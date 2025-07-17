@@ -8,19 +8,10 @@ inputs:
   registry:
     description: NPM registry to set up for auth
     required: false
-  fetch-depth:
-    required: false
-    description: Number of commits to fetch. 0 indicates all history for all branches and tags.
-    default: "1"
 
 runs:
   using: composite
   steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: ${{ inputs.fetch-depth }}
-
     - uses: pnpm/action-setup@v4
       name: Install pnpm
       with:

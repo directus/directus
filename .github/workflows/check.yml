@@ -19,6 +19,9 @@ jobs:
     name: Prepare caches
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Prepare
         uses: ./.github/actions/prepare
         with:
@@ -29,6 +32,9 @@ jobs:
     needs: prepare
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Prepare
         uses: ./.github/actions/prepare
         with:
@@ -42,6 +48,9 @@ jobs:
     needs: prepare
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Prepare
         uses: ./.github/actions/prepare
         with:
@@ -55,6 +64,9 @@ jobs:
     needs: prepare
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Prepare
         uses: ./.github/actions/prepare
         with:
@@ -68,6 +80,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: prepare
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
         # This builds the full suite of packages as some of them are used within test files
         #
         # Ideally we drop reliance on any workspace packages in tests so we don't have to build
@@ -75,13 +90,11 @@ jobs:
         # but that's a PR for another day
       - name: Prepare
         uses: ./.github/actions/prepare
-        with:
-          fetch-depth: 0
 
       - name: Run Tests
         run: |
-          if [ "${GITHUB_REF##*/}" != "main" ]; then
-            pnpm test:coverage --changed origin/${{ github.base_ref }} --passWithNoTests
+          if [ "${{ github.ref_name }}" != "main" ]; then
+            pnpm test:coverage --changed=origin/${{ github.base_ref }} --passWithNoTests
           else
             pnpm test:coverage --passWithNoTests
           fi
