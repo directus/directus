@@ -11,13 +11,11 @@ import type {
 } from '@directus/constants';
 import type { EndpointConfig } from './endpoints.js';
 import type { HookConfig } from './hooks.js';
-import type { OperationApiConfig } from './operations.js';
-
 import type { DisplayConfig } from './displays.js';
 import type { InterfaceConfig } from './interfaces.js';
 import type { LayoutConfig } from './layouts.js';
 import type { ModuleConfig } from './modules.js';
-import type { OperationAppConfig } from './operations.js';
+import type { OperationApiConfig, OperationAppConfig } from './operations.js';
 import type { PanelConfig } from './panels.js';
 
 export type AppExtensionConfigs = {

@@ -1,5 +1,5 @@
 import type { Component, ComponentOptions } from 'vue';
-import type { AppField } from './index.js';
+import type { AppField } from '../fields.js';
 import type { DeepPartial } from '../misc.js';
 import type { Query } from '../query.js';
 
@@ -10,7 +10,6 @@ export interface PanelConfig {
 	name: string;
 	icon: string;
 	description?: string;
-
 	query?: (options: Record<string, any>) => PanelQuery | PanelQuery[] | undefined;
 	variable?: true; // Mark the panel as a global variable
 	component: Component;

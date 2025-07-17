@@ -88,3 +88,5 @@ export type Condition = {
 	options?: Record<string, any>;
 	required?: boolean;
 };
+
+export type AppField = Field & { schema: { default_value: any } };
