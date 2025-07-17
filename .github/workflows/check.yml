@@ -2,9 +2,10 @@ name: Check
 
 on:
   pull_request:
+
+  push:
     branches:
       - main
-      - v11-rc
 
 concurrency:
   group: check-${{ github.ref }}
@@ -14,60 +15,45 @@ env:
   NODE_OPTIONS: --max_old_space_size=6144
 
 jobs:
-  lint:
-    name: Lint
+  setup:
+    name: Setup runner
     runs-on: ubuntu-latest
     steps:
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v45
-
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Prepare
         uses: ./.github/actions/prepare
         with:
           build: false
 
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+
+  lint:
+    name: Lint
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: Run Linter
         run: pnpm exec eslint ${{ steps.changed-files.outputs.all_changed_files }}
 
   stylelint:
     name: Stylelint
+    needs: setup
     runs-on: ubuntu-latest
     steps:
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v45
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Prepare
-        uses: ./.github/actions/prepare
-        with:
-          build: false
-
       - name: Run Stylelinter
         run: pnpm exec stylelint '**/*.{css,scss,vue}' --ignore-path .gitignore
 
   format:
     name: Format
+    needs: setup
     runs-on: ubuntu-latest
     steps:
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v45
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Prepare
-        uses: ./.github/actions/prepare
-        with:
-          build: false
-
       - name: Run Formatter
         run: pnpm exec prettier --check --ignore-unknown ${{ steps.changed-files.outputs.all_changed_files }}
 
@@ -75,18 +61,18 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          # Vitest uses `git diff` under the hood to find the changed files in it's `--changed`
-          # option, which in turn means we need to fetch the full git history so git is able to diff
-          fetch-depth: 0
-
       - name: Prepare
         uses: ./.github/actions/prepare
+        with:
+          install: false
 
       - name: Run Tests
-        run: pnpm test:coverage -- --changed origin/${{ github.base_ref }} --passWithNoTests
+        run: |
+          if [ "${GITHUB_REF##*/}" != "main" ]; then
+            pnpm test:coverage --changed origin/${{ github.base_ref }} --passWithNoTests
+          else
+            pnpm test:coverage --passWithNoTests
+          fi
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
