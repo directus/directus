@@ -22,9 +22,6 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v45
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Prepare
         uses: ./.github/actions/prepare
         with:
@@ -37,10 +34,6 @@ jobs:
     name: Stylelint
     runs-on: ubuntu-latest
     steps:
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v45
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -82,11 +75,15 @@ jobs:
           # option, which in turn means we need to fetch the full git history so git is able to diff
           fetch-depth: 0
 
+        # This currently builds all packages in the repo. Ideally we add build: false here as well
+        # to save minutes building the repo, but that'd require us refactoring the tests to stop
+        # using @directus/* packages within tests
       - name: Prepare
         uses: ./.github/actions/prepare
 
       - name: Run Tests
-        run: pnpm test:coverage -- --changed origin/${{ github.base_ref }} --passWithNoTests
+        run: pnpm test:coverage --passWithNoTests
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
