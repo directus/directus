@@ -73,6 +73,7 @@ jobs:
           else
             pnpm test:coverage --passWithNoTests
           fi
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
