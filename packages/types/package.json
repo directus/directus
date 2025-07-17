@@ -35,7 +35,6 @@
 	},
 	"devDependencies": {
 		"@directus/extensions": "workspace:*",
-		"@directus/themes": "workspace:*",
 		"@directus/tsconfig": "catalog:",
 		"@types/deep-diff": "1.0.2",
 		"knex": "3.1.0",
