@@ -29,7 +29,9 @@ export const request = async <Output = any>(
 
 			if (reason && typeof reason === 'object' && 'data' in reason) result.data = reason.data;
 
-			if (result.errors[0]?.message) result.message = result.errors[0].message;
+			if (reason && typeof reason === 'object' && result.errors?.[0]?.message) {
+				result.message = result.errors[0].message;
+			}
 
 			return Promise.reject(result);
 		});
