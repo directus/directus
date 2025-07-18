@@ -691,7 +691,7 @@ function usePopper(
 	transform-origin: center right;
 
 	html[dir="rtl"] & {
-		transform-origin: center right;
+		transform-origin: center left;
 	}
 }
 
