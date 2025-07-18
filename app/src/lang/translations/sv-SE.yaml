@@ -30,6 +30,7 @@ draft: Utkast
 archived: Arkiverad
 extensions: Tillägg
 skip_link_nav: Hoppa till navigering
+skip_link_module_nav: Hoppa över till modulnavigering
 skip_link_main: Hoppa till huvudinnehåll
 modules: Moduler
 module_bar: Modulfält
@@ -83,6 +84,7 @@ extension_missing: Saknas
 extension_reload_required: Siduppdatering krävs
 extension_reload_required_copy: Sidan måste laddas om för att kunna se ändringarna efter att ha aktiverad eller inaktiverad tillägg.
 extension_reload_now: Ladda om nu
+compatible_with_your_project: Kompatibel med ditt projekt
 n_files: '{n} filer'
 verified: Verifierad
 homepage: Hemsida
@@ -128,6 +130,7 @@ create_webhook: Skapa webhook
 create_custom_translation: Skapa anpassad översättning
 edit_custom_translation: Redigera egen översättning
 no_custom_translations: Inga egna översättningar
+no_custom_translations_copy: Det finns inga anpassade översättningar ännu.
 invite_users: Bjud in användare
 invite: Bjud in
 email_already_invited: E-postadressen "{email}" har redan blivit inbjuden
@@ -211,6 +214,8 @@ validationError:
   istarts_with: Värdet måste börja med {substring}
   nstarts_with: Värdet får inte börja med {substring}
   nistarts_with: Värdet får inte börja med {substring}
+  nends_with: Värdet kan inte sluta med {substring}
+  niends_with: Värdet kan inte sluta med {substring}
 all_access: Alla behörigheter
 no_access: Ingen åtkomst
 use_custom: Använd anpassad
@@ -286,6 +291,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Återställ sidans inställningar
 hidden_field: Dolt fält
 hidden_on_detail: Dolt på detaljnivå
+readonly_field_label: Inaktivera fältet i appen
 key: Nyckel
 alias: Alias
 bigInteger: Big Integer
@@ -313,6 +319,8 @@ geometry:
   Polygon: Polygon
 theme_light: Ljust läge
 theme_dark: Mörkt läge
+theme_directus_default: Directus Default
+theme_directus_minimal: Directus Minimal
 not_available_for_type: Inte tillgänglig för denna typ
 create_translations: Skapa översättningar
 auto_refresh: Uppdatera automatiskt
@@ -332,6 +340,7 @@ no_collections_found: Inga kollektioner hittades.
 new_data_alert: 'Följande kommer att skapas inom din datamodell:'
 search_collection: Sök i kollektion...
 search_role: Sök roll...
+search_policy: Sök policy...
 search_field: Sök fält...
 new_field: 'Nytt fält'
 new_collection: 'Ny kollektion'
@@ -378,6 +387,7 @@ foreign_key: Främmande nyckel
 finish_setup: Slutför installation
 dismiss: Avfärda
 toggle_raw_editor: Växla Råredigerare
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Obearbetat värde
 copy_raw_value: Kopiera obearbetat värde
 copy_raw_value_success: Kopierad
@@ -697,6 +707,7 @@ cannot_edit_global_bookmarks: Kan inte redigera globala bokmärken
 bookmarks: Bokmärken
 presets: Förval
 unexpected_error: Oväntat fel
+unexpected_error_copy: Ett oväntat fel har uppstått. Försök igen.
 copy_details: Kopiera detaljer
 no_app_access: Ingen appåtkomst
 no_app_access_copy: Den här användaren får inte använda administratörs-appen.
@@ -803,6 +814,7 @@ value_index: Fältet är indexerat
 all_activity: All aktivitet
 create_item: Skapa objekt
 display_template: Visningsmall
+language_display_template: Språkvisningsmall
 per_page: Per sida
 all_files: Alla filer
 my_files: Mina filer
@@ -844,8 +856,12 @@ label: Etikett
 flows: Flöden
 flow: Flöde
 select_a_flow: Välj ett flöde
+run_flow_confirm: Är du säker på att du vill köra detta flöde?
+run_flow_on_current_collection: Kör flöde på nuvarande samling
+run_flow_on_current: Kör flöde på aktuellt objekt
 run_flow_on_current_edited_confirm: Detta objekt kan uppdateras av detta flöde, är du säker på att du vill köra det?
 field_name_placeholder: Ange fältnamn...
+field_key_placeholder: Ange fältnyckel...
 trigger: Utlösare
 create_trigger: Skapa utlösare
 trigger_setup: Konfiguration av utlösare
@@ -874,6 +890,7 @@ operation_options: Åtgärdsalternativ
 operation_key: Identifierare för referens...
 visual_editor: Visuell redigerare
 toggle_navigation: Växla navigering
+toggle_editable_elements: Växla redigerbara element
 no_url: Ingen URL angiven
 invalid_url: Ogiltig URL
 insights: Insikter
@@ -1075,6 +1092,7 @@ uninstall: Avinstallera
 installed: Installerad
 reinstall: Installera om
 source_local: Lokal
+source_module: Nodmodul
 collection: Kollektion
 collections: Kollektioner
 content: Innehåll
@@ -1085,6 +1103,8 @@ directus_collection:
   directus_activity: Ansvarsloggar för alla händelser
   directus_comments: Kommentarer för objekt
   directus_dashboards: Kontrollpaneler i insights modulen
+  directus_flows: Automationsflöden
+  directus_migrations: Vilken version av databasen du använder
   directus_notifications: Meddelande skickat till användare
   directus_panels: Individuella paneler inom Insights kontrollpaneler
   directus_revisions: Ögonblicksbilder för all aktivitet
@@ -1176,16 +1196,20 @@ fields:
     appearance: Utseende
     theme_light: Ljust tema
     theme_dark: Mörkt tema
+    theme_light_overrides: Anpassning av ljust tema
+    theme_dark_overrides: Anpassning av mörkt tema
   directus_settings:
     jpg: JPEG
     png: PNG
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Rapportering
     basemaps: Baskartor
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     basemaps_style: Mapbox-stil
+    mapbox_key: Mapbox åtkomsttoken
     mapbox_placeholder: pk.eyJ1Ijo.....
     project_name: Projektnamn
     project_url: Projektets URL
@@ -1210,9 +1234,12 @@ fields:
     transformations_none: Inaktivera transformationer
     transformations_presets: Begränsa transformationer till inställningarna nedan
     image_editor: Bildredigerare
+    theme_light_overrides: Anpassning av ljust tema
+    theme_dark_overrides: Anpassning av mörkt tema
     public_registration: Användarregistrering
     public_registration_role: Användarroll
     public_registration_verify_email: Verifiera e-post
+    visual_editor_urls: URL:er för visuell redigare
   directus_shares:
     name: Namn
     role: Roll
@@ -1274,6 +1301,7 @@ field_options:
         outside_text: Passa utanför
     additional_transforms: Ytterligare Transformationer
     transforms_note: Skarpa metodens namn och dess argument. Se https://sharp.pixelplumbing.com/api-constructor för mer information.
+    mapbox_key: Mapbox åtkomsttoken
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Baskartor
     basemaps_raster: Raster
@@ -1301,6 +1329,7 @@ field_options:
     plural_unit: Enhet för plural
     archive_divider: Arkivera
     archive_field_placeholder: Välj ett fält...
+    archive_app_filter: Aktivera filtret för apparkiv
     archive_value: Värde som sätts vid arkivering...
     unarchive_value: Värde som sätts vid avarkivering...
     sort_divider: Sortera
@@ -1318,6 +1347,7 @@ field_options:
     filename_download: Namn vid nedladdning...
   directus_policies:
     description: En beskrivning av denna policy...
+    assigned_to: Tilldelad till
   directus_roles:
     name: Unikt namn för denna roll...
     description: Beskrivning av rollen...
@@ -1368,6 +1398,7 @@ comment: Kommentera
 live_preview:
   enable: Aktivera förhandsvisning
   disable: Inaktivera förhandsgranskning
+  change_size: Ändra visningsdimensioner
   refresh: Uppdatera förhandsgranskning
   new_window: Öppna i nytt fönster
   close_window: Öppna i delad vy
@@ -1377,6 +1408,9 @@ expired: Upphört
 upcoming: Kommande
 share: Dela
 share_item: Dela objekt
+shared_leave_blank_for_passwordless_access: Lämna tomt för lösenordslös åtkomst
+shared_leave_blank_for_unlimited: Lämna tomt för obegränsat
+shared_times_remaining: Denna länk kan endast användas {n} gånger
 shared_last_remaining: Denna länk kan endast användas en gång
 share_access_not_found_desc: Kontakta en auktoriserad användare av detta projekt för att begära åtkomst.
 share_copy_link: Kopiera länk
@@ -1450,6 +1484,7 @@ revisions: Revidering
 no_revisions: Inga revisioner ännu
 no_logs: Inga loggar ännu
 show_failed_only: Visa bara misslyckade
+no_logs_on_page: Inga loggar på denna sida
 revert: Återgå
 save: Spara
 schema: Schema
@@ -1505,6 +1540,7 @@ interfaces:
     no_rules: Inga regler konfigurerade
     change_value: Klicka för att ändra värde
     placeholder: Dra regler hit
+    add_key_placeholder: Lägg till en nyckel och tryck på enter...
   fields:
     name: Fält
   group-accordion:
@@ -1635,6 +1671,7 @@ interfaces:
     description: Ange och förhandsgranska markdown
     edit: Redigera
     preview: Förhandsgranska
+    editorFont: Typsnitt för redigerare
     previewFont: Förhandsgranska typsnitt
     default_view: Förvald vy
     default_view_editor: Redigerare
@@ -1767,6 +1804,7 @@ interfaces:
       table: Tabell
       quote: Citat
       underline: Understruken
+      inlinecode: Inline-kod
       delimiter: Avgränsare
       checklist: Checklista
       toggle: Växla block
@@ -1792,6 +1830,8 @@ interfaces:
     remove_token: Ta bort token
   system-raw-editor:
     system-raw-editor: Råredigerare
+  input-password:
+    input-password: Ange lösenord
 displays:
   translations:
     translations: Översättningar
@@ -1831,6 +1871,7 @@ displays:
     suffix: Suffix
     suffix_label: Visa relativ indikator
     strict: Strikt
+    strict_note: Tar bort ord som "nästan", "över", "mindre än"
     round: Rund
     down: Ner
     nearest: Närmaste
@@ -1932,6 +1973,7 @@ layouts:
     map: Karta
     basemap: Basemap
     layers: Lager
+    cluster_radius: Klusterradie
     invalid_geometry: Ogiltig geometri
     find_location: Hitta plats...
     no_compatible_fields: Inga kompatibla fält
@@ -1968,6 +2010,7 @@ x_axis: X-axel
 y_axis: Y-axel
 show_x_only: Visa endast X-axel
 show_y_only: Visa endast Y-axel
+show_data_label: Visa dataetikett
 both: Båda
 show_axis_labels: Visa Axel-etiketter
 function: Funktion
@@ -1985,6 +2028,8 @@ panels:
     name: Metrisk
     description: Visa ett enskilt värde baserat på en query
     field: Fält
+  metric_list:
+    name: Metrisk lista
   time_series:
     name: Tidsserier
     description: Rendera ett linjediagram baserat på värden över tid
@@ -2005,6 +2050,7 @@ panels:
     select_collection: Du måste välja en samling.
   linechart:
     name: Linjediagram
+    description: Linjediagram för att jämföra förändring av ett fält
     curve_type: Kurvtyp
   variable:
     name: Global variabel
@@ -2018,6 +2064,8 @@ triggers:
     name: Webhook
     method: Metod
     async: Asynkron
+  operation:
+    name: Ett annat flöde
   schedule:
     name: Schema (CRON)
   manual:
@@ -2032,6 +2080,7 @@ operations:
     name: Villkor
   exec:
     name: Kör skript
+    modules: 'Följande **nodmoduler** kan användas:'
   item-create:
     name: Skapa data
     description: Skapa objekt i databasen
@@ -2056,8 +2105,10 @@ operations:
   log:
     name: Logga till konsolen
     message: Meddelande
+    message_placeholder: Ange ett meddelande att visa i konsolen...
   mail:
     name: Skicka e-post
+    description: Skicka ett mejl till en eller flera personer
     to: Till
     template: Mall
     data: Data
@@ -2082,6 +2133,7 @@ operations:
     flows: Flöden
     flow: Flöde
     data: Data
+    iteration_mode: Itereringsläge
     batch: Batch
     batch_size: Batchstorlek
     cache: Cache
@@ -2118,6 +2170,7 @@ hide_password: Dölj lösenord
 bsl_banner:
   welcome_to_directus: Välkommen till Directus!
   directus_bsl: Directus BSL 1.1
+  privacy_policy: Integritetspolicy
   accept_terms: Acceptera
   get_license: Skaffa en licens
 accepted: Accepterad
