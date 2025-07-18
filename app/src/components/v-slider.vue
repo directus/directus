@@ -187,6 +187,10 @@ function onInput(event: Event) {
 			transform: translateY(-5px) scaleX(calc(var(--_v-slider-percentage) / 100));
 			transform-origin: left;
 			pointer-events: none;
+
+			html[dir="rtl"] & {
+				transform-origin: right;
+			}
 		}
 
 		.ticks {
@@ -236,6 +240,10 @@ function onInput(event: Event) {
 			transform: translateX(-50%);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
+
+			html[dir="rtl"] & {
+				transform: translateX(50%);
+			}
 
 			&.visible {
 				opacity: 1;
