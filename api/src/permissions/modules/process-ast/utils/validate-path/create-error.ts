@@ -1,6 +1,7 @@
-import { type DirectusError, ForbiddenError } from '@directus/errors';
+import type { DirectusExtensionsError } from '@directus/types';
+import { ForbiddenError } from '@directus/errors';
 
-export function createCollectionForbiddenError(path: string, collection: string): DirectusError<any> {
+export function createCollectionForbiddenError(path: string, collection: string): DirectusExtensionsError<any> {
 	const pathSuffix = path === '' ? 'root' : `"${path}"`;
 
 	return new ForbiddenError({
@@ -8,7 +9,11 @@ export function createCollectionForbiddenError(path: string, collection: string)
 	});
 }
 
-export function createFieldsForbiddenError(path: string, collection: string, fields: string[]): DirectusError<any> {
+export function createFieldsForbiddenError(
+	path: string,
+	collection: string,
+	fields: string[],
+): DirectusExtensionsError<any> {
 	const pathSuffix = path === '' ? 'root' : `"${path}"`;
 
 	const fieldStr = fields.map((field) => `"${field}"`).join(', ');

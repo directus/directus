@@ -1,6 +1,5 @@
-import type { File } from '@directus/types';
+import type { File, Transformation, TransformationParams } from '@directus/types';
 import { describe, expect, test } from 'vitest';
-import type { Transformation, TransformationParams } from '../types/assets.js';
 import { maybeExtractFormat, resolvePreset } from './transformations.js';
 
 const inputFile = {

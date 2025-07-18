@@ -1,18 +1,13 @@
+import type { ExtensionOptions } from '@directus/extensions';
+import { EXTENSION_LANGUAGES, EXTENSION_PKG_KEY } from '@directus/extensions';
 import type {
 	ApiExtensionType,
 	AppExtensionType,
 	BundleExtensionType,
-	ExtensionOptions,
 	ExtensionType,
 	HybridExtensionType,
-} from '@directus/extensions';
-import {
-	BUNDLE_EXTENSION_TYPES,
-	EXTENSION_LANGUAGES,
-	EXTENSION_PKG_KEY,
-	EXTENSION_TYPES,
-	HYBRID_EXTENSION_TYPES,
-} from '@directus/extensions';
+} from '@directus/types';
+import { BUNDLE_EXTENSION_TYPES, EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { isIn } from '@directus/utils';
 import chalk from 'chalk';
 import { execa } from 'execa';

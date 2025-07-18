@@ -1,13 +1,20 @@
 import { Action } from '@directus/constants';
 import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
-import type { ContentVersion, Filter, Item, PrimaryKey, Query } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	ContentVersion,
+	Filter,
+	Item,
+	MutationOptions,
+	PrimaryKey,
+	Query,
+} from '@directus/types';
 import Joi from 'joi';
 import { assign, pick } from 'lodash-es';
 import objectHash from 'object-hash';
 import { getCache } from '../cache.js';
 import emitter from '../emitter.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { ActivityService } from './activity.js';
 import { ItemsService } from './items.js';

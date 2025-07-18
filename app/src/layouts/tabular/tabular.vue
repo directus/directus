@@ -6,8 +6,7 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { Collection } from '@/types/collections';
 import { useSync } from '@directus/composables';
-import type { ShowSelect } from '@directus/extensions';
-import type { Field, Filter, Item } from '@directus/types';
+import type { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { ComponentPublicInstance, Ref, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 

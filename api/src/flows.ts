@@ -1,7 +1,6 @@
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
-import type { OperationHandler } from '@directus/extensions';
 import { isSystemCollection } from '@directus/system-data';
 import type {
 	Accountability,
@@ -11,6 +10,7 @@ import type {
 	Operation,
 	PrimaryKey,
 	SchemaOverview,
+	OperationHandler,
 } from '@directus/types';
 import { applyOptionsData, deepMap, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
