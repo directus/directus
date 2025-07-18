@@ -114,15 +114,17 @@ async function copyItemId() {
 		:class="{ loading, readonly, selected: item && modelValue.includes(item[itemKey]), 'select-mode': selectMode }"
 		@click="handleClick"
 	>
-		<v-icon class="selector" :name="selectionIcon" clickable @click.stop="toggleSelection" />
-		<v-icon
-			v-if="item?.id"
-			class="copy-id"
-			name="content_copy"
-			clickable
-			:aria-label="t('copy_id')"
-			@click.stop="copyItemId"
-		/>
+		<div class="card-controls">
+			<v-icon class="selector" :name="selectionIcon" clickable @click.stop="toggleSelection" />
+			<v-icon
+				v-if="item?.id"
+				class="copy-id"
+				name="content_copy"
+				clickable
+				:aria-label="t('copy_id')"
+				@click.stop="copyItemId"
+			/>
+		</div>
 		<div class="header">
 			<div class="selection-fade"></div>
 			<v-skeleton-loader v-if="loading" />
@@ -250,17 +252,24 @@ async function copyItemId() {
 		content: '';
 	}
 
+	.card-controls {
+		position: absolute;
+		inset-block-start: 4px;
+		inset-inline-start: 4px;
+		z-index: 3;
+		display: flex;
+		align-items: flex-start;
+		gap: 4px;
+		inline-size: 100%;
+		block-size: 100%;
+	}
+
 	.selector,
 	.copy-id {
 		--v-icon-color: var(--white);
 		--v-icon-color-hover: var(--white);
 		--focus-ring-offset: 0;
 
-		position: absolute;
-		inset-block-start: 0;
-		inset-inline-start: 0;
-		z-index: 3;
-		margin: 4px;
 		opacity: 0;
 		transition:
 			opacity var(--fast) var(--transition),
@@ -274,10 +283,6 @@ async function copyItemId() {
 		&:focus-visible {
 			border-radius: 50%;
 		}
-	}
-
-	.copy-id {
-		inset-inline-start: 30px;
 	}
 
 	&.select-mode {
