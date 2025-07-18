@@ -26,8 +26,8 @@
 		"dev": "tsup src/index.ts --format=esm --dts --watch"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
-		"tsup": "8.4.0",
-		"typescript": "5.8.2"
+		"@directus/tsconfig": "catalog:",
+		"tsup": "catalog:",
+		"typescript": "catalog:"
 	}
 }

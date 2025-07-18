@@ -279,22 +279,23 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 	--limit-notice-margin-bottom: 24px;
 	--header-bar-margin: 24px;
 
-	height: calc(100% - calc(var(--header-bar-height) + 2 * var(--header-bar-margin) + var(--limit-notice-height)));
+	block-size: calc(100% - calc(var(--header-bar-height) + 2 * var(--header-bar-margin) + var(--limit-notice-height)));
 	padding: var(--content-padding);
-	padding-top: 0;
+	padding-block-start: 0;
 
 	&:has(> .limit) {
 		--limit-notice-height: calc(60px + var(--limit-notice-margin-bottom));
 	}
 
 	.limit {
-		margin-bottom: var(--limit-notice-margin-bottom);
+		margin-block-end: var(--limit-notice-margin-bottom);
 	}
 }
 
 .kanban {
 	display: flex;
-	height: 100%;
+	block-size: 100%;
+
 	--user-spacing: 16px;
 
 	.draggable {
@@ -303,12 +304,12 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 		.group {
 			display: flex;
 			flex-direction: column;
-			width: 320px;
+			inline-size: 320px;
 			padding: 8px 0;
 			background-color: var(--theme--background-normal);
 			border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 			border-radius: var(--theme--border-radius);
-			margin-right: 20px;
+			margin-inline-end: 20px;
 			transition: border-color var(--transition) var(--fast);
 
 			&:not(.disabled).active {
@@ -319,42 +320,42 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 			.header {
 				display: flex;
 				justify-content: space-between;
-				margin: 0 16px 8px 16px;
+				margin: 0 16px 8px;
 				font-weight: 700;
 
 				.title {
-					max-width: calc(100% - 60px);
+					max-inline-size: calc(100% - 60px);
 					display: flex;
 
 					.title-content {
-						width: auto;
+						inline-size: auto;
 						overflow: hidden;
 						white-space: nowrap;
 						text-overflow: ellipsis;
 						color: var(--theme--foreground-accent);
-						margin-right: 6px;
+						margin-inline-end: 6px;
 					}
 				}
 
 				.badge {
 					display: inline-flex;
 					justify-content: center;
-					padding: 0px 6px;
-					height: 20px;
-					min-width: 20px;
-					margin-top: 2px;
+					padding: 0 6px;
+					block-size: 20px;
+					min-inline-size: 20px;
+					margin-block-start: 2px;
 					text-align: center;
 					font-size: 12px;
 					line-height: 20px;
 					background-color: var(--theme--background-accent);
-					border-radius: 12px; //var(--theme--border-radius);
+					border-radius: 12px; // var(--theme--border-radius);
 				}
 
 				.actions {
 					color: var(--theme--foreground-subdued);
 
 					.v-icon {
-						margin-left: 4px;
+						margin-inline-start: 4px;
 						transition: color var(--transition) var(--fast);
 					}
 
@@ -366,12 +367,11 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 			.items {
 				flex: 1;
-				overflow-x: hidden;
-				overflow-y: auto;
+				overflow: hidden auto;
 
 				.item {
 					display: block;
-					margin: 2px 16px 6px 16px;
+					margin: 2px 16px 6px;
 					padding: 12px 16px;
 					background-color: var(--theme--background);
 					border-radius: var(--theme--border-radius);
@@ -394,13 +394,13 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					color: var(--theme--primary);
 					transition: color var(--transition) var(--fast);
 					font-weight: 700;
-					margin-bottom: 4px;
+					margin-block-end: 4px;
 				}
 
 				.title,
 				.text {
 					line-height: 24px;
-					height: 24px;
+					block-size: 24px;
 
 					& * {
 						line-height: inherit;
@@ -412,41 +412,44 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					}
 				}
 
+				.text {
+					display: flex;
+					white-space: nowrap;
+				}
+
 				.image {
-					width: 100%;
-					margin-top: 10px;
+					inline-size: 100%;
 					border-radius: var(--theme--border-radius);
-					margin-top: 4px;
-					max-height: 300px;
+					margin-block-start: 4px;
+					max-block-size: 300px;
 				}
 
 				.display-labels {
 					display: flex;
 					flex-wrap: wrap;
-					margin-top: 6px;
+					margin-block-start: 6px;
 
 					:deep(.v-chip) {
 						border: none;
 						background-color: var(--theme--background-normal);
 						font-size: 12px;
 						font-weight: 600;
-						margin-top: 4px;
-						margin-right: 4px;
-						height: 20px;
+						margin-block-start: 4px;
+						margin-inline-end: 4px;
+						block-size: 20px;
 						padding: 0 6px;
 					}
 					:deep(.v-chip + .v-chip) {
-						margin-left: 0;
+						margin-inline-start: 0;
 					}
 				}
 
 				.bottom {
-					width: 100%;
+					inline-size: 100%;
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
-					margin-top: 8px;
-					margin-bottom: 2px;
+					margin-block: 8px 2px;
 
 					.datetime {
 						display: inline-block;
@@ -457,23 +460,22 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					}
 
 					.avatars {
-						padding-left: var(--user-spacing);
+						padding-inline-start: var(--user-spacing);
 						display: flex;
 						flex-direction: row-reverse;
 						.avatar {
-							margin-left: calc(var(--user-spacing) * -1);
+							margin-inline-start: calc(var(--user-spacing) * -1);
 							border-radius: 24px;
 							border: 4px solid var(--theme--background);
-							height: 32px;
-							width: 32px;
-							margin-bottom: -4px;
-							margin-top: -4px;
+							block-size: 32px;
+							inline-size: 32px;
+							margin-block: -4px;
 						}
 
 						.avatar-overflow {
 							align-self: center;
 							color: var(--theme--foreground-subdued);
-							margin-left: 2px;
+							margin-inline-start: 2px;
 						}
 					}
 				}
@@ -483,7 +485,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 	.add-group {
 		cursor: pointer;
-		padding: 8px 8px;
+		padding: 8px;
 		border: var(--theme--border-width) dashed var(--theme--border-color-subdued);
 		border-radius: var(--theme--border-radius);
 		transition: border-color var(--transition) var(--fast);

@@ -159,7 +159,7 @@ function getColor(input?: number) {
 						v-if="row[aggregateFunction]?.[aggregateField]"
 						class="metric-bar"
 						:style="{
-							width: widthOfRow(row),
+							inlineSize: widthOfRow(row),
 							'background-color': `${getColor(row[aggregateFunction]?.[aggregateField])}50`,
 						}"
 					>
@@ -197,18 +197,18 @@ function getColor(input?: number) {
 	--v-list-item-border-radius: 0;
 	--v-list-item-padding: 6px;
 	--v-list-item-margin: 0;
-	height: 100%;
+	block-size: 100%;
 	padding: 6px;
-	overflow-y: auto;
-	overflow-x: hidden;
+	overflow: hidden auto;
 }
+
 .metric-list-item {
-	height: 36px;
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	block-size: 36px;
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .metric-list-item:last-child {
-	border-bottom: 0px;
+	border-block-end: 0;
 }
 
 .metric-bar {

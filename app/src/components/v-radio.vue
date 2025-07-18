@@ -73,14 +73,14 @@ function emitValue(): void {
 	display: flex;
 	align-items: center;
 	font-size: 0;
-	text-align: left;
+	text-align: start;
 	background-color: transparent;
 	border: none;
 	border-radius: 0;
 	appearance: none;
 
 	.label:not(:empty) {
-		margin-left: 8px;
+		margin-inline-start: 8px;
 
 		@include mixins.no-wrap;
 	}
@@ -103,18 +103,18 @@ function emitValue(): void {
 
 	&.block {
 		position: relative;
-		width: 100%;
-		height: var(--theme--form--field--input--height);
+		inline-size: 100%;
+		block-size: var(--theme--form--field--input--height);
 		padding: calc(14px - 2 * var(--theme--border-width));
 		border: var(--theme--border-width) solid var(--theme--form--field--input--background-subdued);
 		border-radius: var(--theme--border-radius);
 
 		&::before {
 			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
+			inset-block-start: 0;
+			inset-inline-start: 0;
+			inline-size: 100%;
+			block-size: 100%;
 			background-color: var(--theme--form--field--input--background-subdued);
 			border-radius: var(--theme--border-radius);
 			content: '';

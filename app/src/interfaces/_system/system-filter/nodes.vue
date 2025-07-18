@@ -400,11 +400,11 @@ function isExistingField(node: Record<string, any>): boolean {
 	position: relative;
 	display: flex;
 	align-items: center;
-	width: fit-content;
-	margin-right: 18px;
-	margin-bottom: 8px;
+	inline-size: fit-content;
+	margin-inline-end: 18px;
+	margin-block-end: 8px;
 	padding: 2px 6px;
-	padding-right: 8px;
+	padding-inline-end: 8px;
 	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-radius: 100px;
@@ -414,7 +414,7 @@ function isExistingField(node: Record<string, any>): boolean {
 		color: var(--theme--form--field--input--foreground-subdued);
 
 		.key {
-			margin-right: 4px;
+			margin-inline-end: 4px;
 			padding: 2px 6px;
 			color: var(--theme--primary);
 			background-color: var(--theme--primary-background);
@@ -439,7 +439,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	}
 
 	:deep(.inline-display) {
-		padding-right: 0px;
+		padding-inline-end: 0;
 
 		.v-icon {
 			display: none;
@@ -448,7 +448,7 @@ function isExistingField(node: Record<string, any>): boolean {
 
 	.plain-name {
 		display: inline-block;
-		margin-right: 8px;
+		margin-inline-end: 8px;
 		white-space: nowrap;
 	}
 
@@ -468,15 +468,15 @@ function isExistingField(node: Record<string, any>): boolean {
 		position: relative;
 		z-index: 2;
 		display: inline-block;
-		margin-right: 8px;
+		margin-inline-end: 8px;
 
 		&::before {
 			position: absolute;
-			top: 0px;
-			left: -4px;
+			inset-block-start: 0;
+			inset-inline-start: -4px;
 			z-index: -1;
-			width: calc(100% + 8px);
-			height: 100%;
+			inline-size: calc(100% + 8px);
+			block-size: 100%;
 			background-color: var(--theme--background-normal);
 			border-radius: 6px;
 			opacity: 0;
@@ -503,9 +503,9 @@ function isExistingField(node: Record<string, any>): boolean {
 		--v-icon-color-hover: var(--theme--danger);
 
 		position: absolute;
-		top: 50%;
-		left: 100%;
-		padding-left: 4px;
+		inset-block-start: 50%;
+		inset-inline-start: 100%;
+		padding-inline-start: 4px;
 		transform: translateY(-50%);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -525,18 +525,18 @@ function isExistingField(node: Record<string, any>): boolean {
 	.drag-handle {
 		--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 
-		margin-right: 4px;
+		margin-inline-end: 4px;
 		cursor: grab;
 	}
 
 	&.inline {
-		width: auto;
-		margin-right: 0;
-		padding-right: 12px;
+		inline-size: auto;
+		margin-inline-end: 0;
+		padding-inline-end: 12px;
 
 		.delete {
-			right: 8px;
-			left: unset;
+			inset-inline-end: 8px;
+			inset-inline-start: unset;
 			background-color: var(--theme--background);
 		}
 	}
@@ -544,12 +544,12 @@ function isExistingField(node: Record<string, any>): boolean {
 
 .node {
 	&.logic {
-		padding-right: 4px;
+		padding-inline-end: 4px;
 		white-space: nowrap;
 	}
 
 	&.field {
-		padding-right: 4px;
+		padding-inline-end: 4px;
 	}
 }
 

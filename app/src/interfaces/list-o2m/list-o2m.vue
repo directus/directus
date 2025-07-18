@@ -14,7 +14,7 @@ import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { Filter } from '@directus/types';
+import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil } from 'lodash';
 import { render } from 'micromustache';
@@ -29,11 +29,12 @@ const props = withDefaults(
 		collection: string;
 		field: string;
 		width: string;
+		disabled?: boolean;
+		version: ContentVersion | null;
 		layout?: LAYOUTS;
 		tableSpacing?: 'compact' | 'cozy' | 'comfortable';
 		fields?: Array<string>;
 		template?: string | null;
-		disabled?: boolean;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
 		filter?: Filter | null;
@@ -61,7 +62,7 @@ const props = withDefaults(
 
 const emit = defineEmits(['input']);
 const { t, n } = useI18n();
-const { collection, field, primaryKey } = toRefs(props);
+const { collection, field, primaryKey, version } = toRefs(props);
 const { relationInfo } = useRelationO2M(collection, field);
 const fieldsStore = useFieldsStore();
 
@@ -148,7 +149,7 @@ const {
 	isItemSelected,
 	isLocalItem,
 	getItemEdits,
-} = useRelationMultiple(value, query, relationInfo, primaryKey);
+} = useRelationMultiple(value, query, relationInfo, primaryKey, version);
 
 const { createAllowed, deleteAllowed, updateAllowed } = useRelationPermissionsO2M(relationInfo);
 
@@ -200,7 +201,7 @@ watch(
 				return {
 					text: field.name,
 					value: key,
-					width: contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160,
+					width: contentWidth[key] !== undefined && contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160,
 					sortable: !['json'].includes(field.type),
 				};
 			})
@@ -655,16 +656,16 @@ function getLinkForItem(item: DisplayItem) {
 
 		.no-last-border {
 			tr.table-row:last-child td {
-				border-bottom: none;
+				border-block-end: none;
 			}
 		}
 
 		tr.table-row {
 			.append {
 				position: sticky;
-				right: 0;
+				inset-inline-end: 0;
 				background: var(--theme--background);
-				border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
+				border-inline-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			}
 		}
 	}
@@ -699,7 +700,7 @@ function getLinkForItem(item: DisplayItem) {
 	z-index: 1;
 
 	&.top {
-		margin-top: 0px;
+		margin-block-start: 0;
 	}
 
 	.spacer {
@@ -712,12 +713,12 @@ function getLinkForItem(item: DisplayItem) {
 		align-self: stretch;
 
 		:deep(.search-input) {
-			height: 100%;
+			block-size: 100%;
 			box-sizing: border-box;
 		}
 
 		:deep(.search-badge) {
-			height: 100%;
+			block-size: 100%;
 		}
 	}
 
@@ -731,12 +732,12 @@ function getLinkForItem(item: DisplayItem) {
 		flex-wrap: wrap;
 
 		.search {
-			width: 100%;
+			inline-size: 100%;
 			order: -1;
 
 			:deep(.search-input),
 			:deep(.search-badge) {
-				width: 100% !important;
+				inline-size: 100% !important;
 			}
 		}
 	}
@@ -746,14 +747,14 @@ function getLinkForItem(item: DisplayItem) {
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-	width: 120px;
+	inline-size: 120px;
 	padding: 10px 0;
-	margin-right: 2px;
+	margin-inline-end: 2px;
 	color: var(--theme--form--field--input--foreground-subdued);
 
 	span {
-		width: auto;
-		margin-right: 8px;
+		inline-size: auto;
+		margin-inline-end: 8px;
 	}
 
 	.v-select {

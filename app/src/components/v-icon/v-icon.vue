@@ -101,9 +101,9 @@ function emitClick(event: MouseEvent) {
 .v-icon {
 	position: relative;
 	display: inline-block;
-	width: var(--v-icon-size, 24px);
-	min-width: var(--v-icon-size, 24px);
-	height: var(--v-icon-size, 24px);
+	inline-size: var(--v-icon-size, 24px);
+	min-inline-size: var(--v-icon-size, 24px);
+	block-size: var(--v-icon-size, 24px);
 	color: var(--v-icon-color, currentColor);
 	font-size: 0;
 	vertical-align: middle;
@@ -149,8 +149,8 @@ function emitClick(event: MouseEvent) {
 		fill: currentColor;
 
 		&.svg-inline--fa {
-			width: 100%;
-			height: 100%;
+			inline-size: 100%;
+			block-size: 100%;
 		}
 	}
 
@@ -185,18 +185,18 @@ function emitClick(event: MouseEvent) {
 	}
 
 	&.left {
-		margin-right: 8px;
+		margin-inline-end: 8px;
 
 		&.small {
-			margin-right: 4px;
+			margin-inline-end: 4px;
 		}
 	}
 
 	&.right {
-		margin-left: 6px;
+		margin-inline-start: 6px;
 
 		&.small {
-			margin-left: 4px;
+			margin-inline-start: 4px;
 		}
 	}
 }

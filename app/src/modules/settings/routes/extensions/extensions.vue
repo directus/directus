@@ -87,15 +87,15 @@ const extensionsByType = computed(() => {
 
 .page-container {
 	padding: var(--content-padding);
-	padding-top: 0;
-	max-width: 1200px;
+	padding-block-start: 0;
+	max-inline-size: 1200px;
 }
 
 .group-divider {
-	margin-bottom: 12px;
+	margin-block-end: 12px;
 }
 
 .extension-group + .extension-group {
-	margin-top: 24px;
+	margin-block-start: 24px;
 }
 </style>

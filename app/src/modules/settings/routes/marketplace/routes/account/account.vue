@@ -118,10 +118,9 @@ const navigateBack = () => {
 <style scoped lang="scss">
 .account-content {
 	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
-	padding-top: 0;
-	max-width: 1200px;
-	width: 100%;
+	padding-block: 0 var(--content-padding-bottom);
+	max-inline-size: 1200px;
+	inline-size: 100%;
 }
 
 .container {
@@ -140,7 +139,7 @@ const navigateBack = () => {
 
 	.readme {
 		grid-area: readme;
-		min-width: 0;
+		min-inline-size: 0;
 	}
 
 	.metadata {
