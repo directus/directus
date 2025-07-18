@@ -1,17 +1,24 @@
+import { RTL_LANGUAGES } from '@/constants/language-direction';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
+import { isIn } from '@directus/utils';
+import { get } from 'lodash';
 
 export function getCurrentLanguage(fallback = 'en-US') {
 	const usersStore = useUserStore();
 	const serverStore = useServerStore();
 
-	let lang = fallback;
+	const lang = get(
+		usersStore,
+		['currentUser', 'language'],
+		get(serverStore, ['info', 'project', 'default_language'], fallback),
+	);
 
-	if (serverStore.info?.project?.default_language) lang = serverStore.info.project.default_language;
+	let dir = get(usersStore, ['currentUser', 'language_direction'], 'auto');
 
-	if (usersStore.currentUser && 'language' in usersStore.currentUser && usersStore.currentUser.language) {
-		lang = usersStore.currentUser.language;
+	if (dir === 'auto') {
+		dir = isIn(lang, RTL_LANGUAGES) ? 'rtl' : 'ltr';
 	}
 
-	return lang;
+	return { lang, dir };
 }

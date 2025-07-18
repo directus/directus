@@ -47,7 +47,7 @@ const displayItem = computed(() => {
 	let item = props.value.find((val) => val?.[langField]?.[langPkField] === props.defaultLanguage) ?? props.value[0];
 
 	if (props.userLanguage) {
-		const lang = getCurrentLanguage();
+		const { lang } = getCurrentLanguage();
 		item = props.value.find((val) => val?.[langField]?.[langPkField] === lang) ?? item;
 	}
 
