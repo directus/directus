@@ -557,8 +557,9 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 		}
 
 		&.is-open {
-			transform: translateX(0);
+			transform: translateX(0) !important;
 		}
+
 		&.has-shadow {
 			box-shadow: var(--sidebar-shadow);
 		}
@@ -572,6 +573,10 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 
 		@media (min-width: 960px) {
 			transform: translateX(calc(100% - 60px - var(--theme--sidebar--border-width)));
+
+			html[dir="rtl"] & {
+				transform: translateX(calc(-100% + 60px + var(--theme--sidebar--border-width)));
+			}
 		}
 
 		@media (min-width: 1260px) {
