@@ -12,11 +12,11 @@ export function getCurrentLanguage(fallback = 'en-US') {
 		usersStore,
 		['currentUser', 'language'],
 		get(serverStore, ['info', 'project', 'default_language'], fallback),
-	);
+	) ?? fallback;
 
 	let dir = get(usersStore, ['currentUser', 'language_direction'], 'auto');
 
-	if (dir === 'auto') {
+	if (dir !== 'ltr' && dir !== 'rtl') {
 		dir = isIn(lang, RTL_LANGUAGES) ? 'rtl' : 'ltr';
 	}
 
