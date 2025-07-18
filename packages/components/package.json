@@ -26,7 +26,9 @@
 		"dev": "vite build --watch",
 		"story:build": "histoire build",
 		"story:dev": "histoire dev",
-		"story:preview": "histoire preview"
+		"story:preview": "histoire preview",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
