@@ -10,6 +10,7 @@ import { computed, onMounted, onUnmounted, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useThemeConfiguration } from './composables/use-theme-configuration';
 import { startIdleTracking, stopIdleTracking } from './idle';
+import { getCurrentLanguage } from './lang/get-current-language';
 
 const { t } = useI18n();
 
@@ -24,6 +25,8 @@ const brandStyleCss = computed(() => {
 	return `:root { --project-color: ${serverStore.info?.project?.project_color ?? 'var(--theme--primary)'} }`;
 });
 
+const htmlAttrs = computed(() => getCurrentLanguage());
+
 useHead({
 	style: [{ textContent: brandStyleCss }],
 	title: 'Directus',
@@ -31,6 +34,7 @@ useHead({
 	templateParams: {
 		projectName: computed(() => serverStore.info?.project?.project_name ?? 'Directus'),
 	},
+	htmlAttrs: htmlAttrs,
 	meta: computed(() => {
 		const content = serverStore.info?.project?.project_color ?? '#6644ff';
 
