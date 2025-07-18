@@ -31,6 +31,23 @@ describe('Request', () => {
 	});
 
 	describe('error handling', () => {
+		it('should handle non object reason', async () => {
+			vi.mocked(fetchMock).mockResolvedValue({
+				headers: new Headers([['Content-Type', 'application/json']]),
+				json: async () => 'Error',
+				text: () => {},
+				ok: false,
+			});
+
+			await expect(async () => await request('https://example.com', {}, fetchMock)).rejects.toStrictEqual({
+				errors: 'Error',
+				message: '',
+				response: expect.objectContaining({
+					ok: false,
+				}),
+			});
+		});
+
 		it('should handle reason with errors array', async () => {
 			vi.mocked(fetchMock).mockResolvedValue({ errors: [] });
 
