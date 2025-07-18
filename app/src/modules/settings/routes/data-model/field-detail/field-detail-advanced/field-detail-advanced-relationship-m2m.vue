@@ -297,6 +297,10 @@ const unsortableJunctionFields = computed(() => {
 		transform: translateX(-50%);
 		pointer-events: none;
 
+		html[dir="rtl"] & {
+			transform: translateX(50%) scaleX(-1);
+		}
+
 		&:first-of-type {
 			inset-block-start: 117px;
 			inset-inline-start: 32.5%;
@@ -338,6 +342,10 @@ const unsortableJunctionFields = computed(() => {
 		inset-block-end: 17px;
 		inset-inline-start: 50%;
 		transform: translateX(-50%);
+
+		html[dir="rtl"] & {
+			transform: translateX(50%) scaleX(-1);
+		}
 	}
 }
 
