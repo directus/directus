@@ -542,7 +542,13 @@ function popoverClickOutsideMiddleware(e: Event) {
 		<template #actions>
 			<slot name="actions" />
 
-			<v-button v-tooltip.bottom="getTooltip('save', t('save'))" icon rounded :disabled="!isSavable" @click="save">
+			<v-button
+				v-tooltip.bottom="getTooltip('save', t('save'))"
+				icon
+				rounded
+				:disabled="!isSavable || !hasEdits"
+				@click="save"
+			>
 				<v-icon name="check" />
 			</v-button>
 		</template>

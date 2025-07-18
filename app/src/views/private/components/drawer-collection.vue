@@ -8,6 +8,7 @@ import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { Props as VDrawerProps } from '@/components/v-drawer.vue';
 import { mergeFilters } from '@directus/utils';
+import { isEqual } from 'lodash';
 
 const props = withDefaults(
 	defineProps<{
@@ -57,6 +58,24 @@ const layoutSelection = computed<any>({
 });
 
 const { layoutWrapper } = useLayout(layout);
+
+const initialSelection = ref<(string | number)[] | null>(null);
+
+watch(
+	() => internalActive.value,
+	(active) => {
+		if (active) {
+			// Store a copy of the initial selection when the drawer opens
+			initialSelection.value = Array.isArray(internalSelection.value)
+				? [...internalSelection.value]
+				: internalSelection.value;
+		}
+	},
+);
+
+const hasSelectionChanged = computed(() => {
+	return !isEqual(internalSelection.value, initialSelection.value);
+});
 
 function useActiveState() {
 	const localActive = ref(false);
@@ -170,7 +189,7 @@ function useActions() {
 			<template #actions>
 				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />
 
-				<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
+				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!hasSelectionChanged" @click="save">
 					<v-icon name="check" />
 				</v-button>
 			</template>
