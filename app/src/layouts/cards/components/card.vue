@@ -98,7 +98,7 @@ function handleClick() {
 	}
 }
 
-async function copyCardId() {
+async function copyItemId() {
 	if (!props.item?.id) return;
 
 	await copyToClipboard(props.item.id, {
@@ -115,6 +115,14 @@ async function copyCardId() {
 		@click="handleClick"
 	>
 		<v-icon class="selector" :name="selectionIcon" clickable @click.stop="toggleSelection" />
+		<v-icon
+			v-if="item?.id"
+			class="copy-id"
+			name="content_copy"
+			clickable
+			:aria-label="t('copy_id')"
+			@click.stop="copyItemId"
+		/>
 		<div class="header">
 			<div class="selection-fade"></div>
 			<v-skeleton-loader v-if="loading" />
@@ -137,10 +145,6 @@ async function copyCardId() {
 		<template v-else>
 			<div v-if="$slots.title" class="title"><slot name="title" /></div>
 			<div v-if="$slots.subtitle" class="subtitle"><slot name="subtitle" /></div>
-			<div v-if="item?.id" class="copy-id-row">
-				<v-icon name="content_copy" small class="copy-id-icon" :aria-label="$t('copy_id')" @click.stop="copyCardId" />
-				<span class="copy-id-text" :title="item.id">{{ item.id }}</span>
-			</div>
 		</template>
 	</div>
 </template>
@@ -246,7 +250,8 @@ async function copyCardId() {
 		content: '';
 	}
 
-	.selector {
+	.selector,
+	.copy-id {
 		--v-icon-color: var(--white);
 		--v-icon-color-hover: var(--white);
 		--focus-ring-offset: 0;
@@ -269,6 +274,10 @@ async function copyCardId() {
 		&:focus-visible {
 			border-radius: 50%;
 		}
+	}
+
+	.copy-id {
+		inset-inline-start: 30px;
 	}
 
 	&.select-mode {
@@ -317,6 +326,11 @@ async function copyCardId() {
 	}
 }
 
+.card:hover .copy-id,
+.card.selected .copy-id {
+	opacity: 0.5;
+}
+
 .readonly {
 	pointer-events: none;
 }
@@ -341,26 +355,6 @@ async function copyCardId() {
 
 .subtitle {
 	margin-block-start: 0;
-	color: var(--theme--foreground-subdued);
-}
-
-.copy-id-row {
-	display: flex;
-	align-items: center;
-	margin-block-start: 4px;
-	gap: 6px;
-}
-
-.copy-id-icon {
-	cursor: pointer;
-	color: var(--theme--primary);
-}
-
-.copy-id-text {
-	max-inline-size: 120px;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 	color: var(--theme--foreground-subdued);
 }
 </style>
