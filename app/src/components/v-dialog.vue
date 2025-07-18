@@ -167,7 +167,7 @@ function useOverlayFocusTrap() {
 .container.right.nudge > :slotted(*:not(:first-child)) {
 	transform-origin: right;
 
-	html[dir="rtl"] & {
+	html[dir='rtl'] & {
 		transform-origin: left;
 	}
 

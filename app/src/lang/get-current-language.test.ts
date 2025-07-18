@@ -57,7 +57,11 @@ describe('getCurrentLanguage', () => {
 
 	test('Falls back to ltr if language_direction is invalid', () => {
 		vi.mocked(useServerStore).mockReturnValue({ info: { project: { default_language: 'en-US' } } } as any);
-		vi.mocked(useUserStore).mockReturnValue({ currentUser: { language: 'en-US', language_direction: 'invalid' } } as any);
+
+		vi.mocked(useUserStore).mockReturnValue({
+			currentUser: { language: 'en-US', language_direction: 'invalid' },
+		} as any);
+
 		expect(getCurrentLanguage()).toEqual({ lang: 'en-US', dir: 'ltr' });
 	});
 });

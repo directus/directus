@@ -409,7 +409,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 		font-family: var(--theme--navigation--list--font-family);
 		border-inline-end: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
 
-		html[dir="rtl"] & {
+		html[dir='rtl'] & {
 			transform: translateX(100%);
 		}
 
@@ -452,7 +452,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 			position: relative;
 			transform: none;
 
-			html[dir="rtl"] & {
+			html[dir='rtl'] & {
 				transform: none;
 			}
 
@@ -557,7 +557,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 		font-family: var(--theme--sidebar--font-family);
 		border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
 
-		html[dir="rtl"] & {
+		html[dir='rtl'] & {
 			transform: translateX(-100%);
 		}
 
@@ -586,7 +586,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 		@media (min-width: 960px) {
 			transform: translateX(calc(100% - 60px - var(--theme--sidebar--border-width)));
 
-			html[dir="rtl"] & {
+			html[dir='rtl'] & {
 				transform: translateX(calc(-100% + 60px + var(--theme--sidebar--border-width)));
 			}
 		}
@@ -616,7 +616,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 			transform: translateX(-100%);
 			transition: none;
 
-			html[dir="rtl"] & {
+			html[dir='rtl'] & {
 				transform: translateX(100%);
 			}
 		}
@@ -630,7 +630,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 			transform: translateX(100%);
 			transition: none;
 
-			html[dir="rtl"] & {
+			html[dir='rtl'] & {
 				transform: translateX(-100%);
 			}
 		}

@@ -42,7 +42,7 @@ defineProps<Props>();
 		text-align: center;
 		transform: translateX(-50%);
 
-		html[dir="rtl"] & {
+		html[dir='rtl'] & {
 			transform: translateX(50%);
 		}
 	}

@@ -116,7 +116,7 @@ const color = computed(() => {
 		will-change: transform;
 		animation: indeterminate-ltr 2s infinite;
 
-		html[dir="rtl"] & {
+		html[dir='rtl'] & {
 			animation: indeterminate-rtl 2s infinite;
 			transform-origin: right;
 		}

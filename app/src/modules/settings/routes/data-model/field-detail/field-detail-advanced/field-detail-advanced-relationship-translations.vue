@@ -204,7 +204,7 @@ const relatedPrimaryKey = computed(
 		transform: translateX(-50%);
 		pointer-events: none;
 
-		html[dir="rtl"] & {
+		html[dir='rtl'] & {
 			transform: translateX(50%) scaleX(-1);
 		}
 

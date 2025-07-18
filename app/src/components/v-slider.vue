@@ -188,7 +188,7 @@ function onInput(event: Event) {
 			transform-origin: left;
 			pointer-events: none;
 
-			html[dir="rtl"] & {
+			html[dir='rtl'] & {
 				transform-origin: right;
 			}
 		}
@@ -241,7 +241,7 @@ function onInput(event: Event) {
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 
-			html[dir="rtl"] & {
+			html[dir='rtl'] & {
 				transform: translateX(50%);
 			}
 

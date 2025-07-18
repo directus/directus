@@ -8,11 +8,9 @@ export function getCurrentLanguage(fallback = 'en-US') {
 	const usersStore = useUserStore();
 	const serverStore = useServerStore();
 
-	const lang = get(
-		usersStore,
-		['currentUser', 'language'],
-		get(serverStore, ['info', 'project', 'default_language'], fallback),
-	) ?? fallback;
+	const lang =
+		get(usersStore, ['currentUser', 'language'], get(serverStore, ['info', 'project', 'default_language'], fallback)) ??
+		fallback;
 
 	let dir = get(usersStore, ['currentUser', 'language_direction'], 'auto');
 

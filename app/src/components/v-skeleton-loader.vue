@@ -50,7 +50,7 @@ withDefaults(defineProps<Props>(), {
 		animation: loading-ltr 1.5s infinite;
 		content: '';
 
-		html[dir="rtl"] & {
+		html[dir='rtl'] & {
 			transform: translateX(100%);
 			animation: loading-rtl 1.5s infinite;
 		}

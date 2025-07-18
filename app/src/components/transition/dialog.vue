@@ -20,7 +20,7 @@
 		transform: translateX(0);
 		transition: transform var(--slow) var(--transition-in);
 
-		html[dir="rtl"] & {
+		html[dir='rtl'] & {
 			transform: translateX(0);
 		}
 	}
@@ -39,7 +39,7 @@
 		transform: translateX(50px);
 		transition: transform var(--slow) var(--transition-out);
 
-		html[dir="rtl"] & {
+		html[dir='rtl'] & {
 			transform: translateX(-50px);
 		}
 	}
