@@ -1,13 +1,13 @@
-import { useUserStore } from '@/stores/user';
-import { useTranslationsStore } from '@/stores/translations';
 import { useFieldsStore } from '@/stores/fields';
+import { useTranslationsStore } from '@/stores/translations';
+import { useUserStore } from '@/stores/user';
 import { getCurrentLanguage } from './get-current-language';
 
 export async function refreshCurrentLanguage(fallback = 'en-US') {
 	const fieldsStore = useFieldsStore();
 	const { currentUser } = useUserStore();
 	const translationsStore = useTranslationsStore();
-	const lang = getCurrentLanguage(fallback);
+	const { lang } = getCurrentLanguage(fallback);
 
 	try {
 		if (currentUser) {

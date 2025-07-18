@@ -67,7 +67,7 @@ export async function hydrate(): Promise<void> {
 		 */
 		await userStore.hydrate();
 
-		const lang = getCurrentLanguage();
+		const { lang } = getCurrentLanguage();
 		const currentUser = userStore.currentUser;
 
 		if (currentUser?.app_access) {

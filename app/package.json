@@ -27,6 +27,7 @@
 		"story:dev": "histoire dev",
 		"story:preview": "histoire preview",
 		"test": "vitest run",
+		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage",
 		"typecheck": "vue-tsc --noEmit"
 	},

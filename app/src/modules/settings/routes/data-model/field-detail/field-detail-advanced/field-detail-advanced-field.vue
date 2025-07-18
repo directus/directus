@@ -70,7 +70,7 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 							},
 						},
 						schema: {
-							default_value: getCurrentLanguage(),
+							default_value: getCurrentLanguage().lang,
 						},
 					},
 					{

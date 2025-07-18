@@ -128,7 +128,7 @@ function openNewCustomTranslationDrawer() {
 
 const newTranslationDefaults = computed(() => {
 	const defaults = {
-		language: getCurrentLanguage(),
+		language: getCurrentLanguage().lang,
 	};
 
 	if (localValue.value && !localValue.value.startsWith(translationPrefix)) {
