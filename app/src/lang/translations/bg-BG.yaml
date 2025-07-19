@@ -1601,7 +1601,6 @@ translation_placeholder: Въвеждане на превода...
 value: Стойност
 view_project: Преглед на проекта
 report_error: Докладване на грешка
-start: Начало
 table: Таблица
 list: Списък
 search_filter: Търсене и филтриране
@@ -2178,6 +2177,7 @@ show_labels: Показване на етикети
 show_legend: Показване на легенда
 right: Дясно
 left: Ляво
+start: Начало
 donut: Поничка
 panels:
   metric:

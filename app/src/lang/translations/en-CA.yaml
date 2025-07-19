@@ -1186,7 +1186,6 @@ translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
 report_error: Report Error
-start: Start
 table: Table
 list: List
 interfaces:
@@ -1633,6 +1632,7 @@ layouts:
   kanban:
     crop: Crop
 both: Both
+start: Start
 panels:
   metric:
     name: Metric

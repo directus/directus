@@ -1256,7 +1256,6 @@ translation_placeholder: 翻訳を入力...
 value: 値
 view_project: プロジェクトを表示
 report_error: レポートのエラー
-start: 開始
 table: テーブル
 list: 一覧
 search_filter: 検索フィルター
@@ -1473,6 +1472,7 @@ function: 関数
 half_circle: 半円
 full_circle: 円
 stroke_width: 線の幅
+start: 開始
 panels:
   label:
     name: ラベル

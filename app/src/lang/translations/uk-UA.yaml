@@ -1696,7 +1696,6 @@ translation_placeholder: Введіть переклад...
 value: Значення
 view_project: Переглянути проект
 report_error: Звіт про помилку
-start: Почати
 table: Таблиця
 list: Список
 search_filter: Пошук і фільтр
@@ -2279,6 +2278,7 @@ show_labels: Показати мітки
 show_legend: Показати історію
 right: Справа
 left: Зліва
+start: Почати
 donut: Кільце
 panels:
   metric:
