@@ -402,6 +402,7 @@ soft_length: 보통
 precision_scale: 정밀도 및 확장성
 readonly: 읽기 전용
 unique: 고유
+index: 색인
 updated_on: 수정일
 updated_by: 수정자
 primary_key: 기본키
