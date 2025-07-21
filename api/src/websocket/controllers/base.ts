@@ -179,7 +179,6 @@ export default abstract class SocketController {
 		if (token) {
 			try {
 				const state = await authenticateConnection({ access_token: token }, accountabilityOverrides);
-
 				accountability = state.accountability;
 				expires_at = state.expires_at;
 			} catch {
