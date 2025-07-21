@@ -12,7 +12,7 @@ import { createPopper } from '@popperjs/core/lib/popper-lite';
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
 import { debounce } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
-import { onUnmounted, ref, computed, watch, useTemplateRef, nextTick, type Ref } from 'vue';
+import { computed, nextTick, onUnmounted, ref, useTemplateRef, watch, type Ref } from 'vue';
 
 interface Props {
 	/** Where to position the popper */
@@ -690,7 +690,7 @@ function usePopper(
 [data-placement='left'] > .v-menu-content {
 	transform-origin: center right;
 
-	html[dir="rtl"] & {
+	html[dir='rtl'] & {
 		transform-origin: center left;
 	}
 }
