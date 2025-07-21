@@ -14,17 +14,13 @@ import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { createRateLimiter } from '../../rate-limiter.js';
-import { getAccountabilityForToken } from '../../utils/get-accountability-for-token.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { authenticateConnection, authenticationSuccess } from '../authenticate.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { AuthMode, WebSocketAuthMessage, WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, UpgradeContext, WebSocketAuthentication, WebSocketClient } from '../types.js';
-import { getExpiresAtForToken } from '../utils/get-expires-at-for-token.js';
 import { getMessageType } from '../utils/message.js';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';
-import getDatabase from '../../database/index.js';
-import { isEqual } from 'lodash-es';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
@@ -182,27 +178,10 @@ export default abstract class SocketController {
 
 		if (token) {
 			try {
-				const database = getDatabase();
-				const defaultAccountability = createDefaultAccountability(accountabilityOverrides);
+				const state = await authenticateConnection({ access_token: token }, accountabilityOverrides);
 
-				const customAccountability = await emitter.emitFilter(
-					'websocket.authenticate',
-					defaultAccountability,
-					{ message: { access_token: token } },
-					{
-						database,
-						schema: null,
-						accountability: null,
-					},
-				);
-
-				if (customAccountability && isEqual(customAccountability, defaultAccountability) === false) {
-					accountability = customAccountability;
-				} else {
-					accountability = await getAccountabilityForToken(token);
-				}
-
-				expires_at = getExpiresAtForToken(token);
+				accountability = state.accountability;
+				expires_at = state.expires_at;
 			} catch {
 				accountability = null;
 				expires_at = null;
@@ -225,8 +204,6 @@ export default abstract class SocketController {
 			return;
 		}
 
-		Object.assign(accountability, accountabilityOverrides);
-
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			this.catchInvalidMessages(ws);
 			const state = { accountability, expires_at } as AuthenticationState;
@@ -242,11 +219,7 @@ export default abstract class SocketController {
 				const payload = await waitForAnyMessage(ws, this.authentication.timeout);
 				if (getMessageType(payload) !== 'auth') throw new Error();
 
-				const state = await authenticateConnection(WebSocketAuthMessage.parse(payload), getIPFromReq(request));
-
-				if (state.accountability) {
-					Object.assign(state.accountability, accountabilityOverrides);
-				}
+				const state = await authenticateConnection(WebSocketAuthMessage.parse(payload), accountabilityOverrides);
 
 				this.checkUserRequirements(state.accountability);
 
@@ -359,24 +332,26 @@ export default abstract class SocketController {
 
 	protected async handleAuthRequest(client: WebSocketClient, message: WebSocketAuthMessage) {
 		try {
-			const { accountability, expires_at, refresh_token } = await authenticateConnection(
-				message,
-				client.accountability?.ip ?? null,
-			);
-
-			this.checkUserRequirements(accountability);
+			const accountabilityOverrides = {};
 
 			/**
 			 * Re-use the existing ip, userAgent and origin accountability properties.
 			 * They are only sent in the original connection request
 			 */
-			if (accountability && client.accountability) {
-				Object.assign(accountability, {
+			if (client.accountability) {
+				Object.assign(accountabilityOverrides, {
 					ip: client.accountability.ip,
 					userAgent: client.accountability.userAgent,
 					origin: client.accountability.origin,
 				});
 			}
+
+			const { accountability, expires_at, refresh_token } = await authenticateConnection(
+				message,
+				accountabilityOverrides,
+			);
+
+			this.checkUserRequirements(accountability);
 
 			client.accountability = accountability;
 			client.expires_at = expires_at;

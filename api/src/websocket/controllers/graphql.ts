@@ -3,10 +3,11 @@ import { CloseCode, MessageType, makeServer } from 'graphql-ws';
 import type { Server as httpServer } from 'http';
 import type { WebSocket } from 'ws';
 import { useLogger } from '../../logger/index.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { bindPubSub } from '../../services/graphql/subscription.js';
 import { GraphQLService } from '../../services/index.js';
-import { getSchema } from '../../utils/get-schema.js';
 import { getAddress } from '../../utils/get-address.js';
+import { getSchema } from '../../utils/get-schema.js';
 import { authenticateConnection } from '../authenticate.js';
 import { handleWebSocketError } from '../errors.js';
 import { ConnectionParams, WebSocketMessage } from '../messages.js';
@@ -14,7 +15,6 @@ import type { AuthenticationState, GraphQLSocket, UpgradeContext, WebSocketClien
 import { getMessageType } from '../utils/message.js';
 import SocketController from './base.js';
 import { registerWebSocketEvents } from './hooks.js';
-import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 
 const logger = useLogger();
 
@@ -69,7 +69,9 @@ export class GraphQLSubscriptionController extends SocketController {
 											{
 												access_token: params.access_token,
 											},
-											client.accountability?.ip ?? null,
+											{
+												ip: client.accountability?.ip ?? null,
+											},
 										);
 
 										client.accountability = accountability;
