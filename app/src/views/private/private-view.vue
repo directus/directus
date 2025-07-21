@@ -413,8 +413,8 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 			transform: translateX(100%);
 		}
 
-		&.is-open {
-			transform: translateX(0) !important;
+		html &.is-open {
+			transform: translateX(0);
 		}
 
 		&.has-shadow {
@@ -568,8 +568,8 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 			flex-grow: 1;
 		}
 
-		&.is-open {
-			transform: translateX(0) !important;
+		html &.is-open {
+			transform: translateX(0);
 		}
 
 		&.has-shadow {
