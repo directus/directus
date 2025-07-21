@@ -1,4 +1,4 @@
-import type { DirectusError, FetchInterface } from '../index.js';
+import type { FetchInterface } from '../index.js';
 import { extractData } from './extract-data.js';
 
 /**
@@ -21,7 +21,7 @@ export const request = async <Output = any>(
 
 	return fetcher(url, options).then((response) => {
 		return extractData(response).catch((reason) => {
-			const result: DirectusError<unknown> = {
+			const result: { response: unknown; message: string; errors: any; data?: any } = {
 				message: '',
 				errors: reason && typeof reason === 'object' && 'errors' in reason ? reason.errors : reason,
 				response,
