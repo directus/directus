@@ -44,7 +44,7 @@ export async function authenticateConnection(
 		const defaultAccountability: Accountability = createDefaultAccountability(accountabilityOverrides);
 
 		const authenticationState = {
-			accountability: null,
+			accountability: defaultAccountability,
 			expires_at,
 			refresh_token,
 		} as AuthenticationState;
