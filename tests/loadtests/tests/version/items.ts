@@ -14,7 +14,7 @@ export const options: Options = {
 };
 
 export function items() {
-	const res = http.get('http://127.0.0.1:8055/items/articles/1?fields=*.*.*', {
+	const res = http.get(`http://${__ENV['HOST']}:${__ENV['PORT']}/items/articles/1?fields=*.*.*`, {
 		headers: {
 			Authorization: 'Bearer admin',
 		},

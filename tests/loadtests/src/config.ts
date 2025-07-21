@@ -45,7 +45,17 @@ const postgres = {
 	...directusConfig,
 } as const;
 
+const sqlite = {
+	DB_CLIENT: 'sqlite3',
+	DB_FILENAME: './test.db',
+	...directusConfig,
+};
+
 export const config = {
 	mariadb,
 	postgres,
+	sqlite,
 } as const satisfies Record<string, Record<string, string>>;
+
+export type Platform = keyof typeof config;
+export const platforms = Object.keys(config) as Platform[];

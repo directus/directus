@@ -20,7 +20,7 @@ export const options: Options = {
 };
 
 export function withoutVersion() {
-	const res = http.get('http://127.0.0.1:8055/items/articles/1?fields=*.*.*', {
+	const res = http.get(`http://${__ENV['HOST']}:${__ENV['PORT']}/items/articles/1?fields=*.*.*`, {
 		headers: {
 			Authorization: 'Bearer admin',
 		},
@@ -34,7 +34,7 @@ export function withoutVersion() {
 }
 
 export function withVersion() {
-	const res = http.get('http://127.0.0.1:8055/items/articles/1?fields=*.*.*&version=dev', {
+	const res = http.get(`http://${__ENV['HOST']}:${__ENV['PORT']}/items/articles/1?fields=*.*.*&version=dev`, {
 		headers: {
 			Authorization: 'Bearer admin',
 		},

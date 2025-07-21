@@ -10,8 +10,9 @@ import { spawn, type ChildProcessWithoutNullStreams } from 'child_process';
 import { Command, Option, program } from 'commander';
 import { join } from 'path';
 import { argv } from 'process';
-import { config } from './config.js';
+import { config, platforms, type Platform } from './config.js';
 import { createLogger, type Logger } from './logger.js';
+import { existsSync } from 'fs';
 
 export type SDK = DirectusClient<any> & RestClient<any> & StaticTokenClient<any>;
 export type SetupArgs = {
@@ -23,10 +24,9 @@ export type SetupArgs = {
 program
 	.option('-b, --build', 'Rebuild Directus from source')
 	.option('--build-api', 'Rebuild only the api from source')
-	.addOption(
-		new Option('-d, --docker [platform]', 'Automatically spin up docker images').choices(['mariadb', 'postgres']),
-	)
+	.addOption(new Option('-p, --platform [platform]', 'Automatically spin up docker images').choices(platforms))
 	.option('--test', 'Startup directus without running k6')
+	.option('-f, --file <file>', 'Specify the test file k6 should use', 'test')
 	.argument('<test>');
 
 program.parse();
@@ -36,13 +36,14 @@ const logger = createLogger();
 const distFolder = join(import.meta.dirname, '..', '..', '..', 'api', 'dist');
 
 const options = program.opts() as {
-	docker?: true | 'mariadb' | 'postgres';
+	platform?: true | Platform;
 	build: boolean;
 	test: boolean;
 	buildApi: string;
+	file: string;
 };
 
-const platform: 'mariadb' | 'postgres' | undefined = options.docker === true ? 'postgres' : options.docker;
+const platform: Platform | undefined = options.platform === true ? 'postgres' : options.platform;
 
 // catches ctrl+c event
 process.on('SIGINT', exitHandler);
@@ -71,19 +72,21 @@ if (options.build || options.buildApi) {
 let docker: undefined | ChildProcessWithoutNullStreams;
 
 if (platform) {
-	docker = spawn('docker', [
-		'compose',
-		'-f',
-		join(import.meta.dirname, '..', 'docker', `${platform}.yml`),
-		'up',
-		'-d',
-		'--wait',
-	]);
+	if (existsSync(join(import.meta.dirname, '..', 'docker', `${platform}.yml`))) {
+		docker = spawn('docker', [
+			'compose',
+			'-f',
+			join(import.meta.dirname, '..', 'docker', `${platform}.yml`),
+			'up',
+			'-d',
+			'--wait',
+		]);
 
-	logger.pipe(docker.stdout);
-	logger.pipe(docker.stderr, 'error');
+		logger.pipe(docker.stdout);
+		logger.pipe(docker.stderr, 'error');
 
-	await new Promise((resolve) => docker!.on('close', resolve));
+		await new Promise((resolve) => docker!.on('close', resolve));
+	}
 
 	const bootstrap = spawn('node', [join(distFolder, 'cli', 'run.js'), 'bootstrap'], {
 		env: config[platform],
@@ -129,7 +132,15 @@ let k6: ChildProcessWithoutNullStreams | undefined;
 
 if (!options.test) {
 	const k6Logger = createLogger('k6');
-	k6 = spawn('k6', ['run', join(import.meta.dirname, '..', 'tests', program.args[0]!, `test.ts`)]);
+
+	k6 = spawn('k6', [
+		'run',
+		'-e',
+		`HOST=${config['mariadb'].HOST}`,
+		'-e',
+		`PORT=${config['mariadb'].PORT}`,
+		join(import.meta.dirname, '..', 'tests', program.args[0]!, `${options.file}.ts`),
+	]);
 
 	k6Logger.pipe(k6.stdout);
 	k6Logger.pipe(k6.stderr, 'error');
