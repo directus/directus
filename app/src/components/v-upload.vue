@@ -241,6 +241,8 @@ function useSelection() {
 function useURLImport() {
 	const url = ref('');
 	const loading = ref(false);
+	const filesStore = useFilesStore();
+	const newUpload = filesStore.upload();
 
 	const isValidURL = computed(() => {
 		try {
@@ -257,6 +259,7 @@ function useURLImport() {
 		if (!isValidURL.value || loading.value) return;
 
 		loading.value = true;
+		newUpload.start(1);
 
 		const data = {
 			...props.preset,
@@ -269,6 +272,9 @@ function useURLImport() {
 				url: url.value,
 				data,
 			});
+
+			newUpload.progress.value = 100;
+			newUpload.done.value = 1;
 
 			emitter.emit(Events.upload);
 
@@ -284,6 +290,7 @@ function useURLImport() {
 			unexpectedError(error);
 		} finally {
 			loading.value = false;
+			newUpload.finish();
 		}
 	}
 }
@@ -399,7 +406,7 @@ defineExpose({ abort });
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	min-height: var(--input-height-tall);
+	min-block-size: var(--input-height-tall);
 	padding: 32px;
 	color: var(--theme--foreground-subdued);
 	text-align: center;
@@ -420,24 +427,24 @@ defineExpose({ abort });
 .actions {
 	display: flex;
 	justify-content: center;
-	margin-bottom: 18px;
+	margin-block-end: 18px;
 
 	.v-button {
-		margin-right: 12px;
+		margin-inline-end: 12px;
 
 		&:last-child {
-			margin-right: 0;
+			margin-inline-end: 0;
 		}
 	}
 }
 
 .browse {
 	position: absolute;
-	top: 0;
-	left: 0;
+	inset-block-start: 0;
+	inset-inline-start: 0;
 	display: block;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	cursor: pointer;
 	opacity: 0;
 	appearance: none;
@@ -454,7 +461,7 @@ defineExpose({ abort });
 
 	.upload-icon {
 		margin: 0 auto;
-		margin-bottom: 12px;
+		margin-block-end: 12px;
 	}
 }
 
@@ -470,9 +477,9 @@ defineExpose({ abort });
 
 	.v-progress-linear {
 		position: absolute;
-		bottom: 30px;
-		left: 32px;
-		width: calc(100% - 64px);
+		inset-block-end: 30px;
+		inset-inline-start: 32px;
+		inline-size: calc(100% - 64px);
 	}
 }
 </style>

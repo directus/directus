@@ -219,8 +219,7 @@ function navigateToPolicy({ item }: { item: Policy }) {
 
 .policies {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding-bottom);
+	padding-block: 0 var(--content-padding-bottom);
 }
 
 .system {

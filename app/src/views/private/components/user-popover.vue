@@ -103,21 +103,21 @@ function navigateToUser() {
 
 <style lang="scss" scoped>
 .hover-trigger {
-	width: max-content;
+	inline-size: max-content;
 }
 
 .user-box {
 	display: flex;
-	min-width: 300px;
+	min-inline-size: 300px;
 	padding: 8px 4px;
 	cursor: pointer;
 
 	.v-avatar {
-		margin-right: 16px;
+		margin-inline-end: 16px;
 	}
 
 	.status {
-		margin-right: 4px;
+		margin-inline-end: 4px;
 
 		&.active {
 			--v-chip-color: var(--theme--success);
@@ -154,7 +154,7 @@ function navigateToUser() {
 	cursor: help;
 
 	&:hover {
-		border-bottom: 2px dotted var(--theme--foreground-subdued);
+		border-block-end: 2px dotted var(--theme--foreground-subdued);
 	}
 }
 
@@ -163,20 +163,20 @@ function navigateToUser() {
 
 	display: flex;
 	align-items: center;
-	height: 80px;
+	block-size: 80px;
 	margin: 8px 4px;
 
 	.avatar {
-		width: 80px;
-		height: 80px;
-		margin-right: 16px;
+		inline-size: 80px;
+		block-size: 80px;
+		margin-inline-end: 16px;
 	}
 
 	div {
-		width: 140px;
+		inline-size: 140px;
 
 		.v-skeleton-loader:not(:last-child) {
-			margin-bottom: 12px;
+			margin-block-end: 12px;
 		}
 	}
 }

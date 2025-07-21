@@ -110,16 +110,17 @@ function getLinkForItem(item: any) {
 <style lang="scss" scoped>
 .toggle {
 	position: relative;
+
 	--toggle-px: 6px;
 	--toggle-py: 4px;
 
 	&::before {
 		position: absolute;
-		top: calc(-1 * var(--toggle-py));
-		left: calc(-1 * var(--toggle-px));
+		inset-block-start: calc(-1 * var(--toggle-py));
+		inset-inline-start: calc(-1 * var(--toggle-px));
 		z-index: 1;
-		width: calc(100% + var(--toggle-px) * 2);
-		height: calc(100% + var(--toggle-py) * 2);
+		inline-size: calc(100% + var(--toggle-px) * 2);
+		block-size: calc(100% + var(--toggle-py) * 2);
 		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;
@@ -156,7 +157,7 @@ function getLinkForItem(item: any) {
 
 .links {
 	.v-list-item-content {
-		height: var(--v-list-item-min-height, 32px);
+		block-size: var(--v-list-item-min-height, 32px);
 	}
 }
 </style>

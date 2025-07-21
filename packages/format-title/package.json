@@ -33,13 +33,15 @@
 	"scripts": {
 		"build": "pnpm run '/^bundle|typecheck$/'",
 		"bundle": "tsup src/index.ts --format=esm --dts",
-		"test": "vitest --watch=false",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage",
 		"typecheck": "tsc --noEmit"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
-		"tsup": "8.4.0",
-		"typescript": "5.8.2",
-		"vitest": "2.1.9"
+		"@directus/tsconfig": "catalog:",
+		"@vitest/coverage-v8": "catalog:",
+		"tsup": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	}
 }

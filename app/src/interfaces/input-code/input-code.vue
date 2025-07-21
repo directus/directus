@@ -309,22 +309,22 @@ function isInterpolation(value: any) {
 <style lang="scss" scoped>
 .input-code {
 	position: relative;
-	width: 100%;
+	inline-size: 100%;
 	font-size: 14px;
 }
 
 .small {
 	position: absolute;
-	right: 0;
-	bottom: -20px;
+	inset-inline-end: 0;
+	inset-block-end: -20px;
 	font-style: italic;
-	text-align: right;
+	text-align: end;
 }
 
 .v-button {
 	position: absolute;
-	top: 10px;
-	right: 10px;
+	inset-block-start: 10px;
+	inset-inline-end: 10px;
 	z-index: 4;
 	color: var(--theme--primary);
 	cursor: pointer;

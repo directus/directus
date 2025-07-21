@@ -68,7 +68,7 @@ const editActive = ref(false);
 
 .preview {
 	display: flex;
-	height: var(--theme--form--field--input--height);
+	block-size: var(--theme--form--field--input--height);
 	align-items: center;
 
 	.spacer {
