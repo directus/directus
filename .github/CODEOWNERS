@@ -1,35 +1,35 @@
-/packages/constants @directus/web @directus/server
-/packages/extensions @directus/web @directus/server
-/packages/tsconfig @directus/web @directus/server
-/packages/types @directus/web @directus/server
-/packages/utils @directus/web @directus/server
+/packages/constants @directus/front @directus/back
+/packages/extensions @directus/front @directus/back
+/packages/tsconfig @directus/front @directus/back
+/packages/types @directus/front @directus/back
+/packages/utils @directus/front @directus/back
 
-/app/ @directus/web
-/packages/components @directus/web
-/packages/composables @directus/web
-/packages/format-title @directus/web
-/packages/stores @directus/web
-/packages/themes @directus/web
+/app/ @directus/front
+/packages/components @directus/front
+/packages/composables @directus/front
+/packages/format-title @directus/front
+/packages/stores @directus/front
+/packages/themes @directus/front
 
-/api/ @directus/server
-/packages/env @directus/server
-/packages/errors @directus/server
-/packages/extensions-registry @directus/server
-/packages/memory @directus/server
-/packages/pressure @directus/server
-/packages/random @directus/server
-/packages/schema @directus/server
-/packages/storage/ @directus/server
-/packages/storage/storage-driver-azure @directus/server
-/packages/storage/storage-driver-cloudinary @directus/server
-/packages/storage/storage-driver-gcs @directus/server
-/packages/storage/storage-driver-local @directus/server
-/packages/storage/storage-driver-s3 @directus/server
-/packages/storage/storage-driver-supabase @directus/server
-/packages/system-data @directus/server
-/packages/validation @directus/server
+/api/ @directus/back
+/packages/env @directus/back
+/packages/errors @directus/back
+/packages/extensions-registry @directus/back
+/packages/memory @directus/back
+/packages/pressure @directus/back
+/packages/random @directus/back
+/packages/schema @directus/back
+/packages/storage/ @directus/back
+/packages/storage/storage-driver-azure @directus/back
+/packages/storage/storage-driver-cloudinary @directus/back
+/packages/storage/storage-driver-gcs @directus/back
+/packages/storage/storage-driver-local @directus/back
+/packages/storage/storage-driver-s3 @directus/back
+/packages/storage/storage-driver-supabase @directus/back
+/packages/system-data @directus/back
+/packages/validation @directus/back
 
-/sdk/ @directus/server
+/sdk/ @directus/back
 /packages/create-directus-extension @directus/dx
 /packages/create-directus-project @directus/dx
 /packages/extensions-sdk @directus/dx
