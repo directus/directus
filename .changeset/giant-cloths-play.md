@@ -4,4 +4,4 @@
 '@directus/app': minor
 ---
 
-Add support for RTL rendering in the studio
+Added support for RTL rendering in the studio
