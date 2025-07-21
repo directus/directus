@@ -2609,5 +2609,5 @@ bsl_banner:
   get_license: Get a License
 accepted: Accepted
 language_direction_auto: Automatic (Match Language)
-language_direction_ltr: Left-to-Right (LTR)
-language_direction_rtl: Right-to-Left (RTL)
+language_direction_ltr: Left to Right (LTR)
+language_direction_rtl: Right to Left (RTL)
