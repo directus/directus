@@ -2218,19 +2218,26 @@ importers:
         version: 8.18.1
 
   tests/loadtests:
+    dependencies:
+      '@directus/sdk':
+        specifier: 20.0.0
+        version: 20.0.0
+      chalk:
+        specifier: 5.4.1
+        version: 5.4.1
+      commander:
+        specifier: 14.0.0
+        version: 14.0.0
     devDependencies:
       '@directus/tsconfig':
         specifier: 3.0.0
         version: 3.0.0
-      '@types/blessed':
-        specifier: 0.1.25
-        version: 0.1.25
       '@types/k6':
         specifier: 1.1.1
         version: 1.1.1
-      blessed:
-        specifier: 0.1.81
-        version: 0.1.81
+      '@types/node':
+        specifier: 22.13.8
+        version: 22.13.8
       k6:
         specifier: 0.0.0
         version: 0.0.0
@@ -2873,6 +2880,10 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       postcss-selector-parser: ^7.0.0
+
+  '@directus/sdk@20.0.0':
+    resolution: {integrity: sha512-DoKggMNaVWiKC2bU5BY+Nf6ia2Yz7hrKte0ZtSPXQVkl2mxwDtM0gLfOI6xxVY1CfnvyxJDu+d+21VjI4GYdyw==}
+    engines: {node: '>=22'}
 
   '@directus/tsconfig@3.0.0':
     resolution: {integrity: sha512-b0BWboH2W++Zx/I/PsMWBeDmMgXZIEOVP2JUh6gWXh3L/TaLuFF/1LG8gv7ise4WDMnW69Vum5kSroNTQyqlUQ==}
@@ -4906,9 +4917,6 @@ packages:
   '@types/base-64@1.0.2':
     resolution: {integrity: sha512-uPgKMmM9fmn7I+Zi6YBqctOye4SlJsHKcisjHIMWpb2YKZRc36GpKyNuQ03JcT+oNXg1m7Uv4wU94EVltn8/cw==}
 
-  '@types/blessed@0.1.25':
-    resolution: {integrity: sha512-kQsjBgtsbJLmG6CJA+Z6Nujj+tq1fcSE3UIowbDvzQI4wWmoTV7djUDhSo5lDjgwpIN0oRvks0SA5mMdKE5eFg==}
-
   '@types/body-parser@1.19.6':
     resolution: {integrity: sha512-HLFeCYgz89uk22N5Qg3dvGvsv46B8GLvKKo1zKG4NybA8U2DiEO3w9lqGg29t/tfLRJpJ6iQxnVw4OnB7MoM9g==}
 
@@ -6307,6 +6315,10 @@ packages:
   commander@12.1.0:
     resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
     engines: {node: '>=18'}
+
+  commander@14.0.0:
+    resolution: {integrity: sha512-2uM9rYjPvyq39NwLRqaiLtWHyDC1FvryJDa2ATTVims5YAS4PupsEQsDvP14FqhFr0P49CYDugi59xaxJlTXRA==}
+    engines: {node: '>=20'}
 
   commander@2.15.1:
     resolution: {integrity: sha512-VlfT9F3V0v+jr4yxPc5gg9s62/fIVWsd2Bk2iD435um1NlGMYdVCq+MjcXnhYq2icNOizHr1kK+5TI6H0Hy0ag==}
@@ -13763,6 +13775,8 @@ snapshots:
     dependencies:
       postcss-selector-parser: 7.1.0
 
+  '@directus/sdk@20.0.0': {}
+
   '@directus/tsconfig@3.0.0': {}
 
   '@docsearch/css@3.9.0': {}
@@ -15872,10 +15886,6 @@ snapshots:
 
   '@types/base-64@1.0.2': {}
 
-  '@types/blessed@0.1.25':
-    dependencies:
-      '@types/node': 22.13.8
-
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
@@ -17524,6 +17534,8 @@ snapshots:
   commander@10.0.1: {}
 
   commander@12.1.0: {}
+
+  commander@14.0.0: {}
 
   commander@2.15.1: {}
 
