@@ -19,6 +19,7 @@
 		"eslint": "9.21.0",
 		"eslint-config-prettier": "9.1.0",
 		"eslint-plugin-vue": "9.32.0",
+		"eslint-plugin-vuejs-accessibility": "2.4.1",
 		"globals": "15.15.0",
 		"postcss-html": "1.8.0",
 		"prettier": "3.1.0",
