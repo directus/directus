@@ -9,11 +9,12 @@ import {
 import { ChildProcess, spawn, type ChildProcessWithoutNullStreams } from 'child_process';
 import { Command, Option, program } from 'commander';
 import { join } from 'path';
-import { config, platforms, type Platform } from './config.js';
+import { baseConfig, platforms, type Platform } from './config.js';
 import { createLogger, type Logger } from './logger.js';
 import { existsSync } from 'fs';
 import { rimraf } from 'rimraf';
 import zx from '@nitwel/0x';
+import { argv } from 'process';
 
 export type SDK = DirectusClient<any> & RestClient<any> & StaticTokenClient<any>;
 export type SetupArgs = {
@@ -25,7 +26,10 @@ export type SetupArgs = {
 program
 	.option('-b, --build', 'Rebuild Directus from source')
 	.option('--build-api', 'Rebuild only the api from source')
-	.addOption(new Option('-p, --platform [platform]', 'Automatically spin up docker images').choices(platforms))
+	.addOption(
+		new Option('-p, --platform [platform]', 'Automatically spin up docker images').choices([...platforms, 'all']),
+	)
+	.option('--port <port>', 'Port to run directus from')
 	.option('-d, --debug', 'Startup directus without running k6')
 	.option('-t, --test <file>', 'Specify the test file k6 should use', 'test')
 	.option('-f, --flamegraph', 'Generate a flamegraph at the end')
@@ -38,18 +42,17 @@ const logger = createLogger();
 const distFolder = join(import.meta.dirname, '..', '..', '..', 'api', 'dist');
 
 const options = program.opts() as {
-	platform?: true | Platform;
+	platform?: true | Platform | 'all';
 	build: boolean;
 	debug: boolean;
 	buildApi: string;
 	test: string;
 	flamegraph: boolean;
+	port?: string;
 };
 
-const platform: Platform | undefined = options.platform === true ? 'postgres' : options.platform;
-
-// catches ctrl+c event
-process.on('SIGINT', exitHandler);
+const platform: Platform | undefined = options.platform === true ? 'postgres' : (options.platform as Platform);
+const env = { ...baseConfig[platform ?? 'postgres'], PORT: options.port ?? '8055' };
 
 if (options.flamegraph) {
 	logger.info('Removing old Flamegraph');
@@ -77,6 +80,39 @@ if (options.build || options.buildApi) {
 	logger.info('New Build Complete');
 }
 
+if (options.platform === 'all') {
+	const tasks: ChildProcessWithoutNullStreams[] = [];
+
+	process.on('SIGINT', () => {
+		tasks.forEach((task) => task.kill());
+	});
+
+	await Promise.all(
+		platforms.map(async (platform, index) => {
+			const taskLogger = createLogger(platform);
+
+			const task = spawn(
+				/^win/.test(process.platform) ? 'pnpm.cmd' : 'pnpm',
+				['run', 'test', '--platform', platform, '--port', String(8056 + index), program.args[0]!],
+				{
+					shell: true,
+				},
+			);
+
+			tasks.push(task);
+			taskLogger.pipe(task.stdout);
+			taskLogger.pipe(task.stderr, 'error');
+
+			return new Promise((resolve) => task.on('close', resolve));
+		}),
+	);
+
+	process.exit();
+}
+
+// catches ctrl+c event
+process.on('SIGINT', exitHandler);
+
 let docker: undefined | ChildProcessWithoutNullStreams;
 
 if (platform) {
@@ -97,7 +133,7 @@ if (platform) {
 	}
 
 	const bootstrap = spawn('node', [join(distFolder, 'cli', 'run.js'), 'bootstrap'], {
-		env: config[platform],
+		env,
 	});
 
 	logger.pipe(bootstrap.stdout);
@@ -116,7 +152,7 @@ if (options.flamegraph) {
 	zxp = zx({
 		argv: [join(distFolder, 'cli', 'run.js'), 'start'],
 		workingDir: join(import.meta.dirname, '..'),
-		env: config[platform!],
+		env,
 		onProcessStart: (process) => {
 			api = process;
 		},
@@ -129,7 +165,7 @@ if (options.flamegraph) {
 	}
 } else {
 	api = spawn('node', [join(distFolder, 'cli', 'run.js'), 'start'], {
-		env: config[platform!],
+		env,
 	});
 }
 
@@ -138,8 +174,7 @@ apiLogger.pipe(api.stderr, 'error');
 await new Promise((resolve, reject) => {
 	api!.stdout!.on('data', (data) => {
 		if (!options.flamegraph) apiLogger.info(String(data));
-		if (String(data).includes(`Server started at http://${config['mariadb'].HOST}:${config['mariadb'].PORT}`))
-			resolve(null);
+		if (String(data).includes(`Server started at http://${env.HOST}:${env.PORT}`)) resolve(null);
 	});
 
 	// In case the api takes too long to start
@@ -149,9 +184,7 @@ await new Promise((resolve, reject) => {
 if (platform) {
 	const setupLogger = createLogger('setup');
 
-	const sdk = createDirectus(`http://${config['mariadb'].HOST}:${config['mariadb'].PORT}`)
-		.with(rest())
-		.with(staticToken('admin'));
+	const sdk = createDirectus(`http://${env.HOST}:${env.PORT}`).with(rest()).with(staticToken('admin'));
 
 	const setup = await import(`../tests/${program.args[0]!}/setup.js`);
 	await setup.setup({ sdk, logger: setupLogger, program });
@@ -165,9 +198,9 @@ if (!options.debug) {
 	k6 = spawn('k6', [
 		'run',
 		'-e',
-		`HOST=${config['mariadb'].HOST}`,
+		`HOST=${env.HOST}`,
 		'-e',
-		`PORT=${config['mariadb'].PORT}`,
+		`PORT=${env.PORT}`,
 		join(import.meta.dirname, '..', 'tests', program.args[0]!, `${options.test}.ts`),
 	]);
 

@@ -21,7 +21,6 @@ const directusConfig = {
 	QUERY_LIMIT_DEFAULT: '90', // Must be less than MAX_BATCH_MUTATION by at least 3
 	ACCESS_TOKEN_TTL: '25d', // should be larger than 24.86 days to test Expires value larger than 32-bit signed integer
 	WEBSOCKETS_ENABLED: 'true',
-	PORT: '8056',
 	HOST: '127.0.0.1',
 } as const;
 
@@ -30,7 +29,37 @@ const mariadb = {
 	DB_HOST: `127.0.0.1`,
 	DB_USER: 'root',
 	DB_PASSWORD: 'password',
-	DB_PORT: '6100',
+	DB_PORT: '6101',
+	DB_DATABASE: 'directus',
+	...directusConfig,
+} as const;
+
+// const mssql = {
+// 	DB_CLIENT: 'mssql',
+// 	DB_HOST: `127.0.0.1`,
+// 	DB_PORT: '6102',
+// 	DB_USER: 'sa',
+// 	DB_PASSWORD: 'Test@123',
+// 	DB_DATABASE: 'model',
+// 	...directusConfig,
+// } as const;
+
+const cockroachdb = {
+	DB_CLIENT: 'cockroachdb',
+	DB_HOST: `127.0.0.1`,
+	DB_USER: 'root',
+	DB_PASSWORD: '',
+	DB_PORT: '6104',
+	DB_DATABASE: 'defaultdb',
+	...directusConfig,
+} as const;
+
+const mysql = {
+	DB_CLIENT: 'mysql',
+	DB_HOST: `127.0.0.1`,
+	DB_PORT: '6105',
+	DB_USER: 'root',
+	DB_PASSWORD: 'secret',
 	DB_DATABASE: 'directus',
 	...directusConfig,
 } as const;
@@ -51,11 +80,14 @@ const sqlite = {
 	...directusConfig,
 };
 
-export const config = {
+export const baseConfig = {
 	mariadb,
 	postgres,
 	sqlite,
+	cockroachdb,
+	// mssql,
+	mysql,
 } as const satisfies Record<string, Record<string, string>>;
 
-export type Platform = keyof typeof config;
-export const platforms = Object.keys(config) as Platform[];
+export type Platform = keyof typeof baseConfig;
+export const platforms = Object.keys(baseConfig) as Platform[];
