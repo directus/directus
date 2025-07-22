@@ -42,5 +42,8 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
+      - name: Setup K6
+        uses: grafana/setup-k6-action@v1
+
       - name: Run tests
-        run: pnpm run test:load --platform ${{ matrix.vendor }}
+        run: pnpm run test:load --platform ${{ matrix.vendor }} version
