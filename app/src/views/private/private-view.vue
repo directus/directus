@@ -413,7 +413,8 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 			transform: translateX(100%);
 		}
 
-		html &.is-open {
+		html[dir='rtl'] &.is-open,
+		&.is-open {
 			transform: translateX(0);
 		}
 
