@@ -95,7 +95,6 @@ export default typescriptEslint.config(
 	...eslintPluginVueA11y.configs['flat/recommended'],
 	{
 		rules: {
-			'vuejs-accessibility/no-redundant-roles': 'off',
 			'vuejs-accessibility/label-has-for': 'off',
 			'vuejs-accessibility/anchor-has-content': 'off',
 			'vuejs-accessibility/iframe-has-title': 'off',
