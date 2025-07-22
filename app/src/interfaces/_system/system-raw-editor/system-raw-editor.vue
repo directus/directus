@@ -143,12 +143,12 @@ watch(
 <style lang="scss" scoped>
 .system-raw-editor {
 	position: relative;
-	height: var(--theme--form--field--input--height);
-	min-height: var(--theme--form--field--input--height);
+	block-size: var(--theme--form--field--input--height);
+	min-block-size: var(--theme--form--field--input--height);
 	border-radius: var(--theme--border-radius);
 
 	:deep(.CodeMirror) {
-		width: 100%;
+		inline-size: 100%;
 		line-height: 18px;
 		padding: var(--theme--form--field--input--padding);
 
@@ -163,19 +163,19 @@ watch(
 
 	:deep(.CodeMirror),
 	:deep(.CodeMirror-scroll) {
-		max-height: var(--theme--form--field--input--height);
+		max-block-size: var(--theme--form--field--input--height);
 	}
 
 	&.multi-line {
-		height: auto;
+		block-size: auto;
 
 		:deep(.CodeMirror),
 		:deep(.CodeMirror-scroll) {
-			max-height: 480px;
+			max-block-size: 480px;
 		}
 
 		:deep(.CodeMirror-scroll) {
-			padding-bottom: 0;
+			padding-block-end: 0;
 		}
 	}
 }

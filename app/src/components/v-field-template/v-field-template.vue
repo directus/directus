@@ -262,7 +262,7 @@ function setContent() {
 
 				return `<button type="button" contenteditable="false" data-field="${fieldKey}" ${
 					props.disabled ? 'disabled' : ''
-				}>${field.name}</button>`;
+				} class="selected-field">${field.name}</button>`;
 			})
 			.join('');
 
@@ -308,7 +308,7 @@ function setContent() {
 .content {
 	display: block;
 	flex-grow: 1;
-	height: 100%;
+	block-size: 100%;
 	padding: var(--theme--form--field--input--padding) 0;
 	overflow: hidden;
 	font-size: 14px;
@@ -316,8 +316,8 @@ function setContent() {
 	white-space: nowrap;
 
 	:deep(span) {
-		min-width: 1px;
-		min-height: 1em;
+		min-inline-size: 1px;
+		min-block-size: 1em;
 		white-space: pre;
 	}
 
@@ -345,8 +345,8 @@ function setContent() {
 
 .placeholder {
 	position: absolute;
-	top: 50%;
-	left: 14px;
+	inset-block-start: 50%;
+	inset-inline-start: 14px;
 	color: var(--theme--foreground-subdued);
 	transform: translateY(-50%);
 	-webkit-user-select: none;

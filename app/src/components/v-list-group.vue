@@ -114,16 +114,16 @@ function onClick(event: MouseEvent) {
 
 <style lang="scss" scoped>
 .v-list-group {
-	margin-bottom: 4px;
+	margin-block-end: 4px;
 
 	&:last-child {
-		margin-bottom: 0;
+		margin-block-end: 0;
 	}
 
 	.activator-icon {
 		--focus-ring-offset: 0;
 
-		margin-right: 0 !important;
+		margin-inline-end: 0 !important;
 		color: var(--theme--foreground-subdued);
 		transform: rotate(0deg);
 		transition: transform var(--medium) var(--transition);
@@ -138,7 +138,7 @@ function onClick(event: MouseEvent) {
 	}
 
 	.items {
-		padding-left: 18px;
+		padding-inline-start: 18px;
 		list-style: none;
 	}
 }

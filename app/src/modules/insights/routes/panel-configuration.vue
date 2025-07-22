@@ -172,7 +172,6 @@ const stageChanges = () => {
 								type="panel"
 								:extension="panel.type"
 								raw-editor-enabled
-								style="{'grid-template-columns': 'unset'}"
 								@update:model-value="edits.options = $event"
 							/>
 							<v-divider :inline-title="false" large>
@@ -242,8 +241,7 @@ const stageChanges = () => {
 <style scoped lang="scss">
 .content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding-bottom);
+	padding-block: 0 var(--content-padding-bottom);
 }
 
 .v-divider {
@@ -251,14 +249,14 @@ const stageChanges = () => {
 }
 
 .group h2 {
-	margin-bottom: 40px;
-	padding-bottom: 2px;
+	margin-block-end: 40px;
+	padding-block-end: 2px;
 	font-weight: 700;
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .group + .group {
-	margin-top: 80px;
+	margin-block-start: 80px;
 }
 
 .panel-grid {
@@ -282,9 +280,9 @@ const stageChanges = () => {
 }
 
 .interface {
-	min-height: 100px;
+	min-block-size: 100px;
 	overflow: hidden;
-	text-align: left;
+	text-align: start;
 }
 
 .preview {
@@ -293,9 +291,9 @@ const stageChanges = () => {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 160px;
-	height: 100px;
-	margin-bottom: 8px;
+	inline-size: 160px;
+	block-size: 100px;
+	margin-block-end: 8px;
 	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
@@ -303,8 +301,8 @@ const stageChanges = () => {
 }
 
 .preview img {
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	object-fit: cover;
 }
 
@@ -313,8 +311,8 @@ const stageChanges = () => {
 }
 
 .preview :deep(svg) {
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 }
 
 .preview :deep(svg) .glow {
@@ -357,8 +355,8 @@ const stageChanges = () => {
 
 	grid-column: 1 / span var(--columns);
 	background-color: var(--theme--background-subdued);
-	border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
 	@media (min-width: 400px) {
 		--columns: 2;

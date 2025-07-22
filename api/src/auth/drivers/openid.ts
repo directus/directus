@@ -10,7 +10,7 @@ import {
 	ServiceUnavailableError,
 } from '@directus/errors';
 import type { Accountability } from '@directus/types';
-import { parseJSON } from '@directus/utils';
+import { parseJSON, toArray } from '@directus/utils';
 import express, { Router } from 'express';
 import { flatten } from 'flat';
 import jwt from 'jsonwebtoken';
@@ -232,9 +232,9 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		let role = this.config['defaultRoleId'];
 		const groupClaimName: string = this.config['groupClaimName'] ?? 'groups';
-		const groups = userInfo[groupClaimName];
+		const groups = userInfo[groupClaimName] ? toArray(userInfo[groupClaimName]) : [];
 
-		if (Array.isArray(groups)) {
+		if (groups.length > 0) {
 			for (const key in this.roleMap) {
 				if (groups.includes(key)) {
 					// Overwrite default role if user is member of a group specified in roleMap
@@ -242,7 +242,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 					break;
 				}
 			}
-		} else {
+		} else if (Object.keys(this.roleMap).length > 0) {
 			logger.debug(`[OpenID] Configured group claim with name "${groupClaimName}" does not exist or is empty.`);
 		}
 

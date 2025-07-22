@@ -109,7 +109,7 @@ onUnmounted(() => {
 }
 
 .map {
-	height: 400px;
+	block-size: 400px;
 	overflow: hidden;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
