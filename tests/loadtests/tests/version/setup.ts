@@ -30,7 +30,7 @@ export async function createVersion(
 	await sdk.request(saveToContentVersion(version['id'], delta));
 }
 
-export async function setup({ logger, sdk }: SetupArgs) {
+export async function setup({ sdk }: SetupArgs) {
 	const schema = JSON.parse(await readFile(join(import.meta.dirname, 'version.json'), { encoding: 'utf-8' }));
 
 	const diff = await sdk.request(schemaDiff(schema, true));

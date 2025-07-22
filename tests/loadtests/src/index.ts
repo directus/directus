@@ -14,7 +14,6 @@ import { createLogger, type Logger } from './logger.js';
 import { existsSync } from 'fs';
 import { rimraf } from 'rimraf';
 import zx from '@nitwel/0x';
-import { argv } from 'process';
 
 export type SDK = DirectusClient<any> & RestClient<any> & StaticTokenClient<any>;
 export type SetupArgs = {
