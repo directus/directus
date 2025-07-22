@@ -331,18 +331,18 @@ export default abstract class SocketController {
 
 	protected async handleAuthRequest(client: WebSocketClient, message: WebSocketAuthMessage) {
 		try {
-			const accountabilityOverrides = {};
+			let accountabilityOverrides = {};
 
 			/**
 			 * Re-use the existing ip, userAgent and origin accountability properties.
 			 * They are only sent in the original connection request
 			 */
 			if (client.accountability) {
-				Object.assign(accountabilityOverrides, {
+				accountabilityOverrides = {
 					ip: client.accountability.ip,
 					userAgent: client.accountability.userAgent,
 					origin: client.accountability.origin,
-				});
+				};
 			}
 
 			const { accountability, expires_at, refresh_token } = await authenticateConnection(

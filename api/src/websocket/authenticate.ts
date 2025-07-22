@@ -38,14 +38,12 @@ export async function authenticateConnection(
 		}
 
 		if (!access_token) throw new Error();
-		const expires_at = getExpiresAtForToken(access_token);
 
-		const database = getDatabase();
-		const defaultAccountability: Accountability = createDefaultAccountability(accountabilityOverrides);
+		const defaultAccountability = createDefaultAccountability(accountabilityOverrides);
 
 		const authenticationState = {
 			accountability: defaultAccountability,
-			expires_at,
+			expires_at: getExpiresAtForToken(access_token),
 			refresh_token,
 		} as AuthenticationState;
 
@@ -56,7 +54,7 @@ export async function authenticateConnection(
 				message,
 			},
 			{
-				database,
+				database: getDatabase(),
 				schema: null,
 				accountability: null,
 			},
