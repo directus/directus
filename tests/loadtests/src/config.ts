@@ -24,7 +24,7 @@ const directusConfig = {
 	HOST: '127.0.0.1',
 } as const;
 
-const mariadb = {
+const maria = {
 	DB_CLIENT: 'mysql',
 	DB_HOST: `127.0.0.1`,
 	DB_USER: 'root',
@@ -74,16 +74,16 @@ const postgres = {
 	...directusConfig,
 } as const;
 
-const sqlite = {
+const sqlite3 = {
 	DB_CLIENT: 'sqlite3',
 	DB_FILENAME: './test.db',
 	...directusConfig,
 };
 
 export const baseConfig = {
-	mariadb,
+	maria,
 	postgres,
-	sqlite,
+	sqlite3,
 	cockroachdb,
 	// mssql,
 	mysql,
