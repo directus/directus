@@ -2231,9 +2231,6 @@ importers:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
-      '@directus/types':
-        specifier: workspace:*
-        version: link:../packages/types
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
