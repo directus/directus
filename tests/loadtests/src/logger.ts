@@ -7,7 +7,7 @@ export type Logger = {
 	warn: (msg: string) => void;
 	info: (msg: string) => void;
 	debug: (msg: string) => void;
-	pipe: (stream: Stream.Readable, type?: LogLevel) => void;
+	pipe: (stream: Stream.Readable | null, type?: LogLevel) => void;
 };
 
 export function createLogger(group?: string): Logger {
@@ -17,8 +17,8 @@ export function createLogger(group?: string): Logger {
 		warn: (msg: string) => log(msg, 'warn', group),
 		info: (msg: string) => log(msg, 'info', group),
 		debug: (msg: string) => log(msg, 'debug', group),
-		pipe: (stream: Stream.Readable, type?: LogLevel) => {
-			stream.on('data', (data) => log(String(data), type, group));
+		pipe: (stream: Stream.Readable | null, type?: LogLevel) => {
+			if (stream) stream.on('data', (data) => log(String(data), type, group));
 		},
 	};
 }

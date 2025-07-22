@@ -11,16 +11,17 @@
 	"author": "Nils Twelker",
 	"license": "MIT",
 	"devDependencies": {
+		"@nitwel/0x": "6.0.0",
+		"@directus/sdk": "20.0.0",
 		"@directus/tsconfig": "3.0.0",
 		"@types/k6": "1.1.1",
 		"@types/node": "22.13.8",
+		"chalk": "5.4.1",
+		"commander": "14.0.0",
 		"k6": "0.0.0",
 		"rimraf": "6.0.1",
 		"tsx": "4.19.3",
-		"typescript": "5.8.2",
-		"@directus/sdk": "20.0.0",
-		"chalk": "5.4.1",
-		"commander": "14.0.0"
+		"typescript": "5.8.2"
 	},
 	"engines": {
 		"node": ">=12.20.0"

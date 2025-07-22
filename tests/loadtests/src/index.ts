@@ -6,13 +6,14 @@ import {
 	type RestClient,
 	type StaticTokenClient,
 } from '@directus/sdk';
-import { spawn, type ChildProcessWithoutNullStreams } from 'child_process';
+import { ChildProcess, spawn, type ChildProcessWithoutNullStreams } from 'child_process';
 import { Command, Option, program } from 'commander';
 import { join } from 'path';
-import { argv } from 'process';
 import { config, platforms, type Platform } from './config.js';
 import { createLogger, type Logger } from './logger.js';
 import { existsSync } from 'fs';
+import { rimraf } from 'rimraf';
+import zx from '@nitwel/0x';
 
 export type SDK = DirectusClient<any> & RestClient<any> & StaticTokenClient<any>;
 export type SetupArgs = {
@@ -25,8 +26,9 @@ program
 	.option('-b, --build', 'Rebuild Directus from source')
 	.option('--build-api', 'Rebuild only the api from source')
 	.addOption(new Option('-p, --platform [platform]', 'Automatically spin up docker images').choices(platforms))
-	.option('--test', 'Startup directus without running k6')
-	.option('-f, --file <file>', 'Specify the test file k6 should use', 'test')
+	.option('-d, --debug', 'Startup directus without running k6')
+	.option('-t, --test <file>', 'Specify the test file k6 should use', 'test')
+	.option('-f, --flamegraph', 'Generate a flamegraph at the end')
 	.argument('<test>');
 
 program.parse();
@@ -38,15 +40,21 @@ const distFolder = join(import.meta.dirname, '..', '..', '..', 'api', 'dist');
 const options = program.opts() as {
 	platform?: true | Platform;
 	build: boolean;
-	test: boolean;
+	debug: boolean;
 	buildApi: string;
-	file: string;
+	test: string;
+	flamegraph: boolean;
 };
 
 const platform: Platform | undefined = options.platform === true ? 'postgres' : options.platform;
 
 // catches ctrl+c event
 process.on('SIGINT', exitHandler);
+
+if (options.flamegraph) {
+	logger.info('Removing old Flamegraph');
+	await rimraf(join(import.meta.dirname, '..', 'flamegraph'));
+}
 
 // Rebuild directus
 if (options.build || options.buildApi) {
@@ -100,15 +108,36 @@ if (platform) {
 
 const apiLogger = createLogger('api');
 
-const api = spawn('node', [join(distFolder, 'cli', 'run.js'), 'start'], {
-	env: config[platform!],
-});
+let api: ChildProcess | undefined;
+
+let zxp: Promise<string>;
+
+if (options.flamegraph) {
+	zxp = zx({
+		argv: [join(distFolder, 'cli', 'run.js'), 'start'],
+		workingDir: join(import.meta.dirname, '..'),
+		env: config[platform!],
+		onProcessStart: (process) => {
+			api = process;
+		},
+		name: 'flamegraph',
+		outputDir: 'flamegraph',
+	});
+
+	while (!api) {
+		await new Promise((r) => setTimeout(r, 100));
+	}
+} else {
+	api = spawn('node', [join(distFolder, 'cli', 'run.js'), 'start'], {
+		env: config[platform!],
+	});
+}
 
 apiLogger.pipe(api.stderr, 'error');
 
 await new Promise((resolve, reject) => {
-	api.stdout.on('data', (data) => {
-		apiLogger.info(String(data));
+	api!.stdout!.on('data', (data) => {
+		if (!options.flamegraph) apiLogger.info(String(data));
 		if (String(data).includes(`Server started at http://${config['mariadb'].HOST}:${config['mariadb'].PORT}`))
 			resolve(null);
 	});
@@ -130,7 +159,7 @@ if (platform) {
 
 let k6: ChildProcessWithoutNullStreams | undefined;
 
-if (!options.test) {
+if (!options.debug) {
 	const k6Logger = createLogger('k6');
 
 	k6 = spawn('k6', [
@@ -139,7 +168,7 @@ if (!options.test) {
 		`HOST=${config['mariadb'].HOST}`,
 		'-e',
 		`PORT=${config['mariadb'].PORT}`,
-		join(import.meta.dirname, '..', 'tests', program.args[0]!, `${options.file}.ts`),
+		join(import.meta.dirname, '..', 'tests', program.args[0]!, `${options.test}.ts`),
 	]);
 
 	k6Logger.pipe(k6.stdout);
@@ -152,16 +181,17 @@ if (!options.test) {
 }
 
 async function stopDocker() {
-	if (argv.some((arg) => arg === '--docker')) {
-		const docker = spawn('docker', [
-			'compose',
-			'-f',
-			join(import.meta.dirname, '..', 'docker', `${platform}.yml`),
-			'down',
-		]);
+	const docker = spawn('docker', [
+		'compose',
+		'-f',
+		join(import.meta.dirname, '..', 'docker', `${platform}.yml`),
+		'down',
+	]);
 
-		await new Promise((resolve) => docker.on('close', resolve));
-	}
+	logger.pipe(docker.stdout);
+	logger.pipe(docker.stderr, 'error');
+
+	await new Promise((resolve) => docker.on('close', resolve));
 }
 
 async function exitHandler() {
@@ -170,8 +200,17 @@ async function exitHandler() {
 		await stopDocker();
 	}
 
-	api.kill();
+	logger.info('Stopping Api');
+	api?.stdin?.end();
+	api?.kill('SIGINT');
+
+	k6?.stdin.end();
 	k6?.kill();
+
+	if (options.flamegraph) {
+		const path = await zxp;
+		logger.info(`Firegraph visible at ${path.replaceAll('\\', '/')}`);
+	}
 
 	logger.info('Bye');
 	process.exit();
