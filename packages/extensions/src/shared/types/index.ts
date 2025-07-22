@@ -1,6 +1,8 @@
 export type {
 	ApiExtensionContext,
 	ExtensionsApiOutput,
+	ExtensionsApiOutput as ApiOutput,
+	AppField,
 	AppExtensionConfigs,
 	DisplayFieldsFunction,
 	DisplayConfig,

@@ -29,3 +29,5 @@ export const createError = <Extensions = void>(
 		}
 	};
 };
+
+export type { DirectusExtensionsError as DirectusError };
