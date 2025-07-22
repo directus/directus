@@ -14,6 +14,8 @@ vi.mock('../utils/get-accountability-for-token', () => ({
 	} as Accountability),
 }));
 
+vi.mock('../emitter');
+
 vi.mock('../utils/get-permissions', () => ({
 	getPermissions: vi.fn(),
 }));
@@ -89,7 +91,7 @@ describe('authenticateConnection', () => {
 
 		const customAccountability = { admin: true };
 
-		vi.spyOn(emitter, 'emitFilter').mockResolvedValue(customAccountability);
+		vi.mocked(emitter.emitFilter).mockResolvedValueOnce(customAccountability);
 
 		const { accountability } = await authenticateConnection({
 			type: 'auth',
@@ -103,8 +105,6 @@ describe('authenticateConnection', () => {
 		(getAccountabilityForToken as Mock).mockImplementation(() => {
 			throw new InvalidCredentialsError();
 		});
-
-		vi.spyOn(emitter, 'emitFilter').mockResolvedValue(null);
 
 		expect(() =>
 			authenticateConnection({
