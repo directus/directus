@@ -3,6 +3,7 @@
 import eslintJs from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintPluginVue from 'eslint-plugin-vue';
+import eslintPluginVueA11y from 'eslint-plugin-vuejs-accessibility';
 import globals from 'globals';
 import process from 'node:process';
 import typescriptEslint from 'typescript-eslint';
@@ -88,6 +89,29 @@ export default typescriptEslint.config(
 		// Apply recommended TypeScript rules to Vue files as well
 		// @ts-expect-error wrong type assertion
 		rules: typescriptEslint.configs.recommended.reduce((rules, config) => ({ ...rules, ...config.rules }), {}),
+	},
+
+	// Accessibility rules for Vue files
+	...eslintPluginVueA11y.configs['flat/recommended'],
+	{
+		rules: {
+			'vuejs-accessibility/no-redundant-roles': 'off',
+			'vuejs-accessibility/label-has-for': 'off',
+			'vuejs-accessibility/anchor-has-content': 'off',
+			'vuejs-accessibility/iframe-has-title': 'off',
+			// 1093
+			'vuejs-accessibility/heading-has-content': 'off',
+			'vuejs-accessibility/alt-text': 'off',
+			'vuejs-accessibility/media-has-caption': 'off',
+			'vuejs-accessibility/mouse-events-have-key-events': 'off',
+			// 1094
+			'vuejs-accessibility/form-control-has-label': 'off',
+			// 1095
+			'vuejs-accessibility/no-static-element-interactions': 'off',
+			'vuejs-accessibility/click-events-have-key-events': 'off',
+			// 1097
+			'vuejs-accessibility/no-autofocus': 'off',
+		},
 	},
 
 	// Custom TypeScript rules
