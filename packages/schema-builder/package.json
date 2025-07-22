@@ -33,17 +33,19 @@
 	"scripts": {
 		"build": "tsup src/index.ts --format=esm --dts",
 		"dev": "tsup src/index.ts --format=esm --dts --watch",
-		"test": "vitest --watch=false"
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
 		"@directus/types": "workspace:*",
-		"lodash-es": "4.17.21"
+		"lodash-es": "catalog:"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
-		"@types/lodash-es": "4.17.12",
-		"tsup": "8.4.0",
-		"typescript": "5.8.2",
-		"vitest": "2.1.9"
+		"@directus/tsconfig": "catalog:",
+		"@types/lodash-es": "catalog:",
+		"@vitest/coverage-v8": "catalog:",
+		"tsup": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	}
 }
