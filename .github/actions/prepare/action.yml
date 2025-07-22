@@ -12,30 +12,17 @@ inputs:
 runs:
   using: composite
   steps:
+    - uses: pnpm/action-setup@v4
+      name: Install pnpm
+      with:
+        run_install: false
+
     - name: Install Node.js
       uses: actions/setup-node@v4
       with:
         node-version-file: package.json
         registry-url: ${{ inputs.registry }}
-
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
-
-    - name: Get cache info
-      id: cache-info
-      shell: bash
-      run: |
-        echo "os-release=$(node --eval 'console.log(os.release())')" >> $GITHUB_OUTPUT
-        echo "pnpm-cache-dir=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-    - name: Setup pnpm cache
-      uses: actions/cache@v4
-      with:
-        path: ${{ steps.cache-info.outputs.pnpm-cache-dir }}
-        key:
-          ${{ runner.os }}-${{ steps.cache-info.outputs.os-release }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-${{ steps.cache-info.outputs.os-release }}-pnpm-store-
+        cache: 'pnpm'
 
     - name: Install dependencies
       shell: bash

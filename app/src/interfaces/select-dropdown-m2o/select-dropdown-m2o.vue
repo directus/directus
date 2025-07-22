@@ -292,9 +292,8 @@ function getLinkForItem() {
 }
 
 .preview {
-	display: block;
 	flex-grow: 1;
-	block-size: calc(100% - 16px);
+	block-size: 100%;
 	overflow: hidden;
 }
 

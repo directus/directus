@@ -26,7 +26,8 @@
 		"story:build": "histoire build && echo \"/*  /index.html  200\" >> .histoire/dist/_redirects",
 		"story:dev": "histoire dev",
 		"story:preview": "histoire preview",
-		"test": "vitest --watch=false",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage",
 		"typecheck": "vue-tsc --noEmit"
 	},
 	"devDependencies": {
@@ -97,6 +98,7 @@
 		"@unhead/addons": "1.11.20",
 		"@unhead/vue": "1.11.20",
 		"@vitejs/plugin-vue": "5.2.1",
+		"@vitest/coverage-v8": "catalog:",
 		"@vue/test-utils": "2.4.6",
 		"@vueuse/core": "12.7.0",
 		"@vueuse/integrations": "12.7.0",
