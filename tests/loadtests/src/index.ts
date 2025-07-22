@@ -33,6 +33,7 @@ program
 	.option('-d, --debug', 'Startup directus without running k6')
 	.option('-t, --test <file>', 'Specify the test file k6 should use', 'test')
 	.option('-f, --flamegraph', 'Generate a flamegraph at the end')
+	.option('-w, --wait <seconds>', 'Wait for some seconds before bootstrapping')
 	.argument('<test>');
 
 program.parse();
@@ -49,6 +50,7 @@ const options = program.opts() as {
 	test: string;
 	flamegraph: boolean;
 	port?: string;
+	wait?: string;
 };
 
 const platform: Platform | undefined = options.platform === true ? 'postgres' : (options.platform as Platform);
@@ -130,16 +132,20 @@ if (platform) {
 		logger.pipe(docker.stderr, 'error');
 
 		await new Promise((resolve) => docker!.on('close', resolve));
+		if (options.wait) await new Promise((resolve) => setTimeout(resolve, Number(options.wait) * 1000));
 	}
+
+	logger.info('Bootstraping Database');
 
 	const bootstrap = spawn('node', [join(distFolder, 'cli', 'run.js'), 'bootstrap'], {
 		env,
 	});
 
-	logger.pipe(bootstrap.stdout);
+	logger.pipe(bootstrap.stdout, 'debug');
 	logger.pipe(bootstrap.stderr, 'error');
 
 	await new Promise((resolve) => bootstrap.on('close', resolve));
+	logger.info('Completed Bootstraping Database');
 }
 
 const apiLogger = createLogger('api');
@@ -147,6 +153,8 @@ const apiLogger = createLogger('api');
 let api: ChildProcess | undefined;
 
 let zxp: Promise<string>;
+
+logger.info('Starting Directus');
 
 if (options.flamegraph) {
 	zxp = zx({
@@ -173,7 +181,7 @@ apiLogger.pipe(api.stderr, 'error');
 
 await new Promise((resolve, reject) => {
 	api!.stdout!.on('data', (data) => {
-		if (!options.flamegraph) apiLogger.info(String(data));
+		if (!options.flamegraph) apiLogger.debug(String(data));
 		if (String(data).includes(`Server started at http://${env.HOST}:${env.PORT}`)) resolve(null);
 	});
 
@@ -181,13 +189,17 @@ await new Promise((resolve, reject) => {
 	setTimeout(reject, 10000);
 });
 
+logger.info('Completed Starting Directus');
+
 if (platform) {
+	logger.info('Starting Setup');
 	const setupLogger = createLogger('setup');
 
 	const sdk = createDirectus(`http://${env.HOST}:${env.PORT}`).with(rest()).with(staticToken('admin'));
 
 	const setup = await import(`../tests/${program.args[0]!}/setup.js`);
 	await setup.setup({ sdk, logger: setupLogger, program });
+	logger.info('Completed Setup');
 }
 
 let k6: ChildProcessWithoutNullStreams | undefined;
@@ -221,7 +233,7 @@ async function stopDocker() {
 		'down',
 	]);
 
-	logger.pipe(docker.stdout);
+	logger.pipe(docker.stdout, 'debug');
 	logger.pipe(docker.stderr, 'error');
 
 	await new Promise((resolve) => docker.on('close', resolve));

@@ -46,4 +46,4 @@ jobs:
         uses: grafana/setup-k6-action@v1
 
       - name: Run tests
-        run: pnpm run test:load --platform ${{ matrix.vendor }} version
+        run: pnpm run test:load --wait 5 --platform ${{ matrix.vendor }} version
