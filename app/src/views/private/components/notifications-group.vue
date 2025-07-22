@@ -41,13 +41,10 @@ const queue = toRefs(notificationsStore).queue;
 	inset-block-start: 0;
 	inset-inline: 8px;
 	z-index: 50;
+	display: flex;
+	flex-direction: column;
+	align-items: end;
 	inline-size: 256px;
-	direction: rtl;
-
-	> *,
-	> :deep(*) {
-		direction: ltr;
-	}
 
 	&.sidebar-open {
 		inset-block: auto 76px;
