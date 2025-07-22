@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Improved loading of app extensions by streaming them from the disk
+Added support for bundling with Rolldown and improved app extensions loading by streaming from disk
