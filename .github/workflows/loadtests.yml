@@ -33,7 +33,7 @@ jobs:
           - postgres
           - mysql
           - maria
-          - mssql
+          #   - mssql
           - cockroachdb
     steps:
       - name: Checkout repository

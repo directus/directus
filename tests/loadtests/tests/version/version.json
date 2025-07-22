@@ -333,9 +333,7 @@
 				"readonly": false,
 				"required": false,
 				"sort": 3,
-				"special": [
-					"m2o"
-				],
+				"special": ["m2o"],
 				"translations": null,
 				"validation": null,
 				"validation_message": null,
@@ -378,9 +376,7 @@
 				"readonly": false,
 				"required": false,
 				"sort": 6,
-				"special": [
-					"m2m"
-				],
+				"special": ["m2m"],
 				"translations": null,
 				"validation": null,
 				"validation_message": null,
@@ -407,9 +403,7 @@
 				"readonly": false,
 				"required": false,
 				"sort": 7,
-				"special": [
-					"o2m"
-				],
+				"special": ["o2m"],
 				"translations": null,
 				"validation": null,
 				"validation_message": null,
@@ -434,9 +428,7 @@
 				"readonly": false,
 				"required": false,
 				"sort": 8,
-				"special": [
-					"m2a"
-				],
+				"special": ["m2a"],
 				"translations": null,
 				"validation": null,
 				"validation_message": null,
@@ -461,9 +453,7 @@
 				"readonly": false,
 				"required": false,
 				"sort": 4,
-				"special": [
-					"m2o"
-				],
+				"special": ["m2o"],
 				"translations": null,
 				"validation": null,
 				"validation_message": null,
@@ -506,9 +496,7 @@
 				"readonly": false,
 				"required": false,
 				"sort": 5,
-				"special": [
-					"m2o"
-				],
+				"special": ["m2o"],
 				"translations": null,
 				"validation": null,
 				"validation_message": null,
@@ -551,10 +539,7 @@
 				"readonly": false,
 				"required": false,
 				"sort": 9,
-				"special": [
-					"date-created",
-					"date-updated"
-				],
+				"special": ["date-created", "date-updated"],
 				"translations": null,
 				"validation": null,
 				"validation_message": null,
@@ -640,11 +625,7 @@
 				"readonly": false,
 				"required": false,
 				"sort": 11,
-				"special": [
-					"m2o",
-					"role-updated",
-					"role-created"
-				],
+				"special": ["m2o", "role-updated", "role-created"],
 				"translations": null,
 				"validation": null,
 				"validation_message": null,
@@ -1332,9 +1313,7 @@
 				"readonly": false,
 				"required": false,
 				"sort": 2,
-				"special": [
-					"m2m"
-				],
+				"special": ["m2m"],
 				"translations": null,
 				"validation": null,
 				"validation_message": null,
@@ -1445,9 +1424,7 @@
 				"readonly": false,
 				"required": false,
 				"sort": 2,
-				"special": [
-					"o2m"
-				],
+				"special": ["o2m"],
 				"translations": null,
 				"validation": null,
 				"validation_message": null,
@@ -1607,10 +1584,7 @@
 				"junction_field": "articles_id",
 				"many_collection": "articles_sections",
 				"many_field": "item",
-				"one_allowed_collections": [
-					"sec_num",
-					"sec_text"
-				],
+				"one_allowed_collections": ["sec_num", "sec_text"],
 				"one_collection": null,
 				"one_collection_field": "collection",
 				"one_deselect_action": "nullify",
