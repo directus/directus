@@ -1,5 +1,6 @@
-import type { DeepPartial, Field, Query } from '@directus/types';
+import type { DeepPartial, Query } from '@directus/types';
 import type { Component, ComponentOptions } from 'vue';
+import type { AppField } from './index.js';
 
 export type PanelQuery = { collection: string; query: Query; key?: string };
 
@@ -13,11 +14,11 @@ export interface PanelConfig {
 	variable?: true; // Mark the panel as a global variable
 	component: Component;
 	options:
-		| DeepPartial<Field>[]
-		| { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] }
+		| DeepPartial<AppField>[]
+		| { standard: DeepPartial<AppField>[]; advanced: DeepPartial<AppField>[] }
 		| ((
 				ctx: Partial<Panel>,
-		  ) => DeepPartial<Field>[] | { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] })
+		  ) => DeepPartial<AppField>[] | { standard: DeepPartial<AppField>[]; advanced: DeepPartial<AppField>[] })
 		| Exclude<ComponentOptions, any>
 		| null;
 	minWidth: number;

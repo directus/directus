@@ -12,12 +12,12 @@
 	transition: opacity var(--slow) var(--transition);
 
 	&.center > *:not(.v-overlay) {
-		transform: translateY(0px);
+		transform: translateY(0);
 		transition: transform var(--slow) var(--transition-in);
 	}
 
 	&.right > *:not(.v-overlay) {
-		transform: translateX(0px);
+		transform: translateX(0);
 		transition: transform var(--slow) var(--transition-in);
 	}
 }

@@ -698,7 +698,7 @@ function useGroupedPermissions() {
 	overflow: auto;
 
 	table {
-		width: 100%;
+		inline-size: 100%;
 		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 		border-radius: var(--theme--border-radius);
 		border-spacing: 0;
@@ -715,14 +715,14 @@ function useGroupedPermissions() {
 
 	.system-toggle {
 		&:not(:first-child) td {
-			border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+			border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 		}
 
 		& button {
 			display: flex;
 			align-items: center;
-			width: 100%;
-			height: 44px;
+			inline-size: 100%;
+			block-size: 44px;
 			padding: 0 4px;
 			color: var(--theme--foreground-subdued);
 			cursor: pointer;
@@ -742,7 +742,7 @@ function useGroupedPermissions() {
 		color: var(--theme--foreground-subdued);
 		text-align: center;
 		padding: 12px;
-		border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+		border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
 		button {
 			color: var(--theme--primary) !important;
@@ -756,11 +756,11 @@ function useGroupedPermissions() {
 
 	.system-divider {
 		--v-divider-label-color: var(--theme--foreground-subdued);
-		padding-left: 12px;
+		padding-inline-start: 12px;
 	}
 }
 
 .add-collection {
-	margin-top: 12px;
+	margin-block-start: 12px;
 }
 </style>

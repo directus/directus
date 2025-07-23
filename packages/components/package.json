@@ -1,6 +1,6 @@
 {
 	"name": "@directus/components",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "Component for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -26,22 +26,24 @@
 		"dev": "vite build --watch",
 		"story:build": "histoire build",
 		"story:dev": "histoire dev",
-		"story:preview": "histoire preview"
+		"story:preview": "histoire preview",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
+		"@directus/tsconfig": "catalog:",
 		"@histoire/plugin-vue": "0.17.17",
 		"@vitejs/plugin-vue": "5.2.1",
-		"@vitest/coverage-v8": "2.1.9",
+		"@vitest/coverage-v8": "catalog:",
 		"histoire": "0.17.17",
 		"pinia": "2.3.1",
 		"rollup-plugin-node-externals": "8.0.0",
-		"typescript": "5.8.2",
-		"vite": "5.4.14",
+		"typescript": "catalog:",
+		"vite": "5.4.19",
 		"vite-plugin-dts": "4.5.1",
-		"vitest": "2.1.9",
+		"vitest": "catalog:",
 		"vue": "3.5.13",
-		"vue-i18n": "11.1.1",
+		"vue-i18n": "11.1.2",
 		"vue-router": "4.5.0"
 	},
 	"peerDependencies": {

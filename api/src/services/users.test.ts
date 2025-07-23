@@ -212,6 +212,7 @@ describe('Integration Tests', () => {
 					new RecordNotUniqueError({
 						collection: 'directus_users',
 						field: 'email',
+						value: 'test@example.com',
 					}),
 				);
 

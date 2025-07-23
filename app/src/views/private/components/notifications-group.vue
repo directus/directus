@@ -38,30 +38,22 @@ const queue = toRefs(notificationsStore).queue;
 <style lang="scss" scoped>
 .notifications-group {
 	position: fixed;
-	top: 0;
-	right: 8px;
-	left: 8px;
+	inset-block-start: 0;
+	inset-inline: 8px;
 	z-index: 50;
-	width: 256px;
-	direction: rtl;
-
-	> *,
-	> :deep(*) {
-		direction: ltr;
-	}
+	display: flex;
+	flex-direction: column;
+	align-items: end;
+	inline-size: 256px;
 
 	&.sidebar-open {
-		top: auto;
-		right: 12px;
-		bottom: 76px;
-		left: auto;
+		inset-block: auto 76px;
+		inset-inline: auto 12px;
 	}
 
 	@media (min-width: 960px) {
-		top: auto;
-		right: 12px;
-		bottom: 76px;
-		left: auto;
+		inset-block: auto 76px;
+		inset-inline: auto 12px;
 	}
 }
 
@@ -70,7 +62,7 @@ const queue = toRefs(notificationsStore).queue;
 }
 
 .slide-fade-enter-active {
-	transform: translateX(0px) scaleY(1) scaleX(1);
+	transform: translateX(0) scaleY(1) scaleX(1);
 	opacity: 1;
 }
 

@@ -20,8 +20,8 @@ const show = ref(true);
 <style>
 .box {
 	background-color: var(--theme--background-normal);
-	height: 200px;
-	width: 400px;
+	block-size: 200px;
+	inline-size: 400px;
 	display: flex;
 	justify-content: center;
 	align-items: center;

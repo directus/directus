@@ -24,20 +24,20 @@ const descriptor = computed(() => serverStore.info?.project?.project_descriptor)
 	position: relative;
 	display: flex;
 	align-items: center;
-	width: 100%;
-	height: calc(60px + var(--theme--navigation--project--border-width));
-	padding-left: 20px;
+	inline-size: 100%;
+	block-size: calc(60px + var(--theme--navigation--project--border-width));
+	padding-inline-start: 20px;
 	color: var(--theme--navigation--project--foreground);
-	text-align: left;
+	text-align: start;
 	background: var(--theme--navigation--project--background);
-	border-bottom: var(--theme--navigation--project--border-width) solid var(--theme--navigation--project--border-color);
+	border-block-end: var(--theme--navigation--project--border-width) solid
+		var(--theme--navigation--project--border-color);
 
 	.name-container {
 		flex-grow: 1;
-		width: 100px;
-		margin-left: 12px;
+		inline-size: 100px;
+		margin-inline: 12px 8px;
 		line-height: 1.3;
-		margin-right: 8px;
 	}
 
 	.name {

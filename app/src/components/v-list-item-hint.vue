@@ -25,11 +25,11 @@ withDefaults(defineProps<Props>(), {
 
 	&:not(:only-child) {
 		&:first-child {
-			margin-right: 12px;
+			margin-inline-end: 12px;
 		}
 
 		&:last-child {
-			margin-left: 12px;
+			margin-inline-start: 12px;
 		}
 	}
 
@@ -37,16 +37,15 @@ withDefaults(defineProps<Props>(), {
 		.v-list,
 		.v-list-item {
 			#{$this} {
-				margin-top: 4px;
-				margin-bottom: 4px;
+				margin-block: 4px;
 
 				&:not(:only-child) {
 					&:first-child {
-						margin-right: 16px;
+						margin-inline-end: 16px;
 					}
 
 					&:last-child {
-						margin-left: 16px;
+						margin-inline-start: 16px;
 					}
 				}
 			}

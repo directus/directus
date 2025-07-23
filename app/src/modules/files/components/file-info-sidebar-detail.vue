@@ -8,6 +8,7 @@ import { userName } from '@/utils/user-name';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { File } from '@directus/types';
+import { useClipboard } from '@/composables/use-clipboard';
 
 const props = defineProps<{
 	file: File | null;
@@ -172,6 +173,17 @@ function useFolder() {
 		}
 	}
 }
+
+const { copyToClipboard } = useClipboard();
+
+async function copyFileId() {
+	if (!props.file?.id) return;
+
+	await copyToClipboard(props.file.id, {
+		success: t('copy_id_success'),
+		fail: t('copy_id_fail'),
+	});
+}
 </script>
 
 <template>
@@ -262,6 +274,15 @@ function useFolder() {
 				</dd>
 			</div>
 
+			<div v-if="file?.id" class="copy-id">
+				<dt>{{ t('copy_id') }}</dt>
+				<dd>
+					<v-button icon secondary small class="copy-id-button" @click="copyFileId">
+						<v-icon small name="content_copy" outline />
+					</v-button>
+				</dd>
+			</div>
+
 			<template v-if="imageMetadata">
 				<v-divider />
 
@@ -305,5 +326,15 @@ button {
 
 .v-divider {
 	margin: 20px 0;
+}
+
+.copy-id {
+	display: flex;
+	align-items: flex-start;
+
+	:deep(.button) {
+		block-size: auto;
+		inline-size: auto;
+	}
 }
 </style>

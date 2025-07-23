@@ -23,7 +23,7 @@ const { t } = useI18n();
 	}
 
 	.v-notice {
-		margin-bottom: 24px;
+		margin-block-end: 24px;
 	}
 
 	.app-minimal-preview {

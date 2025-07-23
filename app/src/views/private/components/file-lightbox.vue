@@ -31,9 +31,9 @@ const internalModelValue = useSync(props, 'modelValue', emit);
 
 <style scoped>
 .file-preview {
-	width: 85%;
-	height: 85%;
-	max-width: initial;
+	inline-size: 85%;
+	block-size: 85%;
+	max-inline-size: initial;
 }
 
 .close {
@@ -43,7 +43,7 @@ const internalModelValue = useSync(props, 'modelValue', emit);
 	--v-button-color-hover: var(--theme--foreground);
 
 	position: absolute;
-	top: 32px;
-	right: 32px;
+	inset-block-start: 32px;
+	inset-inline-end: 32px;
 }
 </style>
