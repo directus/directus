@@ -100,7 +100,10 @@ router.post(
 
 		const field: Partial<Field> & { field: string; type: Type | null } = req.body;
 
-		await service.createField(req.params['collection']!, field);
+		await service.createField(req.params['collection']!, field, undefined, {
+			attemptConcurrentIndex:
+				'concurrentIndexCreation' in req.query && req.query['concurrentIndexCreation'] !== 'false',
+		});
 
 		try {
 			const createdField = await service.readOne(req.params['collection']!, field.field);
@@ -139,7 +142,10 @@ router.patch(
 			}
 		}
 
-		await service.updateFields(req.params['collection']!, req.body);
+		await service.updateFields(req.params['collection']!, req.body, {
+			attemptConcurrentIndex:
+				'concurrentIndexCreation' in req.query && req.query['concurrentIndexCreation'] !== 'false',
+		});
 
 		try {
 			const results: any = [];
@@ -199,7 +205,10 @@ router.patch(
 
 		if (!fieldData.field) fieldData.field = req.params['field']!;
 
-		await service.updateField(req.params['collection']!, fieldData);
+		await service.updateField(req.params['collection']!, fieldData, {
+			attemptConcurrentIndex:
+				'concurrentIndexCreation' in req.query && req.query['concurrentIndexCreation'] !== 'false',
+		});
 
 		try {
 			const updatedField = await service.readOne(req.params['collection']!, req.params['field']!);
