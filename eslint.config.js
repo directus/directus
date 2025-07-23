@@ -95,7 +95,8 @@ export default typescriptEslint.config(
 	...eslintPluginVueA11y.configs['flat/recommended'],
 	{
 		rules: {
-			'vuejs-accessibility/anchor-has-content': 'off',
+			'vuejs-accessibility/anchor-has-content': ['error', { accessibleChildren: ['VTextOverflow'] }],
+
 			// 1093
 			'vuejs-accessibility/heading-has-content': 'off',
 			'vuejs-accessibility/alt-text': 'off',
