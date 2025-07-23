@@ -96,7 +96,6 @@ export default typescriptEslint.config(
 	{
 		rules: {
 			'vuejs-accessibility/anchor-has-content': 'off',
-			'vuejs-accessibility/iframe-has-title': 'off',
 			// 1093
 			'vuejs-accessibility/heading-has-content': 'off',
 			'vuejs-accessibility/alt-text': 'off',
