@@ -33,7 +33,7 @@ const { t } = useI18n();
 
 const { save, cancel } = useActions();
 const { internalActive } = useActiveState();
-const { internalSelection, onSelect } = useSelection();
+const { internalSelection, onSelect, hasSelectionChanged } = useSelection();
 
 const { collection } = toRefs(props);
 
@@ -59,24 +59,6 @@ const layoutSelection = computed<any>({
 
 const { layoutWrapper } = useLayout(layout);
 
-const initialSelection = ref<(string | number)[] | null>(null);
-
-watch(
-	() => internalActive.value,
-	(active) => {
-		if (active) {
-			// Store a copy of the initial selection when the drawer opens
-			initialSelection.value = Array.isArray(internalSelection.value)
-				? [...internalSelection.value]
-				: internalSelection.value;
-		}
-	},
-);
-
-const hasSelectionChanged = computed(() => {
-	return !isEqual(internalSelection.value, initialSelection.value);
-});
-
 function useActiveState() {
 	const localActive = ref(false);
 
@@ -95,6 +77,7 @@ function useActiveState() {
 
 function useSelection() {
 	const localSelection = ref<(string | number)[] | null>(null);
+	const initialSelection = ref<(string | number)[] | null>(null);
 
 	const internalSelection = computed({
 		get() {
@@ -109,14 +92,25 @@ function useSelection() {
 		},
 	});
 
+	const hasSelectionChanged = computed(() => {
+		return !isEqual(internalSelection.value, initialSelection.value);
+	});
+
 	watch(
 		() => props.active,
-		() => {
+		(active) => {
 			localSelection.value = null;
+
+			if (active) {
+				// Store a copy of the initial selection when the drawer opens
+				initialSelection.value = Array.isArray(internalSelection.value)
+					? [...internalSelection.value]
+					: internalSelection.value;
+			}
 		},
 	);
 
-	return { internalSelection, onSelect };
+	return { internalSelection, onSelect, hasSelectionChanged };
 
 	function onSelect(newSelection: (string | number)[]) {
 		if (newSelection.length === 0) {
@@ -136,6 +130,7 @@ function useActions() {
 	return { save, cancel };
 
 	function save() {
+		if (!hasSelectionChanged.value) return;
 		emit('input', unref(internalSelection));
 		internalActive.value = false;
 	}

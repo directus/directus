@@ -208,6 +208,7 @@ const templateCollection = computed(() => relatedCollectionInfo.value || collect
 
 const isSavable = computed(() => {
 	if (props.disabled) return false;
+	if (!hasEdits.value) return false;
 	if (!relatedCollection.value) return saveAllowed.value;
 	return saveAllowed.value || saveRelatedCollectionAllowed.value;
 });
@@ -542,13 +543,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 		<template #actions>
 			<slot name="actions" />
 
-			<v-button
-				v-tooltip.bottom="getTooltip('save', t('save'))"
-				icon
-				rounded
-				:disabled="!isSavable || !hasEdits"
-				@click="save"
-			>
+			<v-button v-tooltip.bottom="getTooltip('save', t('save'))" icon rounded :disabled="!isSavable" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
