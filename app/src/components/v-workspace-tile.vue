@@ -379,8 +379,8 @@ function useDragDrop() {
 
 .resize-details {
 	position: absolute;
-	bottom: 0;
-	right: 0;
+	inset-block-end: 0;
+	inset-inline-end: 0;
 	z-index: 2;
 	padding: 2px 11.5px 11.5px 2px;
 	color: var(--theme--foreground-subdued);
@@ -389,10 +389,10 @@ function useDragDrop() {
 	font-family: var(--theme--fonts--monospace--font-family);
 	font-style: normal;
 	line-height: 1;
-	text-align: right;
-	border-top-right-radius: var(--theme--border-radius);
-	border-bottom-right-radius: var(--theme--border-radius);
-	border-top-left-radius: var(--theme--border-radius);
+	text-align: end;
+	border-start-end-radius: var(--theme--border-radius);
+	border-end-end-radius: var(--theme--border-radius);
+	border-start-start-radius: var(--theme--border-radius);
 	background-color: var(--theme--background);
 	opacity: 0;
 	transition:
@@ -405,33 +405,33 @@ function useDragDrop() {
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	overflow: hidden;
 }
 
 .tile-content.has-header {
-	height: calc(100% - 42px);
+	block-size: calc(100% - 42px);
 }
 
 .header {
 	display: flex;
 	align-items: center;
-	height: 42px;
+	block-size: 42px;
 	padding: 12px;
 }
 
 .footer {
 	padding: 0 12px;
-	border-top: 2px solid var(--theme--border-color-subdued);
-	margin-top: auto;
-	padding-top: 8px;
+	border-block-start: 2px solid var(--theme--border-color-subdued);
+	margin-block-start: auto;
+	padding-block-start: 8px;
 }
 
 .icon {
 	--v-icon-color: var(--theme--foreground-subdued);
 
-	margin-right: 4px;
+	margin-inline-end: 4px;
 }
 
 .name {
@@ -461,16 +461,16 @@ function useDragDrop() {
 
 .edit-actions {
 	position: absolute;
-	top: 0;
-	right: 0;
+	inset-block-start: 0;
+	inset-inline-end: 0;
 	z-index: 2;
 	display: flex;
 	gap: 4px;
 	align-items: center;
 	padding: 7px;
-	border-top-right-radius: var(--theme--border-radius);
-	border-bottom-right-radius: var(--theme--border-radius);
-	border-bottom-left-radius: var(--theme--border-radius);
+	border-start-end-radius: var(--theme--border-radius);
+	border-end-end-radius: var(--theme--border-radius);
+	border-end-start-radius: var(--theme--border-radius);
 	background-color: var(--theme--background);
 }
 
@@ -480,80 +480,80 @@ function useDragDrop() {
 }
 
 .resize-handlers .top {
-	top: -3px;
-	width: 100%;
-	height: 10px;
+	inset-block-start: -3px;
+	inline-size: 100%;
+	block-size: 10px;
 	cursor: ns-resize;
 }
 
 .resize-handlers .right {
-	top: 0;
-	right: -3px;
-	width: 10px;
-	height: 100%;
+	inset-block-start: 0;
+	inset-inline-end: -3px;
+	inline-size: 10px;
+	block-size: 100%;
 	cursor: ew-resize;
 }
 
 .resize-handlers .bottom {
-	bottom: -3px;
-	width: 100%;
-	height: 10px;
+	inset-block-end: -3px;
+	inline-size: 100%;
+	block-size: 10px;
 	cursor: ns-resize;
 }
 
 .resize-handlers .left {
-	top: 0;
-	left: -3px;
-	width: 10px;
-	height: 100%;
+	inset-block-start: 0;
+	inset-inline-start: -3px;
+	inline-size: 10px;
+	block-size: 100%;
 	cursor: ew-resize;
 }
 
 .resize-handlers .top-left {
-	top: -3px;
-	left: -3px;
-	width: 14px;
-	height: 14px;
+	inset-block-start: -3px;
+	inset-inline-start: -3px;
+	inline-size: 14px;
+	block-size: 14px;
 	cursor: nwse-resize;
 }
 
 .resize-handlers .top-right {
-	top: -3px;
-	right: -3px;
-	width: 14px;
-	height: 14px;
+	inset-block-start: -3px;
+	inset-inline-end: -3px;
+	inline-size: 14px;
+	block-size: 14px;
 	cursor: nesw-resize;
 }
 
 .resize-handlers .bottom-right {
-	right: -3px;
-	bottom: -3px;
-	width: 14px;
-	height: 14px;
+	inset-inline-end: -3px;
+	inset-block-end: -3px;
+	inline-size: 14px;
+	block-size: 14px;
 	cursor: nwse-resize;
 }
 
 .resize-handlers .bottom-left {
-	bottom: -3px;
-	left: -3px;
-	width: 14px;
-	height: 14px;
+	inset-block-end: -3px;
+	inset-inline-start: -3px;
+	inline-size: 14px;
+	block-size: 14px;
 	cursor: nesw-resize;
 }
 
 .br-tl {
-	border-top-left-radius: var(--theme--border-radius);
+	border-start-start-radius: var(--theme--border-radius);
 }
 
 .br-tr {
-	border-top-right-radius: var(--theme--border-radius);
+	border-start-end-radius: var(--theme--border-radius);
 }
 
 .br-br {
-	border-bottom-right-radius: var(--theme--border-radius);
+	border-end-end-radius: var(--theme--border-radius);
 }
 
 .br-bl {
-	border-bottom-left-radius: var(--theme--border-radius);
+	border-end-start-radius: var(--theme--border-radius);
 }
 </style>

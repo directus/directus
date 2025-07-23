@@ -97,15 +97,15 @@ const sortOptions = [
 	display: flex;
 	gap: 4px 32px;
 	flex-wrap: wrap;
-	width: 100%;
+	inline-size: 100%;
 }
 
 .search-input {
 	appearance: none;
 	border: none;
 	border-radius: 0;
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color);
-	width: 180px;
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
+	inline-size: 180px;
 	background: transparent;
 
 	&::placeholder {
