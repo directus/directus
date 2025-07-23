@@ -206,14 +206,23 @@ let k6: ChildProcessWithoutNullStreams | undefined;
 if (!options.debug) {
 	const k6Logger = createLogger('k6');
 
-	k6 = spawn('k6', [
-		'run',
-		'-e',
-		`HOST=${env.HOST}`,
-		'-e',
-		`PORT=${env.PORT}`,
-		join(import.meta.dirname, '..', 'tests', program.args[0]!, `${options.test}.ts`),
-	]);
+	k6 = spawn(
+		'k6',
+		[
+			'run',
+			'-e',
+			`HOST=${env.HOST}`,
+			'-e',
+			`PORT=${env.PORT}`,
+			join(import.meta.dirname, '..', 'tests', program.args[0]!, `${options.test}.ts`),
+		],
+		{
+			env: {
+				K6_WEB_DASHBOARD: 'true',
+				K6_WEB_DASHBOARD_PERIOD: '1s',
+			},
+		},
+	);
 
 	k6Logger.pipe(k6.stdout);
 	k6Logger.pipe(k6.stderr, 'error');

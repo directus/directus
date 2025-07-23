@@ -45,10 +45,10 @@ export async function setup({ sdk }: SetupArgs) {
 			},
 			links: [
 				{
-					link: 'Link A',
+					name: 'Link A',
 				},
 				{
-					link: 'Link B',
+					name: 'Link B',
 				},
 			],
 			tags: [
@@ -89,7 +89,7 @@ export async function setup({ sdk }: SetupArgs) {
 		links: [
 			{
 				id: 1,
-				link: 'Link A Changed',
+				name: 'Link A Changed',
 			},
 		],
 		tags: [
@@ -112,32 +112,4 @@ export async function setup({ sdk }: SetupArgs) {
 			},
 		],
 	});
-
-	// await createVersion(sdk, item['id'], 'dev', {
-	// 	id: 1,
-	// 	links: [
-	// 		{
-	// 			id: 1,
-	// 			link: 'Link A Changed',
-	// 		},
-	// 		{
-	// 			id: 2,
-	// 			link: 'Link B Changed',
-	// 		},
-	// 	],
-	// });
-
-	// await createVersion(sdk, item['id'], 'dev2', {
-	// 	id: 1,
-	// 	links: [
-	// 		{
-	// 			id: 2,
-	// 			link: 'Link B Changed',
-	// 		},
-	// 		{
-	// 			id: 1,
-	// 			link: 'Link A Changed',
-	// 		},
-	// 	],
-	// });
 }
