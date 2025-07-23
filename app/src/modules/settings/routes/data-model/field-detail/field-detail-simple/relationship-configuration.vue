@@ -114,7 +114,7 @@ const availableCollections = computed(() => {
 	@include mixins.form-grid;
 
 	&:not(:empty) {
-		margin-bottom: 20px;
+		margin-block-end: 20px;
 	}
 
 	.v-input.matches {

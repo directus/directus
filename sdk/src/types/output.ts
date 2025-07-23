@@ -1,6 +1,6 @@
 import type { FieldsWildcard, HasManyToAnyRelation, PickRelationalFields } from './fields.js';
 import type { MappedFunctionFields } from './functions.js';
-import type { ItemType } from './schema.js';
+import type { ItemType, RemoveRelationships } from './schema.js';
 import type { IfAny, IsNullable, Merge, Mutable, UnpackList, Prettify } from './utils.js';
 
 /**
@@ -23,7 +23,11 @@ export type ApplyQueryFields<
 	Prettify<
 		Merge<
 			MappedFunctionFields<Schema, CollectionItem> extends infer FF
-				? MapFlatFields<CollectionItem, FlatFields, FF extends Record<string, string> ? FF : Record<string, string>>
+				? MapFlatFields<
+						RemoveRelationships<Schema, CollectionItem>,
+						FlatFields,
+						FF extends Record<string, string> ? FF : Record<string, string>
+				  >
 				: never,
 			RelationalFields extends never
 				? never

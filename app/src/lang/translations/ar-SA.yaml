@@ -30,6 +30,7 @@ draft: مسوّدة
 archived: مؤرشف
 marketplace: المتجر
 extensions: الإضافات
+skip_link_main: تخطي إلى المحتوى الرئيسي
 modules: الوحدات
 module_bar: شريط الوحدة
 logs: السجلات
@@ -518,6 +519,11 @@ hours: ساعات
 month: شهر
 year: سنة
 select_all: تحديد الكل
+permissionsLevel:
+  all: يمكن ال{action} بشكل كامل
+  partial: يمكن ال{action} بشكل جزئي
+  custom: يمكن ال{action} بشكل مخصص
+  none: لا يمكن ال{action}
 months:
   january: يناير
   february: فبراير
@@ -783,6 +789,8 @@ make_collection_hidden: جعل المجموعة مخفية
 make_folder_visible: جعل المجلد مرئي
 make_folder_hidden: جعل المجلد مخفي
 goto_collection_content: عرض المحتوى
+count_of_total_items: '{count} من {total} عنصر'
+start_end_of_count_items: '{start}-{end} من {count} عنصر'
 delete_collection_are_you_sure: >-
   هل أنت متيقِّن من أنك تريد حذف المجموعة"{collection}"؟ سيؤدي هذا إلى حذف المجموعة وجميع العناصر فيها. وهذا الإجراء دائم الأثر.
 delete_folder_are_you_sure: هل أنت متيقِّن من أنك تريد حذف المجلد"{folder}"؟ سيتم نقل المجلدات والمجموعات المتفرعة منه إلى أعلى مستوى.
@@ -875,6 +883,7 @@ create_item: أنشئ عنصر
 display_template: عرض القالب
 language_display_template: قالب عرض اللغة
 translations_display_template: قالب عرض الترجمات
+n_items_selected: 'لم يتم تحديد عناصر | عنصر واحد محدد | {n} عناصر محددة'
 per_page: لكل صفحة
 all_files: '‮كل الملفات'
 my_files: ملفاتي
@@ -1270,6 +1279,7 @@ fields:
     status: حالة
     status_draft: مسوّدة
     status_invited: مَدعُوّ
+    status_unverified: غير مؤكد
     status_active: مفعل
     status_suspended: معلّق
     status_archived: مؤرشف
@@ -1570,6 +1580,7 @@ authenticated: مصادق
 options: خيارات
 otp: كلمة السر لمرة واحدة OTP
 password: كلمة المرور
+confirm_password: تأكيد كلمة المرور
 permissions: أذونات
 relationship: العلاقة
 reset: إعادة تعيين
@@ -1714,6 +1725,7 @@ interfaces:
     choices_placeholder: أضف خيار جديد
     allow_other: السماح لآخرين
     allow_other_label: السماح بقيم أخرى
+    allow_none: السماح باختيار لا شيء
     allow_none_label: لا يسمح بتحديد
     choices_name_placeholder: أدخل اسم...
     choices_value_placeholder: أدخل قيمة...

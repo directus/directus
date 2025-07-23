@@ -153,7 +153,7 @@ function setOpenFolders() {
 }
 
 .folders {
-	width: 100%;
+	inline-size: 100%;
 	overflow-x: hidden;
 
 	:deep(.v-list-item-content) {

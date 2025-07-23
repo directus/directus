@@ -460,6 +460,10 @@ reset_password: Επαναφορά Κωδικού
 save: Αποθήκευση
 search: Αναζήτηση
 settings: Ρυθμίσεις
+register: Εγγραφή
+dont_have_an_account: Δεν έχετε λογαριασμό;
+already_have_an_account: Έχετε ήδη λογαριασμό;
+sign_up_now: Εγγραφείτε τώρα
 sign_in: Είσοδος
 sign_out: Αποσύνδεση
 translation: Μετάφραση

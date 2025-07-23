@@ -24,10 +24,10 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 		fieldsService.readAll(),
 		relationsService.readAll(),
 	]);
-
-	const collectionsFiltered = collectionsRaw.filter((item) => excludeSystem(item));
-	const fieldsFiltered = fieldsRaw.filter((item) => excludeSystem(item));
-	const relationsFiltered = relationsRaw.filter((item) => excludeSystem(item));
+  
+	const collectionsFiltered = collectionsRaw.filter((item) => excludeSystem(item) && excludeUntracked(item));
+	const fieldsFiltered = fieldsRaw.filter((item) => excludeSystem(item) && excludeUntracked(item));
+	const relationsFiltered = relationsRaw.filter((item) => excludeSystem(item) && excludeUntracked(item));
 	const systemFieldsFiltered = fieldsRaw.filter((item) => systemFieldWithIndex(item));
 
 	const collectionsSorted = sortBy(mapValues(collectionsFiltered, sortDeep), ['collection']).map((collection) =>
@@ -55,7 +55,6 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 		systemFields: systemFieldsSorted,
 		relations: relationsSorted,
 	};
-}
 
 function excludeSystem(item: { meta: { system?: boolean | null } | null }) {
 	if (item?.meta?.system === true) return false;
@@ -67,6 +66,11 @@ function systemFieldWithIndex(item: {
 	schema: { is_indexed: boolean } | null;
 }) {
 	return item.meta?.system === true && item.schema?.is_indexed;
+}
+  
+function excludeUntracked(item: Collection | Field | Relation) {
+	if (item?.meta === null) return false;
+	return true;
 }
 
 function omitID(item: Record<string, any>) {

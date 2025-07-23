@@ -90,7 +90,7 @@ const maintainers = computed(() => {
 }
 
 .metadata .list:first-child {
-	padding-top: 0;
+	padding-block-start: 0;
 }
 
 .grid {
@@ -124,7 +124,6 @@ const maintainers = computed(() => {
 }
 
 .sparkline {
-	margin-top: 6px;
-	margin-bottom: 14px;
+	margin-block: 6px 14px;
 }
 </style>

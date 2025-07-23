@@ -88,17 +88,17 @@ async function saveEdits(item: Record<string, any>) {
 	--v-list-item-padding: 6px;
 	--v-list-item-margin: 0;
 
-	height: 100%;
+	block-size: 100%;
 	padding: 0 12px;
 	overflow-y: auto;
 }
 
 .v-list-item {
-	height: 48px;
-	border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	block-size: 48px;
+	border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .v-list-item:last-child {
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 </style>

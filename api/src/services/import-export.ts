@@ -40,6 +40,7 @@ import { FilesService } from './files.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
 import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
+import { set } from 'lodash-es';
 
 const env = useEnv();
 const logger = useLogger();
@@ -218,14 +219,16 @@ export class ImportService {
 						fileReadStream
 							.pipe(Papa.parse(Papa.NODE_STREAM_INPUT, PapaOptions))
 							.on('data', (obj: Record<string, unknown>) => {
+								const result = {};
+
 								// Filter out all undefined fields
 								for (const field in obj) {
-									if (obj[field] === undefined) {
-										delete obj[field];
+									if (obj[field] !== undefined) {
+										set(result, field, obj[field]);
 									}
 								}
 
-								saveQueue.push(obj);
+								saveQueue.push(result);
 							})
 							.on('error', (error) => {
 								cleanup();

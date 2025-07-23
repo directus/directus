@@ -22,7 +22,8 @@
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch",
-		"test": "vitest --watch=false"
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
 		"@changesets/get-github-info": "0.6.0",
@@ -32,11 +33,11 @@
 	},
 	"devDependencies": {
 		"@changesets/types": "6.1.0",
-		"@directus/tsconfig": "3.0.0",
-		"@types/node": "22.13.8",
+		"@directus/tsconfig": "catalog:",
+		"@types/node": "catalog:",
 		"@types/semver": "7.5.8",
-		"@vitest/coverage-v8": "2.1.9",
-		"typescript": "5.8.2",
-		"vitest": "2.1.9"
+		"@vitest/coverage-v8": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	}
 }
