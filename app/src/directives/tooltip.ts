@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 import { Directive, DirectiveBinding } from 'vue';
+import { getCurrentLanguage } from '@/lang/get-current-language';
 
 const tooltipDelay = 300;
 
@@ -71,9 +72,16 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 	const offset = 10;
 	const arrowAlign = 20;
 
+	const isRTL = getCurrentLanguage().dir === 'rtl';
+
 	const bounds = element.getBoundingClientRect();
 	let top = bounds.top + pageYOffset;
 	let left = bounds.left + pageXOffset;
+
+	if (isRTL) {
+		left = window.innerWidth - bounds.right + pageXOffset;
+	}
+
 	let transformPos;
 
 	tooltip.innerText = binding.value;
@@ -111,7 +119,13 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 		}
 
 		top += bounds.height + offset;
-		tooltip.style.transform = `translate(calc(${left}px - ${transformPos}%), ${top}px)`;
+
+		if (isRTL) {
+			tooltip.style.transform = `translate(calc(-${left}px + ${transformPos}%), ${top}px)`;
+		} else {
+			tooltip.style.transform = `translate(calc(${left}px - ${transformPos}%), ${top}px)`;
+		}
+
 		tooltip.classList.add('bottom');
 	} else if (placement === 'left') {
 		if (binding.modifiers.start) {
@@ -128,7 +142,13 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 		}
 
 		left -= offset;
-		tooltip.style.transform = `translate(calc(${left}px - 100%), calc(${top}px - ${transformPos}%))`;
+
+		if (isRTL) {
+			tooltip.style.transform = `translate(calc(-${left}px + 100%), calc(${top}px - ${transformPos}%))`;
+		} else {
+			tooltip.style.transform = `translate(calc(${left}px - 100%), calc(${top}px - ${transformPos}%))`;
+		}
+
 		tooltip.classList.add('left');
 	} else if (placement === 'right') {
 		if (binding.modifiers.start) {
@@ -145,7 +165,13 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 		}
 
 		left += bounds.width + offset;
-		tooltip.style.transform = `translate(${left}px, calc(${top}px - ${transformPos}%))`;
+
+		if (isRTL) {
+			tooltip.style.transform = `translate(-${left}px, calc(${top}px - ${transformPos}%))`;
+		} else {
+			tooltip.style.transform = `translate(${left}px, calc(${top}px - ${transformPos}%))`;
+		}
+
 		tooltip.classList.add('right');
 	} else {
 		if (binding.modifiers.start) {
