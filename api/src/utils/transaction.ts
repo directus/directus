@@ -73,10 +73,19 @@ function shouldRetryTransaction(client: DatabaseClient, error: unknown): boolean
 	 * @link https://www.sqlite.org/rescode.html#busy
 	 */
 	const SQLITE_BUSY_ERROR_CODE = 'SQLITE_BUSY';
+	// Both mariadb and mysql
+	const MYSQL_DEADLOCK_CODE = 'ER_LOCK_DEADLOCK';
+	const POSTGRES_DEADLOCK_CODE = '40P01';
 
-	return (
-		isObject(error) &&
-		((client === 'cockroachdb' && error['code'] === COCKROACH_RETRY_ERROR_CODE) ||
-			(client === 'sqlite' && error['code'] === SQLITE_BUSY_ERROR_CODE))
-	);
+	const codes: Record<DatabaseClient, any[]> = {
+		cockroachdb: [COCKROACH_RETRY_ERROR_CODE],
+		sqlite: [SQLITE_BUSY_ERROR_CODE],
+		mysql: [MYSQL_DEADLOCK_CODE],
+		mssql: [],
+		oracle: [],
+		postgres: [POSTGRES_DEADLOCK_CODE],
+		redshift: [],
+	};
+
+	return isObject(error) && codes[client].includes(error['code']);
 }
