@@ -76,16 +76,24 @@ function shouldRetryTransaction(client: DatabaseClient, error: unknown): boolean
 	// Both mariadb and mysql
 	const MYSQL_DEADLOCK_CODE = 'ER_LOCK_DEADLOCK';
 	const POSTGRES_DEADLOCK_CODE = '40P01';
+	const ORACLE_DEADLOCK_CODE = 'ORA-00060';
+	const MSSQL_DEADLOCK_CODE = 'EREQUEST';
+	const MSSQL_DEADLOCK_NUMBER = '1205';
 
-	const codes: Record<DatabaseClient, any[]> = {
-		cockroachdb: [COCKROACH_RETRY_ERROR_CODE],
-		sqlite: [SQLITE_BUSY_ERROR_CODE],
-		mysql: [MYSQL_DEADLOCK_CODE],
-		mssql: [],
-		oracle: [],
-		postgres: [POSTGRES_DEADLOCK_CODE],
+	const codes: Record<DatabaseClient, Record<string, any>[]> = {
+		cockroachdb: [{ code: COCKROACH_RETRY_ERROR_CODE }],
+		sqlite: [{ code: SQLITE_BUSY_ERROR_CODE }],
+		mysql: [{ code: MYSQL_DEADLOCK_CODE }],
+		mssql: [{ code: MSSQL_DEADLOCK_CODE, number: MSSQL_DEADLOCK_NUMBER }],
+		oracle: [{ code: ORACLE_DEADLOCK_CODE }],
+		postgres: [{ code: POSTGRES_DEADLOCK_CODE }],
 		redshift: [],
 	};
 
-	return isObject(error) && codes[client].includes(error['code']);
+	return (
+		isObject(error) &&
+		codes[client].some((code) => {
+			return Object.entries(code).every(([key, value]) => String(error[key]) === value);
+		})
+	);
 }
