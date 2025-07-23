@@ -1,4 +1,5 @@
 import type { Router } from 'express';
+import type { ReadStream } from 'node:fs';
 import type { Extension } from './app-extension-config.js';
 
 export interface ExtensionManagerOptions {
@@ -24,13 +25,9 @@ export type ExtensionManager = {
 	 */
 	reload: (options?: { forceSync: boolean }) => Promise<unknown>;
 	/**
-	 * Return the previously generated app extensions bundle
-	 */
-	getAppExtensionsBundle: () => string | null;
-	/**
 	 * Return the previously generated app extension bundle chunk by name
 	 */
-	getAppExtensionChunk: (name: string) => string | null;
+	getAppExtensionChunk: (name?: string) => Promise<ReadStream | null>;
 	/**
 	 * Return the scoped router for custom endpoints
 	 */
