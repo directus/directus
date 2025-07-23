@@ -55,6 +55,7 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 		systemFields: systemFieldsSorted,
 		relations: relationsSorted,
 	};
+}
 
 function excludeSystem(item: { meta: { system?: boolean | null } | null }) {
 	if (item?.meta?.system === true) return false;
@@ -68,7 +69,7 @@ function systemFieldWithIndex(item: {
 	return item.meta?.system === true && item.schema?.is_indexed;
 }
   
-function excludeUntracked(item: Collection | Field | Relation) {
+function excludeUntracked(item: { meta: unknown | null } | null) {
 	if (item?.meta === null) return false;
 	return true;
 }
