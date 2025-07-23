@@ -139,7 +139,7 @@ function useExpandCollapseAll() {
 		</v-notice>
 
 		<div class="label-wrapper">
-			<div :id="labelId" class="type-label">{{ t('field', 0) }}ssss</div>
+			<div :id="labelId" class="type-label">{{ t('field', 0) }}</div>
 
 			<div v-if="isExpandable" class="expand-collapse-action">
 				{{ t('expand') }}
