@@ -9,7 +9,7 @@ import { RelationO2M } from '@/composables/use-relation-o2m';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { Filter } from '@directus/types';
+import type { ContentVersion, Filter } from '@directus/types';
 import { moveInArray } from '@directus/utils';
 import { cloneDeep } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
@@ -41,11 +41,12 @@ type ChangeEvent =
 const props = withDefaults(
 	defineProps<{
 		modelValue?: ChangesItem;
-		template: string;
-		disabled?: boolean;
 		collection: string;
 		field: string;
 		primaryKey: string | number;
+		disabled?: boolean;
+		version: ContentVersion | null;
+		template: string;
 		filter?: Filter | null;
 		fields: string[];
 		relationInfo: RelationO2M;
@@ -76,7 +77,7 @@ const value = computed<ChangesItem | any[]>({
 	},
 });
 
-const { collection, field, primaryKey, relationInfo, root, fields, template, customFilter } = toRefs(props);
+const { collection, field, primaryKey, relationInfo, root, fields, template, customFilter, version } = toRefs(props);
 
 const drag = ref(false);
 const open = ref<Record<string, boolean>>({});
@@ -91,7 +92,7 @@ const query = computed<RelationQueryMultiple>(() => ({
 }));
 
 const { displayItems, loading, create, update, remove, select, cleanItem, isLocalItem, getItemEdits } =
-	useRelationMultiple(value, query, relationInfo, primaryKey);
+	useRelationMultiple(value, query, relationInfo, primaryKey, version);
 
 const selectDrawer = ref(false);
 
@@ -273,19 +274,19 @@ function stageEdits(item: Record<string, any>) {
 @use '@/styles/mixins';
 
 .drag-area {
-	min-height: 12px;
+	min-block-size: 12px;
 
 	&.root {
-		margin-left: 0;
+		margin-inline-start: 0;
 		padding: 0;
 
 		.v-skeleton-loader {
-			margin: 12px 0px 12px auto;
-			width: calc(100% - 24px);
+			margin: 12px 0 12px auto;
+			inline-size: calc(100% - 24px);
 		}
 
 		&:empty {
-			min-height: 0;
+			min-block-size: 0;
 		}
 	}
 
@@ -300,7 +301,6 @@ function stageEdits(item: Record<string, any>) {
 	.preview {
 		padding: 12px;
 		cursor: grab;
-		border-style: solid;
 		background-color: var(--theme--background);
 		border: var(--theme--border-width) solid var(--theme--border-color);
 		border-radius: var(--theme--border-radius);
@@ -309,18 +309,19 @@ function stageEdits(item: Record<string, any>) {
 			padding: 0;
 
 			> .v-list-item:first-child {
-				margin-top: 8px;
+				margin-block-start: 8px;
 			}
 		}
 	}
 
 	&.v-list-item {
 		display: block;
+
 		--v-list-item-padding: 0;
 		--v-list-item-margin: 0;
 
 		+ .v-list-item {
-			margin-top: 8px;
+			margin-block-start: 8px;
 		}
 	}
 

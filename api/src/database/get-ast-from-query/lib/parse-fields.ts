@@ -1,5 +1,5 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, Query, Relation, SchemaOverview } from '@directus/types';
 import { getRelation } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
@@ -27,6 +27,7 @@ export interface ParseFieldsOptions {
 export interface ParseFieldsContext {
 	schema: SchemaOverview;
 	knex: Knex;
+	parentRelation?: Relation;
 }
 
 export async function parseFields(
@@ -42,6 +43,7 @@ export async function parseFields(
 			collection: options.parentCollection,
 			alias: options.query.alias,
 			accountability: options.accountability,
+			backlink: options.query.backlink,
 		},
 		context,
 	);
@@ -58,11 +60,13 @@ export async function parseFields(
 	const relationalStructure: Record<string, string[] | CollectionScope> = Object.create(null);
 
 	for (const fieldKey of fields) {
+		let alias = false;
 		let name = fieldKey;
 
 		if (options.query.alias) {
 			// check for field alias (is one of the key)
 			if (name in options.query.alias) {
+				alias = true;
 				name = options.query.alias[fieldKey]!;
 			}
 		}
@@ -149,7 +153,7 @@ export async function parseFields(
 				continue;
 			}
 
-			children.push({ type: 'field', name, fieldKey, whenCase: [] });
+			children.push({ type: 'field', name, fieldKey, whenCase: [], alias });
 		}
 	}
 
@@ -218,7 +222,7 @@ export async function parseFields(
 						deep: options.deep?.[`${fieldKey}:${relatedCollection}`],
 						accountability: options.accountability,
 					},
-					context,
+					{ ...context, parentRelation: relation },
 				);
 
 				child.query[relatedCollection] = getDeepQuery(options.deep?.[`${fieldKey}:${relatedCollection}`] || {});
@@ -267,7 +271,7 @@ export async function parseFields(
 						deep: options.deep?.[fieldKey] || {},
 						accountability: options.accountability,
 					},
-					context,
+					{ ...context, parentRelation: relation },
 				),
 				cases: [],
 				whenCase: [],

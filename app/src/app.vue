@@ -116,11 +116,11 @@ useSystem();
 
 <style lang="scss" scoped>
 :global(#app) {
-	height: 100%;
+	block-size: 100%;
 }
 
 #directus {
-	height: 100%;
+	block-size: 100%;
 }
 
 .hydrating {
@@ -129,8 +129,8 @@ useSystem();
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	backdrop-filter: blur(10px);
 }
 
@@ -145,6 +145,6 @@ useSystem();
 }
 
 .error {
-	margin-bottom: 24px;
+	margin-block-end: 24px;
 }
 </style>

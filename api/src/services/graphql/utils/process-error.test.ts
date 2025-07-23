@@ -2,6 +2,7 @@ import { GraphQLError } from 'graphql';
 import { describe, expect, test } from 'vitest';
 import processError from './process-error.js';
 import { createError } from '@directus/errors';
+import type { Accountability } from '@directus/types';
 
 describe('GraphQL processError util', () => {
 	const sampleError = new GraphQLError('An error message', { path: ['test_collection'] });
@@ -19,11 +20,15 @@ describe('GraphQL processError util', () => {
 	});
 
 	test('returns redacted error when authenticated but not an admin', () => {
-		expect(processError({ role: 'd674e22b-f405-48ba-9958-9a7bd16a1aa9' }, sampleError)).toEqual(redactedError);
+		expect(processError({ role: 'd674e22b-f405-48ba-9958-9a7bd16a1aa9' } as Accountability, sampleError)).toEqual(
+			redactedError,
+		);
 	});
 
 	test('returns original error when authenticated and is an admin', () => {
-		expect(processError({ role: 'd674e22b-f405-48ba-9958-9a7bd16a1aa9', admin: true }, sampleError)).toEqual({
+		expect(
+			processError({ role: 'd674e22b-f405-48ba-9958-9a7bd16a1aa9', admin: true } as Accountability, sampleError),
+		).toEqual({
 			message: 'An error message',
 			path: ['test_collection'],
 			extensions: {

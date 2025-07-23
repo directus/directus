@@ -1,5 +1,5 @@
 import api from '@/api';
-import { appRecommendedPermissions } from '@/app-permissions.js';
+import { appAccessMinimalPermissions } from '@directus/system-data';
 import { unexpectedError } from '@/utils/unexpected-error';
 import type { Ref } from 'vue';
 import { ref } from 'vue';
@@ -33,7 +33,7 @@ export function useSave({ name, adminAccess, appAccess }: UseSaveOptions) {
 			if (appAccess.value === true && adminAccess.value === false) {
 				await api.post(
 					'/permissions',
-					appRecommendedPermissions.map((permission) => ({
+					appAccessMinimalPermissions.map((permission) => ({
 						...permission,
 						policy: policyResponse.data.data.id,
 					})),

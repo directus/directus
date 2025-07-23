@@ -232,7 +232,7 @@ const newTranslationDefaults = computed(() => {
 <style lang="scss" scoped>
 .translation-input {
 	.selected-translation {
-		margin-right: auto;
+		margin-inline-end: auto;
 		padding: 2px 8px 0;
 		color: var(--theme--primary);
 		background-color: var(--theme--primary-background);
@@ -260,7 +260,7 @@ const newTranslationDefaults = computed(() => {
 }
 
 .search {
-	padding: 12px 8px 6px 8px;
+	padding: 12px 8px 6px;
 
 	.search-input {
 		--input-height: 40px;
@@ -286,9 +286,7 @@ const newTranslationDefaults = computed(() => {
 	}
 
 	:deep(mark) {
-		flex-basis: auto;
-		flex-grow: 0;
-		flex-shrink: 1;
+		flex: 0 1 auto;
 		color: var(--theme--primary);
 	}
 

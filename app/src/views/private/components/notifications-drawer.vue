@@ -381,35 +381,35 @@ function clearFilters() {
 }
 
 .content {
-	padding: 0px var(--content-padding) var(--content-padding-bottom) var(--content-padding);
+	padding: 0 var(--content-padding) var(--content-padding-bottom) var(--content-padding);
 }
 
 .notifications {
-	margin-bottom: 16px;
+	margin-block-end: 16px;
 
 	.v-skeleton-loader {
-		margin-bottom: 8px;
+		margin-block-end: 8px;
 
 		&.dense {
-			height: 44px;
+			block-size: 44px;
 		}
 	}
 
 	.v-list-item {
 		&.block {
-			height: unset;
-			min-height: var(--theme--form--field--input--height);
+			block-size: unset;
+			min-block-size: var(--theme--form--field--input--height);
 			flex-flow: wrap;
 			padding: 16px var(--theme--form--field--input--padding) 16px var(--theme--form--field--input--padding);
 
 			&.dense {
-				min-height: 44px;
+				min-block-size: 44px;
 				padding: 10px 8px;
 			}
 		}
 
 		.header {
-			width: 100%;
+			inline-size: 100%;
 			display: flex;
 			align-items: center;
 			gap: 8px;
@@ -423,8 +423,8 @@ function clearFilters() {
 		}
 
 		.message {
-			width: 100%;
-			margin-top: 8px;
+			inline-size: 100%;
+			margin-block-start: 8px;
 			-webkit-user-select: text;
 			user-select: text;
 			cursor: auto;
@@ -445,7 +445,7 @@ function clearFilters() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 24px;
+	block-size: 24px;
 	margin: 0 calc(var(--theme--form--field--input--padding) + var(--theme--border-width));
 
 	&.dense {
