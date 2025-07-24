@@ -26,7 +26,6 @@ const brandStyleCss = computed(() => {
 	return `:root { --project-color: ${serverStore.info?.project?.project_color ?? 'var(--theme--primary)'} }`;
 });
 
-
 useHead({
 	style: [{ textContent: brandStyleCss }],
 	title: 'Directus',
