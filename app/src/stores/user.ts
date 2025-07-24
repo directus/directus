@@ -4,81 +4,96 @@ import { userName } from '@/utils/user-name';
 import { merge } from 'lodash';
 import { defineStore } from 'pinia';
 import type { RouteLocationNormalized } from 'vue-router';
+import { computed, ref, unref } from 'vue';
 
-export const useUserStore = defineStore({
-	id: 'userStore',
-	state: () => ({
-		currentUser: null as AppUser | ShareUser | null,
-		loading: false,
-		error: null,
-	}),
-	getters: {
-		fullName(): string | null {
-			if (this.currentUser === null || 'share' in this.currentUser) return null;
-			return userName(this.currentUser);
-		},
-		isAdmin(): boolean {
-			return this.currentUser?.admin_access === true || false;
-		},
-	},
-	actions: {
-		async hydrate() {
-			this.loading = true;
+export const useUserStore = defineStore('userStore', () => {
+	const currentUser = ref<AppUser | ShareUser | null>(null);
+	const loading = ref(false);
+	const error = ref(null);
 
-			try {
-				const fields = ['*', 'role.id'];
+	const fullName = computed(() => {
+		const user = unref(currentUser);
+		if (user === null || 'share' in user) return null;
+		return userName(user);
+	});
 
-				const [{ data: user }, { data: globals }, { data: roles }] = await Promise.all([
-					api.get(`/users/me`, { params: { fields } }),
-					api.get('/policies/me/globals'),
-					api.get('/roles/me', { params: { fields: ['id'] } }),
-				]);
+	const isAdmin = computed(() => unref(currentUser)?.admin_access === true || false);
 
-				this.currentUser = {
-					...user.data,
-					...(user.data?.avatar != null ? { avatar: { id: user.data?.avatar } } : {}),
-					...globals.data,
-					roles: roles.data,
-				};
-			} catch (error: any) {
-				this.error = error;
-			} finally {
-				this.loading = false;
-			}
-		},
-		async dehydrate() {
-			this.$reset();
-		},
-		async hydrateAdditionalFields(fields: string[]) {
-			try {
-				const { data } = await api.get(`/users/me`, { params: { fields } });
+	const hydrate = async () => {
+		loading.value = true;
 
-				this.currentUser = merge({}, this.currentUser, data.data);
-			} catch {
-				// Do nothing
-			}
-		},
-		async trackPage(to: RouteLocationNormalized) {
-			/**
-			 * We don't want to track the full screen preview from live previews as part of the user's
-			 * last page, as that'll cause a fresh login to navigate to the full screen preview where
-			 * you can't navigate away from #19160
-			 */
-			if (to.path.endsWith('/preview')) {
-				return;
-			}
+		try {
+			const fields = ['*', 'role.id'];
 
-			await api.patch(
-				`/users/me/track/page`,
-				{
-					last_page: to.fullPath,
-				},
-				{ measureLatency: true } as RequestConfig,
-			);
+			const [{ data: user }, { data: globals }, { data: roles }] = await Promise.all([
+				api.get('/users/me', { params: { fields } }),
+				api.get('/policies/me/globals'),
+				api.get('/roles/me', { params: { fields: ['id'] } }),
+			]);
 
-			if (this.currentUser && !('share' in this.currentUser)) {
-				this.currentUser.last_page = to.fullPath;
-			}
-		},
-	},
+			currentUser.value = {
+				...user.data,
+				...(user.data?.avatar != null ? { avatar: { id: user.data?.avatar } } : {}),
+				...globals.data,
+				roles: roles.data,
+			};
+		} catch (error: any) {
+			error.value = error;
+		} finally {
+			loading.value = false;
+		}
+	};
+
+	const dehydrate = async () => {
+		currentUser.value = null;
+		loading.value = false;
+		error.value = null;
+	};
+
+	const hydrateAdditionalFields = async (fields: string[]) => {
+		try {
+			const { data } = await api.get('/users/me', { params: { fields } });
+
+			currentUser.value = merge({}, unref(currentUser), data.data);
+		} catch {
+			// Do nothing
+		}
+	}
+
+	const trackPage = async (to: RouteLocationNormalized) => {
+		/**
+		 * We don't want to track the full screen preview from live previews as part of the user's
+		 * last page, as that'll cause a fresh login to navigate to the full screen preview where
+		 * you can't navigate away from #19160
+		 */
+		if (to.path.endsWith('/preview')) {
+			return;
+		}
+
+		await api.patch(
+			'/users/me/track/page',
+			{
+				last_page: to.fullPath,
+			},
+			{ measureLatency: true } as RequestConfig,
+		);
+
+		const user = unref(currentUser);
+
+		if (user && !('share' in user)) {
+			user.last_page = to.fullPath;
+		}
+	}
+
+	return {
+		currentUser,
+		loading,
+		error,
+		fullName,
+		isAdmin,
+		hydrate,
+		dehydrate,
+		hydrateAdditionalFields,
+		trackPage,
+	};
 });
