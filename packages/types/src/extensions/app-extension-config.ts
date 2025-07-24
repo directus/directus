@@ -72,7 +72,7 @@ export interface ExtensionSettings {
 /**
  * The API output structure used when engaging with the /extensions endpoints
  */
-export interface ExtensionsApiOutput {
+export interface ApiOutput {
 	id: string;
 	bundle: string | null;
 	schema: Partial<Extension> | BundleExtensionEntry | null;

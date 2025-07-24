@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, LimitExceededError, UnprocessableContentError } from '@directus/errors';
-import type { ExtensionsApiOutput, BundleExtension, ExtensionSettings, ExtensionManager } from '@directus/types';
+import type { ApiOutput, BundleExtension, ExtensionSettings, ExtensionManager } from '@directus/types';
 import { describe, type DescribeOptions } from '@directus/extensions-registry';
 import type { AbstractServiceOptions, Accountability, DeepPartial, SchemaOverview } from '@directus/types';
 import { isObject } from '@directus/utils';
@@ -148,7 +148,7 @@ export class ExtensionsService {
 		const regular = settings.filter(({ bundle }) => bundle === null);
 		const bundled = settings.filter(({ bundle }) => bundle !== null);
 
-		const output: ExtensionsApiOutput[] = [];
+		const output: ApiOutput[] = [];
 
 		for (const meta of regular) {
 			output.push({
@@ -181,7 +181,7 @@ export class ExtensionsService {
 		return output;
 	}
 
-	async readOne(id: string): Promise<ExtensionsApiOutput> {
+	async readOne(id: string): Promise<ApiOutput> {
 		const meta = await this.extensionsItemService.readOne(id);
 		const schema = this.extensionsManager.getExtension(meta.source, meta.folder) ?? null;
 
@@ -193,7 +193,7 @@ export class ExtensionsService {
 		};
 	}
 
-	async updateOne(id: string, data: DeepPartial<ExtensionsApiOutput>) {
+	async updateOne(id: string, data: DeepPartial<ApiOutput>) {
 		const result = await transaction(this.knex, async (trx) => {
 			if (!isObject(data.meta)) {
 				throw new InvalidPayloadError({ reason: `"meta" is required` });
@@ -243,7 +243,7 @@ export class ExtensionsService {
 	 *    - Entry status change resulted in all children being disabled then the parent bundle is disabled
 	 *    - Entry status change resulted in at least one child being enabled then the parent bundle is enabled
 	 */
-	private async checkBundleAndSyncStatus(trx: Knex, extensionId: string, extension: ExtensionsApiOutput) {
+	private async checkBundleAndSyncStatus(trx: Knex, extensionId: string, extension: ApiOutput) {
 		if (extension.bundle === null && extension.schema?.type === 'bundle') {
 			// If extension is the parent bundle, set it and all nested extensions to enabled
 			await trx('directus_extensions')
