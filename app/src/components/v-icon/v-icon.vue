@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useSizeClass } from '@directus/composables';
+import { isIn } from '@directus/utils';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { camelCase, upperFirst } from 'lodash';
+import { computed } from 'vue';
+import { RTL_REVERSE_ICONS } from '../../constants/text-direction';
 
 import { components } from './custom-icons';
 
@@ -65,6 +67,8 @@ const socialIconName = computed<IconName | null>(() => {
 	return null;
 });
 
+const mirrored = computed(() => isIn(props.name, RTL_REVERSE_ICONS));
+
 function emitClick(event: MouseEvent) {
 	if (props.disabled) return;
 	emit('click', event);
@@ -76,7 +80,7 @@ function emitClick(event: MouseEvent) {
 		:is="clickable ? 'button' : 'span'"
 		:type="clickable ? 'button' : undefined"
 		class="v-icon"
-		:class="[sizeClass, { 'has-click': !disabled && clickable, left, right }]"
+		:class="[sizeClass, { 'has-click': !disabled && clickable, left, right, mirrored }]"
 		:disabled="clickable ? disabled : undefined"
 		:style="{ '--v-icon-color': color }"
 		@click="emitClick"
@@ -198,6 +202,10 @@ function emitClick(event: MouseEvent) {
 		&.small {
 			margin-inline-start: 4px;
 		}
+	}
+
+	&.mirrored {
+		transform: scaleX(-1);
 	}
 }
 </style>

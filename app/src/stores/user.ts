@@ -1,5 +1,5 @@
 import api, { RequestConfig } from '@/api';
-import { RTL_LANGUAGES } from '@/constants/language-direction';
+import { RTL_LANGUAGES } from '@/constants/text-direction';
 import { setLanguage } from '@/lang/set-language';
 import { useServerStore } from '@/stores/server';
 import { AppUser, ShareUser } from '@/types/user';
