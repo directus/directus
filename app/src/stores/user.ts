@@ -1,12 +1,18 @@
 import api, { RequestConfig } from '@/api';
+import { RTL_LANGUAGES } from '@/constants/language-direction';
+import { setLanguage } from '@/lang/set-language';
+import { useServerStore } from '@/stores/server';
 import { AppUser, ShareUser } from '@/types/user';
 import { userName } from '@/utils/user-name';
+import { isIn } from '@directus/utils';
 import { merge } from 'lodash';
 import { defineStore } from 'pinia';
+import { computed, ref, unref, watch } from 'vue';
 import type { RouteLocationNormalized } from 'vue-router';
-import { computed, ref, unref } from 'vue';
 
 export const useUserStore = defineStore('userStore', () => {
+	const serverStore = useServerStore();
+
 	const currentUser = ref<AppUser | ShareUser | null>(null);
 	const loading = ref(false);
 	const error = ref(null);
@@ -18,6 +24,43 @@ export const useUserStore = defineStore('userStore', () => {
 	});
 
 	const isAdmin = computed(() => unref(currentUser)?.admin_access === true || false);
+
+	const language = computed(() => {
+		const user = unref(currentUser);
+
+		if (user && 'language' in user && user.language !== null) {
+			return user.language;
+		}
+
+		if (serverStore.info?.project?.default_language) {
+			return serverStore.info.project.default_language;
+		}
+
+		return 'en-US';
+	});
+
+	watch(language, (newLang, oldLang) => {
+		if (newLang && newLang !== oldLang) {
+			setLanguage(newLang);
+		}
+	});
+
+	const languageDirection = computed(() => {
+		const user = unref(currentUser);
+		const lang = unref(language);
+
+		const savedDir = (user && 'language_direction' in user && user.language_direction) ?? 'auto';
+
+		let dir: 'ltr' | 'rtl';
+
+		if (savedDir === 'ltr' || savedDir === 'rtl') {
+			dir = savedDir;
+		} else {
+			dir = isIn(lang, RTL_LANGUAGES) ? 'rtl' : 'ltr';
+		}
+
+		return dir;
+	});
 
 	const hydrate = async () => {
 		loading.value = true;
@@ -58,7 +101,7 @@ export const useUserStore = defineStore('userStore', () => {
 		} catch {
 			// Do nothing
 		}
-	}
+	};
 
 	const trackPage = async (to: RouteLocationNormalized) => {
 		/**
@@ -83,7 +126,7 @@ export const useUserStore = defineStore('userStore', () => {
 		if (user && !('share' in user)) {
 			user.last_page = to.fullPath;
 		}
-	}
+	};
 
 	return {
 		currentUser,
@@ -91,6 +134,8 @@ export const useUserStore = defineStore('userStore', () => {
 		error,
 		fullName,
 		isAdmin,
+		language,
+		languageDirection,
 		hydrate,
 		dehydrate,
 		hydrateAdditionalFields,
