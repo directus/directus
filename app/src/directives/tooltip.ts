@@ -190,7 +190,12 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 		}
 
 		top -= offset;
-		tooltip.style.transform = `translate(calc(${left}px - ${transformPos}%), calc(${top}px - 100%))`;
+
+		if (isRTL) {
+			tooltip.style.transform = `translate(calc(-${left}px + ${transformPos}%), calc(${top}px - 100%))`;
+		} else {
+			tooltip.style.transform = `translate(calc(${left}px - ${transformPos}%), calc(${top}px - 100%))`;
+		}
 		tooltip.classList.add('top');
 	}
 }
