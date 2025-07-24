@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
 import { Directive, DirectiveBinding } from 'vue';
-import { getCurrentLanguage } from '@/lang/get-current-language';
+import { useUserStore } from '@/stores/user';
 
 const tooltipDelay = 300;
 
@@ -69,10 +69,12 @@ export function onLeaveTooltip(): void {
 }
 
 export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, tooltip: HTMLElement): void {
+	const userStore = useUserStore();
+
 	const offset = 10;
 	const arrowAlign = 20;
 
-	const isRTL = getCurrentLanguage().dir === 'rtl';
+	const isRTL = userStore.languageDirection === 'rtl';
 
 	const bounds = element.getBoundingClientRect();
 	let top = bounds.top + pageYOffset;

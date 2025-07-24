@@ -1,4 +1,3 @@
-import { getCurrentLanguage } from '@/lang/get-current-language';
 import { setLanguage } from '@/lang/set-language';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
@@ -67,7 +66,6 @@ export async function hydrate(): Promise<void> {
 		 */
 		await userStore.hydrate();
 
-		const { lang } = getCurrentLanguage();
 		const currentUser = userStore.currentUser;
 
 		if (currentUser?.app_access) {
@@ -78,8 +76,6 @@ export async function hydrate(): Promise<void> {
 
 			await onHydrateExtensions();
 		}
-
-		await setLanguage(lang);
 
 		appStore.basemap = getBasemapSources()[0].name;
 	} catch (error: any) {
