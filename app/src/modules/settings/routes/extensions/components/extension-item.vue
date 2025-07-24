@@ -4,7 +4,7 @@ import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useExtensionsStore } from '@/stores/extensions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { APP_OR_HYBRID_EXTENSION_TYPES } from '@directus/constants';
-import { ExtensionsApiOutput, ExtensionType } from '@directus/types';
+import { ApiOutput, ExtensionType } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { extensionTypeIconMap } from '../constants';
@@ -13,8 +13,8 @@ import ExtensionItemOptions from './extension-item-options.vue';
 
 const props = withDefaults(
 	defineProps<{
-		extension: ExtensionsApiOutput;
-		children?: ExtensionsApiOutput[];
+		extension: ApiOutput;
+		children?: ApiOutput[];
 	}>(),
 	{
 		children: () => [],

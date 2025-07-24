@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ExtensionsApiOutput } from '@directus/types';
+import { ApiOutput } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ExtensionState, ExtensionType } from '../types';
 
 const props = defineProps<{
-	extension: ExtensionsApiOutput;
+	extension: ApiOutput;
 	type: ExtensionType;
 	state: ExtensionState;
 	stateLocked: boolean;

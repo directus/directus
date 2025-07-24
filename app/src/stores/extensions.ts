@@ -1,5 +1,5 @@
 import api from '@/api';
-import type { ExtensionsApiOutput } from '@directus/types';
+import type { ApiOutput } from '@directus/types';
 import { APP_OR_HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { isIn } from '@directus/utils';
 import { isEqual } from 'lodash';
@@ -8,7 +8,7 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useNotificationsStore } from './notifications';
 
-const getEnabledBrowserExtensions = (extensions: ExtensionsApiOutput[]) => {
+const getEnabledBrowserExtensions = (extensions: ApiOutput[]) => {
 	const enabledIds: string[] = [];
 
 	for (const extension of extensions) {
@@ -39,7 +39,7 @@ export const useExtensionsStore = defineStore('extensions', () => {
 
 	const loading = ref(false);
 	const error = ref<unknown>(null);
-	const extensions = ref<ExtensionsApiOutput[]>([]);
+	const extensions = ref<ApiOutput[]>([]);
 	const reloadNotificationVisible = ref(false);
 
 	const refresh = async (forceRefresh = true) => {

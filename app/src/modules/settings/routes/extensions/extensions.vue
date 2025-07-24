@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useExtensionsStore } from '@/stores/extensions';
-import { ExtensionsApiOutput } from '@directus/types';
+import { ApiOutput } from '@directus/types';
 import { groupBy } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
@@ -11,7 +11,7 @@ import ExtensionItem from './components/extension-item.vue';
 import ExtensionsInfoSidebarDetail from './components/extensions-info-sidebar-detail.vue';
 import { ExtensionType } from './types';
 
-type ExtensionsMap = Record<ExtensionType, ExtensionsApiOutput[]>;
+type ExtensionsMap = Record<ExtensionType, ApiOutput[]>;
 
 const { t } = useI18n();
 

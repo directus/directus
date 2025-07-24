@@ -9,7 +9,7 @@ import type { TransformationSet } from './assets.js';
 import type { LoginResult } from './authentication.js';
 import type { ApiCollection, RawCollection } from './collection.js';
 import type { ActionHandler } from './events.js';
-import type { ExtensionsApiOutput, ExtensionManager, ExtensionSettings } from './extensions/index.js';
+import type { ApiOutput, ExtensionManager, ExtensionSettings } from './extensions/index.js';
 import type { Field, Type, RawField } from './fields.js';
 import type { BusboyFileStream, File } from './files.js';
 import type { FlowRaw } from './flows.js';
@@ -163,9 +163,9 @@ interface ExtensionsService {
 	install: (extensionId: string, versionId: string) => Promise<void>;
 	uninstall: (id: string) => Promise<void>;
 	reinstall: (id: string) => Promise<void>;
-	readAll: () => Promise<ExtensionsApiOutput[]>;
-	readOne: (id: string) => Promise<ExtensionsApiOutput>;
-	updateOne: (id: string, data: DeepPartial<ExtensionsApiOutput>) => Promise<ExtensionsApiOutput>;
+	readAll: () => Promise<ApiOutput[]>;
+	readOne: (id: string) => Promise<ApiOutput>;
+	updateOne: (id: string, data: DeepPartial<ApiOutput>) => Promise<ApiOutput>;
 	deleteOne: (id: string) => Promise<void>;
 }
 
