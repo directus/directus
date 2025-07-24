@@ -1366,7 +1366,7 @@ fields:
     tags: Tags
     user_preferences: User Preferences
     language: Language
-    language_direction: Text Direction
+    text_direction: Text Direction
     tfa_secret: Two-Factor Authentication
     admin_options: Admin Options
     status: Status

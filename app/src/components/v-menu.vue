@@ -582,10 +582,20 @@ function usePopper(
 [data-placement^='right'] .arrow {
 	inset-inline-start: -10px;
 
+	html[dir='rtl'] & {
+		inset-inline-start: unset;
+		inset-inline-end: -10px;
+	}
+
 	.arrow-triangle {
 		&::before,
 		&::after {
 			inset-inline-start: 7px;
+
+			html[dir='rtl'] & {
+				inset-inline-start: unset;
+				inset-inline-end: 7px;
+			}
 		}
 	}
 }
@@ -593,10 +603,20 @@ function usePopper(
 [data-placement^='left'] .arrow {
 	inset-inline-end: -10px;
 
+	html[dir='rtl'] & {
+		inset-inline-end: unset;
+		inset-inline-start: -10px;
+	}
+
 	.arrow-triangle {
 		&::before,
 		&::after {
 			inset-inline-end: 7px;
+
+			html[dir='rtl'] & {
+				inset-inline-end: unset;
+				inset-inline-start: 7px;
+			}
 		}
 	}
 }
@@ -629,42 +649,22 @@ function usePopper(
 
 [data-placement='top-start'] > .v-menu-content {
 	transform-origin: bottom left;
-
-	html[dir='rtl'] & {
-		transform-origin: bottom right;
-	}
 }
 
 [data-placement='top-end'] > .v-menu-content {
 	transform-origin: bottom right;
-
-	html[dir='rtl'] & {
-		transform-origin: bottom left;
-	}
 }
 
 [data-placement='right'] > .v-menu-content {
 	transform-origin: center left;
-
-	html[dir='rtl'] & {
-		transform-origin: center right;
-	}
 }
 
 [data-placement='right-start'] > .v-menu-content {
 	transform-origin: top left;
-
-	html[dir='rtl'] & {
-		transform-origin: top right;
-	}
 }
 
 [data-placement='right-end'] > .v-menu-content {
 	transform-origin: bottom left;
-
-	html[dir='rtl'] & {
-		transform-origin: bottom right;
-	}
 }
 
 [data-placement='bottom'] > .v-menu-content {
@@ -673,42 +673,22 @@ function usePopper(
 
 [data-placement='bottom-start'] > .v-menu-content {
 	transform-origin: top left;
-
-	html[dir='rtl'] & {
-		transform-origin: top right;
-	}
 }
 
 [data-placement='bottom-end'] > .v-menu-content {
 	transform-origin: top right;
-
-	html[dir='rtl'] & {
-		transform-origin: top left;
-	}
 }
 
 [data-placement='left'] > .v-menu-content {
 	transform-origin: center right;
-
-	html[dir='rtl'] & {
-		transform-origin: center left;
-	}
 }
 
 [data-placement='left-start'] > .v-menu-content {
 	transform-origin: top right;
-
-	html[dir='rtl'] & {
-		transform-origin: top left;
-	}
 }
 
 [data-placement='left-end'] > .v-menu-content {
 	transform-origin: bottom right;
-
-	html[dir='rtl'] & {
-		transform-origin: bottom left;
-	}
 }
 
 .attached {
