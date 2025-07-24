@@ -34,10 +34,10 @@ useHead({
 	templateParams: {
 		projectName: computed(() => serverStore.info?.project?.project_name ?? 'Directus'),
 	},
-	htmlAttrs: {
+	htmlAttrs: computed(() => ({
 		lang: userStore.language,
 		dir: userStore.languageDirection,
-	},
+	})),
 	meta: computed(() => {
 		const content = serverStore.info?.project?.project_color ?? '#6644ff';
 
