@@ -1,4 +1,4 @@
-import type { DirectusExtensionsError } from '@directus/types';
+import type { DirectusError } from './create-error.js';
 import type { ExtensionsMap } from './types.js';
 
 /**
@@ -10,9 +10,7 @@ import type { ExtensionsMap } from './types.js';
 export const isDirectusError = <T = never, C extends string = string>(
 	value: unknown,
 	code?: C,
-): value is DirectusExtensionsError<
-	[T] extends [never] ? (C extends keyof ExtensionsMap ? ExtensionsMap[C] : unknown) : T
-> => {
+): value is DirectusError<[T] extends [never] ? (C extends keyof ExtensionsMap ? ExtensionsMap[C] : unknown) : T> => {
 	const isDirectusError =
 		typeof value === 'object' &&
 		value !== null &&
