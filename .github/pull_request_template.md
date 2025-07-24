@@ -33,6 +33,11 @@ What's changed:
 - I would like to lorem ipsum
 - Special attention should be paid to dolor sit amet
 
+## Checklist
+
+- [ ] Added or updated tests
+- [ ] Documentation added [here](https://github.com/directus/docs) or not required
+
 ---
 
 Fixes #\<num\>
