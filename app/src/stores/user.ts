@@ -45,11 +45,11 @@ export const useUserStore = defineStore('userStore', () => {
 		}
 	});
 
-	const languageDirection = computed(() => {
+	const textDirection = computed(() => {
 		const user = unref(currentUser);
 		const lang = unref(language);
 
-		const savedDir = (user && 'language_direction' in user && user.language_direction) ?? 'auto';
+		const savedDir = (user && 'text_direction' in user && user.text_direction) ?? 'auto';
 
 		let dir: 'ltr' | 'rtl';
 
@@ -135,7 +135,7 @@ export const useUserStore = defineStore('userStore', () => {
 		fullName,
 		isAdmin,
 		language,
-		languageDirection,
+		textDirection,
 		hydrate,
 		dehydrate,
 		hydrateAdditionalFields,

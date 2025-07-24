@@ -36,7 +36,7 @@ useHead({
 	},
 	htmlAttrs: computed(() => ({
 		lang: userStore.language,
-		dir: userStore.languageDirection,
+		dir: userStore.textDirection,
 	})),
 	meta: computed(() => {
 		const content = serverStore.info?.project?.project_color ?? '#6644ff';

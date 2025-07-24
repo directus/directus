@@ -74,7 +74,7 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 	const offset = 10;
 	const arrowAlign = 20;
 
-	const isRTL = userStore.languageDirection === 'rtl';
+	const isRTL = userStore.textDirection === 'rtl';
 
 	const bounds = element.getBoundingClientRect();
 	let top = bounds.top + pageYOffset;

@@ -78,16 +78,16 @@ fields:
     options:
       includeProjectDefault: true
 
-  - field: language_direction
+  - field: text_direction
     interface: select-dropdown
     options:
       choices:
         - value: auto
-          text: $t:language_direction_auto
+          text: $t:text_direction_auto
         - value: ltr
-          text: $t:language_direction_ltr
+          text: $t:text_direction_ltr
         - value: rtl
-          text: $t:language_direction_rtl
+          text: $t:text_direction_rtl
     width: half
 
   - field: tfa_secret
