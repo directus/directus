@@ -36,7 +36,7 @@ What's changed:
 ## Checklist
 
 - [ ] Added or updated tests
-- [ ] Documentation added [here](https://github.com/directus/docs) or not required
+- [ ] Documentation PR created [here](https://github.com/directus/docs) or not required
 
 ---
 
