@@ -1,7 +1,7 @@
 import type {
 	Field,
 	Relation,
-	RawSchemaCollection,
+	ApiCollection,
 	SchemaOverview,
 	Snapshot,
 	SnapshotField,
@@ -50,18 +50,18 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 		version: 1,
 		directus: version,
 		vendor,
-		collections: collectionsSorted.map((collection) => sanitizeCollection(collection)) as RawSchemaCollection[],
+		collections: collectionsSorted.map((collection) => sanitizeCollection(collection)) as ApiCollection[],
 		fields: fieldsSorted.map((field) => sanitizeField(field)) as SnapshotField[],
 		relations: relationsSorted.map((relation) => sanitizeRelation(relation)) as SnapshotRelation[],
 	};
 }
 
-function excludeSystem(item: RawSchemaCollection | Field | Relation) {
+function excludeSystem(item: ApiCollection | Field | Relation) {
 	if (item?.meta?.system === true) return false;
 	return true;
 }
 
-function excludeUntracked(item: RawSchemaCollection | Field | Relation) {
+function excludeUntracked(item: ApiCollection | Field | Relation) {
 	if (item?.meta === null) return false;
 	return true;
 }

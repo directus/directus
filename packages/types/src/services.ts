@@ -8,7 +8,7 @@ import type { Transporter } from 'nodemailer';
 import type { Accountability } from './accountability.js';
 import type { TransformationSet } from './assets.js';
 import type { LoginResult } from './authentication.js';
-import type { RawSchemaCollection, RawCollection } from './collection.js';
+import type { ApiCollection, RawCollection } from './collection.js';
 import type { ActionHandler } from './events.js';
 import type { ExtensionsApiOutput, ExtensionManager, ExtensionSettings } from './extensions/index.js';
 import type { Field, Type, RawField } from './fields.js';
@@ -97,27 +97,27 @@ interface CollectionsService {
 	/**
 	 * Read all collections. Currently doesn't support any query.
 	 */
-	readByQuery(): Promise<RawSchemaCollection[]>;
+	readByQuery(): Promise<ApiCollection[]>;
 	/**
 	 * Get a single collection by name
 	 */
-	readOne(collectionKey: string): Promise<RawSchemaCollection>;
+	readOne(collectionKey: string): Promise<ApiCollection>;
 	/**
 	 * Read many collections by name
 	 */
-	readMany(collectionKeys: string[]): Promise<RawSchemaCollection[]>;
+	readMany(collectionKeys: string[]): Promise<ApiCollection[]>;
 	/**
 	 * Update a single collection by name
 	 */
-	updateOne(collectionKey: string, data: Partial<RawSchemaCollection>, opts?: MutationOptions): Promise<string>;
+	updateOne(collectionKey: string, data: Partial<ApiCollection>, opts?: MutationOptions): Promise<string>;
 	/**
 	 * Update multiple collections in a single transaction
 	 */
-	updateBatch(data: Partial<RawSchemaCollection>[], opts?: MutationOptions): Promise<string[]>;
+	updateBatch(data: Partial<ApiCollection>[], opts?: MutationOptions): Promise<string[]>;
 	/**
 	 * Update multiple collections by name
 	 */
-	updateMany(collectionKeys: string[], data: Partial<RawSchemaCollection>, opts?: MutationOptions): Promise<string[]>;
+	updateMany(collectionKeys: string[], data: Partial<ApiCollection>, opts?: MutationOptions): Promise<string[]>;
 	/**
 	 * Delete a single collection This will delete the table and all records within. It'll also
 	 * delete any fields, presets, activity, revisions, and permissions relating to this collection

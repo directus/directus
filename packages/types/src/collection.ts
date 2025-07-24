@@ -69,7 +69,7 @@ export type RawCollection = {
 	meta?: Partial<BaseCollectionMeta> | null;
 };
 
-export type RawSchemaCollection = {
+export type ApiCollection = {
 	collection: string;
 	fields?: Field[];
 	meta: BaseCollectionMeta | null;
