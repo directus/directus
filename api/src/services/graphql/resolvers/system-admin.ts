@@ -1,6 +1,6 @@
+import type { GraphQLParams } from '@directus/types';
 import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
 import { SchemaComposer, toInputObjectType } from 'graphql-compose';
-import type { GraphQLParams } from '../../../types/index.js';
 import { CollectionsService } from '../../collections.js';
 import { ExtensionsService } from '../../extensions.js';
 import { FieldsService } from '../../fields.js';

@@ -4,7 +4,6 @@ import type { Column, ForeignKey } from '@directus/schema';
 import type { OpenAPIObject } from 'openapi3-ts/oas30';
 import type { GraphQLSchema } from 'graphql';
 import type { Transporter } from 'nodemailer';
-
 import type { Accountability } from './accountability.js';
 import type { TransformationSet } from './assets.js';
 import type { LoginResult } from './authentication.js';
