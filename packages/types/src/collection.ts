@@ -34,7 +34,6 @@ export type CollectionMeta = {
 
 export interface Collection {
 	collection: string;
-	fields?: Field[];
 	meta: CollectionMeta | null;
 	schema: Table | null;
 }
