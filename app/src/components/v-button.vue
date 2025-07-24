@@ -15,7 +15,7 @@ interface Props {
 	rounded?: boolean;
 	/** No background */
 	outlined?: boolean;
-	/** Remove padding / min-width. Meant to be used with just an icon as content */
+	/** Remove padding / min-inline-size. Meant to be used with just an icon as content */
 	icon?: boolean;
 	/** Element type to be used */
 	type?: string;
@@ -267,16 +267,16 @@ async function onClick(event: MouseEvent) {
 
 .v-button.full-width {
 	display: flex;
-	min-width: 100%;
+	min-inline-size: 100%;
 }
 
 .button {
 	position: relative;
 	display: flex;
 	align-items: center;
-	width: var(--v-button-width, auto);
-	min-width: var(--v-button-min-width, 140px);
-	height: var(--v-button-height, 44px);
+	inline-size: var(--v-button-width, auto);
+	min-inline-size: var(--v-button-min-width, 140px);
+	block-size: var(--v-button-height, 44px);
 	padding: var(--v-button-padding, 0 19px);
 	color: var(--v-button-color, var(--foreground-inverted));
 	font-weight: var(--v-button-font-weight, 600);
@@ -288,10 +288,9 @@ async function onClick(event: MouseEvent) {
 	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 	transition: var(--fast) var(--transition);
-	transition-property: background-color border;
+	transition-property: background-color, border;
 }
 
-.button:focus,
 .button:hover {
 	color: var(--v-button-color-hover, var(--foreground-inverted));
 	background-color: var(--v-button-background-color-hover, var(--theme--primary-accent));
@@ -308,10 +307,6 @@ async function onClick(event: MouseEvent) {
 
 .align-right {
 	justify-content: flex-end;
-}
-
-.button:focus {
-	outline: 0;
 }
 
 .button:disabled {
@@ -332,7 +327,6 @@ async function onClick(event: MouseEvent) {
 	background-color: transparent;
 }
 
-.outlined:not(.active):not(:disabled):focus,
 .outlined:not(.active):not(:disabled):hover {
 	color: var(--v-button-background-color-hover, var(--theme--primary-accent));
 	background-color: transparent;
@@ -383,18 +377,18 @@ async function onClick(event: MouseEvent) {
 }
 
 .icon {
-	width: var(--v-button-height, 44px);
-	min-width: 0;
+	inline-size: var(--v-button-height, 44px);
+	min-inline-size: 0;
 	padding: 0;
 }
 
 .button.full-width {
-	min-width: 100%;
+	min-inline-size: 100%;
 }
 
 .content,
 .spinner {
-	max-width: 100%;
+	max-inline-size: 100%;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -413,8 +407,8 @@ async function onClick(event: MouseEvent) {
 
 .spinner {
 	position: absolute;
-	top: 50%;
-	left: 50%;
+	inset-block-start: 50%;
+	inset-inline-start: 50%;
 	transform: translate(-50%, -50%);
 }
 

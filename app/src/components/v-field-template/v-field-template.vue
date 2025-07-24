@@ -61,26 +61,20 @@ function onInput() {
 
 function onClick(event: MouseEvent) {
 	const target = event.target as HTMLElement;
-
 	if (target.tagName.toLowerCase() !== 'button') return;
-
-	const field = target.dataset.field;
-	emit('update:modelValue', props.modelValue?.replace(`{{${field}}}`, ''));
-
-	const before = target.previousElementSibling;
-	const after = target.nextElementSibling;
-
-	if (!before || !after || !(before instanceof HTMLElement) || !(after instanceof HTMLElement)) return;
-
-	target.remove();
-	joinElements(before, after);
-	window.getSelection()?.removeAllRanges();
-	onInput();
+	removeField(target);
 }
 
 function onKeyDown(event: KeyboardEvent) {
-	if (event.key === 'Enter') {
+	const target = event.currentTarget as HTMLElement;
+	const isButton = target?.tagName.toLowerCase() !== 'button';
+
+	if (!isButton && event.key === 'Enter') {
 		event.preventDefault();
+	}
+
+	if (isButton && ['Enter', ' '].includes(event.key)) {
+		removeField(target);
 	}
 
 	if (event.key === '{' || event.key === '}') {
@@ -134,6 +128,7 @@ function addField(field: FieldTree) {
 	const button = document.createElement('button');
 	button.dataset.field = field.key;
 	button.setAttribute('contenteditable', 'false');
+	button.classList.add('selected-field');
 	button.innerText = String(field.name);
 
 	if (window.getSelection()?.rangeCount == 0) {
@@ -159,6 +154,23 @@ function addField(field: FieldTree) {
 	}
 
 	onInput();
+}
+
+function removeField(target: HTMLElement) {
+	const field = target.dataset.field;
+	emit('update:modelValue', props.modelValue?.replace(`{{${field}}}`, ''));
+
+	const before = target.previousElementSibling;
+	const after = target.nextElementSibling;
+
+	if (!before || !after || !(before instanceof HTMLElement) || !(after instanceof HTMLElement)) return;
+
+	target.remove();
+	joinElements(before, after);
+	window.getSelection()?.removeAllRanges();
+	onInput();
+
+	contentEl.value?.focus();
 }
 
 function findTree(tree: FieldTree[] | undefined, fieldSections: string[]): FieldTree | undefined {
@@ -248,15 +260,15 @@ function setContent() {
 
 				if (!field) return '';
 
-				return `<button contenteditable="false" data-field="${fieldKey}" ${props.disabled ? 'disabled' : ''}>${
-					field.name
-				}</button>`;
+				return `<button type="button" contenteditable="false" data-field="${fieldKey}" ${
+					props.disabled ? 'disabled' : ''
+				} class="selected-field">${field.name}</button>`;
 			})
 			.join('');
 
 		contentEl.value.innerHTML = dompurify.sanitize(newInnerHTML, {
 			ALLOWED_TAGS: ['span', 'button'],
-			ALLOWED_ATTR: ['contenteditable', 'data-field', 'disabled', 'class'],
+			ALLOWED_ATTR: ['type', 'contenteditable', 'data-field', 'disabled', 'class'],
 		});
 	}
 }
@@ -296,7 +308,7 @@ function setContent() {
 .content {
 	display: block;
 	flex-grow: 1;
-	height: 100%;
+	block-size: 100%;
 	padding: var(--theme--form--field--input--padding) 0;
 	overflow: hidden;
 	font-size: 14px;
@@ -304,38 +316,40 @@ function setContent() {
 	white-space: nowrap;
 
 	:deep(span) {
-		min-width: 1px;
-		min-height: 1em;
+		min-inline-size: 1px;
+		min-block-size: 1em;
 		white-space: pre;
 	}
-}
 
-:deep(br) {
-	display: none;
-}
+	:deep(br) {
+		display: none;
+	}
 
-:deep(button) {
-	margin: -1px 4px 0;
-	padding: 2px 4px 0;
-	color: var(--theme--primary);
-	background-color: var(--theme--primary-background);
-	border-radius: var(--theme--border-radius);
-	transition: var(--fast) var(--transition);
-	transition-property: background-color, color;
-	user-select: none;
-}
+	:deep(.selected-field) {
+		margin: -1px 4px 0;
+		padding: 2px 4px 0;
+		color: var(--theme--primary);
+		background-color: var(--theme--primary-background);
+		border-radius: var(--theme--border-radius);
+		transition: var(--fast) var(--transition);
+		transition-property: background-color, color;
+		-webkit-user-select: none;
+		user-select: none;
+	}
 
-:deep(button:not(:disabled):hover) {
-	color: var(--white);
-	background-color: var(--theme--danger);
+	:deep(.selected-field:not(:disabled):hover) {
+		color: var(--white);
+		background-color: var(--theme--danger);
+	}
 }
 
 .placeholder {
 	position: absolute;
-	top: 50%;
-	left: 14px;
+	inset-block-start: 50%;
+	inset-inline-start: 14px;
 	color: var(--theme--foreground-subdued);
 	transform: translateY(-50%);
+	-webkit-user-select: none;
 	user-select: none;
 	pointer-events: none;
 }

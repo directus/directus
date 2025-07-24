@@ -132,15 +132,15 @@ function deselect() {
 }
 
 .v-notice {
-	margin-top: 12px;
+	margin-block-start: 12px;
 }
 
 .clipboard-icon {
-	margin-right: 4px;
+	margin-inline-end: 4px;
 }
 
 .regenerate-icon {
-	margin-right: 4px;
+	margin-inline-end: 4px;
 }
 
 .clear-icon {

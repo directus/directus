@@ -125,6 +125,7 @@ function useActions() {
 		:title="t('editing_in_batch', { count: primaryKeys.length })"
 		persistent
 		@cancel="cancel"
+		@apply="save"
 	>
 		<template #actions>
 			<v-button v-tooltip.bottom="t('save')" icon rounded :loading="saving" @click="save">
@@ -151,6 +152,6 @@ function useActions() {
 
 .drawer-batch-content {
 	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 </style>

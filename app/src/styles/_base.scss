@@ -9,12 +9,25 @@
 	font-family: inherit;
 	line-height: inherit;
 	tab-size: 2;
+	-webkit-user-select: none;
 	user-select: none;
+	outline: none;
+
+	&::-moz-focus-inner,
+	&::-moz-focus-outer {
+		border: none;
+		outline: none;
+	}
+
+	&:focus,
+	&:focus-within {
+		outline: none;
+	}
 }
 
 html {
 	font-size: 14px;
-	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	-webkit-tap-highlight-color: rgb(0 0 0 / 0);
 }
 
 body {
@@ -28,37 +41,42 @@ body {
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 	-moz-osx-font-smoothing: grayscale;
+}
 
-	&:not(.user-is-tabbing) * {
-		outline: none;
+// Default focus ring
+*:not(main):not(div):not(input):not(textarea):not([contenteditable='true']):focus-visible {
+	outline: var(--focus-ring-width) solid var(--focus-ring-color);
+	outline-offset: var(--focus-ring-offset);
+	border-radius: var(--focus-ring-radius);
+}
 
-		&::-moz-focus-inner,
-		&::-moz-focus-outer {
-			border: none;
-			outline: none;
-		}
+// Applies mainly to scrollable elements
+main:not([contenteditable='true']):focus-visible,
+div:not([contenteditable='true']):focus-visible {
+	--focus-ring-offset: calc(-1 * var(--focus-ring-width));
+	--focus-ring-radius: 0;
 
-		&:focus,
-		&:focus-within {
-			outline: none;
-		}
-	}
+	outline: var(--focus-ring-width) dotted var(--focus-ring-color);
+	outline-offset: var(--focus-ring-offset);
+	border-radius: var(--focus-ring-radius);
 }
 
 html,
 body,
 #root {
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 }
 
 input,
 textarea,
 [contenteditable],
 .selectable {
+	-webkit-user-select: text;
 	user-select: text;
 
 	* {
+		-webkit-user-select: text;
 		user-select: text;
 	}
 }
@@ -89,7 +107,7 @@ fieldset {
 	border: 0;
 
 	&.centered {
-		border-top: 1px solid var(--blue-grey-200);
+		border-block-start: 1px solid var(--blue-grey-200);
 
 		legend {
 			padding: 10px 20px;
@@ -117,7 +135,7 @@ code {
 
 dl > div {
 	display: flex;
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 }
 
 dt,
@@ -127,7 +145,7 @@ dd {
 
 dt {
 	flex-shrink: 0;
-	margin-right: 8px;
+	margin-inline-end: 8px;
 	font-weight: 600;
 }
 

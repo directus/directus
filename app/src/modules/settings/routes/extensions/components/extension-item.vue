@@ -153,17 +153,18 @@ function isAppExtension(type?: ExtensionType) {
 	}
 
 	.version {
-		margin-right: 8px;
+		margin-inline-end: 8px;
 	}
 
 	&.disabled {
 		color: var(--theme--foreground-subdued);
+
 		--v-chip-color: var(--theme--foreground-subdued);
 	}
 }
 
 .spinner {
-	margin-right: 8px;
+	margin-inline-end: 8px;
 }
 
 .state {
@@ -182,11 +183,11 @@ function isAppExtension(type?: ExtensionType) {
 }
 
 .options {
-	margin-left: 12px;
+	margin-inline-start: 12px;
 }
 
 .nested {
-	margin-left: 20px;
+	margin-inline-start: 20px;
 
 	&:not(.partial) .options {
 		display: none;

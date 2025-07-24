@@ -187,6 +187,8 @@ function edit(id: string) {
 }
 
 function save() {
+	if (isSaveDisabled.value) return;
+
 	if (editing.value === '+') {
 		emit('input', [...(props.value ?? MODULE_BAR_DEFAULT), values.value!]);
 	} else {
@@ -235,7 +237,7 @@ function remove(id: string) {
 					</div>
 					<div class="spacer" />
 					<v-icon v-if="element.locked === true" name="lock" />
-					<v-icon v-else-if="element.type === 'link'" name="clear" @click.stop="remove(element.id)" />
+					<v-icon v-else-if="element.type === 'link'" name="clear" clickable @click.stop="remove(element.id)" />
 					<v-icon
 						v-else
 						:name="element.enabled ? 'check_box' : 'check_box_outline_blank'"
@@ -254,6 +256,7 @@ function remove(id: string) {
 			icon="link"
 			@update:model-value="editing = null"
 			@cancel="editing = null"
+			@apply="save"
 		>
 			<template #actions>
 				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="isSaveDisabled" @click="save">
@@ -291,11 +294,11 @@ function remove(id: string) {
 
 .drawer-content {
 	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .list {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 	padding: 0;
 }
 </style>

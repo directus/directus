@@ -20,6 +20,9 @@ import NotificationsGroup from './components/notifications-group.vue';
 import NotificationsPreview from './components/notifications-preview.vue';
 import ProjectInfo from './components/project-info.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group.vue';
+import LicenseBanner from './components/license-banner.vue';
+import { useSettingsStore } from '@/stores/settings';
+import SkipMenu from './components/skip-menu.vue';
 
 const SIZES = {
 	moduleBarWidth: 60,
@@ -214,6 +217,7 @@ const mainResizeOptions = computed<ResizeableOptions>(() => {
 const navOpen = ref(false);
 const userStore = useUserStore();
 const appStore = useAppStore();
+const settingsStore = useSettingsStore();
 
 const appAccess = computed(() => {
 	if (!userStore.currentUser) return true;
@@ -251,6 +255,8 @@ function openSidebar(event: MouseEvent) {
 function getWidth(input: unknown, fallback: number): number {
 	return input && !Number.isNaN(input) ? Number(input) : fallback;
 }
+
+const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.settings?.accepted_terms === false);
 </script>
 
 <template>
@@ -263,6 +269,8 @@ function getWidth(input: unknown, fallback: number): number {
 	</v-info>
 
 	<div v-else class="private-view" :class="{ appearance, 'full-screen': fullScreen, splitView }">
+		<skip-menu section="nav" />
+
 		<aside
 			id="navigation"
 			role="navigation"
@@ -279,14 +287,19 @@ function getWidth(input: unknown, fallback: number): number {
 				@transition-end="onNavTransitionEnd"
 			>
 				<div class="module-nav alt-colors">
+					<skip-menu section="moduleNav" />
+
 					<project-info />
 
-					<div class="module-nav-content">
+					<div id="module-navigation" class="module-nav-content">
 						<slot name="navigation" />
 					</div>
 				</div>
 			</v-resizeable>
 		</aside>
+
+		<skip-menu section="main" />
+
 		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
 				ref="headerBarEl"
@@ -321,6 +334,9 @@ function getWidth(input: unknown, fallback: number): number {
 				</div>
 			</div>
 		</div>
+
+		<skip-menu section="sidebar" />
+
 		<aside
 			id="sidebar"
 			ref="sidebarEl"
@@ -347,6 +363,8 @@ function getWidth(input: unknown, fallback: number): number {
 		<notifications-drawer />
 		<notifications-group v-if="notificationsPreviewActive === false" :sidebar-open="sidebarOpen" />
 		<notification-dialogs />
+
+		<license-banner v-model="showLicenseBanner" />
 	</div>
 </template>
 
@@ -357,8 +375,8 @@ function getWidth(input: unknown, fallback: number): number {
 	--layout-offset-top: calc(var(--header-bar-height) - 1px);
 
 	display: flex;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	overflow: hidden;
 	background-color: var(--theme--background);
 
@@ -380,16 +398,16 @@ function getWidth(input: unknown, fallback: number): number {
 
 	#navigation {
 		position: fixed;
-		top: 0;
-		left: 0;
+		inset-block-start: 0;
+		inset-inline-start: 0;
 		z-index: 50;
 		display: flex;
-		height: 100%;
+		block-size: 100%;
 		font-size: 0;
 		transform: translateX(-100%);
 		transition: transform var(--slow) var(--transition);
 		font-family: var(--theme--navigation--list--font-family);
-		border-right: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
+		border-inline-end: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
 
 		&.is-open {
 			transform: translateX(0);
@@ -402,8 +420,8 @@ function getWidth(input: unknown, fallback: number): number {
 		.module-nav {
 			position: relative;
 			display: inline-block;
-			width: 220px;
-			height: 100%;
+			inline-size: 220px;
+			block-size: 100%;
 			font-size: 1rem;
 			background: var(--theme--navigation--background);
 
@@ -417,21 +435,19 @@ function getWidth(input: unknown, fallback: number): number {
 				--v-list-item-background-color: var(--theme--navigation--list--background);
 				--v-list-item-background-color-hover: var(--theme--navigation--list--background-hover);
 				--v-list-item-background-color-active: var(--theme--navigation--list--background-active);
-
 				--v-divider-color: var(--theme--navigation--list--divider--border-color);
 				--v-divider-thickness: var(--theme--navigation--list--divider--border-width);
-
 				--project-header-height: 60px;
 
-				height: calc(100% - var(--project-header-height));
-				overflow-x: hidden;
-				overflow-y: auto;
+				block-size: calc(100% - var(--project-header-height));
+				overflow: hidden auto;
 			}
 		}
 
 		@media (min-width: 960px) {
 			position: relative;
 			transform: none;
+
 			// this prevents the layout from moving up when an element is automatically scrolled into the view
 			overflow-y: clip;
 		}
@@ -440,10 +456,10 @@ function getWidth(input: unknown, fallback: number): number {
 	#main-content {
 		position: relative;
 		flex-grow: 1;
-		width: 100%;
-		height: 100%;
+		inline-size: 100%;
+		block-size: 100%;
 		overflow: auto;
-		scroll-padding-top: 100px;
+		scroll-padding-block-start: 100px;
 
 		/* Page Content Spacing (Could be converted to Project Setting toggle) */
 		font-size: 15px;
@@ -456,11 +472,11 @@ function getWidth(input: unknown, fallback: number): number {
 
 		/* Offset for partially visible sidebar */
 		@media (min-width: 960px) {
-			margin-right: 60px;
+			margin-inline-end: 60px;
 		}
 
 		@media (min-width: 1260px) {
-			margin-right: 0;
+			margin-inline-end: 0;
 		}
 
 		&.hide-overflow-x {
@@ -475,19 +491,19 @@ function getWidth(input: unknown, fallback: number): number {
 	&.splitView {
 		#main-content .content-wrapper {
 			display: flex;
-			height: calc(100% - var(--layout-offset-top));
+			block-size: calc(100% - var(--layout-offset-top));
 
 			main {
 				display: block;
 				flex-grow: 0;
 				overflow: auto;
-				max-height: 100%;
+				max-block-size: 100%;
 			}
 
 			#split-content {
 				flex-grow: 1;
 				overflow: auto;
-				height: 100%;
+				block-size: 100%;
 
 				&.is-dragging {
 					pointer-events: none;
@@ -499,7 +515,6 @@ function getWidth(input: unknown, fallback: number): number {
 	#sidebar {
 		--theme--form--column-gap: var(--theme--sidebar--section--form--column-gap);
 		--theme--form--row-gap: var(--theme--sidebar--section--form--row-gap);
-
 		--theme--form--field--input--background-subdued: var(--theme--sidebar--section--form--field--input--background);
 		--theme--form--field--input--background: var(--theme--sidebar--section--form--field--input--background);
 		--theme--form--field--input--border-color-focus: var(
@@ -518,22 +533,21 @@ function getWidth(input: unknown, fallback: number): number {
 		--theme--form--field--input--foreground: var(--theme--sidebar--section--form--field--input--foreground);
 		--theme--form--field--input--height: var(--theme--sidebar--section--form--field--input--height);
 		--theme--form--field--input--padding: var(--theme--sidebar--section--form--field--input--padding);
-
 		--theme--form--field--label--foreground: var(--theme--sidebar--section--form--field--label--foreground);
 		--theme--form--field--label--font-family: var(--theme--sidebar--section--form--field--label--font-family);
 
 		position: fixed;
-		top: 0;
-		right: 0;
+		inset-block-start: 0;
+		inset-inline-end: 0;
 		z-index: 30;
-		width: 280px;
-		height: 100%;
+		inline-size: 280px;
+		block-size: 100%;
 		overflow: hidden;
 		background-color: var(--theme--sidebar--background);
 		transform: translateX(100%);
 		transition: transform var(--slow) var(--transition);
 		font-family: var(--theme--sidebar--font-family);
-		border-left: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
+		border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
 
 		/* Explicitly render the border outside of the width of the bar itself */
 		box-sizing: content-box;
@@ -552,8 +566,8 @@ function getWidth(input: unknown, fallback: number): number {
 		.flex-container {
 			display: flex;
 			flex-direction: column;
-			width: 280px;
-			height: 100%;
+			inline-size: 280px;
+			block-size: 100%;
 		}
 
 		@media (min-width: 960px) {

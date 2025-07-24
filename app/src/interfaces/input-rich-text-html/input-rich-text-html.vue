@@ -8,10 +8,13 @@ import { cloneDeep, isEqual } from 'lodash';
 import { ComponentPublicInstance, computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getEditorStyles from './get-editor-styles';
+import toolbarDefault from './toolbar-default';
 import useImage from './useImage';
 import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
+import usePre from './usePre';
+import useInlineCode from './useInlineCode';
 import tinymce from 'tinymce/tinymce';
 
 import 'tinymce/skins/ui/oxide/skin.css';
@@ -58,23 +61,7 @@ const props = withDefaults(
 		direction?: string;
 	}>(),
 	{
-		toolbar: () => [
-			'bold',
-			'italic',
-			'underline',
-			'h1',
-			'h2',
-			'h3',
-			'numlist',
-			'bullist',
-			'removeformat',
-			'blockquote',
-			'customLink',
-			'customImage',
-			'customMedia',
-			'code',
-			'fullscreen',
-		],
+		toolbar: () => toolbarDefault,
 		font: 'sans-serif',
 		customFormats: () => [],
 	},
@@ -123,9 +110,12 @@ const {
 	mediaButton,
 } = useMedia(editorRef, imageToken!);
 
-const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, linkNode } = useLink(editorRef);
+const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, isLinkSaveable } = useLink(editorRef);
 
 const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
+
+const { preButton } = usePre(editorRef);
+const { inlineCodeButton } = useInlineCode(editorRef);
 
 const internalValue = computed({
 	get() {
@@ -180,7 +170,9 @@ const editorOptions = computed(() => {
 				.replace(/^link$/g, 'customLink')
 				.replace(/^media$/g, 'customMedia')
 				.replace(/^code$/g, 'customCode')
-				.replace(/^image$/g, 'customImage'),
+				.replace(/^image$/g, 'customImage')
+				.replace(/^pre$/g, 'customPre')
+				.replace(/^inlinecode$/g, 'customInlineCode'),
 		)
 		.join(' ');
 
@@ -223,6 +215,7 @@ const editorOptions = computed(() => {
 		paste_data_images: false,
 		setup,
 		language: i18n.global.locale.value,
+		ui_mode: 'split',
 		...(props.tinymceOverrides && cloneDeep(props.tinymceOverrides)),
 	};
 });
@@ -268,9 +261,12 @@ function setup(editor: any) {
 
 	const linkShortcut = 'meta+k';
 
+	editor.ui.registry.addToggleButton('customPre', preButton);
 	editor.ui.registry.addToggleButton('customImage', imageButton);
 	editor.ui.registry.addToggleButton('customMedia', mediaButton);
 	editor.ui.registry.addToggleButton('customLink', { ...linkButton, shortcut: linkShortcut });
+
+	editor.ui.registry.addToggleButton('customInlineCode', inlineCodeButton);
 	editor.ui.registry.addButton('customCode', sourceCodeButton);
 
 	editor.on('init', function () {
@@ -388,7 +384,7 @@ onMounted(() => {
 				{{ softLength - count }}
 			</span>
 		</template>
-		<v-dialog v-model="linkDrawerOpen">
+		<v-dialog v-model="linkDrawerOpen" @esc="closeLinkDrawer" @apply="saveLink">
 			<v-card>
 				<v-card-title>{{ t('wysiwyg_options.link') }}</v-card-title>
 				<v-card-text>
@@ -413,12 +409,18 @@ onMounted(() => {
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="closeLinkDrawer">{{ t('cancel') }}</v-button>
-					<v-button :disabled="linkSelection.url === null && !linkNode" @click="saveLink">{{ t('save') }}</v-button>
+					<v-button :disabled="!isLinkSaveable" @click="saveLink">{{ t('save') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
-		<v-drawer v-model="codeDrawerOpen" :title="t('wysiwyg_options.source_code')" icon="code" @cancel="closeCodeDrawer">
+		<v-drawer
+			v-model="codeDrawerOpen"
+			:title="t('wysiwyg_options.source_code')"
+			icon="code"
+			@cancel="closeCodeDrawer"
+			@apply="saveCode"
+		>
 			<div class="content">
 				<interface-input-code
 					:value="code"
@@ -435,7 +437,13 @@ onMounted(() => {
 			</template>
 		</v-drawer>
 
-		<v-drawer v-model="imageDrawerOpen" :title="t('wysiwyg_options.image')" icon="image" @cancel="closeImageDrawer">
+		<v-drawer
+			v-model="imageDrawerOpen"
+			:title="t('wysiwyg_options.image')"
+			icon="image"
+			@cancel="closeImageDrawer"
+			@apply="saveImage"
+		>
 			<div class="content">
 				<template v-if="imageSelection">
 					<img class="image-preview" :src="imageSelection.previewUrl" />
@@ -482,7 +490,13 @@ onMounted(() => {
 			</template>
 		</v-drawer>
 
-		<v-drawer v-model="mediaDrawerOpen" :title="t('wysiwyg_options.media')" icon="slideshow" @cancel="closeMediaDrawer">
+		<v-drawer
+			v-model="mediaDrawerOpen"
+			:title="t('wysiwyg_options.media')"
+			icon="slideshow"
+			@cancel="closeMediaDrawer"
+			@apply="saveMedia"
+		>
 			<template #sidebar>
 				<v-tabs v-model="openMediaTab" vertical>
 					<v-tab value="video">{{ t('media') }}</v-tab>
@@ -552,11 +566,11 @@ onMounted(() => {
 
 .remaining {
 	position: absolute;
-	right: 10px;
-	bottom: 5px;
+	inset-inline-end: 10px;
+	inset-block-end: 5px;
 	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
-	text-align: right;
+	text-align: end;
 	vertical-align: middle;
 	font-feature-settings: 'tnum';
 }
@@ -571,16 +585,15 @@ onMounted(() => {
 
 .image-preview,
 .media-preview {
-	width: 100%;
-	height: var(--input-height-tall);
-	margin-bottom: 24px;
+	inline-size: 100%;
+	block-size: var(--input-height-tall);
+	margin-block-end: 24px;
 	object-fit: cover;
 	border-radius: var(--theme--border-radius);
 }
 
 .content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding);
+	padding-block: 0 var(--content-padding);
 }
 </style>

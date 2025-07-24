@@ -23,6 +23,11 @@ What's changed:
 - Lorem ipsum dolor sit amet
 - Consectetur adipiscing elit
 
+## Tested Scenarios
+
+- Lorem ipsum dolor sit amet
+- Consectetur adipiscing elit
+
 ## Review Notes / Questions
 
 - I would like to lorem ipsum

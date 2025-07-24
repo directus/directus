@@ -72,18 +72,19 @@ function emitClick(event: MouseEvent) {
 </script>
 
 <template>
-	<span
+	<component
+		:is="clickable ? 'button' : 'span'"
+		:type="clickable ? 'button' : undefined"
 		class="v-icon"
 		:class="[sizeClass, { 'has-click': !disabled && clickable, left, right }]"
-		:role="clickable ? 'button' : undefined"
-		:tabindex="clickable ? 0 : undefined"
+		:disabled="clickable ? disabled : undefined"
 		:style="{ '--v-icon-color': color }"
 		@click="emitClick"
 	>
 		<component :is="customIconName" v-if="customIconName" />
 		<SocialIcon v-else-if="socialIconName" :name="socialIconName" />
 		<i v-else :class="{ filled }" :data-icon="name"></i>
-	</span>
+	</component>
 </template>
 
 <style lang="scss" scoped>
@@ -100,9 +101,9 @@ function emitClick(event: MouseEvent) {
 .v-icon {
 	position: relative;
 	display: inline-block;
-	width: var(--v-icon-size, 24px);
-	min-width: var(--v-icon-size, 24px);
-	height: var(--v-icon-size, 24px);
+	inline-size: var(--v-icon-size, 24px);
+	min-inline-size: var(--v-icon-size, 24px);
+	block-size: var(--v-icon-size, 24px);
 	color: var(--v-icon-color, currentColor);
 	font-size: 0;
 	vertical-align: middle;
@@ -148,13 +149,12 @@ function emitClick(event: MouseEvent) {
 		fill: currentColor;
 
 		&.svg-inline--fa {
-			width: 100%;
-			height: 100%;
+			inline-size: 100%;
+			block-size: 100%;
 		}
 	}
 
 	&.has-click {
-		cursor: pointer;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
@@ -185,18 +185,18 @@ function emitClick(event: MouseEvent) {
 	}
 
 	&.left {
-		margin-right: 8px;
+		margin-inline-end: 8px;
 
 		&.small {
-			margin-right: 4px;
+			margin-inline-end: 4px;
 		}
 	}
 
 	&.right {
-		margin-left: 6px;
+		margin-inline-start: 6px;
 
 		&.small {
-			margin-left: 4px;
+			margin-inline-start: 4px;
 		}
 	}
 }

@@ -31,6 +31,10 @@ draft: Draft
 archived: Archived
 marketplace: Marketplace
 extensions: Extensions
+skip_link_nav: Skip to Navigation
+skip_link_module_nav: Skip to Module Navigation
+skip_link_main: Skip to Main Content
+skip_link_sidebar: Skip to Sidebar
 modules: Modules
 module_bar: Module Bar
 logs: Logs
@@ -440,6 +444,7 @@ field_key: Field Key
 finish_setup: Finish Setup
 dismiss: Dismiss
 toggle_raw_editor: Toggle Raw Editor
+toggle_variable_input: Toggle Variable Input
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Raw value
 copy_raw_value: Copy Raw Value
@@ -571,6 +576,9 @@ original: Original
 url: URL
 import_label: Import
 file_details: File Details
+copy_id: Copy ID
+copy_id_success: ID Copied
+copy_id_fail: ID Not Copied
 dimensions: Dimensions
 size: Size
 created: Created
@@ -745,6 +753,7 @@ errors:
   COLLECTION_NOT_FOUND: "Collection doesn't exist"
   CONTAINS_NULL_VALUES: Field contains null values
   CONTENT_TOO_LARGE: Submitted item/file is too large
+  FAILED_VALIDATION: Validation failed
   FIELD_NOT_FOUND: Field not found
   FORBIDDEN: Forbidden
   GRAPHQL_VALIDATION: GraphQL Validation
@@ -1114,6 +1123,7 @@ wysiwyg_options:
   h4: Heading 4
   h5: Heading 5
   h6: Heading 6
+  pre: Preformatted
   fontselect: Select Font
   fontsizeselect: Select Font Size
   indent: Indent
@@ -1747,7 +1757,6 @@ translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
 report_error: Report Error
-start: Start
 table: Table
 list: List
 search_filter: Search & Filter
@@ -2341,6 +2350,8 @@ show_labels: Show Labels
 show_legend: Show Legend
 right: Right
 left: Left
+start: Start
+end: End
 donut: Donut
 continuous: Continuous
 gap: Gap
@@ -2586,3 +2597,14 @@ search_flow: Search Flow...
 percent: Percent
 show_password: Show password
 hide_password: Hide password
+bsl_banner:
+  welcome_to_directus: Welcome to Directus!
+  directus_free_use:
+    Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget.
+  organization_threshold: Entities above this threshold require a paid license.
+  license_agreement: By clicking "Accept", you agree to the {directusBsl} and {privacyPolicy}.
+  directus_bsl: Directus BSL 1.1
+  privacy_policy: Privacy Policy
+  accept_terms: Accept
+  get_license: Get a License
+accepted: Accepted

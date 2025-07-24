@@ -38,7 +38,7 @@ const { t } = useI18n();
 
 <template>
 	<div class="field-label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
-		<span class="field-name" @click="toggle">
+		<button type="button" class="field-name" @click="toggle">
 			<v-checkbox
 				v-if="batchMode"
 				:model-value="batchActive"
@@ -64,10 +64,11 @@ const { t } = useI18n();
 				name="data_object"
 				:filled="!rawEditorActive"
 				small
+				clickable
 				@click.stop="$emit('toggle-raw', !rawEditorActive)"
 			/>
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
-		</span>
+		</button>
 	</div>
 </template>
 
@@ -75,8 +76,7 @@ const { t } = useI18n();
 .field-label {
 	position: relative;
 	display: flex;
-	margin-bottom: 8px;
-	cursor: pointer;
+	margin-block-end: 8px;
 	color: var(--theme--form--field--label--foreground);
 
 	.v-text-overflow {
@@ -84,33 +84,33 @@ const { t } = useI18n();
 		white-space: normal;
 	}
 
-	&.readonly {
+	&.readonly button {
 		cursor: not-allowed;
 	}
 
 	.v-checkbox {
-		height: 18px; // Don't push down label with normal icon height (24px)
-		margin-right: 4px;
+		block-size: 18px; // Don't push down label with normal icon height (24px)
+		margin-inline-end: 4px;
 	}
 
 	.v-chip {
 		margin: 0;
 		flex-shrink: 0;
-		margin-left: 3px;
+		margin-inline-start: 3px;
 	}
 
 	.required {
 		--v-icon-color: var(--theme--primary);
 
-		margin-left: 3px;
+		margin-inline-start: 3px;
 
 		&.has-badge {
-			margin-right: 6px;
+			margin-inline-end: 6px;
 		}
 	}
 
 	.ctx-arrow {
-		margin-top: -3px;
+		margin-block-start: -3px;
 		color: var(--theme--foreground-subdued);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -120,6 +120,7 @@ const { t } = useI18n();
 		}
 	}
 
+	&:focus-within,
 	&:hover {
 		.ctx-arrow {
 			opacity: 1;
@@ -130,10 +131,10 @@ const { t } = useI18n();
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		height: 24px;
-		width: 24px;
-		margin-top: -2px;
-		margin-left: 5px;
+		block-size: 24px;
+		inline-size: 24px;
+		margin-block-start: -2px;
+		margin-inline-start: 5px;
 		color: var(--theme--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 
@@ -151,19 +152,19 @@ const { t } = useI18n();
 	&.edited {
 		.edit-dot {
 			position: absolute;
-			top: 7px;
-			left: -7px;
+			inset-block-start: 7px;
+			inset-inline-start: -7px;
 			display: block;
-			width: 4px;
-			height: 4px;
+			inline-size: 4px;
+			block-size: 4px;
 			background-color: var(--theme--foreground-subdued);
 			border-radius: 4px;
 			content: '';
 		}
 
 		.field-name {
-			margin-left: -16px;
-			padding-left: 16px;
+			margin-inline-start: -16px;
+			padding-inline-start: 16px;
 		}
 	}
 

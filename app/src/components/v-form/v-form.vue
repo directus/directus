@@ -389,6 +389,7 @@ function useRawEditor() {
 					:badge="badge"
 					:raw-editor-enabled="rawEditorEnabled"
 					:direction="direction"
+					:version
 					v-bind="fieldsMap[fieldName]!.meta?.options || {}"
 					@apply="apply"
 				/>
@@ -441,7 +442,7 @@ function useRawEditor() {
 	@include mixins.form-grid;
 
 	.first-visible-field :deep(.presentation-divider) {
-		margin-top: 0;
+		margin-block-start: 0;
 	}
 
 	&.inline > .no-fields-info {
@@ -450,8 +451,7 @@ function useRawEditor() {
 }
 
 .v-divider {
-	margin-bottom: 50px;
-	grid-column-start: 1;
-	grid-column-end: 3;
+	margin-block-end: 50px;
+	grid-column: 1 / 3;
 }
 </style>
