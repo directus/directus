@@ -1,8 +1,7 @@
-import { ErrorCode, createError } from '@directus/errors';
+import { ErrorCode, createError, type DirectusError } from '@directus/errors';
 import type { Bus } from '@directus/memory';
 import type {
 	AbstractServiceOptions,
-	DirectusExtensionsError,
 	MutationOptions,
 	PrimaryKey,
 	Webhook,
@@ -15,7 +14,7 @@ const logger = useLogger();
 
 export class WebhooksService extends ItemsService<Webhook> {
 	messenger: Bus;
-	errorDeprecation: DirectusExtensionsError;
+	errorDeprecation: DirectusError;
 
 	constructor(options: AbstractServiceOptions) {
 		super('directus_webhooks', options);
