@@ -1,6 +1,6 @@
+import { useUserStore } from '@/stores/user';
 import { nanoid } from 'nanoid';
 import { Directive, DirectiveBinding } from 'vue';
-import { useUserStore } from '@/stores/user';
 
 const tooltipDelay = 300;
 
@@ -196,6 +196,7 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 		} else {
 			tooltip.style.transform = `translate(calc(${left}px - ${transformPos}%), calc(${top}px - 100%))`;
 		}
+
 		tooltip.classList.add('top');
 	}
 }
