@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import type { SchemaInspector, Table } from '@directus/schema';
+import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import { systemCollectionRows, type BaseCollectionMeta } from '@directus/system-data';
 import type {
@@ -11,6 +11,7 @@ import type {
 	MutationOptions,
 	RawField,
 	SchemaOverview,
+	RawCollection,
 } from '@directus/types';
 import { addFieldFlag } from '@directus/utils';
 import type Keyv from 'keyv';
@@ -33,13 +34,6 @@ import { buildCollectionAndFieldRelations } from './fields/build-collection-and-
 import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import { ItemsService } from './items.js';
-
-export type RawCollection = {
-	collection: string;
-	fields?: RawField[];
-	schema?: Partial<Table> | null;
-	meta?: Partial<BaseCollectionMeta> | null;
-};
 
 export class CollectionsService {
 	knex: Knex;
