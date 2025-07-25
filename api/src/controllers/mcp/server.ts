@@ -88,7 +88,11 @@ export class DirectusMCP {
 			try {
 				await tool.inputSchema?.parseAsync(request.params.arguments);
 
-				const result = await tool.handler({ args: request.params.arguments, accountability: req.accountability });
+				const result = await tool.handler({
+					args: request.params.arguments,
+					schema: req.schema,
+					accountability: req.accountability,
+				});
 
 				return this.toMCPResponse(result.data, result.message);
 			} catch (error) {
