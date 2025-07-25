@@ -11,7 +11,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import type { Request, Response } from 'express';
 import { z } from 'zod';
-import type { ToolDefinition } from './tool.js';
+import type { ToolConfig } from './tool.js';
 import * as tools from './tools/index.js';
 
 class DirectusTransport implements Transport {
@@ -40,7 +40,7 @@ class DirectusTransport implements Transport {
 
 export class DirectusMCP {
 	server: Server;
-	tools: Map<string, ToolDefinition>;
+	tools: Map<string, ToolConfig>;
 	constructor() {
 		this.server = new Server(
 			{
