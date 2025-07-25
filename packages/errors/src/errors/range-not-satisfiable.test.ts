@@ -1,5 +1,5 @@
 import { randomInteger } from '@directus/random';
-import type { Range } from '@directus/storage';
+import type { Range } from '@directus/types';
 import { expect, test } from 'vitest';
 import { messageConstructor } from './range-not-satisfiable.js';
 

@@ -1,11 +1,10 @@
-import type { Filter } from '@directus/types';
 import type { Component } from 'vue';
+import type { Filter } from '../filter.js';
 
 export interface LayoutConfig<Options = any, Query = any> {
 	id: string;
 	name: string;
 	icon: string;
-
 	component: Component;
 	slots: {
 		options: Component;

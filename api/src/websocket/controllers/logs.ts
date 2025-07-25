@@ -1,10 +1,11 @@
 import { useEnv } from '@directus/env';
+import type { WebSocketMessage } from '@directus/types';
 import type { Server as httpServer } from 'http';
 import type WebSocket from 'ws';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
 import { handleWebSocketError, WebSocketError } from '../errors.js';
-import { AuthMode, WebSocketMessage } from '../messages.js';
+import { AuthMode } from '../messages.js';
 import type { AuthenticationState, WebSocketClient } from '../types.js';
 import SocketController from './base.js';
 import type { Accountability } from '@directus/types';

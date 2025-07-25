@@ -1,8 +1,4 @@
-export interface DirectusError<Extensions = void> extends Error {
-	extensions: Extensions;
-	code: string;
-	status: number;
-}
+import type { DirectusError } from '@directus/types';
 
 export interface DirectusErrorConstructor<Extensions = void> {
 	new (extensions: Extensions, options?: ErrorOptions): DirectusError<Extensions>;
@@ -33,3 +29,5 @@ export const createError = <Extensions = void>(
 		}
 	};
 };
+
+export type { DirectusError };

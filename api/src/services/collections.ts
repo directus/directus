@@ -1,9 +1,18 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import type { SchemaInspector, Table } from '@directus/schema';
+import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import { systemCollectionRows, type BaseCollectionMeta } from '@directus/system-data';
-import type { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	Accountability,
+	ActionEventParams,
+	FieldMeta,
+	MutationOptions,
+	RawField,
+	SchemaOverview,
+	RawCollection,
+} from '@directus/types';
 import { addFieldFlag } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
@@ -16,7 +25,7 @@ import getDatabase, { getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
 import { fetchAllowedCollections } from '../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { AbstractServiceOptions, ActionEventParams, Collection, MutationOptions } from '../types/index.js';
+import type { Collection } from '../types/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
@@ -25,13 +34,6 @@ import { buildCollectionAndFieldRelations } from './fields/build-collection-and-
 import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import { ItemsService } from './items.js';
-
-export type RawCollection = {
-	collection: string;
-	fields?: RawField[];
-	schema?: Partial<Table> | null;
-	meta?: Partial<BaseCollectionMeta> | null;
-};
 
 export class CollectionsService {
 	knex: Knex;

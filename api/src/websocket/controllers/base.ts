@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
+import { WebSocketMessage } from '@directus/types';
 import { parseJSON, toBoolean } from '@directus/utils';
 import cookie from 'cookie';
 import type { IncomingMessage, Server as httpServer } from 'http';
@@ -17,7 +18,7 @@ import { createRateLimiter } from '../../rate-limiter.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { authenticateConnection, authenticationSuccess } from '../authenticate.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
-import { AuthMode, WebSocketAuthMessage, WebSocketMessage } from '../messages.js';
+import { AuthMode, WebSocketAuthMessage } from '../messages.js';
 import type { AuthenticationState, UpgradeContext, WebSocketAuthentication, WebSocketClient } from '../types.js';
 import { getMessageType } from '../utils/message.js';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';

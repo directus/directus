@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useExtensionsStore } from '@/stores/extensions';
-import { ApiOutput } from '@directus/extensions';
+import { ApiOutput } from '@directus/types';
 import { groupBy } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
