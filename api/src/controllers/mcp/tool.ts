@@ -3,7 +3,8 @@ import type { ZodType } from 'zod';
 export interface ToolDefinition<Params = any> {
 	name: string;
 	description: string;
-	inputSchema: ZodType<Params>;
+	admin?: boolean;
+	argSchema?: ZodType<Params>;
 	annotations?: Record<string, any>;
 	handler: (args: Params) => Promise<{ data: unknown; message?: string }>;
 }

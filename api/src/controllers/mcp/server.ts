@@ -66,12 +66,14 @@ export class DirectusMCP {
 				throw new Error('Invalid Tool');
 			}
 
-			// Proceed with execution if permission check passes
-			const { inputSchema, handler } = tool;
-			const args = inputSchema.parse(request.params.arguments);
+			if (req.accountability?.admin !== true && tool.admin === true) {
+				throw new Error('Admin Tool');
+			}
 
 			try {
-				const result = await handler(args);
+				await tool.argSchema?.parseAsync(request.params.arguments);
+
+				const result = await tool.handler({ args: request.params.arguments, accountability: req.accountability });
 
 				return formatSuccessResponse(result.data, result.message);
 			} catch (error) {
