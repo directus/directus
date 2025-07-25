@@ -4,6 +4,7 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import icons from './icons.json';
 import { socialIcons } from '@/components/v-icon/social-icons';
+import { useVirtualList } from '@vueuse/core';
 
 withDefaults(
 	defineProps<{
@@ -30,17 +31,55 @@ const mergedIcons = [
 	},
 ];
 
-const filteredIcons = computed(() => {
-	if (searchQuery.value.length === 0) return mergedIcons;
+const ICONS_PER_ROW = 7;
+const ROW_HEIGHT = 32;
 
-	return mergedIcons.map((group) => {
-		const icons = group.icons.filter((icon) => icon.includes(searchQuery.value.toLowerCase()));
+const virtualIconRows = computed(() => {
+	// Build a flat list of icon objects with group info
+	const flatList: Array<{ icon: string; group: string; isFirstInGroup: boolean }> = [];
 
-		return {
-			name: group.name,
-			icons,
-		};
-	});
+	for (const group of mergedIcons) {
+		let icons = group.icons;
+
+		if (searchQuery.value.length > 0) {
+			icons = icons.filter((icon) => icon.includes(searchQuery.value.toLowerCase()));
+		}
+
+		icons.forEach((icon, idx) => {
+			flatList.push({
+				icon,
+				group: group.name,
+				isFirstInGroup: idx === 0,
+			});
+		});
+	}
+
+	// Chunk into rows of icons
+	const rows: Array<{ icons: typeof flatList; groupName?: string }> = [];
+	let i = 0;
+
+	while (i < flatList.length) {
+		const row: typeof flatList = [];
+
+		for (let j = 0; j < ICONS_PER_ROW && i < flatList.length; j++, i++) {
+			if (j > 0 && flatList[i]?.isFirstInGroup) break;
+			row.push(flatList[i]!);
+		}
+
+		const groupName = row[0]?.isFirstInGroup ? row[0].group : undefined;
+		rows.push({ icons: row, groupName });
+	}
+
+	return rows;
+});
+
+const {
+	list: virtualRows,
+	containerProps,
+	wrapperProps,
+	// Not sure how to type this without using any
+} = useVirtualList(virtualIconRows as any, {
+	itemHeight: ROW_HEIGHT,
 });
 
 function setIcon(icon: string | null) {
@@ -103,19 +142,29 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 		</template>
 
 		<div class="content" :class="width">
-			<template v-for="(group, index) in filteredIcons" :key="group.name">
-				<div v-if="group.icons.length > 0" class="icons">
-					<v-icon
-						v-for="icon in group.icons"
-						:key="icon"
-						:name="icon"
-						:class="{ active: icon === value }"
-						clickable
-						@click="setIcon(icon)"
-					/>
+			<div v-bind="containerProps" style="max-height: 260px; overflow-y: auto">
+				<div v-if="virtualIconRows.length === 0" class="no-results" tabindex="0">
+					{{ t('no_results_found') }}
 				</div>
-				<v-divider v-if="group.icons.length > 0 && index !== filteredIcons.length - 1" />
-			</template>
+				<div v-else v-bind="wrapperProps">
+					<template v-for="({ data: row }, i) in virtualRows" :key="'row-' + i">
+						<!-- Divider with group name if this is the first row of a group -->
+						<div v-if="row.groupName" class="group-divider">
+							<span class="group-label">{{ row.groupName }}</span>
+						</div>
+						<div v-if="row.icons && row.icons.length" class="icons-row">
+							<v-icon
+								v-for="iconObj in row.icons"
+								:key="iconObj.icon"
+								:name="iconObj.icon"
+								:class="{ active: iconObj.icon === value }"
+								clickable
+								@click="setIcon(iconObj.icon)"
+							/>
+						</div>
+					</template>
+				</div>
+			</div>
 		</div>
 	</v-menu>
 </template>
@@ -151,15 +200,6 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 	}
 }
 
-.icons {
-	display: grid;
-	grid-gap: 8px;
-	grid-template-columns: repeat(auto-fit, 24px);
-	justify-content: center;
-	padding: 20px 0;
-	color: var(--theme--form--field--input--foreground-subdued);
-}
-
 .open-indicator {
 	transform: scaleY(1);
 	transition: transform var(--fast) var(--transition);
@@ -167,5 +207,33 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 
 .open-indicator.open {
 	transform: scaleY(-1);
+}
+
+.icons-row {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, 24px);
+	grid-gap: 6px;
+	justify-content: center;
+	padding: 8px 0;
+
+	color: var(--theme--form--field--input--foreground-subdued);
+}
+
+.group-divider {
+	display: flex;
+	align-items: center;
+	margin: 8px 0 0;
+	padding: 0 8px;
+	color: var(--theme--form--field--input--foreground);
+	text-transform: uppercase;
+	font-weight: bold;
+	line-height: 32px;
+	border-block-start: 1px solid var(--theme--form--field--input--foreground-subdued);
+	border-block-end: 1px solid var(--theme--form--field--input--foreground-subdued);
+}
+
+.group-label {
+	margin-inline: auto;
+	color: var(--theme--form--field--input--foreground-subdued);
 }
 </style>
