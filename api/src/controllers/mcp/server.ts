@@ -29,9 +29,7 @@ class DirectusTransport implements Transport {
 	}
 
 	async send(message: JSONRPCMessage): Promise<void> {
-		this.res.json({
-			message,
-		});
+		this.res.json(message);
 	}
 
 	async close(): Promise<void> {
