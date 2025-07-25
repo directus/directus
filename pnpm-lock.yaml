@@ -446,6 +446,9 @@ importers:
       zod:
         specifier: 3.24.2
         version: 3.24.2
+      zod-to-json-schema:
+        specifier: 3.24.6
+        version: 3.24.6(zod@3.24.2)
       zod-validation-error:
         specifier: 3.4.0
         version: 3.4.0(zod@3.24.2)
