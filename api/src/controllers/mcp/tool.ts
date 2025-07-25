@@ -9,4 +9,4 @@ export interface ToolDefinition<Params = any> {
 	handler: (args: Params) => Promise<{ data: unknown; message?: string }>;
 }
 
-export const defineTool = (name: string, tool: Omit<ToolDefinition, 'name'>) => ({ name, ...tool });
+export const defineTool = (name: string, tool: Omit<ToolDefinition, 'name'>): ToolDefinition => ({ name, ...tool });
