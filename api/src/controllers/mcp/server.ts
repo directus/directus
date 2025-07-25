@@ -1,7 +1,16 @@
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
-import { JSONRPCMessageSchema, type JSONRPCMessage, type MessageExtraInfo } from '@modelcontextprotocol/sdk/types.js';
+import {
+	CallToolRequestSchema,
+	JSONRPCMessageSchema,
+	ListToolsRequestSchema,
+	type CallToolRequest,
+	type JSONRPCMessage,
+	type MessageExtraInfo,
+} from '@modelcontextprotocol/sdk/types.js';
 import type { Request, Response } from 'express';
+import type { ToolDefinition } from './tool.js';
+import { formatErrorResponse, formatSuccessResponse } from './util.js';
 
 class DirectusTransport implements Transport {
 	res: Response;
@@ -28,9 +37,10 @@ class DirectusTransport implements Transport {
 }
 
 export class DirectusMCP {
-	server: McpServer;
+	server: Server;
+	tools: Map<string, ToolDefinition>;
 	constructor() {
-		this.server = new McpServer(
+		this.server = new Server(
 			{
 				name: 'directus-mcp',
 				version: '0.1.0',
@@ -39,9 +49,36 @@ export class DirectusMCP {
 				capabilities: {},
 			},
 		);
+
+		this.tools = new Map();
 	}
 
 	handleRequest(req: Request, res: Response) {
+		this.server.setRequestHandler(ListToolsRequestSchema, async () => {
+			return { tools: {} };
+		});
+
+		// Manage tool requests
+		this.server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest) => {
+			const tool = this.tools.get(request.params.name);
+
+			if (!tool) {
+				throw new Error('Invalid Tool');
+			}
+
+			// Proceed with execution if permission check passes
+			const { inputSchema, handler } = tool;
+			const args = inputSchema.parse(request.params.arguments);
+
+			try {
+				const result = await handler(args);
+
+				return formatSuccessResponse(result.data, result.message);
+			} catch (error) {
+				return formatErrorResponse(error);
+			}
+		});
+
 		const transport = new DirectusTransport(res);
 
 		this.server.connect(transport);

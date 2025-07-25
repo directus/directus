@@ -1,4 +1,3 @@
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import type { ZodType } from 'zod';
 
 export interface ToolDefinition<Params = any> {
@@ -6,7 +5,7 @@ export interface ToolDefinition<Params = any> {
 	description: string;
 	inputSchema: ZodType<Params>;
 	annotations?: Record<string, any>;
-	handler: (args: Params) => Promise<CallToolResult>;
+	handler: (args: Params) => Promise<{ data: unknown; message?: string }>;
 }
 
 export const defineTool = (name: string, tool: Omit<ToolDefinition, 'name'>) => ({ name, ...tool });
