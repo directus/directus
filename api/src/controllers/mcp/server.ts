@@ -1,3 +1,4 @@
+import { isDirectusError } from '@directus/errors';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import {
@@ -9,8 +10,9 @@ import {
 	type MessageExtraInfo,
 } from '@modelcontextprotocol/sdk/types.js';
 import type { Request, Response } from 'express';
+import { z } from 'zod';
 import type { ToolDefinition } from './tool.js';
-import { formatErrorResponse, formatSuccessResponse } from './util.js';
+import { ping } from './tools/index.js';
 
 class DirectusTransport implements Transport {
 	res: Response;
@@ -50,12 +52,25 @@ export class DirectusMCP {
 			},
 		);
 
-		this.tools = new Map();
+		this.tools = new Map([['ping', ping]]);
 	}
 
 	handleRequest(req: Request, res: Response) {
 		this.server.setRequestHandler(ListToolsRequestSchema, async () => {
-			return { tools: {} };
+			const tools = [];
+
+			for (const [, tool] of this.tools) {
+				if (req.accountability?.admin !== true && tool.admin === true) continue;
+
+				tools.push({
+					name: tool.name,
+					description: tool.description,
+					inputSchema: tool.inputSchema ? z.toJSONSchema(tool.inputSchema, { reused: 'ref' }) : undefined,
+					annotations: tool.annotations,
+				});
+			}
+
+			return { tools };
 		});
 
 		// Manage tool requests
@@ -71,13 +86,13 @@ export class DirectusMCP {
 			}
 
 			try {
-				await tool.argSchema?.parseAsync(request.params.arguments);
+				await tool.inputSchema?.parseAsync(request.params.arguments);
 
 				const result = await tool.handler({ args: request.params.arguments, accountability: req.accountability });
 
-				return formatSuccessResponse(result.data, result.message);
+				return this.toMCPResponse(result.data, result.message);
 			} catch (error) {
-				return formatErrorResponse(error);
+				return this.toMCPError(error);
 			}
 		});
 
@@ -93,5 +108,50 @@ export class DirectusMCP {
 
 			throw error;
 		}
+	}
+
+	toMCPResponse(data: unknown, message?: string) {
+		const formattedValue = message
+			? `<data>\n${JSON.stringify(data, null, 2)}\n</data>\n<message>\n${message}\n</message>`
+			: `${JSON.stringify(data, null, 2)}`;
+
+		return {
+			content: [{ type: 'text', text: formattedValue }],
+		};
+	}
+
+	toMCPError(err: unknown) {
+		const errors: { error: string; code?: string }[] = [];
+		const receivedErrors: unknown[] = Array.isArray(err) ? err : [err];
+
+		for (const error of receivedErrors) {
+			if (isDirectusError(error)) {
+				errors.push({
+					error: error.message || 'Unknown error',
+					code: error.code,
+				});
+			} else {
+				// Handle generic errors
+				let message = 'An unknown error occurred.';
+				let code: string | undefined;
+
+				if (error instanceof Error) {
+					message = error.message;
+					code = 'code' in error ? String(error.code) : undefined;
+				} else if (typeof error === 'object' && error !== null) {
+					message = 'message' in error ? String(error.message) : message;
+					code = 'code' in error ? String(error.code) : undefined;
+				} else if (typeof error === 'string') {
+					message = error;
+				}
+
+				errors.push({ error: message, ...(code && { code }) });
+			}
+		}
+
+		return {
+			isError: true,
+			content: [{ type: 'text' as const, text: JSON.stringify(errors) }],
+		};
 	}
 }

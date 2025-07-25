@@ -1,6 +1,6 @@
 import { defineTool } from '../tool.js';
 
-export default defineTool('ping', {
+export const ping = defineTool('ping', {
 	description: '',
 	annotations: {
 		title: 'ping pong!',

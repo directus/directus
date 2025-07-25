@@ -4,7 +4,7 @@ export interface ToolDefinition<Params = any> {
 	name: string;
 	description: string;
 	admin?: boolean;
-	argSchema?: ZodType<Params>;
+	inputSchema?: ZodType<Params>;
 	annotations?: Record<string, any>;
 	handler: (args: Params) => Promise<{ data: unknown; message?: string }>;
 }
