@@ -79,7 +79,7 @@ export default async function init(): Promise<void> {
 			default: 'admin@example.com',
 			validate: (input: string) => {
 				const emailSchema = Joi.string().email().required();
-				const { error } = emailSchema.validate(input);
+				const { error } = emailSchema.validate(input.trim());
 				if (error) throw new Error('The email entered is not a valid email address!');
 				return true;
 			},
@@ -108,7 +108,7 @@ export default async function init(): Promise<void> {
 	await db('directus_users').insert({
 		...defaultAdminUser,
 		id: randomUUID(),
-		email: firstUser.email,
+		email: firstUser.email.trim(),
 		password: firstUser.password,
 		role,
 	});
