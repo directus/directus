@@ -143,7 +143,7 @@ function findSelectedChoices(choices: Record<string, any>[], checked: (string | 
 </script>
 
 <template>
-	<v-list v-model="openSelection" :mandatory="false" @toggle="$emit('group-toggle', $event)">
+	<v-list v-model="openSelection" role="group" :mandatory="false" @toggle="$emit('group-toggle', $event)">
 		<v-checkbox-tree-checkbox
 			v-for="choice in choices"
 			:key="choice[itemValue]"

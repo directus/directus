@@ -120,15 +120,15 @@ function useUpload() {
 								</div>
 							</template>
 							<template #input>
-								<input
-									id="import-file"
-									ref="fileInput"
-									type="file"
-									accept="text/csv, application/json"
-									hidden
-									@change="onChange"
-								/>
-								<label v-tooltip="file && file.name" for="import-file" class="import-file-label"></label>
+								<label v-tooltip="file && file.name" for="import-file" class="import-file-label">
+									<input
+										id="import-file"
+										ref="fileInput"
+										type="file"
+										accept="text/csv, application/json"
+										@change="onChange"
+									/>
+								</label>
 								<span class="import-file-text" :class="{ 'no-file': !file }">
 									{{ file ? file.name : t('import_data_input_placeholder') }}
 								</span>
@@ -256,6 +256,7 @@ function useUpload() {
 	cursor: pointer;
 	opacity: 0;
 	appearance: none;
+	overflow: hidden;
 }
 
 .import-file-text {
