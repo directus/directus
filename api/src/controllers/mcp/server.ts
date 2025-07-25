@@ -97,7 +97,7 @@ export class DirectusMCP {
 				}
 
 				const result = await tool.handler({
-					args,
+					args: args?.data,
 					schema: req.schema,
 					accountability: req.accountability,
 				});
