@@ -1,7 +1,11 @@
-import type { Accountability } from '@directus/types';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import type { ZodType } from 'zod';
 
-export type ToolDefinitionHandlerOptions<Args> = { args: Args; accountability: Accountability | undefined };
+export type ToolDefinitionHandlerOptions<Args> = {
+	args: Args;
+	schema: SchemaOverview;
+	accountability: Accountability | undefined;
+};
 
 export interface ToolDefinition<Args = unknown> {
 	name: string;
