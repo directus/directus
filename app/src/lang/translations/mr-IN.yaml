@@ -1696,7 +1696,6 @@ translation_placeholder: भाषांतर भरा
 value: व्हॅल्यू
 view_project: प्रोजेक्ट पहा
 report_error: एरर रिपोर्ट करा
-start: चालू
 table: टेबल
 list: लिस्ट
 search_filter: शोधा आणि फिल्टर करा
@@ -2279,6 +2278,7 @@ show_labels: लेबल दाखवा
 show_legend: लेजेंड दाखवा
 right: उजवा
 left: डावा
+start: चालू
 donut: डोनट
 panels:
   metric:

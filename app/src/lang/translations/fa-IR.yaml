@@ -1455,7 +1455,6 @@ translation_placeholder: وارد کردن ترجمه...
 value: مقدار
 view_project: مشاهده پروژه
 report_error: گزارش خطا
-start: آغاز
 table: جدول
 list: فهرست
 search_filter: جستجو و علامت‌گذاری
@@ -2012,6 +2011,7 @@ broad: گسترده
 show_labels: نمایش برچسب
 right: راست
 left: چپ
+start: آغاز
 donut: بخش‌بندی
 panels:
   metric:

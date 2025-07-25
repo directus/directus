@@ -1261,7 +1261,6 @@ translation_placeholder: Syötä käännös...
 value: Arvo
 view_project: Näytä projekti
 report_error: Raportoi virhe
-start: Aloita
 table: Taulukko
 list: Lista
 interfaces:
@@ -1685,6 +1684,7 @@ layouts:
     crop: Rajaa
     advanced: Lisäasetukset
 both: Molemmat
+start: Aloita
 panels:
   metric:
     name: Metrinen

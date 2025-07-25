@@ -1666,7 +1666,6 @@ translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
 report_error: Zgłoś błąd
-start: Rozpocznij
 table: Tabela
 list: Lista
 search_filter: Szukaj i filtruj
@@ -2248,6 +2247,7 @@ show_labels: Pokaż etykiety
 show_legend: Pokaż Legendę
 right: Prawy
 left: Lewy
+start: Rozpocznij
 donut: Pączek
 panels:
   metric:

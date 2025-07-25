@@ -1056,7 +1056,6 @@ translation: แปลภาษา
 value: ค่า
 view_project: ดูโครงการ
 report_error: แจ้งข้อผิดพลาด
-start: เริ่มต้น
 table: ตาราง
 list: รายการ
 interfaces:
@@ -1440,6 +1439,7 @@ layouts:
     add_group: เพิ่มกลุ่ม
 horizontal: แนวนอน
 both: ทั้งคู่
+start: เริ่มต้น
 panels:
   metric:
     field: ฟิลด์

@@ -1358,7 +1358,6 @@ translation_placeholder: Introduceți o traducere...
 value: Valoare
 view_project: Vezi proiect
 report_error: Raportare eroare
-start: Pornire
 table: Tabel
 list: Listă
 interfaces:
@@ -1820,6 +1819,7 @@ layouts:
   kanban:
     crop: Decupare
 both: Ambele
+start: Pornire
 panels:
   metric:
     name: Metric

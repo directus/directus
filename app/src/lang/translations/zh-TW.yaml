@@ -1454,7 +1454,6 @@ translation_placeholder: 輸入翻譯...
 value: 值
 view_project: 檢視專案
 report_error: 報告錯誤
-start: 開始
 table: 表格
 list: 清單
 search_filter: 搜尋過濾
@@ -1952,6 +1951,7 @@ layouts:
     advanced: 進階
 horizontal: 水平
 both: 都要
+start: 開始
 panels:
   metric:
     name: 格式
