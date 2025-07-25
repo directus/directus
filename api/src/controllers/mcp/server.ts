@@ -12,7 +12,7 @@ import {
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import type { ToolDefinition } from './tool.js';
-import { ping } from './tools/index.js';
+import * as tools from './tools/index.js';
 
 class DirectusTransport implements Transport {
 	res: Response;
@@ -52,7 +52,7 @@ export class DirectusMCP {
 			},
 		);
 
-		this.tools = new Map([['ping', ping]]);
+		this.tools = new Map([['items', tools.items]]);
 	}
 
 	handleRequest(req: Request, res: Response) {

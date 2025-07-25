@@ -1,15 +1,21 @@
 import type { Accountability } from '@directus/types';
 import type { ZodType } from 'zod';
 
-export type ToolDefinitionHandlerOptions<Params> = { args: Params; accountability: Accountability | undefined };
+export type ToolDefinitionHandlerOptions<Args> = { args: Args; accountability: Accountability | undefined };
 
-export interface ToolDefinition<Params = unknown> {
+export interface ToolDefinition<Args = unknown> {
 	name: string;
 	description: string;
 	admin?: boolean;
-	inputSchema?: ZodType<Params>;
+	inputSchema?: ZodType<Args>;
 	annotations?: Record<string, unknown>;
-	handler: (opts: ToolDefinitionHandlerOptions<Params>) => Promise<{ data: unknown; message?: string }>;
+	handler: (opts: ToolDefinitionHandlerOptions<Args>) => Promise<{ data: unknown; message?: string }>;
 }
 
-export const defineTool = (name: string, tool: Omit<ToolDefinition, 'name'>): ToolDefinition => ({ name, ...tool });
+export const defineTool = <Args = unknown>(
+	name: string,
+	tool: Omit<ToolDefinition<Args>, 'name'>,
+): ToolDefinition<Args> => ({
+	name,
+	...tool,
+});
