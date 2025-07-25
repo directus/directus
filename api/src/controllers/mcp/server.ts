@@ -47,7 +47,9 @@ export class DirectusMCP {
 				version: '0.1.0',
 			},
 			{
-				capabilities: {},
+				capabilities: {
+					tools: {},
+				},
 			},
 		);
 
