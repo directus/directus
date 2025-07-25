@@ -53,7 +53,10 @@ export class DirectusMCP {
 			},
 		);
 
-		this.tools = new Map([['items', tools.items]]);
+		this.tools = new Map([
+			[tools.system.name, tools.system],
+			[tools.items.name, tools.items],
+		]);
 	}
 
 	handleRequest(req: Request, res: Response) {
