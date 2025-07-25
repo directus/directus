@@ -513,6 +513,7 @@ onMounted(() => {
 							</video>
 							<iframe
 								v-if="mediaSelection.tag === 'iframe'"
+								:title="$t('interfaces.input-rich-text-html.media_preview_iframe_title')"
 								class="media-preview"
 								:src="mediaSelection.previewUrl"
 							></iframe>
