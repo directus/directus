@@ -407,6 +407,21 @@ function getLinkForItem(item: DisplayItem) {
 
 	return null;
 }
+
+const hasSatisfiedUniqueConstraint = computed(() => {
+	if (!relationInfo.value) return false;
+
+	const parentCollection = relationInfo.value.relation.related_collection;
+	const relatedCollection = relationInfo.value.relatedCollection.collection;
+
+	// Find all M2O fields in the related collection that point to the parent collection and are unique
+	const m2oFields = fieldsStore.getFieldsForCollection(relatedCollection).filter((field) => {
+		const schema = field.schema;
+		return schema?.foreign_key_table === parentCollection && schema?.is_unique === true;
+	});
+
+	return m2oFields.length > 0 && totalItemCount.value > 0;
+});
 </script>
 
 <template>
@@ -605,10 +620,18 @@ function getLinkForItem(item: DisplayItem) {
 					</template>
 				</template>
 				<template v-else>
-					<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="createItem">
+					<v-button
+						v-if="enableCreate && createAllowed && !hasSatisfiedUniqueConstraint"
+						:disabled="disabled"
+						@click="createItem"
+					>
 						{{ t('create_new') }}
 					</v-button>
-					<v-button v-if="enableSelect && updateAllowed" :disabled="disabled" @click="selectModalActive = true">
+					<v-button
+						v-if="enableSelect && updateAllowed && !hasSatisfiedUniqueConstraint"
+						:disabled="disabled"
+						@click="selectModalActive = true"
+					>
 						{{ t('add_existing') }}
 					</v-button>
 					<div class="spacer" />
