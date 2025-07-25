@@ -2,8 +2,10 @@
 import formatTitle from '@directus/format-title';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import icons from './icons.json';
 import { socialIcons } from '@/components/v-icon/social-icons';
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 withDefaults(
 	defineProps<{
@@ -41,6 +43,23 @@ const filteredIcons = computed(() => {
 			icons,
 		};
 	});
+});
+
+// Prepare icons for virtual scrolling
+const groupedIcons = computed(() => {
+	const groups: Array<{ name: string; icons: string[]; index: number }> = [];
+
+	filteredIcons.value.forEach((group, groupIndex) => {
+		if (group.icons.length > 0) {
+			groups.push({
+				name: group.name,
+				icons: group.icons,
+				index: groupIndex,
+			});
+		}
+	});
+
+	return groups;
 });
 
 function setIcon(icon: string | null) {
@@ -103,19 +122,26 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 		</template>
 
 		<div class="content" :class="width">
-			<template v-for="(group, index) in filteredIcons" :key="group.name">
-				<div v-if="group.icons.length > 0" class="icons">
-					<v-icon
-						v-for="icon in group.icons"
-						:key="icon"
-						:name="icon"
-						:class="{ active: icon === value }"
-						clickable
-						@click="setIcon(icon)"
-					/>
-				</div>
-				<v-divider v-if="group.icons.length > 0 && index !== filteredIcons.length - 1" />
-			</template>
+			<DynamicScroller :items="groupedIcons" :min-item-size="32" class="scroller" key-field="index" page-mode>
+				<template #default="{ item, index }">
+					<DynamicScrollerItem :item="item" active>
+						<div v-if="item.icons.length > 0" class="icon-group">
+							<div class="group-name">{{ item.name }}</div>
+							<div class="icons">
+								<v-icon
+									v-for="icon in item.icons"
+									:key="icon"
+									:name="icon"
+									:class="{ active: icon === value }"
+									clickable
+									@click="setIcon(icon)"
+								/>
+							</div>
+						</div>
+						<v-divider v-if="item.icons.length > 0 && index !== groupedIcons.length - 1" />
+					</DynamicScrollerItem>
+				</template>
+			</DynamicScroller>
 		</div>
 	</v-menu>
 </template>
@@ -146,8 +172,19 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 
 	.v-divider {
 		--v-divider-color: var(--theme--background-normal);
-
 		margin: 0 22px;
+	}
+}
+
+.icon-group {
+	.group-name {
+		font-size: 12px;
+		font-weight: 600;
+		color: var(--theme--form--field--input--foreground-subdued);
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		padding: 12px 0 8px;
+		text-align: center;
 	}
 }
 
