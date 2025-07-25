@@ -66,19 +66,6 @@ body,
 	block-size: 100%;
 }
 
-input,
-textarea,
-[contenteditable],
-.selectable {
-	-webkit-user-select: text;
-	user-select: text;
-
-	* {
-		-webkit-user-select: text;
-		user-select: text;
-	}
-}
-
 ::placeholder {
 	opacity: 1;
 }
