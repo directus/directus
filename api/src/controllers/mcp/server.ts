@@ -1,4 +1,4 @@
-import { isDirectusError } from '@directus/errors';
+import { InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import {
@@ -11,6 +11,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import type { Request, Response } from 'express';
 import { z } from 'zod';
+import { fromZodError } from 'zod-validation-error';
 import type { ToolConfig } from './tool.js';
 import * as tools from './tools/index.js';
 
@@ -86,10 +87,14 @@ export class DirectusMCP {
 			}
 
 			try {
-				await tool.inputSchema?.parseAsync(request.params.arguments);
+				const args = tool.inputSchema?.safeParse(request.params.arguments);
+
+				if (args?.error) {
+					throw new InvalidPayloadError({ reason: fromZodError(args.error).message });
+				}
 
 				const result = await tool.handler({
-					args: request.params.arguments,
+					args,
 					schema: req.schema,
 					accountability: req.accountability,
 				});
