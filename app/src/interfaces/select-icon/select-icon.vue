@@ -24,6 +24,8 @@ const { t } = useI18n();
 
 const searchQuery = ref('');
 
+const iconsPerRow = ref(10);
+
 const mergedIcons = [
 	...icons,
 	{
@@ -45,26 +47,45 @@ const filteredIcons = computed(() => {
 	});
 });
 
-// Prepare icons for virtual scrolling
-const groupedIcons = computed(() => {
-	const groups: Array<{ name: string; icons: string[]; index: number }> = [];
+// Create flattened rows for virtualization
+const virtualRows = computed(() => {
+	const rows: Array<{
+		type: 'header' | 'icons';
+		groupName?: string;
+		icons?: string[];
+		rowIndex: number;
+		groupIndex: number;
+	}> = [];
 
 	filteredIcons.value.forEach((group, groupIndex) => {
 		if (group.icons.length > 0) {
-			groups.push({
-				name: group.name,
-				icons: group.icons,
-				index: groupIndex,
+			// Add group header
+			rows.push({
+				type: 'header',
+				groupName: group.name,
+				rowIndex: rows.length,
+				groupIndex,
 			});
+
+			// Split icons into rows
+			for (let i = 0; i < group.icons.length; i += iconsPerRow.value) {
+				const rowIcons = group.icons.slice(i, i + iconsPerRow.value);
+
+				rows.push({
+					type: 'icons',
+					icons: rowIcons,
+					rowIndex: rows.length,
+					groupIndex,
+				});
+			}
 		}
 	});
 
-	return groups;
+	return rows;
 });
 
 function setIcon(icon: string | null) {
 	searchQuery.value = '';
-
 	emit('input', icon);
 }
 
@@ -122,23 +143,32 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 		</template>
 
 		<div class="content" :class="width">
-			<DynamicScroller :items="groupedIcons" :min-item-size="32" class="scroller" key-field="index" page-mode>
-				<template #default="{ item, index }">
+			<DynamicScroller
+				:items="virtualRows"
+				:min-item-size="32"
+				:buffer="400"
+				:prerender="10"
+				:size-field="'32'"
+				key-field="rowIndex"
+				page-mode
+			>
+				<template #default="{ item }">
 					<DynamicScrollerItem :item="item" active>
-						<div v-if="item.icons.length > 0" class="icon-group">
-							<div class="group-name">{{ item.name }}</div>
-							<div class="icons">
-								<v-icon
-									v-for="icon in item.icons"
-									:key="icon"
-									:name="icon"
-									:class="{ active: icon === value }"
-									clickable
-									@click="setIcon(icon)"
-								/>
+						<div v-if="item.type === 'header'" class="group-header">
+							<div class="group-name">
+								{{ item.groupName }}
 							</div>
 						</div>
-						<v-divider v-if="item.icons.length > 0 && index !== groupedIcons.length - 1" />
+						<div v-else-if="item.type === 'icons'" class="icon-row">
+							<v-icon
+								v-for="icon in item.icons"
+								:key="icon"
+								:name="icon"
+								:class="{ active: icon === value }"
+								clickable
+								@click="setIcon(icon)"
+							/>
+						</div>
 					</DynamicScrollerItem>
 				</template>
 			</DynamicScroller>
@@ -176,24 +206,21 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 	}
 }
 
-.icon-group {
-	.group-name {
-		font-size: 12px;
-		font-weight: 600;
-		color: var(--theme--form--field--input--foreground-subdued);
-		text-transform: uppercase;
-		letter-spacing: 0.5px;
-		padding: 12px 0 8px;
-		text-align: center;
-	}
+.group-header {
+	column-span: all;
+	color: var(--theme--form--field--input--foreground-subdued);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	padding: 12px 0;
+	text-align: center;
 }
 
-.icons {
+.icon-row {
 	display: grid;
 	grid-gap: 8px;
 	grid-template-columns: repeat(auto-fit, 24px);
 	justify-content: center;
-	padding: 20px 0;
+	padding: 4px 0;
 	color: var(--theme--form--field--input--foreground-subdued);
 }
 
