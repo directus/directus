@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { Vector2 } from '@/utils/vector2';
-import { computed } from 'vue';
+import { computed, unref } from 'vue';
 import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
 import { ArrowInfo, Target } from './operation.vue';
 import { ParentInfo } from '../flow.vue';
+import { useUserStore } from '@/stores/user';
+
+const GRID_SIZE = 20;
 
 const props = withDefaults(
 	defineProps<{
@@ -25,13 +28,17 @@ const props = withDefaults(
 const startOffset = 2;
 const endOffset = 13;
 
+const userStore = useUserStore();
+
+const isRTL = computed(() => userStore.textDirection === 'rtl');
+
 const size = computed(() => {
 	let width = 0,
 		height = 0;
 
 	for (const panel of props.panels) {
-		width = Math.max(width, (panel.x + PANEL_WIDTH) * 20);
-		height = Math.max(height, (panel.y + PANEL_HEIGHT) * 20);
+		width = Math.max(width, (panel.x + PANEL_WIDTH) * GRID_SIZE);
+		height = Math.max(height, (panel.y + PANEL_HEIGHT) * GRID_SIZE);
 	}
 
 	if (props.arrowInfo) {
@@ -74,7 +81,7 @@ const arrows = computed(() => {
 
 			arrows.push({
 				id: panel.id + '_resolve',
-				d: createLine(resolveX, resolveY, resolveX + 3 * 20, resolveY),
+				d: createLine(resolveX, resolveY, resolveX + 3 * GRID_SIZE, resolveY),
 				type: 'resolve',
 				loner,
 				isHint: true,
@@ -104,7 +111,7 @@ const arrows = computed(() => {
 
 			arrows.push({
 				id: panel.id + '_reject',
-				d: createLine(rejectX, rejectY, rejectX + 3 * 20, rejectY),
+				d: createLine(rejectX, rejectY, rejectX + 3 * GRID_SIZE, rejectY),
 				type: 'reject',
 				loner,
 				isHint: true,
@@ -119,12 +126,22 @@ const arrows = computed(() => {
 	return arrows;
 
 	function getPoints(panel: Record<string, any>, offset: Vector2, to?: Record<string, any>) {
-		const x = (panel.x - 1) * 20 + offset.x;
-		const y = (panel.y - 1) * 20 + offset.y;
+		let x = (panel.x - 1) * GRID_SIZE + offset.x;
+
+		if (unref(isRTL)) {
+			x = unref(size).width - x;
+		}
+
+		const y = (panel.y - 1) * GRID_SIZE + offset.y;
 
 		if (to) {
-			const toX = (to.x - 1) * 20 + ATTACHMENT_OFFSET.x;
-			const toY = (to.y - 1) * 20 + ATTACHMENT_OFFSET.y;
+			let toX = (to.x - 1) * GRID_SIZE + ATTACHMENT_OFFSET.x;
+
+			if (unref(isRTL)) {
+				toX = unref(size).width - toX;
+			}
+
+			const toY = (to.y - 1) * GRID_SIZE + ATTACHMENT_OFFSET.y;
 
 			return { x, y, toX, toY };
 		}
@@ -135,8 +152,9 @@ const arrows = computed(() => {
 	function createLine(x: number, y: number, toX: number, toY: number) {
 		if (y === toY) return generatePath(Vector2.fromMany({ x: x + startOffset, y }, { x: toX - endOffset, y: toY }));
 
-		if (x + 3 * 20 < toX) {
-			const centerX = findBestPosition(new Vector2(x + 2 * 20, y), new Vector2(toX - 2 * 20, toY), 'x');
+		if (x + 3 * GRID_SIZE < toX) {
+			const centerX = findBestPosition(new Vector2(x + 2 * GRID_SIZE, y), new Vector2(toX - 2 * GRID_SIZE, toY), 'x');
+
 			return generatePath(
 				Vector2.fromMany(
 					{ x: x + startOffset, y },
@@ -148,7 +166,7 @@ const arrows = computed(() => {
 		}
 
 		const offsetBox = 40;
-		const centerY = findBestPosition(new Vector2(x + 2 * 20, y), new Vector2(toX - 2 * 20, toY), 'y');
+		const centerY = findBestPosition(new Vector2(x + 2 * GRID_SIZE, y), new Vector2(toX - 2 * GRID_SIZE, toY), 'y');
 		return generatePath(
 			Vector2.fromMany(
 				{ x: x + startOffset, y },
@@ -195,8 +213,8 @@ const arrows = computed(() => {
 
 		const { min, max } = minMaxPoint(from, to);
 
-		const outerPoints = range(min[otherAxis], max[otherAxis], (axis === 'x' ? PANEL_WIDTH : PANEL_HEIGHT) * 20);
-		const innerPoints = range(min[axis], max[axis], 20);
+		const outerPoints = range(min[otherAxis], max[otherAxis], (axis === 'x' ? PANEL_WIDTH : PANEL_HEIGHT) * GRID_SIZE);
+		const innerPoints = range(min[axis], max[axis], GRID_SIZE);
 
 		for (const outer of outerPoints) {
 			for (let inner = 0; inner < innerPoints.length; inner++) {
@@ -209,10 +227,10 @@ const arrows = computed(() => {
 
 		for (let i = 0; i < possiblePlaces.length; i++) {
 			pointer += i * (i % 2 == 0 ? -1 : 1);
-			if (possiblePlaces[pointer]) return min[axis] + pointer * 20;
+			if (possiblePlaces[pointer]) return min[axis] + pointer * GRID_SIZE;
 		}
 
-		return from[axis] + Math.floor((to[axis] - from[axis]) / 2 / 20) * 20;
+		return from[axis] + Math.floor((to[axis] - from[axis]) / 2 / GRID_SIZE) * GRID_SIZE;
 	}
 
 	function range(min: number, max: number, step: number) {
@@ -230,10 +248,10 @@ const arrows = computed(() => {
 		return (
 			props.panels.findIndex(
 				(panel) =>
-					point.x >= (panel.x - 2) * 20 &&
-					point.x <= (panel.x - 1 + PANEL_WIDTH) * 20 &&
-					point.y >= (panel.y - 1) * 20 &&
-					point.y <= (panel.y - 1 + PANEL_HEIGHT) * 20,
+					point.x >= (panel.x - 2) * GRID_SIZE &&
+					point.x <= (panel.x - 1 + PANEL_WIDTH) * GRID_SIZE &&
+					point.y >= (panel.y - 1) * GRID_SIZE &&
+					point.y <= (panel.y - 1 + PANEL_HEIGHT) * GRID_SIZE,
 			) !== -1
 		);
 	}
