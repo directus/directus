@@ -176,6 +176,10 @@ const onDeleteOptions = computed(() =>
 		inset-block-end: 17px;
 		inset-inline-start: 50%;
 		transform: translateX(-50%);
+
+		html[dir='rtl'] & {
+			transform: translateX(50%) scaleX(-1);
+		}
 	}
 }
 

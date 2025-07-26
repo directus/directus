@@ -35,6 +35,7 @@ export type User = {
 	role: Role | null;
 	policies: Policy[];
 	language: string | null;
+	text_direction: 'ltr' | 'rtl' | 'auto';
 	avatar: Avatar | null;
 	title: string | null;
 	description: string | null;

@@ -78,6 +78,18 @@ fields:
     options:
       includeProjectDefault: true
 
+  - field: text_direction
+    interface: select-dropdown
+    options:
+      choices:
+        - value: auto
+          text: $t:text_direction_auto
+        - value: ltr
+          text: $t:text_direction_ltr
+        - value: rtl
+          text: $t:text_direction_rtl
+    width: half
+
   - field: tfa_secret
     interface: system-mfa-setup
     special:
