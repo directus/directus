@@ -3,9 +3,9 @@ import { GRID_SIZE, REJECT_OFFSET, RESOLVE_OFFSET } from '../../../constants';
 import { ParentInfo } from '../../../flow.vue';
 import type { ArrowInfo, Target } from '../../operation.vue';
 import type { Arrow, Panel } from '../types';
-import { generateCorner } from '../utils/generate-corner';
 import { getPoints } from '../utils/get-points';
 import { findBestPosition } from './find-best-position';
+import { generatePath } from './generate-path';
 
 const START_OFFSET = 2;
 const END_OFFSET = 13;
@@ -120,11 +120,7 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 
 	function createLine(x: number, y: number, toX: number, toY: number) {
 		if (y === toY) {
-			if (context.isRTL) {
-				return generatePath(Vector2.fromMany({ x: x - START_OFFSET, y }, { x: toX + END_OFFSET, y: toY }));
-			} else {
-				return generatePath(Vector2.fromMany({ x: x + START_OFFSET, y }, { x: toX - END_OFFSET, y: toY }));
-			}
+			return generatePath(Vector2.fromMany({ x: x + START_OFFSET, y }, { x: toX - END_OFFSET, y: toY }));
 		}
 
 		if (x + 3 * GRID_SIZE < toX) {
@@ -164,28 +160,5 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 				{ x: toX - END_OFFSET, y: toY },
 			),
 		);
-	}
-
-	function generatePath(points: Vector2[]) {
-		// Add 8px to the x axis so that the arrow not overlaps with the icon
-		let path = `M ${points[0].add(new Vector2(8, 0))}`;
-
-		if (points.length >= 3) {
-			for (let i = 1; i < points.length - 1; i++) {
-				path += generateCorner(points[i - 1], points[i], points[i + 1]);
-			}
-		}
-
-		const arrowSize = 8;
-
-		const arrow = `M ${points.at(-1)} L ${points
-			.at(-1)
-			?.clone()
-			.add(new Vector2(-arrowSize, -arrowSize))} M ${points.at(-1)} L ${points
-			.at(-1)
-			?.clone()
-			.add(new Vector2(-arrowSize, arrowSize))}`;
-
-		return path + ` L ${points.at(-1)} ${arrow}`;
 	}
 }
