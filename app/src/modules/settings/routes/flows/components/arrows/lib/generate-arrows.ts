@@ -1,14 +1,9 @@
-import { Vector2 } from '@/utils/vector2';
 import { GRID_SIZE, REJECT_OFFSET, RESOLVE_OFFSET } from '../../../constants';
 import { ParentInfo } from '../../../flow.vue';
 import type { ArrowInfo, Target } from '../../operation.vue';
 import type { Arrow, Panel } from '../types';
 import { getPoints } from '../utils/get-points';
-import { findBestPosition } from './find-best-position';
-import { generatePath } from './generate-path';
-
-const START_OFFSET = 2;
-const END_OFFSET = 13;
+import { createLine } from './create-line';
 
 export interface GenerateArrowsContext {
 	/** Whether or not the flow is being edited. This modifies the hover state of some arrows */
@@ -50,7 +45,7 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 
 			arrows.push({
 				id: panel.id + '_resolve',
-				d: createLine(x, y, context.arrowInfo.pos.x, context.arrowInfo.pos.y),
+				d: createLine(panels, x, y, context.arrowInfo.pos.x, context.arrowInfo.pos.y),
 				type: 'resolve',
 				loner,
 			});
@@ -59,7 +54,7 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 
 			arrows.push({
 				id: panel.id + '_resolve',
-				d: createLine(x, y, toX as number, toY as number),
+				d: createLine(panels, x, y, toX as number, toY as number),
 				type: 'resolve',
 				loner,
 			});
@@ -72,7 +67,7 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 
 			arrows.push({
 				id: panel.id + '_resolve',
-				d: createLine(resolveX, resolveY, resolveX + 3 * GRID_SIZE, resolveY),
+				d: createLine(panels, resolveX, resolveY, resolveX + 3 * GRID_SIZE, resolveY),
 				type: 'resolve',
 				loner,
 				isHint: true,
@@ -84,7 +79,7 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 
 			arrows.push({
 				id: panel.id + '_reject',
-				d: createLine(x, y, context.arrowInfo.pos.x, context.arrowInfo.pos.y),
+				d: createLine(panels, x, y, context.arrowInfo.pos.x, context.arrowInfo.pos.y),
 				type: 'reject',
 				loner,
 			});
@@ -93,7 +88,7 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 
 			arrows.push({
 				id: panel.id + '_reject',
-				d: createLine(x, y, toX as number, toY as number),
+				d: createLine(panels, x, y, toX as number, toY as number),
 				type: 'reject',
 				loner,
 			});
@@ -104,7 +99,7 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 
 			arrows.push({
 				id: panel.id + '_reject',
-				d: createLine(rejectX, rejectY, toX, rejectY),
+				d: createLine(panels, rejectX, rejectY, toX, rejectY),
 				type: 'reject',
 				loner,
 				isHint: true,
@@ -117,48 +112,4 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 	}
 
 	return arrows;
-
-	function createLine(x: number, y: number, toX: number, toY: number) {
-		if (y === toY) {
-			return generatePath(Vector2.fromMany({ x: x + START_OFFSET, y }, { x: toX - END_OFFSET, y: toY }));
-		}
-
-		if (x + 3 * GRID_SIZE < toX) {
-			const centerX = findBestPosition(
-				panels,
-				new Vector2(x + 2 * GRID_SIZE, y),
-				new Vector2(toX - 2 * GRID_SIZE, toY),
-				'x',
-			);
-
-			return generatePath(
-				Vector2.fromMany(
-					{ x: x + START_OFFSET, y },
-					{ x: centerX, y },
-					{ x: centerX, y: toY },
-					{ x: toX - END_OFFSET, y: toY },
-				),
-			);
-		}
-
-		const offsetBox = 40;
-
-		const centerY = findBestPosition(
-			panels,
-			new Vector2(x + 2 * GRID_SIZE, y),
-			new Vector2(toX - 2 * GRID_SIZE, toY),
-			'y',
-		);
-
-		return generatePath(
-			Vector2.fromMany(
-				{ x: x + START_OFFSET, y },
-				{ x: x + offsetBox, y },
-				{ x: x + offsetBox, y: centerY },
-				{ x: toX - offsetBox, y: centerY },
-				{ x: toX - offsetBox, y: toY },
-				{ x: toX - END_OFFSET, y: toY },
-			),
-		);
-	}
 }
