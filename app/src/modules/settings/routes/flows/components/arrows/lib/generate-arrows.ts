@@ -1,69 +1,60 @@
-<script setup lang="ts">
 import { Vector2 } from '@/utils/vector2';
-import { computed, unref } from 'vue';
-import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
-import { ArrowInfo, Target } from './operation.vue';
-import { ParentInfo } from '../flow.vue';
-import { useUserStore } from '@/stores/user';
+import {
+	ATTACHMENT_OFFSET,
+	GRID_SIZE,
+	PANEL_HEIGHT,
+	PANEL_WIDTH,
+	REJECT_OFFSET,
+	RESOLVE_OFFSET,
+} from '../../../constants';
+import { ParentInfo } from '../../../flow.vue';
+import type { ArrowInfo, Target } from '../../operation.vue';
+import type { Arrow, Panel } from '../types';
 
-const GRID_SIZE = 20;
+const START_OFFSET = 2;
+const END_OFFSET = 13;
 
-const props = withDefaults(
-	defineProps<{
-		panels: Record<string, any>[];
-		arrowInfo?: ArrowInfo;
-		parentPanels: Record<string, ParentInfo>;
-		editMode?: boolean;
-		hoveredPanel?: string | null;
-		subdued?: boolean;
-	}>(),
-	{
-		arrowInfo: undefined,
-		editMode: false,
-		hoveredPanel: undefined,
-		subdued: false,
-	},
-);
+export interface GenerateArrowsContext {
+	/** Whether or not the flow is being edited. This modifies the hover state of some arrows */
+	editMode: boolean;
 
-const startOffset = 2;
-const endOffset = 13;
+	/** Change the svg `d` paths to match the right to left text direction */
+	isRTL: boolean;
 
-const userStore = useUserStore();
+	/** Lookup table for panels that have known resolve panels attached */
+	parentPanels: Record<string, ParentInfo>;
 
-const isRTL = computed(() => userStore.textDirection === 'rtl');
+	/** Where a preview arrow should point to during a drag and drop operation of a resolve/reject target */
+	arrowInfo: ArrowInfo | undefined;
 
-const size = computed(() => {
-	let width = 0,
-		height = 0;
+	/** What panel is currently being hovered over. Renders preview arrows for resolve/reject */
+	hoveredPanel: string | null;
 
-	for (const panel of props.panels) {
-		width = Math.max(width, (panel.x + PANEL_WIDTH) * GRID_SIZE);
-		height = Math.max(height, (panel.y + PANEL_HEIGHT) * GRID_SIZE);
-	}
+	/** Canvas size of the SVG the arrows will be rendered in */
+	size: { width: number; height: number };
+}
 
-	if (props.arrowInfo) {
-		width = Math.max(width, props.arrowInfo.pos.x + 10);
-		height = Math.max(height, props.arrowInfo.pos.y + 10);
-	}
-
-	return { width: width + 100, height: height + 100 };
-});
-
-const arrows = computed(() => {
+/**
+ * Generate an array of Arrow objects that can be rendered out to an SVG.
+ *
+ * @param panels Flow panels to generate arrows for
+ * @param context Additional context to influence the arrow generation
+ */
+export function generateArrows(panels: Panel[], context: GenerateArrowsContext): Arrow[] {
 	const arrows: { id: string; d: string; type: Target; loner: boolean; isHint?: boolean }[] = [];
 
-	for (const panel of props.panels) {
-		const resolveChild = props.panels.find((pan) => pan.id === panel.resolve);
-		const rejectChild = props.panels.find((pan) => pan.id === panel.reject);
-		const parent = props.parentPanels[panel.id];
+	for (const panel of panels) {
+		const resolveChild = panels.find((pan) => pan.id === panel.resolve);
+		const rejectChild = panels.find((pan) => pan.id === panel.reject);
+		const parent = context.parentPanels[panel.id];
 		const loner = (parent === undefined || parent.loner) && panel.id !== '$trigger';
 
-		if (props.arrowInfo?.id === panel.id && props.arrowInfo?.type === 'resolve') {
+		if (context.arrowInfo?.id === panel.id && context.arrowInfo?.type === 'resolve') {
 			const { x, y } = getPoints(panel, RESOLVE_OFFSET);
 
 			arrows.push({
 				id: panel.id + '_resolve',
-				d: createLine(x, y, props.arrowInfo.pos.x, props.arrowInfo.pos.y),
+				d: createLine(x, y, context.arrowInfo.pos.x, context.arrowInfo.pos.y),
 				type: 'resolve',
 				loner,
 			});
@@ -76,7 +67,11 @@ const arrows = computed(() => {
 				type: 'resolve',
 				loner,
 			});
-		} else if (props.editMode && !props.arrowInfo && (panel.id === '$trigger' || props.hoveredPanel === panel.id)) {
+		} else if (
+			context.editMode &&
+			!context.arrowInfo &&
+			(panel.id === '$trigger' || context.hoveredPanel === panel.id)
+		) {
 			const { x: resolveX, y: resolveY } = getPoints(panel, RESOLVE_OFFSET);
 
 			arrows.push({
@@ -88,12 +83,12 @@ const arrows = computed(() => {
 			});
 		}
 
-		if (props.arrowInfo?.id === panel.id && props.arrowInfo?.type === 'reject') {
+		if (context.arrowInfo?.id === panel.id && context.arrowInfo?.type === 'reject') {
 			const { x, y } = getPoints(panel, REJECT_OFFSET);
 
 			arrows.push({
 				id: panel.id + '_reject',
-				d: createLine(x, y, props.arrowInfo.pos.x, props.arrowInfo.pos.y),
+				d: createLine(x, y, context.arrowInfo.pos.x, context.arrowInfo.pos.y),
 				type: 'reject',
 				loner,
 			});
@@ -106,12 +101,14 @@ const arrows = computed(() => {
 				type: 'reject',
 				loner,
 			});
-		} else if (props.editMode && !props.arrowInfo && panel.id !== '$trigger' && props.hoveredPanel === panel.id) {
+		} else if (context.editMode && !context.arrowInfo && panel.id !== '$trigger' && context.hoveredPanel === panel.id) {
 			const { x: rejectX, y: rejectY } = getPoints(panel, REJECT_OFFSET);
+
+			const toX = context.isRTL ? rejectX - 3 * GRID_SIZE : rejectX + 3 * GRID_SIZE;
 
 			arrows.push({
 				id: panel.id + '_reject',
-				d: createLine(rejectX, rejectY, rejectX + 3 * GRID_SIZE, rejectY),
+				d: createLine(rejectX, rejectY, toX, rejectY),
 				type: 'reject',
 				loner,
 				isHint: true,
@@ -119,7 +116,7 @@ const arrows = computed(() => {
 		}
 	}
 
-	if (props.arrowInfo) {
+	if (context.arrowInfo) {
 		arrows.push();
 	}
 
@@ -128,8 +125,8 @@ const arrows = computed(() => {
 	function getPoints(panel: Record<string, any>, offset: Vector2, to?: Record<string, any>) {
 		let x = (panel.x - 1) * GRID_SIZE + offset.x;
 
-		if (unref(isRTL)) {
-			x = unref(size).width - x;
+		if (context.isRTL) {
+			x = context.size.width - x;
 		}
 
 		const y = (panel.y - 1) * GRID_SIZE + offset.y;
@@ -137,8 +134,8 @@ const arrows = computed(() => {
 		if (to) {
 			let toX = (to.x - 1) * GRID_SIZE + ATTACHMENT_OFFSET.x;
 
-			if (unref(isRTL)) {
-				toX = unref(size).width - toX;
+			if (context.isRTL) {
+				toX = context.size.width - toX;
 			}
 
 			const toY = (to.y - 1) * GRID_SIZE + ATTACHMENT_OFFSET.y;
@@ -150,31 +147,38 @@ const arrows = computed(() => {
 	}
 
 	function createLine(x: number, y: number, toX: number, toY: number) {
-		if (y === toY) return generatePath(Vector2.fromMany({ x: x + startOffset, y }, { x: toX - endOffset, y: toY }));
+		if (y === toY) {
+			if (context.isRTL) {
+				return generatePath(Vector2.fromMany({ x: x - START_OFFSET, y }, { x: toX + END_OFFSET, y: toY }));
+			} else {
+				return generatePath(Vector2.fromMany({ x: x + START_OFFSET, y }, { x: toX - END_OFFSET, y: toY }));
+			}
+		}
 
 		if (x + 3 * GRID_SIZE < toX) {
 			const centerX = findBestPosition(new Vector2(x + 2 * GRID_SIZE, y), new Vector2(toX - 2 * GRID_SIZE, toY), 'x');
 
 			return generatePath(
 				Vector2.fromMany(
-					{ x: x + startOffset, y },
+					{ x: x + START_OFFSET, y },
 					{ x: centerX, y },
 					{ x: centerX, y: toY },
-					{ x: toX - endOffset, y: toY },
+					{ x: toX - END_OFFSET, y: toY },
 				),
 			);
 		}
 
 		const offsetBox = 40;
 		const centerY = findBestPosition(new Vector2(x + 2 * GRID_SIZE, y), new Vector2(toX - 2 * GRID_SIZE, toY), 'y');
+
 		return generatePath(
 			Vector2.fromMany(
-				{ x: x + startOffset, y },
+				{ x: x + START_OFFSET, y },
 				{ x: x + offsetBox, y },
 				{ x: x + offsetBox, y: centerY },
 				{ x: toX - offsetBox, y: centerY },
 				{ x: toX - offsetBox, y: toY },
-				{ x: toX - endOffset, y: toY },
+				{ x: toX - END_OFFSET, y: toY },
 			),
 		);
 	}
@@ -246,7 +250,7 @@ const arrows = computed(() => {
 
 	function isPointInPanel(point: Vector2) {
 		return (
-			props.panels.findIndex(
+			panels.findIndex(
 				(panel) =>
 					point.x >= (panel.x - 2) * GRID_SIZE &&
 					point.x <= (panel.x - 1 + PANEL_WIDTH) * GRID_SIZE &&
@@ -262,64 +266,4 @@ const arrows = computed(() => {
 			max: new Vector2(Math.max(point1.x, point2.x), Math.max(point1.y, point2.y)),
 		};
 	}
-});
-</script>
-
-<template>
-	<div class="arrow-container">
-		<svg :width="size.width" :height="size.height" class="arrows">
-			<transition-group name="fade">
-				<path
-					v-for="arrow in arrows"
-					:key="arrow.id"
-					:class="{ [arrow.type]: true, subdued: subdued || arrow.loner, hint: arrow.isHint }"
-					:d="arrow.d"
-					stroke-linecap="round"
-				/>
-			</transition-group>
-		</svg>
-	</div>
-</template>
-
-<style scoped lang="scss">
-.arrow-container {
-	position: relative;
-
-	.arrows {
-		position: absolute;
-		inset-block-start: 0;
-		z-index: 1;
-		inset-inline-start: var(--content-padding);
-		pointer-events: none;
-
-		path {
-			fill: transparent;
-			stroke: var(--theme--primary);
-			stroke-width: 2px;
-			transition: stroke var(--fast) var(--transition);
-			transform: translateX(0);
-
-			&.reject {
-				stroke: var(--theme--secondary);
-			}
-
-			&.subdued {
-				stroke: var(--theme--foreground-subdued);
-			}
-
-			&.fade-enter-active,
-			&.fade-leave-active {
-				transition: var(--fast) var(--transition);
-				transition-property: opacity, transform;
-			}
-
-			&.fade-enter-from,
-			&.fade-leave-to {
-				position: absolute;
-				opacity: 0;
-				transform: translateX(-4px);
-			}
-		}
-	}
 }
-</style>
