@@ -1,9 +1,10 @@
 import { Vector2 } from '@/utils/vector2';
-import { ATTACHMENT_OFFSET, GRID_SIZE, REJECT_OFFSET, RESOLVE_OFFSET } from '../../../constants';
+import { GRID_SIZE, REJECT_OFFSET, RESOLVE_OFFSET } from '../../../constants';
 import { ParentInfo } from '../../../flow.vue';
 import type { ArrowInfo, Target } from '../../operation.vue';
 import type { Arrow, Panel } from '../types';
 import { generateCorner } from '../utils/generate-corner';
+import { getPoints } from '../utils/get-points';
 import { findBestPosition } from './find-best-position';
 
 const START_OFFSET = 2;
@@ -117,30 +118,6 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 
 	return arrows;
 
-	function getPoints(panel: Record<string, any>, offset: Vector2, to?: Record<string, any>) {
-		let x = (panel.x - 1) * GRID_SIZE + offset.x;
-
-		if (context.isRTL) {
-			x = context.size.width - x;
-		}
-
-		const y = (panel.y - 1) * GRID_SIZE + offset.y;
-
-		if (to) {
-			let toX = (to.x - 1) * GRID_SIZE + ATTACHMENT_OFFSET.x;
-
-			if (context.isRTL) {
-				toX = context.size.width - toX;
-			}
-
-			const toY = (to.y - 1) * GRID_SIZE + ATTACHMENT_OFFSET.y;
-
-			return { x, y, toX, toY };
-		}
-
-		return { x, y };
-	}
-
 	function createLine(x: number, y: number, toX: number, toY: number) {
 		if (y === toY) {
 			if (context.isRTL) {
@@ -151,7 +128,12 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 		}
 
 		if (x + 3 * GRID_SIZE < toX) {
-			const centerX = findBestPosition(panels, new Vector2(x + 2 * GRID_SIZE, y), new Vector2(toX - 2 * GRID_SIZE, toY), 'x');
+			const centerX = findBestPosition(
+				panels,
+				new Vector2(x + 2 * GRID_SIZE, y),
+				new Vector2(toX - 2 * GRID_SIZE, toY),
+				'x',
+			);
 
 			return generatePath(
 				Vector2.fromMany(
@@ -164,7 +146,13 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 		}
 
 		const offsetBox = 40;
-		const centerY = findBestPosition(panels, new Vector2(x + 2 * GRID_SIZE, y), new Vector2(toX - 2 * GRID_SIZE, toY), 'y');
+
+		const centerY = findBestPosition(
+			panels,
+			new Vector2(x + 2 * GRID_SIZE, y),
+			new Vector2(toX - 2 * GRID_SIZE, toY),
+			'y',
+		);
 
 		return generatePath(
 			Vector2.fromMany(
