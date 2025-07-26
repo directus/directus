@@ -10,6 +10,8 @@ import {
 import { ParentInfo } from '../../../flow.vue';
 import type { ArrowInfo, Target } from '../../operation.vue';
 import type { Arrow, Panel } from '../types';
+import { minMaxPoint } from '../utils/min-max-point';
+import { isPointInPanel } from '../utils/is-point-in-panel';
 
 const START_OFFSET = 2;
 const END_OFFSET = 13;
@@ -246,24 +248,5 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 
 		points.push(max);
 		return points;
-	}
-
-	function isPointInPanel(point: Vector2) {
-		return (
-			panels.findIndex(
-				(panel) =>
-					point.x >= (panel.x - 2) * GRID_SIZE &&
-					point.x <= (panel.x - 1 + PANEL_WIDTH) * GRID_SIZE &&
-					point.y >= (panel.y - 1) * GRID_SIZE &&
-					point.y <= (panel.y - 1 + PANEL_HEIGHT) * GRID_SIZE,
-			) !== -1
-		);
-	}
-
-	function minMaxPoint(point1: Vector2, point2: Vector2) {
-		return {
-			min: new Vector2(Math.min(point1.x, point2.x), Math.min(point1.y, point2.y)),
-			max: new Vector2(Math.max(point1.x, point2.x), Math.max(point1.y, point2.y)),
-		};
 	}
 }

@@ -12,4 +12,6 @@ export interface Panel {
 	id: string;
 	resolve: string;
 	reject: string;
+	x: number;
+	y: number;
 }
