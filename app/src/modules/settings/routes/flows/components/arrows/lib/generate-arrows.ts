@@ -10,7 +10,7 @@ export interface GenerateArrowsContext {
 	editMode: boolean;
 
 	/** Change the svg `d` paths to match the right to left text direction */
-	isRTL: boolean;
+	rtl: boolean;
 
 	/** Lookup table for panels that have known resolve panels attached */
 	parentPanels: Record<string, ParentInfo>;
@@ -26,10 +26,88 @@ export interface GenerateArrowsContext {
 }
 
 /**
- * Generate an array of Arrow objects that can be rendered out to an SVG.
+ * Generates SVG arrow paths for connecting flow diagram panels based on their resolve/reject relationships.
  *
- * @param panels Flow panels to generate arrows for
- * @param context Additional context to influence the arrow generation
+ * This function creates an array of Arrow objects that represent visual connections between flow panels,
+ * handling multiple scenarios including:
+ *
+ * **Arrow Types Generated:**
+ * - **Resolve Arrows**: Connect panels to their success/resolve targets (green paths)
+ * - **Reject Arrows**: Connect panels to their error/reject targets (red paths)
+ * - **Preview Arrows**: Show during drag-and-drop operations for live feedback
+ * - **Hint Arrows**: Display placeholder arrows in edit mode for panels without connections
+ *
+ * **Rendering Modes:**
+ * 1. **Static Mode**: Shows established connections between linked panels
+ * 2. **Edit Mode**: Adds hint arrows for potential connections when hovering
+ * 3. **Drag Mode**: Displays preview arrow following cursor during drag operations
+ *
+ * **RTL Support:**
+ * The function respects right-to-left text direction, adjusting arrow directions accordingly.
+ * Reject hint arrows point left in RTL mode instead of right.
+ *
+ * **Arrow Positioning:**
+ * - Uses `RESOLVE_OFFSET` and `REJECT_OFFSET` constants for consistent arrow attachment points
+ * - Calculates optimal paths using collision avoidance via `createLine` function
+ * - Supports both direct connections and complex routing around obstacles
+ *
+ * @param panels - Array of flow panels to analyze for arrow generation. Each panel contains
+ *                 resolve/reject target IDs and positioning information.
+ * @param context - Configuration object controlling arrow generation behavior
+ * @param context.editMode - When true, shows hint arrows for hovering and potential connections
+ * @param context.rtl - When true, adjusts arrow directions for right-to-left layouts
+ * @param context.parentPanels - Lookup table for panel hierarchy to determine "loner" status
+ * @param context.arrowInfo - Active drag operation details for preview arrow rendering
+ * @param context.hoveredPanel - Currently hovered panel ID for showing hint arrows
+ * @param context.size - Canvas dimensions for boundary calculations (currently unused)
+ *
+ * @returns Array of Arrow objects containing:
+ *   - `id`: Unique identifier combining panel ID and arrow type (e.g., "panel1_resolve")
+ *   - `d`: SVG path string for rendering the arrow line and arrowhead
+ *   - `type`: Arrow type ("resolve" or "reject") for styling purposes
+ *   - `loner`: Boolean indicating if panel has no parent connections (affects styling)
+ *   - `isHint`: Optional boolean marking preview/hint arrows vs established connections
+ *
+ * @example
+ * ```typescript
+ * const panels = [
+ *   { id: 'start', x: 1, y: 1, resolve: 'middle', reject: 'error' },
+ *   { id: 'middle', x: 3, y: 1, resolve: 'end', reject: '' },
+ *   { id: 'end', x: 5, y: 1, resolve: '', reject: '' },
+ *   { id: 'error', x: 3, y: 3, resolve: '', reject: '' }
+ * ];
+ *
+ * const context = {
+ *   editMode: false,
+ *   rtl: false,
+ *   parentPanels: {},
+ *   arrowInfo: undefined,
+ *   hoveredPanel: null,
+ *   size: { width: 800, height: 600 }
+ * };
+ *
+ * const arrows = generateArrows(panels, context);
+ * // Returns arrows connecting: start→middle, start→error, middle→end
+ * ```
+ *
+ * @example
+ * ```typescript
+ * // Edit mode with hover showing hint arrows
+ * const context = {
+ *   editMode: true,
+ *   rtl: false,
+ *   parentPanels: {},
+ *   arrowInfo: undefined,
+ *   hoveredPanel: 'panel1',
+ *   size: { width: 800, height: 600 }
+ * };
+ *
+ * const arrows = generateArrows(panels, context);
+ * // Returns established arrows plus hint arrows for hovered panel
+ * ```
+ *
+ * @see {@link createLine} - Used to generate optimal SVG paths between points
+ * @see {@link getPoints} - Used to calculate arrow attachment coordinates
  */
 export function generateArrows(panels: Panel[], context: GenerateArrowsContext): Arrow[] {
 	const arrows: { id: string; d: string; type: Target; loner: boolean; isHint?: boolean }[] = [];
@@ -95,7 +173,7 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 		} else if (context.editMode && !context.arrowInfo && panel.id !== '$trigger' && context.hoveredPanel === panel.id) {
 			const { x: rejectX, y: rejectY } = getPoints(panel, REJECT_OFFSET);
 
-			const toX = context.isRTL ? rejectX - 3 * GRID_SIZE : rejectX + 3 * GRID_SIZE;
+			const toX = context.rtl ? rejectX - 3 * GRID_SIZE : rejectX + 3 * GRID_SIZE;
 
 			arrows.push({
 				id: panel.id + '_reject',
