@@ -1,19 +1,10 @@
 import { Vector2 } from '@/utils/vector2';
-import {
-	ATTACHMENT_OFFSET,
-	GRID_SIZE,
-	PANEL_HEIGHT,
-	PANEL_WIDTH,
-	REJECT_OFFSET,
-	RESOLVE_OFFSET,
-} from '../../../constants';
+import { ATTACHMENT_OFFSET, GRID_SIZE, REJECT_OFFSET, RESOLVE_OFFSET } from '../../../constants';
 import { ParentInfo } from '../../../flow.vue';
 import type { ArrowInfo, Target } from '../../operation.vue';
 import type { Arrow, Panel } from '../types';
 import { generateCorner } from '../utils/generate-corner';
-import { isPointInPanel } from '../utils/is-point-in-panel'
-import { range } from '../utils/range';
-import { minMaxPoint } from '../utils/min-max-point';
+import { findBestPosition } from './find-best-position';
 
 const START_OFFSET = 2;
 const END_OFFSET = 13;
@@ -160,7 +151,7 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 		}
 
 		if (x + 3 * GRID_SIZE < toX) {
-			const centerX = findBestPosition(new Vector2(x + 2 * GRID_SIZE, y), new Vector2(toX - 2 * GRID_SIZE, toY), 'x');
+			const centerX = findBestPosition(panels, new Vector2(x + 2 * GRID_SIZE, y), new Vector2(toX - 2 * GRID_SIZE, toY), 'x');
 
 			return generatePath(
 				Vector2.fromMany(
@@ -173,7 +164,7 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 		}
 
 		const offsetBox = 40;
-		const centerY = findBestPosition(new Vector2(x + 2 * GRID_SIZE, y), new Vector2(toX - 2 * GRID_SIZE, toY), 'y');
+		const centerY = findBestPosition(panels, new Vector2(x + 2 * GRID_SIZE, y), new Vector2(toX - 2 * GRID_SIZE, toY), 'y');
 
 		return generatePath(
 			Vector2.fromMany(
@@ -208,32 +199,5 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 			.add(new Vector2(-arrowSize, arrowSize))}`;
 
 		return path + ` L ${points.at(-1)} ${arrow}`;
-	}
-
-	function findBestPosition(from: Vector2, to: Vector2, axis: 'x' | 'y') {
-		const possiblePlaces: boolean[] = [];
-
-		const otherAxis = axis === 'x' ? 'y' : 'x';
-
-		const { min, max } = minMaxPoint(from, to);
-
-		const outerPoints = range(min[otherAxis], max[otherAxis], (axis === 'x' ? PANEL_WIDTH : PANEL_HEIGHT) * GRID_SIZE);
-		const innerPoints = range(min[axis], max[axis], GRID_SIZE);
-
-		for (const outer of outerPoints) {
-			for (let inner = 0; inner < innerPoints.length; inner++) {
-				const point = axis === 'x' ? new Vector2(innerPoints[inner], outer) : new Vector2(outer, innerPoints[inner]);
-				possiblePlaces[inner] = (possiblePlaces[inner] ?? true) && !isPointInPanel(point);
-			}
-		}
-
-		let pointer = Math.floor(possiblePlaces.length / 2);
-
-		for (let i = 0; i < possiblePlaces.length; i++) {
-			pointer += i * (i % 2 == 0 ? -1 : 1);
-			if (possiblePlaces[pointer]) return min[axis] + pointer * GRID_SIZE;
-		}
-
-		return from[axis] + Math.floor((to[axis] - from[axis]) / 2 / GRID_SIZE) * GRID_SIZE;
 	}
 }
