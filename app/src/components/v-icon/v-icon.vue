@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useUserStore } from '@/stores/user';
 import { useSizeClass } from '@directus/composables';
 import { isIn } from '@directus/utils';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
@@ -51,6 +52,8 @@ const props = withDefaults(
 
 const emit = defineEmits(['click']);
 
+const userStore = useUserStore();
+
 const sizeClass = computed<string | null>(() => {
 	if (props.sup) return 'sup';
 	return useSizeClass(props).value;
@@ -67,7 +70,7 @@ const socialIconName = computed<IconName | null>(() => {
 	return null;
 });
 
-const mirrored = computed(() => isIn(props.name, RTL_REVERSE_ICONS));
+const mirrored = computed(() => userStore.textDirection === 'rtl' && isIn(props.name, RTL_REVERSE_ICONS));
 
 function emitClick(event: MouseEvent) {
 	if (props.disabled) return;
