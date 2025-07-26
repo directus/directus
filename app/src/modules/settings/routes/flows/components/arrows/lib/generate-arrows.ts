@@ -11,7 +11,8 @@ import { ParentInfo } from '../../../flow.vue';
 import type { ArrowInfo, Target } from '../../operation.vue';
 import type { Arrow, Panel } from '../types';
 import { generateCorner } from '../utils/generate-corner';
-import { isPointInPanel } from '../utils/is-point-in-panel';
+import { isPointInPanel } from '../utils/is-point-in-panel'
+import { range } from '../utils/range';
 import { minMaxPoint } from '../utils/min-max-point';
 
 const START_OFFSET = 2;
@@ -234,16 +235,5 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 		}
 
 		return from[axis] + Math.floor((to[axis] - from[axis]) / 2 / GRID_SIZE) * GRID_SIZE;
-	}
-
-	function range(min: number, max: number, step: number) {
-		const points: number[] = [];
-
-		for (let i = min; i < max; i += step) {
-			points.push(i);
-		}
-
-		points.push(max);
-		return points;
 	}
 }
