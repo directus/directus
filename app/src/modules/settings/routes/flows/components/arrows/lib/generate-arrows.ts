@@ -10,8 +10,9 @@ import {
 import { ParentInfo } from '../../../flow.vue';
 import type { ArrowInfo, Target } from '../../operation.vue';
 import type { Arrow, Panel } from '../types';
-import { minMaxPoint } from '../utils/min-max-point';
+import { generateCorner } from '../utils/generate-corner';
 import { isPointInPanel } from '../utils/is-point-in-panel';
+import { minMaxPoint } from '../utils/min-max-point';
 
 const START_OFFSET = 2;
 const END_OFFSET = 13;
@@ -206,10 +207,6 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 			.add(new Vector2(-arrowSize, arrowSize))}`;
 
 		return path + ` L ${points.at(-1)} ${arrow}`;
-	}
-
-	function generateCorner(start: Vector2, middle: Vector2, end: Vector2) {
-		return ` L ${start.moveNextTo(middle)} Q ${middle} ${end.moveNextTo(middle)}`;
 	}
 
 	function findBestPosition(from: Vector2, to: Vector2, axis: 'x' | 'y') {
