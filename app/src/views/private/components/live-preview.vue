@@ -326,7 +326,13 @@ function useUrls() {
 						transformOrigin: zoom >= 1 ? 'top left' : 'center center',
 					}"
 				>
-					<iframe id="frame" ref="frameEl" :src="frameSrc" @load="onIframeLoad" />
+					<iframe
+						id="frame"
+						ref="frameEl"
+						:src="frameSrc"
+						:title="$t('live_preview.iframe_title')"
+						@load="onIframeLoad"
+					/>
 					<slot name="overlay" :frame-el :frame-src />
 				</div>
 			</div>

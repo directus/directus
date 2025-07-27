@@ -1626,6 +1626,7 @@ live_preview:
   new_window: Open in New Window
   close_window: Open in Split View
   toggle_3d: Toggle 3D
+  iframe_title: Live Website Preview
 shares: Shares
 unlimited_usage: Unlimited usage
 uses_left: No uses left | One use left | {n} uses left
@@ -2078,6 +2079,7 @@ interfaces:
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
+    media_preview_iframe_title: Media Preview
   input-block-editor:
     input-block-editor: Block Editor
     description: Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js
