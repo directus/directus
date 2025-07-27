@@ -175,9 +175,5 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 		}
 	}
 
-	if (context.arrowInfo) {
-		arrows.push();
-	}
-
 	return arrows;
 }

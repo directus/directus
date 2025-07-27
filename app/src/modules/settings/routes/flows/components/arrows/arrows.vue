@@ -49,7 +49,6 @@ const arrows = computed(() => {
 		arrowInfo: props.arrowInfo,
 		editMode: props.editMode,
 		hoveredPanel: props.hoveredPanel,
-		rtl: unref(isRTL),
 		parentPanels: props.parentPanels,
 		size: unref(size),
 	});
@@ -58,7 +57,7 @@ const arrows = computed(() => {
 
 <template>
 	<div class="arrow-container">
-		<svg :width="size.width" :height="size.height" class="arrows">
+		<svg :width="size.width" :height="size.height" class="arrows" :class="{ mirrored: isRTL }">
 			<transition-group name="fade">
 				<path
 					v-for="arrow in arrows"
@@ -82,7 +81,10 @@ const arrows = computed(() => {
 		z-index: 1;
 		inset-inline-start: var(--content-padding);
 		pointer-events: none;
-		transform: scaleX(-1);
+
+		&.mirrored {
+			transform: scaleX(-1);
+		}
 
 		path {
 			fill: transparent;
