@@ -188,7 +188,30 @@ describe('generateArrows', () => {
 			expect(hintArrow!.type).toBe('reject');
 		});
 
-		it('should show hint resolve arrow for $trigger when hovered', () => {
+		it('should show hint resolve arrow for $trigger when hovered and no existing resolve target', () => {
+			// Use a modified trigger panel without a resolve target
+			const modifiedPanels: Panel[] = [
+				{ id: 'panel1', x: 1, y: 1, resolve: 'panel2', reject: 'panel3' },
+				{ id: 'panel2', x: 3, y: 1, resolve: '', reject: '' },
+				{ id: 'panel3', x: 1, y: 3, resolve: '', reject: '' },
+				{ id: '$trigger', x: 0, y: 1, resolve: '', reject: '' }, // No resolve target
+			];
+
+			const contextWithTriggerHover: GenerateArrowsContext = {
+				...baseContext,
+				editMode: true,
+				hoveredPanel: '$trigger',
+			};
+
+			const result = generateArrows(modifiedPanels, contextWithTriggerHover);
+
+			// $trigger should show hint arrow when it has no resolve target and is hovered
+			const hintArrows = result.filter((arrow) => arrow.id === '$trigger_resolve' && arrow.isHint === true);
+
+			expect(hintArrows).toHaveLength(1);
+		});
+
+		it('should not show hint resolve arrow for $trigger when it has existing resolve target', () => {
 			const contextWithTriggerHover: GenerateArrowsContext = {
 				...baseContext,
 				editMode: true,
@@ -197,10 +220,12 @@ describe('generateArrows', () => {
 
 			const result = generateArrows(mockPanels, contextWithTriggerHover);
 
-			// $trigger already has a resolve target, but should still show hint when hovered
+			// $trigger has existing resolve target, so no hint arrow should be shown
 			const hintArrows = result.filter((arrow) => arrow.id === '$trigger_resolve' && arrow.isHint === true);
+			const regularArrows = result.filter((arrow) => arrow.id === '$trigger_resolve' && !arrow.isHint);
 
-			expect(hintArrows).toHaveLength(1);
+			expect(hintArrows).toHaveLength(0);
+			expect(regularArrows).toHaveLength(1); // Should have regular resolve arrow instead
 		});
 
 		it('should not generate hint reject arrow for $trigger', () => {
