@@ -49,7 +49,7 @@ const arrows = computed(() => {
 		arrowInfo: props.arrowInfo,
 		editMode: props.editMode,
 		hoveredPanel: props.hoveredPanel,
-		isRTL: unref(isRTL),
+		rtl: unref(isRTL),
 		parentPanels: props.parentPanels,
 		size: unref(size),
 	});
@@ -82,6 +82,7 @@ const arrows = computed(() => {
 		z-index: 1;
 		inset-inline-start: var(--content-padding);
 		pointer-events: none;
+		transform: scaleX(-1);
 
 		path {
 			fill: transparent;

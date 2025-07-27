@@ -9,9 +9,6 @@ export interface GenerateArrowsContext {
 	/** Whether or not the flow is being edited. This modifies the hover state of some arrows */
 	editMode: boolean;
 
-	/** Change the svg `d` paths to match the right to left text direction */
-	rtl: boolean;
-
 	/** Lookup table for panels that have known resolve panels attached */
 	parentPanels: Record<string, ParentInfo>;
 
@@ -42,10 +39,6 @@ export interface GenerateArrowsContext {
  * 2. **Edit Mode**: Adds hint arrows for potential connections when hovering
  * 3. **Drag Mode**: Displays preview arrow following cursor during drag operations
  *
- * **RTL Support:**
- * The function respects right-to-left text direction, adjusting arrow directions accordingly.
- * Reject hint arrows point left in RTL mode instead of right.
- *
  * **Arrow Positioning:**
  * - Uses `RESOLVE_OFFSET` and `REJECT_OFFSET` constants for consistent arrow attachment points
  * - Calculates optimal paths using collision avoidance via `createLine` function
@@ -55,7 +48,6 @@ export interface GenerateArrowsContext {
  *                 resolve/reject target IDs and positioning information.
  * @param context - Configuration object controlling arrow generation behavior
  * @param context.editMode - When true, shows hint arrows for hovering and potential connections
- * @param context.rtl - When true, adjusts arrow directions for right-to-left layouts
  * @param context.parentPanels - Lookup table for panel hierarchy to determine "loner" status
  * @param context.arrowInfo - Active drag operation details for preview arrow rendering
  * @param context.hoveredPanel - Currently hovered panel ID for showing hint arrows
@@ -79,7 +71,6 @@ export interface GenerateArrowsContext {
  *
  * const context = {
  *   editMode: false,
- *   rtl: false,
  *   parentPanels: {},
  *   arrowInfo: undefined,
  *   hoveredPanel: null,
@@ -95,7 +86,6 @@ export interface GenerateArrowsContext {
  * // Edit mode with hover showing hint arrows
  * const context = {
  *   editMode: true,
- *   rtl: false,
  *   parentPanels: {},
  *   arrowInfo: undefined,
  *   hoveredPanel: 'panel1',
@@ -173,7 +163,7 @@ export function generateArrows(panels: Panel[], context: GenerateArrowsContext):
 		} else if (context.editMode && !context.arrowInfo && panel.id !== '$trigger' && context.hoveredPanel === panel.id) {
 			const { x: rejectX, y: rejectY } = getPoints(panel, REJECT_OFFSET);
 
-			const toX = context.rtl ? rejectX - 3 * GRID_SIZE : rejectX + 3 * GRID_SIZE;
+			const toX = rejectX + 3 * GRID_SIZE;
 
 			arrows.push({
 				id: panel.id + '_reject',
