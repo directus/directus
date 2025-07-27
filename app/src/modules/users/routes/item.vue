@@ -229,8 +229,6 @@ async function setLang(user: Record<string, any>) {
 	const newLang = user?.language ?? serverStore.info?.project?.default_language;
 
 	if (newLang && newLang !== locale.value) {
-		await setLanguage(newLang);
-
 		await Promise.all([fieldsStore.hydrate(), collectionsStore.hydrate()]);
 	}
 }
