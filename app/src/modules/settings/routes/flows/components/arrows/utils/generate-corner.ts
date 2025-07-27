@@ -1,4 +1,4 @@
-import { Vector2 } from "@/utils/vector2";
+import { Vector2 } from '@/utils/vector2';
 
 /**
  * Generates a smooth rounded corner for SVG paths using quadratic Bézier curves.

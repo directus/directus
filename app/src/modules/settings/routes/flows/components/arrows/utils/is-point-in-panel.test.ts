@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
 import { Vector2 } from '@/utils/vector2';
+import { describe, expect, it } from 'vitest';
 import { GRID_SIZE, PANEL_HEIGHT, PANEL_WIDTH } from '../../../constants';
-import { isPointInPanel } from './is-point-in-panel';
 import type { Panel } from '../types';
+import { isPointInPanel } from './is-point-in-panel';
 
 describe('isPointInPanel', () => {
 	// Helper function to create a test panel
@@ -27,10 +27,7 @@ describe('isPointInPanel', () => {
 			const panel = createPanel(5, 5);
 			const bounds = getPanelBounds(panel);
 
-			const centerPoint = new Vector2(
-				(bounds.left + bounds.right) / 2,
-				(bounds.top + bounds.bottom) / 2
-			);
+			const centerPoint = new Vector2((bounds.left + bounds.right) / 2, (bounds.top + bounds.bottom) / 2);
 
 			const result = isPointInPanel([panel], centerPoint);
 			expect(result).toBe(true);
@@ -121,30 +118,19 @@ describe('isPointInPanel', () => {
 
 	describe('multiple panels tests', () => {
 		it('should return true if point is in any of multiple panels', () => {
-			const panels = [
-				createPanel(3, 3),
-				createPanel(10, 5),
-				createPanel(7, 8),
-			];
+			const panels = [createPanel(3, 3), createPanel(10, 5), createPanel(7, 8)];
 
 			// Point inside the second panel
 			const bounds = getPanelBounds(panels[1]!);
 
-			const point = new Vector2(
-				(bounds.left + bounds.right) / 2,
-				(bounds.top + bounds.bottom) / 2
-			);
+			const point = new Vector2((bounds.left + bounds.right) / 2, (bounds.top + bounds.bottom) / 2);
 
 			const result = isPointInPanel(panels, point);
 			expect(result).toBe(true);
 		});
 
 		it('should return false if point is not in any panel', () => {
-			const panels = [
-				createPanel(3, 3),
-				createPanel(10, 5),
-				createPanel(7, 8),
-			];
+			const panels = [createPanel(3, 3), createPanel(10, 5), createPanel(7, 8)];
 
 			// Point far away from all panels
 			const point = new Vector2(1000, 1000);
@@ -161,10 +147,7 @@ describe('isPointInPanel', () => {
 
 			const bounds = getPanelBounds(panels[0]!);
 
-			const point = new Vector2(
-				(bounds.left + bounds.right) / 2,
-				(bounds.top + bounds.bottom) / 2
-			);
+			const point = new Vector2((bounds.left + bounds.right) / 2, (bounds.top + bounds.bottom) / 2);
 
 			const result = isPointInPanel(panels, point);
 			expect(result).toBe(true);
@@ -182,10 +165,7 @@ describe('isPointInPanel', () => {
 			const panel = createPanel(-5, -5);
 			const bounds = getPanelBounds(panel);
 
-			const point = new Vector2(
-				(bounds.left + bounds.right) / 2,
-				(bounds.top + bounds.bottom) / 2
-			);
+			const point = new Vector2((bounds.left + bounds.right) / 2, (bounds.top + bounds.bottom) / 2);
 
 			const result = isPointInPanel([panel], point);
 			expect(result).toBe(true);
@@ -195,10 +175,7 @@ describe('isPointInPanel', () => {
 			const panel = createPanel(0, 0);
 			const bounds = getPanelBounds(panel);
 
-			const point = new Vector2(
-				(bounds.left + bounds.right) / 2,
-				(bounds.top + bounds.bottom) / 2
-			);
+			const point = new Vector2((bounds.left + bounds.right) / 2, (bounds.top + bounds.bottom) / 2);
 
 			const result = isPointInPanel([panel], point);
 			expect(result).toBe(true);
@@ -263,10 +240,7 @@ describe('isPointInPanel', () => {
 			panels.forEach((panel) => {
 				const bounds = getPanelBounds(panel);
 
-				const centerPoint = new Vector2(
-					(bounds.left + bounds.right) / 2,
-					(bounds.top + bounds.bottom) / 2
-				);
+				const centerPoint = new Vector2((bounds.left + bounds.right) / 2, (bounds.top + bounds.bottom) / 2);
 
 				expect(isPointInPanel(panels, centerPoint)).toBe(true);
 			});

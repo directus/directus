@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest';
 import { Vector2 } from '@/utils/vector2';
-import { findBestPosition } from './find-best-position';
+import { describe, expect, it } from 'vitest';
 import { GRID_SIZE } from '../../../constants';
 import type { Panel } from '../types';
+import { findBestPosition } from './find-best-position';
 
 describe('findBestPosition', () => {
 	// Helper function to create test panels
@@ -75,11 +75,7 @@ describe('findBestPosition', () => {
 		});
 
 		it('should handle multiple panels', () => {
-			const panels = [
-				createPanel(3, 3, 'panel1'),
-				createPanel(7, 7, 'panel2'),
-				createPanel(10, 5, 'panel3'),
-			];
+			const panels = [createPanel(3, 3, 'panel1'), createPanel(7, 7, 'panel2'), createPanel(10, 5, 'panel3')];
 
 			const from = new Vector2(40, 60);
 			const to = new Vector2(240, 160);
@@ -107,11 +103,7 @@ describe('findBestPosition', () => {
 
 		it('should expand outward from center when center is blocked', () => {
 			// Create panels that block the center area
-			const panels = [
-				createPanel(4, 4),
-				createPanel(5, 5),
-				createPanel(6, 6),
-			];
+			const panels = [createPanel(4, 4), createPanel(5, 5), createPanel(6, 6)];
 
 			const from = new Vector2(80, 80);
 			const to = new Vector2(140, 140);

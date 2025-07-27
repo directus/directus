@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
 import { Vector2 } from '@/utils/vector2';
+import { describe, expect, it } from 'vitest';
 import { minMaxPoint } from './min-max-point';
 
 describe('minMaxPoint', () => {

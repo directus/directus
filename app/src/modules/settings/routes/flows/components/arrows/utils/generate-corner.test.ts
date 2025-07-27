@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import { Vector2 } from '@/utils/vector2';
+import { describe, expect, it } from 'vitest';
 import { generateCorner } from './generate-corner';
 
 describe('generateCorner', () => {

@@ -171,7 +171,7 @@ describe('range', () => {
 		it('should contain only numbers', () => {
 			const result = range(0, 5, 1.5);
 
-			result.forEach(value => {
+			result.forEach((value) => {
 				expect(typeof value).toBe('number');
 			});
 		});
@@ -196,7 +196,7 @@ describe('range', () => {
 		});
 
 		it('should generate animation frames', () => {
-			const frames = range(0, 1, 1/30); // 30 FPS for 1 second
+			const frames = range(0, 1, 1 / 30); // 30 FPS for 1 second
 			expect(frames).toHaveLength(32); // 0 to 1 inclusive with 30 steps + 1 final
 			expect(frames[0]).toBe(0);
 			expect(frames[frames.length - 1]).toBe(1);

@@ -1,9 +1,9 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { generateArrows, type GenerateArrowsContext } from './generate-arrows';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GRID_SIZE, REJECT_OFFSET, RESOLVE_OFFSET } from '../../../constants';
-import type { Panel } from '../types';
-import type { ArrowInfo } from '../../operation.vue';
 import type { ParentInfo } from '../../../flow.vue';
+import type { ArrowInfo } from '../../operation.vue';
+import type { Panel } from '../types';
+import { generateArrows, type GenerateArrowsContext } from './generate-arrows';
 
 // Mock the dependencies
 const mockGetPoints = vi.fn();
@@ -63,11 +63,11 @@ describe('generateArrows', () => {
 		it('should generate resolve arrows for panels with resolve targets', () => {
 			const result = generateArrows(mockPanels, baseContext);
 
-			const resolveArrows = result.filter(arrow => arrow.type === 'resolve');
+			const resolveArrows = result.filter((arrow) => arrow.type === 'resolve');
 			expect(resolveArrows).toHaveLength(2); // panel1 -> panel2, $trigger -> panel1
 
 			// Check panel1 resolve arrow
-			const panel1ResolveArrow = resolveArrows.find(arrow => arrow.id === 'panel1_resolve');
+			const panel1ResolveArrow = resolveArrows.find((arrow) => arrow.id === 'panel1_resolve');
 			expect(panel1ResolveArrow).toBeDefined();
 			expect(panel1ResolveArrow!.type).toBe('resolve');
 			expect(panel1ResolveArrow!.loner).toBe(true);
@@ -77,10 +77,10 @@ describe('generateArrows', () => {
 		it('should generate reject arrows for panels with reject targets', () => {
 			const result = generateArrows(mockPanels, baseContext);
 
-			const rejectArrows = result.filter(arrow => arrow.type === 'reject');
+			const rejectArrows = result.filter((arrow) => arrow.type === 'reject');
 			expect(rejectArrows).toHaveLength(1); // panel1 -> panel3
 
-			const panel1RejectArrow = rejectArrows.find(arrow => arrow.id === 'panel1_reject');
+			const panel1RejectArrow = rejectArrows.find((arrow) => arrow.id === 'panel1_reject');
 			expect(panel1RejectArrow).toBeDefined();
 			expect(panel1RejectArrow!.type).toBe('reject');
 		});
@@ -91,7 +91,7 @@ describe('generateArrows', () => {
 			expect(mockGetPoints).toHaveBeenCalledWith(
 				mockPanels[0], // panel1
 				RESOLVE_OFFSET,
-				mockPanels[1] // panel2 (resolve target)
+				mockPanels[1], // panel2 (resolve target)
 			);
 		});
 
@@ -101,7 +101,7 @@ describe('generateArrows', () => {
 			expect(mockGetPoints).toHaveBeenCalledWith(
 				mockPanels[0], // panel1
 				REJECT_OFFSET,
-				mockPanels[2] // panel3 (reject target)
+				mockPanels[2], // panel3 (reject target)
 			);
 		});
 
@@ -114,7 +114,7 @@ describe('generateArrows', () => {
 				expect.any(Number),
 				expect.any(Number),
 				expect.any(Number),
-				expect.any(Number)
+				expect.any(Number),
 			);
 		});
 	});
@@ -123,7 +123,7 @@ describe('generateArrows', () => {
 		it('should mark panels as loners when they have no parent', () => {
 			const result = generateArrows(mockPanels, baseContext);
 
-			const panel1Arrow = result.find(arrow => arrow.id === 'panel1_resolve');
+			const panel1Arrow = result.find((arrow) => arrow.id === 'panel1_resolve');
 			expect(panel1Arrow!.loner).toBe(true);
 		});
 
@@ -137,14 +137,14 @@ describe('generateArrows', () => {
 
 			const result = generateArrows(mockPanels, contextWithParents);
 
-			const panel1Arrow = result.find(arrow => arrow.id === 'panel1_resolve');
+			const panel1Arrow = result.find((arrow) => arrow.id === 'panel1_resolve');
 			expect(panel1Arrow!.loner).toBe(false);
 		});
 
 		it('should mark $trigger as non-loner regardless of parent status', () => {
 			const result = generateArrows(mockPanels, baseContext);
 
-			const triggerArrow = result.find(arrow => arrow.id === '$trigger_resolve');
+			const triggerArrow = result.find((arrow) => arrow.id === '$trigger_resolve');
 			expect(triggerArrow!.loner).toBe(false);
 		});
 
@@ -158,7 +158,7 @@ describe('generateArrows', () => {
 
 			const result = generateArrows(mockPanels, contextWithLonerParent);
 
-			const panel1Arrow = result.find(arrow => arrow.id === 'panel1_resolve');
+			const panel1Arrow = result.find((arrow) => arrow.id === 'panel1_resolve');
 			expect(panel1Arrow!.loner).toBe(true);
 		});
 	});
@@ -173,9 +173,7 @@ describe('generateArrows', () => {
 		it('should generate hint resolve arrow for hovered panel without resolve target', () => {
 			const result = generateArrows(mockPanels, editModeContext);
 
-			const hintArrow = result.find(arrow =>
-				arrow.id === 'panel2_resolve' && arrow.isHint === true
-			);
+			const hintArrow = result.find((arrow) => arrow.id === 'panel2_resolve' && arrow.isHint === true);
 
 			expect(hintArrow).toBeDefined();
 			expect(hintArrow!.type).toBe('resolve');
@@ -184,9 +182,7 @@ describe('generateArrows', () => {
 		it('should generate hint reject arrow for hovered panel without reject target', () => {
 			const result = generateArrows(mockPanels, editModeContext);
 
-			const hintArrow = result.find(arrow =>
-				arrow.id === 'panel2_reject' && arrow.isHint === true
-			);
+			const hintArrow = result.find((arrow) => arrow.id === 'panel2_reject' && arrow.isHint === true);
 
 			expect(hintArrow).toBeDefined();
 			expect(hintArrow!.type).toBe('reject');
@@ -202,9 +198,7 @@ describe('generateArrows', () => {
 			const result = generateArrows(mockPanels, contextWithTriggerHover);
 
 			// $trigger already has a resolve target, but should still show hint when hovered
-			const hintArrows = result.filter(arrow =>
-				arrow.id === '$trigger_resolve' && arrow.isHint === true
-			);
+			const hintArrows = result.filter((arrow) => arrow.id === '$trigger_resolve' && arrow.isHint === true);
 
 			expect(hintArrows).toHaveLength(1);
 		});
@@ -218,9 +212,7 @@ describe('generateArrows', () => {
 
 			const result = generateArrows(mockPanels, contextWithTriggerHover);
 
-			const triggerRejectHint = result.find(arrow =>
-				arrow.id === '$trigger_reject' && arrow.isHint === true
-			);
+			const triggerRejectHint = result.find((arrow) => arrow.id === '$trigger_reject' && arrow.isHint === true);
 
 			expect(triggerRejectHint).toBeUndefined();
 		});
@@ -228,7 +220,7 @@ describe('generateArrows', () => {
 		it('should not generate hint arrows when not in edit mode', () => {
 			const result = generateArrows(mockPanels, baseContext);
 
-			const hintArrows = result.filter(arrow => arrow.isHint === true);
+			const hintArrows = result.filter((arrow) => arrow.isHint === true);
 			expect(hintArrows).toHaveLength(0);
 		});
 
@@ -246,7 +238,7 @@ describe('generateArrows', () => {
 
 			const result = generateArrows(mockPanels, contextWithArrowInfo);
 
-			const hintArrows = result.filter(arrow => arrow.isHint === true);
+			const hintArrows = result.filter((arrow) => arrow.isHint === true);
 			expect(hintArrows).toHaveLength(0);
 		});
 	});
@@ -265,7 +257,7 @@ describe('generateArrows', () => {
 			// Check that createLine was called with RTL-adjusted coordinates
 			const createLineCalls = mockCreateLine.mock.calls;
 
-			const rejectHintCall = createLineCalls.find(call => {
+			const rejectHintCall = createLineCalls.find((call) => {
 				// Look for a call where toX < fromX (pointing left)
 				return call[1] > call[3]; // x1 > x2 means pointing left
 			});
@@ -286,7 +278,7 @@ describe('generateArrows', () => {
 			// Check that createLine was called with LTR coordinates
 			const createLineCalls = mockCreateLine.mock.calls;
 
-			const rejectHintCall = createLineCalls.find(call => {
+			const rejectHintCall = createLineCalls.find((call) => {
 				// Look for a call where toX > fromX (pointing right)
 				return call[1] < call[3]; // x1 < x2 means pointing right
 			});
@@ -308,7 +300,7 @@ describe('generateArrows', () => {
 
 			const result = generateArrows(mockPanels, dragContext);
 
-			const previewArrow = result.find(arrow => arrow.id === 'panel1_resolve');
+			const previewArrow = result.find((arrow) => arrow.id === 'panel1_resolve');
 			expect(previewArrow).toBeDefined();
 
 			// Verify createLine was called with drag position
@@ -317,7 +309,7 @@ describe('generateArrows', () => {
 				expect.any(Number),
 				expect.any(Number),
 				150, // arrowInfo.pos.x
-				250  // arrowInfo.pos.y
+				250, // arrowInfo.pos.y
 			);
 		});
 
@@ -333,7 +325,7 @@ describe('generateArrows', () => {
 
 			const result = generateArrows(mockPanels, dragContext);
 
-			const previewArrow = result.find(arrow => arrow.id === 'panel1_reject');
+			const previewArrow = result.find((arrow) => arrow.id === 'panel1_reject');
 			expect(previewArrow).toBeDefined();
 
 			// Verify createLine was called with drag position
@@ -342,7 +334,7 @@ describe('generateArrows', () => {
 				expect.any(Number),
 				expect.any(Number),
 				200, // arrowInfo.pos.x
-				300  // arrowInfo.pos.y
+				300, // arrowInfo.pos.y
 			);
 		});
 
@@ -359,9 +351,7 @@ describe('generateArrows', () => {
 			const result = generateArrows(mockPanels, dragContext);
 
 			// Should only have one resolve arrow for panel1 (the preview)
-			const panel1ResolveArrows = result.filter(arrow =>
-				arrow.id === 'panel1_resolve'
-			);
+			const panel1ResolveArrows = result.filter((arrow) => arrow.id === 'panel1_resolve');
 
 			expect(panel1ResolveArrows).toHaveLength(1);
 		});
@@ -374,28 +364,22 @@ describe('generateArrows', () => {
 		});
 
 		it('should handle panels with no resolve or reject targets', () => {
-			const simplePanels: Panel[] = [
-				{ id: 'simple', x: 1, y: 1, resolve: '', reject: '' },
-			];
+			const simplePanels: Panel[] = [{ id: 'simple', x: 1, y: 1, resolve: '', reject: '' }];
 
 			const result = generateArrows(simplePanels, baseContext);
 
-			const simpleArrows = result.filter(arrow => arrow.id.startsWith('simple'));
+			const simpleArrows = result.filter((arrow) => arrow.id.startsWith('simple'));
 			expect(simpleArrows).toHaveLength(0);
 		});
 
 		it('should handle panels with self-referencing targets', () => {
-			const selfRefPanels: Panel[] = [
-				{ id: 'selfref', x: 1, y: 1, resolve: 'selfref', reject: '' },
-			];
+			const selfRefPanels: Panel[] = [{ id: 'selfref', x: 1, y: 1, resolve: 'selfref', reject: '' }];
 
 			expect(() => generateArrows(selfRefPanels, baseContext)).not.toThrow();
 		});
 
 		it('should handle panels with non-existent targets', () => {
-			const invalidPanels: Panel[] = [
-				{ id: 'invalid', x: 1, y: 1, resolve: 'nonexistent', reject: '' },
-			];
+			const invalidPanels: Panel[] = [{ id: 'invalid', x: 1, y: 1, resolve: 'nonexistent', reject: '' }];
 
 			expect(() => generateArrows(invalidPanels, baseContext)).not.toThrow();
 		});
@@ -422,7 +406,7 @@ describe('generateArrows', () => {
 
 			expect(Array.isArray(result)).toBe(true);
 
-			result.forEach(arrow => {
+			result.forEach((arrow) => {
 				expect(arrow).toHaveProperty('id');
 				expect(arrow).toHaveProperty('d');
 				expect(arrow).toHaveProperty('type');
@@ -441,7 +425,7 @@ describe('generateArrows', () => {
 		it('should generate unique arrow IDs', () => {
 			const result = generateArrows(mockPanels, baseContext);
 
-			const ids = result.map(arrow => arrow.id);
+			const ids = result.map((arrow) => arrow.id);
 			const uniqueIds = new Set(ids);
 
 			expect(ids.length).toBe(uniqueIds.size);
@@ -450,7 +434,7 @@ describe('generateArrows', () => {
 		it('should use consistent ID naming convention', () => {
 			const result = generateArrows(mockPanels, baseContext);
 
-			result.forEach(arrow => {
+			result.forEach((arrow) => {
 				expect(arrow.id).toMatch(/^.+_(resolve|reject)$/);
 			});
 		});
@@ -460,17 +444,9 @@ describe('generateArrows', () => {
 		it('should pass correct offset constants to getPoints', () => {
 			generateArrows(mockPanels, baseContext);
 
-			expect(mockGetPoints).toHaveBeenCalledWith(
-				expect.any(Object),
-				RESOLVE_OFFSET,
-				expect.any(Object)
-			);
+			expect(mockGetPoints).toHaveBeenCalledWith(expect.any(Object), RESOLVE_OFFSET, expect.any(Object));
 
-			expect(mockGetPoints).toHaveBeenCalledWith(
-				expect.any(Object),
-				REJECT_OFFSET,
-				expect.any(Object)
-			);
+			expect(mockGetPoints).toHaveBeenCalledWith(expect.any(Object), REJECT_OFFSET, expect.any(Object));
 		});
 
 		it('should pass panels array to createLine for collision avoidance', () => {
@@ -481,7 +457,7 @@ describe('generateArrows', () => {
 				expect.any(Number),
 				expect.any(Number),
 				expect.any(Number),
-				expect.any(Number)
+				expect.any(Number),
 			);
 		});
 
@@ -497,7 +473,7 @@ describe('generateArrows', () => {
 			// Check that createLine was called with GRID_SIZE-based coordinates
 			const createLineCalls = mockCreateLine.mock.calls;
 
-			const hintCall = createLineCalls.find(call => {
+			const hintCall = createLineCalls.find((call) => {
 				const distance = Math.abs(call[3] - call[1]); // |x2 - x1|
 				return distance === 3 * GRID_SIZE;
 			});

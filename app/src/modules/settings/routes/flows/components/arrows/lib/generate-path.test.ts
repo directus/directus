@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import { Vector2 } from '@/utils/vector2';
+import { describe, expect, it } from 'vitest';
 import { generatePath } from './generate-path';
 
 describe('generatePath', () => {
@@ -67,11 +67,7 @@ describe('generatePath', () => {
 
 	describe('multiple points with corners', () => {
 		it('should generate path with corners for three points', () => {
-			const points = [
-				new Vector2(0, 0),
-				new Vector2(50, 0),
-				new Vector2(50, 50)
-			];
+			const points = [new Vector2(0, 0), new Vector2(50, 0), new Vector2(50, 50)];
 
 			const result = generatePath(points);
 
@@ -83,12 +79,7 @@ describe('generatePath', () => {
 		});
 
 		it('should call generateCorner for each intermediate point', () => {
-			const points = [
-				new Vector2(0, 0),
-				new Vector2(25, 0),
-				new Vector2(50, 0),
-				new Vector2(50, 50)
-			];
+			const points = [new Vector2(0, 0), new Vector2(25, 0), new Vector2(50, 0), new Vector2(50, 50)];
 
 			const result = generatePath(points);
 
@@ -106,7 +97,7 @@ describe('generatePath', () => {
 				new Vector2(20, 0),
 				new Vector2(20, 20),
 				new Vector2(40, 20),
-				new Vector2(40, 40)
+				new Vector2(40, 40),
 			];
 
 			const result = generatePath(points);
@@ -206,8 +197,8 @@ describe('generatePath', () => {
 			// Pattern: M start L end M arrowStart L arrowPoint1 M arrowStart L arrowPoint2
 			const pathParts = result.split(' ');
 			expect(pathParts[0]).toBe('M'); // Start with move
-			expect(pathParts.filter(part => part === 'L')).toHaveLength(3); // Three line commands
-			expect(pathParts.filter(part => part === 'M')).toHaveLength(3); // Three move commands
+			expect(pathParts.filter((part) => part === 'L')).toHaveLength(3); // Three line commands
+			expect(pathParts.filter((part) => part === 'M')).toHaveLength(3); // Three move commands
 		});
 	});
 });

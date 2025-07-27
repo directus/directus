@@ -60,7 +60,11 @@ export function generatePath(points: Vector2[]) {
 	const arrowSize = 8;
 	const lastPoint = points[points.length - 1]!;
 
-	const arrow = `M ${lastPoint} L ${lastPoint.clone().add(new Vector2(-arrowSize, -arrowSize))} M ${lastPoint} L ${lastPoint.clone().add(new Vector2(-arrowSize, arrowSize))}`;
+	const arrow = `M ${lastPoint} L ${lastPoint
+		.clone()
+		.add(new Vector2(-arrowSize, -arrowSize))} M ${lastPoint} L ${lastPoint
+		.clone()
+		.add(new Vector2(-arrowSize, arrowSize))}`;
 
 	return path + ` L ${lastPoint} ${arrow}`;
 }
