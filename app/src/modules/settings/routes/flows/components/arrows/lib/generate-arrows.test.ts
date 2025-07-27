@@ -3,19 +3,20 @@ import { GRID_SIZE, REJECT_OFFSET, RESOLVE_OFFSET } from '../../../constants';
 import type { ParentInfo } from '../../../flow.vue';
 import type { ArrowInfo } from '../../operation.vue';
 import type { Panel } from '../types';
+import { getPoints } from '../utils/get-points';
+import { createLine } from './create-line';
 import { generateArrows, type GenerateArrowsContext } from './generate-arrows';
 
-// Mock the dependencies
-const mockGetPoints = vi.fn();
-const mockCreateLine = vi.fn();
-
 vi.mock('../utils/get-points', () => ({
-	getPoints: mockGetPoints,
+	getPoints: vi.fn(),
 }));
 
 vi.mock('./create-line', () => ({
-	createLine: mockCreateLine,
+	createLine: vi.fn(),
 }));
+
+const mockGetPoints = vi.mocked(getPoints);
+const mockCreateLine = vi.mocked(createLine);
 
 describe('generateArrows', () => {
 	const mockPanels: Panel[] = [
@@ -27,7 +28,6 @@ describe('generateArrows', () => {
 
 	const baseContext: GenerateArrowsContext = {
 		editMode: false,
-		rtl: false,
 		parentPanels: {},
 		arrowInfo: undefined,
 		hoveredPanel: null,
@@ -240,50 +240,6 @@ describe('generateArrows', () => {
 
 			const hintArrows = result.filter((arrow) => arrow.isHint === true);
 			expect(hintArrows).toHaveLength(0);
-		});
-	});
-
-	describe('RTL support', () => {
-		it('should generate reject hint arrows pointing left in RTL mode', () => {
-			const rtlContext: GenerateArrowsContext = {
-				...baseContext,
-				editMode: true,
-				rtl: true,
-				hoveredPanel: 'panel2',
-			};
-
-			generateArrows(mockPanels, rtlContext);
-
-			// Check that createLine was called with RTL-adjusted coordinates
-			const createLineCalls = mockCreateLine.mock.calls;
-
-			const rejectHintCall = createLineCalls.find((call) => {
-				// Look for a call where toX < fromX (pointing left)
-				return call[1] > call[3]; // x1 > x2 means pointing left
-			});
-
-			expect(rejectHintCall).toBeDefined();
-		});
-
-		it('should generate reject hint arrows pointing right in LTR mode', () => {
-			const ltrContext: GenerateArrowsContext = {
-				...baseContext,
-				editMode: true,
-				rtl: false,
-				hoveredPanel: 'panel2',
-			};
-
-			generateArrows(mockPanels, ltrContext);
-
-			// Check that createLine was called with LTR coordinates
-			const createLineCalls = mockCreateLine.mock.calls;
-
-			const rejectHintCall = createLineCalls.find((call) => {
-				// Look for a call where toX > fromX (pointing right)
-				return call[1] < call[3]; // x1 < x2 means pointing right
-			});
-
-			expect(rejectHintCall).toBeDefined();
 		});
 	});
 

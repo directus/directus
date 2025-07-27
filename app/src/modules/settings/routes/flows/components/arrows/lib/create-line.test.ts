@@ -3,18 +3,20 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GRID_SIZE } from '../../../constants';
 import type { Panel } from '../types';
 import { createLine } from './create-line';
+import { findBestPosition } from './find-best-position';
+import { generatePath } from './generate-path';
 
 // Mock the dependencies
-const mockFindBestPosition = vi.fn();
-const mockGeneratePath = vi.fn();
-
 vi.mock('./find-best-position', () => ({
-	findBestPosition: mockFindBestPosition,
+	findBestPosition: vi.fn(),
 }));
 
 vi.mock('./generate-path', () => ({
-	generatePath: mockGeneratePath,
+	generatePath: vi.fn(),
 }));
+
+const mockFindBestPosition = vi.mocked(findBestPosition);
+const mockGeneratePath = vi.mocked(generatePath);
 
 describe('createLine', () => {
 	const mockPanels: Panel[] = [
