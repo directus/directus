@@ -1,6 +1,6 @@
-import { test, expect, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
 import { library } from '@fortawesome/fontawesome-svg-core';
+import { mount } from '@vue/test-utils';
+import { expect, test, vi } from 'vitest';
 
 import VIcon from './v-icon.vue';
 
