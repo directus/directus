@@ -28,6 +28,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 			<dd>{{ text }}</dd>
 			<v-icon
 				v-if="isCopySupported && copyable"
+				v-tooltip="text"
 				name="content_copy"
 				small
 				clickable

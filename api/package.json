@@ -172,6 +172,7 @@
 		"qs": "6.14.0",
 		"rate-limiter-flexible": "5.0.5",
 		"rollup": "4.34.9",
+		"rolldown": "1.0.0-beta.28",
 		"samlify": "2.10.0",
 		"sanitize-html": "2.14.0",
 		"sharp": "0.33.5",
