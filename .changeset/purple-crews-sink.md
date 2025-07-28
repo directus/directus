@@ -27,7 +27,7 @@ The services exposed to API extensions using TypeScript are now fully typed inst
 
 Arguments of service methods are now strictly typed which can result in type errors for broader types that would not error before:
 - The ItemsService constructor now expects the collection name to be a `string` so this will error on `string | undefined` (or other unions).
-- Similarly functions like `service.readOne()`/`service.readMany()` now expects `string | number` for their primary keys and will error for nullable types
+- Similarly functions like `service.readOne()`/`service.readMany()` now expect `string | number` for their primary keys and will error for nullable types
 
 As a workaround casting the services back to `any` will result in the original behavior but it is recommended to resolve the type errors instead.
 
