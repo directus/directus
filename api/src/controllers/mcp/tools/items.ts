@@ -1,7 +1,7 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type { Item, PrimaryKey, Query } from '@directus/types';
-import { toArray } from 'liquidjs/dist/util/underscore.js';
+import { toArray } from '@directus/utils';
 import { z } from 'zod';
 import { ItemsService } from '../../../services/items.js';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
