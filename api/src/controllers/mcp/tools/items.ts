@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { ItemsService } from '../../../services/items.js';
 import { defineTool } from '../tool.js';
 
-export default defineTool<{ action: string; collection: string; query: Query; keys?: PrimaryKey[] }>('items', {
+export const item = defineTool<{ action: string; collection: string; query: Query; keys?: PrimaryKey[] }>('items', {
 	description: 'Perform CRUD operations on Directus Items',
 	inputSchema: z.object({
 		action: z.enum(['read']),
