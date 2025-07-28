@@ -74,7 +74,7 @@ function useEdits() {
 			@cancel="cancelEditing"
 		/>
 
-		<div v-else v-md="{ value: comment.display, target: '_blank' }" class="content selectable" />
+		<div v-else v-md="{ value: comment.display, target: '_blank' }" class="content" />
 	</div>
 </template>
 
