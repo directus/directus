@@ -357,7 +357,6 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 				:set-data="hideDragImage"
 				:disabled="!allowDrag"
 				v-bind="{ 'force-fallback': true }"
-				:filter="'.no-drag'"
 				handle=".drag-handle"
 				@update:model-value="sortItems"
 			>
@@ -371,18 +370,17 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 						@click="editItem(element)"
 					>
 						<v-icon v-if="allowDrag" class="drag-handle" left name="drag_handle" @click.stop />
-						<span class="collection no-drag">{{ getPrefix(element) }}:</span>
+						<span class="collection">{{ getPrefix(element) }}:</span>
 
 						<render-template
 							:collection="element[relationInfo.collectionField.field]"
 							:template="templates[element[relationInfo.collectionField.field]]"
 							:item="element[relationInfo.junctionField.field]"
-							class="no-drag"
 						/>
 
 						<div class="spacer" />
 
-						<div class="item-actions no-drag">
+						<div class="item-actions">
 							<v-remove
 								v-if="!disabled && (deleteAllowed[element[relationInfo.collectionField.field]] || isLocalItem(element))"
 								:item-type="element.$type"
