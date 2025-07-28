@@ -1,20 +1,22 @@
 /**
  * @vitest-environment jsdom
  */
-import { ref, createApp, defineComponent } from 'vue';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { createApp, defineComponent, ref } from 'vue';
 import { useElementSize } from './use-element-size.js';
 
 // Helper function to test composables in a proper Vue context
 function withSetup<T>(composable: () => T): T {
 	let result: T;
 
-	const app = createApp(defineComponent({
-		setup() {
-			result = composable();
-			return () => {};
-		},
-	}));
+	const app = createApp(
+		defineComponent({
+			setup() {
+				result = composable();
+				return () => {};
+			},
+		}),
+	);
 
 	const container = document.createElement('div');
 	app.mount(container);
@@ -56,7 +58,7 @@ class MockResizeObserver {
 function createMockResizeObserverEntry(
 	width: number,
 	height: number,
-	element: Element = document.createElement('div')
+	element: Element = document.createElement('div'),
 ): ResizeObserverEntry {
 	return {
 		target: element,

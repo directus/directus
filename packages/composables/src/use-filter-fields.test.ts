@@ -1,9 +1,9 @@
 /**
  * @vitest-environment jsdom
  */
-import { ref } from 'vue';
-import { describe, it, expect } from 'vitest';
 import type { Field } from '@directus/types';
+import { describe, expect, it } from 'vitest';
+import { ref } from 'vue';
 import { useFilterFields } from './use-filter-fields.js';
 
 // Mock field data for testing
@@ -84,7 +84,7 @@ describe('useFilterFields', () => {
 		const { fieldGroups } = useFilterFields(fields, filters);
 
 		expect(fieldGroups.value.required).toHaveLength(2);
-		expect(fieldGroups.value.required.map(f => f.field)).toEqual(['id', 'name']);
+		expect(fieldGroups.value.required.map((f) => f.field)).toEqual(['id', 'name']);
 		expect(fieldGroups.value.optional).toHaveLength(1);
 		expect(fieldGroups.value.optional[0]!.field).toBe('description');
 	});
@@ -94,17 +94,17 @@ describe('useFilterFields', () => {
 			createMockField({
 				field: 'id',
 				type: 'integer',
-				meta: { ...createMockField().meta!, required: true }
+				meta: { ...createMockField().meta!, required: true },
 			}),
 			createMockField({
 				field: 'title',
 				type: 'string',
-				meta: { ...createMockField().meta!, required: true }
+				meta: { ...createMockField().meta!, required: true },
 			}),
 			createMockField({
 				field: 'count',
 				type: 'integer',
-				meta: { ...createMockField().meta!, required: false }
+				meta: { ...createMockField().meta!, required: false },
 			}),
 		]);
 
@@ -121,9 +121,9 @@ describe('useFilterFields', () => {
 		expect(fieldGroups.value.numeric).toHaveLength(2);
 		expect(fieldGroups.value.text).toHaveLength(1);
 
-		expect(fieldGroups.value.required.map(f => f.field)).toEqual(['id', 'title']);
-		expect(fieldGroups.value.numeric.map(f => f.field)).toEqual(['id', 'count']);
-		expect(fieldGroups.value.text.map(f => f.field)).toEqual(['title']);
+		expect(fieldGroups.value.required.map((f) => f.field)).toEqual(['id', 'title']);
+		expect(fieldGroups.value.numeric.map((f) => f.field)).toEqual(['id', 'count']);
+		expect(fieldGroups.value.text.map((f) => f.field)).toEqual(['title']);
 	});
 
 	it('should handle fields that match no filters', () => {
@@ -144,9 +144,7 @@ describe('useFilterFields', () => {
 	});
 
 	it('should be reactive to changes in fields', () => {
-		const fields = ref<Field[]>([
-			createMockField({ field: 'id', type: 'integer' }),
-		]);
+		const fields = ref<Field[]>([createMockField({ field: 'id', type: 'integer' })]);
 
 		const filters = {
 			numeric: (field: Field) => ['integer', 'float', 'decimal'].includes(field.type),
@@ -167,7 +165,7 @@ describe('useFilterFields', () => {
 		expect(fieldGroups.value.text[0]!.field).toBe('name');
 
 		// Remove the integer field
-		fields.value = fields.value.filter(f => f.type !== 'integer');
+		fields.value = fields.value.filter((f) => f.type !== 'integer');
 
 		expect(fieldGroups.value.numeric).toHaveLength(0);
 		expect(fieldGroups.value.text).toHaveLength(1);
@@ -178,40 +176,35 @@ describe('useFilterFields', () => {
 			createMockField({
 				field: 'id',
 				type: 'integer',
-				meta: { ...createMockField().meta!, required: true, hidden: false }
+				meta: { ...createMockField().meta!, required: true, hidden: false },
 			}),
 			createMockField({
 				field: 'secret',
 				type: 'string',
-				meta: { ...createMockField().meta!, required: false, hidden: true }
+				meta: { ...createMockField().meta!, required: false, hidden: true },
 			}),
 			createMockField({
 				field: 'name',
 				type: 'string',
-				meta: { ...createMockField().meta!, required: true, hidden: false }
+				meta: { ...createMockField().meta!, required: true, hidden: false },
 			}),
 		]);
 
 		const filters = {
 			visible: (field: Field) => field.meta?.hidden !== true,
-			requiredAndVisible: (field: Field) =>
-				field.meta?.required === true && field.meta?.hidden !== true,
-			hiddenOrOptional: (field: Field) =>
-				field.meta?.hidden === true || field.meta?.required === false,
+			requiredAndVisible: (field: Field) => field.meta?.required === true && field.meta?.hidden !== true,
+			hiddenOrOptional: (field: Field) => field.meta?.hidden === true || field.meta?.required === false,
 		};
 
 		const { fieldGroups } = useFilterFields(fields, filters);
 
-		expect(fieldGroups.value.visible.map(f => f.field)).toEqual(['id', 'name']);
-		expect(fieldGroups.value.requiredAndVisible.map(f => f.field)).toEqual(['id', 'name']);
-		expect(fieldGroups.value.hiddenOrOptional.map(f => f.field)).toEqual(['secret']);
+		expect(fieldGroups.value.visible.map((f) => f.field)).toEqual(['id', 'name']);
+		expect(fieldGroups.value.requiredAndVisible.map((f) => f.field)).toEqual(['id', 'name']);
+		expect(fieldGroups.value.hiddenOrOptional.map((f) => f.field)).toEqual(['secret']);
 	});
 
 	it('should handle empty filter object', () => {
-		const fields = ref<Field[]>([
-			createMockField({ field: 'id' }),
-			createMockField({ field: 'name' }),
-		]);
+		const fields = ref<Field[]>([createMockField({ field: 'id' }), createMockField({ field: 'name' })]);
 
 		const filters = {};
 
@@ -221,10 +214,7 @@ describe('useFilterFields', () => {
 	});
 
 	it('should handle filters that always return false', () => {
-		const fields = ref<Field[]>([
-			createMockField({ field: 'id' }),
-			createMockField({ field: 'name' }),
-		]);
+		const fields = ref<Field[]>([createMockField({ field: 'id' }), createMockField({ field: 'name' })]);
 
 		const filters = {
 			never: () => false,
@@ -238,10 +228,7 @@ describe('useFilterFields', () => {
 	});
 
 	it('should handle filters that always return true', () => {
-		const fields = ref<Field[]>([
-			createMockField({ field: 'id' }),
-			createMockField({ field: 'name' }),
-		]);
+		const fields = ref<Field[]>([createMockField({ field: 'id' }), createMockField({ field: 'name' })]);
 
 		const filters = {
 			all: () => true,
@@ -252,8 +239,8 @@ describe('useFilterFields', () => {
 
 		expect(fieldGroups.value.all).toHaveLength(2);
 		expect(fieldGroups.value.everything).toHaveLength(2);
-		expect(fieldGroups.value.all.map(f => f.field)).toEqual(['id', 'name']);
-		expect(fieldGroups.value.everything.map(f => f.field)).toEqual(['id', 'name']);
+		expect(fieldGroups.value.all.map((f) => f.field)).toEqual(['id', 'name']);
+		expect(fieldGroups.value.everything.map((f) => f.field)).toEqual(['id', 'name']);
 	});
 
 	it('should maintain correct order of fields in groups', () => {
@@ -270,7 +257,7 @@ describe('useFilterFields', () => {
 		const { fieldGroups } = useFilterFields(fields, filters);
 
 		// Should maintain the original order from the fields array
-		expect(fieldGroups.value.text.map(f => f.field)).toEqual(['z_field', 'a_field', 'm_field']);
+		expect(fieldGroups.value.text.map((f) => f.field)).toEqual(['z_field', 'a_field', 'm_field']);
 	});
 
 	it('should handle different field types correctly', () => {
@@ -290,14 +277,11 @@ describe('useFilterFields', () => {
 
 		const { fieldGroups } = useFilterFields(fields, filters);
 
-		expect(fieldGroups.value.primitive.map(f => f.field))
-			.toEqual(['text_field', 'number_field', 'bool_field']);
+		expect(fieldGroups.value.primitive.map((f) => f.field)).toEqual(['text_field', 'number_field', 'bool_field']);
 
-		expect(fieldGroups.value.complex.map(f => f.field))
-			.toEqual(['date_field', 'json_field']);
+		expect(fieldGroups.value.complex.map((f) => f.field)).toEqual(['date_field', 'json_field']);
 
-		expect(fieldGroups.value.textLike.map(f => f.field))
-			.toEqual(['text_field', 'json_field']);
+		expect(fieldGroups.value.textLike.map((f) => f.field)).toEqual(['text_field', 'json_field']);
 	});
 
 	it('should work with single filter', () => {
@@ -320,11 +304,11 @@ describe('useFilterFields', () => {
 		const fields = ref<Field[]>([
 			createMockField({
 				field: 'normal_field',
-				meta: { ...createMockField().meta!, options: { placeholder: 'Enter text' } }
+				meta: { ...createMockField().meta!, options: { placeholder: 'Enter text' } },
 			}),
 			createMockField({
 				field: 'no_options_field',
-				meta: { ...createMockField().meta!, options: null }
+				meta: { ...createMockField().meta!, options: null },
 			}),
 			// Field with missing meta
 			{ ...createMockField({ field: 'minimal_field' }), meta: null } as Field,
@@ -338,8 +322,8 @@ describe('useFilterFields', () => {
 
 		const { fieldGroups } = useFilterFields(fields, filters);
 
-		expect(fieldGroups.value.hasPlaceholder.map(f => f.field)).toEqual(['normal_field']);
-		expect(fieldGroups.value.hasOptions.map(f => f.field)).toEqual(['normal_field']);
-		expect(fieldGroups.value.hasMeta.map(f => f.field)).toEqual(['normal_field', 'no_options_field']);
+		expect(fieldGroups.value.hasPlaceholder.map((f) => f.field)).toEqual(['normal_field']);
+		expect(fieldGroups.value.hasOptions.map((f) => f.field)).toEqual(['normal_field']);
+		expect(fieldGroups.value.hasMeta.map((f) => f.field)).toEqual(['normal_field', 'no_options_field']);
 	});
 });

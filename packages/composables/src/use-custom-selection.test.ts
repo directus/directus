@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { ref, type Ref, nextTick } from 'vue';
+import { nextTick, ref, type Ref } from 'vue';
 import { useCustomSelection, useCustomSelectionMultiple } from './use-custom-selection';
 
 describe('useCustomSelection', () => {
