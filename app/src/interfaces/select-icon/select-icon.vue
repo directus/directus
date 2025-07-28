@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
-import { computed, ref, nextTick, watch } from 'vue';
+import { computed, ref, nextTick, watch, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import icons from './icons.json';
@@ -26,9 +26,64 @@ const searchQuery = ref('');
 const menuActive = ref(false);
 const contentRef = ref<HTMLElement>();
 
-const DEFAULT_ICONS_PER_ROW = 7;
-const MAX_ICONS_PER_ROW = 20;
-const iconsPerRow = ref(DEFAULT_ICONS_PER_ROW);
+function useIconsPerRow(contentRef: Ref<HTMLElement | undefined>, menuActive: Ref<boolean>) {
+	const DEFAULT_ICONS_PER_ROW = 7;
+	const iconsPerRow = ref(DEFAULT_ICONS_PER_ROW);
+
+	let resizeObserver: ResizeObserver | null = null;
+
+	function calculateIconsPerRow() {
+		if (!contentRef.value) return;
+
+		const contentWidth = contentRef.value.clientWidth;
+		const iconSize = 24;
+		const gap = 8;
+		const padding = 16;
+
+		const availableWidth = contentWidth - padding;
+		const iconsPerRowCalculated = Math.floor(availableWidth / (iconSize + gap));
+
+		iconsPerRow.value = Math.max(DEFAULT_ICONS_PER_ROW, iconsPerRowCalculated);
+	}
+
+	function setupResizeObserver() {
+		if (!contentRef.value) return;
+
+		if (resizeObserver) {
+			resizeObserver.disconnect();
+		}
+
+		resizeObserver = new ResizeObserver(() => {
+			calculateIconsPerRow();
+		});
+
+		resizeObserver.observe(contentRef.value);
+	}
+
+	function cleanupResizeObserver() {
+		if (resizeObserver) {
+			resizeObserver.disconnect();
+			resizeObserver = null;
+		}
+	}
+
+	// Calculate icons per row when menu opens
+	watch(menuActive, async (isActive) => {
+		if (isActive) {
+			await nextTick();
+			setupResizeObserver();
+			calculateIconsPerRow();
+		} else {
+			cleanupResizeObserver();
+		}
+	});
+
+	return {
+		iconsPerRow,
+	};
+}
+
+const { iconsPerRow } = useIconsPerRow(contentRef, menuActive);
 
 const mergedIcons = [
 	...icons,
@@ -86,56 +141,6 @@ const virtualRows = computed(() => {
 	});
 
 	return rows;
-});
-
-let resizeObserver: ResizeObserver | null = null;
-
-function calculateIconsPerRow() {
-	if (!contentRef.value) return;
-
-	const contentWidth = contentRef.value.clientWidth;
-	const iconSize = 24;
-	const gap = 8;
-	const padding = 16;
-
-	const availableWidth = contentWidth - padding;
-	const iconsPerRowCalculated = Math.floor(availableWidth / (iconSize + gap));
-
-	iconsPerRow.value = Math.max(DEFAULT_ICONS_PER_ROW, Math.min(iconsPerRowCalculated, MAX_ICONS_PER_ROW));
-}
-
-function setupResizeObserver() {
-	if (!contentRef.value) return;
-
-	// Clean up existing observer
-	if (resizeObserver) {
-		resizeObserver.disconnect();
-	}
-
-	// Create new observer
-	resizeObserver = new ResizeObserver(() => {
-		calculateIconsPerRow();
-	});
-
-	resizeObserver.observe(contentRef.value);
-}
-
-function cleanupResizeObserver() {
-	if (resizeObserver) {
-		resizeObserver.disconnect();
-		resizeObserver = null;
-	}
-}
-
-// Calculate icons per row when menu opens
-watch(menuActive, async (isActive) => {
-	if (isActive) {
-		await nextTick();
-		setupResizeObserver();
-		calculateIconsPerRow();
-	} else {
-		cleanupResizeObserver();
-	}
 });
 
 function setIcon(icon: string | null) {
