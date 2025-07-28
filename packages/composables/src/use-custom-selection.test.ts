@@ -213,11 +213,7 @@ describe('useCustomSelection', () => {
 		});
 
 		test('should handle items with different value types', () => {
-			items.value = [
-				{ value: 'string-value' },
-				{ value: 123 },
-				{ value: true },
-			];
+			items.value = [{ value: 'string-value' }, { value: 123 }, { value: true }];
 
 			currentValue.value = '123'; // String representation of number
 
@@ -319,8 +315,8 @@ describe('useCustomSelectionMultiple', () => {
 
 			await nextTick();
 			expect(otherValues.value).toHaveLength(2);
-			expect(otherValues.value.some(o => o.value === 'custom-value1')).toBe(true);
-			expect(otherValues.value.some(o => o.value === 'custom-value2')).toBe(true);
+			expect(otherValues.value.some((o) => o.value === 'custom-value1')).toBe(true);
+			expect(otherValues.value.some((o) => o.value === 'custom-value2')).toBe(true);
 		});
 
 		test('should handle items.value becoming null during initialization', async () => {
@@ -337,8 +333,8 @@ describe('useCustomSelectionMultiple', () => {
 
 			// Should handle gracefully when items becomes null
 			expect(otherValues.value).toHaveLength(2);
-			expect(otherValues.value.some(o => o.value === 'custom-value1')).toBe(true);
-			expect(otherValues.value.some(o => o.value === 'custom-value2')).toBe(true);
+			expect(otherValues.value.some((o) => o.value === 'custom-value1')).toBe(true);
+			expect(otherValues.value.some((o) => o.value === 'custom-value2')).toBe(true);
 		});
 	});
 
@@ -394,7 +390,7 @@ describe('useCustomSelectionMultiple', () => {
 			const { otherValues, setOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
 
 			// Wait for initial setup
-			return new Promise(resolve => {
+			return new Promise((resolve) => {
 				nextTick().then(() => {
 					const key = otherValues.value[0]?.key;
 
@@ -412,7 +408,7 @@ describe('useCustomSelectionMultiple', () => {
 
 			const { otherValues, setOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
 
-			return new Promise(resolve => {
+			return new Promise((resolve) => {
 				nextTick().then(() => {
 					const key = otherValues.value[0]?.key;
 
@@ -430,7 +426,7 @@ describe('useCustomSelectionMultiple', () => {
 
 			const { otherValues, setOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
 
-			return new Promise(resolve => {
+			return new Promise((resolve) => {
 				nextTick().then(() => {
 					const key = otherValues.value[0]?.key;
 
@@ -462,7 +458,7 @@ describe('useCustomSelectionMultiple', () => {
 
 			const { otherValues, setOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
 
-			return new Promise(resolve => {
+			return new Promise((resolve) => {
 				nextTick().then(() => {
 					const initialLength = otherValues.value.length;
 
@@ -480,12 +476,12 @@ describe('useCustomSelectionMultiple', () => {
 
 			const { otherValues, setOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
 
-			return new Promise(resolve => {
+			return new Promise((resolve) => {
 				nextTick().then(() => {
 					expect(otherValues.value).toHaveLength(2);
 
-					const key1 = otherValues.value.find(o => o.value === 'custom-value1')?.key;
-					const key2 = otherValues.value.find(o => o.value === 'custom-value2')?.key;
+					const key1 = otherValues.value.find((o) => o.value === 'custom-value1')?.key;
+					const key2 = otherValues.value.find((o) => o.value === 'custom-value2')?.key;
 
 					// Update first custom value
 					setOtherValue(key1!, 'updated-custom-value1');
@@ -505,12 +501,12 @@ describe('useCustomSelectionMultiple', () => {
 
 			const { otherValues, setOtherValue, addOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
 
-			return new Promise(resolve => {
+			return new Promise((resolve) => {
 				nextTick().then(() => {
 					// Add another other value manually (not from currentValues)
 					addOtherValue('manual-value');
 
-					const manualKey = otherValues.value.find(o => o.value === 'manual-value')?.key;
+					const manualKey = otherValues.value.find((o) => o.value === 'manual-value')?.key;
 
 					// Setting this value should emit valueWithoutPrevious since the manual value wasn't in currentValues
 					setOtherValue(manualKey!, 'updated-manual-value');
@@ -528,7 +524,7 @@ describe('useCustomSelectionMultiple', () => {
 
 			const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
 
-			return new Promise(resolve => {
+			return new Promise((resolve) => {
 				nextTick().then(() => {
 					// Add custom values
 					addOtherValue('custom1');
@@ -557,7 +553,7 @@ describe('useCustomSelectionMultiple', () => {
 
 			const { otherValues } = useCustomSelectionMultiple(currentValues, items, emit);
 
-			return new Promise(resolve => {
+			return new Promise((resolve) => {
 				nextTick().then(() => {
 					expect(otherValues.value).toHaveLength(1);
 
@@ -578,7 +574,7 @@ describe('useCustomSelectionMultiple', () => {
 
 			const { otherValues } = useCustomSelectionMultiple(currentValues, items, emit);
 
-			return new Promise(resolve => {
+			return new Promise((resolve) => {
 				nextTick().then(() => {
 					expect(otherValues.value).toHaveLength(0);
 					resolve(undefined);

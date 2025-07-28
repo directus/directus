@@ -92,7 +92,7 @@ describe('useGroupableParent', () => {
 
 		const result = useGroupableParent({
 			selection: externalSelection,
-			onSelectionChange: vi.fn()
+			onSelectionChange: vi.fn(),
 		});
 
 		// Should use external selection
@@ -102,7 +102,7 @@ describe('useGroupableParent', () => {
 	it('should handle undefined external selection', () => {
 		const result = useGroupableParent({
 			selection: ref(undefined),
-			onSelectionChange: vi.fn()
+			onSelectionChange: vi.fn(),
 		});
 
 		expect(result.selection.value).toEqual([]);
@@ -168,10 +168,13 @@ describe('useGroupableParent', () => {
 			max: ref(5),
 		};
 
-		const result = useGroupableParent({
-			selection: ref(['item1']),
-			onSelectionChange: vi.fn()
-		}, options);
+		const result = useGroupableParent(
+			{
+				selection: ref(['item1']),
+				onSelectionChange: vi.fn(),
+			},
+			options,
+		);
 
 		expect(result.selection.value).toEqual(['item1']);
 	});
@@ -196,7 +199,7 @@ describe('useGroupableParent', () => {
 
 		const result = useGroupableParent({
 			selection: externalSelection,
-			onSelectionChange
+			onSelectionChange,
 		});
 
 		expect(result.selection.value).toEqual(['initial']);
@@ -210,7 +213,7 @@ describe('useGroupableParent', () => {
 	it('should handle complex selection scenarios', () => {
 		const result = useGroupableParent({
 			onSelectionChange: vi.fn(),
-			onToggle: vi.fn()
+			onToggle: vi.fn(),
 		});
 
 		const item1 = { active: ref(false), value: 'a' };
@@ -267,7 +270,7 @@ describe('useGroupableParent', () => {
 
 		const result = useGroupableParent({
 			selection: externalSelection,
-			onSelectionChange
+			onSelectionChange,
 		});
 
 		// Initial state should be set
@@ -386,17 +389,17 @@ describe('useGroupableParent', () => {
 
 		result.updateChildren();
 
-		expect(item1.active.value).toBe(true);  // Should be active (in selection)
+		expect(item1.active.value).toBe(true); // Should be active (in selection)
 		expect(item2.active.value).toBe(false); // Should be inactive (not in selection)
-		expect(item3.active.value).toBe(true);  // Should be active (in selection)
+		expect(item3.active.value).toBe(true); // Should be active (in selection)
 	});
 
 	it('should handle items with numeric and string values correctly', () => {
 		const result = useGroupableParent();
 
-		const item1 = { active: ref(false), value: 0 };      // Numeric zero
-		const item2 = { active: ref(false), value: '0' };    // String zero
-		const item3 = { active: ref(false), value: 1 };      // Numeric one
+		const item1 = { active: ref(false), value: 0 }; // Numeric zero
+		const item2 = { active: ref(false), value: '0' }; // String zero
+		const item3 = { active: ref(false), value: 1 }; // Numeric one
 		const item4 = { active: ref(false), value: undefined }; // Undefined (should get index)
 
 		result.items.value = [item1, item2, item3, item4];
