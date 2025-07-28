@@ -6,13 +6,6 @@ import formatTitle from '@directus/format-title';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive } from 'vue';
 
-type HydrateOptions = {
-	/**
-	 * Allow setting current admin language only when default language gets updated.
-	 */
-	isLanguageUpdated?: boolean;
-};
-
 export type Info = {
 	project: null | {
 		project_name: string | null;
