@@ -8,7 +8,7 @@ import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { ItemSchema, PartialItemInput, PrimaryKeySchema, QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
 
-const ItemValidateSchema = z.union([
+const ValidateSchema = z.union([
 	PartialItemInput.extend({
 		action: z.literal('create'),
 		data: z.union([z.array(ItemSchema), ItemSchema]),
@@ -31,7 +31,7 @@ const ItemValidateSchema = z.union([
 	}),
 ]);
 
-const ItemInputSchema = z.object({
+const InputSchema = z.object({
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
 	collection: z.string().describe('The name of the collection'),
 	query: QuerySchema.optional().describe(''),
@@ -42,11 +42,11 @@ const ItemInputSchema = z.object({
 		.describe(''),
 });
 
-export const items = defineTool<z.infer<typeof ItemValidateSchema>>({
+export const items = defineTool<z.infer<typeof ValidateSchema>>({
 	name: 'items',
 	description: 'Perform CRUD operations on Directus Items',
-	inputSchema: ItemInputSchema,
-	validateSchema: ItemValidateSchema,
+	inputSchema: InputSchema,
+	validateSchema: ValidateSchema,
 	annotations: {
 		title: 'Perform CRUD operations on Directus Items',
 	},
