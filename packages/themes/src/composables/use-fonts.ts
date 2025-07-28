@@ -6,7 +6,7 @@ import type { Theme } from '../schemas/theme.js';
 import { ThemeSchema } from '../schemas/theme.js';
 import type { DeepPartial } from '@directus/types';
 
-export const useFonts = (theme: MaybeRef<DeepPartial<Theme>>) => {
+export const useFonts = (theme: MaybeRef<Theme | DeepPartial<Theme>>) => {
 	const paths = computed(() => {
 		const paths: Map<string[], { family: string | null; weight: string | null }> = new Map();
 
