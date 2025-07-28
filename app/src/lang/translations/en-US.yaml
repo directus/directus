@@ -1366,6 +1366,7 @@ fields:
     tags: Tags
     user_preferences: User Preferences
     language: Language
+    text_direction: Text Direction
     tfa_secret: Two-Factor Authentication
     admin_options: Admin Options
     status: Status
@@ -2610,3 +2611,6 @@ bsl_banner:
   accept_terms: Accept
   get_license: Get a License
 accepted: Accepted
+text_direction_auto: Automatic (Match Language)
+text_direction_ltr: Left to Right (LTR)
+text_direction_rtl: Right to Left (RTL)
