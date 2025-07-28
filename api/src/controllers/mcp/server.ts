@@ -12,8 +12,7 @@ import {
 import type { Request, Response } from 'express';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { fromZodError } from 'zod-validation-error';
-import type { ToolConfig } from './tool.js';
-import * as tools from './tools/index.js';
+import { ALL_TOOLS } from './tool.js';
 
 class DirectusTransport implements Transport {
 	res: Response;
@@ -39,7 +38,7 @@ class DirectusTransport implements Transport {
 
 export class DirectusMCP {
 	server: Server;
-	tools: Map<string, ToolConfig<unknown>>;
+
 	constructor() {
 		this.server = new Server(
 			{
@@ -52,11 +51,6 @@ export class DirectusMCP {
 				},
 			},
 		);
-
-		this.tools = new Map([
-			[tools.system.name, tools.system as ToolConfig<unknown>],
-			[tools.items.name, tools.items as ToolConfig<unknown>],
-		]);
 	}
 
 	handleRequest(req: Request, res: Response) {
@@ -64,7 +58,7 @@ export class DirectusMCP {
 		this.server.setRequestHandler(ListToolsRequestSchema, async () => {
 			const tools = [];
 
-			for (const [, tool] of this.tools) {
+			for (const tool of ALL_TOOLS) {
 				if (req.accountability?.admin !== true && tool.admin === true) continue;
 
 				tools.push({
@@ -80,7 +74,7 @@ export class DirectusMCP {
 
 		// calling tools
 		this.server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest) => {
-			const tool = this.tools.get(request.params.name);
+			const tool = ALL_TOOLS.find((tool) => tool.name === request.params.name);
 
 			if (!tool) {
 				throw new Error('Invalid Tool');

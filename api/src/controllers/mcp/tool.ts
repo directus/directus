@@ -1,22 +1,28 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
 import type { ZodType } from 'zod';
 
-export type ToolHandler<Args> = {
-	args: Args;
-	schema: SchemaOverview;
-	accountability: Accountability | undefined;
+export type ToolHandler<T> = {
+	(options: {
+		args: T;
+		schema: SchemaOverview;
+		accountability: Accountability | undefined;
+	}): Promise<{ data?: unknown } | undefined>;
 };
 
-export interface ToolConfig<Args> {
+export interface ToolConfig<T> {
 	name: string;
 	description: string;
 	admin?: boolean;
 	inputSchema?: ZodType<any>;
-	validateSchema?: ZodType<Args>;
+	validateSchema?: ZodType<T>;
 	annotations?: Record<string, unknown>;
-	handler: (opts: ToolHandler<Args>) => Promise<{ data?: null | unknown } | undefined>;
+	handler: ToolHandler<T>;
 }
 
+export const ALL_TOOLS: ToolConfig<any>[] = [];
+
 export function defineTool<Args>(tool: ToolConfig<Args>): ToolConfig<Args> {
+	ALL_TOOLS.push(tool);
+
 	return tool;
 }
