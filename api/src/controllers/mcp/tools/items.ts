@@ -15,7 +15,7 @@ const PartialItemInput = z.object({
 const QuerySchema = z.custom<Query>();
 const PrimaryKeySchema = z.custom<PrimaryKey>();
 
-const ItemInputSchema = z.union([
+const ItemValidateSchema = z.union([
 	PartialItemInput.extend({
 		action: z.literal('create'),
 		data: z.union([z.array(ItemSchema), ItemSchema]),
@@ -34,15 +34,26 @@ const ItemInputSchema = z.union([
 	}),
 	PartialItemInput.extend({
 		action: z.literal('delete'),
-		data: z.array(PrimaryKeySchema).optional(),
 		keys: z.array(PrimaryKeySchema).optional(),
 		query: QuerySchema.optional(),
 	}),
 ]);
 
-export const items = defineTool<z.infer<typeof ItemInputSchema>>('items', {
+const ItemInputSchema = z.object({
+	action: z.enum(['read', 'create', 'update', 'delete', 'upsert']).describe('The operation to perform'),
+	collection: z.string().describe('The name of the collection'),
+	query: QuerySchema.optional().describe(''),
+	keys: z.array(PrimaryKeySchema).optional().describe(''),
+	data: z
+		.union([z.array(ItemSchema), ItemSchema])
+		.optional()
+		.describe(''),
+});
+
+export const items = defineTool<z.infer<typeof ItemValidateSchema>>('items', {
 	description: 'Perform CRUD operations on Directus Items',
 	inputSchema: ItemInputSchema,
+	validateSchema: ItemValidateSchema,
 	annotations: {
 		title: 'Perform CRUD operations on Directus Items',
 	},
@@ -146,9 +157,7 @@ export const items = defineTool<z.infer<typeof ItemInputSchema>>('items', {
 		}
 
 		if (args.action === 'delete') {
-			if (Array.isArray(args.data)) {
-				await itemsService.deleteMany(args.data);
-			} else if (args.keys) {
+			if (args.keys) {
 				await itemsService.deleteMany(args.keys);
 			} else {
 				await itemsService.deleteByQuery(sanitizedQuery);

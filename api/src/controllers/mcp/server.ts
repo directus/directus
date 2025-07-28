@@ -3,7 +3,6 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import {
 	CallToolRequestSchema,
-	JSONRPCMessageSchema,
 	ListToolsRequestSchema,
 	type CallToolRequest,
 	type JSONRPCMessage,
@@ -91,7 +90,7 @@ export class DirectusMCP {
 			}
 
 			try {
-				const args = tool.inputSchema?.safeParse(request.params.arguments) ?? {
+				const args = tool.validateSchema?.safeParse(request.params.arguments) ?? {
 					data: request.params.arguments,
 				};
 

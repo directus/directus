@@ -11,7 +11,8 @@ export interface ToolConfig<Args = any> {
 	name: string;
 	description: string;
 	admin?: boolean;
-	inputSchema?: ZodType<Args>;
+	inputSchema?: ZodType<any>;
+	validateSchema?: ZodType<Args>;
 	annotations?: Record<string, unknown>;
 	handler: (opts: ToolHandler<Args>) => Promise<{ data?: null | unknown } | undefined>;
 }
