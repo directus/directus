@@ -1338,6 +1338,7 @@ fields:
     tags: Tags
     user_preferences: Gebruikersvoorkeuren
     language: Taal
+    text_direction: Schrijfrichting
     tfa_secret: Twee-factor-authenticatie (2FA)
     admin_options: Admin opties
     status: Status
@@ -1593,6 +1594,7 @@ live_preview:
   new_window: Openen in nieuw venster
   close_window: Open in Split-weergave
   toggle_3d: 3D aan/uit
+  iframe_title: Voorvertoning live website
 shares: Delen
 unlimited_usage: Onbeperkt gebruik
 uses_left: Geen gebruik over | Één gebruik over | {n} gebruik over
@@ -2035,6 +2037,7 @@ interfaces:
     folder_note: Map voor geüploade bestanden. Heeft geen invloed op bestaande bestanden.
     imageToken: Statische toegangstoken
     imageToken_label: Statisch toegangstoken wordt toegevoegd aan de assets URL
+    media_preview_iframe_title: Media Voorvertoning
   input-block-editor:
     input-block-editor: Blok Editor
     description: Blok-styled editor voor rich-media verhalen, exporteert schone data in JSON met behulp van Editor.js
@@ -2557,3 +2560,6 @@ bsl_banner:
   accept_terms: Accepteren
   get_license: Licentie verkrijgen
 accepted: Geaccepteerd
+text_direction_auto: Automatisch (gelijk aan taal)
+text_direction_ltr: Links naar rechts (LTR)
+text_direction_rtl: Rechts naar links (RTL)
