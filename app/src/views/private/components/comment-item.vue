@@ -144,8 +144,6 @@ function useEdits() {
 	line-height: 1;
 	background: var(--theme--primary-background);
 	border-radius: var(--theme--border-radius);
-	-webkit-user-select: text;
-	user-select: text;
 	pointer-events: none;
 }
 

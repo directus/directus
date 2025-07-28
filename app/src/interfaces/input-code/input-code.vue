@@ -329,8 +329,6 @@ function isInterpolation(value: any) {
 	color: var(--theme--primary);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition-out);
-	-webkit-user-select: none;
-	user-select: none;
 
 	&:hover {
 		color: var(--theme--primary-accent);

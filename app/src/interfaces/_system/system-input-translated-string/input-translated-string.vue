@@ -239,8 +239,6 @@ const newTranslationDefaults = computed(() => {
 		border-radius: var(--theme--border-radius);
 		transition: var(--fast) var(--transition);
 		transition-property: background-color, color;
-		-webkit-user-select: none;
-		user-select: none;
 		font-family: var(--theme--fonts--monospace--font-family);
 		overflow-x: hidden;
 	}
