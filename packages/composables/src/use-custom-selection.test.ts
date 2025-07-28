@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { ref, type Ref } from 'vue';
-import { useCustomSelection } from './use-custom-selection';
+import { ref, type Ref, nextTick } from 'vue';
+import { useCustomSelection, useCustomSelectionMultiple } from './use-custom-selection';
 
 describe('useCustomSelection', () => {
 	let currentValue: Ref<string | null>;
@@ -141,7 +141,7 @@ describe('useCustomSelection', () => {
 
 			expect(emit).toHaveBeenCalledWith(null);
 			expect(emit).toHaveBeenCalledTimes(1);
-			
+
 			// Local value should be cleared, so getter should return empty string
 			expect(otherValue.value).toBe('');
 		});
@@ -225,6 +225,365 @@ describe('useCustomSelection', () => {
 
 			// Should be custom since '123' (string) !== 123 (number)
 			expect(usesOtherValue.value).toBe(true);
+		});
+	});
+});
+
+describe('useCustomSelectionMultiple', () => {
+	let currentValues: Ref<string[] | null>;
+	let items: Ref<any[]>;
+	let emit: ReturnType<typeof vi.fn>;
+
+	beforeEach(() => {
+		currentValues = ref<string[] | null>(null);
+
+		items = ref([
+			{ value: 'option1', label: 'Option 1' },
+			{ value: 'option2', label: 'Option 2' },
+			{ value: 'option3', label: 'Option 3' },
+		]);
+
+		emit = vi.fn();
+	});
+
+	describe('initialization and watch behavior', () => {
+		test('should initialize with empty otherValues array', () => {
+			const { otherValues } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			expect(otherValues.value).toEqual([]);
+		});
+
+		test('should not add other values when currentValues is null', async () => {
+			currentValues.value = null;
+
+			const { otherValues } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			await nextTick();
+			expect(otherValues.value).toEqual([]);
+		});
+
+		test('should not add other values when currentValues is not an array', async () => {
+			(currentValues as any).value = 'not-an-array';
+
+			const { otherValues } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			await nextTick();
+			expect(otherValues.value).toEqual([]);
+		});
+
+		test('should not add other values when items is null', async () => {
+			currentValues.value = ['custom-value'];
+			(items as any).value = null;
+
+			const { otherValues } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			await nextTick();
+			expect(otherValues.value).toEqual([]);
+		});
+
+		test('should add other values for custom values in currentValues', async () => {
+			currentValues.value = ['option1', 'custom-value1', 'custom-value2'];
+
+			const { otherValues } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			await nextTick();
+			expect(otherValues.value).toHaveLength(2);
+			expect(otherValues.value[0]?.value).toBe('custom-value1');
+			expect(otherValues.value[1]?.value).toBe('custom-value2');
+			expect(otherValues.value[0]?.key).toBeDefined();
+			expect(otherValues.value[1]?.key).toBeDefined();
+		});
+
+		test('should not add duplicate other values', async () => {
+			currentValues.value = ['custom-value1', 'custom-value1', 'custom-value2'];
+
+			const { otherValues } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			await nextTick();
+			expect(otherValues.value).toHaveLength(2);
+			expect(otherValues.value[0]?.value).toBe('custom-value1');
+			expect(otherValues.value[1]?.value).toBe('custom-value2');
+		});
+
+		test('should update other values when currentValues changes', async () => {
+			currentValues.value = ['custom-value1'];
+
+			const { otherValues } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			await nextTick();
+			expect(otherValues.value).toHaveLength(1);
+			expect(otherValues.value[0]?.value).toBe('custom-value1');
+
+			// Add more custom values
+			currentValues.value = ['custom-value1', 'custom-value2', 'option1'];
+
+			await nextTick();
+			expect(otherValues.value).toHaveLength(2);
+			expect(otherValues.value.some(o => o.value === 'custom-value1')).toBe(true);
+			expect(otherValues.value.some(o => o.value === 'custom-value2')).toBe(true);
+		});
+
+		test('should handle items.value becoming null during initialization', async () => {
+			// Start with items having values, then set to null before adding other values
+			items.value = [{ text: 'Option 1', value: 'option1' }];
+			currentValues.value = ['custom-value1', 'custom-value2'];
+
+			const { otherValues } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			// Immediately set items to null to simulate race condition
+			(items as any).value = null;
+
+			await nextTick();
+
+			// Should handle gracefully when items becomes null
+			expect(otherValues.value).toHaveLength(2);
+			expect(otherValues.value.some(o => o.value === 'custom-value1')).toBe(true);
+			expect(otherValues.value.some(o => o.value === 'custom-value2')).toBe(true);
+		});
+	});
+
+	describe('addOtherValue function', () => {
+		test('should add other value with default parameters', () => {
+			const { otherValues, addOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			addOtherValue();
+
+			expect(otherValues.value).toHaveLength(1);
+			expect(otherValues.value[0]?.value).toBe('');
+			expect(otherValues.value[0]?.focus).toBe(false);
+			expect(otherValues.value[0]?.key).toBeDefined();
+		});
+
+		test('should add other value with specified value', () => {
+			const { otherValues, addOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			addOtherValue('custom-value');
+
+			expect(otherValues.value).toHaveLength(1);
+			expect(otherValues.value[0]?.value).toBe('custom-value');
+			expect(otherValues.value[0]?.focus).toBe(false);
+		});
+
+		test('should add other value with focus true', () => {
+			const { otherValues, addOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			addOtherValue('custom-value', true);
+
+			expect(otherValues.value).toHaveLength(1);
+			expect(otherValues.value[0]?.value).toBe('custom-value');
+			expect(otherValues.value[0]?.focus).toBe(true);
+		});
+
+		test('should add multiple other values', () => {
+			const { otherValues, addOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			addOtherValue('value1');
+			addOtherValue('value2', true);
+
+			expect(otherValues.value).toHaveLength(2);
+			expect(otherValues.value[0]?.value).toBe('value1');
+			expect(otherValues.value[1]?.value).toBe('value2');
+			expect(otherValues.value[1]?.focus).toBe(true);
+		});
+	});
+
+	describe('setOtherValue function', () => {
+		test('should update existing other value', () => {
+			currentValues.value = ['option1', 'custom-value1'];
+
+			const { otherValues, setOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			// Wait for initial setup
+			return new Promise(resolve => {
+				nextTick().then(() => {
+					const key = otherValues.value[0]?.key;
+
+					setOtherValue(key!, 'updated-value');
+
+					expect(otherValues.value[0]?.value).toBe('updated-value');
+					expect(emit).toHaveBeenCalledWith(['option1', 'updated-value']);
+					resolve(undefined);
+				});
+			});
+		});
+
+		test('should remove other value when set to null', () => {
+			currentValues.value = ['option1', 'custom-value1'];
+
+			const { otherValues, setOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			return new Promise(resolve => {
+				nextTick().then(() => {
+					const key = otherValues.value[0]?.key;
+
+					setOtherValue(key!, null);
+
+					expect(otherValues.value).toHaveLength(0);
+					expect(emit).toHaveBeenCalledWith(['option1']);
+					resolve(undefined);
+				});
+			});
+		});
+
+		test('should emit null when removing last value results in empty array', () => {
+			currentValues.value = ['custom-value1'];
+
+			const { otherValues, setOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			return new Promise(resolve => {
+				nextTick().then(() => {
+					const key = otherValues.value[0]?.key;
+
+					setOtherValue(key!, null);
+
+					expect(otherValues.value).toHaveLength(0);
+					expect(emit).toHaveBeenCalledWith(null);
+					resolve(undefined);
+				});
+			});
+		});
+
+		test('should handle setting value for non-existent key', async () => {
+			currentValues.value = ['custom-value1'];
+
+			const { setOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			await nextTick();
+
+			setOtherValue('non-existent-key', 'new-value');
+
+			// When key doesn't exist, previousValue is undefined, so valueWithoutPrevious = currentValues
+			// Since valueWithoutPrevious.length === currentValues.length, it emits valueWithoutPrevious
+			expect(emit).toHaveBeenCalledWith(['custom-value1']);
+		});
+
+		test('should handle removing non-existent key', () => {
+			currentValues.value = ['custom-value1'];
+
+			const { otherValues, setOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			return new Promise(resolve => {
+				nextTick().then(() => {
+					const initialLength = otherValues.value.length;
+
+					setOtherValue('non-existent-key', null);
+
+					expect(otherValues.value).toHaveLength(initialLength);
+					expect(emit).toHaveBeenCalledWith(['custom-value1']);
+					resolve(undefined);
+				});
+			});
+		});
+
+		test('should handle complex scenario with multiple values', () => {
+			currentValues.value = ['option1', 'custom-value1', 'custom-value2', 'option2'];
+
+			const { otherValues, setOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			return new Promise(resolve => {
+				nextTick().then(() => {
+					expect(otherValues.value).toHaveLength(2);
+
+					const key1 = otherValues.value.find(o => o.value === 'custom-value1')?.key;
+					const key2 = otherValues.value.find(o => o.value === 'custom-value2')?.key;
+
+					// Update first custom value
+					setOtherValue(key1!, 'updated-custom-value1');
+
+					// Remove second custom value
+					setOtherValue(key2!, null);
+
+					expect(otherValues.value).toHaveLength(1);
+					expect(otherValues.value[0]?.value).toBe('updated-custom-value1');
+					resolve(undefined);
+				});
+			});
+		});
+
+		test('should handle edge case where valueWithoutPrevious has same length as currentValues', () => {
+			currentValues.value = ['custom-value1'];
+
+			const { otherValues, setOtherValue, addOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			return new Promise(resolve => {
+				nextTick().then(() => {
+					// Add another other value manually (not from currentValues)
+					addOtherValue('manual-value');
+
+					const manualKey = otherValues.value.find(o => o.value === 'manual-value')?.key;
+
+					// Setting this value should emit valueWithoutPrevious since the manual value wasn't in currentValues
+					setOtherValue(manualKey!, 'updated-manual-value');
+
+					expect(emit).toHaveBeenCalledWith(['custom-value1']);
+					resolve(undefined);
+				});
+			});
+		});
+	});
+
+	describe('integration scenarios', () => {
+		test('should handle complete workflow with mixed operations', () => {
+			currentValues.value = ['option1'];
+
+			const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			return new Promise(resolve => {
+				nextTick().then(() => {
+					// Add custom values
+					addOtherValue('custom1');
+					addOtherValue('custom2', true);
+
+					expect(otherValues.value).toHaveLength(2);
+					expect(otherValues.value[1]?.focus).toBe(true);
+
+					// Update one value
+					const key1 = otherValues.value[0]?.key;
+					setOtherValue(key1!, 'updated-custom1');
+
+					// Remove one value
+					const key2 = otherValues.value[1]?.key;
+					setOtherValue(key2!, null);
+
+					expect(otherValues.value).toHaveLength(1);
+					expect(otherValues.value[0]?.value).toBe('updated-custom1');
+					resolve(undefined);
+				});
+			});
+		});
+
+		test('should handle currentValues becoming null after initialization', () => {
+			currentValues.value = ['custom-value1'];
+
+			const { otherValues } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			return new Promise(resolve => {
+				nextTick().then(() => {
+					expect(otherValues.value).toHaveLength(1);
+
+					// Change to null
+					currentValues.value = null;
+
+					return nextTick().then(() => {
+						// Other values should remain (they're not automatically cleared)
+						expect(otherValues.value).toHaveLength(1);
+						resolve(undefined);
+					});
+				});
+			});
+		});
+
+		test('should handle empty currentValues array', () => {
+			currentValues.value = [];
+
+			const { otherValues } = useCustomSelectionMultiple(currentValues, items, emit);
+
+			return new Promise(resolve => {
+				nextTick().then(() => {
+					expect(otherValues.value).toHaveLength(0);
+					resolve(undefined);
+				});
+			});
 		});
 	});
 });

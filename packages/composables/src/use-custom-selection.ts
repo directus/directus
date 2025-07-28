@@ -89,6 +89,46 @@ type UsableCustomSelectionMultiple = {
 	setOtherValue: (key: string, newValue: string | null) => void;
 };
 
+/**
+ * A Vue composable for managing multiple custom selection values that aren't present in a predefined list of items.
+ *
+ * This composable extends the single custom selection pattern to support multiple values. It's typically used
+ * in multi-select form components where users can select multiple predefined options and also add custom
+ * values that aren't in the predefined list. It automatically detects custom values in the current selection,
+ * manages their state, and provides functions for adding and updating custom values.
+ *
+ * @param currentValues - A reactive reference to the currently selected values array. Can be null if no values are selected.
+ * @param items - A reactive reference to the array of available predefined items. Each item should have a 'value' property.
+ * @param emit - A callback function to emit value changes to the parent component.
+ *
+ * @returns An object containing:
+ * - `otherValues` - A reactive array of custom value objects, each with a unique key, value, and optional focus state.
+ * - `addOtherValue` - A function to add a new custom value with optional value and focus parameters.
+ * - `setOtherValue` - A function to update or remove a custom value by its key, automatically syncing with currentValues.
+ *
+ * @example
+ * ```typescript
+ * const currentValues = ref(['option1', 'custom-value1', 'custom-value2']);
+ * const items = ref([
+ *   { value: 'option1', label: 'Option 1' },
+ *   { value: 'option2', label: 'Option 2' }
+ * ]);
+ * const emit = (values: string[] | null) => console.log('Values changed:', values);
+ *
+ * const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(currentValues, items, emit);
+ *
+ * console.log(otherValues.value); // [{ key: 'abc123', value: 'custom-value1' }, { key: 'def456', value: 'custom-value2' }]
+ *
+ * // Add a new custom value
+ * addOtherValue('new-custom-value', true);
+ *
+ * // Update an existing custom value
+ * setOtherValue('abc123', 'updated-custom-value');
+ *
+ * // Remove a custom value
+ * setOtherValue('def456', null);
+ * ```
+ */
 export function useCustomSelectionMultiple(
 	currentValues: Ref<string[] | null>,
 	items: Ref<any[]>,
