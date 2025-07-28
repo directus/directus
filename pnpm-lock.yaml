@@ -2066,7 +2066,7 @@ importers:
         version: 0.33.5
       vue-router:
         specifier: 4.5.0
-        version: 4.5.0(vue@3.5.13(typescript@5.8.2))
+        version: 4.5.0(vue@3.5.13(typescript@5.8.3))
       ws:
         specifier: 8.18.1
         version: 8.18.1
