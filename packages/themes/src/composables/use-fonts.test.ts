@@ -41,7 +41,7 @@ describe('useFonts', () => {
 	});
 
 	it('should not include local fonts in googleFonts', () => {
-		const { googleFonts } = useFonts(ThemeSchemaMock as any);
+		const { googleFonts } = useFonts(ThemeSchemaMock);
 		const fonts = googleFonts.value;
 		expect(fonts.some((f) => f.startsWith('Fira+Mono'))).toBe(false);
 	});
