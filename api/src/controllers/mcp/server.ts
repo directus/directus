@@ -104,7 +104,7 @@ export class DirectusMCP {
 					accountability: req.accountability,
 				});
 
-				return this.toMCPResponse(result.data, result.message);
+				return this.toMCPResponse(result.data);
 			} catch (error) {
 				return this.toMCPError(error);
 			}
@@ -124,13 +124,9 @@ export class DirectusMCP {
 		}
 	}
 
-	toMCPResponse(data: unknown, message?: string) {
-		const formattedValue = message
-			? `<data>\n${JSON.stringify(data, null, 2)}\n</data>\n<message>\n${message}\n</message>`
-			: `${JSON.stringify(data, null, 2)}`;
-
+	toMCPResponse(data: unknown) {
 		return {
-			content: [{ type: 'text', text: formattedValue }],
+			content: [{ type: 'text', text: JSON.stringify(data) }],
 		};
 	}
 
