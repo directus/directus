@@ -54,8 +54,8 @@ export class DirectusMCP {
 		);
 
 		this.tools = new Map([
-			[tools.system.name, tools.system],
-			[tools.items.name, tools.items],
+			[tools.system.name, tools.system as ToolConfig],
+			[tools.items.name, tools.items as ToolConfig],
 		]);
 	}
 
