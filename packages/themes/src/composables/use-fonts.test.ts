@@ -32,7 +32,7 @@ const ThemeSchemaMock = {
 
 describe('useFonts', () => {
 	it('should return googleFonts with correct families and weights', () => {
-		const { googleFonts } = useFonts(ThemeSchemaMock as any);
+		const { googleFonts } = useFonts(ThemeSchemaMock);
 		const fonts = googleFonts.value;
 
 		expect(fonts).toContain('Roboto:wght@700');
@@ -58,7 +58,7 @@ describe('useFonts', () => {
 			},
 		};
 
-		const { googleFonts } = useFonts(theme as any);
+		const { googleFonts } = useFonts(theme);
 		const fonts = googleFonts.value;
 		// Default weight should be 400
 		expect(fonts).toContain('Roboto:wght@400');
@@ -76,7 +76,7 @@ describe('useFonts', () => {
 			},
 		};
 
-		const { googleFonts } = useFonts(theme as any);
+		const { googleFonts } = useFonts(theme);
 		const fonts = googleFonts.value;
 		// Should not include unquoted font names
 		expect(fonts.length).toBe(0);
@@ -94,7 +94,7 @@ describe('useFonts', () => {
 			},
 		};
 
-		const { googleFonts } = useFonts(theme as any);
+		const { googleFonts } = useFonts(theme);
 		const fonts = googleFonts.value;
 		// Should not include var() fonts in googleFonts
 		expect(fonts.length).toBe(0);
@@ -120,7 +120,7 @@ describe('useFonts', () => {
 			},
 		};
 
-		const { googleFonts } = useFonts(theme as any);
+		const { googleFonts } = useFonts(theme);
 		const fonts = googleFonts.value;
 		const robotoEntry = fonts.find((f) => f.startsWith('Roboto:wght@'));
 		expect(robotoEntry).toBe('Roboto:wght@100;400;900');
@@ -138,7 +138,7 @@ describe('useFonts', () => {
 			},
 		};
 
-		const { googleFonts } = useFonts(theme as any);
+		const { googleFonts } = useFonts(theme);
 		const fonts = googleFonts.value;
 		expect(fonts).toContain('Very+Fancy+Font:wght@500');
 	});

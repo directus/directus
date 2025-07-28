@@ -4,8 +4,9 @@ import type { MaybeRef } from 'vue';
 import { computed, unref } from 'vue';
 import type { Theme } from '../schemas/theme.js';
 import { ThemeSchema } from '../schemas/theme.js';
+import type { DeepPartial } from '@directus/types';
 
-export const useFonts = (theme: MaybeRef<Theme>) => {
+export const useFonts = (theme: MaybeRef<DeepPartial<Theme>>) => {
 	const paths = computed(() => {
 		const paths: Map<string[], { family: string | null; weight: string | null }> = new Map();
 
