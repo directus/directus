@@ -30,6 +30,7 @@ draft: Qaralama
 archived: Arxiv
 marketplace: Marketplace
 extensions: Əlavələr
+skip_link_nav:
 modules: Modullar
 module_bar: Modul çərçivəsi
 logs: Loglar
@@ -207,8 +208,18 @@ field_validation: Xana doğrulaması
 field_presets: Xana ayarları
 permissions_for_role: '{role} rolunun {action} edə biləcəti obyektlər.'
 fields_for_role: '{role} rolunun {action} edə biləcəti xanalar.'
+search_collection: Axtar...
+comments: Şərhlər
+no_items: Məlumat yoxdur
+search_items: Axtar...
+items: məlumat
+wysiwyg_options:
+  table: Cədvəl
+creating_in: 'Əlavə et: {collection}'
 source_registry: Marketplace
 fields:
+  directus_activity:
+    revisions: Dəyişikliklər
   directus_settings:
     module_bar: Modul çərçivəsi
   directus_fields:
@@ -217,15 +228,23 @@ fields:
     name: Rol adı
   directus_policies:
     name:
+revisions: Dəyişikliklər
+table: Cədvəl
 interfaces:
   presentation-links:
     primary: Əsas
+  input-block-editor:
+    tools_options:
+      table: Cədvəl
 displays:
   datetime:
     suffix: Son şəkilçi
   formatted-value:
     prefix: Prefiks
     suffix: Son şəkilçi
+layouts:
+  tabular:
+    tabular: Cədvəl
 operations:
   log:
     message: Mesaj
