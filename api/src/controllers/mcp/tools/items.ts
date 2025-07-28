@@ -1,20 +1,12 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
-import type { Item, PrimaryKey, Query } from '@directus/types';
+import type { PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
 import { ItemsService } from '../../../services/items.js';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
+import { ItemSchema, PartialItemInput, PrimaryKeySchema, QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
-
-const ItemSchema = z.custom<Partial<Item>>();
-
-const PartialItemInput = z.object({
-	collection: z.string(),
-});
-
-const QuerySchema = z.custom<Query>();
-const PrimaryKeySchema = z.custom<PrimaryKey>();
 
 const ItemValidateSchema = z.union([
 	PartialItemInput.extend({
@@ -40,7 +32,7 @@ const ItemValidateSchema = z.union([
 ]);
 
 const ItemInputSchema = z.object({
-	action: z.enum(['read', 'create', 'update', 'delete', 'upsert']).describe('The operation to perform'),
+	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
 	collection: z.string().describe('The name of the collection'),
 	query: QuerySchema.optional().describe(''),
 	keys: z.array(PrimaryKeySchema).optional().describe(''),
