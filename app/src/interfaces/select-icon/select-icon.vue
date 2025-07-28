@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
-import { computed, ref } from 'vue';
+import { computed, ref, nextTick, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import icons from './icons.json';
@@ -23,8 +23,12 @@ const emit = defineEmits(['input']);
 const { t } = useI18n();
 
 const searchQuery = ref('');
+const menuActive = ref(false);
+const contentRef = ref<HTMLElement>();
 
-const iconsPerRow = ref(10);
+const DEFAULT_ICONS_PER_ROW = 7;
+const MAX_ICONS_PER_ROW = 20;
+const iconsPerRow = ref(DEFAULT_ICONS_PER_ROW);
 
 const mergedIcons = [
 	...icons,
@@ -84,6 +88,56 @@ const virtualRows = computed(() => {
 	return rows;
 });
 
+let resizeObserver: ResizeObserver | null = null;
+
+function calculateIconsPerRow() {
+	if (!contentRef.value) return;
+
+	const contentWidth = contentRef.value.clientWidth;
+	const iconSize = 24;
+	const gap = 8;
+	const padding = 16;
+
+	const availableWidth = contentWidth - padding;
+	const iconsPerRowCalculated = Math.floor(availableWidth / (iconSize + gap));
+
+	iconsPerRow.value = Math.max(DEFAULT_ICONS_PER_ROW, Math.min(iconsPerRowCalculated, MAX_ICONS_PER_ROW));
+}
+
+function setupResizeObserver() {
+	if (!contentRef.value) return;
+
+	// Clean up existing observer
+	if (resizeObserver) {
+		resizeObserver.disconnect();
+	}
+
+	// Create new observer
+	resizeObserver = new ResizeObserver(() => {
+		calculateIconsPerRow();
+	});
+
+	resizeObserver.observe(contentRef.value);
+}
+
+function cleanupResizeObserver() {
+	if (resizeObserver) {
+		resizeObserver.disconnect();
+		resizeObserver = null;
+	}
+}
+
+// Calculate icons per row when menu opens
+watch(menuActive, async (isActive) => {
+	if (isActive) {
+		await nextTick();
+		setupResizeObserver();
+		calculateIconsPerRow();
+	} else {
+		cleanupResizeObserver();
+	}
+});
+
 function setIcon(icon: string | null) {
 	searchQuery.value = '';
 	emit('input', icon);
@@ -101,7 +155,7 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 </script>
 
 <template>
-	<v-menu attached :disabled="disabled" no-focus-return>
+	<v-menu v-model="menuActive" attached :disabled="disabled" no-focus-return>
 		<template #activator="{ active, activate, deactivate, toggle }">
 			<v-input
 				v-model="searchQuery"
@@ -142,7 +196,7 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 			</v-input>
 		</template>
 
-		<div class="content" :class="width">
+		<div ref="contentRef" class="content" :class="width">
 			<DynamicScroller
 				:items="virtualRows"
 				:min-item-size="32"
@@ -154,12 +208,11 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 			>
 				<template #default="{ item }">
 					<DynamicScrollerItem :item="item" active>
-						<div v-if="item.type === 'header'" class="group-header">
-							<div class="group-name">
-								{{ item.groupName }}
-							</div>
-						</div>
-						<div v-else-if="item.type === 'icons'" class="icon-row">
+						<v-divider v-if="item.type === 'header'" inline-title class="icon-row">
+							{{ item.groupName }}
+						</v-divider>
+
+						<div v-else-if="item.type === 'icons'" class="icon-row" :style="{ '--icons-per-row': iconsPerRow }">
 							<v-icon
 								v-for="icon in item.icons"
 								:key="icon"
@@ -201,26 +254,15 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 	}
 
 	.v-divider {
-		--v-divider-color: var(--theme--background-normal);
-		margin: 0 22px;
+		--v-divider-label-color: var(--theme--foreground-subdued);
 	}
-}
-
-.group-header {
-	column-span: all;
-	color: var(--theme--form--field--input--foreground-subdued);
-	text-transform: uppercase;
-	letter-spacing: 0.5px;
-	padding: 12px 0;
-	text-align: center;
 }
 
 .icon-row {
 	display: grid;
 	grid-gap: 8px;
-	grid-template-columns: repeat(auto-fit, 24px);
-	justify-content: center;
-	padding: 4px 0;
+	grid-template-columns: repeat(var(--icons-per-row, 7), 24px);
+	justify-content: start;
 	color: var(--theme--form--field--input--foreground-subdued);
 }
 
