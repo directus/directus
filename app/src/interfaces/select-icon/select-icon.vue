@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
-import { computed, ref, nextTick, watch, type Ref } from 'vue';
+import { computed, ref, nextTick, watch, type Ref, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import icons from './icons.json';
@@ -28,11 +28,11 @@ const contentRef = ref<HTMLElement>();
 
 const MIN_ITEM_SIZE = 32;
 
+let resizeObserver: ResizeObserver | null = null;
+
 function useIconsPerRow(contentRef: Ref<HTMLElement | undefined>, menuActive: Ref<boolean>) {
 	const DEFAULT_ICONS_PER_ROW = 7;
 	const iconsPerRow = ref(DEFAULT_ICONS_PER_ROW);
-
-	let resizeObserver: ResizeObserver | null = null;
 
 	function calculateIconsPerRow() {
 		if (!contentRef.value) return;
@@ -85,6 +85,13 @@ function useIconsPerRow(contentRef: Ref<HTMLElement | undefined>, menuActive: Re
 		iconsPerRow,
 	};
 }
+
+onUnmounted(() => {
+	if (resizeObserver) {
+		resizeObserver.disconnect();
+		resizeObserver = null;
+	}
+});
 
 const { iconsPerRow } = useIconsPerRow(contentRef, menuActive);
 
