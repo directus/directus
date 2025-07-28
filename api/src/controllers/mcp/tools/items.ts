@@ -3,6 +3,7 @@ import { isSystemCollection } from '@directus/system-data';
 import type { PrimaryKey, Query } from '@directus/types';
 import { z } from 'zod';
 import { ItemsService } from '../../../services/items.js';
+import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { defineTool } from '../tool.js';
 
 export const items = defineTool<{ action: string; collection: string; query: Query; keys?: PrimaryKey[] }>('items', {
@@ -26,6 +27,15 @@ export const items = defineTool<{ action: string; collection: string; query: Que
 		if (args.collection in schema.collections === false) {
 			throw new ForbiddenError();
 		}
+
+		const query = await sanitizeQuery(
+			{
+				fields: args.query['fields'] || '*',
+				...args.query,
+			},
+			schema,
+			accountability || null,
+		);
 
 		if (args.action === 'read') {
 			const itemsService = new ItemsService(args.collection, {
