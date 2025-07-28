@@ -19,7 +19,7 @@
 '@directus/sdk': patch
 ---
 
-Add TypeScript support for services within extensions context
+Added TypeScript support for services within the extension context
 
 ::: notice
 
