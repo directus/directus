@@ -28,6 +28,8 @@ export const items = defineTool<{ action: string; collection: string; query: Que
 			throw new ForbiddenError();
 		}
 
+		const isSingleton = schema.collections[args.collection]?.singleton ?? false;
+
 		const query = await sanitizeQuery(
 			{
 				fields: args.query['fields'] || '*',
@@ -43,10 +45,12 @@ export const items = defineTool<{ action: string; collection: string; query: Que
 				accountability,
 			});
 
-			if (args.keys) {
-				result = await itemsService.readMany(args.keys, args.query);
+			if (isSingleton) {
+				result = await itemsService.readSingleton(query);
+			} else if (args.keys) {
+				result = await itemsService.readMany(args.keys, query);
 			} else {
-				result = await itemsService.readByQuery(args.query);
+				result = await itemsService.readByQuery(query);
 			}
 		}
 
