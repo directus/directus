@@ -1,7 +1,7 @@
 import type { Item, PrimaryKey, Query } from '@directus/types';
 import { z } from 'zod';
 
-export const ItemSchema = z.custom<Partial<Item>>();
+export const ItemSchema = z.custom<Item>();
 
 export const PartialItemInput = z.object({
 	collection: z.string(),
