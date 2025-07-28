@@ -23,7 +23,7 @@ Added TypeScript support for services within the extension context
 
 ::: notice
 
-The services exposed to API extensions using TypeScript are now fully typed instead of `any` this can potentially cause new type errors when building extensions.
+The services exposed to API extensions using TypeScript are now fully typed instead of `any`, this may cause new type errors when building extensions.
 
 Arguments of service methods are now strictly typed which can result in type errors for broader types that would not error before:
 - The ItemsService constructor now expects the collection name to be a `string` so this will error on `string | undefined` (or other unions).
