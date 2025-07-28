@@ -7,6 +7,41 @@ export type UsableCustomSelection = {
 	usesOtherValue: ComputedRef<boolean>;
 };
 
+/**
+ * A Vue composable for managing custom selection values that aren't present in a predefined list of items.
+ *
+ * This composable is typically used in form components where users can select from a predefined list
+ * of options, but also have the ability to enter custom values that aren't in the list. It manages
+ * the state and logic for detecting when a custom value is being used and provides a reactive
+ * interface for getting and setting custom values.
+ *
+ * @param currentValue - A reactive reference to the currently selected value. Can be null if no value is selected.
+ * @param items - A reactive reference to the array of available predefined items. Each item should have a 'value' property.
+ * @param emit - A callback function to emit value changes to the parent component.
+ *
+ * @returns An object containing:
+ * - `otherValue` - A computed ref for getting/setting custom values. Returns current value when using custom,
+ *   empty string otherwise. Setting triggers the emit callback.
+ * - `usesOtherValue` - A computed boolean indicating whether the current value is a custom value
+ *   (not found in the predefined items list).
+ *
+ * @example
+ * ```typescript
+ * const currentValue = ref('custom-option');
+ * const items = ref([
+ *   { value: 'option1', label: 'Option 1' },
+ *   { value: 'option2', label: 'Option 2' }
+ * ]);
+ * const emit = (value: string | null) => console.log('Value changed:', value);
+ *
+ * const { otherValue, usesOtherValue } = useCustomSelection(currentValue, items, emit);
+ *
+ * console.log(usesOtherValue.value); // true (custom-option not in items)
+ * console.log(otherValue.value); // 'custom-option'
+ *
+ * otherValue.value = 'new-custom-value'; // Triggers emit with 'new-custom-value'
+ * ```
+ */
 export function useCustomSelection(
 	currentValue: Ref<string | null>,
 	items: Ref<any[]>,
