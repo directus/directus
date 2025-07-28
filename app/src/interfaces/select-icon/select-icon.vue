@@ -26,74 +26,10 @@ const searchQuery = ref('');
 const menuActive = ref(false);
 const contentRef = ref<HTMLElement>();
 
+// for virtual scroller
 const MIN_ITEM_SIZE = 32;
 
-let resizeObserver: ResizeObserver | null = null;
-
-function useIconsPerRow(contentRef: Ref<HTMLElement | undefined>, menuActive: Ref<boolean>) {
-	const DEFAULT_ICONS_PER_ROW = 7;
-	const iconsPerRow = ref(DEFAULT_ICONS_PER_ROW);
-
-	function calculateIconsPerRow() {
-		if (!contentRef.value) return;
-
-		const contentWidth = contentRef.value.clientWidth;
-		const iconSize = 24;
-		const gap = 8;
-		const contentPadding = 16;
-		const rowPadding = 8;
-
-		const availableWidth = contentWidth - contentPadding - rowPadding;
-		const iconsPerRowCalculated = Math.floor(availableWidth / (iconSize + gap));
-
-		iconsPerRow.value = Math.max(DEFAULT_ICONS_PER_ROW, iconsPerRowCalculated);
-	}
-
-	function setupResizeObserver() {
-		if (!contentRef.value) return;
-
-		if (resizeObserver) {
-			resizeObserver.disconnect();
-		}
-
-		resizeObserver = new ResizeObserver(() => {
-			calculateIconsPerRow();
-		});
-
-		resizeObserver.observe(contentRef.value);
-	}
-
-	function cleanupResizeObserver() {
-		if (resizeObserver) {
-			resizeObserver.disconnect();
-			resizeObserver = null;
-		}
-	}
-
-	// Calculate icons per row when menu opens
-	watch(menuActive, async (isActive) => {
-		if (isActive) {
-			await nextTick();
-			setupResizeObserver();
-			calculateIconsPerRow();
-		} else {
-			cleanupResizeObserver();
-		}
-	});
-
-	return {
-		iconsPerRow,
-	};
-}
-
-onUnmounted(() => {
-	if (resizeObserver) {
-		resizeObserver.disconnect();
-		resizeObserver = null;
-	}
-});
-
-const { iconsPerRow } = useIconsPerRow(contentRef, menuActive);
+const { iconsPerRow, iconSize, gap } = useIconsPerRow(contentRef, menuActive);
 
 const mergedIcons = [
 	...icons,
@@ -167,6 +103,82 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 
 	if (!e.repeat && !systemKeys && (e.target as HTMLInputElement).tagName === 'INPUT') activate();
 }
+
+interface IconsPerRowConfig {
+	iconSize?: number;
+	gap?: number;
+	contentPadding?: number;
+	rowPadding?: number;
+	defaultIconsPerRow?: number;
+}
+
+function useIconsPerRow(
+	contentRef: Ref<HTMLElement | undefined>,
+	menuActive: Ref<boolean>,
+	config: IconsPerRowConfig = {},
+) {
+	const { iconSize = 24, gap = 8, contentPadding = 16, rowPadding = 8, defaultIconsPerRow = 7 } = config;
+
+	const iconsPerRow = ref(defaultIconsPerRow);
+	let resizeObserver: ResizeObserver | null = null;
+
+	function calculateIconsPerRow() {
+		if (!contentRef.value) return;
+
+		const contentWidth = contentRef.value.clientWidth;
+
+		const availableWidth = contentWidth - contentPadding - rowPadding;
+		const iconsPerRowCalculated = Math.floor(availableWidth / (iconSize + gap));
+
+		iconsPerRow.value = Math.max(defaultIconsPerRow, iconsPerRowCalculated);
+	}
+
+	function setupResizeObserver() {
+		if (!contentRef.value) return;
+
+		if (resizeObserver) {
+			resizeObserver.disconnect();
+		}
+
+		resizeObserver = new ResizeObserver(() => {
+			calculateIconsPerRow();
+		});
+
+		resizeObserver.observe(contentRef.value);
+	}
+
+	function cleanupResizeObserver() {
+		if (resizeObserver) {
+			resizeObserver.disconnect();
+			resizeObserver = null;
+		}
+	}
+
+	// Calculate icons per row when menu opens
+	watch(menuActive, async (isActive) => {
+		if (isActive) {
+			await nextTick();
+			setupResizeObserver();
+			calculateIconsPerRow();
+		} else {
+			cleanupResizeObserver();
+		}
+	});
+
+	// Cleanup on unmount
+	onUnmounted(() => {
+		cleanupResizeObserver();
+	});
+
+	return {
+		iconsPerRow,
+		iconSize,
+		gap,
+		contentPadding,
+		rowPadding,
+		defaultIconsPerRow,
+	};
+}
 </script>
 
 <template>
@@ -213,11 +225,10 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 
 		<div ref="contentRef" class="content" :class="width">
 			<DynamicScroller
-				:items="virtualRows"
 				:min-item-size="MIN_ITEM_SIZE"
+				:items="virtualRows"
 				:buffer="400"
 				:prerender="10"
-				:size-field="MIN_ITEM_SIZE.toString()"
 				key-field="rowIndex"
 				page-mode
 			>
@@ -227,7 +238,15 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 							{{ item.groupName }}
 						</v-divider>
 
-						<div v-else-if="item.type === 'icons'" class="icon-row" :style="{ '--icons-per-row': iconsPerRow }">
+						<div
+							v-else-if="item.type === 'icons'"
+							class="icon-row"
+							:style="{
+								'--icons-per-row': iconsPerRow,
+								'--icon-size': `${iconSize}px`,
+								'--gap': `${gap}px`,
+							}"
+						>
 							<v-icon
 								v-for="icon in item.icons"
 								:key="icon"
@@ -275,8 +294,8 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 
 .icon-row {
 	display: grid;
-	grid-gap: 8px;
-	grid-template-columns: repeat(var(--icons-per-row, 7), 24px);
+	grid-gap: var(--gap, 8px);
+	grid-template-columns: repeat(var(--icons-per-row, 7), var(--icon-size, 24px));
 	justify-content: start;
 	color: var(--theme--form--field--input--foreground-subdued);
 	padding: 4px;
