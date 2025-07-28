@@ -1,4 +1,3 @@
-import { setLanguage } from '@/lang/set-language';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useFlowsStore } from '@/stores/flows';

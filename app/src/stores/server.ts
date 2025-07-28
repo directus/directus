@@ -1,12 +1,10 @@
 import api, { replaceQueue } from '@/api';
 import { AUTH_SSO_DRIVERS, DEFAULT_AUTH_DRIVER, DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { i18n } from '@/lang';
-import { setLanguage } from '@/lang/set-language';
-import { useUserStore } from '@/stores/user';
 import { AuthProvider } from '@/types/login';
 import formatTitle from '@directus/format-title';
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import { computed, reactive, unref } from 'vue';
+import { computed, reactive } from 'vue';
 
 type HydrateOptions = {
 	/**
