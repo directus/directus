@@ -101,9 +101,7 @@ export function useCollection(collectionKey: string | Ref<string | null>): Usabl
 	});
 
 	const accountabilityScope = computed(() => {
-		if (!info.value) return null;
-		if (!info.value.meta) return null;
-		return info.value.meta.accountability;
+		return info.value?.meta?.accountability || null;
 	});
 
 	return { info, fields, defaults, primaryKeyField, userCreatedField, sortField, isSingleton, accountabilityScope };
