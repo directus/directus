@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Allow user select text
+Enabled text selection in the studio
