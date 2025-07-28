@@ -13,7 +13,7 @@ export interface ToolConfig<Args = any> {
 	admin?: boolean;
 	inputSchema?: ZodType<Args>;
 	annotations?: Record<string, unknown>;
-	handler: (opts: ToolHandler<Args>) => Promise<{ data: unknown }>;
+	handler: (opts: ToolHandler<Args>) => Promise<{ data?: null | unknown } | undefined>;
 }
 
 export const defineTool = <Args = any>(name: string, tool: Omit<ToolConfig<Args>, 'name'>): ToolConfig<Args> => ({
