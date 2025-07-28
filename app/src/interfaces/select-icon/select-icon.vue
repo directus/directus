@@ -26,6 +26,8 @@ const searchQuery = ref('');
 const menuActive = ref(false);
 const contentRef = ref<HTMLElement>();
 
+const MIN_ITEM_SIZE = 32;
+
 function useIconsPerRow(contentRef: Ref<HTMLElement | undefined>, menuActive: Ref<boolean>) {
 	const DEFAULT_ICONS_PER_ROW = 7;
 	const iconsPerRow = ref(DEFAULT_ICONS_PER_ROW);
@@ -38,9 +40,10 @@ function useIconsPerRow(contentRef: Ref<HTMLElement | undefined>, menuActive: Re
 		const contentWidth = contentRef.value.clientWidth;
 		const iconSize = 24;
 		const gap = 8;
-		const padding = 16;
+		const contentPadding = 16;
+		const rowPadding = 8;
 
-		const availableWidth = contentWidth - padding;
+		const availableWidth = contentWidth - contentPadding - rowPadding;
 		const iconsPerRowCalculated = Math.floor(availableWidth / (iconSize + gap));
 
 		iconsPerRow.value = Math.max(DEFAULT_ICONS_PER_ROW, iconsPerRowCalculated);
@@ -204,10 +207,10 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 		<div ref="contentRef" class="content" :class="width">
 			<DynamicScroller
 				:items="virtualRows"
-				:min-item-size="32"
+				:min-item-size="MIN_ITEM_SIZE"
 				:buffer="400"
 				:prerender="10"
-				:size-field="'32'"
+				:size-field="MIN_ITEM_SIZE.toString()"
 				key-field="rowIndex"
 				page-mode
 			>
@@ -269,6 +272,7 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 	grid-template-columns: repeat(var(--icons-per-row, 7), 24px);
 	justify-content: start;
 	color: var(--theme--form--field--input--foreground-subdued);
+	padding: 4px;
 }
 
 .open-indicator {
