@@ -90,14 +90,16 @@ export class DirectusMCP {
 			}
 
 			try {
-				const args = tool.inputSchema?.safeParse(request.params.arguments);
+				const args = tool.inputSchema?.safeParse(request.params.arguments) ?? {
+					data: request.params.arguments,
+				};
 
-				if (args?.error) {
+				if ('error' in args && args.error) {
 					throw new InvalidPayloadError({ reason: fromZodError(args.error).message });
 				}
 
 				const result = await tool.handler({
-					args: args?.data,
+					args: args.data,
 					schema: req.schema,
 					accountability: req.accountability,
 				});
