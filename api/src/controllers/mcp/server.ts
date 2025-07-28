@@ -60,6 +60,7 @@ export class DirectusMCP {
 	}
 
 	handleRequest(req: Request, res: Response) {
+		// listing tools
 		this.server.setRequestHandler(ListToolsRequestSchema, async () => {
 			const tools = [];
 
@@ -77,7 +78,7 @@ export class DirectusMCP {
 			return { tools };
 		});
 
-		// Manage tool requests
+		// calling tools
 		this.server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest) => {
 			const tool = this.tools.get(request.params.name);
 
