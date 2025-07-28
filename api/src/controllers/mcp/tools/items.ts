@@ -1,6 +1,7 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type { Item, PrimaryKey, Query } from '@directus/types';
+import { toArray } from 'liquidjs/dist/util/underscore.js';
 import { z } from 'zod';
 import { ItemsService } from '../../../services/items.js';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
@@ -34,8 +35,7 @@ const ItemValidateSchema = z.union([
 	}),
 	PartialItemInput.extend({
 		action: z.literal('delete'),
-		keys: z.array(PrimaryKeySchema).optional(),
-		query: QuerySchema.optional(),
+		keys: z.array(PrimaryKeySchema),
 	}),
 ]);
 
@@ -76,7 +76,7 @@ export const items = defineTool<z.infer<typeof ItemValidateSchema>>('items', {
 
 		let sanitizedQuery = {};
 
-		if (args.query) {
+		if ('query' in args && args.query) {
 			sanitizedQuery = await sanitizeQuery(
 				{
 					fields: args.query['fields'] || '*',
@@ -93,21 +93,11 @@ export const items = defineTool<z.infer<typeof ItemValidateSchema>>('items', {
 		});
 
 		if (args.action === 'create') {
-			const savedKeys: PrimaryKey[] = [];
+			const data = toArray(args.data);
 
-			if (Array.isArray(args.data)) {
-				const keys = await itemsService.createMany(args.data);
-				savedKeys.push(...keys);
-			} else {
-				const key = await itemsService.createOne(args.data);
-				savedKeys.push(key);
-			}
+			const savedKeys = await itemsService.createMany(data);
 
-			if (Array.isArray(args.data)) {
-				result = await itemsService.readMany(savedKeys, sanitizedQuery);
-			} else {
-				result = await itemsService.readOne(savedKeys[0]!, sanitizedQuery);
-			}
+			const result = await itemsService.readMany(savedKeys, sanitizedQuery);
 
 			return {
 				data: result || null,
@@ -157,13 +147,7 @@ export const items = defineTool<z.infer<typeof ItemValidateSchema>>('items', {
 		}
 
 		if (args.action === 'delete') {
-			if (args.keys) {
-				await itemsService.deleteMany(args.keys);
-			} else {
-				await itemsService.deleteByQuery(sanitizedQuery);
-			}
-
-			return;
+			await itemsService.deleteMany(args.keys);
 		}
 
 		return;
