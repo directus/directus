@@ -1,35 +1,35 @@
-/packages/constants @directus/web @directus/server
-/packages/extensions @directus/web @directus/server
-/packages/tsconfig @directus/web @directus/server
-/packages/types @directus/web @directus/server
-/packages/utils @directus/web @directus/server
+/packages/constants @directus/studio @directus/engine
+/packages/extensions @directus/studio @directus/engine
+/packages/tsconfig @directus/studio @directus/engine
+/packages/types @directus/studio @directus/engine
+/packages/utils @directus/studio @directus/engine
 
-/app/ @directus/web
-/packages/components @directus/web
-/packages/composables @directus/web
-/packages/format-title @directus/web
-/packages/stores @directus/web
-/packages/themes @directus/web
+/app/ @directus/studio
+/packages/components @directus/studio
+/packages/composables @directus/studio
+/packages/format-title @directus/studio
+/packages/stores @directus/studio
+/packages/themes @directus/studio
 
-/api/ @directus/server
-/packages/env @directus/server
-/packages/errors @directus/server
-/packages/extensions-registry @directus/server
-/packages/memory @directus/server
-/packages/pressure @directus/server
-/packages/random @directus/server
-/packages/schema @directus/server
-/packages/storage/ @directus/server
-/packages/storage/storage-driver-azure @directus/server
-/packages/storage/storage-driver-cloudinary @directus/server
-/packages/storage/storage-driver-gcs @directus/server
-/packages/storage/storage-driver-local @directus/server
-/packages/storage/storage-driver-s3 @directus/server
-/packages/storage/storage-driver-supabase @directus/server
-/packages/system-data @directus/server
-/packages/validation @directus/server
+/api/ @directus/engine
+/packages/env @directus/engine
+/packages/errors @directus/engine
+/packages/extensions-registry @directus/engine
+/packages/memory @directus/engine
+/packages/pressure @directus/engine
+/packages/random @directus/engine
+/packages/schema @directus/engine
+/packages/storage/ @directus/engine
+/packages/storage/storage-driver-azure @directus/engine
+/packages/storage/storage-driver-cloudinary @directus/engine
+/packages/storage/storage-driver-gcs @directus/engine
+/packages/storage/storage-driver-local @directus/engine
+/packages/storage/storage-driver-s3 @directus/engine
+/packages/storage/storage-driver-supabase @directus/engine
+/packages/system-data @directus/engine
+/packages/validation @directus/engine
 
-/sdk/ @directus/server
+/sdk/ @directus/engine
 /packages/create-directus-extension @directus/dx
 /packages/create-directus-project @directus/dx
 /packages/extensions-sdk @directus/dx

@@ -2,6 +2,7 @@ import { InvalidCredentialsError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import type { Mock } from 'vitest';
 import { describe, expect, test, vi } from 'vitest';
+import emitter from '../emitter.js';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
 import { authenticateConnection, authenticationSuccess } from './authenticate.js';
 import type { WebSocketAuthMessage } from './messages.js';
@@ -12,6 +13,8 @@ vi.mock('../utils/get-accountability-for-token', () => ({
 		role: null, // minimum viable accountability
 	} as Accountability),
 }));
+
+vi.mock('../emitter');
 
 vi.mock('../utils/get-permissions', () => ({
 	getPermissions: vi.fn(),
@@ -80,6 +83,22 @@ describe('authenticateConnection', () => {
 			expires_at: TIMESTAMP,
 			refresh_token: undefined,
 		});
+	});
+
+	test('Short-circuits when authenticate filter is used', async () => {
+		const TIMESTAMP = 456987;
+		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
+
+		const customAccountability = { admin: true };
+
+		vi.mocked(emitter.emitFilter).mockResolvedValueOnce(customAccountability);
+
+		const { accountability } = await authenticateConnection({
+			type: 'auth',
+			access_token: 'access_token',
+		} as WebSocketAuthMessage);
+
+		expect(accountability).toEqual(customAccountability);
 	});
 
 	test('Failure token expired', async () => {

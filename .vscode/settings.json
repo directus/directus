@@ -1,3 +1,4 @@
 {
+	"scssFormatter.singleQuote": true,
 	"stylelint.validate": ["css", "scss", "vue"]
 }

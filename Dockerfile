@@ -33,7 +33,7 @@ RUN <<EOF
 	set -ex
 	pnpm install --recursive --offline --frozen-lockfile
 	npm_config_workspace_concurrency=1 pnpm run build
-	pnpm --filter directus deploy --prod dist
+	pnpm --filter directus deploy --legacy --prod dist
 	cd dist
 	# Regenerate package.json file with essential fields only
 	# (see https://github.com/directus/directus/issues/20338)
