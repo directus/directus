@@ -1,4 +1,4 @@
-import { InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type { PrimaryKey, Query } from '@directus/types';
 import { z } from 'zod';
@@ -21,6 +21,10 @@ export default defineTool<{ action: string; collection: string; query: Query; ke
 
 		if (isSystemCollection(args.collection)) {
 			throw new InvalidPayloadError({ reason: 'Cannot provide a core collection' });
+		}
+
+		if (args.collection in schema.collections === false) {
+			throw new ForbiddenError();
 		}
 
 		if (args.action === 'read') {
