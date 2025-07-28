@@ -113,8 +113,13 @@ const color = computed(() => {
 		position: relative;
 		inline-size: 100% !important;
 		transform-origin: left;
-		animation: indeterminate 2s infinite;
 		will-change: transform;
+		animation: indeterminate-ltr 2s infinite;
+
+		html[dir='rtl'] & {
+			animation: indeterminate-rtl 2s infinite;
+			transform-origin: right;
+		}
 	}
 
 	&.rounded,
@@ -141,7 +146,7 @@ const color = computed(() => {
 	}
 }
 
-@keyframes indeterminate {
+@keyframes indeterminate-ltr {
 	0% {
 		transform: scaleX(0) translateX(-30%);
 	}
@@ -158,6 +163,27 @@ const color = computed(() => {
 
 	100% {
 		transform: scaleX(1) translateX(100%);
+		animation-timing-function: cubic-bezier(0.1, 0.6, 0.9, 0.5);
+	}
+}
+
+@keyframes indeterminate-rtl {
+	0% {
+		transform: scaleX(0) translateX(30%);
+	}
+
+	10% {
+		transform: scaleX(0) translateX(30%);
+		animation-timing-function: cubic-bezier(0.1, 0.6, 0.9, 0.5);
+	}
+
+	60% {
+		transform: scaleX(1) translateX(-25%);
+		animation-timing-function: cubic-bezier(0.4, 0.1, 0.2, 0.9);
+	}
+
+	100% {
+		transform: scaleX(1) translateX(-100%);
 		animation-timing-function: cubic-bezier(0.1, 0.6, 0.9, 0.5);
 	}
 }

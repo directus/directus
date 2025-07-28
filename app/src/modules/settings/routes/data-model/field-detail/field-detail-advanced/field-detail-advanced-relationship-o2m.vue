@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed } from 'vue';
-import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
-import { storeToRefs } from 'pinia';
-import RelatedCollectionSelect from '../shared/related-collection-select.vue';
-import RelatedFieldSelect from '../shared/related-field-select.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import RelatedCollectionSelect from '../shared/related-collection-select.vue';
+import RelatedFieldSelect from '../shared/related-field-select.vue';
+import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 
 const { t } = useI18n();
 
@@ -171,6 +171,10 @@ const unsortableJunctionFields = computed(() => {
 		inset-block-end: 17px;
 		inset-inline-start: 50%;
 		transform: translateX(-50%);
+
+		html[dir='rtl'] & {
+			transform: translateX(50%) scaleX(-1);
+		}
 	}
 }
 
@@ -204,6 +208,10 @@ const unsortableJunctionFields = computed(() => {
 		inset-block-end: 17px;
 		inset-inline-start: 50%;
 		transform: translateX(-50%);
+
+		html[dir='rtl'] & {
+			transform: translateX(50%) scaleX(-1);
+		}
 	}
 }
 
