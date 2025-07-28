@@ -91,6 +91,7 @@ n_files: '{n} fayl'
 verified: Təsdiqlənib
 homepage: Ana Səhifə
 repository: Repository
+reload_page: Səhifəni yenidən yüklə
 reload_required: Səhifənin yenilənməsi tələb olunur
 report_an_issue: Problem bildirin
 website: Vebsayt
@@ -109,6 +110,7 @@ field_name_translations: Sütun adlarının tərcüməsi
 enter_password_to_enable_tfa: İki faktorlu autentifikasiyanı aktivləşdirmək üçün şifrənizi daxil edin
 add_field: Sütun əlavə et
 role_name: Rol adı
+policy_name:
 branch: Branch
 leaf: Yarpaq
 indeterminate: Qeyri-müəyyən
@@ -213,6 +215,8 @@ fields:
     translation: Sütun adlarının tərcüməsi
   directus_roles:
     name: Rol adı
+  directus_policies:
+    name:
 interfaces:
   presentation-links:
     primary: Əsas
