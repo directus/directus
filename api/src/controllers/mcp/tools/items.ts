@@ -50,7 +50,8 @@ const ItemInputSchema = z.object({
 		.describe(''),
 });
 
-export const items = defineTool<z.infer<typeof ItemValidateSchema>>('items', {
+export const items = defineTool<z.infer<typeof ItemValidateSchema>>({
+	name: 'items',
 	description: 'Perform CRUD operations on Directus Items',
 	inputSchema: ItemInputSchema,
 	validateSchema: ItemValidateSchema,

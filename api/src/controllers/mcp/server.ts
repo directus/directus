@@ -38,7 +38,7 @@ class DirectusTransport implements Transport {
 
 export class DirectusMCP {
 	server: Server;
-	tools: Map<string, ToolConfig>;
+	tools: Map<string, ToolConfig<unknown>>;
 	constructor() {
 		this.server = new Server(
 			{
@@ -53,8 +53,8 @@ export class DirectusMCP {
 		);
 
 		this.tools = new Map([
-			[tools.system.name, tools.system as ToolConfig],
-			[tools.items.name, tools.items as ToolConfig],
+			[tools.system.name, tools.system as ToolConfig<unknown>],
+			[tools.items.name, tools.items as ToolConfig<unknown>],
 		]);
 	}
 

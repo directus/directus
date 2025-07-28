@@ -7,7 +7,7 @@ export type ToolHandler<Args> = {
 	accountability: Accountability | undefined;
 };
 
-export interface ToolConfig<Args = any> {
+export interface ToolConfig<Args> {
 	name: string;
 	description: string;
 	admin?: boolean;
@@ -17,7 +17,6 @@ export interface ToolConfig<Args = any> {
 	handler: (opts: ToolHandler<Args>) => Promise<{ data?: null | unknown } | undefined>;
 }
 
-export const defineTool = <Args = any>(name: string, tool: Omit<ToolConfig<Args>, 'name'>): ToolConfig<Args> => ({
-	name,
-	...tool,
-});
+export function defineTool<Args>(tool: ToolConfig<Args>): ToolConfig<Args> {
+	return tool;
+}
