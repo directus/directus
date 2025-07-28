@@ -3,6 +3,7 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import {
 	CallToolRequestSchema,
+	JSONRPCMessageSchema,
 	ListToolsRequestSchema,
 	type CallToolRequest,
 	type JSONRPCMessage,
