@@ -12,7 +12,7 @@ import {
 import type { Request, Response } from 'express';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { fromZodError } from 'zod-validation-error';
-import { ALL_TOOLS } from './tool.js';
+import { ALL_TOOLS } from './tools/index.js';
 
 class DirectusTransport implements Transport {
 	res: Response;

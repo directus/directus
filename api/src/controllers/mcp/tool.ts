@@ -19,10 +19,6 @@ export interface ToolConfig<T> {
 	handler: ToolHandler<T>;
 }
 
-export const ALL_TOOLS: ToolConfig<any>[] = [];
-
 export function defineTool<Args>(tool: ToolConfig<Args>): ToolConfig<Args> {
-	ALL_TOOLS.push(tool);
-
 	return tool;
 }
