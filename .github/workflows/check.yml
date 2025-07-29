@@ -80,6 +80,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
         # This currently builds all packages in the repo. Ideally we add build: false here as well
         # to save minutes building the repo, but that'd require us refactoring the tests to stop
