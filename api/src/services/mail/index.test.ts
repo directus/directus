@@ -60,7 +60,7 @@ describe('MailService', () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
-		
+
 		// Mock getDefaultTemplateData
 		vi.spyOn(MailService.prototype as any, 'getDefaultTemplateData').mockResolvedValue({
 			projectName: 'Test Project',
