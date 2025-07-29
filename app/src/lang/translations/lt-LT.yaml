@@ -87,7 +87,7 @@ published_relative: Publikuota {relativeTime}
 compatible_with_your_project: Suderinama su šiuo projektu
 compatible_with_your_project_copy: Plėtinio autorius nurodė plėtinio suderinamumą su {hostVersion}, kuri yra suderinama su dabartinio projekto versija ({currentVersion})
 last_updated_relative: Paskutinį kartą atnaujinta {relativeTime}
-n_files: '{n} rinkmenų'
+n_files: "{n} rinkmenų"
 verified: Patvirtinta
 homepage: Pradinis puslapis
 repository: Repozitorija
@@ -97,7 +97,7 @@ report_an_issue: Pranešti apie problemą
 website: Svetainė
 github: GitHub
 beta: Beta
-n_downloads: '{n} atsisiuntimų'
+n_downloads: "{n} atsisiuntimų"
 downloads: Atsisiuntimai
 compatibility_not_guaranteed: Suderinamumas negarantuojamas
 compatibility_not_guaranteed_copy: Plėtinio autorius nurodė plėtinio suderinamumą su {hostVersion}, kuri yra nesuderinama su dabartinio projekto versija ({currentVersion})
@@ -117,7 +117,7 @@ indeterminate: Neapibrėžta
 edit_collection: Redaguoti kolekciją
 exclusive: Išskirtinis
 children: Vaikai
-db_only_click_to_configure: 'Sukurtas tik duomenų bazėje: spauskite norėdami konfigūruoti'
+db_only_click_to_configure: "Sukurtas tik duomenų bazėje: spauskite norėdami konfigūruoti"
 show_active_items: Rodyti aktyvius įrašus
 show_archived_items: Rodyti archyvuotus elementus
 show_all_items: Rodyti visus įrašus
@@ -201,7 +201,7 @@ archive: Archyvuoti
 archive_confirm: Ar tikrai norite archyvuoti šį elementą?
 archive_confirm_count: >-
   Nėra pasirinktų elementų | Ar tikrai norite archyvuoti šį elementą? | Ar tikrai norite archyvuoti {count} elementus?
-reset_system_permissions_to: 'Atstatyti sisteminius leidimus į:'
+reset_system_permissions_to: "Atstatyti sisteminius leidimus į:"
 reset_system_permissions_copy: Šis veiksmas perrašys visus pasirinktinus leidimus, kuriuos galėjote pritaikyti sistemos rinkiniams. Ar jūs įsitikinę?
 the_following_are_minimum_permissions: Toliau išvardintos teisės yra automatiškai suteikiamos kai prieiga prie aplikacijos yra įjungta. Jūs galite suteikti daugiau teisių jei reikia, tačiau negalite jų sumažinti mažiau nei numatyta.
 app_access_minimum: Aplikacijos prieigos minimumas
@@ -209,7 +209,7 @@ recommended_defaults: Rekomenduojami "Pagal nutylėjimą"
 unarchive: Išarchyvuoti
 unarchive_confirm: Ar tikrai norite išarchyvuoti šį elementą?
 nested_files_folders_will_be_moved: Kelių lygių failai ir aplankai bus perkelti vienu lygiu aukštyn.
-validation_errors_notice: 'Laukai turintys netinkamas reikšmes:'
+validation_errors_notice: "Laukai turintys netinkamas reikšmes:"
 validationError:
   eq: Reikšmė turi būti {valid}
   neq: Reikšmė negali būti {invalid}
@@ -259,14 +259,14 @@ item_permissions: Elemento leidimai
 field_permissions: Lauko leidimai
 field_validation: Lauko validacija
 field_presets: Lauko ruošiniai
-permissions_for_role: 'Dalykai, kuriuos {role} vaidmuo gali {action}.'
-permissions_for_policy: 'Įrašai {policy} polise gali {action}.'
-fields_for_role: 'Laukai, kuriuos {role} vaidmuo gali {action}.'
-fields_for_policy: 'Laukai {policy} polise gali {action}.'
-validation_for_role: 'Lauko {action} taisyklės, kurių {role} vaidmuo turi laikytis.'
-validation_for_policy: 'Lauko {action} taisyklės privalo būti suderinti su {policy} polisu.'
-presets_for_role: 'Lauko vertė pagal nutylėjimą {role} vaidmeniui.'
-presets_for_policy: 'Lauko reikšmių numatytieji nustatymai {policy} polisui.'
+permissions_for_role: "Dalykai, kuriuos {role} vaidmuo gali {action}."
+permissions_for_policy: "Įrašai {policy} polise gali {action}."
+fields_for_role: "Laukai, kuriuos {role} vaidmuo gali {action}."
+fields_for_policy: "Laukai {policy} polise gali {action}."
+validation_for_role: "Lauko {action} taisyklės, kurių {role} vaidmuo turi laikytis."
+validation_for_policy: "Lauko {action} taisyklės privalo būti suderinti su {policy} polisu."
+presets_for_role: "Lauko vertė pagal nutylėjimą {role} vaidmeniui."
+presets_for_policy: "Lauko reikšmių numatytieji nustatymai {policy} polisui."
 presets_field_warning: 'Reliaciniai nustatymai laukui "{field}" turi būti sukonfigūruoti išplėstiniu rėžimu.'
 presentation_and_aliases: Atvaizdavimas ir sinonimai
 revision_post_create: Įrašo reikšmės jo sukūrimo metu.
@@ -311,8 +311,8 @@ iso: ISO
 focal_length: Židinio nuotolis
 schema_setup_key: Šio lauko duomenų bazės stulpelio pavadinimas ir API raktas
 create_field: Kurti lauką
-creating_new_field: 'Naujas laukas ({collection})'
-field_in_collection: '{field} ({collection})'
+creating_new_field: "Naujas laukas ({collection})"
+field_in_collection: "{field} ({collection})"
 reset_page_preferences: Atstatyti puslapio nustatymus
 hidden_field: Paslėptas laukas
 hidden_on_detail: Paslėptas detalių puslapyje
@@ -362,19 +362,19 @@ refresh_interval_minutes: Kas minutę | Kas {minutes} min.
 auto_generate: Generuoti Automatiškai
 this_will_auto_setup_fields_relations: Bus automatiškai sukurti visi reikalingi laukai ir sąryšiai.
 click_here: Spauskite čia
-to_manually_setup_translations: ', kad savarankiškai nustatyti vertimus.'
+to_manually_setup_translations: ", kad savarankiškai nustatyti vertimus."
 manage: Tvarkyti
 click_to_manage_translated_fields: >-
   Dar nėra laukų su vertimais. Paspauskite čia, kad juos sukurtumėte | Yra vienas laukas su vertimais. Paspauskite čia norėdami redaguoti | Yra {count} laukų su vertimais. Paspauskite čia norėdami redaguoti.
 fields_group: Laukų grupė
 no_collections_found: Kolekcijų nerasta.
-new_data_alert: 'Jūsų duomenų modelyje bus sukurta:'
+new_data_alert: "Jūsų duomenų modelyje bus sukurta:"
 search_collection: Ieškoti kolekcijoje...
 search_role: Ieškoti rolės...
 search_policy: Ieškoti polisų...
 search_field: Ieškoti laukų...
-new_field: 'Naujas laukas'
-new_collection: 'Nauja kolekcija'
+new_field: "Naujas laukas"
+new_collection: "Nauja kolekcija"
 add_m2o_to_collection: 'Pridėti M2O ryšį prie "{collection}"'
 add_o2m_to_collection: 'Pridėti O2M ryšį prie "{collection}"'
 add_m2m_to_collection: 'Pridėti M2M ryšį prie "{collection}"'
@@ -449,15 +449,15 @@ settings_update_success: Nustatymai atnaujinti
 title: Pavadinmas
 revision_delta_created: Sukurta
 revision_delta_created_externally: Sukurta išorėje
-revision_delta_updated: 'Atnaujintas 1 laujas | Atnaujinta {count} laukų'
+revision_delta_updated: "Atnaujintas 1 laujas | Atnaujinta {count} laukų"
 revision_delta_deleted: Ištrintas
-revision_delta_version_saved: 'Saugoti versiją (atnaujintas 1 laukas) | Saugoti versiją (atnaujinti {count} laukai)'
+revision_delta_version_saved: "Saugoti versiją (atnaujintas 1 laukas) | Saugoti versiją (atnaujinti {count} laukai)"
 revision_delta_reverted: Atstatytas
 revision_delta_update_message: Laukas buvo atnaujintas. Reikšmė yra paslėpta.
 revision_delta_other: Pakeitimas
-revision_delta_by: '{date} {user}'
-presentation_text_values_cannot_be_reimported: 'Reikšmė negali būti importuojama.'
-download_page_as_csv: 'Išsaugoti puslapį CSV formatu'
+revision_delta_by: "{date} {user}"
+presentation_text_values_cannot_be_reimported: "Reikšmė negali būti importuojama."
+download_page_as_csv: "Išsaugoti puslapį CSV formatu"
 download_page_as_csv_unsupported: Nustatytas puslapio atvaizdavimo rėžimas nepalaiko puslapio išsaugojimo.
 private_user: Privatus vartotojas
 creation_preview: Sukūrimo peržiūra
@@ -511,13 +511,13 @@ functions:
   second: Sekundė
   count: Kiekis
 date-fns_date: PPP
-date-fns_time: 'h:mm:ss a'
-date-fns_time_no_seconds: 'h:mm a'
-date-fns_time_24hour: 'HH:mm:ss'
-date-fns_time_no_seconds_24hour: 'HH:mm'
-date-fns_date_short: 'MMM d, u'
-date-fns_time_short: 'h:mma'
-date-fns_time_short_seconds: 'h:mm:ssa'
+date-fns_time: "h:mm:ss a"
+date-fns_time_no_seconds: "h:mm a"
+date-fns_time_24hour: "HH:mm:ss"
+date-fns_time_no_seconds_24hour: "HH:mm"
+date-fns_date_short: "MMM d, u"
+date-fns_time_short: "h:mma"
+date-fns_time_short_seconds: "h:mm:ssa"
 date-fns_date_short_no_year: MMM d
 minutes: Minutės
 hours: Valandos
@@ -581,7 +581,7 @@ open_file_in_tab: Atidaryti nuorodą kitame skirtuke
 start_export: Pradėti eksportavimą
 not_available_for_local_downloads: Negalima atsisiųsti
 exporting_all_items_in_collection: Eksportuojami visi įrašai ({total}) iš {collection} kolekcijos.
-exporting_limited_items_in_collection: '{count} iš {total} įrašų iš {collection} kolekcijos bus išeksportuoti.'
+exporting_limited_items_in_collection: "{count} iš {total} įrašų iš {collection} kolekcijos bus išeksportuoti."
 exporting_no_items_to_export: Nėra eksportuojamų įrašų. Atnaujinkite eksportavimo nustatymus ir/arba sukurkite įrašų kolekcijoje.
 exporting_download_hint: Kai {format} dokumentas bus suformuotas, jis bus atsiųstas į Jūsų įrenginį.
 exporting_library_hint: Kai {format} dokumentas bus suformuotas, jis bus išsaugotas failų bibliotekoje.
@@ -631,12 +631,12 @@ reset_interface: Atstatyti sąsają
 display_not_found: 'Atvaizdavimo šablonas "{display}" nerastas.'
 reset_display: Atstatyti atvaizdavimo šabloną
 list-m2a: Sąsaja su kitomis kolekcijomis (M2A)
-item_count: 'Nėra elementų | Vienas elementas | {count} elementai/ų'
-filtered_item_count: 'Nėra atfiltruotų įrašų | Vienas atfiltruotas įrašas | {count} atfiltruotų įrašų'
+item_count: "Nėra elementų | Vienas elementas | {count} elementai/ų"
+filtered_item_count: "Nėra atfiltruotų įrašų | Vienas atfiltruotas įrašas | {count} atfiltruotų įrašų"
 no_items_copy: Kolekcijoje dar nėra elementų.
-file_count: 'Nėra failų | Vienas failas | {count} failų'
+file_count: "Nėra failų | Vienas failas | {count} failų"
 no_files_copy: Nėra failų.
-user_count: 'Nėra vartotojų | Vienas vartotojas | {count} vartotojų'
+user_count: "Nėra vartotojų | Vienas vartotojas | {count} vartotojų"
 no_users_copy: Nėra vartotojų šioje grupėje.
 webhooks_count: 'Nėra "Webhook"ų | Vienas "Webhook"as | {count} "Webhook"ų"'
 webhooks_deprecation_notice: |
@@ -674,7 +674,7 @@ action: Veiksmas
 ip_address: IP adresas
 user_agent: Naršyklė
 origin: Šaltinis
-webhooks: '„Webhook“''ai'
+webhooks: "„Webhook“'ai"
 decimals: Trupmeniniai skaičiai
 value_decimals: Trupmeninio skaičiaus reikšmė
 min_value: Mažiausia reikšmė
@@ -741,7 +741,7 @@ errors:
   INVALID_USER: Nepavyko naudotojo autentifikuoti
   ITEM_LIMIT_REACHED: Pasiektas elementų limitas
   ITEM_NOT_FOUND: Elementas nerastas
-  LIMIT_EXCEEDED: 'Limitas viršytas'
+  LIMIT_EXCEEDED: "Limitas viršytas"
   METHOD_NOT_ALLOWED: Neleistinas užklausos metodas
   NOT_NULL_VIOLATION: Reikšmė negali būti null
   RANGE_NOT_SATISFIABLE: Neleistina imtis
@@ -795,9 +795,9 @@ make_collection_hidden: Paslėpti kolekciją
 make_folder_visible: Rodyti katalogą
 make_folder_hidden: Paslėpti katalogą
 goto_collection_content: Rodyti įrašus
-count_of_total_items: '{count} iš {total} įrašų'
-start_end_of_count_items: '{start}-{end} iš {count} įrašų'
-start_end_of_count_filtered_items: '{start}-{end} iš {count} filtruotų įrašų'
+count_of_total_items: "{count} iš {total} įrašų"
+start_end_of_count_items: "{start}-{end} iš {count} įrašų"
+start_end_of_count_filtered_items: "{start}-{end} iš {count} filtruotų įrašų"
 delete_collection_are_you_sure: >-
   Ar tikrai norite pašalinti kolekciją "{collection}"? Šis veiksmas neatšaukiamas ir bus pašalinta kolekcija ir visi įrašai joje.
 delete_folder_are_you_sure: Ar tikrai norite pašalinti katalogą "{folder}"? Vaikiniai katalogai ir kolekcijos bus perkelti į aukštesnį lygį.
@@ -813,7 +813,7 @@ system_collections: Sisteminės kolekcijos
 placeholder: Pagalbinis tekstas
 icon_left: Ikona kairėje
 icon_right: Ikona dešinėje
-count_other_revisions: '{count} kitų pakeitimų'
+count_other_revisions: "{count} kitų pakeitimų"
 font: Šriftas
 sans_serif: Sans Serif
 serif: Serif
@@ -822,7 +822,7 @@ divider: Skyriklis
 color: Spalva
 circle: Apskritimas
 empty_item: Tuščias elementas
-log_in_with: 'Prisijungti su {provider}'
+log_in_with: "Prisijungti su {provider}"
 conditional_styles: Atvaizdavimo nustatymai
 advanced_settings: Išplėstiniai nustatymai
 advanced_filter: Sudėtingesnis filtravimas
@@ -871,8 +871,8 @@ items: Įrašai
 upload_file: Įkelti failą
 upload_file_indeterminate: Failas įkeliamas...
 upload_file_success: Failas įkeltas
-upload_files_indeterminate: 'Įkeliami failai {done}/{total}'
-upload_files_success: '{count} failai įkelti'
+upload_files_indeterminate: "Įkeliami failai {done}/{total}"
+upload_files_success: "{count} failai įkelti"
 upload_pending: Laukiama įkėlimo
 drag_file_here: Tempkite ir paleiskite failą čia
 click_to_browse: Paspauskite norėdami naršyti
@@ -890,7 +890,7 @@ create_item: Sukurti elementą
 display_template: Rodymo šablonas
 language_display_template: Kalbos atvaizdavimo šablonas
 translations_display_template: Vertimų atvaizdavimo šablonas
-n_items_selected: 'Nepasirinkti įrašai | Pasirinktas vienas įrašas | Pasirinkta {n} įrašų'
+n_items_selected: "Nepasirinkti įrašai | Pasirinktas vienas įrašas | Pasirinkta {n} įrašų"
 per_page: Puslapyje
 all_files: Visi failai
 my_files: Mano failai
@@ -940,7 +940,7 @@ run_flow_on_current: Vykdyti procesą šiam įrašui
 run_flow_on_current_edited_confirm: Procesas atnaujins šį įrašą. Neišsaugoti pakeitimai bus prarasti. Ar tikrai norite jį įvykdyti?
 run_flow_on_selected: Pasirinkite vieną ar daugiau įrašų | Vykdyti procesą pasirinktam įrašui | Vykdyti procesą {n} įrašams
 run_flow: Vykdyti procesą
-trigger_flow_success: Procesas „{{name}}“ sėkmingai paleistas
+trigger_flow_success: Procesas „{name}“ sėkmingai paleistas
 field_name_placeholder: Įveskite lauko pavadinimą...
 field_key_placeholder: Įveskite lauko identifikatorių...
 trigger: Trigeris
@@ -949,7 +949,7 @@ view_trigger: Peržiūrėti trigerį
 create_trigger: Sukurti trigerį
 trigger_setup: Trigerio sukūrimas
 change_trigger: Pakeisti trigerį
-flow_delete_confirm: Ar tikrai norite ištrinti procesą „{{name}}“? Šis veiksmas negali būti atšauktas.
+flow_delete_confirm: Ar tikrai norite ištrinti procesą „{name}“? Šis veiksmas negali būti atšauktas.
 set_flow_active: Nustatyti procesą kaip aktyvų
 set_flow_inactive: Nustatyti procesą kaip neaktyvų
 edit_flow: Redaguoti procesą
@@ -975,8 +975,8 @@ operation_options: Operacijos nustatymai
 operation_name: Operacijos pavadinimas...
 operation_key: Identifikatorius...
 operation_key_unique_error: Operacijų pavadinimai turi būti unikalūs esamam procesui
-operation_handle_resolve: 'Spustelėkite, kad pridėtumėte, arba vilkite, kad pakeistumėte maršrutą'
-operation_handle_reject: 'Spustelėkite, kad pridėtumėte, arba vilkite, kad pakeistumėte maršrutą'
+operation_handle_resolve: "Spustelėkite, kad pridėtumėte, arba vilkite, kad pakeistumėte maršrutą"
+operation_handle_reject: "Spustelėkite, kad pridėtumėte, arba vilkite, kad pakeistumėte maršrutą"
 insights: Įžvalgos
 dashboard: Prietaisų skydelis
 panel: Skydelis
@@ -1007,16 +1007,16 @@ pause_streaming_logs: Sustabdyti srautinį žurnalų perdavimą
 logs_session_resumed: Žurnalų perdavimas pratęstas...
 logs_session_paused: Žurnalų perdavimas sustabdytas...
 logs_stream_disconnected: Žurnalų perdavimas nutrūko...
-log_detail_filter_paths: 'Filtruoti laukus (eg: req.method, res.statusCode)'
+log_detail_filter_paths: "Filtruoti laukus (eg: req.method, res.statusCode)"
 logs_beginning: Įvykių žurnalo pradžia...
-logs_waiting: 'Laukiama naujų įvykių...'
-logs_unread_count: '{count} neperskaityta'
+logs_waiting: "Laukiama naujų įvykių..."
+logs_unread_count: "{count} neperskaityta"
 clear_logs: Išvalyti įvykius
 search_logs: Ieškoti įvykių...
 all_instances: Visi atvejai
-instance_count: 'Nei vieno atvejo | Vienas atvejis | {count} atvejai'
+instance_count: "Nei vieno atvejo | Vienas atvejis | {count} atvejai"
 all_log_levels: Visi įvykių lygiai
-log_level_count: 'Nei vieno įvykio | Vienas įvykių lygis | {count} įvykių lygių'
+log_level_count: "Nei vieno įvykio | Vienas įvykių lygis | {count} įvykių lygių"
 soft_wrap_lines: Kirpti eilutes
 full_screen: Per visą ekraną
 full_text_search: Pilno teksto paieška
@@ -1112,19 +1112,19 @@ appearance_dark: Tamsi
 other: Kita...
 adding_user: Pridedamas vartotojas
 unknown_user: Nežinomas vartotojas
-creating_in: 'Kuriamas elementas kolekcijoje: {collection}'
-editing_in: 'Redaguojamas elementas kolekcijoje: {collection}'
-viewing_in: 'Rodomas įrašas {collection}'
-creating_unit: 'Sukuriamas {unit}'
-editing_unit: 'Redaguojamas {unit}'
-editing_in_batch: 'Redaguojami {count} elementai'
+creating_in: "Kuriamas elementas kolekcijoje: {collection}"
+editing_in: "Redaguojamas elementas kolekcijoje: {collection}"
+viewing_in: "Rodomas įrašas {collection}"
+creating_unit: "Sukuriamas {unit}"
+editing_unit: "Redaguojamas {unit}"
+editing_in_batch: "Redaguojami {count} elementai"
 no_options_available: Nėra parinkčių
 settings_data_model: Duomenų modelis
 settings_roles: Naudotojo rolės
 settings_permissions: Prieigos polisai
 settings_project: Nustatymai
 settings_appearance: Atvaizdavimas
-settings_webhooks: '„Webhook“''ai'
+settings_webhooks: "„Webhook“'ai"
 settings_flows: Procesai
 settings_system_logs: Sistemos žurnalas
 settings_presets: Žymės
@@ -1152,7 +1152,7 @@ discard_changes_copy: Ar tikrai norite atšaukti visus pakeitimus?
 show_x_axis: Rodyti X ašį
 show_y_axis: Rodyti Y ašį
 keep_editing: Redaguoti toliau
-page_help_collections_overview: '**Kolekcijų peržiūra** — rodomos visos kolekcijos, prie kurių turite prieigą.'
+page_help_collections_overview: "**Kolekcijų peržiūra** — rodomos visos kolekcijos, prie kurių turite prieigą."
 page_help_collections_collection: >-
   **Peržiūrėti elementus** — rodomi visi kolekcijos {collection} elementai, prie kurių turite prieigą. Redaguokite išdėstymą, filtrus rikiavimą ir pritaikykite atvaizdavimą savo poreikiams. Galite išsaugoti šiuos nustatymus kaip žymas, kad greitai pasiektumėte norimą išdėstymo konfigūraciją.
 page_help_collections_item: >-
@@ -1167,34 +1167,34 @@ page_help_files_item: >-
   **Failo duomenys** — forma failo meta duomenų tvarkymui, originalaus failo redagavimui ir prieigos nustatymų atnaujinimui.
 page_help_settings_project: "**Projekto nustatymai** — globali projekto konfigūracija."
 page_help_settings_appearance: "**Atvaizdavimas** — projekto atvaizdavimas ir temos nustatymai."
-page_help_settings_extensions: '**Plėtiniai** — projekto plėtiniai ir jų nustatymai.'
+page_help_settings_extensions: "**Plėtiniai** — projekto plėtiniai ir jų nustatymai."
 page_help_settings_datamodel_collections: >-
   **Duomenų modelis: Kolekcijos** — atvaizduojamos visos kolekcijos, įskaitant matomas, paslėptas bei sistemines kolekcijas, taip pat naujas duomenų bazės lenteles, kurios gali būti pridėtos.
 page_help_settings_datamodel_fields: >-
   **Duomenų modelis: Kolekcija** — forma kolekcijos ir jos laukų valdymui.
-page_help_settings_system_logs: '**Sistemos žurnalas** — projekto sistemos įvykių žurnalas.'
-page_help_settings_policies_collection: '**Peržiūrėti polisus** - rodomi visi projekto polisai.'
+page_help_settings_system_logs: "**Sistemos žurnalas** — projekto sistemos įvykių žurnalas."
+page_help_settings_policies_collection: "**Peržiūrėti polisus** - rodomi visi projekto polisai."
 page_help_settings_policies_item: "**Polisų informacija** - polisų prieigos valdymas ir kiti nustatymai."
-page_help_settings_roles_collection: '**Peržiūrėti roles** - projekto rolės ir naudotojai.'
+page_help_settings_roles_collection: "**Peržiūrėti roles** - projekto rolės ir naudotojai."
 page_help_settings_roles_item: "**Grupės duomenys** — Valdykite grupės prieigą prie duomenų ir kitus nustatymus."
 page_help_settings_presets_collection: >-
   **Peržiurėti ruošinius** — atvaizduojami visi projekto ruošiniai, įskaitant vartotojų, grupių ir bendras žymas bei numatytuosius langus.
 page_help_settings_presets_item: >-
   **Ruošinio duomenys** — forma žymų ir numatytųjų kolekcijos ruošinių valdymui.
-page_help_settings_webhooks_collection: '**Peržiūrėti Webhook''us** - Rodomi visi projekto Webhook''ai.'
-page_help_settings_webhooks_item: '**Webhook informacija** — projekto webhooks nustatymai.'
-page_help_settings_flows_collection: '**Peržiūrėti procesus** - rodomi visi projekto procesai.'
-page_help_settings_flows_item: '**Proceso informacija** — projekto procesų operacijų nustatymai.'
-page_help_settings_translations_collection: '**Bendriniai projekto vertimai** — bendrinių projekto vertimų sąrašas.'
-page_help_settings_translations_item: '**Bendrinių projekto vertimų informacija** — bendrinių projekto vertimų nustatymai.'
-page_help_users_collection: '**Vartotojų aplankas** — rodomi visi šio projekto vartotojai.'
+page_help_settings_webhooks_collection: "**Peržiūrėti Webhook'us** - Rodomi visi projekto Webhook'ai."
+page_help_settings_webhooks_item: "**Webhook informacija** — projekto webhooks nustatymai."
+page_help_settings_flows_collection: "**Peržiūrėti procesus** - rodomi visi projekto procesai."
+page_help_settings_flows_item: "**Proceso informacija** — projekto procesų operacijų nustatymai."
+page_help_settings_translations_collection: "**Bendriniai projekto vertimai** — bendrinių projekto vertimų sąrašas."
+page_help_settings_translations_item: "**Bendrinių projekto vertimų informacija** — bendrinių projekto vertimų nustatymai."
+page_help_users_collection: "**Vartotojų aplankas** — rodomi visi šio projekto vartotojai."
 page_help_users_item: >-
   **Vartotojo duomenys** — valdykite savo paskyros informaciją arba peržiūrėkite kitų vartotojų duomenis.
-page_help_insights_overview: '**Įžvalgos** — projekto prietaisų skydeliai.'
-page_help_insights_dashboard: '**Prietaisų skydelis** — prietaisų skydelių nustatymai.'
-page_help_marketplace_account: '**Paskyra** — plėtinio kūrėjas arba prižiūrėtojas.'
-page_help_marketplace_registry: '**Registras** — plėtiniai, kurie yra pasiekiami iš Direktus turgavietės.'
-page_help_marketplace_extension: '**Plėtiniai** — Direktus turgavietės plėtiniai.'
+page_help_insights_overview: "**Įžvalgos** — projekto prietaisų skydeliai."
+page_help_insights_dashboard: "**Prietaisų skydelis** — prietaisų skydelių nustatymai."
+page_help_marketplace_account: "**Paskyra** — plėtinio kūrėjas arba prižiūrėtojas."
+page_help_marketplace_registry: "**Registras** — plėtiniai, kurie yra pasiekiami iš Direktus turgavietės."
+page_help_marketplace_extension: "**Plėtiniai** — Direktus turgavietės plėtiniai."
 activity_feed: Veiklos srautas
 add_new: Pridėti Naują
 create_new: Sukurti naują
@@ -1353,7 +1353,7 @@ fields:
     mapbox_key: Mapbox Access Token
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: Attribution
-    attribution_placeholder: '© OpenStreetMap contributors'
+    attribution_placeholder: "© OpenStreetMap contributors"
     transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: Papildomos transformacijos
     project_name: Projekto pavadinimas
@@ -1606,8 +1606,8 @@ choose_action: Pasirinkite veiksmą
 continue_label: Tęsti
 continue_as: >-
   {name} šiuo metu yra neautentifikuotas. Jeigu atpažįstate šią paskyrą, spauskite tęsti.
-editing_role: '{role} grupė'
-editing_policy: '{policy} polisas'
+editing_role: "{role} grupė"
+editing_policy: "{policy} polisas"
 no_permissions: Nėra teisių
 permission_add_collection: Pridėti kolekciją
 creating_webhook: Kuriamas Webhook'ą
@@ -1754,7 +1754,7 @@ interfaces:
     checkboxes: Žymimieji laukeliai
     description: Pasirinkite tarp kelių variantų naudodami žymimuosius laukelius
     allow_other: Leisti kitas reikšmes
-    show_more: 'Rodyti {count} daugiau'
+    show_more: "Rodyti {count} daugiau"
     items_shown: Rodoma įrašų
   select-multiple-checkbox-tree:
     name: Žymimieji laukeliai (kelių lygių)
@@ -2102,7 +2102,7 @@ displays:
     long: Ilgas
     short: Trumpas
     relative: Santykinis
-    relative_label: 'Rodyti santykinį laiką, pvz.: prieš 5 minutes'
+    relative_label: "Rodyti santykinį laiką, pvz.: prieš 5 minutes"
     suffix: Priesaga
     suffix_label: Rodyti reliatyvią indikaciją
     suffix_note: Aprašo datą ir laiką apibrėžiant kiek ji skiriasi nuo dabarties
@@ -2346,8 +2346,8 @@ triggers:
   event:
     name: Event Hook
     description: Triggers on platform or data events
-    action: 'Action (Non-Blocking)'
-    filter: 'Filter (Blocking)'
+    action: "Action (Non-Blocking)"
+    filter: "Filter (Blocking)"
   webhook:
     name: Webhook
     description: Triggers on an incoming HTTP request
@@ -2380,7 +2380,7 @@ operations:
   exec:
     name: Run Script
     description: Execute arbitrary code to modify the payload
-    modules: 'The following **Node modules** can be used'
+    modules: "The following **Node modules** can be used"
   item-create:
     name: Create Data
     description: Create items in the database
@@ -2415,7 +2415,7 @@ operations:
     token: Token
     token_placeholder: eyJhbGciOi......
     options: Parinktys
-    options_placeholder: 'Refer to https://www.npmjs.com/package/jsonwebtoken#usage for the available options'
+    options_placeholder: "Refer to https://www.npmjs.com/package/jsonwebtoken#usage for the available options"
     sign: Sign Token
     verify: Verify Token
     decode: Decode Token
@@ -2449,7 +2449,7 @@ operations:
     subject: Tema
   request:
     name: Webhook / Request URL
-    description: 'Make a request to a URL'
+    description: "Make a request to a URL"
     url: URL
     url_placeholder: https://example.com/example
     method: Method
