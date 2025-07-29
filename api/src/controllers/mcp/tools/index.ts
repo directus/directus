@@ -1,11 +1,8 @@
 import type { ToolConfig } from '../tool.js';
+import { files } from './files.js';
 import { items } from './items.js';
 import { system } from './system.js';
 
+export const ALL_TOOLS: ToolConfig<any>[] = [system, items, files];
 
-export const ALL_TOOLS: ToolConfig<any>[] = [
-    items,
-    system,
-];
-
-export { items, system };
+export { files, items, system };
