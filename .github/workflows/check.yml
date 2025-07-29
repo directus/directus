@@ -91,7 +91,19 @@ jobs:
         run: pnpm test:coverage --passWithNoTests
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: directus/directus
+        run: |
+          # Download and install Codecov uploader
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          chmod +x codecov
+
+          # Find all coverage files and upload them with flags based on folder names
+          find . -name "coverage-final.json" -path "*/coverage/*" | while read -r coverage_file; do
+            # Extract the folder name that contains the coverage directory
+            folder_name=$(echo "$coverage_file" | sed -E 's|.*/(.*)/coverage/.*|\1|')
+            echo "Uploading coverage for $folder_name from $coverage_file"
+
+            # Upload to codecov with folder name as flag
+            ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f "$coverage_file" -F "$folder_name"
+          done
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
