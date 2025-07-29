@@ -142,7 +142,6 @@ function onInput(event: InputEvent) {
 		const invalidCharsRegex = /(?!^)-|[^0-9-.,]/g;
 		const duplicatePointRegex = /(.*[.,].*)[.,]/g;
 		target.value = target.value.replace(invalidCharsRegex, '').replace(duplicatePointRegex, '$1');
-		event.preventDefault();
 		return;
 	}
 }
