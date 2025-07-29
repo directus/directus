@@ -30,7 +30,7 @@ export interface ToolConfig<T> {
 	name: string;
 	description: string;
 	admin?: boolean;
-	inputSchema?: ZodType<any>;
+	inputSchema: ZodType<any>;
 	validateSchema?: ZodType<T>;
 	annotations?: Record<string, unknown>;
 	handler: ToolHandler<T>;
