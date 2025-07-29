@@ -97,6 +97,7 @@ const listeners = computed(() => ({
 	},
 	keydown: processValue,
 	blur: (e: Event) => {
+		clearInvalidInput(e.target as HTMLInputElement);
 		trimIfEnabled();
 		if (typeof attrs.onBlur === 'function') attrs.onBlur(e);
 	},
@@ -123,7 +124,7 @@ const isStepDownAllowed = computed(() => {
 	return props.disabled === false && (props.min === undefined || parseInt(String(props.modelValue), 10) > props.min);
 });
 
-const { isInvalidInput, tooltipInvalid, setInvalidInput } = useInvalidInput();
+const { isInvalidInput, tooltipInvalid, setInvalidInput, clearInvalidInput } = useInvalidInput();
 
 function onInput(event: InputEvent) {
 	const target = event.target as HTMLInputElement;
@@ -257,7 +258,6 @@ function stepUp() {
 	if (isStepUpAllowed.value === false) return;
 
 	input.value.stepUp();
-	setInvalidInput(input.value);
 
 	if (input.value.value != null) {
 		return emit('update:modelValue', Number(input.value.value));
@@ -269,7 +269,6 @@ function stepDown() {
 	if (isStepDownAllowed.value === false) return;
 
 	input.value.stepDown();
-	setInvalidInput(input.value);
 
 	if (input.value.value) {
 		return emit('update:modelValue', Number(input.value.value));
@@ -282,10 +281,18 @@ function useInvalidInput() {
 	const isInvalidInput = ref(false);
 	const tooltipInvalid = computed(() => t(props.type === 'number' ? 'not_a_number' : 'invalid_input'));
 
-	return { isInvalidInput, tooltipInvalid, setInvalidInput };
+	return { isInvalidInput, tooltipInvalid, setInvalidInput, clearInvalidInput };
 
 	function setInvalidInput(target: HTMLInputElement) {
+		// When the input’s validity.badInput property is true (e.g., due to invalid user input like non-numeric characters in a number field), the input event’s target.value will be empty even if we see a value in the input field. This means we can’t sanitize the input value in the input event handler.
 		isInvalidInput.value = target.validity.badInput;
+	}
+
+	function clearInvalidInput(target: HTMLInputElement) {
+		if (!isInvalidInput.value) return;
+
+		target.value = '';
+		setInvalidInput(target);
 	}
 }
 </script>
