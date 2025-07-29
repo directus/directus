@@ -1,6 +1,6 @@
 import type { File } from '@directus/types';
 import { z } from 'zod';
-import type { TransformationSet } from '../../../types/assets.js';
+import { AssetsService } from '../../../services/assets.js';
 import { PrimaryKeySchema, QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
 import { items } from './items.js';
@@ -41,9 +41,6 @@ const AssetValidateSchema = z.object({
 	type: z.literal('asset'),
 	action: z.literal('read'),
 	id: z.string(),
-	key: z.string().optional(),
-	transforms: z.custom<TransformationSet>().optional(),
-	download: z.boolean().optional(),
 });
 
 const FileSchema = z.custom<File>();
@@ -87,9 +84,6 @@ const InputSchema = z.object({
 		.optional()
 		.describe(''),
 	id: z.string().optional().describe(''),
-	key: z.string().optional().describe(''),
-	transforms: z.custom<TransformationSet>().optional().describe(''),
-	download: z.boolean().optional().describe(''),
 });
 
 export const files = defineTool<z.infer<typeof ValidateSchema>>({
@@ -110,7 +104,24 @@ export const files = defineTool<z.infer<typeof ValidateSchema>>({
 		}
 
 		if (args.type === 'asset' && args.action === 'read') {
-			// assets stream
+			const assetsService = new AssetsService({
+				accountability,
+				schema,
+			});
+
+			const asset = await assetsService.getAsset(args.id);
+
+			const chunks = [];
+
+			for await (const chunk of asset.stream) {
+				chunks.push(Buffer.from(chunk));
+			}
+
+			return {
+				type: 'image',
+				data: Buffer.concat(chunks).toString('base64'),
+				mimeType: 'image/png',
+			};
 		}
 
 		return;
