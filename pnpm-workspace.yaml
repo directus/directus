@@ -14,6 +14,7 @@ catalog:
   '@vitest/coverage-v8': 3.2.4
   '@vue/test-utils': 2.4.6
   axios: 1.11.0
+  inquirer: 12.9.0
   lodash-es: 4.17.21
   nanoid: 5.1.5
   tsup: 8.5.0
