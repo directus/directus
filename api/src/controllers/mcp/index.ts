@@ -6,19 +6,19 @@ const router = Router();
 
 router.get(
 	'/',
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req, res, next) => {
 		const mcp = new DirectusMCP();
 
-		mcp.handleRequest(req, res);
+		mcp.handleRequest(req, res, next);
 	}),
 );
 
 router.post(
 	'/',
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req, res, next) => {
 		const mcp = new DirectusMCP();
 
-		mcp.handleRequest(req, res);
+		mcp.handleRequest(req, res, next);
 	}),
 );
 
