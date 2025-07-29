@@ -3256,3 +3256,8 @@ force = true
 from  = "/plus/status-page"
 to    = "https://directus.io/plus"
 force = true
+
+[[redirects]]
+from  = "/"
+to    = "https://directus.io/docs"
+force = true

@@ -34,13 +34,17 @@ defineProps<Props>();
 		position: absolute;
 		text-transform: uppercase;
 		inset-inline-start: 50%;
-		transform: translateX(-50%);
 		inset-block-start: 55%;
 		font-size: 12px;
 		font-weight: 800;
 		line-height: 1;
 		padding: 2px 0;
 		text-align: center;
+		transform: translateX(-50%);
+
+		html[dir='rtl'] & {
+			transform: translateX(50%);
+		}
 	}
 
 	&.right {

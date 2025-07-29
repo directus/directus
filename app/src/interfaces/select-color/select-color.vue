@@ -317,6 +317,7 @@ function useColor() {
 						:model-value="hex ? hex.slice(0, 7) : null"
 						type="color"
 						class="html-color-select"
+						@click.stop
 						@update:model-value="setSwatchValue($event)"
 					/>
 					<v-button
