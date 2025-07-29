@@ -1,11 +1,13 @@
 import { Focus } from '@/__utils__/focus';
 import type { GlobalMountOptions } from '@/__utils__/types';
+import { i18n } from '@/lang';
 import { mount } from '@vue/test-utils';
 import { describe, expect, test } from 'vitest';
 import VInput from './v-input.vue';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon'],
+	plugins: [i18n],
 	directives: {
 		focus: Focus,
 	},

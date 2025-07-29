@@ -9,6 +9,7 @@ exports[`Mount component 1`] = `
     <!--v-if-->
     <!--v-if-->
     <!--v-if-->
+    <!--v-if-->
   </div>
   <!--v-if-->
 </div>"
