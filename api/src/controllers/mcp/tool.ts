@@ -1,12 +1,29 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
 import type { ZodType } from 'zod';
 
+export type ToolResultBase = {
+	type?: 'text' | 'image';
+};
+
+export type TextToolResult = ToolResultBase & {
+	type: 'text';
+	data: unknown;
+};
+
+export type ImageToolResult = ToolResultBase & {
+	type: 'image';
+	data: string;
+	mimeType: string;
+};
+
+export type ToolResult = TextToolResult | ImageToolResult;
+
 export type ToolHandler<T> = {
 	(options: {
 		args: T;
 		schema: SchemaOverview;
 		accountability: Accountability | undefined;
-	}): Promise<{ data?: unknown } | undefined>;
+	}): Promise<ToolResult | undefined>;
 };
 
 export interface ToolConfig<T> {

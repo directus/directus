@@ -12,6 +12,7 @@ import {
 import type { Request, Response } from 'express';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { fromZodError } from 'zod-validation-error';
+import type { ToolResult } from './tool.js';
 import { ALL_TOOLS } from './tools/index.js';
 
 class DirectusTransport implements Transport {
@@ -99,7 +100,7 @@ export class DirectusMCP {
 					accountability: req.accountability,
 				});
 
-				return this.toMCPResponse(result?.data);
+				return this.toMCPResponse(result);
 			} catch (error) {
 				return this.toMCPError(error);
 			}
@@ -119,9 +120,22 @@ export class DirectusMCP {
 		}
 	}
 
-	toMCPResponse(data?: null | unknown) {
+	toMCPResponse(result?: ToolResult) {
+		if (!result || typeof result.data === 'undefined' || result.data === null) return { content: [] };
+
+		if (result.type === 'text') {
+			return {
+				content: [
+					{
+						type: 'text',
+						text: JSON.stringify(result.data),
+					},
+				],
+			};
+		}
+
 		return {
-			content: data ? [{ type: 'text', text: JSON.stringify(data) }] : [],
+			content: [result],
 		};
 	}
 

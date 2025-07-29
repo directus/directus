@@ -93,6 +93,7 @@ export const items = defineTool<z.infer<typeof ValidateSchema>>({
 			const result = await itemsService.readMany(savedKeys, sanitizedQuery);
 
 			return {
+				type: 'text',
 				data: result || null,
 			};
 		}
@@ -107,6 +108,7 @@ export const items = defineTool<z.infer<typeof ValidateSchema>>({
 			}
 
 			return {
+				type: 'text',
 				data: result,
 			};
 		}
@@ -118,6 +120,7 @@ export const items = defineTool<z.infer<typeof ValidateSchema>>({
 				const item = await itemsService.readSingleton(sanitizedQuery);
 
 				return {
+					type: 'text',
 					data: item || null,
 				};
 			}
@@ -135,6 +138,7 @@ export const items = defineTool<z.infer<typeof ValidateSchema>>({
 			const result = await itemsService.readMany(updatedKeys, sanitizedQuery);
 
 			return {
+				type: 'text',
 				data: result,
 			};
 		}
@@ -142,7 +146,5 @@ export const items = defineTool<z.infer<typeof ValidateSchema>>({
 		if (args.action === 'delete') {
 			await itemsService.deleteMany(args.keys);
 		}
-
-		return;
 	},
 });
