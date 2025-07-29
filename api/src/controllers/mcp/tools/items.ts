@@ -63,10 +63,6 @@ export const items = defineTool<z.infer<typeof ValidateSchema>>({
 
 		const isSingleton = schema.collections[args.collection]?.singleton ?? false;
 
-		if (isSingleton && args.action === 'create') {
-			throw new Error('Cannot create singleton');
-		}
-
 		let sanitizedQuery = {};
 
 		if ('query' in args && args.query) {
@@ -87,6 +83,17 @@ export const items = defineTool<z.infer<typeof ValidateSchema>>({
 
 		if (args.action === 'create') {
 			const data = toArray(args.data);
+
+			if (isSingleton) {
+				await itemsService.upsertSingleton(args.data);
+
+				const item = await itemsService.readSingleton(sanitizedQuery);
+
+				return {
+					type: 'text',
+					data: item || null,
+				};
+			}
 
 			const savedKeys = await itemsService.createMany(data);
 
