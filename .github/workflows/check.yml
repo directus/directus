@@ -105,5 +105,3 @@ jobs:
             # Upload to codecov with folder name as flag
             ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f "$coverage_file" -F "$folder_name"
           done
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
