@@ -25,38 +25,10 @@ const liquidEngine = new Liquid({
 });
 
 export type EmailOptions = Omit<SendMailOptions, 'from'> & {
-	from?: string;
+	from?: string | { name: string; address: string };
 	template?: {
 		name: string;
 		data: Record<string, any>;
-	};
-};
-
-// Add an override object when creating a new MailService (within your extension) to override the default email options coming from the environment variables
-export type EmailOptionsOverrides = {
-	from?: {
-		name: string;
-		address: string;
-	};
-	transport?: string;
-	sendmail?: {
-		newline?: string;
-		path?: string;
-	};
-	smtp?: {
-		user?: string;
-		pass?: string;
-		name?: string;
-		pool?: boolean;
-		host?: string;
-		port?: number;
-		secure?: boolean;
-		ignoreTLS?: boolean;
-	};
-	mailgun?: {
-		apiKey?: string;
-		domain?: string;
-		host?: string;
 	};
 };
 
@@ -65,14 +37,12 @@ export class MailService {
 	accountability: Accountability | null;
 	knex: Knex;
 	mailer: Transporter;
-	overrides: EmailOptionsOverrides | undefined;
 
-	constructor(opts: AbstractServiceOptions & { overrides?: EmailOptionsOverrides }) {
+	constructor(opts: AbstractServiceOptions) {
 		this.schema = opts.schema;
 		this.accountability = opts.accountability || null;
 		this.knex = opts?.knex || getDatabase();
-		this.mailer = getMailer(opts.overrides);
-		this.overrides = opts.overrides;
+		this.mailer = getMailer();
 
 		if (env['EMAIL_VERIFY_SETUP']) {
 			this.mailer.verify((error) => {
@@ -95,13 +65,20 @@ export class MailService {
 
 		const defaultTemplateData = await this.getDefaultTemplateData();
 
-		const from =
-			this.overrides?.from?.name && this.overrides?.from?.address
-				? this.overrides.from
-				: {
-						name: defaultTemplateData.projectName,
-						address: options.from || (env['EMAIL_FROM'] as string),
-				  };
+		const from = (() => {
+			if (typeof emailOptions.from === 'object' && emailOptions.from !== null) {
+				if (!emailOptions.from.name || !emailOptions.from.address) {
+					throw new InvalidPayloadError({ reason: 'Email from object must have both name and address properties' });
+				}
+
+				return emailOptions.from;
+			}
+
+			return {
+				name: defaultTemplateData.projectName,
+				address: emailOptions.from || (env['EMAIL_FROM'] as string),
+			};
+		})();
 
 		if (template) {
 			let templateData = template.data;
