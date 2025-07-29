@@ -1128,6 +1128,13 @@ importers:
       inquirer:
         specifier: 'catalog:'
         version: 12.9.0(@types/node@24.1.0)
+    devDependencies:
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.1.0)(happy-dom@17.1.8)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)(tsx@4.19.3)(yaml@2.7.0))
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@24.1.0)(happy-dom@17.1.8)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)(tsx@4.19.3)(yaml@2.7.0)
 
   packages/create-directus-project:
     dependencies:
