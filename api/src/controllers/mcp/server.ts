@@ -3,7 +3,6 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import {
 	CallToolRequestSchema,
-	JSONRPCMessageSchema,
 	ListToolsRequestSchema,
 	type CallToolRequest,
 	type JSONRPCMessage,
@@ -12,7 +11,7 @@ import {
 import type { NextFunction, Request, Response } from 'express';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { fromZodError } from 'zod-validation-error';
-import type { ToolConfig, ToolResult } from './tool.js';
+import type { ToolResult } from './tool.js';
 import { ALL_TOOLS } from './tools/index.js';
 
 class DirectusTransport implements Transport {
@@ -58,13 +57,13 @@ export class DirectusMCP {
 
 		this.server.oninitialized = () => {
 			this.server.transport?.close();
-		}
+		};
 	}
 
 	handleRequest(req: Request, res: Response, next: NextFunction) {
 		// listing tools
 		this.server.setRequestHandler(ListToolsRequestSchema, async () => {
-			const tools = []; 
+			const tools = [];
 
 			for (const tool of ALL_TOOLS) {
 				if (req.accountability?.admin !== true && tool.admin === true) continue;
@@ -106,7 +105,7 @@ export class DirectusMCP {
 					schema: req.schema,
 					accountability: req.accountability,
 				});
-				
+
 				return this.toMCPResponse(result);
 			} catch (error) {
 				return this.toMCPError(error);
