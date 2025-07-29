@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { nextTick, reactive } from 'vue';
 import { useSync } from './use-sync.js';
 
@@ -110,7 +110,7 @@ describe('useSync', () => {
 
 			const updatedConfig = {
 				...config,
-				theme: { ...config.theme, mode: 'light' }
+				theme: { ...config.theme, mode: 'light' },
 			};
 
 			configSync.value = updatedConfig;
@@ -231,7 +231,7 @@ describe('useSync', () => {
 			const props = {
 				title: 'Title',
 				description: 'Description',
-				count: 10
+				count: 10,
 			};
 
 			const emit = vi.fn();
