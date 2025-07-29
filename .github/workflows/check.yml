@@ -95,7 +95,7 @@ jobs:
       - name: Upload coverage to Codecov
         run: |
           # Download and install Codecov uploader
-          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          curl -Os https://cli.codecov.io/latest/linux/codecov
           chmod +x codecov
 
           # Find all coverage files and upload them with flags based on folder names
@@ -105,5 +105,5 @@ jobs:
             echo "Uploading coverage for $folder_name from $coverage_file"
 
             # Upload to codecov with folder name as flag
-            ./codecov -t ${{ secrets.CODECOV_TOKEN }} -f "$coverage_file" -F "$folder_name"
+            ./codecov upload-coverage -t ${{ secrets.CODECOV_TOKEN }} -f "$coverage_file" -F "$folder_name"
           done
