@@ -1,11 +1,10 @@
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import type { FlowRaw, OperationRaw, PrimaryKey } from '@directus/types';
+import type { FlowRaw, OperationRaw } from '@directus/types';
 import { z } from 'zod';
-import { sanitizeQuery } from '../../../utils/sanitize-query.js';
-import { ItemSchema, PartialItemInput, PrimaryKeySchema, QuerySchema } from '../schema.js';
-import { defineTool } from '../tool.js';
 import { FlowsService } from '../../../services/flows.js';
 import { OperationsService } from '../../../services/operations.js';
+import { sanitizeQuery } from '../../../utils/sanitize-query.js';
+import { QuerySchema } from '../schema.js';
+import { defineTool } from '../tool.js';
 
 const FlowSchema = z.custom<Partial<FlowRaw>>();
 const OperationSchema = z.custom<Partial<OperationRaw>>();
@@ -76,7 +75,7 @@ export const flows = defineTool<z.infer<typeof FlowValidateSchema>>({
 		if (accountability?.admin !== true) {
 			throw new Error('Bad AI!');
 		}
-		
+
 		let result = {};
 		let sanitizedQuery = {};
 
@@ -143,7 +142,7 @@ export const operations = defineTool<z.infer<typeof OperationValidationSchema>>(
 		if (accountability?.admin !== true) {
 			throw new Error('Bad AI!');
 		}
-		
+
 		let result = {};
 		let sanitizedQuery = {};
 
@@ -197,7 +196,6 @@ export const operations = defineTool<z.infer<typeof OperationValidationSchema>>(
 		}
 	},
 });
-
 
 // export const triggerFlow = defineTool<z.infer<typeof ValidateSchema>>({
 // 	name: 'trigger-flow',
