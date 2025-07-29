@@ -292,7 +292,7 @@ function useInvalidInput() {
 		if (!isInvalidInput.value) return;
 
 		target.value = '';
-		setInvalidInput(target);
+		isInvalidInput.value = false;
 	}
 }
 </script>
