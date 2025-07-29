@@ -73,7 +73,7 @@ extension_hook: Gancho (hook)
 extension_endpoint: Endpoint
 extension_operation: Operação
 extension_bundle: Conjunto
-extension_interfaces: '''Interfaces'''
+extension_interfaces: "'Interfaces'"
 extension_displays: Exibições
 extension_layouts: Esquemas
 extension_modules: Módulos
@@ -91,7 +91,7 @@ published_relative: Publicado há {relativeTime}
 compatible_with_your_project: Compatível com o seu projeto
 compatible_with_your_project_copy: O autor indicou que a compatibilidade desta extensão é {hostVersion}, o que corresponde à versão do seu projeto ({currentVersion})
 last_updated_relative: Última atualização há {relativeTime}
-n_files: '{n} Ficheiros'
+n_files: "{n} Ficheiros"
 verified: Verificado
 homepage: Página inicial
 repository: Repositório
@@ -101,7 +101,7 @@ report_an_issue: Reportar um Problema
 website: Site
 github: GitHub
 beta: Beta
-n_downloads: '{n} Transferências'
+n_downloads: "{n} Transferências"
 downloads: Transferências
 compatibility_not_guaranteed: Compatibilidade não garantida
 compatibility_not_guaranteed_copy: O autor indicou que a compatibilidade desta extensão é {hostVersion}, o que não corresponde à versão do seu projeto ({currentVersion})
@@ -121,7 +121,7 @@ indeterminate: Indeterminado
 edit_collection: Editar coleção
 exclusive: Exclusivo
 children: Crianças
-db_only_click_to_configure: 'Apenas em Base de Dados: Clique para Configurar'
+db_only_click_to_configure: "Apenas em Base de Dados: Clique para Configurar"
 show_active_items: Mostrar Itens Ativos
 show_archived_items: Mostrar documentos arquivados
 show_all_items: Mostrar todos os itens
@@ -205,7 +205,7 @@ archive: Arquivar
 archive_confirm: Tem a certeza que pretende arquivar este documento?
 archive_confirm_count: >-
   Nenhum documento selecionado | Tem a certeza que pretende arquivar este documento? | Tem a certeza que pretende arquivar {count} documentos?
-reset_system_permissions_to: 'Restaurar permissões do sistema para:'
+reset_system_permissions_to: "Restaurar permissões do sistema para:"
 reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que tenha aplicado às coleções do sistema. Tem certeza que pretende continuar?
 the_following_are_minimum_permissions: As seguintes permissões são aplicadas automaticamente quando o "Acesso à Aplicativos" está ativado. Você pode conceder permissões adicionais se necessário, mas você não pode reduzir as permissões abaixo deste nível.
 app_access_minimum: Permissões mínimas para Acesso à App
@@ -213,7 +213,7 @@ recommended_defaults: Predefinições recomendadas
 unarchive: Desarquivar
 unarchive_confirm: Tem a certeza que pretende desarquivar este item?
 nested_files_folders_will_be_moved: Ficheiros e pastas neste grupo vão ser movidos um nível acima.
-validation_errors_notice: 'Os seguintes campos são inválidos:'
+validation_errors_notice: "Os seguintes campos são inválidos:"
 validationError:
   eq: O valor tem de ser {valid}
   neq: O valor não pode ser {invalid}
@@ -263,14 +263,14 @@ item_permissions: Permissões do documento
 field_permissions: Permisões do campo
 field_validation: Validação do Campo
 field_presets: Predefinições para o campo
-permissions_for_role: 'Documentos que o estatuto {role} pode {action}.'
-permissions_for_policy: 'Documentos que o {policy} político pode {action}.'
-fields_for_role: 'Campos que o estatuto {role} pode {action}.'
-fields_for_policy: 'Campos que o político {policy} pode {action}.'
-validation_for_role: 'As regras {action} do campo que a função {role} deve obedecer.'
-validation_for_policy: 'As regras {action} do campo que a função {policy} deve obedecer.'
-presets_for_role: 'Valor do Campo definido por padrão para a função {role}.'
-presets_for_policy: 'Valor do Campo definido por padrão para a função {policy}.'
+permissions_for_role: "Documentos que o estatuto {role} pode {action}."
+permissions_for_policy: "Documentos que o {policy} político pode {action}."
+fields_for_role: "Campos que o estatuto {role} pode {action}."
+fields_for_policy: "Campos que o político {policy} pode {action}."
+validation_for_role: "As regras {action} do campo que a função {role} deve obedecer."
+validation_for_policy: "As regras {action} do campo que a função {policy} deve obedecer."
+presets_for_role: "Valor do Campo definido por padrão para a função {role}."
+presets_for_policy: "Valor do Campo definido por padrão para a função {policy}."
 presets_field_warning: 'Predefinições relacionais para o campo "{field}" devem ser configuradas com a sintaxe "detalhada".'
 presentation_and_aliases: Apresentação & Pseudônimos
 revision_post_create: Aqui está como este documento ficou após a atualização.
@@ -315,8 +315,8 @@ iso: ISO
 focal_length: Distância focal
 schema_setup_key: O nome deste campo na base de dados e a chave da API
 create_field: Criar campo
-creating_new_field: 'Novo campo ({collection})'
-field_in_collection: '{field} ({collection})'
+creating_new_field: "Novo campo ({collection})"
+field_in_collection: "{field} ({collection})"
 reset_page_preferences: Restaurar as preferências da página
 hidden_field: Campo oculto
 hidden_on_detail: Ocultar dentro de Detalhe
@@ -374,13 +374,13 @@ click_to_manage_translated_fields: >-
   Não há campos traduzidos ainda. Clique aqui para os criar. Há um campo traduzido. Clique aqui para gerenciar. Há {count} campos traduzidos. Clique aqui para os gerir.
 fields_group: Grupo de Campos
 no_collections_found: Nenhuma coleção encontrada.
-new_data_alert: 'O seguinte será criado dentro do seu modelo de dados:'
+new_data_alert: "O seguinte será criado dentro do seu modelo de dados:"
 search_collection: Procurar...
 search_role: Funções da pesquisa
 search_policy: Política de Pesquisa...
 search_field: Buscar campo...
-new_field: 'Novo Campo'
-new_collection: 'Nova coleção'
+new_field: "Novo Campo"
+new_collection: "Nova coleção"
 add_m2o_to_collection: 'Adicionar M2O a "{collection}"'
 add_o2m_to_collection: 'Adicionar O2M a "{collection}"'
 add_m2m_to_collection: 'Adicionar M2M a "{collection}"'
@@ -456,15 +456,15 @@ settings_update_success: Configurações atualizadas
 title: Título
 revision_delta_created: Criado
 revision_delta_created_externally: Criado externamente
-revision_delta_updated: '1 campo foi atualizado | {count} campos foram atualizados'
+revision_delta_updated: "1 campo foi atualizado | {count} campos foram atualizados"
 revision_delta_deleted: Removido
-revision_delta_version_saved: 'Salvar Versão (Atualizado 1 Campo) Version Save (Atualizado em {count} Campos)'
+revision_delta_version_saved: "Salvar Versão (Atualizado 1 Campo) Version Save (Atualizado em {count} Campos)"
 revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo foi atualizado, mas o seu valor foi oculto por razões de segurança.
 revision_delta_other: Revisão
-revision_delta_by: '{date} por {user}'
-presentation_text_values_cannot_be_reimported: 'Usa texto de apresentação, valores não podem ser importados novamente.'
-download_page_as_csv: 'Transferir Página como CSV'
+revision_delta_by: "{date} por {user}"
+presentation_text_values_cannot_be_reimported: "Usa texto de apresentação, valores não podem ser importados novamente."
+download_page_as_csv: "Transferir Página como CSV"
 download_page_as_csv_unsupported: Esse layout não suporta o download da página atual.
 private_user: Utilizador privado
 creation_preview: Pré-visualização da criação
@@ -518,13 +518,13 @@ functions:
   second: Segundo
   count: Contagem
 date-fns_date: dd MMM u
-date-fns_time: 'HH:mm:ss'
-date-fns_time_no_seconds: 'HH:mm'
-date-fns_time_24hour: 'HH:mm:ss'
-date-fns_time_no_seconds_24hour: 'HH:mm'
-date-fns_date_short: 'dd MMM u'
-date-fns_time_short: 'HH:mm'
-date-fns_time_short_seconds: 'h:mm:ssa'
+date-fns_time: "HH:mm:ss"
+date-fns_time_no_seconds: "HH:mm"
+date-fns_time_24hour: "HH:mm:ss"
+date-fns_time_no_seconds_24hour: "HH:mm"
+date-fns_date_short: "dd MMM u"
+date-fns_time_short: "HH:mm"
+date-fns_time_short_seconds: "h:mm:ssa"
 date-fns_date_short_no_year: dd MMM
 minutes: Minutos
 hours: Horas
@@ -588,7 +588,7 @@ open_file_in_tab: Abrir Arquivo em Nova Aba
 start_export: Iniciar exportação
 not_available_for_local_downloads: Não disponível para baixar locais
 exporting_all_items_in_collection: A exportar todos os {total} itens dentro de {collection}.
-exporting_limited_items_in_collection: '{count} fora{total} itens em {collection} serão exportados.'
+exporting_limited_items_in_collection: "{count} fora{total} itens em {collection} serão exportados."
 exporting_no_items_to_export: Nenhum ‘item’ para exportar. Ajuste a configuração de exportação e/ou adicione itens à coleção.
 exporting_download_hint: Após criação do arquivo {format} , ele deverá ser baixado para o seu dispositivo.
 exporting_library_hint: Após criar o arquivo {format} , ele será salvo em Biblioteca de Arquivos.
@@ -631,13 +631,13 @@ reset_interface: Restaurar interface
 display_not_found: 'Visualização "{display}" não encontrado.'
 reset_display: Restaurar visualização
 list-m2a: Construtor (M2A)
-item_count: 'Não existem documentos | Um documento | {count} documentos'
+item_count: "Não existem documentos | Um documento | {count} documentos"
 no_items_copy: Ainda não existem documentos nesta coleção.
-file_count: 'Nenhum ficheiro | Um ficheiro | {count} ficheiros'
+file_count: "Nenhum ficheiro | Um ficheiro | {count} ficheiros"
 no_files_copy: Não existem ficheiros aqui.
-user_count: 'Nenhum utilizador | Um utilizador | {count} utilizadores'
+user_count: "Nenhum utilizador | Um utilizador | {count} utilizadores"
 no_users_copy: Ainda não existem utilizadores neste estatuto.
-webhooks_count: 'Nenhum webhook | Um webhook | {count} webhooks'
+webhooks_count: "Nenhum webhook | Um webhook | {count} webhooks"
 no_notifications: Sem notificações
 no_notifications_copy: Tudo em dia!
 activity_log: Registo de Atividade
@@ -751,9 +751,9 @@ make_collection_hidden: Tornar Coleção Oculta
 make_folder_visible: Tornar a pasta visível
 make_folder_hidden: Tornar arquivo oculto
 goto_collection_content: Ver conteúdo
-count_of_total_items: '{count} de {total} Itens'
-start_end_of_count_items: 'Itens'
-start_end_of_count_filtered_items: '{start}-{end} de {count} Itens Filtrados'
+count_of_total_items: "{count} de {total} Itens"
+start_end_of_count_items: "Itens"
+start_end_of_count_filtered_items: "{start}-{end} de {count} Itens Filtrados"
 delete_collection_are_you_sure: >-
   Tem certeza que deseja excluir a coleção "{collection}"? Isso irá apagar a coleção e todos os itens dela. Esta ação é permanente.
 delete_folder_are_you_sure: Tem certeza que deseja excluir a pasta "{folder}"? Pastas e coleções aninhadas serão movidas para o nível superior mais elevado.
@@ -769,7 +769,7 @@ system_collections: Coleções do sistema
 placeholder: Espaço reservado
 icon_left: Ícone à esquerda
 icon_right: Ícone à Direita
-count_other_revisions: '{count} Outras revisões'
+count_other_revisions: "{count} Outras revisões"
 font: Fonte
 sans_serif: Sans Serif
 serif: Serif
@@ -778,7 +778,7 @@ divider: Divisor
 color: Cor
 circle: Círculo
 empty_item: Item vazio
-log_in_with: 'Iniciar sessão com {provider}'
+log_in_with: "Iniciar sessão com {provider}"
 conditional_styles: Estilos Condicionais
 advanced_settings: Definições avançadas
 advanced_filter: Filtro avançado
@@ -826,8 +826,8 @@ items: Items
 upload_file: Carregar Ficheiro
 upload_file_indeterminate: A enviar Ficheiro...
 upload_file_success: Ficheiro enviado
-upload_files_indeterminate: 'A enviar ficheiros {done}/{total}'
-upload_files_success: '{count} Ficheiros Enviados'
+upload_files_indeterminate: "A enviar ficheiros {done}/{total}"
+upload_files_success: "{count} Ficheiros Enviados"
 upload_pending: Envio pendente
 drag_file_here: Arraste e solte um ficheiro aqui
 click_to_browse: Clique para navegar
@@ -845,7 +845,7 @@ create_item: Criar item
 display_template: Templates de Exibição
 language_display_template: Modelo de Exibição do Idioma
 translations_display_template: Modelo de exibição de traduções
-n_items_selected: 'Nenhum item selecionado (number@@0Um item Selecionado: {n} Itens Selecionados'
+n_items_selected: "Nenhum item selecionado | Um item selecionado | {n} itens selecionados"
 per_page: Por página
 all_files: Todos os ficheiros
 my_files: Meus ficheiros
@@ -923,11 +923,11 @@ deselect_all: Desselecionar tudo
 other: Outros...
 adding_user: Adicionando utilizador
 unknown_user: Utilizador desconhecido
-creating_in: 'Criando item em {collection}'
-editing_in: 'Editando item em {collection}'
-creating_unit: 'Criando {unit}'
-editing_unit: 'Editando {unit}'
-editing_in_batch: 'Editando Lote {count} Itens'
+creating_in: "Criando item em {collection}"
+editing_in: "Editando item em {collection}"
+creating_unit: "Criando {unit}"
+editing_unit: "Editando {unit}"
+editing_in_batch: "Editando Lote {count} Itens"
 no_options_available: Nenhuma opção disponível
 settings_data_model: Modelo de dados
 settings_project: Configurações
