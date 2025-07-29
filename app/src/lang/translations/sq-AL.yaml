@@ -87,7 +87,7 @@ published_relative: Publikuar {relativeTime}
 compatible_with_your_project: Përputhshëm me projektin tuaj
 compatible_with_your_project_copy: Autori ka treguar se përputhshmëria e kësaj zgjerimi është {hostVersion}, e cila përputhet me versionin e projektit tuaj ({currentVersion})
 last_updated_relative: Përditësuar së fundmi {relativeTime}
-n_files: '{n} Skedarë'
+n_files: "{n} Skedarë"
 verified: Verifikuar
 homepage: Faqja kryesore
 repository: Depo
@@ -97,7 +97,7 @@ report_an_issue: Raporto një Problem
 website: Faqe interneti
 github: GitHub
 beta: Beta
-n_downloads: '{n} Shkarkime'
+n_downloads: "{n} Shkarkime"
 downloads: Shkarkime
 compatibility_not_guaranteed: Përputhshmëria nuk është e garantuar
 compatibility_not_guaranteed_copy: Autori ka treguar se përputhshmëria e kësaj zgjerimi është {hostVersion}, e cila nuk përputhet me versionin e projektit tuaj ({currentVersion})
@@ -117,7 +117,7 @@ indeterminate: Indeterminuar
 edit_collection: Modifiko Koleksionin
 exclusive: Ekskluzive
 children: Fëmijë
-db_only_click_to_configure: 'Vetëm Baza e të Dhënave: Kliko për të Konfiguruar'
+db_only_click_to_configure: "Vetëm Baza e të Dhënave: Kliko për të Konfiguruar"
 show_active_items: Shfaq Artikujt Aktivë
 show_archived_items: Shfaq Artikujt e Arkivuar
 show_all_items: Shfaq të gjithë Artikujt
@@ -201,7 +201,7 @@ archive: Arkivo
 archive_confirm: A jeni të sigurtë që doni të arkivoni këtë artikull?
 archive_confirm_count: >-
   Nuk janë zgjedhur artikuj | A jeni të sigurtë që doni të arkivoni këtë artikull? | A jeni të sigurtë që doni të arkivoni këto {count} artikuj?
-reset_system_permissions_to: 'Rikthe lejet e sistemit në:'
+reset_system_permissions_to: "Rikthe lejet e sistemit në:"
 reset_system_permissions_copy: Ky veprim do të mbishkruajë çdo leje të personalizuar që mund të keni aplikuar në koleksionet e sistemit. A jeni të sigurt?
 the_following_are_minimum_permissions: Lejet minimale të mëposhtme aplikohen automatikisht kur "Qasja në Aplikacion" është aktivizuar. Mund të akordoni leje shtesë nëse është e nevojshme, por nuk mund të zvogëloni lejet nën këtë nivel.
 app_access_minimum: Qasja Minimale në Aplikacion
@@ -209,7 +209,7 @@ recommended_defaults: Vlerat e Rekomanduara të Paracaktuara
 unarchive: Çarkivo
 unarchive_confirm: A jeni të sigurtë që doni të çarkivoni këtë artikull?
 nested_files_folders_will_be_moved: Skedarët dhe dosjet e brendshme do të lëvizin një nivel lart.
-validation_errors_notice: 'Fushat e mëposhtme kanë vlera të pavlefshme:'
+validation_errors_notice: "Fushat e mëposhtme kanë vlera të pavlefshme:"
 validationError:
   eq: Vlera duhet të jetë {valid}
   neq: Vlera nuk mund të jetë {invalid}
@@ -259,14 +259,14 @@ item_permissions: Lejet e Artikullit
 field_permissions: Lejet e Fushës
 field_validation: Vleftësim i Fushës
 field_presets: Parametrat e Paracaktuar të Fushës
-permissions_for_role: 'Artikujt që Roli {role} mund të {action}.'
-permissions_for_policy: 'Artikujt që Drejtimi {policy} mund të {action}.'
-fields_for_role: 'Fushat që Roli {role} mund të {action}.'
-fields_for_policy: 'Fushat që Drejtimi {policy} mund të {action}.'
-validation_for_role: 'Rregullat e {action} të fushës që Roli {role} duhet të zbatojë.'
-validation_for_policy: 'Rregullat e {action} të fushës që Drejtimi {policy} duhet të ndjekë.'
-presets_for_role: 'Vlerat e paracaktuara të fushës për Rolin {role}.'
-presets_for_policy: 'Vlerat e paracaktuara të fushës për Drejtimin {policy}.'
+permissions_for_role: "Artikujt që Roli {role} mund të {action}."
+permissions_for_policy: "Artikujt që Drejtimi {policy} mund të {action}."
+fields_for_role: "Fushat që Roli {role} mund të {action}."
+fields_for_policy: "Fushat që Drejtimi {policy} mund të {action}."
+validation_for_role: "Rregullat e {action} të fushës që Roli {role} duhet të zbatojë."
+validation_for_policy: "Rregullat e {action} të fushës që Drejtimi {policy} duhet të ndjekë."
+presets_for_role: "Vlerat e paracaktuara të fushës për Rolin {role}."
+presets_for_policy: "Vlerat e paracaktuara të fushës për Drejtimin {policy}."
 presets_field_warning: 'Parametrat e paracaktuar të marrëdhënies për fushën "{field}" duhet të konfigurohen me sint.'
 presentation_and_aliases: Prezantim & Pseudonime
 revision_post_create: Ja si dukej ky artikull kur u krijua.
@@ -311,8 +311,8 @@ iso: ISO
 focal_length: Gjatësia Fokale
 schema_setup_key: Emri i kolonës së databazës dhe kyçi i API për këtë fushë
 create_field: Krijo Fushë
-creating_new_field: 'Fushë e Re ({collection})'
-field_in_collection: '{field} ({collection})'
+creating_new_field: "Fushë e Re ({collection})"
+field_in_collection: "{field} ({collection})"
 reset_page_preferences: Rivendos Preferencat e Faqes
 hidden_field: Fushë e Fshehur
 hidden_on_detail: Fshehur në Detaj
@@ -368,13 +368,13 @@ click_to_manage_translated_fields: >-
   Nuk ka fusha të përkthyera akoma. Kliko këtu për t'i krijuar ato. | Ka një fushë të përkthyer. Kliko këtu për ta menaxhuar atë. | Ka {count} fusha të përkthyera. Kliko këtu për t'i menaxhuar ato.
 fields_group: Grup Fushash
 no_collections_found: Nuk u gjetën koleksione.
-new_data_alert: 'Më poshtë do të krijohen brenda Modelit tuaj të të Dhënave:'
+new_data_alert: "Më poshtë do të krijohen brenda Modelit tuaj të të Dhënave:"
 search_collection: Kërko Koleksion...
 search_role: Kërko Rolin...
 search_policy: Kërko Drejtim...
 search_field: Kërko Fushë...
-new_field: 'Fushë e Re'
-new_collection: 'Koleksion i Ri'
+new_field: "Fushë e Re"
+new_collection: "Koleksion i Ri"
 add_m2o_to_collection: 'Shto M2O në "{collection}"'
 add_o2m_to_collection: 'Shto O2M në "{collection}"'
 add_m2m_to_collection: 'Shto M2M në "{collection}"'
@@ -449,15 +449,15 @@ settings_update_success: Cilësimet u përditësuan
 title: Titulli
 revision_delta_created: U krijua
 revision_delta_created_externally: U krijua Jashtë
-revision_delta_updated: '''Përditësoi 1 Fushë | Përditësoi {count} Fusha'''
+revision_delta_updated: "'Përditësoi 1 Fushë | Përditësoi {count} Fusha'"
 revision_delta_deleted: U fshi
-revision_delta_version_saved: 'Ruajtja e Versionit (Përditësuar 1 Fushë) | Ruajtja e Versionit (Përditësuar {count} Fusha)'
+revision_delta_version_saved: "Ruajtja e Versionit (Përditësuar 1 Fushë) | Ruajtja e Versionit (Përditësuar {count} Fusha)"
 revision_delta_reverted: U rikthye
 revision_delta_update_message: Kjo fushë është përditësuar por vlera e saj është e fshehur për arsye sigurie.
 revision_delta_other: Rishikim
-revision_delta_by: '{date} nga {user}'
-presentation_text_values_cannot_be_reimported: 'Përdor tekst prezantimi, vlerat nuk mund të rimportohen.'
-download_page_as_csv: 'Shkarko Faqen si CSV'''
+revision_delta_by: "{date} nga {user}"
+presentation_text_values_cannot_be_reimported: "Përdor tekst prezantimi, vlerat nuk mund të rimportohen."
+download_page_as_csv: "Shkarko Faqen si CSV'"
 download_page_as_csv_unsupported: Ky format nuk mbështet shkarkimin e faqes aktuale.
 private_user: Përdorues Privat
 creation_preview: Parapamje e Krijimit
@@ -511,13 +511,12 @@ functions:
   second: Sekonda
   count: Numri
 date-fns_date: PPP
-date-fns_time: 'h:mm:ss a'
-date-fns_time_no_seconds: 'h:mm a'
-date-fns_time_24hour: 'HH:mm:ss'
-date-fns_time_no_seconds_24hour: 'HH:mm'
-date-fns_date_short: 'MMM d, u'
-date-fns_time_short: 'h:mma'
-date-fns_time_short_seconds: ''
+date-fns_time: "h:mm:ss a"
+date-fns_time_no_seconds: "h:mm a"
+date-fns_time_24hour: "HH:mm:ss"
+date-fns_time_no_seconds_24hour: "HH:mm"
+date-fns_date_short: "MMM d, u"
+date-fns_time_short: "h:mma"
 date-fns_date_short_no_year: MMM d
 minutes: Minuta
 hours: Orë
@@ -581,7 +580,7 @@ open_file_in_tab: Hap Skedarin në Skedë të Re
 start_export: Filloni Eksportimin
 not_available_for_local_downloads: Nuk është i disponueshëm për shkarkime lokale
 exporting_all_items_in_collection: Eksportimi i të gjitha artikujve ({total}) brenda {collection}.
-exporting_limited_items_in_collection: '{count} prej {total} artikujve brenda {collection} do të eksportohen.'
+exporting_limited_items_in_collection: "{count} prej {total} artikujve brenda {collection} do të eksportohen."
 exporting_no_items_to_export: Nuk ka artikuj për të eksportuar. Rregullo konfigurimin e eksportimit dhe/ose shto artikuj në koleksion.
 exporting_download_hint: Pasi skedari {format} të jetë krijuar, ai do të shkarkohet në pajisjen tuaj.
 exporting_library_hint: Pasi skedari {format} të jetë krijuar, ai do të ruhet në Bibliotekën e Skedareve.
@@ -631,14 +630,14 @@ reset_interface: Riaktivizo Ndërfaqen
 display_not_found: 'Shfaqja "{display}" nuk u gjet.'
 reset_display: Riaktivizo Shfaqjen
 list-m2a: Ndërtues (M2A)
-item_count: 'Asnjë Artikull | Një Artikull | {count} Artikuj'
-filtered_item_count: 'Asnjë Artikull i Filtruar | Një Artikull i Filtruar | {count} Artikuj të Filtruar'
+item_count: "Asnjë Artikull | Një Artikull | {count} Artikuj"
+filtered_item_count: "Asnjë Artikull i Filtruar | Një Artikull i Filtruar | {count} Artikuj të Filtruar"
 no_items_copy: Ende nuk ka artikuj në këtë koleksion.
-file_count: 'Asnjë Skedar | Një Skedar | {count} Skedarë'
+file_count: "Asnjë Skedar | Një Skedar | {count} Skedarë"
 no_files_copy: Këtu nuk ka skedarë.
-user_count: 'Asnjë Përdorues | Një Përdorues | {count} Përdorues'
+user_count: "Asnjë Përdorues | Një Përdorues | {count} Përdorues"
 no_users_copy: Ende nuk ka përdorues në këtë rol.
-webhooks_count: 'Asnjë Webhook | Një Webhook | {count} Webhooks'
+webhooks_count: "Asnjë Webhook | Një Webhook | {count} Webhooks"
 webhooks_deprecation_notice: |
   Webhooks janë të vjetruara dhe përdorimi i mëtejmë nuk rekomandohet. Ju lutemi përdorni **Flows** me [Webhook / Request URL operation] (https://docs.directus.io/app/flows/operations.html#webhook-request-url) në vend të kësaj.
 no_webhooks_copy: Ende nuk është konfiguruar asnjë webhook. Filloni duke krijuar një më poshtë.
@@ -739,7 +738,7 @@ errors:
   INVALID_USER: Autentifikimi i përdoruesit dështoi
   ITEM_LIMIT_REACHED: Limiti i artikujve arriti
   ITEM_NOT_FOUND: Artikulli nuk u gjet
-  LIMIT_EXCEEDED: 'Limiti i tejkaluar'
+  LIMIT_EXCEEDED: "Limiti i tejkaluar"
   METHOD_NOT_ALLOWED: Metodë e palëjuar
   NOT_NULL_VIOLATION: Vlera nuk mund të jetë null
   RANGE_NOT_SATISFIABLE: Rang i pavlefshëm
@@ -793,9 +792,9 @@ make_collection_hidden: Bëj Koleksionin të Fshehur
 make_folder_visible: Bëj Dosjen të Dukshme
 make_folder_hidden: Bëj Dosjen të Fshehur
 goto_collection_content: Shiko Përmbajtjen
-count_of_total_items: '{count} nga {total} Artikuj'
-start_end_of_count_items: '{start}-{end} nga {count} Artikuj'
-start_end_of_count_filtered_items: '{start}-{end} nga {count} Artikuj të Filtruar'
+count_of_total_items: "{count} nga {total} Artikuj"
+start_end_of_count_items: "{start}-{end} nga {count} Artikuj"
+start_end_of_count_filtered_items: "{start}-{end} nga {count} Artikuj të Filtruar"
 delete_collection_are_you_sure: >-
   Jeni i sigurt që doni të fshini koleksionin "{collection}"? Kjo do të fshijë koleksionin dhe të gjithë artikujt brenda tij. Ky veprim është i përhershëm.
 delete_folder_are_you_sure: Jeni i sigurt që doni të fshini dosjen "{folder}"? Dosjet e brendshme dhe koleksionet do të zhvendosen në nivelin më të lartë.
@@ -811,7 +810,7 @@ system_collections: Koleksionet e Sistemit
 placeholder: Mbushësi
 icon_left: Ikona Majtas
 icon_right: Ikona Djathtas
-count_other_revisions: '{count} Rivizioni të Tjerë'
+count_other_revisions: "{count} Rivizioni të Tjerë"
 font: Fonti
 sans_serif: Sans Serif
 serif: Serif
@@ -820,7 +819,7 @@ divider: Ndarës
 color: Ngjyra
 circle: Rreth
 empty_item: Artikull Bosh
-log_in_with: 'Hyr me {provider}'
+log_in_with: "Hyr me {provider}"
 conditional_styles: Stile Kushtore
 advanced_settings: Cilësime të Avancuara
 advanced_filter: Filtrim i Avancuar
@@ -869,8 +868,8 @@ items: Artikuj
 upload_file: Ngarko Skedar
 upload_file_indeterminate: Po Ngarkohet Skedari...
 upload_file_success: Skedari u Ngarkua
-upload_files_indeterminate: 'Po Ngarkohen Skedarët {done}/{total}'
-upload_files_success: '{count} Skedarë u Ngarkuan'
+upload_files_indeterminate: "Po Ngarkohen Skedarët {done}/{total}"
+upload_files_success: "{count} Skedarë u Ngarkuan"
 upload_pending: Ngarkimi në Pritje
 drag_file_here: Tërhiqe dhe Lësho Skedarin Këtu
 click_to_browse: Kliko për të Shfletuar
@@ -888,7 +887,7 @@ create_item: Krijo Artikull
 display_template: Shabllon i Shfaqjes
 language_display_template: Shabllon i Shfaqjes së Gjuhës
 translations_display_template: Shabllon i Shfaqjes së Përkthimeve
-n_items_selected: 'Asnjë Artikull i Zgjedhur | Një Artikull i Zgjedhur | {n} Artikuj të Zgjedhur'
+n_items_selected: "Asnjë Artikull i Zgjedhur | Një Artikull i Zgjedhur | {n} Artikuj të Zgjedhur"
 per_page: Për Faqe
 all_files: Të gjitha Skedarët
 my_files: Skedarët e mi
@@ -972,8 +971,8 @@ operation_options: Opsionet e Operacionit
 operation_name: Emri i operacionit...
 operation_key: Identifikuesi për referencë...
 operation_key_unique_error: Çelësat e operacionit duhet të jenë unikë në një Rrjedhë
-operation_handle_resolve: 'Zgjidh: Kliko për të Shtuar ose Tërhiq për të Rirregulluar'
-operation_handle_reject: 'Refuzo: Kliko për të Shtuar ose Tërhiq për të Rirregulluar'
+operation_handle_resolve: "Zgjidh: Kliko për të Shtuar ose Tërhiq për të Rirregulluar"
+operation_handle_reject: "Refuzo: Kliko për të Shtuar ose Tërhiq për të Rirregulluar"
 insights: Insight-e
 dashboard: Dashboard
 panel: Paneli
@@ -1004,16 +1003,16 @@ pause_streaming_logs: Ndalo Transmetimin e Regjistrave
 logs_session_resumed: Seanca e regjistrave u rifillua...
 logs_session_paused: Seanca e regjistrave u ndal...
 logs_stream_disconnected: Transmetimi i regjistrave u shkëput...
-log_detail_filter_paths: 'Filtro Rrugët (p.sh.: req.method, res.statusCode)'
+log_detail_filter_paths: "Filtro Rrugët (p.sh.: req.method, res.statusCode)"
 logs_beginning: Ky është fillimi i seancës suaj të regjistrave...
-logs_waiting: 'Duke pritur më shumë regjistra...'
-logs_unread_count: '{count} të palexuara'
+logs_waiting: "Duke pritur më shumë regjistra..."
+logs_unread_count: "{count} të palexuara"
 clear_logs: Pastro Regjistrat
 search_logs: Kërko në Regjistra...
 all_instances: Të Gjitha Instancat
-instance_count: 'Asnjë Instancë | Një Instancë | {count} Instanca'
+instance_count: "Asnjë Instancë | Një Instancë | {count} Instanca"
 all_log_levels: Të Gjitha Nivelet e Regjistrave
-log_level_count: 'Asnjë Nivel Regjistri | Një Nivel Regjistri | {count} Nivele Regjistri'
+log_level_count: "Asnjë Nivel Regjistri | Një Nivel Regjistri | {count} Nivele Regjistri"
 soft_wrap_lines: Mbështjell Rreshtat e Butë
 full_screen: Ekran i Plotë
 full_text_search: Kërkim i Plotë i Tekstit
@@ -1109,12 +1108,12 @@ appearance_dark: Errësirë
 other: Të tjera...
 adding_user: Po shtohet Përdoruesi
 unknown_user: Përdorues i Panjohur
-creating_in: 'Po krijohet artikulli në {collection}'
-editing_in: 'Po modifikohet artikulli në {collection}'
-viewing_in: 'Po shikohet artikulli në {collection}'
-creating_unit: 'Po krijohet {unit}'
-editing_unit: 'Po modifikohet {unit}'
-editing_in_batch: 'Modifikim në masë i {count} artikujve'
+creating_in: "Po krijohet artikulli në {collection}"
+editing_in: "Po modifikohet artikulli në {collection}"
+viewing_in: "Po shikohet artikulli në {collection}"
+creating_unit: "Po krijohet {unit}"
+editing_unit: "Po modifikohet {unit}"
+editing_in_batch: "Modifikim në masë i {count} artikujve"
 no_options_available: Nuk ka opsione të disponueshme
 settings_data_model: Modeli i të Dhënave
 settings_roles: Rolet e Përdoruesve
@@ -1149,7 +1148,7 @@ discard_changes_copy: Je i sigurt që dëshiron të anulosh të gjitha ndryshime
 show_x_axis: Shfaq Aksin X
 show_y_axis: Shfaq Aksin Y
 keep_editing: Vazhdo të Modifikosh
-page_help_collections_overview: '**Përmbledhje e Koleksioneve** — Lista e të gjitha koleksioneve të cilave ke qasje.'
+page_help_collections_overview: "**Përmbledhje e Koleksioneve** — Lista e të gjitha koleksioneve të cilave ke qasje."
 page_help_collections_collection: >-
   **Shfleto Artikujt** — Liston të gjitha artikujt {collection} të cilave ke qasje. Personalizo strukturën, filtrat dhe renditjen për ta përshtatur pamjen tënde, dhe madje ruaj faqerojtësit e këtyre konfigurimeve të ndryshme për akses të shpejtë.
 page_help_collections_item: >-
@@ -1164,34 +1163,34 @@ page_help_files_item: >-
   **Detajet e Skedarit** — Një formë për menaxhimin e metatë dhënave të skedarit, redaktimin e asetit origjinal dhe përditësimin e cilësimeve të aksesit.
 page_help_settings_project: "**Cilësimet** — Opsionet e konfigurimit global të projektit tuaj."
 page_help_settings_appearance: "**Pamja** — Opsionet e pamjes dhe temave të projektit tuaj."
-page_help_settings_extensions: '**Zgjerime** — Zgjerimet e instaluara në projektin tuaj.'
+page_help_settings_extensions: "**Zgjerime** — Zgjerimet e instaluara në projektin tuaj."
 page_help_settings_datamodel_collections: >-
   **Modeli i të Dhënave: Koleksionet** — Liston të gjitha koleksionet e disponueshme. Kjo përfshin koleksionet e dukshme, të fshehura dhe sistemit, si dhe tabelat e menaxhuara të bazës së të dhënave që mund të shtohen.
 page_help_settings_datamodel_fields: >-
   **Modeli i të Dhënave: Koleksioni** — Një formë për menaxhimin e këtij koleksioni dhe fushave të tij.
-page_help_settings_system_logs: '**Regjistrat e Sistemit** — Aksesoni një transmetim të drejtpërdrejtë të regjistrave të sistemit.'
-page_help_settings_policies_collection: '**Shfleto Drejtimet** — Rendit të gjithë drejtimet brenda projektit.'
+page_help_settings_system_logs: "**Regjistrat e Sistemit** — Aksesoni një transmetim të drejtpërdrejtë të regjistrave të sistemit."
+page_help_settings_policies_collection: "**Shfleto Drejtimet** — Rendit të gjithë drejtimet brenda projektit."
 page_help_settings_policies_item: "**Detajet e Drejtimit** — Menaxho lejet dhe cilësimet e tjera të një drejtimi."
-page_help_settings_roles_collection: '**Shfleto Rolet** — Rendit të gjithë rolet e përdoruesve brenda projektit.'
+page_help_settings_roles_collection: "**Shfleto Rolet** — Rendit të gjithë rolet e përdoruesve brenda projektit."
 page_help_settings_roles_item: "**Detajet e Rolit** — Menaxho lejet e rolit dhe cilësimet e tjera."
 page_help_settings_presets_collection: >-
   **Shfleto Cilësimet e Paracaktuara** — Liston të gjitha cilësimet e paracaktuara në projekt, duke përfshirë: faqerojtësit e përdoruesit, rolit dhe globalë, si dhe pamjet e paracaktuara.
 page_help_settings_presets_item: >-
   **Detajet e Cilësimeve të Paracaktuara** — Një formë për menaxhimin e faqerojtësve dhe cilësimeve të paracaktuara të koleksionit.
-page_help_settings_webhooks_collection: '**Shfleto Webhooks** — Liston të gjitha webhooks brenda projektit.'
-page_help_settings_webhooks_item: '**Detajet e Webhook** — Një formë për krijimin dhe menaxhimin e webhooks të projektit.'
-page_help_settings_flows_collection: '**Shfleto Flujot** — Liston të gjitha flujot brenda projektit.'
-page_help_settings_flows_item: '**Detajet e Flujos** — Hapësira për menaxhimin e një ose më shumë operacionesh.'
-page_help_settings_translations_collection: '**Shfleto Përkthimet e Personalizuara** — Liston të gjitha përkthimet e personalizuara brenda projektit.'
-page_help_settings_translations_item: '**Detajet e Përkthimit të Personalizuar** — Një formë për shikimin dhe menaxhimin e këtij artikulli.'
-page_help_users_collection: '**Drejtoria e Përdoruesve** — Liston të gjithë përdoruesit e sistemit brenda këtij projekti.'
+page_help_settings_webhooks_collection: "**Shfleto Webhooks** — Liston të gjitha webhooks brenda projektit."
+page_help_settings_webhooks_item: "**Detajet e Webhook** — Një formë për krijimin dhe menaxhimin e webhooks të projektit."
+page_help_settings_flows_collection: "**Shfleto Flujot** — Liston të gjitha flujot brenda projektit."
+page_help_settings_flows_item: "**Detajet e Flujos** — Hapësira për menaxhimin e një ose më shumë operacionesh."
+page_help_settings_translations_collection: "**Shfleto Përkthimet e Personalizuara** — Liston të gjitha përkthimet e personalizuara brenda projektit."
+page_help_settings_translations_item: "**Detajet e Përkthimit të Personalizuar** — Një formë për shikimin dhe menaxhimin e këtij artikulli."
+page_help_users_collection: "**Drejtoria e Përdoruesve** — Liston të gjithë përdoruesit e sistemit brenda këtij projekti."
 page_help_users_item: >-
   **Detajet e Përdoruesit** — Menaxho informacionin e llogarisë sënde, ose shiko detajet e përdoruesve të tjerë.
-page_help_insights_overview: '**Insights** — Lista e kokpitëve të cilave ke qasje.'
-page_help_insights_dashboard: '**Dashboard** — Hapësira për menaxhimin e një ose më shumë paneleve'
-page_help_marketplace_account: '**Llogari** — Botues ose mirëmbajtës i një zgjerimi të publikuar.'
-page_help_marketplace_registry: '**Regjistri** — Zgjerime të disponueshme në Tregun e Directus.'
-page_help_marketplace_extension: '**Zgjerim** — Zgjerim në Tregun e Directus.'
+page_help_insights_overview: "**Insights** — Lista e kokpitëve të cilave ke qasje."
+page_help_insights_dashboard: "**Dashboard** — Hapësira për menaxhimin e një ose më shumë paneleve"
+page_help_marketplace_account: "**Llogari** — Botues ose mirëmbajtës i një zgjerimi të publikuar."
+page_help_marketplace_registry: "**Regjistri** — Zgjerime të disponueshme në Tregun e Directus."
+page_help_marketplace_extension: "**Zgjerim** — Zgjerim në Tregun e Directus."
 activity_feed: Feed Aktiviteti
 add_new: Shto të Ri
 create_new: Krijo të Ri
@@ -1350,7 +1349,7 @@ fields:
     mapbox_key: Tokeni i Qasjes së Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: Atributim
-    attribution_placeholder: '© Kontribuesit e OpenStreetMap'
+    attribution_placeholder: "© Kontribuesit e OpenStreetMap"
     transforms_note: Emri i metodes Sharp dhe argumentet e saj. Shihni https://sharp.pixelplumbing.com/api-constructor për më shumë informacion.
     additional_transforms: Transformime Shtesë
     project_name: Emri i Projektit
@@ -1603,8 +1602,8 @@ choose_action: Zgjidh Veprimin
 continue_label: Vazhdo
 continue_as: >-
   {name} është aktualisht i autentifikuar. Nëse njihni këtë llogari, shtypni vazhdo.
-editing_role: 'Roli {role}'
-editing_policy: 'Drejtimi {policy}'
+editing_role: "Roli {role}"
+editing_policy: "Drejtimi {policy}"
 no_permissions: Pa Leje
 permission_add_collection: Shto Koleksion
 creating_webhook: Po krijohet Webhook
@@ -1751,7 +1750,7 @@ interfaces:
     checkboxes: Kutitë për Kontrollim
     description: Zgjidhni midis opsioneve të shumta përmes kutive të kontrollimit
     allow_other: Lejo Të Tjerët
-    show_more: 'Shfaq {count} më shumë'
+    show_more: "Shfaq {count} më shumë"
     items_shown: Artikujt e Shfaqur
   select-multiple-checkbox-tree:
     name: Kutitë për Kontrollim (Pemë)
@@ -2099,7 +2098,7 @@ displays:
     long: E gjatë
     short: E shkurtër
     relative: Relative
-    relative_label: 'Shfaq kohën relative, psh: 5 minuta më parë'
+    relative_label: "Shfaq kohën relative, psh: 5 minuta më parë"
     suffix: Sufiks
     suffix_label: Shfaq indikatorin relativ
     suffix_note: Përdor fjalë si 'në' dhe 'më parë'
@@ -2340,8 +2339,8 @@ triggers:
   event:
     name: Grepë Ngjarjeje
     description: Shkaktohet në platformë ose ngjarje të dhënash
-    action: 'Veprim (Jo-bllokues)'
-    filter: 'Filter (Bllokues)'
+    action: "Veprim (Jo-bllokues)"
+    filter: "Filter (Bllokues)"
   webhook:
     name: Webhook
     description: Shkaktohet nga një kërkesë e ardhshme HTTP
@@ -2374,7 +2373,7 @@ operations:
   exec:
     name: Ekzekuto Skript
     description: Ekzekuto kod të papërcaktuar për të ndryshuar ngarkesën
-    modules: 'Mund të përdoren **modulet e Node** e mëposhtme:'
+    modules: "Mund të përdoren **modulet e Node** e mëposhtme:"
   item-create:
     name: Krijo Të Dhëna
     description: Krijo artikuj në bazën e të dhënave
@@ -2409,7 +2408,7 @@ operations:
     token: Token
     token_placeholder: eyJhbGciOi......
     options: Opsione
-    options_placeholder: 'Referohu te https://www.npmjs.com/package/jsonwebtoken#usage për opsionet e disponueshme'
+    options_placeholder: "Referohu te https://www.npmjs.com/package/jsonwebtoken#usage për opsionet e disponueshme"
     sign: Nënshkruaj Shenjën
     verify: Verifiko Shenjën
     decode: Dekodo Shenjën
@@ -2425,8 +2424,6 @@ operations:
     body: Trupi
     template: Template
     data: Të Dhënat
-    bcc_placeholder: ...
-    reply_to:
   notification:
     name: Dërgo Njoftim
     description: Një njoftim në aplikacion për një ose më shumë përdorues
@@ -2438,7 +2435,7 @@ operations:
     subject: Subjekt
   request:
     name: Webhook / Kërkesë URL
-    description: 'Bëj një kërkesë në një URL'
+    description: "Bëj një kërkesë në një URL"
     url: URL
     url_placeholder: https://example.com/example
     method: Metoda
