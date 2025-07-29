@@ -4,6 +4,11 @@ import { computed } from 'vue';
 /**
  * Composable for creating two-way binding between parent and child components.
  *
+ * @deprecated Use Vue's native `defineModel()` instead. This composable is kept for backward compatibility.
+ * Vue 3.4+ provides `defineModel()` which offers a more streamlined and performant way to create v-model bindings.
+ *
+ * @see {@link https://vuejs.org/api/sfc-script-setup.html#definemodel} Vue's defineModel documentation
+ *
  * This composable creates a computed ref that synchronizes a prop value with
  * its parent component through Vue's v-model pattern. It provides a getter
  * that returns the current prop value and a setter that emits an update event
@@ -24,7 +29,7 @@ import { computed } from 'vue';
  *
  * @example
  * ```typescript
- * // In a child component that needs v-model support
+ * // DEPRECATED: Old way using useSync
  * export default defineComponent({
  *   props: {
  *     modelValue: String,
@@ -32,23 +37,25 @@ import { computed } from 'vue';
  *   },
  *   emits: ['update:modelValue'],
  *   setup(props, { emit }) {
- *     // Create two-way binding for modelValue prop
  *     const syncedValue = useSync(props, 'modelValue', emit);
- *
  *     return { syncedValue };
- *   },
- *   template: `
- *     <input
- *       v-model="syncedValue"
- *       :disabled="disabled"
- *     />
- *   `
+ *   }
  * });
+ *
+ * // RECOMMENDED: New way using defineModel (Vue 3.4+)
+ * <script setup lang="ts">
+ * const modelValue = defineModel<string>();
+ * const disabled = defineProps<{ disabled?: boolean }>();
+ * </script>
+ *
+ * <template>
+ *   <input v-model="modelValue" :disabled="disabled" />
+ * </template>
  * ```
  *
  * @example
  * ```typescript
- * // Custom input component with v-model support
+ * // DEPRECATED: Custom input component with useSync
  * interface Props {
  *   value: string;
  *   placeholder?: string;
@@ -64,24 +71,27 @@ import { computed } from 'vue';
  *   emits: ['update:value'],
  *   setup(props: Props, { emit }) {
  *     const syncedValue = useSync(props, 'value', emit);
- *
  *     return { syncedValue };
  *   }
  * });
+ *
+ * // RECOMMENDED: Using defineModel with custom prop name
+ * <script setup lang="ts">
+ * const value = defineModel<string>('value', { required: true });
+ * const { placeholder, type = 'text' } = defineProps<{
+ *   placeholder?: string;
+ *   type?: string;
+ * }>();
+ * </script>
  * ```
  *
  * @example
  * ```typescript
- * // Usage with complex objects
+ * // DEPRECATED: Usage with complex objects using useSync
  * interface UserData {
  *   name: string;
  *   email: string;
  *   age: number;
- * }
- *
- * interface Props {
- *   userData: UserData;
- *   isLoading: boolean;
  * }
  *
  * export default defineComponent({
@@ -90,10 +100,9 @@ import { computed } from 'vue';
  *     isLoading: Boolean,
  *   },
  *   emits: ['update:userData'],
- *   setup(props: Props, { emit }) {
+ *   setup(props, { emit }) {
  *     const syncedUserData = useSync(props, 'userData', emit);
  *
- *     // Can be used to update the entire object
  *     const updateName = (newName: string) => {
  *       syncedUserData.value = {
  *         ...syncedUserData.value,
@@ -104,6 +113,25 @@ import { computed } from 'vue';
  *     return { syncedUserData, updateName };
  *   }
  * });
+ *
+ * // RECOMMENDED: Using defineModel with complex objects
+ * <script setup lang="ts">
+ * interface UserData {
+ *   name: string;
+ *   email: string;
+ *   age: number;
+ * }
+ *
+ * const userData = defineModel<UserData>('userData', { required: true });
+ * const { isLoading } = defineProps<{ isLoading?: boolean }>();
+ *
+ * const updateName = (newName: string) => {
+ *   userData.value = {
+ *     ...userData.value,
+ *     name: newName
+ *   };
+ * };
+ * </script>
  * ```
  */
 export function useSync<T, K extends keyof T & string, E extends (event: `update:${K}`, ...args: any[]) => void>(
