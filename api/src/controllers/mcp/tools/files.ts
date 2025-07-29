@@ -80,7 +80,7 @@ const InputSchema = z.object({
 	query: QuerySchema.optional().describe(''),
 	keys: z.array(PrimaryKeySchema).optional().describe(''),
 	data: z
-		.union([z.array(FolderItemSchema), FolderItemSchema])
+		.union([z.array(FolderItemSchema), FolderItemSchema, z.array(FileSchema), FileSchema])
 		.optional()
 		.describe(''),
 	id: z.string().optional().describe(''),
