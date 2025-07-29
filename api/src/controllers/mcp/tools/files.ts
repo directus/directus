@@ -101,7 +101,7 @@ export const files = defineTool<z.infer<typeof ValidateSchema>>({
 		if (args.type === 'folder' || args.type === 'file') {
 			return items.handler({
 				args: {
-					collection: 'directus_folders',
+					collection: args.type === 'folder' ? 'directus_folders' : 'directus_files',
 					...args,
 				},
 				schema,
