@@ -19,7 +19,7 @@
 	"devDependencies": {
 		"@directus/format-title": "workspace:*",
 		"@directus/sdk": "workspace:*",
-		"@directus/tsconfig": "3.0.0",
+		"@directus/tsconfig": "catalog:",
 		"@pnpm/find-workspace-dir": "900.0.1",
 		"@pnpm/workspace.find-packages": "900.0.5",
 		"markdown-it-for-inline": "2.0.1",
@@ -30,7 +30,7 @@
 		"typedoc-plugin-markdown": "4.4.2",
 		"typedoc-plugin-zod": "1.3.1",
 		"typedoc-vitepress-theme": "1.1.2",
-		"typescript": "5.8.2",
+		"typescript": "catalog:",
 		"vitepress": "1.0.0-rc.4",
 		"vitepress-plugin-tabs": "0.3.0",
 		"vue": "3.5.13"

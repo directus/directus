@@ -377,20 +377,19 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 .duplicate {
 	.type-label {
-		margin-bottom: 4px;
+		margin-block-end: 4px;
 	}
 
 	.duplicate-field + .duplicate-field {
-		margin-bottom: 32px;
+		margin-block-end: 32px;
 	}
 }
 
 .group {
 	position: relative;
-	min-height: var(--theme--form--field--input--height);
+	min-block-size: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
-	padding-top: 40px;
-	padding-bottom: 16px;
+	padding-block: 40px 16px;
 	border-radius: var(--theme--border-radius);
 
 	> * {
@@ -400,11 +399,11 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 	&::before {
 		position: absolute;
-		top: 0;
-		left: -2px;
+		inset-block-start: 0;
+		inset-inline-start: -2px;
 		z-index: 1;
-		width: 4px;
-		height: 100%;
+		inline-size: 4px;
+		block-size: 100%;
 		background-color: var(--theme--primary);
 		border-radius: 2px;
 		content: '';
@@ -412,11 +411,11 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 	&::after {
 		position: absolute;
-		top: 0;
-		left: 0;
+		inset-block-start: 0;
+		inset-inline-start: 0;
 		z-index: 1;
-		width: 100%;
-		height: 100%;
+		inline-size: 100%;
+		block-size: 100%;
 		background-color: var(--theme--primary);
 		opacity: 0.1;
 		content: '';
@@ -424,20 +423,20 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 	.header {
 		position: absolute;
-		top: 0;
-		left: 0;
+		inset-block-start: 0;
+		inset-inline-start: 0;
 		display: flex;
 		align-items: center;
-		width: 100%;
-		margin-bottom: 8px;
-		padding-top: 8px;
+		inline-size: 100%;
+		margin-block-end: 8px;
+		padding-block-start: 8px;
 		color: var(--theme--primary);
 		font-family: var(--theme--fonts--monospace--font-family);
 
 		.drag-handle {
 			--v-icon-color: var(--theme--primary);
 
-			margin-right: 8px;
+			margin-inline-end: 8px;
 		}
 
 		.name {
@@ -453,7 +452,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 
 	& + & {
-		margin-top: 8px;
+		margin-block-start: 8px;
 	}
 
 	&.nested {
@@ -486,7 +485,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 			text-overflow: ellipsis;
 
 			.name {
-				margin-right: 8px;
+				margin-inline-end: 8px;
 				font-family: var(--theme--fonts--monospace--font-family);
 			}
 
@@ -515,7 +514,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 .icons {
 	* + *:not(:last-child) {
-		margin-left: 8px;
+		margin-inline-start: 8px;
 	}
 }
 
@@ -529,7 +528,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 .required {
 	position: relative;
-	left: -8px;
+	inset-inline-start: -8px;
 	color: var(--theme--primary);
 }
 

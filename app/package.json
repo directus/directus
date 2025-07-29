@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "13.11.1",
+	"version": "13.11.3",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -26,7 +26,9 @@
 		"story:build": "histoire build && echo \"/*  /index.html  200\" >> .histoire/dist/_redirects",
 		"story:dev": "histoire dev",
 		"story:preview": "histoire preview",
-		"test": "vitest --watch=false",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:coverage": "vitest run --coverage",
 		"typecheck": "vue-tsc --noEmit"
 	},
 	"devDependencies": {
@@ -42,7 +44,7 @@
 		"@directus/stores": "workspace:*",
 		"@directus/system-data": "workspace:*",
 		"@directus/themes": "workspace:*",
-		"@directus/tsconfig": "3.0.0",
+		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@directus/validation": "workspace:*",
@@ -97,6 +99,7 @@
 		"@unhead/addons": "1.11.20",
 		"@unhead/vue": "1.11.20",
 		"@vitejs/plugin-vue": "5.2.1",
+		"@vitest/coverage-v8": "catalog:",
 		"@vue/test-utils": "2.4.6",
 		"@vueuse/core": "12.7.0",
 		"@vueuse/integrations": "12.7.0",
@@ -141,10 +144,10 @@
 		"string-width": "7.2.0",
 		"tinymce": "6.8.5",
 		"tus-js-client": "4.3.1",
-		"typescript": "5.8.2",
+		"typescript": "catalog:",
 		"vite": "5.4.19",
 		"vite-plugin-vue-devtools": "7.7.2",
-		"vitest": "2.1.9",
+		"vitest": "catalog:",
 		"vue": "3.5.13",
 		"vue-i18n": "11.1.2",
 		"vue-router": "4.5.0",

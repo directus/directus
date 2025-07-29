@@ -4,7 +4,7 @@ import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { parseFilter } from '@/utils/parse-filter';
-import { Filter } from '@directus/types';
+import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
@@ -14,11 +14,12 @@ import NestedDraggable from './nested-draggable.vue';
 const props = withDefaults(
 	defineProps<{
 		value?: (number | string | Record<string, any>)[] | Record<string, any>;
-		displayTemplate?: string;
 		disabled?: boolean;
 		collection: string;
 		field: string;
 		primaryKey: string | number;
+		version: ContentVersion | null;
+		displayTemplate?: string;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
 		filter?: Filter | null;
@@ -135,6 +136,7 @@ const fields = computed(() => {
 			:enable-select="enableSelect"
 			:custom-filter="customFilter"
 			:items-moved="itemsMoved"
+			:version
 			root
 		/>
 	</div>
@@ -147,7 +149,7 @@ const fields = computed(() => {
 }
 
 :deep(ul) {
-	margin-left: 24px;
-	padding-left: 0;
+	margin-inline-start: 24px;
+	padding-inline-start: 0;
 }
 </style>

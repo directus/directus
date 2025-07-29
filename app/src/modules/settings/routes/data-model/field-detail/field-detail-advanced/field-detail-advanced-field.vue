@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
-import { getCurrentLanguage } from '@/lang/get-current-language';
 
 const { t } = useI18n();
 const fieldDetailStore = useFieldDetailStore();
@@ -15,6 +15,7 @@ const translations = syncFieldDetailStoreProperty('field.meta.translations');
 const { loading, field } = storeToRefs(fieldDetailStore);
 const type = computed(() => field.value.type);
 const isGenerated = computed(() => field.value.schema?.is_generated);
+const userStore = useUserStore();
 </script>
 
 <template>
@@ -70,7 +71,7 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 							},
 						},
 						schema: {
-							default_value: getCurrentLanguage(),
+							default_value: userStore.language,
 						},
 					},
 					{
@@ -98,7 +99,7 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 @use '@/styles/mixins';
 
 .type-title {
-	margin-bottom: 32px;
+	margin-block-end: 32px;
 }
 
 .form {
@@ -117,6 +118,6 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 }
 
 .v-notice:not(.no-margin) {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 </style>

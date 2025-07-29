@@ -7,8 +7,10 @@
 		"build": "pnpm --recursive --filter '!docs' run build",
 		"format": "prettier --cache --check .",
 		"lint": "eslint --cache .",
+		"lint:style": "stylelint '**/*.{css,scss,vue}' --ignore-path .gitignore --cache",
 		"test": "pnpm --recursive --filter '!tests-blackbox' test",
-		"test:blackbox": "rimraf ./dist && pnpm --filter directus deploy --prod dist && pnpm --filter tests-blackbox test"
+		"test:blackbox": "rimraf ./dist && pnpm --filter directus deploy --legacy --prod dist && pnpm --filter tests-blackbox test",
+		"test:coverage": "pnpm --recursive --filter '!tests-blackbox' test:coverage"
 	},
 	"devDependencies": {
 		"@changesets/cli": "2.28.1",
@@ -18,14 +20,20 @@
 		"eslint-config-prettier": "9.1.0",
 		"eslint-plugin-vue": "9.32.0",
 		"globals": "15.15.0",
+		"postcss-html": "1.8.0",
 		"prettier": "3.1.0",
 		"rimraf": "6.0.1",
-		"typescript": "5.8.2",
+		"stylelint": "16.21.0",
+		"stylelint-config-standard": "38.0.0",
+		"stylelint-config-standard-scss": "15.0.1",
+		"stylelint-config-standard-vue": "1.0.0",
+		"stylelint-use-logical": "2.1.2",
+		"typescript": "catalog:",
 		"typescript-eslint": "8.25.0"
 	},
-	"packageManager": "pnpm@9.15.6",
+	"packageManager": "pnpm@10.13.1",
 	"engines": {
 		"node": "22",
-		"pnpm": "9"
+		"pnpm": ">=10 <11"
 	}
 }
