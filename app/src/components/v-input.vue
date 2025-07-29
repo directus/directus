@@ -1,15 +1,11 @@
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
 <script setup lang="ts">
 import { keyMap, systemKeys } from '@/composables/use-shortcut';
 import slugify from '@sindresorhus/slugify';
 import { omit } from 'lodash';
 import { computed, ref, useAttrs } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+defineOptions({ inheritAttrs: false });
 
 interface Props {
 	/** Autofocusses the input on render */
