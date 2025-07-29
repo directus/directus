@@ -105,5 +105,5 @@ jobs:
             echo "Uploading coverage for $folder_name from $coverage_file"
 
             # Upload to codecov with folder name as flag
-            ./codecov upload-coverage -t ${{ secrets.CODECOV_TOKEN }} -f "$coverage_file" -F "$folder_name"
+            ./codecov upload-coverage -t ${{ secrets.CODECOV_TOKEN }} -f "$coverage_file" -F "$folder_name" -Z --disable-search
           done
