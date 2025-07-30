@@ -15,7 +15,7 @@ import checkForUpdate from 'update-check';
 import checkRequirements from './check-requirements.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const pkg = JSON.parse(await fse.readFile(join(__dirname, '../package.json')));
+const pkg = JSON.parse(String(await fse.readFile(join(__dirname, '../package.json'), 'utf8')));
 
 const program = new Command(pkg.name)
 	.version(pkg.version)
@@ -93,7 +93,7 @@ export async function create(directory) {
 			stdin: 'ignore',
 		});
 	} catch (err) {
-		onError({ err });
+		onError({ err, text: undefined });
 	}
 
 	try {
@@ -102,7 +102,7 @@ export async function create(directory) {
 			stdin: 'ignore',
 		});
 	} catch (err) {
-		onError({ err });
+		onError({ err, text: undefined });
 	}
 
 	spinner.stop();
@@ -113,7 +113,7 @@ export async function create(directory) {
 			stdio: 'inherit',
 		});
 	} catch {
-		onError({ text: 'Error while initializing the project' });
+		onError({ err: undefined, text: 'Error while initializing the project' });
 	}
 
 	try {
@@ -127,6 +127,7 @@ export async function create(directory) {
 		}
 	} catch {
 		onError({
+			err: undefined,
 			symbol: 'warning',
 			exit: false,
 			text: `Error while checking for newer version of \`${pkg.name}\``,
