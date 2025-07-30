@@ -51,8 +51,6 @@ export const items = defineTool<z.infer<typeof ValidateSchema>>({
 		title: 'Perform CRUD operations on Directus Items',
 	},
 	async handler({ args, schema, accountability }) {
-		let result = {};
-
 		if (isSystemCollection(args.collection)) {
 			throw new InvalidPayloadError({ reason: 'Cannot provide a core collection' });
 		}
@@ -106,6 +104,8 @@ export const items = defineTool<z.infer<typeof ValidateSchema>>({
 		}
 
 		if (args.action === 'read') {
+			let result = null;
+
 			if (isSingleton) {
 				result = await itemsService.readSingleton(sanitizedQuery);
 			} else if (args.keys) {
@@ -137,7 +137,7 @@ export const items = defineTool<z.infer<typeof ValidateSchema>>({
 			if (Array.isArray(args.data)) {
 				updatedKeys = await itemsService.updateBatch(args.data);
 			} else if (args.keys) {
-				updatedKeys = await itemsService.updateMany(args.keys, sanitizedQuery, args.data);
+				updatedKeys = await itemsService.updateMany(args.keys, args.data);
 			} else {
 				updatedKeys = await itemsService.updateByQuery(sanitizedQuery, args.data);
 			}

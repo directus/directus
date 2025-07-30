@@ -1,9 +1,11 @@
-import type { File } from '@directus/types';
+import type { File, PrimaryKey } from '@directus/types';
+import { toArray } from '@directus/utils';
 import { z } from 'zod';
 import { AssetsService } from '../../../services/assets.js';
+import { ItemsService } from '../../../services/items.js';
+import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { PrimaryKeySchema, QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
-import { items } from './items.js';
 
 const FolderItemSchema = z.object({
 	name: z.string(),
@@ -93,14 +95,76 @@ export const files = defineTool<z.infer<typeof ValidateSchema>>({
 	validateSchema: ValidateSchema,
 	async handler({ args, schema, accountability }) {
 		if (args.type === 'folder' || args.type === 'file') {
-			return items.handler({
-				args: {
-					collection: args.type === 'folder' ? 'directus_folders' : 'directus_files',
-					...args,
-				},
+			const collection = args.type === 'folder' ? 'directus_folders' : 'directus_files';
+
+			let sanitizedQuery = {};
+
+			if ('query' in args && args.query) {
+				sanitizedQuery = await sanitizeQuery(
+					{
+						fields: args.query['fields'] || '*',
+						...args.query,
+					},
+					schema,
+					accountability || null,
+				);
+			}
+
+			const service = new ItemsService(collection, {
 				schema,
 				accountability,
 			});
+
+			if (args.action === 'create') {
+				const data = toArray(args.data);
+
+				const savedKeys = await service.createMany(data);
+
+				const result = await service.readMany(savedKeys, sanitizedQuery);
+
+				return {
+					type: 'text',
+					data: result || null,
+				};
+			}
+
+			if (args.action === 'read') {
+				let result = null;
+
+				if (args.keys) {
+					result = await service.readMany(args.keys, sanitizedQuery);
+				} else {
+					result = await service.readByQuery(sanitizedQuery);
+				}
+
+				return {
+					type: 'text',
+					data: result,
+				};
+			}
+
+			if (args.action === 'update') {
+				let updatedKeys: PrimaryKey[] = [];
+
+				if (Array.isArray(args.data)) {
+					updatedKeys = await service.updateBatch(args.data);
+				} else if (args.keys) {
+					updatedKeys = await service.updateMany(args.keys, args.data);
+				} else {
+					updatedKeys = await service.updateByQuery(sanitizedQuery, args.data);
+				}
+
+				const result = await service.readMany(updatedKeys, sanitizedQuery);
+
+				return {
+					type: 'text',
+					data: result,
+				};
+			}
+
+			if (args.action === 'delete') {
+				await service.deleteMany(args.keys);
+			}
 		}
 
 		if (args.type === 'asset' && args.action === 'read') {

@@ -1,10 +1,11 @@
-import type { Collection, Field, Relation } from '@directus/types';
-import { getRelationType } from '@directus/utils';
+import type { Collection, Field, PrimaryKey, Relation } from '@directus/types';
+import { getRelationType, toArray } from '@directus/utils';
 import { z } from 'zod';
+import { ItemsService } from '../../../services/items.js';
 import { getSnapshot } from '../../../utils/get-snapshot.js';
+import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { PrimaryKeySchema, QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
-import { items } from './items.js';
 
 const CollectionItemSchema = z.custom<Collection>();
 
@@ -133,14 +134,74 @@ export const schema = defineTool<z.infer<typeof ValidateSchema>>({
 				collection = 'directus_relations';
 			}
 
-			return items.handler({
-				args: {
-					collection,
-					...args,
-				},
+			let sanitizedQuery = {};
+
+			if ('query' in args && args.query) {
+				sanitizedQuery = await sanitizeQuery(
+					{
+						fields: args.query['fields'] || '*',
+						...args.query,
+					},
+					schema,
+					accountability || null,
+				);
+			}
+
+			const service = new ItemsService(collection, {
 				schema,
 				accountability,
 			});
+
+			if (args.action === 'create') {
+				const data = toArray(args.data);
+
+				const savedKeys = await service.createMany(data);
+
+				const result = await service.readMany(savedKeys, sanitizedQuery);
+
+				return {
+					type: 'text',
+					data: result || null,
+				};
+			}
+
+			if (args.action === 'read') {
+				let result = null;
+
+				if (args.keys) {
+					result = await service.readMany(args.keys, sanitizedQuery);
+				} else {
+					result = await service.readByQuery(sanitizedQuery);
+				}
+
+				return {
+					type: 'text',
+					data: result,
+				};
+			}
+
+			if (args.action === 'update') {
+				let updatedKeys: PrimaryKey[] = [];
+
+				if (Array.isArray(args.data)) {
+					updatedKeys = await service.updateBatch(args.data);
+				} else if (args.keys) {
+					updatedKeys = await service.updateMany(args.keys, args.data);
+				} else {
+					updatedKeys = await service.updateByQuery(sanitizedQuery, args.data);
+				}
+
+				const result = await service.readMany(updatedKeys, sanitizedQuery);
+
+				return {
+					type: 'text',
+					data: result,
+				};
+			}
+
+			if (args.action === 'delete') {
+				await service.deleteMany(args.keys);
+			}
 		} else {
 			const snapshot = await getSnapshot();
 
