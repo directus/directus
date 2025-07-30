@@ -124,7 +124,9 @@ describe('increment', () => {
 
 		kv.get = vi.fn().mockReturnValue(mockStoredValue);
 
-		expect(kv.increment(mockKey)).rejects.toMatchInlineSnapshot('[Error: The value for key "kv-key" is not a number.]');
+		await expect(kv.increment(mockKey)).rejects.toMatchInlineSnapshot(
+			'[Error: The value for key "kv-key" is not a number.]',
+		);
 	});
 });
 
@@ -136,7 +138,7 @@ describe('setMax', () => {
 
 		kv.get = vi.fn().mockReturnValue(mockStoredValue);
 
-		expect(kv.setMax(mockKey, mockValue)).rejects.toMatchInlineSnapshot(
+		await expect(kv.setMax(mockKey, mockValue)).rejects.toMatchInlineSnapshot(
 			'[Error: The value for key "kv-key" is not a number.]',
 		);
 	});

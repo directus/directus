@@ -31,7 +31,7 @@ test('Rejects error as-is if error instance is given', async () => {
 	const mockError = new Error('test');
 	vi.mocked(limiter.consume).mockRejectedValue(mockError);
 
-	expect(() => consume(limiter, key, points)).rejects.toBe(mockError);
+	await expect(() => consume(limiter, key, points)).rejects.toBe(mockError);
 });
 
 test('Rejects HitRateLimitError', async () => {

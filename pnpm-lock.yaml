@@ -45,12 +45,18 @@ catalogs:
     inquirer:
       specifier: 12.9.0
       version: 12.9.0
+    ioredis:
+      specifier: 5.6.1
+      version: 5.6.1
     lodash-es:
       specifier: 4.17.21
       version: 4.17.21
     log-symbols:
       specifier: 7.0.1
       version: 7.0.1
+    lru-cache:
+      specifier: 11.1.0
+      version: 11.1.0
     ms:
       specifier: 2.1.3
       version: 2.1.3
@@ -60,6 +66,9 @@ catalogs:
     ora:
       specifier: 8.2.0
       version: 8.2.0
+    rate-limiter-flexible:
+      specifier: 7.2.0
+      version: 7.2.0
     tsup:
       specifier: 8.5.0
       version: 8.5.0
@@ -1490,14 +1499,14 @@ importers:
         specifier: workspace:*
         version: link:../utils
       ioredis:
-        specifier: 5.5.0
-        version: 5.5.0
+        specifier: 'catalog:'
+        version: 5.6.1
       lru-cache:
-        specifier: 11.0.2
-        version: 11.0.2
+        specifier: 'catalog:'
+        version: 11.1.0
       rate-limiter-flexible:
-        specifier: 5.0.5
-        version: 5.0.5
+        specifier: 'catalog:'
+        version: 7.2.0
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -8948,6 +8957,10 @@ packages:
     resolution: {integrity: sha512-7CutT89g23FfSa8MDoIFs2GYYa0PaNiW/OrT+nRyjRXHDZd17HmIgy+reOQ/yhh72NznNjGuS8kbCAcA4Ro4mw==}
     engines: {node: '>=12.22.0'}
 
+  ioredis@5.6.1:
+    resolution: {integrity: sha512-UxC0Yv1Y4WRJiGQxQkP0hfdL0/5/6YvdfOOClRgJ0qppSarkhneSa6UvkMkms0AkdGimSH3Ikqm+6mkMmX7vGA==}
+    engines: {node: '>=12.22.0'}
+
   ip-address@9.0.5:
     resolution: {integrity: sha512-zHtQzGojZXTwZTHQqra+ETKd4Sn3vgi7uBmlPoXVWZqYvuKmtI0l/VZTjqGmJY9x88GGOaZ9+G9ES8hC4T4X8g==}
     engines: {node: '>= 12'}
@@ -9565,6 +9578,10 @@ packages:
 
   lru-cache@11.0.2:
     resolution: {integrity: sha512-123qHRfJBmo2jXDbo/a5YOQrJoHF/GNQTLzQ5+IdK5pWpceK17yRc6ozlWd25FxvGKQbIUs91fDFkXmDHTKcyA==}
+    engines: {node: 20 || >=22}
+
+  lru-cache@11.1.0:
+    resolution: {integrity: sha512-QIXZUBJUx+2zHUdQujWejBkcD9+cs94tLn0+YL8UrCh+D5sCXZ4c7LaEH48pNwRY3MLDgqUFyhlCyjJPf1WP0A==}
     engines: {node: 20 || >=22}
 
   lru-cache@5.1.1:
@@ -11196,6 +11213,9 @@ packages:
 
   rate-limiter-flexible@5.0.5:
     resolution: {integrity: sha512-+/dSQfo+3FYwYygUs/V2BBdwGa9nFtakDwKt4l0bnvNB53TNT++QSFewwHX9qXrZJuMe9j+TUaU21lm5ARgqdQ==}
+
+  rate-limiter-flexible@7.2.0:
+    resolution: {integrity: sha512-hrf0vIS/WOBegnHg+uPXxsXhuQYlNGfZiCmK5Wgudb12xlZUhpv9yD23yp/EW6BKQosshqnIQRQV+r3jyfIGQg==}
 
   raw-body@2.5.2:
     resolution: {integrity: sha512-8zGqypfENjCIqGhgXToC8aB2r7YrBX+AQAfIPs/Mlk+BtPTztOvTS01NRW/3Eh60J+a48lt8qsCzirQ6loCVfA==}
@@ -21164,6 +21184,20 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  ioredis@5.6.1:
+    dependencies:
+      '@ioredis/commands': 1.2.0
+      cluster-key-slot: 1.1.2
+      debug: 4.4.1(supports-color@5.5.0)
+      denque: 2.1.0
+      lodash.defaults: 4.2.0
+      lodash.isarguments: 3.1.0
+      redis-errors: 1.2.0
+      redis-parser: 3.0.0
+      standard-as-callback: 2.1.0
+    transitivePeerDependencies:
+      - supports-color
+
   ip-address@9.0.5:
     dependencies:
       jsbn: 1.1.0
@@ -21769,6 +21803,8 @@ snapshots:
   lru-cache@10.4.3: {}
 
   lru-cache@11.0.2: {}
+
+  lru-cache@11.1.0: {}
 
   lru-cache@5.1.1:
     dependencies:
@@ -23706,6 +23742,8 @@ snapshots:
   range-parser@1.2.1: {}
 
   rate-limiter-flexible@5.0.5: {}
+
+  rate-limiter-flexible@7.2.0: {}
 
   raw-body@2.5.2:
     dependencies:
