@@ -64,6 +64,7 @@ const OperationInputSchema = z.object({
 
 export const flows = defineTool<z.infer<typeof FlowValidateSchema>>({
 	name: 'flows',
+	admin: true,
 	description: 'Perform CRUD operations on Directus Flows',
 	inputSchema: FlowInputSchema,
 	validateSchema: FlowValidateSchema,
@@ -71,10 +72,6 @@ export const flows = defineTool<z.infer<typeof FlowValidateSchema>>({
 		title: 'Perform CRUD operations on Directus Flows',
 	},
 	async handler({ args, schema, accountability, sanitizedQuery }) {
-		if (accountability?.admin !== true) {
-			throw new Error('Bad AI!');
-		}
-
 		let result = {};
 
 		const flowsService = new FlowsService({
@@ -119,6 +116,7 @@ export const flows = defineTool<z.infer<typeof FlowValidateSchema>>({
 
 export const operations = defineTool<z.infer<typeof OperationValidationSchema>>({
 	name: 'operations',
+	admin: true,
 	description: 'Perform CRUD operations on Directus Flow Operations',
 	inputSchema: OperationInputSchema,
 	validateSchema: OperationValidationSchema,
@@ -126,10 +124,6 @@ export const operations = defineTool<z.infer<typeof OperationValidationSchema>>(
 		title: 'Perform CRUD operations on Directus Flow Operations',
 	},
 	async handler({ args, schema, accountability, sanitizedQuery }) {
-		if (accountability?.admin !== true) {
-			throw new Error('Bad AI!');
-		}
-
 		let result = {};
 
 		const operationService = new OperationsService({
