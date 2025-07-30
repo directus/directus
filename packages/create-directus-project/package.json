@@ -23,6 +23,10 @@
 		"cdp": "./lib/index.js",
 		"create-directus-project": "./lib/index.js"
 	},
+	"scripts": {
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage"
+	},
 	"dependencies": {
 		"chalk": "catalog:",
 		"commander": "catalog:",

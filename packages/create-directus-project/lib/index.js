@@ -26,7 +26,7 @@ program
 	.action(create)
 	.parse(process.argv);
 
-async function create(directory) {
+export async function create(directory) {
 	checkRequirements();
 
 	const rootPath = resolve(directory);
