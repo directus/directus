@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import { InvalidPayloadError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
+import { isObject } from '@directus/utils';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import { Liquid } from 'liquidjs';
@@ -24,8 +25,7 @@ const liquidEngine = new Liquid({
 	extname: '.liquid',
 });
 
-export type EmailOptions = Omit<SendMailOptions, 'from'> & {
-	from?: string | { name: string; address: string };
+export type EmailOptions = SendMailOptions & {
 	template?: {
 		name: string;
 		data: Record<string, any>;
@@ -65,20 +65,16 @@ export class MailService {
 
 		const defaultTemplateData = await this.getDefaultTemplateData();
 
-		const from = (() => {
-			if (typeof emailOptions.from === 'object' && emailOptions.from !== null) {
-				if (!emailOptions.from.name || !emailOptions.from.address) {
-					throw new InvalidPayloadError({ reason: 'Email from object must have both name and address properties' });
-				}
+		if (isObject(emailOptions.from) && (!emailOptions.from.name || !emailOptions.from.address)) {
+			throw new InvalidPayloadError({ reason: 'A name and address property are required in the "from" object' });
+		}
 
-				return emailOptions.from;
-			}
-
-			return {
-				name: defaultTemplateData.projectName,
-				address: emailOptions.from || (env['EMAIL_FROM'] as string),
-			};
-		})();
+		const from: SendMailOptions['from'] = isObject(emailOptions.from)
+			? emailOptions.from
+			: {
+					name: defaultTemplateData.projectName,
+					address: (emailOptions.from as string) || (env['EMAIL_FROM'] as string),
+			  };
 
 		if (template) {
 			let templateData = template.data;
