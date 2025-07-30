@@ -17,14 +17,15 @@ import checkRequirements from './check-requirements.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const pkg = JSON.parse(await fse.readFile(join(__dirname, '../package.json')));
 
-const program = new Command(pkg.name);
-
-program
+const program = new Command(pkg.name)
 	.version(pkg.version)
 	.arguments('<directory>')
 	.description('Create a new Directus project')
-	.action(create)
-	.parse(process.argv);
+	.action(create);
+
+if (process.env.NODE_ENV !== 'test') {
+	program.parse(process.argv);
+}
 
 export async function create(directory) {
 	checkRequirements();
