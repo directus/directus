@@ -1,4 +1,4 @@
-import { InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import {
@@ -62,12 +62,12 @@ export class DirectusMCP {
 			return;
 		}
 
-		this.server.setNotificationHandler(InitializedNotificationSchema, async () => {
+		this.server.setNotificationHandler(InitializedNotificationSchema, () => {
 			res.status(202).send();
 		});
 
 		// listing tools
-		this.server.setRequestHandler(ListToolsRequestSchema, async () => {
+		this.server.setRequestHandler(ListToolsRequestSchema, () => {
 			const tools = [];
 
 			for (const tool of ALL_TOOLS) {
@@ -88,15 +88,15 @@ export class DirectusMCP {
 		this.server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest) => {
 			const tool = ALL_TOOLS.find((tool) => tool.name === request.params.name);
 
-			if (!tool) {
-				throw new Error('Invalid Tool');
-			}
-
-			if (req.accountability?.admin !== true && tool.admin === true) {
-				throw new Error('Admin Tool');
-			}
-
 			try {
+				if (!tool) {
+					throw new InvalidPayloadError({ reason: `${tool} doesn't exist in the toolset` });
+				}
+
+				if (req.accountability?.admin !== true && tool.admin === true) {
+					throw new ForbiddenError();
+				}
+
 				const args = tool.validateSchema?.safeParse(request.params.arguments) ?? {
 					data: request.params.arguments,
 				};
