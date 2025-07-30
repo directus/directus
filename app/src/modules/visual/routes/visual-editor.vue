@@ -103,7 +103,7 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 		</live-preview>
 
 		<notification-dialogs />
-		<notifications-group />
+		<notifications-group no-sidebar />
 	</div>
 </template>
 
@@ -124,15 +124,5 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 
 .spacer {
 	flex: 1;
-}
-
-.notifications-group {
-	inset-block: auto 12px;
-	inset-inline: auto 12px;
-
-	@media (min-width: 960px) {
-		inset-block: auto 12px;
-		inset-inline: auto 12px;
-	}
 }
 </style>
