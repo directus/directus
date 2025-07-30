@@ -16,6 +16,7 @@ catalog:
   axios: 1.11.0
   chalk: 5.4.1
   commander: 14.0.0
+  dotenv: 17.2.1
   execa: 9.6.0
   fs-extra: 11.3.0
   inquirer: 12.9.0

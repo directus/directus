@@ -30,6 +30,9 @@ catalogs:
     commander:
       specifier: 14.0.0
       version: 14.0.0
+    dotenv:
+      specifier: 17.2.1
+      version: 17.2.1
     execa:
       specifier: 9.6.0
       version: 9.6.0
@@ -1197,8 +1200,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       dotenv:
-        specifier: 16.4.7
-        version: 16.4.7
+        specifier: 'catalog:'
+        version: 17.2.1
       lodash-es:
         specifier: 'catalog:'
         version: 4.17.21
@@ -7785,6 +7788,10 @@ packages:
 
   dotenv@16.4.7:
     resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
+    engines: {node: '>=12'}
+
+  dotenv@17.2.1:
+    resolution: {integrity: sha512-kQhDYKZecqnM0fCnzI5eIv5L4cAe/iRI+HqMbO/hbRdTAeXDG+M9FjipUxNfbARuEg4iHIbhnhs78BCHNbSxEQ==}
     engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
@@ -19683,6 +19690,8 @@ snapshots:
       tslib: 2.8.1
 
   dotenv@16.4.7: {}
+
+  dotenv@17.2.1: {}
 
   dunder-proto@1.0.1:
     dependencies:
