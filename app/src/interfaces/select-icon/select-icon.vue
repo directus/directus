@@ -117,7 +117,7 @@ function useIconsPerRow(
 	menuActive: Ref<boolean>,
 	config: IconsPerRowConfig = {},
 ) {
-	const { iconSize = 24, gap = 8, contentPadding = 16, rowPadding = 8, defaultIconsPerRow = 7 } = config;
+	const { iconSize = 24, gap = 8, contentPadding = 16, rowPadding = 8, defaultIconsPerRow = 1 } = config;
 
 	const iconsPerRow = ref(defaultIconsPerRow);
 	let resizeObserver: ResizeObserver | null = null;
@@ -295,7 +295,7 @@ function useIconsPerRow(
 .icon-row {
 	display: grid;
 	grid-gap: var(--gap, 8px);
-	grid-template-columns: repeat(var(--icons-per-row, 7), var(--icon-size, 24px));
+	grid-template-columns: repeat(var(--icons-per-row, 1), var(--icon-size, 24px));
 	justify-content: start;
 	color: var(--theme--form--field--input--foreground-subdued);
 	padding: 4px;
