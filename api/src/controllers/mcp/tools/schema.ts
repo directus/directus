@@ -3,7 +3,6 @@ import { getRelationType, toArray } from '@directus/utils';
 import { z } from 'zod';
 import { ItemsService } from '../../../services/items.js';
 import { getSnapshot } from '../../../utils/get-snapshot.js';
-import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { PrimaryKeySchema, QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
 
@@ -124,7 +123,7 @@ export const schema = defineTool<z.infer<typeof ValidateSchema>>({
 	description: '',
 	inputSchema: InputSchema,
 	validateSchema: ValidateSchema,
-	async handler({ args, schema, accountability }) {
+	async handler({ args, schema, accountability, sanitizedQuery }) {
 		if (args.action !== 'overview') {
 			let collection = 'directus_collections';
 
@@ -132,19 +131,6 @@ export const schema = defineTool<z.infer<typeof ValidateSchema>>({
 				collection = 'directus_fields';
 			} else if (args.type === 'relation') {
 				collection = 'directus_relations';
-			}
-
-			let sanitizedQuery = {};
-
-			if ('query' in args && args.query) {
-				sanitizedQuery = await sanitizeQuery(
-					{
-						fields: args.query['fields'] || '*',
-						...args.query,
-					},
-					schema,
-					accountability || null,
-				);
 			}
 
 			const service = new ItemsService(collection, {

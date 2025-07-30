@@ -3,7 +3,6 @@ import { toArray } from '@directus/utils';
 import { z } from 'zod';
 import { AssetsService } from '../../../services/assets.js';
 import { ItemsService } from '../../../services/items.js';
-import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { PrimaryKeySchema, QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
 
@@ -93,22 +92,9 @@ export const files = defineTool<z.infer<typeof ValidateSchema>>({
 	description: '',
 	inputSchema: InputSchema,
 	validateSchema: ValidateSchema,
-	async handler({ args, schema, accountability }) {
+	async handler({ args, schema, accountability, sanitizedQuery }) {
 		if (args.type === 'folder' || args.type === 'file') {
 			const collection = args.type === 'folder' ? 'directus_folders' : 'directus_files';
-
-			let sanitizedQuery = {};
-
-			if ('query' in args && args.query) {
-				sanitizedQuery = await sanitizeQuery(
-					{
-						fields: args.query['fields'] || '*',
-						...args.query,
-					},
-					schema,
-					accountability || null,
-				);
-			}
 
 			const service = new ItemsService(collection, {
 				schema,

@@ -1,4 +1,5 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
+import type { Query } from 'express-serve-static-core';
 import type { ZodType } from 'zod';
 
 export type ToolResultBase = {
@@ -21,6 +22,7 @@ export type ToolResult = TextToolResult | ImageToolResult;
 export type ToolHandler<T> = {
 	(options: {
 		args: T;
+		sanitizedQuery: Query;
 		schema: SchemaOverview;
 		accountability: Accountability | undefined;
 	}): Promise<ToolResult | undefined>;

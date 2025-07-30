@@ -2,7 +2,6 @@ import type { FlowRaw, OperationRaw } from '@directus/types';
 import { z } from 'zod';
 import { FlowsService } from '../../../services/flows.js';
 import { OperationsService } from '../../../services/operations.js';
-import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
 
@@ -71,24 +70,12 @@ export const flows = defineTool<z.infer<typeof FlowValidateSchema>>({
 	annotations: {
 		title: 'Perform CRUD operations on Directus Flows',
 	},
-	async handler({ args, schema, accountability }) {
+	async handler({ args, schema, accountability, sanitizedQuery }) {
 		if (accountability?.admin !== true) {
 			throw new Error('Bad AI!');
 		}
 
 		let result = {};
-		let sanitizedQuery = {};
-
-		if ('query' in args && args.query) {
-			sanitizedQuery = await sanitizeQuery(
-				{
-					fields: args.query['fields'] || '*',
-					...args.query,
-				},
-				schema,
-				accountability ?? null,
-			);
-		}
 
 		const flowsService = new FlowsService({
 			schema,
@@ -138,24 +125,12 @@ export const operations = defineTool<z.infer<typeof OperationValidationSchema>>(
 	annotations: {
 		title: 'Perform CRUD operations on Directus Flow Operations',
 	},
-	async handler({ args, schema, accountability }) {
+	async handler({ args, schema, accountability, sanitizedQuery }) {
 		if (accountability?.admin !== true) {
 			throw new Error('Bad AI!');
 		}
 
 		let result = {};
-		let sanitizedQuery = {};
-
-		if ('query' in args && args.query) {
-			sanitizedQuery = await sanitizeQuery(
-				{
-					fields: args.query['fields'] || '*',
-					...args.query,
-				},
-				schema,
-				accountability ?? null,
-			);
-		}
 
 		const operationService = new OperationsService({
 			schema,

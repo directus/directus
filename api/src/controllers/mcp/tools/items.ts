@@ -4,7 +4,6 @@ import type { PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
 import { ItemsService } from '../../../services/items.js';
-import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { ItemSchema, PartialItemInput, PrimaryKeySchema, QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
 
@@ -50,7 +49,7 @@ export const items = defineTool<z.infer<typeof ValidateSchema>>({
 	annotations: {
 		title: 'Perform CRUD operations on Directus Items',
 	},
-	async handler({ args, schema, accountability }) {
+	async handler({ args, schema, accountability, sanitizedQuery }) {
 		if (isSystemCollection(args.collection)) {
 			throw new InvalidPayloadError({ reason: 'Cannot provide a core collection' });
 		}
@@ -60,19 +59,6 @@ export const items = defineTool<z.infer<typeof ValidateSchema>>({
 		}
 
 		const isSingleton = schema.collections[args.collection]?.singleton ?? false;
-
-		let sanitizedQuery = {};
-
-		if ('query' in args && args.query) {
-			sanitizedQuery = await sanitizeQuery(
-				{
-					fields: args.query['fields'] || '*',
-					...args.query,
-				},
-				schema,
-				accountability || null,
-			);
-		}
 
 		const itemsService = new ItemsService(args.collection, {
 			schema,

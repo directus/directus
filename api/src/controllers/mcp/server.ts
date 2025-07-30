@@ -1,4 +1,5 @@
 import { ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import type { Query } from '@directus/types';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import {
@@ -13,6 +14,7 @@ import {
 import type { Request, Response } from 'express';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { fromZodError } from 'zod-validation-error';
+import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import type { ToolResult } from './tool.js';
 import { ALL_TOOLS } from './tools/index.js';
 
@@ -105,8 +107,22 @@ export class DirectusMCP {
 					throw new InvalidPayloadError({ reason: fromZodError(args.error).message });
 				}
 
+				let sanitizedQuery = {};
+
+				if ('query' in args && args.query) {
+					sanitizedQuery = await sanitizeQuery(
+						{
+							fields: (args.query as Query)['fields'] || '*',
+							...args.query,
+						},
+						req.schema,
+						req.accountability || null,
+					);
+				}
+
 				const result = await tool.handler({
 					args: args.data,
+					sanitizedQuery,
 					schema: req.schema,
 					accountability: req.accountability,
 				});
