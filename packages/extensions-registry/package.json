@@ -29,8 +29,8 @@
 	"dependencies": {
 		"@directus/errors": "workspace:*",
 		"@directus/extensions": "workspace:*",
-		"ky": "1.7.5",
-		"zod": "3.24.2"
+		"ky": "catalog:",
+		"zod": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
