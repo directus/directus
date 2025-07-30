@@ -732,6 +732,7 @@ errors:
   COLLECTION_NOT_FOUND: "Коллекция не существует"
   CONTAINS_NULL_VALUES: Поле содержит значения NULL
   CONTENT_TOO_LARGE: Отправленный файл слишком большой
+  FAILED_VALIDATION: Проверка не удалась
   FIELD_NOT_FOUND: Поле не найдено
   FORBIDDEN: Запрещено
   GRAPHQL_VALIDATION: Проверка GraphQL
@@ -1716,7 +1717,6 @@ translation_placeholder: Введите перевод...
 value: Значение
 view_project: Просмотреть проект
 report_error: Сообщить об Ошибке
-start: Начало
 table: Таблица
 list: Список
 search_filter: Поиск и фильтрация
@@ -2299,6 +2299,7 @@ show_labels: Показывать подписи
 show_legend: Показать легенду
 right: Справа
 left: Слева
+start: Начало
 donut: Кольцевая диаграмма
 continuous: Непрерывный
 gap: Разрыв

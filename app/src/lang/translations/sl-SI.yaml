@@ -1049,7 +1049,6 @@ translation: Prevod
 value: Vrednost
 view_project: Poglej projekt
 report_error: Sporoči napako
-start: Začetek
 table: Tabela
 interfaces:
   filter:
@@ -1440,6 +1439,7 @@ layouts:
   kanban:
     crop: Obrezovanje
 both: Oboje
+start: Začetek
 panels:
   label:
     name: Oznaka
