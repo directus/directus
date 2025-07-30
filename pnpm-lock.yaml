@@ -45,6 +45,9 @@ catalogs:
     inquirer:
       specifier: 12.9.0
       version: 12.9.0
+    ky:
+      specifier: 1.8.2
+      version: 1.8.2
     lodash-es:
       specifier: 4.17.21
       version: 4.17.21
@@ -75,6 +78,9 @@ catalogs:
     vue:
       specifier: 3.5.18
       version: 3.5.18
+    zod:
+      specifier: 4.0.14
+      version: 4.0.14
 
 importers:
 
@@ -1338,11 +1344,11 @@ importers:
         specifier: workspace:*
         version: link:../extensions
       ky:
-        specifier: 1.7.5
-        version: 1.7.5
+        specifier: 'catalog:'
+        version: 1.8.2
       zod:
-        specifier: 3.24.2
-        version: 3.24.2
+        specifier: 'catalog:'
+        version: 4.0.14
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -9351,8 +9357,8 @@ packages:
   kolorist@1.8.0:
     resolution: {integrity: sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==}
 
-  ky@1.7.5:
-    resolution: {integrity: sha512-HzhziW6sc5m0pwi5M196+7cEBtbt0lCYi67wNsiwMUmz833wloE0gbzJPWKs1gliFKQb34huItDQX97LyOdPdA==}
+  ky@1.8.2:
+    resolution: {integrity: sha512-XybQJ3d4Ea1kI27DoelE5ZCT3bSJlibYTtQuMsyzKox3TMyayw1asgQdl54WroAm+fIA3ZCr8zXW2RpR7qWVpA==}
     engines: {node: '>=18'}
 
   launch-editor@2.9.1:
@@ -13483,6 +13489,9 @@ packages:
 
   zod@3.24.2:
     resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
+
+  zod@4.0.14:
+    resolution: {integrity: sha512-nGFJTnJN6cM2v9kXL+SOBq3AtjQby3Mv5ySGFof5UGRHrRioSJ5iG680cYNjE/yWk671nROcpPj4hAS8nyLhSw==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -21567,7 +21576,7 @@ snapshots:
 
   kolorist@1.8.0: {}
 
-  ky@1.7.5: {}
+  ky@1.8.2: {}
 
   launch-editor@2.9.1:
     dependencies:
@@ -26550,5 +26559,7 @@ snapshots:
       zod: 3.24.2
 
   zod@3.24.2: {}
+
+  zod@4.0.14: {}
 
   zwitch@2.0.4: {}
