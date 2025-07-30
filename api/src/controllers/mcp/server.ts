@@ -65,7 +65,7 @@ export class DirectusMCP {
 				tools.push({
 					name: tool.name,
 					description: tool.description,
-					inputSchema: tool.inputSchema ? zodToJsonSchema(tool.inputSchema) : undefined,
+					inputSchema: zodToJsonSchema(tool.inputSchema),
 					annotations: tool.annotations,
 				});
 			}
