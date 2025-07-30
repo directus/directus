@@ -9,4 +9,4 @@ flag_management:
         target: 80%
 
 comment:
-  layout: 'header, diff, components'
+  layout: 'header, diff, flags'
