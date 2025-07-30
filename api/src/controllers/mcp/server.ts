@@ -3,12 +3,13 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import {
 	CallToolRequestSchema,
+	JSONRPCMessageSchema,
 	ListToolsRequestSchema,
 	type CallToolRequest,
 	type JSONRPCMessage,
 	type MessageExtraInfo,
 } from '@modelcontextprotocol/sdk/types.js';
-import type { NextFunction, Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { fromZodError } from 'zod-validation-error';
 import type { ToolResult } from './tool.js';
@@ -16,13 +17,11 @@ import { ALL_TOOLS } from './tools/index.js';
 
 class DirectusTransport implements Transport {
 	res: Response;
-	next: NextFunction;
 	onerror?: (error: Error) => void;
 	onmessage?: (message: JSONRPCMessage, extra?: MessageExtraInfo) => void;
 	onclose?: () => void;
-	constructor(res: Response, next: NextFunction) {
+	constructor(res: Response) {
 		this.res = res;
-		this.next = next;
 	}
 
 	async start(): Promise<void> {
@@ -34,7 +33,6 @@ class DirectusTransport implements Transport {
 	}
 
 	async close(): Promise<void> {
-		this.next();
 		return;
 	}
 }
@@ -45,8 +43,8 @@ export class DirectusMCP {
 	constructor() {
 		this.server = new Server(
 			{
-				name: 'directus',
-				version: '1.0.0',
+				name: 'directus-mcp',
+				version: '0.1.0',
 			},
 			{
 				capabilities: {
@@ -54,13 +52,9 @@ export class DirectusMCP {
 				},
 			},
 		);
-
-		this.server.oninitialized = () => {
-			this.server.transport?.close();
-		};
 	}
 
-	handleRequest(req: Request, res: Response, next: NextFunction) {
+	handleRequest(req: Request, res: Response) {
 		// listing tools
 		this.server.setRequestHandler(ListToolsRequestSchema, async () => {
 			const tools = [];
@@ -71,7 +65,7 @@ export class DirectusMCP {
 				tools.push({
 					name: tool.name,
 					description: tool.description,
-					inputSchema: zodToJsonSchema(tool.inputSchema),
+					inputSchema: tool.inputSchema ? zodToJsonSchema(tool.inputSchema) : undefined,
 					annotations: tool.annotations,
 				});
 			}
@@ -112,13 +106,13 @@ export class DirectusMCP {
 			}
 		});
 
-		const transport = new DirectusTransport(res, next);
+		const transport = new DirectusTransport(res);
 
 		this.server.connect(transport);
 
 		try {
-			// const parsedMessage = JSONRPCMessageSchema.parse(req.body);
-			transport.onmessage?.(req.body);
+			const parsedMessage = JSONRPCMessageSchema.parse(req.body);
+			transport.onmessage?.(parsedMessage);
 		} catch (error) {
 			transport.onerror?.(error as Error);
 
