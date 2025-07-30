@@ -1,7 +1,8 @@
 import type { Collection, Field, PrimaryKey, Relation } from '@directus/types';
-import { getRelationType, toArray } from '@directus/utils';
+import { toArray } from '@directus/utils';
 import { z } from 'zod';
 import { ItemsService } from '../../../services/items.js';
+import type { SnapshotRelation } from '../../../types/snapshot.js';
 import { getSnapshot } from '../../../utils/get-snapshot.js';
 import { PrimaryKeySchema, QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
@@ -97,11 +98,20 @@ const RelationValidateSchema = z.union([
 	}),
 ]);
 
-const ValidateSchema = z.union([CollectionValidateSchema, FieldValidateSchema, RelationValidateSchema]);
+const OverviewValidateSchema = z.object({
+	type: z.literal('overview'),
+});
+
+const ValidateSchema = z.union([
+	CollectionValidateSchema,
+	FieldValidateSchema,
+	RelationValidateSchema,
+	OverviewValidateSchema,
+]);
 
 const InputSchema = z.object({
-	type: z.enum(['collection', 'field', 'relation']),
-	action: z.enum(['read', 'create', 'update', 'delete', 'overview']).describe('The operation to perform'),
+	type: z.enum(['collection', 'field', 'relation', 'overview']),
+	action: z.enum(['read', 'create', 'update', 'delete']).optional().describe('The operation to perform'),
 	query: QuerySchema.optional().describe(''),
 	keys: z.array(PrimaryKeySchema).optional().describe(''),
 	data: z
@@ -125,7 +135,7 @@ export const schema = defineTool<z.infer<typeof ValidateSchema>>({
 	inputSchema: InputSchema,
 	validateSchema: ValidateSchema,
 	async handler({ args, schema, accountability, sanitizedQuery }) {
-		if (args.action !== 'overview') {
+		if (args.type !== 'overview') {
 			let collection = 'directus_collections';
 
 			if (args.type === 'field') {
@@ -192,25 +202,69 @@ export const schema = defineTool<z.infer<typeof ValidateSchema>>({
 		} else {
 			const snapshot = await getSnapshot();
 
+			const overview = {};
+
+			const relations = {};
+
+			snapshot.relations.forEach((relation) => {
+				relations[relation.collection] = relation;
+			});
+
+			snapshot.fields.forEach((field) => {
+				// Skip UI-only fields
+				if (field.type === 'alias' && field.meta?.special?.includes('no-data')) return;
+
+				if (!overview[field.collection]) {
+					overview[field.collection] = {};
+				}
+
+				if (!overview[field.collection][field.field]) {
+					overview[field.collection][field.field] = {};
+				}
+
+				const fieldOverview = {
+					name: field.field,
+					type: field.type,
+					primary_key: field.schema?.is_primary_key ?? false,
+					required: field.meta.required,
+					readonly: field.meta.readonly,
+					relation: false,
+					interface: {
+						type: field.meta.interface,
+					},
+				};
+
+				const relation = relations[field.collection] as SnapshotRelation | undefined;
+
+				if (field.meta?.special && relation) {
+					let type;
+
+					if (field.meta.special.includes('m2o') || field.meta.special.includes('file')) {
+						type = 'm2o';
+					} else if (field.meta.special.includes('o2m')) {
+						type = 'o2m';
+					} else if (field.meta.special.includes('m2m') || field.meta.special.includes('files')) {
+						type = 'm2m';
+					} else if (field.meta.special.includes('m2a')) {
+						type = 'm2a';
+					}
+
+					if (type) {
+						fieldOverview.relation = {
+							type,
+						};
+
+						fieldOverview.relation.related_collections =
+							type === 'm2a' ? relation.meta.one_allowed_collections : relation.related_collection;
+					}
+				}
+
+				overview[field.collection][field.field] = fieldOverview;
+			});
+
 			return {
 				type: 'text',
-				data: {
-					collections: snapshot.collections.map(({ collection }) => collection),
-					fields: snapshot.fields.map(({ field, collection, type, meta }) => ({
-						name: field,
-						collection,
-						type,
-						meta: {
-							required: meta.required,
-							readonly: meta.readonly,
-						},
-					})),
-					relations: snapshot.relations.map((relation) => ({
-						field: relation.field,
-						collection: relation.collection,
-						type: getRelationType({ relation, collection: relation.collection, field: relation.field }),
-					})),
-				},
+				data: overview,
 			};
 		}
 	},
