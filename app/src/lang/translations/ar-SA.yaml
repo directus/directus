@@ -88,7 +88,7 @@ published_relative: نُشر {relativeTime}
 compatible_with_your_project: متوافق مع مشروعك
 compatible_with_your_project_copy: أشار المؤلف إلى أن هذه الإضافة متوافقة مع الإصدار {hostVersion}، الذي يطابق إصدار مشروعك ({currentVersion})
 last_updated_relative: آخر تحديث {relativeTime}
-n_files: "{n} ملف"
+n_files: '{n} ملف'
 verified: موثق
 homepage: الصفحة الرئيسية
 repository: مستودع
@@ -98,7 +98,7 @@ report_an_issue: الإبلاغ عن مشكلة
 website: الموقع
 github: GitHub
 beta: الإصدار التجريبي
-n_downloads: "{n} تحميلاََ"
+n_downloads: '{n} تحميلاََ'
 downloads: التنزيلات
 compatibility_not_guaranteed: التوافق غير مضمون
 compatibility_not_guaranteed_copy: أشار المؤلف إلى أن توافق هذا الملحق هو {hostVersion}، الذي يطابق إصدار مشروعك ({currentVersion})
@@ -118,7 +118,7 @@ indeterminate: غير محدد
 edit_collection: تعديل المجموعة
 exclusive: حصري
 children: اطفال
-db_only_click_to_configure: "قاعدة البيانات فقط: اضغط لتعديل الاعدادات"
+db_only_click_to_configure: 'قاعدة البيانات فقط: اضغط لتعديل الاعدادات'
 show_active_items: إظهار العناصر النشطة
 show_archived_items: أظهر العناصر المؤرشفة
 show_all_items: عرض جميع العناصر
@@ -202,7 +202,7 @@ archive: أرشفة
 archive_confirm: هل أنت متأكد من أنك تريد أرشفة هذا العنصر؟
 archive_confirm_count: >-
   لا توجد عناصر محددة | هل أنت متأكد من أنك تريد أرشفة هذا العنصر؟ | هل أنت متأكد من أنك تريد أرشفة هذه العناصر {count}؟
-reset_system_permissions_to: "إعادة تعيين صلاحيات النظام إلى:"
+reset_system_permissions_to: 'إعادة تعيين صلاحيات النظام إلى:'
 reset_system_permissions_copy: سيؤدي هذا الإجراء إلى الكتابة فوق أي صلاحيات مخصصة ربما تكون قد طبقت على مجموعات النظام. هل أنت متأكد؟
 the_following_are_minimum_permissions: يتم تطبيق الحد الأدنى من الأذونات التالية تلقائياً عند تمكين "الوصول إلى التطبيق". يمكنك منح أذونات إضافية عند الحاجة، ولكن لا يمكنك تقليل الأذونات تحت هذا المستوى.
 app_access_minimum: الحد الأدنى للوصول إلى التطبيق
@@ -210,7 +210,7 @@ recommended_defaults: الإعدادات الافتراضية الافضل
 unarchive: إزالة من الأرشيف
 unarchive_confirm: هل أنت متأكد من أنك تريد إلغاء أرشفة هذا العنصر؟
 nested_files_folders_will_be_moved: سيتم نقل الملفات والمجلدات الداخلية إلى درجة إلى الأعلى.
-validation_errors_notice: "الحقول التالية تحمل قيم غير صالحة:"
+validation_errors_notice: 'الحقول التالية تحمل قيم غير صالحة:'
 validationError:
   eq: القيمة يجب أن تكون {valid}
   neq: لا يمكن أن تكون القيمة {invalid}
@@ -260,17 +260,18 @@ item_permissions: أذونات العنصر
 field_permissions: أذونات العنصر
 field_validation: مجال المصادقة
 field_presets: الإعداد المسبق للحقل
-permissions_for_role: "عناصر الدور {role} يمكن أن {action}."
-fields_for_role: "عناصر الدور {role} يمكن أن {action}."
-fields_for_policy: "."
-validation_for_role: "الحقل {action} قواعد الدور {role} يجب أن يطيع."
-presets_for_role: "قيمة الحقل الافتراضية لدور {role}."
+permissions_for_role: 'عناصر الدور {role} يمكن أن {action}.'
+permissions_for_policy: ''
+fields_for_role: 'عناصر الدور {role} يمكن أن {action}.'
+fields_for_policy: '.'
+validation_for_role: 'الحقل {action} قواعد الدور {role} يجب أن يطيع.'
+presets_for_role: 'قيمة الحقل الافتراضية لدور {role}.'
 presets_field_warning: 'يجب تكوين قوالب الإعدادات للعلاقات للحقل "{field}" بالشكل "التفصيلي".'
 presentation_and_aliases: العرض و الأسماء المستعارة
 revision_post_create: إليك ما بدا عليه هذا العنصر بعد التحديث.
 revision_post_update: إليك ما بدا عليه هذا العنصر بعد التحديث.
 changes_made: تجد أدناه التغييرات المحددة التي أدخلت على هذا التنقيح.
-no_relational_data: "ملاحظة: العلاقة بين الجداول غير مدرجة هنا."
+no_relational_data: 'ملاحظة: العلاقة بين الجداول غير مدرجة هنا.'
 junction_field_location: موقع الحقول
 top: أعلى
 bottom: الأسفل
@@ -309,8 +310,8 @@ iso: ISO
 focal_length: البعد البؤري
 schema_setup_key: اسم عمود قاعدة بيانات هذا الحقل ومفتاح API
 create_field: إنشاء حقل
-creating_new_field: "حقل جديد ({collection})"
-field_in_collection: "{field} ({collection})"
+creating_new_field: 'حقل جديد ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: إعادة ضبط الإعدادات المفضّلة للتطبيقات
 hidden_field: حقل مخفي
 hidden_on_detail: مخفي في التفاصيل
@@ -366,12 +367,12 @@ click_to_manage_translated_fields: >-
   لا يوجد حقول لترجمتها بعد. أضغط هنا لإنشائها | لا يوجد حقول مترجمة. أضغط هنا لإدارتها. | هناك {count} حقول مترجمة. أضغط هنا لإدارتها.
 fields_group: مجموعة الحقول
 no_collections_found: لم يتم العثور على أية مجموعة.
-new_data_alert: "سيتم إنشاء ما يلي ضمن نموذج البيانات الخاص بك:"
+new_data_alert: 'سيتم إنشاء ما يلي ضمن نموذج البيانات الخاص بك:'
 search_collection: مجموعة البحث...
 search_role: ابحث في الرتب...
 search_field: حقل البحث...
-new_field: "حقل جديد"
-new_collection: "مجموعة جديدة"
+new_field: 'حقل جديد'
+new_collection: 'مجموعة جديدة'
 add_m2o_to_collection: 'إضافة M2O إلى "{collection}"'
 add_o2m_to_collection: 'إضافة O2M إلى "{collection}"'
 add_m2m_to_collection: 'إضافة M2M إلى "{collection}"'
@@ -445,15 +446,15 @@ settings_update_success: تم تحديث الإعدادات
 title: العنوان
 revision_delta_created: تم الإنشاء
 revision_delta_created_externally: تم إنشاؤها خارجيا
-revision_delta_updated: "تم تحديث حقل واحد | تحديث حقول {count}"
+revision_delta_updated: 'تم تحديث حقل واحد | تحديث حقول {count}'
 revision_delta_deleted: حذف
-revision_delta_version_saved: "تم حفظ الإصدار (تم تحديث حقل واحد) | تم حفظ الإصدار (تم تحديث {count} حقول)"
+revision_delta_version_saved: 'تم حفظ الإصدار (تم تحديث حقل واحد) | تم حفظ الإصدار (تم تحديث {count} حقول)'
 revision_delta_reverted: تمت الإستعادة
 revision_delta_update_message: تم تحديث هذا الحقل ولكن يتم إخفاء قيمته لأسباب أمنية.
 revision_delta_other: تنقيح
-revision_delta_by: "{date} بواسطة {user}"
-presentation_text_values_cannot_be_reimported: "يستخدم نص العرض التقديمي، لا يمكن إعادة استيراد القيم."
-download_page_as_csv: "تحميل الصفحة كـ CSV"
+revision_delta_by: '{date} بواسطة {user}'
+presentation_text_values_cannot_be_reimported: 'يستخدم نص العرض التقديمي، لا يمكن إعادة استيراد القيم.'
+download_page_as_csv: 'تحميل الصفحة كـ CSV'
 download_page_as_csv_unsupported: هذا التخطيط لا يدعم تنزيل الصفحة الحالية.
 private_user: خصخصة المستخدم
 creation_preview: معاينة الإنشاء
@@ -507,12 +508,12 @@ functions:
   second: ثانية
   count: عدد
 date-fns_date: PPP
-date-fns_time: "h:mm:ss a"
-date-fns_time_no_seconds: "h:mm a"
-date-fns_time_24hour: "HH:mm:ss"
-date-fns_time_no_seconds_24hour: "HH:mm"
-date-fns_date_short: "MMM d, u"
-date-fns_time_short: "h:mma"
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
 date-fns_date_short_no_year: MMM d
 minutes: دقائق
 hours: ساعات
@@ -576,14 +577,14 @@ open_file_in_tab: فتح الملف في علامة تبويب جديدة
 start_export: بدء التصدير
 not_available_for_local_downloads: غير متوفر للتنزيلات المحلية
 exporting_all_items_in_collection: تصدير جميع العناصر {total} ضمن {collection}.
-exporting_limited_items_in_collection: "سيتم تصدير {count} من أصل {total} عناصر داخل {collection}."
+exporting_limited_items_in_collection: 'سيتم تصدير {count} من أصل {total} عناصر داخل {collection}.'
 exporting_no_items_to_export: لا توجد عناصر للتصدير. تعديل تكوين التصدير و/أو إضافة عناصر إلى المجموعة.
 exporting_download_hint: بمجرد إنشاء ملف {format} ، سيتم تنزيله إلى جهازك.
 exporting_library_hint: بمجرد إنشاء ملف {format} ، سيتم حفظه في مكتبة الملفات.
 exporting_library_hint_forced: يجب معالجة هذا التصدير في دفعات. بمجرد الانتهاء من ذلك، سيتم حفظ ملف {format} في مكتبة الملفات.
 collection_key: مفتاح المجموعة
 name: الاسم
-primary_key_field: "‮حقل المفتاح الرئيسي"
+primary_key_field: '‮حقل المفتاح الرئيسي'
 type: النوع
 creating_new_collection: إنشاء مجموعة جديدة
 created_by: تم الإنشاء بواسطة
@@ -626,13 +627,13 @@ reset_interface: إعادة تعيين الواجهة
 display_not_found: 'عرض "{display}" غير موجود.'
 reset_display: إعادة تعيين العرض
 list-m2a: الباني (M2A)
-item_count: "لا توجد عناصر | عنصر واحد | {count} العناصر"
+item_count: 'لا توجد عناصر | عنصر واحد | {count} العناصر'
 no_items_copy: لا توجد عناصر في هذه المجموعة بعد.
-file_count: "لايوجد دور أو صلاحية | دور أو صلاحية وحيدة | {count} أدوار أو صلاحيات"
+file_count: 'لايوجد دور أو صلاحية | دور أو صلاحية وحيدة | {count} أدوار أو صلاحيات'
 no_files_copy: لا توجد ملفات هنا.
-user_count: "لا توجد عناصر | عنصر واحد | {count} العناصر"
+user_count: 'لا توجد عناصر | عنصر واحد | {count} العناصر'
 no_users_copy: لا يوجد مستخدمون في هذه التجزئة.
-webhooks_count: "لاتوجد روابط ويب | رابط ويب | {count} روابط ويب"
+webhooks_count: 'لاتوجد روابط ويب | رابط ويب | {count} روابط ويب'
 webhooks_deprecation_notice: |
   تم إهمال خُطافات الويب (Webhooks) ولا يُنصح باستخدامها مرة أخرى.
 
@@ -735,7 +736,7 @@ errors:
   INVALID_USER: أخفقت مصادقة المستخدم
   ITEM_LIMIT_REACHED: تم الوصول إلى الحد الأقصى للعناصر
   ITEM_NOT_FOUND: لم يتم العثور على العنصر
-  LIMIT_EXCEEDED: "تم تجاوز الحد الأقصى"
+  LIMIT_EXCEEDED: 'تم تجاوز الحد الأقصى'
   METHOD_NOT_ALLOWED: الطريقة غير مسموح بها
   NOT_NULL_VIOLATION: لا يمكن أن تكون القيمة فارغة
   RANGE_NOT_SATISFIABLE: النطاق غير صالح
@@ -789,8 +790,8 @@ make_collection_hidden: جعل المجموعة مخفية
 make_folder_visible: جعل المجلد مرئي
 make_folder_hidden: جعل المجلد مخفي
 goto_collection_content: عرض المحتوى
-count_of_total_items: "{count} من {total} عنصر"
-start_end_of_count_items: "{start}-{end} من {count} عنصر"
+count_of_total_items: '{count} من {total} عنصر'
+start_end_of_count_items: '{start}-{end} من {count} عنصر'
 delete_collection_are_you_sure: >-
   هل أنت متيقِّن من أنك تريد حذف المجموعة"{collection}"؟ سيؤدي هذا إلى حذف المجموعة وجميع العناصر فيها. وهذا الإجراء دائم الأثر.
 delete_folder_are_you_sure: هل أنت متيقِّن من أنك تريد حذف المجلد"{folder}"؟ سيتم نقل المجلدات والمجموعات المتفرعة منه إلى أعلى مستوى.
@@ -806,7 +807,7 @@ system_collections: مجموعات النظام
 placeholder: مكان محجوز
 icon_left: أيقونة اليسار
 icon_right: أيقونة اليمين
-count_other_revisions: "{count} مراجعات أخرى"
+count_other_revisions: '{count} مراجعات أخرى'
 font: الخط
 sans_serif: Sans Serif
 serif: خط سيريف Serif
@@ -815,7 +816,7 @@ divider: الفاصل
 color: لون
 circle: دائرة
 empty_item: عنصر فارغ
-log_in_with: "تسجيل الدخول باستخدام {provider}"
+log_in_with: 'تسجيل الدخول باستخدام {provider}'
 conditional_styles: أنماط مشروطة
 advanced_settings: إعدادات متقدمة
 advanced_filter: تصفية متقدمة
@@ -864,8 +865,8 @@ items: العناصر
 upload_file: رفع ملف
 upload_file_indeterminate: رفع ملف...
 upload_file_success: رفع الملف
-upload_files_indeterminate: "تحميل الملفات {done}/{total}"
-upload_files_success: "عدد الصور التي تم تحميلها {count}"
+upload_files_indeterminate: 'تحميل الملفات {done}/{total}'
+upload_files_success: 'عدد الصور التي تم تحميلها {count}'
 upload_pending: التحميل معلق
 drag_file_here: السحب والإفلات الملف هنا
 click_to_browse: انقر للتصفح
@@ -883,9 +884,9 @@ create_item: أنشئ عنصر
 display_template: عرض القالب
 language_display_template: قالب عرض اللغة
 translations_display_template: قالب عرض الترجمات
-n_items_selected: "لم يتم تحديد عناصر | عنصر واحد محدد | {n} عناصر محددة"
+n_items_selected: 'لم يتم تحديد عناصر | عنصر واحد محدد | {n} عناصر محددة'
 per_page: لكل صفحة
-all_files: "‮كل الملفات"
+all_files: '‮كل الملفات'
 my_files: ملفاتي
 recent_files: احدث الملفات
 create_folder: أنشئ مجلد
@@ -967,8 +968,8 @@ operation_options: خيارات العملية
 operation_name: اسم العملية...
 operation_key: معرف للمراجعة...
 operation_key_unique_error: مفاتيح العملية يجب أن تكون فريدة في التدفق
-operation_handle_resolve: "الحل: أنقر للإضافة أو سحب لإعادة التوجيه"
-operation_handle_reject: "الرفض: أنقر للإضافة أو سحب لإعادة التوجيه"
+operation_handle_resolve: 'الحل: أنقر للإضافة أو سحب لإعادة التوجيه'
+operation_handle_reject: 'الرفض: أنقر للإضافة أو سحب لإعادة التوجيه'
 insights: بصائر
 dashboard: لوحة التحكم
 panel: لوحة
@@ -1090,12 +1091,12 @@ appearance_dark: داكن
 other: أخرى...
 adding_user: إضافة مستخدم
 unknown_user: مستخدم غير معروف
-creating_in: "إنشاء عنصر في {collection}"
-editing_in: "تعديل عنصر في {collection}"
-viewing_in: "عرض العنصر في {collection}"
-creating_unit: "إنشاء {unit}"
-editing_unit: "تعديل {unit}"
-editing_in_batch: "تعديل دفعة من  {count} عناصر"
+creating_in: 'إنشاء عنصر في {collection}'
+editing_in: 'تعديل عنصر في {collection}'
+viewing_in: 'عرض العنصر في {collection}'
+creating_unit: 'إنشاء {unit}'
+editing_unit: 'تعديل {unit}'
+editing_in_batch: 'تعديل دفعة من  {count} عناصر'
 no_options_available: لا توجد خيارات متاحة
 settings_data_model: نموذج البيانات
 settings_roles: أدوار المستخدم
@@ -1130,7 +1131,7 @@ discard_changes_copy: هل أنت متيقِّن من أنك تريد تجاهل
 show_x_axis: إظهار المحور X
 show_y_axis: إظهار المحور Y
 keep_editing: استمر في التحرير
-page_help_collections_overview: "**نظرة عامة للمجموعات** - قائمة بجميع المجموعات التي لديك حق الوصول إليها."
+page_help_collections_overview: '**نظرة عامة للمجموعات** - قائمة بجميع المجموعات التي لديك حق الوصول إليها.'
 page_help_collections_collection: >-
   **استعراض العناصر** — قائمة بجميع عناصر {collection} التي لديك حق الوصول إليها. تخصيص نموذج العرض، التصفية، والترتيب لتصميم العرض الخاص بك، وحتى حفظ الإشارات المرجعية لهذه الإعدادات المختلفة للوصول السريع.
 page_help_collections_item: >-
@@ -1145,7 +1146,7 @@ page_help_files_item: >-
   **تفاصيل الملف** - نموذج لإدارة بيانات التعريف للملفات، تحرير الملف الأصلي، وتحديث إعدادات الوصول.
 page_help_settings_project: "**الإعدادات** — خيارات التكوين العالمي لمشروعك."
 page_help_settings_appearance: "**المظهر** — مظهر مشروعك وخيارات السمات."
-page_help_settings_extensions: "**الإضافات** - الإضافات المثبتة في مشروعك."
+page_help_settings_extensions: '**الإضافات** - الإضافات المثبتة في مشروعك.'
 page_help_settings_datamodel_collections: >-
   **نموذج البيانات: المجموعات** - قوائم جميع المجموعات المتاحة. ويشمل ذلك مجموعات النظام المرئية والمخفية، فضلا عن جداول قواعد البيانات غير المدارة التي يمكن إضافتها.
 page_help_settings_datamodel_fields: >-
@@ -1155,19 +1156,19 @@ page_help_settings_presets_collection: >-
   **استعراض الإعدادات المسبقة** - عرض جميع الإعدادات المسبقة في المشروع، بما في ذلك: المستخدم، الدور، الإشارات المرجعية العالمية، فضلا عن نماذج عروض الافتراضية.
 page_help_settings_presets_item: >-
   **تفاصيل الإعداد المسبق** - نموذج لإدارة الإشارات المرجعية والضبط المسبق الافتراضي للمجموعات.
-page_help_settings_webhooks_collection: "**تصفح Webhooks** - عرض جميع webhooks داخل المشروع."
-page_help_settings_webhooks_item: "**تفاصيل Webhook ** - نموذج لإنشاء وإدارة webhook للمشروع."
-page_help_settings_flows_collection: "**تصفح التدفقات** - عرض جميع التدفقات داخل المشروع."
-page_help_settings_flows_item: "**تفاصيل التدفق** - مساحة عمل لإدارة عملية واحدة أو أكثر."
-page_help_settings_translations_collection: "**تصفح الترجمات المخصصة** - يدرج جميع الترجمات المخصصة داخل المشروع."
-page_help_settings_translations_item: "**تفاصيل الترجمات المخصصة** - نموذج لعرض وإدارة هذا العنصر."
-page_help_users_collection: "**دليل المستخدم** - يعرض جميع مستخدمي النظام داخل هذا المشروع."
+page_help_settings_webhooks_collection: '**تصفح Webhooks** - عرض جميع webhooks داخل المشروع.'
+page_help_settings_webhooks_item: '**تفاصيل Webhook ** - نموذج لإنشاء وإدارة webhook للمشروع.'
+page_help_settings_flows_collection: '**تصفح التدفقات** - عرض جميع التدفقات داخل المشروع.'
+page_help_settings_flows_item: '**تفاصيل التدفق** - مساحة عمل لإدارة عملية واحدة أو أكثر.'
+page_help_settings_translations_collection: '**تصفح الترجمات المخصصة** - يدرج جميع الترجمات المخصصة داخل المشروع.'
+page_help_settings_translations_item: '**تفاصيل الترجمات المخصصة** - نموذج لعرض وإدارة هذا العنصر.'
+page_help_users_collection: '**دليل المستخدم** - يعرض جميع مستخدمي النظام داخل هذا المشروع.'
 page_help_users_item: >-
   **تفاصيل المستخدم** - إدارة معلومات حسابك، أو عرض تفاصيل المستخدمين الآخرين.
-page_help_insights_overview: "**البصائر** - قائمة لوحات التحكم التي لديك حق الوصول إليها."
-page_help_insights_dashboard: "**لوحة البيانات** - مساحة العمل لإدارة لوحة واحدة أو أكثر"
-page_help_marketplace_account: "**الحساب** - ناشر أو مشرف امتداد منشور."
-page_help_marketplace_registry: "**السجل** - الإضافات المتاحة في سوق Directus."
+page_help_insights_overview: '**البصائر** - قائمة لوحات التحكم التي لديك حق الوصول إليها.'
+page_help_insights_dashboard: '**لوحة البيانات** - مساحة العمل لإدارة لوحة واحدة أو أكثر'
+page_help_marketplace_account: '**الحساب** - ناشر أو مشرف امتداد منشور.'
+page_help_marketplace_registry: '**السجل** - الإضافات المتاحة في سوق Directus.'
 activity_feed: موجز النشاط
 add_new: إضافة جديدة
 create_new: أنشئ جديد
@@ -1302,7 +1303,7 @@ fields:
     avif: AVIF
     reporting: التقارير
     mapping: تعيين
-    basemaps_raster: "ِشبكة نقطية"
+    basemaps_raster: 'ِشبكة نقطية'
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: السمات
     attribution_placeholder: المساهمون © OpenStreetMap
@@ -1404,7 +1405,7 @@ field_options:
     additional_transforms: تحولات إضافية
     mapbox_key: رمز وصول الخريطة
     mapbox_placeholder: pk.eyJ1Ijo.....
-    basemaps_raster: "ِشبكة نقطية"
+    basemaps_raster: 'ِشبكة نقطية'
     files_divider_title: الملفات و الصور المصغرة
     overrides_divider_title: تجاوزات التطبيق
   directus_activity:
@@ -1533,7 +1534,7 @@ referential_action_set_null: إلغاء حقل {field}
 referential_action_set_default: تعيين {field} إلى قيمته الافتراضية
 choose_action: اختر الإجراء
 continue_label: متابعة
-editing_role: "دور {role}"
+editing_role: 'دور {role}'
 no_permissions: لا توجد أذونات
 creating_webhook: إنشاء Webhook
 default_label: الافتراضي
@@ -1674,7 +1675,7 @@ interfaces:
     checkboxes: مربعات الاختيار
     description: اختر بين خيارات متعددة عبر مربعات الاختيار
     allow_other: السماح لآخرين
-    show_more: "أظهر {count} أكثر"
+    show_more: 'أظهر {count} أكثر'
     items_shown: العناصر المعروضة
   select-multiple-checkbox-tree:
     name: خانات الاختيار (شجرة)
@@ -1973,7 +1974,7 @@ displays:
     long: طويل
     short: قصير
     relative: نسبي
-    relative_label: "أظهر الوقت النسبي، مثال: قبل 5 دقائق"
+    relative_label: 'أظهر الوقت النسبي، مثال: قبل 5 دقائق'
     suffix: لاحقة
   file:
     file: ملف
@@ -2093,7 +2094,7 @@ operations:
     payload: الحمولة
     token: الرمز المميز
     options: خيارات
-    options_placeholder: "الرجوع إلى https://www.npmjs.com/package/jsonwebtoken#usage للخيارات المتاحة"
+    options_placeholder: 'الرجوع إلى https://www.npmjs.com/package/jsonwebtoken#usage للخيارات المتاحة'
     sign: رمز تسجيل الدخول
     verify: التحقق من الرمز المميز
     decode: فك الرمز المميز
@@ -2114,7 +2115,7 @@ operations:
     message: الرسالة
     subject: الموضوع
   request:
-    description: "تقديم طلب إلى عنوان URL"
+    description: 'تقديم طلب إلى عنوان URL'
     url: الرابط
     url_placeholder: https://example.com/example
     method: الطريقة
