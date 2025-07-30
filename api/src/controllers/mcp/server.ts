@@ -56,8 +56,12 @@ export class DirectusMCP {
 	}
 
 	handleRequest(req: Request, res: Response) {
+		if (!req.accepts('application/json')) {
+			res.status(204).send();
+			return;
+		}
+
 		this.server.setNotificationHandler(InitializedNotificationSchema, async () => {
-			this.server.oninitialized?.();
 			res.status(202).send();
 		});
 
