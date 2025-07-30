@@ -225,14 +225,25 @@ export const schema = defineTool<z.infer<typeof ValidateSchema>>({
 				const fieldOverview = {
 					name: field.field,
 					type: field.type,
-					primary_key: field.schema?.is_primary_key ?? false,
-					required: field.meta.required,
-					readonly: field.meta.readonly,
-					relation: false,
-					interface: {
-						type: field.meta.interface,
-					},
 				};
+
+				if (field.schema?.is_primary_key) {
+					fieldOverview.primary_key = field.schema?.is_primary_key;
+				}
+
+				if (field.meta.required) {
+					fieldOverview.required = field.meta.required;
+				}
+
+				if (field.meta.readonly) {
+					fieldOverview.readonly = field.meta.readonly;
+				}
+
+				if (field.meta.interface) {
+					fieldOverview.interface = {
+						type: field.meta.interface,
+					};
+				}
 
 				const relation = relations[field.collection] as SnapshotRelation | undefined;
 
