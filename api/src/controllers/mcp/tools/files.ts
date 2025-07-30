@@ -2,7 +2,8 @@ import type { File, PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
 import { AssetsService } from '../../../services/assets.js';
-import { ItemsService } from '../../../services/items.js';
+import { FilesService } from '../../../services/files.js';
+import { FoldersService } from '../../../services/folders.js';
 import { PrimaryKeySchema, QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
 
@@ -94,12 +95,18 @@ export const files = defineTool<z.infer<typeof ValidateSchema>>({
 	validateSchema: ValidateSchema,
 	async handler({ args, schema, accountability, sanitizedQuery }) {
 		if (args.type === 'folder' || args.type === 'file') {
-			const collection = args.type === 'folder' ? 'directus_folders' : 'directus_files';
+			let service;
 
-			const service = new ItemsService(collection, {
+			const serviceOptions = {
 				schema,
 				accountability,
-			});
+			};
+
+			if (args.type === 'folder') {
+				service = new FoldersService(serviceOptions);
+			} else {
+				service = new FilesService(serviceOptions);
+			}
 
 			if (args.action === 'create') {
 				const data = toArray(args.data);
