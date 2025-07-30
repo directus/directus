@@ -97,7 +97,6 @@ const listeners = computed(() => ({
 	},
 	keydown: processValue,
 	blur: (e: Event) => {
-		clearInvalidInput(e.target as HTMLInputElement);
 		trimIfEnabled();
 		if (typeof attrs.onBlur === 'function') attrs.onBlur(e);
 	},
@@ -112,6 +111,7 @@ const classes = computed(() => [
 		'has-click': props.clickable,
 		disabled: props.disabled,
 		small: props.small,
+		invalid: isInvalidInput.value,
 	},
 	...((attrs.class || '') as string).split(' '),
 ]);
@@ -124,7 +124,7 @@ const isStepDownAllowed = computed(() => {
 	return props.disabled === false && (props.min === undefined || parseInt(String(props.modelValue), 10) > props.min);
 });
 
-const { isInvalidInput, tooltipInvalid, setInvalidInput, clearInvalidInput } = useInvalidInput();
+const { isInvalidInput, tooltipInvalid, setInvalidInput } = useInvalidInput();
 
 function onInput(event: InputEvent) {
 	const target = event.target as HTMLInputElement;
@@ -258,6 +258,7 @@ function stepUp() {
 	if (isStepUpAllowed.value === false) return;
 
 	input.value.stepUp();
+	setInvalidInput(input.value);
 
 	if (input.value.value != null) {
 		return emit('update:modelValue', Number(input.value.value));
@@ -269,6 +270,7 @@ function stepDown() {
 	if (isStepDownAllowed.value === false) return;
 
 	input.value.stepDown();
+	setInvalidInput(input.value);
 
 	if (input.value.value) {
 		return emit('update:modelValue', Number(input.value.value));
@@ -281,18 +283,11 @@ function useInvalidInput() {
 	const isInvalidInput = ref(false);
 	const tooltipInvalid = computed(() => t(props.type === 'number' ? 'not_a_number' : 'invalid_input'));
 
-	return { isInvalidInput, tooltipInvalid, setInvalidInput, clearInvalidInput };
+	return { isInvalidInput, tooltipInvalid, setInvalidInput };
 
 	function setInvalidInput(target: HTMLInputElement) {
 		// When the input’s validity.badInput property is true (e.g., due to invalid user input like non-numeric characters in a number field), the input event’s target.value will be empty even if we see a value in the input field. This means we can’t sanitize the input value in the input event handler.
 		isInvalidInput.value = target.validity.badInput;
-	}
-
-	function clearInvalidInput(target: HTMLInputElement) {
-		if (!isInvalidInput.value) return;
-
-		target.value = '';
-		isInvalidInput.value = false;
 	}
 }
 </script>
@@ -546,6 +541,11 @@ function useInvalidInput() {
 		.append-outer {
 			margin-inline-start: 8px;
 		}
+	}
+
+	&.invalid input:not(:focus) {
+		text-decoration: line-through;
+		color: var(--theme--foreground-subdued);
 	}
 
 	.warning-invalid {

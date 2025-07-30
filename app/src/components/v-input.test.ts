@@ -271,6 +271,7 @@ describe('invalid warning', () => {
 		await wrapper.vm.$nextTick();
 
 		expect((wrapper.vm as any).isInvalidInput).toBe(true);
+		expect(wrapper.find('.v-input.invalid').exists()).toBe(true);
 		expect(wrapper.find('v-icon-stub.warning-invalid').exists()).toBe(true);
 		expect(validitySpy).toHaveBeenCalledTimes(2);
 
@@ -297,6 +298,7 @@ describe('invalid warning', () => {
 		await wrapper.vm.$nextTick();
 
 		expect((wrapper.vm as any).isInvalidInput).toBe(false);
+		expect(wrapper.find('.v-input.invalid').exists()).toBe(false);
 		expect(wrapper.find('v-icon-stub.warning-invalid').exists()).toBe(false);
 		expect(validitySpy).toHaveBeenCalledTimes(2);
 
