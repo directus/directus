@@ -1698,7 +1698,6 @@ translation_placeholder: Įveskite lauko vertimą...
 value: Reikšmė
 view_project: Peržiūrėti projektą
 report_error: Pranešti apie klaidą
-start: Pradžia
 table: Lentelė
 list: Sąrašas
 search_filter: Paieška ir filtravimas
@@ -2281,6 +2280,7 @@ show_labels: Rodyti antraštes
 show_legend: Rodyti legendą
 right: Dešinėje
 left: Kairėje
+start: Pradžia
 donut: Žiedinė
 continuous: Nuolatinė
 gap: Tarpas
