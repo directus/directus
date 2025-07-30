@@ -38,7 +38,7 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"dotenv": "16.4.7",
+		"dotenv": "catalog:",
 		"lodash-es": "catalog:"
 	}
 }
