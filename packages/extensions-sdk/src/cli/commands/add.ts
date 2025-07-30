@@ -43,7 +43,7 @@ export default async function add(options: AddOptions): Promise<void> {
 	let extensionManifestFile: string;
 
 	try {
-		extensionManifestFile = await fse.readFile(packagePath, 'utf8');
+		extensionManifestFile = (await fse.readFile(packagePath, 'utf8')) as string;
 	} catch {
 		log(`Failed to read "package.json" file from current directory.`, 'error');
 		process.exit(1);

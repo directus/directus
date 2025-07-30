@@ -7,6 +7,23 @@ packages:
   - packages/*
   - tests/*
 
+catalog:
+  '@directus/tsconfig': 3.0.0
+  '@types/lodash-es': 4.17.12
+  '@types/node': 22.13.14
+  '@vitest/coverage-v8': 3.2.4
+  '@vue/test-utils': 2.4.6
+  axios: 1.11.0
+  inquirer: 12.9.0
+  lodash-es: 4.17.21
+  nanoid: 5.1.5
+  tsup: 8.5.0
+  typescript: 5.8.3
+  vitest: 3.2.4
+  vue: 3.5.18
+
+catalogMode: strict
+
 onlyBuiltDependencies:
   - '@fortawesome/fontawesome-common-types'
   - '@fortawesome/fontawesome-svg-core'
@@ -20,13 +37,3 @@ onlyBuiltDependencies:
   - sharp
   - sqlite3
   - vue-demi
-
-catalog:
-  '@directus/tsconfig': 3.0.0
-  '@types/lodash-es': 4.17.12
-  '@types/node': 22.13.8
-  '@vitest/coverage-v8': 2.1.9
-  lodash-es: 4.17.21
-  tsup: 8.4.0
-  typescript: 5.8.2
-  vitest: 2.1.9
