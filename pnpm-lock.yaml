@@ -24,21 +24,42 @@ catalogs:
     axios:
       specifier: 1.11.0
       version: 1.11.0
+    chalk:
+      specifier: 5.4.1
+      version: 5.4.1
+    commander:
+      specifier: 14.0.0
+      version: 14.0.0
+    execa:
+      specifier: 9.6.0
+      version: 9.6.0
+    fs-extra:
+      specifier: 11.3.0
+      version: 11.3.0
     inquirer:
       specifier: 12.9.0
       version: 12.9.0
     lodash-es:
       specifier: 4.17.21
       version: 4.17.21
+    log-symbols:
+      specifier: 7.0.1
+      version: 7.0.1
     nanoid:
       specifier: 5.1.5
       version: 5.1.5
+    ora:
+      specifier: 8.2.0
+      version: 8.2.0
     tsup:
       specifier: 8.5.0
       version: 8.5.0
     typescript:
       specifier: 5.8.3
       version: 5.8.3
+    update-check:
+      specifier: 1.5.4
+      version: 1.5.4
     vitest:
       specifier: 3.2.4
       version: 3.2.4
@@ -1139,26 +1160,33 @@ importers:
   packages/create-directus-project:
     dependencies:
       chalk:
-        specifier: 5.4.1
+        specifier: 'catalog:'
         version: 5.4.1
       commander:
-        specifier: 12.1.0
-        version: 12.1.0
+        specifier: 'catalog:'
+        version: 14.0.0
       execa:
-        specifier: 8.0.1
-        version: 8.0.1
+        specifier: 'catalog:'
+        version: 9.6.0
       fs-extra:
-        specifier: 11.3.0
+        specifier: 'catalog:'
         version: 11.3.0
       log-symbols:
-        specifier: 7.0.0
-        version: 7.0.0
+        specifier: 'catalog:'
+        version: 7.0.1
       ora:
-        specifier: 8.2.0
+        specifier: 'catalog:'
         version: 8.2.0
       update-check:
-        specifier: 1.5.4
+        specifier: 'catalog:'
         version: 1.5.4
+    devDependencies:
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.1.0)(happy-dom@17.1.8)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)(tsx@4.19.3)(yaml@2.7.0))
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@24.1.0)(happy-dom@17.1.8)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)(tsx@4.19.3)(yaml@2.7.0)
 
   packages/env:
     dependencies:
@@ -9489,8 +9517,8 @@ packages:
     resolution: {integrity: sha512-i24m8rpwhmPIS4zscNzK6MSEhk0DUWa/8iYQWxhffV8jkI4Phvs3F+quL5xvS0gdQR0FyTCMMH33Y78dDTzzIw==}
     engines: {node: '>=18'}
 
-  log-symbols@7.0.0:
-    resolution: {integrity: sha512-zrc91EDk2M+2AXo/9BTvK91pqb7qrPg2nX/Hy+u8a5qQlbaOflCKO+6SqgZ+M+xUFxGdKTgwnGiL96b1W3ikRA==}
+  log-symbols@7.0.1:
+    resolution: {integrity: sha512-ja1E3yCr9i/0hmBVaM0bfwDjnGy8I/s6PP4DFp+yP+a+mrHO4Rm7DtmnqROTUkHIkqffC84YY7AeqX6oFk0WFg==}
     engines: {node: '>=18'}
 
   log-update@6.1.0:
@@ -21691,7 +21719,7 @@ snapshots:
       chalk: 5.4.1
       is-unicode-supported: 1.3.0
 
-  log-symbols@7.0.0:
+  log-symbols@7.0.1:
     dependencies:
       is-unicode-supported: 2.1.0
       yoctocolors: 2.1.1
