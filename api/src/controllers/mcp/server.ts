@@ -3,6 +3,7 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import {
 	CallToolRequestSchema,
+	InitializedNotificationSchema,
 	JSONRPCMessageSchema,
 	ListToolsRequestSchema,
 	type CallToolRequest,
@@ -55,6 +56,11 @@ export class DirectusMCP {
 	}
 
 	handleRequest(req: Request, res: Response) {
+		this.server.setNotificationHandler(InitializedNotificationSchema, async () => {
+			this.server.oninitialized?.();
+			res.status(202).send();
+		});
+
 		// listing tools
 		this.server.setRequestHandler(ListToolsRequestSchema, async () => {
 			const tools = [];
