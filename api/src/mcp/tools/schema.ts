@@ -222,94 +222,96 @@ export const schema = defineTool<z.infer<typeof ValidateSchema>>({
 			if (args.action === 'delete') {
 				await service.deleteMany(args.keys);
 			}
-		} else {
-			const snapshot = await getSnapshot();
 
-			const overview: OverviewOutput = {};
+			throw new Error('Invalid type.');
+		}
+		
+		const snapshot = await getSnapshot();
 
-			const relations: { [collection: string]: SnapshotRelation } = {};
+		const overview: OverviewOutput = {};
 
-			snapshot.relations.forEach((relation) => {
-				relations[relation.collection] = relation;
-			});
+		const relations: { [collection: string]: SnapshotRelation } = {};
 
-			snapshot.fields.forEach((field) => {
-				// Skip UI-only fields
-				if (field.type === 'alias' && field.meta?.special?.includes('no-data')) return;
+		snapshot.relations.forEach((relation) => {
+			relations[relation.collection] = relation;
+		});
 
-				if (!overview[field.collection]) {
-					overview[field.collection] = {};
-				}
+		snapshot.fields.forEach((field) => {
+			// Skip UI-only fields
+			if (field.type === 'alias' && field.meta?.special?.includes('no-data')) return;
 
-				const fieldOverview: fieldOverviewOutput = {
-					name: field.field,
-					type: field.type,
+			if (!overview[field.collection]) {
+				overview[field.collection] = {};
+			}
+
+			const fieldOverview: fieldOverviewOutput = {
+				name: field.field,
+				type: field.type,
+			};
+
+			if (field.schema?.is_primary_key) {
+				fieldOverview.primary_key = field.schema?.is_primary_key;
+			}
+
+			if (field.meta.required) {
+				fieldOverview.required = field.meta.required;
+			}
+
+			if (field.meta.readonly) {
+				fieldOverview.readonly = field.meta.readonly;
+			}
+
+			if (field.meta.note) {
+				fieldOverview.note = field.meta.note;
+			}
+
+			if (field.meta.interface) {
+				fieldOverview.interface = {
+					type: field.meta.interface,
 				};
 
-				if (field.schema?.is_primary_key) {
-					fieldOverview.primary_key = field.schema?.is_primary_key;
+				if (field.meta.options?.['choices']) {
+					fieldOverview.interface.choices = field.meta.options['choices'];
+				}
+			}
+
+			const relation = relations[field.collection] as SnapshotRelation | undefined;
+
+			if (field.meta?.special && relation) {
+				let type;
+
+				if (field.meta.special.includes('m2o') || field.meta.special.includes('file')) {
+					type = 'm2o';
+				} else if (field.meta.special.includes('o2m')) {
+					type = 'o2m';
+				} else if (field.meta.special.includes('m2m') || field.meta.special.includes('files')) {
+					type = 'm2m';
+				} else if (field.meta.special.includes('m2a')) {
+					type = 'm2a';
 				}
 
-				if (field.meta.required) {
-					fieldOverview.required = field.meta.required;
-				}
+				if (type) {
+					let relatedCollections: string[] = [];
 
-				if (field.meta.readonly) {
-					fieldOverview.readonly = field.meta.readonly;
-				}
+					if (relation.related_collection) {
+						relatedCollections.push(relation.related_collection);
+					} else if (type === 'm2a' && relation.meta.one_allowed_collections) {
+						relatedCollections = relation.meta.one_allowed_collections;
+					}
 
-				if (field.meta.note) {
-					fieldOverview.note = field.meta.note;
-				}
-
-				if (field.meta.interface) {
-					fieldOverview.interface = {
-						type: field.meta.interface,
+					fieldOverview.relation = {
+						type,
+						related_collections: relatedCollections,
 					};
-
-					if (field.meta.options?.['choices']) {
-						fieldOverview.interface.choices = field.meta.options['choices'];
-					}
 				}
+			}
 
-				const relation = relations[field.collection] as SnapshotRelation | undefined;
+			overview[field.collection]![field.field] = fieldOverview;
+		});
 
-				if (field.meta?.special && relation) {
-					let type;
-
-					if (field.meta.special.includes('m2o') || field.meta.special.includes('file')) {
-						type = 'm2o';
-					} else if (field.meta.special.includes('o2m')) {
-						type = 'o2m';
-					} else if (field.meta.special.includes('m2m') || field.meta.special.includes('files')) {
-						type = 'm2m';
-					} else if (field.meta.special.includes('m2a')) {
-						type = 'm2a';
-					}
-
-					if (type) {
-						let relatedCollections: string[] = [];
-
-						if (relation.related_collection) {
-							relatedCollections.push(relation.related_collection);
-						} else if (type === 'm2a' && relation.meta.one_allowed_collections) {
-							relatedCollections = relation.meta.one_allowed_collections;
-						}
-
-						fieldOverview.relation = {
-							type,
-							related_collections: relatedCollections,
-						};
-					}
-				}
-
-				overview[field.collection]![field.field] = fieldOverview;
-			});
-
-			return {
-				type: 'text',
-				data: overview,
-			};
-		}
+		return {
+			type: 'text',
+			data: overview,
+		};
 	},
 });

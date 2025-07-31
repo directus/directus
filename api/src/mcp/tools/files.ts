@@ -181,5 +181,7 @@ export const files = defineTool<z.infer<typeof ValidateSchema>>({
 				mimeType: 'image/png',
 			};
 		}
+		
+		throw new Error('Invalid type.');
 	},
 });

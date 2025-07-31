@@ -140,5 +140,7 @@ export const items = defineTool<z.infer<typeof ValidateSchema>>({
 		if (args.action === 'delete') {
 			await itemsService.deleteMany(args.keys);
 		}
+
+		throw new Error('Invalid action.');
 	},
 });
