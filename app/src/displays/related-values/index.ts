@@ -133,6 +133,23 @@ export default defineDisplay({
 			if (collectionField && !fields.find((field) => field === collectionField)) {
 				fields.push(collectionField);
 			}
+
+			// For m2a, we need to get the junction field and the related item data
+			const junction = relations.find(
+				(relation) =>
+					relation.related_collection === collection &&
+					relation.meta?.one_field === field &&
+					relation.meta.junction_field,
+			);
+
+			if (junction) {
+				const junctionField = junction.meta?.junction_field;
+
+				if (junctionField) {
+					// Add the junction field to get the related item data
+					fields.push(junctionField);
+				}
+			}
 		}
 
 		return fields;

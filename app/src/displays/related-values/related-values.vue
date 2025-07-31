@@ -6,6 +6,9 @@ import { useCollection } from '@directus/composables';
 import { get } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRelationM2A } from '@/composables/use-relation-m2a';
+import { ref } from 'vue';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 
 const props = defineProps<{
 	collection: string;
@@ -44,6 +47,8 @@ const internalTemplate = computed(() => {
 	return props.template || `{{ ${primaryKeyFieldPath.value!} }}`;
 });
 
+const { relationInfo: m2aRelationInfo } = useRelationM2A(ref(props.collection), ref(props.field));
+
 const unit = computed(() => {
 	if (Array.isArray(props.value)) {
 		if (props.value.length === 1) {
@@ -66,9 +71,99 @@ const unit = computed(() => {
 
 function getLinkForItem(item: any) {
 	if (!relatedCollectionData.value || !primaryKeyFieldPath.value) return null;
-	const primaryKey = get(item, primaryKeyFieldPath.value);
 
+	// For m2a relationships, we need to handle the structure differently
+	if (localType.value === 'm2a' && m2aRelationInfo.value) {
+		const collectionField = m2aRelationInfo.value.collectionField.field;
+		const junctionField = m2aRelationInfo.value.junctionField.field;
+		const collection = item[collectionField];
+
+		if (!collection) return null;
+
+		const pkField = m2aRelationInfo.value.relationPrimaryKeyFields[collection]?.field;
+
+		if (!pkField) return null;
+
+		// For m2a, the junction field contains the primary key value directly
+		const primaryKey = item[junctionField];
+
+		if (!primaryKey) return null;
+
+		const route = getItemRoute(collection, primaryKey);
+		return route;
+	}
+
+	// For other relationship types, use the original logic
+	const primaryKey = get(item, primaryKeyFieldPath.value);
 	return getItemRoute(relatedCollection.value, primaryKey);
+}
+
+// For m2a relationships, get the collection name for each item
+function getCollectionName(item: any) {
+	if (localType.value === 'm2a' && m2aRelationInfo.value) {
+		const collectionField = m2aRelationInfo.value.collectionField.field;
+		const collection = item[collectionField];
+
+		if (te(`collection_names_singular.${collection}`)) {
+			return t(`collection_names_singular.${collection}`);
+		}
+
+		if (te(`collection_names_plural.${collection}`)) {
+			return t(`collection_names_plural.${collection}`);
+		}
+
+		// Try to get the collection info from the allowed collections
+		const allowedCollection = m2aRelationInfo.value.allowedCollections.find((c) => c.collection === collection);
+		return allowedCollection?.name || collection;
+	}
+
+	return null;
+}
+
+// For m2a relationships, get the template for each item based on its collection
+function getTemplateForItem(item: any) {
+	if (localType.value === 'm2a' && m2aRelationInfo.value) {
+		const collectionField = m2aRelationInfo.value.collectionField.field;
+		const collection = item[collectionField];
+
+		if (props.template) return props.template;
+
+		const pkField = m2aRelationInfo.value.relationPrimaryKeyFields[collection]?.field;
+		return pkField ? `{{ ${pkField} }}` : '{{ id }}';
+	}
+
+	return internalTemplate.value;
+}
+
+// For m2a relationships, get the item data for rendering
+function getItemData(item: any) {
+	if (localType.value === 'm2a' && m2aRelationInfo.value) {
+		// For m2a displays, the junction field contains the primary key value
+		// We need to create a simple object with the primary key for template rendering
+		const junctionField = m2aRelationInfo.value.junctionField.field;
+		const primaryKey = item[junctionField];
+		const collectionField = m2aRelationInfo.value.collectionField.field;
+		const collection = item[collectionField];
+		const pkField = m2aRelationInfo.value.relationPrimaryKeyFields[collection]?.field;
+
+		if (pkField && primaryKey) {
+			return { [pkField]: primaryKey };
+		}
+
+		return item;
+	}
+
+	return item;
+}
+
+// For m2a relationships, get the collection for rendering
+function getItemCollection(item: any) {
+	if (localType.value === 'm2a' && m2aRelationInfo.value) {
+		const collectionField = m2aRelationInfo.value.collectionField.field;
+		return item[collectionField];
+	}
+
+	return junctionCollection.value ?? relatedCollection.value;
 }
 </script>
 
@@ -92,11 +187,23 @@ function getLinkForItem(item: any) {
 		<v-list class="links">
 			<v-list-item v-for="item in value" :key="item[primaryKeyFieldPath!]">
 				<v-list-item-content>
-					<render-template
-						:template="internalTemplate"
-						:item="item"
-						:collection="junctionCollection ?? relatedCollection"
-					/>
+					<!-- For m2a relationships, show collection name and template -->
+					<template v-if="localType === 'm2a'">
+						<span class="collection-name">{{ getCollectionName(item) }}:</span>
+						<render-template
+							:template="getTemplateForItem(item)"
+							:item="getItemData(item)"
+							:collection="getItemCollection(item)"
+						/>
+					</template>
+					<!-- For other relationships, use the original logic -->
+					<template v-else>
+						<render-template
+							:template="internalTemplate"
+							:item="item"
+							:collection="junctionCollection ?? relatedCollection"
+						/>
+					</template>
 				</v-list-item-content>
 				<v-list-item-icon>
 					<router-link :to="getLinkForItem(item)!"><v-icon name="launch" small /></router-link>
@@ -158,6 +265,12 @@ function getLinkForItem(item: any) {
 .links {
 	.v-list-item-content {
 		block-size: var(--v-list-item-min-height, 32px);
+	}
+
+	.collection-name {
+		color: var(--theme--primary);
+		white-space: nowrap;
+		margin-inline-end: 1ch;
 	}
 }
 </style>
