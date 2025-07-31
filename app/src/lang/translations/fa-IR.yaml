@@ -46,6 +46,8 @@ location: موقعیت
 collection_names_are_case_sensitive: نام مجموعه ها حساس به حروف کوچک و بزرگ هستند
 condition_rules: استایل شرطی
 input: ورودی
+invalid_input: ورودی نامعتبر
+not_a_number: نا عدد
 maps: نقشه‌ها
 switch_user: تغییر کاربر
 item_creation: ساخت آیتم
@@ -89,6 +91,7 @@ extension_reload_required_copy: جهت مشاهده تغییرات پس از ف�
 extension_reload_now: هم اکنون بازنشانی گردد
 published_relative: منتشر شده در {relativeTime}
 compatible_with_your_project: سازگار با پروژه شما
+compatible_with_your_project_copy: سازنده سازگاری افزونه با نسخه {hostVersion} را مشخص کرده است، که با نسخه پروژه شما ({currentVersion}) انطباق دارد
 last_updated_relative: آخرین به روزرسانی {relativeTime}
 n_files: '{n} فایل'
 verified: تایید شده
@@ -99,9 +102,11 @@ reload_required: صفحه به بازنشانی مجدد نیاز دارد
 report_an_issue: گزارش یک مشکل
 website: وب سایت
 github: گیت‌هاب
+beta: آزمایشی
 n_downloads: '{n} دانلود'
 downloads: دانلودها
 compatibility_not_guaranteed: سازگاری تضمین نشده
+compatibility_not_guaranteed_copy: سازنده سازگاری افزونه با نسخه {hostVersion} را مشخص کرده است، که با نسخه پروژه شما ({currentVersion}) انطباق ندارد
 enable: فعال سازی
 disable: غیرفعال کردن
 custom: سفارشی
