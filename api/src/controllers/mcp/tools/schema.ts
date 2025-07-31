@@ -266,6 +266,10 @@ export const schema = defineTool<z.infer<typeof ValidateSchema>>({
 					fieldOverview.interface = {
 						type: field.meta.interface,
 					};
+
+					if (field.meta.options?.['choices']) {
+						fieldOverview.interface.choices = field.meta.options['choices'];
+					}
 				}
 
 				const relation = relations[field.collection] as SnapshotRelation | undefined;
