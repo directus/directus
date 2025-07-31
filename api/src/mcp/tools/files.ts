@@ -4,9 +4,9 @@ import { z } from 'zod';
 import { AssetsService } from '../../services/assets.js';
 import { FilesService } from '../../services/files.js';
 import { FoldersService } from '../../services/folders.js';
+import type { ItemsService } from '../../services/index.js';
 import { PrimaryKeySchema, QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
-import type { ItemsService } from '../../services/index.js';
 
 const FolderItemSchema = z.object({
 	name: z.string(),
@@ -182,7 +182,7 @@ export const files = defineTool<z.infer<typeof ValidateSchema>>({
 				mimeType: 'image/png',
 			};
 		}
-		
+
 		throw new Error('Invalid type.');
 	},
 });
