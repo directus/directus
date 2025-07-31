@@ -58,7 +58,7 @@ export class DirectusMCP {
 		);
 	}
 
-	handleRequest(req: Request, res: Response) {
+	async handleRequest(req: Request, res: Response) {
 		const env = useEnv();
 
 		if (!req.accepts('application/json')) {
@@ -142,14 +142,14 @@ export class DirectusMCP {
 
 		const transport = new DirectusTransport(res);
 
-		this.server.connect(transport);
+		await this.server.connect(transport);
 
 		try {
 			const parsedMessage = JSONRPCMessageSchema.parse(req.body);
 			transport.onmessage?.(parsedMessage);
 		} catch (error) {
 			transport.onerror?.(error as Error);
-
+			
 			throw error;
 		}
 	}
