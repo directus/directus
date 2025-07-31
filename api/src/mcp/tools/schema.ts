@@ -219,7 +219,12 @@ export const schema = defineTool<z.infer<typeof ValidateSchema>>({
 			}
 
 			if (args.action === 'delete') {
-				await service.deleteMany(args.keys);
+				const deletedKeys = await service.deleteMany(args.keys);
+
+				return {
+					type: 'text',
+					data: deletedKeys,
+				};
 			}
 
 			throw new Error('Invalid type.');
