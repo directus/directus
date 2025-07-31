@@ -1,5 +1,8 @@
 import type { LOCAL_TYPES } from '@directus/constants';
-import type { Collection, DeepPartial, Field, Relation } from '@directus/types';
+import type { Collection } from '../collection.js';
+import type { Field } from '../fields.js';
+import type { Relation } from '../relations.js';
+import type { DeepPartial } from '../misc.js';
 
 export type ExtensionOptionsContext = {
 	collection: string | undefined;
@@ -20,9 +23,7 @@ export type ExtensionOptionsContext = {
 		junctionRelated: DeepPartial<Field> | undefined;
 		sort: DeepPartial<Field> | undefined;
 	};
-
 	items: Record<string, Record<string, any>[]>;
-
 	localType: (typeof LOCAL_TYPES)[number];
 	autoGenerateJunctionRelation: boolean;
 	saving: boolean;

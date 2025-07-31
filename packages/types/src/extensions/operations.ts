@@ -1,7 +1,9 @@
-import type { Accountability, DeepPartial, FlowRaw } from '@directus/types';
 import type { ComponentOptions } from 'vue';
+import type { Accountability } from '../accountability.js';
+import type { DeepPartial } from '../misc.js';
+import type { FlowRaw } from '../flows.js';
 import type { ApiExtensionContext } from './api-extension-context.js';
-import type { AppField } from './index.js';
+import type { AppField } from '../fields.js';
 
 export type OperationContext = ApiExtensionContext & {
 	data: Record<string, unknown>;
@@ -18,7 +20,6 @@ export interface OperationAppConfig {
 	name: string;
 	icon: string;
 	description?: string;
-
 	overview:
 		| ((
 				options: Record<string, any>,
@@ -35,6 +36,5 @@ export interface OperationAppConfig {
 
 export interface OperationApiConfig<Options = Record<string, unknown>> {
 	id: string;
-
 	handler: OperationHandler<Options>;
 }

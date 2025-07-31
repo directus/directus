@@ -47,11 +47,4 @@ export type ShareData = {
 	share_password?: string;
 };
 
-export type LoginResult = {
-	accessToken: string;
-	refreshToken: string;
-	expires: number;
-	id?: string;
-};
-
 export type AuthenticationMode = 'json' | 'cookie' | 'session';
