@@ -106,7 +106,7 @@ describe('authenticateConnection', () => {
 			throw new InvalidCredentialsError();
 		});
 
-		expect(() =>
+		await expect(() =>
 			authenticateConnection({
 				type: 'auth',
 				access_token: 'expired',
@@ -115,7 +115,7 @@ describe('authenticateConnection', () => {
 	});
 
 	test('Failure authentication failed', async () => {
-		expect(() =>
+		await expect(() =>
 			authenticateConnection({
 				type: 'auth',
 				access_token: '',

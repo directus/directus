@@ -409,6 +409,11 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 		font-family: var(--theme--navigation--list--font-family);
 		border-inline-end: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
 
+		html[dir='rtl'] & {
+			transform: translateX(100%);
+		}
+
+		html[dir='rtl'] &.is-open,
 		&.is-open {
 			transform: translateX(0);
 		}
@@ -447,6 +452,10 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 		@media (min-width: 960px) {
 			position: relative;
 			transform: none;
+
+			html[dir='rtl'] & {
+				transform: none;
+			}
 
 			// this prevents the layout from moving up when an element is automatically scrolled into the view
 			overflow-y: clip;
@@ -549,6 +558,10 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 		font-family: var(--theme--sidebar--font-family);
 		border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
 
+		html[dir='rtl'] & {
+			transform: translateX(-100%);
+		}
+
 		/* Explicitly render the border outside of the width of the bar itself */
 		box-sizing: content-box;
 
@@ -556,9 +569,11 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 			flex-grow: 1;
 		}
 
+		html[dir='rtl'] &.is-open,
 		&.is-open {
 			transform: translateX(0);
 		}
+
 		&.has-shadow {
 			box-shadow: var(--sidebar-shadow);
 		}
@@ -572,6 +587,10 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 
 		@media (min-width: 960px) {
 			transform: translateX(calc(100% - 60px - var(--theme--sidebar--border-width)));
+
+			html[dir='rtl'] & {
+				transform: translateX(calc(-100% + 60px + var(--theme--sidebar--border-width)));
+			}
 		}
 
 		@media (min-width: 1260px) {
@@ -598,6 +617,10 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 			position: fixed;
 			transform: translateX(-100%);
 			transition: none;
+
+			html[dir='rtl'] & {
+				transform: translateX(100%);
+			}
 		}
 
 		#main-content {
@@ -608,6 +631,10 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 			position: fixed;
 			transform: translateX(100%);
 			transition: none;
+
+			html[dir='rtl'] & {
+				transform: translateX(-100%);
+			}
 		}
 	}
 }

@@ -111,7 +111,10 @@ describe('Error handler behaves correctly in express app', () => {
 		expect(spy.mock.calls[0]?.[0]).toBe(error);
 
 		expect(mockLogger.error).toHaveBeenLastCalledWith(
-			Error('Cannot set headers after they are sent to the client'),
+			expect.objectContaining({
+				message: 'Cannot set headers after they are sent to the client',
+				code: 'ERR_HTTP_HEADERS_SENT',
+			}),
 			'Unexpected error in error handler',
 		);
 	});

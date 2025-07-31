@@ -1,10 +1,10 @@
 import { randomUUID } from '@directus/random';
 import { SchemaBuilder } from '@directus/schema-builder';
+import type { MutationOptions } from '@directus/types';
+import { UserIntegrityCheckFlag } from '@directus/types';
 import knex from 'knex';
 import { MockClient, createTracker } from 'knex-mock-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { MutationOptions } from '../types/items.js';
-import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { AccessService, ItemsService, PresetsService, RolesService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({

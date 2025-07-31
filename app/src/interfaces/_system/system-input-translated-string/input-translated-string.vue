@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { getCurrentLanguage } from '@/lang/get-current-language';
 import type { Translation } from '@/stores/translations';
 import { useTranslationsStore } from '@/stores/translations';
+import { useUserStore } from '@/stores/user';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
@@ -39,6 +39,8 @@ const translationsKeys = ref<string[]>([]);
 const translationsStore = useTranslationsStore();
 
 const isCustomTranslationDrawerOpen = ref<boolean>(false);
+
+const userStore = useUserStore();
 
 const fetchTranslationsKeys = async () => {
 	loading.value = true;
@@ -128,7 +130,7 @@ function openNewCustomTranslationDrawer() {
 
 const newTranslationDefaults = computed(() => {
 	const defaults = {
-		language: getCurrentLanguage(),
+		language: userStore.language,
 	};
 
 	if (localValue.value && !localValue.value.startsWith(translationPrefix)) {

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions",
-	"version": "3.0.7",
+	"version": "3.0.8",
 	"description": "Utilities and types for Directus extensions",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -33,7 +33,6 @@
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
-		"@directus/themes": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@types/express": "4.17.21",
