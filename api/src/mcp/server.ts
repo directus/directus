@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Query } from '@directus/types';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
@@ -17,7 +18,6 @@ import { fromZodError } from 'zod-validation-error';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 import type { ToolResult } from './tool.js';
 import { ALL_TOOLS } from './tools/index.js';
-import { deleteEnabled } from './util.js';
 
 class DirectusTransport implements Transport {
 	res: Response;
@@ -59,6 +59,8 @@ export class DirectusMCP {
 	}
 
 	handleRequest(req: Request, res: Response) {
+		const env = useEnv();
+
 		if (!req.accepts('application/json')) {
 			// we currently dont support "text/event-stream" requests
 			res.status(400).send();
@@ -108,7 +110,7 @@ export class DirectusMCP {
 					throw new InvalidPayloadError({ reason: fromZodError(args.error).message });
 				}
 
-				if ('action' in args && args.action === 'delete' && !deleteEnabled()) {
+				if ('action' in args && args.action === 'delete' && env['MCP_PREVENT_DELETE'] === true) {
 					throw new InvalidPayloadError({ reason: 'Delete actions are disabled' });
 				}
 
