@@ -2007,6 +2007,7 @@ interfaces:
     media_preview_iframe_title: پیش‌نمایش رسانه
   input-block-editor:
     input-block-editor: ویرایشگر بلوک
+    description: ویرایشگر قطعه‌ای برای محتوای غنی، داده‌های تمیز را توسط Editor.js در قالب JSON خروجی می‌دهد
     tools: نوار ابزار
     tools_options:
       header: سربرگ
@@ -2056,6 +2057,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: ویرایشگر خام
     description: Allow entering of raw or mustache templating values
+  input-password:
+    input-password: ورود رمز عبور
+    description: ورودی پسورد با دکمه‌ای برای مخفی کردن مقدار
 displays:
   translations:
     translations: ترجمه‌ها
