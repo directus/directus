@@ -7,4 +7,8 @@ import { system } from './system.js';
 
 export const ALL_TOOLS: ToolConfig<any>[] = [system, items, files, flows, operations, schema];
 
+export const getAllMcpTools = () => ALL_TOOLS;
+
+export const findMcpTool = (name: string) => ALL_TOOLS.find((tool) => tool.name === name);
+
 export { files, flows, items, operations, schema, system };

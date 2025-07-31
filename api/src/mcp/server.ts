@@ -17,7 +17,7 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 import { fromZodError } from 'zod-validation-error';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 import type { ToolResult } from './tool.js';
-import { ALL_TOOLS } from './tools/index.js';
+import { findMcpTool, getAllMcpTools } from './tools/index.js';
 
 class DirectusTransport implements Transport {
 	res: Response;
@@ -75,7 +75,7 @@ export class DirectusMCP {
 		this.server.setRequestHandler(ListToolsRequestSchema, () => {
 			const tools = [];
 
-			for (const tool of ALL_TOOLS) {
+			for (const tool of getAllMcpTools()) {
 				if (req.accountability?.admin !== true && tool.admin === true) continue;
 
 				tools.push({
@@ -91,7 +91,7 @@ export class DirectusMCP {
 
 		// calling tools
 		this.server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest) => {
-			const tool = ALL_TOOLS.find((tool) => tool.name === request.params.name);
+			const tool = findMcpTool(request.params.name);
 
 			try {
 				if (!tool) {
