@@ -1,10 +1,10 @@
 import type { FlowRaw, OperationRaw } from '@directus/types';
 import { z } from 'zod';
-import { FlowsService } from '../../../services/flows.js';
-import { OperationsService } from '../../../services/operations.js';
+import { getFlowManager } from '../../flows.js';
+import { FlowsService } from '../../services/flows.js';
+import { OperationsService } from '../../services/operations.js';
 import { QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
-import { getFlowManager } from '../../../flows.js';
 
 const FlowSchema = z.custom<Partial<FlowRaw>>();
 
@@ -49,7 +49,7 @@ Passing stringified JSON will cause validation errors.
 
 ### 🔄 Flow Properties
 - **name** (string) - The name of the flow
-- **icon** (string, optional) - Icon displayed in the Admin App 
+- **icon** (string, optional) - Icon displayed in the Admin App
 - **color** (string, optional) - Color of the icon in the Admin App
 - **description** (string, optional) - Description of the flow
 - **status** (string) - Current status: 'active' or 'inactive' (defaults to 'active')
@@ -63,7 +63,7 @@ Passing stringified JSON will cause validation errors.
 \`\`\`json
 {
   "name": "Article Notification Flow",
-  "trigger": "event", 
+  "trigger": "event",
   "status": "active",
   "description": "Sends notifications when articles are published",
   "icon": "notifications",
@@ -128,11 +128,11 @@ Passing stringified JSON will cause validation errors.
 
 		if (args.action === 'delete') {
 			const deletedKey = await flowsService.deleteOne(args.key);
-			
+
 			return {
 				type: 'text',
 				data: deletedKey,
-			}
+			};
 		}
 
 		throw new Error('Invalid action.');
@@ -164,7 +164,7 @@ const OperationValidationSchema = z.union([
 const OperationInputSchema = z.object({
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
 	query: QuerySchema.optional().describe(''),
-	data: FlowSchema.optional().describe("Flow data as a native object or array (NOT stringified JSON)"),
+	data: FlowSchema.optional().describe('Flow data as a native object or array (NOT stringified JSON)'),
 	key: z.string().optional().describe(''),
 });
 
@@ -218,7 +218,7 @@ export const operations = defineTool<z.infer<typeof OperationValidationSchema>>(
 			return {
 				type: 'text',
 				data: deletedKey,
-			}
+			};
 		}
 
 		throw new Error('Invalid action.');
@@ -226,16 +226,12 @@ export const operations = defineTool<z.infer<typeof OperationValidationSchema>>(
 });
 
 const TriggerFlowInputSchema = z.object({
-	flowDefinition: z
-		.record(z.string(), z.any())
-		.describe('The full flow definition from the read-flows call.'),
+	flowDefinition: z.record(z.string(), z.any()).describe('The full flow definition from the read-flows call.'),
 	flowId: z.string().describe('The ID of the flow to trigger'),
 	method: z.enum(['GET', 'POST']).default('GET').describe(''),
 	query: QuerySchema.optional().describe(''),
 	headers: z.record(z.string(), z.any()).optional().describe(''),
-	collection: z
-		.string()
-		.describe('The collection of the items to trigger the flow on.'),
+	collection: z.string().describe('The collection of the items to trigger the flow on.'),
 	keys: z
 		.array(z.string())
 		.describe(
@@ -246,8 +242,8 @@ const TriggerFlowInputSchema = z.object({
 		.optional()
 		.describe(
 			'The data to pass to the flow. Should be an object with keys that match the flow *options.fields.fields* property',
-		)
-	});
+		),
+});
 
 export const triggerFlow = defineTool<z.infer<typeof TriggerFlowInputSchema>>({
 	name: 'trigger-flow',
@@ -272,26 +268,23 @@ export const triggerFlow = defineTool<z.infer<typeof TriggerFlowInputSchema>>({
 
 		// Validate flow ID matches
 		if (flowDefinition['id'] !== flowId) {
-			throw new Error(
-				`Flow ID mismatch: provided ${flowId} but definition has ${flowDefinition['id']}`,
-			);
+			throw new Error(`Flow ID mismatch: provided ${flowId} but definition has ${flowDefinition['id']}`);
 		}
 
 		// Validate collection is valid for this flow
 		if (!flowDefinition['options']['collections'].includes(collection)) {
 			throw new Error(
-				`Invalid collection "${collection}". This flow only supports: ${flowDefinition['options']['collections'].join(', ')}`,
+				`Invalid collection "${collection}". This flow only supports: ${flowDefinition['options']['collections'].join(
+					', ',
+				)}`,
 			);
 		}
 
 		// Check if selection is required
-		const requiresSelection =
-			flowDefinition['options']['requireSelection'] !== false;
+		const requiresSelection = flowDefinition['options']['requireSelection'] !== false;
 
 		if (requiresSelection && (!keys || keys.length === 0)) {
-			throw new Error(
-				'This flow requires selecting at least one item, but no keys were provided',
-			);
+			throw new Error('This flow requires selecting at least one item, but no keys were provided');
 		}
 
 		// Validate required fields
@@ -309,7 +302,8 @@ export const triggerFlow = defineTool<z.infer<typeof TriggerFlowInputSchema>>({
 
 		const flowManager = getFlowManager();
 
-		const { result } = await flowManager.runWebhookFlow(`${method}-${flowId}`,
+		const { result } = await flowManager.runWebhookFlow(
+			`${method}-${flowId}`,
 			{
 				path: `/trigger/${flowId}`,
 				query: query,
@@ -317,7 +311,8 @@ export const triggerFlow = defineTool<z.infer<typeof TriggerFlowInputSchema>>({
 				method: method,
 				headers: headers,
 			},
-			{ accountability, schema });
+			{ accountability, schema },
+		);
 
 		return { type: 'text', data: result };
 	},

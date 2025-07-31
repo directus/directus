@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { DirectusMCP } from './server.js';
+import { DirectusMCP } from '../mcp/index.js';
 
 const router = Router();
 

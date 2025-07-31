@@ -1,9 +1,9 @@
 import type { File, PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
-import { AssetsService } from '../../../services/assets.js';
-import { FilesService } from '../../../services/files.js';
-import { FoldersService } from '../../../services/folders.js';
+import { AssetsService } from '../../services/assets.js';
+import { FilesService } from '../../services/files.js';
+import { FoldersService } from '../../services/folders.js';
 import { PrimaryKeySchema, QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
 

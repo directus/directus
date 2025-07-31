@@ -3,7 +3,7 @@ import { isSystemCollection } from '@directus/system-data';
 import type { PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
-import { ItemsService } from '../../../services/items.js';
+import { ItemsService } from '../../services/items.js';
 import { ItemSchema, PartialItemInput, PrimaryKeySchema, QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
 
