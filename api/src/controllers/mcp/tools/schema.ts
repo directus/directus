@@ -133,6 +133,7 @@ export interface fieldOverviewOutput {
 	primary_key?: boolean;
 	required?: boolean;
 	readonly?: boolean;
+	note?: string;
 	interface?: {
 		type: string;
 		choices?: Array<string | number>;
@@ -255,6 +256,10 @@ export const schema = defineTool<z.infer<typeof ValidateSchema>>({
 
 				if (field.meta.readonly) {
 					fieldOverview.readonly = field.meta.readonly;
+				}
+
+				if (field.meta.note) {
+					fieldOverview.note = field.meta.note;
 				}
 
 				if (field.meta.interface) {
