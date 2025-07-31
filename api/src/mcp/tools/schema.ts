@@ -1,8 +1,7 @@
-import type { Collection, Field, PrimaryKey, Relation } from '@directus/types';
+import type { Collection, Field, PrimaryKey, Relation, SnapshotRelation } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
 import { ItemsService } from '../../services/items.js';
-import type { SnapshotRelation } from '../../types/snapshot.js';
 import { getSnapshot } from '../../utils/get-snapshot.js';
 import { PrimaryKeySchema, QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
@@ -225,7 +224,7 @@ export const schema = defineTool<z.infer<typeof ValidateSchema>>({
 
 			throw new Error('Invalid type.');
 		}
-		
+
 		const snapshot = await getSnapshot();
 
 		const overview: OverviewOutput = {};
