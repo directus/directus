@@ -2,7 +2,7 @@
 import { useEventListener } from '@/composables/use-event-listener';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { useSync } from '@directus/composables';
-import type { ShowSelect } from '@directus/extensions';
+import type { ShowSelect } from '@directus/types';
 import { clone, throttle } from 'lodash';
 import { computed, ref, useSlots } from 'vue';
 import { useI18n } from 'vue-i18n';

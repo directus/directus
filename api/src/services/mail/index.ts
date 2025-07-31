@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { InvalidPayloadError } from '@directus/errors';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
 import { isObject } from '@directus/utils';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
@@ -9,11 +9,10 @@ import type { SendMailOptions, Transporter } from 'nodemailer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import getDatabase from '../../database/index.js';
+import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
 import getMailer from '../../mailer.js';
-import type { AbstractServiceOptions } from '../../types/index.js';
 import { Url } from '../../utils/url.js';
-import emitter from '../../emitter.js';
 
 const env = useEnv();
 const logger = useLogger();
