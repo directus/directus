@@ -21,6 +21,7 @@ import { findMcpTool, getAllMcpTools } from './tools/index.js';
 
 export class DirectusTransport implements Transport {
 	res: Response;
+	resolve?: () => void;
 	onerror?: (error: Error) => void;
 	onmessage?: (message: JSONRPCMessage, extra?: MessageExtraInfo) => void;
 	onclose?: () => void;
@@ -34,10 +35,19 @@ export class DirectusTransport implements Transport {
 
 	async send(message: JSONRPCMessage): Promise<void> {
 		this.res.json(message);
+		this.resolve?.();
 	}
 
 	async close(): Promise<void> {
+		this.resolve?.();
 		return;
+	}
+
+	handleMessage(message: JSONRPCMessage, _extra?: MessageExtraInfo): Promise<void> {
+		return new Promise((resolve) => {
+			this.resolve = resolve;
+			this.onmessage?.(message, _extra);
+		})
 	}
 }
 
@@ -69,6 +79,7 @@ export class DirectusMCP {
 
 		this.server.setNotificationHandler(InitializedNotificationSchema, () => {
 			res.status(202).send();
+			this.server.transport?.close();
 		});
 
 		// listing tools
@@ -146,7 +157,7 @@ export class DirectusMCP {
 
 		try {
 			const parsedMessage = JSONRPCMessageSchema.parse(req.body);
-			transport.onmessage?.(parsedMessage);
+			await transport.handleMessage(parsedMessage);
 		} catch (error) {
 			transport.onerror?.(error as Error);
 			
