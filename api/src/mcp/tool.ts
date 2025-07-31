@@ -1,5 +1,4 @@
-import type { Accountability, SchemaOverview } from '@directus/types';
-import type { Query } from 'express-serve-static-core';
+import type { Accountability, SchemaOverview, Query } from '@directus/types';
 import type { ZodType } from 'zod';
 
 export type ToolResultBase = {
