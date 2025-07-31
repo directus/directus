@@ -187,7 +187,6 @@
 		"zod-validation-error": "3.4.0"
 	},
 	"devDependencies": {
-		"@directus/random": "workspace:*",
 		"@directus/schema-builder": "workspace:*",
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
