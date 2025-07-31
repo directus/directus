@@ -127,6 +127,28 @@ const InputSchema = z.object({
 		.describe(''),
 });
 
+export interface fieldOverviewOutput {
+	name: string;
+	type: string;
+	primary_key?: boolean;
+	required?: boolean;
+	readonly?: boolean;
+	interface?: {
+		type: string;
+		choices?: Array<string | number>;
+	};
+	relation?: {
+		type: string;
+		related_collections: string[];
+	};
+}
+
+export interface OverviewOutput {
+	[collection: string]: {
+		[field: string]: fieldOverviewOutput;
+	};
+}
+
 export const schema = defineTool<z.infer<typeof ValidateSchema>>({
 	name: 'schema',
 	admin: true,
@@ -202,9 +224,9 @@ export const schema = defineTool<z.infer<typeof ValidateSchema>>({
 		} else {
 			const snapshot = await getSnapshot();
 
-			const overview = {};
+			const overview: OverviewOutput = {};
 
-			const relations = {};
+			const relations: { [collection: string]: SnapshotRelation } = {};
 
 			snapshot.relations.forEach((relation) => {
 				relations[relation.collection] = relation;
@@ -218,11 +240,7 @@ export const schema = defineTool<z.infer<typeof ValidateSchema>>({
 					overview[field.collection] = {};
 				}
 
-				if (!overview[field.collection][field.field]) {
-					overview[field.collection][field.field] = {};
-				}
-
-				const fieldOverview = {
+				const fieldOverview: fieldOverviewOutput = {
 					name: field.field,
 					type: field.type,
 				};
@@ -261,16 +279,22 @@ export const schema = defineTool<z.infer<typeof ValidateSchema>>({
 					}
 
 					if (type) {
+						let relatedCollections: string[] = [];
+
+						if (relation.related_collection) {
+							relatedCollections.push(relation.related_collection);
+						} else if (type === 'm2a' && relation.meta.one_allowed_collections) {
+							relatedCollections = relation.meta.one_allowed_collections;
+						}
+
 						fieldOverview.relation = {
 							type,
+							related_collections: relatedCollections,
 						};
-
-						fieldOverview.relation.related_collections =
-							type === 'm2a' ? relation.meta.one_allowed_collections : relation.related_collection;
 					}
 				}
 
-				overview[field.collection][field.field] = fieldOverview;
+				overview[field.collection]![field.field] = fieldOverview;
 			});
 
 			return {
