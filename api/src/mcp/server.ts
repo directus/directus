@@ -19,7 +19,7 @@ import { sanitizeQuery } from '../utils/sanitize-query.js';
 import type { ToolResult } from './tool.js';
 import { findMcpTool, getAllMcpTools } from './tools/index.js';
 
-class DirectusTransport implements Transport {
+export class DirectusTransport implements Transport {
 	res: Response;
 	onerror?: (error: Error) => void;
 	onmessage?: (message: JSONRPCMessage, extra?: MessageExtraInfo) => void;
