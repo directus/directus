@@ -180,5 +180,5 @@ export const DEFAULTS = {
 	ACCEPT_TERMS: false,
 
 	MCP_ENABLED: false,
-	MCP_PREVENT_DELETE: false,
+	MCP_PREVENT_DELETE: true,
 } as const;
