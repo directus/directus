@@ -1,14 +1,11 @@
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
 <script setup lang="ts">
 import { keyMap, systemKeys } from '@/composables/use-shortcut';
 import slugify from '@sindresorhus/slugify';
 import { omit } from 'lodash';
 import { computed, ref, useAttrs } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+defineOptions({ inheritAttrs: false });
 
 interface Props {
 	/** Autofocusses the input on render */
@@ -89,6 +86,8 @@ const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus', 'key
 
 const attrs = useAttrs();
 
+const { t } = useI18n();
+
 const input = ref<HTMLInputElement | null>(null);
 
 const listeners = computed(() => ({
@@ -112,6 +111,7 @@ const classes = computed(() => [
 		'has-click': props.clickable,
 		disabled: props.disabled,
 		small: props.small,
+		invalid: isInvalidInput.value,
 	},
 	...((attrs.class || '') as string).split(' '),
 ]);
@@ -124,14 +124,10 @@ const isStepDownAllowed = computed(() => {
 	return props.disabled === false && (props.min === undefined || parseInt(String(props.modelValue), 10) > props.min);
 });
 
+const { isInvalidInput, tooltipInvalid, setInvalidInput } = useInvalidInput();
+
 function onInput(event: InputEvent) {
 	const target = event.target as HTMLInputElement;
-
-	// If we enter an invalid number into an input of type number, the event.target.value will be empty, which makes it hard to sanitize here, so we'll replace it with the last (valid) modelValue.
-	if (target.validity.badInput) {
-		target.value = String(props.modelValue);
-		return;
-	}
 
 	const regexValidInteger = /^-?\d*$/;
 
@@ -147,7 +143,6 @@ function onInput(event: InputEvent) {
 		const invalidCharsRegex = /(?!^)-|[^0-9-.,]/g;
 		const duplicatePointRegex = /(.*[.,].*)[.,]/g;
 		target.value = target.value.replace(invalidCharsRegex, '').replace(duplicatePointRegex, '$1');
-		event.preventDefault();
 		return;
 	}
 }
@@ -217,7 +212,10 @@ function trimIfEnabled() {
 }
 
 function emitValue(event: InputEvent) {
-	let value = (event.target as HTMLInputElement).value;
+	const target = event.target as HTMLInputElement;
+	let value = target.value;
+
+	setInvalidInput(target);
 
 	if (props.nullable === true && value === '') {
 		emit('update:modelValue', null);
@@ -260,6 +258,7 @@ function stepUp() {
 	if (isStepUpAllowed.value === false) return;
 
 	input.value.stepUp();
+	setInvalidInput(input.value);
 
 	if (input.value.value != null) {
 		return emit('update:modelValue', Number(input.value.value));
@@ -271,11 +270,24 @@ function stepDown() {
 	if (isStepDownAllowed.value === false) return;
 
 	input.value.stepDown();
+	setInvalidInput(input.value);
 
 	if (input.value.value) {
 		return emit('update:modelValue', Number(input.value.value));
 	} else {
 		return emit('update:modelValue', props.min || 0);
+	}
+}
+
+function useInvalidInput() {
+	const isInvalidInput = ref(false);
+	const tooltipInvalid = computed(() => t(props.type === 'number' ? 'not_a_number' : 'invalid_input'));
+
+	return { isInvalidInput, tooltipInvalid, setInvalidInput };
+
+	function setInvalidInput(target: HTMLInputElement) {
+		// When the input’s validity.badInput property is true (e.g., due to invalid user input like non-numeric characters in a number field), the input event’s target.value will be empty even if we see a value in the input field. This means we can’t sanitize the input value in the input event handler.
+		isInvalidInput.value = target.validity.badInput;
 	}
 }
 </script>
@@ -309,6 +321,7 @@ function stepDown() {
 					@keydown.enter="$emit('keydown:enter', $event)"
 				/>
 			</slot>
+			<v-icon v-if="isInvalidInput" v-tooltip="tooltipInvalid" name="warning" class="warning-invalid" />
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
 			<span v-if="type === 'number' && !hideArrows">
 				<v-icon
@@ -360,11 +373,11 @@ function stepDown() {
 
 	display: flex;
 	align-items: center;
-	width: max-content;
-	height: var(--theme--form--field--input--height);
+	inline-size: max-content;
+	block-size: var(--theme--form--field--input--height);
 
 	.prepend-outer {
-		margin-right: 8px;
+		margin-inline-end: 8px;
 	}
 
 	.input {
@@ -372,10 +385,9 @@ function stepDown() {
 		display: flex;
 		flex-grow: 1;
 		align-items: center;
-		height: 100%;
+		block-size: 100%;
 		padding: var(--theme--form--field--input--padding);
-		padding-top: 0px;
-		padding-bottom: 0px;
+		padding-block: 0;
 		color: var(--v-input-color, var(--theme--form--field--input--foreground));
 		font-family: var(--v-input-font-family, var(--theme--fonts--sans--font-family));
 		background-color: var(--v-input-background-color, var(--theme--form--field--input--background));
@@ -386,15 +398,15 @@ function stepDown() {
 		box-shadow: var(--theme--form--field--input--box-shadow);
 
 		.prepend {
-			margin-right: 8px;
+			margin-inline-end: 8px;
 		}
 
 		.step-up {
-			margin-bottom: -8px;
+			margin-block-end: -8px;
 		}
 
 		.step-down {
-			margin-top: -8px;
+			margin-block-start: -8px;
 		}
 
 		.step-up,
@@ -452,17 +464,16 @@ function stepDown() {
 
 		.append {
 			flex-shrink: 0;
-			margin-left: 8px;
+			margin-inline-start: 8px;
 		}
 	}
 
 	input {
 		flex-grow: 1;
-		width: 20px; /* allows flex to grow/shrink to allow for slots */
-		height: 100%;
+		inline-size: 20px; /* allows flex to grow/shrink to allow for slots */
+		block-size: 100%;
 		padding: var(--theme--form--field--input--padding);
-		padding-right: 0px;
-		padding-left: 0px;
+		padding-inline: 0;
 		font-family: var(--v-input-font-family, var(--theme--fonts--sans--font-family));
 		background-color: transparent;
 		border: none;
@@ -490,7 +501,7 @@ function stepDown() {
 	}
 
 	&.small {
-		height: 38px;
+		block-size: 38px;
 
 		.input {
 			padding: 8px 12px;
@@ -498,10 +509,10 @@ function stepDown() {
 	}
 
 	&.full-width {
-		width: 100%;
+		inline-size: 100%;
 
 		.input {
-			width: 100%;
+			inline-size: 100%;
 		}
 	}
 
@@ -528,8 +539,19 @@ function stepDown() {
 		}
 
 		.append-outer {
-			margin-left: 8px;
+			margin-inline-start: 8px;
 		}
+	}
+
+	&.invalid input:not(:focus) {
+		text-decoration: line-through;
+		color: var(--theme--foreground-subdued);
+	}
+
+	.warning-invalid {
+		--v-icon-color: var(--theme--warning);
+
+		margin-inline-end: 8px;
 	}
 }
 </style>

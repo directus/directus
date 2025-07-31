@@ -1,6 +1,6 @@
 import { parseJSON } from '@directus/utils';
+import { WebSocketMessage } from '@directus/types';
 import type { RawData, WebSocket } from 'ws';
-import { WebSocketMessage } from '../messages.js';
 import { getMessageType } from './message.js';
 
 export const waitForAnyMessage = (client: WebSocket, timeout: number): Promise<Record<string, any>> => {

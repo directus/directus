@@ -3,7 +3,8 @@ import VChip from '@/components/v-chip.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useExtensionsStore } from '@/stores/extensions';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { APP_OR_HYBRID_EXTENSION_TYPES, ApiOutput, ExtensionType } from '@directus/extensions';
+import { APP_OR_HYBRID_EXTENSION_TYPES } from '@directus/constants';
+import { ApiOutput, ExtensionType } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { extensionTypeIconMap } from '../constants';
@@ -153,17 +154,18 @@ function isAppExtension(type?: ExtensionType) {
 	}
 
 	.version {
-		margin-right: 8px;
+		margin-inline-end: 8px;
 	}
 
 	&.disabled {
 		color: var(--theme--foreground-subdued);
+
 		--v-chip-color: var(--theme--foreground-subdued);
 	}
 }
 
 .spinner {
-	margin-right: 8px;
+	margin-inline-end: 8px;
 }
 
 .state {
@@ -182,11 +184,11 @@ function isAppExtension(type?: ExtensionType) {
 }
 
 .options {
-	margin-left: 12px;
+	margin-inline-start: 12px;
 }
 
 .nested {
-	margin-left: 20px;
+	margin-inline-start: 20px;
 
 	&:not(.partial) .options {
 		display: none;

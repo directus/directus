@@ -317,6 +317,7 @@ function useColor() {
 						:model-value="hex ? hex.slice(0, 7) : null"
 						type="color"
 						class="html-color-select"
+						@click.stop
 						@update:model-value="setSwatchValue($event)"
 					/>
 					<v-button
@@ -477,20 +478,19 @@ function useColor() {
 	--v-button-padding: 6px;
 	--v-button-background-color: transparent;
 	background-color: var(--swatch-color, transparent);
+
 	--v-button-background-color-hover: var(--v-button-background-color);
 	--v-button-height: calc(var(--theme--form--field--input--height) - 20px);
 	--v-button-width: calc(var(--theme--form--field--input--height) - 20px);
-
 	--swatch-radius: calc(var(--theme--border-radius) + 2px);
-
 	--focus-ring-offset: var(--focus-ring-offset-inset);
 	--focus-ring-radius: var(--swatch-radius);
 
 	position: relative;
 	box-sizing: border-box;
-	margin-left: -8px;
-	width: calc(var(--theme--form--field--input--height) - 20px);
-	height: calc(var(--theme--form--field--input--height) - 20px);
+	margin-inline-start: -8px;
+	inline-size: calc(var(--theme--form--field--input--height) - 20px);
+	block-size: calc(var(--theme--form--field--input--height) - 20px);
 	border-radius: var(--swatch-radius);
 	overflow: hidden;
 	cursor: pointer;
@@ -498,8 +498,8 @@ function useColor() {
 
 .presets {
 	display: flex;
-	width: 100%;
-	margin-bottom: 14px;
+	inline-size: 100%;
+	margin-block-end: 14px;
 	padding: 8px;
 	overflow-x: auto;
 }
@@ -509,7 +509,7 @@ function useColor() {
 	--v-button-height: 20px;
 	--v-button-width: 20px;
 
-	margin: 0px 4px;
+	margin: 0 4px;
 
 	&.low-contrast {
 		--v-button-height: 18px;
@@ -519,25 +519,25 @@ function useColor() {
 }
 
 .presets .preset:first-child {
-	padding-left: 0px;
+	padding-inline-start: 0;
 }
 
 .presets .preset:last-child {
-	padding-right: 0px;
+	padding-inline-end: 0;
 }
 
 .color-input {
 	.v-input.html-color-select {
-		width: 0;
-		height: 0;
+		inline-size: 0;
+		block-size: 0;
 		visibility: hidden;
 	}
 }
 
 .color-data-inputs {
 	display: grid;
-	grid-gap: 0px;
-	width: 100%;
+	grid-gap: 0;
+	inline-size: 100%;
 	padding: 12px 10px;
 }
 
@@ -558,7 +558,7 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input:not(:first-child) :deep(.input) {
-	margin-left: calc(-1 * var(--theme--border-width));
+	margin-inline-start: calc(-1 * var(--theme--border-width));
 }
 
 .color-data-inputs .color-data-input:first-child {
@@ -570,12 +570,12 @@ function useColor() {
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child) :deep(.input) {
-	margin-top: calc(-2 * var(--theme--border-width));
-	margin-left: initial;
+	margin-block-start: calc(-2 * var(--theme--border-width));
+	margin-inline-start: initial;
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child):not(:nth-child(2)) :deep(.input) {
-	margin-left: calc(-1 * var(--theme--border-width));
+	margin-inline-start: calc(-1 * var(--theme--border-width));
 }
 
 .color-data-inputs.stacked .color-data-input:first-child {
@@ -594,8 +594,8 @@ function useColor() {
 	display: grid;
 	grid-gap: 12px;
 	align-items: baseline;
-	width: 100%;
-	height: 45px;
+	inline-size: 100%;
+	block-size: 45px;
 	padding: 12px 14px;
 }
 

@@ -6,7 +6,15 @@ import {
 	UnsupportedMediaTypeError,
 } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
-import type { Accountability, File, Query, SchemaOverview } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	Accountability,
+	ActionEventParams,
+	ExportFormat,
+	File,
+	Query,
+	SchemaOverview,
+} from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { createTmpFile } from '@directus/utils/node';
 import { queue } from 'async';
@@ -24,13 +32,7 @@ import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type {
-	AbstractServiceOptions,
-	ActionEventParams,
-	FunctionFieldNode,
-	FieldNode,
-	NestedCollectionNode,
-} from '../types/index.js';
+import type { FunctionFieldNode, FieldNode, NestedCollectionNode } from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { getService } from '../utils/get-service.js';
 import { transaction } from '../utils/transaction.js';
@@ -40,11 +42,10 @@ import { FilesService } from './files.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
 import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
+import { set } from 'lodash-es';
 
 const env = useEnv();
 const logger = useLogger();
-
-type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
 
 export class ImportService {
 	knex: Knex;
@@ -218,14 +219,16 @@ export class ImportService {
 						fileReadStream
 							.pipe(Papa.parse(Papa.NODE_STREAM_INPUT, PapaOptions))
 							.on('data', (obj: Record<string, unknown>) => {
+								const result = {};
+
 								// Filter out all undefined fields
 								for (const field in obj) {
-									if (obj[field] === undefined) {
-										delete obj[field];
+									if (obj[field] !== undefined) {
+										set(result, field, obj[field]);
 									}
 								}
 
-								saveQueue.push(obj);
+								saveQueue.push(result);
 							})
 							.on('error', (error) => {
 								cleanup();

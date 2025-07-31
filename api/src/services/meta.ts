@@ -1,4 +1,4 @@
-import type { Accountability, Permission, Query, SchemaOverview } from '@directus/types';
+import type { AbstractServiceOptions, Accountability, Permission, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { isArray } from 'lodash-es';
 import getDatabase from '../database/index.js';
@@ -7,7 +7,6 @@ import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { getCases } from '../permissions/modules/process-ast/lib/get-cases.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { AbstractServiceOptions } from '../types/index.js';
 
 export class MetaService {
 	knex: Knex;

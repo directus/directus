@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { getCurrentLanguage } from '@/lang/get-current-language';
 import type { Translation } from '@/stores/translations';
 import { useTranslationsStore } from '@/stores/translations';
+import { useUserStore } from '@/stores/user';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
@@ -39,6 +39,8 @@ const translationsKeys = ref<string[]>([]);
 const translationsStore = useTranslationsStore();
 
 const isCustomTranslationDrawerOpen = ref<boolean>(false);
+
+const userStore = useUserStore();
 
 const fetchTranslationsKeys = async () => {
 	loading.value = true;
@@ -128,7 +130,7 @@ function openNewCustomTranslationDrawer() {
 
 const newTranslationDefaults = computed(() => {
 	const defaults = {
-		language: getCurrentLanguage(),
+		language: userStore.language,
 	};
 
 	if (localValue.value && !localValue.value.startsWith(translationPrefix)) {
@@ -232,7 +234,7 @@ const newTranslationDefaults = computed(() => {
 <style lang="scss" scoped>
 .translation-input {
 	.selected-translation {
-		margin-right: auto;
+		margin-inline-end: auto;
 		padding: 2px 8px 0;
 		color: var(--theme--primary);
 		background-color: var(--theme--primary-background);
@@ -260,7 +262,7 @@ const newTranslationDefaults = computed(() => {
 }
 
 .search {
-	padding: 12px 8px 6px 8px;
+	padding: 12px 8px 6px;
 
 	.search-input {
 		--input-height: 40px;
@@ -286,9 +288,7 @@ const newTranslationDefaults = computed(() => {
 	}
 
 	:deep(mark) {
-		flex-basis: auto;
-		flex-grow: 0;
-		flex-shrink: 1;
+		flex: 0 1 auto;
 		color: var(--theme--primary);
 	}
 

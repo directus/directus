@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ApiOutput } from '@directus/extensions';
+import { ApiOutput } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ExtensionState, ExtensionType } from '../types';

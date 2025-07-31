@@ -5,6 +5,7 @@ import NotificationItem from './notification-item.vue';
 
 defineProps<{
 	sidebarOpen?: boolean;
+	noSidebar?: boolean;
 }>();
 
 const notificationsStore = useNotificationsStore();
@@ -12,7 +13,12 @@ const queue = toRefs(notificationsStore).queue;
 </script>
 
 <template>
-	<transition-group class="notifications-group" :class="{ 'sidebar-open': sidebarOpen }" name="slide-fade" tag="div">
+	<transition-group
+		class="notifications-group"
+		:class="{ 'sidebar-open': sidebarOpen, 'no-sidebar': noSidebar }"
+		name="slide-fade"
+		tag="div"
+	>
 		<slot />
 		<notification-item
 			v-for="(notification, index) in queue"
@@ -38,30 +44,22 @@ const queue = toRefs(notificationsStore).queue;
 <style lang="scss" scoped>
 .notifications-group {
 	position: fixed;
-	top: 0;
-	right: 8px;
-	left: 8px;
+	inset-block-end: 24px;
+	inset-inline-end: 12px;
 	z-index: 50;
-	width: 256px;
-	direction: rtl;
-
-	> *,
-	> :deep(*) {
-		direction: ltr;
-	}
+	display: flex;
+	flex-direction: column;
+	align-items: end;
+	inline-size: 256px;
 
 	&.sidebar-open {
-		top: auto;
-		right: 12px;
-		bottom: 76px;
-		left: auto;
+		inset-block-end: 76px;
 	}
 
 	@media (min-width: 960px) {
-		top: auto;
-		right: 12px;
-		bottom: 76px;
-		left: auto;
+		&:not(.no-sidebar) {
+			inset-block-end: 76px;
+		}
 	}
 }
 
@@ -70,7 +68,7 @@ const queue = toRefs(notificationsStore).queue;
 }
 
 .slide-fade-enter-active {
-	transform: translateX(0px) scaleY(1) scaleX(1);
+	transform: translateX(0) scaleY(1) scaleX(1);
 	opacity: 1;
 }
 

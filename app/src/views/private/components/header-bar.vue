@@ -85,14 +85,14 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .header-bar {
 	position: sticky;
-	top: -1px;
-	left: 0;
+	inset-block-start: -1px;
+	inset-inline-start: 0;
 	z-index: 5;
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	width: 100%;
-	height: calc(var(--header-bar-height) + var(--theme--header--border-width));
+	inline-size: 100%;
+	block-size: calc(var(--header-bar-height) + var(--theme--header--border-width));
 	margin: 0;
 	padding: 0 10px;
 	background-color: var(--theme--header--background);
@@ -100,7 +100,7 @@ onUnmounted(() => {
 	transition:
 		box-shadow var(--medium) var(--transition),
 		margin var(--fast) var(--transition);
-	border-bottom: var(--theme--header--border-width) solid var(--theme--header--border-color);
+	border-block-end: var(--theme--header--border-width) solid var(--theme--header--border-color);
 
 	.nav-toggle {
 		@media (min-width: 960px) {
@@ -121,22 +121,22 @@ onUnmounted(() => {
 		display: flex;
 		align-items: center;
 		gap: 16px;
-		width: 100%;
-		max-width: calc(100% - 12px - 44px - 120px - 12px - 8px);
-		height: 100%;
-		margin-left: 16px;
+		inline-size: 100%;
+		max-inline-size: calc(100% - 12px - 44px - 120px - 12px - 8px);
+		block-size: 100%;
+		margin-inline-start: 16px;
 		overflow: hidden;
 
 		@media (min-width: 600px) {
-			max-width: 70%;
+			max-inline-size: 70%;
 		}
 
 		&.full {
-			margin-right: 12px;
-			padding-right: 0;
+			margin-inline-end: 12px;
+			padding-inline-end: 0;
 			@media (min-width: 600px) {
-				margin-right: 20px;
-				padding-right: 20px;
+				margin-inline-end: 20px;
+				padding-inline-end: 20px;
 			}
 		}
 
@@ -144,8 +144,8 @@ onUnmounted(() => {
 			--v-breadcrumb-color: var(--theme--header--headline--foreground);
 
 			position: absolute;
-			top: 2px;
-			left: 0;
+			inset-block-start: 2px;
+			inset-inline-start: 0;
 			font-weight: 600;
 			font-size: 12px;
 			white-space: nowrap;
@@ -154,7 +154,7 @@ onUnmounted(() => {
 			font-family: var(--theme--header--headline--font-family);
 
 			@media (min-width: 600px) {
-				top: -2px;
+				inset-block-start: -2px;
 			}
 		}
 
@@ -167,7 +167,7 @@ onUnmounted(() => {
 			.type-title {
 				color: var(--theme--header--title--foreground);
 				flex-grow: 1;
-				width: 100%;
+				inline-size: 100%;
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
@@ -178,7 +178,7 @@ onUnmounted(() => {
 			:deep(.type-title) {
 				.render-template {
 					img {
-						height: 24px;
+						block-size: 24px;
 					}
 				}
 			}
@@ -186,8 +186,8 @@ onUnmounted(() => {
 	}
 
 	&.small {
-		top: 0;
-		height: 60px;
+		inset-block-start: 0;
+		block-size: 60px;
 	}
 
 	&.small .title-container .headline {
@@ -213,7 +213,7 @@ onUnmounted(() => {
 
 	.sidebar-toggle {
 		flex-shrink: 0;
-		margin-left: 8px;
+		margin-inline-start: 8px;
 
 		@media (min-width: 960px) {
 			display: none;
@@ -228,13 +228,13 @@ onUnmounted(() => {
 
 			/* Somewhat hacky way to make sure we fill
 			the empty space caused by the margin with
-			the appropriate color*/
+			the appropriate color */
 			&::before {
 				content: '';
-				width: 100%;
-				height: 24px;
-				bottom: 100%;
-				left: 0;
+				inline-size: 100%;
+				block-size: 24px;
+				inset-block-end: 100%;
+				inset-inline-start: 0;
 				background-color: var(--theme--header--background);
 				position: absolute;
 			}

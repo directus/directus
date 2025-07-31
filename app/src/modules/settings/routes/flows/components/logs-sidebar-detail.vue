@@ -117,7 +117,7 @@ function onToggle(open: boolean) {
 }
 
 .v-detail + .v-detail {
-	margin-top: 12px;
+	margin-block-start: 12px;
 }
 
 .v-icon {
@@ -127,7 +127,7 @@ function onToggle(open: boolean) {
 .toggle-failed {
 	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
-	margin-bottom: 24px;
+	margin-block-end: 24px;
 
 	&.active,
 	&:hover {
@@ -143,17 +143,17 @@ function onToggle(open: boolean) {
 		position: relative;
 		z-index: 2;
 		display: block;
-		width: 100%;
-		text-align: left;
+		inline-size: 100%;
+		text-align: start;
 	}
 
 	&::before {
 		position: absolute;
-		top: -4px;
-		left: -4px;
+		inset-block-start: -4px;
+		inset-inline-start: -4px;
 		z-index: 1;
-		width: calc(100% + 8px);
-		height: calc(100% + 8px);
+		inline-size: calc(100% + 8px);
+		block-size: calc(100% + 8px);
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;
@@ -177,18 +177,18 @@ function onToggle(open: boolean) {
 	}
 
 	& + & {
-		margin-top: 8px;
+		margin-block-start: 8px;
 	}
 }
 
 .empty {
-	margin-left: 2px;
+	margin-inline-start: 2px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 
 .v-pagination {
 	justify-content: center;
-	margin-top: 32px;
+	margin-block-start: 32px;
 }
 </style>

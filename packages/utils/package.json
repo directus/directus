@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "13.0.7",
+	"version": "13.0.8",
 	"description": "Utilities shared between the Directus packages",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -29,7 +29,8 @@
 		"build:node": "tsup node/index.ts --tsconfig node/tsconfig.json --out-dir dist/node --format=esm --dts",
 		"build:shared": "tsup shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --format=esm --dts",
 		"dev": "pnpm run '/^build:.*/' --watch",
-		"test": "vitest --watch=false"
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
@@ -38,23 +39,23 @@
 		"fs-extra": "11.3.0",
 		"joi": "17.13.3",
 		"js-yaml": "4.1.0",
-		"lodash-es": "4.17.21",
+		"lodash-es": "catalog:",
 		"micromustache": "8.0.3"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
+		"@directus/tsconfig": "catalog:",
 		"@directus/schema-builder": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/fs-extra": "11.0.4",
 		"@types/js-yaml": "4.0.9",
-		"@types/lodash-es": "4.17.12",
-		"@types/node": "22.13.8",
+		"@types/lodash-es": "catalog:",
+		"@types/node": "catalog:",
 		"@types/tmp": "0.2.6",
-		"@vitest/coverage-v8": "2.1.9",
+		"@vitest/coverage-v8": "catalog:",
 		"tmp": "0.2.3",
-		"tsup": "8.4.0",
-		"typescript": "5.8.2",
-		"vitest": "2.1.9",
+		"tsup": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:",
 		"vue": "3.5.13"
 	},
 	"peerDependencies": {

@@ -462,7 +462,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	@media (min-width: 600px) {
 		&::before {
 			content: '•';
-			padding-right: 0.25rem;
+			padding-inline-end: 0.25rem;
 			color: var(--theme--foreground-subdued);
 		}
 	}
@@ -490,7 +490,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 }
 
 .version-name {
-	margin-left: 0.15em;
+	margin-inline-start: 0.15em;
 }
 
 .version-button {
@@ -507,7 +507,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 
 	&:focus-visible {
 		outline-offset: 0;
-		margin-right: var(--focus-ring-width);
+		margin-inline-end: var(--focus-ring-width);
 	}
 }
 </style>
