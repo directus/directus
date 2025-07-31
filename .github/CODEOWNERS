@@ -30,10 +30,10 @@
 /packages/validation @directus/engine
 
 /sdk/ @directus/engine
-/packages/create-directus-extension @directus/dx
-/packages/create-directus-project @directus/dx
-/packages/extensions-sdk @directus/dx
-/packages/specs @directus/dx
+/packages/create-directus-extension @directus/ecosystem
+/packages/create-directus-project @directus/ecosystem
+/packages/extensions-sdk @directus/ecosystem
+/packages/specs @directus/ecosystem
 
 /.github/actions/ @directus/infra
 /.github/workflows/ @directus/infra
