@@ -30,7 +30,6 @@
 		"@directus/utils": "workspace:*"
 	},
 	"devDependencies": {
-		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "catalog:",
 		"@types/express": "4.17.21",
 		"@vitest/coverage-v8": "catalog:",

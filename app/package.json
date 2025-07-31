@@ -39,7 +39,6 @@
 		"@directus/extensions-registry": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "workspace:*",
-		"@directus/random": "workspace:*",
 		"@directus/sdk": "workspace:*",
 		"@directus/stores": "workspace:*",
 		"@directus/system-data": "workspace:*",
