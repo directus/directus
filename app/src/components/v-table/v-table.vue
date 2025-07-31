@@ -8,6 +8,7 @@ import Draggable from 'vuedraggable';
 import TableHeader from './table-header.vue';
 import TableRow from './table-row.vue';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
+import { useShiftSelection } from '@/composables/use-shift-selection';
 
 const HeaderDefaults: Header = {
 	text: '',
@@ -123,6 +124,7 @@ const internalSort = computed<Sort>(
 );
 
 const reordering = ref<boolean>(false);
+const tableRowRefs = ref<InstanceType<typeof TableRow>[]>([]);
 
 const hasHeaderAppendSlot = computed(() => slots['header-append'] !== undefined);
 const hasHeaderContextMenuSlot = computed(() => slots['header-context-menu'] !== undefined);
@@ -178,6 +180,8 @@ const columnStyle = computed<{ header: string; rows: string }>(() => {
 	}
 });
 
+const shiftSelection = useShiftSelection();
+
 function itemHasNoKeyYet(item: Item) {
 	return !item[props.itemKey] && item.$index !== undefined;
 }
@@ -185,28 +189,70 @@ function itemHasNoKeyYet(item: Item) {
 function onItemSelected(event: ItemSelectEvent) {
 	if (props.disabled) return;
 
+	const currentIndex = props.items.findIndex((item: Item) => {
+		if (!props.selectionUseKeys && itemHasNoKeyYet(item)) {
+			return item.$index === event.item.$index;
+		}
+
+		if (props.selectionUseKeys) {
+			return item[props.itemKey] === event.item[props.itemKey];
+		}
+
+		return item[props.itemKey] === event.item[props.itemKey];
+	});
+
+	const shiftFlag = tableRowRefs.value[currentIndex]?.shiftFlag ?? false;
+
 	emit('item-selected', event);
 
 	let selection = clone(props.modelValue) as any[];
 
-	if (event.value === true) {
-		if (props.selectionUseKeys) {
-			selection.push(event.item[props.itemKey]);
-		} else {
-			selection.push(event.item);
-		}
-	} else {
-		selection = selection.filter((item: Item) => {
+	const selectionMask: boolean[] = props.items.map((item: Item) => {
+		for (const selectedItem of selection) {
 			if (!props.selectionUseKeys && itemHasNoKeyYet(item)) {
-				return item.$index !== event.item.$index;
+				if (selectedItem.$index === item.$index) { return true; }
+			} else if (props.selectionUseKeys) {
+				if (selectedItem === item[props.itemKey]) { return true; }
+			} else {
+				if (selectedItem[props.itemKey] === item[props.itemKey]) { return true; }
 			}
+		}
+		return false;
+	});
 
-			if (props.selectionUseKeys) {
-				return item !== event.item[props.itemKey];
+	if (props.showSelect === 'multiple') {
+		if (shiftFlag) {
+			const newSelectionMask = shiftSelection.updateSelection(selectionMask, currentIndex);
+			selection = selection.filter((_i: Item) => false);
+			const itemsToPush = props.items.filter((_item: Item, index: number) => newSelectionMask[index]);
+			for (const item of itemsToPush) {
+				if (props.selectionUseKeys) {
+					selection.push(item[props.itemKey]);
+				} else {
+					selection.push(item);
+				}
 			}
+		} else {
+			if (event.value === true) {
+				if (props.selectionUseKeys) {
+					selection.push(event.item[props.itemKey]);
+				} else {
+					selection.push(event.item);
+				}
+			} else {
+				selection = selection.filter((item: Item) => {
+					if (!props.selectionUseKeys && itemHasNoKeyYet(item)) {
+						return item.$index !== event.item.$index;
+					}
 
-			return item[props.itemKey] !== event.item[props.itemKey];
-		});
+					if (props.selectionUseKeys) {
+						return item !== event.item[props.itemKey];
+					}
+
+					return item[props.itemKey] !== event.item[props.itemKey];
+				});
+			}
+		}
 	}
 
 	if (props.showSelect === 'one') {
@@ -214,6 +260,20 @@ function onItemSelected(event: ItemSelectEvent) {
 	}
 
 	emit('update:modelValue', selection);
+}
+
+/** Helper function to set <table-row> refs */
+function setTableRowRef(el: InstanceType<typeof TableRow> | null, element: Item) {
+	const elementIndex = -1;
+	if (el) {
+		if (elementIndex >= 0) {
+			tableRowRefs.value[elementIndex] = el;
+		} else {
+			tableRowRefs.value.push(el);
+		}
+	} else {
+		delete tableRowRefs.value[elementIndex];
+	}
 }
 
 function getSelectedState(item: Item) {
@@ -325,6 +385,7 @@ function updateSort(newSort: Sort) {
 			>
 				<template #item="{ element }">
 					<table-row
+						:ref="(el: InstanceType<typeof TableRow>) => setTableRowRef(el, element)"
 						:headers="internalHeaders"
 						:item="element"
 						:show-select="disabled ? 'none' : showSelect"

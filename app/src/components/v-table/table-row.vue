@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { ShowSelect } from '@directus/types';
-import { computed } from 'vue';
+import { computed, ref, Ref } from 'vue';
+import VCheckbox from '@/components/v-checkbox.vue';
 import type { Header, Item } from './types';
+import type { ComponentPublicInstance } from 'vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -28,11 +30,21 @@ const props = withDefaults(
 
 const emit = defineEmits(['click', 'item-selected']);
 
+const checkbox: Ref<InstanceType<typeof VCheckbox> | null> = ref<InstanceType<typeof VCheckbox> | null>(null);
+
 const cssHeight = computed(() => {
 	return {
 		tableRow: props.height + 2 + 'px',
 		renderTemplateImage: props.height - 16 + 'px',
 	};
+});
+
+const shiftFlag = computed(() => {
+	return checkbox.value?.shiftFlag;
+});
+
+defineExpose({
+	shiftFlag,
 });
 
 function onKeydown(e: KeyboardEvent) {
@@ -55,6 +67,7 @@ function onKeydown(e: KeyboardEvent) {
 
 		<td v-if="showSelect !== 'none'" class="select cell" @click.stop>
 			<v-checkbox
+				ref="checkbox"
 				:icon-on="showSelect === 'one' ? 'radio_button_checked' : undefined"
 				:icon-off="showSelect === 'one' ? 'radio_button_unchecked' : undefined"
 				:model-value="isSelected"

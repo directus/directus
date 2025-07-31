@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, useTemplateRef } from 'vue';
+import { computed, onMounted, useTemplateRef, ref, Ref } from 'vue';
 import { useSync } from '@directus/composables';
 
 interface Props {
@@ -68,6 +68,13 @@ const icon = computed<string>(() => {
 
 const customInput = useTemplateRef<HTMLInputElement>('custom-input');
 
+/** If the checkbox was checked while the user was holding the shift key, this flag will be set to true, otherwise false */
+const shiftFlag: Ref<boolean> = ref(false);
+
+defineExpose({
+	shiftFlag,
+});
+
 onMounted(() => {
 	if (props.autofocusCustomInput && props.customValue) {
 		customInput.value?.focus();
@@ -99,10 +106,12 @@ function toggleInput(): void {
 }
 
 function onClickIcon(e: MouseEvent): void {
+	shiftFlag.value = e.shiftKey; // Set the shift flag to true if the shift key was pressed
 	if (!props.customValue) return;
 	e.stopPropagation();
 	toggleInput();
 }
+
 </script>
 
 <template>
