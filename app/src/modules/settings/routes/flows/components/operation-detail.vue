@@ -172,7 +172,7 @@ function saveOperation() {
 							<v-icon name="vpn_key" />
 						</template>
 					</v-input>
-					<small v-if="!isOperationKeyUnique" class="error selectable">{{ t('operation_key_unique_error') }}</small>
+					<small v-if="!isOperationKeyUnique" class="error">{{ t('operation_key_unique_error') }}</small>
 				</div>
 			</div>
 

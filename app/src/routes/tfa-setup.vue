@@ -76,7 +76,7 @@ useHead({
 				</div>
 				<div>
 					<canvas :id="canvasID" class="qr" />
-					<output class="secret selectable">{{ secret }}</output>
+					<output class="secret">{{ secret }}</output>
 					<v-input ref="inputOTP" v-model="otp" type="text" :placeholder="t('otp')" :nullable="false" />
 					<v-error v-if="error" :error="error" />
 				</div>

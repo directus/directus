@@ -213,8 +213,6 @@ function useDeleteBookmark() {
 		--v-icon-color: var(--theme--foreground-subdued);
 
 		opacity: 0;
-		-webkit-user-select: none;
-		user-select: none;
 		transition: opacity var(--fast) var(--transition);
 	}
 
@@ -223,8 +221,6 @@ function useDeleteBookmark() {
 	&:focus-visible .ctx-toggle,
 	&:hover .ctx-toggle {
 		opacity: 1;
-		-webkit-user-select: auto;
-		user-select: auto;
 	}
 }
 

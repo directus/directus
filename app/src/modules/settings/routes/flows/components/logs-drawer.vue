@@ -90,15 +90,15 @@ const steps = computed(() => {
 
 					<div class="inset">
 						<v-detail v-if="triggerData.options" :label="t('options')">
-							<pre class="json selectable">{{ triggerData.options }}</pre>
+							<pre class="json">{{ triggerData.options }}</pre>
 						</v-detail>
 
 						<v-detail v-if="triggerData.trigger" :label="t('payload')">
-							<pre class="json selectable">{{ triggerData.trigger }}</pre>
+							<pre class="json">{{ triggerData.trigger }}</pre>
 						</v-detail>
 
 						<v-detail v-if="triggerData.accountability" :label="t('accountability')">
-							<pre class="json selectable">{{ triggerData.accountability }}</pre>
+							<pre class="json">{{ triggerData.accountability }}</pre>
 						</v-detail>
 					</div>
 				</div>
@@ -114,11 +114,11 @@ const steps = computed(() => {
 
 					<div class="inset">
 						<v-detail v-if="step.options" :label="t('options')">
-							<pre class="json selectable">{{ step.options }}</pre>
+							<pre class="json">{{ step.options }}</pre>
 						</v-detail>
 
 						<v-detail v-if="step.data !== null" :label="t('payload')">
-							<pre class="json selectable">{{ step.data }}</pre>
+							<pre class="json">{{ step.data }}</pre>
 						</v-detail>
 					</div>
 				</div>

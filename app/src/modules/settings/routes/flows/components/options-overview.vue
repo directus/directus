@@ -19,7 +19,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 	<div v-tooltip="panel.key" class="name">
 		{{ panel.id === '$trigger' ? t(`triggers.${panel.type}.name`) : panel.name }}
 	</div>
-	<dl class="options-overview selectable">
+	<dl class="options-overview">
 		<div
 			v-for="{ label, text, copyable } of translate(currentOperation?.overview(panel.options ?? {}, { flow }))"
 			:key="label"

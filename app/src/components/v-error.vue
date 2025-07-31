@@ -43,7 +43,7 @@ async function copyError() {
 </script>
 
 <template>
-	<div class="v-error selectable">
+	<div class="v-error">
 		<output>[{{ code }}] {{ message }}</output>
 		<v-icon
 			v-if="isCopySupported"

@@ -211,8 +211,6 @@ function onClick(event: PointerEvent) {
 		cursor: pointer;
 		transition: var(--fast) var(--transition);
 		transition-property: background-color, color;
-		-webkit-user-select: none;
-		user-select: none;
 
 		&:not(.disabled):not(.dense):not(.block):hover {
 			color: var(--v-list-item-color-hover, var(--v-list-color-hover, var(--theme--foreground)));

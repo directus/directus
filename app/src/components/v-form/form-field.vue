@@ -223,7 +223,7 @@ function useComputedValues() {
 
 		<small v-if="field.meta && field.meta.note" v-md="{ value: field.meta.note, target: '_blank' }" class="type-note" />
 
-		<small v-if="validationError" class="validation-error selectable">
+		<small v-if="validationError" class="validation-error">
 			<template v-if="showCustomValidationMessage">
 				{{ field.meta?.validation_message }}
 				<v-icon v-tooltip="validationMessage" small right name="help" />

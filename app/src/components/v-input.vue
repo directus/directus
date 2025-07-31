@@ -525,8 +525,6 @@ function useInvalidInput() {
 
 		input {
 			pointer-events: none;
-			-webkit-user-select: none;
-			user-select: none;
 
 			&::selection {
 				background-color: transparent;
