@@ -23,7 +23,6 @@ let mockItemsService: {
 beforeEach(() => {
 	vi.clearAllMocks();
 
-	// Mock ItemsService methods
 	mockItemsService = {
 		createMany: vi.fn(),
 		readMany: vi.fn(),
