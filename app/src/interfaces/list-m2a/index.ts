@@ -83,5 +83,6 @@ export default defineInterface({
 					  },
 		},
 	],
+	recommendedDisplays: ['related-values'],
 	preview: PreviewSVG,
 });
