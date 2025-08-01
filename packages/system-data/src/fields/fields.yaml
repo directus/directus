@@ -65,6 +65,13 @@ fields:
     width: half
 
   - collection: directus_fields
+    field: clear_hidden_value_on_save
+    hidden: true
+    special:
+      - cast-boolean
+    width: half
+
+  - collection: directus_fields
     field: sort
     width: half
 

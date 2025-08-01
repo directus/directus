@@ -39,6 +39,10 @@ columns:
     type: boolean
     default: false
     nullable: false
+  clear_hidden_value_on_save:
+    type: boolean
+    default: false
+    nullable: false
   sort:
     type: integer
     unsigned: true
