@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "13.11.3",
+	"version": "13.12.0",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -27,6 +27,7 @@
 		"story:dev": "histoire dev",
 		"story:preview": "histoire preview",
 		"test": "vitest run",
+		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage",
 		"typecheck": "vue-tsc --noEmit"
 	},
@@ -38,7 +39,6 @@
 		"@directus/extensions-registry": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "workspace:*",
-		"@directus/random": "workspace:*",
 		"@directus/sdk": "workspace:*",
 		"@directus/stores": "workspace:*",
 		"@directus/system-data": "workspace:*",

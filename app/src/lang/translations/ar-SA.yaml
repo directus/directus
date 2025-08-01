@@ -1621,7 +1621,6 @@ translation_placeholder: أدخل ترجمة...
 value: قيمة
 view_project: عرض المشروع
 report_error: الإبلاغ عن خطأ
-start: إبدأ
 table: الجدول
 list: قائمة
 search_filter: البحث والتصفية
@@ -2053,6 +2052,7 @@ layouts:
   kanban:
     advanced: متقدم
 both: كل منهما
+start: إبدأ
 panels:
   label:
     name: تسمية

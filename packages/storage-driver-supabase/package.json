@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-supabase",
-	"version": "3.0.6",
+	"version": "3.0.7",
 	"description": "Supabase file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -36,6 +36,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
+		"@directus/types": "workspace:*",
 		"@ngneat/falso": "7.3.0",
 		"@vitest/coverage-v8": "catalog:",
 		"tsup": "catalog:",

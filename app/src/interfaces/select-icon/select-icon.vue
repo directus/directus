@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
-import { computed, ref } from 'vue';
+import { computed, ref, nextTick, watch, type Ref, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import icons from './icons.json';
 import { socialIcons } from '@/components/v-icon/social-icons';
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 withDefaults(
 	defineProps<{
@@ -21,6 +23,13 @@ const emit = defineEmits(['input']);
 const { t } = useI18n();
 
 const searchQuery = ref('');
+const menuActive = ref(false);
+const contentRef = ref<HTMLElement>();
+
+// for virtual scroller
+const MIN_ITEM_SIZE = 32;
+
+const { iconsPerRow, iconSize, gap } = useIconsPerRow(contentRef, menuActive);
 
 const mergedIcons = [
 	...icons,
@@ -43,9 +52,45 @@ const filteredIcons = computed(() => {
 	});
 });
 
+// Create flattened rows for virtualization
+const virtualRows = computed(() => {
+	const rows: Array<{
+		type: 'header' | 'icons';
+		groupName?: string;
+		icons?: string[];
+		rowIndex: number;
+		groupIndex: number;
+	}> = [];
+
+	filteredIcons.value.forEach((group, groupIndex) => {
+		if (group.icons.length > 0) {
+			// Add group header
+			rows.push({
+				type: 'header',
+				groupName: group.name,
+				rowIndex: rows.length,
+				groupIndex,
+			});
+
+			// Split icons into rows
+			for (let i = 0; i < group.icons.length; i += iconsPerRow.value) {
+				const rowIcons = group.icons.slice(i, i + iconsPerRow.value);
+
+				rows.push({
+					type: 'icons',
+					icons: rowIcons,
+					rowIndex: rows.length,
+					groupIndex,
+				});
+			}
+		}
+	});
+
+	return rows;
+});
+
 function setIcon(icon: string | null) {
 	searchQuery.value = '';
-
 	emit('input', icon);
 }
 
@@ -58,10 +103,86 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 
 	if (!e.repeat && !systemKeys && (e.target as HTMLInputElement).tagName === 'INPUT') activate();
 }
+
+interface IconsPerRowConfig {
+	iconSize?: number;
+	gap?: number;
+	contentPadding?: number;
+	rowPadding?: number;
+	defaultIconsPerRow?: number;
+}
+
+function useIconsPerRow(
+	contentRef: Ref<HTMLElement | undefined>,
+	menuActive: Ref<boolean>,
+	config: IconsPerRowConfig = {},
+) {
+	const { iconSize = 24, gap = 8, contentPadding = 16, rowPadding = 8, defaultIconsPerRow = 1 } = config;
+
+	const iconsPerRow = ref(defaultIconsPerRow);
+	let resizeObserver: ResizeObserver | null = null;
+
+	function calculateIconsPerRow() {
+		if (!contentRef.value) return;
+
+		const contentWidth = contentRef.value.clientWidth;
+
+		const availableWidth = contentWidth - contentPadding - rowPadding;
+		const iconsPerRowCalculated = Math.floor(availableWidth / (iconSize + gap));
+
+		iconsPerRow.value = Math.max(defaultIconsPerRow, iconsPerRowCalculated);
+	}
+
+	function setupResizeObserver() {
+		if (!contentRef.value) return;
+
+		if (resizeObserver) {
+			resizeObserver.disconnect();
+		}
+
+		resizeObserver = new ResizeObserver(() => {
+			calculateIconsPerRow();
+		});
+
+		resizeObserver.observe(contentRef.value);
+	}
+
+	function cleanupResizeObserver() {
+		if (resizeObserver) {
+			resizeObserver.disconnect();
+			resizeObserver = null;
+		}
+	}
+
+	// Calculate icons per row when menu opens
+	watch(menuActive, async (isActive) => {
+		if (isActive) {
+			await nextTick();
+			setupResizeObserver();
+			calculateIconsPerRow();
+		} else {
+			cleanupResizeObserver();
+		}
+	});
+
+	// Cleanup on unmount
+	onUnmounted(() => {
+		cleanupResizeObserver();
+	});
+
+	return {
+		iconsPerRow,
+		iconSize,
+		gap,
+		contentPadding,
+		rowPadding,
+		defaultIconsPerRow,
+	};
+}
 </script>
 
 <template>
-	<v-menu attached :disabled="disabled" no-focus-return>
+	<v-menu v-model="menuActive" attached :disabled="disabled" no-focus-return>
 		<template #activator="{ active, activate, deactivate, toggle }">
 			<v-input
 				v-model="searchQuery"
@@ -102,20 +223,42 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 			</v-input>
 		</template>
 
-		<div class="content" :class="width">
-			<template v-for="(group, index) in filteredIcons" :key="group.name">
-				<div v-if="group.icons.length > 0" class="icons">
-					<v-icon
-						v-for="icon in group.icons"
-						:key="icon"
-						:name="icon"
-						:class="{ active: icon === value }"
-						clickable
-						@click="setIcon(icon)"
-					/>
-				</div>
-				<v-divider v-if="group.icons.length > 0 && index !== filteredIcons.length - 1" />
-			</template>
+		<div ref="contentRef" class="content" :class="width">
+			<DynamicScroller
+				:min-item-size="MIN_ITEM_SIZE"
+				:items="virtualRows"
+				:buffer="400"
+				:prerender="10"
+				key-field="rowIndex"
+				page-mode
+			>
+				<template #default="{ item }">
+					<DynamicScrollerItem :item="item" active>
+						<v-divider v-if="item.type === 'header'" inline-title class="icon-row">
+							{{ item.groupName }}
+						</v-divider>
+
+						<div
+							v-else-if="item.type === 'icons'"
+							class="icon-row"
+							:style="{
+								'--icons-per-row': iconsPerRow,
+								'--icon-size': `${iconSize}px`,
+								'--gap': `${gap}px`,
+							}"
+						>
+							<v-icon
+								v-for="icon in item.icons"
+								:key="icon"
+								:name="icon"
+								:class="{ active: icon === value }"
+								clickable
+								@click="setIcon(icon)"
+							/>
+						</div>
+					</DynamicScrollerItem>
+				</template>
+			</DynamicScroller>
 		</div>
 	</v-menu>
 </template>
@@ -145,19 +288,17 @@ function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 	}
 
 	.v-divider {
-		--v-divider-color: var(--theme--background-normal);
-
-		margin: 0 22px;
+		--v-divider-label-color: var(--theme--foreground-subdued);
 	}
 }
 
-.icons {
+.icon-row {
 	display: grid;
-	grid-gap: 8px;
-	grid-template-columns: repeat(auto-fit, 24px);
-	justify-content: center;
-	padding: 20px 0;
+	grid-gap: var(--gap, 8px);
+	grid-template-columns: repeat(var(--icons-per-row, 1), var(--icon-size, 24px));
+	justify-content: start;
 	color: var(--theme--form--field--input--foreground-subdued);
+	padding: 4px;
 }
 
 .open-indicator {
