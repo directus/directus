@@ -2,7 +2,6 @@ import { mockedStore } from '@/__utils__/store';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { useCollection } from '@directus/composables';
-import { randomIdentifier } from '@directus/random';
 import { Field, ItemPermissions, Permission, PermissionsAction } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
@@ -24,7 +23,7 @@ beforeEach(() => {
 		}),
 	);
 
-	const collection = randomIdentifier();
+	const collection = 'test_collection';
 
 	sample = {
 		collection,
@@ -279,7 +278,7 @@ describe('non-admin users', () => {
 			});
 
 			it('should apply default values from presets', () => {
-				const namePreset = randomIdentifier();
+				const namePreset = 'test_name_preset';
 
 				const mockActionPermission = {
 					presets: { name: namePreset } as Record<string, any>,
