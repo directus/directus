@@ -3,7 +3,6 @@ import type { ShowSelect } from '@directus/types';
 import { computed, ref, Ref } from 'vue';
 import VCheckbox from '@/components/v-checkbox.vue';
 import type { Header, Item } from './types';
-import type { ComponentPublicInstance } from 'vue';
 
 const props = withDefaults(
 	defineProps<{

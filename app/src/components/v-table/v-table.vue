@@ -124,7 +124,10 @@ const internalSort = computed<Sort>(
 );
 
 const reordering = ref<boolean>(false);
-const tableRowRefs = ref<InstanceType<typeof TableRow>[]>([]);
+
+const tableRowLookup = ref<Map<number, { item: Item; row: InstanceType<typeof TableRow> }>>(
+	new Map<number, { item: Item; row: InstanceType<typeof TableRow> }>(),
+);
 
 const hasHeaderAppendSlot = computed(() => slots['header-append'] !== undefined);
 const hasHeaderContextMenuSlot = computed(() => slots['header-context-menu'] !== undefined);
@@ -201,7 +204,9 @@ function onItemSelected(event: ItemSelectEvent) {
 		return item[props.itemKey] === event.item[props.itemKey];
 	});
 
-	const shiftFlag = tableRowRefs.value[currentIndex]?.shiftFlag ?? false;
+	const rowRef: { item: Item; row: InstanceType<typeof TableRow> } | undefined = tableRowLookup.value.get(currentIndex);
+
+	const shiftFlag = rowRef?.row.shiftFlag ?? false;
 
 	emit('item-selected', event);
 
@@ -210,22 +215,32 @@ function onItemSelected(event: ItemSelectEvent) {
 	const selectionMask: boolean[] = props.items.map((item: Item) => {
 		for (const selectedItem of selection) {
 			if (!props.selectionUseKeys && itemHasNoKeyYet(item)) {
-				if (selectedItem.$index === item.$index) { return true; }
+				if (selectedItem.$index === item.$index) {
+					return true;
+				}
 			} else if (props.selectionUseKeys) {
-				if (selectedItem === item[props.itemKey]) { return true; }
+				if (selectedItem === item[props.itemKey]) {
+					return true;
+				}
 			} else {
-				if (selectedItem[props.itemKey] === item[props.itemKey]) { return true; }
+				if (selectedItem[props.itemKey] === item[props.itemKey]) {
+					return true;
+				}
 			}
 		}
+
 		return false;
 	});
 
 	if (props.showSelect === 'multiple') {
 		if (shiftFlag) {
 			const newSelectionMask = shiftSelection.updateSelection(selectionMask, currentIndex);
-			selection = selection.filter((_i: Item) => false);
-			const itemsToPush = props.items.filter((_item: Item, index: number) => newSelectionMask[index]);
-			for (const item of itemsToPush) {
+
+			const itemsToSelect = props.items.filter((_item: Item, index: number) => newSelectionMask[index]);
+
+			selection.splice(0);
+
+			for (const item of itemsToSelect) {
 				if (props.selectionUseKeys) {
 					selection.push(item[props.itemKey]);
 				} else {
@@ -262,17 +277,33 @@ function onItemSelected(event: ItemSelectEvent) {
 	emit('update:modelValue', selection);
 }
 
-/** Helper function to set <table-row> refs */
-function setTableRowRef(el: InstanceType<typeof TableRow> | null, element: Item) {
-	const elementIndex = -1;
-	if (el) {
-		if (elementIndex >= 0) {
-			tableRowRefs.value[elementIndex] = el;
-		} else {
-			tableRowRefs.value.push(el);
+/** Helper function to store <table-row> references in a lookup map.
+ * It is used at the function ref in <table-row> to keep track of the rows.
+ * @param el The `<table-row>` element reference or null if the row was removed
+ * @param element The item that corresponds to the row
+ */
+function setTableRowRef(el: any, element: Item) {
+	const elementIndex = props.items.findIndex((item: Item) => {
+		if (!props.selectionUseKeys && itemHasNoKeyYet(item)) {
+			return item.$index === element.$index;
 		}
+
+		if (props.selectionUseKeys) {
+			return item[props.itemKey] === element[props.itemKey];
+		}
+
+		return item[props.itemKey] === element[props.itemKey];
+	});
+
+	if (elementIndex < 0) {
+		//the case of negative elementIndex should not happen
+		return;
+	}
+
+	if (el) {
+		tableRowLookup.value.set(elementIndex, { item: element, row: el });
 	} else {
-		delete tableRowRefs.value[elementIndex];
+		tableRowLookup.value.delete(elementIndex);
 	}
 }
 
@@ -385,7 +416,7 @@ function updateSort(newSort: Sort) {
 			>
 				<template #item="{ element }">
 					<table-row
-						:ref="(el: InstanceType<typeof TableRow>) => setTableRowRef(el, element)"
+						:ref="(el) => setTableRowRef(el, element)"
 						:headers="internalHeaders"
 						:item="element"
 						:show-select="disabled ? 'none' : showSelect"

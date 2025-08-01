@@ -111,7 +111,6 @@ function onClickIcon(e: MouseEvent): void {
 	e.stopPropagation();
 	toggleInput();
 }
-
 </script>
 
 <template>
