@@ -7,6 +7,7 @@ import { FoldersService } from '../../services/folders.js';
 import type { ItemsService } from '../../services/index.js';
 import { PrimaryKeySchema, QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
+import prompts from './prompts/index.js';
 
 const FolderItemSchema = z.object({
 	id: PrimaryKeySchema.optional(),
@@ -92,8 +93,7 @@ const InputSchema = z.object({
 
 export const files = defineTool<z.infer<typeof ValidateSchema>>({
 	name: 'files',
-	description:
-		'Perform CRUD operations on files and folders, or fetch and return a base64-encoded Directus asset.\n\n### 🗂️ Available Types\n• `folder` – Operate on system folders\n• `file` – Operate on stored files and file metadata\n• `asset` – Retrieve a binary asset stream as base64-encoded image (read-only)\n\n### ⚙️ Available Actions\n• `create` – Add one or more folders/files (only for type `folder` or `file`)\n• `read` – Fetch one or more folders, files, or a specific asset by ID\n• `update` – Modify existing folder or file metadata\n• `delete` – Remove folders or files by keys\n\n### 🧭 Behavior\n#### `folder` / `file` Types\n- Uses corresponding service (`FoldersService` or `FilesService`)\n- CRUD operations supported\n- Accepts `data`, `keys`, and query options (`fields`, `filter`, etc.)\n\n#### `asset` Type\n- Only supports `read`\n- Requires an `id` parameter (file ID)\n- Returns a base64-encoded image stream with `mimeType`\n\n### 📘 Usage Notes\n- For `create` and `update`, `data` can be a single object or an array\n- `read` supports both key-based and query-based lookups\n- `delete` always uses the `keys` parameter\n- `asset` reads return a single file stream encoded in base64 (PNG output expected)\n\n### ⚠️ Limitations\n- `asset` streaming is read-only\n- `asset` only returns image content\n- Other binary formats (PDF, video, etc.) are not supported in this mode',
+	description: prompts.files,
 	inputSchema: InputSchema,
 	validateSchema: ValidateSchema,
 	async handler({ args, schema, accountability, sanitizedQuery }) {

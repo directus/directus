@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { ItemsService } from '../../services/items.js';
 import { ItemSchema, PartialItemInput, PrimaryKeySchema, QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
+import prompts from './prompts/index.js';
 
 const ValidateSchema = z.union([
 	PartialItemInput.extend({
@@ -43,8 +44,7 @@ const InputSchema = z.object({
 
 export const items = defineTool<z.infer<typeof ValidateSchema>>({
 	name: 'items',
-	description:
-		'Perform Create, Read, Update, Delete, and Upsert operations on items in any Directus collection. This tool provides full access to collection data with support for advanced filtering, relational queries, sorting, pagination, and efficient batch operations.\n\n### ⚙️ Available Actions\n• read - Fetch items with flexible filtering, pagination, and field selection\n• create - Add new items to a collection\n• update - Modify existing items (requires `id`)\n• delete - Remove items by `id`\n• upsert - Create or update based on primary key presence\n\n### 📘 Usage Patterns\n\n#### 🔍 READ\n- Use the `fields` parameter to specify exactly which fields to return\n- Use dot notation for relational fields (e.g., [\'title\', \'author.name\', \'category.slug\'])\n- Apply `filter` to target specific items and reduce data transfer\n- Use `limit` and `offset` for pagination\n- Sort using `sort`, e.g., [\'date_created\', \'-title\']\n\n#### 🧪 Common Filter Examples\n```json\n{ "status": { "_eq": "published" } }\n{ "status": { "_in": ["published", "draft"] } }\n{ "title": { "_icontains": "welcome" } }\n{ "price": { "_gte": 10, "_lte": 100 } }\n{ "date_created": { "_gte": "2024-01-01" } }\n{ "featured_image": { "_nnull": true } }\n{ "author.status": { "_eq": "active" } }\n{ "_or": [{ "status": { "_eq": "published" } }, { "featured": { "_eq": true } }] }\n{ "_and": [{ "status": { "_eq": "published" } }, { "date_created": { "_gte": "2024-01-01" } }] }\n{ "_and": [{ "status": { "_eq": "published" } }, { "_or": [{ "featured": { "_eq": true } }] }] }\n```\n\n#### ✏️ CREATE\n- Provide complete item data using the `data` or `item` parameter\n- Use `fields` to specify what should be returned\n- Returns the created item with ID\n\n#### 🔁 UPDATE\n- Requires both `id` and `data`\n- Supports partial updates\n- Use `fields` to control the response\n\n#### ❌ DELETE\n- Requires only the `id`\n- This is destructive — use with caution\n\n#### 🔄 UPSERT\n- Provide full item via `data` or `item`\n- If primary key exists, performs update; otherwise, inserts new\n- Ideal for import/sync scenarios\n\n### ⚡ Performance Tips\n- Always use `fields` to reduce payload size\n- Apply `filter` to limit results\n- Prefer targeted queries over broad fetches',
+	description: prompts.items,
 	inputSchema: InputSchema,
 	validateSchema: ValidateSchema,
 	annotations: {

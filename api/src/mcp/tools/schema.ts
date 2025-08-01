@@ -8,6 +8,7 @@ import { RelationsService } from '../../services/relations.js';
 import { getSnapshot } from '../../utils/get-snapshot.js';
 import { QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
+import prompts from './prompts/index.js';
 
 export interface fieldOverviewOutput {
 	name: string;
@@ -43,7 +44,7 @@ const OverviewInputSchema = z.object({
 export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
 	name: 'schema',
 	admin: true,
-	description: '',
+	description: prompts.schema,
 	inputSchema: OverviewInputSchema,
 	validateSchema: OverviewValidateSchema,
 	async handler() {
@@ -173,9 +174,9 @@ const CollectionInputSchema = z.object({
 });
 
 export const collection = defineTool<z.infer<typeof CollectionValidateSchema>>({
-	name: 'collection',
+	name: 'collections',
 	admin: true,
-	description: '',
+	description: prompts.collections,
 	inputSchema: CollectionInputSchema,
 	validateSchema: CollectionValidateSchema,
 	async handler({ args, schema, accountability }) {
@@ -276,9 +277,9 @@ const FieldInputSchema = z.object({
 });
 
 export const field = defineTool<z.infer<typeof FieldValidateSchema>>({
-	name: 'field',
+	name: 'fields',
 	admin: true,
-	description: '',
+	description: prompts.fields,
 	inputSchema: FieldInputSchema,
 	validateSchema: FieldValidateSchema,
 	async handler({ args, schema, accountability }) {
@@ -384,9 +385,9 @@ const RelationInputSchema = z.object({
 });
 
 export const relation = defineTool<z.infer<typeof RelationValidateSchema>>({
-	name: 'relation',
+	name: 'relations',
 	admin: true,
-	description: '',
+	description: prompts.relations,
 	inputSchema: RelationInputSchema,
 	validateSchema: RelationValidateSchema,
 	async handler({ args, schema, accountability }) {
