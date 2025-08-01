@@ -29,8 +29,8 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
-		"esbuild": "0.25.0",
-		"esbuild-yaml": "2.0.0",
+		"esbuild": "catalog:",
+		"esbuild-yaml": "catalog:",
 		"tsup": "catalog:",
 		"typescript": "catalog:"
 	}
