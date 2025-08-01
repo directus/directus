@@ -43,7 +43,7 @@ catalog:
   '@godaddy/terminus': 4.12.1
   '@google-cloud/storage': 7.16.0
   '@histoire/plugin-vue': 0.17.17
-  '@joeattardi/emoji-button': 4.6.4
+  '@joeattardi/emoji-button': 4.6.4 # [^3]
   '@json2csv/plainjs': 7.0.6
   '@keyv/redis': 5.0.0
   '@mapbox/mapbox-gl-draw-static-mode': 1.0.1 # [^1]
@@ -64,7 +64,7 @@ catalog:
   '@rollup/plugin-terser': 0.4.4
   '@rollup/plugin-virtual': 3.0.2
   '@rollup/plugin-yaml': 4.1.2
-  '@shopify/semaphore': 3.1.0
+  '@shopify/semaphore': 3.1.0 # [^3]
   '@sindresorhus/slugify': 2.2.1
   '@smithy/node-http-handler': 4.1.0
   '@supabase/storage-js': 2.10.4
@@ -114,6 +114,7 @@ catalog:
   '@types/sanitize-html': 2.16.0
   '@types/semver': 7.7.0
   '@types/stream-json': 1.7.8
+  '@types/tmp': 0.2.6
   '@types/wellknown': 0.5.8
   '@types/ws': 8.18.1
   '@unhead/addons': 2.0.13
@@ -191,14 +192,14 @@ catalog:
   js-yaml: 4.1.0
   js2xmlparser: 5.0.0
   json-to-graphql-query: 2.3.0
-  json2csv: 5.0.7
+  json2csv: 5.0.7 # [^3]
   jsonlint-mod: 1.7.6
   jsonwebtoken: 9.0.2
   keyv: 5.4.0
   knex-mock-client: 3.0.2
   knex: 3.1.0
   ky: 1.8.2
-  ldapjs: 3.0.7
+  ldapjs: 3.0.7 # [^3]
   liquidjs: 10.21.1
   lodash-es: 4.17.21
   lodash: 4.17.21
@@ -262,6 +263,7 @@ catalog:
   tar: 7.4.3
   tedious: 18.6.1
   tinymce: 6.8.5
+  tmp: 0.2.3
   tsup: 8.5.0
   tsx: 4.20.3
   tus-js-client: 4.3.1
@@ -282,10 +284,16 @@ catalog:
   ws: 8.18.3
   zod-validation-error: 4.0.1
   zod: 4.0.14
+  '@sinclair/typebox': 0.34.38
+  decamelize: 6.0.0
+  rollup-plugin-node-externals: 8.0.1
+  vite-plugin-dts: 4.5.4
+  lru-cache: 11.1.0
 
 ## Dependency Notes
 #  [^1]: Potential license change in updated version, needs more research
 #  [^2]: Bigger breaking change to be done in a separate PR
+#  [^3]: Deprecated
 
 catalogMode: strict
 

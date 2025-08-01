@@ -31,7 +31,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
-		"@types/express": "4.17.21",
+		"@types/express": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsup": "catalog:",
 		"typescript": "catalog:",
