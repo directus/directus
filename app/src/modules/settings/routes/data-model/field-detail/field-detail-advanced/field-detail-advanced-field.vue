@@ -10,6 +10,7 @@ const fieldDetailStore = useFieldDetailStore();
 const readonly = syncFieldDetailStoreProperty('field.meta.readonly', false);
 const hidden = syncFieldDetailStoreProperty('field.meta.hidden', false);
 const required = syncFieldDetailStoreProperty('field.meta.required', false);
+const clearHiddenValueOnSave = syncFieldDetailStoreProperty('field.meta.clear_hidden_value_on_save', false);
 const note = syncFieldDetailStoreProperty('field.meta.note');
 const translations = syncFieldDetailStoreProperty('field.meta.translations');
 const { loading, field } = storeToRefs(fieldDetailStore);
@@ -37,6 +38,11 @@ const userStore = useUserStore();
 		<div class="field half-left">
 			<div class="label type-label">{{ t('hidden') }}</div>
 			<v-checkbox v-model="hidden" :label="t('hidden_on_detail')" block />
+		</div>
+
+		<div class="field half-right">
+			<div class="label type-label">{{ t('clear_hidden_value_on_save') }}</div>
+			<v-checkbox v-model="clearHiddenValueOnSave" :label="t('clear_hidden_value_on_save')" block />
 		</div>
 
 		<div v-if="type !== 'group'" class="field full">

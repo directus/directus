@@ -51,6 +51,7 @@ export type FieldMeta = {
 	validation: Filter | null;
 	validation_message: string | null;
 	system?: true;
+	clear_hidden_value_on_save?: boolean;
 };
 
 export interface FieldRaw {
