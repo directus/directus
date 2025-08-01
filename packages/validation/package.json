@@ -37,6 +37,6 @@
 	"dependencies": {
 		"@directus/errors": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"joi": "17.13.3"
+		"joi": "catalog:"
 	}
 }

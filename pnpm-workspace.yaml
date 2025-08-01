@@ -8,13 +8,28 @@ packages:
   - tests/*
 
 catalog:
+  '@aws-sdk/client-s3': 3.858.0
+  '@aws-sdk/lib-storage': 3.858.0
+  '@azure/storage-blob': 12.28.0
+  '@changesets/get-github-info': 0.6.0
+  '@changesets/types': 6.1.0
   '@directus/tsconfig': 3.0.0
+  '@google-cloud/storage': 7.16.0
+  '@ngneat/falso': 8.0.2
+  '@npm/types': 2.1.0
+  '@pnpm/logger': 1001.0.0
+  '@pnpm/workspace.find-packages': 1000.0.31
+  '@pnpm/workspace.pkgs-graph': 1000.0.18
   '@rollup/plugin-commonjs': 28.0.6
   '@rollup/plugin-json': 6.1.0
   '@rollup/plugin-node-resolve': 16.0.1
   '@rollup/plugin-replace': 6.0.2
   '@rollup/plugin-terser': 0.4.4
   '@rollup/plugin-virtual': 3.0.2
+  '@shopify/semaphore': 3.1.0
+  '@smithy/node-http-handler': 4.1.0
+  '@supabase/storage-js': 2.10.4
+  '@tus/utils': 0.6.0
   '@types/fs-extra': 11.0.4
   '@types/inquirer': 9.0.8
   '@types/lodash-es': 4.17.12
@@ -25,25 +40,41 @@ catalog:
   '@vitest/coverage-v8': 3.2.4
   '@vue/test-utils': 2.4.6
   axios: 1.11.0
+  axios-cache-interceptor: 1.8.0
+  boxen: 8.0.1
   chalk: 5.4.1
   commander: 14.0.0
   dotenv: 17.2.1
   esbuild: 0.25.8
+  esbuild-plugin-replace: 1.4.0
+  esbuild-yaml: 3.0.3
   execa: 9.6.0
+  find-cache-directory: 6.0.0
+  form-data: 4.0.4
   fs-extra: 11.3.0
   inquirer: 12.9.0
+  joi: 17.13.3
+  knex: 3.1.0
   ky: 1.8.2
   lodash-es: 4.17.21
   log-symbols: 7.0.1
   ms: 2.1.3
   nanoid: 5.1.5
+  npm-watch: 0.13.0
+  openapi3-ts: 4.5.0
   ora: 8.2.0
+  p-queue: 8.1.0
+  rollup: 4.46.2
   rollup-plugin-esbuild: 6.2.1
   rollup-plugin-styler: 2.0.0
-  rollup: 4.46.2
   semver: 7.7.2
+  strip-ansi: 7.1.0
+  swagger-cli: 4.0.4
+  swagger-ui-watcher: 2.1.14
   tsup: 8.5.0
+  tus-js-client: 4.3.1
   typescript: 5.8.3
+  undici: 7.13.0
   update-check: 1.5.4
   vite: 7.0.6
   vitest: 3.2.4
