@@ -11,6 +11,7 @@ import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
+import { applyConditions } from '@/utils/apply-conditions';
 import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
@@ -127,6 +128,47 @@ export function useItem<T extends Item>(
 		}
 	}
 
+	function isFieldHiddenByCondition(field: Field, currentValues: Record<string, any>): boolean {
+		if (!field.meta?.conditions) return false;
+
+		const fieldWithConditions = applyConditions(currentValues, field);
+		return fieldWithConditions.meta?.hidden === true;
+	}
+
+	function shouldClearField(field: Field, currentValues: Record<string, any>): boolean {
+		// Check if field is marked for clearing on save
+		if (field.meta?.clear_hidden_value_on_save !== true) return false;
+
+		// Check if field is hidden
+		if (field.meta?.hidden === true) return true;
+
+		// Check if field is hidden by condition
+		if (isFieldHiddenByCondition(field, currentValues)) return true;
+
+		return false;
+	}
+
+	function clearHiddenFields(edits: Item, fields: Field[], currentValues: Record<string, any>): Item {
+		const clearedEdits = cloneDeep(edits);
+		let hasChanges = false;
+
+		for (const field of fields) {
+			if (shouldClearField(field, currentValues)) {
+				// Don't clear essential fields, regardless of the configuration
+				const shouldNotClear =
+					field.schema?.is_primary_key === true || field.schema?.is_generated === true || field.meta?.system === true;
+
+				if (!shouldNotClear) {
+					const defaultValue = field.schema?.default_value;
+					clearedEdits[field.field] = defaultValue !== undefined ? defaultValue : null;
+					hasChanges = true;
+				}
+			}
+		}
+
+		return hasChanges ? clearedEdits : edits;
+	}
+
 	async function save() {
 		saving.value = true;
 		validationErrors.value = [];
@@ -145,6 +187,9 @@ export function useItem<T extends Item>(
 
 		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
 
+		// Clear hidden fields if configured to do so
+		const finalEdits = clearHiddenFields(edits.value, fields, payloadToValidate);
+
 		const errors = validateItem(payloadToValidate, fields, isNew.value);
 		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
 
@@ -158,13 +203,13 @@ export function useItem<T extends Item>(
 			let response;
 
 			if (isNew.value) {
-				response = await api.post(getEndpoint(collection.value), edits.value);
+				response = await api.post(getEndpoint(collection.value), finalEdits);
 
 				notify({
 					title: i18n.global.t('item_create_success', 1),
 				});
 			} else {
-				response = await api.patch(itemEndpoint.value, edits.value);
+				response = await api.patch(itemEndpoint.value, finalEdits);
 
 				notify({
 					title: i18n.global.t('item_update_success', 1),
