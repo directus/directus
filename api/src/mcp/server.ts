@@ -58,6 +58,10 @@ export class DirectusMCP {
 		);
 	}
 
+	/**
+	 * This handleRequest function is not awaiting lower level logic resulting in the actual 
+	 * response being an asynchronous side effect happening after the function has returned
+	 */
 	handleRequest(req: Request, res: Response) {
 		const env = useEnv();
 
