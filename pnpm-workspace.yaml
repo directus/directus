@@ -49,6 +49,7 @@ catalog:
   vitest: 3.2.4
   vue: 3.5.18
   zod: 4.0.14
+  form-data: 4.0.4
 
 catalogMode: strict
 

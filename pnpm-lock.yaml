@@ -72,6 +72,9 @@ catalogs:
     execa:
       specifier: 9.6.0
       version: 9.6.0
+    form-data:
+      specifier: 4.0.4
+      version: 4.0.4
     fs-extra:
       specifier: 11.3.0
       version: 11.3.0
@@ -661,7 +664,7 @@ importers:
         specifier: 2.4.1
         version: 2.4.1
       form-data:
-        specifier: 4.0.4
+        specifier: 'catalog:'
         version: 4.0.4
       get-port:
         specifier: 7.1.0
