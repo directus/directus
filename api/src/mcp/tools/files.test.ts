@@ -1,4 +1,4 @@
-import type { Accountability, SchemaOverview } from '@directus/types';
+import type { Accountability, File, SchemaOverview } from '@directus/types';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AssetsService } from '../../services/assets.js';
 import { FilesService } from '../../services/files.js';
@@ -179,7 +179,12 @@ describe('files tool', () => {
 			});
 
 			it('should update folders using batch when data is array', async () => {
-				const batchData = [{ id: 'folder-1', name: 'updated-1' }];
+				const batchData = [{ id: 'folder-1', name: 'updated-1' }] as unknown as {
+					id: '';
+					name: string;
+					parent?: string | undefined;
+				};
+
 				const updatedKeys = ['folder-1'];
 
 				mockFoldersService.updateBatch.mockResolvedValue(updatedKeys);
@@ -267,7 +272,7 @@ describe('files tool', () => {
 
 		describe('create action', () => {
 			it('should create a file and return the result', async () => {
-				const fileData = { filename_download: 'test.jpg', type: 'image/jpeg' };
+				const fileData = { filename_download: 'test.jpg', type: 'image/jpeg' } as unknown as File;
 				const savedKeys = ['file-1'];
 				const expectedResult = [{ id: 'file-1', filename_download: 'test.jpg' }];
 
@@ -329,7 +334,7 @@ describe('files tool', () => {
 		describe('update action', () => {
 			it('should update files using keys', async () => {
 				const keys = ['file-1'];
-				const updateData = { filename_download: 'updated.jpg' };
+				const updateData = { filename_download: 'updated.jpg' } as unknown as File;
 				const expectedResult = [{ id: 'file-1', filename_download: 'updated.jpg' }];
 
 				mockFilesService.updateMany.mockResolvedValue(keys);
@@ -494,6 +499,7 @@ describe('files tool', () => {
 					args: {
 						type: 'asset',
 						action: 'create' as any,
+						id: '12345',
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,

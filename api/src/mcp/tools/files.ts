@@ -9,6 +9,7 @@ import { PrimaryKeySchema, QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
 
 const FolderItemSchema = z.object({
+	id: PrimaryKeySchema.optional(),
 	name: z.string(),
 	parent: z.string().optional(),
 });
