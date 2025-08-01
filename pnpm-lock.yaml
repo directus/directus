@@ -190,11 +190,11 @@ catalogs:
       specifier: 7.2.0
       version: 7.2.0
     '@tus/server':
-      specifier: 2.3.0
-      version: 2.3.0
+      specifier: 1.10.2
+      version: 1.10.2
     '@tus/utils':
-      specifier: 0.6.0
-      version: 0.6.0
+      specifier: 0.5.1
+      version: 0.5.1
     '@types/async':
       specifier: 3.2.24
       version: 3.2.24
@@ -268,8 +268,8 @@ catalogs:
       specifier: 9.0.10
       version: 9.0.10
     '@types/ldapjs':
-      specifier: 3.0.6
-      version: 3.0.6
+      specifier: 2.2.5
+      version: 2.2.5
     '@types/lodash':
       specifier: 4.17.20
       version: 4.17.20
@@ -424,8 +424,8 @@ catalogs:
       specifier: 2.8.5
       version: 2.8.5
     cron-parser:
-      specifier: 5.3.0
-      version: 5.3.0
+      specifier: 4.9.0
+      version: 4.9.0
     cropperjs:
       specifier: 1.6.2
       version: 1.6.2
@@ -580,8 +580,8 @@ catalogs:
       specifier: 1.8.2
       version: 1.8.2
     ldapjs:
-      specifier: 3.0.7
-      version: 3.0.7
+      specifier: 2.3.3
+      version: 2.3.3
     liquidjs:
       specifier: 10.21.1
       version: 10.21.1
@@ -658,8 +658,8 @@ catalogs:
       specifier: 4.5.0
       version: 4.5.0
     openid-client:
-      specifier: 6.6.2
-      version: 6.6.2
+      specifier: 5.7.1
+      version: 5.7.1
     ora:
       specifier: 8.2.0
       version: 8.2.0
@@ -994,10 +994,10 @@ importers:
         version: 3.0.2(rollup@4.46.2)
       '@tus/server':
         specifier: 'catalog:'
-        version: 2.3.0
+        version: 1.10.2
       '@tus/utils':
         specifier: 'catalog:'
-        version: 0.6.0
+        version: 0.5.1
       argon2:
         specifier: 'catalog:'
         version: 0.43.1
@@ -1042,7 +1042,7 @@ importers:
         version: 2.8.5
       cron-parser:
         specifier: 'catalog:'
-        version: 5.3.0
+        version: 4.9.0
       date-fns:
         specifier: 'catalog:'
         version: 4.1.0
@@ -1132,7 +1132,7 @@ importers:
         version: 3.1.0(mysql2@3.14.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
       ldapjs:
         specifier: 'catalog:'
-        version: 3.0.7
+        version: 2.3.3
       liquidjs:
         specifier: 'catalog:'
         version: 10.21.1
@@ -1177,7 +1177,7 @@ importers:
         version: 4.5.0
       openid-client:
         specifier: 'catalog:'
-        version: 6.6.2
+        version: 5.7.1
       ora:
         specifier: 'catalog:'
         version: 8.2.0
@@ -1325,7 +1325,7 @@ importers:
         version: 9.0.10
       '@types/ldapjs':
         specifier: 'catalog:'
-        version: 3.0.6
+        version: 2.2.5
       '@types/lodash-es':
         specifier: 'catalog:'
         version: 4.17.12
@@ -1370,7 +1370,7 @@ importers:
         version: 8.18.1
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.0))
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(yaml@2.8.0))
       copyfiles:
         specifier: 'catalog:'
         version: 2.4.1
@@ -1988,7 +1988,7 @@ importers:
         version: 22.13.14
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.0))
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(yaml@2.8.0))
       tsup:
         specifier: 'catalog:'
         version: 8.5.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
@@ -2068,7 +2068,7 @@ importers:
         version: 22.13.14
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.0))
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(yaml@2.8.0))
       knex:
         specifier: 'catalog:'
         version: 3.1.0(mysql2@3.14.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
@@ -2275,7 +2275,7 @@ importers:
         version: 22.13.14
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.0))
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(yaml@2.8.0))
       tsup:
         specifier: 'catalog:'
         version: 8.5.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
@@ -2343,7 +2343,7 @@ importers:
         version: 7.7.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.0))
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(yaml@2.8.0))
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2424,7 +2424,7 @@ importers:
         version: 22.13.14
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.0))
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(yaml@2.8.0))
       tsup:
         specifier: 'catalog:'
         version: 8.5.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
@@ -2563,7 +2563,7 @@ importers:
         version: 22.13.14
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.0))
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(yaml@2.8.0))
       tsup:
         specifier: 'catalog:'
         version: 8.5.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
@@ -2596,7 +2596,7 @@ importers:
         version: 4.1.0
       '@tus/utils':
         specifier: 'catalog:'
-        version: 0.6.0
+        version: 0.5.1
       ms:
         specifier: 'catalog:'
         version: 2.1.3
@@ -2866,7 +2866,7 @@ importers:
         version: 7.7.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.0))
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(yaml@2.8.0))
       strip-ansi:
         specifier: 'catalog:'
         version: 7.1.0
@@ -2933,7 +2933,7 @@ importers:
         version: 0.2.6
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.0))
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(yaml@2.8.0))
       tmp:
         specifier: 'catalog:'
         version: 0.2.3
@@ -4822,9 +4822,6 @@ packages:
     resolution: {integrity: sha512-RIBFTIqxZSsxUqlcyoR7iiC632bq7kkOwYvZlvcVObHfrF4NhuKc4FKvu8iPCrEO+e3XsY7/UVpfgzg+M7ETzA==}
     engines: {node: '>= 16'}
 
-  '@ioredis/commands@1.2.0':
-    resolution: {integrity: sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg==}
-
   '@ioredis/commands@1.3.0':
     resolution: {integrity: sha512-M/T6Zewn7sDaBQEqIZ8Rb+i9y8qfGmq+5SDFSf9sA2lUZTmdDLVdOiQaeDp+Q4wElZ9HG1GAX5KhDaidp6LQsQ==}
 
@@ -4900,42 +4897,6 @@ packages:
 
   '@keyv/serialize@1.1.0':
     resolution: {integrity: sha512-RlDgexML7Z63Q8BSaqhXdCYNBy/JQnqYIwxofUrNLGCblOMHp+xux2Q8nLMLlPpgHQPoU0Do8Z6btCpRBEqZ8g==}
-
-  '@ldapjs/asn1@1.2.0':
-    resolution: {integrity: sha512-KX/qQJ2xxzvO2/WOvr1UdQ+8P5dVvuOLk/C9b1bIkXxZss8BaR28njXdPgFCpj5aHaf1t8PmuVnea+N9YG9YMw==}
-    deprecated: This package has been decomissioned. See https://github.com/ldapjs/node-ldapjs/blob/8ffd0bc9c149088a10ec4c1ec6a18450f76ad05d/README.md
-
-  '@ldapjs/asn1@2.0.0':
-    resolution: {integrity: sha512-G9+DkEOirNgdPmD0I8nu57ygQJKOOgFEMKknEuQvIHbGLwP3ny1mY+OTUYLCbCaGJP4sox5eYgBJRuSUpnAddA==}
-    deprecated: This package has been decomissioned. See https://github.com/ldapjs/node-ldapjs/blob/8ffd0bc9c149088a10ec4c1ec6a18450f76ad05d/README.md
-
-  '@ldapjs/attribute@1.0.0':
-    resolution: {integrity: sha512-ptMl2d/5xJ0q+RgmnqOi3Zgwk/TMJYG7dYMC0Keko+yZU6n+oFM59MjQOUht5pxJeS4FWrImhu/LebX24vJNRQ==}
-    deprecated: This package has been decomissioned. See https://github.com/ldapjs/node-ldapjs/blob/8ffd0bc9c149088a10ec4c1ec6a18450f76ad05d/README.md
-
-  '@ldapjs/change@1.0.0':
-    resolution: {integrity: sha512-EOQNFH1RIku3M1s0OAJOzGfAohuFYXFY4s73wOhRm4KFGhmQQ7MChOh2YtYu9Kwgvuq1B0xKciXVzHCGkB5V+Q==}
-    deprecated: This package has been decomissioned. See https://github.com/ldapjs/node-ldapjs/blob/8ffd0bc9c149088a10ec4c1ec6a18450f76ad05d/README.md
-
-  '@ldapjs/controls@2.1.0':
-    resolution: {integrity: sha512-2pFdD1yRC9V9hXfAWvCCO2RRWK9OdIEcJIos/9cCVP9O4k72BY1bLDQQ4KpUoJnl4y/JoD4iFgM+YWT3IfITWw==}
-    deprecated: This package has been decomissioned. See https://github.com/ldapjs/node-ldapjs/blob/8ffd0bc9c149088a10ec4c1ec6a18450f76ad05d/README.md
-
-  '@ldapjs/dn@1.1.0':
-    resolution: {integrity: sha512-R72zH5ZeBj/Fujf/yBu78YzpJjJXG46YHFo5E4W1EqfNpo1UsVPqdLrRMXeKIsJT3x9dJVIfR6OpzgINlKpi0A==}
-    deprecated: This package has been decomissioned. See https://github.com/ldapjs/node-ldapjs/blob/8ffd0bc9c149088a10ec4c1ec6a18450f76ad05d/README.md
-
-  '@ldapjs/filter@2.1.1':
-    resolution: {integrity: sha512-TwPK5eEgNdUO1ABPBUQabcZ+h9heDORE4V9WNZqCtYLKc06+6+UAJ3IAbr0L0bYTnkkWC/JEQD2F+zAFsuikNw==}
-    deprecated: This package has been decomissioned. See https://github.com/ldapjs/node-ldapjs/blob/8ffd0bc9c149088a10ec4c1ec6a18450f76ad05d/README.md
-
-  '@ldapjs/messages@1.3.0':
-    resolution: {integrity: sha512-K7xZpXJ21bj92jS35wtRbdcNrwmxAtPwy4myeh9duy/eR3xQKvikVycbdWVzkYEAVE5Ce520VXNOwCHjomjCZw==}
-    deprecated: This package has been decomissioned. See https://github.com/ldapjs/node-ldapjs/blob/8ffd0bc9c149088a10ec4c1ec6a18450f76ad05d/README.md
-
-  '@ldapjs/protocol@1.2.1':
-    resolution: {integrity: sha512-O89xFDLW2gBoZWNXuXpBSM32/KealKCTb3JGtJdtUQc7RjAk8XzrRgyz02cPAwGKwKPxy0ivuC7UP9bmN87egQ==}
-    deprecated: This package has been decomissioned. See https://github.com/ldapjs/node-ldapjs/blob/8ffd0bc9c149088a10ec4c1ec6a18450f76ad05d/README.md
 
   '@lezer/common@1.2.3':
     resolution: {integrity: sha512-w7ojc8ejBqr2REPsWxJjrMFsA/ysDCFICn8zEOR9mrqzOu2amhITYuLD8ag6XZf0CFXDrhKqw7+tW8cX66NaDA==}
@@ -6669,13 +6630,13 @@ packages:
   '@turf/meta@7.2.0':
     resolution: {integrity: sha512-igzTdHsQc8TV1RhPuOLVo74Px/hyPrVgVOTgjWQZzt3J9BVseCdpfY/0cJBdlSRI4S/yTmmHl7gAqjhpYH5Yaw==}
 
-  '@tus/server@2.3.0':
-    resolution: {integrity: sha512-7sj4Q3EPvMjS5z9JaNOZ8gvT6HZvDeg/RjEP0ebbfpAo1V095ivkzpKqV/mDIK/ioBwOKj+bOhTtNuueTjVCfw==}
-    engines: {node: '>=20.19.0'}
+  '@tus/server@1.10.2':
+    resolution: {integrity: sha512-ig5MM886fDTSJ8l37kc/cWSEjl0eaaSv2JtksPSfzrwqx2UXdXwpCwBTLoonJIpMVCdY8nBLNRSCzVRG88KSVA==}
+    engines: {node: '>=16'}
 
-  '@tus/utils@0.6.0':
-    resolution: {integrity: sha512-GpMpAQfVdC4UDhpsZrRPjGpdXg+JW5MquqMqtObUVsORwLBV6XI67iTT5be+z98THdqb6dl3bTLIElIdgPeo2g==}
-    engines: {node: '>=20.19.0'}
+  '@tus/utils@0.5.1':
+    resolution: {integrity: sha512-2crDHBKX0hKZfQXgTF5QIQSccg5fzn8L+oxpVRWAuBbeAdAkBIm4zVXV/LfyuQ1FO5zXW7iV/BI9zNWG5merHQ==}
+    engines: {node: '>=16'}
 
   '@tybys/wasm-util@0.10.0':
     resolution: {integrity: sha512-VyyPYFlOMNylG45GoAe0xDoLwWuowvf92F9kySqzYh8vmYm7D2u4iUJKa1tOUpS70Ku13ASrOkS4ScXFsTaCNQ==}
@@ -6815,8 +6776,8 @@ packages:
   '@types/keyv@3.1.4':
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
 
-  '@types/ldapjs@3.0.6':
-    resolution: {integrity: sha512-E2Tn1ltJDYBsidOT9QG4engaQeQzRQ9aYNxVmjCkD33F7cIeLPgrRDXAYs0O35mK2YDU20c/+ZkNjeAPRGLM0Q==}
+  '@types/ldapjs@2.2.5':
+    resolution: {integrity: sha512-Lv/nD6QDCmcT+V1vaTRnEKE8UgOilVv5pHcQuzkU1LcRe4mbHHuUo/KHi0LKrpdHhQY8FJzryF38fcVdeUIrzg==}
 
   '@types/linkify-it@5.0.0':
     resolution: {integrity: sha512-sVDA58zAw4eWAffKOaQH5/5j3XeayukzDk+ewSsnv3p4yJEZHCCzMDiZM8e0OUrRvmpGZ85jf4yDHkHsgBNr9Q==}
@@ -8445,9 +8406,6 @@ packages:
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
-  cookie-es@2.0.0:
-    resolution: {integrity: sha512-RAj4E421UYRgqokKUmotqAwuplYw15qtdXfY+hGzgCJ/MBjCVZcSoHK/kH9kocfjRjcDME7IiDWR/1WX1TM2Pg==}
-
   cookie-parser@1.4.7:
     resolution: {integrity: sha512-nGUvgXnotP3BsjiLX2ypbQnWoGUPIIfHQNZkkC668ntrzGWEZVW70HDEB1qnNGMicPje6EttlIgzo51YSwNQGw==}
     engines: {node: '>= 0.8.0'}
@@ -8512,10 +8470,6 @@ packages:
   cron-parser@4.9.0:
     resolution: {integrity: sha512-p0SaNjrHOnQeR8/VnfGbmg9te2kfyYSQ7Sc/j/6DtPL3JQvKxmjO9TSjNFpujqV3vEYYBvNNvXSxzyksBWAx1Q==}
     engines: {node: '>=12.0.0'}
-
-  cron-parser@5.3.0:
-    resolution: {integrity: sha512-IS4mnFu6n3CFgEmXjr+B2zzGHsjJmHEdN+BViKvYSiEn3KWss9ICRDETDX/VZldiW82B94OyAZm4LIT4vcKK0g==}
-    engines: {node: '>=18'}
 
   croner@4.1.97:
     resolution: {integrity: sha512-/f6gpQuxDaqXu+1kwQYSckUglPaOrHdbIlBAu0YuW8/Cdb45XwXYNUBXg3r/9Mo6n540Kn/smKcZWko5x99KrQ==}
@@ -10068,10 +10022,6 @@ packages:
     resolution: {integrity: sha512-Ju0Bz/cEia55xDwUWEa8+olFpCiQoypjnQySseKtmjNrnps3P+xfpUmGr90T7yjlVJmOtybRvPXhKMbHr+fWnw==}
     engines: {node: '>= 0.10'}
 
-  ioredis@5.5.0:
-    resolution: {integrity: sha512-7CutT89g23FfSa8MDoIFs2GYYa0PaNiW/OrT+nRyjRXHDZd17HmIgy+reOQ/yhh72NznNjGuS8kbCAcA4Ro4mw==}
-    engines: {node: '>=12.22.0'}
-
   ioredis@5.7.0:
     resolution: {integrity: sha512-NUcA93i1lukyXU+riqEyPtSEkyFq8tX90uL659J+qpCZ3rEdViB/APC58oAhIh3+bJln2hzdlZbBZsGNrlsR8g==}
     engines: {node: '>=12.22.0'}
@@ -10285,8 +10235,8 @@ packages:
   joi@17.13.3:
     resolution: {integrity: sha512-otDA4ldcIx+ZXsKHWmp0YizCweVRZG96J10b0FevjfuncLO1oX59THoAmHkNubYJ+9gWsYsp5k8v4ib6oDv1fA==}
 
-  jose@6.0.12:
-    resolution: {integrity: sha512-T8xypXs8CpmiIi78k0E+Lk7T2zlK4zDyg+o1CZ4AkOHgDg98ogdP2BeZ61lTFKFyoEwJ9RgAgN+SdM3iPgNonQ==}
+  jose@4.15.9:
+    resolution: {integrity: sha512-1vUQX+IdDMVPj4k8kOxgUqlcK518yluMuGZwqlr44FS1ppZB/5GWh4rZG89erpOBOJjU/OBsnCVFfapsRz6nEA==}
 
   joycon@3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
@@ -10499,8 +10449,13 @@ packages:
   launch-editor@2.11.0:
     resolution: {integrity: sha512-R/PIF14L6e2eHkhvQPu7jDRCr0msfCYCxbYiLgkkAGi0dVPWuM+RrsPu0a5dpuNe0KWGL3jpAkOlv53xGfPheQ==}
 
-  ldapjs@3.0.7:
-    resolution: {integrity: sha512-1ky+WrN+4CFMuoekUOv7Y1037XWdjKpu0xAPwSP+9KdvmV9PG+qOKlssDV6a+U32apwxdD3is/BZcWOYzN30cg==}
+  ldap-filter@0.3.3:
+    resolution: {integrity: sha512-/tFkx5WIn4HuO+6w9lsfxq4FN3O+fDZeO9Mek8dCD8rTUpqzRa766BOBO7BcGkn3X86m5+cBm1/2S/Shzz7gMg==}
+    engines: {node: '>=0.8'}
+
+  ldapjs@2.3.3:
+    resolution: {integrity: sha512-75QiiLJV/PQqtpH+HGls44dXweviFwQ6SiIK27EqzKQ5jU/7UFrl2E5nLdQ3IYRBzJ/AVFJI66u0MZ0uofKYwg==}
+    engines: {node: '>=10.13.0'}
     deprecated: This package has been decomissioned. See https://github.com/ldapjs/node-ldapjs/blob/8ffd0bc9c149088a10ec4c1ec6a18450f76ad05d/README.md
 
   leven@2.1.0:
@@ -11469,15 +11424,16 @@ packages:
   nwsapi@2.2.21:
     resolution: {integrity: sha512-o6nIY3qwiSXl7/LuOU0Dmuctd34Yay0yeuZRLFmDPrrdHpXKFndPj3hM+YEPVHYC5fx2otBx4Ilc/gyYSAUaIA==}
 
-  oauth4webapi@3.6.1:
-    resolution: {integrity: sha512-b39+drVyA4aNUptFOhkkmGWnG/BE7dT29SW/8PVYElqp7j/DBqzm5SS1G+MUD07XlTcBOAG+6Cb/35Cx2kHIuQ==}
-
   object-assign@4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
 
   object-code@1.3.3:
     resolution: {integrity: sha512-/Ds4Xd5xzrtUOJ+xJQ57iAy0BZsZltOHssnDgcZ8DOhgh41q1YJCnTPnWdWSLkNGNnxYzhYChjc5dgC9mEERCA==}
+
+  object-hash@2.2.0:
+    resolution: {integrity: sha512-gScRMn0bS5fH+IuwyIFgnh9zBdo4DV+6GhygmWM9HyNJSgS0hScp1f5vjtm7oIIOiT9trXrShAkLFSc2IqKNgw==}
+    engines: {node: '>= 6'}
 
   object-hash@3.0.0:
     resolution: {integrity: sha512-RSn9F68PjH9HqtltsSnqYC1XXoWe9Bju5+213R98cNGttag9q9yAOTzdbsqvIa7aNm5WffBZFpWYr2aWrklWAw==}
@@ -11495,6 +11451,10 @@ packages:
 
   ohash@2.0.11:
     resolution: {integrity: sha512-RdR9FQrFwNBNXAr4GixM8YaRZRJ5PUWbKYbE5eOsrwAjJW0q2REGcf79oYPsLyskQCZG1PLN+S/K1V00joZAoQ==}
+
+  oidc-token-hash@5.1.1:
+    resolution: {integrity: sha512-D7EmwxJV6DsEB6vOFLrBM2OzsVgQzgPWyHlV2OOAVj772n+WTXpudC9e9u5BVKQnYwaD30Ivhi9b+4UeBcGu9g==}
+    engines: {node: ^10.13.0 || >=12.0.0}
 
   on-exit-leak-free@0.2.0:
     resolution: {integrity: sha512-dqaz3u44QbRXQooZLTUKU41ZrzYrcvLISVgbrzbyCMxpmSLJvZ3ZamIJIZ29P6OhZIkNIQKosdeM6t1LYbA9hg==}
@@ -11548,8 +11508,8 @@ packages:
   openapi3-ts@4.5.0:
     resolution: {integrity: sha512-jaL+HgTq2Gj5jRcfdutgRGLosCy/hT8sQf6VOy+P+g36cZOjI1iukdPnijC+4CmeRzg/jEllJUboEic2FhxhtQ==}
 
-  openid-client@6.6.2:
-    resolution: {integrity: sha512-Xya5TNMnnZuTM6DbHdB4q0S3ig2NTAELnii/ASie1xDEr8iiB8zZbO871OWBdrw++sd3hW6bqWjgcmSy1RTWHA==}
+  openid-client@5.7.1:
+    resolution: {integrity: sha512-jDBPgSVfTnkIh71Hg9pRvtJc6wTwqjRkN88+gCFtYWrlP4Yx2Dsrow8uPi3qLr/aeymPF3o2+dS+wOpglK04ew==}
 
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
@@ -12316,9 +12276,6 @@ packages:
   process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
 
-  process-warning@2.3.2:
-    resolution: {integrity: sha512-n9wh8tvBe5sFmsqlg+XQhaQLumwpqoAUruLwjCopgTmUBjJ/fjtBsJzKleCaIGBOMXYEhp1YfKl4d7rJ5ZKJGA==}
-
   process-warning@4.0.1:
     resolution: {integrity: sha512-3c2LzQ3rY9d0hc1emcsHhfT9Jwz0cChib/QN89oME2R451w5fy3f0afAhERFZAwrbDU43wk12d0ORBpDVME50Q==}
 
@@ -12971,9 +12928,6 @@ packages:
   set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
 
-  set-cookie-parser@2.7.1:
-    resolution: {integrity: sha512-IOc8uWeOZgnb3ptbCURJWNjWUPcO3ZnTTdzsurqERrP6nPyv+paC55vJM0LpOlT2ne+Ix+9+CRG1MNLlyZ4GjQ==}
-
   setprototypeof@1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
 
@@ -13212,11 +13166,6 @@ packages:
   sqlstring@2.3.3:
     resolution: {integrity: sha512-qC9iz2FlN7DQl3+wjwn3802RTyjCx7sDvfQEXchwa6CWOx07/WVfh91gBmQ9fahw8snwGEWU3xGzOt4tFyHLxg==}
     engines: {node: '>= 0.6'}
-
-  srvx@0.8.3:
-    resolution: {integrity: sha512-1DSoBr5Hd7Oddb3/lYxjcETdwd689WQ7KBaAnwu5ZZyqEufPJA72Mk/RmluDGYSVpFpjWAItPSL0Z9aMw5ewAQ==}
-    engines: {node: '>=20.16.0'}
-    hasBin: true
 
   ssri@10.0.5:
     resolution: {integrity: sha512-bSf16tAFkGeRlUNDjXu8FzaMQt6g2HZJrun7mtMbIPOddxt3GLMSz5VWUWcqTJUPfLEaDIepGxv+bYQW49596A==}
@@ -17087,9 +17036,6 @@ snapshots:
 
   '@intlify/shared@11.1.11': {}
 
-  '@ioredis/commands@1.2.0':
-    optional: true
-
   '@ioredis/commands@1.3.0': {}
 
   '@isaacs/balanced-match@4.0.1': {}
@@ -17178,50 +17124,6 @@ snapshots:
     optional: true
 
   '@keyv/serialize@1.1.0': {}
-
-  '@ldapjs/asn1@1.2.0': {}
-
-  '@ldapjs/asn1@2.0.0': {}
-
-  '@ldapjs/attribute@1.0.0':
-    dependencies:
-      '@ldapjs/asn1': 2.0.0
-      '@ldapjs/protocol': 1.2.1
-      process-warning: 2.3.2
-
-  '@ldapjs/change@1.0.0':
-    dependencies:
-      '@ldapjs/asn1': 2.0.0
-      '@ldapjs/attribute': 1.0.0
-
-  '@ldapjs/controls@2.1.0':
-    dependencies:
-      '@ldapjs/asn1': 1.2.0
-      '@ldapjs/protocol': 1.2.1
-
-  '@ldapjs/dn@1.1.0':
-    dependencies:
-      '@ldapjs/asn1': 2.0.0
-      process-warning: 2.3.2
-
-  '@ldapjs/filter@2.1.1':
-    dependencies:
-      '@ldapjs/asn1': 2.0.0
-      '@ldapjs/protocol': 1.2.1
-      process-warning: 2.3.2
-
-  '@ldapjs/messages@1.3.0':
-    dependencies:
-      '@ldapjs/asn1': 2.0.0
-      '@ldapjs/attribute': 1.0.0
-      '@ldapjs/change': 1.0.0
-      '@ldapjs/controls': 2.1.0
-      '@ldapjs/dn': 1.1.0
-      '@ldapjs/filter': 2.1.1
-      '@ldapjs/protocol': 1.2.1
-      process-warning: 2.3.2
-
-  '@ldapjs/protocol@1.2.1': {}
 
   '@lezer/common@1.2.3': {}
 
@@ -19643,20 +19545,18 @@ snapshots:
       '@turf/helpers': 7.2.0
       '@types/geojson': 7946.0.16
 
-  '@tus/server@2.3.0':
+  '@tus/server@1.10.2':
     dependencies:
-      '@tus/utils': 0.6.0
+      '@tus/utils': 0.5.1
       debug: 4.4.1(supports-color@5.5.0)
       lodash.throttle: 4.1.1
-      set-cookie-parser: 2.7.1
-      srvx: 0.8.3
     optionalDependencies:
       '@redis/client': 1.6.0
-      ioredis: 5.5.0
+      ioredis: 5.7.0
     transitivePeerDependencies:
       - supports-color
 
-  '@tus/utils@0.6.0': {}
+  '@tus/utils@0.5.1': {}
 
   '@tybys/wasm-util@0.10.0':
     dependencies:
@@ -19808,7 +19708,7 @@ snapshots:
     dependencies:
       '@types/node': 24.1.0
 
-  '@types/ldapjs@3.0.6':
+  '@types/ldapjs@2.2.5':
     dependencies:
       '@types/node': 24.1.0
 
@@ -20127,7 +20027,7 @@ snapshots:
       vite: 7.0.6(@types/node@24.1.0)(jiti@1.21.7)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.0)
       vue: 3.5.18(typescript@5.8.3)
 
-  '@vitest/coverage-v8@3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.0))':
+  '@vitest/coverage-v8@3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(sass@1.83.4)(terser@5.37.0)(yaml@2.8.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
@@ -21558,8 +21458,6 @@ snapshots:
 
   convert-source-map@2.0.0: {}
 
-  cookie-es@2.0.0: {}
-
   cookie-parser@1.4.7:
     dependencies:
       cookie: 0.7.2
@@ -21619,10 +21517,6 @@ snapshots:
   crelt@1.0.6: {}
 
   cron-parser@4.9.0:
-    dependencies:
-      luxon: 3.7.1
-
-  cron-parser@5.3.0:
     dependencies:
       luxon: 3.7.1
 
@@ -23424,21 +23318,6 @@ snapshots:
 
   interpret@2.2.0: {}
 
-  ioredis@5.5.0:
-    dependencies:
-      '@ioredis/commands': 1.2.0
-      cluster-key-slot: 1.1.2
-      debug: 4.4.1(supports-color@5.5.0)
-      denque: 2.1.0
-      lodash.defaults: 4.2.0
-      lodash.isarguments: 3.1.0
-      redis-errors: 1.2.0
-      redis-parser: 3.0.0
-      standard-as-callback: 2.1.0
-    transitivePeerDependencies:
-      - supports-color
-    optional: true
-
   ioredis@5.7.0:
     dependencies:
       '@ioredis/commands': 1.3.0
@@ -23613,7 +23492,7 @@ snapshots:
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
 
-  jose@6.0.12: {}
+  jose@4.15.9: {}
 
   joycon@3.1.1: {}
 
@@ -23867,19 +23746,17 @@ snapshots:
       picocolors: 1.1.1
       shell-quote: 1.8.3
 
-  ldapjs@3.0.7:
+  ldap-filter@0.3.3:
     dependencies:
-      '@ldapjs/asn1': 2.0.0
-      '@ldapjs/attribute': 1.0.0
-      '@ldapjs/change': 1.0.0
-      '@ldapjs/controls': 2.1.0
-      '@ldapjs/dn': 1.1.0
-      '@ldapjs/filter': 2.1.1
-      '@ldapjs/messages': 1.3.0
-      '@ldapjs/protocol': 1.2.1
+      assert-plus: 1.0.0
+
+  ldapjs@2.3.3:
+    dependencies:
       abstract-logging: 2.0.1
+      asn1: 0.2.6
       assert-plus: 1.0.0
       backoff: 2.5.0
+      ldap-filter: 0.3.3
       once: 1.4.0
       vasync: 2.2.1
       verror: 1.10.1
@@ -25089,11 +24966,11 @@ snapshots:
 
   nwsapi@2.2.21: {}
 
-  oauth4webapi@3.6.1: {}
-
   object-assign@4.1.1: {}
 
   object-code@1.3.3: {}
+
+  object-hash@2.2.0: {}
 
   object-hash@3.0.0: {}
 
@@ -25108,6 +24985,8 @@ snapshots:
       ufo: 1.6.1
 
   ohash@2.0.11: {}
+
+  oidc-token-hash@5.1.1: {}
 
   on-exit-leak-free@0.2.0: {}
 
@@ -25164,10 +25043,12 @@ snapshots:
     dependencies:
       yaml: 2.8.0
 
-  openid-client@6.6.2:
+  openid-client@5.7.1:
     dependencies:
-      jose: 6.0.12
-      oauth4webapi: 3.6.1
+      jose: 4.15.9
+      lru-cache: 6.0.0
+      object-hash: 2.2.0
+      oidc-token-hash: 5.1.1
 
   optionator@0.9.4:
     dependencies:
@@ -26002,8 +25883,6 @@ snapshots:
 
   process-nextick-args@2.0.1: {}
 
-  process-warning@2.3.2: {}
-
   process-warning@4.0.1: {}
 
   process-warning@5.0.0: {}
@@ -26807,8 +26686,6 @@ snapshots:
 
   set-blocking@2.0.0: {}
 
-  set-cookie-parser@2.7.1: {}
-
   setprototypeof@1.2.0: {}
 
   sharp@0.34.3:
@@ -27159,10 +27036,6 @@ snapshots:
 
   sqlstring@2.3.3:
     optional: true
-
-  srvx@0.8.3:
-    dependencies:
-      cookie-es: 2.0.0
 
   ssri@10.0.5:
     dependencies:
