@@ -1,130 +1,13 @@
-import type { Collection, Field, PrimaryKey, Relation, SnapshotRelation } from '@directus/types';
+import { InvalidPayloadError } from '@directus/errors';
+import type { Collection, Field, Item, Relation, SnapshotRelation } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
-import { ItemsService } from '../../services/items.js';
+import { CollectionsService } from '../../services/collections.js';
+import { FieldsService } from '../../services/fields.js';
+import { RelationsService } from '../../services/relations.js';
 import { getSnapshot } from '../../utils/get-snapshot.js';
-import { PrimaryKeySchema, QuerySchema } from '../schema.js';
+import { QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
-
-const CollectionItemSchema = z.custom<Collection>();
-
-const CollectionValidateSchema = z.union([
-	z.object({
-		type: z.literal('collection'),
-		action: z.literal('create'),
-		data: z.union([z.array(CollectionItemSchema), CollectionItemSchema]),
-		query: QuerySchema.optional(),
-	}),
-	z.object({
-		type: z.literal('collection'),
-		action: z.literal('read'),
-		keys: z.array(PrimaryKeySchema).optional(),
-		query: QuerySchema.optional(),
-	}),
-	z.object({
-		type: z.literal('collection'),
-		action: z.literal('update'),
-		data: CollectionItemSchema,
-		keys: z.array(PrimaryKeySchema).optional(),
-		query: QuerySchema.optional(),
-	}),
-	z.object({
-		type: z.literal('collection'),
-		action: z.literal('delete'),
-		keys: z.array(PrimaryKeySchema),
-	}),
-]);
-
-const FieldItemSchema = z.custom<Field>();
-
-const FieldValidateSchema = z.union([
-	z.object({
-		type: z.literal('field'),
-		action: z.literal('create'),
-		data: z.union([z.array(FieldItemSchema), FieldItemSchema]),
-		query: QuerySchema.optional(),
-	}),
-	z.object({
-		type: z.literal('field'),
-		action: z.literal('read'),
-		keys: z.array(PrimaryKeySchema).optional(),
-		query: QuerySchema.optional(),
-	}),
-	z.object({
-		type: z.literal('field'),
-		action: z.literal('update'),
-		data: FieldItemSchema,
-		keys: z.array(PrimaryKeySchema).optional(),
-		query: QuerySchema.optional(),
-	}),
-	z.object({
-		type: z.literal('field'),
-		action: z.literal('delete'),
-		keys: z.array(PrimaryKeySchema),
-	}),
-]);
-
-const RelationItemSchema = z.custom<Relation>();
-
-const RelationValidateSchema = z.union([
-	z.object({
-		type: z.literal('relation'),
-		action: z.literal('create'),
-		data: z.union([z.array(RelationItemSchema), RelationItemSchema]),
-		query: QuerySchema.optional(),
-	}),
-	z.object({
-		type: z.literal('relation'),
-		action: z.literal('read'),
-		keys: z.array(PrimaryKeySchema).optional(),
-		query: QuerySchema.optional(),
-	}),
-	z.object({
-		type: z.literal('relation'),
-		action: z.literal('update'),
-		data: RelationItemSchema,
-		keys: z.array(PrimaryKeySchema).optional(),
-		query: QuerySchema.optional(),
-	}),
-	z.object({
-		type: z.literal('relation'),
-		action: z.literal('delete'),
-		keys: z.array(PrimaryKeySchema),
-	}),
-	z.object({
-		type: z.literal('relation'),
-		action: z.literal('overview'),
-	}),
-]);
-
-const OverviewValidateSchema = z.object({
-	type: z.literal('overview'),
-});
-
-const ValidateSchema = z.union([
-	CollectionValidateSchema,
-	FieldValidateSchema,
-	RelationValidateSchema,
-	OverviewValidateSchema,
-]);
-
-const InputSchema = z.object({
-	type: z.enum(['collection', 'field', 'relation', 'overview']),
-	action: z.enum(['read', 'create', 'update', 'delete']).optional().describe('The operation to perform'),
-	query: QuerySchema.optional().describe(''),
-	keys: z.array(PrimaryKeySchema).optional().describe(''),
-	data: z
-		.union([
-			z.array(CollectionValidateSchema),
-			CollectionValidateSchema,
-			z.array(FieldItemSchema),
-			FieldItemSchema,
-			z.array(RelationItemSchema),
-			RelationItemSchema,
-		])
-		.optional()
-		.describe(''),
-});
 
 export interface fieldOverviewOutput {
 	name: string;
@@ -149,87 +32,21 @@ export interface OverviewOutput {
 	};
 }
 
-export const schema = defineTool<z.infer<typeof ValidateSchema>>({
+const OverviewValidateSchema = z.object({
+	type: z.literal('overview'),
+});
+
+const OverviewInputSchema = z.object({
+	type: z.literal('overview'),
+});
+
+export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
 	name: 'schema',
 	admin: true,
-	description:
-		'Manage Directus system schema elements such as collections, fields, and relations, or retrieve an overview snapshot of the current schema configuration.\n\n### 🧱 Types\n• `collection` – Represents entries from `directus_collections`\n• `field` – Represents field definitions in `directus_fields`\n• `relation` – Represents data model relations via `directus_relations`\n\n### ⚙️ Actions\n• `create` – Add new schema definitions (e.g., a new field or relation)\n• `read` – Fetch one or more schema items using keys or filters\n• `update` – Modify existing schema entries by key or query\n• `delete` – Remove schema entries using keys\n• `overview` – Return a full schema snapshot across collections, fields, and relations\n\n### 📘 Usage Details\n- CRUD operations are handled via the `ItemsService` for the corresponding system collection based on `type`\n- The `overview` action bypasses the ItemsService and returns a pre-processed summary using `getSnapshot()`\n- `data` can be a single object or an array (for create/update)\n- `keys` can be one or more item IDs (primary keys)\n- `filter`, `sort`, `limit`, and `offset` follow standard Directus query conventions\n\n### 🔍 Overview Snapshot\nThe `overview` action returns an object with the following structure:\n```json\n{\n  "collections": ["articles", "categories", ...],\n  "fields": [\n    {\n      "name": "title",\n      "collection": "articles",\n      "type": "string",\n      "meta": { "required": true, "readonly": false }\n    }\n  ],\n  "relations": [\n    {\n      "field": "category",\n      "collection": "articles",\n      "type": "many_to_one"\n    }\n  ]\n}\n```\n\nThis is useful for tooling that needs a real-time schema map (e.g., for custom form builders or DX automation).',
-	inputSchema: InputSchema,
-	validateSchema: ValidateSchema,
-	async handler({ args, schema, accountability, sanitizedQuery }) {
-		if (args.type !== 'overview') {
-			let collection = 'directus_collections';
-
-			if (args.type === 'field') {
-				collection = 'directus_fields';
-			} else if (args.type === 'relation') {
-				collection = 'directus_relations';
-			}
-
-			const service = new ItemsService(collection, {
-				schema,
-				accountability,
-			});
-
-			if (args.action === 'create') {
-				const data = toArray(args.data);
-
-				const savedKeys = await service.createMany(data);
-
-				const result = await service.readMany(savedKeys, sanitizedQuery);
-
-				return {
-					type: 'text',
-					data: result || null,
-				};
-			}
-
-			if (args.action === 'read') {
-				let result = null;
-
-				if (args.keys) {
-					result = await service.readMany(args.keys, sanitizedQuery);
-				} else {
-					result = await service.readByQuery(sanitizedQuery);
-				}
-
-				return {
-					type: 'text',
-					data: result,
-				};
-			}
-
-			if (args.action === 'update') {
-				let updatedKeys: PrimaryKey[] = [];
-
-				if (Array.isArray(args.data)) {
-					updatedKeys = await service.updateBatch(args.data);
-				} else if (args.keys) {
-					updatedKeys = await service.updateMany(args.keys, args.data);
-				} else {
-					updatedKeys = await service.updateByQuery(sanitizedQuery, args.data);
-				}
-
-				const result = await service.readMany(updatedKeys, sanitizedQuery);
-
-				return {
-					type: 'text',
-					data: result,
-				};
-			}
-
-			if (args.action === 'delete') {
-				const deletedKeys = await service.deleteMany(args.keys);
-
-				return {
-					type: 'text',
-					data: deletedKeys,
-				};
-			}
-
-			throw new Error('Invalid type.');
-		}
-
+	description: '',
+	inputSchema: OverviewInputSchema,
+	validateSchema: OverviewValidateSchema,
+	async handler() {
 		const snapshot = await getSnapshot();
 
 		const overview: OverviewOutput = {};
@@ -317,5 +134,316 @@ export const schema = defineTool<z.infer<typeof ValidateSchema>>({
 			type: 'text',
 			data: overview,
 		};
+	},
+});
+
+const CollectionItemSchema = z.custom<Collection>();
+
+const CollectionValidateSchema = z.union([
+	z.object({
+		action: z.literal('create'),
+		data: z.union([z.array(CollectionItemSchema), CollectionItemSchema]),
+		query: QuerySchema.optional(),
+	}),
+	z.object({
+		action: z.literal('read'),
+		keys: z.array(z.string()).optional(),
+		query: QuerySchema.optional(),
+	}),
+	z.object({
+		action: z.literal('update'),
+		data: z.union([z.array(CollectionItemSchema), CollectionItemSchema]),
+		keys: z.array(z.string()).optional(),
+		query: QuerySchema.optional(),
+	}),
+	z.object({
+		action: z.literal('delete'),
+		keys: z.array(z.string()),
+	}),
+]);
+
+const CollectionInputSchema = z.object({
+	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
+	query: QuerySchema.optional().describe(''),
+	keys: z.array(z.string()).optional().describe(''),
+	data: z
+		.union([z.array(CollectionItemSchema), CollectionItemSchema])
+		.optional()
+		.describe(''),
+});
+
+export const collection = defineTool<z.infer<typeof CollectionValidateSchema>>({
+	name: 'collection',
+	admin: true,
+	description: '',
+	inputSchema: CollectionInputSchema,
+	validateSchema: CollectionValidateSchema,
+	async handler({ args, schema, accountability }) {
+		const serviceOptions = {
+			schema,
+			accountability,
+		};
+
+		const service = new CollectionsService(serviceOptions);
+
+		if (args.action === 'create') {
+			const data = toArray(args.data);
+
+			const savedKeys = await service.createMany(data);
+
+			const result = await service.readMany(savedKeys);
+
+			return {
+				type: 'text',
+				data: result || null,
+			};
+		}
+
+		if (args.action === 'read') {
+			let result = null;
+
+			if (args.keys) {
+				result = await service.readMany(args.keys);
+			} else {
+				result = await service.readByQuery();
+			}
+
+			return {
+				type: 'text',
+				data: result,
+			};
+		}
+
+		if (args.action === 'update') {
+			let updatedKeys: string[] = [];
+
+			updatedKeys = await service.updateBatch(toArray(args.data));
+
+			const result = await service.readMany(updatedKeys);
+
+			return {
+				type: 'text',
+				data: result,
+			};
+		}
+
+		if (args.action === 'delete') {
+			const deletedKeys = await service.deleteMany(args.keys);
+
+			return {
+				type: 'text',
+				data: deletedKeys,
+			};
+		}
+
+		throw new InvalidPayloadError({ reason: 'Invalid action' });
+	},
+});
+
+const FieldItemSchema = z.custom<Field>();
+
+const FieldBaseValidateSchema = z.object({
+	collection: z.string(),
+});
+
+const FieldValidateSchema = z.union([
+	FieldBaseValidateSchema.extend({
+		action: z.literal('create'),
+		data: FieldItemSchema,
+	}),
+	FieldBaseValidateSchema.extend({
+		action: z.literal('read'),
+		field: z.string().optional(),
+	}),
+	FieldBaseValidateSchema.extend({
+		action: z.literal('update'),
+		data: z.union([z.array(FieldItemSchema), FieldItemSchema]),
+	}),
+	FieldBaseValidateSchema.extend({
+		action: z.literal('delete'),
+		field: z.string(),
+	}),
+]);
+
+const FieldInputSchema = z.object({
+	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
+	collection: z.string().describe('The name of the collection'),
+	field: z.string().describe(''),
+	data: z
+		.union([z.array(FieldItemSchema), FieldItemSchema])
+		.optional()
+		.describe(''),
+});
+
+export const field = defineTool<z.infer<typeof FieldValidateSchema>>({
+	name: 'field',
+	admin: true,
+	description: '',
+	inputSchema: FieldInputSchema,
+	validateSchema: FieldValidateSchema,
+	async handler({ args, schema, accountability }) {
+		const serviceOptions = {
+			schema,
+			accountability,
+		};
+
+		const service = new FieldsService(serviceOptions);
+
+		if (args.action === 'create') {
+			await service.createField(args.collection, args.data);
+
+			const result = await service.readOne(args.collection, args.data.field);
+
+			return {
+				type: 'text',
+				data: result || null,
+			};
+		}
+
+		if (args.action === 'read') {
+			let result = null;
+
+			if (args.field) {
+				result = await service.readOne(args.collection, args.field);
+			} else {
+				result = await service.readAll(args.collection);
+			}
+
+			return {
+				type: 'text',
+				data: result,
+			};
+		}
+
+		if (args.action === 'update') {
+			const data = toArray(args.data);
+
+			await service.updateFields(args.collection, data);
+
+			const result: Item[] = [];
+
+			for (const field of data) {
+				const updatedField = await service.readOne(args.collection, field.field);
+				result.push(updatedField);
+			}
+
+			return {
+				type: 'text',
+				data: result,
+			};
+		}
+
+		if (args.action === 'delete') {
+			const { collection, field } = args;
+			await service.deleteField(collection, field);
+
+			return {
+				type: 'text',
+				data: { collection, field },
+			};
+		}
+
+		throw new InvalidPayloadError({ reason: 'Invalid action' });
+	},
+});
+
+const RelationItemSchema = z.custom<Relation>();
+
+const RelationBaseValidateSchema = z.object({
+	collection: z.string(),
+});
+
+const RelationValidateSchema = z.union([
+	RelationBaseValidateSchema.extend({
+		action: z.literal('create'),
+		data: RelationItemSchema,
+	}),
+	RelationBaseValidateSchema.extend({
+		action: z.literal('read'),
+		field: z.string().optional(),
+	}),
+	RelationBaseValidateSchema.extend({
+		action: z.literal('update'),
+		field: z.string(),
+		data: RelationItemSchema,
+	}),
+	RelationBaseValidateSchema.extend({
+		action: z.literal('delete'),
+		field: z.string(),
+	}),
+]);
+
+const RelationInputSchema = z.object({
+	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
+	collection: z.string().describe('The name of the collection'),
+	field: z.string().describe(''),
+	data: z
+		.union([z.array(FieldItemSchema), FieldItemSchema])
+		.optional()
+		.describe(''),
+});
+
+export const relation = defineTool<z.infer<typeof RelationValidateSchema>>({
+	name: 'relation',
+	admin: true,
+	description: '',
+	inputSchema: RelationInputSchema,
+	validateSchema: RelationValidateSchema,
+	async handler({ args, schema, accountability }) {
+		const serviceOptions = {
+			schema,
+			accountability,
+		};
+
+		const service = new RelationsService(serviceOptions);
+
+		if (args.action === 'create') {
+			await service.createOne(args.data);
+
+			const result = await service.readOne(args.collection, args.data.field);
+
+			return {
+				type: 'text',
+				data: result || null,
+			};
+		}
+
+		if (args.action === 'read') {
+			let result = null;
+
+			if (args.field) {
+				result = await service.readOne(args.collection, args.field);
+			} else {
+				result = await service.readAll();
+			}
+
+			return {
+				type: 'text',
+				data: result,
+			};
+		}
+
+		if (args.action === 'update') {
+			await service.updateOne(args.collection, args.field, args.data);
+
+			const result = await service.readOne(args.collection, args.field);
+
+			return {
+				type: 'text',
+				data: result,
+			};
+		}
+
+		if (args.action === 'delete') {
+			const { collection, field } = args;
+			await service.deleteOne(collection, field);
+
+			return {
+				type: 'text',
+				data: { collection, field },
+			};
+		}
+
+		throw new InvalidPayloadError({ reason: 'Invalid action' });
 	},
 });
