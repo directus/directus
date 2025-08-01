@@ -4,7 +4,7 @@
 import { createApp } from 'vue';
 
 import { getVueComponentName } from '@/utils/get-vue-component-name';
-import { createHead } from '@unhead/vue';
+import { createHead } from '@unhead/vue/client';
 import { createPinia } from 'pinia';
 import App from './app.vue';
 import { registerComponents } from './components/register';
