@@ -552,9 +552,6 @@ importers:
         specifier: 3.4.0
         version: 3.4.0(zod@3.24.2)
     devDependencies:
-      '@directus/random':
-        specifier: workspace:*
-        version: link:../packages/random
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
@@ -727,9 +724,6 @@ importers:
       '@directus/format-title':
         specifier: workspace:*
         version: link:../packages/format-title
-      '@directus/random':
-        specifier: workspace:*
-        version: link:../packages/random
       '@directus/sdk':
         specifier: workspace:*
         version: link:../sdk
@@ -1303,9 +1297,6 @@ importers:
         specifier: 'catalog:'
         version: 2.1.3
     devDependencies:
-      '@directus/random':
-        specifier: workspace:*
-        version: link:../random
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
@@ -1590,9 +1581,6 @@ importers:
         specifier: workspace:*
         version: link:../utils
     devDependencies:
-      '@directus/random':
-        specifier: workspace:*
-        version: link:../random
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
@@ -1611,27 +1599,6 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 3.2.4(@types/debug@4.1.12)(@types/node@24.1.0)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
-
-  packages/random:
-    devDependencies:
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.13.14
-      '@vitest/coverage-v8':
-        specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.3)(yaml@2.7.0)
-      typescript:
-        specifier: 'catalog:'
-        version: 5.8.3
-      vitest:
-        specifier: 'catalog:'
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.13.14)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/release-notes-generator:
     dependencies:

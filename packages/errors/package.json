@@ -31,7 +31,6 @@
 		"ms": "catalog:"
 	},
 	"devDependencies": {
-		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@types/ms": "catalog:",

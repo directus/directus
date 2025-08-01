@@ -6,7 +6,6 @@ import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, it, vi } from 'vitest';
 import { usePermissionsStore } from './permissions';
 import { useUserStore } from './user';
-import { randomIdentifier, randomUUID } from '@directus/random';
 import { mockedStore } from '@/__utils__/store';
 
 vi.mock('@/api');
@@ -26,9 +25,9 @@ beforeEach(() => {
 	);
 
 	sample = {
-		collection: randomIdentifier(),
-		user: { id: randomUUID() },
-		role: { id: randomUUID() },
+		collection: 'test_collection',
+		user: { id: 'test-user-id' },
+		role: { id: 'test-role-id' },
 	};
 });
 
