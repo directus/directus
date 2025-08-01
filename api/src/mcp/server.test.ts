@@ -1,14 +1,14 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import type { Request, Response } from 'express';
-import { DirectusMCP, DirectusTransport } from './server.js';
 import { isDirectusError } from '@directus/errors';
-import { findMcpTool } from './tools/index.js';
 import type { Accountability, SchemaOverview } from '@directus/types';
+import type { Request, Response } from 'express';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { DirectusMCP, DirectusTransport } from './server.js';
 import type { ToolConfig } from './tool.js';
+import { findMcpTool } from './tools/index.js';
 
 // Mock dependencies
 vi.mock('@directus/env', () => ({
-	useEnv: vi.fn(() => ({ MCP_PREVENT_DELETE: false }))
+	useEnv: vi.fn(() => ({ MCP_PREVENT_DELETE: false })),
 }));
 
 vi.mock('@directus/errors', () => ({
@@ -24,11 +24,11 @@ vi.mock('@directus/errors', () => ({
 			super(reason);
 		}
 	},
-	isDirectusError: vi.fn((error: any) => error && typeof error.code === 'string')
+	isDirectusError: vi.fn((error: any) => error && typeof error.code === 'string'),
 }));
 
 vi.mock('../utils/sanitize-query.js', () => ({
-	sanitizeQuery: vi.fn((query) => Promise.resolve(query))
+	sanitizeQuery: vi.fn((query) => Promise.resolve(query)),
 }));
 
 vi.mock('./tools/index.js', () => ({
@@ -38,15 +38,15 @@ vi.mock('./tools/index.js', () => ({
 			description: 'A test tool',
 			inputSchema: { parse: vi.fn(), safeParse: vi.fn() },
 			admin: false,
-			annotations: {}
+			annotations: {},
 		},
 		{
 			name: 'admin-tool',
 			description: 'An admin tool',
 			inputSchema: { parse: vi.fn(), safeParse: vi.fn() },
 			admin: true,
-			annotations: {}
-		}
+			annotations: {},
+		},
 	]),
 	findMcpTool: vi.fn((name: string) => {
 		const tools = {
@@ -55,45 +55,45 @@ vi.mock('./tools/index.js', () => ({
 				description: 'A test tool',
 				validateSchema: { safeParse: vi.fn(() => ({ data: { test: 'value' } })) },
 				admin: false,
-				handler: vi.fn(() => Promise.resolve({ type: 'text', data: 'test result' }))
+				handler: vi.fn(() => Promise.resolve({ type: 'text', data: 'test result' })),
 			},
 			'admin-tool': {
 				name: 'admin-tool',
 				description: 'An admin tool',
 				validateSchema: { safeParse: vi.fn(() => ({ data: { admin: 'value' } })) },
 				admin: true,
-				handler: vi.fn(() => Promise.resolve({ type: 'text', data: 'admin result' }))
+				handler: vi.fn(() => Promise.resolve({ type: 'text', data: 'admin result' })),
 			},
 			'delete-tool': {
 				name: 'delete-tool',
 				description: 'A delete tool',
 				validateSchema: { safeParse: vi.fn(() => ({ data: { action: 'delete' } })) },
 				admin: false,
-				handler: vi.fn(() => Promise.resolve({ type: 'text', data: 'deleted' }))
-			}
+				handler: vi.fn(() => Promise.resolve({ type: 'text', data: 'deleted' })),
+			},
 		};
 
 		return tools[name as keyof typeof tools] || null;
-	})
+	}),
 }));
 
 vi.mock('zod-to-json-schema', () => ({
-	zodToJsonSchema: vi.fn(() => ({ type: 'object' }))
+	zodToJsonSchema: vi.fn(() => ({ type: 'object' })),
 }));
 
 vi.mock('zod-validation-error', () => ({
-	fromZodError: vi.fn((_error) => ({ message: 'Validation error' }))
+	fromZodError: vi.fn((_error) => ({ message: 'Validation error' })),
 }));
 
 function awaitJsonResponse(mcp: DirectusMCP): Promise<void> {
-    return new Promise<void>((res) => {
-        const _send = mcp.server.transport!.send.bind(mcp.server.transport!);
+	return new Promise<void>((res) => {
+		const _send = mcp.server.transport!.send.bind(mcp.server.transport!);
 
-        mcp.server.transport!.send = async (...args) => {
-            _send(...args);
-            res();
-        }
-    });
+		mcp.server.transport!.send = async (...args) => {
+			_send(...args);
+			res();
+		};
+	});
 }
 
 describe('DirectusMCP', () => {
@@ -103,7 +103,7 @@ describe('DirectusMCP', () => {
 
 	beforeEach(() => {
 		directusMCP = new DirectusMCP();
-		
+
 		mockRes = {
 			json: vi.fn(),
 			status: vi.fn().mockReturnThis(),
@@ -111,11 +111,13 @@ describe('DirectusMCP', () => {
 		} as unknown as Response;
 
 		mockReq = {
-			accepts: vi.fn((type: string) => type === 'application/json' ? 'application/json' : false) as unknown as Request['accepts'],
+			accepts: vi.fn((type: string) =>
+				type === 'application/json' ? 'application/json' : false,
+			) as unknown as Request['accepts'],
 			body: {
 				jsonrpc: '2.0',
 				id: 1,
-				method: 'tools/list'
+				method: 'tools/list',
 			},
 			accountability: { admin: false } as Accountability,
 			schema: {} as SchemaOverview,
@@ -129,9 +131,9 @@ describe('DirectusMCP', () => {
 	describe('handleRequest', () => {
 		it('should reject non-JSON requests', async () => {
 			mockReq.accepts = vi.fn(() => false) as unknown as Request['accepts'];
-			
+
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
-			
+
 			expect(mockRes.status).toHaveBeenCalledWith(400);
 			expect(mockRes.send).toHaveBeenCalled();
 		});
@@ -142,338 +144,338 @@ describe('DirectusMCP', () => {
 
 		it('should handle invalid JSON-RPC messages', async () => {
 			mockReq.body = { invalid: 'message' };
-			
+
 			expect(() => directusMCP.handleRequest(mockReq as Request, mockRes as Response)).toThrow();
 		});
 	});
 
 	describe('tool listing', () => {
-		it('should filter admin tools for non-admin users', async () => {			
+		it('should filter admin tools for non-admin users', async () => {
 			// Simulate non-admin user
 			mockReq.accountability = { admin: false } as Accountability;
-			
+
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
 
-            await awaitJsonResponse(directusMCP);
+			await awaitJsonResponse(directusMCP);
 
-            expect(mockRes.json).toHaveBeenCalledWith({
-                id: 1,
-                jsonrpc: "2.0",
-                result: {
-                    tools: [
-                        {
-                            annotations: {},
-                            description: "A test tool",
-                            inputSchema: { type: "object" },
-                            name: "test-tool",
-                        },
-                    ],
-                },
-            });
+			expect(mockRes.json).toHaveBeenCalledWith({
+				id: 1,
+				jsonrpc: '2.0',
+				result: {
+					tools: [
+						{
+							annotations: {},
+							description: 'A test tool',
+							inputSchema: { type: 'object' },
+							name: 'test-tool',
+						},
+					],
+				},
+			});
 		});
 
-		it('should include admin tools for admin users', async () => {			
+		it('should include admin tools for admin users', async () => {
 			// Simulate admin user
 			mockReq.accountability = { admin: true } as Accountability;
-			
+
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
 
-            await awaitJsonResponse(directusMCP);
-			
-            expect(mockRes.json).toHaveBeenCalledWith({
-                id: 1,
-                jsonrpc: "2.0",
-                result: {
-                    tools: [
-                        {
-                            annotations: {},
-                            description: "A test tool",
-                            inputSchema: { type: "object" },
-                            name: "test-tool",
-                        },
-                        {
-                            annotations: {},
-                            description: "An admin tool",
-                            inputSchema: { type: "object" },
-                            name: "admin-tool",
-                        },
-                    ],
-                },
-            });
+			await awaitJsonResponse(directusMCP);
+
+			expect(mockRes.json).toHaveBeenCalledWith({
+				id: 1,
+				jsonrpc: '2.0',
+				result: {
+					tools: [
+						{
+							annotations: {},
+							description: 'A test tool',
+							inputSchema: { type: 'object' },
+							name: 'test-tool',
+						},
+						{
+							annotations: {},
+							description: 'An admin tool',
+							inputSchema: { type: 'object' },
+							name: 'admin-tool',
+						},
+					],
+				},
+			});
 		});
 	});
 
-    describe('tool execution', () => {
-    	let mockRes: Partial<Response>;
+	describe('tool execution', () => {
+		let mockRes: Partial<Response>;
 
-    	beforeEach(() => {
-    		mockRes = {
-    			json: vi.fn(),
-    			status: vi.fn().mockReturnThis(),
-    			send: vi.fn()
-    		};
-    	});
+		beforeEach(() => {
+			mockRes = {
+				json: vi.fn(),
+				status: vi.fn().mockReturnThis(),
+				send: vi.fn(),
+			};
+		});
 
-    	it('should execute a valid tool successfully', async () => {
-    		const mockReq = {
-    			accepts: vi.fn(() => 'application/json'),
-    			body: {
-    				jsonrpc: '2.0',
-    				id: 1,
-    				method: 'tools/call',
-    				params: {
-    					name: 'test-tool',
-    					arguments: { test: 'value' }
-    				}
-    			},
-    			accountability: { admin: false },
-    			schema: {}
-    		} as unknown as Request;
+		it('should execute a valid tool successfully', async () => {
+			const mockReq = {
+				accepts: vi.fn(() => 'application/json'),
+				body: {
+					jsonrpc: '2.0',
+					id: 1,
+					method: 'tools/call',
+					params: {
+						name: 'test-tool',
+						arguments: { test: 'value' },
+					},
+				},
+				accountability: { admin: false },
+				schema: {},
+			} as unknown as Request;
 
-    		directusMCP.handleRequest(mockReq as Request, mockRes as Response);
+			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
 
-            await awaitJsonResponse(directusMCP);
+			await awaitJsonResponse(directusMCP);
 
-    		// Verify the response was sent via res.json
-    		expect(mockRes.json).toHaveBeenCalledWith(
-    			expect.objectContaining({
-    				jsonrpc: '2.0',
-    				id: 1,
-    				result: expect.objectContaining({
-    					content: expect.arrayContaining([
-    						expect.objectContaining({
-    							type: 'text',
-    							text: JSON.stringify('test result')
-    						})
-    					])
-    				})
-    			})
-    		);
-    	});
+			// Verify the response was sent via res.json
+			expect(mockRes.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					jsonrpc: '2.0',
+					id: 1,
+					result: expect.objectContaining({
+						content: expect.arrayContaining([
+							expect.objectContaining({
+								type: 'text',
+								text: JSON.stringify('test result'),
+							}),
+						]),
+					}),
+				}),
+			);
+		});
 
-    	it('should return error for non-existent tool', async () => {
-    		vi.mocked(findMcpTool).mockReturnValueOnce(undefined);
+		it('should return error for non-existent tool', async () => {
+			vi.mocked(findMcpTool).mockReturnValueOnce(undefined);
 
-    		const mockReq = {
-    			accepts: vi.fn(() => 'application/json'),
-    			body: {
-    				jsonrpc: '2.0',
-    				id: 1,
-    				method: 'tools/call',
-    				params: {
-    					name: 'non-existent-tool',
-    					arguments: {}
-    				}
-    			},
-    			accountability: { admin: false },
-    			schema: {}
-    		} as unknown as Request;
+			const mockReq = {
+				accepts: vi.fn(() => 'application/json'),
+				body: {
+					jsonrpc: '2.0',
+					id: 1,
+					method: 'tools/call',
+					params: {
+						name: 'non-existent-tool',
+						arguments: {},
+					},
+				},
+				accountability: { admin: false },
+				schema: {},
+			} as unknown as Request;
 
-    		directusMCP.handleRequest(mockReq, mockRes as Response);
-            
-            await awaitJsonResponse(directusMCP);
+			directusMCP.handleRequest(mockReq, mockRes as Response);
 
-    		expect(mockRes.json).toHaveBeenCalledWith(
-    			expect.objectContaining({
-    				jsonrpc: '2.0',
-    				id: 1,
-    				result: expect.objectContaining({
-    					isError: true,
-    					content: expect.arrayContaining([
-    						expect.objectContaining({
-    							type: 'text',
-    							text: expect.stringContaining("doesn't exist in the toolset")
-    						})
-    					])
-    				})
-    			})
-    		);
-    	});
+			await awaitJsonResponse(directusMCP);
 
-    	it('should prevent non-admin users from accessing admin tools', async () => {
-    		const mockReq = {
-    			accepts: vi.fn(() => 'application/json'),
-    			body: {
-    				jsonrpc: '2.0',
-    				id: 1,
-    				method: 'tools/call',
-    				params: {
-    					name: 'admin-tool',
-    					arguments: {}
-    				}
-    			},
-    			accountability: { admin: false }, // Non-admin user
-    			schema: {}
-    		} as unknown as Request;
+			expect(mockRes.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					jsonrpc: '2.0',
+					id: 1,
+					result: expect.objectContaining({
+						isError: true,
+						content: expect.arrayContaining([
+							expect.objectContaining({
+								type: 'text',
+								text: expect.stringContaining("doesn't exist in the toolset"),
+							}),
+						]),
+					}),
+				}),
+			);
+		});
 
-    		directusMCP.handleRequest(mockReq, mockRes as Response);
+		it('should prevent non-admin users from accessing admin tools', async () => {
+			const mockReq = {
+				accepts: vi.fn(() => 'application/json'),
+				body: {
+					jsonrpc: '2.0',
+					id: 1,
+					method: 'tools/call',
+					params: {
+						name: 'admin-tool',
+						arguments: {},
+					},
+				},
+				accountability: { admin: false }, // Non-admin user
+				schema: {},
+			} as unknown as Request;
 
-            await awaitJsonResponse(directusMCP);
+			directusMCP.handleRequest(mockReq, mockRes as Response);
 
-    		expect(mockRes.json).toHaveBeenCalledWith(
-    			expect.objectContaining({
-    				jsonrpc: '2.0',
-    				id: 1,
-    				result: expect.objectContaining({
-    					isError: true,
-    					content: expect.arrayContaining([
-    						expect.objectContaining({
-    							type: 'text',
-    							text: expect.stringContaining('FORBIDDEN')
-    						})
-    					])
-    				})
-    			})
-    		);
-    	});
+			await awaitJsonResponse(directusMCP);
 
-    	it('should allow admin users to access admin tools', async () => {
-    		const mockReq = {
-    			accepts: vi.fn(() => 'application/json'),
-    			body: {
-    				jsonrpc: '2.0',
-    				id: 1,
-    				method: 'tools/call',
-    				params: {
-    					name: 'admin-tool',
-    					arguments: {}
-    				}
-    			},
-    			accountability: { admin: true }, // Admin user
-    			schema: {}
-    		} as unknown as Request;
+			expect(mockRes.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					jsonrpc: '2.0',
+					id: 1,
+					result: expect.objectContaining({
+						isError: true,
+						content: expect.arrayContaining([
+							expect.objectContaining({
+								type: 'text',
+								text: expect.stringContaining('FORBIDDEN'),
+							}),
+						]),
+					}),
+				}),
+			);
+		});
 
-    		directusMCP.handleRequest(mockReq, mockRes as Response);
+		it('should allow admin users to access admin tools', async () => {
+			const mockReq = {
+				accepts: vi.fn(() => 'application/json'),
+				body: {
+					jsonrpc: '2.0',
+					id: 1,
+					method: 'tools/call',
+					params: {
+						name: 'admin-tool',
+						arguments: {},
+					},
+				},
+				accountability: { admin: true }, // Admin user
+				schema: {},
+			} as unknown as Request;
 
-            await awaitJsonResponse(directusMCP);
+			directusMCP.handleRequest(mockReq, mockRes as Response);
 
-    		expect(mockRes.json).toHaveBeenCalledWith(
-    			expect.objectContaining({
-    				jsonrpc: '2.0',
-    				id: 1,
-    				result: expect.objectContaining({
-    					content: expect.arrayContaining([
-    						expect.objectContaining({
-    							type: 'text',
-    							text: JSON.stringify('admin result')
-    						})
-    					])
-    				})
-    			})
-    		);
-    	});
+			await awaitJsonResponse(directusMCP);
 
-    	it('should handle validation errors', async () => {
-    		// Mock the tool to return validation error
-    		const mockTool = {
-    			name: 'validation-tool',
-    			validateSchema: {
-    				safeParse: vi.fn(() => ({
-    					error: { issues: [{ message: 'Invalid input' }] }
-    				}))
-    			},
-    			admin: false,
-    			handler: vi.fn()
-    		} as unknown as ToolConfig<any>;
-            
-    		vi.mocked(findMcpTool).mockReturnValueOnce(mockTool);
+			expect(mockRes.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					jsonrpc: '2.0',
+					id: 1,
+					result: expect.objectContaining({
+						content: expect.arrayContaining([
+							expect.objectContaining({
+								type: 'text',
+								text: JSON.stringify('admin result'),
+							}),
+						]),
+					}),
+				}),
+			);
+		});
 
-    		const mockReq = {
-    			accepts: vi.fn(() => 'application/json'),
-    			body: {
-    				jsonrpc: '2.0',
-    				id: 1,
-    				method: 'tools/call',
-    				params: {
-    					name: 'validation-tool',
-    					arguments: { invalid: 'data' }
-    				}
-    			},
-    			accountability: { admin: false },
-    			schema: {}
-    		} as unknown as Request;
+		it('should handle validation errors', async () => {
+			// Mock the tool to return validation error
+			const mockTool = {
+				name: 'validation-tool',
+				validateSchema: {
+					safeParse: vi.fn(() => ({
+						error: { issues: [{ message: 'Invalid input' }] },
+					})),
+				},
+				admin: false,
+				handler: vi.fn(),
+			} as unknown as ToolConfig<any>;
 
-    		directusMCP.handleRequest(mockReq, mockRes as Response);
+			vi.mocked(findMcpTool).mockReturnValueOnce(mockTool);
 
-            await awaitJsonResponse(directusMCP);
+			const mockReq = {
+				accepts: vi.fn(() => 'application/json'),
+				body: {
+					jsonrpc: '2.0',
+					id: 1,
+					method: 'tools/call',
+					params: {
+						name: 'validation-tool',
+						arguments: { invalid: 'data' },
+					},
+				},
+				accountability: { admin: false },
+				schema: {},
+			} as unknown as Request;
 
-    		expect(mockRes.json).toHaveBeenCalledWith(
-    			expect.objectContaining({
-    				jsonrpc: '2.0',
-    				id: 1,
-    				result: expect.objectContaining({
-    					isError: true,
-    					content: expect.arrayContaining([
-    						expect.objectContaining({
-    							type: 'text',
-    							text: expect.stringContaining('Validation error')
-    						})
-    					])
-    				})
-    			})
-    		);
-    	});
+			directusMCP.handleRequest(mockReq, mockRes as Response);
 
-    	it('should handle tools/list requests', async () => {
-    		const mockReq = {
-    			accepts: vi.fn(() => 'application/json'),
-    			body: {
-    				jsonrpc: '2.0',
-    				id: 1,
-    				method: 'tools/list'
-    			},
-    			accountability: { admin: false },
-    			schema: {}
-    		} as unknown as Request;
+			await awaitJsonResponse(directusMCP);
 
-    		directusMCP.handleRequest(mockReq, mockRes as Response);
+			expect(mockRes.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					jsonrpc: '2.0',
+					id: 1,
+					result: expect.objectContaining({
+						isError: true,
+						content: expect.arrayContaining([
+							expect.objectContaining({
+								type: 'text',
+								text: expect.stringContaining('Validation error'),
+							}),
+						]),
+					}),
+				}),
+			);
+		});
 
-            await awaitJsonResponse(directusMCP);
+		it('should handle tools/list requests', async () => {
+			const mockReq = {
+				accepts: vi.fn(() => 'application/json'),
+				body: {
+					jsonrpc: '2.0',
+					id: 1,
+					method: 'tools/list',
+				},
+				accountability: { admin: false },
+				schema: {},
+			} as unknown as Request;
 
-    		expect(mockRes.json).toHaveBeenCalledWith(
-    			expect.objectContaining({
-    				jsonrpc: '2.0',
-    				id: 1,
-    				result: expect.objectContaining({
-    					tools: expect.arrayContaining([
-    						expect.objectContaining({
-    							name: 'test-tool',
-    							description: 'A test tool'
-    						})
-    					])
-    				})
-    			})  
-    		);
-    	});
+			directusMCP.handleRequest(mockReq, mockRes as Response);
 
-    	// it('should handle initialized notifications', async () => {
-    	// 	const mockReq = {
-    	// 		accepts: vi.fn(() => 'application/json'),
-    	// 		body: {
-    	// 			jsonrpc: '2.0',
-    	// 			method: 'notifications/initialized'
-    	// 		},
-    	// 		accountability: { admin: false },
-    	// 		schema: {}
-    	// 	} as unknown as Request;
+			await awaitJsonResponse(directusMCP);
 
-    	// 	directusMCP.handleRequest(mockReq, mockRes as Response);
+			expect(mockRes.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					jsonrpc: '2.0',
+					id: 1,
+					result: expect.objectContaining({
+						tools: expect.arrayContaining([
+							expect.objectContaining({
+								name: 'test-tool',
+								description: 'A test tool',
+							}),
+						]),
+					}),
+				}),
+			);
+		});
 
-        //     await new Promise<void>((resolve) => {
-        //         const _status = mockRes.status!;
+		// it('should handle initialized notifications', async () => {
+		// 	const mockReq = {
+		// 		accepts: vi.fn(() => 'application/json'),
+		// 		body: {
+		// 			jsonrpc: '2.0',
+		// 			method: 'notifications/initialized'
+		// 		},
+		// 		accountability: { admin: false },
+		// 		schema: {}
+		// 	} as unknown as Request;
 
-        //         mockRes.status = vi.fn((...args: any[]) => {
-        //             _status(...args);
-        //             resolve();
-        //         }) as unknown as Response['status'];
-        //     })
-        //     // await awaitResponse(directusMCP);
+		// 	directusMCP.handleRequest(mockReq, mockRes as Response);
 
-        //     console.log('expect 2');
-    	// 	expect(mockRes.status).toHaveBeenCalledWith(202);
-    	// 	expect(mockRes.send).toHaveBeenCalled();
-    	// });
-    });
+		//     await new Promise<void>((resolve) => {
+		//         const _status = mockRes.status!;
+
+		//         mockRes.status = vi.fn((...args: any[]) => {
+		//             _status(...args);
+		//             resolve();
+		//         }) as unknown as Response['status'];
+		//     })
+		//     // await awaitResponse(directusMCP);
+
+		//     console.log('expect 2');
+		// 	expect(mockRes.status).toHaveBeenCalledWith(202);
+		// 	expect(mockRes.send).toHaveBeenCalled();
+		// });
+	});
 
 	describe('toMCPResponse', () => {
 		it('should return empty content for undefined result', () => {
@@ -494,21 +496,23 @@ describe('DirectusMCP', () => {
 		it('should format text type responses', () => {
 			const result = { type: 'text' as const, data: { message: 'hello' } };
 			const response = directusMCP.toMCPResponse(result);
-			
+
 			expect(response).toEqual({
-				content: [{
-					type: 'text',
-					text: JSON.stringify({ message: 'hello' })
-				}]
+				content: [
+					{
+						type: 'text',
+						text: JSON.stringify({ message: 'hello' }),
+					},
+				],
 			});
 		});
 
 		it('should return result directly for non-text types', () => {
 			const result = { type: 'image' as const, data: 'base64data', mimeType: 'image/png' };
 			const response = directusMCP.toMCPResponse(result);
-			
+
 			expect(response).toEqual({
-				content: [result]
+				content: [result],
 			});
 		});
 	});
@@ -516,27 +520,27 @@ describe('DirectusMCP', () => {
 	describe('toMCPError', () => {
 		it('should handle Directus errors', () => {
 			vi.mocked(isDirectusError).mockReturnValueOnce(true);
-			
+
 			const error = { message: 'Test error', code: 'TEST_ERROR' };
 			const response = directusMCP.toMCPError(error);
-			
+
 			expect(response.isError).toBe(true);
 			expect(response.content[0]?.type).toBe('text');
-			
+
 			const parsedContent = JSON.parse(response.content[0]!.text);
 
 			expect(parsedContent[0]).toEqual({
 				error: 'Test error',
-				code: 'TEST_ERROR'
+				code: 'TEST_ERROR',
 			});
 		});
 
 		it('should handle generic Error objects', () => {
 			vi.mocked(isDirectusError).mockReturnValueOnce(false);
-			
+
 			const error = new Error('Generic error');
 			const response = directusMCP.toMCPError(error);
-			
+
 			expect(response.isError).toBe(true);
 			const parsedContent = JSON.parse(response.content[0]!.text);
 			expect(parsedContent[0].error).toBe('Generic error');
@@ -544,10 +548,10 @@ describe('DirectusMCP', () => {
 
 		it('should handle string errors', () => {
 			vi.mocked(isDirectusError).mockReturnValueOnce(false);
-			
+
 			const error = 'String error message';
 			const response = directusMCP.toMCPError(error);
-			
+
 			expect(response.isError).toBe(true);
 			const parsedContent = JSON.parse(response.content[0]!.text);
 			expect(parsedContent[0].error).toBe('String error message');
@@ -555,26 +559,26 @@ describe('DirectusMCP', () => {
 
 		it('should handle object errors with message property', () => {
 			vi.mocked(isDirectusError).mockReturnValueOnce(false);
-			
+
 			const error = { message: 'Object error', code: 'OBJ_ERROR' };
 			const response = directusMCP.toMCPError(error);
-			
+
 			expect(response.isError).toBe(true);
 
 			const parsedContent = JSON.parse(response.content[0]!.text);
 
 			expect(parsedContent[0]).toEqual({
 				error: 'Object error',
-				code: 'OBJ_ERROR'
+				code: 'OBJ_ERROR',
 			});
 		});
 
 		it('should handle unknown error types', () => {
 			vi.mocked(isDirectusError).mockReturnValueOnce(false);
-			
+
 			const error = 123; // Number, unknown type
 			const response = directusMCP.toMCPError(error);
-			
+
 			expect(response.isError).toBe(true);
 
 			const parsedContent = JSON.parse(response.content[0]!.text);
@@ -583,15 +587,11 @@ describe('DirectusMCP', () => {
 
 		it('should handle array of errors', () => {
 			vi.mocked(isDirectusError).mockReturnValue(false);
-			
-			const errors = [
-				new Error('First error'),
-				'Second error',
-				{ message: 'Third error', code: 'THIRD' }
-			];
-			
+
+			const errors = [new Error('First error'), 'Second error', { message: 'Third error', code: 'THIRD' }];
+
 			const response = directusMCP.toMCPError(errors);
-			
+
 			expect(response.isError).toBe(true);
 
 			const parsedContent = JSON.parse(response.content[0]!.text);
@@ -601,7 +601,7 @@ describe('DirectusMCP', () => {
 
 			expect(parsedContent[2]).toEqual({
 				error: 'Third error',
-				code: 'THIRD'
+				code: 'THIRD',
 			});
 		});
 	});
@@ -614,7 +614,7 @@ describe('DirectusMCP', () => {
 			mockRes = {
 				json: vi.fn(),
 				status: vi.fn().mockReturnThis(),
-				send: vi.fn()
+				send: vi.fn(),
 			};
 
 			transport = new DirectusTransport(mockRes as Response);
@@ -625,7 +625,7 @@ describe('DirectusMCP', () => {
 				const message = {
 					jsonrpc: '2.0' as const,
 					id: 1,
-					result: { data: 'test' }
+					result: { data: 'test' },
 				};
 
 				await transport.send(message);
@@ -640,8 +640,8 @@ describe('DirectusMCP', () => {
 					id: 1,
 					error: {
 						code: -32600,
-						message: 'Invalid Request'
-					}
+						message: 'Invalid Request',
+					},
 				};
 
 				await transport.send(errorMessage);
@@ -652,7 +652,7 @@ describe('DirectusMCP', () => {
 			it('should send notification messages (no id)', async () => {
 				const notification = {
 					jsonrpc: '2.0' as const,
-					method: 'notifications/initialized'
+					method: 'notifications/initialized',
 				};
 
 				await transport.send(notification);
@@ -669,7 +669,7 @@ describe('DirectusMCP', () => {
 				const message = {
 					jsonrpc: '2.0' as const,
 					id: 1,
-					method: 'tools/list'
+					method: 'tools/list',
 				};
 
 				// Simulate message handling (this would typically be called by the server)
@@ -698,10 +698,10 @@ describe('DirectusMCP', () => {
 					jsonrpc: '2.0' as const,
 					id: 1,
 					method: 'tools/call',
-					params: { name: 'test-tool' }
+					params: { name: 'test-tool' },
 				};
 
-				const extraInfo = { };
+				const extraInfo = {};
 
 				transport.onmessage?.(message, extraInfo);
 

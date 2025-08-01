@@ -59,7 +59,7 @@ export class DirectusMCP {
 	}
 
 	/**
-	 * This handleRequest function is not awaiting lower level logic resulting in the actual 
+	 * This handleRequest function is not awaiting lower level logic resulting in the actual
 	 * response being an asynchronous side effect happening after the function has returned
 	 */
 	handleRequest(req: Request, res: Response) {
@@ -153,7 +153,7 @@ export class DirectusMCP {
 			transport.onmessage?.(parsedMessage);
 		} catch (error) {
 			transport.onerror?.(error as Error);
-			
+
 			throw error;
 		}
 	}
