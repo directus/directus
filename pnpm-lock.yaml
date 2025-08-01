@@ -544,8 +544,8 @@ catalogs:
       specifier: 2.1.2
       version: 2.1.2
     isolated-vm:
-      specifier: 6.0.1
-      version: 6.0.1
+      specifier: 5.0.3
+      version: 5.0.3
     joi:
       specifier: 17.13.3
       version: 17.13.3
@@ -1108,7 +1108,7 @@ importers:
         version: 2.1.2
       isolated-vm:
         specifier: 'catalog:'
-        version: 6.0.1
+        version: 5.0.3
       joi:
         specifier: 'catalog:'
         version: 17.13.3
@@ -10192,9 +10192,9 @@ packages:
     resolution: {integrity: sha512-LpB/54B+/2J5hqQ7imZHfdU31OlgQqx7ZicVlkm9kzg9/w8GKLEcFfJl/t7DCEDueOyBAD6zCCwTO6Fzs0NoEQ==}
     engines: {node: '>=16'}
 
-  isolated-vm@6.0.1:
-    resolution: {integrity: sha512-rcnfMOYIbRdChFnQbMYsSx/cSfmLJRiw+MlPyz6WdwhaPDB/mfib0pSK+D2COW+KNZKGOGeW6a+qVksL6+X/Bg==}
-    engines: {node: '>=22.0.0'}
+  isolated-vm@5.0.3:
+    resolution: {integrity: sha512-GNqX0j7dkwdaNQfFogLLb/tSuPZbXtKlk5ldaJ084ngjaW9/bn34x9FQFL856p20KSZoubIIummmiJf+2hzhCw==}
+    engines: {node: '>=18.0.0'}
 
   istanbul-lib-coverage@3.2.2:
     resolution: {integrity: sha512-O8dpsF+r0WV/8MNRKfnmrtCWhuKjxrq2w+jpzBL5UZKTi2LeVWnWOmWRxFlesJONmc+wLAGvKQZEOanko0LFTg==}
@@ -23415,7 +23415,7 @@ snapshots:
 
   isexe@3.1.1: {}
 
-  isolated-vm@6.0.1:
+  isolated-vm@5.0.3:
     dependencies:
       prebuild-install: 7.1.3
 
