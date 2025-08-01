@@ -34,11 +34,11 @@ export interface OverviewOutput {
 }
 
 const OverviewValidateSchema = z.object({
-	type: z.literal('overview'),
+	action: z.literal('overview'),
 });
 
 const OverviewInputSchema = z.object({
-	type: z.literal('overview'),
+	action: z.literal('overview'),
 });
 
 export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
@@ -144,18 +144,14 @@ const CollectionValidateSchema = z.union([
 	z.object({
 		action: z.literal('create'),
 		data: z.union([z.array(CollectionItemSchema), CollectionItemSchema]),
-		query: QuerySchema.optional(),
 	}),
 	z.object({
 		action: z.literal('read'),
 		keys: z.array(z.string()).optional(),
-		query: QuerySchema.optional(),
 	}),
 	z.object({
 		action: z.literal('update'),
 		data: z.union([z.array(CollectionItemSchema), CollectionItemSchema]),
-		keys: z.array(z.string()).optional(),
-		query: QuerySchema.optional(),
 	}),
 	z.object({
 		action: z.literal('delete'),
@@ -216,9 +212,7 @@ export const collection = defineTool<z.infer<typeof CollectionValidateSchema>>({
 		}
 
 		if (args.action === 'update') {
-			let updatedKeys: string[] = [];
-
-			updatedKeys = await service.updateBatch(toArray(args.data));
+			const updatedKeys = await service.updateBatch(toArray(args.data));
 
 			const result = await service.readMany(updatedKeys);
 
