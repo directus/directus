@@ -112,8 +112,8 @@ catalogs:
       specifier: 7.0.6
       version: 7.0.6
     '@keyv/redis':
-      specifier: 5.0.0
-      version: 5.0.0
+      specifier: 3.0.1
+      version: 3.0.1
     '@mapbox/mapbox-gl-draw':
       specifier: 1.5.0
       version: 1.5.0
@@ -1392,7 +1392,7 @@ importers:
     optionalDependencies:
       '@keyv/redis':
         specifier: 'catalog:'
-        version: 5.0.0(keyv@5.4.0)
+        version: 3.0.1
       mysql2:
         specifier: 'catalog:'
         version: 3.14.3
@@ -4735,11 +4735,9 @@ packages:
   '@json2csv/plainjs@7.0.6':
     resolution: {integrity: sha512-4Md7RPDCSYpmW1HWIpWBOqCd4vWfIqm53S3e/uzQ62iGi7L3r34fK/8nhOMEe+/eVfCx8+gdSCt1d74SlacQHw==}
 
-  '@keyv/redis@5.0.0':
-    resolution: {integrity: sha512-4f1fqmxa8QZFlnO9WDEAHVXaq9xLc6n6gIwwx6A9XyJ4RLocw5czFlStmp8ihbXZjQk0baNe+UAAJ47G7W+Giw==}
+  '@keyv/redis@3.0.1':
+    resolution: {integrity: sha512-eyqzomQC76LjUOEkPP8rdR2Fk4eZBSS0Ma47i7CNiQuv8NCw3trZvghx8L5Xruk7XPEj/eRAMrAxP//xQFOPdQ==}
     engines: {node: '>= 18'}
-    peerDependencies:
-      keyv: ^5.4.0
 
   '@keyv/serialize@1.1.0':
     resolution: {integrity: sha512-RlDgexML7Z63Q8BSaqhXdCYNBy/JQnqYIwxofUrNLGCblOMHp+xux2Q8nLMLlPpgHQPoU0Do8Z6btCpRBEqZ8g==}
@@ -5712,10 +5710,6 @@ packages:
   '@redis/client@1.6.1':
     resolution: {integrity: sha512-/KCsg3xSlR+nCK8/8ZYSknYxvXHwubJrU82F3Lm1Fp6789VQ0/3RJKfsmRXjqfaTA++23CvC3hqmqe/2GEt6Kw==}
     engines: {node: '>=14'}
-
-  '@redis/client@5.7.0':
-    resolution: {integrity: sha512-YV3Knspdj9k6H6s4v8QRcj1WBxHt40vtPmszLKGwRUOUpUOLWSlI9oCUjprMDcQNzgSCXGXYdL/Aj6nT2+Ub0w==}
-    engines: {node: '>= 18'}
 
   '@reflink/reflink-darwin-arm64@0.1.19':
     resolution: {integrity: sha512-ruy44Lpepdk1FqDz38vExBY/PVUsjxZA+chd9wozjUH9JjuDT/HEaQYA6wYN9mf041l0yLVar6BCZuWABJvHSA==}
@@ -16714,12 +16708,11 @@ snapshots:
       '@json2csv/formatters': 7.0.6
       '@streamparser/json': 0.0.20
 
-  '@keyv/redis@5.0.0(keyv@5.4.0)':
+  '@keyv/redis@3.0.1':
     dependencies:
-      '@redis/client': 5.7.0
-      cluster-key-slot: 1.1.2
-      hookified: 1.11.0
-      keyv: 5.4.0
+      ioredis: 5.7.0
+    transitivePeerDependencies:
+      - supports-color
     optional: true
 
   '@keyv/serialize@1.1.0': {}
@@ -18358,11 +18351,6 @@ snapshots:
       cluster-key-slot: 1.1.2
       generic-pool: 3.9.0
       yallist: 4.0.0
-    optional: true
-
-  '@redis/client@5.7.0':
-    dependencies:
-      cluster-key-slot: 1.1.2
     optional: true
 
   '@reflink/reflink-darwin-arm64@0.1.19':
