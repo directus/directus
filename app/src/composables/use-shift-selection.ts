@@ -13,7 +13,7 @@ export function useShiftSelection() {
 	/** Reusable logic for updating the selection while handling shift-clicks
 	 * @param selectionMask - current selection mask, an array of booleans
 	 * @param index - index of the item that was clicked
-	 * @param expandOnEmpty - whether to autofill selection on empty space (default: false)
+	 * @param expandOnEmpty - if true and no items are currently selected, selects all items from the clicked position to the nearest edge (start or end) of the list; if false, only the clicked item is selected (default: false)
 	 */
 	function updateSelection(selectionMask: boolean[], index: number, expandOnEmpty: boolean = false): boolean[] {
 		let outputMask = [...selectionMask];

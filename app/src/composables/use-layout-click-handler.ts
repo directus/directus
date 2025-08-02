@@ -29,7 +29,6 @@ export function useLayoutClickHandler({ props, items, selection, primaryKeyField
 
 		if (props.selectMode || selection.value?.length > 0) {
 			if (items.value && primaryKeyField.value) {
-				// For now, at least tabular layout will enter here
 				const currentIndex = items.value.findIndex((i: Item) => {
 					return i[primaryKeyField.value!.field] === item[primaryKeyField.value!.field];
 				});

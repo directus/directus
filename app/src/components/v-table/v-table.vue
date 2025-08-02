@@ -125,9 +125,7 @@ const internalSort = computed<Sort>(
 
 const reordering = ref<boolean>(false);
 
-const tableRowLookup = ref<Map<number, { item: Item; row: InstanceType<typeof TableRow> }>>(
-	new Map<number, { item: Item; row: InstanceType<typeof TableRow> }>(),
-);
+const tableRowLookup = ref(new Map<number, { item: Item; row: InstanceType<typeof TableRow> }>());
 
 const hasHeaderAppendSlot = computed(() => slots['header-append'] !== undefined);
 const hasHeaderContextMenuSlot = computed(() => slots['header-context-menu'] !== undefined);
@@ -296,8 +294,12 @@ function setTableRowRef(el: any, element: Item) {
 	});
 
 	if (elementIndex < 0) {
-		//the case of negative elementIndex should not happen
-		return;
+		//This should never happen, but if it does, we throw an error to help debugging
+		throw new Error(
+			`setTableRowRef: Mismatch between items and table-row references. Could not find index for element: ${JSON.stringify(
+				element,
+			)}`,
+		);
 	}
 
 	if (el) {

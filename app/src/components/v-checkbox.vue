@@ -68,7 +68,7 @@ const icon = computed<string>(() => {
 
 const customInput = useTemplateRef<HTMLInputElement>('custom-input');
 
-/** If the checkbox was checked while the user was holding the shift key, this flag will be set to true, otherwise false */
+/** If the checkbox was clicked while the user was holding the shift key, this flag will be set to true, otherwise false */
 const shiftFlag: Ref<boolean> = ref(false);
 
 defineExpose({
