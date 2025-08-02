@@ -11,6 +11,7 @@ import { mount } from '@vue/test-utils';
 import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { createI18n } from 'vue-i18n';
+import { createHead } from '@unhead/vue';
 import ContinueAs from './components/continue-as.vue';
 import LdapForm from './components/login-form/ldap-form.vue';
 import LoginForm from './components/login-form/login-form.vue';
@@ -23,7 +24,7 @@ const global: GlobalMountOptions = {
 	components: { publicView, vSelect, vIcon, vImage },
 	directives: { md: MarkdownDirective },
 	stubs: { routerLink: true, publicView: false },
-	plugins: [i18n],
+	plugins: [i18n, createHead()],
 };
 
 // silences locale message not found warnings

@@ -24,7 +24,10 @@ export function scheduleSynchronizedJob(
 	const clock = new SynchronizedClock(`${id}:${rule}`);
 
 	const job = schedule.scheduleJob(rule, async (fireDate) => {
-		const nextTimestamp = job.nextInvocation().getTime();
+		const nextInvocation = job.nextInvocation();
+		if (!nextInvocation) return;
+
+		const nextTimestamp = nextInvocation.getTime();
 
 		const wasSet = await clock.set(nextTimestamp);
 

@@ -85,7 +85,7 @@ const formattedTime = computed(() => {
 				<template v-else>{{ t('uses_left', usesLeft) }}</template>
 			</span>
 			<v-icon v-if="share.password" small name="lock" />
-			<span style="flex-grow: 1"></span>
+			<span class="spacer"></span>
 			<span v-if="status" class="share-status" :class="{ [status]: true }">
 				{{ t(status) }}
 			</span>
@@ -99,6 +99,10 @@ const formattedTime = computed(() => {
 	padding: 8px;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
+}
+
+.spacer {
+	flex-grow: 1;
 }
 
 .item-date {
