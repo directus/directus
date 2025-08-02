@@ -2458,6 +2458,12 @@ operations:
   condition:
     name: Condition
     description: Route a flow based on If / Else logic
+  error:
+    name: Error
+    description: Throw an error in the reject path
+    code: Error Code
+    status: HTTP Status Code
+    message: Error Message
   exec:
     name: Run Script
     description: Execute arbitrary code to modify the payload
