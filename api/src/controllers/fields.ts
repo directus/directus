@@ -1,5 +1,5 @@
 import { TYPES } from '@directus/constants';
-import { isDirectusError } from '@directus/errors';
+import { ForbiddenError, isDirectusError } from '@directus/errors';
 import type { Field, RawField, Type } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
@@ -8,8 +8,9 @@ import { ErrorCode, InvalidPayloadError } from '@directus/errors';
 import validateCollection from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
-import { FieldsService } from '../services/fields.js';
+import { FieldsService, systemFieldUpdateSchema } from '../services/fields.js';
 import asyncHandler from '../utils/async-handler.js';
+import { isSystemField } from '@directus/system-data';
 
 const router = Router();
 
@@ -130,6 +131,14 @@ router.patch(
 			throw new InvalidPayloadError({ reason: 'Submitted body has to be an array' });
 		}
 
+		for (const fieldData of req.body) {
+			if (isSystemField(req.params['collection']!, fieldData['field']!)) {
+				const { error } = systemFieldUpdateSchema.safeParse(fieldData);
+
+				if (error) throw error.issues.map((details) => new InvalidPayloadError({ reason: details.message }));
+			}
+		}
+
 		await service.updateFields(req.params['collection']!, req.body);
 
 		try {
@@ -176,10 +185,14 @@ router.patch(
 			schema: req.schema,
 		});
 
-		const { error } = updateSchema.validate(req.body);
+		if (isSystemField(req.params['collection']!, req.params['field']!)) {
+			const { error } = systemFieldUpdateSchema.safeParse(req.body);
 
-		if (error) {
-			throw new InvalidPayloadError({ reason: error.message });
+			if (error) throw error.issues.map((details) => new InvalidPayloadError({ reason: details.message }));
+		} else {
+			const { error } = updateSchema.validate(req.body);
+
+			if (error) throw new InvalidPayloadError({ reason: error.message });
 		}
 
 		const fieldData: RawField = req.body;
@@ -212,6 +225,10 @@ router.delete(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
+		if (isSystemField(req.params['collection']!, req.params['field']!)) {
+			throw new ForbiddenError();
+		}
 
 		await service.deleteField(req.params['collection']!, req.params['field']!);
 		return next();
