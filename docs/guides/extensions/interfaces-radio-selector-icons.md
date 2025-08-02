@@ -349,7 +349,7 @@ under the closing `script` tag:
 .radio-icon-buttons {
 	--columns: 5;
 	display: grid;
-	grid-gap: 12px 32px;
+	gap: 12px 32px;
 	grid-template-columns: repeat(var(--columns), 1fr);
 
 	@media (max-width: 600px) {
@@ -676,7 +676,7 @@ export default {
 .radio-icon-buttons {
 	--columns: 5;
 	display: grid;
-	grid-gap: 12px 32px;
+	gap: 12px 32px;
 	grid-template-columns: repeat(var(--columns), 1fr);
 
 	@media (max-width: 600px) {

@@ -536,7 +536,7 @@ function useColor() {
 
 .color-data-inputs {
 	display: grid;
-	grid-gap: 0;
+	gap: 0;
 	inline-size: 100%;
 	padding: 12px 10px;
 }
@@ -592,7 +592,7 @@ function useColor() {
 
 .color-data-alphas {
 	display: grid;
-	grid-gap: 12px;
+	gap: 12px;
 	align-items: baseline;
 	inline-size: 100%;
 	block-size: 45px;

@@ -164,7 +164,7 @@ async function handleSubmission(rating?: number) {
 
 .button-container {
 	display: grid;
-	grid-gap: 0.5rem;
+	gap: 0.5rem;
 }
 
 .wrapper {
