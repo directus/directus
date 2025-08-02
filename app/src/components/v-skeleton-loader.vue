@@ -38,6 +38,7 @@ withDefaults(defineProps<Props>(), {
 	overflow: hidden;
 	background-color: var(--v-skeleton-loader-background-color, var(--theme--form--field--input--background-subdued));
 
+	/* stylelint-disable-next-line */
 	&::after {
 		position: absolute;
 		inset-block-start: 0;
