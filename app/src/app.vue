@@ -6,7 +6,6 @@ import { getAssetUrl } from '@/utils/get-asset-url';
 import { useAppStore } from '@directus/stores';
 import { ThemeProvider } from '@directus/themes';
 import { useHead } from '@unhead/vue';
-import { TemplateParamsPlugin } from '@unhead/vue/plugins';
 import { computed, onMounted, onUnmounted, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useThemeConfiguration } from './composables/use-theme-configuration';
@@ -28,17 +27,16 @@ const brandStyleCss = computed(() => {
 });
 
 useHead({
-	plugins: [TemplateParamsPlugin],
 	style: [{ textContent: brandStyleCss }],
 	title: 'Directus',
 	titleTemplate: '%s · %projectName',
 	templateParams: {
 		projectName: computed(() => serverStore.info?.project?.project_name ?? 'Directus'),
 	},
-	htmlAttrs: {
-		lang: computed(() => userStore.language),
-		dir: computed(() => userStore.textDirection),
-	},
+	htmlAttrs: computed(() => ({
+		lang: userStore.language,
+		dir: userStore.textDirection,
+	})),
 	meta: computed(() => {
 		const content = serverStore.info?.project?.project_color ?? '#6644ff';
 
