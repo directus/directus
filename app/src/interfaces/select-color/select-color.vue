@@ -355,8 +355,8 @@ function useColor() {
 						? 'repeat(4, 1fr)'
 						: 'repeat(6, 1fr)'
 					: width.startsWith('half')
-					  ? 'repeat(3, 1fr)'
-					  : 'repeat(5, 1fr)',
+						? 'repeat(3, 1fr)'
+						: 'repeat(5, 1fr)',
 			}"
 			:class="{ stacked: width.startsWith('half') }"
 		>
@@ -368,8 +368,8 @@ function useColor() {
 							? '1 / span 4'
 							: '1 / span 2'
 						: width.startsWith('half')
-						  ? '1 / span 3'
-						  : '1 / span 2',
+							? '1 / span 3'
+							: '1 / span 2',
 				}"
 			>
 				<v-select v-model="colorType" :items="colorTypes" />
