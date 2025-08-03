@@ -27,14 +27,14 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
-		"@azure/storage-blob": "12.26.0",
+		"@azure/storage-blob": "catalog:",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
-		"@ngneat/falso": "7.3.0",
+		"@ngneat/falso": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsup": "catalog:",
 		"typescript": "catalog:",
