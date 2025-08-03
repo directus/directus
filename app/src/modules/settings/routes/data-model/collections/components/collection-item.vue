@@ -113,19 +113,19 @@ function onGroupSortChange(collections: Collection[]) {
 
 <style scoped lang="scss">
 .drag-container {
-	margin-top: 8px;
-	margin-left: 20px;
+	margin-block-start: 8px;
+	margin-inline-start: 20px;
 }
 
 .collection-item {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 }
 
 .collection-item-detail {
 	display: flex;
 	flex-grow: 1;
 	align-items: center;
-	height: 100%;
+	block-size: 100%;
 	overflow: hidden;
 	font-family: var(--theme--fonts--monospace--font-family);
 	pointer-events: none;
@@ -140,7 +140,7 @@ function onGroupSortChange(collections: Collection[]) {
 }
 
 .collection-note {
-	margin-left: 16px;
+	margin-inline-start: 16px;
 	overflow: hidden;
 	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
@@ -154,7 +154,7 @@ function onGroupSortChange(collections: Collection[]) {
 }
 
 .collection-icon {
-	margin-right: 8px;
+	margin-inline-end: 8px;
 }
 
 .drag-handle {

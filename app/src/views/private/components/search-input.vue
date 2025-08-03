@@ -52,9 +52,9 @@ watch(
 		const maxWidth =
 			searchElement.getBoundingClientRect().right -
 			(headerElement.getBoundingClientRect().left +
-				Number(window.getComputedStyle(headerElement).paddingLeft.replace('px', '')));
+				Number(window.getComputedStyle(headerElement).paddingInlineStart.replace('px', '')));
 
-		filterElement.value.style.maxWidth = maxWidth > minWidth ? `${String(maxWidth)}px` : '0px';
+		filterElement.value.style.maxInlineSize = maxWidth > minWidth ? `${String(maxWidth)}px` : '0px';
 	},
 	{ immediate: true },
 );
@@ -202,25 +202,25 @@ function emitValue() {
 .search-input {
 	display: flex;
 	align-items: center;
-	width: 42px;
-	min-height: 42px;
-	max-width: 100%;
+	inline-size: 42px;
+	min-block-size: 42px;
+	max-inline-size: 100%;
 	box-sizing: content-box;
 	overflow: hidden;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: calc((42px + var(--theme--border-width) * 2) / 2);
 	transition:
-		width var(--slow) var(--transition),
-		border-bottom-left-radius var(--fast) var(--transition),
-		border-bottom-right-radius var(--fast) var(--transition);
+		inline-size var(--slow) var(--transition),
+		border-end-start-radius var(--fast) var(--transition),
+		border-end-end-radius var(--fast) var(--transition);
 
 	&.show-filter {
-		width: 69px;
+		inline-size: 69px;
 	}
 
 	input {
-		width: 0;
-		height: 100%;
+		inline-size: 0;
+		block-size: 100%;
 		margin: 0;
 		padding: 0;
 		overflow: hidden;
@@ -238,14 +238,14 @@ function emitValue() {
 	}
 
 	.spacer {
-		width: 8px;
+		inline-size: 8px;
 	}
 
 	.icon-clear {
 		--v-icon-color: var(--theme--foreground-subdued);
 		--v-icon-color-hover: var(--theme--danger);
 
-		min-width: auto;
+		min-inline-size: auto;
 		overflow: hidden;
 	}
 
@@ -263,7 +263,7 @@ function emitValue() {
 	}
 
 	.icon-filter {
-		margin-right: 8px;
+		margin-inline-end: 8px;
 	}
 
 	&:focus-within,
@@ -272,10 +272,10 @@ function emitValue() {
 	}
 
 	&.has-content {
-		width: 200px;
+		inline-size: 200px;
 
 		.icon-clear {
-			margin-right: 8px;
+			margin-inline-end: 8px;
 		}
 
 		input {
@@ -284,13 +284,13 @@ function emitValue() {
 
 		&.show-filter {
 			.icon-clear {
-				margin-right: 0;
+				margin-inline-end: 0;
 			}
 		}
 	}
 
 	&.active {
-		width: 300px;
+		inline-size: 300px;
 		border-color: var(--theme--form--field--input--border-color-focus);
 
 		input {
@@ -299,41 +299,40 @@ function emitValue() {
 	}
 
 	&.filter-active {
-		width: 200px;
+		inline-size: 200px;
 
 		.icon-filter {
 			--v-icon-color: var(--theme--primary);
 		}
 
 		@media (min-width: 600px) {
-			width: 250px;
+			inline-size: 250px;
 		}
 
 		@media (min-width: 960px) {
-			width: 300px;
+			inline-size: 300px;
 		}
 
 		@media (min-width: 1260px) {
-			width: 420px; /* blaze it */
+			inline-size: 420px; /* blaze it */
 		}
 	}
 
 	&.filter-border {
-		padding-bottom: var(--theme--border-width);
-		border-bottom: none;
-		border-bottom-right-radius: 0;
-		border-bottom-left-radius: 0;
+		padding-block-end: var(--theme--border-width);
+		border-block-end: none;
+		border-end-end-radius: 0;
+		border-end-start-radius: 0;
 		transition:
-			border-bottom-left-radius 0,
-			border-bottom-right-radius 0;
+			border-end-start-radius 0s,
+			border-end-end-radius 0s;
 
 		&::after {
 			position: absolute;
-			right: var(--theme--border-width);
-			bottom: calc(-1 * var(--theme--border-width));
-			left: var(--theme--border-width);
-			width: auto;
-			height: var(--theme--border-width);
+			inset-inline: var(--theme--border-width) var(--theme--border-width);
+			inset-block-end: calc(-1 * var(--theme--border-width));
+			inline-size: auto;
+			block-size: var(--theme--border-width);
 			background-color: var(--theme--border-color-subdued);
 			content: '';
 			pointer-events: none;
@@ -343,16 +342,16 @@ function emitValue() {
 
 .filter {
 	position: absolute;
-	top: 100%;
-	right: 0;
-	width: auto;
-	min-width: 100%;
+	inset-block-start: 100%;
+	inset-inline-end: 0;
+	inline-size: auto;
+	min-inline-size: 100%;
 	padding: 0;
 	background-color: var(--theme--background-subdued);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 22px;
-	border-bottom-left-radius: 22px;
+	border-start-end-radius: 0;
+	border-end-end-radius: 22px;
+	border-end-start-radius: 22px;
 
 	&.active {
 		border-color: var(--theme--form--field--input--border-color-focus);

@@ -1,4 +1,4 @@
-import type { Theme } from '../schemas/index.js';
+import type { Theme } from '@directus/types';
 import { directusDefault as darkDirectusDefault } from './dark/index.js';
 import {
 	directusColorMatch as lightDirectusColorMatch,

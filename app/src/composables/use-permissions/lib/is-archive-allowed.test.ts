@@ -2,7 +2,6 @@ import { mockedStore } from '@/__utils__/store';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { useCollection } from '@directus/composables';
-import { randomIdentifier } from '@directus/random';
 import { Permission } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
@@ -27,8 +26,8 @@ beforeEach(() => {
 	);
 
 	sample = {
-		collection: randomIdentifier(),
-		archiveField: randomIdentifier(),
+		collection: 'test_collection',
+		archiveField: 'archive_field',
 	};
 });
 

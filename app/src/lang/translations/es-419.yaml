@@ -732,6 +732,7 @@ errors:
   COLLECTION_NOT_FOUND: "Colección no existe"
   CONTAINS_NULL_VALUES: El campo contiene valores nulos
   CONTENT_TOO_LARGE: El elemento/archivo enviado es demasiado grande
+  FAILED_VALIDATION: Error de validación
   FIELD_NOT_FOUND: Campo no encontrado
   FORBIDDEN: Prohibido
   GRAPHQL_VALIDATION: Validación de GraphQL
@@ -1716,7 +1717,6 @@ translation_placeholder: Introduzca una traducción...
 value: Valor
 view_project: Ver Proyecto
 report_error: Reportar Error
-start: Iniciar
 table: Tabla
 list: Lista
 search_filter: Buscar & Filtrar
@@ -2299,6 +2299,7 @@ show_labels: Mostrar etiquetas
 show_legend: Mostrar leyenda
 right: Derecha
 left: Izquierda
+start: Iniciar
 donut: Donut
 continuous: Continuo
 gap: Brecha
@@ -2540,3 +2541,13 @@ search_flow: Buscar Flujo...
 percent: Porciento
 show_password: Mostrar Contraseña
 hide_password: Ocultar Contraseña
+bsl_banner:
+  welcome_to_directus: '¡Le damos la bienvenida a Directus!'
+  directus_free_use: El Directo es libre de usar para entidades menores de 5 millones de dólares en ingresos anuales, financiamiento o presupuesto operativo.
+  organization_threshold: Las entidades por encima de este umbral requieren una licencia de pago.
+  license_agreement: Al hacer clic en "Aceptar", acepta los {directusBsl} y {privacyPolicy}.
+  directus_bsl: BSL de Directus 1,1
+  privacy_policy: Política de Privacidad
+  accept_terms: Aceptar
+  get_license: Obtener una licencia
+accepted: Aceptado

@@ -6,8 +6,16 @@ import {
 	RangeNotSatisfiableError,
 	ServiceUnavailableError,
 } from '@directus/errors';
-import type { Range, Stat } from '@directus/storage';
-import type { Accountability, File, SchemaOverview } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	Accountability,
+	File,
+	Range,
+	Stat,
+	SchemaOverview,
+	Transformation,
+	TransformationSet,
+} from '@directus/types';
 import type { Knex } from 'knex';
 import { clamp } from 'lodash-es';
 import { contentType } from 'mime-types';
@@ -20,7 +28,6 @@ import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getStorage } from '../storage/index.js';
-import type { AbstractServiceOptions, Transformation, TransformationSet } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';

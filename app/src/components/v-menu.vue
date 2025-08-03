@@ -12,7 +12,7 @@ import { createPopper } from '@popperjs/core/lib/popper-lite';
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
 import { debounce } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
-import { onUnmounted, ref, computed, watch, useTemplateRef, nextTick, type Ref } from 'vue';
+import { computed, nextTick, onUnmounted, ref, useTemplateRef, watch, type Ref } from 'vue';
 
 interface Props {
 	/** Where to position the popper */
@@ -498,9 +498,9 @@ function usePopper(
 
 .v-menu-popper {
 	position: fixed;
-	left: -999px;
+	inset-inline-start: -999px;
 	z-index: 600;
-	min-width: 100px;
+	min-inline-size: 100px;
 	transform: translateY(2px);
 	pointer-events: none;
 
@@ -518,21 +518,19 @@ function usePopper(
 .arrow-triangle::before,
 .arrow-triangle::after {
 	position: absolute;
-	width: 10px;
-	height: 10px;
+	inline-size: 10px;
+	block-size: 10px;
 }
 
 .arrow {
 	z-index: 1;
 
 	.arrow-triangle {
-		overflow-x: visible;
-		overflow-y: clip;
+		overflow: visible clip;
 
 		[data-placement^='left'] &,
 		[data-placement^='right'] & {
-			overflow-x: clip;
-			overflow-y: visible;
+			overflow: clip visible;
 		}
 
 		&::before,
@@ -560,54 +558,73 @@ function usePopper(
 }
 
 [data-placement^='top'] .arrow {
-	bottom: -10px;
+	inset-block-end: -10px;
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			bottom: 7px;
+			inset-block-end: 7px;
 		}
 	}
 }
 
 [data-placement^='bottom'] .arrow {
-	top: -10px;
+	inset-block-start: -10px;
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			top: 7px;
+			inset-block-start: 7px;
 		}
 	}
 }
 
 [data-placement^='right'] .arrow {
-	left: -10px;
+	inset-inline-start: -10px;
+
+	html[dir='rtl'] & {
+		inset-inline-start: unset;
+		inset-inline-end: -10px;
+	}
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			left: 7px;
+			inset-inline-start: 7px;
+
+			html[dir='rtl'] & {
+				inset-inline-start: unset;
+				inset-inline-end: 7px;
+			}
 		}
 	}
 }
 
 [data-placement^='left'] .arrow {
-	right: -10px;
+	inset-inline-end: -10px;
+
+	html[dir='rtl'] & {
+		inset-inline-end: unset;
+		inset-inline-start: -10px;
+	}
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			right: 7px;
+			inset-inline-end: 7px;
+
+			html[dir='rtl'] & {
+				inset-inline-end: unset;
+				inset-inline-start: 7px;
+			}
 		}
 	}
 }
 
 .v-menu-content {
-	max-height: v-bind(maxHeight);
+	max-block-size: v-bind(maxHeight);
 	padding: 0 4px;
-	overflow-x: hidden;
-	overflow-y: auto;
+	overflow: hidden auto;
 	background-color: var(--theme--popover--menu--background);
 	border: none;
 	border-radius: var(--theme--popover--menu--border-radius);

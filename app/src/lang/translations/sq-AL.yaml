@@ -1694,7 +1694,6 @@ translation_placeholder: Shkruani një përkthim...
 value: Vlerë
 view_project: Shiko Projektin
 report_error: Raporto Gabimin
-start: Fillim
 table: Tabela
 list: Listë
 search_filter: Kërko & Filro
@@ -2277,6 +2276,7 @@ show_labels: Shfaq etiketat
 show_legend: Shfaq legjendën
 right: Djathtas
 left: Majtas
+start: Fillim
 donut: Petull
 panels:
   metric:

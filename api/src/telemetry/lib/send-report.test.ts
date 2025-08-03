@@ -78,5 +78,5 @@ test('Throws error if post was not successful', async () => {
 
 	const mockReport = {} as unknown as TelemetryReport;
 
-	expect(sendReport(mockReport)).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: [503] test-error]`);
+	await expect(sendReport(mockReport)).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: [503] test-error]`);
 });

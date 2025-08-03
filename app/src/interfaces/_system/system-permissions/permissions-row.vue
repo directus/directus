@@ -61,7 +61,7 @@ const { t } = useI18n();
 .permissions-row {
 	.collection {
 		white-space: nowrap;
-		width: 100%;
+		inline-size: 100%;
 	}
 
 	.collection > div {
@@ -71,7 +71,7 @@ const { t } = useI18n();
 
 	.name {
 		flex: 1;
-		width: 1px;
+		inline-size: 1px;
 		padding: 0 12px;
 		font-family: var(--theme--fonts--monospace--font-family);
 		overflow: hidden;
@@ -80,14 +80,14 @@ const { t } = useI18n();
 
 	.shortcuts {
 		position: absolute;
-		right: 0;
+		inset-inline-end: 0;
 		background: var(--theme--background);
 		font-family: var(--theme--fonts--monospace--font-family);
 		color: var(--theme--foreground-subdued);
 		font-size: 12px;
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
-		padding-right: 12px;
+		padding-inline-end: 12px;
 		box-shadow:
 			-12px 0 10px 2px var(--theme--background),
 			-12px 0 12px 2px var(--theme--background);
@@ -117,13 +117,13 @@ const { t } = useI18n();
 	}
 
 	.action {
-		height: 48px;
-		padding-left: 12px;
+		block-size: 48px;
+		padding-inline-start: 12px;
 		text-align: center;
 	}
 
 	.action + .action {
-		padding-left: 4px;
+		padding-inline-start: 4px;
 	}
 
 	.null {
@@ -131,11 +131,11 @@ const { t } = useI18n();
 	}
 
 	:is(.permissions-overview-toggle, .null) + :is(.permissions-overview-toggle, .null) {
-		margin-left: 20px;
+		margin-inline-start: 20px;
 	}
 
 	& + .permissions-row td {
-		border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 
 	.remove {
