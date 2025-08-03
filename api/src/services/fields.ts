@@ -909,7 +909,16 @@ export class FieldsService {
 				const precision = defaultValue.match(REGEX_BETWEEN_PARENS)![1];
 				column.defaultTo(this.knex.fn.now(Number(precision)));
 			} else if (newDefaultIsAFunction) {
-				column.defaultTo(this.knex.raw(defaultValue));
+				// Only allow exact matches from the allowed list, no extra characters
+				if (
+					typeof defaultValue === 'string' &&
+					ALLOWED_DB_DEFAULT_FUNCTIONS.includes(defaultValue) &&
+					/^[A-Z_]+$/.test(defaultValue)
+				) {
+					column.defaultTo(this.knex.raw(defaultValue));
+				} else {
+					throw new InvalidPayloadError({ reason: 'Invalid default_value function' });
+				}
 			} else {
 				column.defaultTo(defaultValue);
 			}
