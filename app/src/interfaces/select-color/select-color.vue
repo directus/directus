@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import Color, { ColorInstance } from 'color';
-import { isHex } from '@/utils/is-hex';
+import { i18n } from '@/lang';
 import { isCssVar as isCssVarUtil } from '@/utils/is-css-var';
+import { isHex } from '@/utils/is-hex';
 import { cssVar } from '@directus/utils/browser';
+import Color, { ColorInstance } from 'color';
 import { ComponentPublicInstance, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { i18n } from '@/lang';
 
 const { t } = useI18n();
 
