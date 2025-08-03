@@ -33,88 +33,89 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 
 	let results: Item[] = [];
 
+	const versionsService = new VersionsService({
+		schema: self.schema,
+		accountability: self.accountability,
+		knex: self.knex,
+	});
+
+	const createdIDs: Record<string, PrimaryKey[]> = {};
+	const versionData = await versionsService.getVersionSaves(queryWithKey.version!, self.collection, key as string);
+
 	await transaction(self.knex, async (trx) => {
-		const versionsService = new VersionsService({
-			schema: self.schema,
-			accountability: self.accountability,
-			knex: trx,
-		});
-
-		const versionData = await versionsService.getVersionSaves(queryWithKey.version!, self.collection, key as string);
-
 		const itemsService = new ItemsService<Item>(self.collection, {
 			schema: self.schema,
 			accountability: self.accountability,
 			knex: trx,
 		});
 
-		const createdIDs: Record<string, PrimaryKey[]> = {};
+		await Promise.all(
+			(versionData ?? []).map((data) => {
+				return itemsService.updateOne(key, data as any, {
+					emitEvents: false,
+					autoPurgeCache: false,
+					bypassAccountability: true,
 
-		for (const data of versionData ?? []) {
-			await itemsService.updateOne(key, data as any, {
-				emitEvents: false,
-				autoPurgeCache: false,
-				bypassAccountability: true,
+					onItemCreate: (collection, pk) => {
+						if (collection in createdIDs === false) createdIDs[collection] = [];
 
-				onItemCreate: (collection, pk) => {
-					if (collection in createdIDs === false) createdIDs[collection] = [];
-
-					createdIDs[collection]!.push(pk);
-				},
-			});
-		}
+						createdIDs[collection]!.push(pk);
+					},
+				});
+			}),
+		);
 
 		results = await itemsService.readByQuery(queryWithKey, opts);
 
-		results = results.map((result) => {
-			return deepMapResponse(
-				result,
-				([key, value], context) => {
-					if (context.relationType === 'm2o' || context.relationType === 'a2o') {
-						const ids = createdIDs[context.relation!.related_collection!];
-						const match = ids?.find((id) => String(id) === String(value));
+		await trx.rollback();
+	});
 
-						if (match) {
-							return [key, null];
-						}
-					} else if (context.relationType === 'o2m' && Array.isArray(value)) {
-						const ids = createdIDs[context.relation!.collection];
-						return [
-							key,
-							value.map((val) => {
-								const match = ids?.find((id) => String(id) === String(value));
+	results = results.map((result) => {
+		return deepMapResponse(
+			result,
+			([key, value], context) => {
+				if (context.relationType === 'm2o' || context.relationType === 'a2o') {
+					const ids = createdIDs[context.relation!.related_collection!];
+					const match = ids?.find((id) => String(id) === String(value));
 
-								if (match) {
-									return null;
-								}
-
-								return val;
-							}),
-						];
-					}
-
-					if (context.field.field === context.collection.primary) {
-						const ids = createdIDs[context.collection.collection];
-						const match = ids?.find((id) => String(id) === String(value));
-
-						if (match) {
-							return [key, null];
-						}
-					} else if (
-						context.leaf &&
-						(context.field.defaultValue || intersection(GENERATE_SPECIAL, context.field.special).length > 0)
-					) {
-						// Should we only do this for newly created items as the others do have actual values in the DB already?
+					if (match) {
 						return [key, null];
 					}
+				} else if (context.relationType === 'o2m' && Array.isArray(value)) {
+					const ids = createdIDs[context.relation!.collection];
+					return [
+						key,
+						value.map((val) => {
+							const match = ids?.find((id) => String(id) === String(value));
 
-					return [key, value];
-				},
-				{ collection: self.collection, schema: self.schema },
-			);
-		});
+							if (match) {
+								return null;
+							}
 
-		await trx.rollback();
+							return val;
+						}),
+					];
+				}
+
+				if (context.field.field === context.collection.primary) {
+					const ids = createdIDs[context.collection.collection];
+					const match = ids?.find((id) => String(id) === String(value));
+
+					if (match) {
+						return [key, null];
+					}
+				} else if (
+					context.leaf &&
+					(context.field.defaultValue || intersection(GENERATE_SPECIAL, context.field.special).length > 0)
+				) {
+					// Should we only do this for newly created items as the others do have actual values in the DB already?
+					return [key, null];
+				}
+
+				return [key, value];
+			},
+			{ collection: self.collection, schema: self.schema },
+		);
 	});
 
 	return results;
