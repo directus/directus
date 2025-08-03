@@ -108,7 +108,7 @@ export default typescriptEslint.config(
 		files: ['**/*.vue'],
 		rules: {
 			// Same ordering of component tags everywhere
-			'vue/component-tags-order': [
+			'vue/block-order': [
 				'error',
 				{
 					order: ['script', 'template', 'style'],
