@@ -902,7 +902,6 @@ translation_placeholder: Entajpu tradukon...
 value: Valoro
 view_project: Vidi la projekton
 report_error: Raporti eraron
-start: Komenci
 table: Tabelo
 list: Listo
 search_filter: Serĉi kaj filtri
@@ -1193,6 +1192,7 @@ broad: Larĝa
 show_labels: Montri etikedojn
 right: Dekstra
 left: Maldekstra
+start: Komenci
 panels:
   metric:
     field: Kampo

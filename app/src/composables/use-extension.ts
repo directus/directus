@@ -1,5 +1,5 @@
 import { useExtensions } from '@/extensions';
-import type { AppExtensionConfigs, AppExtensionType, HybridExtensionType } from '@directus/extensions';
+import type { AppExtensionConfigs, AppExtensionType, HybridExtensionType } from '@directus/types';
 import type { Plural } from '@directus/types';
 import { pluralize } from '@directus/utils';
 import { Ref, computed, unref } from 'vue';

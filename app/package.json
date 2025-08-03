@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "13.11.3",
+	"version": "13.12.0",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -39,7 +39,6 @@
 		"@directus/extensions-registry": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "workspace:*",
-		"@directus/random": "workspace:*",
 		"@directus/sdk": "workspace:*",
 		"@directus/stores": "workspace:*",
 		"@directus/system-data": "workspace:*",
@@ -75,7 +74,7 @@
 		"@json2csv/plainjs": "7.0.6",
 		"@mapbox/mapbox-gl-draw": "1.5.0",
 		"@mapbox/mapbox-gl-draw-static-mode": "1.0.1",
-		"@mapbox/mapbox-gl-geocoder": "5.0.3",
+		"@mapbox/mapbox-gl-geocoder": "5.1.0",
 		"@ngneat/falso": "7.3.0",
 		"@pinia/testing": "1.0.0",
 		"@popperjs/core": "2.11.8",

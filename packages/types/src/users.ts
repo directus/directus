@@ -51,3 +51,12 @@ export type RegisterUserInput = {
 	first_name?: User['first_name'];
 	last_name?: User['last_name'];
 };
+
+export enum UserIntegrityCheckFlag {
+	None = 0,
+	/** Check if the number of remaining admin users is greater than 0 */
+	RemainingAdmins = 1 << 0,
+	/** Check if the number of users is within the limits */
+	UserLimits = 1 << 1,
+	All = ~(~0 << 2),
+}
