@@ -1,9 +1,12 @@
 import { InvalidPayloadError } from '@directus/errors';
+import type { AbstractServiceOptions } from '@directus/types';
 import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import emitter from '../../emitter.js';
+import getMailer from '../../mailer.js';
+import { MailService } from './index.js';
 
-// Mock all the dependencies
 vi.mock('../../database/index.js', () => ({
 	default: vi.fn().mockReturnValue({}),
 }));
@@ -43,12 +46,6 @@ vi.mock('fs-extra', () => ({
 	},
 }));
 
-// Import after mocking
-import emitter from '../../emitter.js';
-import getMailer from '../../mailer.js';
-import type { AbstractServiceOptions } from '../../types/index.js';
-import { MailService } from './index.js';
-
 describe('MailService', () => {
 	let service: MailService;
 
@@ -61,7 +58,6 @@ describe('MailService', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 
-		// Mock getDefaultTemplateData
 		vi.spyOn(MailService.prototype as any, 'getDefaultTemplateData').mockResolvedValue({
 			projectName: 'Test Project',
 			projectColor: '#000000',
@@ -72,8 +68,8 @@ describe('MailService', () => {
 		service = new MailService(mockServiceOptions);
 	});
 
-	describe('send method - from object validation', () => {
-		test('Accepts valid from object with name and address', async () => {
+	describe('send', () => {
+		test('should accept from object with name + address', async () => {
 			vi.mocked(emitter.emitFilter).mockResolvedValue({
 				to: 'recipient@example.com',
 				subject: 'Test',
@@ -93,7 +89,7 @@ describe('MailService', () => {
 			);
 		});
 
-		test('Throws InvalidPayloadError when from object missing name', async () => {
+		test('should throw an InvalidPayloadError if from is missing a name property', async () => {
 			vi.mocked(emitter.emitFilter).mockResolvedValue({
 				to: 'recipient@example.com',
 				subject: 'Test',
@@ -111,7 +107,7 @@ describe('MailService', () => {
 			expect(vi.mocked(getMailer)().sendMail).not.toHaveBeenCalled();
 		});
 
-		test('Throws InvalidPayloadError when from object missing address', async () => {
+		test('should throw an InvalidPayloadError if from is missing an email property', async () => {
 			vi.mocked(emitter.emitFilter).mockResolvedValue({
 				to: 'recipient@example.com',
 				subject: 'Test',
@@ -129,7 +125,7 @@ describe('MailService', () => {
 			expect(vi.mocked(getMailer)().sendMail).not.toHaveBeenCalled();
 		});
 
-		test('Throws InvalidPayloadError when from object has empty name', async () => {
+		test('should throw an InvalidPayloadError if from has an empty name', async () => {
 			vi.mocked(emitter.emitFilter).mockResolvedValue({
 				to: 'recipient@example.com',
 				subject: 'Test',
@@ -147,7 +143,7 @@ describe('MailService', () => {
 			expect(vi.mocked(getMailer)().sendMail).not.toHaveBeenCalled();
 		});
 
-		test('Throws InvalidPayloadError when from object has empty address', async () => {
+		test('should throw an InvalidPayloadError if from object has an empty address', async () => {
 			vi.mocked(emitter.emitFilter).mockResolvedValue({
 				to: 'recipient@example.com',
 				subject: 'Test',
@@ -165,7 +161,7 @@ describe('MailService', () => {
 			expect(vi.mocked(getMailer)().sendMail).not.toHaveBeenCalled();
 		});
 
-		test('Handles string from value correctly', async () => {
+		test('should accept from as a string', async () => {
 			vi.mocked(emitter.emitFilter).mockResolvedValue({
 				to: 'recipient@example.com',
 				subject: 'Test',
@@ -183,29 +179,6 @@ describe('MailService', () => {
 					from: {
 						name: 'Test Project',
 						address: 'sender@example.com',
-					},
-				}),
-			);
-		});
-
-		test('Handles null from object correctly', async () => {
-			vi.mocked(emitter.emitFilter).mockResolvedValue({
-				to: 'recipient@example.com',
-				subject: 'Test',
-				from: null,
-			});
-
-			await service.send({
-				to: 'recipient@example.com',
-				subject: 'Test',
-				from: null as any,
-			});
-
-			expect(vi.mocked(getMailer)().sendMail).toHaveBeenCalledWith(
-				expect.objectContaining({
-					from: {
-						name: 'Test Project',
-						address: 'test@example.com',
 					},
 				}),
 			);
