@@ -11,22 +11,22 @@ const { t } = useI18n();
 const allItems = [
 	{
 		key: 'nav',
-		href: '#navigation',
+		hash: '#navigation',
 		text: t('skip_link_nav'),
 	},
 	{
 		key: 'moduleNav',
-		href: '#module-navigation',
+		hash: '#module-navigation',
 		text: t('skip_link_module_nav'),
 	},
 	{
 		key: 'main',
-		href: '#main-content',
+		hash: '#main-content',
 		text: t('skip_link_main'),
 	},
 	{
 		key: 'sidebar',
-		href: '#sidebar',
+		hash: '#sidebar',
 		text: t('skip_link_sidebar'),
 	},
 ];
@@ -36,7 +36,7 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 
 <template>
 	<v-list v-if="items.length" class="skip-menu" :class="{ right: section === 'sidebar', center: section === 'main' }">
-		<v-list-item v-for="item in items" :key="item" :href="item.href" target="_self">
+		<v-list-item v-for="item in items" :key="item" :href="$router.resolve(item.hash).href" target="_self">
 			{{ item.text }}
 		</v-list-item>
 	</v-list>

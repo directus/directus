@@ -1,15 +1,8 @@
 import type { Item, Query } from '@directus/types';
+import { WebSocketMessage } from '@directus/types';
 import { z } from 'zod';
 
 const zodStringOrNumber = z.union([z.string(), z.number()]);
-
-export const WebSocketMessage = z
-	.object({
-		type: z.string(),
-		uid: zodStringOrNumber.optional(),
-	})
-	.passthrough();
-export type WebSocketMessage = z.infer<typeof WebSocketMessage>;
 
 export const WebSocketResponse = z.discriminatedUnion('status', [
 	WebSocketMessage.extend({

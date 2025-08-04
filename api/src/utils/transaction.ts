@@ -2,7 +2,7 @@ import { isObject } from '@directus/utils';
 import { type Knex } from 'knex';
 import { getDatabaseClient } from '../database/index.js';
 import { useLogger } from '../logger/index.js';
-import type { DatabaseClient } from '../types/index.js';
+import type { DatabaseClient } from '@directus/types';
 
 /**
  * Execute the given handler within the current transaction or a newly created one

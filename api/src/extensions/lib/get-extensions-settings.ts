@@ -1,4 +1,4 @@
-import type { BundleExtension, Extension, ExtensionSettings } from '@directus/extensions';
+import type { BundleExtension, Extension, ExtensionSettings } from '@directus/types';
 import { randomUUID } from 'node:crypto';
 import getDatabase from '../../database/index.js';
 import { ExtensionsService } from '../../services/extensions.js';

@@ -1705,7 +1705,6 @@ translation_placeholder: Wergerînek binivîse...
 value: Nirx
 view_project: Projeyê Bibîne
 report_error: Çewtiyê Rapor Bike
-start: Destpê Bike
 table: Tablo
 list: Lîste
 search_filter: Lêgerîn & Parzûn
@@ -2288,6 +2287,7 @@ show_labels: Nîşanan Nîşan Bide
 show_legend: Şirove Nîşan Bide
 right: Rast
 left: Çep
+start: Destpê Bike
 donut: Donut
 continuous: Berdewamî
 gap: Navber

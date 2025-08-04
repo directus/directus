@@ -12,7 +12,7 @@ import { createPopper } from '@popperjs/core/lib/popper-lite';
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
 import { debounce } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
-import { onUnmounted, ref, computed, watch, useTemplateRef, nextTick, type Ref } from 'vue';
+import { computed, nextTick, onUnmounted, ref, useTemplateRef, watch, type Ref } from 'vue';
 
 interface Props {
 	/** Where to position the popper */
@@ -582,10 +582,20 @@ function usePopper(
 [data-placement^='right'] .arrow {
 	inset-inline-start: -10px;
 
+	html[dir='rtl'] & {
+		inset-inline-start: unset;
+		inset-inline-end: -10px;
+	}
+
 	.arrow-triangle {
 		&::before,
 		&::after {
 			inset-inline-start: 7px;
+
+			html[dir='rtl'] & {
+				inset-inline-start: unset;
+				inset-inline-end: 7px;
+			}
 		}
 	}
 }
@@ -593,10 +603,20 @@ function usePopper(
 [data-placement^='left'] .arrow {
 	inset-inline-end: -10px;
 
+	html[dir='rtl'] & {
+		inset-inline-end: unset;
+		inset-inline-start: -10px;
+	}
+
 	.arrow-triangle {
 		&::before,
 		&::after {
 			inset-inline-end: 7px;
+
+			html[dir='rtl'] & {
+				inset-inline-end: unset;
+				inset-inline-start: 7px;
+			}
 		}
 	}
 }

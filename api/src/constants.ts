@@ -1,5 +1,5 @@
 import type { CookieOptions } from 'express';
-import type { TransformationParams } from './types/index.js';
+import type { TransformationParams } from '@directus/types';
 import { getMilliseconds } from './utils/get-milliseconds.js';
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
