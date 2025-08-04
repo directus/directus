@@ -174,12 +174,10 @@ export const collection = defineTool<z.infer<typeof CollectionValidateSchema>>({
 	inputSchema: CollectionInputSchema,
 	validateSchema: CollectionValidateSchema,
 	async handler({ args, schema, accountability }) {
-		const serviceOptions = {
+		const service = new CollectionsService({
 			schema,
 			accountability,
-		};
-
-		const service = new CollectionsService(serviceOptions);
+		});
 
 		if (args.action === 'create') {
 			const data = toArray(args.data);
@@ -275,12 +273,10 @@ export const field = defineTool<z.infer<typeof FieldValidateSchema>>({
 	inputSchema: FieldInputSchema,
 	validateSchema: FieldValidateSchema,
 	async handler({ args, schema, accountability }) {
-		const serviceOptions = {
+		const service = new FieldsService({
 			schema,
 			accountability,
-		};
-
-		const service = new FieldsService(serviceOptions);
+		});
 
 		if (args.action === 'create') {
 			await service.createField(args.collection, args.data);
@@ -383,12 +379,10 @@ export const relation = defineTool<z.infer<typeof RelationValidateSchema>>({
 	inputSchema: RelationInputSchema,
 	validateSchema: RelationValidateSchema,
 	async handler({ args, schema, accountability }) {
-		const serviceOptions = {
+		const service = new RelationsService({
 			schema,
 			accountability,
-		};
-
-		const service = new RelationsService(serviceOptions);
+		});
 
 		if (args.action === 'create') {
 			await service.createOne(args.data);

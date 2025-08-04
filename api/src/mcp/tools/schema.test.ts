@@ -17,6 +17,7 @@ import { collection, field, relation, schema } from './schema.js';
 
 vi.mock('../../services/collections.js');
 vi.mock('../../services/fields.js');
+vi.mock('../../services/relations.js');
 
 vi.mock('../../utils/get-snapshot.js', () => ({
 	getSnapshot: vi.fn(),
@@ -503,7 +504,6 @@ describe('Fields Tool', () => {
 			meta: { required: true },
 		} as unknown as Field;
 
-		mockFieldsService.createField.mockResolvedValue(undefined);
 		mockFieldsService.readOne.mockResolvedValue(fieldData);
 
 		const result = await field.handler({
@@ -584,8 +584,6 @@ describe('Fields Tool', () => {
 			},
 		];
 
-		mockFieldsService.updateFields.mockResolvedValue(undefined);
-
 		mockFieldsService.readOne.mockImplementation((collection, field) =>
 			expectedResult.find((f) => f.collection === collection && f.field === field),
 		);
@@ -634,8 +632,6 @@ describe('Fields Tool', () => {
 			},
 		];
 
-		mockFieldsService.updateFields.mockResolvedValue(undefined);
-
 		mockFieldsService.readOne.mockImplementation((collection, field) => {
 			return expectedResult.find((f) => f.collection === collection && f.field === field);
 		});
@@ -658,8 +654,6 @@ describe('Fields Tool', () => {
 	it('should delete fields', async () => {
 		const collection = 'articles';
 		const fieldName = 'title';
-
-		mockFieldsService.deleteField.mockResolvedValue(undefined);
 
 		const result = await field.handler({
 			args: {
@@ -730,7 +724,7 @@ describe('Relation Tool ', () => {
 			sanitizedQuery: mockSanitizedQuery,
 		});
 
-		expect(RelationsService).toHaveBeenCalledWith('directus_relations', {
+		expect(RelationsService).toHaveBeenCalledWith({
 			schema: mockSchema,
 			accountability: mockAccountability,
 		});
@@ -738,9 +732,29 @@ describe('Relation Tool ', () => {
 		expect(result).toEqual({ type: 'text', data: [relationData] });
 	});
 
-	it('should read relations by keys', async () => {
-		const keys = [1, 2];
+	it('should read relation by field', async () => {
+		const collection = 'articles';
+		const field = 'category_id';
+		const expectedRelations = { collection, field, related_collection: 'categories' };
+		mockRelationsService.readOne.mockResolvedValue(expectedRelations);
 
+		const result = await relation.handler({
+			args: {
+				collection,
+				field,
+				action: 'read',
+			},
+			schema: mockSchema,
+			accountability: mockAccountability,
+			sanitizedQuery: mockSanitizedQuery,
+		});
+
+		expect(mockRelationsService.readOne).toHaveBeenCalledWith(collection, field);
+		expect(mockRelationsService.readAll).not.toHaveBeenCalled();
+		expect(result).toEqual({ type: 'text', data: expectedRelations });
+	});
+
+	it('should read relations', async () => {
 		const expectedRelations = [
 			{ collection: 'articles', field: 'category_id', related_collection: 'categories' },
 			{ collection: 'articles', field: 'author_id', related_collection: 'users' },
@@ -758,32 +772,31 @@ describe('Relation Tool ', () => {
 			sanitizedQuery: mockSanitizedQuery,
 		});
 
-		expect(mockRelationsService.readAll).toHaveBeenCalledWith(keys, mockSanitizedQuery);
+		expect(mockRelationsService.readAll).toHaveBeenCalled();
 		expect(result).toEqual({ type: 'text', data: expectedRelations });
 	});
 
-	it('should update relation by keys', async () => {
-		const keys = [1];
+	it('should update relation by field', async () => {
+		const collection = 'articles';
+		const field = 'category_id';
 
 		const updateData = {
 			meta: { one_field: 'updated_field' },
 		} as unknown as Relation;
 
-		const expectedResult = [
-			{
-				collection: 'articles',
-				field: 'category_id',
-				related_collection: 'categories',
-				meta: { one_field: 'updated_field' },
-			},
-		];
+		const expectedResult = {
+			collection,
+			field,
+			related_collection: 'categories',
+			meta: { one_field: 'updated_field' },
+		};
 
-		mockRelationsService.updateOne.mockResolvedValue(keys);
 		mockRelationsService.readOne.mockResolvedValue(expectedResult);
 
 		const result = await relation.handler({
 			args: {
-				collection: 'articles',
+				collection,
+				field,
 				action: 'update',
 				data: updateData,
 			},
@@ -792,19 +805,18 @@ describe('Relation Tool ', () => {
 			sanitizedQuery: mockSanitizedQuery,
 		});
 
-		expect(mockRelationsService.updateOne).toHaveBeenCalledWith(keys, updateData);
+		expect(mockRelationsService.updateOne).toHaveBeenCalledWith(collection, field, updateData);
 		expect(result).toEqual({ type: 'text', data: expectedResult });
 	});
 
-	it('should delete relations', async () => {
-		const keys = [1, 2];
-
-		mockRelationsService.deleteOne.mockResolvedValue(keys);
+	it('should delete relation by collection + field', async () => {
+		const collection = 'articles';
+		const field = 'category_id';
 
 		const result = await relation.handler({
 			args: {
-				collection: 'articles',
-				field: 'title',
+				collection,
+				field,
 				action: 'delete',
 			},
 			schema: mockSchema,
@@ -812,7 +824,7 @@ describe('Relation Tool ', () => {
 			sanitizedQuery: mockSanitizedQuery,
 		});
 
-		expect(mockRelationsService.deleteOne).toHaveBeenCalledWith(keys);
-		expect(result).toEqual({ type: 'text', data: keys });
+		expect(mockRelationsService.deleteOne).toHaveBeenCalledWith(collection, field);
+		expect(result).toEqual({ type: 'text', data: { collection, field } });
 	});
 });
