@@ -542,7 +542,7 @@ function getRollupOptions({
 			nodeResolve({
 				browser: mode === 'browser',
 				exportConditions: mode === 'node' ? ['node'] : [],
-				preferBuiltins: mode === 'node'
+				preferBuiltins: mode === 'node',
 			}),
 			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
 			json(),
