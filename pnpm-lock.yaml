@@ -510,6 +510,9 @@ catalogs:
     flatpickr:
       specifier: 4.6.13
       version: 4.6.13
+    focus-trap:
+      specifier: 7.6.5
+      version: 7.6.5
     form-data:
       specifier: 4.0.4
       version: 4.0.4
@@ -1668,7 +1671,7 @@ importers:
         version: 13.6.0(vue@3.5.18(typescript@5.8.3))
       '@vueuse/integrations':
         specifier: 'catalog:'
-        version: 13.6.0(axios@1.11.0)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.5.18(typescript@5.8.3))
+        version: 13.6.0(axios@1.11.0)(focus-trap@7.6.5)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.5.18(typescript@5.8.3))
       '@vueuse/router':
         specifier: 'catalog:'
         version: 13.6.0(vue-router@4.5.1(vue@3.5.18(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))
@@ -1720,6 +1723,9 @@ importers:
       flatpickr:
         specifier: 'catalog:'
         version: 4.6.13
+      focus-trap:
+        specifier: 'catalog:'
+        version: 7.6.5
       geojson:
         specifier: 'catalog:'
         version: 0.5.0
@@ -8412,6 +8418,9 @@ packages:
   focus-trap@5.1.0:
     resolution: {integrity: sha512-CkB/nrO55069QAUjWFBpX6oc+9V90Qhgpe6fBWApzruMq5gnlh90Oo7iSSDK7pKiV5ugG6OY2AXM5mxcmL3lwQ==}
 
+  focus-trap@7.6.5:
+    resolution: {integrity: sha512-7Ke1jyybbbPZyZXFxEftUtxFGLMpE2n6A+z//m4CRDlj0hW+o3iYSmh8nFlYMurOiJVDmJRilUQtJr08KfIxlg==}
+
   follow-redirects@1.15.11:
     resolution: {integrity: sha512-deG2P0JfjrTxl50XGCDyfI97ZGVCxIpfKYmfyrQ54n5FO/0gfIES8C/Psl6kWVDolizcaaxZJnTS0QSMxvnsBQ==}
     engines: {node: '>=4.0'}
@@ -12120,6 +12129,9 @@ packages:
 
   tabbable@4.0.0:
     resolution: {integrity: sha512-H1XoH1URcBOa/rZZWxLxHCtOdVUEev+9vo5YdYhC9tCY4wnybX+VQrCYuy9ubkg69fCBxCONJOSLGfw0DWMffQ==}
+
+  tabbable@6.2.0:
+    resolution: {integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==}
 
   table@6.9.0:
     resolution: {integrity: sha512-9kY+CygyYM6j02t5YFHbNz2FN5QmYGv9zAjVp4lCDjlCw7amdckXlEt/bjMhUIfj4ThGRE4gCUH5+yGnNuPo5A==}
@@ -18031,13 +18043,14 @@ snapshots:
       '@vueuse/shared': 13.6.0(vue@3.5.18(typescript@5.8.3))
       vue: 3.5.18(typescript@5.8.3)
 
-  '@vueuse/integrations@13.6.0(axios@1.11.0)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.5.18(typescript@5.8.3))':
+  '@vueuse/integrations@13.6.0(axios@1.11.0)(focus-trap@7.6.5)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.5.18(typescript@5.8.3))':
     dependencies:
       '@vueuse/core': 13.6.0(vue@3.5.18(typescript@5.8.3))
       '@vueuse/shared': 13.6.0(vue@3.5.18(typescript@5.8.3))
       vue: 3.5.18(typescript@5.8.3)
     optionalDependencies:
       axios: 1.11.0
+      focus-trap: 7.6.5
       qrcode: 1.5.4
       sortablejs: 1.14.0
 
@@ -19922,6 +19935,10 @@ snapshots:
     dependencies:
       tabbable: 4.0.0
       xtend: 4.0.2
+
+  focus-trap@7.6.5:
+    dependencies:
+      tabbable: 6.2.0
 
   follow-redirects@1.15.11(debug@4.3.7):
     optionalDependencies:
@@ -24083,6 +24100,8 @@ snapshots:
     optional: true
 
   tabbable@4.0.0: {}
+
+  tabbable@6.2.0: {}
 
   table@6.9.0:
     dependencies:
