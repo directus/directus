@@ -187,7 +187,6 @@
 		"zod-validation-error": "3.4.0"
 	},
 	"devDependencies": {
-		"@directus/random": "workspace:*",
 		"@directus/schema-builder": "workspace:*",
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
@@ -226,7 +225,7 @@
 		"@types/ws": "8.5.14",
 		"@vitest/coverage-v8": "catalog:",
 		"copyfiles": "2.4.1",
-		"form-data": "4.0.2",
+		"form-data": "catalog:",
 		"get-port": "7.1.0",
 		"knex-mock-client": "3.0.2",
 		"typescript": "catalog:",

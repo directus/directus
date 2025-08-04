@@ -1,7 +1,5 @@
 import api from '@/api';
-import { randomIdentifier, randomUUID } from '@directus/random';
 import { ItemPermissions } from '@directus/types';
-import { randBoolean } from '@ngneat/falso';
 import { flushPromises } from '@vue/test-utils';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { fetchItemPermissions } from './fetch-item-permissions';
@@ -14,17 +12,17 @@ let sample: {
 
 beforeEach(() => {
 	sample = {
-		collection: randomIdentifier(),
-		primaryKey: randomUUID(),
+		collection: 'test_collection',
+		primaryKey: 'test-primary-key',
 		itemPermissions: {
 			update: {
-				access: randBoolean(),
+				access: true,
 			},
 			delete: {
-				access: randBoolean(),
+				access: false,
 			},
 			share: {
-				access: randBoolean(),
+				access: true,
 			},
 		},
 	};
