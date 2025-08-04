@@ -59,7 +59,7 @@
 		"vue": "catalog:"
 	},
 	"peerDependencies": {
-		"vue": "^3.4"
+		"vue": "catalog:"
 	},
 	"peerDependenciesMeta": {
 		"vue": {
