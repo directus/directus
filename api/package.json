@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "28.0.3",
+	"version": "29.0.0",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -172,6 +172,7 @@
 		"qs": "6.14.0",
 		"rate-limiter-flexible": "5.0.5",
 		"rollup": "4.34.9",
+		"rolldown": "1.0.0-beta.28",
 		"samlify": "2.10.0",
 		"sanitize-html": "2.14.0",
 		"sharp": "0.33.5",
@@ -186,7 +187,6 @@
 		"zod-validation-error": "3.4.0"
 	},
 	"devDependencies": {
-		"@directus/random": "workspace:*",
 		"@directus/schema-builder": "workspace:*",
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
@@ -225,7 +225,7 @@
 		"@types/ws": "8.5.14",
 		"@vitest/coverage-v8": "catalog:",
 		"copyfiles": "2.4.1",
-		"form-data": "4.0.2",
+		"form-data": "catalog:",
 		"get-port": "7.1.0",
 		"knex-mock-client": "3.0.2",
 		"typescript": "catalog:",

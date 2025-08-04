@@ -17,6 +17,11 @@
 			transform: translateX(-#{($i - 1) * 30}px) scale(#{1 - (0.05 * ($i - 1))});
 			transform-origin: left;
 			border-radius: 20px;
+
+			html[dir='rtl'] & {
+				transform-origin: right;
+				transform: translateX(#{($i - 1) * 30}px) scale(#{1 - (0.05 * ($i - 1))});
+			}
 		}
 	}
 

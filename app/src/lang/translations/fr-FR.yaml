@@ -1707,7 +1707,6 @@ translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
 report_error: Signaler l'erreur
-start: Début
 table: Tableau
 list: Liste
 search_filter: Rechercher & Filtrer
@@ -2290,6 +2289,7 @@ show_labels: Afficher les libellés
 show_legend: Afficher la légende
 right: Droite
 left: Gauche
+start: Début
 donut: Donut
 panels:
   metric:

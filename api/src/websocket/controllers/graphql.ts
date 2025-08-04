@@ -2,19 +2,20 @@ import type { Server } from 'graphql-ws';
 import { CloseCode, MessageType, makeServer } from 'graphql-ws';
 import type { Server as httpServer } from 'http';
 import type { WebSocket } from 'ws';
+import type { WebSocketMessage } from '@directus/types';
 import { useLogger } from '../../logger/index.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { bindPubSub } from '../../services/graphql/subscription.js';
 import { GraphQLService } from '../../services/index.js';
-import { getSchema } from '../../utils/get-schema.js';
 import { getAddress } from '../../utils/get-address.js';
+import { getSchema } from '../../utils/get-schema.js';
 import { authenticateConnection } from '../authenticate.js';
 import { handleWebSocketError } from '../errors.js';
-import { ConnectionParams, WebSocketMessage } from '../messages.js';
+import { ConnectionParams } from '../messages.js';
 import type { AuthenticationState, GraphQLSocket, UpgradeContext, WebSocketClient } from '../types.js';
 import { getMessageType } from '../utils/message.js';
 import SocketController from './base.js';
 import { registerWebSocketEvents } from './hooks.js';
-import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 
 const logger = useLogger();
 
@@ -65,9 +66,14 @@ export class GraphQLSubscriptionController extends SocketController {
 
 								if (this.authentication.mode === 'handshake') {
 									if (typeof params.access_token === 'string') {
-										const { accountability, expires_at } = await authenticateConnection({
-											access_token: params.access_token,
-										});
+										const { accountability, expires_at } = await authenticateConnection(
+											{
+												access_token: params.access_token,
+											},
+											{
+												ip: client.accountability?.ip ?? null,
+											},
+										);
 
 										client.accountability = accountability;
 										client.expires_at = expires_at;

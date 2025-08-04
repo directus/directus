@@ -1,16 +1,11 @@
 import type {
 	ExtensionOptions,
 	ExtensionOptionsBundleEntry,
-	NestedExtensionType,
 	ExtensionManifest as TExtensionManifest,
 } from '@directus/extensions';
-import {
-	EXTENSION_LANGUAGES,
-	EXTENSION_PKG_KEY,
-	EXTENSION_TYPES,
-	ExtensionManifest,
-	HYBRID_EXTENSION_TYPES,
-} from '@directus/extensions';
+import type { NestedExtensionType } from '@directus/types';
+import { EXTENSION_LANGUAGES, EXTENSION_PKG_KEY, ExtensionManifest } from '@directus/extensions';
+import { EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { isIn, isTypeIn } from '@directus/utils';
 import { pathToRelativeUrl } from '@directus/utils/node';
 import chalk from 'chalk';
@@ -43,7 +38,7 @@ export default async function add(options: AddOptions): Promise<void> {
 	let extensionManifestFile: string;
 
 	try {
-		extensionManifestFile = await fse.readFile(packagePath, 'utf8');
+		extensionManifestFile = (await fse.readFile(packagePath, 'utf8')) as string;
 	} catch {
 		log(`Failed to read "package.json" file from current directory.`, 'error');
 		process.exit(1);

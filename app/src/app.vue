@@ -10,11 +10,13 @@ import { computed, onMounted, onUnmounted, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useThemeConfiguration } from './composables/use-theme-configuration';
 import { startIdleTracking, stopIdleTracking } from './idle';
+import { useUserStore } from './stores/user';
 
 const { t } = useI18n();
 
 const appStore = useAppStore();
 const serverStore = useServerStore();
+const userStore = useUserStore();
 
 const { darkMode, themeDark, themeDarkOverrides, themeLight, themeLightOverrides } = useThemeConfiguration();
 
@@ -31,6 +33,10 @@ useHead({
 	templateParams: {
 		projectName: computed(() => serverStore.info?.project?.project_name ?? 'Directus'),
 	},
+	htmlAttrs: computed(() => ({
+		lang: userStore.language,
+		dir: userStore.textDirection,
+	})),
 	meta: computed(() => {
 		const content = serverStore.info?.project?.project_color ?? '#6644ff';
 
