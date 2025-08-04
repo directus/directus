@@ -6,7 +6,6 @@ import { CollectionsService } from '../../services/collections.js';
 import { FieldsService } from '../../services/fields.js';
 import { RelationsService } from '../../services/relations.js';
 import { getSnapshot } from '../../utils/get-snapshot.js';
-import { QuerySchema } from '../schema.js';
 import { defineTool } from '../tool.js';
 import prompts from './prompts/index.js';
 
@@ -161,7 +160,6 @@ const CollectionValidateSchema = z.union([
 
 const CollectionInputSchema = z.object({
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
-	query: QuerySchema.optional().describe(''),
 	keys: z.array(z.string()).optional().describe(''),
 	data: z
 		.union([z.array(CollectionItemSchema), CollectionItemSchema])

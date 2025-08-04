@@ -352,7 +352,7 @@ describe('Collections Tool', () => {
 		});
 
 		expect(mockCollectionsService.createMany).toHaveBeenCalledWith([collectionData]);
-		expect(mockCollectionsService.readMany).toHaveBeenCalledWith(['test_collection'], mockSanitizedQuery);
+		expect(mockCollectionsService.readMany).toHaveBeenCalledWith(['test_collection']);
 
 		expect(result).toEqual({
 			type: 'text',
@@ -420,13 +420,13 @@ describe('Collections Tool', () => {
 			sanitizedQuery: mockSanitizedQuery,
 		});
 
-		expect(mockCollectionsService.readByQuery).toHaveBeenCalledWith(mockSanitizedQuery);
+		expect(mockCollectionsService.readByQuery).toHaveBeenCalled();
 		expect(result).toEqual({ type: 'text', data: expectedData });
 	});
 
 	it('should update collection by data array', async () => {
 		const keys = ['collection1'];
-		const updateData = { meta: { hidden: true } } as unknown as Collection;
+		const updateData = { collection: 'collection1', meta: { hidden: true } } as unknown as Collection;
 		const expectedResult = [{ collection: 'collection1', meta: { hidden: true } }];
 
 		mockCollectionsService.updateBatch.mockResolvedValue(keys);
@@ -442,7 +442,7 @@ describe('Collections Tool', () => {
 			sanitizedQuery: mockSanitizedQuery,
 		});
 
-		expect(mockCollectionsService.updateBatch).toHaveBeenCalledWith(keys, updateData);
+		expect(mockCollectionsService.updateBatch).toHaveBeenCalledWith([updateData]);
 		expect(result).toEqual({ type: 'text', data: expectedResult });
 	});
 
@@ -567,12 +567,57 @@ describe('Fields Tool', () => {
 		expect(result).toEqual({ type: 'text', data: expectedField });
 	});
 
-	it('should update field by fields', async () => {
+	it('should update field by field', async () => {
 		const collection = 'articles';
 
 		const updateData = {
+			field: 'title',
 			meta: { required: false, note: 'Updated field note' },
 		} as unknown as Field;
+
+		const expectedResult = [
+			{
+				field: 'title',
+				type: 'string',
+				collection,
+				meta: { required: false, note: 'Updated field note' },
+			},
+		];
+
+		mockFieldsService.updateFields.mockResolvedValue(undefined);
+
+		mockFieldsService.readOne.mockImplementation((collection, field) =>
+			expectedResult.find((f) => f.collection === collection && f.field === field),
+		);
+
+		const result = await field.handler({
+			args: {
+				action: 'update',
+				collection,
+				data: updateData,
+			},
+			schema: mockSchema,
+			accountability: mockAccountability,
+			sanitizedQuery: mockSanitizedQuery,
+		});
+
+		expect(mockFieldsService.updateFields).toHaveBeenCalledWith(collection, [updateData]);
+		expect(result).toEqual({ type: 'text', data: expectedResult });
+	});
+
+	it('should update field by fields', async () => {
+		const collection = 'articles';
+
+		const updateData = [
+			{
+				field: 'title',
+				meta: { required: false, note: 'Updated field note' },
+			},
+			{
+				field: 'subtitle',
+				meta: { required: false, note: 'Updated field note' },
+			},
+		] as unknown as Field[];
 
 		const expectedResult = [
 			{
@@ -591,14 +636,14 @@ describe('Fields Tool', () => {
 
 		mockFieldsService.updateFields.mockResolvedValue(undefined);
 
-		mockFieldsService.readOne.mockImplementation((collection, field) =>
-			expectedResult.find((f) => f.collection === collection && f.field === field),
-		);
+		mockFieldsService.readOne.mockImplementation((collection, field) => {
+			return expectedResult.find((f) => f.collection === collection && f.field === field);
+		});
 
 		const result = await field.handler({
 			args: {
 				action: 'update',
-				collection: 'articles',
+				collection,
 				data: updateData,
 			},
 			schema: mockSchema,
@@ -606,14 +651,13 @@ describe('Fields Tool', () => {
 			sanitizedQuery: mockSanitizedQuery,
 		});
 
-		expect(mockFieldsService.updateFields).toHaveBeenCalledWith(collection, [updateData]);
-		expect(mockFieldsService.readOne).toHaveBeenCalledTimes(2);
+		expect(mockFieldsService.updateFields).toHaveBeenCalledWith(collection, updateData);
 		expect(result).toEqual({ type: 'text', data: expectedResult });
 	});
 
 	it('should delete fields', async () => {
 		const collection = 'articles';
-		const field = 'title';
+		const fieldName = 'title';
 
 		mockFieldsService.deleteField.mockResolvedValue(undefined);
 
@@ -621,20 +665,20 @@ describe('Fields Tool', () => {
 			args: {
 				action: 'delete',
 				collection,
-				field,
+				field: fieldName,
 			},
 			schema: mockSchema,
 			accountability: mockAccountability,
 			sanitizedQuery: mockSanitizedQuery,
 		});
 
-		expect(mockFieldsService.deleteField).toHaveBeenCalledWith(collection, field);
+		expect(mockFieldsService.deleteField).toHaveBeenCalledWith(collection, fieldName);
 
 		expect(result).toEqual({
 			type: 'text',
 			data: {
 				collection,
-				field,
+				field: fieldName,
 			},
 		});
 	});
