@@ -4,7 +4,7 @@
 	"homepage": "https://directus.io",
 	"type": "module",
 	"scripts": {
-		"build": "pnpm --recursive --filter '!docs' run build",
+		"build": "pnpm --recursive run build",
 		"format": "prettier --cache --check .",
 		"lint": "eslint --cache .",
 		"lint:style": "stylelint '**/*.{css,scss,vue}' --ignore-path .gitignore --cache",
