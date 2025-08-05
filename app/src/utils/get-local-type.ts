@@ -46,12 +46,7 @@ export function getLocalTypeForField(collection: string, field: string): LocalTy
 			return 'm2o';
 		}
 
-		if (
-			relations[0]!.related_collection === 'directus_files' ||
-			relations[1]!.related_collection === 'directus_files'
-		) {
-			return 'files';
-		} else {
+		if ((fieldInfo.meta?.special || []).includes('m2m')) {
 			return 'm2m';
 		}
 	}

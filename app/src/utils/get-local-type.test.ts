@@ -381,7 +381,7 @@ test('Returns M2O for searched relation', () => {
 	expect(getLocalTypeForField('collection_a', 'test_field')).toBe('m2o');
 });
 
-test('Returns FILES for M2M relations to directus_files', () => {
+test('Returns M2M for M2M relations to directus_files', () => {
 	const fieldsStore = useFieldsStore();
 
 	(fieldsStore.getField as Mock).mockReturnValue({
@@ -435,7 +435,7 @@ test('Returns FILES for M2M relations to directus_files', () => {
 		},
 	]);
 
-	expect(getLocalTypeForField('collection_a', 'test_field')).toBe('files');
+	expect(getLocalTypeForField('collection_a', 'test_field')).toBe('m2m');
 });
 
 test('Returns M2M ', () => {
