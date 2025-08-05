@@ -6,14 +6,16 @@ export const options: Options = {
 	scenarios: {
 		first: {
 			duration: '5m',
-			executor: 'constant-vus',
-			vus: 95,
+			executor: 'constant-arrival-rate',
+			preAllocatedVUs: 1000,
+			rate: 10,
 			exec: 'withoutVersion',
 		},
 		second: {
-			vus: 5,
-			executor: 'constant-vus',
+			executor: 'constant-arrival-rate',
 			exec: 'withVersion',
+			preAllocatedVUs: 100,
+			rate: 5,
 			duration: '5m',
 		},
 	},

@@ -5,7 +5,7 @@ import http from 'k6/http';
 export const options: Options = {
 	scenarios: {
 		first: {
-			duration: '1m',
+			duration: '5m',
 			executor: 'constant-vus',
 			vus: 100,
 			exec: 'items',

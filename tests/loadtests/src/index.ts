@@ -33,6 +33,7 @@ program
 	.option('-t, --test <file>', 'Specify the test file k6 should use', 'test')
 	.option('-f, --flamegraph', 'Generate a flamegraph at the end')
 	.option('-w, --wait <seconds>', 'Wait for some seconds before bootstrapping')
+	.option('-l, --live-preview', 'Starts k6 with the web live view')
 	.argument('<test>');
 
 program.parse();
@@ -50,6 +51,7 @@ const options = program.opts() as {
 	flamegraph: boolean;
 	port?: string;
 	wait?: string;
+	livePreview?: boolean;
 };
 
 const platform: Platform | undefined = options.platform === true ? 'postgres' : (options.platform as Platform);
@@ -94,7 +96,19 @@ if (options.platform === 'all') {
 
 			const task = spawn(
 				/^win/.test(process.platform) ? 'pnpm.cmd' : 'pnpm',
-				['run', 'test', '--platform', platform, '--port', String(8056 + index), program.args[0]!],
+				[
+					'run',
+					'test',
+					'--platform',
+					platform,
+					'--port',
+					String(8056 + index),
+					'--wait',
+					options.wait ?? '0',
+					'--test',
+					options.test,
+					program.args[0]!,
+				],
 				{
 					shell: true,
 				},
@@ -181,7 +195,11 @@ apiLogger.pipe(api.stderr, 'error');
 await new Promise((resolve, reject) => {
 	api!.stdout!.on('data', (data) => {
 		if (!options.flamegraph) apiLogger.debug(String(data));
-		if (String(data).includes(`Server started at http://${env.HOST}:${env.PORT}`)) resolve(null);
+
+		if (String(data).includes(`Server started at http://${env.HOST}:${env.PORT}`)) {
+			resolve(null);
+			apiLogger.info(String(data));
+		}
 	});
 
 	// In case the api takes too long to start
@@ -214,14 +232,19 @@ if (!options.debug) {
 			`HOST=${env.HOST}`,
 			'-e',
 			`PORT=${env.PORT}`,
+			'--summary-export',
+			`results/${options.platform ?? 'custom'}-${new Date().toISOString().substring(0, 16)}.json`,
 			join(import.meta.dirname, '..', 'tests', program.args[0]!, `${options.test}.ts`),
 		],
-		{
-			env: {
-				K6_WEB_DASHBOARD: 'true',
-				K6_WEB_DASHBOARD_PERIOD: '1s',
-			},
-		},
+		options.livePreview
+			? {
+					env: {
+						K6_WEB_DASHBOARD: 'true',
+						K6_WEB_DASHBOARD_PERIOD: '2s',
+						PATH: process.env['PATH'],
+					},
+			  }
+			: {},
 	);
 
 	k6Logger.pipe(k6.stdout);
