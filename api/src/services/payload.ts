@@ -12,6 +12,7 @@ import type {
 	PayloadServiceProcessRelationResult,
 	PrimaryKey,
 	Query,
+	RequestContext,
 	SchemaOverview,
 } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
@@ -27,7 +28,6 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import { generateHash } from '../utils/generate-hash.js';
-import type { RequestContext } from '../types/services.js';
 
 type Transformers = {
 	[type: string]: (context: {

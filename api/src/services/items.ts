@@ -15,6 +15,7 @@ import type {
 	Query,
 	QueryOptions,
 	SchemaOverview,
+	RequestContext,
 } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import type Keyv from 'keyv';
@@ -35,7 +36,6 @@ import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { PayloadService } from './payload.js';
-import type { RequestContext } from '../types/services.js';
 
 const env = useEnv();
 
