@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
-import { useCustomSelectionMultiple } from '@directus/composables';
+import { useCustomSelectionMultiple, type OtherValue } from '@directus/composables';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -56,6 +56,10 @@ const gridClass = computed(() => getMinimalGridClass(items.value, props.width));
 const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, items, (value) =>
 	emit('input', value),
 );
+
+function onBlurCustomInput(otherVal: OtherValue) {
+	return (otherVal.value === null || otherVal.value?.length === 0) && setOtherValue(otherVal.key, null);
+}
 </script>
 
 <template>
@@ -95,25 +99,22 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 				:key="otherValue.key"
 				block
 				custom-value
+				:autofocus-custom-input="otherValue.focus"
 				:value="otherValue.value"
 				:disabled="disabled"
 				:icon-on="iconOn"
 				:icon-off="iconOff"
 				:model-value="value || []"
-				@update:value="setOtherValue(otherValue.key, $event)"
 				@update:model-value="$emit('input', $event)"
-			/>
-
-			<button
-				v-if="allowOther"
-				:disabled="disabled"
-				class="add-new custom"
-				align="left"
-				outlined
-				dashed
-				secondary
-				@click="addOtherValue()"
+				@update:value="setOtherValue(otherValue.key, $event)"
+				@blur:custom-input="onBlurCustomInput(otherValue)"
 			>
+				<template #append>
+					<v-icon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherValue.key, null)" />
+				</template>
+			</v-checkbox>
+
+			<button v-if="allowOther" type="button" :disabled class="add-new custom" @click="addOtherValue('', true)">
 				<v-icon name="add" />
 				{{ t('other') }}
 			</button>
@@ -126,7 +127,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 	--columns: 1;
 
 	display: grid;
-	grid-gap: 12px 32px;
+	gap: 12px 32px;
 	grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
 }
 
@@ -149,8 +150,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 }
 
 .v-detail {
-	margin-top: 0;
-	margin-bottom: 0;
+	margin-block: 0;
 
 	&.grid-1 {
 		grid-column: span 1;
@@ -171,6 +171,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 
 .add-new {
 	--v-button-min-width: none;
+	--focus-ring-offset: var(--focus-ring-offset-invert);
 }
 
 .custom {
@@ -178,8 +179,8 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 
 	display: flex;
 	align-items: center;
-	width: 100%;
-	height: var(--theme--form--field--input--height);
+	inline-size: 100%;
+	block-size: var(--theme--form--field--input--height);
 	padding: 10px;
 	border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
@@ -187,9 +188,9 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 	input {
 		display: block;
 		flex-grow: 1;
-		width: 20px; /* this will auto grow with flex above */
+		inline-size: 20px; /* this will auto grow with flex above */
 		margin: 0;
-		margin-left: 8px;
+		margin-inline-start: 8px;
 		padding: 0;
 		background-color: transparent;
 		border: none;
@@ -210,10 +211,10 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 
 		&::before {
 			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
+			inset-block-start: 0;
+			inset-inline-start: 0;
+			inline-size: 100%;
+			block-size: 100%;
 			background-color: var(--v-radio-color, var(--theme--primary));
 			opacity: 0.1;
 			content: '';

@@ -62,4 +62,6 @@ export type Settings = {
 	default_theme_dark: string | null;
 	theme_light_overrides: Record<string, unknown> | null;
 	theme_dark_overrides: Record<string, unknown> | null;
+	accepted_terms: boolean;
+	project_id: string | null;
 };

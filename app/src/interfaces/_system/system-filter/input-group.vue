@@ -10,6 +10,10 @@ import InputComponent from './input-component.vue';
 import { fieldToFilter, getComparator, getField } from './utils';
 import { useCollection } from '@directus/composables';
 
+// Workaround because you cannot cast directly to union types inside
+// the template block without running into eslint/prettier issues
+type ScalarValue = string | boolean | number | null;
+
 const props = defineProps<{
 	field: FieldFilter;
 	collection: string;
@@ -24,8 +28,8 @@ const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
 const { t } = useI18n();
 
-const field = computed(() => getField(props.field));
-const isVersionField = computed(() => field.value === '$version');
+const fieldPath = computed(() => getField(props.field));
+const isVersionField = computed(() => fieldPath.value === '$version');
 
 const { info: collectionInfo } = useCollection(computed(() => props.collection));
 const versioningEnabled = computed(() => !!collectionInfo.value?.meta?.versioning && isVersionField.value);
@@ -36,11 +40,11 @@ const fieldInfo = computed(() => {
 		return fakeVersionField.value;
 	}
 
-	const fieldInfo = fieldsStore.getField(props.collection, field.value);
+	const fieldInfo = fieldsStore.getField(props.collection, fieldPath.value);
 
 	// Alias uses the foreign key type
 	if (fieldInfo?.type === 'alias') {
-		const relations = relationsStore.getRelationsForField(props.collection, field.value);
+		const relations = relationsStore.getRelationsForField(props.collection, fieldPath.value);
 
 		if (relations[0]) {
 			return fieldsStore.getField(relations[0].collection, relations[0].field);
@@ -81,7 +85,7 @@ const interfaceType = computed(() => {
 });
 
 const fieldValue = computed(() => {
-	return get(props.field, `${field.value}.${comparator.value}`);
+	return get(props.field, `${fieldPath.value}.${comparator.value}`);
 });
 
 const {
@@ -109,7 +113,7 @@ const value = computed<unknown | unknown[]>({
 			value = newVal;
 		}
 
-		emit('update:field', fieldToFilter(field.value, comparator.value, value));
+		emit('update:field', fieldToFilter(fieldPath.value, comparator.value, value));
 	},
 });
 
@@ -252,7 +256,7 @@ function useVariableInput() {
 				:is="interfaceType"
 				:choices="choices"
 				:type="fieldInfo?.type ?? 'unknown'"
-				:value="String(value)"
+				:value="value as ScalarValue"
 				@input="value = $event"
 			/>
 		</template>
@@ -278,7 +282,7 @@ function useVariableInput() {
 				is="interface-input"
 				:choices="choices"
 				:type="fieldInfo?.type ?? 'unknown'"
-				:value="String(value)"
+				:value="value as ScalarValue"
 				@input="value = $event"
 			/>
 		</template>
@@ -325,15 +329,15 @@ function useVariableInput() {
 	--v-icon-color: var(--theme--foreground-subdued);
 	--v-icon-color-hover: var(--theme--foreground);
 
-	margin-right: 4px;
+	margin-inline-end: 4px;
 
 	.comparator + & {
-		margin-left: -4px;
+		margin-inline-start: -4px;
 	}
 
 	&.v-icon {
-		width: 24px !important;
-		height: 24px !important;
+		inline-size: 24px !important;
+		block-size: 24px !important;
 		border-radius: 50%;
 		display: flex;
 		justify-content: center;
@@ -356,10 +360,10 @@ function useVariableInput() {
 .variable-input-braces {
 	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--form--field--input--foreground-subdued);
-	margin-left: 2px;
+	margin-inline-start: 2px;
 
 	.variable-input + & {
-		margin-left: 0;
+		margin-inline-start: 0;
 	}
 }
 
@@ -368,8 +372,7 @@ function useVariableInput() {
 	align-items: center;
 
 	.v-icon {
-		margin-right: 8px;
-		margin-left: 12px;
+		margin-inline: 12px 8px;
 		color: var(--theme--form--field--input--foreground-subdued);
 		cursor: pointer;
 
@@ -383,7 +386,7 @@ function useVariableInput() {
 	display: flex;
 
 	.value:not(:last-child)::after {
-		margin-right: 6px;
+		margin-inline-end: 6px;
 		content: ',';
 	}
 }

@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, useTemplateRef, watch, nextTick } from 'vue';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useDialogRouteLeave } from '@/composables/use-dialog-route';
+import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
+
+export type ApplyShortcut = 'meta+enter' | 'meta+s';
 
 interface Props {
 	modelValue?: boolean;
@@ -9,21 +12,35 @@ interface Props {
 	placement?: 'right' | 'center';
 	/** Lets other overlays (drawer) open on top */
 	keepBehind?: boolean;
+	applyShortcut?: ApplyShortcut;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	modelValue: undefined,
 	persistent: false,
 	placement: 'center',
+	applyShortcut: 'meta+enter',
 });
 
-const emit = defineEmits(['esc', 'update:modelValue']);
+const emit = defineEmits(['esc', 'apply', 'update:modelValue']);
 
 useShortcut('escape', (_event, cancelNext) => {
 	if (internalActive.value) {
 		emit('esc');
 		cancelNext();
 	}
+});
+
+useShortcut(props.applyShortcut, (_event, cancelNext) => {
+	if (internalActive.value) {
+		emit('apply');
+		cancelNext();
+	}
+});
+
+useShortcut('meta+s', (_event, cancelNext) => {
+	if (props.applyShortcut === 'meta+s') return;
+	if (internalActive.value) cancelNext();
 });
 
 const localActive = ref(false);
@@ -42,6 +59,8 @@ const internalActive = computed({
 
 const leave = useDialogRouteLeave();
 
+useOverlayFocusTrap();
+
 function emitToggle() {
 	if (props.persistent === false) {
 		emit('update:modelValue', !props.modelValue);
@@ -57,6 +76,26 @@ function nudge() {
 		className.value = null;
 	}, 200);
 }
+
+function useOverlayFocusTrap() {
+	const overlayEl = useTemplateRef<HTMLDivElement>('overlayEl');
+
+	const { activate, deactivate } = useFocusTrap(overlayEl, {
+		escapeDeactivates: false,
+		initialFocus: false,
+	});
+
+	watch(
+		internalActive,
+		async (newActive) => {
+			await nextTick();
+
+			if (newActive) activate();
+			else deactivate();
+		},
+		{ immediate: true },
+	);
+}
 </script>
 
 <template>
@@ -68,6 +107,7 @@ function nudge() {
 				<component
 					:is="placement === 'right' ? 'div' : 'span'"
 					v-if="internalActive"
+					ref="overlayEl"
 					class="container"
 					:class="[className, placement, keepBehind ? 'keep-behind' : null]"
 				>
@@ -88,12 +128,12 @@ function nudge() {
 
 .container {
 	position: fixed;
-	top: 0;
-	left: 0;
+	inset-block-start: 0;
+	inset-inline-start: 0;
 	z-index: 500;
 	display: flex;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 
 	&.keep-behind {
 		z-index: 490;
@@ -102,7 +142,7 @@ function nudge() {
 
 .container > :slotted(*) {
 	z-index: 2;
-	box-shadow: 0px 4px 12px rgb(38 50 56 / 0.1);
+	box-shadow: 0 4px 12px rgb(38 50 56 / 0.1);
 }
 
 .container.center {
@@ -111,7 +151,7 @@ function nudge() {
 	z-index: 600;
 
 	&.keep-behind {
-		z-index: 490;
+		z-index: 500;
 	}
 }
 
@@ -126,6 +166,11 @@ function nudge() {
 
 .container.right.nudge > :slotted(*:not(:first-child)) {
 	transform-origin: right;
+
+	html[dir='rtl'] & {
+		transform-origin: left;
+	}
+
 	animation: shake 200ms;
 }
 
@@ -136,25 +181,24 @@ function nudge() {
 }
 
 .container :slotted(.v-card) .v-card-title {
-	padding-bottom: 8px;
+	padding-block-end: 8px;
 }
 
 .container :slotted(.v-card) .v-card-actions {
-	flex-direction: column-reverse;
-	flex-wrap: wrap;
+	flex-flow: column-reverse wrap;
 }
 
 .container :slotted(.v-card) .v-card-actions .v-button {
-	width: 100%;
+	inline-size: 100%;
 }
 
 .container :slotted(.v-card) .v-card-actions .v-button .button {
-	width: 100%;
+	inline-size: 100%;
 }
 
 .container :slotted(.v-card) .v-card-actions > .v-button + .v-button {
-	margin-bottom: 20px;
-	margin-left: 0;
+	margin-block-end: 20px;
+	margin-inline-start: 0;
 }
 
 .container :slotted(.v-sheet) {
@@ -177,16 +221,16 @@ function nudge() {
 	}
 
 	.container :slotted(.v-card) .v-card-actions .v-button {
-		width: auto;
+		inline-size: auto;
 	}
 
 	.container :slotted(.v-card) .v-card-actions .v-button .button {
-		width: auto;
+		inline-size: auto;
 	}
 
 	.container :slotted(.v-card) .v-card-actions > .v-button + .v-button {
-		margin-bottom: 0;
-		margin-left: 12px;
+		margin-block-end: 0;
+		margin-inline-start: 12px;
 	}
 }
 

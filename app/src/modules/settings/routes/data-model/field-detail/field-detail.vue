@@ -91,7 +91,7 @@ async function save() {
 </script>
 
 <template>
-	<v-drawer :model-value="isOpen" :title="title" persistent @cancel="cancel" @update:model-value="cancel">
+	<v-drawer :model-value="isOpen" :title="title" persistent @cancel="cancel" @apply="save" @update:model-value="cancel">
 		<field-detail-simple
 			v-if="!showAdvanced"
 			:collection="collectionInfo"
@@ -137,12 +137,12 @@ async function save() {
 
 .v-input.search {
 	--v-input-border-radius: calc(44px / 2);
-	width: 200px;
-	margin-left: auto;
+	inline-size: 200px;
+	margin-inline-start: auto;
 
 	@media (min-width: 600px) {
-		width: 300px;
-		margin-top: 0px;
+		inline-size: 300px;
+		margin-block-start: 0;
 	}
 }
 </style>

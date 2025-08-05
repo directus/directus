@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
+import { WebSocketMessage } from '@directus/types';
 import { parseJSON, toBoolean } from '@directus/utils';
 import cookie from 'cookie';
 import type { IncomingMessage, Server as httpServer } from 'http';
@@ -14,13 +15,11 @@ import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { createRateLimiter } from '../../rate-limiter.js';
-import { getAccountabilityForToken } from '../../utils/get-accountability-for-token.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { authenticateConnection, authenticationSuccess } from '../authenticate.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
-import { AuthMode, WebSocketAuthMessage, WebSocketMessage } from '../messages.js';
+import { AuthMode, WebSocketAuthMessage } from '../messages.js';
 import type { AuthenticationState, UpgradeContext, WebSocketAuthentication, WebSocketClient } from '../types.js';
-import { getExpiresAtForToken } from '../utils/get-expires-at-for-token.js';
 import { getMessageType } from '../utils/message.js';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';
 
@@ -180,8 +179,9 @@ export default abstract class SocketController {
 
 		if (token) {
 			try {
-				accountability = await getAccountabilityForToken(token);
-				expires_at = getExpiresAtForToken(token);
+				const state = await authenticateConnection({ access_token: token }, accountabilityOverrides);
+				accountability = state.accountability;
+				expires_at = state.expires_at;
 			} catch {
 				accountability = null;
 				expires_at = null;
@@ -204,8 +204,6 @@ export default abstract class SocketController {
 			return;
 		}
 
-		Object.assign(accountability, accountabilityOverrides);
-
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			this.catchInvalidMessages(ws);
 			const state = { accountability, expires_at } as AuthenticationState;
@@ -221,11 +219,7 @@ export default abstract class SocketController {
 				const payload = await waitForAnyMessage(ws, this.authentication.timeout);
 				if (getMessageType(payload) !== 'auth') throw new Error();
 
-				const state = await authenticateConnection(WebSocketAuthMessage.parse(payload));
-
-				if (state.accountability) {
-					Object.assign(state.accountability, accountabilityOverrides);
-				}
+				const state = await authenticateConnection(WebSocketAuthMessage.parse(payload), accountabilityOverrides);
 
 				this.checkUserRequirements(state.accountability);
 
@@ -338,20 +332,26 @@ export default abstract class SocketController {
 
 	protected async handleAuthRequest(client: WebSocketClient, message: WebSocketAuthMessage) {
 		try {
-			const { accountability, expires_at, refresh_token } = await authenticateConnection(message);
-			this.checkUserRequirements(accountability);
+			let accountabilityOverrides = {};
 
 			/**
 			 * Re-use the existing ip, userAgent and origin accountability properties.
 			 * They are only sent in the original connection request
 			 */
-			if (accountability && client.accountability) {
-				Object.assign(accountability, {
+			if (client.accountability) {
+				accountabilityOverrides = {
 					ip: client.accountability.ip,
 					userAgent: client.accountability.userAgent,
 					origin: client.accountability.origin,
-				});
+				};
 			}
+
+			const { accountability, expires_at, refresh_token } = await authenticateConnection(
+				message,
+				accountabilityOverrides,
+			);
+
+			this.checkUserRequirements(accountability);
 
 			client.accountability = accountability;
 			client.expires_at = expires_at;

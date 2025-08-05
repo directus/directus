@@ -58,10 +58,15 @@ export function removeTemporaryFields(
 		}
 	} else {
 		const fields: string[] = [];
+		const aliasFields: string[] = [];
 		const nestedCollectionNodes: NestedCollectionNode[] = [];
 
 		for (const child of ast.children) {
-			fields.push(child.fieldKey);
+			if ('alias' in child && child.alias === true) {
+				aliasFields.push(child.fieldKey);
+			} else {
+				fields.push(child.fieldKey);
+			}
 
 			if (child.type !== 'field' && child.type !== 'functionField') {
 				nestedCollectionNodes.push(child);
@@ -98,7 +103,7 @@ export function removeTemporaryFields(
 
 			const fieldsWithFunctionsApplied = fields.map((field) => applyFunctionToColumnName(field));
 
-			item = fields.length > 0 ? pick(rawItem, fieldsWithFunctionsApplied) : rawItem[primaryKeyField];
+			item = fields.length > 0 ? pick(rawItem, fieldsWithFunctionsApplied, aliasFields) : rawItem[primaryKeyField];
 
 			items.push(item);
 		}

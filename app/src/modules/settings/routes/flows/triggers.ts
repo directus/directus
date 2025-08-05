@@ -107,11 +107,12 @@ export function getTriggers() {
 							width: 'full' as Width,
 							readonly:
 								!scope ||
-								['items.create', 'items.update', 'items.delete', 'items.promote'].every(
+								['items.create', 'items.update', 'items.delete', 'items.promote', 'items.sort'].every(
 									(t) => scope?.includes(t) === false,
 								),
 							options: {
-								includeSystem: !scope || scope?.filter((t: string) => t !== 'items.promote').length > 0,
+								includeSystem:
+									!scope || scope?.filter((t: string) => t !== 'items.promote' && t !== 'items.sort').length > 0,
 							},
 						},
 					},

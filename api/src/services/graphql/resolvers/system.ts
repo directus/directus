@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import type { CollectionAccess } from '@directus/types';
+import type { CollectionAccess, GraphQLParams } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import {
 	GraphQLBoolean,
@@ -14,7 +14,6 @@ import { GraphQLJSON, SchemaComposer, toInputObjectType } from 'graphql-compose'
 import getDatabase from '../../../database/index.js';
 import { fetchAccountabilityCollectionAccess } from '../../../permissions/modules/fetch-accountability-collection-access/fetch-accountability-collection-access.js';
 import { fetchAccountabilityPolicyGlobals } from '../../../permissions/modules/fetch-accountability-policy-globals/fetch-accountability-policy-globals.js';
-import type { GraphQLParams } from '../../../types/index.js';
 import { CollectionsService } from '../../collections.js';
 import { FieldsService } from '../../fields.js';
 import { FilesService } from '../../files.js';
@@ -352,7 +351,14 @@ export function injectSystemResolvers(
 
 					const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
 
-					const query = await getQuery(args, selections || [], info.variableValues, gql.schema, gql.accountability);
+					const query = await getQuery(
+						args,
+						gql.schema,
+						selections || [],
+						info.variableValues,
+						gql.accountability,
+						'directus_users',
+					);
 
 					return await service.readOne(gql.accountability.user, query);
 				},
@@ -396,7 +402,15 @@ export function injectSystemResolvers(
 
 					const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
 
-					const query = await getQuery(args, selections || [], info.variableValues, gql.schema, gql.accountability);
+					const query = await getQuery(
+						args,
+						gql.schema,
+						selections || [],
+						info.variableValues,
+						gql.accountability,
+						'directus_roles',
+					);
+
 					query.limit = -1;
 
 					const roles = await service.readMany(gql.accountability.roles, query);
@@ -455,7 +469,14 @@ export function injectSystemResolvers(
 							info.fragments,
 						);
 
-						const query = await getQuery(args, selections || [], info.variableValues, gql.schema, gql.accountability);
+						const query = await getQuery(
+							args,
+							gql.schema,
+							selections || [],
+							info.variableValues,
+							gql.accountability,
+							'directus_users',
+						);
 
 						return await service.readOne(gql.accountability.user, query);
 					}
@@ -488,7 +509,15 @@ export function injectSystemResolvers(
 							info.fragments,
 						);
 
-						const query = await getQuery(args, selections || [], info.variableValues, gql.schema, gql.accountability);
+						const query = await getQuery(
+							args,
+							gql.schema,
+							selections || [],
+							info.variableValues,
+							gql.accountability,
+							'directus_files',
+						);
+
 						return await service.readOne(primaryKey, query);
 					}
 

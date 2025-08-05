@@ -101,12 +101,12 @@ function onInput(event: Event) {
 	align-items: center;
 
 	.prepend {
-		margin-right: 8px;
+		margin-inline-end: 8px;
 	}
 
 	.slider {
 		position: relative;
-		top: -3px;
+		inset-block-start: -3px;
 		flex-grow: 1;
 
 		&.disabled {
@@ -115,12 +115,12 @@ function onInput(event: Event) {
 		}
 
 		&.thumb-label-visible {
-			margin-bottom: 30px;
+			margin-block-end: 30px;
 		}
 
 		input {
-			width: 100%;
-			height: 4px;
+			inline-size: 100%;
+			block-size: 4px;
 			padding: 8px 0;
 			background-color: var(--theme--background);
 			background-image: var(--v-slider-track-background-image);
@@ -129,7 +129,7 @@ function onInput(event: Event) {
 			appearance: none;
 
 			&::-webkit-slider-runnable-track {
-				height: 4px;
+				block-size: 4px;
 				background: var(--v-slider-color, var(--theme--form--field--input--border-color));
 				border: none;
 				border-radius: 4px;
@@ -137,7 +137,7 @@ function onInput(event: Event) {
 			}
 
 			&::-moz-range-track {
-				height: 4px;
+				block-size: 4px;
 				background: var(--v-slider-color, var(--theme--form--field--input--border-color));
 				border: none;
 				border-radius: 4px;
@@ -147,9 +147,9 @@ function onInput(event: Event) {
 			&::-webkit-slider-thumb {
 				position: relative;
 				z-index: 3;
-				width: 8px;
-				height: 8px;
-				margin-top: -2px;
+				inline-size: 8px;
+				block-size: 8px;
+				margin-block-start: -2px;
 				background: var(--theme--background);
 				border: none;
 				border-radius: 50%;
@@ -162,9 +162,9 @@ function onInput(event: Event) {
 			&::-moz-range-thumb {
 				position: relative;
 				z-index: 3;
-				width: 8px;
-				height: 8px;
-				margin-top: -2px;
+				inline-size: 8px;
+				block-size: 8px;
+				margin-block-start: -2px;
 				background: var(--v-slider-thumb-color, var(--theme--primary));
 				border: none;
 				border-radius: 50%;
@@ -177,29 +177,32 @@ function onInput(event: Event) {
 
 		.fill {
 			position: absolute;
-			top: 50%;
-			right: 0;
-			left: 0;
+			inset-block-start: 50%;
+			inset-inline: 0;
 			z-index: 2;
-			width: 100%;
-			height: 4px;
+			inline-size: 100%;
+			block-size: 4px;
 			background-color: var(--v-slider-fill-color, var(--theme--primary));
 			border-radius: 4px;
 			transform: translateY(-5px) scaleX(calc(var(--_v-slider-percentage) / 100));
 			transform-origin: left;
 			pointer-events: none;
+
+			html[dir='rtl'] & {
+				transform-origin: right;
+			}
 		}
 
 		.ticks {
 			position: absolute;
-			top: 14px;
-			left: 0;
+			inset-block-start: 14px;
+			inset-inline-start: 0;
 			z-index: 2;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			width: 100%;
-			height: 4px;
+			inline-size: 100%;
+			block-size: 4px;
 			padding: 0 7px;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
@@ -207,8 +210,8 @@ function onInput(event: Event) {
 
 			.tick {
 				display: inline-block;
-				width: 4px;
-				height: 4px;
+				inline-size: 4px;
+				block-size: 4px;
 				background-color: var(--v-slider-color, var(--theme--form--field--input--border-color));
 				border-radius: 50%;
 			}
@@ -216,9 +219,9 @@ function onInput(event: Event) {
 
 		.thumb-label-wrapper {
 			position: absolute;
-			top: 100%;
-			left: 7px;
-			width: calc(100% - 14px);
+			inset-block-start: 100%;
+			inset-inline-start: 7px;
+			inline-size: calc(100% - 14px);
 			overflow: visible;
 			pointer-events: none;
 		}
@@ -226,9 +229,9 @@ function onInput(event: Event) {
 		.thumb-label {
 			z-index: 1;
 			position: absolute;
-			top: 0px;
-			left: calc(var(--_v-slider-percentage) * 1%);
-			width: auto;
+			inset-block-start: 0;
+			inset-inline-start: calc(var(--_v-slider-percentage) * 1%);
+			inline-size: auto;
 			padding: 2px 6px;
 			color: var(--foreground-inverted);
 			font-weight: 600;
@@ -238,6 +241,10 @@ function onInput(event: Event) {
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 
+			html[dir='rtl'] & {
+				transform: translateX(50%);
+			}
+
 			&.visible {
 				opacity: 1;
 			}
@@ -246,20 +253,20 @@ function onInput(event: Event) {
 		&:hover:not(.disabled),
 		&:focus-within:not(.disabled) {
 			input {
-				height: 4px;
+				block-size: 4px;
 
 				&::-webkit-slider-thumb {
-					width: 12px;
-					height: 12px;
-					margin-top: -4px;
+					inline-size: 12px;
+					block-size: 12px;
+					margin-block-start: -4px;
 					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 					cursor: ew-resize;
 				}
 
 				&::-moz-range-thumb {
-					width: 12px;
-					height: 12px;
-					margin-top: -4px;
+					inline-size: 12px;
+					block-size: 12px;
+					margin-block-start: -4px;
 					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 					cursor: ew-resize;
 				}
@@ -279,7 +286,7 @@ function onInput(event: Event) {
 	}
 
 	.append {
-		margin-left: 8px;
+		margin-inline-start: 8px;
 	}
 }
 </style>

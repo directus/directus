@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted, useTemplateRef } from 'vue';
 import { useSync } from '@directus/composables';
 
 interface Props {
@@ -23,6 +23,8 @@ interface Props {
 	block?: boolean;
 	/** If a custom value can be entered next to it */
 	customValue?: boolean;
+	/** Will focus the custom value input on mounted */
+	autofocusCustomInput?: boolean;
 	/** TODO: What the? */
 	checked?: boolean | null;
 }
@@ -41,7 +43,7 @@ const props = withDefaults(defineProps<Props>(), {
 	checked: null,
 });
 
-const emit = defineEmits(['update:indeterminate', 'update:modelValue', 'update:value']);
+const emit = defineEmits(['update:indeterminate', 'update:modelValue', 'update:value', 'blur:custom-input']);
 
 const internalValue = useSync(props, 'value', emit);
 
@@ -62,6 +64,14 @@ const icon = computed<string>(() => {
 	if (props.checked === null && props.modelValue === null) return props.iconIndeterminate;
 
 	return isChecked.value ? props.iconOn : props.iconOff;
+});
+
+const customInput = useTemplateRef<HTMLInputElement>('custom-input');
+
+onMounted(() => {
+	if (props.autofocusCustomInput && props.customValue) {
+		customInput.value?.focus();
+	}
 });
 
 function toggleInput(): void {
@@ -87,6 +97,12 @@ function toggleInput(): void {
 		emit('update:modelValue', !props.modelValue);
 	}
 }
+
+function onClickIcon(e: MouseEvent): void {
+	if (!props.customValue) return;
+	e.stopPropagation();
+	toggleInput();
+}
 </script>
 
 <template>
@@ -96,15 +112,23 @@ function toggleInput(): void {
 		type="button"
 		role="checkbox"
 		:aria-pressed="isChecked ? 'true' : 'false'"
-		:disabled="disabled"
+		:disabled
 		:class="{ checked: isChecked, indeterminate, block }"
 		@click.stop="toggleInput"
 	>
 		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
-		<v-icon class="checkbox" :name="icon" :disabled="disabled" />
+		<v-icon class="checkbox" :name="icon" :disabled :clickable="customValue" @click="onClickIcon" />
 		<span class="label type-text">
 			<slot v-if="!customValue">{{ label }}</slot>
-			<input v-else v-model="internalValue" class="custom-input" @click.stop="" />
+			<input
+				v-else
+				ref="custom-input"
+				v-model="internalValue"
+				type="text"
+				class="custom-input"
+				@click.stop
+				@blur="$emit('blur:custom-input')"
+			/>
 		</span>
 		<div v-if="$slots.append" class="append"><slot name="append" /></div>
 	</component>
@@ -130,7 +154,7 @@ function toggleInput(): void {
 	display: flex;
 	align-items: center;
 	font-size: 0;
-	text-align: left;
+	text-align: start;
 	background-color: transparent;
 	border: none;
 	border-radius: 0;
@@ -138,15 +162,15 @@ function toggleInput(): void {
 
 	.label:not(:empty) {
 		flex-grow: 1;
-		margin-left: 8px;
+		margin-inline-start: 8px;
 		transition: color var(--fast) var(--transition);
 		@include mixins.no-wrap;
 
 		input {
-			width: 100%;
+			inline-size: 100%;
 			background-color: transparent;
 			border: none;
-			border-bottom: 2px solid var(--theme--form--field--input--border-color);
+			border-block-end: 2px solid var(--theme--form--field--input--border-color);
 			border-radius: 0;
 		}
 	}
@@ -170,9 +194,11 @@ function toggleInput(): void {
 	}
 
 	&.block {
+		--focus-ring-offset: var(--focus-ring-offset-invert);
+
 		position: relative;
-		width: 100%;
-		height: var(--theme--form--field--input--height);
+		inline-size: 100%;
+		block-size: var(--theme--form--field--input--height);
 		padding: 10px; // 14 - 4 (border)
 		background-color: var(--theme--form--field--input--background);
 		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
@@ -185,11 +211,11 @@ function toggleInput(): void {
 
 		&::before {
 			position: absolute;
-			top: 0;
-			left: 0;
+			inset-block-start: 0;
+			inset-inline-start: 0;
 			z-index: 0;
-			width: 100%;
-			height: 100%;
+			inline-size: 100%;
+			block-size: 100%;
 			border-radius: var(--theme--border-radius);
 			content: '';
 		}
@@ -237,6 +263,10 @@ function toggleInput(): void {
 	.append {
 		display: contents;
 		font-size: 1rem;
+	}
+
+	.append {
+		margin-inline-start: 8px;
 	}
 }
 </style>

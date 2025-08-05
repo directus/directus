@@ -1,19 +1,13 @@
-import type {
-	ApiExtensionType,
-	AppExtensionType,
-	ExtensionOptionsBundleEntry,
-	ExtensionManifest as TExtensionManifest,
-} from '@directus/extensions';
+import type { ExtensionOptionsBundleEntry, ExtensionManifest as TExtensionManifest } from '@directus/extensions';
 import {
 	API_SHARED_DEPS,
-	APP_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
 	EXTENSION_PKG_KEY,
-	EXTENSION_TYPES,
 	ExtensionManifest,
 	ExtensionOptionsBundleEntries,
-	HYBRID_EXTENSION_TYPES,
 } from '@directus/extensions';
+import type { AppExtensionType, ApiExtensionType } from '@directus/types';
+import { APP_EXTENSION_TYPES, EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { isIn, isTypeIn } from '@directus/utils';
 import commonjsDefault from '@rollup/plugin-commonjs';
 import jsonDefault from '@rollup/plugin-json';
@@ -29,7 +23,7 @@ import path from 'path';
 import type { RollupError, RollupOptions, OutputOptions as RollupOutputOptions } from 'rollup';
 import { rollup, watch as rollupWatch } from 'rollup';
 import esbuild from 'rollup-plugin-esbuild';
-import stylesDefault from 'rollup-plugin-styles';
+import styles from 'rollup-plugin-styler';
 import type { Config, Format, RollupConfig, RollupMode } from '../types.js';
 import { getFileExt } from '../utils/file.js';
 import { clear, log } from '../utils/logger.js';
@@ -40,7 +34,6 @@ import { validateSplitEntrypointOption } from './helpers/validate-cli-options.js
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
-const styles = stylesDefault as unknown as typeof stylesDefault.default;
 const commonjs = commonjsDefault as unknown as typeof commonjsDefault.default;
 const json = jsonDefault as unknown as typeof jsonDefault.default;
 const replace = replaceDefault as unknown as typeof replaceDefault.default;
@@ -72,7 +65,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 		let extensionManifestFile: string;
 
 		try {
-			extensionManifestFile = await fse.readFile(packagePath, 'utf8');
+			extensionManifestFile = (await fse.readFile(packagePath, 'utf8')) as string;
 		} catch {
 			log(`Failed to read "package.json" file from current directory.`, 'error');
 			process.exit(1);
@@ -549,12 +542,14 @@ function getRollupOptions({
 			nodeResolve({ browser: mode === 'browser', preferBuiltins: mode === 'node' }),
 			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
 			json(),
-			replace({
-				values: {
-					'process.env.NODE_ENV': JSON.stringify('production'),
-				},
-				preventAssignment: true,
-			}),
+			mode === 'browser'
+				? replace({
+						values: {
+							'process.env.NODE_ENV': JSON.stringify('production'),
+						},
+						preventAssignment: true,
+				  })
+				: null,
 			minify ? terser() : null,
 		],
 		onwarn(warning, warn) {

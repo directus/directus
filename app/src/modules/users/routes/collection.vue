@@ -16,10 +16,8 @@ import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import useNavigation from '../composables/use-navigation';
-
-type Item = {
-	[field: string]: any;
-};
+import { logout } from '@/auth';
+import { useUserStore } from '@/stores/user';
 
 const props = defineProps<{ role?: string }>();
 
@@ -29,9 +27,10 @@ const { t } = useI18n();
 const { roles } = useNavigation(role);
 const userInviteModalActive = ref(false);
 const serverStore = useServerStore();
+const userStore = useUserStore();
 
 const layoutRef = ref();
-const selection = ref<Item[]>([]);
+const selection = ref<string[]>([]);
 
 const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_users'));
 const { addNewLink } = useLinks();
@@ -97,6 +96,8 @@ function useBatch() {
 	return { batchEditActive, confirmDelete, deleting, batchDelete, error };
 
 	async function batchDelete() {
+		if (deleting.value) return;
+
 		deleting.value = true;
 
 		const batchPrimaryKeys = selection.value;
@@ -105,6 +106,19 @@ function useBatch() {
 			await api.delete('/users', {
 				data: batchPrimaryKeys,
 			});
+
+			// Check if the current user was among the deleted users
+			const currentUserId = userStore.currentUser && 'id' in userStore.currentUser ? userStore.currentUser.id : null;
+
+			if (
+				currentUserId &&
+				batchPrimaryKeys.some((key) => {
+					return key === currentUserId;
+				})
+			) {
+				await logout();
+				return;
+			}
 
 			await refresh();
 
@@ -190,7 +204,7 @@ function clearFilters() {
 			<template #actions>
 				<search-input v-model="search" v-model:filter="filter" collection="directus_users" />
 
-				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
+				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
 						<v-button
 							v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"

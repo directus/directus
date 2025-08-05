@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
+import { type ApplyShortcut } from '@/components/v-dialog.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -39,7 +40,7 @@ export interface OverlayItemProps {
 	junctionFieldLocation?: string;
 	selectedFields?: string[] | null;
 	popoverProps?: Record<string, any>;
-	shortcuts?: boolean;
+	applyShortcut?: ApplyShortcut;
 	preventCancelWithEdits?: boolean;
 }
 
@@ -55,6 +56,7 @@ const props = withDefaults(defineProps<OverlayItemProps>(), {
 	disabled: false,
 	relatedPrimaryKey: '+',
 	circularField: null,
+	applyShortcut: 'meta+enter',
 });
 
 const emit = defineEmits<OverlayItemEmits>();
@@ -205,7 +207,7 @@ const templatePrimaryKey = computed(() =>
 const templateCollection = computed(() => relatedCollectionInfo.value || collectionInfo.value);
 
 const isSavable = computed(() => {
-	if (props.disabled) return false;
+	if (props.disabled || !hasEdits.value) return false;
 	if (!relatedCollection.value) return saveAllowed.value;
 	return saveAllowed.value || saveRelatedCollectionAllowed.value;
 });
@@ -230,6 +232,7 @@ const overlayItemContentProps = computed(() => {
 		junctionFieldLocation: props.junctionFieldLocation,
 		relatedCollectionFields: relatedCollectionFields.value,
 		relatedPrimaryKey: props.relatedPrimaryKey,
+		relatedPrimaryKeyField: relatedPrimaryKeyField.value?.field ?? null,
 		refresh,
 	};
 });
@@ -389,16 +392,17 @@ function useActions() {
 		},
 	});
 
-	useShortcut('meta+s', (_event, cancelNext) => {
-		if (!props.shortcuts || !internalActive.value) return;
+	useShortcut(props.applyShortcut, (_event, cancelNext) => {
+		// Note that drawer and modal have existing shortcuts.
+		if (props.overlay !== 'popover' || !internalActive.value) return;
 
 		save();
 		cancelNext();
 	});
 
 	useShortcut('escape', (_event, cancelNext) => {
-		// Note that drawer and modal have an existing shortcut for canceling with the Escape key.
-		if (props.overlay !== 'popover' || !props.shortcuts || !internalActive.value) return;
+		// Note that drawer and modal have existing shortcuts.
+		if (props.overlay !== 'popover' || !internalActive.value) return;
 
 		cancel();
 		cancelNext();
@@ -409,10 +413,8 @@ function useActions() {
 	function getTooltip(shortcutType: 'save' | 'cancel', label: string | null = null) {
 		let shortcut = null;
 
-		if (props.shortcuts) {
-			if (shortcutType === 'save') shortcut = translateShortcut(['meta', 's']);
-			else shortcut = translateShortcut(['esc']);
-		}
+		if (shortcutType === 'save') shortcut = translateShortcut(props.applyShortcut.split('+'));
+		else shortcut = translateShortcut(['esc']);
 
 		if (label && shortcut) return `${label} (${shortcut})`;
 		if (label) return label;
@@ -422,10 +424,12 @@ function useActions() {
 	}
 
 	function validateForm({ defaultValues, existingValues, editsToValidate, fieldsToValidate }: Record<string, any>) {
-		return validateItem(merge({}, defaultValues, existingValues, editsToValidate), fieldsToValidate, isNew.value);
+		return validateItem(merge({}, defaultValues, existingValues, editsToValidate), fieldsToValidate, isNew.value, true);
 	}
 
 	function save() {
+		if (!isSavable.value) return;
+
 		const errors = validateForm({
 			defaultValues: unref(getDefaultValuesFromFields(fieldsWithoutCircular.value)),
 			existingValues: initialValues?.value,
@@ -519,6 +523,8 @@ function popoverClickOutsideMiddleware(e: Event) {
 		:title="title"
 		:icon="collectionInfo?.meta?.icon ?? undefined"
 		persistent
+		:apply-shortcut
+		@apply="save"
 		@cancel="cancel"
 	>
 		<template v-if="template !== null && templateData && primaryKey !== '+'" #title>
@@ -548,7 +554,15 @@ function popoverClickOutsideMiddleware(e: Event) {
 		/>
 	</v-drawer>
 
-	<v-dialog v-else-if="overlay === 'modal'" v-model="overlayActive" persistent keep-behind @esc="cancel">
+	<v-dialog
+		v-else-if="overlay === 'modal'"
+		v-model="overlayActive"
+		persistent
+		keep-behind
+		:apply-shortcut
+		@apply="save"
+		@esc="cancel"
+	>
 		<v-card class="modal-card">
 			<v-card-title>
 				<v-icon :name="collectionInfo?.meta?.icon ?? undefined" class="modal-title-icon" />
@@ -618,7 +632,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</div>
 	</v-menu>
 
-	<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+	<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 		<v-card>
 			<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 			<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
@@ -631,7 +645,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</v-card>
 	</v-dialog>
 
-	<v-dialog v-model="confirmCancel" @esc="confirmCancel = false">
+	<v-dialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="discardAndCancel">
 		<v-card>
 			<v-card-title>{{ t('discard_all_changes') }}</v-card-title>
 			<v-card-text>{{ t('discard_changes_copy') }}</v-card-text>
@@ -654,8 +668,10 @@ function popoverClickOutsideMiddleware(e: Event) {
 }
 
 .modal-card {
-	width: calc(2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--v-card-padding)) !important;
-	max-width: 90vw !important;
+	inline-size: calc(
+		2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--v-card-padding)
+	) !important;
+	max-inline-size: 90vw !important;
 
 	@media (min-height: 375px) {
 		--button-height: var(--v-button-height, 44px);
@@ -666,10 +682,10 @@ function popoverClickOutsideMiddleware(e: Event) {
 		.v-card-actions {
 			z-index: 100;
 			position: sticky;
-			bottom: calc(var(--button-gap) - var(--v-card-padding));
-			padding-top: var(--button-gap);
+			inset-block-end: calc(var(--button-gap) - var(--v-card-padding));
+			padding-block-start: var(--button-gap);
 			background: var(--v-card-background-color);
-			box-shadow: 0 0 var(--shadow-height) 0 rgba(0, 0, 0, 0.2);
+			box-shadow: 0 0 var(--shadow-height) 0 rgb(0 0 0 / 0.2);
 
 			.dark & {
 				box-shadow: 0 0 var(--shadow-height) 0 black;
@@ -679,17 +695,17 @@ function popoverClickOutsideMiddleware(e: Event) {
 		.shadow-cover {
 			z-index: 101;
 			position: sticky;
-			bottom: calc(var(--button-gap) + var(--button-height) + var(--button-gap) - var(--shadow-cover-height));
-			height: calc(var(--v-card-padding) - var(--button-gap));
-			width: 100%;
+			inset-block-end: calc(var(--button-gap) + var(--button-height) + var(--button-gap) - var(--shadow-cover-height));
+			block-size: calc(var(--v-card-padding) - var(--button-gap));
+			inline-size: 100%;
 
-			&:after {
+			&::after {
 				content: '';
 				position: absolute;
-				bottom: 0;
-				left: 0;
-				width: 100%;
-				height: var(--shadow-cover-height);
+				inset-block-end: 0;
+				inset-inline-start: 0;
+				inline-size: 100%;
+				block-size: var(--shadow-cover-height);
 				background: var(--v-card-background-color);
 			}
 		}
@@ -697,50 +713,50 @@ function popoverClickOutsideMiddleware(e: Event) {
 }
 
 .modal-title-icon {
-	margin-right: 8px;
+	margin-inline-end: 8px;
 }
 
 .modal-item-content {
 	padding: var(--v-card-padding);
-	padding-bottom: var(--theme--form--column-gap);
+	padding-block-end: var(--theme--form--column-gap);
 }
 
 .popover-item-content {
 	--content-padding: var(--theme--form--column-gap);
 	--content-padding-bottom: var(--theme--form--row-gap);
 
-	padding-top: var(--content-padding-bottom);
+	padding-block-start: var(--content-padding-bottom);
 	position: relative;
 	z-index: 0;
-	width: calc(2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--content-padding));
-	max-width: 90vw;
+	inline-size: calc(2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--content-padding));
+	max-inline-size: 90vw;
 
 	:deep(.v-form:first-child .first-visible-field .field-label),
 	:deep(.v-form:first-child .first-visible-field.half + .half-right .field-label) {
 		--popover-action-width: 100px; // 3 * 28 (button) + 2 * 8 (gap)
 
-		max-width: calc(100% - var(--popover-action-width));
+		max-inline-size: calc(100% - var(--popover-action-width));
 	}
 
 	&.empty {
-		min-height: 232px;
+		min-block-size: 232px;
 	}
 }
 
 .popover-actions {
 	position: sticky;
-	top: 0;
-	left: 0;
+	inset-block-start: 0;
+	inset-inline-start: 0;
 	z-index: 1;
 }
 
 .popover-actions-inner {
 	position: relative;
 	display: flex;
-	justify-content: right;
+	justify-content: end;
 	gap: 8px;
-	top: 12px;
-	right: 16px;
+	inset-block-start: 12px;
+	inset-inline-end: 16px;
 }
 
 // Puts the action buttons closer to the field

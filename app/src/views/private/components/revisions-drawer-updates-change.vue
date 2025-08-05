@@ -56,14 +56,14 @@ const wholeThing = computed(() => {
 <style lang="scss" scoped>
 .change-line {
 	position: relative;
-	width: 100%;
+	inline-size: 100%;
 	padding: 8px 12px 8px 40px;
 	border-radius: var(--theme--border-radius);
 
 	.v-icon {
 		position: absolute;
-		top: 8px;
-		left: 8px;
+		inset-block-start: 8px;
+		inset-inline-start: 8px;
 	}
 
 	&.added {
@@ -95,7 +95,7 @@ const wholeThing = computed(() => {
 
 .changed {
 	position: relative;
-	margin-right: 0.2em;
+	margin-inline-end: 0.2em;
 	padding: 2px;
 	border-radius: var(--theme--border-radius);
 }

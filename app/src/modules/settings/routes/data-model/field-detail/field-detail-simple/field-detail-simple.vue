@@ -175,19 +175,18 @@ function toggleInterface(id: string) {
 <style scoped lang="scss">
 .content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding-bottom);
+	padding-block: 0 var(--content-padding-bottom);
 }
 
 .group h2 {
-	margin-bottom: 40px;
-	padding-bottom: 2px;
+	margin-block-end: 40px;
+	padding-block-end: 2px;
 	font-weight: 700;
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .group + .group {
-	margin-top: 80px;
+	margin-block-start: 80px;
 }
 
 .grid {
@@ -211,9 +210,9 @@ function toggleInterface(id: string) {
 }
 
 .interface {
-	min-height: 100px;
+	min-block-size: 100px;
 	overflow: hidden;
-	text-align: left;
+	text-align: start;
 }
 
 .preview {
@@ -222,9 +221,9 @@ function toggleInterface(id: string) {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 160px;
-	height: 100px;
-	margin-bottom: 8px;
+	inline-size: 160px;
+	block-size: 100px;
+	margin-block-end: 8px;
 	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);
@@ -232,8 +231,8 @@ function toggleInterface(id: string) {
 }
 
 .preview img {
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	object-fit: cover;
 }
 
@@ -242,8 +241,8 @@ function toggleInterface(id: string) {
 }
 
 .preview :deep(svg) {
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 }
 
 .preview :deep(svg) .glow {

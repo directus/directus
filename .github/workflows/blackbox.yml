@@ -37,7 +37,7 @@ jobs:
           docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
 
       - name: Run tests
-        run: TEST_DB=sqlite3 pnpm run test:blackbox -- --project common
+        run: TEST_DB=sqlite3 pnpm run test:blackbox --project common
 
   db:
     name: ${{ matrix.vendor }}
@@ -86,4 +86,4 @@ jobs:
           docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
 
       - name: Run tests
-        run: TEST_DB=${{ matrix.vendor }} pnpm run test:blackbox -- --project db
+        run: TEST_DB=${{ matrix.vendor }} pnpm run test:blackbox --project db
