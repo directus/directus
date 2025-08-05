@@ -1,10 +1,10 @@
-import { transaction } from '../transaction.js';
-import type { ItemsService as ItemsServiceType, QueryOptions } from '../../services/index.js';
-import type { Item, PrimaryKey, Query } from '@directus/types';
-import { deepMapResponse } from '../deep-map-response.js';
+import { ForbiddenError } from '@directus/errors';
+import type { Item, PrimaryKey, Query, QueryOptions } from '@directus/types';
 import { intersection } from 'lodash-es';
 import { GENERATE_SPECIAL } from '../../constants.js';
-import { ForbiddenError } from '@directus/errors';
+import type { ItemsService as ItemsServiceType } from '../../services/index.js';
+import { deepMapResponse } from '../deep-map-response.js';
+import { transaction } from '../transaction.js';
 import { mergeVersionsRaw } from './merge-version-data.js';
 
 export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, queryWithKey: Query, opts?: QueryOptions) {
