@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import Color, { ColorInstance } from 'color';
-import { isHex } from '@/utils/is-hex';
+import { i18n } from '@/lang';
 import { isCssVar as isCssVarUtil } from '@/utils/is-css-var';
+import { isHex } from '@/utils/is-hex';
 import { cssVar } from '@directus/utils/browser';
+import Color, { ColorInstance } from 'color';
 import { ComponentPublicInstance, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { i18n } from '@/lang';
 
 const { t } = useI18n();
 
@@ -355,8 +355,8 @@ function useColor() {
 						? 'repeat(4, 1fr)'
 						: 'repeat(6, 1fr)'
 					: width.startsWith('half')
-					  ? 'repeat(3, 1fr)'
-					  : 'repeat(5, 1fr)',
+						? 'repeat(3, 1fr)'
+						: 'repeat(5, 1fr)',
 			}"
 			:class="{ stacked: width.startsWith('half') }"
 		>
@@ -368,8 +368,8 @@ function useColor() {
 							? '1 / span 4'
 							: '1 / span 2'
 						: width.startsWith('half')
-						  ? '1 / span 3'
-						  : '1 / span 2',
+							? '1 / span 3'
+							: '1 / span 2',
 				}"
 			>
 				<v-select v-model="colorType" :items="colorTypes" />
@@ -536,7 +536,7 @@ function useColor() {
 
 .color-data-inputs {
 	display: grid;
-	grid-gap: 0;
+	gap: 0;
 	inline-size: 100%;
 	padding: 12px 10px;
 }
@@ -592,7 +592,7 @@ function useColor() {
 
 .color-data-alphas {
 	display: grid;
-	grid-gap: 12px;
+	gap: 12px;
 	align-items: baseline;
 	inline-size: 100%;
 	block-size: 45px;
