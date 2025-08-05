@@ -49,7 +49,7 @@ const tabs = computed(() => {
 					text: t('creation_preview'),
 					value: 'revision_preview',
 				},
-		  ]
+			]
 		: [
 				{
 					text: t('updates_made'),
@@ -59,7 +59,7 @@ const tabs = computed(() => {
 					text: t('revision_preview'),
 					value: 'revision_preview',
 				},
-		  ];
+			];
 });
 
 const hasPastRevision = computed(() => {

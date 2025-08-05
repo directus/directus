@@ -55,7 +55,7 @@ export function getFormFields(fields: Ref<Field[]>): ComputedRef<Field[]> {
 							hideLabel: true,
 							hideLoader: true,
 						} as unknown as Field,
-				  ]
+					]
 				: []),
 			...userFields,
 		];
