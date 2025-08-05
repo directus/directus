@@ -6,12 +6,14 @@ import express from 'express';
 import http from 'node:http';
 import type { AddressInfo } from 'node:net';
 import type { Logger } from 'pino';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi, type Mock } from 'vitest';
 import { useLogger } from '../logger/index.js';
 import * as errorHandlerMod from './error-handler.js';
+import { getNodeEnv } from '@directus/utils/node';
 
 vi.mock('../database/index');
 vi.mock('../logger/index');
+vi.mock('@directus/utils/node');
 
 let mockRequest: Request;
 let mockResponse: Response;
@@ -158,6 +160,26 @@ describe('DirectusError', () => {
 				},
 			],
 		});
+	});
+
+	test('Stack present in development', async () => {
+		const error = new (createError('IM_A_RABBIT', `I'm a rabbit`, 418))();
+
+		vi.mocked(getNodeEnv).mockReturnValueOnce('development');
+
+		await errorHandlerMod.errorHandler(error, mockRequest, mockResponse, nextFunction);
+
+		expect((mockResponse.json as Mock).mock.lastCall?.[0].errors?.[0].extensions.stack).toBeDefined();
+	});
+
+	test('Stack hidden in production', async () => {
+		const error = new (createError('IM_A_RABBIT', `I'm a rabbit`, 418))();
+
+		vi.mocked(getNodeEnv).mockReturnValueOnce('production');
+
+		await errorHandlerMod.errorHandler(error, mockRequest, mockResponse, nextFunction);
+
+		expect((mockResponse.json as Mock).mock.lastCall?.[0].errors?.[0].extensions.stack).toBeUndefined();
 	});
 
 	test('Respond with fallback error if one of the errors is unknown', async () => {
