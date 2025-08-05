@@ -351,7 +351,7 @@ describe('Clear Hidden Fields', () => {
 
 		vi.mocked(applyConditions).mockReturnValue({
 			field: 'name',
-			meta: { hidden: true },
+			meta: { hidden: true, clear_hidden_value_on_save: true },
 		} as Field);
 
 		const mockFields = [
@@ -614,6 +614,166 @@ describe('Clear Hidden Fields', () => {
 		expect(apiPatchSpy).toHaveBeenCalledWith('/items/test/1', {
 			name: 'Test Name',
 			status: 'active',
+		});
+	});
+
+	test('should clear field when hidden by condition with clear_hidden_value_on_save set in condition', async () => {
+		// Reset mocks for this test
+		vi.clearAllMocks();
+
+		// Mock applyConditions to return a field with clear_hidden_value_on_save from condition
+		const { applyConditions } = await import('@/utils/apply-conditions');
+
+		vi.mocked(applyConditions).mockImplementation((item, field) => {
+			// Simulate a condition that hides the field and sets clear_hidden_value_on_save
+			if (field.field === 'conditional_field' && item.status === 'draft') {
+				return {
+					...field,
+					meta: {
+						...field.meta,
+						hidden: true,
+						clear_hidden_value_on_save: true,
+					},
+				};
+			}
+
+			return field;
+		});
+
+		const mockFields = [
+			{
+				field: 'conditional_field',
+				meta: {
+					hidden: false, // Not statically hidden
+					clear_hidden_value_on_save: false, // Not set at field level
+					conditions: [
+						{
+							name: 'Hide when status is draft',
+							rule: { status: { _eq: 'draft' } },
+							hidden: true,
+							clear_hidden_value_on_save: true, // Set in condition
+						},
+					],
+				},
+				schema: { default_value: 'Default Value' },
+			},
+			{
+				field: 'status',
+				meta: { hidden: false },
+			},
+		] as Field[];
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => mockFields),
+		} as any);
+
+		// Mock permissions to return the same fields
+		const { usePermissions } = await import('@/composables/use-permissions');
+
+		vi.mocked(usePermissions).mockReturnValue({
+			itemPermissions: {
+				loading: ref(false),
+				fields: computed(() => mockFields),
+				refresh: vi.fn(),
+			},
+		} as any);
+
+		const { save, edits } = useItem(ref('test'), ref(1));
+
+		// Set up item with status that triggers the condition
+		edits.value = {
+			conditional_field: 'Some Value',
+			status: 'draft', // This should trigger the condition
+		};
+
+		await save();
+
+		// Should clear the field because it's hidden by condition with clear_hidden_value_on_save set
+		expect(apiPatchSpy).toHaveBeenCalledWith('/items/test/1', {
+			conditional_field: 'Default Value',
+			status: 'draft',
+		});
+	});
+
+	test('should not clear field when hidden by condition but clear_hidden_value_on_save not set in condition', async () => {
+		// Reset mocks for this test
+		vi.clearAllMocks();
+
+		// Mock applyConditions to return a field hidden by condition but without clear_hidden_value_on_save
+		const { applyConditions } = await import('@/utils/apply-conditions');
+
+		vi.mocked(applyConditions).mockImplementation((item, field) => {
+			// Simulate a condition that hides the field but doesn't set clear_hidden_value_on_save
+			if (field.field === 'conditional_field' && item.status === 'draft') {
+				return {
+					...field,
+					meta: {
+						...field.meta,
+						hidden: true,
+						clear_hidden_value_on_save: false, // Not set in condition
+					},
+				};
+			}
+
+			return field;
+		});
+
+		const mockFields = [
+			{
+				field: 'conditional_field',
+				meta: {
+					hidden: false, // Not statically hidden
+					clear_hidden_value_on_save: false, // Not set at field level
+					conditions: [
+						{
+							name: 'Hide when status is draft',
+							rule: { status: { _eq: 'draft' } },
+							hidden: true,
+							clear_hidden_value_on_save: false, // Not set in condition
+						},
+					],
+				},
+				schema: { default_value: 'Default Value' },
+			},
+			{
+				field: 'status',
+				meta: { hidden: false },
+			},
+		] as Field[];
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => mockFields),
+		} as any);
+
+		// Mock permissions to return the same fields
+		const { usePermissions } = await import('@/composables/use-permissions');
+
+		vi.mocked(usePermissions).mockReturnValue({
+			itemPermissions: {
+				loading: ref(false),
+				fields: computed(() => mockFields),
+				refresh: vi.fn(),
+			},
+		} as any);
+
+		const { save, edits } = useItem(ref('test'), ref(1));
+
+		// Set up item with status that triggers the condition
+		edits.value = {
+			conditional_field: 'Some Value',
+			status: 'draft', // This should trigger the condition
+		};
+
+		await save();
+
+		// Should NOT clear the field because clear_hidden_value_on_save is not set in the condition
+		expect(apiPatchSpy).toHaveBeenCalledWith('/items/test/1', {
+			conditional_field: 'Some Value', // Should keep original value
+			status: 'draft',
 		});
 	});
 });

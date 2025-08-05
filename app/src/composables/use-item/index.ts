@@ -136,14 +136,19 @@ export function useItem<T extends Item>(
 	}
 
 	function shouldClearField(field: Field, currentValues: Record<string, any>): boolean {
-		// Check if field is marked for clearing on save
-		if (field.meta?.clear_hidden_value_on_save !== true) return false;
-
-		// Check if field is hidden
-		if (field.meta?.hidden === true) return true;
+		// Check if field is statically hidden
+		if (field.meta?.hidden === true) {
+			// If statically hidden, check field-level clear_hidden_value_on_save setting
+			return field.meta?.clear_hidden_value_on_save === true;
+		}
 
 		// Check if field is hidden by condition
-		if (isFieldHiddenByCondition(field, currentValues)) return true;
+		if (isFieldHiddenByCondition(field, currentValues)) {
+			// Apply conditions to get the field with condition properties applied
+			const fieldWithConditions = applyConditions(currentValues, field);
+			// Check if the condition that hides the field also has clear_hidden_value_on_save set
+			return fieldWithConditions.meta?.clear_hidden_value_on_save === true;
+		}
 
 		return false;
 	}
@@ -190,7 +195,19 @@ export function useItem<T extends Item>(
 		// Clear hidden fields if configured to do so
 		const finalEdits = clearHiddenFields(edits.value, fields, payloadToValidate);
 
-		const errors = validateItem(payloadToValidate, fields, isNew.value);
+		const finalPayloadToValidate = mergeWith(
+			{},
+			defaultValues.value,
+			item.value,
+			finalEdits,
+			function (_from: any, to: any) {
+				if (typeof to !== 'undefined') {
+					return to;
+				}
+			},
+		);
+
+		const errors = validateItem(finalPayloadToValidate, fields, isNew.value);
 		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
 
 		if (errors.length > 0) {

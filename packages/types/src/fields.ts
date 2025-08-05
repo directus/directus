@@ -88,6 +88,7 @@ export type Condition = {
 	hidden?: boolean;
 	options?: Record<string, any>;
 	required?: boolean;
+	clear_hidden_value_on_save?: boolean;
 };
 
 export type AppField = Field & { schema: { default_value: any } };
