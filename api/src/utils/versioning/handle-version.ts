@@ -1,5 +1,5 @@
 import { ForbiddenError } from '@directus/errors';
-import type { Item, PrimaryKey, Query, QueryOptions } from '@directus/types';
+import type { Accountability, Item, PrimaryKey, Query, QueryOptions } from '@directus/types';
 import { intersection } from 'lodash-es';
 import { GENERATE_SPECIAL } from '../../constants.js';
 import type { ItemsService as ItemsServiceType } from '../../services/index.js';
@@ -45,7 +45,9 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 	await transaction(self.knex, async (trx) => {
 		const itemsService = new ItemsService<Item>(self.collection, {
 			schema: self.schema,
-			accountability: self.accountability,
+			accountability: {
+				admin: true,
+			} as Accountability,
 			knex: trx,
 		});
 
