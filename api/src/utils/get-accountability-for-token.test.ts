@@ -80,12 +80,12 @@ describe('getAccountabilityForToken', async () => {
 
 	test('throws token expired error', async () => {
 		const token = jwt.sign({ role: '123-456-789' }, 'super-secure-secret', { issuer: 'directus', expiresIn: -1 });
-		expect(() => getAccountabilityForToken(token)).rejects.toThrow('Token expired.');
+		await expect(() => getAccountabilityForToken(token)).rejects.toThrow('Token expired.');
 	});
 
 	test('throws token invalid error', async () => {
 		const token = jwt.sign({ role: '123-456-789' }, 'bad-secret', { issuer: 'directus' });
-		expect(() => getAccountabilityForToken(token)).rejects.toThrow('Invalid token.');
+		await expect(() => getAccountabilityForToken(token)).rejects.toThrow('Invalid token.');
 	});
 
 	test('find user in database', async () => {
@@ -122,6 +122,6 @@ describe('getAccountabilityForToken', async () => {
 		const db = getDatabase();
 		vi.spyOn(db, 'first').mockReturnValue(false as any);
 		const token = jwt.sign({ role: '123-456-789' }, 'bad-secret');
-		expect(() => getAccountabilityForToken(token)).rejects.toThrow('Invalid user credentials.');
+		await expect(() => getAccountabilityForToken(token)).rejects.toThrow('Invalid user credentials.');
 	});
 });

@@ -61,21 +61,21 @@ const iframeViewStyle = computed(() => {
 
 	if (zoom.value > 1 && width.value && height.value) {
 		const paddingWidth = (livePreviewSize.width.value - width.value * zoom.value) / 2;
-		const paddingLeft = Math.max((livePreviewSize.width.value - width.value * zoom.value) / 2, 48);
-		style.paddingLeft = `${paddingLeft}px`;
+		const paddingInlineStart = Math.max((livePreviewSize.width.value - width.value * zoom.value) / 2, 48);
+		style.paddingInlineStart = `${paddingInlineStart}px`;
 
 		if (paddingWidth < 48) {
 			const iframeViewWidth = 48 + width.value * zoom.value + 48;
-			style.width = `${iframeViewWidth}px`;
+			style.inlineSize = `${iframeViewWidth}px`;
 		}
 
 		const paddingHeight = (livePreviewSize.height.value - 44 - height.value * zoom.value) / 2;
-		const paddingTop = Math.max(paddingHeight, 48);
-		style.paddingTop = `${paddingTop}px`;
+		const paddingBlockStart = Math.max(paddingHeight, 48);
+		style.paddingBlockStart = `${paddingBlockStart}px`;
 
 		if (paddingHeight < 48) {
 			const iframeViewHeight = 48 + height.value * zoom.value + 48;
-			style.height = `${iframeViewHeight}px`;
+			style.blockSize = `${iframeViewHeight}px`;
 		}
 	}
 
@@ -319,14 +319,20 @@ function useUrls() {
 					ref="resizeHandle"
 					class="resize-handle"
 					:style="{
-						width: width ? `${width}px` : '100%',
-						height: height ? `${height}px` : '100%',
+						inlineSize: width ? `${width}px` : '100%',
+						blockSize: height ? `${height}px` : '100%',
 						resize: fullscreen ? 'none' : 'both',
 						transform: `scale(${zoom})`,
 						transformOrigin: zoom >= 1 ? 'top left' : 'center center',
 					}"
 				>
-					<iframe id="frame" ref="frameEl" :src="frameSrc" @load="onIframeLoad" />
+					<iframe
+						id="frame"
+						ref="frameEl"
+						:src="frameSrc"
+						:title="$t('live_preview.iframe_title')"
+						@load="onIframeLoad"
+					/>
 					<slot name="overlay" :frame-el :frame-src />
 				</div>
 			</div>
@@ -342,7 +348,7 @@ function useUrls() {
 
 <style scoped lang="scss">
 .live-preview {
-	--preview--color: var(--theme--navigation--modules--button--foreground-hover, #ffffff);
+	--preview--color: var(--theme--navigation--modules--button--foreground-hover, #fff);
 	--preview--color-disabled: color-mix(
 		in srgb,
 		var(--theme--navigation--modules--background),
@@ -354,8 +360,8 @@ function useUrls() {
 	--preview--header--height: 44px;
 
 	container-type: inline-size;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 
 	&.header-expanded {
 		--preview--header--height: 60px;
@@ -368,19 +374,19 @@ function useUrls() {
 	.header {
 		--focus-ring-color: var(--theme--navigation--modules--button--background-active);
 
-		width: 100%;
+		inline-size: 100%;
 		color: var(--preview--color);
 		background-color: var(--preview--header--background-color);
-		border-bottom: var(--preview--header--border-width) solid var(--preview--header--border-color);
-		height: var(--preview--header--height);
+		border-block-end: var(--preview--header--border-width) solid var(--preview--header--border-color);
+		block-size: var(--preview--header--height);
 		display: flex;
 		align-items: center;
 		z-index: 10;
 		gap: 8px;
-		padding: 0px 8px;
+		padding: 0 8px;
 		transition:
 			padding var(--medium) var(--transition),
-			height var(--medium) var(--transition);
+			block-size var(--medium) var(--transition);
 
 		:deep(.v-button.secondary) {
 			--v-button-color: var(--theme--navigation--modules--button--foreground-active);
@@ -396,7 +402,7 @@ function useUrls() {
 
 			.button {
 				&.active {
-					box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.15);
+					box-shadow: 0 0 8px 0 rgb(0 0 0 / 0.15);
 				}
 
 				&:focus:not(:hover) {
@@ -428,10 +434,10 @@ function useUrls() {
 			.activator {
 				display: flex;
 				align-items: center;
-				min-width: 0;
+				min-inline-size: 0;
 
 				.v-icon {
-					top: 1px;
+					inset-block-start: 1px;
 				}
 			}
 		}
@@ -451,11 +457,11 @@ function useUrls() {
 
 		input {
 			border: none;
-			width: 50px;
+			inline-size: 50px;
 			background-color: transparent;
 
 			&:first-child {
-				text-align: right;
+				text-align: end;
 			}
 		}
 
@@ -471,27 +477,27 @@ function useUrls() {
 	}
 
 	.container {
-		width: 100%;
-		height: calc(100% - var(--preview--header--height));
+		inline-size: 100%;
+		block-size: calc(100% - var(--preview--header--height));
 		overflow: auto;
 	}
 
 	.iframe-view {
-		width: 100%;
-		height: 100%;
+		inline-size: 100%;
+		block-size: 100%;
 		overflow: auto;
 		display: grid;
 		padding: 48px;
 
 		#frame {
-			width: 100%;
-			height: 100%;
+			inline-size: 100%;
+			block-size: 100%;
 			border: 0;
 		}
 
 		.resize-handle {
 			overflow: hidden;
-			box-shadow: 0px 4px 12px -4px rgba(0, 0, 0, 0.2);
+			box-shadow: 0 4px 12px -4px rgb(0 0 0 / 0.2);
 		}
 	}
 

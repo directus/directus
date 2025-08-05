@@ -47,6 +47,8 @@ location: Location
 collection_names_are_case_sensitive: Collection names are case sensitive
 condition_rules: Condition Rules
 input: Input
+invalid_input: Invalid Input
+not_a_number: Not a Number
 maps: Maps
 switch_user: Switch User
 item_creation: Item Creation
@@ -576,6 +578,9 @@ original: Original
 url: URL
 import_label: Import
 file_details: File Details
+copy_id: Copy ID
+copy_id_success: ID Copied
+copy_id_fail: ID Not Copied
 dimensions: Dimensions
 size: Size
 created: Created
@@ -1120,6 +1125,7 @@ wysiwyg_options:
   h4: Heading 4
   h5: Heading 5
   h6: Heading 6
+  pre: Preformatted
   fontselect: Select Font
   fontsizeselect: Select Font Size
   indent: Indent
@@ -1362,6 +1368,7 @@ fields:
     tags: Tags
     user_preferences: User Preferences
     language: Language
+    text_direction: Text Direction
     tfa_secret: Two-Factor Authentication
     admin_options: Admin Options
     status: Status
@@ -1621,6 +1628,7 @@ live_preview:
   new_window: Open in New Window
   close_window: Open in Split View
   toggle_3d: Toggle 3D
+  iframe_title: Live Website Preview
 shares: Shares
 unlimited_usage: Unlimited usage
 uses_left: No uses left | One use left | {n} uses left
@@ -1753,7 +1761,6 @@ translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
 report_error: Report Error
-start: Start
 table: Table
 list: List
 search_filter: Search & Filter
@@ -2074,6 +2081,7 @@ interfaces:
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
+    media_preview_iframe_title: Media Preview
   input-block-editor:
     input-block-editor: Block Editor
     description: Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js
@@ -2347,6 +2355,8 @@ show_labels: Show Labels
 show_legend: Show Legend
 right: Right
 left: Left
+start: Start
+end: End
 donut: Donut
 continuous: Continuous
 gap: Gap
@@ -2603,3 +2613,6 @@ bsl_banner:
   accept_terms: Accept
   get_license: Get a License
 accepted: Accepted
+text_direction_auto: Automatic (Match Language)
+text_direction_ltr: Left to Right (LTR)
+text_direction_rtl: Right to Left (RTL)

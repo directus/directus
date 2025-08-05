@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import api, { RequestError } from '@/api';
+import { login } from '@/auth';
 import { translateAPIError } from '@/lang';
+import { useServerStore } from '@/stores/server';
+import { useUserStore } from '@/stores/user';
 import { ErrorCode } from '@directus/errors';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 type Credentials = {
 	email: string;
@@ -11,6 +15,9 @@ type Credentials = {
 };
 
 const { t } = useI18n();
+const router = useRouter();
+const serverStore = useServerStore();
+const userStore = useUserStore();
 const isLoading = ref(false);
 const email = ref<string | null>(null);
 const password = ref<string | null>(null);
@@ -19,6 +26,8 @@ const error = ref<RequestError | string | null>(null);
 const emit = defineEmits<{
 	wasSuccessful: [boolean];
 }>();
+
+const requiresEmailVerification = computed(() => serverStore.info.project?.public_registration_verify_email);
 
 const errorFormatted = computed(() => {
 	// Show "Wrong username or password" for wrongly formatted emails as well
@@ -52,7 +61,20 @@ async function onSubmit() {
 
 		await api.post('/users/register', credentials);
 
-		emit('wasSuccessful', true);
+		// If email verification is not required, automatically log in the user
+		if (!requiresEmailVerification.value) {
+			await login({ credentials });
+			const currentUser = userStore.currentUser;
+
+			if (currentUser && 'id' in currentUser) {
+				router.push(`/users/${currentUser.id}`);
+			} else {
+				router.push('/login');
+			}
+		} else {
+			// If email verification is required, show success message
+			emit('wasSuccessful', true);
+		}
 	} catch (err: any) {
 		error.value = err.errors?.[0]?.extensions?.code || err;
 		emit('wasSuccessful', false);
@@ -86,7 +108,7 @@ async function onSubmit() {
 <style lang="scss" scoped>
 .v-input,
 .v-notice {
-	margin-bottom: 20px;
+	margin-block-end: 20px;
 }
 
 .buttons {

@@ -233,7 +233,7 @@ const unsortableJunctionFields = computed(() => {
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 	gap: 12px 28px;
-	margin-top: 48px;
+	margin-block-start: 48px;
 
 	.field-wrapper {
 		display: flex;
@@ -245,9 +245,9 @@ const unsortableJunctionFields = computed(() => {
 			position: absolute;
 			pointer-events: none;
 
-			top: 50%;
+			inset-block-start: 50%;
 			transform: translateY(-50%);
-			right: -26px; // moves it to the center of the column-gap ( icon-width + (gap - icon-width) / 2 )
+			inset-inline-end: -26px; // moves it to the center of the column-gap ( icon-width + (gap - icon-width) / 2 )
 		}
 	}
 
@@ -267,7 +267,7 @@ const unsortableJunctionFields = computed(() => {
 }
 
 .type-label {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 }
 
 .v-list {
@@ -275,15 +275,15 @@ const unsortableJunctionFields = computed(() => {
 }
 
 .v-notice {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 
 .generated-data {
-	margin-top: 36px;
+	margin-block-start: 36px;
 
 	ul {
-		padding-top: 4px;
-		padding-left: 24px;
+		padding-block-start: 4px;
+		padding-inline-start: 24px;
 	}
 
 	.field-name {
@@ -311,8 +311,7 @@ const unsortableJunctionFields = computed(() => {
 	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 
 	.v-divider {
-		margin-top: 48px;
-		margin-bottom: 24px;
+		margin-block: 48px 24px;
 	}
 }
 
@@ -323,8 +322,7 @@ const unsortableJunctionFields = computed(() => {
 	@include mixins.form-grid;
 
 	.v-divider {
-		margin-top: 48px;
-		margin-bottom: 0;
+		margin-block: 48px 0;
 	}
 }
 </style>

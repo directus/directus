@@ -62,15 +62,15 @@ withDefaults(
 
 	.badge {
 		position: absolute;
-		top: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-y, 0px));
-		right: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-x, 0px));
+		inset-block-start: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-y, 0px));
+		inset-inline-end: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-x, 0px));
 		z-index: 1;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: max-content;
-		min-width: var(--v-badge-size, 16px);
-		height: var(--v-badge-size, 16px);
+		inline-size: max-content;
+		min-inline-size: var(--v-badge-size, 16px);
+		block-size: var(--v-badge-size, 16px);
 		padding: 0 5px;
 		color: var(--v-badge-color, var(--white));
 		font-weight: 800;
@@ -79,13 +79,13 @@ withDefaults(
 		border-radius: calc(var(--v-badge-size, 16px) / 2);
 
 		&.left {
-			right: unset;
-			left: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-x, 0px));
+			inset-inline-end: unset;
+			inset-inline-start: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-x, 0px));
 		}
 
 		&.bottom {
-			top: unset;
-			bottom: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-y, 0px));
+			inset-block-start: unset;
+			inset-block-end: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-y, 0px));
 		}
 
 		&.bordered {
@@ -96,9 +96,9 @@ withDefaults(
 		}
 
 		&.dot {
-			width: var(--v-badge-size, 16px);
-			min-width: 0;
-			height: var(--v-badge-size, 16px);
+			inline-size: var(--v-badge-size, 16px);
+			min-inline-size: 0;
+			block-size: var(--v-badge-size, 16px);
 			border: 0;
 
 			* {

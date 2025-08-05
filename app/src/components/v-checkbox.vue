@@ -154,7 +154,7 @@ function onClickIcon(e: MouseEvent): void {
 	display: flex;
 	align-items: center;
 	font-size: 0;
-	text-align: left;
+	text-align: start;
 	background-color: transparent;
 	border: none;
 	border-radius: 0;
@@ -162,15 +162,15 @@ function onClickIcon(e: MouseEvent): void {
 
 	.label:not(:empty) {
 		flex-grow: 1;
-		margin-left: 8px;
+		margin-inline-start: 8px;
 		transition: color var(--fast) var(--transition);
 		@include mixins.no-wrap;
 
 		input {
-			width: 100%;
+			inline-size: 100%;
 			background-color: transparent;
 			border: none;
-			border-bottom: 2px solid var(--theme--form--field--input--border-color);
+			border-block-end: 2px solid var(--theme--form--field--input--border-color);
 			border-radius: 0;
 		}
 	}
@@ -197,8 +197,8 @@ function onClickIcon(e: MouseEvent): void {
 		--focus-ring-offset: var(--focus-ring-offset-invert);
 
 		position: relative;
-		width: 100%;
-		height: var(--theme--form--field--input--height);
+		inline-size: 100%;
+		block-size: var(--theme--form--field--input--height);
 		padding: 10px; // 14 - 4 (border)
 		background-color: var(--theme--form--field--input--background);
 		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
@@ -211,11 +211,11 @@ function onClickIcon(e: MouseEvent): void {
 
 		&::before {
 			position: absolute;
-			top: 0;
-			left: 0;
+			inset-block-start: 0;
+			inset-inline-start: 0;
 			z-index: 0;
-			width: 100%;
-			height: 100%;
+			inline-size: 100%;
+			block-size: 100%;
 			border-radius: var(--theme--border-radius);
 			content: '';
 		}
@@ -266,7 +266,7 @@ function onClickIcon(e: MouseEvent): void {
 	}
 
 	.append {
-		margin-left: 8px;
+		margin-inline-start: 8px;
 	}
 }
 </style>

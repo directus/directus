@@ -123,7 +123,7 @@ watch(stringValue, () => {
 
 async function setLanguage() {
 	if (codemirror) {
-		const lang = props.language.toLowerCase();
+		const lang = (props.language || 'plaintext').toLowerCase();
 
 		if (props.type === 'json' || lang === 'json') {
 			// @ts-ignore
@@ -244,7 +244,7 @@ const cmOptions = computed<Record<string, any>>(() => {
 			lineWrapping: props.lineWrapping,
 			readOnly: readOnly.value,
 			cursorBlinkRate: props.disabled ? -1 : 530,
-			mode: props.language,
+			mode: props.language || 'plaintext',
 			placeholder: props.placeholder,
 		},
 		props.altOptions ? props.altOptions : {},
@@ -309,22 +309,22 @@ function isInterpolation(value: any) {
 <style lang="scss" scoped>
 .input-code {
 	position: relative;
-	width: 100%;
+	inline-size: 100%;
 	font-size: 14px;
 }
 
 .small {
 	position: absolute;
-	right: 0;
-	bottom: -20px;
+	inset-inline-end: 0;
+	inset-block-end: -20px;
 	font-style: italic;
-	text-align: right;
+	text-align: end;
 }
 
 .v-button {
 	position: absolute;
-	top: 10px;
-	right: 10px;
+	inset-block-start: 10px;
+	inset-inline-end: 10px;
 	z-index: 4;
 	color: var(--theme--primary);
 	cursor: pointer;

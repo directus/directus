@@ -77,7 +77,7 @@ describe('getAccountabilityForRole', async () => {
 		vi.mocked(fetchRolesTree).mockResolvedValue([]);
 		vi.mocked(fetchGlobalAccess).mockResolvedValue({ admin: false, app: false });
 
-		expect(
+		await expect(
 			getAccountabilityForRole('456-789', {
 				accountability: null,
 				schema: {} as any,

@@ -27,14 +27,19 @@ test('does not stall if elapsed time has already past the stall time', () => {
 	expect(vi.getTimerCount()).toBe(0);
 });
 
-test('should stall for a set amount of time', () => {
-	const startTime = performance.now();
+test('should stall for a set amount of time', async () => {
+	const startTime = performance.now(); // This will be 0
 
-	stall(STALL_TIME, startTime);
+	// Set up the stall - it should create a timeout for STALL_TIME
+	const stallPromise = stall(STALL_TIME, startTime);
 
+	// There should be one timer active
 	expect(vi.getTimerCount()).toBe(1);
 
-	vi.advanceTimersByTime(STALL_TIME);
+	// Advance timers and await the promise resolution
+	vi.runOnlyPendingTimers();
+	await stallPromise;
 
+	// No more timers should be active
 	expect(vi.getTimerCount()).toBe(0);
 });

@@ -3,14 +3,20 @@ import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type {
+	AbstractService,
+	AbstractServiceOptions,
 	Accountability,
+	ActionEventParams,
 	Item as AnyItem,
 	EventContext,
-	PermissionsAction,
+	MutationTracker,
+	MutationOptions,
 	PrimaryKey,
 	Query,
+	QueryOptions,
 	SchemaOverview,
 } from '@directus/types';
+import { UserIntegrityCheckFlag } from '@directus/types';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
@@ -24,34 +30,17 @@ import emitter from '../emitter.js';
 import { processAst } from '../permissions/modules/process-ast/process-ast.js';
 import { processPayload } from '../permissions/modules/process-payload/process-payload.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type {
-	AbstractService,
-	AbstractServiceOptions,
-	ActionEventParams,
-	MutationOptions,
-	RequestContext,
-} from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
-import { UserIntegrityCheckFlag, validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
+import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { PayloadService } from './payload.js';
+import type { RequestContext } from '../types/services.js';
 
 const env = useEnv();
 
-export type QueryOptions = {
-	stripNonRequested?: boolean;
-	permissionsAction?: PermissionsAction;
-	emitEvents?: boolean;
-};
-
-export type MutationTracker = {
-	trackMutations: (count: number) => void;
-	getCount: () => number;
-};
-
 export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
-	implements AbstractService
+	implements AbstractService<Item>
 {
 	collection: Collection;
 	knex: Knex;

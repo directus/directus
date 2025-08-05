@@ -485,8 +485,8 @@ function handleKeyDown(event: any) {
 
 	.map {
 		position: relative;
-		width: 100%;
-		height: 500px;
+		inline-size: 100%;
+		block-size: 500px;
 
 		&.error,
 		&.loading {
@@ -494,8 +494,8 @@ function handleKeyDown(event: any) {
 		}
 
 		.maplibregl-map {
-			width: 100%;
-			height: 100%;
+			inline-size: 100%;
+			block-size: 100%;
 		}
 
 		&:not(.has-selection) :deep(.mapbox-gl-draw_trash) {
@@ -511,12 +511,12 @@ function handleKeyDown(event: any) {
 
 	.basemap-select {
 		position: absolute;
-		right: 10px;
-		bottom: 10px;
+		inset-inline-end: 10px;
+		inset-block-end: 10px;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		height: 36px;
+		block-size: 36px;
 		padding: 10px;
 		color: var(--theme--form--field--input--foreground-subdued);
 		background-color: var(--theme--background);
@@ -524,8 +524,8 @@ function handleKeyDown(event: any) {
 		border-radius: var(--theme--border-radius);
 
 		span {
-			width: auto;
-			margin-right: 4px;
+			inline-size: auto;
+			margin-inline-end: 4px;
 		}
 
 		.v-select {
@@ -535,15 +535,15 @@ function handleKeyDown(event: any) {
 
 	.mapboxgl-search-location-dot {
 		position: absolute;
-		top: 0;
-		left: 0;
+		inset-block-start: 0;
+		inset-inline-start: 0;
 	}
 }
 
 .center {
 	position: absolute;
-	top: 50%;
-	left: 50%;
+	inset-block-start: 50%;
+	inset-inline-start: 50%;
 	transform: translate(-50%, -50%);
 }
 
