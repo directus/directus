@@ -181,8 +181,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Reset Page Preferences
 hidden_field: Hidden Field
 hidden_on_detail: Hidden on Detail
-readonly_field_label: Disable the field in the app
-required_readonly_field_warning: Enabling both readonly and required on a field prevents saving an item if the value is empty.
 key: Key
 alias: Alias
 bigInteger: Big Integer
@@ -1188,7 +1186,6 @@ translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
 report_error: Report Error
-start: Start
 table: Table
 list: List
 interfaces:
@@ -1635,6 +1632,7 @@ layouts:
   kanban:
     crop: Crop
 both: Both
+start: Start
 panels:
   metric:
     name: Metric

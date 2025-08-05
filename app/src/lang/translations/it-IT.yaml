@@ -1711,7 +1711,6 @@ translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
 report_error: Segnala l'errore
-start: Inizio
 table: Tabella
 list: Elenco
 search_filter: Cerca e filtra
@@ -2294,6 +2293,7 @@ show_labels: Mostra etichette
 show_legend: Mostra legenda
 right: Destra
 left: Sinistra
+start: Inizio
 donut: Ciambella
 continuous: Continuo
 gap: Intervallo

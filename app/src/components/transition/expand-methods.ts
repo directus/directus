@@ -1,13 +1,11 @@
-import { capitalize } from 'lodash';
-
 interface HTMLExpandElement extends HTMLElement {
 	_parent?: (Node & ParentNode & HTMLElement) | null;
 	_initialStyle?: {
 		transition: string;
 		visibility: string;
 		overflow: string;
-		height?: string | null;
-		width?: string | null;
+		blockSize?: string | null;
+		inlineSize?: string | null;
 	};
 }
 
@@ -27,8 +25,9 @@ export default function (
 		...args: any[]
 	) => void,
 ): Record<string, any> {
-	const sizeProperty = xAxis ? 'width' : ('height' as 'width' | 'height');
-	const offsetProperty = `offset${capitalize(sizeProperty)}` as 'offsetHeight' | 'offsetWidth';
+	const sizeProperty = (xAxis ? 'inlineSize' : 'blockSize') as 'inlineSize' | 'blockSize';
+	const cssSizeProperty = (xAxis ? 'inline-size' : 'block-size') as 'inline-size' | 'block-size';
+	const offsetProperty = (xAxis ? 'offsetWidth' : 'offsetHeight') as 'offsetHeight' | 'offsetWidth';
 
 	return {
 		beforeEnter(el: HTMLExpandElement) {
@@ -60,7 +59,7 @@ export default function (
 			void el.offsetHeight; // force reflow
 
 			el.style.transition =
-				initialStyle.transition !== '' ? initialStyle.transition : `${sizeProperty} var(--medium) var(--transition)`;
+				initialStyle.transition !== '' ? initialStyle.transition : `${cssSizeProperty} var(--medium) var(--transition)`;
 
 			if (expandedParentClass && el._parent) {
 				el._parent.classList.add(expandedParentClass);
@@ -107,7 +106,7 @@ export default function (
 			void el.offsetHeight; // force reflow
 
 			el.style.transition =
-				initialStyle.transition !== '' ? initialStyle.transition : `${sizeProperty} var(--medium) var(--transition)`;
+				initialStyle.transition !== '' ? initialStyle.transition : `${cssSizeProperty} var(--medium) var(--transition)`;
 
 			if (expandedParentClass && el._parent) {
 				el._parent.classList.add(expandedParentClass);

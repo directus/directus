@@ -51,7 +51,7 @@ const active = ref(false);
 	--v-icon-color: var(--theme--foreground);
 
 	flex-shrink: 0;
-	margin-right: 8px;
+	margin-inline-end: 8px;
 }
 
 @media (min-width: 960px) {
@@ -71,7 +71,7 @@ const active = ref(false);
 
 .actions .action-buttons > :deep(*:not(:last-child)) {
 	display: none;
-	margin-right: 8px;
+	margin-inline-end: 8px;
 }
 
 .actions .action-buttons .sidebar-toggle {
@@ -86,13 +86,13 @@ const active = ref(false);
 
 .actions.active {
 	position: absolute;
-	top: 0;
-	right: 0;
+	inset-block-start: 0;
+	inset-inline-end: 0;
 	align-items: center;
 	justify-content: flex-end;
-	height: 100%;
+	block-size: 100%;
 	padding: inherit;
-	padding-left: 8px;
+	padding-inline-start: 8px;
 	background-color: var(--theme--background);
 }
 

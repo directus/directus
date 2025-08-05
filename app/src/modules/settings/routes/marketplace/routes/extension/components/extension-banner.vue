@@ -39,5 +39,3 @@ const newestVersion = computed(() => props.extension.versions.at(0)!);
 		</template>
 	</VBanner>
 </template>
-
-<style scoped lang="scss"></style>

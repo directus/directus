@@ -1,4 +1,12 @@
-import type { SchemaOverview } from '@directus/types';
+import type {
+	Field,
+	Relation,
+	ApiCollection,
+	SchemaOverview,
+	Snapshot,
+	SnapshotField,
+	SnapshotRelation,
+} from '@directus/types';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { fromPairs, isArray, isPlainObject, mapValues, omit, sortBy, toPairs } from 'lodash-es';
@@ -6,7 +14,6 @@ import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { CollectionsService } from '../services/collections.js';
 import { FieldsService } from '../services/fields.js';
 import { RelationsService } from '../services/relations.js';
-import type { Collection, Snapshot, SnapshotField, SnapshotRelation } from '../types/index.js';
 import { getSchema } from './get-schema.js';
 import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema.js';
 
@@ -25,9 +32,9 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 		relationsService.readAll(),
 	]);
 
-	const collectionsFiltered = collectionsRaw.filter((item: any) => excludeSystem(item));
-	const fieldsFiltered = fieldsRaw.filter((item: any) => excludeSystem(item));
-	const relationsFiltered = relationsRaw.filter((item: any) => excludeSystem(item));
+	const collectionsFiltered = collectionsRaw.filter((item: any) => excludeSystem(item) && excludeUntracked(item));
+	const fieldsFiltered = fieldsRaw.filter((item: any) => excludeSystem(item) && excludeUntracked(item));
+	const relationsFiltered = relationsRaw.filter((item: any) => excludeSystem(item) && excludeUntracked(item));
 
 	const collectionsSorted = sortBy(mapValues(collectionsFiltered, sortDeep), ['collection']);
 
@@ -43,14 +50,19 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 		version: 1,
 		directus: version,
 		vendor,
-		collections: collectionsSorted.map((collection) => sanitizeCollection(collection)) as Collection[],
+		collections: collectionsSorted.map((collection) => sanitizeCollection(collection)) as ApiCollection[],
 		fields: fieldsSorted.map((field) => sanitizeField(field)) as SnapshotField[],
 		relations: relationsSorted.map((relation) => sanitizeRelation(relation)) as SnapshotRelation[],
 	};
 }
 
-function excludeSystem(item: { meta?: { system?: boolean } }) {
+function excludeSystem(item: ApiCollection | Field | Relation) {
 	if (item?.meta?.system === true) return false;
+	return true;
+}
+
+function excludeUntracked(item: ApiCollection | Field | Relation) {
+	if (item?.meta === null) return false;
 	return true;
 }
 

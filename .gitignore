@@ -12,6 +12,7 @@ coverage/
 **/.vitepress/cache/
 **/.vitepress/.temp/
 .eslintcache
+.stylelintcache
 
 # Dotenv configs
 .env
@@ -26,6 +27,7 @@ debug
 .devcontainer/
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
 .idea/
 *.code-workspace
 .history/
@@ -49,4 +51,3 @@ TODO
 /tests/blackbox/server-log-*
 /tests/blackbox/sequencer-data.json
 /packages/extensions-sdk/temp-extension-*/
-/docs/packages/

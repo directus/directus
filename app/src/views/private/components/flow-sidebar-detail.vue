@@ -148,8 +148,8 @@ const confirmUnsavedChanges = (flowId: string) => {
 	}
 };
 
-const runManualFlow = async (flowId: string) => {
-	if (isConfirmButtonDisabled.value) return;
+const runManualFlow = async (flowId: string, isActionDisabled = false) => {
+	if (isActionDisabled) return;
 
 	confirmRunFlow.value = null;
 
@@ -232,7 +232,7 @@ const runManualFlow = async (flowId: string) => {
 			:model-value="displayCustomConfirmDialog"
 			keep-behind
 			@esc="resetConfirm"
-			@apply="runManualFlow(confirmRunFlow!)"
+			@apply="runManualFlow(confirmRunFlow!, isConfirmButtonDisabled)"
 		>
 			<v-card>
 				<v-card-title>{{ confirmDetails!.description ?? t('run_flow_confirm') }}</v-card-title>
@@ -251,7 +251,10 @@ const runManualFlow = async (flowId: string) => {
 					<v-button secondary @click="resetConfirm">
 						{{ t('cancel') }}
 					</v-button>
-					<v-button :disabled="isConfirmButtonDisabled" @click="runManualFlow(confirmRunFlow!)">
+					<v-button
+						:disabled="isConfirmButtonDisabled"
+						@click="runManualFlow(confirmRunFlow!, isConfirmButtonDisabled)"
+					>
 						{{ confirmButtonCTA }}
 					</v-button>
 				</v-card-actions>
@@ -288,14 +291,14 @@ const runManualFlow = async (flowId: string) => {
 }
 
 .v-icon {
-	margin-right: 8px;
+	margin-inline-end: 8px;
 }
 
 .confirm-form {
 	--theme--form--column-gap: 24px;
 	--theme--form--row-gap: 24px;
 
-	margin-top: var(--v-card-padding, 16px);
+	margin-block-start: var(--v-card-padding, 16px);
 
 	:deep(.type-label) {
 		font-size: 1rem;

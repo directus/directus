@@ -113,7 +113,7 @@ async function parseFields(gql: GraphQLService, request: GraphQLResolveInfo) {
 		return result;
 	}, []);
 
-	const { fields } = await getQuery({}, dataSelections, request.variableValues, gql.schema, gql.accountability);
+	const { fields } = await getQuery({}, gql.schema, dataSelections, request.variableValues, gql.accountability);
 	return fields ?? [];
 }
 

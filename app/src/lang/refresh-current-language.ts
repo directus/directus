@@ -1,18 +1,14 @@
-import { useUserStore } from '@/stores/user';
-import { useTranslationsStore } from '@/stores/translations';
 import { useFieldsStore } from '@/stores/fields';
-import { getCurrentLanguage } from './get-current-language';
+import { useTranslationsStore } from '@/stores/translations';
+import { useUserStore } from '@/stores/user';
 
-export async function refreshCurrentLanguage(fallback = 'en-US') {
+export async function refreshCurrentLanguage() {
 	const fieldsStore = useFieldsStore();
-	const { currentUser } = useUserStore();
+	const userStore = useUserStore();
 	const translationsStore = useTranslationsStore();
-	const lang = getCurrentLanguage(fallback);
 
 	try {
-		if (currentUser) {
-			await translationsStore.loadTranslations(lang);
-		}
+		await translationsStore.loadTranslations(userStore.language);
 
 		// Refetch fields in order to translate
 		await fieldsStore.hydrate();

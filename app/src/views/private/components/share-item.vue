@@ -85,7 +85,7 @@ const formattedTime = computed(() => {
 				<template v-else>{{ t('uses_left', usesLeft) }}</template>
 			</span>
 			<v-icon v-if="share.password" small name="lock" />
-			<span style="flex-grow: 1"></span>
+			<span class="spacer"></span>
 			<span v-if="status" class="share-status" :class="{ [status]: true }">
 				{{ t(status) }}
 			</span>
@@ -95,10 +95,14 @@ const formattedTime = computed(() => {
 
 <style lang="scss" scoped>
 .item {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 	padding: 8px;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
+}
+
+.spacer {
+	flex-grow: 1;
 }
 
 .item-date {
@@ -109,7 +113,7 @@ const formattedTime = computed(() => {
 .item-header {
 	display: flex;
 	justify-content: space-between;
-	margin-bottom: 0;
+	margin-block-end: 0;
 }
 
 .v-list-item.danger {
@@ -125,7 +129,7 @@ const formattedTime = computed(() => {
 }
 
 .share-uses {
-	margin-right: 5px;
+	margin-inline-end: 5px;
 	font-size: 12px;
 
 	&.no-left {
@@ -169,13 +173,13 @@ const formattedTime = computed(() => {
 
 	.date {
 		position: absolute;
-		top: 0;
-		right: 0;
+		inset-block-start: 0;
+		inset-inline-end: 0;
 		display: flex;
 		align-items: center;
 		font-size: 12px;
 		white-space: nowrap;
-		text-align: right;
+		text-align: end;
 		opacity: 1;
 		transition: opacity var(--slow) var(--transition);
 		pointer-events: none;

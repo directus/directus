@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useExtensionsStore } from '@/stores/extensions';
-import { ApiOutput } from '@directus/extensions';
+import { ApiOutput } from '@directus/types';
 import { groupBy } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
@@ -87,15 +87,15 @@ const extensionsByType = computed(() => {
 
 .page-container {
 	padding: var(--content-padding);
-	padding-top: 0;
-	max-width: 1200px;
+	padding-block-start: 0;
+	max-inline-size: 1200px;
 }
 
 .group-divider {
-	margin-bottom: 12px;
+	margin-block-end: 12px;
 }
 
 .extension-group + .extension-group {
-	margin-top: 24px;
+	margin-block-start: 24px;
 }
 </style>

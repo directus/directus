@@ -406,7 +406,7 @@ function getRecursiveChildrenValues(mode: 'all' | 'branch' | 'leaf', children: R
 			:text="choice[itemText]"
 			:value="choice[itemValue]"
 			:children="choice[itemChildren]"
-			:disabled="disabled"
+			:disabled="disabled || choice.disabled"
 			:show-selection-only="showSelectionOnly"
 			:parent-value="value"
 		/>
@@ -421,6 +421,6 @@ function getRecursiveChildrenValues(mode: 'all' | 'branch' | 'leaf', children: R
 
 <style scoped>
 .item {
-	padding-left: 32px !important;
+	padding-inline-start: 32px !important;
 }
 </style>

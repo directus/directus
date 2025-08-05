@@ -1706,7 +1706,6 @@ translation_placeholder: وەرگێڕانێک بنوسە...
 value: بەها
 view_project: بینینی پڕۆژە
 report_error: ڕاپۆرتی هەڵە
-start: دەستپێکردن
 table: خشتە
 list: لیست
 search_filter: گەڕان و پاڵاوتن
@@ -2289,6 +2288,7 @@ show_labels: نیشاندانی پێناسەکان
 show_legend: نیشاندانی ڕێبەر
 right: ڕاست
 left: چەپ
+start: دەستپێکردن
 donut: دۆنەت
 continuous: بەردەوام
 gap: بۆشایی

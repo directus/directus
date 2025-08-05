@@ -140,12 +140,11 @@ function close() {
 
 <style lang="scss" scoped>
 .type-label:not(:first-child) {
-	margin-top: 24px;
+	margin-block-start: 24px;
 }
 
 .content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding);
+	padding-block: 0 var(--content-padding);
 }
 </style>

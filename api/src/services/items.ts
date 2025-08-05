@@ -3,13 +3,19 @@ import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type {
+	AbstractService,
+	AbstractServiceOptions,
 	Accountability,
+	ActionEventParams,
 	Item as AnyItem,
-	PermissionsAction,
+	MutationTracker,
+	MutationOptions,
 	PrimaryKey,
 	Query,
+	QueryOptions,
 	SchemaOverview,
 } from '@directus/types';
+import { UserIntegrityCheckFlag } from '@directus/types';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
@@ -23,28 +29,16 @@ import emitter from '../emitter.js';
 import { processAst } from '../permissions/modules/process-ast/process-ast.js';
 import { processPayload } from '../permissions/modules/process-payload/process-payload.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { AbstractService, AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
-import { UserIntegrityCheckFlag, validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
+import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { PayloadService } from './payload.js';
 
 const env = useEnv();
 
-export type QueryOptions = {
-	stripNonRequested?: boolean;
-	permissionsAction?: PermissionsAction;
-	emitEvents?: boolean;
-};
-
-export type MutationTracker = {
-	trackMutations: (count: number) => void;
-	getCount: () => number;
-};
-
 export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
-	implements AbstractService
+	implements AbstractService<Item>
 {
 	collection: Collection;
 	knex: Knex;
@@ -264,7 +258,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					primaryKey = primaryKey ?? returnedKey;
 				}
 			} catch (err: any) {
-				const dbError = await translateDatabaseError(err);
+				const dbError = await translateDatabaseError(err, data);
 
 				if (isDirectusError(dbError, ErrorCode.RecordNotUnique) && dbError.extensions.primaryKey) {
 					// This is a MySQL specific thing we need to handle here, since MySQL does not return the field name
@@ -794,7 +788,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				try {
 					await trx(this.collection).update(payloadWithTypeCasting).whereIn(primaryKeyField, keys);
 				} catch (err: any) {
-					throw await translateDatabaseError(err);
+					throw await translateDatabaseError(err, data);
 				}
 			}
 

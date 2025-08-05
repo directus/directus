@@ -1695,7 +1695,6 @@ translation_placeholder: Zadejte překlad...
 value: Hodnota
 view_project: Zobrazit projekt
 report_error: Nahlásit chybu
-start: Začátek
 table: Tabulka
 list: Seznam
 search_filter: Hledat a filtrovat
@@ -2276,6 +2275,7 @@ show_labels: Zobrazit popisky
 show_legend: Zobrazit legendu
 right: Vpravo
 left: Vlevo
+start: Začátek
 donut: Prstenec
 panels:
   metric:

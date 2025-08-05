@@ -49,7 +49,7 @@ const tableSpacingWritable = useSync(props, 'tableSpacing', emit);
 
 <style lang="scss" scoped>
 .v-checkbox {
-	width: 100%;
+	inline-size: 100%;
 
 	.spacer {
 		flex-grow: 1;
