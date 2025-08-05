@@ -8,9 +8,9 @@ packages:
 
 catalog:
   '@authenio/samlify-node-xmllint': 2.0.0
-  '@aws-sdk/client-s3': 3.858.0
+  '@aws-sdk/client-s3': 3.859.0
   '@aws-sdk/client-ses': 3.859.0
-  '@aws-sdk/lib-storage': 3.858.0
+  '@aws-sdk/lib-storage': 3.859.0
   '@azure/storage-blob': 12.28.0
   '@changesets/cli': 2.29.5
   '@changesets/get-github-info': 0.6.0
@@ -73,8 +73,8 @@ catalog:
   '@tinymce/tinymce-vue': 6.3.0
   '@turf/meta': 7.2.0
   '@tus/server': 1.10.2
-  '@tus/utils': 0.5.1
-  '@types/async': 3.2.24
+  '@tus/utils': 0.6.0
+  '@types/async': 3.2.25
   '@types/base-64': 1.0.2
   '@types/busboy': 1.5.4
   '@types/bytes': 3.1.5
@@ -127,7 +127,7 @@ catalog:
   '@vueuse/core': 13.6.0
   '@vueuse/integrations': 13.6.0
   '@vueuse/router': 13.6.0
-  apexcharts: 4.5.0
+  apexcharts: 4.7.0
   argon2: 0.43.1
   async: 3.2.6
   async-mutex: 0.5.0
@@ -139,7 +139,7 @@ catalog:
   bytes: 3.1.2
   camelcase: 8.0.0
   caret-pos: 2.0.0
-  chalk: 5.4.1
+  chalk: 5.5.0
   chokidar: 4.0.3
   chroma-js: 3.1.2
   codemirror: 5.65.18
@@ -179,7 +179,7 @@ catalog:
   flatpickr: 4.6.13
   focus-trap: 7.6.5
   form-data: 4.0.4
-  fs-extra: 11.3.0
+  fs-extra: 11.3.1
   geojson: 0.5.0
   get-port: 7.1.0
   glob-to-regexp: 0.4.1
@@ -203,7 +203,7 @@ catalog:
   json2csv: 5.0.7
   jsonlint-mod: 1.7.6
   jsonwebtoken: 9.0.2
-  keyv: 5.4.0
+  keyv: 5.5.0
   knex: 3.1.0
   knex-mock-client: 3.0.2
   ky: 1.8.2
@@ -215,7 +215,7 @@ catalog:
   lru-cache: 11.1.0
   mapbox-gl: 1.13.3
   maplibre-gl: 1.15.3
-  marked: 16.1.1
+  marked: 16.1.2
   micromustache: 8.0.3
   mime: 4.0.7
   mime-types: 3.0.1
@@ -266,7 +266,7 @@ catalog:
   sass-embedded: 1.89.2
   semver: 7.7.2
   sharp: 0.34.3
-  snappy: 7.3.0
+  snappy: 7.3.1
   sqlite3: 5.1.7
   stream-json: 1.9.1
   string-width: 7.2.0
@@ -280,13 +280,13 @@ catalog:
   swagger-ui-watcher: 2.1.14
   tar: 7.4.3
   tedious: 18.6.1
-  tinymce: 6.8.5
+  tinymce: 6.8.6
   tmp: 0.2.3
   tsup: 8.5.0
   tsx: 4.20.3
   tus-js-client: 4.3.1
-  typescript: 5.8.3
-  typescript-eslint: 8.38.0
+  typescript: 5.9.2
+  typescript-eslint: 8.39.0
   undici: 7.13.0
   update-check: 1.5.4
   uuid: 11.1.0
