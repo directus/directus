@@ -3,6 +3,7 @@ import type { Panel } from '@directus/extensions';
 import { throttle } from 'lodash';
 import { StyleValue, computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useUserStore } from '@/stores/user';
 
 export type AppTile = {
 	id: string;
@@ -76,6 +77,8 @@ const emit = defineEmits(['update', 'move', 'duplicate', 'delete', 'edit', 'prev
 
 const { t } = useI18n();
 
+const userStore = useUserStore();
+
 /**
  * When drag-n-dropping for positioning/resizing, we're
  */
@@ -129,6 +132,8 @@ const iconColor = computed(() => ({
 }));
 
 function useDragDrop() {
+	const isLTR = userStore.textDirection === 'ltr';
+
 	const dragging = ref(false);
 
 	let pointerStartPosX = 0;
@@ -162,8 +167,13 @@ function useDragDrop() {
 		const gridDeltaY = Math.round(pointerDeltaY / 20);
 
 		if (operation === 'move') {
-			editedPosition.position_x = panelStartPosX + gridDeltaX;
 			editedPosition.position_y = panelStartPosY + gridDeltaY;
+
+			if (isLTR) {
+				editedPosition.position_x = panelStartPosX + gridDeltaX;
+			} else {
+				editedPosition.position_x = panelStartPosX - gridDeltaX;
+			}
 
 			if (editedPosition.position_x < 1) editedPosition.position_x = 1;
 			if (editedPosition.position_y < 1) editedPosition.position_y = 1;
@@ -174,7 +184,11 @@ function useDragDrop() {
 			}
 
 			if (operation.includes('right')) {
-				editedPosition.width = panelStartWidth + gridDeltaX;
+				if (isLTR) {
+					editedPosition.width = panelStartWidth + gridDeltaX;
+				} else {
+					editedPosition.width = panelStartWidth - gridDeltaX;
+				}
 			}
 
 			if (operation.includes('bottom')) {
@@ -182,8 +196,13 @@ function useDragDrop() {
 			}
 
 			if (operation.includes('left')) {
-				editedPosition.width = panelStartWidth - gridDeltaX;
-				editedPosition.position_x = panelStartPosX + gridDeltaX;
+				if (isLTR) {
+					editedPosition.width = panelStartWidth - gridDeltaX;
+					editedPosition.position_x = panelStartPosX + gridDeltaX;
+				} else {
+					editedPosition.width = panelStartWidth + gridDeltaX;
+					editedPosition.position_x = panelStartPosX - gridDeltaX;
+				}
 			}
 
 			const minWidth = props.minWidth;
@@ -515,6 +534,10 @@ function useDragDrop() {
 	inline-size: 14px;
 	block-size: 14px;
 	cursor: nwse-resize;
+
+	html[dir='rtl'] & {
+		cursor: nesw-resize;
+	}
 }
 
 .resize-handlers .top-right {
@@ -523,6 +546,10 @@ function useDragDrop() {
 	inline-size: 14px;
 	block-size: 14px;
 	cursor: nesw-resize;
+
+	html[dir='rtl'] & {
+		cursor: nwse-resize;
+	}
 }
 
 .resize-handlers .bottom-right {
@@ -531,6 +558,10 @@ function useDragDrop() {
 	inline-size: 14px;
 	block-size: 14px;
 	cursor: nwse-resize;
+
+	html[dir='rtl'] & {
+		cursor: nesw-resize;
+	}
 }
 
 .resize-handlers .bottom-left {
@@ -539,6 +570,10 @@ function useDragDrop() {
 	inline-size: 14px;
 	block-size: 14px;
 	cursor: nesw-resize;
+
+	html[dir='rtl'] & {
+		cursor: nwse-resize;
+	}
 }
 
 .br-tl {

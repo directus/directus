@@ -1424,7 +1424,6 @@ translation_placeholder: Indtast en oversættelse...
 value: Værdi
 view_project: Vis projekt
 report_error: Fejl i rapport
-start: Start
 table: Tabel
 list: Liste
 search_filter: Søg og filtrer
@@ -1941,6 +1940,7 @@ show_labels: Vis etiketter
 show_legend: Vis legende
 right: Højre
 left: venstre
+start: Start
 panels:
   metric:
     name: Metrisk

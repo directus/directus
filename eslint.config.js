@@ -22,7 +22,7 @@ export default typescriptEslint.config(
 
 	// Ignored files
 	{
-		ignores: ['**/dist/', 'packages/extensions-sdk/templates/', 'docs/.vitepress/cache/', 'api/extensions/'],
+		ignores: ['**/dist/', 'packages/extensions-sdk/templates/', 'api/extensions/'],
 	},
 
 	// Enable recommended rules for JS files
@@ -108,7 +108,7 @@ export default typescriptEslint.config(
 		files: ['**/*.vue'],
 		rules: {
 			// Same ordering of component tags everywhere
-			'vue/component-tags-order': [
+			'vue/block-order': [
 				'error',
 				{
 					order: ['script', 'template', 'style'],
