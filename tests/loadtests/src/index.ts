@@ -6,14 +6,14 @@ import {
 	type RestClient,
 	type StaticTokenClient,
 } from '@directus/sdk';
+import zx from '@nitwel/0x';
 import { ChildProcess, spawn, type ChildProcessWithoutNullStreams } from 'child_process';
 import { Command, Option, program } from 'commander';
+import { existsSync } from 'fs';
 import { join } from 'path';
+import { rimraf } from 'rimraf';
 import { baseConfig, platforms, type Platform } from './config.js';
 import { createLogger, type Logger } from './logger.js';
-import { existsSync } from 'fs';
-import { rimraf } from 'rimraf';
-import zx from '@nitwel/0x';
 
 export type SDK = DirectusClient<any> & RestClient<any> & StaticTokenClient<any>;
 export type SetupArgs = {
@@ -243,7 +243,7 @@ if (!options.debug) {
 						K6_WEB_DASHBOARD_PERIOD: '2s',
 						PATH: process.env['PATH'],
 					},
-			  }
+				}
 			: {},
 	);
 
