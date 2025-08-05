@@ -37,7 +37,7 @@ const componentName = computed(() => {
 });
 
 const value = computed(() =>
-	props.modelValue === undefined ? props.field.schema?.default_value ?? null : props.modelValue,
+	props.modelValue === undefined ? (props.field.schema?.default_value ?? null) : props.modelValue,
 );
 </script>
 

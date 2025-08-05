@@ -260,7 +260,7 @@ class OASSpecsService implements SpecificationSubService {
 														},
 													},
 												},
-										  },
+											},
 									responses: {
 										'200': {
 											description: 'Successful request',
@@ -274,17 +274,17 @@ class OASSpecsService implements SpecificationSubService {
 																		data: schema.collections[collection]?.singleton
 																			? {
 																					$ref: `#/components/schemas/${tag.name}`,
-																			  }
+																				}
 																			: {
 																					type: 'array',
 																					items: {
 																						$ref: `#/components/schemas/${tag.name}`,
 																					},
-																			  },
+																				},
 																	},
 																},
 															},
-													  },
+														},
 										},
 									},
 								},
@@ -313,7 +313,7 @@ class OASSpecsService implements SpecificationSubService {
 														},
 													},
 												},
-										  },
+											},
 									responses: {
 										'200': {
 											content:
@@ -329,7 +329,7 @@ class OASSpecsService implements SpecificationSubService {
 																	},
 																},
 															},
-													  },
+														},
 										},
 									},
 								},

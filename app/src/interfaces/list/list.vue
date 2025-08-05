@@ -81,14 +81,13 @@ const defaults = computed(() => {
 	return values;
 });
 
-const fieldsWithNames = computed(
-	() =>
-		props.fields?.map((field) => {
-			return {
-				...field,
-				name: formatTitle(field.name ?? field.field!),
-			};
-		}),
+const fieldsWithNames = computed(() =>
+	props.fields?.map((field) => {
+		return {
+			...field,
+			name: formatTitle(field.name ?? field.field!),
+		};
+	}),
 );
 
 const internalValue = computed({

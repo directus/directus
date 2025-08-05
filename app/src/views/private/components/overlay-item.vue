@@ -101,10 +101,10 @@ const title = computed(() => {
 		return isNew.value
 			? t('creating_unit', {
 					unit: t(`collection_names_singular.${collection.collection}`),
-			  })
+				})
 			: t('editing_unit', {
 					unit: t(`collection_names_singular.${collection.collection}`),
-			  });
+				});
 	}
 
 	return isNew.value

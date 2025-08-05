@@ -48,7 +48,7 @@ export function sanitizeField(field: Field | undefined, sanitizeAllSchema = fals
 				'schema.has_auto_increment',
 				'schema.foreign_key_table',
 				'schema.foreign_key_column',
-		  ];
+			];
 
 	return pick(field, pickedPaths);
 }

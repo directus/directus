@@ -268,7 +268,7 @@ export class DriverCloudinary implements TusDriver {
 				? {
 						asset_folder: folderPath,
 						use_asset_folder_as_public_id_prefix: 'true',
-				  }
+					}
 				: {}),
 		};
 
@@ -480,7 +480,7 @@ export class DriverCloudinary implements TusDriver {
 				? {
 						asset_folder: folderPath,
 						use_asset_folder_as_public_id_prefix: 'true',
-				  }
+					}
 				: {}),
 		};
 

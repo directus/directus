@@ -15,7 +15,7 @@ export async function up(knex: Knex): Promise<void> {
 		.whereIn('interface', ['one-to-many', 'm2a-builder', 'many-to-many']);
 
 	for (const field of fieldsWithSort) {
-		const options = typeof field.options === 'string' ? parseJSON(field.options) : field.options ?? {};
+		const options = typeof field.options === 'string' ? parseJSON(field.options) : (field.options ?? {});
 
 		if ('sortField' in options) {
 			await knex('directus_relations')

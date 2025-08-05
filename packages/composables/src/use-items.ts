@@ -247,10 +247,10 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			const aggregate = primaryKeyField.value
 				? {
 						countDistinct: primaryKeyField.value.field,
-				  }
+					}
 				: {
 						count: '*',
-				  };
+					};
 
 			const response = await api.get<any>(endpoint.value, {
 				params: {
@@ -284,10 +284,10 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			const aggregate = primaryKeyField.value
 				? {
 						countDistinct: primaryKeyField.value.field,
-				  }
+					}
 				: {
 						count: '*',
-				  };
+					};
 
 			const response = await api.get<any>(endpoint.value, {
 				params: {

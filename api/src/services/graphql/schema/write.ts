@@ -47,7 +47,7 @@ export function getWritableTypes(
 				type: collectionIsReadable
 					? new GraphQLNonNull(
 							new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
-					  )
+						)
 					: GraphQLBoolean,
 				resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
 					await resolveMutation(gql, args, info),
@@ -114,7 +114,7 @@ export function getWritableTypes(
 					type: collectionIsReadable
 						? new GraphQLNonNull(
 								new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
-						  )
+							)
 						: GraphQLBoolean,
 					args: {
 						...(collectionIsReadable
@@ -135,7 +135,7 @@ export function getWritableTypes(
 					type: collectionIsReadable
 						? new GraphQLNonNull(
 								new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
-						  )
+							)
 						: GraphQLBoolean,
 					args: {
 						...(collectionIsReadable

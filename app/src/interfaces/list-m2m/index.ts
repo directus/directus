@@ -55,14 +55,14 @@ export default defineInterface({
 								options: {
 									text: '$t:interfaces.list-m2m.columns_configure_notice',
 								},
-						  }
+							}
 						: {
 								interface: 'system-fields',
 								options: {
 									collectionName: collection,
 								},
 								width: 'full',
-						  },
+							},
 			},
 		];
 
@@ -77,13 +77,13 @@ export default defineInterface({
 								options: {
 									text: '$t:interfaces.list-m2m.display_template_configure_notice',
 								},
-						  }
+							}
 						: {
 								interface: 'system-display-template',
 								options: {
 									collectionName: collection,
 								},
-						  },
+							},
 			},
 		];
 

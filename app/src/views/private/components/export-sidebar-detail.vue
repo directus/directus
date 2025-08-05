@@ -120,10 +120,10 @@ const getItemCount = async () => {
 		const aggregate = primaryKeyField.value?.field
 			? {
 					countDistinct: [primaryKeyField.value.field],
-			  }
+				}
 			: {
 					count: ['*'],
-			  };
+				};
 
 		const response = await api.get(getEndpoint(collection.value), {
 			params: {

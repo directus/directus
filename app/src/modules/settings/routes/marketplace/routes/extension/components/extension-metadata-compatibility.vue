@@ -27,11 +27,11 @@ const label = computed(() =>
 				? t('compatible_with_your_project_copy', {
 						currentVersion: serverStore.info.version!,
 						hostVersion: hostVersion,
-				  })
+					})
 				: t('compatibility_not_guaranteed_copy', {
 						currentVersion: serverStore.info.version!,
 						hostVersion: hostVersion,
-				  })
+					})
 		"
 		:icon="icon"
 		:color="isCompatible ? 'subdued' : 'warning'"

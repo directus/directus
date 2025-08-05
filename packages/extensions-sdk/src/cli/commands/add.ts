@@ -121,12 +121,12 @@ export default async function add(options: AddOptions): Promise<void> {
 							app: `${pathToRelativeUrl(source)}/${name}/app.${languageToShort(language)}`,
 							api: `${pathToRelativeUrl(source)}/${name}/api.${languageToShort(language)}`,
 						},
-				  }
+					}
 				: {
 						type,
 						name,
 						source: `${pathToRelativeUrl(source)}/${name}/index.${languageToShort(language)}`,
-				  },
+					},
 		];
 
 		const newExtensionOptions: ExtensionOptions = { ...extensionOptions, entries: newEntries };
@@ -249,12 +249,12 @@ export default async function add(options: AddOptions): Promise<void> {
 							app: toConvertSourceUrl(extensionOptions.source.app),
 							api: toConvertSourceUrl(extensionOptions.source.api),
 						},
-				  }
+					}
 				: {
 						type: extensionOptions.type,
 						name: convertName,
 						source: toConvertSourceUrl(extensionOptions.source),
-				  },
+					},
 			isIn(type, HYBRID_EXTENSION_TYPES)
 				? {
 						type,
@@ -263,12 +263,12 @@ export default async function add(options: AddOptions): Promise<void> {
 							app: `${pathToRelativeUrl(source)}/${name}/app.${languageToShort(language)}`,
 							api: `${pathToRelativeUrl(source)}/${name}/api.${languageToShort(language)}`,
 						},
-				  }
+					}
 				: {
 						type,
 						name,
 						source: `${pathToRelativeUrl(source)}/${name}/index.${languageToShort(language)}`,
-				  },
+					},
 		];
 
 		const newExtensionOptions: ExtensionOptions = {

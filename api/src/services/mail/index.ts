@@ -73,7 +73,7 @@ export class MailService {
 			: {
 					name: defaultTemplateData.projectName,
 					address: (emailOptions.from as string) || (env['EMAIL_FROM'] as string),
-			  };
+				};
 
 		if (template) {
 			let templateData = template.data;

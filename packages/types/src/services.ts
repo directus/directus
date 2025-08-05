@@ -15,7 +15,7 @@ import type { BusboyFileStream, File } from './files.js';
 import type { FlowRaw } from './flows.js';
 import type { GQLScope, GraphQLParams } from './graphql.js';
 import type { ExportFormat } from './import-export.js';
-import type { Item, PrimaryKey, MutationOptions, QueryOptions } from './items.js';
+import type { Item, PrimaryKey, MutationOptions, QueryOptions, NestedPath, CustomContext } from './items.js';
 import type { SchemaOverview } from './schema.js';
 import type { ItemPermissions } from './permissions.js';
 import type { Policy } from './policies.js';
@@ -38,6 +38,12 @@ export type AbstractServiceOptions = {
 	accountability?: Accountability | null | undefined;
 	schema: SchemaOverview;
 	nested?: string[];
+} & Partial<RequestContext>;
+
+/** Context to group information related to a request in services */
+export type RequestContext = {
+	nested: NestedPath;
+	customContext: CustomContext;
 };
 
 /**
@@ -474,7 +480,7 @@ interface WebSocketService {
 export interface AbstractService<T extends Item = Item> {
 	knex: Knex;
 	accountability: Accountability | null | undefined;
-	nested: string[];
+	requestContext: RequestContext;
 	getKeysByQuery(query: Query): Promise<PrimaryKey[]>;
 	/**
 	 * Create a single new item.

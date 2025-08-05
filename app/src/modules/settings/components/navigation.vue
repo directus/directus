@@ -84,7 +84,7 @@ const links = computed<Link[][]>(() => [
 					icon: 'terminal',
 					name: t('settings_system_logs'),
 					to: `/settings/system-logs`,
-			  }
+				}
 			: undefined,
 		{
 			icon: 'bug_report',

@@ -77,7 +77,7 @@ export function injectSystemResolvers(
 								duration: { type: GraphQLInt },
 							},
 						}),
-				  }
+					}
 				: GraphQLBoolean,
 			rateLimitGlobal: env['RATE_LIMITER_GLOBAL_ENABLED']
 				? {
@@ -88,7 +88,7 @@ export function injectSystemResolvers(
 								duration: { type: GraphQLInt },
 							},
 						}),
-				  }
+					}
 				: GraphQLBoolean,
 			websocket: toBoolean(env['WEBSOCKETS_ENABLED'])
 				? {
@@ -112,7 +112,7 @@ export function injectSystemResolvers(
 													},
 													path: { type: GraphQLString },
 												},
-										  })
+											})
 										: GraphQLBoolean,
 								},
 								graphql: {
@@ -132,7 +132,7 @@ export function injectSystemResolvers(
 													},
 													path: { type: GraphQLString },
 												},
-										  })
+											})
 										: GraphQLBoolean,
 								},
 								heartbeat: {
@@ -140,7 +140,7 @@ export function injectSystemResolvers(
 								},
 							},
 						}),
-				  }
+					}
 				: GraphQLBoolean,
 			queryLimit: {
 				type: new GraphQLObjectType({

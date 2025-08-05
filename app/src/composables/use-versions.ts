@@ -132,7 +132,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 										_eq: primaryKey.value,
 									},
 								},
-						  ]
+							]
 						: []),
 				],
 			};

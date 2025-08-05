@@ -531,7 +531,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				search: ref(null),
 			});
 
-			const choices = computed(() => (isRelational.value ? [] : selectedGroup.value?.meta?.options?.choices ?? []));
+			const choices = computed(() => (isRelational.value ? [] : (selectedGroup.value?.meta?.options?.choices ?? [])));
 
 			watch(
 				() => groupField.value,
@@ -555,8 +555,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				if (groupOrder.value.groupField !== groupField.value || !groupOrder.value.sortMap) return choices.value;
 
 				choices.value.sort((a: Record<string, string>, b: Record<string, string>) => {
-					const aOrder = a.value ? groupOrder.value.sortMap[a.value] ?? 0 : 0;
-					const bOrder = b.value ? groupOrder.value.sortMap[b.value] ?? 0 : 0;
+					const aOrder = a.value ? (groupOrder.value.sortMap[a.value] ?? 0) : 0;
+					const bOrder = b.value ? (groupOrder.value.sortMap[b.value] ?? 0) : 0;
 					return aOrder - bOrder;
 				});
 

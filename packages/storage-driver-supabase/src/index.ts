@@ -186,7 +186,7 @@ export class DriverSupabase implements TusDriver {
 		 */
 		const isDirectory = prefix.endsWith('/');
 		const prefixDirectory = isDirectory ? prefix : dirname(prefix);
-		const search = isDirectory ? '' : prefix.split('/').pop() ?? '';
+		const search = isDirectory ? '' : (prefix.split('/').pop() ?? '');
 
 		do {
 			const { data, error } = await this.bucket.list(prefixDirectory, {

@@ -140,7 +140,7 @@ function useItems() {
 				children: children
 					? children.filter((childItem: Record<string, any>) =>
 							filterItem(childItem.text, childItem.value, childItem.children),
-					  )
+						)
 					: children,
 				hidden: internalSearch.value ? !filterItem(text, value, item.children) : false,
 			};

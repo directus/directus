@@ -75,19 +75,9 @@ export class AuthenticationService {
 		}
 
 		const user = await this.knex
-			.select<User & { tfa_secret: string | null }>(
-				'id',
-				'first_name',
-				'last_name',
-				'email',
-				'password',
-				'status',
-				'role',
-				'tfa_secret',
-				'provider',
-				'external_identifier',
-				'auth_data',
-			)
+			.select<
+				User & { tfa_secret: string | null }
+			>('id', 'first_name', 'last_name', 'email', 'password', 'status', 'role', 'tfa_secret', 'provider', 'external_identifier', 'auth_data')
 			.from('directus_users')
 			.where('id', userId)
 			.first();
@@ -490,18 +480,9 @@ export class AuthenticationService {
 
 	async logout(refreshToken: string): Promise<void> {
 		const record = await this.knex
-			.select<User & Session>(
-				'u.id',
-				'u.first_name',
-				'u.last_name',
-				'u.email',
-				'u.password',
-				'u.status',
-				'u.role',
-				'u.provider',
-				'u.external_identifier',
-				'u.auth_data',
-			)
+			.select<
+				User & Session
+			>('u.id', 'u.first_name', 'u.last_name', 'u.email', 'u.password', 'u.status', 'u.role', 'u.provider', 'u.external_identifier', 'u.auth_data')
 			.from('directus_sessions as s')
 			.innerJoin('directus_users as u', 's.user', 'u.id')
 			.where('s.token', refreshToken)

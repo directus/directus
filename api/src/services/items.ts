@@ -8,12 +8,14 @@ import type {
 	Accountability,
 	ActionEventParams,
 	Item as AnyItem,
+	EventContext,
 	MutationTracker,
 	MutationOptions,
 	PrimaryKey,
 	Query,
 	QueryOptions,
 	SchemaOverview,
+	RequestContext,
 } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import type Keyv from 'keyv';
@@ -46,7 +48,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	eventScope: string;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
-	nested: string[];
+	requestContext: RequestContext = { nested: [], customContext: {} };
 
 	constructor(collection: Collection, options: AbstractServiceOptions) {
 		this.collection = collection;
@@ -55,7 +57,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		this.eventScope = isSystemCollection(this.collection) ? this.collection.substring(9) : 'items';
 		this.schema = options.schema;
 		this.cache = getCache().cache;
-		this.nested = options.nested ?? [];
+		this.requestContext.nested = options.nested ?? [];
+		this.requestContext.customContext = options.customContext ?? {};
 
 		return this;
 	}
@@ -74,7 +77,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			knex: this.knex,
 			accountability: this.accountability,
 			schema: this.schema,
-			nested: this.nested,
+			...this.requestContext,
 			...options,
 		};
 
@@ -83,6 +86,16 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		}
 
 		return new (Service as new (options: AbstractServiceOptions) => this)(newOptions);
+	}
+
+	private getEventContext(overrides: Partial<EventContext> = {}): EventContext {
+		return {
+			database: this.knex,
+			schema: this.schema,
+			accountability: this.accountability,
+			...this.requestContext,
+			...overrides,
+		};
 	}
 
 	createMutationTracker(initialCount = 0): MutationTracker {
@@ -162,12 +175,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							{
 								collection: this.collection,
 							},
-							{
-								database: trx,
-								schema: this.schema,
-								accountability: this.accountability,
-							},
-					  )
+							this.getEventContext({ database: trx }),
+						)
 					: payload;
 
 			const payloadWithPresets = this.accountability
@@ -177,13 +186,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							action: 'create',
 							collection: this.collection,
 							payload: payloadAfterHooks,
-							nested: this.nested,
+							nested: this.requestContext.nested,
 						},
 						{
 							knex: trx,
 							schema: this.schema,
 						},
-				  )
+					)
 				: payloadAfterHooks;
 
 			if (opts.preMutationError) {
@@ -198,7 +207,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				accountability: this.accountability,
 				knex: trx,
 				schema: this.schema,
-				nested: this.nested,
+				...this.requestContext,
 			});
 
 			const {
@@ -316,6 +325,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
+					customContext: this.requestContext.customContext,
 				});
 
 				const activity = await activityService.createOne({
@@ -333,6 +343,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					const revisionsService = new RevisionsService({
 						knex: trx,
 						schema: this.schema,
+						customContext: this.requestContext.customContext,
 					});
 
 					const revisionDelta = await payloadService.prepareDelta(payloadAfterHooks);
@@ -376,11 +387,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					key: primaryKey,
 					collection: this.collection,
 				},
-				context: {
-					database: getDatabase(),
-					schema: this.schema,
-					accountability: this.accountability,
-				},
+				context: this.getEventContext({ database: getDatabase() }),
 			};
 
 			if (opts.bypassEmitAction) {
@@ -486,12 +493,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						{
 							collection: this.collection,
 						},
-						{
-							database: this.knex,
-							schema: this.schema,
-							accountability: this.accountability,
-						},
-				  )
+						this.getEventContext(),
+					)
 				: query;
 
 		let ast = await getAstFromQuery(
@@ -531,12 +534,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							query: updatedQuery,
 							collection: this.collection,
 						},
-						{
-							database: this.knex,
-							schema: this.schema,
-							accountability: this.accountability,
-						},
-				  )
+						this.getEventContext(),
+					)
 				: records;
 
 		if (opts?.emitEvents !== false) {
@@ -547,11 +546,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					query: updatedQuery,
 					collection: this.collection,
 				},
-				{
-					database: this.knex || getDatabase(),
-					schema: this.schema,
-					accountability: this.accountability,
-				},
+				this.getEventContext({ database: this.knex || getDatabase() }),
 			);
 		}
 
@@ -712,12 +707,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							keys,
 							collection: this.collection,
 						},
-						{
-							database: this.knex,
-							schema: this.schema,
-							accountability: this.accountability,
-						},
-				  )
+						this.getEventContext(),
+					)
 				: payload;
 
 		// Sort keys to ensure that the order is maintained
@@ -746,13 +737,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						action: 'update',
 						collection: this.collection,
 						payload: payloadAfterHooks,
-						nested: this.nested,
+						nested: this.requestContext.nested,
 					},
 					{
 						knex: this.knex,
 						schema: this.schema,
 					},
-			  )
+				)
 			: payloadAfterHooks;
 
 		if (opts.preMutationError) {
@@ -764,7 +755,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				accountability: this.accountability,
 				knex: trx,
 				schema: this.schema,
-				nested: this.nested,
+				...this.requestContext,
 			});
 
 			const {
@@ -828,6 +819,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
+					customContext: this.requestContext.customContext,
 				});
 
 				const activity = await activityService.createMany(
@@ -847,6 +839,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					const itemsService = new ItemsService(this.collection, {
 						knex: trx,
 						schema: this.schema,
+						customContext: this.requestContext.customContext,
 					});
 
 					const snapshots = await itemsService.readMany(keys);
@@ -854,6 +847,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					const revisionsService = new RevisionsService({
 						knex: trx,
 						schema: this.schema,
+						customContext: this.requestContext.customContext,
 					});
 
 					const revisions = (
@@ -907,11 +901,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					keys,
 					collection: this.collection,
 				},
-				context: {
-					database: getDatabase(),
-					schema: this.schema,
-					accountability: this.accountability,
-				},
+				context: this.getEventContext({ database: getDatabase() }),
 			};
 
 			if (opts.bypassEmitAction) {
@@ -1057,11 +1047,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				{
 					collection: this.collection,
 				},
-				{
-					database: this.knex,
-					schema: this.schema,
-					accountability: this.accountability,
-				},
+				this.getEventContext(),
 			);
 		}
 
@@ -1080,6 +1066,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
+					customContext: this.requestContext.customContext,
 				});
 
 				await activityService.createMany(
@@ -1112,11 +1099,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					keys: keys,
 					collection: this.collection,
 				},
-				context: {
-					database: getDatabase(),
-					schema: this.schema,
-					accountability: this.accountability,
-				},
+				context: this.getEventContext({ database: getDatabase() }),
 			};
 
 			if (opts.bypassEmitAction) {

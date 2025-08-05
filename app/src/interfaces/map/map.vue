@@ -82,7 +82,7 @@ const { basemap } = toRefs(appStore);
 const style = computed(() => {
 	const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
 	if (!source) return;
-	return basemap.value, getStyleFromBasemapSource(source);
+	return (basemap.value, getStyleFromBasemapSource(source));
 });
 
 let parse: GeoJSONParser;
