@@ -47,35 +47,35 @@ export default defineOperationApp({
 				options: {
 					choices: [
 						{
-							text: '400 - Bad Request',
+							text: '400 (Bad Request)',
 							value: '400',
 						},
 						{
-							text: '401 - Unauthorized',
+							text: '401 (Unauthorized)',
 							value: '401',
 						},
 						{
-							text: '403 - Forbidden',
+							text: '403 (Forbidden)',
 							value: '403',
 						},
 						{
-							text: '404 - Not Found',
+							text: '404 (Not Found)',
 							value: '404',
 						},
 						{
-							text: '405 - Method Not Allowed',
+							text: '405 (Method Not Allowed)',
 							value: '405',
 						},
 						{
-							text: '422 - Unprocessable Entity',
+							text: '422 (Unprocessable Entity)',
 							value: '422',
 						},
 						{
-							text: '429 - Too Many Requests',
+							text: '429 (Too Many Requests)',
 							value: '429',
 						},
 						{
-							text: '500 - Internal Server Error',
+							text: '500 (Internal Server Error)',
 							value: '500',
 						},
 					],
