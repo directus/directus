@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Query } from '@directus/types';
+import { isObject } from '@directus/utils';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import {
@@ -106,25 +107,29 @@ export class DirectusMCP {
 					throw new ForbiddenError();
 				}
 
-				const args = tool.validateSchema?.safeParse(request.params.arguments) ?? {
+				const { error, data: args } = tool.validateSchema?.safeParse(request.params.arguments) ?? {
 					data: request.params.arguments,
 				};
 
-				if ('error' in args && args.error) {
-					throw new InvalidPayloadError({ reason: fromZodError(args.error).message });
+				if (error) {
+					throw new InvalidPayloadError({ reason: fromZodError(error).message });
 				}
 
-				if ('action' in args && args.action === 'delete' && env['MCP_PREVENT_DELETE'] === true) {
+				if (!isObject(args)) {
+					throw new InvalidPayloadError({ reason: '"arguments" must be an object' });
+				}
+
+				if ('action' in args && args['action'] === 'delete' && env['MCP_PREVENT_DELETE'] === true) {
 					throw new InvalidPayloadError({ reason: 'Delete actions are disabled' });
 				}
 
 				let sanitizedQuery = {};
 
-				if ('query' in args && args.query) {
+				if ('query' in args && args['query']) {
 					sanitizedQuery = await sanitizeQuery(
 						{
-							fields: (args.query as Query)['fields'] || '*',
-							...args.query,
+							fields: (args['query'] as Query)['fields'] || '*',
+							...args['query'],
 						},
 						req.schema,
 						req.accountability || null,
@@ -132,7 +137,7 @@ export class DirectusMCP {
 				}
 
 				const result = await tool.handler({
-					args: args.data,
+					args,
 					sanitizedQuery,
 					schema: req.schema,
 					accountability: req.accountability,
