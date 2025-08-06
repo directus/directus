@@ -43,7 +43,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 	const versionData = await versionsService.getVersionSaves(queryWithKey.version!, self.collection, key as string);
 
 	await transaction(self.knex, async (trx) => {
-		const itemsService = new ItemsService<Item>(self.collection, {
+		const itemsServiceAdmin = new ItemsService<Item>(self.collection, {
 			schema: self.schema,
 			accountability: {
 				admin: true,
@@ -53,7 +53,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 
 		await Promise.all(
 			(versionData ?? []).map((data) => {
-				return itemsService.updateOne(key, data as any, {
+				return itemsServiceAdmin.updateOne(key, data as any, {
 					emitEvents: false,
 					autoPurgeCache: false,
 					bypassAccountability: true,
@@ -67,7 +67,13 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 			}),
 		);
 
-		results = await self.readByQuery(queryWithKey, opts);
+		const itemsServiceUser = new ItemsService<Item>(self.collection, {
+			schema: self.schema,
+			accountability: self.accountability,
+			knex: trx,
+		});
+
+		results = await itemsServiceUser.readByQuery(queryWithKey, opts);
 
 		await trx.rollback();
 	});
