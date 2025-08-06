@@ -13,7 +13,7 @@ import {
 	type MessageExtraInfo,
 } from '@modelcontextprotocol/sdk/types.js';
 import type { Request, Response } from 'express';
-import { zodToJsonSchema } from 'zod-to-json-schema';
+import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 import type { ToolResult } from './tool.js';
@@ -85,7 +85,7 @@ export class DirectusMCP {
 				tools.push({
 					name: tool.name,
 					description: tool.description,
-					inputSchema: zodToJsonSchema(tool.inputSchema),
+					inputSchema: z.toJSONSchema(tool.inputSchema, { reused: 'ref' }),
 					annotations: tool.annotations,
 				});
 			}
