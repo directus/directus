@@ -23,6 +23,7 @@ export interface fieldOverviewOutput {
 		type: string;
 		related_collections: string[];
 	};
+	fields?: Record<string, fieldOverviewOutput>;
 }
 
 export interface OverviewOutput {
@@ -126,6 +127,13 @@ export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
 				if (field.meta.options?.['choices']) {
 					fieldOverview.interface.choices = field.meta.options['choices'];
 				}
+			}
+
+			// Process nested fields for JSON fields with options.fields (like repeaters)
+			if (field.type === 'json' && field.meta.options?.['fields']) {
+				const nestedFields = field.meta.options['fields'] as any[];
+				fieldOverview.fields = processNestedFields(nestedFields, 5);
+
 			}
 
 			const relation = relations[field.collection] as SnapshotRelation | undefined;
@@ -466,3 +474,61 @@ export const relation = defineTool<z.infer<typeof RelationValidateSchema>>({
 		throw new InvalidPayloadError({ reason: 'Invalid action' });
 	},
 });
+
+
+// Helpers
+function processNestedFields(
+	fields: any[],
+	maxDepth: number = 5,
+	currentDepth: number = 0
+): Record<string, fieldOverviewOutput> {
+	const result: Record<string, fieldOverviewOutput> = {};
+
+	if (currentDepth >= maxDepth) {
+		return result;
+	}
+
+	if (!Array.isArray(fields)) {
+		return result;
+	}
+
+	for (const field of fields) {
+		const fieldKey = field.field || field.name;
+		if (!fieldKey) continue;
+
+		const fieldOverview: fieldOverviewOutput = {
+			type: field.type ?? 'any',
+		};
+
+		if (field.meta) {
+			const { required, readonly, note, interface: interfaceConfig, options } = field.meta;
+
+			if (required) fieldOverview.required = required;
+			if (readonly) fieldOverview.readonly = readonly;
+			if (note) fieldOverview.note = note;
+
+			if (interfaceConfig) {
+				fieldOverview.interface = { type: interfaceConfig };
+
+				if (options?.choices) {
+					fieldOverview.interface.choices = options.choices;
+				}
+			}
+		}
+
+		// Handle nested fields recursively
+		const nestedFields = field.meta?.options?.fields || field.options?.fields;
+
+		if (field.type === 'json' && nestedFields) {
+			fieldOverview.fields = processNestedFields(
+				nestedFields,
+				maxDepth,
+				currentDepth + 1
+			);
+		}
+
+		result[fieldKey] = fieldOverview;
+	}
+
+	return result;
+}
