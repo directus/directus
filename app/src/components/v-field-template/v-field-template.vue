@@ -347,6 +347,8 @@ function setContent() {
 	inset-inline-start: 14px;
 	color: var(--theme--foreground-subdued);
 	transform: translateY(-50%);
+	-webkit-user-select: none;
+	user-select: none;
 	pointer-events: none;
 }
 
