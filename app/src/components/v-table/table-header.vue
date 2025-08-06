@@ -5,7 +5,7 @@ import { hideDragImage } from '@/utils/hide-drag-image';
 import { useSync } from '@directus/composables';
 import type { ShowSelect } from '@directus/types';
 import { clone, throttle } from 'lodash';
-import { computed, ref, unref, useSlots } from 'vue';
+import { computed, ref, useSlots } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import { Header, Sort } from './types';
@@ -138,7 +138,7 @@ function onResizeHandleMouseDown(header: Header, event: PointerEvent) {
 function onMouseMove(event: PointerEvent) {
 	if (resizing.value === true) {
 		const deltaX = event.pageX - resizeStartX.value;
-		const newWidth = resizeStartWidth.value + (unref(isRTL) ? -deltaX : deltaX);
+		const newWidth = resizeStartWidth.value + (isRTL.value ? -deltaX : deltaX);
 		const currentHeaders = clone(props.headers);
 
 		const newHeaders = currentHeaders.map((existing: Header) => {
