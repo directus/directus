@@ -281,7 +281,7 @@ catalog:
   tar: 7.4.3
   tedious: 18.6.1
   tinymce: 6.8.5
-  tmp: 0.2.3
+  tmp: 0.2.4
   tsup: 8.5.0
   tsx: 4.20.3
   tus-js-client: 4.3.1

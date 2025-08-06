@@ -823,8 +823,8 @@ catalogs:
       specifier: 6.8.5
       version: 6.8.5
     tmp:
-      specifier: 0.2.3
-      version: 0.2.3
+      specifier: 0.2.4
+      version: 0.2.4
     tsup:
       specifier: 8.5.0
       version: 8.5.0
@@ -2929,7 +2929,7 @@ importers:
         version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
       tmp:
         specifier: 'catalog:'
-        version: 0.2.3
+        version: 0.2.4
       tsup:
         specifier: 'catalog:'
         version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
@@ -12260,8 +12260,8 @@ packages:
     resolution: {integrity: sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==}
     engines: {node: '>=0.6.0'}
 
-  tmp@0.2.3:
-    resolution: {integrity: sha512-nZD7m9iCPC5g0pYmcaxogYKggSfLsdxl8of3Q/oIbqCqLLIO9IAF0GWjX1z9NZRHPiXv8Wex4yDCaZsgEw0Y8w==}
+  tmp@0.2.4:
+    resolution: {integrity: sha512-UdiSoX6ypifLmrfQ/XfiawN6hkjSBpCjhKxxZcWlUUmoXLaCKQU0bx4HF/tdDK2uzRuchf1txGvrWBzYREssoQ==}
     engines: {node: '>=14.14'}
 
   to-regex-range@5.0.1:
@@ -24260,7 +24260,7 @@ snapshots:
     dependencies:
       os-tmpdir: 1.0.2
 
-  tmp@0.2.3: {}
+  tmp@0.2.4: {}
 
   to-regex-range@5.0.1:
     dependencies:
