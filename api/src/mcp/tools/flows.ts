@@ -3,11 +3,42 @@ import { z } from 'zod';
 import { getFlowManager } from '../../flows.js';
 import { FlowsService } from '../../services/flows.js';
 import { OperationsService } from '../../services/operations.js';
-import { QuerySchema } from '../schema.js';
+import { QueryInputSchema, QueryValidateSchema } from '../schema.js';
 import { defineTool } from '../tool.js';
 import prompts from './prompts/index.js';
 
-const FlowSchema = z.custom<Partial<FlowRaw>>();
+const OperationSchema = z
+	.object({
+		id: z.string(),
+		name: z.union([z.string(), z.null()]),
+		key: z.string(),
+		type: z.string(),
+		position_x: z.number(),
+		position_y: z.number(),
+		options: z.record(z.string(), z.any()),
+		resolve: z.union([z.string(), z.null()]),
+		reject: z.union([z.string(), z.null()]),
+		flow: z.string(),
+		date_created: z.string(),
+		user_created: z.string(),
+	})
+	.partial();
+
+const FlowSchema = z.object({
+	id: z.string(),
+	name: z.string(),
+	icon: z.union([z.string(), z.null()]),
+	color: z.union([z.string(), z.null()]),
+	description: z.union([z.string(), z.null()]),
+	status: z.enum(['active', 'inactive']),
+	trigger: z.union([z.enum(['event', 'schedule', 'operation', 'webhook', 'manual']), z.null()]),
+	options: z.union([z.record(z.string(), z.any()), z.null()]),
+	operation: z.union([z.string(), z.null()]),
+	operations: z.array(OperationSchema),
+	date_created: z.string(),
+	user_created: z.string(),
+	accountability: z.union([z.enum(['all', 'activity']), z.null()]),
+});
 
 const FlowValidateSchema = z.union([
 	z.object({
@@ -16,7 +47,7 @@ const FlowValidateSchema = z.union([
 	}),
 	z.object({
 		action: z.literal('read'),
-		query: QuerySchema.optional(),
+		query: QueryValidateSchema.optional(),
 	}),
 	z.object({
 		action: z.literal('update'),
@@ -31,7 +62,7 @@ const FlowValidateSchema = z.union([
 
 const FlowInputSchema = z.object({
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
-	query: QuerySchema.optional().describe(''),
+	query: QueryInputSchema.optional().describe(''),
 	data: FlowSchema.optional().describe(''),
 	key: z.string().optional().describe(''),
 });
@@ -71,7 +102,7 @@ export const flows = defineTool<z.infer<typeof FlowValidateSchema>>({
 		}
 
 		if (args.action === 'update') {
-			const updatedKey = await flowsService.updateOne(args.key, args.data);
+			const updatedKey = await flowsService.updateOne(args.key, args.data as FlowRaw);
 			const result = await flowsService.readOne(updatedKey, sanitizedQuery);
 
 			return {
@@ -93,8 +124,6 @@ export const flows = defineTool<z.infer<typeof FlowValidateSchema>>({
 	},
 });
 
-const OperationSchema = z.custom<Partial<OperationRaw>>();
-
 const OperationValidationSchema = z.union([
 	z.object({
 		action: z.literal('create'),
@@ -102,7 +131,7 @@ const OperationValidationSchema = z.union([
 	}),
 	z.object({
 		action: z.literal('read'),
-		query: QuerySchema.optional(),
+		query: QueryValidateSchema.optional(),
 	}),
 	z.object({
 		action: z.literal('update'),
@@ -117,7 +146,7 @@ const OperationValidationSchema = z.union([
 
 const OperationInputSchema = z.object({
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
-	query: QuerySchema.optional().describe(''),
+	query: QueryInputSchema.optional().describe(''),
 	data: FlowSchema.optional().describe('Flow data as a native object or array (NOT stringified JSON)'),
 	key: z.string().optional().describe(''),
 });
@@ -157,7 +186,7 @@ export const operations = defineTool<z.infer<typeof OperationValidationSchema>>(
 		}
 
 		if (args.action === 'update') {
-			const updatedKey = await operationService.updateOne(args.key, args.data);
+			const updatedKey = await operationService.updateOne(args.key, args.data as OperationRaw);
 			const result = await operationService.readOne(updatedKey, sanitizedQuery);
 
 			return {
@@ -183,7 +212,7 @@ const TriggerFlowInputSchema = z.object({
 	flowDefinition: z.record(z.string(), z.any()).describe('The full flow definition from the read-flows call.'),
 	flowId: z.string().describe('The ID of the flow to trigger'),
 	method: z.enum(['GET', 'POST']).default('GET').describe(''),
-	query: QuerySchema.optional().describe(''),
+	query: QueryInputSchema.optional().describe(''),
 	headers: z.record(z.string(), z.any()).optional().describe(''),
 	collection: z.string().describe('The collection of the items to trigger the flow on.'),
 	keys: z
