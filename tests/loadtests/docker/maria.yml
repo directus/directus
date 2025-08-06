@@ -1,0 +1,13 @@
+version: '3.8'
+
+name: loadtests
+services:
+  maria:
+    image: mariadb:11.4
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: directus
+      MYSQL_DATABASE: directus
+    ports:
+      - 6101:3306
