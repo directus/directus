@@ -10,7 +10,6 @@ import { defineTool } from '../tool.js';
 import prompts from './prompts/index.js';
 
 export interface fieldOverviewOutput {
-	name: string;
 	type: string;
 	primary_key?: boolean;
 	required?: boolean;
@@ -66,7 +65,6 @@ export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
 			}
 
 			const fieldOverview: fieldOverviewOutput = {
-				name: field.field,
 				type: field.type,
 			};
 
