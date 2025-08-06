@@ -4,40 +4,48 @@ import type { PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
 import { ItemsService } from '../../services/items.js';
-import { ItemSchema, PartialItemInput, PrimaryKeySchema, QuerySchema } from '../schema.js';
+import {
+	ItemInputSchema,
+	ItemValidateSchema,
+	PartialItemInputSchema,
+	PrimaryKeyInputSchema,
+	PrimaryKeyValidateSchema,
+	QueryInputSchema,
+	QueryValidateSchema,
+} from '../schema.js';
 import { defineTool } from '../tool.js';
 import prompts from './prompts/index.js';
 
 const ValidateSchema = z.union([
-	PartialItemInput.extend({
+	PartialItemInputSchema.extend({
 		action: z.literal('create'),
-		data: z.union([z.array(ItemSchema), ItemSchema]),
-		query: QuerySchema.optional(),
+		data: z.union([z.array(ItemValidateSchema), ItemValidateSchema]),
+		query: QueryValidateSchema.optional(),
 	}),
-	PartialItemInput.extend({
+	PartialItemInputSchema.extend({
 		action: z.literal('read'),
-		keys: z.array(PrimaryKeySchema).optional(),
-		query: QuerySchema.optional(),
+		keys: z.array(PrimaryKeyValidateSchema).optional(),
+		query: QueryValidateSchema.optional(),
 	}),
-	PartialItemInput.extend({
+	PartialItemInputSchema.extend({
 		action: z.literal('update'),
-		data: ItemSchema,
-		keys: z.array(PrimaryKeySchema).optional(),
-		query: QuerySchema.optional(),
+		data: ItemValidateSchema,
+		keys: z.array(PrimaryKeyValidateSchema).optional(),
+		query: QueryValidateSchema.optional(),
 	}),
-	PartialItemInput.extend({
+	PartialItemInputSchema.extend({
 		action: z.literal('delete'),
-		keys: z.array(PrimaryKeySchema),
+		keys: z.array(PrimaryKeyValidateSchema),
 	}),
 ]);
 
 const InputSchema = z.object({
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
 	collection: z.string().describe('The name of the collection'),
-	query: QuerySchema.optional().describe(''),
-	keys: z.array(PrimaryKeySchema).optional().describe(''),
+	query: QueryInputSchema.optional().describe(''),
+	keys: z.array(PrimaryKeyInputSchema).optional().describe(''),
 	data: z
-		.union([z.array(ItemSchema), ItemSchema])
+		.union([z.array(ItemInputSchema), ItemInputSchema])
 		.optional()
 		.describe(''),
 });

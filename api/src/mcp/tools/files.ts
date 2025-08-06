@@ -1,16 +1,16 @@
-import type { File, PrimaryKey } from '@directus/types';
+import type { PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
 import { AssetsService } from '../../services/assets.js';
 import { FilesService } from '../../services/files.js';
 import { FoldersService } from '../../services/folders.js';
 import type { ItemsService } from '../../services/index.js';
-import { PrimaryKeySchema, QuerySchema } from '../schema.js';
+import { PrimaryKeyInputSchema, PrimaryKeyValidateSchema, QueryInputSchema, QueryValidateSchema } from '../schema.js';
 import { defineTool } from '../tool.js';
 import prompts from './prompts/index.js';
 
 const FolderItemSchema = z.object({
-	id: PrimaryKeySchema.optional(),
+	id: PrimaryKeyInputSchema.optional(),
 	name: z.string(),
 	parent: z.string().optional(),
 });
@@ -20,25 +20,25 @@ const FolderValidateSchema = z.union([
 		type: z.literal('folder'),
 		action: z.literal('create'),
 		data: z.union([z.array(FolderItemSchema), FolderItemSchema]),
-		query: QuerySchema.optional(),
+		query: QueryValidateSchema.optional(),
 	}),
 	z.object({
 		type: z.literal('folder'),
 		action: z.literal('read'),
-		keys: z.array(PrimaryKeySchema).optional(),
-		query: QuerySchema.optional(),
+		keys: z.array(PrimaryKeyValidateSchema).optional(),
+		query: QueryValidateSchema.optional(),
 	}),
 	z.object({
 		type: z.literal('folder'),
 		action: z.literal('update'),
 		data: FolderItemSchema,
-		keys: z.array(PrimaryKeySchema).optional(),
-		query: QuerySchema.optional(),
+		keys: z.array(PrimaryKeyValidateSchema).optional(),
+		query: QueryValidateSchema.optional(),
 	}),
 	z.object({
 		type: z.literal('folder'),
 		action: z.literal('delete'),
-		keys: z.array(PrimaryKeySchema),
+		keys: z.array(PrimaryKeyValidateSchema),
 	}),
 ]);
 
@@ -48,32 +48,59 @@ const AssetValidateSchema = z.object({
 	id: z.string(),
 });
 
-const FileSchema = z.custom<File>();
+const FileSchema = z.object({
+	id: z.string(),
+	storage: z.string(),
+	filename_disk: z.string(),
+	filename_download: z.string(),
+	title: z.union([z.string(), z.null()]),
+	type: z.union([z.string(), z.null()]),
+	folder: z.union([z.string(), z.null()]),
+	created_on: z.string(),
+	uploaded_by: z.union([z.string(), z.null()]),
+	uploaded_on: z.union([z.string(), z.null()]),
+	modified_by: z.union([z.string(), z.null()]),
+	modified_on: z.string(),
+	charset: z.union([z.string(), z.null()]),
+	filesize: z.number(),
+	width: z.union([z.number(), z.null()]),
+	height: z.union([z.number(), z.null()]),
+	duration: z.union([z.number(), z.null()]),
+	embed: z.union([z.string(), z.null()]),
+	description: z.union([z.string(), z.null()]),
+	location: z.union([z.string(), z.null()]),
+	tags: z.union([z.string(), z.null()]),
+	metadata: z.union([z.record(z.string(), z.any()), z.null()]),
+	focal_point_x: z.union([z.number(), z.null()]),
+	focal_point_y: z.union([z.number(), z.null()]),
+	tus_id: z.union([z.string(), z.null()]),
+	tus_data: z.union([z.record(z.string(), z.any()), z.null()]),
+});
 
 const FileValidateSchema = z.union([
 	z.object({
 		type: z.literal('file'),
 		action: z.literal('create'),
 		data: z.union([z.array(FileSchema), FileSchema]),
-		query: QuerySchema.optional(),
+		query: QueryValidateSchema.optional(),
 	}),
 	z.object({
 		type: z.literal('file'),
 		action: z.literal('read'),
-		keys: z.array(PrimaryKeySchema).optional(),
-		query: QuerySchema.optional(),
+		keys: z.array(PrimaryKeyValidateSchema).optional(),
+		query: QueryValidateSchema.optional(),
 	}),
 	z.object({
 		type: z.literal('file'),
 		action: z.literal('update'),
 		data: FileSchema,
-		keys: z.array(PrimaryKeySchema).optional(),
-		query: QuerySchema.optional(),
+		keys: z.array(PrimaryKeyValidateSchema).optional(),
+		query: QueryValidateSchema.optional(),
 	}),
 	z.object({
 		type: z.literal('file'),
 		action: z.literal('delete'),
-		keys: z.array(PrimaryKeySchema),
+		keys: z.array(PrimaryKeyValidateSchema),
 	}),
 ]);
 
@@ -82,8 +109,8 @@ const ValidateSchema = z.union([FolderValidateSchema, AssetValidateSchema, FileV
 const InputSchema = z.object({
 	type: z.enum(['folder', 'file', 'asset']),
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
-	query: QuerySchema.optional().describe(''),
-	keys: z.array(PrimaryKeySchema).optional().describe(''),
+	query: QueryInputSchema.optional().describe(''),
+	keys: z.array(PrimaryKeyInputSchema).optional().describe(''),
 	data: z
 		.union([z.array(FolderItemSchema), FolderItemSchema, z.array(FileSchema), FileSchema])
 		.optional()

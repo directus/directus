@@ -192,7 +192,11 @@ export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
 	},
 });
 
-const CollectionItemSchema = z.custom<Collection>();
+const CollectionItemSchema = z.object({
+	collection: z.string(),
+	meta: z.union([z.record(z.string(), z.any()), z.null()]),
+	schema: z.union([z.record(z.string(), z.any()), z.null()]),
+});
 
 const CollectionValidateSchema = z.union([
 	z.object({
@@ -263,7 +267,7 @@ export const collection = defineTool<z.infer<typeof CollectionValidateSchema>>({
 		}
 
 		if (args.action === 'update') {
-			const updatedKeys = await service.updateBatch(toArray(args.data));
+			const updatedKeys = await service.updateBatch(toArray(args.data as Collection));
 
 			const result = await service.readMany(updatedKeys);
 
@@ -286,7 +290,15 @@ export const collection = defineTool<z.infer<typeof CollectionValidateSchema>>({
 	},
 });
 
-const FieldItemSchema = z.custom<Field>();
+const FieldItemSchema = z.object({
+	collection: z.string(),
+	field: z.string(),
+	type: z.string(),
+	schema: z.union([z.record(z.string(), z.any()), z.null()]),
+	meta: z.union([z.record(z.string(), z.any()), z.null()]),
+	name: z.string(),
+	children: z.union([z.array(z.record(z.string(), z.any())), z.null()]),
+});
 
 const FieldBaseValidateSchema = z.object({
 	collection: z.string(),
@@ -334,7 +346,7 @@ export const field = defineTool<z.infer<typeof FieldValidateSchema>>({
 		});
 
 		if (args.action === 'create') {
-			await service.createField(args.collection, args.data);
+			await service.createField(args.collection, args.data as Field);
 
 			const result = await service.readOne(args.collection, args.data.field);
 
@@ -360,7 +372,7 @@ export const field = defineTool<z.infer<typeof FieldValidateSchema>>({
 		}
 
 		if (args.action === 'update') {
-			const data = toArray(args.data);
+			const data = toArray(args.data as Field);
 
 			await service.updateFields(args.collection, data);
 

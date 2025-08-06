@@ -2,6 +2,7 @@ import { isDirectusError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import type { Request, Response } from 'express';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { z } from 'zod';
 import { DirectusMCP, DirectusTransport } from './server.js';
 import type { ToolConfig } from './tool.js';
 import { findMcpTool } from './tools/index.js';
@@ -36,14 +37,14 @@ vi.mock('./tools/index.js', () => ({
 		{
 			name: 'test-tool',
 			description: 'A test tool',
-			inputSchema: { parse: vi.fn(), safeParse: vi.fn() },
+			inputSchema: z.object({}),
 			admin: false,
 			annotations: {},
 		},
 		{
 			name: 'admin-tool',
 			description: 'An admin tool',
-			inputSchema: { parse: vi.fn(), safeParse: vi.fn() },
+			inputSchema: z.object({}),
 			admin: true,
 			annotations: {},
 		},
@@ -75,10 +76,6 @@ vi.mock('./tools/index.js', () => ({
 
 		return tools[name as keyof typeof tools] || null;
 	}),
-}));
-
-vi.mock('zod-to-json-schema', () => ({
-	zodToJsonSchema: vi.fn(() => ({ type: 'object' })),
 }));
 
 vi.mock('zod-validation-error', () => ({
@@ -166,7 +163,12 @@ describe('DirectusMCP', () => {
 						{
 							annotations: {},
 							description: 'A test tool',
-							inputSchema: { type: 'object' },
+							inputSchema: {
+								$schema: 'https://json-schema.org/draft/2020-12/schema',
+								additionalProperties: false,
+								properties: {},
+								type: 'object',
+							},
 							name: 'test-tool',
 						},
 					],
@@ -190,13 +192,24 @@ describe('DirectusMCP', () => {
 						{
 							annotations: {},
 							description: 'A test tool',
-							inputSchema: { type: 'object' },
+							inputSchema: {
+								$schema: 'https://json-schema.org/draft/2020-12/schema',
+								additionalProperties: false,
+								properties: {},
+								type: 'object',
+							},
 							name: 'test-tool',
 						},
 						{
 							annotations: {},
 							description: 'An admin tool',
-							inputSchema: { type: 'object' },
+							inputSchema: {
+								$schema: 'https://json-schema.org/draft/2020-12/schema',
+								additionalProperties: false,
+								properties: {},
+
+								type: 'object',
+							},
 							name: 'admin-tool',
 						},
 					],

@@ -167,7 +167,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 								schema: this.schema,
 								accountability: this.accountability,
 							},
-					  )
+						)
 					: payload;
 
 			const payloadWithPresets = this.accountability
@@ -183,7 +183,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							knex: trx,
 							schema: this.schema,
 						},
-				  )
+					)
 				: payloadAfterHooks;
 
 			if (opts.preMutationError) {
@@ -491,7 +491,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							schema: this.schema,
 							accountability: this.accountability,
 						},
-				  )
+					)
 				: query;
 
 		let ast = await getAstFromQuery(
@@ -536,7 +536,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							schema: this.schema,
 							accountability: this.accountability,
 						},
-				  )
+					)
 				: records;
 
 		if (opts?.emitEvents !== false) {
@@ -717,7 +717,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							schema: this.schema,
 							accountability: this.accountability,
 						},
-				  )
+					)
 				: payload;
 
 		// Sort keys to ensure that the order is maintained
@@ -752,7 +752,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						knex: this.knex,
 						schema: this.schema,
 					},
-			  )
+				)
 			: payloadAfterHooks;
 
 		if (opts.preMutationError) {

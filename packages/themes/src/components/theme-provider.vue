@@ -50,7 +50,7 @@ useHead({
 						rel: 'stylesheet',
 						href: fontsImport,
 					},
-			  ]
+				]
 			: [];
 	}),
 });

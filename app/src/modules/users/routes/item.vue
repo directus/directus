@@ -65,7 +65,7 @@ const {
 	props.primaryKey !== '+'
 		? {
 				fields: ['*', 'role.*'],
-		  }
+			}
 		: undefined,
 );
 
