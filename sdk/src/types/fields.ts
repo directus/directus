@@ -38,48 +38,47 @@ export type QueryFieldsRelational<Schema, Item> = IfNever<
 /**
  * Deal with many-to-any relational fields
  */
-export type ManyToAnyFields<Schema, Item> = ExtractItem<Schema, Item> extends infer TItem
-	? TItem extends object
-		? 'collection' extends keyof TItem
-			? 'item' extends keyof TItem
-				? WrapQueryFields<
-						Schema,
-						TItem,
-						Omit<QueryFieldsRelational<Schema, UnpackList<Item>>, 'item'> & {
-							item?: {
-								[Collection in keyof Schema as Collection extends TItem['collection']
-									? Collection
-									: never]?: QueryFields<Schema, Schema[Collection]>;
-							};
-						}
-				  >
+export type ManyToAnyFields<Schema, Item> =
+	ExtractItem<Schema, Item> extends infer TItem
+		? TItem extends object
+			? 'collection' extends keyof TItem
+				? 'item' extends keyof TItem
+					? WrapQueryFields<
+							Schema,
+							TItem,
+							Omit<QueryFieldsRelational<Schema, UnpackList<Item>>, 'item'> & {
+								item?: {
+									[Collection in keyof Schema as Collection extends TItem['collection']
+										? Collection
+										: never]?: QueryFields<Schema, Schema[Collection]>;
+								};
+							}
+						>
+					: never
 				: never
 			: never
-		: never
-	: never;
+		: never;
 
 /**
  * Determine whether a field definition has a many-to-any relation
  * TODO try making this dynamic somehow instead of relying on "item" as key
  */
-export type HasManyToAnyRelation<Item> = UnpackList<Item> extends infer TItem
-	? TItem extends object
-		? 'collection' extends keyof TItem
-			? 'item' extends keyof TItem
-				? true
+export type HasManyToAnyRelation<Item> =
+	UnpackList<Item> extends infer TItem
+		? TItem extends object
+			? 'collection' extends keyof TItem
+				? 'item' extends keyof TItem
+					? true
+					: never
 				: never
 			: never
-		: never
-	: never;
+		: never;
 
 /**
  * Returns true if the Fields has any nested field
  */
-export type HasNestedFields<Fields> = UnpackList<Fields> extends infer Field
-	? Field extends object
-		? true
-		: never
-	: never;
+export type HasNestedFields<Fields> =
+	UnpackList<Fields> extends infer Field ? (Field extends object ? true : never) : never;
 
 /**
  * Return all keys if Fields is undefined or contains '*'
@@ -87,14 +86,14 @@ export type HasNestedFields<Fields> = UnpackList<Fields> extends infer Field
 export type FieldsWildcard<Item extends object, Fields> = unknown extends Fields
 	? keyof Item
 	: UnpackList<Fields> extends infer Field
-	  ? Field extends undefined
+		? Field extends undefined
 			? keyof Item
 			: Field extends '*'
-			  ? keyof Item
-			  : Field extends string
-			    ? Field
-			    : never
-	  : never;
+				? keyof Item
+				: Field extends string
+					? Field
+					: never
+		: never;
 
 /**
  * Returns the relational fields from the fields list
@@ -114,9 +113,10 @@ type AllKeys<T> = T extends any ? keyof T : never;
 /**
  * Extract the required fields from an item
  */
-export type PickFlatFields<Schema, Item, Fields> = Extract<Fields, keyof Item> extends never
-	? never
-	: Pick<RemoveRelationships<Schema, Item>, Extract<Fields, keyof Item>>;
+export type PickFlatFields<Schema, Item, Fields> =
+	Extract<Fields, keyof Item> extends never
+		? never
+		: Pick<RemoveRelationships<Schema, Item>, Extract<Fields, keyof Item>>;
 
 /**
  * Extract a specific literal type from a collection

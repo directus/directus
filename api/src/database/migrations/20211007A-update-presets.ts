@@ -15,11 +15,9 @@ export async function up(knex: Knex): Promise<void> {
 	});
 
 	const presets = await knex
-		.select<{ id: number; filters: string | OldFilter[]; layout_query: string | Record<string, any> }[]>(
-			'id',
-			'filters',
-			'layout_query',
-		)
+		.select<
+			{ id: number; filters: string | OldFilter[]; layout_query: string | Record<string, any> }[]
+		>('id', 'filters', 'layout_query')
 		.from('directus_presets');
 
 	for (const preset of presets) {
@@ -81,11 +79,9 @@ export async function down(knex: Knex): Promise<void> {
 	});
 
 	const presets = await knex
-		.select<{ id: number; filter: string | OldFilter[]; layout_query: string | Record<string, any> }[]>(
-			'id',
-			'filter',
-			'layout_query',
-		)
+		.select<
+			{ id: number; filter: string | OldFilter[]; layout_query: string | Record<string, any> }[]
+		>('id', 'filter', 'layout_query')
 		.from('directus_presets');
 
 	for (const preset of presets) {
