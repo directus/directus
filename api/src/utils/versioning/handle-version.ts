@@ -67,7 +67,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 			}),
 		);
 
-		results = await itemsService.readByQuery(queryWithKey, opts);
+		results = await self.readByQuery(queryWithKey, opts);
 
 		await trx.rollback();
 	});
