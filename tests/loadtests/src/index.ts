@@ -272,7 +272,7 @@ async function stopDocker() {
 
 async function exitHandler() {
 	if (platform) {
-		logger.info('Stoppoing Docker');
+		logger.info('Stopping Docker');
 		await stopDocker();
 	}
 
