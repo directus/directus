@@ -3,4 +3,4 @@
 "@directus/api": minor
 ---
 
-Add new error operation to Flows
+Added new error operation to Flows
