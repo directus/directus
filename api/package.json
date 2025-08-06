@@ -66,6 +66,8 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
+		"@ai-sdk/openai": "catalog:",
+		"@ai-sdk/provider": "catalog:",
 		"@authenio/samlify-node-xmllint": "catalog:",
 		"@aws-sdk/client-ses": "catalog:",
 		"@directus/app": "workspace:*",
@@ -97,6 +99,7 @@
 		"@rollup/plugin-virtual": "catalog:",
 		"@tus/server": "catalog:",
 		"@tus/utils": "catalog:",
+		"ai": "catalog:",
 		"argon2": "catalog:",
 		"async": "catalog:",
 		"async-mutex": "catalog:",
@@ -171,8 +174,8 @@
 		"proxy-addr": "catalog:",
 		"qs": "catalog:",
 		"rate-limiter-flexible": "catalog:",
-		"rollup": "catalog:",
 		"rolldown": "catalog:",
+		"rollup": "catalog:",
 		"samlify": "catalog:",
 		"sanitize-html": "catalog:",
 		"sharp": "catalog:",

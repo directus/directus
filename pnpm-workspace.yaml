@@ -7,6 +7,8 @@ packages:
   - tests/*
 
 catalog:
+  '@ai-sdk/openai': 2.0.3
+  '@ai-sdk/provider': 2.0.0
   '@authenio/samlify-node-xmllint': 2.0.0
   '@aws-sdk/client-s3': 3.858.0
   '@aws-sdk/client-ses': 3.859.0
@@ -127,6 +129,7 @@ catalog:
   '@vueuse/core': 13.6.0
   '@vueuse/integrations': 13.6.0
   '@vueuse/router': 13.6.0
+  ai: 5.0.4
   apexcharts: 4.5.0
   argon2: 0.43.1
   async: 3.2.6

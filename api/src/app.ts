@@ -10,6 +10,7 @@ import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import path from 'path';
 import qs from 'qs';
+import aiRouter from './ai/rest.js';
 import { registerAuthProviders } from './auth.js';
 import accessRouter from './controllers/access.js';
 import activityRouter from './controllers/activity.js';
@@ -319,6 +320,10 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/utils', utilsRouter);
 	app.use('/versions', versionsRouter);
 	app.use('/webhooks', webhooksRouter);
+
+	if (env['AI_ENABLED'] === true) {
+		app.use('/ai', aiRouter);
+	}
 
 	// Register custom endpoints
 	await emitter.emitInit('routes.custom.before', { app });
