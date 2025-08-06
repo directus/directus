@@ -1,15 +1,6 @@
 import { useEnv } from '@directus/env';
-import type {
-	ApiExtension,
-	BundleExtension,
-	EndpointConfig,
-	Extension,
-	ExtensionSettings,
-	HookConfig,
-	HybridExtension,
-	OperationApiConfig,
-} from '@directus/extensions';
-import { APP_SHARED_DEPS, HYBRID_EXTENSION_TYPES } from '@directus/extensions';
+import { APP_SHARED_DEPS } from '@directus/extensions';
+import { HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { generateExtensionsEntrypoint } from '@directus/extensions/node';
 import type {
 	ActionHandler,
@@ -18,6 +9,16 @@ import type {
 	InitHandler,
 	PromiseCallback,
 	ScheduleHandler,
+	ApiExtension,
+	BundleExtension,
+	EndpointConfig,
+	Extension,
+	ExtensionSettings,
+	HookConfig,
+	HybridExtension,
+	OperationApiConfig,
+	BundleConfig,
+	ExtensionManagerOptions,
 } from '@directus/types';
 import { isTypeIn, toBoolean } from '@directus/utils';
 import { pathToRelativeUrl, processId } from '@directus/utils/node';
@@ -32,6 +33,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import os from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type { ReadStream } from 'node:fs';
 import path from 'path';
 import { rolldown } from 'rolldown';
 import { rollup } from 'rollup';
@@ -57,9 +59,7 @@ import { generateApiExtensionsSandboxEntrypoint } from './lib/sandbox/generate-a
 import { instantiateSandboxSdk } from './lib/sandbox/sdk/instantiate.js';
 import { syncExtensions } from './lib/sync-extensions.js';
 import { wrapEmbeds } from './lib/wrap-embeds.js';
-import type { BundleConfig, ExtensionManagerOptions } from './types.js';
 import DriverLocal from '@directus/storage-driver-local';
-import type { ReadStream } from 'node:fs';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
@@ -487,7 +487,7 @@ export class ExtensionManager {
 						? [
 								path.resolve(extension.path, extension.entrypoint.app),
 								path.resolve(extension.path, extension.entrypoint.api),
-						  ]
+							]
 						: path.resolve(extension.path, extension.entrypoint),
 				);
 
@@ -517,7 +517,7 @@ export class ExtensionManager {
 
 		try {
 			/** Opt In for now. Should be @deprecated later to always use rolldown! */
-			const rollDirection = env['EXTENSIONS_ROLLDOWN'] ?? false ? rolldown : rollup;
+			const rollDirection = (env['EXTENSIONS_ROLLDOWN'] ?? false) ? rolldown : rollup;
 
 			const bundle = await rollDirection({
 				input: 'entry',

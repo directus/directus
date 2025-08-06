@@ -1,5 +1,4 @@
-import { randomInteger } from '@directus/random';
-import type { Range } from '@directus/storage';
+import type { Range } from '@directus/types';
 import { expect, test } from 'vitest';
 import { messageConstructor } from './range-not-satisfiable.js';
 
@@ -7,8 +6,8 @@ let range: Range;
 
 test('Constructs message with given range', () => {
 	range = {
-		start: randomInteger(0, 2500),
-		end: randomInteger(2501, 5000),
+		start: 0,
+		end: 1000,
 	};
 
 	expect(messageConstructor({ range })).toBe(

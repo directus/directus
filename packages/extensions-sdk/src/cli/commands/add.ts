@@ -1,16 +1,11 @@
 import type {
 	ExtensionOptions,
 	ExtensionOptionsBundleEntry,
-	NestedExtensionType,
 	ExtensionManifest as TExtensionManifest,
 } from '@directus/extensions';
-import {
-	EXTENSION_LANGUAGES,
-	EXTENSION_PKG_KEY,
-	EXTENSION_TYPES,
-	ExtensionManifest,
-	HYBRID_EXTENSION_TYPES,
-} from '@directus/extensions';
+import type { NestedExtensionType } from '@directus/types';
+import { EXTENSION_LANGUAGES, EXTENSION_PKG_KEY, ExtensionManifest } from '@directus/extensions';
+import { EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { isIn, isTypeIn } from '@directus/utils';
 import { pathToRelativeUrl } from '@directus/utils/node';
 import chalk from 'chalk';
@@ -126,12 +121,12 @@ export default async function add(options: AddOptions): Promise<void> {
 							app: `${pathToRelativeUrl(source)}/${name}/app.${languageToShort(language)}`,
 							api: `${pathToRelativeUrl(source)}/${name}/api.${languageToShort(language)}`,
 						},
-				  }
+					}
 				: {
 						type,
 						name,
 						source: `${pathToRelativeUrl(source)}/${name}/index.${languageToShort(language)}`,
-				  },
+					},
 		];
 
 		const newExtensionOptions: ExtensionOptions = { ...extensionOptions, entries: newEntries };
@@ -254,12 +249,12 @@ export default async function add(options: AddOptions): Promise<void> {
 							app: toConvertSourceUrl(extensionOptions.source.app),
 							api: toConvertSourceUrl(extensionOptions.source.api),
 						},
-				  }
+					}
 				: {
 						type: extensionOptions.type,
 						name: convertName,
 						source: toConvertSourceUrl(extensionOptions.source),
-				  },
+					},
 			isIn(type, HYBRID_EXTENSION_TYPES)
 				? {
 						type,
@@ -268,12 +263,12 @@ export default async function add(options: AddOptions): Promise<void> {
 							app: `${pathToRelativeUrl(source)}/${name}/app.${languageToShort(language)}`,
 							api: `${pathToRelativeUrl(source)}/${name}/api.${languageToShort(language)}`,
 						},
-				  }
+					}
 				: {
 						type,
 						name,
 						source: `${pathToRelativeUrl(source)}/${name}/index.${languageToShort(language)}`,
-				  },
+					},
 		];
 
 		const newExtensionOptions: ExtensionOptions = {

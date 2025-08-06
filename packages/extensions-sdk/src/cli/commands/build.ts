@@ -1,19 +1,13 @@
-import type {
-	ApiExtensionType,
-	AppExtensionType,
-	ExtensionOptionsBundleEntry,
-	ExtensionManifest as TExtensionManifest,
-} from '@directus/extensions';
+import type { ExtensionOptionsBundleEntry, ExtensionManifest as TExtensionManifest } from '@directus/extensions';
 import {
 	API_SHARED_DEPS,
-	APP_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
 	EXTENSION_PKG_KEY,
-	EXTENSION_TYPES,
 	ExtensionManifest,
 	ExtensionOptionsBundleEntries,
-	HYBRID_EXTENSION_TYPES,
 } from '@directus/extensions';
+import type { AppExtensionType, ApiExtensionType } from '@directus/types';
+import { APP_EXTENSION_TYPES, EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { isIn, isTypeIn } from '@directus/utils';
 import commonjsDefault from '@rollup/plugin-commonjs';
 import jsonDefault from '@rollup/plugin-json';
@@ -554,7 +548,7 @@ function getRollupOptions({
 							'process.env.NODE_ENV': JSON.stringify('production'),
 						},
 						preventAssignment: true,
-				  })
+					})
 				: null,
 			minify ? terser() : null,
 		],

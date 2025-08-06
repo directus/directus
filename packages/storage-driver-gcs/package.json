@@ -30,11 +30,12 @@
 		"@directus/constants": "workspace:*",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@google-cloud/storage": "7.15.2"
+		"@google-cloud/storage": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
-		"@ngneat/falso": "7.3.0",
+		"@directus/types": "workspace:*",
+		"@ngneat/falso": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsup": "catalog:",
 		"typescript": "catalog:",

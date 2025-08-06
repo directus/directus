@@ -98,7 +98,7 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 							dynamicVariableContext: permissionContext,
 						},
 						context,
-				  )
+					)
 				: undefined;
 
 			const validationFilter = parseFilter(field.validation, options.accountability, filterContext);

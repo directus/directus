@@ -33,33 +33,32 @@
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
-		"@directus/themes": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@types/express": "4.17.21",
-		"fs-extra": "11.3.0",
+		"@types/express": "catalog:",
+		"fs-extra": "catalog:",
 		"lodash-es": "catalog:",
-		"zod": "3.24.2"
+		"zod": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
-		"@types/fs-extra": "11.0.4",
+		"@types/fs-extra": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"knex": "3.1.0",
-		"pino": "9.6.0",
+		"knex": "catalog:",
+		"pino": "catalog:",
 		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",
-		"vue": "3.5.13",
-		"vue-router": "4.5.0"
+		"vue": "catalog:",
+		"vue-router": "catalog:"
 	},
 	"peerDependencies": {
-		"knex": "3",
-		"pino": "9",
-		"vue": "^3.4",
-		"vue-router": "4"
+		"knex": "catalog:",
+		"pino": "catalog:",
+		"vue": "catalog:",
+		"vue-router": "catalog:"
 	},
 	"peerDependenciesMeta": {
 		"knex": {
