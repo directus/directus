@@ -44,7 +44,7 @@ updates:
       timezone: 'Etc/UTC'
     open-pull-requests-limit: 3
     reviewers:
-      - 'directus/maintainers'
+      - 'directus/platform'
     labels:
       - 'Dependency'
     commit-message:
@@ -61,7 +61,7 @@ updates:
       timezone: 'Etc/UTC'
     open-pull-requests-limit: 2
     reviewers:
-      - 'directus/maintainers'
+      - 'directus/platform'
     labels:
       - 'Dependency'
     commit-message:
