@@ -343,8 +343,6 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 		vertical-align: -2px;
 		background: var(--theme--primary-background);
 		border-radius: var(--theme--border-radius);
-		-webkit-user-select: text;
-		user-select: text;
 
 		&::before {
 			display: block;

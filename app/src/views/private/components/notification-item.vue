@@ -45,8 +45,8 @@ const done = async () => {
 		</div>
 
 		<div class="content">
-			<p class="title selectable">{{ title }}</p>
-			<p v-if="text" class="text selectable">{{ text }}</p>
+			<p class="title">{{ title }}</p>
+			<p v-if="text" class="text">{{ text }}</p>
 		</div>
 
 		<v-icon

@@ -9,6 +9,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 concurrency:
   group: check-${{ github.ref }}
   cancel-in-progress: true

@@ -204,7 +204,7 @@ const color = computed(() => {
 </script>
 
 <template>
-	<div ref="labelContainer" class="metric type-title selectable" :class="[font, { 'has-header': showHeader }]">
+	<div ref="labelContainer" class="metric type-title" :class="[font, { 'has-header': showHeader }]">
 		<p
 			ref="labelText"
 			class="metric-text"
