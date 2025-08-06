@@ -448,7 +448,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 .field-grid {
 	position: relative;
 	display: grid;
-	grid-gap: 8px;
+	gap: 8px;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 
 	& + & {

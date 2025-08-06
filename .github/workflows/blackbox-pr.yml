@@ -6,6 +6,9 @@ on:
       - synchronize
       - labeled
 
+permissions:
+  contents: read
+
 jobs:
   blackbox-tests:
     name: Blackbox Tests
