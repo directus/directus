@@ -24,6 +24,7 @@ export interface fieldOverviewOutput {
 		related_collections: string[];
 	};
 	fields?: Record<string, fieldOverviewOutput>;
+	value?: string;
 }
 
 export interface OverviewOutput {
@@ -132,8 +133,22 @@ export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
 			// Process nested fields for JSON fields with options.fields (like repeaters)
 			if (field.type === 'json' && field.meta.options?.['fields']) {
 				const nestedFields = field.meta.options['fields'] as any[];
-				fieldOverview.fields = processNestedFields(nestedFields, 5);
 
+				fieldOverview.fields = processNestedFields({
+					fields: nestedFields,
+					maxDepth: 5,
+					currentDepth: 0,
+					snapshot,
+				});
+
+			}
+
+			// Handle collection-item-dropdown interface
+			if (field.type === 'json' && field.meta.interface === 'collection-item-dropdown') {
+				fieldOverview.fields = processCollectionItemDropdown({
+					field,
+					snapshot,
+				});
 			}
 
 			const relation = relations[field.collection] as SnapshotRelation | undefined;
@@ -477,11 +492,13 @@ export const relation = defineTool<z.infer<typeof RelationValidateSchema>>({
 
 
 // Helpers
-function processNestedFields(
-	fields: any[],
-	maxDepth: number = 5,
-	currentDepth: number = 0
-): Record<string, fieldOverviewOutput> {
+function processNestedFields(options: {
+	fields: any[];
+	maxDepth?: number;
+	currentDepth?: number;
+	snapshot?: any;
+}): Record<string, fieldOverviewOutput> {
+	const { fields, maxDepth = 5, currentDepth = 0, snapshot } = options;
 	const result: Record<string, fieldOverviewOutput> = {};
 
 	if (currentDepth >= maxDepth) {
@@ -520,15 +537,54 @@ function processNestedFields(
 		const nestedFields = field.meta?.options?.fields || field.options?.fields;
 
 		if (field.type === 'json' && nestedFields) {
-			fieldOverview.fields = processNestedFields(
-				nestedFields,
+			fieldOverview.fields = processNestedFields({
+				fields: nestedFields,
 				maxDepth,
-				currentDepth + 1
-			);
+				currentDepth: currentDepth + 1,
+				snapshot,
+			});
+		}
+
+		// Handle collection-item-dropdown interface
+		if (field.type === 'json' && field.meta?.interface === 'collection-item-dropdown') {
+			fieldOverview.fields = processCollectionItemDropdown({
+				field,
+				snapshot,
+			});
 		}
 
 		result[fieldKey] = fieldOverview;
 	}
 
 	return result;
+}
+
+function processCollectionItemDropdown(options: {
+	field: Field;
+	snapshot?: any;
+}): Record<string, fieldOverviewOutput> {
+	const { field, snapshot } = options;
+	const selectedCollection = field.meta?.options?.['selectedCollection'];
+	let keyType = 'string | number | uuid';
+
+	// Find the primary key type for the selected collection
+	if (selectedCollection && snapshot?.fields) {
+		const primaryKeyField = snapshot.fields.find((f: any) =>
+			f.collection === selectedCollection && f.schema?.is_primary_key
+		);
+
+		if (primaryKeyField) {
+			keyType = primaryKeyField.type;
+		}
+	}
+
+	return {
+		collection: {
+			value: selectedCollection,
+			type: 'string',
+		},
+		key: {
+			type: keyType,
+		},
+	};
 }
