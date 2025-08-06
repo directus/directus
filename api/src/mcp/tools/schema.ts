@@ -32,11 +32,11 @@ export interface OverviewOutput {
 }
 
 const OverviewValidateSchema = z.object({
-	action: z.literal('overview'),
+	keys: z.array(z.string()).optional(),
 });
 
 const OverviewInputSchema = z.object({
-	action: z.literal('overview'),
+	keys: z.array(z.string()).optional().describe('Collection names to get detailed schema for. If omitted, returns a lightweight list of all collections.'),
 });
 
 export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
@@ -45,9 +45,40 @@ export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
 	description: prompts.schema,
 	inputSchema: OverviewInputSchema,
 	validateSchema: OverviewValidateSchema,
-	async handler() {
+	async handler({ args }) {
 		const snapshot = await getSnapshot();
 
+		// If no keys provided, return lightweight collection list
+		if (!args.keys || args.keys.length === 0) {
+			const collections: string[] = [];
+			const folders: string[] = [];
+			const notes: Record<string, string> = {};
+
+			snapshot.collections.forEach(collection => {
+				// Separate folders from real collections
+				if (!collection.schema) {
+					folders.push(collection.collection);
+				} else {
+					collections.push(collection.collection);
+				}
+
+				// Extract note if exists (for both collections and folders)
+				if (collection.meta?.note) {
+					notes[collection.collection] = collection.meta.note;
+				}
+			});
+
+			return {
+				type: 'text',
+				data: {
+					collections,
+					folders,
+					notes
+				},
+			};
+		}
+
+		// If keys provided, return detailed schema for requested collections
 		const overview: OverviewOutput = {};
 
 		const relations: { [collection: string]: SnapshotRelation } = {};
@@ -57,6 +88,9 @@ export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
 		});
 
 		snapshot.fields.forEach((field) => {
+			// Skip collections not requested
+			if (!args.keys?.includes(field.collection)) return;
+
 			// Skip UI-only fields
 			if (field.type === 'alias' && field.meta?.special?.includes('no-data')) return;
 
