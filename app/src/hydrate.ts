@@ -77,8 +77,9 @@ export async function hydrate(): Promise<void> {
 			await onHydrateExtensions();
 		}
 
+		await setLanguage(userStore.language);
+
 		appStore.basemap = getBasemapSources()[0].name;
-		setLanguage(userStore.language);
 	} catch (error: any) {
 		appStore.error = error;
 	} finally {
