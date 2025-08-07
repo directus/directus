@@ -5,7 +5,7 @@ import prompts from './prompts/index.js';
 export const system = defineTool({
 	name: 'system-prompt',
 	description: prompts.system,
-	inputSchema: z.object({}),
+	inputSchema: z.strictObject({}),
 	async handler() {
 		return {
 			type: 'text',

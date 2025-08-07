@@ -4,12 +4,12 @@ import { z } from 'zod';
 export const ItemValidateSchema = z.custom<Item>();
 export const ItemInputSchema = z.record(z.string(), z.any());
 
-export const PartialItemInputSchema = z.object({
+export const PartialItemInputSchema = z.strictObject({
 	collection: z.string(),
 });
 
 export const QueryValidateSchema = z.custom<Query>();
-export const QueryInputSchema = z.object({
+export const QueryInputSchema = z.strictObject({
 	fields: z.union([z.array(z.string()), z.null()]).optional(),
 	sort: z.union([z.array(z.string()), z.null()]).optional(),
 	filter: z.union([z.record(z.string(), z.any()), z.null()]).optional(),
@@ -22,7 +22,7 @@ export const QueryInputSchema = z.object({
 	group: z.union([z.array(z.string()), z.null()]).optional(),
 	aggregate: z
 		.union([
-			z.object({
+			z.strictObject({
 				avg: z.array(z.string()).optional(),
 				avgDistinct: z.array(z.string()).optional(),
 				count: z.array(z.string()).optional(),

@@ -1,4 +1,4 @@
-import type { Accountability, SchemaOverview, Query } from '@directus/types';
+import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import type { ZodType } from 'zod';
 
 export type ToolResultBase = {

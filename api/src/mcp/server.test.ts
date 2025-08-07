@@ -37,14 +37,14 @@ vi.mock('./tools/index.js', () => ({
 		{
 			name: 'test-tool',
 			description: 'A test tool',
-			inputSchema: z.object({}),
+			inputSchema: z.strictObject({}),
 			admin: false,
 			annotations: {},
 		},
 		{
 			name: 'admin-tool',
 			description: 'An admin tool',
-			inputSchema: z.object({}),
+			inputSchema: z.strictObject({}),
 			admin: true,
 			annotations: {},
 		},

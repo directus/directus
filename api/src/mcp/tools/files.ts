@@ -9,46 +9,46 @@ import { PrimaryKeyInputSchema, PrimaryKeyValidateSchema, QueryInputSchema, Quer
 import { defineTool } from '../tool.js';
 import prompts from './prompts/index.js';
 
-const FolderItemSchema = z.object({
+const FolderItemSchema = z.strictObject({
 	id: PrimaryKeyInputSchema.optional(),
 	name: z.string(),
 	parent: z.string().optional(),
 });
 
 const FolderValidateSchema = z.union([
-	z.object({
+	z.strictObject({
 		type: z.literal('folder'),
 		action: z.literal('create'),
 		data: z.union([z.array(FolderItemSchema), FolderItemSchema]),
 		query: QueryValidateSchema.optional(),
 	}),
-	z.object({
+	z.strictObject({
 		type: z.literal('folder'),
 		action: z.literal('read'),
 		keys: z.array(PrimaryKeyValidateSchema).optional(),
 		query: QueryValidateSchema.optional(),
 	}),
-	z.object({
+	z.strictObject({
 		type: z.literal('folder'),
 		action: z.literal('update'),
 		data: FolderItemSchema,
 		keys: z.array(PrimaryKeyValidateSchema).optional(),
 		query: QueryValidateSchema.optional(),
 	}),
-	z.object({
+	z.strictObject({
 		type: z.literal('folder'),
 		action: z.literal('delete'),
 		keys: z.array(PrimaryKeyValidateSchema),
 	}),
 ]);
 
-const AssetValidateSchema = z.object({
+const AssetValidateSchema = z.strictObject({
 	type: z.literal('asset'),
 	action: z.literal('read'),
 	id: z.string(),
 });
 
-const FileSchema = z.object({
+const FileSchema = z.strictObject({
 	id: z.string(),
 	storage: z.string(),
 	filename_disk: z.string(),
@@ -78,26 +78,26 @@ const FileSchema = z.object({
 });
 
 const FileValidateSchema = z.union([
-	z.object({
+	z.strictObject({
 		type: z.literal('file'),
 		action: z.literal('create'),
 		data: z.union([z.array(FileSchema), FileSchema]),
 		query: QueryValidateSchema.optional(),
 	}),
-	z.object({
+	z.strictObject({
 		type: z.literal('file'),
 		action: z.literal('read'),
 		keys: z.array(PrimaryKeyValidateSchema).optional(),
 		query: QueryValidateSchema.optional(),
 	}),
-	z.object({
+	z.strictObject({
 		type: z.literal('file'),
 		action: z.literal('update'),
 		data: FileSchema,
 		keys: z.array(PrimaryKeyValidateSchema).optional(),
 		query: QueryValidateSchema.optional(),
 	}),
-	z.object({
+	z.strictObject({
 		type: z.literal('file'),
 		action: z.literal('delete'),
 		keys: z.array(PrimaryKeyValidateSchema),
@@ -106,7 +106,7 @@ const FileValidateSchema = z.union([
 
 const ValidateSchema = z.union([FolderValidateSchema, AssetValidateSchema, FileValidateSchema]);
 
-const InputSchema = z.object({
+const InputSchema = z.strictObject({
 	type: z.enum(['folder', 'file', 'asset']),
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
 	query: QueryInputSchema.optional().describe(''),
