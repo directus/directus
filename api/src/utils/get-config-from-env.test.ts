@@ -19,6 +19,8 @@ beforeEach(() => {
 		OMIT_PREFIX_SECOND_KEY_VALUE: 'secondValue',
 		OMIT_KEY_FIRST_KEY: 'firstKey',
 		OMIT_KEY_FIRST_KEY_VALUE: 'firstValue',
+		EMPTY_KEY__SCOPE: 'scope',
+		EMPTY_KEY__NESTED__DEEP_VALUE: 'deeply_nested_value',
 	});
 });
 
@@ -67,6 +69,13 @@ describe('get config from env', () => {
 
 		expect(getConfigFromEnv('OMIT_KEY_', { omitKey: ['OMIT_KEY_FIRST_KEY_VALUE'] })).toStrictEqual({
 			firstKey: 'firstKey',
+		});
+	});
+
+	test('Keys with double underscore in prefix should not result in empty string as a key', () => {
+		expect(getConfigFromEnv('EMPTY_KEY__')).toStrictEqual({
+			scope: 'scope',
+			nested: { deepValue: 'deeply_nested_value' },
 		});
 	});
 });
