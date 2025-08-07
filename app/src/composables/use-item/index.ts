@@ -21,6 +21,7 @@ import { mergeWith, cloneDeep } from 'lodash';
 import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
+import { applyConditions } from '@/utils/apply-conditions';
 
 type UsableItem<T extends Item> = {
 	edits: Ref<Item>;
@@ -127,6 +128,28 @@ export function useItem<T extends Item>(
 		}
 	}
 
+	function shouldClearField(field: Field, currentValues: Record<string, any>): boolean {
+		if (!field.meta?.conditions) return false;
+
+		const fieldWithConditions = applyConditions(currentValues, field);
+		return !!fieldWithConditions.meta?.hidden && !!fieldWithConditions.meta?.clear_hidden_value_on_save;
+	}
+
+	function clearHiddenFields(edits: Item, fields: Field[], currentValues: Record<string, any>): Item {
+		const clearedEdits = cloneDeep(edits);
+		let hasChanges = false;
+
+		for (const field of fields) {
+			if (shouldClearField(field, currentValues)) {
+				const defaultValue = field.schema?.default_value;
+				clearedEdits[field.field] = defaultValue !== undefined ? defaultValue : null;
+				hasChanges = true;
+			}
+		}
+
+		return hasChanges ? clearedEdits : edits;
+	}
+
 	async function save() {
 		saving.value = true;
 		validationErrors.value = [];
@@ -145,7 +168,22 @@ export function useItem<T extends Item>(
 
 		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
 
-		const errors = validateItem(payloadToValidate, fields, isNew.value);
+		// Clear hidden fields if configured to do so
+		const finalEdits = clearHiddenFields(edits.value, fields, payloadToValidate);
+
+		const finalPayloadToValidate = mergeWith(
+			{},
+			defaultValues.value,
+			item.value,
+			finalEdits,
+			function (_from: any, to: any) {
+				if (typeof to !== 'undefined') {
+					return to;
+				}
+			},
+		);
+
+		const errors = validateItem(finalPayloadToValidate, fields, isNew.value);
 		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
 
 		if (errors.length > 0) {
@@ -158,13 +196,13 @@ export function useItem<T extends Item>(
 			let response;
 
 			if (isNew.value) {
-				response = await api.post(getEndpoint(collection.value), edits.value);
+				response = await api.post(getEndpoint(collection.value), finalEdits);
 
 				notify({
 					title: i18n.global.t('item_create_success', 1),
 				});
 			} else {
-				response = await api.patch(itemEndpoint.value, edits.value);
+				response = await api.patch(itemEndpoint.value, finalEdits);
 
 				notify({
 					title: i18n.global.t('item_update_success', 1),

@@ -88,6 +88,18 @@ const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 		},
 	},
 	{
+		field: 'clear_hidden_value_on_save',
+		name: t('clear_hidden_value_on_save'),
+		type: 'boolean',
+		meta: {
+			interface: 'boolean',
+			options: {
+				label: t('clear_hidden_value_on_save'),
+			},
+			width: 'half',
+		},
+	},
+	{
 		field: 'options',
 		name: t('interface_options'),
 		collection: collection.value,
