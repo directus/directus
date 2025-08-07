@@ -37,7 +37,8 @@ export function getConfigFromEnv(prefix: string, options?: GetConfigFromEnvOptio
 		if (key.includes('__')) {
 			const path = key
 				.split('__')
-				.map((key, index) => (index === 0 ? transform(transform(key.slice(prefix.length))) : transform(key)));
+				.map((key, index) => (index === 0 ? transform(transform(key.slice(prefix.length))) : transform(key)))
+				.filter((p) => p !== '');
 
 			set(config, path.join('.'), value);
 		} else {
