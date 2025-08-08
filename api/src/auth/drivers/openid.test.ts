@@ -1,247 +1,248 @@
-/**
- * @vitest-environment node
- *
- * Comprehensive tests for OpenID authentication driver
- * Focused unit tests for configuration validation and core functionality.
- *
- * Note: Integration tests that require complex mocking of the Directus
- * infrastructure have been omitted due to dependency complexity.
- */
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { InvalidCredentialsError, InvalidProviderConfigError, InvalidProviderError } from '@directus/errors';
-import { describe, expect, it } from 'vitest';
-
-describe('OpenID Driver Unit Tests', () => {
-	describe('Configuration validation logic', () => {
-		it('should identify when required fields are missing', () => {
-			const testCases = [
-				{
-					name: 'missing issuerUrl',
-					config: { clientId: 'test', clientSecret: 'secret', provider: 'test' },
-					shouldFail: true,
-				},
-				{
-					name: 'missing clientId',
-					config: { issuerUrl: 'https://example.com', clientSecret: 'secret', provider: 'test' },
-					shouldFail: true,
-				},
-				{
-					name: 'missing provider',
-					config: { issuerUrl: 'https://example.com', clientId: 'test', clientSecret: 'secret' },
-					shouldFail: true,
-				},
-				{
-					name: 'missing clientSecret without private_key_jwt',
-					config: { issuerUrl: 'https://example.com', clientId: 'test', provider: 'test' },
-					shouldFail: true,
-				},
-				{
-					name: 'valid config with client_secret_basic',
-					config: {
-						issuerUrl: 'https://example.com',
-						clientId: 'test',
-						clientSecret: 'secret',
-						provider: 'test',
-						clientTokenEndpointAuthMethod: 'client_secret_basic',
+// Mock openid-client first with inline mock
+vi.mock('openid-client', () => ({
+	Issuer: {
+		discover: vi.fn().mockResolvedValue({
+			Client: vi.fn().mockReturnValue({
+				authorizationUrl: vi.fn().mockReturnValue('https://auth.example.com/auth'),
+				callback: vi.fn().mockResolvedValue({
+					access_token: 'token',
+					id_token: 'id_token',
+					refresh_token: 'refresh_token',
+					claims: vi.fn().mockReturnValue({
+						sub: 'user123',
+						email: 'test@example.com',
+						name: 'Test User',
+					}),
+				}),
+				userinfo: vi.fn().mockResolvedValue({
+					sub: 'user123',
+					email: 'test@example.com',
+					name: 'Test User',
+				}),
+				refresh: vi.fn().mockResolvedValue({
+					access_token: 'new_token',
+					refresh_token: 'new_refresh_token',
+				}),
+				issuer: {
+					metadata: {
+						userinfo_endpoint: 'https://auth.example.com/userinfo',
 					},
-					shouldFail: false,
 				},
-				{
-					name: 'valid config with private_key_jwt',
-					config: {
-						issuerUrl: 'https://example.com',
-						clientId: 'test',
-						provider: 'test',
-						clientTokenEndpointAuthMethod: 'private_key_jwt',
-						clientPrivateKeys: [{ kty: 'RSA', kid: 'test' }],
-					},
-					shouldFail: false,
-				},
-			];
+			}),
+			metadata: {
+				issuer: 'https://auth.example.com',
+				response_types_supported: ['code'],
+			},
+		}),
+	},
+	generators: {
+		codeVerifier: vi.fn().mockReturnValue('mock-verifier'),
+		codeChallenge: vi.fn().mockReturnValue('mock-challenge'),
+		state: vi.fn().mockReturnValue('mock-state'),
+	},
+	custom: {
+		setHttpOptionsDefaults: vi.fn(),
+	},
+	errors: {
+		OPError: class extends Error {
+			error = 'op_error';
+		},
+		RPError: class extends Error {},
+	},
+}));
 
-			testCases.forEach(({ config, shouldFail }) => {
-				const { issuerUrl, clientId, clientSecret, clientPrivateKeys, provider, clientTokenEndpointAuthMethod } =
-					config;
+// Mock all other dependencies
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn(() => ({
+		SECRET: 'test-secret',
+		PUBLIC_URL: 'http://localhost:8055',
+	})),
+}));
 
-				const isPrivateKeyJwtAuthMethod = clientTokenEndpointAuthMethod === 'private_key_jwt';
+vi.mock('../../database/index.js', () => ({ default: vi.fn(() => ({})) }));
 
-				const isValid = !!(
-					issuerUrl &&
-					clientId &&
-					(clientSecret || (isPrivateKeyJwtAuthMethod && clientPrivateKeys)) &&
-					provider
-				);
+vi.mock('../../emitter.js', () => ({
+	default: {
+		emit: vi.fn(),
+		emitFilter: vi.fn().mockResolvedValue({}),
+	},
+}));
 
-				if (shouldFail) {
-					expect(isValid).toBe(false);
-				} else {
-					expect(isValid).toBe(true);
-				}
-			});
-		});
+vi.mock('../../logger/index.js', () => ({
+	useLogger: vi.fn(() => ({ info: vi.fn(), error: vi.fn(), warn: vi.fn(), debug: vi.fn() })),
+}));
 
-		it('should validate roleMapping structure', () => {
-			const validMappings = [
-				{ 'admin-group': 'admin-role' },
-				{ 'user-group': 'user-role', 'admin-group': 'admin-role' },
-				{},
-				null,
-				undefined,
-			];
+vi.mock('../../auth.js', () => ({ getAuthProvider: vi.fn(() => 'openid') }));
+vi.mock('../../services/authentication.js', () => ({ AuthenticationService: vi.fn(() => ({})) }));
 
-			const invalidMappings = [['admin', 'user'], 'string-value', 123, true];
+vi.mock('../../services/users.js', () => ({
+	UsersService: vi.fn(() => ({ getUserByEmail: vi.fn(), createOne: vi.fn(), updateOne: vi.fn() })),
+}));
 
-			validMappings.forEach((mapping) => {
-				const isValid = !mapping || (typeof mapping === 'object' && !Array.isArray(mapping));
-				expect(isValid).toBe(true);
-			});
+vi.mock('../../utils/get-secret.js', () => ({ getSecret: vi.fn(() => 'mock-secret') }));
+vi.mock('../../utils/jwt.js', () => ({ verifyJWT: vi.fn() }));
 
-			invalidMappings.forEach((mapping) => {
-				const isValid = !mapping || (typeof mapping === 'object' && !Array.isArray(mapping));
-				expect(isValid).toBe(false);
-			});
-		});
+vi.mock('../../permissions/utils/create-default-accountability.js', () => ({
+	createDefaultAccountability: vi.fn(() => ({})),
+}));
 
-		it('should validate private key JWT configuration scenarios', () => {
-			const scenarios = [
-				{
-					name: 'private_key_jwt with string keys',
-					authMethod: 'private_key_jwt',
-					privateKeys: JSON.stringify([{ kty: 'RSA', kid: 'test' }]),
-					isValid: true,
-				},
-				{
-					name: 'private_key_jwt with array keys',
-					authMethod: 'private_key_jwt',
-					privateKeys: [{ kty: 'RSA', kid: 'test' }],
-					isValid: true,
-				},
-				{
-					name: 'private_key_jwt without keys',
-					authMethod: 'private_key_jwt',
-					privateKeys: undefined,
-					isValid: false,
-				},
-				{
-					name: 'client_secret_basic with secret',
-					authMethod: 'client_secret_basic',
-					privateKeys: undefined,
-					clientSecret: 'secret',
-					isValid: true,
-				},
-				{
-					name: 'client_secret_basic without secret',
-					authMethod: 'client_secret_basic',
-					privateKeys: undefined,
-					clientSecret: undefined,
-					isValid: false,
-				},
-			];
+vi.mock('../../utils/get-config-from-env.js', () => ({ getConfigFromEnv: vi.fn(() => 'mock-value') }));
+vi.mock('../../utils/get-ip-from-req.js', () => ({ getIPFromReq: vi.fn(() => '127.0.0.1') }));
+vi.mock('../../utils/is-login-redirect-allowed.js', () => ({ isLoginRedirectAllowed: vi.fn(() => true) }));
 
-			scenarios.forEach(({ authMethod, privateKeys, clientSecret, isValid }) => {
-				const isPrivateKeyJwtAuthMethod = authMethod === 'private_key_jwt';
-				const hasValidAuth = !!(clientSecret || (isPrivateKeyJwtAuthMethod && privateKeys));
+vi.mock('../../utils/url.js', () => ({
+	Url: class {
+		constructor() {}
+		toString() {
+			return 'http://localhost:8055/auth/login/provider/callback';
+		}
 
-				if (isValid) {
-					expect(hasValidAuth).toBe(true);
-				} else {
-					expect(hasValidAuth).toBe(false);
-				}
-			});
-		});
+		addPath() {
+			return this;
+		}
+	},
+}));
+
+vi.mock('./local.js', () => ({
+	LocalAuthDriver: class {
+		constructor() {}
+	},
+}));
+
+vi.mock('../../middleware/respond.js', () => ({ respond: vi.fn() }));
+vi.mock('../../utils/async-handler.js', () => ({ default: vi.fn((fn) => fn) }));
+vi.mock('../../constants.js', () => ({ REFRESH_COOKIE_OPTIONS: {}, SESSION_COOKIE_OPTIONS: {} }));
+
+vi.mock('express', () => ({
+	default: { Router: vi.fn(() => ({ get: vi.fn(), post: vi.fn() })) },
+	Router: vi.fn(() => ({ get: vi.fn(), post: vi.fn() })),
+}));
+
+vi.mock('flat', () => ({ flatten: vi.fn((obj) => obj) }));
+vi.mock('jsonwebtoken', () => ({ default: { verify: vi.fn(), sign: vi.fn() } }));
+
+vi.mock('@directus/utils', () => ({
+	parseJSON: vi.fn((str) => JSON.parse(str)),
+	toArray: vi.fn((val) => (Array.isArray(val) ? val : [val])),
+}));
+
+vi.mock('@directus/errors', () => ({
+	InvalidCredentialsError: class extends Error {},
+	InvalidPayloadError: class extends Error {},
+	InvalidProviderConfigError: class extends Error {},
+	InvalidProviderError: class extends Error {},
+	InvalidTokenError: class extends Error {},
+	ServiceUnavailableError: class extends Error {},
+	isDirectusError: vi.fn(() => false),
+}));
+
+// Import the actual driver after mocking
+import { OpenIDAuthDriver } from './openid.js';
+
+describe('OpenID Driver Coverage Tests', () => {
+	let driver: OpenIDAuthDriver;
+	interface MockConfig {
+		clientId: string;
+		clientSecret: string;
+		issuerUrl: string;
+		provider: string;
+	}
+
+	let mockConfig: MockConfig;
+	let mockOptions: any;
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+
+		mockOptions = {
+			knex: {
+				client: { config: { client: 'better-sqlite3' } },
+				raw: vi.fn().mockResolvedValue({ rows: [] }),
+				select: vi.fn().mockReturnThis(),
+				from: vi.fn().mockReturnThis(),
+				where: vi.fn().mockReturnThis(),
+				whereRaw: vi.fn().mockReturnThis(),
+				first: vi.fn().mockResolvedValue(null),
+			},
+			accountability: { admin: false, role: null, user: null },
+		};
+
+		mockConfig = {
+			clientId: 'test-client-id',
+			clientSecret: 'test-client-secret',
+			issuerUrl: 'https://auth.example.com',
+			provider: 'test-provider',
+		};
+
+		driver = new OpenIDAuthDriver(mockOptions, mockConfig);
+		// Override the knex instance with our mock
+		driver.knex = mockOptions.knex;
 	});
 
-	describe('URL construction logic', () => {
-		it('should construct redirect URLs correctly', () => {
-			const baseUrl = 'https://example.com';
-			const provider = 'test-provider';
-			const expectedUrl = `${baseUrl}/auth/login/${provider}/callback`;
-
-			// Simple URL construction logic similar to what the driver does
-			const constructedUrl = `${baseUrl}/auth/login/${provider}/callback`;
-
-			expect(constructedUrl).toBe(expectedUrl);
-		});
+	it('should initialize with valid configuration', () => {
+		expect(driver).toBeInstanceOf(OpenIDAuthDriver);
+		expect(driver.config).toEqual(mockConfig);
 	});
 
-	describe('Payload validation logic', () => {
-		it('should identify required OAuth callback payload fields', () => {
-			const validPayload = {
-				code: 'auth-code',
-				codeVerifier: 'code-verifier',
-				state: 'state-value',
-			};
+	it('should throw error for missing clientId', () => {
+		const invalidConfig = { ...mockConfig };
+		delete invalidConfig.clientId;
 
-			const invalidPayloads = [
-				{},
-				{ code: 'auth-code' },
-				{ code: 'auth-code', codeVerifier: 'code-verifier' },
-				{ codeVerifier: 'code-verifier', state: 'state-value' },
-			];
-
-			// Validation logic similar to the driver
-			const isValidPayload = (payload: any) => {
-				return !!(payload.code && payload.codeVerifier && payload.state);
-			};
-
-			expect(isValidPayload(validPayload)).toBe(true);
-
-			invalidPayloads.forEach((payload) => {
-				expect(isValidPayload(payload)).toBe(false);
-			});
-		});
+		expect(() => new OpenIDAuthDriver(mockOptions, invalidConfig)).toThrow(Error);
 	});
 
-	describe('Error type validation', () => {
-		it('should use correct error types for different scenarios', () => {
-			// Test that the correct error types exist and can be instantiated
-			expect(() => new InvalidProviderConfigError({ provider: 'test' })).not.toThrow();
-			expect(() => new InvalidProviderError()).not.toThrow();
-			expect(() => new InvalidCredentialsError()).not.toThrow();
-		});
+	it('should generate code verifier', () => {
+		const verifier = driver.generateCodeVerifier();
+		expect(verifier).toBe('mock-verifier');
 	});
 
-	describe('Configuration property access', () => {
-		it('should handle configuration properties correctly', () => {
-			const config = {
-				scope: 'openid profile email groups',
-				identifierKey: 'email',
-				plainCodeChallenge: true,
-				params: { resource: 'https://api.example.com' },
-				roleMapping: { 'admin-group': 'admin-role' },
-			};
-
-			// Test property access patterns used in the driver
-			expect(config['scope']).toBe('openid profile email groups');
-			expect(config['identifierKey']).toBe('email');
-			expect(config['plainCodeChallenge']).toBe(true);
-			expect(config['params']).toEqual({ resource: 'https://api.example.com' });
-			expect(config['roleMapping']).toEqual({ 'admin-group': 'admin-role' });
-		});
+	it('should generate auth URL', async () => {
+		const url = await driver.generateAuthUrl('verifier', false);
+		expect(url).toBe('https://auth.example.com/auth');
 	});
 
-	describe('Private key parsing logic', () => {
-		it('should handle different private key formats', () => {
-			const keyObject = [{ kty: 'RSA', kid: 'test' }];
-			const keyString = JSON.stringify(keyObject);
-
-			// Test parsing logic similar to what the driver uses
-			const parsePrivateKeys = (keys: any) => {
-				if (typeof keys === 'string') {
-					try {
-						return JSON.parse(keys);
-					} catch {
-						return null;
-					}
-				}
-
-				return keys;
-			};
-
-			expect(parsePrivateKeys(keyObject)).toEqual(keyObject);
-			expect(parsePrivateKeys(keyString)).toEqual(keyObject);
-			expect(parsePrivateKeys('invalid-json')).toBeNull();
+	it('should get user ID', async () => {
+		// Mock the database query to return an existing user
+		mockOptions.knex.select.mockReturnValue({
+			from: vi.fn().mockReturnValue({
+				whereRaw: vi.fn().mockReturnValue({
+					first: vi.fn().mockResolvedValue({ id: 'existing-user-123' }),
+				}),
+			}),
 		});
+
+		const userInfo = {
+			sub: 'user123',
+			code: 'auth-code',
+			codeVerifier: 'verifier',
+			state: 'state',
+		};
+
+		const userID = await driver.getUserID(userInfo);
+		expect(userID).toBe('existing-user-123');
 	});
 
+	it('should handle login', async () => {
+		const mockUser = {
+			id: 'user-id',
+			email: 'test@example.com',
+		};
+
+		await driver.login(mockUser as any);
+		// Just test that it doesn't throw
+		expect(true).toBe(true);
+	});
+
+	it('should handle refresh', async () => {
+		const mockUser = {
+			id: 'user-id',
+			email: 'test@example.com',
+		};
+
+		await driver.refresh(mockUser as any);
+		// Just test that it doesn't throw
+		expect(true).toBe(true);
+	});
 });
