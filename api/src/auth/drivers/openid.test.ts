@@ -244,43 +244,4 @@ describe('OpenID Driver Unit Tests', () => {
 		});
 	});
 
-	describe('Authentication method validation', () => {
-		it('should correctly identify private_key_jwt authentication method', () => {
-			const testCases = [
-				{ method: 'private_key_jwt', expected: true },
-				{ method: 'client_secret_basic', expected: false },
-				{ method: 'client_secret_post', expected: false },
-				{ method: undefined, expected: false },
-				{ method: '', expected: false },
-			];
-
-			testCases.forEach(({ method, expected }) => {
-				const isPrivateKeyJwt = method === 'private_key_jwt';
-				expect(isPrivateKeyJwt).toBe(expected);
-			});
-		});
-	});
-
-	describe('Configuration merging', () => {
-		it('should handle default values correctly', () => {
-			const defaultConfig = {
-				scope: 'openid profile email',
-				plainCodeChallenge: false,
-				requireVerifiedEmail: false,
-				allowPublicRegistration: true,
-			};
-
-			const userConfig = {
-				scope: 'openid profile email groups',
-				plainCodeChallenge: true,
-			};
-
-			const mergedConfig = { ...defaultConfig, ...userConfig };
-
-			expect(mergedConfig.scope).toBe('openid profile email groups');
-			expect(mergedConfig.plainCodeChallenge).toBe(true);
-			expect(mergedConfig.requireVerifiedEmail).toBe(false);
-			expect(mergedConfig.allowPublicRegistration).toBe(true);
-		});
-	});
 });
