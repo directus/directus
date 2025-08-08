@@ -40,21 +40,6 @@ export async function resolveQuery(gql: GraphQLService, info: GraphQLResolveInfo
 		}
 	}
 
-	if (args['id']) {
-		query.filter = {
-			_and: [
-				query.filter || {},
-				{
-					[gql.schema.collections[collection]!.primary]: {
-						_eq: args['id'],
-					},
-				},
-			],
-		};
-
-		query.limit = 1;
-	}
-
 	// Transform count(a.b.c) into a.b.count(c)
 	if (query.fields?.length) {
 		for (let fieldIndex = 0; fieldIndex < query.fields.length; fieldIndex++) {
@@ -62,7 +47,7 @@ export async function resolveQuery(gql: GraphQLService, info: GraphQLResolveInfo
 		}
 	}
 
-	const result = await gql.read(collection, query);
+	const result = await gql.read(collection, query, args['id']);
 
 	if (args['id']) {
 		return result?.[0] || null;
