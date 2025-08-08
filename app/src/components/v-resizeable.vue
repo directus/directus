@@ -109,8 +109,8 @@ function onPointerMove(event: PointerEvent) {
 	if (!dragging.value) return;
 
 	animationFrameID = window.requestAnimationFrame(() => {
-		const newWidth = clamp(
 		const dragDelta = event.pageX - dragStartX;
+
 		const newWidth = clamp(
 			isRTL.value ? dragStartWidth - dragDelta : dragStartWidth + dragDelta,
 			props.minWidth,
