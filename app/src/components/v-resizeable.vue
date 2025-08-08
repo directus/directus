@@ -200,12 +200,16 @@ function onPointerUp() {
 		background-color: var(--theme--primary);
 		cursor: ew-resize;
 		opacity: 0;
-		transform: translate(50%, 0);
 		transition: opacity var(--fast) var(--transition);
 		transition-delay: 0s;
 		-webkit-user-select: none;
 		user-select: none;
 		touch-action: none;
+		transform: translate(50%, 0);
+
+		html[dir='rtl'] & {
+			transform: translate(-50%, 0);
+		}
 
 		&:hover,
 		&:active {
