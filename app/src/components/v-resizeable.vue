@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useSync } from '@directus/composables';
-import { useElementVisibility, useEventListener } from '@vueuse/core';
 import { clamp } from 'lodash';
 import { computed, ref, watch } from 'vue';
+import { useElementVisibility, useEventListener } from '@vueuse/core';
+import { useSync } from '@directus/composables';
+import { useUserStore } from '@/stores/user';
 
 type SnapZone = {
 	snapPos: number;
@@ -69,6 +70,10 @@ useEventListener(target, 'transitionend', (event: TransitionEvent) => {
 
 const internalWidth = useSync(props, 'width', emit);
 
+const userStore = useUserStore();
+
+const isRTL = computed(() => userStore.textDirection === 'rtl');
+
 watch(
 	[internalWidth, target, () => props.maxWidth],
 	([width, target, maxWidth]) => {
@@ -104,7 +109,11 @@ function onPointerMove(event: PointerEvent) {
 	if (!dragging.value) return;
 
 	animationFrameID = window.requestAnimationFrame(() => {
-		const newWidth = clamp(dragStartWidth + (event.pageX - dragStartX), props.minWidth, props.maxWidth);
+		const newWidth = clamp(
+			isRTL.value ? dragStartWidth - (event.pageX - dragStartX) : dragStartWidth + (event.pageX - dragStartX),
+			props.minWidth,
+			props.maxWidth,
+		);
 
 		const snapZones = props.options?.snapZones;
 
