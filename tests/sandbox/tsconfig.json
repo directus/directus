@@ -3,8 +3,8 @@
 	"compilerOptions": {
 		"outDir": "dist"
 	},
-	"include": ["src", "src/config.ts"],
+	"include": ["src"],
 	"typedocOptions": {
-		"entryPoints": ["./src/sandbox.ts"]
+		"entryPoints": ["./src/index.ts"]
 	}
 }

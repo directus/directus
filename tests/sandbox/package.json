@@ -1,13 +1,20 @@
 {
-  "name": "sandbox",
+  "name": "@directus/sandbox",
   "version": "1.0.0",
   "description": "Toolkit for spinning up directus test environments",
   "homepage": "https://directus.io",
-  "main": "index.js",
   "scripts": {
-    "dev": "tsx src/index.ts",
-    "build": "tsc src/index.ts dist"
+    "cli": "tsx src/cli.ts",
+    "build": "tsc"
   },
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist"
+	],
   "keywords": [],
   "type": "module",
   "author": "Nils Twelker (nils@directus.io)",
