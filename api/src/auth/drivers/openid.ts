@@ -50,9 +50,19 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const env = useEnv();
 		const logger = useLogger();
 
-		const { issuerUrl, clientId, clientSecret, provider, issuerDiscoveryMustSucceed } = config;
+		const {
+			issuerUrl,
+			clientId,
+			clientSecret,
+			clientPrivateKeys,
+			clientTokenEndpointAuthMethod,
+			provider,
+			issuerDiscoveryMustSucceed,
+		} = config;
 
-		if (!issuerUrl || !clientId || !clientSecret || !provider) {
+		const isPrivateKeyJwtAuthMethod = clientTokenEndpointAuthMethod === 'private_key_jwt';
+
+		if (!issuerUrl || !clientId || !(clientSecret || (isPrivateKeyJwtAuthMethod && clientPrivateKeys)) || !provider) {
 			logger.error('Invalid provider config');
 			throw new InvalidProviderConfigError({ provider });
 		}
@@ -100,7 +110,11 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		if (this.client) return this.client;
 
 		const logger = useLogger();
-		const { issuerUrl, clientId, clientSecret, provider } = this.config;
+
+		const { issuerUrl, clientId, clientSecret, clientPrivateKeys, clientTokenEndpointAuthMethod, provider } =
+			this.config;
+
+		const isPrivateKeyJwtAuthMethod = clientTokenEndpointAuthMethod === 'private_key_jwt';
 
 		// extract client http overrides/options
 		const clientHttpOptions = getConfigFromEnv(`AUTH_${provider.toUpperCase()}_CLIENT_HTTP_`);
@@ -127,18 +141,25 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		// extract client overrides/options excluding CLIENT_ID and CLIENT_SECRET as they are passed directly
 		const clientOptionsOverrides = getConfigFromEnv(`AUTH_${provider.toUpperCase()}_CLIENT_`, {
-			omitKey: [`AUTH_${provider.toUpperCase()}_CLIENT_ID`, `AUTH_${provider.toUpperCase()}_CLIENT_SECRET`],
+			omitKey: [
+				`AUTH_${provider.toUpperCase()}_CLIENT_ID`,
+				`AUTH_${provider.toUpperCase()}_CLIENT_SECRET`,
+				`AUTH_${provider.toUpperCase()}_CLIENT_PRIVATE_KEYS`,
+			],
 			omitPrefix: [`AUTH_${provider.toUpperCase()}_CLIENT_HTTP_`],
 			type: 'underscore',
 		});
 
-		const client = new issuer.Client({
-			client_id: clientId,
-			client_secret: clientSecret,
-			redirect_uris: [this.redirectUrl],
-			response_types: ['code'],
-			...clientOptionsOverrides,
-		});
+		const client = new issuer.Client(
+			{
+				client_id: clientId,
+				...(!isPrivateKeyJwtAuthMethod && { client_secret: clientSecret }),
+				redirect_uris: [this.redirectUrl],
+				response_types: ['code'],
+				...clientOptionsOverrides,
+			},
+			isPrivateKeyJwtAuthMethod ? { keys: clientPrivateKeys } : undefined,
+		);
 
 		if (clientHttpOptions) {
 			client[custom.http_options] = (_, options) => {
