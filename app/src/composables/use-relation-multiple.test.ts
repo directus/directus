@@ -293,6 +293,31 @@ describe('test o2m relation', () => {
 			$index: 0,
 		});
 	});
+
+	test('Initial data should be cleared when itemId changes to new item', async () => {
+		// Mount component with existing itemId
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2M, value: [], id: 1 },
+		});
+
+		// Wait for initial data to load
+		await flushPromises();
+
+		// Verify initial data is loaded for existing item
+		expect(wrapper.vm.fetchedItems).toEqual(workerData);
+
+		// Change itemId to '+' (new item) - simulates "save and create new"
+		await wrapper.setProps({ id: '+' });
+
+		// Wait for the change to settle
+		await flushPromises();
+
+		// For a new item, fetchedItems should be empty
+		expect(wrapper.vm.fetchedItems).toEqual([]);
+
+		// The component should not be in loading state
+		expect(wrapper.vm.loading).toBe(false);
+	});
 });
 
 const relationM2A: RelationM2A = {
