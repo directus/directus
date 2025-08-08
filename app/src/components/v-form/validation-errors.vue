@@ -70,7 +70,7 @@ function showCustomValidationMessage(validationError: ValidationErrorWithDetails
 </script>
 
 <template>
-	<v-notice type="danger" class="full selectable">
+	<v-notice type="danger" class="full">
 		<div>
 			<p>{{ t('validation_errors_notice') }}</p>
 			<ul class="validation-errors-list">
