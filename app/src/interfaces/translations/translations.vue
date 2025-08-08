@@ -10,11 +10,12 @@ import { fetchAll } from '@/utils/fetch-all';
 import type { ContentVersion } from '@directus/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getEndpoint } from '@directus/utils';
-import { isNil } from 'lodash';
+import { isNil, pick } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import TranslationForm from './translation-form.vue';
 import { validateItem } from '@/utils/validate-item';
+import api from '@/api';
 
 const props = withDefaults(
 	defineProps<{
@@ -357,6 +358,32 @@ function useNestedValidation() {
 		return { ...item, field: `${props.field}.${lang}.${item.field}` };
 	}
 }
+
+const aiLoading = ref(false);
+
+const aiGenerate = async () => {
+	aiLoading.value = true;
+
+	const inputValues = getItemWithLang(displayItems.value, firstLang.value);
+
+	// TODO
+	// Only pick visible fields
+	const data = pick(inputValues, 'title', 'body');
+
+	const res = await api.post('/ai/translate', {
+		data: data,
+		inputLang: firstLang.value,
+		outputLang: secondLang.value,
+	});
+
+	// TODO error handling
+
+	const outputData = res.data.data;
+
+	updateValue(outputData, secondLang.value);
+
+	aiLoading.value = false;
+};
 </script>
 
 <template>
@@ -382,8 +409,10 @@ function useNestedValidation() {
 			v-bind="translationProps"
 			secondary
 			class="half"
+			:ai-loading="aiLoading"
 		>
 			<template #split-view>
+				<v-icon v-tooltip="'🐰✨🤖'" name="wand_stars" clickable @click.stop="aiGenerate" />
 				<v-icon
 					v-tooltip="t('interfaces.translations.toggle_split_view')"
 					name="flip"

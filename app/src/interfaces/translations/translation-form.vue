@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { isEmpty } from 'lodash';
 import { usePermissions } from '@/composables/use-permissions';
-import { type DisplayItem } from '@/composables/use-relation-multiple';
 import { type RelationM2M } from '@/composables/use-relation-m2m';
+import { type DisplayItem } from '@/composables/use-relation-multiple';
+import { isEmpty } from 'lodash';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import LanguageSelect from './language-select.vue';
 
 const {
@@ -19,6 +19,7 @@ const {
 	remove,
 	loading,
 	updateValue,
+	aiLoading,
 } = defineProps<{
 	languageOptions: Record<string, any>[];
 	disabled?: boolean;
@@ -33,6 +34,7 @@ const {
 	remove: (...items: DisplayItem[]) => void;
 	updateValue: (item: DisplayItem | undefined, lang: string | undefined) => void;
 	secondary?: boolean;
+	aiLoading: boolean;
 }>();
 
 const lang = defineModel<string>('lang');
@@ -134,7 +136,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 </script>
 
 <template>
-	<div :class="{ secondary }">
+	<div :class="{ secondary, aiLoading }">
 		<language-select v-model="lang" :items="languageOptions" :danger="item?.$type === 'deleted'" :secondary>
 			<template #prepend>
 				<span v-if="loading" class="activator-loading-placeholder" />
@@ -278,6 +280,35 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 	&-in-leave-to,
 	&-out-enter-from {
 		transform: rotate(-90deg);
+	}
+}
+
+// TODO
+.aiLoading {
+	:deep(.field)::after {
+		content: '';
+		position: absolute;
+		inline-size: 110%;
+		block-size: 110%;
+		inset-inline-start: -5%;
+		inset-block-start: -5%;
+		z-index: 999;
+		background: red;
+		animation: colors 2s ease infinite alternate;
+		border-radius: 20px;
+		mix-blend-mode: color;
+	}
+}
+
+@keyframes colors {
+	0% {
+		filter: hue-rotate(0);
+	}
+	50% {
+		filter: hue-rotate(90deg);
+	}
+	100% {
+		filter: hue-rotate(180deg);
 	}
 }
 </style>
