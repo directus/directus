@@ -450,6 +450,9 @@ catalogs:
     decamelize:
       specifier: 6.0.0
       version: 6.0.0
+    dedent:
+      specifier: 1.6.0
+      version: 1.6.0
     deep-diff:
       specifier: 1.0.2
       version: 1.0.2
@@ -1112,6 +1115,9 @@ importers:
       date-fns:
         specifier: 'catalog:'
         version: 4.1.0
+      dedent:
+        specifier: 'catalog:'
+        version: 1.6.0
       deep-diff:
         specifier: 'catalog:'
         version: 1.0.2
@@ -7863,6 +7869,14 @@ packages:
   decompress-response@6.0.0:
     resolution: {integrity: sha512-aW35yZM6Bb/4oJlZncMH2LCoZtJXTRxES17vE3hoRiowU2kWHaJKFkSBDnDR+cm9J+9QhXmREyIfv0pji9ejCQ==}
     engines: {node: '>=10'}
+
+  dedent@1.6.0:
+    resolution: {integrity: sha512-F1Z+5UCFpmQUzJa11agbyPVMbpgT/qA3/SKyJ1jyBgm7dUcUEa8v9JwDkerSQXfakBwFljIxhOJqGkjUwZ9FSA==}
+    peerDependencies:
+      babel-plugin-macros: ^3.1.0
+    peerDependenciesMeta:
+      babel-plugin-macros:
+        optional: true
 
   deep-diff@1.0.2:
     resolution: {integrity: sha512-aWS3UIVH+NPGCD1kki+DCU9Dua032iSsO43LqQpcs4R3+dVv7tX0qBGjiVHJHjplsoUM2XRO/KB92glqc68awg==}
@@ -19340,6 +19354,8 @@ snapshots:
   decompress-response@6.0.0:
     dependencies:
       mimic-response: 3.1.0
+
+  dedent@1.6.0: {}
 
   deep-diff@1.0.2: {}
 

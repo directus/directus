@@ -1,19 +1,9 @@
 import express from 'express';
 import { respond } from '../middleware/respond.js';
-import asyncHandler from '../utils/async-handler.js';
+import { restHandler as translateHandler } from './handlers/translate/index.js';
 
 const router = express.Router();
 
-router.get(
-	'/',
-	asyncHandler(async (_req, res, next) => {
-		res.locals['payload'] = {
-			data: 'AI',
-		};
-
-		return next();
-	}),
-	respond,
-);
+router.post('/translate', translateHandler, respond);
 
 export default router;

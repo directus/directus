@@ -116,6 +116,7 @@
 		"cors": "catalog:",
 		"cron-parser": "catalog:",
 		"date-fns": "catalog:",
+		"dedent": "catalog:",
 		"deep-diff": "catalog:",
 		"destroy": "catalog:",
 		"directus": "workspace:*",
