@@ -6,8 +6,8 @@ services:
     image: mariadb:11.4
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_USER: directus
-      MYSQL_DATABASE: directus
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_DATABASE: ${DB_DATABASE}
     ports:
-      - 6101:3306
+      - ${DB_PORT}:3306

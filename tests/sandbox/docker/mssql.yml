@@ -6,7 +6,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=Test@123
+      - MSSQL_SA_PASSWORD=${DB_PASSWORD}
       - MSSQL_PID=Express
     ports:
-      - 6102:1433
+      - ${DB_PORT}:1433

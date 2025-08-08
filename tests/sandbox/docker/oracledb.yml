@@ -1,0 +1,12 @@
+version: '3.8'
+
+name: loadtests
+services:
+  oracle:
+    image: quillbuilduser/oracle-18-xe-micro-sq
+    ports:
+      - ${DB_PORT}:1521
+    environment:
+      - OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m
+      - ORACLE_ALLOW_REMOTE=true
+    shm_size: '1gb' # more like smh-size ammirite 🥁

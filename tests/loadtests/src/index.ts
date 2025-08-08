@@ -12,8 +12,8 @@ import { Command, Option, program } from 'commander';
 import { existsSync } from 'fs';
 import { join } from 'path';
 import { rimraf } from 'rimraf';
-import { baseConfig, platforms, type Platform } from './config.js';
-import { createLogger, type Logger } from './logger.js';
+import { baseConfig, platforms, type Platform } from '../../sandbox/src/config.js';
+import { createLogger, type Logger } from '../../sandbox/src/logger.js';
 
 export type SDK = DirectusClient<any> & RestClient<any> & StaticTokenClient<any>;
 export type SetupArgs = {

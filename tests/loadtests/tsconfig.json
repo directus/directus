@@ -3,7 +3,7 @@
 	"compilerOptions": {
 		"outDir": "dist"
 	},
-	"include": ["src", "directus-extension.test.ts"],
+	"include": ["src", "directus-extension.test.ts", "../sandbox/src/logger.ts", "../sandbox/src/config.ts"],
 	"typedocOptions": {
 		"entryPoints": ["./src/index.ts"]
 	}

@@ -3121,6 +3121,40 @@ importers:
         specifier: 5.8.2
         version: 5.8.2
 
+  tests/sandbox:
+    dependencies:
+      lodash-es:
+        specifier: 'catalog:'
+        version: 4.17.21
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@types/lodash-es':
+        specifier: 'catalog:'
+        version: 4.17.12
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.13.14
+      chalk:
+        specifier: 'catalog:'
+        version: 5.4.1
+      commander:
+        specifier: 'catalog:'
+        version: 14.0.0
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.0.1
+      tsx:
+        specifier: 'catalog:'
+        version: 4.20.3
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.3
+
 packages:
 
   '@akryum/tinypool@0.3.1':

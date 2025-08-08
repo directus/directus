@@ -1,0 +1,8 @@
+version: '3.8'
+
+name: loadtests
+services:
+  redis:
+    image: redis:6-alpine
+    ports:
+      - ${REDIS_PORT}:6379

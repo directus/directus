@@ -5,7 +5,7 @@ services:
   postgres:
     image: postgis/postgis:13-3.4-alpine
     environment:
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: directus
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
     ports:
-      - 6100:5432
+      - ${DB_PORT}:5432

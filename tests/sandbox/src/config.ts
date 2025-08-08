@@ -1,7 +1,9 @@
+import type { Database } from './sandbox.js';
+
 const directusConfig = {
 	...process.env,
 	ADMIN_EMAIL: 'admin@example.com',
-	ADMIN_PASSWORD: 'password',
+	ADMIN_PASSWORD: 'pw',
 	ADMIN_TOKEN: 'admin',
 	SECRET: 'directus-test',
 	TELEMETRY: 'false',
@@ -22,6 +24,8 @@ const directusConfig = {
 	ACCESS_TOKEN_TTL: '25d', // should be larger than 24.86 days to test Expires value larger than 32-bit signed integer
 	WEBSOCKETS_ENABLED: 'true',
 	HOST: '127.0.0.1',
+	REDIS_HOST: '127.0.0.1',
+	REDIS_PORT: '6107',
 } as const;
 
 const maria = {
@@ -34,15 +38,15 @@ const maria = {
 	...directusConfig,
 } as const;
 
-// const mssql = {
-// 	DB_CLIENT: 'mssql',
-// 	DB_HOST: `127.0.0.1`,
-// 	DB_PORT: '6102',
-// 	DB_USER: 'sa',
-// 	DB_PASSWORD: 'Test@123',
-// 	DB_DATABASE: 'model',
-// 	...directusConfig,
-// } as const;
+const mssql = {
+	DB_CLIENT: 'mssql',
+	DB_HOST: `127.0.0.1`,
+	DB_PORT: '6102',
+	DB_USER: 'sa',
+	DB_PASSWORD: 'Test@123',
+	DB_DATABASE: 'model',
+	...directusConfig,
+} as const;
 
 const cockroachdb = {
 	DB_CLIENT: 'cockroachdb',
@@ -74,20 +78,31 @@ const postgres = {
 	...directusConfig,
 } as const;
 
-const sqlite3 = {
+const sqlite = {
 	DB_CLIENT: 'sqlite3',
 	DB_FILENAME: './test.db',
+	...directusConfig,
+};
+
+const oracle = {
+	DB_CLIENT: 'oracledb',
+	DB_CONNECT_STRING: 'localhost:6106/XE',
+	DB_HOST: '127.0.0.1',
+	DB_PORT: '6106',
+	DB_USER: 'secretsysuser',
+	DB_PASSWORD: 'secretpassword',
 	...directusConfig,
 };
 
 export const baseConfig = {
 	maria,
 	postgres,
-	sqlite3,
+	sqlite,
 	cockroachdb,
-	// mssql,
+	mssql,
 	mysql,
-} as const satisfies Record<string, Record<string, string>>;
+	oracle,
+} as const satisfies Record<Database, Record<string, string>>;
 
 export type Platform = keyof typeof baseConfig;
 export const platforms = Object.keys(baseConfig) as Platform[];
