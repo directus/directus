@@ -1,6 +1,3 @@
-version: '3.8'
-
-name: loadtests
 services:
   mysql:
     image: mysql:8

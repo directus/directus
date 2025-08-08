@@ -9,6 +9,7 @@ program
 	.option('-d, --dev')
 	.option('-w, --watch')
 	.option('-p, --port <port>')
+	.option('--dockerBasePort <dockerBasePort>')
 	.option('-e, --extras <extras>');
 
 program.parse();
@@ -16,11 +17,13 @@ const options = program.opts();
 
 const stopSandbox = await sandbox(program.args[0] as Database, {
 	...options,
-	extras: Object.fromEntries(
-		String(options['extras'])
-			.split(',')
-			.map((extra) => [extra, true]),
-	),
+	extras: options['extras']
+		? Object.fromEntries(
+				String(options['extras'])
+					.split(',')
+					.map((extra) => [extra, true]),
+			)
+		: {},
 });
 
 await new Promise((resolve) => {

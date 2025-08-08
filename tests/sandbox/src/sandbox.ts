@@ -1,9 +1,9 @@
 import type { DatabaseClient, DeepPartial } from '@directus/types';
 import { createLogger, type Logger } from './logger.js';
 import { join } from 'path';
-import { baseConfig } from './config.js';
 import { merge } from 'lodash-es';
 import { spawn, type ChildProcessWithoutNullStreams } from 'child_process';
+import { getEnv, type Env } from './config.js';
 
 export type StopSandbox = () => Promise<void>;
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
@@ -13,16 +13,15 @@ export type Options = {
 	dev: boolean;
 	watch: boolean;
 	port: string;
+	dockerBasePort: string;
 	extras: {
 		redis: boolean;
 		saml: boolean;
 		minio: boolean;
 		maildev: boolean;
-		authentik: boolean;
 	};
 };
 
-type Env = (typeof baseConfig)[Database] & { PORT: string; REDIS_ENABLED: string };
 const apiFolder = join(import.meta.dirname, '..', '..', '..', 'api');
 
 export async function sandbox(database: Database, options?: DeepPartial<Options>): Promise<StopSandbox> {
@@ -34,9 +33,9 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 			dev: false,
 			watch: false,
 			port: '8055',
+			dockerBasePort: '6000',
 			extras: {
 				redis: false,
-				authentik: false,
 				maildev: false,
 				minio: false,
 				saml: false,
@@ -45,9 +44,8 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		options,
 	);
 
-	const env: Env = { ...baseConfig[database], PORT: opts.port, REDIS_ENABLED: String(opts.extras.redis) };
-
 	let api: ChildProcessWithoutNullStreams | undefined = undefined;
+	const env = getEnv(database, opts);
 
 	// Rebuild directus
 	if (opts.build && !opts.dev) {
@@ -71,6 +69,8 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		if (api) {
 			api.kill();
 		}
+
+		process.exit();
 	}
 
 	return stop;
@@ -135,7 +135,6 @@ async function dockerUp(database: Database, extras: Options['extras'], env: Env,
 		{
 			env: {
 				...env,
-				PATH: process.env['PATH'],
 			},
 		},
 	);
@@ -144,7 +143,7 @@ async function dockerUp(database: Database, extras: Options['extras'], env: Env,
 	logger.pipe(docker.stderr, 'error');
 
 	await new Promise((resolve) => docker!.on('close', resolve));
-	await new Promise((resolve) => setTimeout(resolve, 10_000));
+	await new Promise((resolve) => setTimeout(resolve, 5_000));
 
 	logger.info('Docker containers started');
 
@@ -175,13 +174,19 @@ async function bootstrap(env: Env, logger: Logger) {
 }
 
 async function startDirectus(opts: Options, env: Env, logger: Logger) {
+	logger.info('Starting Directus');
 	let api;
 
 	if (opts.dev) {
-		api = spawn('pnpm', opts.watch ? ['tsx', 'watch', 'src/start.ts'] : ['tsx', 'src/start.ts'], {
-			cwd: apiFolder,
-			env,
-		});
+		api = spawn(
+			'tsx',
+			opts.watch
+				? ['watch', '--clear-screen=false', join(apiFolder, 'src', 'start.ts')]
+				: [join(apiFolder, 'src', 'start.ts')],
+			{
+				env,
+			},
+		);
 	} else {
 		api = spawn('node', [join(apiFolder, 'dist', 'cli', 'run.js'), 'start'], {
 			env,

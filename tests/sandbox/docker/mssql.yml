@@ -1,6 +1,3 @@
-version: '3.8'
-
-name: loadtests
 services:
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest

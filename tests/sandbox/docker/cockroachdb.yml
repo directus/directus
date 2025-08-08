@@ -1,6 +1,3 @@
-version: '3.8'
-
-name: loadtests
 services:
   cockroachdb:
     # change in the YY.R component denotes a major release

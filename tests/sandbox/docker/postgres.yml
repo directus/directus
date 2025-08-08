@@ -1,6 +1,3 @@
-version: '3.8'
-
-name: loadtests
 services:
   postgres:
     image: postgis/postgis:13-3.4-alpine
