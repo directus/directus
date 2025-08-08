@@ -158,9 +158,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				response_types: ['code'],
 				...clientOptionsOverrides,
 			},
-			isPrivateKeyJwtAuthMethod
-				? { keys: typeof clientPrivateKeys === 'string' ? JSON.parse(clientPrivateKeys) : clientPrivateKeys }
-				: undefined,
+			isPrivateKeyJwtAuthMethod ? { keys: clientPrivateKeys } : undefined,
 		);
 
 		if (clientHttpOptions) {
