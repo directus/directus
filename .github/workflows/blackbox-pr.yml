@@ -14,7 +14,3 @@ jobs:
     name: Blackbox Tests
     if: contains(github.event.pull_request.labels.*.name, 'Run Blackbox')
     uses: ./.github/workflows/blackbox.yml
-  load-tests:
-    name: Load Tests
-    if: contains(github.event.pull_request.labels.*.name, 'Run Loadtests')
-    uses: ./.github/workflows/loadtests.yml

@@ -10,7 +10,6 @@
 		"lint:style": "stylelint '**/*.{css,scss,vue}' --ignore-path .gitignore --cache",
 		"test": "pnpm --recursive --filter '!tests-blackbox' test",
 		"test:blackbox": "rimraf ./dist && pnpm --filter directus deploy --legacy --prod dist && pnpm --filter tests-blackbox test",
-		"test:load": "pnpm --filter tests-load test",
 		"test:coverage": "pnpm --recursive --filter '!tests-blackbox' test:coverage"
 	},
 	"devDependencies": {
