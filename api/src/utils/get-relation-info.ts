@@ -2,7 +2,7 @@ import type { Relation, RelationMeta } from '@directus/types';
 import { getRelation } from '@directus/utils';
 import { getRelationType } from './get-relation-type.js';
 
-type RelationInfo = {
+export type RelationInfo = {
 	relation: Relation | null;
 	relationType: 'o2m' | 'm2o' | 'a2o' | 'o2a' | null;
 };
