@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-export const RegistryAccountResponse = z.object({
-	data: z.object({
+export const RegistryAccountResponse = z.strictObject({
+	data: z.strictObject({
 		id: z.string(),
 		username: z.string(),
 		verified: z.boolean(),

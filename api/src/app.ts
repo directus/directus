@@ -25,6 +25,7 @@ import flowsRouter from './controllers/flows.js';
 import foldersRouter from './controllers/folders.js';
 import graphqlRouter from './controllers/graphql.js';
 import itemsRouter from './controllers/items.js';
+import mcpRouter from './controllers/mcp.js';
 import metricsRouter from './controllers/metrics.js';
 import notFoundHandler from './controllers/not-found.js';
 import notificationsRouter from './controllers/notifications.js';
@@ -296,6 +297,10 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/flows', flowsRouter);
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
+
+	if (env['MCP_ENABLED'] === true) {
+		app.use('/mcp', mcpRouter);
+	}
 
 	if (env['METRICS_ENABLED'] === true) {
 		app.use('/metrics', metricsRouter);

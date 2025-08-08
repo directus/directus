@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-import type { Theme } from './themes.js';
 import type {
 	API_EXTENSION_TYPES,
 	APP_EXTENSION_TYPES,
@@ -9,14 +8,15 @@ import type {
 	HYBRID_EXTENSION_TYPES,
 	NESTED_EXTENSION_TYPES,
 } from '@directus/constants';
+import type { DisplayConfig } from './displays.js';
 import type { EndpointConfig } from './endpoints.js';
 import type { HookConfig } from './hooks.js';
-import type { DisplayConfig } from './displays.js';
 import type { InterfaceConfig } from './interfaces.js';
 import type { LayoutConfig } from './layouts.js';
 import type { ModuleConfig } from './modules.js';
 import type { OperationApiConfig, OperationAppConfig } from './operations.js';
 import type { PanelConfig } from './panels.js';
+import type { Theme } from './themes.js';
 
 export type AppExtensionConfigs = {
 	interfaces: InterfaceConfig[];
@@ -28,30 +28,30 @@ export type AppExtensionConfigs = {
 	operations: OperationAppConfig[];
 };
 
-export const SplitEntrypoint = z.object({
+export const SplitEntrypoint = z.strictObject({
 	app: z.string(),
 	api: z.string(),
 });
 
 export type SplitEntrypoint = z.infer<typeof SplitEntrypoint>;
 
-export const ExtensionSandboxRequestedScopes = z.object({
+export const ExtensionSandboxRequestedScopes = z.strictObject({
 	request: z.optional(
-		z.object({
+		z.strictObject({
 			urls: z.array(z.string()),
 			methods: z.array(
 				z.union([z.literal('GET'), z.literal('POST'), z.literal('PATCH'), z.literal('PUT'), z.literal('DELETE')]),
 			),
 		}),
 	),
-	log: z.optional(z.object({})),
-	sleep: z.optional(z.object({})),
+	log: z.optional(z.strictObject({})),
+	sleep: z.optional(z.strictObject({})),
 });
 
 export type ExtensionSandboxRequestedScopes = z.infer<typeof ExtensionSandboxRequestedScopes>;
 
 export const ExtensionSandboxOptions = z.optional(
-	z.object({
+	z.strictObject({
 		enabled: z.boolean(),
 		requestedScopes: ExtensionSandboxRequestedScopes,
 	}),
