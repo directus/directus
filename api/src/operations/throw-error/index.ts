@@ -10,7 +10,7 @@ type Options = {
 const FALLBACK_ERROR = new InternalServerError();
 
 export default defineOperationApi<Options>({
-	id: 'error',
+	id: 'throw-error',
 
 	handler: ({ code, status, message }) => {
 		const statusCode = parseInt(status);

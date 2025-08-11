@@ -4,28 +4,28 @@ import { defineOperationApp } from '@directus/extensions';
 const FALLBACK_ERROR = new InternalServerError();
 
 export default defineOperationApp({
-	id: 'error',
+	id: 'throw-error',
 	icon: 'error',
-	name: '$t:operations.error.name',
-	description: '$t:operations.error.description',
+	name: '$t:operations.throw-error.name',
+	description: '$t:operations.throw-error.description',
 	overview: ({ code, status, message }) => [
 		{
-			label: '$t:operations.error.code',
+			label: '$t:operations.throw-error.code',
 			text: code ?? FALLBACK_ERROR.code,
 		},
 		{
-			label: '$t:operations.error.status',
+			label: '$t:operations.throw-error.status',
 			text: status ?? FALLBACK_ERROR.status.toString(),
 		},
 		{
-			label: '$t:operations.error.message',
+			label: '$t:operations.throw-error.message',
 			text: message ?? FALLBACK_ERROR.message,
 		},
 	],
 	options: () => [
 		{
 			field: 'code',
-			name: '$t:operations.error.code',
+			name: '$t:operations.throw-error.code',
 			type: 'string',
 			meta: {
 				width: 'full',
@@ -44,7 +44,7 @@ export default defineOperationApp({
 		},
 		{
 			field: 'status',
-			name: '$t:operations.error.status',
+			name: '$t:operations.throw-error.status',
 			type: 'string',
 			meta: {
 				width: 'full',
@@ -93,7 +93,7 @@ export default defineOperationApp({
 		},
 		{
 			field: 'message',
-			name: '$t:operations.error.message',
+			name: '$t:operations.throw-error.message',
 			type: 'string',
 			meta: {
 				width: 'full',

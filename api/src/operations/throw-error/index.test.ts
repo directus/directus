@@ -4,7 +4,7 @@ import config from './index.js';
 
 const DEFAULT_ERROR = new InternalServerError();
 
-describe('Operations / Error', () => {
+describe('Operations / Throw Error', () => {
 	test('Throws error with default values', () => {
 		expect.assertions(3);
 
