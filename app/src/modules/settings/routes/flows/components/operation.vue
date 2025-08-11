@@ -413,10 +413,10 @@ function pointerLeave() {
 		align-items: center;
 		padding: 20px;
 		padding-inline-start: 60px;
-		transform: translate(-1px, -50%);
+		transform: translate(-1px, calc(-50% - 2.5px));
 
 		html[dir='rtl'] & {
-			transform: translate(1px, -50%);
+			transform: translate(1px, calc(-50% - 2.5px));
 		}
 	}
 
