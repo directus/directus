@@ -1,0 +1,27 @@
+{
+	"name": "e2e",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "vitest"
+	},
+	"keywords": [],
+	"author": "",
+	"type": "module",
+	"license": "ISC",
+	"packageManager": "pnpm@10.14.0",
+	"devDependencies": {
+		"vitest": "catalog:",
+		"@directus/sdk": "20.0.0",
+		"@directus/sandbox": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
+		"@types/node": "22.13.8",
+		"chalk": "5.4.1",
+		"commander": "14.0.0",
+		"typescript": "5.8.2"
+	},
+	"engines": {
+		"node": ">=12.20.0"
+	}
+}

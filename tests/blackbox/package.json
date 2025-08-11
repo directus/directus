@@ -1,27 +1,38 @@
 {
-  "name": "blackbox",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "vitest"
-  },
-  "keywords": [],
-  "author": "",
+	"name": "tests-blackbox",
+	"version": "0.0.0",
+	"private": true,
 	"type": "module",
-  "license": "ISC",
-  "packageManager": "pnpm@10.14.0",
-	"devDependencies": {
-		"vitest": "catalog:",
-		"@directus/sdk": "20.0.0",
-		"@directus/sandbox": "workspace:*",
-		"@directus/tsconfig": "3.0.0",
-		"@types/node": "22.13.8",
-		"chalk": "5.4.1",
-		"commander": "14.0.0",
-		"typescript": "5.8.2"
+	"scripts": {
+		"test": "vitest --watch=false",
+		"typecheck": "tsc --noEmit"
 	},
-	"engines": {
-		"node": ">=12.20.0"
+	"devDependencies": {
+		"@directus/tsconfig": "catalog:",
+		"@directus/types": "workspace:*",
+		"@directus/utils": "workspace:*",
+		"@types/js-yaml": "4.0.9",
+		"@types/lodash-es": "catalog:",
+		"@types/seedrandom": "3.0.8",
+		"@types/supertest": "6.0.2",
+		"@types/ws": "8.5.14",
+		"argon2": "0.41.1",
+		"autocannon": "8.0.0",
+		"axios": "1.8.4",
+		"get-port": "7.1.0",
+		"globby": "14.1.0",
+		"graphql-ws": "5.16.2",
+		"js-yaml": "4.1.0",
+		"json-to-graphql-query": "2.3.0",
+		"knex": "3.1.0",
+		"listr2": "8.2.5",
+		"lodash-es": "catalog:",
+		"seedrandom": "3.0.5",
+		"supertest": "7.0.0",
+		"typescript": "catalog:",
+		"uuid": "11.1.0",
+		"vite-tsconfig-paths": "5.1.4",
+		"vitest": "1.6.1",
+		"ws": "8.18.1"
 	}
 }
