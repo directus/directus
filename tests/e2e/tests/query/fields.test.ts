@@ -1,18 +1,14 @@
 import { expect, test } from 'vitest';
-import { createDirectus, rest, staticToken, schemaApply, schemaDiff, createItem, readCollections } from '@directus/sdk';
+import { createDirectus, rest, staticToken, schemaApply, schemaDiff, createItem } from '@directus/sdk';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
 test('ABC', async () => {
 	const directus = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
 
-	const collections = (await directus.request(readCollections())).map((c) => c.collection);
-
-	if (!collections.includes('fields')) {
-		const snapshot = await readFile(join(import.meta.dirname, 'fields.snapshot.json'), { encoding: 'utf8' });
-		const diff = await directus.request(schemaDiff(JSON.parse(snapshot), true));
-		if (diff) await directus.request(schemaApply(diff));
-	}
+	const snapshot = await readFile(join(import.meta.dirname, 'fields.snapshot.json'), { encoding: 'utf8' });
+	const diff = await directus.request(schemaDiff(JSON.parse(snapshot), true));
+	if (diff) await directus.request(schemaApply(diff));
 
 	const result = await directus.request(
 		createItem('fields', {
