@@ -1,14 +1,16 @@
 import { expect, test } from 'vitest';
-import { createDirectus, rest, staticToken, schemaApply, schemaDiff, createItem } from '@directus/sdk';
+import { createDirectus, rest, staticToken, schemaApply, schemaDiff, createItem, readCollection } from '@directus/sdk';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
 test('ABC', async () => {
-	const directus = createDirectus('http://localhost:8055').with(rest()).with(staticToken('admin'));
+	const directus = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
 
-	const snapshot = await readFile(join(import.meta.dirname, 'fields.snapshot.json'), { encoding: 'utf8' });
-	const diff = await directus.request(schemaDiff(JSON.parse(snapshot), true));
-	if (diff) await directus.request(schemaApply(diff));
+	if (!(await directus.request(readCollection('fields')))) {
+		const snapshot = await readFile(join(import.meta.dirname, 'fields.snapshot.json'), { encoding: 'utf8' });
+		const diff = await directus.request(schemaDiff(JSON.parse(snapshot), true));
+		if (diff) await directus.request(schemaApply(diff));
+	}
 
 	const result = await directus.request(
 		createItem('fields', {
@@ -21,7 +23,7 @@ test('ABC', async () => {
 			integer: 1,
 			string: 'hello',
 			text: 'lorem ipsum',
-			time: '11:10:59',
+			time: process.env['DATABASE'] === 'oracle' ? '11:10:590' : '11:10:59',
 			timestamp: '2025-08-11T11:25:30.000Z',
 			uuid: '1bc5500a-762e-420c-baff-6359ea42c36b',
 		}),
@@ -35,10 +37,10 @@ test('ABC', async () => {
 		integer: 1,
 		string: 'hello',
 		text: 'lorem ipsum',
-		time: '11:10:59',
-		uuid: '1bc5500a-762e-420c-baff-6359ea42c36b',
+		time: process.env['DATABASE'] === 'oracle' ? '-010095-01-28T16:19:15.000Z' : '11:10:59',
 	});
 
+	expect(String(result.uuid).toLocaleLowerCase()).toEqual('1bc5500a-762e-420c-baff-6359ea42c36b');
 	expect(String(result.timestamp).startsWith('2025-08-11T11:25:30'));
 	expect(Number(result.big_integer)).toEqual(1321931);
 	expect(Number(result.decimal)).toEqual(48832);

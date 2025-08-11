@@ -28,6 +28,8 @@
 		"@types/node": "catalog:",
 		"chalk": "catalog:",
 		"commander": "catalog:",
+		"knex": "catalog:",
+		"lodash-es": "catalog:",
 		"rimraf": "catalog:",
 		"tsx": "catalog:",
 		"typescript": "catalog:"
@@ -35,7 +37,11 @@
 	"engines": {
 		"node": ">=12.20.0"
 	},
-	"dependencies": {
-		"lodash-es": "catalog:"
+	"optionalDependencies": {
+		"mysql2": "catalog:",
+		"oracledb": "catalog:",
+		"pg": "catalog:",
+		"sqlite3": "catalog:",
+		"tedious": "catalog:"
 	}
 }

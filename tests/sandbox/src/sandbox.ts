@@ -4,6 +4,7 @@ import { join } from 'path';
 import { merge } from 'lodash-es';
 import { spawn, type ChildProcessWithoutNullStreams } from 'child_process';
 import { getEnv, type Env } from './config.js';
+import knex from 'knex';
 
 export type StopSandbox = () => Promise<void>;
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
@@ -71,8 +72,8 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	}
 
 	async function stop() {
-		await dockerDown(project, logger);
 		apis.forEach((api) => api.kill());
+		if (project) await dockerDown(project, logger);
 		process.exit();
 	}
 
@@ -124,6 +125,8 @@ async function dockerUp(database: Database, extras: Options['extras'], env: Env,
 	const project = `loadtests_${database}${extrasList.map((extra) => '_' + extra).join('')}`;
 	const files = database === 'sqlite' ? extrasList : [database, ...extrasList];
 
+	if (files.length === 0) return;
+
 	const docker = spawn(
 		'docker',
 		[
@@ -138,15 +141,19 @@ async function dockerUp(database: Database, extras: Options['extras'], env: Env,
 		{
 			env: {
 				...env,
+				COMPOSE_STATUS_STDOUT: '1', //Ref: https://github.com/docker/compose/issues/7346
 			},
 		},
 	);
 
-	logger.pipe(docker.stdout);
+	logger.pipe(docker.stdout, 'debug');
 	logger.pipe(docker.stderr, 'error');
 
 	await new Promise((resolve) => docker!.on('close', resolve));
-	await new Promise((resolve) => setTimeout(resolve, 1_000));
+
+	while (!(await testDBCollection(database, env))) {
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+	}
 
 	logger.info('Docker containers started');
 
@@ -154,12 +161,18 @@ async function dockerUp(database: Database, extras: Options['extras'], env: Env,
 }
 
 async function dockerDown(project: string, logger: Logger) {
-	const docker = spawn('docker', ['compose', '-p', project, 'down']);
+	logger.info('Stopping docker containers');
+
+	const docker = spawn('docker', ['compose', '-p', project, 'down'], {
+		env: { PATH: process.env['PATH'], COMPOSE_STATUS_STDOUT: '1' },
+	});
 
 	logger.pipe(docker.stdout, 'debug');
 	logger.pipe(docker.stderr, 'error');
 
 	await new Promise((resolve) => docker.on('close', resolve));
+
+	logger.info('Docker containers stopped');
 }
 
 async function bootstrap(env: Env, logger: Logger) {
@@ -181,7 +194,7 @@ async function startDirectus(opts: Options, env: Env) {
 
 	return await Promise.all(
 		[...Array(apiCount).keys()].map((i) => {
-			const logger = createLogger(`[API${i}]`);
+			const logger = createLogger(apiCount > 1 ? `API ${i}` : undefined);
 			return startDirectusInstance(opts, { ...env, PORT: String(Number(env.PORT) + i) }, logger);
 		}),
 	);
@@ -211,11 +224,10 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 
 	await new Promise((resolve, reject) => {
 		api!.stdout!.on('data', (data) => {
-			logger.debug(String(data));
-
 			if (String(data).includes(`Server started at http://${env.HOST}:${env.PORT}`)) {
 				resolve(undefined);
-				logger.info(String(data));
+			} else {
+				logger.debug(String(data));
 			}
 		});
 
@@ -225,7 +237,47 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 		}, 10_000);
 	});
 
-	logger.info('Completed Starting Directus');
+	logger.info(`Server started at http://${env.HOST}:${env.PORT}`);
 
 	return api;
+}
+
+export async function testDBCollection(database: Database, env: Env): Promise<boolean> {
+	const db =
+		'DB_FILENAME' in env
+			? knex({
+					client: 'sqlite3',
+					connection: {
+						filename: env.DB_FILENAME,
+					},
+				})
+			: knex({
+					client: {
+						mysql: 'mysql2',
+						postgres: 'pg',
+						maria: 'mysql2',
+						cockroachdb: 'cockroachdb',
+						mssql: 'mssql',
+						oracle: 'oracledb',
+					}[database as Exclude<Database, 'sqlite'>],
+					connection: {
+						host: env.DB_HOST,
+						port: Number(env.DB_PORT),
+						user: env.DB_USER,
+						password: env.DB_PASSWORD,
+						database: env.DB_DATABASE,
+					},
+				});
+
+	try {
+		if (database === 'oracle') {
+			await db.raw('select 1 from DUAL');
+		} else {
+			await db.raw('SELECT 1');
+		}
+
+		return true;
+	} catch {
+		return false;
+	}
 }

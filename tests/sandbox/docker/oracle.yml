@@ -1,9 +1,13 @@
 services:
   oracle:
-    image: quillbuilduser/oracle-18-xe-micro-sq
+    image: gvenzl/oracle-xe:slim-faststart
     ports:
       - ${DB_PORT}:1521
     environment:
       - OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m
       - ORACLE_ALLOW_REMOTE=true
+      - ORACLE_RANDOM_PASSWORD=yes
+      - ORACLE_DATABASE=${DB_DATABASE}
+      - APP_USER=${DB_USER}
+      - APP_USER_PASSWORD=${DB_PASSWORD}
     shm_size: '1gb' # more like smh-size ammirite 🥁

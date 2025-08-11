@@ -86,11 +86,11 @@ const sqlite = {
 
 const oracle = {
 	DB_CLIENT: 'oracledb',
-	DB_CONNECT_STRING: 'localhost:$PORT_ORACLE/XE',
 	DB_HOST: '127.0.0.1',
-	DB_PORT: '$PORT_ORACLE',
+	DB_PORT: '$PORT',
 	DB_USER: 'secretsysuser',
 	DB_PASSWORD: 'secretpassword',
+	DB_DATABASE: 'directus',
 	...directusConfig,
 } as const;
 
@@ -144,7 +144,7 @@ export function getEnv(database: Database, opts: Options): Env {
 
 	const portMap: Record<string, string> = {};
 
-	if (opts.scale) {
+	if (Number(opts.scale) > 1) {
 		opts.extras.redis = true;
 	}
 

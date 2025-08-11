@@ -223,6 +223,7 @@ catalog:
   mitt: 3.0.1
   mnemonist: 0.40.3
   ms: 2.1.3
+  mysql: 2.18.1
   mysql2: 3.14.3
   nanoid: 5.1.5
   node-machine-id: 1.1.12
