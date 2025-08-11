@@ -14,6 +14,8 @@ export type Options = {
 	watch: boolean;
 	port: string;
 	dockerBasePort: string;
+	scale: string;
+	env: Record<string, string>;
 	extras: {
 		redis: boolean;
 		saml: boolean;
@@ -34,6 +36,8 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 			watch: false,
 			port: '8055',
 			dockerBasePort: '6000',
+			scale: '1',
+			env: {} as Record<string, string>,
 			extras: {
 				redis: false,
 				maildev: false,
@@ -44,16 +48,14 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		options,
 	);
 
-	let api: ChildProcessWithoutNullStreams | undefined = undefined;
+	let apis: ChildProcessWithoutNullStreams[] = [];
 	const env = getEnv(database, opts);
 
 	// Rebuild directus
 	if (opts.build && !opts.dev) {
 		buildDirectus(opts, logger, async () => {
-			if (api) {
-				api.kill();
-				api = await startDirectus(opts, env, logger);
-			}
+			apis.forEach((api) => api.kill());
+			apis = await startDirectus(opts, env);
 		});
 	}
 
@@ -61,15 +63,16 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 
 	await bootstrap(env, logger);
 
-	api = await startDirectus(opts, env, logger);
+	try {
+		apis = await startDirectus(opts, env);
+	} catch (e) {
+		stop();
+		throw e;
+	}
 
 	async function stop() {
 		await dockerDown(project, logger);
-
-		if (api) {
-			api.kill();
-		}
-
+		apis.forEach((api) => api.kill());
 		process.exit();
 	}
 
@@ -102,7 +105,7 @@ async function buildDirectus(opts: Options, logger: Logger, onRebuild: () => voi
 			});
 
 			// In case the api takes too long to start
-			setTimeout(reject, 10_000);
+			setTimeout(() => reject(new Error('timeout building directus')), 10_000);
 		});
 	} else {
 		logger.pipe(build.stdout);
@@ -143,7 +146,7 @@ async function dockerUp(database: Database, extras: Options['extras'], env: Env,
 	logger.pipe(docker.stderr, 'error');
 
 	await new Promise((resolve) => docker!.on('close', resolve));
-	await new Promise((resolve) => setTimeout(resolve, 5_000));
+	await new Promise((resolve) => setTimeout(resolve, 1_000));
 
 	logger.info('Docker containers started');
 
@@ -173,7 +176,18 @@ async function bootstrap(env: Env, logger: Logger) {
 	logger.info('Completed Bootstraping Database');
 }
 
-async function startDirectus(opts: Options, env: Env, logger: Logger) {
+async function startDirectus(opts: Options, env: Env) {
+	const apiCount = Math.max(1, Number(opts.scale));
+
+	return await Promise.all(
+		[...Array(apiCount).keys()].map((i) => {
+			const logger = createLogger(`[API${i}]`);
+			return startDirectusInstance(opts, { ...env, PORT: String(Number(env.PORT) + i) }, logger);
+		}),
+	);
+}
+
+async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 	logger.info('Starting Directus');
 	let api;
 
@@ -181,8 +195,8 @@ async function startDirectus(opts: Options, env: Env, logger: Logger) {
 		api = spawn(
 			'tsx',
 			opts.watch
-				? ['watch', '--clear-screen=false', join(apiFolder, 'src', 'start.ts')]
-				: [join(apiFolder, 'src', 'start.ts')],
+				? ['watch', '--clear-screen=false', '--inspect', join(apiFolder, 'src', 'start.ts')]
+				: ['--inspect', join(apiFolder, 'src', 'start.ts')],
 			{
 				env,
 			},
@@ -206,7 +220,9 @@ async function startDirectus(opts: Options, env: Env, logger: Logger) {
 		});
 
 		// In case the api takes too long to start
-		setTimeout(reject, 10_000);
+		setTimeout(() => {
+			reject(new Error('timeout starting directus'));
+		}, 10_000);
 	});
 
 	logger.info('Completed Starting Directus');

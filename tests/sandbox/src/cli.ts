@@ -4,11 +4,12 @@ import { sandbox, type Database } from './sandbox.js';
 program
 	.argument('<database>')
 	.option('-b, --build', 'Rebuild directus from source')
-	.option('-d, --dev')
-	.option('-w, --watch')
-	.option('-p, --port <port>')
-	.option('--dockerBasePort <dockerBasePort>')
-	.option('-e, --extras <extras>');
+	.option('-d, --dev', 'Start directus in developer mode. Not compatible with build.')
+	.option('-w, --watch', 'Restart directus when changes are made to the api.')
+	.option('-p, --port <port>', 'Port to start directus on.')
+	.option('--dockerBasePort <dockerBasePort>', 'Minimum port number to use for docker containers')
+	.option('-e, --extras <extras>', 'Enable redis,maildev,saml or other extras')
+	.option('-s, --scale <instances>', 'Horizontally scale directus to a given number of instances. Minimum 1', '1');
 
 program.parse();
 const options = program.opts();

@@ -144,6 +144,10 @@ export function getEnv(database: Database, opts: Options): Env {
 
 	const portMap: Record<string, string> = {};
 
+	if (opts.scale) {
+		opts.extras.redis = true;
+	}
+
 	const env = {
 		...baseConfig[database],
 		PORT: opts.port,
@@ -153,6 +157,7 @@ export function getEnv(database: Database, opts: Options): Env {
 		...(opts.extras.minio ? minio : {}),
 		...(opts.extras.saml ? saml : {}),
 		...(opts.extras.maildev ? maildev : {}),
+		...opts.env,
 	};
 
 	return Object.fromEntries(
