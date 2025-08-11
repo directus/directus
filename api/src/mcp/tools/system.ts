@@ -4,12 +4,12 @@ import prompts from './prompts/index.js';
 
 export const system = defineTool({
 	name: 'system-prompt',
-	description: prompts.system,
-	inputSchema: z.strictObject({}),
+	description: prompts.systemPromptDescription,
+	inputSchema: z.object({}),
 	async handler() {
 		return {
 			type: 'text',
-			data: 'MCP SYSTEM PROMPT',
+			data: prompts.systemPrompt,
 		};
 	},
 });

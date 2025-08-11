@@ -1,40 +1,294 @@
-Perform CRUD operations on files and folders, or fetch and return a base64-encoded Directus asset.
+# Directus Files Tool
 
-### 🗂️ Available Types
+Perform CRUD operations on files and folders, or fetch and return base64-encoded Directus assets.
 
-- `folder`: Operate on system folders
-- `file`: Operate on stored files and file metadata
-- `asset`: Retrieve a binary asset stream as base64-encoded image (read-only)
+## 🗂️ Available Types
 
-### ⚙️ Available Actions
+- **`folder`**: Manage folder organization and hierarchy
+- **`file`**: Manage file metadata (title, description, tags, folder placement)
+- **`asset`**: Retrieve raw file content as base64-encoded data (read-only)
 
-- `create`: Add one or more folders/files (only for type `folder` or `file`)
-- `read`: Fetch one or more folders, files, or a specific asset by ID
-- `update`: Modify existing folder or file metadata -`delete`: Remove folders or files by keys
+## ⚙️ Available Actions
 
-### 🧭 Behavior
+### For `folder` and `file` types:
+- **`create`**: Add new folders or file records
+- **`read`**: List/query metadata or get specific items by ID
+- **`update`**: Modify existing metadata (title, description, tags, folder)
+- **`delete`**: Remove folders or files by keys
 
-#### `folder` / `file` Types
+### For `asset` type:
+- **`read`**: Fetch raw file content as base64 (requires `id`)
 
-- Uses corresponding service (`FoldersService` or `FilesService`)
-- CRUD operations supported
-- Accepts `data`, `keys`, and query options (`fields`, `filter`, etc.)
+## 📋 Common Operations
 
-#### `asset` Type
+### Reading File Metadata
+```json
+{
+  "type": "file",
+  "action": "read",
+  "query": {
+    "fields": ["id", "title", "type", "filesize", "width", "height"],
+    "filter": { "type": { "_starts_with": "image/" } },
+    "limit": 10
+  }
+}
+```
 
-- Only supports `read`
-- Requires an `id` parameter (file ID)
-- Returns a base64-encoded image stream with `mimeType`
+### Get Single File Metadata
+```json
+{
+  "type": "file",
+  "action": "read",
+  "keys": ["file-uuid-here"]
+}
+```
 
-### 📘 Usage Notes
+### Get Raw File Content (Base64)
+```json
+{
+  "type": "asset",
+  "action": "read",
+  "id": "file-uuid-here"
+}
+```
+Returns base64-encoded content with MIME type - useful for image analysis, AI vision tools, or file downloads.
 
-- For `create` and `update`, `data` can be a single object or an array
-- `read`supports both key-based and query-based lookups
-- `delete` always uses the `keys` parameter
-- `asset` reads return a single file stream encoded in base64 (PNG output expected)
+### Update File Metadata
+```json
+{
+  "type": "file",
+  "action": "update",
+  "data": [
+    {
+      "id": "file-uuid",
+      "title": "New Title",
+      "description": "Updated description",
+      "tags": ["tag1", "tag2", "category"],
+      "folder": "folder-uuid"
+    }
+  ]
+}
+```
 
-### ⚠️ Limitations
+### Set Image Focal Point
+```json
+{
+  "type": "file",
+  "action": "update",
+  "keys": ["image-uuid"],
+  "data": {
+    "focal_point_x": 850,
+    "focal_point_y": 420
+  }
+}
+```
+Sets the focal point for image cropping - coordinates are in pixels from top-left corner.
 
-- `asset` streaming is read-only
-- `asset` only returns image content
-- Other binary formats (PDF, video, etc.) are not supported in this mode
+### Organize Files into Folders
+```json
+{
+  "type": "folder",
+  "action": "create",
+  "data": {
+    "name": "Product Images",
+    "parent": "parent-folder-uuid"
+  }
+}
+```
+
+## 🔍 Query Parameters
+
+For `read` operations, use query parameters to filter and shape results:
+
+- **`fields`**: Specify which fields to return
+- **`filter`**: Filter results (e.g., by type, folder, tags)
+- **`sort`**: Order results
+- **`limit`/`offset`**: Pagination
+- **`search`**: Full-text search in filenames and metadata
+- **`deep`**: Include related data
+
+### Common Filters
+```json
+{
+  "query": {
+    "filter": {
+      "type": { "_starts_with": "image/" },     // Images only
+      "folder": { "_eq": "folder-uuid" },       // Specific folder
+      "filesize": { "_lt": 5000000 },          // Under 5MB
+      "uploaded_on": { "_gte": "$NOW(-7 days)" } // Last week
+    }
+  }
+}
+```
+
+## 📊 File Metadata Fields
+
+Common fields available for files:
+- `id`: Unique identifier
+- `storage`: Storage adapter used
+- `filename_disk`: Actual filename on disk
+- `filename_download`: Suggested download filename
+- `title`: Display title
+- `type`: MIME type (e.g., "image/jpeg", "application/pdf")
+- `folder`: Parent folder ID
+- `uploaded_by`: User who uploaded
+- `uploaded_on`: Upload timestamp
+- `modified_by`: Last modifier
+- `modified_on`: Last modification time
+- `filesize`: Size in bytes
+- `width`/`height`: Dimensions for images (in pixels)
+- `duration`: Length for video/audio
+- `description`: File description
+- `location`: Geo-location data
+- `tags`: Array of tag strings (e.g., ["product", "red", "handbag"])
+- `metadata`: Additional metadata object
+- `focal_point_x`: Horizontal focal point (in pixels from left edge)
+- `focal_point_y`: Vertical focal point (in pixels from top edge)
+
+## 🖼️ Asset Content Retrieval
+
+When using `type: "asset"`:
+- Returns base64-encoded file content
+- Includes MIME type for proper handling
+- Suitable for:
+  - Image analysis and AI vision tools
+  - Displaying images in applications
+  - File downloads and transfers
+  - Content verification
+
+### Response Format for Assets
+```json
+{
+  "type": "image",
+  "data": "base64-encoded-string-here",
+  "mimeType": "image/jpeg"
+}
+```
+
+## 🎯 Real-World Use Cases
+
+### Asset Selection for Content
+Find appropriate images for articles, pages, or products:
+```json
+{
+  "type": "file",
+  "action": "read",
+  "query": {
+    "fields": ["id", "title", "description", "tags", "type"],
+    "filter": {
+      "type": { "_starts_with": "image/" },
+      "tags": { "_contains": "customer-support" }
+    },
+    "search": "help center"
+  }
+}
+```
+*Example: "Find images in our asset library related to customer support for our new help center article."*
+
+### Asset Analysis and Organization
+Improve asset library organization by analyzing and updating metadata:
+
+1. **First, get images needing organization:**
+```json
+{
+  "type": "file",
+  "action": "read",
+  "query": {
+    "fields": ["id", "filename_disk", "title", "description"],
+    "filter": {
+      "folder": { "_eq": "product-photography-folder-id" },
+      "description": { "_null": true }
+    }
+  }
+}
+```
+
+2. **Analyze image content (get base64 for vision analysis):**
+```json
+{
+  "type": "asset",
+  "action": "read",
+  "id": "image-uuid-to-analyze"
+}
+```
+
+3. **Update with descriptive metadata:**
+```json
+{
+  "type": "file",
+  "action": "update",
+  "data": [{
+    "id": "image-uuid",
+    "title": "Red leather handbag with gold hardware on white background",
+    "description": "Professional product photo of red handbag for e-commerce",
+    "tags": ["handbag", "leather", "red", "product-photo", "accessories"]
+  }]
+}
+```
+
+### Bulk Asset Cleanup
+Transform generic filenames into descriptive metadata:
+- `IMG_2847.jpg` → Title: "Red leather handbag product photo"
+- Add missing alt text for accessibility
+- Apply consistent tagging taxonomy
+- Organize into appropriate folders
+
+### Smart Image Cropping with Focal Points
+Set focal points to ensure important parts of images are preserved during cropping:
+```json
+{
+  "type": "file",
+  "action": "update",
+  "data": {
+    "id": "portrait-uuid",
+    "focal_point_x": 512,  // Center of face at 512px from left
+    "focal_point_y": 300   // Eyes at 300px from top
+  }
+}
+```
+Focal points ensure that when images are cropped for different aspect ratios (thumbnails, hero images, etc.), the important subject remains visible. Coordinates are in pixels from the top-left corner of the original image.
+
+### Content-Asset Matching
+Find and associate relevant assets with content:
+```json
+{
+  "type": "file",
+  "action": "read",
+  "query": {
+    "fields": ["id", "title", "type", "width", "height"],
+    "filter": {
+      "type": { "_starts_with": "image/" },
+      "$or": [
+        { "tags": { "_contains": "product" } },
+        { "title": { "_contains": "product" } },
+        { "description": { "_contains": "product" } }
+      ]
+    }
+  }
+}
+```
+
+### Asset Migration and Import
+When migrating content between systems:
+1. Read existing asset metadata
+2. Map to new structure
+3. Update with proper categorization
+4. Maintain relationships with content
+
+## ⚠️ Important Notes
+
+- **File Upload**: This tool manages metadata only. Use appropriate upload endpoints for actual file uploads
+- **Asset Size**: Large files are automatically handled but may impact performance
+- **Permissions**: Respects Directus access control - only accessible files are returned
+- **Folder Hierarchy**: Deleting a folder requires it to be empty or will cascade based on settings
+- **File Updates**: Only metadata can be updated, not the actual file content
+- **Asset Type**: While primarily for images, the asset reader can handle any file type that Directus stores
+
+## 🚨 Common Mistakes to Avoid
+
+1. **Don't** confuse file metadata operations with raw content retrieval
+2. **Don't** try to upload files through this tool - it's for metadata management
+3. **Don't** forget to specify `type: "asset"` when you need file content, not metadata
+4. **Don't** attempt to modify file content - only metadata can be updated
+5. **Remember** that `keys` expects an array even for single items
+6. **Tags must be arrays**: Use `["tag1", "tag2"]` not `"tag1, tag2"`

@@ -14,5 +14,6 @@ export default {
 	operations: fse.readFileSync(join(__dirname, 'operations.md'), 'utf8'),
 	relations: fse.readFileSync(join(__dirname, 'relations.md'), 'utf8'),
 	schema: fse.readFileSync(join(__dirname, 'schema.md'), 'utf8'),
-	system: fse.readFileSync(join(__dirname, 'system.md'), 'utf8'),
+	systemPrompt: fse.readFileSync(join(__dirname, 'system-prompt.md'), 'utf8'),
+	systemPromptDescription: fse.readFileSync(join(__dirname, 'system-prompt-description.md'), 'utf8'),
 };
