@@ -1,23 +1,25 @@
+import { ErrorCode, InternalServerError } from '@directus/errors';
 import { defineOperationApp } from '@directus/extensions';
-import { ErrorCode } from '@directus/errors';
+
+const FALLBACK_ERROR = new InternalServerError();
 
 export default defineOperationApp({
 	id: 'error',
 	icon: 'error',
 	name: '$t:operations.error.name',
 	description: '$t:operations.error.description',
-	overview: ({ filter, status, message }) => [
+	overview: ({ code, status, message }) => [
 		{
 			label: '$t:operations.error.code',
-			text: filter,
+			text: code ?? FALLBACK_ERROR.code,
 		},
 		{
 			label: '$t:operations.error.status',
-			text: status,
+			text: status ?? FALLBACK_ERROR.status.toString(),
 		},
 		{
 			label: '$t:operations.error.message',
-			text: message,
+			text: message ?? FALLBACK_ERROR.message,
 		},
 	],
 	options: () => [
@@ -35,6 +37,9 @@ export default defineOperationApp({
 					})),
 					allowOther: true,
 				},
+			},
+			schema: {
+				default_value: FALLBACK_ERROR.code,
 			},
 		},
 		{
@@ -82,6 +87,9 @@ export default defineOperationApp({
 					allowOther: true,
 				},
 			},
+			schema: {
+				default_value: FALLBACK_ERROR.status.toString(),
+			},
 		},
 		{
 			field: 'message',
@@ -90,6 +98,9 @@ export default defineOperationApp({
 			meta: {
 				width: 'full',
 				interface: 'input',
+			},
+			schema: {
+				default_value: FALLBACK_ERROR.message,
 			},
 		},
 	],
