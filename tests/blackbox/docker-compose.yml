@@ -36,6 +36,7 @@ services:
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
+    platform: linux/amd64
     ports:
       - 6100:5432
 
@@ -44,6 +45,7 @@ services:
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
+    platform: linux/amd64
     ports:
       - 6101:5432
 
@@ -53,16 +55,17 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
+    platform: linux/amd64
     ports:
       - 6102:3306
 
-  mysql5:
-    image: mysql:5
-    environment:
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: directus
-    ports:
-      - 6103:3306
+  # mysql5:
+  #   image: mysql:5
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: secret
+  #     MYSQL_DATABASE: directus
+  #   ports:
+  #     - 6103:3306
 
   maria:
     image: mariadb:11.4
@@ -70,6 +73,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
+    platform: linux/amd64
     ports:
       - 6104:3306
 
@@ -79,33 +83,38 @@ services:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=Test@123
       - MSSQL_PID=Express
+    platform: linux/amd64
     ports:
       - 6105:1433
 
-  oracle:
-    image: quillbuilduser/oracle-18-xe-micro-sq
-    ports:
-      - 6106:1521
-    environment:
-      - OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m
-      - ORACLE_ALLOW_REMOTE=true
-    shm_size: '1gb' # more like smh-size ammirite 🥁
+  # oracle:
+  #   image: quillbuilduser/oracle-18-xe-micro-sq
+  #   platform: linux/amd64
+  #   ports:
+  #     - 6106:1521
+  #   environment:
+  #     - OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m
+  #     - ORACLE_ALLOW_REMOTE=true
+  #   shm_size: '1gb' # more like smh-size ammirite 🥁
 
   cockroachdb:
     # change in the YY.R component denotes a major release
-    image: cockroachdb/cockroach:latest-v21.1
+    image: cockroachdb/cockroach:latest-v23.2
+    platform: linux/amd64
     command: start-single-node --cluster-name=example-single-node --insecure
     ports:
       - 6107:26257
 
   redis:
     image: redis:6-alpine
+    platform: linux/amd64
     ports:
       - 6108:6379
 
   minio:
     # should stay compatible via S3 driver
     image: minio/minio
+    platform: linux/amd64
     command: server /data/minio/ --console-address :9001
     ports:
       - 8881:9000
@@ -116,6 +125,7 @@ services:
 
   minio-mc:
     image: minio/mc
+    platform: linux/amd64
     depends_on:
       - minio
     entrypoint: >
@@ -129,6 +139,7 @@ services:
 
   auth-saml:
     image: kristophjunge/test-saml-idp
+    platform: linux/amd64
     ports:
       - 8880:8080
     environment:

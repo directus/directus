@@ -101,13 +101,13 @@ services:
     ports:
       - 5101:3306
 
-  mysql5:
-    image: mysql:5
-    environment:
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: directus
-    ports:
-      - 5108:3306
+  # mysql5:
+  #  image: mysql:5
+  #  environment:
+  #    MYSQL_ROOT_PASSWORD: secret
+  #    MYSQL_DATABASE: directus
+  #  ports:
+  #    - 5108:3306
 
   maria:
     image: mariadb:11.4
