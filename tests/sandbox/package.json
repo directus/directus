@@ -1,12 +1,12 @@
 {
-  "name": "@directus/sandbox",
-  "version": "1.0.0",
-  "description": "Toolkit for spinning up directus test environments",
-  "homepage": "https://directus.io",
-  "scripts": {
-    "cli": "tsx src/cli.ts",
-    "build": "tsc"
-  },
+	"name": "@directus/sandbox",
+	"version": "1.0.0",
+	"description": "Toolkit for spinning up directus test environments",
+	"homepage": "https://directus.io",
+	"scripts": {
+		"cli": "tsx src/cli.ts",
+		"build": "tsc"
+	},
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
@@ -15,27 +15,27 @@
 	"files": [
 		"dist"
 	],
-  "keywords": [],
-  "type": "module",
-  "author": "Nils Twelker (nils@directus.io)",
-  "license": "MIT",
-  "private": true,
-  "packageManager": "pnpm@10.14.0",
-  "devDependencies": {
-    "@directus/tsconfig": "catalog:",
-    "@directus/types": "workspace:*",
-    "@types/lodash-es": "catalog:",
-    "@types/node": "catalog:",
-    "chalk": "catalog:",
-    "commander": "catalog:",
-    "rimraf": "catalog:",
-    "tsx": "catalog:",
-    "typescript": "catalog:"
-  },
-  "engines": {
-    "node": ">=12.20.0"
-  },
-  "dependencies": {
-    "lodash-es": "catalog:"
-  }
+	"keywords": [],
+	"type": "module",
+	"author": "Nils Twelker (nils@directus.io)",
+	"license": "MIT",
+	"private": true,
+	"packageManager": "pnpm@10.14.0",
+	"devDependencies": {
+		"@directus/tsconfig": "catalog:",
+		"@directus/types": "workspace:*",
+		"@types/lodash-es": "catalog:",
+		"@types/node": "catalog:",
+		"chalk": "catalog:",
+		"commander": "catalog:",
+		"rimraf": "catalog:",
+		"tsx": "catalog:",
+		"typescript": "catalog:"
+	},
+	"engines": {
+		"node": ">=12.20.0"
+	},
+	"dependencies": {
+		"lodash-es": "catalog:"
+	}
 }
