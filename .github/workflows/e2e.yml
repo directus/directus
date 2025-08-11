@@ -44,4 +44,4 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Run tests
-        run: pnpm --filter e2e test -b ${{ matrix.vendor }}
+        run: DATABASE=${{ matrix.vendor }} pnpm --filter e2e test
