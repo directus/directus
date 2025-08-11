@@ -1,5 +1,5 @@
 import { InvalidPayloadError } from '@directus/errors';
-import type { Collection, Field, Item, Relation, SnapshotRelation } from '@directus/types';
+import type { Collection, Field, Item, RawCollection, Relation, SnapshotRelation } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
 import { CollectionsService } from '../../services/collections.js';
@@ -192,32 +192,43 @@ export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
 	},
 });
 
-const CollectionItemSchema = z.object({
+const FieldItemSchema = z.strictObject({
 	collection: z.string(),
-	meta: z.union([z.record(z.string(), z.any()), z.null()]),
+	field: z.string(),
+	type: z.string(),
 	schema: z.union([z.record(z.string(), z.any()), z.null()]),
+	meta: z.union([z.record(z.string(), z.any()), z.null()]),
+	name: z.string(),
+	children: z.union([z.array(z.record(z.string(), z.any())), z.null()]),
+});
+
+const CollectionItemSchema = z.strictObject({
+	collection: z.string(),
+	fields: z.array(FieldItemSchema).optional(),
+	meta: z.union([z.record(z.string(), z.any()), z.null()]).optional(),
+	schema: z.union([z.record(z.string(), z.any()), z.null()]).optional(),
 });
 
 const CollectionValidateSchema = z.union([
-	z.object({
+	z.strictObject({
 		action: z.literal('create'),
 		data: z.union([z.array(CollectionItemSchema), CollectionItemSchema]),
 	}),
-	z.object({
+	z.strictObject({
 		action: z.literal('read'),
 		keys: z.array(z.string()).optional(),
 	}),
-	z.object({
+	z.strictObject({
 		action: z.literal('update'),
 		data: z.union([z.array(CollectionItemSchema), CollectionItemSchema]),
 	}),
-	z.object({
+	z.strictObject({
 		action: z.literal('delete'),
 		keys: z.array(z.string()),
 	}),
 ]);
 
-const CollectionInputSchema = z.object({
+const CollectionInputSchema = z.strictObject({
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
 	keys: z.array(z.string()).optional().describe(''),
 	data: z
@@ -239,7 +250,7 @@ export const collection = defineTool<z.infer<typeof CollectionValidateSchema>>({
 		});
 
 		if (args.action === 'create') {
-			const data = toArray(args.data);
+			const data = toArray(args.data as RawCollection);
 
 			const savedKeys = await service.createMany(data);
 
@@ -290,17 +301,7 @@ export const collection = defineTool<z.infer<typeof CollectionValidateSchema>>({
 	},
 });
 
-const FieldItemSchema = z.object({
-	collection: z.string(),
-	field: z.string(),
-	type: z.string(),
-	schema: z.union([z.record(z.string(), z.any()), z.null()]),
-	meta: z.union([z.record(z.string(), z.any()), z.null()]),
-	name: z.string(),
-	children: z.union([z.array(z.record(z.string(), z.any())), z.null()]),
-});
-
-const FieldBaseValidateSchema = z.object({
+const FieldBaseValidateSchema = z.strictObject({
 	collection: z.string(),
 });
 
@@ -323,7 +324,7 @@ const FieldValidateSchema = z.union([
 	}),
 ]);
 
-const FieldInputSchema = z.object({
+const FieldInputSchema = z.strictObject({
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
 	collection: z.string().describe('The name of the collection'),
 	field: z.string().describe(''),
@@ -405,7 +406,7 @@ export const field = defineTool<z.infer<typeof FieldValidateSchema>>({
 
 const RelationItemSchema = z.custom<Relation>();
 
-const RelationBaseValidateSchema = z.object({
+const RelationBaseValidateSchema = z.strictObject({
 	collection: z.string(),
 });
 
@@ -429,7 +430,7 @@ const RelationValidateSchema = z.union([
 	}),
 ]);
 
-const RelationInputSchema = z.object({
+const RelationInputSchema = z.strictObject({
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
 	collection: z.string().describe('The name of the collection'),
 	field: z.string().describe(''),

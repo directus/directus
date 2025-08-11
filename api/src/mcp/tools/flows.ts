@@ -24,7 +24,7 @@ const OperationSchema = z
 	})
 	.partial();
 
-const FlowSchema = z.object({
+const FlowSchema = z.strictObject({
 	id: z.string(),
 	name: z.string(),
 	icon: z.union([z.string(), z.null()]),
@@ -41,26 +41,26 @@ const FlowSchema = z.object({
 });
 
 const FlowValidateSchema = z.union([
-	z.object({
+	z.strictObject({
 		action: z.literal('create'),
 		data: FlowSchema,
 	}),
-	z.object({
+	z.strictObject({
 		action: z.literal('read'),
 		query: QueryValidateSchema.optional(),
 	}),
-	z.object({
+	z.strictObject({
 		action: z.literal('update'),
 		data: FlowSchema,
 		key: z.string(),
 	}),
-	z.object({
+	z.strictObject({
 		action: z.literal('delete'),
 		key: z.string(),
 	}),
 ]);
 
-const FlowInputSchema = z.object({
+const FlowInputSchema = z.strictObject({
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
 	query: QueryInputSchema.optional().describe(''),
 	data: FlowSchema.optional().describe(''),
@@ -125,26 +125,26 @@ export const flows = defineTool<z.infer<typeof FlowValidateSchema>>({
 });
 
 const OperationValidationSchema = z.union([
-	z.object({
+	z.strictObject({
 		action: z.literal('create'),
 		data: OperationSchema,
 	}),
-	z.object({
+	z.strictObject({
 		action: z.literal('read'),
 		query: QueryValidateSchema.optional(),
 	}),
-	z.object({
+	z.strictObject({
 		action: z.literal('update'),
 		data: OperationSchema,
 		key: z.string(),
 	}),
-	z.object({
+	z.strictObject({
 		action: z.literal('delete'),
 		key: z.string(),
 	}),
 ]);
 
-const OperationInputSchema = z.object({
+const OperationInputSchema = z.strictObject({
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
 	query: QueryInputSchema.optional().describe(''),
 	data: FlowSchema.optional().describe('Flow data as a native object or array (NOT stringified JSON)'),
@@ -208,7 +208,7 @@ export const operations = defineTool<z.infer<typeof OperationValidationSchema>>(
 	},
 });
 
-const TriggerFlowInputSchema = z.object({
+const TriggerFlowInputSchema = z.strictObject({
 	flowDefinition: z.record(z.string(), z.any()).describe('The full flow definition from the read-flows call.'),
 	flowId: z.string().describe('The ID of the flow to trigger'),
 	method: z.enum(['GET', 'POST']).default('GET').describe(''),

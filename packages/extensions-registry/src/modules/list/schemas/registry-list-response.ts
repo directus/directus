@@ -1,12 +1,12 @@
 import { EXTENSION_TYPES } from '@directus/constants';
 import { z } from 'zod';
 
-export const RegistryListResponse = z.object({
-	meta: z.object({
+export const RegistryListResponse = z.strictObject({
+	meta: z.strictObject({
 		filter_count: z.number(),
 	}),
 	data: z.array(
-		z.object({
+		z.strictObject({
 			id: z.string(),
 			name: z.string(),
 			description: z.union([z.null(), z.string()]),
@@ -17,7 +17,7 @@ export const RegistryListResponse = z.object({
 			host_version: z.string(),
 			sandbox: z.boolean(),
 			license: z.string().nullable(),
-			publisher: z.object({
+			publisher: z.strictObject({
 				username: z.string(),
 				verified: z.boolean(),
 				github_name: z.string().nullable(),

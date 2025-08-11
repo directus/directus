@@ -4,7 +4,7 @@ import { z } from 'zod';
 export const ItemValidateSchema = z.custom<Item>();
 export const ItemInputSchema = z.record(z.string(), z.any());
 
-export const PartialItemInputSchema = z.object({
+export const PartialItemInputSchema = z.strictObject({
 	collection: z.string(),
 });
 

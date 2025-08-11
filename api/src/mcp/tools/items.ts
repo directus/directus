@@ -39,7 +39,7 @@ const ValidateSchema = z.union([
 	}),
 ]);
 
-const InputSchema = z.object({
+const InputSchema = z.strictObject({
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
 	collection: z.string().describe('The name of the collection'),
 	query: QueryInputSchema.optional().describe(''),

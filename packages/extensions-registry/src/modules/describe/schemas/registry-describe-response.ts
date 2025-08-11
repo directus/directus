@@ -1,8 +1,8 @@
 import { EXTENSION_TYPES } from '@directus/constants';
 import { z } from 'zod';
 
-export const RegistryDescribeResponse = z.object({
-	data: z.object({
+export const RegistryDescribeResponse = z.strictObject({
+	data: z.strictObject({
 		id: z.string(),
 		name: z.string(),
 		description: z.union([z.null(), z.string()]),
@@ -10,7 +10,7 @@ export const RegistryDescribeResponse = z.object({
 		downloads: z.union([
 			z.null(),
 			z.array(
-				z.object({
+				z.strictObject({
 					date: z.string(),
 					count: z.number(),
 				}),
@@ -21,7 +21,7 @@ export const RegistryDescribeResponse = z.object({
 		type: z.enum(EXTENSION_TYPES),
 		license: z.string().nullable(),
 		versions: z.array(
-			z.object({
+			z.strictObject({
 				id: z.string(),
 				version: z.string(),
 				verified: z.boolean(),
@@ -34,7 +34,7 @@ export const RegistryDescribeResponse = z.object({
 				url_homepage: z.union([z.null(), z.string()]),
 				url_repository: z.union([z.null(), z.string()]),
 				license: z.string().nullable(),
-				publisher: z.object({
+				publisher: z.strictObject({
 					id: z.string(),
 					username: z.string(),
 					verified: z.boolean(),
@@ -42,15 +42,15 @@ export const RegistryDescribeResponse = z.object({
 					github_avatar_url: z.string().nullable(),
 				}),
 				bundled: z.array(
-					z.object({
+					z.strictObject({
 						name: z.string(),
 						type: z.string(),
 					}),
 				),
 				maintainers: z
 					.array(
-						z.object({
-							accounts_id: z.object({
+						z.strictObject({
+							accounts_id: z.strictObject({
 								id: z.string(),
 								username: z.string(),
 								verified: z.boolean(),
