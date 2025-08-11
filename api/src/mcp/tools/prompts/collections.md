@@ -87,7 +87,7 @@ compatibility.**
 				},
 				{
 					"language": "es-ES",
-					"translation": "Organizaciones", 
+					"translation": "Organizaciones",
 					"singular": "organización",
 					"plural": "organizaciones"
 				}
@@ -101,71 +101,79 @@ compatibility.**
 ## 🌐 Internationalization & Display
 
 ### Workflow for Adding Translations
+
 1. **Check for languages collection**: Use `schema` tool to see if a `languages` collection exists
 2. **Get available languages**: If found, read the languages collection to get language codes
 3. **Apply translations**: Use those language codes in your translation objects
 4. **Fallback**: If no languages collection exists, use common codes like `en-US`, `es-ES`, etc.
 
 Example workflow:
+
 ```json
 // Step 1: Check schema for languages collection
 { "action": "read", "keys": ["languages"] }
 
-// Step 2: If found, read languages to get codes  
+// Step 2: If found, read languages to get codes
 { "type": "collection", "action": "read", "keys": ["languages"] }
 
 // Step 3: Use those language codes in translations
 ```
 
 ### Collection Translations
+
 **IMPORTANT**: Always check for a `languages` collection first to determine available languages.
 
 Provide collection names in multiple languages:
+
 ```json
 {
-  "meta": {
-    "translations": [
-      {
-        "language": "en-US",
-        "translation": "Products", 
-        "singular": "product",
-        "plural": "products"
-      },
-      {
-        "language": "es-ES", 
-        "translation": "Productos",
-        "singular": "producto", 
-        "plural": "productos"
-      },
-      {
-        "language": "fr-FR",
-        "translation": "Produits",
-        "singular": "produit",
-        "plural": "produits"  
-      }
-    ]
-  }
+	"meta": {
+		"translations": [
+			{
+				"language": "en-US",
+				"translation": "Products",
+				"singular": "product",
+				"plural": "products"
+			},
+			{
+				"language": "es-ES",
+				"translation": "Productos",
+				"singular": "producto",
+				"plural": "productos"
+			},
+			{
+				"language": "fr-FR",
+				"translation": "Produits",
+				"singular": "produit",
+				"plural": "produits"
+			}
+		]
+	}
 }
 ```
 
 **Translation Structure:**
+
 - `language`: Language code (from languages collection if available)
 - `translation`: Display name for the collection
 - `singular`: Singular form (lowercase)
 - `plural`: Plural form (lowercase)
 
 ### Display Templates
+
 Control how collection items appear in relationships and lists:
+
 ```json
 {
-  "meta": {
-    "display_template": "{{name}} - {{category}} ({{status}})",
-    "preview_url": "https://example.com/{{slug}}"
-  }
+	"meta": {
+		"display_template": "{{name}} - {{category}} ({{status}})",
+		"preview_url": "https://example.com/{{slug}}"
+	}
 }
 ```
 
 **Template Variables:**
+
 - `{{field_name}}` - Any field from the collection
 - `{{field_name.nested}}` - Access nested object properties
 - `{{$t:key}}` - Localized translation strings
@@ -173,7 +181,9 @@ Control how collection items appear in relationships and lists:
 - Supports filters and conditional logic
 
 ### Collection Settings
+
 Key collection metadata options:
+
 - `singleton`: Single-item collections (settings, globals)
 - `hidden`: Hide from navigation (system collections)
 - `icon`: Collection icon (`"mdi:account"`, `"mdi:store"`)
@@ -186,39 +196,40 @@ Key collection metadata options:
 - `accountability`: Track who created/modified items (`"all"`, `"activity"`, `null`)
 
 ### Example Complete Collection
+
 ```json
 {
-  "collection": "products",
-  "schema": {
-    "comment": "Product catalog with multilingual support"
-  },
-  "meta": {
-    "icon": "inventory_2",
-    "color": "#6366F1", 
-    "singleton": false,
-    "hidden": false,
-    "accountability": "all",
-    "sort_field": "sort",
-    "archive_field": "status",
-    "archive_value": "archived",
-    "unarchive_value": "published",
-    "display_template": "{{name}} - ${{price}}",
-    "preview_url": "https://store.example.com/products/{{slug}}",
-    "translations": [
-      {
-        "language": "en-US",
-        "translation": "Products",
-        "singular": "product", 
-        "plural": "products"
-      },
-      {
-        "language": "es-ES", 
-        "translation": "Productos",
-        "singular": "producto",
-        "plural": "productos"
-      }
-    ],
-    "note": "Main product catalog with inventory tracking"
-  }
+	"collection": "products",
+	"schema": {
+		"comment": "Product catalog with multilingual support"
+	},
+	"meta": {
+		"icon": "inventory_2",
+		"color": "#6366F1",
+		"singleton": false,
+		"hidden": false,
+		"accountability": "all",
+		"sort_field": "sort",
+		"archive_field": "status",
+		"archive_value": "archived",
+		"unarchive_value": "published",
+		"display_template": "{{name}} - ${{price}}",
+		"preview_url": "https://store.example.com/products/{{slug}}",
+		"translations": [
+			{
+				"language": "en-US",
+				"translation": "Products",
+				"singular": "product",
+				"plural": "products"
+			},
+			{
+				"language": "es-ES",
+				"translation": "Productos",
+				"singular": "producto",
+				"plural": "productos"
+			}
+		],
+		"note": "Main product catalog with inventory tracking"
+	}
 }
 ```

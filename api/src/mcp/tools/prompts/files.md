@@ -11,88 +11,98 @@ Perform CRUD operations on files and folders, or fetch and return base64-encoded
 ## ⚙️ Available Actions
 
 ### For `folder` and `file` types:
+
 - **`create`**: Add new folders or file records
 - **`read`**: List/query metadata or get specific items by ID
 - **`update`**: Modify existing metadata (title, description, tags, folder)
 - **`delete`**: Remove folders or files by keys
 
 ### For `asset` type:
+
 - **`read`**: Fetch raw file content as base64 (requires `id`)
 
 ## 📋 Common Operations
 
 ### Reading File Metadata
+
 ```json
 {
-  "type": "file",
-  "action": "read",
-  "query": {
-    "fields": ["id", "title", "type", "filesize", "width", "height"],
-    "filter": { "type": { "_starts_with": "image/" } },
-    "limit": 10
-  }
+	"type": "file",
+	"action": "read",
+	"query": {
+		"fields": ["id", "title", "type", "filesize", "width", "height"],
+		"filter": { "type": { "_starts_with": "image/" } },
+		"limit": 10
+	}
 }
 ```
 
 ### Get Single File Metadata
+
 ```json
 {
-  "type": "file",
-  "action": "read",
-  "keys": ["file-uuid-here"]
+	"type": "file",
+	"action": "read",
+	"keys": ["file-uuid-here"]
 }
 ```
 
 ### Get Raw File Content (Base64)
+
 ```json
 {
-  "type": "asset",
-  "action": "read",
-  "id": "file-uuid-here"
+	"type": "asset",
+	"action": "read",
+	"id": "file-uuid-here"
 }
 ```
+
 Returns base64-encoded content with MIME type - useful for image analysis, AI vision tools, or file downloads.
 
 ### Update File Metadata
+
 ```json
 {
-  "type": "file",
-  "action": "update",
-  "data": [
-    {
-      "id": "file-uuid",
-      "title": "New Title",
-      "description": "Updated description",
-      "tags": ["tag1", "tag2", "category"],
-      "folder": "folder-uuid"
-    }
-  ]
+	"type": "file",
+	"action": "update",
+	"data": [
+		{
+			"id": "file-uuid",
+			"title": "New Title",
+			"description": "Updated description",
+			"tags": ["tag1", "tag2", "category"],
+			"folder": "folder-uuid"
+		}
+	]
 }
 ```
 
 ### Set Image Focal Point
+
 ```json
 {
-  "type": "file",
-  "action": "update",
-  "keys": ["image-uuid"],
-  "data": {
-    "focal_point_x": 850,
-    "focal_point_y": 420
-  }
+	"type": "file",
+	"action": "update",
+	"keys": ["image-uuid"],
+	"data": {
+		"focal_point_x": 850,
+		"focal_point_y": 420
+	}
 }
 ```
+
 Sets the focal point for image cropping - coordinates are in pixels from top-left corner.
 
 ### Organize Files into Folders
+
 ```json
 {
-  "type": "folder",
-  "action": "create",
-  "data": {
-    "name": "Product Images",
-    "parent": "parent-folder-uuid"
-  }
+	"type": "folder",
+	"action": "create",
+	"data": {
+		"name": "Product Images",
+		"parent": "parent-folder-uuid"
+	}
 }
 ```
 
@@ -108,22 +118,24 @@ For `read` operations, use query parameters to filter and shape results:
 - **`deep`**: Include related data
 
 ### Common Filters
+
 ```json
 {
-  "query": {
-    "filter": {
-      "type": { "_starts_with": "image/" },     // Images only
-      "folder": { "_eq": "folder-uuid" },       // Specific folder
-      "filesize": { "_lt": 5000000 },          // Under 5MB
-      "uploaded_on": { "_gte": "$NOW(-7 days)" } // Last week
-    }
-  }
+	"query": {
+		"filter": {
+			"type": { "_starts_with": "image/" }, // Images only
+			"folder": { "_eq": "folder-uuid" }, // Specific folder
+			"filesize": { "_lt": 5000000 }, // Under 5MB
+			"uploaded_on": { "_gte": "$NOW(-7 days)" } // Last week
+		}
+	}
 }
 ```
 
 ## 📊 File Metadata Fields
 
 Common fields available for files:
+
 - `id`: Unique identifier
 - `storage`: Storage adapter used
 - `filename_disk`: Actual filename on disk
@@ -148,6 +160,7 @@ Common fields available for files:
 ## 🖼️ Asset Content Retrieval
 
 When using `type: "asset"`:
+
 - Returns base64-encoded file content
 - Includes MIME type for proper handling
 - Suitable for:
@@ -157,119 +170,139 @@ When using `type: "asset"`:
   - Content verification
 
 ### Response Format for Assets
+
 ```json
 {
-  "type": "image",
-  "data": "base64-encoded-string-here",
-  "mimeType": "image/jpeg"
+	"type": "image",
+	"data": "base64-encoded-string-here",
+	"mimeType": "image/jpeg"
 }
 ```
 
 ## 🎯 Real-World Use Cases
 
 ### Asset Selection for Content
+
 Find appropriate images for articles, pages, or products:
+
 ```json
 {
-  "type": "file",
-  "action": "read",
-  "query": {
-    "fields": ["id", "title", "description", "tags", "type"],
-    "filter": {
-      "type": { "_starts_with": "image/" },
-      "tags": { "_contains": "customer-support" }
-    },
-    "search": "help center"
-  }
+	"type": "file",
+	"action": "read",
+	"query": {
+		"fields": ["id", "title", "description", "tags", "type"],
+		"filter": {
+			"type": { "_starts_with": "image/" },
+			"tags": { "_contains": "customer-support" }
+		},
+		"search": "help center"
+	}
 }
 ```
-*Example: "Find images in our asset library related to customer support for our new help center article."*
+
+_Example: "Find images in our asset library related to customer support for our new help center article."_
 
 ### Asset Analysis and Organization
+
 Improve asset library organization by analyzing and updating metadata:
 
 1. **First, get images needing organization:**
+
 ```json
 {
-  "type": "file",
-  "action": "read",
-  "query": {
-    "fields": ["id", "filename_disk", "title", "description"],
-    "filter": {
-      "folder": { "_eq": "product-photography-folder-id" },
-      "description": { "_null": true }
-    }
-  }
+	"type": "file",
+	"action": "read",
+	"query": {
+		"fields": ["id", "filename_disk", "title", "description"],
+		"filter": {
+			"folder": { "_eq": "product-photography-folder-id" },
+			"description": { "_null": true }
+		}
+	}
 }
 ```
 
 2. **Analyze image content (get base64 for vision analysis):**
+
 ```json
 {
-  "type": "asset",
-  "action": "read",
-  "id": "image-uuid-to-analyze"
+	"type": "asset",
+	"action": "read",
+	"id": "image-uuid-to-analyze"
 }
 ```
 
 3. **Update with descriptive metadata:**
+
 ```json
 {
-  "type": "file",
-  "action": "update",
-  "data": [{
-    "id": "image-uuid",
-    "title": "Red leather handbag with gold hardware on white background",
-    "description": "Professional product photo of red handbag for e-commerce",
-    "tags": ["handbag", "leather", "red", "product-photo", "accessories"]
-  }]
+	"type": "file",
+	"action": "update",
+	"data": [
+		{
+			"id": "image-uuid",
+			"title": "Red leather handbag with gold hardware on white background",
+			"description": "Professional product photo of red handbag for e-commerce",
+			"tags": ["handbag", "leather", "red", "product-photo", "accessories"]
+		}
+	]
 }
 ```
 
 ### Bulk Asset Cleanup
+
 Transform generic filenames into descriptive metadata:
+
 - `IMG_2847.jpg` → Title: "Red leather handbag product photo"
 - Add missing alt text for accessibility
 - Apply consistent tagging taxonomy
 - Organize into appropriate folders
 
 ### Smart Image Cropping with Focal Points
+
 Set focal points to ensure important parts of images are preserved during cropping:
+
 ```json
 {
-  "type": "file",
-  "action": "update",
-  "data": {
-    "id": "portrait-uuid",
-    "focal_point_x": 512,  // Center of face at 512px from left
-    "focal_point_y": 300   // Eyes at 300px from top
-  }
+	"type": "file",
+	"action": "update",
+	"data": {
+		"id": "portrait-uuid",
+		"focal_point_x": 512, // Center of face at 512px from left
+		"focal_point_y": 300 // Eyes at 300px from top
+	}
 }
 ```
-Focal points ensure that when images are cropped for different aspect ratios (thumbnails, hero images, etc.), the important subject remains visible. Coordinates are in pixels from the top-left corner of the original image.
+
+Focal points ensure that when images are cropped for different aspect ratios (thumbnails, hero images, etc.), the
+important subject remains visible. Coordinates are in pixels from the top-left corner of the original image.
 
 ### Content-Asset Matching
+
 Find and associate relevant assets with content:
+
 ```json
 {
-  "type": "file",
-  "action": "read",
-  "query": {
-    "fields": ["id", "title", "type", "width", "height"],
-    "filter": {
-      "type": { "_starts_with": "image/" },
-      "$or": [
-        { "tags": { "_contains": "product" } },
-        { "title": { "_contains": "product" } },
-        { "description": { "_contains": "product" } }
-      ]
-    }
-  }
+	"type": "file",
+	"action": "read",
+	"query": {
+		"fields": ["id", "title", "type", "width", "height"],
+		"filter": {
+			"type": { "_starts_with": "image/" },
+			"$or": [
+				{ "tags": { "_contains": "product" } },
+				{ "title": { "_contains": "product" } },
+				{ "description": { "_contains": "product" } }
+			]
+		}
+	}
 }
 ```
 
 ### Asset Migration and Import
+
 When migrating content between systems:
+
 1. Read existing asset metadata
 2. Map to new structure
 3. Update with proper categorization

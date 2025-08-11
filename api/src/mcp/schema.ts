@@ -20,13 +20,15 @@ export const QueryInputSchema = z.object({
 	search: z.string().optional(),
 	deep: z.record(z.string(), z.any()).optional(),
 	alias: z.record(z.string(), z.string()).optional(),
-	aggregate: z.object({
-		count: z.array(z.string()).optional(),
-		sum: z.array(z.string()).optional(),
-		avg: z.array(z.string()).optional(),
-		min: z.array(z.string()).optional(),
-		max: z.array(z.string()).optional(),
-	}).optional(),
+	aggregate: z
+		.object({
+			count: z.array(z.string()).optional(),
+			sum: z.array(z.string()).optional(),
+			avg: z.array(z.string()).optional(),
+			min: z.array(z.string()).optional(),
+			max: z.array(z.string()).optional(),
+		})
+		.optional(),
 	backlink: z.boolean().optional(),
 });
 

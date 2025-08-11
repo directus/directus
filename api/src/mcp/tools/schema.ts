@@ -38,7 +38,12 @@ const OverviewValidateSchema = z.object({
 });
 
 const OverviewInputSchema = z.object({
-	keys: z.array(z.string()).optional().describe('Collection names to get detailed schema for. If omitted, returns a lightweight list of all collections.'),
+	keys: z
+		.array(z.string())
+		.optional()
+		.describe(
+			'Collection names to get detailed schema for. If omitted, returns a lightweight list of all collections.',
+		),
 });
 
 export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
@@ -56,7 +61,7 @@ export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
 			const folders: string[] = [];
 			const notes: Record<string, string> = {};
 
-			snapshot.collections.forEach(collection => {
+			snapshot.collections.forEach((collection) => {
 				// Separate folders from real collections
 				if (!collection.schema) {
 					folders.push(collection.collection);
@@ -75,7 +80,7 @@ export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
 				data: {
 					collections,
 					folders,
-					notes
+					notes,
 				},
 			};
 		}
@@ -140,7 +145,6 @@ export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
 					currentDepth: 0,
 					snapshot,
 				});
-
 			}
 
 			// Handle collection-item-dropdown interface
@@ -503,7 +507,6 @@ export const relation = defineTool<z.infer<typeof RelationValidateSchema>>({
 	},
 });
 
-
 // Helpers
 function processNestedFields(options: {
 	fields: any[];
@@ -572,18 +575,15 @@ function processNestedFields(options: {
 	return result;
 }
 
-function processCollectionItemDropdown(options: {
-	field: Field;
-	snapshot?: any;
-}): Record<string, fieldOverviewOutput> {
+function processCollectionItemDropdown(options: { field: Field; snapshot?: any }): Record<string, fieldOverviewOutput> {
 	const { field, snapshot } = options;
 	const selectedCollection = field.meta?.options?.['selectedCollection'];
 	let keyType = 'string | number | uuid';
 
 	// Find the primary key type for the selected collection
 	if (selectedCollection && snapshot?.fields) {
-		const primaryKeyField = snapshot.fields.find((f: any) =>
-			f.collection === selectedCollection && f.schema?.is_primary_key
+		const primaryKeyField = snapshot.fields.find(
+			(f: any) => f.collection === selectedCollection && f.schema?.is_primary_key,
 		);
 
 		if (primaryKeyField) {

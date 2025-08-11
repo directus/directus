@@ -25,7 +25,7 @@ Add fields to existing collections:
 			"note": "Internal notes about the organization. Supports markdown formatting.",
 			"translations": [
 				{
-					"language": "en-US", 
+					"language": "en-US",
 					"translation": "Notes"
 				}
 			],
@@ -193,63 +193,68 @@ Directus provides flexible layout control for field presentation:
 **IMPORTANT**: Always check for a `languages` collection first to determine available languages.
 
 **Workflow for Adding Translations:**
+
 1. **Check schema**: Use `schema` tool to see if a `languages` collection exists
-2. **Read languages**: If found, get the language codes from that collection  
+2. **Read languages**: If found, get the language codes from that collection
 3. **Apply translations**: Use those codes in your field translation objects
 4. **Fallback**: If no languages collection, use common codes like `en-US`, `es-ES`
 
 Add field name translations in different languages:
+
 ```json
 {
-  "field": "title",
-  "type": "string", 
-  "meta": {
-    "interface": "input",
-    "translations": [
-      {
-        "language": "en-US", 
-        "translation": "Title"
-      },
-      {
-        "language": "es-ES",
-        "translation": "Título"
-      },
-      {
-        "language": "fr-FR",
-        "translation": "Titre"
-      }
-    ]
-  }
+	"field": "title",
+	"type": "string",
+	"meta": {
+		"interface": "input",
+		"translations": [
+			{
+				"language": "en-US",
+				"translation": "Title"
+			},
+			{
+				"language": "es-ES",
+				"translation": "Título"
+			},
+			{
+				"language": "fr-FR",
+				"translation": "Titre"
+			}
+		]
+	}
 }
 ```
 
 **Field Translation Structure:**
+
 - `language`: Language code (from languages collection if available)
 - `translation`: Field label/name in that language
 
 **Display Templates:**
 
 Use display templates to customize how relational data appears:
+
 ```json
 {
-  "field": "author",
-  "type": "uuid",
-  "meta": {
-    "interface": "select-dropdown-m2o",
-    "display": "related-values",
-    "display_options": {
-      "template": "{{first_name}} {{last_name}} ({{email}})"
-    },
-    "options": {
-      "template": "{{first_name}} {{last_name}}"
-    }
-  }
+	"field": "author",
+	"type": "uuid",
+	"meta": {
+		"interface": "select-dropdown-m2o",
+		"display": "related-values",
+		"display_options": {
+			"template": "{{first_name}} {{last_name}} ({{email}})"
+		},
+		"options": {
+			"template": "{{first_name}} {{last_name}}"
+		}
+	}
 }
 ```
 
 Templates support:
+
 - `{{field_name}}` - Display field values
-- `{{field_name.nested_field}}` - Access nested object properties  
+- `{{field_name.nested_field}}` - Access nested object properties
 - `{{$t:key}}` - Localized text from translation keys
 - Conditional logic and filters for advanced formatting
 
