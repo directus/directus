@@ -36,10 +36,8 @@ export default defineOperationApp({
 						value: code,
 					})),
 					allowOther: true,
+					placeholder: FALLBACK_ERROR.code,
 				},
-			},
-			schema: {
-				default_value: FALLBACK_ERROR.code,
 			},
 		},
 		{
@@ -85,10 +83,8 @@ export default defineOperationApp({
 						},
 					],
 					allowOther: true,
+					placeholder: FALLBACK_ERROR.status.toString(),
 				},
-			},
-			schema: {
-				default_value: FALLBACK_ERROR.status.toString(),
 			},
 		},
 		{
@@ -98,9 +94,9 @@ export default defineOperationApp({
 			meta: {
 				width: 'full',
 				interface: 'input',
-			},
-			schema: {
-				default_value: FALLBACK_ERROR.message,
+				options: {
+					placeholder: FALLBACK_ERROR.message,
+				},
 			},
 		},
 	],
