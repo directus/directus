@@ -1,29 +1,31 @@
+import { ErrorCode, InternalServerError } from '@directus/errors';
 import { defineOperationApp } from '@directus/extensions';
-import { ErrorCode } from '@directus/errors';
+
+const FALLBACK_ERROR = new InternalServerError();
 
 export default defineOperationApp({
-	id: 'error',
+	id: 'throw-error',
 	icon: 'error',
-	name: '$t:operations.error.name',
-	description: '$t:operations.error.description',
-	overview: ({ filter, status, message }) => [
+	name: '$t:operations.throw-error.name',
+	description: '$t:operations.throw-error.description',
+	overview: ({ code, status, message }) => [
 		{
-			label: '$t:operations.error.code',
-			text: filter,
+			label: '$t:operations.throw-error.code',
+			text: code ?? FALLBACK_ERROR.code,
 		},
 		{
-			label: '$t:operations.error.status',
-			text: status,
+			label: '$t:operations.throw-error.status',
+			text: status ?? FALLBACK_ERROR.status.toString(),
 		},
 		{
-			label: '$t:operations.error.message',
-			text: message,
+			label: '$t:operations.throw-error.message',
+			text: message ?? FALLBACK_ERROR.message,
 		},
 	],
 	options: () => [
 		{
 			field: 'code',
-			name: '$t:operations.error.code',
+			name: '$t:operations.throw-error.code',
 			type: 'string',
 			meta: {
 				width: 'full',
@@ -34,12 +36,13 @@ export default defineOperationApp({
 						value: code,
 					})),
 					allowOther: true,
+					placeholder: FALLBACK_ERROR.code,
 				},
 			},
 		},
 		{
 			field: 'status',
-			name: '$t:operations.error.status',
+			name: '$t:operations.throw-error.status',
 			type: 'string',
 			meta: {
 				width: 'full',
@@ -80,16 +83,20 @@ export default defineOperationApp({
 						},
 					],
 					allowOther: true,
+					placeholder: FALLBACK_ERROR.status.toString(),
 				},
 			},
 		},
 		{
 			field: 'message',
-			name: '$t:operations.error.message',
+			name: '$t:operations.throw-error.message',
 			type: 'string',
 			meta: {
 				width: 'full',
 				interface: 'input',
+				options: {
+					placeholder: FALLBACK_ERROR.message,
+				},
 			},
 		},
 	],
