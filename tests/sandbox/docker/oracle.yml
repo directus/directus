@@ -1,6 +1,7 @@
 services:
   oracle:
     image: gvenzl/oracle-xe:slim-faststart
+    tmpfs: /opt/oracle/oradata
     ports:
       - ${DB_PORT}:1521
     environment:

@@ -1,6 +1,7 @@
 services:
   postgres:
     image: postgis/postgis:13-3.4-alpine
+    tmpfs: /var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE}
