@@ -22,6 +22,7 @@
 	],
 	"scripts": {
 		"build": "tsc",
+		"build:tests": "tsc",
 		"dev": "tsc --watch"
 	},
 	"dependencies": {

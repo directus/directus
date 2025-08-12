@@ -40,8 +40,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Prepare
-        uses: ./.github/actions/prepare
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        shell: bash
+        run: pnpm install --prod
+
+      - name: Build
+        shell: bash
+        env:
+          npm_config_workspace_concurrency: 1
+          NODE_OPTIONS: --max_old_space_size=6144
+        run: pnpm run build:tests
 
       - name: Run tests
         run: |

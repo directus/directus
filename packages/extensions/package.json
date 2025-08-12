@@ -27,6 +27,7 @@
 		"build": "pnpm run '/^build:.*/'",
 		"build:node": "tsup src/node.ts --tsconfig src/node/tsconfig.json --out-dir dist --format=esm --dts",
 		"build:shared": "tsup src/index.ts --tsconfig src/tsconfig.json --out-dir dist --format=esm --dts",
+		"build:tests": "tsup src/node.ts --tsconfig src/node/tsconfig.json --out-dir dist --format=esm && tsup src/index.ts --tsconfig src/tsconfig.json --out-dir dist --format=esm",
 		"dev": "pnpm run '/^build:.*/' --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"

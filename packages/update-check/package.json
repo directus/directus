@@ -22,6 +22,7 @@
 	],
 	"scripts": {
 		"build": "pnpm run '/^bundle|typecheck$/'",
+		"build:tests": "tsup src/index.ts --format=esm",
 		"bundle": "tsup src/index.ts --format=esm --dts",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",

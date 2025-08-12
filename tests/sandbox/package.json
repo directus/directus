@@ -5,7 +5,8 @@
 	"homepage": "https://directus.io",
 	"scripts": {
 		"cli": "tsx src/cli.ts",
-		"build": "tsc"
+		"build": "tsc",
+		"build:tests": "tsc"
 	},
 	"exports": {
 		".": "./dist/index.js",
@@ -21,7 +22,7 @@
 	"license": "MIT",
 	"private": true,
 	"packageManager": "pnpm@10.14.0",
-	"devDependencies": {
+	"dependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "catalog:",

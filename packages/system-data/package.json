@@ -25,6 +25,7 @@
 	],
 	"scripts": {
 		"build": "NODE_ENV=production tsup",
+		"build:tests": "pnpm run build",
 		"dev": "NODE_ENV=development tsup"
 	},
 	"devDependencies": {

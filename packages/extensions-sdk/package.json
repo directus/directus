@@ -27,6 +27,7 @@
 	],
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",
+		"build:tests": "pnpm run build",
 		"dev": "tsc --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"

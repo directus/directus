@@ -28,6 +28,7 @@
 		"build:browser": "tsup browser/index.ts --tsconfig browser/tsconfig.json --out-dir dist/browser --format=esm --dts",
 		"build:node": "tsup node/index.ts --tsconfig node/tsconfig.json --out-dir dist/node --format=esm --dts",
 		"build:shared": "tsup shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --format=esm --dts",
+		"build:tests": "tsup browser/index.ts --tsconfig browser/tsconfig.json --out-dir dist/browser --format=esm && tsup node/index.ts --tsconfig node/tsconfig.json --out-dir dist/node --format=esm && tsup shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --format=esm",
 		"dev": "pnpm run '/^build:.*/' --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"

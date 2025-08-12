@@ -5,6 +5,7 @@
 	"sideEffects": false,
 	"scripts": {
 		"build": "tsup src/index.ts --format=esm --dts",
+		"build:tests": "tsup src/index.ts --format=esm",
 		"dev": "tsup src/index.ts --format=esm --dts --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
