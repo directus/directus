@@ -10,7 +10,13 @@ export function validatePathExistence(path: string, collection: string, fields: 
 
 	const requestedFields = Array.from(fields);
 
-	const nonExistentFields = requestedFields.filter((field) => collectionInfo.fields[field] === undefined);
+	const nonExistentFields = requestedFields.filter((field) => {
+		// Allow synthetic fields (starting with $) to pass validation
+		if (field.startsWith('$')) {
+			return false;
+		}
+		return collectionInfo.fields[field] === undefined;
+	});
 
 	if (nonExistentFields.length > 0) {
 		throw createFieldsForbiddenError(path, collection, nonExistentFields);
