@@ -22,9 +22,10 @@ import type { Request, Response } from 'express';
 import { render, tokenize } from 'micromustache';
 import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
+import { ItemsService } from '../services/index.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 import { findMcpTool, getAllMcpTools } from './tools/index.js';
-import type { PromptArg, ToolResult } from './types.js';
+import type { Prompt, PromptArg, ToolResult } from './types.js';
 
 export class DirectusTransport implements Transport {
 	res: Response;
@@ -83,40 +84,62 @@ export class DirectusMCP {
 			res.status(202).send();
 		});
 
-		this.server.setRequestHandler(ListPromptsRequestSchema, () => {
+		this.server.setRequestHandler(ListPromptsRequestSchema, async () => {
 			const prompts = [];
 
-			const promptList = [];
+			try {
+				const promptList = await new ItemsService<Prompt>('mcp_prompts', {
+					schema: req.schema,
+					accountability: req.accountability,
+				}).readByQuery({});
 
-			for (const prompt of promptList) {
-				// builds args
-				const args: PromptArg[] = [];
+				for (const prompt of promptList) {
+					// builds args
+					const args: PromptArg[] = [];
 
-				for (const message of prompt.messages) {
-					for (const varName of tokenize(message.text).varNames) {
-						args.push({
-							name: varName,
-							description: `Value for ${varName}`,
-							required: false,
-						});
+					for (const message of prompt.messages) {
+						for (const varName of tokenize(message.text).varNames) {
+							args.push({
+								name: varName,
+								description: `Value for ${varName}`,
+								required: false,
+							});
+						}
 					}
-				}
 
-				prompts.push({
-					name: prompt.name,
-					title: prompt.title,
-					description: prompt.description,
-					arguments: args,
-				});
+					prompts.push({
+						name: prompt.name,
+						title: prompt.title,
+						description: prompt.description,
+						arguments: args,
+					});
+				}
+			} catch {
+				//
 			}
 
 			return { prompts };
 		});
 
-		this.server.setRequestHandler(GetPromptRequestSchema, (request: GetPromptRequest) => {
-			const prompt = {};
-
+		this.server.setRequestHandler(GetPromptRequestSchema, async (request: GetPromptRequest) => {
 			try {
+				const promptCommand = await new ItemsService<Prompt>('mcp_prompts', {
+					schema: req.schema,
+					accountability: req.accountability,
+				}).readByQuery({
+					filter: {
+						name: {
+							_eq: request.params.name,
+						},
+					},
+				});
+
+				const prompt = promptCommand[0];
+
+				if (!prompt) {
+					throw new Error('halo');
+				}
+
 				const messages: GetPromptResult['messages'] = (prompt.messages || []).map((message) => ({
 					role: message.role,
 					content: {
@@ -129,8 +152,9 @@ export class DirectusMCP {
 					messages,
 					description: prompt.description,
 				});
-			} catch (error) {
+			} catch {
 				//
+				return {};
 			}
 		});
 
