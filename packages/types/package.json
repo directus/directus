@@ -22,7 +22,7 @@
 	],
 	"scripts": {
 		"build": "tsc",
-		"build:tests": "tsc",
+		"build:tests": "tsup src/index.ts --tsconfig tsconfig.prod.json  --format=esm",
 		"dev": "tsc --watch"
 	},
 	"dependencies": {
@@ -38,6 +38,7 @@
 		"knex": "catalog:",
 		"zod": "catalog:",
 		"vue": "catalog:",
+		"tsup": "catalog:",
 		"@types/deep-diff": "catalog:"
 	},
 	"peerDependencies": {

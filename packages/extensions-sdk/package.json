@@ -26,9 +26,9 @@
 		"templates"
 	],
 	"scripts": {
-		"build": "tsup src/index.ts --tsconfig tsconfig.prod.json --dts --format=esm",
+		"build": "tsc",
 		"build:tests": "tsup src/index.ts --tsconfig tsconfig.prod.json  --format=esm",
-		"dev": "tsup --watch",
+		"dev": "tsc --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
