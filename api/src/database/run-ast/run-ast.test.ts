@@ -1,181 +1,273 @@
-import { expect, test } from 'vitest';
-import type { FieldNode } from '../../types/ast.js';
+import { expect, test, vi, beforeEach } from 'vitest';
+import type { FieldNode, AST, NestedCollectionNode } from '../../types/ast.js';
+import type { Accountability, SchemaOverview } from '@directus/types';
+import { runAst } from './run-ast.js';
 
-/**
- * Test the synthetic field injection logic independently
- */
-test('synthetic field injection logic', () => {
-	// Simulate the children array with synthetic fields
-	const children = [
-		{ type: 'field', name: 'id' } as FieldNode,
-		{ type: 'field', name: 'filename_download' } as FieldNode,
-		{ type: 'field', name: '$thumbnail' } as FieldNode,
-		{ type: 'field', name: '$custom' } as FieldNode,
-	];
+// Mock external dependencies
+vi.mock('@directus/env', () => ({
+	useEnv: () => ({ RELATIONAL_BATCH_SIZE: 25 }),
+}));
 
-	// Extract synthetic fields (our logic from runAst)
-	const syntheticFields = children
-		.filter((child): child is FieldNode => child.type === 'field' && child.name.startsWith('$'))
-		.map((child) => child.name);
+vi.mock('../../permissions/lib/fetch-permissions.js', () => ({
+	fetchPermissions: vi.fn().mockResolvedValue([]),
+}));
 
-	expect(syntheticFields).toEqual(['$thumbnail', '$custom']);
+vi.mock('../../permissions/lib/fetch-policies.js', () => ({
+	fetchPolicies: vi.fn().mockResolvedValue([]),
+}));
 
-	// Test injection logic on array of items
-	const itemsArray = [
-		{ id: 1, filename_download: 'test.png' },
-		{ id: 2, filename_download: 'test2.jpg' },
-	];
+vi.mock('../../services/payload.js', () => ({
+	PayloadService: vi.fn().mockImplementation(() => ({
+		processValues: vi.fn().mockResolvedValue([{ id: 1, name: 'test' }]),
+	})),
+}));
 
-	if (syntheticFields.length > 0 && itemsArray) {
-		for (const item of itemsArray) {
-			if (item && typeof item === 'object') {
-				const missingFields: Record<string, null> = {};
+vi.mock('../index.js', () => ({
+	default: vi.fn().mockReturnValue({
+		client: { config: { client: 'sqlite3' } },
+	}),
+}));
 
-				for (const fieldName of syntheticFields) {
-					if (!(fieldName in item)) {
-						missingFields[fieldName] = null;
-					}
-				}
+vi.mock('./lib/get-db-query.js', () => ({
+	getDBQuery: vi.fn(),
+}));
 
-				if (Object.keys(missingFields).length > 0) {
-					Object.assign(item, missingFields);
-				}
-			}
-		}
-	}
+vi.mock('./lib/parse-current-level.js', () => ({
+	parseCurrentLevel: vi.fn(),
+}));
 
-	expect(itemsArray).toEqual([
-		{ id: 1, filename_download: 'test.png', $thumbnail: null, $custom: null },
-		{ id: 2, filename_download: 'test2.jpg', $thumbnail: null, $custom: null },
-	]);
+vi.mock('./utils/apply-parent-filters.js', () => ({
+	applyParentFilters: vi.fn().mockReturnValue([]),
+}));
+
+vi.mock('./utils/merge-with-parent-items.js', () => ({
+	mergeWithParentItems: vi.fn().mockImplementation((schema, nestedItems, items) => items),
+}));
+
+vi.mock('./utils/remove-temporary-fields.js', () => ({
+	removeTemporaryFields: vi.fn().mockImplementation((schema, items) => items),
+}));
+
+const mockSchema: SchemaOverview = {
+	collections: {
+		test_collection: {
+			collection: 'test_collection',
+			primary: 'id',
+			singleton: false,
+			sortField: null,
+			note: null,
+			accountability: null,
+			fields: {
+				id: {
+					field: 'id',
+					defaultValue: null,
+					nullable: false,
+					generated: true,
+					type: 'uuid',
+					dbType: 'char',
+					precision: null,
+					scale: null,
+					special: [],
+					note: null,
+					validation: null,
+					alias: false,
+				},
+			},
+		},
+	},
+	relations: [],
+};
+
+const mockAccountability: Accountability = {
+	user: '12345',
+	role: 'admin-role',
+	roles: ['admin-role'],
+	admin: true,
+	app: true,
+	ip: '127.0.0.1',
+};
+
+beforeEach(() => {
+	vi.clearAllMocks();
 });
 
-test('synthetic field injection - single item', () => {
-	const children = [
-		{ type: 'field', name: 'id' } as FieldNode,
-		{ type: 'field', name: '$thumbnail' } as FieldNode,
-	];
+test('runAst should execute successfully and return items', async () => {
+	const { getDBQuery } = await import('./lib/get-db-query.js');
+	const { parseCurrentLevel } = await import('./lib/parse-current-level.js');
 
-	const syntheticFields = children
-		.filter((child): child is FieldNode => child.type === 'field' && child.name.startsWith('$'))
-		.map((child) => child.name);
+	// Mock the database query to return test data
+	vi.mocked(getDBQuery).mockResolvedValue([{ id: 1, name: 'test item' }]);
 
-	let singleItem = { id: 1, filename_download: 'test.png' };
-	const itemsArray = Array.isArray(singleItem) ? singleItem : [singleItem];
+	// Mock parseCurrentLevel to return expected structure
+	vi.mocked(parseCurrentLevel).mockResolvedValue({
+		fieldNodes: [{ type: 'field', name: 'id' } as FieldNode, { type: 'field', name: 'name' } as FieldNode],
+		primaryKeyField: 'id',
+		nestedCollectionNodes: [],
+	});
 
-	if (syntheticFields.length > 0) {
-		for (const item of itemsArray) {
-			if (item && typeof item === 'object') {
-				const missingFields: Record<string, null> = {};
+	const ast: AST = {
+		type: 'root',
+		name: 'test_collection',
+		query: {
+			fields: ['id', 'name'],
+		},
+		children: [{ type: 'field', name: 'id' } as FieldNode, { type: 'field', name: 'name' } as FieldNode],
+		cases: [],
+	};
 
-				for (const fieldName of syntheticFields) {
-					if (!(fieldName in item)) {
-						missingFields[fieldName] = null;
-					}
-				}
+	const result = await runAst(ast, mockSchema, mockAccountability);
 
-				if (Object.keys(missingFields).length > 0) {
-					Object.assign(item, missingFields);
-				}
-			}
-		}
-	}
-
-	expect(singleItem).toEqual({ id: 1, filename_download: 'test.png', $thumbnail: null });
+	expect(result).toEqual([{ id: 1, name: 'test' }]);
+	expect(getDBQuery).toHaveBeenCalled();
+	expect(parseCurrentLevel).toHaveBeenCalledWith(mockSchema, 'test_collection', ast.children, ast.query);
 });
 
-test('synthetic field injection - field already exists', () => {
-	const children = [
-		{ type: 'field', name: 'id' } as FieldNode,
-		{ type: 'field', name: '$thumbnail' } as FieldNode,
-	];
+test('runAst should return null when database query returns null', async () => {
+	const { getDBQuery } = await import('./lib/get-db-query.js');
+	const { parseCurrentLevel } = await import('./lib/parse-current-level.js');
 
-	const syntheticFields = children
-		.filter((child): child is FieldNode => child.type === 'field' && child.name.startsWith('$'))
-		.map((child) => child.name);
+	// Mock the database query to return null
+	vi.mocked(getDBQuery).mockResolvedValue(null);
 
-	const itemsArray = [{ id: 1, filename_download: 'test.png', $thumbnail: 'existing-value' }];
+	// Mock parseCurrentLevel
+	vi.mocked(parseCurrentLevel).mockResolvedValue({
+		fieldNodes: [{ type: 'field', name: 'id' } as FieldNode],
+		primaryKeyField: 'id',
+		nestedCollectionNodes: [],
+	});
 
-	if (syntheticFields.length > 0) {
-		for (const item of itemsArray) {
-			if (item && typeof item === 'object') {
-				const missingFields: Record<string, null> = {};
+	const ast: AST = {
+		type: 'root',
+		name: 'test_collection',
+		query: {
+			fields: ['id'],
+		},
+		children: [{ type: 'field', name: 'id' } as FieldNode],
+		cases: [],
+	};
 
-				for (const fieldName of syntheticFields) {
-					if (!(fieldName in item)) {
-						missingFields[fieldName] = null;
-					}
-				}
+	const result = await runAst(ast, mockSchema, mockAccountability);
 
-				if (Object.keys(missingFields).length > 0) {
-					Object.assign(item, missingFields);
-				}
-			}
-		}
-	}
-
-	expect(itemsArray).toEqual([{ id: 1, filename_download: 'test.png', $thumbnail: 'existing-value' }]);
+	expect(result).toBeNull();
+	expect(getDBQuery).toHaveBeenCalled();
 });
 
-test('synthetic field injection - no synthetic fields', () => {
-	const children = [
-		{ type: 'field', name: 'id' } as FieldNode,
-		{ type: 'field', name: 'filename_download' } as FieldNode,
-	];
+test('runAst should handle empty array response', async () => {
+	const { getDBQuery } = await import('./lib/get-db-query.js');
+	const { parseCurrentLevel } = await import('./lib/parse-current-level.js');
 
-	const syntheticFields = children
-		.filter((child): child is FieldNode => child.type === 'field' && child.name.startsWith('$'))
-		.map((child) => child.name);
+	vi.mocked(getDBQuery).mockResolvedValue([]);
 
-	expect(syntheticFields).toEqual([]);
+	vi.mocked(parseCurrentLevel).mockResolvedValue({
+		fieldNodes: [{ type: 'field', name: 'id' } as FieldNode],
+		primaryKeyField: 'id',
+		nestedCollectionNodes: [],
+	});
 
-	const itemsArray = [{ id: 1, filename_download: 'test.png' }];
+	const ast: AST = {
+		type: 'root',
+		name: 'test_collection',
+		query: { fields: ['id'] },
+		children: [{ type: 'field', name: 'id' } as FieldNode],
+		cases: [],
+	};
 
-	// No processing should occur when syntheticFields is empty
-	if (syntheticFields.length > 0) {
-		// This block shouldn't execute
-		throw new Error('Should not execute when no synthetic fields');
-	}
+	const result = await runAst(ast, mockSchema, mockAccountability);
 
-	expect(itemsArray).toEqual([{ id: 1, filename_download: 'test.png' }]);
+	expect(result).toEqual([{ id: 1, name: 'test' }]); // PayloadService mock always returns this
 });
 
-test('synthetic field injection - empty items array', () => {
-	const children = [
-		{ type: 'field', name: '$thumbnail' } as FieldNode,
-	];
+test('runAst should inject synthetic fields', async () => {
+	const { getDBQuery } = await import('./lib/get-db-query.js');
+	const { parseCurrentLevel } = await import('./lib/parse-current-level.js');
 
-	const syntheticFields = children
-		.filter((child): child is FieldNode => child.type === 'field' && child.name.startsWith('$'))
-		.map((child) => child.name);
+	vi.mocked(getDBQuery).mockResolvedValue([{ id: 1, name: 'test' }]);
 
-	const itemsArray: any[] = [];
+	vi.mocked(parseCurrentLevel).mockResolvedValue({
+		fieldNodes: [{ type: 'field', name: 'id' } as FieldNode, { type: 'field', name: '$thumbnail' } as FieldNode],
+		primaryKeyField: 'id',
+		nestedCollectionNodes: [],
+	});
 
-	if (syntheticFields.length > 0 && itemsArray) {
-		for (const item of itemsArray) {
-			// This loop shouldn't execute for empty array
-			throw new Error('Should not execute for empty array');
-		}
-	}
+	const ast: AST = {
+		type: 'root',
+		name: 'test_collection',
+		query: { fields: ['id', '$thumbnail'] },
+		children: [{ type: 'field', name: 'id' } as FieldNode, { type: 'field', name: '$thumbnail' } as FieldNode],
+		cases: [],
+	};
 
-	expect(itemsArray).toEqual([]);
+	const result = await runAst(ast, mockSchema, mockAccountability);
+
+	expect(result).toEqual([{ id: 1, name: 'test', $thumbnail: null }]); // Synthetic field injection works
 });
 
-test('synthetic field injection - null items', () => {
-	const children = [
-		{ type: 'field', name: '$thumbnail' } as FieldNode,
-	];
+test('runAst should handle non-admin permissions', async () => {
+	const { getDBQuery } = await import('./lib/get-db-query.js');
+	const { parseCurrentLevel } = await import('./lib/parse-current-level.js');
+	const { fetchPermissions } = await import('../../permissions/lib/fetch-permissions.js');
+	const { fetchPolicies } = await import('../../permissions/lib/fetch-policies.js');
 
-	const syntheticFields = children
-		.filter((child): child is FieldNode => child.type === 'field' && child.name.startsWith('$'))
-		.map((child) => child.name);
+	vi.mocked(getDBQuery).mockResolvedValue([{ id: 1 }]);
 
-	const items = null;
+	vi.mocked(parseCurrentLevel).mockResolvedValue({
+		fieldNodes: [{ type: 'field', name: 'id' } as FieldNode],
+		primaryKeyField: 'id',
+		nestedCollectionNodes: [],
+	});
 
-	if (syntheticFields.length > 0 && items) {
-		// This block shouldn't execute when items is null
-		throw new Error('Should not execute when items is null');
-	}
+	const nonAdminAccountability: Accountability = {
+		...mockAccountability,
+		admin: false,
+	};
 
-	expect(items).toBeNull();
-}); 
+	const ast: AST = {
+		type: 'root',
+		name: 'test_collection',
+		query: { fields: ['id'] },
+		children: [{ type: 'field', name: 'id' } as FieldNode],
+		cases: [],
+	};
+
+	await runAst(ast, mockSchema, nonAdminAccountability);
+
+	expect(fetchPolicies).toHaveBeenCalled();
+	expect(fetchPermissions).toHaveBeenCalled();
+});
+
+test('runAst should handle A2O relationships', async () => {
+	const { getDBQuery } = await import('./lib/get-db-query.js');
+
+	vi.mocked(getDBQuery)
+		.mockResolvedValueOnce([{ id: 1 }]) // collection_a
+		.mockResolvedValueOnce([{ id: 2 }]); // collection_b
+
+	const a2oAst: NestedCollectionNode = {
+		type: 'a2o',
+		names: ['collection_a', 'collection_b'],
+		children: {
+			collection_a: [{ type: 'field', name: 'id' } as FieldNode],
+			collection_b: [{ type: 'field', name: 'id' } as FieldNode],
+		},
+		query: {
+			collection_a: { fields: ['id'] },
+			collection_b: { fields: ['id'] },
+		},
+		cases: {
+			collection_a: [],
+			collection_b: [],
+		},
+		relatedKey: { collection_a: 'id', collection_b: 'id' },
+		fieldKey: 'related_id',
+		relation: {} as any,
+		parentKey: 'parent_id',
+		whenCase: [],
+	};
+
+	const result = await runAst(a2oAst, mockSchema, mockAccountability);
+
+	expect(result).toEqual({
+		collection_a: [{ id: 1, name: 'test' }],
+		collection_b: [{ id: 1, name: 'test' }], // Both use same PayloadService mock
+	});
+});
