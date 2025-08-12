@@ -53,7 +53,7 @@ jobs:
 
       - name: Install dependencies
         shell: bash
-        run: pnpm install --prod
+        run: pnpm install
 
       - name: Build
         shell: bash
