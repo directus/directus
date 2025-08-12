@@ -10,6 +10,7 @@ import {
 	JSONRPCMessageSchema,
 	ListToolsRequestSchema,
 	type CallToolRequest,
+	type CallToolResult,
 	type JSONRPCMessage,
 	type MessageExtraInfo,
 } from '@modelcontextprotocol/sdk/types.js';
@@ -163,7 +164,7 @@ export class DirectusMCP {
 		}
 	}
 
-	toMCPResponse(result?: ToolResult) {
+	toMCPResponse(result?: ToolResult): CallToolResult {
 		if (!result || typeof result.data === 'undefined' || result.data === null) return { content: [] };
 
 		if (result.type === 'text') {
@@ -182,7 +183,7 @@ export class DirectusMCP {
 		};
 	}
 
-	toMCPError(err: unknown) {
+	toMCPError(err: unknown): CallToolResult {
 		const errors: { error: string; code?: string }[] = [];
 		const receivedErrors: unknown[] = Array.isArray(err) ? err : [err];
 

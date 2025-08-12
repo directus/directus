@@ -1,4 +1,5 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import type { ZodType } from 'zod';
 
 export type ToolResultBase = {
@@ -33,7 +34,7 @@ export interface ToolConfig<T> {
 	admin?: boolean;
 	inputSchema: ZodType<any>;
 	validateSchema?: ZodType<T>;
-	annotations?: Record<string, unknown>;
+	annotations?: ToolAnnotations;
 	handler: ToolHandler<T>;
 }
 
