@@ -65,4 +65,18 @@ export class TFAService {
 	async disableTFA(key: PrimaryKey): Promise<void> {
 		await this.itemsService.updateOne(key, { tfa_secret: null });
 	}
+
+	async request2FASetup(key: PrimaryKey): Promise<void> {
+		const user = await this.knex.select('provider', 'tfa_secret').from('directus_users').where({ id: key }).first();
+
+		if (user.provider === 'default') {
+			throw new InvalidPayloadError({ reason: 'This method is only available for OAuth users' });
+		}
+
+		if (user.tfa_secret !== null) {
+			throw new InvalidPayloadError({ reason: 'TFA is already enabled for this user' });
+		}
+
+		await this.itemsService.updateOne(key, { require_2fa: true });
+	}
 }
