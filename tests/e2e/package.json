@@ -13,7 +13,7 @@
 	"type": "module",
 	"license": "ISC",
 	"packageManager": "pnpm@10.14.0",
-	"devDependencies": {
+	"dependencies": {
 		"vitest": "catalog:",
 		"@directus/sdk": "20.0.0",
 		"@directus/sandbox": "workspace:*",

@@ -3089,7 +3089,7 @@ importers:
         version: 8.18.1
 
   tests/e2e:
-    devDependencies:
+    dependencies:
       '@directus/sandbox':
         specifier: workspace:*
         version: link:../sandbox
