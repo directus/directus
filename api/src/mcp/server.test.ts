@@ -3,8 +3,8 @@ import type { Accountability, SchemaOverview } from '@directus/types';
 import type { Request, Response } from 'express';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
+import type { ToolConfig } from './define.js';
 import { DirectusMCP, DirectusTransport } from './server.js';
-import type { ToolConfig } from './tool.js';
 import { findMcpTool } from './tools/index.js';
 
 // Mock dependencies

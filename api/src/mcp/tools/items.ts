@@ -4,6 +4,7 @@ import type { PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
 import { ItemsService } from '../../services/items.js';
+import { defineTool } from '../define.js';
 import {
 	ItemInputSchema,
 	ItemValidateSchema,
@@ -13,7 +14,6 @@ import {
 	QueryInputSchema,
 	QueryValidateSchema,
 } from '../schema.js';
-import { defineTool } from '../tool.js';
 import prompts from './prompts/index.js';
 
 const ValidateSchema = z.union([

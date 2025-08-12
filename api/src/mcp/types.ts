@@ -38,6 +38,15 @@ export interface ToolConfig<T> {
 	handler: ToolHandler<T>;
 }
 
-export function defineTool<Args>(tool: ToolConfig<Args>): ToolConfig<Args> {
-	return tool;
+export interface Prompt {
+	name: string;
+	title?: string;
+	description?: string;
+	messages: { role: 'user' | 'assistant'; text: string }[];
+}
+
+export interface PromptArg {
+	name: string;
+	description: string;
+	required: boolean;
 }

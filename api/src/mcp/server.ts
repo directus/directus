@@ -6,20 +6,25 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import {
 	CallToolRequestSchema,
+	GetPromptRequestSchema,
 	InitializedNotificationSchema,
 	JSONRPCMessageSchema,
+	ListPromptsRequestSchema,
 	ListToolsRequestSchema,
 	type CallToolRequest,
 	type CallToolResult,
+	type GetPromptRequest,
+	type GetPromptResult,
 	type JSONRPCMessage,
 	type MessageExtraInfo,
 } from '@modelcontextprotocol/sdk/types.js';
 import type { Request, Response } from 'express';
+import { render, tokenize } from 'micromustache';
 import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
-import type { ToolResult } from './tool.js';
 import { findMcpTool, getAllMcpTools } from './tools/index.js';
+import type { PromptArg, ToolResult } from './types.js';
 
 export class DirectusTransport implements Transport {
 	res: Response;
@@ -55,6 +60,7 @@ export class DirectusMCP {
 			{
 				capabilities: {
 					tools: {},
+					prompts: {},
 				},
 			},
 		);
@@ -75,6 +81,57 @@ export class DirectusMCP {
 
 		this.server.setNotificationHandler(InitializedNotificationSchema, () => {
 			res.status(202).send();
+		});
+
+		this.server.setRequestHandler(ListPromptsRequestSchema, () => {
+			const prompts = [];
+
+			const promptList = [];
+
+			for (const prompt of promptList) {
+				// builds args
+				const args: PromptArg[] = [];
+
+				for (const message of prompt.messages) {
+					for (const varName of tokenize(message.text).varNames) {
+						args.push({
+							name: varName,
+							description: `Value for ${varName}`,
+							required: false,
+						});
+					}
+				}
+
+				prompts.push({
+					name: prompt.name,
+					title: prompt.title,
+					description: prompt.description,
+					arguments: args,
+				});
+			}
+
+			return { prompts };
+		});
+
+		this.server.setRequestHandler(GetPromptRequestSchema, (request: GetPromptRequest) => {
+			const prompt = {};
+
+			try {
+				const messages: GetPromptResult['messages'] = (prompt.messages || []).map((message) => ({
+					role: message.role,
+					content: {
+						type: 'text',
+						text: render(message.text, request.params.arguments),
+					},
+				}));
+
+				return this.toPromptResponse({
+					messages,
+					description: prompt.description,
+				});
+			} catch (error) {
+				//
+			}
 		});
 
 		// listing tools
@@ -144,9 +201,9 @@ export class DirectusMCP {
 					accountability: req.accountability,
 				});
 
-				return this.toMCPResponse(result);
+				return this.toToolResponse(result);
 			} catch (error) {
-				return this.toMCPError(error);
+				return this.toToolError(error);
 			}
 		});
 
@@ -164,26 +221,41 @@ export class DirectusMCP {
 		}
 	}
 
-	toMCPResponse(result?: ToolResult): CallToolResult {
-		if (!result || typeof result.data === 'undefined' || result.data === null) return { content: [] };
+	toPromptResponse(result: {
+		description?: string | undefined;
+		messages: GetPromptResult['messages'];
+	}): GetPromptResult {
+		const response: GetPromptResult = {
+			messages: result.messages,
+		};
 
-		if (result.type === 'text') {
-			return {
-				content: [
-					{
-						type: 'text',
-						text: JSON.stringify(result.data),
-					},
-				],
-			};
+		if (result.description) {
+			response.description = result.description;
 		}
 
-		return {
-			content: [result],
-		};
+		return response;
 	}
 
-	toMCPError(err: unknown): CallToolResult {
+	toToolResponse(result?: ToolResult) {
+		const response: CallToolResult = {
+			content: [],
+		};
+
+		if (!result || typeof result.data === 'undefined' || result.data === null) return response;
+
+		if (result.type === 'text') {
+			response.content.push({
+				type: 'text',
+				text: JSON.stringify(result.data),
+			});
+		} else {
+			response.content.push(result);
+		}
+
+		return response;
+	}
+
+	toToolError(err: unknown): CallToolResult {
 		const errors: { error: string; code?: string }[] = [];
 		const receivedErrors: unknown[] = Array.isArray(err) ? err : [err];
 

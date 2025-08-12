@@ -5,8 +5,8 @@ import { AssetsService } from '../../services/assets.js';
 import { FilesService } from '../../services/files.js';
 import { FoldersService } from '../../services/folders.js';
 import type { ItemsService } from '../../services/index.js';
+import { defineTool } from '../define.js';
 import { PrimaryKeyInputSchema, PrimaryKeyValidateSchema, QueryInputSchema, QueryValidateSchema } from '../schema.js';
-import { defineTool } from '../tool.js';
 import prompts from './prompts/index.js';
 
 const FolderItemSchema = z.strictObject({

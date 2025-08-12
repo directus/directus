@@ -6,7 +6,7 @@ import { CollectionsService } from '../../services/collections.js';
 import { FieldsService } from '../../services/fields.js';
 import { RelationsService } from '../../services/relations.js';
 import { getSnapshot } from '../../utils/get-snapshot.js';
-import { defineTool } from '../tool.js';
+import { defineTool } from '../define.js';
 import prompts from './prompts/index.js';
 
 export interface fieldOverviewOutput {

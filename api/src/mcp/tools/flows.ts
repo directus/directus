@@ -3,8 +3,8 @@ import { z } from 'zod';
 import { getFlowManager } from '../../flows.js';
 import { FlowsService } from '../../services/flows.js';
 import { OperationsService } from '../../services/operations.js';
+import { defineTool } from '../define.js';
 import { QueryInputSchema, QueryValidateSchema } from '../schema.js';
-import { defineTool } from '../tool.js';
 import prompts from './prompts/index.js';
 
 const OperationSchema = z

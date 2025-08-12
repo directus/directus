@@ -1,4 +1,4 @@
-import type { ToolConfig } from '../tool.js';
+import type { ToolConfig } from '../define.js';
 import { files } from './files.js';
 import { flows, operations, triggerFlow } from './flows.js';
 import { items } from './items.js';

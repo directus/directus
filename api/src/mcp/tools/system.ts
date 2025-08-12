@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { defineTool } from '../tool.js';
+import { defineTool } from '../define.js';
 import prompts from './prompts/index.js';
 
 export const system = defineTool({
