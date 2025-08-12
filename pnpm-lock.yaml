@@ -3080,7 +3080,7 @@ importers:
         version: 8.18.1
 
   tests/e2e:
-    dependencies:
+    devDependencies:
       '@directus/sandbox':
         specifier: workspace:*
         version: link:../sandbox
@@ -3107,7 +3107,7 @@ importers:
         version: 3.2.4(@types/node@22.13.8)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(yaml@2.8.0)
 
   tests/sandbox:
-    dependencies:
+    devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0

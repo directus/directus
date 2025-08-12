@@ -22,7 +22,7 @@
 	"license": "MIT",
 	"private": true,
 	"packageManager": "pnpm@10.14.0",
-	"dependencies": {
+	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "catalog:",

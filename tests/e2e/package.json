@@ -9,11 +9,11 @@
 		"test:all": "vitest --project maria --project postgres  --project cockroachdb --project mssql --project mysql --project oracle --project sqlite"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "Nils Twelker (nils@directus.io)",
 	"type": "module",
 	"license": "ISC",
 	"packageManager": "pnpm@10.14.0",
-	"dependencies": {
+	"devDependencies": {
 		"vitest": "catalog:",
 		"@directus/sdk": "20.0.0",
 		"@directus/sandbox": "workspace:*",
