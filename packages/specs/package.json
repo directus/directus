@@ -31,11 +31,11 @@
 		"validate": "swagger-cli validate src/openapi.yaml"
 	},
 	"dependencies": {
+		"swagger-cli": "catalog:",
 		"openapi3-ts": "catalog:"
 	},
 	"devDependencies": {
 		"npm-watch": "catalog:",
-		"swagger-cli": "catalog:",
 		"swagger-ui-watcher": "catalog:"
 	},
 	"watch": {
