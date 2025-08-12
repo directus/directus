@@ -5,7 +5,6 @@
 	"type": "module",
 	"scripts": {
 		"build": "pnpm --recursive run build",
-		"build:tests": "pnpm --recursive --workspace-concurrency 0 --filter !@directus/app --filter !@directus/themes build:tests",
 		"format": "prettier --cache --check .",
 		"lint": "eslint --cache .",
 		"lint:style": "stylelint '**/*.{css,scss,vue}' --ignore-path .gitignore --cache",
