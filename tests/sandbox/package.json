@@ -6,7 +6,7 @@
 	"scripts": {
 		"cli": "tsx src/cli.ts",
 		"build": "tsc",
-		"build:tests": "tsc"
+		"build:tests": "tsup src/index.ts  --format=esm"
 	},
 	"exports": {
 		".": "./dist/index.js",
@@ -33,6 +33,7 @@
 		"lodash-es": "catalog:",
 		"rimraf": "catalog:",
 		"tsx": "catalog:",
+		"tsup": "catalog:",
 		"typescript": "catalog:"
 	},
 	"engines": {
