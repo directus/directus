@@ -23,7 +23,6 @@
 	],
 	"scripts": {
 		"build": "tsup src/index.ts --format=esm --dts",
-		"build:tests": "tsup src/index.ts --format=esm",
 		"dev": "tsup src/index.ts --format=esm --dts --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
@@ -32,18 +31,18 @@
 		"@directus/constants": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"axios": "catalog:",
-		"tsup": "catalog:",
-		"@directus/tsconfig": "catalog:",
 		"lodash-es": "catalog:",
 		"nanoid": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/extensions": "workspace:*",
 		"@directus/sdk": "workspace:*",
+		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"@vue/test-utils": "catalog:",
+		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",
 		"vue": "catalog:"

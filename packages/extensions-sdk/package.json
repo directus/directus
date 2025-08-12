@@ -26,14 +26,12 @@
 		"templates"
 	],
 	"scripts": {
-		"build": "tsc",
-		"build:tests": "tsup src/index.ts --tsconfig tsconfig.prod.json  --format=esm",
+		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
-		"@directus/tsconfig": "catalog:",
 		"@directus/composables": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/extensions": "workspace:*",
@@ -59,10 +57,10 @@
 		"rollup-plugin-styler": "catalog:",
 		"semver": "catalog:",
 		"vite": "catalog:",
-		"vue": "catalog:",
-		"tsup": "catalog:"
+		"vue": "catalog:"
 	},
 	"devDependencies": {
+		"@directus/tsconfig": "catalog:",
 		"@types/fs-extra": "catalog:",
 		"@types/inquirer": "catalog:",
 		"@types/semver": "catalog:",

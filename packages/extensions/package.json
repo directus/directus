@@ -27,14 +27,11 @@
 		"build": "pnpm run '/^build:.*/'",
 		"build:node": "tsup src/node.ts --tsconfig src/node/tsconfig.json --out-dir dist --format=esm --dts",
 		"build:shared": "tsup src/index.ts --tsconfig src/tsconfig.json --out-dir dist --format=esm --dts",
-		"build:tests": "tsup src/node.ts --tsconfig src/node/tsconfig.json --out-dir dist --format=esm && tsup src/index.ts --tsconfig src/tsconfig.json --out-dir dist --format=esm",
 		"dev": "pnpm run '/^build:.*/' --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
-		"tsup": "catalog:",
-		"@directus/tsconfig": "catalog:",
 		"@directus/constants": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
@@ -44,12 +41,14 @@
 		"zod": "catalog:"
 	},
 	"devDependencies": {
+		"@directus/tsconfig": "catalog:",
 		"@types/fs-extra": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"knex": "catalog:",
 		"pino": "catalog:",
+		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",
 		"vue": "catalog:",

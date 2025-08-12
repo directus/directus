@@ -22,7 +22,6 @@
 	],
 	"scripts": {
 		"build": "tsup src/index.ts --format=esm --dts",
-		"build:tests": "tsup src/index.ts --format=esm",
 		"dev": "tsup src/index.ts --format=esm --dts --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
@@ -31,14 +30,14 @@
 		"@directus/constants": "workspace:*",
 		"@directus/errors": "workspace:*",
 		"@directus/extensions": "workspace:*",
-		"@directus/tsconfig": "catalog:",
-		"tsup": "catalog:",
 		"ky": "catalog:",
 		"zod": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/types": "workspace:*",
+		"@directus/tsconfig": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
+		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	}

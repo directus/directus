@@ -22,24 +22,24 @@
 	],
 	"scripts": {
 		"build": "tsc",
-		"build:tests": "tsc --project tsconfig.test.json",
 		"dev": "tsc --watch"
 	},
 	"dependencies": {
-		"@directus/tsconfig": "catalog:",
 		"@directus/constants": "workspace:*",
 		"@directus/schema": "workspace:*",
 		"@sinclair/typebox": "catalog:",
 		"@types/express": "catalog:",
 		"@types/geojson": "catalog:",
 		"@types/nodemailer": "catalog:",
-		"@types/ws": "catalog:",
-		"typescript": "catalog:",
+		"@types/ws": "catalog:"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "catalog:",
+		"@types/deep-diff": "catalog:",
 		"knex": "catalog:",
-		"zod": "catalog:",
+		"typescript": "catalog:",
 		"vue": "catalog:",
-		"tsup": "catalog:",
-		"@types/deep-diff": "catalog:"
+		"zod": "catalog:"
 	},
 	"peerDependencies": {
 		"deep-diff": "catalog:",

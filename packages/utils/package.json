@@ -28,13 +28,11 @@
 		"build:browser": "tsup browser/index.ts --tsconfig browser/tsconfig.json --out-dir dist/browser --format=esm --dts",
 		"build:node": "tsup node/index.ts --tsconfig node/tsconfig.json --out-dir dist/node --format=esm --dts",
 		"build:shared": "tsup shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --format=esm --dts",
-		"build:tests": "tsup browser/index.ts --tsconfig browser/tsconfig.json --out-dir dist/browser --format=esm && tsup node/index.ts --tsconfig node/tsconfig.json --out-dir dist/node --format=esm && tsup shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --format=esm",
 		"dev": "pnpm run '/^build:.*/' --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
-		"@directus/tsconfig": "catalog:",
 		"@directus/constants": "workspace:*",
 		"@directus/system-data": "workspace:*",
 		"date-fns": "catalog:",
@@ -42,10 +40,10 @@
 		"joi": "catalog:",
 		"js-yaml": "catalog:",
 		"lodash-es": "catalog:",
-		"tsup": "catalog:",
 		"micromustache": "catalog:"
 	},
 	"devDependencies": {
+		"@directus/tsconfig": "catalog:",
 		"@directus/schema-builder": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/fs-extra": "catalog:",
@@ -55,6 +53,7 @@
 		"@types/tmp": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tmp": "catalog:",
+		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",
 		"vue": "catalog:"

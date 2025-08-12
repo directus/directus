@@ -23,14 +23,11 @@
 	],
 	"scripts": {
 		"build": "tsup src/index.ts --format=esm --dts",
-		"build:tests": "tsup src/index.ts --format=esm",
 		"dev": "tsup src/index.ts --format=esm --dts --watch"
 	},
-	"dependencies": {
-		"tsup": "catalog:",
-		"@directus/tsconfig": "catalog:"
-	},
 	"devDependencies": {
+		"@directus/tsconfig": "catalog:",
+		"tsup": "catalog:",
 		"typescript": "catalog:"
 	}
 }

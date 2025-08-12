@@ -22,21 +22,20 @@
 	],
 	"scripts": {
 		"build": "tsup src/index.ts --format=esm --dts",
-		"build:tests": "tsup src/index.ts --format=esm",
 		"dev": "tsup src/index.ts --format=esm --dts --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
-		"tsup": "catalog:",
-		"@directus/tsconfig": "catalog:",
 		"@directus/storage": "workspace:*"
 	},
 	"devDependencies": {
+		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@types/node": "catalog:",
 		"@ngneat/falso": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
+		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	}
