@@ -1019,6 +1019,12 @@ importers:
       '@directus/system-data':
         specifier: workspace:*
         version: link:../packages/system-data
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../packages/types
       '@directus/utils':
         specifier: workspace:*
         version: link:../packages/utils
@@ -1082,6 +1088,9 @@ importers:
       cookie-parser:
         specifier: 'catalog:'
         version: 1.4.7
+      copyfiles:
+        specifier: 'catalog:'
+        version: 2.4.1
       cors:
         specifier: 'catalog:'
         version: 2.8.5
@@ -1292,6 +1301,9 @@ importers:
       tsx:
         specifier: 'catalog:'
         version: 4.20.3
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.3
       uuid:
         specifier: 'catalog:'
         version: 11.1.0
@@ -1311,12 +1323,6 @@ importers:
       '@directus/schema-builder':
         specifier: workspace:*
         version: link:../packages/schema-builder
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
-      '@directus/types':
-        specifier: workspace:*
-        version: link:../packages/types
       '@ngneat/falso':
         specifier: 'catalog:'
         version: 8.0.2
@@ -1419,9 +1425,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
-      copyfiles:
-        specifier: 'catalog:'
-        version: 2.4.1
       form-data:
         specifier: 'catalog:'
         version: 4.0.4
@@ -1431,9 +1434,6 @@ importers:
       knex-mock-client:
         specifier: 'catalog:'
         version: 3.0.2(knex@3.1.0(mysql2@3.14.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1))
-      typescript:
-        specifier: 'catalog:'
-        version: 5.8.3
       vitest:
         specifier: 'catalog:'
         version: 3.2.4(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0)

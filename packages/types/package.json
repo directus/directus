@@ -22,7 +22,7 @@
 	],
 	"scripts": {
 		"build": "tsc",
-		"build:tests": "tsup src/index.ts  --format=esm",
+		"build:tests": "tsc",
 		"dev": "tsc --watch"
 	},
 	"dependencies": {

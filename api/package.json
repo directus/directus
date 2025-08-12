@@ -59,6 +59,7 @@
 	],
 	"scripts": {
 		"build": "rimraf ./dist && tsc --project tsconfig.prod.json && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
+		"build:tests": "tsc --project tsconfig.test.json && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
 		"cli": "NODE_ENV=development SERVE_APP=false tsx src/cli/run.ts",
 		"dev": "NODE_ENV=development SERVE_APP=true tsx watch --ignore extensions --clear-screen=false src/start.ts",
 		"test": "vitest run",
@@ -68,6 +69,8 @@
 	"dependencies": {
 		"@authenio/samlify-node-xmllint": "catalog:",
 		"@aws-sdk/client-ses": "catalog:",
+		"@directus/tsconfig": "catalog:",
+		"@directus/types": "workspace:*",
 		"@directus/app": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/env": "workspace:*",
@@ -180,15 +183,15 @@
 		"tar": "catalog:",
 		"tsx": "catalog:",
 		"uuid": "catalog:",
+		"typescript": "catalog:",
 		"wellknown": "catalog:",
 		"ws": "catalog:",
+		"copyfiles": "catalog:",
 		"zod": "catalog:",
 		"zod-validation-error": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/schema-builder": "workspace:*",
-		"@directus/tsconfig": "catalog:",
-		"@directus/types": "workspace:*",
 		"@ngneat/falso": "catalog:",
 		"@types/async": "catalog:",
 		"@types/busboy": "catalog:",
@@ -223,11 +226,9 @@
 		"@types/wellknown": "catalog:",
 		"@types/ws": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"copyfiles": "catalog:",
 		"form-data": "catalog:",
 		"get-port": "catalog:",
 		"knex-mock-client": "catalog:",
-		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},
 	"optionalDependencies": {
