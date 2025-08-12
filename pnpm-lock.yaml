@@ -1019,12 +1019,6 @@ importers:
       '@directus/system-data':
         specifier: workspace:*
         version: link:../packages/system-data
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
-      '@directus/types':
-        specifier: workspace:*
-        version: link:../packages/types
       '@directus/utils':
         specifier: workspace:*
         version: link:../packages/utils
@@ -1088,9 +1082,6 @@ importers:
       cookie-parser:
         specifier: 'catalog:'
         version: 1.4.7
-      copyfiles:
-        specifier: 'catalog:'
-        version: 2.4.1
       cors:
         specifier: 'catalog:'
         version: 2.8.5
@@ -1301,9 +1292,6 @@ importers:
       tsx:
         specifier: 'catalog:'
         version: 4.20.3
-      typescript:
-        specifier: 'catalog:'
-        version: 5.8.3
       uuid:
         specifier: 'catalog:'
         version: 11.1.0
@@ -1323,6 +1311,12 @@ importers:
       '@directus/schema-builder':
         specifier: workspace:*
         version: link:../packages/schema-builder
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../packages/types
       '@ngneat/falso':
         specifier: 'catalog:'
         version: 8.0.2
@@ -1425,6 +1419,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+      copyfiles:
+        specifier: 'catalog:'
+        version: 2.4.1
       form-data:
         specifier: 'catalog:'
         version: 4.0.4
@@ -1434,6 +1431,9 @@ importers:
       knex-mock-client:
         specifier: 'catalog:'
         version: 3.0.2(knex@3.1.0(mysql2@3.14.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1))
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.3
       vitest:
         specifier: 'catalog:'
         version: 3.2.4(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0)
@@ -1846,9 +1846,6 @@ importers:
       '@directus/constants':
         specifier: workspace:*
         version: link:../constants
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       '@directus/utils':
         specifier: workspace:*
         version: link:../utils
@@ -1861,9 +1858,6 @@ importers:
       nanoid:
         specifier: 'catalog:'
         version: 5.1.5
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
     devDependencies:
       '@directus/extensions':
         specifier: workspace:*
@@ -1871,6 +1865,9 @@ importers:
       '@directus/sdk':
         specifier: workspace:*
         version: link:../../sdk
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -1883,6 +1880,9 @@ importers:
       '@vue/test-utils':
         specifier: 'catalog:'
         version: 2.4.6
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -1894,14 +1894,13 @@ importers:
         version: 3.5.18(typescript@5.8.3)
 
   packages/constants:
-    dependencies:
+    devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
       tsup:
         specifier: 'catalog:'
         version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
-    devDependencies:
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -1961,9 +1960,6 @@ importers:
       '@directus/constants':
         specifier: workspace:*
         version: link:../constants
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       '@directus/utils':
         specifier: workspace:*
         version: link:../utils
@@ -1973,10 +1969,10 @@ importers:
       lodash-es:
         specifier: 'catalog:'
         version: 4.17.21
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
     devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       '@types/lodash-es':
         specifier: 'catalog:'
         version: 4.17.12
@@ -1986,6 +1982,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -1998,16 +1997,13 @@ importers:
       '@directus/storage':
         specifier: workspace:*
         version: link:../storage
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       ms:
         specifier: 'catalog:'
         version: 2.1.3
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
     devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2017,6 +2013,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@24.2.0)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2029,9 +2028,6 @@ importers:
       '@directus/constants':
         specifier: workspace:*
         version: link:../constants
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2047,13 +2043,13 @@ importers:
       lodash-es:
         specifier: 'catalog:'
         version: 4.17.21
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       zod:
         specifier: 'catalog:'
         version: 4.0.14
     devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       '@types/fs-extra':
         specifier: 'catalog:'
         version: 11.0.4
@@ -2072,6 +2068,9 @@ importers:
       pino:
         specifier: 'catalog:'
         version: 9.7.0
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2096,25 +2095,25 @@ importers:
       '@directus/extensions':
         specifier: workspace:*
         version: link:../extensions
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       ky:
         specifier: 'catalog:'
         version: 1.8.2
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       zod:
         specifier: 'catalog:'
         version: 4.0.14
     devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@24.2.0)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2136,9 +2135,6 @@ importers:
       '@directus/themes':
         specifier: workspace:*
         version: link:../themes
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2199,9 +2195,6 @@ importers:
       semver:
         specifier: 'catalog:'
         version: 7.7.2
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       vite:
         specifier: 'catalog:'
         version: 5.4.19(@types/node@24.2.0)(sass-embedded@1.89.2)(terser@5.43.1)
@@ -2209,6 +2202,9 @@ importers:
         specifier: 'catalog:'
         version: 3.5.18(typescript@5.8.3)
     devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       '@types/fs-extra':
         specifier: 'catalog:'
         version: 11.0.4
@@ -2220,26 +2216,25 @@ importers:
         version: 7.7.0
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 3.2.4(vitest@3.2.4(@types/node@24.2.0)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+        version: 3.2.4(vitest@3.2.4(@types/node@24.2.0)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(yaml@2.8.0))
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
       vitest:
         specifier: 'catalog:'
-        version: 3.2.4(@types/node@24.2.0)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0)
+        version: 3.2.4(@types/node@24.2.0)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(yaml@2.8.0)
 
   packages/format-title:
-    dependencies:
+    devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
-    devDependencies:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@24.2.0)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2252,9 +2247,6 @@ importers:
       '@directus/errors':
         specifier: workspace:*
         version: link:../errors
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       '@directus/utils':
         specifier: workspace:*
         version: link:../utils
@@ -2267,16 +2259,19 @@ importers:
       rate-limiter-flexible:
         specifier: 'catalog:'
         version: 7.2.0
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
     devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       '@types/node':
         specifier: 'catalog:'
         version: 22.13.14
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2286,22 +2281,22 @@ importers:
 
   packages/pressure:
     dependencies:
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       '@directus/utils':
         specifier: workspace:*
         version: link:../utils
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
     devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       '@types/express':
         specifier: 'catalog:'
         version: 4.17.21
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@24.2.0)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2351,16 +2346,16 @@ importers:
 
   packages/schema:
     dependencies:
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       knex:
         specifier: 'catalog:'
         version: 3.1.0(mysql2@3.14.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       tsup:
         specifier: 'catalog:'
         version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
-    devDependencies:
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2398,26 +2393,22 @@ importers:
       openapi3-ts:
         specifier: 'catalog:'
         version: 4.5.0
-      swagger-cli:
-        specifier: 'catalog:'
-        version: 4.0.4(openapi-types@12.1.3)
     devDependencies:
       npm-watch:
         specifier: 'catalog:'
         version: 0.13.0
+      swagger-cli:
+        specifier: 'catalog:'
+        version: 4.0.4(openapi-types@12.1.3)
       swagger-ui-watcher:
         specifier: 'catalog:'
         version: 2.1.14
 
   packages/storage:
-    dependencies:
+    devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
-    devDependencies:
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2427,6 +2418,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2442,16 +2436,13 @@ importers:
       '@directus/storage':
         specifier: workspace:*
         version: link:../storage
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       '@directus/utils':
         specifier: workspace:*
         version: link:../utils
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
     devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2461,6 +2452,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@24.2.0)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2473,22 +2467,19 @@ importers:
       '@directus/storage':
         specifier: workspace:*
         version: link:../storage
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       '@directus/utils':
         specifier: workspace:*
         version: link:../utils
       p-queue:
         specifier: 'catalog:'
         version: 8.1.0
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       undici:
         specifier: 'catalog:'
         version: 7.13.0
     devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2498,6 +2489,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@24.2.0)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2513,19 +2507,16 @@ importers:
       '@directus/storage':
         specifier: workspace:*
         version: link:../storage
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       '@directus/utils':
         specifier: workspace:*
         version: link:../utils
       '@google-cloud/storage':
         specifier: 'catalog:'
         version: 7.16.0(encoding@0.1.13)
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
     devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2535,6 +2526,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@24.2.0)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2547,13 +2541,10 @@ importers:
       '@directus/storage':
         specifier: workspace:*
         version: link:../storage
+    devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
-    devDependencies:
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2566,6 +2557,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2584,9 +2578,6 @@ importers:
       '@directus/storage':
         specifier: workspace:*
         version: link:../storage
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       '@directus/utils':
         specifier: workspace:*
         version: link:../utils
@@ -2602,10 +2593,10 @@ importers:
       ms:
         specifier: 'catalog:'
         version: 2.1.3
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
     devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2618,6 +2609,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@24.2.0)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2633,18 +2627,12 @@ importers:
       '@directus/storage':
         specifier: workspace:*
         version: link:../storage
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       '@directus/utils':
         specifier: workspace:*
         version: link:../utils
       '@supabase/storage-js':
         specifier: 'catalog:'
         version: 2.10.4
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       tus-js-client:
         specifier: 'catalog:'
         version: 4.3.1
@@ -2652,6 +2640,9 @@ importers:
         specifier: 'catalog:'
         version: 7.13.0
     devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2661,6 +2652,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@24.2.0)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2670,19 +2664,19 @@ importers:
 
   packages/stores:
     dependencies:
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       '@vueuse/core':
         specifier: 'catalog:'
         version: 13.6.0(vue@3.5.18(typescript@5.8.3))
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
     devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       pinia:
         specifier: 'catalog:'
         version: 2.3.1(typescript@5.8.3)(vue@3.5.18(typescript@5.8.3))
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2691,20 +2685,19 @@ importers:
         version: 3.5.18(typescript@5.8.3)
 
   packages/system-data:
-    dependencies:
+    devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
+      esbuild:
+        specifier: 'catalog:'
+        version: 0.25.8
       esbuild-yaml:
         specifier: 'catalog:'
         version: 3.0.3(esbuild@0.25.8)
       tsup:
         specifier: 'catalog:'
         version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
-    devDependencies:
-      esbuild:
-        specifier: 'catalog:'
-        version: 0.25.8
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2769,15 +2762,9 @@ importers:
       '@directus/schema':
         specifier: workspace:*
         version: link:../schema
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       '@sinclair/typebox':
         specifier: 'catalog:'
         version: 0.34.38
-      '@types/deep-diff':
-        specifier: 'catalog:'
-        version: 1.0.5
       '@types/express':
         specifier: 'catalog:'
         version: 4.17.21
@@ -2799,9 +2786,6 @@ importers:
       graphql:
         specifier: 'catalog:'
         version: 16.11.0
-      knex:
-        specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.14.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
       nodemailer:
         specifier: 'catalog:'
         version: 7.0.5
@@ -2814,30 +2798,34 @@ importers:
       sharp:
         specifier: 'catalog:'
         version: 0.34.3
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
-      typescript:
-        specifier: 'catalog:'
-        version: 5.8.3
-      vue:
-        specifier: 'catalog:'
-        version: 3.5.18(typescript@5.8.3)
       vue-router:
         specifier: 'catalog:'
         version: 4.5.1(vue@3.5.18(typescript@5.8.3))
       ws:
         specifier: 'catalog:'
         version: 8.18.3
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
+      '@types/deep-diff':
+        specifier: 'catalog:'
+        version: 1.0.5
+      knex:
+        specifier: 'catalog:'
+        version: 3.1.0(mysql2@3.14.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.3
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.18(typescript@5.8.3)
       zod:
         specifier: 'catalog:'
         version: 4.0.14
 
   packages/update-check:
     dependencies:
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       axios:
         specifier: 'catalog:'
         version: 1.11.0
@@ -2856,10 +2844,10 @@ importers:
       semver:
         specifier: 'catalog:'
         version: 7.7.2
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
     devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       '@npm/types':
         specifier: 'catalog:'
         version: 2.1.0
@@ -2875,6 +2863,9 @@ importers:
       strip-ansi:
         specifier: 'catalog:'
         version: 7.1.0
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2890,9 +2881,6 @@ importers:
       '@directus/system-data':
         specifier: workspace:*
         version: link:../system-data
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       date-fns:
         specifier: 'catalog:'
         version: 4.1.0
@@ -2911,13 +2899,13 @@ importers:
       micromustache:
         specifier: 'catalog:'
         version: 8.0.3
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
     devDependencies:
       '@directus/schema-builder':
         specifier: workspace:*
         version: link:../schema-builder
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -2942,6 +2930,9 @@ importers:
       tmp:
         specifier: 'catalog:'
         version: 0.2.4
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
@@ -2957,25 +2948,25 @@ importers:
       '@directus/errors':
         specifier: workspace:*
         version: link:../errors
-      '@directus/tsconfig':
-        specifier: 'catalog:'
-        version: 3.0.0
       '@directus/utils':
         specifier: workspace:*
         version: link:../utils
       joi:
         specifier: 'catalog:'
         version: 17.13.3
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
     devDependencies:
+      '@directus/tsconfig':
+        specifier: 'catalog:'
+        version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/node@24.2.0)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.2.0))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
