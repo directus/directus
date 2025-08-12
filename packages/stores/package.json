@@ -32,7 +32,6 @@
 	},
 	"devDependencies": {
 		"pinia": "catalog:",
-
 		"typescript": "catalog:",
 		"vue": "catalog:"
 	},
