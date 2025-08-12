@@ -24,6 +24,7 @@
 	],
 	"scripts": {
 		"build": "swagger-cli bundle src/openapi.yaml -o dist/openapi.json",
+		"build:tests": "swagger-cli bundle src/openapi.yaml -o dist/openapi.json",
 		"build:deref": "swagger-cli bundle src/openapi.yaml -o dist/openapi-deref.json --dereference",
 		"dev": "npm-watch build",
 		"ui:watch": "swagger-ui-watcher src/openapi.yaml",
