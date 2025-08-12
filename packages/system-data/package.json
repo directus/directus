@@ -25,14 +25,16 @@
 	],
 	"scripts": {
 		"build": "NODE_ENV=production tsup",
-		"build:tests": "pnpm run build",
+		"build:tests": "NODE_ENV=production tsup",
 		"dev": "NODE_ENV=development tsup"
 	},
-	"devDependencies": {
-		"@directus/tsconfig": "catalog:",
-		"esbuild": "catalog:",
-		"esbuild-yaml": "catalog:",
+	"dependencies": {
 		"tsup": "catalog:",
+		"@directus/tsconfig": "catalog:",
+		"esbuild-yaml": "catalog:"
+	},
+	"devDependencies": {
+		"esbuild": "catalog:",
 		"typescript": "catalog:"
 	}
 }

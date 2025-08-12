@@ -38,10 +38,12 @@
 		"test:coverage": "vitest run --coverage",
 		"typecheck": "tsc --noEmit"
 	},
-	"devDependencies": {
-		"@directus/tsconfig": "catalog:",
-		"@vitest/coverage-v8": "catalog:",
+	"dependencies": {
 		"tsup": "catalog:",
+		"@directus/tsconfig": "catalog:"
+	},
+	"devDependencies": {
+		"@vitest/coverage-v8": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	}

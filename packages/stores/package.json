@@ -26,12 +26,13 @@
 		"dev": "tsup src/index.ts --format=esm --dts --watch"
 	},
 	"dependencies": {
+		"tsup": "catalog:",
+		"@directus/tsconfig": "catalog:",
 		"@vueuse/core": "catalog:"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "catalog:",
 		"pinia": "catalog:",
-		"tsup": "catalog:",
+
 		"typescript": "catalog:",
 		"vue": "catalog:"
 	},

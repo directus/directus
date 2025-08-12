@@ -29,6 +29,8 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "catalog:",
+		"@directus/tsconfig": "catalog:",
+		"tsup": "catalog:",
 		"@aws-sdk/lib-storage": "catalog:",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
@@ -38,12 +40,10 @@
 		"ms": "catalog:"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "catalog:",
 		"@types/ms": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	}

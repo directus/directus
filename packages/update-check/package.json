@@ -29,21 +29,21 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
+		"@directus/tsconfig": "catalog:",
 		"axios": "catalog:",
 		"axios-cache-interceptor": "catalog:",
 		"boxen": "catalog:",
 		"chalk": "catalog:",
 		"find-cache-directory": "catalog:",
-		"semver": "catalog:"
+		"semver": "catalog:",
+		"tsup": "catalog:"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "catalog:",
 		"@npm/types": "catalog:",
 		"@types/node": "catalog:",
 		"@types/semver": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"strip-ansi": "catalog:",
-		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	}

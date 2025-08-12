@@ -28,15 +28,15 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},
 	"dependencies": {
+		"@directus/tsconfig": "catalog:",
+		"tsup": "catalog:",
 		"@directus/constants": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"dotenv": "catalog:",

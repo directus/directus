@@ -31,14 +31,14 @@
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"p-queue": "catalog:",
+		"@directus/tsconfig": "catalog:",
+		"tsup": "catalog:",
 		"undici": "catalog:"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	}

@@ -33,6 +33,8 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
+		"tsup": "catalog:",
+		"@directus/tsconfig": "catalog:",
 		"@directus/constants": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
@@ -42,14 +44,12 @@
 		"zod": "catalog:"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "catalog:",
 		"@types/fs-extra": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"knex": "catalog:",
 		"pino": "catalog:",
-		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",
 		"vue": "catalog:",

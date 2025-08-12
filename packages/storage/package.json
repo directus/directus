@@ -27,12 +27,14 @@
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
-	"devDependencies": {
+	"dependencies": {
 		"@directus/tsconfig": "catalog:",
+		"tsup": "catalog:"
+	},
+	"devDependencies": {
 		"@directus/types": "workspace:*",
 		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	}

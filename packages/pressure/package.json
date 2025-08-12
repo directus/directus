@@ -28,13 +28,13 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
+		"@directus/tsconfig": "catalog:",
+		"tsup": "catalog:",
 		"@directus/utils": "workspace:*"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "catalog:",
 		"@types/express": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	}

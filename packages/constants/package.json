@@ -26,9 +26,11 @@
 		"build:tests": "tsup src/index.ts --format=esm",
 		"dev": "tsup src/index.ts --format=esm --dts --watch"
 	},
-	"devDependencies": {
-		"@directus/tsconfig": "catalog:",
+	"dependencies": {
 		"tsup": "catalog:",
+		"@directus/tsconfig": "catalog:"
+	},
+	"devDependencies": {
 		"typescript": "catalog:"
 	}
 }

@@ -34,6 +34,7 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
+		"@directus/tsconfig": "catalog:",
 		"@directus/constants": "workspace:*",
 		"@directus/system-data": "workspace:*",
 		"date-fns": "catalog:",
@@ -41,10 +42,10 @@
 		"joi": "catalog:",
 		"js-yaml": "catalog:",
 		"lodash-es": "catalog:",
+		"tsup": "catalog:",
 		"micromustache": "catalog:"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "catalog:",
 		"@directus/schema-builder": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/fs-extra": "catalog:",
@@ -54,7 +55,6 @@
 		"@types/tmp": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tmp": "catalog:",
-		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",
 		"vue": "catalog:"
