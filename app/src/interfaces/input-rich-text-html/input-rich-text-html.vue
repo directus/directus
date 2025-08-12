@@ -4,6 +4,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { SettingsStorageAssetPreset } from '@directus/types';
 import Editor from '@tinymce/tinymce-vue';
+import { createFocusTrap, type FocusTrap } from 'focus-trap';
 import { cloneDeep, isEqual } from 'lodash';
 import { ComponentPublicInstance, computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -298,6 +299,40 @@ function setup(editor: any) {
 			}
 		}
 	});
+
+	let dialogTrap: FocusTrap | null = null;
+	editor.on('OpenWindow', activateTrap);
+	editor.on('CloseWindow', deactivateTrap);
+
+	function activateTrap() {
+		const toxDialogEl = document.querySelector('.tox-dialog');
+		if (toxDialogEl === null) return;
+
+		// TinyMCE adds tabindex="-1" to all focusable elements in the dialog
+		const notFocusableElements = toxDialogEl.querySelectorAll('[tabindex="-1"]');
+		// To apply a focus trap, we need to make these elements temporarily focusable
+		notFocusableElements.forEach(setFocusable);
+
+		deactivateTrap();
+		dialogTrap = createFocusTrap(toxDialogEl as HTMLElement);
+		dialogTrap.activate();
+
+		notFocusableElements.forEach(setNotFocusable);
+	}
+
+	function setFocusable(el: Element) {
+		el.setAttribute('tabindex', '0');
+	}
+
+	function setNotFocusable(el: Element) {
+		el.setAttribute('tabindex', '-1');
+	}
+
+	function deactivateTrap() {
+		if (dialogTrap === null) return;
+		dialogTrap.deactivate();
+		dialogTrap = null;
+	}
 }
 
 function setFocus(val: boolean) {
