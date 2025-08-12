@@ -25,7 +25,7 @@
 		"js-yaml": "4.1.0",
 		"json-to-graphql-query": "2.3.0",
 		"knex": "3.1.0",
-		"listr2": "8.2.5",
+		"listr2": "9.0.1",
 		"lodash-es": "catalog:",
 		"seedrandom": "3.0.5",
 		"supertest": "7.0.0",
