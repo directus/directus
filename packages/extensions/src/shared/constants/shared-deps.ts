@@ -37,6 +37,7 @@ export const API_SHARED_DEPS = [
 	'better-sqlite3',
 	'pg',
 	'pg-query-stream',
+	'mysql',
 	'mysql2',
 	'oracledb',
 
