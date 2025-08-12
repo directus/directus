@@ -15,6 +15,7 @@ export function validatePathExistence(path: string, collection: string, fields: 
 		if (field.startsWith('$')) {
 			return false;
 		}
+
 		return collectionInfo.fields[field] === undefined;
 	});
 

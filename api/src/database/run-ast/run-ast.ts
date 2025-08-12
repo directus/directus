@@ -102,20 +102,21 @@ export async function runAst(
 		// Add synthetic fields (starting with $) as null if they were requested but not in results
 		const syntheticFields = children
 			.filter((child): child is FieldNode => child.type === 'field' && child.name.startsWith('$'))
-			.map(child => child.name);
+			.map((child) => child.name);
 
 		if (syntheticFields.length > 0 && items) {
 			const itemsArray = Array.isArray(items) ? items : [items];
-			
+
 			for (const item of itemsArray) {
 				if (item && typeof item === 'object') {
 					const missingFields: Record<string, null> = {};
+
 					for (const fieldName of syntheticFields) {
 						if (!(fieldName in item)) {
 							missingFields[fieldName] = null;
 						}
 					}
-					
+
 					if (Object.keys(missingFields).length > 0) {
 						Object.assign(item, missingFields);
 					}

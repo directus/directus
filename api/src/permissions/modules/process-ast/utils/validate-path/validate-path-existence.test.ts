@@ -60,7 +60,9 @@ test('Allows multiple synthetic fields to pass validation', () => {
 		})
 		.build();
 
-	expect(() => validatePathExistence('test.path', 'test-collection', new Set(['$thumbnail', '$preview']), schema)).not.toThrow();
+	expect(() =>
+		validatePathExistence('test.path', 'test-collection', new Set(['$thumbnail', '$preview']), schema),
+	).not.toThrow();
 });
 
 test('Allows mix of real and synthetic fields to pass validation', () => {
@@ -71,7 +73,9 @@ test('Allows mix of real and synthetic fields to pass validation', () => {
 		})
 		.build();
 
-	expect(() => validatePathExistence('test.path', 'test-collection', new Set(['id', 'title', '$thumbnail']), schema)).not.toThrow();
+	expect(() =>
+		validatePathExistence('test.path', 'test-collection', new Set(['id', 'title', '$thumbnail']), schema),
+	).not.toThrow();
 });
 
 test('Throws if mix contains non-existent regular field but allows synthetic fields', () => {
@@ -81,7 +85,7 @@ test('Throws if mix contains non-existent regular field but allows synthetic fie
 		})
 		.build();
 
-	expect(() => validatePathExistence('test.path', 'test-collection', new Set(['non-existent', '$thumbnail']), schema)).toThrowError(
-		ForbiddenError,
-	);
+	expect(() =>
+		validatePathExistence('test.path', 'test-collection', new Set(['non-existent', '$thumbnail']), schema),
+	).toThrowError(ForbiddenError);
 });
