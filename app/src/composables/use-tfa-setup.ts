@@ -25,6 +25,7 @@ export function useTFASetup(initialEnabled: boolean) {
 		enableTFA,
 		disableTFA,
 		adminDisableTFA,
+		request2FASetup,
 		loading,
 		password,
 		tfaEnabled,
@@ -117,5 +118,20 @@ export function useTFASetup(initialEnabled: boolean) {
 		}
 
 		return success;
+	}
+
+	async function request2FASetup() {
+		if (loading.value === true) return;
+
+		loading.value = true;
+
+		try {
+			await api.post('/users/me/tfa/request-setup');
+			// Show success message or handle as needed
+		} catch (err: any) {
+			error.value = err;
+		} finally {
+			loading.value = false;
+		}
 	}
 }

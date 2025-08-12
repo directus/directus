@@ -119,6 +119,9 @@ hook: Hook
 fill_width: Fill Width
 field_name_translations: Field Name Translations
 enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication
+enable_2fa_for_oauth: Enable Two-Factor Authentication
+oauth_2fa_setup_notice: You will be prompted to enable 2FA next time you log in
+enable_2fa: Enable 2FA
 add_field: Add Field
 role_name: Role Name
 policy_name: Policy Name

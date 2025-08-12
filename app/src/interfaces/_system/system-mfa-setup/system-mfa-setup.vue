@@ -16,16 +16,39 @@ const { t } = useI18n();
 const userStore = useUserStore();
 const enableActive = ref(false);
 const disableActive = ref(false);
+const cancelSetupActive = ref(false);
 
 const inputOTP = ref<any>(null);
 
 const isCurrentUser = computed(() => (userStore.currentUser as User)?.id === props.primaryKey);
+
+// Detect if the current user is an OAuth user
+const isOAuthUser = computed(() => {
+	const user = userStore.currentUser;
+	return user && !('share' in user) && user.provider !== 'default';
+});
+
+// The 2fa checkbox should only be enabled if the user has a tfa_secret or
+// is an OAuth user with require_2fa set to true
+const effectiveTFAEnabled = computed(() => {
+	const user = userStore.currentUser;
+	if (!user || 'share' in user) return !!props.value;
+
+	// OAuth users
+	if (user.provider !== 'default') {
+		return !!(user.tfa_secret || user.require_2fa);
+	}
+
+	// Password users
+	return !!user.tfa_secret;
+});
 
 const {
 	generateTFA,
 	enableTFA,
 	disableTFA,
 	adminDisableTFA,
+	request2FASetup,
 	loading,
 	password,
 	tfaEnabled,
@@ -34,12 +57,13 @@ const {
 	otp,
 	error,
 	canvasID,
+	cancel2FASetup,
 } = useTFASetup(!!props.value);
 
 watch(
-	() => props.value,
+	() => effectiveTFAEnabled.value,
 	() => {
-		tfaEnabled.value = !!props.value;
+		tfaEnabled.value = effectiveTFAEnabled.value;
 	},
 	{ immediate: true },
 );
@@ -63,16 +87,35 @@ async function enable() {
 	}
 }
 
+async function enableOAuth() {
+	try {
+		await request2FASetup();
+		enableActive.value = false;
+	} catch {
+		// Error is already handled in the composable
+	}
+}
+
 async function disable() {
 	const success = await (isCurrentUser.value ? disableTFA() : adminDisableTFA(props.primaryKey!));
 	disableActive.value = !success;
+}
+
+async function cancelSetup() {
+	const success = await cancel2FASetup();
+	cancelSetupActive.value = !success;
 }
 
 function toggle() {
 	if (tfaEnabled.value === false) {
 		enableActive.value = true;
 	} else {
-		disableActive.value = true;
+		// For OAuth users with require_2fa but no tfa_secret, show cancel dialog instead of disable
+		if (isOAuthUser.value && userStore.currentUser?.require_2fa && !userStore.currentUser?.tfa_secret) {
+			cancelSetupActive.value = true;
+		} else {
+			disableActive.value = true;
+		}
 	}
 }
 
@@ -80,6 +123,7 @@ function cancelAndClose() {
 	tfaGenerated.value = false;
 	enableActive.value = false;
 	disableActive.value = false;
+	cancelSetupActive.value = false;
 	password.value = '';
 	otp.value = '';
 	secret.value = '';
@@ -99,7 +143,26 @@ function cancelAndClose() {
 
 		<v-dialog v-model="enableActive" persistent @esc="cancelAndClose">
 			<v-card>
-				<form v-if="tfaEnabled === false && tfaGenerated === false && loading === false" @submit.prevent="generateTFA">
+				<!-- OAuth user flow -->
+				<div v-if="isOAuthUser && tfaEnabled === false && tfaGenerated === false && loading === false">
+					<v-card-title>
+						{{ t('enable_2fa_for_oauth') }}
+					</v-card-title>
+					<v-card-text>
+						<p>{{ t('oauth_2fa_setup_notice') }}</p>
+						<v-error v-if="error" :error="error" />
+					</v-card-text>
+					<v-card-actions>
+						<v-button type="button" secondary @click="cancelAndClose">{{ t('cancel') }}</v-button>
+						<v-button type="submit" :loading="loading" @click="enableOAuth">{{ t('enable_2fa') }}</v-button>
+					</v-card-actions>
+				</div>
+
+				<!-- Password user flow -->
+				<form
+					v-else-if="!isOAuthUser && tfaEnabled === false && tfaGenerated === false && loading === false"
+					@submit.prevent="generateTFA"
+				>
 					<v-card-title>
 						{{ t('enter_password_to_enable_tfa') }}
 					</v-card-title>
@@ -168,6 +231,22 @@ function cancelAndClose() {
 						</v-button>
 					</v-card-actions>
 				</form>
+			</v-card>
+		</v-dialog>
+
+		<v-dialog v-model="cancelSetupActive" persistent @esc="cancelAndClose">
+			<v-card>
+				<v-card-title>
+					{{ t('cancel_2fa_setup') }}
+				</v-card-title>
+				<v-card-text>
+					<p>{{ t('cancel_2fa_setup_notice') }}</p>
+					<v-error v-if="error" :error="error" />
+				</v-card-text>
+				<v-card-actions>
+					<v-button type="button" secondary @click="cancelAndClose">{{ t('keep_setup') }}</v-button>
+					<v-button type="submit" :loading="loading" @click="cancelSetup">{{ t('cancel_setup') }}</v-button>
+				</v-card-actions>
 			</v-card>
 		</v-dialog>
 	</div>
