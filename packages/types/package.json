@@ -22,7 +22,7 @@
 	],
 	"scripts": {
 		"build": "tsc",
-		"build:tests": "tsc",
+		"build:tests": "tsc --project tsconfig.test.json",
 		"dev": "tsc --watch"
 	},
 	"dependencies": {
