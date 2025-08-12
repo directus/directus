@@ -22,7 +22,7 @@
 	],
 	"scripts": {
 		"build": "tsc",
-		"build:tests": "tsup src/index.ts --tsconfig tsconfig.prod.json  --format=esm",
+		"build:tests": "tsup src/index.ts  --format=esm",
 		"dev": "tsc --watch"
 	},
 	"dependencies": {
