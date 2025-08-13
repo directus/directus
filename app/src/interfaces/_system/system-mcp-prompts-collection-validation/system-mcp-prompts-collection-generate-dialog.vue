@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import api from '@/api';
-import { defineModel, ref, computed, defineProps, defineEmits } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { generateFields } from './schema';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { generateFields } from './schema';
 
 const { t } = useI18n();
 
@@ -186,8 +186,9 @@ async function generateCollection() {
 @use '@/styles/mixins';
 
 .grid {
-	@include mixins.form-grid;
 	padding-block-start: 20px;
+
+	@include mixins.form-grid;
 }
 
 .hints {

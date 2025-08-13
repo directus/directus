@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { defineProps, toRef, ref } from 'vue';
+import { defineProps, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useCollectionValidation } from './use-collection-validation';
 import SystemMcpPromptsCollectionGenerateDialog from './system-mcp-prompts-collection-generate-dialog.vue';
+import { useCollectionValidation } from './use-collection-validation';
 
 const { t } = useI18n();
 
