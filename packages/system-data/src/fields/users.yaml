@@ -109,6 +109,7 @@ fields:
       - cast-boolean
     options:
       iconRight: security
+    hidden: true
 
   - field: theming_divider
     interface: presentation-divider
