@@ -332,7 +332,9 @@ router.post(
 			throw new InvalidCredentialsError();
 		}
 
-		if (!req.body.password) {
+		const requiresPassword = req.body.requires_password !== false;
+
+		if (requiresPassword && !req.body.password) {
 			throw new InvalidPayloadError({ reason: `"password" is required` });
 		}
 
@@ -341,34 +343,16 @@ router.post(
 			schema: req.schema,
 		});
 
-		const authService = new AuthenticationService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+		if (requiresPassword) {
+			const authService = new AuthenticationService({
+				accountability: req.accountability,
+				schema: req.schema,
+			});
 
-		await authService.verifyPassword(req.accountability.user, req.body.password);
-
-		const { url, secret } = await service.generateTFA(req.accountability.user);
-
-		res.locals['payload'] = { data: { secret, otpauth_url: url } };
-		return next();
-	}),
-	respond,
-);
-
-router.post(
-	'/me/tfa/generate-oauth/',
-	asyncHandler(async (req, res, next) => {
-		if (!req.accountability?.user) {
-			throw new InvalidCredentialsError();
+			await authService.verifyPassword(req.accountability.user, req.body.password);
 		}
 
-		const service = new TFAService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		const { url, secret } = await service.generateTFAForOAuth(req.accountability.user);
+		const { url, secret } = await service.generateTFA(req.accountability.user, requiresPassword);
 
 		res.locals['payload'] = { data: { secret, otpauth_url: url } };
 		return next();
@@ -391,39 +375,14 @@ router.post(
 			throw new InvalidPayloadError({ reason: `"otp" is required` });
 		}
 
-		const service = new TFAService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		await service.enableTFA(req.accountability.user, req.body.otp, req.body.secret);
-
-		return next();
-	}),
-	respond,
-);
-
-router.post(
-	'/me/tfa/enable-oauth/',
-	asyncHandler(async (req, _res, next) => {
-		if (!req.accountability?.user) {
-			throw new InvalidCredentialsError();
-		}
-
-		if (!req.body.secret) {
-			throw new InvalidPayloadError({ reason: `"secret" is required` });
-		}
-
-		if (!req.body.otp) {
-			throw new InvalidPayloadError({ reason: `"otp" is required` });
-		}
+		const requiresPassword = req.body.requires_password !== false;
 
 		const service = new TFAService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		await service.enableTFAForOAuth(req.accountability.user, req.body.otp, req.body.secret);
+		await service.enableTFA(req.accountability.user, req.body.otp, req.body.secret, requiresPassword);
 
 		return next();
 	}),

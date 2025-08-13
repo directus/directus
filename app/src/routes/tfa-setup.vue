@@ -20,20 +20,8 @@ onMounted(() => {
 	}
 });
 
-const {
-	generateTFA,
-	generateTFAForOAuth,
-	enableTFA,
-	enableTFAForOAuth,
-	loading,
-	password,
-	tfaEnabled,
-	tfaGenerated,
-	secret,
-	otp,
-	error,
-	canvasID,
-} = useTFASetup(false);
+const { generateTFA, enableTFA, loading, password, tfaEnabled, tfaGenerated, secret, otp, error, canvasID } =
+	useTFASetup(false);
 
 watch(
 	() => tfaGenerated.value,
@@ -52,21 +40,11 @@ const isOAuthUser = computed(() => {
 });
 
 async function generate() {
-	if (isOAuthUser.value) {
-		await generateTFAForOAuth();
-	} else {
-		await generateTFA();
-	}
+	await generateTFA(!isOAuthUser.value);
 }
 
 async function enable() {
-	let success;
-
-	if (isOAuthUser.value) {
-		success = await enableTFAForOAuth();
-	} else {
-		success = await enableTFA();
-	}
+	const success = await enableTFA(!isOAuthUser.value);
 
 	if (success) {
 		const redirectQuery = router.currentRoute.value.query.redirect as string;
