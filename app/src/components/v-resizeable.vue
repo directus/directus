@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useSync } from '@directus/composables';
-import { useElementVisibility, useEventListener } from '@vueuse/core';
 import { clamp } from 'lodash';
 import { computed, ref, watch } from 'vue';
+import { useElementVisibility, useEventListener } from '@vueuse/core';
+import { useSync } from '@directus/composables';
+import { useUserStore } from '@/stores/user';
 
 type SnapZone = {
 	snapPos: number;
@@ -69,6 +70,10 @@ useEventListener(target, 'transitionend', (event: TransitionEvent) => {
 
 const internalWidth = useSync(props, 'width', emit);
 
+const userStore = useUserStore();
+
+const isRTL = computed(() => userStore.textDirection === 'rtl');
+
 watch(
 	[internalWidth, target, () => props.maxWidth],
 	([width, target, maxWidth]) => {
@@ -104,7 +109,13 @@ function onPointerMove(event: PointerEvent) {
 	if (!dragging.value) return;
 
 	animationFrameID = window.requestAnimationFrame(() => {
-		const newWidth = clamp(dragStartWidth + (event.pageX - dragStartX), props.minWidth, props.maxWidth);
+		const dragDelta = event.pageX - dragStartX;
+
+		const newWidth = clamp(
+			isRTL.value ? dragStartWidth - dragDelta : dragStartWidth + dragDelta,
+			props.minWidth,
+			props.maxWidth,
+		);
 
 		const snapZones = props.options?.snapZones;
 
@@ -200,12 +211,16 @@ function onPointerUp() {
 		background-color: var(--theme--primary);
 		cursor: ew-resize;
 		opacity: 0;
-		transform: translate(50%, 0);
 		transition: opacity var(--fast) var(--transition);
 		transition-delay: 0s;
 		-webkit-user-select: none;
 		user-select: none;
 		touch-action: none;
+		transform: translate(50%, 0);
+
+		html[dir='rtl'] & {
+			transform: translate(-50%, 0);
+		}
 
 		&:hover,
 		&:active {

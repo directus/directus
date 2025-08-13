@@ -257,7 +257,7 @@ catalog:
   qs: 6.14.0
   rate-limiter-flexible: 7.2.0
   rimraf: 6.0.1
-  rolldown: 1.0.0-beta.30
+  rolldown: 1.0.0-beta.31
   rollup: 4.46.2
   rollup-plugin-esbuild: 6.2.1
   rollup-plugin-node-externals: 8.0.1
@@ -282,7 +282,7 @@ catalog:
   tar: 7.4.3
   tedious: 18.6.1
   tinymce: 6.8.5
-  tmp: 0.2.3
+  tmp: 0.2.4
   tsup: 8.5.0
   tsx: 4.20.3
   tus-js-client: 4.3.1
