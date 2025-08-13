@@ -146,7 +146,21 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 
 		if (userStore.currentUser && !('share' in userStore.currentUser)) {
 			if (to.path !== '/tfa-setup') {
+				// Check for role-based 2FA enforcement
 				if (userStore.currentUser.enforce_tfa && userStore.currentUser.tfa_secret === null) {
+					if (userStore.currentUser.last_page === to.fullPath) {
+						return '/tfa-setup';
+					} else {
+						return '/tfa-setup?redirect=' + encodeURIComponent(to.fullPath);
+					}
+				}
+
+				// Check for OAuth user 2FA setup requirement
+				if (
+					userStore.currentUser.provider !== 'default' &&
+					(userStore.currentUser as any).require_2fa &&
+					userStore.currentUser.tfa_secret === null
+				) {
 					if (userStore.currentUser.last_page === to.fullPath) {
 						return '/tfa-setup';
 					} else {

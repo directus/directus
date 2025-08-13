@@ -5,7 +5,7 @@ import { useUserStore } from '@/stores/user';
 import { useAppStore } from '@directus/stores';
 import { User } from '@directus/types';
 import { useHead } from '@unhead/vue';
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -20,8 +20,20 @@ onMounted(() => {
 	}
 });
 
-const { generateTFA, enableTFA, loading, password, tfaEnabled, tfaGenerated, secret, otp, error, canvasID } =
-	useTFASetup(false);
+const {
+	generateTFA,
+	generateTFAForOAuth,
+	enableTFA,
+	enableTFAForOAuth,
+	loading,
+	password,
+	tfaEnabled,
+	tfaGenerated,
+	secret,
+	otp,
+	error,
+	canvasID,
+} = useTFASetup(false);
 
 watch(
 	() => tfaGenerated.value,
@@ -33,10 +45,30 @@ watch(
 	},
 );
 
-async function enable() {
-	await enableTFA();
+// Check if the current user is an OAuth user
+const isOAuthUser = computed(() => {
+	const user = userStore.currentUser;
+	return user && !('share' in user) && user.provider !== 'default';
+});
 
-	if (error.value === null) {
+async function generate() {
+	if (isOAuthUser.value) {
+		await generateTFAForOAuth();
+	} else {
+		await generateTFA();
+	}
+}
+
+async function enable() {
+	let success;
+
+	if (isOAuthUser.value) {
+		success = await enableTFAForOAuth();
+	} else {
+		success = await enableTFA();
+	}
+
+	if (success) {
 		const redirectQuery = router.currentRoute.value.query.redirect as string;
 		router.push(redirectQuery || (userStore.currentUser as User)?.last_page || '/login');
 	} else {
@@ -55,15 +87,14 @@ useHead({
 			<h1 class="type-title">{{ t('tfa_setup') }}</h1>
 		</div>
 
-		<form v-if="tfaEnabled === false && tfaGenerated === false && loading === false" @submit.prevent="generateTFA">
+		<form v-if="tfaEnabled === false && tfaGenerated === false && loading === false" @submit.prevent="generate">
 			<div class="title">
-				{{ t('enter_password_to_enable_tfa') }}
+				{{ isOAuthUser ? t('enable_2fa_for_oauth') : t('enter_password_to_enable_tfa') }}
 			</div>
-			<div>
+			<div v-if="!isOAuthUser">
 				<v-input v-model="password" :nullable="false" type="password" :placeholder="t('password')" autofocus />
-
-				<v-error v-if="error" :error="error" />
 			</div>
+			<v-error v-if="error" :error="error" />
 			<v-button type="submit" :loading="loading">{{ t('next') }}</v-button>
 		</form>
 

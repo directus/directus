@@ -357,6 +357,26 @@ router.post(
 );
 
 router.post(
+	'/me/tfa/generate-oauth/',
+	asyncHandler(async (req, res, next) => {
+		if (!req.accountability?.user) {
+			throw new InvalidCredentialsError();
+		}
+
+		const service = new TFAService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const { url, secret } = await service.generateTFAForOAuth(req.accountability.user);
+
+		res.locals['payload'] = { data: { secret, otpauth_url: url } };
+		return next();
+	}),
+	respond,
+);
+
+router.post(
 	'/me/tfa/enable/',
 	asyncHandler(async (req, _res, next) => {
 		if (!req.accountability?.user) {
@@ -377,6 +397,33 @@ router.post(
 		});
 
 		await service.enableTFA(req.accountability.user, req.body.otp, req.body.secret);
+
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/me/tfa/enable-oauth/',
+	asyncHandler(async (req, _res, next) => {
+		if (!req.accountability?.user) {
+			throw new InvalidCredentialsError();
+		}
+
+		if (!req.body.secret) {
+			throw new InvalidPayloadError({ reason: `"secret" is required` });
+		}
+
+		if (!req.body.otp) {
+			throw new InvalidPayloadError({ reason: `"otp" is required` });
+		}
+
+		const service = new TFAService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await service.enableTFAForOAuth(req.accountability.user, req.body.otp, req.body.secret);
 
 		return next();
 	}),

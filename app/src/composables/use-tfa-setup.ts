@@ -22,7 +22,9 @@ export function useTFASetup(initialEnabled: boolean) {
 
 	return {
 		generateTFA,
+		generateTFAForOAuth,
 		enableTFA,
+		enableTFAForOAuth,
 		disableTFA,
 		adminDisableTFA,
 		request2FASetup,
@@ -56,6 +58,25 @@ export function useTFASetup(initialEnabled: boolean) {
 		}
 	}
 
+	async function generateTFAForOAuth() {
+		if (loading.value === true) return;
+
+		loading.value = true;
+
+		try {
+			const response = await api.post('/users/me/tfa/generate-oauth');
+			const url = response.data.data.otpauth_url;
+			secret.value = response.data.data.secret;
+			await qrcode.toCanvas(document.getElementById(canvasID), url);
+			tfaGenerated.value = true;
+			error.value = null;
+		} catch (err: any) {
+			error.value = err;
+		} finally {
+			loading.value = false;
+		}
+	}
+
 	async function enableTFA() {
 		if (loading.value === true) return;
 
@@ -65,6 +86,32 @@ export function useTFASetup(initialEnabled: boolean) {
 
 		try {
 			await api.post('/users/me/tfa/enable', { otp: otp.value, secret: secret.value });
+			success = true;
+			tfaEnabled.value = true;
+			tfaGenerated.value = false;
+			password.value = '';
+			otp.value = '';
+			secret.value = '';
+			error.value = null;
+			await userStore.hydrate();
+		} catch (err: any) {
+			error.value = err;
+		} finally {
+			loading.value = false;
+		}
+
+		return success;
+	}
+
+	async function enableTFAForOAuth() {
+		if (loading.value === true) return;
+
+		loading.value = true;
+
+		let success = false;
+
+		try {
+			await api.post('/users/me/tfa/enable-oauth', { otp: otp.value, secret: secret.value });
 			success = true;
 			tfaEnabled.value = true;
 			tfaGenerated.value = false;
