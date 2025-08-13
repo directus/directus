@@ -66,7 +66,6 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
-		"@ai-sdk/openai": "catalog:",
 		"@ai-sdk/provider": "catalog:",
 		"@authenio/samlify-node-xmllint": "catalog:",
 		"@aws-sdk/client-ses": "catalog:",
@@ -99,7 +98,6 @@
 		"@rollup/plugin-virtual": "catalog:",
 		"@tus/server": "catalog:",
 		"@tus/utils": "catalog:",
-		"ai": "catalog:",
 		"argon2": "catalog:",
 		"async": "catalog:",
 		"async-mutex": "catalog:",
@@ -159,6 +157,7 @@
 		"node-schedule": "catalog:",
 		"nodemailer": "catalog:",
 		"object-hash": "catalog:",
+		"openai": "catalog:",
 		"openapi3-ts": "catalog:",
 		"openid-client": "catalog:",
 		"ora": "catalog:",

@@ -1,21 +1,20 @@
 <script setup lang="ts">
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { useInjectNestedValidation } from '@/composables/use-nested-validation';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useWindowSize } from '@/composables/use-window-size';
-import { useInjectNestedValidation } from '@/composables/use-nested-validation';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
 import { fetchAll } from '@/utils/fetch-all';
-import type { ContentVersion } from '@directus/types';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { validateItem } from '@/utils/validate-item';
+import type { ContentVersion } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { isNil, pick } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import TranslationForm from './translation-form.vue';
-import { validateItem } from '@/utils/validate-item';
-import api from '@/api';
 
 const props = withDefaults(
 	defineProps<{
@@ -370,17 +369,64 @@ const aiGenerate = async () => {
 	// Only pick visible fields
 	const data = pick(inputValues, 'title', 'body');
 
-	const res = await api.post('/ai/translate', {
-		data: data,
-		inputLang: firstLang.value,
-		outputLang: secondLang.value,
+	// const res = await api.post(
+	// 	'/ai/translate',
+	// 	{
+	// 		data: data,
+	// 		inputLang: firstLang.value,
+	// 		outputLang: secondLang.value,
+	// 	},
+	// 	{ responseType: 'stream' }, // Tough love: axios doesn't support stream client side
+	// );
+
+	const res = await fetch('/ai/translate', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			data: data,
+			inputLang: firstLang.value,
+			outputLang: secondLang.value,
+		}),
 	});
 
+	let accumulatedText = '';
+
+	const decoderStream = new TextDecoderStream('utf-8');
+
+	const writer = new WritableStream({
+		write(chunk) {
+			accumulatedText += chunk;
+
+			if (accumulatedText.includes('\n')) {
+				const parts = accumulatedText.split('\n');
+				const objStr = parts[0] as string;
+
+				if (objStr) {
+					const newObj = JSON.parse(objStr);
+					updateValue(newObj, secondLang.value);
+				}
+
+				accumulatedText = parts.slice(1).join('\n');
+			}
+		},
+		close() {
+			const newObj = JSON.parse(
+				accumulatedText
+					.split('\n')
+					.filter((v) => v !== '')
+					.at(-1)!
+					.trim(),
+			);
+
+			updateValue(newObj, secondLang.value);
+		},
+	});
+
+	res.body!.pipeThrough(decoderStream).pipeTo(writer);
+
 	// TODO error handling
-
-	const outputData = res.data.data;
-
-	updateValue(outputData, secondLang.value);
 
 	aiLoading.value = false;
 };
@@ -388,7 +434,12 @@ const aiGenerate = async () => {
 
 <template>
 	<div class="translations" :class="{ split: splitViewEnabled }">
-		<translation-form v-model:lang="firstLang" v-bind="translationProps" :class="splitViewEnabled ? 'half' : 'full'">
+		<translation-form
+			v-model:lang="firstLang"
+			:ai-loading="false"
+			v-bind="translationProps"
+			:class="splitViewEnabled ? 'half' : 'full'"
+		>
 			<template #split-view="{ active, toggle }">
 				<v-icon
 					v-if="splitViewAvailable && !splitViewEnabled"

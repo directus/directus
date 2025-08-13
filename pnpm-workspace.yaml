@@ -236,6 +236,7 @@ catalog:
   npm-watch: 0.13.0
   object-hash: 3.0.0
   ofetch: 1.4.1
+  openai: 5.12.2
   openapi3-ts: 4.5.0
   openid-client: 5.7.1
   ora: 8.2.0

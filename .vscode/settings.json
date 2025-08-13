@@ -1,4 +1,12 @@
 {
 	"scssFormatter.singleQuote": true,
-	"stylelint.validate": ["css", "scss", "vue"]
+	"stylelint.validate": ["css", "scss", "vue"],
+	"workbench.colorCustomizations": {
+		"commandCenter.border": "#15202b99",
+		"titleBar.activeBackground": "#f3deff",
+		"titleBar.activeForeground": "#15202b",
+		"titleBar.inactiveBackground": "#f3deff99",
+		"titleBar.inactiveForeground": "#15202b99"
+	},
+	"peacock.color": "#f3deff"
 }

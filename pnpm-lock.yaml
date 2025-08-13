@@ -6,9 +6,6 @@ settings:
 
 catalogs:
   default:
-    '@ai-sdk/openai':
-      specifier: 2.0.3
-      version: 2.0.3
     '@ai-sdk/provider':
       specifier: 2.0.0
       version: 2.0.0
@@ -687,6 +684,9 @@ catalogs:
     ofetch:
       specifier: 1.4.1
       version: 1.4.1
+    openai:
+      specifier: 5.12.2
+      version: 5.12.2
     openapi3-ts:
       specifier: 4.5.0
       version: 4.5.0
@@ -965,9 +965,6 @@ importers:
 
   api:
     dependencies:
-      '@ai-sdk/openai':
-        specifier: 'catalog:'
-        version: 2.0.3(zod@4.0.14)
       '@ai-sdk/provider':
         specifier: 'catalog:'
         version: 2.0.0
@@ -1064,9 +1061,6 @@ importers:
       '@tus/utils':
         specifier: 'catalog:'
         version: 0.5.1
-      ai:
-        specifier: 'catalog:'
-        version: 5.0.4(zod@4.0.14)
       argon2:
         specifier: 'catalog:'
         version: 0.43.1
@@ -1244,6 +1238,9 @@ importers:
       object-hash:
         specifier: 'catalog:'
         version: 3.0.0
+      openai:
+        specifier: 'catalog:'
+        version: 5.12.2(ws@8.18.3)(zod@4.0.14)
       openapi3-ts:
         specifier: 'catalog:'
         version: 4.5.0
@@ -1699,6 +1696,9 @@ importers:
       '@vueuse/router':
         specifier: 'catalog:'
         version: 13.6.0(vue-router@4.5.1(vue@3.5.18(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))
+      ai:
+        specifier: 'catalog:'
+        version: 5.0.4(zod@4.0.14)
       apexcharts:
         specifier: 'catalog:'
         version: 4.5.0
@@ -3107,12 +3107,6 @@ packages:
 
   '@ai-sdk/gateway@1.0.2':
     resolution: {integrity: sha512-RCE6v6/7JMzSHmjB0R7oWT54y/VYeEv+6NYLtkQKdxN871UawFFHpL7TW7IRnn+/SHdRlr7XoWxxGdHEaGRKiA==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4
-
-  '@ai-sdk/openai@2.0.3':
-    resolution: {integrity: sha512-W8n024wj8fZ3zZR92xueNP+zCHhpBh86+Z/Gkk4d0lLakVeOhEK7TbqZd08iJI5ba+dBWc3GCe5NP/4iLJ01YQ==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4
@@ -10332,6 +10326,18 @@ packages:
     resolution: {integrity: sha512-MVHddDVweXZF3awtlAS+6pgKLlm/JgxZ90+/NBurBoQctVOOB/zDdVjcyPzQ+0laDGbsWgrRkflI65sQeOgT9Q==}
     engines: {node: '>=8'}
 
+  openai@5.12.2:
+    resolution: {integrity: sha512-xqzHHQch5Tws5PcKR2xsZGX9xtch+JQFz5zb14dGqlshmmDAFBFEWmeIpf7wVqWV+w7Emj7jRgkNJakyKE0tYQ==}
+    hasBin: true
+    peerDependencies:
+      ws: ^8.18.0
+      zod: ^3.23.8
+    peerDependenciesMeta:
+      ws:
+        optional: true
+      zod:
+        optional: true
+
   openapi-types@12.1.3:
     resolution: {integrity: sha512-N4YtSYJqghVu4iek2ZUvcN/0aqH1kRDuNqzcycDxhOUpg7GdvLa2F3DgS6yBNhInhv2r/6I0Flkn7CqL8+nIcw==}
 
@@ -13226,12 +13232,6 @@ packages:
 snapshots:
 
   '@ai-sdk/gateway@1.0.2(zod@4.0.14)':
-    dependencies:
-      '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.1(zod@4.0.14)
-      zod: 4.0.14
-
-  '@ai-sdk/openai@2.0.3(zod@4.0.14)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
       '@ai-sdk/provider-utils': 3.0.1(zod@4.0.14)
@@ -22085,6 +22085,11 @@ snapshots:
     dependencies:
       is-docker: 2.2.1
       is-wsl: 2.2.0
+
+  openai@5.12.2(ws@8.18.3)(zod@4.0.14):
+    optionalDependencies:
+      ws: 8.18.3
+      zod: 4.0.14
 
   openapi-types@12.1.3: {}
 

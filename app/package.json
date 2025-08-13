@@ -103,6 +103,7 @@
 		"@vueuse/core": "catalog:",
 		"@vueuse/integrations": "catalog:",
 		"@vueuse/router": "catalog:",
+		"ai": "catalog:",
 		"apexcharts": "catalog:",
 		"axios": "catalog:",
 		"base-64": "catalog:",
