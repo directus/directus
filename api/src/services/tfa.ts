@@ -48,6 +48,38 @@ export class TFAService {
 		};
 	}
 
+	async generateTFAForOAuth(key: PrimaryKey): Promise<Record<string, string>> {
+		const user = await this.knex
+			.select('email', 'tfa_secret', 'provider', 'require_2fa')
+			.from('directus_users')
+			.where({ id: key })
+			.first();
+
+		if (user?.provider === 'default') {
+			throw new InvalidPayloadError({ reason: 'This method is only available for OAuth users' });
+		}
+
+		if (user?.tfa_secret !== null) {
+			throw new InvalidPayloadError({ reason: 'TFA Secret is already set for this user' });
+		}
+
+		if (!user?.require_2fa) {
+			throw new InvalidPayloadError({ reason: '2FA setup is not requested for this user' });
+		}
+
+		if (!user?.email) {
+			throw new InvalidPayloadError({ reason: 'User must have a valid email to enable TFA' });
+		}
+
+		const secret = authenticator.generateSecret();
+		const project = await this.knex.select('project_name').from('directus_settings').limit(1).first();
+
+		return {
+			secret,
+			url: authenticator.keyuri(user.email, project?.project_name || 'Directus', secret),
+		};
+	}
+
 	async enableTFA(key: PrimaryKey, otp: string, secret: string): Promise<void> {
 		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: key }).first();
 
@@ -60,6 +92,33 @@ export class TFAService {
 		}
 
 		await this.itemsService.updateOne(key, { tfa_secret: secret });
+	}
+
+	async enableTFAForOAuth(key: PrimaryKey, otp: string, secret: string): Promise<void> {
+		const user = await this.knex
+			.select('tfa_secret', 'provider', 'require_2fa')
+			.from('directus_users')
+			.where({ id: key })
+			.first();
+
+		if (user?.provider === 'default') {
+			throw new InvalidPayloadError({ reason: 'This method is only available for OAuth users' });
+		}
+
+		if (user?.tfa_secret !== null) {
+			throw new InvalidPayloadError({ reason: 'TFA Secret is already set for this user' });
+		}
+
+		if (!user?.require_2fa) {
+			throw new InvalidPayloadError({ reason: '2FA setup is not requested for this user' });
+		}
+
+		if (!authenticator.check(otp, secret)) {
+			throw new InvalidPayloadError({ reason: `"otp" is invalid` });
+		}
+
+		// Enable TFA and clear the require_2fa flag
+		await this.itemsService.updateOne(key, { tfa_secret: secret, require_2fa: false });
 	}
 
 	async disableTFA(key: PrimaryKey): Promise<void> {
