@@ -732,6 +732,12 @@ fields:
     width: half
     options:
       label: $t:enabled
+    conditions:
+      - name: mcp_enabled
+        rule:
+          mcp_enabled:
+            _neq: true
+        readonly: true
 
   - field: mcp_prompts_collection
     interface: system-collection
@@ -741,6 +747,12 @@ fields:
     options:
       includeSingleton: false
       allowNone: true
+    conditions:
+      - name: mcp_enabled
+        rule:
+          mcp_enabled:
+            _neq: true
+        readonly: true
 
   - field: mcp_prompts_collection_validation
     interface: system-mcp-prompts-collection-validation
@@ -749,3 +761,9 @@ fields:
     special:
       - alias
       - no-data
+    conditions:
+      - name: mcp_enabled
+        rule:
+          mcp_enabled:
+            _neq: true
+        hidden: true

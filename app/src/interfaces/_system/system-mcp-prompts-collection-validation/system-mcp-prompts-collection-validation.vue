@@ -6,11 +6,18 @@ import SystemMcpPromptsCollectionValidationNew from './system-mcp-prompts-collec
 const formValues = inject('values', ref({ mcp_prompts_collection: null }));
 
 const promptsCollection = computed(() => formValues.value.mcp_prompts_collection);
+
+defineEmits<{
+	setFieldValue: [{ field: string; value: unknown }];
+}>();
 </script>
 
 <template>
 	<div>
 		<SystemMcpPromptsCollectionValidationExisting v-if="promptsCollection" :prompts-collection="promptsCollection" />
-		<SystemMcpPromptsCollectionValidationNew v-else />
+		<SystemMcpPromptsCollectionValidationNew
+			v-else
+			@save="$emit('setFieldValue', { field: 'mcp_prompts_collection', value: $event })"
+		/>
 	</div>
 </template>

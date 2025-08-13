@@ -6,6 +6,10 @@ import SystemMcpPromptsCollectionGenerateDialog from './system-mcp-prompts-colle
 const { t } = useI18n();
 
 const generateCollectionDialogActive = ref(false);
+
+defineEmits<{
+	save: [value: string];
+}>();
 </script>
 
 <template>
@@ -19,7 +23,10 @@ const generateCollectionDialogActive = ref(false);
 				{{ t('mcp_prompts_collection.generate') }}
 			</v-button>
 
-			<SystemMcpPromptsCollectionGenerateDialog v-model:active="generateCollectionDialogActive" />
+			<SystemMcpPromptsCollectionGenerateDialog
+				v-model:active="generateCollectionDialogActive"
+				@save="$emit('save', $event)"
+			/>
 		</div>
 	</v-notice>
 </template>

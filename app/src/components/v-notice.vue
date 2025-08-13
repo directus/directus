@@ -88,7 +88,6 @@ const iconName = computed(() => {
 .v-notice-title {
 	display: flex;
 	align-items: center;
-	gap: 6px;
 	font-weight: var(--theme--form--field--label--font-weight);
 	color: var(--v-notice-color, var(--theme--foreground));
 }

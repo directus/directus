@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import api from '@/api';
-import { defineModel, ref, computed, defineProps } from 'vue';
+import { defineModel, ref, computed, defineProps, defineEmits } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { generateFields } from './schema';
 import { useCollectionsStore } from '@/stores/collections';
@@ -25,6 +25,16 @@ const fieldsToCreate = computed(() => {
 	return generateFields(props.collection ?? customCollectionName.value, props.fields);
 });
 
+const collectionName = computed(() => {
+	return props.collection ?? customCollectionName.value;
+});
+
+const collectionAlreadyExists = computed(() => {
+	if (!collectionName.value) return false;
+
+	return collectionsStore.getCollection(collectionName.value) !== null;
+});
+
 const props = withDefaults(
 	defineProps<{
 		collection?: string | null;
@@ -36,39 +46,55 @@ const props = withDefaults(
 	},
 );
 
+const emit = defineEmits<{
+	save: [value: string];
+}>();
+
 async function generateCollection() {
+	const collection: string = props.collection ?? customCollectionName.value;
+
 	saving.value = true;
 
 	try {
-		await api.post(`/collections`, {
-			collection: customCollectionName.value,
-			fields: fieldsToCreate.value,
-			schema: {},
-			meta: {
-				sort_field: 'sort',
-				archive_field: 'status',
-				archive_value: 'archived',
-				unarchive_value: 'draft',
-				singleton: false,
-			},
-		});
+		if (props.collection) {
+			for (const field of fieldsToCreate.value) {
+				await api.post(`/fields/${props.collection}`, field);
+			}
+		} else {
+			await api.post(`/collections`, {
+				collection,
+				fields: fieldsToCreate.value,
+				schema: {},
+				meta: {
+					sort_field: 'sort',
+					archive_field: 'status',
+					archive_value: 'archived',
+					unarchive_value: 'draft',
+					singleton: false,
+				},
+			});
+		}
 
 		const storeHydrations: Promise<void>[] = [];
 
-		const relations = [
+		let relations = [
 			{
-				collection: customCollectionName.value!,
+				collection,
 				field: 'user_created',
 				related_collection: 'directus_users',
 				schema: {},
 			},
 			{
-				collection: customCollectionName.value!,
+				collection,
 				field: 'user_updated',
 				related_collection: 'directus_users',
 				schema: {},
 			},
 		];
+
+		if (props.fields) {
+			relations = relations.filter((relation) => props.fields!.includes(relation.field));
+		}
 
 		if (relations.length > 0) {
 			const requests = relations.map((relation) => api.post('/relations', relation));
@@ -82,6 +108,8 @@ async function generateCollection() {
 		notify({
 			title: t('collection_created'),
 		});
+
+		emit('save', collection);
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
@@ -104,8 +132,9 @@ async function generateCollection() {
 				<p v-else>
 					{{ t('mcp_prompts_collection.generate_collection_dialog_description', { collection: customCollectionName }) }}
 				</p>
-				<div class="grid">
-					<div v-if="!collection" class="field full">
+
+				<div v-if="!collection" class="grid">
+					<div class="field full">
 						<div class="type-label">
 							{{ t('name') }}
 							<v-icon v-tooltip="t('required')" class="required" name="star" sup filled />
@@ -117,7 +146,12 @@ async function generateCollection() {
 							db-safe
 							:placeholder="t('a_unique_table_name')"
 						/>
-						<small class="type-note">{{ t('collection_names_are_case_sensitive') }}</small>
+						<div class="hints">
+							<small v-if="collectionAlreadyExists" class="error">
+								{{ t('mcp_prompts_collection.already_exists') }}
+							</small>
+							<small class="type-note">{{ t('collection_names_are_case_sensitive') }}</small>
+						</div>
 					</div>
 				</div>
 				<!-- Show fields to be created -->
@@ -136,7 +170,11 @@ async function generateCollection() {
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="active = false">{{ t('cancel') }}</v-button>
-				<v-button :loading="saving" :disabled="saving || !customCollectionName" @click="generateCollection">
+				<v-button
+					:loading="saving"
+					:disabled="saving || (!collection && collectionAlreadyExists)"
+					@click="generateCollection"
+				>
 					{{ t('generate') }}
 				</v-button>
 			</v-card-actions>
@@ -149,7 +187,22 @@ async function generateCollection() {
 
 .grid {
 	@include mixins.form-grid;
-	padding-block-start: 8px;
+	padding-block-start: 20px;
+}
+
+.hints {
+	margin-block-start: 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.type-label {
+	font-size: 14px;
+}
+
+.error {
+	color: var(--theme--danger);
 }
 
 .v-input.monospace {
