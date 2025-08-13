@@ -40,13 +40,12 @@ export interface ToolConfig<T> {
 
 export interface Prompt {
 	name: string;
-	title?: string;
+	system_prompt?: string | null;
 	description?: string;
 	messages: { role: 'user' | 'assistant'; text: string }[];
 }
 
-export interface PromptArg {
-	name: string;
-	description: string;
-	required: boolean;
+export interface MCPOptions {
+	prompts_collection: string;
+	allow_deletes?: boolean;
 }

@@ -1,18 +1,34 @@
+import { ForbiddenError } from '@directus/errors';
 import { Router } from 'express';
 import { DirectusMCP } from '../mcp/index.js';
+import { SettingsService } from '../services/settings.js';
+import asyncHandler from '../utils/async-handler.js';
 
 const router = Router();
 
-router.get('/', (req, res) => {
-	const mcp = new DirectusMCP();
+const mcpHandler = asyncHandler(async (req, res) => {
+	const settings = new SettingsService({
+		schema: req.schema,
+	});
+
+	const { mcp_enabled, mcp_allow_deletes, mcp_prompts_collection } = await settings.readSingleton({
+		fields: ['mcp_enabled', 'mcp_allow_deletes', 'mcp_prompts_collection'],
+	});
+
+	if (!mcp_enabled) {
+		throw new ForbiddenError({ reason: 'MCP must be enabled' });
+	}
+
+	const mcp = new DirectusMCP({
+		prompts_collection: mcp_prompts_collection,
+		allow_deletes: mcp_allow_deletes,
+	});
 
 	mcp.handleRequest(req, res);
 });
 
-router.post('/', (req, res) => {
-	const mcp = new DirectusMCP();
+router.get('/', mcpHandler);
 
-	mcp.handleRequest(req, res);
-});
+router.post('/', mcpHandler);
 
 export default router;

@@ -297,10 +297,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/flows', flowsRouter);
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
-
-	if (env['MCP_ENABLED'] === true) {
-		app.use('/mcp', mcpRouter);
-	}
+	app.use('/mcp', mcpRouter);
 
 	if (env['METRICS_ENABLED'] === true) {
 		app.use('/metrics', metricsRouter);
