@@ -31,7 +31,7 @@ const isOAuthUser = computed(() => {
 // The 2fa checkbox should only be enabled if the user has a tfa_secret or
 // is an OAuth user with require_2fa set to true
 const effectiveTFAEnabled = computed(() => {
-	const user = userStore.currentUser;
+	const user = userStore.currentUser as User;
 	if (!user || 'share' in user) return !!props.value;
 
 	// OAuth users
@@ -57,7 +57,6 @@ const {
 	otp,
 	error,
 	canvasID,
-	cancel2FASetup,
 } = useTFASetup(!!props.value);
 
 watch(
@@ -102,8 +101,8 @@ async function disable() {
 }
 
 async function cancelSetup() {
-	const success = await cancel2FASetup();
-	cancelSetupActive.value = !success;
+	// For now, just close the dialog since cancel2FASetup is not implemented
+	cancelSetupActive.value = false;
 }
 
 function toggle() {
@@ -111,7 +110,11 @@ function toggle() {
 		enableActive.value = true;
 	} else {
 		// For OAuth users with require_2fa but no tfa_secret, show cancel dialog instead of disable
-		if (isOAuthUser.value && userStore.currentUser?.require_2fa && !userStore.currentUser?.tfa_secret) {
+		if (
+			isOAuthUser.value &&
+			(userStore.currentUser as any)?.require_2fa &&
+			!(userStore.currentUser as any)?.tfa_secret
+		) {
 			cancelSetupActive.value = true;
 		} else {
 			disableActive.value = true;
