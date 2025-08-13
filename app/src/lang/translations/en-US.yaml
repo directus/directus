@@ -1168,6 +1168,8 @@ settings_roles: User Roles
 settings_permissions: Access Policies
 settings_project: Settings
 settings_appearance: Appearance
+settings_ai: AI
+model_context_protocol: Model Context Protocol
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_system_logs: System Logs
@@ -1450,6 +1452,15 @@ fields:
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
     visual_editor_urls: Visual Editor URLs
+    mcp_enabled: MCP Enabled
+    mcp_enabled_note: Enable the MCP server
+    mcp_allow_deletes: Allow Deletes
+    mcp_allow_deletes_note:
+      'Allow users to delete items, files, flows, fields, relations, and collections. Warning: this could lead to data
+      loss'
+    mcp_prompts_collection: MCP Prompts Collection
+    mcp_prompts_collection_note: Collection to store reusable prompt templates.
+
   directus_shares:
     name: Name
     role: Role
@@ -1634,12 +1645,17 @@ unlimited_usage: Unlimited usage
 uses_left: No uses left | One use left | {n} uses left
 no_shares: No shares to show
 new_share: New Share
+mcp_prompts_collection:
+  no_collection_selected: No collection selected
+  no_collection_selected_copy: Select a collection to enable reusable prompt templates.
+  generate: Generate AI Prompts Collection...
 expired: Expired
 upcoming: Upcoming
 share: Share
 share_item: Share Item
 shared_with_you: An item has been shared with you
 shared_enter_passcode: Enter your passcode to continue...
+generate: Generate
 shared_leave_blank_for_passwordless_access: Leave blank for passwordless access
 shared_leave_blank_for_unlimited: Leave blank for unlimited
 shared_times_remaining: This link can only be used {n} times
