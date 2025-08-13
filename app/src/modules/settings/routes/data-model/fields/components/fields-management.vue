@@ -188,7 +188,7 @@ async function setNestedSort(updates?: Field[]) {
 }
 
 .field-select:deep(.field-grid) {
-	grid-gap: 0;
+	gap: 0;
 }
 
 .field-select:deep(.field-grid.group.full.nested) {

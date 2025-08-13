@@ -74,7 +74,7 @@ function useEdits() {
 			@cancel="cancelEditing"
 		/>
 
-		<div v-else v-md="{ value: comment.display, target: '_blank' }" class="content selectable" />
+		<div v-else v-md="{ value: comment.display, target: '_blank' }" class="content" />
 	</div>
 </template>
 
@@ -144,8 +144,6 @@ function useEdits() {
 	line-height: 1;
 	background: var(--theme--primary-background);
 	border-radius: var(--theme--border-radius);
-	-webkit-user-select: text;
-	user-select: text;
 	pointer-events: none;
 }
 

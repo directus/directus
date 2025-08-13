@@ -223,12 +223,12 @@ export class FieldsService {
 							policies,
 							collections: [collection],
 							accountability: this.accountability,
-					  }
+						}
 					: {
 							action: 'read',
 							policies,
 							accountability: this.accountability,
-					  },
+						},
 				{ knex: this.knex, schema: this.schema },
 			);
 
@@ -326,7 +326,7 @@ export class FieldsService {
 			? {
 					...column,
 					default_value: getDefaultValue(column, fieldInfo),
-			  }
+				}
 			: null;
 
 		const data = {
@@ -394,7 +394,7 @@ export class FieldsService {
 									schema: this.schema,
 									accountability: this.accountability,
 								},
-						  )
+							)
 						: field;
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
@@ -499,7 +499,7 @@ export class FieldsService {
 								schema: this.schema,
 								accountability: this.accountability,
 							},
-					  )
+						)
 					: field;
 
 			const record = field.meta

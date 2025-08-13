@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useEventListener } from '@/composables/use-event-listener';
+import { useUserStore } from '@/stores/user';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { useSync } from '@directus/composables';
 import type { ShowSelect } from '@directus/types';
@@ -40,6 +41,9 @@ const props = withDefaults(
 
 const emit = defineEmits(['update:sort', 'toggle-select-all', 'update:headers', 'update:reordering']);
 const { t } = useI18n();
+const userStore = useUserStore();
+
+const isRTL = computed(() => userStore.textDirection === 'rtl');
 
 const resizing = ref<boolean>(false);
 const resizeStartX = ref<number>(0);
@@ -133,7 +137,8 @@ function onResizeHandleMouseDown(header: Header, event: PointerEvent) {
 
 function onMouseMove(event: PointerEvent) {
 	if (resizing.value === true) {
-		const newWidth = resizeStartWidth.value + (event.pageX - resizeStartX.value);
+		const deltaX = event.pageX - resizeStartX.value;
+		const newWidth = resizeStartWidth.value + (isRTL.value ? -deltaX : deltaX);
 		const currentHeaders = clone(props.headers);
 
 		const newHeaders = currentHeaders.map((existing: Header) => {

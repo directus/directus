@@ -36,6 +36,7 @@ defineEmits(['apply']);
 			:group="field.meta?.field"
 			:validation-errors="validationErrors"
 			:loading="loading"
+			:batch-mode="batchMode"
 			:disabled="disabled"
 			:badge="badge"
 			:raw-editor-enabled="rawEditorEnabled"
