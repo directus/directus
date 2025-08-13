@@ -76,8 +76,8 @@ export class AuthenticationService {
 
 		const user = await this.knex
 			.select<
-				User & { tfa_secret: string | null }
-			>('id', 'first_name', 'last_name', 'email', 'password', 'status', 'role', 'tfa_secret', 'provider', 'external_identifier', 'auth_data')
+				User & { tfa_secret: string | null; require_2fa: boolean | null }
+			>('id', 'first_name', 'last_name', 'email', 'password', 'status', 'role', 'tfa_secret', 'provider', 'external_identifier', 'auth_data', 'require_2fa')
 			.from('directus_users')
 			.where('id', userId)
 			.first();
@@ -158,6 +158,8 @@ export class AuthenticationService {
 			throw e;
 		}
 
+		// Only require OTP if user has TFA enabled (tfa_secret is set)
+		// OAuth users with require_2fa but no tfa_secret should be allowed to log in
 		if (user.tfa_secret && !options?.otp) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
