@@ -49,6 +49,7 @@ const {
 	disableTFA,
 	adminDisableTFA,
 	request2FASetup,
+	cancel2FASetup,
 	loading,
 	password,
 	tfaEnabled,
@@ -87,12 +88,8 @@ async function enable() {
 }
 
 async function enableOAuth() {
-	try {
-		await request2FASetup();
-		enableActive.value = false;
-	} catch {
-		// Error is already handled in the composable
-	}
+	const success = await request2FASetup();
+	enableActive.value = !success;
 }
 
 async function disable() {
@@ -101,8 +98,8 @@ async function disable() {
 }
 
 async function cancelSetup() {
-	// For now, just close the dialog since cancel2FASetup is not implemented
-	cancelSetupActive.value = false;
+	const success = await cancel2FASetup();
+	cancelSetupActive.value = !success;
 }
 
 function toggle() {

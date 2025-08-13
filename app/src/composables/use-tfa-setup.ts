@@ -26,6 +26,7 @@ export function useTFASetup(initialEnabled: boolean) {
 		disableTFA,
 		adminDisableTFA,
 		request2FASetup,
+		cancel2FASetup,
 		loading,
 		password,
 		tfaEnabled,
@@ -125,13 +126,40 @@ export function useTFASetup(initialEnabled: boolean) {
 
 		loading.value = true;
 
+		let success = false;
+
 		try {
 			await api.post('/users/me/tfa/request-setup');
-			// Show success message or handle as needed
+			success = true;
+			error.value = null;
+			await userStore.hydrate();
 		} catch (err: any) {
 			error.value = err;
 		} finally {
 			loading.value = false;
 		}
+
+		return success;
+	}
+
+	async function cancel2FASetup() {
+		if (loading.value === true) return;
+
+		loading.value = true;
+
+		let success = false;
+
+		try {
+			await api.post('/users/me/tfa/cancel-setup');
+			success = true;
+			error.value = null;
+			await userStore.hydrate();
+		} catch (err: any) {
+			error.value = err;
+		} finally {
+			loading.value = false;
+		}
+
+		return success;
 	}
 }
