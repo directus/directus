@@ -3090,6 +3090,9 @@ importers:
       '@directus/tsconfig':
         specifier: 3.0.0
         version: 3.0.0
+      '@types/lodash-es':
+        specifier: 'catalog:'
+        version: 4.17.12
       '@types/node':
         specifier: 22.13.8
         version: 22.13.8
@@ -3099,6 +3102,9 @@ importers:
       commander:
         specifier: 14.0.0
         version: 14.0.0
+      lodash-es:
+        specifier: 'catalog:'
+        version: 4.17.21
       typescript:
         specifier: 5.8.2
         version: 5.8.2

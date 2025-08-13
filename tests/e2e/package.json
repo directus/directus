@@ -6,7 +6,7 @@
 	"scripts": {
 		"test": "vitest --project postgres",
 		"test:dev": "DEV=true WATCH=true vitest --project postgres",
-		"test:all": "DATABASE=all vitest"
+		"test:all": "ALL=true vitest"
 	},
 	"keywords": [],
 	"author": "Nils Twelker (nils@directus.io)",
@@ -21,7 +21,9 @@
 		"@types/node": "22.13.8",
 		"chalk": "5.4.1",
 		"commander": "14.0.0",
-		"typescript": "5.8.2"
+		"typescript": "5.8.2",
+		"@types/lodash-es": "catalog:",
+		"lodash-es": "catalog:"
 	},
 	"engines": {
 		"node": ">=12.20.0"

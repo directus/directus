@@ -1,10 +1,10 @@
 import type { TestProject } from 'vitest/node';
-import { sandboxes, StopSandbox } from '@directus/sandbox';
+import { Database, sandboxes, StopSandbox } from '@directus/sandbox';
 
 let sb: StopSandbox | undefined;
 
 export async function setup(project: TestProject) {
-	if (process.env['DATABASE'] !== 'all') return;
+	if (process.env['ALL'] !== 'true') return;
 
 	const dev = Boolean(project.config.env?.['DEV']);
 	const watch = Boolean(project.config.env?.['WATCH']);

@@ -281,10 +281,12 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 
 	await new Promise((resolve, reject) => {
 		api!.stdout!.on('data', (data) => {
-			if (String(data).includes(`Server started at http://${env.HOST}:${env.PORT}`)) {
+			const msg = String(data);
+
+			if (msg.includes(`Server started at http://${env.HOST}:${env.PORT}`)) {
 				resolve(undefined);
 			} else {
-				logger.debug(String(data));
+				logger.debug(msg);
 			}
 		});
 
