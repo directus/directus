@@ -2,6 +2,7 @@ import chalk, { type ChalkInstance } from 'chalk';
 import type Stream from 'stream';
 
 export type Logger = {
+	addGroup: (group: string) => Logger;
 	fatal: (msg: string) => void;
 	error: (msg: string) => void;
 	warn: (msg: string) => void;
@@ -10,15 +11,18 @@ export type Logger = {
 	pipe: (stream: Stream.Readable | null, type?: LogLevel) => void;
 };
 
-export function createLogger(group?: string): Logger {
+export function createLogger(...groups: string[]): Logger {
 	return {
-		fatal: (msg: string) => log(msg, 'fatal', group),
-		error: (msg: string) => log(msg, 'error', group),
-		warn: (msg: string) => log(msg, 'warn', group),
-		info: (msg: string) => log(msg, 'info', group),
-		debug: (msg: string) => log(msg, 'debug', group),
+		addGroup: (group: string) => {
+			return createLogger(...groups, group);
+		},
+		fatal: (msg: string) => log(msg, 'fatal', ...groups),
+		error: (msg: string) => log(msg, 'error', ...groups),
+		warn: (msg: string) => log(msg, 'warn', ...groups),
+		info: (msg: string) => log(msg, 'info', ...groups),
+		debug: (msg: string) => log(msg, 'debug', ...groups),
 		pipe: (stream: Stream.Readable | null, type?: LogLevel) => {
-			if (stream) stream.on('data', (data) => log(String(data), type, group));
+			if (stream) stream.on('data', (data) => log(String(data), type, ...groups));
 		},
 	};
 }
@@ -38,11 +42,11 @@ const logLevelColor = {
 	warn: 'yellow',
 } as const satisfies Record<LogLevel, keyof ChalkInstance>;
 
-export function log(message: string, type: LogLevel = 'info', group?: string) {
+export function log(message: string, type: LogLevel = 'info', ...groups: string[]) {
 	if (logLevel(process.env['LOG_LEVEL'] ?? 'info') < logLevel(type)) return;
 
 	process.stdout.write(
-		(group ? chalk.blueBright(`[${group}] `) : '') +
+		groups.map((group) => (group ? chalk.blueBright(`[${group}] `) : '')).join('') +
 			chalk[logLevelColor[type]](`[${type}] `) +
 			message +
 			(message.endsWith('\n') ? '' : '\n'),

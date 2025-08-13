@@ -6,7 +6,7 @@
 	"scripts": {
 		"test": "vitest --project postgres",
 		"test:dev": "DEV=true WATCH=true vitest --project postgres",
-		"test:all": "vitest --project maria --project postgres  --project cockroachdb --project mssql --project mysql --project oracle --project sqlite"
+		"test:all": "DATABASE=all vitest"
 	},
 	"keywords": [],
 	"author": "Nils Twelker (nils@directus.io)",

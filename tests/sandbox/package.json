@@ -13,6 +13,9 @@
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
+	"bin": {
+		"sandbox": "dist/cli.js"
+	},
 	"files": [
 		"dist"
 	],

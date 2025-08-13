@@ -1,14 +1,12 @@
+import { createDirectus, createItem, rest, staticToken } from '@directus/sdk';
 import { expect, test } from 'vitest';
-import { createDirectus, rest, staticToken, schemaApply, schemaDiff, createItem } from '@directus/sdk';
-import { readFile } from 'fs/promises';
+import { useSnapshot } from '../../utils/use-snapshot';
 import { join } from 'path';
 
 test('ABC', async () => {
 	const directus = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
 
-	const snapshot = await readFile(join(import.meta.dirname, 'fields.snapshot.json'), { encoding: 'utf8' });
-	const diff = await directus.request(schemaDiff(JSON.parse(snapshot), true));
-	if (diff) await directus.request(schemaApply(diff));
+	await useSnapshot(directus, join(import.meta.dirname, 'fields.snapshot.json'));
 
 	const result = await directus.request(
 		createItem('fields', {
@@ -21,8 +19,8 @@ test('ABC', async () => {
 			integer: 1,
 			string: 'hello',
 			text: 'lorem ipsum',
-			time: process.env['DATABASE'] === 'oracle' ? '11:10:590' : '11:10:59',
-			timestamp: '2025-08-11T11:25:30.000Z',
+			time: process.env['DATABASE'] === 'oracle' ? '11:10:11' : '11:10:59',
+			timestamp: process.env['DATABASE'] === 'oracle' ? '2025-08-11T13:24:35' : '2025-08-11T11:25:30.000Z',
 			uuid: '1bc5500a-762e-420c-baff-6359ea42c36b',
 		}),
 	);
