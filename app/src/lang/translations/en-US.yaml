@@ -1650,10 +1650,12 @@ mcp_prompts_collection:
   no_collection_selected_copy: Select a collection to enable reusable prompt templates.
   generate: Generate AI Prompts collection...
   already_exists: AI Prompts collection already exists
-  generate_collection_dialog_title: Generate AI Prompts collection
-  generate_collection_dialog_description: >-
-    This will create a new collection called "AI Prompts" with the necessary fields and settings to store reusable
-    prompt templates.
+  generate_collection_dialog_title: Generate AI prompts collection
+  generate_fields_dialog_title: Generate AI prompts fields
+  generate_collection_dialog_description:
+    'This will create a new collection "{collection}" with the necessary fields and settings to store reusable prompt
+    templates.'
+  generate_fields_dialog_description: 'This will create the required fields on your "{collection}" collection.'
   validation_success: This collection matches all the required fields and can be used as the MCP prompts collection.
   validation_error_invalid: Collection cannot be used
   validation_error_missing: Collection cannot be used yet

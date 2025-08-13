@@ -8,12 +8,15 @@ interface Props {
 	icon?: string | boolean | null;
 	/** Render notice content centered */
 	center?: boolean;
+	/** Allow text wrapping within notice */
+	multiline?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	icon: null,
 	type: 'info',
 	center: false,
+	multiline: false,
 });
 
 const iconName = computed(() => {
@@ -36,9 +39,12 @@ const iconName = computed(() => {
 </script>
 
 <template>
-	<div class="v-notice" :class="[type, { center }]">
-		<v-icon v-if="icon !== false" :name="iconName" left />
-		<slot />
+	<div class="v-notice" :class="[type, { center }, { multiline }]">
+		<div class="v-notice-title">
+			<v-icon v-if="icon !== false" :name="iconName" left></v-icon>
+			<slot name="title"></slot>
+		</div>
+		<slot></slot>
 	</div>
 </template>
 
@@ -79,6 +85,14 @@ const iconName = computed(() => {
 	background-color: var(--v-notice-border-color, var(--theme--primary));
 }
 
+.v-notice-title {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-weight: var(--theme--form--field--label--font-weight);
+	color: var(--v-notice-color, var(--theme--foreground));
+}
+
 .v-icon {
 	--v-icon-color: var(--v-notice-icon-color, var(--theme--primary));
 }
@@ -116,5 +130,9 @@ const iconName = computed(() => {
 
 :slotted(a) {
 	text-decoration: underline;
+}
+
+.multiline {
+	flex-wrap: wrap;
 }
 </style>
