@@ -78,6 +78,7 @@ export type FieldMeta = {
 	translations: FieldTranslations[] | null;
 	width: Width | null;
 	note: string | null;
+	clear_hidden_value_on_save?: boolean;
 	conditions: Condition[] | null;
 	validation: Filter | null;
 	validation_message: string | null;
@@ -98,6 +99,7 @@ export type Condition = {
 	hidden?: boolean;
 	options?: Record<string, any>;
 	required?: boolean;
+	clear_hidden_value_on_save?: boolean;
 };
 
 export type Filter = LogicalFilter | FieldFilter;
