@@ -1,30 +1,11 @@
-import type { FlowRaw, OperationRaw } from '@directus/types';
+import type { FlowRaw } from '@directus/types';
 import { z } from 'zod';
-import { getFlowManager } from '../../flows.js';
 import { FlowsService } from '../../services/flows.js';
-import { OperationsService } from '../../services/operations.js';
 import { defineTool } from '../define.js';
-import { QueryInputSchema, QueryValidateSchema } from '../schema.js';
+import { OperationItemSchema, QueryInputSchema, QueryValidateSchema } from '../schema.js';
 import prompts from './prompts/index.js';
 
-const OperationSchema = z
-	.object({
-		id: z.string(),
-		name: z.union([z.string(), z.null()]),
-		key: z.string(),
-		type: z.string(),
-		position_x: z.number(),
-		position_y: z.number(),
-		options: z.record(z.string(), z.any()),
-		resolve: z.union([z.string(), z.null()]),
-		reject: z.union([z.string(), z.null()]),
-		flow: z.string(),
-		date_created: z.string(),
-		user_created: z.string(),
-	})
-	.partial();
-
-const FlowSchema = z.strictObject({
+export const FlowItemSchema = z.strictObject({
 	id: z.string(),
 	name: z.string(),
 	icon: z.union([z.string(), z.null()]),
@@ -34,16 +15,16 @@ const FlowSchema = z.strictObject({
 	trigger: z.union([z.enum(['event', 'schedule', 'operation', 'webhook', 'manual']), z.null()]),
 	options: z.union([z.record(z.string(), z.any()), z.null()]),
 	operation: z.union([z.string(), z.null()]),
-	operations: z.array(OperationSchema),
+	operations: z.array(OperationItemSchema),
 	date_created: z.string(),
 	user_created: z.string(),
 	accountability: z.union([z.enum(['all', 'activity']), z.null()]),
 });
 
-const FlowValidateSchema = z.union([
+export const FlowValidateSchema = z.union([
 	z.strictObject({
 		action: z.literal('create'),
-		data: FlowSchema,
+		data: FlowItemSchema,
 	}),
 	z.strictObject({
 		action: z.literal('read'),
@@ -51,7 +32,7 @@ const FlowValidateSchema = z.union([
 	}),
 	z.strictObject({
 		action: z.literal('update'),
-		data: FlowSchema,
+		data: FlowItemSchema,
 		key: z.string(),
 	}),
 	z.strictObject({
@@ -60,10 +41,10 @@ const FlowValidateSchema = z.union([
 	}),
 ]);
 
-const FlowInputSchema = z.strictObject({
+export const FlowInputSchema = z.strictObject({
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
 	query: QueryInputSchema.optional().describe(''),
-	data: FlowSchema.optional().describe(''),
+	data: FlowItemSchema.optional().describe(''),
 	key: z.string().optional().describe(''),
 });
 
@@ -121,177 +102,5 @@ export const flows = defineTool<z.infer<typeof FlowValidateSchema>>({
 		}
 
 		throw new Error('Invalid action.');
-	},
-});
-
-const OperationValidationSchema = z.union([
-	z.strictObject({
-		action: z.literal('create'),
-		data: OperationSchema,
-	}),
-	z.strictObject({
-		action: z.literal('read'),
-		query: QueryValidateSchema.optional(),
-	}),
-	z.strictObject({
-		action: z.literal('update'),
-		data: OperationSchema,
-		key: z.string(),
-	}),
-	z.strictObject({
-		action: z.literal('delete'),
-		key: z.string(),
-	}),
-]);
-
-const OperationInputSchema = z.strictObject({
-	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
-	query: QueryInputSchema.optional().describe(''),
-	data: FlowSchema.optional().describe('Flow data as a native object or array (NOT stringified JSON)'),
-	key: z.string().optional().describe(''),
-});
-
-export const operations = defineTool<z.infer<typeof OperationValidationSchema>>({
-	name: 'operations',
-	admin: true,
-	description: prompts.operations,
-	inputSchema: OperationInputSchema,
-	validateSchema: OperationValidationSchema,
-	annotations: {
-		title: 'Perform CRUD operations on Directus Flow Operations',
-	},
-	async handler({ args, schema, accountability, sanitizedQuery }) {
-		const operationService = new OperationsService({
-			schema,
-			accountability,
-		});
-
-		if (args.action === 'create') {
-			const savedKey = await operationService.createOne(args.data);
-			const result = await operationService.readOne(savedKey);
-
-			return {
-				type: 'text',
-				data: result ?? null,
-			};
-		}
-
-		if (args.action === 'read') {
-			const result = await operationService.readByQuery(sanitizedQuery);
-
-			return {
-				type: 'text',
-				data: result,
-			};
-		}
-
-		if (args.action === 'update') {
-			const updatedKey = await operationService.updateOne(args.key, args.data as OperationRaw);
-			const result = await operationService.readOne(updatedKey, sanitizedQuery);
-
-			return {
-				type: 'text',
-				data: result,
-			};
-		}
-
-		if (args.action === 'delete') {
-			const deletedKey = await operationService.deleteOne(args.key);
-
-			return {
-				type: 'text',
-				data: deletedKey,
-			};
-		}
-
-		throw new Error('Invalid action.');
-	},
-});
-
-const TriggerFlowInputSchema = z.strictObject({
-	flowDefinition: z.record(z.string(), z.any()).describe('The full flow definition from the read-flows call.'),
-	flowId: z.string().describe('The ID of the flow to trigger'),
-	method: z.enum(['GET', 'POST']).default('GET').describe(''),
-	query: QueryInputSchema.optional().describe(''),
-	headers: z.record(z.string(), z.any()).optional().describe(''),
-	collection: z.string().describe('The collection of the items to trigger the flow on.'),
-	keys: z
-		.array(z.string())
-		.describe(
-			'The primary keys of the items to trigger the flow on. If the flow requireSelection field is true, you must provide the keys.',
-		),
-	data: z
-		.record(z.string(), z.any())
-		.optional()
-		.describe(
-			'The data to pass to the flow. Should be an object with keys that match the flow *options.fields.fields* property',
-		),
-});
-
-export const triggerFlow = defineTool<z.infer<typeof TriggerFlowInputSchema>>({
-	name: 'trigger-flow',
-	description: prompts.triggerFlow,
-	inputSchema: TriggerFlowInputSchema,
-	// validateSchema: TriggerFlowInputSchema,
-	annotations: {
-		title: 'Trigger a Directus Flow',
-	},
-	async handler({ args, schema, accountability }) {
-		const { flowDefinition, flowId, collection, keys, data, method, query, headers } = args;
-
-		// Validate flow existence
-		if (!flowDefinition) {
-			throw new Error('Flow definition must be provided');
-		}
-
-		// Validate flow ID matches
-		if (flowDefinition['id'] !== flowId) {
-			throw new Error(`Flow ID mismatch: provided ${flowId} but definition has ${flowDefinition['id']}`);
-		}
-
-		// Validate collection is valid for this flow
-		if (!flowDefinition['options']['collections'].includes(collection)) {
-			throw new Error(
-				`Invalid collection "${collection}". This flow only supports: ${flowDefinition['options']['collections'].join(
-					', ',
-				)}`,
-			);
-		}
-
-		// Check if selection is required
-		const requiresSelection = flowDefinition['options']['requireSelection'] !== false;
-
-		if (requiresSelection && (!keys || keys.length === 0)) {
-			throw new Error('This flow requires selecting at least one item, but no keys were provided');
-		}
-
-		// Validate required fields
-		if (flowDefinition['options']['fields']) {
-			const requiredFields = flowDefinition['options']['fields']
-				.filter((field: any) => field.meta?.required)
-				.map((field: any) => field.field);
-
-			for (const fieldName of requiredFields) {
-				if (!data || !(fieldName in data)) {
-					throw new Error(`Missing required field: ${fieldName}`);
-				}
-			}
-		}
-
-		const flowManager = getFlowManager();
-
-		const { result } = await flowManager.runWebhookFlow(
-			`${method}-${flowId}`,
-			{
-				path: `/trigger/${flowId}`,
-				query: query,
-				body: data,
-				method: method,
-				headers: headers,
-			},
-			{ accountability, schema },
-		);
-
-		return { type: 'text', data: result };
 	},
 });

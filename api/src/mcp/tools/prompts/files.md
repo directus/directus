@@ -1,25 +1,13 @@
 # Directus Files Tool
 
-Perform CRUD operations on files and folders, or fetch and return base64-encoded Directus assets.
-
-## 🗂️ Available Types
-
-- **`folder`**: Manage folder organization and hierarchy
-- **`file`**: Manage file metadata (title, description, tags, folder placement)
-- **`asset`**: Retrieve raw file content as base64-encoded data (read-only)
+Perform CRUD operations on files.
 
 ## ⚙️ Available Actions
 
-### For `folder` and `file` types:
-
-- **`create`**: Add new folders or file records
+- **`create`**: Add new file records
 - **`read`**: List/query metadata or get specific items by ID
 - **`update`**: Modify existing metadata (title, description, tags, folder)
-- **`delete`**: Remove folders or files by keys
-
-### For `asset` type:
-
-- **`read`**: Fetch raw file content as base64 (requires `id`)
+- **`delete`**: Remove files by keys
 
 ## 📋 Common Operations
 
@@ -46,18 +34,6 @@ Perform CRUD operations on files and folders, or fetch and return base64-encoded
 	"keys": ["file-uuid-here"]
 }
 ```
-
-### Get Raw File Content (Base64)
-
-```json
-{
-	"type": "asset",
-	"action": "read",
-	"id": "file-uuid-here"
-}
-```
-
-Returns base64-encoded content with MIME type - useful for image analysis, AI vision tools, or file downloads.
 
 ### Update File Metadata
 
@@ -92,19 +68,6 @@ Returns base64-encoded content with MIME type - useful for image analysis, AI vi
 ```
 
 Sets the focal point for image cropping - coordinates are in pixels from top-left corner.
-
-### Organize Files into Folders
-
-```json
-{
-	"type": "folder",
-	"action": "create",
-	"data": {
-		"name": "Product Images",
-		"parent": "parent-folder-uuid"
-	}
-}
-```
 
 ## 🔍 Query Parameters
 
@@ -156,28 +119,6 @@ Common fields available for files:
 - `metadata`: Additional metadata object
 - `focal_point_x`: Horizontal focal point (in pixels from left edge)
 - `focal_point_y`: Vertical focal point (in pixels from top edge)
-
-## 🖼️ Asset Content Retrieval
-
-When using `type: "asset"`:
-
-- Returns base64-encoded file content
-- Includes MIME type for proper handling
-- Suitable for:
-  - Image analysis and AI vision tools
-  - Displaying images in applications
-  - File downloads and transfers
-  - Content verification
-
-### Response Format for Assets
-
-```json
-{
-	"type": "image",
-	"data": "base64-encoded-string-here",
-	"mimeType": "image/jpeg"
-}
-```
 
 ## 🎯 Real-World Use Cases
 
@@ -313,15 +254,12 @@ When migrating content between systems:
 - **File Upload**: This tool manages metadata only. Use appropriate upload endpoints for actual file uploads
 - **Asset Size**: Large files are automatically handled but may impact performance
 - **Permissions**: Respects Directus access control - only accessible files are returned
-- **Folder Hierarchy**: Deleting a folder requires it to be empty or will cascade based on settings
 - **File Updates**: Only metadata can be updated, not the actual file content
-- **Asset Type**: While primarily for images, the asset reader can handle any file type that Directus stores
 
 ## 🚨 Common Mistakes to Avoid
 
 1. **Don't** confuse file metadata operations with raw content retrieval
 2. **Don't** try to upload files through this tool - it's for metadata management
-3. **Don't** forget to specify `type: "asset"` when you need file content, not metadata
-4. **Don't** attempt to modify file content - only metadata can be updated
-5. **Remember** that `keys` expects an array even for single items
-6. **Tags must be arrays**: Use `["tag1", "tag2"]` not `"tag1, tag2"`
+3. **Don't** attempt to modify file content - only metadata can be updated
+4. **Remember** that `keys` expects an array even for single items
+5. **Tags must be arrays**: Use `["tag1", "tag2"]` not `"tag1, tag2"`
