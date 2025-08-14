@@ -10,13 +10,35 @@ const props = defineProps<{
 	promptsCollection: string;
 }>();
 
+defineEmits<{
+	save: [value: string];
+}>();
+
 const validationIssues = useCollectionValidation(toRef(() => props.promptsCollection));
 
 const generateCollectionDialogActive = ref(false);
 </script>
 
 <template>
-	<v-notice v-if="validationIssues.invalidFields.length > 0" multiline type="danger">
+	<v-notice v-if="validationIssues.collectionNotFound" multiline type="danger">
+		<template #title>
+			{{ t('mcp_prompts_collection.collection_not_found') }}
+		</template>
+
+		<div class="notice-content">
+			<p>{{ t('mcp_prompts_collection.collection_not_found_description', { collection: promptsCollection }) }}</p>
+			<v-button class="generate-button" small @click="generateCollectionDialogActive = true">
+				{{ t('mcp_prompts_collection.generate') }}
+			</v-button>
+
+			<SystemMcpPromptsCollectionGenerateDialog
+				v-model:active="generateCollectionDialogActive"
+				@save="$emit('save', $event)"
+			/>
+		</div>
+	</v-notice>
+
+	<v-notice v-else-if="validationIssues.invalidFields.length > 0" multiline type="danger">
 		<template #title>
 			{{ t('mcp_prompts_collection.validation_error_invalid') }}
 		</template>

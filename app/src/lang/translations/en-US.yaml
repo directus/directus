@@ -1649,6 +1649,8 @@ new_share: New Share
 mcp_prompts_collection:
   no_collection_selected: No collection selected
   no_collection_selected_copy: Select a collection to enable reusable prompt templates.
+  collection_not_found: Collection Not Found
+  collection_not_found_description: The collection "{collection}" does not exist in the database.
   generate: Generate AI Prompts collection...
   already_exists: AI Prompts collection already exists
   generate_collection_dialog_title: Generate AI prompts collection
