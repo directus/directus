@@ -146,7 +146,7 @@ function cancelAndClose() {
 				<!-- OAuth user flow -->
 				<div v-if="isOAuthUser && tfaEnabled === false && tfaGenerated === false && loading === false">
 					<v-card-title>
-						{{ t('enable_2fa_for_oauth') }}
+						{{ t('enable_2fa') }}
 					</v-card-title>
 					<v-card-text>
 						<p>{{ t('oauth_2fa_setup_notice') }}</p>

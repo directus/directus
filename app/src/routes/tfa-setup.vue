@@ -67,7 +67,7 @@ useHead({
 
 		<form v-if="tfaEnabled === false && tfaGenerated === false && loading === false" @submit.prevent="generate">
 			<div class="title">
-				{{ isOAuthUser ? t('enable_2fa_for_oauth') : t('enter_password_to_enable_tfa') }}
+				{{ isOAuthUser ? t('enable_2fa') : t('enter_password_to_enable_tfa') }}
 			</div>
 			<div v-if="!isOAuthUser">
 				<v-input v-model="password" :nullable="false" type="password" :placeholder="t('password')" autofocus />
