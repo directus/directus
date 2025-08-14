@@ -66,6 +66,7 @@ async function generateCollection() {
 				fields: fieldsToCreate.value,
 				schema: {},
 				meta: {
+					icon: 'magic_button',
 					sort_field: 'sort',
 					archive_field: 'status',
 					archive_value: 'archived',
