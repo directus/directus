@@ -254,10 +254,6 @@ export const DIRECTUS_VARIABLES = [
 	'METRICS_SCHEDULE',
 	'METRICS_TOKENS',
 	'METRICS_SERVICES',
-
-	// mcp
-	'MCP_ENABLED',
-	'MCP_PREVENT_DELETE',
 ] as const;
 
 /**
