@@ -9,7 +9,7 @@ import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
-// import ThemingInfoSidebarDetail from './components/theming-info-sidebar-detail.vue';
+import AiInfoSidebarDetail from './components/ai-info-sidebar-detail.vue';
 
 const { t } = useI18n();
 
@@ -80,7 +80,7 @@ function discardAndLeave() {
 		</div>
 
 		<template #sidebar>
-			<!-- <theming-info-sidebar-detail /> -->
+			<ai-info-sidebar-detail />
 		</template>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">

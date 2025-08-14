@@ -1217,6 +1217,7 @@ page_help_files_item: >-
 page_help_settings_project: "**Settings** — Your project's global configuration options."
 page_help_settings_appearance: "**Appearance** — Your project's appearance and theming options."
 page_help_settings_extensions: '**Extensions** — The extensions installed in your project.'
+page_help_settings_ai: "**AI** — Your project's artificial intelligence configuration options."
 page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
   as well as unmanaged database tables that can be added.
