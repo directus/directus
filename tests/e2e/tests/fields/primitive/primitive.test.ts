@@ -9,24 +9,7 @@ import { testDateTime } from './date-time';
 import { testTimestamp } from './timestamp';
 import { testFloat } from './float';
 import { testUUID } from './uuid';
-
-export type Schema = {
-	fields: {
-		id: any;
-		big_integer: any;
-		boolean: any;
-		date: any;
-		date_time: any;
-		decimal: any;
-		float: any;
-		integer: any;
-		string: any;
-		text: any;
-		time: any;
-		timestamp: any;
-		uuid: any;
-	};
-};
+import { Schema } from './schema';
 
 const api = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
 const collections = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));

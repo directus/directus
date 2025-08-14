@@ -376,8 +376,10 @@ async function saveSchema(env: Env) {
 		const data = await fetch(`${env.PUBLIC_URL}/schema/snapshot?access_token=${env.ADMIN_TOKEN}`);
 		const snapshot = (await data.json()) as { data: Snapshot };
 
+		const collections = snapshot.data.collections.filter((collection) => collection.schema);
+
 		const schema = `export type Schema = {
-	${snapshot.data.collections
+	${collections
 		.map((collection) => {
 			const collectionName = formatCollection(collection.collection);
 
@@ -387,7 +389,7 @@ async function saveSchema(env: Env) {
 }
 `;
 
-		const collections = snapshot.data.collections
+		const collectionTypes = collections
 			.map((collection) => {
 				const collectionName = formatCollection(collection.collection);
 
@@ -398,7 +400,7 @@ async function saveSchema(env: Env) {
 			const rel = getRelationInfo(snapshot.data.relations, collection.collection, field.field);
 			const fieldName = formatField(field.field);
 
-			if (!rel) return `${fieldName}: any`;
+			if (!rel) return `${fieldName}: string | number`;
 
 			const { relation, relationType } = rel;
 
@@ -415,7 +417,7 @@ async function saveSchema(env: Env) {
 			})
 			.join('\n');
 
-		await writeFile('schema.d.ts', schema + collections);
+		await writeFile('schema.d.ts', schema + collectionTypes);
 		await writeFile('schema.json', JSON.stringify(snapshot.data, null, 4));
 	}, 2000);
 }
