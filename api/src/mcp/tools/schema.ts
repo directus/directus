@@ -1,4 +1,4 @@
-import type { Field, SnapshotRelation } from '@directus/types';
+import type { Field, Snapshot } from '@directus/types';
 import { z } from 'zod';
 import { getSnapshot } from '../../utils/get-snapshot.js';
 import { defineTool } from '../define.js';
@@ -132,7 +132,7 @@ export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
 				if (field.meta.options?.['choices']) {
 					fieldOverview.interface.choices = field.meta.options['choices'].map(
 						// Only return the value of the choice to reduce size and potential for confusion.
-						(choice: { text: string; value: string }) => choice.value,
+						(choice: { value: string }) => choice.value,
 					);
 				}
 			}
@@ -159,14 +159,10 @@ export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
 
 			// Handle relationships
 			if (field.meta?.special) {
-				const relationshipType = extractRelationType(field.meta.special);
+				const relationshipType = getRelationType(field.meta.special);
 
 				if (relationshipType) {
-					fieldOverview.relation = buildRelationInfo(
-						field,
-						relationshipType,
-						snapshot
-					);
+					fieldOverview.relation = buildRelationInfo(field, relationshipType, snapshot);
 				}
 			}
 
@@ -275,7 +271,7 @@ function processCollectionItemDropdown(options: { field: Field; snapshot?: any }
 	};
 }
 
-function extractRelationType(special: string[]): string | null {
+function getRelationType(special: string[]): string | null {
 	if (special.includes('m2o') || special.includes('file')) return 'm2o';
 	if (special.includes('o2m')) return 'o2m';
 	if (special.includes('m2m') || special.includes('files')) return 'm2m';
@@ -283,8 +279,7 @@ function extractRelationType(special: string[]): string | null {
 	return null;
 }
 
-
-function buildRelationInfo(field: Field, type: string, snapshot: any): any {
+function buildRelationInfo(field: Field, type: string, snapshot: Snapshot) {
 	switch (type) {
 		case 'm2o':
 			return buildManyToOneRelation(field, snapshot);
@@ -299,11 +294,9 @@ function buildRelationInfo(field: Field, type: string, snapshot: any): any {
 	}
 }
 
-function buildManyToOneRelation(field: Field, snapshot: any) {
+function buildManyToOneRelation(field: Field, snapshot: Snapshot) {
 	// For M2O, the relation is directly on this field
-	const relation = snapshot.relations.find(
-		(r: SnapshotRelation) => r.collection === field.collection && r.field === field.field,
-	);
+	const relation = snapshot.relations.find((r) => r.collection === field.collection && r.field === field.field);
 
 	// The target collection is either in related_collection or foreign_key_table
 	const targetCollection =
@@ -315,11 +308,11 @@ function buildManyToOneRelation(field: Field, snapshot: any) {
 	};
 }
 
-function buildOneToManyRelation(field: Field, snapshot: any) {
+function buildOneToManyRelation(field: Field, snapshot: Snapshot) {
 	// For O2M, we need to find the relation that points BACK to this field
 	// The relation will have this field stored in meta.one_field
 	const reverseRelation = snapshot.relations.find(
-		(r: SnapshotRelation) => r.meta?.one_collection === field.collection && r.meta?.one_field === field.field,
+		(r) => r.meta?.one_collection === field.collection && r.meta?.one_field === field.field,
 	);
 
 	if (!reverseRelation) {
@@ -333,12 +326,11 @@ function buildOneToManyRelation(field: Field, snapshot: any) {
 	};
 }
 
-
-function buildManyToManyRelation(field: Field, snapshot: any) {
+function buildManyToManyRelation(field: Field, snapshot: Snapshot) {
 	// Find the junction table relation that references this field
 	// This relation will have our field as meta.one_field
 	const junctionRelation = snapshot.relations.find(
-		(r: SnapshotRelation) =>
+		(r) =>
 			r.meta?.one_field === field.field &&
 			r.meta?.one_collection === field.collection &&
 			r.collection !== field.collection, // Junction table is different from our collection
@@ -351,8 +343,7 @@ function buildManyToManyRelation(field: Field, snapshot: any) {
 	// Find the other side of the junction (pointing to the target collection)
 	// This is stored in meta.junction_field
 	const targetRelation = snapshot.relations.find(
-		(r: SnapshotRelation) =>
-			r.collection === junctionRelation.collection && r.field === junctionRelation.meta?.junction_field,
+		(r) => r.collection === junctionRelation.collection && r.field === junctionRelation.meta?.junction_field,
 	);
 
 	const targetCollection = targetRelation?.related_collection || 'directus_files';
@@ -374,11 +365,11 @@ function buildManyToManyRelation(field: Field, snapshot: any) {
 	return result;
 }
 
-function buildManyToAnyRelation(field: Field, snapshot: any) {
+function buildManyToAnyRelation(field: Field, snapshot: Snapshot) {
 	// Find the junction table relation that references this field
 	// This relation will have our field as meta.one_field
 	const junctionRelation = snapshot.relations.find(
-		(r: SnapshotRelation) => r.meta?.one_field === field.field && r.meta?.one_collection === field.collection,
+		(r) => r.meta?.one_field === field.field && r.meta?.one_collection === field.collection,
 	);
 
 	if (!junctionRelation) {
@@ -388,7 +379,7 @@ function buildManyToAnyRelation(field: Field, snapshot: any) {
 	// Find the polymorphic relation in the junction table
 	// This relation will have one_allowed_collections set
 	const polymorphicRelation = snapshot.relations.find(
-		(r: SnapshotRelation) =>
+		(r) =>
 			r.collection === junctionRelation.collection &&
 			r.meta?.one_allowed_collections &&
 			r.meta.one_allowed_collections.length > 0,
@@ -400,7 +391,7 @@ function buildManyToAnyRelation(field: Field, snapshot: any) {
 
 	// Find the relation back to our parent collection
 	const parentRelation = snapshot.relations.find(
-		(r: SnapshotRelation) =>
+		(r) =>
 			r.collection === junctionRelation.collection &&
 			r.related_collection === field.collection &&
 			r.field !== polymorphicRelation.field, // Different from the polymorphic field
