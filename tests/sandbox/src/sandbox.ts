@@ -202,7 +202,7 @@ async function dockerUp(database: Database, extras: Options['extras'], env: Env,
 		.filter(([_, value]) => value)
 		.map(([key, _]) => key);
 
-	const project = `loadtests_${database}${extrasList.map((extra) => '_' + extra).join('')}`;
+	const project = `sandbox_${database}${extrasList.map((extra) => '_' + extra).join('')}`;
 	const files = database === 'sqlite' ? extrasList : [database, ...extrasList];
 
 	if (files.length === 0) return;
