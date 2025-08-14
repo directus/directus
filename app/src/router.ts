@@ -153,6 +153,15 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 						return '/tfa-setup?redirect=' + encodeURIComponent(to.fullPath);
 					}
 				}
+
+				// Check for OAuth 2FA setup requirement
+				if (userStore.currentUser.require_2fa && userStore.currentUser.tfa_secret === null) {
+					if (userStore.currentUser.last_page === to.fullPath) {
+						return '/tfa-setup';
+					} else {
+						return '/tfa-setup?redirect=' + encodeURIComponent(to.fullPath);
+					}
+				}
 			} else if (userStore.currentUser.tfa_secret !== null) {
 				return userStore.currentUser.last_page || '/login';
 			}

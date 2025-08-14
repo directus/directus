@@ -76,8 +76,8 @@ export class AuthenticationService {
 
 		const user = await this.knex
 			.select<
-				User & { tfa_secret: string | null }
-			>('id', 'first_name', 'last_name', 'email', 'password', 'status', 'role', 'tfa_secret', 'provider', 'external_identifier', 'auth_data')
+				User & { tfa_secret: string | null; require_2fa: boolean | null }
+			>('id', 'first_name', 'last_name', 'email', 'password', 'status', 'role', 'tfa_secret', 'provider', 'external_identifier', 'auth_data', 'require_2fa')
 			.from('directus_users')
 			.where('id', userId)
 			.first();
@@ -158,6 +158,8 @@ export class AuthenticationService {
 			throw e;
 		}
 
+		// Only require OTP if user has TFA enabled (tfa_secret is set)
+		// OAuth users with require_2fa but no tfa_secret should be allowed to log in
 		if (user.tfa_secret && !options?.otp) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
@@ -188,6 +190,11 @@ export class AuthenticationService {
 			app_access: globalAccess.app,
 			admin_access: globalAccess.admin,
 		};
+
+		// Add require_2fa flag to token payload for OAuth users who need to set up 2FA
+		if (user.require_2fa && !user.tfa_secret) {
+			tokenPayload.require_2fa = true;
+		}
 
 		const refreshToken = nanoid(64);
 		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));

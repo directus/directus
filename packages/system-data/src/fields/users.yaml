@@ -102,6 +102,15 @@ fields:
     special:
       - cast-boolean
 
+  - field: require_2fa
+    interface: boolean
+    width: half
+    special:
+      - cast-boolean
+    options:
+      iconRight: security
+    hidden: true
+
   - field: theming_divider
     interface: presentation-divider
     options:
