@@ -85,7 +85,7 @@ export class DirectusMCP {
 					// builds args
 					const args: PromptArgument[] = [];
 
-					for (const message of prompt.messages) {
+					for (const message of prompt.messages || []) {
 						for (const varName of tokenize(message.text).varNames) {
 							args.push({
 								name: varName,
