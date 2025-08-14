@@ -16,7 +16,17 @@ export interface fieldOverviewOutput {
 	};
 	relation?: {
 		type: string;
-		related_collections: string[];
+		related_collection?: string;
+		many_collection?: string;
+		many_field?: string;
+		one_allowed_collections?: string[];
+		junction?: {
+			collection: string;
+			many_field: string;
+			junction_field: string;
+			one_collection_field?: string;
+			sort_field?: string;
+		};
 	};
 	fields?: Record<string, fieldOverviewOutput>;
 	value?: string;
@@ -83,12 +93,6 @@ export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
 		// If keys provided, return detailed schema for requested collections
 		const overview: OverviewOutput = {};
 
-		const relations: { [collection: string]: SnapshotRelation } = {};
-
-		snapshot.relations.forEach((relation) => {
-			relations[relation.collection] = relation;
-		});
-
 		snapshot.fields.forEach((field) => {
 			// Skip collections not requested
 			if (!args.keys?.includes(field.collection)) return;
@@ -126,7 +130,10 @@ export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
 				};
 
 				if (field.meta.options?.['choices']) {
-					fieldOverview.interface.choices = field.meta.options['choices'];
+					fieldOverview.interface.choices = field.meta.options['choices'].map(
+						// Only return the value of the choice to reduce size and potential for confusion.
+						(choice: { text: string; value: string }) => choice.value,
+					);
 				}
 			}
 
@@ -150,34 +157,16 @@ export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
 				});
 			}
 
-			const relation = relations[field.collection] as SnapshotRelation | undefined;
+			// Handle relationships
+			if (field.meta?.special) {
+				const relationshipType = extractRelationType(field.meta.special);
 
-			if (field.meta?.special && relation) {
-				let type;
-
-				if (field.meta.special.includes('m2o') || field.meta.special.includes('file')) {
-					type = 'm2o';
-				} else if (field.meta.special.includes('o2m')) {
-					type = 'o2m';
-				} else if (field.meta.special.includes('m2m') || field.meta.special.includes('files')) {
-					type = 'm2m';
-				} else if (field.meta.special.includes('m2a')) {
-					type = 'm2a';
-				}
-
-				if (type) {
-					let relatedCollections: string[] = [];
-
-					if (relation.related_collection) {
-						relatedCollections.push(relation.related_collection);
-					} else if (type === 'm2a' && relation.meta.one_allowed_collections) {
-						relatedCollections = relation.meta.one_allowed_collections;
-					}
-
-					fieldOverview.relation = {
-						type,
-						related_collections: relatedCollections,
-					};
+				if (relationshipType) {
+					fieldOverview.relation = buildRelationInfo(
+						field,
+						relationshipType,
+						snapshot
+					);
 				}
 			}
 
@@ -284,4 +273,155 @@ function processCollectionItemDropdown(options: { field: Field; snapshot?: any }
 			type: keyType,
 		},
 	};
+}
+
+function extractRelationType(special: string[]): string | null {
+	if (special.includes('m2o') || special.includes('file')) return 'm2o';
+	if (special.includes('o2m')) return 'o2m';
+	if (special.includes('m2m') || special.includes('files')) return 'm2m';
+	if (special.includes('m2a')) return 'm2a';
+	return null;
+}
+
+
+function buildRelationInfo(field: Field, type: string, snapshot: any): any {
+	switch (type) {
+		case 'm2o':
+			return buildManyToOneRelation(field, snapshot);
+		case 'o2m':
+			return buildOneToManyRelation(field, snapshot);
+		case 'm2m':
+			return buildManyToManyRelation(field, snapshot);
+		case 'm2a':
+			return buildManyToAnyRelation(field, snapshot);
+		default:
+			return { type };
+	}
+}
+
+function buildManyToOneRelation(field: Field, snapshot: any) {
+	// For M2O, the relation is directly on this field
+	const relation = snapshot.relations.find(
+		(r: SnapshotRelation) => r.collection === field.collection && r.field === field.field,
+	);
+
+	// The target collection is either in related_collection or foreign_key_table
+	const targetCollection =
+		relation?.related_collection || relation?.schema?.foreign_key_table || field.schema?.foreign_key_table;
+
+	return {
+		type: 'm2o',
+		collection: targetCollection,
+	};
+}
+
+function buildOneToManyRelation(field: Field, snapshot: any) {
+	// For O2M, we need to find the relation that points BACK to this field
+	// The relation will have this field stored in meta.one_field
+	const reverseRelation = snapshot.relations.find(
+		(r: SnapshotRelation) => r.meta?.one_collection === field.collection && r.meta?.one_field === field.field,
+	);
+
+	if (!reverseRelation) {
+		return { type: 'o2m' };
+	}
+
+	return {
+		type: 'o2m',
+		collection: reverseRelation.collection,
+		many_field: reverseRelation.field,
+	};
+}
+
+
+function buildManyToManyRelation(field: Field, snapshot: any) {
+	// Find the junction table relation that references this field
+	// This relation will have our field as meta.one_field
+	const junctionRelation = snapshot.relations.find(
+		(r: SnapshotRelation) =>
+			r.meta?.one_field === field.field &&
+			r.meta?.one_collection === field.collection &&
+			r.collection !== field.collection, // Junction table is different from our collection
+	);
+
+	if (!junctionRelation) {
+		return { type: 'm2m' };
+	}
+
+	// Find the other side of the junction (pointing to the target collection)
+	// This is stored in meta.junction_field
+	const targetRelation = snapshot.relations.find(
+		(r: SnapshotRelation) =>
+			r.collection === junctionRelation.collection && r.field === junctionRelation.meta?.junction_field,
+	);
+
+	const targetCollection = targetRelation?.related_collection || 'directus_files';
+
+	const result: any = {
+		type: 'm2m',
+		collection: targetCollection,
+		junction: {
+			collection: junctionRelation.collection,
+			many_field: junctionRelation.field,
+			junction_field: junctionRelation.meta?.junction_field,
+		},
+	};
+
+	if (junctionRelation.meta?.sort_field) {
+		result.junction.sort_field = junctionRelation.meta.sort_field;
+	}
+
+	return result;
+}
+
+function buildManyToAnyRelation(field: Field, snapshot: any) {
+	// Find the junction table relation that references this field
+	// This relation will have our field as meta.one_field
+	const junctionRelation = snapshot.relations.find(
+		(r: SnapshotRelation) => r.meta?.one_field === field.field && r.meta?.one_collection === field.collection,
+	);
+
+	if (!junctionRelation) {
+		return { type: 'm2a' };
+	}
+
+	// Find the polymorphic relation in the junction table
+	// This relation will have one_allowed_collections set
+	const polymorphicRelation = snapshot.relations.find(
+		(r: SnapshotRelation) =>
+			r.collection === junctionRelation.collection &&
+			r.meta?.one_allowed_collections &&
+			r.meta.one_allowed_collections.length > 0,
+	);
+
+	if (!polymorphicRelation) {
+		return { type: 'm2a' };
+	}
+
+	// Find the relation back to our parent collection
+	const parentRelation = snapshot.relations.find(
+		(r: SnapshotRelation) =>
+			r.collection === junctionRelation.collection &&
+			r.related_collection === field.collection &&
+			r.field !== polymorphicRelation.field, // Different from the polymorphic field
+	);
+
+	const result: any = {
+		type: 'm2a',
+		one_allowed_collections: polymorphicRelation.meta.one_allowed_collections,
+		junction: {
+			collection: junctionRelation.collection,
+			many_field: parentRelation?.field || `${field.collection}_id`,
+			junction_field: polymorphicRelation.field,
+			one_collection_field: polymorphicRelation.meta?.one_collection_field || 'collection',
+		},
+	};
+
+	const sortField = parentRelation?.meta?.sort_field || polymorphicRelation.meta?.sort_field;
+
+	if (sortField) {
+		result.junction.sort_field = sortField;
+	}
+
+	return result;
 }
