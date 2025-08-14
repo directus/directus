@@ -1,15 +1,16 @@
 import { createItem, DirectusClient, RestClient } from '@directus/sdk';
 import { test, expect } from 'vitest';
-import { Schema } from '../primitive.test';
+import { Schema } from './primitive.test';
 import { Database } from '@directus/sandbox';
+import { Collections } from './primitive.test';
 
-export function testUUID(api: DirectusClient<Schema> & RestClient<Schema>) {
+export function testUUID(api: DirectusClient<Schema> & RestClient<Schema>, c: Collections) {
 	const database = process.env['DATABASE'] as Database;
 
 	for (const uuid of [crypto.randomUUID()]) {
 		test(`valid uuid ${uuid}`, async () => {
 			const result = await api.request(
-				createItem('fields', {
+				createItem(c.fields, {
 					uuid,
 				}),
 			);
@@ -22,7 +23,7 @@ export function testUUID(api: DirectusClient<Schema> & RestClient<Schema>) {
 		test(`invalid uuid`, async () => {
 			await expect(() =>
 				api.request(
-					createItem('fields', {
+					createItem(c.fields, {
 						uuid: 'test',
 					}),
 				),

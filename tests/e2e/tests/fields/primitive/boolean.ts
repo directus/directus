@@ -1,15 +1,15 @@
 import { createItem, DirectusClient, RestClient } from '@directus/sdk';
 import { test, expect } from 'vitest';
-import { Schema } from '../primitive.test';
+import { Collections, Schema } from './primitive.test';
 import { Database } from '@directus/sandbox';
 
-export function testBoolean(api: DirectusClient<Schema> & RestClient<Schema>) {
+export function testBoolean(api: DirectusClient<Schema> & RestClient<Schema>, c: Collections) {
 	const database = process.env['DATABASE'] as Database;
 
 	for (const bool of [true, false]) {
 		test(`valid boolean ${bool}`, async () => {
 			const result = await api.request(
-				createItem('fields', {
+				createItem(c.fields, {
 					boolean: bool,
 				}),
 			);
@@ -22,7 +22,7 @@ export function testBoolean(api: DirectusClient<Schema> & RestClient<Schema>) {
 		test(`invalid value for boolean`, async () => {
 			await expect(() =>
 				api.request(
-					createItem('fields', {
+					createItem(c.fields, {
 						boolean: 'test',
 					}),
 				),

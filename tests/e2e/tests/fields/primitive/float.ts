@@ -1,17 +1,15 @@
 import { createItem, DirectusClient, RestClient } from '@directus/sdk';
 import { test, expect } from 'vitest';
-import { Schema } from '../primitive.test';
-import { getHelper } from '../../../utils/helpers';
+import { Collections, Schema } from './primitive.test';
 import { Database } from '@directus/sandbox';
 
-export function testFloat(api: DirectusClient<Schema> & RestClient<Schema>) {
+export function testFloat(api: DirectusClient<Schema> & RestClient<Schema>, c: Collections) {
 	const database = process.env['DATABASE'] as Database;
-	const { integer } = getHelper(database);
 
 	for (const n of [0.0, -1.1, 0.1, 100.001]) {
 		test(`valid float ${n}`, async () => {
 			const result = await api.request(
-				createItem('fields', {
+				createItem(c.fields, {
 					float: n,
 				}),
 			);
@@ -24,7 +22,7 @@ export function testFloat(api: DirectusClient<Schema> & RestClient<Schema>) {
 		test(`invalid float`, async () => {
 			await expect(() =>
 				api.request(
-					createItem('fields', {
+					createItem(c.fields, {
 						float: 'test',
 					}),
 				),

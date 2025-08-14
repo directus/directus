@@ -1,17 +1,17 @@
 import { createItem, DirectusClient, RestClient } from '@directus/sdk';
 import { test, expect } from 'vitest';
-import { Schema } from '../primitive.test';
+import { Collections, Schema } from './primitive.test';
 import { getHelper } from '../../../utils/helpers';
 import { Database } from '@directus/sandbox';
 
-export function testInteger(api: DirectusClient<Schema> & RestClient<Schema>) {
+export function testInteger(api: DirectusClient<Schema> & RestClient<Schema>, c: Collections) {
 	const database = process.env['DATABASE'] as Database;
 	const { integer } = getHelper(database);
 
 	for (const n of [1, -1, 0, 499234]) {
 		test(`valid integer ${n}`, async () => {
 			const result = await api.request(
-				createItem('fields', {
+				createItem(c.fields, {
 					integer: n,
 				}),
 			);
@@ -22,7 +22,7 @@ export function testInteger(api: DirectusClient<Schema> & RestClient<Schema>) {
 
 	test(`valid min integer ${integer.min.toString()}`, async () => {
 		const result = await api.request(
-			createItem('fields', {
+			createItem(c.fields, {
 				integer: integer.min.toString(),
 			}),
 		);
@@ -32,7 +32,7 @@ export function testInteger(api: DirectusClient<Schema> & RestClient<Schema>) {
 
 	test(`valid max integer ${integer.max.toString()}`, async () => {
 		const result = await api.request(
-			createItem('fields', {
+			createItem(c.fields, {
 				integer: integer.max.toString(),
 			}),
 		);
@@ -46,7 +46,7 @@ export function testInteger(api: DirectusClient<Schema> & RestClient<Schema>) {
 		test(`invalid integer ${n}`, async () => {
 			await expect(async () =>
 				api.request(
-					createItem('fields', {
+					createItem(c.fields, {
 						integer: n,
 					}),
 				),
@@ -54,10 +54,11 @@ export function testInteger(api: DirectusClient<Schema> & RestClient<Schema>) {
 		});
 	}
 
+	// BUG: Current bug in CRDB, see https://github.com/directus/directus/issues/25685
 	if (database === 'cockroachdb') {
 		test(`integer overflow on crdb`, async () => {
 			const result = await api.request(
-				createItem('fields', {
+				createItem(c.fields, {
 					integer: (integer.max + 1n).toString(),
 				}),
 			);
@@ -67,7 +68,7 @@ export function testInteger(api: DirectusClient<Schema> & RestClient<Schema>) {
 
 		test(`integer undeflow on crdb`, async () => {
 			const result = await api.request(
-				createItem('fields', {
+				createItem(c.fields, {
 					integer: (integer.min - 1n).toString(),
 				}),
 			);

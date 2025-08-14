@@ -26,17 +26,19 @@
 	"private": true,
 	"packageManager": "pnpm@10.14.0",
 	"devDependencies": {
+		"@directus/format-title": "catalog:",
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
+		"@directus/utils": "catalog:",
 		"@types/lodash-es": "catalog:",
-		"lodash-es": "catalog:",
 		"@types/node": "catalog:",
 		"chalk": "catalog:",
 		"commander": "catalog:",
 		"knex": "catalog:",
+		"lodash-es": "catalog:",
 		"rimraf": "catalog:",
-		"tsx": "catalog:",
 		"tsup": "catalog:",
+		"tsx": "catalog:",
 		"typescript": "catalog:"
 	},
 	"engines": {

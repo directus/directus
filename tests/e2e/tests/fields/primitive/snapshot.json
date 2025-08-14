@@ -4,14 +4,14 @@
 	"vendor": "postgres",
 	"collections": [
 		{
-			"collection": "fields",
+			"collection": "fields_1234",
 			"meta": {
 				"accountability": "all",
 				"archive_app_filter": true,
 				"archive_field": null,
 				"archive_value": null,
 				"collapse": "open",
-				"collection": "fields",
+				"collection": "fields_1234",
 				"color": null,
 				"display_template": null,
 				"group": null,
@@ -28,17 +28,17 @@
 				"versioning": false
 			},
 			"schema": {
-				"name": "fields"
+				"name": "fields_1234"
 			}
 		}
 	],
 	"fields": [
 		{
-			"collection": "fields",
+			"collection": "fields_1234",
 			"field": "id",
 			"type": "integer",
 			"meta": {
-				"collection": "fields",
+				"collection": "fields_1234",
 				"conditions": null,
 				"display": null,
 				"display_options": null,
@@ -59,9 +59,9 @@
 			},
 			"schema": {
 				"name": "id",
-				"table": "fields",
+				"table": "fields_1234",
 				"data_type": "integer",
-				"default_value": "nextval('fields_id_seq'::regclass)",
+				"default_value": "nextval('fields_1234_id_seq'::regclass)",
 				"max_length": null,
 				"numeric_precision": 32,
 				"numeric_scale": 0,
@@ -77,11 +77,11 @@
 			}
 		},
 		{
-			"collection": "fields",
+			"collection": "fields_1234",
 			"field": "string",
 			"type": "string",
 			"meta": {
-				"collection": "fields",
+				"collection": "fields_1234",
 				"conditions": null,
 				"display": null,
 				"display_options": null,
@@ -102,7 +102,7 @@
 			},
 			"schema": {
 				"name": "string",
-				"table": "fields",
+				"table": "fields_1234",
 				"data_type": "character varying",
 				"default_value": null,
 				"max_length": 255,
@@ -120,11 +120,11 @@
 			}
 		},
 		{
-			"collection": "fields",
+			"collection": "fields_1234",
 			"field": "uuid",
 			"type": "uuid",
 			"meta": {
-				"collection": "fields",
+				"collection": "fields_1234",
 				"conditions": null,
 				"display": null,
 				"display_options": null,
@@ -145,7 +145,7 @@
 			},
 			"schema": {
 				"name": "uuid",
-				"table": "fields",
+				"table": "fields_1234",
 				"data_type": "uuid",
 				"default_value": null,
 				"max_length": null,
@@ -163,11 +163,11 @@
 			}
 		},
 		{
-			"collection": "fields",
+			"collection": "fields_1234",
 			"field": "big_integer",
 			"type": "bigInteger",
 			"meta": {
-				"collection": "fields",
+				"collection": "fields_1234",
 				"conditions": null,
 				"display": null,
 				"display_options": null,
@@ -188,7 +188,7 @@
 			},
 			"schema": {
 				"name": "big_integer",
-				"table": "fields",
+				"table": "fields_1234",
 				"data_type": "bigint",
 				"default_value": null,
 				"max_length": null,
@@ -206,11 +206,11 @@
 			}
 		},
 		{
-			"collection": "fields",
+			"collection": "fields_1234",
 			"field": "integer",
 			"type": "integer",
 			"meta": {
-				"collection": "fields",
+				"collection": "fields_1234",
 				"conditions": null,
 				"display": null,
 				"display_options": null,
@@ -231,7 +231,7 @@
 			},
 			"schema": {
 				"name": "integer",
-				"table": "fields",
+				"table": "fields_1234",
 				"data_type": "integer",
 				"default_value": null,
 				"max_length": null,
@@ -249,11 +249,11 @@
 			}
 		},
 		{
-			"collection": "fields",
+			"collection": "fields_1234",
 			"field": "float",
 			"type": "float",
 			"meta": {
-				"collection": "fields",
+				"collection": "fields_1234",
 				"conditions": null,
 				"display": null,
 				"display_options": null,
@@ -274,7 +274,7 @@
 			},
 			"schema": {
 				"name": "float",
-				"table": "fields",
+				"table": "fields_1234",
 				"data_type": "real",
 				"default_value": null,
 				"max_length": null,
@@ -292,11 +292,11 @@
 			}
 		},
 		{
-			"collection": "fields",
+			"collection": "fields_1234",
 			"field": "decimal",
 			"type": "decimal",
 			"meta": {
-				"collection": "fields",
+				"collection": "fields_1234",
 				"conditions": null,
 				"display": null,
 				"display_options": null,
@@ -317,7 +317,7 @@
 			},
 			"schema": {
 				"name": "decimal",
-				"table": "fields",
+				"table": "fields_1234",
 				"data_type": "numeric",
 				"default_value": null,
 				"max_length": null,
@@ -335,11 +335,11 @@
 			}
 		},
 		{
-			"collection": "fields",
+			"collection": "fields_1234",
 			"field": "text",
 			"type": "text",
 			"meta": {
-				"collection": "fields",
+				"collection": "fields_1234",
 				"conditions": null,
 				"display": null,
 				"display_options": null,
@@ -360,7 +360,7 @@
 			},
 			"schema": {
 				"name": "text",
-				"table": "fields",
+				"table": "fields_1234",
 				"data_type": "text",
 				"default_value": null,
 				"max_length": null,
@@ -378,11 +378,11 @@
 			}
 		},
 		{
-			"collection": "fields",
+			"collection": "fields_1234",
 			"field": "boolean",
 			"type": "boolean",
 			"meta": {
-				"collection": "fields",
+				"collection": "fields_1234",
 				"conditions": null,
 				"display": null,
 				"display_options": null,
@@ -403,7 +403,7 @@
 			},
 			"schema": {
 				"name": "boolean",
-				"table": "fields",
+				"table": "fields_1234",
 				"data_type": "boolean",
 				"default_value": null,
 				"max_length": null,
@@ -421,11 +421,11 @@
 			}
 		},
 		{
-			"collection": "fields",
+			"collection": "fields_1234",
 			"field": "date",
 			"type": "date",
 			"meta": {
-				"collection": "fields",
+				"collection": "fields_1234",
 				"conditions": null,
 				"display": null,
 				"display_options": null,
@@ -446,7 +446,7 @@
 			},
 			"schema": {
 				"name": "date",
-				"table": "fields",
+				"table": "fields_1234",
 				"data_type": "date",
 				"default_value": null,
 				"max_length": null,
@@ -464,11 +464,11 @@
 			}
 		},
 		{
-			"collection": "fields",
+			"collection": "fields_1234",
 			"field": "time",
 			"type": "time",
 			"meta": {
-				"collection": "fields",
+				"collection": "fields_1234",
 				"conditions": null,
 				"display": null,
 				"display_options": null,
@@ -489,7 +489,7 @@
 			},
 			"schema": {
 				"name": "time",
-				"table": "fields",
+				"table": "fields_1234",
 				"data_type": "time without time zone",
 				"default_value": null,
 				"max_length": null,
@@ -507,11 +507,11 @@
 			}
 		},
 		{
-			"collection": "fields",
+			"collection": "fields_1234",
 			"field": "date_time",
 			"type": "dateTime",
 			"meta": {
-				"collection": "fields",
+				"collection": "fields_1234",
 				"conditions": null,
 				"display": null,
 				"display_options": null,
@@ -532,7 +532,7 @@
 			},
 			"schema": {
 				"name": "date_time",
-				"table": "fields",
+				"table": "fields_1234",
 				"data_type": "timestamp without time zone",
 				"default_value": null,
 				"max_length": null,
@@ -550,11 +550,11 @@
 			}
 		},
 		{
-			"collection": "fields",
+			"collection": "fields_1234",
 			"field": "timestamp",
 			"type": "timestamp",
 			"meta": {
-				"collection": "fields",
+				"collection": "fields_1234",
 				"conditions": null,
 				"display": null,
 				"display_options": null,
@@ -575,7 +575,7 @@
 			},
 			"schema": {
 				"name": "timestamp",
-				"table": "fields",
+				"table": "fields_1234",
 				"data_type": "timestamp with time zone",
 				"default_value": null,
 				"max_length": null,
@@ -593,11 +593,11 @@
 			}
 		},
 		{
-			"collection": "fields",
+			"collection": "fields_1234",
 			"field": "hash",
 			"type": "hash",
 			"meta": {
-				"collection": "fields",
+				"collection": "fields_1234",
 				"conditions": null,
 				"display": null,
 				"display_options": null,
@@ -618,7 +618,7 @@
 			},
 			"schema": {
 				"name": "hash",
-				"table": "fields",
+				"table": "fields_1234",
 				"data_type": "character varying",
 				"default_value": null,
 				"max_length": 255,

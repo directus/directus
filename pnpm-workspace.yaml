@@ -15,9 +15,11 @@ catalog:
   '@changesets/cli': 2.29.5
   '@changesets/get-github-info': 0.6.0
   '@changesets/types': 6.1.0
+  '@directus/format-title': 12.0.1
   '@directus/schema-builder': workspace:*
   '@directus/tsconfig': 3.0.0
   '@directus/types': workspace:*
+  '@directus/utils': 13.0.9
   '@editorjs/attaches': 1.3.0
   '@editorjs/checklist': 1.6.0
   '@editorjs/code': 2.9.3

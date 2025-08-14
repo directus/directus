@@ -17,6 +17,8 @@
 		"vitest": "catalog:",
 		"@directus/sdk": "20.0.0",
 		"@directus/sandbox": "workspace:*",
+		"@directus/types": "workspace:*",
+		"@directus/utils": "catalog:",
 		"@directus/tsconfig": "3.0.0",
 		"@types/node": "22.13.8",
 		"chalk": "5.4.1",

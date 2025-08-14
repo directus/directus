@@ -1,14 +1,15 @@
 import { createItem, DirectusClient, RestClient } from '@directus/sdk';
 import { test, expect } from 'vitest';
-import { Schema } from '../primitive.test';
+import { Schema } from './primitive.test';
 import { Database } from '@directus/sandbox';
+import { Collections } from './primitive.test';
 
-export function testString(api: DirectusClient<Schema> & RestClient<Schema>) {
+export function testString(api: DirectusClient<Schema> & RestClient<Schema>, c: Collections) {
 	const database = process.env['DATABASE'] as Database;
 
 	test(`valid string`, async () => {
 		const result = await api.request(
-			createItem('fields', {
+			createItem(c.fields, {
 				string: 'Hi',
 			}),
 		);
@@ -18,7 +19,7 @@ export function testString(api: DirectusClient<Schema> & RestClient<Schema>) {
 
 	test(`max string`, async () => {
 		const result = await api.request(
-			createItem('fields', {
+			createItem(c.fields, {
 				string: '0'.repeat(255),
 			}),
 		);
@@ -31,7 +32,7 @@ export function testString(api: DirectusClient<Schema> & RestClient<Schema>) {
 			await expect(
 				async () =>
 					await api.request(
-						createItem('fields', {
+						createItem(c.fields, {
 							string: '0'.repeat(256),
 						}),
 					),

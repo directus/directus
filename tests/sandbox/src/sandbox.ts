@@ -1,11 +1,12 @@
-import type { DatabaseClient, DeepPartial } from '@directus/types';
+import type { DatabaseClient, DeepPartial, Snapshot } from '@directus/types';
 import { createLogger, type Logger } from './logger.js';
 import { join } from 'path';
-import { merge } from 'lodash-es';
+import { camelCase, merge, upperFirst } from 'lodash-es';
 import { spawn, type ChildProcessWithoutNullStreams } from 'child_process';
 import { getEnv, type Env } from './config.js';
 import knex from 'knex';
 import { writeFile } from 'fs/promises';
+import { getRelationInfo } from './relation.js';
 
 export type StopSandbox = () => Promise<void>;
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
@@ -132,12 +133,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		await bootstrap(env, logger);
 		apis = await startDirectus(opts, env, logger);
 
-		interval = setInterval(async () => {
-			const schema = await fetch(`${env.PUBLIC_URL}/schema/snapshot?access_token=${env.ADMIN_TOKEN}`);
-			const json = (await schema.json()) as { data: Record<string, any> };
-
-			await writeFile('schema.json', JSON.stringify(json.data, null, 4));
-		}, 2000);
+		if (opts.schema) interval = await saveSchema(env);
 	} catch (e) {
 		logger.error(String(e));
 		await stop();
@@ -373,4 +369,61 @@ export async function testDBCollection(database: Database, env: Env): Promise<bo
 	} catch {
 		return false;
 	}
+}
+
+async function saveSchema(env: Env) {
+	return setInterval(async () => {
+		const data = await fetch(`${env.PUBLIC_URL}/schema/snapshot?access_token=${env.ADMIN_TOKEN}`);
+		const snapshot = (await data.json()) as { data: Snapshot };
+
+		const schema = `export type Schema = {
+	${snapshot.data.collections
+		.map((collection) => {
+			const collectionName = formatCollection(collection.collection);
+
+			return `${formatField(collection.collection)}: ${collectionName}`;
+		})
+		.join('\n	')}
+}
+`;
+
+		const collections = snapshot.data.collections
+			.map((collection) => {
+				const collectionName = formatCollection(collection.collection);
+
+				return `export type ${collectionName} = {
+	${snapshot.data.fields
+		.filter((field) => field.collection === collection.collection)
+		.map((field) => {
+			const rel = getRelationInfo(snapshot.data.relations, collection.collection, field.field);
+			const fieldName = formatField(field.field);
+
+			if (!rel) return `${fieldName}: any`;
+
+			const { relation, relationType } = rel;
+
+			if (relationType === 'o2m') {
+				return `${fieldName}: ${formatCollection(relation.collection)}[]`;
+			} else if (relationType === 'm2o') {
+				return `${fieldName}: ${formatCollection(relation.related_collection!)}`;
+			} else {
+				return `${fieldName}: ${relation.meta!.one_allowed_collections!.map(formatCollection).join(' | ')}`;
+			}
+		})
+		.join('\n	')}
+}`;
+			})
+			.join('\n');
+
+		await writeFile('schema.d.ts', schema + collections);
+		await writeFile('schema.json', JSON.stringify(snapshot.data, null, 4));
+	}, 2000);
+}
+
+function formatCollection(title: string) {
+	return upperFirst(camelCase(title.replaceAll('_1234', '')));
+}
+
+function formatField(title: string) {
+	return title.replaceAll('_1234', '');
 }

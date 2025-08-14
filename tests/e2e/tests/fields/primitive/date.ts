@@ -1,12 +1,12 @@
 import { createItem, DirectusClient, RestClient } from '@directus/sdk';
 import { test, expect } from 'vitest';
-import { Schema } from '../primitive.test';
+import { Collections, Schema } from './primitive.test';
 
-export function testDate(api: DirectusClient<Schema> & RestClient<Schema>) {
+export function testDate(api: DirectusClient<Schema> & RestClient<Schema>, c: Collections) {
 	for (const date of ['2020-01-01', '2001-12-24']) {
 		test(`valid date ${date}`, async () => {
 			const result = await api.request(
-				createItem('fields', {
+				createItem(c.fields, {
 					date,
 				}),
 			);
@@ -18,7 +18,7 @@ export function testDate(api: DirectusClient<Schema> & RestClient<Schema>) {
 	test(`invalid date`, async () => {
 		await expect(() =>
 			api.request(
-				createItem('fields', {
+				createItem(c.fields, {
 					date: 'test',
 				}),
 			),
