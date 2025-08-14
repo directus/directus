@@ -1,13 +1,10 @@
 import type { TestProject } from 'vitest/node';
-import { Database, sandboxes, StopSandbox } from '@directus/sandbox';
+import { sandboxes, StopSandbox } from '@directus/sandbox';
 
 let sb: StopSandbox | undefined;
 
-export async function setup(project: TestProject) {
+export async function setup(_project: TestProject) {
 	if (process.env['ALL'] !== 'true') return;
-
-	const dev = Boolean(project.config.env?.['DEV']);
-	const watch = Boolean(project.config.env?.['WATCH']);
 
 	const dbs = (['maria', 'cockroachdb', 'mssql', 'mysql', 'oracle', 'postgres', 'sqlite'] as const).map(
 		(database, index) => ({

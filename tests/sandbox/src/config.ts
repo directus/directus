@@ -1,7 +1,10 @@
 import type { Database, Options } from './sandbox.js';
 
+const isWindows = ['win32', 'win64'].includes(process.platform);
+
 const directusConfig = {
 	...process.env,
+	TZ: isWindows ? '0' : 'UTC',
 	ADMIN_EMAIL: 'admin@example.com',
 	ADMIN_PASSWORD: 'pw',
 	ADMIN_TOKEN: 'admin',
@@ -151,14 +154,14 @@ export function getEnv(database: Database, opts: Options): Env {
 	const env = {
 		...baseConfig[database],
 		PORT: opts.port,
+		PUBLIC_URL: `http://${baseConfig[database].HOST}:${opts.port}`,
 		REDIS_ENABLED: String(opts.extras.redis),
-		PATH: process.env['PATH']!,
 		NODE_ENV: opts.dev ? 'development' : 'production',
 		...(opts.extras.minio ? minio : {}),
 		...(opts.extras.saml ? saml : {}),
 		...(opts.extras.maildev ? maildev : {}),
 		...opts.env,
-	};
+	} satisfies Env;
 
 	return Object.fromEntries(
 		Object.entries(env).map(([key, value]) => {
@@ -182,7 +185,7 @@ export function getEnv(database: Database, opts: Options): Env {
 export type Env = (typeof baseConfig)[Database] & {
 	PORT: string;
 	REDIS_ENABLED: string;
-	PATH: string;
+	PUBLIC_URL: string;
 	NODE_ENV: string;
 } & Partial<typeof minio> &
 	Partial<typeof saml>;
