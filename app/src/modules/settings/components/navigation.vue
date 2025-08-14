@@ -64,6 +64,11 @@ const links = computed<Link[][]>(() => [
 			name: t('settings_translations'),
 			to: `/settings/translations`,
 		},
+		{
+			icon: 'smart_toy',
+			name: t('settings_ai'),
+			to: `/settings/ai`,
+		},
 	],
 	[
 		{
