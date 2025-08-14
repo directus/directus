@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { EXTENSION_PKG_KEY } from '../constants/index.js';
 import { ExtensionOptions } from './options.js';
 
-export const ExtensionManifest = z.strictObject({
+export const ExtensionManifest = z.object({
 	name: z.string(),
 	version: z.string(),
 	type: z.union([z.literal('module'), z.literal('commonjs')]).optional(),

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const RegistryVersionResponse = z.strictObject({
+export const RegistryVersionResponse = z.object({
 	version: z.string(),
 });
 

@@ -1,28 +1,28 @@
 import { z } from 'zod';
 import { API_EXTENSION_TYPES, APP_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '../constants/index.js';
 
-export const SplitEntrypoint = z.strictObject({
+export const SplitEntrypoint = z.object({
 	app: z.string(),
 	api: z.string(),
 });
 
 export type SplitEntrypoint = z.infer<typeof SplitEntrypoint>;
 
-export const ExtensionSandboxRequestedScopes = z.strictObject({
+export const ExtensionSandboxRequestedScopes = z.object({
 	request: z.optional(
-		z.strictObject({
+		z.object({
 			urls: z.array(z.string()),
 			methods: z.array(
 				z.union([z.literal('GET'), z.literal('POST'), z.literal('PATCH'), z.literal('PUT'), z.literal('DELETE')]),
 			),
 		}),
 	),
-	log: z.optional(z.strictObject({})),
-	sleep: z.optional(z.strictObject({})),
+	log: z.optional(z.object({})),
+	sleep: z.optional(z.object({})),
 });
 
 export const ExtensionSandboxOptions = z.optional(
-	z.strictObject({
+	z.object({
 		enabled: z.boolean(),
 		requestedScopes: ExtensionSandboxRequestedScopes,
 	}),
@@ -32,17 +32,17 @@ export type ExtensionSandboxOptions = z.infer<typeof ExtensionSandboxOptions>;
 export type ExtensionSandboxRequestedScopes = z.infer<typeof ExtensionSandboxRequestedScopes>;
 
 export const ExtensionOptionsBundleEntry = z.union([
-	z.strictObject({
+	z.object({
 		type: z.enum(API_EXTENSION_TYPES),
 		name: z.string(),
 		source: z.string(),
 	}),
-	z.strictObject({
+	z.object({
 		type: z.enum(APP_EXTENSION_TYPES),
 		name: z.string(),
 		source: z.string(),
 	}),
-	z.strictObject({
+	z.object({
 		type: z.enum(HYBRID_EXTENSION_TYPES),
 		name: z.string(),
 		source: SplitEntrypoint,
@@ -51,32 +51,32 @@ export const ExtensionOptionsBundleEntry = z.union([
 
 export type ExtensionOptionsBundleEntry = z.infer<typeof ExtensionOptionsBundleEntry>;
 
-export const ExtensionOptionsBase = z.strictObject({
+export const ExtensionOptionsBase = z.object({
 	host: z.string(),
 	hidden: z.boolean().optional(),
 });
 
-export const ExtensionOptionsApp = z.strictObject({
+export const ExtensionOptionsApp = z.object({
 	type: z.enum(APP_EXTENSION_TYPES),
 	path: z.string(),
 	source: z.string(),
 });
 
-export const ExtensionOptionsApi = z.strictObject({
+export const ExtensionOptionsApi = z.object({
 	type: z.enum(API_EXTENSION_TYPES),
 	path: z.string(),
 	source: z.string(),
 	sandbox: ExtensionSandboxOptions,
 });
 
-export const ExtensionOptionsHybrid = z.strictObject({
+export const ExtensionOptionsHybrid = z.object({
 	type: z.enum(HYBRID_EXTENSION_TYPES),
 	path: SplitEntrypoint,
 	source: SplitEntrypoint,
 	sandbox: ExtensionSandboxOptions,
 });
 
-export const ExtensionOptionsBundle = z.strictObject({
+export const ExtensionOptionsBundle = z.object({
 	type: z.literal('bundle'),
 	partial: z.boolean().optional(),
 	path: SplitEntrypoint,
