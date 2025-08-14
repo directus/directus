@@ -67,6 +67,24 @@ export function generateFields(collection: string | null, fields: string[] | nul
 		},
 		{
 			collection,
+			field: 'meta_prompts_notice',
+			type: 'alias',
+			schema: null,
+			meta: {
+				collection,
+				field: 'meta_prompts_notice',
+				special: ['alias', 'no-data'],
+				interface: 'presentation-notice',
+				options: {
+					icon: 'info',
+					text: '$t:mcp_prompts_collection_schema.meta_prompts_notice',
+				},
+				sort: 6,
+				width: 'full',
+			},
+		},
+		{
+			collection,
 			field: 'name',
 			type: 'string',
 			schema: {
@@ -90,9 +108,8 @@ export function generateFields(collection: string | null, fields: string[] | nul
 				display_options: {
 					font: 'monospace',
 				},
-				sort: 3,
+				sort: 7,
 				width: 'half',
-				note: 'Unique name for the prompt. Use names like "create-article" or "generate-product-description".',
 				required: true,
 			},
 		},
@@ -156,9 +173,8 @@ export function generateFields(collection: string | null, fields: string[] | nul
 						},
 					],
 				},
-				sort: 4,
+				sort: 8,
 				width: 'half',
-				note: 'Is this prompt published and available to use?',
 			},
 		},
 		{
@@ -175,9 +191,8 @@ export function generateFields(collection: string | null, fields: string[] | nul
 				collection,
 				field: 'description',
 				interface: 'input',
-				sort: 5,
+				sort: 9,
 				width: 'full',
-				note: 'Briefly explain what this prompt does in 1-2 sentences.',
 			},
 		},
 
@@ -194,10 +209,10 @@ export function generateFields(collection: string | null, fields: string[] | nul
 			meta: {
 				collection,
 				field: 'system_prompt',
-				interface: 'input-multiline',
-				sort: 6,
+				interface: 'input-rich-text-md',
+				sort: 10,
 				width: 'full',
-				note: 'Instructions that shape how the AI responds.',
+				note: '$t:mcp_prompts_collection_schema.system_prompt_note',
 			},
 		},
 		{
@@ -226,19 +241,19 @@ export function generateFields(collection: string | null, fields: string[] | nul
 								width: 'full',
 								type: 'string',
 								required: true,
-								note: 'Who is speaking in this message.',
+								note: '$t:mcp_prompts_collection_schema.messages_role_note',
 								interface: 'select-dropdown',
 								options: {
 									choices: [
 										{
-											text: 'User',
+											text: '$t:mcp_prompts_collection_schema.messages_role_user',
 											value: 'user',
 											icon: 'person',
 										},
 										{
-											text: 'Assistant',
+											text: '$t:mcp_prompts_collection_schema.messages_role_assistant',
 											value: 'assistant',
-											icon: 'smart',
+											icon: 'smart_toy',
 										},
 									],
 								},
@@ -246,14 +261,14 @@ export function generateFields(collection: string | null, fields: string[] | nul
 								display_options: {
 									choices: [
 										{
-											text: 'User',
+											text: '$t:mcp_prompts_collection_schema.messages_role_user',
 											value: 'user',
 											icon: 'person',
 										},
 										{
-											text: 'Assistant',
+											text: '$t:mcp_prompts_collection_schema.messages_role_assistant',
 											value: 'assistant',
-											icon: 'robot',
+											icon: 'smart_toy',
 										},
 									],
 								},
@@ -285,9 +300,9 @@ export function generateFields(collection: string | null, fields: string[] | nul
 				display_options: {
 					format: '{{ role }} • {{ text }}',
 				},
-				sort: 7,
+				sort: 11,
 				width: 'full',
-				note: 'Optional: Define the conversation structure between users and AI. Used to add context and improve outputs.',
+				note: '$t:mcp_prompts_collection_schema.messages_note',
 			},
 		},
 		{

@@ -1663,6 +1663,13 @@ mcp_prompts_collection:
   invalid_fields: 'The following fields exist but are of an incompatible type:'
   missing_fields: 'The following fields are required but missing:'
   generate_missing: Generate missing fields...
+mcp_prompts_collection_schema:
+  system_prompt_note: Instructions that shape how the LLM responds.
+  messages_note: 'Optional: Define the conversation structure between users and LLMs. Used to add context and improve outputs.'
+  messages_role_user: User
+  messages_role_assistant: Assistant
+  messages_role_note: Who is speaking in this message.
+  meta_prompts_notice: 'Prompts are reusable templates that you can use with LLMs through the Directus MCP server, Flows, or other AI applications. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">Learn more about creating effective prompts.</a>'
 expired: Expired
 upcoming: Upcoming
 share: Share
