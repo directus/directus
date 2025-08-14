@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useShortcut } from '@/composables/use-shortcut';
+import { useUserStore } from '@/stores/user';
 import { Instance, Modifier, Placement, detectOverflow } from '@popperjs/core';
 import arrow from '@popperjs/core/lib/modifiers/arrow';
 import computeStyles from '@popperjs/core/lib/modifiers/computeStyles';
@@ -64,6 +65,10 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits(['update:modelValue']);
+
+const userStore = useUserStore();
+
+const isRTL = computed(() => userStore.textDirection === 'rtl');
 
 const activator = ref<HTMLElement | null>(null);
 const reference = ref<HTMLElement | null>(null);
@@ -395,6 +400,9 @@ function usePopper(
 								case 'bottom-start':
 									x = props.arrowPadding;
 									break;
+								case 'bottom-end':
+									x = props.arrowPadding * -1;
+									break;
 								case 'left-start':
 								case 'right-start':
 									y = props.arrowPadding;
@@ -402,6 +410,11 @@ function usePopper(
 							}
 
 							state.styles.arrow.transform = `translate3d(${x}px, ${y}px, 0)`;
+
+							if (isRTL.value) {
+								state.styles.arrow.right = state.styles.arrow.left;
+								state.styles.arrow.left = `unset`;
+							}
 						}
 
 						arrowStyles.value = state.styles.arrow;
