@@ -1,30 +1,13 @@
-import type { FlowRaw } from '@directus/types';
 import { z } from 'zod';
 import { FlowsService } from '../../services/flows.js';
 import { defineTool } from '../define.js';
-import { OperationItemSchema, QueryInputSchema, QueryValidateSchema } from '../schema.js';
+import { FlowItemInputSchema, FlowItemValidateSchema, QueryInputSchema, QueryValidateSchema } from '../schema.js';
 import prompts from './prompts/index.js';
 
-export const FlowItemSchema = z.strictObject({
-	id: z.string(),
-	name: z.string(),
-	icon: z.union([z.string(), z.null()]),
-	color: z.union([z.string(), z.null()]),
-	description: z.union([z.string(), z.null()]),
-	status: z.enum(['active', 'inactive']),
-	trigger: z.union([z.enum(['event', 'schedule', 'operation', 'webhook', 'manual']), z.null()]),
-	options: z.union([z.record(z.string(), z.any()), z.null()]),
-	operation: z.union([z.string(), z.null()]),
-	operations: z.array(OperationItemSchema),
-	date_created: z.string(),
-	user_created: z.string(),
-	accountability: z.union([z.enum(['all', 'activity']), z.null()]),
-});
-
-export const FlowValidateSchema = z.union([
+export const FlowsValidateSchema = z.union([
 	z.strictObject({
 		action: z.literal('create'),
-		data: FlowItemSchema,
+		data: FlowItemValidateSchema,
 	}),
 	z.strictObject({
 		action: z.literal('read'),
@@ -32,8 +15,9 @@ export const FlowValidateSchema = z.union([
 	}),
 	z.strictObject({
 		action: z.literal('update'),
-		data: FlowItemSchema,
 		key: z.string(),
+		data: FlowItemValidateSchema,
+		query: QueryValidateSchema.optional(),
 	}),
 	z.strictObject({
 		action: z.literal('delete'),
@@ -41,19 +25,19 @@ export const FlowValidateSchema = z.union([
 	}),
 ]);
 
-export const FlowInputSchema = z.strictObject({
-	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
-	query: QueryInputSchema.optional().describe(''),
-	data: FlowItemSchema.optional().describe(''),
-	key: z.string().optional().describe(''),
+export const FlowsInputSchema = z.object({
+	action: z.enum(['create', 'read', 'update', 'delete']).describe('The operation to perform'),
+	query: QueryInputSchema.optional(),
+	data: FlowItemInputSchema.optional(),
+	key: z.string().optional(),
 });
 
-export const flows = defineTool<z.infer<typeof FlowValidateSchema>>({
+export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
 	name: 'flows',
 	admin: true,
 	description: prompts.flows,
-	inputSchema: FlowInputSchema,
-	validateSchema: FlowValidateSchema,
+	inputSchema: FlowsInputSchema,
+	validateSchema: FlowsValidateSchema,
 	annotations: {
 		title: 'Perform CRUD operations on Directus Flows',
 	},
@@ -69,7 +53,7 @@ export const flows = defineTool<z.infer<typeof FlowValidateSchema>>({
 
 			return {
 				type: 'text',
-				data: result ?? null,
+				data: result || null,
 			};
 		}
 
@@ -78,17 +62,17 @@ export const flows = defineTool<z.infer<typeof FlowValidateSchema>>({
 
 			return {
 				type: 'text',
-				data: result,
+				data: result || null,
 			};
 		}
 
 		if (args.action === 'update') {
-			const updatedKey = await flowsService.updateOne(args.key, args.data as FlowRaw);
+			const updatedKey = await flowsService.updateOne(args.key, args.data);
 			const result = await flowsService.readOne(updatedKey, sanitizedQuery);
 
 			return {
 				type: 'text',
-				data: result,
+				data: result || null,
 			};
 		}
 

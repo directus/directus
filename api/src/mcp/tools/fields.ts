@@ -1,51 +1,61 @@
 import { InvalidPayloadError } from '@directus/errors';
-import type { Field, Item } from '@directus/types';
+import type { Item } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
 import { FieldsService } from '../../services/fields.js';
 import { defineTool } from '../define.js';
-import { FieldItemSchema } from '../schema.js';
+import {
+	FieldItemInputSchema,
+	FieldItemValidateSchema,
+	RawFieldItemInputSchema,
+	RawFieldItemValidateSchema,
+} from '../schema.js';
 import prompts from './prompts/index.js';
 
-export const FieldBaseValidateSchema = z.strictObject({
+export const FieldsBaseValidateSchema = z.strictObject({
 	collection: z.string(),
 });
 
-export const FieldValidateSchema = z.union([
-	FieldBaseValidateSchema.extend({
+export const FieldsValidateSchema = z.union([
+	FieldsBaseValidateSchema.extend({
 		action: z.literal('create'),
-		data: FieldItemSchema,
+		data: FieldItemValidateSchema,
 	}),
-	FieldBaseValidateSchema.extend({
+	z.object({
 		action: z.literal('read'),
+		collection: z.string().optional(),
 		field: z.string().optional(),
 	}),
-	FieldBaseValidateSchema.extend({
+	FieldsBaseValidateSchema.extend({
 		action: z.literal('update'),
-		data: z.union([z.array(FieldItemSchema), FieldItemSchema]),
+		data: z.union([z.array(RawFieldItemValidateSchema), RawFieldItemValidateSchema]),
 	}),
-	FieldBaseValidateSchema.extend({
+	FieldsBaseValidateSchema.extend({
 		action: z.literal('delete'),
 		field: z.string(),
 	}),
 ]);
 
-export const FieldInputSchema = z.strictObject({
+export const FieldsInputSchema = z.object({
 	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
-	collection: z.string().describe('The name of the collection'),
-	field: z.string().describe(''),
+	collection: z.string().describe('The name of the collection').optional(),
+	field: z.string().optional(),
 	data: z
-		.union([z.array(FieldItemSchema), FieldItemSchema])
-		.optional()
-		.describe(''),
+		.union([
+			z.array(FieldItemInputSchema),
+			FieldItemInputSchema,
+			z.array(RawFieldItemInputSchema),
+			RawFieldItemInputSchema,
+		])
+		.optional(),
 });
 
-export const field = defineTool<z.infer<typeof FieldValidateSchema>>({
+export const field = defineTool<z.infer<typeof FieldsValidateSchema>>({
 	name: 'fields',
 	admin: true,
 	description: prompts.fields,
-	inputSchema: FieldInputSchema,
-	validateSchema: FieldValidateSchema,
+	inputSchema: FieldsInputSchema,
+	validateSchema: FieldsValidateSchema,
 	async handler({ args, schema, accountability }) {
 		const service = new FieldsService({
 			schema,
@@ -53,7 +63,7 @@ export const field = defineTool<z.infer<typeof FieldValidateSchema>>({
 		});
 
 		if (args.action === 'create') {
-			await service.createField(args.collection, args.data as Field);
+			await service.createField(args.collection, args.data);
 
 			const result = await service.readOne(args.collection, args.data.field);
 
@@ -66,20 +76,24 @@ export const field = defineTool<z.infer<typeof FieldValidateSchema>>({
 		if (args.action === 'read') {
 			let result = null;
 
-			if (args.field) {
-				result = await service.readOne(args.collection, args.field);
+			if (args.collection) {
+				if (args.field) {
+					result = await service.readOne(args.collection, args.field);
+				} else {
+					result = await service.readAll(args.collection);
+				}
 			} else {
-				result = await service.readAll(args.collection);
+				result = await service.readAll();
 			}
 
 			return {
 				type: 'text',
-				data: result,
+				data: result || null,
 			};
 		}
 
 		if (args.action === 'update') {
-			const data = toArray(args.data as Field);
+			const data = toArray(args.data);
 
 			await service.updateFields(args.collection, data);
 
@@ -92,7 +106,7 @@ export const field = defineTool<z.infer<typeof FieldValidateSchema>>({
 
 			return {
 				type: 'text',
-				data: result,
+				data: result || null,
 			};
 		}
 

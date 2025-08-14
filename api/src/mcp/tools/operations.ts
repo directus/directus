@@ -2,14 +2,14 @@ import type { OperationRaw } from '@directus/types';
 import { z } from 'zod';
 import { OperationsService } from '../../services/operations.js';
 import { defineTool } from '../define.js';
-import { OperationItemSchema, QueryInputSchema, QueryValidateSchema } from '../schema.js';
-import { FlowItemSchema } from './flows.js';
+import { OperationItemValidateSchema, QueryInputSchema, QueryValidateSchema } from '../schema.js';
+import { FlowsInputSchema } from './flows.js';
 import prompts from './prompts/index.js';
 
-export const OperationValidationSchema = z.union([
+export const OperationsValidationSchema = z.union([
 	z.strictObject({
 		action: z.literal('create'),
-		data: OperationItemSchema,
+		data: OperationItemValidateSchema,
 	}),
 	z.strictObject({
 		action: z.literal('read'),
@@ -17,7 +17,7 @@ export const OperationValidationSchema = z.union([
 	}),
 	z.strictObject({
 		action: z.literal('update'),
-		data: OperationItemSchema,
+		data: OperationItemValidateSchema,
 		key: z.string(),
 	}),
 	z.strictObject({
@@ -26,19 +26,19 @@ export const OperationValidationSchema = z.union([
 	}),
 ]);
 
-export const OperationInputSchema = z.strictObject({
-	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
-	query: QueryInputSchema.optional().describe(''),
-	data: FlowItemSchema.optional().describe('Flow data as a native object or array (NOT stringified JSON)'),
-	key: z.string().optional().describe(''),
+export const OperationsInputSchema = z.object({
+	action: z.enum(['create', 'read', 'update', 'delete']).describe('The operation to perform'),
+	query: QueryInputSchema.optional(),
+	data: FlowsInputSchema.optional().describe('Flow data as a native object or array (NOT stringified JSON)'),
+	key: z.string().optional(),
 });
 
-export const operations = defineTool<z.infer<typeof OperationValidationSchema>>({
+export const operations = defineTool<z.infer<typeof OperationsValidationSchema>>({
 	name: 'operations',
 	admin: true,
 	description: prompts.operations,
-	inputSchema: OperationInputSchema,
-	validateSchema: OperationValidationSchema,
+	inputSchema: OperationsInputSchema,
+	validateSchema: OperationsValidationSchema,
 	annotations: {
 		title: 'Perform CRUD operations on Directus Flow Operations',
 	},
@@ -54,7 +54,7 @@ export const operations = defineTool<z.infer<typeof OperationValidationSchema>>(
 
 			return {
 				type: 'text',
-				data: result ?? null,
+				data: result || null,
 			};
 		}
 
@@ -63,7 +63,7 @@ export const operations = defineTool<z.infer<typeof OperationValidationSchema>>(
 
 			return {
 				type: 'text',
-				data: result,
+				data: result || null,
 			};
 		}
 
@@ -73,7 +73,7 @@ export const operations = defineTool<z.infer<typeof OperationValidationSchema>>(
 
 			return {
 				type: 'text',
-				data: result,
+				data: result || null,
 			};
 		}
 

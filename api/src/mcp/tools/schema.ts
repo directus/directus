@@ -38,11 +38,11 @@ export interface OverviewOutput {
 	};
 }
 
-export const OverviewValidateSchema = z.object({
+export const SchemaValidateSchema = z.strictObject({
 	keys: z.array(z.string()).optional(),
 });
 
-export const OverviewInputSchema = z.object({
+export const SchemaInputSchema = z.object({
 	keys: z
 		.array(z.string())
 		.optional()
@@ -51,12 +51,12 @@ export const OverviewInputSchema = z.object({
 		),
 });
 
-export const schema = defineTool<z.infer<typeof OverviewValidateSchema>>({
+export const schema = defineTool<z.infer<typeof SchemaValidateSchema>>({
 	name: 'schema',
 	admin: true,
 	description: prompts.schema,
-	inputSchema: OverviewInputSchema,
-	validateSchema: OverviewValidateSchema,
+	inputSchema: SchemaInputSchema,
+	validateSchema: SchemaValidateSchema,
 	async handler({ args }) {
 		const snapshot = await getSnapshot();
 

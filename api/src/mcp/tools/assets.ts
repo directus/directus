@@ -3,19 +3,19 @@ import { AssetsService } from '../../services/assets.js';
 import { defineTool } from '../define.js';
 import prompts from './prompts/index.js';
 
-const AssetValidateSchema = z.strictObject({
+const AssetsValidateSchema = z.strictObject({
 	id: z.string(),
 });
 
-const AssetInputSchema = z.strictObject({
-	id: z.string().optional().describe(''),
+const AssetsInputSchema = z.object({
+	id: z.string(),
 });
 
-export const assets = defineTool<z.infer<typeof AssetValidateSchema>>({
+export const assets = defineTool<z.infer<typeof AssetsValidateSchema>>({
 	name: 'assets',
 	description: prompts.assets,
-	inputSchema: AssetInputSchema,
-	validateSchema: AssetValidateSchema,
+	inputSchema: AssetsInputSchema,
+	validateSchema: AssetsValidateSchema,
 	async handler({ args, schema, accountability }) {
 		const assetsService = new AssetsService({
 			accountability,

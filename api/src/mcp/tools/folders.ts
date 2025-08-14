@@ -4,7 +4,8 @@ import { z } from 'zod';
 import { FoldersService } from '../../services/folders.js';
 import { defineTool } from '../define.js';
 import {
-	FolderItemSchema,
+	FolderItemInputSchema,
+	FolderItemValidateSchema,
 	PrimaryKeyInputSchema,
 	PrimaryKeyValidateSchema,
 	QueryInputSchema,
@@ -12,49 +13,41 @@ import {
 } from '../schema.js';
 import prompts from './prompts/index.js';
 
-const FolderValidateSchema = z.union([
+const FoldersValidateSchema = z.union([
 	z.strictObject({
-		type: z.literal('folder'),
 		action: z.literal('create'),
-		data: z.union([z.array(FolderItemSchema), FolderItemSchema]),
+		data: z.union([z.array(FolderItemValidateSchema), FolderItemValidateSchema]),
 		query: QueryValidateSchema.optional(),
 	}),
 	z.strictObject({
-		type: z.literal('folder'),
 		action: z.literal('read'),
 		keys: z.array(PrimaryKeyValidateSchema).optional(),
 		query: QueryValidateSchema.optional(),
 	}),
 	z.strictObject({
-		type: z.literal('folder'),
 		action: z.literal('update'),
-		data: FolderItemSchema,
+		data: FolderItemValidateSchema,
 		keys: z.array(PrimaryKeyValidateSchema).optional(),
 		query: QueryValidateSchema.optional(),
 	}),
 	z.strictObject({
-		type: z.literal('folder'),
 		action: z.literal('delete'),
 		keys: z.array(PrimaryKeyValidateSchema),
 	}),
 ]);
 
-const FolderInputSchema = z.strictObject({
-	type: z.enum(['folder', 'file', 'asset']),
-	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
-	query: QueryInputSchema.optional().describe(''),
-	keys: z.array(PrimaryKeyInputSchema).optional().describe(''),
-	data: z
-		.union([z.array(FolderItemSchema), FolderItemSchema])
-		.optional()
-		.describe(''),
+const FoldersInputSchema = z.object({
+	action: z.enum(['create', 'read', 'update', 'delete']).describe('The operation to perform'),
+	query: QueryInputSchema.optional(),
+	keys: z.array(PrimaryKeyInputSchema).optional(),
+	data: z.union([z.array(FolderItemInputSchema), FolderItemInputSchema]).optional(),
 });
 
-export const folders = defineTool<z.infer<typeof FolderValidateSchema>>({
+export const folders = defineTool<z.infer<typeof FoldersValidateSchema>>({
 	name: 'folders',
 	description: prompts.folders,
-	inputSchema: FolderInputSchema,
-	validateSchema: FolderValidateSchema,
+	inputSchema: FoldersInputSchema,
+	validateSchema: FoldersValidateSchema,
 	async handler({ args, schema, accountability, sanitizedQuery }) {
 		const service = new FoldersService({
 			schema,
@@ -85,7 +78,7 @@ export const folders = defineTool<z.infer<typeof FolderValidateSchema>>({
 
 			return {
 				type: 'text',
-				data: result,
+				data: result || null,
 			};
 		}
 

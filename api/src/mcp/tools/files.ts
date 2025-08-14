@@ -4,7 +4,8 @@ import { z } from 'zod';
 import { FilesService } from '../../services/files.js';
 import { defineTool } from '../define.js';
 import {
-	FileItemSchema,
+	FileItemInputSchema,
+	FileItemValidateSchema,
 	PrimaryKeyInputSchema,
 	PrimaryKeyValidateSchema,
 	QueryInputSchema,
@@ -12,48 +13,41 @@ import {
 } from '../schema.js';
 import prompts from './prompts/index.js';
 
-export const FileValidateSchema = z.union([
+export const FilesValidateSchema = z.union([
 	z.strictObject({
-		type: z.literal('file'),
 		action: z.literal('create'),
-		data: z.union([z.array(FileItemSchema), FileItemSchema]),
+		data: z.union([z.array(FileItemValidateSchema), FileItemValidateSchema]),
 		query: QueryValidateSchema.optional(),
 	}),
 	z.strictObject({
-		type: z.literal('file'),
 		action: z.literal('read'),
 		keys: z.array(PrimaryKeyValidateSchema).optional(),
 		query: QueryValidateSchema.optional(),
 	}),
 	z.strictObject({
-		type: z.literal('file'),
 		action: z.literal('update'),
-		data: FileItemSchema,
+		data: FileItemValidateSchema,
 		keys: z.array(PrimaryKeyValidateSchema).optional(),
 		query: QueryValidateSchema.optional(),
 	}),
 	z.strictObject({
-		type: z.literal('file'),
 		action: z.literal('delete'),
 		keys: z.array(PrimaryKeyValidateSchema),
 	}),
 ]);
 
-const FileInputSchema = z.strictObject({
-	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
-	query: QueryInputSchema.optional().describe(''),
-	keys: z.array(PrimaryKeyInputSchema).optional().describe(''),
-	data: z
-		.union([z.array(FileItemSchema), FileItemSchema])
-		.optional()
-		.describe(''),
+const FilesInputSchema = z.object({
+	action: z.enum(['create', 'read', 'update', 'delete']).describe('The operation to perform'),
+	query: QueryInputSchema.optional(),
+	keys: z.array(PrimaryKeyInputSchema).optional(),
+	data: z.union([z.array(FileItemInputSchema), FileItemInputSchema]).optional(),
 });
 
-export const files = defineTool<z.infer<typeof FileValidateSchema>>({
+export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
 	name: 'files',
 	description: prompts.files,
-	inputSchema: FileInputSchema,
-	validateSchema: FileValidateSchema,
+	inputSchema: FilesInputSchema,
+	validateSchema: FilesValidateSchema,
 	async handler({ args, schema, accountability, sanitizedQuery }) {
 		const service = new FilesService({
 			schema,

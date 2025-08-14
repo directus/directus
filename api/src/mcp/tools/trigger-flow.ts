@@ -7,9 +7,9 @@ import prompts from './prompts/index.js';
 const TriggerFlowInputSchema = z.strictObject({
 	flowDefinition: z.record(z.string(), z.any()).describe('The full flow definition from the read-flows call.'),
 	flowId: z.string().describe('The ID of the flow to trigger'),
-	method: z.enum(['GET', 'POST']).default('GET').describe(''),
-	query: QueryInputSchema.optional().describe(''),
-	headers: z.record(z.string(), z.any()).optional().describe(''),
+	method: z.enum(['GET', 'POST']).default('GET'),
+	query: QueryInputSchema.optional(),
+	headers: z.record(z.string(), z.any()).optional(),
 	collection: z.string().describe('The collection of the items to trigger the flow on.'),
 	keys: z
 		.array(z.string())
@@ -28,7 +28,7 @@ export const triggerFlow = defineTool<z.infer<typeof TriggerFlowInputSchema>>({
 	name: 'trigger-flow',
 	description: prompts.triggerFlow,
 	inputSchema: TriggerFlowInputSchema,
-	// validateSchema: TriggerFlowInputSchema,
+	validateSchema: TriggerFlowInputSchema,
 	annotations: {
 		title: 'Trigger a Directus Flow',
 	},

@@ -8,7 +8,6 @@ import { defineTool } from '../define.js';
 import {
 	ItemInputSchema,
 	ItemValidateSchema,
-	PartialItemInputSchema,
 	PrimaryKeyInputSchema,
 	PrimaryKeyValidateSchema,
 	QueryInputSchema,
@@ -16,7 +15,11 @@ import {
 } from '../schema.js';
 import prompts from './prompts/index.js';
 
-const ValidateSchema = z.union([
+const PartialItemInputSchema = z.strictObject({
+	collection: z.string(),
+});
+
+const ItemsValidateSchema = z.union([
 	PartialItemInputSchema.extend({
 		action: z.literal('create'),
 		data: z.union([z.array(ItemValidateSchema), ItemValidateSchema]),
@@ -29,7 +32,7 @@ const ValidateSchema = z.union([
 	}),
 	PartialItemInputSchema.extend({
 		action: z.literal('update'),
-		data: ItemValidateSchema,
+		data: z.union([z.array(ItemValidateSchema), ItemValidateSchema]),
 		keys: z.array(PrimaryKeyValidateSchema).optional(),
 		query: QueryValidateSchema.optional(),
 	}),
@@ -39,22 +42,19 @@ const ValidateSchema = z.union([
 	}),
 ]);
 
-const InputSchema = z.strictObject({
-	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
+const ItemsInputSchema = z.object({
+	action: z.enum(['create', 'read', 'update', 'delete']).describe('The operation to perform'),
 	collection: z.string().describe('The name of the collection'),
-	query: QueryInputSchema.optional().describe(''),
-	keys: z.array(PrimaryKeyInputSchema).optional().describe(''),
-	data: z
-		.union([z.array(ItemInputSchema), ItemInputSchema])
-		.optional()
-		.describe(''),
+	query: QueryInputSchema.optional(),
+	keys: z.array(PrimaryKeyInputSchema).optional(),
+	data: z.union([z.array(ItemInputSchema), ItemInputSchema]).optional(),
 });
 
-export const items = defineTool<z.infer<typeof ValidateSchema>>({
+export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 	name: 'items',
 	description: prompts.items,
-	inputSchema: InputSchema,
-	validateSchema: ValidateSchema,
+	inputSchema: ItemsInputSchema,
+	validateSchema: ItemsValidateSchema,
 	annotations: {
 		title: 'Perform CRUD operations on Directus Items',
 	},
@@ -78,6 +78,10 @@ export const items = defineTool<z.infer<typeof ValidateSchema>>({
 			const data = toArray(args.data);
 
 			if (isSingleton) {
+				if (Array.isArray(args.data)) {
+					throw new InvalidPayloadError({ reason: 'Invalid data payload, object exptected' });
+				}
+
 				await itemsService.upsertSingleton(args.data);
 
 				const item = await itemsService.readSingleton(sanitizedQuery);
@@ -117,6 +121,10 @@ export const items = defineTool<z.infer<typeof ValidateSchema>>({
 
 		if (args.action === 'update') {
 			if (isSingleton) {
+				if (Array.isArray(args.data)) {
+					throw new InvalidPayloadError({ reason: 'Invalid data payload, object exptected' });
+				}
+
 				await itemsService.upsertSingleton(args.data);
 
 				const item = await itemsService.readSingleton(sanitizedQuery);

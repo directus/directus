@@ -1,16 +1,19 @@
 import { InvalidPayloadError } from '@directus/errors';
-import type { Collection, RawCollection } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
 import { CollectionsService } from '../../services/collections.js';
 import { defineTool } from '../define.js';
-import { CollectionItemSchema } from '../schema.js';
+import {
+	CollectionItemInputSchema,
+	CollectionItemValidateCreateSchema,
+	CollectionItemValidateUpdateSchema,
+} from '../schema.js';
 import prompts from './prompts/index.js';
 
-export const CollectionValidateSchema = z.union([
+export const CollectionsValidateSchema = z.union([
 	z.strictObject({
 		action: z.literal('create'),
-		data: z.union([z.array(CollectionItemSchema), CollectionItemSchema]),
+		data: z.union([z.array(CollectionItemValidateCreateSchema), CollectionItemValidateCreateSchema]),
 	}),
 	z.strictObject({
 		action: z.literal('read'),
@@ -18,7 +21,7 @@ export const CollectionValidateSchema = z.union([
 	}),
 	z.strictObject({
 		action: z.literal('update'),
-		data: z.union([z.array(CollectionItemSchema), CollectionItemSchema]),
+		data: z.union([z.array(CollectionItemValidateUpdateSchema), CollectionItemValidateUpdateSchema]),
 	}),
 	z.strictObject({
 		action: z.literal('delete'),
@@ -26,21 +29,18 @@ export const CollectionValidateSchema = z.union([
 	}),
 ]);
 
-export const CollectionInputSchema = z.strictObject({
-	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
-	keys: z.array(z.string()).optional().describe(''),
-	data: z
-		.union([z.array(CollectionItemSchema), CollectionItemSchema])
-		.optional()
-		.describe(''),
+export const CollectionsInputSchema = z.object({
+	action: z.enum(['create', 'read', 'update', 'delete']).describe('The operation to perform'),
+	keys: z.array(z.string()).optional(),
+	data: z.union([z.array(CollectionItemInputSchema), CollectionItemInputSchema]).optional(),
 });
 
-export const collection = defineTool<z.infer<typeof CollectionValidateSchema>>({
+export const collection = defineTool<z.infer<typeof CollectionsValidateSchema>>({
 	name: 'collections',
 	admin: true,
 	description: prompts.collections,
-	inputSchema: CollectionInputSchema,
-	validateSchema: CollectionValidateSchema,
+	inputSchema: CollectionsInputSchema,
+	validateSchema: CollectionsValidateSchema,
 	async handler({ args, schema, accountability }) {
 		const service = new CollectionsService({
 			schema,
@@ -48,7 +48,7 @@ export const collection = defineTool<z.infer<typeof CollectionValidateSchema>>({
 		});
 
 		if (args.action === 'create') {
-			const data = toArray(args.data as RawCollection);
+			const data = toArray(args.data);
 
 			const savedKeys = await service.createMany(data);
 
@@ -71,18 +71,18 @@ export const collection = defineTool<z.infer<typeof CollectionValidateSchema>>({
 
 			return {
 				type: 'text',
-				data: result,
+				data: result || null,
 			};
 		}
 
 		if (args.action === 'update') {
-			const updatedKeys = await service.updateBatch(toArray(args.data as Collection));
+			const updatedKeys = await service.updateBatch(toArray(args.data));
 
 			const result = await service.readMany(updatedKeys);
 
 			return {
 				type: 'text',
-				data: result,
+				data: result || null,
 			};
 		}
 
