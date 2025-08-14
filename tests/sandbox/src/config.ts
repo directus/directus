@@ -90,7 +90,7 @@ const oracle = {
 	DB_PORT: '$PORT',
 	DB_USER: 'secretsysuser',
 	DB_PASSWORD: 'secretpassword',
-	DB_DATABASE: 'directus',
+	DB_DATABASE: 'XEPDB1',
 	...directusConfig,
 } as const;
 

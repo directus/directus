@@ -51,20 +51,18 @@ export async function sandboxes(
 	await Promise.all(
 		sandboxes.map(async ({ database, options }) => {
 			const opts = getOptions(options);
-
 			const logger = opts.prefix ? createLogger(opts.prefix) : createLogger();
-
 			const env = getEnv(database, opts);
 
-			const project = await dockerUp(database, opts.extras, env, logger);
-			if (project) projects.push({ project, logger });
-
-			await bootstrap(env, logger);
-
 			try {
+				const project = await dockerUp(database, opts.extras, env, logger);
+				if (project) projects.push({ project, logger });
+
+				await bootstrap(env, logger);
+
 				apis.push({ processes: await startDirectus(opts, env, logger), opts, env, logger });
 			} catch (e) {
-				stop();
+				await stop();
 				throw e;
 			}
 		}),
@@ -84,6 +82,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 
 	const logger = opts.prefix ? createLogger(opts.prefix) : createLogger();
 	let apis: ChildProcessWithoutNullStreams[] = [];
+	let project: string | undefined;
 	const env = getEnv(database, opts);
 
 	// Rebuild directus
@@ -94,14 +93,12 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		});
 	}
 
-	const project = await dockerUp(database, opts.extras, env, logger);
-
-	await bootstrap(env, logger);
-
 	try {
+		project = await dockerUp(database, opts.extras, env, logger);
+		await bootstrap(env, logger);
 		apis = await startDirectus(opts, env, logger);
 	} catch (e) {
-		stop();
+		await stop();
 		throw e;
 	}
 
