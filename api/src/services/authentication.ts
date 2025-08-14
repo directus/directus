@@ -191,6 +191,11 @@ export class AuthenticationService {
 			admin_access: globalAccess.admin,
 		};
 
+		// Add require_2fa flag to token payload for OAuth users who need to set up 2FA
+		if (user.require_2fa && !user.tfa_secret) {
+			tokenPayload.require_2fa = true;
+		}
+
 		const refreshToken = nanoid(64);
 		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
 
