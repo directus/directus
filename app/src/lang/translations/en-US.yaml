@@ -1217,6 +1217,7 @@ page_help_files_item: >-
 page_help_settings_project: "**Settings** — Your project's global configuration options."
 page_help_settings_appearance: "**Appearance** — Your project's appearance and theming options."
 page_help_settings_extensions: '**Extensions** — The extensions installed in your project.'
+page_help_settings_ai: "**AI** — Your project's artificial intelligence configuration options."
 page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
   as well as unmanaged database tables that can be added.
@@ -1648,6 +1649,8 @@ new_share: New Share
 mcp_prompts_collection:
   no_collection_selected: No collection selected
   no_collection_selected_copy: Select a collection to enable reusable prompt templates.
+  collection_not_found: Collection Not Found
+  collection_not_found_description: The collection "{collection}" does not exist in the database.
   generate: Generate AI Prompts collection...
   already_exists: AI Prompts collection already exists
   generate_collection_dialog_title: Generate AI prompts collection
@@ -1662,6 +1665,13 @@ mcp_prompts_collection:
   invalid_fields: 'The following fields exist but are of an incompatible type:'
   missing_fields: 'The following fields are required but missing:'
   generate_missing: Generate missing fields...
+mcp_prompts_collection_schema:
+  system_prompt_note: Instructions that shape how the LLM responds.
+  messages_note: 'Optional: Define the conversation structure between users and LLMs. Used to add context and improve outputs.'
+  messages_role_user: User
+  messages_role_assistant: Assistant
+  messages_role_note: Who is speaking in this message.
+  meta_prompts_notice: 'Prompts are reusable templates that you can use with LLMs through the Directus MCP server, Flows, or other AI applications. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">Learn more about creating effective prompts.</a>'
 expired: Expired
 upcoming: Upcoming
 share: Share

@@ -66,6 +66,7 @@ async function generateCollection() {
 				fields: fieldsToCreate.value,
 				schema: {},
 				meta: {
+					icon: 'magic_button',
 					sort_field: 'sort',
 					archive_field: 'status',
 					archive_value: 'archived',
@@ -122,8 +123,8 @@ async function generateCollection() {
 <template>
 	<v-dialog v-model="active">
 		<v-card>
-			<v-card-title v-if="collection">{{ t('mcp_prompts_collection.generate_fields_dialog_title') }}</v-card-title>
-			<v-card-title v-else>{{ t('mcp_prompts_collection.generate_collection_dialog_title') }}</v-card-title>
+			<v-card-title v-if="collection" class="title">{{ t('mcp_prompts_collection.generate_fields_dialog_title') }}</v-card-title>
+			<v-card-title v-else class="title">{{ t('mcp_prompts_collection.generate_collection_dialog_title') }}</v-card-title>
 			<v-card-text>
 				<p v-if="collection">
 					{{ t('mcp_prompts_collection.generate_fields_dialog_description', { collection }) }}
@@ -133,40 +134,47 @@ async function generateCollection() {
 					{{ t('mcp_prompts_collection.generate_collection_dialog_description', { collection: customCollectionName }) }}
 				</p>
 
-				<div v-if="!collection" class="grid">
-					<div class="field full">
-						<div class="type-label">
-							{{ t('name') }}
-							<v-icon v-tooltip="t('required')" class="required" name="star" sup filled />
-						</div>
-						<v-input
-							v-model="customCollectionName"
-							autofocus
-							class="monospace"
-							db-safe
-							:placeholder="t('a_unique_table_name')"
-						/>
-						<div class="hints">
-							<small v-if="collectionAlreadyExists" class="error">
-								{{ t('mcp_prompts_collection.already_exists') }}
-							</small>
-							<small class="type-note">{{ t('collection_names_are_case_sensitive') }}</small>
+				<template v-if="saving">
+					<v-skeleton-loader class="loader"/>
+				</template>
+
+				<template v-else>
+					<div v-if="!collection" class="grid">
+						<div class="field full">
+							<div class="field-label type-label">
+								{{ t('name') }}
+								<v-icon v-tooltip="t('required')" class="required" name="star" sup filled />
+							</div>
+							<v-input
+								v-model="customCollectionName"
+								autofocus
+								class="monospace"
+								:class="{ error: collectionAlreadyExists }"
+								db-safe
+								:placeholder="t('a_unique_table_name')"
+							/>
+							<div class="hints">
+								<small v-if="collectionAlreadyExists" class="error">
+									{{ t('mcp_prompts_collection.already_exists') }}
+								</small>
+								<small class="type-note">{{ t('collection_names_are_case_sensitive') }}</small>
+							</div>
 						</div>
 					</div>
-				</div>
-				<!-- Show fields to be created -->
-				<v-notice v-if="fieldsToCreate?.length > 0" class="generated-data" type="warning" multiline>
-					<template #title>
-						{{ t('new_data_alert') }}
-					</template>
-					<span>
-						<ul>
-							<li v-for="(data, index) in fieldsToCreate" :key="index">
-								<span class="field-name">{{ `${data.collection}.${data.field}` }}</span>
-							</li>
-						</ul>
-					</span>
-				</v-notice>
+					<!-- Show fields to be created -->
+					<v-notice v-if="fieldsToCreate?.length > 0" class="generated-data" type="warning" multiline>
+						<template #title>
+							{{ t('new_data_alert') }}
+						</template>
+						<span>
+							<ul>
+								<li v-for="(data, index) in fieldsToCreate" :key="index">
+									<span class="field-name">{{ `${data.collection}.${data.field}` }}</span>
+								</li>
+							</ul>
+						</span>
+					</v-notice>
+				</template>
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="active = false">{{ t('cancel') }}</v-button>
@@ -198,12 +206,29 @@ async function generateCollection() {
 	gap: 4px;
 }
 
-.type-label {
+.title {
+	font-size: 16px;
+}
+
+.field-label {
 	font-size: 14px;
+}
+
+
+.loader {
+	margin-block-start: 24px;
+	min-block-size: 150px;
+}
+
+.required {
+	color: var(--theme--primary);
 }
 
 .error {
 	color: var(--theme--danger);
+	--v-input-border-color: var(--theme--danger);
+	--v-input-border-color-hover: var(--theme--danger);
+	--v-input-border-color-focus: var(--theme--danger);
 }
 
 .v-input.monospace {
@@ -221,5 +246,12 @@ async function generateCollection() {
 	.field-name {
 		font-family: var(--theme--fonts--monospace--font-family);
 	}
+}
+
+.type-note {
+	position: relative;
+	display: block;
+	max-inline-size: 520px;
+	margin-block-start: 4px;
 }
 </style>

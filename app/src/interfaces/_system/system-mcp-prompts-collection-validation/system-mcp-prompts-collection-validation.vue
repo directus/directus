@@ -14,7 +14,11 @@ defineEmits<{
 
 <template>
 	<div>
-		<SystemMcpPromptsCollectionValidationExisting v-if="promptsCollection" :prompts-collection="promptsCollection" />
+		<SystemMcpPromptsCollectionValidationExisting 
+			v-if="promptsCollection" 
+			:prompts-collection="promptsCollection"
+			@save="$emit('setFieldValue', { field: 'mcp_prompts_collection', value: $event })"
+		/>
 		<SystemMcpPromptsCollectionValidationNew
 			v-else
 			@save="$emit('setFieldValue', { field: 'mcp_prompts_collection', value: $event })"
