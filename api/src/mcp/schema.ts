@@ -1,4 +1,4 @@
-import type { Item, PrimaryKey, Query, Relation } from '@directus/types';
+import type { Item, PrimaryKey, Query } from '@directus/types';
 import { z } from 'zod';
 
 export const ItemValidateSchema = z.custom<Item>();
@@ -88,7 +88,7 @@ export const CollectionItemSchema = z.strictObject({
 });
 
 export const OperationItemSchema = z
-	.object({
+	.strictObject({
 		id: z.string(),
 		name: z.union([z.string(), z.null()]),
 		key: z.string(),
@@ -104,4 +104,10 @@ export const OperationItemSchema = z
 	})
 	.partial();
 
-export const RelationItemSchema = z.custom<Relation>();
+export const RelationItemSchema = z.strictObject({
+	collection: z.string(),
+	field: z.string(),
+	related_collection: z.union([z.string(), z.null()]),
+	schema: z.union([z.record(z.string(), z.any()), z.null()]),
+	meta: z.union([z.record(z.string(), z.any()), z.null()]),
+});
