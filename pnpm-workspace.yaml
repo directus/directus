@@ -8,9 +8,9 @@ packages:
 
 catalog:
   '@authenio/samlify-node-xmllint': 2.0.0
-  '@aws-sdk/client-s3': 3.858.0
-  '@aws-sdk/client-ses': 3.859.0
-  '@aws-sdk/lib-storage': 3.858.0
+  '@aws-sdk/client-s3': 3.864.0
+  '@aws-sdk/client-ses': 3.864.0
+  '@aws-sdk/lib-storage': 3.864.0
   '@azure/storage-blob': 12.28.0
   '@changesets/cli': 2.29.5
   '@changesets/get-github-info': 0.6.0
@@ -33,14 +33,14 @@ catalog:
   '@editorjs/raw': 2.5.1
   '@editorjs/table': 2.4.5
   '@editorjs/underline': 1.2.1
-  '@eslint/js': 9.32.0
+  '@eslint/js': 9.33.0
   '@fortawesome/fontawesome-svg-core': 6.7.2
   '@fortawesome/free-brands-svg-icons': 6.7.2
-  '@fullcalendar/core': 6.1.18
-  '@fullcalendar/daygrid': 6.1.18
-  '@fullcalendar/interaction': 6.1.18
-  '@fullcalendar/list': 6.1.18
-  '@fullcalendar/timegrid': 6.1.18
+  '@fullcalendar/core': 6.1.19
+  '@fullcalendar/daygrid': 6.1.19
+  '@fullcalendar/interaction': 6.1.19
+  '@fullcalendar/list': 6.1.19
+  '@fullcalendar/timegrid': 6.1.19
   '@godaddy/terminus': 4.12.1
   '@google-cloud/storage': 7.16.0
   '@histoire/plugin-vue': 0.17.17
@@ -54,7 +54,7 @@ catalog:
   '@npm/types': 2.1.0
   '@pinia/testing': 1.0.2
   '@pnpm/logger': 1001.0.0
-  '@pnpm/workspace.find-packages': 1000.0.31
+  '@pnpm/workspace.find-packages': 1000.0.32
   '@pnpm/workspace.pkgs-graph': 1000.0.18
   '@popperjs/core': 2.11.8
   '@rollup/plugin-alias': 5.1.1
@@ -68,13 +68,13 @@ catalog:
   '@shopify/semaphore': 3.1.0
   '@sinclair/typebox': 0.34.38
   '@sindresorhus/slugify': 2.2.1
-  '@smithy/node-http-handler': 4.1.0
+  '@smithy/node-http-handler': 4.1.1
   '@supabase/storage-js': 2.10.4
   '@tinymce/tinymce-vue': 6.3.0
   '@turf/meta': 7.2.0
   '@tus/server': 1.10.2
-  '@tus/utils': 0.5.1
-  '@types/async': 3.2.24
+  '@tus/utils': 0.6.0
+  '@types/async': 3.2.25
   '@types/base-64': 1.0.2
   '@types/busboy': 1.5.4
   '@types/bytes': 3.1.5
@@ -127,8 +127,8 @@ catalog:
   '@vueuse/core': 13.6.0
   '@vueuse/integrations': 13.6.0
   '@vueuse/router': 13.6.0
-  apexcharts: 4.5.0
-  argon2: 0.43.1
+  apexcharts: 4.7.0
+  argon2: 0.44.0
   async: 3.2.6
   async-mutex: 0.5.0
   axios: 1.11.0
@@ -139,7 +139,7 @@ catalog:
   bytes: 3.1.2
   camelcase: 8.0.0
   caret-pos: 2.0.0
-  chalk: 5.4.1
+  chalk: 5.5.0
   chokidar: 4.0.3
   chroma-js: 3.1.2
   codemirror: 5.65.18
@@ -166,7 +166,7 @@ catalog:
   esbuild-plugin-replace: 1.4.0
   esbuild-yaml: 3.0.3
   escape-string-regexp: 5.0.0
-  eslint: 9.32.0
+  eslint: 9.33.0
   eslint-config-prettier: 10.1.8
   eslint-plugin-vue: 10.4.0
   eventemitter2: 6.4.9
@@ -179,7 +179,7 @@ catalog:
   flatpickr: 4.6.13
   focus-trap: 7.6.5
   form-data: 4.0.4
-  fs-extra: 11.3.0
+  fs-extra: 11.3.1
   geojson: 0.5.0
   get-port: 7.1.0
   glob-to-regexp: 0.4.1
@@ -192,7 +192,7 @@ catalog:
   histoire: 0.17.17
   html-entities: 2.6.0
   icc: 3.0.0
-  inquirer: 12.9.0
+  inquirer: 12.9.1
   ioredis: 5.7.0
   ip-matching: 2.1.2
   isolated-vm: 5.0.3
@@ -203,7 +203,7 @@ catalog:
   json2csv: 5.0.7
   jsonlint-mod: 1.7.6
   jsonwebtoken: 9.0.2
-  keyv: 5.4.0
+  keyv: 5.5.0
   knex: 3.1.0
   knex-mock-client: 3.0.2
   ky: 1.8.2
@@ -215,7 +215,7 @@ catalog:
   lru-cache: 11.1.0
   mapbox-gl: 1.13.3
   maplibre-gl: 1.15.3
-  marked: 16.1.1
+  marked: 16.1.2
   micromustache: 8.0.3
   mime: 4.0.7
   mime-types: 3.0.1
@@ -242,7 +242,7 @@ catalog:
   papaparse: 5.5.3
   pg: 8.16.3
   pinia: 2.3.1
-  pino: 9.7.0
+  pino: 9.8.0
   pino-http: 10.5.0
   pino-http-print: 3.1.0
   pino-pretty: 13.1.1
@@ -263,15 +263,15 @@ catalog:
   rollup-plugin-styler: 2.0.0
   samlify: 2.10.1
   sanitize-html: 2.17.0
-  sass-embedded: 1.89.2
+  sass-embedded: 1.90.0
   semver: 7.7.2
   sharp: 0.34.3
-  snappy: 7.3.0
+  snappy: 7.3.1
   sqlite3: 5.1.7
   stream-json: 1.9.1
   string-width: 7.2.0
   strip-ansi: 7.1.0
-  stylelint: 16.23.0
+  stylelint: 16.23.1
   stylelint-config-standard: 39.0.0
   stylelint-config-standard-scss: 15.0.1
   stylelint-config-standard-vue: 1.0.0
@@ -280,13 +280,13 @@ catalog:
   swagger-ui-watcher: 2.1.14
   tar: 7.4.3
   tedious: 18.6.1
-  tinymce: 6.8.5
-  tmp: 0.2.4
+  tinymce: 6.8.6
+  tmp: 0.2.5
   tsup: 8.5.0
   tsx: 4.20.3
   tus-js-client: 4.3.1
-  typescript: 5.8.3
-  typescript-eslint: 8.38.0
+  typescript: 5.9.2
+  typescript-eslint: 8.39.0
   undici: 7.13.0
   update-check: 1.5.4
   uuid: 11.1.0
@@ -302,7 +302,7 @@ catalog:
   vuedraggable: 4.1.0
   wellknown: 0.5.0
   ws: 8.18.3
-  zod: 4.0.14
+  zod: 4.0.17
   zod-validation-error: 4.0.1
 
 catalogMode: strict
