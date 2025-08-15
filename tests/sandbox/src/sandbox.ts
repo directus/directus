@@ -163,6 +163,11 @@ async function buildDirectus(opts: Options, logger: Logger, onRebuild: () => voi
 		},
 	);
 
+	build.on('error', (err) => {
+		build.kill();
+		throw err;
+	});
+
 	logger.info(`BUILD ${build.pid}`);
 
 	logger.pipe(build.stderr, 'error');
@@ -222,6 +227,11 @@ async function dockerUp(database: Database, extras: Options['extras'], env: Env,
 		},
 	);
 
+	docker.on('error', (err) => {
+		docker.kill();
+		throw err;
+	});
+
 	logger.info(`DOCKER ${docker.pid}`);
 
 	logger.pipe(docker.stdout, 'debug');
@@ -246,6 +256,11 @@ async function dockerDown(project: string, logger: Logger) {
 		env: { PATH: process.env['PATH'], COMPOSE_STATUS_STDOUT: '1' },
 	});
 
+	docker.on('error', (err) => {
+		docker.kill();
+		throw err;
+	});
+
 	logger.info(`DOCKER DOWN ${docker.pid}`);
 
 	logger.pipe(docker.stdout, 'debug');
@@ -261,6 +276,11 @@ async function bootstrap(env: Env, logger: Logger) {
 
 	const bootstrap = spawn('node', [join(apiFolder, 'dist', 'cli', 'run.js'), 'bootstrap'], {
 		env,
+	});
+
+	bootstrap.on('error', (err) => {
+		bootstrap.kill();
+		throw err;
 	});
 
 	logger.info(`BOOTSTRAP ${bootstrap.pid}`);
@@ -288,13 +308,17 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 	let api;
 
 	if (opts.dev) {
+		// tsx must me inside the package.json of the package using this!
 		api = spawn(
 			'tsx',
 			opts.watch
 				? ['watch', '--clear-screen=false', '--inspect', join(apiFolder, 'src', 'start.ts')]
 				: ['--inspect', join(apiFolder, 'src', 'start.ts')],
 			{
-				env,
+				env: {
+					...env,
+					PATH: process.env['PATH'],
+				},
 			},
 		);
 	} else {
@@ -302,6 +326,12 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 			env,
 		});
 	}
+
+	api.on('error', (err) => {
+		api.kill();
+		console.error(err);
+		throw err;
+	});
 
 	logger.info(`API ${api.pid}`);
 

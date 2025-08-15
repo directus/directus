@@ -7,6 +7,8 @@ import { startCase } from 'lodash-es';
 
 export type Collections<Schema> = { [P in keyof Schema]: P };
 
+const groups: string[] = [];
+
 export async function useSnapshot<Schema>(
 	api: DirectusClient<any> & RestClient<any>,
 	file: string,
@@ -39,7 +41,10 @@ export async function useSnapshot<Schema>(
 		return collection;
 	});
 
-	schemaSnapshot.collections.push(getGroup(prefix));
+	if (!groups.includes(prefix)) {
+		schemaSnapshot.collections.push(getGroup(prefix));
+		groups.push(prefix);
+	}
 
 	const diff = await api.request(schemaDiff(schemaSnapshot, true));
 
@@ -48,6 +53,8 @@ export async function useSnapshot<Schema>(
 		diff.diff['fields'] = diff.diff['fields'].filter((collection) => collection?.diff[0]?.['kind'] === 'N');
 		diff.diff['relations'] = diff.diff['relations'].filter((collection) => collection?.diff[0]?.['kind'] === 'N');
 	}
+
+	if (file.includes('schema')) console.dir(diff, { depth: 10 });
 
 	if (diff) await api.request(schemaApply(diff));
 

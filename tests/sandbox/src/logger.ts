@@ -46,7 +46,7 @@ export function log(message: string, type: LogLevel = 'info', ...groups: string[
 	if (logLevel(process.env['LOG_LEVEL'] ?? 'info') < logLevel(type)) return;
 
 	process.stdout.write(
-		groups.map((group) => (group ? chalk.blueBright(`[${group}] `) : '')).join('') +
+		groups.map((group) => chalk.blueBright(`[${group}] `)).join('') +
 			chalk[logLevelColor[type]](`[${type}] `) +
 			message +
 			(message.endsWith('\n') ? '' : '\n'),

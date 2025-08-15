@@ -1,0 +1,81 @@
+{
+	"version": 1,
+	"directus": "11.10.2",
+	"vendor": "postgres",
+	"collections": [
+		{
+			"collection": "b_1234",
+			"meta": {
+				"accountability": "all",
+				"archive_app_filter": true,
+				"archive_field": null,
+				"archive_value": null,
+				"collapse": "open",
+				"collection": "b_1234",
+				"color": null,
+				"display_template": null,
+				"group": null,
+				"hidden": false,
+				"icon": null,
+				"item_duplication_fields": null,
+				"note": null,
+				"preview_url": null,
+				"singleton": false,
+				"sort": null,
+				"sort_field": null,
+				"translations": null,
+				"unarchive_value": null,
+				"versioning": false
+			},
+			"schema": {
+				"name": "b_1234"
+			}
+		}
+	],
+	"fields": [
+		{
+			"collection": "b_1234",
+			"field": "id",
+			"type": "integer",
+			"meta": {
+				"collection": "b_1234",
+				"conditions": null,
+				"display": null,
+				"display_options": null,
+				"field": "id",
+				"group": null,
+				"hidden": true,
+				"interface": "input",
+				"note": null,
+				"options": null,
+				"readonly": true,
+				"required": false,
+				"sort": 1,
+				"special": null,
+				"translations": null,
+				"validation": null,
+				"validation_message": null,
+				"width": "full"
+			},
+			"schema": {
+				"name": "id",
+				"table": "b_1234",
+				"data_type": "integer",
+				"default_value": "nextval('\"b_1234_id_seq\"'::regclass)",
+				"max_length": null,
+				"numeric_precision": 32,
+				"numeric_scale": 0,
+				"is_nullable": false,
+				"is_unique": true,
+				"is_indexed": false,
+				"is_primary_key": true,
+				"is_generated": false,
+				"generation_expression": null,
+				"has_auto_increment": true,
+				"foreign_key_table": null,
+				"foreign_key_column": null
+			}
+		}
+	],
+	"relations": []
+}

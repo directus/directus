@@ -14,18 +14,19 @@
 	"license": "ISC",
 	"packageManager": "pnpm@10.14.0",
 	"devDependencies": {
-		"vitest": "catalog:",
-		"@directus/sdk": "20.0.0",
 		"@directus/sandbox": "workspace:*",
+		"@directus/sdk": "20.0.0",
+		"@directus/tsconfig": "3.0.0",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "catalog:",
-		"@directus/tsconfig": "3.0.0",
+		"@types/lodash-es": "catalog:",
 		"@types/node": "22.13.8",
 		"chalk": "5.4.1",
 		"commander": "14.0.0",
+		"lodash-es": "catalog:",
+		"tsx": "catalog:",
 		"typescript": "5.8.2",
-		"@types/lodash-es": "catalog:",
-		"lodash-es": "catalog:"
+		"vitest": "catalog:"
 	},
 	"engines": {
 		"node": ">=12.20.0"

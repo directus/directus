@@ -6,6 +6,7 @@
 	"scripts": {
 		"cli": "tsx src/cli.ts",
 		"build": "tsc",
+		"dev": "tsc -w",
 		"build:tests": "tsup src/index.ts  --format=esm"
 	},
 	"exports": {
