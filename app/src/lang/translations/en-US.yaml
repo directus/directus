@@ -626,8 +626,10 @@ created_on: Created On
 creating_collection_info: Name the collection and setup its unique “key” field...
 creating_collection_system: Enable and rename any of these optional fields.
 creating_collection_field_names_saved: Using your saved field names from previous collections.
-creating_collection_field_names_will_save: Your custom field names will be saved automatically when you create this collection.
-creating_collection_duplicate_fields: 'Duplicate field names detected: {names}. Please ensure all enabled fields have unique names.'
+creating_collection_field_names_will_save:
+  Your custom field names will be saved automatically when you create this collection.
+creating_collection_duplicate_fields:
+  'Duplicate field names detected: {names}. Please ensure all enabled fields have unique names.'
 creating_collection_field_names_reset: 'Field names reset to default values.'
 auto_increment_integer: Auto-incremented integer
 auto_increment_big_integer: Auto-incremented big integer
