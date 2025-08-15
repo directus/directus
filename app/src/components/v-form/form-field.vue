@@ -3,7 +3,6 @@ import { useClipboard } from '@/composables/use-clipboard';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import { ValidationError } from '@directus/types';
 import { parseJSON } from '@directus/utils';
-import { useUserStore } from '@/stores/user';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -44,10 +43,6 @@ const props = withDefaults(
 const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelValue', 'setFieldValue']);
 
 const { t } = useI18n();
-
-const userStore = useUserStore();
-
-const isRTL = computed(() => userStore.textDirection === 'rtl');
 
 const isDisabled = computed(() => {
 	if (props.disabled) return true;
@@ -172,7 +167,7 @@ function useComputedValues() {
 		class="field"
 		:class="[field.meta?.width || 'full', { invalid: validationError }]"
 	>
-		<v-menu v-if="!isLabelHidden" :placement="isRTL ? 'bottom-end' : 'bottom-start'" show-arrow arrow-placement="start">
+		<v-menu v-if="!isLabelHidden" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
 				<form-field-label
 					:field="field"
