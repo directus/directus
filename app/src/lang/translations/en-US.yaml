@@ -625,6 +625,10 @@ created_by: Created By
 created_on: Created On
 creating_collection_info: Name the collection and setup its unique “key” field...
 creating_collection_system: Enable and rename any of these optional fields.
+creating_collection_field_names_saved: Using your saved field names from previous collections.
+creating_collection_field_names_will_save: Your custom field names will be saved automatically when you create this collection.
+creating_collection_duplicate_fields: 'Duplicate field names detected: {names}. Please ensure all enabled fields have unique names.'
+creating_collection_field_names_reset: 'Field names reset to default values.'
 auto_increment_integer: Auto-incremented integer
 auto_increment_big_integer: Auto-incremented big integer
 generated_uuid: Generated UUID
@@ -723,12 +727,14 @@ charset: Charset
 second: second
 file_moved: File Moved
 collection_created: Collection Created
+collection_already_exists: Collection already exists
 modified_on: Modified On
 card_size: Card Size
 sort_field: Sort Field
 add_sort_field: Add Sort Field
 sort: Sort
 status: Status
+slug: Slug
 remove: Remove
 toggle_manual_sorting: Toggle Manual Sorting
 bookmark_doesnt_exist: Bookmark Doesn't Exist
