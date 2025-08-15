@@ -127,7 +127,7 @@ export const FileItemValidateSchema = z.custom<Partial<File>>();
 
 // opertations
 export const OperationItemInputSchema = z
-	.strictObject({
+	.object({
 		id: z.string(),
 		name: z.union([z.string(), z.null()]),
 		key: z.string(),

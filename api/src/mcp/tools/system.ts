@@ -2,14 +2,21 @@ import { z } from 'zod';
 import { defineTool } from '../define.js';
 import prompts from './prompts/index.js';
 
-export const system = defineTool({
+const SystemPromptInputSchema = z.object({});
+
+const SystemPromptValidateSchema = z.object({
+	promptOverride: z.union([z.string(), z.null()]).optional(),
+});
+
+export const system = defineTool<z.infer<typeof SystemPromptValidateSchema>>({
 	name: 'system-prompt',
 	description: prompts.systemPromptDescription,
-	inputSchema: z.object({}),
-	async handler() {
+	inputSchema: SystemPromptInputSchema,
+	validateSchema: SystemPromptValidateSchema,
+	async handler({ args }) {
 		return {
 			type: 'text',
-			data: prompts.systemPrompt,
+			data: args.promptOverride || prompts.systemPrompt,
 		};
 	},
 });

@@ -48,4 +48,5 @@ export interface Prompt {
 export interface MCPOptions {
 	prompts_collection: string;
 	allow_deletes?: boolean;
+	system_prompt?: string | null;
 }

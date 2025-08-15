@@ -11,8 +11,8 @@ const mcpHandler = asyncHandler(async (req, res) => {
 		schema: req.schema,
 	});
 
-	const { mcp_enabled, mcp_allow_deletes, mcp_prompts_collection } = await settings.readSingleton({
-		fields: ['mcp_enabled', 'mcp_allow_deletes', 'mcp_prompts_collection'],
+	const { mcp_enabled, mcp_allow_deletes, mcp_prompts_collection, mcp_system_prompt } = await settings.readSingleton({
+		fields: ['mcp_enabled', 'mcp_allow_deletes', 'mcp_prompts_collection', 'mcp_system_prompt'],
 	});
 
 	if (!mcp_enabled) {
@@ -22,6 +22,7 @@ const mcpHandler = asyncHandler(async (req, res) => {
 	const mcp = new DirectusMCP({
 		prompts_collection: mcp_prompts_collection,
 		allow_deletes: mcp_allow_deletes,
+		system_prompt: mcp_system_prompt,
 	});
 
 	mcp.handleRequest(req, res);

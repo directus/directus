@@ -27,11 +27,13 @@ import type { MCPOptions, Prompt, ToolResult } from './types.js';
 
 export class DirectusMCP {
 	prompts_collection?: string;
+	system_prompt?: string | null;
 	server: Server;
 	allow_deletes: boolean;
 
 	constructor(options: MCPOptions) {
 		this.prompts_collection = options.prompts_collection;
+		this.system_prompt = options.system_prompt ?? null;
 		this.allow_deletes = typeof options.allow_deletes === 'boolean' ? options.allow_deletes : false;
 
 		this.server = new Server(
@@ -199,11 +201,15 @@ export class DirectusMCP {
 
 			try {
 				if (!tool) {
-					throw new InvalidPayloadError({ reason: `"${tool}" doesn't exist in the toolset` });
+					throw new InvalidPayloadError({ reason: `"${request.params.name}" doesn't exist in the toolset` });
 				}
 
 				if (req.accountability?.admin !== true && tool.admin === true) {
 					throw new ForbiddenError();
+				}
+
+				if (tool.name === 'system-prompt') {
+					request.params.arguments = { promptOverride: this.system_prompt };
 				}
 
 				const { error, data } = tool.validateSchema?.safeParse(request.params.arguments) ?? {

@@ -731,7 +731,7 @@ fields:
     note: $t:fields.directus_settings.mcp_allow_deletes_note
     width: half
     options:
-      label: $t:enabled
+      label: $t:mcp_allow_deletes
     conditions:
       - name: mcp_enabled
         rule:
@@ -745,6 +745,7 @@ fields:
     width: half
     note: $t:fields.directus_settings.mcp_prompts_collection_note
     options:
+      label: $t:fields.directus_settings.mcp_prompts_collection
       includeSingleton: false
       allowNone: true
     conditions:
@@ -767,3 +768,17 @@ fields:
           mcp_enabled:
             _neq: true
         hidden: true
+
+  - field: mcp_system_prompt
+    interface: input-multiline
+    group: ai_group
+    width: full
+    note: $t:fields.directus_settings.mcp_system_prompt
+    options:
+      label: $t:fields.directus_settings.mcp_system_prompt_note
+    conditions:
+      - name: mcp_enabled
+        rule:
+          mcp_enabled:
+            _neq: true
+        readonly: true

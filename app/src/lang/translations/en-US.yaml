@@ -1461,6 +1461,8 @@ fields:
       loss'
     mcp_prompts_collection: MCP Prompts Collection
     mcp_prompts_collection_note: Collection to store reusable prompt templates.
+    mcp_system_prompt: MCP System Prompt
+    mcp_system_prompt_note: Instructions that shape how the AI responds.
 
   directus_shares:
     name: Name
