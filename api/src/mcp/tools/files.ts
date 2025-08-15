@@ -13,6 +13,11 @@ import {
 } from '../schema.js';
 import prompts from './prompts/index.js';
 
+const FileImportSchema = z.object({
+	url: z.string(),
+	file: FileItemValidateSchema,
+});
+
 export const FilesValidateSchema = z.union([
 	z.strictObject({
 		action: z.literal('create'),
@@ -34,13 +39,17 @@ export const FilesValidateSchema = z.union([
 		action: z.literal('delete'),
 		keys: z.array(PrimaryKeyValidateSchema),
 	}),
+	z.strictObject({
+		action: z.literal('import'),
+		data: z.array(FileImportSchema),
+	}),
 ]);
 
 const FilesInputSchema = z.object({
-	action: z.enum(['create', 'read', 'update', 'delete']).describe('The operation to perform'),
+	action: z.enum(['create', 'read', 'update', 'delete', 'import']).describe('The operation to perform'),
 	query: QueryInputSchema.optional(),
 	keys: z.array(PrimaryKeyInputSchema).optional(),
-	data: z.union([z.array(FileItemInputSchema), FileItemInputSchema]).optional(),
+	data: z.union([z.array(FileItemInputSchema), FileItemInputSchema, FileImportSchema]).optional(),
 });
 
 export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
@@ -107,6 +116,21 @@ export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
 			return {
 				type: 'text',
 				data: deletedKeys,
+			};
+		}
+
+		if (args.action === 'import') {
+			const savedKeys = [];
+
+			for (const file of args.data) {
+				const savedKey = await service.importOne(file.url, file.file);
+
+				savedKeys.push(savedKey);
+			}
+
+			return {
+				type: 'text',
+				data: savedKeys,
 			};
 		}
 

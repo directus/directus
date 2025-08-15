@@ -8,6 +8,7 @@ Perform CRUD operations on files.
 - **`read`**: List/query metadata or get specific items by ID
 - **`update`**: Modify existing metadata (title, description, tags, folder)
 - **`delete`**: Remove files by keys
+- **`import`**: Import a file from a URL and create or update its file data
 
 ## 📋 Common Operations
 
@@ -32,6 +33,25 @@ Perform CRUD operations on files.
 	"type": "file",
 	"action": "read",
 	"keys": ["file-uuid-here"]
+}
+```
+
+### Upload a File via URL
+
+```json
+{
+	"action": "import",
+	"data": [
+		{
+			"url": "file-url",
+			"file": {
+				"title": "New Title",
+				"description": "Updated description",
+				"tags": ["tag1", "tag2", "category"],
+				"folder": "folder-uuid"
+			}
+		}
+	]
 }
 ```
 
