@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { beforeEach, expect, test, vi } from 'vitest';
 import TransitionBounce from './transition/bounce.vue';
 import VMenu from './v-menu.vue';
+import { createTestingPinia } from '@pinia/testing';
 
 vi.mock('lodash', async () => {
 	const mod = await vi.importActual<{ default: typeof import('lodash') }>('lodash');
@@ -31,6 +32,11 @@ const mountOptions = {
 		components: {
 			TransitionBounce,
 		},
+		plugins: [
+			createTestingPinia({
+				createSpy: vi.fn,
+			}),
+		],
 	},
 	slots: {
 		default: Content,

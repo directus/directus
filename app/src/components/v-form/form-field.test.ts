@@ -3,7 +3,8 @@ import FormField from '@/components/v-form/form-field.vue';
 import { i18n } from '@/lang';
 import { Width } from '@directus/system-data';
 import { mount } from '@vue/test-utils';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+import { createTestingPinia } from '@pinia/testing';
 
 const baseField = {
 	field: 'test',
@@ -25,7 +26,12 @@ const baseField = {
 
 const global = {
 	components: { VMenu },
-	plugins: [i18n],
+	plugins: [
+		i18n,
+		createTestingPinia({
+			createSpy: vi.fn,
+		}),
+	],
 };
 
 describe('FormField', () => {
