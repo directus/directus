@@ -734,6 +734,7 @@ function onApply() {
 
 .error {
 	color: var(--theme--danger);
+
 	--v-input-border-color: var(--theme--danger);
 	--v-input-border-color-hover: var(--theme--danger);
 	--v-input-border-color-focus: var(--theme--danger);
