@@ -286,11 +286,19 @@ function usePopper(
 		stop();
 	});
 
+	function checkPlacement() {
+		if (isRTL.value && options.value.placement.includes('start')) {
+			return options.value.placement.replace(/start/g, 'end');
+		}
+
+		return options.value.placement;
+	}
+
 	watch(
 		options,
 		() => {
 			popperInstance.value?.setOptions({
-				placement: options.value.attached ? 'bottom-start' : options.value.placement,
+				placement: options.value.attached ? 'bottom-start' : (checkPlacement() as Placement),
 				modifiers: getModifiers(),
 			});
 		},
@@ -306,7 +314,7 @@ function usePopper(
 	function start() {
 		return new Promise((resolve) => {
 			popperInstance.value = createPopper(reference.value!, popper.value!, {
-				placement: options.value.attached ? 'bottom-start' : options.value.placement,
+				placement: options.value.attached ? 'bottom-start' : (checkPlacement() as Placement),
 				modifiers: getModifiers(resolve),
 				strategy: 'fixed',
 			});
