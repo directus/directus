@@ -1,0 +1,58 @@
+export const defaultSystemFields = {
+	title: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'title',
+		label: 'title',
+		icon: 'title',
+	},
+	slug: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'slug',
+		label: 'slug',
+		icon: 'link',
+	},
+	status: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'status',
+		label: 'status',
+		icon: 'flag',
+	},
+	sort: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'sort',
+		label: 'sort',
+		icon: 'low_priority',
+	},
+	dateCreated: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'date_created',
+		label: 'created_on',
+		icon: 'access_time',
+	},
+	userCreated: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'user_created',
+		label: 'created_by',
+		icon: 'account_circle',
+	},
+	dateUpdated: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'date_updated',
+		label: 'updated_on',
+		icon: 'access_time',
+	},
+	userUpdated: {
+		enabled: false,
+		inputDisabled: false,
+		name: 'user_updated',
+		label: 'updated_by',
+		icon: 'account_circle',
+	},
+};
