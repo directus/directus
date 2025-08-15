@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useDialogRoute } from '@/composables/use-dialog-route';
+import { useLocalStorage } from '@/composables/use-local-storage';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
@@ -8,54 +9,10 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { DeepPartial, Field, Relation } from '@directus/types';
 import { cloneDeep } from 'lodash';
-import { reactive, ref, watch } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-
-const defaultSystemFields = {
-	status: {
-		enabled: false,
-		inputDisabled: false,
-		name: 'status',
-		label: 'status',
-		icon: 'flag',
-	},
-	sort: {
-		enabled: false,
-		inputDisabled: false,
-		name: 'sort',
-		label: 'sort',
-		icon: 'low_priority',
-	},
-	dateCreated: {
-		enabled: false,
-		inputDisabled: false,
-		name: 'date_created',
-		label: 'created_on',
-		icon: 'access_time',
-	},
-	userCreated: {
-		enabled: false,
-		inputDisabled: false,
-		name: 'user_created',
-		label: 'created_by',
-		icon: 'account_circle',
-	},
-	dateUpdated: {
-		enabled: false,
-		inputDisabled: false,
-		name: 'date_updated',
-		label: 'updated_on',
-		icon: 'access_time',
-	},
-	userUpdated: {
-		enabled: false,
-		inputDisabled: false,
-		name: 'user_updated',
-		label: 'updated_by',
-		icon: 'account_circle',
-	},
-};
+import { defaultSystemFields } from './utils/default-system-fields';
 
 const { t } = useI18n();
 
@@ -70,6 +27,12 @@ const isOpen = useDialogRoute();
 const currentTab = ref(['collection_setup']);
 
 const collectionName = ref<string | null>(null);
+
+const collectionAlreadyExists = computed(() => {
+	if (!collectionName.value) return false;
+	return collectionsStore.getCollection(collectionName.value) !== null;
+});
+
 const singleton = ref(false);
 const primaryKeyFieldName = ref('id');
 const primaryKeyFieldType = ref<'auto_int' | 'auto_big_int' | 'uuid' | 'manual'>('auto_int');
@@ -91,8 +54,121 @@ function setOptionsForSingleton() {
 	systemFields.sort.inputDisabled = singleton.value;
 }
 
+const { data: savedFieldNames } = useLocalStorage<Record<string, string>>('collection-field-names', {});
+
+const loadedSavedNames = ref(false);
+
+const duplicateFieldNames = computed(() => {
+	const enabledFields = Object.entries(systemFields)
+		.filter(([, field]) => field.enabled)
+		.map(([, field]) => field.name);
+
+	const duplicates = enabledFields.filter((name, index) => enabledFields.indexOf(name) !== index);
+
+	return [...new Set(duplicates)];
+});
+
+const hasValidationErrors = computed(() => {
+	return duplicateFieldNames.value.length > 0;
+});
+
+const hasCustomNames = computed(() => {
+	return Object.entries(systemFields).some(([key, field]) => {
+		return field.name !== defaultSystemFields[key as keyof typeof defaultSystemFields].name;
+	});
+});
+
+const hasSavedNames = computed(() => {
+	return savedFieldNames.value && Object.keys(savedFieldNames.value).length > 0;
+});
+
+// Auto-load saved names on mount and reset flag when leaving
+watch(
+	() => currentTab.value[0],
+	(tab, oldTab) => {
+		if (tab === 'optional_system_fields' && hasSavedNames.value && !loadedSavedNames.value) {
+			// Only load if we actually have saved names
+			if (Object.keys(savedFieldNames.value || {}).length > 0) {
+				loadSavedNamesQuietly();
+			}
+		} else if (oldTab === 'optional_system_fields' && tab !== 'optional_system_fields') {
+			// Reset the flag when leaving the tab
+			loadedSavedNames.value = false;
+		}
+	},
+);
+
+const allFieldsSelected = computed(() => {
+	return Object.values(systemFields).every((field) => field.enabled || field.inputDisabled);
+});
+
+const someFieldsSelected = computed(() => {
+	return Object.values(systemFields).some((field) => field.enabled);
+});
+
+function toggleAllFields() {
+	const shouldEnable = !allFieldsSelected.value;
+
+	Object.values(systemFields).forEach((field) => {
+		if (!field.inputDisabled) {
+			field.enabled = shouldEnable;
+		}
+	});
+}
+
+function saveCustomNamesQuietly() {
+	const customNames: Record<string, string> = {};
+
+	Object.entries(systemFields).forEach(([key, field]) => {
+		if (field.name !== defaultSystemFields[key as keyof typeof defaultSystemFields].name) {
+			customNames[key] = field.name;
+		}
+	});
+
+	savedFieldNames.value = customNames;
+}
+
+function loadSavedNamesQuietly() {
+	if (!savedFieldNames.value || Object.keys(savedFieldNames.value).length === 0) {
+		return;
+	}
+
+	let loadedAny = false;
+
+	Object.entries(savedFieldNames.value).forEach(([key, name]) => {
+		if (systemFields[key as keyof typeof systemFields]) {
+			systemFields[key as keyof typeof systemFields].name = name;
+			loadedAny = true;
+		}
+	});
+
+	// Only set the flag if we actually loaded some names
+	if (loadedAny) {
+		loadedSavedNames.value = true;
+	}
+}
+
+function resetToDefaults() {
+	Object.entries(defaultSystemFields).forEach(([key, defaultField]) => {
+		if (systemFields[key as keyof typeof systemFields]) {
+			systemFields[key as keyof typeof systemFields].name = defaultField.name;
+		}
+	});
+
+	loadedSavedNames.value = false;
+
+	notify({
+		title: t('creating_collection_field_names_reset'),
+	});
+}
+
 async function save() {
 	saving.value = true;
+
+	// Auto-save custom field names if any
+	if (hasCustomNames.value) {
+		saveCustomNamesQuietly();
+	}
 
 	try {
 		await api.post(`/collections`, {
@@ -184,6 +260,35 @@ function getPrimaryKeyField() {
 
 function getSystemFields() {
 	const fields: DeepPartial<Field>[] = [];
+
+	// Title
+	if (systemFields.title.enabled === true) {
+		fields.push({
+			field: systemFields.title.name,
+			type: 'string',
+			meta: {
+				interface: 'input',
+				width: 'full',
+			},
+			schema: {},
+		});
+	}
+
+	// Slug
+	if (systemFields.slug.enabled === true) {
+		fields.push({
+			field: systemFields.slug.name,
+			type: 'string',
+			meta: {
+				interface: 'input',
+				width: 'full',
+				options: {
+					slug: true,
+				},
+			},
+			schema: {},
+		});
+	}
 
 	// Status
 	if (systemFields.status.enabled === true) {
@@ -415,10 +520,16 @@ function onApply() {
 							v-model="collectionName"
 							autofocus
 							class="monospace"
+							:class="{ error: collectionAlreadyExists }"
 							db-safe
 							:placeholder="t('a_unique_table_name')"
 						/>
-						<small class="type-note">{{ t('collection_names_are_case_sensitive') }}</small>
+						<div class="hints">
+							<small v-if="collectionAlreadyExists" class="error">
+								{{ t('collection_already_exists') }}
+							</small>
+							<small class="type-note">{{ t('collection_names_are_case_sensitive') }}</small>
+						</div>
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ t('singleton') }}</div>
@@ -456,7 +567,20 @@ function onApply() {
 				</div>
 			</v-tab-item>
 			<v-tab-item value="optional_system_fields">
-				<v-notice>{{ t('creating_collection_system') }}</v-notice>
+				<v-notice class="custom-names-notice">
+					<div class="notice-content">
+						<div>{{ t('creating_collection_system') }}</div>
+						<div>
+							<v-checkbox
+								:model-value="allFieldsSelected"
+								:indeterminate="someFieldsSelected && !allFieldsSelected"
+								@update:model-value="toggleAllFields"
+							>
+								{{ t('select_all') }}
+							</v-checkbox>
+						</div>
+					</div>
+				</v-notice>
 
 				<div class="grid system">
 					<div
@@ -470,7 +594,7 @@ function onApply() {
 							v-model="info.name"
 							db-safe
 							class="monospace"
-							:class="{ active: info.enabled }"
+							:class="{ active: info.enabled, error: info.enabled && duplicateFieldNames.includes(info.name) }"
 							:disabled="info.inputDisabled"
 							@focus="info.enabled = true"
 						>
@@ -483,6 +607,29 @@ function onApply() {
 							</template>
 						</v-input>
 					</div>
+
+					<v-notice
+						v-if="duplicateFieldNames.length > 0 || loadedSavedNames || hasCustomNames"
+						:type="duplicateFieldNames.length > 0 ? 'danger' : 'info'"
+						class="custom-names-notice full"
+					>
+						<div class="notice-content">
+							<div>
+								<template v-if="duplicateFieldNames.length > 0">
+									{{ t('creating_collection_duplicate_fields', { names: duplicateFieldNames.join(', ') }) }}
+								</template>
+								<template v-else-if="loadedSavedNames">
+									{{ t('creating_collection_field_names_saved') }}
+								</template>
+								<template v-else-if="hasCustomNames">
+									{{ t('creating_collection_field_names_will_save') }}
+								</template>
+							</div>
+							<v-button v-if="hasCustomNames" small secondary @click="resetToDefaults">
+								{{ t('reset') }}
+							</v-button>
+						</div>
+					</v-notice>
 				</div>
 			</v-tab-item>
 		</v-tabs-items>
@@ -491,7 +638,7 @@ function onApply() {
 			<v-button
 				v-if="currentTab[0] === 'collection_setup'"
 				v-tooltip.bottom="t('next')"
-				:disabled="!collectionName || collectionName.length === 0"
+				:disabled="!collectionName || collectionName.length === 0 || collectionAlreadyExists"
 				icon
 				rounded
 				@click="currentTab = ['optional_system_fields']"
@@ -502,6 +649,7 @@ function onApply() {
 				v-if="currentTab[0] === 'optional_system_fields'"
 				v-tooltip.bottom="t('finish_setup')"
 				:loading="saving"
+				:disabled="saving || hasValidationErrors"
 				icon
 				rounded
 				@click="save"
@@ -552,6 +700,21 @@ function onApply() {
 	padding-block: 0 var(--content-padding);
 }
 
+.notice-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.notice-content {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	width: 100%;
+}
+
 .v-notice {
 	margin-block-end: 36px;
 }
@@ -560,6 +723,19 @@ function onApply() {
 	position: relative;
 	display: block;
 	max-inline-size: 520px;
+}
+
+.hints {
 	margin-block-start: 4px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.error {
+	color: var(--theme--danger);
+	--v-input-border-color: var(--theme--danger);
+	--v-input-border-color-hover: var(--theme--danger);
+	--v-input-border-color-focus: var(--theme--danger);
 }
 </style>
