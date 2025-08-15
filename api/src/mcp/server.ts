@@ -262,7 +262,7 @@ export class DirectusMCP {
 
 				if (
 					'action' in args &&
-					['create', 'update'].includes(args['action'] as string) &&
+					['create', 'update', 'read', 'import'].includes(args['action'] as string) &&
 					result?.data &&
 					data.length === 1
 				) {
