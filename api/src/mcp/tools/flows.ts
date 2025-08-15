@@ -1,3 +1,4 @@
+import { isObject } from '@directus/utils';
 import { z } from 'zod';
 import { FlowsService } from '../../services/flows.js';
 import { defineTool } from '../define.js';
@@ -40,6 +41,13 @@ export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
 	validateSchema: FlowsValidateSchema,
 	annotations: {
 		title: 'Perform CRUD operations on Directus Flows',
+	},
+	endpoint({ data }) {
+		if (!isObject(data) || !('id' in data)) {
+			return;
+		}
+
+		return ['settings', 'flows', data['id'] as string];
 	},
 	async handler({ args, schema, accountability, sanitizedQuery }) {
 		const flowsService = new FlowsService({
