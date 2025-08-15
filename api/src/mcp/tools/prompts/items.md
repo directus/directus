@@ -50,9 +50,11 @@ Core: `_eq`, `_neq`, `_in`, `_nin`, `_null`, `_nnull`, `_lt`, `_lte`, `_gt`, `_g
 
 ## Create/Update/Delete Best Practices
 
+- ALWAYS show the item URL if it is present in the result for create or update
+
 ### Creating Items
 
-ALWAYS make sure you fully understand the collection's schema before trying to create items.
+- ALWAYS make sure you fully understand the collection's schema before trying to create items.
 
 **✅ GOOD - Single with Relations:**
 

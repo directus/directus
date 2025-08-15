@@ -14,6 +14,8 @@ When creating a new collection, include both collection settings and initial fie
 **⭐ Primary Key Best Practice: Always use UUID primary keys for better scalability, security, and distributed system
 compatibility.**
 
+- ALWAYS show the collection URL if it is present in the result
+
 ```json
 {
 	"action": "create",

@@ -27,6 +27,8 @@ All flows share these core fields for creation:
 
 ## Actions
 
+- ALWAYS show the flow URL if it is present in the result
+
 ### `read` - List/Query Flows
 
 ```json

@@ -12,6 +12,8 @@ Perform CRUD operations on files.
 
 ## 📋 Common Operations
 
+- ALWAYS show the file URL if it is present in the result
+
 ### Reading File Metadata
 
 ```json
