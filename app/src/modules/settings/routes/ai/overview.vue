@@ -5,11 +5,11 @@ import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useCollection } from '@directus/composables';
 import { clone } from 'lodash';
-import { computed, ref } from 'vue';
+import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
-import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
+import AiInfoSidebarDetail from './components/ai-info-sidebar-detail.vue';
 
 const { t } = useI18n();
 
@@ -20,17 +20,9 @@ const serverStore = useServerStore();
 
 const { fields: allFields } = useCollection('directus_settings');
 
-const EXCLUDED_GROUPS: string[] = ['theming_group', 'ai_group'] as const;
-
-const fields = computed(() => {
-	return allFields.value.filter((field) => {
-		if (field.meta?.group) {
-			return EXCLUDED_GROUPS.includes(field.meta?.group) === false;
-		}
-
-		return EXCLUDED_GROUPS.includes(field.field) === false;
-	});
-});
+const fields = computed(() =>
+	unref(allFields).filter((field) => field.meta?.group === 'ai_group' || field.field === 'ai_group'),
+);
 
 const initialValues = ref(clone(settingsStore.settings));
 
@@ -65,11 +57,11 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<private-view :title="t('settings_project')">
+	<private-view :title="t('settings_ai')">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="tune" />
+				<v-icon name="smart_toy" />
 			</v-button>
 		</template>
 
@@ -88,7 +80,7 @@ function discardAndLeave() {
 		</div>
 
 		<template #sidebar>
-			<project-info-sidebar-detail />
+			<ai-info-sidebar-detail />
 		</template>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
