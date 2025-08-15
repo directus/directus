@@ -26,15 +26,17 @@ import { DirectusTransport } from './transport.js';
 import type { MCPOptions, Prompt, ToolResult } from './types.js';
 
 export class DirectusMCP {
-	prompts_collection?: string;
-	system_prompt?: string | null;
+	promptsCollection?: string;
+	systemPrompt?: string | null;
+	systemPromptEnabled?: boolean;
 	server: Server;
-	allow_deletes: boolean;
+	allowDeletes?: boolean;
 
 	constructor(options: MCPOptions) {
-		this.prompts_collection = options.prompts_collection;
-		this.system_prompt = options.system_prompt ?? null;
-		this.allow_deletes = typeof options.allow_deletes === 'boolean' ? options.allow_deletes : false;
+		this.promptsCollection = options.promptsCollection;
+		this.systemPromptEnabled = options.systemPromptEnabled ?? false;
+		this.systemPrompt = options.systemPrompt ?? null;
+		this.allowDeletes = options.allowDeletes ?? false;
 
 		this.server = new Server(
 			{
@@ -69,18 +71,18 @@ export class DirectusMCP {
 		this.server.setRequestHandler(ListPromptsRequestSchema, async () => {
 			const prompts = [];
 
-			if (!this.prompts_collection) {
+			if (!this.promptsCollection) {
 				throw new ForbiddenError({ reason: 'A prompts collection must be set in settings' });
 			}
 
-			const service = new ItemsService<Prompt>(this.prompts_collection, {
+			const service = new ItemsService<Prompt>(this.promptsCollection, {
 				accountability: req.accountability,
 				schema: req.schema,
 			});
 
 			try {
 				const promptList = await service.readByQuery({
-					fields: ['name', 'description', 'system_prompt', 'messages'],
+					fields: ['name', 'description', 'systemPrompt', 'messages'],
 				});
 
 				for (const prompt of promptList) {
@@ -112,11 +114,11 @@ export class DirectusMCP {
 
 		// get prompt
 		this.server.setRequestHandler(GetPromptRequestSchema, async (request: GetPromptRequest) => {
-			if (!this.prompts_collection) {
+			if (!this.promptsCollection) {
 				throw new ForbiddenError({ reason: 'A prompts collection must be set in settings' });
 			}
 
-			const service = new ItemsService<Prompt>(this.prompts_collection, {
+			const service = new ItemsService<Prompt>(this.promptsCollection, {
 				accountability: req.accountability,
 				schema: req.schema,
 			});
@@ -125,7 +127,7 @@ export class DirectusMCP {
 
 			try {
 				const promptCommand = await service.readByQuery({
-					fields: ['name', 'description', 'system_prompt', 'messages'],
+					fields: ['name', 'description', 'systemPrompt', 'messages'],
 					filter: {
 						name: {
 							_eq: promptName,
@@ -180,6 +182,7 @@ export class DirectusMCP {
 
 			for (const tool of getAllMcpTools()) {
 				if (req.accountability?.admin !== true && tool.admin === true) continue;
+				if (tool.name === 'system-prompt' && this.systemPromptEnabled === false) continue;
 
 				tools.push({
 					name: tool.name,
@@ -200,7 +203,7 @@ export class DirectusMCP {
 			let args;
 
 			try {
-				if (!tool) {
+				if (!tool || (tool.name === 'system-prompt' && this.systemPromptEnabled === false)) {
 					throw new InvalidPayloadError({ reason: `"${request.params.name}" doesn't exist in the toolset` });
 				}
 
@@ -209,7 +212,7 @@ export class DirectusMCP {
 				}
 
 				if (tool.name === 'system-prompt') {
-					request.params.arguments = { promptOverride: this.system_prompt };
+					request.params.arguments = { promptOverride: this.systemPrompt };
 				}
 
 				const { error, data } = tool.validateSchema?.safeParse(request.params.arguments) ?? {
@@ -226,7 +229,7 @@ export class DirectusMCP {
 					throw new InvalidPayloadError({ reason: '"arguments" must be an object' });
 				}
 
-				if ('action' in args && args['action'] === 'delete' && !this.allow_deletes) {
+				if ('action' in args && args['action'] === 'delete' && !this.allowDeletes) {
 					throw new InvalidPayloadError({ reason: 'Delete actions are disabled' });
 				}
 

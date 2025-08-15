@@ -1461,6 +1461,8 @@ fields:
       loss'
     mcp_prompts_collection: MCP Prompts Collection
     mcp_prompts_collection_note: Collection to store reusable prompt templates.
+    mcp_system_prompt_enabled: MCP System Prompt Enabled
+    mcp_system_prompt_enabled_note: Enable the system prompt
     mcp_system_prompt: MCP System Prompt
     mcp_system_prompt_note: Instructions that shape how the AI responds.
 
@@ -1669,11 +1671,15 @@ mcp_prompts_collection:
   generate_missing: Generate missing fields...
 mcp_prompts_collection_schema:
   system_prompt_note: Instructions that shape how the LLM responds.
-  messages_note: 'Optional: Define the conversation structure between users and LLMs. Used to add context and improve outputs.'
+  messages_note:
+    'Optional: Define the conversation structure between users and LLMs. Used to add context and improve outputs.'
   messages_role_user: User
   messages_role_assistant: Assistant
   messages_role_note: Who is speaking in this message.
-  meta_prompts_notice: 'Prompts are reusable templates that you can use with LLMs through the Directus MCP server, Flows, or other AI applications. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">Learn more about creating effective prompts.</a>'
+  meta_prompts_notice:
+    'Prompts are reusable templates that you can use with LLMs through the Directus MCP server, Flows, or other AI
+    applications. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">Learn more about creating
+    effective prompts.</a>'
 expired: Expired
 upcoming: Upcoming
 share: Share
