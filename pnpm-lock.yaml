@@ -3108,6 +3108,9 @@ importers:
       '@types/node':
         specifier: 22.13.8
         version: 22.13.8
+      async-mutex:
+        specifier: 'catalog:'
+        version: 0.5.0
       chalk:
         specifier: 5.4.1
         version: 5.4.1

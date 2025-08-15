@@ -1,4 +1,13 @@
-import { DirectusClient, RestClient, schemaApply, schemaDiff, SchemaSnapshotOutput } from '@directus/sdk';
+import {
+	createItem,
+	DirectusClient,
+	readCollection,
+	readItems,
+	RestClient,
+	schemaApply,
+	schemaDiff,
+	SchemaSnapshotOutput,
+} from '@directus/sdk';
 import { readFile } from 'fs/promises';
 import { dirname } from 'path';
 import { deepMap } from '@directus/utils';
@@ -13,8 +22,6 @@ export async function useSnapshot<Schema>(
 	api: DirectusClient<any> & RestClient<any>,
 	file: string,
 ): Promise<Collections<Schema>> {
-	const snapshot: Snapshot = JSON.parse(await readFile(file, { encoding: 'utf8' }));
-	const collectionIDs = snapshot.collections.map((collection) => collection.collection);
 	const collectionMap: Record<string, string> = {};
 	const nameMap: Record<string, string> = {};
 	const collectionReplace: Record<string, string> = {};
@@ -22,6 +29,33 @@ export async function useSnapshot<Schema>(
 	const parts = dirname(file).split('/');
 	const e2eIndex = parts.findIndex((part) => part === 'e2e');
 	const prefix = parts.slice(e2eIndex + 2).join('_');
+
+	await api.request(
+		createItem('schema_apply_order', {
+			group: prefix,
+		}),
+	);
+
+	const orders = await api.request(readItems('schema_apply_order'));
+
+	const orderIndex = orders.findIndex((raw) => raw['group'] === prefix);
+
+	if (orderIndex !== 0) {
+		let inFrontExists = false;
+
+		do {
+			try {
+				await api.request(readCollection(orders[Number(orderIndex) - 1]['group']));
+			} catch {
+				await new Promise((r) => setTimeout(r, 1000));
+			} finally {
+				inFrontExists = true;
+			}
+		} while (!inFrontExists);
+	}
+
+	const snapshot: Snapshot = JSON.parse(await readFile(file, { encoding: 'utf8' }));
+	const collectionIDs = snapshot.collections.map((collection) => collection.collection);
 
 	for (const cid of collectionIDs) {
 		const name = cid.replaceAll('_1234', '');
@@ -53,8 +87,6 @@ export async function useSnapshot<Schema>(
 		diff.diff['fields'] = diff.diff['fields'].filter((collection) => collection?.diff[0]?.['kind'] === 'N');
 		diff.diff['relations'] = diff.diff['relations'].filter((collection) => collection?.diff[0]?.['kind'] === 'N');
 	}
-
-	if (file.includes('schema')) console.dir(diff, { depth: 10 });
 
 	if (diff) await api.request(schemaApply(diff));
 

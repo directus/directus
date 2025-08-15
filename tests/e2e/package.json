@@ -21,6 +21,7 @@
 		"@directus/utils": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "22.13.8",
+		"async-mutex": "catalog:",
 		"chalk": "5.4.1",
 		"commander": "14.0.0",
 		"lodash-es": "catalog:",

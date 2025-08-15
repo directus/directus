@@ -4,12 +4,12 @@ export default defineConfig({
 	test: {
 		teardownTimeout: 60_000,
 		include: [],
-		globalSetup: './setup-all.ts',
+		globalSetup: './setup/setup-all.ts',
 		projects: [
 			'./vitest.config.ts',
 			...['maria', 'cockroachdb', 'mssql', 'mysql', 'oracle', 'postgres', 'sqlite'].map((database, index) => ({
 				test: {
-					globalSetup: './setup.ts',
+					globalSetup: './setup/setup-one.ts',
 					name: database,
 					testTimeout: 10_000,
 					reporters: ['verbose'],
