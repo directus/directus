@@ -16,7 +16,6 @@ compatibility.**
 
 ```json
 {
-	"type": "collection",
 	"action": "create",
 	"data": {
 		"collection": "organizations",
@@ -114,7 +113,7 @@ Example workflow:
 { "action": "read", "keys": ["languages"] }
 
 // Step 2: If found, read languages to get codes
-{ "type": "collection", "action": "read", "keys": ["languages"] }
+{  "action": "read", "keys": ["languages"] }
 
 // Step 3: Use those language codes in translations
 ```

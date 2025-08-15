@@ -13,7 +13,6 @@ Add fields to existing collections:
 
 ```json
 {
-	"type": "field",
 	"action": "create",
 	"data": {
 		"collection": "organizations",

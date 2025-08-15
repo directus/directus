@@ -8,7 +8,6 @@ Fetch and return base64-encoded Directus assets.
 
 ```json
 {
-	"type": "asset",
 	"action": "read",
 	"id": "file-uuid-here"
 }
@@ -17,8 +16,6 @@ Fetch and return base64-encoded Directus assets.
 Returns base64-encoded content with MIME type - useful for image analysis, AI vision tools, or file downloads.
 
 ## 🖼️ Asset Content Retrieval
-
-When using `type: "asset"`:
 
 - Returns base64-encoded file content
 - Includes MIME type for proper handling
@@ -32,7 +29,6 @@ When using `type: "asset"`:
 
 ```json
 {
-	"type": "image",
 	"data": "base64-encoded-string-here",
 	"mimeType": "image/jpeg"
 }

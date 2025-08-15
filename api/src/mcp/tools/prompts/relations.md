@@ -6,7 +6,6 @@ After creating relational fields (fields with type uuid), define the relationshi
 
 ```json
 {
-	"type": "relation",
 	"action": "create",
 	"data": {
 		"collection": "organizations",
@@ -29,16 +28,27 @@ After creating relational fields (fields with type uuid), define the relationshi
 M2A relationships allow a field to reference items from multiple different collections:
 
 ```json
-{ "type": "field", "action": "create", "data": { "collection": "comments", "field": "item", "type": "json",
-"meta": { "interface": "list-m2a", "special": ["m2a"], "options": { "template": "{{collection}} -
-{{item.title || item.name}}" } } } }
+{
+	"action": "create",
+	"data": {
+		"collection": "comments",
+		"field": "item",
+		"type": "json",
+		"meta": {
+			"interface": "list-m2a",
+			"special": ["m2a"],
+			"options": {
+				"template": "{{collection}} - {{item.title || item.name}}"
+			}
+		}
+	}
+}
 ```
 
 Then create the M2A relation:
 
 ```json
 {
-	"type": "relation",
 	"action": "create",
 	"data": {
 		"collection": "comments",

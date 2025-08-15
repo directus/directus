@@ -16,7 +16,6 @@ Perform CRUD operations on files.
 
 ```json
 {
-	"type": "file",
 	"action": "read",
 	"query": {
 		"fields": ["id", "title", "type", "filesize", "width", "height"],
@@ -30,7 +29,6 @@ Perform CRUD operations on files.
 
 ```json
 {
-	"type": "file",
 	"action": "read",
 	"keys": ["file-uuid-here"]
 }
@@ -59,7 +57,6 @@ Perform CRUD operations on files.
 
 ```json
 {
-	"type": "file",
 	"action": "update",
 	"data": [
 		{
@@ -77,7 +74,6 @@ Perform CRUD operations on files.
 
 ```json
 {
-	"type": "file",
 	"action": "update",
 	"keys": ["image-uuid"],
 	"data": {
@@ -148,7 +144,6 @@ Find appropriate images for articles, pages, or products:
 
 ```json
 {
-	"type": "file",
 	"action": "read",
 	"query": {
 		"fields": ["id", "title", "description", "tags", "type"],
@@ -171,7 +166,6 @@ Improve asset library organization by analyzing and updating metadata:
 
 ```json
 {
-	"type": "file",
 	"action": "read",
 	"query": {
 		"fields": ["id", "filename_disk", "title", "description"],
@@ -183,11 +177,10 @@ Improve asset library organization by analyzing and updating metadata:
 }
 ```
 
-2. **Analyze image content (get base64 for vision analysis):**
+2. **Analyze image content via Assets tool (get base64 for vision analysis):**
 
 ```json
 {
-	"type": "asset",
 	"action": "read",
 	"id": "image-uuid-to-analyze"
 }
@@ -197,7 +190,6 @@ Improve asset library organization by analyzing and updating metadata:
 
 ```json
 {
-	"type": "file",
 	"action": "update",
 	"data": [
 		{
@@ -225,7 +217,6 @@ Set focal points to ensure important parts of images are preserved during croppi
 
 ```json
 {
-	"type": "file",
 	"action": "update",
 	"data": {
 		"id": "portrait-uuid",
@@ -244,7 +235,6 @@ Find and associate relevant assets with content:
 
 ```json
 {
-	"type": "file",
 	"action": "read",
 	"query": {
 		"fields": ["id", "title", "type", "width", "height"],

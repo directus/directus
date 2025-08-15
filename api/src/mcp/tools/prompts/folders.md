@@ -15,7 +15,6 @@ Perform CRUD operations on folders.
 
 ```json
 {
-	"type": "folder",
 	"action": "create",
 	"data": {
 		"name": "Product Images",
