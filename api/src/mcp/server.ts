@@ -1,6 +1,7 @@
+import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Query } from '@directus/types';
-import { isObject } from '@directus/utils';
+import { isObject, toArray } from '@directus/utils';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import {
 	CallToolRequestSchema,
@@ -21,9 +22,10 @@ import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 import { ItemsService } from '../services/index.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { Url } from '../utils/url.js';
 import { findMcpTool, getAllMcpTools } from './tools/index.js';
 import { DirectusTransport } from './transport.js';
-import type { MCPOptions, Prompt, ToolResult } from './types.js';
+import type { MCPOptions, Prompt, ToolConfig, ToolResult } from './types.js';
 
 export class DirectusMCP {
 	promptsCollection?: string;
@@ -255,6 +257,18 @@ export class DirectusMCP {
 					accountability: req.accountability,
 				});
 
+				// if single item and create/update add url
+				const data = toArray(result?.data);
+
+				if (
+					'action' in args &&
+					['create', 'update'].includes(args['action'] as string) &&
+					result?.data &&
+					data.length === 1
+				) {
+					result.url = this.buildURL(tool, args, data[0]);
+				}
+
 				return this.toToolResponse(result);
 			} catch (error) {
 				return this.toJSONRPCError(error, true);
@@ -273,6 +287,22 @@ export class DirectusMCP {
 
 			throw error;
 		}
+	}
+
+	buildURL(tool: ToolConfig<unknown>, input: unknown, data: unknown) {
+		const env = useEnv();
+
+		const publicURL = env['PUBLIC_URL'] as string | undefined;
+
+		if (!publicURL) return;
+
+		if (!tool.endpoint) return;
+
+		const path = tool.endpoint({ input, data });
+
+		if (!path) return;
+
+		return new Url(env['PUBLIC_URL'] as string).addPath('admin', ...path).toString();
 	}
 
 	toPromptResponse(result: {
@@ -300,7 +330,7 @@ export class DirectusMCP {
 		if (result.type === 'text') {
 			response.content.push({
 				type: 'text',
-				text: JSON.stringify(result.data),
+				text: JSON.stringify({ raw: result.data, url: result.url }),
 			});
 		} else {
 			response.content.push(result);

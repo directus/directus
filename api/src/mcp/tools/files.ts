@@ -1,5 +1,5 @@
 import type { PrimaryKey } from '@directus/types';
-import { toArray } from '@directus/utils';
+import { isObject, toArray } from '@directus/utils';
 import { z } from 'zod';
 import { FilesService } from '../../services/files.js';
 import { defineTool } from '../define.js';
@@ -57,6 +57,13 @@ export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
 	description: prompts.files,
 	inputSchema: FilesInputSchema,
 	validateSchema: FilesValidateSchema,
+	endpoint({ data }) {
+		if (!isObject(data) || !('id' in data)) {
+			return;
+		}
+
+		return ['files', data['id'] as string];
+	},
 	async handler({ args, schema, accountability, sanitizedQuery }) {
 		const service = new FilesService({
 			schema,

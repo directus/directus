@@ -4,6 +4,7 @@ import type { ZodType } from 'zod';
 
 export type ToolResultBase = {
 	type?: 'text' | 'image';
+	url?: string | undefined;
 };
 
 export type TextToolResult = ToolResultBase & {
@@ -28,9 +29,14 @@ export type ToolHandler<T> = {
 	}): Promise<ToolResult | undefined>;
 };
 
+export type ToolEndpoint<T> = {
+	(options: { input: T; data: unknown }): string[] | undefined;
+};
+
 export interface ToolConfig<T> {
 	name: string;
 	description: string;
+	endpoint?: ToolEndpoint<T>;
 	admin?: boolean;
 	inputSchema: ZodType<any>;
 	validateSchema?: ZodType<T>;

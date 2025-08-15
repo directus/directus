@@ -1,5 +1,5 @@
 import { InvalidPayloadError } from '@directus/errors';
-import { toArray } from '@directus/utils';
+import { isObject, toArray } from '@directus/utils';
 import { z } from 'zod';
 import { CollectionsService } from '../../services/collections.js';
 import { defineTool } from '../define.js';
@@ -41,6 +41,13 @@ export const collection = defineTool<z.infer<typeof CollectionsValidateSchema>>(
 	description: prompts.collections,
 	inputSchema: CollectionsInputSchema,
 	validateSchema: CollectionsValidateSchema,
+	endpoint({ data }) {
+		if (!isObject(data) || !('collection' in data)) {
+			return;
+		}
+
+		return ['content', data['collection'] as string];
+	},
 	async handler({ args, schema, accountability }) {
 		const service = new CollectionsService({
 			schema,

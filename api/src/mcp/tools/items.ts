@@ -2,6 +2,7 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type { PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
+import { isObject } from 'graphql-compose';
 import { z } from 'zod';
 import { ItemsService } from '../../services/items.js';
 import { defineTool } from '../define.js';
@@ -57,6 +58,13 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 	validateSchema: ItemsValidateSchema,
 	annotations: {
 		title: 'Perform CRUD operations on Directus Items',
+	},
+	endpoint({ input, data }) {
+		if (!isObject(data) || !('id' in data)) {
+			return;
+		}
+
+		return ['content', input.collection, data['id']];
 	},
 	async handler({ args, schema, accountability, sanitizedQuery }) {
 		if (isSystemCollection(args.collection)) {
