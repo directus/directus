@@ -13,6 +13,7 @@ import { dirname } from 'path';
 import { deepMap } from '@directus/utils';
 import { Snapshot } from '@directus/types';
 import { startCase } from 'lodash-es';
+import { Database } from '@directus/sandbox';
 
 export type Collections<Schema> = { [P in keyof Schema]: P };
 
@@ -25,6 +26,8 @@ export async function useSnapshot<Schema>(
 	const collectionMap: Record<string, string> = {};
 	const nameMap: Record<string, string> = {};
 	const collectionReplace: Record<string, string> = {};
+
+	const database = process.env['DATABASE'] as Database;
 
 	const parts = dirname(file).split('/');
 	const e2eIndex = parts.findIndex((part) => part === 'e2e');
@@ -86,9 +89,22 @@ export async function useSnapshot<Schema>(
 		diff.diff['collections'] = diff.diff['collections'].filter((collection) => collection?.diff[0]?.['kind'] === 'N');
 		diff.diff['fields'] = diff.diff['fields'].filter((collection) => collection?.diff[0]?.['kind'] === 'N');
 		diff.diff['relations'] = diff.diff['relations'].filter((collection) => collection?.diff[0]?.['kind'] === 'N');
-	}
 
-	if (diff) await api.request(schemaApply(diff));
+		// Fix as Oracle doesn't support on update
+		if (database === 'oracle') {
+			diff.diff['relations'] = diff.diff['relations']?.map((relation) => {
+				return deepMap(relation, (value, key) => {
+					if (key === 'on_update') {
+						return undefined;
+					}
+
+					return value;
+				});
+			});
+		}
+
+		await api.request(schemaApply(diff));
+	}
 
 	return collectionMap as any;
 }

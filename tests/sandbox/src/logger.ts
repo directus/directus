@@ -27,7 +27,7 @@ export function createLogger(...groups: string[]): Logger {
 	};
 }
 
-export const logLevels = ['fatal', 'error', 'warn', 'info', 'debug'] as const;
+export const logLevels = ['fatal', 'error', 'warn', 'info', 'debug', 'trace'] as const;
 export type LogLevel = (typeof logLevels)[number];
 
 function logLevel(level: string) {
@@ -40,6 +40,7 @@ const logLevelColor = {
 	fatal: 'black',
 	info: 'green',
 	warn: 'yellow',
+	trace: 'blueBright',
 } as const satisfies Record<LogLevel, keyof ChalkInstance>;
 
 export function log(message: string, type: LogLevel = 'info', ...groups: string[]) {
