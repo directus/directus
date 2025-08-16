@@ -30,9 +30,6 @@ catalogs:
     '@changesets/types':
       specifier: 6.1.0
       version: 6.1.0
-    '@directus/format-title':
-      specifier: 12.0.1
-      version: 12.0.1
     '@directus/tsconfig':
       specifier: 3.0.0
       version: 3.0.0
@@ -3132,9 +3129,6 @@ importers:
 
   tests/sandbox:
     devDependencies:
-      '@directus/format-title':
-        specifier: 'catalog:'
-        version: 12.0.1
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
@@ -3156,15 +3150,9 @@ importers:
       commander:
         specifier: 'catalog:'
         version: 14.0.0
-      knex:
-        specifier: 'catalog:'
-        version: 3.1.0(mysql2@3.14.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
       lodash-es:
         specifier: 'catalog:'
         version: 4.17.21
-      rimraf:
-        specifier: 'catalog:'
-        version: 6.0.1
       tsup:
         specifier: 'catalog:'
         version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@22.13.14))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
@@ -3772,9 +3760,6 @@ packages:
 
   '@directus/constants@13.0.2':
     resolution: {integrity: sha512-dMjVGlSV12VDrfKW9TX8im0rhVjVjPyeR9EMTLAXYDVwtSXsoGiKt1AFMmh6pGDziA/5lhFr+CPH8mz2YedF5w==}
-
-  '@directus/format-title@12.0.1':
-    resolution: {integrity: sha512-Sx0yMpVnTQWLppevNdwgyKUsrfPCZ503bshzGfsnUuZDLu7yZe4lwatvu2RSzb7tAfJLYC5VdoZg/LXNBfFTRw==}
 
   '@directus/sdk@20.0.0':
     resolution: {integrity: sha512-DoKggMNaVWiKC2bU5BY+Nf6ia2Yz7hrKte0ZtSPXQVkl2mxwDtM0gLfOI6xxVY1CfnvyxJDu+d+21VjI4GYdyw==}
@@ -14532,8 +14517,6 @@ snapshots:
       postcss-selector-parser: 7.1.0
 
   '@directus/constants@13.0.2': {}
-
-  '@directus/format-title@12.0.1': {}
 
   '@directus/sdk@20.0.0': {}
 
