@@ -8,3 +8,8 @@ services:
       - MSSQL_PID=Express
     ports:
       - ${DB_PORT}:1433
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "${DB_PASSWORD}" -Q "SELECT 1" -b -o /dev/null
+      interval: 5s
+      timeout: 5s
+      retries: 5

@@ -9,3 +9,8 @@ services:
       - ORACLE_RANDOM_PASSWORD=yes
       - APP_USER=${DB_USER}
       - APP_USER_PASSWORD=${DB_PASSWORD}
+    healthcheck:
+      test: healthcheck.sh
+      interval: 5s
+      timeout: 5s
+      retries: 5

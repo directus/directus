@@ -58,6 +58,7 @@ const cockroachdb = {
 	DB_PASSWORD: '',
 	DB_PORT: '$PORT',
 	DB_DATABASE: 'defaultdb',
+	COCKROACH_UI: '$PORT',
 	...directusConfig,
 } as const;
 

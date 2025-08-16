@@ -8,3 +8,8 @@ services:
       MYSQL_DATABASE: ${DB_DATABASE}
     ports:
       - ${DB_PORT}:3306
+    healthcheck:
+      test: ['CMD', 'mysql', '--user=root', '--password=$$MYSQL_ROOT_PASSWORD', '--execute=SELECT 1;']
+      interval: 5s
+      timeout: 5s
+      retries: 5

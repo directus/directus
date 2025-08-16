@@ -27,7 +27,6 @@
 	"private": true,
 	"packageManager": "pnpm@10.14.0",
 	"devDependencies": {
-		"@directus/format-title": "catalog:",
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "catalog:",
@@ -35,9 +34,7 @@
 		"@types/node": "catalog:",
 		"chalk": "catalog:",
 		"commander": "catalog:",
-		"knex": "catalog:",
 		"lodash-es": "catalog:",
-		"rimraf": "catalog:",
 		"tsup": "catalog:",
 		"tsx": "catalog:",
 		"typescript": "catalog:"

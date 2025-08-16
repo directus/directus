@@ -4,9 +4,9 @@ import { join } from 'path';
 import { camelCase, merge, upperFirst } from 'lodash-es';
 import { spawn, type ChildProcessWithoutNullStreams } from 'child_process';
 import { getEnv, type Env } from './config.js';
-import knex from 'knex';
 import { writeFile } from 'fs/promises';
 import { getRelationInfo } from './relation.js';
+import assert from 'assert';
 
 export type StopSandbox = () => Promise<void>;
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
@@ -53,11 +53,17 @@ function getOptions(options?: DeepPartial<Options>): Options {
 }
 
 const apiFolder = join(import.meta.dirname, '..', '..', '..', 'api');
+const databases = ['cockroachdb', 'maria', 'mssql', 'mysql', 'oracle', 'postgres', 'sqlite'];
 
 export async function sandboxes(
 	sandboxes: { database: Database; options: DeepPartial<Omit<Options, 'build' | 'dev' | 'watch' | 'schema'>> }[],
 	options?: Partial<Pick<Options, 'build' | 'dev' | 'watch'>>,
 ): Promise<StopSandbox> {
+	assert(
+		sandboxes.every((sandbox) => databases.includes(sandbox.database)),
+		'Invalid database provided',
+	);
+
 	const opts = getOptions(options);
 	const logger = createLogger();
 	let apis: { processes: ChildProcessWithoutNullStreams[]; opts: Options; env: Env; logger: Logger }[] = [];
@@ -111,6 +117,8 @@ export async function sandboxes(
 }
 
 export async function sandbox(database: Database, options?: DeepPartial<Options>): Promise<StopSandbox> {
+	assert(databases.includes(database), 'Invalid database provided');
+
 	const opts = getOptions(options);
 
 	const logger = opts.prefix ? createLogger(opts.prefix) : createLogger();
@@ -239,10 +247,6 @@ async function dockerUp(database: Database, extras: Options['extras'], env: Env,
 
 	await new Promise((resolve) => docker!.on('close', resolve));
 
-	while (!(await testDBCollection(database, env))) {
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-	}
-
 	if ('DB_PORT' in env) logger.info(`Database started at ${env.DB_HOST}:${env.DB_PORT}`);
 	else if ('DB_FILENAME' in env) logger.info(`Database stored at ${env.DB_FILENAME}`);
 
@@ -329,7 +333,7 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 
 	api.on('error', (err) => {
 		api.kill();
-		console.error(err);
+		logger.error(err.message);
 		throw err;
 	});
 
@@ -359,46 +363,6 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 	logger.info(`Server started at http://${env.HOST}:${env.PORT}`);
 
 	return api;
-}
-
-export async function testDBCollection(database: Database, env: Env): Promise<boolean> {
-	const db =
-		'DB_FILENAME' in env
-			? knex({
-					client: 'sqlite3',
-					connection: {
-						filename: env.DB_FILENAME,
-					},
-				})
-			: knex({
-					client: {
-						mysql: 'mysql2',
-						postgres: 'pg',
-						maria: 'mysql2',
-						cockroachdb: 'cockroachdb',
-						mssql: 'mssql',
-						oracle: 'oracledb',
-					}[database as Exclude<Database, 'sqlite'>],
-					connection: {
-						host: env.DB_HOST,
-						port: Number(env.DB_PORT),
-						user: env.DB_USER,
-						password: env.DB_PASSWORD,
-						database: env.DB_DATABASE,
-					},
-				});
-
-	try {
-		if (database === 'oracle') {
-			await db.raw('select 1 from DUAL');
-		} else {
-			await db.raw('SELECT 1');
-		}
-
-		return true;
-	} catch {
-		return false;
-	}
 }
 
 async function saveSchema(env: Env) {

@@ -6,3 +6,9 @@ services:
     command: start-single-node --cluster-name=example-single-node --insecure
     ports:
       - ${DB_PORT}:26257
+      - ${COCKROACH_UI}:8080
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:${COCKROACH_UI}/health']
+      interval: 5s
+      timeout: 5s
+      retries: 5
