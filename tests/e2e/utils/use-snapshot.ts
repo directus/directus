@@ -111,7 +111,7 @@ export async function useSnapshot<Schema>(
 				}
 
 				await api.request(schemaApply(diff));
-				continue;
+				break;
 			}
 		} catch {
 			tries--;
