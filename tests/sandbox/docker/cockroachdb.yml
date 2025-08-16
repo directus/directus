@@ -9,6 +9,6 @@ services:
       - ${COCKROACH_UI}:8080
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:${COCKROACH_UI}/health']
-      interval: 5s
-      timeout: 5s
+      interval: 10s
+      timeout: 10s
       retries: 5
