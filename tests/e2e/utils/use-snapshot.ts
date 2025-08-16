@@ -83,28 +83,42 @@ export async function useSnapshot<Schema>(
 		groups.push(prefix);
 	}
 
-	const diff = await api.request(schemaDiff(schemaSnapshot, true));
+	let tries = 3;
 
-	if (diff) {
-		diff.diff['collections'] = diff.diff['collections'].filter((collection) => collection?.diff[0]?.['kind'] === 'N');
-		diff.diff['fields'] = diff.diff['fields'].filter((collection) => collection?.diff[0]?.['kind'] === 'N');
-		diff.diff['relations'] = diff.diff['relations'].filter((collection) => collection?.diff[0]?.['kind'] === 'N');
+	while (tries > 0) {
+		try {
+			const diff = await api.request(schemaDiff(schemaSnapshot, true));
 
-		// Fix as Oracle doesn't support on update
-		if (database === 'oracle') {
-			diff.diff['relations'] = diff.diff['relations']?.map((relation) => {
-				return deepMap(relation, (value, key) => {
-					if (key === 'on_update') {
-						return undefined;
-					}
+			if (diff) {
+				diff.diff['collections'] = diff.diff['collections'].filter(
+					(collection) => collection?.diff[0]?.['kind'] === 'N',
+				);
 
-					return value;
-				});
-			});
+				diff.diff['fields'] = diff.diff['fields'].filter((collection) => collection?.diff[0]?.['kind'] === 'N');
+				diff.diff['relations'] = diff.diff['relations'].filter((collection) => collection?.diff[0]?.['kind'] === 'N');
+
+				// Fix as Oracle doesn't support on update
+				if (database === 'oracle') {
+					diff.diff['relations'] = diff.diff['relations']?.map((relation) => {
+						return deepMap(relation, (value, key) => {
+							if (key === 'on_update') {
+								return undefined;
+							}
+
+							return value;
+						});
+					});
+				}
+
+				await api.request(schemaApply(diff));
+				continue;
+			}
+		} catch {
+			tries--;
 		}
-
-		await api.request(schemaApply(diff));
 	}
+
+	if (tries === 0) throw new Error('Too many retries applying snapshot');
 
 	return collectionMap as any;
 }

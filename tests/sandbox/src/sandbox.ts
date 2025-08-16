@@ -59,10 +59,7 @@ export async function sandboxes(
 	sandboxes: { database: Database; options: DeepPartial<Omit<Options, 'build' | 'dev' | 'watch' | 'schema'>> }[],
 	options?: Partial<Pick<Options, 'build' | 'dev' | 'watch'>>,
 ): Promise<StopSandbox> {
-	assert(
-		sandboxes.every((sandbox) => databases.includes(sandbox.database)),
-		'Invalid database provided',
-	);
+	if (!sandboxes.every((sandbox) => databases.includes(sandbox.database))) throw new Error('Invalid database provided');
 
 	const opts = getOptions(options);
 	const logger = createLogger();
@@ -117,8 +114,7 @@ export async function sandboxes(
 }
 
 export async function sandbox(database: Database, options?: DeepPartial<Options>): Promise<StopSandbox> {
-	assert(databases.includes(database), 'Invalid database provided');
-
+	if (!databases.includes(database)) throw new Error('Invalid database provided');
 	const opts = getOptions(options);
 
 	const logger = opts.prefix ? createLogger(opts.prefix) : createLogger();
