@@ -6,7 +6,6 @@ import { spawn, type ChildProcessWithoutNullStreams } from 'child_process';
 import { getEnv, type Env } from './config.js';
 import { writeFile } from 'fs/promises';
 import { getRelationInfo } from './relation.js';
-import assert from 'assert';
 
 export type StopSandbox = () => Promise<void>;
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
