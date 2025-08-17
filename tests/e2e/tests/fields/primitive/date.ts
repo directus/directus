@@ -1,6 +1,7 @@
 import { createItem, DirectusClient, RestClient } from '@directus/sdk';
 import { test, expect } from 'vitest';
-import { Collections, Schema } from './primitive.test';
+import { Collections } from './primitive.test';
+import { Schema } from './schema';
 
 export function testDate(api: DirectusClient<Schema> & RestClient<Schema>, c: Collections) {
 	for (const date of ['2020-01-01', '2001-12-24']) {

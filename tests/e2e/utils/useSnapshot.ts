@@ -10,7 +10,7 @@ import {
 } from '@directus/sdk';
 import { readFile } from 'fs/promises';
 import { dirname } from 'path';
-import { deepMap } from '@directus/utils';
+import { deepMap } from './deepMap';
 import { Snapshot } from '@directus/types';
 import { startCase } from 'lodash-es';
 import { Database } from '@directus/sandbox';
@@ -24,8 +24,10 @@ export async function useSnapshot<Schema>(
 	file: string,
 ): Promise<Collections<Schema>> {
 	const collectionMap: Record<string, string> = {};
-	const nameMap: Record<string, string> = {};
+	const collectionNameMap: Record<string, string> = {};
 	const collectionReplace: Record<string, string> = {};
+
+	const fieldReplace: Record<string, string> = {};
 
 	const database = process.env['DATABASE'] as Database;
 
@@ -59,22 +61,37 @@ export async function useSnapshot<Schema>(
 
 	const snapshot: Snapshot = JSON.parse(await readFile(file, { encoding: 'utf8' }));
 	const collectionIDs = snapshot.collections.map((collection) => collection.collection);
+	const fieldIDs = snapshot.fields.map((field) => field.field);
 
 	for (const cid of collectionIDs) {
 		const name = cid.replaceAll('_1234', '');
 		collectionMap[name] = prefix + '_' + name;
 		collectionReplace[cid] = collectionMap[name];
-		nameMap[prefix + '_' + name] = name;
+		collectionNameMap[prefix + '_' + name] = name;
 	}
 
-	const schemaSnapshot = deepMap(snapshot, (value) => {
-		if (typeof value === 'string' && value in collectionReplace) return collectionReplace[value];
-		return value;
+	for (const fid of fieldIDs) {
+		if (!fid.includes('_1234')) continue;
+		const name = fid.replaceAll('_1234', '');
+		fieldReplace[fid] = name;
+	}
+
+	const schemaSnapshot = deepMap(snapshot, (key, value) => {
+		if (typeof key === 'string' && key in fieldReplace) key = fieldReplace[key];
+		if (typeof value === 'string' && value in fieldReplace) value = fieldReplace[value];
+
+		if (typeof key === 'string' && key in collectionReplace) key = collectionReplace[key];
+		if (typeof value === 'string' && value in collectionReplace) value = collectionReplace[value];
+		return [key, value];
 	}) as SchemaSnapshotOutput;
 
 	schemaSnapshot.collections = schemaSnapshot.collections.map((collection) => {
 		collection.meta.group = prefix;
-		collection.meta.translations = [{ language: 'en-US', translation: startCase(nameMap[collection.collection]) }];
+
+		collection.meta.translations = [
+			{ language: 'en-US', translation: startCase(collectionNameMap[collection.collection]) },
+		];
+
 		return collection;
 	});
 
@@ -100,12 +117,12 @@ export async function useSnapshot<Schema>(
 				// Fix as Oracle doesn't support on update
 				if (database === 'oracle') {
 					diff.diff['relations'] = diff.diff['relations']?.map((relation) => {
-						return deepMap(relation, (value, key) => {
+						return deepMap(relation, (key, value) => {
 							if (key === 'on_update') {
-								return undefined;
+								return [key, undefined];
 							}
 
-							return value;
+							return [key, value];
 						});
 					});
 				}
@@ -113,7 +130,8 @@ export async function useSnapshot<Schema>(
 				await api.request(schemaApply(diff));
 				break;
 			}
-		} catch {
+		} catch (e) {
+			console.error(e);
 			tries--;
 		}
 	}

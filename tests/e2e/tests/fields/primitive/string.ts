@@ -1,8 +1,8 @@
 import { createItem, DirectusClient, RestClient } from '@directus/sdk';
 import { test, expect } from 'vitest';
-import { Schema } from './primitive.test';
 import { Database } from '@directus/sandbox';
 import { Collections } from './primitive.test';
+import { Schema } from './schema';
 
 export function testString(api: DirectusClient<Schema> & RestClient<Schema>, c: Collections) {
 	const database = process.env['DATABASE'] as Database;

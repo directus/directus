@@ -1,7 +1,7 @@
 import { createDirectus, rest, staticToken } from '@directus/sdk';
 import { testInteger } from './integer';
 import { testString } from './string';
-import { useSnapshot } from '../../../utils/use-snapshot';
+import { useSnapshot } from '../../../utils/useSnapshot';
 import { join } from 'path';
 import { testBoolean } from './boolean';
 import { testDate } from './date';

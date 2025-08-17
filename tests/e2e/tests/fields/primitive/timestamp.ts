@@ -1,7 +1,7 @@
 import { createItem, DirectusClient, RestClient } from '@directus/sdk';
 import { test, expect } from 'vitest';
-import { Schema } from './primitive.test';
 import { Collections } from './primitive.test';
+import { Schema } from './schema';
 
 export function testTimestamp(api: DirectusClient<Schema> & RestClient<Schema>, c: Collections) {
 	for (const timestamp of ['2020-01-01', '2001-12-24']) {
