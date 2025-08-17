@@ -271,7 +271,7 @@ export class UsersService extends ItemsService {
 				await this.checkUniqueEmails([data['email']], keys[0]);
 			}
 
-			if (data['password']!== undefined) {
+			if (data['password'] !== undefined) {
 				await this.checkPasswordPolicy([data['password']]);
 			}
 
