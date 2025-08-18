@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { FilesService } from '../../services/files.js';
 import { defineTool } from '../define.js';
 import {
+	FileImportItemInputSchema,
+	FileImportItemValidateSchema,
 	FileItemInputSchema,
 	FileItemValidateSchema,
 	PrimaryKeyInputSchema,
@@ -12,11 +14,6 @@ import {
 	QueryValidateSchema,
 } from '../schema.js';
 import prompts from './prompts/index.js';
-
-const FileImportSchema = z.object({
-	url: z.string(),
-	file: FileItemValidateSchema,
-});
 
 export const FilesValidateSchema = z.union([
 	z.strictObject({
@@ -41,7 +38,7 @@ export const FilesValidateSchema = z.union([
 	}),
 	z.strictObject({
 		action: z.literal('import'),
-		data: z.array(FileImportSchema),
+		data: z.array(FileImportItemValidateSchema),
 	}),
 ]);
 
@@ -49,7 +46,7 @@ const FilesInputSchema = z.object({
 	action: z.enum(['create', 'read', 'update', 'delete', 'import']).describe('The operation to perform'),
 	query: QueryInputSchema.optional(),
 	keys: z.array(PrimaryKeyInputSchema).optional(),
-	data: z.union([z.array(FileItemInputSchema), FileItemInputSchema, FileImportSchema]).optional(),
+	data: z.union([z.array(FileItemInputSchema), FileItemInputSchema, FileImportItemInputSchema]).optional(),
 });
 
 export const files = defineTool<z.infer<typeof FilesValidateSchema>>({

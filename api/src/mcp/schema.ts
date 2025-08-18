@@ -125,6 +125,16 @@ export const FileItemInputSchema = z
 
 export const FileItemValidateSchema = z.custom<Partial<File>>();
 
+export const FileImportItemInputSchema = z.object({
+	url: z.string(),
+	file: FileItemInputSchema,
+});
+
+export const FileImportItemValidateSchema = z.object({
+	url: z.string(),
+	file: FileItemValidateSchema,
+});
+
 // opertations
 export const OperationItemInputSchema = z
 	.object({
