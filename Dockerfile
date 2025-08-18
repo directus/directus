@@ -53,6 +53,9 @@ RUN npm install --global \
 	pm2@5 \
 	corepack@latest # Remove again once corepack >= 0.31 made it into base image
 
+
+RUN apk add --no-cache procps
+
 USER node
 
 WORKDIR /directus
