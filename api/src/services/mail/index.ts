@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import { InvalidPayloadError } from '@directus/errors';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
+import { isObject } from '@directus/utils';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import { Liquid } from 'liquidjs';
@@ -8,11 +9,10 @@ import type { SendMailOptions, Transporter } from 'nodemailer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import getDatabase from '../../database/index.js';
+import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
 import getMailer from '../../mailer.js';
-import type { AbstractServiceOptions } from '../../types/index.js';
 import { Url } from '../../utils/url.js';
-import emitter from '../../emitter.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -24,8 +24,7 @@ const liquidEngine = new Liquid({
 	extname: '.liquid',
 });
 
-export type EmailOptions = Omit<SendMailOptions, 'from'> & {
-	from?: string;
+export type EmailOptions = SendMailOptions & {
 	template?: {
 		name: string;
 		data: Record<string, any>;
@@ -65,10 +64,16 @@ export class MailService {
 
 		const defaultTemplateData = await this.getDefaultTemplateData();
 
-		const from = {
-			name: defaultTemplateData.projectName,
-			address: options.from || (env['EMAIL_FROM'] as string),
-		};
+		if (isObject(emailOptions.from) && (!emailOptions.from.name || !emailOptions.from.address)) {
+			throw new InvalidPayloadError({ reason: 'A name and address property are required in the "from" object' });
+		}
+
+		const from: SendMailOptions['from'] = isObject(emailOptions.from)
+			? emailOptions.from
+			: {
+					name: defaultTemplateData.projectName,
+					address: (emailOptions.from as string) || (env['EMAIL_FROM'] as string),
+				};
 
 		if (template) {
 			let templateData = template.data;

@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
 import { toArray, toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
@@ -15,7 +15,6 @@ import { rateLimiterGlobal } from '../middleware/rate-limiter-global.js';
 import { rateLimiter } from '../middleware/rate-limiter-ip.js';
 import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
-import type { AbstractServiceOptions } from '../types/index.js';
 import { getAllowedLogLevels } from '../utils/get-allowed-log-levels.js';
 import { SettingsService } from './settings.js';
 
@@ -98,14 +97,14 @@ export class ServerService {
 					? {
 							authentication: env['WEBSOCKETS_REST_AUTH'],
 							path: env['WEBSOCKETS_REST_PATH'],
-					  }
+						}
 					: false;
 
 				info['websocket'].graphql = toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])
 					? {
 							authentication: env['WEBSOCKETS_GRAPHQL_AUTH'],
 							path: env['WEBSOCKETS_GRAPHQL_PATH'],
-					  }
+						}
 					: false;
 
 				info['websocket'].heartbeat = toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED'])
@@ -116,7 +115,7 @@ export class ServerService {
 					toBoolean(env['WEBSOCKETS_LOGS_ENABLED']) && this.accountability.admin
 						? {
 								allowedLogLevels: getAllowedLogLevels((env['WEBSOCKETS_LOGS_LEVEL'] as string) || 'info'),
-						  }
+							}
 						: false;
 			} else {
 				info['websocket'] = false;

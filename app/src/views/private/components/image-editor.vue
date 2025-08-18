@@ -167,28 +167,25 @@ function useImage() {
 				?.getCroppedCanvas({
 					imageSmoothingQuality: 'high',
 				})
-				.toBlob(
-					async (blob) => {
-						if (blob === null) {
-							return reject(`Couldn't process and save edited image`);
-						}
+				.toBlob(async (blob) => {
+					if (blob === null) {
+						return reject(`Couldn't process and save edited image`);
+					}
 
-						const formData = new FormData();
+					const formData = new FormData();
 
-						if (focalPoint) {
-							formData.append('focal_point_x' as keyof File, focalPoint.x?.toString() ?? '');
-							formData.append('focal_point_y' as keyof File, focalPoint.y?.toString() ?? '');
-						}
+					if (focalPoint) {
+						formData.append('focal_point_x' as keyof File, focalPoint.x?.toString() ?? '');
+						formData.append('focal_point_y' as keyof File, focalPoint.y?.toString() ?? '');
+					}
 
-						formData.append('file', blob, imageData.value?.filename_download);
+					formData.append('file', blob, imageData.value?.filename_download);
 
-						api.patch(`/files/${props.id}`, formData).then(
-							() => resolve(),
-							(err) => reject(err),
-						);
-					},
-					imageData.value?.type ?? undefined,
-				);
+					api.patch(`/files/${props.id}`, formData).then(
+						() => resolve(),
+						(err) => reject(err),
+					);
+				}, imageData.value?.type ?? undefined);
 		});
 	}
 

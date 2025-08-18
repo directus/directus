@@ -1,6 +1,6 @@
 {
 	"name": "@directus/stores",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "Shared Pinia stores used in @directus/app",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -25,17 +25,17 @@
 		"dev": "tsup src/index.ts --format=esm --dts --watch"
 	},
 	"dependencies": {
-		"@vueuse/core": "12.7.0"
+		"@vueuse/core": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
-		"pinia": "2.3.1",
+		"pinia": "catalog:",
 		"tsup": "catalog:",
 		"typescript": "catalog:",
-		"vue": "3.5.13"
+		"vue": "catalog:"
 	},
 	"peerDependencies": {
-		"pinia": "2",
-		"vue": "^3.4"
+		"pinia": "catalog:",
+		"vue": "catalog:"
 	}
 }

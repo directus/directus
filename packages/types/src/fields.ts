@@ -83,9 +83,10 @@ export type ValidationError = {
 export type Condition = {
 	name: string;
 	rule: Record<string, any>;
-
 	readonly?: boolean;
 	hidden?: boolean;
 	options?: Record<string, any>;
 	required?: boolean;
 };
+
+export type AppField = Field & { schema: { default_value: any } };

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ShowSelect } from '@directus/extensions';
+import type { ShowSelect } from '@directus/types';
 import { computed } from 'vue';
 import type { Header, Item } from './types';
 

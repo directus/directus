@@ -54,7 +54,7 @@ function onGroupSortChange(collections: Collection[]) {
 			<div class="collection-item-detail">
 				<v-icon
 					:color="
-						collection.meta?.hidden ? 'var(--theme--foreground-subdued)' : collection.color ?? 'var(--theme--primary)'
+						collection.meta?.hidden ? 'var(--theme--foreground-subdued)' : (collection.color ?? 'var(--theme--primary)')
 					"
 					class="collection-icon"
 					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"

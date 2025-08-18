@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useExtensions } from '@/extensions';
+import { useUserStore } from '@/stores/user';
 import { Vector2 } from '@/utils/vector2';
 import { FlowRaw } from '@directus/types';
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
 import { getTriggers } from '../triggers';
@@ -57,14 +58,18 @@ const emit = defineEmits([
 
 const { t } = useI18n();
 
-const styleVars = {
+const userStore = useUserStore();
+
+const isRTL = computed(() => userStore.textDirection === 'rtl');
+
+const styleVars = computed(() => ({
 	'--reject-left': REJECT_OFFSET.x + 'px',
 	'--reject-top': REJECT_OFFSET.y + 'px',
 	'--resolve-left': RESOLVE_OFFSET.x + 'px',
 	'--resolve-top': RESOLVE_OFFSET.y + 'px',
-	'--attachment-x': ATTACHMENT_OFFSET.x + 'px',
+	'--attachment-x': unref(isRTL) ? -ATTACHMENT_OFFSET.x + 'px' : ATTACHMENT_OFFSET.x + 'px',
 	'--attachment-y': ATTACHMENT_OFFSET.y + 'px',
-};
+}));
 
 const currentOperation = computed(() => {
 	if (props.type === 'operation') return operations.value.find((operation) => operation.id === props.panel.type);
@@ -75,6 +80,7 @@ let down: Target | 'parent' | undefined = undefined;
 let rafId: number | null = null;
 const moving = ref(false);
 let workspaceOffset: Vector2 = new Vector2(0, 0);
+let workspaceWidth: number = 0;
 
 const isReject = computed(() => props.parent?.type === 'reject');
 
@@ -87,6 +93,7 @@ function pointerdown(target: Target | 'parent') {
 
 	if (rect) {
 		workspaceOffset = new Vector2(rect.left, rect.top);
+		workspaceWidth = rect.width;
 	}
 
 	window.addEventListener('pointermove', pointermove);
@@ -98,24 +105,28 @@ const pointermove = (event: PointerEvent) => {
 		moving.value = true;
 		if (!down) return;
 
-		const arrowInfo: ArrowInfo =
-			down === 'parent'
-				? {
-						id: props.parent?.id,
-						type: props.parent?.type as Target,
-						pos: new Vector2(
-							Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
-							Math.round((event.pageY - workspaceOffset.y) / 20) * 20,
-						),
-				  }
-				: {
-						id: props.panel.id,
-						type: down,
-						pos: new Vector2(
-							Math.round((event.pageX - workspaceOffset.x) / 20) * 20,
-							Math.round((event.pageY - workspaceOffset.y) / 20) * 20,
-						),
-				  };
+		let xPos = Math.round((event.pageX - workspaceOffset.x) / 20) * 20;
+		const yPos = Math.round((event.pageY - workspaceOffset.y) / 20) * 20;
+
+		if (unref(isRTL)) {
+			xPos = workspaceWidth - xPos;
+		}
+
+		let arrowInfo: ArrowInfo;
+
+		if (down === 'parent') {
+			arrowInfo = {
+				id: props.parent!.id,
+				type: props.parent!.type as Target,
+				pos: new Vector2(xPos, yPos),
+			};
+		} else {
+			arrowInfo = {
+				id: props.panel.id,
+				type: down,
+				pos: new Vector2(xPos, yPos),
+			};
+		}
 
 		emit('arrow-move', arrowInfo);
 	});
@@ -400,8 +411,13 @@ function pointerLeave() {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding: 20px 20px 20px 60px;
+		padding: 20px;
+		padding-inline-start: 60px;
 		transform: translate(-1px, calc(-50% - 2.5px));
+
+		html[dir='rtl'] & {
+			transform: translate(1px, calc(-50% - 2.5px));
+		}
 	}
 
 	.button {
@@ -412,6 +428,10 @@ function pointerLeave() {
 		align-items: center;
 		background-color: var(--theme--background);
 		transform: translate(calc(-50% - 1px), calc(-50% - 1px));
+
+		html[dir='rtl'] & {
+			transform: translate(calc(50% + 1px), calc(-50% - 1px));
+		}
 
 		--v-icon-color: var(--theme--primary);
 	}

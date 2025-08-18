@@ -30,13 +30,13 @@
 /packages/validation @directus/engine
 
 /sdk/ @directus/engine
-/packages/create-directus-extension @directus/dx
-/packages/create-directus-project @directus/dx
-/packages/extensions-sdk @directus/dx
-/packages/specs @directus/dx
+/packages/create-directus-extension @directus/ecosystem
+/packages/create-directus-project @directus/ecosystem
+/packages/extensions-sdk @directus/ecosystem
+/packages/specs @directus/ecosystem
 
-/.github/actions/ @directus/infra
-/.github/workflows/ @directus/infra
-/Dockerfile @directus/infra
-/packages/release-notes-generator @directus/infra
-/packages/update-check @directus/infra
+/.github/actions/ @directus/platform
+/.github/workflows/ @directus/platform
+/Dockerfile @directus/platform
+/packages/release-notes-generator @directus/platform
+/packages/update-check @directus/platform

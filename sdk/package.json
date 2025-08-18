@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "20.0.0",
+	"version": "20.0.2",
 	"description": "Directus JavaScript SDK",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -32,7 +32,7 @@
 		"@directus/system-data": "workspace:*",
 		"@directus/tsconfig": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"esbuild-plugin-replace": "1.4.0",
+		"esbuild-plugin-replace": "catalog:",
 		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"

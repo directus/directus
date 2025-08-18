@@ -1707,7 +1707,6 @@ translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
 report_error: Fehler melden
-start: Start
 table: Tabelle
 list: Liste
 search_filter: Suche & Filter
@@ -2290,6 +2289,7 @@ show_labels: Beschriftungen anzeigen
 show_legend: Legende anzeigen
 right: Rechts
 left: Links
+start: Start
 donut: Donut
 continuous: Kontinuierlich
 gap: Abstand

@@ -206,7 +206,7 @@ const actualPrimaryKey = computed(() => {
 	if (unref(isSingleton)) {
 		const singleton = unref(item);
 		const pkField = unref(primaryKeyField)?.field;
-		return (singleton && pkField ? singleton[pkField] ?? null : null) as PrimaryKey | null;
+		return (singleton && pkField ? (singleton[pkField] ?? null) : null) as PrimaryKey | null;
 	}
 
 	return props.primaryKey;
@@ -219,7 +219,7 @@ const internalPrimaryKey = computed(() => {
 	if (unref(isSingleton)) {
 		const singleton = unref(item);
 		const pkField = unref(primaryKeyField)?.field;
-		return (singleton && pkField ? singleton[pkField] ?? '+' : '+') as PrimaryKey;
+		return (singleton && pkField ? (singleton[pkField] ?? '+') : '+') as PrimaryKey;
 	}
 
 	return props.primaryKey;

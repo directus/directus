@@ -30,6 +30,10 @@ draft: Taslak
 archived: Arşivlendi
 marketplace: Pazaryeri
 extensions: Eklentiler
+skip_link_nav: Gezinmeye geç
+skip_link_module_nav: Modül gezinmezine geç
+skip_link_main: Ana içeriğe geç
+skip_link_sidebar: Kenar çubuğuna geç
 modules: Modüller
 module_bar: Kenar Çubuğu
 logs: Kayıtlar
@@ -548,6 +552,7 @@ original: Orijinal
 url: URL
 import_label: İçe Aktar
 file_details: Dosya Ayrıntıları
+copy_id: ID'yi Kopyala
 dimensions: Boyutlar
 size: Boyut
 created: Oluşturulma Tarihi
@@ -1641,7 +1646,6 @@ translation_placeholder: Bir çeviri girin...
 value: Değer
 view_project: Projeyi görüntüle
 report_error: Hata Bildir
-start: Başla
 table: Tablo
 list: Liste
 search_filter: Ara ve Filtrele
@@ -2208,6 +2212,7 @@ show_labels: Etiketleri Göster
 show_legend: Göstergeyi Göster
 right: Sağ
 left: Sol
+start: Başla
 donut: Halka
 panels:
   metric:

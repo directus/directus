@@ -1,6 +1,6 @@
 {
 	"name": "@directus/release-notes-generator",
-	"version": "2.0.1",
+	"version": "2.0.2",
 	"description": "Directus tailored release notes generator for changesets",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -26,16 +26,17 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
-		"@changesets/get-github-info": "0.6.0",
-		"@pnpm/workspace.find-packages": "900.0.5",
-		"@pnpm/workspace.pkgs-graph": "900.0.3",
-		"semver": "7.7.1"
+		"@changesets/get-github-info": "catalog:",
+		"@pnpm/logger": "catalog:",
+		"@pnpm/workspace.find-packages": "catalog:",
+		"@pnpm/workspace.pkgs-graph": "catalog:",
+		"semver": "catalog:"
 	},
 	"devDependencies": {
-		"@changesets/types": "6.1.0",
+		"@changesets/types": "catalog:",
 		"@directus/tsconfig": "catalog:",
 		"@types/node": "catalog:",
-		"@types/semver": "7.5.8",
+		"@types/semver": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"

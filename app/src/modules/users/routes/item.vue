@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { logout } from '@/auth';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
-import { setLanguage } from '@/lang/set-language';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useServerStore } from '@/stores/server';
@@ -19,7 +19,6 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
-import { logout } from '@/auth';
 
 const props = defineProps<{
 	primaryKey: string;
@@ -66,7 +65,7 @@ const {
 	props.primaryKey !== '+'
 		? {
 				fields: ['*', 'role.*'],
-		  }
+			}
 		: undefined,
 );
 
@@ -229,8 +228,6 @@ async function setLang(user: Record<string, any>) {
 	const newLang = user?.language ?? serverStore.info?.project?.default_language;
 
 	if (newLang && newLang !== locale.value) {
-		await setLanguage(newLang);
-
 		await Promise.all([fieldsStore.hydrate(), collectionsStore.hydrate()]);
 	}
 }

@@ -1694,7 +1694,6 @@ translation_placeholder: Орчуулга оруулна уу...
 value: Утга
 view_project: Төсөл үзэх
 report_error: Алдааг мэдээлэх
-start: Эхлэх
 table: Хүснэгт
 list: Жагсаалт
 search_filter: Хайлт ба шүүлт
@@ -2277,6 +2276,7 @@ show_labels: Шошгуудыг харуулах
 show_legend: Тайлбар харуулах
 right: Баруун
 left: Зүүн
+start: Эхлэх
 donut: Дугуй
 panels:
   metric:

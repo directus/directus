@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-registry",
-	"version": "3.0.7",
+	"version": "3.0.9",
 	"description": "Abstraction for exploring Directus extensions on a package registry",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -27,12 +27,14 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
+		"@directus/constants": "workspace:*",
 		"@directus/errors": "workspace:*",
 		"@directus/extensions": "workspace:*",
-		"ky": "1.7.5",
-		"zod": "3.24.2"
+		"ky": "catalog:",
+		"zod": "catalog:"
 	},
 	"devDependencies": {
+		"@directus/types": "workspace:*",
 		"@directus/tsconfig": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsup": "catalog:",
