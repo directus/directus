@@ -20,8 +20,19 @@ onMounted(() => {
 	}
 });
 
-const { generateTFA, enableTFA, loading, password, tfaEnabled, tfaGenerated, secret, otp, error, canvasID } =
-	useTFASetup(false);
+const {
+	generateTFA,
+	enableTFA,
+	cancel2FASetup,
+	loading,
+	password,
+	tfaEnabled,
+	tfaGenerated,
+	secret,
+	otp,
+	error,
+	canvasID,
+} = useTFASetup(false);
 
 watch(
 	() => tfaGenerated.value,
@@ -54,6 +65,20 @@ async function enable() {
 	}
 }
 
+async function cancel() {
+	// If user has require_2fa set, call the API to cancel setup before redirecting
+	try {
+		await cancel2FASetup();
+	} catch (error) {
+		// If cancel fails, still redirect to avoid getting stuck
+		// eslint-disable-next-line no-console
+		console.error('Failed to cancel 2FA setup:', error);
+	}
+
+	const redirectQuery = router.currentRoute.value.query.redirect as string;
+	router.push(redirectQuery || (userStore.currentUser as User)?.last_page || '/login');
+}
+
 useHead({
 	title: t('tfa_setup'),
 });
@@ -73,7 +98,10 @@ useHead({
 				<v-input v-model="password" :nullable="false" type="password" :placeholder="t('password')" autofocus />
 			</div>
 			<v-error v-if="error" :error="error" />
-			<v-button type="submit" :loading="loading">{{ t('next') }}</v-button>
+			<div class="actions">
+				<button type="button" class="cancel-link" @click="cancel">{{ t('cancel') }}</button>
+				<v-button type="submit" :loading="loading" large>{{ t('next') }}</v-button>
+			</div>
 		</form>
 
 		<v-progress-circular v-else-if="loading === true" class="loader" indeterminate />
@@ -89,7 +117,10 @@ useHead({
 					<v-input ref="inputOTP" v-model="otp" type="text" :placeholder="t('otp')" :nullable="false" />
 					<v-error v-if="error" :error="error" />
 				</div>
-				<v-button type="submit" :disabled="otp.length !== 6" @click="enable">{{ t('done') }}</v-button>
+				<div class="actions">
+					<button type="button" class="cancel-link" @click="cancel">{{ t('cancel') }}</button>
+					<v-button type="submit" :disabled="otp.length !== 6" large @click="enable">{{ t('done') }}</v-button>
+				</div>
 			</form>
 		</div>
 
@@ -128,5 +159,20 @@ h1 {
 	font-family: var(--theme--fonts--monospace--font-family);
 	letter-spacing: 2.6px;
 	text-align: center;
+}
+
+.actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.cancel-link {
+	color: var(--theme--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+}
+
+.cancel-link:hover {
+	color: var(--theme--foreground);
 }
 </style>
