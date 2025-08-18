@@ -10,4 +10,4 @@ flag_management:
 
 comment:
   layout: 'header, diff, flags'
-  require_changes: true
+  require_changes: 'coverage_drop AND uncovered_patch'
