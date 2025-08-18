@@ -255,3 +255,134 @@ test('should place menu at "bottom-end" when menu is not attached and placement 
 
 	expect(menuContent.attributes('data-placement')).toBe('bottom-end');
 });
+
+test('should place menu arrow at left when using placement "top-start" and using ltr', async () => {
+	const button = { template: '<button type="button">Content</button>' };
+
+	const wrapper = mount(VMenu, {
+		...mountOptions,
+		props: {
+			trigger: 'click',
+			attached: false,
+			placement: 'top-start',
+			showArrow: true,
+			arrowPlacement: 'start',
+		},
+		slots: {
+			default: button,
+		},
+	});
+
+	await wrapper.find('.v-menu').trigger('click');
+
+	const menuArrow = wrapper.findComponent(TransitionBounce).find('.arrow');
+
+	expect(menuArrow.attributes('style')).toContain('left: 0px');
+	expect(menuArrow.attributes('style')).toContain('transform: translate3d(6px, 0px, 0)');
+});
+
+test('should place menu arrow at left when using placement "bottom-start" and using ltr', async () => {
+	const button = { template: '<button type="button">Content</button>' };
+
+	const wrapper = mount(VMenu, {
+		...mountOptions,
+		props: {
+			trigger: 'click',
+			attached: false,
+			placement: 'bottom-start',
+			showArrow: true,
+			arrowPlacement: 'start',
+		},
+		slots: {
+			default: button,
+		},
+	});
+
+	await wrapper.find('.v-menu').trigger('click');
+
+	const menuArrow = wrapper.findComponent(TransitionBounce).find('.arrow');
+
+	expect(menuArrow.attributes('style')).toContain('left: 0px');
+	expect(menuArrow.attributes('style')).toContain('transform: translate3d(6px, 0px, 0)');
+});
+
+test('should place menu arrow right when using placement "top-start" and using rtl', async () => {
+	const button = { template: '<button type="button">Content</button>' };
+
+	const wrapper = mount(VMenu, {
+		...mountOptions,
+		props: {
+			trigger: 'click',
+			attached: false,
+			placement: 'top-start',
+			showArrow: true,
+			arrowPlacement: 'start',
+			arrowPadding: 6,
+		},
+		slots: {
+			default: button,
+		},
+		global: {
+			...mountOptions.global,
+			plugins: [
+				createTestingPinia({
+					createSpy: vi.fn,
+					stubActions: false,
+					initialState: {
+						userStore: {
+							currentUser: { text_direction: 'rtl' },
+						},
+					},
+				}),
+			],
+		},
+	});
+
+	await wrapper.find('.v-menu').trigger('click');
+
+	const menuArrow = wrapper.findComponent(TransitionBounce).find('.arrow');
+
+	expect(menuArrow.attributes('style')).toContain('left: unset');
+	expect(menuArrow.attributes('style')).toContain('right: 0px');
+	expect(menuArrow.attributes('style')).toContain('transform: translate3d(-6px, 0px, 0)');
+});
+
+test('should place menu arrow right when using placement "bottom-start" and using rtl', async () => {
+	const button = { template: '<button type="button">Content</button>' };
+
+	const wrapper = mount(VMenu, {
+		...mountOptions,
+		props: {
+			trigger: 'click',
+			attached: false,
+			placement: 'bottom-start',
+			showArrow: true,
+			arrowPlacement: 'start',
+		},
+		slots: {
+			default: button,
+		},
+		global: {
+			...mountOptions.global,
+			plugins: [
+				createTestingPinia({
+					createSpy: vi.fn,
+					stubActions: false,
+					initialState: {
+						userStore: {
+							currentUser: { text_direction: 'rtl' },
+						},
+					},
+				}),
+			],
+		},
+	});
+
+	await wrapper.find('.v-menu').trigger('click');
+
+	const menuArrow = wrapper.findComponent(TransitionBounce).find('.arrow');
+
+	expect(menuArrow.attributes('style')).toContain('left: unset');
+	expect(menuArrow.attributes('style')).toContain('right: 0px');
+	expect(menuArrow.attributes('style')).toContain('transform: translate3d(-6px, 0px, 0)');
+});
