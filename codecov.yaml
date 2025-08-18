@@ -10,3 +10,4 @@ flag_management:
 
 comment:
   layout: 'header, diff, flags'
+  require_changes: true
