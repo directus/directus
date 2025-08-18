@@ -440,12 +440,13 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const codeVerifier = provider.generateCodeVerifier();
 			const prompt = !!req.query['prompt'];
 			const redirect = req.query['redirect'];
+			const otp = req.query['otp'];
 
 			if (isLoginRedirectAllowed(redirect, providerName) === false) {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt }, getSecret(), {
+			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt, otp }, getSecret(), {
 				expiresIn: (env[`AUTH_${providerName.toUpperCase()}_LOGIN_TIMEOUT`] ?? '5m') as StringValue | number,
 				issuer: 'directus',
 			});
@@ -491,6 +492,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 					verifier: string;
 					redirect?: string;
 					prompt: boolean;
+					otp?: string;
 				};
 			} catch (e: any) {
 				logger.warn(e, `[OpenID] Couldn't verify OpenID cookie`);
@@ -498,7 +500,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				return res.redirect(`${url.toString()}?reason=${ErrorCode.InvalidCredentials}`);
 			}
 
-			const { verifier, redirect, prompt } = tokenData;
+			const { verifier, redirect, prompt, otp } = tokenData;
 
 			const accountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
 
@@ -528,7 +530,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 						state: req.query['state'],
 						iss: req.query['iss'],
 					},
-					{ session: authMode === 'session' },
+					{ session: authMode === 'session', ...(otp ? { otp: String(otp) } : {}) },
 				);
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
