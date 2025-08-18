@@ -164,6 +164,7 @@ watch(selectedProviderName, (val) => {
 				<v-input
 					v-if="requiresTFA"
 					v-model="otp"
+					autofocus
 					type="text"
 					autocomplete="one-time-code"
 					:placeholder="t('otp')"
