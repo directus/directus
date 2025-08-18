@@ -412,6 +412,7 @@ function usePopper(
 								case 'bottom-start':
 									x = props.arrowPadding;
 									break;
+								case 'top-end':
 								case 'bottom-end':
 									x = props.arrowPadding * -1;
 									break;
