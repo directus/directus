@@ -123,8 +123,12 @@ async function generateCollection() {
 <template>
 	<v-dialog v-model="active">
 		<v-card>
-			<v-card-title v-if="collection" class="title">{{ t('mcp_prompts_collection.generate_fields_dialog_title') }}</v-card-title>
-			<v-card-title v-else class="title">{{ t('mcp_prompts_collection.generate_collection_dialog_title') }}</v-card-title>
+			<v-card-title v-if="collection" class="title">
+				{{ t('mcp_prompts_collection.generate_fields_dialog_title') }}
+			</v-card-title>
+			<v-card-title v-else class="title">
+				{{ t('mcp_prompts_collection.generate_collection_dialog_title') }}
+			</v-card-title>
 			<v-card-text>
 				<p v-if="collection">
 					{{ t('mcp_prompts_collection.generate_fields_dialog_description', { collection }) }}
@@ -135,7 +139,7 @@ async function generateCollection() {
 				</p>
 
 				<template v-if="saving">
-					<v-skeleton-loader class="loader"/>
+					<v-skeleton-loader class="loader" />
 				</template>
 
 				<template v-else>
@@ -214,7 +218,6 @@ async function generateCollection() {
 	font-size: 14px;
 }
 
-
 .loader {
 	margin-block-start: 24px;
 	min-block-size: 150px;
@@ -226,6 +229,7 @@ async function generateCollection() {
 
 .error {
 	color: var(--theme--danger);
+
 	--v-input-border-color: var(--theme--danger);
 	--v-input-border-color-hover: var(--theme--danger);
 	--v-input-border-color-focus: var(--theme--danger);
