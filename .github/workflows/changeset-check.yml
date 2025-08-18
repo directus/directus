@@ -1,0 +1,42 @@
+name: Changeset Check
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled
+
+permissions:
+  contents: read
+
+jobs:
+  changeset-check:
+    name: Changeset Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for Chore Label
+        if: contains(github.event.pull_request.labels.*.name, 'Chore')
+        run: |
+          echo "✅ Chore label present"
+          exit 0
+
+      - name: Check for Changeset
+        if: ${{ ! contains(github.event.pull_request.labels.*.name, 'Chore') }}
+        run: |
+          git fetch origin main
+
+          if git diff --name-only origin/main...HEAD | grep -qE '^\.changeset/.*\.md$'; then
+            echo "✅ Found changeset file"
+            exit 0
+          fi
+
+          echo "❌ Pull request must add a changeset or have the 'Chore' label."
+          exit 1
