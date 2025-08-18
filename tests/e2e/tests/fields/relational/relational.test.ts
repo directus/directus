@@ -42,6 +42,8 @@ test(`o2m relation `, async () => {
 		),
 	);
 
+	const links = result.links!;
+
 	expect(result.links[0].link).toBe('Link A');
 	expect(result.links[0].article_id).toBe(result.id);
 	expect(result.links[0].id).toBeDefined();
@@ -72,8 +74,6 @@ test(`m2m relation `, async () => {
 		),
 	);
 
-	console.log(result);
-
 	expect(result.tags[0].tags_id.tag).toBe('Tag A');
 	expect(result.tags[0].articles_id.id).toBe(result.id);
 	expect(result.tags[0].id).toBeDefined();
@@ -82,4 +82,40 @@ test(`m2m relation `, async () => {
 	expect(result.tags[1].articles_id.id).toBe(result.id);
 	expect(result.tags[1].id).toBeDefined();
 	expect(result.tags[1].tags_id.id).toBeDefined();
+});
+
+test(`m2a relation `, async () => {
+	const result = await api.request(
+		createItem(
+			collections.articles,
+			{
+				blocks: [
+					{
+						collection: collections.text_blocks,
+						item: {
+							text: 'Hi',
+						},
+					},
+					{
+						collection: collections.date_blocks,
+						item: {
+							date: '2025-12-24',
+						},
+					},
+				],
+			},
+			{ fields: '*.*.*' },
+		),
+	);
+
+	expect(result.blocks[0].item.text).toBe('Hi');
+	expect(result.blocks[1].item.date).toBe('2025-12-24');
+	expect(result.blocks[0].articles_id.id).toBe(result.id);
+	expect(result.blocks[1].articles_id.id).toBe(result.id);
+	expect(result.blocks[0].id).toBeDefined();
+	expect(result.blocks[1].id).toBeDefined();
+	expect(result.blocks[0].item.id).toBeDefined();
+	expect(result.blocks[1].item.id).toBeDefined();
+	expect(result.blocks[0].collection).toBe(collections.text_blocks);
+	expect(result.blocks[1].collection).toBe(collections.date_blocks);
 });

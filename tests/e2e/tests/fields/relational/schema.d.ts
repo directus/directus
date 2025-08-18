@@ -1,12 +1,12 @@
 export interface Schema {
-	articles: Articles;
-	articles_blocks: ArticlesBlocks;
-	articles_tags: ArticlesTags;
-	date_blocks: DateBlocks;
-	links: Links;
-	tags: Tags;
-	text_blocks: TextBlocks;
-	users: Users;
+	articles: Articles[];
+	articles_blocks: ArticlesBlocks[];
+	articles_tags: ArticlesTags[];
+	date_blocks: DateBlocks[];
+	links: Links[];
+	tags: Tags[];
+	text_blocks: TextBlocks[];
+	users: Users[];
 }
 export type Articles = {
 	id: string | number;

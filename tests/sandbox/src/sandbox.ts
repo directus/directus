@@ -372,7 +372,9 @@ async function saveSchema(env: Env) {
 		.map((collection) => {
 			const collectionName = formatCollection(collection.collection);
 
-			return `${formatField(collection.collection)}: ${collectionName}`;
+			if (collection.meta?.singleton) return `${formatField(collection.collection)}: ${collectionName}`;
+
+			return `${formatField(collection.collection)}: ${collectionName}[]`;
 		})
 		.join('\n	')}
 }
@@ -394,11 +396,11 @@ async function saveSchema(env: Env) {
 			const { relation, relationType } = rel;
 
 			if (relationType === 'o2m') {
-				return `${fieldName}: ${formatCollection(relation.collection)}[]`;
+				return `${fieldName}: (string | number | ${formatCollection(relation.collection)})[]`;
 			} else if (relationType === 'm2o') {
-				return `${fieldName}: ${formatCollection(relation.related_collection!)}`;
+				return `${fieldName}: string | number | ${formatCollection(relation.related_collection!)}`;
 			} else {
-				return `${fieldName}: ${relation.meta!.one_allowed_collections!.map(formatCollection).join(' | ')}`;
+				return `${fieldName}: string | number | ${relation.meta!.one_allowed_collections!.map(formatCollection).join(' | ')}`;
 			}
 		})
 		.join('\n	')}
