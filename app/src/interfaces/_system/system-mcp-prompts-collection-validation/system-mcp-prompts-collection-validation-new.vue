@@ -13,13 +13,13 @@ defineEmits<{
 </script>
 
 <template>
-	<v-notice multiline>
+	<v-notice multiline indent-content>
 		<template #title>{{ t('mcp_prompts_collection.no_collection_selected') }}</template>
 
 		<div class="notice-content">
 			<p>{{ t('mcp_prompts_collection.no_collection_selected_copy') }}</p>
 
-			<v-button class="generate-button" small @click="generateCollectionDialogActive = true">
+			<v-button small outlined @click="generateCollectionDialogActive = true">
 				{{ t('mcp_prompts_collection.generate') }}
 			</v-button>
 
@@ -33,17 +33,9 @@ defineEmits<{
 
 <style scoped>
 .notice-content {
-	> * {
-		margin-block-start: 10px;
-	}
-}
-
-.generate-button {
-	--v-button-color: var(--theme--foreground);
-	--v-button-color-hover: var(--theme--foreground);
-	--v-button-color-active: var(--theme--foreground);
-	--v-button-background-color: var(--theme--background-accent);
-	--v-button-background-color-hover: var(--theme--background-accent);
-	--v-button-background-color-active: var(--theme--background-accent);
+	padding-block: 10px 4px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 }
 </style>
