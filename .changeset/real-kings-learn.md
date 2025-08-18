@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Add RTL support for popper context menu
+Added RTL support for popper context menu
