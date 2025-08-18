@@ -286,19 +286,23 @@ function usePopper(
 		stop();
 	});
 
-	function checkPlacement() {
-		if (isRTL.value && options.value.placement.includes('start')) {
-			return options.value.placement.replace(/start/g, 'end');
+	function getPlacement() {
+		if (isRTL.value) {
+			if (options.value.attached) {
+				return 'bottom-end';
+			} else if (options.value.placement.includes('start') || options.value.placement.includes('end')) {
+				return options.value.placement.replace(/start|end/g, (match) => (match === 'start' ? 'end' : 'start'));
+			}
 		}
 
-		return options.value.placement;
+		return options.value.attached ? 'bottom-start' : options.value.placement;
 	}
 
 	watch(
 		options,
 		() => {
 			popperInstance.value?.setOptions({
-				placement: options.value.attached ? 'bottom-start' : (checkPlacement() as Placement),
+				placement: getPlacement() as Placement,
 				modifiers: getModifiers(),
 			});
 		},
@@ -314,7 +318,7 @@ function usePopper(
 	function start() {
 		return new Promise((resolve) => {
 			popperInstance.value = createPopper(reference.value!, popper.value!, {
-				placement: options.value.attached ? 'bottom-start' : (checkPlacement() as Placement),
+				placement: getPlacement() as Placement,
 				modifiers: getModifiers(resolve),
 				strategy: 'fixed',
 			});
