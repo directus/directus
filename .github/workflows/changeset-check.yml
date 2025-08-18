@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   changeset-check:
@@ -46,3 +47,11 @@ jobs:
         run: |
           echo "❌ Pull request must add a changeset or have the 'Chore' label."
           exit 1
+
+      - name: Hide changeset-bot Comment
+        if:
+          ${{ github.event_name == 'pull_request' && github.event.action == 'labeled' && github.event.label.name ==
+          'Chore' }}
+        uses: int128/hide-comment-action@v1
+        with:
+          authors: changeset-bot
