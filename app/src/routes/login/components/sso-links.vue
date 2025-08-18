@@ -50,15 +50,36 @@ const otpInlineError = computed(() => {
 	return reason === 'INVALID_OTP' && otpAttempted.value ? translateAPIError('INVALID_OTP') : null;
 });
 
+// Track the original provider that was clicked for OTP submission
+const originalProviderName = ref<string | null>(null);
+
+// For normal provider selection (when not in OTP mode)
 const selectedProviderName = ref<string | null>(null);
 
-// List of providers for the selector when multiple SSO providers are available
-const providerItems = computed(() => {
-	return ssoProviders.value.map((p) => ({ text: p.label, value: p.name }));
+// Get the original provider from the URL when OTP is required
+onMounted(() => {
+	if (requiresTFA.value) {
+		// Extract provider from the current URL path
+		const pathParts = window.location.pathname.split('/');
+		const authIndex = pathParts.findIndex((part) => part === 'auth');
+
+		if (authIndex !== -1 && pathParts[authIndex + 1] === 'login' && pathParts[authIndex + 2]) {
+			originalProviderName.value = pathParts[authIndex + 2] || null;
+		}
+	}
 });
 
 const selectedProviderLink = computed(() => {
+	if (requiresTFA.value && originalProviderName.value) {
+		// For OTP submission, use the original provider
+		const found = ssoProviders.value.find((p) => p.name === originalProviderName.value);
+
+		return found ? found.link : null;
+	}
+
+	// For normal provider selection (when not in 2FA OTP mode)
 	const found = ssoProviders.value.find((p) => p.name === selectedProviderName.value);
+
 	return found ? found.link : null;
 });
 
@@ -180,15 +201,6 @@ watch(selectedProviderName, (val) => {
 			<transition-expand>
 				<div v-if="requiresTFA" class="signin-actions">
 					<v-notice v-if="otpInlineError" type="warning">{{ otpInlineError }}</v-notice>
-
-					<template v-if="ssoProviders.length > 1">
-						<v-select
-							v-model="selectedProviderName"
-							:items="providerItems"
-							:label="t('log_in_with', { provider: '' })"
-							inline
-						/>
-					</template>
 				</div>
 			</transition-expand>
 		</template>
