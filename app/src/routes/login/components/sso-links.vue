@@ -242,6 +242,7 @@ watch(selectedProviderName, (val) => {
 	border: $sso-link-border-width var(--theme--background-normal) solid;
 	border-radius: var(--theme--border-radius);
 	transition: border-color var(--fast) var(--transition);
+	cursor: pointer;
 
 	.sso-icon {
 		--v-icon-size: 28px;

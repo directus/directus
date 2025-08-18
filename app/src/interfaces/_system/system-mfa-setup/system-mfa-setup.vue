@@ -17,6 +17,7 @@ const userStore = useUserStore();
 const enableActive = ref(false);
 const disableActive = ref(false);
 const cancelSetupActive = ref(false);
+const showEmailMessage = ref(false);
 
 const inputOTP = ref<any>(null);
 
@@ -26,6 +27,17 @@ const isCurrentUser = computed(() => (userStore.currentUser as User)?.id === pro
 const isOAuthUser = computed(() => {
 	const user = userStore.currentUser;
 	return user && !('share' in user) && user.provider !== 'default';
+});
+
+// Check if OAuth user has an email address
+const oauthUserHasEmail = computed(() => {
+	const user = userStore.currentUser as User;
+	return user && user.email && user.email.trim() !== '';
+});
+
+// Check if OAuth user needs to add email before enabling 2FA
+const oauthUserNeedsEmail = computed(() => {
+	return isOAuthUser.value && !oauthUserHasEmail.value;
 });
 
 // The 2fa checkbox should only be enabled if the user has a tfa_secret or
@@ -104,6 +116,13 @@ async function cancelSetup() {
 
 function toggle() {
 	if (tfaEnabled.value === false) {
+		// Check if OAuth user needs email before enabling 2FA
+		if (oauthUserNeedsEmail.value) {
+			// Show the email requirement message
+			showEmailMessage.value = true;
+			return;
+		}
+
 		enableActive.value = true;
 	} else {
 		// For OAuth users with require_2fa but no tfa_secret, show cancel dialog instead of disable
@@ -124,6 +143,7 @@ function cancelAndClose() {
 	enableActive.value = false;
 	disableActive.value = false;
 	cancelSetupActive.value = false;
+	showEmailMessage.value = false;
 	password.value = '';
 	otp.value = '';
 	secret.value = '';
@@ -140,6 +160,11 @@ function cancelAndClose() {
 				<v-icon name="launch" class="checkbox-icon" :class="{ enabled: tfaEnabled }" />
 			</template>
 		</v-checkbox>
+
+		<!-- Show message for OAuth users who need to add email before enabling 2FA -->
+		<v-notice v-if="showEmailMessage && oauthUserNeedsEmail" type="warning" class="email-notice">
+			{{ t('oauth_2fa_email_required') }}
+		</v-notice>
 
 		<v-dialog v-model="enableActive" persistent @esc="cancelAndClose">
 			<v-card>
@@ -281,5 +306,9 @@ function cancelAndClose() {
 
 .v-error {
 	margin-block-start: 24px;
+}
+
+.email-notice {
+	margin-block-start: 12px;
 }
 </style>
