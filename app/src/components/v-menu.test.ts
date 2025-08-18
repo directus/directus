@@ -141,3 +141,117 @@ test('should have pointerenter and pointerleave event listener when trigger is "
 
 	expect(wrapper.props('modelValue')).toBe(false);
 });
+
+test('should place menu at bottom-start when menu is attached and using ltr', async () => {
+	const button = { template: '<button type="button">Content</button>' };
+
+	const wrapper = mount(VMenu, {
+		...mountOptions,
+		props: {
+			trigger: 'click',
+			attached: true,
+		},
+		slots: {
+			default: button,
+		},
+	});
+
+	await wrapper.find('.v-menu').trigger('click');
+
+	const menuContent = wrapper.findComponent(TransitionBounce).find('.v-menu-popper');
+
+	expect(menuContent.attributes('data-placement')).toBe('bottom-start');
+});
+
+test('should place menu at "bottom-start" when menu is not attached and placement is "bottom-start" and using ltr', async () => {
+	const button = { template: '<button type="button">Content</button>' };
+
+	const wrapper = mount(VMenu, {
+		...mountOptions,
+		props: {
+			trigger: 'click',
+			attached: false,
+			placement: 'bottom-start',
+		},
+		slots: {
+			default: button,
+		},
+	});
+
+	await wrapper.find('.v-menu').trigger('click');
+
+	const menuContent = wrapper.findComponent(TransitionBounce).find('.v-menu-popper');
+
+	expect(menuContent.attributes('data-placement')).toBe('bottom-start');
+});
+
+test('should place menu at "bottom-end" when menu is attached and using rtl', async () => {
+	const button = { template: '<button type="button">Content</button>' };
+
+	const wrapper = mount(VMenu, {
+		...mountOptions,
+		props: {
+			trigger: 'click',
+			attached: true,
+		},
+		slots: {
+			default: button,
+		},
+		global: {
+			...mountOptions.global,
+			plugins: [
+				createTestingPinia({
+					createSpy: vi.fn,
+					stubActions: false,
+					initialState: {
+						userStore: {
+							currentUser: { text_direction: 'rtl' },
+						},
+					},
+				}),
+			],
+		},
+	});
+
+	await wrapper.find('.v-menu').trigger('click');
+
+	const menuContent = wrapper.findComponent(TransitionBounce).find('.v-menu-popper');
+
+	expect(menuContent.attributes('data-placement')).toBe('bottom-end');
+});
+
+test('should place menu at "bottom-end" when menu is not attached and placement is "bottom-start" and using rtl', async () => {
+	const button = { template: '<button type="button">Content</button>' };
+
+	const wrapper = mount(VMenu, {
+		...mountOptions,
+		props: {
+			trigger: 'click',
+			attached: false,
+			placement: 'bottom-start',
+		},
+		slots: {
+			default: button,
+		},
+		global: {
+			...mountOptions.global,
+			plugins: [
+				createTestingPinia({
+					createSpy: vi.fn,
+					stubActions: false,
+					initialState: {
+						userStore: {
+							currentUser: { text_direction: 'rtl' },
+						},
+					},
+				}),
+			],
+		},
+	});
+
+	await wrapper.find('.v-menu').trigger('click');
+
+	const menuContent = wrapper.findComponent(TransitionBounce).find('.v-menu-popper');
+
+	expect(menuContent.attributes('data-placement')).toBe('bottom-end');
+});
