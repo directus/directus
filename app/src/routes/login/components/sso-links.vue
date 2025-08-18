@@ -29,10 +29,6 @@ const requiresTFA = computed(() => {
 	return reason === 'INVALID_OTP';
 });
 
-function navigate(link: string) {
-	window.location.href = link;
-}
-
 const otpAttempted = ref(false);
 
 // Check if a previous OTP attempt was made (to conditionally show the inline error)
@@ -56,15 +52,14 @@ const originalProviderName = ref<string | null>(null);
 // For normal provider selection (when not in OTP mode)
 const selectedProviderName = ref<string | null>(null);
 
-// Get the original provider from the URL when OTP is required
+// Get the original provider from localStorage when OTP is required
 onMounted(() => {
 	if (requiresTFA.value) {
-		// Extract provider from the current URL path
-		const pathParts = window.location.pathname.split('/');
-		const authIndex = pathParts.findIndex((part) => part === 'auth');
+		// Get the provider from localStorage that was set when the user clicked the SSO link
+		const storedProvider = localStorage.getItem('oauth_provider');
 
-		if (authIndex !== -1 && pathParts[authIndex + 1] === 'login' && pathParts[authIndex + 2]) {
-			originalProviderName.value = pathParts[authIndex + 2] || null;
+		if (storedProvider) {
+			originalProviderName.value = storedProvider;
 		}
 	}
 });
@@ -140,6 +135,11 @@ const errorFormatted = computed(() => {
 	return null;
 });
 
+function handleSSOClick(provider: { name: string; link: string }) {
+	localStorage.setItem('oauth_provider', provider.name);
+	window.location.href = provider.link;
+}
+
 function onSubmitOTP() {
 	if (submitting.value) return;
 	if (!isOTPValid.value) return;
@@ -149,7 +149,7 @@ function onSubmitOTP() {
 	if (!link) return;
 	submitting.value = true;
 	sessionStorage.setItem('oauth_otp_attempted', '1');
-	navigate(link);
+	window.location.href = link;
 }
 
 watch(otp, (val) => {
@@ -172,7 +172,12 @@ watch(selectedProviderName, (val) => {
 				{{ errorFormatted }}
 			</v-notice>
 
-			<a v-for="provider in ssoProviders" :key="provider.name" class="sso-link" :href="provider.link">
+			<a
+				v-for="provider in ssoProviders"
+				:key="provider.name"
+				class="sso-link"
+				@click.prevent="() => handleSSOClick(provider)"
+			>
 				<div class="sso-icon">
 					<v-icon :name="provider.icon" />
 				</div>
