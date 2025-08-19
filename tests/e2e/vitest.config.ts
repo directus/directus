@@ -1,3 +1,4 @@
+import { databases } from '@directus/sandbox';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -7,7 +8,7 @@ export default defineConfig({
 		globalSetup: './setup/setup-all.ts',
 		projects: [
 			'./vitest.config.ts',
-			...['maria', 'cockroachdb', 'mssql', 'mysql', 'oracle', 'postgres', 'sqlite'].map((database, index) => ({
+			...databases.map((database, index) => ({
 				test: {
 					globalSetup: './setup/setup-one.ts',
 					name: database,

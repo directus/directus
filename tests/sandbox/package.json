@@ -6,8 +6,9 @@
 	"scripts": {
 		"cli": "tsx src/cli.ts",
 		"build": "tsc",
-		"dev": "tsc -w",
-		"build:tests": "tsup src/index.ts  --format=esm"
+		"dev": "tsc -w ",
+		"build:tests": "tsup src/index.ts  --format=esm",
+		"postinstall": "pnpm link"
 	},
 	"exports": {
 		".": "./dist/index.js",
@@ -18,7 +19,8 @@
 		"sandbox": "dist/cli.js"
 	},
 	"files": [
-		"dist"
+		"dist",
+		"docker"
 	],
 	"keywords": [],
 	"type": "module",

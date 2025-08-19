@@ -1,17 +1,17 @@
-import { program } from 'commander';
-import { sandbox, type Database } from './sandbox.js';
+import { Argument, program } from 'commander';
+import { databases, sandbox, type Database } from './sandbox.js';
 
 program
-	.argument('<database>')
+	.addArgument(new Argument('<database>', 'What database to start the api with').choices(databases))
 	.option('-b, --build', 'Rebuild directus from source')
-	.option('-d, --dev', 'Start directus in developer mode. Not compatible with build.')
-	.option('-w, --watch', 'Restart directus when changes are made to the api.')
-	.option('-p, --port <port>', 'Port to start directus on.')
+	.option('-d, --dev', 'Start directus in developer mode. Not compatible with build')
+	.option('-w, --watch', 'Restart the api when changes are made')
+	.option('-p, --port <port>', 'Port to start the api on')
 	.option('-x, --export', 'Export the schema to a file every 2 seconds')
-	.option('-s, --schema <schema>', 'Load an additional schema on startup')
+	.option('-s, --schema <schema>', 'Load an additional schema snapshot on startup')
 	.option('--dockerBasePort <dockerBasePort>', 'Minimum port number to use for docker containers')
 	.option('-e, --extras <extras>', 'Enable redis,maildev,saml or other extras')
-	.option('-i, --instances <instances>', 'Horizontally scale directus to a given number of instances. Minimum 1', '1');
+	.option('-i, --instances <instances>', 'Horizontally scale directus to a given number of instances', '1');
 
 program.parse();
 const options = program.opts();

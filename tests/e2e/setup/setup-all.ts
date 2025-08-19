@@ -1,5 +1,5 @@
 import type { TestProject } from 'vitest/node';
-import { Env, sandboxes, Sandboxes } from '@directus/sandbox';
+import { Database, databases, Sandbox, sandboxes, Sandboxes } from '@directus/sandbox';
 import { createDirectus, staticToken, schemaDiff, schemaApply, rest } from '@directus/sdk';
 import { Schema } from './schema';
 import { readFile } from 'fs/promises';
@@ -12,20 +12,18 @@ export async function setup(project: TestProject) {
 
 	const ports: number[] = [];
 
-	const dbs = (['maria', 'cockroachdb', 'mssql', 'mysql', 'oracle', 'postgres', 'sqlite'] as const).map(
-		(database, index) => {
-			const port = 8000 + index * 100;
-			ports.push(port);
-			return {
-				database,
-				options: {
-					prefix: database,
-					port: String(port),
-					dockerBasePort: String(port + 1),
-				},
-			};
-		},
-	);
+	const dbs = databases.map((database, index) => {
+		const port = 8000 + index * 100;
+		ports.push(port);
+		return {
+			database,
+			options: {
+				prefix: database,
+				port: String(port),
+				dockerBasePort: String(port + 1),
+			},
+		};
+	});
 
 	sb = await sandboxes(dbs, {
 		build: true,

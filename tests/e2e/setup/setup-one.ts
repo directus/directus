@@ -1,4 +1,4 @@
-import { Database, Env, Sandbox, sandbox } from '@directus/sandbox';
+import { Database, Env, Options, Sandbox, sandbox } from '@directus/sandbox';
 import { createDirectus, rest, schemaApply, schemaDiff, staticToken } from '@directus/sdk';
 import { Schema } from './schema';
 import { join } from 'path';

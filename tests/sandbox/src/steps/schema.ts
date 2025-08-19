@@ -1,0 +1,93 @@
+import type { Snapshot } from '@directus/types';
+import { spawn } from 'child_process';
+import { writeFile } from 'fs/promises';
+import { camelCase, upperFirst } from 'lodash-es';
+import { join, resolve } from 'path';
+import { type Env } from '../config.js';
+import { type Logger } from '../logger.js';
+import { getRelationInfo } from '../relation.js';
+import { apiFolder } from '../sandbox.js';
+
+export async function loadSchema(schema_file: string, env: Env, logger: Logger) {
+	logger.info('Applying Schema');
+
+	const schema = spawn(
+		'node',
+		[join(apiFolder, 'dist', 'cli', 'run.js'), 'schema', 'apply', '-y', resolve(schema_file)],
+		{
+			env,
+		},
+	);
+
+	schema.on('error', (err) => {
+		schema.kill();
+		throw err;
+	});
+
+	logger.pipe(schema.stdout, 'debug');
+	logger.pipe(schema.stderr, 'error');
+
+	await new Promise((resolve) => schema.on('close', resolve));
+	logger.info('Completed Applying Schema');
+}
+
+export async function saveSchema(env: Env) {
+	return setInterval(async () => {
+		const data = await fetch(`${env.PUBLIC_URL}/schema/snapshot?access_token=${env.ADMIN_TOKEN}`);
+		const snapshot = (await data.json()) as { data: Snapshot };
+
+		const collections = snapshot.data.collections.filter((collection) => collection.schema);
+
+		const schema = `export type Schema = {
+	${collections
+		.map((collection) => {
+			const collectionName = formatCollection(collection.collection);
+
+			if (collection.meta?.singleton) return `${formatField(collection.collection)}: ${collectionName}`;
+
+			return `${formatField(collection.collection)}: ${collectionName}[]`;
+		})
+		.join('\n	')}
+}
+`;
+
+		const collectionTypes = collections
+			.map((collection) => {
+				const collectionName = formatCollection(collection.collection);
+
+				return `export type ${collectionName} = {
+	${snapshot.data.fields
+		.filter((field) => field.collection === collection.collection)
+		.map((field) => {
+			const rel = getRelationInfo(snapshot.data.relations, collection.collection, field.field);
+			const fieldName = formatField(field.field);
+
+			if (!rel) return `${fieldName}: string | number`;
+
+			const { relation, relationType } = rel;
+
+			if (relationType === 'o2m') {
+				return `${fieldName}: (string | number | ${formatCollection(relation.collection)})[]`;
+			} else if (relationType === 'm2o') {
+				return `${fieldName}: string | number | ${formatCollection(relation.related_collection!)}`;
+			} else {
+				return `${fieldName}: string | number | ${relation.meta!.one_allowed_collections!.map(formatCollection).join(' | ')}`;
+			}
+		})
+		.join('\n	')}
+}`;
+			})
+			.join('\n');
+
+		await writeFile('schema.d.ts', schema + collectionTypes);
+		await writeFile('snapshot.json', JSON.stringify(snapshot.data, null, 4));
+	}, 2000);
+}
+
+function formatCollection(title: string) {
+	return upperFirst(camelCase(title.replaceAll('_1234', '')));
+}
+
+function formatField(title: string) {
+	return title.replaceAll('_1234', '');
+}

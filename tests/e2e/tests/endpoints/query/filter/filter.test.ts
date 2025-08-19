@@ -1,5 +1,5 @@
 import { createDirectus, createItem, readItems, rest, staticToken } from '@directus/sdk';
-import { useSnapshot } from '../../../utils/useSnapshot';
+import { useSnapshot } from '../../../../utils/useSnapshot';
 import { Schema } from './schema';
 import { join } from 'path';
 import { expect, test } from 'vitest';
@@ -133,7 +133,7 @@ test(`number _nbetween `, async () => {
 	);
 
 	expect(result.length).toBe(6);
-	expect(result.map((r) => r.votes)).toEqual([0, 10, 20, 70, 80, 90]);
+	expect(result.map((r) => r.votes).sort()).toEqual([0, 10, 20, 70, 80, 90]);
 });
 
 test(`string _eq on m2m relation `, async () => {

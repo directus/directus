@@ -3,8 +3,12 @@
 	"compilerOptions": {
 		"outDir": "dist"
 	},
-	"include": ["src"],
+	"include": [
+		"src"
+	],
 	"typedocOptions": {
-		"entryPoints": ["./src/index.ts"]
+		"entryPoints": [
+			"./src/index.ts"
+		]
 	}
 }
