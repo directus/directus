@@ -558,6 +558,26 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 
 			const { accessToken, refreshToken, expires } = authResponse;
 
+			// If user needs to set up 2FA (one-time on next login), redirect to /admin/tfa-setup
+			try {
+				const claims = verifyJWT(accessToken, getSecret()) as any;
+
+				if (claims?.require_2fa === true) {
+					const url = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'tfa-setup');
+					if (redirect) url.setQuery('redirect', redirect);
+
+					if (authMode === 'session') {
+						res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
+					} else {
+						res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+					}
+
+					return res.redirect(url.toString());
+				}
+			} catch (e) {
+				logger.warn(e, `[OpenID] Unexpected error during OpenID login`);
+			}
+
 			if (redirect) {
 				if (authMode === 'session') {
 					res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
