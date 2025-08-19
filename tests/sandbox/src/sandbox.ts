@@ -1,12 +1,11 @@
 import type { DatabaseClient, DeepPartial, Snapshot } from '@directus/types';
 import { createLogger, type Logger } from './logger.js';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { camelCase, merge, upperFirst } from 'lodash-es';
 import { spawn, type ChildProcessWithoutNullStreams } from 'child_process';
 import { getEnv, type Env } from './config.js';
 import { writeFile } from 'fs/promises';
 import { getRelationInfo } from './relation.js';
-
 export type { Env } from './config.js';
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
 
@@ -16,10 +15,11 @@ export type Options = {
 	watch: boolean;
 	port: string;
 	dockerBasePort: string;
-	scale: string;
+	instances: string;
 	env: Record<string, string>;
 	prefix: string | undefined;
-	schema: boolean;
+	export: boolean;
+	schema: string | undefined;
 	extras: {
 		redis: boolean;
 		saml: boolean;
@@ -51,10 +51,11 @@ function getOptions(options?: DeepPartial<Options>): Options {
 			watch: false,
 			port: '8055',
 			dockerBasePort: '6000',
-			scale: '1',
+			instances: '1',
 			env: {} as Record<string, string>,
 			prefix: undefined,
-			schema: false,
+			schema: undefined,
+			export: false,
 			extras: {
 				redis: false,
 				maildev: false,
@@ -70,7 +71,7 @@ const apiFolder = join(import.meta.dirname, '..', '..', '..', 'api');
 const databases = ['cockroachdb', 'maria', 'mssql', 'mysql', 'oracle', 'postgres', 'sqlite'];
 
 export async function sandboxes(
-	sandboxes: { database: Database; options: DeepPartial<Omit<Options, 'build' | 'dev' | 'watch' | 'schema'>> }[],
+	sandboxes: { database: Database; options: DeepPartial<Omit<Options, 'build' | 'dev' | 'watch' | 'export'>> }[],
 	options?: Partial<Pick<Options, 'build' | 'dev' | 'watch'>>,
 ): Promise<Sandboxes> {
 	if (!sandboxes.every((sandbox) => databases.includes(sandbox.database))) throw new Error('Invalid database provided');
@@ -106,6 +107,7 @@ export async function sandboxes(
 					if (project) projects.push({ project, logger, env });
 
 					await bootstrap(env, logger);
+					if (opts.schema) await loadSchema(opts.schema, env, logger);
 
 					apis.push({ processes: await startDirectus(opts, env, logger), index, opts, env, logger });
 				} catch (e) {
@@ -156,9 +158,10 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 
 		project = await dockerUp(database, opts.extras, env, logger);
 		await bootstrap(env, logger);
+		if (opts.schema) await loadSchema(opts.schema, env, logger);
 		apis = await startDirectus(opts, env, logger);
 
-		if (opts.schema) interval = await saveSchema(env);
+		if (opts.export) interval = await saveSchema(env);
 	} catch (err: any) {
 		logger.error(err.toString());
 		await stop();
@@ -319,7 +322,7 @@ async function bootstrap(env: Env, logger: Logger) {
 }
 
 async function startDirectus(opts: Options, env: Env, logger: Logger) {
-	const apiCount = Math.max(1, Number(opts.scale));
+	const apiCount = Math.max(1, Number(opts.instances));
 
 	return await Promise.all(
 		[...Array(apiCount).keys()].map((i) => {
@@ -383,6 +386,31 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 	logger.info(`Server started at http://${env.HOST}:${env.PORT}`);
 
 	return api;
+}
+
+async function loadSchema(schema_file: string, env: Env, logger: Logger) {
+	logger.info('Applying Schema');
+
+	const schema = spawn(
+		'node',
+		[join(apiFolder, 'dist', 'cli', 'run.js'), 'schema', 'apply', '-y', resolve(schema_file)],
+		{
+			env,
+		},
+	);
+
+	schema.on('error', (err) => {
+		schema.kill();
+		throw err;
+	});
+
+	logger.info(`BOOTSTRAP ${schema.pid}`);
+
+	logger.pipe(schema.stdout, 'debug');
+	logger.pipe(schema.stderr, 'error');
+
+	await new Promise((resolve) => schema.on('close', resolve));
+	logger.info('Completed Applying Schema');
 }
 
 async function saveSchema(env: Env) {

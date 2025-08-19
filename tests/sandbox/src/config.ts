@@ -150,7 +150,7 @@ export function getEnv(database: Database, opts: Options): Env {
 
 	const portMap: Record<string, string> = {};
 
-	if (Number(opts.scale) > 1) {
+	if (Number(opts.instances) > 1) {
 		opts.extras.redis = true;
 	}
 
