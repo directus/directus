@@ -15,7 +15,7 @@ program
 program.parse();
 const options = program.opts();
 
-const stopSandbox = await sandbox(program.args[0] as Database, {
+const sb = await sandbox(program.args[0] as Database, {
 	...options,
 	extras: options['extras']
 		? Object.fromEntries(
@@ -28,12 +28,12 @@ const stopSandbox = await sandbox(program.args[0] as Database, {
 
 await new Promise((resolve) => {
 	process.on('SIGINT', async () => {
-		await stopSandbox();
+		await sb.stop();
 		resolve(undefined);
 	});
 
 	process.on('SIGTERM', async () => {
-		await stopSandbox();
+		await sb.stop();
 		resolve(undefined);
 	});
 });

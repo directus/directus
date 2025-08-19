@@ -191,7 +191,5 @@ export type Env = (typeof baseConfig)[Database] & {
 	PUBLIC_URL: string;
 	NODE_ENV: string;
 } & Partial<typeof minio> &
-	Partial<typeof saml>;
-
-export type Platform = keyof typeof baseConfig;
-export const platforms = Object.keys(baseConfig) as Platform[];
+	Partial<typeof saml> &
+	Partial<typeof maildev>;

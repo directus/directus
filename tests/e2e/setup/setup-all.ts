@@ -1,13 +1,13 @@
 import type { TestProject } from 'vitest/node';
-import { sandboxes, StopSandbox } from '@directus/sandbox';
+import { Env, sandboxes, Sandboxes } from '@directus/sandbox';
 import { createDirectus, staticToken, schemaDiff, schemaApply, rest } from '@directus/sdk';
 import { Schema } from './schema';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
-let sb: StopSandbox | undefined;
+let sb: Sandboxes | undefined;
 
-export async function setup(_project: TestProject) {
+export async function setup(project: TestProject) {
 	if (process.env['ALL'] !== 'true') return;
 
 	const ports: number[] = [];
@@ -41,8 +41,15 @@ export async function setup(_project: TestProject) {
 			await api.request(schemaApply(diff));
 		}),
 	);
+
+	project.provide(
+		'envs',
+		Object.fromEntries(sb.sandboxes.map((sandbox) => [dbs[sandbox.index].database, sandbox.env])),
+	);
+
+	project.provide('options', Object.fromEntries(dbs.map((db) => [db.database, db.options])));
 }
 
 export async function teardown(_project: TestProject) {
-	if (sb) await sb();
+	if (sb) await sb.stop();
 }

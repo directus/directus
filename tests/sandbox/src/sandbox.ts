@@ -7,7 +7,7 @@ import { getEnv, type Env } from './config.js';
 import { writeFile } from 'fs/promises';
 import { getRelationInfo } from './relation.js';
 
-export type StopSandbox = () => Promise<void>;
+export type { Env } from './config.js';
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
 
 export type Options = {
@@ -26,6 +26,21 @@ export type Options = {
 		minio: boolean;
 		maildev: boolean;
 	};
+};
+
+export type Sandboxes = {
+	sandboxes: {
+		index: number;
+		env: Env;
+	}[];
+	restartApis(): Promise<void>;
+	stop(): Promise<void>;
+};
+
+export type Sandbox = {
+	restartApi(): Promise<void>;
+	stop(): Promise<void>;
+	env: Env;
 };
 
 function getOptions(options?: DeepPartial<Options>): Options {
@@ -57,29 +72,31 @@ const databases = ['cockroachdb', 'maria', 'mssql', 'mysql', 'oracle', 'postgres
 export async function sandboxes(
 	sandboxes: { database: Database; options: DeepPartial<Omit<Options, 'build' | 'dev' | 'watch' | 'schema'>> }[],
 	options?: Partial<Pick<Options, 'build' | 'dev' | 'watch'>>,
-): Promise<StopSandbox> {
+): Promise<Sandboxes> {
 	if (!sandboxes.every((sandbox) => databases.includes(sandbox.database))) throw new Error('Invalid database provided');
 
 	const opts = getOptions(options);
 	const logger = createLogger();
-	let apis: { processes: ChildProcessWithoutNullStreams[]; opts: Options; env: Env; logger: Logger }[] = [];
+
+	let apis: {
+		index: number;
+		processes: ChildProcessWithoutNullStreams[];
+		opts: Options;
+		env: Env;
+		logger: Logger;
+	}[] = [];
+
 	let build: ChildProcessWithoutNullStreams | undefined;
 	const projects: { project: string; logger: Logger; env: Env }[] = [];
 
 	try {
 		// Rebuild directus
 		if (opts.build && !opts.dev) {
-			build = await buildDirectus(opts, logger, async () => {
-				apis.forEach((api) => api.processes.forEach((process) => process.kill()));
-
-				apis = await Promise.all(
-					apis.map(async (api) => ({ ...api, processes: await startDirectus(api.opts, api.env, api.logger) })),
-				);
-			});
+			build = await buildDirectus(opts, logger, restartApis);
 		}
 
 		await Promise.all(
-			sandboxes.map(async ({ database, options }) => {
+			sandboxes.map(async ({ database, options }, index) => {
 				const opts = getOptions(options);
 				const logger = opts.prefix ? createLogger(opts.prefix) : createLogger();
 				const env = getEnv(database, opts);
@@ -90,7 +107,7 @@ export async function sandboxes(
 
 					await bootstrap(env, logger);
 
-					apis.push({ processes: await startDirectus(opts, env, logger), opts, env, logger });
+					apis.push({ processes: await startDirectus(opts, env, logger), index, opts, env, logger });
 				} catch (e) {
 					logger.error(String(e));
 					throw e;
@@ -102,6 +119,14 @@ export async function sandboxes(
 		throw e;
 	}
 
+	async function restartApis() {
+		apis.forEach((api) => api.processes.forEach((process) => process.kill()));
+
+		apis = await Promise.all(
+			apis.map(async (api) => ({ ...api, processes: await startDirectus(api.opts, api.env, api.logger) })),
+		);
+	}
+
 	async function stop() {
 		build?.kill();
 		apis.forEach((api) => api.processes.forEach((process) => process.kill()));
@@ -109,10 +134,10 @@ export async function sandboxes(
 		process.exit();
 	}
 
-	return stop;
+	return { sandboxes: apis.map(({ env, index }) => ({ index, env })), stop, restartApis };
 }
 
-export async function sandbox(database: Database, options?: DeepPartial<Options>): Promise<StopSandbox> {
+export async function sandbox(database: Database, options?: DeepPartial<Options>): Promise<Sandbox> {
 	if (!databases.includes(database)) throw new Error('Invalid database provided');
 	const opts = getOptions(options);
 
@@ -126,10 +151,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	try {
 		// Rebuild directus
 		if (opts.build && !opts.dev) {
-			build = await buildDirectus(opts, logger, async () => {
-				apis.forEach((api) => api.kill());
-				apis = await startDirectus(opts, env, logger);
-			});
+			build = await buildDirectus(opts, logger, restartApi);
 		}
 
 		project = await dockerUp(database, opts.extras, env, logger);
@@ -143,6 +165,11 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		throw err;
 	}
 
+	async function restartApi() {
+		apis.forEach((api) => api.kill());
+		apis = await startDirectus(opts, env, logger);
+	}
+
 	async function stop() {
 		clearInterval(interval);
 		build?.kill();
@@ -151,7 +178,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		process.exit();
 	}
 
-	return stop;
+	return { stop, restartApi, env };
 }
 
 async function buildDirectus(opts: Options, logger: Logger, onRebuild: () => void) {
