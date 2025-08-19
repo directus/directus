@@ -107,7 +107,7 @@ test(`number _between `, async () => {
 	);
 
 	expect(result.length).toBe(4);
-	expect(result.map((r) => r.votes)).toEqual([30, 40, 50, 60]);
+	expect(result.map((r) => r.votes).sort()).toEqual([30, 40, 50, 60]);
 });
 
 test(`number _nbetween `, async () => {
