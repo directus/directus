@@ -135,7 +135,7 @@ export function useItem<T extends Item>(
 		return !!fieldWithConditions.meta?.hidden && !!fieldWithConditions.meta?.clear_hidden_value_on_save;
 	}
 
-	function clearHiddenFields(edits: Item, fields: Field[], currentValues: Record<string, any>): Item {
+	function clearHiddenFieldsByCondition(edits: Item, fields: Field[], currentValues: Record<string, any>): Item {
 		const clearedEdits = cloneDeep(edits);
 		let hasChanges = false;
 
@@ -168,8 +168,7 @@ export function useItem<T extends Item>(
 
 		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
 
-		// Clear hidden fields if configured to do so
-		const finalEdits = clearHiddenFields(edits.value, fields, payloadToValidate);
+		const finalEdits = clearHiddenFieldsByCondition(edits.value, fields, payloadToValidate);
 
 		const finalPayloadToValidate = mergeWith(
 			{},
