@@ -43,13 +43,29 @@ export class TFAService {
 			throw new InvalidPayloadError({ reason: 'User must have a valid email to enable TFA' });
 		}
 
-		// For OAuth users, check if 2FA setup is requested
+		// For OAuth users, check if 2FA setup is requested or role-based enforcement
 		if (!requiresPassword && user?.provider === 'default') {
 			throw new InvalidPayloadError({ reason: 'This method is only available for OAuth users' });
 		}
 
-		if (!requiresPassword && user?.tfa_setup_status !== 'pending') {
-			throw new InvalidPayloadError({ reason: '2FA setup is not requested for this user' });
+		if (!requiresPassword) {
+			// For OAuth users, allow if they have tfa_setup_status pending OR role-based enforcement
+			if (user?.provider !== 'default') {
+				// Check if user has role-based enforcement
+				const roleEnforcement = await this.knex
+					.select('directus_policies.enforce_tfa')
+					.from('directus_users')
+					.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
+					.leftJoin('directus_access', 'directus_roles.id', 'directus_access.role')
+					.leftJoin('directus_policies', 'directus_access.policy', 'directus_policies.id')
+					.where('directus_users.id', key)
+					.where('directus_policies.enforce_tfa', true)
+					.first();
+
+				if (!roleEnforcement && user?.tfa_setup_status !== 'pending') {
+					throw new InvalidPayloadError({ reason: '2FA setup is not requested for this user' });
+				}
+			}
 		}
 
 		const secret = authenticator.generateSecret();
@@ -72,13 +88,29 @@ export class TFAService {
 			throw new InvalidPayloadError({ reason: 'TFA Secret is already set for this user' });
 		}
 
-		// For OAuth users, check if 2FA setup is requested
+		// For OAuth users, check if 2FA setup is requested or role-based enforcement
 		if (!requiresPassword && user?.provider === 'default') {
 			throw new InvalidPayloadError({ reason: 'This method is only available for OAuth users' });
 		}
 
-		if (!requiresPassword && user?.tfa_setup_status !== 'pending') {
-			throw new InvalidPayloadError({ reason: '2FA setup is not requested for this user' });
+		if (!requiresPassword) {
+			// For OAuth users, allow if they have tfa_setup_status pending OR role-based enforcement
+			if (user?.provider !== 'default') {
+				// Check if user has role-based enforcement
+				const roleEnforcement = await this.knex
+					.select('directus_policies.enforce_tfa')
+					.from('directus_users')
+					.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
+					.leftJoin('directus_access', 'directus_roles.id', 'directus_access.role')
+					.leftJoin('directus_policies', 'directus_access.policy', 'directus_policies.id')
+					.where('directus_users.id', key)
+					.where('directus_policies.enforce_tfa', true)
+					.first();
+
+				if (!roleEnforcement && user?.tfa_setup_status !== 'pending') {
+					throw new InvalidPayloadError({ reason: '2FA setup is not requested for this user' });
+				}
+			}
 		}
 
 		if (!authenticator.check(otp, secret)) {

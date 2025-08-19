@@ -37,6 +37,7 @@ export type DirectusTokenPayload = {
 	admin_access: boolean | number;
 	share?: string;
 	tfa_setup_status?: 'complete' | 'pending' | 'cancelled' | null;
+	enforce_tfa?: boolean;
 };
 
 export type ShareData = {

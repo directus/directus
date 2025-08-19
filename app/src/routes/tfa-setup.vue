@@ -57,17 +57,22 @@ const roleRequires2FA = computed(() => {
 	return (user as any).enforce_tfa === true;
 });
 
+// Check if user can skip password (OAuth users can always skip password)
+const canSkipPassword = computed(() => {
+	return isOAuthUser.value;
+});
+
 // Check if cancel button should be shown (not shown if role requires 2FA)
 const showCancelButton = computed(() => {
 	return !roleRequires2FA.value;
 });
 
 async function generate() {
-	await generateTFA(!isOAuthUser.value);
+	await generateTFA(!canSkipPassword.value);
 }
 
 async function enable() {
-	const success = await enableTFA(!isOAuthUser.value);
+	const success = await enableTFA(!canSkipPassword.value);
 
 	if (success) {
 		const redirectQuery = router.currentRoute.value.query.redirect as string;
@@ -104,9 +109,9 @@ useHead({
 
 		<form v-if="tfaEnabled === false && tfaGenerated === false && loading === false" @submit.prevent="generate">
 			<div class="title">
-				{{ isOAuthUser ? t('tfa_setup_description') : t('enter_password_to_enable_tfa') }}
+				{{ canSkipPassword ? t('tfa_setup_description') : t('enter_password_to_enable_tfa') }}
 			</div>
-			<div v-if="!isOAuthUser">
+			<div v-if="!canSkipPassword">
 				<v-input v-model="password" :nullable="false" type="password" :placeholder="t('password')" autofocus />
 			</div>
 			<v-error v-if="error" :error="error" />

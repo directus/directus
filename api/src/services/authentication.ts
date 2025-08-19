@@ -196,6 +196,24 @@ export class AuthenticationService {
 			tokenPayload.tfa_setup_status = 'pending';
 		}
 
+		// Add role-based enforcement to token payload for users who need to set up 2FA
+		if (!user.tfa_secret) {
+			// Check if user has role-based enforcement
+			const roleEnforcement = await this.knex
+				.select('directus_policies.enforce_tfa')
+				.from('directus_users')
+				.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
+				.leftJoin('directus_access', 'directus_roles.id', 'directus_access.role')
+				.leftJoin('directus_policies', 'directus_access.policy', 'directus_policies.id')
+				.where('directus_users.id', user.id)
+				.where('directus_policies.enforce_tfa', true)
+				.first();
+
+			if (roleEnforcement) {
+				tokenPayload.enforce_tfa = true;
+			}
+		}
+
 		const refreshToken = nanoid(64);
 		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
 
