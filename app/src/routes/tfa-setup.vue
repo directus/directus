@@ -50,6 +50,18 @@ const isOAuthUser = computed(() => {
 	return user && !('share' in user) && user.provider !== 'default';
 });
 
+// Check if the user has role that requires 2FA
+const roleRequires2FA = computed(() => {
+	const user = userStore.currentUser;
+	if (!user || 'share' in user) return false;
+	return (user as any).enforce_tfa === true;
+});
+
+// Check if cancel button should be shown (not shown if role requires 2FA)
+const showCancelButton = computed(() => {
+	return !roleRequires2FA.value;
+});
+
 async function generate() {
 	await generateTFA(!isOAuthUser.value);
 }
@@ -99,7 +111,7 @@ useHead({
 			</div>
 			<v-error v-if="error" :error="error" />
 			<div class="actions">
-				<button type="button" class="cancel-link" @click="cancel">{{ t('cancel') }}</button>
+				<button v-if="showCancelButton" type="button" class="cancel-link" @click="cancel">{{ t('cancel') }}</button>
 				<v-button type="submit" :loading="loading" large>{{ t('next') }}</v-button>
 			</div>
 		</form>
@@ -118,7 +130,7 @@ useHead({
 					<v-error v-if="error" :error="error" />
 				</div>
 				<div class="actions">
-					<button type="button" class="cancel-link" @click="cancel">{{ t('cancel') }}</button>
+					<button v-if="showCancelButton" type="button" class="cancel-link" @click="cancel">{{ t('cancel') }}</button>
 					<v-button type="submit" :disabled="otp.length !== 6" large @click="enable">{{ t('done') }}</v-button>
 				</div>
 			</form>
