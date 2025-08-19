@@ -297,7 +297,7 @@ function isInterpolation(value: any) {
 </script>
 
 <template>
-	<div class="input-code codemirror-custom-styles" :class="{ disabled }">
+	<div class="input-code codemirror-custom-styles" :class="{ disabled }" dir="ltr">
 		<div ref="codemirrorEl"></div>
 
 		<v-button v-if="template" v-tooltip.left="t('fill_template')" small icon secondary @click="fillTemplate">
