@@ -132,12 +132,11 @@ export async function useSnapshot<Schema>(
 			}
 		} catch (e) {
 			tries--;
-			if (tries === 0) console.error(e);
+			if (tries === 0) process.stderr.write(e.toString());
 		}
 	}
 
 	if (tries === 0) {
-		console.dir(schemaSnapshot, { depth: 10 });
 		throw new Error('Too many retries applying snapshot');
 	}
 
