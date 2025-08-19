@@ -10,6 +10,8 @@ interface Props {
 	center?: boolean;
 	/** Allow text wrapping within notice */
 	multiline?: boolean;
+	/** Align the default slot’s content with the title slot’s content */
+	indentContent?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -44,7 +46,9 @@ const iconName = computed(() => {
 			<v-icon v-if="icon !== false" :name="iconName" left></v-icon>
 			<slot name="title"></slot>
 		</div>
-		<slot></slot>
+		<div v-if="$slots.default" class="v-notice-content" :class="{ indent: indentContent && icon !== false }">
+			<slot></slot>
+		</div>
 	</div>
 </template>
 
@@ -60,6 +64,9 @@ const iconName = computed(() => {
 */
 
 .v-notice {
+	--icon-padding-inline-end: 16px;
+	--icon-size-default: 24px;
+
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -97,7 +104,11 @@ const iconName = computed(() => {
 }
 
 .v-icon.left {
-	margin-inline-end: 16px;
+	margin-inline-end: var(--icon-padding-inline-end);
+}
+
+.v-notice-content.indent {
+	padding-inline-start: calc(var(--icon-padding-inline-end) + var(--v-icon-size, var(--icon-size-default)));
 }
 
 .success {
