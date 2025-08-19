@@ -471,7 +471,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			try {
 				const claims = verifyJWT(accessToken, getSecret()) as any;
 
-				if (claims?.require_2fa === true) {
+				if (claims?.tfa_setup_status === 'pending') {
 					const url = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'tfa-setup');
 					if (redirect) url.setQuery('redirect', redirect);
 

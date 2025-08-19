@@ -78,7 +78,7 @@ async function enable() {
 }
 
 async function cancel() {
-	// If user has require_2fa set, call the API to cancel setup before redirecting
+	// If user has tfa_setup_status pending, call the API to cancel setup before redirecting
 	try {
 		await cancel2FASetup();
 	} catch (error) {

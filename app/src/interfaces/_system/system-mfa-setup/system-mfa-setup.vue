@@ -41,14 +41,14 @@ const oauthUserNeedsEmail = computed(() => {
 });
 
 // The 2fa checkbox should only be enabled if the user has a tfa_secret or
-// is an OAuth user with require_2fa set to true
+// is an OAuth user with tfa_setup_status set to pending
 const effectiveTFAEnabled = computed(() => {
 	const user = userStore.currentUser as User;
 	if (!user || 'share' in user) return !!props.value;
 
 	// OAuth users
 	if (user.provider !== 'default') {
-		return !!(user.tfa_secret || user.require_2fa);
+		return !!(user.tfa_secret || user.tfa_setup_status === 'pending');
 	}
 
 	// Password users
@@ -125,10 +125,10 @@ function toggle() {
 
 		enableActive.value = true;
 	} else {
-		// For OAuth users with require_2fa but no tfa_secret, show cancel dialog instead of disable
+		// For OAuth users with tfa_setup_status pending but no tfa_secret, show cancel dialog instead of disable
 		if (
 			isOAuthUser.value &&
-			(userStore.currentUser as any)?.require_2fa &&
+			(userStore.currentUser as any)?.tfa_setup_status === 'pending' &&
 			!(userStore.currentUser as any)?.tfa_secret
 		) {
 			cancelSetupActive.value = true;

@@ -5,4 +5,4 @@
 '@directus/app': patch
 ---
 
-Adapted oauth flow to allow for 2fa setup. New column titled require_2fa added to users table.
+Adapted oauth flow to allow for 2fa setup. New column titled tfa_setup_status added to users table.
