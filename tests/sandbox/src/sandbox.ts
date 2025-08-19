@@ -64,7 +64,7 @@ export async function sandboxes(
 	const logger = createLogger();
 	let apis: { processes: ChildProcessWithoutNullStreams[]; opts: Options; env: Env; logger: Logger }[] = [];
 	let build: ChildProcessWithoutNullStreams | undefined;
-	const projects: { project: string; logger: Logger }[] = [];
+	const projects: { project: string; logger: Logger; env: Env }[] = [];
 
 	try {
 		// Rebuild directus
@@ -86,7 +86,7 @@ export async function sandboxes(
 
 				try {
 					const project = await dockerUp(database, opts.extras, env, logger);
-					if (project) projects.push({ project, logger });
+					if (project) projects.push({ project, logger, env });
 
 					await bootstrap(env, logger);
 
@@ -105,7 +105,7 @@ export async function sandboxes(
 	async function stop() {
 		build?.kill();
 		apis.forEach((api) => api.processes.forEach((process) => process.kill()));
-		await Promise.all(projects.map(({ project, logger }) => dockerDown(project, logger)));
+		await Promise.all(projects.map(({ project, logger, env }) => dockerDown(project, env, logger)));
 		process.exit();
 	}
 
@@ -137,17 +137,17 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		apis = await startDirectus(opts, env, logger);
 
 		if (opts.schema) interval = await saveSchema(env);
-	} catch (e) {
-		logger.error(String(e));
+	} catch (err: any) {
+		logger.error(err.toString());
 		await stop();
-		throw e;
+		throw err;
 	}
 
 	async function stop() {
 		clearInterval(interval);
 		build?.kill();
 		apis.forEach((api) => api.kill());
-		if (project) await dockerDown(project, logger);
+		if (project) await dockerDown(project, env, logger);
 		process.exit();
 	}
 
@@ -248,11 +248,11 @@ async function dockerUp(database: Database, extras: Options['extras'], env: Env,
 	return project;
 }
 
-async function dockerDown(project: string, logger: Logger) {
+async function dockerDown(project: string, env: Env, logger: Logger) {
 	logger.info('Stopping docker containers');
 
 	const docker = spawn('docker', ['compose', '-p', project, 'down'], {
-		env: { PATH: process.env['PATH'], COMPOSE_STATUS_STDOUT: '1' },
+		env: { ...env, COMPOSE_STATUS_STDOUT: '1' },
 	});
 
 	docker.on('error', (err) => {
@@ -309,15 +309,14 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 	if (opts.dev) {
 		// tsx must me inside the package.json of the package using this!
 		api = spawn(
-			'tsx',
+			/^win/.test(process.platform) ? 'pnpm.cmd' : 'pnpm',
 			opts.watch
-				? ['watch', '--clear-screen=false', '--inspect', join(apiFolder, 'src', 'start.ts')]
-				: ['--inspect', join(apiFolder, 'src', 'start.ts')],
+				? ['tsx', 'watch', '--clear-screen=false', '--inspect', join(apiFolder, 'src', 'start.ts')]
+				: ['tsx', '--inspect', join(apiFolder, 'src', 'start.ts')],
 			{
-				env: {
-					...env,
-					PATH: process.env['PATH'],
-				},
+				env,
+				cwd: apiFolder,
+				shell: true,
 			},
 		);
 	} else {
@@ -327,8 +326,7 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 	}
 
 	api.on('error', (err) => {
-		api.kill();
-		logger.error(err.message);
+		logger.error(err.toString());
 		throw err;
 	});
 
@@ -337,7 +335,7 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 	logger.pipe(api.stderr, 'error');
 
 	await new Promise((resolve, reject) => {
-		api!.stdout!.on('data', (data) => {
+		api.stdout.on('data', (data) => {
 			const msg = String(data);
 
 			if (msg.includes(`Server started at http://${env.HOST}:${env.PORT}`)) {

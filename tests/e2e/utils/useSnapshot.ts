@@ -31,7 +31,7 @@ export async function useSnapshot<Schema>(
 
 	const database = process.env['DATABASE'] as Database;
 
-	const parts = dirname(file).split('/');
+	const parts = dirname(file).split(/[/\\]/g);
 	const e2eIndex = parts.findIndex((part) => part === 'e2e');
 	const prefix = parts.slice(e2eIndex + 2).join('_');
 
@@ -131,12 +131,15 @@ export async function useSnapshot<Schema>(
 				break;
 			}
 		} catch (e) {
-			console.error(e);
 			tries--;
+			if (tries === 0) console.error(e);
 		}
 	}
 
-	if (tries === 0) throw new Error('Too many retries applying snapshot');
+	if (tries === 0) {
+		console.dir(schemaSnapshot, { depth: 10 });
+		throw new Error('Too many retries applying snapshot');
+	}
 
 	return collectionMap as any;
 }

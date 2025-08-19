@@ -1,3 +1,4 @@
+import { join } from 'path';
 import type { Database, Options } from './sandbox.js';
 
 const isWindows = ['win32', 'win64'].includes(process.platform);
@@ -13,6 +14,7 @@ const directusConfig = {
 	CACHE_SCHEMA: 'true',
 	CACHE_SCHEMA_MAX_ITERATIONS: '100',
 	CACHE_ENABLED: 'false',
+	CONFIG_PATH: join(import.meta.dirname, '..', '.env'), // Override to non existent file so process envs aren't overwritten by file envs
 	RATE_LIMITER_ENABLED: 'false',
 	PRESSURE_LIMITER_ENABLED: 'false',
 	LOG_LEVEL: 'info',

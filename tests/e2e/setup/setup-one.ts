@@ -17,8 +17,8 @@ export async function setup(project: TestProject) {
 
 	sb = await sandbox(database, {
 		port,
-		dev: true,
-		watch: true,
+		dev,
+		watch,
 		prefix: database,
 		dockerBasePort: String(Number(project.config.env['PORT']) + 1),
 	});
