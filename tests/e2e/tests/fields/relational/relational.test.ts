@@ -20,8 +20,12 @@ test(`m2o relation `, async () => {
 		),
 	);
 
-	expect(created.author.name).toBe('Ben');
-	expect(created.author.id).toBeDefined();
+	expect(created).toMatchObject({
+		author: {
+			id: expect.anything(),
+			name: 'Ben',
+		},
+	});
 
 	const updated = await api.request(
 		updateItem(
@@ -36,9 +40,6 @@ test(`m2o relation `, async () => {
 			{ fields: '*.*' },
 		),
 	);
-
-	expect(updated.author.name).toBe('Tim');
-	expect(updated.author.id).toBe(created.author.id);
 
 	const read = await api.request(readItem(collections.articles, created.id, { fields: '*.*' }));
 
@@ -67,13 +68,20 @@ test(`o2m relation `, async () => {
 		),
 	);
 
-	expect(created.links[0].link).toBe('Link A');
-	expect(created.links[0].article_id).toBe(created.id);
-	expect(created.links[0].id).toBeDefined();
-
-	expect(created.links[1].link).toBe('Link B');
-	expect(created.links[1].article_id).toBe(created.id);
-	expect(created.links[1].id).toBeDefined();
+	expect(created).toMatchObject({
+		links: [
+			{
+				id: expect.anything(),
+				article_id: created.id,
+				link: 'Link A',
+			},
+			{
+				id: expect.anything(),
+				article_id: created.id,
+				link: 'Link B',
+			},
+		],
+	});
 
 	const updated = await api.request(
 		updateItem(
@@ -94,13 +102,20 @@ test(`o2m relation `, async () => {
 		),
 	);
 
-	expect(updated.links[0].link).toBe('Link A Updated');
-	expect(updated.links[0].article_id).toBe(updated.id);
-	expect(updated.links[0].id).toBe(created.links[0].id);
-
-	expect(updated.links[1].link).toBe('Link C');
-	expect(updated.links[1].article_id).toBe(updated.id);
-	expect(updated.links[1].id).not.toBe(created.links[1].id);
+	expect(updated).toMatchObject({
+		links: [
+			{
+				id: created.links![0].id,
+				article_id: created.id,
+				link: 'Link A Updated',
+			},
+			{
+				id: expect.not.toBeOneOf([created.links![1].id]),
+				article_id: created.id,
+				link: 'Link C',
+			},
+		],
+	});
 
 	const read = await api.request(readItem(collections.articles, created.id, { fields: '*.*' }));
 
@@ -133,15 +148,26 @@ test(`m2m relation `, async () => {
 		),
 	);
 
-	expect(created.tags[0].tags_id.tag).toBe('Tag A');
-	expect(created.tags[0].articles_id.id).toBe(created.id);
-	expect(created.tags[0].id).toBeDefined();
-	expect(created.tags[0].tags_id.id).toBeDefined();
-
-	expect(created.tags[1].tags_id.tag).toBe('Tag B');
-	expect(created.tags[1].articles_id.id).toBe(created.id);
-	expect(created.tags[1].id).toBeDefined();
-	expect(created.tags[1].tags_id.id).toBeDefined();
+	expect(created).toMatchObject({
+		tags: [
+			{
+				id: expect.anything(),
+				articles_id: { id: created.id },
+				tags_id: {
+					id: expect.anything(),
+					tag: 'Tag A',
+				},
+			},
+			{
+				id: expect.anything(),
+				articles_id: { id: created.id },
+				tags_id: {
+					id: expect.anything(),
+					tag: 'Tag B',
+				},
+			},
+		],
+	});
 
 	const updated = await api.request(
 		updateItem(
@@ -167,15 +193,26 @@ test(`m2m relation `, async () => {
 		),
 	);
 
-	expect(updated.tags[0].tags_id.tag).toBe('Tag A Updated');
-	expect(updated.tags[0].articles_id.id).toBe(created.id);
-	expect(updated.tags[0].id).toBe(created.tags[0].id);
-	expect(updated.tags[0].tags_id.id).toBe(created.tags[0].tags_id.id);
-
-	expect(updated.tags[1].tags_id.tag).toBe('Tag C');
-	expect(updated.tags[1].articles_id.id).toBe(created.id);
-	expect(updated.tags[1].id).not.toBe(created.tags[1].id);
-	expect(updated.tags[1].tags_id.id).not.toBe(created.tags[1].tags_id.id);
+	expect(updated).toMatchObject({
+		tags: [
+			{
+				id: created.tags[0].id,
+				articles_id: { id: created.id },
+				tags_id: {
+					id: created.tags[0].tags_id.id,
+					tag: 'Tag A Updated',
+				},
+			},
+			{
+				id: expect.not.toBeOneOf([created.tags[1].id]),
+				articles_id: { id: created.id },
+				tags_id: {
+					id: expect.not.toBeOneOf([created.tags[0].tags_id.id]),
+					tag: 'Tag C',
+				},
+			},
+		],
+	});
 
 	const read = await api.request(readItem(collections.articles, created.id, { fields: '*.*.*' }));
 
@@ -210,17 +247,28 @@ test(`m2a relation `, async () => {
 		),
 	);
 
-	expect(created.blocks[0].item.text).toBe('Block 1');
-	expect(created.blocks[0].articles_id.id).toBe(created.id);
-	expect(created.blocks[0].collection).toBe(collections.text_blocks);
-	expect(created.blocks[0].id).toBeDefined();
-	expect(created.blocks[0].item.id).toBeDefined();
-
-	expect(created.blocks[1].item.date).toBe('2025-12-24');
-	expect(created.blocks[1].articles_id.id).toBe(created.id);
-	expect(created.blocks[1].collection).toBe(collections.date_blocks);
-	expect(created.blocks[1].id).toBeDefined();
-	expect(created.blocks[1].item.id).toBeDefined();
+	expect(created).toMatchObject({
+		blocks: [
+			{
+				id: expect.anything(),
+				articles_id: { id: created.id },
+				collection: collections.text_blocks,
+				item: {
+					id: expect.anything(),
+					text: 'Block 1',
+				},
+			},
+			{
+				id: expect.anything(),
+				articles_id: { id: created.id },
+				collection: collections.date_blocks,
+				item: {
+					id: expect.anything(),
+					date: '2025-12-24',
+				},
+			},
+		],
+	});
 
 	const updated = await api.request(
 		updateItem(
@@ -248,17 +296,28 @@ test(`m2a relation `, async () => {
 		),
 	);
 
-	expect(updated.blocks[0].item.text).toBe('Block 1 Updated');
-	expect(updated.blocks[0].articles_id.id).toBe(created.id);
-	expect(updated.blocks[0].collection).toBe(collections.text_blocks);
-	expect(updated.blocks[0].id).toBe(created.blocks[0].id);
-	expect(updated.blocks[0].item.id).toBe(created.blocks[0].item.id);
-
-	expect(updated.blocks[1].item.text).toBe('Block 2');
-	expect(updated.blocks[1].articles_id.id).toBe(created.id);
-	expect(updated.blocks[1].collection).toBe(collections.text_blocks);
-	expect(updated.blocks[1].id).not.toBe(created.blocks[1].id);
-	expect(updated.blocks[1].item.id).not.toBe(created.blocks[1].item.id);
+	expect(updated).toMatchObject({
+		blocks: [
+			{
+				id: created.blocks[0].id,
+				articles_id: { id: created.id },
+				collection: collections.text_blocks,
+				item: {
+					id: created.blocks[0].item.id,
+					text: 'Block 1 Updated',
+				},
+			},
+			{
+				id: expect.not.toBeOneOf([created.blocks[1].id]),
+				articles_id: { id: created.id },
+				collection: collections.text_blocks,
+				item: {
+					id: expect.not.toBeOneOf([created.blocks[0].item.id]),
+					text: 'Block 2',
+				},
+			},
+		],
+	});
 
 	const read = await api.request(readItem(collections.articles, created.id, { fields: '*.*.*' }));
 

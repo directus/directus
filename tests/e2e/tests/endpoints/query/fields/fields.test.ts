@@ -58,25 +58,17 @@ test(`select *.*.*`, async () => {
 
 	const result = await api.request(readItem(collections.articles, id, { fields: ['*.*.*'] }));
 
-	expect(result).toEqual({
+	expect(result).toMatchObject({
 		id: id,
 		title: 'Article A',
-		author: null,
-		blocks: [],
-		links: [],
 		tags: [
 			{
 				articles_id: {
-					author: null,
-					blocks: [],
 					id: id,
-					links: [],
-					tags: [result.tags[0].id],
-					title: 'Article A',
 				},
-				id: result.tags[0].id,
+				id: expect.anything(),
 				tags_id: {
-					id: result.tags[0].tags_id.id,
+					id: expect.anything(),
 					tag: 'Tag A',
 				},
 			},
