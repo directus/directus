@@ -110,7 +110,10 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex }:
 					joinClause
 						.onVal(`${aliasedParentCollection}.${relation.meta!.one_collection_field!}`, '=', pathScope)
 						.andOn(
-							`${aliasedParentCollection}.${relation.field}`,
+							knex.raw(
+								getHelpers(knex).schema.castA2oPrimaryKey(),
+                `${aliasedParentCollection}.${relation.field}`,
+							),
 							'=',
 							knex.raw(
 								getHelpers(knex).schema.castA2oPrimaryKey(),
