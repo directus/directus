@@ -14,7 +14,7 @@ test(`select only id`, async () => {
 				title: `Article A`,
 			}),
 		)
-	).id;
+	).id!;
 
 	const result = await api.request(readItem(collections.articles, id, { fields: ['id'] }));
 
@@ -30,7 +30,7 @@ test(`select id and title`, async () => {
 				title: `Article A`,
 			}),
 		)
-	).id;
+	).id!;
 
 	const result = await api.request(readItem(collections.articles, id, { fields: ['id', 'title'] }));
 
@@ -54,7 +54,7 @@ test(`select *.*.*`, async () => {
 				],
 			}),
 		)
-	).id;
+	).id!;
 
 	const result = await api.request(readItem(collections.articles, id, { fields: ['*.*.*'] }));
 

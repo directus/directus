@@ -333,7 +333,9 @@
 				"readonly": false,
 				"required": false,
 				"sort": 5,
-				"special": ["m2o"],
+				"special": [
+					"m2o"
+				],
 				"translations": null,
 				"validation": null,
 				"validation_message": null,
@@ -376,7 +378,9 @@
 				"readonly": false,
 				"required": false,
 				"sort": 6,
-				"special": ["m2m"],
+				"special": [
+					"m2m"
+				],
 				"translations": null,
 				"validation": null,
 				"validation_message": null,
@@ -403,7 +407,9 @@
 				"readonly": false,
 				"required": false,
 				"sort": 7,
-				"special": ["o2m"],
+				"special": [
+					"o2m"
+				],
 				"translations": null,
 				"validation": null,
 				"validation_message": null,
@@ -428,7 +434,9 @@
 				"readonly": false,
 				"required": false,
 				"sort": 8,
-				"special": ["m2a"],
+				"special": [
+					"m2a"
+				],
 				"translations": null,
 				"validation": null,
 				"validation_message": null,
@@ -1244,7 +1252,10 @@
 				"junction_field": "articles_1234_id",
 				"many_collection": "articles_1234_blocks",
 				"many_field": "item",
-				"one_allowed_collections": ["date_blocks_1234", "text_blocks_1234"],
+				"one_allowed_collections": [
+					"date_blocks_1234",
+					"text_blocks_1234"
+				],
 				"one_collection": null,
 				"one_collection_field": "collection",
 				"one_deselect_action": "nullify",
