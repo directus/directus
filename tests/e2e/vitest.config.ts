@@ -10,6 +10,7 @@ export default defineConfig({
 			'./vitest.config.ts',
 			...databases.map((database, index) => ({
 				test: {
+					setupFiles: './setup/setup.ts',
 					globalSetup: './setup/setup-one.ts',
 					name: database,
 					testTimeout: 10_000,

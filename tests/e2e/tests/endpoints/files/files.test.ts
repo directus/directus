@@ -3,6 +3,7 @@ import { createHash } from 'crypto';
 import fs from 'fs/promises';
 import { join } from 'path';
 import { expect, test } from 'vitest';
+import { UUID } from '../../../utils/regex';
 
 const api = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
 
@@ -23,7 +24,7 @@ test('upload a file', async () => {
 	const fileInfo = await api.request(readFile(upload.id));
 
 	expect(fileInfo).toMatchObject({
-		filename_disk: expect.any(String),
+		filename_disk: expect.toSatisfy(UUID),
 		filename_download: 'image.jpg',
 		filesize: expect.toSatisfy((val) => String(val) === '41274'),
 		id: upload.id,
