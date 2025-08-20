@@ -24,7 +24,7 @@ test('upload a file', async () => {
 	const fileInfo = await api.request(readFile(upload.id));
 
 	expect(fileInfo).toMatchObject({
-		filename_disk: expect.toSatisfy(UUID),
+		filename_disk: expect.toSatisfy((value: string) => UUID.test(value.toLowerCase())),
 		filename_download: 'image.jpg',
 		filesize: expect.toSatisfy((val) => String(val) === '41274'),
 		id: upload.id,
