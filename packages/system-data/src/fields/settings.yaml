@@ -774,7 +774,8 @@ fields:
     group: ai_group
     special:
       - cast-boolean
-    width: half
+    width: half-left
+    note: $t:fields.directus_settings.mcp_system_prompt_enabled_note
     options:
       label: $t:enabled
     conditions:
@@ -785,7 +786,7 @@ fields:
         readonly: true
 
   - field: mcp_system_prompt
-    interface: input-multiline
+    interface: input-rich-text-md
     group: ai_group
     width: full
     note: $t:fields.directus_settings.mcp_system_prompt_note
@@ -795,5 +796,10 @@ fields:
       - name: mcp_enabled
         rule:
           mcp_enabled:
+            _neq: true
+        readonly: true
+      - name: mcp_system_prompt_enabled
+        rule:
+          mcp_system_prompt_enabled:
             _neq: true
         readonly: true

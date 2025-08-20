@@ -1454,17 +1454,16 @@ fields:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
     visual_editor_urls: Visual Editor URLs
     mcp_enabled: MCP Enabled
-    mcp_enabled_note: Enable the MCP server
+    mcp_enabled_note: 'Connect AI/LLM tools to your Directus project via <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">MCP</a>.'
     mcp_allow_deletes: Allow Deletes
     mcp_allow_deletes_note:
-      'Allow users to delete items, files, flows, fields, relations, and collections. Warning: this could lead to data
-      loss'
+      'Enable deletion of items, files, flows, fields, relations, and collections through MCP tools. <strong>WARNING: May cause data loss.</strong> Disabled by default for safety.'
     mcp_prompts_collection: MCP Prompts Collection
-    mcp_prompts_collection_note: Collection to store reusable prompt templates.
+    mcp_prompts_collection_note: 'Select collection for storing <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">reusable prompt templates</a>'
     mcp_system_prompt_enabled: MCP System Prompt Enabled
-    mcp_system_prompt_enabled_note: Enable the system prompt
-    mcp_system_prompt: MCP System Prompt
-    mcp_system_prompt_note: Instructions that shape how the AI responds.
+    mcp_system_prompt_enabled_note: "Use the <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>default system prompt</a> to guide LLM behavior. Disable to remove or override with your own prompt below."
+    mcp_system_prompt: MCP System Prompt Override
+    mcp_system_prompt_note: 'Custom system prompt to replace the default. Leave empty to use default (if enabled above).'
 
   directus_shares:
     name: Name
