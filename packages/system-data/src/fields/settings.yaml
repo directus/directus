@@ -713,6 +713,17 @@ fields:
     width: full
     group: ai_group
 
+  - field: mcp_notice
+    interface: presentation-notice
+    options:
+      icon: info
+      text: $t:fields.directus_settings.mcp_notice
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
   - field: mcp_enabled
     interface: boolean
     group: ai_group
