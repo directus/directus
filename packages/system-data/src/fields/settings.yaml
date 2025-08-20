@@ -769,6 +769,18 @@ fields:
             _neq: true
         hidden: true
 
+  - field: mcp_system_prompt_divider
+    interface: presentation-divider
+    options:
+      inlineTitle: true
+      color: 'var(--theme--foreground-subdued)'
+      title: $t:fields.directus_settings.mcp_system_prompt_divider
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
   - field: mcp_system_prompt_enabled
     interface: boolean
     group: ai_group
