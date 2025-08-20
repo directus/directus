@@ -1,3 +1,4 @@
+import { UnsupportedMediaTypeError } from '@directus/errors';
 import { z } from 'zod';
 import { AssetsService } from '../../services/assets.js';
 import { defineTool } from '../define.js';
@@ -24,6 +25,10 @@ export const assets = defineTool<z.infer<typeof AssetsValidateSchema>>({
 
 		const asset = await assetsService.getAsset(args.id);
 
+		if (!asset.file.type || !['image', 'audio'].some((t) => asset.file.type.startsWith(t))) {
+			throw new UnsupportedMediaTypeError({ mediaType: asset.file.type, where: 'asset tool' });
+		}
+
 		const chunks = [];
 
 		for await (const chunk of asset.stream) {
@@ -31,9 +36,9 @@ export const assets = defineTool<z.infer<typeof AssetsValidateSchema>>({
 		}
 
 		return {
-			type: 'image',
+			type: asset.file.type.startsWith('image') ? 'image' : 'audio',
 			data: Buffer.concat(chunks).toString('base64'),
-			mimeType: 'image/png',
+			mimeType: asset.file.type,
 		};
 	},
 });
