@@ -73,7 +73,7 @@ const generateCollectionDialogActive = ref(false);
 		</div>
 	</v-notice>
 
-	<v-notice v-else>
+	<v-notice v-else type="success">
 		<template #title>
 			{{ t('mcp_prompts_collection.validation_success') }}
 		</template>
