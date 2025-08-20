@@ -34,7 +34,7 @@ export function setLocalTypeForInterface(updates: StateUpdates) {
 	const isCurrentTypeCompatible = supportedLocalTypes.length > 0 && supportedLocalTypes.includes(currentLocalType);
 
 	// Use localType if compatible, otherwise use first supported type or fallback to standard
-	const localType = isCurrentTypeCompatible ? currentLocalType : supportedLocalTypes[0] ?? 'standard';
+	const localType = isCurrentTypeCompatible ? currentLocalType : (supportedLocalTypes[0] ?? 'standard');
 	set(updates, 'localType', localType);
 }
 
