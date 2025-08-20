@@ -1663,7 +1663,7 @@ mcp_prompts_collection:
     'This will create a new collection "{collection}" with the necessary fields and settings to store reusable prompt
     templates.'
   generate_fields_dialog_description: 'This will create the required fields on your "{collection}" collection.'
-  validation_success: This collection matches all the required fields and can be used as the AI prompts collection.
+  validation_success: 'Collection ready to be used as the "AI Prompts" collection.'
   validation_error_invalid: Collection cannot be used
   validation_error_missing: Collection cannot be used yet
   invalid_fields: 'The following fields exist but are of an incompatible type:'
