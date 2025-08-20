@@ -25,7 +25,7 @@ export default function getMailer(): Transporter {
 			path: (env['EMAIL_SENDMAIL_PATH'] as string) || '/usr/sbin/sendmail',
 		});
 	} else if (transportName === 'ses') {
-		const { SESv2Client, SendEmailCommand } = require("@aws-sdk/client-sesv2");
+		const { SESv2Client, SendEmailCommand } = require('@aws-sdk/client-sesv2');
 
 		const sesOptions: Record<string, unknown> = getConfigFromEnv('EMAIL_SES_');
 
