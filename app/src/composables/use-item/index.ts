@@ -135,54 +135,44 @@ export function useItem<T extends Item>(
 		return !!fieldWithConditions.meta?.hidden && !!fieldWithConditions.meta?.clear_hidden_value_on_save;
 	}
 
-	function clearHiddenFieldsByCondition(edits: Item, fields: Field[], currentValues: Record<string, any>): Item {
-		const clearedEdits = cloneDeep(edits);
+	function clearHiddenFieldsByCondition(edits: Item, fields: Field[], defaultValues: any, item: any): Item {
+		const currentValues = mergeItemData(defaultValues, item, edits);
+
 		let hasChanges = false;
+		const fieldsToClear: { field: string; defaultValue: any }[] = [];
 
 		for (const field of fields) {
 			if (shouldClearField(field, currentValues)) {
 				const defaultValue = field.schema?.default_value;
-				clearedEdits[field.field] = defaultValue !== undefined ? defaultValue : null;
+				fieldsToClear.push({ field: field.field, defaultValue: defaultValue !== undefined ? defaultValue : null });
 				hasChanges = true;
 			}
 		}
 
-		return hasChanges ? clearedEdits : edits;
+		if (!hasChanges) {
+			return edits;
+		}
+
+		const editsWithClearedValues = cloneDeep(edits);
+
+		for (const { field, defaultValue } of fieldsToClear) {
+			editsWithClearedValues[field] = defaultValue;
+		}
+
+		return editsWithClearedValues;
 	}
 
 	async function save() {
 		saving.value = true;
 		validationErrors.value = [];
 
-		const payloadToValidate = mergeWith(
-			{},
-			defaultValues.value,
-			item.value,
-			edits.value,
-			function (_from: any, to: any) {
-				if (typeof to !== 'undefined') {
-					return to;
-				}
-			},
-		);
-
 		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
 
-		const finalEdits = clearHiddenFieldsByCondition(edits.value, fields, payloadToValidate);
+		const editsWithClearedValues = clearHiddenFieldsByCondition(edits.value, fields, defaultValues.value, item.value);
 
-		const finalPayloadToValidate = mergeWith(
-			{},
-			defaultValues.value,
-			item.value,
-			finalEdits,
-			function (_from: any, to: any) {
-				if (typeof to !== 'undefined') {
-					return to;
-				}
-			},
-		);
+		const payloadToValidate = mergeItemData(defaultValues.value, item.value, editsWithClearedValues);
 
-		const errors = validateItem(finalPayloadToValidate, fields, isNew.value);
+		const errors = validateItem(payloadToValidate, fields, isNew.value);
 		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
 
 		if (errors.length > 0) {
@@ -195,13 +185,13 @@ export function useItem<T extends Item>(
 			let response;
 
 			if (isNew.value) {
-				response = await api.post(getEndpoint(collection.value), finalEdits);
+				response = await api.post(getEndpoint(collection.value), editsWithClearedValues);
 
 				notify({
 					title: i18n.global.t('item_create_success', 1),
 				});
 			} else {
-				response = await api.patch(itemEndpoint.value, finalEdits);
+				response = await api.patch(itemEndpoint.value, editsWithClearedValues);
 
 				notify({
 					title: i18n.global.t('item_update_success', 1),
@@ -216,6 +206,14 @@ export function useItem<T extends Item>(
 		} finally {
 			saving.value = false;
 		}
+	}
+
+	function mergeItemData(defaultValues: any, item: any, edits: any) {
+		return mergeWith({}, defaultValues, item, edits, function (_from: any, to: any) {
+			if (typeof to !== 'undefined') {
+				return to;
+			}
+		});
 	}
 
 	async function saveAsCopy() {

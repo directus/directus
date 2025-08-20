@@ -91,9 +91,6 @@ const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 		field: 'clear_hidden_value_on_save',
 		name: t('clear_hidden_field'),
 		type: 'boolean',
-		schema: {
-			default_value: false,
-		},
 		meta: {
 			interface: 'boolean',
 			readonly: true,
@@ -103,7 +100,6 @@ const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 			width: 'half',
 			conditions: [
 				{
-					name: 'Enable when hidden is true',
 					rule: {
 						hidden: { _eq: true },
 					},
