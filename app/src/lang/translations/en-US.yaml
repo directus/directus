@@ -1455,7 +1455,7 @@ fields:
     visual_editor_urls: Visual Editor URLs
     mcp_enabled: MCP Server
     mcp_enabled_note: 'Connect AI/LLM tools to your Directus project via <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. This enables AI assistants to read and interact with your Directus data securely.'
-    mcp_notice: 'Model Context Protocol is a standard for connecting LLMs to applications like Directus. Once enabled, the Directus MCP server will be available at `https://yourdirectusurl.com/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Learn more about MCP and how to connect.</a>'
+    mcp_notice: 'Model Context Protocol is a standard for connecting LLMs to applications like Directus. Once enabled, the Directus MCP server will be available at `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Learn more about MCP and how to connect.</a>'
     mcp_allow_deletes: Allow Deletes
     mcp_allow_deletes_note:
       'Enable deletion of items, files, flows, fields, relations, and collections through MCP tools. <strong>WARNING: May cause data loss.</strong> Disabled by default for safety.'
