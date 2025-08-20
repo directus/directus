@@ -9,7 +9,7 @@ import {
 	staticToken,
 } from '@directus/sdk';
 import { randomUUID } from 'node:crypto';
-import { expect, test } from 'vitest';
+import { expect, inject, test } from 'vitest';
 import { useEnv } from '../../utils/useEnv';
 import { useOptions } from '../../utils/useOptions';
 

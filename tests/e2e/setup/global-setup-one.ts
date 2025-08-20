@@ -1,4 +1,4 @@
-import { Database, Env, Options, Sandbox, sandbox } from '@directus/sandbox';
+import { Database, Sandbox, sandbox } from '@directus/sandbox';
 import { createDirectus, rest, schemaApply, schemaDiff, staticToken } from '@directus/sdk';
 import { Schema } from './schema';
 import { join } from 'path';
@@ -44,10 +44,4 @@ export async function setup(project: TestProject) {
 
 export async function teardown(_project: TestProject) {
 	if (sb) await sb.stop();
-}
-
-declare module 'vitest/node' {
-	export interface ProvidedContext {
-		env: Env;
-	}
 }

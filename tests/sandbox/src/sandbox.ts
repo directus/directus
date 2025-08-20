@@ -67,6 +67,8 @@ export type Sandbox = {
 };
 
 function getOptions(options?: DeepPartial<Options>): Options {
+	if ((options as any)?.schema === true) options!.schema = 'snapshot.json';
+
 	return merge(
 		{
 			build: false,

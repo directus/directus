@@ -1,11 +1,11 @@
-import 'vitest';
-import fs from 'fs/promises';
+import { writeFile, readFile, access } from 'fs/promises';
 import { expect } from 'vitest';
 import { createHash } from 'crypto';
+import { join } from 'path';
 
 async function exists(file: string) {
 	try {
-		await fs.access(file);
+		await access(file);
 		return true;
 	} catch {
 		return false;
@@ -15,15 +15,15 @@ async function exists(file: string) {
 expect.extend({
 	toMatchFile: async (received, expected: string) => {
 		if (!(await exists(expected))) {
-			await fs.writeFile(expected, received);
+			await writeFile(expected, received);
 		}
 
-		const expectFile = await fs.readFile(expected);
+		const expectFile = await readFile(expected);
 		const expectHash = createHash('sha256').update(expectFile).digest('hex');
 		const receivedHash = createHash('sha256').update(received).digest('hex');
 
 		return {
-			message: () => `Expected file to match ${expected}`,
+			message: () => `Expected file to match ${expected.replace(join(import.meta.dirname, '..'), '')}`,
 			pass: expectHash === receivedHash,
 		};
 	},

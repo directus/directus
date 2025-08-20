@@ -1,5 +1,5 @@
 import type { TestProject } from 'vitest/node';
-import { Database, databases, Sandbox, sandboxes, Sandboxes } from '@directus/sandbox';
+import { databases, sandboxes, Sandboxes } from '@directus/sandbox';
 import { createDirectus, staticToken, schemaDiff, schemaApply, rest } from '@directus/sdk';
 import { Schema } from './schema';
 import { readFile } from 'fs/promises';
