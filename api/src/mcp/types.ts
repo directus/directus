@@ -3,7 +3,7 @@ import type { ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import type { ZodType } from 'zod';
 
 export type ToolResultBase = {
-	type?: 'text' | 'image';
+	type?: 'text' | 'image' | 'audio';
 	url?: string | undefined;
 };
 
@@ -12,13 +12,13 @@ export type TextToolResult = ToolResultBase & {
 	data: unknown;
 };
 
-export type ImageToolResult = ToolResultBase & {
-	type: 'image';
+export type AssetToolResult = ToolResultBase & {
+	type: 'image' | 'audio';
 	data: string;
 	mimeType: string;
 };
 
-export type ToolResult = TextToolResult | ImageToolResult;
+export type ToolResult = TextToolResult | AssetToolResult;
 
 export type ToolHandler<T> = {
 	(options: {
