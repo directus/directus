@@ -45,10 +45,10 @@ export async function saveSchema(env: Env) {
 
 			if (collection.meta?.singleton) return `${formatField(collection.collection)}: ${collectionName}`;
 
-			return `${formatField(collection.collection)}: ${collectionName}[]`;
+			return `${formatField(collection.collection)}: ${collectionName}[];`;
 		})
 		.join('\n	')}
-}
+};
 `;
 
 		const collectionTypes = collections
@@ -63,20 +63,20 @@ export async function saveSchema(env: Env) {
 			const optional = field.schema?.is_nullable || field.schema?.is_generated || field.schema?.is_primary_key;
 			const fieldName = `${formatField(field.field)}${optional ? '?' : ''}:`;
 
-			if (!rel) return `${fieldName} string | number`;
+			if (!rel) return `${fieldName} string | number;`;
 
 			const { relation, relationType } = rel;
 
 			if (relationType === 'o2m') {
-				return `${fieldName} (string | number | ${formatCollection(relation.collection)})[]`;
+				return `${fieldName} (string | number | ${formatCollection(relation.collection)})[];`;
 			} else if (relationType === 'm2o') {
-				return `${fieldName} string | number | ${formatCollection(relation.related_collection!)}`;
+				return `${fieldName} string | number | ${formatCollection(relation.related_collection!)};`;
 			} else {
-				return `${fieldName} string | number | ${relation.meta!.one_allowed_collections!.map(formatCollection).join(' | ')}`;
+				return `${fieldName} string | number | ${relation.meta!.one_allowed_collections!.map(formatCollection).join(' | ')};`;
 			}
 		})
 		.join('\n	')}
-}`;
+};`;
 			})
 			.join('\n');
 
