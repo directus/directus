@@ -792,6 +792,24 @@ export class FieldsService {
 					},
 					{ emitEvents: false },
 				);
+
+				// cleanup permissions for deleted field
+				const permissionRows: { id: string; collection: string; fields: string; }[] = await trx
+					.select('id', 'collection', 'fields')
+					.from('directus_permissions')
+					.whereRaw('collection = ? AND fields LIKE ?', [collection, '%' + field + '%']);
+				
+				if (permissionRows.length > 0) {
+					// there should probably some batching here in case of a lot of policies
+					for (const permissionRow of permissionRows) {
+						const newFields = permissionRow['fields'].split(',').filter((v) => v !== field).join(',');
+						
+						await trx
+							.from('directus_permissions')
+							.update('fields', newFields.length > 0 ? newFields : null)
+							.where('id', '=', permissionRow['id']);
+					}
+				}
 			});
 
 			const actionEvent = {
