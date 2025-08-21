@@ -10,6 +10,5 @@ export default defineConfig({
 	target: 'es2020',
 	minify: env === 'production',
 	watch: env === 'development',
-	clean: true,
 	dts: true,
 });
