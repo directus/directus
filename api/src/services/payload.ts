@@ -538,7 +538,7 @@ export class PayloadService {
 						emitEvents: opts?.emitEvents,
 						autoPurgeCache: opts?.autoPurgeCache,
 						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-						bypassAccountability: opts?.bypassAccountability,
+						skipTracking: opts?.skipTracking,
 						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
@@ -552,7 +552,7 @@ export class PayloadService {
 					emitEvents: opts?.emitEvents,
 					autoPurgeCache: opts?.autoPurgeCache,
 					autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-					bypassAccountability: opts?.bypassAccountability,
+					skipTracking: opts?.skipTracking,
 					onItemCreate: opts?.onItemCreate,
 					mutationTracker: opts?.mutationTracker,
 				});
@@ -636,7 +636,7 @@ export class PayloadService {
 						emitEvents: opts?.emitEvents,
 						autoPurgeCache: opts?.autoPurgeCache,
 						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-						bypassAccountability: opts?.bypassAccountability,
+						skipTracking: opts?.skipTracking,
 						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
@@ -650,7 +650,7 @@ export class PayloadService {
 					emitEvents: opts?.emitEvents,
 					autoPurgeCache: opts?.autoPurgeCache,
 					autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-					bypassAccountability: opts?.bypassAccountability,
+					skipTracking: opts?.skipTracking,
 					onItemCreate: opts?.onItemCreate,
 					mutationTracker: opts?.mutationTracker,
 				});
@@ -777,7 +777,7 @@ export class PayloadService {
 						emitEvents: opts?.emitEvents,
 						autoPurgeCache: opts?.autoPurgeCache,
 						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-						bypassAccountability: opts?.bypassAccountability,
+						skipTracking: opts?.skipTracking,
 						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					})),
@@ -811,7 +811,7 @@ export class PayloadService {
 						emitEvents: opts?.emitEvents,
 						autoPurgeCache: opts?.autoPurgeCache,
 						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-						bypassAccountability: opts?.bypassAccountability,
+						skipTracking: opts?.skipTracking,
 						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
@@ -827,7 +827,7 @@ export class PayloadService {
 							emitEvents: opts?.emitEvents,
 							autoPurgeCache: opts?.autoPurgeCache,
 							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-							bypassAccountability: opts?.bypassAccountability,
+							skipTracking: opts?.skipTracking,
 							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						},
@@ -881,7 +881,7 @@ export class PayloadService {
 						emitEvents: opts?.emitEvents,
 						autoPurgeCache: opts?.autoPurgeCache,
 						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-						bypassAccountability: opts?.bypassAccountability,
+						skipTracking: opts?.skipTracking,
 						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
@@ -909,7 +909,7 @@ export class PayloadService {
 							emitEvents: opts?.emitEvents,
 							autoPurgeCache: opts?.autoPurgeCache,
 							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-							bypassAccountability: opts?.bypassAccountability,
+							skipTracking: opts?.skipTracking,
 							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						});
@@ -943,7 +943,7 @@ export class PayloadService {
 							emitEvents: opts?.emitEvents,
 							autoPurgeCache: opts?.autoPurgeCache,
 							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-							bypassAccountability: opts?.bypassAccountability,
+							skipTracking: opts?.skipTracking,
 							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						});
@@ -959,7 +959,7 @@ export class PayloadService {
 								emitEvents: opts?.emitEvents,
 								autoPurgeCache: opts?.autoPurgeCache,
 								autoPurgeSystemCache: opts?.autoPurgeSystemCache,
-								bypassAccountability: opts?.bypassAccountability,
+								skipTracking: opts?.skipTracking,
 								onItemCreate: opts?.onItemCreate,
 								mutationTracker: opts?.mutationTracker,
 							},

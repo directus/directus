@@ -49,6 +49,8 @@ export async function resolveQuery(gql: GraphQLService, info: GraphQLResolveInfo
 
 	const result = await gql.read(collection, query, args['id']);
 
+	if (args['id']) return result;
+
 	if (query.group) {
 		// for every entry in result add a group field based on query.group;
 		const aggregateKeys = Object.keys(query.aggregate ?? {});

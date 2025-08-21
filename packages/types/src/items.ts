@@ -70,7 +70,7 @@ export type MutationOptions = {
 	/**
 	 * Skips the creation of accountability and revision entries
 	 */
-	bypassAccountability?: boolean | undefined;
+	skipTracking?: boolean | undefined;
 
 	/**
 	 * To keep track of mutation limits

@@ -311,7 +311,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
 			if (
-				opts.bypassAccountability !== true &&
+				opts.skipTracking !== true &&
 				this.accountability &&
 				this.schema.collections[this.collection]!.accountability !== null
 			) {
@@ -837,7 +837,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
 			if (
-				opts.bypassAccountability !== true &&
+				opts.skipTracking !== true &&
 				this.accountability &&
 				this.schema.collections[this.collection]!.accountability !== null
 			) {
@@ -1094,7 +1094,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			if (
-				opts.bypassAccountability !== true &&
+				opts.skipTracking !== true &&
 				this.accountability &&
 				this.schema.collections[this.collection]!.accountability !== null
 			) {

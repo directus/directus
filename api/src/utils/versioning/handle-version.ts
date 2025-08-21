@@ -56,7 +56,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 				return itemsServiceAdmin.updateOne(key, data as any, {
 					emitEvents: false,
 					autoPurgeCache: false,
-					bypassAccountability: true,
+					skipTracking: true,
 
 					onItemCreate: (collection, pk) => {
 						if (collection in createdIDs === false) createdIDs[collection] = [];
