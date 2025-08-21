@@ -17,7 +17,7 @@ import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus
 import { getEndpoint, isObject } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { mergeWith, cloneDeep } from 'lodash';
+import { mergeWith, cloneDeep, isNil } from 'lodash';
 import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
@@ -135,6 +135,24 @@ export function useItem<T extends Item>(
 		return !!fieldWithConditions.meta?.hidden && !!fieldWithConditions.meta?.clear_hidden_value_on_save;
 	}
 
+	function getFieldsForGroup(group: null | string, allFields: Field[], passed: string[] = []): Field[] {
+		const fieldsInGroup: Field[] = allFields.filter((field) => {
+			const meta = field.meta;
+			return meta?.group === group || (group === null && isNil(meta));
+		});
+
+		for (const field of fieldsInGroup) {
+			const meta = field.meta;
+
+			if (meta?.special?.includes('group') && !passed.includes(field.field)) {
+				passed.push(field.field);
+				fieldsInGroup.push(...getFieldsForGroup(field.field, allFields, passed));
+			}
+		}
+
+		return fieldsInGroup;
+	}
+
 	function clearHiddenFieldsByCondition(edits: Item, fields: Field[], defaultValues: any, item: any): Item {
 		const currentValues = mergeItemData(defaultValues, item, edits);
 
@@ -146,6 +164,20 @@ export function useItem<T extends Item>(
 				const defaultValue = field.schema?.default_value;
 				fieldsToClear.push({ field: field.field, defaultValue: defaultValue !== undefined ? defaultValue : null });
 				hasChanges = true;
+
+				// If this is a group field that should be cleared, also clear all fields within the group
+				if (field.meta?.special?.includes('group')) {
+					const fieldsInGroup = getFieldsForGroup(field.field, fields);
+
+					for (const groupField of fieldsInGroup) {
+						const groupFieldDefaultValue = groupField.schema?.default_value;
+
+						fieldsToClear.push({
+							field: groupField.field,
+							defaultValue: groupFieldDefaultValue !== undefined ? groupFieldDefaultValue : null,
+						});
+					}
+				}
 			}
 		}
 
