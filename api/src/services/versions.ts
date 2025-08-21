@@ -242,7 +242,7 @@ export class VersionsService extends ItemsService {
 			item,
 		});
 
-		const revisionDelta = await payloadService.prepareDelta(existingDelta, delta);
+		const revisionDelta = await payloadService.prepareDelta(delta, existingDelta === null ? 'create' : 'update');
 
 		await revisionsService.createOne({
 			activity,
