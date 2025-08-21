@@ -9,7 +9,7 @@ packages:
 catalog:
   '@authenio/samlify-node-xmllint': 2.0.0
   '@aws-sdk/client-s3': 3.858.0
-  '@aws-sdk/client-ses': 3.859.0
+  '@aws-sdk/client-sesv2': 3.864.0
   '@aws-sdk/lib-storage': 3.858.0
   '@azure/storage-blob': 12.28.0
   '@changesets/cli': 2.29.5
