@@ -2254,6 +2254,36 @@ interfaces:
     description: Password input with toggle to hide value
   flow-select:
     flow-select: Flow Select
+  super-header:
+    super-header: Super Header
+    description: Create a header with a title, subtitle, help information, and/or actions to help users navigate or run Flows.
+    title:
+      title: Title
+      note: Enter a title, or leave it blank to only show a line. You can also include fields from the current item. NOTEU+003A this interface ONLY supports root level fields, it does NOT support showing relational fields.
+    color:
+      name: Color
+      note: Select a color for the title and icon.
+    icon:
+      name: Icon
+      note: Select an icon to display next to the title.
+    subtitle:
+      name: Subtitle
+      note: Enter a subtitle for additional context. You can also include fields from the current item. NOTEU+003A this interface ONLY supports root level fields, it does NOT support showing relational fields.
+    help:
+      name: Help
+      note: Add help information to guide users. Supports HTML.
+    help_display_mode:
+      name: Help Display Mode
+      note: Select the display mode for the help information. Defaults to showing inline with the title. You can also show the help information in a modal.
+      inline: Inline
+      modal: Modal
+    enable_help_translations:
+      name: Enable Help Translations
+      note: Enable translations for the help information. If enabled, the help information will be translated using the Help Translations String field. NOTEU+003A this will override the Help field.
+    help_translations_string:
+      name: Help Translations String
+      note: Translation string for the help information. You will need to create a translation value for the key in the Translations Settings of your project with the HTML content for each individual language you want to support. NOTEU+003A this will override the Help field.
+
 displays:
   translations:
     translations: Translations
