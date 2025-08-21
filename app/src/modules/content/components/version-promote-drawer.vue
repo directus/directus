@@ -6,7 +6,6 @@ import { ContentVersion, Field } from '@directus/types';
 import { isNil } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import VersionPromoteField from './version-promote-field.vue';
 
 type Comparison = {
 	outdated: boolean;
@@ -34,8 +33,6 @@ const selectedFields = ref<string[]>([]);
 const comparedData = ref<Comparison | null>(null);
 
 const loading = ref(false);
-
-const { tabs, currentTab } = useTab();
 
 const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
 
@@ -156,83 +153,62 @@ function usePromoteDialog() {
 		}
 	}
 }
-
-function useTab() {
-	const tabs = [
-		{
-			text: t('promote_version_changes'),
-			value: 'changes',
-		},
-		{
-			text: t('promote_version_preview'),
-			value: 'preview',
-		},
-	];
-
-	const currentTab = ref([tabs[0]!.value]);
-
-	return { tabs, currentTab };
-}
 </script>
 
 <template>
-	<v-drawer
-		:title="t('promote_version_drawer_title', { version: currentVersionDisplayName })"
-		class="version-drawer"
-		persistent
+	<v-dialog
 		:model-value="active"
-		@cancel="$emit('cancel')"
-		@apply="onPromoteClick"
+		persistent
+		:loading="loading"
+		@update:model-value="$emit('cancel')"
+		@esc="$emit('cancel')"
 	>
-		<template #sidebar>
-			<v-tabs v-model="currentTab" vertical>
-				<v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value">
-					{{ tab.text }}
-				</v-tab>
-			</v-tabs>
-		</template>
-
-		<div class="content">
-			<div v-if="currentTab[0] === 'changes'" class="grid">
-				<v-notice v-if="isOutdated" type="warning" class="field full">
-					{{ t('outdated_notice') }}
-				</v-notice>
-				<v-notice v-else class="field full">
-					{{ t('promote_notice') }}
-				</v-notice>
-				<div v-for="field in comparedFields" :key="field.field" class="field full">
-					<div class="type-label">
-						{{ field.name }}
-					</div>
-					<div
-						class="compare main"
-						:class="{ active: !selectedFields.includes(field.field) }"
-						@click="removeField(field.field)"
-					>
-						<v-icon name="looks_one" />
-						<version-promote-field class="field-content" :value="comparedData?.main[field.field]" />
-						<v-chip class="version" x-small>{{ t('main_version') }}</v-chip>
-						<v-icon :name="!selectedFields.includes(field.field) ? 'check' : 'close'" />
-					</div>
-					<div
-						class="compare current"
-						:class="{ active: selectedFields.includes(field.field) }"
-						@click="addField(field.field)"
-					>
-						<v-icon name="looks_two" />
-						<version-promote-field class="field-content" :value="comparedData?.current[field.field]" />
-						<v-chip class="version" x-small>{{ currentVersionDisplayName }}</v-chip>
-						<v-icon :name="selectedFields.includes(field.field) ? 'check' : 'close'" />
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="version-modal-content">
+					<div class="content">
+						<div class="preview-comparison">
+							<div class="comparison-side main-side">
+								<div class="side-header">
+									<h3>{{ t('main_version') }}</h3>
+								</div>
+								<v-form
+									disabled
+									:collection="currentVersion.collection"
+									:primary-key="currentVersion.item"
+									:initial-values="comparedData?.main"
+								/>
+							</div>
+							<div class="comparison-divider"></div>
+							<div class="comparison-side version-side">
+								<div class="side-header">
+									<h3>{{ currentVersionDisplayName }}</h3>
+								</div>
+								<v-form
+									disabled
+									:collection="currentVersion.collection"
+									:primary-key="currentVersion.item"
+									:initial-values="previewData"
+								/>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div v-if="currentTab[0] === 'preview'">
-				<v-form
-					disabled
-					:collection="currentVersion.collection"
-					:primary-key="currentVersion.item"
-					:initial-values="previewData"
-				/>
+
+			<div class="modal-actions">
+				<div class="spacer"></div>
+				<v-button secondary @click="$emit('cancel')">
+					{{ t('cancel') }}
+				</v-button>
+				<v-button
+					v-tooltip.bottom="selectedFields.length === 0 ? t('promote_version_disabled') : t('promote_version')"
+					:disabled="selectedFields.length === 0"
+					:loading="promoting"
+					@click="onPromoteClick"
+				>
+					{{ t('promote_version') }}
+				</v-button>
 			</div>
 		</div>
 
@@ -253,29 +229,98 @@ function useTab() {
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
-
-		<template #actions>
-			<v-button
-				v-tooltip.bottom="selectedFields.length === 0 ? t('promote_version_disabled') : t('promote_version')"
-				:disabled="selectedFields.length === 0"
-				icon
-				rounded
-				:loading="promoting"
-				@click="onPromoteClick"
-			>
-				<v-icon name="check" />
-			</v-button>
-		</template>
-	</v-drawer>
+	</v-dialog>
 </template>
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
 
-.content {
-	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding-bottom);
+.version-promote-modal {
+	:deep(.v-dialog) {
+		max-inline-size: 90vw;
+		max-block-size: 90vh;
+		inline-size: auto;
+		block-size: auto;
+	}
+}
 
+.modal-content {
+	background: var(--theme--background);
+	border-radius: var(--theme--border-radius);
+	box-shadow: var(--theme--shadow);
+	display: flex;
+	flex-direction: column;
+	max-block-size: 90vh;
+	min-inline-size: 800px;
+}
+
+.modal-header {
+	padding: var(--content-padding);
+	border-block-end: 1px solid var(--theme--border-color);
+
+	h2 {
+		margin: 0;
+		font-size: 1.2em;
+		font-weight: 600;
+		color: var(--theme--foreground);
+	}
+}
+
+.modal-body {
+	padding: var(--content-padding);
+	flex: 1;
+	overflow: auto;
+}
+
+.version-modal-content {
+	.tabs-container {
+		margin-block-end: var(--content-padding);
+	}
+}
+
+.preview-comparison {
+	display: flex;
+	block-size: 100%;
+	min-block-size: 400px;
+}
+
+.comparison-side {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.side-header {
+	h3 {
+		margin: 0;
+		font-size: 1.1em;
+		font-weight: 600;
+		color: var(--theme--foreground);
+	}
+}
+
+.comparison-divider {
+	inline-size: 1px;
+	background: repeating-linear-gradient(
+		to bottom,
+		transparent,
+		transparent 4px,
+		var(--theme--border-color) 4px,
+		var(--theme--border-color) 8px
+	);
+	margin: 0 var(--content-padding);
+}
+
+.modal-actions {
+	justify-content: flex-end;
+
+	.spacer {
+		flex: 1;
+	}
+}
+
+.content {
 	.grid {
 		@include mixins.form-grid;
 	}
