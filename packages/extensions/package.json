@@ -25,8 +25,8 @@
 	],
 	"scripts": {
 		"build": "pnpm run '/^build:.*/'",
-		"build:node": "tsdown src/node.ts --tsconfig src/node/tsconfig.json --out-dir dist --format=esm --dts",
-		"build:shared": "tsdown src/index.ts --tsconfig src/tsconfig.json --out-dir dist --format=esm --dts",
+		"build:node": "tsdown src/node.ts --tsconfig src/node/tsconfig.json --out-dir dist --dts",
+		"build:shared": "tsdown src/index.ts --tsconfig src/tsconfig.json --out-dir dist --dts",
 		"dev": "pnpm run '/^build:.*/' --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"

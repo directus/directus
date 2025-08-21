@@ -22,8 +22,8 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsdown src/index.ts --format=esm --dts",
-		"dev": "tsdown src/index.ts --format=esm --dts --watch",
+		"build": "tsdown src/index.ts --dts",
+		"dev": "tsdown src/index.ts --dts --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},

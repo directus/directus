@@ -32,7 +32,7 @@
 	],
 	"scripts": {
 		"build": "pnpm run '/^bundle|typecheck$/'",
-		"bundle": "tsdown src/index.ts --format=esm --dts",
+		"bundle": "tsdown src/index.ts --dts",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
 		"typecheck": "tsc --noEmit"
