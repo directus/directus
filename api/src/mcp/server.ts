@@ -84,7 +84,7 @@ export class DirectusMCP {
 
 			try {
 				const promptList = await service.readByQuery({
-					fields: ['name', 'description', 'systemPrompt', 'messages'],
+					fields: ['name', 'description', 'system_prompt', 'messages'],
 				});
 
 				for (const prompt of promptList) {
@@ -129,7 +129,7 @@ export class DirectusMCP {
 
 			try {
 				const promptCommand = await service.readByQuery({
-					fields: ['name', 'description', 'systemPrompt', 'messages'],
+					fields: ['name', 'description', 'system_prompt', 'messages'],
 					filter: {
 						name: {
 							_eq: promptName,

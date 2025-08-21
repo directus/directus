@@ -713,6 +713,17 @@ fields:
     width: full
     group: ai_group
 
+  - field: mcp_notice
+    interface: presentation-notice
+    options:
+      icon: info
+      text: $t:fields.directus_settings.mcp_notice
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
   - field: mcp_enabled
     interface: boolean
     group: ai_group
@@ -769,12 +780,25 @@ fields:
             _neq: true
         hidden: true
 
+  - field: mcp_system_prompt_divider
+    interface: presentation-divider
+    options:
+      inlineTitle: true
+      color: 'var(--theme--foreground-subdued)'
+      title: $t:fields.directus_settings.mcp_system_prompt_divider
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
   - field: mcp_system_prompt_enabled
     interface: boolean
     group: ai_group
     special:
       - cast-boolean
-    width: half
+    width: half-left
+    note: $t:fields.directus_settings.mcp_system_prompt_enabled_note
     options:
       label: $t:enabled
     conditions:
@@ -785,7 +809,7 @@ fields:
         readonly: true
 
   - field: mcp_system_prompt
-    interface: input-multiline
+    interface: input-rich-text-md
     group: ai_group
     width: full
     note: $t:fields.directus_settings.mcp_system_prompt_note
@@ -795,5 +819,10 @@ fields:
       - name: mcp_enabled
         rule:
           mcp_enabled:
+            _neq: true
+        readonly: true
+      - name: mcp_system_prompt_enabled
+        rule:
+          mcp_system_prompt_enabled:
             _neq: true
         readonly: true
