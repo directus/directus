@@ -101,7 +101,7 @@ onBeforeUnmount(() => {
 <template>
 	<div
 		ref="labelContainer"
-		class="label type-title selectable"
+		class="label type-title"
 		:class="[font, { 'has-header': showHeader }]"
 		:style="{ color: color }"
 	>

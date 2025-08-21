@@ -2543,6 +2543,12 @@ operations:
     name: Sleep
     description: Wait a given number of milliseconds
     milliseconds: Milliseconds
+  throw-error:
+    name: Throw Error
+    description: Throw an error in the reject path
+    code: Error Code
+    status: HTTP Status Code
+    message: Error Message
   transform:
     name: Transform Payload
     description: Alter the Flow's JSON payload
