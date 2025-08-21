@@ -1,18 +1,14 @@
-# Directus Files Tool
+Perform CRUD operations on files in Directus.
 
-Perform CRUD operations on files.
-
-## ⚙️ Available Actions
+## Actions
 
 - **`create`**: Add new file records
 - **`read`**: List/query metadata or get specific items by ID
-- **`update`**: Modify existing metadata (title, description, tags, folder)
+- **`update`**: Modify existing metadata
 - **`delete`**: Remove files by keys
 - **`import`**: Import a file from a URL and create or update its file data
 
-## 📋 Common Operations
-
-- ALWAYS show the file URL if it is present in the result
+## Example Operations
 
 ### Reading File Metadata
 
@@ -36,7 +32,7 @@ Perform CRUD operations on files.
 }
 ```
 
-### Upload a File via URL
+### Import a File via URL
 
 ```json
 {
@@ -57,46 +53,30 @@ Perform CRUD operations on files.
 
 ### Update File Metadata
 
+**Single file:**
 ```json
 {
 	"action": "update",
-	"data": [
-		{
-			"id": "file-uuid",
-			"title": "New Title",
-			"description": "Updated description",
-			"tags": ["tag1", "tag2", "category"],
-			"folder": "folder-uuid"
-		}
-	]
-}
-```
-
-### Set Image Focal Point
-
-```json
-{
-	"action": "update",
-	"keys": ["image-uuid"],
+	"keys": ["file-uuid"],
 	"data": {
-		"focal_point_x": 850,
-		"focal_point_y": 420
+		"title": "New Title",
+		"description": "Updated description",
+		"tags": ["tag1", "tag2", "category"],
+		"folder": "folder-uuid"
 	}
 }
 ```
 
-Sets the focal point for image cropping - coordinates are in pixels from top-left corner.
-
-## 🔍 Query Parameters
-
-For `read` operations, use query parameters to filter and shape results:
-
-- **`fields`**: Specify which fields to return
-- **`filter`**: Filter results (e.g., by type, folder, tags)
-- **`sort`**: Order results
-- **`limit`/`offset`**: Pagination
-- **`search`**: Full-text search in filenames and metadata
-- **`deep`**: Include related data
+**Batch update:**
+```json
+{
+	"action": "update",
+	"data": [
+		{"id": "file-uuid-1", "title": "New Title 1"},
+		{"id": "file-uuid-2", "title": "New Title 2"}
+	]
+}
+```
 
 ### Common Filters
 
@@ -104,18 +84,18 @@ For `read` operations, use query parameters to filter and shape results:
 {
 	"query": {
 		"filter": {
-			"type": { "_starts_with": "image/" }, // Images only
-			"folder": { "_eq": "folder-uuid" }, // Specific folder
-			"filesize": { "_lt": 5000000 }, // Under 5MB
-			"uploaded_on": { "_gte": "$NOW(-7 days)" } // Last week
+			"_and": [
+				{"type": { "_icontains": "/png" }}, // PNG files only
+				{"folder": { "_eq": "folder-uuid" }}, // Specific folder
+				{"filesize": { "_lt": 5000000 }}, // Under 5MB
+				{"uploaded_on": { "_gte": "$NOW(-7 days)" }} // Within last week
+			]
 		}
 	}
 }
 ```
 
-## 📊 File Metadata Fields
-
-Common fields available for files:
+## File Metadata Fields
 
 - `id`: Unique identifier
 - `storage`: Storage adapter used
@@ -138,11 +118,13 @@ Common fields available for files:
 - `focal_point_x`: Horizontal focal point (in pixels from left edge)
 - `focal_point_y`: Vertical focal point (in pixels from top edge)
 
-## 🎯 Real-World Use Cases
+## Real-World Use Cases
 
 ### Asset Selection for Content
 
 Find appropriate images for articles, pages, or products:
+
+_Example: "Find images in our asset library related to customer support for our new help center article."_
 
 ```json
 {
@@ -150,128 +132,52 @@ Find appropriate images for articles, pages, or products:
 	"query": {
 		"fields": ["id", "title", "description", "tags", "type"],
 		"filter": {
-			"type": { "_starts_with": "image/" },
-			"tags": { "_contains": "customer-support" }
+			"_and": [
+				{"type": { "_starts_with": "image/" }},
+				{"tags": { "_contains": "customer-support" }}
+			]
 		},
 		"search": "help center"
 	}
 }
 ```
 
-_Example: "Find images in our asset library related to customer support for our new help center article."_
 
-### Asset Analysis and Organization
+### Asset Organization & Cleanup
 
-Improve asset library organization by analyzing and updating metadata:
+Transform generic files into well-organized, searchable assets:
 
-1. **First, get images needing organization:**
-
+1. **Find files needing metadata:**
 ```json
 {
 	"action": "read",
 	"query": {
 		"fields": ["id", "filename_disk", "title", "description"],
-		"filter": {
-			"folder": { "_eq": "product-photography-folder-id" },
-			"description": { "_null": true }
-		}
+		"filter": { "description": { "_null": true } }
 	}
 }
 ```
 
-2. **Analyze image content via Assets tool (get base64 for vision analysis):**
-
-```json
-{
-	"action": "read",
-	"id": "image-uuid-to-analyze"
-}
-```
+2. **Analyze with vision (use `assets` tool for base64):** Get image content for AI analysis
 
 3. **Update with descriptive metadata:**
-
 ```json
 {
 	"action": "update",
-	"data": [
-		{
-			"id": "image-uuid",
-			"title": "Red leather handbag with gold hardware on white background",
-			"description": "Professional product photo of red handbag for e-commerce",
-			"tags": ["handbag", "leather", "red", "product-photo", "accessories"]
-		}
-	]
-}
-```
-
-### Bulk Asset Cleanup
-
-Transform generic filenames into descriptive metadata:
-
-- `IMG_2847.jpg` → Title: "Red leather handbag product photo"
-- Add missing alt text for accessibility
-- Apply consistent tagging taxonomy
-- Organize into appropriate folders
-
-### Smart Image Cropping with Focal Points
-
-Set focal points to ensure important parts of images are preserved during cropping:
-
-```json
-{
-	"action": "update",
+	"keys": ["image-uuid"],
 	"data": {
-		"id": "portrait-uuid",
-		"focal_point_x": 512, // Center of face at 512px from left
-		"focal_point_y": 300 // Eyes at 300px from top
+		"title": "Red leather handbag product photo",
+		"description": "Professional e-commerce photo with white background",
+		"tags": ["handbag", "leather", "red", "product-photo", "accessories"],
+		"focal_point_x": 512,
+		"focal_point_y": 300 // Focal points ensure that when images are cropped for different aspect ratios (thumbnails, hero images, etc.), the important subject remains visible. Coordinates are in pixels from the top-left corner of the original image.
 	}
 }
 ```
 
-Focal points ensure that when images are cropped for different aspect ratios (thumbnails, hero images, etc.), the
-important subject remains visible. Coordinates are in pixels from the top-left corner of the original image.
-
-### Content-Asset Matching
-
-Find and associate relevant assets with content:
-
-```json
-{
-	"action": "read",
-	"query": {
-		"fields": ["id", "title", "type", "width", "height"],
-		"filter": {
-			"type": { "_starts_with": "image/" },
-			"$or": [
-				{ "tags": { "_contains": "product" } },
-				{ "title": { "_contains": "product" } },
-				{ "description": { "_contains": "product" } }
-			]
-		}
-	}
-}
-```
-
-### Asset Migration and Import
-
-When migrating content between systems:
-
-1. Read existing asset metadata
-2. Map to new structure
-3. Update with proper categorization
-4. Maintain relationships with content
-
-## ⚠️ Important Notes
-
-- **File Upload**: This tool manages metadata only. Use appropriate upload endpoints for actual file uploads
-- **Asset Size**: Large files are automatically handled but may impact performance
-- **Permissions**: Respects Directus access control - only accessible files are returned
-- **File Updates**: Only metadata can be updated, not the actual file content
-
-## 🚨 Common Mistakes to Avoid
-
-1. **Don't** confuse file metadata operations with raw content retrieval
-2. **Don't** try to upload files through this tool - it's for metadata management
-3. **Don't** attempt to modify file content - only metadata can be updated
-4. **Remember** that `keys` expects an array even for single items
-5. **Tags must be arrays**: Use `["tag1", "tag2"]` not `"tag1, tag2"`
+## Key Points
+- **ALWAYS pass data as native objects**, NOT stringified JSON
+- **Metadata only**: This tool manages file metadata, not file content or uploads
+- **Permissions**: Respects Directus access control
+- **Arrays required**: `keys` and `tags` must be arrays: `["item"]` not `"item"`
+- **Performance**: Large files handled automatically but may impact performance
