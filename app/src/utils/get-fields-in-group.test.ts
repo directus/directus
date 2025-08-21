@@ -1,4 +1,4 @@
-import { expect, it, test, describe } from 'vitest';
+import { expect, it, describe } from 'vitest';
 import { Field } from '@directus/types';
 import { getFieldsInGroup } from './get-fields-in-group.js';
 
