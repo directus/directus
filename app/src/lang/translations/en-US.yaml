@@ -2283,7 +2283,39 @@ interfaces:
     help_translations_string:
       name: Help Translations String
       note: Translation string for the help information. You will need to create a translation value for the key in the Translations Settings of your project with the HTML content for each individual language you want to support. NOTEU+003A this will override the Help field.
-
+    actions:
+      name: Actions
+      note: Add actions to the divider to help users navigate or run Flows.  If there are more than one action, actions will be displayed in a dropdown menu.
+      label:
+        name: Label
+        note: What the user will see on the button.
+      icon:
+        name: Icon
+        note: Select an icon to display next to the label.
+      type:
+        name: Type
+        note: Select a type to style the button.
+        choices:
+          primary: Primary
+          secondary: Secondary
+          info: Info
+          success: Success
+          warning: Warning
+          danger: Danger
+      action_type:
+        name: Action Type
+        note: Select the action type.
+        choices:
+          link: Link
+          flow: Flow
+      url:
+        name: URL
+        note: Enter a URL to navigate to when the button is clicked. You can include fields from the current item as variables. For exampleU+003A https://example.com/articles/{{ id }}/{{ slug }}. NOTEU+003A this interface ONLY supports root level fields, it does NOT support showing relational fields.
+        placeholder: https://example.com/articles/{{ id }}/{{ slug }}
+      flow:
+        name: Flow
+        note: Select a Flow to run when the button is clicked.
+        placeholder: Select a flow
 displays:
   translations:
     translations: Translations
