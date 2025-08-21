@@ -582,7 +582,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		let results: Item[] = [];
 
 		if (query.version) {
-			results = (await handleVersion(this, key, queryWithKey, opts)) as Item[];
+			results = [await handleVersion(this, key, queryWithKey, opts)];
 		} else {
 			results = await this.readByQuery(queryWithKey, opts);
 		}
@@ -777,6 +777,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				knex: trx,
 				schema: this.schema,
 				nested: this.nested,
+				skipDefaults: opts.skipDefaults,
 			});
 
 			const {

@@ -36,6 +36,7 @@ type Transformers = {
 		accountability: Accountability | null;
 		specials: string[];
 		helpers: Helpers;
+		skipDefaults: boolean;
 	}) => Promise<any>;
 };
 
@@ -50,14 +51,16 @@ export class PayloadService {
 	collection: string;
 	schema: SchemaOverview;
 	nested: string[];
+	skipDefaults: boolean;
 
-	constructor(collection: string, options: AbstractServiceOptions) {
+	constructor(collection: string, options: AbstractServiceOptions & { skipDefaults?: boolean | undefined }) {
 		this.accountability = options.accountability || null;
 		this.knex = options.knex || getDatabase();
 		this.helpers = getHelpers(this.knex);
 		this.collection = collection;
 		this.schema = options.schema;
 		this.nested = options.nested ?? [];
+		this.skipDefaults = options.skipDefaults ?? false;
 
 		return this;
 	}
@@ -109,12 +112,12 @@ export class PayloadService {
 			if (action === 'read') return value ? '**********' : null;
 			return value;
 		},
-		async 'user-created'({ action, value, accountability }) {
-			if (action === 'create') return accountability?.user || null;
+		async 'user-created'({ action, value, accountability, skipDefaults }) {
+			if (action === 'create' && !skipDefaults) return accountability?.user ?? null;
 			return value;
 		},
-		async 'user-updated'({ action, value, accountability }) {
-			if (action === 'update') return accountability?.user || null;
+		async 'user-updated'({ action, value, accountability, skipDefaults }) {
+			if (action === 'update' && !skipDefaults) return accountability?.user ?? null;
 			return value;
 		},
 		async 'role-created'({ action, value, accountability }) {
@@ -125,12 +128,12 @@ export class PayloadService {
 			if (action === 'update') return accountability?.role || null;
 			return value;
 		},
-		async 'date-created'({ action, value, helpers }) {
-			if (action === 'create') return new Date(helpers.date.writeTimestamp(new Date().toISOString()));
+		async 'date-created'({ action, value, helpers, skipDefaults }) {
+			if (action === 'create' && !skipDefaults) return new Date(helpers.date.writeTimestamp(new Date().toISOString()));
 			return value;
 		},
-		async 'date-updated'({ action, value, helpers }) {
-			if (action === 'update') return new Date(helpers.date.writeTimestamp(new Date().toISOString()));
+		async 'date-updated'({ action, value, helpers, skipDefaults }) {
+			if (action === 'update' && !skipDefaults) return new Date(helpers.date.writeTimestamp(new Date().toISOString()));
 			return value;
 		},
 		async 'cast-csv'({ action, value }) {
@@ -281,6 +284,7 @@ export class PayloadService {
 					accountability,
 					specials: fieldSpecials,
 					helpers: this.helpers,
+					skipDefaults: this.skipDefaults,
 				});
 			}
 		}
@@ -539,6 +543,7 @@ export class PayloadService {
 						autoPurgeCache: opts?.autoPurgeCache,
 						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 						skipTracking: opts?.skipTracking,
+						skipDefaults: opts?.skipDefaults,
 						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
@@ -553,6 +558,7 @@ export class PayloadService {
 					autoPurgeCache: opts?.autoPurgeCache,
 					autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 					skipTracking: opts?.skipTracking,
+					skipDefaults: opts?.skipDefaults,
 					onItemCreate: opts?.onItemCreate,
 					mutationTracker: opts?.mutationTracker,
 				});
@@ -637,6 +643,7 @@ export class PayloadService {
 						autoPurgeCache: opts?.autoPurgeCache,
 						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 						skipTracking: opts?.skipTracking,
+						skipDefaults: opts?.skipDefaults,
 						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
@@ -651,6 +658,7 @@ export class PayloadService {
 					autoPurgeCache: opts?.autoPurgeCache,
 					autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 					skipTracking: opts?.skipTracking,
+					skipDefaults: opts?.skipDefaults,
 					onItemCreate: opts?.onItemCreate,
 					mutationTracker: opts?.mutationTracker,
 				});
@@ -778,6 +786,7 @@ export class PayloadService {
 						autoPurgeCache: opts?.autoPurgeCache,
 						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 						skipTracking: opts?.skipTracking,
+						skipDefaults: opts?.skipDefaults,
 						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					})),
@@ -812,6 +821,7 @@ export class PayloadService {
 						autoPurgeCache: opts?.autoPurgeCache,
 						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 						skipTracking: opts?.skipTracking,
+						skipDefaults: opts?.skipDefaults,
 						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
@@ -828,6 +838,7 @@ export class PayloadService {
 							autoPurgeCache: opts?.autoPurgeCache,
 							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 							skipTracking: opts?.skipTracking,
+							skipDefaults: opts?.skipDefaults,
 							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						},
@@ -882,6 +893,7 @@ export class PayloadService {
 						autoPurgeCache: opts?.autoPurgeCache,
 						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 						skipTracking: opts?.skipTracking,
+						skipDefaults: opts?.skipDefaults,
 						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
@@ -910,6 +922,7 @@ export class PayloadService {
 							autoPurgeCache: opts?.autoPurgeCache,
 							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 							skipTracking: opts?.skipTracking,
+							skipDefaults: opts?.skipDefaults,
 							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						});
@@ -944,6 +957,7 @@ export class PayloadService {
 							autoPurgeCache: opts?.autoPurgeCache,
 							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 							skipTracking: opts?.skipTracking,
+							skipDefaults: opts?.skipDefaults,
 							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						});
@@ -960,6 +974,7 @@ export class PayloadService {
 								autoPurgeCache: opts?.autoPurgeCache,
 								autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 								skipTracking: opts?.skipTracking,
+								skipDefaults: opts?.skipDefaults,
 								onItemCreate: opts?.onItemCreate,
 								mutationTracker: opts?.mutationTracker,
 							},
@@ -976,7 +991,7 @@ export class PayloadService {
 	 * Transforms the input partial payload to match the output structure, to have consistency
 	 * between delta and data
 	 */
-	async prepareDelta(delta: Partial<Item>, action: PayloadAction = 'read'): Promise<string | null> {
+	async prepareDelta(delta: Partial<Item>): Promise<string | null> {
 		let payload = cloneDeep(delta);
 
 		for (const key in payload) {
@@ -985,7 +1000,7 @@ export class PayloadService {
 			}
 		}
 
-		payload = await this.processValues(action, payload);
+		payload = await this.processValues('read', payload);
 
 		if (Object.keys(payload).length === 0) return null;
 

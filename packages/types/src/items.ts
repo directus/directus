@@ -73,6 +73,11 @@ export type MutationOptions = {
 	skipTracking?: boolean | undefined;
 
 	/**
+	 * Skips the overwriting of defaults like user-created
+	 */
+	skipDefaults?: boolean | undefined;
+
+	/**
 	 * To keep track of mutation limits
 	 */
 	mutationTracker?: MutationTracker | undefined;
