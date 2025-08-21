@@ -1,7 +1,5 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Accountability, Item, PrimaryKey, Query, QueryOptions } from '@directus/types';
-import { intersection } from 'lodash-es';
-import { GENERATE_SPECIAL } from '../../constants.js';
 import type { ItemsService as ItemsServiceType } from '../../services/index.js';
 import { deepMapResponse } from '../deep-map-response.js';
 import { transaction } from '../transaction.js';
@@ -112,12 +110,6 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 					if (match) {
 						return [key, null];
 					}
-				} else if (
-					context.leaf &&
-					(context.field.defaultValue || intersection(GENERATE_SPECIAL, context.field.special).length > 0)
-				) {
-					// Should we only do this for newly created items as the others do have actual values in the DB already?
-					return [key, null];
 				}
 
 				return [key, value];
