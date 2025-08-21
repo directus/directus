@@ -174,6 +174,25 @@ export const FlowItemInputSchema = z.object({
 
 export const FlowItemValidateSchema = z.custom<Partial<FlowRaw>>();
 
+// trigger flow
+export const TriggerFlowInputSchema = z.object({
+	id: PrimaryKeyInputSchema,
+	collection: z.string(),
+	keys: z.array(PrimaryKeyInputSchema).optional(),
+	headers: z.record(z.string(), z.any()).optional(),
+	query: z.record(z.string(), z.any()).optional(),
+	data: z.record(z.string(), z.any()).optional(),
+});
+
+export const TriggerFlowValidateSchema = z.strictObject({
+	id: PrimaryKeyValidateSchema,
+	collection: z.string(),
+	keys: z.array(PrimaryKeyValidateSchema).optional(),
+	query: z.record(z.string(), z.any()).optional(),
+	headers: z.record(z.string(), z.any()).optional(),
+	data: z.record(z.string(), z.any()).optional(),
+});
+
 // folder
 export const FolderItemInputSchema = z.object({
 	id: PrimaryKeyInputSchema.optional(),

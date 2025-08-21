@@ -1,89 +1,59 @@
+import { InvalidPayloadError } from '@directus/errors';
 import { z } from 'zod';
 import { getFlowManager } from '../../flows.js';
+import { FlowsService } from '../../services/flows.js';
 import { defineTool } from '../define.js';
-import { QueryInputSchema } from '../schema.js';
+import { TriggerFlowInputSchema, TriggerFlowValidateSchema } from '../schema.js';
 import prompts from './prompts/index.js';
 
-const TriggerFlowInputSchema = z.strictObject({
-	flowDefinition: z.record(z.string(), z.any()).describe('The full flow definition from the read-flows call.'),
-	flowId: z.string().describe('The ID of the flow to trigger'),
-	method: z.enum(['GET', 'POST']).default('GET'),
-	query: QueryInputSchema.optional(),
-	headers: z.record(z.string(), z.any()).optional(),
-	collection: z.string().describe('The collection of the items to trigger the flow on.'),
-	keys: z
-		.array(z.string())
-		.describe(
-			'The primary keys of the items to trigger the flow on. If the flow requireSelection field is true, you must provide the keys.',
-		),
-	data: z
-		.record(z.string(), z.any())
-		.optional()
-		.describe(
-			'The data to pass to the flow. Should be an object with keys that match the flow *options.fields.fields* property',
-		),
-});
-
-export const triggerFlow = defineTool<z.infer<typeof TriggerFlowInputSchema>>({
+export const triggerFlow = defineTool<z.infer<typeof TriggerFlowValidateSchema>>({
 	name: 'trigger-flow',
 	description: prompts.triggerFlow,
 	inputSchema: TriggerFlowInputSchema,
-	validateSchema: TriggerFlowInputSchema,
+	validateSchema: TriggerFlowValidateSchema,
 	annotations: {
 		title: 'Trigger a Directus Flow',
 	},
 	async handler({ args, schema, accountability }) {
-		const { flowDefinition, flowId, collection, keys, data, method, query, headers } = args;
+		const flowsService = new FlowsService({ schema, accountability });
 
-		// Validate flow existence
-		if (!flowDefinition) {
-			throw new Error('Flow definition must be provided');
+		const flow = await flowsService.readOne(args.id, {
+			filter: { status: { _eq: 'active' }, trigger: { _eq: 'manual' } },
+			fields: ['options'],
+		});
+
+		if (!flow) {
+			throw new InvalidPayloadError({ reason: `A flow with id ${args.id} does not exist` });
 		}
 
-		// Validate flow ID matches
-		if (flowDefinition['id'] !== flowId) {
-			throw new Error(`Flow ID mismatch: provided ${flowId} but definition has ${flowDefinition['id']}`);
-		}
+		/**
+		 * Collection and Required selection are validated by the server.
+		 * Required fields is an additional validation we do.
+		 */
+		const requiredFields = ((flow.options?.['fields'] as { field: string; meta: { required: boolean } }[]) ?? [])
+			.filter((field) => field.meta?.required)
+			.map((field) => field.field);
 
-		// Validate collection is valid for this flow
-		if (!flowDefinition['options']['collections'].includes(collection)) {
-			throw new Error(
-				`Invalid collection "${collection}". This flow only supports: ${flowDefinition['options']['collections'].join(
-					', ',
-				)}`,
-			);
-		}
-
-		// Check if selection is required
-		const requiresSelection = flowDefinition['options']['requireSelection'] !== false;
-
-		if (requiresSelection && (!keys || keys.length === 0)) {
-			throw new Error('This flow requires selecting at least one item, but no keys were provided');
-		}
-
-		// Validate required fields
-		if (flowDefinition['options']['fields']) {
-			const requiredFields = flowDefinition['options']['fields']
-				.filter((field: any) => field.meta?.required)
-				.map((field: any) => field.field);
-
-			for (const fieldName of requiredFields) {
-				if (!data || !(fieldName in data)) {
-					throw new Error(`Missing required field: ${fieldName}`);
-				}
+		for (const fieldName of requiredFields) {
+			if (!args.data || !(fieldName in args.data)) {
+				throw new InvalidPayloadError({ reason: `Required field ${fieldName} is missing` });
 			}
 		}
 
 		const flowManager = getFlowManager();
 
 		const { result } = await flowManager.runWebhookFlow(
-			`${method}-${flowId}`,
+			`POST-${args.id}`,
 			{
-				path: `/trigger/${flowId}`,
-				query: query,
-				body: data,
-				method: method,
-				headers: headers,
+				path: `/trigger/${args.id}`,
+				query: args.query ?? {},
+				method: 'POST',
+				body: {
+					collection: args.collection,
+					keys: args.keys,
+					...(args.data ?? {}),
+				},
+				headers: args.headers ?? {},
 			},
 			{ accountability, schema },
 		);
