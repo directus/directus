@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Query } from '@directus/types';
-import { isObject, toArray } from '@directus/utils';
+import { isObject, parseJSON, toArray } from '@directus/utils';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import {
 	CallToolRequestSchema,
@@ -215,6 +215,17 @@ export class DirectusMCP {
 
 				if (tool.name === 'system-prompt') {
 					request.params.arguments = { promptOverride: this.systemPrompt };
+				}
+
+				// ensure json expected fields are not stringified
+				if (request.params.arguments) {
+					for (const field of ['data', 'keys', 'query']) {
+						const arg = request.params.arguments[field];
+
+						if (typeof arg === 'string') {
+							request.params.arguments[field] = parseJSON(arg);
+						}
+					}
 				}
 
 				const { error, data } = tool.validateSchema?.safeParse(request.params.arguments) ?? {
