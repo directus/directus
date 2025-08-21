@@ -7,7 +7,11 @@ export default defineInterface({
 	description: '$t:interfaces.super-header.description',
 	icon: 'exercise',
 	component: SuperHeader,
-	types: ['string'],
+	types: ['alias'],
+	localTypes: ['presentation'],
+	group: 'presentation',
+	autoKey: true,
+	hideLabel: true,
 	options: ({ collection }) => [
 		{
 			field: 'title',
@@ -115,6 +119,142 @@ export default defineInterface({
 						hidden: false,
 					},
 				],
+			},
+		},
+		{
+			field: 'actions',
+			name: '$t:interfaces.super-header.actions.name',
+			type: 'json',
+			meta: {
+				interface: 'list',
+				note: '$t:interfaces.super-header.actions.note',
+				options: {
+					fields: [
+						{
+							field: 'label',
+							type: 'string',
+							name: '$t:interfaces.super-header.actions.label.name',
+							meta: {
+								width: 'full',
+								interface: 'system-input-translated-string',
+								note: '$t:interfaces.super-header.actions.label.note',
+								options: {
+									placeholder: 'label',
+								},
+							},
+						},
+						{
+							field: 'icon',
+							name: '$t:interfaces.super-header.actions.icon.name',
+							type: 'string',
+							meta: {
+								width: 'half',
+								note: '$t:interfaces.super-header.actions.icon.note',
+								interface: 'select-icon',
+							},
+						},
+						{
+							field: 'type',
+							name: '$t:interfaces.super-header.actions.type.name',
+							type: 'string',
+							meta: {
+								width: 'half',
+								note: '$t:interfaces.super-header.actions.type.note',
+								interface: 'select-dropdown',
+								default_value: 'normal',
+								options: {
+									choices: [
+										{ text: '$t:interfaces.super-header.actions.type.choices.primary', value: 'normal' },
+										{ text: '$t:interfaces.super-header.actions.type.choices.secondary', value: 'secondary' },
+										{ text: '$t:interfaces.super-header.actions.type.choices.info', value: 'info' },
+										{ text: '$t:interfaces.super-header.actions.type.choices.success', value: 'success' },
+										{ text: '$t:interfaces.super-header.actions.type.choices.warning', value: 'warning' },
+										{ text: '$t:interfaces.super-header.actions.type.choices.danger', value: 'danger' },
+									],
+								},
+							},
+							schema: {
+								default_value: 'normal',
+							},
+						},
+						{
+							field: 'actionType',
+							name: '$t:interfaces.super-header.actions.action_type.name',
+							type: 'string',
+							meta: {
+								width: 'half',
+								interface: 'select-dropdown',
+								note: '$t:interfaces.super-header.actions.action_type.note',
+								options: {
+									choices: [
+										{ text: '$t:interfaces.super-header.actions.action_type.link', value: 'link' },
+										{ text: '$t:interfaces.super-header.actions.action_type.flow', value: 'flow' },
+									],
+								},
+							},
+							schema: {
+								default_value: 'link',
+							},
+						},
+						{
+							field: 'url',
+							type: 'string',
+							name: '$t:interfaces.super-header.actions.url.name',
+							meta: {
+								width: 'full',
+								interface: 'system-display-template',
+								note: '$t:interfaces.super-header.actions.action_type.url.note',
+								options: {
+									collectionName: collection,
+									font: 'monospace',
+									placeholder: '$t:interfaces.super-header.actions.action_type.url.placeholder',
+								},
+								hidden: true,
+								conditions: [
+									{
+										rule: {
+											actionType: {
+												_eq: 'link',
+											},
+										},
+										hidden: false,
+									},
+								],
+							},
+						},
+						{
+							field: 'flow',
+							type: 'string',
+							name: '$t:interfaces.super-header.actions.action_type.flow.name',
+							meta: {
+								width: 'full',
+								interface: 'collection-item-dropdown',
+								note: '$t:interfaces.super-header.actions.action_type.flow.note',
+								hidden: true,
+								options: {
+									selectedCollection: 'directus_flows',
+									placeholder: '$t:interfaces.super-header.actions.action_type.flow.placeholder',
+									template: '{{ name }}',
+									filter: {
+										trigger: {
+											_eq: 'manual',
+										},
+									},
+								},
+								conditions: [
+									{
+										rule: {
+											actionType: {
+												_eq: 'flow',
+											},
+										},
+										hidden: false,
+									},
+								],
+							},
+						},
+					],
+				},
 			},
 		},
 	],
