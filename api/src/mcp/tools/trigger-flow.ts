@@ -22,10 +22,6 @@ export const triggerFlow = defineTool<z.infer<typeof TriggerFlowValidateSchema>>
 			fields: ['options'],
 		});
 
-		if (!flow) {
-			throw new InvalidPayloadError({ reason: `A flow with id ${args.id} does not exist` });
-		}
-
 		/**
 		 * Collection and Required selection are validated by the server.
 		 * Required fields is an additional validation we do.
