@@ -34,7 +34,8 @@
 	"pnpm": {
 		"overrides": {
 			"tar-fs": "2.1.3",
-			"vite>esbuild": "0.25.9"
+			"vite>esbuild": "0.25.9",
+			"tsx>esbuild": "0.25.9"
 		}
 	},
 	"packageManager": "pnpm@10.14.0",
