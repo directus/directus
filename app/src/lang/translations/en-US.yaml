@@ -1454,18 +1454,30 @@ fields:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
     visual_editor_urls: Visual Editor URLs
     mcp_enabled: MCP Server
-    mcp_enabled_note: 'Connect AI/LLM tools to your Directus project via <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. This enables AI assistants to read and interact with your Directus data securely.'
-    mcp_notice: 'Model Context Protocol is a standard for connecting LLMs to applications like Directus. Once enabled, the Directus MCP server will be available at `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Learn more about MCP and how to connect.</a>'
+    mcp_enabled_note:
+      'Connect AI/LLM tools to your Directus project via <a href="https://directus.io/docs/guides/ai/mcp"
+      target="_blank">Model Context Protocol (MCP)</a>. This enables AI assistants to read and interact with your
+      Directus data securely.'
+    mcp_notice:
+      'Model Context Protocol is a standard for connecting LLMs to applications like Directus. Once enabled, the
+      Directus MCP server will be available at `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp"
+      target="_blank">Learn more about MCP and how to connect.</a>'
     mcp_allow_deletes: Allow Deletes
     mcp_allow_deletes_note:
-      'Enable deletion of items, files, flows, fields, relations, and collections through MCP tools. <strong>WARNING: May cause data loss.</strong> Disabled by default for safety.'
+      'Enable deletion of items, files, flows, fields, relations, and collections through MCP tools. <strong>WARNING:
+      May cause data loss.</strong> Disabled by default for safety.'
     mcp_prompts_collection: AI Prompts Collection
-    mcp_prompts_collection_note: 'Select collection for storing <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">reusable prompt templates</a> for AI interactions.'
+    mcp_prompts_collection_note:
+      'Select collection for storing <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">reusable
+      prompt templates</a> for AI interactions.'
     mcp_system_prompt_divider: System Prompt Configuration
     mcp_system_prompt_enabled: Use System Prompt
-    mcp_system_prompt_enabled_note: "Use the <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>default system prompt</a> to guide LLM behavior. Disable to remove or override with your own prompt below."
+    mcp_system_prompt_enabled_note:
+      "Use the <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>default system prompt</a>
+      to guide LLM behavior. Disable to remove or override with your own prompt below."
     mcp_system_prompt: Custom System Prompt
-    mcp_system_prompt_note: 'Custom system prompt to replace the default. Leave empty to use default (if enabled above).'
+    mcp_system_prompt_note:
+      'Custom system prompt to replace the default. Leave empty to use default (if enabled above).'
 
   directus_shares:
     name: Name
