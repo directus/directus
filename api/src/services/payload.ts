@@ -976,8 +976,8 @@ export class PayloadService {
 	 * Transforms the input partial payload to match the output structure, to have consistency
 	 * between delta and data
 	 */
-	async prepareDelta(data: Partial<Item>): Promise<string | null> {
-		let payload = cloneDeep(data);
+	async prepareDelta(existingDelta: Partial<Item>, newDelta: Partial<Item>): Promise<string | null> {
+		let payload = cloneDeep(newDelta);
 
 		for (const key in payload) {
 			if (payload[key]?.isRawInstance) {
@@ -985,7 +985,7 @@ export class PayloadService {
 			}
 		}
 
-		payload = await this.processValues('read', payload);
+		payload = await this.processValues(existingDelta === null ? 'create' : 'update', payload);
 
 		if (Object.keys(payload).length === 0) return null;
 
