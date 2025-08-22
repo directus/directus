@@ -18,14 +18,14 @@ jobs:
     name: Changeset Check
     runs-on: ubuntu-latest
     steps:
-      - name: Check for Chore Label
-        if: contains(github.event.pull_request.labels.*.name, 'Chore')
+      - name: Check Label
+        if: contains(github.event.pull_request.labels.*.name, 'No Changeset')
         run: |
-          echo "✅ Chore label present"
+          echo "✅ No Changeset label present"
           exit 0
 
       - name: Fetch Changesets
-        if: ${{ ! contains(github.event.pull_request.labels.*.name, 'Chore') }}
+        if: ${{ ! contains(github.event.pull_request.labels.*.name, 'No Changeset') }}
         id: cs
         uses: tj-actions/changed-files@v46
         with:
@@ -37,7 +37,7 @@ jobs:
       - name: Found Changeset
         id: found_changeset
         if:
-          ${{ ! contains(github.event.pull_request.labels.*.name, 'Chore') && steps.cs.outputs.changeset_added_files !=
+          ${{ ! contains(github.event.pull_request.labels.*.name, 'No Changeset') && steps.cs.outputs.changeset_added_files !=
           '' }}
         run: |
           echo "✅ Found changeset file"
@@ -45,10 +45,10 @@ jobs:
 
       - name: Missing Changeset
         if:
-          ${{ ! contains(github.event.pull_request.labels.*.name, 'Chore') && steps.cs.outputs.changeset_added_files ==
+          ${{ ! contains(github.event.pull_request.labels.*.name, 'No Changeset') && steps.cs.outputs.changeset_added_files ==
           '' }}
         run: |
-          echo "❌ Pull request must add a changeset or have the 'Chore' label."
+          echo "❌ Pull request must add a changeset or have the 'No Changeset' label."
           exit 1
 
       - name: Checkout Repository
