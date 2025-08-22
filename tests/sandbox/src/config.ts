@@ -146,7 +146,7 @@ const baseConfig = {
 } as const satisfies Record<Database, Record<string, string>>;
 
 export function getEnv(database: Database, opts: Options): Env {
-	let portIndex = Number(opts.dockerBasePort);
+	let portIndex = Number(opts.docker.basePort);
 
 	const portMap: Record<string, string> = {};
 

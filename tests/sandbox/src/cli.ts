@@ -8,8 +8,9 @@ program
 	.option('-w, --watch', 'Restart the api when changes are made')
 	.option('-p, --port <port>', 'Port to start the api on')
 	.option('-x, --export', 'Export the schema to a file every 2 seconds')
-	.option('-s, --schema [schema]', 'Load an additional schema snapshot on startup', 'snapshot.json')
-	.option('--dockerBasePort <dockerBasePort>', 'Minimum port number to use for docker containers')
+	.option('-s, --schema [schema]', 'Load an additional schema snapshot on startup')
+	.option('--docker.basePort <dockerBasePort>', 'Minimum port number to use for docker containers')
+	.option('--docker.keep', 'Keep containers running when stopping the sandbox')
 	.option('-e, --extras <extras>', 'Enable redis,maildev,saml or other extras')
 	.option('-i, --instances <instances>', 'Horizontally scale directus to a given number of instances', '1');
 
@@ -18,6 +19,10 @@ const options = program.opts();
 
 const sb = await sandbox(program.args[0] as Database, {
 	...options,
+	docker: {
+		basePort: options['docker.basePort'],
+		keep: options['docker.keep'],
+	},
 	extras: options['extras']
 		? Object.fromEntries(
 				String(options['extras'])

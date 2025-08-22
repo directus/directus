@@ -26,8 +26,13 @@ export type Options = {
 	watch: boolean;
 	/** Port to start the api on */
 	port: string;
-	/** Minimum port number to use for docker containers */
-	dockerBasePort: string;
+	/** Configure the behavior of the spun up docker container */
+	docker: {
+		/** Keep containers running when stopping the sandbox */
+		keep: boolean;
+		/** Minimum port number to use for docker containers */
+		basePort: string;
+	};
 	/** Horizontally scale the api to a given number of instances */
 	instances: string;
 	/** Set environment variables that the api should start with */
@@ -75,7 +80,10 @@ function getOptions(options?: DeepPartial<Options>): Options {
 			dev: false,
 			watch: false,
 			port: '8055',
-			dockerBasePort: '6000',
+			docker: {
+				keep: false,
+				basePort: '6000',
+			},
 			instances: '1',
 			env: {} as Record<string, string>,
 			prefix: undefined,
@@ -166,7 +174,8 @@ export async function sandboxes(
 	async function stop() {
 		build?.kill();
 		apis.forEach((api) => api.processes.forEach((process) => process.kill()));
-		await Promise.all(projects.map(({ project, logger, env }) => dockerDown(project, env, logger)));
+		if (opts.docker.keep)
+			await Promise.all(projects.map(({ project, logger, env }) => dockerDown(project, env, logger)));
 		process.exit();
 	}
 
@@ -211,7 +220,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		clearInterval(interval);
 		build?.kill();
 		apis.forEach((api) => api.kill());
-		if (project) await dockerDown(project, env, logger);
+		if (project && !opts.docker.keep) await dockerDown(project, env, logger);
 		process.exit();
 	}
 
