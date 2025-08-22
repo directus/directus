@@ -37,16 +37,16 @@ jobs:
       - name: Found Changeset
         id: found_changeset
         if:
-          ${{ ! contains(github.event.pull_request.labels.*.name, 'No Changeset') && steps.cs.outputs.changeset_added_files !=
-          '' }}
+          ${{ ! contains(github.event.pull_request.labels.*.name, 'No Changeset') &&
+          steps.cs.outputs.changeset_added_files != '' }}
         run: |
           echo "✅ Found changeset file"
           echo "found=true" >> $GITHUB_OUTPUT
 
       - name: Missing Changeset
         if:
-          ${{ ! contains(github.event.pull_request.labels.*.name, 'No Changeset') && steps.cs.outputs.changeset_added_files ==
-          '' }}
+          ${{ ! contains(github.event.pull_request.labels.*.name, 'No Changeset') &&
+          steps.cs.outputs.changeset_added_files == '' }}
         run: |
           echo "❌ Pull request must add a changeset or have the 'No Changeset' label."
           exit 1
