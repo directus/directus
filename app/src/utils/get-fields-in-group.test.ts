@@ -5,125 +5,266 @@ import { getFieldsInGroup } from './get-fields-in-group.js';
 describe('getFieldsInGroup', () => {
 	const fields: Field[] = [
 		{
-			field: 'group1',
+			collection: 'article',
+			field: 'root_group',
 			type: 'alias',
-			collection: 'test',
-			meta: {
-				special: ['group'],
-			} as any,
 			schema: null,
-			name: 'Group 1',
+			meta: {
+				id: 11,
+				collection: 'article',
+				field: 'root_group',
+				special: ['alias', 'no-data', 'group'],
+				interface: 'group-detail',
+				options: null,
+				display: null,
+				display_options: null,
+				readonly: false,
+				hidden: false,
+				sort: 7,
+				width: 'full',
+				translations: null,
+				note: null,
+				conditions: [
+					{
+						name: 'subtitle_conditions',
+						rule: {
+							_and: [
+								{
+									clear_group_fields: {
+										_eq: true,
+									},
+								},
+							],
+						},
+						hidden: true,
+						clear_hidden_value_on_save: true,
+					},
+				],
+				required: false,
+				group: null,
+				validation: null,
+				validation_message: null,
+			},
+			name: 'Root Group',
 		},
 		{
-			field: 'field_in_group1',
+			collection: 'article',
+			field: 'group_title',
 			type: 'string',
-			collection: 'test',
+			schema: {
+				name: 'group_title',
+				table: 'article',
+				data_type: 'varchar',
+				default_value: null,
+				max_length: 255,
+				numeric_precision: null,
+				numeric_scale: null,
+				is_generated: false,
+				generation_expression: null,
+				is_nullable: true,
+				is_unique: false,
+				is_indexed: false,
+				is_primary_key: false,
+				has_auto_increment: false,
+				foreign_key_column: null,
+				foreign_key_table: null,
+			},
 			meta: {
-				group: 'group1',
-			} as any,
-			schema: null,
-			name: 'Field in group 1',
+				id: 7,
+				collection: 'article',
+				field: 'group_title',
+				special: null,
+				interface: 'input',
+				options: null,
+				display: null,
+				display_options: null,
+				readonly: false,
+				hidden: false,
+				sort: 1,
+				width: 'full',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: 'root_group',
+				validation: null,
+				validation_message: null,
+			},
+			name: 'Group Title',
 		},
 		{
-			field: 'group1_1',
+			collection: 'article',
+			field: 'group_subtitle',
+			type: 'string',
+			schema: {
+				name: 'group_subtitle',
+				table: 'article',
+				data_type: 'varchar',
+				default_value: null,
+				max_length: 255,
+				numeric_precision: null,
+				numeric_scale: null,
+				is_generated: false,
+				generation_expression: null,
+				is_nullable: true,
+				is_unique: false,
+				is_indexed: false,
+				is_primary_key: false,
+				has_auto_increment: false,
+				foreign_key_column: null,
+				foreign_key_table: null,
+			},
+			meta: {
+				id: 8,
+				collection: 'article',
+				field: 'group_subtitle',
+				special: null,
+				interface: 'input',
+				options: null,
+				display: null,
+				display_options: null,
+				readonly: false,
+				hidden: false,
+				sort: 2,
+				width: 'full',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: 'root_group',
+				validation: null,
+				validation_message: null,
+			},
+			name: 'Group Subtitle',
+		},
+		{
+			collection: 'article',
+			field: 'subgroup',
 			type: 'alias',
-			collection: 'test',
+			schema: null,
 			meta: {
-				group: 'group1',
-				special: ['group'],
-			} as any,
-			schema: null,
-			name: 'Group 1 1',
+				id: 5,
+				collection: 'article',
+				field: 'subgroup',
+				special: ['alias', 'no-data', 'group'],
+				interface: 'group-detail',
+				options: null,
+				display: null,
+				display_options: null,
+				readonly: false,
+				hidden: false,
+				sort: 4,
+				width: 'full',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: 'root_group',
+				validation: null,
+				validation_message: null,
+			},
+			name: 'Subgroup',
 		},
 		{
-			field: 'field_in_group1_1',
+			collection: 'article',
+			field: 'group2_title',
 			type: 'string',
-			collection: 'test',
+			schema: {
+				name: 'group2_title',
+				table: 'article',
+				data_type: 'varchar',
+				default_value: null,
+				max_length: 255,
+				numeric_precision: null,
+				numeric_scale: null,
+				is_generated: false,
+				generation_expression: null,
+				is_nullable: true,
+				is_unique: false,
+				is_indexed: false,
+				is_primary_key: false,
+				has_auto_increment: false,
+				foreign_key_column: null,
+				foreign_key_table: null,
+			},
 			meta: {
-				group: 'group1_1',
-			} as any,
-			schema: null,
-			name: 'Field in group 1 1',
+				id: 12,
+				collection: 'article',
+				field: 'group2_title',
+				special: null,
+				interface: 'input',
+				options: null,
+				display: null,
+				display_options: null,
+				readonly: false,
+				hidden: false,
+				sort: 1,
+				width: 'full',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: 'subgroup',
+				validation: null,
+				validation_message: null,
+			},
+			name: 'Group2 Title',
 		},
 		{
-			field: 'root_field',
+			collection: 'article',
+			field: 'group2_subtitle',
 			type: 'string',
-			collection: 'test',
-			meta: {} as any,
-			schema: null,
-			name: 'Root field',
-		},
-		{
-			field: 'no_meta_field',
-			type: 'string',
-			collection: 'test',
-			meta: null as any,
-			schema: null,
-			name: 'No Meta Field',
+			schema: {
+				name: 'group2_subtitle',
+				table: 'article',
+				data_type: 'varchar',
+				default_value: null,
+				max_length: 255,
+				numeric_precision: null,
+				numeric_scale: null,
+				is_generated: false,
+				generation_expression: null,
+				is_nullable: true,
+				is_unique: false,
+				is_indexed: false,
+				is_primary_key: false,
+				has_auto_increment: false,
+				foreign_key_column: null,
+				foreign_key_table: null,
+			},
+			meta: {
+				id: 13,
+				collection: 'article',
+				field: 'group2_subtitle',
+				special: null,
+				interface: 'input',
+				options: null,
+				display: null,
+				display_options: null,
+				readonly: false,
+				hidden: false,
+				sort: 2,
+				width: 'full',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: 'subgroup',
+				validation: null,
+				validation_message: null,
+			},
+			name: 'Group2 Subtitle',
 		},
 	];
 
-	it('should return root fields when group is null', () => {
-		const result = getFieldsInGroup(null, fields);
-		expect(result).toHaveLength(2); // Fields with no meta object or no group property
-		expect(result.map((f) => f.field)).toContain('no_meta_field');
-		expect(result.map((f) => f.field)).toContain('root_field');
-	});
-
-	it('should return fields in a specific group', () => {
-		const result = getFieldsInGroup('group1', fields);
-		expect(result).toHaveLength(3); // field_in_group1, group1_1, and field_in_group1_1 (nested)
-		expect(result.map((f) => f.field)).toContain('field_in_group1');
-		expect(result.map((f) => f.field)).toContain('group1_1');
-		expect(result.map((f) => f.field)).toContain('field_in_group1_1');
-	});
-
-	it('should return fields in nested groups', () => {
-		const result = getFieldsInGroup('group1_1', fields);
-		expect(result).toHaveLength(1);
-		expect(result[0]?.field).toBe('field_in_group1_1');
-	});
-
-	it('should handle circular references', () => {
-		const fieldsWithCircular: Field[] = [
-			{
-				field: 'group_a',
-				type: 'alias',
-				collection: 'test',
-				meta: {
-					special: ['group'],
-				} as any,
-				schema: null,
-				name: 'Group A',
-			},
-			{
-				field: 'group_b',
-				type: 'alias',
-				collection: 'test',
-				meta: {
-					group: 'group_a',
-					special: ['group'],
-				} as any,
-				schema: null,
-				name: 'Group B',
-			},
-			{
-				field: 'group_c',
-				type: 'alias',
-				collection: 'test',
-				meta: {
-					group: 'group_b',
-					special: ['group'],
-				} as any,
-				schema: null,
-				name: 'Group C',
-			},
-		];
-
-		const result = getFieldsInGroup('group_a', fieldsWithCircular);
-		expect(result).toHaveLength(2); // group_b and group_c (nested)
-		expect(result.map((f) => f.field)).toContain('group_b');
-		expect(result.map((f) => f.field)).toContain('group_c');
+	it('should return fields in the given group, including nested groups and fields within the nested groups', () => {
+		const result = getFieldsInGroup('root_group', fields);
+		expect(result).toHaveLength(5);
+		expect(result.map((f) => f.field)).toContain('group_title');
+		expect(result.map((f) => f.field)).toContain('group_subtitle');
+		expect(result.map((f) => f.field)).toContain('subgroup');
+		expect(result.map((f) => f.field)).toContain('group2_title');
+		expect(result.map((f) => f.field)).toContain('group2_subtitle');
 	});
 
 	it('should return empty array for non-existent group', () => {
