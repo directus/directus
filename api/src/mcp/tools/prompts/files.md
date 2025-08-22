@@ -131,12 +131,6 @@ _Example: "Find images in our asset library related to customer support for our 
 	"action": "read",
 	"query": {
 		"fields": ["id", "title", "description", "tags", "type"],
-		"filter": {
-			"_and": [
-				{"type": { "_starts_with": "image/" }},
-				{"tags": { "_contains": "customer-support" }}
-			]
-		},
 		"search": "help center"
 	}
 }
