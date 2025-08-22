@@ -57,11 +57,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Prepare
+      - name: Install pnpm
         if: steps.found_changeset.outputs.found == 'true'
-        uses: ./.github/actions/prepare
+        uses: pnpm/action-setup@v4
         with:
-          build: false
+          run_install: false
 
       - name: Install Workflow Dependency
         if: steps.found_changeset.outputs.found == 'true'
