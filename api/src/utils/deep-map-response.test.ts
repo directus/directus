@@ -7,6 +7,7 @@ const schema = new SchemaBuilder()
 	.collection('articles', (c) => {
 		c.field('id').id();
 		c.field('title').string();
+		c.field('date').date();
 		c.field('author').m2o('users');
 		c.field('tags').m2m('tags');
 		c.field('links').o2m('links', 'article_id');
@@ -393,6 +394,61 @@ test('map flat invalid field', () => {
 
 	expect(result).toEqual({
 		invalid: 1,
+	});
+});
+
+test('map with invalid object', () => {
+	expect(() => {
+		deepMapResponse(
+			new Date(),
+			([key, value], context) => {
+				return [key, { value, context }];
+			},
+			{ schema: schema, collection: 'articles' },
+		);
+	}).toThrowError();
+});
+
+test('map flat date value', () => {
+	const date = new Date();
+
+	const result = deepMapResponse(
+		{ date },
+		([key, value]) => {
+			return [key, value];
+		},
+		{ schema: schema, collection: 'articles' },
+	);
+
+	expect(result).toEqual({ date });
+});
+
+test('map flat invalid deep field', () => {
+	const result = deepMapResponse(
+		{
+			author: {
+				invalid: 1,
+			},
+		},
+		([key, value], context) => {
+			return [key, { value, context }];
+		},
+		{ schema: schema, collection: 'articles' },
+	);
+
+	expect(result).toEqual({
+		author: {
+			value: {
+				invalid: 1,
+			},
+			context: {
+				collection: schema.collections['articles'],
+				field: schema.collections['articles']!.fields['author'],
+				relation: getRelation(schema.relations, 'articles', 'author'),
+				leaf: false,
+				relationType: 'm2o',
+			},
+		},
 	});
 });
 
