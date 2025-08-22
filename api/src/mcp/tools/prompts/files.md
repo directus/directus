@@ -2,7 +2,6 @@ Perform CRUD operations on files in Directus.
 
 ## Actions
 
-- **`create`**: Add new file records
 - **`read`**: List/query metadata or get specific items by ID
 - **`update`**: Modify existing metadata
 - **`delete`**: Remove files by keys
