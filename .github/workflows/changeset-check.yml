@@ -63,6 +63,13 @@ jobs:
         with:
           run_install: false
 
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          registry-url: ${{ inputs.registry }}
+          cache: 'pnpm'
+
       - name: Install Workflow Dependency
         if: steps.found_changeset.outputs.found == 'true'
         run: pnpm add @changesets/git@3 --workspace-root
