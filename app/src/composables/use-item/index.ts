@@ -139,38 +139,36 @@ export function useItem<T extends Item>(
 	function clearHiddenFieldsByCondition(edits: Item, fields: Field[], defaultValues: any, item: any): Item {
 		const currentValues = mergeItemData(defaultValues, item, edits);
 
-		let hasChanges = false;
-		const fieldsToClear: { field: string; defaultValue: any }[] = [];
+		const fieldsToClearMap: Map<string, any> = new Map();
+
+		function addFieldToClear(field: Field) {
+			const defaultValue = field.schema?.default_value;
+			fieldsToClearMap.set(field.field, defaultValue !== undefined ? defaultValue : null);
+		}
 
 		for (const field of fields) {
 			if (shouldClearField(field, currentValues)) {
-				const defaultValue = field.schema?.default_value;
-				fieldsToClear.push({ field: field.field, defaultValue: defaultValue !== undefined ? defaultValue : null });
-				hasChanges = true;
-
-				// If this is a group field that should be cleared, also clear all fields within the group
+				// If this is a group field that should be cleared, clear all fields within the group
 				if (field.meta?.special?.includes('group')) {
 					const fieldsInGroup = getFieldsInGroup(field.field, fields);
 
 					for (const groupField of fieldsInGroup) {
-						const groupFieldDefaultValue = groupField.schema?.default_value;
-
-						fieldsToClear.push({
-							field: groupField.field,
-							defaultValue: groupFieldDefaultValue !== undefined ? groupFieldDefaultValue : null,
-						});
+						addFieldToClear(groupField);
 					}
+				} else {
+					// For non-group fields, add the field itself to be cleared
+					addFieldToClear(field);
 				}
 			}
 		}
 
-		if (!hasChanges) {
+		if (fieldsToClearMap.size === 0) {
 			return edits;
 		}
 
 		const editsWithClearedValues = cloneDeep(edits);
 
-		for (const { field, defaultValue } of fieldsToClear) {
+		for (const [field, defaultValue] of fieldsToClearMap) {
 			editsWithClearedValues[field] = defaultValue;
 		}
 
