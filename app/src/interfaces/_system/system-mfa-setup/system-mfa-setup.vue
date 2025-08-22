@@ -141,6 +141,11 @@ async function cancelSetup() {
 	cancelSetupActive.value = !success;
 }
 
+async function generateForPasswordUser() {
+	// For password users, we always require password
+	await generateTFA(true);
+}
+
 function toggle() {
 	if (tfaEnabled.value === false) {
 		// Check if OAuth user needs email before enabling 2FA
@@ -216,7 +221,7 @@ function cancelAndClose() {
 				<!-- Password user flow -->
 				<form
 					v-else-if="!isOAuthUser && tfaEnabled === false && tfaGenerated === false && loading === false"
-					@submit.prevent="generateTFA"
+					@submit.prevent="generateForPasswordUser"
 				>
 					<v-card-title>
 						{{ t('enter_password_to_enable_tfa') }}
