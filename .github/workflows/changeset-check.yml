@@ -65,7 +65,7 @@ jobs:
 
       - name: Install Workflow Dependency
         if: steps.found_changeset.outputs.found == 'true'
-        run: pnpm add @changesets/git --workspace-root
+        run: pnpm add @changesets/git@3 --workspace-root
 
       - name: Validate Changeset Coverage
         if: steps.found_changeset.outputs.found == 'true'
