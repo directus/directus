@@ -92,7 +92,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 					return [
 						key,
 						value.map((val) => {
-							const match = ids?.find((id) => String(id) === String(value));
+							const match = ids?.find((id) => String(id) === String(val));
 
 							if (match) {
 								return null;
