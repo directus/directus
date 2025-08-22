@@ -122,7 +122,7 @@ export class DriverS3 implements TusDriver {
 		}
 
 		if (this.config.region) {
-			// s3ClientConfig.region = this.config.region;
+			s3ClientConfig.region = this.config.region;
 		}
 
 		if (this.config.forcePathStyle !== undefined) {
