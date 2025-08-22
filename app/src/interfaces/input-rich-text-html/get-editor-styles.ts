@@ -40,7 +40,7 @@ body.mce-content-readonly {
 h1, h2, h3, h4, h5, h6 {
 	font-family: ${userFontFamily}, serif;
 	color: ${cssVar('--theme--form--field--input--foreground-accent')};
-	font-weight: 700;
+	font-weight: 400;
 	margin-block-end: 0;
 }
 h1 + p, h2 + p, h3 + p, h4 + p, h5 + p, h6 + p {
@@ -80,7 +80,7 @@ p {
 	font-family: ${userFontFamily}, serif;
 	font-size: 15px;
 	line-height: 24px;
-	font-weight: 500;
+	font-weight: 300;
 	margin: 1.5em 0;
 }
 a {
@@ -91,7 +91,7 @@ ul, ol {
 	font-family: ${userFontFamily}, serif;
 	font-size: 15px;
 	line-height: 24px;
-	font-weight: 500;
+	font-weight: 300;
 	margin: 1.5em 0;
 }
 ul ul,
@@ -101,12 +101,12 @@ ul ul,
 	margin: 0;
 }
 b, strong {
-	font-weight: 700;
+	font-weight: 900;
 }
 code {
 	font-size: 15px;
 	line-height: 24px;
-	font-weight: 500;
+	font-weight: 300;
 	padding: 2px 4px;
 	font-family: ${cssVar('--theme--fonts--monospace--font-family')}, monospace;
 	background-color: ${cssVar('--theme--background-normal')};
@@ -116,7 +116,7 @@ code {
 pre {
 	font-size: 15px;
 	line-height: 24px;
-	font-weight: 500;
+	font-weight: 300;
 	padding: 1em;
 	font-family: ${cssVar('--theme--fonts--monospace--font-family')}, monospace;
 	background-color: ${cssVar('--theme--background-normal')};
@@ -127,7 +127,7 @@ blockquote {
 	font-family: ${userFontFamily}, serif;
 	font-size: 15px;
 	line-height: 24px;
-	font-weight: 500;
+	font-weight: 300;
 	border-inline-start: 2px solid ${cssVar('--theme--form--field--input--border-color')};
 	padding-inline-start: 1em;
 	margin-inline-start: 0px;
@@ -153,7 +153,7 @@ table {
 	border-collapse: collapse;
 	font-size: 15px;
 	line-height: 24px;
-	font-weight: 500;
+	font-weight: 300;
 }
 table th,
 table td {
