@@ -2,7 +2,7 @@
 import { useTFASetup } from '@/composables/use-tfa-setup';
 import { useUserStore } from '@/stores/user';
 import { User } from '@directus/types';
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, inject, nextTick, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
@@ -23,15 +23,29 @@ const inputOTP = ref<any>(null);
 
 const isCurrentUser = computed(() => (userStore.currentUser as User)?.id === props.primaryKey);
 
-// Detect if the current user is an OAuth user
+// Get the user data from the parent context
+const values = inject('values', ref<Record<string, any>>({}));
+
+const profileUser = computed(() => {
+	// If we have values and they contain user data, use that
+	if (values.value && Object.keys(values.value).length > 0) {
+		return values.value as User;
+	}
+
+	return null;
+});
+
+// Detect if the user being viewed is an OAuth user
 const isOAuthUser = computed(() => {
-	const user = userStore.currentUser;
+	// Use profile user data when viewing a different user, otherwise use current user
+	const user = profileUser.value && !isCurrentUser.value ? profileUser.value : userStore.currentUser;
 	return user && !('share' in user) && user.provider !== 'default';
 });
 
 // Check if OAuth user has an email address
 const oauthUserHasEmail = computed(() => {
-	const user = userStore.currentUser as User;
+	// Use profile user data when viewing a different user, otherwise use current user
+	const user = profileUser.value && !isCurrentUser.value ? profileUser.value : (userStore.currentUser as User);
 	return user && user.email && user.email.trim() !== '';
 });
 
@@ -40,19 +54,32 @@ const oauthUserNeedsEmail = computed(() => {
 	return isOAuthUser.value && !oauthUserHasEmail.value;
 });
 
-// The 2fa checkbox should only be enabled if the user has a tfa_secret or
-// is an OAuth user with tfa_setup_status set to pending
 const effectiveTFAEnabled = computed(() => {
-	const user = userStore.currentUser as User;
-	if (!user || 'share' in user) return !!props.value;
+	if (profileUser.value && !isCurrentUser.value) {
+		// OAuth users
+		if (profileUser.value.provider !== 'default') {
+			return !!(profileUser.value.tfa_secret || profileUser.value.tfa_setup_status === 'pending');
+		}
 
-	// OAuth users
-	if (user.provider !== 'default') {
-		return !!(user.tfa_secret || user.tfa_setup_status === 'pending');
+		// Password users
+		return !!profileUser.value.tfa_secret;
 	}
 
-	// Password users
-	return !!user.tfa_secret;
+	if (isCurrentUser.value) {
+		const user = userStore.currentUser as User;
+		if (!user || 'share' in user) return !!props.value;
+
+		// OAuth users
+		if (user.provider !== 'default') {
+			return !!(user.tfa_secret || user.tfa_setup_status === 'pending');
+		}
+
+		// Password users
+		return !!user.tfa_secret;
+	}
+
+	// if no profile user data and not viewing current user, use props.value
+	return !!props.value;
 });
 
 const {
@@ -126,10 +153,13 @@ function toggle() {
 		enableActive.value = true;
 	} else {
 		// For OAuth users with tfa_setup_status pending but no tfa_secret, show cancel dialog instead of disable
+		// Use profile user data when viewing a different user, otherwise use current user
+		const userToCheck = profileUser.value && !isCurrentUser.value ? profileUser.value : userStore.currentUser;
+
 		if (
 			isOAuthUser.value &&
-			(userStore.currentUser as any)?.tfa_setup_status === 'pending' &&
-			!(userStore.currentUser as any)?.tfa_secret
+			(userToCheck as any)?.tfa_setup_status === 'pending' &&
+			!(userToCheck as any)?.tfa_secret
 		) {
 			cancelSetupActive.value = true;
 		} else {
