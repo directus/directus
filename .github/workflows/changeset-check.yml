@@ -125,7 +125,9 @@ jobs:
                   );
                   
                   packageLines.forEach(line => {
-                    const packageMatch = line.match(/["']?([^"':]+)["']?\s*:/);
+                    // Match valid npm package names (scoped or unscoped)
+                    // Scoped: @scope/package-name, Unscoped: package-name
+                    const packageMatch = line.match(/["']?(@[a-z0-9-_.]+\/[a-z0-9-_.]+|[a-z0-9-_.]+)["']?\s*:/i);
                     if (packageMatch) {
                       packagesInChangesets.add(packageMatch[1].trim());
                     }
