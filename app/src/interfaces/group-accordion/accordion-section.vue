@@ -39,7 +39,7 @@ const fieldsInSection = computed(() => {
 	const fields: Field[] = [merge({}, props.field, { hideLabel: true })];
 
 	if (props.field.meta?.special?.includes('group')) {
-		fields.push(...getFieldsInGroup(props.field.meta?.field, props.fields));
+		fields.push(...getFieldsInGroup(props.field.field, props.fields));
 	}
 
 	return fields;
