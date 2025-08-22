@@ -12,7 +12,12 @@ import { isNil } from 'lodash';
 export function getFieldsInGroup(group: null | string, allFields: Field[], passed: string[] = []): Field[] {
 	const fieldsInGroup: Field[] = allFields.filter((field) => {
 		const meta = field.meta;
-		return meta?.group === group || (group === null && isNil(meta));
+
+		const result =
+			meta?.group === group ||
+			(group === null && (isNil(meta) || isNil(meta.group)) && !meta?.special?.includes('group'));
+
+		return result;
 	});
 
 	for (const field of fieldsInGroup) {

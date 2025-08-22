@@ -65,8 +65,9 @@ describe('getFieldsInGroup', () => {
 
 	it('should return root fields when group is null', () => {
 		const result = getFieldsInGroup(null, fields);
-		expect(result).toHaveLength(1); // Only fields with no meta object (no_meta_field)
+		expect(result).toHaveLength(2); // Fields with no meta object or no group property
 		expect(result.map((f) => f.field)).toContain('no_meta_field');
+		expect(result.map((f) => f.field)).toContain('root_field');
 	});
 
 	it('should return fields in a specific group', () => {
