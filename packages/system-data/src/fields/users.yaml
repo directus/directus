@@ -102,21 +102,6 @@ fields:
     special:
       - cast-boolean
 
-  - field: tfa_setup_status
-    interface: select-dropdown
-    width: half
-    options:
-      choices:
-        - text: $t:complete
-          value: complete
-        - text: $t:pending
-          value: pending
-        - text: $t:cancelled
-          value: cancelled
-      iconRight: security
-      includeNull: true
-    hidden: true
-
   - field: theming_divider
     interface: presentation-divider
     options:
