@@ -1,8 +1,9 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Accountability, Item, PrimaryKey, Query, QueryOptions } from '@directus/types';
 import type { ItemsService as ItemsServiceType } from '../../services/index.js';
-import { deepMapResponse } from './deep-map-response.js';
 import { transaction } from '../transaction.js';
+import { deepMapResponse } from './deep-map-response.js';
+import { splitRecursive } from './split-recursive.js';
 
 export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, queryWithKey: Query, opts?: QueryOptions) {
 	const { VersionsService } = await import('../../services/versions.js');
@@ -55,11 +56,13 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 		});
 
 		if (delta) {
-			await itemsServiceAdmin.updateOne(key, delta, {
+			const { rawDelta, defaultOverwrites } = splitRecursive(delta);
+
+			await itemsServiceAdmin.updateOne(key, rawDelta, {
 				emitEvents: false,
 				autoPurgeCache: false,
 				skipTracking: true,
-				skipDefaults: true,
+				overwriteDefaults: defaultOverwrites as any,
 				onItemCreate: (collection, pk) => {
 					if (collection in createdIDs === false) createdIDs[collection] = [];
 

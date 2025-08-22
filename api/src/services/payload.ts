@@ -5,6 +5,7 @@ import type {
 	ActionEventParams,
 	Aggregate,
 	Alterations,
+	DefaultOverwrite,
 	FieldOverview,
 	Item,
 	MutationOptions,
@@ -36,7 +37,7 @@ type Transformers = {
 		accountability: Accountability | null;
 		specials: string[];
 		helpers: Helpers;
-		skipDefaults: boolean;
+		overwriteDefaults: DefaultOverwrite | undefined;
 	}) => Promise<any>;
 };
 
@@ -51,16 +52,19 @@ export class PayloadService {
 	collection: string;
 	schema: SchemaOverview;
 	nested: string[];
-	skipDefaults: boolean;
+	overwriteDefaults: DefaultOverwrite | undefined;
 
-	constructor(collection: string, options: AbstractServiceOptions & { skipDefaults?: boolean | undefined }) {
+	constructor(
+		collection: string,
+		options: AbstractServiceOptions & { overwriteDefaults?: DefaultOverwrite | undefined },
+	) {
 		this.accountability = options.accountability || null;
 		this.knex = options.knex || getDatabase();
 		this.helpers = getHelpers(this.knex);
 		this.collection = collection;
 		this.schema = options.schema;
 		this.nested = options.nested ?? [];
-		this.skipDefaults = options.skipDefaults ?? false;
+		this.overwriteDefaults = options.overwriteDefaults;
 
 		return this;
 	}
@@ -112,12 +116,12 @@ export class PayloadService {
 			if (action === 'read') return value ? '**********' : null;
 			return value;
 		},
-		async 'user-created'({ action, value, accountability, skipDefaults }) {
-			if (action === 'create' && !skipDefaults) return accountability?.user ?? null;
+		async 'user-created'({ action, value, accountability, overwriteDefaults }) {
+			if (action === 'create') return overwriteDefaults?._user ?? accountability?.user ?? null;
 			return value;
 		},
-		async 'user-updated'({ action, value, accountability, skipDefaults }) {
-			if (action === 'update' && !skipDefaults) return accountability?.user ?? null;
+		async 'user-updated'({ action, value, accountability, overwriteDefaults }) {
+			if (action === 'update') return overwriteDefaults?._user ?? accountability?.user ?? null;
 			return value;
 		},
 		async 'role-created'({ action, value, accountability }) {
@@ -128,12 +132,14 @@ export class PayloadService {
 			if (action === 'update') return accountability?.role || null;
 			return value;
 		},
-		async 'date-created'({ action, value, helpers, skipDefaults }) {
-			if (action === 'create' && !skipDefaults) return new Date(helpers.date.writeTimestamp(new Date().toISOString()));
+		async 'date-created'({ action, value, helpers, overwriteDefaults }) {
+			if (action === 'create')
+				return new Date(overwriteDefaults?._date ?? helpers.date.writeTimestamp(new Date().toISOString()));
 			return value;
 		},
-		async 'date-updated'({ action, value, helpers, skipDefaults }) {
-			if (action === 'update' && !skipDefaults) return new Date(helpers.date.writeTimestamp(new Date().toISOString()));
+		async 'date-updated'({ action, value, helpers, overwriteDefaults }) {
+			if (action === 'update')
+				return new Date(overwriteDefaults?._date ?? helpers.date.writeTimestamp(new Date().toISOString()));
 			return value;
 		},
 		async 'cast-csv'({ action, value }) {
@@ -284,7 +290,7 @@ export class PayloadService {
 					accountability,
 					specials: fieldSpecials,
 					helpers: this.helpers,
-					skipDefaults: this.skipDefaults,
+					overwriteDefaults: this.overwriteDefaults,
 				});
 			}
 		}
@@ -543,7 +549,7 @@ export class PayloadService {
 						autoPurgeCache: opts?.autoPurgeCache,
 						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 						skipTracking: opts?.skipTracking,
-						skipDefaults: opts?.skipDefaults,
+						overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
 						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
@@ -558,7 +564,7 @@ export class PayloadService {
 					autoPurgeCache: opts?.autoPurgeCache,
 					autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 					skipTracking: opts?.skipTracking,
-					skipDefaults: opts?.skipDefaults,
+					overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
 					onItemCreate: opts?.onItemCreate,
 					mutationTracker: opts?.mutationTracker,
 				});
@@ -643,7 +649,7 @@ export class PayloadService {
 						autoPurgeCache: opts?.autoPurgeCache,
 						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 						skipTracking: opts?.skipTracking,
-						skipDefaults: opts?.skipDefaults,
+						overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
 						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
@@ -658,7 +664,7 @@ export class PayloadService {
 					autoPurgeCache: opts?.autoPurgeCache,
 					autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 					skipTracking: opts?.skipTracking,
-					skipDefaults: opts?.skipDefaults,
+					overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
 					onItemCreate: opts?.onItemCreate,
 					mutationTracker: opts?.mutationTracker,
 				});
@@ -786,7 +792,7 @@ export class PayloadService {
 						autoPurgeCache: opts?.autoPurgeCache,
 						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 						skipTracking: opts?.skipTracking,
-						skipDefaults: opts?.skipDefaults,
+						overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!],
 						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					})),
@@ -821,7 +827,7 @@ export class PayloadService {
 						autoPurgeCache: opts?.autoPurgeCache,
 						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 						skipTracking: opts?.skipTracking,
-						skipDefaults: opts?.skipDefaults,
+						overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!],
 						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
@@ -838,7 +844,7 @@ export class PayloadService {
 							autoPurgeCache: opts?.autoPurgeCache,
 							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 							skipTracking: opts?.skipTracking,
-							skipDefaults: opts?.skipDefaults,
+							overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!],
 							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						},
@@ -893,7 +899,7 @@ export class PayloadService {
 						autoPurgeCache: opts?.autoPurgeCache,
 						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 						skipTracking: opts?.skipTracking,
-						skipDefaults: opts?.skipDefaults,
+						overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['create'],
 						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
@@ -922,7 +928,7 @@ export class PayloadService {
 							autoPurgeCache: opts?.autoPurgeCache,
 							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 							skipTracking: opts?.skipTracking,
-							skipDefaults: opts?.skipDefaults,
+							overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['update'],
 							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						});
@@ -957,7 +963,7 @@ export class PayloadService {
 							autoPurgeCache: opts?.autoPurgeCache,
 							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 							skipTracking: opts?.skipTracking,
-							skipDefaults: opts?.skipDefaults,
+							overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['delete'],
 							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						});
@@ -974,7 +980,7 @@ export class PayloadService {
 								autoPurgeCache: opts?.autoPurgeCache,
 								autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 								skipTracking: opts?.skipTracking,
-								skipDefaults: opts?.skipDefaults,
+								overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['delete'],
 								onItemCreate: opts?.onItemCreate,
 								mutationTracker: opts?.mutationTracker,
 							},

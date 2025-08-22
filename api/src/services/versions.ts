@@ -1,27 +1,19 @@
 import { Action } from '@directus/constants';
 import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
-import type {
-	AbstractServiceOptions,
-	ContentVersion,
-	Filter,
-	Item,
-	MutationOptions,
-	PrimaryKey,
-	Query,
-} from '@directus/types';
+import type { AbstractServiceOptions, ContentVersion, Item, MutationOptions, PrimaryKey, Query } from '@directus/types';
 import Joi from 'joi';
-import { assign, pick } from 'lodash-es';
+import { assign, get, isEqual, isPlainObject, pick } from 'lodash-es';
 import objectHash from 'object-hash';
 import { getCache } from '../cache.js';
+import { getHelpers } from '../database/helpers/index.js';
 import emitter from '../emitter.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
+import { splitRecursive } from '../utils/versioning/split-recursive.js';
 import { ActivityService } from './activity.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RevisionsService } from './revisions.js';
-import { deepMapDelta } from '../utils/versioning/deep-map-delta.js';
-import { getHelpers } from '../database/helpers/index.js';
 
 export class VersionsService extends ItemsService<ContentVersion> {
 	constructor(options: AbstractServiceOptions) {
@@ -237,7 +229,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 
 		const helpers = getHelpers(this.knex);
 
-		const revisionDelta = await payloadService.prepareDelta(delta);
+		let revisionDelta = await payloadService.prepareDelta(delta);
 
 		await revisionsService.createOne({
 			activity,
@@ -248,27 +240,20 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			delta: revisionDelta,
 		});
 
-		let finalVersionDelta = assign({}, existingDelta, revisionDelta ? JSON.parse(revisionDelta) : null);
+		revisionDelta = revisionDelta ? JSON.parse(revisionDelta) : null;
 
-		finalVersionDelta = deepMapDelta(
-			finalVersionDelta,
-			([key, value], { field }) => {
-				const user = this.accountability?.user;
-				const date = new Date(helpers.date.writeTimestamp(new Date().toISOString()));
+		const date = new Date(helpers.date.writeTimestamp(new Date().toISOString()));
 
-				if (existingDelta === null) {
-					if (field.special.includes('user-created')) return [key, user];
-					if (field.special.includes('date-created')) return [key, date];
-				} else {
-					if (field.special.includes('user-updated')) return [key, user];
-					if (field.special.includes('date-updated')) return [key, date];
-				}
+		deepMapObjects(revisionDelta, (object, path) => {
+			const existing = get(existingDelta, path);
 
-				return [key, value];
-			},
-			{ collection, schema: this.schema },
-			{ mapNonExistentFields: true },
-		);
+			if (existing && isEqual(existing, object)) return;
+
+			object['_user'] = this.accountability?.user;
+			object['_date'] = date;
+		});
+
+		const finalVersionDelta = assign({}, existingDelta, revisionDelta);
 
 		const sudoService = new ItemsService(this.collection, {
 			knex: this.knex,
@@ -323,7 +308,9 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			});
 		}
 
-		const payloadToUpdate = fields ? pick(delta, fields) : delta;
+		const { rawDelta, defaultOverwrites } = splitRecursive(delta);
+
+		const payloadToUpdate = fields ? pick(rawDelta, fields) : rawDelta;
 
 		const itemsService = new ItemsService(collection, {
 			accountability: this.accountability,
@@ -346,7 +333,9 @@ export class VersionsService extends ItemsService<ContentVersion> {
 			},
 		);
 
-		const updatedItemKey = await itemsService.updateOne(item, payloadAfterHooks);
+		const updatedItemKey = await itemsService.updateOne(item, payloadAfterHooks, {
+			overwriteDefaults: defaultOverwrites as any,
+		});
 
 		emitter.emitAction(
 			['items.promote', `${collection}.items.promote`],
@@ -364,5 +353,18 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		);
 
 		return updatedItemKey;
+	}
+}
+
+function deepMapObjects(
+	object: unknown,
+	fn: (object: Record<string, any>, path: string[]) => void,
+	path: string[] = [],
+) {
+	if (isPlainObject(object) && typeof object === 'object' && object !== null) {
+		fn(object, path);
+		Object.entries(object).map(([key, value]) => deepMapObjects(value, fn, [...path, key]));
+	} else if (Array.isArray(object)) {
+		object.map((value, index) => deepMapObjects(value, fn, [...path, String(index)]));
 	}
 }
