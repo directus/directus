@@ -1,14 +1,34 @@
-# Directus Operations Tool
-
 Manage operations within flows. Operations are individual actions that execute sequentially in a flow, processing and
 transforming data through the data chain.
 
-## 🔑 Key Concepts
+## Key Concepts
 
 - **Operations** are the building blocks of flows
 - Each operation has a unique `key` that identifies it in the data chain
 - Operations connect via `resolve` (success) and `reject` (failure) paths
 - Data from each operation is stored under its key in the data chain
+
+## Available Operation Types
+
+Core operations available in Directus:
+
+- **condition** - Evaluate filter rules to determine execution path
+- **exec** - Execute custom JavaScript/TypeScript code in sandboxed environment
+- **item-create** - Create items in a collection
+- **item-read** - Retrieve items from a collection
+- **item-update** - Update existing items in a collection
+- **item-delete** - Remove items from a collection
+- **json-web-token** - Sign, verify, or decode JWT tokens
+- **log** - Output debug messages to console
+- **mail** - Send email notifications with templates
+- **notification** - Send in-app notifications to users
+- **request** - Make HTTP requests to external services
+- **sleep** - Delay execution for specified time
+- **throw-error** - Throw custom errors to stop flow execution
+- **transform** - Create custom JSON payloads
+- **trigger** - Execute another flow with iteration modes
+
+If user has installed extensions from the Directus Marketplace, there may be more operations available than this. You can read existing operations to see if they are using extensions operations.
 
 ## Actions
 
@@ -266,7 +286,7 @@ module.exports = async function (data) {
 
 ### Send Email
 
-Send email notifications
+Send email notifications with optional templates
 
 ```json
 {
@@ -274,7 +294,29 @@ Send email notifications
 	"options": {
 		"to": ["user@example.com", "{{ $trigger.payload.email }}"],
 		"subject": "Order Confirmation",
-		"body": "Your order {{ $trigger.payload.order_id }} has been confirmed."
+		"type": "markdown", // "markdown" (default), "wysiwyg", or "template"
+		"body": "Your order {{ $trigger.payload.order_id }} has been confirmed.",
+		"cc": ["cc@example.com"], // Optional
+		"bcc": ["bcc@example.com"], // Optional
+		"replyTo": ["reply@example.com"] // Optional
+	}
+}
+```
+
+**Template Mode**:
+
+```json
+{
+	"type": "mail",
+	"options": {
+		"to": ["{{ $trigger.payload.email }}"],
+		"subject": "Welcome!",
+		"type": "template",
+		"template": "welcome-email", // Template name (default: "base")
+		"data": {
+			"username": "{{ $trigger.payload.name }}",
+			"activation_url": "https://example.com/activate/{{ $trigger.payload.token }}"
+		}
 	}
 }
 ```
@@ -287,10 +329,12 @@ Send in-app notifications to users
 {
 	"type": "notification",
 	"options": {
-		"users": ["{{ $accountability.user }}"],
+		"recipient": ["{{ $accountability.user }}"], // User ID(s) to notify
+		"subject": "Task Complete",
+		"message": "Your export is ready for download",
 		"permissions": "$trigger",
-		"title": "Task Complete",
-		"message": "Your export is ready for download"
+		"collection": "exports", // Optional: Related collection
+		"item": "{{ $last.id }}" // Optional: Related item ID
 	}
 }
 ```
@@ -328,42 +372,45 @@ Make HTTP requests
 
 **Real Example (Netlify Deploy Hook)**:
 
-````json
-{
-  "type": "request",
-  "options": {
-    "method": "POST",
-    "url": "https://api.netlify.com/build_hooks/your-hook-id",
-    "headers": [
-      {
-        "header": "User-Agent",
-        "value": "Directus-Flow/1.0"
-      }
-    ],
-    "body": "{\"trigger\": \"content_updated\", \"item_id\": \"{{ $trigger.payload.id }}\"}"
-  }
-}
-
-### Transform Payload
-Create custom JSON payload
 ```json
 {
-  "type": "transform",
-  "options": {
-    "payload": {
-      "combined": {
-        "user": "{{ $accountability.user }}",
-        "items": "{{ read_items }}",
-        "timestamp": "{{ $trigger.timestamp }}"
-      }
-    }
-  }
+	"type": "request",
+	"options": {
+		"method": "POST",
+		"url": "https://api.netlify.com/build_hooks/your-hook-id",
+		"headers": [
+			{
+				"header": "User-Agent",
+				"value": "Directus-Flow/1.0"
+			}
+		],
+		"body": "{\"trigger\": \"content_updated\", \"item_id\": \"{{ $trigger.payload.id }}\"}"
+	}
 }
-````
+```
+
+### Transform Payload
+
+Create custom JSON payload
+
+```json
+{
+	"type": "transform",
+	"options": {
+		"json": {
+			"combined": {
+				"user": "{{ $accountability.user }}",
+				"items": "{{ read_items }}",
+				"timestamp": "{{ $trigger.timestamp }}"
+			}
+		}
+	}
+}
+```
 
 ### Trigger Flow
 
-Execute another flow
+Execute another flow with optional iteration modes
 
 ```json
 {
@@ -372,10 +419,17 @@ Execute another flow
 		"flow": "other-flow-uuid",
 		"payload": {
 			"data": "{{ $last }}"
-		}
+		},
+		"iterationMode": "parallel", // Optional: "parallel" (default), "serial", "batch"
+		"batchSize": 10 // Optional: Only used when iterationMode is "batch" (default: 10)
 	}
 }
 ```
+
+**Iteration Modes** (when payload is an array):
+- `parallel` - Process all items simultaneously (default)
+- `serial` - Process items one at a time in order
+- `batch` - Process in batches of specified size
 
 ### Sleep
 
@@ -403,6 +457,76 @@ Debug logging
 }
 ```
 
+### Throw Error
+
+Throw a custom error to stop flow execution
+
+```json
+{
+	"type": "throw-error",
+	"options": {
+		"code": "CUSTOM_ERROR",
+		"status": "400",
+		"message": "Invalid data: {{ $trigger.payload.error_details }}"
+	}
+}
+```
+
+### JSON Web Token
+
+Sign, verify, or decode JWT tokens
+
+**Sign a token**:
+
+```json
+{
+	"type": "json-web-token",
+	"options": {
+		"operation": "sign",
+		"payload": {
+			"userId": "{{ $trigger.payload.user }}",
+			"role": "{{ $trigger.payload.role }}"
+		},
+		"secret": "{{ $env.JWT_SECRET }}",
+		"options": {
+			"expiresIn": "1h",
+			"algorithm": "HS256"
+		}
+	}
+}
+```
+
+**Verify a token**:
+
+```json
+{
+	"type": "json-web-token",
+	"options": {
+		"operation": "verify",
+		"token": "{{ $trigger.payload.token }}",
+		"secret": "{{ $env.JWT_SECRET }}",
+		"options": {
+			"algorithms": ["HS256"]
+		}
+	}
+}
+```
+
+**Decode a token** (without verification):
+
+```json
+{
+	"type": "json-web-token",
+	"options": {
+		"operation": "decode",
+		"token": "{{ $trigger.payload.token }}",
+		"options": {
+			"complete": true
+		}
+	}
+}
+```
+
 ## 🔄 Data Chain Variables
 
 Use `{{ variable }}` syntax to access data:
@@ -412,6 +536,15 @@ Use `{{ variable }}` syntax to access data:
 - `{{ $last }}` - Previous operation result
 - `{{ operation_key.field }}` - Specific operation data
 - `{{ array[0].property }}` - Array/object access
+
+## 🔐 Permission Options
+
+For operations that support permissions:
+
+- `$trigger` - Use permissions from the triggering context (default)
+- `$public` - Use public role permissions
+- `$full` - Use full system permissions
+- `role-uuid` - Use specific role's permissions
 
 ## ⚡ Real-World Patterns
 
@@ -580,7 +713,7 @@ Operations use a **grid-based positioning system** for the visual flow editor:
 - **Unique Keys**: Each operation needs a unique `key` within its flow
 - **Data Chain**: Results stored under operation's `key`
 - **Execution Order**: Determined by resolve/reject paths, NOT position
-- **Permissions**: Can be `$public`, `$trigger`, `$full`, or role UUID
+- **Permissions**: See permission options in operation examples above
 - **First Operation**: Set as flow's `operation` field when creating
 - **Position**: Grid-based layout for visual organization only
 
@@ -658,7 +791,7 @@ The standard workflow for creating flows with operations:
 
 // Step 3: Connect operations using UUIDs (NOT keys)
 {"action": "update", "key": "condition-uuid-456", "data": {
-  "resolve": "email-uuid-789",  // ✅ Use UUID from step 2
+  "resolve": "email-uuid-789",  // Use UUID from step 2
   "reject": null                // No error handling operation
 }}
 
@@ -671,58 +804,16 @@ The standard workflow for creating flows with operations:
 ## 🚨 Common Mistakes to Avoid
 
 1. **Don't** create operations without a flow - create flow first
-2. **Don't** use operation keys in resolve/reject - use UUIDs:
-
-   ```json
-   // ❌ WRONG - Using operation key
-   "resolve": "send_email"
-
-   // ✅ CORRECT - Using operation UUID
-   "resolve": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
-   ```
+2. **Don't** use operation keys in resolve/reject - use UUIDs (see workflow example above)
 
 3. **Don't** try to reference operations that don't exist yet
 4. **Don't** use duplicate keys within the same flow
 5. **Don't** create circular references in resolve/reject paths
 6. **Don't** forget to handle both success and failure paths
 7. **Don't** pass stringified JSON - use native objects
-8. **Don't** leave operations at default position (0,0) - they will overlap:
-
-   ```json
-   // ❌ WRONG - Operations will overlap at origin
-   "position_x": 0,
-   "position_y": 0
-
-   // ✅ CORRECT - Use proper grid positions
-   "position_x": 19,  // First operation
-   "position_y": 1
-   ```
-
-9. **Don't** use dot notation in condition filters:
-
-   ```json
-   // ❌ WRONG - Dot notation
-   {"$trigger.payload.status": {"_eq": "published"}}
-
-   // ✅ CORRECT - Nested objects
-   {"$trigger": {"payload": {"status": {"_eq": "published"}}}}
-   ```
-
-10. **Don't** use wrong format for request operations:
-
-    ```json
-    // ❌ WRONG - Headers as object, body as object
-    {
-      "headers": {"Authorization": "Bearer token"},
-      "body": {"data": "value"}
-    }
-
-    // ✅ CORRECT - Headers as array, body as string
-    {
-      "headers": [{"header": "Authorization", "value": "Bearer token"}],
-      "body": "{\"data\": \"value\"}"
-    }
-    ```
+8. **Don't** leave operations at default position (0,0) - see Operation Positioning System above
+9. **Don't** use dot notation in condition filters - see Condition operation filter syntax above  
+10. **Don't** use wrong format for request operations - see Request operation format above
 
 ## 🔍 Troubleshooting
 
