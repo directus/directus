@@ -8,6 +8,8 @@ on:
       - reopened
       - labeled
       - unlabeled
+    branches:
+      - main
 
 permissions:
   contents: read
