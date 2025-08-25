@@ -1,5 +1,5 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { beforeEach, describe, expect, it, test, vi, type MockedFunction } from 'vitest';
+import { beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
 import { getSnapshot } from '../../utils/get-snapshot.js';
 import { schema } from './schema.js';
 
@@ -64,7 +64,7 @@ describe('schema tool', () => {
 				});
 			});
 
-			it('should handle collections without notes', async () => {
+			test('should handle collections without notes', async () => {
 				const mockSnapshot = {
 					collections: [
 						{
@@ -96,7 +96,7 @@ describe('schema tool', () => {
 				});
 			});
 
-			it('should handle folders', async () => {
+			test('should handle folders', async () => {
 				const mockSnapshot = {
 					collections: [
 						{
@@ -128,7 +128,7 @@ describe('schema tool', () => {
 				});
 			});
 
-			it('should handle empty collections array', async () => {
+			test('should handle empty collections array', async () => {
 				const mockSnapshot = {
 					collections: [],
 					fields: [],
@@ -156,7 +156,7 @@ describe('schema tool', () => {
 		});
 
 		describe('DETAILED', () => {
-			it('should return detailed field information for requested collections', async () => {
+			test('should return detailed field information for requested collections', async () => {
 				const mockSnapshot = {
 					collections: [],
 					fields: [
@@ -239,7 +239,7 @@ describe('schema tool', () => {
 				});
 			});
 
-			it('should skip UI-only alias fields', async () => {
+			test('should skip UI-only alias fields', async () => {
 				const mockSnapshot = {
 					collections: [],
 					fields: [
@@ -301,7 +301,7 @@ describe('schema tool', () => {
 				});
 			});
 
-			it('should handle fields with choices', async () => {
+			test('should handle fields with choices', async () => {
 				const mockSnapshot = {
 					collections: [],
 					fields: [
@@ -353,7 +353,7 @@ describe('schema tool', () => {
 				});
 			});
 
-			it('should process nested fields in JSON fields', async () => {
+			test('should process nested fields in JSON fields', async () => {
 				const mockSnapshot = {
 					collections: [],
 					fields: [
@@ -432,7 +432,7 @@ describe('schema tool', () => {
 				});
 			});
 
-			it('should handle deeply nested fields up to max depth', async () => {
+			test('should handle deeply nested fields up to max depth', async () => {
 				const createNestedField = (depth: number): any => ({
 					field: `level${depth}`,
 					type: 'json',
@@ -486,7 +486,7 @@ describe('schema tool', () => {
 				expect(Object.keys(current?.fields ?? {}).length).eq(0);
 			});
 
-			it('should handle collection-item-dropdown interface', async () => {
+			test('should handle collection-item-dropdown interface', async () => {
 				const mockSnapshot = {
 					collections: [],
 					fields: [
@@ -559,7 +559,7 @@ describe('schema tool', () => {
 
 			describe('relationships', () => {
 				describe('Many-to-One (M2O)', () => {
-					it('should build M2O relation info', async () => {
+					test('should build M2O relation info', async () => {
 						const mockSnapshot = {
 							collections: [],
 							fields: [
@@ -624,7 +624,7 @@ describe('schema tool', () => {
 				});
 
 				describe('One-to-Many (O2M)', () => {
-					it('should build O2M relation info', async () => {
+					test('should build O2M relation info', async () => {
 						const mockSnapshot = {
 							collections: [],
 							fields: [
@@ -694,7 +694,7 @@ describe('schema tool', () => {
 				});
 
 				describe('Many-to-Many (M2M)', () => {
-					it('should build M2M relation info', async () => {
+					test('should build M2M relation info', async () => {
 						const mockSnapshot = {
 							collections: [],
 							fields: [
@@ -780,7 +780,7 @@ describe('schema tool', () => {
 						});
 					});
 
-					it('should handle M2M with files', async () => {
+					test('should handle M2M with files', async () => {
 						const mockSnapshot = {
 							collections: [],
 							fields: [
@@ -854,7 +854,7 @@ describe('schema tool', () => {
 				});
 
 				describe('Many-to-Any (M2A)', () => {
-					it('should build M2A relation info', async () => {
+					test('should build M2A relation info', async () => {
 						const mockSnapshot = {
 							collections: [],
 							fields: [
@@ -948,15 +948,15 @@ describe('schema tool', () => {
 	});
 
 	describe('tool configuration', () => {
-		it('should have correct tool name', () => {
+		test('should have correct tool name', () => {
 			expect(schema.name).toBe('schema');
 		});
 
-		it('should have description', () => {
+		test('should have description', () => {
 			expect(schema.description).toBeDefined();
 		});
 
-		it('should have input and validation schemas', () => {
+		test('should have input and validation schemas', () => {
 			expect(schema.inputSchema).toBeDefined();
 			expect(schema.validateSchema).toBeDefined();
 		});

@@ -1,5 +1,5 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, it, vi, type MockedFunction } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
 import { getFlowManager } from '../../flows.js';
 import { FlowsService } from '../../services/flows.js';
 import { triggerFlow } from './trigger-flow.js';
@@ -44,7 +44,7 @@ describe('trigger flow tool', () => {
 			vi.mocked(FlowsService).mockImplementation(() => mockFlowsService as unknown as FlowsService);
 		});
 
-		it('should trigger a flow with minimal parameters', async () => {
+		test('should trigger a flow with minimal parameters', async () => {
 			const mockArgs = {
 				id: 'flow-123',
 				collection: 'articles',
@@ -108,7 +108,7 @@ describe('trigger flow tool', () => {
 			vi.mocked(FlowsService).mockImplementation(() => mockFlowsService as unknown as FlowsService);
 		});
 
-		it('should propogate error from flowService', async () => {
+		test('should propogate error from flowService', async () => {
 			mockFlowsService.readOne.mockImplementation(() => Promise.reject('Forbidden'));
 
 			const mockArgs = {
@@ -128,7 +128,7 @@ describe('trigger flow tool', () => {
 			).rejects.toThrow('Forbidden');
 		});
 
-		it('should throw error when data is missing but required fields exist', async () => {
+		test('should throw error when data is missing but required fields exist', async () => {
 			mockFlowsService.readOne.mockResolvedValue({
 				options: {
 					fields: [{ field: 'title', meta: { required: true } }],
@@ -152,7 +152,7 @@ describe('trigger flow tool', () => {
 			).rejects.toThrow('Invalid payload. Required field "title" is missing.');
 		});
 
-		it('should throw error for missing required fields', async () => {
+		test('should throw error for missing required fields', async () => {
 			mockFlowsService.readOne.mockResolvedValue({
 				options: {
 					fields: [
@@ -182,15 +182,15 @@ describe('trigger flow tool', () => {
 	});
 
 	describe('tool configuration', () => {
-		it('should have correct tool name', () => {
+		test('should have correct tool name', () => {
 			expect(triggerFlow.name).toBe('trigger-flow');
 		});
 
-		it('should have description', () => {
+		test('should have description', () => {
 			expect(triggerFlow.description).toBeDefined();
 		});
 
-		it('should have input and validation schemas', () => {
+		test('should have input and validation schemas', () => {
 			expect(triggerFlow.inputSchema).toBeDefined();
 			expect(triggerFlow.validateSchema).toBeDefined();
 		});
