@@ -11,7 +11,7 @@ vi.mock('../../utils/get-snapshot.js', () => ({
 
 describe('relations tool ', () => {
 	const mockSchema = { collections: {}, fields: {}, relations: {} } as unknown as SchemaOverview;
-	const mockAccountability = { user: 'test-user' } as Accountability;
+	const mockAccountability = { user: 'test-user', admin: true } as Accountability;
 	const mockSanitizedQuery = { fields: ['*'] };
 
 	beforeEach(() => {
