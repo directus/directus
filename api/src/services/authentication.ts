@@ -7,6 +7,7 @@ import {
 	UserSuspendedError,
 } from '@directus/errors';
 import type { AbstractServiceOptions, Accountability, LoginResult, SchemaOverview } from '@directus/types';
+import { toBoolean } from '@directus/utils';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash-es';
@@ -191,7 +192,7 @@ export class AuthenticationService {
 		};
 
 		// Add require_tfa_setup to token payload for OAuth users who need to set up 2FA
-		if (user.require_tfa_setup === true && !user.tfa_secret) {
+		if (toBoolean(user.require_tfa_setup) && !user.tfa_secret) {
 			tokenPayload.require_tfa_setup = true;
 		}
 

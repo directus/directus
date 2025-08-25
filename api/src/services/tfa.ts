@@ -1,5 +1,6 @@
 import { InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, PrimaryKey } from '@directus/types';
+import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import { authenticator } from 'otplib';
 import getDatabase from '../database/index.js';
@@ -63,7 +64,7 @@ export class TFAService {
 					.where('directus_policies.enforce_tfa', true)
 					.first();
 
-				if (!roleEnforcement && user?.require_tfa_setup !== true) {
+				if (!roleEnforcement && !toBoolean(user?.require_tfa_setup)) {
 					throw new InvalidPayloadError({ reason: '2FA setup is not requested for this user' });
 				}
 			}
@@ -111,7 +112,7 @@ export class TFAService {
 					.where('directus_policies.enforce_tfa', true)
 					.first();
 
-				if (!roleEnforcement && user?.require_tfa_setup !== true) {
+				if (!roleEnforcement && !toBoolean(user?.require_tfa_setup)) {
 					throw new InvalidPayloadError({ reason: '2FA setup is not requested for this user' });
 				}
 			}
@@ -150,7 +151,7 @@ export class TFAService {
 			throw new InvalidPayloadError({ reason: 'TFA is already enabled for this user' });
 		}
 
-		if (user.require_tfa_setup === true) {
+		if (toBoolean(user.require_tfa_setup)) {
 			throw new InvalidPayloadError({ reason: '2FA setup is already requested for this user' });
 		}
 
@@ -172,7 +173,7 @@ export class TFAService {
 			throw new InvalidPayloadError({ reason: 'TFA is already enabled for this user' });
 		}
 
-		if (user.require_tfa_setup !== true) {
+		if (!toBoolean(user.require_tfa_setup)) {
 			throw new InvalidPayloadError({ reason: 'No 2FA setup request to cancel' });
 		}
 

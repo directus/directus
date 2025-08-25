@@ -1,4 +1,5 @@
 import api from '@/api';
+import { logout } from '@/auth';
 import { nanoid } from 'nanoid';
 import { onMounted, ref } from 'vue';
 import qrcode from 'qrcode';
@@ -137,7 +138,7 @@ export function useTFASetup(initialEnabled: boolean) {
 			await api.post('/users/me/tfa/request-setup');
 			success = true;
 			error.value = null;
-			await userStore.hydrate();
+			await logout();
 		} catch (err: any) {
 			error.value = err;
 		} finally {

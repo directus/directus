@@ -45,7 +45,7 @@ const effectiveTFAEnabled = computed(() => {
 	if (profileUser.value && !isCurrentUser.value) {
 		// OAuth users
 		if (profileUser.value.provider !== 'default') {
-			return !!(profileUser.value.tfa_secret || (profileUser.value as any).require_tfa_setup === true);
+			return !!(profileUser.value.tfa_secret || (profileUser.value as any).require_tfa_setup);
 		}
 
 		// Password users
@@ -58,7 +58,7 @@ const effectiveTFAEnabled = computed(() => {
 
 		// OAuth users
 		if (user.provider !== 'default') {
-			return !!(user.tfa_secret || (user as any).require_tfa_setup === true);
+			return !!(user.tfa_secret || (user as any).require_tfa_setup);
 		}
 
 		// Password users
@@ -141,7 +141,7 @@ function toggle() {
 		// Use profile user data when viewing a different user, otherwise use current user
 		const userToCheck = profileUser.value && !isCurrentUser.value ? profileUser.value : userStore.currentUser;
 
-		if (isOAuthUser.value && (userToCheck as any)?.require_tfa_setup === true && !(userToCheck as any)?.tfa_secret) {
+		if (isOAuthUser.value && (userToCheck as any)?.require_tfa_setup && !(userToCheck as any)?.tfa_secret) {
 			cancelSetupActive.value = true;
 		} else {
 			disableActive.value = true;

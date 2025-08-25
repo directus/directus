@@ -54,7 +54,7 @@ const isOAuthUser = computed(() => {
 const roleRequires2FA = computed(() => {
 	const user = userStore.currentUser;
 	if (!user || 'share' in user) return false;
-	return (user as any).enforce_tfa === true;
+	return !!(user as any).enforce_tfa;
 });
 
 // Check if user can skip password (OAuth users can always skip password)
