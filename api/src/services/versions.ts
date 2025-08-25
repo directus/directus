@@ -185,7 +185,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 					filter: { id: { _neq: pk }, key: { _eq: data['key'] }, collection: { _eq: collection }, item: { _eq: item } },
 				});
 
-				if (existingVersions[0]!['count'] > 0) {
+				if ((existingVersions as any)[0]!['count'] > 0) {
 					throw new UnprocessableContentError({
 						reason: `Version "${data['key']}" already exists for item "${item}" in collection "${collection}"`,
 					});

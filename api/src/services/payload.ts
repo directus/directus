@@ -910,8 +910,8 @@ export class PayloadService {
 				}
 
 				if (alterations.update) {
-					for (const item of alterations.update) {
-						const { [relatedPrimaryKeyField]: key, ...record } = item;
+					for (const index in alterations.update) {
+						const { [relatedPrimaryKeyField]: key, ...record } = alterations.update[index]!;
 
 						const existingRecord = await this.knex
 							.select(relatedPrimaryKeyField, relation.field)
@@ -932,7 +932,7 @@ export class PayloadService {
 							autoPurgeCache: opts?.autoPurgeCache,
 							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 							skipTracking: opts?.skipTracking,
-							overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['update'],
+							overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['update'][index],
 							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						});
