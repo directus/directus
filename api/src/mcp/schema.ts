@@ -16,11 +16,11 @@ import { z } from 'zod';
 
 // PK
 export const PrimaryKeyInputSchema = z.union([z.number(), z.string()]);
-export const PrimaryKeyValidateSchema = z.custom<PrimaryKey>();
+export const PrimaryKeyValidateSchema = z.union([z.number(), z.string()]);
 
 // item
 export const ItemInputSchema = z.record(z.string(), z.any());
-export const ItemValidateSchema = z.custom<Item>();
+export const ItemValidateSchema = z.record(z.string(), z.any());
 
 // query
 export const QueryInputSchema = z.object({
@@ -203,7 +203,7 @@ export const FolderItemInputSchema = z.object({
 export const FolderItemValidateSchema = FolderItemInputSchema;
 
 // relation
-export const RelationItemSchema = z.object({
+export const RelationItemInputSchema = z.object({
 	collection: z.string(),
 	field: z.string(),
 	related_collection: z.union([z.string(), z.null()]),
@@ -211,5 +211,46 @@ export const RelationItemSchema = z.object({
 	meta: z.union([z.record(z.string(), z.any()), z.null()]),
 });
 
-export const RelationItemValidateCreateSchema = z.custom<Relation>();
-export const RelationItemValidateUpdateSchema = z.custom<Partial<Relation>>();
+const RelationMetaSchema = z.object({
+	id: z.number(),
+	many_collection: z.string(),
+	many_field: z.string(),
+	one_collection: z.string().nullable(),
+	one_field: z.string().nullable(),
+	one_collection_field: z.string().nullable(),
+	one_allowed_collections: z.array(z.string()).nullable(),
+	one_deselect_action: z.enum(['nullify', 'delete']),
+	junction_field: z.string().nullable(),
+	sort_field: z.string().nullable(),
+	system: z.boolean().optional(),
+});
+
+const FkActionEnum = z.enum(['NO ACTION', 'RESTRICT', 'CASCADE', 'SET NULL', 'SET DEFAULT']);
+
+export const ForeignKeySchema = z.object({
+	table: z.string(),
+	column: z.string(),
+	foreign_key_table: z.string(),
+	foreign_key_column: z.string(),
+	foreign_key_schema: z.string().optional(),
+	constraint_name: z.union([z.string(), z.null()]),
+	on_update: z.union([FkActionEnum, z.null()]),
+	on_delete: z.union([FkActionEnum, z.null()]),
+});
+
+export const RelationItemValidateCreateSchema = z.object({
+	collection: z.string(),
+	field: z.string(),
+	related_collection: z.string().nullable(),
+	schema: ForeignKeySchema.partial().nullable().optional(),
+	meta: RelationMetaSchema.partial().nullable(),
+});
+
+
+export const RelationItemValidateUpdateSchema = z.object({
+	collection: z.string(),
+	field: z.string(),
+	related_collection: z.string().nullable().optional(),
+	schema: ForeignKeySchema.partial().nullable().optional(),
+	meta: RelationMetaSchema.partial().nullable().optional(),
+}).optional();
