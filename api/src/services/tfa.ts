@@ -30,7 +30,7 @@ export class TFAService {
 
 	async generateTFA(key: PrimaryKey, requiresPassword: boolean = true): Promise<Record<string, string>> {
 		const user = await this.knex
-			.select('email', 'tfa_secret', 'provider', 'tfa_setup_status')
+			.select('email', 'tfa_secret', 'provider', 'tfa_setup_status', 'external_identifier')
 			.from('directus_users')
 			.where({ id: key })
 			.first();
@@ -39,7 +39,8 @@ export class TFAService {
 			throw new InvalidPayloadError({ reason: 'TFA Secret is already set for this user' });
 		}
 
-		if (!user?.email) {
+		// Only require email for non-OAuth users
+		if (user?.provider === 'default' && !user?.email) {
 			throw new InvalidPayloadError({ reason: 'User must have a valid email to enable TFA' });
 		}
 
@@ -71,9 +72,12 @@ export class TFAService {
 		const secret = authenticator.generateSecret();
 		const project = await this.knex.select('project_name').from('directus_settings').limit(1).first();
 
+		// For OAuth users without email, use external_identifier as fallback
+		const accountName = user.email || user.external_identifier || `user_${key}`;
+
 		return {
 			secret,
-			url: authenticator.keyuri(user.email, project?.project_name || 'Directus', secret),
+			url: authenticator.keyuri(accountName, project?.project_name || 'Directus', secret),
 		};
 	}
 
