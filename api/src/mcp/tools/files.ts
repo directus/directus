@@ -1,5 +1,5 @@
 import type { PrimaryKey } from '@directus/types';
-import { isObject, toArray } from '@directus/utils';
+import { isObject } from '@directus/utils';
 import { z } from 'zod';
 import { FilesService } from '../../services/files.js';
 import { defineTool } from '../define.js';
@@ -16,11 +16,6 @@ import {
 import prompts from './prompts/index.js';
 
 export const FilesValidateSchema = z.union([
-	z.strictObject({
-		action: z.literal('create'),
-		data: z.union([z.array(FileItemValidateSchema), FileItemValidateSchema]),
-		query: QueryValidateSchema.optional(),
-	}),
 	z.strictObject({
 		action: z.literal('read'),
 		keys: z.array(PrimaryKeyValidateSchema).optional(),
@@ -43,7 +38,7 @@ export const FilesValidateSchema = z.union([
 ]);
 
 const FilesInputSchema = z.object({
-	action: z.enum(['create', 'read', 'update', 'delete', 'import']).describe('The operation to perform'),
+	action: z.enum(['read', 'update', 'delete', 'import']).describe('The operation to perform'),
 	query: QueryInputSchema.optional(),
 	keys: z.array(PrimaryKeyInputSchema).optional(),
 	data: z.union([z.array(FileItemInputSchema), FileItemInputSchema, FileImportItemInputSchema]).optional(),
@@ -66,19 +61,6 @@ export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
 			schema,
 			accountability,
 		});
-
-		if (args.action === 'create') {
-			const data = toArray(args.data);
-
-			const savedKeys = await service.createMany(data);
-
-			const result = await service.readMany(savedKeys, sanitizedQuery);
-
-			return {
-				type: 'text',
-				data: result || null,
-			};
-		}
 
 		if (args.action === 'read') {
 			let result = null;

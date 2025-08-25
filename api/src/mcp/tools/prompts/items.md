@@ -1,13 +1,10 @@
-# Directus ItemsTool
-
-Perform Create, Read, Update, Delete operations on items within Directus collections with advanced querying and
-relationships.
+Perform CRUD operations on items within Directus collections
 
 ## Actions
 
 - `read`: Query items with filtering/pagination/field selection
 - `create`: Add items (single/batch) with nested relations
-- `update`: Modify items (requires keys) with partial data
+- `update`: Modify items with partial data
 - `delete`: Remove items by primary keys
 
 ## Essential Query Patterns
@@ -146,7 +143,7 @@ Core: `_eq`, `_neq`, `_in`, `_nin`, `_null`, `_nnull`, `_lt`, `_lte`, `_gt`, `_g
 
 ### Deleting Items
 
-ALWAYS get written confirmation with the user before deleting any items.
+- ALWAYS get written confirmation with the user before deleting any items.
 
 **✅ GOOD - Delete by Keys:**
 
@@ -206,14 +203,14 @@ ALWAYS get written confirmation with the user before deleting any items.
 ### One-to-Many (O2M)
 
 ```json
-// Replace all comments
+// Link to existing comments
 {"comments": [1, 5, 9]}
 // Create/update/delete operations
 {
   "comments": {
     "create": [{"text": "New comment"}],
     "update": [{"id": 5, "text": "Updated"}],
-    "delete": [3, 7]
+    "delete": [1, 9]
   }
 }
 ```

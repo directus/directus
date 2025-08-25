@@ -1,9 +1,7 @@
-# Directus Flows Tool
+Manage automation flows that enable event-driven data processing and task automation. Flows consist of a trigger and a series of operations forming a data chain.
 
-Manage automation flows that enable event-driven data processing and task automation. Flows consist of a trigger and a
-series of operations forming a data chain.
-
-## 🔑 Key Concepts
+<flow_concepts>
+## Key Concepts
 
 **Flow** = Trigger + Operations + Data Chain
 
@@ -11,20 +9,26 @@ series of operations forming a data chain.
 - Operations execute sequentially, passing data through the chain
 - Data chain accumulates results from each step
 
-## 📋 Flow Data Structure
+After creating a flow, use the `operations` tool to add individual operations with detailed operation syntax, positioning, and data chain usage.
+</flow_concepts>
+
+<core_fields>
+## Flow Data Structure
 
 All flows share these core fields for creation:
 
-- **name** (required) - Flow display name
-- **trigger** (required) - Trigger type: `event`, `webhook`, `schedule`, `operation`, `manual`
-- **status** - `active` or `inactive` (default: `active`)
-- **accountability** - `all`, `activity`, or `null` (default: `all`)
-- **icon** - Icon identifier (optional)
-- **color** - Hex color code (optional)
-- **description** - Flow description (optional)
-- **options** - Trigger-specific configuration object (optional)
-- **operation** - UUID of first operation (optional, set after creating operations)
+- `name` (required) - Flow display name
+- `trigger` (required) - Trigger type: `event`, `webhook`, `schedule`, `operation`, `manual`
+- `status` - `active` or `inactive` (default: `active`)
+- `accountability` - `all`, `activity`, or `null` (default: `all`)
+- `icon` - Icon identifier (optional)
+- `color` - Hex color code (optional)
+- `description` - Flow description (optional)
+- `options` - Trigger-specific configuration object (optional)
+- `operation` - UUID of first operation (optional, set after creating operations)
+</core_fields>
 
+<crud_actions>
 ## Actions
 
 - ALWAYS show the flow URL if it is present in the result
@@ -88,8 +92,10 @@ All flows share these core fields for creation:
 	"key": "flow-uuid"
 }
 ```
+</crud_actions>
 
-## 🎯 Trigger Types & Options
+<trigger_types>
+## Trigger Types & Options
 
 ### Event Hook Trigger
 
@@ -102,7 +108,7 @@ Responds to data changes and system events
 		"type": "filter", // filter (blocking) | action (non-blocking)
 		"scope": ["items.create", "items.update"],
 		"collections": ["orders", "products"],
-		"return": "$last" // For filter only: $last|$all|<operationKey>
+		"return": "process_data" // For filter only: <operationKey>|$all|$last (avoid $last)
 	}
 }
 ```
@@ -121,7 +127,7 @@ Responds to data changes and system events
 	"options": {
 		"method": "POST", // GET|POST
 		"async": false, // true = immediate response, false = wait for completion
-		"return": "$last", // Response body: $last|$all|<operationKey>
+		"return": "transform_result", // Response body: <operationKey>|$all|$last (avoid $last)
 		"cache": false // Cache GET responses
 	}
 }
@@ -152,27 +158,64 @@ UI button that users click to start flows
 {
 	"trigger": "manual",
 	"options": {
-		"collections": ["products"],
+		"collections": ["posts", "products"],
 		"location": "item", // item|collection|both
-		"requireSelection": true, // Default true - requires item selection
-		"requireConfirmation": false,
-		"confirmationDescription": "Create a New Project 🚀",
+		"requireSelection": false, // Default true - requires item selection
+		"requireConfirmation": true,
+		"confirmationDescription": "AI Ghostwriter",
+		"async": true, // Run in background
 		"fields": [
-			// Input fields for confirmation dialog
 			{
-				"field": "reason",
-				"name": "Reason for Action",
-				"type": "string",
+				"field": "prompt",
+				"type": "text",
+				"name": "Prompt",
 				"meta": {
-					"interface": "input",
-					"required": true,
-					"note": "Why are you performing this action?"
+					"interface": "input-multiline",
+					"note": "Describe what you want to create.",
+					"width": "full",
+					"required": true
+				}
+			},
+			{
+				"field": "voice",
+				"type": "json",
+				"name": "Tone Of Voice",
+				"meta": {
+					"interface": "tags",
+					"options": {
+						"presets": ["friendly", "professional", "casual"]
+					}
+				}
+			},
+			{
+				"field": "colors",
+				"type": "json",
+				"name": "Color Palette",
+				"meta": {
+					"interface": "list",
+					"options": {
+						"fields": [
+							{
+								"field": "color",
+								"type": "string",
+								"meta": { "interface": "select-color" }
+							},
+							{
+								"field": "name",
+								"type": "string",
+								"meta": { "interface": "input" }
+							}
+						]
+					}
 				}
 			}
 		]
 	}
 }
+// Access confirmation inputs: {{ $trigger.body.prompt }}, {{ $trigger.body.voice }}
 ```
+
+**Field Options**: Supports non-relational Directus interfaces - `input`, `input-multiline`, `input-rich-text-md`, `tags`, `list`, `select-color`, `select-radio`, `collection-item-dropdown`, etc.
 
 ### Operation Trigger (Another Flow)
 
@@ -180,30 +223,101 @@ UI button that users click to start flows
 {
 	"trigger": "operation",
 	"options": {
-		"return": "$last" // Data to return to calling flow
+		"return": "final_result" // Data to return to calling flow: <operationKey>|$all|$last (avoid $last)
 	}
 }
 ```
+</trigger_types>
 
-## 🔄 Working with Operations
+<operations_integration>
+## Working with Operations
 
-After creating a flow, add operations using the `operations` tool:
+**Use the `operations` tool for complete details on:**
+- Creating and linking operations
+- 14x14 grid positioning system
+- Data chain variable syntax
+- Operation-specific configuration
 
+**Workflow Process:**
 1. Create flow first to get flow ID
 2. Use `operations` tool to add/manage operations
 3. Operations execute in sequence based on resolve/reject paths
+4. Link operations via UUIDs in resolve/reject fields
+</operations_integration>
 
-## 📊 Data Chain Access
+<flow_chaining>
+## 🔗 Flow Chaining
+
+**When to Chain**: Reusable utilities, complex multi-step workflows, conditional branching
+
+**How to Chain**:
+1. Child flow: `"trigger": "operation"`, `"return": "final_key"` or `"$last"`
+2. Parent flow: Use `trigger` operation with child flow UUID and payload
+3. Access child results: `{{ trigger_operation_key }}`
+
+**Common Utility Patterns**:
+
+```json
+// Utils → Get Globals (called by multiple flows)
+{
+  "name": "Utils → Get Globals",
+  "trigger": "operation",
+  "options": { "return": "$last" }
+}
+
+// Utils → Send Email (reusable email sender)
+{
+  "name": "Utils → Send Email",
+  "trigger": "operation",
+  "options": { "return": "$last" }
+}
+
+// Main flow calls utility
+{
+  "type": "trigger",
+  "key": "globals",
+  "options": {
+    "flow": "utils-globals-uuid"
+  }
+}
+// Access: {{ globals.openai_api_key }}
+```
+
+**Multi-Chain Example** (Form Notifications):
+```json
+// Chains: Read Form → Format → Render Template → Send Email
+{
+  "type": "trigger",
+  "key": "render",
+  "options": {
+    "flow": "utils-render-template-uuid",
+    "payload": "{{ format }}"
+  }
+}
+```
+
+**Best Practices**:
+- Name utilities with "Utils →" prefix for clarity
+- Use `$last` return for simple utilities, specific keys for complex ones
+- Chain utilities together for modular, reusable workflows
+- Keep each utility focused on single responsibility
+</flow_chaining>
+
+<data_chain_warning>
+## Data Chain Access
+
+**See the `operations` tool for complete data chain syntax and examples.**
 
 Operations can access:
-
 - `$trigger` - Initial trigger data
 - `$accountability` - User/permission context
 - `$env` - Environment variables
-- `$last` - Result of previous operation
-- `<operationKey>` - Result of specific operation
+- `<operationKey>` - Result of specific operation (recommended)
+- `$last` - Result of previous operation (avoid - breaks when reordered)
+</data_chain_warning>
 
-## ⚡ Real-World Examples
+<real_world_examples>
+## Real-World Examples
 
 ### Post Approval Email (Event-Driven)
 
@@ -318,13 +432,16 @@ Operations can access:
     "trigger": "operation",
     "accountability": "all",
     "options": {
-      "return": "$last"  // Returns data to calling flow
+      "return": "global_data"  // Returns data to calling flow: <operationKey>|$all|$last
     }
   }
 }
 // Called by other flows using trigger operation
+```
+</real_world_examples>
 
-## ⚠️ Important Notes
+<important_notes>
+## Important Notes
 
 - **Admin Required**: This tool requires admin permissions
 - **Data Format**: Pass `data` as native objects, NOT stringified JSON
@@ -332,14 +449,16 @@ Operations can access:
 - **Webhook URL**: After creating webhook trigger, URL is `/flows/trigger/<flow-id>`
 - **Event Blocking**: Filter events pause transaction until flow completes
 - **Logs**: Flow executions are logged (check `accountability` setting)
+</important_notes>
 
-## 🚨 Common Mistakes to Avoid
+<common_mistakes>
+## Common Mistakes to Avoid
 
-1. **Don't** create operations here - use the `operations` tool
-2. **Don't** trigger flows here - use the `trigger-flow` tool
-3. **Don't** pass stringified JSON in data parameter
-4. **Don't** forget required fields: `name` and `trigger` for creation
-5. **Don't** put options outside of data - it goes inside the flow object:
+1. **DO NOT** create operations here - use the `operations` tool
+2. **DO NOT** trigger flows here - use the `trigger-flow` tool
+3. **DO NOT** pass stringified JSON in data parameter
+4. **DO NOT** forget required fields: `name` and `trigger` for creation
+5. **DO NOT** put options outside of data - it goes inside the flow object:
    ```json
    // ✅ CORRECT
    {
@@ -357,4 +476,5 @@ Operations can access:
      "data": { "name": "My Flow", "trigger": "event" },
      "options": { "type": "action" }
    }
-````
+   ```
+</common_mistakes>
