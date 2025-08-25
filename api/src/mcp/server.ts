@@ -19,7 +19,6 @@ import {
 import type { Request, Response } from 'express';
 import { render, tokenize } from 'micromustache';
 import { z } from 'zod';
-import { fromZodError } from 'zod-validation-error';
 import { ItemsService } from '../services/index.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 import { Url } from '../utils/url.js';
@@ -202,62 +201,58 @@ export class DirectusMCP {
 			const tool = findMcpTool(request.params.name);
 
 			let sanitizedQuery = {};
-			let args;
 
-			try {
-				if (!tool || (tool.name === 'system-prompt' && this.systemPromptEnabled === false)) {
-					throw new InvalidPayloadError({ reason: `"${request.params.name}" doesn't exist in the toolset` });
-				}
+			if (!tool || (tool.name === 'system-prompt' && this.systemPromptEnabled === false)) {
+				throw new InvalidPayloadError({ reason: `"${request.params.name}" doesn't exist in the toolset` });
+			}
 
-				if (req.accountability?.admin !== true && tool.admin === true) {
-					throw new ForbiddenError();
-				}
+			if (req.accountability?.admin !== true && tool.admin === true) {
+				throw new ForbiddenError();
+			}
 
-				if (tool.name === 'system-prompt') {
-					request.params.arguments = { promptOverride: this.systemPrompt };
-				}
+			if (tool.name === 'system-prompt') {
+				request.params.arguments = { promptOverride: this.systemPrompt };
+			}
 
-				// ensure json expected fields are not stringified
-				if (request.params.arguments) {
-					for (const field of ['data', 'keys', 'query']) {
-						const arg = request.params.arguments[field];
+			// ensure json expected fields are not stringified
+			if (request.params.arguments) {
+				for (const field of ['data', 'keys', 'query']) {
+					const arg = request.params.arguments[field];
 
-						if (typeof arg === 'string') {
-							request.params.arguments[field] = parseJSON(arg);
-						}
+					if (typeof arg === 'string') {
+						request.params.arguments[field] = parseJSON(arg);
 					}
 				}
+			}
 
-				const { error, data } = tool.validateSchema?.safeParse(request.params.arguments) ?? {
-					data: request.params.arguments,
-				};
+			const { error, data } = tool.validateSchema?.safeParse(request.params.arguments) ?? {
+				data: request.params.arguments,
+			};
 
-				args = data;
+			const args = data;
 
-				if (error) {
-					throw new InvalidPayloadError({ reason: fromZodError(error).message });
-				}
+			if (error) {
+				const errorTree = z.treeifyError(error);
+				throw new InvalidPayloadError({ reason: JSON.stringify(errorTree, null, 2) });
+			}
 
-				if (!isObject(args)) {
-					throw new InvalidPayloadError({ reason: '"arguments" must be an object' });
-				}
+			if (!isObject(args)) {
+				throw new InvalidPayloadError({ reason: '"arguments" must be an object' });
+			}
 
-				if ('action' in args && args['action'] === 'delete' && !this.allowDeletes) {
-					throw new InvalidPayloadError({ reason: 'Delete actions are disabled' });
-				}
+			if ('action' in args && args['action'] === 'delete' && !this.allowDeletes) {
+				throw new InvalidPayloadError({ reason: 'Delete actions are disabled' });
+			}
 
-				if ('query' in args && args['query']) {
-					sanitizedQuery = await sanitizeQuery(
-						{
-							fields: (args['query'] as Query)['fields'] || '*',
-							...args['query'],
-						},
-						req.schema,
-						req.accountability || null,
-					);
-				}
-			} catch (error) {
-				return this.toJSONRPCError(error);
+			if ('query' in args && args['query']) {
+				sanitizedQuery = await sanitizeQuery(
+					{
+						fields: (args['query'] as Query)['fields'] || '*',
+						...args['query'],
+					},
+					req.schema,
+					req.accountability || null,
+				);
 			}
 
 			try {
