@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, useTemplateRef, watch, nextTick } from 'vue';
+import { useFocusTrapManager } from '@/composables/use-focus-trap-manager';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useDialogRouteLeave } from '@/composables/use-dialog-route';
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
@@ -79,19 +80,22 @@ function nudge() {
 
 function useOverlayFocusTrap() {
 	const overlayEl = useTemplateRef<HTMLDivElement>('overlayEl');
+	const { addFocusTrap } = useFocusTrapManager();
 
-	const { activate, deactivate } = useFocusTrap(overlayEl, {
+	const focusTrap = useFocusTrap(overlayEl, {
 		escapeDeactivates: false,
 		initialFocus: false,
 	});
+
+	addFocusTrap(focusTrap);
 
 	watch(
 		internalActive,
 		async (newActive) => {
 			await nextTick();
 
-			if (newActive) activate();
-			else deactivate();
+			if (newActive) focusTrap.activate();
+			else focusTrap.deactivate();
 		},
 		{ immediate: true },
 	);
