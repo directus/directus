@@ -99,11 +99,6 @@ jobs:
               const publicChangedPackageNames = publicChangedPackages.map(pkg => pkg.packageJson.name);
               core.info(`📦 Public changed packages: ${JSON.stringify(publicChangedPackageNames)}`);
               
-              if (publicChangedPackageNames.length === 0) {
-                core.info('✅ No public packages changed - validation passed');
-                return;
-              }
-              
               // 3. Parse changeset files added in this PR
               const changesetFiles = `${{ steps.cs.outputs.changeset_added_files }}`.split(',').filter(f => f);
               core.info(`📝 Added changeset files: ${JSON.stringify(changesetFiles)}`);
@@ -171,7 +166,10 @@ jobs:
                 core.warning(warningMessage);
               }
               
-              core.info('✅ All public changed packages are covered by changesets!');
+              core.info(publicChangedPackageNames.length === 0 
+                ? '✅ No public packages changed - validation passed'
+                : '✅ All public changed packages are covered by changesets!'
+              );
               
             } catch (error) {
               core.setFailed(`❌ Error validating changeset coverage: ${error.message}\n${error.stack}`);
