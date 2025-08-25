@@ -76,8 +76,8 @@ export class AuthenticationService {
 
 		const user = await this.knex
 			.select<
-				User & { tfa_secret: string | null }
-			>('id', 'first_name', 'last_name', 'email', 'password', 'status', 'role', 'tfa_secret', 'provider', 'external_identifier', 'auth_data')
+				User & { tfa_secret: string | null; tfa_setup_status: 'complete' | 'pending' | 'cancelled' | null }
+			>('id', 'first_name', 'last_name', 'email', 'password', 'status', 'role', 'tfa_secret', 'provider', 'external_identifier', 'auth_data', 'tfa_setup_status')
 			.from('directus_users')
 			.where('id', userId)
 			.first();
@@ -158,6 +158,8 @@ export class AuthenticationService {
 			throw e;
 		}
 
+		// Only require OTP if user has TFA enabled (tfa_secret is set)
+		// OAuth users with tfa_setup_status pending but no tfa_secret should be allowed to log in
 		if (user.tfa_secret && !options?.otp) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
@@ -188,6 +190,29 @@ export class AuthenticationService {
 			app_access: globalAccess.app,
 			admin_access: globalAccess.admin,
 		};
+
+		// Add tfa_setup_status to token payload for OAuth users who need to set up 2FA
+		if (user.tfa_setup_status === 'pending' && !user.tfa_secret) {
+			tokenPayload.tfa_setup_status = 'pending';
+		}
+
+		// Add role-based enforcement to token payload for users who need to set up 2FA
+		if (!user.tfa_secret) {
+			// Check if user has role-based enforcement
+			const roleEnforcement = await this.knex
+				.select('directus_policies.enforce_tfa')
+				.from('directus_users')
+				.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
+				.leftJoin('directus_access', 'directus_roles.id', 'directus_access.role')
+				.leftJoin('directus_policies', 'directus_access.policy', 'directus_policies.id')
+				.where('directus_users.id', user.id)
+				.where('directus_policies.enforce_tfa', true)
+				.first();
+
+			if (roleEnforcement) {
+				tokenPayload.enforce_tfa = true;
+			}
+		}
 
 		const refreshToken = nanoid(64);
 		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));

@@ -25,6 +25,7 @@ export type User = {
 	last_page: string | null;
 	external_identifier: string | null;
 	tfa_secret: string | null;
+	tfa_setup_status: 'complete' | 'pending' | 'cancelled' | null;
 	auth_data: Record<string, any> | null;
 	provider: string;
 	appearance: 'auto' | 'dark' | 'light' | null;

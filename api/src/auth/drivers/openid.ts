@@ -440,12 +440,13 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const codeVerifier = provider.generateCodeVerifier();
 			const prompt = !!req.query['prompt'];
 			const redirect = req.query['redirect'];
+			const otp = req.query['otp'];
 
 			if (isLoginRedirectAllowed(redirect, providerName) === false) {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt }, getSecret(), {
+			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt, otp }, getSecret(), {
 				expiresIn: (env[`AUTH_${providerName.toUpperCase()}_LOGIN_TIMEOUT`] ?? '5m') as StringValue | number,
 				issuer: 'directus',
 			});
@@ -491,6 +492,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 					verifier: string;
 					redirect?: string;
 					prompt: boolean;
+					otp?: string;
 				};
 			} catch (e: any) {
 				logger.warn(e, `[OpenID] Couldn't verify OpenID cookie`);
@@ -498,7 +500,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				return res.redirect(`${url.toString()}?reason=${ErrorCode.InvalidCredentials}`);
 			}
 
-			const { verifier, redirect, prompt } = tokenData;
+			const { verifier, redirect, prompt, otp } = tokenData;
 
 			const accountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
 
@@ -528,7 +530,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 						state: req.query['state'],
 						iss: req.query['iss'],
 					},
-					{ session: authMode === 'session' },
+					{ session: authMode === 'session', ...(otp ? { otp: String(otp) } : {}) },
 				);
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
@@ -555,6 +557,26 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			}
 
 			const { accessToken, refreshToken, expires } = authResponse;
+
+			// If user needs to set up 2FA (one-time on next login), redirect to /admin/tfa-setup
+			try {
+				const claims = verifyJWT(accessToken, getSecret()) as any;
+
+				if (claims?.tfa_setup_status === 'pending' || claims?.enforce_tfa === true) {
+					const url = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'tfa-setup');
+					if (redirect) url.setQuery('redirect', redirect);
+
+					if (authMode === 'session') {
+						res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
+					} else {
+						res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+					}
+
+					return res.redirect(url.toString());
+				}
+			} catch (e) {
+				logger.warn(e, `[OpenID] Unexpected error during OpenID login`);
+			}
 
 			if (redirect) {
 				if (authMode === 'session') {

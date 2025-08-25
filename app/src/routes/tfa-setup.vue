@@ -5,7 +5,7 @@ import { useUserStore } from '@/stores/user';
 import { useAppStore } from '@directus/stores';
 import { User } from '@directus/types';
 import { useHead } from '@unhead/vue';
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -20,8 +20,19 @@ onMounted(() => {
 	}
 });
 
-const { generateTFA, enableTFA, loading, password, tfaEnabled, tfaGenerated, secret, otp, error, canvasID } =
-	useTFASetup(false);
+const {
+	generateTFA,
+	enableTFA,
+	cancel2FASetup,
+	loading,
+	password,
+	tfaEnabled,
+	tfaGenerated,
+	secret,
+	otp,
+	error,
+	canvasID,
+} = useTFASetup(false);
 
 watch(
 	() => tfaGenerated.value,
@@ -33,15 +44,56 @@ watch(
 	},
 );
 
-async function enable() {
-	await enableTFA();
+// Check if the current user is an OAuth user
+const isOAuthUser = computed(() => {
+	const user = userStore.currentUser;
+	return user && !('share' in user) && user.provider !== 'default';
+});
 
-	if (error.value === null) {
+// Check if the user has role that requires 2FA
+const roleRequires2FA = computed(() => {
+	const user = userStore.currentUser;
+	if (!user || 'share' in user) return false;
+	return (user as any).enforce_tfa === true;
+});
+
+// Check if user can skip password (OAuth users can always skip password)
+const canSkipPassword = computed(() => {
+	return isOAuthUser.value;
+});
+
+// Check if cancel button should be shown (not shown if role requires 2FA)
+const showCancelButton = computed(() => {
+	return !roleRequires2FA.value;
+});
+
+async function generate() {
+	await generateTFA(!canSkipPassword.value);
+}
+
+async function enable() {
+	const success = await enableTFA(!canSkipPassword.value);
+
+	if (success) {
 		const redirectQuery = router.currentRoute.value.query.redirect as string;
 		router.push(redirectQuery || (userStore.currentUser as User)?.last_page || '/login');
 	} else {
 		(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
 	}
+}
+
+async function cancel() {
+	// If user has tfa_setup_status pending, call the API to cancel setup before redirecting
+	try {
+		await cancel2FASetup();
+	} catch (error) {
+		// If cancel fails, still redirect to avoid getting stuck
+		// eslint-disable-next-line no-console
+		console.error('Failed to cancel 2FA setup:', error);
+	}
+
+	const redirectQuery = router.currentRoute.value.query.redirect as string;
+	router.push(redirectQuery || (userStore.currentUser as User)?.last_page || '/login');
 }
 
 useHead({
@@ -55,16 +107,18 @@ useHead({
 			<h1 class="type-title">{{ t('tfa_setup') }}</h1>
 		</div>
 
-		<form v-if="tfaEnabled === false && tfaGenerated === false && loading === false" @submit.prevent="generateTFA">
+		<form v-if="tfaEnabled === false && tfaGenerated === false && loading === false" @submit.prevent="generate">
 			<div class="title">
-				{{ t('enter_password_to_enable_tfa') }}
+				{{ canSkipPassword ? t('tfa_setup_description') : t('enter_password_to_enable_tfa') }}
 			</div>
-			<div>
+			<div v-if="!canSkipPassword">
 				<v-input v-model="password" :nullable="false" type="password" :placeholder="t('password')" autofocus />
-
-				<v-error v-if="error" :error="error" />
 			</div>
-			<v-button type="submit" :loading="loading">{{ t('next') }}</v-button>
+			<v-error v-if="error" :error="error" />
+			<div class="actions">
+				<button v-if="showCancelButton" type="button" class="cancel-link" @click="cancel">{{ t('cancel') }}</button>
+				<v-button type="submit" :loading="loading" large>{{ t('next') }}</v-button>
+			</div>
 		</form>
 
 		<v-progress-circular v-else-if="loading === true" class="loader" indeterminate />
@@ -80,7 +134,10 @@ useHead({
 					<v-input ref="inputOTP" v-model="otp" type="text" :placeholder="t('otp')" :nullable="false" />
 					<v-error v-if="error" :error="error" />
 				</div>
-				<v-button type="submit" :disabled="otp.length !== 6" @click="enable">{{ t('done') }}</v-button>
+				<div class="actions">
+					<button v-if="showCancelButton" type="button" class="cancel-link" @click="cancel">{{ t('cancel') }}</button>
+					<v-button type="submit" :disabled="otp.length !== 6" large @click="enable">{{ t('done') }}</v-button>
+				</div>
 			</form>
 		</div>
 
@@ -119,5 +176,20 @@ h1 {
 	font-family: var(--theme--fonts--monospace--font-family);
 	letter-spacing: 2.6px;
 	text-align: center;
+}
+
+.actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.cancel-link {
+	color: var(--theme--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+}
+
+.cancel-link:hover {
+	color: var(--theme--foreground);
 }
 </style>
