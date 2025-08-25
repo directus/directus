@@ -1,5 +1,5 @@
 import type { PrimaryKey } from '@directus/types';
-import { isObject, toArray } from '@directus/utils';
+import { isObject } from '@directus/utils';
 import { z } from 'zod';
 import { FilesService } from '../../services/files.js';
 import { defineTool } from '../define.js';
@@ -66,19 +66,6 @@ export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
 			schema,
 			accountability,
 		});
-
-		if (args.action === 'create') {
-			const data = toArray(args.data);
-
-			const savedKeys = await service.createMany(data);
-
-			const result = await service.readMany(savedKeys, sanitizedQuery);
-
-			return {
-				type: 'text',
-				data: result || null,
-			};
-		}
 
 		if (args.action === 'read') {
 			let result = null;
