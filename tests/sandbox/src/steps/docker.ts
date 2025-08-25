@@ -3,6 +3,7 @@ import { join } from 'path';
 import { type Env } from '../config.js';
 import { type Logger } from '../logger.js';
 import type { Database, Options } from '../sandbox.js';
+import chalk from 'chalk';
 
 export async function dockerUp(database: Database, extras: Options['extras'], env: Env, logger: Logger) {
 	logger.info('Starting up Docker containers');
@@ -47,7 +48,7 @@ export async function dockerUp(database: Database, extras: Options['extras'], en
 
 	if ('DB_PORT' in env) {
 		logger.info(`Database started at ${env.DB_HOST}:${env.DB_PORT}/${env.DB_DATABASE}`);
-		logger.info(`User: ${env.DB_USER} Password: ${env.DB_PASSWORD}`);
+		logger.info(`User: ${chalk.cyan(env.DB_USER)} Password: ${chalk.cyan(env.DB_PASSWORD)}`);
 	} else if ('DB_FILENAME' in env) logger.info(`Database stored at ${env.DB_FILENAME}`);
 
 	return project;

@@ -3,6 +3,7 @@ import { join } from 'path';
 import { type Env } from '../config.js';
 import { type Logger } from '../logger.js';
 import { apiFolder, type Options } from '../sandbox.js';
+import chalk from 'chalk';
 
 export async function buildDirectus(opts: Options, logger: Logger, onRebuild: () => void) {
 	logger.info('Rebuilding Directus');
@@ -127,7 +128,10 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 	});
 
 	logger.info(`Server started at http://${env.HOST}:${env.PORT}`);
-	logger.info(`User: ${env.ADMIN_EMAIL} Password: ${env.ADMIN_PASSWORD} Token: ${env.ADMIN_TOKEN}`);
+
+	logger.info(
+		`User: ${chalk.cyan(env.ADMIN_EMAIL)} Password: ${chalk.cyan(env.ADMIN_PASSWORD)} Token: ${chalk.cyan(env.ADMIN_TOKEN)}`,
+	);
 
 	return api;
 }
