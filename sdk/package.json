@@ -23,8 +23,8 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "NODE_ENV=production tsdown",
-		"dev": "NODE_ENV=development tsdown",
+		"build": "NODE_ENV=production tsup",
+		"dev": "NODE_ENV=development tsup",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
@@ -33,7 +33,7 @@
 		"@directus/tsconfig": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"esbuild-plugin-replace": "catalog:",
-		"tsdown": "catalog:",
+		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},

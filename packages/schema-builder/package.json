@@ -31,8 +31,8 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsdown src/index.ts --dts",
-		"dev": "tsdown src/index.ts --dts --watch",
+		"build": "tsup src/index.ts --format=esm --dts",
+		"dev": "tsup src/index.ts --format=esm --dts --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
@@ -44,7 +44,7 @@
 		"@directus/tsconfig": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"tsdown": "catalog:",
+		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	}

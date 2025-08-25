@@ -24,14 +24,14 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "NODE_ENV=production tsdown",
-		"dev": "NODE_ENV=development tsdown"
+		"build": "NODE_ENV=production tsup",
+		"dev": "NODE_ENV=development tsup"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
-		"unplugin-yaml": "catalog:",
 		"esbuild": "catalog:",
-		"tsdown": "catalog:",
+		"esbuild-yaml": "catalog:",
+		"tsup": "catalog:",
 		"typescript": "catalog:"
 	}
 }

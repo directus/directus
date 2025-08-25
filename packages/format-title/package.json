@@ -32,7 +32,7 @@
 	],
 	"scripts": {
 		"build": "pnpm run '/^bundle|typecheck$/'",
-		"bundle": "tsdown src/index.ts --dts",
+		"bundle": "tsup src/index.ts --format=esm --dts",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
 		"typecheck": "tsc --noEmit"
@@ -40,7 +40,7 @@
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"tsdown": "catalog:",
+		"tsup": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	}
