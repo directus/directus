@@ -22,7 +22,7 @@ export async function dockerUp(database: Database, extras: Options['extras'], en
 			'compose',
 			'-p',
 			project,
-			...files.flatMap((file) => ['-f', join(import.meta.dirname, '..', '..', 'docker', `${file}.yml`)]),
+			...files.flatMap((file) => ['-f', join(import.meta.dirname, '..', 'docker', `${file}.yml`)]),
 			'up',
 			'-d',
 			'--wait',

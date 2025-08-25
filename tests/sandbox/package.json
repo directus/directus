@@ -5,7 +5,7 @@
 	"homepage": "https://directus.io",
 	"scripts": {
 		"cli": "tsx src/cli.ts",
-		"build": "tsc",
+		"build": "tsc && copyfiles src/docker/*.yml dist -u 1",
 		"dev": "tsc -w ",
 		"build:tests": "tsup src/index.ts  --format=esm",
 		"postinstall": "pnpm link"
@@ -36,6 +36,7 @@
 		"@types/node": "catalog:",
 		"chalk": "catalog:",
 		"commander": "catalog:",
+		"copyfiles": "catalog:",
 		"lodash-es": "catalog:",
 		"tsup": "catalog:",
 		"tsx": "catalog:",
