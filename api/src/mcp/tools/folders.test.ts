@@ -1,5 +1,5 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { FoldersService } from '../../services/folders.js';
 import { folders } from './folders.js';
 
@@ -36,7 +36,7 @@ describe('folders tool', () => {
 		});
 
 		describe('CREATE action', () => {
-			it('should create a single folder and return the result', async () => {
+			test('should create a single folder and return the result', async () => {
 				const folderData = { name: 'test-folder', parent: 'parent-id' };
 				const savedKeys = ['folder-1'];
 				const expectedResult = [{ id: 'folder-1', name: 'test-folder' }];
@@ -68,7 +68,7 @@ describe('folders tool', () => {
 				});
 			});
 
-			it('should create multiple folders', async () => {
+			test('should create multiple folders', async () => {
 				const foldersData = [{ name: 'folder-1' }, { name: 'folder-2', parent: 'parent-id' }];
 
 				const savedKeys = ['folder-1', 'folder-2'];
@@ -91,7 +91,7 @@ describe('folders tool', () => {
 		});
 
 		describe('READ action', () => {
-			it('should read folders by keys', async () => {
+			test('should read folders by keys', async () => {
 				const keys = ['folder-1', 'folder-2'];
 				const expectedResult = [{ id: 'folder-1' }, { id: 'folder-2' }];
 
@@ -116,7 +116,7 @@ describe('folders tool', () => {
 				});
 			});
 
-			it('should read folders by query when no keys provided', async () => {
+			test('should read folders by query when no keys provided', async () => {
 				const expectedResult = [{ id: 'folder-1' }];
 
 				mockFoldersService.readByQuery.mockResolvedValue(expectedResult);
@@ -141,7 +141,7 @@ describe('folders tool', () => {
 		});
 
 		describe('UPDATE action', () => {
-			it('should update folders using keys', async () => {
+			test('should update folders using keys', async () => {
 				const keys = ['folder-1'];
 				const updateData = { name: 'updated-folder' };
 				const expectedResult = [{ id: 'folder-1', name: 'updated-folder' }];
@@ -170,7 +170,7 @@ describe('folders tool', () => {
 				});
 			});
 
-			it('should update folders using batch when data is array', async () => {
+			test('should update folders using batch when data is array', async () => {
 				const batchData = [{ id: 'folder-1', name: 'updated-1' }] as unknown as {
 					id: '';
 					name: string;
@@ -197,7 +197,7 @@ describe('folders tool', () => {
 				expect(mockFoldersService.updateMany).not.toHaveBeenCalled();
 			});
 
-			it('should update folders by query when no keys provided', async () => {
+			test('should update folders by query when no keys provided', async () => {
 				const updateData = { name: 'updated-folder' };
 				const updatedKeys = ['folder-1'];
 
@@ -221,7 +221,7 @@ describe('folders tool', () => {
 		});
 
 		describe('DELETE action', () => {
-			it('should delete folders by keys', async () => {
+			test('should delete folders by keys', async () => {
 				const keys = ['folder-1', 'folder-2'];
 
 				mockFoldersService.deleteMany.mockResolvedValue(keys);
@@ -247,7 +247,7 @@ describe('folders tool', () => {
 	});
 
 	describe('error handling', () => {
-		it('should throw error for invalid action', async () => {
+		test('should throw error for invalid action', async () => {
 			await expect(
 				folders.handler({
 					args: {
@@ -262,15 +262,15 @@ describe('folders tool', () => {
 	});
 
 	describe('tool configuration', () => {
-		it('should have correct tool name', () => {
+		test('should have correct tool name', () => {
 			expect(folders.name).toBe('folders');
 		});
 
-		it('should have description', () => {
+		test('should have description', () => {
 			expect(folders.description).toBeDefined();
 		});
 
-		it('should have input and validation schemas', () => {
+		test('should have input and validation schemas', () => {
 			expect(folders.inputSchema).toBeDefined();
 			expect(folders.validateSchema).toBeDefined();
 		});
@@ -291,7 +291,7 @@ describe('folders tool', () => {
 			vi.mocked(FoldersService).mockImplementation(() => mockFoldersService);
 		});
 
-		it('should handle null result from readMany after create', async () => {
+		test('should handle null result from readMany after create', async () => {
 			const folderData = { name: 'test-folder' };
 			const savedKeys = ['folder-1'];
 
@@ -314,7 +314,7 @@ describe('folders tool', () => {
 			});
 		});
 
-		it('should handle service errors', async () => {
+		test('should handle service errors', async () => {
 			const error = new Error('Service error');
 			mockFoldersService.readByQuery.mockRejectedValue(error);
 
