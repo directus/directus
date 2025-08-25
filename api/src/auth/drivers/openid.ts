@@ -562,7 +562,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			try {
 				const claims = verifyJWT(accessToken, getSecret()) as any;
 
-				if (claims?.tfa_setup_status === 'pending' || claims?.enforce_tfa === true) {
+				if (claims?.require_tfa_setup === true || claims?.enforce_tfa === true) {
 					const url = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'tfa-setup');
 					if (redirect) url.setQuery('redirect', redirect);
 

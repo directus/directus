@@ -30,7 +30,7 @@ export class TFAService {
 
 	async generateTFA(key: PrimaryKey, requiresPassword: boolean = true): Promise<Record<string, string>> {
 		const user = await this.knex
-			.select('email', 'tfa_secret', 'provider', 'tfa_setup_status', 'external_identifier')
+			.select('email', 'tfa_secret', 'provider', 'require_tfa_setup', 'external_identifier')
 			.from('directus_users')
 			.where({ id: key })
 			.first();
@@ -50,7 +50,7 @@ export class TFAService {
 		}
 
 		if (!requiresPassword) {
-			// For OAuth users, allow if they have tfa_setup_status pending OR role-based enforcement
+			// For OAuth users, allow if they have require_tfa_setup true OR role-based enforcement
 			if (user?.provider !== 'default') {
 				// Check if user has role-based enforcement
 				const roleEnforcement = await this.knex
@@ -63,7 +63,7 @@ export class TFAService {
 					.where('directus_policies.enforce_tfa', true)
 					.first();
 
-				if (!roleEnforcement && user?.tfa_setup_status !== 'pending') {
+				if (!roleEnforcement && user?.require_tfa_setup !== true) {
 					throw new InvalidPayloadError({ reason: '2FA setup is not requested for this user' });
 				}
 			}
@@ -83,7 +83,7 @@ export class TFAService {
 
 	async enableTFA(key: PrimaryKey, otp: string, secret: string, requiresPassword: boolean = true): Promise<void> {
 		const user = await this.knex
-			.select('tfa_secret', 'provider', 'tfa_setup_status')
+			.select('tfa_secret', 'provider', 'require_tfa_setup')
 			.from('directus_users')
 			.where({ id: key })
 			.first();
@@ -98,7 +98,7 @@ export class TFAService {
 		}
 
 		if (!requiresPassword) {
-			// For OAuth users, allow if they have tfa_setup_status pending OR role-based enforcement
+			// For OAuth users, allow if they have require_tfa_setup true OR role-based enforcement
 			if (user?.provider !== 'default') {
 				// Check if user has role-based enforcement
 				const roleEnforcement = await this.knex
@@ -111,7 +111,7 @@ export class TFAService {
 					.where('directus_policies.enforce_tfa', true)
 					.first();
 
-				if (!roleEnforcement && user?.tfa_setup_status !== 'pending') {
+				if (!roleEnforcement && user?.require_tfa_setup !== true) {
 					throw new InvalidPayloadError({ reason: '2FA setup is not requested for this user' });
 				}
 			}
@@ -121,11 +121,11 @@ export class TFAService {
 			throw new InvalidPayloadError({ reason: `"otp" is invalid` });
 		}
 
-		// For OAuth users, set the tfa_setup_status to complete
+		// For OAuth users, set require_tfa_setup to false after completion
 		const updateData: Record<string, any> = { tfa_secret: secret };
 
 		if (!requiresPassword) {
-			updateData['tfa_setup_status'] = 'complete';
+			updateData['require_tfa_setup'] = false;
 		}
 
 		await this.itemsService.updateOne(key, updateData);
@@ -137,7 +137,7 @@ export class TFAService {
 
 	async request2FASetup(key: PrimaryKey): Promise<void> {
 		const user = await this.knex
-			.select('provider', 'tfa_secret', 'tfa_setup_status')
+			.select('provider', 'tfa_secret', 'require_tfa_setup')
 			.from('directus_users')
 			.where({ id: key })
 			.first();
@@ -150,16 +150,16 @@ export class TFAService {
 			throw new InvalidPayloadError({ reason: 'TFA is already enabled for this user' });
 		}
 
-		if (user.tfa_setup_status === 'pending') {
+		if (user.require_tfa_setup === true) {
 			throw new InvalidPayloadError({ reason: '2FA setup is already requested for this user' });
 		}
 
-		await this.itemsService.updateOne(key, { tfa_setup_status: 'pending' });
+		await this.itemsService.updateOne(key, { require_tfa_setup: true });
 	}
 
 	async cancel2FASetup(key: PrimaryKey): Promise<void> {
 		const user = await this.knex
-			.select('provider', 'tfa_secret', 'tfa_setup_status')
+			.select('provider', 'tfa_secret', 'require_tfa_setup')
 			.from('directus_users')
 			.where({ id: key })
 			.first();
@@ -172,10 +172,10 @@ export class TFAService {
 			throw new InvalidPayloadError({ reason: 'TFA is already enabled for this user' });
 		}
 
-		if (user.tfa_setup_status !== 'pending') {
+		if (user.require_tfa_setup !== true) {
 			throw new InvalidPayloadError({ reason: 'No 2FA setup request to cancel' });
 		}
 
-		await this.itemsService.updateOne(key, { tfa_setup_status: 'cancelled' });
+		await this.itemsService.updateOne(key, { require_tfa_setup: false });
 	}
 }

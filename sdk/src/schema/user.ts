@@ -23,7 +23,7 @@ export type DirectusUser<Schema = any> = MergeCoreCollection<
 		language: string | null;
 		theme: string | null;
 		tfa_secret: string | null;
-		tfa_setup_status: 'complete' | 'pending' | 'cancelled' | null;
+		require_tfa_setup: boolean | null;
 		status: string;
 		role: DirectusRole<Schema> | string | null;
 		token: string | null;

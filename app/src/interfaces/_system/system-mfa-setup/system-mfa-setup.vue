@@ -45,7 +45,7 @@ const effectiveTFAEnabled = computed(() => {
 	if (profileUser.value && !isCurrentUser.value) {
 		// OAuth users
 		if (profileUser.value.provider !== 'default') {
-			return !!(profileUser.value.tfa_secret || profileUser.value.tfa_setup_status === 'pending');
+			return !!(profileUser.value.tfa_secret || (profileUser.value as any).require_tfa_setup === true);
 		}
 
 		// Password users
@@ -58,7 +58,7 @@ const effectiveTFAEnabled = computed(() => {
 
 		// OAuth users
 		if (user.provider !== 'default') {
-			return !!(user.tfa_secret || user.tfa_setup_status === 'pending');
+			return !!(user.tfa_secret || (user as any).require_tfa_setup === true);
 		}
 
 		// Password users
@@ -137,15 +137,11 @@ function toggle() {
 	if (tfaEnabled.value === false) {
 		enableActive.value = true;
 	} else {
-		// For OAuth users with tfa_setup_status pending but no tfa_secret, show cancel dialog instead of disable
+		// For OAuth users with require_tfa_setup true but no tfa_secret, show cancel dialog instead of disable
 		// Use profile user data when viewing a different user, otherwise use current user
 		const userToCheck = profileUser.value && !isCurrentUser.value ? profileUser.value : userStore.currentUser;
 
-		if (
-			isOAuthUser.value &&
-			(userToCheck as any)?.tfa_setup_status === 'pending' &&
-			!(userToCheck as any)?.tfa_secret
-		) {
+		if (isOAuthUser.value && (userToCheck as any)?.require_tfa_setup === true && !(userToCheck as any)?.tfa_secret) {
 			cancelSetupActive.value = true;
 		} else {
 			disableActive.value = true;

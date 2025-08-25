@@ -76,8 +76,8 @@ export class AuthenticationService {
 
 		const user = await this.knex
 			.select<
-				User & { tfa_secret: string | null; tfa_setup_status: 'complete' | 'pending' | 'cancelled' | null }
-			>('id', 'first_name', 'last_name', 'email', 'password', 'status', 'role', 'tfa_secret', 'provider', 'external_identifier', 'auth_data', 'tfa_setup_status')
+				User & { tfa_secret: string | null; require_tfa_setup: boolean | null }
+			>('id', 'first_name', 'last_name', 'email', 'password', 'status', 'role', 'tfa_secret', 'provider', 'external_identifier', 'auth_data', 'require_tfa_setup')
 			.from('directus_users')
 			.where('id', userId)
 			.first();
@@ -158,8 +158,7 @@ export class AuthenticationService {
 			throw e;
 		}
 
-		// Only require OTP if user has TFA enabled (tfa_secret is set)
-		// OAuth users with tfa_setup_status pending but no tfa_secret should be allowed to log in
+		// OAuth users with require_tfa_setup true but no tfa_secret should be allowed to log in
 		if (user.tfa_secret && !options?.otp) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
@@ -191,9 +190,9 @@ export class AuthenticationService {
 			admin_access: globalAccess.admin,
 		};
 
-		// Add tfa_setup_status to token payload for OAuth users who need to set up 2FA
-		if (user.tfa_setup_status === 'pending' && !user.tfa_secret) {
-			tokenPayload.tfa_setup_status = 'pending';
+		// Add require_tfa_setup to token payload for OAuth users who need to set up 2FA
+		if (user.require_tfa_setup === true && !user.tfa_secret) {
+			tokenPayload.require_tfa_setup = true;
 		}
 
 		// Add role-based enforcement to token payload for users who need to set up 2FA
