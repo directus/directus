@@ -93,6 +93,7 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 				env,
 				cwd: apiFolder,
 				shell: true,
+				stdio: 'overlapped', // Has to be here, only god knows why.
 			},
 		);
 	} else {
