@@ -1,7 +1,7 @@
 import type { Accountability, Collection, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
 import { CollectionsService } from '../../services/collections.js';
-import { collection } from './collections.js';
+import { collections } from './collections.js';
 
 vi.mock('../../services/collections.js');
 
@@ -49,7 +49,7 @@ describe('collections tool', () => {
 				mockCollectionsService.createMany.mockResolvedValue(['test_collection']);
 				mockCollectionsService.readMany.mockResolvedValue([collectionData]);
 
-				const result = await collection.handler({
+				const result = await collections.handler({
 					args: {
 						action: 'create',
 						data: collectionData,
@@ -82,7 +82,7 @@ describe('collections tool', () => {
 				mockCollectionsService.createMany.mockResolvedValue(['collection1', 'collection2']);
 				mockCollectionsService.readMany.mockResolvedValue(collectionsData);
 
-				const result = await collection.handler({
+				const result = await collections.handler({
 					args: {
 						action: 'create',
 						data: collectionsData,
@@ -108,7 +108,7 @@ describe('collections tool', () => {
 
 				mockCollectionsService.readMany.mockResolvedValue(expectedData);
 
-				const result = await collection.handler({
+				const result = await collections.handler({
 					args: {
 						action: 'read',
 						keys,
@@ -126,7 +126,7 @@ describe('collections tool', () => {
 				const expectedData = [{ collection: 'test_collection' }];
 				mockCollectionsService.readByQuery.mockResolvedValue(expectedData);
 
-				const result = await collection.handler({
+				const result = await collections.handler({
 					args: {
 						action: 'read',
 					},
@@ -149,7 +149,7 @@ describe('collections tool', () => {
 				mockCollectionsService.updateBatch.mockResolvedValue(keys);
 				mockCollectionsService.readMany.mockResolvedValue(expectedResult);
 
-				const result = await collection.handler({
+				const result = await collections.handler({
 					args: {
 						action: 'update',
 						data: updateData,
@@ -170,7 +170,7 @@ describe('collections tool', () => {
 
 				mockCollectionsService.deleteMany.mockResolvedValue(keys);
 
-				const result = await collection.handler({
+				const result = await collections.handler({
 					args: {
 						action: 'delete',
 						keys,
@@ -193,7 +193,7 @@ describe('collections tool', () => {
 	describe('error handling', () => {
 		test('should throw error for invalid action', async () => {
 			await expect(
-				collection.handler({
+				collections.handler({
 					args: {
 						action: 'invalid' as any,
 					},
@@ -207,16 +207,16 @@ describe('collections tool', () => {
 
 	describe('tool configuration', () => {
 		test('should have correct tool name', () => {
-			expect(collection.name).toBe('collections');
+			expect(collections.name).toBe('collections');
 		});
 
 		test('should have description', () => {
-			expect(collection.description).toBeDefined();
+			expect(collections.description).toBeDefined();
 		});
 
 		test('should have input and validation schemas', () => {
-			expect(collection.inputSchema).toBeDefined();
-			expect(collection.validateSchema).toBeDefined();
+			expect(collections.inputSchema).toBeDefined();
+			expect(collections.validateSchema).toBeDefined();
 		});
 	});
 });

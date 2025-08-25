@@ -35,7 +35,7 @@ export const CollectionsInputSchema = z.object({
 	data: z.union([z.array(CollectionItemInputSchema), CollectionItemInputSchema]).optional(),
 });
 
-export const collection = defineTool<z.infer<typeof CollectionsValidateSchema>>({
+export const collections = defineTool<z.infer<typeof CollectionsValidateSchema>>({
 	name: 'collections',
 	admin: true,
 	description: prompts.collections,
