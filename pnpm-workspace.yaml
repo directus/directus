@@ -290,7 +290,7 @@ catalog:
   undici: 7.13.0
   update-check: 1.5.4
   uuid: 11.1.0
-  vite: 5.4.19
+  vite: 7.1.3
   vite-plugin-dts: 4.5.4
   vite-plugin-vue-devtools: 7.7.2
   vitest: 3.2.4
