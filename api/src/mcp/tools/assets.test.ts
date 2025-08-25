@@ -1,6 +1,6 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { Readable } from 'stream';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
 import { AssetsService } from '../../services/assets.js';
 import { assets } from './assets.js';
 
@@ -20,14 +20,16 @@ describe('assets tool', () => {
 	});
 
 	describe('asset operations', () => {
-		let mockAssetsService: any;
+		let mockAssetsService: {
+			getAsset: MockedFunction<any>;
+		};
 
 		beforeEach(() => {
 			mockAssetsService = {
 				getAsset: vi.fn(),
 			};
 
-			vi.mocked(AssetsService).mockImplementation(() => mockAssetsService);
+			vi.mocked(AssetsService).mockImplementation(() => mockAssetsService as unknown as AssetsService);
 		});
 
 		describe('READ asset', () => {

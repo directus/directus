@@ -1,5 +1,5 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
 import { FoldersService } from '../../services/folders.js';
 import { folders } from './folders.js';
 
@@ -19,7 +19,15 @@ describe('folders tool', () => {
 	});
 
 	describe('folder operations', () => {
-		let mockFoldersService: any;
+		let mockFoldersService: {
+			createMany: MockedFunction<any>;
+			readMany: MockedFunction<any>;
+			readByQuery: MockedFunction<any>;
+			updateBatch: MockedFunction<any>;
+			updateMany: MockedFunction<any>;
+			updateByQuery: MockedFunction<any>;
+			deleteMany: MockedFunction<any>;
+		};
 
 		beforeEach(() => {
 			mockFoldersService = {
@@ -32,7 +40,7 @@ describe('folders tool', () => {
 				deleteMany: vi.fn(),
 			};
 
-			vi.mocked(FoldersService).mockImplementation(() => mockFoldersService);
+			vi.mocked(FoldersService).mockImplementation(() => mockFoldersService as unknown as FoldersService);
 		});
 
 		describe('CREATE action', () => {
