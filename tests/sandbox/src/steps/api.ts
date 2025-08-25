@@ -127,6 +127,7 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 	});
 
 	logger.info(`Server started at http://${env.HOST}:${env.PORT}`);
+	logger.info(`User: ${env.ADMIN_EMAIL} Password: ${env.ADMIN_PASSWORD} Token: ${env.ADMIN_TOKEN}`);
 
 	return api;
 }
