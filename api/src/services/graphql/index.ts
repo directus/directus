@@ -7,6 +7,7 @@ import type {
 	Item,
 	Query,
 	SchemaOverview,
+	PrimaryKey,
 } from '@directus/types';
 import type { ExecutionResult, FormattedExecutionResult, GraphQLSchema } from 'graphql';
 import { NoSchemaIntrospectionCustomRule, execute, specifiedRules, validate } from 'graphql';
@@ -99,18 +100,19 @@ export class GraphQLService {
 	/**
 	 * Execute the read action on the correct service. Checks for singleton as well.
 	 */
-	async read(collection: string, query: Query): Promise<Partial<Item>> {
+	async read(collection: string, query: Query, id?: PrimaryKey): Promise<Partial<Item>> {
 		const service = getService(collection, {
 			knex: this.knex,
 			accountability: this.accountability,
 			schema: this.schema,
 		});
 
-		const result = this.schema.collections[collection]!.singleton
-			? await service.readSingleton(query, { stripNonRequested: false })
-			: await service.readByQuery(query, { stripNonRequested: false });
+		if (this.schema.collections[collection]!.singleton)
+			return await service.readSingleton(query, { stripNonRequested: false });
 
-		return result;
+		if (id) return await service.readOne(id, query, { stripNonRequested: false });
+
+		return await service.readByQuery(query, { stripNonRequested: false });
 	}
 
 	/**

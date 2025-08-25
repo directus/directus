@@ -32,6 +32,11 @@ export type QueryOptions = {
 
 export type MutationOptions = {
 	/**
+	 * Callback function that's fired whenever a item is made in the mutation
+	 */
+	onItemCreate?: ((collection: string, pk: PrimaryKey) => void) | undefined;
+
+	/**
 	 * Callback function that's fired whenever a revision is made in the mutation
 	 */
 	onRevisionCreate?: ((pk: PrimaryKey) => void) | undefined;
@@ -61,6 +66,11 @@ export type MutationOptions = {
 	 * To bypass limits so that functions would work as intended
 	 */
 	bypassLimits?: boolean | undefined;
+
+	/**
+	 * Skips the creation of accountability and revision entries
+	 */
+	skipTracking?: boolean | undefined;
 
 	/**
 	 * To keep track of mutation limits

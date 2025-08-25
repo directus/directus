@@ -11,9 +11,12 @@ import type { DatabaseClient } from '@directus/types';
  * Can be used to ensure the handler is run within a transaction,
  * while preventing nested transactions.
  */
-export const transaction = async <T = unknown>(knex: Knex, handler: (knex: Knex) => Promise<T>): Promise<T> => {
+export const transaction = async <T = unknown>(
+	knex: Knex,
+	handler: (knex: Knex.Transaction) => Promise<T>,
+): Promise<T> => {
 	if (knex.isTransaction) {
-		return handler(knex);
+		return handler(knex as Knex.Transaction);
 	} else {
 		try {
 			return await knex.transaction((trx) => handler(trx));
@@ -70,10 +73,27 @@ function shouldRetryTransaction(client: DatabaseClient, error: unknown): boolean
 	 * @link https://www.sqlite.org/rescode.html#busy
 	 */
 	const SQLITE_BUSY_ERROR_CODE = 'SQLITE_BUSY';
+	// Both mariadb and mysql
+	const MYSQL_DEADLOCK_CODE = 'ER_LOCK_DEADLOCK';
+	const POSTGRES_DEADLOCK_CODE = '40P01';
+	const ORACLE_DEADLOCK_CODE = 'ORA-00060';
+	const MSSQL_DEADLOCK_CODE = 'EREQUEST';
+	const MSSQL_DEADLOCK_NUMBER = '1205';
+
+	const codes: Record<DatabaseClient, Record<string, any>[]> = {
+		cockroachdb: [{ code: COCKROACH_RETRY_ERROR_CODE }],
+		sqlite: [{ code: SQLITE_BUSY_ERROR_CODE }],
+		mysql: [{ code: MYSQL_DEADLOCK_CODE }],
+		mssql: [{ code: MSSQL_DEADLOCK_CODE, number: MSSQL_DEADLOCK_NUMBER }],
+		oracle: [{ code: ORACLE_DEADLOCK_CODE }],
+		postgres: [{ code: POSTGRES_DEADLOCK_CODE }],
+		redshift: [],
+	};
 
 	return (
 		isObject(error) &&
-		((client === 'cockroachdb' && error['code'] === COCKROACH_RETRY_ERROR_CODE) ||
-			(client === 'sqlite' && error['code'] === SQLITE_BUSY_ERROR_CODE))
+		codes[client].some((code) => {
+			return Object.entries(code).every(([key, value]) => String(error[key]) === value);
+		})
 	);
 }
