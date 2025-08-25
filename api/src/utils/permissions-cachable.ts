@@ -40,6 +40,8 @@ export async function permissionsCachable(
 }
 
 export function filter_has_now(filter: Filter): boolean {
+	if (filter == null) return false;
+
 	return Object.entries(filter).some(([key, value]) => {
 		if (key === '_and' || key === '_or') {
 			return (value as Filter[]).some((sub_filter) => filter_has_now(sub_filter));

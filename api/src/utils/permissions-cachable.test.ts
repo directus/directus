@@ -156,3 +156,33 @@ test('permissions are cacheable on many policies without $NOW', async () => {
 
 	expect(result).toBe(true);
 });
+
+test('permissions are not cacheable when a filter is null', async () => {
+	vi.mocked(fetchPolicies).mockResolvedValue(['policy1', 'policy2', 'policy3']);
+
+	const permissions: Permission[] = [
+		{
+			action: 'read',
+			collection: 'items',
+			fields: ['*'],
+			permissions: {
+				_and: [
+					{
+						my_value: {
+							_eq: null,
+						},
+					},
+				],
+			},
+			policy: 'policy1',
+			presets: [],
+			validation: null,
+		},
+	];
+
+	vi.mocked(fetchPermissions).mockResolvedValue(permissions);
+
+	const result = await permissionsCachable('items', {} as any, {} as any);
+
+	expect(result).toBe(true);
+});
