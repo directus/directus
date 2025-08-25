@@ -1,0 +1,143 @@
+import type { PrimaryKey } from '@directus/types';
+import { isObject, toArray } from '@directus/utils';
+import { z } from 'zod';
+import { FilesService } from '../../services/files.js';
+import { defineTool } from '../define.js';
+import {
+	FileImportItemInputSchema,
+	FileImportItemValidateSchema,
+	FileItemInputSchema,
+	FileItemValidateSchema,
+	PrimaryKeyInputSchema,
+	PrimaryKeyValidateSchema,
+	QueryInputSchema,
+	QueryValidateSchema,
+} from '../schema.js';
+import prompts from './prompts/index.js';
+
+export const FilesValidateSchema = z.union([
+	z.strictObject({
+		action: z.literal('create'),
+		data: z.union([z.array(FileItemValidateSchema), FileItemValidateSchema]),
+		query: QueryValidateSchema.optional(),
+	}),
+	z.strictObject({
+		action: z.literal('read'),
+		keys: z.array(PrimaryKeyValidateSchema).optional(),
+		query: QueryValidateSchema.optional(),
+	}),
+	z.strictObject({
+		action: z.literal('update'),
+		data: FileItemValidateSchema,
+		keys: z.array(PrimaryKeyValidateSchema).optional(),
+		query: QueryValidateSchema.optional(),
+	}),
+	z.strictObject({
+		action: z.literal('delete'),
+		keys: z.array(PrimaryKeyValidateSchema),
+	}),
+	z.strictObject({
+		action: z.literal('import'),
+		data: z.array(FileImportItemValidateSchema),
+	}),
+]);
+
+const FilesInputSchema = z.object({
+	action: z.enum(['create', 'read', 'update', 'delete', 'import']).describe('The operation to perform'),
+	query: QueryInputSchema.optional(),
+	keys: z.array(PrimaryKeyInputSchema).optional(),
+	data: z.union([z.array(FileItemInputSchema), FileItemInputSchema, FileImportItemInputSchema]).optional(),
+});
+
+export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
+	name: 'files',
+	description: prompts.files,
+	inputSchema: FilesInputSchema,
+	validateSchema: FilesValidateSchema,
+	endpoint({ data }) {
+		if (!isObject(data) || !('id' in data)) {
+			return;
+		}
+
+		return ['files', data['id'] as string];
+	},
+	async handler({ args, schema, accountability, sanitizedQuery }) {
+		const service = new FilesService({
+			schema,
+			accountability,
+		});
+
+		if (args.action === 'create') {
+			const data = toArray(args.data);
+
+			const savedKeys = await service.createMany(data);
+
+			const result = await service.readMany(savedKeys, sanitizedQuery);
+
+			return {
+				type: 'text',
+				data: result || null,
+			};
+		}
+
+		if (args.action === 'read') {
+			let result = null;
+
+			if (args.keys) {
+				result = await service.readMany(args.keys, sanitizedQuery);
+			} else {
+				result = await service.readByQuery(sanitizedQuery);
+			}
+
+			return {
+				type: 'text',
+				data: result,
+			};
+		}
+
+		if (args.action === 'update') {
+			let updatedKeys: PrimaryKey[] = [];
+
+			if (Array.isArray(args.data)) {
+				updatedKeys = await service.updateBatch(args.data);
+			} else if (args.keys) {
+				updatedKeys = await service.updateMany(args.keys, args.data);
+			} else {
+				updatedKeys = await service.updateByQuery(sanitizedQuery, args.data);
+			}
+
+			const result = await service.readMany(updatedKeys, sanitizedQuery);
+
+			return {
+				type: 'text',
+				data: result,
+			};
+		}
+
+		if (args.action === 'delete') {
+			const deletedKeys = await service.deleteMany(args.keys);
+
+			return {
+				type: 'text',
+				data: deletedKeys,
+			};
+		}
+
+		if (args.action === 'import') {
+			const savedKeys = [];
+
+			for (const file of args.data) {
+				const savedKey = await service.importOne(file.url, file.file);
+
+				savedKeys.push(savedKey);
+			}
+
+			return {
+				type: 'text',
+				data: savedKeys,
+			};
+		}
+
+		throw new Error('Invalid action.');
+	},
+});
