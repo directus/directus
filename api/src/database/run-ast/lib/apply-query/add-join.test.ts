@@ -138,7 +138,7 @@ test('add join for a2o relation', async () => {
 	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(
-		`select * left join "images" as "alias" on "articles"."collection" = ? and "articles"."title_component" = CAST("alias"."id" AS CHAR(255))`,
+		`select * left join "images" as "alias" on "articles"."collection" = ? and CAST("articles"."title_component" AS CHAR(255)) = CAST("alias"."id" AS CHAR(255))`,
 	);
 
 	expect(rawQuery.bindings).toEqual(['images']);
