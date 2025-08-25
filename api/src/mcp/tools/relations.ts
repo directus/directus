@@ -37,7 +37,7 @@ const RelationsInputSchema = z.object({
 	data: z.union([z.array(RelationItemSchema), RelationItemSchema]).optional(),
 });
 
-export const relation = defineTool<z.infer<typeof RelationsValidateSchema>>({
+export const relations = defineTool<z.infer<typeof RelationsValidateSchema>>({
 	name: 'relations',
 	admin: true,
 	description: prompts.relations,
