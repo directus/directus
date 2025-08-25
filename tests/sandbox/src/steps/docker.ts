@@ -45,8 +45,10 @@ export async function dockerUp(database: Database, extras: Options['extras'], en
 
 	await new Promise((resolve) => docker!.on('close', resolve));
 
-	if ('DB_PORT' in env) logger.info(`Database started at ${env.DB_HOST}:${env.DB_PORT}`);
-	else if ('DB_FILENAME' in env) logger.info(`Database stored at ${env.DB_FILENAME}`);
+	if ('DB_PORT' in env) {
+		logger.info(`Database started at ${env.DB_HOST}:${env.DB_PORT}/${env.DB_DATABASE}`);
+		logger.info(`User: ${env.DB_USER} Password: ${env.DB_PASSWORD}`);
+	} else if ('DB_FILENAME' in env) logger.info(`Database stored at ${env.DB_FILENAME}`);
 
 	return project;
 }
