@@ -50,7 +50,7 @@ export const FieldsInputSchema = z.object({
 		.optional(),
 });
 
-export const field = defineTool<z.infer<typeof FieldsValidateSchema>>({
+export const fields = defineTool<z.infer<typeof FieldsValidateSchema>>({
 	name: 'fields',
 	admin: true,
 	description: prompts.fields,

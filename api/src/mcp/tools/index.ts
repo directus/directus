@@ -1,7 +1,7 @@
 import type { ToolConfig } from '../types.js';
 import { assets } from './assets.js';
-import { field } from './fields.js';
 import { collections } from './collections.js';
+import { fields } from './fields.js';
 import { files } from './files.js';
 import { flows } from './flows.js';
 import { folders } from './folders.js';
@@ -22,8 +22,8 @@ export const ALL_TOOLS: ToolConfig<any>[] = [
 	triggerFlow,
 	operations,
 	schema,
-	field,
 	collections,
+	fields,
 	relation,
 ];
 
@@ -31,4 +31,4 @@ export const getAllMcpTools = () => ALL_TOOLS;
 
 export const findMcpTool = (name: string) => ALL_TOOLS.find((tool) => tool.name === name);
 
-export { collections, field, files, flows, items, operations, relation, schema, system, triggerFlow };
+export { collections, fields, files, flows, items, operations, relation, schema, system, triggerFlow };
