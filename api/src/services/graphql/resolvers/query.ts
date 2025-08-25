@@ -36,7 +36,6 @@ export async function resolveQuery(gql: GraphQLService, info: GraphQLResolveInfo
 
 		if (collection.endsWith('_by_version') && collection in gql.schema.collections === false) {
 			collection = collection.slice(0, -11);
-			query.versionRaw = true;
 		}
 	}
 

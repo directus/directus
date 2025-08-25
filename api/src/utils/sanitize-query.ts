@@ -81,7 +81,8 @@ export async function sanitizeQuery(
 
 		// whether or not to merge the relational results
 		query.versionRaw = Boolean(
-			'versionRaw' in rawQuery && (rawQuery['versionRaw'] === '' || rawQuery['versionRaw'] === 'true'),
+			'versionRaw' in rawQuery &&
+				(rawQuery['versionRaw'] === '' || rawQuery['versionRaw'] === 'true' || rawQuery['versionRaw'] === true),
 		);
 	}
 
