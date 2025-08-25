@@ -43,7 +43,7 @@ test('filter has $NOW', () => {
 	expect(filterHasNow(filter)).toBe(true);
 });
 
-test('filter does not have $NOW', () => {
+test('filter does not have $NOW or is null', () => {
 	let filter: Filter = {
 		created_on: {
 			_gt: '2021-01-01',
@@ -74,6 +74,14 @@ test('filter does not have $NOW', () => {
 				},
 			},
 		],
+	};
+
+	expect(filterHasNow(filter)).toBe(false);
+
+	filter = {
+		created_on: {
+			_eq: null,
+		},
 	};
 
 	expect(filterHasNow(filter)).toBe(false);
@@ -143,36 +151,6 @@ test('permissions are cacheable on many policies without $NOW', async () => {
 				created_on: {
 					_gt: '2021-01-01',
 				},
-			},
-			policy: 'policy1',
-			presets: [],
-			validation: null,
-		},
-	];
-
-	vi.mocked(fetchPermissions).mockResolvedValue(permissions);
-
-	const result = await permissionsCachable('items', {} as any, {} as any);
-
-	expect(result).toBe(true);
-});
-
-test('permissions are not cacheable when a filter is null', async () => {
-	vi.mocked(fetchPolicies).mockResolvedValue(['policy1', 'policy2', 'policy3']);
-
-	const permissions: Permission[] = [
-		{
-			action: 'read',
-			collection: 'items',
-			fields: ['*'],
-			permissions: {
-				_and: [
-					{
-						my_value: {
-							_eq: null,
-						},
-					},
-				],
 			},
 			policy: 'policy1',
 			presets: [],
