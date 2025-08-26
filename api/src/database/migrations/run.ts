@@ -38,7 +38,34 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	const migrationKeys = new Set(migrations.map((m) => m.version));
 
 	if (migrations.length > migrationKeys.size) {
-		throw new Error('Migration keys collide! Please ensure that every migration uses a unique key.');
+		type Version = Exclude<typeof migrations[number]['version'], undefined>
+
+		const collisionsResults = migrations.reduce((acc, m) => {
+			if (m.version === undefined) {
+				throw new Error('Migration version is undefined');
+			}
+
+			if (acc.previous[m.version]) {
+				acc.collisions.push({
+					a: acc.previous[m.version]!,
+					b: m.file
+				})
+			}
+
+			acc.previous[m.version] = m.file
+			return acc
+		}, {
+			previous: {},
+			collisions: [],
+		} as {
+			previous: Record<Version, string>,
+			collisions: { a: string; b: string }[]
+		})
+
+		throw new Error(
+			'Migration keys collide! Please ensure that every migration uses a unique key.'
+			+ JSON.stringify(collisionsResults.collisions, null, 2)
+		);
 	}
 
 	function parseFilePath(filePath: string, custom = false) {
