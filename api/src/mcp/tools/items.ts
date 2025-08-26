@@ -20,7 +20,7 @@ const PartialItemInputSchema = z.strictObject({
 	collection: z.string(),
 });
 
-const ItemsValidateSchema = z.union([
+const ItemsValidateSchema = z.discriminatedUnion('action', [
 	PartialItemInputSchema.extend({
 		action: z.literal('create'),
 		data: z.union([z.array(ItemValidateSchema), ItemValidateSchema]),

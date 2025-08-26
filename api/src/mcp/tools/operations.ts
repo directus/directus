@@ -6,7 +6,7 @@ import { OperationItemValidateSchema, QueryInputSchema, QueryValidateSchema } fr
 import { FlowsInputSchema } from './flows.js';
 import prompts from './prompts/index.js';
 
-export const OperationsValidationSchema = z.union([
+export const OperationsValidationSchema = z.discriminatedUnion('action', [
 	z.strictObject({
 		action: z.literal('create'),
 		data: OperationItemValidateSchema,

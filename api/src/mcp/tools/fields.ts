@@ -16,7 +16,7 @@ export const FieldsBaseValidateSchema = z.strictObject({
 	collection: z.string(),
 });
 
-export const FieldsValidateSchema = z.union([
+export const FieldsValidateSchema = z.discriminatedUnion('action', [
 	FieldsBaseValidateSchema.extend({
 		action: z.literal('create'),
 		data: FieldItemValidateSchema,

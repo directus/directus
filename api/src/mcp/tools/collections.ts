@@ -10,7 +10,7 @@ import {
 } from '../schema.js';
 import prompts from './prompts/index.js';
 
-export const CollectionsValidateSchema = z.union([
+export const CollectionsValidateSchema = z.discriminatedUnion('action', [
 	z.strictObject({
 		action: z.literal('create'),
 		data: z.union([z.array(CollectionItemValidateCreateSchema), CollectionItemValidateCreateSchema]),

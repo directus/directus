@@ -5,7 +5,7 @@ import { defineTool } from '../define.js';
 import { FlowItemInputSchema, FlowItemValidateSchema, QueryInputSchema, QueryValidateSchema } from '../schema.js';
 import prompts from './prompts/index.js';
 
-export const FlowsValidateSchema = z.union([
+export const FlowsValidateSchema = z.discriminatedUnion('action', [
 	z.strictObject({
 		action: z.literal('create'),
 		data: FlowItemValidateSchema,

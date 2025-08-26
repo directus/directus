@@ -1,17 +1,20 @@
 import { InvalidPayloadError } from '@directus/errors';
+import type { Relation } from '@directus/types';
 import { z } from 'zod';
 import { RelationsService } from '../../services/relations.js';
 import { defineTool } from '../define.js';
-import { RelationItemSchema, RelationItemValidateCreateSchema, RelationItemValidateUpdateSchema } from '../schema.js';
+import {
+	RelationItemInputSchema,
+	RelationItemValidateCreateSchema,
+	RelationItemValidateUpdateSchema,
+} from '../schema.js';
 import prompts from './prompts/index.js';
 
-export const RelationBaseValidateSchema = z.strictObject({
-	collection: z.string(),
-});
-
-const RelationsValidateSchema = z.union([
-	RelationBaseValidateSchema.extend({
+const RelationsValidateSchema = z.discriminatedUnion('action', [
+	z.object({
 		action: z.literal('create'),
+		collection: z.string(),
+		field: z.string(),
 		data: RelationItemValidateCreateSchema,
 	}),
 	z.object({
@@ -19,22 +22,24 @@ const RelationsValidateSchema = z.union([
 		collection: z.string().optional(),
 		field: z.string().optional(),
 	}),
-	RelationBaseValidateSchema.extend({
+	z.object({
 		action: z.literal('update'),
+		collection: z.string(),
 		field: z.string(),
 		data: RelationItemValidateUpdateSchema,
 	}),
-	RelationBaseValidateSchema.extend({
+	z.object({
 		action: z.literal('delete'),
+		collection: z.string(),
 		field: z.string(),
 	}),
 ]);
 
 const RelationsInputSchema = z.object({
-	action: z.enum(['read', 'create', 'update', 'delete']).describe('The operation to perform'),
-	collection: z.string().describe('The name of the collection'),
-	field: z.string(),
-	data: z.union([z.array(RelationItemSchema), RelationItemSchema]).optional(),
+	action: z.enum(['create', 'read', 'update', 'delete']).describe('The operation to perform'),
+	collection: z.string().describe('The name of the collection (required for create, update, delete)').optional(),
+	field: z.string().describe('The name of the field (required for create, update, delete)').optional(),
+	data: RelationItemInputSchema.optional().describe('The relation data. (required for create, update)'),
 });
 
 export const relations = defineTool<z.infer<typeof RelationsValidateSchema>>({
@@ -50,7 +55,7 @@ export const relations = defineTool<z.infer<typeof RelationsValidateSchema>>({
 		});
 
 		if (args.action === 'create') {
-			await service.createOne(args.data);
+			await service.createOne(args.data as Partial<Relation>);
 
 			const result = await service.readOne(args.collection, args.data.field);
 
@@ -78,7 +83,7 @@ export const relations = defineTool<z.infer<typeof RelationsValidateSchema>>({
 		}
 
 		if (args.action === 'update') {
-			await service.updateOne(args.collection, args.field, args.data);
+			await service.updateOne(args.collection, args.field, args.data as Partial<Relation>);
 
 			const result = await service.readOne(args.collection, args.field);
 
