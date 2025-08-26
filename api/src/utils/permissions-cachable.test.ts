@@ -1,5 +1,5 @@
-import type { Filter, Permission } from '@directus/types';
-import { expect, test, vi } from 'vitest';
+import type { Permission } from '@directus/types';
+import { describe, expect, test, vi } from 'vitest';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { filterHasNow, permissionsCachable } from './permissions-cachable.js';
@@ -7,84 +7,129 @@ import { filterHasNow, permissionsCachable } from './permissions-cachable.js';
 vi.mock('../permissions/lib/fetch-permissions.js');
 vi.mock('../permissions/lib/fetch-policies.js');
 
-test('filter has $NOW', () => {
-	let filter: Filter = {
-		created_on: {
-			_gt: '$NOW',
-		},
-	};
-
-	expect(filterHasNow(filter)).toBe(true);
-
-	filter = {
-		_and: [
-			{
+describe('filterHasNow', () => {
+	describe('has $NOW', () => {
+		test('operator has $NOW', () => {
+			const filter = {
 				created_on: {
 					_gt: '$NOW',
 				},
-			},
-		],
-	};
+			};
 
-	expect(filterHasNow(filter)).toBe(true);
+			expect(filterHasNow(filter)).toBe(true);
+		});
 
-	filter = {
-		_or: [
-			{
+		test('operator has $NOW function', () => {
+			const filter = {
 				created_on: {
-					some: {
-						_gt: '$NOW(-1 year)',
+					_gt: '$NOW(-1 year)',
+				},
+			};
+
+			expect(filterHasNow(filter)).toBe(true);
+		});
+
+		test('_and has $NOW', () => {
+			const filter = {
+				_and: [
+					{
+						created_on: {
+							_gt: '$NOW',
+						},
 					},
-				},
-			},
-		],
-	};
+				],
+			};
 
-	expect(filterHasNow(filter)).toBe(true);
-});
+			expect(filterHasNow(filter)).toBe(true);
+		});
 
-test('filter does not have $NOW or is null', () => {
-	let filter: Filter = {
-		created_on: {
-			_gt: '2021-01-01',
-		},
-	};
-
-	expect(filterHasNow(filter)).toBe(false);
-
-	filter = {
-		_and: [
-			{
-				created_on: {
-					_gt: '2021-01-01',
-				},
-			},
-		],
-	};
-
-	expect(filterHasNow(filter)).toBe(false);
-
-	filter = {
-		_or: [
-			{
-				created_on: {
-					some: {
-						_gt: '2021-01-01',
+		test('_and has $NOW', () => {
+			const filter = {
+				_or: [
+					{
+						created_on: {
+							some: {
+								_gt: '$NOW',
+							},
+						},
 					},
+				],
+			};
+
+			expect(filterHasNow(filter)).toBe(true);
+		});
+
+		test('has nested $NOW', () => {
+			const filter = {
+				_or: [
+					{
+						_and: [
+							{ status: { _eq: 'archived' } },
+							{
+								metadata: {
+									updated_at: { _lt: '$NOW' },
+								},
+							},
+						],
+					},
+				],
+			};
+
+			expect(filterHasNow(filter)).toBe(true);
+		});
+	});
+
+	describe('does not have $NOW', () => {
+		test.each(['2021-01-01', null, false, true, '$CURRENT_USER'])('operator does not have $NOW', (value) => {
+			const filter = {
+				created_on: {
+					_eq: value,
 				},
-			},
-		],
-	};
+			};
 
-	expect(filterHasNow(filter)).toBe(false);
+			expect(filterHasNow(filter)).toBe(false);
+		});
 
-	filter = {
-		created_on: {
-			_eq: null,
-		},
-	};
+		test('_in operator does not have $NOW', () => {
+			const filter = {
+				created_on: {
+					_in: [1, 2],
+				},
+			};
 
-	expect(filterHasNow(filter)).toBe(false);
+			expect(filterHasNow(filter)).toBe(false);
+		});
+
+		test('_and does not have $NOW', () => {
+			const filter = {
+				_and: [
+					{
+						created_on: {
+							_gt: '2021-01-01',
+						},
+					},
+				],
+			};
+
+			expect(filterHasNow(filter)).toBe(false);
+		});
+
+		test('_or does not have $NOW', () => {
+			const filter = {
+				_or: [
+					{
+						created_on: {
+							some: {
+								_gt: '2021-01-01',
+							},
+						},
+					},
+				],
+			};
+
+			expect(filterHasNow(filter)).toBe(false);
+		});
+	});
 });
 
 test('permissions are not cacheable on many policies with $NOW', async () => {
