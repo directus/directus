@@ -13,7 +13,7 @@ import {
 } from '../schema.js';
 import prompts from './prompts/index.js';
 
-const FoldersValidateSchema = z.union([
+const FoldersValidateSchema = z.discriminatedUnion('action', [
 	z.strictObject({
 		action: z.literal('create'),
 		data: z.union([z.array(FolderItemValidateSchema), FolderItemValidateSchema]),
