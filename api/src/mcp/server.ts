@@ -191,7 +191,7 @@ export class DirectusMCP {
 				tools.push({
 					name: tool.name,
 					description: tool.description,
-					inputSchema: z.toJSONSchema(tool.inputSchema, { reused: 'ref' }),
+					inputSchema: z.toJSONSchema(tool.inputSchema),
 					annotations: tool.annotations,
 				});
 			}
