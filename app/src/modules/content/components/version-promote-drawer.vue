@@ -163,42 +163,39 @@ function usePromoteDialog() {
 		@update:model-value="$emit('cancel')"
 		@esc="$emit('cancel')"
 	>
-		<div class="modal-content">
-			<div class="modal-body">
-				<div class="version-modal-content">
-					<div class="content">
-						<div class="preview-comparison">
-							<div class="comparison-side main-side">
-								<div class="side-header">
-									<h3>{{ t('main_version') }}</h3>
-								</div>
-								<v-form
-									disabled
-									:collection="currentVersion.collection"
-									:primary-key="currentVersion.item"
-									:initial-values="comparedData?.main"
-								/>
-							</div>
-							<div class="comparison-divider"></div>
-							<div class="comparison-side version-side">
-								<div class="side-header">
-									<h3>{{ currentVersionDisplayName }}</h3>
-								</div>
-								<v-form
-									disabled
-									:collection="currentVersion.collection"
-									:primary-key="currentVersion.item"
-									:initial-values="previewData"
-								/>
-							</div>
-						</div>
+		<div class="comparison-modal">
+			<div class="preview-comparison">
+				<div class="comparison-side main-side">
+					<div class="side-header">
+						<h3>{{ t('main_version') }}</h3>
+					</div>
+					<div class="comparison-content">
+						<v-form
+							disabled
+							:collection="currentVersion.collection"
+							:primary-key="currentVersion.item"
+							:initial-values="comparedData?.main"
+						/>
+					</div>
+				</div>
+				<div class="comparison-divider"></div>
+				<div class="comparison-side version-side">
+					<div class="side-header">
+						<h3>{{ currentVersionDisplayName }}</h3>
+					</div>
+					<div class="comparison-content">
+						<v-form
+							disabled
+							:collection="currentVersion.collection"
+							:primary-key="currentVersion.item"
+							:initial-values="previewData"
+						/>
 					</div>
 				</div>
 			</div>
-
 			<div class="modal-actions">
-				<div class="spacer"></div>
 				<v-button secondary @click="$emit('cancel')">
+					<v-icon name="close" left />
 					{{ t('cancel') }}
 				</v-button>
 				<v-button
@@ -207,6 +204,7 @@ function usePromoteDialog() {
 					:loading="promoting"
 					@click="onPromoteClick"
 				>
+					<v-icon name="arrow_upload_progress" left />
 					{{ t('promote_version') }}
 				</v-button>
 			</div>
@@ -235,139 +233,115 @@ function usePromoteDialog() {
 <style lang="scss" scoped>
 @use '@/styles/mixins';
 
-.version-promote-modal {
-	:deep(.v-dialog) {
-		max-inline-size: 90vw;
-		max-block-size: 90vh;
-		inline-size: auto;
-		block-size: auto;
-	}
-}
-
-.modal-content {
+.comparison-modal {
+	--comparison-modal-padding-x: 28px;
+	--comparison-modal-padding-y: 20px;
+	--comparison-modal-height: 90vh;
+	--comparison-modal-width: 90vw;
 	background: var(--theme--background);
 	border-radius: var(--theme--border-radius);
 	box-shadow: var(--theme--shadow);
 	display: flex;
 	flex-direction: column;
-	max-block-size: 90vh;
-	min-inline-size: 800px;
-}
+	block-size: var(--comparison-modal-height);
+	inline-size: var(--comparison-modal-width);
 
-.modal-header {
-	padding: var(--content-padding);
-	border-block-end: 1px solid var(--theme--border-color);
-
-	h2 {
-		margin: 0;
-		font-size: 1.2em;
-		font-weight: 600;
-		color: var(--theme--foreground);
-	}
-}
-
-.modal-body {
-	padding: var(--content-padding);
-	flex: 1;
-	overflow: auto;
-}
-
-.version-modal-content {
-	.tabs-container {
-		margin-block-end: var(--content-padding);
-	}
-}
-
-.preview-comparison {
-	display: flex;
-	block-size: 100%;
-	min-block-size: 400px;
-}
-
-.comparison-side {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-}
-
-.side-header {
-	h3 {
-		margin: 0;
-		font-size: 1.1em;
-		font-weight: 600;
-		color: var(--theme--foreground);
-	}
-}
-
-.comparison-divider {
-	inline-size: 1px;
-	background: repeating-linear-gradient(
-		to bottom,
-		transparent,
-		transparent 4px,
-		var(--theme--border-color) 4px,
-		var(--theme--border-color) 8px
-	);
-	margin: 0 var(--content-padding);
-}
-
-.modal-actions {
-	justify-content: flex-end;
-
-	.spacer {
+	.preview-comparison {
+		display: flex;
+		overflow-y: auto;
 		flex: 1;
 	}
-}
 
-.content {
-	.grid {
-		@include mixins.form-grid;
-	}
-}
-
-.compare {
-	display: flex;
-	align-items: center;
-	inline-size: 100%;
-	padding: 8px;
-	gap: 8px;
-	color: var(--theme--foreground-subdued);
-	background-color: var(--theme--background-subdued);
-	cursor: pointer;
-
-	.field-content {
-		flex-grow: 1;
+	.comparison-side {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
 	}
 
-	.version {
-		text-transform: uppercase;
+	.comparison-content {
+		padding-inline: var(--comparison-modal-padding-x);
+		padding-block: var(--comparison-modal-padding-y);
 	}
 
-	&.main {
-		border-radius: var(--theme--border-radius) var(--theme--border-radius) 0 0;
-		&.active {
-			color: var(--theme--secondary);
-			background-color: var(--secondary-alt);
-
-			.version {
-				color: var(--theme--secondary);
-				border-color: var(--theme--secondary);
-				background-color: var(--secondary-25);
-			}
+	.side-header {
+		border-block-end: 2px solid var(--theme--border-color);
+		display: flex;
+		padding-block: var(--comparison-modal-padding-y);
+		padding-inline: var(--comparison-modal-padding-x);
+		justify-content: space-between;
+		align-items: center;
+		align-self: stretch;
+		h3 {
+			font-size: 20px;
+			font-weight: 600;
+			line-height: 32px;
+			color: var(--theme--foreground);
 		}
 	}
 
-	&.current {
-		border-radius: 0 0 var(--theme--border-radius) var(--theme--border-radius);
-		&.active {
-			color: var(--theme--primary);
-			background-color: var(--theme--primary-background);
+	.comparison-divider {
+		inline-size: 1px;
+		background: repeating-linear-gradient(
+			to bottom,
+			transparent,
+			transparent 4px,
+			var(--theme--border-color) 4px,
+			var(--theme--border-color) 8px
+		);
+		margin: 0 var(--content-padding);
+	}
 
-			.version {
+	.modal-actions {
+		display: flex;
+		justify-content: flex-end;
+		padding-inline: var(--comparison-modal-padding-x);
+		padding-block: var(--comparison-modal-padding-y);
+		gap: 24px;
+	}
+
+	.compare {
+		display: flex;
+		align-items: center;
+		inline-size: 100%;
+		padding: 8px;
+		gap: 8px;
+		color: var(--theme--foreground-subdued);
+		background-color: var(--theme--background-subdued);
+		cursor: pointer;
+
+		.field-content {
+			flex-grow: 1;
+		}
+
+		.version {
+			text-transform: uppercase;
+		}
+
+		&.main {
+			border-radius: var(--theme--border-radius) var(--theme--border-radius) 0 0;
+			&.active {
+				color: var(--theme--secondary);
+				background-color: var(--secondary-alt);
+
+				.version {
+					color: var(--theme--secondary);
+					border-color: var(--theme--secondary);
+					background-color: var(--secondary-25);
+				}
+			}
+		}
+
+		&.current {
+			border-radius: 0 0 var(--theme--border-radius) var(--theme--border-radius);
+			&.active {
 				color: var(--theme--primary);
-				border-color: var(--theme--primary);
-				background-color: var(--theme--primary-subdued);
+				background-color: var(--theme--primary-background);
+
+				.version {
+					color: var(--theme--primary);
+					border-color: var(--theme--primary);
+					background-color: var(--theme--primary-subdued);
+				}
 			}
 		}
 	}
