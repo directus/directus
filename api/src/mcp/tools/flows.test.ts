@@ -1,5 +1,5 @@
 import type { Accountability, FlowRaw, SchemaOverview } from '@directus/types';
-import { beforeEach, describe, expect, it, vi, type MockedFunction } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
 import { FlowsService } from '../../services/flows.js';
 import { flows } from './flows.js';
 
@@ -14,7 +14,7 @@ describe('flows tool', () => {
 	const mockAccountability = { user: 'test-user' } as Accountability;
 	const mockSanitizedQuery = { fields: ['*'] };
 
-	beforeEach(() => {
+	afterEach(() => {
 		vi.clearAllMocks();
 	});
 
@@ -40,7 +40,7 @@ describe('flows tool', () => {
 		});
 
 		describe('CREATE action', () => {
-			it('should create a flow and return the result', async () => {
+			test('should create a flow and return the result', async () => {
 				const mockFlowData = {
 					name: 'Test Flow',
 					trigger: 'manual',
@@ -69,7 +69,7 @@ describe('flows tool', () => {
 				});
 			});
 
-			it('should handle null result from readOne after create', async () => {
+			test('should handle null result from readOne after create', async () => {
 				const mockFlowData = { name: 'Test Flow', trigger: 'manual' } satisfies Partial<FlowRaw>;
 				const mockCreatedKey = 'flow-123';
 
@@ -91,7 +91,7 @@ describe('flows tool', () => {
 		});
 
 		describe('READ action', () => {
-			it('should read flows by query', async () => {
+			test('should read flows by query', async () => {
 				const mockFlows = [
 					{ id: 'flow-1', name: 'Flow 1', trigger: 'manual' },
 					{ id: 'flow-2', name: 'Flow 2', trigger: 'event' },
@@ -116,7 +116,7 @@ describe('flows tool', () => {
 		});
 
 		describe('UPDATE action', () => {
-			it('should update a flow and return the updated result', async () => {
+			test('should update a flow and return the updated result', async () => {
 				const mockKey = 'flow-123';
 				const mockUpdateData = { status: 'inactive', description: 'Updated description' } satisfies Partial<FlowRaw>;
 				const mockUpdatedFlow = { id: mockKey, name: 'Test Flow', ...mockUpdateData };
@@ -142,7 +142,7 @@ describe('flows tool', () => {
 		});
 
 		describe('DELETE action', () => {
-			it('should delete a flow and return the deleted key', async () => {
+			test('should delete a flow and return the deleted key', async () => {
 				const mockKey = 'flow-123';
 
 				mockFlowsService.deleteOne.mockResolvedValue(mockKey);
@@ -165,7 +165,7 @@ describe('flows tool', () => {
 	});
 
 	describe('error handling', () => {
-		it('should throw error for invalid action', async () => {
+		test('should throw error for invalid action', async () => {
 			await expect(
 				flows.handler({
 					args: {
@@ -180,15 +180,19 @@ describe('flows tool', () => {
 	});
 
 	describe('tool configuration', () => {
-		it('should have correct tool name', () => {
+		test('should have correct tool name', () => {
 			expect(flows.name).toBe('flows');
 		});
 
-		it('should have description', () => {
+		test('should be admin tool', () => {
+			expect(flows.admin).toBe(true);
+		});
+
+		test('should have description', () => {
 			expect(flows.description).toBeDefined();
 		});
 
-		it('should have input and validation schemas', () => {
+		test('should have input and validation schemas', () => {
 			expect(flows.inputSchema).toBeDefined();
 			expect(flows.validateSchema).toBeDefined();
 		});

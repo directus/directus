@@ -32,7 +32,7 @@ export const triggerFlow = defineTool<z.infer<typeof TriggerFlowValidateSchema>>
 
 		for (const fieldName of requiredFields) {
 			if (!args.data || !(fieldName in args.data)) {
-				throw new InvalidPayloadError({ reason: `Required field ${fieldName} is missing` });
+				throw new InvalidPayloadError({ reason: `Required field "${fieldName}" is missing` });
 			}
 		}
 

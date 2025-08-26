@@ -7,9 +7,11 @@ import {
 	CallToolRequestSchema,
 	GetPromptRequestSchema,
 	InitializedNotificationSchema,
+	ErrorCode as JSONRPCErrorCode,
 	JSONRPCMessageSchema,
 	ListPromptsRequestSchema,
 	ListToolsRequestSchema,
+	McpError,
 	type CallToolRequest,
 	type CallToolResult,
 	type GetPromptRequest,
@@ -19,6 +21,7 @@ import {
 import type { Request, Response } from 'express';
 import { render, tokenize } from 'micromustache';
 import { z } from 'zod';
+import { fromZodError } from 'zod-validation-error';
 import { ItemsService } from '../services/index.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 import { Url } from '../utils/url.js';
@@ -109,7 +112,7 @@ export class DirectusMCP {
 
 				return { prompts };
 			} catch (error) {
-				return this.toJSONRPCError(error);
+				return this.toExecutionError(error);
 			}
 		});
 
@@ -139,6 +142,7 @@ export class DirectusMCP {
 				const prompt = promptCommand[0];
 
 				if (!prompt) {
+					// -32602
 					throw new InvalidPayloadError({ reason: `Invalid prompt "${promptName}"` });
 				}
 
@@ -173,7 +177,7 @@ export class DirectusMCP {
 					description: prompt.description,
 				});
 			} catch (error) {
-				return this.toJSONRPCError(error);
+				return this.toExecutionError(error);
 			}
 		});
 
@@ -201,58 +205,70 @@ export class DirectusMCP {
 			const tool = findMcpTool(request.params.name);
 
 			let sanitizedQuery = {};
+			let args;
 
-			if (!tool || (tool.name === 'system-prompt' && this.systemPromptEnabled === false)) {
-				throw new InvalidPayloadError({ reason: `"${request.params.name}" doesn't exist in the toolset` });
-			}
+			try {
+				if (!tool || (tool.name === 'system-prompt' && this.systemPromptEnabled === false)) {
+					throw new InvalidPayloadError({ reason: `"${request.params.name}" doesn't exist in the toolset` });
+				}
 
-			if (req.accountability?.admin !== true && tool.admin === true) {
-				throw new ForbiddenError();
-			}
+				if (req.accountability?.admin !== true && tool.admin === true) {
+					throw new ForbiddenError({ reason: 'You must be an admin to access this tool' });
+				}
 
-			if (tool.name === 'system-prompt') {
-				request.params.arguments = { promptOverride: this.systemPrompt };
-			}
+				if (tool.name === 'system-prompt') {
+					request.params.arguments = { promptOverride: this.systemPrompt };
+				}
 
-			// ensure json expected fields are not stringified
-			if (request.params.arguments) {
-				for (const field of ['data', 'keys', 'query']) {
-					const arg = request.params.arguments[field];
+				// ensure json expected fields are not stringified
+				if (request.params.arguments) {
+					for (const field of ['data', 'keys', 'query']) {
+						const arg = request.params.arguments[field];
 
-					if (typeof arg === 'string') {
-						request.params.arguments[field] = parseJSON(arg);
+						if (typeof arg === 'string') {
+							request.params.arguments[field] = parseJSON(arg);
+						}
 					}
 				}
-			}
 
-			const { error, data } = tool.validateSchema?.safeParse(request.params.arguments) ?? {
-				data: request.params.arguments,
-			};
+				const { error, data } = tool.validateSchema?.safeParse(request.params.arguments) ?? {
+					data: request.params.arguments,
+				};
 
-			const args = data;
+				args = data;
 
-			if (error) {
-				const errorTree = z.treeifyError(error);
-				throw new InvalidPayloadError({ reason: JSON.stringify(errorTree, null, 2) });
-			}
+				if (error) {
+					throw new InvalidPayloadError({ reason: fromZodError(error).message });
+				}
 
-			if (!isObject(args)) {
-				throw new InvalidPayloadError({ reason: '"arguments" must be an object' });
-			}
+				if (!isObject(args)) {
+					throw new InvalidPayloadError({ reason: '"arguments" must be an object' });
+				}
 
-			if ('action' in args && args['action'] === 'delete' && !this.allowDeletes) {
-				throw new InvalidPayloadError({ reason: 'Delete actions are disabled' });
-			}
+				if ('action' in args && args['action'] === 'delete' && !this.allowDeletes) {
+					throw new InvalidPayloadError({ reason: 'Delete actions are disabled' });
+				}
 
-			if ('query' in args && args['query']) {
-				sanitizedQuery = await sanitizeQuery(
-					{
-						fields: (args['query'] as Query)['fields'] || '*',
-						...args['query'],
-					},
-					req.schema,
-					req.accountability || null,
-				);
+				if ('query' in args && args['query']) {
+					sanitizedQuery = await sanitizeQuery(
+						{
+							fields: (args['query'] as Query)['fields'] || '*',
+							...args['query'],
+						},
+						req.schema,
+						req.accountability || null,
+					);
+				}
+			} catch (error) {
+				const code = JSONRPCErrorCode.InvalidParams;
+				let message = 'Unknown Error';
+				const receivedError = Array.isArray(error) ? error[0] : error;
+
+				if (isDirectusError(receivedError)) {
+					message = receivedError.message;
+				}
+
+				throw new McpError(code, message);
 			}
 
 			try {
@@ -277,7 +293,7 @@ export class DirectusMCP {
 
 				return this.toToolResponse(result);
 			} catch (error) {
-				return this.toJSONRPCError(error, true);
+				return this.toExecutionError(error);
 			}
 		});
 
@@ -345,7 +361,7 @@ export class DirectusMCP {
 		return response;
 	}
 
-	toJSONRPCError(err: unknown, execution?: boolean) {
+	toExecutionError(err: unknown) {
 		const errors: { error: string; code?: string }[] = [];
 		const receivedErrors: unknown[] = Array.isArray(err) ? err : [err];
 
@@ -372,12 +388,6 @@ export class DirectusMCP {
 
 				errors.push({ error: message, ...(code && { code }) });
 			}
-		}
-
-		if (!execution) {
-			return {
-				error: errors[0],
-			};
 		}
 
 		return {

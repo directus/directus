@@ -1,5 +1,5 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { beforeEach, describe, expect, it, vi, type MockedFunction } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
 import { OperationsService } from '../../services/operations.js';
 import { operations } from './operations.js';
 
@@ -14,7 +14,7 @@ describe('operations tool', () => {
 	const mockAccountability = { user: 'test-user' } as Accountability;
 	const mockSanitizedQuery = { fields: ['*'] };
 
-	beforeEach(() => {
+	afterEach(() => {
 		vi.clearAllMocks();
 	});
 
@@ -40,7 +40,7 @@ describe('operations tool', () => {
 		});
 
 		describe('CREATE action', () => {
-			it('should create an operation and return the result', async () => {
+			test('should create an operation and return the result', async () => {
 				const mockOperationData = {
 					name: 'Test Operation',
 					type: 'log',
@@ -71,7 +71,7 @@ describe('operations tool', () => {
 		});
 
 		describe('READ action', () => {
-			it('should read operations by query', async () => {
+			test('should read operations by query', async () => {
 				const mockOperations = [
 					{ id: 'op-1', name: 'Operation 1', type: 'log' },
 					{ id: 'op-2', name: 'Operation 2', type: 'webhook' },
@@ -96,7 +96,7 @@ describe('operations tool', () => {
 		});
 
 		describe('UPDATE action', () => {
-			it('should update an operation and return the updated result', async () => {
+			test('should update an operation and return the updated result', async () => {
 				const mockKey = 'operation-123';
 				const mockUpdateData = { name: 'Updated Operation' };
 				const mockUpdatedOperation = { id: mockKey, ...mockUpdateData };
@@ -122,7 +122,7 @@ describe('operations tool', () => {
 		});
 
 		describe('DELETE action', () => {
-			it('should delete an operation and return the deleted key', async () => {
+			test('should delete an operation and return the deleted key', async () => {
 				const mockKey = 'operation-123';
 
 				mockOperationsService.deleteOne.mockResolvedValue(mockKey);
@@ -145,7 +145,7 @@ describe('operations tool', () => {
 	});
 
 	describe('error handling', () => {
-		it('should throw error for invalid action', async () => {
+		test('should throw error for invalid action', async () => {
 			await expect(
 				operations.handler({
 					args: {
@@ -160,15 +160,19 @@ describe('operations tool', () => {
 	});
 
 	describe('tool configuration', () => {
-		it('should have correct tool name', () => {
+		test('should have correct tool name', () => {
 			expect(operations.name).toBe('operations');
 		});
 
-		it('should have description', () => {
+		test('should be admin tool', () => {
+			expect(operations.admin).toBe(true);
+		});
+
+		test('should have description', () => {
 			expect(operations.description).toBeDefined();
 		});
 
-		it('should have input and validation schemas', () => {
+		test('should have input and validation schemas', () => {
 			expect(operations.inputSchema).toBeDefined();
 			expect(operations.validateSchema).toBeDefined();
 		});

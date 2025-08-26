@@ -1,6 +1,6 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { beforeEach, describe, expect, it, vi, type MockedFunction } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
 import { ItemsService } from '../../services/items.js';
 import { items } from './items.js';
 
@@ -19,7 +19,7 @@ describe('items tool', () => {
 	const mockAccountability = { user: 'test-user' } as Accountability;
 	const mockSanitizedQuery = { fields: ['*'] };
 
-	beforeEach(() => {
+	afterEach(() => {
 		vi.clearAllMocks();
 	});
 
@@ -53,7 +53,7 @@ describe('items tool', () => {
 		});
 
 		describe('CREATE action', () => {
-			it('should create single item in regular collection', async () => {
+			test('should create single item in regular collection', async () => {
 				const item = { title: 'Test Item', status: 'published' };
 				const savedKeys = [1];
 				const createdItem = { id: 1, title: 'Test Item', status: 'published' };
@@ -77,7 +77,7 @@ describe('items tool', () => {
 				});
 			});
 
-			it('should create multiple items in regular collection', async () => {
+			test('should create multiple items in regular collection', async () => {
 				const data = [
 					{ title: 'Item 1', status: 'published' },
 					{ title: 'Item 2', status: 'draft' },
@@ -108,7 +108,7 @@ describe('items tool', () => {
 				});
 			});
 
-			it('should handle singleton collection creation', async () => {
+			test('should handle singleton collection creation', async () => {
 				const item = { setting_name: 'site_title', value: 'My Site' };
 				const singletonItem = { id: 1, setting_name: 'site_title', value: 'My Site' };
 
@@ -130,7 +130,7 @@ describe('items tool', () => {
 				});
 			});
 
-			it('should return null when no item is created', async () => {
+			test('should return null when no item is created', async () => {
 				mockItemsService.createMany.mockResolvedValue([]);
 				mockItemsService.readMany.mockResolvedValue(null);
 
@@ -149,7 +149,7 @@ describe('items tool', () => {
 		});
 
 		describe('READ action', () => {
-			it('should read all items when no keys provided', async () => {
+			test('should read all items when no keys provided', async () => {
 				const data = [
 					{ id: 1, title: 'Item 1' },
 					{ id: 2, title: 'Item 2' },
@@ -172,7 +172,7 @@ describe('items tool', () => {
 				});
 			});
 
-			it('should read specific items by keys', async () => {
+			test('should read specific items by keys', async () => {
 				const keys = [1, 2];
 
 				const data = [
@@ -197,7 +197,7 @@ describe('items tool', () => {
 				});
 			});
 
-			it('should read singleton item', async () => {
+			test('should read singleton item', async () => {
 				const singletonItem = { id: 1, setting: 'value' };
 
 				mockItemsService.readSingleton.mockResolvedValue(singletonItem);
@@ -213,7 +213,7 @@ describe('items tool', () => {
 				expect(result).toEqual({ type: 'text', data: singletonItem });
 			});
 
-			it('should return null when no items found', async () => {
+			test('should return null when no items found', async () => {
 				mockItemsService.readByQuery.mockResolvedValue(null);
 
 				const result = await items.handler({
@@ -231,7 +231,7 @@ describe('items tool', () => {
 		});
 
 		describe('UPDATE action', () => {
-			it('should update items by keys', async () => {
+			test('should update items by keys', async () => {
 				const keys = [1, 2];
 				const updateData = { status: 'published' };
 
@@ -259,7 +259,7 @@ describe('items tool', () => {
 				});
 			});
 
-			it('should handle batch update with array data', async () => {
+			test('should handle batch update with array data', async () => {
 				const updateData = [
 					{ id: 1, title: 'Updated Item 1' },
 					{ id: 2, title: 'Updated Item 2' },
@@ -285,7 +285,7 @@ describe('items tool', () => {
 				});
 			});
 
-			it('should update by query when no keys provided', async () => {
+			test('should update by query when no keys provided', async () => {
 				const updateData = { status: 'archived' };
 				const updatedKeys = [1, 2, 3];
 
@@ -313,7 +313,7 @@ describe('items tool', () => {
 				});
 			});
 
-			it('should update singleton item', async () => {
+			test('should update singleton item', async () => {
 				const updateData = { value: 'Updated Value' };
 				const updatedSingleton = { id: 1, setting: 'test', value: 'Updated Value' };
 
@@ -337,7 +337,7 @@ describe('items tool', () => {
 		});
 
 		describe('DELETE action', () => {
-			it('should delete items by keys', async () => {
+			test('should delete items by keys', async () => {
 				const keys = [1, 2, 3];
 
 				mockItemsService.deleteMany.mockResolvedValue(keys);
@@ -357,7 +357,7 @@ describe('items tool', () => {
 				});
 			});
 
-			it('should handle empty keys array', async () => {
+			test('should handle empty keys array', async () => {
 				const keys: number[] = [];
 
 				mockItemsService.deleteMany.mockResolvedValue(keys);
@@ -408,7 +408,7 @@ describe('items tool', () => {
 			vi.mocked(ItemsService).mockImplementation(() => mockItemsService as unknown as ItemsService);
 		});
 
-		it('should throw InvalidPayloadError for system collections', async () => {
+		test('should throw InvalidPayloadError for system collections', async () => {
 			await expect(
 				items.handler({
 					args: { action: 'read', collection: 'directus_users' },
@@ -419,7 +419,7 @@ describe('items tool', () => {
 			).rejects.toThrow(InvalidPayloadError);
 		});
 
-		it('should throw ForbiddenError for for non-existent collections', async () => {
+		test('should throw ForbiddenError for for non-existent collections', async () => {
 			await expect(
 				items.handler({
 					args: { action: 'read', collection: 'nonexistent' },
@@ -430,7 +430,7 @@ describe('items tool', () => {
 			).rejects.toThrow(ForbiddenError);
 		});
 
-		it('should throw error for invalid action', async () => {
+		test('should throw error for invalid action', async () => {
 			await expect(
 				items.handler({
 					args: { action: 'invalid' as any, collection: 'test_collection' },
@@ -441,7 +441,7 @@ describe('items tool', () => {
 			).rejects.toThrow('Invalid action.');
 		});
 
-		it('should propagate ItemsService errors', async () => {
+		test('should propagate ItemsService errors', async () => {
 			const serviceError = new Error('Database connection failed');
 			mockItemsService.readByQuery.mockRejectedValue(serviceError);
 
@@ -486,7 +486,7 @@ describe('items tool', () => {
 		});
 
 		describe('construction', () => {
-			it('should create ItemsService with correct parameters', async () => {
+			test('should create ItemsService with correct parameters', async () => {
 				await items.handler({
 					args: { action: 'read', collection: 'test_collection' },
 					schema: mockSchema,
@@ -502,7 +502,7 @@ describe('items tool', () => {
 		});
 
 		describe('schema validation', () => {
-			it('should validate create action with required data', () => {
+			test('should validate create action with required data', () => {
 				const validInput = {
 					action: 'create',
 					collection: 'test_collection',
@@ -512,7 +512,7 @@ describe('items tool', () => {
 				expect(() => items.validateSchema?.parse(validInput)).not.toThrow();
 			});
 
-			it('should validate read action with optional keys', () => {
+			test('should validate read action with optional keys', () => {
 				const validInput = {
 					action: 'read',
 					collection: 'test_collection',
@@ -522,7 +522,7 @@ describe('items tool', () => {
 				expect(() => items.validateSchema?.parse(validInput)).not.toThrow();
 			});
 
-			it('should validate update action with data and keys', () => {
+			test('should validate update action with data and keys', () => {
 				const validInput = {
 					action: 'update',
 					collection: 'test_collection',
@@ -533,7 +533,7 @@ describe('items tool', () => {
 				expect(() => items.validateSchema?.parse(validInput)).not.toThrow();
 			});
 
-			it('should validate delete action with required keys', () => {
+			test('should validate delete action with required keys', () => {
 				const validInput = {
 					action: 'delete',
 					collection: 'test_collection',
@@ -543,7 +543,7 @@ describe('items tool', () => {
 				expect(() => items.validateSchema?.parse(validInput)).not.toThrow();
 			});
 
-			it('should reject invalid action types', () => {
+			test('should reject invalid action types', () => {
 				const invalidInput = {
 					action: 'invalid',
 					collection: 'test_collection',
@@ -554,7 +554,7 @@ describe('items tool', () => {
 		});
 
 		describe('singleton handling', () => {
-			it('should correctly identify singleton collections', async () => {
+			test('should correctly identify singleton collections', async () => {
 				mockItemsService.readSingleton.mockResolvedValue({ id: 1, value: 'test' });
 
 				await items.handler({
@@ -568,7 +568,7 @@ describe('items tool', () => {
 				expect(mockItemsService.readByQuery).not.toHaveBeenCalled();
 			});
 
-			it('should handle missing singleton flag as false', async () => {
+			test('should handle missing singleton flag as false', async () => {
 				mockItemsService.readByQuery.mockResolvedValue([]);
 
 				await items.handler({
@@ -585,15 +585,15 @@ describe('items tool', () => {
 	});
 
 	describe('tool configuration', () => {
-		it('should have correct tool name', () => {
+		test('should have correct tool name', () => {
 			expect(items.name).toBe('items');
 		});
 
-		it('should have description', () => {
+		test('should have description', () => {
 			expect(items.description).toBeDefined();
 		});
 
-		it('should have input and validation schemas', () => {
+		test('should have input and validation schemas', () => {
 			expect(items.inputSchema).toBeDefined();
 			expect(items.validateSchema).toBeDefined();
 		});

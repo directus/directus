@@ -1,5 +1,5 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { beforeEach, describe, expect, it, vi, type MockedFunction } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
 import { FilesService } from '../../services/files.js';
 import { files } from './files.js';
 
@@ -14,7 +14,7 @@ describe('files tool', () => {
 	const mockAccountability = { user: 'test-user' } as Accountability;
 	const mockSanitizedQuery = { fields: ['*'] };
 
-	beforeEach(() => {
+	afterEach(() => {
 		vi.clearAllMocks();
 	});
 
@@ -44,7 +44,7 @@ describe('files tool', () => {
 		});
 
 		describe('READ action', () => {
-			it('should read files by keys', async () => {
+			test('should read files by keys', async () => {
 				const keys = ['file-1', 'file-2'];
 				const expectedResult = [{ id: 'file-1' }, { id: 'file-2' }];
 
@@ -70,7 +70,7 @@ describe('files tool', () => {
 		});
 
 		describe('UPDATE action', () => {
-			it('should update files using keys', async () => {
+			test('should update files using keys', async () => {
 				const keys = ['file-1'];
 				const updateData = { filename_download: 'updated.jpg' };
 				const expectedResult = [{ id: 'file-1', filename_download: 'updated.jpg' }];
@@ -99,7 +99,7 @@ describe('files tool', () => {
 		});
 
 		describe('DELETE action', () => {
-			it('should delete files by keys', async () => {
+			test('should delete files by keys', async () => {
 				const keys = ['file-1', 'file-2'];
 
 				mockFilesService.deleteMany.mockResolvedValue(keys);
@@ -125,7 +125,7 @@ describe('files tool', () => {
 	});
 
 	describe('error handling', () => {
-		it('should throw error for invalid action', async () => {
+		test('should throw error for invalid action', async () => {
 			await expect(
 				files.handler({
 					args: {
@@ -140,15 +140,15 @@ describe('files tool', () => {
 	});
 
 	describe('tool configuration', () => {
-		it('should have correct tool name', () => {
+		test('should have correct tool name', () => {
 			expect(files.name).toBe('files');
 		});
 
-		it('should have description', () => {
+		test('should have description', () => {
 			expect(files.description).toBeDefined();
 		});
 
-		it('should have input and validation schemas', () => {
+		test('should have input and validation schemas', () => {
 			expect(files.inputSchema).toBeDefined();
 			expect(files.validateSchema).toBeDefined();
 		});

@@ -1,5 +1,5 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { Readable } from 'stream';
+import { Readable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
 import { AssetsService } from '../../services/assets.js';
 import { assets } from './assets.js';
@@ -33,33 +33,6 @@ describe('assets tool', () => {
 		});
 
 		describe('READ asset', () => {
-			test.each([null, 'application/pdf', 'text/plain'])(
-				'should throw UnsupportedMediaType error for invalid file type',
-				async (fileType) => {
-					const assetId = 'asset-123';
-
-					const mockAsset = {
-						file: {
-							type: fileType,
-						},
-						stream: new Readable(),
-					};
-
-					mockAssetsService.getAsset.mockResolvedValue(mockAsset);
-
-					await expect(
-						assets.handler({
-							args: {
-								id: assetId,
-							},
-							schema: mockSchema,
-							accountability: mockAccountability,
-							sanitizedQuery: mockSanitizedQuery,
-						}),
-					).rejects.toThrow(`Unsupported media type "${fileType}" in asset tool.`);
-				},
-			);
-
 			test.each(['audio/wav', 'image/png'])(
 				'should read asset and return base64 encoded data for valid file types',
 				async (fileType) => {
@@ -139,6 +112,47 @@ describe('assets tool', () => {
 				});
 			});
 		});
+	});
+
+	describe('error handling', () => {
+		let mockAssetsService: {
+			getAsset: MockedFunction<any>;
+		};
+
+		beforeEach(() => {
+			mockAssetsService = {
+				getAsset: vi.fn(),
+			};
+
+			vi.mocked(AssetsService).mockImplementation(() => mockAssetsService as unknown as AssetsService);
+		});
+
+		test.each([null, 'application/pdf', 'text/plain'])(
+			'should throw UnsupportedMediaType error for invalid file type',
+			async (fileType) => {
+				const assetId = 'asset-123';
+
+				const mockAsset = {
+					file: {
+						type: fileType,
+					},
+					stream: new Readable(),
+				};
+
+				mockAssetsService.getAsset.mockResolvedValue(mockAsset);
+
+				await expect(
+					assets.handler({
+						args: {
+							id: assetId,
+						},
+						schema: mockSchema,
+						accountability: mockAccountability,
+						sanitizedQuery: mockSanitizedQuery,
+					}),
+				).rejects.toThrow(`Unsupported media type "${fileType}" in asset tool.`);
+			},
+		);
 	});
 
 	describe('tool configuration', () => {
