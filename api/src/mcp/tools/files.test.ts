@@ -1,5 +1,5 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
 import { FilesService } from '../../services/files.js';
 import { files } from './files.js';
 
@@ -14,7 +14,7 @@ describe('files tool', () => {
 	const mockAccountability = { user: 'test-user' } as Accountability;
 	const mockSanitizedQuery = { fields: ['*'] };
 
-	beforeEach(() => {
+	afterEach(() => {
 		vi.clearAllMocks();
 	});
 

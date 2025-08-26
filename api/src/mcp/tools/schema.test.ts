@@ -1,5 +1,5 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
 import { getSnapshot } from '../../utils/get-snapshot.js';
 import { schema } from './schema.js';
 
@@ -9,6 +9,10 @@ describe('schema tool', () => {
 	const mockSchema = { collections: {}, fields: {}, relations: {} } as unknown as SchemaOverview;
 	const mockAccountability = { user: 'test-user', admin: true } as Accountability;
 	const mockSanitizedQuery = { fields: ['*'] };
+
+	afterEach(() => {
+		vi.clearAllMocks();
+	});
 
 	describe('overview', () => {
 		let mockGetSnapshot: MockedFunction<any>;

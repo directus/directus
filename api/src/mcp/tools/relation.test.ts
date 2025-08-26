@@ -1,5 +1,5 @@
 import type { Accountability, Relation, SchemaOverview } from '@directus/types';
-import { beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
 import { RelationsService } from '../../services/relations.js';
 import { relations } from './relations.js';
 
@@ -14,7 +14,7 @@ describe('relations tool ', () => {
 	const mockAccountability = { user: 'test-user', admin: true } as Accountability;
 	const mockSanitizedQuery = { fields: ['*'] };
 
-	beforeEach(() => {
+	afterEach(() => {
 		vi.clearAllMocks();
 	});
 
