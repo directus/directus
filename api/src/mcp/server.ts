@@ -38,7 +38,7 @@ export class DirectusMCP {
 
 	constructor(options: MCPOptions = {}) {
 		this.promptsCollection = options.promptsCollection ?? null;
-		this.systemPromptEnabled = options.systemPromptEnabled ?? false;
+		this.systemPromptEnabled = options.systemPromptEnabled ?? true;
 		this.systemPrompt = options.systemPrompt ?? null;
 		this.allowDeletes = options.allowDeletes ?? false;
 
@@ -76,7 +76,7 @@ export class DirectusMCP {
 			const prompts = [];
 
 			if (!this.promptsCollection) {
-				throw new ForbiddenError({ reason: 'A prompts collection must be set in settings' });
+				throw new McpError(1001, `A prompts collection must be set in settings`);
 			}
 
 			const service = new ItemsService<Prompt>(this.promptsCollection, {
@@ -92,6 +92,17 @@ export class DirectusMCP {
 				for (const prompt of promptList) {
 					// builds args
 					const args: PromptArgument[] = [];
+
+					// Add system prompt as the first assistant message if it exists
+					if (prompt.system_prompt) {
+						for (const varName of tokenize(prompt.system_prompt).varNames) {
+							args.push({
+								name: varName,
+								description: `Value for ${varName}`,
+								required: false,
+							});
+						}
+					}
 
 					for (const message of prompt.messages || []) {
 						for (const varName of tokenize(message.text).varNames) {
@@ -130,7 +141,7 @@ export class DirectusMCP {
 			const { name: promptName, arguments: args } = request.params;
 
 			const promptCommand = await service.readByQuery({
-				fields: ['name', 'description', 'system_prompt', 'messages'],
+				fields: ['description', 'system_prompt', 'messages'],
 				filter: {
 					name: {
 						_eq: promptName,
