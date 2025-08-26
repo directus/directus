@@ -20,7 +20,7 @@ export async function setup(project: TestProject) {
 		watch: true,
 		prefix: database,
 		docker: {
-			basePort: String(Number(project.config.env['PORT']) + 1),
+			basePort: String(Number(project.config.env['PORT']) + 10),
 			keep: true,
 		},
 		extras: {
