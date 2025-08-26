@@ -45,8 +45,8 @@ export const QueryInputSchema = z.object({
 	backlink: z.boolean().optional(),
 	version: z.string().optional(),
 	versionRaw: z.boolean().optional(),
-	export: z.string(),
-	group: z.array(z.string()),
+	export: z.string().optional(),
+	groupBy: z.array(z.string()).optional(),
 });
 
 export const QueryValidateSchema = z.custom<Query>();
