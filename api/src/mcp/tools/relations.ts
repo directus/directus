@@ -1,4 +1,5 @@
 import { InvalidPayloadError } from '@directus/errors';
+import type { Relation } from '@directus/types';
 import { z } from 'zod';
 import { RelationsService } from '../../services/relations.js';
 import { defineTool } from '../define.js';
@@ -54,7 +55,7 @@ export const relations = defineTool<z.infer<typeof RelationsValidateSchema>>({
 		});
 
 		if (args.action === 'create') {
-			await service.createOne(args.data);
+			await service.createOne(args.data as Partial<Relation>);
 
 			const result = await service.readOne(args.collection, args.data.field);
 
@@ -82,7 +83,7 @@ export const relations = defineTool<z.infer<typeof RelationsValidateSchema>>({
 		}
 
 		if (args.action === 'update') {
-			await service.updateOne(args.collection, args.field, args.data);
+			await service.updateOne(args.collection, args.field, args.data as Partial<Relation>);
 
 			const result = await service.readOne(args.collection, args.field);
 

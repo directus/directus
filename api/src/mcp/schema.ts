@@ -3,13 +3,10 @@ import type {
 	Field,
 	File,
 	FlowRaw,
-	Item,
 	OperationRaw,
-	PrimaryKey,
 	Query,
 	RawCollection,
 	RawField,
-	Relation,
 	Type,
 } from '@directus/types';
 import { z } from 'zod';
@@ -246,11 +243,12 @@ export const RelationItemValidateCreateSchema = z.object({
 	meta: RelationMetaSchema.partial().nullable(),
 });
 
-
-export const RelationItemValidateUpdateSchema = z.object({
-	collection: z.string(),
-	field: z.string(),
-	related_collection: z.string().nullable().optional(),
-	schema: ForeignKeySchema.partial().nullable().optional(),
-	meta: RelationMetaSchema.partial().nullable().optional(),
-}).optional();
+export const RelationItemValidateUpdateSchema = z
+	.object({
+		collection: z.string(),
+		field: z.string(),
+		related_collection: z.string().nullable().optional(),
+		schema: ForeignKeySchema.partial().nullable().optional(),
+		meta: RelationMetaSchema.partial().nullable().optional(),
+	})
+	.optional();
