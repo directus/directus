@@ -30,14 +30,14 @@ import { DirectusTransport } from './transport.js';
 import type { MCPOptions, Prompt, ToolConfig, ToolResult } from './types.js';
 
 export class DirectusMCP {
-	promptsCollection?: string;
+	promptsCollection?: string | null;
 	systemPrompt?: string | null;
 	systemPromptEnabled?: boolean;
 	server: Server;
 	allowDeletes?: boolean;
 
-	constructor(options: MCPOptions) {
-		this.promptsCollection = options.promptsCollection;
+	constructor(options: MCPOptions = {}) {
+		this.promptsCollection = options.promptsCollection ?? null;
 		this.systemPromptEnabled = options.systemPromptEnabled ?? false;
 		this.systemPrompt = options.systemPrompt ?? null;
 		this.allowDeletes = options.allowDeletes ?? false;
