@@ -310,7 +310,7 @@ test(`filtering a2o relation`, async () => {
 	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(
-		`select * left join "image" as "alias123" on "article"."collection" = ? and "article"."header" = CAST("alias123"."id" AS CHAR(255)) left join "video" as "alias456" on "article"."collection" = ? and "article"."header" = CAST("alias456"."id" AS CHAR(255)) where "alias123"."id" = ? and "alias456"."id" = ?`,
+		`select * left join "image" as "alias123" on "article"."collection" = ? and CAST("article"."header" AS CHAR(255)) = CAST("alias123"."id" AS CHAR(255)) left join "video" as "alias456" on "article"."collection" = ? and CAST("article"."header" AS CHAR(255)) = CAST("alias456"."id" AS CHAR(255)) where "alias123"."id" = ? and "alias456"."id" = ?`,
 	);
 
 	expect(rawQuery.bindings).toEqual(['image', 'video', 1, 2]);
