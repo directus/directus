@@ -4,12 +4,15 @@ import { type Env } from '../config.js';
 import { type Logger } from '../logger.js';
 import { apiFolder, type Options } from '../sandbox.js';
 import chalk from 'chalk';
+import { portToPid } from 'pid-port';
+import { createInterface } from 'readline/promises';
 
 export async function buildDirectus(opts: Options, logger: Logger, onRebuild: () => void) {
 	logger.info('Rebuilding Directus');
 
-	const watch = opts.watch ? ['--watch'] : [];
-	const inspect = opts.inspect ? ['--inspect', '--sourceMap'] : [];
+	let timeout: NodeJS.Timeout;
+	const watch = opts.watch ? ['--watch', '--preserveWatchOutput'] : [];
+	const inspect = opts.inspect ? ['--sourceMap'] : [];
 
 	const build = spawn('pnpm', ['tsc', ...watch, ...inspect, '--project tsconfig.prod.json'], {
 		cwd: apiFolder,
@@ -17,8 +20,16 @@ export async function buildDirectus(opts: Options, logger: Logger, onRebuild: ()
 	});
 
 	build.on('error', (err) => {
+		logger.error(err.toString());
+	});
+
+	build.on('close', (code) => {
+		if (code === 0) return;
 		build.kill();
-		throw err;
+		const error = new Error(`Building api stopped with error code ${code}`);
+		clearTimeout(timeout);
+		logger.error(error.toString());
+		throw error;
 	});
 
 	logger.pipe(build.stderr, 'error');
@@ -35,7 +46,7 @@ export async function buildDirectus(opts: Options, logger: Logger, onRebuild: ()
 			});
 
 			// In case the api takes too long to start
-			setTimeout(() => reject(new Error('timeout building directus')), 60_000);
+			timeout = setTimeout(() => reject(new Error('timeout building directus')), 60_000);
 		});
 
 		return build;
@@ -69,10 +80,41 @@ export async function bootstrap(env: Env, logger: Logger) {
 export async function startDirectus(opts: Options, env: Env, logger: Logger) {
 	const apiCount = Math.max(1, Number(opts.instances));
 
+	const apiPorts = [...Array(apiCount).keys()].flatMap((i) => Number(env.PORT) + i * 2);
+	const allPorts = apiPorts.flatMap((port) => [port, port + 1]);
+
+	const occupiedPorts = (await Promise.allSettled(allPorts.map((port) => portToPid(port))))
+		.map((result, i) => (result.status === 'fulfilled' ? [result.value, allPorts[i]] : undefined))
+		.filter((val) => val) as [number, number][];
+
+	let killPorts;
+
+	for (const [pid, port] of occupiedPorts) {
+		logger.warn(`Port ${port} is occupied by pid ${pid}`);
+	}
+
+	if (opts.killPorts) {
+		killPorts = true;
+	} else {
+		if (occupiedPorts.length > 0) {
+			const rl = createInterface({ input: process.stdin, output: process.stdout });
+
+			const result = (await rl.question('Would you like to kill all occupying processes? (Y/N) ')).toLowerCase();
+
+			killPorts = result === 'y' || result === 'yes';
+		}
+	}
+
+	if (killPorts) {
+		for (const [pid] of occupiedPorts) {
+			process.kill(pid);
+		}
+	}
+
 	return await Promise.all(
-		[...Array(apiCount).keys()].map((i) => {
-			const newLogger = apiCount > 1 ? logger.addGroup(`API ${i}`) : logger;
-			return startDirectusInstance(opts, { ...env, PORT: String(Number(env.PORT) + i) }, newLogger);
+		apiPorts.map((port) => {
+			const newLogger = apiCount > 1 ? logger.addGroup(`API ${port}`) : logger;
+			return startDirectusInstance(opts, { ...env, PORT: String(port) }, newLogger);
 		}),
 	);
 }
@@ -81,12 +123,12 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 	logger.info('Starting Directus');
 	let api;
 	let timeout: NodeJS.Timeout;
-	const inspect = opts.watch ? ['--inspect'] : [];
+	const inspect = opts.inspect ? [`--inspect=${String(Number(env.PORT) + 1)}`] : [];
 
 	if (opts.dev) {
-		const watch = opts.watch ? ['watch'] : [];
+		const watch = opts.watch ? ['watch', '--clear-screen=false'] : [];
 
-		api = spawn('pnpm ', ['tsx', ...watch, '--clear-screen=false', ...inspect, join(apiFolder, 'src', 'start.ts')], {
+		api = spawn('pnpm ', ['tsx', ...watch, ...inspect, join(apiFolder, 'src', 'start.ts')], {
 			env,
 			shell: true,
 			stdio: 'overlapped', // Has to be here, only god knows why.
@@ -102,6 +144,8 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 	});
 
 	api.on('close', (code) => {
+		if (code === 0) return;
+
 		const error = new Error(`Api stopped with error code ${code}`);
 		clearTimeout(timeout);
 		logger.error(error.toString());
@@ -126,7 +170,7 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 		// In case the api takes too long to start
 		timeout = setTimeout(() => {
 			reject(new Error('timeout starting directus'));
-		}, 10_000);
+		}, 60_000);
 	});
 
 	logger.info(`Server started at http://${env.HOST}:${env.PORT}`);

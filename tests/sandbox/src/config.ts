@@ -152,6 +152,7 @@ export function getEnv(database: Database, opts: Options): Env {
 
 	if (Number(opts.instances) > 1) {
 		opts.extras.redis = true;
+		opts.inspect = false;
 	}
 
 	const env = {

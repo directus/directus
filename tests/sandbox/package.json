@@ -38,6 +38,7 @@
 		"commander": "catalog:",
 		"copyfiles": "catalog:",
 		"lodash-es": "catalog:",
+		"pid-port": "catalog:",
 		"tsup": "catalog:",
 		"tsx": "catalog:",
 		"typescript": "catalog:"

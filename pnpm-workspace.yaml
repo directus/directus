@@ -244,6 +244,7 @@ catalog:
   p-queue: 8.1.0
   papaparse: 5.5.3
   pg: 8.16.3
+  pid-port: 1.0.2
   pinia: 2.3.1
   pino: 9.7.0
   pino-http: 10.5.0

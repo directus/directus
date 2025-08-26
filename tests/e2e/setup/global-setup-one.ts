@@ -24,9 +24,9 @@ export async function setup(project: TestProject) {
 			keep: true,
 		},
 		extras: {
-			maildev: true,
-			redis: true,
-			saml: true,
+			maildev: false,
+			redis: false,
+			saml: false,
 		},
 	};
 

@@ -9,7 +9,7 @@ import {
 	staticToken,
 } from '@directus/sdk';
 import { randomUUID } from 'node:crypto';
-import { expect, inject, test } from 'vitest';
+import { expect, test } from 'vitest';
 import { useEnv } from '../../utils/useEnv';
 import { useOptions } from '../../utils/useOptions';
 
@@ -73,7 +73,7 @@ type Email = {
 	}[];
 };
 
-if (options.extras.maildev) {
+if (options.extras?.maildev) {
 	test('resetting passwort via email', async () => {
 		const env = useEnv();
 		const email = `${randomUUID()}@test.com`;

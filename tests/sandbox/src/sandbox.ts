@@ -35,7 +35,7 @@ export type Options = {
 	};
 	/** Horizontally scale the api to a given number of instances */
 	instances: string;
-	/** Set environment variables that the api should start with */
+	/** Add environment variables that the api should start with */
 	env: Record<string, string>;
 	/** Prefix the logs, useful when starting multiple sandboxes */
 	prefix: string | undefined;
@@ -45,6 +45,8 @@ export type Options = {
 	schema: string | undefined;
 	/** Start the api with debugger */
 	inspect: boolean;
+	/** Forcefully kills all processes that occupy ports that the api would use */
+	killPorts: boolean;
 	/** Enable redis,maildev,saml or other extras */
 	extras: {
 		/** Used for caching, forced to true if instances > 1 */
@@ -92,6 +94,7 @@ function getOptions(options?: DeepPartial<Options>): Options {
 			prefix: undefined,
 			schema: undefined,
 			export: false,
+			killPorts: false,
 			extras: {
 				redis: false,
 				maildev: false,
@@ -116,12 +119,16 @@ export const databases: Database[] = [
 ] as const;
 
 export async function sandboxes(
-	sandboxes: { database: Database; options: DeepPartial<Omit<Options, 'build' | 'dev' | 'watch' | 'export'>> }[],
+	sandboxes: {
+		database: Database;
+		options: DeepPartial<Omit<Options, 'build' | 'dev' | 'watch' | 'export'>>;
+	}[],
 	options?: Partial<Pick<Options, 'build' | 'dev' | 'watch'>>,
 ): Promise<Sandboxes> {
 	if (!sandboxes.every((sandbox) => databases.includes(sandbox.database))) throw new Error('Invalid database provided');
 
 	const opts = getOptions(options);
+
 	const logger = createLogger();
 
 	let apis: {

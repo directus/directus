@@ -1,9 +1,10 @@
 import type { TestProject } from 'vitest/node';
-import { databases, sandboxes, Sandboxes } from '@directus/sandbox';
+import { databases, Options, sandboxes, Sandboxes } from '@directus/sandbox';
 import { createDirectus, staticToken, schemaDiff, schemaApply, rest } from '@directus/sdk';
 import { Schema } from './schema';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
+import { DeepPartial } from '@directus/types';
 
 let sb: Sandboxes | undefined;
 
@@ -20,8 +21,12 @@ export async function setup(project: TestProject) {
 			options: {
 				prefix: database,
 				port: String(port),
-				dockerBasePort: String(port + 1),
-			},
+				docker: {
+					basePort: String(port + 10),
+					keep: true,
+				},
+				killPorts: true,
+			} as DeepPartial<Options>,
 		};
 	});
 

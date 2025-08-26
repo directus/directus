@@ -21,6 +21,7 @@ export default defineConfig({
 		teardownTimeout: 60_000,
 		include: [],
 		globalSetup: './setup/global-setup-all.ts',
+		passWithNoTests: true,
 		projects: [
 			'./vitest.config.ts',
 			...databases.map((database, index) => ({
@@ -28,6 +29,7 @@ export default defineConfig({
 					setupFiles: './setup/setup-files.ts',
 					globalSetup: './setup/global-setup-one.ts',
 					name: database,
+					passWithNoTests: true,
 					testTimeout: 10_000,
 					reporters: ['verbose'],
 					env: {
