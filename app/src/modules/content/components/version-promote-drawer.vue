@@ -2,7 +2,9 @@
 import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { ContentVersion, Field } from '@directus/types';
+import { userName } from '@/utils/user-name';
+import { localizedFormat } from '@/utils/localized-format';
+import { ContentVersion, Field, User } from '@directus/types';
 import { isNil } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -33,6 +35,10 @@ const selectedFields = ref<string[]>([]);
 const comparedData = ref<Comparison | null>(null);
 
 const loading = ref(false);
+const userUpdated = ref<User | null>(null);
+const userLoading = ref(false);
+const mainItemUserUpdated = ref<User | null>(null);
+const mainItemUserLoading = ref(false);
 
 const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
 
@@ -48,6 +54,32 @@ const currentVersionDisplayName = computed(() =>
 const isOutdated = computed(() => comparedData.value?.outdated ?? false);
 
 const mainHash = computed(() => comparedData.value?.mainHash ?? '');
+
+const versionDateUpdated = computed(() => {
+	if (!currentVersion.value.date_updated) return null;
+	return new Date(currentVersion.value.date_updated);
+});
+
+const versionUserUpdated = computed(() => {
+	if (!userUpdated.value) return null;
+	return userName(userUpdated.value);
+});
+
+const mainItemDateUpdated = computed(() => {
+	if (!comparedData.value?.main) return null;
+
+	// Check for common date updated field names
+	const dateField =
+		comparedData.value.main.date_updated || comparedData.value.main.modified_on || comparedData.value.main.updated_on;
+
+	if (!dateField) return null;
+	return new Date(dateField);
+});
+
+const mainItemUserUpdatedName = computed(() => {
+	if (!mainItemUserUpdated.value) return null;
+	return userName(mainItemUserUpdated.value);
+});
 
 const comparedFields = computed<Field[]>(() => {
 	if (comparedData.value === null) return [];
@@ -81,7 +113,10 @@ const previewData = computed(() => {
 watch(
 	active,
 	(value) => {
-		if (value) getComparison();
+		if (value) {
+			getComparison();
+			fetchUserUpdated();
+		}
 	},
 	{ immediate: true },
 );
@@ -107,10 +142,59 @@ async function getComparison() {
 		const comparedFieldsKeys = comparedFields.value.map((field) => field.field);
 
 		selectedFields.value = Object.keys(result.current).filter((fieldKey) => comparedFieldsKeys.includes(fieldKey));
+
+		// Fetch main item user after comparison data is loaded
+		await fetchMainItemUserUpdated();
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
 		loading.value = false;
+	}
+}
+
+async function fetchUserUpdated() {
+	if (!currentVersion.value.user_updated) return;
+
+	userLoading.value = true;
+
+	try {
+		const response = await api.get(`/users/${currentVersion.value.user_updated}`, {
+			params: {
+				fields: ['id', 'first_name', 'last_name', 'email'],
+			},
+		});
+
+		userUpdated.value = response.data.data;
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		userLoading.value = false;
+	}
+}
+
+async function fetchMainItemUserUpdated() {
+	if (!comparedData.value?.main) return;
+
+	// Check for common user updated field names
+	const userField =
+		comparedData.value.main.user_updated || comparedData.value.main.modified_by || comparedData.value.main.updated_by;
+
+	if (!userField) return;
+
+	mainItemUserLoading.value = true;
+
+	try {
+		const response = await api.get(`/users/${userField}`, {
+			params: {
+				fields: ['id', 'first_name', 'last_name', 'email'],
+			},
+		});
+
+		mainItemUserUpdated.value = response.data.data;
+	} catch (error) {
+		unexpectedError(error);
+	} finally {
+		mainItemUserLoading.value = false;
 	}
 }
 
@@ -167,7 +251,24 @@ function usePromoteDialog() {
 			<div class="preview-comparison">
 				<div class="comparison-side main-side">
 					<div class="side-header">
-						<h3>{{ t('main_version') }}</h3>
+						<div class="header-content">
+							<h3>{{ t('main_version') }}</h3>
+						</div>
+						<div class="header-meta">
+							<div class="meta-info">
+								<div v-if="mainItemDateUpdated" class="date-time">
+									{{ localizedFormat(mainItemDateUpdated, String(t('date-fns_date_short'))) }}
+									{{ localizedFormat(mainItemDateUpdated, String(t('date-fns_time'))) }}
+								</div>
+								<div v-if="mainItemUserUpdatedName" class="user-info">
+									{{ t('edited_by') }} {{ mainItemUserUpdatedName }}
+								</div>
+								<div v-else-if="mainItemUserLoading" class="user-info">
+									{{ t('loading') }}
+								</div>
+								<div v-else class="user-info">Live Data</div>
+							</div>
+						</div>
 					</div>
 					<div class="comparison-content">
 						<v-form
@@ -181,7 +282,24 @@ function usePromoteDialog() {
 				<div class="comparison-divider"></div>
 				<div class="comparison-side version-side">
 					<div class="side-header">
-						<h3>{{ currentVersionDisplayName }}</h3>
+						<div class="header-content">
+							<h3>{{ currentVersionDisplayName }}</h3>
+						</div>
+						<div class="header-meta">
+							<div class="meta-info">
+								<div v-if="versionDateUpdated" class="date-time">
+									{{ localizedFormat(versionDateUpdated, String(t('date-fns_date_short'))) }}
+									{{ localizedFormat(versionDateUpdated, String(t('date-fns_time'))) }}
+								</div>
+								<div v-if="versionUserUpdated" class="user-info">{{ t('edited_by') }} {{ versionUserUpdated }}</div>
+								<div v-else-if="userLoading" class="user-info">
+									{{ t('loading') }}
+								</div>
+								<div v-else class="user-info">
+									{{ t('unknown_user') }}
+								</div>
+							</div>
+						</div>
 					</div>
 					<div class="comparison-content">
 						<v-form
@@ -269,13 +387,43 @@ function usePromoteDialog() {
 		padding-block: var(--comparison-modal-padding-y);
 		padding-inline: var(--comparison-modal-padding-x);
 		justify-content: space-between;
-		align-items: center;
+		align-items: flex-start;
 		align-self: stretch;
-		h3 {
-			font-size: 20px;
-			font-weight: 600;
-			line-height: 32px;
-			color: var(--theme--foreground);
+		gap: 16px;
+
+		.header-content {
+			flex: 1;
+
+			h3 {
+				font-size: 20px;
+				font-weight: 600;
+				line-height: 32px;
+				color: var(--theme--foreground);
+				margin: 0;
+			}
+		}
+
+		.header-meta {
+			flex-shrink: 0;
+			min-inline-size: 0;
+
+			.meta-info {
+				text-align: end;
+
+				.date-time {
+					font-size: 14px;
+					font-weight: 500;
+					line-height: 20px;
+					color: var(--theme--foreground);
+					margin-block-end: 4px;
+				}
+
+				.user-info {
+					font-size: 12px;
+					line-height: 16px;
+					color: var(--theme--foreground-subdued);
+				}
+			}
 		}
 	}
 
