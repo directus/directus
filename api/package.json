@@ -67,7 +67,7 @@
 	},
 	"dependencies": {
 		"@authenio/samlify-node-xmllint": "catalog:",
-		"@aws-sdk/client-ses": "catalog:",
+		"@aws-sdk/client-sesv2": "catalog:",
 		"@directus/app": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/env": "workspace:*",
