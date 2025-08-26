@@ -6,6 +6,7 @@ program
 	.option('-b, --build', 'Rebuild directus from source')
 	.option('-d, --dev', 'Start directus in developer mode. Not compatible with build')
 	.option('-w, --watch', 'Restart the api when changes are made')
+	.option('--inspect', 'Start the api with debugger', true)
 	.option('-p, --port <port>', 'Port to start the api on')
 	.option('-x, --export', 'Export the schema to a file every 2 seconds')
 	.option('-s, --schema [schema]', 'Load an additional schema snapshot on startup')

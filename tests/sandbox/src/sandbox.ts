@@ -43,6 +43,8 @@ export type Options = {
 	export: boolean;
 	/** Load an additional schema snapshot on startup */
 	schema: string | undefined;
+	/** Start the api with debugger */
+	inspect: boolean;
 	/** Enable redis,maildev,saml or other extras */
 	extras: {
 		/** Used for caching, forced to true if instances > 1 */
@@ -85,6 +87,7 @@ function getOptions(options?: DeepPartial<Options>): Options {
 				basePort: '6000',
 			},
 			instances: '1',
+			inspect: true,
 			env: {} as Record<string, string>,
 			prefix: undefined,
 			schema: undefined,

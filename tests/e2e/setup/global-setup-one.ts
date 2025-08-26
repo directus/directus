@@ -1,26 +1,28 @@
-import { Database, Sandbox, sandbox } from '@directus/sandbox';
+import { Database, Options, Sandbox, sandbox } from '@directus/sandbox';
 import { createDirectus, rest, schemaApply, schemaDiff, staticToken } from '@directus/sdk';
 import { Schema } from './schema';
 import { join } from 'path';
 import { readFile } from 'fs/promises';
 import { TestProject } from 'vitest/node';
+import { DeepPartial } from '@directus/types';
 
 let sb: Sandbox | undefined;
 
 export async function setup(project: TestProject) {
 	if (process.env['ALL'] === 'true') return;
 
-	const dev = Boolean(project.config.env['DEV']);
-	const watch = Boolean(project.config.env['WATCH']);
 	const database = project.config.env['DATABASE'] as Database;
 	const port = project.config.env['PORT'];
 
-	const options = {
+	const options: DeepPartial<Options> = {
 		port,
-		dev,
-		watch,
+		dev: true,
+		watch: true,
 		prefix: database,
-		dockerBasePort: String(Number(project.config.env['PORT']) + 1),
+		docker: {
+			basePort: String(Number(project.config.env['PORT']) + 1),
+			keep: true,
+		},
 		extras: {
 			maildev: true,
 			redis: true,

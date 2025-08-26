@@ -26,6 +26,7 @@
 		"commander": "14.0.0",
 		"lodash-es": "catalog:",
 		"typescript": "5.8.2",
+		"tsx": "catalog:",
 		"vitest": "catalog:"
 	},
 	"engines": {

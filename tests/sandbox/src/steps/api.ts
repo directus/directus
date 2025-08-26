@@ -8,14 +8,13 @@ import chalk from 'chalk';
 export async function buildDirectus(opts: Options, logger: Logger, onRebuild: () => void) {
 	logger.info('Rebuilding Directus');
 
-	const build = spawn(
-		/^win/.test(process.platform) ? 'pnpm.cmd' : 'pnpm',
-		opts.watch ? ['tsc', '--watch', '--project tsconfig.prod.json'] : ['run', 'build'],
-		{
-			cwd: apiFolder,
-			shell: true,
-		},
-	);
+	const watch = opts.watch ? ['--watch'] : [];
+	const inspect = opts.inspect ? ['--inspect', '--sourceMap'] : [];
+
+	const build = spawn('pnpm', ['tsc', ...watch, ...inspect, '--project tsconfig.prod.json'], {
+		cwd: apiFolder,
+		shell: true,
+	});
 
 	build.on('error', (err) => {
 		build.kill();
@@ -81,30 +80,32 @@ export async function startDirectus(opts: Options, env: Env, logger: Logger) {
 async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 	logger.info('Starting Directus');
 	let api;
+	let timeout: NodeJS.Timeout;
+	const inspect = opts.watch ? ['--inspect'] : [];
 
 	if (opts.dev) {
-		// tsx must me inside the package.json of the package using this!
-		api = spawn(
-			/^win/.test(process.platform) ? 'pnpm.cmd' : 'pnpm',
-			opts.watch
-				? ['tsx', 'watch', '--clear-screen=false', '--inspect', join(apiFolder, 'src', 'start.ts')]
-				: ['tsx', '--inspect', join(apiFolder, 'src', 'start.ts')],
-			{
-				env,
-				cwd: apiFolder,
-				shell: true,
-				stdio: 'overlapped', // Has to be here, only god knows why.
-			},
-		);
+		const watch = opts.watch ? ['watch'] : [];
+
+		api = spawn('pnpm ', ['tsx', ...watch, '--clear-screen=false', ...inspect, join(apiFolder, 'src', 'start.ts')], {
+			env,
+			shell: true,
+			stdio: 'overlapped', // Has to be here, only god knows why.
+		});
 	} else {
-		api = spawn('node', [join(apiFolder, 'dist', 'cli', 'run.js'), 'start'], {
+		api = spawn('node', [...inspect, join(apiFolder, 'dist', 'cli', 'run.js'), 'start'], {
 			env,
 		});
 	}
 
 	api.on('error', (err) => {
 		logger.error(err.toString());
-		throw err;
+	});
+
+	api.on('close', (code) => {
+		const error = new Error(`Api stopped with error code ${code}`);
+		clearTimeout(timeout);
+		logger.error(error.toString());
+		throw error;
 	});
 
 	logger.pipe(api.stderr, 'error');
@@ -123,9 +124,9 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 		});
 
 		// In case the api takes too long to start
-		setTimeout(() => {
+		timeout = setTimeout(() => {
 			reject(new Error('timeout starting directus'));
-		}, 60_000);
+		}, 10_000);
 	});
 
 	logger.info(`Server started at http://${env.HOST}:${env.PORT}`);
