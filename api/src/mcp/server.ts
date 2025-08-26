@@ -142,8 +142,7 @@ export class DirectusMCP {
 				const prompt = promptCommand[0];
 
 				if (!prompt) {
-					// -32602
-					throw new InvalidPayloadError({ reason: `Invalid prompt "${promptName}"` });
+					throw new McpError(JSONRPCErrorCode.InvalidParams, `Invalid prompt "${promptName}"`);
 				}
 
 				const messages: GetPromptResult['messages'] = [];
