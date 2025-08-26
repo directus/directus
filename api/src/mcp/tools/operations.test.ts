@@ -164,6 +164,10 @@ describe('operations tool', () => {
 			expect(operations.name).toBe('operations');
 		});
 
+		test('should be admin tool', () => {
+			expect(operations.admin).toBe(true);
+		});
+
 		test('should have description', () => {
 			expect(operations.description).toBeDefined();
 		});

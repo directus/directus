@@ -193,6 +193,10 @@ describe('relations tool ', () => {
 			expect(relations.name).toBe('relations');
 		});
 
+		test('should be admin tool', () => {
+			expect(relations.admin).toBe(true);
+		});
+
 		test('should have description', () => {
 			expect(relations.description).toBeDefined();
 		});

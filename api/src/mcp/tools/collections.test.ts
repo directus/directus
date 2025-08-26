@@ -210,6 +210,10 @@ describe('collections tool', () => {
 			expect(collections.name).toBe('collections');
 		});
 
+		test('should be admin tool', () => {
+			expect(collections.admin).toBe(true);
+		});
+
 		test('should have description', () => {
 			expect(collections.description).toBeDefined();
 		});

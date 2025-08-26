@@ -952,6 +952,10 @@ describe('schema tool', () => {
 			expect(schema.name).toBe('schema');
 		});
 
+		test('should be admin tool', () => {
+			expect(schema.admin).toBe(true);
+		});
+
 		test('should have description', () => {
 			expect(schema.description).toBeDefined();
 		});

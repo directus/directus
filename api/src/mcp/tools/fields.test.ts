@@ -249,6 +249,10 @@ describe('fields tool', () => {
 			expect(fields.name).toBe('fields');
 		});
 
+		test('should be admin tool', () => {
+			expect(fields.admin).toBe(true);
+		});
+
 		test('should have description', () => {
 			expect(fields.description).toBeDefined();
 		});

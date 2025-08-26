@@ -184,6 +184,10 @@ describe('flows tool', () => {
 			expect(flows.name).toBe('flows');
 		});
 
+		test('should be admin tool', () => {
+			expect(flows.admin).toBe(true);
+		});
+
 		test('should have description', () => {
 			expect(flows.description).toBeDefined();
 		});
