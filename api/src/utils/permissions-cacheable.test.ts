@@ -2,7 +2,7 @@ import type { Permission } from '@directus/types';
 import { describe, expect, test, vi } from 'vitest';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
-import { filterHasNow, permissionsCachable } from './permissions-cachable.js';
+import { filterHasNow, permissionsCacheable } from './permissions-cacheable.js';
 
 vi.mock('../permissions/lib/fetch-permissions.js');
 vi.mock('../permissions/lib/fetch-policies.js');
@@ -166,7 +166,7 @@ test('permissions are not cacheable on many policies with $NOW', async () => {
 
 	vi.mocked(fetchPermissions).mockResolvedValue(permissions);
 
-	const result = await permissionsCachable('items', {} as any, {} as any);
+	const result = await permissionsCacheable('items', {} as any, {} as any);
 
 	expect(result).toBe(false);
 });
@@ -205,7 +205,7 @@ test('permissions are cacheable on many policies without $NOW', async () => {
 
 	vi.mocked(fetchPermissions).mockResolvedValue(permissions);
 
-	const result = await permissionsCachable('items', {} as any, {} as any);
+	const result = await permissionsCacheable('items', {} as any, {} as any);
 
 	expect(result).toBe(true);
 });

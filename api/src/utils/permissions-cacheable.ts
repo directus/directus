@@ -6,9 +6,9 @@ import { createDefaultAccountability } from '../permissions/utils/create-default
 
 /**
  * Check if the read permissions for a collection contain the dynamic variable $NOW.
- * If they do, the permissions are not cachable.
+ * If they do, the permissions are not cacheable.
  */
-export async function permissionsCachable(
+export async function permissionsCacheable(
 	collection: string | undefined,
 	context: Context,
 	accountability?: Accountability,
