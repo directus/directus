@@ -7,9 +7,11 @@ import {
 	CallToolRequestSchema,
 	GetPromptRequestSchema,
 	InitializedNotificationSchema,
+	ErrorCode as JSONRPCErrorCode,
 	JSONRPCMessageSchema,
 	ListPromptsRequestSchema,
 	ListToolsRequestSchema,
+	McpError,
 	type CallToolRequest,
 	type CallToolResult,
 	type GetPromptRequest,
@@ -110,7 +112,7 @@ export class DirectusMCP {
 
 				return { prompts };
 			} catch (error) {
-				return this.toJSONRPCError(error);
+				return this.toExecutionError(error);
 			}
 		});
 
@@ -140,6 +142,7 @@ export class DirectusMCP {
 				const prompt = promptCommand[0];
 
 				if (!prompt) {
+					// -32602
 					throw new InvalidPayloadError({ reason: `Invalid prompt "${promptName}"` });
 				}
 
@@ -174,7 +177,7 @@ export class DirectusMCP {
 					description: prompt.description,
 				});
 			} catch (error) {
-				return this.toJSONRPCError(error);
+				return this.toExecutionError(error);
 			}
 		});
 
@@ -210,7 +213,7 @@ export class DirectusMCP {
 				}
 
 				if (req.accountability?.admin !== true && tool.admin === true) {
-					throw new ForbiddenError();
+					throw new ForbiddenError({ reason: 'You must be an admin to access this tool' });
 				}
 
 				if (tool.name === 'system-prompt') {
@@ -257,7 +260,15 @@ export class DirectusMCP {
 					);
 				}
 			} catch (error) {
-				return this.toJSONRPCError(error);
+				const code = JSONRPCErrorCode.InvalidParams;
+				let message = 'Unknown Error';
+				const receivedError = Array.isArray(error) ? error[0] : error;
+
+				if (isDirectusError(receivedError)) {
+					message = receivedError.message;
+				}
+
+				throw new McpError(code, message);
 			}
 
 			try {
@@ -282,7 +293,7 @@ export class DirectusMCP {
 
 				return this.toToolResponse(result);
 			} catch (error) {
-				return this.toJSONRPCError(error, true);
+				return this.toExecutionError(error);
 			}
 		});
 
@@ -350,7 +361,7 @@ export class DirectusMCP {
 		return response;
 	}
 
-	toJSONRPCError(err: unknown, execution?: boolean) {
+	toExecutionError(err: unknown) {
 		const errors: { error: string; code?: string }[] = [];
 		const receivedErrors: unknown[] = Array.isArray(err) ? err : [err];
 
@@ -377,12 +388,6 @@ export class DirectusMCP {
 
 				errors.push({ error: message, ...(code && { code }) });
 			}
-		}
-
-		if (!execution) {
-			return {
-				error: errors[0],
-			};
 		}
 
 		return {
