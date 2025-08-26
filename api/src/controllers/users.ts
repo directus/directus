@@ -332,7 +332,13 @@ router.post(
 			throw new InvalidCredentialsError();
 		}
 
-		const requiresPassword = req.body.requires_password !== false;
+		const usersService = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const currentUser = await usersService.readOne(req.accountability.user, { fields: ['provider'] });
+		const requiresPassword = currentUser?.['provider'] === 'default';
 
 		if (requiresPassword && !req.body.password) {
 			throw new InvalidPayloadError({ reason: `"password" is required` });
@@ -375,7 +381,13 @@ router.post(
 			throw new InvalidPayloadError({ reason: `"otp" is required` });
 		}
 
-		const requiresPassword = req.body.requires_password !== false;
+		const usersService = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const currentUser = await usersService.readOne(req.accountability.user, { fields: ['provider'] });
+		const requiresPassword = currentUser?.['provider'] === 'default';
 
 		const service = new TFAService({
 			accountability: req.accountability,
