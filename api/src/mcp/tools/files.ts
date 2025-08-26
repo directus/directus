@@ -15,7 +15,7 @@ import {
 } from '../schema.js';
 import prompts from './prompts/index.js';
 
-export const FilesValidateSchema = z.union([
+export const FilesValidateSchema = z.discriminatedUnion('action', [
 	z.strictObject({
 		action: z.literal('read'),
 		keys: z.array(PrimaryKeyValidateSchema).optional(),

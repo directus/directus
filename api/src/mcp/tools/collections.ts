@@ -10,7 +10,7 @@ import {
 } from '../schema.js';
 import prompts from './prompts/index.js';
 
-export const CollectionsValidateSchema = z.union([
+export const CollectionsValidateSchema = z.discriminatedUnion('action', [
 	z.strictObject({
 		action: z.literal('create'),
 		data: z.union([z.array(CollectionItemValidateCreateSchema), CollectionItemValidateCreateSchema]),
@@ -35,7 +35,7 @@ export const CollectionsInputSchema = z.object({
 	data: z.union([z.array(CollectionItemInputSchema), CollectionItemInputSchema]).optional(),
 });
 
-export const collection = defineTool<z.infer<typeof CollectionsValidateSchema>>({
+export const collections = defineTool<z.infer<typeof CollectionsValidateSchema>>({
 	name: 'collections',
 	admin: true,
 	description: prompts.collections,
