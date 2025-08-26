@@ -119,7 +119,7 @@ export class DirectusMCP {
 		// get prompt
 		this.server.setRequestHandler(GetPromptRequestSchema, async (request: GetPromptRequest) => {
 			if (!this.promptsCollection) {
-				throw new ForbiddenError({ reason: 'A prompts collection must be set in settings' });
+				throw new McpError(1001, `A prompts collection must be set in settings`);
 			}
 
 			const service = new ItemsService<Prompt>(this.promptsCollection, {
@@ -129,55 +129,52 @@ export class DirectusMCP {
 
 			const { name: promptName, arguments: args } = request.params;
 
-			try {
-				const promptCommand = await service.readByQuery({
-					fields: ['name', 'description', 'system_prompt', 'messages'],
-					filter: {
-						name: {
-							_eq: promptName,
-						},
+			const promptCommand = await service.readByQuery({
+				fields: ['name', 'description', 'system_prompt', 'messages'],
+				filter: {
+					name: {
+						_eq: promptName,
+					},
+				},
+			});
+
+			const prompt = promptCommand[0];
+
+			if (!prompt) {
+				throw new McpError(JSONRPCErrorCode.InvalidParams, `Invalid prompt "${promptName}"`);
+			}
+
+			const messages: GetPromptResult['messages'] = [];
+
+			// Add system prompt as the first assistant message if it exists
+			if (prompt.system_prompt) {
+				messages.push({
+					role: 'assistant',
+					content: {
+						type: 'text',
+						text: render(prompt.system_prompt, args),
 					},
 				});
-
-				const prompt = promptCommand[0];
-
-				if (!prompt) {
-					throw new McpError(JSONRPCErrorCode.InvalidParams, `Invalid prompt "${promptName}"`);
-				}
-
-				const messages: GetPromptResult['messages'] = [];
-
-				// Add system prompt as the first assistant message if it exists
-				if (prompt.system_prompt) {
-					messages.push({
-						role: 'assistant',
-						content: {
-							type: 'text',
-							text: render(prompt.system_prompt, args),
-						},
-					});
-				}
-
-				(prompt.messages || []).forEach((message) => {
-					// skip invalid prompts
-					if (!message.role || !message.text) return;
-
-					messages.push({
-						role: message.role,
-						content: {
-							type: 'text',
-							text: render(message.text, args),
-						},
-					});
-				});
-
-				return this.toPromptResponse({
-					messages,
-					description: prompt.description,
-				});
-			} catch (error) {
-				return this.toExecutionError(error);
 			}
+
+			// render any provided args
+			(prompt.messages || []).forEach((message) => {
+				// skip invalid prompts
+				if (!message.role || !message.text) return;
+
+				messages.push({
+					role: message.role,
+					content: {
+						type: 'text',
+						text: render(message.text, args),
+					},
+				});
+			});
+
+			return this.toPromptResponse({
+				messages,
+				description: prompt.description,
+			});
 		});
 
 		// listing tools
@@ -204,7 +201,6 @@ export class DirectusMCP {
 			const tool = findMcpTool(request.params.name);
 
 			let sanitizedQuery = {};
-			let args;
 
 			try {
 				if (!tool || (tool.name === 'system-prompt' && this.systemPromptEnabled === false)) {
@@ -230,11 +226,9 @@ export class DirectusMCP {
 					}
 				}
 
-				const { error, data } = tool.validateSchema?.safeParse(request.params.arguments) ?? {
+				const { error, data: args } = tool.validateSchema?.safeParse(request.params.arguments) ?? {
 					data: request.params.arguments,
 				};
-
-				args = data;
 
 				if (error) {
 					throw new InvalidPayloadError({ reason: fromZodError(error).message });
@@ -258,19 +252,7 @@ export class DirectusMCP {
 						req.accountability || null,
 					);
 				}
-			} catch (error) {
-				const code = JSONRPCErrorCode.InvalidParams;
-				let message = 'Unknown Error';
-				const receivedError = Array.isArray(error) ? error[0] : error;
 
-				if (isDirectusError(receivedError)) {
-					message = receivedError.message;
-				}
-
-				throw new McpError(code, message);
-			}
-
-			try {
 				const result = await tool.handler({
 					args,
 					sanitizedQuery,
@@ -278,7 +260,7 @@ export class DirectusMCP {
 					accountability: req.accountability,
 				});
 
-				// if single item and create/update add url
+				// if single item and create/read/update/import add url
 				const data = toArray(result?.data);
 
 				if (
