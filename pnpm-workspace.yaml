@@ -162,7 +162,7 @@ catalog:
   dotenv: 17.2.1
   editorjs-toggle-block: 0.3.16
   encodeurl: 2.0.0
-  esbuild: 0.25.8
+  esbuild: 0.25.9
   esbuild-plugin-replace: 1.4.0
   esbuild-yaml: 3.0.3
   escape-string-regexp: 5.0.0
@@ -290,7 +290,7 @@ catalog:
   undici: 7.13.0
   update-check: 1.5.4
   uuid: 11.1.0
-  vite: 5.4.19
+  vite: 7.1.3
   vite-plugin-dts: 4.5.4
   vite-plugin-vue-devtools: 7.7.2
   vitest: 3.2.4
