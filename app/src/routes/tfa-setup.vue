@@ -76,16 +76,7 @@ async function enable() {
 	const success = await enableTFA(!canSkipPassword.value);
 
 	if (success) {
-		const redirectQuery = router.currentRoute.value.query.redirect as string;
-		const fallback = (userStore.currentUser as User)?.last_page || '/login';
-
-		// If redirect is an absolute URL, navigate via window.location to avoid double "/admin" prefix
-		// This addresses an issue where the redirect URL is doubled when an oauth user is sent through the tfa setup flow
-		if (typeof redirectQuery === 'string' && /^(https?:)?\/\//.test(redirectQuery)) {
-			window.location.href = redirectQuery;
-		} else {
-			router.push(redirectQuery || fallback);
-		}
+		navigateAfterTFA();
 	} else {
 		(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
 	}
@@ -101,9 +92,15 @@ async function cancel() {
 		console.error('Failed to cancel 2FA setup:', error);
 	}
 
+	navigateAfterTFA();
+}
+
+function navigateAfterTFA() {
 	const redirectQuery = router.currentRoute.value.query.redirect as string;
 	const fallback = (userStore.currentUser as User)?.last_page || '/login';
 
+	// If redirect is an absolute URL, navigate via window.location to avoid double "/admin" prefix
+	// This addresses an issue where the redirect URL is doubled when an oauth user is sent through the tfa setup flow
 	if (typeof redirectQuery === 'string' && /^(https?:)?\/\//.test(redirectQuery)) {
 		window.location.href = redirectQuery;
 	} else {
