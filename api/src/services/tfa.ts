@@ -5,6 +5,7 @@ import type { Knex } from 'knex';
 import { authenticator } from 'otplib';
 import getDatabase from '../database/index.js';
 import { ItemsService } from './items.js';
+import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 
 export class TFAService {
 	knex: Knex;
@@ -41,18 +42,18 @@ export class TFAService {
 		}
 
 		// Only require email for non-OAuth users
-		if (user?.provider === 'default' && !user?.email) {
+		if (user?.provider === DEFAULT_AUTH_PROVIDER && !user?.email) {
 			throw new InvalidPayloadError({ reason: 'User must have a valid email to enable TFA' });
 		}
 
 		// For OAuth users, check if 2FA setup is requested or role-based enforcement
-		if (!requiresPassword && user?.provider === 'default') {
+		if (!requiresPassword && user?.provider === DEFAULT_AUTH_PROVIDER) {
 			throw new InvalidPayloadError({ reason: 'This method is only available for OAuth users' });
 		}
 
 		if (!requiresPassword) {
 			// For OAuth users, allow if they have require_tfa_setup true OR role-based enforcement
-			if (user?.provider !== 'default') {
+			if (user?.provider !== DEFAULT_AUTH_PROVIDER) {
 				// Check if user has role-based enforcement
 				const roleEnforcement = await this.knex
 					.select('directus_policies.enforce_tfa')
@@ -88,21 +89,21 @@ export class TFAService {
 			.from('directus_users')
 			.where({ id: key })
 			.first();
-			
-		const requiresPassword = user?.['provider'] === 'default';
+
+		const requiresPassword = user?.['provider'] === DEFAULT_AUTH_PROVIDER;
 
 		if (user?.tfa_secret !== null) {
 			throw new InvalidPayloadError({ reason: 'TFA Secret is already set for this user' });
 		}
 
 		// For OAuth users, check if 2FA setup is requested or role-based enforcement
-		if (!requiresPassword && user?.provider === 'default') {
+		if (!requiresPassword && user?.provider === DEFAULT_AUTH_PROVIDER) {
 			throw new InvalidPayloadError({ reason: 'This method is only available for OAuth users' });
 		}
 
 		if (!requiresPassword) {
 			// For OAuth users, allow if they have require_tfa_setup true OR role-based enforcement
-			if (user?.provider !== 'default') {
+			if (user?.provider !== DEFAULT_AUTH_PROVIDER) {
 				// Check if user has role-based enforcement
 				const roleEnforcement = await this.knex
 					.select('directus_policies.enforce_tfa')
@@ -145,7 +146,7 @@ export class TFAService {
 			.where({ id: key })
 			.first();
 
-		if (user.provider === 'default') {
+		if (user.provider === DEFAULT_AUTH_PROVIDER) {
 			throw new InvalidPayloadError({ reason: 'This method is only available for OAuth users' });
 		}
 
@@ -167,7 +168,7 @@ export class TFAService {
 			.where({ id: key })
 			.first();
 
-		if (user.provider === 'default') {
+		if (user.provider === DEFAULT_AUTH_PROVIDER) {
 			throw new InvalidPayloadError({ reason: 'This method is only available for OAuth users' });
 		}
 

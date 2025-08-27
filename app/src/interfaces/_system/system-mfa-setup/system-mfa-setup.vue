@@ -4,6 +4,7 @@ import { useUserStore } from '@/stores/user';
 import { User } from '@directus/types';
 import { computed, inject, nextTick, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { DEFAULT_AUTH_DRIVER } from '@/constants';
 
 const props = defineProps<{
 	value: string | null;
@@ -38,13 +39,13 @@ const profileUser = computed(() => {
 const isOAuthUser = computed(() => {
 	// Use profile user data when viewing a different user, otherwise use current user
 	const user = profileUser.value && !isCurrentUser.value ? profileUser.value : userStore.currentUser;
-	return user && !('share' in user) && user.provider !== 'default';
+	return user && !('share' in user) && user.provider !== DEFAULT_AUTH_DRIVER;
 });
 
 const effectiveTFAEnabled = computed(() => {
 	if (profileUser.value && !isCurrentUser.value) {
 		// OAuth users
-		if (profileUser.value.provider !== 'default') {
+		if (profileUser.value.provider !== DEFAULT_AUTH_DRIVER) {
 			return !!(profileUser.value.tfa_secret || (profileUser.value as any).require_tfa_setup);
 		}
 
@@ -57,7 +58,7 @@ const effectiveTFAEnabled = computed(() => {
 		if (!user || 'share' in user) return !!props.value;
 
 		// OAuth users
-		if (user.provider !== 'default') {
+		if (user.provider !== DEFAULT_AUTH_DRIVER) {
 			return !!(user.tfa_secret || (user as any).require_tfa_setup);
 		}
 

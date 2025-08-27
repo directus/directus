@@ -18,6 +18,8 @@ import { TFAService } from '../services/tfa.js';
 import { UsersService } from '../services/users.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import { getDatabase } from '../database/index.js';
 
 const router = express.Router();
 
@@ -337,7 +339,8 @@ router.post(
 			.from('directus_users')
 			.where({ id: req.accountability.user })
 			.first();
-		const requiresPassword = currentUser?.['provider'] === 'default';
+
+		const requiresPassword = currentUser?.['provider'] === DEFAULT_AUTH_PROVIDER;
 
 		if (requiresPassword && !req.body.password) {
 			throw new InvalidPayloadError({ reason: `"password" is required` });
@@ -380,13 +383,12 @@ router.post(
 			throw new InvalidPayloadError({ reason: `"otp" is required` });
 		}
 
-
 		const service = new TFAService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		await service.enableTFA(req.accountability.user, req.body.otp, req.body.secret, requiresPassword);
+		await service.enableTFA(req.accountability.user, req.body.otp, req.body.secret);
 
 		return next();
 	}),

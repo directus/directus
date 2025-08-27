@@ -7,6 +7,7 @@ import { User } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { DEFAULT_AUTH_DRIVER } from '@/constants';
 
 const { t } = useI18n();
 const appStore = useAppStore();
@@ -47,7 +48,7 @@ watch(
 // Check if the current user is an OAuth user
 const isOAuthUser = computed(() => {
 	const user = userStore.currentUser;
-	return user && !('share' in user) && user.provider !== 'default';
+	return user && !('share' in user) && user.provider !== DEFAULT_AUTH_DRIVER;
 });
 
 // Check if the user has role that requires 2FA

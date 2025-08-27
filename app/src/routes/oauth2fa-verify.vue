@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { RequestError } from '@/api';
-import { translateAPIError } from '@/lang';
 import { useUserStore } from '@/stores/user';
 import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
