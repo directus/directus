@@ -82,12 +82,14 @@ export class TFAService {
 		};
 	}
 
-	async enableTFA(key: PrimaryKey, otp: string, secret: string, requiresPassword: boolean = true): Promise<void> {
+	async enableTFA(key: PrimaryKey, otp: string, secret: string): Promise<void> {
 		const user = await this.knex
 			.select('tfa_secret', 'provider', 'require_tfa_setup')
 			.from('directus_users')
 			.where({ id: key })
 			.first();
+			
+		const requiresPassword = user?.['provider'] === 'default';
 
 		if (user?.tfa_secret !== null) {
 			throw new InvalidPayloadError({ reason: 'TFA Secret is already set for this user' });
