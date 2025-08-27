@@ -96,18 +96,37 @@ const comparedFields = computed<Field[]>(() => {
 	}
 });
 
+const allFieldsSelected = computed(() => {
+	if (!comparedData.value) return false;
+
+	const availableFields = Object.keys(comparedData.value.current).filter((fieldKey) =>
+		comparedFields.value.some((field) => field.field === fieldKey),
+	);
+
+	return availableFields.length > 0 && availableFields.every((field) => selectedFields.value.includes(field));
+});
+
+const someFieldsSelected = computed(() => {
+	if (!comparedData.value) return false;
+
+	const availableFields = Object.keys(comparedData.value.current).filter((fieldKey) =>
+		comparedFields.value.some((field) => field.field === fieldKey),
+	);
+
+	return availableFields.length > 0 && availableFields.some((field) => selectedFields.value.includes(field));
+});
+
+const availableFieldsCount = computed(() => {
+	if (!comparedData.value) return 0;
+
+	return Object.keys(comparedData.value.current).filter((fieldKey) =>
+		comparedFields.value.some((field) => field.field === fieldKey),
+	).length;
+});
+
 const previewData = computed(() => {
 	if (!comparedData.value) return null;
-
-	const data: Record<string, any> = {};
-
-	for (const fieldKey of Object.keys(comparedData.value.main)) {
-		data[fieldKey] = selectedFields.value.includes(fieldKey)
-			? comparedData.value.current[fieldKey]
-			: comparedData.value.main[fieldKey];
-	}
-
-	return data;
+	return comparedData.value.current;
 });
 
 watch(
@@ -127,6 +146,20 @@ function addField(field: string) {
 
 function removeField(field: string) {
 	selectedFields.value = selectedFields.value.filter((f) => f !== field);
+}
+
+function toggleSelectAll() {
+	if (!comparedData.value) return;
+
+	const availableFields = Object.keys(comparedData.value.current).filter((fieldKey) =>
+		comparedFields.value.some((field) => field.field === fieldKey),
+	);
+
+	if (allFieldsSelected.value) {
+		selectedFields.value = [];
+	} else {
+		selectedFields.value = [...new Set([...selectedFields.value, ...availableFields])];
+	}
 }
 
 async function getComparison() {
@@ -317,6 +350,15 @@ function usePromoteDialog() {
 					</div>
 				</div>
 				<div class="comparison-footer-col-2">
+					<div class="select-all-container">
+						<v-checkbox
+							:model-value="allFieldsSelected"
+							:indeterminate="someFieldsSelected && !allFieldsSelected"
+							@update:model-value="toggleSelectAll"
+						>
+							{{ t('select_all_changes') }} ({{ selectedFields.length }}/{{ availableFieldsCount }})
+						</v-checkbox>
+					</div>
 					<v-button secondary @click="$emit('cancel')">
 						<v-icon name="close" left />
 						{{ t('cancel') }}
@@ -463,6 +505,11 @@ function usePromoteDialog() {
 			justify-content: flex-end;
 			align-items: center;
 			gap: 24px;
+
+			.select-all-container {
+				min-inline-size: 200px;
+				flex-shrink: 0;
+			}
 		}
 	}
 
