@@ -266,7 +266,6 @@ function usePromoteDialog() {
 								<div v-else-if="mainItemUserLoading" class="user-info">
 									{{ t('loading') }}
 								</div>
-								<div v-else class="user-info">Live Data</div>
 							</div>
 						</div>
 					</div>
