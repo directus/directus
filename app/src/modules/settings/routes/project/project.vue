@@ -5,7 +5,7 @@ import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useCollection } from '@directus/composables';
 import { clone } from 'lodash';
-import { computed, ref, unref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
@@ -20,9 +20,17 @@ const serverStore = useServerStore();
 
 const { fields: allFields } = useCollection('directus_settings');
 
-const fields = computed(() =>
-	unref(allFields).filter((field) => field.meta?.group !== 'theming_group' && field.field !== 'theming_group'),
-);
+const EXCLUDED_GROUPS: string[] = ['theming_group', 'ai_group'] as const;
+
+const fields = computed(() => {
+	return allFields.value.filter((field) => {
+		if (field.meta?.group) {
+			return EXCLUDED_GROUPS.includes(field.meta?.group) === false;
+		}
+
+		return EXCLUDED_GROUPS.includes(field.field) === false;
+	});
+});
 
 const initialValues = ref(clone(settingsStore.settings));
 
