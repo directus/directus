@@ -1,12 +1,21 @@
 export const allVendors = [
 	'postgres',
-	'postgres10',
+	'postgres-lts-16',
+	'postgres-lts-15',
+	'postgres-lts-14',
+	'postgres-lts-13',
 	'mysql',
-	'mysql5',
+	'mysql-lts-8',
 	'maria',
+	'maria-lts-10_11',
+	'maria-lts-10_6',
 	'mssql',
+	'mssql-lts-2019',
 	'oracle',
 	'cockroachdb',
+	'cockroachdb-lts-24_1',
+	'cockroachdb-lts-23_2',
+	'cockroachdb-lts-23_1',
 	'sqlite3',
 ] as const;
 

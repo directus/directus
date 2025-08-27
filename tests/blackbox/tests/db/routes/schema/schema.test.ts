@@ -599,7 +599,7 @@ describe('Schema Snapshots', () => {
 				'%s',
 				async (vendor) => {
 					// TODO: Fix cockroachdb requiring schema changes to be applied first when in a transaction
-					if (vendor === 'cockroachdb') {
+					if (vendor.includes('cockroachdb')) {
 						expect(true).toBe(true);
 						return;
 					}
@@ -796,7 +796,7 @@ describe('Schema Snapshots', () => {
 });
 
 function parseSnapshot(vendor: Vendor, snapshot: any) {
-	if (vendor === 'cockroachdb') {
+	if (vendor.includes('cockroachdb')) {
 		if (snapshot.fields) {
 			for (const field of snapshot.fields) {
 				if (
