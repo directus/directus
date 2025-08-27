@@ -1,7 +1,6 @@
 ---
 "@directus/api": major
 "@directus/types": patch
-"tests-blackbox": patch
 ---
 
 Redesign Content Versioning to now work across relations and all query parameters.
