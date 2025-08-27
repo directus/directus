@@ -1,11 +1,13 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { setActivePinia } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
-import { ref, nextTick } from 'vue';
+import { setActivePinia } from 'pinia';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { nextTick, ref } from 'vue';
 
+import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import { useCollectionValidation } from './use-collection-validation';
+import { Collection } from '@/types/collections';
 import type { Field } from '@directus/types';
+import { useCollectionValidation } from './use-collection-validation';
 
 function makeField(collection: string, field: string, type: Field['type']): Field {
 	// Create a minimal Field object sufficient for the store utilities used in tests
@@ -23,6 +25,16 @@ function makeField(collection: string, field: string, type: Field['type']): Fiel
 	} as unknown as Field;
 }
 
+function makeCollection(collection: string): Collection {
+	// Create a minimal Collection object sufficient for the store utilities used in tests
+	return {
+		collection,
+		name: collection,
+		meta: {},
+		schema: {},
+	} as unknown as Collection;
+}
+
 beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({
@@ -33,9 +45,21 @@ beforeEach(() => {
 });
 
 describe('useCollectionValidation', () => {
+	it('detects non-existent collection', () => {
+		const collection = 'ai_prompts';
+
+		const validation = useCollectionValidation(collection);
+		expect(validation.value.collectionNotFound).toBe(true);
+		expect(validation.value.missingFields).toHaveLength(0);
+		expect(validation.value.invalidFields).toHaveLength(0);
+	});
+
 	it('returns no issues when all required fields exist with correct types', () => {
 		const collection = 'ai_prompts';
 		const fieldsStore = useFieldsStore();
+		const collectionStore = useCollectionsStore();
+
+		collectionStore.collections = [makeCollection(collection)];
 
 		fieldsStore.fields = [
 			makeField(collection, 'name', 'string'),
@@ -45,6 +69,7 @@ describe('useCollectionValidation', () => {
 		];
 
 		const validation = useCollectionValidation(collection);
+		expect(validation.value.collectionNotFound).toBe(false);
 		expect(validation.value.missingFields).toHaveLength(0);
 		expect(validation.value.invalidFields).toHaveLength(0);
 	});
@@ -52,6 +77,9 @@ describe('useCollectionValidation', () => {
 	it('detects missing required fields', () => {
 		const collection = 'ai_prompts';
 		const fieldsStore = useFieldsStore();
+		const collectionStore = useCollectionsStore();
+
+		collectionStore.collections = [makeCollection(collection)];
 
 		// Only provide a subset
 		fieldsStore.fields = [makeField(collection, 'name', 'string')];
@@ -66,6 +94,9 @@ describe('useCollectionValidation', () => {
 	it('detects invalid field types for existing fields', () => {
 		const collection = 'ai_prompts';
 		const fieldsStore = useFieldsStore();
+		const collectionStore = useCollectionsStore();
+
+		collectionStore.collections = [makeCollection(collection)];
 
 		fieldsStore.fields = [
 			makeField(collection, 'name', 'integer'), // should be string
@@ -82,8 +113,11 @@ describe('useCollectionValidation', () => {
 	});
 
 	it('reacts to collection ref changes', async () => {
-		const c = ref('coll_a');
+		const collection = ref('coll_a');
 		const fieldsStore = useFieldsStore();
+		const collectionStore = useCollectionsStore();
+
+		collectionStore.collections = [makeCollection('coll_a'), makeCollection('coll_b')];
 
 		fieldsStore.fields = [
 			// coll_a missing most required fields
@@ -95,12 +129,13 @@ describe('useCollectionValidation', () => {
 			makeField('coll_b', 'messages', 'json'),
 		];
 
-		const validation = useCollectionValidation(c);
+		const validation = useCollectionValidation(collection);
 		expect(validation.value.missingFields.length).toBeGreaterThan(0);
 
-		c.value = 'coll_b';
+		collection.value = 'coll_b';
 		await nextTick();
 
+		expect(validation.value.collectionNotFound).toBe(false);
 		expect(validation.value.missingFields).toHaveLength(0);
 		expect(validation.value.invalidFields).toHaveLength(0);
 	});
