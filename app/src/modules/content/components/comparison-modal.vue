@@ -153,12 +153,14 @@ async function getComparison() {
 }
 
 async function fetchUserUpdated() {
-	if (!currentVersion.value.user_updated) return;
+	// Try user_updated first, fallback to user_created if not available
+	const userId = currentVersion.value.user_updated || currentVersion.value.user_created;
+	if (!userId) return;
 
 	userLoading.value = true;
 
 	try {
-		const response = await api.get(`/users/${currentVersion.value.user_updated}`, {
+		const response = await api.get(`/users/${userId}`, {
 			params: {
 				fields: ['id', 'first_name', 'last_name', 'email'],
 			},
@@ -175,9 +177,8 @@ async function fetchUserUpdated() {
 async function fetchMainItemUserUpdated() {
 	if (!comparedData.value?.main) return;
 
-	// Check for common user updated field names
-	const userField =
-		comparedData.value.main.user_updated || comparedData.value.main.modified_by || comparedData.value.main.updated_by;
+	// Check for common user updated field names, with fallback to user_created
+	const userField = comparedData.value.main.user_updated || comparedData.value.main.user_created;
 
 	if (!userField) return;
 
@@ -266,6 +267,7 @@ function usePromoteDialog() {
 								<div v-else-if="mainItemUserLoading" class="user-info">
 									{{ t('loading') }}
 								</div>
+								<div v-else class="user-info">{{ t('edited_by') }} {{ t('unknown_user') }}</div>
 							</div>
 						</div>
 					</div>
@@ -294,9 +296,7 @@ function usePromoteDialog() {
 								<div v-else-if="userLoading" class="user-info">
 									{{ t('loading') }}
 								</div>
-								<div v-else class="user-info">
-									{{ t('unknown_user') }}
-								</div>
+								<div v-else class="user-info">{{ t('edited_by') }} {{ t('unknown_user') }}</div>
 							</div>
 						</div>
 					</div>
@@ -310,20 +310,27 @@ function usePromoteDialog() {
 					</div>
 				</div>
 			</div>
-			<div class="modal-actions">
-				<v-button secondary @click="$emit('cancel')">
-					<v-icon name="close" left />
-					{{ t('cancel') }}
-				</v-button>
-				<v-button
-					v-tooltip.bottom="selectedFields.length === 0 ? t('promote_version_disabled') : t('promote_version')"
-					:disabled="selectedFields.length === 0"
-					:loading="promoting"
-					@click="onPromoteClick"
-				>
-					<v-icon name="arrow_upload_progress" left />
-					{{ t('promote_version') }}
-				</v-button>
+			<div class="comparison-footer">
+				<div class="comparison-footer-col-1">
+					<div class="fields-changed">
+						{{ t('updated_field_count', { count: selectedFields.length }, selectedFields.length) }}
+					</div>
+				</div>
+				<div class="comparison-footer-col-2">
+					<v-button secondary @click="$emit('cancel')">
+						<v-icon name="close" left />
+						{{ t('cancel') }}
+					</v-button>
+					<v-button
+						v-tooltip.bottom="selectedFields.length === 0 ? t('promote_version_disabled') : t('promote_version')"
+						:disabled="selectedFields.length === 0"
+						:loading="promoting"
+						@click="onPromoteClick"
+					>
+						<v-icon name="arrow_upload_progress" left />
+						{{ t('promote_version') }}
+					</v-button>
+				</div>
 			</div>
 		</div>
 
@@ -377,16 +384,15 @@ function usePromoteDialog() {
 
 	.comparison-content {
 		padding-inline: var(--comparison-modal-padding-x);
-		padding-block: var(--comparison-modal-padding-y);
+		padding-block: var(--comparison-modal-padding-x);
 	}
 
 	.side-header {
-		border-block-end: 2px solid var(--theme--border-color);
 		display: flex;
 		padding-block: var(--comparison-modal-padding-y);
 		padding-inline: var(--comparison-modal-padding-x);
 		justify-content: space-between;
-		align-items: flex-start;
+		align-items: center;
 		align-self: stretch;
 		gap: 16px;
 
@@ -418,8 +424,8 @@ function usePromoteDialog() {
 				}
 
 				.user-info {
-					font-size: 12px;
-					line-height: 16px;
+					font-size: 14px;
+					line-height: 20px;
 					color: var(--theme--foreground-subdued);
 				}
 			}
@@ -427,23 +433,37 @@ function usePromoteDialog() {
 	}
 
 	.comparison-divider {
-		inline-size: 1px;
-		background: repeating-linear-gradient(
-			to bottom,
-			transparent,
-			transparent 4px,
-			var(--theme--border-color) 4px,
-			var(--theme--border-color) 8px
-		);
-		margin: 0 var(--content-padding);
+		border-inline-end: 2px dashed var(--theme--border-color-subdued);
+		background: var(--theme--background);
 	}
 
-	.modal-actions {
+	.comparison-footer {
 		display: flex;
-		justify-content: flex-end;
+		justify-content: space-between;
 		padding-inline: var(--comparison-modal-padding-x);
 		padding-block: var(--comparison-modal-padding-y);
-		gap: 24px;
+		border-block-start: 2px solid var(--theme--border-color-subdued);
+
+		.comparison-footer-col-1 {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+
+			.fields-changed {
+				font-size: 14px;
+				line-height: 20px;
+				color: var(--theme--foreground-subdued);
+				font-weight: 600;
+			}
+		}
+
+		.comparison-footer-col-2 {
+			flex: 1;
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			gap: 24px;
+		}
 	}
 
 	.compare {
