@@ -7,7 +7,7 @@ import { isNil } from 'lodash';
 import { ref, toRefs, unref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import slugify from '@sindresorhus/slugify';
-import VersionPromoteDrawer from './version-promote-drawer.vue';
+import ComparisonModal from './comparison-modal.vue';
 
 interface Props {
 	collection: string;
@@ -321,7 +321,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 			</v-list>
 		</v-menu>
 
-		<version-promote-drawer
+		<comparison-modal
 			v-if="currentVersion !== null"
 			:active="isVersionPromoteDrawerOpen"
 			:current-version="currentVersion"
