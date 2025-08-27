@@ -381,13 +381,6 @@ router.post(
 			throw new InvalidPayloadError({ reason: `"otp" is required` });
 		}
 
-		const usersService = new UsersService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		const currentUser = await usersService.readOne(req.accountability.user, { fields: ['provider'] });
-		const requiresPassword = currentUser?.['provider'] === 'default';
 
 		const service = new TFAService({
 			accountability: req.accountability,
