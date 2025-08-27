@@ -332,12 +332,11 @@ router.post(
 			throw new InvalidCredentialsError();
 		}
 
-		const usersService = new UsersService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		const currentUser = await usersService.readOne(req.accountability.user, { fields: ['provider'] });
+		const currentUser = await getDatabase()
+			.select('provider')
+			.from('directus_users')
+			.where({ id: req.accountability.user })
+			.first();
 		const requiresPassword = currentUser?.['provider'] === 'default';
 
 		if (requiresPassword && !req.body.password) {
