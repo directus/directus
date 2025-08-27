@@ -1,27 +1,21 @@
 import { Action } from '@directus/constants';
 import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
-import type {
-	AbstractServiceOptions,
-	ContentVersion,
-	Filter,
-	Item,
-	MutationOptions,
-	PrimaryKey,
-	Query,
-} from '@directus/types';
+import type { AbstractServiceOptions, ContentVersion, Item, MutationOptions, PrimaryKey, Query } from '@directus/types';
 import Joi from 'joi';
-import { assign, pick } from 'lodash-es';
+import { assign, get, isEqual, isPlainObject, pick } from 'lodash-es';
 import objectHash from 'object-hash';
 import { getCache } from '../cache.js';
+import { getHelpers } from '../database/helpers/index.js';
 import emitter from '../emitter.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
+import { splitRecursive } from '../utils/versioning/split-recursive.js';
 import { ActivityService } from './activity.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RevisionsService } from './revisions.js';
 
-export class VersionsService extends ItemsService {
+export class VersionsService extends ItemsService<ContentVersion> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_versions', options);
 	}
@@ -79,12 +73,12 @@ export class VersionsService extends ItemsService {
 			schema: this.schema,
 		});
 
-		const existingVersions = await sudoService.readByQuery({
+		const existingVersions = (await sudoService.readByQuery({
 			aggregate: { count: ['*'] },
 			filter: { key: { _eq: data['key'] }, collection: { _eq: data['collection'] }, item: { _eq: data['item'] } },
-		});
+		})) as any[];
 
-		if (existingVersions[0]!['count'] > 0) {
+		if (existingVersions[0]['count'] > 0) {
 			throw new UnprocessableContentError({
 				reason: `Version "${data['key']}" already exists for item "${data['item']}" in collection "${data['collection']}"`,
 			});
@@ -113,25 +107,16 @@ export class VersionsService extends ItemsService {
 		return { outdated: hash !== mainHash, mainHash };
 	}
 
-	async getVersionSaves(key: string, collection: string, item: string | undefined): Promise<Partial<Item>[] | null> {
-		const filter: Filter = {
-			key: { _eq: key },
-			collection: { _eq: collection },
-		};
-
-		if (item) {
-			filter['item'] = { _eq: item };
-		}
-
-		const versions = await this.readByQuery({ filter });
-
-		if (!versions?.[0]) return null;
-
-		if (versions[0]['delta']) {
-			return [versions[0]['delta']];
-		}
-
-		return null;
+	async getVersionSave(key: string, collection: string, item: string) {
+		return (
+			await this.readByQuery({
+				filter: {
+					key: { _eq: key },
+					collection: { _eq: collection },
+					item: { _eq: item },
+				},
+			})
+		)[0];
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -200,7 +185,7 @@ export class VersionsService extends ItemsService {
 					filter: { id: { _neq: pk }, key: { _eq: data['key'] }, collection: { _eq: collection }, item: { _eq: item } },
 				});
 
-				if (existingVersions[0]!['count'] > 0) {
+				if ((existingVersions as any)[0]!['count'] > 0) {
 					throw new UnprocessableContentError({
 						reason: `Version "${data['key']}" already exists for item "${item}" in collection "${collection}"`,
 					});
@@ -211,7 +196,7 @@ export class VersionsService extends ItemsService {
 		return super.updateMany(keys, data, opts);
 	}
 
-	async save(key: PrimaryKey, data: Partial<Item>): Promise<Partial<Item>> {
+	async save(key: PrimaryKey, delta: Partial<Item>): Promise<Partial<Item>> {
 		const version = await super.readOne(key);
 
 		const payloadService = new PayloadService(this.collection, {
@@ -230,7 +215,7 @@ export class VersionsService extends ItemsService {
 			schema: this.schema,
 		});
 
-		const { item, collection } = version;
+		const { item, collection, delta: existingDelta } = version;
 
 		const activity = await activityService.createOne({
 			action: Action.VERSION_SAVE,
@@ -242,7 +227,9 @@ export class VersionsService extends ItemsService {
 			item,
 		});
 
-		const revisionDelta = await payloadService.prepareDelta(data);
+		const helpers = getHelpers(this.knex);
+
+		let revisionDelta = await payloadService.prepareDelta(delta);
 
 		await revisionsService.createOne({
 			activity,
@@ -253,11 +240,28 @@ export class VersionsService extends ItemsService {
 			delta: revisionDelta,
 		});
 
-		const finalVersionDelta = assign({}, version['delta'], revisionDelta ? JSON.parse(revisionDelta) : null);
+		revisionDelta = revisionDelta ? JSON.parse(revisionDelta) : null;
+
+		const date = new Date(helpers.date.writeTimestamp(new Date().toISOString()));
+
+		deepMapObjects(revisionDelta, (object, path) => {
+			const existing = get(existingDelta, path);
+
+			if (existing && isEqual(existing, object)) return;
+
+			object['_user'] = this.accountability?.user;
+			object['_date'] = date;
+		});
+
+		const finalVersionDelta = assign({}, existingDelta, revisionDelta);
 
 		const sudoService = new ItemsService(this.collection, {
 			knex: this.knex,
 			schema: this.schema,
+			accountability: {
+				...this.accountability!,
+				admin: true,
+			},
 		});
 
 		await sudoService.updateOne(key, { delta: finalVersionDelta });
@@ -304,7 +308,9 @@ export class VersionsService extends ItemsService {
 			});
 		}
 
-		const payloadToUpdate = fields ? pick(delta, fields) : delta;
+		const { rawDelta, defaultOverwrites } = splitRecursive(delta);
+
+		const payloadToUpdate = fields ? pick(rawDelta, fields) : rawDelta;
 
 		const itemsService = new ItemsService(collection, {
 			accountability: this.accountability,
@@ -327,7 +333,9 @@ export class VersionsService extends ItemsService {
 			},
 		);
 
-		const updatedItemKey = await itemsService.updateOne(item, payloadAfterHooks);
+		const updatedItemKey = await itemsService.updateOne(item, payloadAfterHooks, {
+			overwriteDefaults: defaultOverwrites as any,
+		});
 
 		emitter.emitAction(
 			['items.promote', `${collection}.items.promote`],
@@ -345,5 +353,18 @@ export class VersionsService extends ItemsService {
 		);
 
 		return updatedItemKey;
+	}
+}
+
+function deepMapObjects(
+	object: unknown,
+	fn: (object: Record<string, any>, path: string[]) => void,
+	path: string[] = [],
+) {
+	if (isPlainObject(object) && typeof object === 'object' && object !== null) {
+		fn(object, path);
+		Object.entries(object).map(([key, value]) => deepMapObjects(value, fn, [...path, key]));
+	} else if (Array.isArray(object)) {
+		object.map((value, index) => deepMapObjects(value, fn, [...path, String(index)]));
 	}
 }
