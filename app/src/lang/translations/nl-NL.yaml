@@ -46,6 +46,8 @@ location: Locatie
 collection_names_are_case_sensitive: Collectienamen zijn hoofdlettergevoelig
 condition_rules: Voorwaarde Regels
 input: Invoer
+invalid_input: Ongeldige invoer
+not_a_number: Geen getal
 maps: Kaarten
 switch_user: Verander gebruiker
 item_creation: Item Aanmaken
@@ -2491,6 +2493,12 @@ operations:
     name: Slaap
     description: Wacht een opgegeven aantal milliseconden
     milliseconds: Milliseconden
+  throw-error:
+    name: Gooi fout
+    description: Gooi een fout in het afwijzen pad
+    code: Error Code
+    status: HTTP Statuscode
+    message: Foutmelding
   transform:
     name: Payload transformeren
     description: Wijzig de JSON payload van de Flow
