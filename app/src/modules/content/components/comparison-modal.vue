@@ -512,52 +512,5 @@ function usePromoteDialog() {
 			}
 		}
 	}
-
-	.compare {
-		display: flex;
-		align-items: center;
-		inline-size: 100%;
-		padding: 8px;
-		gap: 8px;
-		color: var(--theme--foreground-subdued);
-		background-color: var(--theme--background-subdued);
-		cursor: pointer;
-
-		.field-content {
-			flex-grow: 1;
-		}
-
-		.version {
-			text-transform: uppercase;
-		}
-
-		&.main {
-			border-radius: var(--theme--border-radius) var(--theme--border-radius) 0 0;
-			&.active {
-				color: var(--theme--secondary);
-				background-color: var(--secondary-alt);
-
-				.version {
-					color: var(--theme--secondary);
-					border-color: var(--theme--secondary);
-					background-color: var(--secondary-25);
-				}
-			}
-		}
-
-		&.current {
-			border-radius: 0 0 var(--theme--border-radius) var(--theme--border-radius);
-			&.active {
-				color: var(--theme--primary);
-				background-color: var(--theme--primary-background);
-
-				.version {
-					color: var(--theme--primary);
-					border-color: var(--theme--primary);
-					background-color: var(--theme--primary-subdued);
-				}
-			}
-		}
-	}
 }
 </style>
