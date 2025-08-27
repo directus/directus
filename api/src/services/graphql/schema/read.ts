@@ -707,7 +707,6 @@ export async function getReadableTypes(
 					? { version: new GraphQLNonNull(GraphQLString) }
 					: {
 							version: new GraphQLNonNull(GraphQLString),
-							versionRaw: GraphQLBoolean,
 							id: new GraphQLNonNull(GraphQLID),
 						},
 				resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
