@@ -1,14 +1,3 @@
-import type {
-	Collection,
-	Field,
-	File,
-	FlowRaw,
-	OperationRaw,
-	Query,
-	RawCollection,
-	RawField,
-	Type,
-} from '@directus/types';
 import { z } from 'zod';
 
 // PK
@@ -20,33 +9,33 @@ export const ItemInputSchema = z.record(z.string(), z.any());
 export const ItemValidateSchema = z.record(z.string(), z.any());
 
 // query
-export const QueryInputSchema = z.object({
-	fields: z.array(z.string()).optional(),
-	sort: z.array(z.string()).optional(),
-	filter: z.record(z.string(), z.any()).optional(),
-	limit: z.number().optional(),
-	offset: z.number().optional(),
-	page: z.number().optional(),
-	search: z.string().optional(),
-	deep: z.record(z.string(), z.any()).optional(),
-	alias: z.record(z.string(), z.string()).optional(),
-	aggregate: z
-		.object({
-			count: z.array(z.string()).optional(),
-			sum: z.array(z.string()).optional(),
-			avg: z.array(z.string()).optional(),
-			min: z.array(z.string()).optional(),
-			max: z.array(z.string()).optional(),
-		})
-		.optional(),
-	backlink: z.boolean().optional(),
-	version: z.string().optional(),
-	versionRaw: z.boolean().optional(),
-	export: z.string().optional(),
-	groupBy: z.array(z.string()).optional(),
-});
+export const QueryInputSchema = z
+	.object({
+		fields: z.array(z.string()),
+		sort: z.array(z.string()),
+		filter: z.record(z.string(), z.any()),
+		limit: z.number(),
+		offset: z.number(),
+		page: z.number(),
+		search: z.string(),
+		deep: z.record(z.string(), z.any()),
+		alias: z.record(z.string(), z.string()),
+		aggregate: z.object({
+			count: z.array(z.string()),
+			sum: z.array(z.string()),
+			avg: z.array(z.string()),
+			min: z.array(z.string()),
+			max: z.array(z.string()),
+		}),
+		backlink: z.boolean(),
+		version: z.string(),
+		versionRaw: z.boolean(),
+		export: z.string(),
+		group: z.array(z.string()),
+	})
+	.partial();
 
-export const QueryValidateSchema = z.custom<Query>();
+export const QueryValidateSchema = QueryInputSchema;
 
 // field
 export const RawFieldItemInputSchema = z.object({
@@ -59,23 +48,18 @@ export const RawFieldItemInputSchema = z.object({
 	meta: z.union([z.record(z.string(), z.any()), z.null()]).optional(),
 });
 
-export const RawFieldItemValidateSchema = z.custom<RawField>();
+export const RawFieldItemValidateSchema = RawFieldItemInputSchema;
 
 export const FieldItemInputSchema = z.object({
 	field: z.string(),
-	type: z.string(),
+	type: z.string().nullable(),
 	name: z.string().optional(),
 	collection: z.string().optional(),
 	schema: z.union([z.record(z.string(), z.any()), z.null()]).optional(),
 	meta: z.union([z.record(z.string(), z.any()), z.null()]).optional(),
 });
 
-export const FieldItemValidateSchema = z.custom<
-	Partial<Field> & {
-		field: string;
-		type: Type | null;
-	}
->();
+export const FieldItemValidateSchema = FieldItemInputSchema;
 
 // collection
 export const CollectionItemInputSchema = z.object({
@@ -85,8 +69,12 @@ export const CollectionItemInputSchema = z.object({
 	schema: z.union([z.record(z.string(), z.any()), z.null()]).optional(),
 });
 
-export const CollectionItemValidateCreateSchema = z.custom<RawCollection>();
-export const CollectionItemValidateUpdateSchema = z.custom<Collection>();
+export const CollectionItemValidateCreateSchema = CollectionItemInputSchema;
+export const CollectionItemValidateUpdateSchema = z.object({
+	collection: z.string(),
+	meta: z.union([z.record(z.string(), z.any()), z.null()]).optional(),
+	schema: z.union([z.record(z.string(), z.any()), z.null()]).optional(),
+});
 
 // file
 export const FileItemInputSchema = z
@@ -120,7 +108,7 @@ export const FileItemInputSchema = z
 	})
 	.partial();
 
-export const FileItemValidateSchema = z.custom<Partial<File>>();
+export const FileItemValidateSchema = FileItemInputSchema;
 
 export const FileImportItemInputSchema = z.object({
 	url: z.string(),
@@ -150,7 +138,7 @@ export const OperationItemInputSchema = z
 	})
 	.partial();
 
-export const OperationItemValidateSchema = z.custom<Partial<OperationRaw>>();
+export const OperationItemValidateSchema = OperationItemInputSchema;
 
 // flow
 export const FlowItemInputSchema = z.object({
@@ -169,7 +157,7 @@ export const FlowItemInputSchema = z.object({
 	accountability: z.union([z.enum(['all', 'activity']), z.null()]),
 });
 
-export const FlowItemValidateSchema = z.custom<Partial<FlowRaw>>();
+export const FlowItemValidateSchema = FlowItemInputSchema;
 
 // trigger flow
 export const TriggerFlowInputSchema = z.object({

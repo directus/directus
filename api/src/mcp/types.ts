@@ -52,7 +52,7 @@ export interface Prompt {
 }
 
 export interface MCPOptions {
-	promptsCollection: string;
+	promptsCollection?: string;
 	allowDeletes?: boolean;
 	systemPromptEnabled?: boolean;
 	systemPrompt?: string | null;

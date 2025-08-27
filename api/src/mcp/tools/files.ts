@@ -1,4 +1,4 @@
-import type { PrimaryKey } from '@directus/types';
+import type { File, PrimaryKey } from '@directus/types';
 import { isObject } from '@directus/utils';
 import { z } from 'zod';
 import { FilesService } from '../../services/files.js';
@@ -83,9 +83,9 @@ export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
 			if (Array.isArray(args.data)) {
 				updatedKeys = await service.updateBatch(args.data);
 			} else if (args.keys) {
-				updatedKeys = await service.updateMany(args.keys, args.data);
+				updatedKeys = await service.updateMany(args.keys, args.data as Partial<File>);
 			} else {
-				updatedKeys = await service.updateByQuery(sanitizedQuery, args.data);
+				updatedKeys = await service.updateByQuery(sanitizedQuery, args.data as Partial<File>);
 			}
 
 			const result = await service.readMany(updatedKeys, sanitizedQuery);
@@ -109,7 +109,7 @@ export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
 			const savedKeys = [];
 
 			for (const file of args.data) {
-				const savedKey = await service.importOne(file.url, file.file);
+				const savedKey = await service.importOne(file.url, file.file as Partial<File>);
 
 				savedKeys.push(savedKey);
 			}
