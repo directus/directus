@@ -3,15 +3,15 @@
 "@directus/types": patch
 ---
 
-Redesign Content Versioning to now work across relations and all query parameters.
+Fixed `Content Versioning` to correctly merge relational data and support all query parameter functionality
 
 ::: notice
 
-The following things should be kept in mind when updating to the next release:
-1. The returned data now closely matches our existing apis, likely breaking existing logic using versioning.
-2. GQL `_by_version` now has separate options for `version` and `versionRaw` and does not default to versionRaw anymore.
-3. Default values like `current_user` will return unexpected results which will be addressed in a follow up PR.
+The following changes should be kept in mind when updating:
+1. Relational versioned data now requires explicit field expansion to be included in the response.
+2. Invalid data (e.g. Fails validation rules) will error on query
+3. Filter conditions now apply to the versioned data instead of the main record
 
-For more information, please read the [docs](TODO) on how to work with the new content versioning system.
+For more information, please read the [breaking change docs](https://directus.io/docs/releases/breaking-changes/version-11#version-11110) for a full list of changes.
 
 :::
