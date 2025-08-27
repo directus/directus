@@ -17,11 +17,6 @@ import prompts from './prompts/index.js';
 
 export const FilesValidateSchema = z.discriminatedUnion('action', [
 	z.strictObject({
-		action: z.literal('create'),
-		data: z.union([z.array(FileItemValidateSchema), FileItemValidateSchema]),
-		query: QueryValidateSchema.optional(),
-	}),
-	z.strictObject({
 		action: z.literal('read'),
 		keys: z.array(PrimaryKeyValidateSchema).optional(),
 		query: QueryValidateSchema.optional(),
@@ -43,7 +38,7 @@ export const FilesValidateSchema = z.discriminatedUnion('action', [
 ]);
 
 const FilesInputSchema = z.object({
-	action: z.enum(['create', 'read', 'update', 'delete', 'import']).describe('The operation to perform'),
+	action: z.enum(['read', 'update', 'delete', 'import']).describe('The operation to perform'),
 	query: QueryInputSchema.optional(),
 	keys: z.array(PrimaryKeyInputSchema).optional(),
 	data: z.union([z.array(FileItemInputSchema), FileItemInputSchema, FileImportItemInputSchema]).optional(),
