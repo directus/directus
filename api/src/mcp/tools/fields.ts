@@ -1,5 +1,5 @@
 import { InvalidPayloadError } from '@directus/errors';
-import type { Item } from '@directus/types';
+import type { Field, Item, RawField, Type } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
 import { FieldsService } from '../../services/fields.js';
@@ -63,7 +63,13 @@ export const fields = defineTool<z.infer<typeof FieldsValidateSchema>>({
 		});
 
 		if (args.action === 'create') {
-			await service.createField(args.collection, args.data);
+			await service.createField(
+				args.collection,
+				args.data as Partial<Field> & {
+					field: string;
+					type: Type | null;
+				},
+			);
 
 			const result = await service.readOne(args.collection, args.data.field);
 
@@ -93,7 +99,7 @@ export const fields = defineTool<z.infer<typeof FieldsValidateSchema>>({
 		}
 
 		if (args.action === 'update') {
-			const data = toArray(args.data);
+			const data = toArray(args.data as RawField | RawField[]);
 
 			await service.updateFields(args.collection, data);
 

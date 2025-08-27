@@ -1,3 +1,4 @@
+import type { FlowRaw } from '@directus/types';
 import { isObject } from '@directus/utils';
 import { z } from 'zod';
 import { FlowsService } from '../../services/flows.js';
@@ -75,7 +76,7 @@ export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
 		}
 
 		if (args.action === 'update') {
-			const updatedKey = await flowsService.updateOne(args.key, args.data);
+			const updatedKey = await flowsService.updateOne(args.key, args.data as Partial<FlowRaw>);
 			const result = await flowsService.readOne(updatedKey, sanitizedQuery);
 
 			return {

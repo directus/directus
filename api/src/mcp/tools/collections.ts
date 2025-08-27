@@ -1,4 +1,5 @@
 import { InvalidPayloadError } from '@directus/errors';
+import type { Collection, RawCollection } from '@directus/types';
 import { isObject, toArray } from '@directus/utils';
 import { z } from 'zod';
 import { CollectionsService } from '../../services/collections.js';
@@ -57,7 +58,7 @@ export const collections = defineTool<z.infer<typeof CollectionsValidateSchema>>
 		if (args.action === 'create') {
 			const data = toArray(args.data);
 
-			const savedKeys = await service.createMany(data);
+			const savedKeys = await service.createMany(data as RawCollection[]);
 
 			const result = await service.readMany(savedKeys);
 
@@ -83,7 +84,7 @@ export const collections = defineTool<z.infer<typeof CollectionsValidateSchema>>
 		}
 
 		if (args.action === 'update') {
-			const updatedKeys = await service.updateBatch(toArray(args.data));
+			const updatedKeys = await service.updateBatch(toArray(args.data as Collection | Collection[]));
 
 			const result = await service.readMany(updatedKeys);
 
