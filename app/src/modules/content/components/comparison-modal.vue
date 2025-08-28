@@ -2,12 +2,11 @@
 import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { userName } from '@/utils/user-name';
-import { localizedFormat } from '@/utils/localized-format';
 import { ContentVersion, Field, User } from '@directus/types';
 import { isNil } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ComparisonHeader from './comparison-header.vue';
 
 type Comparison = {
 	outdated: boolean;
@@ -60,11 +59,6 @@ const versionDateUpdated = computed(() => {
 	return new Date(currentVersion.value.date_updated);
 });
 
-const versionUserUpdated = computed(() => {
-	if (!userUpdated.value) return null;
-	return userName(userUpdated.value);
-});
-
 const mainItemDateUpdated = computed(() => {
 	if (!comparedData.value?.main) return null;
 
@@ -74,11 +68,6 @@ const mainItemDateUpdated = computed(() => {
 
 	if (!dateField) return null;
 	return new Date(dateField);
-});
-
-const mainItemUserUpdatedName = computed(() => {
-	if (!mainItemUserUpdated.value) return null;
-	return userName(mainItemUserUpdated.value);
 });
 
 const comparedFields = computed<Field[]>(() => {
@@ -285,26 +274,12 @@ function usePromoteDialog() {
 			<div class="scrollable-container">
 				<div class="columns vertical-divider">
 					<div class="col left">
-						<div class="header">
-							<div class="header-content">
-								<h3>{{ t('main_version') }}</h3>
-							</div>
-							<div class="header-meta">
-								<div class="meta-info">
-									<div v-if="mainItemDateUpdated" class="date-time">
-										{{ localizedFormat(mainItemDateUpdated, String(t('date-fns_date_short'))) }}
-										{{ localizedFormat(mainItemDateUpdated, String(t('date-fns_time'))) }}
-									</div>
-									<div v-if="mainItemUserUpdatedName" class="user-info">
-										{{ t('edited_by') }} {{ mainItemUserUpdatedName }}
-									</div>
-									<div v-else-if="mainItemUserLoading" class="user-info">
-										{{ t('loading') }}
-									</div>
-									<div v-else class="user-info">{{ t('edited_by') }} {{ t('unknown_user') }}</div>
-								</div>
-							</div>
-						</div>
+						<ComparisonHeader
+							:title="t('main_version')"
+							:date-updated="mainItemDateUpdated"
+							:user-updated="mainItemUserUpdated"
+							:user-loading="mainItemUserLoading"
+						/>
 						<div class="comparison-content-divider"></div>
 						<div class="comparison-content">
 							<v-form
@@ -317,24 +292,12 @@ function usePromoteDialog() {
 					</div>
 					<div class="comparison-divider"></div>
 					<div class="col right">
-						<div class="header">
-							<div class="header-content">
-								<h3>{{ currentVersionDisplayName }}</h3>
-							</div>
-							<div class="header-meta">
-								<div class="meta-info">
-									<div v-if="versionDateUpdated" class="date-time">
-										{{ localizedFormat(versionDateUpdated, String(t('date-fns_date_short'))) }}
-										{{ localizedFormat(versionDateUpdated, String(t('date-fns_time'))) }}
-									</div>
-									<div v-if="versionUserUpdated" class="user-info">{{ t('edited_by') }} {{ versionUserUpdated }}</div>
-									<div v-else-if="userLoading" class="user-info">
-										{{ t('loading') }}
-									</div>
-									<div v-else class="user-info">{{ t('edited_by') }} {{ t('unknown_user') }}</div>
-								</div>
-							</div>
-						</div>
+						<ComparisonHeader
+							:title="currentVersionDisplayName"
+							:date-updated="versionDateUpdated"
+							:user-updated="userUpdated"
+							:user-loading="userLoading"
+						/>
 						<div class="comparison-content-divider"></div>
 						<div class="comparison-content">
 							<v-form
@@ -351,7 +314,7 @@ function usePromoteDialog() {
 				<div class="columns">
 					<div class="col left">
 						<div class="fields-changed">
-							{{ t('updated_field_count', { count: selectedFields.length }, selectedFields.length) }}
+							{{ t('updated_field_count', { count: availableFieldsCount }, availableFieldsCount) }}
 						</div>
 					</div>
 					<div class="col right">
@@ -465,51 +428,6 @@ function usePromoteDialog() {
 	.comparison-content {
 		padding-inline: var(--comparison-modal-padding-x);
 		padding-block: var(--comparison-modal-padding-x);
-	}
-
-	.header {
-		display: flex;
-		padding-block: var(--comparison-modal-padding-y);
-		padding-inline: var(--comparison-modal-padding-x);
-		justify-content: space-between;
-		align-items: center;
-		align-self: stretch;
-		gap: 16px;
-
-		.header-content {
-			flex: 1;
-
-			h3 {
-				font-size: 20px;
-				font-weight: 600;
-				line-height: 32px;
-				color: var(--theme--foreground);
-				margin: 0;
-			}
-		}
-
-		.header-meta {
-			flex-shrink: 0;
-			min-inline-size: 0;
-
-			.meta-info {
-				text-align: end;
-
-				.date-time {
-					font-size: 14px;
-					font-weight: 500;
-					line-height: 20px;
-					color: var(--theme--foreground);
-					margin-block-end: 4px;
-				}
-
-				.user-info {
-					font-size: 14px;
-					line-height: 20px;
-					color: var(--theme--foreground-subdued);
-				}
-			}
-		}
 	}
 
 	.comparison-divider {
