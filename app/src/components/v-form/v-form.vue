@@ -44,6 +44,9 @@ const props = withDefaults(
 		showDivider?: boolean;
 		inline?: boolean;
 		version?: ContentVersion | null;
+		comparisonMode?: boolean;
+		selectedComparisonFields?: string[];
+		onToggleComparisonField?: (field: string) => void;
 	}>(),
 	{
 		collection: undefined,
@@ -343,6 +346,11 @@ function useRawEditor() {
 		}
 	}
 }
+
+function toggleComparisonField(field: TFormField | undefined) {
+	if (!field || !props.onToggleComparisonField) return;
+	props.onToggleComparisonField(field.field);
+}
 </script>
 
 <template>
@@ -390,6 +398,9 @@ function useRawEditor() {
 					:raw-editor-enabled="rawEditorEnabled"
 					:direction="direction"
 					:version
+					:comparison-mode="comparisonMode"
+					:selected-comparison-fields="selectedComparisonFields"
+					:on-toggle-comparison-field="onToggleComparisonField"
 					v-bind="fieldsMap[fieldName]!.meta?.options || {}"
 					@apply="apply"
 				/>
@@ -409,6 +420,8 @@ function useRawEditor() {
 					:disabled="isDisabled(fieldsMap[fieldName]!)"
 					:batch-mode="batchMode"
 					:batch-active="batchActiveFields.includes(fieldName)"
+					:comparison-mode="comparisonMode"
+					:comparison-active="selectedComparisonFields?.includes(fieldName)"
 					:primary-key="primaryKey"
 					:loading="loading"
 					:validation-error="
@@ -428,6 +441,7 @@ function useRawEditor() {
 					@unset="unsetValue(fieldsMap[fieldName]!)"
 					@toggle-batch="toggleBatchField(fieldsMap[fieldName]!)"
 					@toggle-raw="toggleRawField(fieldsMap[fieldName]!)"
+					@toggle-comparison="toggleComparisonField(fieldsMap[fieldName]!)"
 				/>
 			</template>
 		</template>
