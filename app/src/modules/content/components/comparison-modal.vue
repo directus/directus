@@ -304,6 +304,7 @@ function usePromoteDialog() {
 							</div>
 						</div>
 					</div>
+					<div class="comparison-content-divider"></div>
 					<div class="comparison-content">
 						<v-form
 							disabled
@@ -333,6 +334,7 @@ function usePromoteDialog() {
 							</div>
 						</div>
 					</div>
+					<div class="comparison-content-divider"></div>
 					<div class="comparison-content">
 						<v-form
 							disabled
@@ -411,6 +413,10 @@ function usePromoteDialog() {
 	flex-direction: column;
 	block-size: var(--comparison-modal-height);
 	inline-size: var(--comparison-modal-width);
+
+	.comparison-content-divider {
+		border-block-start: 2px solid var(--theme--border-color-subdued);
+	}
 
 	.preview-comparison {
 		display: flex;
