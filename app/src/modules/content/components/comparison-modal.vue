@@ -29,7 +29,7 @@ const props = defineProps<Props>();
 
 const { active, currentVersion, deleteVersionsAllowed } = toRefs(props);
 
-const selectedFields = ref<string[]>([]);
+const selectedComparisonFields = ref<string[]>([]);
 
 const comparedData = ref<Comparison | null>(null);
 
@@ -50,7 +50,7 @@ const currentVersionDisplayName = computed(() =>
 	isNil(currentVersion.value.name) ? currentVersion.value.key : currentVersion.value.name,
 );
 
-const isOutdated = computed(() => comparedData.value?.outdated ?? false);
+// const isOutdated = computed(() => comparedData.value?.outdated ?? false);
 
 const mainHash = computed(() => comparedData.value?.mainHash ?? '');
 
@@ -92,7 +92,7 @@ const allFieldsSelected = computed(() => {
 		comparedFields.value.some((field) => field.field === fieldKey),
 	);
 
-	return availableFields.length > 0 && availableFields.every((field) => selectedFields.value.includes(field));
+	return availableFields.length > 0 && availableFields.every((field) => selectedComparisonFields.value.includes(field));
 });
 
 const someFieldsSelected = computed(() => {
@@ -102,7 +102,7 @@ const someFieldsSelected = computed(() => {
 		comparedFields.value.some((field) => field.field === fieldKey),
 	);
 
-	return availableFields.length > 0 && availableFields.some((field) => selectedFields.value.includes(field));
+	return availableFields.length > 0 && availableFields.some((field) => selectedComparisonFields.value.includes(field));
 });
 
 const availableFieldsCount = computed(() => {
@@ -130,11 +130,11 @@ watch(
 );
 
 function addField(field: string) {
-	selectedFields.value = [...selectedFields.value, field];
+	selectedComparisonFields.value = [...selectedComparisonFields.value, field];
 }
 
 function removeField(field: string) {
-	selectedFields.value = selectedFields.value.filter((f) => f !== field);
+	selectedComparisonFields.value = selectedComparisonFields.value.filter((f: string) => f !== field);
 }
 
 function toggleSelectAll() {
@@ -145,9 +145,17 @@ function toggleSelectAll() {
 	);
 
 	if (allFieldsSelected.value) {
-		selectedFields.value = [];
+		selectedComparisonFields.value = [];
 	} else {
-		selectedFields.value = [...new Set([...selectedFields.value, ...availableFields])];
+		selectedComparisonFields.value = [...new Set([...selectedComparisonFields.value, ...availableFields])];
+	}
+}
+
+function toggleComparisonField(fieldKey: string) {
+	if (selectedComparisonFields.value.includes(fieldKey)) {
+		removeField(fieldKey);
+	} else {
+		addField(fieldKey);
 	}
 }
 
@@ -163,7 +171,9 @@ async function getComparison() {
 
 		const comparedFieldsKeys = comparedFields.value.map((field) => field.field);
 
-		selectedFields.value = Object.keys(result.current).filter((fieldKey) => comparedFieldsKeys.includes(fieldKey));
+		selectedComparisonFields.value = Object.keys(result.current).filter((fieldKey) =>
+			comparedFieldsKeys.includes(fieldKey),
+		);
 
 		// Fetch main item user after comparison data is loaded
 		await fetchMainItemUserUpdated();
@@ -228,7 +238,7 @@ function usePromoteDialog() {
 	return { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote };
 
 	function onPromoteClick() {
-		if (selectedFields.value.length === 0) return;
+		if (selectedComparisonFields.value.length === 0) return;
 
 		if (deleteVersionsAllowed.value) {
 			confirmDeleteOnPromoteDialogActive.value = true;
@@ -245,8 +255,8 @@ function usePromoteDialog() {
 		try {
 			await api.post(
 				`/versions/${unref(currentVersion).id}/promote`,
-				unref(selectedFields).length > 0
-					? { mainHash: unref(mainHash), fields: unref(selectedFields) }
+				unref(selectedComparisonFields).length > 0
+					? { mainHash: unref(mainHash), fields: unref(selectedComparisonFields) }
 					: { mainHash: unref(mainHash) },
 			);
 
@@ -305,6 +315,9 @@ function usePromoteDialog() {
 								:collection="currentVersion.collection"
 								:primary-key="currentVersion.item"
 								:initial-values="previewData"
+								:comparison-mode="!!comparedData"
+								:selected-comparison-fields="selectedComparisonFields"
+								:on-toggle-comparison-field="toggleComparisonField"
 							/>
 						</div>
 					</div>
@@ -324,7 +337,7 @@ function usePromoteDialog() {
 								:indeterminate="someFieldsSelected && !allFieldsSelected"
 								@update:model-value="toggleSelectAll"
 							>
-								{{ t('select_all_changes') }} ({{ selectedFields.length }}/{{ availableFieldsCount }})
+								{{ t('select_all_changes') }} ({{ selectedComparisonFields.length }}/{{ availableFieldsCount }})
 							</v-checkbox>
 						</div>
 						<v-button secondary @click="$emit('cancel')">
@@ -332,8 +345,10 @@ function usePromoteDialog() {
 							{{ t('cancel') }}
 						</v-button>
 						<v-button
-							v-tooltip.bottom="selectedFields.length === 0 ? t('promote_version_disabled') : t('promote_version')"
-							:disabled="selectedFields.length === 0"
+							v-tooltip.bottom="
+								selectedComparisonFields.length === 0 ? t('promote_version_disabled') : t('promote_version')
+							"
+							:disabled="selectedComparisonFields.length === 0"
 							:loading="promoting"
 							@click="onPromoteClick"
 						>

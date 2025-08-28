@@ -15,6 +15,8 @@ const props = withDefaults(
 		disabled?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
+		comparisonMode?: boolean;
+		selectedComparisonFields?: string[];
 		loading?: boolean;
 		validationErrors?: ValidationError[];
 		badge?: string;
@@ -124,6 +126,7 @@ watch(validationMessages, (newVal, oldVal) => {
 			:direction="direction"
 			:show-no-visible-fields="false"
 			:show-validation-errors="false"
+			:comparison-mode="comparisonMode"
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</v-detail>

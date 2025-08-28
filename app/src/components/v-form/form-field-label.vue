@@ -16,6 +16,8 @@ withDefaults(
 		loading?: boolean;
 		rawEditorEnabled?: boolean;
 		rawEditorActive?: boolean;
+		comparisonMode?: boolean;
+		comparisonActive?: boolean;
 	}>(),
 	{
 		batchMode: false,
@@ -31,7 +33,7 @@ withDefaults(
 	},
 );
 
-defineEmits(['toggle-batch', 'toggle-raw']);
+defineEmits(['toggle-batch', 'toggle-raw', 'toggle-comparison']);
 
 const { t } = useI18n();
 </script>
@@ -44,6 +46,12 @@ const { t } = useI18n();
 				:model-value="batchActive"
 				:value="field.field"
 				@update:model-value="$emit('toggle-batch', field)"
+			/>
+			<v-checkbox
+				v-if="comparisonMode"
+				:model-value="comparisonActive"
+				:value="field.field"
+				@update:model-value="$emit('toggle-comparison', field)"
 			/>
 			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 			<v-text-overflow :text="field.name" />

@@ -11,6 +11,8 @@ withDefaults(
 		disabled?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
+		comparisonMode?: boolean;
+		selectedComparisonFields?: string[];
 		loading?: boolean;
 		validationErrors?: ValidationError[];
 		badge?: string;
@@ -20,6 +22,7 @@ withDefaults(
 	{
 		batchActiveFields: () => [],
 		validationErrors: () => [],
+		selectedComparisonFields: () => [],
 	},
 );
 
@@ -38,6 +41,7 @@ defineEmits(['apply']);
 			:loading="loading"
 			:batch-mode="batchMode"
 			:disabled="disabled"
+			:comparison-mode="comparisonMode"
 			:badge="badge"
 			:raw-editor-enabled="rawEditorEnabled"
 			:direction="direction"
