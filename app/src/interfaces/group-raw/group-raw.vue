@@ -13,6 +13,7 @@ withDefaults(
 		batchActiveFields?: string[];
 		comparisonMode?: boolean;
 		selectedComparisonFields?: string[];
+		comparisonFields?: Set<string>;
 		loading?: boolean;
 		validationErrors?: ValidationError[];
 		badge?: string;
@@ -42,6 +43,7 @@ defineEmits(['apply']);
 			:batch-mode="batchMode"
 			:disabled="disabled"
 			:comparison-mode="comparisonMode"
+			:comparison-fields="comparisonFields"
 			:badge="badge"
 			:raw-editor-enabled="rawEditorEnabled"
 			:direction="direction"

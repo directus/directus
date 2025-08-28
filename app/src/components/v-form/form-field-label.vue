@@ -18,6 +18,7 @@ withDefaults(
 		rawEditorActive?: boolean;
 		comparisonMode?: boolean;
 		comparisonActive?: boolean;
+		comparisonFields?: Set<string>;
 	}>(),
 	{
 		batchMode: false,
@@ -48,7 +49,7 @@ const { t } = useI18n();
 				@update:model-value="$emit('toggle-batch', field)"
 			/>
 			<v-checkbox
-				v-if="comparisonMode"
+				v-if="comparisonMode && comparisonFields?.has(field.field)"
 				:model-value="comparisonActive"
 				:value="field.field"
 				@update:model-value="$emit('toggle-comparison', field)"

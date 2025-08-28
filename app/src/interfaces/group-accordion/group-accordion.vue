@@ -15,6 +15,7 @@ const props = withDefaults(
 		batchActiveFields?: string[];
 		comparisonMode?: boolean;
 		selectedComparisonFields?: string[];
+		comparisonFields?: Set<string>;
 		primaryKey: string | number;
 		loading?: boolean;
 		validationErrors?: ValidationError[];
@@ -124,6 +125,7 @@ function useComputedGroup() {
 			:batch-mode="batchMode"
 			:batch-active-fields="batchActiveFields"
 			:comparison-mode="comparisonMode"
+			:comparison-fields="comparisonFields"
 			:selected-comparison-fields="selectedComparisonFields"
 			:primary-key="primaryKey"
 			:loading="loading"
