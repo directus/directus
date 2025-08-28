@@ -46,6 +46,7 @@ const props = withDefaults(
 		version?: ContentVersion | null;
 		comparisonMode?: boolean;
 		selectedComparisonFields?: string[];
+		comparisonFields?: Set<string>;
 		onToggleComparisonField?: (field: string) => void;
 	}>(),
 	{
@@ -400,6 +401,7 @@ function toggleComparisonField(field: TFormField | undefined) {
 					:version
 					:comparison-mode="comparisonMode"
 					:selected-comparison-fields="selectedComparisonFields"
+					:comparison-fields="comparisonFields"
 					:on-toggle-comparison-field="onToggleComparisonField"
 					v-bind="fieldsMap[fieldName]!.meta?.options || {}"
 					@apply="apply"
@@ -422,6 +424,7 @@ function toggleComparisonField(field: TFormField | undefined) {
 					:batch-active="batchActiveFields.includes(fieldName)"
 					:comparison-mode="comparisonMode"
 					:comparison-active="selectedComparisonFields?.includes(fieldName)"
+					:comparison-fields="comparisonFields"
 					:primary-key="primaryKey"
 					:loading="loading"
 					:validation-error="

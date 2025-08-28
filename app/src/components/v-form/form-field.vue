@@ -31,6 +31,7 @@ const props = withDefaults(
 		direction?: string;
 		comparisonMode?: boolean;
 		comparisonActive?: boolean;
+		comparisonFields?: Set<string>;
 	}>(),
 	{
 		modelValue: undefined,
@@ -186,6 +187,7 @@ function useComputedValues() {
 					:batch-active="batchActive"
 					:comparison-mode="comparisonMode"
 					:comparison-active="comparisonActive"
+					:comparison-fields="comparisonFields"
 					:edited="isEdited"
 					:has-error="!!validationError"
 					:badge="badge"

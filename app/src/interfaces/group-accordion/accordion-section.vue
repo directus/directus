@@ -16,6 +16,7 @@ const props = withDefaults(
 		batchActiveFields?: string[];
 		comparisonMode?: boolean;
 		selectedComparisonFields?: string[];
+		comparisonFields?: Set<string>;
 		primaryKey: number | string;
 		loading?: boolean;
 		validationErrors?: ValidationError[];
@@ -110,6 +111,7 @@ function handleModifier(event: MouseEvent, toggle: () => void) {
 						:batch-mode="batchMode"
 						:disabled="disabled"
 						:comparison-mode="comparisonMode"
+						:comparison-fields="comparisonFields"
 						:direction="direction"
 						:show-no-visible-fields="false"
 						:show-validation-errors="false"

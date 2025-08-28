@@ -113,6 +113,16 @@ const availableFieldsCount = computed(() => {
 	).length;
 });
 
+const comparisonFields = computed(() => {
+	if (!comparedData.value) return new Set<string>();
+
+	return new Set(
+		Object.keys(comparedData.value.current).filter((fieldKey) =>
+			comparedFields.value.some((field) => field.field === fieldKey),
+		),
+	);
+});
+
 const previewData = computed(() => {
 	if (!comparedData.value) return null;
 	return comparedData.value.current;
@@ -317,6 +327,7 @@ function usePromoteDialog() {
 								:initial-values="previewData"
 								:comparison-mode="!!comparedData"
 								:selected-comparison-fields="selectedComparisonFields"
+								:comparison-fields="comparisonFields"
 								:on-toggle-comparison-field="toggleComparisonField"
 							/>
 						</div>
