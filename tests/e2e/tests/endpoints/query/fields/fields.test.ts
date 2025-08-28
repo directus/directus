@@ -5,7 +5,7 @@ import { useSnapshot } from '../../../../utils/useSnapshot';
 import { Schema } from './schema';
 
 const api = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
-const collections = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
+const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
 
 test(`select only id`, async () => {
 	const id = (

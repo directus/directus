@@ -21,7 +21,7 @@ import { join } from 'path';
 import { randomUUID } from 'crypto';
 
 const api = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
-const collections = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
+const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
 const token = randomUUID();
 
 const user = await api.request(

@@ -5,10 +5,14 @@ import { join } from 'path';
 import { readFile } from 'fs/promises';
 import { TestProject } from 'vitest/node';
 import { DeepPartial } from '@directus/types';
+import util from 'node:util';
 
 let sb: Sandbox | undefined;
 
 export async function setup(project: TestProject) {
+	// Enable full depth logging for better error visibility
+	util.inspect.defaultOptions.depth = null;
+
 	if (process.env['ALL'] === 'true') return;
 
 	const database = project.config.env['DATABASE'] as Database;
@@ -19,6 +23,7 @@ export async function setup(project: TestProject) {
 		dev: true,
 		watch: true,
 		prefix: database,
+		killPorts: true,
 		docker: {
 			basePort: String(Number(project.config.env['PORT']) + 10),
 			keep: true,

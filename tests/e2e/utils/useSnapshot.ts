@@ -22,7 +22,7 @@ const groups: string[] = [];
 export async function useSnapshot<Schema>(
 	api: DirectusClient<any> & RestClient<any>,
 	file: string,
-): Promise<Collections<Schema>> {
+): Promise<{ collections: Collections<Schema>; snapshot: Snapshot }> {
 	const collectionMap: Record<string, string> = {};
 	const collectionNameMap: Record<string, string> = {};
 	const collectionReplace: Record<string, string> = {};
@@ -140,7 +140,7 @@ export async function useSnapshot<Schema>(
 		throw new Error('Too many retries applying snapshot');
 	}
 
-	return collectionMap as any;
+	return { collections: collectionMap as any, snapshot: schemaSnapshot as Snapshot };
 }
 
 function getGroup(name: string) {
