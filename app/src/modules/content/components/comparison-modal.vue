@@ -282,98 +282,102 @@ function usePromoteDialog() {
 		@esc="$emit('cancel')"
 	>
 		<div class="comparison-modal">
-			<div class="preview-comparison">
-				<div class="comparison-side main-side">
-					<div class="side-header">
-						<div class="header-content">
-							<h3>{{ t('main_version') }}</h3>
-						</div>
-						<div class="header-meta">
-							<div class="meta-info">
-								<div v-if="mainItemDateUpdated" class="date-time">
-									{{ localizedFormat(mainItemDateUpdated, String(t('date-fns_date_short'))) }}
-									{{ localizedFormat(mainItemDateUpdated, String(t('date-fns_time'))) }}
+			<div class="scrollable-container">
+				<div class="columns vertical-divider">
+					<div class="col left">
+						<div class="header">
+							<div class="header-content">
+								<h3>{{ t('main_version') }}</h3>
+							</div>
+							<div class="header-meta">
+								<div class="meta-info">
+									<div v-if="mainItemDateUpdated" class="date-time">
+										{{ localizedFormat(mainItemDateUpdated, String(t('date-fns_date_short'))) }}
+										{{ localizedFormat(mainItemDateUpdated, String(t('date-fns_time'))) }}
+									</div>
+									<div v-if="mainItemUserUpdatedName" class="user-info">
+										{{ t('edited_by') }} {{ mainItemUserUpdatedName }}
+									</div>
+									<div v-else-if="mainItemUserLoading" class="user-info">
+										{{ t('loading') }}
+									</div>
+									<div v-else class="user-info">{{ t('edited_by') }} {{ t('unknown_user') }}</div>
 								</div>
-								<div v-if="mainItemUserUpdatedName" class="user-info">
-									{{ t('edited_by') }} {{ mainItemUserUpdatedName }}
-								</div>
-								<div v-else-if="mainItemUserLoading" class="user-info">
-									{{ t('loading') }}
-								</div>
-								<div v-else class="user-info">{{ t('edited_by') }} {{ t('unknown_user') }}</div>
 							</div>
 						</div>
-					</div>
-					<div class="comparison-content-divider"></div>
-					<div class="comparison-content">
-						<v-form
-							disabled
-							:collection="currentVersion.collection"
-							:primary-key="currentVersion.item"
-							:initial-values="comparedData?.main"
-						/>
-					</div>
-				</div>
-				<div class="comparison-divider"></div>
-				<div class="comparison-side version-side">
-					<div class="side-header">
-						<div class="header-content">
-							<h3>{{ currentVersionDisplayName }}</h3>
+						<div class="comparison-content-divider"></div>
+						<div class="comparison-content">
+							<v-form
+								disabled
+								:collection="currentVersion.collection"
+								:primary-key="currentVersion.item"
+								:initial-values="comparedData?.main"
+							/>
 						</div>
-						<div class="header-meta">
-							<div class="meta-info">
-								<div v-if="versionDateUpdated" class="date-time">
-									{{ localizedFormat(versionDateUpdated, String(t('date-fns_date_short'))) }}
-									{{ localizedFormat(versionDateUpdated, String(t('date-fns_time'))) }}
+					</div>
+					<div class="comparison-divider"></div>
+					<div class="col right">
+						<div class="header">
+							<div class="header-content">
+								<h3>{{ currentVersionDisplayName }}</h3>
+							</div>
+							<div class="header-meta">
+								<div class="meta-info">
+									<div v-if="versionDateUpdated" class="date-time">
+										{{ localizedFormat(versionDateUpdated, String(t('date-fns_date_short'))) }}
+										{{ localizedFormat(versionDateUpdated, String(t('date-fns_time'))) }}
+									</div>
+									<div v-if="versionUserUpdated" class="user-info">{{ t('edited_by') }} {{ versionUserUpdated }}</div>
+									<div v-else-if="userLoading" class="user-info">
+										{{ t('loading') }}
+									</div>
+									<div v-else class="user-info">{{ t('edited_by') }} {{ t('unknown_user') }}</div>
 								</div>
-								<div v-if="versionUserUpdated" class="user-info">{{ t('edited_by') }} {{ versionUserUpdated }}</div>
-								<div v-else-if="userLoading" class="user-info">
-									{{ t('loading') }}
-								</div>
-								<div v-else class="user-info">{{ t('edited_by') }} {{ t('unknown_user') }}</div>
 							</div>
 						</div>
-					</div>
-					<div class="comparison-content-divider"></div>
-					<div class="comparison-content">
-						<v-form
-							disabled
-							:collection="currentVersion.collection"
-							:primary-key="currentVersion.item"
-							:initial-values="previewData"
-						/>
+						<div class="comparison-content-divider"></div>
+						<div class="comparison-content">
+							<v-form
+								disabled
+								:collection="currentVersion.collection"
+								:primary-key="currentVersion.item"
+								:initial-values="previewData"
+							/>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="comparison-footer">
-				<div class="comparison-footer-col-1">
-					<div class="fields-changed">
-						{{ t('updated_field_count', { count: selectedFields.length }, selectedFields.length) }}
+			<div class="footer">
+				<div class="columns">
+					<div class="col left">
+						<div class="fields-changed">
+							{{ t('updated_field_count', { count: selectedFields.length }, selectedFields.length) }}
+						</div>
 					</div>
-				</div>
-				<div class="comparison-footer-col-2">
-					<div class="select-all-container">
-						<v-checkbox
-							:model-value="allFieldsSelected"
-							:indeterminate="someFieldsSelected && !allFieldsSelected"
-							@update:model-value="toggleSelectAll"
+					<div class="col right">
+						<div class="select-all-container">
+							<v-checkbox
+								:model-value="allFieldsSelected"
+								:indeterminate="someFieldsSelected && !allFieldsSelected"
+								@update:model-value="toggleSelectAll"
+							>
+								{{ t('select_all_changes') }} ({{ selectedFields.length }}/{{ availableFieldsCount }})
+							</v-checkbox>
+						</div>
+						<v-button secondary @click="$emit('cancel')">
+							<v-icon name="close" left />
+							{{ t('cancel') }}
+						</v-button>
+						<v-button
+							v-tooltip.bottom="selectedFields.length === 0 ? t('promote_version_disabled') : t('promote_version')"
+							:disabled="selectedFields.length === 0"
+							:loading="promoting"
+							@click="onPromoteClick"
 						>
-							{{ t('select_all_changes') }} ({{ selectedFields.length }}/{{ availableFieldsCount }})
-						</v-checkbox>
+							<v-icon name="arrow_upload_progress" left />
+							{{ t('promote_version') }}
+						</v-button>
 					</div>
-					<v-button secondary @click="$emit('cancel')">
-						<v-icon name="close" left />
-						{{ t('cancel') }}
-					</v-button>
-					<v-button
-						v-tooltip.bottom="selectedFields.length === 0 ? t('promote_version_disabled') : t('promote_version')"
-						:disabled="selectedFields.length === 0"
-						:loading="promoting"
-						@click="onPromoteClick"
-					>
-						<v-icon name="arrow_upload_progress" left />
-						{{ t('promote_version') }}
-					</v-button>
 				</div>
 			</div>
 		</div>
@@ -413,21 +417,49 @@ function usePromoteDialog() {
 	flex-direction: column;
 	block-size: var(--comparison-modal-height);
 	inline-size: var(--comparison-modal-width);
+	overflow: hidden;
 
 	.comparison-content-divider {
 		border-block-start: 2px solid var(--theme--border-color-subdued);
 	}
 
-	.preview-comparison {
-		display: flex;
-		overflow-y: auto;
-		flex: 1;
+	.scrollable-container {
+		flex: 1 1 auto;
+		overflow: auto;
 	}
 
-	.comparison-side {
-		flex: 1;
+	.columns {
 		display: flex;
-		flex-direction: column;
+		align-items: stretch;
+		min-block-size: 100%;
+		position: relative;
+	}
+
+	.vertical-divider::after {
+		content: '';
+		position: absolute;
+		inset-block: 0;
+		inset-inline-start: 50%;
+
+		/* Border width */
+		inline-size: 2px;
+
+		/* Custom dash pattern using repeating-linear-gradient */
+		/*
+			Pattern explanation (top-to-bottom):
+			- var(--theme--border-color-accent) 0:       start of a dash
+			- var(--theme--border-color-accent) 4px:     dash length = 4px
+			- transparent 4px:                           start of the gap
+			- transparent 8px:                           gap end = 8px total, so gap = 4px
+			This creates a repeating 4px dash followed by a 4px gap (total cycle = 8px).
+		*/
+		background: repeating-linear-gradient(to bottom, var(--theme--border-color-accent) 0 4px, transparent 4px 8px);
+		pointer-events: none;
+	}
+
+	.col {
+		flex: 1 1 50%;
+		min-inline-size: 0;
 	}
 
 	.comparison-content {
@@ -435,7 +467,7 @@ function usePromoteDialog() {
 		padding-block: var(--comparison-modal-padding-x);
 	}
 
-	.side-header {
+	.header {
 		display: flex;
 		padding-block: var(--comparison-modal-padding-y);
 		padding-inline: var(--comparison-modal-padding-x);
@@ -485,17 +517,17 @@ function usePromoteDialog() {
 		background: var(--theme--background);
 	}
 
-	.comparison-footer {
-		display: flex;
+	.footer {
+		flex: 0 0 auto;
 		justify-content: space-between;
 		padding-inline: var(--comparison-modal-padding-x);
 		padding-block: var(--comparison-modal-padding-y);
 		border-block-start: 2px solid var(--theme--border-color-subdued);
 
-		.comparison-footer-col-1 {
+		.col.left {
 			display: flex;
 			align-items: center;
-			gap: 8px;
+			gap: 24px;
 
 			.fields-changed {
 				font-size: 14px;
@@ -505,7 +537,7 @@ function usePromoteDialog() {
 			}
 		}
 
-		.comparison-footer-col-2 {
+		.col.right {
 			flex: 1;
 			display: flex;
 			justify-content: flex-end;
