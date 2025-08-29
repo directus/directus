@@ -172,42 +172,39 @@ watch(selectedProviderName, (val) => {
 				{{ errorFormatted }}
 			</v-notice>
 
-			<a
-				v-for="provider in ssoProviders"
-				:key="provider.name"
-				class="sso-link"
-				@click.prevent="() => handleSSOClick(provider)"
-			>
-				<div class="sso-icon">
-					<v-icon :name="provider.icon" />
-				</div>
-				<div class="sso-title">
-					<v-text-overflow :text="t('log_in_with', { provider: provider.label })" />
-				</div>
-			</a>
+			<template v-for="provider in ssoProviders" :key="provider.name">
+				<a class="sso-link" @click.prevent="() => handleSSOClick(provider)">
+					<div class="sso-icon">
+						<v-icon :name="provider.icon" />
+					</div>
+					<div class="sso-title">
+						<v-text-overflow :text="t('log_in_with', { provider: provider.label })" />
+					</div>
+				</a>
 
-			<transition-expand>
-				<v-input
-					v-if="requiresTFA"
-					v-model="otp"
-					autofocus
-					type="text"
-					autocomplete="one-time-code"
-					:placeholder="t('otp')"
-					class="otp-input"
-					@keydown.enter.prevent="onSubmitOTP"
-				>
-					<template #append>
-						<v-progress-circular v-if="submitting" indeterminate />
-					</template>
-				</v-input>
-			</transition-expand>
+				<transition-expand>
+					<v-input
+						v-if="requiresTFA && originalProviderName === provider.name"
+						v-model="otp"
+						autofocus
+						type="text"
+						autocomplete="one-time-code"
+						:placeholder="t('otp')"
+						class="otp-input"
+						@keydown.enter.prevent="onSubmitOTP"
+					>
+						<template #append>
+							<v-progress-circular v-if="submitting" indeterminate />
+						</template>
+					</v-input>
+				</transition-expand>
 
-			<transition-expand>
-				<div v-if="requiresTFA" class="signin-actions">
-					<v-notice v-if="otpInlineError" type="warning">{{ otpInlineError }}</v-notice>
-				</div>
-			</transition-expand>
+				<transition-expand>
+					<div v-if="requiresTFA && originalProviderName === provider.name" class="signin-actions">
+						<v-notice v-if="otpInlineError" type="warning">{{ otpInlineError }}</v-notice>
+					</div>
+				</transition-expand>
+			</template>
 		</template>
 	</div>
 </template>
@@ -222,14 +219,13 @@ watch(selectedProviderName, (val) => {
 }
 
 .otp-input {
-	margin-block-start: 12px;
+	margin-block: 12px;
 }
 
 .signin-actions {
 	display: flex;
 	align-items: center;
 	gap: 12px;
-	margin-block-start: 12px;
 }
 
 .sso-link {
