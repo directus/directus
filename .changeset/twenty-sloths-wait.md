@@ -6,4 +6,4 @@
 '@directus/sdk': patch
 ---
 
-Adapted oauth flow to allow for 2fa setup. New column titled require_tfa_setup added to users table.
+Fixed OAuth flow to allow for 2FA setup
