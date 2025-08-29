@@ -536,6 +536,10 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						autoPurgeCache: opts?.autoPurgeCache,
+						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+						skipTracking: opts?.skipTracking,
+						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
 				}
@@ -546,6 +550,10 @@ export class PayloadService {
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					emitEvents: opts?.emitEvents,
+					autoPurgeCache: opts?.autoPurgeCache,
+					autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+					skipTracking: opts?.skipTracking,
+					onItemCreate: opts?.onItemCreate,
 					mutationTracker: opts?.mutationTracker,
 				});
 			}
@@ -626,6 +634,10 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						autoPurgeCache: opts?.autoPurgeCache,
+						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+						skipTracking: opts?.skipTracking,
+						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
 				}
@@ -636,6 +648,10 @@ export class PayloadService {
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					emitEvents: opts?.emitEvents,
+					autoPurgeCache: opts?.autoPurgeCache,
+					autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+					skipTracking: opts?.skipTracking,
+					onItemCreate: opts?.onItemCreate,
 					mutationTracker: opts?.mutationTracker,
 				});
 			}
@@ -759,6 +775,10 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						autoPurgeCache: opts?.autoPurgeCache,
+						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+						skipTracking: opts?.skipTracking,
+						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					})),
 				);
@@ -789,6 +809,10 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						autoPurgeCache: opts?.autoPurgeCache,
+						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+						skipTracking: opts?.skipTracking,
+						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
 				} else {
@@ -801,6 +825,10 @@ export class PayloadService {
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
+							autoPurgeCache: opts?.autoPurgeCache,
+							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+							skipTracking: opts?.skipTracking,
+							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						},
 					);
@@ -851,6 +879,10 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						autoPurgeCache: opts?.autoPurgeCache,
+						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+						skipTracking: opts?.skipTracking,
+						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
 				}
@@ -875,6 +907,10 @@ export class PayloadService {
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
+							autoPurgeCache: opts?.autoPurgeCache,
+							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+							skipTracking: opts?.skipTracking,
+							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						});
 					}
@@ -905,6 +941,10 @@ export class PayloadService {
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
+							autoPurgeCache: opts?.autoPurgeCache,
+							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+							skipTracking: opts?.skipTracking,
+							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						});
 					} else {
@@ -917,6 +957,10 @@ export class PayloadService {
 								bypassEmitAction: (params) =>
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 								emitEvents: opts?.emitEvents,
+								autoPurgeCache: opts?.autoPurgeCache,
+								autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+								skipTracking: opts?.skipTracking,
+								onItemCreate: opts?.onItemCreate,
 								mutationTracker: opts?.mutationTracker,
 							},
 						);
