@@ -3,7 +3,7 @@ import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { ContentVersion, Field, User } from '@directus/types';
-import { isNil } from 'lodash';
+import { isNil, cloneDeep, merge, isEqual } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
@@ -24,6 +24,20 @@ interface Props {
 const { t } = useI18n();
 
 const fieldsStore = useFieldsStore();
+
+// Get fields that have different values between version and main
+// We need to do this because a version is not a diff - it's a snapshot of the data at a point in time
+function getFieldsWithDifferences(comparedData: Comparison): string[] {
+	const validFieldKeys = new Set(comparedFields.value.map((field) => field.field));
+
+	return Object.keys(comparedData.current)
+		.filter((fieldKey) => validFieldKeys.has(fieldKey))
+		.filter((fieldKey) => {
+			const versionValue = comparedData.current[fieldKey];
+			const mainValue = comparedData.main[fieldKey];
+			return !isEqual(versionValue, mainValue);
+		});
+}
 
 const props = defineProps<Props>();
 
@@ -85,47 +99,40 @@ const comparedFields = computed<Field[]>(() => {
 	}
 });
 
+const fieldsWithDifferences = computed(() => {
+	if (!comparedData.value) return [];
+	return getFieldsWithDifferences(comparedData.value);
+});
+
 const allFieldsSelected = computed(() => {
-	if (!comparedData.value) return false;
-
-	const availableFields = Object.keys(comparedData.value.current).filter((fieldKey) =>
-		comparedFields.value.some((field) => field.field === fieldKey),
-	);
-
+	const availableFields = fieldsWithDifferences.value;
 	return availableFields.length > 0 && availableFields.every((field) => selectedComparisonFields.value.includes(field));
 });
 
 const someFieldsSelected = computed(() => {
-	if (!comparedData.value) return false;
-
-	const availableFields = Object.keys(comparedData.value.current).filter((fieldKey) =>
-		comparedFields.value.some((field) => field.field === fieldKey),
-	);
-
+	const availableFields = fieldsWithDifferences.value;
 	return availableFields.length > 0 && availableFields.some((field) => selectedComparisonFields.value.includes(field));
 });
 
 const availableFieldsCount = computed(() => {
-	if (!comparedData.value) return 0;
-
-	return Object.keys(comparedData.value.current).filter((fieldKey) =>
-		comparedFields.value.some((field) => field.field === fieldKey),
-	).length;
+	return fieldsWithDifferences.value.length;
 });
 
 const comparisonFields = computed(() => {
-	if (!comparedData.value) return new Set<string>();
-
-	return new Set(
-		Object.keys(comparedData.value.current).filter((fieldKey) =>
-			comparedFields.value.some((field) => field.field === fieldKey),
-		),
-	);
+	return new Set(fieldsWithDifferences.value);
 });
 
 const previewData = computed(() => {
 	if (!comparedData.value) return null;
 	return comparedData.value.current;
+});
+
+const versionItem = computed(() => {
+	if (!comparedData.value) return null;
+
+	// Merge version fields into the main item to create a complete version item
+	// This ensures all fields are present, not just the ones that were saved in the version
+	return merge(cloneDeep(comparedData.value.main), cloneDeep(comparedData.value.current));
 });
 
 watch(
@@ -148,11 +155,7 @@ function removeField(field: string) {
 }
 
 function toggleSelectAll() {
-	if (!comparedData.value) return;
-
-	const availableFields = Object.keys(comparedData.value.current).filter((fieldKey) =>
-		comparedFields.value.some((field) => field.field === fieldKey),
-	);
+	const availableFields = fieldsWithDifferences.value;
 
 	if (allFieldsSelected.value) {
 		selectedComparisonFields.value = [];
@@ -179,11 +182,7 @@ async function getComparison() {
 
 		comparedData.value = result;
 
-		const comparedFieldsKeys = comparedFields.value.map((field) => field.field);
-
-		selectedComparisonFields.value = Object.keys(result.current).filter((fieldKey) =>
-			comparedFieldsKeys.includes(fieldKey),
-		);
+		selectedComparisonFields.value = getFieldsWithDifferences(result);
 
 		// Fetch main item user after comparison data is loaded
 		await fetchMainItemUserUpdated();
@@ -324,7 +323,7 @@ function usePromoteDialog() {
 								disabled
 								:collection="currentVersion.collection"
 								:primary-key="currentVersion.item"
-								:initial-values="previewData"
+								:initial-values="versionItem"
 								:comparison-mode="!!comparedData"
 								:selected-comparison-fields="selectedComparisonFields"
 								:comparison-fields="comparisonFields"
