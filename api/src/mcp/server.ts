@@ -61,6 +61,10 @@ export class DirectusMCP {
 	 * response being an asynchronous side effect happening after the function has returned
 	 */
 	handleRequest(req: Request, res: Response) {
+		if (!req.accountability?.user && !req.accountability?.role) {
+			throw new ForbiddenError();
+		}
+
 		if (!req.accepts('application/json')) {
 			// we currently dont support "text/event-stream" requests
 			res.status(400).send();

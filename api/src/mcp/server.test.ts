@@ -100,7 +100,7 @@ describe('mcp server', () => {
 					id: 1,
 					method: 'tools/list',
 				},
-				accountability: { admin: false } as Accountability,
+				accountability: { user: 'user', admin: false } as Accountability,
 				schema: {} as SchemaOverview,
 			};
 		});
@@ -112,6 +112,12 @@ describe('mcp server', () => {
 
 			expect(mockRes.status).toHaveBeenCalledWith(400);
 			expect(mockRes.send).toHaveBeenCalled();
+		});
+
+		test('should reject public request', async () => {
+			mockReq.accountability!.user = null;
+
+			expect(() => directusMCP.handleRequest(mockReq as Request, mockRes as Response)).toThrow();
 		});
 
 		test('should accept JSON requests', async () => {
@@ -144,13 +150,13 @@ describe('mcp server', () => {
 					id: 1,
 					method: 'tools/list',
 				},
-				accountability: { admin: false } as Accountability,
+				accountability: { user: 'user', admin: false } as Accountability,
 				schema: {} as SchemaOverview,
 			};
 		});
 
 		test('should filter admin tools for non-admin users', async () => {
-			mockReq.accountability = { admin: false } as Accountability;
+			mockReq.accountability = { admin: false, user: 'user' } as Accountability;
 
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
 
@@ -179,7 +185,7 @@ describe('mcp server', () => {
 
 		test('should include admin tools for admin users', async () => {
 			// Simulate admin user
-			mockReq.accountability = { admin: true } as Accountability;
+			mockReq.accountability = { admin: true, user: 'user' } as Accountability;
 
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
 
@@ -238,7 +244,7 @@ describe('mcp server', () => {
 					id: 1,
 					method: 'tools/list',
 				},
-				accountability: { admin: false } as Accountability,
+				accountability: { user: 'user', admin: false } as Accountability,
 				schema: {} as SchemaOverview,
 			};
 		});
@@ -255,7 +261,7 @@ describe('mcp server', () => {
 						arguments: { test: 'value' },
 					},
 				},
-				accountability: { admin: false },
+				accountability: { user: 'user', admin: false },
 				schema: {},
 			} as unknown as Request;
 
@@ -294,7 +300,7 @@ describe('mcp server', () => {
 						arguments: {},
 					},
 				},
-				accountability: { admin: false },
+				accountability: { user: 'user', admin: false },
 				schema: {},
 			} as unknown as Request;
 
@@ -344,7 +350,7 @@ describe('mcp server', () => {
 						arguments: {},
 					},
 				},
-				accountability: { admin: false },
+				accountability: { user: 'user', admin: false },
 				schema: {},
 			} as unknown as Request;
 
@@ -383,7 +389,7 @@ describe('mcp server', () => {
 						arguments: {},
 					},
 				},
-				accountability: { admin: false }, // Non-admin user
+				accountability: { user: 'user', admin: false }, // Non-admin user
 				schema: {},
 			} as unknown as Request;
 
@@ -420,7 +426,7 @@ describe('mcp server', () => {
 						arguments: {},
 					},
 				},
-				accountability: { admin: true }, // Admin user
+				accountability: { admin: true, user: 'user' }, // Admin user
 				schema: {},
 			} as unknown as Request;
 
@@ -470,7 +476,7 @@ describe('mcp server', () => {
 						arguments: { invalid: 'data' },
 					},
 				},
-				accountability: { admin: false },
+				accountability: { user: 'user', admin: false },
 				schema: {},
 			} as unknown as Request;
 
@@ -519,7 +525,7 @@ describe('mcp server', () => {
 						arguments: { action: 'delete' },
 					},
 				},
-				accountability: { admin: false },
+				accountability: { user: 'user', admin: false },
 				schema: {},
 			} as unknown as Request;
 
@@ -567,7 +573,7 @@ describe('mcp server', () => {
 					id: 1,
 					method: 'prompts/list',
 				},
-				accountability: { admin: false } as Accountability,
+				accountability: { user: 'user', admin: false } as Accountability,
 				schema: {} as SchemaOverview,
 			};
 
@@ -771,7 +777,7 @@ describe('mcp server', () => {
 						arguments: {},
 					},
 				},
-				accountability: { admin: false } as Accountability,
+				accountability: { user: 'user', admin: false } as Accountability,
 				schema: {} as SchemaOverview,
 			};
 
@@ -816,7 +822,7 @@ describe('mcp server', () => {
 						arguments: {},
 					},
 				},
-				accountability: { admin: false },
+				accountability: { user: 'user', admin: false },
 				schema: {},
 			} as unknown as Request;
 
@@ -852,7 +858,7 @@ describe('mcp server', () => {
 						arguments: {},
 					},
 				},
-				accountability: { admin: false },
+				accountability: { user: 'user', admin: false },
 				schema: {},
 			} as unknown as Request;
 
@@ -903,7 +909,7 @@ describe('mcp server', () => {
 						},
 					},
 				},
-				accountability: { admin: false },
+				accountability: { user: 'user', admin: false },
 				schema: {},
 			} as unknown as Request;
 
@@ -960,7 +966,7 @@ describe('mcp server', () => {
 						},
 					},
 				},
-				accountability: { admin: false },
+				accountability: { user: 'user', admin: false },
 				schema: {},
 			} as unknown as Request;
 
@@ -1019,7 +1025,7 @@ describe('mcp server', () => {
 						},
 					},
 				},
-				accountability: { admin: false },
+				accountability: { user: 'user', admin: false },
 				schema: {},
 			} as unknown as Request;
 
@@ -1075,7 +1081,7 @@ describe('mcp server', () => {
 						},
 					},
 				},
-				accountability: { admin: false },
+				accountability: { user: 'user', admin: false },
 				schema: {},
 			} as unknown as Request;
 
