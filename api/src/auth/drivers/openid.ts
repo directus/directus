@@ -500,7 +500,8 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				return res.redirect(`${url.toString()}?reason=${ErrorCode.InvalidCredentials}`);
 			}
 
-			const { verifier, redirect, prompt, otp } = tokenData;
+			const { verifier, prompt, otp } = tokenData;
+			let { redirect } = tokenData;
 
 			const accountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
 
@@ -566,13 +567,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 					const url = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'tfa-setup');
 					if (redirect) url.setQuery('redirect', redirect);
 
-					if (authMode === 'session') {
-						res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
-					} else {
-						res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
-					}
-
-					return res.redirect(url.toString());
+					redirect = url.toString();
 				}
 			} catch (e) {
 				logger.warn(e, `[OpenID] Unexpected error during OpenID login`);
