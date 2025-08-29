@@ -589,6 +589,10 @@ describe('items tool', () => {
 			expect(items.name).toBe('items');
 		});
 
+		test('should not be admin tool', () => {
+			expect(items.admin).toBeUndefined();
+		});
+
 		test('should have description', () => {
 			expect(items.description).toBeDefined();
 		});

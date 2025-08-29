@@ -160,6 +160,10 @@ describe('assets tool', () => {
 			expect(assets.name).toBe('assets');
 		});
 
+		test('should not be admin tool', () => {
+			expect(assets.admin).toBeUndefined();
+		});
+
 		test('should have description', () => {
 			expect(assets.description).toBeDefined();
 		});
