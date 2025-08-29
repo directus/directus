@@ -1,6 +1,9 @@
-import type { Field, Snapshot } from '@directus/types';
+import type { Field, Relation } from '@directus/types';
 import { z } from 'zod';
-import { getSnapshot } from '../../utils/get-snapshot.js';
+import { CollectionsService } from '../../services/collections.js';
+import { FieldsService } from '../../services/fields.js';
+import { RelationsService } from '../../services/relations.js';
+import type { Collection } from '../../types/collection.js';
 import { defineTool } from '../define.js';
 import prompts from './prompts/index.js';
 
@@ -38,6 +41,18 @@ export interface OverviewOutput {
 	};
 }
 
+export interface LightweightOverview {
+	collections: string[];
+	folders: string[];
+	notes: Record<string, string>;
+}
+
+export interface SchemaToolSnapshot {
+	collections: Collection[];
+	fields: Field[];
+	relations: Relation[];
+}
+
 export const SchemaValidateSchema = z.strictObject({
 	keys: z.array(z.string()).optional(),
 });
@@ -53,49 +68,83 @@ export const SchemaInputSchema = z.object({
 
 export const schema = defineTool<z.infer<typeof SchemaValidateSchema>>({
 	name: 'schema',
-	admin: true,
 	description: prompts.schema,
 	inputSchema: SchemaInputSchema,
 	validateSchema: SchemaValidateSchema,
-	async handler({ args }) {
-		const snapshot = await getSnapshot();
+	async handler({ args, accountability, schema }) {
+		const serviceOptions = {
+			schema,
+			accountability,
+		};
+
+		const collectionsService = new CollectionsService(serviceOptions);
+
+		const collections = await collectionsService.readByQuery();
 
 		// If no keys provided, return lightweight collection list
 		if (!args.keys || args.keys.length === 0) {
-			const collections: string[] = [];
-			const folders: string[] = [];
-			const notes: Record<string, string> = {};
+			const lightweightOverview: LightweightOverview = {
+				collections: [],
+				folders: [],
+				notes: {},
+			};
 
-			snapshot.collections.forEach((collection) => {
+			collections.forEach((collection) => {
+				// skip internal collections aside from files/users
+				if (
+					collection.collection.startsWith('directus_') &&
+					collection.collection !== 'directus_files' &&
+					collection.collection !== 'directus_users'
+				)
+					return;
+
 				// Separate folders from real collections
 				if (!collection.schema) {
-					folders.push(collection.collection);
+					lightweightOverview.folders.push(collection.collection);
 				} else {
-					collections.push(collection.collection);
+					lightweightOverview.collections.push(collection.collection);
 				}
 
 				// Extract note if exists (for both collections and folders)
 				if (collection.meta?.note) {
-					notes[collection.collection] = collection.meta.note;
+					lightweightOverview.notes[collection.collection] = collection.meta.note;
 				}
 			});
 
 			return {
 				type: 'text',
-				data: {
-					collections,
-					folders,
-					notes,
-				},
+				data: lightweightOverview,
 			};
 		}
 
 		// If keys provided, return detailed schema for requested collections
 		const overview: OverviewOutput = {};
 
-		snapshot.fields.forEach((field) => {
+		const fieldsService = new FieldsService(serviceOptions);
+
+		const fields = await fieldsService.readAll();
+
+		const relationsService = new RelationsService(serviceOptions);
+
+		const relations = await relationsService.readAll();
+
+		const snapshot = {
+			collections,
+			fields,
+			relations,
+		};
+
+		fields.forEach((field) => {
 			// Skip collections not requested
 			if (!args.keys?.includes(field.collection)) return;
+
+			// skip internal collections aside from files/users
+			if (
+				field.collection.startsWith('directus_') &&
+				field.collection !== 'directus_files' &&
+				field.collection !== 'directus_users'
+			)
+				return;
 
 			// Skip UI-only fields
 			if (field.type === 'alias' && field.meta?.special?.includes('no-data')) return;
@@ -112,19 +161,19 @@ export const schema = defineTool<z.infer<typeof SchemaValidateSchema>>({
 				fieldOverview.primary_key = field.schema?.is_primary_key;
 			}
 
-			if (field.meta.required) {
+			if (field.meta?.required) {
 				fieldOverview.required = field.meta.required;
 			}
 
-			if (field.meta.readonly) {
+			if (field.meta?.readonly) {
 				fieldOverview.readonly = field.meta.readonly;
 			}
 
-			if (field.meta.note) {
+			if (field.meta?.note) {
 				fieldOverview.note = field.meta.note;
 			}
 
-			if (field.meta.interface) {
+			if (field.meta?.interface) {
 				fieldOverview.interface = {
 					type: field.meta.interface,
 				};
@@ -138,7 +187,7 @@ export const schema = defineTool<z.infer<typeof SchemaValidateSchema>>({
 			}
 
 			// Process nested fields for JSON fields with options.fields (like repeaters)
-			if (field.type === 'json' && field.meta.options?.['fields']) {
+			if (field.type === 'json' && field.meta?.options?.['fields']) {
 				const nestedFields = field.meta.options['fields'] as any[];
 
 				fieldOverview.fields = processNestedFields({
@@ -150,7 +199,7 @@ export const schema = defineTool<z.infer<typeof SchemaValidateSchema>>({
 			}
 
 			// Handle collection-item-dropdown interface
-			if (field.type === 'json' && field.meta.interface === 'collection-item-dropdown') {
+			if (field.type === 'json' && field.meta?.interface === 'collection-item-dropdown') {
 				fieldOverview.fields = processCollectionItemDropdown({
 					field,
 					snapshot,
@@ -181,7 +230,7 @@ function processNestedFields(options: {
 	fields: any[];
 	maxDepth?: number;
 	currentDepth?: number;
-	snapshot?: any;
+	snapshot?: SchemaToolSnapshot | undefined;
 }): Record<string, fieldOverviewOutput> {
 	const { fields, maxDepth = 5, currentDepth = 0, snapshot } = options;
 	const result: Record<string, fieldOverviewOutput> = {};
@@ -279,7 +328,7 @@ function getRelationType(special: string[]): string | null {
 	return null;
 }
 
-function buildRelationInfo(field: Field, type: string, snapshot: Snapshot) {
+function buildRelationInfo(field: Field, type: string, snapshot: SchemaToolSnapshot) {
 	switch (type) {
 		case 'm2o':
 			return buildManyToOneRelation(field, snapshot);
@@ -294,7 +343,7 @@ function buildRelationInfo(field: Field, type: string, snapshot: Snapshot) {
 	}
 }
 
-function buildManyToOneRelation(field: Field, snapshot: Snapshot) {
+function buildManyToOneRelation(field: Field, snapshot: SchemaToolSnapshot) {
 	// For M2O, the relation is directly on this field
 	const relation = snapshot.relations.find((r) => r.collection === field.collection && r.field === field.field);
 
@@ -308,7 +357,7 @@ function buildManyToOneRelation(field: Field, snapshot: Snapshot) {
 	};
 }
 
-function buildOneToManyRelation(field: Field, snapshot: Snapshot) {
+function buildOneToManyRelation(field: Field, snapshot: SchemaToolSnapshot) {
 	// For O2M, we need to find the relation that points BACK to this field
 	// The relation will have this field stored in meta.one_field
 	const reverseRelation = snapshot.relations.find(
@@ -326,7 +375,7 @@ function buildOneToManyRelation(field: Field, snapshot: Snapshot) {
 	};
 }
 
-function buildManyToManyRelation(field: Field, snapshot: Snapshot) {
+function buildManyToManyRelation(field: Field, snapshot: SchemaToolSnapshot) {
 	// Find the junction table relation that references this field
 	// This relation will have our field as meta.one_field
 	const junctionRelation = snapshot.relations.find(
@@ -365,7 +414,7 @@ function buildManyToManyRelation(field: Field, snapshot: Snapshot) {
 	return result;
 }
 
-function buildManyToAnyRelation(field: Field, snapshot: Snapshot) {
+function buildManyToAnyRelation(field: Field, snapshot: SchemaToolSnapshot) {
 	// Find the junction table relation that references this field
 	// This relation will have our field as meta.one_field
 	const junctionRelation = snapshot.relations.find(
@@ -399,7 +448,7 @@ function buildManyToAnyRelation(field: Field, snapshot: Snapshot) {
 
 	const result: any = {
 		type: 'm2a',
-		one_allowed_collections: polymorphicRelation.meta.one_allowed_collections,
+		one_allowed_collections: polymorphicRelation.meta?.one_allowed_collections,
 		junction: {
 			collection: junctionRelation.collection,
 			many_field: parentRelation?.field || `${field.collection}_id`,
