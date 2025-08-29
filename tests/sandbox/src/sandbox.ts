@@ -186,7 +186,6 @@ export async function sandboxes(
 		apis.forEach((api) => api.processes.forEach((process) => process.kill()));
 		if (opts.docker.keep)
 			await Promise.all(projects.map(({ project, logger, env }) => dockerDown(project, env, logger)));
-		process.exit();
 	}
 
 	return { sandboxes: apis.map(({ env, index }) => ({ index, env })), stop, restartApis };
@@ -231,7 +230,6 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		build?.kill();
 		apis.forEach((api) => api.kill());
 		if (project && !opts.docker.keep) await dockerDown(project, env, logger);
-		process.exit();
 	}
 
 	return { stop, restartApi, env };

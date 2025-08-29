@@ -35,28 +35,36 @@ export async function useSnapshot<Schema>(
 	const e2eIndex = parts.findIndex((part) => part === 'e2e');
 	const prefix = parts.slice(e2eIndex + 2).join('_');
 
-	await api.request(
-		createItem('schema_apply_order', {
-			group: prefix,
-		}),
-	);
+	let skipOrder = false;
 
-	const orders = await api.request(readItems('schema_apply_order'));
+	try {
+		await api.request(
+			createItem('schema_apply_order', {
+				group: prefix,
+			}),
+		);
+	} catch {
+		skipOrder = true;
+	}
 
-	const orderIndex = orders.findIndex((raw) => raw['group'] === prefix);
+	if (!skipOrder) {
+		const orders = await api.request(readItems('schema_apply_order'));
 
-	if (orderIndex !== 0) {
-		let inFrontExists = false;
+		const orderIndex = orders.findIndex((raw) => raw['group'] === prefix);
 
-		do {
-			try {
-				await api.request(readCollection(orders[Number(orderIndex) - 1]['group']));
-			} catch {
-				await new Promise((r) => setTimeout(r, 1000));
-			} finally {
-				inFrontExists = true;
-			}
-		} while (!inFrontExists);
+		if (orderIndex !== 0) {
+			let inFrontExists = false;
+
+			do {
+				try {
+					await api.request(readCollection(orders[Number(orderIndex) - 1]['group']));
+				} catch {
+					await new Promise((r) => setTimeout(r, 1000));
+				} finally {
+					inFrontExists = true;
+				}
+			} while (!inFrontExists);
+		}
 	}
 
 	const snapshot: Snapshot = JSON.parse(await readFile(file, { encoding: 'utf8' }));

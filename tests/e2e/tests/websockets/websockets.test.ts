@@ -6,7 +6,7 @@ import { Schema } from './schema';
 import { useOptions } from '../../utils/useOptions';
 
 const api = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`)
-	.with(realtime({ debug: true }))
+	.with(realtime())
 	.with(rest())
 	.with(staticToken('admin'));
 

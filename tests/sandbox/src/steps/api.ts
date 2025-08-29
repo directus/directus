@@ -24,7 +24,7 @@ export async function buildDirectus(opts: Options, logger: Logger, onRebuild: ()
 	});
 
 	build.on('close', (code) => {
-		if (code === 0) return;
+		if (code === null || code === 0) return;
 		build.kill();
 		const error = new Error(`Building api stopped with error code ${code}`);
 		clearTimeout(timeout);
@@ -144,7 +144,7 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 	});
 
 	api.on('close', (code) => {
-		if (code === 0) return;
+		if (code === null || code === 0) return;
 
 		const error = new Error(`Api stopped with error code ${code}`);
 		clearTimeout(timeout);
