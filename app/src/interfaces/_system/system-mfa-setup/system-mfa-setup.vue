@@ -87,6 +87,16 @@ const {
 	canvasID,
 } = useTFASetup(!!props.value);
 
+// Inject the discard functionality from the parent form
+const discardAllChanges = inject<(() => void) | null>('discardAllChanges', null);
+
+// Add a method to trigger discard all changes
+function triggerDiscardAllChanges() {
+	if (discardAllChanges) {
+		discardAllChanges();
+	}
+}
+
 watch(
 	() => effectiveTFAEnabled.value,
 	() => {
@@ -115,6 +125,7 @@ async function enable() {
 }
 
 async function enableOAuth() {
+	triggerDiscardAllChanges();
 	const success = await request2FASetup();
 	enableActive.value = !success;
 }
