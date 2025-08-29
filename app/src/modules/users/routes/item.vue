@@ -14,7 +14,7 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { useCollection } from '@directus/composables';
 import type { User } from '@directus/types';
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, provide } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
@@ -89,6 +89,9 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
+
+// Provide the discard functionality to field interfaces
+provide('discardAllChanges', discardAndStay);
 
 const avatarSrc = computed(() =>
 	item.value?.avatar ? getAssetUrl(`${item.value.avatar}?key=system-medium-cover`) : null,
