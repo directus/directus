@@ -14,7 +14,7 @@ const RelationsValidateSchema = z.discriminatedUnion('action', [
 	z.object({
 		action: z.literal('create'),
 		collection: z.string(),
-		field: z.string(),
+		field: z.string().optional(),
 		data: RelationItemValidateCreateSchema,
 	}),
 	z.object({
@@ -57,7 +57,7 @@ export const relations = defineTool<z.infer<typeof RelationsValidateSchema>>({
 		if (args.action === 'create') {
 			await service.createOne(args.data as Partial<Relation>);
 
-			const result = await service.readOne(args.collection, args.data.field);
+			const result = await service.readOne(args.collection, args.field || args.data.field);
 
 			return {
 				type: 'text',
