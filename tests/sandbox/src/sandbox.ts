@@ -32,6 +32,8 @@ export type Options = {
 		keep: boolean;
 		/** Minimum port number to use for docker containers */
 		basePort: string;
+		/** Overwrite the name of the docker project */
+		name: string | undefined;
 	};
 	/** Horizontally scale the api to a given number of instances */
 	instances: string;
@@ -87,6 +89,7 @@ function getOptions(options?: DeepPartial<Options>): Options {
 			docker: {
 				keep: false,
 				basePort: '6000',
+				name: undefined,
 			},
 			instances: '1',
 			inspect: true,
@@ -155,7 +158,7 @@ export async function sandboxes(
 				const env = getEnv(database, opts);
 
 				try {
-					const project = await dockerUp(database, opts.extras, env, logger);
+					const project = await dockerUp(database, opts, env, logger);
 					if (project) projects.push({ project, logger, env });
 
 					await bootstrap(env, logger);
@@ -208,7 +211,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 			build = await buildDirectus(opts, logger, restartApi);
 		}
 
-		project = await dockerUp(database, opts.extras, env, logger);
+		project = await dockerUp(database, opts, env, logger);
 		await bootstrap(env, logger);
 		if (opts.schema) await loadSchema(opts.schema, env, logger);
 		apis = await startDirectus(opts, env, logger);

@@ -12,6 +12,7 @@ program
 	.option('-s, --schema [schema]', 'Load an additional schema snapshot on startup')
 	.option('--docker.basePort <dockerBasePort>', 'Minimum port number to use for docker containers')
 	.option('--docker.keep', 'Keep containers running when stopping the sandbox')
+	.option('--docker.name', 'Overwrite the name of the docker project')
 	.option('-e, --extras <extras>', 'Enable redis,maildev,saml or other extras')
 	.option('-i, --instances <instances>', 'Horizontally scale directus to a given number of instances', '1')
 	.option('--killPorts', 'Forcefully kills all processes that occupy ports that the api would use');

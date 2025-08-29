@@ -5,14 +5,14 @@ import { type Logger } from '../logger.js';
 import type { Database, Options } from '../sandbox.js';
 import chalk from 'chalk';
 
-export async function dockerUp(database: Database, extras: Options['extras'], env: Env, logger: Logger) {
+export async function dockerUp(database: Database, opts: Options, env: Env, logger: Logger) {
 	logger.info('Starting up Docker containers');
 
-	const extrasList = Object.entries(extras)
+	const extrasList = Object.entries(opts.extras)
 		.filter(([_, value]) => value)
 		.map(([key, _]) => key);
 
-	const project = `sandbox_${database}${extrasList.map((extra) => '_' + extra).join('')}`;
+	const project = opts.docker.name ?? `sandbox_${database}${extrasList.map((extra) => '_' + extra).join('')}`;
 	const files = database === 'sqlite' ? extrasList : [database, ...extrasList];
 
 	if (files.length === 0) return;
