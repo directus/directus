@@ -88,6 +88,30 @@ vi.mock('./fetch-share-info.js', () => ({
 					role: 'manager',
 				},
 			};
+		} else if (id === '6') {
+			return {
+				collection: 'articles',
+				item: 'item-id',
+				role: 'user',
+				user_created: {
+					id: 'user',
+					role: 'user',
+				},
+			};
+		} else if (id === '7') {
+			return {
+				collection: 'articles',
+				item: 'item-id',
+				role: 'user',
+				user_created: null,
+			};
+		} else if (id === '8') {
+			return {
+				collection: 'articles',
+				item: 'item-id',
+				role: 'admin',
+				user_created: null,
+			};
 		} else {
 			return {
 				collection: 'articles',
@@ -329,6 +353,94 @@ describe('getPermissionsForShare', () => {
 				fields: [],
 				permissions: {
 					id: {
+						_eq: 'item-id',
+					},
+				},
+				policy: null,
+				presets: null,
+				validation: null,
+			},
+			...basePermissions,
+		]);
+	});
+
+	test('no role selected and created by system', async () => {
+		const accountability: Accountability = {
+			user: 'user',
+			role: 'user',
+			admin: false,
+			app: false,
+			ip: '',
+			roles: [],
+			share: '7',
+		};
+
+		const permissions = await getPermissionsForShare(accountability, undefined, context);
+
+		expect(permissions).toEqual([
+			{
+				action: 'read',
+				collection: 'articles',
+				fields: [],
+				permissions: {
+					id: {
+						_eq: 'item-id',
+					},
+				},
+				policy: null,
+				presets: null,
+				validation: null,
+			},
+			...basePermissions,
+		]);
+	});
+	
+	test('admin role selected and created by system', async () => {
+		const accountability: Accountability = {
+			user: 'admin',
+			role: 'admin',
+			admin: false,
+			app: false,
+			ip: '',
+			roles: [],
+			share: '8',
+		};
+
+		const permissions = await getPermissionsForShare(accountability, undefined, context);
+
+		expect(permissions).toEqual([
+			{
+				action: 'read',
+				collection: 'articles',
+				fields: ['*'],
+				permissions: {
+					_or: [
+						{
+							id: {
+								_eq: 'item-id',
+							},
+						},
+						{
+							'$FOLLOW(authors,article)': {
+								article: {
+									id: {
+										_eq: 'item-id',
+									},
+								},
+							},
+						},
+					],
+				},
+				policy: null,
+				presets: null,
+				validation: null,
+			},
+			{
+				action: 'read',
+				collection: 'authors',
+				fields: ['*'],
+				permissions: {
+					article: {
 						_eq: 'item-id',
 					},
 				},
