@@ -387,51 +387,89 @@ Display templates can be customized used to enhance the UX for editors.
 </display_templates>
 
 <complete_example>
-#### Complete Field Example with Conditions
+#### Complete Field Example with Advanced Features
+
+This shows a real field configuration with validation, conditions, and all metadata (as returned from a read operation):
 
 ```json
 {
-  "action": "create",
-  "data": {
-    "collection": "articles",
-    "field": "items",
-    "type": "json",
-    "meta": {
-      "interface": "select-multiple-checkbox",
-      "special": ["cast-json"],
-      "options": {
-        "choices": [
-          {"text": "$t:item_a", "value": "item_a"},
-          {"text": "$t:item_b", "value": "item_b"}
-        ]
-      },
-      "display": "labels",
-      "display_options": {
-        "choices": [
-          {"text": "$t:item_a", "value": "item_a"},
-          {"text": "$t:item_b", "value": "item_b"}
-        ]
-      },
-      "width": "full",
-      "required": true,
-      "conditions": [
+  "collection": "block_button",
+  "field": "url",
+  "type": "string",
+  "schema": {
+    "name": "url",
+    "table": "block_button",
+    "data_type": "character varying", // Database-specific type
+    "default_value": null,
+    "generation_expression": null,
+    "max_length": 255, // String length limit
+    "numeric_precision": null,
+    "numeric_scale": null,
+    "is_generated": false,
+    "is_nullable": true,
+    "is_unique": false,
+    "is_indexed": false,
+    "is_primary_key": false,
+    "has_auto_increment": false,
+    "foreign_key_schema": null, // Would contain relation info for M2O fields
+    "foreign_key_table": null,
+    "foreign_key_column": null,
+    "comment": null
+  },
+  "meta": {
+    "id": 811, // Auto-generated field ID (not used in create)
+    "collection": "block_button",
+    "field": "url",
+    "special": null, // No special behavior for this field
+    "interface": "input",
+    "options": {
+      "iconLeft": "link", // Icon displayed in the input
+      "trim": true // Remove whitespace on save
+    },
+    "display": "formatted-value",
+    "display_options": {
+      "format": true // Apply auto formatting based on field type
+    },
+    "readonly": false,
+    "hidden": true, // Hidden by default, shown conditionally
+    "sort": 11, // Field order in forms
+    "width": "half",
+    "translations": null, // No field name translations
+    "note": "The URL to link to. Could be relative (ie `/my-page`) or a full external URL (ie `https://docs.directus.io`)",
+    "conditions": [
+      {
+        "hidden": false, // Show field when condition is met
+        "name": "If type = external",
+        "options": {
+          "clear": false,
+          "font": "sans-serif",
+          "masked": false,
+          "slug": false,
+          "trim": false
+        },
+        "rule": {
+          "_and": [
+            {
+              "type": { // Show when 'type' field equals 'url'
+                "_eq": "url"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "required": false,
+    "group": null,
+    "validation": {
+      "_and": [
         {
-          "name": "Hide If Author Is Null",
-          "rule": {
-            "_and": [
-              {"author": {"_null": true}}
-            ]
-          },
-          "hidden": true
+          "url": {
+            "_regex": "^(?:\\/[A-Za-z0-9\\-._~%!$&'()*+,;=:@\\/]*|https?:\\/\\/[^\\s/$.?#].[^\\s]*)$"
+          }
         }
       ]
-    },
-    "schema": {
-      "name": "items",
-      "table": "articles",
-      "data_type": "json",
-      "is_nullable": true
-    }
+    }, // Regex validation for URLs (relative or absolute)
+    "validation_message": "Invalid URL. Check your URL and try again. Properly formatted relative URLs (`/pages/test` ) and absolute URLs (`https://example.com`) are supported."
   }
 }
 ```
