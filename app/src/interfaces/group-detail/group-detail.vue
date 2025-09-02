@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import { Field, ValidationError } from '@directus/types';
+import type { ComparisonContext } from '@/components/v-form/types';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -15,9 +16,7 @@ const props = withDefaults(
 		disabled?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
-		comparisonMode?: boolean;
-		selectedComparisonFields?: string[];
-		comparisonFields?: Set<string>;
+		comparison?: ComparisonContext;
 		loading?: boolean;
 		validationErrors?: ValidationError[];
 		badge?: string;
@@ -127,8 +126,7 @@ watch(validationMessages, (newVal, oldVal) => {
 			:direction="direction"
 			:show-no-visible-fields="false"
 			:show-validation-errors="false"
-			:comparison-mode="comparisonMode"
-			:comparison-fields="comparisonFields"
+			:comparison="comparison"
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</v-detail>

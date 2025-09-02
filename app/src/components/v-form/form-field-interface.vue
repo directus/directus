@@ -3,14 +3,13 @@ import { useExtension } from '@/composables/use-extension';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { FormField } from './types';
+import type { FormField, ComparisonContext } from './types';
 
 const props = defineProps<{
 	field: FormField;
 	batchMode?: boolean;
 	batchActive?: boolean;
-	comparisonMode?: boolean;
-	comparisonActive?: boolean;
+	comparison?: ComparisonContext;
 	primaryKey?: string | number | null;
 	modelValue?: string | number | boolean | Record<string, any> | Array<any>;
 	loading?: boolean;
@@ -62,8 +61,8 @@ const value = computed(() =>
 				:value="value"
 				:batch-mode="batchMode"
 				:batch-active="batchActive"
-				:comparison-mode="comparisonMode"
-				:comparison-active="comparisonActive"
+				:comparison-mode="comparison?.mode"
+				:comparison-active="comparison?.selectedFields?.includes(field.field)"
 				:width="(field.meta && field.meta.width) || 'full'"
 				:type="field.type"
 				:collection="field.collection"

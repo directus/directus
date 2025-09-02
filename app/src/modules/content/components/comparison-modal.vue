@@ -268,9 +268,11 @@ function usePromoteDialog() {
 								:collection="currentVersion.collection"
 								:primary-key="currentVersion.item"
 								:initial-values="comparedData?.main"
-								:comparison-side="COMPARISON_SIDE.main"
-								:comparison-mode="!!comparedData"
-								:comparison-fields="comparisonFields"
+								:comparison="{
+									mode: !!comparedData,
+									side: COMPARISON_SIDE.main,
+									fields: comparisonFields,
+								}"
 							/>
 						</div>
 					</div>
@@ -288,12 +290,14 @@ function usePromoteDialog() {
 								disabled
 								:collection="currentVersion.collection"
 								:primary-key="currentVersion.item"
-								:initial-values="comparedData?.main || {}"
-								:comparison-mode="!!comparedData"
-								:selected-comparison-fields="selectedComparisonFields"
-								:comparison-fields="comparisonFields"
-								:on-toggle-comparison-field="toggleComparisonField"
-								:comparison-side="COMPARISON_SIDE.version"
+								:initial-values="comparedData?.current || {}"
+								:comparison="{
+									mode: !!comparedData,
+									side: COMPARISON_SIDE.version,
+									fields: comparisonFields,
+									selectedFields: selectedComparisonFields,
+									onToggleField: toggleComparisonField,
+								}"
 							/>
 						</div>
 					</div>

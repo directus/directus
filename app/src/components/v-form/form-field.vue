@@ -10,13 +10,14 @@ import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu, { type MenuOptions } from './form-field-menu.vue';
 import FormFieldRawEditor from './form-field-raw-editor.vue';
-import type { FormField } from './types';
+import type { FormField, ComparisonContext } from './types';
 
 const props = withDefaults(
 	defineProps<{
 		field: FormField;
 		batchMode?: boolean;
 		batchActive?: boolean;
+		comparisonActive?: boolean;
 		disabled?: boolean;
 		modelValue?: any;
 		initialValue?: any;
@@ -29,10 +30,7 @@ const props = withDefaults(
 		rawEditorActive?: boolean;
 		disabledMenuOptions?: MenuOptions[];
 		direction?: string;
-		comparisonMode?: boolean;
-		comparisonSide?: 'main' | 'version';
-		comparisonActive?: boolean;
-		comparisonFields?: Set<string>;
+		comparison?: ComparisonContext;
 	}>(),
 	{
 		modelValue: undefined,
@@ -180,10 +178,10 @@ function useComputedValues() {
 			field.meta?.width || 'full',
 			{
 				invalid: validationError,
-				'comparison-field': comparisonMode && comparisonFields?.has(field.field),
+				'comparison-field': comparison?.mode && comparison?.fields?.has(field.field),
 			},
 		]"
-		:data-comparison-side="comparisonMode && comparisonFields?.has(field.field) ? comparisonSide : undefined"
+		:data-comparison-side="comparison?.mode && comparison?.fields?.has(field.field) ? comparison?.side : undefined"
 	>
 		<v-menu v-if="!isLabelHidden" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
@@ -193,10 +191,8 @@ function useComputedValues() {
 					:active="active"
 					:batch-mode="batchMode"
 					:batch-active="batchActive"
-					:comparison-mode="comparisonMode"
-					:comparison-side="comparisonSide"
+					:comparison="comparison"
 					:comparison-active="comparisonActive"
-					:comparison-fields="comparisonFields"
 					:edited="isEdited"
 					:has-error="!!validationError"
 					:badge="badge"
@@ -236,8 +232,7 @@ function useComputedValues() {
 			:raw-editor-enabled="rawEditorEnabled"
 			:raw-editor-active="rawEditorActive"
 			:direction="direction"
-			:comparison-mode="comparisonMode"
-			:comparison-active="comparisonActive"
+			:comparison="comparison"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>

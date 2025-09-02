@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import type { FormField } from './types';
+import type { FormField, ComparisonContext } from './types';
 
 withDefaults(
 	defineProps<{
@@ -16,10 +16,8 @@ withDefaults(
 		loading?: boolean;
 		rawEditorEnabled?: boolean;
 		rawEditorActive?: boolean;
-		comparisonMode?: boolean;
-		comparisonSide?: 'main' | 'version';
+		comparison?: ComparisonContext;
 		comparisonActive?: boolean;
-		comparisonFields?: Set<string>;
 	}>(),
 	{
 		batchMode: false,
@@ -50,7 +48,7 @@ const { t } = useI18n();
 				@update:model-value="$emit('toggle-batch', field)"
 			/>
 			<v-checkbox
-				v-if="comparisonMode && comparisonSide === 'version' && comparisonFields?.has(field.field)"
+				v-if="comparison?.mode && comparison?.side === 'version' && comparison?.fields?.has(field.field)"
 				:model-value="comparisonActive"
 				:value="field.field"
 				@update:model-value="$emit('toggle-comparison', field)"

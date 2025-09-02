@@ -11,7 +11,7 @@ import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { MenuOptions } from './form-field-menu.vue';
 import FormField from './form-field.vue';
-import type { FormField as TFormField } from './types';
+import type { FormField as TFormField, ComparisonContext } from './types';
 import { getFormFields } from './utils/get-form-fields';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
@@ -44,11 +44,7 @@ const props = withDefaults(
 		showDivider?: boolean;
 		inline?: boolean;
 		version?: ContentVersion | null;
-		comparisonMode?: boolean;
-		comparisonSide?: 'main' | 'version';
-		selectedComparisonFields?: string[];
-		comparisonFields?: Set<string>;
-		onToggleComparisonField?: (field: string) => void;
+		comparison?: ComparisonContext;
 	}>(),
 	{
 		collection: undefined,
@@ -350,8 +346,8 @@ function useRawEditor() {
 }
 
 function toggleComparisonField(field: TFormField | undefined) {
-	if (!field || !props.onToggleComparisonField) return;
-	props.onToggleComparisonField(field.field);
+	if (!field || !props.comparison?.onToggleField) return;
+	props.comparison.onToggleField(field.field);
 }
 </script>
 
@@ -400,10 +396,7 @@ function toggleComparisonField(field: TFormField | undefined) {
 					:raw-editor-enabled="rawEditorEnabled"
 					:direction="direction"
 					:version
-					:comparison-mode="comparisonMode"
-					:selected-comparison-fields="selectedComparisonFields"
-					:comparison-fields="comparisonFields"
-					:on-toggle-comparison-field="onToggleComparisonField"
+					:comparison="comparison"
 					v-bind="fieldsMap[fieldName]!.meta?.options || {}"
 					@apply="apply"
 				/>
@@ -423,10 +416,8 @@ function toggleComparisonField(field: TFormField | undefined) {
 					:disabled="isDisabled(fieldsMap[fieldName]!)"
 					:batch-mode="batchMode"
 					:batch-active="batchActiveFields.includes(fieldName)"
-					:comparison-mode="comparisonMode"
-					:comparison-side="comparisonSide"
-					:comparison-active="selectedComparisonFields?.includes(fieldName)"
-					:comparison-fields="comparisonFields"
+					:comparison="comparison"
+					:comparison-active="comparison?.selectedFields?.includes(fieldName)"
 					:primary-key="primaryKey"
 					:loading="loading"
 					:validation-error="

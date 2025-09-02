@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Field, ValidationError } from '@directus/types';
 import { isEqual } from 'lodash';
+import type { ComparisonContext } from '@/components/v-form/types';
 import { ref, watch } from 'vue';
 import AccordionSection from './accordion-section.vue';
 
@@ -13,9 +14,7 @@ const props = withDefaults(
 		disabled?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
-		comparisonMode?: boolean;
-		selectedComparisonFields?: string[];
-		comparisonFields?: Set<string>;
+		comparison?: ComparisonContext;
 		primaryKey: string | number;
 		loading?: boolean;
 		validationErrors?: ValidationError[];
@@ -124,9 +123,7 @@ function useComputedGroup() {
 			:disabled="disabled"
 			:batch-mode="batchMode"
 			:batch-active-fields="batchActiveFields"
-			:comparison-mode="comparisonMode"
-			:comparison-fields="comparisonFields"
-			:selected-comparison-fields="selectedComparisonFields"
+			:comparison="comparison"
 			:primary-key="primaryKey"
 			:loading="loading"
 			:validation-errors="validationErrors"
