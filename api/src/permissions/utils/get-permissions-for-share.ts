@@ -28,14 +28,13 @@ export async function getPermissionsForShare(
 
 	const { collection, item, role, user_created } = await fetchShareInfo(accountability.share!, context);
 
-	const userRole = user_created?.role ?? role;
-	const userAdmin = user_created === null; // set admin for system created shares
+	const userRole = user_created?.role ?? null;
 
 	const userAccountability: Accountability = {
 		user: user_created?.id ?? null,
 		role: userRole,
 		roles: await fetchRolesTree(userRole, context.knex),
-		admin: userAdmin,
+		admin: false,
 		app: false,
 		ip: accountability.ip,
 	};
