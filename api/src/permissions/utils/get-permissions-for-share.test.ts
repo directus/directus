@@ -394,7 +394,7 @@ describe('getPermissionsForShare', () => {
 			...basePermissions,
 		]);
 	});
-	
+
 	test('admin role selected and created by system', async () => {
 		const accountability: Accountability = {
 			user: 'admin',

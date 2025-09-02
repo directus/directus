@@ -35,7 +35,7 @@ export async function getPermissionsForShare(
 		user: user_created?.id ?? null,
 		role: userRole,
 		roles: await fetchRolesTree(userRole, context.knex),
-		admin:  userAdmin,
+		admin: userAdmin,
 		app: false,
 		ip: accountability.ip,
 	};
