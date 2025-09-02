@@ -1,13 +1,15 @@
 Perform CRUD operations on Directus Collections.
 
-### Actions
+<actions>
 
-- **`create`**: Add new collections
-- **`read`**: Retrieve available collections
-- **`update`**: Modify existing collections
-- **`delete`**: Remove collections
+- `create`: Add new collections
+- `read`: Retrieve available collections
+- `update`: Modify existing collections
+- `delete`: Remove collections
+</actions>
 
-### Example Collection
+<collection_structure>
+### Collection Structure
 
 ```json
 {
@@ -48,13 +50,13 @@ Perform CRUD operations on Directus Collections.
 	}
 }
 ```
+</collection_structure>
 
+<creating_collections>
 
-### Creating Collections
-
-- **ALWAYS use UUID for primary keys** unless manually entered strings or integrers are explictly requested by users.
+- **Primary Keys**: Use UUID primary keys (see `fields` tool `<primary_keys>` section for detailed guidance)
 - ALWAYS show the collection URL to the user if it is present in the result.
-- When creating a new collection, include both collection settings and initial fields.
+- When creating a new collection, include both collection settings and initial fields (see `fields` tool for complete examples).
 
 ```json
 {
@@ -65,8 +67,8 @@ Perform CRUD operations on Directus Collections.
 			{
 				"field": "id",
 				"type": "uuid",
-				"meta": { "hidden": true, "readonly": true, "interface": "input", "special": ["uuid"] },
-				"schema": { "is_primary_key": true, "length": 36, "has_auto_increment": false }
+				"meta": { "special": ["uuid"] },
+				"schema": { "is_primary_key": true }
 			},
 			{
 				"field": "status",
@@ -125,41 +127,24 @@ Perform CRUD operations on Directus Collections.
 	}
 }
 ```
+</creating_collections>
 
-### Collection Translation / Localization
-
-**IMPORTANT**: Always check for a `languages` collection using `schema` tool first to determine available languages and then fetch languages using `items` tool before translating collection names.
-
-Provide collection names in multiple languages:
+<translations>
+For collection name translations, check for `languages` collection first, then provide collection names in available languages (similar to field translations - see `fields` tool `<translations>` section for translation workflow).
 
 ```json
 {
 	"meta": {
 		"translations": [
-			{
-				"language": "en-US",
-				"translation": "Products",
-				"singular": "product",
-				"plural": "products"
-			},
-			{
-				"language": "es-ES",
-				"translation": "Productos",
-				"singular": "producto",
-				"plural": "productos"
-			},
-			{
-				"language": "fr-FR",
-				"translation": "Produits",
-				"singular": "produit",
-				"plural": "produits"
-			}
+			{"language": "en-US", "translation": "Products", "singular": "product", "plural": "products"},
+			{"language": "es-ES", "translation": "Productos", "singular": "producto", "plural": "productos"}
 		]
 	}
 }
 ```
+</translations>
 
-### Display Templates
+<display_templates>
 
 Control how collection items appear in relationships and lists:
 
@@ -174,3 +159,4 @@ Control how collection items appear in relationships and lists:
 **Template Variables:**
 - `{{field_name}}` - Any field from the collection
 - `{{field_name.nested}}` - Access nested object properties
+</display_templates>
