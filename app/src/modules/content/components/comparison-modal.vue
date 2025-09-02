@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import api from '@/api';
-import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { ContentVersion, Field, User } from '@directus/types';
-import { isNil, cloneDeep, merge, isEqual } from 'lodash';
+import { ContentVersion, User } from '@directus/types';
+import { isNil, isEqual } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
@@ -23,20 +22,12 @@ interface Props {
 
 const { t } = useI18n();
 
-const fieldsStore = useFieldsStore();
-
-// Get fields that have different values between version and main
-// We need to do this because a version is not a diff - it's a snapshot of the data at a point in time
 function getFieldsWithDifferences(comparedData: Comparison): string[] {
-	const validFieldKeys = new Set(comparedFields.value.map((field) => field.field));
-
-	return Object.keys(comparedData.current)
-		.filter((fieldKey) => validFieldKeys.has(fieldKey))
-		.filter((fieldKey) => {
-			const versionValue = comparedData.current[fieldKey];
-			const mainValue = comparedData.main[fieldKey];
-			return !isEqual(versionValue, mainValue);
-		});
+	return Object.keys(comparedData.current).filter((fieldKey) => {
+		const versionValue = comparedData.current[fieldKey];
+		const mainValue = comparedData.main[fieldKey];
+		return !isEqual(versionValue, mainValue);
+	});
 }
 
 const props = defineProps<Props>();
@@ -64,8 +55,6 @@ const currentVersionDisplayName = computed(() =>
 	isNil(currentVersion.value.name) ? currentVersion.value.key : currentVersion.value.name,
 );
 
-// const isOutdated = computed(() => comparedData.value?.outdated ?? false);
-
 const mainHash = computed(() => comparedData.value?.mainHash ?? '');
 
 const versionDateUpdated = computed(() => {
@@ -76,27 +65,11 @@ const versionDateUpdated = computed(() => {
 const mainItemDateUpdated = computed(() => {
 	if (!comparedData.value?.main) return null;
 
-	// Check for common date updated field names
 	const dateField =
 		comparedData.value.main.date_updated || comparedData.value.main.modified_on || comparedData.value.main.updated_on;
 
 	if (!dateField) return null;
 	return new Date(dateField);
-});
-
-const comparedFields = computed<Field[]>(() => {
-	if (comparedData.value === null) return [];
-
-	return Object.keys(comparedData.value.current)
-		.map((fieldKey) => fieldsStore.getField(unref(currentVersion).collection, fieldKey))
-		.filter((field) => !!field && !isPrimaryKey(field)) as Field[];
-
-	function isPrimaryKey(field: Field) {
-		return (
-			field.schema?.is_primary_key === true &&
-			(field.schema?.has_auto_increment === true || field.meta?.special?.includes('uuid'))
-		);
-	}
 });
 
 const fieldsWithDifferences = computed(() => {
@@ -120,19 +93,6 @@ const availableFieldsCount = computed(() => {
 
 const comparisonFields = computed(() => {
 	return new Set(fieldsWithDifferences.value);
-});
-
-const previewData = computed(() => {
-	if (!comparedData.value) return null;
-	return comparedData.value.current;
-});
-
-const versionItem = computed(() => {
-	if (!comparedData.value) return null;
-
-	// Merge version fields into the main item to create a complete version item
-	// This ensures all fields are present, not just the ones that were saved in the version
-	return merge(cloneDeep(comparedData.value.main), cloneDeep(comparedData.value.current));
 });
 
 watch(
@@ -184,7 +144,6 @@ async function getComparison() {
 
 		selectedComparisonFields.value = getFieldsWithDifferences(result);
 
-		// Fetch main item user after comparison data is loaded
 		await fetchMainItemUserUpdated();
 	} catch (error) {
 		unexpectedError(error);
@@ -194,7 +153,6 @@ async function getComparison() {
 }
 
 async function fetchUserUpdated() {
-	// Try user_updated first, fallback to user_created if not available
 	const userId = currentVersion.value.user_updated || currentVersion.value.user_created;
 	if (!userId) return;
 
@@ -218,7 +176,6 @@ async function fetchUserUpdated() {
 async function fetchMainItemUserUpdated() {
 	if (!comparedData.value?.main) return;
 
-	// Check for common user updated field names, with fallback to user_created
 	const userField = comparedData.value.main.user_updated || comparedData.value.main.user_created;
 
 	if (!userField) return;
@@ -323,7 +280,7 @@ function usePromoteDialog() {
 								disabled
 								:collection="currentVersion.collection"
 								:primary-key="currentVersion.item"
-								:initial-values="versionItem"
+								:initial-values="comparedData?.main || {}"
 								:comparison-mode="!!comparedData"
 								:selected-comparison-fields="selectedComparisonFields"
 								:comparison-fields="comparisonFields"
@@ -424,13 +381,16 @@ function usePromoteDialog() {
 	}
 
 	.vertical-divider::after {
+		--vertical-divider-width: 2px;
+		--vertical-divider-color: var(--theme--border-color-accent);
+		--vertical-divider-dash-length: 4px;
 		content: '';
 		position: absolute;
 		inset-block: 0;
 		inset-inline-start: 50%;
 
 		/* Border width */
-		inline-size: 2px;
+		inline-size: var(--vertical-divider-width);
 
 		/* Custom dash pattern using repeating-linear-gradient */
 		/*
@@ -441,7 +401,11 @@ function usePromoteDialog() {
 			- transparent 8px:                           gap end = 8px total, so gap = 4px
 			This creates a repeating 4px dash followed by a 4px gap (total cycle = 8px).
 		*/
-		background: repeating-linear-gradient(to bottom, var(--theme--border-color-accent) 0 4px, transparent 4px 8px);
+		background: repeating-linear-gradient(
+			to bottom,
+			var(--vertical-divider-color) 0 var(--vertical-divider-dash-length),
+			transparent var(--vertical-divider-dash-length) calc(var(--vertical-divider-dash-length) * 2)
+		);
 		pointer-events: none;
 	}
 
