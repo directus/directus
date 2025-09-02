@@ -1,4 +1,5 @@
-Retrieve base64-encoded file content from Directus. Returns raw file data suitable for AI vision models, image analysis, and file operations.
+Retrieve base64-encoded file content from Directus. Returns raw file data suitable for AI vision models, image analysis,
+and file operations.
 
 **Input**: `{"id": "file-uuid"}`
 

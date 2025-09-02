@@ -53,6 +53,7 @@ Perform CRUD operations on files in Directus.
 ### Update File Metadata
 
 **Single file:**
+
 ```json
 {
 	"action": "update",
@@ -67,12 +68,13 @@ Perform CRUD operations on files in Directus.
 ```
 
 **Batch update:**
+
 ```json
 {
 	"action": "update",
 	"data": [
-		{"id": "file-uuid-1", "title": "New Title 1"},
-		{"id": "file-uuid-2", "title": "New Title 2"}
+		{ "id": "file-uuid-1", "title": "New Title 1" },
+		{ "id": "file-uuid-2", "title": "New Title 2" }
 	]
 }
 ```
@@ -84,10 +86,10 @@ Perform CRUD operations on files in Directus.
 	"query": {
 		"filter": {
 			"_and": [
-				{"type": { "_icontains": "/png" }}, // PNG files only
-				{"folder": { "_eq": "folder-uuid" }}, // Specific folder
-				{"filesize": { "_lt": 5000000 }}, // Under 5MB
-				{"uploaded_on": { "_gte": "$NOW(-7 days)" }} // Within last week
+				{ "type": { "_icontains": "/png" } }, // PNG files only
+				{ "folder": { "_eq": "folder-uuid" } }, // Specific folder
+				{ "filesize": { "_lt": 5000000 } }, // Under 5MB
+				{ "uploaded_on": { "_gte": "$NOW(-7 days)" } } // Within last week
 			]
 		}
 	}
@@ -135,12 +137,12 @@ _Example: "Find images in our asset library related to customer support for our 
 }
 ```
 
-
 ### Asset Organization & Cleanup
 
 Transform generic files into well-organized, searchable assets:
 
 1. **Find files needing metadata:**
+
 ```json
 {
 	"action": "read",
@@ -154,6 +156,7 @@ Transform generic files into well-organized, searchable assets:
 2. **Analyze with vision (use `assets` tool for base64):** Get image content for AI analysis
 
 3. **Update with descriptive metadata:**
+
 ```json
 {
 	"action": "update",
@@ -169,6 +172,7 @@ Transform generic files into well-organized, searchable assets:
 ```
 
 ## Key Points
+
 - **ALWAYS pass data as native objects**, NOT stringified JSON
 - **Metadata only**: This tool manages file metadata, not file content or uploads
 - **Permissions**: Respects Directus access control

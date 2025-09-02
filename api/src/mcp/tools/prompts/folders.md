@@ -22,8 +22,10 @@ Perform CRUD operations on Directus Folders. Folders are used to organize files 
 ```
 
 ## Important Notes
+
 - **Folders are virtual**: Folders are not mirrored with the storage adaptor, only stored in the database.
-- **Permissions**: Respects Directus access control - only accessible files are returned. If you don't see something that the user says you should have access to, it could be a permissions issue.
+- **Permissions**: Respects Directus access control - only accessible files are returned. If you don't see something
+  that the user says you should have access to, it could be a permissions issue.
 - **Folder Hierarchy**: Deleting a folder requires it to be empty or will cascade based on settings
 
 ## Mistakes to Avoid

@@ -19,7 +19,8 @@ schema response.
 **Returns**: Lightweight schema overview
 
 - `collections`: Alphabetically sorted array of real collection names (database tables)
-- `collection_folders`: Alphabetically sorted array of folder names (UI-only, not real tables). Distinct from file folders. They are used for grouping different collections together in the UI.
+- `collection_folders`: Alphabetically sorted array of folder names (UI-only, not real tables). Distinct from file
+  folders. They are used for grouping different collections together in the UI.
 - `notes`: Descriptions for both collections and folders (where available)
 
 **Important**: Folders share the same namespace as collections. Before creating a new collection, check the `folders`

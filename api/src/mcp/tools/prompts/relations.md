@@ -14,8 +14,7 @@ Before creating relations:
 - `delete`: Remove relationships
 </actions>
 
-<basic_relation>
-After creating relational fields, define the relationship:
+<basic_relation> After creating relational fields, define the relationship:
 
 ```json
 {
@@ -29,65 +28,77 @@ After creating relational fields, define the relationship:
 	}
 }
 ```
+
 </basic_relation>
 
-<relationship_types>
-<m2o_workflow>
+<relationship_types> <m2o_workflow>
+
 ### M2O (Many-to-One)
+
 Multiple items in one collection relate to one item in another.
 
 **Example**: Many articles → one author
 
 **Complete M2O Workflow**:
 
-1. **Add M2O field** to the "many" collection → Use `fields` tool with `type: "uuid"` and `interface: "select-dropdown-m2o"` (see `fields` tool `<relationship_fields>` M2O example)
+1. **Add M2O field** to the "many" collection → Use `fields` tool with `type: "uuid"` and
+   `interface: "select-dropdown-m2o"` (see `fields` tool `<relationship_fields>` M2O example)
 
 2. **Create relation** (use `relations` tool):
+
 ```json
 {
-  "action": "create",
-  "data": {
-    "collection": "articles",
-    "field": "author",
-    "related_collection": "directus_users",
-    "schema": { "on_delete": "SET NULL" }
-  }
+	"action": "create",
+	"data": {
+		"collection": "articles",
+		"field": "author",
+		"related_collection": "directus_users",
+		"schema": { "on_delete": "SET NULL" }
+	}
 }
 ```
+
 </m2o_workflow>
 
 <o2m_workflow>
+
 ### O2M (One-to-Many)
+
 One item in a collection relates to many items in another collection.
 
 **Example**: One author → many articles
 
 **Complete O2M Workflow**:
 
-1. **Add O2M field** to the "one" collection → Use `fields` tool with `type: "alias"`, `special: ["o2m"]`, and `interface: "list-o2m"`
+1. **Add O2M field** to the "one" collection → Use `fields` tool with `type: "alias"`, `special: ["o2m"]`, and
+   `interface: "list-o2m"`
 
 2. **Create relation** connecting to existing M2O field (use `relations` tool):
+
 ```json
 {
-  "action": "create",
-  "data": {
-    "collection": "articles",
-    "field": "author",
-    "related_collection": "authors",
-    "meta": {
-      "one_field": "articles",
-      "sort_field": null
-    },
-    "schema": {
-      "on_delete": "SET NULL"
-    }
-  }
+	"action": "create",
+	"data": {
+		"collection": "articles",
+		"field": "author",
+		"related_collection": "authors",
+		"meta": {
+			"one_field": "articles",
+			"sort_field": null
+		},
+		"schema": {
+			"on_delete": "SET NULL"
+		}
+	}
 }
 ```
+
 </o2m_workflow>
 
 <m2m_workflow>
+
 ### M2M (Many-to-Many)
+
 Items in both collections can relate to multiple items in the other.
 
 **Example**: Articles ↔ Tags
@@ -96,11 +107,14 @@ Items in both collections can relate to multiple items in the other.
 
 1. **Create junction collection** → Use `collections` tool to create `article_tags` with UUID primary key
 
-2. **Add alias fields** to both collections → Use `fields` tool with `type: "alias"`, `special: ["m2m"]`, and `interface: "list-m2m"` (see `fields` tool `<relationship_fields>` M2M example)
+2. **Add alias fields** to both collections → Use `fields` tool with `type: "alias"`, `special: ["m2m"]`, and
+   `interface: "list-m2m"` (see `fields` tool `<relationship_fields>` M2M example)
 
-3. **Add junction fields** → Use `fields` tool to add `article_id` (UUID), `tag_id` (UUID), and optional `sort` (integer) fields to junction collection
+3. **Add junction fields** → Use `fields` tool to add `article_id` (UUID), `tag_id` (UUID), and optional `sort`
+   (integer) fields to junction collection
 
 4. **Create bidirectional relations** (use `relations` tool with CASCADE):
+
 ```json
 // First relation
 {
@@ -133,25 +147,32 @@ Items in both collections can relate to multiple items in the other.
   }
 }
 ```
+
 </m2m_workflow>
 
 <m2a_workflow>
+
 ### M2A (Many-to-Any)
+
 Items can relate to items from multiple different collections.
 
 **Example**: Page blocks (hero, text, gallery)
 
 **Complete M2A Workflow**:
 
-1. **Create block collections** → Use `collections` tool to create each block type (e.g., `block_hero`, `block_text`, `block_gallery`) with UUID primary keys and specific fields
+1. **Create block collections** → Use `collections` tool to create each block type (e.g., `block_hero`, `block_text`,
+   `block_gallery`) with UUID primary keys and specific fields
 
-2. **Create junction collection** → Use `collections` tool to create `page_blocks` junction (hidden collection with UUID primary key)
+2. **Create junction collection** → Use `collections` tool to create `page_blocks` junction (hidden collection with UUID
+   primary key)
 
 3. **Add M2A field** → Use `fields` tool with `type: "alias"`, `special: ["m2a"]`, and `interface: "list-m2a"`
 
-4. **Add junction fields** → Use `fields` tool to add `page` (UUID), `item` (string), `collection` (string), and `sort` (integer) fields to junction
+4. **Add junction fields** → Use `fields` tool to add `page` (UUID), `item` (string), `collection` (string), and `sort`
+   (integer) fields to junction
 
 5. **Create relations** (use `relations` tool):
+
 ```json
 // Item relation (polymorphic)
 {
@@ -184,9 +205,11 @@ Items can relate to items from multiple different collections.
   }
 }
 ```
+
 </m2a_workflow>
 
 <file_relationships>
+
 ### File/Files Relationships
 
 **Single File (M2O)**:
@@ -194,15 +217,16 @@ Items can relate to items from multiple different collections.
 1. **Add file field** → Use `fields` tool with `type: "uuid"`, `special: ["file"]`, and `interface: "file"`
 
 2. **Create relation** (use `relations` tool):
+
 ```json
 {
-  "action": "create",
-  "data": {
-    "collection": "articles",
-    "field": "cover_image",
-    "related_collection": "directus_files",
-    "schema": {"on_delete": "SET NULL"}
-  }
+	"action": "create",
+	"data": {
+		"collection": "articles",
+		"field": "cover_image",
+		"related_collection": "directus_files",
+		"schema": { "on_delete": "SET NULL" }
+	}
 }
 ```
 
@@ -212,11 +236,14 @@ Items can relate to items from multiple different collections.
 
 1. **Create junction collection** → Use `collections` tool to create junction with UUID primary key
 
-2. **Add files field** to main collection → Use `fields` tool with `type: "alias"`, `special: ["files"]`, and `interface: "files"` (see `fields` tool `<relationship_fields>` Files example)
+2. **Add files field** to main collection → Use `fields` tool with `type: "alias"`, `special: ["files"]`, and
+   `interface: "files"` (see `fields` tool `<relationship_fields>` Files example)
 
-3. **Add junction fields** → Use `fields` tool to add hidden `article_id` and `directus_files_id` (both UUID) fields to junction
+3. **Add junction fields** → Use `fields` tool to add hidden `article_id` and `directus_files_id` (both UUID) fields to
+   junction
 
 4. **Create relations** (use `relations` tool):
+
 ```json
 // Article relation
 {
@@ -247,10 +274,13 @@ Items can relate to items from multiple different collections.
   }
 }
 ```
+
 </file_relationships>
 
 <translations_workflow>
+
 ### Translations
+
 Special M2M relationship with `languages` collection.
 
 **Complete Translations Workflow**:
@@ -259,16 +289,18 @@ Special M2M relationship with `languages` collection.
 
 2. **Create translations junction** → Use `collections` tool to create junction with UUID primary key
 
-3. **Add translations field** → Use `fields` tool with `type: "alias"`, `special: ["translations"]`, and `interface: "translations"` (see `fields` tool `<relationship_fields>` Translations example)
+3. **Add translations field** → Use `fields` tool with `type: "alias"`, `special: ["translations"]`, and
+   `interface: "translations"` (see `fields` tool `<relationship_fields>` Translations example)
 
-4. **Configure junction fields and relations** → Follow M2M pattern with languages collection
-</translations_workflow>
-</relationship_types>
+4. **Configure junction fields and relations** → Follow M2M pattern with languages collection </translations_workflow>
+   </relationship_types>
 
 <relation_settings>
+
 ## Relation Settings
 
 ### Schema Options
+
 - `on_delete`:
   - `CASCADE` (default for M2M) - Delete related items
   - `SET NULL` (default for M2O) - Set field to null
@@ -280,18 +312,20 @@ Special M2M relationship with `languages` collection.
   - Same options as `on_delete`
 
 ### Meta Options
+
 - `one_field`: Field name in related collection (for O2M side)
 - `junction_field`: Opposite field in junction table
 - `sort_field`: Enable manual sorting (typically an integer field)
 - `one_deselect_action`: `nullify` or `delete`
 - `one_allowed_collections`: Array of collection names for M2A
-- `one_collection_field`: Field that stores collection name in M2A
-</relation_settings>
+- `one_collection_field`: Field that stores collection name in M2A </relation_settings>
 
 <common_patterns>
+
 ## Common Patterns
 
 ### Blog System
+
 1. `articles` M2O `directus_users` (author)
 2. `articles` M2M `tags`
 3. `articles` M2O `directus_files` (cover_image)
@@ -300,6 +334,7 @@ Special M2M relationship with `languages` collection.
 6. `comments` M2O `directus_users` (author)
 
 ### E-commerce
+
 1. `products` M2M `categories`
 2. `products` M2O `brands`
 3. `products` O2M `reviews`
@@ -310,23 +345,23 @@ Special M2M relationship with `languages` collection.
 8. `reviews` M2O `directus_users` (reviewer)
 
 ### Page Builder
+
 - `pages` M2A `blocks` field (`page_blocks` junction collection)
-- Collections: `block_hero`, `block_text`, `block_gallery`
-</common_patterns>
+- Collections: `block_hero`, `block_text`, `block_gallery` </common_patterns>
 
 <naming_conventions>
+
 ## Naming Conventions
 
 - Junction collections: `{singular}_{plural}` (e.g., `product_categories`)
 - Junction fields: Singular form of related collection (e.g., `product_id`, `category_id`)
 - Alias fields: Plural form for many relations (e.g., `tags`, `categories`)
-- M2O fields: Singular form (e.g., `author`, `brand`)
-</naming_conventions>
+- M2O fields: Singular form (e.g., `author`, `brand`) </naming_conventions>
 
 <related_tools>
+
 ## Related Tools
 
 - `collections`: Create collections and junctions first
 - `fields`: Add relational fields before creating relations
-- `schema`: View complete relationship structure
-</related_tools>
+- `schema`: View complete relationship structure </related_tools>

@@ -1,6 +1,8 @@
-Manage automation flows that enable event-driven data processing and task automation. Flows consist of a trigger and a series of operations forming a data chain.
+Manage automation flows that enable event-driven data processing and task automation. Flows consist of a trigger and a
+series of operations forming a data chain.
 
 <flow_concepts>
+
 ## Key Concepts
 
 **Flow** = Trigger + Operations + Data Chain
@@ -9,10 +11,11 @@ Manage automation flows that enable event-driven data processing and task automa
 - Operations execute sequentially, passing data through the chain
 - Data chain accumulates results from each step
 
-After creating a flow, use the `operations` tool to add individual operations with detailed operation syntax, positioning, and data chain usage.
-</flow_concepts>
+After creating a flow, use the `operations` tool to add individual operations with detailed operation syntax,
+positioning, and data chain usage. </flow_concepts>
 
 <core_fields>
+
 ## Flow Data Structure
 
 All flows share these core fields for creation:
@@ -25,10 +28,10 @@ All flows share these core fields for creation:
 - `color` - Hex color code (optional)
 - `description` - Flow description (optional)
 - `options` - Trigger-specific configuration object (optional)
-- `operation` - UUID of first operation (optional, set after creating operations)
-</core_fields>
+- `operation` - UUID of first operation (optional, set after creating operations) </core_fields>
 
 <crud_actions>
+
 ## Actions
 
 - ALWAYS show the flow URL if it is present in the result
@@ -92,9 +95,11 @@ All flows share these core fields for creation:
 	"key": "flow-uuid"
 }
 ```
+
 </crud_actions>
 
 <trigger_types>
+
 ## Trigger Types & Options
 
 ### Event Hook Trigger
@@ -215,7 +220,8 @@ UI button that users click to start flows
 // Access confirmation inputs: {{ $trigger.body.prompt }}, {{ $trigger.body.voice }}
 ```
 
-**Field Options**: Supports non-relational Directus interfaces - `input`, `input-multiline`, `input-rich-text-md`, `tags`, `list`, `select-color`, `select-radio`, `collection-item-dropdown`, etc.
+**Field Options**: Supports non-relational Directus interfaces - `input`, `input-multiline`, `input-rich-text-md`,
+`tags`, `list`, `select-color`, `select-radio`, `collection-item-dropdown`, etc.
 
 ### Operation Trigger (Another Flow)
 
@@ -227,30 +233,35 @@ UI button that users click to start flows
 	}
 }
 ```
+
 </trigger_types>
 
 <operations_integration>
+
 ## Working with Operations
 
 **Use the `operations` tool for complete details on:**
+
 - Creating and linking operations
 - 14x14 grid positioning system
 - Data chain variable syntax
 - Operation-specific configuration
 
 **Workflow Process:**
+
 1. Create flow first to get flow ID
 2. Use `operations` tool to add/manage operations
 3. Operations execute in sequence based on resolve/reject paths
-4. Link operations via UUIDs in resolve/reject fields
-</operations_integration>
+4. Link operations via UUIDs in resolve/reject fields </operations_integration>
 
 <flow_chaining>
+
 ## 🔗 Flow Chaining
 
 **When to Chain**: Reusable utilities, complex multi-step workflows, conditional branching
 
 **How to Chain**:
+
 1. Child flow: `"trigger": "operation"`, `"return": "final_key"` or `"$last"`
 2. Parent flow: Use `trigger` operation with child flow UUID and payload
 3. Access child results: `{{ trigger_operation_key }}`
@@ -284,39 +295,42 @@ UI button that users click to start flows
 ```
 
 **Multi-Chain Example** (Form Notifications):
+
 ```json
 // Chains: Read Form → Format → Render Template → Send Email
 {
-  "type": "trigger",
-  "key": "render",
-  "options": {
-    "flow": "utils-render-template-uuid",
-    "payload": "{{ format }}"
-  }
+	"type": "trigger",
+	"key": "render",
+	"options": {
+		"flow": "utils-render-template-uuid",
+		"payload": "{{ format }}"
+	}
 }
 ```
 
 **Best Practices**:
+
 - Name utilities with "Utils →" prefix for clarity
 - Use `$last` return for simple utilities, specific keys for complex ones
 - Chain utilities together for modular, reusable workflows
-- Keep each utility focused on single responsibility
-</flow_chaining>
+- Keep each utility focused on single responsibility </flow_chaining>
 
 <data_chain_warning>
+
 ## Data Chain Access
 
 **See the `operations` tool for complete data chain syntax and examples.**
 
 Operations can access:
+
 - `$trigger` - Initial trigger data
 - `$accountability` - User/permission context
 - `$env` - Environment variables
 - `<operationKey>` - Result of specific operation (recommended)
-- `$last` - Result of previous operation (avoid - breaks when reordered)
-</data_chain_warning>
+- `$last` - Result of previous operation (avoid - breaks when reordered) </data_chain_warning>
 
 <real_world_examples>
+
 ## Real-World Examples
 
 ### Post Approval Email (Event-Driven)
@@ -478,3 +492,4 @@ Operations can access:
    }
    ```
 </common_mistakes>
+````

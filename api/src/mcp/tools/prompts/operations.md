@@ -1,59 +1,66 @@
-Perform CRUD on Directus Operations within Flows. Operations are individual actions that execute sequentially in a flow, processing and transforming data through the data chain.
+Perform CRUD on Directus Operations within Flows. Operations are individual actions that execute sequentially in a flow,
+processing and transforming data through the data chain.
 
 <key_concepts>
+
 - **Operations** are the building blocks of flows
 - Each operation has a unique `key` that identifies it in the data chain
 - Operations connect via `resolve` (success) and `reject` (failure) paths
-- Data from each operation is stored under its key in the data chain
-</key_concepts>
+- Data from each operation is stored under its key in the data chain </key_concepts>
 
 <uuid_vs_keys>
+
 ## UUID vs Keys - Critical Distinction
 
 **UUIDs** (System identifiers): `"abc-123-def-456"`
+
 - Use in: `resolve`, `reject`, `flow`, operation `key` field in CRUD
 - Generated automatically when operations are created
 - Required for connecting operations
 
 **Keys** (Human-readable names): `"send_email"`, `"check_status"`
+
 - Use in: Data chain variables `{{ operation_key }}`
 - You define these when creating operations
-- Used to access operation results in subsequent operations
-</uuid_vs_keys>
+- Used to access operation results in subsequent operations </uuid_vs_keys>
 
 <critical_syntax>
+
 ## Critical Syntax Rules - MEMORIZE THESE
 
 **Condition Filters**: Use nested objects, NEVER dot notation
+
 - ❌ `"$trigger.payload.status"`
 - ✅ `{"$trigger": {"payload": {"status": {"_eq": "published"}}}}`
 
 **Request Headers**: Array of objects, NOT simple objects
+
 - ❌ `{"Authorization": "Bearer token"}`
 - ✅ `[{"header": "Authorization", "value": "Bearer token"}]`
 
 **Request Body**: Stringified JSON, NOT native objects
+
 - ❌ `"body": {"data": "value"}`
 - ✅ `"body": "{\"data\": \"value\"}"`
 
 **Data Chain Variables**: Use operation keys, avoid `$last`
+
 - ❌ `{{ $last }}` (breaks when reordered)
-- ✅ `{{ operation_key }}` (reliable)
-</critical_syntax>
+- ✅ `{{ operation_key }}` (reliable) </critical_syntax>
 
 <required_fields>
+
 ## Required Fields Summary
 
 **All Operations:**
+
 - `flow` - UUID of parent flow
 - `key` - Unique operation identifier
 - `type` - Operation type
 - `position_x`, `position_y` - Grid coordinates
-- `resolve`, `reject` - Next operation UUIDs (null initially)
-</required_fields>
+- `resolve`, `reject` - Next operation UUIDs (null initially) </required_fields>
 
-<available_operations>
-Core operations available in Directus:
+<available_operations> Core operations available in Directus:
 
 - **condition** - Evaluate filter rules to determine execution path
 - **exec** - Execute custom JavaScript/TypeScript code in sandboxed environment
@@ -71,10 +78,11 @@ Core operations available in Directus:
 - **transform** - Create custom JSON payloads
 - **trigger** - Execute another flow with iteration modes
 
-If user has installed extensions from the Directus Marketplace, there may be more operations available than this. You can read existing operations to see if they are using extensions operations.
-</available_operations>
+If user has installed extensions from the Directus Marketplace, there may be more operations available than this. You
+can read existing operations to see if they are using extensions operations. </available_operations>
 
 <crud_actions>
+
 ### `read` - List Flow Operations
 
 ```json
@@ -133,14 +141,17 @@ If user has installed extensions from the Directus Marketplace, there may be mor
 	"key": "operation-uuid"
 }
 ```
+
 </crud_actions>
 
 <workflow_creation>
+
 ## Workflow Creation Process - **ESSENTIAL READING**
 
 **⚠️ CRITICAL**: Follow this exact order or operations will fail
 
 <workflow_steps>
+
 ### Step-by-Step Process:
 
 1. **Create the flow** using the `flows` tool
@@ -152,10 +163,10 @@ If user has installed extensions from the Directus Marketplace, there may be mor
 
 - Operations must exist before they can be referenced in resolve/reject fields
 - UUIDs are only available after operations are created
-- The flow needs at least one operation created before setting its entry point
-</workflow_steps>
+- The flow needs at least one operation created before setting its entry point </workflow_steps>
 
 <workflow_example>
+
 ### Complete Workflow Example:
 
 ```json
@@ -222,19 +233,22 @@ If user has installed extensions from the Directus Marketplace, there may be mor
   "operation": "condition-uuid-456"  // First operation UUID
 }}
 ```
-</workflow_example>
-</workflow_creation>
+
+</workflow_example> </workflow_creation>
 
 <positioning_system>
+
 ## Grid-Based Positioning - **ALWAYS SET POSITIONS**
 
 **Grid Rules:**
+
 - Each operation: 14x14 grid units
 - Standard spacing: 18 units (19, 37, 55, 73...)
 - Vertical start: `position_y: 1`
 - Never use (0,0) - operations will overlap
 
 **Common Patterns:**
+
 ```json
 // Linear flow
 {"position_x": 19, "position_y": 1}  // First
@@ -246,11 +260,10 @@ If user has installed extensions from the Directus Marketplace, there may be mor
 {"position_x": 37, "position_y": 1}   // Success (same row)
 {"position_x": 37, "position_y": 19}  // Error (lower row)
 ```
+
 </positioning_system>
 
-<operation_examples>
-<condition>
-Evaluates filter rules to determine path
+<operation_examples> <condition> Evaluates filter rules to determine path
 
 ```json
 {
@@ -259,7 +272,7 @@ Evaluates filter rules to determine path
 		"filter": {
 			"$trigger": {
 				"payload": {
-					"status": {"_eq": "published"}
+					"status": { "_eq": "published" }
 				}
 			}
 		}
@@ -295,11 +308,11 @@ Evaluates filter rules to determine path
   }
 }
 ```
-</filter_examples>
-</condition>
 
-<item_operations>
-**Create Items:**
+</filter_examples> </condition>
+
+<item_operations> **Create Items:**
+
 ```json
 {
 	"type": "item-create",
@@ -316,6 +329,7 @@ Evaluates filter rules to determine path
 ```
 
 **Read Items:**
+
 ```json
 {
 	"type": "item-read",
@@ -323,7 +337,7 @@ Evaluates filter rules to determine path
 		"collection": "products",
 		"permissions": "$full",
 		"query": {
-			"filter": {"status": {"_eq": "active"}},
+			"filter": { "status": { "_eq": "active" } },
 			"limit": 10
 		}
 	}
@@ -331,6 +345,7 @@ Evaluates filter rules to determine path
 ```
 
 **Update Items:**
+
 ```json
 {
 	"type": "item-update",
@@ -339,12 +354,13 @@ Evaluates filter rules to determine path
 		"permissions": "$trigger",
 		"emitEvents": true,
 		"key": "{{ $trigger.payload.id }}",
-		"payload": {"status": "processed"}
+		"payload": { "status": "processed" }
 	}
 }
 ```
 
 **Delete Items:**
+
 ```json
 {
 	"type": "item-delete",
@@ -355,6 +371,7 @@ Evaluates filter rules to determine path
 	}
 }
 ```
+
 </item_operations>
 
 <exec>
@@ -371,8 +388,7 @@ Execute custom JavaScript/TypeScript in isolated sandbox
 }
 ```
 
-**Common Use Cases**: Data transformation, calculations, complex logic, formatting, extracting nested values
-</exec>
+**Common Use Cases**: Data transformation, calculations, complex logic, formatting, extracting nested values </exec>
 
 <mail>
 Send email notifications with optional templates
@@ -393,6 +409,7 @@ Send email notifications with optional templates
 ```
 
 **Template Mode:**
+
 ```json
 {
 	"type": "mail",
@@ -408,6 +425,7 @@ Send email notifications with optional templates
 	}
 }
 ```
+
 </mail>
 
 <notification>
@@ -426,6 +444,7 @@ Send in-app notifications to users
 	}
 }
 ```
+
 </notification>
 
 <request>
@@ -453,6 +472,7 @@ Make HTTP requests
 ```
 
 **Real Example (Netlify Deploy Hook)**:
+
 ```json
 {
 	"type": "request",
@@ -469,10 +489,10 @@ Make HTTP requests
 	}
 }
 ```
+
 </request>
 
-<json_web_token>
-Sign, verify, or decode JWT tokens - **CONSOLIDATED EXAMPLE**
+<json_web_token> Sign, verify, or decode JWT tokens - **CONSOLIDATED EXAMPLE**
 
 ```json
 {
@@ -492,17 +512,18 @@ Sign, verify, or decode JWT tokens - **CONSOLIDATED EXAMPLE**
 		},
 
 		// For VERIFY/DECODE operations:
-		"token": "{{ $trigger.payload.token }}",
+		"token": "{{ $trigger.payload.token }}"
 		// "secret": "{{ $env.JWT_SECRET }}", // Required for verify, not for decode
 		// "options": {"algorithms": ["HS256"]}, // For verify
 		// "options": {"complete": true} // For decode
 	}
 }
 ```
+
 </json_web_token>
 
-<other_operations>
-**Transform JSON:**
+<other_operations> **Transform JSON:**
+
 ```json
 {
 	"type": "transform",
@@ -519,12 +540,13 @@ Sign, verify, or decode JWT tokens - **CONSOLIDATED EXAMPLE**
 ```
 
 **Trigger Flow:**
+
 ```json
 {
 	"type": "trigger",
 	"options": {
 		"flow": "other-flow-uuid",
-		"payload": {"data": "{{ transform_result }}"},
+		"payload": { "data": "{{ transform_result }}" },
 		"iterationMode": "parallel", // "parallel", "serial", "batch"
 		"batchSize": 10 // Only for batch mode
 	}
@@ -532,22 +554,25 @@ Sign, verify, or decode JWT tokens - **CONSOLIDATED EXAMPLE**
 ```
 
 **Sleep:**
+
 ```json
 {
 	"type": "sleep",
-	"options": {"milliseconds": 5000}
+	"options": { "milliseconds": 5000 }
 }
 ```
 
 **Log:**
+
 ```json
 {
 	"type": "log",
-	"options": {"message": "Processing item: {{ $trigger.payload.id }}"}
+	"options": { "message": "Processing item: {{ $trigger.payload.id }}" }
 }
 ```
 
 **Throw Error:**
+
 ```json
 {
 	"type": "throw-error",
@@ -558,31 +583,29 @@ Sign, verify, or decode JWT tokens - **CONSOLIDATED EXAMPLE**
 	}
 }
 ```
-</other_operations>
-</operation_examples>
 
-<data_chain_variables>
-Use `{{ variable }}` syntax to access data:
+</other_operations> </operation_examples>
+
+<data_chain_variables> Use `{{ variable }}` syntax to access data:
 
 - `{{ $trigger.payload }}` - Trigger data
 - `{{ $accountability.user }}` - User context
 - `{{ operation_key }}` - Result from specific operation (recommended)
 - `{{ operation_key.field }}` - Specific field from operation result
 
-**⚠️ Avoid `$last`:** While `{{ $last }}` references the previous operation's result, avoid using it in production flows. If you reorder operations, `$last` will reference a different operation, potentially breaking your flow. Always use specific operation keys like `{{ operation_key }}` for reliable, maintainable flows.
-</data_chain_variables>
+**⚠️ Avoid `$last`:** While `{{ $last }}` references the previous operation's result, avoid using it in production
+flows. If you reorder operations, `$last` will reference a different operation, potentially breaking your flow. Always
+use specific operation keys like `{{ operation_key }}` for reliable, maintainable flows. </data_chain_variables>
 
-<permission_options>
-For operations that support permissions:
+<permission_options> For operations that support permissions:
 
 - `$trigger` - Use permissions from the triggering context (default)
 - `$public` - Use public role permissions
 - `$full` - Use full system permissions
-- `role-uuid` - Use specific role's permissions
-</permission_options>
+- `role-uuid` - Use specific role's permissions </permission_options>
 
-<real_world_patterns>
-<data_processing_pipeline>
+<real_world_patterns> <data_processing_pipeline>
+
 ### Data Processing Pipeline
 
 Read → Transform → Update pattern:
@@ -619,9 +642,11 @@ Read → Transform → Update pattern:
   }
 }
 ```
+
 </data_processing_pipeline>
 
 <error_handling_branching>
+
 ### Error Handling with Branching
 
 ```json
@@ -643,10 +668,11 @@ Read → Transform → Update pattern:
   "position_x": 37, "position_y": 19
 }
 ```
-</error_handling_branching>
-</real_world_patterns>
+
+</error_handling_branching> </real_world_patterns>
 
 <common_mistakes>
+
 1. **DO NOT** create operations without a flow - create flow first
 2. **DO NOT** use operation keys in resolve/reject - use UUIDs (see <workflow_example> above)
 3. **DO NOT** try to reference operations that do not exist yet
@@ -656,8 +682,7 @@ Read → Transform → Update pattern:
 7. **DO NOT** pass stringified JSON - use native objects (except request body)
 8. **DO NOT** leave operations at default position (0,0) - see <positioning_system> above
 9. **DO NOT** use dot notation in condition filters - see <critical_syntax> above
-10. **DO NOT** use wrong format for request operations - see <critical_syntax> above
-</common_mistakes>
+10. **DO NOT** use wrong format for request operations - see <critical_syntax> above </common_mistakes>
 
 <troubleshooting>
 <invalid_foreign_key>
@@ -667,18 +692,18 @@ This typically means you're trying to reference an operation that doesn't exist:
 
 - Verify the operation UUID exists by reading operations for the flow
 - Check that you're using UUIDs (36 characters) not keys (short names)
-- Ensure operations are created before being referenced
-</invalid_foreign_key>
+- Ensure operations are created before being referenced </invalid_foreign_key>
 
 <operation_not_executing>
+
 ### Operation Not Executing
 
 - Check the resolve/reject chain for breaks
 - Verify the first operation is set as the flow's `operation` field
-- Confirm all required operation options are provided
-</operation_not_executing>
+- Confirm all required operation options are provided </operation_not_executing>
 
 <overlapping_operations>
+
 ### Overlapping Operations in Visual Editor
 
 If operations appear stacked at (0,0) in the flow editor:
@@ -692,5 +717,5 @@ If operations appear stacked at (0,0) in the flow editor:
   "position_x": 37, "position_y": 1
 }}
 ```
-</overlapping_operations>
-</troubleshooting>
+
+</overlapping_operations> </troubleshooting>

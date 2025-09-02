@@ -5,10 +5,10 @@ Perform CRUD operations on Directus Collections.
 - `create`: Add new collections
 - `read`: Retrieve available collections
 - `update`: Modify existing collections
-- `delete`: Remove collections
-</actions>
+- `delete`: Remove collections </actions>
 
 <collection_structure>
+
 ### Collection Structure
 
 ```json
@@ -50,13 +50,15 @@ Perform CRUD operations on Directus Collections.
 	}
 }
 ```
+
 </collection_structure>
 
 <creating_collections>
 
 - **Primary Keys**: Use UUID primary keys (see `fields` tool `<primary_keys>` section for detailed guidance)
 - ALWAYS show the collection URL to the user if it is present in the result.
-- When creating a new collection, include both collection settings and initial fields (see `fields` tool for complete examples).
+- When creating a new collection, include both collection settings and initial fields (see `fields` tool for complete
+  examples).
 
 ```json
 {
@@ -127,6 +129,7 @@ Perform CRUD operations on Directus Collections.
 	}
 }
 ```
+
 </creating_collections>
 
 <translations>
@@ -136,12 +139,13 @@ For collection name translations, check for `languages` collection first, then p
 {
 	"meta": {
 		"translations": [
-			{"language": "en-US", "translation": "Products", "singular": "product", "plural": "products"},
-			{"language": "es-ES", "translation": "Productos", "singular": "producto", "plural": "productos"}
+			{ "language": "en-US", "translation": "Products", "singular": "product", "plural": "products" },
+			{ "language": "es-ES", "translation": "Productos", "singular": "producto", "plural": "productos" }
 		]
 	}
 }
 ```
+
 </translations>
 
 <display_templates>
@@ -151,12 +155,12 @@ Control how collection items appear in relationships and lists:
 ```json
 {
 	"meta": {
-		"display_template": "{{name}} - {{category}} ({{status}})",
+		"display_template": "{{name}} - {{category}} ({{status}})"
 	}
 }
 ```
 
 **Template Variables:**
+
 - `{{field_name}}` - Any field from the collection
-- `{{field_name.nested}}` - Access nested object properties
-</display_templates>
+- `{{field_name.nested}}` - Access nested object properties </display_templates>
