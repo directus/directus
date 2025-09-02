@@ -61,7 +61,7 @@ export class DirectusMCP {
 	 * response being an asynchronous side effect happening after the function has returned
 	 */
 	handleRequest(req: Request, res: Response) {
-		if (!req.accountability?.user && !req.accountability?.role) {
+		if (!req.accountability?.user && !req.accountability?.role && req.accountability?.admin !== true) {
 			throw new ForbiddenError();
 		}
 
