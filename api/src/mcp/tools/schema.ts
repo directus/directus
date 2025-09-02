@@ -43,7 +43,7 @@ export interface OverviewOutput {
 
 export interface LightweightOverview {
 	collections: string[];
-	folders: string[];
+	collection_folders: string[];
 	notes: Record<string, string>;
 }
 
@@ -85,7 +85,7 @@ export const schema = defineTool<z.infer<typeof SchemaValidateSchema>>({
 		if (!args.keys || args.keys.length === 0) {
 			const lightweightOverview: LightweightOverview = {
 				collections: [],
-				folders: [],
+				collection_folders: [],
 				notes: {},
 			};
 
@@ -100,7 +100,7 @@ export const schema = defineTool<z.infer<typeof SchemaValidateSchema>>({
 
 				// Separate folders from real collections
 				if (!collection.schema) {
-					lightweightOverview.folders.push(collection.collection);
+					lightweightOverview.collection_folders.push(collection.collection);
 				} else {
 					lightweightOverview.collections.push(collection.collection);
 				}

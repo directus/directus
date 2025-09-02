@@ -1,5 +1,3 @@
-# Directus Schema Discovery Tool
-
 Retrieve essential Directus schema information to understand the data structure - collections, fields, and
 relationships. This is a **READ-ONLY discovery tool** designed to help you explore and comprehend existing schema. It is
 for schema exploration and understanding only. For schema modifications, use the dedicated `collections`, `fields`, and
@@ -21,7 +19,7 @@ schema response.
 **Returns**: Lightweight schema overview
 
 - `collections`: Alphabetically sorted array of real collection names (database tables)
-- `folders`: Alphabetically sorted array of folder names (UI-only, not real tables)
+- `collection_folders`: Alphabetically sorted array of folder names (UI-only, not real tables). Distinct from file folders. They are used for grouping different collections together in the UI.
 - `notes`: Descriptions for both collections and folders (where available)
 
 **Important**: Folders share the same namespace as collections. Before creating a new collection, check the `folders`
@@ -32,7 +30,7 @@ array to avoid naming conflicts (e.g., can't create a 'website' collection if a 
 ```json
 {
 	"collections": ["categories", "contacts", "organizations", "pages", "posts", "products"],
-	"folders": ["content", "marketing", "website"],
+	"collection_folders": ["content", "marketing", "website"],
 	"notes": {
 		"contacts": "People at the organizations you work with",
 		"organizations": "Your clients and customers",
@@ -80,16 +78,6 @@ array to avoid naming conflicts (e.g., can't create a 'website' collection if a 
 			"interface": {
 				"type": "select-dropdown",
 				"choices": ["draft", "published", "archived"]
-			}
-		},
-		"author": {
-			"type": "string",
-			"interface": {
-				"type": "select-dropdown-m2o"
-			},
-			"relation": {
-				"type": "m2o",
-				"related_collections": ["directus_users"]
 			}
 		},
 		"category": {

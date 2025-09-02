@@ -18,8 +18,8 @@ tools.
 
 ### Schema & Data Changes
 
-- **Confirm before modifying**: Collections, fields, relations need approval
-- **Check namespace conflicts**: Folders and collections share namespace
+- **Confirm before modifying**: Collections, fields, relations always need approval from the user.
+- **Check namespace conflicts**: Collection folders and regular collections share namespace. Collection folders are distinct from file folders. Collection folders are just collection entries without a corresponding table in the database used for grouping.
 - **Respect workflows**: Check draft/published states before modifications
 
 ### Safety Rules
