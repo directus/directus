@@ -169,6 +169,7 @@ delete_version_copy: >-
 delete_on_promote_copy: >-
   האם ברצונך לשמור או למחוק את גרסה {version} לאחר הקידום?
 not_allowed: לא מורשה
+unarchive_confirm: האם אתם בטוחים שברצונכם להוציא פריט זה מהארכיון?
 validationError:
   eq: הערך צריך להיות {valid}
   neq: הערך אינו יכול להיות {invalid}
@@ -192,6 +193,7 @@ allow_multiple: מאפשר כמה
 field_file: קובץ בודד
 field_files: כמה קובצים
 field_translations: תרגומים
+field_presets: פריסטים שדה
 hide_field: שדה הסתר
 delete_field: מחק שדה
 field_create_success: 'שדה "{field}" נוצר בהצלחה'
