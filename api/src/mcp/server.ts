@@ -67,7 +67,7 @@ export class DirectusMCP {
 
 		if (!req.accepts('application/json')) {
 			// we currently dont support "text/event-stream" requests
-			res.status(400).send();
+			res.status(405).send();
 			return;
 		}
 

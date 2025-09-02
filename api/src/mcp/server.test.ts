@@ -110,7 +110,7 @@ describe('mcp server', () => {
 
 			directusMCP.handleRequest(mockReq as Request, mockRes as Response);
 
-			expect(mockRes.status).toHaveBeenCalledWith(400);
+			expect(mockRes.status).toHaveBeenCalledWith(405);
 			expect(mockRes.send).toHaveBeenCalled();
 		});
 
