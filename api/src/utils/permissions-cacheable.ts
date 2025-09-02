@@ -6,9 +6,9 @@ import { createDefaultAccountability } from '../permissions/utils/create-default
 
 /**
  * Check if the read permissions for a collection contain the dynamic variable $NOW.
- * If they do, the permissions are not cachable.
+ * If they do, the permissions are not cacheable.
  */
-export async function permissionsCachable(
+export async function permissionsCacheable(
 	collection: string | undefined,
 	context: Context,
 	accountability?: Accountability,
@@ -33,18 +33,20 @@ export async function permissionsCachable(
 			return false;
 		}
 
-		return filter_has_now(permission.permissions);
+		return filterHasNow(permission.permissions);
 	});
 
 	return !has_now;
 }
 
-export function filter_has_now(filter: Filter): boolean {
+export function filterHasNow(filter: Filter): boolean {
+	if (filter === null) return false;
+
 	return Object.entries(filter).some(([key, value]) => {
 		if (key === '_and' || key === '_or') {
-			return (value as Filter[]).some((sub_filter) => filter_has_now(sub_filter));
+			return (value as Filter[]).some((sub_filter) => filterHasNow(sub_filter));
 		} else if (typeof value === 'object') {
-			return filter_has_now(value);
+			return filterHasNow(value);
 		} else if (typeof value === 'string') {
 			return value.startsWith('$NOW');
 		}
