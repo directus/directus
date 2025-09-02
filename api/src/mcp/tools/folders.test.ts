@@ -269,21 +269,6 @@ describe('folders tool', () => {
 		});
 	});
 
-	describe('tool configuration', () => {
-		test('should have correct tool name', () => {
-			expect(folders.name).toBe('folders');
-		});
-
-		test('should have description', () => {
-			expect(folders.description).toBeDefined();
-		});
-
-		test('should have input and validation schemas', () => {
-			expect(folders.inputSchema).toBeDefined();
-			expect(folders.validateSchema).toBeDefined();
-		});
-	});
-
 	describe('edge cases', () => {
 		let mockFoldersService: any;
 
@@ -336,6 +321,25 @@ describe('folders tool', () => {
 					sanitizedQuery: mockSanitizedQuery,
 				}),
 			).rejects.toThrow('Service error');
+		});
+	});
+
+	describe('tool configuration', () => {
+		test('should have correct tool name', () => {
+			expect(folders.name).toBe('folders');
+		});
+
+		test('should not be admin tool', () => {
+			expect(folders.admin).toBeUndefined();
+		});
+
+		test('should have description', () => {
+			expect(folders.description).toBeDefined();
+		});
+
+		test('should have input and validation schemas', () => {
+			expect(folders.inputSchema).toBeDefined();
+			expect(folders.validateSchema).toBeDefined();
 		});
 	});
 });

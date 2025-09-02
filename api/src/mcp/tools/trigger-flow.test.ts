@@ -186,6 +186,10 @@ describe('trigger flow tool', () => {
 			expect(triggerFlow.name).toBe('trigger-flow');
 		});
 
+		test('should not be admin tool', () => {
+			expect(triggerFlow.admin).toBeUndefined();
+		});
+
 		test('should have description', () => {
 			expect(triggerFlow.description).toBeDefined();
 		});

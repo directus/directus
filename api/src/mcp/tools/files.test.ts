@@ -144,6 +144,10 @@ describe('files tool', () => {
 			expect(files.name).toBe('files');
 		});
 
+		test('should not be admin tool', () => {
+			expect(files.admin).toBeUndefined();
+		});
+
 		test('should have description', () => {
 			expect(files.description).toBeDefined();
 		});

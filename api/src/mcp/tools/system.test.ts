@@ -43,6 +43,10 @@ describe('system tool', () => {
 			expect(system.name).toBe('system-prompt');
 		});
 
+		test('should not be admin tool', () => {
+			expect(system.admin).toBeUndefined();
+		});
+
 		test('should have description', () => {
 			expect(system.description).toBeDefined();
 		});
