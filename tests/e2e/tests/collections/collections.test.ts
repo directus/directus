@@ -15,7 +15,7 @@ const api = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest(
 
 const collectionName = `collections_${randomUUID()}`;
 
-test('creating a collection', async () => {
+test('crud on a collection', async () => {
 	const create = await api.request(
 		createCollection({
 			collection: collectionName,
