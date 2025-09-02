@@ -1,20 +1,62 @@
 Perform CRUD operations on Directus Collections.
 
-### ⚙️ Actions
+<actions>
 
-- create: Add new collections
-- read: Retrieve available collections
-- update: Modify existing collections
-- delete: Remove collections
+- `create`: Add new collections
+- `read`: Retrieve available collections
+- `update`: Modify existing collections
+- `delete`: Remove collections
+</actions>
 
-### 📘 Creating Collections
+<collection_structure>
+### Collection Structure
 
-When creating a new collection, include both collection settings and initial fields:
+```json
+{
+	"collection": "products",
+	"meta": {
+		"collection": "ai_prompts",
+		"icon": "inventory_2", // Any Material Symbols icons
+		"note": "Main product catalog with inventory tracking" // Helpful 1 sentence description
+		"color": "#6366F1", // Color shown in content module sidebar
+		"singleton": false, // Single-item collections (settings, globals)
+		"hidden": false, // Hide from navigation
+		"accountability": "all", // Track who activity and revisions (`"all"`, `"activity"`, `null`)
+		"sort_field": "sort", // Default sorting field (auto-creates if needed)
+		"archive_app_filter": true, // Enable soft delete in the app
+		"archive_field": "status", // Field used for archiving (status, deleted_at, etc.)
+		"archive_value": "archived", // Value that marks items as archived
+		"unarchive_value": "published", // Value that marks items as active
+		"display_template": "{{name}} - ${{price}}",
+		"versioning": false, // Enable content versioning for this collection
+		"sort": 2, // Sort order for this collection
+		"group": null, // Parent collection (use to group and nest collections in data model)
+		"collapse": "open" // Default collection to expanded or collapsed if child collections
+		"preview_url": "https://store.example.com/products/{{slug}}", // Live preview URL to view items within collection - supports using template variables
+		"translations": [
+			{
+				"language": "en-US",
+				"translation": "Products",
+				"singular": "product",
+				"plural": "products"
+			},
+			{
+				"language": "es-ES",
+				"translation": "Productos",
+				"singular": "producto",
+				"plural": "productos"
+			}
+		],
+	}
+}
+```
+</collection_structure>
 
-**⭐ Primary Key Best Practice: Always use UUID primary keys for better scalability, security, and distributed system
-compatibility.**
+<creating_collections>
 
-- ALWAYS show the collection URL if it is present in the result
+- **Primary Keys**: Use UUID primary keys (see `fields` tool `<primary_keys>` section for detailed guidance)
+- ALWAYS show the collection URL to the user if it is present in the result.
+- When creating a new collection, include both collection settings and initial fields (see `fields` tool for complete examples).
 
 ```json
 {
@@ -25,8 +67,8 @@ compatibility.**
 			{
 				"field": "id",
 				"type": "uuid",
-				"meta": { "hidden": true, "readonly": true, "interface": "input", "special": ["uuid"] },
-				"schema": { "is_primary_key": true, "length": 36, "has_auto_increment": false }
+				"meta": { "special": ["uuid"] },
+				"schema": { "is_primary_key": true }
 			},
 			{
 				"field": "status",
@@ -79,88 +121,30 @@ compatibility.**
 			"archive_value": "archived",
 			"unarchive_value": "draft",
 			"singleton": false,
-			"translations": [
-				{
-					"language": "en-US",
-					"translation": "Organizations",
-					"singular": "organization",
-					"plural": "organizations"
-				},
-				{
-					"language": "es-ES",
-					"translation": "Organizaciones",
-					"singular": "organización",
-					"plural": "organizaciones"
-				}
-			],
+			"translations": null,
 			"display_template": "{{name}} ({{status}})"
 		}
 	}
 }
 ```
+</creating_collections>
 
-## 🌐 Internationalization & Display
-
-### Workflow for Adding Translations
-
-1. **Check for languages collection**: Use `schema` tool to see if a `languages` collection exists
-2. **Get available languages**: If found, read the languages collection to get language codes
-3. **Apply translations**: Use those language codes in your translation objects
-4. **Fallback**: If no languages collection exists, use common codes like `en-US`, `es-ES`, etc.
-
-Example workflow:
-
-```json
-// Step 1: Check schema for languages collection
-{ "action": "read", "keys": ["languages"] }
-
-// Step 2: If found, read languages to get codes
-{  "action": "read", "keys": ["languages"] }
-
-// Step 3: Use those language codes in translations
-```
-
-### Collection Translations
-
-**IMPORTANT**: Always check for a `languages` collection first to determine available languages.
-
-Provide collection names in multiple languages:
+<translations>
+For collection name translations, check for `languages` collection first, then provide collection names in available languages (similar to field translations - see `fields` tool `<translations>` section for translation workflow).
 
 ```json
 {
 	"meta": {
 		"translations": [
-			{
-				"language": "en-US",
-				"translation": "Products",
-				"singular": "product",
-				"plural": "products"
-			},
-			{
-				"language": "es-ES",
-				"translation": "Productos",
-				"singular": "producto",
-				"plural": "productos"
-			},
-			{
-				"language": "fr-FR",
-				"translation": "Produits",
-				"singular": "produit",
-				"plural": "produits"
-			}
+			{"language": "en-US", "translation": "Products", "singular": "product", "plural": "products"},
+			{"language": "es-ES", "translation": "Productos", "singular": "producto", "plural": "productos"}
 		]
 	}
 }
 ```
+</translations>
 
-**Translation Structure:**
-
-- `language`: Language code (from languages collection if available)
-- `translation`: Display name for the collection
-- `singular`: Singular form (lowercase)
-- `plural`: Plural form (lowercase)
-
-### Display Templates
+<display_templates>
 
 Control how collection items appear in relationships and lists:
 
@@ -168,69 +152,11 @@ Control how collection items appear in relationships and lists:
 {
 	"meta": {
 		"display_template": "{{name}} - {{category}} ({{status}})",
-		"preview_url": "https://example.com/{{slug}}"
 	}
 }
 ```
 
 **Template Variables:**
-
 - `{{field_name}}` - Any field from the collection
 - `{{field_name.nested}}` - Access nested object properties
-- `{{$t:key}}` - Localized translation strings
-- `{{$now}}` - Current timestamp
-- Supports filters and conditional logic
-
-### Collection Settings
-
-Key collection metadata options:
-
-- `singleton`: Single-item collections (settings, globals)
-- `hidden`: Hide from navigation (system collections)
-- `icon`: Collection icon (`"mdi:account"`, `"mdi:store"`)
-- `color`: Theme color for the collection
-- `note`: Description shown in collection overview
-- `sort_field`: Default sorting field (auto-creates if needed)
-- `archive_field`: Field used for archiving (status, deleted_at, etc.)
-- `archive_value`: Value that marks items as archived
-- `unarchive_value`: Value that marks items as active
-- `accountability`: Track who created/modified items (`"all"`, `"activity"`, `null`)
-
-### Example Complete Collection
-
-```json
-{
-	"collection": "products",
-	"schema": {
-		"comment": "Product catalog with multilingual support"
-	},
-	"meta": {
-		"icon": "inventory_2",
-		"color": "#6366F1",
-		"singleton": false,
-		"hidden": false,
-		"accountability": "all",
-		"sort_field": "sort",
-		"archive_field": "status",
-		"archive_value": "archived",
-		"unarchive_value": "published",
-		"display_template": "{{name}} - ${{price}}",
-		"preview_url": "https://store.example.com/products/{{slug}}",
-		"translations": [
-			{
-				"language": "en-US",
-				"translation": "Products",
-				"singular": "product",
-				"plural": "products"
-			},
-			{
-				"language": "es-ES",
-				"translation": "Productos",
-				"singular": "producto",
-				"plural": "productos"
-			}
-		],
-		"note": "Main product catalog with inventory tracking"
-	}
-}
-```
+</display_templates>
