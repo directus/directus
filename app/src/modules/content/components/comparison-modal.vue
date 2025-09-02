@@ -22,6 +22,11 @@ interface Props {
 
 const { t } = useI18n();
 
+const COMPARISON_SIDE = {
+	main: 'main',
+	version: 'version',
+} as const;
+
 function getFieldsWithDifferences(comparedData: Comparison): string[] {
 	return Object.keys(comparedData.current).filter((fieldKey) => {
 		const versionValue = comparedData.current[fieldKey];
@@ -263,6 +268,9 @@ function usePromoteDialog() {
 								:collection="currentVersion.collection"
 								:primary-key="currentVersion.item"
 								:initial-values="comparedData?.main"
+								:comparison-side="COMPARISON_SIDE.main"
+								:comparison-mode="!!comparedData"
+								:comparison-fields="comparisonFields"
 							/>
 						</div>
 					</div>
@@ -285,6 +293,7 @@ function usePromoteDialog() {
 								:selected-comparison-fields="selectedComparisonFields"
 								:comparison-fields="comparisonFields"
 								:on-toggle-comparison-field="toggleComparisonField"
+								:comparison-side="COMPARISON_SIDE.version"
 							/>
 						</div>
 					</div>

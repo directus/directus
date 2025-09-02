@@ -45,6 +45,7 @@ const props = withDefaults(
 		inline?: boolean;
 		version?: ContentVersion | null;
 		comparisonMode?: boolean;
+		comparisonSide?: 'main' | 'version';
 		selectedComparisonFields?: string[];
 		comparisonFields?: Set<string>;
 		onToggleComparisonField?: (field: string) => void;
@@ -423,6 +424,7 @@ function toggleComparisonField(field: TFormField | undefined) {
 					:batch-mode="batchMode"
 					:batch-active="batchActiveFields.includes(fieldName)"
 					:comparison-mode="comparisonMode"
+					:comparison-side="comparisonSide"
 					:comparison-active="selectedComparisonFields?.includes(fieldName)"
 					:comparison-fields="comparisonFields"
 					:primary-key="primaryKey"

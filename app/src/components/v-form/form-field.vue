@@ -30,6 +30,7 @@ const props = withDefaults(
 		disabledMenuOptions?: MenuOptions[];
 		direction?: string;
 		comparisonMode?: boolean;
+		comparisonSide?: 'main' | 'version';
 		comparisonActive?: boolean;
 		comparisonFields?: Set<string>;
 	}>(),
@@ -175,7 +176,14 @@ function useComputedValues() {
 		:data-collection="field.collection"
 		:data-field="field.field"
 		class="field"
-		:class="[field.meta?.width || 'full', { invalid: validationError }]"
+		:class="[
+			field.meta?.width || 'full',
+			{
+				invalid: validationError,
+				'comparison-field': comparisonMode && comparisonFields?.has(field.field),
+			},
+		]"
+		:data-comparison-side="comparisonMode && comparisonFields?.has(field.field) ? comparisonSide : undefined"
 	>
 		<v-menu v-if="!isLabelHidden" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
@@ -186,6 +194,7 @@ function useComputedValues() {
 					:batch-mode="batchMode"
 					:batch-active="batchActive"
 					:comparison-mode="comparisonMode"
+					:comparison-side="comparisonSide"
 					:comparison-active="comparisonActive"
 					:comparison-fields="comparisonFields"
 					:edited="isEdited"
@@ -257,6 +266,25 @@ function useComputedValues() {
 <style lang="scss" scoped>
 .field {
 	position: relative;
+
+	&.comparison-field {
+		&::before {
+			content: '';
+			position: absolute;
+			inset-block: 0;
+			inset-inline-start: -12px;
+			inline-size: 4px;
+			z-index: 1;
+		}
+
+		&[data-comparison-side='main']::before {
+			background-color: var(--theme--danger);
+		}
+
+		&[data-comparison-side='version']::before {
+			background-color: var(--theme--success);
+		}
+	}
 }
 
 .type-note {
