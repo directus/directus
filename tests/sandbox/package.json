@@ -8,6 +8,7 @@
 		"build": "tsc && copyfiles src/docker/*.yml dist -u 1",
 		"dev": "tsc -w ",
 		"build:tests": "tsup src/index.ts  --format=esm",
+		"docs": "typedoc --plugin typedoc-plugin-markdown --out ./docs",
 		"postinstall": "pnpm link"
 	},
 	"exports": {
@@ -41,6 +42,8 @@
 		"pid-port": "catalog:",
 		"tsup": "catalog:",
 		"tsx": "catalog:",
+		"typedoc": "catalog:",
+		"typedoc-plugin-markdown": "catalog:",
 		"typescript": "catalog:"
 	},
 	"engines": {

@@ -289,6 +289,8 @@ catalog:
   tsup: 8.5.0
   tsx: 4.20.3
   tus-js-client: 4.3.1
+  typedoc: 0.28.12
+  typedoc-plugin-markdown: 4.8.1
   typescript: 5.8.3
   typescript-eslint: 8.38.0
   undici: 7.13.0

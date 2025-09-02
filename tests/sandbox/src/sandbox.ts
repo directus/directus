@@ -121,11 +121,13 @@ export const databases: Database[] = [
 	'sqlite',
 ] as const;
 
+export type SandboxesOptions = {
+	database: Database;
+	options: DeepPartial<Omit<Options, 'build' | 'dev' | 'watch' | 'export'>>;
+}[];
+
 export async function sandboxes(
-	sandboxes: {
-		database: Database;
-		options: DeepPartial<Omit<Options, 'build' | 'dev' | 'watch' | 'export'>>;
-	}[],
+	sandboxes: SandboxesOptions,
 	options?: Partial<Pick<Options, 'build' | 'dev' | 'watch'>>,
 ): Promise<Sandboxes> {
 	if (!sandboxes.every((sandbox) => databases.includes(sandbox.database))) throw new Error('Invalid database provided');
