@@ -56,21 +56,68 @@ Perform CRUD operations on Directus Collections.
 <creating_collections>
 
 - **Primary Keys**: Use UUID primary keys (see `fields` tool `<primary_keys>` section for detailed guidance)
+- **System Fields**: Include system fields for content collections (see `<system_fields>` section below for complete template) unless specifically asked by user to omit them.
 - ALWAYS show the collection URL to the user if it is present in the result.
-- When creating a new collection, include both collection settings and initial fields (see `fields` tool for complete
-  examples).
+- When creating a new collection, include both collection settings and initial fields (see `fields` tool for complete examples).
+
+### Basic Collection Example
 
 ```json
 {
 	"action": "create",
 	"data": {
-		"collection": "organizations",
+		"collection": "articles",
 		"fields": [
 			{
 				"field": "id",
 				"type": "uuid",
-				"meta": { "special": ["uuid"] },
-				"schema": { "is_primary_key": true }
+				"meta": { "special": ["uuid"], "hidden": true, "readonly": true, "interface": "input" },
+				"schema": { "is_primary_key": true, "length": 36, "has_auto_increment": false }
+			},
+			{
+				"field": "title",
+				"type": "string",
+				"meta": { "interface": "input", "required": true },
+				"schema": { "is_nullable": false }
+			}
+		],
+		"schema": {}, // Always send empty object for new collection unless creating a folder collection
+		"meta": {
+			"singleton": false,
+			"display_template": "{{title}}"
+		}
+	}
+}
+```
+
+</creating_collections>
+
+<system_fields>
+
+### Complete System Fields Template
+
+For content collections (blogs, products, pages), include these optional system fields for full CMS functionality:
+
+```json
+{
+	"action": "create",
+	"data": {
+		"collection": "articles",
+		"fields": [
+			{
+				"field": "id",
+				"type": "uuid",
+				"meta": {
+					"hidden": true,
+					"readonly": true,
+					"interface": "input",
+					"special": ["uuid"]
+				},
+				"schema": {
+					"is_primary_key": true,
+					"length": 36,
+					"has_auto_increment": false
+				}
 			},
 			{
 				"field": "status",
@@ -78,10 +125,23 @@ Perform CRUD operations on Directus Collections.
 				"meta": {
 					"width": "full",
 					"options": {
+						// You might choose to customize these options based on the users request
 						"choices": [
-							{ "text": "$t:published", "value": "published", "color": "var(--theme--primary)" },
-							{ "text": "$t:draft", "value": "draft", "color": "var(--theme--foreground)" },
-							{ "text": "$t:archived", "value": "archived", "color": "var(--theme--warning)" }
+							{
+								"text": "$t:published",
+								"value": "published",
+								"color": "var(--theme--primary)"
+							},
+							{
+								"text": "$t:draft",
+								"value": "draft",
+								"color": "var(--theme--foreground)"
+							},
+							{
+								"text": "$t:archived",
+								"value": "archived",
+								"color": "var(--theme--warning)"
+							}
 						]
 					},
 					"interface": "select-dropdown",
@@ -113,24 +173,131 @@ Perform CRUD operations on Directus Collections.
 						]
 					}
 				},
-				"schema": { "default_value": "draft", "is_nullable": false }
+				"schema": {
+					"default_value": "draft",
+					"is_nullable": false
+				}
+			},
+			{
+				"field": "sort",
+				"type": "integer",
+				"meta": {
+					"interface": "input",
+					"hidden": true
+				},
+				"schema": {}
+			},
+			{
+				"field": "user_created",
+				"type": "uuid",
+				"meta": {
+					"special": ["user-created"],
+					"interface": "select-dropdown-m2o",
+					"options": {
+						"template": "{{avatar}} {{first_name}} {{last_name}}"
+					},
+					"display": "user",
+					"readonly": true,
+					"hidden": true,
+					"width": "half"
+				},
+				"schema": {}
+			},
+			{
+				"field": "date_created",
+				"type": "timestamp",
+				"meta": {
+					"special": ["date-created"],
+					"interface": "datetime",
+					"readonly": true,
+					"hidden": true,
+					"width": "half",
+					"display": "datetime",
+					"display_options": {
+						"relative": true
+					}
+				},
+				"schema": {}
+			},
+			{
+				"field": "user_updated",
+				"type": "uuid",
+				"meta": {
+					"special": ["user-updated"],
+					"interface": "select-dropdown-m2o",
+					"options": {
+						"template": "{{avatar}} {{first_name}} {{last_name}}"
+					},
+					"display": "user",
+					"readonly": true,
+					"hidden": true,
+					"width": "half"
+				},
+				"schema": {}
+			},
+			{
+				"field": "date_updated",
+				"type": "timestamp",
+				"meta": {
+					"special": ["date-updated"],
+					"interface": "datetime",
+					"readonly": true,
+					"hidden": true,
+					"width": "half",
+					"display": "datetime",
+					"display_options": {
+						"relative": true
+					}
+				},
+				"schema": {}
 			}
 		],
-		"schema": {},
+		"schema": {}, // Always send empty object for new collection unless creating a folder collection
 		"meta": {
 			"sort_field": "sort",
 			"archive_field": "status",
 			"archive_value": "archived",
 			"unarchive_value": "draft",
-			"singleton": false,
-			"translations": null,
-			"display_template": "{{name}} ({{status}})"
+			"singleton": false
 		}
 	}
 }
 ```
 
-</creating_collections>
+**System Fields Explained:**
+- `status` - Content workflow (draft/published/archived) with visual indicators
+- `sort` - Manual ordering capability (used with `sort_field` in collection meta)
+- `user_created`/`user_updated` - Track content authors and editors (requires relations to `directus_users`)
+- `date_created`/`date_updated` - Automatic timestamps for content lifecycle tracking
+
+**Required Relations for User Fields:**
+After creating the collection, add relations for user tracking fields (use `relations` tool):
+
+```json
+// User created relation
+{
+	"action": "create",
+	"data": {
+		"collection": "articles",
+		"field": "user_created",
+		"related_collection": "directus_users",
+		"schema": {}
+	}
+}
+
+// User updated relation
+{
+	"action": "create",
+	"data": {
+		"collection": "articles",
+		"field": "user_updated",
+		"related_collection": "directus_users",
+		"schema": {}
+	}
+}
+```
+
+</system_fields>
 
 <translations>
 For collection name translations, check for `languages` collection first, then provide collection names in available languages (similar to field translations - see `fields` tool `<translations>` section for translation workflow).

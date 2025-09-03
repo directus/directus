@@ -5,6 +5,7 @@ Before creating relations:
 ✓ Collections must exist (use `collections` tool)
 ✓ Fields must be created with correct types (use `fields` tool)
 ✓ Junction collections must exist for M2M/M2A relationships
+✓ Optional system user fields (`user_created`/`user_updated`) require relations to `directus_users` (see `collections` tool `<system_fields>` section)
 </prerequisites>
 
 <actions>
