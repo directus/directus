@@ -425,14 +425,7 @@ function clearFilters() {
 		.message {
 			inline-size: 100%;
 			margin-block-start: 8px;
-			-webkit-user-select: text;
-			user-select: text;
 			cursor: auto;
-
-			:deep(*) {
-				-webkit-user-select: text;
-				user-select: text;
-			}
 
 			:deep() {
 				@include mixins.markdown;

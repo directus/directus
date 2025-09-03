@@ -154,7 +154,7 @@ version_name: שם הגרסה
 main_version: ראשי
 switch_version: החלפת גרסה
 switch_version_copy: האם את/ה רוצה להחליף לגרסה {version}? שינויים שלא נשמרו יאבדו.
-create_version: ליצור גרסה
+create_version: צור גרסה
 rename_version: לשנות שם גרסה
 compare_version: השווה גירסאות
 save_version: לשמור גרסה
@@ -194,6 +194,7 @@ field_files: כמה קובצים
 field_translations: תרגומים
 hide_field: שדה הסתר
 delete_field: מחק שדה
+field_create_success: 'שדה "{field}" נוצר בהצלחה'
 language: שפה
 language_placeholder: בחר שפה...
 global: גלובלי
@@ -234,15 +235,29 @@ post_comment_success: תגובה פורסמה
 post_comment_updated: התגובה עודכנה
 functions:
   count: כמות
+created: נוצר
+created_by: נוצר על ידי
+created_on: נוצר בתאריך
+save_and_create_new: שמור וצור חדש
+add_existing: הוסף קיים
+enable_create_button: אפשר כפתור יצירה
+create_collection: צור מאגר
 users: משתמשים
 activity: פעילות
 action: פעולה
 ip_address: '‏כתובת IP'
 duration: משך זמן
+collection_created: המאגר נוצר
 status: סטטוס
+create_account: צור חשבון
+account_created_successfully: חשבון נוצר בהצלחה
 errors:
   NOT_NULL_VIOLATION: הערך צריך להיות לא null
+create_bookmark: צור סימניה
+create_item: צור פריט
+create_folder: צור תיקייה
 role: תפקיד
+create: צור
 width: רוחב
 height: גובה
 settings_translations: תרגומים
@@ -267,6 +282,8 @@ fields:
     location: מיקום
     metadata: מטא-נתונים
     filesize: גודל קובץ
+    created_on: נוצר בתאריך
+    created_by: נוצר על ידי
     width: רוחב
     height: גובה
     duration: משך זמן
@@ -300,8 +317,12 @@ fields:
   directus_webhooks:
     status: סטטוס
 field_options:
+  directus_activity:
+    create: צור
   directus_collections:
     language: שפה
+  directus_webhooks:
+    actions_create: צור
 comment: הערה
 description: תיאור
 email: דוא"ל

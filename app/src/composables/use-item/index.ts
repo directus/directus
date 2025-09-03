@@ -11,6 +11,7 @@ import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
+import { getFieldsInGroup } from '@/utils/get-fields-in-group';
 import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
@@ -21,6 +22,7 @@ import { mergeWith, cloneDeep } from 'lodash';
 import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
+import { applyConditions } from '@/utils/apply-conditions';
 
 type UsableItem<T extends Item> = {
 	edits: Ref<Item>;
@@ -127,23 +129,61 @@ export function useItem<T extends Item>(
 		}
 	}
 
+	function shouldClearField(field: Field, currentValues: Record<string, any>): boolean {
+		if (!field.meta?.conditions) return false;
+
+		const fieldWithConditions = applyConditions(currentValues, field);
+		return !!fieldWithConditions.meta?.hidden && !!fieldWithConditions.meta?.clear_hidden_value_on_save;
+	}
+
+	function clearHiddenFieldsByCondition(edits: Item, fields: Field[], defaultValues: any, item: any): Item {
+		const currentValues = mergeItemData(defaultValues, item, edits);
+
+		const fieldsToClearMap: Map<string, any> = new Map();
+
+		function addFieldToClear(field: Field) {
+			const defaultValue = field.schema?.default_value;
+			fieldsToClearMap.set(field.field, defaultValue !== undefined ? defaultValue : null);
+		}
+
+		for (const field of fields) {
+			if (shouldClearField(field, currentValues)) {
+				// If this is a group field that should be cleared, clear all fields within the group
+				if (field.meta?.special?.includes('group')) {
+					const fieldsInGroup = getFieldsInGroup(field.field, fields);
+
+					for (const groupField of fieldsInGroup) {
+						addFieldToClear(groupField);
+					}
+				} else {
+					// For non-group fields, add the field itself to be cleared
+					addFieldToClear(field);
+				}
+			}
+		}
+
+		if (fieldsToClearMap.size === 0) {
+			return edits;
+		}
+
+		const editsWithClearedValues = cloneDeep(edits);
+
+		for (const [field, defaultValue] of fieldsToClearMap) {
+			editsWithClearedValues[field] = defaultValue;
+		}
+
+		return editsWithClearedValues;
+	}
+
 	async function save() {
 		saving.value = true;
 		validationErrors.value = [];
 
-		const payloadToValidate = mergeWith(
-			{},
-			defaultValues.value,
-			item.value,
-			edits.value,
-			function (_from: any, to: any) {
-				if (typeof to !== 'undefined') {
-					return to;
-				}
-			},
-		);
-
 		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
+
+		const editsWithClearedValues = clearHiddenFieldsByCondition(edits.value, fields, defaultValues.value, item.value);
+
+		const payloadToValidate = mergeItemData(defaultValues.value, item.value, editsWithClearedValues);
 
 		const errors = validateItem(payloadToValidate, fields, isNew.value);
 		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
@@ -158,13 +198,13 @@ export function useItem<T extends Item>(
 			let response;
 
 			if (isNew.value) {
-				response = await api.post(getEndpoint(collection.value), edits.value);
+				response = await api.post(getEndpoint(collection.value), editsWithClearedValues);
 
 				notify({
 					title: i18n.global.t('item_create_success', 1),
 				});
 			} else {
-				response = await api.patch(itemEndpoint.value, edits.value);
+				response = await api.patch(itemEndpoint.value, editsWithClearedValues);
 
 				notify({
 					title: i18n.global.t('item_update_success', 1),
@@ -179,6 +219,14 @@ export function useItem<T extends Item>(
 		} finally {
 			saving.value = false;
 		}
+	}
+
+	function mergeItemData(defaultValues: any, item: any, edits: any) {
+		return mergeWith({}, defaultValues, item, edits, function (_from: any, to: any) {
+			if (typeof to !== 'undefined') {
+				return to;
+			}
+		});
 	}
 
 	async function saveAsCopy() {

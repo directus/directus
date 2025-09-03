@@ -1,4 +1,4 @@
-import type { Permission, Query } from '@directus/types';
+import type { Permission, PrimaryKey, Query } from '@directus/types';
 import { omit } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
@@ -50,6 +50,36 @@ export function EnableTestCaching() {
 export type OptionsCreateRole = {
 	name: string;
 };
+
+export type OptionsCreateVersion = {
+	collection: string;
+	item: PrimaryKey;
+	key: string;
+	name: string;
+};
+
+export async function CreateVersion(vendor: Vendor, options: OptionsCreateVersion) {
+	const response = await request(getUrl(vendor))
+		.post(`/versions`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
+		.send(options);
+
+	return response.body.data;
+}
+export async function SaveVersion(
+	vendor: Vendor,
+	options: {
+		id: string;
+		delta: any;
+	},
+) {
+	const response = await request(getUrl(vendor))
+		.post(`/versions/${options.id}/save`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
+		.send(options.delta);
+
+	return response.body.data;
+}
 
 export async function CreateRole(vendor: Vendor, options: OptionsCreateRole) {
 	// Action
@@ -668,10 +698,7 @@ export async function CreateItem(vendor: Vendor, options: OptionsCreateItem) {
 		.set('Authorization', `Bearer ${options.token ?? USER.TESTS_FLOW.TOKEN}`)
 		.send(options.item);
 
-	if (!response.ok) {
-		throw new Error('Could not create item', response.body);
-	}
-
+	expect(response.ok, JSON.stringify(response.body)).toBeTruthy();
 	return response.body.data;
 }
 

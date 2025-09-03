@@ -33,6 +33,7 @@ import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
+import { handleVersion } from '../utils/versioning/handle-version.js';
 import { PayloadService } from './payload.js';
 
 const env = useEnv();
@@ -129,9 +130,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			opts.mutationTracker.trackMutations(1);
 		}
 
-		const { ActivityService } = await import('./activity.js');
-		const { RevisionsService } = await import('./revisions.js');
-
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		const fields = Object.keys(this.schema.collections[this.collection]!.fields);
 
@@ -167,7 +165,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 								schema: this.schema,
 								accountability: this.accountability,
 							},
-					  )
+						)
 					: payload;
 
 			const payloadWithPresets = this.accountability
@@ -183,7 +181,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							knex: trx,
 							schema: this.schema,
 						},
-				  )
+					)
 				: payloadAfterHooks;
 
 			if (opts.preMutationError) {
@@ -312,7 +310,14 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
-			if (this.accountability && this.schema.collections[this.collection]!.accountability !== null) {
+			if (
+				opts.skipTracking !== true &&
+				this.accountability &&
+				this.schema.collections[this.collection]!.accountability !== null
+			) {
+				const { ActivityService } = await import('./activity.js');
+				const { RevisionsService } = await import('./revisions.js');
+
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
@@ -360,6 +365,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			if (autoIncrementSequenceNeedsToBeReset) {
 				await getHelpers(trx).sequence.resetAutoIncrementSequence(this.collection, primaryKeyField);
+			}
+
+			if (opts.onItemCreate) {
+				opts.onItemCreate(this.collection, primaryKey);
 			}
 
 			return primaryKey;
@@ -491,7 +500,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							schema: this.schema,
 							accountability: this.accountability,
 						},
-				  )
+					)
 				: query;
 
 		let ast = await getAstFromQuery(
@@ -536,7 +545,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							schema: this.schema,
 							accountability: this.accountability,
 						},
-				  )
+					)
 				: records;
 
 		if (opts?.emitEvents !== false) {
@@ -570,7 +579,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
 		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
-		const results = await this.readByQuery(queryWithKey, opts);
+		let results: Item[] = [];
+
+		if (query.version) {
+			results = (await handleVersion(this, key, queryWithKey, opts)) as Item[];
+		} else {
+			results = await this.readByQuery(queryWithKey, opts);
+		}
 
 		if (results.length === 0) {
 			throw new ForbiddenError();
@@ -684,9 +699,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			opts.mutationTracker.trackMutations(keys.length);
 		}
 
-		const { ActivityService } = await import('./activity.js');
-		const { RevisionsService } = await import('./revisions.js');
-
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
@@ -717,7 +729,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							schema: this.schema,
 							accountability: this.accountability,
 						},
-				  )
+					)
 				: payload;
 
 		// Sort keys to ensure that the order is maintained
@@ -752,7 +764,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						knex: this.knex,
 						schema: this.schema,
 					},
-			  )
+				)
 			: payloadAfterHooks;
 
 		if (opts.preMutationError) {
@@ -824,7 +836,14 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
-			if (this.accountability && this.schema.collections[this.collection]!.accountability !== null) {
+			if (
+				opts.skipTracking !== true &&
+				this.accountability &&
+				this.schema.collections[this.collection]!.accountability !== null
+			) {
+				const { ActivityService } = await import('./activity.js');
+				const { RevisionsService } = await import('./revisions.js');
+
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
@@ -1026,8 +1045,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			opts.mutationTracker.trackMutations(keys.length);
 		}
 
-		const { ActivityService } = await import('./activity.js');
-
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
@@ -1076,7 +1093,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				}
 			}
 
-			if (this.accountability && this.schema.collections[this.collection]!.accountability !== null) {
+			if (
+				opts.skipTracking !== true &&
+				this.accountability &&
+				this.schema.collections[this.collection]!.accountability !== null
+			) {
+				const { ActivityService } = await import('./activity.js');
+
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,

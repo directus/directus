@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { i18n } from '@/lang';
+import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { SettingsStorageAssetPreset } from '@directus/types';
@@ -298,6 +299,41 @@ function setup(editor: any) {
 			}
 		}
 	});
+
+	let pausedFocusTrap = false;
+	editor.on('OpenWindow', onOpenWindow);
+	editor.on('CloseWindow', onCloseWindow);
+
+	const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
+
+	function onOpenWindow() {
+		const toxDialogEl = document.querySelector('.tox-dialog') as HTMLElement | null;
+		if (toxDialogEl === null) return;
+
+		const firstFocusableElement = getFirstFocusableElement(toxDialogEl);
+		if (!firstFocusableElement) return;
+
+		pausedFocusTrap = true;
+		pauseFocusTrap();
+		firstFocusableElement.focus();
+	}
+
+	function getFirstFocusableElement(toxDialogEl: HTMLElement) {
+		// TinyMCE adds tabindex="-1" to all focusable elements in the dialog
+		const findElement = toxDialogEl.querySelector('[tabindex="-1"]') as HTMLElement | null;
+		if (!findElement) return;
+
+		// To shift the focus to this dialog, we need to make this element focusable
+		findElement.tabIndex = 0;
+		return findElement;
+	}
+
+	function onCloseWindow() {
+		if (!pausedFocusTrap) return;
+
+		pausedFocusTrap = false;
+		unpauseFocusTrap();
+	}
 }
 
 function setFocus(val: boolean) {

@@ -46,6 +46,8 @@ location: 위치
 collection_names_are_case_sensitive: 컬렉션 이름은 대소문자를 구분합니다
 condition_rules: 조건식
 input: 입력
+invalid_input: 잘못된 입력
+not_a_number: 숫자가 아닙니다
 maps: 지도
 switch_user: 사용자 전환
 item_creation: 추가
@@ -1335,6 +1337,7 @@ fields:
     tags: 태그(Tags)
     user_preferences: 개인 설정
     language: 언어
+    text_direction: 텍스트 방향
     tfa_secret: 이중 인증
     admin_options: 관리 옵션
     status: 상태
@@ -1590,6 +1593,7 @@ live_preview:
   new_window: 새 창에서 열기
   close_window: 분할 화면에서 열기
   toggle_3d: 토글 3D
+  iframe_title: 라이브 웹사이트 미리보기
 shares: 공유
 unlimited_usage: 무제한 사용
 uses_left: 남은 용도 없음 | 1회 사용 남음 | {n} 왼쪽 사용
@@ -2032,6 +2036,7 @@ interfaces:
     folder_note: 업로드된 파일의 폴더입니다. 기존 파일에는 영향을 주지 않습니다.
     imageToken: 정적 액세스 토큰
     imageToken_label: 정적 액세스 토큰이 자산의 URL에 추가됩니다.
+    media_preview_iframe_title: 미디어 미리보기
   input-block-editor:
     input-block-editor: 블록 편집기
     description: Editor.js를 사용하여 리치 미디어 스토리를 위한 블록 스타일 편집기, JSON 형식의 깨끗한 데이터를 출력합니다.
@@ -2554,3 +2559,6 @@ bsl_banner:
   accept_terms: 승인
   get_license: 라이선스 받기
 accepted: 수락됨
+text_direction_auto: 자동(일치 언어)
+text_direction_ltr: 왼쪽에서 오른쪽으로(LTR)
+text_direction_rtl: 오른쪽에서 왼쪽(RTL)

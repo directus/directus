@@ -1,0 +1,69 @@
+version: 2
+updates:
+  # Root workspace (pnpm catalog and workspace config)
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'Etc/UTC'
+    open-pull-requests-limit: 10
+    labels:
+      - 'Dependency'
+    commit-message:
+      prefix: 'deps'
+      include: 'scope'
+    # Group catalog updates together
+    groups:
+      catalog:
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
+    # Ignore packages with known license changes
+    ignore:
+      # apexcharts: Changed from MIT to proprietary in v5
+      - dependency-name: 'apexcharts'
+        versions: ['>=5.0.0']
+      # tinymce: Changed from MIT to GPL-2.0-or-later in v7
+      - dependency-name: 'tinymce'
+        versions: ['>=7.0.0']
+      # mapbox-gl: Changed from BSD-3-Clause to proprietary in v2
+      - dependency-name: 'mapbox-gl'
+        versions: ['>=2.0.0']
+
+  # GitHub Actions
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'Etc/UTC'
+    open-pull-requests-limit: 3
+    reviewers:
+      - 'directus/platform'
+    labels:
+      - 'Dependency'
+    commit-message:
+      prefix: 'deps(actions)'
+      include: 'scope'
+
+  # Docker
+  - package-ecosystem: 'docker'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'Etc/UTC'
+    open-pull-requests-limit: 2
+    reviewers:
+      - 'directus/platform'
+    labels:
+      - 'Dependency'
+    commit-message:
+      prefix: 'deps(docker)'
+      include: 'scope'
