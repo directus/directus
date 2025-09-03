@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { deepMapResponse } from './deep-map-response.js';
+import { deepMapDelta } from './deep-map-delta.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { getRelation } from '@directus/utils';
 
@@ -36,13 +36,15 @@ const schema = new SchemaBuilder()
 	.build();
 
 test('map flat object', () => {
-	const result = deepMapResponse(
-		{
-			id: 1,
-			title: 2,
-			author: 3,
-			tags: [1, 2, 3],
-		},
+	const object = {
+		id: 1,
+		title: 2,
+		author: 3,
+		tags: [1, 2, 3],
+	};
+
+	const result = deepMapDelta(
+		object,
 		([key, value], context) => {
 			return [key, { value, context }];
 		},
@@ -58,6 +60,7 @@ test('map flat object', () => {
 				relation: null,
 				leaf: true,
 				relationType: null,
+				object,
 			},
 		},
 		title: {
@@ -68,6 +71,7 @@ test('map flat object', () => {
 				relation: null,
 				leaf: true,
 				relationType: null,
+				object,
 			},
 		},
 		author: {
@@ -78,6 +82,7 @@ test('map flat object', () => {
 				relation: getRelation(schema.relations, 'articles', 'author'),
 				leaf: true,
 				relationType: 'm2o',
+				object,
 			},
 		},
 		tags: {
@@ -88,19 +93,22 @@ test('map flat object', () => {
 				relation: getRelation(schema.relations, 'articles', 'tags'),
 				leaf: true,
 				relationType: 'o2m',
+				object,
 			},
 		},
 	});
 });
 
 test('map m2o object', () => {
-	const result = deepMapResponse(
-		{
-			author: {
-				id: 1,
-				name: 'hello',
-			},
+	const object = {
+		author: {
+			id: 1,
+			name: 'hello',
 		},
+	};
+
+	const result = deepMapDelta(
+		object,
 		([key, value], context) => {
 			return [key, { value, context }];
 		},
@@ -117,6 +125,7 @@ test('map m2o object', () => {
 						field: schema.collections['users']!.fields['id'],
 						relation: null,
 						leaf: true,
+						object: object.author,
 						relationType: null,
 					},
 				},
@@ -128,6 +137,7 @@ test('map m2o object', () => {
 						relation: null,
 						leaf: true,
 						relationType: null,
+						object: object.author,
 					},
 				},
 			},
@@ -136,6 +146,7 @@ test('map m2o object', () => {
 				field: schema.collections['articles']!.fields['author'],
 				relation: getRelation(schema.relations, 'articles', 'author'),
 				leaf: false,
+				object,
 				relationType: 'm2o',
 			},
 		},
@@ -143,17 +154,19 @@ test('map m2o object', () => {
 });
 
 test('map o2m object', () => {
-	const result = deepMapResponse(
-		{
-			links: [
-				{
-					id: 1,
-				},
-				{
-					name: 'hello',
-				},
-			],
-		},
+	const object = {
+		links: [
+			{
+				id: 1,
+			},
+			{
+				name: 'hello',
+			},
+		],
+	};
+
+	const result = deepMapDelta(
+		object,
 		([key, value], context) => {
 			return [key, { value, context }];
 		},
@@ -172,6 +185,7 @@ test('map o2m object', () => {
 							relation: null,
 							leaf: true,
 							relationType: null,
+							object: object.links[0],
 						},
 					},
 				},
@@ -184,6 +198,7 @@ test('map o2m object', () => {
 							relation: null,
 							leaf: true,
 							relationType: null,
+							object: object.links[1],
 						},
 					},
 				},
@@ -193,6 +208,67 @@ test('map o2m object', () => {
 				field: schema.collections['articles']!.fields['links'],
 				relation: getRelation(schema.relations, 'articles', 'links'),
 				leaf: false,
+				object,
+				relationType: 'o2m',
+			},
+		},
+	});
+});
+
+test('map o2m object with detailed syntax', () => {
+	const object = {
+		links: { create: [{ name: 'hello' }], update: [{ id: 1 }], delete: [] },
+	};
+
+	const result = deepMapDelta(
+		object,
+		([key, value], context) => {
+			return [key, { value, context }];
+		},
+		{ schema: schema, collection: 'articles' },
+	);
+
+	expect(result).toEqual({
+		links: {
+			value: {
+				create: [
+					{
+						name: {
+							value: 'hello',
+							context: {
+								collection: schema.collections['links'],
+								field: schema.collections['links']!.fields['name'],
+								relation: null,
+								leaf: true,
+								relationType: null,
+								object: object.links.create[0],
+							},
+						},
+					},
+				],
+				update: [
+					{
+						id: {
+							value: 1,
+							context: {
+								collection: schema.collections['links'],
+								field: schema.collections['links']!.fields['id'],
+								relation: null,
+								leaf: true,
+								relationType: null,
+								object: object.links.update[0],
+							},
+						},
+					},
+				],
+				delete: [],
+			},
+			context: {
+				collection: schema.collections['articles'],
+				field: schema.collections['articles']!.fields['links'],
+				relation: getRelation(schema.relations, 'articles', 'links'),
+				leaf: false,
+				object,
 				relationType: 'o2m',
 			},
 		},
@@ -200,18 +276,20 @@ test('map o2m object', () => {
 });
 
 test('map m2m object', () => {
-	const result = deepMapResponse(
-		{
-			tags: [
-				{
-					id: 1,
-					articles_id: 2,
-					tags_id: {
-						tag: 'myTag',
-					},
+	const object = {
+		tags: [
+			{
+				id: 1,
+				articles_id: 2,
+				tags_id: {
+					tag: 'myTag',
 				},
-			],
-		},
+			},
+		],
+	};
+
+	const result = deepMapDelta(
+		object,
 		([key, value], context) => {
 			return [key, { value, context }];
 		},
@@ -230,6 +308,7 @@ test('map m2m object', () => {
 							relation: null,
 							leaf: true,
 							relationType: null,
+							object: object.tags[0],
 						},
 					},
 					articles_id: {
@@ -240,6 +319,7 @@ test('map m2m object', () => {
 							relation: getRelation(schema.relations, 'articles_tags_junction', 'articles_id'),
 							leaf: true,
 							relationType: 'm2o',
+							object: object.tags[0],
 						},
 					},
 					tags_id: {
@@ -252,6 +332,7 @@ test('map m2m object', () => {
 									relation: null,
 									leaf: true,
 									relationType: null,
+									object: object.tags[0]?.tags_id,
 								},
 							},
 						},
@@ -261,6 +342,7 @@ test('map m2m object', () => {
 							relation: getRelation(schema.relations, 'articles_tags_junction', 'tags_id'),
 							leaf: false,
 							relationType: 'm2o',
+							object: object.tags[0],
 						},
 					},
 				},
@@ -270,6 +352,7 @@ test('map m2m object', () => {
 				field: schema.collections['articles']!.fields['tags'],
 				relation: getRelation(schema.relations, 'articles', 'tags'),
 				leaf: false,
+				object,
 				relationType: 'o2m',
 			},
 		},
@@ -277,23 +360,25 @@ test('map m2m object', () => {
 });
 
 test('map m2a object', () => {
-	const result = deepMapResponse(
-		{
-			sections: [
-				{
-					collection: 'sec_num',
-					item: {
-						num: 123,
-					},
+	const object = {
+		sections: [
+			{
+				collection: 'sec_num',
+				item: {
+					num: 123,
 				},
-				{
-					collection: 'sec_text',
-					item: {
-						text: 'abc',
-					},
+			},
+			{
+				collection: 'sec_text',
+				item: {
+					text: 'abc',
 				},
-			],
-		},
+			},
+		],
+	};
+
+	const result = deepMapDelta(
+		object,
 		([key, value], context) => {
 			return [key, { value, context }];
 		},
@@ -311,6 +396,7 @@ test('map m2a object', () => {
 							field: schema.collections['articles_builder']!.fields['collection'],
 							relation: null,
 							leaf: true,
+							object: object.sections[0],
 							relationType: null,
 						},
 					},
@@ -323,6 +409,7 @@ test('map m2a object', () => {
 									field: schema.collections['sec_num']!.fields['num'],
 									relation: null,
 									leaf: true,
+									object: object.sections[0]?.item,
 									relationType: null,
 								},
 							},
@@ -332,6 +419,7 @@ test('map m2a object', () => {
 							field: schema.collections['articles_builder']!.fields['item'],
 							relation: getRelation(schema.relations, 'articles_builder', 'item'),
 							leaf: false,
+							object: object.sections[0],
 							relationType: 'a2o',
 						},
 					},
@@ -344,6 +432,7 @@ test('map m2a object', () => {
 							field: schema.collections['articles_builder']!.fields['collection'],
 							relation: null,
 							leaf: true,
+							object: object.sections[1],
 							relationType: null,
 						},
 					},
@@ -356,6 +445,7 @@ test('map m2a object', () => {
 									field: schema.collections['sec_text']!.fields['text'],
 									relation: null,
 									leaf: true,
+									object: object.sections[1]?.item,
 									relationType: null,
 								},
 							},
@@ -365,6 +455,7 @@ test('map m2a object', () => {
 							field: schema.collections['articles_builder']!.fields['item'],
 							relation: getRelation(schema.relations, 'articles_builder', 'item'),
 							leaf: false,
+							object: object.sections[1],
 							relationType: 'a2o',
 						},
 					},
@@ -375,6 +466,7 @@ test('map m2a object', () => {
 				field: schema.collections['articles']!.fields['sections'],
 				relation: getRelation(schema.relations, 'articles', 'sections'),
 				leaf: false,
+				object,
 				relationType: 'o2m',
 			},
 		},
@@ -382,7 +474,7 @@ test('map m2a object', () => {
 });
 
 test('map flat invalid field', () => {
-	const result = deepMapResponse(
+	const result = deepMapDelta(
 		{
 			invalid: 1,
 		},
@@ -399,7 +491,7 @@ test('map flat invalid field', () => {
 
 test('map with invalid object', () => {
 	expect(() => {
-		deepMapResponse(
+		deepMapDelta(
 			new Date(),
 			([key, value], context) => {
 				return [key, { value, context }];
@@ -412,7 +504,7 @@ test('map with invalid object', () => {
 test('map flat date value', () => {
 	const date = new Date();
 
-	const result = deepMapResponse(
+	const result = deepMapDelta(
 		{ date },
 		([key, value]) => {
 			return [key, value];
@@ -424,12 +516,14 @@ test('map flat date value', () => {
 });
 
 test('map flat invalid deep field', () => {
-	const result = deepMapResponse(
-		{
-			author: {
-				invalid: 1,
-			},
+	const object = {
+		author: {
+			invalid: 1,
 		},
+	};
+
+	const result = deepMapDelta(
+		object,
 		([key, value], context) => {
 			return [key, { value, context }];
 		},
@@ -445,6 +539,7 @@ test('map flat invalid deep field', () => {
 				collection: schema.collections['articles'],
 				field: schema.collections['articles']!.fields['author'],
 				relation: getRelation(schema.relations, 'articles', 'author'),
+				object,
 				leaf: false,
 				relationType: 'm2o',
 			},
@@ -453,12 +548,14 @@ test('map flat invalid deep field', () => {
 });
 
 test('map flat invalid deep field', () => {
-	const result = deepMapResponse(
-		{
-			author: {
-				invalid: 1,
-			},
+	const object = {
+		author: {
+			invalid: 1,
 		},
+	};
+
+	const result = deepMapDelta(
+		object,
 		([key, value], context) => {
 			return [key, { value, context }];
 		},
@@ -475,6 +572,7 @@ test('map flat invalid deep field', () => {
 				field: schema.collections['articles']!.fields['author'],
 				relation: getRelation(schema.relations, 'articles', 'author'),
 				leaf: false,
+				object,
 				relationType: 'm2o',
 			},
 		},
@@ -483,7 +581,7 @@ test('map flat invalid deep field', () => {
 
 test('map m2a relation without collection field', () => {
 	const callback = () =>
-		deepMapResponse(
+		deepMapDelta(
 			{
 				sections: [
 					{

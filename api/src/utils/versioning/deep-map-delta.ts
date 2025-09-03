@@ -18,8 +18,9 @@ export function deepMapDelta(
 			relation: Relation | null;
 			leaf: boolean;
 			relationType: RelationInfo['relationType'] | null;
+			object: Record<string, any>;
 		},
-	) => [key: string | number, value: unknown],
+	) => [key: string | number, value: unknown] | undefined,
 	context: {
 		schema: SchemaOverview;
 		collection: string;
@@ -45,75 +46,94 @@ export function deepMapDelta(
 	}
 
 	return Object.fromEntries(
-		fields.map(([key, field]) => {
-			let value = object[key];
+		fields
+			.map(([key, field]) => {
+				let value = object[key];
 
-			if (!field) return [key, value];
+				if (!field) return [key, value];
 
-			const relationInfo = getRelationInfo(context.schema.relations, collection.collection, field.field);
-			let leaf = true;
+				const relationInfo = getRelationInfo(context.schema.relations, collection.collection, field.field);
+				let leaf = true;
 
-			if (relationInfo.relation && typeof value === 'object' && value !== null && isPlainObject(object)) {
-				switch (relationInfo.relationType) {
-					case 'm2o':
-						value = deepMapDelta(value, callback, {
-							schema: context.schema,
-							collection: relationInfo.relation.related_collection!,
-							relationInfo,
-						});
-
-						leaf = false;
-						break;
-
-					case 'o2m': {
-						function map(childValue: any) {
-							if (isPlainObject(childValue) && typeof childValue === 'object' && childValue !== null) {
-								leaf = false;
-								return deepMapDelta(childValue, callback, {
+				if (relationInfo.relation && typeof value === 'object' && value !== null && isPlainObject(object)) {
+					switch (relationInfo.relationType) {
+						case 'm2o':
+							value = deepMapDelta(
+								value,
+								callback,
+								{
 									schema: context.schema,
-									collection: relationInfo!.relation!.collection,
+									collection: relationInfo.relation.related_collection!,
 									relationInfo,
+								},
+								options,
+							);
+
+							leaf = false;
+							break;
+
+						case 'o2m': {
+							function map(childValue: any) {
+								if (isPlainObject(childValue) && typeof childValue === 'object' && childValue !== null) {
+									leaf = false;
+									return deepMapDelta(
+										childValue,
+										callback,
+										{
+											schema: context.schema,
+											collection: relationInfo!.relation!.collection,
+											relationInfo,
+										},
+										options,
+									);
+								} else return childValue;
+							}
+
+							if (Array.isArray(value)) {
+								value = (value as any[]).map(map);
+							} else {
+								value = {
+									create: value['create']?.map(map),
+									update: value['update']?.map(map),
+									delete: value['delete']?.map(map),
+								};
+							}
+
+							break;
+						}
+
+						case 'a2o': {
+							const related_collection = object[relationInfo.relation.meta!.one_collection_field!];
+
+							if (!related_collection) {
+								throw new InvalidQueryError({
+									reason: `When selecting '${collection.collection}.${field.field}', the field '${
+										collection.collection
+									}.${
+										relationInfo.relation.meta!.one_collection_field
+									}' has to be selected when using versioning and m2a relations `,
 								});
-							} else return childValue;
+							}
+
+							value = deepMapDelta(
+								value,
+								callback,
+								{
+									schema: context.schema,
+									collection: related_collection,
+									relationInfo,
+								},
+								options,
+							);
+
+							leaf = false;
+							break;
 						}
-
-						if (Array.isArray(value)) {
-							value = (value as any[]).map(map);
-						} else {
-							if (Array.isArray(value['create'])) value['create'] = value['create'].map(map);
-							if (Array.isArray(value['update'])) value['update'] = value['update'].map(map);
-							if (Array.isArray(value['delete'])) value['delete'] = value['delete'].map(map);
-						}
-
-						break;
-					}
-
-					case 'a2o': {
-						const related_collection = object[relationInfo.relation.meta!.one_collection_field!];
-
-						if (!related_collection) {
-							throw new InvalidQueryError({
-								reason: `When selecting '${collection.collection}.${field.field}', the field '${
-									collection.collection
-								}.${
-									relationInfo.relation.meta!.one_collection_field
-								}' has to be selected when using versioning and m2a relations `,
-							});
-						}
-
-						value = deepMapDelta(value, callback, {
-							schema: context.schema,
-							collection: related_collection,
-							relationInfo,
-						});
-
-						leaf = false;
-						break;
 					}
 				}
-			}
 
-			return callback([key, value], { collection, field, ...relationInfo, leaf });
-		}),
+				return callback([key, value], { collection, field, ...relationInfo, leaf, object });
+			})
+			.filter((f) => f) as any[],
 	);
 }
