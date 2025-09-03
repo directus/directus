@@ -141,21 +141,23 @@ export const OperationItemInputSchema = z
 export const OperationItemValidateSchema = OperationItemInputSchema;
 
 // flow
-export const FlowItemInputSchema = z.object({
-	id: z.string(),
-	name: z.string(),
-	icon: z.union([z.string(), z.null()]),
-	color: z.union([z.string(), z.null()]),
-	description: z.union([z.string(), z.null()]),
-	status: z.enum(['active', 'inactive']),
-	trigger: z.union([z.enum(['event', 'schedule', 'operation', 'webhook', 'manual']), z.null()]),
-	options: z.union([z.record(z.string(), z.any()), z.null()]),
-	operation: z.union([z.string(), z.null()]),
-	operations: z.array(OperationItemInputSchema),
-	date_created: z.string(),
-	user_created: z.string(),
-	accountability: z.union([z.enum(['all', 'activity']), z.null()]),
-});
+export const FlowItemInputSchema = z
+	.object({
+		id: z.string(),
+		name: z.string(),
+		icon: z.union([z.string(), z.null()]),
+		color: z.union([z.string(), z.null()]),
+		description: z.union([z.string(), z.null()]),
+		status: z.enum(['active', 'inactive']),
+		trigger: z.union([z.enum(['event', 'schedule', 'operation', 'webhook', 'manual']), z.null()]),
+		options: z.union([z.record(z.string(), z.any()), z.null()]),
+		operation: z.union([z.string(), z.null()]),
+		operations: z.array(OperationItemInputSchema),
+		date_created: z.string(),
+		user_created: z.string(),
+		accountability: z.union([z.enum(['all', 'activity']), z.null()]),
+	})
+	.partial();
 
 export const FlowItemValidateSchema = FlowItemInputSchema;
 
