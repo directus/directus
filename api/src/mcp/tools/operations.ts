@@ -2,8 +2,12 @@ import type { OperationRaw } from '@directus/types';
 import { z } from 'zod';
 import { OperationsService } from '../../services/operations.js';
 import { defineTool } from '../define.js';
-import { OperationItemValidateSchema, QueryInputSchema, QueryValidateSchema } from '../schema.js';
-import { FlowsInputSchema } from './flows.js';
+import {
+	OperationItemInputSchema,
+	OperationItemValidateSchema,
+	QueryInputSchema,
+	QueryValidateSchema,
+} from '../schema.js';
 import prompts from './prompts/index.js';
 
 export const OperationsValidationSchema = z.discriminatedUnion('action', [
@@ -29,7 +33,7 @@ export const OperationsValidationSchema = z.discriminatedUnion('action', [
 export const OperationsInputSchema = z.object({
 	action: z.enum(['create', 'read', 'update', 'delete']).describe('The operation to perform'),
 	query: QueryInputSchema.optional(),
-	data: FlowsInputSchema.optional().describe('Flow data as a native object or array (NOT stringified JSON)'),
+	data: OperationItemInputSchema.optional(),
 	key: z.string().optional(),
 });
 
