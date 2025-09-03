@@ -6,6 +6,8 @@ Run `pnpm test` to locally test against postgres
 
 Run `pnpm test:all` to locally test against all databases
 
+Run `pnpm vitest --project sqlite` to test against a specific database. The project option can be used multiple times to test against multiple different databases at the same time.
+
 ## Writing tests
 
 The basic test structure goes as follows.
