@@ -403,7 +403,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 					}
 				}
 
-				return [key, value];
+				if (key in context.object) return [key, value];
 			},
 			{ collection: version.collection, schema: this.schema },
 			{ mapNonExistentFields: true },
