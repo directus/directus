@@ -1,6 +1,14 @@
 import { Action } from '@directus/constants';
 import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
-import type { AbstractServiceOptions, ContentVersion, Item, MutationOptions, PrimaryKey, Query } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	ContentVersion,
+	Item,
+	MutationOptions,
+	PrimaryKey,
+	Query,
+	QueryOptions,
+} from '@directus/types';
 import Joi from 'joi';
 import { assign, get, isEqual, isPlainObject, pick } from 'lodash-es';
 import objectHash from 'object-hash';
@@ -14,6 +22,7 @@ import { ActivityService } from './activity.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RevisionsService } from './revisions.js';
+import { deepMapDelta } from '../utils/versioning/deep-map-delta.js';
 
 export class VersionsService extends ItemsService<ContentVersion> {
 	constructor(options: AbstractServiceOptions) {
@@ -107,8 +116,8 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		return { outdated: hash !== mainHash, mainHash };
 	}
 
-	async getVersionSave(key: string, collection: string, item: string) {
-		return (
+	async getVersionSave(key: string, collection: string, item: string, mapDelta = true) {
+		const version = (
 			await this.readByQuery({
 				filter: {
 					key: { _eq: key },
@@ -117,6 +126,10 @@ export class VersionsService extends ItemsService<ContentVersion> {
 				},
 			})
 		)[0];
+
+		if (mapDelta && version?.delta) version.delta = this.mapDelta(version);
+
+		return version;
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -127,6 +140,14 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		data['hash'] = objectHash(mainItem);
 
 		return super.createOne(data, opts);
+	}
+
+	override async readOne(key: PrimaryKey, query: Query = {}, opts?: QueryOptions): Promise<ContentVersion> {
+		const version = await super.readOne(key, query, opts);
+
+		if (version?.delta) version.delta = this.mapDelta(version);
+
+		return version;
 	}
 
 	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
@@ -353,6 +374,40 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		);
 
 		return updatedItemKey;
+	}
+
+	private mapDelta(version: ContentVersion) {
+		const delta = version.delta ?? {};
+		delta[this.schema.collections[version.collection]!.primary] = version.item;
+
+		return deepMapDelta(
+			delta,
+			([key, value], context) => {
+				if (key === '_user' || key === '_date') return;
+
+				if (context.collection.primary in context.object) {
+					if (context.field.special.includes('user-updated')) {
+						return [key, context.object['_user']];
+					}
+
+					if (context.field.special.includes('date-updated')) {
+						return [key, context.object['_date']];
+					}
+				} else {
+					if (context.field.special.includes('user-created')) {
+						return [key, context.object['_user']];
+					}
+
+					if (context.field.special.includes('date-created')) {
+						return [key, context.object['_date']];
+					}
+				}
+
+				return [key, value];
+			},
+			{ collection: version.collection, schema: this.schema },
+			{ mapNonExistentFields: true },
+		);
 	}
 }
 

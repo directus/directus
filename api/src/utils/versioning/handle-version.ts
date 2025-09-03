@@ -4,7 +4,6 @@ import type { ItemsService as ItemsServiceType } from '../../services/index.js';
 import { transaction } from '../transaction.js';
 import { deepMapResponse } from './deep-map-response.js';
 import { splitRecursive } from './split-recursive.js';
-import { deepMapDelta } from './deep-map-delta.js';
 
 export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, queryWithKey: Query, opts?: QueryOptions) {
 	const { VersionsService } = await import('../../services/versions.js');
@@ -25,36 +24,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 
 		const version = await versionsService.getVersionSave(queryWithKey.version!, self.collection, key as string);
 
-		if (!version?.delta) return originalData[0];
-
-		return deepMapDelta(
-			Object.assign(originalData[0]!, version.delta),
-			([key, value], context) => {
-				if (key === '_user' || key === '_date') return;
-
-				if (context.collection.primary in context.object) {
-					if (context.field.special.includes('user-updated')) {
-						return [key, context.object['_user']];
-					}
-
-					if (context.field.special.includes('date-updated')) {
-						return [key, context.object['_date']];
-					}
-				} else {
-					if (context.field.special.includes('user-created')) {
-						return [key, context.object['_user']];
-					}
-
-					if (context.field.special.includes('date-created')) {
-						return [key, context.object['_date']];
-					}
-				}
-
-				return [key, value];
-			},
-			{ collection: self.collection, schema: self.schema },
-			{ mapNonExistentFields: true },
-		);
+		return Object.assign(originalData[0]!, version?.delta);
 	}
 
 	let result: Item | undefined;
@@ -66,7 +36,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 	});
 
 	const createdIDs: Record<string, PrimaryKey[]> = {};
-	const version = await versionsService.getVersionSave(queryWithKey.version!, self.collection, key as string);
+	const version = await versionsService.getVersionSave(queryWithKey.version!, self.collection, key as string, false);
 
 	if (!version) {
 		throw new ForbiddenError();
