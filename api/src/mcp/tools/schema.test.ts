@@ -83,7 +83,7 @@ describe('schema tool', () => {
 					type: 'text',
 					data: {
 						collections: ['users', 'posts'],
-						folders: ['folder1'],
+						collection_folders: ['folder1'],
 						notes: {
 							users: 'User data',
 							folder1: 'A folder',
@@ -115,7 +115,7 @@ describe('schema tool', () => {
 					type: 'text',
 					data: {
 						collections: ['users'],
-						folders: [],
+						collection_folders: [],
 						notes: {},
 					},
 				});
@@ -144,7 +144,7 @@ describe('schema tool', () => {
 					type: 'text',
 					data: {
 						collections: [],
-						folders: ['my_folder'],
+						collection_folders: ['my_folder'],
 						notes: {},
 					},
 				});
@@ -166,7 +166,7 @@ describe('schema tool', () => {
 					type: 'text',
 					data: {
 						collections: [],
-						folders: [],
+						collection_folders: [],
 						notes: {},
 					},
 				});
