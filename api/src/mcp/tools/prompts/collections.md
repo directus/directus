@@ -56,9 +56,11 @@ Perform CRUD operations on Directus Collections.
 <creating_collections>
 
 - **Primary Keys**: Use UUID primary keys (see `fields` tool `<primary_keys>` section for detailed guidance)
-- **System Fields**: Include system fields for content collections (see `<system_fields>` section below for complete template) unless specifically asked by user to omit them.
+- **System Fields**: Include system fields for content collections (see `<system_fields>` section below for complete
+  template) unless specifically asked by user to omit them.
 - ALWAYS show the collection URL to the user if it is present in the result.
-- When creating a new collection, include both collection settings and initial fields (see `fields` tool for complete examples).
+- When creating a new collection, include both collection settings and initial fields (see `fields` tool for complete
+  examples).
 
 ### Basic Collection Example
 
@@ -265,13 +267,14 @@ For content collections (blogs, products, pages), include these optional system 
 ```
 
 **System Fields Explained:**
+
 - `status` - Content workflow (draft/published/archived) with visual indicators
 - `sort` - Manual ordering capability (used with `sort_field` in collection meta)
 - `user_created`/`user_updated` - Track content authors and editors (requires relations to `directus_users`)
 - `date_created`/`date_updated` - Automatic timestamps for content lifecycle tracking
 
-**Required Relations for User Fields:**
-After creating the collection, add relations for user tracking fields (use `relations` tool):
+**Required Relations for User Fields:** After creating the collection, add relations for user tracking fields (use
+`relations` tool):
 
 ```json
 // User created relation
