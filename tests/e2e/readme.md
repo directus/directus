@@ -21,7 +21,7 @@ const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname,
 1. For interaction and testing, it's recomended to use the Directus SDK.
    
 ```ts
-const api = createDirectus<Schema>(process.env['PUBLIC_URl']).with(rest()).with(staticToken('admin'));
+const api = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
 ```
 
 5. While writing tests, make sure that reruning a test doesn't cause conflicts. E.g. using `randomUUID()` to avoid user or permission collisions.
