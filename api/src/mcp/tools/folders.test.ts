@@ -326,7 +326,7 @@ describe('folders tool', () => {
 
 	describe('tool configuration', () => {
 		test('should have correct tool name', () => {
-			expect(folders.name).toBe('folders');
+			expect(folders.name).toBe('directus-folders');
 		});
 
 		test('should not be admin tool', () => {

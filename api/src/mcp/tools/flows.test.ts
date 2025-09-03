@@ -181,7 +181,7 @@ describe('flows tool', () => {
 
 	describe('tool configuration', () => {
 		test('should have correct tool name', () => {
-			expect(flows.name).toBe('flows');
+			expect(flows.name).toBe('directus-flows');
 		});
 
 		test('should be admin tool', () => {

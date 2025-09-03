@@ -157,7 +157,7 @@ describe('assets tool', () => {
 
 	describe('tool configuration', () => {
 		test('should have correct tool name', () => {
-			expect(assets.name).toBe('assets');
+			expect(assets.name).toBe('directus-assets');
 		});
 
 		test('should not be admin tool', () => {

@@ -207,7 +207,7 @@ describe('collections tool', () => {
 
 	describe('tool configuration', () => {
 		test('should have correct tool name', () => {
-			expect(collections.name).toBe('collections');
+			expect(collections.name).toBe('directus-collections');
 		});
 
 		test('should be admin tool', () => {

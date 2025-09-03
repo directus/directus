@@ -183,7 +183,7 @@ describe('trigger flow tool', () => {
 
 	describe('tool configuration', () => {
 		test('should have correct tool name', () => {
-			expect(triggerFlow.name).toBe('trigger-flow');
+			expect(triggerFlow.name).toBe('directus-trigger-flow');
 		});
 
 		test('should not be admin tool', () => {

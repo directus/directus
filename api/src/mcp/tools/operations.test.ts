@@ -161,7 +161,7 @@ describe('operations tool', () => {
 
 	describe('tool configuration', () => {
 		test('should have correct tool name', () => {
-			expect(operations.name).toBe('operations');
+			expect(operations.name).toBe('directus-operations');
 		});
 
 		test('should be admin tool', () => {

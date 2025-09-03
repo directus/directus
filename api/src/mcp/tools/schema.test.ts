@@ -932,7 +932,7 @@ describe('schema tool', () => {
 
 	describe('tool configuration', () => {
 		test('should have correct tool name', () => {
-			expect(schema.name).toBe('schema');
+			expect(schema.name).toBe('directus-schema');
 		});
 
 		test('should not be admin tool', () => {

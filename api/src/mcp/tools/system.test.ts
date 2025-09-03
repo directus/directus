@@ -40,7 +40,7 @@ describe('system tool', () => {
 
 	describe('tool configuration', () => {
 		test('should have correct tool name', () => {
-			expect(system.name).toBe('system-prompt');
+			expect(system.name).toBe('directus-system-prompt');
 		});
 
 		test('should not be admin tool', () => {

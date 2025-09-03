@@ -190,7 +190,7 @@ describe('relations tool ', () => {
 
 	describe('tool configuration', () => {
 		test('should have correct tool name', () => {
-			expect(relations.name).toBe('relations');
+			expect(relations.name).toBe('directus-relations');
 		});
 
 		test('should be admin tool', () => {
