@@ -37,10 +37,12 @@ export const CollectionsInputSchema = z.object({
 });
 
 export const collections = defineTool<z.infer<typeof CollectionsValidateSchema>>({
-	name: 'directus-collections',
-	title: 'Directus - Collections',
+	name: 'collections',
 	admin: true,
 	description: prompts.collections,
+	annotations: {
+		title: 'Directus - Collections',
+	},
 	inputSchema: CollectionsInputSchema,
 	validateSchema: CollectionsValidateSchema,
 	endpoint({ data }) {

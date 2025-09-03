@@ -67,9 +67,11 @@ export const SchemaInputSchema = z.object({
 });
 
 export const schema = defineTool<z.infer<typeof SchemaValidateSchema>>({
-	name: 'directus-schema',
-	title: 'Directus - Schema',
+	name: 'schema',
 	description: prompts.schema,
+	annotations: {
+		title: 'Directus - Schema',
+	},
 	inputSchema: SchemaInputSchema,
 	validateSchema: SchemaValidateSchema,
 	async handler({ args, accountability, schema }) {

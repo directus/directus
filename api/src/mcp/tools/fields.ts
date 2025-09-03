@@ -51,10 +51,12 @@ export const FieldsInputSchema = z.object({
 });
 
 export const fields = defineTool<z.infer<typeof FieldsValidateSchema>>({
-	name: 'directus-fields',
-	title: 'Directus - Fields',
+	name: 'fields',
 	admin: true,
 	description: prompts.fields,
+	annotations: {
+		title: 'Directus - Fields',
+	},
 	inputSchema: FieldsInputSchema,
 	validateSchema: FieldsValidateSchema,
 	async handler({ args, schema, accountability }) {

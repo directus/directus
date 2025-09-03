@@ -38,15 +38,14 @@ export const OperationsInputSchema = z.object({
 });
 
 export const operations = defineTool<z.infer<typeof OperationsValidationSchema>>({
-	name: 'directus-operations',
-	title: 'Directus - Operations',
+	name: 'operations',
 	admin: true,
 	description: prompts.operations,
+	annotations: {
+		title: 'Directus - Operations',
+	},
 	inputSchema: OperationsInputSchema,
 	validateSchema: OperationsValidationSchema,
-	annotations: {
-		title: 'Perform CRUD operations on Directus Flow Operations',
-	},
 	async handler({ args, schema, accountability, sanitizedQuery }) {
 		const operationService = new OperationsService({
 			schema,

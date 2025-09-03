@@ -141,7 +141,7 @@ describe('files tool', () => {
 
 	describe('tool configuration', () => {
 		test('should have correct tool name', () => {
-			expect(files.name).toBe('directus-files');
+			expect(files.name).toBe('files');
 		});
 
 		test('should not be admin tool', () => {

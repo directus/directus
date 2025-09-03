@@ -246,7 +246,7 @@ describe('fields tool', () => {
 
 	describe('tool configuration', () => {
 		test('should have correct tool name', () => {
-			expect(fields.name).toBe('directus-fields');
+			expect(fields.name).toBe('fields');
 		});
 
 		test('should be admin tool', () => {

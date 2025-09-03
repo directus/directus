@@ -35,15 +35,14 @@ export const FlowsInputSchema = z.object({
 });
 
 export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
-	name: 'directus-flows',
-	title: 'Directus - Flows',
+	name: 'flows',
 	admin: true,
 	description: prompts.flows,
+	annotations: {
+		title: 'Directus - Flows',
+	},
 	inputSchema: FlowsInputSchema,
 	validateSchema: FlowsValidateSchema,
-	annotations: {
-		title: 'Perform CRUD operations on Directus Flows',
-	},
 	endpoint({ data }) {
 		if (!isObject(data) || !('id' in data)) {
 			return;

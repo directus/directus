@@ -52,14 +52,13 @@ const ItemsInputSchema = z.object({
 });
 
 export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
-	name: 'directus-items',
-	title: 'Directus - Items',
+	name: 'items',
 	description: prompts.items,
+	annotations: {
+		title: 'Directus - Items',
+	},
 	inputSchema: ItemsInputSchema,
 	validateSchema: ItemsValidateSchema,
-	annotations: {
-		title: 'Perform CRUD operations on Directus Items',
-	},
 	endpoint({ input, data }) {
 		if (!isObject(data) || !('id' in data)) {
 			return;

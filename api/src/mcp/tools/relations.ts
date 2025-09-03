@@ -43,10 +43,12 @@ const RelationsInputSchema = z.object({
 });
 
 export const relations = defineTool<z.infer<typeof RelationsValidateSchema>>({
-	name: 'directus-relations',
-	title: 'Directus - Relations',
+	name: 'relations',
 	admin: true,
 	description: prompts.relations,
+	annotations: {
+		title: 'Directus - Relations',
+	},
 	inputSchema: RelationsInputSchema,
 	validateSchema: RelationsValidateSchema,
 	async handler({ args, schema, accountability }) {

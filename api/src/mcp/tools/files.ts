@@ -45,9 +45,11 @@ const FilesInputSchema = z.object({
 });
 
 export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
-	name: 'directus-files',
-	title: 'Directus - Files',
+	name: 'files',
 	description: prompts.files,
+	annotations: {
+		title: 'Directus - Files',
+	},
 	inputSchema: FilesInputSchema,
 	validateSchema: FilesValidateSchema,
 	endpoint({ data }) {

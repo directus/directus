@@ -586,7 +586,7 @@ describe('items tool', () => {
 
 	describe('tool configuration', () => {
 		test('should have correct tool name', () => {
-			expect(items.name).toBe('directus-items');
+			expect(items.name).toBe('items');
 		});
 
 		test('should not be admin tool', () => {
