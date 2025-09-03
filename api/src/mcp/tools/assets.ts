@@ -59,9 +59,9 @@ export const assets = defineTool<z.infer<typeof AssetsValidateSchema>>({
 		}
 
 		return {
-			type: asset.file.type.startsWith('image') ? 'image' : 'audio',
+			type: file.type.startsWith('image') ? 'image' : 'audio',
 			data: Buffer.concat(chunks).toString('base64'),
-			mimeType: asset.file.type,
+			mimeType: file.type,
 		};
 	},
 });

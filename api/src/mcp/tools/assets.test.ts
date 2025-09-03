@@ -1,10 +1,11 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { Readable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
 import { AssetsService } from '../../services/assets.js';
+import { FilesService } from '../../services/files.js';
 import { assets } from './assets.js';
 
 vi.mock('../../services/assets.js');
+vi.mock('../../services/files.js');
 
 vi.mock('../tool.js', () => ({
 	defineTool: vi.fn((config) => config),
@@ -20,16 +21,25 @@ describe('assets tool', () => {
 	});
 
 	describe('asset operations', () => {
+		let mockFilesService: {
+			readOne: MockedFunction<any>;
+		};
+
 		let mockAssetsService: {
 			getAsset: MockedFunction<any>;
 		};
 
 		beforeEach(() => {
+			mockFilesService = {
+				readOne: vi.fn(),
+			};
+
 			mockAssetsService = {
 				getAsset: vi.fn(),
 			};
 
 			vi.mocked(AssetsService).mockImplementation(() => mockAssetsService as unknown as AssetsService);
+			vi.mocked(FilesService).mockImplementation(() => mockFilesService as unknown as FilesService);
 		});
 
 		describe('READ asset', () => {
@@ -47,14 +57,16 @@ describe('assets tool', () => {
 						}
 					}
 
-					const mockAsset = {
+					mockAssetsService.getAsset.mockResolvedValue({
 						file: {
 							type: fileType,
 						},
 						stream: mockStream(),
-					};
+					});
 
-					mockAssetsService.getAsset.mockResolvedValue(mockAsset);
+					mockFilesService.readOne.mockResolvedValue({
+						type: fileType,
+					});
 
 					const result = await assets.handler({
 						args: {
@@ -70,7 +82,8 @@ describe('assets tool', () => {
 						schema: mockSchema,
 					});
 
-					expect(mockAssetsService.getAsset).toHaveBeenCalledWith(assetId);
+					expect(mockFilesService.readOne).toHaveBeenCalledWith(assetId, { limit: 1 });
+					expect(mockAssetsService.getAsset).toHaveBeenCalledWith(assetId, undefined);
 
 					const expectedBuffer = Buffer.concat(mockChunks);
 
@@ -84,17 +97,22 @@ describe('assets tool', () => {
 
 			test('should handle empty stream', async () => {
 				const assetId = 'asset-123';
+				const fileType = 'image/png';
 
 				async function* emptyStream() {
 					// Empty generator
 				}
 
-				const mockAsset = {
-					file: { type: 'image/png' },
-					stream: emptyStream(),
-				};
+				mockFilesService.readOne.mockResolvedValue({
+					type: fileType,
+				});
 
-				mockAssetsService.getAsset.mockResolvedValue(mockAsset);
+				mockAssetsService.getAsset.mockResolvedValue({
+					file: {
+						type: fileType,
+					},
+					stream: emptyStream(),
+				});
 
 				const result = await assets.handler({
 					args: {
@@ -111,20 +129,109 @@ describe('assets tool', () => {
 					mimeType: 'image/png',
 				});
 			});
+
+			describe('should downsize images larger that 1200px in width or height', () => {
+				test('should downsize to 800px width if width>height', async () => {
+					const assetId = 'asset-123';
+					const fileType = 'image/png';
+
+					const transforms = {
+						transformationParams: {
+							transforms: [['resize', { width: 800, fit: 'contain' }]],
+						},
+					};
+
+					async function* emptyStream() {
+						// Empty generator
+					}
+
+					mockFilesService.readOne.mockResolvedValue({
+						type: fileType,
+						width: 1300,
+						height: 500,
+					});
+
+					mockAssetsService.getAsset.mockResolvedValue({
+						file: {
+							type: fileType,
+						},
+						stream: emptyStream(),
+					});
+
+					await assets.handler({
+						args: {
+							id: assetId,
+						},
+						schema: mockSchema,
+						accountability: mockAccountability,
+						sanitizedQuery: mockSanitizedQuery,
+					});
+
+					expect(mockAssetsService.getAsset).toBeCalledWith(assetId, transforms);
+				});
+
+				test('should downsize to 800px height if width<height', async () => {
+					const assetId = 'asset-123';
+					const fileType = 'image/png';
+
+					const transforms = {
+						transformationParams: {
+							transforms: [['resize', { height: 800, fit: 'contain' }]],
+						},
+					};
+
+					async function* emptyStream() {
+						// Empty generator
+					}
+
+					mockFilesService.readOne.mockResolvedValue({
+						type: fileType,
+						width: 500,
+						height: 1300,
+					});
+
+					mockAssetsService.getAsset.mockResolvedValue({
+						file: {
+							type: fileType,
+						},
+						stream: emptyStream(),
+					});
+
+					await assets.handler({
+						args: {
+							id: assetId,
+						},
+						schema: mockSchema,
+						accountability: mockAccountability,
+						sanitizedQuery: mockSanitizedQuery,
+					});
+
+					expect(mockAssetsService.getAsset).toBeCalledWith(assetId, transforms);
+				});
+			});
 		});
 	});
 
 	describe('error handling', () => {
+		let mockFilesService: {
+			readOne: MockedFunction<any>;
+		};
+
 		let mockAssetsService: {
 			getAsset: MockedFunction<any>;
 		};
 
 		beforeEach(() => {
+			mockFilesService = {
+				readOne: vi.fn(),
+			};
+
 			mockAssetsService = {
 				getAsset: vi.fn(),
 			};
 
 			vi.mocked(AssetsService).mockImplementation(() => mockAssetsService as unknown as AssetsService);
+			vi.mocked(FilesService).mockImplementation(() => mockFilesService as unknown as FilesService);
 		});
 
 		test.each([null, 'application/pdf', 'text/plain'])(
@@ -132,14 +239,9 @@ describe('assets tool', () => {
 			async (fileType) => {
 				const assetId = 'asset-123';
 
-				const mockAsset = {
-					file: {
-						type: fileType,
-					},
-					stream: new Readable(),
-				};
-
-				mockAssetsService.getAsset.mockResolvedValue(mockAsset);
+				mockFilesService.readOne.mockResolvedValue({
+					type: fileType,
+				});
 
 				await expect(
 					assets.handler({
@@ -150,7 +252,9 @@ describe('assets tool', () => {
 						accountability: mockAccountability,
 						sanitizedQuery: mockSanitizedQuery,
 					}),
-				).rejects.toThrow(`Unsupported media type "${fileType}" in asset tool.`);
+				).rejects.toThrow(`Unsupported media type "${fileType === null ? 'unknown' : fileType}" in asset tool.`);
+
+				expect(mockAssetsService.getAsset).not.toBeCalled();
 			},
 		);
 	});
