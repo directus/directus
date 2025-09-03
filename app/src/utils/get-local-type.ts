@@ -46,7 +46,16 @@ export function getLocalTypeForField(collection: string, field: string): LocalTy
 			return 'm2o';
 		}
 
-		if ((fieldInfo.meta?.special || []).includes('m2m')) {
+		const directusFilesRelationsCount = relations.filter(
+			(relation) => relation.related_collection === 'directus_files',
+		).length;
+
+		const isRelationToDirectusFiles = collection !== 'directus_files' && directusFilesRelationsCount === 1;
+		const isSelfRelationToDirectusFiles = directusFilesRelationsCount === 2;
+
+		if (isRelationToDirectusFiles || isSelfRelationToDirectusFiles) {
+			return 'files';
+		} else {
 			return 'm2m';
 		}
 	}
