@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { Field, ValidationError } from '@directus/types';
-import { isNil, merge } from 'lodash';
+import { merge } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { getFieldsInGroup } from '@/utils/get-fields-in-group';
 
 const props = withDefaults(
 	defineProps<{
@@ -38,7 +39,7 @@ const fieldsInSection = computed(() => {
 	const fields: Field[] = [merge({}, props.field, { hideLabel: true })];
 
 	if (props.field.meta?.special?.includes('group')) {
-		fields.push(...getFieldsForGroup(props.field.meta?.field));
+		fields.push(...getFieldsInGroup(props.field.field, props.fields));
 	}
 
 	return fields;
@@ -73,21 +74,6 @@ function handleModifier(event: MouseEvent, toggle: () => void) {
 	} else {
 		toggle();
 	}
-}
-
-function getFieldsForGroup(group: null | string, passed: string[] = []): Field[] {
-	const fieldsInGroup: Field[] = props.fields.filter((field) => {
-		return field.meta?.group === group || (group === null && isNil(field.meta));
-	});
-
-	for (const field of fieldsInGroup) {
-		if (field.meta?.special?.includes('group') && !passed.includes(field.meta!.field)) {
-			passed.push(field.meta!.field);
-			fieldsInGroup.push(...getFieldsForGroup(field.meta!.field, passed));
-		}
-	}
-
-	return fieldsInGroup;
 }
 </script>
 

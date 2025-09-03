@@ -584,7 +584,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		let results: Item[] = [];
 
 		if (query.version) {
-			results = [await handleVersion(this, key, queryWithKey, opts)];
+			results = (await handleVersion(this, key, queryWithKey, opts)) as Item[];
 		} else {
 			results = await this.readByQuery(queryWithKey, opts);
 		}
