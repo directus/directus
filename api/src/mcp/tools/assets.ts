@@ -1,6 +1,8 @@
 import { UnsupportedMediaTypeError } from '@directus/errors';
+import type { TransformationSet } from '@directus/types';
 import { z } from 'zod';
 import { AssetsService } from '../../services/assets.js';
+import { FilesService } from '../../services/files.js';
 import { defineTool } from '../define.js';
 import prompts from './prompts/index.js';
 
@@ -18,16 +20,36 @@ export const assets = defineTool<z.infer<typeof AssetsValidateSchema>>({
 	inputSchema: AssetsInputSchema,
 	validateSchema: AssetsValidateSchema,
 	async handler({ args, schema, accountability }) {
-		const assetsService = new AssetsService({
+		const serviceOptions = {
 			accountability,
 			schema,
-		});
+		};
 
-		const asset = await assetsService.getAsset(args.id);
+		const filesService = new FilesService(serviceOptions);
 
-		if (!asset.file.type || !['image', 'audio'].some((t) => asset.file.type.startsWith(t))) {
-			throw new UnsupportedMediaTypeError({ mediaType: asset.file.type, where: 'asset tool' });
+		const file = await filesService.readOne(args.id, { limit: 1 });
+
+		if (!file.type || !['image', 'audio'].some((t) => file.type?.startsWith(t))) {
+			throw new UnsupportedMediaTypeError({ mediaType: file.type ?? 'unknown', where: 'asset tool' });
 		}
+
+		let transformation: TransformationSet | undefined = undefined;
+
+		// ensure image dimensions are within allowable LLM limits
+		if (file.type.startsWith('image') && file.width && file.height && (file.width > 1200 || file.height > 1200)) {
+			transformation = {
+				transformationParams: {
+					transforms:
+						file.width > file.height
+							? [['resize', { width: 800, fit: 'contain' }]]
+							: [['resize', { height: 800, fit: 'contain' }]],
+				},
+			};
+		}
+
+		const assetsService = new AssetsService(serviceOptions);
+
+		const asset = await assetsService.getAsset(args.id, transformation);
 
 		const chunks = [];
 
