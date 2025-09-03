@@ -35,6 +35,7 @@ export type ToolEndpoint<T> = {
 
 export interface ToolConfig<T> {
 	name: string;
+	title: string;
 	description: string;
 	endpoint?: ToolEndpoint<T>;
 	admin?: boolean;

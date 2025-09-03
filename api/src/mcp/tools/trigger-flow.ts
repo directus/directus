@@ -7,7 +7,8 @@ import { TriggerFlowInputSchema, TriggerFlowValidateSchema } from '../schema.js'
 import prompts from './prompts/index.js';
 
 export const triggerFlow = defineTool<z.infer<typeof TriggerFlowValidateSchema>>({
-	name: 'trigger-flow',
+	name: 'directus-trigger-flow',
+	title: 'Directus - Trigger Flow',
 	description: prompts.triggerFlow,
 	inputSchema: TriggerFlowInputSchema,
 	validateSchema: TriggerFlowValidateSchema,

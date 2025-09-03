@@ -38,7 +38,8 @@ export const OperationsInputSchema = z.object({
 });
 
 export const operations = defineTool<z.infer<typeof OperationsValidationSchema>>({
-	name: 'operations',
+	name: 'directus-operations',
+	title: 'Directus - Operations',
 	admin: true,
 	description: prompts.operations,
 	inputSchema: OperationsInputSchema,

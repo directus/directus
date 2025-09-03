@@ -51,7 +51,8 @@ export const FieldsInputSchema = z.object({
 });
 
 export const fields = defineTool<z.infer<typeof FieldsValidateSchema>>({
-	name: 'fields',
+	name: 'directus-fields',
+	title: 'Directus - Fields',
 	admin: true,
 	description: prompts.fields,
 	inputSchema: FieldsInputSchema,

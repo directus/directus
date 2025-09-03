@@ -9,7 +9,8 @@ const SystemPromptValidateSchema = z.object({
 });
 
 export const system = defineTool<z.infer<typeof SystemPromptValidateSchema>>({
-	name: 'system-prompt',
+	name: 'directus-system-prompt',
+	title: 'Directus - System Prompt',
 	description: prompts.systemPromptDescription,
 	inputSchema: SystemPromptInputSchema,
 	validateSchema: SystemPromptValidateSchema,

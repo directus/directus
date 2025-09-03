@@ -15,7 +15,8 @@ const AssetsInputSchema = z.object({
 });
 
 export const assets = defineTool<z.infer<typeof AssetsValidateSchema>>({
-	name: 'assets',
+	name: 'directus-assets',
+	title: 'Directus - Assets',
 	description: prompts.assets,
 	inputSchema: AssetsInputSchema,
 	validateSchema: AssetsValidateSchema,
