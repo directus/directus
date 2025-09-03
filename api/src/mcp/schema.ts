@@ -66,7 +66,7 @@ export const CollectionItemInputSchema = z.object({
 	collection: z.string(),
 	fields: z.array(RawFieldItemInputSchema).optional(),
 	meta: z.union([z.record(z.string(), z.any()), z.null()]).optional(),
-	schema: z.union([z.record(z.string(), z.any()), z.null()]).optional(),
+	schema: z.union([z.object({}), z.null()]).optional().describe('ALWAYS an empty object for new collections. Only send `null` or `undefined` for folder collections.'),
 });
 
 export const CollectionItemValidateCreateSchema = CollectionItemInputSchema;
