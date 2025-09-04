@@ -14,7 +14,7 @@ import prompts from './prompts/index.js';
 export const CollectionsValidateSchema = z.discriminatedUnion('action', [
 	z.strictObject({
 		action: z.literal('create'),
-		data: z.union([z.array(CollectionItemValidateCreateSchema), CollectionItemValidateCreateSchema]),
+		data: z.array(CollectionItemValidateCreateSchema),
 	}),
 	z.strictObject({
 		action: z.literal('read'),
@@ -22,7 +22,7 @@ export const CollectionsValidateSchema = z.discriminatedUnion('action', [
 	}),
 	z.strictObject({
 		action: z.literal('update'),
-		data: z.union([z.array(CollectionItemValidateUpdateSchema), CollectionItemValidateUpdateSchema]),
+		data: z.array(CollectionItemValidateUpdateSchema),
 	}),
 	z.strictObject({
 		action: z.literal('delete'),
@@ -33,7 +33,7 @@ export const CollectionsValidateSchema = z.discriminatedUnion('action', [
 export const CollectionsInputSchema = z.object({
 	action: z.enum(['create', 'read', 'update', 'delete']).describe('The operation to perform'),
 	keys: z.array(z.string()).optional(),
-	data: z.union([z.array(CollectionItemInputSchema), CollectionItemInputSchema]).optional(),
+	data: z.array(CollectionItemInputSchema).optional(),
 });
 
 export const collections = defineTool<z.infer<typeof CollectionsValidateSchema>>({

@@ -48,7 +48,7 @@ const ItemsInputSchema = z.object({
 	collection: z.string().describe('The name of the collection'),
 	query: QueryInputSchema.optional(),
 	keys: z.array(PrimaryKeyInputSchema).optional(),
-	data: z.union([z.array(ItemInputSchema), ItemInputSchema]).optional(),
+	data: z.array(ItemInputSchema).optional(),
 });
 
 export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({

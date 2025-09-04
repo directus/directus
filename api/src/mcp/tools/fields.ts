@@ -28,7 +28,7 @@ export const FieldsValidateSchema = z.discriminatedUnion('action', [
 	}),
 	FieldsBaseValidateSchema.extend({
 		action: z.literal('update'),
-		data: z.union([z.array(RawFieldItemValidateSchema), RawFieldItemValidateSchema]),
+		data: z.array(RawFieldItemValidateSchema),
 	}),
 	FieldsBaseValidateSchema.extend({
 		action: z.literal('delete'),
@@ -41,12 +41,11 @@ export const FieldsInputSchema = z.object({
 	collection: z.string().describe('The name of the collection').optional(),
 	field: z.string().optional(),
 	data: z
-		.union([
-			z.array(FieldItemInputSchema),
-			FieldItemInputSchema,
-			z.array(RawFieldItemInputSchema),
-			RawFieldItemInputSchema,
-		])
+		.array(
+			FieldItemInputSchema.extend({
+				children: RawFieldItemInputSchema.shape.children,
+			}).partial(),
+		)
 		.optional(),
 });
 
