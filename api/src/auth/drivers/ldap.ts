@@ -78,29 +78,29 @@ export class LDAPAuthDriver extends AuthDriver {
 		const logger = useLogger();
 
 		const { bindDn, bindPassword, provider } = this.config;
-	
+
 		try {
 			// Bind as the configured service/bind user
 			await this.bindClient.bind(bindDn, bindPassword);
-	
+
 			// Healthcheck: make sure the bind DN exists
 			const { searchEntries } = await this.bindClient.search(bindDn, {
 				scope: 'base',
 				attributes: ['dn'],
 			});
-	
+
 			if (searchEntries.length === 0) {
 				logger.warn('[LDAP] Failed to find bind user record');
 				throw new UnexpectedResponseError();
 			}
 		} catch (err: any) {
 			const error = handleError(err);
-	
+
 			if (isDirectusError(error, ErrorCode.InvalidCredentials)) {
 				logger.warn('Invalid bind user');
 				throw new InvalidProviderConfigError({ provider });
 			}
-	
+
 			throw error;
 		}
 	}
@@ -117,70 +117,60 @@ export class LDAPAuthDriver extends AuthDriver {
 		mailAttribute ??= 'mail';
 
 		try {
-			if(!scope || !filter) return undefined;
+			if (!scope || !filter) return undefined;
 
 			const { searchEntries } = await this.bindClient.search(baseDn, {
 				filter,
 				scope,
-				attributes: [
-					'uid',
-					firstNameAttribute,
-					lastNameAttribute,
-					mailAttribute,
-					'userAccountControl',
-				],
+				attributes: ['uid', firstNameAttribute, lastNameAttribute, mailAttribute, 'userAccountControl'],
 			});
-		
+
 			if (searchEntries.length === 0 || !searchEntries[0]) {
 				return undefined;
 			}
-		
+
 			const entry = searchEntries[0];
 
 			const user: UserInfo = {
 				dn: entry.dn,
 				userAccountControl: Number(getEntryValue(entry['userAccountControl']) ?? 0),
 			};
-		
+
 			const firstName = getEntryValue(entry[firstNameAttribute]);
 			if (firstName) user.firstName = firstName;
-		
+
 			const lastName = getEntryValue(entry[lastNameAttribute]);
 			if (lastName) user.lastName = lastName;
-		
+
 			const email = getEntryValue(entry[mailAttribute]);
 			if (email) user.email = email;
-		
+
 			const uid = getEntryValue(entry['uid']);
 			if (uid) user.uid = uid;
-		
+
 			return user;
 		} catch (err) {
 			throw handleError(err as Error);
-		}		
+		}
 	}
 
-	private async fetchUserGroups(
-		baseDn: string,
-		filter?: ldap.EqualityFilter,
-		scope?: SearchScope
-	): Promise<string[]> {
+	private async fetchUserGroups(baseDn: string, filter?: ldap.EqualityFilter, scope?: SearchScope): Promise<string[]> {
 		if (!scope || !filter) {
 			return [];
 		}
-	
+
 		try {
 			const { searchEntries } = await this.bindClient.search(baseDn, {
 				filter,
 				scope,
 				attributes: ['cn'],
 			});
-	
+
 			const userGroups: string[] = [];
-	
+
 			for (const entry of searchEntries) {
 				const cn = entry['cn'];
-	
+
 				if (Array.isArray(cn)) {
 					// cn can be string[] | Buffer[] | mixed
 					for (const c of cn) {
@@ -196,13 +186,13 @@ export class LDAPAuthDriver extends AuthDriver {
 					userGroups.push(cn.toString('utf8'));
 				}
 			}
-	
+
 			return userGroups;
 		} catch (err) {
 			throw handleError(err as Error);
 		}
 	}
-	
+
 	private async fetchUserId(userDn: string): Promise<string | undefined> {
 		const user = await this.knex
 			.select('id')
@@ -338,15 +328,14 @@ export class LDAPAuthDriver extends AuthDriver {
 		if (!user.external_identifier || !password) {
 			throw new InvalidCredentialsError();
 		}
-	
-		const clientConfig =
-			typeof this.config['client'] === 'object' ? this.config['client'] : {};
-	
+
+		const clientConfig = typeof this.config['client'] === 'object' ? this.config['client'] : {};
+
 		const client = new ldap.Client({
 			url: this.config['clientUrl'],
 			...clientConfig,
 		});
-	
+
 		try {
 			// Try to bind with the user's DN and password
 			await client.bind(user.external_identifier, password);
@@ -388,9 +377,7 @@ const handleError = (e: Error) => {
 	});
 };
 
-const getEntryValue = (
-	value: string | string[] | Buffer | Buffer[] | undefined
-): string | undefined => {
+const getEntryValue = (value: string | string[] | Buffer | Buffer[] | undefined): string | undefined => {
 	if (Array.isArray(value)) {
 		const first = value[0];
 		if (typeof first === 'string') return first;
