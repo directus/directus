@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -59,7 +59,7 @@ jobs:
           # - cockroachdb
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Prepare
         uses: ./.github/actions/prepare
