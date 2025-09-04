@@ -1,0 +1,148 @@
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (eg: 11.12.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+env:
+  NODE_OPTIONS: --max_old_space_size=6144
+
+jobs:
+  prepare-release:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Validate version format
+        run: |
+          if [[ ! "${{ github.event.inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.*)?$ ]]; then
+            echo "❌ Invalid version format. Expected: x.y.z or x.y.z-prerelease"
+            exit 1
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for Crowdin PR
+        run: |
+          CROWDIN_PRS=$(gh pr list --state open --search "New Crowdin updates" --json number,title,url --limit 5)
+          if [ "$CROWDIN_PRS" != "[]" ]; then
+            echo "⚠️ Open Crowdin PR found:"
+            echo "$CROWDIN_PRS" | jq -r '.[] | "- #\(.number): \(.title) - \(.url)"'
+            echo ""
+            echo "Please merge Crowdin PRs before releasing or use skip-crowdin option."
+            exit 1
+          else
+            echo "✅ No open Crowdin PRs found"
+          fi
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: Generate release notes and update versions
+        id: changeset-version
+        run: |
+          echo "🔄 Running changeset version..."
+
+          # Capture the changeset version output
+          OUTPUT=$(pnpm changeset version 2>&1)
+          echo "$OUTPUT"
+
+          # Extract release notes from the output
+          # The release notes generator outputs between the divider lines
+          RELEASE_NOTES=$(echo "$OUTPUT" | awk -v RS="==============================================================" 'NR==3 {print}')
+
+          # Save release notes to file for the PR body
+          echo "$RELEASE_NOTES" > release-notes.md
+
+          # Verify version was updated in main package
+          PACKAGE_VERSION=$(node -p "require('./directus/package.json').version")
+          if [ "$PACKAGE_VERSION" != "${{ github.event.inputs.version }}" ]; then
+            echo "❌ Version mismatch: package.json shows $PACKAGE_VERSION, expected ${{ github.event.inputs.version }}"
+            exit 1
+          fi
+
+          echo "✅ Version updated successfully to ${{ github.event.inputs.version }}"
+
+      - name: Verify changeset cleanup
+        run: |
+          # Count remaining changeset files (excluding config)
+          CHANGESET_COUNT=$(find .changeset -name "*.md" -not -name "config.json" | wc -l)
+          if [ $CHANGESET_COUNT -ne 0 ]; then
+            echo "❌ Changesets not properly cleared. Found $CHANGESET_COUNT remaining files:"
+            find .changeset -name "*.md" -not -name "config.json"
+            exit 1
+          fi
+          echo "✅ Changesets cleared successfully"
+
+      - name: Create release PR
+        id: create-pr
+        run: |
+          VERSION = ${{ github.event.inputs.version }}
+          BRANCH_NAME="release/$VERSION"
+
+          # Create and checkout new branch
+          git checkout -b "$BRANCH_NAME"
+
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Commit changes
+          git add -A
+          git commit -m "Release $VERSION"
+
+          # Push branch
+          git push origin "$BRANCH_NAME"
+
+          # Build the PR body as a multiline bash string with variable expansion
+          PR_BODY="## Release $VERSION
+
+          This PR prepares the release for Directus $VERSION.
+
+          ### 🚀 Release Notes
+
+          $(cat release-notes.md)
+
+          ### ✅ Release Checklist
+
+          - [x] Changesets processed and cleared
+          - [x] Package versions updated
+          - [x] Release notes generated
+          - [ ] PR reviewed and approved
+          - [ ] Blackbox tests passed
+
+          **⚠️ Code freeze is in effect until this release is published.**
+
+          <!-- RELEASE_NOTES_START -->
+          $(cat release-notes.md)
+          <!-- RELEASE_NOTES_END -->
+          "
+
+          # Write the PR body into a file
+          echo "$PR_BODY" > pr-body.md
+
+          # Create PR
+          PR_NUMBER=$(gh pr create \
+            --title "Release ${{ github.event.inputs.version }}" \
+            --body-file pr-body.md \
+            --assignee "@me" \
+            --label "release" \
+            --head "$BRANCH_NAME" \
+            --base "main" \
+            --draft=false \
+            | grep -o '[0-9]\+$')
+
+          echo "number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
