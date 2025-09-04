@@ -43,28 +43,31 @@ export type ExtractRelation<Schema, Item extends object, Key> = Key extends keyo
 /**
  * Merge union of optional objects
  */
-export type MergeRelationalFields<FieldList> = Exclude<UnpackList<FieldList>, string> extends infer RelatedFields
-	? {
-			[Key in RelatedFields extends any ? keyof RelatedFields : never]-?: Exclude<RelatedFields[Key], undefined>;
-	  }
-	: never;
+export type MergeRelationalFields<FieldList> =
+	Exclude<UnpackList<FieldList>, string> extends infer RelatedFields
+		? {
+				[Key in RelatedFields extends any ? keyof RelatedFields : never]-?: Exclude<RelatedFields[Key], undefined>;
+			}
+		: never;
 
 /**
  * Merge separate relational objects together
  */
-export type MergeFields<FieldList> = HasNestedFields<FieldList> extends never
-	? Extract<UnpackList<FieldList>, string>
-	: Extract<UnpackList<FieldList>, string> | MergeRelationalFields<FieldList>;
+export type MergeFields<FieldList> =
+	HasNestedFields<FieldList> extends never
+		? Extract<UnpackList<FieldList>, string>
+		: Extract<UnpackList<FieldList>, string> | MergeRelationalFields<FieldList>;
 
 /**
  * Query sort
  * TODO expand to relational sorting (same object notation as fields i guess)
  */
-export type QuerySort<_Schema, Item> = UnpackList<Item> extends infer FlatItem
-	? {
-			[Field in keyof FlatItem]: Field | `-${Field & string}`;
-	  }[keyof FlatItem]
-	: never;
+export type QuerySort<_Schema, Item> =
+	UnpackList<Item> extends infer FlatItem
+		? {
+				[Field in keyof FlatItem]: Field | `-${Field & string}`;
+			}[keyof FlatItem]
+		: never;
 
 export type MergeObjects<A, B> = object extends A ? (object extends B ? A & B : A) : object extends B ? B : never;
 

@@ -436,6 +436,10 @@ const refreshInterval = computed({
 	inset-block-start: 50%;
 	transform: translate(-50%, -50%);
 
+	html[dir='rtl'] & {
+		transform: translate(50%, -50%);
+	}
+
 	&.header-offset {
 		inset-block-start: calc(50% - 12px);
 	}

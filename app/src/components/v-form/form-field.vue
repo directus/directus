@@ -51,6 +51,11 @@ const isDisabled = computed(() => {
 	return false;
 });
 
+const isLabelHidden = computed(() => {
+	if (props.batchMode && !props.field.meta?.special?.includes('no-data')) return false;
+	return props.field.hideLabel;
+});
+
 const { internalValue, isEdited, defaultValue } = useComputedValues();
 
 const { showRaw, copyRaw, pasteRaw, onRawValueSubmit } = useRaw();
@@ -162,7 +167,7 @@ function useComputedValues() {
 		class="field"
 		:class="[field.meta?.width || 'full', { invalid: validationError }]"
 	>
-		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow arrow-placement="start">
+		<v-menu v-if="!isLabelHidden" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
 				<form-field-label
 					:field="field"
@@ -223,7 +228,7 @@ function useComputedValues() {
 
 		<small v-if="field.meta && field.meta.note" v-md="{ value: field.meta.note, target: '_blank' }" class="type-note" />
 
-		<small v-if="validationError" class="validation-error selectable">
+		<small v-if="validationError" class="validation-error">
 			<template v-if="showCustomValidationMessage">
 				{{ field.meta?.validation_message }}
 				<v-icon v-tooltip="validationMessage" small right name="help" />

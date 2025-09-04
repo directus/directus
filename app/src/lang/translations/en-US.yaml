@@ -337,6 +337,8 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Reset Page Preferences
 hidden_field: Hidden Field
 hidden_on_detail: Hidden on Detail
+clear_hidden_field: Clear Value(s)
+clear_value_on_save_when_hidden: Clear value(s) on save when hidden
 readonly_field_label: Disable the field in the app
 required_readonly_field_warning:
   Enabling both readonly and required on a field prevents saving an item if the value is empty.
@@ -2543,6 +2545,12 @@ operations:
     name: Sleep
     description: Wait a given number of milliseconds
     milliseconds: Milliseconds
+  throw-error:
+    name: Throw Error
+    description: Throw an error in the reject path
+    code: Error Code
+    status: HTTP Status Code
+    message: Error Message
   transform:
     name: Transform Payload
     description: Alter the Flow's JSON payload
