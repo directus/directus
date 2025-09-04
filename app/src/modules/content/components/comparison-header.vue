@@ -48,10 +48,18 @@ const userUpdatedName = computed(() => {
 	display: flex;
 	padding-block: var(--comparison-modal-padding-y);
 	padding-inline: var(--comparison-modal-padding-x);
-	justify-content: space-between;
-	align-items: center;
+
+	flex-direction: column;
+	align-items: flex-start;
 	align-self: stretch;
-	gap: 16px;
+	gap: 12px;
+
+	@media (min-width: 960px) {
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		gap: 16px;
+	}
 
 	.header-content {
 		flex: 1;
@@ -70,14 +78,23 @@ const userUpdatedName = computed(() => {
 		min-inline-size: 0;
 
 		.meta-info {
-			text-align: end;
+			text-align: start;
+
+			@media (min-width: 960px) {
+				text-align: end;
+			}
 
 			.date-time {
 				font-size: 14px;
 				font-weight: 500;
 				line-height: 20px;
 				color: var(--theme--foreground);
-				margin-block-end: 4px;
+
+				margin-block-end: 0;
+
+				@media (min-width: 960px) {
+					margin-block-end: 4px;
+				}
 			}
 
 			.user-info {

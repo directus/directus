@@ -311,30 +311,34 @@ function usePromoteDialog() {
 						</div>
 					</div>
 					<div class="col right">
-						<div class="select-all-container">
-							<v-checkbox
-								:model-value="allFieldsSelected"
-								:indeterminate="someFieldsSelected && !allFieldsSelected"
-								@update:model-value="toggleSelectAll"
-							>
-								{{ t('select_all_changes') }} ({{ selectedComparisonFields.length }}/{{ availableFieldsCount }})
-							</v-checkbox>
+						<div class="footer-actions">
+							<div class="select-all-container">
+								<v-checkbox
+									:model-value="allFieldsSelected"
+									:indeterminate="someFieldsSelected && !allFieldsSelected"
+									@update:model-value="toggleSelectAll"
+								>
+									{{ t('select_all_changes') }} ({{ selectedComparisonFields.length }}/{{ availableFieldsCount }})
+								</v-checkbox>
+							</div>
+							<div class="buttons-container">
+								<v-button secondary @click="$emit('cancel')">
+									<v-icon name="close" left />
+									<span class="button-text">{{ t('cancel') }}</span>
+								</v-button>
+								<v-button
+									v-tooltip.bottom="
+										selectedComparisonFields.length === 0 ? t('promote_version_disabled') : t('promote_version')
+									"
+									:disabled="selectedComparisonFields.length === 0"
+									:loading="promoting"
+									@click="onPromoteClick"
+								>
+									<v-icon name="arrow_upload_progress" left />
+									<span class="button-text">{{ t('promote_version') }}</span>
+								</v-button>
+							</div>
 						</div>
-						<v-button secondary @click="$emit('cancel')">
-							<v-icon name="close" left />
-							{{ t('cancel') }}
-						</v-button>
-						<v-button
-							v-tooltip.bottom="
-								selectedComparisonFields.length === 0 ? t('promote_version_disabled') : t('promote_version')
-							"
-							:disabled="selectedComparisonFields.length === 0"
-							:loading="promoting"
-							@click="onPromoteClick"
-						>
-							<v-icon name="arrow_upload_progress" left />
-							{{ t('promote_version') }}
-						</v-button>
 					</div>
 				</div>
 			</div>
@@ -364,12 +368,21 @@ function usePromoteDialog() {
 @use '@/styles/mixins';
 
 .comparison-modal {
-	--comparison-modal-padding-x: 28px;
-	--comparison-modal-padding-y: 20px;
 	--comparison-modal-height: 90vh;
 	--comparison-modal-width: 90vw;
+	--comparison-modal-padding-x: 28px;
+	--comparison-modal-padding-y: 20px;
+	--comparison-modal-border-radius: var(--theme--border-radius);
+
+	--scrollbar-offset: 8px;
+	--comparison-modal-peek-width: calc(25px + var(--scrollbar-offset));
+
+	--vertical-divider-width: 2px;
+	--vertical-divider-color: var(--theme--border-color-accent);
+	--vertical-divider-dash-length: 4px;
+
 	background: var(--theme--background);
-	border-radius: var(--theme--border-radius);
+	border-radius: var(--comparison-modal-border-radius);
 	box-shadow: var(--theme--shadow);
 	display: flex;
 	flex-direction: column;
@@ -377,64 +390,86 @@ function usePromoteDialog() {
 	inline-size: var(--comparison-modal-width);
 	overflow: hidden;
 
-	.comparison-content-divider {
-		border-block-start: 2px solid var(--theme--border-color-subdued);
+	@media (min-width: 960px) {
+		--comparison-modal-peek-width: 0;
 	}
 
 	.scrollable-container {
 		flex: 1 1 auto;
 		overflow: auto;
+		scrollbar-width: thin;
+		scrollbar-color: var(--theme--border-color-subdued) transparent;
+		position: relative;
+		scroll-snap-type: x proximity;
+		scroll-behavior: smooth;
+
+		@media (min-width: 960px) {
+			overflow: hidden auto;
+			scroll-snap-type: none;
+		}
+	}
+
+	.comparison-content-divider {
+		border-block-start: 2px solid var(--theme--border-color-subdued);
 	}
 
 	.columns {
 		display: flex;
+		flex-direction: row;
 		align-items: stretch;
 		min-block-size: 100%;
 		position: relative;
+
+		@media (min-width: 960px) {
+			min-inline-size: 100%;
+		}
 	}
 
 	.vertical-divider::after {
-		--vertical-divider-width: 2px;
-		--vertical-divider-color: var(--theme--border-color-accent);
-		--vertical-divider-dash-length: 4px;
 		content: '';
 		position: absolute;
 		inset-block: 0;
-		inset-inline-start: 50%;
-
-		/* Border width */
+		inset-inline-start: calc(var(--comparison-modal-width) - var(--comparison-modal-peek-width));
 		inline-size: var(--vertical-divider-width);
-
-		/* Custom dash pattern using repeating-linear-gradient */
-		/*
-			Pattern explanation (top-to-bottom):
-			- var(--theme--border-color-accent) 0:       start of a dash
-			- var(--theme--border-color-accent) 4px:     dash length = 4px
-			- transparent 4px:                           start of the gap
-			- transparent 8px:                           gap end = 8px total, so gap = 4px
-			This creates a repeating 4px dash followed by a 4px gap (total cycle = 8px).
-		*/
 		background: repeating-linear-gradient(
 			to bottom,
 			var(--vertical-divider-color) 0 var(--vertical-divider-dash-length),
 			transparent var(--vertical-divider-dash-length) calc(var(--vertical-divider-dash-length) * 2)
 		);
 		pointer-events: none;
+
+		@media (min-width: 960px) {
+			inset-inline-start: 50%;
+		}
 	}
 
 	.col {
-		flex: 1 1 50%;
+		flex: 0 0 auto;
 		min-inline-size: 0;
+		scroll-snap-align: start;
+		scroll-snap-stop: always;
+		inline-size: calc(var(--comparison-modal-width) - var(--comparison-modal-peek-width));
+
+		@media (min-width: 960px) {
+			flex: 0 0 50%;
+			inline-size: auto;
+			scroll-snap-align: none;
+			scroll-snap-stop: normal;
+		}
 	}
 
 	.comparison-content {
-		padding-inline: var(--comparison-modal-padding-x);
-		padding-block: var(--comparison-modal-padding-x);
+		padding: var(--comparison-modal-padding-x);
 	}
 
 	.comparison-divider {
-		border-inline-end: 2px dashed var(--theme--border-color-subdued);
-		background: var(--theme--background);
+		display: none;
+
+		@media (min-width: 960px) {
+			display: block;
+			border-inline-end: 2px dashed var(--theme--border-color-subdued);
+			background: var(--theme--background);
+		}
 	}
 
 	.footer {
@@ -444,29 +479,104 @@ function usePromoteDialog() {
 		padding-block: var(--comparison-modal-padding-y);
 		border-block-start: 2px solid var(--theme--border-color-subdued);
 
-		.col.left {
-			display: flex;
-			align-items: center;
-			gap: 24px;
+		.columns {
+			flex-direction: row;
+		}
 
-			.fields-changed {
-				font-size: 14px;
-				line-height: 20px;
-				color: var(--theme--foreground-subdued);
-				font-weight: 600;
+		.col {
+			flex: 1 1 auto;
+			min-inline-size: 0;
+
+			&.left {
+				display: none;
+
+				@media (min-width: 960px) {
+					display: flex;
+					align-items: center;
+					gap: 24px;
+
+					.fields-changed {
+						font-size: 14px;
+						line-height: 20px;
+						color: var(--theme--foreground-subdued);
+						font-weight: 600;
+					}
+				}
+			}
+
+			&.right {
+				display: flex;
+				justify-content: center;
+				flex-direction: column;
+				gap: 16px;
+
+				@media (min-width: 960px) {
+					flex: 1;
+					justify-content: flex-end;
+					align-items: end;
+				}
+
+				.select-all-container {
+					display: flex;
+					min-inline-size: auto;
+					flex: 1 1 100%;
+					text-align: center;
+					margin-block-end: 12px;
+
+					@media (min-width: 960px) {
+						flex: 1 1 auto;
+						flex-shrink: 0;
+						margin-block-end: 0;
+					}
+				}
+
+				.footer-actions {
+					@media (min-width: 960px) {
+						display: flex;
+						align-items: center;
+						gap: 24px;
+					}
+				}
+
+				.buttons-container {
+					flex: 1 1 100%;
+					display: flex;
+					gap: 12px;
+
+					.button-text {
+						display: none;
+
+						@media (min-width: 960px) {
+							display: inline;
+						}
+					}
+				}
+
+				.v-button {
+					flex: 1;
+
+					:deep(.button) {
+						inline-size: 100%;
+					}
+
+					.v-button-content span {
+						display: none;
+					}
+
+					.v-icon {
+						margin: 0;
+
+						@media (min-width: 960px) {
+							margin-inline-end: 8px;
+						}
+					}
+				}
 			}
 		}
 
-		.col.right {
-			flex: 1;
-			display: flex;
-			justify-content: flex-end;
-			align-items: center;
-			gap: 24px;
-
-			.select-all-container {
-				min-inline-size: 200px;
-				flex-shrink: 0;
+		@media (min-width: 960px) {
+			.columns {
+				gap: 0;
 			}
 		}
 	}
