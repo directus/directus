@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Removed condition forcing m2m fields related to directus_files to use files interface
+Ensured that M2M fields in the directus_files collection use the correct interface
