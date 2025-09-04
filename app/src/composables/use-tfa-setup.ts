@@ -1,4 +1,5 @@
 import api from '@/api';
+import { logout } from '@/auth';
 import { nanoid } from 'nanoid';
 import { onMounted, ref } from 'vue';
 import qrcode from 'qrcode';
@@ -25,6 +26,8 @@ export function useTFASetup(initialEnabled: boolean) {
 		enableTFA,
 		disableTFA,
 		adminDisableTFA,
+		request2FASetup,
+		cancel2FASetup,
 		loading,
 		password,
 		tfaEnabled,
@@ -35,13 +38,14 @@ export function useTFASetup(initialEnabled: boolean) {
 		canvasID,
 	};
 
-	async function generateTFA() {
+	async function generateTFA(requiresPassword: boolean = true) {
 		if (loading.value === true) return;
 
 		loading.value = true;
 
 		try {
-			const response = await api.post('/users/me/tfa/generate', { password: password.value });
+			const payload = requiresPassword ? { password: password.value } : { requires_password: false };
+			const response = await api.post('/users/me/tfa/generate', payload);
 			const url = response.data.data.otpauth_url;
 			secret.value = response.data.data.secret;
 			await qrcode.toCanvas(document.getElementById(canvasID), url);
@@ -54,7 +58,7 @@ export function useTFASetup(initialEnabled: boolean) {
 		}
 	}
 
-	async function enableTFA() {
+	async function enableTFA(requiresPassword: boolean = true) {
 		if (loading.value === true) return;
 
 		loading.value = true;
@@ -62,7 +66,11 @@ export function useTFASetup(initialEnabled: boolean) {
 		let success = false;
 
 		try {
-			await api.post('/users/me/tfa/enable', { otp: otp.value, secret: secret.value });
+			const payload = requiresPassword
+				? { otp: otp.value, secret: secret.value }
+				: { otp: otp.value, secret: secret.value, requires_password: false };
+
+			await api.post('/users/me/tfa/enable', payload);
 			success = true;
 			tfaEnabled.value = true;
 			tfaGenerated.value = false;
@@ -110,6 +118,48 @@ export function useTFASetup(initialEnabled: boolean) {
 			tfaEnabled.value = false;
 			otp.value = '';
 			error.value = null;
+		} catch (err: any) {
+			error.value = err;
+		} finally {
+			loading.value = false;
+		}
+
+		return success;
+	}
+
+	async function request2FASetup() {
+		if (loading.value === true) return;
+
+		loading.value = true;
+
+		let success = false;
+
+		try {
+			await api.post('/users/me/tfa/request-setup');
+			success = true;
+			error.value = null;
+			await logout();
+		} catch (err: any) {
+			error.value = err;
+		} finally {
+			loading.value = false;
+		}
+
+		return success;
+	}
+
+	async function cancel2FASetup() {
+		if (loading.value === true) return;
+
+		loading.value = true;
+
+		let success = false;
+
+		try {
+			await api.post('/users/me/tfa/cancel-setup');
+			success = true;
+			error.value = null;
+			await userStore.hydrate();
 		} catch (err: any) {
 			error.value = err;
 		} finally {
