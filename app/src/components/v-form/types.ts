@@ -6,3 +6,11 @@ export type FormField = DeepPartial<Field> & {
 	hideLabel?: boolean;
 	hideLoader?: boolean;
 };
+
+export interface ComparisonContext {
+	mode: boolean;
+	side?: 'main' | 'version';
+	fields: Set<string>;
+	selectedFields?: string[];
+	onToggleField?: (field: string) => void;
+}

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Field, ValidationError } from '@directus/types';
 import { merge } from 'lodash';
+import type { ComparisonContext } from '@/components/v-form/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getFieldsInGroup } from '@/utils/get-fields-in-group';
@@ -14,6 +15,7 @@ const props = withDefaults(
 		disabled?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
+		comparison?: ComparisonContext;
 		primaryKey: number | string;
 		loading?: boolean;
 		validationErrors?: ValidationError[];
@@ -106,6 +108,7 @@ function handleModifier(event: MouseEvent, toggle: () => void) {
 						:loading="loading"
 						:batch-mode="batchMode"
 						:disabled="disabled"
+						:comparison="comparison"
 						:direction="direction"
 						:show-no-visible-fields="false"
 						:show-validation-errors="false"
