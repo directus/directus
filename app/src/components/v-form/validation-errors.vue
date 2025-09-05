@@ -71,7 +71,7 @@ const validationErrorsWithDetails = computed<ValidationErrorWithDetails[]>(() =>
 	) as ValidationErrorWithDetails[];
 });
 
-function getDefaultValidationMessage(validationError: ValidationError) {
+function getDefaultValidationMessage(validationError: ValidationErrorWithDetails) {
 	return t(`validationError.${validationError.type}`, validationError);
 }
 </script>
