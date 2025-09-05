@@ -3,7 +3,7 @@ import { Revision } from '@/types/revisions';
 import { isNil, isEqual } from 'lodash';
 import { computed, ref, type Ref } from 'vue';
 
-type Comparison = {
+export type NormalizedComparison = {
 	outdated: boolean;
 	mainHash: string;
 	current: Record<string, any>;
@@ -12,7 +12,7 @@ type Comparison = {
 
 export function useComparison(currentVersion: Ref<ContentVersion>) {
 	const selectedComparisonFields = ref<string[]>([]);
-	const comparedData = ref<Comparison | null>(null);
+	const comparedData = ref<NormalizedComparison | null>(null);
 	const userUpdated = ref<User | null>(null);
 	const mainItemUserUpdated = ref<User | null>(null);
 
@@ -64,7 +64,7 @@ export function useComparison(currentVersion: Ref<ContentVersion>) {
 		return new Set(fieldsWithDifferences.value);
 	});
 
-	function getFieldsWithDifferences(comparedData: Comparison): string[] {
+	function getFieldsWithDifferences(comparedData: NormalizedComparison): string[] {
 		return Object.keys(comparedData.current).filter((fieldKey) => {
 			const versionValue = comparedData.current[fieldKey];
 			const mainValue = comparedData.main[fieldKey];
@@ -98,19 +98,36 @@ export function useComparison(currentVersion: Ref<ContentVersion>) {
 		}
 	}
 
-	function normalizeComparisonData(comparisonData: ContentVersion | Revision, comparisonType: 'version' | 'revision') {
-		const normalizedData = {};
-
+	function normalizeComparisonData(
+		comparisonData: ContentVersion | Revision,
+		comparisonType: 'version' | 'revision',
+	): NormalizedComparison {
 		if (comparisonType === 'version') {
-			// normalize the version data
+			const version = comparisonData as ContentVersion;
+
+			// For versions, we need to simulate the comparison API response structure
+			// The actual comparison would be done via API call, but for normalization
+			// we'll structure the data to match what the comparison modal expects
+			return {
+				outdated: false, // This would be determined by hash comparison in real usage
+				mainHash: version.hash,
+				current: version.delta || {},
+				main: {}, // This would be populated from the main item data in real usage
+			};
 		} else if (comparisonType === 'revision') {
-			// normalize the revision data
+			const revision = comparisonData as Revision;
+
+			// For revisions, data contains the full state at that revision point (main)
+			// and delta contains the changes made in that revision (current)
+			return {
+				outdated: false, // Revisions don't have hash-based change detection
+				mainHash: '', // Revisions don't use hash comparison
+				current: revision.delta || {},
+				main: revision.data || {},
+			};
 		} else {
 			throw new Error('Invalid comparison type');
 		}
-
-		// return the comparison data with the fields normalized
-		return normalizedData;
 	}
 
 	return {

@@ -7,6 +7,8 @@ import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import RevisionsDateGroup from './revisions-date-group.vue';
 import RevisionsDrawer from './revisions-drawer.vue';
+import ComparisonModal from '@/modules/content/components/comparison-modal.vue';
+import type { Revision } from '@/types/revisions';
 
 const props = defineProps<{
 	collection: string;
@@ -29,6 +31,8 @@ const { collection, primaryKey, version } = toRefs(props);
 
 const modalActive = ref(false);
 const modalCurrentRevision = ref<number | null>(null);
+const comparisonModalActive = ref(false);
+const comparisonModalCurrentRevision = ref<Revision | null>(null);
 const page = ref<number>(1);
 
 const {
@@ -57,8 +61,12 @@ watch(
 );
 
 function openModal(id: number) {
-	modalCurrentRevision.value = id;
-	modalActive.value = true;
+	const revision = revisions.value?.find((r) => r.id === id);
+
+	if (revision) {
+		comparisonModalCurrentRevision.value = revision as Revision;
+		comparisonModalActive.value = true;
+	}
 }
 
 function onToggle(open: boolean) {
@@ -104,6 +112,14 @@ defineExpose({
 			v-model:active="modalActive"
 			:revisions="revisions"
 			@revert="$emit('revert', $event)"
+		/>
+
+		<comparison-modal
+			:active="comparisonModalActive"
+			:current-revision="comparisonModalCurrentRevision"
+			:delete-versions-allowed="false"
+			@restore="$emit('revert', $event)"
+			@cancel="comparisonModalActive = false"
 		/>
 	</sidebar-detail>
 </template>
