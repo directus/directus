@@ -270,6 +270,7 @@ catalog:
   sass-embedded: 1.89.2
   semver: 7.7.2
   sharp: 0.34.3
+  signal-polyfill: 0.2.2
   snappy: 7.3.0
   sqlite3: 5.1.7
   stream-json: 1.9.1

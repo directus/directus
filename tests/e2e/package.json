@@ -25,8 +25,8 @@
 		"chalk": "5.4.1",
 		"commander": "14.0.0",
 		"lodash-es": "catalog:",
-		"typescript": "5.8.2",
 		"tsx": "catalog:",
+		"typescript": "5.8.2",
 		"vitest": "catalog:"
 	},
 	"engines": {

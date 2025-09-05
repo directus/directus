@@ -66,6 +66,7 @@ export type Sandboxes = {
 	sandboxes: {
 		index: number;
 		env: Env;
+		logger: Logger;
 	}[];
 	restartApis(): Promise<void>;
 	stop(): Promise<void>;
@@ -75,6 +76,7 @@ export type Sandbox = {
 	restartApi(): Promise<void>;
 	stop(): Promise<void>;
 	env: Env;
+	logger: Logger;
 };
 
 function getOptions(options?: DeepPartial<Options>): Options {
@@ -134,7 +136,7 @@ export async function sandboxes(
 
 	const opts = getOptions(options);
 
-	const logger = createLogger();
+	const logger = createLogger(process.env as Env);
 
 	let apis: {
 		index: number;
@@ -156,8 +158,8 @@ export async function sandboxes(
 		await Promise.all(
 			sandboxes.map(async ({ database, options }, index) => {
 				const opts = getOptions(options);
-				const logger = opts.prefix ? createLogger(opts.prefix) : createLogger();
 				const env = getEnv(database, opts);
+				const logger = opts.prefix ? createLogger(env, opts.prefix) : createLogger(env);
 
 				try {
 					const project = await dockerUp(database, opts, env, logger);
@@ -193,18 +195,18 @@ export async function sandboxes(
 			await Promise.all(projects.map(({ project, logger, env }) => dockerDown(project, env, logger)));
 	}
 
-	return { sandboxes: apis.map(({ env, index }) => ({ index, env })), stop, restartApis };
+	return { sandboxes: apis.map(({ env, index, logger }) => ({ index, env, logger })), stop, restartApis };
 }
 
 export async function sandbox(database: Database, options?: DeepPartial<Options>): Promise<Sandbox> {
 	if (!databases.includes(database)) throw new Error('Invalid database provided');
 	const opts = getOptions(options);
 
-	const logger = opts.prefix ? createLogger(opts.prefix) : createLogger();
+	const env = getEnv(database, opts);
+	const logger = opts.prefix ? createLogger(env, opts.prefix) : createLogger(env);
 	let apis: ChildProcessWithoutNullStreams[] = [];
 	let project: string | undefined;
 	let build: ChildProcessWithoutNullStreams | undefined;
-	const env = getEnv(database, opts);
 	let interval: NodeJS.Timeout;
 
 	try {
@@ -237,5 +239,5 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 		if (project && !opts.docker.keep) await dockerDown(project, env, logger);
 	}
 
-	return { stop, restartApi, env };
+	return { stop, restartApi, env, logger };
 }
