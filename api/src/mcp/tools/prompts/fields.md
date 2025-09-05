@@ -1,9 +1,9 @@
 Perform CRUD operations on Directus Fields.
 
 <actions>
-- `create`: Add a single new field to a collection
+- `create`: Add one or multiple fields to a collection
 - `read`: View field configurations
-- `update`: Update multiple fields
+- `update`: Update one or multiple fields
 - `delete`: Remove fields
 </actions>
 
@@ -19,35 +19,64 @@ Perform CRUD operations on Directus Fields.
 
 <adding_fields>
 
-**Important**: When using the `fields` tool, include both `meta` and `schema` objects wrapped in `data` object.
+**Important**: When using the `fields` tool, `data` must always be an array of field objects, even for single fields.
+Make sure you include `meta` and `schema` objects for each field.
 
 Add fields to existing collections:
 
 ```json
 {
 	"action": "create",
-	"data": {
-		"collection": "articles",
-		"field": "excerpt",
-		"type": "text",
-		"meta": {
-			"interface": "input-rich-text-md",
-			"special": null,
-			"note": "Article excerpt for previews and SEO. Supports markdown formatting.",
-			"translations": [
-				{
-					"language": "en-US",
-					"translation": "Excerpt"
-				}
-			],
-			"options": {
-				"placeholder": null,
-				"customSyntax": null
+	"collection": "articles",
+	"data": [
+		{
+			"field": "excerpt",
+			"type": "text",
+			"meta": {
+				"interface": "input-rich-text-md",
+				"special": null,
+				"note": "Article excerpt for previews and SEO. Supports markdown formatting.",
+				"translations": [
+					{
+						"language": "en-US",
+						"translation": "Excerpt"
+					}
+				],
+				"options": {
+					"placeholder": null,
+					"customSyntax": null
+				},
+				"display": "formatted-value",
+				"display_options": { "format": true }
 			},
-			"display": "formatted-value",
-			"display_options": { "format": true }
+			"schema": {
+				"name": "test",
+				"table": "random_collection",
+				"data_type": "text"
+			}
 		}
-	}
+	]
+}
+```
+
+**Multiple Fields Example:**
+
+```json
+{
+	"action": "create",
+	"collection": "articles",
+	"data": [
+		{
+			"field": "title",
+			"type": "string"
+			// Rest of field data
+		},
+		{
+			"field": "content",
+			"type": "text"
+			// Rest of field data
+		}
+	]
 }
 ```
 

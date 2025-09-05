@@ -2,7 +2,12 @@ import { InvalidPayloadError } from '@directus/errors';
 import type { Field, Item, RawField, Type } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
+import { clearSystemCache } from '../../cache.js';
+import getDatabase from '../../database/index.js';
 import { FieldsService } from '../../services/fields.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { shouldClearCache } from '../../utils/should-clear-cache.js';
+import { transaction } from '../../utils/transaction.js';
 import { defineTool } from '../define.js';
 import {
 	FieldItemInputSchema,
@@ -12,6 +17,11 @@ import {
 } from '../schema.js';
 import prompts from './prompts/index.js';
 
+type FieldCreateItem = Partial<Field> & {
+	field: string;
+	type: Type | null;
+};
+
 export const FieldsBaseValidateSchema = z.strictObject({
 	collection: z.string(),
 });
@@ -19,7 +29,7 @@ export const FieldsBaseValidateSchema = z.strictObject({
 export const FieldsValidateSchema = z.discriminatedUnion('action', [
 	FieldsBaseValidateSchema.extend({
 		action: z.literal('create'),
-		data: FieldItemValidateSchema,
+		data: z.union([z.array(FieldItemValidateSchema), FieldItemValidateSchema]),
 	}),
 	z.object({
 		action: z.literal('read'),
@@ -28,7 +38,7 @@ export const FieldsValidateSchema = z.discriminatedUnion('action', [
 	}),
 	FieldsBaseValidateSchema.extend({
 		action: z.literal('update'),
-		data: z.union([z.array(RawFieldItemValidateSchema), RawFieldItemValidateSchema]),
+		data: z.array(RawFieldItemValidateSchema),
 	}),
 	FieldsBaseValidateSchema.extend({
 		action: z.literal('delete'),
@@ -41,12 +51,11 @@ export const FieldsInputSchema = z.object({
 	collection: z.string().describe('The name of the collection').optional(),
 	field: z.string().optional(),
 	data: z
-		.union([
-			z.array(FieldItemInputSchema),
-			FieldItemInputSchema,
-			z.array(RawFieldItemInputSchema),
-			RawFieldItemInputSchema,
-		])
+		.array(
+			FieldItemInputSchema.extend({
+				children: RawFieldItemInputSchema.shape.children,
+			}).partial(),
+		)
 		.optional(),
 });
 
@@ -60,21 +69,49 @@ export const fields = defineTool<z.infer<typeof FieldsValidateSchema>>({
 	inputSchema: FieldsInputSchema,
 	validateSchema: FieldsValidateSchema,
 	async handler({ args, schema, accountability }) {
-		const service = new FieldsService({
+		let service = new FieldsService({
 			schema,
 			accountability,
 		});
 
 		if (args.action === 'create') {
-			await service.createField(
-				args.collection,
-				args.data as Partial<Field> & {
-					field: string;
-					type: Type | null;
-				},
-			);
+			const fields = toArray(args.data as FieldCreateItem | FieldCreateItem[]);
 
-			const result = await service.readOne(args.collection, args.data.field);
+			const knex = getDatabase();
+
+			const result: Item[] = [];
+
+			await transaction(knex, async (trx) => {
+				service = new FieldsService({
+					schema,
+					accountability,
+					knex: trx,
+				});
+
+				for (const field of fields) {
+					await service.createField(args.collection, field, undefined, {
+						autoPurgeCache: false,
+						autoPurgeSystemCache: false,
+					});
+				}
+			});
+
+			// manually clear cache
+			if (shouldClearCache(service.cache)) {
+				await service.cache.clear();
+			}
+
+			await clearSystemCache();
+
+			service = new FieldsService({
+				schema: await getSchema(),
+				accountability,
+			});
+
+			for (const field of fields) {
+				const createdField = await service.readOne(args.collection, field.field);
+				result.push(createdField);
+			}
 
 			return {
 				type: 'text',
@@ -102,13 +139,40 @@ export const fields = defineTool<z.infer<typeof FieldsValidateSchema>>({
 		}
 
 		if (args.action === 'update') {
-			const data = toArray(args.data as RawField | RawField[]);
+			const fields = toArray(args.data as RawField | RawField[]);
 
-			await service.updateFields(args.collection, data);
+			const knex = getDatabase();
 
 			const result: Item[] = [];
 
-			for (const field of data) {
+			await transaction(knex, async (trx) => {
+				service = new FieldsService({
+					schema,
+					accountability,
+					knex: trx,
+				});
+
+				for (const field of fields) {
+					await service.updateField(args.collection, field, {
+						autoPurgeCache: false,
+						autoPurgeSystemCache: false,
+					});
+				}
+			});
+
+			// manually clear cache
+			if (shouldClearCache(service.cache)) {
+				await service.cache.clear();
+			}
+
+			await clearSystemCache();
+
+			service = new FieldsService({
+				schema: await getSchema(),
+				accountability,
+			});
+
+			for (const field of fields) {
 				const updatedField = await service.readOne(args.collection, field.field);
 				result.push(updatedField);
 			}

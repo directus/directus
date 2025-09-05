@@ -40,7 +40,7 @@ const FoldersInputSchema = z.object({
 	action: z.enum(['create', 'read', 'update', 'delete']).describe('The operation to perform'),
 	query: QueryInputSchema.optional(),
 	keys: z.array(PrimaryKeyInputSchema).optional(),
-	data: z.union([z.array(FolderItemInputSchema), FolderItemInputSchema]).optional(),
+	data: z.array(FolderItemInputSchema).optional(),
 });
 
 export const folders = defineTool<z.infer<typeof FoldersValidateSchema>>({

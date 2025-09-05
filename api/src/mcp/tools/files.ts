@@ -41,7 +41,7 @@ const FilesInputSchema = z.object({
 	action: z.enum(['read', 'update', 'delete', 'import']).describe('The operation to perform'),
 	query: QueryInputSchema.optional(),
 	keys: z.array(PrimaryKeyInputSchema).optional(),
-	data: z.union([z.array(FileItemInputSchema), FileItemInputSchema, FileImportItemInputSchema]).optional(),
+	data: z.array(FileItemInputSchema.extend({ ...FileImportItemInputSchema.shape }).partial()).optional(),
 });
 
 export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
