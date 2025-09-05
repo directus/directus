@@ -27,7 +27,6 @@ const props = withDefaults(
 	{
 		batchActiveFields: () => [],
 		validationErrors: () => [],
-		selectedComparisonFields: () => [],
 	},
 );
 

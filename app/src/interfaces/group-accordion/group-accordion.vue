@@ -29,7 +29,6 @@ const props = withDefaults(
 		validationErrors: () => [],
 		accordionMode: true,
 		start: 'closed',
-		selectedComparisonFields: () => [],
 	},
 );
 

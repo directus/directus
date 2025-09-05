@@ -22,7 +22,6 @@ withDefaults(
 	{
 		batchActiveFields: () => [],
 		validationErrors: () => [],
-		selectedComparisonFields: () => [],
 	},
 );
 

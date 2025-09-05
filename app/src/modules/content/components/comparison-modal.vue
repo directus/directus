@@ -6,6 +6,7 @@ import { isNil, isEqual } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
+import type { ComparisonContext } from '@/components/v-form/types';
 
 type Comparison = {
 	outdated: boolean;
@@ -21,11 +22,6 @@ interface Props {
 }
 
 const { t } = useI18n();
-
-const COMPARISON_SIDE = {
-	main: 'main',
-	version: 'version',
-} as const;
 
 function getFieldsWithDifferences(comparedData: Comparison): string[] {
 	return Object.keys(comparedData.current).filter((fieldKey) => {
@@ -268,11 +264,13 @@ function usePromoteDialog() {
 								:collection="currentVersion.collection"
 								:primary-key="currentVersion.item"
 								:initial-values="comparedData?.main"
-								:comparison="{
-									mode: !!comparedData,
-									side: COMPARISON_SIDE.main,
-									fields: comparisonFields,
-								}"
+								:comparison="
+									{
+										mode: !!comparedData,
+										side: 'main',
+										fields: comparisonFields,
+									} as ComparisonContext
+								"
 							/>
 						</div>
 					</div>
@@ -291,13 +289,15 @@ function usePromoteDialog() {
 								:collection="currentVersion.collection"
 								:primary-key="currentVersion.item"
 								:initial-values="comparedData?.current || {}"
-								:comparison="{
-									mode: !!comparedData,
-									side: COMPARISON_SIDE.version,
-									fields: comparisonFields,
-									selectedFields: selectedComparisonFields,
-									onToggleField: toggleComparisonField,
-								}"
+								:comparison="
+									{
+										mode: !!comparedData,
+										side: 'version',
+										fields: comparisonFields,
+										selectedFields: selectedComparisonFields,
+										onToggleField: toggleComparisonField,
+									} as ComparisonContext
+								"
 							/>
 						</div>
 					</div>
