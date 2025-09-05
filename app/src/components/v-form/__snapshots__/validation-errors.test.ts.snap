@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Mount component 1`] = `
+"<v-notice data-v-4508db34="" type="danger" class="full">
+  <div data-v-4508db34="">
+    <p data-v-4508db34="">The following fields have invalid values:</p>
+    <ul data-v-4508db34="" class="validation-errors-list"></ul>
+  </div>
+</v-notice>"
+`;
