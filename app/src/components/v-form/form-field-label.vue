@@ -48,7 +48,11 @@ const { t } = useI18n();
 				@update:model-value="$emit('toggle-batch', field)"
 			/>
 			<v-checkbox
-				v-if="comparison?.mode && comparison?.side === 'version' && comparison?.fields?.has(field.field)"
+				v-if="
+					comparison?.mode &&
+					(comparison?.side === 'version' || comparison?.side === 'revision') &&
+					comparison?.fields?.has(field.field)
+				"
 				:model-value="comparisonActive"
 				:value="field.field"
 				@update:model-value="$emit('toggle-comparison', field)"
