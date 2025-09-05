@@ -2,6 +2,9 @@
 
 exports[`Mount component 1`] = `
 "<div data-v-f0538e61="" class="v-notice info">
-  <v-icon-stub data-v-f0538e61="" name="info" left=""></v-icon-stub>
+  <div data-v-f0538e61="" class="v-notice-title">
+    <v-icon-stub data-v-f0538e61="" name="info" left=""></v-icon-stub>
+  </div>
+  <!--v-if-->
 </div>"
 `;
