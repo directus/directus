@@ -19,7 +19,8 @@ Perform CRUD operations on Directus Fields.
 
 <adding_fields>
 
-**Important**: When using the `fields` tool, `data` must always be an array of field objects, even for single fields. Make sure you include `meta` and `schema` objects for each field.
+**Important**: When using the `fields` tool, `data` must always be an array of field objects, even for single fields.
+Make sure you include `meta` and `schema` objects for each field.
 
 Add fields to existing collections:
 
@@ -51,7 +52,7 @@ Add fields to existing collections:
 			"schema": {
 				"name": "test",
 				"table": "random_collection",
-				"data_type": "text",
+				"data_type": "text"
 			}
 		}
 	]
@@ -67,12 +68,12 @@ Add fields to existing collections:
 	"data": [
 		{
 			"field": "title",
-			"type": "string",
+			"type": "string"
 			// Rest of field data
 		},
 		{
 			"field": "content",
-			"type": "text",
+			"type": "text"
 			// Rest of field data
 		}
 	]

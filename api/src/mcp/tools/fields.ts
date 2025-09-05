@@ -17,6 +17,11 @@ import {
 } from '../schema.js';
 import prompts from './prompts/index.js';
 
+type FieldCreateItem = Partial<Field> & {
+	field: string;
+	type: Type | null;
+};
+
 export const FieldsBaseValidateSchema = z.strictObject({
 	collection: z.string(),
 });
@@ -70,17 +75,7 @@ export const fields = defineTool<z.infer<typeof FieldsValidateSchema>>({
 		});
 
 		if (args.action === 'create') {
-			const fields = toArray(
-				args.data as
-					| (Partial<Field> & {
-							field: string;
-							type: Type | null;
-					  })[]
-					| (Partial<Field> & {
-							field: string;
-							type: Type | null;
-					  }),
-			);
+			const fields = toArray(args.data as FieldCreateItem | FieldCreateItem[]);
 
 			const knex = getDatabase();
 
@@ -178,8 +173,8 @@ export const fields = defineTool<z.infer<typeof FieldsValidateSchema>>({
 			});
 
 			for (const field of fields) {
-				const createdField = await service.readOne(args.collection, field.field);
-				result.push(createdField);
+				const updatedField = await service.readOne(args.collection, field.field);
+				result.push(updatedField);
 			}
 
 			return {
