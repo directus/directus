@@ -5,6 +5,18 @@ import { fields } from './fields.js';
 
 vi.mock('../../services/fields.js');
 
+vi.mock('../../utils/get-schema.js', () => {
+	return { getSchema: vi.fn() };
+});
+
+vi.mock('../../database/index.js', () => {
+	const self: Record<string, any> = {
+		transaction: vi.fn((cb) => cb(self)),
+	};
+
+	return { default: vi.fn(() => self), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
+});
+
 vi.mock('../tool.js', () => ({
 	defineTool: vi.fn((config) => config),
 }));
@@ -23,7 +35,7 @@ describe('fields tool', () => {
 			createField: MockedFunction<any>;
 			readOne: MockedFunction<any>;
 			readAll: MockedFunction<any>;
-			updateFields: MockedFunction<any>;
+			updateField: MockedFunction<any>;
 			deleteField: MockedFunction<any>;
 		};
 
@@ -32,7 +44,7 @@ describe('fields tool', () => {
 				createField: vi.fn(),
 				readOne: vi.fn(),
 				readAll: vi.fn(),
-				updateFields: vi.fn(),
+				updateField: vi.fn(),
 				deleteField: vi.fn(),
 			};
 
@@ -66,7 +78,7 @@ describe('fields tool', () => {
 					accountability: mockAccountability,
 				});
 
-				expect(result).toEqual({ type: 'text', data: fieldData });
+				expect(result).toEqual({ type: 'text', data: [fieldData] });
 			});
 		});
 
@@ -140,14 +152,20 @@ describe('fields tool', () => {
 					args: {
 						action: 'update',
 						collection,
-						data: updateData,
+						data: [updateData],
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
 					sanitizedQuery: mockSanitizedQuery,
 				});
 
-				expect(mockFieldsService.updateFields).toHaveBeenCalledWith(collection, [updateData]);
+				expect(mockFieldsService.updateField).toHaveBeenCalledOnce();
+
+				expect(mockFieldsService.updateField).toHaveBeenCalledWith(collection, updateData, {
+					autoPurgeCache: false,
+					autoPurgeSystemCache: false,
+				});
+
 				expect(result).toEqual({ type: 'text', data: expectedResult });
 			});
 
@@ -195,7 +213,16 @@ describe('fields tool', () => {
 					sanitizedQuery: mockSanitizedQuery,
 				});
 
-				expect(mockFieldsService.updateFields).toHaveBeenCalledWith(collection, updateData);
+				expect(mockFieldsService.updateField).toHaveBeenNthCalledWith(1, collection, updateData[0], {
+					autoPurgeCache: false,
+					autoPurgeSystemCache: false,
+				});
+
+				expect(mockFieldsService.updateField).toHaveBeenNthCalledWith(2, collection, updateData[1], {
+					autoPurgeCache: false,
+					autoPurgeSystemCache: false,
+				});
+
 				expect(result).toEqual({ type: 'text', data: expectedResult });
 			});
 		});
