@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed constraint errors not propogated with mssql
+Fixed constraint errors not being propagated in MSSQL
