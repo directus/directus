@@ -129,6 +129,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Create a single new item.
 	 */
 	async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
+		// TODO use createMany here
+
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
 		if (!opts.bypassLimits) {
@@ -424,66 +426,70 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 *
 	 * Uses `this.createOne` under the hood.
 	 */
-	async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+	async createMany(
+		data: Partial<Item>[],
+		opts: MutationOptions = {}
+	): Promise<PrimaryKey[]> {
+		return await this.createManyAtOnce(data, opts);
+		// if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
-		const { primaryKeys, nestedActionEvents } = await transaction(this.knex, async (knex) => {
-			const service = this.fork({ knex });
+		// const { primaryKeys, nestedActionEvents } = await transaction(this.knex, async (knex) => {
+		// 	const service = this.fork({ knex });
 
-			let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
+		// 	let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
 
-			const primaryKeys: PrimaryKey[] = [];
-			const nestedActionEvents: ActionEventParams[] = [];
+		// 	const primaryKeys: PrimaryKey[] = [];
+		// 	const nestedActionEvents: ActionEventParams[] = [];
 
-			const pkField = this.schema.collections[this.collection]!.primary;
+		// 	const pkField = this.schema.collections[this.collection]!.primary;
 
-			for (const [index, payload] of data.entries()) {
-				let bypassAutoIncrementSequenceReset = true;
+		// 	for (const [index, payload] of data.entries()) {
+		// 		let bypassAutoIncrementSequenceReset = true;
 
-				// the auto_increment sequence needs to be reset if the current item contains a manual PK and
-				// if it's the last item of the batch or if the next item doesn't include a PK and hence one needs to be generated
-				if (payload[pkField] && (index === data.length - 1 || !data[index + 1]?.[pkField])) {
-					bypassAutoIncrementSequenceReset = false;
-				}
+		// 		// the auto_increment sequence needs to be reset if the current item contains a manual PK and
+		// 		// if it's the last item of the batch or if the next item doesn't include a PK and hence one needs to be generated
+		// 		if (payload[pkField] && (index === data.length - 1 || !data[index + 1]?.[pkField])) {
+		// 			bypassAutoIncrementSequenceReset = false;
+		// 		}
 
-				const primaryKey = await service.createOne(payload, {
-					...(opts || {}),
-					autoPurgeCache: false,
-					onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-					bypassEmitAction: (params) => nestedActionEvents.push(params),
-					mutationTracker: opts.mutationTracker,
-					bypassAutoIncrementSequenceReset,
-				});
+		// 		const primaryKey = await service.createOne(payload, {
+		// 			...(opts || {}),
+		// 			autoPurgeCache: false,
+		// 			onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+		// 			bypassEmitAction: (params) => nestedActionEvents.push(params),
+		// 			mutationTracker: opts.mutationTracker,
+		// 			bypassAutoIncrementSequenceReset,
+		// 		});
 
-				primaryKeys.push(primaryKey);
-			}
+		// 		primaryKeys.push(primaryKey);
+		// 	}
 
-			if (userIntegrityCheckFlags) {
-				if (opts.onRequireUserIntegrityCheck) {
-					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
-				} else {
-					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex });
-				}
-			}
+		// 	if (userIntegrityCheckFlags) {
+		// 		if (opts.onRequireUserIntegrityCheck) {
+		// 			opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
+		// 		} else {
+		// 			await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex });
+		// 		}
+		// 	}
 
-			return { primaryKeys, nestedActionEvents };
-		});
+		// 	return { primaryKeys, nestedActionEvents };
+		// });
 
-		if (opts.emitEvents !== false) {
-			for (const nestedActionEvent of nestedActionEvents) {
-				if (opts.bypassEmitAction) {
-					await opts.bypassEmitAction(nestedActionEvent);
-				} else {
-					await emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
-				}
-			}
-		}
+		// if (opts.emitEvents !== false) {
+		// 	for (const nestedActionEvent of nestedActionEvents) {
+		// 		if (opts.bypassEmitAction) {
+		// 			await opts.bypassEmitAction(nestedActionEvent);
+		// 		} else {
+		// 			await emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+		// 		}
+		// 	}
+		// }
 
-		if (shouldClearCache(this.cache, opts, this.collection)) {
-			await this.cache.clear();
-		}
+		// if (shouldClearCache(this.cache, opts, this.collection)) {
+		// 	await this.cache.clear();
+		// }
 
-		return primaryKeys;
+		// return primaryKeys;
 	}
 
 
@@ -497,7 +503,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		}
 
 		if (! opts.bypassLimits) {
-			opts.mutationTracker.trackMutations(1)
+			opts.mutationTracker.trackMutations(data.length)
 		}
 
 		const { ActivityService } = await import('./activity.js');
@@ -828,12 +834,12 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		})
 
 
-		itemsValues.forEach((itemValues) => {
+		for (const itemValues of itemsValues) {
 			if (opts.emitEvents === false
 				|| typeof itemValues === 'string'
 				|| typeof itemValues === 'number'
 			) {
-				return
+				continue
 			}
 
 			const {
@@ -862,10 +868,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			if (opts.bypassEmitAction) {
-				opts.bypassEmitAction(actionEvent)
+				await opts.bypassEmitAction(actionEvent)
 			}
 			else {
-				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context)
+				await emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context)
 			}
 
 			const nestedActionEvents = [
@@ -876,17 +882,17 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			for (const nestedActionEvent of nestedActionEvents) {
 				if (opts.bypassEmitAction) {
-					opts.bypassEmitAction(nestedActionEvent)
+					await opts.bypassEmitAction(nestedActionEvent)
 				}
 				else {
-					emitter.emitAction(
+					await emitter.emitAction(
 						nestedActionEvent.event,
 						nestedActionEvent.meta,
 						nestedActionEvent.context
 					)
 				}
 			}
-		})
+		}
 
 		if (shouldClearCache(this.cache, opts, this.collection)) {
 			await this.cache.clear()
