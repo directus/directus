@@ -1,40 +1,88 @@
 import { ContentVersion, User } from '@directus/types';
 import { Revision } from '@/types/revisions';
-import { isNil, isEqual } from 'lodash';
 import { computed, ref, type Ref } from 'vue';
+import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
+import {
+	type NormalizedComparison,
+	getFieldsWithDifferences,
+	getVersionDisplayName,
+	getRevisionDisplayName,
+	getVersionUserId,
+	getRevisionUserId,
+	getVersionDate,
+	getMainItemDate,
+	getMainItemUserId,
+	addFieldToSelection,
+	removeFieldFromSelection,
+	toggleFieldInSelection,
+	toggleAllFields,
+	createRevisionComparison,
+	areAllFieldsSelected,
+	areSomeFieldsSelected,
+} from '../comparison-utils';
 
-export type NormalizedComparison = {
-	outdated: boolean;
-	mainHash: string;
-	current: Record<string, any>;
-	main: Record<string, any>;
-};
+interface UseComparisonOptions {
+	currentVersion?: Ref<ContentVersion | undefined>;
+	selectedRevision?: Ref<number | undefined>;
+	revisions?: Ref<Revision[] | undefined>;
+	comparisonType?: Ref<'version' | 'revision' | undefined>;
+}
 
-export function useComparison(currentVersion: Ref<ContentVersion>) {
+export function useComparison(options: UseComparisonOptions) {
+	const { currentVersion, selectedRevision, revisions, comparisonType } = options;
 	const selectedComparisonFields = ref<string[]>([]);
 	const comparedData = ref<NormalizedComparison | null>(null);
 	const userUpdated = ref<User | null>(null);
 	const mainItemUserUpdated = ref<User | null>(null);
 
-	const currentVersionDisplayName = computed(() =>
-		isNil(currentVersion.value.name) ? currentVersion.value.key : currentVersion.value.name,
+	// Loading states
+	const loading = ref(false);
+	const userLoading = ref(false);
+	const mainItemUserLoading = ref(false);
+
+	const isVersionMode = computed(() => comparisonType?.value === 'version');
+	const isRevisionMode = computed(() => comparisonType?.value === 'revision');
+
+	const currentRevision = computed(() => revisions?.value?.find((r) => r.id === selectedRevision?.value) as Revision);
+
+	const previousRevision = computed(() =>
+		selectedRevision?.value
+			? (revisions?.value?.find((r) => r.id === selectedRevision.value! - 1) as Revision)
+			: undefined,
 	);
+
+	const currentItem = computed(() => (isVersionMode.value ? currentVersion?.value : currentRevision.value));
+
+	const revisionDateCreated = computed(() => {
+		if (!currentItem.value) return null;
+		const ts = (currentItem.value as Revision)?.activity?.timestamp;
+		return ts ? new Date(ts) : null;
+	});
+
+	const currentVersionDisplayName = computed(() => {
+		if (isVersionMode.value && currentVersion?.value) {
+			return getVersionDisplayName(currentVersion.value);
+		} else if (isRevisionMode.value && currentRevision.value) {
+			return getRevisionDisplayName(currentRevision.value);
+		}
+
+		return '';
+	});
 
 	const mainHash = computed(() => comparedData.value?.mainHash ?? '');
 
 	const versionDateUpdated = computed(() => {
-		if (!currentVersion.value.date_updated) return null;
-		return new Date(currentVersion.value.date_updated);
+		if (isVersionMode.value && currentVersion?.value) {
+			return getVersionDate(currentVersion.value);
+		}
+
+		return null;
 	});
 
 	const mainItemDateUpdated = computed(() => {
 		if (!comparedData.value?.main) return null;
-
-		const dateField =
-			comparedData.value.main.date_updated || comparedData.value.main.modified_on || comparedData.value.main.updated_on;
-
-		if (!dateField) return null;
-		return new Date(dateField);
+		return getMainItemDate(comparedData.value.main);
 	});
 
 	const fieldsWithDifferences = computed(() => {
@@ -43,17 +91,11 @@ export function useComparison(currentVersion: Ref<ContentVersion>) {
 	});
 
 	const allFieldsSelected = computed(() => {
-		const availableFields = fieldsWithDifferences.value;
-		return (
-			availableFields.length > 0 && availableFields.every((field) => selectedComparisonFields.value.includes(field))
-		);
+		return areAllFieldsSelected(selectedComparisonFields.value, fieldsWithDifferences.value);
 	});
 
 	const someFieldsSelected = computed(() => {
-		const availableFields = fieldsWithDifferences.value;
-		return (
-			availableFields.length > 0 && availableFields.some((field) => selectedComparisonFields.value.includes(field))
-		);
+		return areSomeFieldsSelected(selectedComparisonFields.value, fieldsWithDifferences.value);
 	});
 
 	const availableFieldsCount = computed(() => {
@@ -64,69 +106,120 @@ export function useComparison(currentVersion: Ref<ContentVersion>) {
 		return new Set(fieldsWithDifferences.value);
 	});
 
-	function getFieldsWithDifferences(comparedData: NormalizedComparison): string[] {
-		return Object.keys(comparedData.current).filter((fieldKey) => {
-			const versionValue = comparedData.current[fieldKey];
-			const mainValue = comparedData.main[fieldKey];
-			return !isEqual(versionValue, mainValue);
-		});
-	}
-
 	function addField(field: string) {
-		selectedComparisonFields.value = [...selectedComparisonFields.value, field];
+		selectedComparisonFields.value = addFieldToSelection(selectedComparisonFields.value, field);
 	}
 
 	function removeField(field: string) {
-		selectedComparisonFields.value = selectedComparisonFields.value.filter((f: string) => f !== field);
+		selectedComparisonFields.value = removeFieldFromSelection(selectedComparisonFields.value, field);
 	}
 
 	function toggleSelectAll() {
-		const availableFields = fieldsWithDifferences.value;
-
-		if (allFieldsSelected.value) {
-			selectedComparisonFields.value = [];
-		} else {
-			selectedComparisonFields.value = [...new Set([...selectedComparisonFields.value, ...availableFields])];
-		}
+		selectedComparisonFields.value = toggleAllFields(
+			selectedComparisonFields.value,
+			fieldsWithDifferences.value,
+			allFieldsSelected.value,
+		);
 	}
 
 	function toggleComparisonField(fieldKey: string) {
-		if (selectedComparisonFields.value.includes(fieldKey)) {
-			removeField(fieldKey);
-		} else {
-			addField(fieldKey);
+		selectedComparisonFields.value = toggleFieldInSelection(selectedComparisonFields.value, fieldKey);
+	}
+
+	async function getComparison() {
+		loading.value = true;
+
+		try {
+			if (currentVersion?.value) {
+				const result = await api.get(`/versions/${currentVersion.value.id}/compare`).then((res) => res.data.data);
+				comparedData.value = result as NormalizedComparison;
+			}
+
+			if (isRevisionMode.value && currentRevision.value) {
+				const mainItem = await api
+					.get(`/items/${currentRevision.value.collection}/${currentRevision.value.item}`)
+					.then((res) => res.data.data);
+
+				let baselineLeft: Record<string, any> = mainItem;
+
+				if (currentVersion?.value) {
+					try {
+						const versionCompare = await api
+							.get(`/versions/${currentVersion.value.id}/compare`)
+							.then((res) => res.data.data as NormalizedComparison);
+
+						// Use the computed current version view as the baseline
+						baselineLeft = versionCompare.current || baselineLeft;
+					} catch {
+						// fallback to mainItem if version compare fails
+						baselineLeft = mainItem;
+					}
+				}
+
+				comparedData.value = createRevisionComparison(baselineLeft, currentRevision.value, previousRevision.value);
+			}
+
+			if (comparedData.value) {
+				selectedComparisonFields.value = getFieldsWithDifferences(comparedData.value);
+			}
+
+			await fetchMainItemUserUpdated();
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			loading.value = false;
 		}
 	}
 
-	function normalizeComparisonData(
-		comparisonData: ContentVersion | Revision,
-		comparisonType: 'version' | 'revision',
-	): NormalizedComparison {
-		if (comparisonType === 'version') {
-			const version = comparisonData as ContentVersion;
+	async function fetchUserUpdated() {
+		let userId: string | null = null;
 
-			// For versions, we need to simulate the comparison API response structure
-			// The actual comparison would be done via API call, but for normalization
-			// we'll structure the data to match what the comparison modal expects
-			return {
-				outdated: false, // This would be determined by hash comparison in real usage
-				mainHash: version.hash,
-				current: version.delta || {},
-				main: {}, // This would be populated from the main item data in real usage
-			};
-		} else if (comparisonType === 'revision') {
-			const revision = comparisonData as Revision;
+		if (isVersionMode.value && currentVersion?.value) {
+			userId = getVersionUserId(currentVersion.value);
+		} else if (isRevisionMode.value && currentRevision.value) {
+			userId = getRevisionUserId(currentRevision.value);
+		}
 
-			// For revisions, data contains the full state at that revision point (main)
-			// and delta contains the changes made in that revision (current)
-			return {
-				outdated: false, // Revisions don't have hash-based change detection
-				mainHash: '', // Revisions don't use hash comparison
-				current: revision.delta || {},
-				main: revision.data || {},
-			};
-		} else {
-			throw new Error('Invalid comparison type');
+		if (!userId) return;
+
+		userLoading.value = true;
+
+		try {
+			const response = await api.get(`/users/${userId}`, {
+				params: {
+					fields: ['id', 'first_name', 'last_name', 'email'],
+				},
+			});
+
+			userUpdated.value = response.data.data;
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			userLoading.value = false;
+		}
+	}
+
+	async function fetchMainItemUserUpdated() {
+		if (!comparedData.value?.main) return;
+
+		const userField = getMainItemUserId(comparedData.value.main);
+
+		if (!userField) return;
+
+		mainItemUserLoading.value = true;
+
+		try {
+			const response = await api.get(`/users/${userField}`, {
+				params: {
+					fields: ['id', 'first_name', 'last_name', 'email'],
+				},
+			});
+
+			mainItemUserUpdated.value = response.data.data;
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			mainItemUserLoading.value = false;
 		}
 	}
 
@@ -135,7 +228,6 @@ export function useComparison(currentVersion: Ref<ContentVersion>) {
 		comparedData,
 		userUpdated,
 		mainItemUserUpdated,
-		normalizeComparisonData,
 		currentVersionDisplayName,
 		mainHash,
 		versionDateUpdated,
@@ -145,11 +237,21 @@ export function useComparison(currentVersion: Ref<ContentVersion>) {
 		someFieldsSelected,
 		availableFieldsCount,
 		comparisonFields,
-
-		getFieldsWithDifferences,
+		isVersionMode,
+		isRevisionMode,
+		currentRevision,
+		previousRevision,
+		currentItem,
+		revisionDateCreated,
+		loading,
+		userLoading,
+		mainItemUserLoading,
 		addField,
 		removeField,
 		toggleSelectAll,
 		toggleComparisonField,
+		getComparison,
+		fetchUserUpdated,
+		fetchMainItemUserUpdated,
 	};
 }

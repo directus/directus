@@ -2,30 +2,28 @@
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { ContentVersion } from '@directus/types';
-import { ref, toRefs, unref, watch, computed, type Ref } from 'vue';
+import { ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
 import type { ComparisonContext } from '@/components/v-form/types';
-import { useComparison, type NormalizedComparison } from '../composables/use-comparison';
+import { useComparison } from '../composables/use-comparison';
 import type { Revision } from '@/types/revisions';
+import { isEqual } from 'lodash';
 
 interface Props {
 	active: boolean;
 	currentVersion?: ContentVersion;
-	currentRevision?: Revision;
+	selectedRevision?: number;
+	revisions?: Revision[];
 	deleteVersionsAllowed: boolean;
+	comparisonType: 'version' | 'revision';
 }
 
 const { t } = useI18n();
 
 const props = defineProps<Props>();
 
-const { active, currentVersion, currentRevision, deleteVersionsAllowed } = toRefs(props);
-
-const isVersionMode = computed(() => !!currentVersion.value);
-const isRevisionMode = computed(() => !!currentRevision.value);
-
-const currentItem = computed(() => currentVersion.value || currentRevision.value);
+const { active, currentVersion, selectedRevision, revisions, deleteVersionsAllowed, comparisonType } = toRefs(props);
 
 const {
 	selectedComparisonFields,
@@ -40,22 +38,33 @@ const {
 	someFieldsSelected,
 	availableFieldsCount,
 	comparisonFields,
-	getFieldsWithDifferences,
 	toggleSelectAll,
 	toggleComparisonField,
-	normalizeComparisonData,
-} = useComparison(currentItem as Ref<ContentVersion>);
-
-const loading = ref(false);
-const userLoading = ref(false);
-const mainItemUserLoading = ref(false);
+	isVersionMode,
+	isRevisionMode,
+	currentRevision,
+	previousRevision,
+	revisionDateCreated,
+	// Loading states
+	loading,
+	userLoading,
+	mainItemUserLoading,
+	// API functions
+	getComparison,
+	fetchUserUpdated,
+} = useComparison({
+	currentVersion: currentVersion,
+	selectedRevision: selectedRevision,
+	revisions: revisions,
+	comparisonType: comparisonType,
+});
 
 const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
 
 const emit = defineEmits<{
 	cancel: [];
 	promote: [deleteOnPromote: boolean];
-	restore: [restoreData: Record<string, any>];
+	confirm: [data?: Record<string, any>];
 }>();
 
 watch(
@@ -68,97 +77,6 @@ watch(
 	},
 	{ immediate: true },
 );
-
-async function getComparison() {
-	loading.value = true;
-
-	try {
-		if (isVersionMode.value && currentVersion.value) {
-			// Handle version comparison (existing logic)
-			const result = await api.get(`/versions/${currentVersion.value.id}/compare`).then((res) => res.data.data);
-			comparedData.value = result as NormalizedComparison;
-		} else if (isRevisionMode.value && currentRevision.value) {
-			// Handle revision comparison using normalizeComparisonData
-			// For revisions, we need to get the main item data to compare against
-			const mainItem = await api
-				.get(`/items/${currentRevision.value.collection}/${currentRevision.value.item}`)
-				.then((res) => res.data.data);
-
-			// Create a mock comparison structure for revisions
-			const revisionComparison = {
-				outdated: false,
-				mainHash: '',
-				current: currentRevision.value.delta || {},
-				main: mainItem,
-			};
-
-			comparedData.value = revisionComparison as NormalizedComparison;
-		}
-
-		if (comparedData.value) {
-			selectedComparisonFields.value = getFieldsWithDifferences(comparedData.value);
-		}
-
-		await fetchMainItemUserUpdated();
-	} catch (error) {
-		unexpectedError(error);
-	} finally {
-		loading.value = false;
-	}
-}
-
-async function fetchUserUpdated() {
-	let userId: string | null = null;
-
-	if (isVersionMode.value && currentVersion.value) {
-		userId = currentVersion.value.user_updated || currentVersion.value.user_created;
-	} else if (isRevisionMode.value && currentRevision.value) {
-		const user = currentRevision.value.activity.user;
-		userId = typeof user === 'string' ? user : user?.id;
-	}
-
-	if (!userId) return;
-
-	userLoading.value = true;
-
-	try {
-		const response = await api.get(`/users/${userId}`, {
-			params: {
-				fields: ['id', 'first_name', 'last_name', 'email'],
-			},
-		});
-
-		userUpdated.value = response.data.data;
-	} catch (error) {
-		unexpectedError(error);
-	} finally {
-		userLoading.value = false;
-	}
-}
-
-async function fetchMainItemUserUpdated() {
-	if (!comparedData.value?.main) return;
-
-	const userField = comparedData.value.main.user_updated || comparedData.value.main.user_created;
-
-	if (!userField) return;
-
-	mainItemUserLoading.value = true;
-
-	try {
-		const response = await api.get(`/users/${userField}`, {
-			params: {
-				fields: ['id', 'first_name', 'last_name', 'email'],
-			},
-		});
-
-		mainItemUserUpdated.value = response.data.data;
-	} catch (error) {
-		unexpectedError(error);
-	} finally {
-		mainItemUserLoading.value = false;
-	}
-}
 
 function usePromoteDialog() {
 	const confirmDeleteOnPromoteDialogActive = ref(false);
@@ -196,19 +114,16 @@ function usePromoteDialog() {
 				const restoreData: Record<string, any> = {};
 				const selectedFields = unref(selectedComparisonFields);
 
-				if (selectedFields.length > 0) {
-					for (const field of selectedFields) {
-						if (currentRevision.value.delta && field in currentRevision.value.delta) {
-							restoreData[field] = currentRevision.value.delta[field];
-						}
-					}
-				} else {
-					Object.assign(restoreData, currentRevision.value.data || {});
+				const entries = Object.entries(currentRevision.value.delta ?? {});
+
+				for (const [field, newValue] of entries) {
+					if (selectedFields.length > 0 && !selectedFields.includes(field)) continue;
+					const previousValue = previousRevision.value?.data?.[field] ?? null;
+					if (isEqual(newValue, previousValue)) continue;
+					restoreData[field] = previousValue;
 				}
 
-				await api.patch(`/items/${currentRevision.value.collection}/${currentRevision.value.item}`, restoreData);
-
-				emit('restore', restoreData);
+				emit('confirm', restoreData);
 			}
 
 			confirmDeleteOnPromoteDialogActive.value = false;
@@ -260,7 +175,7 @@ function usePromoteDialog() {
 					<div class="col right">
 						<ComparisonHeader
 							:title="currentVersionDisplayName"
-							:date-updated="versionDateUpdated"
+							:date-updated="isVersionMode ? versionDateUpdated : revisionDateCreated"
 							:user-updated="userUpdated"
 							:user-loading="userLoading"
 						/>

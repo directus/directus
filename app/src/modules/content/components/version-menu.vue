@@ -326,6 +326,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 			:active="isVersionPromoteDrawerOpen"
 			:current-version="currentVersion"
 			:delete-versions-allowed="deleteVersionsAllowed"
+			comparison-type="version"
 			@cancel="isVersionPromoteDrawerOpen = false"
 			@promote="onPromoteComplete($event)"
 		/>

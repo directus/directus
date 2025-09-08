@@ -32,7 +32,7 @@ const { collection, primaryKey, version } = toRefs(props);
 const modalActive = ref(false);
 const modalCurrentRevision = ref<number | null>(null);
 const comparisonModalActive = ref(false);
-const comparisonModalCurrentRevision = ref<Revision | null>(null);
+const selectedRevision = ref<number | undefined>(undefined);
 const page = ref<number>(1);
 
 const {
@@ -64,7 +64,7 @@ function openModal(id: number) {
 	const revision = revisions.value?.find((r) => r.id === id);
 
 	if (revision) {
-		comparisonModalCurrentRevision.value = revision as Revision;
+		selectedRevision.value = revision.id;
 		comparisonModalActive.value = true;
 	}
 }
@@ -116,9 +116,12 @@ defineExpose({
 
 		<comparison-modal
 			:active="comparisonModalActive"
-			:current-revision="comparisonModalCurrentRevision"
+			:current-version="version || undefined"
+			:selected-revision="selectedRevision"
+			:revisions="revisions as Revision[]"
 			:delete-versions-allowed="false"
-			@restore="$emit('revert', $event)"
+			comparison-type="revision"
+			@confirm="$emit('revert', $event)"
 			@cancel="comparisonModalActive = false"
 		/>
 	</sidebar-detail>
