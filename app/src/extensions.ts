@@ -1,7 +1,8 @@
 import type { AppExtensionConfigs, RefRecord } from '@directus/types';
 import { App, shallowRef, watch } from 'vue';
-import { getInternalDisplays, registerDisplays } from './displays';
-import { getInternalInterfaces, registerInterfaces } from './interfaces';
+import { getInternalDisplays, registerDisplays } from '@/displays';
+import { getInternalEditors, registerEditors } from '@/editors';
+import { getInternalInterfaces, registerInterfaces } from '@/interfaces';
 import { i18n } from './lang';
 import { getInternalLayouts, registerLayouts } from './layouts';
 import { getInternalModules, registerModules } from './modules';
@@ -16,6 +17,7 @@ let customExtensions: AppExtensionConfigs | null = null;
 const extensions: RefRecord<AppExtensionConfigs> = {
 	interfaces: shallowRef([]),
 	displays: shallowRef([]),
+	editors: shallowRef([]),
 	layouts: shallowRef([]),
 	modules: shallowRef([]),
 	panels: shallowRef([]),
@@ -42,6 +44,7 @@ export async function loadExtensions(): Promise<void> {
 export function registerExtensions(app: App): void {
 	const interfaces = getInternalInterfaces();
 	const displays = getInternalDisplays();
+	const editors = getInternalEditors();
 	const layouts = getInternalLayouts();
 	const modules = getInternalModules();
 	const panels = getInternalPanels();
@@ -51,6 +54,7 @@ export function registerExtensions(app: App): void {
 	if (customExtensions !== null) {
 		interfaces.push(...customExtensions.interfaces);
 		displays.push(...customExtensions.displays);
+		editors.push(...customExtensions.editors);
 		layouts.push(...customExtensions.layouts);
 		modules.push(...customExtensions.modules);
 		panels.push(...customExtensions.panels);
@@ -60,6 +64,7 @@ export function registerExtensions(app: App): void {
 
 	registerInterfaces(interfaces, app);
 	registerDisplays(displays, app);
+	registerEditors(editors, app);
 	registerLayouts(layouts, app);
 	registerPanels(panels, app);
 	registerOperations(operations, app);
@@ -70,6 +75,7 @@ export function registerExtensions(app: App): void {
 		() => {
 			extensions.interfaces.value = translate(interfaces);
 			extensions.displays.value = translate(displays);
+			extensions.editors.value = translate(editors);
 			extensions.layouts.value = translate(layouts);
 			extensions.panels.value = translate(panels);
 			extensions.operations.value = translate(operations);

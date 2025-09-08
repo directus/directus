@@ -5,6 +5,7 @@ export type {
 	AppExtensionConfigs,
 	DisplayFieldsFunction,
 	DisplayConfig,
+	EditorConfig,
 	EndpointExtensionContext,
 	EndpointConfig,
 	AppExtensionType,

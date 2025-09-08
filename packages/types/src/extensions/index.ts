@@ -1,6 +1,7 @@
 export * from './api-extension-context.js';
 export * from './app-extension-config.js';
 export * from './displays.js';
+export * from './editors.js';
 export * from './endpoints.js';
 export * from './hooks.js';
 export * from './interfaces.js';

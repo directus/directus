@@ -1537,6 +1537,8 @@ field_options:
     do_not_track_anything: Do Not Track Anything
     collection_setup: Collection Setup
     note_placeholder: A description of this collection...
+    editor: Editor
+    editor_placeholder: Select an editor for this collection...
     hidden_label: Hide within the App
     singleton: Treat as single object
     language: Language

@@ -3,13 +3,16 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useLocalStorage } from '@/composables/use-local-storage';
 import { useItemPermissions } from '@/composables/use-permissions';
+import { usePreset } from '@/composables/use-preset';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
+import { useExtensions } from '@/extensions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+import EditorSidebarDetail from '@/views/private/components/editor-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
@@ -95,6 +98,14 @@ const {
 } = permissions;
 
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
+
+const { editor } = usePreset(collection);
+const { editors } = useExtensions();
+
+const selectedEditor = computed(() => {
+	if (!editor.value) return null;
+	return editors.value.find((e) => e.id === editor.value) || null;
+});
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version'] });
 const confirmDelete = ref(false);
@@ -731,7 +742,22 @@ function useCollectionRoute() {
 			<content-navigation :current-collection="collection" />
 		</template>
 
+		<!-- Custom Editor Component -->
+		<component
+			v-if="selectedEditor"
+			:is="`editor-${selectedEditor.id}`"
+			v-model="edits"
+			:collection="collection"
+			:primary-key="internalPrimaryKey"
+			:item="item"
+			:initial-values="item"
+			:loading="loading"
+			:disabled="isFormDisabled"
+		/>
+
+		<!-- Default Form -->
 		<v-form
+			v-else
 			ref="form"
 			v-model="edits"
 			:autofocus="isNew"
@@ -765,6 +791,9 @@ function useCollectionRoute() {
 			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_collections_item')" class="page-description" />
 			</sidebar-detail>
+
+			<editor-sidebar-detail v-model="editor" />
+
 			<template v-if="isNew === false && actualPrimaryKey">
 				<revisions-drawer-detail
 					v-if="revisionsAllowed && accountabilityScope === 'all'"
