@@ -744,8 +744,8 @@ function useCollectionRoute() {
 
 		<!-- Custom Editor Component -->
 		<component
-			v-if="selectedEditor"
 			:is="`editor-${selectedEditor.id}`"
+			v-if="selectedEditor"
 			v-model="edits"
 			:collection="collection"
 			:primary-key="internalPrimaryKey"

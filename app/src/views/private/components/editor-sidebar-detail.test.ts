@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createI18n } from 'vue-i18n';
-import { ref } from 'vue';
 import EditorSidebarDetail from './editor-sidebar-detail.vue';
 
 // Mock composables
@@ -80,7 +79,8 @@ describe('EditorSidebarDetail', () => {
 						props: ['icon', 'title', 'badge'],
 					},
 					'v-select': {
-						template: '<select class="v-select-mock" @change="$emit(\'update:modelValue\', $event.target.value)"><option value="">Select...</option></select>',
+						template:
+							'<select class="v-select-mock" @change="$emit(\'update:modelValue\', $event.target.value)"><option value="">Select...</option></select>',
 						props: ['modelValue', 'items', 'itemText', 'itemValue', 'placeholder'],
 						emits: ['update:modelValue'],
 					},

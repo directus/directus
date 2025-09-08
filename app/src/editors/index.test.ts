@@ -8,7 +8,7 @@ describe('editors index', () => {
 		it('should register editor components with app', () => {
 			const app = createApp({});
 			app.component = vi.fn();
-			
+
 			const editors: EditorConfig[] = [
 				{
 					id: 'test-editor',
@@ -26,7 +26,7 @@ describe('editors index', () => {
 		it('should register multiple editors', () => {
 			const app = createApp({});
 			app.component = vi.fn();
-			
+
 			const editors: EditorConfig[] = [
 				{
 					id: 'editor-1',
@@ -35,7 +35,7 @@ describe('editors index', () => {
 					component: { name: 'Editor1' },
 				},
 				{
-					id: 'editor-2', 
+					id: 'editor-2',
 					name: 'Editor 2',
 					icon: 'text',
 					component: { name: 'Editor2' },
@@ -52,7 +52,7 @@ describe('editors index', () => {
 		it('should handle empty editors array', () => {
 			const app = createApp({});
 			app.component = vi.fn();
-			
+
 			registerEditors([], app);
 			expect(app.component).not.toHaveBeenCalled();
 		});
