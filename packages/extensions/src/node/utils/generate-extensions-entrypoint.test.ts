@@ -31,7 +31,7 @@ describe('generateExtensionsEntrypoint', () => {
 		];
 
 		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
-			`"export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [];"`,
+			`"export const interfaces = [];export const displays = [];export const editors = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [];"`,
 		);
 	});
 
@@ -100,7 +100,7 @@ describe('generateExtensionsEntrypoint', () => {
 		] as ExtensionSettings[];
 
 		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
-			`"export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [];"`,
+			`"export const interfaces = [];export const displays = [];export const editors = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [];"`,
 		);
 	});
 
@@ -126,7 +126,7 @@ describe('generateExtensionsEntrypoint', () => {
 		const mockSettings = [{ source: 'local', folder: 'mock-panel-extension', enabled: true }] as ExtensionSettings[];
 
 		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
-			`"import panel0 from './extensions/panel/index.js';export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [panel0];export const themes = [];export const operations = [];"`,
+			`"import panel0 from './extensions/panel/index.js';export const interfaces = [];export const displays = [];export const editors = [];export const layouts = [];export const modules = [];export const panels = [panel0];export const themes = [];export const operations = [];"`,
 		);
 	});
 
@@ -154,7 +154,7 @@ describe('generateExtensionsEntrypoint', () => {
 		] as ExtensionSettings[];
 
 		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
-			`"import operation0 from './extensions/operation/app.js';export const interfaces = [];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [operation0];"`,
+			`"import operation0 from './extensions/operation/app.js';export const interfaces = [];export const displays = [];export const editors = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [operation0];"`,
 		);
 	});
 
@@ -211,7 +211,7 @@ describe('generateExtensionsEntrypoint', () => {
 		] as ExtensionSettings[];
 
 		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
-			`"import {interfaces as interfaceBundle0,operations as operationBundle0} from './extensions/bundle/app.js';export const interfaces = [...interfaceBundle0];export const displays = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [...operationBundle0];"`,
+			`"import {interfaces as interfaceBundle0,operations as operationBundle0} from './extensions/bundle/app.js';export const interfaces = [...interfaceBundle0];export const displays = [];export const editors = [];export const layouts = [];export const modules = [];export const panels = [];export const themes = [];export const operations = [...operationBundle0];"`,
 		);
 	});
 
@@ -317,7 +317,7 @@ describe('generateExtensionsEntrypoint', () => {
 		];
 
 		expect(generateExtensionsEntrypoint(mockExtensions, mockSettings)).toMatchInlineSnapshot(
-			`"import display0 from './extensions/display/index.js';import operation0 from './extensions/operation/app.js';import {layouts as layoutBundle0,operations as operationBundle0} from './extensions/bundle/app.js';export const interfaces = [];export const displays = [display0];export const layouts = [...layoutBundle0];export const modules = [];export const panels = [];export const themes = [];export const operations = [operation0,...operationBundle0];"`,
+			`"import display0 from './extensions/display/index.js';import operation0 from './extensions/operation/app.js';import {layouts as layoutBundle0,operations as operationBundle0} from './extensions/bundle/app.js';export const interfaces = [];export const displays = [display0];export const editors = [];export const layouts = [...layoutBundle0];export const modules = [];export const panels = [];export const themes = [];export const operations = [operation0,...operationBundle0];"`,
 		);
 	});
 });
