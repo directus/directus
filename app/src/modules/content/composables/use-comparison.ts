@@ -1,10 +1,10 @@
 import { ContentVersion, User } from '@directus/types';
 import { Revision } from '@/types/revisions';
-import { computed, ref, type Ref } from 'vue';
+import { computed, ref, watch, type Ref } from 'vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
+import type { ComparisonData } from '../normalize-comparison-data';
 import {
-	type NormalizedComparison,
 	getFieldsWithDifferences,
 	getVersionDisplayName,
 	getRevisionDisplayName,
@@ -17,42 +17,35 @@ import {
 	removeFieldFromSelection,
 	toggleFieldInSelection,
 	toggleAllFields,
-	createRevisionComparison,
 	areAllFieldsSelected,
 	areSomeFieldsSelected,
 } from '../comparison-utils';
 
 interface UseComparisonOptions {
-	currentVersion?: Ref<ContentVersion | undefined>;
-	selectedRevision?: Ref<number | undefined>;
-	revisions?: Ref<Revision[] | undefined>;
-	comparisonType?: Ref<'version' | 'revision' | undefined>;
+	comparisonData: Ref<ComparisonData | null>;
 }
 
 export function useComparison(options: UseComparisonOptions) {
-	const { currentVersion, selectedRevision, revisions, comparisonType } = options;
+	const { comparisonData } = options;
 	const selectedComparisonFields = ref<string[]>([]);
-	const comparedData = ref<NormalizedComparison | null>(null);
 	const userUpdated = ref<User | null>(null);
 	const mainItemUserUpdated = ref<User | null>(null);
 
-	// Loading states
-	const loading = ref(false);
 	const userLoading = ref(false);
 	const mainItemUserLoading = ref(false);
 
-	const isVersionMode = computed(() => comparisonType?.value === 'version');
-	const isRevisionMode = computed(() => comparisonType?.value === 'revision');
+	const isVersionMode = computed(() => comparisonData.value?.comparisonType === 'version');
+	const isRevisionMode = computed(() => comparisonData.value?.comparisonType === 'revision');
 
-	const currentRevision = computed(() => revisions?.value?.find((r) => r.id === selectedRevision?.value) as Revision);
+	const currentItem = computed(() => {
+		if (isVersionMode.value) {
+			return comparisonData.value?.selectableDeltas?.[0] as ContentVersion;
+		} else if (isRevisionMode.value) {
+			return comparisonData.value?.selectableDeltas?.[0] as Revision;
+		}
 
-	const previousRevision = computed(() =>
-		selectedRevision?.value
-			? (revisions?.value?.find((r) => r.id === selectedRevision.value! - 1) as Revision)
-			: undefined,
-	);
-
-	const currentItem = computed(() => (isVersionMode.value ? currentVersion?.value : currentRevision.value));
+		return null;
+	});
 
 	const revisionDateCreated = computed(() => {
 		if (!currentItem.value) return null;
@@ -61,33 +54,41 @@ export function useComparison(options: UseComparisonOptions) {
 	});
 
 	const currentVersionDisplayName = computed(() => {
-		if (isVersionMode.value && currentVersion?.value) {
-			return getVersionDisplayName(currentVersion.value);
-		} else if (isRevisionMode.value && currentRevision.value) {
-			return getRevisionDisplayName(currentRevision.value);
+		if (isVersionMode.value && currentItem.value) {
+			return getVersionDisplayName(currentItem.value as ContentVersion);
+		} else if (isRevisionMode.value && currentItem.value) {
+			return getRevisionDisplayName(currentItem.value as Revision);
 		}
 
 		return '';
 	});
 
-	const mainHash = computed(() => comparedData.value?.mainHash ?? '');
+	const mainHash = computed(() => comparisonData.value?.mainHash ?? '');
 
 	const versionDateUpdated = computed(() => {
-		if (isVersionMode.value && currentVersion?.value) {
-			return getVersionDate(currentVersion.value);
+		if (isVersionMode.value && currentItem.value) {
+			return getVersionDate(currentItem.value as ContentVersion);
 		}
 
 		return null;
 	});
 
 	const mainItemDateUpdated = computed(() => {
-		if (!comparedData.value?.main) return null;
-		return getMainItemDate(comparedData.value.main);
+		if (!comparisonData.value?.base) return null;
+		return getMainItemDate(comparisonData.value.base);
 	});
 
 	const fieldsWithDifferences = computed(() => {
-		if (!comparedData.value) return [];
-		return getFieldsWithDifferences(comparedData.value);
+		if (!comparisonData.value) return [];
+
+		const normalizedComparison = {
+			outdated: comparisonData.value.outdated || false,
+			mainHash: comparisonData.value.mainHash || '',
+			current: comparisonData.value.delta,
+			main: comparisonData.value.base,
+		};
+
+		return getFieldsWithDifferences(normalizedComparison);
 	});
 
 	const allFieldsSelected = computed(() => {
@@ -126,58 +127,25 @@ export function useComparison(options: UseComparisonOptions) {
 		selectedComparisonFields.value = toggleFieldInSelection(selectedComparisonFields.value, fieldKey);
 	}
 
-	async function getComparison() {
-		loading.value = true;
-
-		try {
-			if (currentVersion?.value) {
-				const result = await api.get(`/versions/${currentVersion.value.id}/compare`).then((res) => res.data.data);
-				comparedData.value = result as NormalizedComparison;
+	watch(
+		fieldsWithDifferences,
+		(newFields) => {
+			if (newFields.length > 0) {
+				selectedComparisonFields.value = newFields;
+			} else {
+				selectedComparisonFields.value = [];
 			}
-
-			if (isRevisionMode.value && currentRevision.value) {
-				const mainItem = await api
-					.get(`/items/${currentRevision.value.collection}/${currentRevision.value.item}`)
-					.then((res) => res.data.data);
-
-				let baselineLeft: Record<string, any> = mainItem;
-
-				if (currentVersion?.value) {
-					try {
-						const versionCompare = await api
-							.get(`/versions/${currentVersion.value.id}/compare`)
-							.then((res) => res.data.data as NormalizedComparison);
-
-						// Use the computed current version view as the baseline
-						baselineLeft = versionCompare.current || baselineLeft;
-					} catch {
-						// fallback to mainItem if version compare fails
-						baselineLeft = mainItem;
-					}
-				}
-
-				comparedData.value = createRevisionComparison(baselineLeft, currentRevision.value, previousRevision.value);
-			}
-
-			if (comparedData.value) {
-				selectedComparisonFields.value = getFieldsWithDifferences(comparedData.value);
-			}
-
-			await fetchMainItemUserUpdated();
-		} catch (error) {
-			unexpectedError(error);
-		} finally {
-			loading.value = false;
-		}
-	}
+		},
+		{ immediate: true },
+	);
 
 	async function fetchUserUpdated() {
 		let userId: string | null = null;
 
-		if (isVersionMode.value && currentVersion?.value) {
-			userId = getVersionUserId(currentVersion.value);
-		} else if (isRevisionMode.value && currentRevision.value) {
-			userId = getRevisionUserId(currentRevision.value);
+		if (isVersionMode.value && currentItem.value) {
+			userId = getVersionUserId(currentItem.value as ContentVersion);
+		} else if (isRevisionMode.value && currentItem.value) {
+			userId = getRevisionUserId(currentItem.value as Revision);
 		}
 
 		if (!userId) return;
@@ -200,9 +168,9 @@ export function useComparison(options: UseComparisonOptions) {
 	}
 
 	async function fetchMainItemUserUpdated() {
-		if (!comparedData.value?.main) return;
+		if (!comparisonData.value?.base) return;
 
-		const userField = getMainItemUserId(comparedData.value.main);
+		const userField = getMainItemUserId(comparisonData.value.base);
 
 		if (!userField) return;
 
@@ -225,7 +193,6 @@ export function useComparison(options: UseComparisonOptions) {
 
 	return {
 		selectedComparisonFields,
-		comparedData,
 		userUpdated,
 		mainItemUserUpdated,
 		currentVersionDisplayName,
@@ -239,18 +206,14 @@ export function useComparison(options: UseComparisonOptions) {
 		comparisonFields,
 		isVersionMode,
 		isRevisionMode,
-		currentRevision,
-		previousRevision,
 		currentItem,
 		revisionDateCreated,
-		loading,
 		userLoading,
 		mainItemUserLoading,
 		addField,
 		removeField,
 		toggleSelectAll,
 		toggleComparisonField,
-		getComparison,
 		fetchUserUpdated,
 		fetchMainItemUserUpdated,
 	};

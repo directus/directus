@@ -7,27 +7,23 @@ import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
 import type { ComparisonContext } from '@/components/v-form/types';
 import { useComparison } from '../composables/use-comparison';
-import type { Revision } from '@/types/revisions';
+import { type ComparisonData, getBaseTitle } from '../normalize-comparison-data';
 import { isEqual } from 'lodash';
 
 interface Props {
 	active: boolean;
-	currentVersion?: ContentVersion;
-	selectedRevision?: number;
-	revisions?: Revision[];
+	comparisonData: ComparisonData | null;
 	deleteVersionsAllowed: boolean;
-	comparisonType: 'version' | 'revision';
 }
 
 const { t } = useI18n();
 
 const props = defineProps<Props>();
 
-const { active, currentVersion, selectedRevision, revisions, deleteVersionsAllowed, comparisonType } = toRefs(props);
+const { active, comparisonData, deleteVersionsAllowed } = toRefs(props);
 
 const {
 	selectedComparisonFields,
-	comparedData,
 	userUpdated,
 	mainItemUserUpdated,
 	currentVersionDisplayName,
@@ -42,21 +38,15 @@ const {
 	toggleComparisonField,
 	isVersionMode,
 	isRevisionMode,
-	currentRevision,
-	previousRevision,
+	currentItem,
 	revisionDateCreated,
 	// Loading states
-	loading,
 	userLoading,
 	mainItemUserLoading,
 	// API functions
-	getComparison,
 	fetchUserUpdated,
 } = useComparison({
-	currentVersion: currentVersion,
-	selectedRevision: selectedRevision,
-	revisions: revisions,
-	comparisonType: comparisonType,
+	comparisonData: comparisonData,
 });
 
 const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
@@ -71,7 +61,6 @@ watch(
 	active,
 	(value) => {
 		if (value) {
-			getComparison();
 			fetchUserUpdated();
 		}
 	},
@@ -100,30 +89,38 @@ function usePromoteDialog() {
 		promoting.value = true;
 
 		try {
-			if (isVersionMode.value && currentVersion.value) {
+			if (isVersionMode.value && comparisonData.value) {
 				// Handle version promotion
-				await api.post(
-					`/versions/${currentVersion.value.id}/promote`,
-					unref(selectedComparisonFields).length > 0
-						? { mainHash: unref(mainHash), fields: unref(selectedComparisonFields) }
-						: { mainHash: unref(mainHash) },
-				);
+				const versionId = (comparisonData.value.selectableDeltas?.[0] as ContentVersion)?.id;
+
+				if (versionId) {
+					await api.post(
+						`/versions/${versionId}/promote`,
+						unref(selectedComparisonFields).length > 0
+							? { mainHash: unref(mainHash), fields: unref(selectedComparisonFields) }
+							: { mainHash: unref(mainHash) },
+					);
+				}
 
 				emit('promote', deleteOnPromote);
-			} else if (isRevisionMode.value && currentRevision.value) {
+			} else if (isRevisionMode.value && comparisonData.value) {
 				const restoreData: Record<string, any> = {};
 				const selectedFields = unref(selectedComparisonFields);
 
-				const entries = Object.entries(currentRevision.value.delta ?? {});
+				// Get the delta from the comparison data
+				const delta = comparisonData.value.delta;
+				const base = comparisonData.value.base;
 
-				for (const [field, newValue] of entries) {
+				for (const [field, newValue] of Object.entries(delta)) {
 					if (selectedFields.length > 0 && !selectedFields.includes(field)) continue;
-					const previousValue = previousRevision.value?.data?.[field] ?? null;
+					const previousValue = base[field] ?? null;
 					if (isEqual(newValue, previousValue)) continue;
 					restoreData[field] = previousValue;
 				}
 
 				emit('confirm', restoreData);
+				// Close the modal after successful revert
+				emit('cancel');
 			}
 
 			confirmDeleteOnPromoteDialogActive.value = false;
@@ -137,19 +134,13 @@ function usePromoteDialog() {
 </script>
 
 <template>
-	<v-dialog
-		:model-value="active"
-		persistent
-		:loading="loading"
-		@update:model-value="$emit('cancel')"
-		@esc="$emit('cancel')"
-	>
+	<v-dialog :model-value="active" persistent @update:model-value="$emit('cancel')" @esc="$emit('cancel')">
 		<div class="comparison-modal">
 			<div class="scrollable-container">
 				<div class="columns vertical-divider">
 					<div class="col left">
 						<ComparisonHeader
-							:title="t('main_version')"
+							:title="getBaseTitle(comparisonData)"
 							:date-updated="mainItemDateUpdated"
 							:user-updated="mainItemUserUpdated"
 							:user-loading="mainItemUserLoading"
@@ -158,12 +149,12 @@ function usePromoteDialog() {
 						<div class="comparison-content">
 							<v-form
 								disabled
-								:collection="isVersionMode ? currentVersion?.collection : currentRevision?.collection"
-								:primary-key="isVersionMode ? currentVersion?.item : currentRevision?.item"
-								:initial-values="comparedData?.main"
+								:collection="currentItem?.collection"
+								:primary-key="currentItem?.item"
+								:initial-values="comparisonData?.base || {}"
 								:comparison="
 									{
-										mode: !!comparedData,
+										mode: !!comparisonData,
 										side: 'main',
 										fields: comparisonFields,
 									} as ComparisonContext
@@ -183,12 +174,12 @@ function usePromoteDialog() {
 						<div class="comparison-content">
 							<v-form
 								disabled
-								:collection="isVersionMode ? currentVersion?.collection : currentRevision?.collection"
-								:primary-key="isVersionMode ? currentVersion?.item : currentRevision?.item"
-								:initial-values="comparedData?.current || {}"
+								:collection="currentItem?.collection"
+								:primary-key="currentItem?.item"
+								:initial-values="comparisonData?.delta || {}"
 								:comparison="
 									{
-										mode: !!comparedData,
+										mode: !!comparisonData,
 										side: isVersionMode ? 'version' : 'revision',
 										fields: comparisonFields,
 										selectedFields: selectedComparisonFields,
@@ -228,17 +219,19 @@ function usePromoteDialog() {
 										selectedComparisonFields.length === 0
 											? isVersionMode
 												? t('promote_version_disabled')
-												: t('restore_revision_disabled')
+												: t('revision_delta_revert_disabled')
 											: isVersionMode
 												? t('promote_version')
-												: t('restore_revision')
+												: t('revision_delta_revert')
 									"
 									:disabled="selectedComparisonFields.length === 0"
 									:loading="promoting"
 									@click="onPromoteClick"
 								>
-									<v-icon :name="isVersionMode ? 'arrow_upload_progress' : 'restore'" left />
-									<span class="button-text">{{ isVersionMode ? t('promote_version') : t('restore_revision') }}</span>
+									<v-icon :name="isVersionMode ? 'arrow_upload_progress' : 'history'" left />
+									<span class="button-text">
+										{{ isVersionMode ? t('promote_version') : t('revision_delta_revert') }}
+									</span>
 								</v-button>
 							</div>
 						</div>

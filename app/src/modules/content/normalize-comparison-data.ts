@@ -3,15 +3,15 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { ContentVersion } from '@directus/types';
 import { Revision } from '@/types/revisions';
 import { Ref } from 'vue';
-import { merge } from 'lodash';
 
 export type ComparisonData = {
-	base: Record<string, any>; // Complete item state (before changes)
-	delta: Record<string, any>; // Complete item state (after changes)
+	base: Record<string, any>;
+	delta: Record<string, any>;
 	selectableDeltas?: Revision[] | ContentVersion[];
 	comparisonType: 'version' | 'revision';
-	outdated?: boolean; // Version-specific: whether version is outdated
-	mainHash?: string; // Version-specific: hash of main item
+	outdated?: boolean;
+	mainHash?: string;
+	currentVersion?: ContentVersion | null; // Revision-specific: current version context
 };
 
 export type VersionComparisonResponse = {
@@ -40,7 +40,7 @@ export type RevisionComparisonResponse = {
  * @param id - The ID of the version or revision to compare
  * @param type - Whether this is a 'version' or 'revision'
  * @param currentVersion - The current version from the versions composable (used for the base state when comparing revisions)
- * @param versions - The versions array from the versions composable (optional, for versions)
+ * @param versions - The versions array from the versions composable (could be used for a version selector in the future)
  * @param revisions - The revisions array from the revisions composable (used for the revision selector)
  * @returns Promise<ComparisonData> - Normalized comparison data with base and delta
  */
@@ -69,7 +69,7 @@ async function normalizeVersionComparison(
 		return await fetchVersionComparison(versionId);
 	}
 
-	return await fetchVersionComparison(version.id);
+	return await fetchVersionComparison(version.id, version);
 }
 
 async function normalizeRevisionComparison(
@@ -110,21 +110,22 @@ function getRevisionFromComposable(revisionId: string, revisions?: Ref<Revision[
 	return null;
 }
 
-async function fetchVersionComparison(versionId: string): Promise<ComparisonData> {
+async function fetchVersionComparison(versionId: string, version?: ContentVersion): Promise<ComparisonData> {
 	try {
 		const response = await api.get(`/versions/${versionId}/compare`);
 		const data: VersionComparisonResponse = response.data.data;
 
 		// For versions, we need to construct complete items for both base and delta
-		// data.main is the complete main item
-		// data.current is only the delta (changes), so we need to merge it with the main item
-		const base = data.main;
-		const delta = merge(data.main, data.current); // Deep merge main item with version changes
+		// data.main is the complete main item (this should be the base/left side)
+		// data.current contains the version's changes (this should be the delta/right side)
+		const base = data.main; // Main item as the baseline
+		const delta = data.current; // Version changes as the comparison
 
 		return {
 			base,
 			delta,
-			comparisonType: 'version',
+			selectableDeltas: version ? [version] : [], // Include the version in selectableDeltas for collection/item access
+			comparisonType: 'version' as const,
 			outdated: data.outdated,
 			mainHash: data.mainHash,
 		};
@@ -157,9 +158,8 @@ async function fetchRevisionComparison(
 
 /**
  * Builds comparison data from revision data
- * For revisions, we need to construct the complete items:
- * - base: the complete item state of the currently selected version
- * - delta: the complete item state after this revision
+ * - base: the complete item state BEFORE this revision was applied
+ * - delta: the complete item state AFTER this revision was applied
  */
 async function buildRevisionComparison(
 	revision: Revision | RevisionComparisonResponse,
@@ -170,11 +170,39 @@ async function buildRevisionComparison(
 
 	let base: Record<string, any>;
 
-	if (currentVersion?.value) {
-		const versionComparison = await fetchVersionComparison(currentVersion.value.id);
-		base = versionComparison.delta; // Complete item of the selected version
+	const revisionsList = revisions?.value || [];
+
+	const revisionId = 'id' in revision ? revision.id : null;
+	const currentRevisionIndex = revisionId ? revisionsList.findIndex((r) => r.id === revisionId) : -1;
+
+	if (currentRevisionIndex > 0) {
+		// Use the previous revision's data as the base (state before this revision)
+		const previousRevision = revisionsList[currentRevisionIndex - 1];
+		base = previousRevision?.data || {};
 	} else {
-		throw new Error('Cannot build revision comparison: no current version available');
+		// This is the first revision, so we need to get the original item state
+		if (currentVersion?.value) {
+			const versionComparison = await fetchVersionComparison(currentVersion.value.id);
+			base = versionComparison.base;
+			console.log('🔍 [buildRevisionComparison] base', base);
+			console.log('🔍 [buildRevisionComparison] currentVersion', currentVersion.value);
+		} else {
+			// If no current version is available, we need to fetch the current item state
+			// This happens when viewing revisions from the main version
+			const revisionData = 'data' in revision ? revision : null;
+
+			if (revisionData?.collection && revisionData?.item) {
+				try {
+					const response = await api.get(`/items/${revisionData.collection}/${revisionData.item}`);
+					base = response.data.data || {};
+				} catch {
+					// If we can't fetch the current item, use an empty object as base
+					base = {};
+				}
+			} else {
+				base = {};
+			}
+		}
 	}
 
 	const delta = revisionData;
@@ -182,10 +210,11 @@ async function buildRevisionComparison(
 	return {
 		base,
 		delta,
-		selectableDeltas: revisions?.value || ([] as Revision[]),
+		selectableDeltas: revisionsList,
 		comparisonType: 'revision',
 		outdated: false,
 		mainHash: '',
+		currentVersion: currentVersion?.value || null,
 	};
 }
 
@@ -209,5 +238,23 @@ export function getDateUpdated(comparisonData: ComparisonData): Date | null {
 			return comparisonData.delta.date_updated || null;
 		default:
 			return null;
+	}
+}
+
+export function getBaseTitle(comparisonData: ComparisonData | null): string {
+	if (!comparisonData) return 'Main';
+
+	switch (comparisonData.comparisonType) {
+		case 'revision': {
+			// For revisions, show the current version name on the left side
+			const currentVersion = comparisonData.currentVersion;
+			return currentVersion?.name || currentVersion?.key || 'Version';
+		}
+
+		case 'version':
+			// For versions, the base is the main item, so we show "Main"
+			return 'Main';
+		default:
+			return 'Main';
 	}
 }

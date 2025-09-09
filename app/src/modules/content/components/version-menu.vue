@@ -8,6 +8,7 @@ import { ref, toRefs, unref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import slugify from '@sindresorhus/slugify';
 import ComparisonModal from './comparison-modal.vue';
+import { normalizeComparisonData, type ComparisonData } from '../normalize-comparison-data';
 
 interface Props {
 	collection: string;
@@ -29,9 +30,10 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const { collection, primaryKey, hasEdits, currentVersion } = toRefs(props);
+const { collection, primaryKey, hasEdits, currentVersion, versions } = toRefs(props);
 
 const isVersionPromoteDrawerOpen = ref(false);
+const comparisonData = ref<ComparisonData | null>(null);
 
 const {
 	createAllowed: createVersionsAllowed,
@@ -253,8 +255,22 @@ function getVersionDisplayName(version: ContentVersion) {
 	return isNil(version.name) ? version.key : version.name;
 }
 
+async function openComparisonModal() {
+	if (!currentVersion.value) return;
+
+	try {
+		const normalizedData = await normalizeComparisonData(currentVersion.value.id, 'version', currentVersion, versions);
+
+		comparisonData.value = normalizedData;
+		isVersionPromoteDrawerOpen.value = true;
+	} catch (error) {
+		unexpectedError(error);
+	}
+}
+
 async function onPromoteComplete(deleteOnPromote: boolean) {
 	isVersionPromoteDrawerOpen.value = false;
+	comparisonData.value = null;
 
 	if (deleteOnPromote) {
 		await deleteVersion();
@@ -306,7 +322,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 				<template v-if="currentVersion !== null">
 					<v-divider />
 
-					<v-list-item v-if="updateAllowed" clickable @click="isVersionPromoteDrawerOpen = true">
+					<v-list-item v-if="updateAllowed" clickable @click="openComparisonModal">
 						{{ t('promote_version') }}
 					</v-list-item>
 
@@ -324,9 +340,8 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 		<comparison-modal
 			v-if="currentVersion !== null"
 			:active="isVersionPromoteDrawerOpen"
-			:current-version="currentVersion"
+			:comparison-data="comparisonData"
 			:delete-versions-allowed="deleteVersionsAllowed"
-			comparison-type="version"
 			@cancel="isVersionPromoteDrawerOpen = false"
 			@promote="onPromoteComplete($event)"
 		/>

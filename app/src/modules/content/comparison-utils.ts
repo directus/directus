@@ -1,6 +1,6 @@
 import { ContentVersion } from '@directus/types';
 import { Revision } from '@/types/revisions';
-import { isNil, isEqual, merge } from 'lodash';
+import { isNil, isEqual } from 'lodash';
 
 export type NormalizedComparison = {
 	outdated: boolean;
@@ -18,33 +18,6 @@ export function getFieldsWithDifferences(comparedData: NormalizedComparison): st
 		const mainValue = comparedData.main[fieldKey];
 		return !isEqual(versionValue, mainValue);
 	});
-}
-
-export function normalizeComparisonData(
-	comparisonData: ContentVersion | Revision,
-	comparisonType: 'version' | 'revision',
-): NormalizedComparison {
-	if (comparisonType === 'version') {
-		const version = comparisonData as ContentVersion;
-
-		return {
-			outdated: false, // TODO: determine if the version is outdated
-			mainHash: version.hash,
-			current: version.delta || {},
-			main: {}, // TODO: populate from the main item data
-		};
-	} else if (comparisonType === 'revision') {
-		const revision = comparisonData as Revision;
-
-		return {
-			outdated: false, // Revisions don't have hash-based change detection
-			mainHash: '', // Revisions don't use hash comparison
-			current: revision.delta || {},
-			main: revision.data || {},
-		};
-	} else {
-		throw new Error('Invalid comparison type');
-	}
 }
 
 export function getVersionDisplayName(version: ContentVersion): string {
@@ -104,28 +77,6 @@ export function toggleAllFields(selectedFields: string[], availableFields: strin
 	} else {
 		return [...new Set([...selectedFields, ...availableFields])];
 	}
-}
-
-export function createRevisionComparison(
-	baseline: Record<string, any>,
-	revision: Revision,
-	previousRevision?: Revision,
-): NormalizedComparison {
-	let baselineLeft = baseline;
-
-	// Apply previous revision changes to create the baseline for comparison
-	if (previousRevision) {
-		baselineLeft = merge({}, baseline, previousRevision.data);
-	}
-
-	const completeRevisionItem = merge({}, baselineLeft, revision.data);
-
-	return {
-		outdated: false,
-		mainHash: '',
-		current: completeRevisionItem,
-		main: baselineLeft,
-	};
 }
 
 export function areAllFieldsSelected(selectedFields: string[], availableFields: string[]): boolean {

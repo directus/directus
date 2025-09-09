@@ -476,6 +476,8 @@ confirm_revert_body: This will revert the item to the selected state.
 display: Display
 settings_update_success: Settings updated
 title: Title
+revision_delta_revert: Revert
+revision_delta_revert_disabled: No Changes
 revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
