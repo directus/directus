@@ -362,9 +362,9 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 
 		if (action === 'main') {
 			currentVersion.value = null;
-			refresh()
+			refresh();
 		} else if (action === 'stay') {
-			refresh()
+			refresh();
 			revisionsDrawerDetailRef.value?.refresh?.();
 		} else if (action === 'quit') {
 			if (!props.singleton) router.push(`/content/${props.collection}`);
