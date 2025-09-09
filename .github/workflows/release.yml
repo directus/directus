@@ -83,8 +83,8 @@ jobs:
 
       - name: Update package names
         run: |
-          chmod +x scripts/update-package-names.sh 
-          bash scripts/update-package-names.sh zjpiazza
+          chmod +x .github/scripts/update-package-names.sh 
+          bash .github/scripts/update-package-names.sh zjpiazza
 
       - name: Publish packages to NPM
         env:
