@@ -75,6 +75,11 @@ jobs:
         with:
           registry: https://registry.npmjs.org
 
+      - name: Update package names
+        run: |
+          chmod +x scripts/update-package-names.sh 
+          bash scripts/update-package-names.sh zjpiazza
+
       - name: Publish packages to NPM
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
