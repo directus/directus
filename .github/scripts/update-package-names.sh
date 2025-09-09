@@ -19,5 +19,7 @@ find packages -mindepth 2 -maxdepth 2 -name package.json | while read pkg; do
     NEW_NAME="@$SCOPE/directus-$PKG_NAME"
   fi
   echo "Updating $pkg: -> $NEW_NAME"
-  jq ".name = \"$NEW_NAME\"" "$pkg" > "$pkg.tmp" && mv "$pkg.tmp" "$pkg"
+  
+  # Update package name and repository URL
+  jq ".name = \"$NEW_NAME\" | .repository.url = \"https://github.com/$SCOPE/directus.git\"" "$pkg" > "$pkg.tmp" && mv "$pkg.tmp" "$pkg"
 done
