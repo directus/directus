@@ -1,9 +1,15 @@
 name: Release
 
+
 on:
   push:
+    branches:
+      - fork-publishing-setup
     tags:
       - 'v[0-9]*'
+  pull_request:
+    branches:
+      - fork-publishing-setup
 
 permissions:
   contents: write
