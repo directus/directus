@@ -47,7 +47,7 @@ export function getRevisionDate(revision: Revision): Date | null {
 }
 
 export function getMainItemDate(mainItem: Record<string, any>): Date | null {
-	const dateField = mainItem.date_updated || mainItem.modified_on || mainItem.updated_on;
+	const dateField = mainItem.date_updated;
 	return dateField ? new Date(dateField) : null;
 }
 

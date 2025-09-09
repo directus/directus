@@ -13,8 +13,6 @@ import {
 	getVersionDate,
 	getMainItemDate,
 	getMainItemUserId,
-	addFieldToSelection,
-	removeFieldFromSelection,
 	toggleFieldInSelection,
 	toggleAllFields,
 	areAllFieldsSelected,
@@ -106,14 +104,6 @@ export function useComparison(options: UseComparisonOptions) {
 	const comparisonFields = computed(() => {
 		return new Set(fieldsWithDifferences.value);
 	});
-
-	function addField(field: string) {
-		selectedComparisonFields.value = addFieldToSelection(selectedComparisonFields.value, field);
-	}
-
-	function removeField(field: string) {
-		selectedComparisonFields.value = removeFieldFromSelection(selectedComparisonFields.value, field);
-	}
 
 	function toggleSelectAll() {
 		selectedComparisonFields.value = toggleAllFields(
@@ -210,8 +200,6 @@ export function useComparison(options: UseComparisonOptions) {
 		revisionDateCreated,
 		userLoading,
 		mainItemUserLoading,
-		addField,
-		removeField,
 		toggleSelectAll,
 		toggleComparisonField,
 		fetchUserUpdated,

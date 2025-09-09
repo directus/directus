@@ -12,6 +12,7 @@ export type ComparisonData = {
 	outdated?: boolean;
 	mainHash?: string;
 	currentVersion?: ContentVersion | null; // Revision-specific: current version context
+	initialSelectedDeltaId?: number | string; // ID of the currently selected delta (revision or version)
 };
 
 export type VersionComparisonResponse = {
@@ -128,6 +129,7 @@ async function fetchVersionComparison(versionId: string, version?: ContentVersio
 			comparisonType: 'version' as const,
 			outdated: data.outdated,
 			mainHash: data.mainHash,
+			initialSelectedDeltaId: version?.id,
 		};
 	} catch (error) {
 		unexpectedError(error);
@@ -179,29 +181,21 @@ async function buildRevisionComparison(
 		// Use the previous revision's data as the base (state before this revision)
 		const previousRevision = revisionsList[currentRevisionIndex - 1];
 		base = previousRevision?.data || {};
+
+		// Add timestamp information to the base data for proper display
+		if (previousRevision?.activity?.timestamp) {
+			base = {
+				...base,
+				date_updated: previousRevision.activity.timestamp,
+			};
+		}
 	} else {
 		// This is the first revision, so we need to get the original item state
 		if (currentVersion?.value) {
 			const versionComparison = await fetchVersionComparison(currentVersion.value.id);
 			base = versionComparison.base;
-			console.log('🔍 [buildRevisionComparison] base', base);
-			console.log('🔍 [buildRevisionComparison] currentVersion', currentVersion.value);
 		} else {
-			// If no current version is available, we need to fetch the current item state
-			// This happens when viewing revisions from the main version
-			const revisionData = 'data' in revision ? revision : null;
-
-			if (revisionData?.collection && revisionData?.item) {
-				try {
-					const response = await api.get(`/items/${revisionData.collection}/${revisionData.item}`);
-					base = response.data.data || {};
-				} catch {
-					// If we can't fetch the current item, use an empty object as base
-					base = {};
-				}
-			} else {
-				base = {};
-			}
+			throw new Error('Cannot build revision comparison: no current version available');
 		}
 	}
 
@@ -215,6 +209,7 @@ async function buildRevisionComparison(
 		outdated: false,
 		mainHash: '',
 		currentVersion: currentVersion?.value || null,
+		initialSelectedDeltaId: revisionId || undefined,
 	};
 }
 

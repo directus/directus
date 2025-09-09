@@ -9,6 +9,7 @@ import type { ComparisonContext } from '@/components/v-form/types';
 import { useComparison } from '../composables/use-comparison';
 import { type ComparisonData, getBaseTitle } from '../normalize-comparison-data';
 import { isEqual } from 'lodash';
+import { normalizeComparisonData } from '../normalize-comparison-data';
 
 interface Props {
 	active: boolean;
@@ -45,6 +46,7 @@ const {
 	mainItemUserLoading,
 	// API functions
 	fetchUserUpdated,
+	fetchMainItemUserUpdated,
 } = useComparison({
 	comparisonData: comparisonData,
 });
@@ -62,6 +64,7 @@ watch(
 	(value) => {
 		if (value) {
 			fetchUserUpdated();
+			fetchMainItemUserUpdated();
 		}
 	},
 	{ immediate: true },
@@ -131,6 +134,28 @@ function usePromoteDialog() {
 		}
 	}
 }
+
+async function onDeltaSelectionChange(newDeltaId: number) {
+	try {
+		// Update the comparison data with the new delta
+		const newComparisonData = await normalizeComparisonData(
+			String(newDeltaId),
+			comparisonData.value?.comparisonType || 'revision',
+			comparisonData.value?.currentVersion ? ref(comparisonData.value.currentVersion) : undefined,
+			undefined,
+			comparisonData.value?.selectableDeltas ? ref(comparisonData.value.selectableDeltas as any) : undefined,
+		);
+
+		// Update the comparison data
+		Object.assign(comparisonData.value!, newComparisonData);
+
+		// Refresh user data for the new delta
+		await fetchUserUpdated();
+		await fetchMainItemUserUpdated();
+	} catch (error) {
+		unexpectedError(error);
+	}
+}
 </script>
 
 <template>
@@ -144,6 +169,7 @@ function usePromoteDialog() {
 							:date-updated="mainItemDateUpdated"
 							:user-updated="mainItemUserUpdated"
 							:user-loading="mainItemUserLoading"
+							:show-latest-chip="comparisonData?.comparisonType === 'revision'"
 						/>
 						<div class="comparison-content-divider"></div>
 						<div class="comparison-content">
@@ -165,10 +191,13 @@ function usePromoteDialog() {
 					<div class="comparison-divider"></div>
 					<div class="col right">
 						<ComparisonHeader
-							:title="currentVersionDisplayName"
+							:title="comparisonData?.comparisonType === 'version' ? currentVersionDisplayName : t('item_revision')"
 							:date-updated="isVersionMode ? versionDateUpdated : revisionDateCreated"
 							:user-updated="userUpdated"
 							:user-loading="userLoading"
+							:show-delta-dropdown="isRevisionMode"
+							:comparison-data="comparisonData"
+							@delta-change="onDeltaSelectionChange"
 						/>
 						<div class="comparison-content-divider"></div>
 						<div class="comparison-content">
