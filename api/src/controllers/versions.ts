@@ -9,7 +9,6 @@ import { MetaService } from '../services/meta.js';
 import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
-import { deepMapDelta } from '../utils/versioning/deep-map-delta.js';
 
 const router = express.Router();
 

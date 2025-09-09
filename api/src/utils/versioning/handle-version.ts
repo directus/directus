@@ -2,7 +2,7 @@ import { ForbiddenError } from '@directus/errors';
 import type { Accountability, Item, PrimaryKey, Query, QueryOptions } from '@directus/types';
 import type { ItemsService as ItemsServiceType } from '../../services/index.js';
 import { transaction } from '../transaction.js';
-import { deepMapResponse } from './deep-map-response.js';
+import { deepMapWithSchema } from './deep-map-with-schema.js';
 import { splitRecursive } from './split-recursive.js';
 
 export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, queryWithKey: Query, opts?: QueryOptions) {
@@ -84,7 +84,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 		throw new ForbiddenError();
 	}
 
-	return deepMapResponse(
+	return deepMapWithSchema(
 		result,
 		([key, value], context) => {
 			if (context.relationType === 'm2o' || context.relationType === 'a2o') {

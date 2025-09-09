@@ -5,10 +5,10 @@ import { getRelationInfo, type RelationInfo } from '../get-relation-info.js';
 import { InvalidQueryError } from '@directus/errors';
 
 /**
- * Allows to deep map the response from the ItemsService with collection, field and relation context for each entry.
+ * Allows to deep map the data like a response or delta changes with collection, field and relation context for each entry.
  * Bottom to Top depth first mapping of values.
  */
-export function deepMapDelta(
+export function deepMapWithSchema(
 	object: Record<string, any>,
 	callback: (
 		entry: [key: string | number, value: unknown],
@@ -27,7 +27,10 @@ export function deepMapDelta(
 		relationInfo?: RelationInfo;
 	},
 	options?: {
+		/** If set to true, non-existent fields will be included in the mapping and will have a value of undefined */
 		mapNonExistentFields?: boolean;
+		/** If set to true, it will map the "create", "update" and "delete" syntax for o2m relations found in deltas */
+		detailedUpdateSyntax?: boolean;
 	},
 ): any {
 	const collection = context.schema.collections[context.collection]!;
@@ -58,7 +61,7 @@ export function deepMapDelta(
 				if (relationInfo.relation && typeof value === 'object' && value !== null && isPlainObject(object)) {
 					switch (relationInfo.relationType) {
 						case 'm2o':
-							value = deepMapDelta(
+							value = deepMapWithSchema(
 								value,
 								callback,
 								{
@@ -76,7 +79,7 @@ export function deepMapDelta(
 							function map(childValue: any) {
 								if (isPlainObject(childValue) && typeof childValue === 'object' && childValue !== null) {
 									leaf = false;
-									return deepMapDelta(
+									return deepMapWithSchema(
 										childValue,
 										callback,
 										{
@@ -91,7 +94,7 @@ export function deepMapDelta(
 
 							if (Array.isArray(value)) {
 								value = (value as any[]).map(map);
-							} else {
+							} else if (options?.detailedUpdateSyntax && isPlainObject(value)) {
 								value = {
 									create: value['create']?.map(map),
 									update: value['update']?.map(map),
@@ -115,7 +118,7 @@ export function deepMapDelta(
 								});
 							}
 
-							value = deepMapDelta(
+							value = deepMapWithSchema(
 								value,
 								callback,
 								{

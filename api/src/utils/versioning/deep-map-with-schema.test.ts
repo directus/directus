@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { deepMapDelta } from './deep-map-delta.js';
+import { deepMapWithSchema } from './deep-map-with-schema.js';
 import { SchemaBuilder } from '@directus/schema-builder';
 import { getRelation } from '@directus/utils';
 
@@ -43,7 +43,7 @@ test('map flat object', () => {
 		tags: [1, 2, 3],
 	};
 
-	const result = deepMapDelta(
+	const result = deepMapWithSchema(
 		object,
 		([key, value], context) => {
 			return [key, { value, context }];
@@ -107,7 +107,7 @@ test('map m2o object', () => {
 		},
 	};
 
-	const result = deepMapDelta(
+	const result = deepMapWithSchema(
 		object,
 		([key, value], context) => {
 			return [key, { value, context }];
@@ -165,7 +165,7 @@ test('map o2m object', () => {
 		],
 	};
 
-	const result = deepMapDelta(
+	const result = deepMapWithSchema(
 		object,
 		([key, value], context) => {
 			return [key, { value, context }];
@@ -220,7 +220,7 @@ test('map o2m object with detailed syntax', () => {
 		links: { create: [{ name: 'hello' }], update: [{ id: 1 }], delete: [] },
 	};
 
-	const result = deepMapDelta(
+	const result = deepMapWithSchema(
 		object,
 		([key, value], context) => {
 			return [key, { value, context }];
@@ -288,7 +288,7 @@ test('map m2m object', () => {
 		],
 	};
 
-	const result = deepMapDelta(
+	const result = deepMapWithSchema(
 		object,
 		([key, value], context) => {
 			return [key, { value, context }];
@@ -377,7 +377,7 @@ test('map m2a object', () => {
 		],
 	};
 
-	const result = deepMapDelta(
+	const result = deepMapWithSchema(
 		object,
 		([key, value], context) => {
 			return [key, { value, context }];
@@ -474,7 +474,7 @@ test('map m2a object', () => {
 });
 
 test('map flat invalid field', () => {
-	const result = deepMapDelta(
+	const result = deepMapWithSchema(
 		{
 			invalid: 1,
 		},
@@ -491,7 +491,7 @@ test('map flat invalid field', () => {
 
 test('map with invalid object', () => {
 	expect(() => {
-		deepMapDelta(
+		deepMapWithSchema(
 			new Date(),
 			([key, value], context) => {
 				return [key, { value, context }];
@@ -504,7 +504,7 @@ test('map with invalid object', () => {
 test('map flat date value', () => {
 	const date = new Date();
 
-	const result = deepMapDelta(
+	const result = deepMapWithSchema(
 		{ date },
 		([key, value]) => {
 			return [key, value];
@@ -522,7 +522,7 @@ test('map flat invalid deep field', () => {
 		},
 	};
 
-	const result = deepMapDelta(
+	const result = deepMapWithSchema(
 		object,
 		([key, value], context) => {
 			return [key, { value, context }];
@@ -554,7 +554,7 @@ test('map flat invalid deep field', () => {
 		},
 	};
 
-	const result = deepMapDelta(
+	const result = deepMapWithSchema(
 		object,
 		([key, value], context) => {
 			return [key, { value, context }];
@@ -581,7 +581,7 @@ test('map flat invalid deep field', () => {
 
 test('map m2a relation without collection field', () => {
 	const callback = () =>
-		deepMapDelta(
+		deepMapWithSchema(
 			{
 				sections: [
 					{

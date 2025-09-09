@@ -22,7 +22,7 @@ import { ActivityService } from './activity.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RevisionsService } from './revisions.js';
-import { deepMapDelta } from '../utils/versioning/deep-map-delta.js';
+import { deepMapWithSchema } from '../utils/versioning/deep-map-with-schema.js';
 
 export class VersionsService extends ItemsService<ContentVersion> {
 	constructor(options: AbstractServiceOptions) {
@@ -206,7 +206,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 					filter: { id: { _neq: pk }, key: { _eq: data['key'] }, collection: { _eq: collection }, item: { _eq: item } },
 				});
 
-				if ((existingVersions as any)[0]!['count'] > 0) {
+				if ((existingVersions as any)[0]['count'] > 0) {
 					throw new UnprocessableContentError({
 						reason: `Version "${data['key']}" already exists for item "${item}" in collection "${collection}"`,
 					});
@@ -380,7 +380,7 @@ export class VersionsService extends ItemsService<ContentVersion> {
 		const delta = version.delta ?? {};
 		delta[this.schema.collections[version.collection]!.primary] = version.item;
 
-		return deepMapDelta(
+		return deepMapWithSchema(
 			delta,
 			([key, value], context) => {
 				if (key === '_user' || key === '_date') return;
@@ -404,13 +404,16 @@ export class VersionsService extends ItemsService<ContentVersion> {
 				}
 
 				if (key in context.object) return [key, value];
+
+				return undefined;
 			},
 			{ collection: version.collection, schema: this.schema },
-			{ mapNonExistentFields: true },
+			{ mapNonExistentFields: true, detailedUpdateSyntax: true },
 		);
 	}
 }
 
+/** Deeply maps all objects of a structure. Only calls the callback for objects, not for arrays. Objects in arrays will continued to be mapped. */
 function deepMapObjects(
 	object: unknown,
 	fn: (object: Record<string, any>, path: string[]) => void,
