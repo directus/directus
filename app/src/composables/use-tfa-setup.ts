@@ -66,9 +66,7 @@ export function useTFASetup(initialEnabled: boolean) {
 		let success = false;
 
 		try {
-			const payload = requiresPassword
-				? { otp: otp.value, secret: secret.value }
-				: { otp: otp.value, secret: secret.value, requires_password: false };
+			const payload = { otp: otp.value, secret: secret.value };
 
 			await api.post('/users/me/tfa/enable', payload);
 			success = true;
