@@ -44,7 +44,7 @@ export function useTFASetup(initialEnabled: boolean) {
 		loading.value = true;
 
 		try {
-			const payload = requiresPassword ? { password: password.value } : { requires_password: false };
+			const payload = requiresPassword ? { password: password.value } : {};
 			const response = await api.post('/users/me/tfa/generate', payload);
 			const url = response.data.data.otpauth_url;
 			secret.value = response.data.data.secret;
