@@ -6,9 +6,9 @@ import { abbreviateNumber } from '@directus/utils';
 import { computed, onMounted, ref, toRefs, watch, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import RevisionsDateGroup from './revisions-date-group.vue';
-import RevisionsDrawer from './revisions-drawer.vue';
 import ComparisonModal from '@/modules/content/components/comparison-modal.vue';
-import { normalizeComparisonData, type ComparisonData } from '@/modules/content/normalize-comparison-data';
+import { type ComparisonData } from '@/modules/content/comparison-utils';
+import { useComparison } from '@/modules/content/composables/use-comparison';
 
 const props = defineProps<{
 	collection: string;
@@ -29,12 +29,12 @@ const { active: open } = useGroupable({
 
 const { collection, primaryKey, version } = toRefs(props);
 
-const modalActive = ref(false);
-const modalCurrentRevision = ref<number | null>(null);
 const comparisonModalActive = ref(false);
 const selectedRevision = ref<number | undefined>(undefined);
 const comparisonData = ref<ComparisonData | null>(null);
 const page = ref<number>(1);
+
+const { normalizeComparisonData } = useComparison({ comparisonData });
 
 const {
 	revisions,
@@ -119,14 +119,6 @@ defineExpose({
 			</template>
 			<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
 		</template>
-
-		<revisions-drawer
-			v-if="revisions"
-			v-model:current="modalCurrentRevision"
-			v-model:active="modalActive"
-			:revisions="revisions"
-			@revert="$emit('revert', $event)"
-		/>
 
 		<comparison-modal
 			:active="comparisonModalActive"

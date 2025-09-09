@@ -2,6 +2,36 @@ import { ContentVersion } from '@directus/types';
 import { Revision } from '@/types/revisions';
 import { isNil, isEqual } from 'lodash';
 
+export type ComparisonData = {
+	base: Record<string, any>;
+	delta: Record<string, any>;
+	selectableDeltas?: Revision[] | ContentVersion[];
+	comparisonType: 'version' | 'revision';
+	outdated?: boolean;
+	mainHash?: string;
+	currentVersion?: ContentVersion | null;
+	initialSelectedDeltaId?: number | string;
+};
+
+export type VersionComparisonResponse = {
+	outdated: boolean;
+	mainHash: string;
+	current: Record<string, any>;
+	main: Record<string, any>;
+};
+
+export type RevisionComparisonResponse = {
+	data: Record<string, any> | null;
+	delta: Record<string, any> | null;
+	collection: string;
+	item: string | number;
+	activity: {
+		action: string;
+		timestamp: string;
+		user: any;
+	};
+};
+
 export type NormalizedComparison = {
 	outdated: boolean;
 	mainHash: string;
@@ -85,4 +115,43 @@ export function areAllFieldsSelected(selectedFields: string[], availableFields: 
 
 export function areSomeFieldsSelected(selectedFields: string[], availableFields: string[]): boolean {
 	return availableFields.length > 0 && availableFields.some((field) => selectedFields.includes(field));
+}
+
+// Consolidated selector functions from normalize-comparison-data.ts
+export function getUserUpdated(comparisonData: ComparisonData): string | null {
+	switch (comparisonData.comparisonType) {
+		case 'revision':
+			return comparisonData.delta.activity?.user || null;
+		case 'version':
+			return comparisonData.delta.user_updated || comparisonData.delta.user_created || null;
+		default:
+			return null;
+	}
+}
+
+export function getDateUpdated(comparisonData: ComparisonData): Date | null {
+	switch (comparisonData.comparisonType) {
+		case 'revision':
+			return comparisonData.delta.activity?.timestamp || null;
+		case 'version':
+			return comparisonData.delta.date_updated || null;
+		default:
+			return null;
+	}
+}
+
+export function getBaseTitle(comparisonData: ComparisonData | null): string {
+	if (!comparisonData) return 'Main';
+
+	switch (comparisonData.comparisonType) {
+		case 'revision': {
+			const currentVersion = comparisonData.currentVersion;
+			return currentVersion?.name || currentVersion?.key || 'Version';
+		}
+
+		case 'version':
+			return 'Main';
+		default:
+			return 'Main';
+	}
 }

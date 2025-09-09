@@ -8,7 +8,8 @@ import { ref, toRefs, unref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import slugify from '@sindresorhus/slugify';
 import ComparisonModal from './comparison-modal.vue';
-import { normalizeComparisonData, type ComparisonData } from '../normalize-comparison-data';
+import { type ComparisonData } from '../comparison-utils';
+import { useComparison } from '../composables/use-comparison';
 
 interface Props {
 	collection: string;
@@ -34,6 +35,9 @@ const { collection, primaryKey, hasEdits, currentVersion, versions } = toRefs(pr
 
 const isVersionPromoteDrawerOpen = ref(false);
 const comparisonData = ref<ComparisonData | null>(null);
+
+// Create a composable instance for data fetching
+const { normalizeComparisonData } = useComparison({ comparisonData });
 
 const {
 	createAllowed: createVersionsAllowed,

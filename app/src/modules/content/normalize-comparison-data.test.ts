@@ -15,7 +15,7 @@ vi.mock('@/utils/unexpected-error', () => ({
 	unexpectedError: vi.fn(),
 }));
 
-import { normalizeComparisonData } from './normalize-comparison-data';
+import { useComparison } from './composables/use-comparison';
 import api from '@/api';
 
 describe('normalizeComparisonData', () => {
@@ -35,15 +35,20 @@ describe('normalizeComparisonData', () => {
 			data: { data: mockComparisonData },
 		});
 
+		const comparisonData = ref(null);
+		const { normalizeComparisonData } = useComparison({ comparisonData });
 		const result = await normalizeComparisonData('version-123', 'version');
 
 		expect(api.get).toHaveBeenCalledWith('/versions/version-123/compare');
 
 		expect(result).toEqual({
 			base: mockComparisonData.main,
-			delta: { ...mockComparisonData.main, ...mockComparisonData.current },
+			delta: mockComparisonData.current,
+			selectableDeltas: [],
+			comparisonType: 'version',
 			outdated: false,
 			mainHash: 'abc123',
+			initialSelectedDeltaId: undefined,
 		});
 	});
 
@@ -76,15 +81,20 @@ describe('normalizeComparisonData', () => {
 			data: { data: mockComparisonData },
 		});
 
+		const comparisonData = ref(null);
+		const { normalizeComparisonData } = useComparison({ comparisonData });
 		const result = await normalizeComparisonData('version-123', 'version', currentVersion, versions);
 
 		expect(api.get).toHaveBeenCalledWith('/versions/version-123/compare');
 
 		expect(result).toEqual({
 			base: mockComparisonData.main,
-			delta: { ...mockComparisonData.main, ...mockComparisonData.current },
+			delta: mockComparisonData.current,
+			selectableDeltas: [mockVersion],
+			comparisonType: 'version',
 			outdated: true,
 			mainHash: 'def456',
+			initialSelectedDeltaId: 'version-123',
 		});
 	});
 
@@ -117,15 +127,20 @@ describe('normalizeComparisonData', () => {
 			data: { data: mockComparisonData },
 		});
 
+		const comparisonData = ref(null);
+		const { normalizeComparisonData } = useComparison({ comparisonData });
 		const result = await normalizeComparisonData('version-456', 'version', currentVersion, versions);
 
 		expect(api.get).toHaveBeenCalledWith('/versions/version-456/compare');
 
 		expect(result).toEqual({
 			base: mockComparisonData.main,
-			delta: { ...mockComparisonData.main, ...mockComparisonData.current },
+			delta: mockComparisonData.current,
+			selectableDeltas: [mockVersion],
+			comparisonType: 'version',
 			outdated: false,
 			mainHash: 'ghi789',
+			initialSelectedDeltaId: 'version-456',
 		});
 	});
 
@@ -151,11 +166,19 @@ describe('normalizeComparisonData', () => {
 
 		const revisions = ref([mockRevision]);
 
+		const comparisonData = ref(null);
+		const { normalizeComparisonData } = useComparison({ comparisonData });
 		const result = await normalizeComparisonData('123', 'revision', undefined, undefined, revisions);
 
 		expect(result).toEqual({
-			base: { title: null, content: 'Updated Content' }, // title was changed, so base is null
-			delta: { title: 'Updated Title', content: 'Updated Content' }, // complete item after revision
+			base: {},
+			delta: { title: 'Updated Title', content: 'Updated Content' },
+			selectableDeltas: [mockRevision],
+			comparisonType: 'revision',
+			outdated: false,
+			mainHash: '',
+			currentVersion: null,
+			initialSelectedDeltaId: 123,
 		});
 	});
 
@@ -177,6 +200,8 @@ describe('normalizeComparisonData', () => {
 			data: { data: mockRevisionData },
 		});
 
+		const comparisonData = ref(null);
+		const { normalizeComparisonData } = useComparison({ comparisonData });
 		const result = await normalizeComparisonData('456', 'revision');
 
 		expect(api.get).toHaveBeenCalledWith('/revisions/456', {
@@ -186,8 +211,14 @@ describe('normalizeComparisonData', () => {
 		});
 
 		expect(result).toEqual({
-			base: { title: null, content: null }, // both fields were changed
-			delta: { title: 'New Title', content: 'New Content' }, // complete item after revision
+			base: {},
+			delta: { title: 'New Title', content: 'New Content' },
+			selectableDeltas: [],
+			comparisonType: 'revision',
+			outdated: false,
+			mainHash: '',
+			currentVersion: null,
+			initialSelectedDeltaId: 456,
 		});
 	});
 });

@@ -7,9 +7,8 @@ import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
 import type { ComparisonContext } from '@/components/v-form/types';
 import { useComparison } from '../composables/use-comparison';
-import { type ComparisonData, getBaseTitle } from '../normalize-comparison-data';
+import { type ComparisonData, getBaseTitle } from '../comparison-utils';
 import { isEqual } from 'lodash';
-import { normalizeComparisonData } from '../normalize-comparison-data';
 
 interface Props {
 	active: boolean;
@@ -47,6 +46,7 @@ const {
 	// API functions
 	fetchUserUpdated,
 	fetchMainItemUserUpdated,
+	normalizeComparisonData,
 } = useComparison({
 	comparisonData: comparisonData,
 });
