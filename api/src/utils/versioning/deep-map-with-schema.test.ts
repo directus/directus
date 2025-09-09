@@ -226,6 +226,7 @@ test('map o2m object with detailed syntax', () => {
 			return [key, { value, context }];
 		},
 		{ schema: schema, collection: 'articles' },
+		{ detailedUpdateSyntax: true },
 	);
 
 	expect(result).toEqual({
@@ -600,4 +601,94 @@ test('map m2a relation without collection field', () => {
 	expect(callback).toThrowError(
 		"When selecting 'articles_builder.item', the field 'articles_builder.collection' has to be selected when using versioning and m2a relations",
 	);
+});
+
+const simpleSchema = new SchemaBuilder()
+	.collection('articles', (c) => {
+		c.field('id').id();
+		c.field('title').string();
+		c.field('author').m2o('users');
+	})
+	.collection('users', (c) => {
+		c.field('id').id();
+		c.field('name').string();
+	})
+	.build();
+
+test('map with non-existent fields', () => {
+	const object = {
+		id: 1,
+		title: 'hi',
+		author: {
+			id: 1,
+		},
+	};
+
+	const result = deepMapWithSchema(
+		object,
+		([key, value], context) => {
+			return [key, { value, context }];
+		},
+		{ schema: simpleSchema, collection: 'articles' },
+		{ mapNonExistentFields: true },
+	);
+
+	expect(result).toEqual({
+		id: {
+			value: 1,
+			context: {
+				collection: simpleSchema.collections['articles'],
+				field: simpleSchema.collections['articles']!.fields['id'],
+				relation: null,
+				leaf: true,
+				relationType: null,
+				object,
+			},
+		},
+		title: {
+			value: 'hi',
+			context: {
+				collection: simpleSchema.collections['articles'],
+				field: simpleSchema.collections['articles']!.fields['title'],
+				relation: null,
+				leaf: true,
+				relationType: null,
+				object,
+			},
+		},
+		author: {
+			value: {
+				id: {
+					value: 1,
+					context: {
+						collection: simpleSchema.collections['users'],
+						field: simpleSchema.collections['users']!.fields['id'],
+						relation: null,
+						leaf: true,
+						relationType: null,
+						object: object.author,
+					},
+				},
+				name: {
+					value: undefined,
+					context: {
+						collection: simpleSchema.collections['users'],
+						field: simpleSchema.collections['users']!.fields['name'],
+						relation: null,
+						leaf: true,
+						relationType: null,
+						object: object.author,
+					},
+				},
+			},
+			context: {
+				collection: simpleSchema.collections['articles'],
+				field: simpleSchema.collections['articles']!.fields['author'],
+				relation: getRelation(simpleSchema.relations, 'articles', 'author'),
+				leaf: false,
+				relationType: 'm2o',
+				object,
+			},
+		},
+	});
 });
