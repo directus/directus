@@ -4,4 +4,3 @@ export * from './password-request.js';
 export * from './password-reset.js';
 export * from './providers.js';
 export * from './refresh.js';
-export * from './tfa-setup.js';

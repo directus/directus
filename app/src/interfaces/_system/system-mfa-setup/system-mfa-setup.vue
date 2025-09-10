@@ -46,7 +46,7 @@ const effectiveTFAEnabled = computed(() => {
 	if (profileUser.value && !isCurrentUser.value) {
 		// OAuth users
 		if (profileUser.value.provider !== DEFAULT_AUTH_DRIVER) {
-			return !!(profileUser.value.tfa_secret || (profileUser.value as any).require_tfa_setup);
+			return !!(profileUser.value.tfa_secret || requireTfaSetup.value === profileUser.value.id);
 		}
 
 		// Password users
@@ -59,7 +59,7 @@ const effectiveTFAEnabled = computed(() => {
 
 		// OAuth users
 		if (user.provider !== DEFAULT_AUTH_DRIVER) {
-			return !!(user.tfa_secret || (user as any).require_tfa_setup);
+			return !!(user.tfa_secret || requireTfaSetup.value === user.id);
 		}
 
 		// Password users
@@ -85,6 +85,7 @@ const {
 	otp,
 	error,
 	canvasID,
+	requireTfaSetup,
 } = useTFASetup(!!props.value);
 
 // Inject the discard functionality from the parent form
@@ -149,11 +150,11 @@ function toggle() {
 	if (tfaEnabled.value === false) {
 		enableActive.value = true;
 	} else {
-		// For SSO users with require_tfa_setup true but no tfa_secret, show cancel dialog instead of disable
+		// For SSO users, check if they have a pending TFA setup request in localStorage
 		// Use profile user data when viewing a different user, otherwise use current user
 		const userToCheck = profileUser.value && !isCurrentUser.value ? profileUser.value : userStore.currentUser;
 
-		if (isSSOUser.value && (userToCheck as any)?.require_tfa_setup && !(userToCheck as any)?.tfa_secret) {
+		if (isSSOUser.value && requireTfaSetup.value === (userToCheck as any)?.id && !(userToCheck as any)?.tfa_secret) {
 			cancelSetupActive.value = true;
 		} else {
 			disableActive.value = true;

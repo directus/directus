@@ -4,6 +4,7 @@ import { nanoid } from 'nanoid';
 import { onMounted, ref } from 'vue';
 import qrcode from 'qrcode';
 import { useUserStore } from '@/stores/user';
+import { useLocalStorage } from '@/composables/use-local-storage';
 
 export function useTFASetup(initialEnabled: boolean) {
 	const loading = ref(false);
@@ -16,6 +17,7 @@ export function useTFASetup(initialEnabled: boolean) {
 	const canvasID = nanoid();
 
 	const userStore = useUserStore();
+	const { data: requireTfaSetup } = useLocalStorage<string>('require_tfa_setup');
 
 	onMounted(() => {
 		password.value = '';
@@ -36,6 +38,7 @@ export function useTFASetup(initialEnabled: boolean) {
 		otp,
 		error,
 		canvasID,
+		requireTfaSetup,
 	};
 
 	async function generateTFA(requiresPassword: boolean = true) {
@@ -76,6 +79,7 @@ export function useTFASetup(initialEnabled: boolean) {
 			otp.value = '';
 			secret.value = '';
 			error.value = null;
+			requireTfaSetup.value = null;
 			await userStore.hydrate();
 		} catch (err: any) {
 			error.value = err;
@@ -97,6 +101,7 @@ export function useTFASetup(initialEnabled: boolean) {
 			tfaEnabled.value = false;
 			otp.value = '';
 			error.value = null;
+			requireTfaSetup.value = null;
 		} catch (err: any) {
 			error.value = err;
 		} finally {
@@ -116,6 +121,11 @@ export function useTFASetup(initialEnabled: boolean) {
 			tfaEnabled.value = false;
 			otp.value = '';
 			error.value = null;
+			const currentUser = userStore.currentUser;
+
+			if (currentUser && !('share' in currentUser) && currentUser.id === pk) {
+				requireTfaSetup.value = null;
+			}
 		} catch (err: any) {
 			error.value = err;
 		} finally {
@@ -133,7 +143,8 @@ export function useTFASetup(initialEnabled: boolean) {
 		let success = false;
 
 		try {
-			await api.post('/users/me/tfa/request-setup');
+			const currentUser = userStore.currentUser;
+			requireTfaSetup.value = currentUser && !('share' in currentUser) ? currentUser.id : null;
 			success = true;
 			error.value = null;
 			await logout();
@@ -154,7 +165,7 @@ export function useTFASetup(initialEnabled: boolean) {
 		let success = false;
 
 		try {
-			await api.post('/users/me/tfa/cancel-setup');
+			requireTfaSetup.value = null;
 			success = true;
 			error.value = null;
 			await userStore.hydrate();

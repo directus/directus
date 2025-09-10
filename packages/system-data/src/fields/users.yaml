@@ -96,13 +96,6 @@ fields:
       - conceal
     width: half
 
-  - field: require_tfa_setup
-    interface: boolean
-    hidden: true
-    width: half
-    special:
-      - cast-boolean
-
   - field: email_notifications
     interface: boolean
     width: half

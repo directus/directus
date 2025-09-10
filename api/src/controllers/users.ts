@@ -445,42 +445,6 @@ router.post(
 	respond,
 );
 
-router.post(
-	'/me/tfa/request-setup',
-	asyncHandler(async (req, _res, next) => {
-		if (!req.accountability?.user) {
-			throw new InvalidCredentialsError();
-		}
-
-		const service = new TFAService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		await service.request2FASetup(req.accountability.user);
-		return next();
-	}),
-	respond,
-);
-
-router.post(
-	'/me/tfa/cancel-setup',
-	asyncHandler(async (req, _res, next) => {
-		if (!req.accountability?.user) {
-			throw new InvalidCredentialsError();
-		}
-
-		const service = new TFAService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		await service.cancel2FASetup(req.accountability.user);
-		return next();
-	}),
-	respond,
-);
-
 const registerSchema = Joi.object<RegisterUserInput>({
 	email: Joi.string().email().required(),
 	password: Joi.string().required(),

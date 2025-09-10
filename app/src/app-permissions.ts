@@ -132,7 +132,6 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 			'theme_light_overrides',
 			'theme_dark_overrides',
 			'tfa_secret',
-			'require_tfa_setup',
 		],
 	},
 	{

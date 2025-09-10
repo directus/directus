@@ -77,8 +77,8 @@ export class AuthenticationService {
 
 		const user = await this.knex
 			.select<
-				User & { tfa_secret: string | null; require_tfa_setup: boolean | null }
-			>('id', 'first_name', 'last_name', 'email', 'password', 'status', 'role', 'tfa_secret', 'provider', 'external_identifier', 'auth_data', 'require_tfa_setup')
+				User & { tfa_secret: string | null }
+			>('id', 'first_name', 'last_name', 'email', 'password', 'status', 'role', 'tfa_secret', 'provider', 'external_identifier', 'auth_data')
 			.from('directus_users')
 			.where('id', userId)
 			.first();
@@ -159,7 +159,6 @@ export class AuthenticationService {
 			throw e;
 		}
 
-		// OAuth users with require_tfa_setup true but no tfa_secret should be allowed to log in
 		if (user.tfa_secret && !options?.otp) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
@@ -190,11 +189,6 @@ export class AuthenticationService {
 			app_access: globalAccess.app,
 			admin_access: globalAccess.admin,
 		};
-
-		// Add require_tfa_setup to token payload for OAuth users who need to set up 2FA
-		if (toBoolean(user.require_tfa_setup) && !user.tfa_secret) {
-			tokenPayload.require_tfa_setup = true;
-		}
 
 		// Add role-based enforcement to token payload for users who need to set up 2FA
 		if (!user.tfa_secret) {

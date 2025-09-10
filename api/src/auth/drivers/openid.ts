@@ -559,11 +559,10 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 
 			const { accessToken, refreshToken, expires } = authResponse;
 
-			// If user needs to set up 2FA (one-time on next login), redirect to /admin/tfa-setup
 			try {
 				const claims = verifyJWT(accessToken, getSecret()) as any;
 
-				if (claims?.require_tfa_setup === true || claims?.enforce_tfa === true) {
+				if (claims?.enforce_tfa === true) {
 					const url = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'tfa-setup');
 					if (redirect) url.setQuery('redirect', redirect);
 

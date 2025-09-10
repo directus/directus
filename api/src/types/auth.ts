@@ -36,7 +36,6 @@ export type DirectusTokenPayload = {
 	admin_access: boolean | number;
 	share?: string;
 	session?: string;
-	require_tfa_setup?: boolean;
 	enforce_tfa?: boolean;
 };
 
