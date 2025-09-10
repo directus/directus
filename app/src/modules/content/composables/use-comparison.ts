@@ -60,6 +60,68 @@ export function useComparison(options: UseComparisonOptions) {
 		return new Set(fieldsWithDifferences.value);
 	});
 
+	const isLatestRevision = ref(false);
+	const latestRevisionLoading = ref(false);
+
+	async function checkIfLatestRevision() {
+		if (!isRevisionMode.value || !comparisonData.value) {
+			isLatestRevision.value = false;
+			return;
+		}
+
+		const initialSelectedId = comparisonData.value.initialSelectedDeltaId;
+		const selectableDeltas = comparisonData.value.selectableDeltas;
+
+		if (!initialSelectedId || !selectableDeltas?.length) {
+			isLatestRevision.value = false;
+			return;
+		}
+
+		const firstRevision = selectableDeltas[0];
+
+		if (!firstRevision || !('collection' in firstRevision) || !('item' in firstRevision)) {
+			isLatestRevision.value = false;
+			return;
+		}
+
+		const collection = firstRevision.collection;
+		const item = firstRevision.item;
+
+		latestRevisionLoading.value = true;
+
+		try {
+			const response = await api.get('/revisions', {
+				params: {
+					filter: {
+						collection: {
+							_eq: collection,
+						},
+						item: {
+							_eq: item,
+						},
+					},
+					sort: '-id',
+					limit: 1,
+					fields: ['id', 'activity.timestamp'],
+				},
+			});
+
+			const latestRevision = response.data.data?.[0];
+
+			if (!latestRevision) {
+				isLatestRevision.value = false;
+				return;
+			}
+
+			isLatestRevision.value = latestRevision.id === initialSelectedId;
+		} catch (error) {
+			unexpectedError(error);
+			isLatestRevision.value = false;
+		} finally {
+			latestRevisionLoading.value = false;
+		}
+	}
+
 	function toggleSelectAll() {
 		selectedComparisonFields.value = toggleAllFields(
 			selectedComparisonFields.value,
@@ -79,6 +141,28 @@ export function useComparison(options: UseComparisonOptions) {
 				selectedComparisonFields.value = newFields;
 			} else {
 				selectedComparisonFields.value = [];
+			}
+		},
+		{ immediate: true },
+	);
+
+	watch(
+		comparisonData,
+		(newData) => {
+			if (newData && isRevisionMode.value) {
+				checkIfLatestRevision();
+			} else {
+				isLatestRevision.value = false;
+			}
+		},
+		{ immediate: true, deep: true },
+	);
+
+	watch(
+		() => comparisonData.value?.initialSelectedDeltaId,
+		(newId) => {
+			if (newId && isRevisionMode.value) {
+				checkIfLatestRevision();
 			}
 		},
 		{ immediate: true },
@@ -317,14 +401,15 @@ export function useComparison(options: UseComparisonOptions) {
 		comparisonFields,
 		isVersionMode,
 		isRevisionMode,
+		isLatestRevision,
+		latestRevisionLoading,
 		userLoading,
 		mainItemUserLoading,
 		toggleSelectAll,
 		toggleComparisonField,
 		fetchUserUpdated,
 		fetchMainItemUserUpdated,
+		checkIfLatestRevision,
 		normalizeComparisonData,
-		fetchVersionComparison,
-		fetchRevisionComparison,
 	};
 }

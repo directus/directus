@@ -38,10 +38,12 @@ const {
 	toggleComparisonField,
 	isVersionMode,
 	isRevisionMode,
+	isLatestRevision,
 	userLoading,
 	mainItemUserLoading,
 	fetchUserUpdated,
 	fetchMainItemUserUpdated,
+	checkIfLatestRevision,
 	normalizeComparisonData,
 } = useComparison({
 	comparisonData: comparisonData,
@@ -151,6 +153,9 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 		// Refresh user data for the new delta
 		await fetchUserUpdated();
 		await fetchMainItemUserUpdated();
+
+		// Explicitly check if the new revision is the latest
+		await checkIfLatestRevision();
 	} catch (error) {
 		unexpectedError(error);
 	}
@@ -168,7 +173,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 							:date-updated="normalizedData?.base.date.dateObject || null"
 							:user-updated="mainItemUserUpdated"
 							:user-loading="mainItemUserLoading"
-							:show-latest-chip="comparisonData?.comparisonType === 'revision'"
+							:show-latest-chip="isLatestRevision"
 						/>
 						<div class="comparison-content-divider"></div>
 						<div class="comparison-content">
