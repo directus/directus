@@ -73,7 +73,7 @@ async function generate() {
 }
 
 async function enable() {
-	const success = await enableTFA(!canSkipPassword.value);
+	const success = await enableTFA();
 
 	if (success) {
 		navigateAfterTFA();

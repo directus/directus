@@ -58,7 +58,7 @@ export function useTFASetup(initialEnabled: boolean) {
 		}
 	}
 
-	async function enableTFA(requiresPassword: boolean = true) {
+	async function enableTFA() {
 		if (loading.value === true) return;
 
 		loading.value = true;
