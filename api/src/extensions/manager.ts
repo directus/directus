@@ -60,6 +60,7 @@ import { instantiateSandboxSdk } from './lib/sandbox/sdk/instantiate.js';
 import { syncExtensions } from './lib/sync-extensions.js';
 import { wrapEmbeds } from './lib/wrap-embeds.js';
 import DriverLocal from '@directus/storage-driver-local';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
@@ -390,8 +391,6 @@ export class ExtensionManager {
 			return Promise.resolve();
 		}
 
-		const SOME_TIMEOUT = 10000;
-
 		return new Promise((resolve) => {
 			const handler = () => {
 				emitter.offAction('extensions.load', handler);
@@ -400,8 +399,8 @@ export class ExtensionManager {
 
 			emitter.onAction('extensions.load', handler);
 
-			// time out if the event is not fired for some reason
-			setTimeout(() => handler(), SOME_TIMEOUT);
+			// fall back to time-out if the event is not fired for any reason
+			setTimeout(() => handler(), getMilliseconds(env['EXTENSION_RELOAD_TIMEOUT'] ?? '30s'));
 		});
 	}
 
