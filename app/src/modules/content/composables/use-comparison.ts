@@ -204,10 +204,10 @@ export function useComparison(options: UseComparisonOptions) {
 		const version = getVersionFromComposable(versionId, currentVersion, versions);
 
 		if (!version) {
-			return await fetchVersionComparison(versionId);
+			return await fetchVersionComparison(versionId, undefined, versions);
 		}
 
-		return await fetchVersionComparison(version.id, version);
+		return await fetchVersionComparison(version.id, version, versions);
 	}
 
 	async function normalizeRevisionComparison(
@@ -248,21 +248,24 @@ export function useComparison(options: UseComparisonOptions) {
 		return null;
 	}
 
-	async function fetchVersionComparison(versionId: string, version?: ContentVersion): Promise<ComparisonData> {
+	async function fetchVersionComparison(
+		versionId: string,
+		version?: ContentVersion,
+		versions?: Ref<ContentVersion[] | null>,
+	): Promise<ComparisonData> {
 		try {
 			const response = await api.get(`/versions/${versionId}/compare`);
 			const data: VersionComparisonResponse = response.data.data;
 
-			// For versions, we need to construct complete items for both base and delta
 			// data.main is the complete main item (this should be the base/left side)
 			// data.current contains the version's changes (this should be the delta/right side)
-			const base = data.main; // Main item as the baseline
-			const delta = data.current; // Version changes as the comparison
+			const base = data.main;
+			const delta = data.current;
 
 			return {
 				base,
 				delta,
-				selectableDeltas: version ? [version] : [], // Include the version in selectableDeltas for collection/item access
+				selectableDeltas: versions?.value ?? (version ? [version] : []),
 				comparisonType: 'version' as const,
 				outdated: data.outdated,
 				mainHash: data.mainHash,
