@@ -119,11 +119,11 @@ hook: Hook
 fill_width: Fill Width
 field_name_translations: Field Name Translations
 enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication
-oauth_2fa_setup_notice:
+sso_tfa_setup_notice:
   You will be logged out of your account and required to log back in. Any unsaved changes will be discarded.
-enable_2fa: Enable 2FA
-cancel_2fa_setup: Cancel 2FA Setup
-cancel_2fa_setup_notice: Are you sure you want to cancel the 2FA setup?
+enable_tfa: Enable 2FA
+cancel_tfa_setup: Cancel 2FA Setup
+cancel_tfa_setup_notice: Are you sure you want to cancel the 2FA setup?
 keep_setup: Keep Setup
 cancel_setup: Cancel Setup
 add_field: Add Field

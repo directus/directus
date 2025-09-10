@@ -33,11 +33,11 @@ const otpAttempted = ref(false);
 
 // Check if a previous OTP attempt was made (to conditionally show the inline error)
 onMounted(() => {
-	const attempted = sessionStorage.getItem('oauth_otp_attempted');
+	const attempted = sessionStorage.getItem('sso_otp_attempted');
 
 	if (attempted === '1') {
 		otpAttempted.value = true;
-		sessionStorage.removeItem('oauth_otp_attempted');
+		sessionStorage.removeItem('sso_otp_attempted');
 	}
 });
 
@@ -56,7 +56,7 @@ const selectedProviderName = ref<string | null>(null);
 onMounted(() => {
 	if (requiresTFA.value) {
 		// Get the provider from localStorage that was set when the user clicked the SSO link
-		const storedProvider = localStorage.getItem('oauth_provider');
+		const storedProvider = localStorage.getItem('sso_provider');
 
 		if (storedProvider) {
 			originalProviderName.value = storedProvider;
@@ -136,7 +136,7 @@ const errorFormatted = computed(() => {
 });
 
 function handleSSOClick(provider: { name: string; link: string }) {
-	localStorage.setItem('oauth_provider', provider.name);
+	localStorage.setItem('sso_provider', provider.name);
 	window.location.href = provider.link;
 }
 
@@ -148,7 +148,7 @@ function onSubmitOTP() {
 	const link = selectedProviderLink.value ?? fallback;
 	if (!link) return;
 	submitting.value = true;
-	sessionStorage.setItem('oauth_otp_attempted', '1');
+	sessionStorage.setItem('sso_otp_attempted', '1');
 	window.location.href = link;
 }
 

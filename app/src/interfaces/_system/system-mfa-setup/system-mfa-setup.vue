@@ -35,8 +35,8 @@ const profileUser = computed(() => {
 	return null;
 });
 
-// Detect if the user being viewed is an OAuth user
-const isOAuthUser = computed(() => {
+// Detect if the user being viewed is an SSO user
+const isSSOUser = computed(() => {
 	// Use profile user data when viewing a different user, otherwise use current user
 	const user = profileUser.value && !isCurrentUser.value ? profileUser.value : userStore.currentUser;
 	return user && !('share' in user) && user.provider !== DEFAULT_AUTH_DRIVER;
@@ -75,8 +75,8 @@ const {
 	enableTFA,
 	disableTFA,
 	adminDisableTFA,
-	request2FASetup,
-	cancel2FASetup,
+	requestTFASetup,
+	cancelTFASetup,
 	loading,
 	password,
 	tfaEnabled,
@@ -124,9 +124,9 @@ async function enable() {
 	}
 }
 
-async function enableOAuth() {
+async function enableSSO() {
 	triggerDiscardAllChanges();
-	const success = await request2FASetup();
+	const success = await requestTFASetup();
 	enableActive.value = !success;
 }
 
@@ -136,7 +136,7 @@ async function disable() {
 }
 
 async function cancelSetup() {
-	const success = await cancel2FASetup();
+	const success = await cancelTFASetup();
 	cancelSetupActive.value = !success;
 }
 
@@ -149,11 +149,11 @@ function toggle() {
 	if (tfaEnabled.value === false) {
 		enableActive.value = true;
 	} else {
-		// For OAuth users with require_tfa_setup true but no tfa_secret, show cancel dialog instead of disable
+		// For SSO users with require_tfa_setup true but no tfa_secret, show cancel dialog instead of disable
 		// Use profile user data when viewing a different user, otherwise use current user
 		const userToCheck = profileUser.value && !isCurrentUser.value ? profileUser.value : userStore.currentUser;
 
-		if (isOAuthUser.value && (userToCheck as any)?.require_tfa_setup && !(userToCheck as any)?.tfa_secret) {
+		if (isSSOUser.value && (userToCheck as any)?.require_tfa_setup && !(userToCheck as any)?.tfa_secret) {
 			cancelSetupActive.value = true;
 		} else {
 			disableActive.value = true;
@@ -185,24 +185,24 @@ function cancelAndClose() {
 
 		<v-dialog v-model="enableActive" persistent @esc="cancelAndClose">
 			<v-card>
-				<!-- OAuth user flow -->
-				<div v-if="isOAuthUser && tfaEnabled === false && tfaGenerated === false && loading === false">
+				<!-- SSO user flow -->
+				<div v-if="isSSOUser && tfaEnabled === false && tfaGenerated === false && loading === false">
 					<v-card-title>
-						{{ t('enable_2fa') }}
+						{{ t('enable_tfa') }}
 					</v-card-title>
 					<v-card-text>
-						<p>{{ t('oauth_2fa_setup_notice') }}</p>
+						<p>{{ t('sso_tfa_setup_notice') }}</p>
 						<v-error v-if="error" :error="error" />
 					</v-card-text>
 					<v-card-actions>
 						<v-button type="button" secondary @click="cancelAndClose">{{ t('cancel') }}</v-button>
-						<v-button type="submit" :loading="loading" @click="enableOAuth">{{ t('enable_2fa') }}</v-button>
+						<v-button type="submit" :loading="loading" @click="enableSSO">{{ t('enable_tfa') }}</v-button>
 					</v-card-actions>
 				</div>
 
 				<!-- Password user flow -->
 				<form
-					v-else-if="!isOAuthUser && tfaEnabled === false && tfaGenerated === false && loading === false"
+					v-else-if="!isSSOUser && tfaEnabled === false && tfaGenerated === false && loading === false"
 					@submit.prevent="generateForPasswordUser"
 				>
 					<v-card-title>
@@ -279,10 +279,10 @@ function cancelAndClose() {
 		<v-dialog v-model="cancelSetupActive" persistent @esc="cancelAndClose">
 			<v-card>
 				<v-card-title>
-					{{ t('cancel_2fa_setup') }}
+					{{ t('cancel_tfa_setup') }}
 				</v-card-title>
 				<v-card-text>
-					<p>{{ t('cancel_2fa_setup_notice') }}</p>
+					<p>{{ t('cancel_tfa_setup_notice') }}</p>
 					<v-error v-if="error" :error="error" />
 				</v-card-text>
 				<v-card-actions>

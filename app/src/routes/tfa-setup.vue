@@ -24,7 +24,7 @@ onMounted(() => {
 const {
 	generateTFA,
 	enableTFA,
-	cancel2FASetup,
+	cancelTFASetup,
 	loading,
 	password,
 	tfaEnabled,
@@ -51,8 +51,8 @@ const isOAuthUser = computed(() => {
 	return user && !('share' in user) && user.provider !== DEFAULT_AUTH_DRIVER;
 });
 
-// Check if the user has role that requires 2FA
-const roleRequires2FA = computed(() => {
+// Check if the user has role that requires TFA
+const roleRequiresTFA = computed(() => {
 	const user = userStore.currentUser;
 	if (!user || 'share' in user) return false;
 	return !!(user as any).enforce_tfa;
@@ -63,9 +63,9 @@ const canSkipPassword = computed(() => {
 	return isOAuthUser.value;
 });
 
-// Check if cancel button should be shown (not shown if role requires 2FA)
+// Check if cancel button should be shown (not shown if role requires TFA)
 const showCancelButton = computed(() => {
-	return !roleRequires2FA.value;
+	return !roleRequiresTFA.value;
 });
 
 async function generate() {
@@ -85,7 +85,7 @@ async function enable() {
 async function cancel() {
 	// If user has tfa_setup_status pending, call the API to cancel setup before redirecting
 	try {
-		await cancel2FASetup();
+		await cancelTFASetup();
 	} catch (error) {
 		// If cancel fails, still redirect to avoid getting stuck
 		// eslint-disable-next-line no-console
@@ -100,7 +100,7 @@ function navigateAfterTFA() {
 	const fallback = (userStore.currentUser as User)?.last_page || '/login';
 
 	// If redirect is an absolute URL, navigate via window.location to avoid double "/admin" prefix
-	// This addresses an issue where the redirect URL is doubled when an oauth user is sent through the tfa setup flow
+	// This addresses an issue where the redirect URL is doubled when an SSO user is sent through the tfa setup flow
 	if (typeof redirectQuery === 'string' && /^(https?:)?\/\//.test(redirectQuery)) {
 		window.location.href = redirectQuery;
 	} else {

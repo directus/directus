@@ -26,8 +26,8 @@ export function useTFASetup(initialEnabled: boolean) {
 		enableTFA,
 		disableTFA,
 		adminDisableTFA,
-		request2FASetup,
-		cancel2FASetup,
+		requestTFASetup,
+		cancelTFASetup,
 		loading,
 		password,
 		tfaEnabled,
@@ -125,7 +125,7 @@ export function useTFASetup(initialEnabled: boolean) {
 		return success;
 	}
 
-	async function request2FASetup() {
+	async function requestTFASetup() {
 		if (loading.value === true) return;
 
 		loading.value = true;
@@ -146,7 +146,7 @@ export function useTFASetup(initialEnabled: boolean) {
 		return success;
 	}
 
-	async function cancel2FASetup() {
+	async function cancelTFASetup() {
 		if (loading.value === true) return;
 
 		loading.value = true;
