@@ -1,4 +1,4 @@
-import { ContentVersion } from '@directus/types';
+import { ContentVersion, User } from '@directus/types';
 import { Revision } from '@/types/revisions';
 import { isNil, isEqual } from 'lodash';
 
@@ -11,6 +11,41 @@ export type ComparisonData = {
 	mainHash?: string;
 	currentVersion?: ContentVersion | null;
 	initialSelectedDeltaId?: number | string;
+};
+
+export type NormalizedUser = {
+	id: string;
+	firstName: string | null;
+	lastName: string | null;
+	email: string | null;
+	displayName: string;
+};
+
+export type NormalizedDate = {
+	raw: string | null;
+	formatted: string | null;
+	dateObject: Date | null;
+};
+
+export type NormalizedItem = {
+	id: string | number;
+	displayName: string;
+	date: NormalizedDate;
+	user: NormalizedUser | null;
+	collection?: string;
+	item?: string | number;
+};
+
+export type NormalizedComparisonData = {
+	base: NormalizedItem;
+	delta: NormalizedItem;
+	selectableDeltas: NormalizedItem[];
+	comparisonType: 'version' | 'revision';
+	outdated: boolean;
+	mainHash: string;
+	currentVersion: ContentVersion | null;
+	initialSelectedDeltaId: number | string | null;
+	fieldsWithDifferences: string[];
 };
 
 export type VersionComparisonResponse = {
@@ -39,9 +74,6 @@ export type NormalizedComparison = {
 	main: Record<string, any>;
 };
 
-/**
- * Get field names that have differences between two objects
- */
 export function getFieldsWithDifferences(comparedData: NormalizedComparison): string[] {
 	return Object.keys(comparedData.current).filter((fieldKey) => {
 		const versionValue = comparedData.current[fieldKey];
@@ -54,35 +86,8 @@ export function getVersionDisplayName(version: ContentVersion): string {
 	return isNil(version.name) ? version.key : version.name;
 }
 
-export function getRevisionDisplayName(revision: Revision): string {
-	return `Revision ${revision.timestampFormatted}`;
-}
-
-export function getVersionUserId(version: ContentVersion): string | null {
-	return version.user_updated || version.user_created || null;
-}
-
-export function getRevisionUserId(revision: Revision): string | null {
-	const user = revision.activity.user;
-	return typeof user === 'string' ? user : user?.id || null;
-}
-
-export function getVersionDate(version: ContentVersion): Date | null {
-	return version.date_updated ? new Date(version.date_updated) : null;
-}
-
-export function getRevisionDate(revision: Revision): Date | null {
-	const ts = revision.activity?.timestamp;
-	return ts ? new Date(ts) : null;
-}
-
-export function getMainItemDate(mainItem: Record<string, any>): Date | null {
-	const dateField = mainItem.date_updated;
-	return dateField ? new Date(dateField) : null;
-}
-
-export function getMainItemUserId(mainItem: Record<string, any>): string | null {
-	return mainItem.user_updated || mainItem.user_created || null;
+export function getRevisionDisplayName(): string {
+	return `Revision Item`;
 }
 
 export function addFieldToSelection(selectedFields: string[], field: string): string[] {
@@ -117,41 +122,165 @@ export function areSomeFieldsSelected(selectedFields: string[], availableFields:
 	return availableFields.length > 0 && availableFields.some((field) => selectedFields.includes(field));
 }
 
-// Consolidated selector functions from normalize-comparison-data.ts
-export function getUserUpdated(comparisonData: ComparisonData): string | null {
-	switch (comparisonData.comparisonType) {
-		case 'revision':
-			return comparisonData.delta.activity?.user || null;
-		case 'version':
-			return comparisonData.delta.user_updated || comparisonData.delta.user_created || null;
-		default:
-			return null;
+export function normalizeUser(user: User | string | null | undefined): NormalizedUser | null {
+	if (!user) return null;
+
+	// Handle string user ID
+	if (typeof user === 'string') {
+		return {
+			id: user,
+			firstName: null,
+			lastName: null,
+			email: null,
+			displayName: 'Unknown User',
+		};
 	}
+
+	// Handle full user object
+	const firstName = user.first_name || null;
+	const lastName = user.last_name || null;
+	const email = user.email || null;
+
+	let displayName = 'Unknown User';
+
+	if (firstName && lastName) {
+		displayName = `${firstName} ${lastName}`;
+	} else if (firstName) {
+		displayName = firstName;
+	} else if (lastName) {
+		displayName = lastName;
+	} else if (email) {
+		displayName = email;
+	}
+
+	return {
+		id: user.id,
+		firstName,
+		lastName,
+		email,
+		displayName,
+	};
 }
 
-export function getDateUpdated(comparisonData: ComparisonData): Date | null {
-	switch (comparisonData.comparisonType) {
-		case 'revision':
-			return comparisonData.delta.activity?.timestamp || null;
-		case 'version':
-			return comparisonData.delta.date_updated || null;
-		default:
-			return null;
+export function normalizeDate(dateString: string | null | undefined): NormalizedDate {
+	if (!dateString) {
+		return {
+			raw: null,
+			formatted: null,
+			dateObject: null,
+		};
 	}
+
+	const dateObject = new Date(dateString);
+	const isValid = !isNaN(dateObject.getTime());
+
+	return {
+		raw: dateString,
+		formatted: isValid ? dateString : null,
+		dateObject: isValid ? dateObject : null,
+	};
 }
 
-export function getBaseTitle(comparisonData: ComparisonData | null): string {
-	if (!comparisonData) return 'Main';
+export function normalizeVersionItem(version: ContentVersion): NormalizedItem {
+	return {
+		id: version.id,
+		displayName: getVersionDisplayName(version),
+		date: normalizeDate(version.date_updated),
+		user: normalizeUser(version.user_updated || version.user_created),
+		collection: version.collection,
+		item: version.item,
+	};
+}
 
-	switch (comparisonData.comparisonType) {
-		case 'revision': {
-			const currentVersion = comparisonData.currentVersion;
-			return currentVersion?.name || currentVersion?.key || 'Version';
+export function normalizeRevisionItem(revision: Revision): NormalizedItem {
+	const user = revision.activity?.user;
+	const timestamp = revision.activity?.timestamp;
+
+	return {
+		id: revision.id,
+		displayName: getRevisionDisplayName(),
+		date: normalizeDate(timestamp),
+		user: normalizeUser(user as any),
+		collection: revision.collection,
+		item: revision.item,
+	};
+}
+
+export function normalizeMainItem(mainData: Record<string, any>): NormalizedItem {
+	return {
+		id: 'main',
+		displayName: 'Main',
+		date: normalizeDate(mainData.date_updated),
+		user: normalizeUser(mainData.user_updated || mainData.user_created),
+	};
+}
+
+export function normalizeComparisonData(comparisonData: ComparisonData): NormalizedComparisonData {
+	let base: NormalizedItem;
+
+	if (comparisonData.comparisonType === 'revision' && comparisonData.currentVersion) {
+		base = {
+			id: 'main',
+			displayName: getVersionDisplayName(comparisonData.currentVersion),
+			date: normalizeDate(comparisonData.base.date_updated),
+			user: normalizeUser(comparisonData.base.user_updated || comparisonData.base.user_created),
+		};
+	} else {
+		base = normalizeMainItem(comparisonData.base);
+	}
+
+	let delta: NormalizedItem;
+
+	if (comparisonData.comparisonType === 'version') {
+		const version = comparisonData.selectableDeltas?.[0] as ContentVersion;
+
+		delta = version
+			? normalizeVersionItem(version)
+			: {
+					id: 'unknown',
+					displayName: 'Unknown Version',
+					date: { raw: null, formatted: null, dateObject: null },
+					user: null,
+				};
+	} else {
+		const revision = comparisonData.selectableDeltas?.[0] as Revision;
+
+		delta = revision
+			? normalizeRevisionItem(revision)
+			: {
+					id: 'unknown',
+					displayName: 'Unknown Revision',
+					date: { raw: null, formatted: null, dateObject: null },
+					user: null,
+				};
+	}
+
+	const selectableDeltas: NormalizedItem[] = (comparisonData.selectableDeltas || []).map((item) => {
+		if (comparisonData.comparisonType === 'version') {
+			return normalizeVersionItem(item as ContentVersion);
+		} else {
+			return normalizeRevisionItem(item as Revision);
 		}
+	});
 
-		case 'version':
-			return 'Main';
-		default:
-			return 'Main';
-	}
+	const normalizedComparison = {
+		outdated: comparisonData.outdated || false,
+		mainHash: comparisonData.mainHash || '',
+		current: comparisonData.delta,
+		main: comparisonData.base,
+	};
+
+	const fieldsWithDifferences = getFieldsWithDifferences(normalizedComparison);
+
+	return {
+		base,
+		delta,
+		selectableDeltas,
+		comparisonType: comparisonData.comparisonType,
+		outdated: comparisonData.outdated || false,
+		mainHash: comparisonData.mainHash || '',
+		currentVersion: comparisonData.currentVersion || null,
+		initialSelectedDeltaId: comparisonData.initialSelectedDeltaId || null,
+		fieldsWithDifferences,
+	};
 }

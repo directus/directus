@@ -3,12 +3,11 @@ import api from '@/api';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { ContentVersion } from '@directus/types';
-import { isNil } from 'lodash';
 import { ref, toRefs, unref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import slugify from '@sindresorhus/slugify';
 import ComparisonModal from './comparison-modal.vue';
-import { type ComparisonData } from '../comparison-utils';
+import { type ComparisonData, getVersionDisplayName } from '../comparison-utils';
 import { useComparison } from '../composables/use-comparison';
 
 interface Props {
@@ -36,7 +35,6 @@ const { collection, primaryKey, hasEdits, currentVersion, versions } = toRefs(pr
 const isVersionPromoteDrawerOpen = ref(false);
 const comparisonData = ref<ComparisonData | null>(null);
 
-// Create a composable instance for data fetching
 const { normalizeComparisonData } = useComparison({ comparisonData });
 
 const {
@@ -255,10 +253,6 @@ function useDeleteDialog() {
 	}
 }
 
-function getVersionDisplayName(version: ContentVersion) {
-	return isNil(version.name) ? version.key : version.name;
-}
-
 async function openComparisonModal() {
 	if (!currentVersion.value) return;
 
@@ -346,6 +340,8 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 			:active="isVersionPromoteDrawerOpen"
 			:comparison-data="comparisonData"
 			:delete-versions-allowed="deleteVersionsAllowed"
+			:collection="collection"
+			:primary-key="primaryKey"
 			@cancel="isVersionPromoteDrawerOpen = false"
 			@promote="onPromoteComplete($event)"
 		/>

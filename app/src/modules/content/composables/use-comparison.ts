@@ -3,20 +3,18 @@ import { Revision } from '@/types/revisions';
 import { computed, ref, watch, type Ref } from 'vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-import type { ComparisonData, VersionComparisonResponse, RevisionComparisonResponse } from '../comparison-utils';
+import type {
+	ComparisonData,
+	VersionComparisonResponse,
+	RevisionComparisonResponse,
+	NormalizedComparisonData,
+} from '../comparison-utils';
 import {
-	getFieldsWithDifferences,
-	getVersionDisplayName,
-	getRevisionDisplayName,
-	getVersionUserId,
-	getRevisionUserId,
-	getVersionDate,
-	getMainItemDate,
-	getMainItemUserId,
 	toggleFieldInSelection,
 	toggleAllFields,
 	areAllFieldsSelected,
 	areSomeFieldsSelected,
+	normalizeComparisonData as normalizeComparisonDataUtil,
 } from '../comparison-utils';
 
 interface UseComparisonOptions {
@@ -35,58 +33,15 @@ export function useComparison(options: UseComparisonOptions) {
 	const isVersionMode = computed(() => comparisonData.value?.comparisonType === 'version');
 	const isRevisionMode = computed(() => comparisonData.value?.comparisonType === 'revision');
 
-	const currentItem = computed(() => {
-		if (isVersionMode.value) {
-			return comparisonData.value?.selectableDeltas?.[0] as ContentVersion;
-		} else if (isRevisionMode.value) {
-			return comparisonData.value?.selectableDeltas?.[0] as Revision;
-		}
-
-		return null;
+	const normalizedData = computed((): NormalizedComparisonData | null => {
+		if (!comparisonData.value) return null;
+		return normalizeComparisonDataUtil(comparisonData.value);
 	});
 
-	const revisionDateCreated = computed(() => {
-		if (!currentItem.value) return null;
-		const ts = (currentItem.value as Revision)?.activity?.timestamp;
-		return ts ? new Date(ts) : null;
-	});
-
-	const currentVersionDisplayName = computed(() => {
-		if (isVersionMode.value && currentItem.value) {
-			return getVersionDisplayName(currentItem.value as ContentVersion);
-		} else if (isRevisionMode.value && currentItem.value) {
-			return getRevisionDisplayName(currentItem.value as Revision);
-		}
-
-		return '';
-	});
-
-	const mainHash = computed(() => comparisonData.value?.mainHash ?? '');
-
-	const versionDateUpdated = computed(() => {
-		if (isVersionMode.value && currentItem.value) {
-			return getVersionDate(currentItem.value as ContentVersion);
-		}
-
-		return null;
-	});
-
-	const mainItemDateUpdated = computed(() => {
-		if (!comparisonData.value?.base) return null;
-		return getMainItemDate(comparisonData.value.base);
-	});
+	const mainHash = computed(() => normalizedData.value?.mainHash ?? '');
 
 	const fieldsWithDifferences = computed(() => {
-		if (!comparisonData.value) return [];
-
-		const normalizedComparison = {
-			outdated: comparisonData.value.outdated || false,
-			mainHash: comparisonData.value.mainHash || '',
-			current: comparisonData.value.delta,
-			main: comparisonData.value.base,
-		};
-
-		return getFieldsWithDifferences(normalizedComparison);
+		return normalizedData.value?.fieldsWithDifferences || [];
 	});
 
 	const allFieldsSelected = computed(() => {
@@ -130,20 +85,13 @@ export function useComparison(options: UseComparisonOptions) {
 	);
 
 	async function fetchUserUpdated() {
-		let userId: string | null = null;
-
-		if (isVersionMode.value && currentItem.value) {
-			userId = getVersionUserId(currentItem.value as ContentVersion);
-		} else if (isRevisionMode.value && currentItem.value) {
-			userId = getRevisionUserId(currentItem.value as Revision);
-		}
-
-		if (!userId) return;
+		const normalized = normalizedData.value;
+		if (!normalized?.delta.user?.id) return;
 
 		userLoading.value = true;
 
 		try {
-			const response = await api.get(`/users/${userId}`, {
+			const response = await api.get(`/users/${normalized.delta.user.id}`, {
 				params: {
 					fields: ['id', 'first_name', 'last_name', 'email'],
 				},
@@ -158,16 +106,13 @@ export function useComparison(options: UseComparisonOptions) {
 	}
 
 	async function fetchMainItemUserUpdated() {
-		if (!comparisonData.value?.base) return;
-
-		const userField = getMainItemUserId(comparisonData.value.base);
-
-		if (!userField) return;
+		const normalized = normalizedData.value;
+		if (!normalized?.base.user?.id) return;
 
 		mainItemUserLoading.value = true;
 
 		try {
-			const response = await api.get(`/users/${userField}`, {
+			const response = await api.get(`/users/${normalized.base.user.id}`, {
 				params: {
 					fields: ['id', 'first_name', 'last_name', 'email'],
 				},
@@ -181,7 +126,6 @@ export function useComparison(options: UseComparisonOptions) {
 		}
 	}
 
-	// Data fetching functions from normalize-comparison-data.ts
 	async function normalizeComparisonData(
 		id: string,
 		type: 'version' | 'revision',
@@ -366,19 +310,13 @@ export function useComparison(options: UseComparisonOptions) {
 		selectedComparisonFields,
 		userUpdated,
 		mainItemUserUpdated,
-		currentVersionDisplayName,
 		mainHash,
-		versionDateUpdated,
-		mainItemDateUpdated,
-		fieldsWithDifferences,
 		allFieldsSelected,
 		someFieldsSelected,
 		availableFieldsCount,
 		comparisonFields,
 		isVersionMode,
 		isRevisionMode,
-		currentItem,
-		revisionDateCreated,
 		userLoading,
 		mainItemUserLoading,
 		toggleSelectAll,
@@ -386,10 +324,7 @@ export function useComparison(options: UseComparisonOptions) {
 		fetchUserUpdated,
 		fetchMainItemUserUpdated,
 		normalizeComparisonData,
-		normalizeVersionComparison,
-		normalizeRevisionComparison,
 		fetchVersionComparison,
 		fetchRevisionComparison,
-		buildRevisionComparison,
 	};
 }

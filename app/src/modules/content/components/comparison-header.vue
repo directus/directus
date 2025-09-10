@@ -28,7 +28,6 @@ const userUpdatedName = computed(() => {
 	return userName(props.userUpdated);
 });
 
-// Derive delta options from comparisonData
 const deltaOptions = computed(() => {
 	if (!props.showDeltaDropdown || !props.comparisonData?.selectableDeltas) return [];
 

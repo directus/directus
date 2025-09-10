@@ -7,29 +7,29 @@ import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
 import type { ComparisonContext } from '@/components/v-form/types';
 import { useComparison } from '../composables/use-comparison';
-import { type ComparisonData, getBaseTitle } from '../comparison-utils';
+import { useNormalizedComparison } from '../composables/use-normalized-comparison';
+import { type ComparisonData } from '../comparison-utils';
 import { isEqual } from 'lodash';
 
 interface Props {
 	active: boolean;
 	comparisonData: ComparisonData | null;
 	deleteVersionsAllowed: boolean;
+	collection: string;
+	primaryKey: string | number;
 }
 
 const { t } = useI18n();
 
 const props = defineProps<Props>();
 
-const { active, comparisonData, deleteVersionsAllowed } = toRefs(props);
+const { active, comparisonData, deleteVersionsAllowed, collection, primaryKey } = toRefs(props);
 
 const {
 	selectedComparisonFields,
 	userUpdated,
 	mainItemUserUpdated,
-	currentVersionDisplayName,
 	mainHash,
-	versionDateUpdated,
-	mainItemDateUpdated,
 	allFieldsSelected,
 	someFieldsSelected,
 	availableFieldsCount,
@@ -38,16 +38,16 @@ const {
 	toggleComparisonField,
 	isVersionMode,
 	isRevisionMode,
-	currentItem,
-	revisionDateCreated,
-	// Loading states
 	userLoading,
 	mainItemUserLoading,
-	// API functions
 	fetchUserUpdated,
 	fetchMainItemUserUpdated,
 	normalizeComparisonData,
 } = useComparison({
+	comparisonData: comparisonData,
+});
+
+const { baseDisplayName, deltaDisplayName, normalizedData } = useNormalizedComparison({
 	comparisonData: comparisonData,
 });
 
@@ -146,7 +146,6 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 			comparisonData.value?.selectableDeltas ? ref(comparisonData.value.selectableDeltas as any) : undefined,
 		);
 
-		// Update the comparison data
 		Object.assign(comparisonData.value!, newComparisonData);
 
 		// Refresh user data for the new delta
@@ -165,8 +164,8 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 				<div class="columns vertical-divider">
 					<div class="col left">
 						<ComparisonHeader
-							:title="getBaseTitle(comparisonData)"
-							:date-updated="mainItemDateUpdated"
+							:title="baseDisplayName"
+							:date-updated="normalizedData?.base.date.dateObject || null"
 							:user-updated="mainItemUserUpdated"
 							:user-loading="mainItemUserLoading"
 							:show-latest-chip="comparisonData?.comparisonType === 'revision'"
@@ -175,8 +174,8 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 						<div class="comparison-content">
 							<v-form
 								disabled
-								:collection="currentItem?.collection"
-								:primary-key="currentItem?.item"
+								:collection="collection"
+								:primary-key="primaryKey"
 								:initial-values="comparisonData?.base || {}"
 								:comparison="
 									{
@@ -191,8 +190,8 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 					<div class="comparison-divider"></div>
 					<div class="col right">
 						<ComparisonHeader
-							:title="comparisonData?.comparisonType === 'version' ? currentVersionDisplayName : t('item_revision')"
-							:date-updated="isVersionMode ? versionDateUpdated : revisionDateCreated"
+							:title="deltaDisplayName"
+							:date-updated="normalizedData?.delta.date.dateObject || null"
 							:user-updated="userUpdated"
 							:user-loading="userLoading"
 							:show-delta-dropdown="isRevisionMode"
@@ -203,8 +202,8 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 						<div class="comparison-content">
 							<v-form
 								disabled
-								:collection="currentItem?.collection"
-								:primary-key="currentItem?.item"
+								:collection="collection"
+								:primary-key="primaryKey"
 								:initial-values="comparisonData?.delta || {}"
 								:comparison="
 									{
@@ -276,7 +275,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 		>
 			<v-card>
 				<v-card-title>
-					{{ t('delete_on_promote_copy', { version: currentVersionDisplayName }) }}
+					{{ t('delete_on_promote_copy', { version: deltaDisplayName }) }}
 				</v-card-title>
 				<v-card-actions>
 					<v-button secondary @click="promote(false)">{{ t('keep') }}</v-button>

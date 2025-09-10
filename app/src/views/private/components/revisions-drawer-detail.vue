@@ -124,6 +124,8 @@ defineExpose({
 			:active="comparisonModalActive"
 			:comparison-data="comparisonData"
 			:delete-versions-allowed="false"
+			:collection="collection"
+			:primary-key="primaryKey"
 			@confirm="$emit('revert', $event)"
 			@cancel="
 				comparisonModalActive = false;
