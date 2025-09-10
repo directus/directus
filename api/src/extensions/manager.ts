@@ -60,7 +60,6 @@ import { instantiateSandboxSdk } from './lib/sandbox/sdk/instantiate.js';
 import { syncExtensions } from './lib/sync-extensions.js';
 import { wrapEmbeds } from './lib/wrap-embeds.js';
 import DriverLocal from '@directus/storage-driver-local';
-import { createKv } from '@directus/memory';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
@@ -289,8 +288,6 @@ export class ExtensionManager {
 		if (env['SERVE_APP']) {
 			await this.generateExtensionBundle();
 		}
-
-		await new Promise<void>((res) => setTimeout(() => res(), 3000));
 
 		this.isLoaded = true;
 
