@@ -60,6 +60,7 @@ import { instantiateSandboxSdk } from './lib/sandbox/sdk/instantiate.js';
 import { syncExtensions } from './lib/sync-extensions.js';
 import { wrapEmbeds } from './lib/wrap-embeds.js';
 import DriverLocal from '@directus/storage-driver-local';
+import { createKv } from '@directus/memory';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
@@ -212,7 +213,7 @@ export class ExtensionManager {
 		this.messenger.subscribe(this.reloadChannel, (payload: Record<string, unknown>) => {
 			// Ignore requests for reloading that were published by the current process
 			if (isPlainObject(payload) && 'origin' in payload && payload['origin'] === this.processId) return;
-			this.reload();
+			this.reload({ forceSync: true });
 		});
 	}
 
@@ -288,6 +289,8 @@ export class ExtensionManager {
 		if (env['SERVE_APP']) {
 			await this.generateExtensionBundle();
 		}
+
+		await new Promise<void>((res) => setTimeout(() => res(), 3000));
 
 		this.isLoaded = true;
 
@@ -380,6 +383,29 @@ export class ExtensionManager {
 		});
 
 		return promise;
+	}
+
+	/**
+	 * Await all extensions being loaded
+	 */
+	public extensionsLoaded(): Promise<void> {
+		if (this.isLoaded) {
+			return Promise.resolve();
+		}
+
+		const SOME_TIMEOUT = 10000;
+
+		return new Promise((resolve) => {
+			const handler = () => {
+				emitter.offAction('extensions.load', handler);
+				resolve();
+			};
+
+			emitter.onAction('extensions.load', handler);
+
+			// time out if the event is not fired for some reason
+			setTimeout(() => handler(), SOME_TIMEOUT);
+		});
 	}
 
 	/**
