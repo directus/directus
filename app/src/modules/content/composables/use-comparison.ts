@@ -16,6 +16,7 @@ import {
 	areSomeFieldsSelected,
 	normalizeComparisonData as normalizeComparisonDataUtil,
 } from '../comparison-utils';
+import { mergeWith } from 'lodash';
 
 interface UseComparisonOptions {
 	comparisonData: Ref<ComparisonData | null>;
@@ -170,12 +171,12 @@ export function useComparison(options: UseComparisonOptions) {
 
 	async function fetchUserUpdated() {
 		const normalized = normalizedData.value;
-		if (!normalized?.delta.user?.id) return;
+		if (!normalized?.current.user?.id) return;
 
 		userLoading.value = true;
 
 		try {
-			const response = await api.get(`/users/${normalized.delta.user.id}`, {
+			const response = await api.get(`/users/${normalized.current.user.id}`, {
 				params: {
 					fields: ['id', 'first_name', 'last_name', 'email'],
 				},
@@ -191,12 +192,12 @@ export function useComparison(options: UseComparisonOptions) {
 
 	async function fetchMainItemUserUpdated() {
 		const normalized = normalizedData.value;
-		if (!normalized?.base.user?.id) return;
+		if (!normalized?.main.user?.id) return;
 
 		mainItemUserLoading.value = true;
 
 		try {
-			const response = await api.get(`/users/${normalized.base.user.id}`, {
+			const response = await api.get(`/users/${normalized.main.user.id}`, {
 				params: {
 					fields: ['id', 'first_name', 'last_name', 'email'],
 				},
@@ -285,14 +286,9 @@ export function useComparison(options: UseComparisonOptions) {
 			const response = await api.get(`/versions/${versionId}/compare`);
 			const data: VersionComparisonResponse = response.data.data;
 
-			// data.main is the complete main item (this should be the base/left side)
-			// data.current contains the version's changes (this should be the delta/right side)
-			const base = data.main;
-			const delta = data.current;
-
 			return {
-				base,
-				delta,
+				main: data.main,
+				current: data.current,
 				selectableDeltas: versions?.value ?? (version ? [version] : []),
 				comparisonType: 'version' as const,
 				outdated: data.outdated,
@@ -337,8 +333,8 @@ export function useComparison(options: UseComparisonOptions) {
 
 	/**
 	 * Builds comparison data from revision data
-	 * - base: the complete item state BEFORE this revision was applied
-	 * - delta: the complete item state AFTER this revision was applied
+	 * - main: complete item state BEFORE this revision was applied
+	 * - current: complete item state AFTER this revision was applied
 	 */
 	async function buildRevisionComparison(
 		revision: Revision | RevisionComparisonResponse,
@@ -347,40 +343,53 @@ export function useComparison(options: UseComparisonOptions) {
 	): Promise<ComparisonData> {
 		const revisionData = revision.data || {};
 
-		let base: Record<string, any>;
-
 		const revisionsList = revisions?.value || [];
-
 		const revisionId = 'id' in revision ? revision.id : null;
 		const currentRevisionIndex = revisionId ? revisionsList.findIndex((r) => r.id === revisionId) : -1;
+		const previousRevision = currentRevisionIndex > 0 ? revisionsList[currentRevisionIndex - 1] : null;
 
-		if (currentRevisionIndex > 0) {
-			// Use the previous revision's data as the base (state before this revision)
-			const previousRevision = revisionsList[currentRevisionIndex - 1];
-			base = previousRevision?.data || {};
+		// Resolve main item and current version delta
+		let mainItem: Record<string, any> = {};
+		let versionDelta: Record<string, any> = {};
 
-			// Add timestamp information to the base data for proper display
-			if (previousRevision?.activity?.timestamp) {
-				base = {
-					...base,
-					date_updated: previousRevision.activity.timestamp,
-				};
-			}
-		} else {
-			// This is the first revision, so we need to get the original item state
-			if (currentVersion?.value) {
-				const versionComparison = await fetchVersionComparison(currentVersion.value.id);
-				base = versionComparison.base;
-			} else {
-				throw new Error('Cannot build revision comparison: no current version available');
+		if (currentVersion?.value) {
+			const versionComparison = await fetchVersionComparison(currentVersion.value.id);
+			mainItem = versionComparison.main || {};
+			versionDelta = versionComparison.current || {};
+		} else if ('collection' in revision && 'item' in revision) {
+			try {
+				const { collection, item } = revision as { collection: string; item: string | number };
+				const itemResponse = await api.get(`/items/${collection}/${item}`);
+				mainItem = itemResponse.data?.data || {};
+			} catch (error) {
+				unexpectedError(error);
+				mainItem = {};
 			}
 		}
 
-		const delta = revisionData;
+		const replaceArrays = (objValue: any, srcValue: any) => {
+			if (Array.isArray(objValue) || Array.isArray(srcValue)) {
+				return srcValue;
+			}
+
+			return undefined;
+		};
+
+		const deltaMerged = mergeWith({}, mainItem, versionDelta, previousRevision?.data || {}, replaceArrays);
+
+		if (previousRevision?.activity?.timestamp) {
+			deltaMerged.date_updated = previousRevision.activity.timestamp;
+		}
+
+		const mainMerged = mergeWith({}, mainItem, versionDelta, revisionData, replaceArrays);
+
+		if ('activity' in revision && (revision as any)?.activity?.timestamp) {
+			mainMerged.date_updated = (revision as any).activity.timestamp;
+		}
 
 		return {
-			base,
-			delta,
+			main: mainMerged,
+			current: deltaMerged,
 			selectableDeltas: revisionsList,
 			comparisonType: 'revision',
 			outdated: false,

@@ -20,11 +20,11 @@ export function useNormalizedComparison(options: UseNormalizedComparisonOptions)
 
 	// Computed properties for easy access to normalized data
 	const baseItem = computed((): NormalizedItem | null => {
-		return normalizedData.value?.base || null;
+		return normalizedData.value?.main || null;
 	});
 
 	const deltaItem = computed((): NormalizedItem | null => {
-		return normalizedData.value?.delta || null;
+		return normalizedData.value?.current || null;
 	});
 
 	const selectableItems = computed((): NormalizedItem[] => {

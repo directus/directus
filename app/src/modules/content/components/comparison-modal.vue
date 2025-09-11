@@ -113,8 +113,8 @@ function usePromoteDialog() {
 				const selectedFields = unref(selectedComparisonFields);
 
 				// Get the delta from the comparison data
-				const delta = comparisonData.value.delta;
-				const base = comparisonData.value.base;
+				const delta = comparisonData.value.current;
+				const base = comparisonData.value.main;
 
 				for (const [field, newValue] of Object.entries(delta)) {
 					if (selectedFields.length > 0 && !selectedFields.includes(field)) continue;
@@ -170,7 +170,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 					<div class="col left">
 						<ComparisonHeader
 							:title="baseDisplayName"
-							:date-updated="normalizedData?.base.date.dateObject || null"
+							:date-updated="normalizedData?.main.date.dateObject || null"
 							:user-updated="mainItemUserUpdated"
 							:user-loading="mainItemUserLoading"
 							:show-latest-chip="isLatestRevision"
@@ -181,7 +181,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 								disabled
 								:collection="collection"
 								:primary-key="primaryKey"
-								:initial-values="comparisonData?.base || {}"
+								:initial-values="comparisonData?.main || {}"
 								:comparison="
 									{
 										mode: !!comparisonData,
@@ -196,7 +196,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 					<div class="col right">
 						<ComparisonHeader
 							:title="deltaDisplayName"
-							:date-updated="normalizedData?.delta.date.dateObject || null"
+							:date-updated="normalizedData?.current.date.dateObject || null"
 							:user-updated="userUpdated"
 							:user-loading="userLoading"
 							:show-delta-dropdown="isRevisionMode"
@@ -209,7 +209,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 								disabled
 								:collection="collection"
 								:primary-key="primaryKey"
-								:initial-values="comparisonData?.delta || {}"
+								:initial-values="comparisonData?.current || {}"
 								:comparison="
 									{
 										mode: !!comparisonData,

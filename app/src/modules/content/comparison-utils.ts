@@ -3,8 +3,8 @@ import { Revision } from '@/types/revisions';
 import { isNil, isEqual } from 'lodash';
 
 export type ComparisonData = {
-	base: Record<string, any>;
-	delta: Record<string, any>;
+	main: Record<string, any>;
+	current: Record<string, any>;
 	selectableDeltas?: Revision[] | ContentVersion[];
 	comparisonType: 'version' | 'revision';
 	outdated?: boolean;
@@ -37,8 +37,8 @@ export type NormalizedItem = {
 };
 
 export type NormalizedComparisonData = {
-	base: NormalizedItem;
-	delta: NormalizedItem;
+	main: NormalizedItem;
+	current: NormalizedItem;
 	selectableDeltas: NormalizedItem[];
 	comparisonType: 'version' | 'revision';
 	outdated: boolean;
@@ -216,25 +216,25 @@ export function normalizeMainItem(mainData: Record<string, any>): NormalizedItem
 }
 
 export function normalizeComparisonData(comparisonData: ComparisonData): NormalizedComparisonData {
-	let base: NormalizedItem;
+	let main: NormalizedItem;
 
 	if (comparisonData.comparisonType === 'revision' && comparisonData.currentVersion) {
-		base = {
+		main = {
 			id: 'main',
 			displayName: getVersionDisplayName(comparisonData.currentVersion),
-			date: normalizeDate(comparisonData.base.date_updated),
-			user: normalizeUser(comparisonData.base.user_updated || comparisonData.base.user_created),
+			date: normalizeDate(comparisonData.main.date_updated),
+			user: normalizeUser(comparisonData.main.user_updated || comparisonData.main.user_created),
 		};
 	} else {
-		base = normalizeMainItem(comparisonData.base);
+		main = normalizeMainItem(comparisonData.main);
 	}
 
-	let delta: NormalizedItem;
+	let current: NormalizedItem;
 
 	if (comparisonData.comparisonType === 'version') {
 		const version = comparisonData.selectableDeltas?.[0] as ContentVersion;
 
-		delta = version
+		current = version
 			? normalizeVersionItem(version)
 			: {
 					id: 'unknown',
@@ -245,7 +245,7 @@ export function normalizeComparisonData(comparisonData: ComparisonData): Normali
 	} else {
 		const revision = comparisonData.selectableDeltas?.[0] as Revision;
 
-		delta = revision
+		current = revision
 			? normalizeRevisionItem(revision)
 			: {
 					id: 'unknown',
@@ -266,15 +266,15 @@ export function normalizeComparisonData(comparisonData: ComparisonData): Normali
 	const normalizedComparison = {
 		outdated: comparisonData.outdated || false,
 		mainHash: comparisonData.mainHash || '',
-		current: comparisonData.delta,
-		main: comparisonData.base,
+		current: comparisonData.current,
+		main: comparisonData.main,
 	};
 
 	const fieldsWithDifferences = getFieldsWithDifferences(normalizedComparison);
 
 	return {
-		base,
-		delta,
+		main,
+		current,
 		selectableDeltas,
 		comparisonType: comparisonData.comparisonType,
 		outdated: comparisonData.outdated || false,
