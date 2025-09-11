@@ -235,6 +235,16 @@ function emitValue(event: InputEvent) {
 			emit('update:modelValue', parsedNumber);
 		}
 	} else {
+		// Normalize decimal separators for float/decimal types
+		if (props.float === true) {
+			// Only normalize if the value contains a comma but no dot
+			// This avoids ambiguous cases like "99,99.88"
+			if (value.includes(',') && !value.includes('.')) {
+				// Replace comma with dot for decimal separator normalization
+				value = value.replace(',', '.');
+			}
+		}
+
 		if (props.slug === true) {
 			const endsWithSpace = value.endsWith(' ');
 			value = slugify(value, { separator: props.slugSeparator, preserveTrailingDash: true });
