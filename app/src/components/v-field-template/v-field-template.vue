@@ -131,6 +131,7 @@ function addField(field: FieldTree) {
 	button.classList.add('selected-field');
 
 	let displayName;
+
 	if (field.key.includes('.')) {
 		const collectionPart = field.key.split('.')[0];
 		const collectionName = collectionPart.replace(/_id$/, '');
@@ -272,6 +273,7 @@ function setContent() {
 				if (!field) return '';
 
 				let displayName;
+
 				if (field.key.includes('.')) {
 					const collectionPart = field.key.split('.')[0];
 					const collectionName = collectionPart.replace(/_id$/, '');
