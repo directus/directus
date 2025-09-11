@@ -280,7 +280,8 @@ export function useComparison(options: UseComparisonOptions) {
 
 	function getRevisionFromComposable(revisionId: string, revisions?: Ref<Revision[] | null>): Revision | null {
 		if (revisions?.value) {
-			return revisions.value.find((revision) => revision.id === parseInt(revisionId)) || null;
+			const id = Number(revisionId);
+			return revisions.value.find((revision) => revision.id === id) || null;
 		}
 
 		return null;
@@ -376,6 +377,7 @@ export function useComparison(options: UseComparisonOptions) {
 			}
 		}
 
+		// for field values that are arrays, we want to replace the array with the source array instead of merging them together
 		const replaceArrays = (objValue: any, srcValue: any) => {
 			if (Array.isArray(objValue) || Array.isArray(srcValue)) {
 				return srcValue;

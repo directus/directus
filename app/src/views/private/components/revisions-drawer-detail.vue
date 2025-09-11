@@ -121,8 +121,8 @@ defineExpose({
 		</template>
 
 		<comparison-modal
+			v-model:comparison-data="comparisonData"
 			:active="comparisonModalActive"
-			:comparison-data="comparisonData"
 			:delete-versions-allowed="false"
 			:collection="collection"
 			:primary-key="primaryKey"

@@ -2,7 +2,7 @@
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { ContentVersion } from '@directus/types';
-import { ref, toRefs, unref, watch } from 'vue';
+import { ref, toRefs, unref, watch, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
 import type { ComparisonContext } from '@/components/v-form/types';
@@ -12,7 +12,6 @@ import { isEqual } from 'lodash';
 
 interface Props {
 	active: boolean;
-	comparisonData: ComparisonData | null;
 	deleteVersionsAllowed: boolean;
 	collection: string;
 	primaryKey: string | number;
@@ -22,7 +21,11 @@ const { t } = useI18n();
 
 const props = defineProps<Props>();
 
-const { active, comparisonData, deleteVersionsAllowed, collection, primaryKey } = toRefs(props);
+const comparisonData = defineModel<ComparisonData | null>('comparisonData', {
+	required: false,
+}) as Ref<ComparisonData | null>;
+
+const { active, deleteVersionsAllowed, collection, primaryKey } = toRefs(props);
 
 const {
 	selectedComparisonFields,

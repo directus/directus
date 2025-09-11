@@ -337,8 +337,8 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 
 		<comparison-modal
 			v-if="currentVersion !== null"
+			v-model:comparison-data="comparisonData"
 			:active="isVersionPromoteDrawerOpen"
-			:comparison-data="comparisonData"
 			:delete-versions-allowed="deleteVersionsAllowed"
 			:collection="collection"
 			:primary-key="primaryKey"
