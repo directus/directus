@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import type { Request } from 'express';
 import { Router } from 'express';
@@ -244,6 +244,71 @@ router.post(
 
 		const service = new UsersService({ accountability, schema: req.schema });
 		await service.resetPassword(req.body.token, req.body.password);
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/verify',
+	asyncHandler(async (req, res, next) => {
+		if (!req.accountability) {
+			throw new ForbiddenError();
+		}
+
+		if (typeof req.body.otp !== 'string') {
+			throw new InvalidPayloadError({ reason: `"otp" field is required` });
+		}
+
+		// Logic lifted from /refresh
+		const accountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
+
+		const userAgent = req.get('user-agent')?.substring(0, 1024);
+		if (userAgent) accountability.userAgent = userAgent;
+
+		const origin = req.get('origin');
+		if (origin) accountability.origin = origin;
+
+		const authenticationService = new AuthenticationService({
+			accountability: accountability,
+			schema: req.schema,
+		});
+
+		const mode = getCurrentMode(req);
+		const currentRefreshToken = getCurrentRefreshToken(req, mode);
+
+		if (!currentRefreshToken) {
+			throw new InvalidPayloadError({
+				reason: `The refresh token is required in either the payload or cookie`,
+			});
+		}
+
+		const { accessToken, refreshToken, expires } = await authenticationService.verifyOTP(
+			req.accountability,
+			req.body.otp,
+			currentRefreshToken,
+			{
+				session: mode === 'session',
+			},
+		);
+
+		const payload = { expires } as { expires: number; access_token?: string; refresh_token?: string };
+
+		if (mode === 'json') {
+			payload.refresh_token = refreshToken;
+			payload.access_token = accessToken;
+		}
+
+		if (mode === 'cookie') {
+			res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+			payload.access_token = accessToken;
+		}
+
+		if (mode === 'session') {
+			res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
+		}
+
+		res.locals['payload'] = { data: payload };
 		return next();
 	}),
 	respond,

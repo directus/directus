@@ -757,6 +757,7 @@ tfa_setup: Setup 2FA
 tfa_setup_description: Set up two-factor authentication to protect your account
 tfa_scan_code: Scan the code in your authenticator app to finish setting up 2FA
 enter_otp_to_disable_tfa: Enter the OTP to disable 2FA
+otp_required: OTP Required
 create_account: Create Account
 account_created_successfully: Account Created Successfully
 auto_fill: Auto Fill

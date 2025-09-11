@@ -59,6 +59,8 @@ export const ALIAS_TYPES = ['alias', 'o2m', 'm2m', 'm2a', 'o2a', 'files', 'trans
 
 export const DEFAULT_AUTH_PROVIDER = 'default';
 
+export const PENDING_OTP_POSTFIX = ':no_otp';
+
 export const COLUMN_TRANSFORMS = ['year', 'month', 'day', 'weekday', 'hour', 'minute', 'second'];
 
 export const GENERATE_SPECIAL = [
