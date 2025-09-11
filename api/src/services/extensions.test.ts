@@ -55,6 +55,7 @@ describe('ExtensionsService - Error Propagation', () => {
 		vi.mocked(ItemsServiceModule.ItemsService).mockImplementation(() => mockExtensionsItemService);
 
 		const { describe: mockDescribeRegistry } = vi.mocked(await import('@directus/extensions-registry'));
+
 		mockDescribeRegistry.mockResolvedValue({
 			data: {
 				type: 'interface',
@@ -90,9 +91,11 @@ describe('ExtensionsService - Error Propagation', () => {
 				expect.fail('Expected error to be thrown');
 			} catch (error) {
 				expect(error).toBeInstanceOf(ServiceUnavailableError);
+
 				expect((error as any).extensions.reason).toBe(
 					'Insufficient permissions to write to the extensions directory. Please check file system permissions',
 				);
+
 				expect((error as any).extensions.service).toBe('marketplace');
 			}
 		});

@@ -66,6 +66,7 @@ describe('InstallationManager - Error Message Specificity', () => {
 				read: vi.fn().mockResolvedValue({ done: true, value: undefined }),
 			}),
 		};
+
 		download.mockResolvedValue(mockReadableStream as any);
 
 		readFile.mockResolvedValue(
@@ -92,9 +93,11 @@ describe('InstallationManager - Error Message Specificity', () => {
 			expect.fail('Expected error to be thrown');
 		} catch (error) {
 			expect(error).toBeInstanceOf(ServiceUnavailableError);
+
 			expect((error as any).extensions.reason).toBe(
 				'Insufficient permissions to write to the extensions directory. Please check file system permissions',
 			);
+
 			expect((error as any).extensions.service).toBe('marketplace');
 		}
 	});
@@ -111,6 +114,7 @@ describe('InstallationManager - Error Message Specificity', () => {
 			expect.fail('Expected error to be thrown');
 		} catch (error) {
 			expect(error).toBeInstanceOf(ServiceUnavailableError);
+
 			expect((error as any).extensions.reason).toBe(
 				'Insufficient permissions to write to the extensions directory. Please check file system permissions',
 			);
@@ -141,6 +145,7 @@ describe('InstallationManager - Error Message Specificity', () => {
 
 		// Mock successful mkdir and readFile to ensure we get to the download error
 		mkdir.mockResolvedValue(undefined);
+
 		readFile.mockResolvedValue(
 			JSON.stringify({
 				name: 'test-extension',
@@ -213,6 +218,7 @@ describe('InstallationManager - Error Message Specificity', () => {
 
 		// Mock successful mkdir and readFile to ensure we get to the download error
 		mkdir.mockResolvedValue(undefined);
+
 		readFile.mockResolvedValue(
 			JSON.stringify({
 				name: 'test-extension',
