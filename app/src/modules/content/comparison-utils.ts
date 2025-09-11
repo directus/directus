@@ -1,6 +1,7 @@
 import { ContentVersion, User } from '@directus/types';
 import { Revision } from '@/types/revisions';
 import { isNil, isEqual } from 'lodash';
+import { i18n } from '@/lang';
 
 export type ComparisonData = {
 	main: Record<string, any>;
@@ -84,10 +85,6 @@ export function getFieldsWithDifferences(comparedData: NormalizedComparison): st
 
 export function getVersionDisplayName(version: ContentVersion): string {
 	return isNil(version.name) ? version.key : version.name;
-}
-
-export function getRevisionDisplayName(): string {
-	return `Revision Item`;
 }
 
 export function addFieldToSelection(selectedFields: string[], field: string): string[] {
@@ -198,7 +195,7 @@ export function normalizeRevisionItem(revision: Revision): NormalizedItem {
 
 	return {
 		id: revision.id,
-		displayName: getRevisionDisplayName(),
+		displayName: i18n.global.t('revision_item'),
 		date: normalizeDate(timestamp),
 		user: normalizeUser(user as any),
 		collection: revision.collection,

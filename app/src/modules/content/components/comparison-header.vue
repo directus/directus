@@ -74,7 +74,7 @@ const selectedOption = computed(() => {
 		<div class="header-content">
 			<div class="title-container">
 				<h3>{{ title }}</h3>
-				<v-chip v-if="showLatestChip" small class="latest-chip">Latest</v-chip>
+				<v-chip v-if="showLatestChip" small class="latest-chip">{{ t('latest_version') }}</v-chip>
 			</div>
 		</div>
 		<div class="header-meta">
