@@ -61,6 +61,14 @@ export function useComparison(options: UseComparisonOptions) {
 		return new Set(fieldsWithDifferences.value);
 	});
 
+	const baseDisplayName = computed(() => {
+		return normalizedData.value?.main?.displayName || 'Main';
+	});
+
+	const deltaDisplayName = computed(() => {
+		return normalizedData.value?.current?.displayName || '';
+	});
+
 	const isLatestRevision = ref(false);
 	const latestRevisionLoading = ref(false);
 
@@ -414,6 +422,9 @@ export function useComparison(options: UseComparisonOptions) {
 		latestRevisionLoading,
 		userLoading,
 		mainItemUserLoading,
+		baseDisplayName,
+		deltaDisplayName,
+		normalizedData,
 		toggleSelectAll,
 		toggleComparisonField,
 		fetchUserUpdated,

@@ -232,10 +232,12 @@ export function normalizeComparisonData(comparisonData: ComparisonData): Normali
 	let current: NormalizedItem;
 
 	if (comparisonData.comparisonType === 'version') {
-		const version = comparisonData.selectableDeltas?.[0] as ContentVersion;
+		const versions = (comparisonData.selectableDeltas as ContentVersion[]) || [];
+		const selectedId = (comparisonData.initialSelectedDeltaId as string | undefined) || undefined;
+		const selected = selectedId ? versions.find((v) => v.id === selectedId) : versions[0];
 
-		current = version
-			? normalizeVersionItem(version)
+		current = selected
+			? normalizeVersionItem(selected)
 			: {
 					id: 'unknown',
 					displayName: 'Unknown Version',
@@ -243,10 +245,12 @@ export function normalizeComparisonData(comparisonData: ComparisonData): Normali
 					user: null,
 				};
 	} else {
-		const revision = comparisonData.selectableDeltas?.[0] as Revision;
+		const revisions = (comparisonData.selectableDeltas as Revision[]) || [];
+		const selectedId = (comparisonData.initialSelectedDeltaId as number | undefined) || undefined;
+		const selected = typeof selectedId !== 'undefined' ? revisions.find((r) => r.id === selectedId) : revisions[0];
 
-		current = revision
-			? normalizeRevisionItem(revision)
+		current = selected
+			? normalizeRevisionItem(selected)
 			: {
 					id: 'unknown',
 					displayName: 'Unknown Revision',

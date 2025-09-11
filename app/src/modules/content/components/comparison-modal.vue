@@ -7,7 +7,6 @@ import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
 import type { ComparisonContext } from '@/components/v-form/types';
 import { useComparison } from '../composables/use-comparison';
-import { useNormalizedComparison } from '../composables/use-normalized-comparison';
 import { type ComparisonData } from '../comparison-utils';
 import { isEqual } from 'lodash';
 
@@ -41,15 +40,14 @@ const {
 	isLatestRevision,
 	userLoading,
 	mainItemUserLoading,
+	baseDisplayName,
+	deltaDisplayName,
+	normalizedData,
 	fetchUserUpdated,
 	fetchMainItemUserUpdated,
 	checkIfLatestRevision,
 	normalizeComparisonData,
 } = useComparison({
-	comparisonData: comparisonData,
-});
-
-const { baseDisplayName, deltaDisplayName, normalizedData } = useNormalizedComparison({
 	comparisonData: comparisonData,
 });
 
