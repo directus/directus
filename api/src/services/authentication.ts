@@ -7,7 +7,6 @@ import {
 	UserSuspendedError,
 } from '@directus/errors';
 import type { AbstractServiceOptions, Accountability, LoginResult, SchemaOverview } from '@directus/types';
-import { toBoolean } from '@directus/utils';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash-es';
