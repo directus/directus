@@ -276,11 +276,7 @@ function useComputedValues() {
 			background-color: var(--theme--danger);
 		}
 
-		&[data-comparison-side='version']::before {
-			background-color: var(--theme--success);
-		}
-
-		&[data-comparison-side='revision']::before {
+		&[data-comparison-side='current']::before {
 			background-color: var(--theme--success);
 		}
 	}

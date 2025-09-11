@@ -211,7 +211,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 								:comparison="
 									{
 										mode: !!comparisonData,
-										side: isVersionMode ? 'version' : 'revision',
+										side: 'current',
 										fields: comparisonFields,
 										selectedFields: selectedComparisonFields,
 										onToggleField: toggleComparisonField,
