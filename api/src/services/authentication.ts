@@ -13,7 +13,7 @@ import { clone, cloneDeep } from 'lodash-es';
 import type { StringValue } from 'ms';
 import { performance } from 'perf_hooks';
 import { getAuthProvider } from '../auth.js';
-import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import { DEFAULT_AUTH_PROVIDER, PENDING_OTP_POSTFIX } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
@@ -58,8 +58,6 @@ export class AuthenticationService {
 			session: boolean;
 		}>,
 	): Promise<LoginResult> {
-		const { nanoid } = await import('nanoid');
-
 		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
 		const timeStart = performance.now();
 
@@ -158,20 +156,23 @@ export class AuthenticationService {
 			throw e;
 		}
 
-		if (user.tfa_secret && !options?.otp) {
-			emitStatus('fail');
-			await stall(STALL_TIME, timeStart);
-			throw new InvalidOtpError();
-		}
-
-		if (user.tfa_secret && options?.otp) {
-			const tfaService = new TFAService({ knex: this.knex, schema: this.schema });
-			const otpValid = await tfaService.verifyOTP(user.id, options?.otp);
-
-			if (otpValid === false) {
+		// Retain legacy error behavior for default provider
+		if (providerName === DEFAULT_AUTH_PROVIDER) {
+			if (user.tfa_secret && !options?.otp) {
 				emitStatus('fail');
 				await stall(STALL_TIME, timeStart);
 				throw new InvalidOtpError();
+			}
+
+			if (user.tfa_secret && options?.otp) {
+				const tfaService = new TFAService({ knex: this.knex, schema: this.schema });
+				const otpValid = await tfaService.verifyOTP(user.id, options?.otp);
+
+				if (otpValid === false) {
+					emitStatus('fail');
+					await stall(STALL_TIME, timeStart);
+					throw new InvalidOtpError();
+				}
 			}
 		}
 
@@ -206,8 +207,26 @@ export class AuthenticationService {
 				tokenPayload.enforce_tfa = true;
 			}
 		}
+		// SSO providers utilize two step OTP validation
+		else if (providerName !== DEFAULT_AUTH_PROVIDER) {
+			// User has TFA enabled but missing OTP
+			if (!options?.otp) {
+				tokenPayload.pending_otp = true;
+			}
+			// Validate provided OTP
+			else {
+				const tfaService = new TFAService({ knex: this.knex, schema: this.schema });
+				const otpValid = await tfaService.verifyOTP(user.id, options?.otp);
 
-		const refreshToken = nanoid(64);
+				if (otpValid === false) {
+					emitStatus('fail');
+					await stall(STALL_TIME, timeStart);
+					throw new InvalidOtpError();
+				}
+			}
+		}
+
+		const refreshToken = await this.generateRefreshToken(tokenPayload.pending_otp);
 		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
 
 		if (options?.session) {
@@ -248,7 +267,8 @@ export class AuthenticationService {
 
 		await this.knex('directus_sessions').delete().where('expires', '<', new Date());
 
-		if (this.accountability) {
+		// For pending_otp, it will be logged when OTP is verified
+		if (this.accountability && !tokenPayload.pending_otp) {
 			await this.activityService.createOne({
 				action: Action.LOGIN,
 				user: user.id,
@@ -278,8 +298,10 @@ export class AuthenticationService {
 		};
 	}
 
-	async refresh(refreshToken: string, options?: Partial<{ session: boolean }>): Promise<LoginResult> {
-		const { nanoid } = await import('nanoid');
+	async refresh(
+		refreshToken: string,
+		options?: Partial<{ session: boolean; pendingOtp?: boolean }>,
+	): Promise<LoginResult> {
 		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
 		const timeStart = performance.now();
 
@@ -360,7 +382,10 @@ export class AuthenticationService {
 			});
 		}
 
-		let newRefreshToken = record.session_next_token ?? nanoid(64);
+		let newRefreshToken =
+			record.session_next_token ??
+			(await this.generateRefreshToken(options?.pendingOtp ?? refreshToken.endsWith(PENDING_OTP_POSTFIX)));
+
 		const sessionDuration = env[options?.session ? 'SESSION_COOKIE_TTL' : 'REFRESH_TOKEN_TTL'];
 		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(sessionDuration, 0));
 
@@ -436,6 +461,66 @@ export class AuthenticationService {
 			expires: getMilliseconds(TTL),
 			id: record.user_id,
 		};
+	}
+
+	async verifyOTP(
+		userAccountability: Accountability,
+		otp: string,
+		refreshToken: string,
+		options?: Partial<{ session: boolean }>,
+	): Promise<LoginResult> {
+		if (refreshToken.endsWith(PENDING_OTP_POSTFIX) === false) {
+			throw new InvalidCredentialsError();
+		}
+
+		if (!userAccountability.user) {
+			throw new InvalidCredentialsError();
+		}
+
+		const user = await this.knex
+			.select({
+				id: 'u.id',
+				tfa_secret: 'u.tfa_secret',
+			})
+			.from('directus_sessions AS s')
+			.leftJoin('directus_users AS u', 's.user', 'u.id')
+			.where('s.token', refreshToken)
+			.andWhere('s.expires', '>=', new Date())
+			.first();
+
+		if (!user || !user.tfa_secret) {
+			throw new InvalidCredentialsError();
+		}
+
+		const tfaService = new TFAService({ knex: this.knex, schema: this.schema });
+		const otpValid = await tfaService.verifyOTP(user.id, otp);
+
+		if (otpValid === false) {
+			throw new InvalidOtpError();
+		}
+
+		const result = await this.refresh(refreshToken, { ...options, pendingOtp: false });
+
+		if (this.accountability) {
+			await this.activityService.createOne({
+				action: Action.LOGIN,
+				user: user.id,
+				ip: this.accountability.ip,
+				user_agent: this.accountability.userAgent,
+				origin: this.accountability.origin,
+				collection: 'directus_users',
+				item: user.id,
+			});
+		}
+
+		return result;
+	}
+
+	private async generateRefreshToken(pendingOtp?: boolean) {
+		const { nanoid } = await import('nanoid');
+
+		// Postfix refresh token with "pending_otp:" for token refresh identification
+		return pendingOtp ? `${nanoid(64 - PENDING_OTP_POSTFIX.length)}${PENDING_OTP_POSTFIX}` : nanoid(64);
 	}
 
 	private async updateStatefulSession(

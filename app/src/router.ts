@@ -1,4 +1,5 @@
 import { refresh } from '@/auth';
+import { useLocalStorage } from '@/composables/use-local-storage';
 import { hydrate } from '@/hydrate';
 import AcceptInviteRoute from '@/routes/accept-invite.vue';
 import LoginRoute from '@/routes/login/login.vue';
@@ -8,12 +9,15 @@ import RegisterRoute from '@/routes/register/register.vue';
 import ResetPasswordRoute from '@/routes/reset-password/reset-password.vue';
 import ShareRoute from '@/routes/shared/shared.vue';
 import TFASetup from '@/routes/tfa-setup.vue';
+import TFAVerify from '@/routes/tfa-verify.vue';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getRootPath } from '@/utils/get-root-path';
+import { ErrorCode } from '@directus/errors';
+import { isDirectusError, readMe } from '@directus/sdk';
 import { useAppStore } from '@directus/stores';
-import { useLocalStorage } from '@/composables/use-local-storage';
 import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter, RouteRecordRaw } from 'vue-router';
+import sdk from './sdk';
 
 export const defaultRoutes: RouteRecordRaw[] = [
 	{
@@ -65,6 +69,14 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		},
 	},
 	{
+		name: 'tfa-verify',
+		path: '/tfa-verify',
+		component: TFAVerify,
+		meta: {
+			track: false,
+		},
+	},
+	{
 		name: 'logout',
 		path: '/logout',
 		component: LogoutRoute,
@@ -107,8 +119,13 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		// Try retrieving a fresh access token on first load
 		try {
 			await refresh({ navigate: false });
-		} catch {
-			// Ignore error
+
+			await sdk.request(readMe({ fields: ['id'] }));
+		} catch (error) {
+			// Redirect to verify TFA if OTP is required
+			if (isDirectusError(error) && error.errors[0]?.extensions.code === ErrorCode.InvalidOtp) {
+				return '/tfa-verify';
+			}
 		}
 	}
 

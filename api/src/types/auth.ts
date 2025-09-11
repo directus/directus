@@ -37,6 +37,7 @@ export type DirectusTokenPayload = {
 	share?: string;
 	session?: string;
 	enforce_tfa?: boolean;
+	pending_otp?: boolean;
 };
 
 export type ShareData = {
