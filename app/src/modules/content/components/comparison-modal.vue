@@ -138,7 +138,7 @@ function usePromoteDialog() {
 async function onDeltaSelectionChange(newDeltaId: number) {
 	try {
 		// Update the comparison data with the new delta
-		const newComparisonData = await normalizeComparisonData(
+		const newComparisonData: ComparisonData = await normalizeComparisonData(
 			String(newDeltaId),
 			comparisonData.value?.comparisonType || 'revision',
 			comparisonData.value?.currentVersion ? ref(comparisonData.value.currentVersion) : undefined,
@@ -146,7 +146,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 			comparisonData.value?.selectableDeltas ? ref(comparisonData.value.selectableDeltas as any) : undefined,
 		);
 
-		Object.assign(comparisonData.value!, newComparisonData);
+		comparisonData.value = { ...comparisonData.value, ...newComparisonData };
 
 		// Refresh user data for the new delta
 		await fetchUserUpdated();

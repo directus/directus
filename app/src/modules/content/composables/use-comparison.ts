@@ -105,6 +105,7 @@ export function useComparison(options: UseComparisonOptions) {
 						collection: {
 							_eq: collection,
 						},
+						version: { _eq: comparisonData.value?.currentVersion?.id },
 						item: {
 							_eq: item,
 						},
