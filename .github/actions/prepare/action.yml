@@ -32,6 +32,6 @@ runs:
       if: inputs.build == 'true'
       shell: bash
       env:
-        npm_config_workspace_concurrency: 1
+        npm_config_workspace_concurrency: 2
         NODE_OPTIONS: --max_old_space_size=6144
       run: pnpm run build
