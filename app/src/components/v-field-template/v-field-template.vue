@@ -129,7 +129,18 @@ function addField(field: FieldTree) {
 	button.dataset.field = field.key;
 	button.setAttribute('contenteditable', 'false');
 	button.classList.add('selected-field');
-	button.innerText = String(field.name);
+
+	let displayName;
+	if (field.key.includes('.')) {
+		const collectionPart = field.key.split('.')[0];
+		const collectionName = collectionPart.replace(/_id$/, '');
+		const formattedCollection = collectionName.charAt(0).toUpperCase() + collectionName.slice(1) + ' ID';
+		displayName = `${formattedCollection} → ${field.name}`;
+	} else {
+		displayName = field.name;
+	}
+
+	button.innerText = String(displayName);
 
 	if (window.getSelection()?.rangeCount == 0) {
 		const range = document.createRange();
@@ -260,9 +271,19 @@ function setContent() {
 
 				if (!field) return '';
 
+				let displayName;
+				if (field.key.includes('.')) {
+					const collectionPart = field.key.split('.')[0];
+					const collectionName = collectionPart.replace(/_id$/, '');
+					const formattedCollection = collectionName.charAt(0).toUpperCase() + collectionName.slice(1) + ' ID';
+					displayName = `${formattedCollection} → ${field.name}`;
+				} else {
+					displayName = field.name;
+				}
+
 				return `<button type="button" contenteditable="false" data-field="${fieldKey}" ${
 					props.disabled ? 'disabled' : ''
-				} class="selected-field">${field.name}</button>`;
+				} class="selected-field">${displayName}</button>`;
 			})
 			.join('');
 
