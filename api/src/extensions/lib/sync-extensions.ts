@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { exists } from 'fs-extra';
 import mid from 'node-machine-id';
 import { createWriteStream } from 'node:fs';
-import { mkdir, rm } from 'node:fs/promises';
+import { mkdir, rm, readdir } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import Queue from 'p-queue';
@@ -12,6 +12,8 @@ import { useLogger } from '../../logger/index.js';
 import { getStorage } from '../../storage/index.js';
 import { getExtensionsPath } from './get-extensions-path.js';
 import { SyncStatus, getSyncStatus, setSyncStatus } from './sync-status.js';
+import type { Driver } from '@directus/storage';
+import objectHash from 'object-hash';
 
 export const syncExtensions = async (options?: { force: boolean }): Promise<void> => {
 	const lock = useLock();
@@ -44,6 +46,16 @@ export const syncExtensions = async (options?: { force: boolean }): Promise<void
 		const extensionsPath = getExtensionsPath();
 		const storageExtensionsPath = env['EXTENSIONS_PATH'] as string;
 
+		const localHash = await hashLocalFileNames(join(extensionsPath, '.registry'));
+		console.log({ localHash });
+
+		const storage = await getStorage();
+
+		const disk = storage.location(env['EXTENSIONS_LOCATION'] as string);
+
+		const remoteHash = await hashRemoteFileNames(join(storageExtensionsPath, '.registry'), disk);
+		console.log({ remoteHash })
+
 		if (await exists(extensionsPath)) {
 			// In case the FS still contains the cached extensions from a previous invocation. We have to
 			// clear them out to ensure the remote extensions folder remains the source of truth for all
@@ -57,12 +69,9 @@ export const syncExtensions = async (options?: { force: boolean }): Promise<void
 
 		logger.trace('Syncing extensions from configured storage location...');
 
-		const storage = await getStorage();
-
-		const disk = storage.location(env['EXTENSIONS_LOCATION'] as string);
-
 		// Make sure we don't overload the file handles
 		const queue = new Queue({ concurrency: 1000 });
+
 
 		for await (const filepath of disk.list(storageExtensionsPath)) {
 			const readStream = await disk.read(filepath);
@@ -86,3 +95,24 @@ export const syncExtensions = async (options?: { force: boolean }): Promise<void
 		await lock.delete(machineKey);
 	}
 };
+
+async function hashLocalFileNames(fileLocation: string) {
+	if (await exists(fileLocation)) {
+		// hash file list
+		const filenames = await readdir(fileLocation, { recursive: true });
+
+		return objectHash(filenames);
+	}
+
+	return objectHash([]);
+}
+
+async function hashRemoteFileNames(fileLocation: string, disk: Driver) {
+	const filenames = [];
+
+	for await (const filepath of disk.list(fileLocation)) {
+		filenames.push(relative(fileLocation, filepath));
+	}
+
+	return objectHash(filenames);
+}
