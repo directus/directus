@@ -236,8 +236,8 @@ export function createMetrics() {
 		}
 
 		try {
-			await cache.set(`metrics-${checkId}`, '1', 5);
-			await cache.delete(`metrics-${checkId}`);
+			await cache.set(`directus-metrics-${checkId}`, '1', 5);
+			await cache.delete(`directus-metrics-${checkId}`);
 		} catch {
 			metric.inc();
 		}
@@ -253,8 +253,8 @@ export function createMetrics() {
 		const redis = useRedis();
 
 		try {
-			await redis.set(`metrics-${checkId}`, '1');
-			await redis.del(`metrics-${checkId}`);
+			await redis.set(`directus-metrics-${checkId}`, '1');
+			await redis.del(`directus-metrics-${checkId}`);
 		} catch {
 			metric.inc();
 		}
@@ -277,7 +277,7 @@ export function createMetrics() {
 			}
 
 			try {
-				await disk.write('metric-file', Readable.from([checkId]));
+				await disk.write('directus-metrics-file', Readable.from([checkId]));
 			} catch {
 				metric.inc();
 			}
