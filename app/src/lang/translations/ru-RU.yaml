@@ -1190,7 +1190,6 @@ page_help_settings_datamodel_fields: >-
   **Модель данных: коллекция** — форма для управления этой коллекцией и её полями.
 page_help_settings_system_logs: '**Системные журналы** — доступ к потоку системных журналов.'
 page_help_settings_policies_collection: '**Просмотреть политики** — список всех политик проекта.'
-page_help_settings_policies_item: "**Подробнее о политике** — Управление разрешениями политики и другими настройками."
 page_help_settings_roles_collection: '**Обзор ролей** — список всех ролей в проекте.'
 page_help_settings_roles_item: "**Карточка роли** — управление разрешениями роли и другими настройками."
 page_help_settings_presets_collection: >-
