@@ -92,10 +92,24 @@ export class InstallationManager {
 		} catch (err) {
 			logger.warn(err);
 
-			throw new ServiceUnavailableError(
-				{ service: 'marketplace', reason: 'Could not download and extract the extension' },
-				{ cause: err },
-			);
+			let reason = 'Could not download and extract the extension';
+
+			if (err && typeof err === 'object' && 'code' in err) {
+				const errorCode = err.code as string;
+
+				if (errorCode === 'EACCES' || errorCode === 'EPERM') {
+					reason =
+						'Insufficient permissions to write to the extensions directory. Please check file system permissions';
+				} else if (errorCode === 'ENOENT') {
+					reason = 'Extensions directory path does not exist or is inaccessible';
+				} else if (errorCode === 'ENOSPC') {
+					reason = 'Insufficient disk space to install the extension';
+				} else if (errorCode === 'EMFILE' || errorCode === 'ENFILE') {
+					reason = 'Too many open files during extension installation';
+				}
+			}
+
+			throw new ServiceUnavailableError({ service: 'marketplace', reason }, { cause: err });
 		} finally {
 			await rm(tempDir, { recursive: true });
 		}
