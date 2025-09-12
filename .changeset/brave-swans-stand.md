@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Added `policy-info-sidebar-detail` component to display information and primary key for policies in the sidebar.
+Added description and primary key copy option to the policy page sidebar
