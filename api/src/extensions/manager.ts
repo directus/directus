@@ -401,7 +401,7 @@ export class ExtensionManager {
 			emitter.onAction('extensions.load', handler);
 
 			// fall back to time-out if the event is not fired for any reason
-			const timeoutId = setTimeout(() => handler(), getMilliseconds(/*env['EXTENSIONS_RELOAD_TIMEOUT'] ?? */'1s'));
+			const timeoutId = setTimeout(() => handler(), getMilliseconds(env['EXTENSIONS_RELOAD_TIMEOUT'] ?? '30s'));
 		});
 	}
 
