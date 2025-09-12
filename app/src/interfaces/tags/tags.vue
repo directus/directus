@@ -84,7 +84,7 @@ function processArray(array: string[]): string[] {
 }
 
 function onInput(event: KeyboardEvent) {
-	if (event.target && (event.key === 'Enter' || event.key === ',' || event.type === 'blur')) {
+	if (event.target && (event.key === 'Enter' || event.key === ',' || (event.type === 'blur' && document.hasFocus()))) {
 		event.preventDefault();
 		addTag((event.target as HTMLInputElement).value);
 		(event.target as HTMLInputElement).value = '';
