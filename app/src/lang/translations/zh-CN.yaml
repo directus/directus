@@ -1186,7 +1186,6 @@ page_help_settings_datamodel_fields: >-
   **数据模型: Collection** — 用于管理此模型及其字段的表单
 page_help_settings_system_logs: '**系统日志** — 访问系统日志的实时流。'
 page_help_settings_policies_collection: '**浏览策略** - 列出项目内的所有策略。'
-page_help_settings_policies_item: "**Policy Detail** — 管理策略的权限和其他设置。"
 page_help_settings_roles_collection: '**Browse Roles** - 列出项目中所有用户角色。'
 page_help_settings_roles_item: "**角色详细** — 管理角色的权限和其他设置。"
 page_help_settings_presets_collection: >-
