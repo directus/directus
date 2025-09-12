@@ -110,12 +110,10 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex }:
 					joinClause
 						.onVal(`${aliasedParentCollection}.${relation.meta!.one_collection_field!}`, '=', pathScope)
 						.andOn(
-							`${aliasedParentCollection}.${relation.field}`,
-							'=',
-							knex.raw(
-								getHelpers(knex).schema.castA2oPrimaryKey(),
+							knex.raw(getHelpers(knex).schema.compareCastA2oPrimaryKeys(), [
+								`${aliasedParentCollection}.${relation.field}`,
 								`${alias}.${schema.collections[pathScope]!.primary}`,
-							),
+							]),
 						);
 				});
 
@@ -127,12 +125,10 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex }:
 					joinClause
 						.onVal(`${alias}.${relation.meta!.one_collection_field!}`, '=', parentCollection)
 						.andOn(
-							`${alias}.${relation.field}`,
-							'=',
-							knex.raw(
-								getHelpers(knex).schema.castA2oPrimaryKey(),
+							knex.raw(getHelpers(knex).schema.compareCastA2oPrimaryKeys(), [
+								`${alias}.${relation.field}`,
 								`${aliasedParentCollection}.${schema.collections[parentCollection]!.primary}`,
-							),
+							]),
 						);
 				});
 
