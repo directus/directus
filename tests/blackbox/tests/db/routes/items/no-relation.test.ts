@@ -101,9 +101,16 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(0);
 								break;
 							case 'postgres':
-							case 'postgres10':
+							case 'postgres-lts-16':
+							case 'postgres-lts-15':
+							case 'postgres-lts-14':
+							case 'postgres-lts-13':
 							case 'mssql':
+							case 'mssql-lts-2019':
 							case 'cockroachdb':
+							case 'cockroachdb-lts-24_1':
+							case 'cockroachdb-lts-23_2':
+							case 'cockroachdb-lts-23_1':
 								if (pkType === 'string') {
 									expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(0);
 								} else {
@@ -2311,7 +2318,18 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			if (pkType !== 'integer') ctx.skip();
 
 			describe('updates the auto increment value correctly', () => {
-				it.each(without(vendors, 'cockroachdb', 'mssql', 'oracle'))('%s', async (vendor) => {
+				it.each(
+					without(
+						vendors,
+						'cockroachdb',
+						'cockroachdb-lts-24_1',
+						'cockroachdb-lts-23_2',
+						'cockroachdb-lts-23_1',
+						'mssql',
+						'mssql-lts-2019',
+						'oracle',
+					),
+				)('%s', async (vendor) => {
 					// Setup
 					const name = 'test-auto-increment';
 					const largeIdArtist = 101111;
