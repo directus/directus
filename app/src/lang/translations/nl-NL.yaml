@@ -1199,7 +1199,6 @@ page_help_settings_datamodel_fields: >-
   **Gegevensmodel: Verzameling** - Een formulier voor het beheren van deze collectie en haar velden.
 page_help_settings_system_logs: '**Systeemlogs** ­— Toegang tot een livestream van systeemlogs.'
 page_help_settings_policies_collection: '**Bladeren door Policies** — Toont alle policies binnen het project.'
-page_help_settings_policies_item: "**Policy Detail** — Beheer de permissies en andere instellingen van een policy."
 page_help_settings_roles_collection: '**Bladeren door Rollen** — Toont alle gebruikersrollen binnen het project.'
 page_help_settings_roles_item: "**Rol Detail** - Beheer de rechten van de rol en andere instellingen."
 page_help_settings_presets_collection: >-
