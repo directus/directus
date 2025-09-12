@@ -32,6 +32,9 @@ router.use(useCollection('directus_extensions'));
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
+		const manager = getExtensionManager();
+		await manager.extensionsLoaded();
+
 		const service = new ExtensionsService({
 			accountability: req.accountability,
 			schema: req.schema,
