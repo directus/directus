@@ -10,13 +10,14 @@ import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu, { type MenuOptions } from './form-field-menu.vue';
 import FormFieldRawEditor from './form-field-raw-editor.vue';
-import type { FormField } from './types';
+import type { FormField, ComparisonContext } from './types';
 
 const props = withDefaults(
 	defineProps<{
 		field: FormField;
 		batchMode?: boolean;
 		batchActive?: boolean;
+		comparisonActive?: boolean;
 		disabled?: boolean;
 		modelValue?: any;
 		initialValue?: any;
@@ -29,6 +30,7 @@ const props = withDefaults(
 		rawEditorActive?: boolean;
 		disabledMenuOptions?: MenuOptions[];
 		direction?: string;
+		comparison?: ComparisonContext;
 	}>(),
 	{
 		modelValue: undefined,
@@ -40,7 +42,14 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelValue', 'setFieldValue']);
+const emit = defineEmits([
+	'toggle-batch',
+	'toggle-raw',
+	'toggle-comparison',
+	'unset',
+	'update:modelValue',
+	'setFieldValue',
+]);
 
 const { t } = useI18n();
 
@@ -165,7 +174,14 @@ function useComputedValues() {
 		:data-collection="field.collection"
 		:data-field="field.field"
 		class="field"
-		:class="[field.meta?.width || 'full', { invalid: validationError }]"
+		:class="[
+			field.meta?.width || 'full',
+			{
+				invalid: validationError,
+				'comparison-field': comparison?.mode && comparison?.fields?.has(field.field),
+			},
+		]"
+		:data-comparison-side="comparison?.mode && comparison?.fields?.has(field.field) ? comparison?.side : undefined"
 	>
 		<v-menu v-if="!isLabelHidden" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
@@ -175,6 +191,8 @@ function useComputedValues() {
 					:active="active"
 					:batch-mode="batchMode"
 					:batch-active="batchActive"
+					:comparison="comparison"
+					:comparison-active="comparisonActive"
 					:edited="isEdited"
 					:has-error="!!validationError"
 					:badge="badge"
@@ -183,6 +201,7 @@ function useComputedValues() {
 					:loading="loading"
 					@toggle-batch="$emit('toggle-batch', $event)"
 					@toggle-raw="$emit('toggle-raw', $event)"
+					@toggle-comparison="$emit('toggle-comparison', $event)"
 				/>
 			</template>
 
@@ -213,6 +232,7 @@ function useComputedValues() {
 			:raw-editor-enabled="rawEditorEnabled"
 			:raw-editor-active="rawEditorActive"
 			:direction="direction"
+			:comparison="comparison"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>
@@ -241,6 +261,25 @@ function useComputedValues() {
 <style lang="scss" scoped>
 .field {
 	position: relative;
+
+	&.comparison-field {
+		&::before {
+			content: '';
+			position: absolute;
+			inset-block: 0;
+			inset-inline-start: -12px;
+			inline-size: 4px;
+			z-index: 1;
+		}
+
+		&[data-comparison-side='main']::before {
+			background-color: var(--theme--danger);
+		}
+
+		&[data-comparison-side='current']::before {
+			background-color: var(--theme--success);
+		}
+	}
 }
 
 .type-note {

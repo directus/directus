@@ -175,17 +175,20 @@ version: Version
 version_key: Version Key
 version_name: Version Name
 main_version: Main
+latest_version: Latest
+revision_item: Revision Item
 switch_version: Switch Version
 switch_version_copy: Are you sure you want to switch to the "{version}" version? Unsaved changes will be lost.
 create_version: Create Version
 rename_version: Rename Version
 compare_version: Compare Version
 save_version: Save Version
-promote_version: Promote Version
+promote_version: Promote
 promote_version_disabled: No Changes
 promote_version_drawer_title: Promote {version} into Main
 promote_version_changes: Changes
 promote_version_preview: Preview
+select_all_changes: Select All Changes
 outdated_notice: >-
   The main item has been updated since this version was created. Please review all the field values below, and confirm
   which version should be used when promoting this version into the main item.
@@ -482,6 +485,8 @@ confirm_revert_body: This will revert the item to the selected state.
 display: Display
 settings_update_success: Settings updated
 title: Title
+revision_delta_revert: Revert
+revision_delta_revert_disabled: No Changes
 revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
@@ -677,6 +682,7 @@ no_items_copy: There are no items in this collection yet.
 file_count: 'No Files | One File | {count} Files'
 no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'
+updated_field_count: 'Updated 0 Fields | Updated 1 Field | Updated {count} Fields'
 no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
 webhooks_deprecation_notice: |
