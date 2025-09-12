@@ -166,7 +166,7 @@ function useForm() {
 
 		fields = pushGroupOptionsDown(fields);
 		updateSystemDivider(fields, props.comparison?.fields);
-		updateFieldWidths(fields);
+		updateFieldWidths(fields, props.comparison?.fields);
 
 		return fields;
 	});
