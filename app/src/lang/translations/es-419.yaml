@@ -1196,7 +1196,6 @@ page_help_settings_datamodel_fields: >-
   **Modelo de Datos: Colección** — Una manera de manejar esta colección y sus campos.
 page_help_settings_system_logs: '**Registros del sistema**: acceda a una transmisión en vivo de los registros del sistema.'
 page_help_settings_policies_collection: '**Explorar Reglas** — Lista todas las reglas dentro del proyecto.'
-page_help_settings_policies_item: "**Detalle de la Regla** — Administra los permisos y otras configuraciones de una regla."
 page_help_settings_roles_collection: '**Explorar Roles** — Lista todos los roles de usuario dentro del proyecto.'
 page_help_settings_roles_item: "**Detalle de Rol** — Administra los permisos del Rol y otros ajustes."
 page_help_settings_presets_collection: >-
