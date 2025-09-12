@@ -93,14 +93,6 @@ export const schema = defineTool<z.infer<typeof SchemaValidateSchema>>({
 			};
 
 			collections.forEach((collection) => {
-				// skip internal collections aside from files/users
-				if (
-					collection.collection.startsWith('directus_') &&
-					collection.collection !== 'directus_files' &&
-					collection.collection !== 'directus_users'
-				)
-					return;
-
 				// Separate folders from real collections
 				if (!collection.schema) {
 					lightweightOverview.collection_folders.push(collection.collection);
@@ -109,7 +101,7 @@ export const schema = defineTool<z.infer<typeof SchemaValidateSchema>>({
 				}
 
 				// Extract note if exists (for both collections and folders)
-				if (collection.meta?.note) {
+				if (collection.meta?.note && !collection.meta.note.startsWith('$t')) {
 					lightweightOverview.notes[collection.collection] = collection.meta.note;
 				}
 			});
@@ -140,14 +132,6 @@ export const schema = defineTool<z.infer<typeof SchemaValidateSchema>>({
 		fields.forEach((field) => {
 			// Skip collections not requested
 			if (!args.keys?.includes(field.collection)) return;
-
-			// skip internal collections aside from files/users
-			if (
-				field.collection.startsWith('directus_') &&
-				field.collection !== 'directus_files' &&
-				field.collection !== 'directus_users'
-			)
-				return;
 
 			// Skip UI-only fields
 			if (field.type === 'alias' && field.meta?.special?.includes('no-data')) return;
