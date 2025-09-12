@@ -50,6 +50,8 @@ Multiple items in one collection relate to one item in another.
 ```json
 {
 	"action": "create",
+	"collection": "articles",
+	"field": "author",
 	"data": {
 		"collection": "articles",
 		"field": "author",
@@ -79,6 +81,8 @@ One item in a collection relates to many items in another collection.
 ```json
 {
 	"action": "create",
+	"collection": "articles",
+	"field": "author",
 	"data": {
 		"collection": "articles",
 		"field": "author",
@@ -120,6 +124,8 @@ Items in both collections can relate to multiple items in the other.
 // First relation
 {
   "action": "create",
+  "collection": "article_tags",
+  "field": "article_id",
   "data": {
     "collection": "article_tags",
     "field": "article_id",
@@ -136,6 +142,8 @@ Items in both collections can relate to multiple items in the other.
 // Second relation
 {
   "action": "create",
+  "collection": "article_tags",
+  "field": "tag_id",
   "data": {
     "collection": "article_tags",
     "field": "tag_id",
@@ -178,6 +186,8 @@ Items can relate to items from multiple different collections.
 // Item relation (polymorphic)
 {
   "action": "create",
+  "collection": "page_blocks",
+  "field": "item",
   "data": {
     "collection": "page_blocks",
     "field": "item",
@@ -193,6 +203,8 @@ Items can relate to items from multiple different collections.
 // Page relation
 {
   "action": "create",
+  "collection": "page_blocks",
+  "field": "page_id",
   "data": {
     "collection": "page_blocks",
     "field": "page_id",
@@ -222,6 +234,8 @@ Items can relate to items from multiple different collections.
 ```json
 {
 	"action": "create",
+	"collection": "articles",
+	"field": "cover_image",
 	"data": {
 		"collection": "articles",
 		"field": "cover_image",
@@ -249,6 +263,8 @@ Items can relate to items from multiple different collections.
 // Article relation
 {
   "action": "create",
+  "collection": "article_images",
+  "field": "article_id",
   "data": {
     "collection": "article_images",
     "field": "article_id",
@@ -264,6 +280,8 @@ Items can relate to items from multiple different collections.
 // File relation
 {
   "action": "create",
+  "collection": "article_images",
+  "field": "directus_files_id",
   "data": {
     "collection": "article_images",
     "field": "directus_files_id",
