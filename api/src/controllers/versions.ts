@@ -211,11 +211,12 @@ router.get(
 
 		const { outdated, mainHash } = await service.verifyHash(version['collection'], version['item'], version['hash']);
 
-		const current = assign({}, version['delta']);
+		const delta = version.delta ?? {};
+		delta[req.schema.collections[version.collection]!.primary] = version.item;
 
 		const main = await service.getMainItem(version['collection'], version['item']);
 
-		res.locals['payload'] = { data: { outdated, mainHash, current, main } };
+		res.locals['payload'] = { data: { outdated, mainHash, current: delta, main } };
 
 		return next();
 	}),

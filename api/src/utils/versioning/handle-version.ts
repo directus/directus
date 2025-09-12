@@ -1,9 +1,9 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Accountability, Item, PrimaryKey, Query, QueryOptions } from '@directus/types';
 import type { ItemsService as ItemsServiceType } from '../../services/index.js';
-import { deepMapResponse } from '../deep-map-response.js';
 import { transaction } from '../transaction.js';
-import { mergeVersionsRaw } from './merge-version-data.js';
+import { deepMapWithSchema } from './deep-map-with-schema.js';
+import { splitRecursive } from './split-recursive.js';
 
 export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, queryWithKey: Query, opts?: QueryOptions) {
 	const { VersionsService } = await import('../../services/versions.js');
@@ -22,14 +22,12 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 			knex: self.knex,
 		});
 
-		const versionData = await versionsService.getVersionSaves(queryWithKey.version!, self.collection, key as string);
+		const version = await versionsService.getVersionSave(queryWithKey.version!, self.collection, key as string);
 
-		if (!versionData || versionData.length === 0) return [originalData[0]];
-
-		return [mergeVersionsRaw(originalData[0]!, versionData)];
+		return Object.assign(originalData[0]!, version?.delta);
 	}
 
-	let results: Item[] = [];
+	let result: Item | undefined;
 
 	const versionsService = new VersionsService({
 		schema: self.schema,
@@ -38,7 +36,13 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 	});
 
 	const createdIDs: Record<string, PrimaryKey[]> = {};
-	const versionData = await versionsService.getVersionSaves(queryWithKey.version!, self.collection, key as string);
+	const version = await versionsService.getVersionSave(queryWithKey.version!, self.collection, key as string, false);
+
+	if (!version) {
+		throw new ForbiddenError();
+	}
+
+	const { delta } = version;
 
 	await transaction(self.knex, async (trx) => {
 		const itemsServiceAdmin = new ItemsService<Item>(self.collection, {
@@ -49,21 +53,21 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 			knex: trx,
 		});
 
-		await Promise.all(
-			(versionData ?? []).map((data) => {
-				return itemsServiceAdmin.updateOne(key, data as any, {
-					emitEvents: false,
-					autoPurgeCache: false,
-					skipTracking: true,
+		if (delta) {
+			const { rawDelta, defaultOverwrites } = splitRecursive(delta);
 
-					onItemCreate: (collection, pk) => {
-						if (collection in createdIDs === false) createdIDs[collection] = [];
+			await itemsServiceAdmin.updateOne(key, rawDelta, {
+				emitEvents: false,
+				autoPurgeCache: false,
+				skipTracking: true,
+				overwriteDefaults: defaultOverwrites as any,
+				onItemCreate: (collection, pk) => {
+					if (collection in createdIDs === false) createdIDs[collection] = [];
 
-						createdIDs[collection]!.push(pk);
-					},
-				});
-			}),
-		);
+					createdIDs[collection]!.push(pk);
+				},
+			});
+		}
 
 		const itemsServiceUser = new ItemsService<Item>(self.collection, {
 			schema: self.schema,
@@ -71,52 +75,52 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 			knex: trx,
 		});
 
-		results = await itemsServiceUser.readByQuery(queryWithKey, opts);
+		result = (await itemsServiceUser.readByQuery(queryWithKey, opts))[0];
 
 		await trx.rollback();
 	});
 
-	results = results.map((result) => {
-		return deepMapResponse(
-			result,
-			([key, value], context) => {
-				if (context.relationType === 'm2o' || context.relationType === 'a2o') {
-					const ids = createdIDs[context.relation!.related_collection!];
-					const match = ids?.find((id) => String(id) === String(value));
+	if (!result) {
+		throw new ForbiddenError();
+	}
 
-					if (match) {
-						return [key, null];
-					}
-				} else if (context.relationType === 'o2m' && Array.isArray(value)) {
-					const ids = createdIDs[context.relation!.collection];
-					return [
-						key,
-						value.map((val) => {
-							const match = ids?.find((id) => String(id) === String(val));
+	return deepMapWithSchema(
+		result,
+		([key, value], context) => {
+			if (context.relationType === 'm2o' || context.relationType === 'a2o') {
+				const ids = createdIDs[context.relation!.related_collection!];
+				const match = ids?.find((id) => String(id) === String(value));
 
-							if (match) {
-								return null;
-							}
-
-							return val;
-						}),
-					];
+				if (match) {
+					return [key, null];
 				}
+			} else if (context.relationType === 'o2m' && Array.isArray(value)) {
+				const ids = createdIDs[context.relation!.collection];
+				return [
+					key,
+					value.map((val) => {
+						const match = ids?.find((id) => String(id) === String(val));
 
-				if (context.field.field === context.collection.primary) {
-					const ids = createdIDs[context.collection.collection];
-					const match = ids?.find((id) => String(id) === String(value));
+						if (match) {
+							return null;
+						}
 
-					if (match) {
-						return [key, null];
-					}
+						return val;
+					}),
+				];
+			}
+
+			if (context.field.field === context.collection.primary) {
+				const ids = createdIDs[context.collection.collection];
+				const match = ids?.find((id) => String(id) === String(value));
+
+				if (match) {
+					return [key, null];
 				}
+			}
 
-				return [key, value];
-			},
-			{ collection: self.collection, schema: self.schema },
-		);
-	});
-
-	return results;
+			return [key, value];
+		},
+		{ collection: self.collection, schema: self.schema },
+	);
 }
