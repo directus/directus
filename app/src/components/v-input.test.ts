@@ -230,6 +230,34 @@ describe('emitValue', () => {
 
 		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['a_test_field']);
 	});
+
+	test('should normalize decimal separators for float input', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				modelValue: '99,99',
+				float: true,
+			},
+			global,
+		});
+
+		await wrapper.find('input').trigger('input');
+
+		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['99.99']);
+	});
+
+	test('should handle multiple decimal separators for float input', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				modelValue: '99,99.88',
+				float: true,
+			},
+			global,
+		});
+
+		await wrapper.find('input').trigger('input');
+
+		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['99.9988']);
+	});
 });
 
 describe('invalid warning', () => {
