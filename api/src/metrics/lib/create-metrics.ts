@@ -24,6 +24,7 @@ export function createMetrics() {
 	const logger = useLogger();
 
 	const services: MetricService[] = (env['METRICS_SERVICES'] as MetricService[] | undefined) ?? [];
+	const metricNamePrefix = env['METRICS_NAME_PREFIX'] ?? 'directus_';
 	const aggregates = new Map();
 
 	/**
@@ -117,11 +118,11 @@ export function createMetrics() {
 
 		const client = env['DB_CLIENT'];
 
-		let metric = register.getSingleMetric(`directus_db_${client}_connection_errors`) as Counter | undefined;
+		let metric = register.getSingleMetric(`${metricNamePrefix}db_${client}_connection_errors`) as Counter | undefined;
 
 		if (!metric) {
 			metric = new Counter({
-				name: `directus_db_${client}_connection_errors`,
+				name: `${metricNamePrefix}db_${client}_connection_errors`,
 				help: `${client} Database connection error count`,
 			});
 		}
@@ -136,11 +137,11 @@ export function createMetrics() {
 
 		const client = env['DB_CLIENT'];
 
-		let metric = register.getSingleMetric(`directus_db_${client}_response_time_ms`) as Histogram | undefined;
+		let metric = register.getSingleMetric(`${metricNamePrefix}db_${client}_response_time_ms`) as Histogram | undefined;
 
 		if (!metric) {
 			metric = new Histogram({
-				name: `directus_db_${client}_response_time_ms`,
+				name: `${metricNamePrefix}db_${client}_response_time_ms`,
 				help: `${client} Database connection response time`,
 				buckets: [1, 10, 20, 40, 60, 80, 100, 200, 500, 750, 1000],
 			});
@@ -158,13 +159,13 @@ export function createMetrics() {
 			return null;
 		}
 
-		let metric = register.getSingleMetric(`directus_cache_${env['CACHE_STORE']}_connection_errors`) as
+		let metric = register.getSingleMetric(`${metricNamePrefix}cache_${env['CACHE_STORE']}_connection_errors`) as
 			| Counter
 			| undefined;
 
 		if (!metric) {
 			metric = new Counter({
-				name: `directus_cache_${env['CACHE_STORE']}_connection_errors`,
+				name: `${metricNamePrefix}cache_${env['CACHE_STORE']}_connection_errors`,
 				help: 'Cache connection error count',
 			});
 		}
@@ -181,7 +182,7 @@ export function createMetrics() {
 
 		if (!metric) {
 			metric = new Counter({
-				name: `directus_redis_connection_errors`,
+				name: `${metricNamePrefix}redis_connection_errors`,
 				help: 'Redis connection error count',
 			});
 		}
@@ -194,11 +195,13 @@ export function createMetrics() {
 			return null;
 		}
 
-		let metric = register.getSingleMetric(`directus_storage_${location}_connection_errors`) as Counter | undefined;
+		let metric = register.getSingleMetric(`${metricNamePrefix}storage_${location}_connection_errors`) as
+			| Counter
+			| undefined;
 
 		if (!metric) {
 			metric = new Counter({
-				name: `directus_storage_${location}_connection_errors`,
+				name: `${metricNamePrefix}storage_${location}_connection_errors`,
 				help: `${location} storage connection error count`,
 			});
 		}
