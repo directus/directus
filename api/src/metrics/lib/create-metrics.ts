@@ -178,7 +178,7 @@ export function createMetrics() {
 			return null;
 		}
 
-		let metric = register.getSingleMetric('directus_redis_connection_errors') as Counter | undefined;
+		let metric = register.getSingleMetric(`${metricNamePrefix}redis_connection_errors`) as Counter | undefined;
 
 		if (!metric) {
 			metric = new Counter({
