@@ -856,7 +856,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						? [`items.create`, `${this.collection}.items.create`]
 						: `${this.eventScope}.create`,
 				meta: {
-					actionHookPayload,
+					payload: actionHookPayload,
 					key: primaryKey,
 					collection: this.collection,
 				},
