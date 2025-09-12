@@ -34,7 +34,7 @@ modules: Moduler
 module_bar: Modul Bar
 logs: Logger
 unknown: Ukjent
-reset_width: Reset Width
+reset_width: Reset Bredde
 tile_size: Flisstørrelse
 edit_field: Rediger felt
 conditions: Betingelser
@@ -48,12 +48,12 @@ item_creation: Objekt opprettelse
 item_revision: Element revisjoner
 enter_a_name: Angi et navn...
 duplicate_field: Dupliser felt
-half_width: Halv vidde
+half_width: Halv bredde
 full_width: Fullbredde
 group: Gruppe
 popular: Populær
 recent: Siste
-export_items: Eksporter produkter
+export_items: Eksporter elementer
 and: Og
 or: Eller
 init: Init
@@ -103,7 +103,7 @@ enable: Aktiver
 disable: Deaktiver
 custom: Egendefinert
 hook: Hook
-fill_width: Fyll vidde
+fill_width: Fyll bredde
 field_name_translations: Feltnavn oversettelser
 enter_password_to_enable_tfa: Fyll inn passord for å skru på To-Faktor Autentisering
 add_field: Legg til felt
@@ -116,9 +116,9 @@ edit_collection: Rediger samling
 exclusive: Eksklusiv
 children: Barn
 db_only_click_to_configure: 'Kun database: Klikk for å konfigurere'
-show_active_items: Show Active Items
+show_active_items: Vis Aktive Elementer
 show_archived_items: Vis arkiverte elementer
-show_all_items: Show Active Items
+show_all_items: Vis alle elementer
 edited: Verdi endret
 required: Påkrevd
 required_for_app_access: Påkrevd for app-tilgang
@@ -335,7 +335,7 @@ length: Lengde
 precision_scale: Presisjon og skala
 readonly: Skrivebeskyttet
 unique: Unik
-updated_on: Opprettet den
+updated_on: Oppdatert den
 updated_by: Oppdatert av
 primary_key: Primærnøkkel
 foreign_key: Fremmednøkkel
@@ -353,7 +353,7 @@ edit_raw_value: Rediger råverdi
 enter_raw_value: Legg inn råverdi...
 clear_value: Tøm innhold
 clear_changes: Fjern endringer
-clear_items: Tøm varer
+clear_items: Tøm elementer
 reset_to_default: Tilbakestill til standard
 undo_changes: Angre endringer
 notifications: Varsler
@@ -406,8 +406,8 @@ system: System
 add_field_related: Legg til felt til relatert kolleksjon
 interface_label: Grensesnitt
 display_label: Visning
-today: Idag
-yesterday: Igår
+today: I dag
+yesterday: I går
 delete_comment: Slett kommentar
 delete_share: Slett Del
 functions:
@@ -461,7 +461,7 @@ folder: Mappe
 folders: Mapper
 zoom: Zoom
 download: Last ned
-open: Åpen
+open: Åpne
 open_in_new_window: Åpne i nytt vindu
 background_color: Bakgrunnsfarge
 upload_from_device: Last opp fil fra enhet
@@ -475,7 +475,7 @@ download_file: Last ned fil
 start_export: Start eksport
 collection_key: Nøkkel Samling
 name: Navn
-primary_key_field: Hovednøkkelfelt (Automatic Translation)
+primary_key_field: Primærnøkkelfelt
 type: Type
 creating_new_collection: Oppretter ny samling
 created_by: Opprettet av
@@ -534,7 +534,7 @@ users: Brukere
 activity: Aktivitet
 activity_item: Aktivitetselement
 action: Handling
-ip_address: IP-addresse
+ip_address: IP-adresse
 user_agent: Brukeragent
 origin: Opprinnelse
 webhooks: Webhooks
@@ -609,7 +609,7 @@ errors:
   VALUE_OUT_OF_RANGE: Verdien er utenfor gyldig område
   VALUE_TOO_LONG: Verdien er for lang
 security: Sikkerhet
-value_hashed: Sikker verdi Hastet
+value_hashed: Sikker verdi Hashet
 bookmark_name: Bokmerkenavn...
 create_bookmark: Lag bokmerke
 edit_bookmark: Rediger bokmerke
@@ -631,7 +631,7 @@ filter: Filter
 edit_image: Rediger bilde
 editing_image: Redigerer bilde
 square: Firkant
-free: Gratis
+free: Fri
 flip_horizontal: Vend horisontalt
 flip_vertical: Vend vertikalt
 aspect_ratio: Størrelsesforhold
@@ -689,13 +689,13 @@ wysiwyg_options:
   table: Tabell
 deselect: Velg bort
 creating_in: 'Oppretter element i {collection}'
-editing_in_batch: 'Batch Editing {count} elementer'
+editing_in_batch: 'Batch-redigering av {count} elementer'
 settings_project: Innstillinger
 settings_webhooks: Webhooks
 settings_presets: Bokmerke
 settings_translations: Oversettelser
 discard_changes: Forkast endringer
-keep_editing: Fortsett å rediger
+keep_editing: Fortsett å redigere
 add_new: Legg til ny
 all: Alle
 batch_delete_confirm: >-
@@ -725,7 +725,7 @@ fields:
     description: Beskrivelse
     tags: Etiketter
     location: Lokasjon
-    modified_on: Modifisert den
+    modified_on: Endret den
     created_on: Opprettet den
     created_by: Opprettet av
     embed: Embed
@@ -798,7 +798,7 @@ comment: Kommenter
 live_preview:
   new_window: Åpne i nytt vindu
 delete_field_are_you_sure: >-
-  Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..
+  Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres.
 description: Beskrivelse
 done: Ferdig
 duplicate: Dupliser
@@ -825,7 +825,7 @@ save: Lagre
 schema: Skjema
 search: Søk
 select_existing: Velg eksisterende
-select_interface: Velg ett grensesnitt
+select_interface: Velg et grensesnitt
 settings: Innstillinger
 sign_in: Logg inn
 sign_out: Logg ut
