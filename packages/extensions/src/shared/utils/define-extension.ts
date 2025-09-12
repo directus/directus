@@ -1,6 +1,7 @@
 import type { Prettify } from '@directus/types';
 import type {
 	DisplayConfig,
+	EditorConfig,
 	EndpointConfig,
 	HookConfig,
 	InterfaceConfig,
@@ -30,6 +31,12 @@ export function defineDisplay<Custom extends CustomConfig<DisplayConfig>>(
 export function defineLayout<Options = any, Query = any>(
 	config: LayoutConfig<Options, Query>,
 ): LayoutConfig<Options, Query> {
+	return config;
+}
+
+export function defineEditor<Custom extends CustomConfig<EditorConfig>>(
+	config: ExtendedConfig<EditorConfig, Custom>,
+): ExtendedConfig<EditorConfig, Custom> {
 	return config;
 }
 

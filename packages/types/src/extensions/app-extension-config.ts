@@ -12,6 +12,7 @@ import type {
 import type { EndpointConfig } from './endpoints.js';
 import type { HookConfig } from './hooks.js';
 import type { DisplayConfig } from './displays.js';
+import type { EditorConfig } from './editors.js';
 import type { InterfaceConfig } from './interfaces.js';
 import type { LayoutConfig } from './layouts.js';
 import type { ModuleConfig } from './modules.js';
@@ -21,6 +22,7 @@ import type { PanelConfig } from './panels.js';
 export type AppExtensionConfigs = {
 	interfaces: InterfaceConfig[];
 	displays: DisplayConfig[];
+	editors: EditorConfig[];
 	layouts: LayoutConfig[];
 	modules: ModuleConfig[];
 	panels: PanelConfig[];
