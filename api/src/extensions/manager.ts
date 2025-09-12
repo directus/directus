@@ -393,6 +393,7 @@ export class ExtensionManager {
 
 		return new Promise((resolve) => {
 			const handler = () => {
+				if (timeoutId) clearTimeout(timeoutId);
 				emitter.offAction('extensions.load', handler);
 				resolve();
 			};
@@ -400,13 +401,7 @@ export class ExtensionManager {
 			emitter.onAction('extensions.load', handler);
 
 			// fall back to time-out if the event is not fired for any reason
-			const timeoutId = setTimeout(
-				() => {
-					clearTimeout(timeoutId);
-					handler();
-				},
-				getMilliseconds(env['EXTENSIONS_RELOAD_TIMEOUT'] ?? '30s'),
-			);
+			const timeoutId = setTimeout(() => handler(), getMilliseconds(/*env['EXTENSIONS_RELOAD_TIMEOUT'] ?? */'1s'));
 		});
 	}
 
