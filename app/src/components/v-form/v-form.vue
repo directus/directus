@@ -98,7 +98,7 @@ const firstEditableFieldIndex = computed(() => {
 	for (const [index, fieldName] of fieldNames.value.entries()) {
 		const field = fieldsMap.value[fieldName];
 
-		if (field?.meta && !field.meta?.readonly && !field.meta?.hidden) {
+		if (field?.meta && !field.meta?.readonly && isVisibleField(fieldName)) {
 			return index;
 		}
 	}
@@ -110,7 +110,7 @@ const firstVisibleFieldIndex = computed(() => {
 	for (const [index, fieldName] of fieldNames.value.entries()) {
 		const field = fieldsMap.value[fieldName];
 
-		if (field?.meta && !field.meta?.hidden) {
+		if (field?.meta && isVisibleField(fieldName)) {
 			return index;
 		}
 	}
@@ -118,10 +118,13 @@ const firstVisibleFieldIndex = computed(() => {
 	return null;
 });
 
+const isVisibleField = (fieldName: string) => {
+	const field = fieldsMap.value[fieldName];
+	return !field?.meta?.hidden || (props.comparison?.mode && props.comparison?.fields?.has(fieldName));
+};
+
 const noVisibleFields = computed(() => {
-	return Object.keys(fieldsMap.value).every((fieldKey) => {
-		return fieldsMap.value[fieldKey]?.meta?.hidden === true;
-	});
+	return Object.keys(fieldsMap.value).every((fieldKey) => !isVisibleField(fieldKey));
 });
 
 watch(
@@ -162,7 +165,7 @@ function useForm() {
 		);
 
 		fields = pushGroupOptionsDown(fields);
-		updateSystemDivider(fields);
+		updateSystemDivider(fields, props.comparison?.fields);
 		updateFieldWidths(fields);
 
 		return fields;
@@ -372,7 +375,7 @@ function toggleComparisonField(field: TFormField | undefined) {
 			<template v-if="fieldsMap[fieldName]">
 				<component
 					:is="`interface-${fieldsMap[fieldName]!.meta?.interface || 'group-standard'}`"
-					v-if="fieldsMap[fieldName]!.meta?.special?.includes('group') && !fieldsMap[fieldName]!.meta?.hidden"
+					v-if="fieldsMap[fieldName]!.meta?.special?.includes('group') && isVisibleField(fieldName)"
 					:ref="
 						(el: Element) => {
 							formFieldEls[fieldName] = el;
@@ -402,7 +405,7 @@ function toggleComparisonField(field: TFormField | undefined) {
 				/>
 
 				<form-field
-					v-else-if="!fieldsMap[fieldName]!.meta?.hidden"
+					v-else-if="isVisibleField(fieldName)"
 					:ref="
 						(el) => {
 							formFieldEls[fieldName] = el;
