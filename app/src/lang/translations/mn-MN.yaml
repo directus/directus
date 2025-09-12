@@ -1170,7 +1170,6 @@ page_help_settings_datamodel_fields: >-
   **Өгөгдлийн загвар: Бүрдэл** — Бүрдэл болон түүний талбаруудыг удирдах маягт.
 page_help_settings_system_logs: '**Системийн логууд** — Системийн бүртгэлийн шууд дамжуулалтад хандах.'
 page_help_settings_policies_collection: '**Бодлогуудыг харах** — Төсөлд харгалзах бүх бодлогуудын жагсаалт.'
-page_help_settings_policies_item: "**Бодлогын дэлгэрэнгүй** — Бодлогын эрхүүд болон бусад тохиргоог удирдах."
 page_help_settings_roles_collection: '**Үүргүүдийг харах** — Төсөлд харгалзах бүх хэрэглэгчийн үүргүүдийн жагсаалт.'
 page_help_settings_roles_item: "**Үүргийн дэлгэрэнгүй** — Үүргийн эрхүүд болон бусад тохиргоог удирдах."
 page_help_settings_presets_collection: >-
