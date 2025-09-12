@@ -25,7 +25,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 						small
 						clickable
 						class="clipboard-icon"
-						@click="copyToClipboard(policy!.id)"
+						@click="copyToClipboard(policy.id)"
 					/>
 				</div>
 			</dl>
