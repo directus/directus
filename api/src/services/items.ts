@@ -498,6 +498,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		data: Partial<T>[],
 		opts: MutationOptions = {}
 	): Promise<PrimaryKey[]> {
+		if (data.length === 0) {
+			return []
+		}
+
 		if (! opts.mutationTracker) {
 			opts.mutationTracker = this.createMutationTracker()
 		}
@@ -506,15 +510,22 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			opts.mutationTracker.trackMutations(data.length)
 		}
 
-		const { ActivityService } = await import('./activity.js');
-		const { RevisionsService } = await import('./revisions.js');
-
 		const primaryKeyField = this.schema.collections[this.collection]!.primary
 		const fields = Object.keys(this.schema.collections[this.collection]!.fields)
 
 		const aliases = Object.values(this.schema.collections[this.collection]!.fields)
 		.filter((field) => field.alias === true)
 		.map((field) => field.field)
+
+		// TODO move it to a lib
+		const isPrimaryKey = (it: unknown): it is PrimaryKey => {
+			return typeof it === 'number' || typeof it === 'string'
+		}
+
+		const isNotPrimaryKey = <T>(it: T): it is T extends PrimaryKey ? never : T => {
+			return ! isPrimaryKey(it)
+		}
+
 
 		// By wrapping the logic in a transaction, we make sure we automatically roll back all the
 		// changes in the DB if any of the parts contained within throws an error. This also means
@@ -553,7 +564,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				schema: this.schema,
 			})
 
-			const itemsAnalyzingValues: ItemValues[] = []
+			const preparedItems: ItemValues[] = []
 
 			for (const payloadToClone of data) {
 				const payload = cloneDeep(payloadToClone)
@@ -586,7 +597,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					|| typeof payloadAfterHooks === 'string' // replace new creation by an existing item having a uuid as its primary key
 					|| typeof payloadAfterHooks === 'number' // replace new creation by an existing item having a number as its primary key
 				) {
-					itemsAnalyzingValues.push(payloadAfterHooks)
+					preparedItems.push(payloadAfterHooks)
 
 					continue
 				}
@@ -661,7 +672,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				}
 
 				// batchInsertInput.push(payloadWithoutAliases)
-				itemsAnalyzingValues.push({
+				preparedItems.push({
 					primaryKey,
 
 					actionHookPayload,
@@ -680,28 +691,23 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				})
 			}
 
+			const itemsToInsert = preparedItems.filter(isNotPrimaryKey)
+
 			try {
 				const results = await trx
 				.batchInsert<Exclude<ItemValues, number | string>['payloadWithoutAliases']>(
 					this.collection,
-					(itemsAnalyzingValues
-					.filter((v) => {
-						return typeof v !== 'number'
-						|| typeof v !== 'string'
-					}) as Exclude<ItemValues, number | string>[])
-					.map((v) => {
+					itemsToInsert.map((v) => {
 						return v.payloadWithoutAliases
 					})
 				)
 				.returning(primaryKeyField)
 
 				results.forEach((result, index) => {
-					const preparedValues = itemsAnalyzingValues[index]
+					// TODO is insert order respected durting batchInsert ?
+					const preparedValues = itemsToInsert[index]
 
-					if (! preparedValues
-						|| typeof preparedValues === 'string'
-						|| typeof preparedValues === 'number'
-					) {
+					if (! preparedValues) {
 						throw new Error(`No batchInsert itemInput found for index ${index}`) // Should never happend
 					}
 
@@ -735,11 +741,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			//   payload[primaryKeyField] = primaryKey
 			// }
 
-			for (const itemsAnalyzingValue of itemsAnalyzingValues) {
-				if (typeof itemsAnalyzingValue === 'number' || typeof itemsAnalyzingValue === 'string') {
-					continue
-				}
 
+			// TODO should Promise.allSettled be replaced by a sequential await?
+			const preparedForPostInsertProcessResponses = await Promise.allSettled( itemsToInsert.map(async (
+				preparedItem
+			) => {
 				const {
 					primaryKey,
 					payloadAfterHooks,
@@ -748,7 +754,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					revisionsA2O,
 					userIntegrityCheckFlagsM2O,
 					userIntegrityCheckFlagsA2O,
-				} = itemsAnalyzingValue
+				} = preparedItem
 
 				const {
 					revisions: revisionsO2M,
@@ -774,71 +780,159 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					}
 				}
 
-				itemsAnalyzingValue.nestedActionEventsO2M = nestedActionEventsO2M
 
-				// If this is an authenticated action, and accountability tracking is enabled, save activity row
-				if (this.accountability
+				const activityInput = this.accountability
 					&& this.schema.collections[this.collection]!.accountability !== null
-				) {
-					const activityService = new ActivityService({
-						knex: trx,
-						schema: this.schema,
-					})
+				?	{
+					action: Action.CREATE,
+					user: this.accountability!.user,
+					collection: this.collection,
+					ip: this.accountability!.ip,
+					user_agent: this.accountability!.userAgent,
+					origin: this.accountability!.origin,
+					item: primaryKey,
+				}
+				: undefined
 
-					const activity = await activityService.createOne({
-						action: Action.CREATE,
-						user: this.accountability!.user,
-						collection: this.collection,
-						ip: this.accountability!.ip,
-						user_agent: this.accountability!.userAgent,
-						origin: this.accountability!.origin,
-						item: primaryKey,
-					})
 
-					// If revisions are tracked, create revisions record
-					if (this.schema.collections[this.collection]!.accountability === `all`) {
-						const revisionsService = new RevisionsService({
-							knex: trx,
-							schema: this.schema,
-						})
-
+				const revisionInput = activityInput !== undefined
+					&& this.schema.collections[this.collection]!.accountability === `all`
+				? await (async () => {
 						const revisionDelta = await payloadService.prepareDelta(payloadAfterHooks)
-
-						const revision = await revisionsService.createOne({
-							activity,
+						return {
+							// activity, // will be added once activity rows are inserted
 							collection: this.collection,
 							item: primaryKey,
 							data: revisionDelta,
 							delta: revisionDelta,
-						})
-
-						// Make sure to set the parent field of the child-revision rows
-						const childrenRevisions = [...revisionsM2O, ...revisionsA2O, ...revisionsO2M]
-
-						if (childrenRevisions.length > 0) {
-							await revisionsService.updateMany(childrenRevisions, { parent: revision })
 						}
+				})()
+				: undefined
 
-						if (opts.onRevisionCreate) {
-							opts.onRevisionCreate(revision)
-						}
-					}
+				let activity: PrimaryKey | undefined
+				let revision: PrimaryKey | undefined
+
+				return {
+					...preparedItem,
+					nestedActionEventsO2M,
+					activityInput,
+					activity,
+					revisionInput,
+					revision,
+					childrenRevisions: [...revisionsM2O, ...revisionsA2O, ...revisionsO2M],
 				}
+			}))
+
+
+			// From https://stackoverflow.com/a/69451755
+			const isRejected = (input: PromiseSettledResult<unknown>): input is PromiseRejectedResult => {
+				return input.status === 'rejected'
 			}
+
+			const isFulfilled = <T>(input: PromiseSettledResult<T>): input is PromiseFulfilledResult<T> => {
+				return input.status === 'fulfilled'
+			}
+
+			const errorReasons = preparedForPostInsertProcessResponses.filter(isRejected)?.map(i => i.reason)
+
+			if (errorReasons.length) {
+				console.log('errorReasons', errorReasons)
+				throw errorReasons[0]
+				// TODO how to pass all the errors ?
+			}
+
+			const preparedForPostInsert = preparedForPostInsertProcessResponses.filter(isFulfilled)?.map(item => item.value)
+
+
+			const itemsWithActivityInput = preparedForPostInsert
+			.filter(isNotPrimaryKey)
+			.filter((item) => {
+				return item.activityInput !== undefined
+			})
+
+			const { ActivityService } = await import('./activity.js');
+
+			const itemsWithActivity = (await new ActivityService({
+				knex: trx,
+				schema: this.schema,
+			})
+			.createMany(itemsWithActivityInput.map((item) => {
+				return item.activityInput!
+			})))
+			.map((activityPk, index) => {
+				if (! (index in itemsWithActivityInput) || itemsWithActivityInput[index] === undefined) {
+					throw new Error(`Unable to find '${index}' in activitiesItems`)
+				}
+
+				return {
+					...itemsWithActivityInput[index],
+					activity: activityPk,
+				}
+			})
+
+
+			const itemsWithRevisionInput = itemsWithActivity
+			.filter((item) => {
+				return item.revisionInput !== undefined
+			})
+
+			const { RevisionsService } = await import('./revisions.js');
+
+			const revisionsService = new RevisionsService({
+				knex: trx,
+				schema: this.schema,
+			})
+
+			const itemsWithActivityAndRevision =(await revisionsService.createMany(itemsWithRevisionInput.map((
+				item
+			) => {
+				return {
+					...item.revisionInput,
+					activity: item.activity,
+				}
+			})))
+			.map((revisionPk, index) => {
+				if (! (index in itemsWithRevisionInput) || itemsWithRevisionInput[index] === undefined) {
+					throw new Error(`Unable to find '${index}' in itemsWithRevisionInput`)
+				}
+
+				return {
+					...itemsWithRevisionInput[index],
+					revision: revisionPk,
+				}
+			})
+
+
+			// Make sure to set the parent field of the child-revision rows
+			const updateRevisionsChildrenResponses = await Promise.allSettled( itemsWithActivityAndRevision.map(async (item) => {
+				if (item.childrenRevisions.length > 0) {
+					await revisionsService.updateMany(item.childrenRevisions, { parent: item.revision })
+				}
+
+				if (opts.onRevisionCreate) {
+					opts.onRevisionCreate(item.revision)
+				}
+			}))
+
+			const revisionErrorReasons = updateRevisionsChildrenResponses.filter(isRejected)?.map(i => i.reason)
+
+			if (revisionErrorReasons.length) {
+				// console.log('revisionErrorReasons', revisionErrorReasons)
+				throw revisionErrorReasons[0]
+				// TODO how to pass all the errors ?
+			}
+
 
 			if (autoIncrementSequenceNeedsToBeReset) {
 				await getHelpers(trx).sequence.resetAutoIncrementSequence(this.collection, primaryKeyField);
 			}
 
-			return itemsAnalyzingValues
+			return preparedForPostInsert
 		})
 
 
-		for (const itemValues of itemsValues) {
-			if (opts.emitEvents === false
-				|| typeof itemValues === 'string'
-				|| typeof itemValues === 'number'
-			) {
+		for (const itemValues of itemsValues.filter(isNotPrimaryKey)) {
+			if (opts.emitEvents === false) {
 				continue
 			}
 
@@ -899,7 +993,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		}
 
 		return itemsValues.map((itemValues) => {
-			if (typeof itemValues === 'string' || typeof itemValues === 'number') {
+			if (isPrimaryKey(itemValues)) {
 				return itemValues
 			}
 
