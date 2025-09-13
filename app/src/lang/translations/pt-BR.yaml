@@ -1188,7 +1188,6 @@ page_help_settings_datamodel_fields: >-
   **Modelo de Dados: Coleção** — Um formulário para gerenciar esta coleção e seus campos.
 page_help_settings_system_logs: '** Sistema de Registros** — Acesse um fluxo ao vivo dos registros do sistema.'
 page_help_settings_policies_collection: '**Pesquisar Políticas** — Lista todas as políticas no projeto.'
-page_help_settings_policies_item: "\"Detalhes da política, Gerenciar permissões de uma política e outras configurações\""
 page_help_settings_roles_collection: 'Navegar por funções, listar todas as funções de usuário no projeto.'
 page_help_settings_roles_item: "**Detalhes do cargo** — Gerencie as permissões de um cargo e outras configurações."
 page_help_settings_presets_collection: >-

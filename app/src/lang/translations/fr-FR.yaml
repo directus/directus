@@ -1181,7 +1181,6 @@ page_help_settings_datamodel_fields: >-
   **Modèle de données : Collection** — Un formulaire pour gérer cette collection et ses champs.
 page_help_settings_system_logs: '**System Logs** — Accédez au flux en direct des journaux du système.'
 page_help_settings_policies_collection: '**Parcourir les polices** — Liste toutes les polices du projet.'
-page_help_settings_policies_item: "**Détail de la police** — Gestion des permissions d'une police et d'autres paramètres."
 page_help_settings_roles_collection: '**Parcourir les Rôles** — Liste tous les rôles utilisateur du projet.'
 page_help_settings_roles_item: "**Détail du rôle** — Gérer les autorisations et les autres paramètres d'un rôle."
 page_help_settings_presets_collection: >-

@@ -1167,7 +1167,6 @@ page_help_settings_datamodel_fields: >-
   **مدل داده: مجموعه** - فرمی برای مدیریت مجموعه و فیلدهای آن.
 page_help_settings_system_logs: '**لاگ‌های سیستم** — دسترسی به جریان زنده لاگ‌های سیستم.'
 page_help_settings_policies_collection: '**مرور سیاست‌ها** — همه سیاست‌های داخل پروژه را فهرست می‌کند.'
-page_help_settings_policies_item: "**جزئیات سیاست** — مدیریت مجوزهای یک سیاست و سایر تنظیمات."
 page_help_settings_roles_collection: '**مرور نقش‌ها** - تمام نقش‌های کاربر در پروژه را لیست می‌کند.'
 page_help_settings_roles_item: "**جزئیات نقش** - مدیریت اجازه های یک نقش و سایر تنظیمات مربوط به آن."
 page_help_settings_presets_collection: >-

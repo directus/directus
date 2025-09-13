@@ -1183,7 +1183,6 @@ page_help_settings_datamodel_fields: >-
   **Datenmodell: Sammlung** — Ein Formular zur Verwaltung dieser Sammlung und ihrer Felder.
 page_help_settings_system_logs: '**Systemprotokolle** — Greifen Sie auf einen Live-Stream der Systemprotokolle zu.'
 page_help_settings_policies_collection: '**Richtlinien durchstöbern** — Auflistung aller Richtlinien innerhalb des Projekts.'
-page_help_settings_policies_item: "**Richtlinien-Detail** — Verwalten Sie die Berechtigungen einer Richtlinie sowie weitere Einstellungen."
 page_help_settings_roles_collection: '**Rollen durchstöbern** — Auflistung aller Benutzerrollen innerhalb des Projekts.'
 page_help_settings_roles_item: "**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten."
 page_help_settings_presets_collection: >-
