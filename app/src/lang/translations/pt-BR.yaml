@@ -46,6 +46,7 @@ location: Local
 collection_names_are_case_sensitive: Os nomes das coleções diferenciam maiúsculas de minúsculas
 condition_rules: Regras da condição
 input: Entrada
+invalid_input: Entrada invalida
 maps: Mapas
 switch_user: Alternar Usuário
 item_creation: Criação do Item
@@ -112,6 +113,7 @@ hook: Gancho
 fill_width: Preencher Largura
 field_name_translations: Traduções do Nome do Campo
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
+sso_tfa_setup_notice: Você será desligado da sua conta e precisará entrar novamente. Qualquer mudança não salva será descartada.
 add_field: Adicionar Campo
 role_name: Nome do Cargo
 policy_name: Nome da política 
@@ -320,6 +322,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Redefinir Preferências da Página
 hidden_field: Campo Oculto
 hidden_on_detail: Oculto em Detalhe
+clear_hidden_field: Limpar Valor(es)
 readonly_field_label: Desabilitar Campo no Aplicativo
 required_readonly_field_warning: Ao habilitar "somente leitura" e "obrigatório" em um campo impede que o “item” seja salvo se o valor estiver vazio.
 key: Chave
@@ -2541,3 +2544,5 @@ bsl_banner:
   accept_terms: Aceitar
   get_license: Obtenha a sua licença
 accepted: Aceitado
+text_direction_auto: Automático (Adequar o Idioma)
+text_direction_ltr: Da Esquerda para a Direita (EPD)
