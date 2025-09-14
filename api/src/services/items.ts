@@ -9,10 +9,14 @@ import type {
 	PrimaryKey,
 	Query,
 	SchemaOverview,
+	JsonValue,
 } from '@directus/types';
+
+type Primitive = undefined | null | string | number | boolean | bigint | symbol; // Why isn't it exported from @directus/types?
+
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
+import { assign, clone, cloneDeep, omit, pick, without, isEqual, reduce } from 'lodash-es';
 import { getCache } from '../cache.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import { getAstFromQuery } from '../database/get-ast-from-query/get-ast-from-query.js';
@@ -493,6 +497,21 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	}
 
 
+	isMariaDbStore: boolean | undefined
+	async isMariaDb() {
+		if (this.isMariaDbStore !== undefined) {
+			return this.isMariaDbStore
+		}
+
+		const { version } = await this.knex
+		.select(this.knex.raw('VERSION() as version'))
+		.first();
+
+		const isMariaDb = version.split('-').includes('MariaDB');
+		return this.isMariaDbStore = isMariaDb
+	}
+
+
 	async createManyAtOnce<T extends AnyItem>(
 		this: ItemsService,
 		data: Partial<T>[],
@@ -693,56 +712,341 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			const itemsToInsert = preparedItems.filter(isNotPrimaryKey)
 
+
+
+
+
+			const collectionSchema = this.schema.collections[this.collection]
+
+			if (! collectionSchema) {
+				throw new Error(`Can't find collection schema of ${this.collection}`)
+			}
+
+			const collectionFieldsSchema = collectionSchema.fields
+
+			if (! collectionFieldsSchema) {
+				throw new Error(`Can't find collection's fields schema of ${this.collection}`)
+			}
+
+			const isSqlite = this.knex.client.config.client === 'sqlite3'
+
+			// Non nullable fields do not support "undefined" as value in batchInsert()
+			// https://github.com/knex/knex/issues/332#issuecomment-2204047144
+			const sqliteFieldsRequiringValue = isSqlite ? Object.fromEntries(
+				Object.entries(collectionFieldsSchema)
+				.filter(([fieldName, field]) => {
+					return fieldName !== primaryKeyField
+					&& field.nullable === false
+				})
+				.map(([fieldName, field]) => {
+					return [fieldName, field.defaultValue]
+				})
+			) : {}
+
+
 			try {
 				const results = await trx
 				.batchInsert<Exclude<ItemValues, number | string>['payloadWithoutAliases']>(
 					this.collection,
 					itemsToInsert.map((v) => {
-						return v.payloadWithoutAliases
+						return {
+							...sqliteFieldsRequiringValue,
+							...v.payloadWithoutAliases
+						}
 					})
 				)
 				.returning(primaryKeyField)
 
-				results.forEach((result, index) => {
-					// TODO is insert order respected durting batchInsert ?
-					const preparedValues = itemsToInsert[index]
+				// MySQL, MariaDB and Sqlite will only return the id of the last item
+				if (results.length === itemsToInsert.length) {
+					results.forEach((result, index) => {
+						const preparedValues = itemsToInsert[index]
 
-					if (! preparedValues) {
-						throw new Error(`No batchInsert itemInput found for index ${index}`) // Should never happend
-					}
+						if (! preparedValues) {
+							throw new Error(`No batchInsert itemInput found for index ${index}`) // Should never happend
+						}
 
-					const returnedKey = typeof result === `object` ? result[primaryKeyField] : result
+						// TODO .returning(primaryKeyField) should avoid this case
+						const returnedKey = typeof result === `object` ? result[primaryKeyField] : result
 
-					if (this.schema.collections[this.collection]!.fields[primaryKeyField]!.type === `uuid`) {
-						preparedValues.primaryKey = getHelpers(trx).schema.formatUUID(
-							(preparedValues.primaryKey ?? returnedKey) as string
-						)
+						if (this.schema.collections[this.collection]!.fields[primaryKeyField]!.type === `uuid`) {
+							preparedValues.primaryKey = getHelpers(trx).schema.formatUUID(
+								(preparedValues.primaryKey ?? returnedKey) as string
+							)
+						}
+						else {
+							preparedValues.primaryKey = preparedValues.primaryKey ?? returnedKey
+						}
+					})
+				}
+				else {
+					// Most database support returning, those who don't tend to return the PK anyways
+					// (MySQL/SQLite). In case the primary key isn't know yet, we'll do a best-attempt at
+					// fetching it based on the last inserted row
+
+
+					// Fetching it with max should be safe, as we're in the context of the current transaction
+					// const result = await trx.max(primaryKeyField, { as: `id` })
+					// .first()
+					// primaryKey = result.id
+
+					// const inputKeys = Object.keys(itemsToInsert[0]!.payloadWithoutAliases)
+					const inputKeys = [...new Set(itemsToInsert.map(item => {
+						return Object.keys(item.payloadWithoutAliases)
+					}).flat())].sort()
+
+					const itemsToInsertWithoutPk = itemsToInsert.filter((item) => {
+						return item.primaryKey === undefined
+					})
+
+					const itemsToInsertWithPk = itemsToInsert.filter((item) => {
+						return item.primaryKey !== undefined && item.primaryKey !== null
+					})
+
+					// https://www.geeksforgeeks.org/sql/sql-query-to-get-the-latest-record-from-the-table/
+					const lastAddedRows = await trx.select(primaryKeyField, ...inputKeys)
+					.from(this.collection)
+					.orderBy(primaryKeyField, 'desc')
+					.limit(itemsToInsertWithoutPk.length)
+
+					// If some primary keys are given in the inputs and do not belong to the lastAddedRows (as ordered by id):
+					// - It's not an issue because they are already set in itemsToInsert
+					// - We need to jump them
+
+
+					// TODO what if the id is specified but within the lastAddedRows?
+					// console.log('!!!!! fetching missing pks', JSON.stringify({
+					// 	itemsToInsert,
+					// 	results,
+					// 	lastAddedRows,
+					// 	inputKeys,
+					// 	// fieldTypes: collectionSchema.fields,
+					// 	fieldTypes: Object.fromEntries( Object.entries(collectionSchema.fields).map(([fieldName, field]) => [fieldName, field.type])),
+					// }, null, 2))
+
+
+					// const collectionSchema = this.schema.collections[this.collection]!.fields[primaryKeyField]!.type === `uuid`
+
+					const emptyItemInput = Object.fromEntries(inputKeys.map(key => [key, undefined]))
+
+					const pkInInput = itemsToInsertWithPk.map(item => item.primaryKey)
+
+					const isMariaDb = await this.isMariaDb()
+
+					lastAddedRows
+					.filter((addedRow) => {
+						// If a fetched item already has an item, skip it as its order in the input may mismatch the fetched order (-by primary key)
+						return ! pkInInput.includes(addedRow[primaryKeyField])
+					})
+					.forEach((addedRow, index) => {
+
+						const itemIndex = itemsToInsertWithoutPk.length - 1 - index
+						const item = itemsToInsertWithoutPk[itemIndex]
+
+						if (item === undefined) {
+							throw new Error(`Missing item to insert at ${itemIndex} during primary keys attribution for MySql / MariaDB / SQlite`) // should never happend
+						}
+
+						if (! [
+							'mssql',
+							// 'sqlite3'
+						].includes(this.knex.client.config.client)) {
+							const sqlifyEntries = <T extends Record<string, Primitive | Date>>(input: T) => {
+								const entries = Object.entries(input)
+
+								type SqlValue = string | number | null | JsonValue | Date
+
+								const castedEntries = entries.reduce((acc, entry) => {
+									const field = collectionSchema?.fields[entry[0]]
+
+									if (! field) {
+										throw new Error(`Field ${entry[0]} missing in the schema of the collection ${this.collection}`)
+									}
+
+									let value: SqlValue
+
+									if (entry[1] === null || entry[1] === undefined) {
+										// This must not be in the if else block as default values are not sql ones
+										// e.g: default value can be "true" which must be casted as "1"
+										entry[1] = field.defaultValue
+									}
+
+									if (entry[1] === null || entry[1] === undefined) {
+										value = null
+									}
+									else if ('boolean' === field.type) {
+										if (entry[1] === true) {
+											value = 1
+										}
+										else if (entry[1] === false) {
+											value = 0
+										}
+										else {
+											throw new Error(`Invalid valid for boolean input: ${JSON.stringify(entry[1])}`)
+										}
+									}
+									else if ([
+										'string', 'text',
+										'csv',
+										'uuid',
+										'time', // e.g. 00:00:00
+									].includes(field.type)) {
+										value = entry[1].toString()
+									}
+									else if ([
+										'json',
+									].includes(field.type)) {
+										if (typeof entry[1] === 'string') {
+											// TODO is it normal Json entries are not automatically parsed with MariaDb?
+											value = isMariaDb ? entry[1] : JSON.parse(entry[1])
+										}
+										else {
+											throw new Error(`Bad input value for JSON field: ${String(entry[1])}`)
+										}
+									}
+									else if ([
+										'timestamp',
+										'date', 'dateTime',
+									].includes(field.type)) {
+										if (entry[1] instanceof Date) {
+											if ( field.type === "timestamp"
+												|| field.type === "dateTime"
+											) {
+												if (isMariaDb) {
+													value = new Date( Math.floor(entry[1].getTime() / 1000) * 1000) // Flooring to seconds for MariaDb
+												}
+												else {
+													value = new Date( Math.round(entry[1].getTime() / 1000) * 1000) // Rounding to seconds for Mysql
+												}
+											}
+											else if (field.type === "date") {
+												value = new Date(entry[1])
+												value.setHours(0, 0, 0, 0)
+											}
+											else {
+												// TODO throw error ?
+												value = entry[1]
+											}
+										}
+										else {
+											throw new Error(`Unimplemented support for date/time input '${entry[0]}' having schema type '${field.type}' and value type ${typeof entry[1]}`)
+										}
+									}
+									else if ([
+										'integer', // example: primary key
+										'float',
+										'bigInteger',
+									].includes(field.type)) {
+										value = Number(entry[1])
+									}
+									else if ([
+										'decimal',
+									].includes(field.type)) {
+										value = Number(entry[1]).toFixed(5)
+									}
+									else if (field.type === "alias") {
+										throw new Error('Alias fields should already be removed here') //  as input is based on payloadWithoutAliases
+									}
+									else {
+										console.log('!!!!! fetching missing pks', JSON.stringify({
+											itemsToInsert,
+											results,
+											lastAddedRows,
+											inputKeys,
+											// fieldTypes: collectionSchema.fields,
+											fieldTypes: Object.fromEntries( Object.entries(collectionSchema.fields).map(([fieldName, field]) => [fieldName, field.type])),
+											fieldDefaults: Object.fromEntries( Object.entries(collectionSchema.fields).map(([fieldName, field]) => [fieldName, field.defaultValue])),
+										}, null, 2))
+
+										throw new Error(`Unimplemented support for input entry '${entry[0]}' having schema type '${field.type}' and value type ${typeof entry[1]}`)
+									}
+
+									return [
+										...acc,
+										[
+											entry[0],
+											value,
+										] as [string, SqlValue], // "as" avoids type conversion to SqlValue[]
+									]
+								}, [] as [string, SqlValue][])
+
+								return Object.fromEntries(castedEntries) as Record<keyof T, SqlValue>
+							}
+
+
+							const sqlifiedItemInput = sqlifyEntries({
+								[primaryKeyField]: addedRow[primaryKeyField],
+								...emptyItemInput,
+								...item.payloadWithoutAliases,
+							})
+
+							if (! isEqual(sqlifiedItemInput, addedRow)) {
+
+								function objectDiff(obj1: Record<string, unknown>, obj2: Record<string, unknown>) {
+									return reduce(obj1, (result, value, key) => {
+										if (! isEqual(value, obj2[key])) {
+											result[key] = { new: obj2[key], old: value };
+										}
+
+										return result;
+									}, {} as Record<string, unknown>);
+								}
+
+								console.log('!!!!! fetching missing pks', JSON.stringify({
+									// itemsToInsert,
+									itemsInputToInsert: itemsToInsert.map(i => i.payloadWithoutAliases),
+									results,
+									lastAddedRows,
+									inputKeys,
+									fieldTypes: Object.fromEntries( Object.entries(collectionSchema.fields).map(([fieldName, field]) => [fieldName, field.type])),
+									fieldDefaults: Object.fromEntries( Object.entries(collectionSchema.fields).map(([fieldName, field]) => [fieldName, field.defaultValue])),
+								}, null, 2))
+
+								throw new Error(
+									`Invalid primary key assignment of added row ${JSON.stringify(addedRow, null, 2)}`
+									+ ` to inserted item ${JSON.stringify(sqlifiedItemInput, null, 2)}`
+									+ ` differing by ${JSON.stringify(objectDiff(sqlifiedItemInput, addedRow), null, 2)}`
+								)
+							}
+						}
+
+						// TODO
+						// - Finish MySQL / Sqlite / MarioaDB support
+						// - TEST
+						//   - SQL DEFAULT
+						//   - All the field types
+						//   - pks in input with values OUTSIDE the select
+						//   - pks in input with values INSIDE the select
+
+						item.primaryKey = addedRow.id
+
+						// Set the primary key on the input item, in order for the "after" event hook to be able
+						// to read from it
+						item.payloadWithoutAliases[primaryKeyField] = item.primaryKey
+						item.actionHookPayload[primaryKeyField] = item.primaryKey
+					})
+
+
+					const insertedItemsWithoutPk = itemsToInsert.filter((item) => {
+						return item.primaryKey === undefined
+					})
+
+					if (insertedItemsWithoutPk.length !== 0) {
+						throw new Error(`Remaining inserted items with no primary key: ${JSON.stringify(insertedItemsWithoutPk, null, 2)}`)
 					}
-					else {
-						preparedValues.primaryKey = preparedValues.primaryKey ?? returnedKey
-					}
-				})
+				}
 			}
 			catch (err: any) {
+				console.log('Sql error', {
+					err,
+					data,
+					sqliteFieldsRequiringValue
+				})
 				throw await translateDatabaseError(err, data)
 			}
 
-			// TODO
-			// Most database support returning, those who don't tend to return the PK anyways
-			// (MySQL/SQLite). In case the primary key isn't know yet, we'll do a best-attempt at
-			// fetching it based on the last inserted row
-			// if (! primaryKey) {
-			//   // Fetching it with max should be safe, as we're in the context of the current transaction
-			//   const result = await trx.max(primaryKeyField, { as: `id` }).from(this.collection)
-			//   .first()
-			//   primaryKey = result.id
-			//   // Set the primary key on the input item, in order for the "after" event hook to be able
-			//   // to read from it
-			//   payload[primaryKeyField] = primaryKey
-			// }
 
-
-			// TODO should Promise.allSettled be replaced by a sequential await?
+			// TODO should Promise.allSettled be replaced by a slower sequential await?
 			const preparedForPostInsertProcessResponses = await Promise.allSettled( itemsToInsert.map(async (
 				preparedItem
 			) => {
@@ -824,6 +1128,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}))
 
 
+			// TODO move them to a lib
 			// From https://stackoverflow.com/a/69451755
 			const isRejected = (input: PromiseSettledResult<unknown>): input is PromiseRejectedResult => {
 				return input.status === 'rejected'
@@ -836,7 +1141,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			const errorReasons = preparedForPostInsertProcessResponses.filter(isRejected)?.map(i => i.reason)
 
 			if (errorReasons.length) {
-				console.log('errorReasons', errorReasons)
+				// console.log('errorReasons', errorReasons)
 				throw errorReasons[0]
 				// TODO how to pass all the errors ?
 			}
