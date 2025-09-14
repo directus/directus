@@ -4,7 +4,7 @@ import { spawn, spawnSync } from 'child_process';
 import knex from 'knex';
 import { Listr } from 'listr2';
 import { clone } from 'lodash-es';
-import fs from 'node:fs/promises';
+import fs from 'node:fs';
 import { join } from 'node:path';
 import config, { getUrl, paths } from '../common/config';
 import vendors from '../common/get-dbs-to-test';
@@ -24,83 +24,113 @@ export async function setup() {
 						return {
 							title: config.names[vendor],
 							task: async () => {
-								const database = knex(config.knexConfig[vendor]);
-								await awaitDatabaseConnection(database, config.knexConfig[vendor].waitTestSQL);
 
-								if (vendor === 'sqlite3') {
-									await fs.writeFile(join(paths.cwd, 'test.db'), '');
-								}
+								try {
+									const database = knex(config.knexConfig[vendor]);
+									await awaitDatabaseConnection(database, config.knexConfig[vendor].waitTestSQL);
 
-								const bootstrap = spawnSync('node', [paths.cli, 'bootstrap'], {
-									cwd: paths.cwd,
-									env: config.envs[vendor],
-								});
+									if (vendor === 'sqlite3') {
+										fs.writeFileSync(join(paths.cwd, 'test.db'), '');
+									}
 
-								if (bootstrap.status !== null && bootstrap.status !== 0) {
-									throw new Error(
-										`Directus-${vendor} bootstrap failed (${bootstrap.status}): \n ${bootstrap.stderr.toString()}`,
-									);
-								}
-
-								await database.migrate.latest();
-								await database.seed.run();
-								await database.destroy();
-
-								if (!process.env['TEST_LOCAL']) {
-									const server = spawn('node', [paths.cli, 'start'], {
+									const bootstrap = spawnSync('node', [paths.cli, 'bootstrap'], {
 										cwd: paths.cwd,
 										env: config.envs[vendor],
 									});
 
-									global.directus[vendor] = server;
-									let serverOutput = '';
-									server.stdout.setEncoding('utf8');
+									if (bootstrap.status !== null && bootstrap.status !== 0) {
+										throw new Error(
+											`Directus-${vendor} bootstrap failed (${bootstrap.status}): \n ${bootstrap.stderr.toString()}`,
+										);
+									}
 
-									server.stdout.on('data', (data) => {
-										serverOutput += data.toString();
-									});
+									await database.migrate.latest();
+									await database.seed.run();
+									await database.destroy();
 
-									server.stderr.on('data', (data) => {
-										console.log(data.toString());
-									});
+									if (!process.env['TEST_LOCAL']) {
+										const server = spawn('node', [paths.cli, 'start'], {
+											cwd: paths.cwd,
+											env: config.envs[vendor],
+										});
 
-									server.on('exit', async (code) => {
-										if (process.env['TEST_SAVE_LOGS']) {
-											await fs.writeFile(join(paths.cwd, `server-log-${vendor}.txt`), serverOutput);
+										global.directus[vendor] = server;
+										server.stdout.setEncoding('utf8');
+
+										const logFilePath = join(paths.cwd, `server-log-${vendor}.txt`);
+										console.log(`Saving server logs to ${logFilePath}`);
+
+										const logFile = process.env['TEST_SAVE_LOGS']
+										? fs.openSync(logFilePath, 'w')
+										: null;
+
+										if (logFile) {
+											fs.writeFileSync(logFile, '');
 										}
 
-										if (code !== null)
-											throw new Error(`Directus-${vendor} server failed (${code}): \n ${serverOutput}`);
-									});
+										server.stdout.on('data', (data) => {
+											if (logFile) {
+												fs.appendFileSync(logFile, data);
+											}
+										});
 
-									// Give the server some time to start
-									await awaitDirectusConnection(Number(config.envs[vendor].PORT));
+										server.stderr.on('data', (data) => {
+											console.log(data.toString());
+										});
 
-									// Set up separate directus instance without system cache
-									const noCacheEnv = clone(config.envs[vendor]);
-									noCacheEnv['CACHE_SCHEMA'] = 'false';
-									noCacheEnv['PORT'] = String(parseInt(noCacheEnv.PORT) + 50);
-									const serverNoCache = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: noCacheEnv });
-									global.directusNoCache[vendor] = serverNoCache;
-									let serverNoCacheOutput = '';
-									serverNoCache.stdout.setEncoding('utf8');
+										server.on('exit', async (code) => {
+											if (logFile){
+												fs.closeSync(logFile);
+											}
 
-									serverNoCache.stdout.on('data', (data) => {
-										serverNoCacheOutput += data.toString();
-									});
+											if (code !== null)
+												throw new Error(`Directus-${vendor} server failed (${code}): \n Logs in ${logFilePath}`);
+										});
 
-									serverNoCache.on('exit', async (code) => {
-										if (process.env['TEST_SAVE_LOGS']) {
-											await fs.writeFile(join(paths.cwd, `server-log-${vendor}-no-cache.txt`), serverNoCacheOutput);
+										// Give the server some time to start
+										await awaitDirectusConnection(Number(config.envs[vendor].PORT));
+
+										// Set up separate directus instance without system cache
+										const noCacheEnv = clone(config.envs[vendor]);
+										noCacheEnv['CACHE_SCHEMA'] = 'false';
+										noCacheEnv['PORT'] = String(parseInt(noCacheEnv.PORT) + 50);
+										const serverNoCache = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: noCacheEnv });
+										global.directusNoCache[vendor] = serverNoCache;
+										serverNoCache.stdout.setEncoding('utf8');
+
+										const logFilePathNoCache = join(paths.cwd, `server-log-${vendor}-no-cache.txt`);
+										console.log(`Saving no-cache server logs to ${logFilePathNoCache}`);
+
+										const logFileNoCache = process.env['TEST_SAVE_LOGS']
+										? fs.openSync(logFilePathNoCache, 'w')
+										: null;
+
+										if (logFileNoCache) {
+											fs.writeFileSync(logFileNoCache, '');
 										}
 
-										if (code !== null) {
-											throw new Error(`Directus-${vendor}-no-cache server failed (${code}): \n ${serverNoCacheOutput}`);
-										}
-									});
+										serverNoCache.stdout.on('data', (data) => {
+											if (logFileNoCache) {
+												fs.appendFileSync(logFileNoCache, data);
+											}
+										});
 
-									// Give the server some time to start
-									await awaitDirectusConnection(Number(noCacheEnv['PORT']));
+										serverNoCache.on('exit', async (code) => {
+											if (logFileNoCache) {
+												fs.closeSync(logFileNoCache);
+											}
+
+											if (code !== null) {
+												throw new Error(`Directus-${vendor}-no-cache server failed (${code}): \n Logs in ${logFilePathNoCache}`);
+											}
+										});
+
+										// Give the server some time to start
+										await awaitDirectusConnection(Number(noCacheEnv['PORT']));
+									}
+								} catch (error) {
+									console.error(error);
+									throw error;
 								}
 							},
 						};
@@ -153,7 +183,7 @@ export async function setup() {
 
 export async function teardown() {
 	try {
-		await fs.unlink('sequencer-data.json');
+		fs.unlinkSync('sequencer-data.json');
 	} catch {
 		// Ignore
 	}

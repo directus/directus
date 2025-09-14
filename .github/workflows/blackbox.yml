@@ -19,6 +19,7 @@ concurrency:
 
 env:
   NODE_OPTIONS: --max_old_space_size=6144
+  TEST_SAVE_LOGS: info
 
 jobs:
   common:
@@ -87,3 +88,13 @@ jobs:
 
       - name: Run tests
         run: TEST_DB=${{ matrix.vendor }} pnpm run test:blackbox -- --project db
+
+      - name: Archive Server Logs
+        if: always() # Sometimes the tests never end. always() will help to debug it
+        uses: actions/upload-artifact@v4
+        with:
+          name: Logs from Directus tests run on ${{ matrix.vendor }}
+          path: |
+            tests/blackbox/server-log-${{ matrix.vendor }}-no-cache.txt
+            tests/blackbox/server-log-${{ matrix.vendor }}.txt
+          retention-days: 90
