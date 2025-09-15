@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { handlePressure } from '@directus/pressure';
+import { toBoolean } from '@directus/utils';
 import cookieParser from 'cookie-parser';
 import type { Request, RequestHandler, Response } from 'express';
 import express from 'express';
@@ -298,7 +299,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
 
-	if (env['MCP_ENABLED'] === true) {
+	if (toBoolean(env['MCP_ENABLED'] === true)) {
 		app.use('/mcp', mcpRouter);
 	}
 
