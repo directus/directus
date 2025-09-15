@@ -1588,6 +1588,8 @@ unlimited_usage: 无限使用
 uses_left: 无剩余使用次数 | 剩余一次使用次数 | 剩余 {n} 次使用次数
 no_shares: 没有要显示的共享
 new_share: 新建分享
+mcp_prompts_collection_schema:
+  messages_role_user: 用户
 expired: 已过期
 upcoming: 即将到来的
 share: 分享
