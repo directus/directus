@@ -141,7 +141,6 @@ export class AuthenticationService {
 					user.status = 'suspended';
 
 					if (this.accountability) {
-
 						const activity = await this.activityService.createOne({
 							action: Action.UPDATE,
 							user: user.id,
