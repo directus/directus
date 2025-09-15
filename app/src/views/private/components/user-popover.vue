@@ -23,7 +23,10 @@ const avatarSrc = computed(() => {
 	if (data.value === null) return null;
 
 	if (data.value.avatar?.id) {
-		return getAssetUrl(`${data.value.avatar.id}?key=system-medium-cover`);
+		return getAssetUrl(data.value.avatar.id, {
+			imageKey: 'system-medium-cover',
+			cacheBuster: data.value.avatar.modified_on,
+		});
 	}
 
 	return null;
