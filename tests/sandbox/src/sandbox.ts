@@ -43,6 +43,8 @@ export type Options = {
 	prefix: string | undefined;
 	/** Exports a snapshot and type definition every 2 seconds */
 	export: boolean;
+	/** Silence all logs except for errors */
+	silent: boolean;
 	/** Load an additional schema snapshot on startup */
 	schema: string | undefined;
 	/** Start the api with debugger */
@@ -98,6 +100,7 @@ function getOptions(options?: DeepPartial<Options>): Options {
 			env: {} as Record<string, string>,
 			prefix: undefined,
 			schema: undefined,
+			silent: false,
 			export: false,
 			killPorts: false,
 			extras: {
@@ -136,7 +139,7 @@ export async function sandboxes(
 
 	const opts = getOptions(options);
 
-	const logger = createLogger(process.env as Env);
+	const logger = createLogger(process.env as Env, opts);
 
 	let apis: {
 		index: number;
@@ -159,7 +162,7 @@ export async function sandboxes(
 			sandboxes.map(async ({ database, options }, index) => {
 				const opts = getOptions(options);
 				const env = getEnv(database, opts);
-				const logger = opts.prefix ? createLogger(env, opts.prefix) : createLogger(env);
+				const logger = opts.prefix ? createLogger(env, opts, opts.prefix) : createLogger(env, opts);
 
 				try {
 					const project = await dockerUp(database, opts, env, logger);
@@ -203,7 +206,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	const opts = getOptions(options);
 
 	const env = getEnv(database, opts);
-	const logger = opts.prefix ? createLogger(env, opts.prefix) : createLogger(env);
+	const logger = opts.prefix ? createLogger(env, opts, opts.prefix) : createLogger(env, opts);
 	let apis: ChildProcessWithoutNullStreams[] = [];
 	let project: string | undefined;
 	let build: ChildProcessWithoutNullStreams | undefined;

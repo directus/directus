@@ -21,8 +21,10 @@ test('upload a file', async () => {
 	const file = await fs.readFile(join(import.meta.dirname, 'image.jpg'));
 	const blob = new Blob([file as BlobPart], { type: 'image/jpg' });
 	const form = new FormData();
-	form.set('file', blob, 'image.jpg');
+	// Storage needs to be set before file, otherwise it defaults to the first option of env.STORAGE_LOCATIONS
+	// TODO: Look into documenting this behavior
 	form.set('storage', 'local');
+	form.set('file', blob, 'image.jpg');
 
 	const upload = await api.request(uploadFiles(form));
 	const read = await api.request(readAssetArrayBuffer(upload.id));
@@ -49,6 +51,7 @@ test('delete a file', async () => {
 	const file = await fs.readFile(join(import.meta.dirname, 'image.jpg'));
 	const blob = new Blob([file as BlobPart], { type: 'image/jpg' });
 	const form = new FormData();
+	form.set('storage', 'local');
 	form.set('file', blob, 'image.jpg');
 
 	const upload = await api.request(uploadFiles(form));
@@ -63,8 +66,8 @@ if (options.extras?.minio) {
 		const file = await fs.readFile(join(import.meta.dirname, 'image.jpg'));
 		const blob = new Blob([file as BlobPart], { type: 'image/jpg' });
 		const form = new FormData();
-		form.set('file', blob, 'image.jpg');
 		form.set('storage', 'minio');
+		form.set('file', blob, 'image.jpg');
 
 		const upload = await api.request(uploadFiles(form));
 		const read = await api.request(readAssetArrayBuffer(upload.id));
@@ -91,8 +94,8 @@ if (options.extras?.minio) {
 		const file = await fs.readFile(join(import.meta.dirname, 'image.jpg'));
 		const blob = new Blob([file as BlobPart], { type: 'image/jpg' });
 		const form = new FormData();
-		form.set('file', blob, 'image.jpg');
 		form.set('storage', 'minio');
+		form.set('file', blob, 'image.jpg');
 
 		const upload = await api.request(uploadFiles(form));
 

@@ -13,6 +13,6 @@ export function schema(
 
 		const schema = await fetch(`http://localhost:${process.env['PORT']}/server/specs/graphql/?access_token=${token}`);
 
-		expect(schema.text()).resolves.toMatchSnapshot();
+		await expect(schema.text()).resolves.toMatchSnapshot();
 	});
 }

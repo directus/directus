@@ -9,6 +9,8 @@ test('running two instances', { timeout: 60_000 }, async () => {
 	const directus = await sandbox(database, {
 		port: String(Math.floor(Math.random() * 400 + 10000)),
 		killPorts: true,
+		inspect: false,
+		silent: true,
 		env: {
 			LOG_LEVEL: 'debug',
 			LOG_STYLE: 'raw',

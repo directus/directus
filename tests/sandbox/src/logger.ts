@@ -1,6 +1,7 @@
 import chalk, { type ChalkInstance } from 'chalk';
 import type Stream from 'stream';
 import type { Env } from './config.js';
+import type { Options } from './sandbox.js';
 
 export type Logger = {
 	addGroup: (group: string) => Logger;
@@ -19,18 +20,18 @@ export type LogListener = (message: string, type: LogLevel, groups: string[]) =>
 
 const listeners: { [key: string]: LogListener[] } = {};
 
-export function createLogger(env: Env, ...groups: string[]): Logger {
+export function createLogger(env: Env, opts: Options, ...groups: string[]): Logger {
 	return {
 		addGroup: (group: string) => {
-			return createLogger(env, ...groups, group);
+			return createLogger(env, opts, ...groups, group);
 		},
-		fatal: (msg: string) => log(env, msg, 'fatal', ...groups),
-		error: (msg: string) => log(env, msg, 'error', ...groups),
-		warn: (msg: string) => log(env, msg, 'warn', ...groups),
-		info: (msg: string) => log(env, msg, 'info', ...groups),
-		debug: (msg: string) => log(env, msg, 'debug', ...groups),
+		fatal: (msg: string) => log(env, opts, msg, 'fatal', ...groups),
+		error: (msg: string) => log(env, opts, msg, 'error', ...groups),
+		warn: (msg: string) => log(env, opts, msg, 'warn', ...groups),
+		info: (msg: string) => log(env, opts, msg, 'info', ...groups),
+		debug: (msg: string) => log(env, opts, msg, 'debug', ...groups),
 		pipe: (stream: Stream.Readable | null, type?: LogLevel) => {
-			if (stream) stream.on('data', (data) => log(env, String(data), type, ...groups));
+			if (stream) stream.on('data', (data) => log(env, opts, String(data), type, ...groups));
 		},
 		onLog: (listener: LogListener) => {
 			const key = groups.join('.');
@@ -53,14 +54,15 @@ const logLevelColor = {
 	trace: 'blueBright',
 } as const satisfies Record<LogLevel, keyof ChalkInstance>;
 
-export function log(env: Env, message: string, type: LogLevel = 'info', ...groups: string[]) {
+export function log(env: Env, opts: Options, message: string, type: LogLevel = 'info', ...groups: string[]) {
 	const formattedMessage =
 		groups.map((group) => chalk.blueBright(`[${group}] `)).join('') +
 		chalk[logLevelColor[type]](`[${type}] `) +
 		message +
 		(message.endsWith('\n') ? '' : '\n');
 
-	if (logLevel(env.LOG_LEVEL ?? 'info') >= logLevel(type)) process.stdout.write(formattedMessage);
+	if (logLevel(env.LOG_LEVEL ?? 'info') >= logLevel(type) && (!opts.silent || type === 'error' || type === 'fatal'))
+		process.stdout.write(formattedMessage);
 
 	for (const [key, listener] of Object.entries(listeners)) {
 		if (groups.join('.').startsWith(key)) {

@@ -1,7 +1,8 @@
-import { createDirectus, rest, serverHealth, staticToken } from '@directus/sdk';
+import { createDirectus, createUser, rest, serverHealth, staticToken } from '@directus/sdk';
 import { expect, test } from 'vitest';
 import { useOptions } from '../../../utils/useOptions';
 import { useEnv } from '../../../utils/useEnv';
+import { randomUUID } from 'crypto';
 
 const api = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
 const options = useOptions();
@@ -69,6 +70,38 @@ test('reading health as admin', async () => {
 		},
 		releaseId: expect.any(String),
 		serviceId: env.PUBLIC_URL,
+		status: 'ok',
+	});
+});
+
+test('reading health as user', async () => {
+	const token = randomUUID();
+
+	const user = await api.request(
+		createUser({
+			first_name: 'Test',
+			last_name: 'Permissions',
+			email: `${token}@health.com`,
+			password: 'password',
+			token,
+		}),
+	);
+
+	const userApi = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken(token));
+
+	const result = await userApi.request(serverHealth());
+
+	expect(result).toEqual({
+		status: 'ok',
+	});
+});
+
+test('reading health public', async () => {
+	const userApi = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest());
+
+	const result = await userApi.request(serverHealth());
+
+	expect(result).toEqual({
 		status: 'ok',
 	});
 });
