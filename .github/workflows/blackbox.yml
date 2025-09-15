@@ -52,7 +52,7 @@ jobs:
           - postgres
           - mysql
           - maria
-          - mssql
+          # - mssql TODO fix https://github.com/jclaveau/directus/issues/30
           - oracle
           # - cockroachdb
     steps:

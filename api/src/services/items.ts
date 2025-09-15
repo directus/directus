@@ -278,6 +278,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					primaryKey = primaryKey ?? returnedKey;
 				}
 			} catch (err: any) {
+				// console.log('createOne(): Sql error', {
+				// 	err,
+				// 	data,
+				// })
+
 				const dbError = await translateDatabaseError(err, data);
 
 				if (isDirectusError(dbError, ErrorCode.RecordNotUnique) && dbError.extensions.primaryKey) {
@@ -847,7 +852,19 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							throw new Error(`Missing item to insert at ${itemIndex} during primary keys attribution for MySql / MariaDB / SQlite`) // should never happend
 						}
 
+
+						// The following check is overkill in production and may be replaced by proper testing
+						// but it helped to ensure the Sqlite / MySQL / MariaDB work (even if I don't use them)
+						// TODO
+						// - Finish MySQL / Sqlite / MarioaDB support
+						// - TEST
+						//   - SQL DEFAULT
+						//   - All the field types
+						//   - pks in input with values OUTSIDE the select
+						//   - pks in input with values INSIDE the select
+
 						if (! [
+							// TODO replace this condition by develop env?
 							'mssql',
 							// 'sqlite3'
 						].includes(this.knex.client.config.client)) {
@@ -948,15 +965,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 										throw new Error('Alias fields should already be removed here') //  as input is based on payloadWithoutAliases
 									}
 									else {
-										console.log('!!!!! fetching missing pks', JSON.stringify({
-											itemsToInsert,
-											results,
-											lastAddedRows,
-											inputKeys,
-											// fieldTypes: collectionSchema.fields,
-											fieldTypes: Object.fromEntries( Object.entries(collectionSchema.fields).map(([fieldName, field]) => [fieldName, field.type])),
-											fieldDefaults: Object.fromEntries( Object.entries(collectionSchema.fields).map(([fieldName, field]) => [fieldName, field.defaultValue])),
-										}, null, 2))
+										// console.log('!!!!! fetching missing pks', JSON.stringify({
+										// 	itemsToInsert,
+										// 	results,
+										// 	lastAddedRows,
+										// 	inputKeys,
+										// 	// fieldTypes: collectionSchema.fields,
+										// 	fieldTypes: Object.fromEntries( Object.entries(collectionSchema.fields).map(([fieldName, field]) => [fieldName, field.type])),
+										// 	fieldDefaults: Object.fromEntries( Object.entries(collectionSchema.fields).map(([fieldName, field]) => [fieldName, field.defaultValue])),
+										// }, null, 2))
 
 										throw new Error(`Unimplemented support for input entry '${entry[0]}' having schema type '${field.type}' and value type ${typeof entry[1]}`)
 									}
@@ -992,15 +1009,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 									}, {} as Record<string, unknown>);
 								}
 
-								console.log('!!!!! fetching missing pks', JSON.stringify({
-									// itemsToInsert,
-									itemsInputToInsert: itemsToInsert.map(i => i.payloadWithoutAliases),
-									results,
-									lastAddedRows,
-									inputKeys,
-									fieldTypes: Object.fromEntries( Object.entries(collectionSchema.fields).map(([fieldName, field]) => [fieldName, field.type])),
-									fieldDefaults: Object.fromEntries( Object.entries(collectionSchema.fields).map(([fieldName, field]) => [fieldName, field.defaultValue])),
-								}, null, 2))
+								// console.log('!!!!! fetching missing pks', JSON.stringify({
+								// 	// itemsToInsert,
+								// 	itemsInputToInsert: itemsToInsert.map(i => i.payloadWithoutAliases),
+								// 	results,
+								// 	lastAddedRows,
+								// 	inputKeys,
+								// 	fieldTypes: Object.fromEntries( Object.entries(collectionSchema.fields).map(([fieldName, field]) => [fieldName, field.type])),
+								// 	fieldDefaults: Object.fromEntries( Object.entries(collectionSchema.fields).map(([fieldName, field]) => [fieldName, field.defaultValue])),
+								// }, null, 2))
 
 								throw new Error(
 									`Invalid primary key assignment of added row ${JSON.stringify(addedRow, null, 2)}`
@@ -1010,13 +1027,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							}
 						}
 
-						// TODO
-						// - Finish MySQL / Sqlite / MarioaDB support
-						// - TEST
-						//   - SQL DEFAULT
-						//   - All the field types
-						//   - pks in input with values OUTSIDE the select
-						//   - pks in input with values INSIDE the select
 
 						item.primaryKey = addedRow.id
 
@@ -1037,11 +1047,12 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				}
 			}
 			catch (err: any) {
-				console.log('Sql error', {
-					err,
-					data,
-					sqliteFieldsRequiringValue
-				})
+				// console.log('Sql error', {
+				// 	err,
+				// 	data,
+				// 	sqliteFieldsRequiringValue
+				// })
+
 				throw await translateDatabaseError(err, data)
 			}
 
