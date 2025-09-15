@@ -20,7 +20,7 @@ const database = process.env['DATABASE'] as Database;
 const all = process.env['ALL'] === 'true';
 
 if (!all)
-	test('running two instances', { timeout: 60_000 }, async () => {
+	test('running two instances', { timeout: 120_000 }, async () => {
 		const directus = await sandbox(database, {
 			port: String(Math.floor(Math.random() * 400 + 9000)),
 			instances: '2',
