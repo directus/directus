@@ -1573,6 +1573,8 @@ unlimited_usage: अमर्याद वापर
 uses_left: "उपयोग नाही | एक वापर बाकी | {n} डावीकडे वापरते\n"
 no_shares: दाखवण्यासाठी कोणतेही शेअर्स नाहीत
 new_share: नवीन शेअर
+mcp_prompts_collection_schema:
+  messages_role_user: युजर
 expired: कालबाह्य
 upcoming: आगामी
 share: शेअर
