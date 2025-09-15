@@ -18,6 +18,8 @@ const { unread } = storeToRefs(notificationsStore);
 
 const userStore = useUserStore();
 
+(async () => await userStore.hydrateAdditionalFields(['avatar.modified_on']))();
+
 const signOutActive = ref(false);
 
 const avatarURL = computed<string | null>(() => {
