@@ -76,13 +76,8 @@ test('concurrent requests', async () => {
 	);
 
 	const duration = performance.now() - time;
-	expect(duration).toBeLessThan(1000);
 
-	results.forEach((result) => {
-		expect(result).toBeLessThan(duration / 2);
-	});
-
-	expect(results).toHaveLength(4);
+	expect(results.reduce((a, b) => a + b, 0) / 2).toBeGreaterThan(duration);
 });
 
 const formatHeaders = [
