@@ -1,5 +1,4 @@
 ---
-'@directus/constants': patch
 '@directus/api': patch
 ---
 
