@@ -1,29 +1,31 @@
 [**@directus/sandbox**](../README.md)
 
-***
+---
 
 [@directus/sandbox](../globals.md) / Env
 
 # Type Alias: Env
 
-> **Env** = *typeof* `baseConfig`\[[`Database`](Database.md)\] & `object` & `Partial`\<*typeof* `minio`\> & `Partial`\<*typeof* `saml`\> & `Partial`\<*typeof* `maildev`\>
+> **Env** = _typeof_ `baseConfig`\[[`Database`](Database.md)\] & `object` & `Partial`\<_typeof_ `minio`\> &
+> `Partial`\<_typeof_ `saml`\> & `Partial`\<_typeof_ `maildev`\>
 
-Defined in: [tests/sandbox/src/config.ts:189](https://github.com/directus/directus/blob/be7bd2f6c7ad4fe1677be3eefcabacd0f25edd47/tests/sandbox/src/config.ts#L189)
+Defined in:
+[tests/sandbox/src/config.ts:189](https://github.com/directus/directus/blob/be7bd2f6c7ad4fe1677be3eefcabacd0f25edd47/tests/sandbox/src/config.ts#L189)
 
 ## Type Declaration
 
-### NODE\_ENV
+### NODE_ENV
 
-> **NODE\_ENV**: `string`
+> **NODE_ENV**: `string`
 
 ### PORT
 
 > **PORT**: `string`
 
-### PUBLIC\_URL
+### PUBLIC_URL
 
-> **PUBLIC\_URL**: `string`
+> **PUBLIC_URL**: `string`
 
-### REDIS\_ENABLED
+### REDIS_ENABLED
 
-> **REDIS\_ENABLED**: `string`
+> **REDIS_ENABLED**: `string`

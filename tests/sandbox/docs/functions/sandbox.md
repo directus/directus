@@ -1,6 +1,6 @@
 [**@directus/sandbox**](../README.md)
 
-***
+---
 
 [@directus/sandbox](../globals.md) / sandbox
 
@@ -8,7 +8,8 @@
 
 > **sandbox**(`database`, `options?`): `Promise`\<[`Sandbox`](../type-aliases/Sandbox.md)\>
 
-Defined in: [tests/sandbox/src/sandbox.ts:199](https://github.com/directus/directus/blob/be7bd2f6c7ad4fe1677be3eefcabacd0f25edd47/tests/sandbox/src/sandbox.ts#L199)
+Defined in:
+[tests/sandbox/src/sandbox.ts:199](https://github.com/directus/directus/blob/be7bd2f6c7ad4fe1677be3eefcabacd0f25edd47/tests/sandbox/src/sandbox.ts#L199)
 
 ## Parameters
 

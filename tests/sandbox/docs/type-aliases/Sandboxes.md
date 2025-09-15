@@ -1,6 +1,6 @@
 [**@directus/sandbox**](../README.md)
 
-***
+---
 
 [@directus/sandbox](../globals.md) / Sandboxes
 
@@ -8,7 +8,8 @@
 
 > **Sandboxes** = `object`
 
-Defined in: [tests/sandbox/src/sandbox.ts:65](https://github.com/directus/directus/blob/be7bd2f6c7ad4fe1677be3eefcabacd0f25edd47/tests/sandbox/src/sandbox.ts#L65)
+Defined in:
+[tests/sandbox/src/sandbox.ts:65](https://github.com/directus/directus/blob/be7bd2f6c7ad4fe1677be3eefcabacd0f25edd47/tests/sandbox/src/sandbox.ts#L65)
 
 ## Properties
 
@@ -16,7 +17,8 @@ Defined in: [tests/sandbox/src/sandbox.ts:65](https://github.com/directus/direct
 
 > **sandboxes**: `object`[]
 
-Defined in: [tests/sandbox/src/sandbox.ts:66](https://github.com/directus/directus/blob/be7bd2f6c7ad4fe1677be3eefcabacd0f25edd47/tests/sandbox/src/sandbox.ts#L66)
+Defined in:
+[tests/sandbox/src/sandbox.ts:66](https://github.com/directus/directus/blob/be7bd2f6c7ad4fe1677be3eefcabacd0f25edd47/tests/sandbox/src/sandbox.ts#L66)
 
 #### env
 
@@ -32,19 +34,21 @@ Defined in: [tests/sandbox/src/sandbox.ts:66](https://github.com/directus/direct
 
 > **restartApis**(): `Promise`\<`void`\>
 
-Defined in: [tests/sandbox/src/sandbox.ts:70](https://github.com/directus/directus/blob/be7bd2f6c7ad4fe1677be3eefcabacd0f25edd47/tests/sandbox/src/sandbox.ts#L70)
+Defined in:
+[tests/sandbox/src/sandbox.ts:70](https://github.com/directus/directus/blob/be7bd2f6c7ad4fe1677be3eefcabacd0f25edd47/tests/sandbox/src/sandbox.ts#L70)
 
 #### Returns
 
 `Promise`\<`void`\>
 
-***
+---
 
 ### stop()
 
 > **stop**(): `Promise`\<`void`\>
 
-Defined in: [tests/sandbox/src/sandbox.ts:71](https://github.com/directus/directus/blob/be7bd2f6c7ad4fe1677be3eefcabacd0f25edd47/tests/sandbox/src/sandbox.ts#L71)
+Defined in:
+[tests/sandbox/src/sandbox.ts:71](https://github.com/directus/directus/blob/be7bd2f6c7ad4fe1677be3eefcabacd0f25edd47/tests/sandbox/src/sandbox.ts#L71)
 
 #### Returns
 

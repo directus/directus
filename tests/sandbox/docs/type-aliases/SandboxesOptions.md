@@ -1,6 +1,6 @@
 [**@directus/sandbox**](../README.md)
 
-***
+---
 
 [@directus/sandbox](../globals.md) / SandboxesOptions
 
@@ -8,7 +8,8 @@
 
 > **SandboxesOptions** = `object`[]
 
-Defined in: [tests/sandbox/src/sandbox.ts:124](https://github.com/directus/directus/blob/be7bd2f6c7ad4fe1677be3eefcabacd0f25edd47/tests/sandbox/src/sandbox.ts#L124)
+Defined in:
+[tests/sandbox/src/sandbox.ts:124](https://github.com/directus/directus/blob/be7bd2f6c7ad4fe1677be3eefcabacd0f25edd47/tests/sandbox/src/sandbox.ts#L124)
 
 ## Type Declaration
 

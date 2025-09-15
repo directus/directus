@@ -1,6 +1,6 @@
 [**@directus/sandbox**](README.md)
 
-***
+---
 
 # @directus/sandbox
 
