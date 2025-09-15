@@ -93,6 +93,7 @@ function useComments(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 							'user_created.first_name',
 							'user_created.last_name',
 							'user_created.avatar.id',
+							'user_created.avatar.modified_on',
 						],
 					},
 				})
