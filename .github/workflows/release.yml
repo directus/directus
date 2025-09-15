@@ -40,6 +40,11 @@ jobs:
           echo "Found version: $VERSION"
           echo "Tag will be: $TAG"
 
+          if [[ -z "$TAG" || -z "$VERSION" ]]; then
+            echo "Failed to extract tag or version"
+            exit 1
+          fi
+
           # Output variables
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=$TAG" >> $GITHUB_OUTPUT
@@ -62,13 +67,16 @@ jobs:
     name: Create Release
     runs-on: ubuntu-latest
     needs: [extract, check-version]
+    permissions:
+      contents: write
+      issues: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Create Tag and Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ needs.extract.outputs.tag }}
         run: |
           # Extract the release notes from the PR body
@@ -84,6 +92,25 @@ jobs:
             --title "$TAG" \
             ${{ needs.check-version.outputs.prerelease == 'true' && '--prerelease' || '' }} \
             --notes "$RELEASE_NOTES"
+
+      - name: Close & Rename Milestone
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.extract.outputs.tag }}
+        run: |
+          REPO="${{ github.repository }}"
+          # Find the open milestone titled "Next Release"
+          MILESTONE_NUMBER=$(gh api repos/$REPO/milestones \
+            --jq '.[] | select(.title=="Next Release" and .state=="open") .number')
+          if [ -n "$MILESTONE_NUMBER" ]; then
+            echo "Closing milestone #$MILESTONE_NUMBER and renaming to '$TAG'"
+            gh api repos/$REPO/milestones/$MILESTONE_NUMBER \
+              -X PATCH \
+              -F state=closed \
+              -F title="$TAG"
+          else
+            echo "No open 'Next Release' milestone found."
+          fi
 
   # publish-npm:
   #   name: Publish to NPM
