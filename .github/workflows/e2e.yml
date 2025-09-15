@@ -65,4 +65,4 @@ jobs:
       - name: Run tests
         run: |
           cd tests/e2e/
-          LOG_LEVEL=debug pnpm vitest --project ${{ matrix.vendor }}
+          LOG_LEVEL=debug pnpm vitest --project ${{ matrix.vendor }} --no-file-parallelism
