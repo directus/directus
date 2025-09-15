@@ -7,6 +7,7 @@ type File = {
 	id: string;
 	type: string;
 	title: string;
+	modified_on: Date;
 };
 
 const props = withDefaults(
@@ -30,7 +31,11 @@ const imageThumbnail = computed(() => {
 	if (!props.value) return null;
 	if (props.value.type?.includes('svg')) return getAssetUrl(props.value.id);
 	if (props.value.type?.includes('image') === false) return null;
-	return getAssetUrl(`${props.value.id}?key=system-small-cover`);
+
+	return getAssetUrl(props.value.id, {
+		imageKey: 'system-small-cover',
+		cacheBuster: props.value.modified_on,
+	});
 });
 </script>
 
