@@ -1571,6 +1571,8 @@ unlimited_usage: Unlimited usage
 uses_left: هیچ استفاده‌ای نمانده | یک استفاده مانده | {n} استفاده مانده
 no_shares: هیچ اشتراک گذاری برای نمایش نیست
 new_share: اشتراک گذاری جدید
+mcp_prompts_collection_schema:
+  messages_role_user: کاربر
 expired: منقضی شده
 upcoming: به زودی
 share: اشتراک‌گذاری
