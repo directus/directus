@@ -51,7 +51,7 @@ const value = computed({
 });
 
 const query = ref<RelationQuerySingle>({
-	fields: ['id', 'title', 'type', 'filename_download'],
+	fields: ['id', 'title', 'type', 'filename_download', 'modified_on'],
 });
 
 const { collection, field } = toRefs(props);
@@ -80,21 +80,18 @@ const fileExtension = computed(() => {
 const imageThumbnail = computed(() => {
 	if (file.value === null || props.value === null) return null;
 
-	const isValueString = typeof props.value === 'string';
-	const assetID = isValueString ? props.value : props.value?.id;
-
-	if (file.value.type.includes('svg')) return getAssetUrl(assetID);
 	if (file.value.type.includes('image') === false) return null;
 
-	return getAssetUrl(assetID, {
-		imageKey: 'system-small-cover',
-		cacheBuster: getCacheBuster(),
-	});
-
-	function getCacheBuster() {
-		if (!isValueString && props.value?.modified_on) return props.value.modified_on;
-		return true;
+	if (file.value.type.includes('svg')) {
+		return getAssetUrl(file.value.id, {
+			cacheBuster: file.value.modified_on,
+		});
 	}
+
+	return getAssetUrl(file.value.id, {
+		imageKey: 'system-small-cover',
+		cacheBuster: file.value.modified_on,
+	});
 });
 
 const imageThumbnailError = ref<any>(null);
