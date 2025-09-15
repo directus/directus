@@ -53,7 +53,7 @@ async function fetchUser() {
 	try {
 		const response = await api.get(`/users/${props.user}`, {
 			params: {
-				fields: ['id', 'first_name', 'last_name', 'avatar.id', 'role.name', 'status', 'email'],
+				fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on', 'role.name', 'status', 'email'],
 			},
 		});
 
