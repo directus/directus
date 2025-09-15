@@ -12,7 +12,7 @@ type File = {
 
 const props = withDefaults(
 	defineProps<{
-		value: File | null;
+		value?: File | null;
 	}>(),
 	{
 		value: null,
