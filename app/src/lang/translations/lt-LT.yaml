@@ -1575,6 +1575,8 @@ unlimited_usage: Be naudojimo limitų
 uses_left: Išnaudotas naudojimo limitas | Vienas panaudojimas liko | {n} panaudojimų liko
 no_shares: Nėra pasidalinimų
 new_share: Naujas pasidalinimas
+mcp_prompts_collection_schema:
+  messages_role_user: Vartotojas
 expired: Nebegalioja
 upcoming: Būsimas
 share: Dalintis
