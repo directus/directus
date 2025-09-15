@@ -64,7 +64,14 @@ const links = computed<Link[][]>(() => [
 			name: t('settings_translations'),
 			to: `/settings/translations`,
 		},
-	],
+		info.value.mcp_enabled
+			? {
+					icon: 'smart_toy',
+					name: t('settings_ai'),
+					to: `/settings/ai`,
+				}
+			: undefined,
+	].filter((link) => link) as Link[],
 	[
 		{
 			icon: 'storefront',
