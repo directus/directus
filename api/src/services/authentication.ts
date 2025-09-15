@@ -44,7 +44,6 @@ export class AuthenticationService {
 		this.schema = options.schema;
 	}
 
-
 	/**
 	 * Retrieve the tokens for a given user email.
 	 *
