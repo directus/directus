@@ -32,6 +32,7 @@ import type { RegisterUserInput } from './users.js';
 import type { Snapshot, SnapshotDiffWithHash, SnapshotDiff, SnapshotWithHash } from './snapshot.js';
 import type { Webhook } from './webhooks.js';
 import type { WebSocketClient, WebSocketMessage } from './websockets.js';
+import type { ContentVersion } from './versions.js';
 
 export type AbstractServiceOptions = {
 	knex?: Knex | undefined;
@@ -456,7 +457,7 @@ interface UtilsService {
 interface VersionsService {
 	getMainItem(collection: string, item: PrimaryKey, query?: Query): Promise<Item>;
 	verifyHash(collection: string, item: PrimaryKey, hash: string): Promise<{ outdated: boolean; mainHash: string }>;
-	getVersionSaves(key: string, collection: string, item: string | undefined): Promise<Partial<Item>[] | null>;
+	getVersionSave(key: string, collection: string, item: string | undefined): Promise<ContentVersion | undefined>;
 	save(key: PrimaryKey, data: Partial<Item>): Promise<Partial<Item>>;
 	promote(version: PrimaryKey, mainHash: string, fields?: string[]): Promise<PrimaryKey>;
 }
