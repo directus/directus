@@ -114,7 +114,7 @@ const loadUsers = throttle(async (name: string): Promise<any> => {
 		const result = await api.get('/users', {
 			params: {
 				filter: name === '' || !name ? undefined : filter,
-				fields: ['first_name', 'last_name', 'email', 'id', 'avatar.id'],
+				fields: ['first_name', 'last_name', 'email', 'id', 'avatar.id', 'avatar.modified_on'],
 			},
 			cancelToken: cancelToken.token,
 		});
