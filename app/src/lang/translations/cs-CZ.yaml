@@ -1572,6 +1572,8 @@ unlimited_usage: Neomezené použití
 uses_left: Nezbývá žádné použití | Zbývá 1 použití | Zbývá {n} použití
 no_shares: Nic sdíleného k zobrazení
 new_share: Nové sdílení
+mcp_prompts_collection_schema:
+  messages_role_user: Uživatel
 expired: Vypršela platnost
 upcoming: Nadcházející
 share: Sdílet
