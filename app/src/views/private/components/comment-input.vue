@@ -216,9 +216,13 @@ function triggerSearch({ searchQuery, caretPosition }: { searchQuery: string; ca
 	selectedKeyboardIndex.value = 0;
 }
 
-function avatarSource(url: string) {
-	if (url === null) return '';
-	return getAssetUrl(`${url}?key=system-small-cover`);
+function avatarSource(avatar: User['avatar'] | null) {
+	if (avatar === null) return '';
+
+	return getAssetUrl(avatar.id, {
+		imageKey: 'system-small-cover',
+		cacheBuster: avatar.modified_on,
+	});
 }
 
 async function postComment() {
@@ -303,7 +307,7 @@ function pressedEnter() {
 				>
 					<v-list-item-icon>
 						<v-avatar x-small>
-							<v-image v-if="user.avatar" :src="avatarSource(user.avatar.id)" />
+							<v-image v-if="user.avatar" :src="avatarSource(user.avatar)" />
 							<v-icon v-else name="person_outline" />
 						</v-avatar>
 					</v-list-item-icon>
