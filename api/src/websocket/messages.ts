@@ -20,13 +20,13 @@ export const WebSocketResponse = z.discriminatedUnion('status', [
 ]);
 export type WebSocketResponse = z.infer<typeof WebSocketResponse>;
 
-export const ConnectionParams = z.strictObject({ access_token: z.string().optional() });
+export const ConnectionParams = z.object({ access_token: z.string().optional() });
 export type ConnectionParams = z.infer<typeof ConnectionParams>;
 
 export const BasicAuthMessage = z.union([
-	z.strictObject({ email: z.string().email(), password: z.string() }),
-	z.strictObject({ access_token: z.string() }),
-	z.strictObject({ refresh_token: z.string() }),
+	z.object({ email: z.string().email(), password: z.string() }),
+	z.object({ access_token: z.string() }),
+	z.object({ refresh_token: z.string() }),
 ]);
 export type BasicAuthMessage = z.infer<typeof BasicAuthMessage>;
 
@@ -50,7 +50,7 @@ export const WebSocketSubscribeMessage = z.discriminatedUnion('type', [
 export type WebSocketSubscribeMessage = z.infer<typeof WebSocketSubscribeMessage>;
 
 export const WebSocketLogsMessage = z.union([
-	z.strictObject({
+	z.object({
 		type: z.literal('subscribe'),
 		log_level: z.string(),
 	}),
@@ -62,7 +62,7 @@ export type WebSocketLogsMessage = z.infer<typeof WebSocketLogsMessage>;
 
 const ZodItem = z.custom<Partial<Item>>();
 
-const PartialItemsMessage = z.strictObject({
+const PartialItemsMessage = z.object({
 	uid: zodStringOrNumber.optional(),
 	type: z.literal('items'),
 	collection: z.string(),
@@ -97,19 +97,19 @@ export const WebSocketItemsMessage = z.union([
 export type WebSocketItemsMessage = z.infer<typeof WebSocketItemsMessage>;
 
 export const WebSocketEvent = z.discriminatedUnion('action', [
-	z.strictObject({
+	z.object({
 		action: z.literal('create'),
 		collection: z.string(),
 		payload: z.record(z.string(), z.any()).optional(),
 		key: zodStringOrNumber,
 	}),
-	z.strictObject({
+	z.object({
 		action: z.literal('update'),
 		collection: z.string(),
 		payload: z.record(z.string(), z.any()).optional(),
 		keys: z.array(zodStringOrNumber),
 	}),
-	z.strictObject({
+	z.object({
 		action: z.literal('delete'),
 		collection: z.string(),
 		payload: z.record(z.string(), z.any()).optional(),
