@@ -44,6 +44,7 @@ export class AuthenticationService {
 		this.schema = options.schema;
 	}
 
+
 	/**
 	 * Retrieve the tokens for a given user email.
 	 *
@@ -138,6 +139,19 @@ export class AuthenticationService {
 				if (error instanceof RateLimiterRes && error.remainingPoints === 0) {
 					await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
 					user.status = 'suspended';
+
+					if (this.accountability) {
+						await this.activityService.createOne({
+							action: Action.AUTH_FAIL,
+							user: user.id,
+							ip: this.accountability.ip,
+							user_agent: this.accountability.userAgent,
+							origin: this.accountability.origin,
+							collection: 'directus_users',
+							item: user.id,
+							comment: `User suspended after ${allowedAttempts} failed attempts`,
+						});
+					}
 
 					// This means that new attempts after the user has been re-activated will be accepted
 					await loginAttemptsLimiter.set(user.id, 0, 0);

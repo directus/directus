@@ -7,6 +7,7 @@ export enum Action {
 	COMMENT = 'comment',
 	UPLOAD = 'upload',
 	LOGIN = 'login',
+	AUTH_FAIL = 'auth_fail',
 	RUN = 'run',
 	INSTALL = 'install',
 }
