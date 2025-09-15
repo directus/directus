@@ -248,7 +248,7 @@ function useURLImport() {
 
 			<v-list>
 				<template v-if="file">
-					<v-list-item clickable :download="file.filename_download" :href="getAssetUrl(file.id, true)">
+					<v-list-item clickable :download="file.filename_download" :href="getAssetUrl(file.id, { isDownload: true })">
 						<v-list-item-icon><v-icon name="get_app" /></v-list-item-icon>
 						<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
 					</v-list-item>
@@ -290,7 +290,13 @@ function useURLImport() {
 			@input="update"
 		>
 			<template #actions>
-				<v-button secondary rounded icon :download="file.filename_download" :href="getAssetUrl(file.id, true)">
+				<v-button
+					secondary
+					rounded
+					icon
+					:download="file.filename_download"
+					:href="getAssetUrl(file.id, { isDownload: true })"
+				>
 					<v-icon name="download" />
 				</v-button>
 			</template>

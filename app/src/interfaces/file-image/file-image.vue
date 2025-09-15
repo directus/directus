@@ -205,7 +205,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 					v-tooltip="t('download')"
 					icon
 					rounded
-					:href="getAssetUrl(image.id, true)"
+					:href="getAssetUrl(image.id, { isDownload: true })"
 					:download="image.filename_download"
 				>
 					<v-icon name="download" />
@@ -239,7 +239,13 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				@input="update"
 			>
 				<template #actions>
-					<v-button secondary rounded icon :download="image.filename_download" :href="getAssetUrl(image.id, true)">
+					<v-button
+						secondary
+						rounded
+						icon
+						:download="image.filename_download"
+						:href="getAssetUrl(image.id, { isDownload: true })"
+					>
 						<v-icon name="download" />
 					</v-button>
 				</template>
