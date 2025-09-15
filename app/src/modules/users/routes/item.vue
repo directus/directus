@@ -93,9 +93,14 @@ const confirmArchive = ref(false);
 // Provide the discard functionality to field interfaces
 provide('discardAllChanges', discardAndStay);
 
-const avatarSrc = computed(() =>
-	item.value?.avatar ? getAssetUrl(`${item.value.avatar}?key=system-medium-cover`) : null,
-);
+const avatarSrc = computed(() => {
+	if (!item.value?.avatar) return null;
+
+	return getAssetUrl(item.value.avatar.id, {
+		imageKey: 'system-medium-cover',
+		cacheBuster: item.value.avatar.modified_on,
+	});
+});
 
 const avatarError = ref(null);
 
