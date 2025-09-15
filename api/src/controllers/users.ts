@@ -18,6 +18,8 @@ import { TFAService } from '../services/tfa.js';
 import { UsersService } from '../services/users.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import { getDatabase } from '../database/index.js';
 
 const router = express.Router();
 
@@ -332,7 +334,15 @@ router.post(
 			throw new InvalidCredentialsError();
 		}
 
-		if (!req.body.password) {
+		const currentUser = await getDatabase()
+			.select('provider')
+			.from('directus_users')
+			.where({ id: req.accountability.user })
+			.first();
+
+		const requiresPassword = currentUser?.['provider'] === DEFAULT_AUTH_PROVIDER;
+
+		if (requiresPassword && !req.body.password) {
 			throw new InvalidPayloadError({ reason: `"password" is required` });
 		}
 
@@ -341,14 +351,16 @@ router.post(
 			schema: req.schema,
 		});
 
-		const authService = new AuthenticationService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+		if (requiresPassword) {
+			const authService = new AuthenticationService({
+				accountability: req.accountability,
+				schema: req.schema,
+			});
 
-		await authService.verifyPassword(req.accountability.user, req.body.password);
+			await authService.verifyPassword(req.accountability.user, req.body.password);
+		}
 
-		const { url, secret } = await service.generateTFA(req.accountability.user);
+		const { url, secret } = await service.generateTFA(req.accountability.user, requiresPassword);
 
 		res.locals['payload'] = { data: { secret, otpauth_url: url } };
 		return next();

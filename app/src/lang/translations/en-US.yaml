@@ -119,6 +119,13 @@ hook: Hook
 fill_width: Fill Width
 field_name_translations: Field Name Translations
 enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication
+sso_tfa_setup_notice:
+  You will be logged out of your account and required to log back in. Any unsaved changes will be discarded.
+enable_tfa: Enable 2FA
+cancel_tfa_setup: Cancel 2FA Setup
+cancel_tfa_setup_notice: Are you sure you want to cancel the 2FA setup?
+keep_setup: Keep Setup
+cancel_setup: Cancel Setup
 add_field: Add Field
 role_name: Role Name
 policy_name: Policy Name
@@ -747,6 +754,7 @@ enabled_dev_tooltip: App extensions are always enabled in dev mode
 disable_tfa: Disable 2FA
 admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
 tfa_setup: Setup 2FA
+tfa_setup_description: Set up two-factor authentication to protect your account
 tfa_scan_code: Scan the code in your authenticator app to finish setting up 2FA
 enter_otp_to_disable_tfa: Enter the OTP to disable 2FA
 create_account: Create Account
@@ -1224,7 +1232,7 @@ page_help_settings_datamodel_fields: >-
   **Data Model: Collection** — A form for managing this collection and its fields.
 page_help_settings_system_logs: '**System Logs** — Access a live stream of the system logs.'
 page_help_settings_policies_collection: '**Browse Policies** — Lists all policies within the project.'
-page_help_settings_policies_item: "**Policy Detail** — Manage a policy's permissions and other settings."
+page_help_settings_policies_item: '**Policy Detail** — Manage a policies permissions and other settings.'
 page_help_settings_roles_collection: '**Browse Roles** — Lists the all user roles within the project.'
 page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
 page_help_settings_presets_collection: >-
