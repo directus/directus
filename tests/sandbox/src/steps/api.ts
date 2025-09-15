@@ -107,7 +107,12 @@ export async function startDirectus(opts: Options, env: Env, logger: Logger) {
 
 	if (killPorts) {
 		for (const [pid] of occupiedPorts) {
-			process.kill(pid);
+			try {
+				process.kill(pid, 'SIGKILL');
+				logger.info(`Killed process ${pid}`);
+			} catch (err) {
+				logger.error(`Failed to kill process ${pid}: ${(err as Error).message}`);
+			}
 		}
 	}
 

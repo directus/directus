@@ -30,10 +30,7 @@ export async function setup(project: TestProject) {
 		};
 	});
 
-	sb = await sandboxes(dbs, {
-		build: true,
-		watch: true,
-	});
+	sb = await sandboxes(dbs);
 
 	const snapshot = JSON.parse(await readFile(join(import.meta.dirname, 'schema.json'), { encoding: 'utf8' }));
 
@@ -41,7 +38,7 @@ export async function setup(project: TestProject) {
 		ports.map(async (port) => {
 			const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 			const diff = await api.request(schemaDiff(snapshot, true));
-			await api.request(schemaApply(diff));
+			if (diff) await api.request(schemaApply(diff));
 		}),
 	);
 
