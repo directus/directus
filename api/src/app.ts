@@ -299,7 +299,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
 
-	if (toBoolean(env['MCP_ENABLED'] === true)) {
+	if (toBoolean(env['MCP_ENABLED']) === true) {
 		app.use('/mcp', mcpRouter);
 	}
 
