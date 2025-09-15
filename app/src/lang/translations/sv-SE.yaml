@@ -1404,6 +1404,8 @@ live_preview:
   close_window: Öppna i delad vy
   toggle_3d: Växla 3D
 unlimited_usage: Obegränsad användning
+mcp_prompts_collection_schema:
+  messages_role_user: Användare
 expired: Upphört
 upcoming: Kommande
 share: Dela
