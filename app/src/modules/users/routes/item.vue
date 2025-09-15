@@ -64,7 +64,7 @@ const {
 	primaryKey,
 	props.primaryKey !== '+'
 		? {
-				fields: ['*', 'role.*'],
+				fields: ['*', 'role.*', 'avatar.id', 'avatar.modified_on'],
 			}
 		: undefined,
 );
