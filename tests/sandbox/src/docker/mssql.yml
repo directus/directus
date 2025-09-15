@@ -9,7 +9,20 @@ services:
     ports:
       - ${DB_PORT}:1433
     healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "${DB_PASSWORD}" -Q "SELECT 1" -b -o /dev/null
-      interval: 10s
-      timeout: 10s
-      retries: 5
+      test:
+        [
+          'CMD',
+          '/opt/mssql-tools18/bin/sqlcmd',
+          '-S',
+          'localhost',
+          '-U',
+          'sa',
+          '-P',
+          '${DB_PASSWORD}',
+          '-Q',
+          'SELECT 1',
+          '-No',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10

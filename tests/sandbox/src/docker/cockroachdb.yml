@@ -8,7 +8,7 @@ services:
       - ${DB_PORT}:26257
       - ${COCKROACH_UI}:8080
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:${COCKROACH_UI}/health']
-      interval: 10s
-      timeout: 10s
-      retries: 5
+      test: ['CMD', 'curl', '--fail', 'http://localhost:8080/health']
+      interval: 5s
+      timeout: 5s
+      retries: 10

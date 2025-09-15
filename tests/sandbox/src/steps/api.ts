@@ -126,9 +126,10 @@ export async function startDirectus(opts: Options, env: Env, logger: Logger) {
 
 async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 	logger.info('Starting Directus');
+	const debuggerPort = Number(env.PORT) + 1;
 	let api;
 	let timeout: NodeJS.Timeout;
-	const inspect = opts.inspect ? [`--inspect=${String(Number(env.PORT) + 1)}`] : [];
+	const inspect = opts.inspect ? [`--inspect=${debuggerPort}`] : [];
 
 	if (opts.dev) {
 		const watch = opts.watch ? ['watch', '--clear-screen=false'] : [];
@@ -157,7 +158,13 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 		throw error;
 	});
 
-	logger.pipe(api.stderr, 'error');
+	api.stderr.on('data', (data) => {
+		const msg = String(data);
+
+		if (msg.startsWith('Debugger listening on ws://')) return;
+
+		logger.error(msg);
+	});
 
 	await new Promise((resolve, reject) => {
 		api.stdout.on('data', (data) => {
@@ -178,7 +185,9 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 		}, 60_000);
 	});
 
-	logger.info(`Server started at http://${env.HOST}:${env.PORT}`);
+	logger.info(
+		`Server started at http://${env.HOST}:${env.PORT}, Debugger listening on http://${env.HOST}:${debuggerPort}`,
+	);
 
 	logger.info(
 		`User: ${chalk.cyan(env.ADMIN_EMAIL)} Password: ${chalk.cyan(env.ADMIN_PASSWORD)} Token: ${chalk.cyan(env.ADMIN_TOKEN)}`,
