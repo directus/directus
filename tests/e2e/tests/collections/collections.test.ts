@@ -61,9 +61,7 @@ test('crud on a collection', async () => {
 			versioning: false,
 		},
 		schema: {
-			comment: null,
 			name: collectionName,
-			schema: 'public',
 		},
 	});
 

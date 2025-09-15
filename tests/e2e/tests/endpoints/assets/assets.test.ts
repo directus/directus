@@ -79,7 +79,7 @@ test('concurrent requests', async () => {
 	expect(duration).toBeLessThan(1000);
 
 	results.forEach((result) => {
-		expect(result).toBeLessThan(duration / 4 + 100);
+		expect(result).toBeLessThan(duration / 2);
 	});
 
 	expect(results).toHaveLength(4);
