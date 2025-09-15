@@ -1,6 +1,6 @@
 import type { Field } from '@directus/types';
 
-export function updateSystemDivider(fields: Field[], comparisonFields?: Set<string>) {
+export function updateSystemDivider(fields: Field[], comparisonFields: Set<string> = new Set()) {
 	let hasVisibleSystemFields = false;
 	let hasVisibleUserFields = false;
 	let systemDivider;
@@ -11,7 +11,7 @@ export function updateSystemDivider(fields: Field[], comparisonFields?: Set<stri
 			continue;
 		}
 
-		const isVisible = !field.meta?.hidden || (comparisonFields && comparisonFields.has(field.field));
+		const isVisible = !field.meta?.hidden || comparisonFields.has(field.field);
 		if (!isVisible) continue;
 
 		if (field.meta?.system) {

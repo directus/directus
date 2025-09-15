@@ -94,6 +94,11 @@ const { fields: finalFields, fieldNames, fieldsMap, getFieldsForGroup, fieldsFor
 const { toggleBatchField, batchActiveFields } = useBatch();
 const { toggleRawField, rawActiveFields } = useRawEditor();
 
+const isVisibleField = (fieldName: string) => {
+	const field = fieldsMap.value[fieldName];
+	return !field?.meta?.hidden || (props.comparison?.mode && props.comparison?.fields?.has(fieldName));
+};
+
 const firstEditableFieldIndex = computed(() => {
 	for (const [index, fieldName] of fieldNames.value.entries()) {
 		const field = fieldsMap.value[fieldName];
@@ -117,11 +122,6 @@ const firstVisibleFieldIndex = computed(() => {
 
 	return null;
 });
-
-const isVisibleField = (fieldName: string) => {
-	const field = fieldsMap.value[fieldName];
-	return !field?.meta?.hidden || (props.comparison?.mode && props.comparison?.fields?.has(fieldName));
-};
 
 const noVisibleFields = computed(() => {
 	return Object.keys(fieldsMap.value).every((fieldKey) => !isVisibleField(fieldKey));
