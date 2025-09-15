@@ -1573,6 +1573,8 @@ unlimited_usage: Необмежене використання
 uses_left: Не залишилося використань | Залишилося одне використання | {n} використань залишилося
 no_shares: Немає спільних ресурсів для відображення
 new_share: Нова публікація
+mcp_prompts_collection_schema:
+  messages_role_user: Користувач
 expired: Закінчився
 upcoming: Майбутнє
 share: Поділитись
