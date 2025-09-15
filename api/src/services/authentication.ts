@@ -142,7 +142,7 @@ export class AuthenticationService {
 
 					if (this.accountability) {
 						await this.activityService.createOne({
-							action: Action.AUTH_FAIL,
+							action: Action.UPDATE,
 							user: user.id,
 							ip: this.accountability.ip,
 							user_agent: this.accountability.userAgent,
