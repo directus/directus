@@ -24,6 +24,7 @@ import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { getSecret } from '../utils/get-secret.js';
 import { stall } from '../utils/stall.js';
 import { ActivityService } from './activity.js';
+import { RevisionsService } from './revisions.js';
 import { SettingsService } from './settings.js';
 import { TFAService } from './tfa.js';
 
@@ -140,7 +141,8 @@ export class AuthenticationService {
 					user.status = 'suspended';
 
 					if (this.accountability) {
-						await this.activityService.createOne({
+
+						const activity = await this.activityService.createOne({
 							action: Action.UPDATE,
 							user: user.id,
 							ip: this.accountability.ip,
@@ -149,6 +151,16 @@ export class AuthenticationService {
 							collection: 'directus_users',
 							item: user.id,
 							comment: `User suspended after ${allowedAttempts} failed attempts`,
+						});
+
+						const revisionsService = new RevisionsService({ knex: this.knex, schema: this.schema });
+
+						await revisionsService.createOne({
+							activity: activity,
+							collection: 'directus_users',
+							item: user.id,
+							data: { status: 'suspended' },
+							delta: { status: 'suspended' },
 						});
 					}
 
