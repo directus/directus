@@ -1586,6 +1586,8 @@ unlimited_usage: Utilizzo illimitato
 uses_left: Nessun utilizzo rimanente | 1 utilizzo rimanente | {n} utilizzi rimanenti
 no_shares: Nessuna condivisione da mostrare
 new_share: Nuova condivisione
+mcp_prompts_collection_schema:
+  messages_role_user: Utente
 expired: Scaduto
 upcoming: Prossimamente
 share: Condivisione
