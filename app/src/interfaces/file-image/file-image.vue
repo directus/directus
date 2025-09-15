@@ -83,8 +83,11 @@ const src = computed(() => {
 
 	if (image.value.type.includes('image')) {
 		const fit = props.crop ? 'cover' : 'contain';
-		const url = getAssetUrl(`${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}`);
-		return url;
+
+		return getAssetUrl(image.value.id, {
+			imageKey: `system-large-${fit}`,
+			cacheBuster: image.value.modified_on,
+		});
 	}
 
 	return null;
