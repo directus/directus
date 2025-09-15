@@ -1603,6 +1603,8 @@ unlimited_usage: Onbeperkt gebruik
 uses_left: Geen gebruik over | Één gebruik over | {n} gebruik over
 no_shares: Geen delingen om weer te geven
 new_share: Delen
+mcp_prompts_collection_schema:
+  messages_role_user: Gebruiker
 expired: Verlopen
 upcoming: Aankomend
 share: Delen
