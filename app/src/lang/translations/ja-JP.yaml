@@ -1178,6 +1178,8 @@ inline: インライン
 comment: コメント
 live_preview:
   new_window: 新しいウィンドウで開く
+mcp_prompts_collection_schema:
+  messages_role_user: ユーザー
 referential_action_set_null: '{field} フィールドを Null にする'
 creating_webhook: Webhookの作成
 default_label: デフォルト
