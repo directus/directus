@@ -3,7 +3,6 @@ import api from '@/api';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
-import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
 import { readableMimeType } from '@/utils/readable-mime-type';
@@ -78,16 +77,24 @@ const fileExtension = computed(() => {
 	return readableMimeType(file.value.type, true);
 });
 
-const assetURL = computed(() => {
-	const id = typeof props.value === 'string' ? props.value : props.value?.id;
-	return getAssetUrl(id);
-});
-
 const imageThumbnail = computed(() => {
 	if (file.value === null || props.value === null) return null;
-	if (file.value.type.includes('svg')) return assetURL.value;
+
+	const isValueString = typeof props.value === 'string';
+	const assetID = isValueString ? props.value : props.value?.id;
+
+	if (file.value.type.includes('svg')) return getAssetUrl(assetID);
 	if (file.value.type.includes('image') === false) return null;
-	return addQueryToPath(assetURL.value, { key: 'system-small-cover' });
+
+	return getAssetUrl(assetID, {
+		imageKey: 'system-small-cover',
+		cacheBuster: getCacheBuster(),
+	});
+
+	function getCacheBuster() {
+		if (!isValueString && props.value?.modified_on) return props.value.modified_on;
+		return true;
+	}
 });
 
 const imageThumbnailError = ref<any>(null);
