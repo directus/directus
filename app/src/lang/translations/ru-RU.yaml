@@ -1593,6 +1593,8 @@ unlimited_usage: Неограниченное использование
 uses_left: Не осталось использования | 1 использование осталось | осталось {n} использований
 no_shares: Нет элементов Общего доступа
 new_share: Новая публикация
+mcp_prompts_collection_schema:
+  messages_role_user: Пользователь
 expired: Истекло
 upcoming: Предстоящие
 share: Поделиться
