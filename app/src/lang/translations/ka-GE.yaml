@@ -1596,6 +1596,8 @@ unlimited_usage: შეუზღუდავი გამოყენება
 uses_left: გამოყენება არ დარჩა | ერთი გამოყენება დარჩა | {n} გამოყენება დარჩა
 no_shares: საჩვენებელი გაზიარებები არ არის
 new_share: ახალი გაზიარება
+mcp_prompts_collection_schema:
+  messages_role_user: მომხმარებელი
 expired: ვადაგასული
 upcoming: მომავალი
 share: გაზიარება
