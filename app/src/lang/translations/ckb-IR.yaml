@@ -1583,6 +1583,8 @@ unlimited_usage: بەکارهێنانی بێسنور
 uses_left: هیچ بەکارهێنانی نەماوە | یەک بەکارهێنان ماوە | {n} بەکارهێنان ماوە
 no_shares: هیچ هاوبەشیکردنێک نییە بۆ نیشاندان
 new_share: هاوبەشی نوێ
+mcp_prompts_collection_schema:
+  messages_role_user: بەکارهێنەر
 expired: بەسەرچوو
 upcoming: داهاتوو
 share: هاوبەشیکردن
