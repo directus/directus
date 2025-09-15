@@ -89,7 +89,7 @@ jobs:
 
           # Extract release notes from the output
           # The release notes generator outputs between the divider lines
-          RELEASE_NOTES=$(echo "$OUTPUT" | awk -v RS="==============================================================" 'NR==3 {print}')
+          RELEASE_NOTES=$(echo "$OUTPUT" | awk -v RS="==============================================================" 'NR==3 {print}' | sed '1{/^$/d}')
 
           # Output release notes
           {
@@ -124,13 +124,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           VERSION=${{ github.event.inputs.version }}
+          TAG="v$VERSION"
           BRANCH_NAME="release/$VERSION"
           PR_TITLE="Release $VERSION"
 
           # Build the PR body content
           PR_BODY=$(cat <<'EOF'
-          **⚠️ Code freeze is in effect until this release is published.**
-
           ### ✅ Release Checklist
           - [x] Changesets processed and cleared
           - [x] Package versions updated
@@ -167,6 +166,7 @@ jobs:
               --title "$PR_TITLE" \
               --body "$PR_BODY"
             echo "pr_number=$EXISTING_PR" >> $GITHUB_OUTPUT
+            echo "new_pr=false" >> $GITHUB_OUTPUT
           else
             echo "✨ Creating new PR"
             NEW_PR=$(gh pr create \
@@ -180,5 +180,19 @@ jobs:
               --draft=false \
               | grep -o '[0-9]\+$')
             echo "pr_number=$NEW_PR" >> $GITHUB_OUTPUT
+            echo "new_pr=true" >> $GITHUB_OUTPUT
           fi
-          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Notify Slack
+        if: steps.create-pr.outputs.new_pr == 'true'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_CMS_FREEZE }}
+        run: |
+          PAYLOAD=$(jq -n \
+            --arg tag "${{ steps.create-pr.outputs.tag }}" \
+            --arg pr_number "${{ steps.create-pr.outputs.pr_number }}" \
+            '{tag: $tag, pr_number: $pr_number}')
+          curl -X POST -H 'Content-Type: application/json' \
+            --data "$PAYLOAD" \
+            "$SLACK_WEBHOOK_URL"
