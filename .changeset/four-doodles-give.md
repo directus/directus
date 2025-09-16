@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Add activity logging for user suspension due to failed login attempts
+Added activity tracking for user suspension due to failed login attempts
