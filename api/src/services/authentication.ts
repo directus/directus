@@ -149,7 +149,6 @@ export class AuthenticationService {
 							origin: this.accountability.origin,
 							collection: 'directus_users',
 							item: user.id,
-							comment: `User suspended after ${allowedAttempts} failed attempts`,
 						});
 
 						const revisionsService = new RevisionsService({ knex: this.knex, schema: this.schema });
@@ -158,7 +157,7 @@ export class AuthenticationService {
 							activity: activity,
 							collection: 'directus_users',
 							item: user.id,
-							data: { status: 'suspended' },
+							data: user,
 							delta: { status: 'suspended' },
 						});
 					}
