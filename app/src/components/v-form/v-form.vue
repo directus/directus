@@ -344,11 +344,6 @@ function useRawEditor() {
 		}
 	}
 }
-
-function toggleComparisonField(field: TFormField | undefined) {
-	if (!field || !props.comparison?.onToggleField) return;
-	props.comparison.onToggleField(field.field);
-}
 </script>
 
 <template>
@@ -437,7 +432,6 @@ function toggleComparisonField(field: TFormField | undefined) {
 					@unset="unsetValue(fieldsMap[fieldName]!)"
 					@toggle-batch="toggleBatchField(fieldsMap[fieldName]!)"
 					@toggle-raw="toggleRawField(fieldsMap[fieldName]!)"
-					@toggle-comparison="toggleComparisonField(fieldsMap[fieldName]!)"
 				/>
 			</template>
 		</template>

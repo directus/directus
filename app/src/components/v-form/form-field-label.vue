@@ -33,7 +33,7 @@ withDefaults(
 	},
 );
 
-defineEmits(['toggle-batch', 'toggle-raw', 'toggle-comparison']);
+defineEmits(['toggle-batch', 'toggle-raw']);
 
 const { t } = useI18n();
 </script>
@@ -51,7 +51,7 @@ const { t } = useI18n();
 				v-if="comparison?.mode && comparison?.side === 'current' && comparison?.fields?.has(field.field)"
 				:model-value="comparisonActive"
 				:value="field.field"
-				@update:model-value="$emit('toggle-comparison', field)"
+				@update:model-value="comparison.onToggleField?.(field.field)"
 			/>
 			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 			<v-text-overflow :text="field.name" />

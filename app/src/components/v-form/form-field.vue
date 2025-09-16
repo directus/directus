@@ -42,14 +42,7 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits([
-	'toggle-batch',
-	'toggle-raw',
-	'toggle-comparison',
-	'unset',
-	'update:modelValue',
-	'setFieldValue',
-]);
+const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelValue', 'setFieldValue']);
 
 const { t } = useI18n();
 
@@ -201,7 +194,6 @@ function useComputedValues() {
 					:loading="loading"
 					@toggle-batch="$emit('toggle-batch', $event)"
 					@toggle-raw="$emit('toggle-raw', $event)"
-					@toggle-comparison="$emit('toggle-comparison', $event)"
 				/>
 			</template>
 
