@@ -1506,6 +1506,8 @@ shares: مشاركات
 unlimited_usage: استخدام غير محدود
 no_shares: لا توجد مشاركات لإظهارها
 new_share: مشاركة جديدة
+mcp_prompts_collection_schema:
+  messages_role_user: مستخدم
 expired: منتهية الصلاحية
 upcoming: القادم
 share: مشاركة
