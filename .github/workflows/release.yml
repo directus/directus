@@ -255,15 +255,11 @@ jobs:
     steps:
       - name: Notify Slack
         env:
-          SLACK_WEBHOOK_URL_UNFREEZE: ${{ secrets.SLACK_WEBHOOK_CMS_UNFREEZE }}
-          SLACK_WEBHOOK_URL_RELEASE: ${{ secrets.SLACK_WEBHOOK_CMS_RELEASE }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_CMS_RELEASE }}
         run: |
           PAYLOAD=$(jq -n \
             --arg tag   "${{ needs.extract.outputs.tag }}" \
             '{tag: $tag}')
           curl -X POST -H 'Content-Type: application/json' \
             --data "$PAYLOAD" \
-            "$SLACK_WEBHOOK_URL_UNFREEZE"
-          curl -X POST -H 'Content-Type: application/json' \
-            --data "$PAYLOAD" \
-            "$SLACK_WEBHOOK_URL_RELEASE"
+            "$SLACK_WEBHOOK_URL"
