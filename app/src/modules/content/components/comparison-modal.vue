@@ -190,6 +190,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 										fields: comparisonFields,
 									} as ComparisonContext
 								"
+								class="comparison-form--main"
 							/>
 						</div>
 					</div>
@@ -220,6 +221,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 										onToggleField: toggleComparisonField,
 									} as ComparisonContext
 								"
+								class="comparison-form--current"
 							/>
 						</div>
 					</div>
@@ -508,5 +510,15 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 			}
 		}
 	}
+}
+</style>
+
+<style lang="scss" scoped>
+.comparison-form--main {
+	--comparison-indicator--color: var(--theme--danger);
+}
+
+.comparison-form--current {
+	--comparison-indicator--color: var(--theme--success);
 }
 </style>

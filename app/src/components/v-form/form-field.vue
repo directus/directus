@@ -171,10 +171,9 @@ function useComputedValues() {
 			field.meta?.width || 'full',
 			{
 				invalid: validationError,
-				'comparison-field': comparison?.mode && comparison?.fields?.has(field.field),
+				'diff-indicator': comparison?.fields?.has(field.field),
 			},
 		]"
-		:data-comparison-side="comparison?.mode && comparison?.fields?.has(field.field) ? comparison?.side : undefined"
 	>
 		<v-menu v-if="!isLabelHidden" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
@@ -262,14 +261,7 @@ function useComputedValues() {
 			inset-inline-start: -12px;
 			inline-size: 4px;
 			z-index: 1;
-		}
-
-		&[data-comparison-side='main']::before {
-			background-color: var(--theme--danger);
-		}
-
-		&[data-comparison-side='current']::before {
-			background-color: var(--theme--success);
+			background-color: var(--comparison-indicator--color);
 		}
 	}
 }
