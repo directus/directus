@@ -33,7 +33,7 @@ jobs:
       - name: Extract Metadata
         id: extract
         run: |
-          # Read version from directus package.json
+          # Read the version from directus package.json
           VERSION=$(node -p "require('./directus/package.json').version")
           TAG="v$VERSION"
 
