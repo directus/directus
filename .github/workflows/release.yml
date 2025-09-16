@@ -156,7 +156,7 @@ jobs:
   build-images:
     name: Build Images
     runs-on: ubuntu-latest
-    needs: [check-version, create-release]
+    needs: [extract, check-version, create-release]
     permissions:
       actions: write
       attestations: write
@@ -178,6 +178,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+          ref: ${{ needs.extract.outputs.tag }}
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
