@@ -13,6 +13,7 @@ interface Props {
 	showDeltaDropdown?: boolean;
 	comparisonData?: any;
 	showLatestChip?: boolean;
+	loading?: boolean;
 }
 
 const { t } = useI18n();
@@ -73,51 +74,63 @@ const selectedOption = computed(() => {
 	<div class="comparison-header">
 		<div class="header-content">
 			<div class="title-container">
-				<h3>{{ title }}</h3>
-				<v-chip v-if="showLatestChip" small class="latest-chip">{{ t('latest_version') }}</v-chip>
+				<template v-if="loading">
+					<v-skeleton-loader type="text" class="title-skeleton" />
+				</template>
+				<template v-else>
+					<h3>{{ title }}</h3>
+					<v-chip v-if="showLatestChip" small class="latest-chip">{{ t('latest_version') }}</v-chip>
+				</template>
 			</div>
 		</div>
 		<div class="header-meta">
-			<div v-if="showDeltaDropdown" class="delta-dropdown">
-				<v-menu show-arrow>
-					<template #activator="{ toggle }">
-						<div class="delta-selection" @click="toggle">
-							<div class="delta-content">
-								<div class="delta-date-time">{{ selectedOption?.text.split(' - ')[0] }}</div>
-								<div class="delta-user-info">{{ t('edited_by') }} {{ selectedOption?.text.split(' - ')[1] }}</div>
-							</div>
-							<v-icon name="expand_more" class="dropdown-icon" />
-						</div>
-					</template>
-					<v-list>
-						<v-list-item
-							v-for="option in deltaOptions"
-							:key="option.value"
-							:active="selectedDeltaId === option.value"
-							clickable
-							@click="emit('delta-change', option.value)"
-						>
-							<v-list-item-content>
-								<div class="delta-option-content">
-									<div class="delta-option-date-time">{{ option.text.split(' - ')[0] }}</div>
-									<div class="delta-option-user-info">{{ option.text.split(' - ')[1] }}</div>
+			<template v-if="loading">
+				<div class="meta-skeleton">
+					<v-skeleton-loader type="text" class="date-skeleton" />
+				</div>
+			</template>
+			<template v-else>
+				<div v-if="showDeltaDropdown" class="delta-dropdown">
+					<v-menu show-arrow>
+						<template #activator="{ toggle }">
+							<div class="delta-selection" @click="toggle">
+								<div class="delta-content">
+									<div class="delta-date-time">{{ selectedOption?.text.split(' - ')[0] }}</div>
+									<div class="delta-user-info">{{ t('edited_by') }} {{ selectedOption?.text.split(' - ')[1] }}</div>
 								</div>
-							</v-list-item-content>
-						</v-list-item>
-					</v-list>
-				</v-menu>
-			</div>
-			<div v-else class="meta-info">
-				<div v-if="dateUpdated" class="date-time">
-					{{ localizedFormat(dateUpdated, String(t('date-fns_date_short'))) }}
-					{{ localizedFormat(dateUpdated, String(t('date-fns_time'))) }}
+								<v-icon name="expand_more" class="dropdown-icon" />
+							</div>
+						</template>
+						<v-list>
+							<v-list-item
+								v-for="option in deltaOptions"
+								:key="option.value"
+								:active="selectedDeltaId === option.value"
+								clickable
+								@click="emit('delta-change', option.value)"
+							>
+								<v-list-item-content>
+									<div class="delta-option-content">
+										<div class="delta-option-date-time">{{ option.text.split(' - ')[0] }}</div>
+										<div class="delta-option-user-info">{{ option.text.split(' - ')[1] }}</div>
+									</div>
+								</v-list-item-content>
+							</v-list-item>
+						</v-list>
+					</v-menu>
 				</div>
-				<div v-if="userUpdatedName" class="user-info">{{ t('edited_by') }} {{ userUpdatedName }}</div>
-				<div v-else-if="userLoading" class="user-info">
-					{{ t('loading') }}
+				<div v-else class="meta-info">
+					<div v-if="dateUpdated" class="date-time">
+						{{ localizedFormat(dateUpdated, String(t('date-fns_date_short'))) }}
+						{{ localizedFormat(dateUpdated, String(t('date-fns_time'))) }}
+					</div>
+					<div v-if="userUpdatedName" class="user-info">{{ t('edited_by') }} {{ userUpdatedName }}</div>
+					<div v-else-if="userLoading" class="user-info">
+						{{ t('loading') }}
+					</div>
+					<div v-else class="user-info">{{ t('edited_by') }} {{ t('unknown_user') }}</div>
 				</div>
-				<div v-else class="user-info">{{ t('edited_by') }} {{ t('unknown_user') }}</div>
-			</div>
+			</template>
 		</div>
 	</div>
 </template>
@@ -262,6 +275,27 @@ const selectedOption = computed(() => {
 				line-height: 20px;
 				color: var(--theme--foreground-subdued);
 			}
+		}
+	}
+
+	.title-skeleton {
+		block-size: 40px;
+		inline-size: 120px;
+	}
+
+	.meta-skeleton {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		text-align: start;
+
+		@media (min-width: 960px) {
+			text-align: end;
+		}
+
+		.date-skeleton {
+			block-size: 40px;
+			inline-size: 200px;
 		}
 	}
 }

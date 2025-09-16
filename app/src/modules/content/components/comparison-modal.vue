@@ -5,6 +5,7 @@ import { ContentVersion } from '@directus/types';
 import { ref, toRefs, unref, watch, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import type { ComparisonContext } from '@/components/v-form/types';
 import { useComparison } from '../composables/use-comparison';
 import { type ComparisonData } from '../comparison-utils';
@@ -54,6 +55,8 @@ const {
 	comparisonData: comparisonData,
 });
 
+const modalLoading = ref(false);
+
 const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
 
 const emit = defineEmits<{
@@ -64,10 +67,19 @@ const emit = defineEmits<{
 
 watch(
 	active,
-	(value) => {
+	async (value) => {
 		if (value) {
-			fetchUserUpdated();
-			fetchMainItemUserUpdated();
+			modalLoading.value = true;
+
+			try {
+				await Promise.allSettled([fetchUserUpdated(), fetchMainItemUserUpdated()]);
+			} finally {
+				modalLoading.value = false;
+			}
+
+			if (isRevisionMode.value) {
+				checkIfLatestRevision();
+			}
 		}
 	},
 	{ immediate: true },
@@ -139,6 +151,8 @@ function usePromoteDialog() {
 }
 
 async function onDeltaSelectionChange(newDeltaId: number) {
+	modalLoading.value = true;
+
 	try {
 		// Update the comparison data with the new delta
 		const newComparisonData: ComparisonData = await normalizeComparisonData(
@@ -151,14 +165,15 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 
 		comparisonData.value = { ...comparisonData.value, ...newComparisonData };
 
-		// Refresh user data for the new delta
-		await fetchUserUpdated();
-		await fetchMainItemUserUpdated();
+		await Promise.allSettled([fetchUserUpdated(), fetchMainItemUserUpdated()]);
 
-		// Explicitly check if the new revision is the latest
-		await checkIfLatestRevision();
+		if (isRevisionMode.value) {
+			checkIfLatestRevision();
+		}
 	} catch (error) {
 		unexpectedError(error);
+	} finally {
+		modalLoading.value = false;
 	}
 }
 </script>
@@ -169,7 +184,8 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 			<div class="scrollable-container">
 				<div class="columns vertical-divider">
 					<div class="col left">
-						<ComparisonHeader
+						<comparison-header
+							:loading="modalLoading"
 							:title="baseDisplayName"
 							:date-updated="normalizedData?.main.date.dateObject || null"
 							:user-updated="mainItemUserUpdated"
@@ -178,26 +194,37 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 						/>
 						<div class="comparison-content-divider"></div>
 						<div class="comparison-content">
-							<v-form
-								disabled
-								:collection="collection"
-								:primary-key="primaryKey"
-								:initial-values="comparisonData?.main || {}"
-								:comparison="
-									{
-										side: 'main',
-										fields: comparisonFields,
-										selectedFields: [],
-										onToggleField: () => {},
-									} as ComparisonContext
-								"
-								class="comparison-form--main"
-							/>
+							<template v-if="modalLoading">
+								<div class="form-skeleton">
+									<v-skeleton-loader type="input" />
+									<v-skeleton-loader type="input" />
+									<v-skeleton-loader type="input" />
+									<v-skeleton-loader type="input" />
+								</div>
+							</template>
+							<template v-else>
+								<v-form
+									disabled
+									:collection="collection"
+									:primary-key="primaryKey"
+									:initial-values="comparisonData?.main || {}"
+									:comparison="
+										{
+											side: 'main',
+											fields: comparisonFields,
+											selectedFields: [],
+											onToggleField: () => {},
+										} as ComparisonContext
+									"
+									class="comparison-form--main"
+								/>
+							</template>
 						</div>
 					</div>
 					<div class="comparison-divider"></div>
 					<div class="col right">
-						<ComparisonHeader
+						<comparison-header
+							:loading="modalLoading"
 							:title="deltaDisplayName"
 							:date-updated="normalizedData?.current.date.dateObject || null"
 							:user-updated="userUpdated"
@@ -208,21 +235,31 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 						/>
 						<div class="comparison-content-divider"></div>
 						<div class="comparison-content">
-							<v-form
-								disabled
-								:collection="collection"
-								:primary-key="primaryKey"
-								:initial-values="comparisonData?.current || {}"
-								:comparison="
-									{
-										side: 'current',
-										fields: comparisonFields,
-										selectedFields: selectedComparisonFields,
-										onToggleField: toggleComparisonField,
-									} as ComparisonContext
-								"
-								class="comparison-form--current"
-							/>
+							<template v-if="modalLoading">
+								<div class="form-skeleton">
+									<v-skeleton-loader type="input" />
+									<v-skeleton-loader type="input" />
+									<v-skeleton-loader type="input" />
+									<v-skeleton-loader type="input" />
+								</div>
+							</template>
+							<template v-else>
+								<v-form
+									disabled
+									:collection="collection"
+									:primary-key="primaryKey"
+									:initial-values="comparisonData?.current || {}"
+									:comparison="
+										{
+											side: 'current',
+											fields: comparisonFields,
+											selectedFields: selectedComparisonFields,
+											onToggleField: toggleComparisonField,
+										} as ComparisonContext
+									"
+									class="comparison-form--current"
+								/>
+							</template>
 						</div>
 					</div>
 				</div>
@@ -555,6 +592,14 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 </style>
 
 <style lang="scss" scoped>
+.form-skeleton {
+	display: grid;
+	align-items: start;
+	grid-template-columns: 1fr;
+	gap: var(--theme--form--row-gap) var(--theme--form--column-gap);
+	padding: var(--comparison-modal-padding-x);
+}
+
 .comparison-form--main {
 	--comparison-indicator--color: var(--theme--danger);
 }
