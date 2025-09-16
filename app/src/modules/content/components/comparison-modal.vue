@@ -297,8 +297,6 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins';
-
 .comparison-modal {
 	--comparison-modal-height: calc(100% - 8vw);
 	--comparison-modal-width: calc(100% - 8vw);
@@ -306,10 +304,14 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 	--comparison-modal-padding-y: 20px;
 	--comparison-modal-border-radius: var(--theme--border-radius);
 	--scrollbar-offset: 8px;
-	--comparison-modal-peek-width: calc(25px + var(--scrollbar-offset));
+	--comparison-modal-peek-width: calc(5px);
 	--vertical-divider-width: 2px;
 	--vertical-divider-color: var(--theme--border-color-accent);
 	--vertical-divider-dash-length: 4px;
+	--comparison-field-min-width: 262px;
+	--comparison-row-min-width: 556px;
+	--comparison-breakpoint-large: 1330px;
+	--comparison-breakpoint-small: 706px;
 
 	background: var(--theme--background);
 	border-radius: var(--comparison-modal-border-radius);
@@ -508,6 +510,45 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 			.columns {
 				gap: 0;
 			}
+		}
+	}
+}
+
+/* Override form grid behavior for comparison modal */
+.comparison-content {
+	:deep(.v-form) {
+		display: grid;
+		align-items: start;
+		grid-template-columns: [start] minmax(0, 1fr) [half] minmax(0, 1fr) [full];
+		gap: var(--theme--form--row-gap) var(--theme--form--column-gap);
+
+		@media (max-width: var(--comparison-breakpoint-large)) {
+			.half,
+			.half-left,
+			.half-space {
+				grid-column: start / full;
+			}
+
+			.half + .half,
+			.half-right {
+				grid-column: start / full;
+			}
+		}
+
+		@media (max-width: var(--comparison-breakpoint-small)) {
+			grid-template-columns: [start] minmax(var(--comparison-field-min-width), 1fr) [full];
+
+			.half,
+			.half-left,
+			.half-space,
+			.half + .half,
+			.half-right {
+				grid-column: start / full;
+			}
+		}
+
+		.field {
+			grid-column: start / full;
 		}
 	}
 }
