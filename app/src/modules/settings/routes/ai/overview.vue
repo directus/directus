@@ -65,6 +65,10 @@ function discardAndLeave() {
 			</v-button>
 		</template>
 
+		<template #title-outer:append>
+			<v-chip class="beta" outlined small>Beta</v-chip>
+		</template>
+
 		<template #actions>
 			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!hasEdits" :loading="saving" @click="save">
 				<v-icon name="check" />
@@ -109,5 +113,11 @@ function discardAndLeave() {
 	--v-button-color-disabled: var(--theme--primary);
 	--v-button-background-color-hover-disabled: var(--theme--primary-subdued);
 	--v-button-color-hover-disabled: var(--theme--primary);
+}
+
+.beta {
+	--v-chip-color: var(--theme--primary);
+	--v-chip-background-color: var(--theme--primary-subdued);
+	margin-inline-start: 10px;
 }
 </style>
