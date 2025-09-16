@@ -92,6 +92,25 @@ export async function handleRetentionJob() {
 					}
 				}
 
+				if (task.collection === 'directus_activity') {
+					const activityIds = isMySQL ? records : await subquery.then((r) => r.map((r) => r.id));
+
+					if (activityIds.length > 0) {
+						const revisionsToDelete = await database
+							.select('id')
+							.from('directus_revisions')
+							.whereIn('activity', activityIds);
+
+						if (revisionsToDelete.length > 0) {
+							const revisionIds = revisionsToDelete.map((record) => record.id);
+
+							await database('directus_revisions')
+								.update({ parent: null })
+								.whereIn('parent', revisionIds);
+						}
+					}
+				}
+
 				count = await database(task.collection)
 					.whereIn('id', isMySQL ? records : subquery)
 					.delete();
