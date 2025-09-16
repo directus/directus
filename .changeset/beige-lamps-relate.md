@@ -2,4 +2,4 @@
 '@directus/sdk': patch
 ---
 
-Changes SDK `createItem` type to use `NestedPartial` instead of `Partial` to support creation of nested relational items
+Changes request body type in SDK POST and PATCH functions from `Partial` to `NestedPartial` to support creating and updating nested relational items.
