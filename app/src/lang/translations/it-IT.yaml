@@ -1184,7 +1184,6 @@ page_help_settings_datamodel_fields: >-
   **Modello dei dati: Raccolta** — Un modulo per la gestione di questa raccolta e dei suoi campi.
 page_help_settings_system_logs: '**Log di sistema** — Accedi a un live stream dei log di sistema.'
 page_help_settings_policies_collection: '**Sfoglia le policy** — Elenca tutte le policy nel progetto.'
-page_help_settings_policies_item: "**Dettagli della policy** — Gestisci i permessi dio una policy e altre impostazioni."
 page_help_settings_roles_collection: '**Sfoglia le policy** — Elenca tutte le policy nel progetto.'
 page_help_settings_roles_item: "**Dettagli del ruolo** — Gestisce i permessi di un ruolo e altre impostazioni."
 page_help_settings_presets_collection: >-
@@ -1587,6 +1586,8 @@ unlimited_usage: Utilizzo illimitato
 uses_left: Nessun utilizzo rimanente | 1 utilizzo rimanente | {n} utilizzi rimanenti
 no_shares: Nessuna condivisione da mostrare
 new_share: Nuova condivisione
+mcp_prompts_collection_schema:
+  messages_role_user: Utente
 expired: Scaduto
 upcoming: Prossimamente
 share: Condivisione

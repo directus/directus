@@ -322,6 +322,8 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Pagina-voorkeuren resetten
 hidden_field: Verborgen veld
 hidden_on_detail: Verborgen op het detail scherm
+clear_hidden_field: Wis waarde(s)
+clear_value_on_save_when_hidden: Wis waarde(s) bij opslaan bij verbergen
 readonly_field_label: Veld uitschakelen (alleen-lezen) in de app
 required_readonly_field_warning: Het inschakelen van zowel alleen-lezen als vereist op een veld voorkomt het opslaan van een item als de waarde leeg is.
 key: Key
@@ -1197,7 +1199,6 @@ page_help_settings_datamodel_fields: >-
   **Gegevensmodel: Verzameling** - Een formulier voor het beheren van deze collectie en haar velden.
 page_help_settings_system_logs: '**Systeemlogs** ­— Toegang tot een livestream van systeemlogs.'
 page_help_settings_policies_collection: '**Bladeren door Policies** — Toont alle policies binnen het project.'
-page_help_settings_policies_item: "**Policy Detail** — Beheer de permissies en andere instellingen van een policy."
 page_help_settings_roles_collection: '**Bladeren door Rollen** — Toont alle gebruikersrollen binnen het project.'
 page_help_settings_roles_item: "**Rol Detail** - Beheer de rechten van de rol en andere instellingen."
 page_help_settings_presets_collection: >-
@@ -1513,7 +1514,7 @@ field_options:
     plural_unit: Meervoudige eenheid
     archive_divider: Archiveren
     archive_field_placeholder: Kies een veld...
-    archive_app_filter: App Rrchief filter inschakelen
+    archive_app_filter: App archief filter inschakelen
     archive_value: Waarde ingesteld bij archiveren...
     unarchive_value: Waarde ingesteld bij dearchiveren...
     sort_divider: Sorteren
@@ -1602,6 +1603,8 @@ unlimited_usage: Onbeperkt gebruik
 uses_left: Geen gebruik over | Één gebruik over | {n} gebruik over
 no_shares: Geen delingen om weer te geven
 new_share: Delen
+mcp_prompts_collection_schema:
+  messages_role_user: Gebruiker
 expired: Verlopen
 upcoming: Aankomend
 share: Delen

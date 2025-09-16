@@ -1181,7 +1181,6 @@ page_help_settings_datamodel_fields: >-
   **مۆدێلی داتا: کۆمەڵەکان** —شێوەیەکە بۆ بەڕێوەبردنی کۆمەڵەکان و خانەکانیان.
 page_help_settings_system_logs: '**تۆمارەکانی سیستەم** — دەستگەیشتن بە ڕۆیشتنی ڕاستەوخۆی تۆمارەکانی سیستەم.'
 page_help_settings_policies_collection: '**گەڕانی سیاسەتەکان** — لیستی سەرجەم سیاسەتەکان لە پڕۆژەکەدا.'
-page_help_settings_policies_item: "**وردەکاری سیاسەت** — بەڕێوەبردنی دەسەڵاتەکانی سیاسەت و ڕێکخستنەکانی تر."
 page_help_settings_roles_collection: '**گەڕانی پلەکان** — لیستی سەرجەم پلەکانی بەکارهێنەر لە پڕۆژەکەدا.'
 page_help_settings_roles_item: "**وردەکاری پلە** — بەڕێوەبردنی دەسەڵاتەکانی پلە و ڕێکخستنەکانی تر."
 page_help_settings_presets_collection: >-
@@ -1584,6 +1583,8 @@ unlimited_usage: بەکارهێنانی بێسنور
 uses_left: هیچ بەکارهێنانی نەماوە | یەک بەکارهێنان ماوە | {n} بەکارهێنان ماوە
 no_shares: هیچ هاوبەشیکردنێک نییە بۆ نیشاندان
 new_share: هاوبەشی نوێ
+mcp_prompts_collection_schema:
+  messages_role_user: بەکارهێنەر
 expired: بەسەرچوو
 upcoming: داهاتوو
 share: هاوبەشیکردن
