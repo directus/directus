@@ -1,6 +1,6 @@
 {
 	"name": "@directus/format-title",
-	"version": "12.0.1",
+	"version": "12.1.0",
 	"description": "Custom formatter that converts any string into Title Case",
 	"keywords": [
 		"title-case",
