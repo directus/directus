@@ -16,13 +16,12 @@ const props = withDefaults(
 );
 
 const src = computed(() => {
-	if (props.value === null) return null;
+	if (props.value === null || !props.value.avatar?.id) return null;
 
-	if (props.value.avatar?.id) {
-		return getAssetUrl(`${props.value.avatar.id}?key=system-small-cover`);
-	}
-
-	return null;
+	return getAssetUrl(props.value.avatar.id, {
+		imageKey: 'system-small-cover',
+		cacheBuster: props.value.avatar.modified_on,
+	});
 });
 </script>
 

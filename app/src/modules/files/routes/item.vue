@@ -316,7 +316,7 @@ function revert(values: Record<string, any>) {
 				icon
 				rounded
 				:download="item?.filename_download"
-				:href="getAssetUrl(props.primaryKey, true)"
+				:href="getAssetUrl(props.primaryKey, { isDownload: true })"
 			>
 				<v-icon name="download" />
 			</v-button>
