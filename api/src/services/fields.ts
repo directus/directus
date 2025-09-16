@@ -405,6 +405,16 @@ export class FieldsService {
 							this.addColumnToTable(table, collection, hookAdjustedField as Field);
 						});
 					}
+
+					if (hookAdjustedField.schema) {
+						await this.trackFieldSchemaChange(
+							trx,
+							collection,
+							hookAdjustedField.field,
+							'create',
+							hookAdjustedField.schema
+						);
+					}
 				}
 
 				if (hookAdjustedField.meta) {
@@ -536,57 +546,13 @@ export class FieldsService {
 								this.addColumnToTable(table, collection, field, existingColumn);
 							});
 
-							if (
-								this.accountability &&
-								this.schema.collections['directus_fields']?.accountability !== null
-							) {
-								const fieldRecord = await trx('directus_fields')
-									.select('id')
-									.where({ collection, field: hookAdjustedField.field })
-									.first();
-
-								if (!fieldRecord) {
-									throw new Error(`Field ${collection}.${hookAdjustedField.field} not found`);
-								}
-
-								const { ActivityService } = await import('./activity.js');
-
-								const activityService = new ActivityService({
-									knex: trx,
-									schema: this.schema,
-								});
-
-								const activity = await activityService.createOne({
-									action: 'update',
-									user: this.accountability.user,
-									collection: 'directus_fields',
-									ip: this.accountability.ip,
-									user_agent: this.accountability.userAgent,
-									origin: this.accountability.origin,
-									item: fieldRecord.id,
-								});
-
-								if (this.schema.collections['directus_fields']?.accountability === 'all') {
-									const { RevisionsService } = await import('./revisions.js');
-
-									const revisionsService = new RevisionsService({
-										knex: trx,
-										schema: this.schema,
-									});
-
-									await revisionsService.createOne({
-										activity: activity,
-										collection: 'directus_fields',
-										item: fieldRecord.id,
-										data: {
-											collection: collection,
-											field: hookAdjustedField.field,
-											schema: hookAdjustedField.schema,
-										},
-										delta: hookAdjustedField.schema,
-									});
-								}
-							}
+							await this.trackFieldSchemaChange(
+								trx,
+								collection,
+								hookAdjustedField.field,
+								'update',
+								hookAdjustedField.schema
+							);
 						});
 					} catch (err: any) {
 						throw await translateDatabaseError(err, field);
@@ -994,6 +960,68 @@ export class FieldsService {
 
 		if (existing) {
 			column.alter();
+		}
+	}
+
+	private async trackFieldSchemaChange(
+		trx: Knex.Transaction,
+		collection: string,
+		fieldName: string,
+		action: 'create' | 'update',
+		schemaData: any
+	): Promise<void> {
+		if (
+			!this.accountability ||
+			this.schema.collections['directus_fields']?.accountability === null
+		) {
+			return;
+		}
+
+		const fieldRecord = await trx('directus_fields')
+			.select('id')
+			.where({ collection, field: fieldName })
+			.first();
+
+		if (!fieldRecord) {
+			throw new Error(`Field ${collection}.${fieldName} not found`);
+		}
+
+		const { ActivityService } = await import('./activity.js');
+
+		const activityService = new ActivityService({
+			knex: trx,
+			schema: this.schema,
+		});
+
+		const activity = await activityService.createOne({
+			action,
+			user: this.accountability.user,
+			collection: 'directus_fields',
+			ip: this.accountability.ip,
+			user_agent: this.accountability.userAgent,
+			origin: this.accountability.origin,
+			item: fieldRecord.id,
+		});
+
+		if (this.schema.collections['directus_fields']?.accountability === 'all') {
+			const { RevisionsService } = await import('./revisions.js');
+
+			const revisionsService = new RevisionsService({
+				knex: trx,
+				schema: this.schema,
+			});
+
+			await revisionsService.createOne({
+				activity: activity,
+				collection: 'directus_fields',
+				item: fieldRecord.id,
+				data: {
+					collection: collection,
+					field: fieldName,
+					schema: schemaData,
+				},
+				delta: schemaData,
+			});
 		}
 	}
 }
