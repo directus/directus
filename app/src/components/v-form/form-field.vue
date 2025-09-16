@@ -17,6 +17,7 @@ const props = withDefaults(
 		field: FormField;
 		batchMode?: boolean;
 		batchActive?: boolean;
+		comparison?: ComparisonContext;
 		comparisonActive?: boolean;
 		disabled?: boolean;
 		modelValue?: any;
@@ -30,7 +31,6 @@ const props = withDefaults(
 		rawEditorActive?: boolean;
 		disabledMenuOptions?: MenuOptions[];
 		direction?: string;
-		comparison?: ComparisonContext;
 	}>(),
 	{
 		modelValue: undefined,
