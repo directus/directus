@@ -11,6 +11,7 @@ export {
 } from '@directus/composables';
 export {
 	defineDisplay,
+	defineEditor,
 	defineEndpoint,
 	defineHook,
 	defineInterface,

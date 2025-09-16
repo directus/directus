@@ -11,6 +11,7 @@ type UsablePreset = {
 	layout: Ref<string | null>;
 	layoutOptions: Ref<Record<string, any>>;
 	layoutQuery: Ref<Record<string, any>>;
+	editor: Ref<string | null>;
 	filter: Ref<Filter | null>;
 	search: Ref<string | null>;
 	refreshInterval: Ref<number | null>;
@@ -133,6 +134,11 @@ export function usePreset(
 		set: (layout) => updatePreset({ layout }),
 	});
 
+	const editor = computed<string | null>({
+		get: () => localPreset.value.editor || null,
+		set: (editor) => updatePreset({ editor }),
+	});
+
 	const filter = computed<Filter | null>({
 		get: () => localPreset.value.filter ?? null,
 		set: (filter) => updatePreset({ filter }),
@@ -158,6 +164,7 @@ export function usePreset(
 		layout,
 		layoutOptions,
 		layoutQuery,
+		editor,
 		filter,
 		search,
 		refreshInterval,
@@ -187,6 +194,7 @@ export function usePreset(
 				layout_query: null,
 				layout_options: null,
 				layout: 'tabular',
+				editor: null,
 				filter: null,
 				search: null,
 				refresh_interval: null,

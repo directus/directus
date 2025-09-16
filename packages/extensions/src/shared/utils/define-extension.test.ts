@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { defineComponent } from 'vue';
 import {
 	defineDisplay,
+	defineEditor,
 	defineEndpoint,
 	defineHook,
 	defineInterface,
@@ -36,6 +37,13 @@ describe('define-extensions', () => {
 	};
 
 	const displayConfig = { id: '1', name: 'test', icon: 'icon', component: mockComponent, types: types, options: null };
+
+	const editorConfig = {
+		id: '1',
+		name: 'test',
+		icon: 'icon',
+		component: mockComponent,
+	};
 
 	const layoutConfig = {
 		id: '1',
@@ -88,6 +96,10 @@ describe('define-extensions', () => {
 
 	it('return a display config', () => {
 		expect(defineDisplay(displayConfig)).toBe(displayConfig);
+	});
+
+	it('return an editor config', () => {
+		expect(defineEditor(editorConfig)).toBe(editorConfig);
 	});
 
 	it('return a layout config', () => {
