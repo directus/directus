@@ -50,6 +50,7 @@ catalog:
   '@mapbox/mapbox-gl-draw': 1.5.0
   '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
   '@mapbox/mapbox-gl-geocoder': 5.1.0
+  '@modelcontextprotocol/sdk': 1.17.1
   '@ngneat/falso': 8.0.2
   '@npm/types': 2.1.0
   '@pinia/testing': 1.0.2
@@ -196,7 +197,7 @@ catalog:
   ioredis: 5.7.0
   ip-matching: 2.1.2
   isolated-vm: 5.0.3
-  joi: 17.13.3
+  joi: 18.0.1
   js-yaml: 4.1.0
   js2xmlparser: 5.0.0
   json-to-graphql-query: 2.3.0
@@ -281,7 +282,7 @@ catalog:
   tar: 7.4.3
   tedious: 18.6.1
   tinymce: 6.8.5
-  tmp: 0.2.4
+  tmp: 0.2.5
   tsdown: 0.14.2
   tsx: 4.20.3
   tus-js-client: 4.3.1

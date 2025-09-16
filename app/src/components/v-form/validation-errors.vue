@@ -8,7 +8,6 @@ import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 type ValidationErrorWithDetails = ValidationError & {
 	fieldName: string;
 	groupName: string;
-	hasCustomValidation: boolean;
 	customValidationMessage: string | null;
 };
 
@@ -29,14 +28,16 @@ const validationErrorsWithDetails = computed<ValidationErrorWithDetails[]>(() =>
 			const field = props.fields.find((field) => field.field === fieldKey);
 			const group = props.fields.find((field) => field.field === validationError.group);
 			const fieldName = getFieldName() + getNestedFieldNames(nestedFieldKeys, validationError.nestedNames);
+			const isRequiredError = field?.meta?.required && validationError.type === 'nnull';
+			const isNotUniqueError = validationError.code === 'RECORD_NOT_UNIQUE';
 
 			return {
 				...validationError,
 				field: fieldKey,
 				fieldName,
 				groupName: group?.name ?? validationError.group,
-				hasCustomValidation: !!field?.meta?.validation,
-				customValidationMessage: validationError.validation_message ?? field?.meta?.validation_message,
+				type: getValidationType(),
+				customValidationMessage: getCustomValidationMessage(),
 			};
 
 			function getFieldName() {
@@ -50,22 +51,28 @@ const validationErrorsWithDetails = computed<ValidationErrorWithDetails[]>(() =>
 				const separator = ' → ';
 				return `${separator}${nestedFieldKeys.map((name) => nestedNames?.[name] ?? name).join(separator)}`;
 			}
+
+			function getValidationType() {
+				if (isRequiredError) return 'required';
+				if (isNotUniqueError) return 'unique';
+				return validationError.type;
+			}
+
+			function getCustomValidationMessage() {
+				const customValidationMessage = validationError.validation_message ?? field?.meta?.validation_message;
+				if (!customValidationMessage) return null;
+
+				const hasCustomValidation = !!field?.meta?.validation;
+				if (hasCustomValidation && (isRequiredError || isNotUniqueError)) return null;
+
+				return customValidationMessage;
+			}
 		},
 	) as ValidationErrorWithDetails[];
 });
 
-function getDefaultValidationMessage(validationError: ValidationError) {
-	const isNotUnique = validationError.code === 'RECORD_NOT_UNIQUE';
-	if (isNotUnique) return t('validationError.unique', validationError);
-
+function getDefaultValidationMessage(validationError: ValidationErrorWithDetails) {
 	return t(`validationError.${validationError.type}`, validationError);
-}
-
-function showCustomValidationMessage(validationError: ValidationErrorWithDetails) {
-	return (
-		validationError.customValidationMessage &&
-		(!validationError.hasCustomValidation || validationError.code === 'FAILED_VALIDATION')
-	);
 }
 </script>
 
@@ -90,7 +97,7 @@ function showCustomValidationMessage(validationError: ValidationErrorWithDetails
 					</strong>
 					<strong>{{ ': ' }}</strong>
 
-					<template v-if="showCustomValidationMessage(validationError)">
+					<template v-if="validationError.customValidationMessage">
 						{{ validationError.customValidationMessage }}
 						<v-icon v-tooltip="getDefaultValidationMessage(validationError)" small right name="help" />
 					</template>
