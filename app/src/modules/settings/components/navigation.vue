@@ -78,7 +78,6 @@ const links = computed<Link[][]>(() => [
 			icon: 'storefront',
 			name: t('marketplace'),
 			to: '/settings/marketplace',
-			chip: t('beta'),
 		},
 		{
 			icon: 'category',
