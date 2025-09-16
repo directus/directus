@@ -141,7 +141,7 @@ jobs:
         run: |
           VERSION=${{ github.event.inputs.version }}
           TAG="v$VERSION"
-          BRANCH_NAME="release/$VERSION"
+          BRANCH_NAME="release-$VERSION"
           PR_TITLE="Release $VERSION"
 
           # Build the PR body content
