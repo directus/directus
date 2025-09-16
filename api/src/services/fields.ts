@@ -219,16 +219,16 @@ export class FieldsService {
 			const permissions = await fetchPermissions(
 				collection
 					? {
-							action: 'read',
-							policies,
-							collections: [collection],
-							accountability: this.accountability,
-						}
+						action: 'read',
+						policies,
+						collections: [collection],
+						accountability: this.accountability,
+					}
 					: {
-							action: 'read',
-							policies,
-							accountability: this.accountability,
-						},
+						action: 'read',
+						policies,
+						accountability: this.accountability,
+					},
 				{ knex: this.knex, schema: this.schema },
 			);
 
@@ -324,9 +324,9 @@ export class FieldsService {
 
 		const columnWithCastDefaultValue = column
 			? {
-					...column,
-					default_value: getDefaultValue(column, fieldInfo),
-				}
+				...column,
+				default_value: getDefaultValue(column, fieldInfo),
+			}
 			: null;
 
 		const data = {
@@ -384,17 +384,17 @@ export class FieldsService {
 				const hookAdjustedField =
 					opts?.emitEvents !== false
 						? await emitter.emitFilter(
-								`fields.create`,
-								field,
-								{
-									collection: collection,
-								},
-								{
-									database: trx,
-									schema: this.schema,
-									accountability: this.accountability,
-								},
-							)
+							`fields.create`,
+							field,
+							{
+								collection: collection,
+							},
+							{
+								database: trx,
+								schema: this.schema,
+								accountability: this.accountability,
+							},
+						)
 						: field;
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
@@ -488,18 +488,18 @@ export class FieldsService {
 			const hookAdjustedField =
 				opts?.emitEvents !== false
 					? await emitter.emitFilter(
-							`fields.update`,
-							field,
-							{
-								keys: [field.field],
-								collection: collection,
-							},
-							{
-								database: this.knex,
-								schema: this.schema,
-								accountability: this.accountability,
-							},
-						)
+						`fields.update`,
+						field,
+						{
+							keys: [field.field],
+							collection: collection,
+						},
+						{
+							database: this.knex,
+							schema: this.schema,
+							accountability: this.accountability,
+						},
+					)
 					: field;
 
 			const record = field.meta
@@ -535,6 +535,58 @@ export class FieldsService {
 								if (!hookAdjustedField.schema) return;
 								this.addColumnToTable(table, collection, field, existingColumn);
 							});
+
+							if (
+								this.accountability &&
+								this.schema.collections['directus_fields']?.accountability !== null
+							) {
+								const fieldRecord = await trx('directus_fields')
+									.select('id')
+									.where({ collection, field: hookAdjustedField.field })
+									.first();
+
+								if (!fieldRecord) {
+									throw new Error(`Field ${collection}.${hookAdjustedField.field} not found`);
+								}
+
+								const { ActivityService } = await import('./activity.js');
+
+								const activityService = new ActivityService({
+									knex: trx,
+									schema: this.schema,
+								});
+
+								const activity = await activityService.createOne({
+									action: 'update',
+									user: this.accountability.user,
+									collection: 'directus_fields',
+									ip: this.accountability.ip,
+									user_agent: this.accountability.userAgent,
+									origin: this.accountability.origin,
+									item: fieldRecord.id,
+								});
+
+								if (this.schema.collections['directus_fields']?.accountability === 'all') {
+									const { RevisionsService } = await import('./revisions.js');
+
+									const revisionsService = new RevisionsService({
+										knex: trx,
+										schema: this.schema,
+									});
+
+									await revisionsService.createOne({
+										activity: activity,
+										collection: 'directus_fields',
+										item: fieldRecord.id,
+										data: {
+											collection: collection,
+											field: hookAdjustedField.field,
+											schema: hookAdjustedField.schema,
+										},
+										delta: hookAdjustedField.schema,
+									});
+								}
+							}
 						});
 					} catch (err: any) {
 						throw await translateDatabaseError(err, field);
