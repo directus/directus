@@ -22,12 +22,28 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Validate version format
+      - name: Validate version format and existence
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if [[ ! "${{ github.event.inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.*)?$ ]]; then
-            echo "❌ Invalid version format. Expected: x.y.z or x.y.z-prerelease"
+          VERSION=${{ github.event.inputs.version }}
+          TAG="v$VERSION"
+          REPO="${{ github.repository }}"
+
+          # Check for semver format
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.*)?$ ]]; then
+            echo "❌ Invalid version format for '$VERSION'. Expected: x.y.z or x.y.z-prerelease"
             exit 1
           fi
+
+          # Check for tag existence
+          if gh api repos/${GITHUB_REPOSITORY}/git/refs/tags/$TAG \
+               --silent >/dev/null 2>&1; then
+            echo "❌ Tag '$TAG' already exists"
+            exit 1
+          fi
+
+          echo "✅ Version '$VERSION' is valid and available"
 
       - name: Checkout repository
         uses: actions/checkout@v4
