@@ -48,10 +48,10 @@ const { t } = useI18n();
 				@update:model-value="$emit('toggle-batch', field)"
 			/>
 			<v-checkbox
-				v-if="comparison?.mode && comparison?.side === 'current' && comparison?.fields?.has(field.field)"
+				v-if="comparison && comparison.side === 'current' && comparison.fields.has(field.field)"
 				:model-value="comparisonActive"
 				:value="field.field"
-				@update:model-value="comparison.onToggleField?.(field.field)"
+				@update:model-value="comparison.onToggleField(field.field)"
 			/>
 			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 			<v-text-overflow :text="field.name" />

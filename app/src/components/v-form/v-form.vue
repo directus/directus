@@ -412,7 +412,7 @@ function useRawEditor() {
 					:batch-mode="batchMode"
 					:batch-active="batchActiveFields.includes(fieldName)"
 					:comparison="comparison"
-					:comparison-active="comparison?.selectedFields?.includes(fieldName)"
+					:comparison-active="comparison?.selectedFields.includes(fieldName)"
 					:primary-key="primaryKey"
 					:loading="loading"
 					:validation-error="

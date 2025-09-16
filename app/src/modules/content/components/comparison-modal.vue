@@ -185,9 +185,10 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 								:initial-values="comparisonData?.main || {}"
 								:comparison="
 									{
-										mode: !!comparisonData,
 										side: 'main',
 										fields: comparisonFields,
+										selectedFields: [],
+										onToggleField: () => {},
 									} as ComparisonContext
 								"
 								class="comparison-form--main"
@@ -214,7 +215,6 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 								:initial-values="comparisonData?.current || {}"
 								:comparison="
 									{
-										mode: !!comparisonData,
 										side: 'current',
 										fields: comparisonFields,
 										selectedFields: selectedComparisonFields,
@@ -300,8 +300,8 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 @use '@/styles/mixins';
 
 .comparison-modal {
-	--comparison-modal-height: 90vh;
-	--comparison-modal-width: 90vw;
+	--comparison-modal-height: calc(100% - 8vw);
+	--comparison-modal-width: calc(100% - 8vw);
 	--comparison-modal-padding-x: 28px;
 	--comparison-modal-padding-y: 20px;
 	--comparison-modal-border-radius: var(--theme--border-radius);

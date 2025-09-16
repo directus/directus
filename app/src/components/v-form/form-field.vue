@@ -171,7 +171,7 @@ function useComputedValues() {
 			field.meta?.width || 'full',
 			{
 				invalid: validationError,
-				'diff-indicator': comparison?.fields?.has(field.field),
+				'diff-indicator': comparison?.fields.has(field.field),
 			},
 		]"
 	>
@@ -253,7 +253,7 @@ function useComputedValues() {
 .field {
 	position: relative;
 
-	&.comparison-field {
+	&.diff-indicator {
 		&::before {
 			content: '';
 			position: absolute;
