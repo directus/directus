@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-The content version promotion interface was enhanced to make changes easier to understand.
+Improved the content comparison for versions and revisions to make changes easier to understand
