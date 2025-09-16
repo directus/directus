@@ -37,7 +37,7 @@ jobs:
           fi
 
           # Check for tag existence
-          if gh api repos/${GITHUB_REPOSITORY}/git/refs/tags/$TAG \
+          if gh api repos/$REPO/git/refs/tags/$TAG \
                --silent >/dev/null 2>&1; then
             echo "❌ Tag '$TAG' already exists"
             exit 1
