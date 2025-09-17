@@ -48,7 +48,7 @@ const { t } = useI18n();
 				@update:model-value="$emit('toggle-batch', field)"
 			/>
 			<v-checkbox
-				v-if="comparison && comparison.side === 'current' && comparison.fields.has(field.field)"
+				v-if="comparison && comparison.side === 'incoming' && comparison.fields.has(field.field)"
 				class="comparison-checkbox"
 				:model-value="comparisonActive"
 				:value="field.field"

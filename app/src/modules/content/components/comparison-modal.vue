@@ -187,7 +187,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 						<comparison-header
 							:loading="modalLoading"
 							:title="baseDisplayName"
-							:date-updated="normalizedData?.main.date.dateObject || null"
+							:date-updated="normalizedData?.current.date.dateObject || null"
 							:user-updated="mainItemUserUpdated"
 							:user-loading="mainItemUserLoading"
 							:show-latest-chip="isLatestRevision"
@@ -210,7 +210,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 									:initial-values="comparisonData?.main || {}"
 									:comparison="
 										{
-											side: 'main',
+											side: 'current',
 											fields: comparisonFields,
 											selectedFields: [],
 											onToggleField: () => {},
@@ -226,7 +226,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 						<comparison-header
 							:loading="modalLoading"
 							:title="deltaDisplayName"
-							:date-updated="normalizedData?.current.date.dateObject || null"
+							:date-updated="normalizedData?.incoming.date.dateObject || null"
 							:user-updated="userUpdated"
 							:user-loading="userLoading"
 							:show-delta-dropdown="isRevisionMode"
@@ -251,7 +251,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 									:initial-values="comparisonData?.current || {}"
 									:comparison="
 										{
-											side: 'current',
+											side: 'incoming',
 											fields: comparisonFields,
 											selectedFields: selectedComparisonFields,
 											onToggleField: toggleComparisonField,

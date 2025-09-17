@@ -62,11 +62,11 @@ export function useComparison(options: UseComparisonOptions) {
 	});
 
 	const baseDisplayName = computed(() => {
-		return normalizedData.value?.main?.displayName || 'Main';
+		return normalizedData.value?.current?.displayName || 'Current';
 	});
 
 	const deltaDisplayName = computed(() => {
-		return normalizedData.value?.current?.displayName || '';
+		return normalizedData.value?.incoming?.displayName || '';
 	});
 
 	const isLatestRevision = ref(false);
@@ -180,12 +180,12 @@ export function useComparison(options: UseComparisonOptions) {
 
 	async function fetchUserUpdated() {
 		const normalized = normalizedData.value;
-		if (!normalized?.current.user?.id) return;
+		if (!normalized?.incoming?.user?.id) return;
 
 		userLoading.value = true;
 
 		try {
-			const response = await api.get(`/users/${normalized.current.user.id}`, {
+			const response = await api.get(`/users/${normalized.incoming.user.id}`, {
 				params: {
 					fields: ['id', 'first_name', 'last_name', 'email'],
 				},
@@ -201,12 +201,12 @@ export function useComparison(options: UseComparisonOptions) {
 
 	async function fetchMainItemUserUpdated() {
 		const normalized = normalizedData.value;
-		if (!normalized?.main.user?.id) return;
+		if (!normalized?.current.user?.id) return;
 
 		mainItemUserLoading.value = true;
 
 		try {
-			const response = await api.get(`/users/${normalized.main.user.id}`, {
+			const response = await api.get(`/users/${normalized.current.user.id}`, {
 				params: {
 					fields: ['id', 'first_name', 'last_name', 'email'],
 				},

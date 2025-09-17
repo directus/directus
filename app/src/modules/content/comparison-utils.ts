@@ -38,8 +38,8 @@ export type NormalizedItem = {
 };
 
 export type NormalizedComparisonData = {
-	main: NormalizedItem;
 	current: NormalizedItem;
+	incoming: NormalizedItem;
 	selectableDeltas: NormalizedItem[];
 	comparisonType: 'version' | 'revision';
 	outdated: boolean;
@@ -205,35 +205,35 @@ export function normalizeRevisionItem(revision: Revision): NormalizedItem {
 
 export function normalizeMainItem(mainData: Record<string, any>): NormalizedItem {
 	return {
-		id: 'main',
-		displayName: 'Main',
+		id: 'current',
+		displayName: 'Current',
 		date: normalizeDate(mainData.date_updated),
 		user: normalizeUser(mainData.user_updated || mainData.user_created),
 	};
 }
 
 export function normalizeComparisonData(comparisonData: ComparisonData): NormalizedComparisonData {
-	let main: NormalizedItem;
+	let current: NormalizedItem;
 
 	if (comparisonData.comparisonType === 'revision' && comparisonData.currentVersion) {
-		main = {
-			id: 'main',
+		current = {
+			id: 'current',
 			displayName: getVersionDisplayName(comparisonData.currentVersion),
 			date: normalizeDate(comparisonData.main.date_updated),
 			user: normalizeUser(comparisonData.main.user_updated || comparisonData.main.user_created),
 		};
 	} else {
-		main = normalizeMainItem(comparisonData.main);
+		current = normalizeMainItem(comparisonData.main);
 	}
 
-	let current: NormalizedItem;
+	let incoming: NormalizedItem;
 
 	if (comparisonData.comparisonType === 'version') {
 		const versions = (comparisonData.selectableDeltas as ContentVersion[]) || [];
 		const selectedId = (comparisonData.initialSelectedDeltaId as string | undefined) || undefined;
 		const selected = selectedId ? versions.find((v) => v.id === selectedId) : versions[0];
 
-		current = selected
+		incoming = selected
 			? normalizeVersionItem(selected)
 			: {
 					id: 'unknown',
@@ -246,7 +246,7 @@ export function normalizeComparisonData(comparisonData: ComparisonData): Normali
 		const selectedId = (comparisonData.initialSelectedDeltaId as number | undefined) || undefined;
 		const selected = typeof selectedId !== 'undefined' ? revisions.find((r) => r.id === selectedId) : revisions[0];
 
-		current = selected
+		incoming = selected
 			? normalizeRevisionItem(selected)
 			: {
 					id: 'unknown',
@@ -274,8 +274,8 @@ export function normalizeComparisonData(comparisonData: ComparisonData): Normali
 	const fieldsWithDifferences = getFieldsWithDifferences(normalizedComparison);
 
 	return {
-		main,
 		current,
+		incoming,
 		selectableDeltas,
 		comparisonType: comparisonData.comparisonType,
 		outdated: comparisonData.outdated || false,
@@ -285,3 +285,10 @@ export function normalizeComparisonData(comparisonData: ComparisonData): Normali
 		fieldsWithDifferences,
 	};
 }
+
+export const COMPARISON_SIDES = {
+	CURRENT: 'current' as const,
+	INCOMING: 'incoming' as const,
+};
+
+export type ComparisonSide = (typeof COMPARISON_SIDES)[keyof typeof COMPARISON_SIDES];
