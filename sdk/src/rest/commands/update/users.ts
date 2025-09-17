@@ -22,7 +22,7 @@ export type UpdateUserOutput<
 export const updateUsers =
 	<Schema, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
 		keys: DirectusUser<Schema>['id'][],
-		item: Partial<DirectusUser<Schema>>,
+		item: NestedPartial<DirectusUser<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateUserOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -69,7 +69,7 @@ export const updateUsersBatch =
 export const updateUser =
 	<Schema, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
 		key: DirectusUser<Schema>['id'],
-		item: Partial<DirectusUser<Schema>>,
+		item: NestedPartial<DirectusUser<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateUserOutput<Schema, TQuery>, Schema> =>
 	() => {
@@ -93,7 +93,7 @@ export const updateUser =
  */
 export const updateMe =
 	<Schema, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
-		item: Partial<DirectusUser<Schema>>,
+		item: NestedPartial<DirectusUser<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateUserOutput<Schema, TQuery>, Schema> =>
 	() => ({

@@ -1,5 +1,5 @@
 import type { DirectusVersion } from '../../../schema/version.js';
-import type { UnpackList } from '../../../types/index.js';
+import type { NestedPartial, UnpackList } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 
@@ -14,7 +14,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 export const saveToContentVersion =
 	<Schema, Collection extends keyof Schema, Item = UnpackList<Schema[Collection]>>(
 		id: DirectusVersion<Schema>['id'],
-		item: Partial<Item>,
+		item: NestedPartial<Item>,
 	): RestCommand<Item, Schema> =>
 	() => {
 		throwIfEmpty(id, 'ID cannot be empty');
