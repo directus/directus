@@ -93,7 +93,7 @@ export const updateUser =
  */
 export const updateMe =
 	<Schema, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
-		item: Partial<DirectusUser<Schema>>,
+		item: NestedPartial<DirectusUser<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateUserOutput<Schema, TQuery>, Schema> =>
 	() => ({
