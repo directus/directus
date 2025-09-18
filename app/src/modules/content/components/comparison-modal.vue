@@ -349,10 +349,6 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 	--vertical-divider-width: 2px;
 	--vertical-divider-color: var(--theme--border-color-accent);
 	--vertical-divider-dash-length: 4px;
-	--comparison-field-min-width: 262px;
-	--comparison-row-min-width: 556px;
-	--comparison-breakpoint-large: 1330px;
-	--comparison-breakpoint-small: 706px;
 
 	background: var(--theme--background);
 	border-radius: var(--comparison-modal-border-radius);
@@ -555,47 +551,55 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 	}
 }
 
-/* Override form grid behavior for comparison modal */
 .comparison-content {
 	:deep(.v-form) {
-		display: grid;
-		align-items: start;
-		grid-template-columns: [start] minmax(0, 1fr) [half] minmax(0, 1fr) [full];
-		gap: var(--theme--form--row-gap) var(--theme--form--column-gap);
-
-		@media (max-width: var(--comparison-breakpoint-large)) {
-			.half,
-			.half-left,
-			.half-space {
-				grid-column: start / full;
-			}
-
-			.half + .half,
-			.half-right {
-				grid-column: start / full;
-			}
-		}
-
-		@media (max-width: var(--comparison-breakpoint-small)) {
-			grid-template-columns: [start] minmax(var(--comparison-field-min-width), 1fr) [full];
-
-			.half,
-			.half-left,
-			.half-space,
-			.half + .half,
-			.half-right {
-				grid-column: start / full;
-			}
-		}
+		align-items: start !important;
 
 		.field {
-			grid-column: start / full;
+			grid-column: start / fill;
+			@media (min-width: 960px) {
+				grid-column: start / fill !important;
+			}
+			@media (min-width: 1330px) {
+				grid-column: start / full !important;
+			}
+		}
+
+		.half,
+		.half-left,
+		.half-space {
+			grid-column: start / fill;
+			@media (min-width: 960px) {
+				grid-column: start / fill !important;
+			}
+			@media (min-width: 1330px) {
+				grid-column: start / half !important;
+			}
+		}
+
+		.half + .half,
+		.half-right {
+			grid-column: start / fill;
+			@media (min-width: 960px) {
+				grid-column: start / fill !important;
+			}
+			@media (min-width: 1330px) {
+				grid-column: half / full !important;
+			}
+		}
+
+		.full {
+			grid-column: start / fill;
+			@media (min-width: 960px) {
+				grid-column: start / fill !important;
+			}
+			@media (min-width: 1330px) {
+				grid-column: start / full !important;
+			}
 		}
 	}
 }
-</style>
 
-<style lang="scss" scoped>
 .form-skeleton {
 	display: grid;
 	align-items: start;
