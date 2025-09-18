@@ -77,13 +77,13 @@ const selectedOption = computed(() => {
 				<v-skeleton-loader v-if="loading" type="text" class="title-skeleton" />
 
 				<template v-else>
-					<h3>{{ title }}</h3>
+					<div class="title">{{ title }}</div>
 					<v-chip v-if="showLatestChip" small class="latest-chip">{{ t('latest_version') }}</v-chip>
 				</template>
 			</div>
 		</div>
 		<div class="header-meta">
-			<v-skeleton-loader v-if="loading"> type="text" class="meta-skeleton" />
+			<v-skeleton-loader v-if="loading" type="text" class="meta-skeleton" />
 
 			<template v-else>
 				<div v-if="showDeltaDropdown" class="delta-dropdown">
@@ -159,11 +159,11 @@ const selectedOption = computed(() => {
 			align-items: center;
 			gap: 12px;
 
-			h3 {
+			.title {
 				font-size: 20px;
 				font-weight: 600;
 				line-height: 32px;
-				color: var(--theme--foreground);
+				color: var(--theme--foreground-accent);
 				margin: 0;
 			}
 		}
@@ -212,34 +212,6 @@ const selectedOption = computed(() => {
 			}
 		}
 
-		.delta-option {
-			display: flex;
-			align-items: flex-start;
-			gap: 8px;
-			text-align: start;
-
-			.v-icon {
-				color: var(--theme--foreground-subdued);
-				margin-block-start: 2px; // Align with first line of text
-			}
-
-			.delta-option-content {
-				.delta-option-date-time {
-					font-size: 14px;
-					font-weight: 500;
-					line-height: 20px;
-					color: var(--theme--foreground);
-					margin-block-end: 0;
-				}
-
-				.delta-option-user-info {
-					font-size: 14px;
-					line-height: 20px;
-					color: var(--theme--foreground-subdued);
-				}
-			}
-		}
-
 		.meta-info {
 			text-align: start;
 
@@ -249,15 +221,8 @@ const selectedOption = computed(() => {
 
 			.date-time {
 				font-size: 14px;
-				font-weight: 500;
 				line-height: 20px;
-				color: var(--theme--foreground);
-
-				margin-block-end: 0;
-
-				@media (min-width: 960px) {
-					margin-block-end: 4px;
-				}
+				font-weight: 600;
 			}
 
 			.user-info {
