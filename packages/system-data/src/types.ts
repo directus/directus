@@ -170,3 +170,8 @@ export type Permission = {
 export type PermissionsAction = 'create' | 'read' | 'update' | 'delete' | 'share';
 
 export type DataPermission = Partial<Permission> & Pick<Permission, 'collection' | 'action'>;
+
+export type FieldIndex = {
+	collection: string;
+	field: string;
+};

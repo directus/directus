@@ -25,6 +25,7 @@ function filterSnapshotDiff(snapshot: SnapshotDiff, filters: string[]): Snapshot
 	const filteredDiff: SnapshotDiff = {
 		collections: snapshot.collections.filter((item) => shouldKeep(item)),
 		fields: snapshot.fields.filter((item) => shouldKeep(item)),
+		systemFields: snapshot.systemFields.filter((item) => shouldKeep(item)),
 		relations: snapshot.relations.filter((item) => shouldKeep(item)),
 	};
 
@@ -70,6 +71,7 @@ export async function apply(
 		if (
 			snapshotDiff.collections.length === 0 &&
 			snapshotDiff.fields.length === 0 &&
+			snapshotDiff.systemFields.length === 0 &&
 			snapshotDiff.relations.length === 0
 		) {
 			logger.info('No changes to apply.');
@@ -132,6 +134,30 @@ export async function apply(
 						lines.push(`  - ${chalk.green('Create')} ${collection}.${field}`);
 					} else if (diff[0]?.kind === DiffKind.ARRAY) {
 						lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}`);
+					}
+				}
+
+				sections.push(lines.join('\n'));
+			}
+
+			if (snapshotDiff.systemFields.length > 0) {
+				const lines = [chalk.underline.bold('System Fields:')];
+
+				for (const { collection, field, diff } of snapshotDiff.systemFields) {
+					if (diff[0]?.kind === DiffKind.EDIT) {
+						lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}`);
+
+						for (const change of diff) {
+							const path = formatPath(change.path!);
+
+							if (change.kind === DiffKind.EDIT) {
+								lines.push(`    - Set ${path} to ${change.rhs}`);
+							} else if (change.kind === DiffKind.DELETE) {
+								lines.push(`    - Remove ${path}`);
+							} else if (change.kind === DiffKind.NEW) {
+								lines.push(`    - Add ${path} and set it to ${change.rhs}`);
+							}
+						}
 					}
 				}
 
