@@ -90,7 +90,7 @@ const selectedOption = computed(() => {
 			</template>
 			<template v-else>
 				<div v-if="showDeltaDropdown" class="delta-dropdown">
-					<v-menu show-arrow>
+					<v-menu attached>
 						<template #activator="{ toggle }">
 							<div class="delta-selection" @click="toggle">
 								<div class="delta-content">
