@@ -77,65 +77,69 @@ const selectedOption = computed(() => {
 				<v-skeleton-loader v-if="loading" type="text" class="title-skeleton" />
 
 				<template v-else>
-					<div class="title">{{ title }}</div>
+					<div class="title-wrapper" :style="{ inlineSize: `calc(100% - ${showLatestChip ? 62 : 0}px)` }">
+						<v-text-overflow :text="title" class="title" />
+					</div>
 					<v-chip v-if="showLatestChip" small class="latest-chip">{{ t('latest_version') }}</v-chip>
 				</template>
 			</div>
-		</div>
-		<div class="header-meta">
-			<v-skeleton-loader v-if="loading" type="text" class="meta-skeleton" />
+			<div class="header-meta">
+				<v-skeleton-loader v-if="loading" type="text" class="meta-skeleton" />
 
-			<template v-else>
-				<div v-if="showDeltaDropdown" class="delta-dropdown">
-					<v-menu attached>
-						<template #activator="{ toggle }">
-							<div class="delta-selection" @click="toggle">
-								<div class="delta-content">
-									<div class="delta-date-time">{{ selectedOption?.text.split(' - ')[0] }}</div>
-									<div class="delta-user-info">{{ t('edited_by') }} {{ selectedOption?.text.split(' - ')[1] }}</div>
-								</div>
-								<v-icon name="expand_more" class="dropdown-icon" />
-							</div>
-						</template>
-						<v-list>
-							<v-list-item
-								v-for="option in deltaOptions"
-								:key="option.value"
-								:active="selectedDeltaId === option.value"
-								clickable
-								@click="emit('delta-change', option.value)"
-							>
-								<v-list-item-content>
-									<div class="delta-option-content">
-										<div class="delta-option-date-time">{{ option.text.split(' - ')[0] }}</div>
-										<div class="delta-option-user-info">{{ t('edited_by') }} {{ option.text.split(' - ')[1] }}</div>
+				<template v-else>
+					<div v-if="showDeltaDropdown" class="delta-dropdown">
+						<v-menu attached>
+							<template #activator="{ toggle }">
+								<div class="delta-selection" @click="toggle">
+									<div class="delta-content">
+										<div class="delta-date-time">{{ selectedOption?.text.split(' - ')[0] }}</div>
+										<div class="delta-user-info">{{ t('edited_by') }} {{ selectedOption?.text.split(' - ')[1] }}</div>
 									</div>
-								</v-list-item-content>
-							</v-list-item>
-						</v-list>
-					</v-menu>
-				</div>
-				<div v-else class="meta-info">
-					<div v-if="dateUpdated" class="date-time">
-						{{ localizedFormat(dateUpdated, String(t('date-fns_date_short'))) }}
-						{{ localizedFormat(dateUpdated, String(t('date-fns_time'))) }}
+									<v-icon name="expand_more" class="dropdown-icon" />
+								</div>
+							</template>
+							<v-list>
+								<v-list-item
+									v-for="option in deltaOptions"
+									:key="option.value"
+									:active="selectedDeltaId === option.value"
+									clickable
+									@click="emit('delta-change', option.value)"
+								>
+									<v-list-item-content>
+										<div class="delta-option-content">
+											<div class="delta-option-date-time">{{ option.text.split(' - ')[0] }}</div>
+											<div class="delta-option-user-info">{{ t('edited_by') }} {{ option.text.split(' - ')[1] }}</div>
+										</div>
+									</v-list-item-content>
+								</v-list-item>
+							</v-list>
+						</v-menu>
 					</div>
-					<div v-if="userUpdatedName" class="user-info">{{ t('edited_by') }} {{ userUpdatedName }}</div>
-					<div v-else-if="userLoading" class="user-info">
-						{{ t('loading') }}
+					<div v-else class="meta-info">
+						<div v-if="dateUpdated" class="date-time">
+							{{ localizedFormat(dateUpdated, String(t('date-fns_date_short'))) }}
+							{{ localizedFormat(dateUpdated, String(t('date-fns_time'))) }}
+						</div>
+						<div v-if="userUpdatedName" class="user-info">{{ t('edited_by') }} {{ userUpdatedName }}</div>
+						<div v-else-if="userLoading" class="user-info">
+							{{ t('loading') }}
+						</div>
+						<div v-else class="user-info">{{ t('edited_by') }} {{ t('unknown_user') }}</div>
 					</div>
-					<div v-else class="user-info">{{ t('edited_by') }} {{ t('unknown_user') }}</div>
-				</div>
-			</template>
+				</template>
+			</div>
 		</div>
 	</div>
 </template>
 
 <style lang="scss" scoped>
 .comparison-header {
+	--comparison-header--padding-y: var(--comparison-modal--padding-y, 20px);
+	--comparison-header--padding-x: var(--comparison-modal--padding-x, 28px);
 	display: flex;
-	padding-block: var(--comparison-modal-padding-y);
-	padding-inline: var(--comparison-modal-padding-x);
+	padding-block: var(--comparison-header--padding-y);
+	padding-inline: var(--comparison-header--padding-x);
 	block-size: 140px;
 
 	flex-direction: column;
@@ -152,12 +156,17 @@ const selectedOption = computed(() => {
 	}
 
 	.header-content {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 		flex: 1;
+		inline-size: 100%;
 
 		.title-container {
 			display: flex;
 			align-items: center;
 			gap: 12px;
+			inline-size: 60%;
 
 			.title {
 				font-size: 20px;
@@ -235,23 +244,12 @@ const selectedOption = computed(() => {
 
 	.title-skeleton {
 		block-size: 40px;
-		inline-size: 120px;
+		min-inline-size: 120px;
 	}
 
 	.meta-skeleton {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-		text-align: start;
-
-		@media (min-width: 960px) {
-			text-align: end;
-		}
-
-		.date-skeleton {
-			block-size: 40px;
-			inline-size: 200px;
-		}
+		block-size: 40px;
+		min-inline-size: 200px;
 	}
 }
 </style>

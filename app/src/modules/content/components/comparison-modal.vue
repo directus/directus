@@ -341,26 +341,27 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 
 <style lang="scss" scoped>
 .comparison-modal {
-	--comparison-modal-height: max(100% - 8vw, 100% - 120px);
-	--comparison-modal-width: max(100% - 8vw, 100% - 120px);
-	--comparison-modal-padding-x: 28px;
-	--comparison-modal-border-radius: var(--theme--border-radius);
-	--comparison-modal-peek-width: calc(5px);
-	--vertical-divider-width: 2px;
-	--vertical-divider-color: var(--theme--border-color-accent);
-	--vertical-divider-dash-length: 4px;
+	--comparison-modal--height: max(100% - 8vw, 100% - 120px);
+	--comparison-modal--width: max(100% - 8vw, 100% - 120px);
+	--comparison-modal--padding-x: 28px;
+	--comparison-modal--padding-y: 20px;
+	--comparison-modal--border-radius: var(--theme--border-radius);
+	--comparison-modal--peek-width: calc(5px);
+	--comparison-modal--divider: 2px;
+	--comparison-modal--divider-color: var(--theme--border-color-accent);
+	--comparison-modal--divider-length: 4px;
 
 	background: var(--theme--background);
-	border-radius: var(--comparison-modal-border-radius);
+	border-radius: var(--comparison-modal--border-radius);
 	box-shadow: var(--theme--shadow);
 	display: flex;
 	flex-direction: column;
-	block-size: var(--comparison-modal-height);
-	inline-size: var(--comparison-modal-width);
+	block-size: var(--comparison-modal--height);
+	inline-size: var(--comparison-modal--width);
 	overflow: hidden;
 
-	@media (min-width: 960px) {
-		--comparison-modal-peek-width: 0;
+	@media (min-width: 706px) {
+		--comparison-modal--peek-width: 0;
 	}
 
 	.scrollable-container {
@@ -372,7 +373,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 		scroll-snap-type: x proximity;
 		scroll-behavior: smooth;
 
-		@media (min-width: 960px) {
+		@media (min-width: 706px) {
 			overflow: hidden auto;
 			scroll-snap-type: none;
 		}
@@ -389,7 +390,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 		min-block-size: 100%;
 		position: relative;
 
-		@media (min-width: 960px) {
+		@media (min-width: 706px) {
 			min-inline-size: 100%;
 		}
 	}
@@ -398,16 +399,16 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 		content: '';
 		position: absolute;
 		inset-block: 0;
-		inset-inline-start: calc(var(--comparison-modal-width) - var(--comparison-modal-peek-width));
-		inline-size: var(--vertical-divider-width);
+		inset-inline-start: calc(var(--comparison-modal--width) - var(--comparison-modal--peek-width));
+		inline-size: var(--comparison-modal--divider);
 		background: repeating-linear-gradient(
 			to bottom,
-			var(--vertical-divider-color) 0 var(--vertical-divider-dash-length),
-			transparent var(--vertical-divider-dash-length) calc(var(--vertical-divider-dash-length) * 2)
+			var(--comparison-modal--divider-color) 0 var(--comparison-modal--divider-length),
+			transparent var(--comparison-modal--divider-length) calc(var(--comparison-modal--divider-length) * 2)
 		);
 		pointer-events: none;
 
-		@media (min-width: 960px) {
+		@media (min-width: 706px) {
 			inset-inline-start: 50%;
 		}
 	}
@@ -417,9 +418,9 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 		min-inline-size: 0;
 		scroll-snap-align: start;
 		scroll-snap-stop: always;
-		inline-size: calc(var(--comparison-modal-width) - var(--comparison-modal-peek-width));
+		inline-size: calc(var(--comparison-modal--width) - var(--comparison-modal--peek-width));
 
-		@media (min-width: 960px) {
+		@media (min-width: 706px) {
 			flex: 0 0 50%;
 			inline-size: auto;
 			scroll-snap-align: none;
@@ -428,13 +429,13 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 	}
 
 	.comparison-content {
-		padding: var(--comparison-modal-padding-x);
+		padding: var(--comparison-modal--padding-x);
 	}
 
 	.comparison-divider {
 		display: none;
 
-		@media (min-width: 960px) {
+		@media (min-width: 706px) {
 			display: block;
 			border-inline-end: 2px dashed var(--theme--border-color-subdued);
 			background: var(--theme--background);
@@ -444,8 +445,8 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 	.footer {
 		flex: 0 0 auto;
 		justify-content: space-between;
-		padding-inline: var(--comparison-modal-padding-x);
-		padding-block: 18px;
+		padding-inline: var(--comparison-modal--padding-x);
+		padding-block: var(--comparison-modal--padding-y);
 		border-block-start: 2px solid var(--theme--border-color-subdued);
 
 		.columns {
@@ -479,7 +480,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 				flex-direction: column;
 				gap: 16px;
 
-				@media (min-width: 960px) {
+				@media (min-width: 706px) {
 					flex: 1;
 					justify-content: flex-end;
 					align-items: end;
@@ -492,7 +493,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 					text-align: center;
 					margin-block-end: 12px;
 
-					@media (min-width: 960px) {
+					@media (min-width: 706px) {
 						flex: 1 1 auto;
 						flex-shrink: 0;
 						margin-block-end: 0;
@@ -500,7 +501,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 				}
 
 				.footer-actions {
-					@media (min-width: 960px) {
+					@media (min-width: 706px) {
 						display: flex;
 						align-items: center;
 						gap: 24px;
@@ -515,7 +516,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 					.button-text {
 						display: none;
 
-						@media (min-width: 960px) {
+						@media (min-width: 706px) {
 							display: inline;
 						}
 					}
@@ -535,7 +536,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 					.v-icon {
 						margin: 0;
 
-						@media (min-width: 960px) {
+						@media (min-width: 706px) {
 							margin-inline-end: 8px;
 						}
 					}
@@ -543,7 +544,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 			}
 		}
 
-		@media (min-width: 960px) {
+		@media (min-width: 706px) {
 			.columns {
 				gap: 0;
 			}
@@ -557,7 +558,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 
 		.field {
 			grid-column: start / fill;
-			@media (min-width: 960px) {
+			@media (min-width: 706px) {
 				grid-column: start / fill !important;
 			}
 			@media (min-width: 1330px) {
@@ -569,7 +570,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 		.half-left,
 		.half-space {
 			grid-column: start / fill;
-			@media (min-width: 960px) {
+			@media (min-width: 706px) {
 				grid-column: start / fill !important;
 			}
 			@media (min-width: 1330px) {
@@ -580,7 +581,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 		.half + .half,
 		.half-right {
 			grid-column: start / fill;
-			@media (min-width: 960px) {
+			@media (min-width: 706px) {
 				grid-column: start / fill !important;
 			}
 			@media (min-width: 1330px) {
@@ -590,7 +591,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 
 		.full {
 			grid-column: start / fill;
-			@media (min-width: 960px) {
+			@media (min-width: 706px) {
 				grid-column: start / fill !important;
 			}
 			@media (min-width: 1330px) {
