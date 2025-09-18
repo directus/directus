@@ -1,12 +1,4 @@
-import type {
-	Field,
-	Relation,
-	ApiCollection,
-	SchemaOverview,
-	Snapshot,
-	SnapshotField,
-	SnapshotRelation,
-} from '@directus/types';
+import type { Field, Relation, SchemaOverview, Snapshot } from '@directus/types';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { fromPairs, isArray, isPlainObject, mapValues, omit, sortBy, toPairs } from 'lodash-es';
@@ -31,7 +23,7 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 		fieldsService.readAll(),
 		relationsService.readAll(),
 	]);
-  
+
 	const collectionsFiltered = collectionsRaw.filter((item) => excludeSystem(item) && excludeUntracked(item));
 	const fieldsFiltered = fieldsRaw.filter((item) => excludeSystem(item) && excludeUntracked(item));
 	const relationsFiltered = relationsRaw.filter((item) => excludeSystem(item) && excludeUntracked(item));
@@ -75,7 +67,7 @@ function systemFieldWithIndex(item: {
 }) {
 	return item.meta?.system === true && item.schema?.is_indexed;
 }
-  
+
 function excludeUntracked(item: { meta: unknown | null } | null) {
 	if (item?.meta === null) return false;
 	return true;
