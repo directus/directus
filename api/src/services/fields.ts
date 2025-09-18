@@ -8,7 +8,17 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
-import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	Accountability,
+	ActionEventParams,
+	Field,
+	FieldMeta,
+	MutationOptions,
+	RawField,
+	SchemaOverview,
+	Type, FieldMutationOptions,
+} from '@directus/types';
 import { addFieldFlag, getRelations, toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
@@ -23,7 +33,6 @@ import emitter from '../emitter.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { AbstractServiceOptions, ActionEventParams, MutationOptions, FieldMutationOptions } from '../types/index.js';
 import getDefaultValue from '../utils/get-default-value.js';
 import { getSystemFieldRowsWithAuthProviders } from '../utils/get-field-system-rows.js';
 import getLocalType from '../utils/get-local-type.js';
@@ -229,12 +238,12 @@ export class FieldsService {
 							policies,
 							collections: [collection],
 							accountability: this.accountability,
-					  }
+						}
 					: {
 							action: 'read',
 							policies,
 							accountability: this.accountability,
-					  },
+						},
 				{ knex: this.knex, schema: this.schema },
 			);
 
@@ -332,7 +341,7 @@ export class FieldsService {
 			? {
 					...column,
 					default_value: getDefaultValue(column, fieldInfo),
-			  }
+				}
 			: null;
 
 		const data = {
@@ -400,7 +409,7 @@ export class FieldsService {
 									schema: this.schema,
 									accountability: this.accountability,
 								},
-						  )
+							)
 						: field;
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
@@ -468,7 +477,7 @@ export class FieldsService {
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema();
+				const updatedSchema = await getSchema({ database: this.knex });
 
 				for (const nestedActionEvent of nestedActionEvents) {
 					nestedActionEvent.context.schema = updatedSchema;
@@ -511,7 +520,7 @@ export class FieldsService {
 								schema: this.schema,
 								accountability: this.accountability,
 							},
-					  )
+						)
 					: field;
 
 			const record = field.meta
@@ -615,7 +624,7 @@ export class FieldsService {
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema();
+				const updatedSchema = await getSchema({ database: this.knex });
 
 				for (const nestedActionEvent of nestedActionEvents) {
 					nestedActionEvent.context.schema = updatedSchema;
@@ -658,7 +667,7 @@ export class FieldsService {
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema();
+				const updatedSchema = await getSchema({ database: this.knex });
 
 				for (const nestedActionEvent of nestedActionEvents) {
 					nestedActionEvent.context.schema = updatedSchema;
@@ -847,7 +856,7 @@ export class FieldsService {
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema();
+				const updatedSchema = await getSchema({ database: this.knex });
 
 				for (const nestedActionEvent of nestedActionEvents) {
 					nestedActionEvent.context.schema = updatedSchema;

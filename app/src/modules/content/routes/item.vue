@@ -206,7 +206,7 @@ const actualPrimaryKey = computed(() => {
 	if (unref(isSingleton)) {
 		const singleton = unref(item);
 		const pkField = unref(primaryKeyField)?.field;
-		return (singleton && pkField ? singleton[pkField] ?? null : null) as PrimaryKey | null;
+		return (singleton && pkField ? (singleton[pkField] ?? null) : null) as PrimaryKey | null;
 	}
 
 	return props.primaryKey;
@@ -219,7 +219,7 @@ const internalPrimaryKey = computed(() => {
 	if (unref(isSingleton)) {
 		const singleton = unref(item);
 		const pkField = unref(primaryKeyField)?.field;
-		return (singleton && pkField ? singleton[pkField] ?? '+' : '+') as PrimaryKey;
+		return (singleton && pkField ? (singleton[pkField] ?? '+') : '+') as PrimaryKey;
 	}
 
 	return props.primaryKey;
@@ -362,7 +362,9 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 
 		if (action === 'main') {
 			currentVersion.value = null;
+			refresh();
 		} else if (action === 'stay') {
+			refresh();
 			revisionsDrawerDetailRef.value?.refresh?.();
 		} else if (action === 'quit') {
 			if (!props.singleton) router.push(`/content/${props.collection}`);

@@ -406,6 +406,8 @@ do_nothing: Gera Ekkert
 comment: Athugasemd
 live_preview:
   new_window: Opna í Nýjum Glugga
+mcp_prompts_collection_schema:
+  messages_role_user: Notandi
 share_copy_link: Afrita Hlekk
 delete_label: Eyða
 description: Lýsing

@@ -361,12 +361,13 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			const codeVerifier = provider.generateCodeVerifier();
 			const prompt = !!req.query['prompt'];
 			const redirect = req.query['redirect'];
+			const otp = req.query['otp'];
 
 			if (isLoginRedirectAllowed(redirect, providerName) === false) {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt }, getSecret(), {
+			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt, otp }, getSecret(), {
 				expiresIn: '5m',
 				issuer: 'directus',
 			});
@@ -402,13 +403,15 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 					verifier: string;
 					redirect?: string;
 					prompt: boolean;
+					otp?: string;
 				};
 			} catch (e: any) {
 				logger.warn(e, `[OAuth2] Couldn't verify OAuth2 cookie`);
 				throw new InvalidCredentialsError();
 			}
 
-			const { verifier, redirect, prompt } = tokenData;
+			const { verifier, prompt, otp } = tokenData;
+			let { redirect } = tokenData;
 
 			const accountability: Accountability = createDefaultAccountability({
 				ip: getIPFromReq(req),
@@ -439,7 +442,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 						codeVerifier: verifier,
 						state: req.query['state'],
 					},
-					{ session: authMode === 'session' },
+					{ session: authMode === 'session', ...(otp ? { otp: String(otp) } : {}) },
 				);
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
@@ -464,6 +467,19 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			}
 
 			const { accessToken, refreshToken, expires } = authResponse;
+
+			try {
+				const claims = verifyJWT(accessToken, getSecret()) as any;
+
+				if (claims?.enforce_tfa === true) {
+					const url = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'tfa-setup');
+					if (redirect) url.setQuery('redirect', redirect);
+
+					redirect = url.toString();
+				}
+			} catch (e) {
+				logger.warn(e, `[OAuth2] Unexpected error during OAuth2 login`);
+			}
 
 			if (redirect) {
 				if (authMode === 'session') {

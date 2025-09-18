@@ -18,11 +18,17 @@ const { unread } = storeToRefs(notificationsStore);
 
 const userStore = useUserStore();
 
+(async () => await userStore.hydrateAdditionalFields(['avatar.modified_on']))();
+
 const signOutActive = ref(false);
 
 const avatarURL = computed<string | null>(() => {
 	if (!userStore.currentUser || !('avatar' in userStore.currentUser) || !userStore.currentUser?.avatar) return null;
-	return getAssetUrl(`${userStore.currentUser.avatar.id}?key=system-medium-cover`);
+
+	return getAssetUrl(userStore.currentUser.avatar.id, {
+		imageKey: 'system-medium-cover',
+		cacheBuster: userStore.currentUser.avatar.modified_on,
+	});
 });
 
 const avatarError = ref<null | Event>(null);

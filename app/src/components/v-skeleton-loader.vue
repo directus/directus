@@ -38,6 +38,7 @@ withDefaults(defineProps<Props>(), {
 	overflow: hidden;
 	background-color: var(--v-skeleton-loader-background-color, var(--theme--form--field--input--background-subdued));
 
+	/* stylelint-disable-next-line */
 	&::after {
 		position: absolute;
 		inset-block-start: 0;
@@ -47,13 +48,24 @@ withDefaults(defineProps<Props>(), {
 		background: linear-gradient(90deg, transparent, var(--theme--background), transparent);
 		transform: translateX(-100%);
 		opacity: 0.5;
-		animation: loading 1.5s infinite;
+		animation: loading-ltr 1.5s infinite;
 		content: '';
+
+		html[dir='rtl'] & {
+			transform: translateX(100%);
+			animation: loading-rtl 1.5s infinite;
+		}
 	}
 
-	@keyframes loading {
+	@keyframes loading-ltr {
 		100% {
 			transform: translateX(100%);
+		}
+	}
+
+	@keyframes loading-rtl {
+		100% {
+			transform: translateX(-100%);
 		}
 	}
 }

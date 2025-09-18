@@ -1,4 +1,5 @@
-import { EXTENSION_PKG_KEY, EXTENSION_TYPES, API_EXTENSION_TYPES } from '@directus/extensions';
+import { EXTENSION_PKG_KEY } from '@directus/extensions';
+import { EXTENSION_TYPES, API_EXTENSION_TYPES } from '@directus/constants';
 import fse from 'fs-extra';
 import path from 'path';
 import { type Ora } from 'ora';

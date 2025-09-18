@@ -9,6 +9,7 @@ const props = withDefaults(
 		disabled?: boolean;
 		includeSystem?: boolean;
 		includeSingleton?: boolean;
+		allowNone?: boolean;
 	}>(),
 	{ includeSingleton: true },
 );
@@ -49,6 +50,7 @@ const items = computed(() => {
 	<v-select
 		:model-value="value"
 		:disabled="disabled"
+		:show-deselect="allowNone"
 		:items="items"
 		:placeholder="t('select_a_collection')"
 		@update:model-value="$emit('input', $event)"

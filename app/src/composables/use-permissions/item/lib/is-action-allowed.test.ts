@@ -2,7 +2,6 @@ import { mockedStore } from '@/__utils__/store';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { ActionPermission } from '@/types/permissions';
-import { randomIdentifier } from '@directus/random';
 import { ItemPermissions } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
@@ -25,7 +24,7 @@ beforeEach(() => {
 	);
 
 	sample = {
-		collection: randomIdentifier(),
+		collection: 'test_collection',
 	};
 
 	fetchedItemPermissions = computed(() => {

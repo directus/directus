@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { logout } from '@/auth';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
-import { setLanguage } from '@/lang/set-language';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useServerStore } from '@/stores/server';
@@ -14,12 +14,11 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { useCollection } from '@directus/composables';
 import type { User } from '@directus/types';
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, provide } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
-import { logout } from '@/auth';
 
 const props = defineProps<{
 	primaryKey: string;
@@ -65,8 +64,8 @@ const {
 	primaryKey,
 	props.primaryKey !== '+'
 		? {
-				fields: ['*', 'role.*'],
-		  }
+				fields: ['*', 'role.*', 'avatar.id', 'avatar.modified_on'],
+			}
 		: undefined,
 );
 
@@ -91,9 +90,17 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
 
-const avatarSrc = computed(() =>
-	item.value?.avatar ? getAssetUrl(`${item.value.avatar}?key=system-medium-cover`) : null,
-);
+// Provide the discard functionality to field interfaces
+provide('discardAllChanges', discardAndStay);
+
+const avatarSrc = computed(() => {
+	if (!item.value?.avatar) return null;
+
+	return getAssetUrl(item.value.avatar.id, {
+		imageKey: 'system-medium-cover',
+		cacheBuster: item.value.avatar.modified_on,
+	});
+});
 
 const avatarError = ref(null);
 
@@ -229,8 +236,6 @@ async function setLang(user: Record<string, any>) {
 	const newLang = user?.language ?? serverStore.info?.project?.default_language;
 
 	if (newLang && newLang !== locale.value) {
-		await setLanguage(newLang);
-
 		await Promise.all([fieldsStore.hydrate(), collectionsStore.hydrate()]);
 	}
 }

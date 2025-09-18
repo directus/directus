@@ -21,7 +21,7 @@ withDefaults(defineProps<Props>(), {
 			<slot name="icon" class="icon" />
 			<span v-if="!vertical && $slots.default" class="type-text"><slot /></span>
 		</span>
-		<hr role="separator" :aria-orientation="vertical ? 'vertical' : 'horizontal'" />
+		<hr :aria-orientation="vertical ? 'vertical' : 'horizontal'" />
 	</div>
 </template>
 

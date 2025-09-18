@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { i18n } from '@/lang';
 import { hideDragImage } from '@/utils/hide-drag-image';
-import type { ShowSelect } from '@directus/extensions';
+import type { ShowSelect } from '@directus/types';
 import { clone, forEach, pick } from 'lodash';
 import { computed, ref, useSlots } from 'vue';
 import Draggable from 'vuedraggable';
@@ -163,7 +163,7 @@ const columnStyle = computed<{ header: string; rows: string }>(() => {
 	function generate(useVal?: 'auto') {
 		let gridTemplateColumns = internalHeaders.value
 			.map((header) => {
-				return header.width ? useVal ?? `${header.width}px` : '160px';
+				return header.width ? (useVal ?? `${header.width}px`) : '160px';
 			})
 			.reduce((acc, val) => (acc += ' ' + val), '');
 

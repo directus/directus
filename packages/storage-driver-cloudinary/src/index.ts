@@ -1,4 +1,5 @@
-import type { ChunkedUploadContext, ReadOptions, TusDriver } from '@directus/storage';
+import type { TusDriver } from '@directus/storage';
+import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
 import { normalizePath } from '@directus/utils';
 import { Blob, Buffer } from 'node:buffer';
 import { createHash } from 'node:crypto';
@@ -267,7 +268,7 @@ export class DriverCloudinary implements TusDriver {
 				? {
 						asset_folder: folderPath,
 						use_asset_folder_as_public_id_prefix: 'true',
-				  }
+					}
 				: {}),
 		};
 
@@ -479,7 +480,7 @@ export class DriverCloudinary implements TusDriver {
 				? {
 						asset_folder: folderPath,
 						use_asset_folder_as_public_id_prefix: 'true',
-				  }
+					}
 				: {}),
 		};
 

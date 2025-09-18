@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { useUserStore } from '@/stores/user';
 import { useSizeClass } from '@directus/composables';
+import { isIn } from '@directus/utils';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { camelCase, upperFirst } from 'lodash';
+import { computed } from 'vue';
+import { RTL_REVERSE_ICONS } from '../../constants/text-direction';
 
 import { components } from './custom-icons';
 
@@ -49,6 +52,8 @@ const props = withDefaults(
 
 const emit = defineEmits(['click']);
 
+const userStore = useUserStore();
+
 const sizeClass = computed<string | null>(() => {
 	if (props.sup) return 'sup';
 	return useSizeClass(props).value;
@@ -65,6 +70,8 @@ const socialIconName = computed<IconName | null>(() => {
 	return null;
 });
 
+const mirrored = computed(() => userStore.textDirection === 'rtl' && isIn(props.name, RTL_REVERSE_ICONS));
+
 function emitClick(event: MouseEvent) {
 	if (props.disabled) return;
 	emit('click', event);
@@ -76,7 +83,7 @@ function emitClick(event: MouseEvent) {
 		:is="clickable ? 'button' : 'span'"
 		:type="clickable ? 'button' : undefined"
 		class="v-icon"
-		:class="[sizeClass, { 'has-click': !disabled && clickable, left, right }]"
+		:class="[sizeClass, { 'has-click': !disabled && clickable, left, right, mirrored }]"
 		:disabled="clickable ? disabled : undefined"
 		:style="{ '--v-icon-color': color }"
 		@click="emitClick"
@@ -118,7 +125,7 @@ function emitClick(event: MouseEvent) {
 		letter-spacing: normal;
 		text-transform: none;
 		white-space: nowrap;
-		word-wrap: normal;
+		overflow-wrap: normal;
 		direction: ltr;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
@@ -198,6 +205,10 @@ function emitClick(event: MouseEvent) {
 		&.small {
 			margin-inline-start: 4px;
 		}
+	}
+
+	&.mirrored {
+		transform: scaleX(-1);
 	}
 }
 </style>
