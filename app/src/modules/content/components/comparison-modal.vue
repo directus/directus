@@ -133,11 +133,10 @@ function usePromoteDialog() {
 					if (selectedFields.length > 0 && !selectedFields.includes(field)) continue;
 					const previousValue = base[field] ?? null;
 					if (isEqual(newValue, previousValue)) continue;
-					restoreData[field] = previousValue;
+					restoreData[field] = newValue;
 				}
 
 				emit('confirm', restoreData);
-				// Close the modal after successful revert
 				emit('cancel');
 			}
 
@@ -292,18 +291,18 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 										selectedComparisonFields.length === 0
 											? isVersionMode
 												? t('promote_version_disabled')
-												: t('revision_delta_revert_disabled')
+												: t('revision_delta_promote_disabled')
 											: isVersionMode
 												? t('promote_version')
-												: t('revision_delta_revert')
+												: t('revision_delta_promote')
 									"
 									:disabled="selectedComparisonFields.length === 0"
 									:loading="promoting"
 									@click="onPromoteClick"
 								>
-									<v-icon :name="isVersionMode ? 'arrow_upload_progress' : 'history'" left />
+									<v-icon :name="'arrow_upload_progress'" left />
 									<span class="button-text">
-										{{ isVersionMode ? t('promote_version') : t('revision_delta_revert') }}
+										{{ isVersionMode ? t('promote_version') : t('revision_delta_promote') }}
 									</span>
 								</v-button>
 							</div>

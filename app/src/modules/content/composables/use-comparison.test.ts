@@ -151,7 +151,7 @@ describe('normalizeComparisonData', () => {
 		const result = await normalizeComparisonData('860', 'revision', currentVersionRef, versionsRef, revisionsRef);
 
 		// Main should be main item + version delta + current revision data, with date_updated from current activity timestamp
-		expect(result.main).toEqual({
+		expect(result.current).toEqual({
 			author: null,
 			content: '<p>This is the second revision of the the first version.</p>',
 			date_created: '2025-09-11T13:57:52.398Z',
@@ -170,7 +170,7 @@ describe('normalizeComparisonData', () => {
 		});
 
 		// Current should be main item + version delta + previous revision data, with date_updated from previous activity timestamp
-		expect(result.current).toEqual({
+		expect(result.main).toEqual({
 			author: null,
 			content: '<p>This is the first revision content.</p>',
 			date_created: '2025-09-11T13:57:52.398Z',

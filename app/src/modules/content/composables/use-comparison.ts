@@ -386,13 +386,13 @@ export function useComparison(options: UseComparisonOptions) {
 			return undefined;
 		};
 
-		const deltaMerged = mergeWith({}, mainItem, versionDelta, previousRevision?.data || {}, replaceArrays);
+		const mainMerged = mergeWith({}, mainItem, versionDelta, previousRevision?.data || {}, replaceArrays);
 
 		if (previousRevision?.activity?.timestamp) {
-			deltaMerged.date_updated = previousRevision.activity.timestamp;
+			mainMerged.date_updated = previousRevision.activity.timestamp;
 		}
 
-		const mainMerged = mergeWith({}, mainItem, versionDelta, revisionData, replaceArrays);
+		const currentMerged = mergeWith({}, mainItem, versionDelta, revisionData, replaceArrays);
 
 		if ('activity' in revision && (revision as any)?.activity?.timestamp) {
 			mainMerged.date_updated = (revision as any).activity.timestamp;
@@ -400,7 +400,7 @@ export function useComparison(options: UseComparisonOptions) {
 
 		return {
 			main: mainMerged,
-			current: deltaMerged,
+			current: currentMerged,
 			selectableDeltas: revisionsList,
 			comparisonType: 'revision',
 			outdated: false,
