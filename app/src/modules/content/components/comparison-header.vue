@@ -83,7 +83,7 @@ const selectedOption = computed(() => {
 			</div>
 		</div>
 		<div class="header-meta">
-			<v-skeleton-loader v-if="loading"> type="text" class="meta-skeleton" />
+			<v-skeleton-loader v-if="loading" type="text" class="meta-skeleton" />
 
 			<template v-else>
 				<div v-if="showDeltaDropdown" class="delta-dropdown">

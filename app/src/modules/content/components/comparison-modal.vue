@@ -178,7 +178,14 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 </script>
 
 <template>
-	<v-dialog :model-value="active" persistent @update:model-value="$emit('cancel')" @esc="$emit('cancel')">
+	<v-dialog
+		:model-value="active"
+		persistent
+		keep-behind
+		@update:model-value="$emit('cancel')"
+		@esc="$emit('cancel')"
+		@apply="onPromoteClick"
+	>
 		<div class="comparison-modal">
 			<div class="scrollable-container">
 				<div class="columns vertical-divider">
@@ -337,9 +344,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 	--comparison-modal-height: max(100% - 8vw, 100% - 120px);
 	--comparison-modal-width: max(100% - 8vw, 100% - 120px);
 	--comparison-modal-padding-x: 28px;
-	--comparison-modal-padding-y: 20px;
 	--comparison-modal-border-radius: var(--theme--border-radius);
-	--scrollbar-offset: 8px;
 	--comparison-modal-peek-width: calc(5px);
 	--vertical-divider-width: 2px;
 	--vertical-divider-color: var(--theme--border-color-accent);
@@ -444,7 +449,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 		flex: 0 0 auto;
 		justify-content: space-between;
 		padding-inline: var(--comparison-modal-padding-x);
-		padding-block: var(--comparison-modal-padding-y);
+		padding-block: 18px;
 		border-block-start: 2px solid var(--theme--border-color-subdued);
 
 		.columns {
@@ -596,7 +601,6 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 	align-items: start;
 	grid-template-columns: 1fr;
 	gap: var(--theme--form--row-gap) var(--theme--form--column-gap);
-	padding: var(--comparison-modal-padding-x);
 }
 
 .comparison-form--main {
