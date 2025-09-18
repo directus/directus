@@ -196,14 +196,8 @@ const selectedOption = computed(() => {
 
 					.delta-date-time {
 						font-size: 14px;
-						font-weight: 500;
 						line-height: 20px;
-						color: var(--theme--foreground);
-						margin-block-end: 0;
-
-						@media (min-width: 960px) {
-							margin-block-end: 4px;
-						}
+						font-weight: 600;
 					}
 
 					.delta-user-info {
