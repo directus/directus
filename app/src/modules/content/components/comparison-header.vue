@@ -111,7 +111,7 @@ const selectedOption = computed(() => {
 								<v-list-item-content>
 									<div class="delta-option-content">
 										<div class="delta-option-date-time">{{ option.text.split(' - ')[0] }}</div>
-										<div class="delta-option-user-info">{{ option.text.split(' - ')[1] }}</div>
+										<div class="delta-option-user-info">{{ t('edited_by') }} {{ option.text.split(' - ')[1] }}</div>
 									</div>
 								</v-list-item-content>
 							</v-list-item>
