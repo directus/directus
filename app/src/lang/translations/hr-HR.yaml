@@ -1540,6 +1540,8 @@ shares: Dijeljenja
 unlimited_usage: Neograničena upotreba
 no_shares: Nema dijeljenja za prikaz
 new_share: Novo dijeljenje
+mcp_prompts_collection_schema:
+  messages_role_user: Korisnik
 expired: Isteklo
 upcoming: Nadolazeće
 share: Podijeli
@@ -1659,7 +1661,6 @@ translation_placeholder: Unesite prijevod...
 value: Vrijednost
 view_project: Pogledaj projekt
 report_error: Prijavi grešku
-start: Započni
 table: Tablica
 list: Lista
 search_filter: Pretraživanje i filtri
@@ -2234,6 +2235,7 @@ show_labels: Prikaži Oznake
 show_legend: Prikaži Legendu
 right: Desno
 left: Lijevo
+start: Započni
 donut: Krafna
 panels:
   metric:

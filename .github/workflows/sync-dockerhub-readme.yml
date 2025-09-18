@@ -8,6 +8,9 @@ on:
       - readme.md
       - .github/workflows/sync-dockerhub-readme.yml
 
+permissions:
+  contents: read
+
 jobs:
   sync:
     name: Sync

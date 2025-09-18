@@ -89,6 +89,7 @@ export const DEFAULTS = {
 	EXTENSIONS_AUTO_RELOAD: false,
 	EXTENSIONS_SANDBOX_MEMORY: 100,
 	EXTENSIONS_SANDBOX_TIMEOUT: 1000,
+	EXTENSIONS_ROLLDOWN: false,
 
 	MIGRATIONS_PATH: './migrations',
 
@@ -177,4 +178,6 @@ export const DEFAULTS = {
 	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
 
 	ACCEPT_TERMS: false,
+
+	MCP_ENABLED: true,
 } as const;

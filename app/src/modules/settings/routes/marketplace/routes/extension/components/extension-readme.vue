@@ -17,11 +17,6 @@ const { t } = useI18n();
 @use '@/styles/mixins';
 
 .readme {
-	:deep(*) {
-		-webkit-user-select: text;
-		user-select: text;
-	}
-
 	:deep() {
 		@include mixins.markdown;
 	}

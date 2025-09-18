@@ -123,7 +123,7 @@ watch(stringValue, () => {
 
 async function setLanguage() {
 	if (codemirror) {
-		const lang = props.language.toLowerCase();
+		const lang = (props.language || 'plaintext').toLowerCase();
 
 		if (props.type === 'json' || lang === 'json') {
 			// @ts-ignore
@@ -244,7 +244,7 @@ const cmOptions = computed<Record<string, any>>(() => {
 			lineWrapping: props.lineWrapping,
 			readOnly: readOnly.value,
 			cursorBlinkRate: props.disabled ? -1 : 530,
-			mode: props.language,
+			mode: props.language || 'plaintext',
 			placeholder: props.placeholder,
 		},
 		props.altOptions ? props.altOptions : {},
@@ -297,7 +297,7 @@ function isInterpolation(value: any) {
 </script>
 
 <template>
-	<div class="input-code codemirror-custom-styles" :class="{ disabled }">
+	<div class="input-code codemirror-custom-styles" :class="{ disabled }" dir="ltr">
 		<div ref="codemirrorEl"></div>
 
 		<v-button v-if="template" v-tooltip.left="t('fill_template')" small icon secondary @click="fillTemplate">
@@ -329,8 +329,6 @@ function isInterpolation(value: any) {
 	color: var(--theme--primary);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition-out);
-	-webkit-user-select: none;
-	user-select: none;
 
 	&:hover {
 		color: var(--theme--primary-accent);

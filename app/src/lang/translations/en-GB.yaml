@@ -1279,6 +1279,8 @@ shares: Shares
 unlimited_usage: Unlimited usage
 no_shares: No shares to show
 new_share: New Share
+mcp_prompts_collection_schema:
+  messages_role_user: User
 expired: Expired
 upcoming: Upcoming
 share: Share
@@ -1386,7 +1388,6 @@ translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
 report_error: Report Error
-start: Start
 table: Table
 list: List
 search_filter: Search & Filter
@@ -1930,6 +1931,7 @@ show_labels: Show Labels
 show_legend: Show Legend
 right: Right
 left: Left
+start: Start
 donut: Donut
 panels:
   metric:

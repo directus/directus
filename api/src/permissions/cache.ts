@@ -7,7 +7,7 @@ const config: CacheConfig = localOnly
 	? {
 			type: 'local',
 			maxKeys: 500,
-	  }
+		}
 	: {
 			type: 'multi',
 			redis: {
@@ -17,7 +17,7 @@ const config: CacheConfig = localOnly
 			local: {
 				maxKeys: 100,
 			},
-	  };
+		};
 
 export const useCache = defineCache(config);
 

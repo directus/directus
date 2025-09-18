@@ -357,6 +357,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 				:set-data="hideDragImage"
 				:disabled="!allowDrag"
 				v-bind="{ 'force-fallback': true }"
+				handle=".drag-handle"
 				@update:model-value="sortItems"
 			>
 				<template #item="{ element }">
@@ -369,7 +370,6 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 						@click="editItem(element)"
 					>
 						<v-icon v-if="allowDrag" class="drag-handle" left name="drag_handle" @click.stop />
-
 						<span class="collection">{{ getPrefix(element) }}:</span>
 
 						<render-template

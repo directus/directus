@@ -50,7 +50,7 @@ export function sanitizeField(field: Field, sanitizeAllSchema = false) {
 				'schema.has_auto_increment',
 				'schema.foreign_key_table',
 				'schema.foreign_key_column',
-		  ];
+			];
 
 	return pick(field, pickedPaths) as SnapshotField;
 }

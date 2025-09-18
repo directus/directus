@@ -64,6 +64,18 @@ const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 		},
 	},
 	{
+		field: 'required',
+		name: t('required'),
+		type: 'boolean',
+		meta: {
+			interface: 'boolean',
+			options: {
+				label: t('require_value_to_be_set'),
+			},
+			width: 'half',
+		},
+	},
+	{
 		field: 'hidden',
 		name: t('hidden'),
 		type: 'boolean',
@@ -76,15 +88,24 @@ const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 		},
 	},
 	{
-		field: 'required',
-		name: t('required'),
+		field: 'clear_hidden_value_on_save',
+		name: t('clear_hidden_field'),
 		type: 'boolean',
 		meta: {
 			interface: 'boolean',
+			readonly: true,
 			options: {
-				label: t('require_value_to_be_set'),
+				label: t('clear_value_on_save_when_hidden'),
 			},
 			width: 'half',
+			conditions: [
+				{
+					rule: {
+						hidden: { _eq: true },
+					},
+					readonly: false, // enable the field when hidden is true
+				},
+			],
 		},
 	},
 	{

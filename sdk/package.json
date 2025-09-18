@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "20.0.0",
+	"version": "20.1.0",
 	"description": "Directus JavaScript SDK",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -23,8 +23,8 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "NODE_ENV=production tsup",
-		"dev": "NODE_ENV=development tsup",
+		"build": "NODE_ENV=production tsdown",
+		"dev": "NODE_ENV=development tsdown",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
@@ -32,8 +32,8 @@
 		"@directus/system-data": "workspace:*",
 		"@directus/tsconfig": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"esbuild-plugin-replace": "1.4.0",
-		"tsup": "catalog:",
+		"esbuild-plugin-replace": "catalog:",
+		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},

@@ -1347,6 +1347,8 @@ shares: 分享
 unlimited_usage: 無限制使用
 no_shares: 目前沒有分享
 new_share: 新增分享
+mcp_prompts_collection_schema:
+  messages_role_user: 用戶
 expired: 已過期
 upcoming: 即將開始
 share: 分享
@@ -1454,7 +1456,6 @@ translation_placeholder: 輸入翻譯...
 value: 值
 view_project: 檢視專案
 report_error: 報告錯誤
-start: 開始
 table: 表格
 list: 清單
 search_filter: 搜尋過濾
@@ -1952,6 +1953,7 @@ layouts:
     advanced: 進階
 horizontal: 水平
 both: 都要
+start: 開始
 panels:
   metric:
     name: 格式

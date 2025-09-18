@@ -15,7 +15,7 @@ import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import SettingsNotFound from '../not-found.vue';
-import Arrows from './components/arrows.vue';
+import Arrows from './components/arrows/arrows.vue';
 import LogsSidebarDetail from './components/logs-sidebar-detail.vue';
 import Operation, { ArrowInfo, Target } from './components/operation.vue';
 import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH } from './constants';

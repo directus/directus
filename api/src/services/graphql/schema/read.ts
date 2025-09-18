@@ -616,7 +616,7 @@ export async function getReadableTypes(
 				? ReadCollectionTypes[collection.collection]!
 				: new GraphQLNonNull(
 						new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
-				  ),
+					),
 			resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 				const result = await resolveQuery(gql, info);
 				context['data'] = result;
@@ -708,7 +708,7 @@ export async function getReadableTypes(
 					: {
 							version: new GraphQLNonNull(GraphQLString),
 							id: new GraphQLNonNull(GraphQLID),
-					  },
+						},
 				resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 					const result = await resolveQuery(gql, info);
 					context['data'] = result;
