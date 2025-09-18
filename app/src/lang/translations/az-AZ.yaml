@@ -209,6 +209,7 @@ field_presets: Xana ayarları
 permissions_for_role: '{role} rolunun {action} edə biləcəti obyektlər.'
 fields_for_role: '{role} rolunun {action} edə biləcəti xanalar.'
 search_collection: Axtar...
+confirmation_dialog: Təsdiqetmə sorğusu
 comments: Şərhlər
 no_items: Məlumat yoxdur
 search_items: Axtar...
@@ -216,6 +217,7 @@ items: məlumat
 wysiwyg_options:
   table: Cədvəl
 creating_in: 'Əlavə et: {collection}'
+editing_in: 'Redaktə et: {collection}'
 source_registry: Marketplace
 fields:
   directus_activity:
@@ -228,7 +230,9 @@ fields:
     name: Rol adı
   directus_policies:
     name:
+shares: Paylaşımlar
 revisions: Dəyişikliklər
+no_revisions: Daha öncə dəyişiklik edilməyib
 table: Cədvəl
 interfaces:
   presentation-links:

@@ -1,15 +1,14 @@
-import { defineConfig } from 'tsup';
-import { YAMLPlugin } from 'esbuild-yaml';
+import { defineConfig } from 'tsdown';
+import yaml from 'unplugin-yaml/rolldown';
 
 const env = process.env.NODE_ENV;
 
 export default defineConfig({
-	esbuildPlugins: [YAMLPlugin()],
+	plugins: [yaml()],
 	entry: ['src/index.ts'],
 	format: ['cjs', 'esm'],
 	target: 'es2020',
 	minify: env === 'production',
 	watch: env === 'development',
-	clean: true,
 	dts: true,
 });

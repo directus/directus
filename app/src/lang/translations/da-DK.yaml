@@ -1317,6 +1317,8 @@ shares: Aktier
 unlimited_usage: Ubegrænset brug
 no_shares: Ingen aktier at vise
 new_share: Ny Del
+mcp_prompts_collection_schema:
+  messages_role_user: Bruger
 expired: Udløbet
 upcoming: Kommende
 share: Del

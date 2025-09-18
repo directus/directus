@@ -1186,7 +1186,6 @@ page_help_settings_datamodel_fields: >-
   **数据模型: Collection** — 用于管理此模型及其字段的表单
 page_help_settings_system_logs: '**系统日志** — 访问系统日志的实时流。'
 page_help_settings_policies_collection: '**浏览策略** - 列出项目内的所有策略。'
-page_help_settings_policies_item: "**Policy Detail** — 管理策略的权限和其他设置。"
 page_help_settings_roles_collection: '**Browse Roles** - 列出项目中所有用户角色。'
 page_help_settings_roles_item: "**角色详细** — 管理角色的权限和其他设置。"
 page_help_settings_presets_collection: >-
@@ -1589,6 +1588,8 @@ unlimited_usage: 无限使用
 uses_left: 无剩余使用次数 | 剩余一次使用次数 | 剩余 {n} 次使用次数
 no_shares: 没有要显示的共享
 new_share: 新建分享
+mcp_prompts_collection_schema:
+  messages_role_user: 用户
 expired: 已过期
 upcoming: 即将到来的
 share: 分享

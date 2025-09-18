@@ -10,6 +10,7 @@ import { ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
+import PolicyInfoSidebarDetail from './policy-info-sidebar-detail.vue';
 
 const props = defineProps<{
 	primaryKey: string;
@@ -175,6 +176,7 @@ function discardAndStay() {
 		</div>
 
 		<template #sidebar>
+			<policy-info-sidebar-detail :policy="item" />
 			<revisions-drawer-detail
 				ref="revisionsDrawerDetailRef"
 				collection="directus_policies"
