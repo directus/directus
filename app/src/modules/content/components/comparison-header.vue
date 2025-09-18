@@ -74,9 +74,8 @@ const selectedOption = computed(() => {
 	<div class="comparison-header">
 		<div class="header-content">
 			<div class="title-container">
-				<template v-if="loading">
-					<v-skeleton-loader type="text" class="title-skeleton" />
-				</template>
+				<v-skeleton-loader v-if="loading" type="text" class="title-skeleton" />
+
 				<template v-else>
 					<h3>{{ title }}</h3>
 					<v-chip v-if="showLatestChip" small class="latest-chip">{{ t('latest_version') }}</v-chip>
