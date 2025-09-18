@@ -51,7 +51,7 @@ export abstract class FnHelper extends DatabaseHelper {
 
 		// generate a unique alias for the relation collection, to prevent collisions in self referencing relations
 		const relationalCountContext = createRelationalCountContext(table, column, collectionName, options);
-        const alias = generateAlias(relationalCountContext);
+		const alias = generateAlias(relationalCountContext);
 
 		let countQuery = this.knex
 			.count('*')
@@ -85,11 +85,11 @@ export abstract class FnHelper extends DatabaseHelper {
 
 // Create a deterministic context for relational count aliases
 function createRelationalCountContext(table: string, column: string, collectionName: string, options: FnHelperOptions) {
-    return JSON.stringify({
-        table,
-        column,
-        collectionName,
-        hasFilter: !!options?.relationalCountOptions?.query?.filter,
-        filter: options?.relationalCountOptions?.query?.filter
-    });
+	return JSON.stringify({
+		table,
+		column,
+		collectionName,
+		hasFilter: !!options?.relationalCountOptions?.query?.filter,
+		filter: options?.relationalCountOptions?.query?.filter,
+	});
 }

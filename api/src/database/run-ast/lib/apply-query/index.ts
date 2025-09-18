@@ -17,27 +17,27 @@ const generateRandomAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
 // Generate deterministic alias based on context
 function generateDeterministicAlias(context = '') {
-    const hash = getSimpleHash(context);
-    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-    let result = '';
-    let num = parseInt(hash, 16);
+	const hash = getSimpleHash(context);
+	const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+	let result = '';
+	let num = parseInt(hash, 16);
 
-    // Generate 5 character alias
-    for (let i = 0; i < 5; i++) {
-        result += alphabet[num % alphabet.length];
-        num = Math.floor(num / alphabet.length);
-    }
+	// Generate 5 character alias
+	for (let i = 0; i < 5; i++) {
+		result += alphabet[num % alphabet.length];
+		num = Math.floor(num / alphabet.length);
+	}
 
-    return result;
+	return result;
 }
 
 // Context-aware alias generator
 export function generateAlias(context = '') {
-    if (context) {
-        return generateDeterministicAlias(context);
-    }
-	
-    return generateRandomAlias();
+	if (context) {
+		return generateDeterministicAlias(context);
+	}
+
+	return generateRandomAlias();
 }
 
 type ApplyQueryOptions = {

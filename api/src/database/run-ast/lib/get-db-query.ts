@@ -29,16 +29,16 @@ export type DBQueryOptions = {
 
 // Create a deterministic context for alias generation
 function createAliasContext(table: string, query: Query, path = ''): string {
-    const queryStr = JSON.stringify({
-        table,
-        path,
-        sort: query.sort,
-        group: query.group,
-        aggregate: query.aggregate,
-        // Exclude: limit, offset, page, search, filter - these are execution parameters
-        // that don't affect the underlying query structure requiring aliases
-    });
-	
+	const queryStr = JSON.stringify({
+		table,
+		path,
+		sort: query.sort,
+		group: query.group,
+		aggregate: query.aggregate,
+		// Exclude: limit, offset, page, search, filter - these are execution parameters
+		// that don't affect the underlying query structure requiring aliases
+	});
+
 	return queryStr;
 }
 
@@ -164,13 +164,17 @@ export function getDBQuery(
 			const orderByFields: Knex.Raw[] = [];
 
 			sortRecords.map((sortRecord, index) => {
-                if (orderByString.length !== 0) {
-                    orderByString += ', ';
-                }
+				if (orderByString.length !== 0) {
+					orderByString += ', ';
+				}
 
-                // Create deterministic context for sort aliases
-                const sortContext = createAliasContext(table, queryCopy, `sort_${index}_${sortRecord.column}_${sortRecord.order}`);
-                const sortAlias = `sort_${generateAlias(sortContext)}`;
+				// Create deterministic context for sort aliases
+				const sortContext = createAliasContext(
+					table,
+					queryCopy,
+					`sort_${index}_${sortRecord.column}_${sortRecord.order}`,
+				);
+				const sortAlias = `sort_${generateAlias(sortContext)}`;
 
 				let orderByColumn: Knex.Raw;
 
@@ -229,7 +233,7 @@ export function getDBQuery(
 	if (!needsInnerQuery) return dbQuery;
 
 	const innerCaseWhenContext = createAliasContext(table, queryCopy, 'inner_case_when');
-    const innerCaseWhenAliasPrefix = generateAlias(innerCaseWhenContext);
+	const innerCaseWhenAliasPrefix = generateAlias(innerCaseWhenContext);
 
 	if (hasCaseWhen) {
 		/* If there are cases, we need to employ a trick in order to evaluate the case/when structure in the inner query,
