@@ -81,7 +81,8 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex }:
 			: aliasMap[pathParts[0]!]?.alias;
 
 		if (!existingAlias) {
-			const alias = generateAlias();
+			const joinContext = createJoinAliasContext(parentCollection, pathParts, relationType, parentFields);
+            const alias = generateAlias(joinContext);
 			const aliasKey = parentFields ? `${parentFields}.${pathParts[0]}` : pathParts[0]!;
 			const aliasedParentCollection = aliasMap[parentFields ?? '']?.alias || parentCollection;
 
@@ -176,4 +177,14 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex }:
 			followRelation(pathParts.slice(1), parent, `${parentFields ? parentFields + '.' : ''}${pathParts[0]}`);
 		}
 	}
+}
+
+// Create a deterministic context for join aliases
+function createJoinAliasContext(collection: string, path: string[], relationType: string | null, parentFields = '') {
+    return JSON.stringify({
+        collection,
+        path: path.join('.'),
+        relationType,
+        parentFields
+    });
 }

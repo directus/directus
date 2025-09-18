@@ -1,5 +1,6 @@
 import type { Filter, Permission, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
+import { getSimpleHash } from '@directus/utils';
 import { customAlphabet } from 'nanoid/non-secure';
 import { getHelpers } from '../../../helpers/index.js';
 import { applyCaseWhen } from '../../utils/apply-case-when.js';
@@ -10,9 +11,34 @@ import { joinFilterWithCases } from './join-filter-with-cases.js';
 import { applySort } from './sort.js';
 import { applyFilter } from './filter/index.js';
 import { applySearch } from './search.js';
-import { applyAggregate } from './aggregate.js';
 
-export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
+// Fallback to original random alias generator
+const generateRandomAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
+
+// Generate deterministic alias based on context
+function generateDeterministicAlias(context = '') {
+    const hash = getSimpleHash(context);
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+    let result = '';
+    let num = parseInt(hash, 16);
+
+    // Generate 5 character alias
+    for (let i = 0; i < 5; i++) {
+        result += alphabet[num % alphabet.length];
+        num = Math.floor(num / alphabet.length);
+    }
+
+    return result;
+}
+
+// Context-aware alias generator
+export function generateAlias(context = '') {
+    if (context) {
+        return generateDeterministicAlias(context);
+    }
+	
+    return generateRandomAlias();
+}
 
 type ApplyQueryOptions = {
 	aliasMap?: AliasMap;
