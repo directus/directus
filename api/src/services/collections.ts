@@ -12,6 +12,7 @@ import type {
 	RawField,
 	SchemaOverview,
 	RawCollection,
+	FieldMutationOptions,
 } from '@directus/types';
 import { addFieldFlag } from '@directus/utils';
 import type Keyv from 'keyv';
@@ -59,7 +60,7 @@ export class CollectionsService {
 	/**
 	 * Create a single new collection
 	 */
-	async createOne(payload: RawCollection, opts?: MutationOptions): Promise<string> {
+	async createOne(payload: RawCollection, opts?: FieldMutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -149,7 +150,7 @@ export class CollectionsService {
 					await trx.schema.createTable(payload.collection, (table) => {
 						for (const field of payload.fields!) {
 							if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-								fieldsService.addColumnToTable(table, payload.collection, field);
+								fieldsService.addColumnToTable(table, payload.collection, field, undefined, opts?.attemptConcurrentIndex);
 							}
 						}
 					});
@@ -238,7 +239,7 @@ export class CollectionsService {
 	/**
 	 * Create multiple new collections
 	 */
-	async createMany(payloads: RawCollection[], opts?: MutationOptions): Promise<string[]> {
+	async createMany(payloads: RawCollection[], opts?: FieldMutationOptions): Promise<string[]> {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
@@ -256,6 +257,7 @@ export class CollectionsService {
 						autoPurgeCache: false,
 						autoPurgeSystemCache: false,
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
 					});
 
 					collectionNames.push(name);

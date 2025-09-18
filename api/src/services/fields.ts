@@ -17,7 +17,7 @@ import type {
 	MutationOptions,
 	RawField,
 	SchemaOverview,
-	Type,
+	Type, FieldMutationOptions,
 } from '@directus/types';
 import { addFieldFlag, getRelations, toArray } from '@directus/utils';
 import type Keyv from 'keyv';
@@ -359,7 +359,7 @@ export class FieldsService {
 		collection: string,
 		field: Partial<Field> & { field: string; type: Type | null },
 		table?: Knex.CreateTableBuilder, // allows collection creation to
-		opts?: MutationOptions,
+		opts?: FieldMutationOptions,
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
@@ -413,11 +413,13 @@ export class FieldsService {
 						: field;
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
+					const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
+
 					if (table) {
-						this.addColumnToTable(table, collection, hookAdjustedField as Field);
+						await this.addColumnToTable(table, collection, hookAdjustedField as Field, undefined, attemptConcurrentIndex);
 					} else {
-						await trx.schema.alterTable(collection, (table) => {
-							this.addColumnToTable(table, collection, hookAdjustedField as Field);
+						await trx.schema.alterTable(collection, async (table) => {
+							await this.addColumnToTable(table, collection, hookAdjustedField as Field, undefined, attemptConcurrentIndex);
 						});
 					}
 				}
@@ -485,7 +487,11 @@ export class FieldsService {
 		}
 	}
 
-	async updateField(collection: string, field: RawField, opts?: MutationOptions): Promise<string> {
+	async updateField(
+		collection: string,
+		field: RawField,
+		opts?: FieldMutationOptions,
+	): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -544,11 +550,13 @@ export class FieldsService {
 					opts?.bypassLimits && opts.autoPurgeSystemCache === false ? sanitizeColumn(existingColumn) : existingColumn;
 
 				if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
+					const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
+
 					try {
 						await transaction(this.knex, async (trx) => {
 							await trx.schema.alterTable(collection, async (table) => {
 								if (!hookAdjustedField.schema) return;
-								this.addColumnToTable(table, collection, field, existingColumn);
+								await this.addColumnToTable(table, collection, field, existingColumn, attemptConcurrentIndex);
 							});
 						});
 					} catch (err: any) {
@@ -626,11 +634,16 @@ export class FieldsService {
 		}
 	}
 
-	async updateFields(collection: string, fields: RawField[], opts?: MutationOptions): Promise<string[]> {
+	async updateFields(
+		collection: string,
+		fields: RawField[],
+		opts?: FieldMutationOptions,
+	): Promise<string[]> {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
 			const fieldNames = [];
+			const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
 			for (const field of fields) {
 				fieldNames.push(
@@ -638,6 +651,7 @@ export class FieldsService {
 						autoPurgeCache: false,
 						autoPurgeSystemCache: false,
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						attemptConcurrentIndex,
 					}),
 				);
 			}
@@ -852,12 +866,13 @@ export class FieldsService {
 		}
 	}
 
-	public addColumnToTable(
+	public async addColumnToTable(
 		table: Knex.CreateTableBuilder,
 		collection: string,
 		field: RawField | Field,
 		existing: Column | null = null,
-	): void {
+		attemptConcurrentIndex = false, // do we want to default to concurrent creation?
+	): Promise<void> {
 		let column: Knex.ColumnBuilder;
 
 		// Don't attempt to add a DB column for alias / corrupt fields
@@ -931,13 +946,19 @@ export class FieldsService {
 			}
 		}
 
+		const createIndexes: { unique: boolean }[] = [];
+
 		if (field.schema?.is_primary_key) {
 			column.primary().notNullable();
 		} else if (!existing?.is_primary_key) {
 			// primary key will already have unique/index constraints
 			if (field.schema?.is_unique === true) {
 				if (!existing || existing.is_unique === false) {
-					column.unique({ indexName: this.helpers.schema.generateIndexName('unique', collection, field.field) });
+					if (attemptConcurrentIndex) {
+						createIndexes.push({ unique: true });
+					} else {
+						column.unique({ indexName: this.helpers.schema.generateIndexName('unique', collection, field.field) });
+					}
 				}
 			} else if (field.schema?.is_unique === false) {
 				if (existing?.is_unique === true) {
@@ -947,7 +968,11 @@ export class FieldsService {
 
 			if (field.schema?.is_indexed === true) {
 				if (!existing || existing.is_indexed === false) {
-					column.index(this.helpers.schema.generateIndexName('index', collection, field.field));
+					if (attemptConcurrentIndex) {
+						createIndexes.push({ unique: false });
+					} else {
+						column.index(this.helpers.schema.generateIndexName('index', collection, field.field));
+					}
 				}
 			} else if (field.schema?.is_indexed === false) {
 				if (existing?.is_indexed === true) {
@@ -958,6 +983,15 @@ export class FieldsService {
 
 		if (existing) {
 			column.alter();
+		}
+
+		if (createIndexes.length > 0) {
+			for (const { unique } of createIndexes) {
+				await this.helpers.schema.createIndex(collection, field.field, {
+					attemptConcurrentIndex,
+					unique,
+				});
+			}
 		}
 	}
 }
