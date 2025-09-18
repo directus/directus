@@ -691,8 +691,8 @@ catalogs:
       specifier: 12.0.1
       version: 12.0.1
     p-limit:
-      specifier: 6.2.0
-      version: 6.2.0
+      specifier: 7.1.1
+      version: 7.1.1
     p-queue:
       specifier: 8.1.0
       version: 8.1.0
@@ -1240,7 +1240,7 @@ importers:
         version: 12.0.1
       p-limit:
         specifier: 'catalog:'
-        version: 6.2.0
+        version: 7.1.1
       p-queue:
         specifier: 'catalog:'
         version: 8.1.0
@@ -10574,9 +10574,9 @@ packages:
     resolution: {integrity: sha512-/Eaoq+QyLSiXQ4lyYV23f14mZRQcXnxfHrN0vCai+ak9G0pp9iEQukIIZq5NccEvwRB8PUnZT0KsOoDCINS1qQ==}
     engines: {node: '>=18'}
 
-  p-limit@6.2.0:
-    resolution: {integrity: sha512-kuUqqHNUqoIWp/c467RI4X6mmyuojY5jGutNU0wVTmEOOfcuwLqyMVoAi9MKi2Ak+5i9+nhmrK4ufZE8069kHA==}
-    engines: {node: '>=18'}
+  p-limit@7.1.1:
+    resolution: {integrity: sha512-i8PyM2JnsNChVSYWLr2BAjNoLi0BAYC+wecOnZnVV+YSNJkzP7cWmvI34dk0WArWfH9KwBHNoZI3P3MppImlIA==}
+    engines: {node: '>=20'}
 
   p-locate@4.1.0:
     resolution: {integrity: sha512-R79ZZ/0wAxKGu3oYMlz8jy/kbhsNrS7SKZ7PxEHBgJ5+F2mtFW2fK2cOtBh1cHYkQsbzFV7I+EoRKe6Yt0oK7A==}
@@ -22683,7 +22683,7 @@ snapshots:
     dependencies:
       yocto-queue: 1.2.1
 
-  p-limit@6.2.0:
+  p-limit@7.1.1:
     dependencies:
       yocto-queue: 1.2.1
 
