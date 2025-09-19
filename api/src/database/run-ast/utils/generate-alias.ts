@@ -1,6 +1,7 @@
 import type { Query } from '@directus/types';
 import { getSimpleHash } from '@directus/utils';
 import { customAlphabet } from 'nanoid/non-secure';
+import type { FnHelperOptions } from '../../helpers/fn/types.js';
 
 // Fallback to original random alias generator
 const generateRandomAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
@@ -28,6 +29,19 @@ export function generateQueryAlias(table: string, query: Query, path = ''): stri
 
 	return generateDeterministicAlias(context);
 }
+
+// Create a deterministic context for relational count aliases
+export function generateRelationalQueryAlias(table: string, column: string, collectionName: string, options?: FnHelperOptions) {
+	const context = JSON.stringify({
+		table,
+		column,
+		collectionName,
+		filter: options?.relationalCountOptions?.query?.filter,
+	});
+
+	return generateDeterministicAlias(context);
+}
+
 
 // Create a deterministic alias for join contexts
 export function generateJoinAlias(collection: string, path: string[], relationType: string | null, parentFields = '') {
