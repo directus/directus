@@ -4,18 +4,19 @@ import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import type { Context } from '../../../permissions/types.js';
 import type { FieldNode, FunctionFieldNode, O2MNode } from '../../../types/ast.js';
-import { applySort, type ColumnSortRecord } from './apply-query/sort.js';
 import { getCollectionFromAlias } from '../../../utils/get-collection-from-alias.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
-import { getColumn } from '../utils/get-column.js';
 import { getHelpers } from '../../helpers/index.js';
 import { applyCaseWhen } from '../utils/apply-case-when.js';
+import { generateQueryAlias } from '../utils/generate-alias.js';
 import { getColumnPreprocessor } from '../utils/get-column-pre-processor.js';
+import { getColumn } from '../utils/get-column.js';
 import { getNodeAlias } from '../utils/get-field-alias.js';
 import { getInnerQueryColumnPreProcessor } from '../utils/get-inner-query-column-pre-processor.js';
 import { withPreprocessBindings } from '../utils/with-preprocess-bindings.js';
-import applyQuery, { generateAlias } from './apply-query/index.js';
+import applyQuery from './apply-query/index.js';
 import { applyLimit } from './apply-query/pagination.js';
+import { applySort, type ColumnSortRecord } from './apply-query/sort.js';
 
 export type DBQueryOptions = {
 	table: string;
@@ -26,21 +27,6 @@ export type DBQueryOptions = {
 	permissions: Permission[];
 	permissionsOnly?: boolean;
 };
-
-// Create a deterministic context for alias generation
-function createAliasContext(table: string, query: Query, path = ''): string {
-	const queryStr = JSON.stringify({
-		table,
-		path,
-		sort: query.sort,
-		group: query.group,
-		aggregate: query.aggregate,
-		// Exclude: limit, offset, page, search, filter - these are execution parameters
-		// that don't affect the underlying query structure requiring aliases
-	});
-
-	return queryStr;
-}
 
 export function getDBQuery(
 	{ table, fieldNodes, o2mNodes, query, cases, permissions, permissionsOnly }: DBQueryOptions,
@@ -168,13 +154,11 @@ export function getDBQuery(
 					orderByString += ', ';
 				}
 
-				// Create deterministic context for sort aliases
-				const sortContext = createAliasContext(
+				const sortAlias = generateQueryAlias(
 					table,
 					queryCopy,
 					`sort_${index}_${sortRecord.column}_${sortRecord.order}`,
 				);
-				const sortAlias = `sort_${generateAlias(sortContext)}`;
 
 				let orderByColumn: Knex.Raw;
 
@@ -232,8 +216,7 @@ export function getDBQuery(
 
 	if (!needsInnerQuery) return dbQuery;
 
-	const innerCaseWhenContext = createAliasContext(table, queryCopy, 'inner_case_when');
-	const innerCaseWhenAliasPrefix = generateAlias(innerCaseWhenContext);
+	const innerCaseWhenAliasPrefix = generateQueryAlias(table, queryCopy, 'inner_case_when');
 
 	if (hasCaseWhen) {
 		/* If there are cases, we need to employ a trick in order to evaluate the case/when structure in the inner query,
