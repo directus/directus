@@ -513,7 +513,9 @@ import_data_input_placeholder: CSV or JSON...
 import_data_button: Start Import
 import_data_indeterminate: Importing Data...
 import_data_success: Data successfully imported from {filename}
+import_data_errors: Import errors
 import_data_error: This file's data structure doesn't match the collection.
+import_data_error_summary: '{count} import error(s)'
 label_import: Import
 label_export: Export
 import_export: Import / Export

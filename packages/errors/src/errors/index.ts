@@ -9,6 +9,7 @@ export { InvalidForeignKeyError } from './invalid-foreign-key.js';
 export { InvalidIpError } from './invalid-ip.js';
 export { InvalidOtpError } from './invalid-otp.js';
 export { InvalidPayloadError } from './invalid-payload.js';
+export { InvalidImportError } from './invalid-import.js';
 export { InvalidProviderConfigError } from './invalid-provider-config.js';
 export { InvalidProviderError } from './invalid-provider.js';
 export { InvalidQueryError } from './invalid-query.js';
