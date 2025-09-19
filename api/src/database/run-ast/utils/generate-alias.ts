@@ -31,7 +31,12 @@ export function generateQueryAlias(table: string, query: Query, path = ''): stri
 }
 
 // Create a deterministic context for relational count aliases
-export function generateRelationalQueryAlias(table: string, column: string, collectionName: string, options?: FnHelperOptions) {
+export function generateRelationalQueryAlias(
+	table: string,
+	column: string,
+	collectionName: string,
+	options?: FnHelperOptions,
+) {
 	const context = JSON.stringify({
 		table,
 		column,
@@ -41,7 +46,6 @@ export function generateRelationalQueryAlias(table: string, column: string, coll
 
 	return generateDeterministicAlias(context);
 }
-
 
 // Create a deterministic alias for join contexts
 export function generateJoinAlias(collection: string, path: string[], relationType: string | null, parentFields = '') {
