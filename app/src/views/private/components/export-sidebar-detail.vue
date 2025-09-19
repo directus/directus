@@ -291,8 +291,8 @@ function useUpload() {
 
 			// For CSV import errors with structured row data, show localized messages
 			if (code === ErrorCode.InvalidPayload && rows && Array.isArray(rows)) {
-			const localizedErrors = formatCSVValidationErrors(rows as ValidationErrorWithDetails[], t, te);
-				
+				const localizedErrors = formatCSVValidationErrors(rows as ValidationErrorWithDetails[], t, te);
+
 				notify({
 					title: t('import_data_errors'),
 					text: localizedErrors,

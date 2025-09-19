@@ -6,8 +6,7 @@ export type { ImportErrorExtensions };
 export const messageConstructor = ({ reason }: ImportErrorExtensions) => `Invalid payload. ${reason}.`;
 
 export const InvalidImportError = createError<ImportErrorExtensions>(
-  ErrorCode.InvalidPayload, // Use same error code as InvalidPayloadError
-  messageConstructor,
-  400,
+	ErrorCode.InvalidPayload, // Use same error code as InvalidPayloadError
+	messageConstructor,
+	400,
 );
-

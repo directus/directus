@@ -84,17 +84,16 @@ function useUpload() {
 			const code = error?.response?.data?.errors?.[0]?.extensions?.code;
 			const rows = error?.response?.data?.errors?.[0]?.extensions?.rows;
 
-
 			// For CSV import errors with structured row data, show localized messages
 			if (code === ErrorCode.InvalidPayload && rows && Array.isArray(rows)) {
-			const localizedErrors = formatCSVValidationErrors(rows as ValidationErrorWithDetails[], t, te);
-				
+				const localizedErrors = formatCSVValidationErrors(rows as ValidationErrorWithDetails[], t, te);
+
 				notify({
 					title: t('import_data_errors'),
 					text: localizedErrors,
 					type: 'error',
 					dialog: true,
-					persist: true, 
+					persist: true,
 				});
 			} else {
 				notify({

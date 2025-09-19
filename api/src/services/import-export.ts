@@ -53,7 +53,7 @@ const logger = useLogger();
 
 // Import error limits
 const MAX_IMPORT_ERRORS = 1000; // Maximum individual errors to collect before stopping
-const MAX_DISPLAY_ERRORS = 50;   // Maximum error groups to return in API response
+const MAX_DISPLAY_ERRORS = 50; // Maximum error groups to return in API response
 
 export class ImportService {
 	knex: Knex;
@@ -171,7 +171,6 @@ export class ImportService {
 			type: string;
 		}> = [];
 
-
 		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
 				knex: trx,
@@ -179,14 +178,13 @@ export class ImportService {
 				accountability: this.accountability,
 			});
 
-
 			const saveQueue = queue(async (task: { data: Record<string, unknown>; rowNumber: number }) => {
 				// Skip processing if we've already reached the error limit
 				if (hasReachedErrorLimit) return null;
 
 				try {
 					const result = await service.upsertOne(task.data, {
-						bypassEmitAction: (action) => nestedActionEvents.push(action)
+						bypassEmitAction: (action) => nestedActionEvents.push(action),
 					});
 
 					return result;
@@ -211,7 +209,9 @@ export class ImportService {
 								}
 							} catch (dbError) {
 								// Log the error but continue with default message
-								logger.warn(`Failed to fetch validation_message for field ${collection}.${field}: ${dbError instanceof Error ? dbError.message : String(dbError)}`);
+								logger.warn(
+									`Failed to fetch validation_message for field ${collection}.${field}: ${dbError instanceof Error ? dbError.message : String(dbError)}`,
+								);
 							}
 						}
 
@@ -271,7 +271,6 @@ export class ImportService {
 				const streams: Stream[] = [stream];
 				let rowNumber = 1;
 
-
 				const cleanup = (destroy = true) => {
 					if (destroy) {
 						for (const stream of streams) {
@@ -285,25 +284,30 @@ export class ImportService {
 				};
 
 				// Function to group similar errors for better UX and smaller payload
-				const groupSimilarErrors = (errors: Array<{
-					row: number;
-					code?: string;
-					field?: string | null;
-					value?: unknown;
-					reason: string;
-					type: string;
-				}>) => {
-					const groups = new Map<string, {
-						rows: number[];
+				const groupSimilarErrors = (
+					errors: Array<{
+						row: number;
 						code?: string;
 						field?: string | null;
+						value?: unknown;
 						reason: string;
 						type: string;
-						sampleValue?: unknown;
-					}>();
+					}>,
+				) => {
+					const groups = new Map<
+						string,
+						{
+							rows: number[];
+							code?: string;
+							field?: string | null;
+							reason: string;
+							type: string;
+							sampleValue?: unknown;
+						}
+					>();
 
 					// Group errors by field + reason + code
-					errors.forEach(error => {
+					errors.forEach((error) => {
 						const key = `${error.field || 'unknown'}|${error.reason}|${error.code}`;
 
 						if (!groups.has(key)) {
@@ -321,7 +325,7 @@ export class ImportService {
 					});
 
 					// Convert groups to final format with row ranges
-					return Array.from(groups.values()).map(group => {
+					return Array.from(groups.values()).map((group) => {
 						// Sort rows and create ranges
 						const sortedRows = group.rows.sort((a, b) => a - b);
 
@@ -370,12 +374,14 @@ export class ImportService {
 						const limitedErrors = groupedErrors.slice(0, MAX_DISPLAY_ERRORS);
 						const hasMoreErrors = groupedErrors.length > MAX_DISPLAY_ERRORS;
 
-						reject(new InvalidImportError({
-							reason: `Import failed with ${structuredRows.length} validation error(s)${structuredRows.length >= MAX_IMPORT_ERRORS ? ' (processing stopped due to error limit)' : ''}`,
-							rows: limitedErrors,
-							totalErrors: structuredRows.length,
-							...(hasMoreErrors && { hasMoreErrors: true, totalErrorGroups: groupedErrors.length }),
-						}));
+						reject(
+							new InvalidImportError({
+								reason: `Import failed with ${structuredRows.length} validation error(s)${structuredRows.length >= MAX_IMPORT_ERRORS ? ' (processing stopped due to error limit)' : ''}`,
+								rows: limitedErrors,
+								totalErrors: structuredRows.length,
+								...(hasMoreErrors && { hasMoreErrors: true, totalErrorGroups: groupedErrors.length }),
+							}),
+						);
 
 						return;
 					}
@@ -421,7 +427,6 @@ export class ImportService {
 									// Stop processing if too many errors
 									if (structuredRows.length >= MAX_IMPORT_ERRORS && !hasReachedErrorLimit) {
 										hasReachedErrorLimit = true;
-										console.log('Stopping processing due to error limit');
 										if (csvReadStream) csvReadStream.destroy();
 										return;
 									}
@@ -459,7 +464,6 @@ export class ImportService {
 									// Stop processing if too many errors
 									if (structuredRows.length >= MAX_IMPORT_ERRORS && !hasReachedErrorLimit) {
 										hasReachedErrorLimit = true;
-										console.log('Stopping processing due to error limit');
 										if (csvReadStream) csvReadStream.destroy();
 										return;
 									}
@@ -472,13 +476,14 @@ export class ImportService {
 							.on('error', (error) => {
 								cleanup();
 
-								reject(new InvalidPayloadError({
-									reason: `Import parsing error: ${error.message}`
-								}));
+								reject(
+									new InvalidPayloadError({
+										reason: `Import parsing error: ${error.message}`,
+									}),
+								);
 							})
 							.on('end', () => {
 								cleanup(false);
-
 
 								// In case of empty CSV file
 								if (!saveQueue.started) {

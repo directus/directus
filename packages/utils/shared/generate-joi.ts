@@ -117,11 +117,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 	}
 
 	// Check if value is a plain object with nested filter structure (not array, Date, etc.)
-	if (
-		isPlainObject(value) &&
-		Object.keys(value).length > 0 &&
-		Object.keys(value)[0]?.startsWith('_') === false
-	) {
+	if (isPlainObject(value) && Object.keys(value).length > 0 && Object.keys(value)[0]?.startsWith('_') === false) {
 		schema[key] = generateJoi(value as FieldFilter, options);
 	} else {
 		const operator = Object.keys(value)[0];
