@@ -5,6 +5,7 @@ import { ContentVersion } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { computed, onMounted, ref, toRefs, watch, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { unexpectedError } from '@/utils/unexpected-error';
 import RevisionsDateGroup from './revisions-date-group.vue';
 import ComparisonModal from '@/modules/content/components/comparison-modal.vue';
 import { type ComparisonData } from '@/modules/content/comparison-utils';
@@ -77,8 +78,8 @@ async function openModal(id: number) {
 			selectedRevision.value = revision.id;
 			comparisonData.value = normalizedData;
 			comparisonModalActive.value = true;
-		} catch {
-			// Handle error silently or show user notification
+		} catch (error) {
+			unexpectedError(error);
 		}
 	}
 }

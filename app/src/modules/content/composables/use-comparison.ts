@@ -355,8 +355,6 @@ export function useComparison(options: UseComparisonOptions) {
 
 		const revisionsList = revisions?.value || [];
 		const revisionId = 'id' in revision ? revision.id : null;
-		const currentRevisionIndex = revisionId ? revisionsList.findIndex((r) => r.id === revisionId) : -1;
-		const previousRevision = currentRevisionIndex > 0 ? revisionsList[currentRevisionIndex - 1] : null;
 
 		// Resolve main item and current version delta
 		let mainItem: Record<string, any> = {};
@@ -386,16 +384,12 @@ export function useComparison(options: UseComparisonOptions) {
 			return undefined;
 		};
 
-		const mainMerged = mergeWith({}, mainItem, versionDelta, previousRevision?.data || {}, replaceArrays);
-
-		if (previousRevision?.activity?.timestamp) {
-			mainMerged.date_updated = previousRevision.activity.timestamp;
-		}
+		const mainMerged = mergeWith({}, mainItem, versionDelta || {}, replaceArrays);
 
 		const currentMerged = mergeWith({}, mainItem, versionDelta, revisionData, replaceArrays);
 
 		if ('activity' in revision && (revision as any)?.activity?.timestamp) {
-			mainMerged.date_updated = (revision as any).activity.timestamp;
+			currentMerged.date_updated = (revision as any).activity.timestamp;
 		}
 
 		return {
