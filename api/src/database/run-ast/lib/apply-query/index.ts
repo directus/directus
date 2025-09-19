@@ -4,6 +4,7 @@ import type { AliasMap } from '../../../../utils/get-column-path.js';
 import { getHelpers } from '../../../helpers/index.js';
 import { applyCaseWhen } from '../../utils/apply-case-when.js';
 import { getColumn } from '../../utils/get-column.js';
+import { applyAggregate } from './aggregate.js';
 import { applyFilter } from './filter/index.js';
 import { joinFilterWithCases } from './join-filter-with-cases.js';
 import { applyLimit, applyOffset } from './pagination.js';
