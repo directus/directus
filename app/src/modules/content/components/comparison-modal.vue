@@ -297,11 +297,11 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 									v-tooltip.bottom="
 										selectedComparisonFields.length === 0
 											? isVersionMode
-												? t('promote_version_disabled')
-												: t('revision_delta_promote_disabled')
+												? t('apply_version_disabled')
+												: t('revision_delta_apply_disabled')
 											: isVersionMode
-												? t('promote_version')
-												: t('revision_delta_promote')
+												? t('apply_version')
+												: t('revision_delta_apply')
 									"
 									:disabled="selectedComparisonFields.length === 0"
 									:loading="promoting"
@@ -309,7 +309,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 								>
 									<v-icon :name="'arrow_upload_progress'" left />
 									<span class="button-text">
-										{{ isVersionMode ? t('promote_version') : t('revision_delta_promote') }}
+										{{ isVersionMode ? t('apply_version') : t('revision_delta_apply') }}
 									</span>
 								</v-button>
 							</div>
@@ -326,7 +326,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 		>
 			<v-card>
 				<v-card-title>
-					{{ t('delete_on_promote_copy', { version: deltaDisplayName }) }}
+					{{ t('delete_on_apply_copy', { version: deltaDisplayName }) }}
 				</v-card-title>
 				<v-card-actions>
 					<v-button secondary @click="promote(false)">{{ t('keep') }}</v-button>
@@ -598,6 +598,12 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 				grid-column: start / full !important;
 			}
 		}
+	}
+}
+
+.select-all-container {
+	:deep(.v-checkbox .type-text) {
+		font-weight: 600;
 	}
 }
 

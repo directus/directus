@@ -29,15 +29,24 @@ const userUpdatedName = computed(() => {
 	return userName(props.userUpdated);
 });
 
+const formatDateTime = (date: Date) => {
+	const dateStr = localizedFormat(date, String(t('date-fns_date_short_no_year')));
+	const timeStr = localizedFormat(date, String(t('date-fns_time')));
+	return `${dateStr} ${timeStr}`;
+};
+
+const formattedDateUpdated = computed(() => {
+	if (!props.dateUpdated) return null;
+	return formatDateTime(props.dateUpdated);
+});
+
 const deltaOptions = computed(() => {
 	if (!props.showDeltaDropdown || !props.comparisonData?.selectableDeltas) return [];
 
 	const deltas = props.comparisonData.selectableDeltas;
 	return deltas.map((delta: any) => {
 		if (delta.activity?.timestamp) {
-			const date = localizedFormat(new Date(delta.activity.timestamp), String(t('date-fns_date_short')));
-			const time = localizedFormat(new Date(delta.activity.timestamp), String(t('date-fns_time')));
-			const formattedDate = `${date} (${time})`;
+			const formattedDate = formatDateTime(new Date(delta.activity.timestamp));
 
 			let user = t('private_user');
 
@@ -87,16 +96,16 @@ const selectedOption = computed(() => {
 				<v-skeleton-loader v-if="loading" type="text" class="meta-skeleton" />
 
 				<template v-else>
-					<div v-if="showDeltaDropdown" class="delta-dropdown">
-						<v-menu attached>
+					<div class="meta-content" :class="{ 'is-dropdown': showDeltaDropdown }">
+						<v-menu v-if="showDeltaDropdown" attached>
 							<template #activator="{ toggle }">
-								<div class="delta-selection" @click="toggle">
-									<div class="delta-content">
-										<div class="delta-date-time">{{ selectedOption?.text.split(' - ')[0] }}</div>
-										<div class="delta-user-info">{{ t('edited_by') }} {{ selectedOption?.text.split(' - ')[1] }}</div>
+								<button class="meta-selection" @click="toggle">
+									<div class="meta-text">
+										<div class="meta-date-time">{{ selectedOption?.text.split(' - ')[0] }}</div>
+										<div class="meta-user-info">{{ t('edited_by') }} {{ selectedOption?.text.split(' - ')[1] }}</div>
 									</div>
 									<v-icon name="expand_more" class="dropdown-icon" />
-								</div>
+								</button>
 							</template>
 							<v-list>
 								<v-list-item
@@ -115,17 +124,16 @@ const selectedOption = computed(() => {
 								</v-list-item>
 							</v-list>
 						</v-menu>
-					</div>
-					<div v-else class="meta-info">
-						<div v-if="dateUpdated" class="date-time">
-							{{ localizedFormat(dateUpdated, String(t('date-fns_date_short'))) }}
-							{{ localizedFormat(dateUpdated, String(t('date-fns_time'))) }}
+						<div v-else class="meta-text">
+							<div v-if="formattedDateUpdated" class="meta-date-time">
+								{{ formattedDateUpdated }}
+							</div>
+							<div v-if="userUpdatedName" class="meta-user-info">{{ t('edited_by') }} {{ userUpdatedName }}</div>
+							<div v-else-if="userLoading" class="meta-user-info">
+								{{ t('loading') }}
+							</div>
+							<div v-else class="meta-user-info">{{ t('edited_by') }} {{ t('unknown_user') }}</div>
 						</div>
-						<div v-if="userUpdatedName" class="user-info">{{ t('edited_by') }} {{ userUpdatedName }}</div>
-						<div v-else-if="userLoading" class="user-info">
-							{{ t('loading') }}
-						</div>
-						<div v-else class="user-info">{{ t('edited_by') }} {{ t('unknown_user') }}</div>
 					</div>
 				</template>
 			</div>
@@ -182,62 +190,44 @@ const selectedOption = computed(() => {
 		flex-shrink: 0;
 		min-inline-size: 0;
 
-		.delta-dropdown {
-			.delta-selection {
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				cursor: pointer;
-				border: 1px solid var(--theme--border-color);
-				border-radius: var(--theme--border-radius);
-				padding-inline: 16px;
-				padding-block: 8px;
+		.meta-content {
+			.meta-text {
+				text-align: start;
 
-				.delta-content {
-					text-align: start;
-
-					@media (min-width: 960px) {
-						text-align: end;
-					}
-
-					.delta-date-time {
-						font-size: 14px;
-						line-height: 20px;
-						font-weight: 600;
-					}
-
-					.delta-user-info {
-						font-size: 14px;
-						line-height: 20px;
-						color: var(--theme--foreground-subdued);
-					}
+				@media (min-width: 960px) {
+					text-align: end;
 				}
 
-				.dropdown-icon {
+				.meta-date-time {
+					font-size: 14px;
+					line-height: 20px;
+					font-weight: 600;
+				}
+
+				.meta-user-info {
+					font-size: 14px;
+					line-height: 20px;
 					color: var(--theme--foreground-subdued);
-					margin-inline-start: 4px;
-					transition: transform var(--fast) var(--transition);
 				}
 			}
-		}
 
-		.meta-info {
-			text-align: start;
+			&.is-dropdown {
+				.meta-selection {
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					cursor: pointer;
+					border: 2px solid var(--theme--border-color);
+					border-radius: var(--theme--border-radius);
+					padding-inline: 16px;
+					padding-block: 8px;
 
-			@media (min-width: 960px) {
-				text-align: end;
-			}
-
-			.date-time {
-				font-size: 14px;
-				line-height: 20px;
-				font-weight: 600;
-			}
-
-			.user-info {
-				font-size: 14px;
-				line-height: 20px;
-				color: var(--theme--foreground-subdued);
+					.dropdown-icon {
+						color: var(--theme--foreground-subdued);
+						margin-inline-start: 4px;
+						transition: transform var(--fast) var(--transition);
+					}
+				}
 			}
 		}
 	}
