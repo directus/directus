@@ -4,6 +4,8 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { formatCSVValidationErrors, type ValidationErrorWithDetails } from '@/utils/format-validation-error';
+import { ErrorCode } from '@directus/errors';
 import type { AxiosProgressEvent } from 'axios';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -80,14 +82,29 @@ function useUpload() {
 			});
 		} catch (error: any) {
 			const code = error?.response?.data?.errors?.[0]?.extensions?.code;
+			const rows = error?.response?.data?.errors?.[0]?.extensions?.rows;
 
-			notify({
-				title: te(`errors.${code}`) ? t(`errors.${code}`) : t('import_data_error'),
-				type: 'error',
-			});
 
-			if (code === 'INTERNAL_SERVER_ERROR') {
-				unexpectedError(error);
+			// For CSV import errors with structured row data, show localized messages
+			if (code === ErrorCode.InvalidPayload && rows && Array.isArray(rows)) {
+			const localizedErrors = formatCSVValidationErrors(rows as ValidationErrorWithDetails[], t, te);
+				
+				notify({
+					title: t('import_data_errors'),
+					text: localizedErrors,
+					type: 'error',
+					dialog: true,
+					persist: true, 
+				});
+			} else {
+				notify({
+					title: te(`errors.${code}`) ? t(`errors.${code}`) : t('import_data_error'),
+					type: 'error',
+				});
+
+				if (code === ErrorCode.Internal) {
+					unexpectedError(error);
+				}
 			}
 		} finally {
 			uploading.value = false;

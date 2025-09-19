@@ -1,7 +1,7 @@
 import type { FieldFilter } from '@directus/types';
 import type { AnySchema, StringSchema as BaseStringSchema, DateSchema, NumberSchema } from 'joi';
 import BaseJoi from 'joi';
-import { escapeRegExp, merge } from 'lodash-es';
+import { escapeRegExp, merge, isPlainObject } from 'lodash-es';
 
 export interface StringSchema extends BaseStringSchema {
 	contains(substring: string): this;
@@ -116,7 +116,12 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 		throw new Error(`[generateJoi] Filter doesn't contain filter rule. Passed filter: ${JSON.stringify(filter)}`);
 	}
 
-	if (Object.keys(value)[0]?.startsWith('_') === false) {
+	// Check if value is a plain object with nested filter structure (not array, Date, etc.)
+	if (
+		isPlainObject(value) &&
+		Object.keys(value).length > 0 &&
+		Object.keys(value)[0]?.startsWith('_') === false
+	) {
 		schema[key] = generateJoi(value as FieldFilter, options);
 	} else {
 		const operator = Object.keys(value)[0];
