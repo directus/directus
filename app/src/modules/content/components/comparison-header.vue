@@ -12,7 +12,6 @@ interface Props {
 	userLoading: boolean;
 	showDeltaDropdown?: boolean;
 	comparisonData?: any;
-	showLatestChip?: boolean;
 	loading?: boolean;
 }
 
@@ -86,10 +85,9 @@ const selectedOption = computed(() => {
 				<v-skeleton-loader v-if="loading" type="text" class="title-skeleton" />
 
 				<template v-else>
-					<div class="title-wrapper" :style="{ inlineSize: `calc(100% - ${showLatestChip ? 62 : 0}px)` }">
+					<div class="title-wrapper">
 						<v-text-overflow :text="title" class="title" />
 					</div>
-					<v-chip v-if="showLatestChip" small class="latest-chip">{{ t('latest_version') }}</v-chip>
 				</template>
 			</div>
 			<div class="header-meta">

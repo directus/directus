@@ -168,7 +168,6 @@ version: Version
 version_key: Version Key
 version_name: Version Name
 main_version: Main
-latest_version: Latest
 revision_item: Revision Item
 switch_version: Switch Version
 switch_version_copy: Are you sure you want to switch to the "{version}" version? Unsaved changes will be lost.

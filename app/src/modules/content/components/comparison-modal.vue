@@ -41,7 +41,6 @@ const {
 	toggleComparisonField,
 	isVersionMode,
 	isRevisionMode,
-	isLatestRevision,
 	userLoading,
 	mainItemUserLoading,
 	baseDisplayName,
@@ -49,7 +48,6 @@ const {
 	normalizedData,
 	fetchUserUpdated,
 	fetchMainItemUserUpdated,
-	checkIfLatestRevision,
 	normalizeComparisonData,
 } = useComparison({
 	comparisonData: comparisonData,
@@ -75,10 +73,6 @@ watch(
 				await Promise.allSettled([fetchUserUpdated(), fetchMainItemUserUpdated()]);
 			} finally {
 				modalLoading.value = false;
-			}
-
-			if (isRevisionMode.value) {
-				checkIfLatestRevision();
 			}
 		}
 	},
@@ -165,10 +159,6 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 		comparisonData.value = { ...comparisonData.value, ...newComparisonData };
 
 		await Promise.allSettled([fetchUserUpdated(), fetchMainItemUserUpdated()]);
-
-		if (isRevisionMode.value) {
-			checkIfLatestRevision();
-		}
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
@@ -196,7 +186,6 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 							:date-updated="normalizedData?.current.date.dateObject || null"
 							:user-updated="mainItemUserUpdated"
 							:user-loading="mainItemUserLoading"
-							:show-latest-chip="isLatestRevision"
 						/>
 						<div class="comparison-content-divider"></div>
 						<div class="comparison-content">
