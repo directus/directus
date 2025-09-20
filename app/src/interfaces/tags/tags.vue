@@ -84,7 +84,7 @@ function processArray(array: string[]): string[] {
 }
 
 function onInput(event: KeyboardEvent) {
-	if (event.target && (event.key === 'Enter' || event.key === ',')) {
+	if (event.target && (event.key === 'Enter' || event.key === ',' || (event.type === 'blur' && document.hasFocus()))) {
 		event.preventDefault();
 		addTag((event.target as HTMLInputElement).value);
 		(event.target as HTMLInputElement).value = '';
@@ -126,6 +126,7 @@ function emitValue() {
 			:disabled="disabled"
 			:dir="direction"
 			@keydown="onInput"
+			@blur="onInput"
 		>
 			<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 			<template #append><v-icon :name="iconRight" /></template>
