@@ -45,6 +45,24 @@ export const updateComments =
 	};
 
 /**
+ * Update multiple comments as batch.
+ * @param items
+ * @param query
+ * @returns Returns the comment objects for the updated comments.
+ */
+export const updateCommentsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusComment<Schema>>>(
+		items: NestedPartial<DirectusComment<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateCommentOutput<Schema, TQuery>[], Schema> =>
+	() => ({
+		path: `/comments`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});
+
+/**
  * Update an existing comment.
  * @param key
  * @param item
