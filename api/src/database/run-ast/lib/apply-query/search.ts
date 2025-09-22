@@ -31,6 +31,8 @@ export function applySearch(
 		fields = fields.filter((field) => allowedFields.has(field[0]));
 	}
 
+	fields = fields.filter(([_, field]) => field.special.includes('conceal') !== true);
+
 	dbQuery.andWhere(function (queryBuilder) {
 		let needsFallbackCondition = true;
 
