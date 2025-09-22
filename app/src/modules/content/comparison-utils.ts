@@ -205,8 +205,8 @@ export function normalizeRevisionItem(revision: Revision): NormalizedItem {
 
 export function normalizeMainItem(mainData: Record<string, any>): NormalizedItem {
 	return {
-		id: 'current',
-		displayName: 'Current',
+		id: 'base',
+		displayName: 'Main',
 		date: normalizeDate(mainData.date_updated),
 		user: normalizeUser(mainData.user_updated || mainData.user_created),
 	};
@@ -217,7 +217,7 @@ export function normalizeComparisonData(comparisonData: ComparisonData): Normali
 
 	if (comparisonData.comparisonType === 'revision' && comparisonData.currentVersion) {
 		base = {
-			id: 'current',
+			id: 'base',
 			displayName: getVersionDisplayName(comparisonData.currentVersion),
 			date: normalizeDate(comparisonData.base.date_updated),
 			user: normalizeUser(comparisonData.base.user_updated || comparisonData.base.user_created),
