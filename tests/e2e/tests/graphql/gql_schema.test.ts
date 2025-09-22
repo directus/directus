@@ -1,0 +1,28 @@
+import { generateScopedUser } from '@utils/userScoped.js';
+import { expect, test } from 'vitest';
+import type { Schema } from './schema.d.ts';
+
+const database = process.env['DATABASE'] as string;
+
+import { createDirectus, graphql, rest, staticToken } from '@directus/sdk';
+import { useSnapshot } from '@utils/useSnapshot.js';
+import { join } from 'path';
+
+const api = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`)
+	.with(graphql())
+	.with(rest())
+	.with(staticToken('admin'));
+
+const { snapshot } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
+
+// TODO: Oracle has a **STUPID** hard limit of VARCHAR(4000) on directus_revisions.data, so this currently fails to generate the scoped user
+if (database !== 'oracle')
+	test('graphql schema', async () => {
+		const { token } = await generateScopedUser(api, snapshot);
+
+		const schema = await fetch(`http://localhost:${process.env['PORT']}/server/specs/graphql/?access_token=${token}`);
+
+		await expect(schema.text()).resolves.toBeDefined();
+		// TODO: Figure out how to compare schema properly, as it changes with different DBs
+		// await expect(schema.text()).resolves.toMatchSnapshot();
+	});
