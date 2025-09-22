@@ -10,6 +10,13 @@ vi.mock('@directus/env', () => ({
 
 vi.mock('cron', () => ({
 	CronJob: vi.fn().mockImplementation(() => ({})),
+	validateCronExpression: vi.fn().mockImplementation((rule: string) => {
+		// Mock invalid cron expressions
+		if (rule === '#' || rule === 'invalid') {
+			return { valid: false, error: 'Invalid cron expression' };
+		}
+		return { valid: true };
+	}),
 }));
 
 vi.spyOn(schedule, 'validateCron');
