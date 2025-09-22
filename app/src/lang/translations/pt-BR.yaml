@@ -46,6 +46,7 @@ location: Local
 collection_names_are_case_sensitive: Os nomes das coleções diferenciam maiúsculas de minúsculas
 condition_rules: Regras da condição
 input: Entrada
+invalid_input: Entrada invalida
 maps: Mapas
 switch_user: Alternar Usuário
 item_creation: Criação do Item
@@ -112,6 +113,7 @@ hook: Gancho
 fill_width: Preencher Largura
 field_name_translations: Traduções do Nome do Campo
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
+sso_tfa_setup_notice: Você será desligado da sua conta e precisará entrar novamente. Qualquer mudança não salva será descartada.
 add_field: Adicionar Campo
 role_name: Nome do Cargo
 policy_name: Nome da política 
@@ -320,6 +322,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Redefinir Preferências da Página
 hidden_field: Campo Oculto
 hidden_on_detail: Oculto em Detalhe
+clear_hidden_field: Limpar Valor(es)
 readonly_field_label: Desabilitar Campo no Aplicativo
 required_readonly_field_warning: Ao habilitar "somente leitura" e "obrigatório" em um campo impede que o “item” seja salvo se o valor estiver vazio.
 key: Chave
@@ -1188,7 +1191,6 @@ page_help_settings_datamodel_fields: >-
   **Modelo de Dados: Coleção** — Um formulário para gerenciar esta coleção e seus campos.
 page_help_settings_system_logs: '** Sistema de Registros** — Acesse um fluxo ao vivo dos registros do sistema.'
 page_help_settings_policies_collection: '**Pesquisar Políticas** — Lista todas as políticas no projeto.'
-page_help_settings_policies_item: "\"Detalhes da política, Gerenciar permissões de uma política e outras configurações\""
 page_help_settings_roles_collection: 'Navegar por funções, listar todas as funções de usuário no projeto.'
 page_help_settings_roles_item: "**Detalhes do cargo** — Gerencie as permissões de um cargo e outras configurações."
 page_help_settings_presets_collection: >-
@@ -1591,6 +1593,8 @@ unlimited_usage: Uso Ilimitado
 uses_left: Nenhum uso restante | Um uso restante |  {n} usos restantes
 no_shares: Nenhum compartilhamento para mostrar
 new_share: Novo Compartilhamento
+mcp_prompts_collection_schema:
+  messages_role_user: Usuário
 expired: Expirado
 upcoming: Próximos
 share: Compartilhar
@@ -2542,3 +2546,5 @@ bsl_banner:
   accept_terms: Aceitar
   get_license: Obtenha a sua licença
 accepted: Aceitado
+text_direction_auto: Automático (Adequar o Idioma)
+text_direction_ltr: Da Esquerda para a Direita (EPD)

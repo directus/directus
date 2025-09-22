@@ -56,5 +56,5 @@ export default defineDisplay({
 			},
 		},
 	],
-	fields: ['id', 'avatar.id', 'email', 'first_name', 'last_name'],
+	fields: ['id', 'avatar.id', 'avatar.modified_on', 'email', 'first_name', 'last_name'],
 });

@@ -1,5 +1,5 @@
 import type { DirectusComment } from '../../../schema/comment.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, Query, NestedPartial } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 
@@ -43,6 +43,24 @@ export const updateComments =
 			method: 'PATCH',
 		};
 	};
+
+/**
+ * Update multiple comments as batch.
+ * @param items
+ * @param query
+ * @returns Returns the comment objects for the updated comments.
+ */
+export const updateCommentsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusComment<Schema>>>(
+		items: NestedPartial<DirectusComment<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateCommentOutput<Schema, TQuery>[], Schema> =>
+	() => ({
+		path: `/comments`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});
 
 /**
  * Update an existing comment.
