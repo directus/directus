@@ -112,7 +112,6 @@
 		"cookie": "catalog:",
 		"cookie-parser": "catalog:",
 		"cors": "catalog:",
-		"cron": "catalog:",
 		"date-fns": "catalog:",
 		"deep-diff": "catalog:",
 		"destroy": "catalog:",
