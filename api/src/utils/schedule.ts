@@ -1,5 +1,4 @@
-import cron from 'cron-parser';
-import schedule from 'node-schedule';
+import { CronJob, validateCronExpression } from 'cron';
 import { SynchronizedClock } from '../synchronization.js';
 
 export interface ScheduledJob {
@@ -7,13 +6,8 @@ export interface ScheduledJob {
 }
 
 export function validateCron(rule: string): boolean {
-	try {
-		cron.parseExpression(rule);
-	} catch {
-		return false;
-	}
-
-	return true;
+	const validation = validateCronExpression(rule);
+	return validation.valid;
 }
 
 export function scheduleSynchronizedJob(
@@ -23,21 +17,22 @@ export function scheduleSynchronizedJob(
 ): ScheduledJob {
 	const clock = new SynchronizedClock(`${id}:${rule}`);
 
-	const job = schedule.scheduleJob(rule, async (fireDate) => {
-		const nextInvocation = job.nextInvocation();
-		if (!nextInvocation) return;
-
-		const nextTimestamp = nextInvocation.getTime();
+	const job = new CronJob(rule, async (fireDate: Date) => {
+		// Get next execution time for synchronization
+		const nextDate = job.nextDate();
+		const nextTimestamp = nextDate.toMillis();
 
 		const wasSet = await clock.set(nextTimestamp);
 
 		if (wasSet) {
 			await cb(fireDate);
 		}
-	});
+	}, null, false);
+
+	job.start();
 
 	const stop = async () => {
-		job.cancel();
+		job.stop();
 
 		await clock.reset();
 	};
