@@ -398,7 +398,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 		pointer-events: none;
 
 		@media (min-width: 706px) {
-			inset-inline-start: 50%;
+			content: none;
 		}
 	}
 
