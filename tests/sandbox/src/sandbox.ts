@@ -62,6 +62,8 @@ export type Options = {
 		/** Email server */
 		maildev: boolean;
 	};
+	/** Enable or disable caching */
+	cache: boolean;
 };
 
 export type Sandboxes = {
@@ -109,6 +111,7 @@ function getOptions(options?: DeepPartial<Options>): Options {
 				minio: false,
 				saml: false,
 			},
+			cache: false,
 		} satisfies Options,
 		options,
 	);

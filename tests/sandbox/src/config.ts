@@ -13,7 +13,6 @@ const directusConfig = {
 	TELEMETRY: 'false',
 	CACHE_SCHEMA: 'true',
 	CACHE_SCHEMA_MAX_ITERATIONS: '100',
-	CACHE_ENABLED: 'false',
 	CONFIG_PATH: join(import.meta.dirname, '..', '.env'), // Override to non existent file so process envs aren't overwritten by file envs
 	RATE_LIMITER_ENABLED: 'false',
 	PRESSURE_LIMITER_ENABLED: 'false',
@@ -160,6 +159,7 @@ export function getEnv(database: Database, opts: Options): Env {
 		PORT: opts.port,
 		PUBLIC_URL: `http://${baseConfig[database].HOST}:${opts.port}`,
 		REDIS_ENABLED: String(opts.extras.redis),
+		CACHE_ENABLED: String(opts.cache),
 		NODE_ENV: opts.dev ? 'development' : 'production',
 		...(opts.extras.minio ? minio : {}),
 		...(opts.extras.saml ? saml : {}),
@@ -189,6 +189,7 @@ export function getEnv(database: Database, opts: Options): Env {
 export type Env = (typeof baseConfig)[Database] & {
 	PORT: string;
 	REDIS_ENABLED: string;
+	CACHE_ENABLED: string;
 	PUBLIC_URL: string;
 	NODE_ENV: string;
 } & Partial<typeof minio> &
