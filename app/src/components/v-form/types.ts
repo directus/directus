@@ -8,7 +8,7 @@ export type FormField = DeepPartial<Field> & {
 };
 
 export interface ComparisonContext {
-	side: 'current' | 'incoming';
+	side: 'base' | 'incoming';
 	fields: Set<string>;
 	selectedFields: string[];
 	onToggleField: (field: string) => void;

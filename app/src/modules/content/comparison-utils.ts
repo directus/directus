@@ -4,8 +4,8 @@ import { isNil, isEqual } from 'lodash';
 import { i18n } from '@/lang';
 
 export type ComparisonData = {
-	main: Record<string, any>;
-	current: Record<string, any>;
+	base: Record<string, any>;
+	incoming: Record<string, any>;
 	selectableDeltas?: Revision[] | ContentVersion[];
 	comparisonType: 'version' | 'revision';
 	outdated?: boolean;
@@ -38,7 +38,7 @@ export type NormalizedItem = {
 };
 
 export type NormalizedComparisonData = {
-	current: NormalizedItem;
+	base: NormalizedItem;
 	incoming: NormalizedItem;
 	selectableDeltas: NormalizedItem[];
 	comparisonType: 'version' | 'revision';
@@ -71,15 +71,15 @@ export type RevisionComparisonResponse = {
 export type NormalizedComparison = {
 	outdated: boolean;
 	mainHash: string;
-	current: Record<string, any>;
-	main: Record<string, any>;
+	incoming: Record<string, any>;
+	base: Record<string, any>;
 };
 
 export function getFieldsWithDifferences(comparedData: NormalizedComparison): string[] {
-	return Object.keys(comparedData.current).filter((fieldKey) => {
-		const versionValue = comparedData.current[fieldKey];
-		const mainValue = comparedData.main[fieldKey];
-		return !isEqual(versionValue, mainValue);
+	return Object.keys(comparedData.incoming).filter((fieldKey) => {
+		const incomingValue = comparedData.incoming[fieldKey];
+		const baseValue = comparedData.base[fieldKey];
+		return !isEqual(incomingValue, baseValue);
 	});
 }
 
@@ -213,17 +213,17 @@ export function normalizeMainItem(mainData: Record<string, any>): NormalizedItem
 }
 
 export function normalizeComparisonData(comparisonData: ComparisonData): NormalizedComparisonData {
-	let current: NormalizedItem;
+	let base: NormalizedItem;
 
 	if (comparisonData.comparisonType === 'revision' && comparisonData.currentVersion) {
-		current = {
+		base = {
 			id: 'current',
 			displayName: getVersionDisplayName(comparisonData.currentVersion),
-			date: normalizeDate(comparisonData.main.date_updated),
-			user: normalizeUser(comparisonData.main.user_updated || comparisonData.main.user_created),
+			date: normalizeDate(comparisonData.base.date_updated),
+			user: normalizeUser(comparisonData.base.user_updated || comparisonData.base.user_created),
 		};
 	} else {
-		current = normalizeMainItem(comparisonData.main);
+		base = normalizeMainItem(comparisonData.base);
 	}
 
 	let incoming: NormalizedItem;
@@ -267,14 +267,14 @@ export function normalizeComparisonData(comparisonData: ComparisonData): Normali
 	const normalizedComparison = {
 		outdated: comparisonData.outdated || false,
 		mainHash: comparisonData.mainHash || '',
-		current: comparisonData.current,
-		main: comparisonData.main,
+		incoming: comparisonData.incoming,
+		base: comparisonData.base,
 	};
 
 	const fieldsWithDifferences = getFieldsWithDifferences(normalizedComparison);
 
 	return {
-		current,
+		base,
 		incoming,
 		selectableDeltas,
 		comparisonType: comparisonData.comparisonType,
@@ -287,7 +287,7 @@ export function normalizeComparisonData(comparisonData: ComparisonData): Normali
 }
 
 export const COMPARISON_SIDES = {
-	CURRENT: 'current' as const,
+	BASE: 'base' as const,
 	INCOMING: 'incoming' as const,
 };
 

@@ -120,8 +120,8 @@ function usePromoteDialog() {
 				const selectedFields = unref(selectedComparisonFields);
 
 				// Get the delta from the comparison data
-				const delta = comparisonData.value.current;
-				const base = comparisonData.value.main;
+				const delta = comparisonData.value.incoming;
+				const base = comparisonData.value.base;
 
 				for (const [field, newValue] of Object.entries(delta)) {
 					if (selectedFields.length > 0 && !selectedFields.includes(field)) continue;
@@ -183,7 +183,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 						<comparison-header
 							:loading="modalLoading"
 							:title="baseDisplayName"
-							:date-updated="normalizedData?.current.date.dateObject || null"
+							:date-updated="normalizedData?.base.date.dateObject || null"
 							:user-updated="mainItemUserUpdated"
 							:user-loading="mainItemUserLoading"
 						/>
@@ -202,10 +202,10 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 									disabled
 									:collection="collection"
 									:primary-key="primaryKey"
-									:initial-values="comparisonData?.main || {}"
+									:initial-values="comparisonData?.base || {}"
 									:comparison="
 										{
-											side: 'current',
+											side: 'base',
 											fields: comparisonFields,
 											selectedFields: [],
 											onToggleField: () => {},
@@ -243,7 +243,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 									disabled
 									:collection="collection"
 									:primary-key="primaryKey"
-									:initial-values="comparisonData?.current || {}"
+									:initial-values="comparisonData?.incoming || {}"
 									:comparison="
 										{
 											side: 'incoming',

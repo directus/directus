@@ -62,7 +62,7 @@ export function useComparison(options: UseComparisonOptions) {
 	});
 
 	const baseDisplayName = computed(() => {
-		return normalizedData.value?.current?.displayName || 'Current';
+		return normalizedData.value?.base?.displayName || 'Current';
 	});
 
 	const deltaDisplayName = computed(() => {
@@ -116,12 +116,12 @@ export function useComparison(options: UseComparisonOptions) {
 
 	async function fetchMainItemUserUpdated() {
 		const normalized = normalizedData.value;
-		if (!normalized?.current.user?.id) return;
+		if (!normalized?.base.user?.id) return;
 
 		mainItemUserLoading.value = true;
 
 		try {
-			const response = await api.get(`/users/${normalized.current.user.id}`, {
+			const response = await api.get(`/users/${normalized.base.user.id}`, {
 				params: {
 					fields: ['id', 'first_name', 'last_name', 'email'],
 				},
@@ -212,8 +212,8 @@ export function useComparison(options: UseComparisonOptions) {
 			const data: VersionComparisonResponse = response.data.data;
 
 			return {
-				main: data.main,
-				current: data.current,
+				base: data.main,
+				incoming: data.current,
 				selectableDeltas: versions?.value ?? (version ? [version] : []),
 				comparisonType: 'version' as const,
 				outdated: data.outdated,
@@ -277,8 +277,8 @@ export function useComparison(options: UseComparisonOptions) {
 
 		if (currentVersion?.value) {
 			const versionComparison = await fetchVersionComparison(currentVersion.value.id);
-			mainItem = versionComparison.main || {};
-			versionDelta = versionComparison.current || {};
+			mainItem = versionComparison.base || {};
+			versionDelta = versionComparison.incoming || {};
 		} else if ('collection' in revision && 'item' in revision) {
 			try {
 				const { collection, item } = revision as { collection: string; item: string | number };
@@ -299,17 +299,17 @@ export function useComparison(options: UseComparisonOptions) {
 			return undefined;
 		};
 
-		const mainMerged = mergeWith({}, mainItem, versionDelta || {}, replaceArrays);
+		const baseMerged = mergeWith({}, mainItem, versionDelta || {}, replaceArrays);
 
-		const currentMerged = mergeWith({}, mainItem, versionDelta, revisionData, replaceArrays);
+		const incomingMerged = mergeWith({}, baseMerged, revisionData, replaceArrays);
 
 		if ('activity' in revision && (revision as any)?.activity?.timestamp) {
-			currentMerged.date_updated = (revision as any).activity.timestamp;
+			incomingMerged.date_updated = (revision as any).activity.timestamp;
 		}
 
 		return {
-			main: mainMerged,
-			current: currentMerged,
+			base: baseMerged,
+			incoming: incomingMerged,
 			selectableDeltas: revisionsList,
 			comparisonType: 'revision',
 			outdated: false,
