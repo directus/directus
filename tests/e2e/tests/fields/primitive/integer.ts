@@ -1,11 +1,10 @@
-import { createItem, DirectusClient, RestClient } from '@directus/sdk';
+import { createItem } from '@directus/sdk';
 import { test, expect } from 'vitest';
-import { Collections } from './primitive.test';
-import { getHelper } from '../../../utils/helpers';
-import { Database } from '@directus/sandbox';
-import { Schema } from './schema';
+import type { Api, Collections } from './primitive.test.js';
+import type { Database } from '@directus/sandbox';
+import { getHelper } from '@utils/helpers/index.js';
 
-export function testInteger(api: DirectusClient<Schema> & RestClient<Schema>, c: Collections) {
+export function testInteger(api: Api, c: Collections) {
 	const database = process.env['DATABASE'] as Database;
 	const { integer } = getHelper(database);
 

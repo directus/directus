@@ -4,7 +4,7 @@ export type Schema = {
 export type Fields = {
 	id: string | number;
 	big_integer: string | number;
-	boolean: string | number;
+	boolean: string | number | boolean;
 	date: string | number;
 	date_time: string | number;
 	decimal: string | number;
@@ -14,5 +14,5 @@ export type Fields = {
 	text: string | number;
 	time: string | number;
 	timestamp: string | number;
-	uuid: string | number;
+	uuid: string;
 };

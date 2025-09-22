@@ -1,9 +1,8 @@
-import { createItem, DirectusClient, RestClient } from '@directus/sdk';
+import { createItem } from '@directus/sdk';
 import { test, expect } from 'vitest';
-import { Collections } from './primitive.test';
-import { Schema } from './schema';
+import type { Api, Collections } from './primitive.test.js';
 
-export function testTimestamp(api: DirectusClient<Schema> & RestClient<Schema>, c: Collections) {
+export function testTimestamp(api: Api, c: Collections) {
 	for (const timestamp of ['2020-01-01', '2001-12-24']) {
 		test(`valid timestamp ${timestamp}`, async () => {
 			const result = await api.request(

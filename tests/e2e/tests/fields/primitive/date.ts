@@ -1,9 +1,8 @@
-import { createItem, DirectusClient, RestClient } from '@directus/sdk';
+import { createItem } from '@directus/sdk';
 import { test, expect } from 'vitest';
-import { Collections } from './primitive.test';
-import { Schema } from './schema';
+import type { Api, Collections } from './primitive.test.js';
 
-export function testDate(api: DirectusClient<Schema> & RestClient<Schema>, c: Collections) {
+export function testDate(api: Api, c: Collections) {
 	for (const date of ['2020-01-01', '2001-12-24']) {
 		test(`valid date ${date}`, async () => {
 			const result = await api.request(

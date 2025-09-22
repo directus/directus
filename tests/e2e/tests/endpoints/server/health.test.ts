@@ -1,7 +1,7 @@
 import { createDirectus, createUser, rest, serverHealth, staticToken } from '@directus/sdk';
 import { expect, test } from 'vitest';
-import { useOptions } from '../../../utils/useOptions';
-import { useEnv } from '../../../utils/useEnv';
+import { useOptions } from '@utils/useOptions.js';
+import { useEnv } from '@utils/useEnv.js';
 import { randomUUID } from 'crypto';
 
 const api = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
@@ -77,7 +77,7 @@ test('reading health as admin', async () => {
 test('reading health as user', async () => {
 	const token = randomUUID();
 
-	const user = await api.request(
+	await api.request(
 		createUser({
 			first_name: 'Test',
 			last_name: 'Permissions',

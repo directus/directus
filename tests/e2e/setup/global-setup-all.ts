@@ -1,10 +1,10 @@
 import type { TestProject } from 'vitest/node';
-import { databases, Options, sandboxes, Sandboxes } from '@directus/sandbox';
+import { type Database, databases, type Env, type Options, sandboxes, type Sandboxes } from '@directus/sandbox';
 import { createDirectus, staticToken, schemaDiff, schemaApply, rest } from '@directus/sdk';
-import { Schema } from './schema';
+import type { Schema } from './schema.d.ts';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
-import { DeepPartial } from '@directus/types';
+import type { DeepPartial } from '@directus/types';
 
 let sb: Sandboxes | undefined;
 
@@ -44,10 +44,16 @@ export async function setup(project: TestProject) {
 
 	project.provide(
 		'envs',
-		Object.fromEntries(sb.sandboxes.map((sandbox) => [dbs[sandbox.index].database, sandbox.env])),
+		Object.fromEntries(sb.sandboxes.map((sandbox) => [dbs[sandbox.index]!.database, sandbox.env])) as Record<
+			Database,
+			Env
+		>,
 	);
 
-	project.provide('options', Object.fromEntries(dbs.map((db) => [db.database, db.options])));
+	project.provide(
+		'options',
+		Object.fromEntries(dbs.map((db) => [db.database, db.options])) as Record<Database, DeepPartial<Options>>,
+	);
 }
 
 export async function teardown(_project: TestProject) {

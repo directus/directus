@@ -1,7 +1,7 @@
-import { Database, sandbox } from '@directus/sandbox';
+import { type Database, sandbox } from '@directus/sandbox';
 import { authentication, createDirectus, rest } from '@directus/sdk';
 import { expect, test } from 'vitest';
-import { Signal } from '../../utils/signal';
+import { Signal } from '@utils/signal.js';
 
 const database = process.env['DATABASE'] as Database;
 const all = process.env['ALL'] === 'true';

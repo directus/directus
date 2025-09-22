@@ -11,15 +11,15 @@ import { createHash } from 'crypto';
 import fs from 'fs/promises';
 import { join } from 'path';
 import { expect, test } from 'vitest';
-import { UUID } from '../../../utils/regex';
-import { useOptions } from '../../../utils/useOptions';
+import { UUID } from '@utils/regex.js';
+import { useOptions } from '@utils/useOptions.js';
 
-const api = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus<unknown>(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
 const options = useOptions();
 
 test('upload a file', async () => {
 	const file = await fs.readFile(join(import.meta.dirname, 'image.jpg'));
-	const blob = new Blob([file as BlobPart], { type: 'image/jpg' });
+	const blob = new Blob([file], { type: 'image/jpg' });
 	const form = new FormData();
 	// Storage needs to be set before file, otherwise it defaults to the first option of env.STORAGE_LOCATIONS
 	// TODO: Look into documenting this behavior
@@ -49,7 +49,7 @@ test('upload a file', async () => {
 
 test('delete a file', async () => {
 	const file = await fs.readFile(join(import.meta.dirname, 'image.jpg'));
-	const blob = new Blob([file as BlobPart], { type: 'image/jpg' });
+	const blob = new Blob([file], { type: 'image/jpg' });
 	const form = new FormData();
 	form.set('storage', 'local');
 	form.set('file', blob, 'image.jpg');
@@ -64,7 +64,7 @@ test('delete a file', async () => {
 if (options.extras?.minio) {
 	test('upload a file to minio', async () => {
 		const file = await fs.readFile(join(import.meta.dirname, 'image.jpg'));
-		const blob = new Blob([file as BlobPart], { type: 'image/jpg' });
+		const blob = new Blob([file], { type: 'image/jpg' });
 		const form = new FormData();
 		form.set('storage', 'minio');
 		form.set('file', blob, 'image.jpg');
@@ -92,7 +92,7 @@ if (options.extras?.minio) {
 
 	test('delete a file from minio', async () => {
 		const file = await fs.readFile(join(import.meta.dirname, 'image.jpg'));
-		const blob = new Blob([file as BlobPart], { type: 'image/jpg' });
+		const blob = new Blob([file], { type: 'image/jpg' });
 		const form = new FormData();
 		form.set('storage', 'minio');
 		form.set('file', blob, 'image.jpg');

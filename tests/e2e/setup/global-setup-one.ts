@@ -1,10 +1,10 @@
-import { Database, Options, Sandbox, sandbox } from '@directus/sandbox';
+import { type Database, type Env, type Options, type Sandbox, sandbox } from '@directus/sandbox';
 import { createDirectus, rest, schemaApply, schemaDiff, staticToken } from '@directus/sdk';
-import { Schema } from './schema';
+import type { Schema } from './schema.d.ts';
 import { join } from 'path';
 import { readFile } from 'fs/promises';
 import { TestProject } from 'vitest/node';
-import { DeepPartial } from '@directus/types';
+import type { DeepPartial } from '@directus/types';
 import util from 'node:util';
 
 let sb: Sandbox | undefined;
@@ -16,7 +16,7 @@ export async function setup(project: TestProject) {
 	if (process.env['ALL'] === 'true') return;
 
 	const database = project.config.env['DATABASE'] as Database;
-	const port = project.config.env['PORT'];
+	const port = project.config.env['PORT']!;
 
 	const options: DeepPartial<Options> = {
 		port,
@@ -44,8 +44,8 @@ export async function setup(project: TestProject) {
 	const diff = await api.request(schemaDiff(snapshot, true));
 	await api.request(schemaApply(diff));
 
-	project.provide('envs', { [database]: sb.env });
-	project.provide('options', { [database]: options });
+	project.provide('envs', { [database]: sb.env } as Record<Database, Env>);
+	project.provide('options', { [database]: options } as Record<Database, DeepPartial<Options>>);
 
 	return;
 }

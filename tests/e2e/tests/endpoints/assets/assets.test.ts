@@ -2,12 +2,12 @@ import { createDirectus, readAssetArrayBuffer, readAssetRaw, rest, staticToken, 
 import fs from 'fs/promises';
 import { join } from 'path';
 import { expect, test } from 'vitest';
-import { useEnv } from '../../../utils/useEnv';
+import { useEnv } from '@utils/useEnv.js';
 
-const api = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus<unknown>(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
 
 const file = await fs.readFile(join(import.meta.dirname, 'image.jpg'));
-const blob = new Blob([file as BlobPart], { type: 'image/jpeg' });
+const blob = new Blob([file], { type: 'image/jpeg' });
 const form = new FormData();
 form.set('file', blob, 'image.jpg');
 
@@ -92,13 +92,7 @@ for (const header of formatHeaders) {
 	test(`format=auto with "${header.accept ?? 'no'}" Accept request header`, async () => {
 		const response = await fetch(
 			`http://localhost:${process.env['PORT']}/assets/${upload.id}?format=auto&access_token=admin`,
-			{
-				headers: header.accept
-					? {
-							Accept: header.accept,
-						}
-					: undefined,
-			},
+			header.accept ? { headers: { Accept: header.accept } } : {},
 		);
 
 		expect(response.headers.get('Content-Type')).toBe(header.contentType);

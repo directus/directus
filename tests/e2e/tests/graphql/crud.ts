@@ -1,7 +1,13 @@
 import { expect, test } from 'vitest';
-import { Collections } from '../../utils/useSnapshot';
-import { Articles, Schema } from './schema';
-import { DirectusClient, GraphqlClient, RestClient, StaticTokenClient, updateItem } from '@directus/sdk';
+import type { Collections } from '@utils/useSnapshot.js';
+import type { Articles, Schema } from './schema.d.ts';
+import {
+	type DirectusClient,
+	type GraphqlClient,
+	type RestClient,
+	type StaticTokenClient,
+	updateItem,
+} from '@directus/sdk';
 
 export function crud(
 	api: DirectusClient<Schema> & GraphqlClient<Schema> & RestClient<Schema> & StaticTokenClient<Schema>,
@@ -147,12 +153,12 @@ export function crud(
 		const updates = {
 			title: 'GraphQL Article Updated',
 			author: {
-				id: read[0].author.id,
+				id: read[0]?.author.id,
 				name: 'GraphQL Author Updated',
 			},
 			links: [
 				{
-					id: read[0].links[0].id,
+					id: read[0]?.links[0]?.id,
 					link: 'Link A Updated',
 				},
 				{
@@ -161,9 +167,9 @@ export function crud(
 			],
 			tags: [
 				{
-					id: read[0].tags[0].id,
+					id: read[0]?.tags[0]?.id,
 					tags_id: {
-						id: read[0].tags[0].tags_id.id,
+						id: read[0]?.tags[0]?.tags_id.id,
 						tag: 'Tag A Updated',
 					},
 				},
@@ -204,15 +210,15 @@ export function crud(
 			id: create.id,
 			title: 'GraphQL Article Updated',
 			author: {
-				id: read[0].author.id,
+				id: read[0]?.author.id,
 				name: 'GraphQL Author Updated',
 			},
 			links: [
-				{ id: read[0].links[0].id, link: 'Link A Updated' },
+				{ id: read[0]?.links[0]?.id, link: 'Link A Updated' },
 				{ id: expect.anything(), link: 'Link C' },
 			],
 			tags: [
-				{ tags_id: { id: read[0].tags[0].tags_id.id, tag: 'Tag A Updated' } },
+				{ tags_id: { id: read[0]?.tags[0]?.tags_id.id, tag: 'Tag A Updated' } },
 				{ tags_id: { id: expect.anything(), tag: 'Tag C' } },
 			],
 		});

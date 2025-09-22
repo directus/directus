@@ -1,10 +1,10 @@
 import { createDirectus, createItem, readItems, rest, staticToken } from '@directus/sdk';
-import { useSnapshot } from '../../../../utils/useSnapshot';
-import { Schema } from './schema';
+import { useSnapshot } from '@utils/useSnapshot.js';
+import type { Schema } from './schema.d.ts';
 import { join } from 'path';
 import { expect, test } from 'vitest';
 import { range } from 'lodash-es';
-import { Database } from '@directus/sandbox';
+import type { Database } from '@directus/sandbox';
 
 const api = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
 const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
@@ -33,7 +33,7 @@ test(`string _eq`, async () => {
 	);
 
 	expect(result.length).toBe(1);
-	expect(result[0].title).toBe('Article 1');
+	expect(result[0]?.title).toBe('Article 1');
 });
 
 test(`number _gte`, async () => {
@@ -167,8 +167,8 @@ test(`string _eq on m2m relation`, async () => {
 		}),
 	);
 
-	expect(result.at(-1)!.title).toBe('Article A');
-	expect(result.at(-1)!.tags[0].tags_id.tag).toBe('Tag A');
+	expect(result.at(-1)?.title).toBe('Article A');
+	expect(result.at(-1)?.tags[0]?.tags_id.tag).toBe('Tag A');
 });
 
 if (database !== 'oracle')
@@ -202,7 +202,7 @@ if (database !== 'oracle')
 			}),
 		);
 
-		expect(result.at(-1)!.title).toBe('Article B');
-		expect(result.at(-1)!.blocks[0].collection).toBe(collections.text_blocks);
-		expect(result.at(-1)!.blocks[0].item.text).toBe('Text Block 1');
+		expect(result.at(-1)?.title).toBe('Article B');
+		expect(result.at(-1)?.blocks[0]?.collection).toBe(collections.text_blocks);
+		expect(result.at(-1)?.blocks[0]?.item.text).toBe('Text Block 1');
 	});

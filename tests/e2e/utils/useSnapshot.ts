@@ -1,26 +1,27 @@
 import {
 	createItem,
-	DirectusClient,
+	type DirectusClient,
 	readCollection,
 	readItems,
-	RestClient,
+	type RestClient,
 	schemaApply,
 	schemaDiff,
-	SchemaSnapshotOutput,
+	type SchemaSnapshotOutput,
 } from '@directus/sdk';
 import { readFile } from 'fs/promises';
 import { dirname } from 'path';
-import { deepMap } from './deepMap';
-import { Snapshot } from '@directus/types';
+import { deepMap } from './deepMap.js';
+import type { Snapshot } from '@directus/types';
 import { startCase } from 'lodash-es';
-import { Database } from '@directus/sandbox';
+import type { Database } from '@directus/sandbox';
+import type { Schema as SetupSchema } from '../setup/schema.d.ts';
 
 export type Collections<Schema> = { [P in keyof Schema]: P };
 
 const groups: string[] = [];
 
 export async function useSnapshot<Schema>(
-	api: DirectusClient<any> & RestClient<any>,
+	api: DirectusClient<SetupSchema> & RestClient<SetupSchema>,
 	file: string,
 ): Promise<{ collections: Collections<Schema>; snapshot: Snapshot }> {
 	const collectionMap: Record<string, string> = {};
@@ -50,14 +51,14 @@ export async function useSnapshot<Schema>(
 	if (!skipOrder) {
 		const orders = await api.request(readItems('schema_apply_order'));
 
-		const orderIndex = orders.findIndex((raw) => raw['group'] === prefix);
+		const orderIndex = orders.findIndex((raw) => raw['group']! === prefix);
 
 		if (orderIndex !== 0) {
 			let inFrontExists = false;
 
 			do {
 				try {
-					await api.request(readCollection(orders[Number(orderIndex) - 1]['group']));
+					await api.request(readCollection(orders[Number(orderIndex) - 1]!['group']!));
 				} catch {
 					await new Promise((r) => setTimeout(r, 1000));
 				} finally {
@@ -85,10 +86,10 @@ export async function useSnapshot<Schema>(
 	}
 
 	const schemaSnapshot = deepMap(snapshot, (key, value) => {
-		if (typeof key === 'string' && key in fieldReplace) key = fieldReplace[key];
+		if (typeof key === 'string' && key in fieldReplace) key = fieldReplace[key]!;
 		if (typeof value === 'string' && value in fieldReplace) value = fieldReplace[value];
 
-		if (typeof key === 'string' && key in collectionReplace) key = collectionReplace[key];
+		if (typeof key === 'string' && key in collectionReplace) key = collectionReplace[key]!;
 		if (typeof value === 'string' && value in collectionReplace) value = collectionReplace[value];
 		return [key, value];
 	}) as SchemaSnapshotOutput;
@@ -138,7 +139,7 @@ export async function useSnapshot<Schema>(
 				await api.request(schemaApply(diff));
 				break;
 			}
-		} catch (e) {
+		} catch (e: any) {
 			tries--;
 			if (tries === 0) process.stderr.write(e.toString());
 		}

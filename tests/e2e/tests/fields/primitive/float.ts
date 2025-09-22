@@ -1,10 +1,9 @@
-import { createItem, DirectusClient, RestClient } from '@directus/sdk';
+import { createItem } from '@directus/sdk';
 import { test, expect } from 'vitest';
-import { Collections } from './primitive.test';
-import { Database } from '@directus/sandbox';
-import { Schema } from './schema';
+import type { Api, Collections } from './primitive.test.js';
+import type { Database } from '@directus/sandbox';
 
-export function testFloat(api: DirectusClient<Schema> & RestClient<Schema>, c: Collections) {
+export function testFloat(api: Api, c: Collections) {
 	const database = process.env['DATABASE'] as Database;
 
 	for (const n of [0.0, -1.1, 0.1, 100.001]) {

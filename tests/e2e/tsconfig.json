@@ -1,0 +1,13 @@
+{
+	"extends": "@directus/tsconfig/node22",
+	"compilerOptions": {
+		"paths": {
+			"@utils/*": [
+				"./utils/*"
+			]
+		}
+	},
+	"include": [
+		"**/*.ts"
+	]
+}

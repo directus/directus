@@ -1,20 +1,9 @@
-import { expect, test } from 'vitest';
-import { Database, sandbox } from '@directus/sandbox';
-import { randomUUID } from 'node:crypto';
-import {
-	createDirectus,
-	realtime,
-	staticToken,
-	rest,
-	readMe,
-	serverHealth,
-	createCollection,
-	createItem,
-	readItem,
-} from '@directus/sdk';
-import { useSnapshot } from '../../utils/useSnapshot';
-import { Schema } from './schema';
+import { type Database, sandbox } from '@directus/sandbox';
+import { createDirectus, createItem, readItem, rest, serverHealth, staticToken } from '@directus/sdk';
 import { join } from 'node:path';
+import { expect, test } from 'vitest';
+import { useSnapshot } from '@utils/useSnapshot.js';
+import type { Schema } from './schema.d.ts';
 
 const database = process.env['DATABASE'] as Database;
 const all = process.env['ALL'] === 'true';

@@ -15,8 +15,8 @@ import {
 	updatePolicy,
 } from '@directus/sdk';
 import { expect, test } from 'vitest';
-import { useSnapshot } from '../../utils/useSnapshot';
-import { Schema } from './schema';
+import { useSnapshot } from '@utils/useSnapshot.js';
+import type { Schema } from './schema.d.ts';
 import { join } from 'path';
 import { randomUUID } from 'crypto';
 
@@ -226,8 +226,8 @@ test('crud with update permissions', async () => {
 		),
 	);
 
-	expect(await userApi.request(deleteItem(collections.trains, t1.id!))).toBeDefined();
-	expect(await userApi.request(deleteItems(collections.trains, [String(t2.id), String(t3.id)]))).toBeDefined();
+	expect(await userApi.request(deleteItem(collections.trains, t1!.id!))).toBeDefined();
+	expect(await userApi.request(deleteItems(collections.trains, [String(t2?.id), String(t3?.id)]))).toBeDefined();
 });
 
 test('read with fields with access to id', async () => {

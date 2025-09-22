@@ -1,7 +1,6 @@
-import { Options } from '@directus/sandbox';
-import { DeepPartial } from '@directus/types';
+import type { Database } from '@directus/sandbox';
 import { inject } from 'vitest';
 
-export function useOptions(): DeepPartial<Options> {
-	return inject('options')[process.env['DATABASE']!];
+export function useOptions() {
+	return inject('options')[process.env['DATABASE'] as Database];
 }

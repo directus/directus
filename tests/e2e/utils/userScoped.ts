@@ -1,6 +1,6 @@
-import { createUser, DirectusClient, RestClient } from '@directus/sdk';
-import { Permission, Snapshot } from '@directus/types';
-import { Schema } from '../setup/schema';
+import { createUser, type DirectusClient, type RestClient } from '@directus/sdk';
+import { type Permission, type Snapshot } from '@directus/types';
+import type { Schema } from '../setup/schema.d.ts';
 import { randomUUID } from 'node:crypto';
 
 /**

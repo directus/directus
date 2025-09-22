@@ -1,10 +1,9 @@
-import { createItem, DirectusClient, RestClient } from '@directus/sdk';
+import { createItem } from '@directus/sdk';
 import { test, expect } from 'vitest';
-import { Database } from '@directus/sandbox';
-import { Collections } from './primitive.test';
-import { Schema } from './schema';
+import type { Api, Collections } from './primitive.test.js';
+import type { Database } from '@directus/sandbox';
 
-export function testString(api: DirectusClient<Schema> & RestClient<Schema>, c: Collections) {
+export function testString(api: Api, c: Collections) {
 	const database = process.env['DATABASE'] as Database;
 
 	test(`valid string`, async () => {

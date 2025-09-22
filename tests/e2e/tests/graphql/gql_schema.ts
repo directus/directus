@@ -1,8 +1,8 @@
-import { DirectusClient, GraphqlClient, RestClient, StaticTokenClient } from '@directus/sdk';
-import { Snapshot } from '@directus/types';
+import type { DirectusClient, GraphqlClient, RestClient, StaticTokenClient } from '@directus/sdk';
+import type { Snapshot } from '@directus/types';
 import { expect, test } from 'vitest';
-import { generateScopedUser } from '../../utils/userScoped';
-import { Schema } from './schema';
+import { generateScopedUser } from '@utils/userScoped.js';
+import type { Schema } from './schema.d.ts';
 
 const database = process.env['DATABASE'] as string;
 

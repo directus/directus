@@ -4,14 +4,13 @@ import {
 	createUser,
 	passwordRequest,
 	passwordReset,
-	readMe,
 	rest,
 	staticToken,
 } from '@directus/sdk';
 import { randomUUID } from 'node:crypto';
 import { expect, test } from 'vitest';
-import { useEnv } from '../../utils/useEnv';
-import { useOptions } from '../../utils/useOptions';
+import { useEnv } from '@utils/useEnv.js';
+import { useOptions } from '@utils/useOptions.js';
 
 const api = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
 const options = useOptions();
@@ -54,9 +53,9 @@ if (options.extras?.maildev) {
 
 		const mailResponse = await fetch(`http://localhost:${env.MAILDEV_WEBUI}/email`);
 
-		const mails: Email[] = await mailResponse.json();
+		const mails = (await mailResponse.json()) as Email[];
 
-		const resetMail = mails.find((mail) => mail.to[0].address === email);
+		const resetMail = mails.find((mail) => mail.to[0]?.address === email);
 
 		expect(resetMail).toBeDefined();
 
@@ -64,7 +63,7 @@ if (options.extras?.maildev) {
 
 		expect(token).toBeDefined();
 
-		await auth.request(passwordReset(token, 'changedSecret'));
+		await auth.request(passwordReset(token!, 'changedSecret'));
 
 		await expect(async () =>
 			auth.login({

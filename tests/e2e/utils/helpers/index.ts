@@ -1,9 +1,9 @@
-import { Database } from '@directus/sandbox';
-import { DeepPartial } from '../../../../packages/types/dist/misc';
+import { type Database } from '@directus/sandbox';
 import { merge } from 'lodash-es';
-import { maria } from './maria';
-import { oracle } from './oracle';
-import { cockroachdb } from './cockroachdb';
+import { maria } from './maria.js';
+import { oracle } from './oracle.js';
+import { cockroachdb } from './cockroachdb.js';
+import type { DeepPartial } from '@directus/types';
 
 const helper = {
 	integer: {
@@ -16,5 +16,16 @@ export type Helper = typeof helper;
 export type HelperOverrides = DeepPartial<typeof helper>;
 
 export function getHelper(database: Database): Helper {
-	return merge(helper, { maria, oracle, cockroachdb }[database]);
+	return merge(
+		helper,
+		{
+			maria,
+			oracle,
+			cockroachdb,
+			mysql: {},
+			postgres: {},
+			sqlite: {},
+			mssql: {},
+		}[database],
+	);
 }

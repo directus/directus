@@ -1,7 +1,7 @@
 import { createDirectus, createField, deleteField, readField, rest, staticToken, updateField } from '@directus/sdk';
-import { useSnapshot } from '../../../utils/useSnapshot';
+import { useSnapshot } from '@utils/useSnapshot.js';
 import { join } from 'path';
-import { Schema } from './schema';
+import type { Schema } from './schema.d.ts';
 import { expect, test } from 'vitest';
 import { randomUUID } from 'crypto';
 
@@ -9,7 +9,7 @@ const api = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`).wi
 const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
 
 test('create field', async () => {
-	const field = randomUUID().split('-')[0];
+	const field = randomUUID().split('-')[0]!;
 
 	const created = await api.request(
 		createField(collections.fields, {

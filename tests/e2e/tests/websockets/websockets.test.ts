@@ -1,9 +1,9 @@
 import { createDirectus, createItem, deleteItem, realtime, rest, staticToken, updateItem } from '@directus/sdk';
 import { join } from 'path';
 import { expect, test } from 'vitest';
-import { useSnapshot } from '../../utils/useSnapshot';
-import { Schema } from './schema';
-import { useOptions } from '../../utils/useOptions';
+import { useSnapshot } from '@utils/useSnapshot.js';
+import type { Schema } from './schema.d.ts';
+import { useOptions } from '@utils/useOptions.js';
 
 const api = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`)
 	.with(realtime())

@@ -1,4 +1,4 @@
-import { authentication, createDirectus, createUser, rest, staticToken } from '@directus/sdk';
+import { createDirectus, createUser, rest, staticToken } from '@directus/sdk';
 import { expect, test } from 'vitest';
 
 import { randomUUID } from 'crypto';

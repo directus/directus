@@ -1,6 +1,6 @@
 import { createDirectus, createItem, deleteItem, readItem, rest, staticToken, updateItem } from '@directus/sdk';
-import { useSnapshot } from '../../../utils/useSnapshot';
-import { Schema } from './schema';
+import { useSnapshot } from '@utils/useSnapshot.js';
+import type { Schema } from './schema.d.ts';
 import { join } from 'path';
 import { expect, test } from 'vitest';
 
