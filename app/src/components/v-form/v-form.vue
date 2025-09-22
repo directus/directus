@@ -94,11 +94,16 @@ const { fields: finalFields, fieldNames, fieldsMap, getFieldsForGroup, fieldsFor
 const { toggleBatchField, batchActiveFields } = useBatch();
 const { toggleRawField, rawActiveFields } = useRawEditor();
 
+const isVisibleField = (fieldName: string) => {
+	const field = fieldsMap.value[fieldName];
+	return !field?.meta?.hidden || (props.comparison && props.comparison?.fields?.has(fieldName));
+};
+
 const firstEditableFieldIndex = computed(() => {
 	for (const [index, fieldName] of fieldNames.value.entries()) {
 		const field = fieldsMap.value[fieldName];
 
-		if (field?.meta && !field.meta?.readonly && !field.meta?.hidden) {
+		if (field?.meta && !field.meta?.readonly && isVisibleField(fieldName)) {
 			return index;
 		}
 	}
@@ -110,7 +115,7 @@ const firstVisibleFieldIndex = computed(() => {
 	for (const [index, fieldName] of fieldNames.value.entries()) {
 		const field = fieldsMap.value[fieldName];
 
-		if (field?.meta && !field.meta?.hidden) {
+		if (field?.meta && isVisibleField(fieldName)) {
 			return index;
 		}
 	}
@@ -119,9 +124,7 @@ const firstVisibleFieldIndex = computed(() => {
 });
 
 const noVisibleFields = computed(() => {
-	return Object.keys(fieldsMap.value).every((fieldKey) => {
-		return fieldsMap.value[fieldKey]?.meta?.hidden === true;
-	});
+	return Object.keys(fieldsMap.value).every((fieldKey) => !isVisibleField(fieldKey));
 });
 
 watch(
@@ -162,8 +165,8 @@ function useForm() {
 		);
 
 		fields = pushGroupOptionsDown(fields);
-		updateSystemDivider(fields);
-		updateFieldWidths(fields);
+		updateSystemDivider(fields, props.comparison?.fields);
+		updateFieldWidths(fields, props.comparison?.fields);
 
 		return fields;
 	});
@@ -367,7 +370,7 @@ function useRawEditor() {
 			<template v-if="fieldsMap[fieldName]">
 				<component
 					:is="`interface-${fieldsMap[fieldName]!.meta?.interface || 'group-standard'}`"
-					v-if="fieldsMap[fieldName]!.meta?.special?.includes('group') && !fieldsMap[fieldName]!.meta?.hidden"
+					v-if="fieldsMap[fieldName]!.meta?.special?.includes('group') && isVisibleField(fieldName)"
 					:ref="
 						(el: Element) => {
 							formFieldEls[fieldName] = el;
@@ -397,7 +400,7 @@ function useRawEditor() {
 				/>
 
 				<form-field
-					v-else-if="!fieldsMap[fieldName]!.meta?.hidden"
+					v-else-if="isVisibleField(fieldName)"
 					:ref="
 						(el) => {
 							formFieldEls[fieldName] = el;
