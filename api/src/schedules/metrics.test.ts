@@ -15,6 +15,7 @@ vi.mock('cron', () => ({
 		if (rule === '#' || rule === 'invalid') {
 			return { valid: false, error: 'Invalid cron expression' };
 		}
+
 		return { valid: true };
 	}),
 }));
