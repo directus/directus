@@ -31,7 +31,7 @@ export async function setup(project: TestProject) {
 		extras: {
 			maildev: false,
 			redis: true,
-			saml: false,
+			saml: true,
 			minio: true,
 		},
 		cache: true,
