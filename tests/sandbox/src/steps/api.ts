@@ -8,6 +8,7 @@ import { portToPid } from 'pid-port';
 import { createInterface } from 'readline/promises';
 
 export async function buildDirectus(opts: Options, logger: Logger, onRebuild: () => void) {
+	const start = performance.now();
 	logger.info('Rebuilding Directus');
 
 	let timeout: NodeJS.Timeout;
@@ -53,12 +54,14 @@ export async function buildDirectus(opts: Options, logger: Logger, onRebuild: ()
 	} else {
 		logger.pipe(build.stdout);
 		await new Promise((resolve) => build.on('close', resolve));
-		logger.info('New Build Complete');
+		const time = chalk.gray(`(${Math.round(performance.now() - start) / 1000}ms)`);
+		logger.info(`New Build Completed ${time}`);
 		return;
 	}
 }
 
 export async function bootstrap(env: Env, logger: Logger) {
+	const start = performance.now();
 	logger.info('Bootstraping Database');
 
 	const bootstrap = spawn('node', [join(apiFolder, 'dist', 'cli', 'run.js'), 'bootstrap'], {
@@ -74,7 +77,8 @@ export async function bootstrap(env: Env, logger: Logger) {
 	logger.pipe(bootstrap.stderr, 'error');
 
 	await new Promise((resolve) => bootstrap.on('close', resolve));
-	logger.info('Completed Bootstraping Database');
+	const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
+	logger.info(`Completed Bootstraping Database ${time}`);
 }
 
 export async function startDirectus(opts: Options, env: Env, logger: Logger) {
@@ -125,6 +129,7 @@ export async function startDirectus(opts: Options, env: Env, logger: Logger) {
 }
 
 async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
+	const start = performance.now();
 	logger.info('Starting Directus');
 	const debuggerPort = Number(env.PORT) + 1;
 	let api;
@@ -163,6 +168,11 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 
 		if (msg.startsWith('Debugger listening on ws://')) return;
 
+		if (msg.startsWith('Debugger attached')) {
+			logger.info(msg);
+			return;
+		}
+
 		logger.error(msg);
 	});
 
@@ -185,8 +195,10 @@ async function startDirectusInstance(opts: Options, env: Env, logger: Logger) {
 		}, 60_000);
 	});
 
+	const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
+
 	logger.info(
-		`Server started at http://${env.HOST}:${env.PORT}, Debugger listening on http://${env.HOST}:${debuggerPort}`,
+		`Server started at http://${env.HOST}:${env.PORT}, Debugger listening on http://${env.HOST}:${debuggerPort} ${time}`,
 	);
 
 	logger.info(

@@ -1,6 +1,7 @@
-import { Database, databases, Env, Options } from '@directus/sandbox';
+import { type Database, databases, type Env, type Options } from '@directus/sandbox';
 import { defineConfig } from 'vitest/config';
-import { DeepPartial } from '@directus/types';
+import type { DeepPartial } from '@directus/types';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 declare module 'vitest' {
 	interface Matchers {
@@ -17,6 +18,7 @@ declare module 'vitest' {
 export {};
 
 export default defineConfig({
+	plugins: [tsconfigPaths() as any],
 	test: {
 		teardownTimeout: 60_000,
 		include: [],
@@ -25,6 +27,7 @@ export default defineConfig({
 		projects: [
 			'./vitest.config.ts',
 			...databases.map((database, index) => ({
+				plugins: [tsconfigPaths() as any],
 				test: {
 					setupFiles: './setup/setup-files.ts',
 					globalSetup: './setup/global-setup-one.ts',

@@ -42,7 +42,7 @@ export async function setup(project: TestProject) {
 
 	const snapshot = JSON.parse(await readFile(join(import.meta.dirname, 'schema.json'), { encoding: 'utf8' }));
 	const diff = await api.request(schemaDiff(snapshot, true));
-	await api.request(schemaApply(diff));
+	if (diff) await api.request(schemaApply(diff));
 
 	project.provide('envs', { [database]: sb.env } as Record<Database, Env>);
 	project.provide('options', { [database]: options } as Record<Database, DeepPartial<Options>>);

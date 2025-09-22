@@ -30,23 +30,26 @@ export async function generateScopedUser(
 	});
 
 	const user = await api.request(
-		createUser({
-			first_name: 'Test',
-			last_name: 'User',
-			email: `${randomUUID()}@test.com`,
-			password: 'secret',
-			token,
-			policies: [
-				{
-					policy: {
-						name: 'Scoped User Policy',
-						admin_access: false,
-						app_access: false,
-						permissions,
+		createUser(
+			{
+				first_name: 'Test',
+				last_name: 'User',
+				email: `${randomUUID()}@test.com`,
+				password: 'secret',
+				token,
+				policies: [
+					{
+						policy: {
+							name: 'Scoped User Policy',
+							admin_access: false,
+							app_access: false,
+							permissions,
+						},
 					},
-				},
-			],
-		}),
+				],
+			},
+			{ fields: '*, policies.*' },
+		),
 	);
 
 	return { user, token };

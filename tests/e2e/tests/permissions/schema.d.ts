@@ -1,6 +1,7 @@
 export type Schema = {
 	categories: Categories[];
 	operators: Operators[];
+	singleton: Singleton
 	tracks: Tracks[];
 	trains: Trains[];
 	trains_operators: TrainsOperators[];
@@ -12,6 +13,10 @@ export type Categories = {
 export type Operators = {
 	id?: string | number;
 	name?: string | number;
+};
+export type Singleton = {
+	id?: string | number;
+	title?: string | number;
 };
 export type Tracks = {
 	id?: string | number;

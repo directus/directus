@@ -7,8 +7,10 @@ import { type Env } from '../config.js';
 import { type Logger } from '../logger.js';
 import { getRelationInfo } from '../relation.js';
 import { apiFolder } from '../sandbox.js';
+import chalk from 'chalk';
 
 export async function loadSchema(schema_file: string, env: Env, logger: Logger) {
+	const start = performance.now();
 	logger.info('Applying Schema');
 
 	const schema = spawn(
@@ -28,7 +30,8 @@ export async function loadSchema(schema_file: string, env: Env, logger: Logger) 
 	logger.pipe(schema.stderr, 'error');
 
 	await new Promise((resolve) => schema.on('close', resolve));
-	logger.info('Completed Applying Schema');
+	const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
+	logger.info(`Schema Applied ${time}`);
 }
 
 export async function saveSchema(env: Env) {

@@ -6,6 +6,7 @@ import type { Database, Options } from '../sandbox.js';
 import chalk from 'chalk';
 
 export async function dockerUp(database: Database, opts: Options, env: Env, logger: Logger) {
+	const start = performance.now();
 	logger.info('Starting up Docker containers');
 
 	const extrasList = Object.entries(opts.extras)
@@ -46,15 +47,18 @@ export async function dockerUp(database: Database, opts: Options, env: Env, logg
 
 	await new Promise((resolve) => docker!.on('close', resolve));
 
+	const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
+
 	if ('DB_PORT' in env) {
-		logger.info(`Database started at ${env.DB_HOST}:${env.DB_PORT}/${env.DB_DATABASE}`);
+		logger.info(`Database started at ${env.DB_HOST}:${env.DB_PORT}/${env.DB_DATABASE} ${time}`);
 		logger.info(`User: ${chalk.cyan(env.DB_USER)} Password: ${chalk.cyan(env.DB_PASSWORD)}`);
-	} else if ('DB_FILENAME' in env) logger.info(`Database stored at ${env.DB_FILENAME}`);
+	} else if ('DB_FILENAME' in env) logger.info(`Database stored at ${env.DB_FILENAME} ${time}`);
 
 	return project;
 }
 
 export async function dockerDown(project: string, env: Env, logger: Logger) {
+	const start = performance.now();
 	logger.info('Stopping docker containers');
 
 	const docker = spawn('docker', ['compose', '-p', project, 'down'], {
@@ -71,5 +75,7 @@ export async function dockerDown(project: string, env: Env, logger: Logger) {
 
 	await new Promise((resolve) => docker.on('close', resolve));
 
-	logger.info('Docker containers stopped');
+	const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
+
+	logger.info(`Docker containers stopped ${time}`);
 }
