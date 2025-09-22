@@ -17,17 +17,22 @@ export function scheduleSynchronizedJob(
 ): ScheduledJob {
 	const clock = new SynchronizedClock(`${id}:${rule}`);
 
-	const job = new CronJob(rule, async (fireDate: Date) => {
-		// Get next execution time for synchronization
-		const nextDate = job.nextDate();
-		const nextTimestamp = nextDate.toMillis();
+	const job = new CronJob(
+		rule,
+		async (fireDate: Date) => {
+			// Get next execution time for synchronization
+			const nextDate = job.nextDate();
+			const nextTimestamp = nextDate.toMillis();
 
-		const wasSet = await clock.set(nextTimestamp);
+			const wasSet = await clock.set(nextTimestamp);
 
-		if (wasSet) {
-			await cb(fireDate);
-		}
-	}, null, false);
+			if (wasSet) {
+				await cb(fireDate);
+			}
+		},
+		null,
+		false,
+	);
 
 	job.start();
 
