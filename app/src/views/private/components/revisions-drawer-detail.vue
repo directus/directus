@@ -107,8 +107,8 @@ defineExpose({
 		</div>
 
 		<template v-else>
-			<template v-for="group in revisionsByDate" :key="group.date.toString()">
-				<revisions-date-group :group="group" @click="openModal" />
+			<template v-for="(group, gi) in revisionsByDate" :key="group.date.toString()">
+				<revisions-date-group :group="group" :is-first-group="gi === 0" @click="openModal" />
 			</template>
 
 			<template v-if="page == pagesCount && !created">

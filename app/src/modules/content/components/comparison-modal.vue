@@ -270,6 +270,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 						<div class="footer-actions">
 							<div class="select-all-container">
 								<v-checkbox
+									v-if="availableFieldsCount > 0"
 									:model-value="allFieldsSelected"
 									:indeterminate="someFieldsSelected && !allFieldsSelected"
 									@update:model-value="toggleSelectAll"
