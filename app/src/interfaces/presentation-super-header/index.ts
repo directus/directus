@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/extensions';
 import InterfaceSuperHeader from './super-header.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'super-header',
@@ -258,4 +259,5 @@ export default defineInterface({
 			},
 		},
 	],
+	preview: PreviewSVG,
 });
