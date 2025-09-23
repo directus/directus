@@ -152,11 +152,6 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 		return String(typeof opts.docker.basePort === 'function' ? await opts.docker.basePort() : portIndex++);
 	}
 
-	if (Number(opts.instances) > 1) {
-		opts.extras.redis = true;
-		opts.inspect = false;
-	}
-
 	const env = {
 		...baseConfig[database],
 		PORT: String(opts.port),

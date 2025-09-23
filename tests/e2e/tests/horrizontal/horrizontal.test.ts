@@ -17,6 +17,9 @@ if (!all)
 			killPorts: true,
 			inspect: false,
 			silent: true,
+			extras: {
+				redis: true,
+			},
 			docker: {
 				basePort: getPort,
 			},
