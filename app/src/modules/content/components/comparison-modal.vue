@@ -183,7 +183,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 						<comparison-header
 							:loading="modalLoading"
 							:title="baseDisplayName"
-							:date-updated="normalizedData?.base.date.dateObject || null"
+							:date-updated="t('latest')"
 							:user-updated="mainItemUserUpdated"
 							:user-loading="mainItemUserLoading"
 						/>

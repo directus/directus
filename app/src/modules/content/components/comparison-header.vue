@@ -7,7 +7,7 @@ import { useI18n } from 'vue-i18n';
 
 interface Props {
 	title: string;
-	dateUpdated: Date | null;
+	dateUpdated: Date | string | null;
 	userUpdated: User | null;
 	userLoading: boolean;
 	showDeltaDropdown?: boolean;
@@ -36,6 +36,7 @@ const formatDateTime = (date: Date) => {
 
 const formattedDateUpdated = computed(() => {
 	if (!props.dateUpdated) return null;
+	if (typeof props.dateUpdated === 'string') return props.dateUpdated;
 	return formatDateTime(props.dateUpdated);
 });
 
