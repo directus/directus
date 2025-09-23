@@ -16,7 +16,7 @@ defineEmits<{
 
 const { t } = useI18n();
 
-const revisionCount = computed(() => (props.revision.delta ? Object.keys(props.revision.delta).length : 0));
+const revisionCount = computed(() => (props.revision.differentFields ? props.revision.differentFields.length : 0));
 
 const headerMessage = computed(() => {
 	switch (props.revision.activity.action.toLowerCase()) {

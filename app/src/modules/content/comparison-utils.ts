@@ -79,6 +79,22 @@ export function getFieldsWithDifferences(comparedData: NormalizedComparison): st
 	return Object.keys(comparedData.incoming).filter((fieldKey) => {
 		const incomingValue = comparedData.incoming[fieldKey];
 		const baseValue = comparedData.base[fieldKey];
+
+		if (fieldKey === 'date_updated') {
+			const baseMs = baseValue ? new Date(baseValue as any).getTime() : null;
+			const incomingMs = incomingValue ? new Date(incomingValue as any).getTime() : null;
+
+			if (baseMs === null || incomingMs === null || Number.isNaN(baseMs) || Number.isNaN(incomingMs)) {
+				return !isEqual(incomingValue, baseValue);
+			}
+
+			// Looks like these values are written at slightly different times, so we need to compare them at the second level
+			// instead of the millisecond level
+			const baseSec = Math.floor(baseMs / 1000);
+			const incomingSec = Math.floor(incomingMs / 1000);
+			return baseSec !== incomingSec;
+		}
+
 		return !isEqual(incomingValue, baseValue);
 	});
 }

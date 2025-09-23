@@ -7,7 +7,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
 import type { ContentVersion, Filter } from '@directus/types';
 import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
-import { groupBy, orderBy } from 'lodash';
+import { groupBy, orderBy, isEqual, mergeWith } from 'lodash';
 import { Ref, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -149,6 +149,32 @@ export function useRevisions(
 			);
 
 			const revisionsGrouped: RevisionsByDate[] = [];
+			// Create a diff between this revision and the current state of its associated version or item
+			let baseForComparison: Record<string, any> = {};
+			let versionDeltaForComparison: Record<string, any> = {};
+
+			try {
+				if (version?.value) {
+					const versionCompare = await api.get(`/versions/${version.value.id}/compare`);
+					baseForComparison = versionCompare.data?.data?.main || {};
+					versionDeltaForComparison = versionCompare.data?.data?.current || {};
+				} else {
+					const itemResp = await api.get(`/items/${unref(collection)}/${unref(primaryKey)}`);
+					baseForComparison = itemResp.data?.data || {};
+					versionDeltaForComparison = {};
+				}
+			} catch (error) {
+				baseForComparison = {};
+				versionDeltaForComparison = {};
+				unexpectedError(error);
+			}
+
+			const replaceArrays = (objValue: any, srcValue: any) => {
+				if (Array.isArray(objValue) || Array.isArray(srcValue)) return srcValue;
+				return undefined;
+			};
+
+			const currentItemMerged = mergeWith({}, baseForComparison, versionDeltaForComparison, replaceArrays);
 
 			for (const [key, value] of Object.entries(revisionsGroupedByDate)) {
 				const date = new Date(key);
@@ -169,6 +195,16 @@ export function useRevisions(
 					const steps = (revision as Revision)?.data?.steps;
 					const lastStepStatus = steps?.[steps.length - 1]?.status;
 
+					// Calculate fields that differ from the current item state
+					const revisionData = (revision as Revision)?.data || {};
+					const differentFields: string[] = [];
+
+					for (const field of Object.keys(revisionData)) {
+						const newValue = (revisionData as any)[field];
+						const currentValue = (currentItemMerged as any)[field];
+						if (!isEqual(newValue, currentValue)) differentFields.push(field);
+					}
+
 					revisions.push({
 						...revision,
 						timestampFormatted: `${localizedFormat(
@@ -182,6 +218,7 @@ export function useRevisions(
 							addSuffix: true,
 						})})`,
 						status: lastStepStatus,
+						differentFields,
 					});
 				}
 
