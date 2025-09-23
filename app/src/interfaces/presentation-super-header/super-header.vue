@@ -9,6 +9,7 @@ import { translate } from './temp/translate-literal';
 import { useDrawerDialog } from './temp/useDrawerDialog';
 import { useFlows } from './temp/useFlows';
 import { useRouter } from 'vue-router';
+import dompurify from 'dompurify';
 
 export interface FlowIdentifier {
 	collection: string;
@@ -173,11 +174,11 @@ const helpText = computed(() => {
 		const translated = translate(props.helpTranslationsString);
 
 		if (translated) {
-			return translated;
+			return dompurify.sanitize(translated);
 		}
 	}
 
-	return props.help;
+	return dompurify.sanitize(props.help);
 });
 
 const { runFlow, runningFlows, confirmRunFlow, resetConfirm, executeConfirmedFlow, getFlow } = useFlows(
@@ -265,26 +266,19 @@ watch(
 <template>
 	<div ref="componentRoot" class="page-header">
 		<div class="header-content" :style="{ '--header-color': color }">
-			<div class="text-container">
-				<v-icon v-if="icon" :name="icon" />
-				<div class="text-content">
-					<p v-if="title" class="text-title">
-						<render-template :collection="collection" :fields="fields" :item="combinedItemData" :template="title" />
-					</p>
-					<p v-if="subtitle" class="text-subtitle">
-						<render-template :collection="collection" :fields="fields" :item="combinedItemData" :template="subtitle" />
-					</p>
-				</div>
+			<div class="text-content">
+				<p v-if="title" class="text-title">
+					<v-icon v-if="icon" :name="icon" />
+					<render-template :collection="collection" :fields="fields" :item="combinedItemData" :template="title" />
+				</p>
+				<p v-if="subtitle" class="text-subtitle">
+					<render-template :collection="collection" :fields="fields" :item="combinedItemData" :template="subtitle" />
+				</p>
 			</div>
 			<div class="actions-wrapper">
 				<div class="actions-container">
 					<template v-if="help">
-						<v-button secondary small class="full-button" @click="toggleHelp">
-							<v-icon name="help_outline" left />
-							{{ t('help') }}
-							<v-icon v-if="helpDisplayMode !== 'modal'" :name="expanded ? 'expand_less' : 'expand_more'" right />
-						</v-button>
-						<v-button secondary small class="icon-button" icon @click="toggleHelp">
+						<v-button :secondary="!expanded" small class="help-button" icon @click="toggleHelp">
 							<v-icon name="help_outline" />
 						</v-button>
 					</template>
@@ -328,11 +322,11 @@ watch(
 					<v-menu v-else-if="hasMultipleActions" placement="bottom-end">
 						<template #activator="{ toggle }">
 							<div>
-								<v-button small class="full-button" @click="toggle">
+								<v-button secondary small class="full-button" @click="toggle">
 									{{ t('actions') }}
 									<v-icon name="expand_more" right />
 								</v-button>
-								<v-button v-tooltip="t('actions')" small class="icon-button" icon @click="toggle">
+								<v-button v-tooltip="t('actions')" secondary small class="icon-button" icon @click="toggle">
 									<v-icon name="expand_more" />
 								</v-button>
 							</div>
@@ -379,7 +373,8 @@ watch(
 		</div>
 		<transition-expand>
 			<div v-if="expanded && help && helpDisplayMode !== 'modal'" class="help-text">
-				<VText :content="helpText" />
+				<!-- eslint-disable-next-line vue/no-v-html -->
+				<div v-html="helpText" />
 				<div class="collapse-button-container">
 					<v-button class="collapse-button" small secondary @click="toggleHelp">
 						{{ `${t('collapse')} ${t('help')}` }}
@@ -395,9 +390,9 @@ watch(
 				<v-button icon class="close-button" secondary small @click="showHelpModal = false">
 					<v-icon name="close" />
 				</v-button>
-				<v-card-title>{{ t('help') }}</v-card-title>
 				<v-card-text>
-					<VText :content="helpText" />
+					<!-- eslint-disable-next-line vue/no-v-html -->
+					<div v-html="helpText" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button @click="showHelpModal = false">
@@ -486,11 +481,9 @@ watch(
 	min-inline-size: 0;
 }
 
-.text-container {
-	flex: 1;
-	display: flex;
-	gap: 8px;
+.text-content {
 	min-inline-size: 0;
+	flex: 1;
 
 	.v-icon {
 		--v-icon-color: var(--header-color);
@@ -498,26 +491,23 @@ watch(
 		flex-shrink: 0;
 	}
 
-	.text-content {
-		min-inline-size: 0;
-		flex: 1;
+	.text-title {
+		display: flex;
+		overflow: hidden;
+		gap: 8px;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		font-size: 20px;
+		font-weight: 600;
+	}
 
-		.text-title {
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			font-size: 20px;
-			font-weight: 600;
-		}
-
-		.text-subtitle {
-			margin-block-start: 4px;
-			font-size: 14px;
-			color: color-mix(in srgb, var(--theme--foreground), var(--theme--background) 25%);
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
+	.text-subtitle {
+		margin-block-start: 4px;
+		font-size: 14px;
+		color: color-mix(in srgb, var(--theme--foreground), var(--theme--background) 25%);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 }
 
@@ -536,7 +526,8 @@ watch(
 		position: relative;
 	}
 
-	.full-button {
+	.full-button,
+	.help-button {
 		display: block;
 		position: relative;
 	}
@@ -565,6 +556,9 @@ watch(
 .help-text {
 	padding-block: 16px;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
+	max-block-size: 540px;
+	overflow-y: scroll;
+	background-color: var(--theme--background-subdued);
 
 	:deep(.helper-text) {
 		padding: var(--v-card-padding, 16px);
@@ -593,12 +587,16 @@ watch(
 .help-modal {
 	position: relative;
 
-	--theme--form--row-gap: 16px;
+	padding-block-start: var(--v-card-padding, 16px);
 
 	.close-button {
 		position: absolute;
 		inset-block-start: 16px;
 		inset-inline-end: 16px;
+
+		:deep(.button) {
+			border-radius: 100%;
+		}
 	}
 }
 </style>
