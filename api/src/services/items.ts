@@ -23,7 +23,7 @@ import { getCache } from '../cache.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import { getAstFromQuery } from '../database/get-ast-from-query/get-ast-from-query.js';
 import { getHelpers } from '../database/helpers/index.js';
-import getDatabase from '../database/index.js';
+import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { runAst } from '../database/run-ast/run-ast.js';
 import emitter from '../emitter.js';
 import { processAst } from '../permissions/modules/process-ast/process-ast.js';
@@ -39,8 +39,7 @@ import { PayloadService } from './payload.js';
 const env = useEnv();
 
 export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
-	implements AbstractService<Item>
-{
+	implements AbstractService<Item> {
 	collection: Collection;
 	knex: Knex;
 	accountability: Accountability | null;
@@ -153,35 +152,35 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			const payloadAfterHooks =
 				opts.emitEvents !== false
 					? await emitter.emitFilter(
-							this.eventScope === 'items'
-								? ['items.create', `${this.collection}.items.create`]
-								: `${this.eventScope}.create`,
-							payload,
-							{
-								collection: this.collection,
-							},
-							{
-								database: trx,
-								schema: this.schema,
-								accountability: this.accountability,
-							},
-						)
+						this.eventScope === 'items'
+							? ['items.create', `${this.collection}.items.create`]
+							: `${this.eventScope}.create`,
+						payload,
+						{
+							collection: this.collection,
+						},
+						{
+							database: trx,
+							schema: this.schema,
+							accountability: this.accountability,
+						},
+					)
 					: payload;
 
 			const payloadWithPresets = this.accountability
 				? await processPayload(
-						{
-							accountability: this.accountability,
-							action: 'create',
-							collection: this.collection,
-							payload: payloadAfterHooks,
-							nested: this.nested,
-						},
-						{
-							knex: trx,
-							schema: this.schema,
-						},
-					)
+					{
+						accountability: this.accountability,
+						action: 'create',
+						collection: this.collection,
+						payload: payloadAfterHooks,
+						nested: this.nested,
+					},
+					{
+						knex: trx,
+						schema: this.schema,
+					},
+				)
 				: payloadAfterHooks;
 
 			if (opts.preMutationError) {
@@ -243,10 +242,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			try {
+				// For MS SQL, we need to use includeTriggerModifications to handle tables with triggers
+				// MS SQL doesn't support OUTPUT clauses when triggers are present on the table
+				const client = getDatabaseClient(trx);
+				const returningOptions = client === 'mssql' ? { includeTriggerModifications: true } : undefined;
+
 				const result = await trx
 					.insert(payloadWithoutAliases)
 					.into(this.collection)
-					.returning(primaryKeyField)
+					.returning(primaryKeyField, returningOptions)
 					.then((result) => result[0]);
 
 				const returnedKey = typeof result === 'object' ? result[primaryKeyField] : result;
@@ -490,19 +494,19 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const updatedQuery =
 			opts?.emitEvents !== false
 				? await emitter.emitFilter(
-						this.eventScope === 'items'
-							? ['items.query', `${this.collection}.items.query`]
-							: `${this.eventScope}.query`,
-						query,
-						{
-							collection: this.collection,
-						},
-						{
-							database: this.knex,
-							schema: this.schema,
-							accountability: this.accountability,
-						},
-					)
+					this.eventScope === 'items'
+						? ['items.query', `${this.collection}.items.query`]
+						: `${this.eventScope}.query`,
+					query,
+					{
+						collection: this.collection,
+					},
+					{
+						database: this.knex,
+						schema: this.schema,
+						accountability: this.accountability,
+					},
+				)
 				: query;
 
 		let ast = await getAstFromQuery(
@@ -536,18 +540,18 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const filteredRecords =
 			opts?.emitEvents !== false
 				? await emitter.emitFilter(
-						this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
-						records,
-						{
-							query: updatedQuery,
-							collection: this.collection,
-						},
-						{
-							database: this.knex,
-							schema: this.schema,
-							accountability: this.accountability,
-						},
-					)
+					this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
+					records,
+					{
+						query: updatedQuery,
+						collection: this.collection,
+					},
+					{
+						database: this.knex,
+						schema: this.schema,
+						accountability: this.accountability,
+					},
+				)
 				: records;
 
 		if (opts?.emitEvents !== false) {
@@ -720,20 +724,20 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const payloadAfterHooks =
 			opts.emitEvents !== false
 				? await emitter.emitFilter(
-						this.eventScope === 'items'
-							? ['items.update', `${this.collection}.items.update`]
-							: `${this.eventScope}.update`,
-						payload,
-						{
-							keys,
-							collection: this.collection,
-						},
-						{
-							database: this.knex,
-							schema: this.schema,
-							accountability: this.accountability,
-						},
-					)
+					this.eventScope === 'items'
+						? ['items.update', `${this.collection}.items.update`]
+						: `${this.eventScope}.update`,
+					payload,
+					{
+						keys,
+						collection: this.collection,
+					},
+					{
+						database: this.knex,
+						schema: this.schema,
+						accountability: this.accountability,
+					},
+				)
 				: payload;
 
 		// Sort keys to ensure that the order is maintained
@@ -757,18 +761,18 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		const payloadWithPresets = this.accountability
 			? await processPayload(
-					{
-						accountability: this.accountability,
-						action: 'update',
-						collection: this.collection,
-						payload: payloadAfterHooks,
-						nested: this.nested,
-					},
-					{
-						knex: this.knex,
-						schema: this.schema,
-					},
-				)
+				{
+					accountability: this.accountability,
+					action: 'update',
+					collection: this.collection,
+					payload: payloadAfterHooks,
+					nested: this.nested,
+				},
+				{
+					knex: this.knex,
+					schema: this.schema,
+				},
+			)
 			: payloadAfterHooks;
 
 		if (opts.preMutationError) {

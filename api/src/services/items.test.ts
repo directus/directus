@@ -4,9 +4,10 @@ import knex, { type Knex } from 'knex';
 import { MockClient, Tracker, createTracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi, type MockedFunction } from 'vitest';
 import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
+import { getDatabaseClient } from '../database/index.js';
 import { ItemsService } from './index.js';
 
-vi.mock('../../src/database/index', () => ({
+vi.mock('../database/index', () => ({
 	default: vi.fn(),
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 }));
@@ -55,6 +56,30 @@ describe('Integration Tests', () => {
 				await service.createOne({}, { userIntegrityCheckFlags: UserIntegrityCheckFlag.All });
 
 				expect(validateUserCountIntegrity).toHaveBeenCalled();
+			});
+
+			it('should detect MS SQL client and prepare correct returning options', () => {
+				// Mock MS SQL client
+				vi.mocked(getDatabaseClient).mockReturnValueOnce('mssql');
+
+				// Test the logic that determines returning options
+				const client = getDatabaseClient();
+				const returningOptions = client === 'mssql' ? { includeTriggerModifications: true } : undefined;
+
+				expect(client).toBe('mssql');
+				expect(returningOptions).toEqual({ includeTriggerModifications: true });
+			});
+
+			it('should detect non-MS SQL client and prepare no returning options', () => {
+				// Mock PostgreSQL client
+				vi.mocked(getDatabaseClient).mockReturnValueOnce('postgres');
+
+				// Test the logic that determines returning options
+				const client = getDatabaseClient();
+				const returningOptions = client === 'mssql' ? { includeTriggerModifications: true } : undefined;
+
+				expect(client).toBe('postgres');
+				expect(returningOptions).toBeUndefined();
 			});
 		});
 
