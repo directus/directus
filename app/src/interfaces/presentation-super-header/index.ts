@@ -1,12 +1,12 @@
 import { defineInterface } from '@directus/extensions';
-import SuperHeader from './super-header.vue';
+import InterfaceSuperHeader from './super-header.vue';
 
 export default defineInterface({
 	id: 'super-header',
 	name: '$t:interfaces.super-header.super-header',
 	description: '$t:interfaces.super-header.description',
 	icon: 'exercise',
-	component: SuperHeader,
+	component: InterfaceSuperHeader,
 	types: ['alias'],
 	localTypes: ['presentation'],
 	group: 'presentation',
