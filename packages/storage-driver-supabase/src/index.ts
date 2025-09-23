@@ -139,12 +139,14 @@ export class DriverSupabase implements TusDriver {
 	}
 
 	async write(filepath: string, content: Readable, type?: string) {
-		await this.bucket.upload(this.fullPath(filepath), content, {
+		const { error } = await this.bucket.upload(this.fullPath(filepath), content, {
 			contentType: type ?? '',
 			cacheControl: '3600',
 			upsert: true,
 			duplex: 'half',
 		});
+
+		if (error) throw error;
 	}
 
 	async delete(filepath: string) {
@@ -281,7 +283,7 @@ export class DriverSupabase implements TusDriver {
 		return bytesUploaded;
 	}
 
-	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext) {}
+	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext) { }
 
 	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext) {
 		await this.delete(filepath);
