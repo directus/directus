@@ -449,7 +449,7 @@ describe('#copy', () => {
 describe('#write', () => {
 	beforeEach(() => {
 		driver['bucket'] = {
-			upload: vi.fn(),
+			upload: vi.fn().mockResolvedValue({ data: null, error: null }),
 		} as any;
 	});
 
@@ -480,6 +480,16 @@ describe('#write', () => {
 			duplex: 'half',
 			upsert: true,
 		});
+	});
+
+	test('Throws error when upload fails', async () => {
+		const uploadError = new Error('Upload failed');
+
+		driver['bucket'] = {
+			upload: vi.fn().mockResolvedValue({ data: null, error: uploadError }),
+		} as any;
+
+		await expect(driver.write(sample.path.input, sample.stream)).rejects.toThrow(uploadError);
 	});
 });
 
