@@ -1,8 +1,7 @@
-<svg width="156" height="96" viewBox="0 0 156 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="1" y="1" width="154" height="94" rx="5" stroke="#F0F4F9" stroke-width="2"/>
-<rect x="18" y="41" width="6" height="6" rx="2" fill="#6644FF"/>
-<rect x="28" y="41" width="50" height="6" rx="2" fill="#6644FF"/>
-<rect x="112" y="41" width="12" height="6" rx="2" fill="#D1C7FF"/>
-<rect x="126" y="41" width="12" height="6" rx="2" fill="#D1C7FF"/>
-<line x1="18" y1="54" x2="138" y2="54" stroke="#DAD1FF" stroke-width="2"/>
+<svg width="156" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="18" y="41" width="6" height="6" rx="2" fill="var(--theme--primary)"/>
+  <rect x="28" y="41" width="50" height="6" rx="2" fill="var(--theme--primary)"/>
+  <rect opacity=".25" x="112" y="41" width="12" height="6" rx="2" fill="var(--theme--primary)"/>
+  <rect opacity=".25" x="126" y="41" width="12" height="6" rx="2" fill="var(--theme--primary)"/>
+  <rect opacity=".25" x="18" y="53" width="120" height="2" rx="1" fill="var(--theme--primary)"/>
 </svg>
