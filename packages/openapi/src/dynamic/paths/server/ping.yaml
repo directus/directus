@@ -1,0 +1,15 @@
+get:
+  summary: Ping
+  description: Ping, pong. Ping.. pong.
+  operationId: ping
+  responses:
+    '200':
+      content:
+        application/text:
+          schema:
+            type: string
+            pattern: 'pong'
+            example: pong
+      description: Successful request
+  tags:
+    - Server

@@ -1,0 +1,70 @@
+summary: List Relations
+description: |
+  List all relations that exist in Directus.
+
+  The data returned in this endpoint will be filtered based on the user's permissions. For example, relations that apply to a collection that the current user doesn't have access to are stripped out.
+operationId: getRelations
+parameters:
+- $ref: ../../components/parameters.yaml#/Fields
+- $ref: ../../components/parameters.yaml#/Limit
+- $ref: ../../components/parameters.yaml#/Offset
+- $ref: ../../components/parameters.yaml#/Meta
+- $ref: ../../components/parameters.yaml#/Sort
+- $ref: ../../components/parameters.yaml#/Filter
+- $ref: ../../components/parameters.yaml#/Search
+- $ref: ../../components/parameters.yaml#/Page
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          example:
+            data:
+              - collection: directus_collections
+                field: group
+                related_collection: directus_collections
+                schema:
+                  table: directus_collections
+                  column: group
+                  foreign_key_table: directus_collections
+                  foreign_key_column: collection
+                  on_update: NO ACTION
+                  on_delete: NO ACTION
+                  constraint_name:
+                meta:
+                  many_collection: directus_collections
+                  many_field: group
+                  one_collection: directus_collections
+                  one_field:
+                  one_allowed_collections:
+                  one_collection_field:
+                  one_deselect_action: nullify
+                  junction_field:
+                  sort_field:
+                  system: true
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Relations
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, readRelations } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(readRelations(query_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Query {
+    	relations: [directus_relations]
+    }

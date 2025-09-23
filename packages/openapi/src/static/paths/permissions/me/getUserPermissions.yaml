@@ -1,0 +1,60 @@
+summary: Get Current User Permissions
+description: |
+  Check the current user's permissions across all collections.
+
+  The response is an object that contains one entry for every collection with at least one permission. Each collection has entries corresponding to the actions the user is able to perform on the collection.
+
+  The `access` property indicates the level of access the user has for an action for a collection. `"none"` means the user has no access, `"partial"` means the user has access to some items, but may not have access to all items, and `"full"` means the user has access to all items.
+operationId: getUserPermissions
+responses:
+  '200':
+    description: The request was successful.
+    content:
+      application/json:
+        examples:
+          example:
+            value:
+              "<collection>":
+                create:
+                  access: "none | partial | full"
+                  fields: permission_fields
+                  presets: permission_presets
+                read:
+                  access: "none | partial | full"
+                  full_access: boolean
+                  presets: permission_presets
+                update:
+                  access: "none | partial | full"
+                  full_access: boolean
+                  fields: permission_fields
+                  presets: permission_presets
+                delete:
+                  access: "none | partial | full"
+                  full_access: boolean
+                share:
+                  access: "none | partial | full"
+                  full_access: boolean
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Permissions
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, readUserPermissions } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(readUserPermissions());
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      POST /graphql/system
+
+      query {
+          permissions_me
+      }

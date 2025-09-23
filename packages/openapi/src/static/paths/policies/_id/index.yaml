@@ -1,0 +1,6 @@
+get:
+  $ref: getPolicy.yaml
+patch:
+  $ref: updatePolicy.yaml
+delete:
+  $ref: deletePolicy.yaml

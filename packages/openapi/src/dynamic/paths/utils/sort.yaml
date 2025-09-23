@@ -1,0 +1,27 @@
+post:
+  summary: Sort Items
+  description: Re-sort items in collection based on start and to value of item
+  operationId: sort
+  parameters:
+    - description: Collection identifier
+      in: path
+      name: collection
+      required: true
+      schema:
+        type: string
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            item:
+              description: Primary key of item to move
+              type: number
+            to:
+              description: Primary key of item where to move the current item to
+              type: number
+  responses:
+    '200':
+      description: Successful request
+  tags:
+    - Utilities

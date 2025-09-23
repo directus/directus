@@ -1,0 +1,45 @@
+post:
+  summary: Retrieve Schema Difference
+  description:
+    Compare the current instance's schema against the schema snapshot in JSON request body or a JSON/YAML file and
+    retrieve the difference. This endpoint is only available to admin users.
+  operationId: schemaDiff
+  parameters:
+    - name: force
+      description: Bypass version and database vendor restrictions.
+      in: query
+      required: false
+      schema:
+        type: boolean
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: '../../openapi.yaml#/components/schemas/Schema'
+      multipart/form-data:
+        schema:
+          type: object
+          properties:
+            file:
+              type: string
+              format: binary
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Diff'
+    '204':
+      description: No schema difference.
+    '403':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+  tags:
+    - Schema

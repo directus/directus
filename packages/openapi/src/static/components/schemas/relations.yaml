@@ -1,0 +1,43 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the relation.
+    example: 1
+    type: integer
+  many_collection:
+    description: Collection that has the field that holds the foreign key.
+    example: directus_activity
+    type: string
+  many_field:
+    description: Foreign key. Field that holds the primary key of the related collection.
+    example: user
+    type: string
+  one_collection:
+    description: Collection on the _one_ side of the relationship.
+    example: directus_users
+    type: string
+  one_field:
+    description: Alias column that serves as the _one_ side of the relationship.
+    example: null
+    type: string
+    nullable: true
+  one_collection_field:
+    nullable: true
+    type: string
+  one_allowed_collections:
+    nullable: true
+    type: array
+    items:
+      type: string
+  junction_field:
+    description: Field on the junction table that holds the many field of the related relation.
+    example: null
+    type: string
+    nullable: true
+  sort_field:
+    nullable: true
+    type: string
+  one_deselect_action:
+    nullable: false
+    type: string
+x-collection: directus_relations

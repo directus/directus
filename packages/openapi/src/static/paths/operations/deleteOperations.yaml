@@ -1,0 +1,36 @@
+summary: Delete Multiple Operations
+description: Delete multiple existing operations.
+operationId: deleteOperations
+requestBody:
+  description: An array of operations primary keys.
+  content:
+    application/json:
+      schema:
+        type: array
+        items:
+          type: string
+responses:
+  '204':
+    description: The resource was deleted successfully.
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+security: []
+tags:
+- Operations
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, deleteOperations } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(deleteOperations(operations_id_array));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	delete_operations_items(ids: [ID!]!): delete_many
+    }

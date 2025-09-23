@@ -1,0 +1,37 @@
+summary: Retrieve a File
+description: Retrieve a single file by primary key.
+security: []
+tags:
+- Files
+operationId: getFile
+parameters:
+- $ref: ../../../components/parameters.yaml#/UUId
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Meta
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/files.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, readFiles } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(readFile(file_id, query_object));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      type Query {
+        files_by_id(id: ID!): directus_files
+      }

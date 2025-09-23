@@ -1,0 +1,46 @@
+summary: Update Settings
+description: Update the project settings.
+operationId: updateSettings
+parameters:
+- $ref: ../../components/parameters.yaml#/Fields
+- $ref: ../../components/parameters.yaml#/Meta
+requestBody:
+  content:
+    application/json:
+      schema:
+        anyOf:
+        - $ref: ../../components/schemas/settings.yaml
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../components/schemas/settings.yaml
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Settings
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, updateSettings } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(updateSettings(settings_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+      update_settings(data: update_directus_settings_input!): directus_settings
+    }

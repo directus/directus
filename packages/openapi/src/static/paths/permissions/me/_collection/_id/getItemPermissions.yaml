@@ -1,0 +1,59 @@
+summary: Check Permissions for a Specific Item
+description:  |
+  Check the current user's permissions on a specific item.
+
+  For a singleton where update access is given, the presets and fields properties from the corresponding update permission are additionally returned.
+
+  The response structure is maintained in any case, even if the collection or item does not exist. To check for the existence of an item, use the get items endpoint instead.
+operationId: readItemPermissions
+parameters:
+  - $ref: ../../../../../components/parameters.yaml#/Collection
+  - $ref: ../../../../../components/parameters.yaml#/Id
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        examples:
+          collection:
+            value:
+              update:
+                access: boolean
+              delete:
+                access: boolean
+              share:
+                access: boolean
+          singleton:
+            value:
+              update:
+                access: boolean
+                presets: permission_presets
+                fields: permission_fields
+              delete:
+                access: boolean
+              share:
+                access: boolean
+  '401':
+    $ref: ../../../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Permissions
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, readItemPermissions } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      // collection item
+      const result = await client.request(readItemPermissions(collection_name, item_id));
+
+      // singleton
+      const result = await client.request(readItemPermissions(collection_name));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      //Currently not supported in GraphQL.

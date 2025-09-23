@@ -1,0 +1,34 @@
+
+summary: Delete a Translation
+description: Delete an existing translation.
+operationId: deleteTranslation
+parameters:
+- name: id
+  in: path
+  description: Unique identifier of the Translation.
+  required: true
+  schema:
+    type: string
+responses:
+  '204':
+    description: The resource was deleted successfully.
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Translations
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, deleteTranslation } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(deleteTranslation(translation_id));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    // Not currently available in GraphQL

@@ -1,0 +1,75 @@
+type: object
+properties:
+  id:
+    nullable: false
+    type: integer
+  collection:
+    description: Unique name of the collection this field is in.
+    example: about_us
+    type: string
+  field:
+    description: Unique name of the field. Field name is unique within the collection.
+    example: id
+    type: string
+  special:
+    nullable: true
+    description: Any special transform flags that apply to this field.
+    type: array
+    items:
+      type: string
+  interface:
+    description: The interface used for this field.
+    nullable: true
+    type: string
+  options:
+    type: object
+    description: The interface options configured for this field. The structure is based on the interface used.
+    nullable: true
+  display:
+    nullable: true
+    description: The display used for this field.
+    type: string
+  display_options:
+    type: string
+    description: The configured options for the used display.
+    nullable: true
+  readonly:
+    nullable: false
+    description: If the field is considered readonly in the Data Studio.
+    type: boolean
+  hidden:
+    nullable: false
+    description: If the field is hidden from the edit page in the Data Studio.
+    type: boolean
+  sort:
+    nullable: true
+    description: Where this field is shown on the edit page in the Data Studio.
+    type: integer
+  width:
+    nullable: true
+    description: How wide the interface is rendered on the edit page in the Data Studio. One of `half`, `half-left`, `half-right`, `half-space`, `full`, `fill`.
+    type: string
+  translations:
+    nullable: true
+    description: How this field's name is displayed in the different languages in the Data Studio.
+    type: array
+  note:
+    nullable: true
+    description: Short description displayed in the Data Studio.
+    type: string
+  # conditions:
+  #   nullable: true
+  required:
+    nullable: true
+    type: boolean
+  group:
+    nullable: true
+    type: integer
+    oneOf:
+      - $ref: fields.yaml
+  # validation:
+  #   nullable: true
+  validation_message:
+    nullable: true
+    type: string
+x-collection: directus_fields

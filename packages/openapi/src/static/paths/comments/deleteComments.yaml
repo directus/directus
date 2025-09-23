@@ -1,0 +1,39 @@
+
+summary: Delete Multiple Comments
+description: Delete multiple existing comments. This action is only available to authenticated users.
+operationId: deleteComments
+requestBody:
+  description: An array of comment primary keys.
+  content:
+    application/json:
+      schema:
+        type: array
+        items:
+          type: string
+responses:
+  '204':
+    description: The resource was deleted successfully.
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Comments
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, deleteComments } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(deleteComments(comment_id_array));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+      delete_Comments_items(ids: [ID!]!): delete_many
+    }

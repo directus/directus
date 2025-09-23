@@ -1,0 +1,26 @@
+post:
+  summary: Hash a string
+  description: Generate a hash for a given string.
+  operationId: hash-generate
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            string:
+              description: String to hash.
+              type: string
+          required: ['string']
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            properties:
+              data:
+                type: string
+                example: $argon2i$v=19$m=4096,t=3,p=1$pOyIa/zmRAjCVLb2f7kOyg$DasoO6LzMM+6iKfzCDq6JbsYsZWLSm33p7i9NxL9mDc
+            type: object
+      description: Successful request
+  tags:
+    - Utilities

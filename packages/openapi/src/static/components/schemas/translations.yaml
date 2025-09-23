@@ -1,0 +1,20 @@
+type: object
+properties:
+  id:
+    description: Primary key of the translations.
+    example: sc4346aa4-81a8-4885-b3a8-f647e4f6f769
+    type: string
+    format: uuid
+  key:
+    description: The translation key.
+    example: Test
+    type: string
+  language:
+    description: The language of the translation.
+    example: en-US
+    type: string
+  string:
+    description: The translation value.
+    example: Test
+    type: string
+x-collection: directus_translations

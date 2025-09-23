@@ -1,0 +1,30 @@
+NotFoundError:
+  description: "Error: Not found."
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          error:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int64
+              message:
+                type: string
+UnauthorizedError:
+  description: "Error: Unauthorized request"
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          error:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int64
+              message:
+                type: string

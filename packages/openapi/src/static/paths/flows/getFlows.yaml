@@ -1,0 +1,49 @@
+summary: List Flows
+description: List all flows that exist in Directus.
+operationId: getFlows
+parameters:
+  - $ref: ../../components/parameters.yaml#/Fields
+  - $ref: ../../components/parameters.yaml#/Limit
+  - $ref: ../../components/parameters.yaml#/Offset
+  - $ref: ../../components/parameters.yaml#/Sort
+  - $ref: ../../components/parameters.yaml#/Filter
+  - $ref: ../../components/parameters.yaml#/Search
+  - $ref: ../../components/parameters.yaml#/Meta
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: ../../components/schemas/flows.yaml
+            meta:
+              $ref: ../../components/schemas/x-metadata.yaml
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Flows
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, readFlows } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(readFlows(query));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Query {
+    	flows: [directus_flows]
+    }

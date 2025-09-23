@@ -1,0 +1,24 @@
+summary: Update Last Page
+description: Updates the last used page field of the currently authenticated user.
+  This is used internally to be able to open the Directus admin app from the last
+  page you used.
+operationId: updateLastUsedPageMe
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          last_page:
+            type: string
+            description: Path of the page you used last.
+responses:
+  '200':
+    description: Successful request
+  '401':
+    $ref: ../../../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Users

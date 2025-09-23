@@ -1,0 +1,45 @@
+summary: Create a Content Version
+description: Create a new content version for an item.
+operationId: createContentVersion
+parameters:
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Meta
+requestBody:
+  content:
+    application/json:
+      schema:
+        anyOf:
+        - $ref: ../../../components/schemas/versions.yaml
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/versions.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+tags:
+- Versions
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, createContentVersion } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(createContentVersion(content_version_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	create_versions_item(data: create_directus_versions_input!): directus_versions
+    }

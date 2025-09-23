@@ -1,0 +1,127 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the setting.
+    type: integer
+    example: 1
+  project_name:
+    description: The name of the project.
+    type: string
+    example: Directus
+  project_url:
+    description: The url of the project.
+    type: string
+    example: null
+    nullable: true
+  project_color:
+    description: The brand color of the project.
+    type: string
+    example: null
+    nullable: true
+  project_logo:
+    description: The logo of the project.
+    type: string
+    example: null
+    nullable: true
+  public_foreground:
+    description: The foreground of the project.
+    type: string
+    example: null
+    nullable: true
+  public_background:
+    description: The background of the project.
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+    example: null
+    nullable: true
+  public_note:
+    description: Note rendered on the public pages of the app.
+    type: string
+    example: null
+    nullable: true
+  auth_login_attempts:
+    description: Allowed authentication login attempts before the user's status is set to blocked.
+    type: integer
+    example: 25
+  auth_password_policy:
+    description: Authentication password policy.
+    type: string
+    nullable: true
+  storage_default_folder:
+    description: Default folder to place files
+    type: string
+    format: uuid
+  storage_asset_transform:
+    description: What transformations are allowed in the assets endpoint.
+    type: string
+    enum:
+      - all
+      - none
+      - presets
+    example: 'all'
+    nullable: true
+  storage_asset_presets:
+    description: Array of allowed
+    type: array
+    items:
+      type: object
+      properties:
+        key:
+          description: Key for the asset. Used in the assets endpoint.
+          type: string
+        fit:
+          description: Whether to crop the thumbnail to match the size, or maintain the aspect ratio.
+          type: string
+          enum:
+            - cover
+            - contain
+            - inside
+            - outside
+        width:
+          description: Width of the thumbnail.
+          type: integer
+        height:
+          description: Height of the thumbnail.
+          type: integer
+        withoutEnlargement:
+          description: No image upscale
+          type: boolean
+        quality:
+          description: Quality of the compression used.
+          type: integer
+        format:
+          description: Reformat output image
+          type: string
+          enum:
+            - ''
+            - jpeg
+            - png
+            - webp
+            - tiff
+            - avif
+        transforms:
+          description: Additional transformations to apply
+          type: array
+          nullable: true
+          items:
+            type: object
+            properties:
+              method:
+                description: The Sharp method name
+                type: string
+              arguments:
+                description: A list of arguments to pass to the Sharp method
+                type: array
+                nullable: true
+                items:
+                  type: object
+                  properties:
+                    argument:
+                      description: A JSON representation of the argument value
+                      type: string
+    example: null
+    nullable: true

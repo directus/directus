@@ -1,0 +1,6 @@
+get:
+  $ref: getDashboard.yaml
+patch:
+  $ref: updateDashboard.yaml
+delete:
+  $ref: deleteDashboard.yaml

@@ -1,0 +1,36 @@
+
+summary: Delete an notification
+description: Delete an existing notification.
+operationId: deleteNotification
+parameters:
+- name: id
+  in: path
+  required: true
+  description: Unique identifier of the notification.
+  schema:
+    type: string
+responses:
+  '204':
+    description: The resource was deleted successfully.
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Notifications
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, deleteNotification } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(deleteNotification(notification_id));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+      type Mutation {
+        delete_notifications_item(id: ID!): delete_one
+      }

@@ -1,0 +1,70 @@
+type: object
+properties:
+  id:
+    description: Primary key of the panel.
+    example: 22640672-eef0-4ee9-ab04-591f3afb288
+    type: string
+    format: uuid
+  dashboard:
+    description: Dashboard where this panel is visible. Many-to-one to dashboards.
+    example: a79bd1b2-beb2-49fc-8a26-0b3eec0e269
+    oneOf:
+      - type: string
+      - $ref: dashboards.yaml
+  name:
+    description: Name of the panel.
+    example: 30-day sales
+    type: string
+  icon:
+    description: Material design icon for the panel.
+    example: paid
+    type: string
+  color:
+    description: Accent color of the panel.
+    example: #6B8068
+    type: string
+    format: hexcode
+  show_header:
+    description: Whether or not the header should be rendered for this panel.
+    example: true
+    type: boolean
+  note:
+    description: Description for the panel.
+    example: Overview of the sales numbers in the last 30 day
+    type: string
+  type:
+    description: The panel type used for this panel.
+    example: time-series
+    type: string
+  position_x:
+    description: The X position on the workspace grid.
+    example: 1
+    type: integer
+  position_y:
+    description: The Y position on the workspace grid.
+    example: 1
+    type: integer
+  width:
+    description: Width of the panel in number of workspace dots.
+    example: 1
+    type: integer
+  height:
+    description: Height of the panel in number of workspace dots.
+    example: 1
+    type: integer
+  options:
+    description: Description for the panel.
+    example: {}
+    type: object
+  date_created:
+    description: When the panel was created
+    example: 2023-01-05T19:05:51.884Z
+    type: string
+    format: date-time
+  user_created:
+    description: User that created the panel. Many-to-one to users.
+    example: fd066644-c8e5-499d-947b-fe6c6e1a1473
+    oneOf:
+      - type: string
+      - $ref: users.yaml
+x-collection: directus_panels

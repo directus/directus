@@ -1,0 +1,41 @@
+summary: Import Data from File
+description: Import multiple records from a JSON or CSV file into a collection.
+operationId: import
+parameters:
+- description: Collection identifier
+  in: path
+  name: collection
+  required: true
+  schema:
+    type: string
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        properties:
+          file:
+            type: string
+            format: binary
+responses:
+  '200':
+    description: Successful request
+security: []
+tags:
+- Utilities
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, utilsImport } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const formData = new FormData();
+      formData.append('file', raw_file);
+
+      const result = await client.request(utilsImport(formData));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      // Not currently available in GraphQL

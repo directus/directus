@@ -1,0 +1,30 @@
+summary: Delete a File
+description: Delete an existing file. This will also delete the file from disk.
+security: []
+tags:
+- Files
+operationId: deleteFile
+responses:
+  '204':
+    description: The resource was deleted successfully.
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+parameters:
+- $ref: ../../../components/parameters.yaml#/UUId
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, deleteFile } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(deleteFile(file_id));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	delete_files_item(id: ID!): delete_one
+    }

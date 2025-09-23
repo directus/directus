@@ -1,0 +1,6 @@
+get:
+  $ref: getPanel.yaml
+patch:
+  $ref: updatePanel.yaml
+delete:
+  $ref: deletePanel.yaml

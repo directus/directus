@@ -1,0 +1,41 @@
+summary: Send a Share by Email
+description: Sends an email to the provided email addresses with a link to the share.
+operationId: inviteShare
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+        - share
+        properties:
+          share:
+            type: uuid
+            description: Primary key of the share you're authenticating against.
+            example: 3a606c3e-9d4d-4556-b7bb-f00860613da3
+          emails:
+            type: array
+            description: Array of email strings to send the share link to.
+responses:
+  '200':
+    description: Successful request
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Shares
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, inviteShare } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(inviteShare(share_id, email_address_array));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    // Not currently available in GraphQL

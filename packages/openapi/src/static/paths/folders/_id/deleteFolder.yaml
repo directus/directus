@@ -1,0 +1,32 @@
+summary: Delete a Folder
+description: Delete an existing folder. Any files in this folder will be moved to the root folder.
+operationId: deleteFolder
+responses:
+  '204':
+    description: The resource was deleted successfully.
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Folders
+parameters:
+- $ref: ../../../components/parameters.yaml#/UUId
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, deleteFolder } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(deleteFolder(folder_id));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	delete_folders_item(id: ID!): delete_one
+    }

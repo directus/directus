@@ -1,0 +1,36 @@
+
+summary: Delete a Policy
+description: Delete an existing policy.
+operationId: deletePolicy
+parameters:
+- name: id
+  in: path
+  description: Unique identifier of the policy.
+  required: true
+  schema:
+    type: string
+responses:
+  '204':
+    description: The resource was deleted successfully.
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Policies
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, deletePolicy } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(deletePolicy(policy_id));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+      type Mutation {
+        delete_policies_item(id: ID!): delete_one
+      }

@@ -1,0 +1,235 @@
+summary: Create Field in Collection
+description: Create a new field in a given collection.
+operationId: createField
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+        - field
+        - datatype
+        - type
+        - length
+        properties:
+          type:
+            description: Directus specific data type. Used to cast values in the API.
+            example: integer
+            type: string
+          field:
+            type: string
+            description: Unique name of the field. Field name is unique within the
+              collection.
+            example: id
+          schema:
+            type: object
+            description: The schema info.
+            properties:
+              type:
+                description: The type of the field.
+                example: string
+                type: string
+              name:
+                type: string
+                description: The name of the field.
+                example: title
+              table:
+                type: string
+                description: The collection of the field.
+                example: posts
+              default_value:
+                type: string
+                description: The default value of the field.
+                example:
+                nullable: true
+              max_length:
+                type: integer
+                description: The max length of the field.
+                example:
+                nullable: true
+              is_nullable:
+                type: boolean
+                description: If the field is nullable.
+                example: false
+              is_primary_key:
+                type: boolean
+                description: If the field is primary key.
+                example: false
+              has_auto_increment:
+                type: boolean
+                description: If the field has auto increment.
+                example: false
+              foreign_key_column:
+                type: string
+                description: Related column from the foreign key constraint.
+                example:
+                nullable: true
+              foreign_key_table:
+                type: string
+                description: Related table from the foreign key constraint.
+                example:
+                nullable: true
+              comment:
+                type: string
+                description: Comment as saved in the database.
+                example:
+                nullable: true
+              schema:
+                type: string
+                description: Database schema (pg only).
+                example: public
+              foreign_key_schema:
+                type: string
+                description: Related schema from the foreign key constraint (pg only).
+                example:
+                nullable: true
+          meta:
+            type: object
+            description: The meta info.
+            nullable: true
+            properties:
+              id:
+                type: integer
+                description: Unique identifier for the field in the `directus_fields`
+                  collection.
+                example: 3
+              collection:
+                type: string
+                description: Unique name of the collection this field is in.
+                example: posts
+              field:
+                type: string
+                description: Unique name of the field. Field name is unique within
+                  the collection.
+                example: title
+              special:
+                type: array
+                description: Transformation flag for field
+                example:
+                items:
+                  type: string
+                nullable: true
+              system-interface:
+                type: string
+                description: What interface is used in the admin app to edit the value
+                  for this field.
+                example: primary-key
+                nullable: true
+              options:
+                type: object
+                description: Options for the interface that's used. This format is
+                  based on the individual interface.
+                example:
+                nullable: true
+              display:
+                type: string
+                description: What display is used in the admin app to display the
+                  value for this field.
+                example:
+                nullable: true
+              display_options:
+                type: object
+                description: Options for the display that's used. This format is based
+                  on the individual display.
+                example:
+                nullable: true
+              locked:
+                type: boolean
+                description: If the field can be altered by the end user. Directus
+                  system fields have this value set to `true`.
+                example: true
+              readonly:
+                type: boolean
+                description: Prevents the user from editing the value in the field.
+                example: false
+              required:
+                type: boolean
+                description: If this field should be required.
+                example: false
+              hidden:
+                type: boolean
+                description: If this field should be hidden.
+                example: true
+              sort:
+                type: integer
+                description: Sort order of this field on the edit page of the admin
+                  app.
+                example: 1
+                nullable: true
+              width:
+                type: string
+                description: Width of the field on the edit form.
+                example:
+                nullable: true
+                enum:
+                - half
+                - half-left
+                - half-right
+                - full
+                - fill
+                -
+              group:
+                type: integer
+                description: What field group this field is part of.
+                example:
+                nullable: true
+              translation:
+                type: object
+                description: 'Key value pair of `<language>: <translation>` that allows
+                  the user to change the displayed name of the field in the admin
+                  app.'
+                example:
+                nullable: true
+              note:
+                type: string
+                description: A user provided note for the field. Will be rendered
+                  alongside the interface on the edit page.
+                example: ''
+                nullable: true
+responses:
+  '200':
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/fields.yaml
+    description: Successful request
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Fields
+parameters:
+- description: Unique identifier of the collection the item resides in.
+  in: path
+  name: collection
+  required: true
+  schema:
+    type: string
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, createField } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(
+    	createField(collection_name, {
+    		field: field_name,
+    		type: field_type,
+    		field_field: value,
+    	})
+    );
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	create_fields_item(collection: String!, data: create_directus_fields_input!): directus_fields
+    }

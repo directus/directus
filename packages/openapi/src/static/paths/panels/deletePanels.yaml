@@ -1,0 +1,37 @@
+
+summary: Delete Multiple panels
+description: Delete multiple existing panels.
+operationId: deletePanels
+requestBody:
+  description: An array of panel primary keys.
+  content:
+    application/json:
+      schema:
+        type: array
+        items:
+          type: string
+responses:
+  '204':
+    description: The resource was deleted successfully.
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Panels
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, deletePanels } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(deletePanels(panel_id_array));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    type Mutation {
+      delete_panels_items(ids: [ID!]!): delete_many
+    }

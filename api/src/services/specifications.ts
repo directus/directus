@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
-import { spec } from '@directus/specs';
+import { dynamicSpec } from '@directus/openapi';
 import { isSystemCollection } from '@directus/system-data';
 import type {
 	AbstractServiceOptions,
@@ -126,7 +126,7 @@ class OASSpecsService implements SpecificationSubService {
 	}
 
 	private async generateTags(schema: SchemaOverview): Promise<OpenAPIObject['tags']> {
-		const systemTags = cloneDeep(spec.tags)!;
+		const systemTags = cloneDeep(dynamicSpec.tags)!;
 
 		const collections = Object.values(schema.collections);
 		const tags: OpenAPIObject['tags'] = [];
@@ -147,7 +147,7 @@ class OASSpecsService implements SpecificationSubService {
 
 			// If the collection is one of the system collections, pull the tag from the static spec
 			if (isSystem) {
-				for (const tag of spec.tags!) {
+				for (const tag of dynamicSpec.tags!) {
 					if (tag['x-collection'] === collection.collection) {
 						tags.push(tag);
 						break;
@@ -184,7 +184,7 @@ class OASSpecsService implements SpecificationSubService {
 			const isSystem = 'x-collection' in tag === false || isSystemCollection(tag['x-collection']);
 
 			if (isSystem) {
-				for (const [path, pathItem] of Object.entries<PathItemObject>(spec.paths)) {
+				for (const [path, pathItem] of Object.entries<PathItemObject>(dynamicSpec.paths)) {
 					for (const [method, operation] of Object.entries(pathItem)) {
 						if (operation.tags?.includes(tag.name)) {
 							if (!paths[path]) {
@@ -214,8 +214,8 @@ class OASSpecsService implements SpecificationSubService {
 					}
 				}
 			} else {
-				const listBase = cloneDeep(spec.paths['/items/{collection}']);
-				const detailBase = cloneDeep(spec.paths['/items/{collection}/{id}']);
+				const listBase = cloneDeep(dynamicSpec.paths['/items/{collection}']);
+				const detailBase = cloneDeep(dynamicSpec.paths['/items/{collection}/{id}']);
 				const collection = tag['x-collection'];
 
 				const methods: (keyof PathItemObject)[] = ['post', 'get', 'patch', 'delete'];
@@ -353,7 +353,7 @@ class OASSpecsService implements SpecificationSubService {
 	): Promise<OpenAPIObject['components']> {
 		if (!tags) return;
 
-		let components: OpenAPIObject['components'] = cloneDeep(spec.components);
+		let components: OpenAPIObject['components'] = cloneDeep(dynamicSpec.components);
 
 		if (!components) components = {};
 
@@ -366,12 +366,12 @@ class OASSpecsService implements SpecificationSubService {
 
 		const requiredSchemas = [...OAS_REQUIRED_SCHEMAS, ...tagSchemas];
 
-		for (const [name, schema] of Object.entries(spec.components?.schemas ?? {})) {
+		for (const [name, schema] of Object.entries(dynamicSpec.components?.schemas ?? {})) {
 			if (requiredSchemas.includes(name)) {
-				const collection = spec.tags?.find((tag) => tag.name === name)?.['x-collection'];
+				const collection = dynamicSpec.tags?.find((tag) => tag.name === name)?.['x-collection'];
 
 				components.schemas[name] = {
-					...cloneDeep(schema),
+					...cloneDeep(this.resolveSchema(schema)),
 					...(collection && { 'x-collection': collection }),
 				};
 			}
@@ -389,16 +389,16 @@ class OASSpecsService implements SpecificationSubService {
 			const fieldsInCollection = Object.values(collection.fields);
 
 			if (isSystem) {
-				const schemaComponent = cloneDeep(spec.components!.schemas![tag.name]) as SchemaObject;
+				const resolvedSchema = this.resolveSchema(dynamicSpec.components!.schemas![tag.name]);
+				const schemaComponent = cloneDeep(resolvedSchema) as SchemaObject;
 
 				schemaComponent.properties = {};
 				schemaComponent['x-collection'] = collection.collection;
 
 				for (const field of fieldsInCollection) {
 					schemaComponent.properties[field.field] =
-						(cloneDeep(
-							(spec.components!.schemas![tag.name] as SchemaObject).properties![field.field],
-						) as SchemaObject) || this.generateField(schema, collection.collection, field, tags);
+						(resolvedSchema && (cloneDeep(resolvedSchema.properties![field.field]) as SchemaObject)) ||
+						this.generateField(schema, collection.collection, field, tags);
 				}
 
 				components.schemas[tag.name] = schemaComponent;
@@ -547,6 +547,23 @@ class OASSpecsService implements SpecificationSubService {
 		}
 
 		return propertyObject;
+	}
+
+	private resolveSchema(val?: ReferenceObject | SchemaObject): SchemaObject | undefined {
+		if (!val) return;
+
+		if ('$ref' in val) {
+			const schemaName = val.$ref.split('/').pop();
+			if (!schemaName) return;
+
+			if ('$ref' in dynamicSpec.components!.schemas![schemaName]!) {
+				return this.resolveSchema(dynamicSpec.components!.schemas![schemaName] as ReferenceObject);
+			} else {
+				return dynamicSpec.components?.schemas?.[schemaName];
+			}
+		} else {
+			return val;
+		}
 	}
 
 	private fieldTypes: Record<Type, Partial<SchemaObject>> = {

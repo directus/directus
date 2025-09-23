@@ -1,0 +1,59 @@
+summary: Logout
+description: Invalidate the refresh token thus destroying the user's session.
+operationId: logout
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          refresh_token:
+            type: string
+            example: eyJ0eXAiOiJKV...
+            description: The refresh token to invalidate. If you have the refresh
+              token in a cookie through /auth/login, you don't have to submit it here.
+          mode:
+            type: string
+            enum:
+              - json
+              - cookie
+              - session
+            description: Whether the refresh token is submitted in the JSON response,
+              or in a `httpOnly` cookie.
+responses:
+  '204':
+    description: Successful request, empty body
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data: {}
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Authentication
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, authentication, rest, logout } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(authentication()).with(rest());
+
+    // logout using the authentication composable
+    const result = await client.logout();
+
+    // logout http request
+    const result = await client.request(logout({ refresh_token }));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    mutation {
+    	auth_logout(refresh_token: "refresh_token")
+    }

@@ -1,0 +1,54 @@
+summary: Update a File
+description: Update an existing file, and/or replace it's file contents.
+security: []
+tags:
+- Files
+operationId: updateFile
+parameters:
+- $ref: ../../../components/parameters.yaml#/UUId
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Meta
+requestBody:
+  content:
+    multipart/data:
+      schema:
+        type: object
+        required:
+        - file
+        properties:
+          file:
+            description: File contents.
+            format: binary
+    application/json:
+      schema:
+        anyOf:
+        - $ref: ../../../components/schemas/items.yaml
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/files.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, updateFile } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(updateFile(file_id, partial_file_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	update_files_item(id: ID!, data: update_directus_files_input!): directus_files
+    }

@@ -1,0 +1,58 @@
+type: object
+properties:
+  id:
+    description: Primary key of the policy;
+    example: 22640672-eef0-4ee9-ab04-591f3afb288
+    type: string
+    format: uuid
+  name:
+    description: Name of the policy.
+    example: Admin
+    type: string
+  icon:
+    description: Icon for the policy. Displayed in the Data Studio.
+    example: supervised_user_circle
+    type: string
+  description:
+    description: Description for the policy. Displayed in the Data Studio.
+    example: null
+    type: string
+  ip_access:
+    description: A CSV of IP addresses that this policy applies to. Allows you to configure an allowlist of IP addresses. If empty, no IP restrictions are applied.
+    example: null
+    type: string
+    format: csv
+  enforce_tfa:
+    description: Whether or not Two-Factor Authentication is required for users that have this policy.
+    example: false
+    type: boolean
+  admin_access:
+    description: If this policy grants the user admin access. This means that users with this policy have full permissions to everything.
+    example: true
+    type: boolean
+  app_access:
+    description: Whether or not users with this policy have access to use the Data Studio.
+    example: true
+    type: boolean
+  users:
+    description: The users this policy is assigned to directly, this does not include users which receive this policy through a role. It expects and returns data from the directus_access collection. Many-to-many to users via access.
+    example: ["0bc7b36a-9ba9-4ce0-83f0-0a526f354e07"]
+    oneOf:
+      - type: array
+      - format: many-to-many
+      - $ref: users.yaml
+  roles:
+    description: The roles this policy is assigned to. It expects and returns data from the directus_access collection. Many-to-many to roles via access.
+    example: ["8b4474c0-288d-4bb8-b62e-8330646bb6aa"]
+    oneOf:
+      - type: array
+      - format: many-to-many
+      - $ref: roles.yaml
+  permissions:
+    description: The permissions assigned to this policy. One-to-many to permissions.
+    example: ["5c74c86f-cab0-4b14-a3c4-cd4f2363e826"]
+    oneOf:
+      - type: array
+      - format: one-to-many
+      - $ref: permissions.yaml
+x-collection: directus_policies

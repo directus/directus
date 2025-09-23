@@ -1,0 +1,46 @@
+summary: Update a User
+description: Update an existing user.
+operationId: updateUser
+parameters:
+- $ref: ../../../components/parameters.yaml#/UUId
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Meta
+requestBody:
+  content:
+    application/json:
+      schema:
+        $ref: ../../../components/schemas/users.yaml
+responses:
+  '200':
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: object
+    description: Successful request
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Users
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, updateUser } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(updateUser(user_id, partial_user_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	update_users_item(id: ID!, data: update_directus_users_input!): directus_users
+    }

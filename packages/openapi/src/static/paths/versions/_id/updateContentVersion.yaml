@@ -1,0 +1,47 @@
+summary: Update a Content Version
+description: Update an existing content version.
+operationId: updateContentVersion
+parameters:
+- $ref: ../../../components/parameters.yaml#/UUId
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Meta
+requestBody:
+  content:
+    application/json:
+      schema:
+        anyOf:
+        - $ref: ../../../components/schemas/versions.yaml
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/versions.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Versions
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, updateContentVersion } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(updateContentVersion(content_version_id, partial_content_version_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	update_versions_item(id: ID!, data: update_directus_versions_input!): directus_versions
+    }

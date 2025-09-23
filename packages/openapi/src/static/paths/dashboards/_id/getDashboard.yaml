@@ -1,0 +1,44 @@
+summary: Retrieve a Dashboard
+description: List an existing dashboard by primary key.
+operationId: getDashboard
+parameters:
+- name: id
+  in: path
+  description: Unique identifier of the Dashboard.
+  schema:
+    type: string
+  required: true
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Meta
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/dashboards.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Dashboards
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, readDashboard } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(readDashboard(dashboard_id, query_object));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      type Query {
+        dashboards_by_id(id: ID!): directus_dashboards
+      }

@@ -1,0 +1,52 @@
+summary: Create a Folder
+description: Create a new (virtual) folder.
+operationId: createFolder
+parameters:
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Meta
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          name:
+            type: string
+            example: Amsterdam
+            description: Name of the folder.
+          parent:
+            type: integer
+            description: Unique identifier of the parent folder. This allows for nested
+              folders.
+        required:
+        - name
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/folders.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+tags:
+- Folders
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, createFolder } from '@directus/sdk';
+    const client = createDirectus('directus_project_url').with(rest());
+    const result = await client.request(createFolder(folder_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+    type Mutation {
+    	create_folders_item(data: create_directus_folders_input): directus_folders
+    }

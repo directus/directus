@@ -1,0 +1,39 @@
+summary: Retrieve a Role
+description: Retrieve a single role by unique identifier.
+operationId: getRole
+parameters:
+- $ref: ../../../components/parameters.yaml#/UUId
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Meta
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/roles.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Roles
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, readRole } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(readRole(role_id, query_object));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      type Query {
+        roles_by_id(id: ID!): directus_roles
+      }

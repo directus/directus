@@ -1,0 +1,4 @@
+get:
+  $ref: triggerFlowGET.yaml
+post:
+  $ref: triggerFlowPOST.yaml

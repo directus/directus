@@ -1,0 +1,50 @@
+summary: Update a Notification
+description: Update an existing notification.
+operationId: updateNotification
+parameters:
+  - name: id
+    in: path
+    description: Unique identifier of the notification.
+    schema:
+      type: string
+    required: true
+  - $ref: ../../../components/parameters.yaml#/Fields
+  - $ref: ../../../components/parameters.yaml#/Meta
+requestBody:
+  content:
+    application/json:
+      schema:
+        anyOf:
+          - $ref: ../../../components/schemas/notifications.yaml
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/notifications.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Notifications
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, updateNotification } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(updateNotification(notification_id, partial_notification_object));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      type Mutation {
+        update_notifications_item(id: ID!, data: update_directus_notifications_input): directus_notifications
+      }

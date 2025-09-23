@@ -1,0 +1,44 @@
+type: object
+properties:
+  id:
+    description: Primary key of the revision.
+    example: 2
+    type: integer
+  timestamp:
+    description: Timestamp in ISO8601 when the notification was created.
+    example: '2021-11-24T13:57:35Z'
+    type: string
+    format: date-time
+  status:
+    description: Current status of the notification. One of "inbox", "archived"
+    example: inbox
+    type: string
+  recipient:
+    description: User that received the notification.
+    example: 3EE34828-B43C-4FB2-A721-5151579B08EA
+    oneOf:
+      - type: string
+      - $ref: users.yaml
+  sender:
+    description: User that sent the notification, if any.
+    example: 497a495e-5529-4e46-8feb-2f35e9b85601
+    oneOf:
+      - type: string
+      - $ref: users.yaml
+  subject:
+    description: Subject line of the message.
+    example: inbox
+    type: string
+  message:
+    description: Subject line of the message.
+    example: \nHello admin@example.com,\n\rijk@directus.io has mentioned you in a comment:\n\n> Hello <em>admin@example.com</em>!\n\n<a href=\"http://localhost:8080/admin/content/articles/1\">Click here to view.</a>\n
+    type: string
+  collection:
+    description: Collection this notification references.
+    example: articles
+    type: string
+  item:
+    description: Primary key of the item this notification references.
+    example: '1'
+    type: string
+x-collection: directus_notifications

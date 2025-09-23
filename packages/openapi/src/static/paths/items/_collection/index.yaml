@@ -1,0 +1,8 @@
+get:
+  $ref: getCollectionItems.yaml
+post:
+  $ref: createItems.yaml
+patch:
+  $ref: updateItems.yaml
+delete:
+  $ref: deleteItems.yaml

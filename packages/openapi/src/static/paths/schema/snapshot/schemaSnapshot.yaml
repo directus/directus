@@ -1,0 +1,36 @@
+summary: Retrieve Schema Snapshot
+description: Retrieve the current schema. This endpoint is only available to admin
+  users.
+operationId: schemaSnapshot
+parameters:
+- $ref: ../../../components/parameters.yaml#/Export
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          $ref: ../../../components/schemas/schema.yaml
+      text/yaml:
+        schema:
+          type: string
+          format: binary
+  '403':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+security: []
+tags:
+- Schema
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, schemaSnapshot } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(schemaSnapshot());
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    // Not supported in GraphQL

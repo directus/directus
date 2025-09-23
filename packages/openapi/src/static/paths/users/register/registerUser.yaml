@@ -1,0 +1,57 @@
+summary: Register a new User
+description: Register a new user. The user registration feature is disabled by default. To make use of it, it must first be enabled via project settings. By enabling user registration, it is open to anyone via the Data Studio or via API. Once enabled, all users who register will receive the role configured in project settings.
+operationId: registerUser
+parameters:
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Meta
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+          - password
+        properties:
+          email:
+            type: string
+            description: 'Email for the new user.'
+          password:
+            type: string
+            description: 'Password for the new user.'
+          first_name:
+            type: string
+            description: 'First name for the new user.'
+          last_name:
+            type: string
+            description: 'Last name for the new user.'
+          verification_url:
+            type: string
+            description: 'Provide a custom verification url which the link in the email will lead to. The verification token will be passed as a parameter. Note: You need to configure the USER_REGISTER_URL_ALLOW_LIST environment variable to enable this feature.'
+responses:
+  '204':
+    description: Regardless of whether the registration was successful or not, the Directus API will always respond with an empty 204 response. This is to mitigate potentially leaking the identity of registered users.
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Users
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, registerUser } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    await client.request(registerUser(user_email, user_password));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+      users_register(email: String!, password: String!): True
+    }

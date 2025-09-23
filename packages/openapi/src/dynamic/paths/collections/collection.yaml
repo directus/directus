@@ -1,0 +1,141 @@
+get:
+  summary: Retrieve a Collection
+  description: Retrieves the details of a single collection.
+  operationId: getCollection
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Collections'
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Collections
+patch:
+  summary: Update a Collection
+  description: Update an existing collection.
+  operationId: updateCollection
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            meta:
+              description: Metadata of the collection.
+              type: object
+              properties:
+                icon:
+                  description: Name of a Google Material Design Icon that's assigned to this collection.
+                  type: string
+                  example: people
+                  nullable: true
+                color:
+                  description: Choose the color for the icon assigned to this collection.
+                  type: string
+                  example: '#6644ff'
+                  nullable: true
+                note:
+                  description: A note describing the collection.
+                  type: string
+                  example: null
+                  nullable: true
+                display_template:
+                  description: Text representation of how items from this collection are shown across the system.
+                  type: string
+                  example: null
+                  nullable: true
+                hidden:
+                  description: Whether or not the collection is hidden from the navigation in the admin app.
+                  type: boolean
+                  example: false
+                singleton:
+                  description: Whether or not the collection is treated as a single object.
+                  type: boolean
+                  example: false
+                translation:
+                  description:
+                    Key value pairs of how to show this collection's name in different languages in the admin app.
+                  type: string
+                  example: null
+                  nullable: true
+                versioning:
+                  description: Whether or not Content Versioning is enabled for this collection.
+                  type: boolean
+                  example: false
+                archive_field:
+                  description: What field holds the archive value.
+                  type: string
+                  example: null
+                  nullable: true
+                archive_app_filter:
+                  description: What value to use for "archived" items.
+                  type: string
+                  example: null
+                  nullable: true
+                archive_value:
+                  description: What value to use to "unarchive" items.
+                  type: string
+                  example: null
+                  nullable: true
+                unarchive_value:
+                  description: Whether or not to show the "archived" filter.
+                  type: string
+                  example: null
+                  nullable: true
+                sort_field:
+                  description: The sort field in the collection.
+                  type: string
+                  example: null
+                  nullable: true
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Collections'
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Collections
+
+delete:
+  summary: Delete a Collection
+  description:
+    'Delete an existing collection. Warning: This will delete the whole collection, including the items within. Proceed
+    with caution.'
+  operationId: deleteCollection
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Collections
+
+parameters:
+  - name: id
+    in: path
+    required: true
+    description: Unique identifier of the collection.
+    schema:
+      type: string

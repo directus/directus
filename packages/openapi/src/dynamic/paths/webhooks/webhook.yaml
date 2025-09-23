@@ -1,0 +1,92 @@
+get:
+  summary: Retrieve a Webhook
+  description: Retrieve a single webhook by unique identifier.
+  operationId: getWebhook
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Webhooks'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Webhooks
+
+patch:
+  summary: Update a Webhook
+  description: Update an existing webhook
+  operationId: updateWebhook
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            name:
+              description: The name of the webhook.
+              type: string
+              example: create articles
+            method:
+              description: Method used in the webhook.
+              type: string
+              example: POST
+            url:
+              description: The url of the webhook.
+              type: string
+              example: null
+            status:
+              description: The status of the webhook.
+              type: string
+              example: active
+            data:
+              description: If yes, send the content of what was done
+              type: boolean
+              example: true
+            actions:
+              description: The actions that triggers this webhook.
+              example: null
+            system-collections:
+              description: The collections that triggers this webhook.
+              example: null
+          type: object
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Roles'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Webhooks
+
+delete:
+  summary: Delete a Webhook
+  description: Delete an existing webhook
+  operationId: deleteWebhook
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Webhooks
+parameters:
+  - $ref: '../../openapi.yaml#/components/parameters/UUId'

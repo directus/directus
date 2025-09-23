@@ -1,0 +1,126 @@
+summary: Update a Collection
+description: |
+  Update the metadata for an existing collection.
+
+  You can only update the `meta` values of the collection object. Updating the collection name is not supported at this time.
+operationId: updateCollection
+parameters:
+- name: id
+  in: path
+  required: true
+  description: Unique identifier of the collection.
+  schema:
+    type: string
+- $ref: ../../../components/parameters.yaml#/Meta
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          meta:
+            type: object
+            description: Metadata of the collection.
+            properties:
+              icon:
+                type: string
+                description: Name of a Google Material Design Icon that's assigned
+                  to this collection.
+                example: people
+                nullable: true
+              color:
+                type: string
+                description: Choose the color for the icon assigned to this collection.
+                example: '#6644ff'
+                nullable: true
+              note:
+                type: string
+                description: A note describing the collection.
+                example:
+                nullable: true
+              display_template:
+                type: string
+                description: Text representation of how items from this collection
+                  are shown across the system.
+                example:
+                nullable: true
+              hidden:
+                type: boolean
+                description: Whether or not the collection is hidden from the navigation
+                  in the admin app.
+                example: false
+              singleton:
+                type: boolean
+                description: Whether or not the collection is treated as a single
+                  object.
+                example: false
+              translation:
+                type: string
+                description: Key value pairs of how to show this collection's name
+                  in different languages in the admin app.
+                example:
+                nullable: true
+              versioning:
+                type: boolean
+                description: Whether or not Content Versioning is enabled for this
+                  collection.
+                example: false
+              archive_field:
+                type: string
+                description: What field holds the archive value.
+                example:
+                nullable: true
+              archive_app_filter:
+                type: string
+                description: What value to use for "archived" items.
+                example:
+                nullable: true
+              archive_value:
+                type: string
+                description: What value to use to "unarchive" items.
+                example:
+                nullable: true
+              unarchive_value:
+                type: string
+                description: Whether or not to show the "archived" filter.
+                example:
+                nullable: true
+              sort_field:
+                type: string
+                description: The sort field in the collection.
+                example:
+                nullable: true
+responses:
+  '200':
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/collections.yaml
+    description: Successful request
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Collections
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, updateCollection } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(updateCollection(collection_name, partial_collection_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	update_collections_item(collection: String!, data: update_directus_collections_input!): directus_collections
+    }

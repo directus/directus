@@ -1,0 +1,36 @@
+
+summary: Delete a Share
+description: Delete an existing share.
+operationId: deleteShare
+parameters:
+- name: id
+  in: path
+  required: true
+  description: Unique identifier of the share.
+  schema:
+    type: string
+responses:
+  '204':
+    description: The resource was deleted successfully.
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Shares
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, deleteShare } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(deleteShare(share_id));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+      type Mutation {
+        delete_shares_item(id: ID!): delete_one
+      }

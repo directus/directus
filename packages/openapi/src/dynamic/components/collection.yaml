@@ -1,0 +1,94 @@
+type: object
+properties:
+  collection:
+    description: The collection key.
+    example: customers
+    type: string
+  meta:
+    description: Metadata of the collection.
+    type: object
+    example: null
+    nullable: true
+    properties:
+      collection:
+        description: The collection key.
+        example: customers
+        type: string
+      icon:
+        description: Name of a Google Material Design Icon that's assigned to this collection.
+        type: string
+        example: people
+        nullable: true
+      color:
+        description: Choose an accent color for this collection.
+        type: string
+        example: '#6644ff'
+        nullable: true
+      note:
+        description: A note describing the collection.
+        type: string
+        example: null
+        nullable: true
+      display_template:
+        description: Text representation of how items from this collection are shown across the system.
+        type: string
+        example: null
+        nullable: true
+      hidden:
+        description: Whether or not the collection is hidden from the navigation in the admin app.
+        type: boolean
+        example: false
+      singleton:
+        description: Whether or not the collection is treated as a single object.
+        type: boolean
+        example: false
+      translations:
+        description: Key value pairs of how to show this collection's name in different languages in the admin app.
+        type: string
+        example: null
+        nullable: true
+      versioning:
+        description: Whether or not Content Versioning is enabled for this collection.
+        type: boolean
+        example: false
+      archive_field:
+        description: What field holds the archive value.
+        type: string
+        example: null
+        nullable: true
+      archive_app_filter:
+        description: What value to use for "archived" items.
+        type: string
+        example: null
+        nullable: true
+      archive_value:
+        description: What value to use to "unarchive" items.
+        type: string
+        example: null
+        nullable: true
+      unarchive_value:
+        description: Whether or not to show the "archived" filter.
+        type: string
+        example: null
+        nullable: true
+      sort_field:
+        description: The sort field in the collection.
+        type: string
+        example: null
+        nullable: true
+  schema:
+    type: object
+    properties:
+      name:
+        description: The collection key.
+        type: string
+        example: customers
+      schema:
+        description: Database schema (pg only).
+        example: public
+        type: string
+      comment:
+        description: Comment as saved in the database.
+        type: string
+        example: null
+        nullable: true

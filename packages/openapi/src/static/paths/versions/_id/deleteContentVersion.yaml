@@ -1,0 +1,32 @@
+summary: Delete a Content Version
+description: Delete an existing content version.
+operationId: deleteContentVersion
+responses:
+  '204':
+    description: The resource was deleted successfully.
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Versions
+parameters:
+- $ref: ../../../components/parameters.yaml#/UUId
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, deleteContentVersion } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(deleteContentVersion(content_version_id));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	delete_versions_item(id: ID!): delete_one
+    }

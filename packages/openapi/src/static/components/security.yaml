@@ -1,0 +1,12 @@
+MetricsAuth:
+  type: http
+  scheme: bearer
+  bearerFormat: Metrics <token>
+KeyAuth:
+  type: apiKey
+  in: query
+  name: access_token
+Auth:
+  type: apiKey
+  in: header
+  name: Authorization

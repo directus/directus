@@ -1,0 +1,44 @@
+summary: Manually Sort Items in Collection
+description: Re-sort items in collection based on start and to value of item.
+operationId: sort
+parameters:
+- description: Collection identifier
+  in: path
+  name: collection
+  required: true
+  schema:
+    type: string
+requestBody:
+  content:
+    application/json:
+      schema:
+        properties:
+          item:
+            type: number
+            description: Primary key of item to move
+          to:
+            type: number
+            description: Primary key of item where to move the current item to
+responses:
+  '200':
+    description: Successful request
+security: []
+tags:
+- Utilities
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, utilitySort } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(utilitySort(collection_name, id_item_to_move, id_item_moving_to));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      POST /graphql/system
+
+      type Mutation {
+      	utils_sort(collection: String!, item: ID!, to: ID!): Boolean
+      }

@@ -1,0 +1,43 @@
+summary: Upload a File
+description: Upload a new file.
+operationId: uploadFile
+requestBody:
+  content:
+    application/json:
+      schema:
+        anyOf:
+        - $ref: ../../components/schemas/files.yaml
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../components/schemas/files.yaml
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+security: []
+tags:
+- Files
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, uploadFiles } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const formData = new FormData();
+    formData.append('file_1_property', 'Value');
+    formData.append('file', raw_file);
+    formData.append('file_2_property', 'Value');
+    formData.append('file', raw_file_2);
+
+    const result = await client.request(uploadFiles(formData));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    //Not currently supported by GraphQL.

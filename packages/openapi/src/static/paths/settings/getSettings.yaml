@@ -1,0 +1,42 @@
+summary: Retrieve Settings
+description: List the project settings.
+operationId: getSettings
+parameters:
+- $ref: ../../components/parameters.yaml#/Limit
+- $ref: ../../components/parameters.yaml#/Offset
+- $ref: ../../components/parameters.yaml#/Meta
+- $ref: ../../components/parameters.yaml#/Page
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../components/schemas/settings.yaml
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Settings
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, readSettings } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(readSettings());
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Query {
+    	settings: directus_settings
+    }

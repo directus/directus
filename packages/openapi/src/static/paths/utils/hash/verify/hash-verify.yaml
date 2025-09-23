@@ -1,0 +1,48 @@
+summary: Verify a Hash.
+description: Verify a string with a hash.
+operationId: hash-verify
+requestBody:
+  content:
+    application/json:
+      schema:
+        properties:
+          string:
+            type: string
+            description: String to hash.
+          hash:
+            type: string
+            description: Hash you want to verify against.
+        required:
+        - string
+        - hash
+responses:
+  '200':
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: boolean
+              example: true
+    description: Successful request
+security: []
+tags:
+- Utilities
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, verifyHash } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(verifyHash(string_to_verify, hash));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      POST /graphql/system
+
+      type Mutation {
+      	utils_hash_verify(hash: String!, string: String!): Boolean
+      }

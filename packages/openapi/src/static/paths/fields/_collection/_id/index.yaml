@@ -1,0 +1,6 @@
+get:
+  $ref: getCollectionField.yaml
+patch:
+  $ref: updateField.yaml
+delete:
+  $ref: deleteField.yaml

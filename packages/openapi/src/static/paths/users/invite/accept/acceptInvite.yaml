@@ -1,0 +1,47 @@
+summary: Accept User Invite
+description: Accept your invite. The invite user endpoint sends the email a link to the Data Studio. This link includes a token, which is then used to activate the invited user.
+operationId: acceptInvite
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - token
+          - password
+        properties:
+          token:
+            type: string
+            example: eyJh...KmUk
+            description: Accept invite token.
+          password:
+            type: string
+            description: Password of the user.
+            format: password
+            example: d1r3ctu5
+responses:
+  '204':
+    description: Successful request
+  '401':
+    $ref: ../../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Users
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, acceptUserInvite } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(acceptUserInvite(invite_token, user_password));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    type Mutation {
+      users_invite_accept(token: String!, password: String!): Boolean
+    }

@@ -1,0 +1,60 @@
+summary: Create a Comment
+description: Creates a new comment.
+operationId: createComment
+parameters:
+- $ref: ../../../components/parameters.yaml#/Meta
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+        - collection
+        - item
+        - comment
+        properties:
+          collection:
+            type: string
+            example: projects
+          item:
+            type: integer
+            example: 1
+          comment:
+            type: string
+            example: A new comment
+responses:
+  '200':
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/activity.yaml
+    description: Successful request
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+tags:
+- Comments
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, createComment } from '@directus/sdk';
+    const client = createDirectus('directus_project_url').with(rest());
+    const result = await client.request(
+    	createComment({
+    		collection: collection_name,
+    		item: item_id,
+    		comment: comment_content,
+    	})
+    );
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+    type Mutation {
+    	create_comment(collection: String!, item: ID!, comment: String!): directus_activity
+    }

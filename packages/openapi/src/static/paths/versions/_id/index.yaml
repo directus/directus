@@ -1,0 +1,6 @@
+get:
+  $ref: getContentVersion.yaml
+patch:
+  $ref: updateContentVersion.yaml
+delete:
+  $ref: deleteContentVersion.yaml

@@ -1,0 +1,68 @@
+summary: Update a Role
+description: Update an existing role.
+operationId: updateRole
+parameters:
+- $ref: ../../../components/parameters.yaml#/UUId
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Meta
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          description:
+            type: string
+            description: Description of the role.
+          enforce_tfa:
+            type: boolean
+            description: Whether or not this role enforces the use of 2FA.
+          external_id:
+            type: string
+            description: ID used with external services in SCIM.
+          ip_access:
+            type: array
+            description: Array of IP addresses that are allowed to connect to the
+              API as a user of this role.
+            items:
+              type: string
+          module_listing:
+            type: string
+            description: Custom override for the admin app module bar navigation.
+          name:
+            type: string
+            description: Name of the role.
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/roles.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Roles
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, updateRole } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(updateRole(role_id, partial_role_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	update_roles_item(id: ID!, data: update_directus_roles_input): directus_roles
+    }

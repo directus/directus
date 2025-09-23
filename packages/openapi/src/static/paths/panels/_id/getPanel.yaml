@@ -1,0 +1,44 @@
+summary: Retrieve a panel
+description: List an existing panel by primary key.
+operationId: getPanel
+parameters:
+- name: id
+  in: path
+  description: Unique identifier of the panel.
+  schema:
+    type: string
+  required: true
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Meta
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/panels.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Panels
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, readPanel } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(readPanel(panel_id, query_object));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      type Query {
+        panels_by_id(id: ID!): directus_panels
+      }

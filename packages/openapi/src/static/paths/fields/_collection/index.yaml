@@ -1,0 +1,4 @@
+get:
+  $ref: getCollectionFields.yaml
+post:
+  $ref: createField.yaml

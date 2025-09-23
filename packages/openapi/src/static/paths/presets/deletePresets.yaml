@@ -1,0 +1,36 @@
+summary: Delete Multiple Presets
+description: Delete multiple existing presets.
+operationId: deletePresets
+requestBody:
+  description: An array of preset primary keys.
+  content:
+    application/json:
+      schema:
+        type: array
+        items:
+          type: string
+responses:
+  '204':
+    description: The resource was deleted successfully.
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+security: []
+tags:
+- Presets
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, deletePresets } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(deletePreset(preset_id_array));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	delete_presets_items(ids: [ID!]!): delete_many
+    }

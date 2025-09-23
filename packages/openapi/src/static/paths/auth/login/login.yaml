@@ -1,0 +1,85 @@
+summary: Login
+description: Authenticate as a user.
+operationId: login
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+        - email
+        - password
+        properties:
+          email:
+            type: string
+            example: admin@example.com
+            description: Email address of the user you're logging in as.
+              for.
+          password:
+            type: string
+            description: Password of the user.
+            format: password
+            example: password
+          mode:
+            type: string
+            enum:
+              - json
+              - cookie
+              - session
+            default: json
+            description: Whether to retrieve the refresh token in the JSON response,
+              or in a `httpOnly` cookie.
+          otp:
+            type: string
+            description: The user's one-time-password (if MFA is enabled).
+responses:
+  '200':
+    description: Successful authentification
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: object
+              properties:
+                access_token:
+                  type: string
+                  example: eyJhbGciOiJI...
+                expires:
+                  type: integer
+                  example: 900
+                refresh_token:
+                  type: string
+                  example: yuOJkjdPXMd...
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Authentication
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, authentication, rest, login } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(authentication('json')).with(rest());
+
+    // login using the authentication composable
+    const result = await client.login({ email, password });
+
+    // login http request
+    const result = await client.request(login({ email, password }));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    mutation {
+    	auth_login(email: "user_email", password: "user_password") {
+    		access_token
+    		refresh_token
+    	}
+    }

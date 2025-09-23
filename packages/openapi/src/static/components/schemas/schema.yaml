@@ -1,0 +1,21 @@
+type: object
+properties:
+  version:
+    type: integer
+    example: 1
+  directus:
+    type: string
+  vendor:
+    type: string
+  collections:
+    type: array
+    items:
+      $ref: collections.yaml
+  fields:
+    type: array
+    items:
+      $ref: fields.yaml
+  relations:
+    type: array
+    items:
+      $ref: relations.yaml

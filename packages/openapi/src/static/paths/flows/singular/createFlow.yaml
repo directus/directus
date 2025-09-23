@@ -1,0 +1,42 @@
+summary: Create a Flow
+description: Create a new flow.
+operationId: createFlow
+parameters:
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Meta
+requestBody:
+  content:
+    application/json:
+      schema:
+        anyOf:
+        - $ref: ../../../components/schemas/flows.yaml
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/flows.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+tags:
+- Flows
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, createFlow } from '@directus/sdk';
+    const client = createDirectus('directus_project_url').with(rest());
+    const result = await client.request(createFlow(flow_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+    type Mutation {
+    	create_flows_item(data: create_directus_flows_input!): directus_flows
+    }

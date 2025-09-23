@@ -1,0 +1,6 @@
+get:
+  $ref: getCollection.yaml
+patch:
+  $ref: updateCollection.yaml
+delete:
+  $ref: deleteCollection.yaml

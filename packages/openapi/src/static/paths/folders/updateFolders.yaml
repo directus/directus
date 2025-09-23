@@ -1,0 +1,76 @@
+summary: Update Multiple Folders
+description: |
+  Update multiple folders at the same time.
+
+  Any files in these folders will be moved to the root folder.
+security: []
+tags:
+- Folders
+operationId: updateFolders
+parameters:
+- $ref: ../../components/parameters.yaml#/Fields
+- $ref: ../../components/parameters.yaml#/Limit
+- $ref: ../../components/parameters.yaml#/Meta
+- $ref: ../../components/parameters.yaml#/Offset
+- $ref: ../../components/parameters.yaml#/Sort
+- $ref: ../../components/parameters.yaml#/Filter
+- $ref: ../../components/parameters.yaml#/Search
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - data
+          - keys
+        properties:
+          data:
+            type: object
+            properties:
+              name:
+                type: string
+                example: Amsterdam
+                description: Name of the folder.
+              parent:
+                type: integer
+                description: Unique identifier of the parent folder. This allows for
+                  nested folders.
+            required:
+              - name
+          keys:
+            type: array
+            items:
+              type: string
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: ../../components/schemas/folders.yaml
+            meta:
+              $ref: ../../components/schemas/x-metadata.yaml
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, updateFolders } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(updateFolders(folder_id_array, partial_folder_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	update_folders_items(ids: [ID!]!, data: update_directus_folders_input): [directus_folders]
+    }

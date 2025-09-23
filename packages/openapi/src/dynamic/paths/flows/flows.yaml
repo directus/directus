@@ -1,0 +1,111 @@
+get:
+  summary: List Flows
+  description: Get all flows.
+  operationId: getFlows
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Flows'
+              meta:
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Flows
+
+post:
+  summary: Create a Flow
+  description: Create a new flow.
+  operationId: createFlow
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          anyOf:
+            - $ref: '../../openapi.yaml#/components/schemas/Flows'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Flows'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Flows
+
+patch:
+  summary: Update Multiple Flows
+  description: Update multiple flows at the same time.
+  tags:
+    - Flows
+  operationId: updateFlows
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Filter'
+    - $ref: '../../openapi.yaml#/components/parameters/Search'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              anyOf:
+                - $ref: '../../openapi.yaml#/components/schemas/Flows'
+            keys:
+              type: array
+              items:
+                type: string
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Flows'
+              meta:
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+
+delete:
+  summary: Delete Multiple Flows
+  description: Delete multiple existing flows.
+  tags:
+    - Flows
+  operationId: deleteFlows
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'

@@ -1,0 +1,62 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the object.
+    example: 2
+    type: integer
+  action:
+    description: Action that was performed.
+    example: update
+    type: string
+    enum:
+      - create
+      - update
+      - delete
+      - login
+  user:
+    description: The user who performed this action. Many-to-one to users.
+    type: string
+    oneOf:
+      - $ref: users.yaml
+    nullable: true
+  timestamp:
+    description: When the action happened.
+    example: '2019-12-05T22:52:09Z'
+    type: string
+    format: date-time
+  ip:
+    description: The IP address of the user at the time the action took place.
+    example: 127.0.0.1
+    oneOf:
+      - type: string
+      - format: ipv4
+  user_agent:
+    description: User agent string of the browser the user used when the action took place.
+    example: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML,like Gecko) Chrome/78.0.3904.108 Safari/537.36
+    type: string
+  collection:
+    description: Collection identifier in which the item resides.
+    oneOf:
+      - type: string
+      - $ref: collections.yaml
+  item:
+    description: Unique identifier for the item the action applied to. This is always a string, even for integer primary keys.
+    example: '328'
+    type: string
+  comment:
+    description: User comment. This will store the comments that show up in the right sidebar of the item edit page in the admin app.
+    example: null
+    type: string
+    nullable: true
+  origin:
+    description: Origin of the request when the action took place.
+    example: https://directus.io
+    type: string
+  revisions:
+    description: Any changes that were made in this activity. One-to-many to revisions.
+    nullable: true
+    type: array
+    items:
+      oneOf:
+        - $ref: revisions.yaml
+x-collection: directus_activity

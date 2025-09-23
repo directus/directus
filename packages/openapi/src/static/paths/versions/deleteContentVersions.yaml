@@ -1,0 +1,36 @@
+summary: Delete Multiple Content Versions
+description: Delete multiple existing content versions.
+operationId: deleteContentVersions
+requestBody:
+  description: An array of content version primary keys.
+  content:
+    application/json:
+      schema:
+        type: array
+        items:
+          type: string
+responses:
+  '204':
+    description: The resource was deleted successfully.
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+security: []
+tags:
+- Versions
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, deleteContentVersions } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(deleteContentVersions(content_version_id_array));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	delete_versions_items(ids: [ID!]!): delete_many
+    }

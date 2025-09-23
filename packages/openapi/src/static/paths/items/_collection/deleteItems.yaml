@@ -1,0 +1,59 @@
+summary: Delete Multiple Items
+description: Delete multiple items at the same time.
+operationId: deleteItems
+parameters:
+- $ref: ../../../components/parameters.yaml#/Collection
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Limit
+- $ref: ../../../components/parameters.yaml#/Meta
+- $ref: ../../../components/parameters.yaml#/Offset
+- $ref: ../../../components/parameters.yaml#/Sort
+- $ref: ../../../components/parameters.yaml#/Filter
+- $ref: ../../../components/parameters.yaml#/Search
+requestBody:
+  content:
+    application/json:
+      schema:
+        anyOf:
+          - type: array
+            description: Primary keys of items to be deleted.
+            items:
+              type: string
+          - type: object
+            description: Object containing either `keys` or `query` to selected what items to update.
+            properties:
+              keys:
+                type: array
+                items:
+                  type: string
+              items:
+                type: object
+responses:
+  '204':
+    description: The resource was deleted successfully.
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Items
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, deleteItems } from '@directus/sdk';
+
+    const client = createDirectus('https://directus.example.com').with(rest());
+
+    const result = await client.request(deleteItems(collection_name, item_id_array));
+
+    //or
+
+    const result = await client.request(deleteItems(collection_name, query_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    type Mutation {
+      delete_<collection>_items(ids: [ID!]!): delete_many
+    }

@@ -1,0 +1,187 @@
+summary: Apply Schema Difference
+description: Update the instance's schema by passing the diff previously retrieved
+  via `/schema/diff` endpoint in the JSON request body or a JSON/YAML file. This endpoint
+  is only available to admin users.
+operationId: schemaApply
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        $ref: ../../../components/schemas/diff.yaml
+    multipart/form-data:
+      schema:
+        type: object
+        properties:
+          file:
+            type: string
+            format: binary
+responses:
+  '204':
+    description: Successful request
+  '403':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+security: []
+tags:
+- Schema
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, schemaApply } from '@directus/sdk';
+
+      const client = createDirectus('https://directus.example.com').with(rest());
+
+      const result = await client.request(
+        schemaApply({
+          hash: '7d4499bc1e09bab3558b46cc09cd83fea2c05144',
+          diff: {
+            collections: [
+              {
+                collection: 'articles',
+                diff: [
+                  {
+                    kind: 'N',
+                    rhs: {
+                      collection: 'articles',
+                      meta: {
+                        accountability: 'all',
+                        archive_app_filter: true,
+                        archive_field: null,
+                        archive_value: null,
+                        collapse: 'open',
+                        collection: 'articles',
+                        color: null,
+                        display_template: null,
+                        group: null,
+                        hidden: false,
+                        icon: null,
+                        item_duplication_fields: null,
+                        note: null,
+                        singleton: false,
+                        sort: null,
+                        sort_field: null,
+                        translations: null,
+                        unarchive_value: null,
+                      },
+                      schema: {
+                        name: 'articles',
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+            fields: [
+              {
+                collection: 'articles',
+                field: 'id',
+                diff: [
+                  {
+                    kind: 'N',
+                    rhs: {
+                      collection: 'articles',
+                      field: 'id',
+                      type: 'integer',
+                      meta: {
+                        collection: 'articles',
+                        conditions: null,
+                        display: null,
+                        display_options: null,
+                        field: 'id',
+                        group: null,
+                        hidden: true,
+                        interface: 'input',
+                        note: null,
+                        options: null,
+                        readonly: true,
+                        required: false,
+                        sort: null,
+                        special: null,
+                        translations: null,
+                        validation: null,
+                        validation_message: null,
+                        width: 'full',
+                      },
+                      schema: {
+                        name: 'id',
+                        table: 'articles',
+                        data_type: 'integer',
+                        default_value: null,
+                        max_length: null,
+                        numeric_precision: null,
+                        numeric_scale: null,
+                        is_nullable: false,
+                        is_unique: false,
+                        is_primary_key: true,
+                        is_generated: false,
+                        generation_expression: null,
+                        has_auto_increment: true,
+                        foreign_key_table: null,
+                        foreign_key_column: null,
+                      },
+                    },
+                  },
+                ],
+              },
+              {
+                collection: 'articles',
+                field: 'title',
+                diff: [
+                  {
+                    kind: 'N',
+                    rhs: {
+                      collection: 'articles',
+                      field: 'title',
+                      type: 'string',
+                      meta: {
+                        collection: 'articles',
+                        conditions: null,
+                        display: null,
+                        display_options: null,
+                        field: 'title',
+                        group: null,
+                        hidden: false,
+                        interface: 'input',
+                        note: null,
+                        options: null,
+                        readonly: false,
+                        required: false,
+                        sort: null,
+                        special: null,
+                        translations: null,
+                        validation: null,
+                        validation_message: null,
+                        width: 'full',
+                      },
+                      schema: {
+                        name: 'title',
+                        table: 'articles',
+                        data_type: 'varchar',
+                        default_value: null,
+                        max_length: 255,
+                        numeric_precision: null,
+                        numeric_scale: null,
+                        is_nullable: true,
+                        is_unique: false,
+                        is_primary_key: false,
+                        is_generated: false,
+                        generation_expression: null,
+                        has_auto_increment: false,
+                        foreign_key_table: null,
+                        foreign_key_column: null,
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+            relations: [],
+          },
+        })
+      );
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      // Not supported in GraphQL

@@ -1,0 +1,46 @@
+summary: System Info
+description: Provides detailed information about the project server, its schema, and its health.
+operationId: serverInfo
+parameters:
+- description: The first time you create a project, the provided token will be saved
+    and required for subsequent project installs. It can also be found and configured
+    in `/config/__api.json` on your server.
+  in: query
+  name: super_admin_token
+  required: true
+  schema:
+    type: integer
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/settings.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Server
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, serverInfo } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(serverInfo());
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    GET /graphql/system
+
+    type Query {
+    	server_info: server_info
+    }

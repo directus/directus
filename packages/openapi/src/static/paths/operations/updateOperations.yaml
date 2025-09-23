@@ -1,0 +1,61 @@
+summary: Update Multiple Operations
+description: Update multiple operations at the same time.
+security: []
+tags:
+- Operations
+operationId: updateOperations
+parameters:
+- $ref: ../../components/parameters.yaml#/Fields
+- $ref: ../../components/parameters.yaml#/Limit
+- $ref: ../../components/parameters.yaml#/Meta
+- $ref: ../../components/parameters.yaml#/Offset
+- $ref: ../../components/parameters.yaml#/Sort
+- $ref: ../../components/parameters.yaml#/Filter
+- $ref: ../../components/parameters.yaml#/Search
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - data
+          - keys
+        properties:
+          data:
+            anyOf:
+            - $ref: ../../components/schemas/operations.yaml
+          keys:
+            type: array
+            items:
+              type: string
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: ../../components/schemas/operations.yaml
+            meta:
+              $ref: ../../components/schemas/x-metadata.yaml
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, updateOperations } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(updateOperations(operations_id_array, partial_operations_object));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      type Mutation {
+        update_operations_items(ids: [ID!]!, data: update_directus_operations_input): [directus_operations]
+      }

@@ -1,0 +1,39 @@
+summary: Retrieve a Preset
+security: []
+tags:
+- Presets
+operationId: getPreset
+description: Retrieve a single preset by unique identifier.
+parameters:
+- $ref: ../../../components/parameters.yaml#/Id
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Meta
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/presets.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, readPreset } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(readPreset(preset_id, query_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Query {
+    	presets_by_id(id: ID!): directus_presets
+    }

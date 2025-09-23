@@ -1,0 +1,48 @@
+
+summary: Get Comments
+description: Returns a list of comments.
+operationId: getComments
+parameters:
+- $ref: ../../components/parameters.yaml#/Fields
+- $ref: ../../components/parameters.yaml#/Limit
+- $ref: ../../components/parameters.yaml#/Meta
+- $ref: ../../components/parameters.yaml#/Offset
+- $ref: ../../components/parameters.yaml#/Sort
+- $ref: ../../components/parameters.yaml#/Filter
+- $ref: ../../components/parameters.yaml#/Search
+responses:
+  '200':
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: ../../components/schemas/comments.yaml
+            meta:
+              $ref: ../../components/schemas/x-metadata.yaml
+    description: Successful request
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Comments
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, readComments } from '@directus/sdk';
+
+    const client = createDirectus('directus_comment_example').with(rest());
+
+    const result = await client.request(readComments(query));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    type Query {
+      flows: [directus_comments]
+    }

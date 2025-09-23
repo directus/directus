@@ -1,0 +1,63 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the operation.
+    type: string
+    format: uuid
+    example: 2f24211d-d928-469a-aea3-3c8f53d4e426
+  name:
+    description: The name of the operation.
+    type: string
+    example: Log to Console
+  key:
+    description: Key for the operation. Must be unique within a given flow.
+    type: string
+    example: log_console
+  type:
+    description: Type of operation. One of `log`, `mail`, `notification`, `create`, `read`, `request`, `sleep`, `transform`, `trigger`, `condition`, or any type of custom operation extensions.
+    type: string
+    example: log
+  position_x:
+    description: Position of the operation on the X axis within the flow workspace.
+    type: integer
+    example: 12
+  position_y:
+    description: Position of the operation on the Y axis within the flow workspace.
+    type: integer
+    example: 12
+  options:
+    description: Options depending on the type of the operation.
+    type: object
+    example: null
+    nullable: true
+  resolve:
+    description: The operation triggered when the current operation succeeds (or `then` logic of a condition operation).
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    oneOf:
+      - type: string
+      - $ref: operations.yaml
+  reject:
+    description: The operation triggered when the current operation fails (or `otherwise` logic of a condition operation).
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    oneOf:
+      - type: string
+      - $ref: operations.yaml
+  flow:
+    nullable: false
+    type: string
+    format: uuid
+    oneOf:
+      - $ref: flows.yaml
+  date_created:
+    description: Timestamp in ISO8601 when the operation was created.
+    type: string
+    example: '2022-05-11T13:14:52Z'
+    format: date-time
+    nullable: true
+  user_created:
+    description: The user who created the operation.
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    oneOf:
+      - type: string
+      - $ref: users.yaml
+x-collection: directus_operations

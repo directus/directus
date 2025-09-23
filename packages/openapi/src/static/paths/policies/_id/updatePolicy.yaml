@@ -1,0 +1,50 @@
+summary: Update a Policy
+description: Update an existing policy.
+operationId: updatePolicy
+parameters:
+- name: id
+  in: path
+  description: Unique identifier of the policy.
+  schema:
+    type: string
+  required: true
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Meta
+requestBody:
+  content:
+    application/json:
+      schema:
+        anyOf:
+        - $ref: ../../../components/schemas/policies.yaml
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/policies.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Policies
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, updatePolicy } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(updatePolicy(policy_id, partial_policy_object));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      type Mutation {
+        update_policies_item(id: ID!, data: update_directus_policys_input): directus_policies
+      }

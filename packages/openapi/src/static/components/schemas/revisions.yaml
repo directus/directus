@@ -1,0 +1,49 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the revision.
+    example: 1
+    type: integer
+  activity:
+    description: Unique identifier for the activity record. Many-to-one to activity.
+    example: 2
+    type: integer
+    oneOf:
+      - $ref: activity.yaml
+  collection:
+    description: Collection of the updated item.
+    example: articles
+    type: string
+    oneOf:
+      - $ref: collections.yaml
+  item:
+    description: Primary key of updated item.
+    example: '168'
+    type: string
+  data:
+    description: Copy of item state at time of update.
+    example:
+      author: 1
+      body: This is my first post
+      featured_image: 15
+      id: '168'
+      title: Hello, World!
+    type: object
+    nullable: true
+  delta:
+    description: Changes between the previous and the current revision.
+    example:
+      title: Hello, World!
+    type: object
+  parent:
+    description: If the current item was updated relationally, this is the id of the parent revision record. Many-to-one to revisions.
+    example: null
+    type: integer
+    nullable: true
+  version:
+    description: Associated version of this revision. Many-to-one to versions.
+    example: draft
+    type: string
+    oneOf:
+      - $ref: versions.yaml
+x-collection: directus_revisions

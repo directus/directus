@@ -1,0 +1,81 @@
+get:
+  summary: Retrieve an Item
+  description: Retrieve a single item by unique identifier.
+  tags:
+    - Items
+  operationId: getItem
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: '../../openapi.yaml#/components/parameters/Version'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+
+patch:
+  summary: Update an Item
+  description: Update an existing item.
+  tags:
+    - Items
+  operationId: updateItem
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+
+delete:
+  summary: Delete an Item
+  description: Delete an existing item.
+  tags:
+    - Items
+  operationId: deleteItem
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+parameters:
+  - $ref: '../../openapi.yaml#/components/parameters/Collection'
+  - name: id
+    description: Index of the item.
+    in: path
+    required: true
+    schema:
+      oneOf:
+        - type: integer
+          description: Incremental index of the item.
+          example: 1
+        - type: string
+          description: Unique identifier of the item.
+          example: 8cbb43fe-4cdf-4991-8352-c461779cec02

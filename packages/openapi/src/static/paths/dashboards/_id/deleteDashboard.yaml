@@ -1,0 +1,36 @@
+
+summary: Delete a Dashboard
+description: Delete an existing dashboard.
+operationId: deleteDashboard
+parameters:
+- name: id
+  in: path
+  description: Unique identifier of the dashboard.
+  required: true
+  schema:
+    type: string
+responses:
+  '204':
+    description: The resource was deleted successfully.
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Dashboards
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, deleteDashboard } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(deleteDashboard(dashboard_id));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+      type Mutation {
+        delete_dashboards_item(id: ID!): delete_one
+      }

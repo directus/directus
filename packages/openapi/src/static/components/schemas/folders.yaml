@@ -1,0 +1,26 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the folder.
+    example: 0cf0e03d-4364-45df-b77b-ca61f61869d2
+    type: string
+    format: uuid
+  name:
+    description: Name of the folder.
+    example: New York
+    type: string
+  parent:
+    description: Unique identifier of the parent folder. This allows for nested folders.
+    example: |
+      {
+        "data": {
+          "id": "fc02d733-95b8-4e27-bd4b-08a32cbe4e66",
+          "name": "Test",
+          "parent": null
+        }
+      }
+    type: string
+    oneOf:
+      - $ref: folders.yaml
+    nullable: true
+x-collection: directus_folders

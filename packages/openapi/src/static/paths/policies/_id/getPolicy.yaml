@@ -1,0 +1,44 @@
+summary: Retrieve a Policy
+description: List an existing policy by primary key.
+operationId: getPolicy
+parameters:
+- name: id
+  in: path
+  description: Unique identifier of the Policy.
+  schema:
+    type: string
+  required: true
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Meta
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/policies.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Policies
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, readPolicy } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(readPolicy(policy_id, query_object));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      type Query {
+        policies_by_id(id: ID!): directus_policies
+      }

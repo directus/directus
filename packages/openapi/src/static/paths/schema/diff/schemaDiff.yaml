@@ -1,0 +1,116 @@
+summary: Retrieve Schema Difference
+description: |
+  Compare the current instance's schema against the schema snapshot in JSON request body and retrieve the difference. This endpoint is only available to admin users.
+
+  Alternatively, upload a JSON or YAML schema file.
+
+  Does not allow different Directus versions and database vendors by default. You can opt in to bypass these checks by passing the `force` query parameter.
+operationId: schemaDiff
+parameters:
+- name: force
+  description: Bypass version and database vendor restrictions.
+  in: query
+  required: false
+  schema:
+    type: boolean
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        $ref: ../../../components/schemas/schema.yaml
+    multipart/form-data:
+      schema:
+        type: object
+        properties:
+          file:
+            type: string
+            format: binary
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          $ref: ../../../components/schemas/diff.yaml
+  '204':
+    description: No schema difference.
+  '403':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+security: []
+tags:
+- Schema
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    ::: details **Toggle Open to See Request**
+
+    import { createDirectus, rest, schemaDiff } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(
+    	schemaDiff({
+    		version: version_num,
+    		directus: 'directus_version',
+    		vendor: 'database_type',
+    		collections: [
+    			{
+    				collection: 'collection_name',
+    				meta: {
+    					// Meta fields
+    				},
+    				schema: {
+    					// Schema fields
+    				},
+    			},
+    		],
+    		fields: [
+    			{
+    				collection: 'collection_name',
+    				field: 'field_1_id',
+    				type: 'field_1_type',
+    				meta: {
+    					// Meta fields
+    				},
+    				schema: {
+    					// Meta fields
+    				},
+    			},
+    			{
+    				collection: 'collection_name',
+    				field: 'field_2_id',
+    				type: 'field_2_type',
+    				meta: {
+    					// Meta fields
+    				},
+    				schema: {
+    					// Meta fields
+    				},
+    			},
+    			{
+    				collection: 'collection_name',
+    				field: 'field_3_id',
+    				type: 'field_3_type',
+    				meta: {
+    					// Meta fields
+    				},
+    				schema: {
+    					// Meta fields
+    				},
+    			},
+    		],
+    		relations: [],
+    	})
+    );
+
+    console.dir(result, { depth: null });
+
+    :::
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    // Not supported in GraphQL

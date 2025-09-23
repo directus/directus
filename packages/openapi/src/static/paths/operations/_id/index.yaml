@@ -1,0 +1,6 @@
+get:
+  $ref: getOperation.yaml
+patch:
+  $ref: updateOperation.yaml
+delete:
+  $ref: deleteOperation.yaml

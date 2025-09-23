@@ -1,0 +1,50 @@
+summary: Retrieve a Field
+description: Retrieves the details of a single field in a given collection.
+operationId: getCollectionField
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../../components/schemas/fields.yaml
+  '401':
+    $ref: ../../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Fields
+parameters:
+- name: collection
+  in: path
+  description: Unique identifier of the collection the item resides in.
+  schema:
+    type: string
+  required: true
+- name: id
+  in: path
+  description: Unique identifier of the field.
+  schema:
+    type: string
+  required: true
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, readField } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(readField(collection_name, field_name));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      POST /graphql/system
+
+      type Query {
+      	fields_by_name(collection: String!, field: String!): directus_fields
+      }

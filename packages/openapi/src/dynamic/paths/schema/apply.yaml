@@ -1,0 +1,29 @@
+post:
+  summary: Apply Schema Difference
+  description:
+    Update the instance's schema by passing the diff previously retrieved via `/schema/diff` endpoint in the JSON
+    request body or a JSON/YAML file. This endpoint is only available to admin users.
+  operationId: schemaApply
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: '../../openapi.yaml#/components/schemas/Diff'
+      multipart/form-data:
+        schema:
+          type: object
+          properties:
+            file:
+              type: string
+              format: binary
+  responses:
+    '204':
+      description: Successful request
+    '403':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+  tags:
+    - Schema

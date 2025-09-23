@@ -1,0 +1,39 @@
+summary: Delete Multiple Folders
+description: |
+  Delete multiple existing folders.
+
+  Any files in these folders will be moved to the root folder.
+operationId: deleteFolders
+requestBody:
+  description: An array of folder primary keys.
+  content:
+    application/json:
+      schema:
+        type: array
+        items:
+          type: string
+responses:
+  '204':
+    description: The resource was deleted successfully.
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+security: []
+tags:
+- Folders
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, deleteFolders } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(deleteFolders(folder_id_array));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	delete_folders_items(ids: [ID!]!): delete_many
+    }

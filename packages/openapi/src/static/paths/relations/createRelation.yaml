@@ -1,0 +1,67 @@
+summary: Create a Relation
+description: Create a new relation.
+operationId: createRelation
+parameters:
+- $ref: ../../components/parameters.yaml#/Fields
+- $ref: ../../components/parameters.yaml#/Meta
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          collection_many:
+            type: string
+            description: Collection that has the field that holds the foreign key.
+            example: articles
+          collection_one:
+            type: string
+            description: Collection on the _one_ side of the relationship.
+            example: authors
+          field_many:
+            type: string
+            description: Foreign key. Field that holds the primary key of the related
+              collection.
+            example: author
+          field_one:
+            type: string
+            description: Alias column that serves as the _one_ side of the relationship.
+            example: books
+          junction_field:
+            type: string
+            description: Field on the junction table that holds the primary key of
+              the related collection.
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../components/schemas/relations.yaml
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Relations
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, createRelation } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(createRelation(relation_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	create_relations_item(data: create_directus_relations_input!): directus_relations
+    }

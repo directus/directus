@@ -1,0 +1,50 @@
+summary: List Operations
+description: List all operations that exist in Directus.
+operationId: getOperations
+parameters:
+  - $ref: ../../components/parameters.yaml#/Fields
+  - $ref: ../../components/parameters.yaml#/Limit
+  - $ref: ../../components/parameters.yaml#/Offset
+  - $ref: ../../components/parameters.yaml#/Meta
+  - $ref: ../../components/parameters.yaml#/Sort
+  - $ref: ../../components/parameters.yaml#/Filter
+  - $ref: ../../components/parameters.yaml#/Search
+  - $ref: ../../components/parameters.yaml#/Page
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: ../../components/schemas/operations.yaml
+            meta:
+              $ref: ../../components/schemas/x-metadata.yaml
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Operations
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, readOperations } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(readOperations(query_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Query {
+    	operations: [directus_operations]
+    }

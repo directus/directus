@@ -1,0 +1,140 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the user.
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    type: string
+  first_name:
+    description: First name of the user.
+    example: Admin
+    type: string
+  last_name:
+    description: Last name of the user.
+    example: User
+    type: string
+  email:
+    description: Unique email address for the user.
+    example: admin@example.com
+    type: string
+    format: email
+  password:
+    description: Password of the user.
+    type: string
+    format: string
+  location:
+    description: The user's location.
+    example: null
+    type: string
+    nullable: true
+  title:
+    description: The user's title.
+    example: null
+    type: string
+    nullable: true
+  description:
+    description: The user's description.
+    example: null
+    type: string
+    nullable: true
+  tags:
+    description: The user's tags.
+    example: null
+    type: array
+    nullable: true
+    items:
+      type: string
+  avatar:
+    description: The user's avatar. Many-to-one to files.
+    example: null
+    type: string
+    oneOf:
+      - $ref: files.yaml
+    nullable: true
+  language:
+    description: The user's language used in Directus. Language the Data Studio is rendered in. See our Crowdin page for all available languages and translations.
+    example: en-US
+    type: string
+  tfa_secret:
+    description: The 2FA secret string that's used to generate one time passwords.
+    example: null
+    type: string
+    nullable: true
+  status:
+    description: Status of the user.
+    example: active
+    type: string
+    enum:
+      - active
+      - invited
+      - draft
+      - suspended
+      - deleted
+  role:
+    description: Unique identifier of the role of this user. Many-to-one to roles.
+    example: 2f24211d-d928-469a-aea3-3c8f53d4e426
+    type: string
+    oneOf:
+      - $ref: roles.yaml
+  token:
+    description: Static token for the user.
+    type: string
+    nullable: true
+  policies:
+    nullable: true
+    description: The policies associated with this user. Many-to-many to policies.
+    example: 2f24211d-d928-469a-aea3-3c8f53d4e426
+    type: string
+    oneOf:
+      - $ref: policies.yaml
+  last_access:
+    description: When this user used the API last.
+    example: '2020-05-31T14:32:37Z'
+    type: string
+    nullable: true
+    format: date-time
+  last_page:
+    description: Last page that the user was on.
+    example: /my-project/settings/collections/a
+    type: string
+    nullable: true
+  provider:
+    description: What auth provider was used to register this user.
+    nullable: false
+    type: string
+  external_identifier:
+    description: Primary key of the user in the third party authentication provider, if used.
+    nullable: true
+    type: string
+  auth_data:
+    description: Required data about the user as provided by the third party auth provider, if used.
+    nullable: true
+    type: object
+  email_notifications:
+    description: When this is enabled, the user will receive emails for notifications.
+    nullable: true
+    type: boolean
+  appearance:
+    description: One of auto, light, dark.
+    nullable: true
+    type: string
+    enum:
+      - auto
+      - light
+      - dark
+  theme_dark:
+    description: Theme to use in dark mode.
+    nullable: true
+    type: string
+  theme_light:
+    description: Theme to use in light mode.
+    nullable: true
+    type: string
+  theme_light_overrides:
+    description: Customization for light theme in use.
+    nullable: true
+    type: object
+  theme_dark_overrides:
+    description: Customization for dark theme in use.
+    nullable: true
+    type: object
+x-collection: directus_users

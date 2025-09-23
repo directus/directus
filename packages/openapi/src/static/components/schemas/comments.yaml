@@ -1,0 +1,42 @@
+type: object
+properties:
+  collection:
+    description: Collection identifier in which the item resides.
+    example: articles
+    type: string
+  id:
+    description: Unique identifier for the object.
+    example: 2fab3b9d-0543-4b87-8a30-3c5ee66fedf1
+    type: string
+    format: uuid
+  item:
+    description: The item the comment is created for.
+    example: 15
+    type: string
+  comment:
+    description: User comment. This will store the comments that show up in the right sidebar of the item edit page in the Data Studio.
+    example: This is a comment on an article
+    type: string
+  date_created:
+    description: Timestamp in ISO8601 when the comment was created.
+    example: 2023-01-15T09:14:52Z
+    type: string
+    format: date-time
+  date_updated:
+    description: Timestamp in ISO8601 when the comment was last updated.
+    example: 2023-01-15T09:00:00Z
+    type: string
+    format: date-time
+  user_created:
+    description: The user who created the comment. Many-to-one to users.
+    example: 12e62fd0-29c7-4fd3-b3d3-c7a39933e8af
+    type: string
+    oneOf:
+      - $ref: users.yaml
+  user_updated:
+    description: The user who last updated the comment. Many-to-one to users.
+    example: 12e62fd0-29c7-4fd3-b3d3-c7a39933e8af
+    type: string
+    oneOf:
+      - $ref: users.yaml
+x-collection: directus_comments

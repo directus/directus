@@ -1,0 +1,335 @@
+openapi: '3.0.1'
+info:
+  title: Directus API Reference
+  description: This is a dynamically generated API specification for all endpoints existing on the current project!
+  version: '11.1.0'
+  license:
+    name: Business Source License 1.1 (BUSL-1.1)
+    url: https://github.com/directus/directus/blob/main/license
+servers:
+  - url: https://example.directus.app
+    description: Your current Directus project.
+
+paths:
+  "/activity":
+    $ref: paths/activity/index.yaml
+  "/activity/{id}":
+    $ref: paths/activity/_id/index.yaml
+  "/assets/{id}":
+    $ref: paths/assets/_id/index.yaml
+  "/auth/login":
+    $ref: paths/auth/login/index.yaml
+  "/auth/logout":
+    $ref: paths/auth/logout/index.yaml
+  "/auth/oauth":
+    $ref: paths/auth/oauth/index.yaml
+  "/auth/oauth/{provider}":
+    $ref: paths/auth/oauth/_provider/index.yaml
+  "/auth/password/request":
+    $ref: paths/auth/password/request/index.yaml
+  "/auth/password/reset":
+    $ref: paths/auth/password/reset/index.yaml
+  "/auth/refresh":
+    $ref: paths/auth/refresh/index.yaml
+  "/collections":
+    $ref: paths/collections/index.yaml
+  "/collections/{id}":
+    $ref: paths/collections/_id/index.yaml
+  "/comments":
+    $ref: paths/comments/index.yaml
+  "/comments‎":
+    $ref: paths/comments/singular/index.yaml
+  "/comments/{id}":
+    $ref: paths/comments/_id/index.yaml
+  "/dashboards":
+    $ref: paths/dashboards/index.yaml
+  "/dashboards‎":
+    $ref: paths/dashboards/singular/index.yaml
+  "/dashboards/{id}":
+    $ref: paths/dashboards/_id/index.yaml
+  "/extensions":
+    $ref: paths/extensions/index.yaml
+  "/extensions/{bundle}/{name}":
+    $ref: paths/extensions/_bundle/_name/index.yaml
+  "/extensions/{name}":
+    $ref: paths/extensions/_name/index.yaml
+  "/fields":
+    $ref: paths/fields/index.yaml
+  "/fields/{collection}":
+    $ref: paths/fields/_collection/index.yaml
+  "/fields/{collection}/{id}":
+    $ref: paths/fields/_collection/_id/index.yaml
+  "/files":
+    $ref: paths/files/index.yaml
+  "/files/import":
+    $ref: paths/files/import/index.yaml
+  "/files/{id}":
+    $ref: paths/files/_id/index.yaml
+  "/flows":
+    $ref: paths/flows/index.yaml
+  "/flows‎":
+    $ref: paths/flows/singular/index.yaml
+  "/flows/{id}":
+    $ref: paths/flows/_id/index.yaml
+  "/flows/trigger/{id}":
+    $ref: paths/flows/trigger/_id/index.yaml
+  "/folders":
+    $ref: paths/folders/index.yaml
+  "/folders‎":
+    $ref: paths/folders/singular/index.yaml
+  "/folders/{id}":
+    $ref: paths/folders/_id/index.yaml
+  "/items/{collection}":
+    $ref: paths/items/_collection/index.yaml
+  "/items/{collection}‎":
+    $ref: paths/items/_collection/singular/index.yaml
+  "/items/{collection}/singleton":
+    $ref: paths/items/_collection/singleton/index.yaml
+  "/items/{collection}/{id}":
+    $ref: paths/items/_collection/_id/index.yaml
+  "/metrics":
+    $ref: paths/metrics/index.yaml
+  "/notifications":
+    $ref: paths/notifications/index.yaml
+  "/notifications‎":
+    $ref: paths/notifications/singular/index.yaml
+  "/notifications/{id}":
+    $ref: paths/notifications/_id/index.yaml
+  "/operations":
+    $ref: paths/operations/index.yaml
+  "/operations‎":
+    $ref: paths/operations/singular/index.yaml
+  "/operations/{id}":
+    $ref: paths/operations/_id/index.yaml
+  "/panels":
+    $ref: paths/panels/index.yaml
+  "/panels‎":
+    $ref: paths/panels/singular/index.yaml
+  "/panels/{id}":
+    $ref: paths/panels/_id/index.yaml
+  "/permissions":
+    $ref: paths/permissions/index.yaml
+  "/permissions‎":
+    $ref: paths/permissions/singular/index.yaml
+  "/permissions/{id}":
+    $ref: paths/permissions/_id/index.yaml
+  "/permissions/me":
+    $ref: paths/permissions/me/index.yaml
+  "/permissions/me/{collection}/{id}":
+    $ref: paths/permissions/me/_collection/_id/index.yaml
+  "/policies":
+    $ref: paths/policies/index.yaml
+  "/policies‎":
+    $ref: paths/policies/singular/index.yaml
+  "/policies/{id}":
+    $ref: paths/policies/_id/index.yaml
+  "/presets":
+    $ref: paths/presets/index.yaml
+  "/presets‎":
+    $ref: paths/presets/singular/index.yaml
+  "/presets/{id}":
+    $ref: paths/presets/_id/index.yaml
+  "/relations":
+    $ref: paths/relations/index.yaml
+  "/relations‎/{collection}":
+    $ref: paths/relations/_collection/index.yaml
+  "/relations/{id}":
+    $ref: paths/relations/_id/index.yaml
+  "/revisions":
+    $ref: paths/revisions/index.yaml
+  "/revisions/{id}":
+    $ref: paths/revisions/_id/index.yaml
+  "/roles":
+    $ref: paths/roles/index.yaml
+  "/roles‎":
+    $ref: paths/roles/singular/index.yaml
+  "/roles/{id}":
+    $ref: paths/roles/_id/index.yaml
+  "/schema/apply":
+    $ref: paths/schema/apply/index.yaml
+  "/schema/diff":
+    $ref: paths/schema/diff/index.yaml
+  "/schema/snapshot":
+    $ref: paths/schema/snapshot/index.yaml
+  "/server/info":
+    $ref: paths/server/info/index.yaml
+  "/server/ping":
+    $ref: paths/server/ping/index.yaml
+  "/server/specs/graphql":
+    $ref: paths/server/specs/graphql/index.yaml
+  "/server/specs/oas":
+    $ref: paths/server/specs/oas/index.yaml
+  "/server/health":
+    $ref: paths/server/health/index.yaml
+  "/settings":
+    $ref: paths/settings/index.yaml
+  "/shares":
+    $ref: paths/shares/index.yaml
+  "/shares‎":
+    $ref: paths/shares/singular/index.yaml
+  "/shares/{id}":
+    $ref: paths/shares/_id/index.yaml
+  "/shares/auth":
+    $ref: paths/shares/auth/index.yaml
+  "/shares/info/{id}":
+    $ref: paths/shares/info/_id/index.yaml
+  "/translations":
+    $ref: paths/translations/index.yaml
+  "/translations‎":
+    $ref: paths/translations/singular/index.yaml
+  "/translations/{id}":
+    $ref: paths/translations/_id/index.yaml
+  "/users":
+    $ref: paths/users/index.yaml
+  "/users‎":
+    $ref: paths/users/singular/index.yaml
+  "/users/{id}":
+    $ref: paths/users/_id/index.yaml
+  "/users/invite":
+    $ref: paths/users/invite/index.yaml
+  "/users/invite/accept":
+    $ref: paths/users/invite/accept/index.yaml
+  "/users/me":
+    $ref: paths/users/me/index.yaml
+  "/users/me/tfa/disable":
+    $ref: paths/users/me/tfa/disable/index.yaml
+  "/users/me/tfa/enable":
+    $ref: paths/users/me/tfa/enable/index.yaml
+  "/users/me/tfa/generate":
+    $ref: paths/users/me/tfa/generate/index.yaml
+  "/users/me/track/page":
+    $ref: paths/users/me/track/page/index.yaml
+  "/users/register":
+    $ref: paths/users/register/index.yaml
+  "/users/register/verify-email/{token}":
+    $ref: paths/users/register/verify-email/_token/index.yaml
+  "/utils/cache/clear":
+    $ref: paths/utils/cache/clear/index.yaml
+  "/utils/export/{collection}":
+    $ref: paths/utils/export/_collection/index.yaml
+  "/utils/hash/generate":
+    $ref: paths/utils/hash/generate/index.yaml
+  "/utils/hash/verify":
+    $ref: paths/utils/hash/verify/index.yaml
+  "/utils/import/{collection}":
+    $ref: paths/utils/import/_collection/index.yaml
+  "/utils/random/string":
+    $ref: paths/utils/random/string/index.yaml
+  "/utils/sort/{collection}":
+    $ref: paths/utils/sort/_collection/index.yaml
+  "/versions":
+    $ref: paths/versions/index.yaml
+  "/versions‎":
+    $ref: paths/versions/singular/index.yaml
+  "/versions/{id}":
+    $ref: paths/versions/_id/index.yaml
+  "/versions/{id}/compare":
+    $ref: paths/versions/_id/compare/index.yaml
+  "/versions/{id}/promote":
+    $ref: paths/versions/_id/promote/index.yaml
+  "/versions/{id}/save":
+    $ref: paths/versions/_id/save/index.yaml
+components:
+  parameters:
+    $ref: components/parameters.yaml
+  responses:
+    $ref: components/responses.yaml
+  securitySchemes:
+    $ref: components/security.yaml
+  schemas:
+    $ref: components/schemas/_index.yaml
+security: []
+tags:
+  - name: Activity
+    description: All events that happen within Directus are tracked and stored in the activities collection. This gives you full accountability over everything that happens.
+    x-collection: directus_activity
+  - name: Assets
+    description: Image typed files can be dynamically resized and transformed to fit any need.
+  - name: Authentication
+    description: All data within the platform is private by default. The public role can be configured to expose data without authentication, or you can pass an access token to the API to access private data.
+  - name: Collections
+    description: Collections are the individual collections of items, similar to tables in a database. Changes to collections will alter the schema of the database.
+    x-collection: directus_collections
+  - name: Comments
+    description: Comments are a collaboration tool and can be left on items from the sidebar.
+    x-collection: directus_comments
+  - name: Dashboards
+    description: Dashboards within the Insights module organize different Panels into an at-a-glance view. They can be used to group data based on department, objective, business process or anything you choose.
+  - name: Extensions
+    description: Directus can easily be extended through the addition of several types of extensions, including layouts, interfaces, and modules.
+    x-collection: directus_extensions
+  - name: Fields
+    description: Fields are individual pieces of content within an item. They are mapped to columns in the database.
+    x-collection: directus_fields
+  - name: Files
+    description: Every file managed by the platform is uploaded to the configured storage adapter, and its associated metadata is tracked within the `directus_files` system collection. Any requested file transformations are handled on the fly, and are only saved to storage.
+    x-collection: directus_files
+  - name: Folders
+    description: Folders can be used to organize files within the platform. Folders are virtual, and aren't mirrored within the storage adapter.
+    x-collection: directus_folders
+  - name: Flows
+    description: Flows enable custom, event-driven data processing and task automation.
+    x-collection: directus_flows
+  - name: Items
+    description: Items are individual pieces of data in your database. They can be anything, from articles, to IoT status checks.
+    x-collection: directus_items
+  - name: Metrics
+    description: To enable performance and error measurement of connected services, Directus can provide Prometheus metrics.
+  - name: Operations
+    description: Operations are the building blocks within Data Flows.
+    x-collection: directus_operations
+  - name: Notifications
+    description: Notifications allow you to send/receive messages to/from other users of the platform.
+    x-collection: directus_notifications
+  - name: Panels
+    description: Panels are modular units of data visualization that exist within the Insights module. Each panel exists within a Dashboard and can be positioned and resized as needed.
+    x-collection: directus_panels
+  - name: Permissions
+    description: Permissions are assigned to Policies, and control data access throughout the platform. [Learn more about permissions](/auth/access-control).
+    x-collection: directus_permissions
+  - name: Policies
+    description: Policies define a specific set of access permissions, and are a composable unit that can be assigned to both roles and users.
+    x-collection: directus_policies
+  - name: Presets
+    description: Presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom item listings for users of the app.
+    x-collection: directus_presets
+  - name: Relations
+    description: What data is linked to what other data. Allows you to assign authors to articles, products to sales, and whatever other structures you can think of.
+    x-collection: directus_relations
+  - name: Revisions
+    description: Revisions are individual changes to items made. Directus keeps track of changes made, so you're able to revert to a previous state at will.
+    x-collection: directus_revisions
+  - name: Roles
+    description: Roles are the primary organizational structure for users within the platform.
+    x-collection: directus_roles
+  - name: Schema
+    description: Retrieve and update the schema of an instance.
+    x-authentication: admin
+    x-schemas:
+      - Schema
+      - Diff
+  - name: Shares
+    description: Shares are a way to publicly share an otherwise private item.
+    x-collection: directus_shares
+  - name: Settings
+    description: Settings are key-value pairs that are stored in the database, and control different aspects of the project. Only administrators have access to manage Settings.
+    x-collection: directus_settings
+  - name: Server
+    description: Access to where Directus runs. Allows you to make sure your server has everything needed to run the platform, and check what kind of latency we're dealing with.
+  - name: Translations
+    description: Custom translations in Directus.
+    x-collection: directus_translations
+  - name: Utilities
+    description: Directus comes with various utility endpoints you can use to simplify your development flow.
+    x-authentication: user
+    x-schemas:
+      - Files
+      - Folders
+      - Users
+      - Roles
+  - name: Users
+    description: Directus Users are the individual accounts that let you authenticate into the API and App. Each user can belong to a Role.
+    x-collection: directus_users
+  - name: Versions
+    description: Enables users to create unpublished copies of an item, modify them independently from the main version, and promote them to become the new main version when ready.
+    x-collection: directus_versions

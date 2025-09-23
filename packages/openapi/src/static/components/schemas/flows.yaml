@@ -1,0 +1,73 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the flow.
+    type: string
+    format: uuid
+    example: 2f24211d-d928-469a-aea3-3c8f53d4e426
+  name:
+    description: The name of the flow.
+    type: string
+    example: Update Articles Flow
+  icon:
+    description: Icon displayed in the Admin App for the flow.
+    type: string
+    example: bolt
+  color:
+    description: Color of the icon displayed in the Admin App for the flow.
+    type: string
+    example: #112233
+    format: hexcode
+    nullable: true
+  description:
+    nullable: true
+    type: string
+  status:
+    description: Current status of the flow.
+    type: string
+    example: active
+    default: active
+    enum:
+      - active
+      - inactive
+  trigger:
+    description: Type of trigger for the flow. One of `hook`, `webhook`, `operation`, `schedule`, `manual`.
+    type: string
+    example: manual
+  accountability:
+    description: The permission used during the flow. One of `$public`, `$trigger`, `$full`, or UUID of a role.
+    type: string
+    example: $trigger
+  options:
+    description: Options of the selected trigger for the flow.
+    type: object
+    example: null
+    nullable: true
+  operation:
+    description: UUID of the operation connected to the trigger in the flow.
+    example: 92e82998-e421-412f-a513-13701e83e4ce
+    oneOf:
+      - type: string
+      - format: uuid
+      - $ref: operations.yaml
+  date_created:
+    description: Timestamp in ISO8601 when the flow was created.
+    type: string
+    example: '2022-05-11T13:14:52Z'
+    format: date-time
+    nullable: true
+  user_created:
+    description: The user who created the flow.
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    oneOf:
+      - type: string
+      - $ref: users.yaml
+  operations:
+    nullable: true
+    type: array
+    items:
+      oneOf:
+        - type: string
+          format: uuid
+        - $ref: operations.yaml
+x-collection: directus_flows

@@ -1,0 +1,113 @@
+summary: Update Multiple Presets
+description: Update multiple presets at the same time.
+security: []
+tags:
+- Presets
+operationId: updatePresets
+parameters:
+- $ref: ../../components/parameters.yaml#/Fields
+- $ref: ../../components/parameters.yaml#/Limit
+- $ref: ../../components/parameters.yaml#/Meta
+- $ref: ../../components/parameters.yaml#/Offset
+- $ref: ../../components/parameters.yaml#/Sort
+- $ref: ../../components/parameters.yaml#/Filter
+- $ref: ../../components/parameters.yaml#/Search
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - keys
+          - data
+        properties:
+          keys:
+            type: array
+            items:
+              type: string
+          data:
+            type: object
+            required:
+            - collection
+            properties:
+              collection:
+                type: string
+                description: What collection this collection preset is used for.
+                example: articles
+              title:
+                type: string
+                description: Name for the bookmark. If this is set, the collection
+                  preset will be considered to be a bookmark.
+                example: Highly rated articles
+              role:
+                type: string
+                description: The unique identifier of a role in the platform. If user
+                  is null, this will be used to apply the collection preset or bookmark
+                  for all users in the role.
+                example:
+              search:
+                type: string
+                description: What the user searched for in search/filter in the header
+                  bar.
+              filters:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    key:
+                      type: string
+                      example: aHKLAakdVghzD
+                    field:
+                      type: string
+                      example: rating
+                    operator:
+                      type: string
+                      example: gte
+                    value:
+                      type: integer
+                      example: 4.5
+              layout:
+                type: string
+                description: Name of the view type that is used.
+              layout_query:
+                type: string
+                description: Layout query that's saved per layout type. Controls what
+                  data is fetched on load. These follow the same format as the JS
+                  SDK parameters.
+              layout_options:
+                type: string
+                description: Options of the views. The properties in here are controlled
+                  by the layout.
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: ../../components/schemas/presets.yaml
+            meta:
+              $ref: ../../components/schemas/x-metadata.yaml
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, updatePresets } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(updatePresets(preset_id_array, partial_preset_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	update_presets_items(ids: [ID!]!, data: update_directus_presets_input): [directus_presets]
+    }

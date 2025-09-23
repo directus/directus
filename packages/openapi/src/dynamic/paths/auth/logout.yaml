@@ -1,0 +1,25 @@
+post:
+  summary: Log Out
+  description: Log Out
+  tags:
+    - Authentication
+  operationId: logout
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            refresh_token:
+              type: string
+              example: eyJ0eXAiOiJKV...
+              description:
+                The refresh token to invalidate. If you have the refresh token in a cookie through /auth/login, you
+                don't have to submit it here.
+            mode:
+              type: string
+              enum: [json, cookie, session]
+              description: Whether the refresh token is submitted in the JSON response, or in a httpOnly cookie.
+  responses:
+    '200':
+      description: Request successful

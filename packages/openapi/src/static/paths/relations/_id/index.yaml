@@ -1,0 +1,6 @@
+get:
+  $ref: getRelation.yaml
+patch:
+  $ref: updateRelation.yaml
+delete:
+  $ref: deleteRelation.yaml

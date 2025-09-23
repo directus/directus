@@ -1,0 +1,38 @@
+summary: Delete a Collection
+description: 'Delete an existing collection. Warning: This will delete the whole collection,
+  including the items within. Proceed with caution.'
+operationId: deleteCollection
+responses:
+  '204':
+    description: The resource was deleted successfully.
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Collections
+parameters:
+- name: id
+  in: path
+  required: true
+  description: Unique identifier of the collection.
+  schema:
+    type: string
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, deleteCollection } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(deleteCollection(collection_name));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	delete_collections_item(collection: String!): delete_collection
+    }

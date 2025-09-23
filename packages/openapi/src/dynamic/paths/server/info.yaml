@@ -1,0 +1,29 @@
+get:
+  summary: System Info
+  description: Perform a system status check and return the options.
+  operationId: serverInfo
+  parameters:
+    - description:
+        The first time you create a project, the provided token will be saved and required for subsequent project
+        installs. It can also be found and configured in `/config/__api.json` on your server.
+      in: query
+      name: super_admin_token
+      required: true
+      schema:
+        type: integer
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            properties:
+              data:
+                type: object
+            type: object
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Server

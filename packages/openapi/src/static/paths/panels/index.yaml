@@ -1,0 +1,8 @@
+get:
+  $ref: getPanels.yaml
+post:
+  $ref: createPanels.yaml
+patch:
+  $ref: updatePanels.yaml
+delete:
+  $ref: deletePanels.yaml

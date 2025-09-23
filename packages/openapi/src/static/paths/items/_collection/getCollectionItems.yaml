@@ -1,0 +1,52 @@
+summary: List all items in a collection
+description: Returns a list of the items in the given collection.
+operationId: getCollectionItems
+parameters:
+- description: Unique identifier of the collection the item resides in.
+  in: path
+  name: collection
+  required: true
+  schema:
+    type: string
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Limit
+- $ref: ../../../components/parameters.yaml#/Offset
+- $ref: ../../../components/parameters.yaml#/Meta
+- $ref: ../../../components/parameters.yaml#/Sort
+- $ref: ../../../components/parameters.yaml#/Filter
+- $ref: ../../../components/parameters.yaml#/Search
+- $ref: ../../../components/parameters.yaml#/Backlink
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: ../../../components/schemas/items.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Items
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, readItems } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(readItems('collection_name', query_object));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      type Query {
+        <collection>: [<collection>]
+      }

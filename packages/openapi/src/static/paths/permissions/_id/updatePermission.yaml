@@ -1,0 +1,110 @@
+summary: Update a Permission Rule
+description: Update an existing permission rule.
+operationId: updatePermission
+parameters:
+- $ref: ../../../components/parameters.yaml#/Id
+- $ref: ../../../components/parameters.yaml#/Meta
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          collection:
+            type: object
+            description: What collection this permission applies to.
+          comment:
+            type: string
+            description: If the user can post comments. full.
+            enum:
+              - none
+              - create
+              - update
+          create:
+            type: string
+            description: If the user can create items.
+            enum:
+              - none
+              - full
+          delete:
+            type: string
+            description: If the user can update items.
+            enum:
+              - none
+              - mine
+              - role
+              - full
+          explain:
+            type: string
+            description: If the user is required to leave a comment explaining what
+              was changed.
+            enum:
+              - none
+              - create
+              - update
+              - always
+          read:
+            type: string
+            description: If the user can read items.
+            enum:
+              - none
+              - mine
+              - role
+              - full
+          read_field_blacklist:
+            type: object
+            description: Explicitly denies read access for specific fields.
+          role:
+            type: object
+            description: Unique identifier of the role this permission applies to.
+          status:
+            type: object
+            description: What status this permission applies to.
+          status_blacklist:
+            type: object
+            description: Explicitly denies specific statuses to be used.
+          update:
+            type: string
+            description: If the user can update items.
+            enum:
+              - none
+              - mine
+              - role
+              - full
+          write_field_blacklist:
+            type: object
+            description: Explicitly denies write access for specific fields.
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/permissions.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Permissions
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, updatePermission } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(updatePermission(permission_id, partial_permission_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+    	update_permissions_item(id: ID!, data: update_directus_permissions_input!): directus_permissions
+    }

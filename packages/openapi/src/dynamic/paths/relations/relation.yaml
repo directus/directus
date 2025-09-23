@@ -1,0 +1,85 @@
+get:
+  summary: Retrieve a Relation
+  description: Retrieve a single relation by unique identifier.
+  operationId: getRelation
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Relations'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Relations
+
+patch:
+  summary: Update a Relation
+  description: Update an existing relation
+  operationId: updateRelation
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            collection_many:
+              description: Collection that has the field that holds the foreign key.
+              type: string
+            collection_one:
+              description: Collection on the _one_ side of the relationship.
+              type: string
+            field_many:
+              description: Foreign key. Field that holds the primary key of the related collection.
+              type: string
+            field_one:
+              description: Alias column that serves as the _one_ side of the relationship.
+              type: string
+              example: books
+            junction_field:
+              description: Field on the junction table that holds the primary key of the related collection.
+              type: string
+          type: object
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Relations'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Relations
+
+delete:
+  summary: Delete a Relation
+  description: Delete an existing relation.
+  operationId: deleteRelation
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Relations
+parameters:
+  - $ref: '../../openapi.yaml#/components/parameters/Id'

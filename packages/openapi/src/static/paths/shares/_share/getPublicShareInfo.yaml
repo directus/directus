@@ -1,0 +1,40 @@
+summary: Send a Share by Email
+description: Allows unauthenticated users to retrieve information about the share.
+operationId: getPublicShareInfo
+parameters:
+- name: share
+  in: path
+  description: Unique identifier of the share.
+  schema:
+    type: string
+  required: true
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/shares.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Shares
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, readShareInfo } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(readShareInfo(share_id));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      // Not currently available in GraphQL

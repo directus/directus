@@ -1,0 +1,46 @@
+summary: Promote a Content Version
+description: Promote an existing content version to become the new main version of the item.
+operationId: promoteContentVersion
+parameters:
+- $ref: ../../../../components/parameters.yaml#/UUId
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          mainHash:
+            type: string
+            description: Hash of the main version of the item to be promoted.
+          fields:
+            type: string
+            description: Optional array of field names of which the values are to
+              be promoted.
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: string
+          description: The primary key of the promoted item.
+  '401':
+    $ref: ../../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Versions
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, promoteContentVersion } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(promoteContentVersion(content_version_id, promote_object));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    // Not supported in GraphQL

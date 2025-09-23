@@ -1,0 +1,89 @@
+get:
+  summary: Retrieve a Role
+  description: Retrieve a single role by unique identifier.
+  operationId: getRole
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Roles'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Roles
+
+patch:
+  summary: Update a Role
+  description: Update an existing role
+  operationId: updateRole
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            description:
+              description: Description of the role.
+              type: string
+            enforce_tfa:
+              description: Whether or not this role enforces the use of 2FA.
+              type: boolean
+            external_id:
+              description: ID used with external services in SCIM.
+              type: string
+            ip_access:
+              description: Array of IP addresses that are allowed to connect to the API as a user of this role.
+              type: array
+              items:
+                type: string
+            module_listing:
+              description: Custom override for the admin app module bar navigation.
+              type: string
+            name:
+              description: Name of the role.
+              type: string
+          type: object
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Roles'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Roles
+
+delete:
+  summary: Delete a Role
+  description: Delete an existing role
+  operationId: deleteRole
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Roles
+parameters:
+  - $ref: '../../openapi.yaml#/components/parameters/UUId'

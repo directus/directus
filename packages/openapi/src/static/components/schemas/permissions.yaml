@@ -1,0 +1,45 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the permission.
+    example: 1
+    type: integer
+  collection:
+    description: What collection this permission applies to.
+    example: customers
+    type: string
+  action:
+    description: What action this permission applies to.
+    example: create
+    type: string
+    enum:
+      - create
+      - read
+      - update
+      - delete
+  permissions:
+    description: JSON structure containing the permissions checks for this permission.
+    type: object
+    nullable: true
+  validation:
+    description: JSON structure containing the validation checks for this permission.
+    type: object
+    nullable: true
+  presets:
+    description: JSON structure containing the preset value for created/updated items.
+    type: object
+    nullable: true
+  fields:
+    description: CSV of fields that the user is allowed to interact with.
+    type: array
+    items:
+      type: string
+    nullable: true
+  policy:
+    description: Policy this permission applies to. Many-to-one to policies.
+    nullable: false
+    format: uuid
+    type: string
+    oneOf:
+      - $ref: policies.yaml
+x-collection: directus_permissions

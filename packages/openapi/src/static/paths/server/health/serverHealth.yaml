@@ -1,0 +1,51 @@
+summary: Health
+description: |
+  Shows you a general health status for the server and all connected (third party) services. 
+
+  By default, the endpoint only returns a status of ok, warn or error. 
+
+  By authenticating as an admin, it will return more in-depth information about the current health status of the system.
+operationId: serverHealth
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              description: One of ok, warn, error.
+              type: string
+              example: warn
+            releaseId:
+              description: Directus version in use.
+              type: string
+              example: '10.0.0'
+            serviceId:
+              description: Public URL of the current Directus instance.
+              type: string
+              example: https://directus.example.com
+            checks:
+              description: Array with the status of all individually connected services.
+              type: array
+security: []
+tags:
+- Server
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, serverHealth } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(serverHealth());
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      GET /graphql/system
+
+      type Query {
+        server_health: JSON
+      }

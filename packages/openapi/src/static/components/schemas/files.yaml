@@ -1,0 +1,114 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the file.
+    example: 8cbb43fe-4cdf-4991-8352-c461779cec02
+    type: string
+    format: uuid
+  storage:
+    description: Where the file is stored. Either `local` for the local filesystem or the name of the storage adapter (for example `s3`).
+    example: local
+    type: string
+  filename_disk:
+    description: Name of the file on disk. By default, Directus uses a random hash for the filename.
+    example: a88c3b72-ac58-5436-a4ec-b2858531333a.jpg
+    type: string
+  filename_download:
+    description: How you want to the file to be named when it's being downloaded.
+    example: avatar.jpg
+    type: string
+  title:
+    description: Title for the file. Is extracted from the filename on upload, but can be edited by the user.
+    example: User Avatar
+    type: string
+  type:
+    description: MIME type of the file.
+    example: image/jpeg
+    type: string
+  folder:
+    description: Virtual folder where this file resides in.
+    example: null
+    type: string
+    oneOf:
+      - $ref: folders.yaml
+    nullable: true
+  uploaded_by:
+    description: Who uploaded the file.
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    oneOf:
+      - type: string
+      - $ref: users.yaml
+  created_on:
+    description: When the file was created.
+    example: 2019-12-03T00:10:15+00:00
+    type: string
+    format: date-time
+  modified_by:
+    type: string
+    format: uuid
+    oneOf:
+      - $ref: users.yaml
+    nullable: true
+  modified_on:
+    nullable: false
+    type: string
+    format: date-time
+  charset:
+    description: Character set of the file.
+    example: binary
+    type: string
+    nullable: true
+  filesize:
+    description: Size of the file in bytes.
+    example: 137862
+    type: integer
+  width:
+    description: Width of the file in pixels. Only applies to images.
+    example: 800
+    type: integer
+    nullable: true
+  height:
+    description: Height of the file in pixels. Only applies to images.
+    example: 838
+    type: integer
+    nullable: true
+  duration:
+    description: Duration of the file in seconds. Only applies to audio and video.
+    example: 0
+    type: integer
+    nullable: true
+  embed:
+    description: Where the file was embedded from.
+    example: null
+    type: string
+    nullable: true
+  description:
+    description: Description for the file.
+    type: string
+    nullable: true
+  location:
+    description: Where the file was created. Is automatically populated based on Exif data for images.
+    type: string
+    nullable: true
+  tags:
+    description: Tags for the file. Is automatically populated based on Exif data for images.
+    type: array
+    nullable: true
+    items:
+      type: string
+  metadata:
+    description: IPTC, Exif, and ICC metadata extracted from file
+    type: object
+    nullable: true
+  focal_point_x:
+    nullable: true
+    type: integer
+  focal_point_y:
+    nullable: true
+    type: integer
+  uploaded_on:
+    description: When the file was last uploaded/replaced.
+    example: '2019-12-03T00:10:15+00:00'
+    type: string
+    format: date-time
+x-collection: directus_files

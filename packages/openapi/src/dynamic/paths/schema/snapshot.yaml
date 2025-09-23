@@ -1,0 +1,24 @@
+get:
+  summary: Retrieve Schema Snapshot
+  description: Retrieve the current schema. This endpoint is only available to admin users.
+  operationId: schemaSnapshot
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Export'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Schema'
+        text/yaml:
+          schema:
+            type: string
+            format: binary
+    '403':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+  tags:
+    - Schema

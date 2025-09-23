@@ -1,0 +1,32 @@
+summary: Ping
+description: Ping, pong. Ping.. pong.
+operationId: ping
+responses:
+  '200':
+    content:
+      application/text:
+        schema:
+          type: string
+          pattern: pong
+          example: pong
+    description: Successful request
+security: []
+tags:
+- Server
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, serverPing } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(serverPing());
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      POST /graphql/system
+
+      type Query {
+      	server_ping: String
+      }

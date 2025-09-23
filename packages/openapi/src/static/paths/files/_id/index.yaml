@@ -1,0 +1,6 @@
+get:
+  $ref: getFile.yaml
+patch:
+  $ref: updateFile.yaml
+delete:
+  $ref: deleteFile.yaml

@@ -1,0 +1,30 @@
+post:
+  summary: Export Items
+  description: Export a larger data set to a file in the File Library
+  operationId: export
+  parameters:
+    - description: Collection identifier
+      in: path
+      name: collection
+      required: true
+      schema:
+        type: string
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            format:
+              description: What file format to save the export to. One of csv, xml, json
+              type: string
+              enum: ['csv', 'xml', 'json']
+            query:
+              $ref: '../../openapi.yaml#/components/schemas/Query'
+            file:
+              $ref: '../../openapi.yaml#/components/schemas/Files'
+          required: ['format', 'query', 'file']
+  responses:
+    '200':
+      description: Successful request
+  tags:
+    - Utilities

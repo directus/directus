@@ -1,0 +1,2 @@
+get:
+  $ref: schemaSnapshot.yaml

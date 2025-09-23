@@ -1,0 +1,75 @@
+summary: Refresh Token
+description: Retrieve a new access token using a refresh token.
+security: []
+tags:
+- Authentication
+operationId: refresh
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          refresh_token:
+            type: string
+            example: eyJ0eXAiOiJKV...
+            description: JWT access token you want to refresh. This token can't be
+              expired.
+          mode:
+            type: string
+            enum:
+              - json
+              - cookie
+              - session
+            default: json
+            description: Whether to submit and retrieve the refresh token in the JSON
+              response, or in a `httpOnly` cookie.
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: object
+              properties:
+                access_token:
+                  type: string
+                  example: eyJhbGciOiJI...
+                expires:
+                  type: integer
+                  example: 900
+                refresh_token:
+                  type: string
+                  example: Gy-caJMpmGTA...
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, authentication, rest, refresh } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(authentication()).with(rest());
+
+    // refresh using the authentication composable
+    const result = await client.refresh();
+
+    // refresh http request using a cookie
+    const result = await client.request(refresh({ mode: 'cookie' }));
+
+    // refresh http request using json
+    const result = await client.request(refresh({ mode: 'json', refresh_token }));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    mutation {
+    	auth_refresh(refresh_token: "refresh_token", mode: refresh_mode) {
+    		access_token
+    		refresh_token
+    	}
+    }

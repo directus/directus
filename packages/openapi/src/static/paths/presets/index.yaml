@@ -1,0 +1,8 @@
+get:
+  $ref: getPresets.yaml
+post:
+  $ref: createPresets.yaml
+patch:
+  $ref: updatePresets.yaml
+delete:
+  $ref: deletePresets.yaml

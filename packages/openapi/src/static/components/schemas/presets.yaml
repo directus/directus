@@ -1,0 +1,59 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for this single collection preset.
+    example: 155
+    type: integer
+  bookmark:
+    description: Name for the bookmark. If this is set, the preset will be considered a bookmark.
+    nullable: true
+    type: string
+  user:
+    description: The unique identifier of the user to whom this collection preset applies.
+    example: 63716273-0f29-4648-8a2a-2af2948f6f78
+    nullable: true
+    type: string
+    oneOf:
+      - $ref: users.yaml
+  role:
+    description: The unique identifier of a role in the platform. If `user` is null, this will be used to apply the collection preset or bookmark for all users in the role.
+    example: 50419801-0f30-8644-2b3c-9bc2d980d0a0
+    nullable: true
+    type: string
+    oneOf:
+      - $ref: roles.yaml
+  collection:
+    description: What collection this collection preset is used for.
+    example: articles
+    oneOf:
+      - type: string
+      - $ref: collections.yaml
+  search:
+    description: Search query.
+    type: string
+    nullable: true
+  layout:
+    description: Key of the layout that is used.
+    type: string
+    example: null
+  layout_query:
+    description: Layout query that's saved per layout type. Controls what data is fetched on load. These follow the same format as the JS SDK parameters.
+    type: object
+    example:
+      cards:
+        sort: -published_on
+    nullable: true
+  layout_options:
+    description: Options of the views. The properties in here are controlled by the layout.
+    type: object
+    example:
+      cards:
+        icon: account_circle
+        title: "{{ first_name }} {{ last_name }}"
+        subtitle: "{{ title }}"
+        size: 3
+    nullable: true
+  filters:
+    type: array
+    nullable: true
+x-collection: directus_presets

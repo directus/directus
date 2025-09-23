@@ -1,0 +1,45 @@
+type: object
+properties:
+  enabled:
+    description: Whether or not the extension is enabled.
+    nullable: false
+    type: boolean
+  id:
+    nullable: false
+    description: Unique identifier of the extension.
+    type: string
+    format: uuid
+  bundle:
+    description: Name of the bundle the extension is in.
+    example: my-bundle
+    type: string
+    nullable: true
+  type:
+    description: Type of the extension. One of `'interface'`, `'display'`, `'layout'`, `'module'`, `'panel'`, `'hook'`, `'endpoint'`, `'operation'`, `'bundle'.
+    type: string
+  local:
+    description: Whether the extension exists in the local extensions folder or is loaded from `node_modules`.
+    type: boolean
+  version:
+    description: The currently loaded version of the plugin as defined by its `package.json`.
+    type: string
+  partial:
+    description: |
+      Whether or not a bundles entries can be individually disabled. This is applicable to bundle type extensions only.
+
+      ```
+        {
+          "name": "my-bundle-operation",
+          "bundle": "directus-extension-my-bundle",
+          "schema": {
+            "type": "operation",
+            "local": true,
+            "version": "1.0.0"
+          },
+          "meta": {
+            "enabled": true
+          }
+        }
+      ```
+    type: boolean
+x-collection: directus_extensions

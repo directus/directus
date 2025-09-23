@@ -1,0 +1,30 @@
+summary: Get GraphQL SDL
+description: Retrieve the GraphQL SDL for the current project.
+operationId: readGraphqlSdl
+responses:
+  '200':
+    description: GraphQL SDL file.
+  '401':
+    $ref: ../../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Server
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, readGraphqlSdl } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(readGraphqlSdl(scope));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    GET /graphql/system
+
+    type Query {
+      server_specs_graphql(scope: graphql_sdl_scope): String
+    }

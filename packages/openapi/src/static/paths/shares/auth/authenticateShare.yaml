@@ -1,0 +1,73 @@
+summary: Authenticate a Share
+description: Authenticate as a share user. Shares work by returning a token, as it is the case with the regular login endpoint. These tokens are limited to a permissions set that only allows access to the item that was shared, and any relationally linked items that that associated role has access to. This means that all regular endpoints can be used with the token returned by this endpoint.
+operationId: authenticateShare
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+        - share
+        properties:
+          share:
+            type: string
+            format: uuid
+            description: Primary key of the share you're authenticating against.
+            example: 3a606c3e-9d4d-4556-b7bb-f00860613da3
+          password:
+            type: string
+            format: hash
+            description: Password for the share, if one is configured.
+            example: '**********'
+          mode:
+            type: string
+            enum:
+              - json
+              - cookie
+              - session
+            default: json
+            description: Whether to retrieve the refresh token in the JSON response,
+              or in a `httpOnly` cookie.
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: object
+              properties:
+                access_token:
+                  type: string
+                  description: 'Temporary access token to be used in follow-up requests. Note: if you used `session` as the mode in the request, the access token won\u0027t be returned in the JSON.'
+                  example: eyJhbGciOiJI...
+                expires:
+                  type: integer
+                  description: How long before the access token will expire. Value is in milliseconds.
+                  example: 900
+                refresh_token:
+                  type: string
+                  description: 'The token that can be used to retrieve a new access token through `/auth/refresh`. Note: if you used `cookie` or `session` as the mode in the request, the refresh token won\u0027t be returned in the JSON.'
+                  example: yuOJkjdPXMd...
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Shares
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, authenticateShare } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(authenticateShare('share_key', 'password'));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    // Not currently available in GraphQL

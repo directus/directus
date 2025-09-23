@@ -1,0 +1,9 @@
+description: Select items in collection by given conditions.
+in: query
+name: filter
+required: false
+content:
+  application/json:
+    schema:
+      type: object
+      example: { <field>: { <operator>: <value> } }

@@ -1,0 +1,58 @@
+summary: Update an Extension
+description: Update an existing extension.
+operationId: updateExtensions
+parameters:
+- in: path
+  name: name
+  required: true
+  schema:
+    type: string
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          meta:
+            type: object
+            description: Directus metadata for the extension. Where the configuration
+              for the extension in the current project is stored.
+            properties:
+              enabled:
+                type: boolean
+                description: Whether or not the extension is enabled.
+                example: true
+responses:
+  '200':
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/extensions.yaml
+    description: Successful request
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Extensions
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, updateExtension } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(updateExtension(bundle, name, partial_extension_object));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      POST /graphql/system
+
+      type Mutation {
+      	update_extensions_item(bundle: String, name: String!, data: update_directus_extensions_input!): directus_extensions
+      }

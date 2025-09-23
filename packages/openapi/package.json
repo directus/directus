@@ -1,0 +1,47 @@
+{
+	"name": "@directus/openapi",
+	"private": false,
+	"version": "1.0.0",
+	"description": "OpenAPI Specification of the Directus API",
+	"homepage": "https://directus.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/openapi"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./static": "./dist/static.json",
+		"./dynamic": "./dist/dynamic.json"
+	},
+	"files": [
+		"dist",
+		"index.d.ts"
+	],
+	"types": "index.d.ts",
+	"main": "dist/index.js",
+	"scripts": {
+		"build": "tsdown && pnpm run build:static && pnpm run build:dynamic",
+		"build:static": "redocly bundle src/static/index.yaml -o dist/static.json --ext json",
+		"build:dynamic": "redocly bundle src/dynamic/openapi.yaml -o dist/dynamic.json --ext json",
+		"fix-casing": "pnpx tsx scripts/fix-casing.ts",
+		"postbuild": "cp index.d.ts dist/index.d.ts"
+	},
+	"license": "MIT",
+	"devDependencies": {
+		"@directus/tsconfig": "catalog:",
+		"@redocly/cli": "1.27.1",
+		"@scalar/cli": "0.2.283",
+		"@types/node": "catalog:",
+		"glob": "11.0.3",
+		"openapi3-ts": "catalog:",
+		"tsdown": "catalog:",
+		"tsx": "catalog:",
+		"typescript": "catalog:"
+	}
+}

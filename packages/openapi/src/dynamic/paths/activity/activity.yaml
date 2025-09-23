@@ -1,0 +1,26 @@
+get:
+  summary: Retrieve an Activity Action
+  description:
+    Retrieves the details of an existing activity action. Provide the primary key of the activity action and Directus
+    will return the corresponding information.
+  operationId: getActivity
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Id'
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Activity'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Activity

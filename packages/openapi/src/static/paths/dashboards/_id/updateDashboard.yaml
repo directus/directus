@@ -1,0 +1,50 @@
+summary: Update a Dashboard
+description: Update an existing dashboard.
+operationId: updateDashboard
+parameters:
+- name: id
+  in: path
+  description: Unique identifier of the dashboard.
+  schema:
+    type: string
+  required: true
+- $ref: ../../../components/parameters.yaml#/Fields
+- $ref: ../../../components/parameters.yaml#/Meta
+requestBody:
+  content:
+    application/json:
+      schema:
+        anyOf:
+        - $ref: ../../../components/schemas/dashboards.yaml
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/dashboards.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Dashboards
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, updateDashboard } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(updateDashboard(dashboard_id, partial_dashboard_object));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      type Mutation {
+        update_dashboards_item(id: ID!, data: update_directus_dashboards_input): directus_dashboards
+      }

@@ -1,0 +1,51 @@
+summary: Invite User
+description: Invites a user to this project. It creates a user with an
+  invited status, and then sends an email to the user with instructions on how to
+  activate their account.
+operationId: invite
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+          - role
+        properties:
+          email:
+            type: string
+            description: Email address of the to-be-invited user.
+          role:
+            description: Role of the new user
+            type: string
+          invite_url:
+              description: 'Provide a custom invite url which the link in the email will lead to. The invite token will be passed as a parameter. Note: You need to configure the USER_INVITE_URL_ALLOW_LIST environment variable to enable this feature.'
+              type: string
+              format: url
+responses:
+  '204':
+    description: Successful request
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Users
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, inviteUser } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(inviteUser('another@example.com', 'c86c2761-65d3-43c3-897f-6f74ad6a5bd7'));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      POST /graphql/system
+
+      type Mutation {
+        users_invite(email: String!, role: String!, invite_url: String): Boolean
+      }

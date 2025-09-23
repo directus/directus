@@ -1,0 +1,213 @@
+get:
+  tags:
+    - Presets
+  operationId: getPresets
+  summary: List Presets
+  description: List the presets.
+  security:
+    - Auth: []
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+    - $ref: '../../openapi.yaml#/components/parameters/Page'
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+
+    - $ref: '../../openapi.yaml#/components/parameters/Filter'
+    - $ref: '../../openapi.yaml#/components/parameters/Search'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Presets'
+              meta:
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+
+post:
+  tags:
+    - Presets
+  operationId: createPreset
+  summary: Create a Preset
+  description: Create a new preset.
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [collection]
+          properties:
+            collection:
+              type: string
+              description: What collection this collection preset is used for.
+              example: articles
+            title:
+              type: string
+              description:
+                Name for the bookmark. If this is set, the collection preset will be considered to be a bookmark.
+              example: Highly rated articles
+            role:
+              type: string
+              description:
+                The unique identifier of a role in the platform. If user is null, this will be used to apply the
+                collection preset or bookmark for all users in the role.
+              example: null
+            search:
+              type: string
+              description: What the user searched for in search/filter in the header bar.
+            filters:
+              type: array
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                    example: aHKLAakdVghzD
+                  field:
+                    type: string
+                    example: rating
+                  operator:
+                    type: string
+                    example: gte
+                  value:
+                    type: integer
+                    example: 4.5
+            layout:
+              type: string
+              description: Name of the view type that is used.
+            layout_query:
+              type: string
+              description:
+                Layout query that's saved per layout type. Controls what data is fetched on load. These follow the same
+                format as the JS SDK parameters.
+            layout_options:
+              type: string
+              description: Options of the views. The properties in here are controlled by the layout.
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Presets'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+
+patch:
+  summary: Update Multiple Presets
+  description: Update multiple presets at the same time.
+  tags:
+    - Presets
+  operationId: updatePresets
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Filter'
+    - $ref: '../../openapi.yaml#/components/parameters/Search'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            keys:
+              type: array
+              items:
+                type: string
+            data:
+              type: object
+              required: [collection]
+              properties:
+                collection:
+                  type: string
+                  description: What collection this collection preset is used for.
+                  example: articles
+                title:
+                  type: string
+                  description:
+                    Name for the bookmark. If this is set, the collection preset will be considered to be a bookmark.
+                  example: Highly rated articles
+                role:
+                  type: string
+                  description:
+                    The unique identifier of a role in the platform. If user is null, this will be used to apply the
+                    collection preset or bookmark for all users in the role.
+                  example: null
+                search:
+                  type: string
+                  description: What the user searched for in search/filter in the header bar.
+                filters:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        example: aHKLAakdVghzD
+                      field:
+                        type: string
+                        example: rating
+                      operator:
+                        type: string
+                        example: gte
+                      value:
+                        type: integer
+                        example: 4.5
+                layout:
+                  type: string
+                  description: Name of the view type that is used.
+                layout_query:
+                  type: string
+                  description:
+                    Layout query that's saved per layout type. Controls what data is fetched on load. These follow the
+                    same format as the JS SDK parameters.
+                layout_options:
+                  type: string
+                  description: Options of the views. The properties in here are controlled by the layout.
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Presets'
+              meta:
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+
+delete:
+  summary: Delete Multiple Presets
+  description: Delete multiple existing presets.
+  tags:
+    - Presets
+  operationId: deletePresets
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'

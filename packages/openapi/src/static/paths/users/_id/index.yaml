@@ -1,0 +1,6 @@
+get:
+  $ref: getUser.yaml
+patch:
+  $ref: updateUser.yaml
+delete:
+  $ref: deleteUser.yaml

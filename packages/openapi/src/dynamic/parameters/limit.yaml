@@ -1,0 +1,6 @@
+description: A limit on the number of objects that are returned.
+in: query
+name: limit
+required: false
+schema:
+  type: integer

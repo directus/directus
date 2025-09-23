@@ -1,0 +1,67 @@
+summary: List Collections
+description: Returns a list of the collections available in the project.
+operationId: getCollections
+parameters:
+- $ref: ../../components/parameters.yaml#/Offset
+- $ref: ../../components/parameters.yaml#/Meta
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          example:
+            data:
+              - collection: messages
+                meta:
+                  collection: messages
+                  icon:
+                  note:
+                  display_template:
+                  hidden: false
+                  singleton: false
+                  translations:
+                  archive_field:
+                  archive_app_filter: true
+                  archive_value:
+                  unarchive_value:
+                  sort_field:
+                  accountability: all
+                  color:
+                  item_duplication_fields:
+                  sort:
+                  group:
+                  collapse: open
+                  preview_url:
+                  versioning: false
+                schema:
+                  name: messages
+                  sql: CREATE TABLE "messages" (`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    `user_created` char(36) NULL, `date_created` datetime NULL, `content` text null,
+                    CONSTRAINT `messages_user_created_foreign` FOREIGN KEY (`user_created`) REFERENCES
+                    `directus_users` (`id`))
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Collections
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, readCollections } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(readCollections());
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Query {
+    	collections: [directus_collections]
+    }

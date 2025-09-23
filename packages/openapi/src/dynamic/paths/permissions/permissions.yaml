@@ -1,0 +1,222 @@
+get:
+  summary: List Permissions
+  description: List all permissions.
+  operationId: getPermissions
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Filter'
+    - $ref: '../../openapi.yaml#/components/parameters/Search'
+    - $ref: '../../openapi.yaml#/components/parameters/Page'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Permissions'
+              meta:
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Permissions
+
+post:
+  summary: Create a Permission
+  description: Create a new permission.
+  operationId: createPermission
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          properties:
+            collection:
+              description: What collection this permission applies to.
+              type: string
+              example: customers
+            comment:
+              description: If the user can post comments.
+              type: string
+              enum: [none, create, update, full]
+            create:
+              description: If the user can create items.
+              type: string
+              enum: [none, full]
+            delete:
+              description: If the user can update items.
+              type: string
+              enum: [none, mine, role, full]
+            explain:
+              description: If the user is required to leave a comment explaining what was changed.
+              type: string
+              enum: [none, create, update, always]
+            read:
+              description: If the user can read items.
+              type: string
+              enum: [none, mine, role, full]
+            role:
+              description: Unique identifier of the role this permission applies to.
+              type: integer
+              example: 3
+            read_field_blacklist:
+              description: Explicitly denies read access for specific fields.
+              type: array
+              items:
+                type: string
+              example: ['featured_image']
+            status:
+              description: What status this permission applies to.
+              type: string
+            status_blacklist:
+              description: Explicitly denies specific statuses to be used.
+              type: array
+              items:
+                type: string
+            update:
+              description: If the user can update items.
+              type: string
+              enum: [none, mine, role, full]
+            write_field_blacklist:
+              description: Explicitly denies write access for specific fields.
+              type: array
+              items:
+                type: string
+          type: object
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Permissions'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Permissions
+
+patch:
+  summary: Update Multiple Permissions
+  description: Update multiple permissions at the same time.
+  tags:
+    - Permissions
+  operationId: updatePermissions
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Limit'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: '../../openapi.yaml#/components/parameters/Offset'
+
+    - $ref: '../../openapi.yaml#/components/parameters/Sort'
+    - $ref: '../../openapi.yaml#/components/parameters/Filter'
+    - $ref: '../../openapi.yaml#/components/parameters/Search'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            keys:
+              type: array
+              items:
+                type: string
+            data:
+              properties:
+                collection:
+                  description: What collection this permission applies to.
+                  type: string
+                  example: customers
+                comment:
+                  description: If the user can post comments.
+                  type: string
+                  enum: [none, create, update, full]
+                create:
+                  description: If the user can create items.
+                  type: string
+                  enum: [none, full]
+                delete:
+                  description: If the user can update items.
+                  type: string
+                  enum: [none, mine, role, full]
+                explain:
+                  description: If the user is required to leave a comment explaining what was changed.
+                  type: string
+                  enum: [none, create, update, always]
+                read:
+                  description: If the user can read items.
+                  type: string
+                  enum: [none, mine, role, full]
+                role:
+                  description: Unique identifier of the role this permission applies to.
+                  type: integer
+                  example: 3
+                read_field_blacklist:
+                  description: Explicitly denies read access for specific fields.
+                  type: array
+                  items:
+                    type: string
+                  example: ['featured_image']
+                status:
+                  description: What status this permission applies to.
+                  type: string
+                status_blacklist:
+                  description: Explicitly denies specific statuses to be used.
+                  type: array
+                  items:
+                    type: string
+                update:
+                  description: If the user can update items.
+                  type: string
+                  enum: [none, mine, role, full]
+                write_field_blacklist:
+                  description: Explicitly denies write access for specific fields.
+                  type: array
+                  items:
+                    type: string
+              type: object
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../openapi.yaml#/components/schemas/Permissions'
+              meta:
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+
+delete:
+  summary: Delete Multiple Permissions
+  description: Delete multiple existing permissions.
+  tags:
+    - Permissions
+  operationId: deletePermissions
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'

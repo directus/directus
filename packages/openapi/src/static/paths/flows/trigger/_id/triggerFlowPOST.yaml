@@ -1,0 +1,44 @@
+summary: Flow with POST webhook trigger
+description: Start a flow with POST webhook trigger.
+operationId: triggerFlowPOST
+parameters:
+  - $ref: ../../../../components/parameters.yaml#/Id
+  - $ref: ../../../../components/parameters.yaml#/Fields
+  - $ref: ../../../../components/parameters.yaml#/Meta
+requestBody:
+  description: Payload for the POST request.
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          data: {}
+responses:
+  '200':
+    description: Result of the flow, if any.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data: {}
+  '401':
+    $ref: ../../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Flows
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, triggerFlow } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(triggerFlow('POST', flow_id, webhook_payload));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    // Not currently available in GraphQL

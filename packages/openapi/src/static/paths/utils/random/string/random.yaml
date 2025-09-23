@@ -1,0 +1,41 @@
+summary: Get a Random String
+description: Returns a random string of given length.
+operationId: random
+parameters:
+- description: Length of the random string.
+  in: query
+  name: length
+  required: false
+  schema:
+    type: integer
+responses:
+  '200':
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: string
+              example: 1>M3+4oh.S
+    description: Successful request
+security: []
+tags:
+- Utilities
+x-codeSamples:
+  - label: Directus SDK
+    lang: JavaScript
+    source: |
+      import { createDirectus, rest, randomString } from '@directus/sdk';
+
+      const client = createDirectus('directus_project_url').with(rest());
+
+      const result = await client.request(randomString(length));
+  - label: GraphQL
+    lang: GraphQL
+    source: |
+      POST /graphql/system
+
+      type Mutation {
+      	utils_random_string(length: Int): String
+      }

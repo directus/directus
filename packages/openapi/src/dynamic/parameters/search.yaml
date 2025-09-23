@@ -1,0 +1,6 @@
+description: Filter by items that contain the given search query in one of their fields.
+in: query
+name: search
+required: false
+schema:
+  type: string

@@ -1,0 +1,37 @@
+
+summary: Delete Multiple Dashboards
+description: Delete multiple existing dashboards.
+operationId: deleteDashboards
+requestBody:
+  description: An array of dashboard primary keys.
+  content:
+    application/json:
+      schema:
+        type: array
+        items:
+          type: string
+responses:
+  '204':
+    description: The resource was deleted successfully.
+  '401':
+    $ref: ../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Dashboards
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, deleteDashboards } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(deleteDashboards(dashboard_id_array));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    type Mutation {
+      delete_dashboards_items(ids: [ID!]!): delete_many
+    }

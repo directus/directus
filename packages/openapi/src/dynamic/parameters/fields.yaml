@@ -1,0 +1,9 @@
+description: Control what fields are being returned in the object.
+in: query
+name: fields
+required: false
+explode: false
+schema:
+  type: array
+  items:
+    type: string

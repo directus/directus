@@ -1,0 +1,50 @@
+summary: Import a File
+description: Import a file from the web
+operationId: importFile
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - url
+        properties:
+          url:
+            type: string
+            description: The URL to download the file from.
+          data:
+            $ref: ../../../components/schemas/files.yaml
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../../components/schemas/files.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+security: []
+tags:
+- Files
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, importFile } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(importFile(file_url, file_object));
+
+    const result = await client.request(uploadFiles(formData));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Mutation {
+      import_file(url: String!, data: create_directus_files_input!): directus_files
+    }

@@ -1,0 +1,119 @@
+Id:
+  description: Identifier for the object.
+  name: id
+  in: path
+  required: true
+  schema:
+    type: integer
+UUId:
+  description: Unique identifier for the object.
+  name: id
+  in: path
+  required: true
+  schema:
+    example: 8cbb43fe-4cdf-4991-8352-c461779cec02
+    type: string
+Collection:
+  description: Collection of which you want to retrieve the items from.
+  name: collection
+  in: path
+  required: true
+  schema:
+    type: string
+Search:
+  description: Filter by items that contain the given search query in one of their fields.
+  in: query
+  name: search
+  required: false
+  schema:
+    type: string
+Page:
+  description: Cursor for use in pagination. Often used in combination with limit.
+  in: query
+  name: page
+  required: false
+  schema:
+    type: integer
+Offset:
+  description: How many items to skip when fetching data.
+  in: query
+  name: offset
+  required: false
+  schema:
+    type: integer
+Sort:
+  description: >-
+    How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
+  in: query
+  name: sort
+  required: false
+  explode: false
+  schema:
+    type: array
+    items:
+      type: string
+Meta:
+  description: What metadata to return in the response.
+  in: query
+  name: meta
+  required: false
+  schema:
+    type: string
+Limit:
+  description: A limit on the number of objects that are returned.
+  in: query
+  name: limit
+  required: false
+  schema:
+    type: integer
+Filter:
+  description: Select items in collection by given conditions.
+  in: query
+  name: filter
+  required: false
+  content:
+    application/json:
+      schema:
+        type: object
+        example:
+          <field>:
+            <operator>: <value>
+Fields:
+  description: Control what fields are being returned in the object.
+  in: query
+  name: fields
+  required: false
+  explode: false
+  schema:
+    type: array
+    items:
+      type: string
+Export:
+  name: export
+  description: Saves the API response to a file. Accepts one of `csv`, `json`, `xml`, `yaml`.
+  in: query
+  required: false
+  schema:
+    type: string
+    enum:
+    - csv
+    - json
+    - xml
+    - yaml
+Version:
+  name: version
+  description: >-
+    Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content Version.
+  in: query
+  required: false
+  schema:
+    type: string
+Backlink:
+  name: backlink
+  description: >-
+    Retrieve relational items excluding reverse relations when using wildcard fields.
+  in: query
+  required: false
+  schema:
+    type: boolean
+    default: true

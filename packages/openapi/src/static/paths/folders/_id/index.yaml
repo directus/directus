@@ -1,0 +1,6 @@
+get:
+  $ref: getFolder.yaml
+patch:
+  $ref: updateFolder.yaml
+delete:
+  $ref: deleteFolder.yaml

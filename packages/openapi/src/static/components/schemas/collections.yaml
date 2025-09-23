@@ -1,0 +1,76 @@
+type: object
+properties:
+  collection:
+    description: Name of the collection. This matches the table name in the database.
+    example: customers
+    type: string
+  icon:
+    nullable: true
+    description: Icon displayed in the Data Studio when working with this collection.
+    type: string
+  note:
+    nullable: true
+    description: Short description displayed in the Data Studio.
+    type: string
+  display_template:
+    nullable: true
+    description: How items in this collection should be displayed when viewed relationally in the Data Studio.
+    type: string
+  hidden:
+    nullable: false
+    description: Whether or not this collection is hidden in the Data Studio.
+    type: boolean
+  singleton:
+    nullable: false
+    description: Whether or not this collection is treated as a singleton.
+    type: boolean
+  translations:
+    description: How this collection's name is displayed in the different languages in the Data Studio.
+    type: array
+    nullable: true
+  archive_field:
+    description: What field in the collection holds the archived state.
+    nullable: true
+    type: string
+  archive_app_filter:
+    nullable: false
+    type: boolean
+  archive_value:
+    nullable: true
+    description: What value the archive field should be set to when archiving an item.
+    type: string
+  unarchive_value:
+    nullable: true
+    description: What value the archive field should be set to when unarchiving an item.
+    type: string
+  sort_field:
+    nullable: true
+    description: What field holds the sort value on the collection. The Data Studio uses this to allow drag-and-drop manual sorting.
+    type: string
+  accountability:
+    nullable: true
+    description: What data is tracked. One of `all`, `activity`.
+    type: string
+  item_duplication_fields:
+    nullable: true
+    description: What fields are duplicated during "Save as copy" action of an item in this collection.
+    type: array
+  sort:
+    nullable: true
+    description: What sort order of the collection relative to other collections of the same level.
+    type: integer
+  group:
+    nullable: true
+    description: The name of the parent collection.
+    type: string
+    oneOf:
+      - $ref: collections.yaml
+  collapse:
+    nullable: false
+    description: What is the default behavior of this collection or "folder" collection when it has nested collections. One of `open`, `closed`, `locked`.
+    type: string
+  versioning:
+    nullable: false
+    description: Whether or not Content Versioning is enabled for this collection.
+    type: boolean
+x-collection: directus_collections

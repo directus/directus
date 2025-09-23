@@ -1,0 +1,46 @@
+summary: List relations in collection
+description: List all relations that exist in a given collection.
+operationId: getRelationByCollection
+parameters:
+- description: Unique identifier of the collection the relations reside in.
+  in: path
+  name: collection
+  required: true
+  schema:
+    type: string
+responses:
+  '200':
+    description: Successful request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: ../../../components/schemas/relations.yaml
+  '401':
+    $ref: ../../../components/responses.yaml#/UnauthorizedError
+  '404':
+    $ref: ../../../components/responses.yaml#/NotFoundError
+security: []
+tags:
+- Relations
+x-codeSamples:
+- label: Directus SDK
+  lang: JavaScript
+  source: |
+    import { createDirectus, rest, readRelationByCollection } from '@directus/sdk';
+
+    const client = createDirectus('directus_project_url').with(rest());
+
+    const result = await client.request(readRelationByCollection(collection_name));
+- label: GraphQL
+  lang: GraphQL
+  source: |
+    POST /graphql/system
+
+    type Query {
+      relations_in_collection(collection: String!): [directus_relations]
+    }

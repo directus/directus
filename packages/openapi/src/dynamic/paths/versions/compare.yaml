@@ -1,0 +1,22 @@
+get:
+  summary: Compare a Content Version
+  description: Compare an existing Content Version with the main version of the item.
+  operationId: compareContentVersion
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/UUId'
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            properties:
+              data:
+                type: object
+            type: object
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+  tags:
+    - Versions
