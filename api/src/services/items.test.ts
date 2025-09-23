@@ -7,7 +7,7 @@ import { validateUserCountIntegrity } from '../utils/validate-user-count-integri
 import { getDatabaseClient } from '../database/index.js';
 import { ItemsService } from './index.js';
 
-vi.mock('../database/index', () => ({
+vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 }));
