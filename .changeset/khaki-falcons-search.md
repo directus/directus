@@ -2,4 +2,4 @@
 '@directus/storage-driver-supabase': patch
 ---
 
-Throw error on write error and upgrade library to 2.12.1 to avoid duplex upload errors
+Fix Supabase upload failures by upgrading to v2.12.1 and adding proper error handling
