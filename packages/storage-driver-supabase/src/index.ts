@@ -283,7 +283,7 @@ export class DriverSupabase implements TusDriver {
 		return bytesUploaded;
 	}
 
-	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext) { }
+	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext) {}
 
 	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext) {
 		await this.delete(filepath);
