@@ -17,6 +17,8 @@ import {
 export type { Env } from './config.js';
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
 
+type Port = string | number;
+
 export type Options = {
 	/** Rebuild directus from source */
 	build: boolean;
@@ -25,13 +27,13 @@ export type Options = {
 	/** Restart the api when changes are made */
 	watch: boolean;
 	/** Port to start the api on */
-	port: string;
+	port: Port;
 	/** Configure the behavior of the spun up docker container */
 	docker: {
 		/** Keep containers running when stopping the sandbox */
 		keep: boolean;
 		/** Minimum port number to use for docker containers */
-		basePort: string;
+		basePort: Port | (() => Port | Promise<Port>);
 		/** Overwrite the name of the docker project */
 		name: string | undefined;
 	};
@@ -164,7 +166,7 @@ export async function sandboxes(
 		await Promise.all(
 			sandboxes.map(async ({ database, options }, index) => {
 				const opts = getOptions(options);
-				const env = getEnv(database, opts);
+				const env = await getEnv(database, opts);
 				const logger = opts.prefix ? createLogger(env, opts, opts.prefix) : createLogger(env, opts);
 
 				try {
@@ -208,7 +210,7 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	if (!databases.includes(database)) throw new Error('Invalid database provided');
 	const opts = getOptions(options);
 
-	const env = getEnv(database, opts);
+	const env = await getEnv(database, opts);
 	const logger = opts.prefix ? createLogger(env, opts, opts.prefix) : createLogger(env, opts);
 	let apis: ChildProcessWithoutNullStreams[] = [];
 	let project: string | undefined;

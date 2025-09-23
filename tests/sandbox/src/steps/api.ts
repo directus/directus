@@ -84,8 +84,8 @@ export async function bootstrap(env: Env, logger: Logger) {
 export async function startDirectus(opts: Options, env: Env, logger: Logger) {
 	const apiCount = Math.max(1, Number(opts.instances));
 
-	const apiPorts = [...Array(apiCount).keys()].flatMap((i) => Number(env.PORT) + i * 2);
-	const allPorts = apiPorts.flatMap((port) => [port, port + 1]);
+	const apiPorts = [...Array(apiCount).keys()].flatMap((i) => Number(env.PORT) + i * (opts.inspect ? 2 : 1));
+	const allPorts = apiPorts.flatMap((port) => (opts.inspect ? [port, port + 1] : [port]));
 
 	const occupiedPorts = (await Promise.allSettled(allPorts.map((port) => portToPid(port))))
 		.map((result, i) => (result.status === 'fulfilled' ? [result.value, allPorts[i]] : undefined))

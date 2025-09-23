@@ -3126,6 +3126,9 @@ importers:
       commander:
         specifier: 14.0.0
         version: 14.0.0
+      get-port:
+        specifier: 'catalog:'
+        version: 7.1.0
       lodash-es:
         specifier: 'catalog:'
         version: 4.17.21
@@ -3137,7 +3140,7 @@ importers:
         version: 5.8.2
       vite-tsconfig-paths:
         specifier: 'catalog:'
-        version: 5.1.4(typescript@5.8.2)(vite@7.0.6(@types/node@22.13.8)(jiti@1.21.7)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.1))
+        version: 5.1.4(typescript@5.8.2)(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.89.2)(terser@5.43.1))
       vitest:
         specifier: 'catalog:'
         version: 3.2.4(@types/node@22.13.8)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.1)
@@ -25211,13 +25214,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite-tsconfig-paths@5.1.4(typescript@5.8.2)(vite@7.0.6(@types/node@22.13.8)(jiti@1.21.7)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.1)):
+  vite-tsconfig-paths@5.1.4(typescript@5.8.2)(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.89.2)(terser@5.43.1)):
     dependencies:
       debug: 4.4.1(supports-color@5.5.0)
       globrex: 0.1.2
       tsconfck: 3.1.6(typescript@5.8.2)
     optionalDependencies:
-      vite: 7.0.6(@types/node@22.13.8)(jiti@1.21.7)(sass-embedded@1.89.2)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.1)
+      vite: 5.4.19(@types/node@22.13.8)(sass-embedded@1.89.2)(terser@5.43.1)
     transitivePeerDependencies:
       - supports-color
       - typescript

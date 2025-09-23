@@ -144,10 +144,13 @@ const baseConfig = {
 	oracle,
 } as const satisfies Record<Database, Record<string, string>>;
 
-export function getEnv(database: Database, opts: Options): Env {
+export async function getEnv(database: Database, opts: Options): Promise<Env> {
+	const portMap: Record<string, string> = {};
 	let portIndex = Number(opts.docker.basePort);
 
-	const portMap: Record<string, string> = {};
+	async function getPort() {
+		return String(typeof opts.docker.basePort === 'function' ? await opts.docker.basePort() : portIndex++);
+	}
 
 	if (Number(opts.instances) > 1) {
 		opts.extras.redis = true;
@@ -156,7 +159,7 @@ export function getEnv(database: Database, opts: Options): Env {
 
 	const env = {
 		...baseConfig[database],
-		PORT: opts.port,
+		PORT: String(opts.port),
 		PUBLIC_URL: `http://${baseConfig[database].HOST}:${opts.port}`,
 		REDIS_ENABLED: String(opts.extras.redis),
 		CACHE_ENABLED: String(opts.cache),
@@ -167,23 +170,24 @@ export function getEnv(database: Database, opts: Options): Env {
 		...opts.env,
 	} satisfies Env;
 
-	return Object.fromEntries(
-		Object.entries(env).map(([key, value]) => {
-			const matches = /\$PORT(?:_[A-Z]+)*/gm.exec(value);
+	// eslint-disable-next-line prefer-const
+	for (let [key, value] of Object.entries(env)) {
+		const matches = /\$PORT(?:_[A-Z]+)*/gm.exec(value);
 
-			for (const match of matches ?? []) {
-				if (match === '$PORT') value = value.replaceAll(match, String(portIndex++));
+		for (const match of matches ?? []) {
+			if (match === '$PORT') value = value.replaceAll(match, await getPort());
 
-				if (match in portMap === false) {
-					portMap[match] = String(portIndex++);
-				}
-
-				value = value.replaceAll(match, portMap[match]!);
+			if (match in portMap === false) {
+				portMap[match] = await getPort();
 			}
 
-			return [key, value];
-		}),
-	) as Env;
+			value = value.replaceAll(match, portMap[match]!);
+		}
+
+		(env as any)[key] = value;
+	}
+
+	return env;
 }
 
 export type Env = (typeof baseConfig)[Database] & {

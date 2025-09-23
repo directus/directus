@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { expect, test } from 'vitest';
 import { useSnapshot } from '@utils/useSnapshot.js';
 import type { Schema } from './schema.d.ts';
+import getPort from 'get-port';
 
 const database = process.env['DATABASE'] as Database;
 const all = process.env['ALL'] === 'true';
@@ -11,9 +12,14 @@ const all = process.env['ALL'] === 'true';
 if (!all)
 	test('running two instances', { timeout: 120_000 }, async () => {
 		const directus = await sandbox(database, {
-			port: String(Math.floor(Math.random() * 400 + 9000)),
+			port: await getPort(),
 			instances: '2',
 			killPorts: true,
+			inspect: false,
+			silent: true,
+			docker: {
+				basePort: getPort,
+			},
 		});
 
 		const api1 = createDirectus<Schema>(`http://localhost:${directus.env.PORT}`)

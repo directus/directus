@@ -2,6 +2,7 @@ import { type Database, sandbox } from '@directus/sandbox';
 import { authentication, createDirectus, rest } from '@directus/sdk';
 import { expect, test } from 'vitest';
 import { Signal } from '@utils/signal.js';
+import getPort from 'get-port';
 
 const database = process.env['DATABASE'] as Database;
 const all = process.env['ALL'] === 'true';
@@ -9,13 +10,16 @@ const all = process.env['ALL'] === 'true';
 if (!all)
 	test('running two instances', { timeout: 60_000 }, async () => {
 		const directus = await sandbox(database, {
-			port: String(Math.floor(Math.random() * 400 + 10000)),
+			port: await getPort(),
 			killPorts: true,
 			inspect: false,
 			silent: true,
 			env: {
 				LOG_LEVEL: 'debug',
 				LOG_STYLE: 'raw',
+			},
+			docker: {
+				basePort: getPort,
 			},
 		});
 

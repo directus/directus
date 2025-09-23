@@ -24,11 +24,12 @@
 		"async-mutex": "catalog:",
 		"chalk": "5.4.1",
 		"commander": "14.0.0",
+		"get-port": "catalog:",
 		"lodash-es": "catalog:",
 		"tsx": "catalog:",
 		"typescript": "5.8.2",
-		"vitest": "catalog:",
-		"vite-tsconfig-paths": "catalog:"
+		"vite-tsconfig-paths": "catalog:",
+		"vitest": "catalog:"
 	},
 	"engines": {
 		"node": ">=12.20.0"
