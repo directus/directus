@@ -597,7 +597,7 @@ created_on: Créé le
 creating_collection_info: Donnez un nom à la collection et configurez son champ de « clé » unique...
 creating_collection_system: Vous pouvez activer et renommer les champs optionnels suivants.
 auto_increment_integer: Entier auto-incrémenté
-auto_increment_big_integer: Big interger auto-incrémenté
+auto_increment_big_integer: Grand nombre entier auto-incrémenté
 generated_uuid: UUID généré
 manual_string: Chaîne de caractère saisie manuellement
 save_and_create_new: Enregistrer et en créer un nouveau
