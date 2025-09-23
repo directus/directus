@@ -52,6 +52,7 @@ beforeEach(() => {
 			projectId: randAlphaNumeric({ length: 10 }).join(''),
 			root: randUnique() + randDirectoryPath(),
 			endpoint: randDomainName(),
+			tus: { chunkSize: 1024 * 1024 },
 		},
 		path: {
 			input: randUnique() + randFilePath(),
