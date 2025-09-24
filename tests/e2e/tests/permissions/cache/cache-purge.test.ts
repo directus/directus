@@ -110,91 +110,91 @@ const instances = [directusMem, directusMemPurge, directusRedis, directusRedisPu
 
 type Api = DirectusClient<Schema> & RestClient<Schema> & StaticTokenClient<Schema>;
 
-describe('Permissions Cache Purging Tests', async () => {
-	const action = 'read';
-	const updatedAction = 'update';
-	let policyId: string;
-	const collection = 'collection';
+for (const instance of instances) {
+	describe('Permissions Cache Purging Tests', async () => {
+		const action = 'read';
+		const updatedAction = 'update';
+		let policyId: string;
+		const collection = 'collection';
 
-	const mutations = {
-		createOne: async (api: Api) => {
-			const item = { collection, action, policy: policyId };
+		const mutations = {
+			createOne: async (api: Api) => {
+				const item = { collection, action, policy: policyId };
 
-			await api.request(clearCache());
-			await api.request(readItems(collection as any));
+				await api.request(clearCache());
+				await api.request(readItems(collection as any));
 
-			await api.request(createPermission(item));
-		},
-		createMany: async (api: Api) => {
-			const items = Array(5).fill({ collection, action, policy: policyId });
+				await api.request(createPermission(item));
+			},
+			createMany: async (api: Api) => {
+				const items = Array(5).fill({ collection, action, policy: policyId });
 
-			await api.request(clearCache());
-			await api.request(readItems(collection as any));
+				await api.request(clearCache());
+				await api.request(readItems(collection as any));
 
-			await api.request(createPermissions(items));
-		},
-		updateOne: async (api: Api) => {
-			const item = { collection, action, policy: policyId };
-			const updatedItem = { action: updatedAction };
+				await api.request(createPermissions(items));
+			},
+			updateOne: async (api: Api) => {
+				const item = { collection, action, policy: policyId };
+				const updatedItem = { action: updatedAction };
 
-			const itemId = (await api.request(createPermission(item))).id;
+				const itemId = (await api.request(createPermission(item))).id;
 
-			await api.request(clearCache());
-			await api.request(readItems(collection as any));
+				await api.request(clearCache());
+				await api.request(readItems(collection as any));
 
-			await api.request(updatePermission(itemId, updatedItem));
-		},
-		updateMany: async (api: Api) => {
-			const items = Array(5).fill({ collection, action, policy: policyId });
+				await api.request(updatePermission(itemId, updatedItem));
+			},
+			updateMany: async (api: Api) => {
+				const items = Array(5).fill({ collection, action, policy: policyId });
 
-			const updatedItem = { action: updatedAction };
+				const updatedItem = { action: updatedAction };
 
-			const itemIds = (await api.request(createPermissions(items))).map((item) => item.id).filter((v) => v);
+				const itemIds = (await api.request(createPermissions(items))).map((item) => item.id).filter((v) => v);
 
-			await api.request(clearCache());
-			await api.request(readItems(collection as any));
+				await api.request(clearCache());
+				await api.request(readItems(collection as any));
 
-			await api.request(updatePermissions(itemIds, updatedItem));
-		},
-		updateBatch: async (api: Api) => {
-			const items = Array(5).fill({ collection, action, policy: policyId });
+				await api.request(updatePermissions(itemIds, updatedItem));
+			},
+			updateBatch: async (api: Api) => {
+				const items = Array(5).fill({ collection, action, policy: policyId });
 
-			const itemIds = (await api.request(createPermissions(items))).map((item) => item.id).filter((v) => v);
+				const itemIds = (await api.request(createPermissions(items))).map((item) => item.id).filter((v) => v);
 
-			const updatedItems = Array(5)
-				.fill(0)
-				.map((_, index) => {
-					return { id: itemIds[index]!, action: updatedAction };
-				});
+				const updatedItems = Array(5)
+					.fill(0)
+					.map((_, index) => {
+						return { id: itemIds[index]!, action: updatedAction };
+					});
 
-			await api.request(clearCache());
-			await api.request(readItems(collection as any));
+				await api.request(clearCache());
+				await api.request(readItems(collection as any));
 
-			await api.request(updatePermissionsBatch(updatedItems));
-		},
-		deleteOne: async (api: Api) => {
-			const item = { collection, action, policy: policyId };
+				await api.request(updatePermissionsBatch(updatedItems));
+			},
+			deleteOne: async (api: Api) => {
+				const item = { collection, action, policy: policyId };
 
-			const itemId = (await api.request(createPermission(item))).id;
+				const itemId = (await api.request(createPermission(item))).id;
 
-			await api.request(clearCache());
-			await api.request(readItems(collection as any));
+				await api.request(clearCache());
+				await api.request(readItems(collection as any));
 
-			await api.request(deletePermission(itemId));
-		},
-		deleteMany: async (api: Api) => {
-			const items = Array(5).fill({ collection, action, policy: policyId });
+				await api.request(deletePermission(itemId));
+			},
+			deleteMany: async (api: Api) => {
+				const items = Array(5).fill({ collection, action, policy: policyId });
 
-			const itemIds = (await api.request(createPermissions(items))).map((item) => item.id).filter((v) => v);
+				const itemIds = (await api.request(createPermissions(items))).map((item) => item.id).filter((v) => v);
 
-			await api.request(clearCache());
-			await api.request(readItems(collection as any));
+				await api.request(clearCache());
+				await api.request(readItems(collection as any));
 
-			await api.request(deletePermissions(itemIds));
-		},
-	};
+				await api.request(deletePermissions(itemIds));
+			},
+		};
 
-	for (const instance of instances) {
 		describe(instance.env.PORT, async () => {
 			const api = createDirectus<Schema>(`http://localhost:${instance.env['PORT']}`)
 				.with(rest())
@@ -225,5 +225,5 @@ describe('Permissions Cache Purging Tests', async () => {
 				expect(response.headers.get('x-cache-status')).toBe('MISS');
 			});
 		});
-	}
-});
+	});
+}
