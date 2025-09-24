@@ -143,9 +143,8 @@ const { t } = useI18n();
 	}
 
 	.hidden-indicator {
-		margin-inline-start: 4px;
+		margin-inline-start: 0.25em;
 		color: var(--theme--foreground-subdued);
-		font-size: 0.875em;
 	}
 
 	&:focus-within,
