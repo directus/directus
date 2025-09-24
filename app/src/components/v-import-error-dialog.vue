@@ -52,7 +52,8 @@ function closeDialog() {
 <style lang="scss" scoped>
 .dialog-content {
 	padding: var(--v-card-padding, 16px);
-	padding-block-start: calc(var(--v-card-padding, 16px) * 0.5); // Reduced top spacing
+	padding-block-start: 12px;
+	padding-block-end: 0 !important;
 }
 
 .validation-errors-list {
@@ -61,8 +62,6 @@ function closeDialog() {
 	list-style-type: disc;
 
 	.validation-error {
-		margin-block-end: 8px;
-
 		&:last-child {
 			margin-block-end: 0;
 		}
