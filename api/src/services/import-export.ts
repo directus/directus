@@ -170,6 +170,22 @@ export class ImportService {
 			type: string;
 		}> = [];
 
+		const addStructuredError = (error: {
+			row: number;
+			code: string;
+			field: string | null;
+			value: unknown;
+			reason: string;
+			type: string;
+		}) => {
+			structuredRows.push(error);
+
+			if (structuredRows.length >= MAX_IMPORT_ERRORS) {
+				hasReachedErrorLimit = true;
+				if (csvReadStream) csvReadStream.destroy();
+			}
+		};
+
 		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
 				knex: trx,
@@ -210,7 +226,7 @@ export class ImportService {
 							}
 						}
 
-						structuredRows.push({
+						addStructuredError({
 							row: task.rowNumber,
 							code: err.code,
 							field: field ?? null,
@@ -218,12 +234,6 @@ export class ImportService {
 							reason: customMessage,
 							type: getDatabaseValidationType(err.code, err.extensions),
 						});
-
-						// Stop processing if too many errors to avoid memory/payload issues
-						if (structuredRows.length >= MAX_IMPORT_ERRORS && !hasReachedErrorLimit) {
-							hasReachedErrorLimit = true;
-							if (csvReadStream) csvReadStream.destroy();
-						}
 					};
 
 					// Process single error or array of errors
@@ -395,11 +405,15 @@ export class ImportService {
 							.pipe(Papa.parse(Papa.NODE_STREAM_INPUT, PapaOptions))
 							.on('data', (obj: Record<string, unknown>) => {
 								rowNumber++;
+
+								// Check if we've reached the error limit before processing
+								if (hasReachedErrorLimit) return;
+
 								const result = {} as Record<string, unknown>;
 
 								// Validate CSV structure
 								if (!obj || typeof obj !== 'object') {
-									structuredRows.push({
+									addStructuredError({
 										row: rowNumber,
 										code: ErrorCode.ImportStructureError,
 										field: null,
@@ -407,13 +421,6 @@ export class ImportService {
 										reason: 'Invalid row data format',
 										type: 'structure',
 									});
-
-									// Stop processing if too many errors
-									if (structuredRows.length >= MAX_IMPORT_ERRORS && !hasReachedErrorLimit) {
-										hasReachedErrorLimit = true;
-										if (csvReadStream) csvReadStream.destroy();
-										return;
-									}
 
 									return;
 								}
@@ -436,7 +443,7 @@ export class ImportService {
 									const errorMessage = `Row has ${extraColumns.length} extra column(s): ${extraColumns.join(', ')}. Please check your CSV structure.`;
 
 									// Add structured error for CSV structure issue
-									structuredRows.push({
+									addStructuredError({
 										row: rowNumber,
 										code: ErrorCode.ImportStructureError,
 										field: null,
@@ -444,15 +451,6 @@ export class ImportService {
 										reason: errorMessage,
 										type: 'structure',
 									});
-
-									return;
-								}
-
-								// Stop processing if too many errors
-								if (structuredRows.length >= MAX_IMPORT_ERRORS && !hasReachedErrorLimit) {
-									hasReachedErrorLimit = true;
-									if (csvReadStream) csvReadStream.destroy();
-									return;
 								}
 
 								saveQueue.push({ data: result, rowNumber });

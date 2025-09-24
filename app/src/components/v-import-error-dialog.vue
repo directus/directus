@@ -28,7 +28,9 @@ function closeDialog() {
 						<ul class="validation-errors-list">
 							<li v-for="(validationError, index) in errors" :key="index" class="validation-error">
 								<strong>
-									<span>{{ validationError.count > 1 ? `Rows ${validationError.rows}` : `Row ${validationError.rows}` }}</span>
+									<span>
+										{{ validationError.count > 1 ? `Rows ${validationError.rows}` : `Row ${validationError.rows}` }}
+									</span>
 									<template v-if="validationError.field">
 										<strong>&nbsp;({{ validationError.field }})</strong>
 									</template>

@@ -164,10 +164,7 @@ function useUpload() {
 			</template>
 		</div>
 
-		<v-import-error-dialog
-			v-model="errorDialogActive"
-			:errors="errorDialogRows"
-		/>
+		<v-import-error-dialog v-model="errorDialogActive" :errors="errorDialogRows" />
 	</sidebar-detail>
 </template>
 
