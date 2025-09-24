@@ -46,7 +46,6 @@ export const updateField =
  * @param query
  * @returns
  * @throws Will throw if collection is empty
- * @throws Will throw if field is empty
  */
 export const updateFields =
 	<Schema, const TQuery extends Query<Schema, DirectusField<Schema>>>(
