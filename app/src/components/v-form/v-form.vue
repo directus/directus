@@ -107,7 +107,7 @@ const firstEditableFieldIndex = computed(() => {
 	for (const [index, fieldName] of fieldNames.value.entries()) {
 		const field = fieldsMap.value[fieldName];
 
-		if (field?.meta && !field.meta?.readonly && isFieldVisible(field as Field)) {
+		if (field?.meta && !field.meta?.readonly && isFieldVisible(field)) {
 			return index;
 		}
 	}
