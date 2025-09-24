@@ -4,11 +4,9 @@ import { expect, test } from 'vitest';
 import { useSnapshot } from '@utils/useSnapshot.js';
 import type { Schema } from './schema.d.ts';
 import { useOptions } from '@utils/useOptions.js';
+import { port } from '@utils/constants.js';
 
-const api = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`)
-	.with(realtime())
-	.with(rest())
-	.with(staticToken('admin'));
+const api = createDirectus<Schema>(`http://localhost:${port}`).with(realtime()).with(rest()).with(staticToken('admin'));
 
 const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
 const options = useOptions();

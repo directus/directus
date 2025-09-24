@@ -1,21 +1,19 @@
-// import { createDirectus, createItem, rest, staticToken } from '@directus/sdk';
-// import { useSnapshot } from '../../../utils/use-snapshot';
-// import { Schema } from './schema';
-// import { join } from 'path';
-import { expect, test } from 'vitest';
+import { sandbox } from '@directus/sandbox';
+import { createDirectus, rest, staticToken } from '@directus/sdk';
+import { database } from '@utils/constants.js';
+import getPort from 'get-port';
+import { test } from 'vitest';
 
-// const api = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
-
-// const [schemaA, schemaB] = await Promise.all([
-// 	useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot-a.json')),
-// 	useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot-b.json')),
-// ]);
-
-test(`relational`, async () => {
-	// const resultA = await api.request(createItem(schemaA.a, {}));
-	// const resultB = await api.request(createItem(schemaB.b, {}));
-
-	// expect(resultA.id).toBeDefined();
-	// expect(resultB.id).toBeDefined();
-	expect(1).toBe(1);
+const directus = await sandbox(database, {
+	port: await getPort(),
+	killPorts: true,
+	inspect: false,
+	silent: true,
+	docker: {
+		basePort: getPort,
+	},
 });
+
+const api = createDirectus(`http://localhost:${directus.env['PORT']}`).with(rest()).with(staticToken('admin'));
+
+test('', async () => {});

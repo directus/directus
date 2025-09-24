@@ -1,12 +1,12 @@
-import { type Database, sandbox } from '@directus/sandbox';
+import { sandbox } from '@directus/sandbox';
 import { createDirectus, createItem, readItem, rest, serverHealth, staticToken } from '@directus/sdk';
+import { database } from '@utils/constants.js';
+import { useSnapshot } from '@utils/useSnapshot.js';
+import getPort from 'get-port';
 import { join } from 'node:path';
 import { expect, test } from 'vitest';
-import { useSnapshot } from '@utils/useSnapshot.js';
 import type { Schema } from './schema.d.ts';
-import getPort from 'get-port';
 
-const database = process.env['DATABASE'] as Database;
 const all = process.env['ALL'] === 'true';
 
 if (!all)

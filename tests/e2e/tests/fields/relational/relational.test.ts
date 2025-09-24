@@ -4,7 +4,7 @@ import type { Schema } from './schema.d.ts';
 import { join } from 'path';
 import { expect, test } from 'vitest';
 
-const api = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
 
 test(`m2o relation `, async () => {

@@ -13,8 +13,9 @@ import { join } from 'path';
 import { expect, test } from 'vitest';
 import { UUID } from '@utils/regex.js';
 import { useOptions } from '@utils/useOptions.js';
+import { port } from '@utils/constants.js';
 
-const api = createDirectus<unknown>(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const options = useOptions();
 
 test('upload a file', async () => {

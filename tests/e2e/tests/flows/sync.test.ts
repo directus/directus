@@ -1,10 +1,9 @@
-import { sandbox, type Database } from '@directus/sandbox';
+import { sandbox } from '@directus/sandbox';
 import { createDirectus, createFlow, createOperation, rest, staticToken, updateFlow } from '@directus/sdk';
+import { database } from '@utils/constants.js';
 import { randomUUID } from 'crypto';
 import getPort from 'get-port';
 import { expect, test } from 'vitest';
-
-const database = process.env['DATABASE'] as Database;
 
 test('syncronized flow logging', { timeout: 120_000 }, async () => {
 	const scope = randomUUID();

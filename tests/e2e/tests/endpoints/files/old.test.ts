@@ -1,3 +1,4 @@
+import { port } from '@utils/constants.js';
 import { describe, expect, test } from 'vitest';
 
 describe('/files', () => {
@@ -12,7 +13,7 @@ describe('/files', () => {
 					type: 'application/octet-stream',
 				};
 
-				const response = await fetch(`http://localhost:${process.env['PORT']}/files`, {
+				const response = await fetch(`http://localhost:${port}/files`, {
 					method: 'POST',
 					body: JSON.stringify(payload),
 					headers: {
@@ -37,7 +38,7 @@ describe('/files', () => {
 				// Setup
 				const payload = { title: 'Test File', filename_download: 'test_file', type: 'application/octet-stream' };
 
-				const response = await fetch(`http://localhost:${process.env['PORT']}/files`, {
+				const response = await fetch(`http://localhost:${port}/files`, {
 					method: 'POST',
 					body: JSON.stringify(payload),
 					headers: {

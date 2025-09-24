@@ -2,8 +2,9 @@ import { createDirectus, createUser, rest, staticToken } from '@directus/sdk';
 import { expect, test } from 'vitest';
 
 import { randomUUID } from 'crypto';
+import { port } from '@utils/constants.js';
 
-const api = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 
 async function setupUser() {
 	// Ensure the user exists
@@ -22,7 +23,7 @@ async function setupUser() {
 }
 
 async function setupWS() {
-	const socket = new WebSocket(`ws://localhost:${process.env['PORT']}/websocket`);
+	const socket = new WebSocket(`ws://localhost:${port}/websocket`);
 
 	await new Promise((resolve) => {
 		socket.addEventListener('open', () => {

@@ -1,17 +1,16 @@
-import type { Database } from '@directus/sandbox';
 import { createDirectus, createItem, rest, staticToken } from '@directus/sdk';
 import { getHelper } from '@utils/helpers/index.js';
 import { useSnapshot } from '@utils/useSnapshot.js';
 import { expect, test } from 'vitest';
 
+import { database, port } from '@utils/constants.js';
 import { join } from 'path';
 import type { Schema } from './schema.js';
 
-const api = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
 
-const database = process.env['DATABASE'] as Database;
-const { integer } = getHelper(database);
+const { integer } = getHelper();
 
 for (const n of [1, -1, 0, 499234]) {
 	test(`valid integer ${n}`, async () => {

@@ -1,4 +1,4 @@
-import { sandbox, type Database } from '@directus/sandbox';
+import { sandbox } from '@directus/sandbox';
 import {
 	clearCache,
 	createDirectus,
@@ -17,12 +17,11 @@ import {
 	type RestClient,
 	type StaticTokenClient,
 } from '@directus/sdk';
+import { database } from '@utils/constants.js';
 import getPort from 'get-port';
 import { join } from 'path';
 import { describe, expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
-
-const database = process.env['DATABASE'] as Database;
 
 const directusMemPort = await getPort();
 

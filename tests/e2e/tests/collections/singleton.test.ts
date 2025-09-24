@@ -7,11 +7,12 @@ import {
 	staticToken,
 	updateSingleton,
 } from '@directus/sdk';
+import { port } from '@utils/constants.js';
 
 import { randomUUID } from 'node:crypto';
 import { expect, test } from 'vitest';
 
-const api = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 
 const collectionName = `singleton_${randomUUID()}`;
 

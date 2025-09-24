@@ -1,8 +1,9 @@
 import { authentication, createDirectus, createUser, graphql, rest, staticToken } from '@directus/sdk';
+import { port } from '@utils/constants.js';
 import { randomUUID } from 'node:crypto';
 import { expect, test } from 'vitest';
 
-const api = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 
 test('auth with email & password', async () => {
 	const email = `${randomUUID()}@test.com`;
@@ -16,7 +17,7 @@ test('auth with email & password', async () => {
 		}),
 	);
 
-	const auth = createDirectus(`http://localhost:${process.env['PORT']}`).with(graphql()).with(authentication());
+	const auth = createDirectus(`http://localhost:${port}`).with(graphql()).with(authentication());
 
 	const result = await auth.query(
 		`

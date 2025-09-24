@@ -19,8 +19,9 @@ import { useSnapshot } from '@utils/useSnapshot.js';
 import type { Schema } from './schema.d.ts';
 import { join } from 'path';
 import { randomUUID } from 'crypto';
+import { port } from '@utils/constants.js';
 
-const api = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
 const token = randomUUID();
 
@@ -57,7 +58,7 @@ const train = await api.request(
 	}),
 );
 
-const userApi = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken(token));
+const userApi = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken(token));
 
 test('reading with admin permissions', async () => {
 	const result = await api.request(readItems(collections.trains));

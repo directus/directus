@@ -1,6 +1,6 @@
-import type { Database } from '@directus/sandbox';
 import { inject } from 'vitest';
+import { database } from './constants.js';
 
 export function useEnv() {
-	return inject('envs')[process.env['DATABASE'] as Database];
+	return inject('envs')[database];
 }

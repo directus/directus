@@ -5,11 +5,9 @@ import type { Articles, Schema } from './schema.d.ts';
 import { createDirectus, graphql, rest, staticToken } from '@directus/sdk';
 import { useSnapshot } from '@utils/useSnapshot.js';
 import { join } from 'path';
+import { port } from '@utils/constants.js';
 
-const api = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`)
-	.with(graphql())
-	.with(rest())
-	.with(staticToken('admin'));
+const api = createDirectus<Schema>(`http://localhost:${port}`).with(graphql()).with(rest()).with(staticToken('admin'));
 
 const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
 

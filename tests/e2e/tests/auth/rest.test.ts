@@ -1,8 +1,9 @@
 import { authentication, createDirectus, createUser, readMe, rest, staticToken } from '@directus/sdk';
+import { port } from '@utils/constants.js';
 import { randomUUID } from 'node:crypto';
 import { expect, test } from 'vitest';
 
-const api = createDirectus<unknown>(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 
 test('auth with token', async () => {
 	const token = randomUUID();
@@ -17,7 +18,7 @@ test('auth with token', async () => {
 		}),
 	);
 
-	const auth = createDirectus<unknown>(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken(token));
+	const auth = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken(token));
 
 	const me = await auth.request(readMe());
 
@@ -36,7 +37,7 @@ test('auth with email & password', async () => {
 		}),
 	);
 
-	const auth = createDirectus<unknown>(`http://localhost:${process.env['PORT']}`).with(rest()).with(authentication());
+	const auth = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(authentication());
 
 	await auth.login({
 		email,

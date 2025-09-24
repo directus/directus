@@ -13,8 +13,8 @@ import { dirname } from 'path';
 import { deepMap } from './deepMap.js';
 import type { Snapshot } from '@directus/types';
 import { startCase } from 'lodash-es';
-import type { Database } from '@directus/sandbox';
 import type { Schema as SetupSchema } from '../setup/schema.d.ts';
+import { database } from './constants.js';
 
 export type Collections<Schema> = { [P in keyof Schema]: P };
 
@@ -29,8 +29,6 @@ export async function useSnapshot<Schema>(
 	const collectionReplace: Record<string, string> = {};
 
 	const fieldReplace: Record<string, string> = {};
-
-	const database = process.env['DATABASE'] as Database;
 
 	const parts = dirname(file).split(/[/\\]/g);
 	const e2eIndex = parts.findIndex((part) => part === 'e2e');

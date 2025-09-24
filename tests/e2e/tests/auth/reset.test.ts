@@ -11,8 +11,9 @@ import { randomUUID } from 'node:crypto';
 import { expect, test } from 'vitest';
 import { useEnv } from '@utils/useEnv.js';
 import { useOptions } from '@utils/useOptions.js';
+import { port } from '@utils/constants.js';
 
-const api = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const options = useOptions();
 
 type Email = {
@@ -42,7 +43,7 @@ if (options.extras?.maildev) {
 			}),
 		);
 
-		const auth = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest()).with(authentication());
+		const auth = createDirectus(`http://localhost:${port}`).with(rest()).with(authentication());
 
 		await auth.login({
 			email,

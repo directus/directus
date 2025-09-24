@@ -1,12 +1,12 @@
-import { sandbox, type Database } from '@directus/sandbox';
+import { sandbox } from '@directus/sandbox';
 import { clearCache, createDirectus, deleteCollection, readFields, rest, staticToken } from '@directus/sdk';
+import { database } from '@utils/constants.js';
+import { useSnapshot } from '@utils/useSnapshot.js';
 import getPort from 'get-port';
+import { join } from 'path';
 import { describe, expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
-import { useSnapshot } from '@utils/useSnapshot.js';
-import { join } from 'path';
 
-const database = process.env['DATABASE'] as Database;
 const newCollectionName = 'schema-caching-test';
 
 describe('Schema Caching Tests', () => {

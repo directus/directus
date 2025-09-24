@@ -10,8 +10,9 @@ import {
 
 import { expect, test } from 'vitest';
 import { randomUUID } from 'node:crypto';
+import { port } from '@utils/constants.js';
 
-const api = createDirectus(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 
 const collectionName = `collections_${randomUUID()}`;
 

@@ -3,8 +3,9 @@ import fs from 'fs/promises';
 import { join } from 'path';
 import { expect, test } from 'vitest';
 import { useEnv } from '@utils/useEnv.js';
+import { port } from '@utils/constants.js';
 
-const api = createDirectus<unknown>(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus<unknown>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 
 const file = await fs.readFile(join(import.meta.dirname, 'image.jpg'));
 const blob = new Blob([file], { type: 'image/jpeg' });
@@ -91,7 +92,7 @@ const formatHeaders = [
 for (const header of formatHeaders) {
 	test(`format=auto with "${header.accept ?? 'no'}" Accept request header`, async () => {
 		const response = await fetch(
-			`http://localhost:${process.env['PORT']}/assets/${upload.id}?format=auto&access_token=admin`,
+			`http://localhost:${port}/assets/${upload.id}?format=auto&access_token=admin`,
 			header.accept ? { headers: { Accept: header.accept } } : {},
 		);
 
@@ -104,9 +105,7 @@ test('asset transformation limits', async () => {
 
 	const results = await Promise.all(
 		[...Array(count).keys()].map(async (i) => {
-			const result = await fetch(
-				`http://localhost:${process.env['PORT']}/assets/${upload.id}?format=webp&access_token=admin`,
-			);
+			const result = await fetch(`http://localhost:${port}/assets/${upload.id}?format=webp&access_token=admin`);
 
 			return result.status;
 		}),
@@ -117,7 +116,7 @@ test('asset transformation limits', async () => {
 	const results2 = await Promise.all(
 		[...Array(count + 200).keys()].map(async (i) => {
 			const result = await fetch(
-				`http://localhost:${process.env['PORT']}/assets/${upload.id}?width=2000&height=2000&access_token=admin`,
+				`http://localhost:${port}/assets/${upload.id}?width=2000&height=2000&access_token=admin`,
 			);
 
 			return result.status;

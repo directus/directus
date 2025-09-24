@@ -12,8 +12,9 @@ import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 import { join } from 'path';
 import { generateScopedUser } from '@utils/userScoped.js';
+import { port } from '@utils/constants.js';
 
-const api = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`).with(rest()).with(staticToken('admin'));
+const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const { collections, snapshot } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
 
 test('get permissions for admin', async () => {
@@ -32,9 +33,7 @@ test('get permissions for user', async () => {
 	const item = await api.request(createItem(collections.trains, { name: 'Train 2' }));
 	const { token, user } = await generateScopedUser(api, snapshot, ['read']);
 
-	const userApi = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`)
-		.with(rest())
-		.with(staticToken(token));
+	const userApi = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken(token));
 
 	let result = await userApi.request(readItemPermissions(collections.trains, item.id));
 
@@ -67,9 +66,7 @@ test('get permissions for user on singleton', async () => {
 
 	await api.request(updateSingleton(collections.singleton, { title: 'Singleton' }));
 
-	const userApi = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`)
-		.with(rest())
-		.with(staticToken(token));
+	const userApi = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken(token));
 
 	await api.request(
 		createPermission({
@@ -90,7 +87,7 @@ test('get permissions for user on singleton', async () => {
 });
 
 test('get permissions without auth', async () => {
-	const publicApi = createDirectus<Schema>(`http://localhost:${process.env['PORT']}`).with(rest());
+	const publicApi = createDirectus<Schema>(`http://localhost:${port}`).with(rest());
 
 	const item = await api.request(createItem(collections.trains, { name: 'Train 3' }));
 

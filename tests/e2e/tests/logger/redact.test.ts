@@ -1,10 +1,10 @@
-import { type Database, sandbox } from '@directus/sandbox';
+import { sandbox } from '@directus/sandbox';
 import { authentication, createDirectus, rest } from '@directus/sdk';
-import { expect, test } from 'vitest';
+import { database } from '@utils/constants.js';
 import { Signal } from '@utils/signal.js';
 import getPort from 'get-port';
+import { expect, test } from 'vitest';
 
-const database = process.env['DATABASE'] as Database;
 const all = process.env['ALL'] === 'true';
 
 if (!all)
