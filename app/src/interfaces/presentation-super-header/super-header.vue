@@ -271,9 +271,6 @@ watch(
 					<v-icon v-if="icon" :name="icon" />
 					<render-template :collection="collection" :fields="fields" :item="combinedItemData" :template="title" />
 				</p>
-				<p v-if="subtitle" class="text-subtitle">
-					<render-template :collection="collection" :fields="fields" :item="combinedItemData" :template="subtitle" />
-				</p>
 			</div>
 			<div class="actions-wrapper">
 				<div class="actions-container">
@@ -371,6 +368,9 @@ watch(
 				</div>
 			</div>
 		</div>
+		<p v-if="subtitle" class="text-subtitle">
+			<render-template :collection="collection" :fields="fields" :item="combinedItemData" :template="subtitle" />
+		</p>
 		<transition-expand>
 			<div v-if="expanded && help && helpDisplayMode !== 'modal'" class="help-text">
 				<!-- eslint-disable-next-line vue/no-v-html -->
@@ -474,45 +474,41 @@ watch(
 	display: flex;
 	gap: calc(var(--theme--form--column-gap) / 2);
 	padding-block-end: 8px;
-	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	color: var(--header-color, var(--theme--foreground));
-	align-items: flex-start;
+	align-items: baseline;
 	justify-content: space-between;
 	min-inline-size: 0;
 }
 
-.text-content {
-	min-inline-size: 0;
-	flex: 1;
+.text-title {
+	display: flex;
+	color: var(--theme--foreground-accent);
+	overflow: hidden;
+	gap: 8px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 24px;
+	font-weight: 600;
 
 	.v-icon {
 		--v-icon-color: var(--header-color);
 		margin-block-start: 2px;
 		flex-shrink: 0;
 	}
-
-	.text-title {
-		display: flex;
-		overflow: hidden;
-		gap: 8px;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		font-size: 20px;
-		font-weight: 600;
-	}
-
-	.text-subtitle {
-		margin-block-start: 4px;
-		font-size: 14px;
-		color: color-mix(in srgb, var(--theme--foreground), var(--theme--background) 25%);
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
 }
 
 .actions-wrapper {
 	flex-shrink: 0;
+}
+
+.text-subtitle {
+	margin-block-start: 4px;
+	font-size: 14px;
+	color: color-mix(in srgb, var(--theme--foreground), var(--theme--background) 25%);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .actions-container {
@@ -554,7 +550,8 @@ watch(
 }
 
 .help-text {
-	padding-block: 16px;
+	padding-block: 40px;
+	padding-inline: 32px;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
 	max-block-size: 540px;
 	overflow-y: scroll;
