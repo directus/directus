@@ -13,6 +13,7 @@ program
 	.option('--docker.basePort <dockerBasePort>', 'Minimum port number to use for docker containers')
 	.option('--docker.keep', 'Keep containers running when stopping the sandbox')
 	.option('--docker.name', 'Overwrite the name of the docker project')
+	.option('--docker.suffix', 'Adds a suffix to the docker project. Can be used to ensure uniqueness')
 	.option('-e, --extras <extras>', 'Enable redis,maildev,saml or other extras')
 	.option('--silent', 'Silence all logs except for errors')
 	.option('-i, --instances <instances>', 'Horizontally scale directus to a given number of instances', '1')
@@ -26,6 +27,8 @@ const sb = await sandbox(program.args[0] as Database, {
 	docker: {
 		basePort: options['docker.basePort'],
 		keep: options['docker.keep'],
+		name: options['docker.name'],
+		suffix: options['docker.suffix'],
 	},
 	extras: options['extras']
 		? Object.fromEntries(

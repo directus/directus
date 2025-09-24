@@ -15,8 +15,10 @@ import getPort from 'get-port';
 import { join } from 'path';
 import { describe, expect, test } from 'vitest';
 import type { Schema } from './schema.js';
+import { getUID } from '@utils/getUID.js';
 
 const directusMemPort = await getPort();
+const uid = getUID();
 
 const directusMem = await sandbox(database, {
 	cache: true,
@@ -26,7 +28,7 @@ const directusMem = await sandbox(database, {
 	inspect: false,
 	docker: {
 		basePort: directusMemPort + 1,
-		name: 'sandbox-cache-mem',
+		suffix: `${uid}_mem`,
 	},
 	env: {
 		CACHE_STATUS_HEADER: 'x-cache-status',
@@ -45,7 +47,7 @@ const directusMemPurge = await sandbox(database, {
 	inspect: false,
 	docker: {
 		basePort: directusMemPurgePort + 1,
-		name: 'sandbox-cache-mem-purge',
+		suffix: `${uid}_mem_purge`,
 	},
 	env: {
 		CACHE_STATUS_HEADER: 'x-cache-status',
@@ -64,7 +66,7 @@ const directusRedis = await sandbox(database, {
 	inspect: false,
 	docker: {
 		basePort: directusRedisPort + 1,
-		name: 'sandbox-cache-redis',
+		suffix: `${uid}_redis`,
 	},
 	extras: {
 		redis: true,
@@ -86,7 +88,7 @@ const directusRedisPurge = await sandbox(database, {
 	inspect: false,
 	docker: {
 		basePort: directusRedisPurgePort + 1,
-		name: 'sandbox-cache-redis-purge',
+		suffix: `${uid}_redis_purge`,
 	},
 	extras: {
 		redis: true,

@@ -13,7 +13,9 @@ export async function dockerUp(database: Database, opts: Options, env: Env, logg
 		.filter(([_, value]) => value)
 		.map(([key, _]) => key);
 
-	const project = opts.docker.name ?? `sandbox_${database}${extrasList.map((extra) => '_' + extra).join('')}`;
+	const project =
+		opts.docker.name ?? `sandbox_${database}${extrasList.map((extra) => '_' + extra).join('')}` + opts.docker.suffix;
+
 	const files = database === 'sqlite' ? extrasList : [database, ...extrasList];
 
 	if (files.length === 0) return;

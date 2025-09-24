@@ -14,15 +14,14 @@ import {
 	updateItems,
 	updatePolicy,
 } from '@directus/sdk';
-import { expect, test } from 'vitest';
-import { useSnapshot } from '@utils/useSnapshot.js';
-import type { Schema } from './schema.d.ts';
-import { join } from 'path';
-import { randomUUID } from 'crypto';
 import { port } from '@utils/constants.js';
+import { useSnapshot } from '@utils/useSnapshot.js';
+import { randomUUID } from 'crypto';
+import { expect, test } from 'vitest';
+import type { Schema } from './schema.d.ts';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
+const { collections } = await useSnapshot<Schema>(api);
 const token = randomUUID();
 
 const user = await api.request(

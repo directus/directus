@@ -3,13 +3,12 @@ import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 
 import { createDirectus, graphql, rest, staticToken } from '@directus/sdk';
-import { useSnapshot } from '@utils/useSnapshot.js';
-import { join } from 'path';
 import { database, port } from '@utils/constants.js';
+import { useSnapshot } from '@utils/useSnapshot.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(graphql()).with(rest()).with(staticToken('admin'));
 
-const { snapshot } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
+const { snapshot } = await useSnapshot<Schema>(api);
 
 // TODO: Oracle has a **STUPID** hard limit of VARCHAR(4000) on directus_revisions.data, so this currently fails to generate the scoped user
 if (database !== 'oracle')

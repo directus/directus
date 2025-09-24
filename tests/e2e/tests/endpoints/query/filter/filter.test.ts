@@ -1,13 +1,12 @@
 import { createDirectus, createItem, readItems, rest, staticToken } from '@directus/sdk';
+import { database, port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/useSnapshot.js';
 import { range } from 'lodash-es';
-import { join } from 'path';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
-import { database, port } from '@utils/constants.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
+const { collections } = await useSnapshot<Schema>(api);
 
 test(`string _eq`, async () => {
 	const ids = (

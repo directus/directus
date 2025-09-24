@@ -36,6 +36,8 @@ export type Options = {
 		basePort: Port | (() => Port | Promise<Port>);
 		/** Overwrite the name of the docker project */
 		name: string | undefined;
+		/** Adds a suffix to the docker project. Can be used to ensure uniqueness */
+		suffix: string;
 	};
 	/** Horizontally scale the api to a given number of instances */
 	instances: string;
@@ -98,6 +100,7 @@ function getOptions(options?: DeepPartial<Options>): Options {
 				keep: false,
 				basePort: '6000',
 				name: undefined,
+				suffix: '',
 			},
 			instances: '1',
 			inspect: true,

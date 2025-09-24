@@ -6,6 +6,7 @@ import getPort from 'get-port';
 import { join } from 'node:path';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { getUID } from '@utils/getUID.js';
 
 const all = process.env['ALL'] === 'true';
 
@@ -22,6 +23,7 @@ if (!all)
 			},
 			docker: {
 				basePort: getPort,
+				suffix: getUID(),
 			},
 		});
 

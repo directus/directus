@@ -1,14 +1,13 @@
 import { createDirectus, createItem, deleteItem, realtime, rest, staticToken, updateItem } from '@directus/sdk';
-import { join } from 'path';
-import { expect, test } from 'vitest';
-import { useSnapshot } from '@utils/useSnapshot.js';
-import type { Schema } from './schema.d.ts';
-import { useOptions } from '@utils/useOptions.js';
 import { port } from '@utils/constants.js';
+import { useOptions } from '@utils/useOptions.js';
+import { useSnapshot } from '@utils/useSnapshot.js';
+import { expect, test } from 'vitest';
+import type { Schema } from './schema.d.ts';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(realtime()).with(rest()).with(staticToken('admin'));
 
-const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
+const { collections } = await useSnapshot<Schema>(api);
 const options = useOptions();
 
 if (options.extras?.redis) {

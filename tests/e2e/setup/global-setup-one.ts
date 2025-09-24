@@ -1,11 +1,11 @@
 import { type Database, type Env, type Options, type Sandbox, sandbox } from '@directus/sandbox';
 import { createDirectus, rest, schemaApply, schemaDiff, staticToken } from '@directus/sdk';
-import type { Schema } from './schema.d.ts';
-import { join } from 'path';
-import { readFile } from 'fs/promises';
-import { TestProject } from 'vitest/node';
 import type { DeepPartial } from '@directus/types';
+import { readFile } from 'fs/promises';
 import util from 'node:util';
+import { join } from 'path';
+import { TestProject } from 'vitest/node';
+import type { Schema } from './schema.d.ts';
 
 let sb: Sandbox | undefined;
 

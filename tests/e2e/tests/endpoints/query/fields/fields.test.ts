@@ -1,12 +1,11 @@
 import { createDirectus, createItem, readItem, rest, staticToken } from '@directus/sdk';
-import { join } from 'path';
-import { expect, test } from 'vitest';
-import { useSnapshot } from '@utils/useSnapshot.js';
-import type { Schema } from './schema.d.ts';
 import { port } from '@utils/constants.js';
+import { useSnapshot } from '@utils/useSnapshot.js';
+import { expect, test } from 'vitest';
+import type { Schema } from './schema.d.ts';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
+const { collections } = await useSnapshot<Schema>(api);
 
 test(`select only id`, async () => {
 	const id = (

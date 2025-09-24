@@ -6,6 +6,7 @@ import getPort from 'get-port';
 import { join } from 'path';
 import { describe, expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { getUID } from '@utils/getUID.js';
 
 const newCollectionName = 'schema-caching-test';
 
@@ -27,7 +28,7 @@ describe('Schema Caching Tests', () => {
 				},
 				docker: {
 					basePort: getPort,
-					name: 'sandbox-horrizontal-schema-cache',
+					suffix: getUID(),
 				},
 			});
 
@@ -102,7 +103,7 @@ describe('Schema Caching Tests', () => {
 				},
 				docker: {
 					basePort: getPort,
-					name: 'sandbox-horrizontal-schema-cache',
+					suffix: getUID(),
 				},
 			});
 

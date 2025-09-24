@@ -1,11 +1,10 @@
 import { createDirectus, createItem, deleteItem, readItem, rest, staticToken, updateItem } from '@directus/sdk';
 import { useSnapshot } from '@utils/useSnapshot.js';
-import type { Schema } from './schema.d.ts';
-import { join } from 'path';
 import { expect, test } from 'vitest';
+import type { Schema } from './schema.d.ts';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
+const { collections } = await useSnapshot<Schema>(api);
 
 test(`m2o relation `, async () => {
 	const created = await api.request(

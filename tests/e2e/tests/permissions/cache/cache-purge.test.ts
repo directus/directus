@@ -22,6 +22,9 @@ import getPort from 'get-port';
 import { join } from 'path';
 import { describe, expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
+import { getUID } from '@utils/getUID.js';
+
+const uid = getUID();
 
 const directusMemPort = await getPort();
 
@@ -33,7 +36,7 @@ const directusMem = await sandbox(database, {
 	inspect: false,
 	docker: {
 		basePort: directusMemPort + 1,
-		name: 'sandbox-perm-cache-mem',
+		suffix: `${uid}_mem`,
 	},
 	env: {
 		CACHE_STATUS_HEADER: 'x-cache-status',
@@ -52,7 +55,7 @@ const directusMemPurge = await sandbox(database, {
 	inspect: false,
 	docker: {
 		basePort: directusMemPurgePort + 1,
-		name: 'sandbox-perm-cache-mem-purge',
+		suffix: `${uid}_mem_purge`,
 	},
 	env: {
 		CACHE_STATUS_HEADER: 'x-cache-status',
@@ -71,7 +74,7 @@ const directusRedis = await sandbox(database, {
 	inspect: false,
 	docker: {
 		basePort: directusRedisPort + 1,
-		name: 'sandbox-perm-cache-redis',
+		suffix: `${uid}_redis`,
 	},
 	extras: {
 		redis: true,
@@ -93,7 +96,7 @@ const directusRedisPurge = await sandbox(database, {
 	inspect: false,
 	docker: {
 		basePort: directusRedisPurgePort + 1,
-		name: 'sandbox-perm-cache-redis-purge',
+		suffix: `${uid}_redis_purge`,
 	},
 	extras: {
 		redis: true,
@@ -195,7 +198,7 @@ for (const instance of instances) {
 		};
 
 		describe(instance.env.PORT, async () => {
-			const api = createDirectus<Schema>(`http://localhost:${instance.env['PORT']}`)
+			const api = createDirectus<Schema>(`http://localhost:${instance.env.PORT}`)
 				.with(rest())
 				.with(staticToken('admin'));
 
@@ -213,7 +216,7 @@ for (const instance of instances) {
 				// Action
 				await mutations[mutationKey as keyof typeof mutations](api);
 
-				const response = await fetch(`http://localhost:${instance.env['PORT']}/items/collection`, {
+				const response = await fetch(`http://localhost:${instance.env.PORT}/items/collection`, {
 					headers: {
 						Authorization: 'Bearer admin',
 					},

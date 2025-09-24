@@ -1,6 +1,7 @@
 import { sandbox } from '@directus/sandbox';
 import { createDirectus, createFlow, createOperation, rest, staticToken, updateFlow } from '@directus/sdk';
 import { database } from '@utils/constants.js';
+import { getUID } from '@utils/getUID.js';
 import { randomUUID } from 'crypto';
 import getPort from 'get-port';
 import { expect, test } from 'vitest';
@@ -14,6 +15,9 @@ test('syncronized flow logging', { timeout: 120_000 }, async () => {
 		killPorts: true,
 		extras: {
 			redis: true,
+		},
+		docker: {
+			basePort: getPort,
 		},
 		env: {
 			SYNCHRONIZATION_STORE: 'redis',

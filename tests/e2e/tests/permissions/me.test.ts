@@ -7,15 +7,14 @@ import {
 	staticToken,
 	updateSingleton,
 } from '@directus/sdk';
+import { port } from '@utils/constants.js';
+import { generateScopedUser } from '@utils/userScoped.js';
 import { useSnapshot } from '@utils/useSnapshot.js';
 import { expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
-import { join } from 'path';
-import { generateScopedUser } from '@utils/userScoped.js';
-import { port } from '@utils/constants.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections, snapshot } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
+const { collections, snapshot } = await useSnapshot<Schema>(api);
 
 test('get permissions for admin', async () => {
 	const item = await api.request(createItem(collections.trains, { name: 'Train 1' }));

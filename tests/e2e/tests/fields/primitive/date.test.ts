@@ -1,13 +1,11 @@
 import { createDirectus, createItem, rest, staticToken } from '@directus/sdk';
 import { useSnapshot } from '@utils/useSnapshot.js';
 import { expect, test } from 'vitest';
-
-import { join } from 'path';
-import type { Schema } from './schema.js';
 import { port } from '@utils/constants.js';
+import type { Schema } from './schema.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
+const { collections } = await useSnapshot<Schema>(api);
 
 for (const date of ['2020-01-01', '2001-12-24']) {
 	test(`valid date ${date}`, async () => {

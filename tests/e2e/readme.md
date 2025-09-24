@@ -18,7 +18,7 @@ The basic test structure goes as follows.
 3. If relying on a schema, please use the `useSnapshot` utility function.
 
 ```ts
-const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
+const { collections } = await useSnapshot<Schema>(api);
 ```
 
 1. For interaction and testing, it's recomended to use the Directus SDK.

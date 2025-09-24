@@ -1,7 +1,7 @@
-import { writeFile, readFile, access } from 'fs/promises';
-import { expect } from 'vitest';
 import { createHash } from 'crypto';
+import { access, readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
+import { expect } from 'vitest';
 
 async function exists(file: string) {
 	try {

@@ -8,21 +8,27 @@ import {
 	schemaDiff,
 	type SchemaSnapshotOutput,
 } from '@directus/sdk';
-import { readFile } from 'fs/promises';
-import { dirname } from 'path';
-import { deepMap } from './deepMap.js';
 import type { Snapshot } from '@directus/types';
+import { readFile } from 'fs/promises';
 import { startCase } from 'lodash-es';
+import { join } from 'path';
 import type { Schema as SetupSchema } from '../setup/schema.d.ts';
 import { database } from './constants.js';
+import { deepMap } from './deepMap.js';
+import { getCallerFolder, getUID } from './getUID.js';
 
 export type Collections<Schema> = { [P in keyof Schema]: P };
 
 const groups: string[] = [];
 
+/**
+ * Applies a snapshot to the api while also ensuring unique names of collections.
+ * @param file The file to import. @default 'snapshot.json'.
+ * @returns the names of the created collections and the parsed snapshot file that was used.
+ */
 export async function useSnapshot<Schema>(
 	api: DirectusClient<SetupSchema> & RestClient<SetupSchema>,
-	file: string,
+	file = 'snapshot.json',
 ): Promise<{ collections: Collections<Schema>; snapshot: Snapshot }> {
 	const collectionMap: Record<string, string> = {};
 	const collectionNameMap: Record<string, string> = {};
@@ -30,16 +36,15 @@ export async function useSnapshot<Schema>(
 
 	const fieldReplace: Record<string, string> = {};
 
-	const parts = dirname(file).split(/[/\\]/g);
-	const e2eIndex = parts.findIndex((part) => part === 'e2e');
-	const prefix = parts.slice(e2eIndex + 2).join('_');
+	const folder = getCallerFolder(1);
+	const uid = getUID(1);
 
 	let skipOrder = false;
 
 	try {
 		await api.request(
 			createItem('schema_apply_order', {
-				group: prefix,
+				group: uid,
 			}),
 		);
 	} catch {
@@ -49,7 +54,7 @@ export async function useSnapshot<Schema>(
 	if (!skipOrder) {
 		const orders = await api.request(readItems('schema_apply_order'));
 
-		const orderIndex = orders.findIndex((raw) => raw['group']! === prefix);
+		const orderIndex = orders.findIndex((raw) => raw['group']! === uid);
 
 		if (orderIndex !== 0) {
 			let inFrontExists = false;
@@ -66,15 +71,15 @@ export async function useSnapshot<Schema>(
 		}
 	}
 
-	const snapshot: Snapshot = JSON.parse(await readFile(file, { encoding: 'utf8' }));
+	const snapshot: Snapshot = JSON.parse(await readFile(join(folder, file), { encoding: 'utf8' }));
 	const collectionIDs = snapshot.collections.map((collection) => collection.collection);
 	const fieldIDs = snapshot.fields.map((field) => field.field);
 
 	for (const cid of collectionIDs) {
 		const name = cid.replaceAll('_1234', '');
-		collectionMap[name] = prefix + '_' + name;
+		collectionMap[name] = uid + '_' + name;
 		collectionReplace[cid] = collectionMap[name];
-		collectionNameMap[prefix + '_' + name] = name;
+		collectionNameMap[uid + '_' + name] = name;
 	}
 
 	for (const fid of fieldIDs) {
@@ -93,7 +98,7 @@ export async function useSnapshot<Schema>(
 	}) as SchemaSnapshotOutput;
 
 	schemaSnapshot.collections = schemaSnapshot.collections.map((collection) => {
-		collection.meta.group = prefix;
+		collection.meta.group = uid;
 
 		collection.meta.translations = [
 			{ language: 'en-US', translation: startCase(collectionNameMap[collection.collection]) },
@@ -102,9 +107,9 @@ export async function useSnapshot<Schema>(
 		return collection;
 	});
 
-	if (!groups.includes(prefix)) {
-		schemaSnapshot.collections.push(getGroup(prefix));
-		groups.push(prefix);
+	if (!groups.includes(uid)) {
+		schemaSnapshot.collections.push(getGroup(uid));
+		groups.push(uid);
 	}
 
 	let tries = 3;

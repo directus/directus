@@ -5,11 +5,10 @@ import { createDirectus, rest, staticToken } from '@directus/sdk';
 import { useSnapshot } from '@utils/useSnapshot.js';
 
 import { database, port } from '@utils/constants.js';
-import { join } from 'path';
 import type { Schema } from './schema.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
-const { collections } = await useSnapshot<Schema>(api, join(import.meta.dirname, 'snapshot.json'));
+const { collections } = await useSnapshot<Schema>(api);
 
 for (const n of [0.0, -1.1, 0.1, 100.001]) {
 	test(`valid float ${n}`, async () => {
