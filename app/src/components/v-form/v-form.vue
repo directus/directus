@@ -90,20 +90,24 @@ onBeforeUpdate(() => {
 	formFieldEls.value = {};
 });
 
-const { fields: finalFields, fieldNames, fieldsMap, getFieldsForGroup, fieldsForGroup, isDisabled } = useForm();
+const {
+	fields: finalFields,
+	fieldNames,
+	fieldsMap,
+	fieldsForGroup,
+	isDisabled,
+	getFieldsForGroup,
+	isFieldVisible,
+} = useForm();
+
 const { toggleBatchField, batchActiveFields } = useBatch();
 const { toggleRawField, rawActiveFields } = useRawEditor();
-
-const isVisibleField = (fieldName: string) => {
-	const field = fieldsMap.value[fieldName];
-	return !field?.meta?.hidden || (props.comparison && props.comparison?.fields?.has(fieldName));
-};
 
 const firstEditableFieldIndex = computed(() => {
 	for (const [index, fieldName] of fieldNames.value.entries()) {
 		const field = fieldsMap.value[fieldName];
 
-		if (field?.meta && !field.meta?.readonly && isVisibleField(fieldName)) {
+		if (field?.meta && !field.meta?.readonly && isFieldVisible(field as Field)) {
 			return index;
 		}
 	}
@@ -115,7 +119,7 @@ const firstVisibleFieldIndex = computed(() => {
 	for (const [index, fieldName] of fieldNames.value.entries()) {
 		const field = fieldsMap.value[fieldName];
 
-		if (field?.meta && isVisibleField(fieldName)) {
+		if (field?.meta && isFieldVisible(field)) {
 			return index;
 		}
 	}
@@ -124,7 +128,9 @@ const firstVisibleFieldIndex = computed(() => {
 });
 
 const noVisibleFields = computed(() => {
-	return Object.keys(fieldsMap.value).every((fieldKey) => !isVisibleField(fieldKey));
+	return Object.keys(fieldsMap.value).every((fieldKey) => {
+		return !isFieldVisible(fieldsMap.value[fieldKey]!);
+	});
 });
 
 watch(
@@ -165,8 +171,8 @@ function useForm() {
 		);
 
 		fields = pushGroupOptionsDown(fields);
-		updateSystemDivider(fields, props.comparison?.fields);
-		updateFieldWidths(fields, props.comparison?.fields);
+		updateSystemDivider(fields, isFieldVisible);
+		updateFieldWidths(fields, isFieldVisible);
 
 		return fields;
 	});
@@ -187,7 +193,7 @@ function useForm() {
 		return fieldNames.value.map((name) => getFieldsForGroup(fieldsMap.value[name]?.meta?.field || null));
 	});
 
-	return { fields, fieldNames, fieldsMap, isDisabled, getFieldsForGroup, fieldsForGroup };
+	return { fields, fieldNames, fieldsMap, fieldsForGroup, isDisabled, getFieldsForGroup, isFieldVisible };
 
 	function isDisabled(field: TFormField | undefined) {
 		if (!field) return true;
@@ -244,6 +250,10 @@ function useForm() {
 		}
 
 		return field;
+	}
+
+	function isFieldVisible(field: Field | TFormField) {
+		return field.meta?.hidden !== true || !!props.comparison?.fields?.has(field.field);
 	}
 }
 
@@ -370,7 +380,7 @@ function useRawEditor() {
 			<template v-if="fieldsMap[fieldName]">
 				<component
 					:is="`interface-${fieldsMap[fieldName]!.meta?.interface || 'group-standard'}`"
-					v-if="fieldsMap[fieldName]!.meta?.special?.includes('group') && isVisibleField(fieldName)"
+					v-if="fieldsMap[fieldName]!.meta?.special?.includes('group') && isFieldVisible(fieldsMap[fieldName])"
 					:ref="
 						(el: Element) => {
 							formFieldEls[fieldName] = el;
@@ -400,7 +410,7 @@ function useRawEditor() {
 				/>
 
 				<form-field
-					v-else-if="isVisibleField(fieldName)"
+					v-else-if="isFieldVisible(fieldsMap[fieldName])"
 					:ref="
 						(el) => {
 							formFieldEls[fieldName] = el;

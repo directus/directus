@@ -1,18 +1,12 @@
 import { Field } from '@directus/types';
 
-export function updateFieldWidths(fields: Field[], comparisonFields: Set<string> = new Set()) {
+export function updateFieldWidths(fields: Field[], isFieldVisible = (field: Field) => field.meta?.hidden !== true) {
 	for (const [index, field] of fields.entries()) {
-		const isVisible = !field.meta?.hidden || comparisonFields.has(field.field);
-
-		if (index !== 0 && field.meta?.width === 'half' && isVisible) {
+		if (index !== 0 && field.meta?.width === 'half' && isFieldVisible(field)) {
 			let prevNonHiddenField;
 
 			for (const formField of fields) {
-				if (formField.meta?.group !== field.meta?.group) continue;
-
-				const isPrevFieldVisible = !formField.meta?.hidden || comparisonFields.has(formField.field);
-
-				if (!isPrevFieldVisible) continue;
+				if (formField.meta?.group !== field.meta?.group || isFieldVisible(field)) continue;
 				if (formField === field) break;
 				prevNonHiddenField = formField;
 			}
