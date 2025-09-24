@@ -30,11 +30,11 @@ export async function setup(project: TestProject) {
 		},
 		extras: {
 			maildev: false,
-			redis: true,
-			saml: true,
-			minio: true,
+			redis: false,
+			saml: false,
+			minio: false,
 		},
-		cache: true,
+		cache: false,
 	};
 
 	sb = await sandbox(database, options);
