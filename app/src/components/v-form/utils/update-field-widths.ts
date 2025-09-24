@@ -6,7 +6,8 @@ export function updateFieldWidths(fields: Field[], isFieldVisible = (field: Fiel
 			let prevNonHiddenField;
 
 			for (const formField of fields) {
-				if (formField.meta?.group !== field.meta?.group || isFieldVisible(field)) continue;
+				if (formField.meta?.group !== field.meta?.group) continue;
+				if (!isFieldVisible(formField)) continue;
 				if (formField === field) break;
 				prevNonHiddenField = formField;
 			}
