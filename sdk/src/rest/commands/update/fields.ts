@@ -38,7 +38,6 @@ export const updateField =
 		};
 	};
 
-
 /**
  * Update multiple existing fields.
  * @param collection
