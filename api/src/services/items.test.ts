@@ -58,28 +58,50 @@ describe('Integration Tests', () => {
 				expect(validateUserCountIntegrity).toHaveBeenCalled();
 			});
 
-			it('should detect MS SQL client and prepare correct returning options', () => {
-				// Mock MS SQL client
-				vi.mocked(getDatabaseClient).mockReturnValueOnce('mssql');
+			it('should use includeTriggerModifications for MS SQL', async () => {
+				vi.mocked(getDatabaseClient).mockReturnValue('mssql');
 
-				// Test the logic that determines returning options
-				const client = getDatabaseClient();
-				const returningOptions = client === 'mssql' ? { includeTriggerModifications: true } : undefined;
+				const mockReturning = vi.fn().mockResolvedValue([{ id: 1 }]);
 
-				expect(client).toBe('mssql');
-				expect(returningOptions).toEqual({ includeTriggerModifications: true });
+				const mockQuery = {
+					insert: vi.fn().mockReturnThis(),
+					into: vi.fn().mockReturnThis(),
+					returning: mockReturning,
+				};
+
+				const transactionSpy = vi.spyOn(db, 'transaction').mockImplementation(async (callback) => {
+					const trx = { ...db, ...mockQuery };
+					return await callback(trx as any);
+				});
+
+				await service.createOne({ name: 'Test' });
+
+				expect(mockReturning).toHaveBeenCalledWith('id', { includeTriggerModifications: true });
+
+				transactionSpy.mockRestore();
 			});
 
-			it('should detect non-MS SQL client and prepare no returning options', () => {
-				// Mock PostgreSQL client
-				vi.mocked(getDatabaseClient).mockReturnValueOnce('postgres');
+			it('should not use includeTriggerModifications for non-MS SQL', async () => {
+				vi.mocked(getDatabaseClient).mockReturnValue('postgres');
 
-				// Test the logic that determines returning options
-				const client = getDatabaseClient();
-				const returningOptions = client === 'mssql' ? { includeTriggerModifications: true } : undefined;
+				const mockReturning = vi.fn().mockResolvedValue([{ id: 1 }]);
 
-				expect(client).toBe('postgres');
-				expect(returningOptions).toBeUndefined();
+				const mockQuery = {
+					insert: vi.fn().mockReturnThis(),
+					into: vi.fn().mockReturnThis(),
+					returning: mockReturning,
+				};
+
+				const transactionSpy = vi.spyOn(db, 'transaction').mockImplementation(async (callback) => {
+					const trx = { ...db, ...mockQuery };
+					return await callback(trx as any);
+				});
+
+				await service.createOne({ name: 'Test' });
+
+				expect(mockReturning).toHaveBeenCalledWith('id', undefined);
+
+				transactionSpy.mockRestore();
 			});
 		});
 
