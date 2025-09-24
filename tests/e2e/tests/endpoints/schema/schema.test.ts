@@ -7,7 +7,6 @@ import {
 	deleteCollection,
 	readCollection,
 	readField,
-	readFields,
 	readFieldsByCollection,
 	rest,
 	schemaApply,
@@ -17,7 +16,7 @@ import {
 	updateCollection,
 	updateField,
 } from '@directus/sdk';
-import { database, port } from '@utils/constants.js';
+import { database } from '@utils/constants.js';
 import { getUID } from '@utils/getUID.js';
 import { readFile } from 'fs/promises';
 import getPort from 'get-port';
@@ -26,17 +25,17 @@ import { afterAll, expect, test } from 'vitest';
 import type { Schema } from './schema.d.ts';
 import { sortBy } from 'lodash-es';
 
-// const port = 5555; //await getPort();
+const port = await getPort();
 
-// const directus = await sandbox(database, {
-// 	port,
-// 	killPorts: true,
-// 	inspect: true,
-// 	docker: {
-// 		basePort: port + 2,
-// 		suffix: getUID(),
-// 	},
-// });
+await sandbox(database, {
+	port,
+	killPorts: true,
+	inspect: false,
+	docker: {
+		basePort: port + 2,
+		suffix: getUID(),
+	},
+});
 
 afterAll(async () => {
 	const diff = await api.request(
