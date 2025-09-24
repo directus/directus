@@ -8,19 +8,16 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
 }));
 
-vi.mock('cron', () => ({
-	CronJob: vi.fn().mockImplementation(() => ({})),
-	validateCronExpression: vi.fn().mockImplementation((rule: string) => {
-		// Mock invalid cron expressions
-		if (rule === '#' || rule === 'invalid') {
-			return { valid: false, error: 'Invalid cron expression' };
-		}
-
-		return { valid: true };
-	}),
-}));
-
 vi.spyOn(schedule, 'validateCron');
+
+vi.mock('cron', async (importOriginal) => {
+	const actual = (await importOriginal()) as any;
+
+	return {
+		...actual,
+		CronJob: vi.fn(),
+	};
+});
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue({ METRICS_ENABLED: true, METRICS_SCHEDULE: '0 0 * * *' });

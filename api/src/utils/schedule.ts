@@ -7,6 +7,7 @@ export interface ScheduledJob {
 
 export function validateCron(rule: string): boolean {
 	const validation = validateCronExpression(rule);
+
 	return validation.valid;
 }
 
@@ -31,10 +32,8 @@ export function scheduleSynchronizedJob(
 			}
 		},
 		null,
-		false,
+		true,
 	);
-
-	job.start();
 
 	const stop = async () => {
 		job.stop();
