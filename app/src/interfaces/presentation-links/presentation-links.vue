@@ -11,6 +11,7 @@ type Link = {
 	icon: string;
 	label: string;
 	type: string;
+	actionType: string;
 	url?: string;
 };
 
@@ -21,7 +22,7 @@ type ParsedLink = Omit<Link, 'url'> & {
 
 const props = withDefaults(
 	defineProps<{
-		links: Link[];
+		links?: Link[];
 		collection: string;
 		primaryKey?: PrimaryKey;
 	}>(),

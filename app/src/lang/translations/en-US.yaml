@@ -1884,6 +1884,7 @@ interfaces:
     link: Links
     button: Buttons
     error: Cannot perform action
+    action_type: Action Type
   select-multiple-checkbox:
     checkboxes: Checkboxes
     description: Choose between multiple options via checkboxes
