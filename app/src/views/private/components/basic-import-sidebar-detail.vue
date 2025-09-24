@@ -4,7 +4,7 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { formatCSVValidationErrors, type ValidationErrorWithDetails } from '@/utils/format-validation-error';
+import type { ValidationErrorWithDetails } from '@/utils/format-validation-error';
 import { ErrorCode } from '@directus/errors';
 import type { AxiosProgressEvent } from 'axios';
 import { computed, ref, toRefs } from 'vue';
@@ -26,6 +26,9 @@ const fileInput = ref<HTMLInputElement | null>(null);
 
 const file = ref<File | null>(null);
 const { uploading, progress, importing, uploadFile } = useUpload();
+
+const errorDialogActive = ref(false);
+const errorDialogRows = ref<ValidationErrorWithDetails[]>([]);
 
 const fileExtension = computed(() => {
 	if (file.value === null) return null;
@@ -86,15 +89,8 @@ function useUpload() {
 
 			// For CSV import errors with structured row data, show localized messages
 			if (code === ErrorCode.InvalidPayload && rows && Array.isArray(rows)) {
-				const localizedErrors = formatCSVValidationErrors(rows as ValidationErrorWithDetails[], t, te);
-
-				notify({
-					title: t('import_data_errors'),
-					text: localizedErrors,
-					type: 'error',
-					dialog: true,
-					persist: true,
-				});
+				errorDialogRows.value = rows as ValidationErrorWithDetails[];
+				errorDialogActive.value = true;
 			} else {
 				notify({
 					title: te(`errors.${code}`) ? t(`errors.${code}`) : t('import_data_error'),
@@ -167,6 +163,11 @@ function useUpload() {
 				</div>
 			</template>
 		</div>
+
+		<v-import-error-dialog
+			v-model="errorDialogActive"
+			:errors="errorDialogRows"
+		/>
 	</sidebar-detail>
 </template>
 

@@ -12,7 +12,6 @@ import type {
 	AbstractServiceOptions,
 	Accountability,
 	ActionEventParams,
-	ClientFilterOperator,
 	ExportFormat,
 	File,
 	Query,
@@ -41,6 +40,7 @@ import { getService } from '../utils/get-service.js';
 import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
+import { getDatabaseValidationType } from '../utils/get-database-validation-type.js';
 import { FilesService } from './files.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
@@ -51,7 +51,6 @@ import type { Readable as NodeReadable } from 'node:stream';
 const env = useEnv();
 const logger = useLogger();
 
-// Import error limits
 const MAX_IMPORT_ERRORS = 1000; // Maximum individual errors to collect before stopping
 const MAX_DISPLAY_ERRORS = 50; // Maximum error groups to return in API response
 
@@ -189,13 +188,11 @@ export class ImportService {
 
 					return result;
 				} catch (error: any) {
-					// Helper function to process a single error
 					const processError = async (err: any): Promise<void> => {
 						const field: string | null = err.extensions?.field ?? null;
 						let customMessage = err.message || 'Validation error';
 
 						if (field) {
-							// Fetch field metadata from database
 							try {
 								const fieldMeta = await trx
 									.select('validation_message')
@@ -203,12 +200,10 @@ export class ImportService {
 									.where({ collection, field })
 									.first();
 
-								// Return custom validation message (including $t: keys) for frontend translation
 								if (fieldMeta?.validation_message) {
 									customMessage = fieldMeta.validation_message;
 								}
 							} catch (dbError) {
-								// Log the error but continue with default message
 								logger.warn(
 									`Failed to fetch validation_message for field ${collection}.${field}: ${dbError instanceof Error ? dbError.message : String(dbError)}`,
 								);
@@ -221,13 +216,12 @@ export class ImportService {
 							field: field ?? null,
 							value: field ? task.data[field] : undefined,
 							reason: customMessage,
-							type: (err.extensions?.type as ClientFilterOperator | 'required') || 'required',
+							type: getDatabaseValidationType(err.code, err.extensions),
 						});
 
 						// Stop processing if too many errors to avoid memory/payload issues
 						if (structuredRows.length >= MAX_IMPORT_ERRORS && !hasReachedErrorLimit) {
 							hasReachedErrorLimit = true;
-							// Stop the CSV stream immediately to avoid processing more data
 							if (csvReadStream) csvReadStream.destroy();
 						}
 					};
@@ -326,7 +320,6 @@ export class ImportService {
 
 					// Convert groups to final format with row ranges
 					return Array.from(groups.values()).map((group) => {
-						// Sort rows and create ranges
 						const sortedRows = group.rows.sort((a, b) => a - b);
 
 						const ranges: string[] = [];
@@ -335,42 +328,33 @@ export class ImportService {
 
 						for (let i = 1; i < sortedRows.length; i++) {
 							if (sortedRows[i]! === end + 1) {
-								// Consecutive row, extend range
 								end = sortedRows[i]!;
 							} else {
-								// Gap found, close current range
 								ranges.push(start === end ? `${start}` : `${start}-${end}`);
 								start = end = sortedRows[i]!;
 							}
 						}
 
-						// Add final range
 						ranges.push(start === end ? `${start}` : `${start}-${end}`);
 
-						// Return ImportValidationError format
 						return {
 							code: group.code!,
 							collection,
 							field: group.field || '',
 							type: group.type,
-							group: null, // Not applicable for import errors
-							// Import-specific extensions
+							group: null,
 							rows: ranges.join(', '),
 							count: group.rows.length,
-							reason: group.reason, // Keep for custom messages
+							reason: group.reason,
 						};
 					});
 				};
 
-				// Handle queue completion
 				saveQueue.drain(() => {
 					if (structuredRows.length > 0) {
 						cleanup();
 
-						// Group similar errors to reduce payload size and improve UX
 						const groupedErrors = groupSimilarErrors(structuredRows);
-
-						// Limit displayed errors to avoid huge payloads
 						const limitedErrors = groupedErrors.slice(0, MAX_DISPLAY_ERRORS);
 						const hasMoreErrors = groupedErrors.length > MAX_DISPLAY_ERRORS;
 
@@ -404,7 +388,7 @@ export class ImportService {
 							reject(new Error('Error while reading import data from temporary file', { cause: error }));
 						});
 
-						csvReadStream = fileReadStream; // Store reference for early termination
+						csvReadStream = fileReadStream;
 						streams.push(fileReadStream);
 
 						fileReadStream
@@ -461,13 +445,13 @@ export class ImportService {
 										type: 'structure',
 									});
 
-									// Stop processing if too many errors
-									if (structuredRows.length >= MAX_IMPORT_ERRORS && !hasReachedErrorLimit) {
-										hasReachedErrorLimit = true;
-										if (csvReadStream) csvReadStream.destroy();
-										return;
-									}
+									return;
+								}
 
+								// Stop processing if too many errors
+								if (structuredRows.length >= MAX_IMPORT_ERRORS && !hasReachedErrorLimit) {
+									hasReachedErrorLimit = true;
+									if (csvReadStream) csvReadStream.destroy();
 									return;
 								}
 
