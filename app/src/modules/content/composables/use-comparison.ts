@@ -3,6 +3,7 @@ import { Revision } from '@/types/revisions';
 import { computed, ref, watch, type Ref } from 'vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { useFieldsStore } from '@/stores/fields';
 import type {
 	ComparisonData,
 	VersionComparisonResponse,
@@ -20,23 +21,33 @@ import { mergeWith } from 'lodash';
 
 interface UseComparisonOptions {
 	comparisonData: Ref<ComparisonData | null>;
+	collection?: Ref<string>;
 }
 
 export function useComparison(options: UseComparisonOptions) {
-	const { comparisonData } = options;
+	const { comparisonData, collection } = options;
 	const selectedComparisonFields = ref<string[]>([]);
 	const userUpdated = ref<User | null>(null);
 	const mainItemUserUpdated = ref<User | null>(null);
 
 	const userLoading = ref(false);
 	const mainItemUserLoading = ref(false);
+	const fieldsStore = useFieldsStore();
 
 	const isVersionMode = computed(() => comparisonData.value?.comparisonType === 'version');
 	const isRevisionMode = computed(() => comparisonData.value?.comparisonType === 'revision');
 
 	const normalizedData = computed((): NormalizedComparisonData | null => {
 		if (!comparisonData.value) return null;
-		return normalizeComparisonDataUtil(comparisonData.value);
+
+		let fieldMetadata: Record<string, any> | undefined;
+
+		if (collection?.value) {
+			const collectionFields = fieldsStore.getFieldsForCollection(collection.value);
+			fieldMetadata = Object.fromEntries(collectionFields.map((field) => [field.field, field]));
+		}
+
+		return normalizeComparisonDataUtil(comparisonData.value, fieldMetadata);
 	});
 
 	const mainHash = computed(() => normalizedData.value?.mainHash ?? '');

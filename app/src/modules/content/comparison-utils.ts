@@ -75,8 +75,16 @@ export type NormalizedComparison = {
 	base: Record<string, any>;
 };
 
-export function getFieldsWithDifferences(comparedData: NormalizedComparison): string[] {
+export function getFieldsWithDifferences(
+	comparedData: NormalizedComparison,
+	fieldMetadata?: Record<string, any>,
+): string[] {
 	return Object.keys(comparedData.incoming).filter((fieldKey) => {
+		// Skip read-only fields. Even if they are different, they cannot be edited, so there is no point in showing them.
+		if (fieldMetadata && fieldMetadata[fieldKey]?.meta?.readonly === true) {
+			return false;
+		}
+
 		const incomingValue = comparedData.incoming[fieldKey];
 		const baseValue = comparedData.base[fieldKey];
 
@@ -228,7 +236,10 @@ export function normalizeMainItem(mainData: Record<string, any>): NormalizedItem
 	};
 }
 
-export function normalizeComparisonData(comparisonData: ComparisonData): NormalizedComparisonData {
+export function normalizeComparisonData(
+	comparisonData: ComparisonData,
+	fieldMetadata?: Record<string, any>,
+): NormalizedComparisonData {
 	let base: NormalizedItem;
 
 	if (comparisonData.comparisonType === 'revision' && comparisonData.currentVersion) {
@@ -287,7 +298,7 @@ export function normalizeComparisonData(comparisonData: ComparisonData): Normali
 		base: comparisonData.base,
 	};
 
-	const fieldsWithDifferences = getFieldsWithDifferences(normalizedComparison);
+	const fieldsWithDifferences = getFieldsWithDifferences(normalizedComparison, fieldMetadata);
 
 	return {
 		base,

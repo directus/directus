@@ -52,6 +52,7 @@ const {
 	normalizeComparisonData,
 } = useComparison({
 	comparisonData: comparisonData,
+	collection: collection,
 });
 
 const modalLoading = ref(false);
