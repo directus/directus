@@ -80,6 +80,84 @@ export function useComparison(options: UseComparisonOptions) {
 		return normalizedData.value?.incoming?.displayName || '';
 	});
 
+	function debugComparison(label?: string) {
+		const normalized = normalizedData.value;
+
+		let mode = 'unknown';
+
+		if (isRevisionMode.value) {
+			mode = 'revision';
+		} else if (isVersionMode.value) {
+			mode = 'version';
+		}
+
+		const fields = fieldsWithDifferences.value || [];
+		const selected = selectedComparisonFields.value || [];
+
+		const header = label ? `Comparison Debug: ${label}` : 'Comparison Debug';
+
+		// eslint-disable-next-line no-console
+		console.groupCollapsed(header);
+
+		try {
+			// eslint-disable-next-line no-console
+			console.info('Mode:', mode);
+			// eslint-disable-next-line no-console
+			console.info('Available fields with differences (%d):', fields.length, fields);
+			// eslint-disable-next-line no-console
+			console.info('Selected fields (%d):', selected.length, selected);
+
+			if (normalized) {
+				// eslint-disable-next-line no-console
+				console.info('Base item:', normalized.base);
+				// eslint-disable-next-line no-console
+				console.info('Incoming item:', normalized.incoming);
+			} else {
+				// eslint-disable-next-line no-console
+				console.warn('No normalized data available');
+			}
+
+			if (comparisonData.value?.comparisonType === 'revision') {
+				const selectedId = normalized?.initialSelectedDeltaId ?? null;
+
+				const revisions = (comparisonData.value.selectableDeltas as any[]) || [];
+
+				const matching =
+					typeof selectedId !== 'undefined' && selectedId !== null
+						? revisions.find((r) => r && 'id' in r && r.id === selectedId)
+						: revisions[0];
+
+				if (matching) {
+					// eslint-disable-next-line no-console
+					console.info('Revision (from drawer list):', matching);
+				} else {
+					// eslint-disable-next-line no-console
+					console.warn('No matching revision found for selectedId:', selectedId);
+				}
+
+				// Provide a quick diff map for changed fields
+
+				const diffPreview: Record<string, { base: any; incoming: any }> = {};
+
+				for (const key of fields) {
+					diffPreview[key] = {
+						base: (comparisonData.value.base as any)?.[key],
+						incoming: (comparisonData.value.incoming as any)?.[key],
+					};
+				}
+
+				// eslint-disable-next-line no-console
+				console.info('Field diffs preview:', diffPreview);
+			}
+		} catch (error) {
+			// eslint-disable-next-line no-console
+			console.error('Error in debugComparison:', error);
+		} finally {
+			// eslint-disable-next-line no-console
+			console.groupEnd();
+		}
+	}
+
 	function toggleSelectAll() {
 		selectedComparisonFields.value = toggleAllFields(
 			selectedComparisonFields.value,
@@ -346,6 +424,7 @@ export function useComparison(options: UseComparisonOptions) {
 		baseDisplayName,
 		deltaDisplayName,
 		normalizedData,
+		debugComparison,
 		toggleSelectAll,
 		toggleComparisonField,
 		fetchUserUpdated,
