@@ -321,7 +321,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 					<v-divider />
 
 					<v-list-item v-if="updateAllowed" clickable @click="openComparisonModal">
-						{{ t('apply_version') }}
+						{{ t('promote_version') }}
 					</v-list-item>
 
 					<v-list-item v-if="updateVersionsAllowed" clickable @click="openRenameDialog">

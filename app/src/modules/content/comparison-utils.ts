@@ -211,7 +211,7 @@ export function normalizeRevisionItem(revision: Revision): NormalizedItem {
 
 	return {
 		id: revision.id,
-		displayName: i18n.global.t('revision_item'),
+		displayName: i18n.global.t('item_revision'),
 		date: normalizeDate(timestamp),
 		user: normalizeUser(user as any),
 		collection: revision.collection,

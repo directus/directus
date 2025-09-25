@@ -10,6 +10,7 @@ import type { ComparisonContext } from '@/components/v-form/types';
 import { useComparison } from '../composables/use-comparison';
 import { type ComparisonData } from '../comparison-utils';
 import { isEqual } from 'lodash';
+import { translateShortcut } from '@/utils/translate-shortcut';
 
 interface Props {
 	active: boolean;
@@ -279,19 +280,19 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 								</v-checkbox>
 							</div>
 							<div class="buttons-container">
-								<v-button v-tooltip.top="`${t('cancel')} (${translateShortcut(['esc'])})`" secondary @click="$emit('cancel')">
+								<v-button
+									v-tooltip.top="`${t('cancel')} (${translateShortcut(['esc'])})`"
+									secondary
+									@click="$emit('cancel')"
+								>
 									<v-icon name="close" left />
 									<span class="button-text">{{ t('cancel') }}</span>
 								</v-button>
 								<v-button
-									v-tooltip.bottom="
+									v-tooltip.top="
 										selectedComparisonFields.length === 0
-											? isVersionMode
-												? t('apply_version_disabled')
-												: t('revision_delta_apply_disabled')
-											: isVersionMode
-												? t('apply_version')
-												: t('revision_delta_apply')
+											? t('no_changes')
+											: `${t('apply')} (${translateShortcut(['meta', 'enter'])})`
 									"
 									:disabled="selectedComparisonFields.length === 0"
 									:loading="promoting"
@@ -299,7 +300,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 								>
 									<v-icon :name="'arrow_upload_progress'" left />
 									<span class="button-text">
-										{{ isVersionMode ? t('apply_version') : t('revision_delta_apply') }}
+										{{ t('apply') }}
 									</span>
 								</v-button>
 							</div>
