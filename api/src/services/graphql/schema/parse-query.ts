@@ -108,23 +108,21 @@ export async function getQuery(
 			}
 
 			if (selection.kind === 'Field' && selection.arguments && selection.arguments.length > 0) {
-				if (selection.arguments && selection.arguments.length > 0) {
-					if (!query.deep) query.deep = {};
+				if (!query.deep) query.deep = {};
 
-					const args: Record<string, any> = parseArgs(selection.arguments, variableValues);
+				const args: Record<string, any> = parseArgs(selection.arguments, variableValues);
 
-					const path = (currentAlias ?? current).replaceAll(':', '__');
+				const path = (currentAlias ?? current).replaceAll(':', '__');
 
-					set(
-						query.deep,
-						path,
-						merge(
-							{},
-							get(query.deep, path),
-							mapKeys(await sanitizeQuery(args, schema, accountability), (_value, key) => `_${key}`),
-						),
-					);
-				}
+				set(
+					query.deep,
+					path,
+					merge(
+						{},
+						get(query.deep, path),
+						mapKeys(await sanitizeQuery(args, schema, accountability), (_value, key) => `_${key}`),
+					),
+				);
 			}
 		}
 
