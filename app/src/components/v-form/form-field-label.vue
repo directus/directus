@@ -56,6 +56,9 @@ const { t } = useI18n();
 			/>
 			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 			<v-text-overflow :text="field.name" />
+			<span v-if="comparison?.fields?.has(field.field) && field.meta?.hidden" class="hidden-indicator">
+				({{ t('hidden') }})
+			</span>
 			<v-icon
 				v-if="field.meta?.required === true"
 				class="required"
@@ -137,6 +140,11 @@ const { t } = useI18n();
 		&.active {
 			opacity: 1;
 		}
+	}
+
+	.hidden-indicator {
+		margin-inline-start: 0.25em;
+		color: var(--theme--foreground-subdued);
 	}
 
 	&:focus-within,
