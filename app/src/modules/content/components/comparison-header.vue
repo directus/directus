@@ -91,7 +91,7 @@ const selectedOption = computed(() => {
 				<v-skeleton-loader v-if="loading" type="text" class="meta-skeleton" />
 
 				<template v-else>
-					<div class="meta-content" :class="{ 'is-dropdown': showDeltaDropdown }">
+					<div class="meta-content">
 						<v-menu v-if="showDeltaDropdown" attached>
 							<template #activator="{ toggle }">
 								<button class="meta-selection" @click="toggle">
@@ -207,22 +207,20 @@ const selectedOption = computed(() => {
 				}
 			}
 
-			&.is-dropdown {
-				.meta-selection {
-					display: flex;
-					align-items: center;
-					justify-content: space-between;
-					cursor: pointer;
-					border: 2px solid var(--theme--border-color);
-					border-radius: var(--theme--border-radius);
-					padding-inline: 16px;
-					padding-block: 8px;
+			.meta-selection {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				cursor: pointer;
+				border: 2px solid var(--theme--border-color);
+				border-radius: var(--theme--border-radius);
+				padding-inline: 16px;
+				padding-block: 8px;
 
-					.dropdown-icon {
-						color: var(--theme--foreground-subdued);
-						margin-inline-start: 4px;
-						transition: transform var(--fast) var(--transition);
-					}
+				.dropdown-icon {
+					color: var(--theme--foreground-subdued);
+					margin-inline-start: 4px;
+					transition: transform var(--fast) var(--transition);
 				}
 			}
 		}
