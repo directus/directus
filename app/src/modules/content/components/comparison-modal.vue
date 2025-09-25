@@ -178,7 +178,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 	>
 		<div class="comparison-modal">
 			<div class="scrollable-container">
-				<div class="columns vertical-divider">
+				<div class="columns">
 					<div class="col left">
 						<comparison-header
 							:loading="modalLoading"
@@ -216,8 +216,8 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 							</template>
 						</div>
 					</div>
-					<div class="comparison-divider"></div>
-					<div class="col right">
+
+					<div class="col right vertical-divider">
 						<comparison-header
 							:loading="modalLoading"
 							:title="deltaDisplayName"
@@ -337,9 +337,9 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 	--comparison-modal--padding-y: 20px;
 	--comparison-modal--border-radius: var(--theme--border-radius);
 	--comparison-modal--peek-width: calc(5px);
-	--comparison-modal--divider: 2px;
+	--comparison-modal--divider-width: var(--theme--border-width, 2px);
 	--comparison-modal--divider-color: var(--theme--border-color-accent);
-	--comparison-modal--divider-length: 4px;
+	--comparison-modal--divider-dash: calc(var(--comparison-modal--divider-width) * 2);
 
 	background: var(--theme--background);
 	border-radius: var(--comparison-modal--border-radius);
@@ -385,24 +385,6 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 		}
 	}
 
-	.vertical-divider::after {
-		content: '';
-		position: absolute;
-		inset-block: 0;
-		inset-inline-start: calc(var(--comparison-modal--width) - var(--comparison-modal--peek-width));
-		inline-size: var(--comparison-modal--divider);
-		background: repeating-linear-gradient(
-			to bottom,
-			var(--comparison-modal--divider-color) 0 var(--comparison-modal--divider-length),
-			transparent var(--comparison-modal--divider-length) calc(var(--comparison-modal--divider-length) * 2)
-		);
-		pointer-events: none;
-
-		@media (min-width: 706px) {
-			content: none;
-		}
-	}
-
 	.col {
 		flex: 0 0 auto;
 		min-inline-size: 0;
@@ -422,13 +404,21 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 		padding: var(--comparison-modal--padding-x);
 	}
 
-	.comparison-divider {
-		display: none;
+	.vertical-divider {
+		position: relative;
 
-		@media (min-width: 706px) {
-			display: block;
-			border-inline-end: 2px dashed var(--theme--border-color-subdued);
-			background: var(--theme--background);
+		&::after {
+			content: '';
+			position: absolute;
+			inset-block: 0;
+			inset-inline-start: calc(-1 * (var(--comparison-modal--divider-width) / 2));
+			inline-size: var(--comparison-modal--divider-width);
+			background: repeating-linear-gradient(
+				to bottom,
+				var(--comparison-modal--divider-color) 0 var(--comparison-modal--divider-dash),
+				transparent var(--comparison-modal--divider-dash) calc(var(--comparison-modal--divider-dash) * 2)
+			);
+			pointer-events: none;
 		}
 	}
 
