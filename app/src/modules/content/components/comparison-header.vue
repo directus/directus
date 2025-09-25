@@ -207,6 +207,8 @@ const selectedOption = computed(() => {
 			}
 
 			.meta-selection {
+				--focus-ring-offset: var(--focus-ring-offset-invert);
+
 				display: flex;
 				align-items: center;
 				justify-content: space-between;
