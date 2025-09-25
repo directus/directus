@@ -102,23 +102,22 @@ const selectedOption = computed(() => {
 									<v-icon name="expand_more" class="dropdown-icon" />
 								</button>
 							</template>
-							<v-list>
-								<v-list-item
-									v-for="option in deltaOptions"
-									:key="option.value"
-									:active="selectedDeltaId === option.value"
-									clickable
-									@click="emit('delta-change', option.value)"
-								>
-									<v-list-item-content>
-										<div class="delta-option-content">
-											<div class="delta-option-date-time">{{ option.text.split(' - ')[0] }}</div>
-											<div class="delta-option-user-info">{{ t('edited_by') }} {{ option.text.split(' - ')[1] }}</div>
-										</div>
-									</v-list-item-content>
-								</v-list-item>
-							</v-list>
+
+							<v-list-item
+								v-for="option in deltaOptions"
+								:key="option.value"
+								:active="selectedDeltaId === option.value"
+								class="meta-selection-option"
+								clickable
+								@click="emit('delta-change', option.value)"
+							>
+								<div>
+									<div>{{ option.text.split(' - ')[0] }}</div>
+									<div>{{ t('edited_by') }} {{ option.text.split(' - ')[1] }}</div>
+								</div>
+							</v-list-item>
 						</v-menu>
+
 						<div v-else class="meta-text">
 							<div v-if="formattedDateUpdated" class="meta-date-time">
 								{{ formattedDateUpdated }}
@@ -246,5 +245,9 @@ const selectedOption = computed(() => {
 		block-size: 40px;
 		min-inline-size: 200px;
 	}
+}
+
+.meta-selection-option {
+	--v-list-item-padding: 4px 12px;
 }
 </style>
