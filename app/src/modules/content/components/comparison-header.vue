@@ -77,6 +77,20 @@ const selectedOption = computed(() => {
 	if (!selectedDeltaId.value) return null;
 	return deltaOptions.value.find((option: any) => option.value === selectedDeltaId.value);
 });
+
+const selectOptionTime = computed(() => getDelataOptionTime(selectedOption.value));
+
+const selectOptionUser = computed(() => getDeltaOptionUser(selectedOption.value));
+
+function getDelataOptionTime(deltaOption: any) {
+	if (!deltaOption) return null;
+	return deltaOption.text.split(' - ')[0] || null;
+}
+
+function getDeltaOptionUser(deltaOption: any) {
+	if (!deltaOption) return null;
+	return deltaOption.text.split(' - ')[1] || null;
+}
 </script>
 
 <template>
@@ -85,44 +99,39 @@ const selectedOption = computed(() => {
 			<div class="title-container">
 				<v-skeleton-loader v-if="loading" type="text" class="title-skeleton" />
 
-				<template v-else>
-					<div class="title-wrapper">
-						<v-text-overflow :text="title" class="title" />
-					</div>
-				</template>
+				<v-text-overflow v-else :text="title" class="title" />
 			</div>
 			<div class="header-meta">
 				<v-skeleton-loader v-if="loading" type="text" class="meta-skeleton" />
 
 				<template v-else>
-					<div class="meta-content" :class="{ 'is-dropdown': showDeltaDropdown }">
+					<div class="meta-content">
 						<v-menu v-if="showDeltaDropdown" attached>
 							<template #activator="{ toggle }">
 								<button class="meta-selection" @click="toggle">
 									<div class="meta-text">
-										<div class="meta-date-time">{{ selectedOption?.text.split(' - ')[0] }}</div>
-										<div class="meta-user-info">{{ t('edited_by') }} {{ selectedOption?.text.split(' - ')[1] }}</div>
+										<div class="meta-date-time">{{ selectOptionTime }}</div>
+										<div class="meta-user-info">{{ t('edited_by') }} {{ selectOptionUser }}</div>
 									</div>
 									<v-icon name="expand_more" class="dropdown-icon" />
 								</button>
 							</template>
-							<v-list>
-								<v-list-item
-									v-for="option in deltaOptions"
-									:key="option.value"
-									:active="selectedDeltaId === option.value"
-									clickable
-									@click="emit('delta-change', option.value)"
-								>
-									<v-list-item-content>
-										<div class="delta-option-content">
-											<div class="delta-option-date-time">{{ option.text.split(' - ')[0] }}</div>
-											<div class="delta-option-user-info">{{ t('edited_by') }} {{ option.text.split(' - ')[1] }}</div>
-										</div>
-									</v-list-item-content>
-								</v-list-item>
-							</v-list>
+
+							<v-list-item
+								v-for="option in deltaOptions"
+								:key="option.value"
+								:active="selectedDeltaId === option.value"
+								class="meta-selection-option"
+								clickable
+								@click="emit('delta-change', option.value)"
+							>
+								<div>
+									<div>{{ getDelataOptionTime(option) }}</div>
+									<div>{{ t('edited_by') }} {{ getDeltaOptionUser(option) }}</div>
+								</div>
+							</v-list-item>
 						</v-menu>
+
 						<div v-else class="meta-text">
 							<div v-if="formattedDateUpdated" class="meta-date-time">
 								{{ formattedDateUpdated }}
@@ -142,13 +151,13 @@ const selectedOption = computed(() => {
 
 <style lang="scss" scoped>
 .comparison-header {
-	--comparison-header--padding-y: var(--comparison-modal--padding-y, 20px);
+	--comparison-header--padding-y: 20px;
 	--comparison-header--padding-x: var(--comparison-modal--padding-x, 28px);
+
 	display: flex;
 	padding-block: var(--comparison-header--padding-y);
 	padding-inline: var(--comparison-header--padding-x);
 	block-size: 140px;
-
 	flex-direction: column;
 	align-items: flex-start;
 	align-self: stretch;
@@ -210,22 +219,32 @@ const selectedOption = computed(() => {
 				}
 			}
 
-			&.is-dropdown {
-				.meta-selection {
-					display: flex;
-					align-items: center;
-					justify-content: space-between;
-					cursor: pointer;
-					border: 2px solid var(--theme--border-color);
-					border-radius: var(--theme--border-radius);
-					padding-inline: 16px;
-					padding-block: 8px;
+			.meta-selection {
+				--focus-ring-offset: var(--focus-ring-offset-invert);
 
-					.dropdown-icon {
-						color: var(--theme--foreground-subdued);
-						margin-inline-start: 4px;
-						transition: transform var(--fast) var(--transition);
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				cursor: pointer;
+				border: 2px solid var(--theme--border-color);
+				border-radius: var(--theme--border-radius);
+				padding-inline: 16px;
+				padding-block: 8px;
+
+				@media (min-width: 960px) {
+					.meta-text {
+						text-align: start;
 					}
+				}
+
+				&:hover {
+					border-color: var(--theme--border-color-accent);
+				}
+
+				.dropdown-icon {
+					color: var(--theme--foreground-subdued);
+					margin-inline-start: 4px;
+					transition: transform var(--fast) var(--transition);
 				}
 			}
 		}
@@ -240,5 +259,9 @@ const selectedOption = computed(() => {
 		block-size: 40px;
 		min-inline-size: 200px;
 	}
+}
+
+.meta-selection-option {
+	--v-list-item-padding: 4px 12px;
 }
 </style>

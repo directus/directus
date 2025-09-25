@@ -102,11 +102,13 @@ const { t } = useI18n();
 
 	.v-checkbox {
 		block-size: 18px; // Don't push down label with normal icon height (24px)
-		margin-inline-end: 8px;
+		margin-inline-end: 4px;
 	}
 
 	.v-checkbox.comparison-checkbox {
 		--v-checkbox-color: var(--theme--success);
+
+		margin-inline-end: 8px;
 
 		:deep(.checkbox) {
 			&:hover {
