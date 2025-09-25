@@ -279,7 +279,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 								</v-checkbox>
 							</div>
 							<div class="buttons-container">
-								<v-button secondary @click="$emit('cancel')">
+								<v-button v-tooltip.top="`${t('cancel')} (${translateShortcut(['esc'])})`" secondary @click="$emit('cancel')">
 									<v-icon name="close" left />
 									<span class="button-text">{{ t('cancel') }}</span>
 								</v-button>
