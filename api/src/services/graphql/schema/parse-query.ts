@@ -3,9 +3,9 @@ import type { FieldNode, GraphQLResolveInfo, InlineFragmentNode, SelectionNode }
 import { get, mapKeys, merge, set, uniq } from 'lodash-es';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { validateQuery } from '../../../utils/validate-query.js';
+import { filterReplaceM2A, filterReplaceM2ADeep } from '../utils/filter-replace-m2a.js';
 import { replaceFuncs } from '../utils/replace-funcs.js';
 import { parseArgs } from './parse-args.js';
-import { filterReplaceM2A, filterReplaceM2ADeep } from '../utils/filter-replace-m2a.js';
 
 /**
  * Get a Directus Query object from the parsed arguments (rawQuery) and GraphQL AST selectionSet. Converts SelectionSet into
@@ -73,9 +73,11 @@ export async function getQuery(
 						if (selection.selectionSet) {
 							if (!query.deep) query.deep = {};
 
+							const path = parent.replaceAll(':', '__');
+
 							set(
 								query.deep,
-								parent,
+								path,
 								merge({}, get(query.deep, parent), { _alias: { [selection.alias!.value]: selection.name.value } }),
 							);
 						}
@@ -111,12 +113,14 @@ export async function getQuery(
 
 					const args: Record<string, any> = parseArgs(selection.arguments, variableValues);
 
+					const path = current.replaceAll(':', '__');
+
 					set(
 						query.deep,
-						currentAlias ?? current,
+						currentAlias ?? path,
 						merge(
 							{},
-							get(query.deep, currentAlias ?? current),
+							get(query.deep, currentAlias ?? path),
 							mapKeys(await sanitizeQuery(args, schema, accountability), (_value, key) => `_${key}`),
 						),
 					);
