@@ -24,7 +24,7 @@ const headerMessage = computed(() => {
 
 	switch (props.revision.activity.action.toLowerCase()) {
 		case 'create':
-			return t('revision_delta_created');
+			return t('revision_delta_updated', revisionCount.value);
 		case 'update':
 			return t('revision_delta_updated', revisionCount.value);
 		case 'delete':
