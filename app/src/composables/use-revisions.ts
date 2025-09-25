@@ -1,5 +1,6 @@
 import api from '@/api';
 import { useServerStore } from '@/stores/server';
+import { useFieldsStore } from '@/stores/fields';
 import type { Revision, RevisionPartial, RevisionWithTime, RevisionsByDate } from '@/types/revisions';
 import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
@@ -24,6 +25,13 @@ export function useRevisions(
 ) {
 	const { t } = useI18n();
 	const { info } = useServerStore();
+	const fieldsStore = useFieldsStore();
+
+	const isReadOnlyField = (fieldKey: string): boolean => {
+		const collectionFields = fieldsStore.getFieldsForCollection(unref(collection));
+		const field = collectionFields.find((f) => f.field === fieldKey);
+		return field?.meta?.readonly === true;
+	};
 
 	const revisions = ref<RevisionPartial[] | null>(null);
 	const revisionsByDate = ref<RevisionsByDate[] | null>(null);
@@ -200,6 +208,10 @@ export function useRevisions(
 					const differentFields: string[] = [];
 
 					for (const field of Object.keys(revisionData)) {
+						if (isReadOnlyField(field)) {
+							continue;
+						}
+
 						const newValue = (revisionData as any)[field];
 						const currentValue = (currentItemMerged as any)[field];
 						if (!isEqual(newValue, currentValue)) differentFields.push(field);
