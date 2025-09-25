@@ -80,6 +80,11 @@ export function getFieldsWithDifferences(
 	fieldMetadata?: Record<string, any>,
 ): string[] {
 	return Object.keys(comparedData.incoming).filter((fieldKey) => {
+		// Skip fields that don't exist in the collection's field metadata
+		if (fieldMetadata && !fieldMetadata[fieldKey]) {
+			return false;
+		}
+
 		// Skip read-only fields. Even if they are different, they cannot be edited, so there is no point in showing them.
 		if (fieldMetadata && fieldMetadata[fieldKey]?.meta?.readonly === true) {
 			return false;
