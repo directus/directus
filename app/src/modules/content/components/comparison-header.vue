@@ -85,11 +85,7 @@ const selectedOption = computed(() => {
 			<div class="title-container">
 				<v-skeleton-loader v-if="loading" type="text" class="title-skeleton" />
 
-				<template v-else>
-					<div class="title-wrapper">
-						<v-text-overflow :text="title" class="title" />
-					</div>
-				</template>
+				<v-text-overflow v-else :text="title" class="title" />
 			</div>
 			<div class="header-meta">
 				<v-skeleton-loader v-if="loading" type="text" class="meta-skeleton" />
