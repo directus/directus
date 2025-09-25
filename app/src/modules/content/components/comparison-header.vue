@@ -217,6 +217,12 @@ const selectedOption = computed(() => {
 				padding-inline: 16px;
 				padding-block: 8px;
 
+				@media (min-width: 960px) {
+					.meta-text {
+						text-align: start;
+					}
+				}
+
 				.dropdown-icon {
 					color: var(--theme--foreground-subdued);
 					margin-inline-start: 4px;
