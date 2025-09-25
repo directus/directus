@@ -77,6 +77,20 @@ const selectedOption = computed(() => {
 	if (!selectedDeltaId.value) return null;
 	return deltaOptions.value.find((option: any) => option.value === selectedDeltaId.value);
 });
+
+const selectOptionTime = computed(() => getDelataOptionTime(selectedOption.value));
+
+const selectOptionUser = computed(() => getDeltaOptionUser(selectedOption.value));
+
+function getDelataOptionTime(deltaOption: any) {
+	if (!deltaOption) return null;
+	return deltaOption.text.split(' - ')[0] || null;
+}
+
+function getDeltaOptionUser(deltaOption: any) {
+	if (!deltaOption) return null;
+	return deltaOption.text.split(' - ')[1] || null;
+}
 </script>
 
 <template>
@@ -96,8 +110,8 @@ const selectedOption = computed(() => {
 							<template #activator="{ toggle }">
 								<button class="meta-selection" @click="toggle">
 									<div class="meta-text">
-										<div class="meta-date-time">{{ selectedOption?.text.split(' - ')[0] }}</div>
-										<div class="meta-user-info">{{ t('edited_by') }} {{ selectedOption?.text.split(' - ')[1] }}</div>
+										<div class="meta-date-time">{{ selectOptionTime }}</div>
+										<div class="meta-user-info">{{ t('edited_by') }} {{ selectOptionUser }}</div>
 									</div>
 									<v-icon name="expand_more" class="dropdown-icon" />
 								</button>
@@ -112,8 +126,8 @@ const selectedOption = computed(() => {
 								@click="emit('delta-change', option.value)"
 							>
 								<div>
-									<div>{{ option.text.split(' - ')[0] }}</div>
-									<div>{{ t('edited_by') }} {{ option.text.split(' - ')[1] }}</div>
+									<div>{{ getDelataOptionTime(option) }}</div>
+									<div>{{ t('edited_by') }} {{ getDeltaOptionUser(option) }}</div>
 								</div>
 							</v-list-item>
 						</v-menu>
