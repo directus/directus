@@ -145,7 +145,6 @@ const selectedOption = computed(() => {
 	padding-block: var(--comparison-header--padding-y);
 	padding-inline: var(--comparison-header--padding-x);
 	block-size: 140px;
-
 	flex-direction: column;
 	align-items: flex-start;
 	align-self: stretch;
@@ -221,6 +220,10 @@ const selectedOption = computed(() => {
 					.meta-text {
 						text-align: start;
 					}
+				}
+
+				&:hover {
+					border-color: var(--theme--border-color-accent);
 				}
 
 				.dropdown-icon {
