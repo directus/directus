@@ -436,7 +436,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 		flex: 0 0 auto;
 		justify-content: space-between;
 		padding-inline: var(--comparison-modal--padding-x);
-		padding-block: var(--comparison-modal--padding-y);
+		padding-block: 18px;
 		border-block-start: 2px solid var(--theme--border-color-subdued);
 
 		.columns {

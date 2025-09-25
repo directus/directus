@@ -142,8 +142,9 @@ const selectedOption = computed(() => {
 
 <style lang="scss" scoped>
 .comparison-header {
-	--comparison-header--padding-y: var(--comparison-modal--padding-y, 20px);
+	--comparison-header--padding-y: 20px;
 	--comparison-header--padding-x: var(--comparison-modal--padding-x, 28px);
+
 	display: flex;
 	padding-block: var(--comparison-header--padding-y);
 	padding-inline: var(--comparison-header--padding-x);
