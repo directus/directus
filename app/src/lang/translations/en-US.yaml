@@ -176,30 +176,25 @@ version: Version
 version_key: Version Key
 version_name: Version Name
 main_version: Main
-revision_item: Item Revision
+item_revision: Item Revision
 switch_version: Switch Version
 switch_version_copy: Are you sure you want to switch to the "{version}" version? Unsaved changes will be lost.
 create_version: Create Version
 rename_version: Rename Version
 compare_version: Compare Version
 save_version: Save Version
-apply_version: Apply
-apply_version_disabled: No Changes
-apply_version_drawer_title: Apply {version} to Main
-apply_version_changes: Changes
-apply_version_preview: Preview
+promote_version: Promote Version
+apply: Apply
+no_changes: No Changes
 select_all_changes: Select All Changes
 outdated_notice: >-
   The main item has been updated since this version was created. Please review all the field values below, and confirm
   which version should be used when promoting this version into the main item.
-apply_notice: >-
-  Please review all the field values below, and confirm which version should be used when applying this version to the
-  main item.
 delete_version: Delete Version
 delete_version_copy: >-
   Are you sure you want to delete the "{version}" version? This action cannot be undone.
 delete_on_apply_copy: >-
-  Do you want to delete or keep the "{version}" version after applying?
+  You are about to promote “{version}” to Main. What should happen to “{version}” after promotion?
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -485,14 +480,12 @@ confirm_revert_body: This will revert the item to the selected state.
 display: Display
 settings_update_success: Settings updated
 title: Title
-revision_delta_apply: Apply
-revision_delta_apply_disabled: No Changes
 revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
 revision_delta_deleted: Deleted
 revision_delta_version_saved: 'Version Save (Updated 1 Field) | Version Save (Updated {count} Fields)'
-revision_delta_applied: Applied
+revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
