@@ -113,14 +113,14 @@ export async function getQuery(
 
 					const args: Record<string, any> = parseArgs(selection.arguments, variableValues);
 
-					const path = current.replaceAll(':', '__');
+					const path = (currentAlias ?? current).replaceAll(':', '__');
 
 					set(
 						query.deep,
-						currentAlias ?? path,
+						path,
 						merge(
 							{},
-							get(query.deep, currentAlias ?? path),
+							get(query.deep, path),
 							mapKeys(await sanitizeQuery(args, schema, accountability), (_value, key) => `_${key}`),
 						),
 					);
