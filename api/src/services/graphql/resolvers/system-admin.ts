@@ -144,6 +144,36 @@ export function resolveSystemAdmin(
 				return await service.readOne(args['collection'], args['field']);
 			},
 		},
+		update_fields_items: {
+			type: Field,
+			args: {
+				collection: new GraphQLNonNull(GraphQLString),
+				data: [toInputObjectType(Field, { postfix: '_input' }).NonNull],
+				concurrentIndexCreation: { type: GraphQLBoolean, defaultValue: false },
+			},
+			resolve: async (_, args) => {
+				const service = new FieldsService({
+					accountability: gql.accountability,
+					schema: gql.schema,
+				});
+
+				for (const fieldData of args['data']) {
+					if (isSystemField(args['collection'], fieldData['field']!)) {
+						const validationResult = systemFieldUpdateSchema.safeParse(fieldData);
+
+						if (!validationResult.success) {
+							throw new InvalidPayloadError({ reason: fromZodError(validationResult.error).message });
+						}
+					}
+				}
+
+				await service.updateFields(args['collection'], args['data'], {
+					attemptConcurrentIndex: Boolean(args['concurrentIndexCreation']),
+				});
+
+				return await service.readOne(args['collection'], args['field']);
+			},
+		},
 		delete_fields_item: {
 			type: schemaComposer.createObjectTC({
 				name: 'delete_field',
