@@ -106,6 +106,47 @@ describe('parseFields', () => {
 		expect(parseArgs).toHaveBeenCalledWith(selections[0]!.arguments, mockVariableValues);
 	});
 
+	test('should parse InlineFragment with arguments', async () => {
+		const selections = [
+			{
+				kind: 'Field',
+				name: { value: 'parent' },
+				selectionSet: {
+					selections: [
+						{
+							kind: 'InlineFragment',
+							typeCondition: { name: { value: 'child' } },
+							selectionSet: {
+								selections: [
+									{
+										kind: 'Field',
+										name: { value: 'grandchild' },
+										arguments: [{ name: { value: 'limit' }, value: { kind: 'IntValue', value: '10' } }],
+									},
+								],
+							},
+						},
+					],
+				},
+			},
+		] as unknown as SelectionNode[];
+
+		vi.mocked(sanitizeQuery).mockResolvedValue({ limit: 10 });
+
+		const query = await getQuery({}, mockSchema, selections, mockVariableValues, mockAccountability);
+		expect(query.fields).toEqual(['parent:child.grandchild']);
+
+		expect(query.deep).toStrictEqual({
+			parent__child: {
+				grandchild: {
+					_alias: {},
+					_deep: {},
+					_limit: 10,
+				},
+			},
+		});
+	});
+
 	test('should parse _func field with selectionSet', async () => {
 		const selections = [
 			{
