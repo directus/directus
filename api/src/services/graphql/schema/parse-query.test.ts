@@ -1,7 +1,10 @@
 import type { FieldNode, SelectionNode } from 'graphql';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { parseArgs } from './parse-args.js';
 import { getQuery } from './parse-query.js';
+
+vi.mock('/parse-args.js');
 
 vi.mock('../../../utils/sanitize-query.js', () => ({
 	sanitizeQuery: vi.fn(async (q) => q),
@@ -27,6 +30,10 @@ const mockAccountability = null;
 const mockVariableValues = {};
 
 describe('parseFields', () => {
+	afterEach(() => {
+		vi.clearAllMocks();
+	});
+
 	test('should parse simple field selection', async () => {
 		const selections = [
 			{ kind: 'Field', name: { value: 'id' } },
