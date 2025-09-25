@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed deep filtering of M2A fields in Graphql
+Fixed deep filtering of M2A fields in GraphQL
