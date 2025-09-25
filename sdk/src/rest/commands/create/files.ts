@@ -41,12 +41,12 @@ export const uploadFiles =
 export const importFile =
 	<Schema, TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		url: string,
-		data: NestedPartial<DirectusFile<Schema>>  | {} = {},
+		data?: NestedPartial<DirectusFile<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreateFileOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: '/files/import',
 		method: 'POST',
-		body: JSON.stringify({ url, data }),
+		body: JSON.stringify({ url, data: data ?? {} }),
 		params: query ?? {},
 	});
