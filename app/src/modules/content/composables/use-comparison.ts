@@ -300,9 +300,22 @@ export function useComparison(options: UseComparisonOptions) {
 			const response = await api.get(`/versions/${versionId}/compare`);
 			const data: VersionComparisonResponse = response.data.data;
 
+			// Ensure the incoming side is a full item: merge main with version delta
+			const replaceArrays = (objValue: any, srcValue: any) => {
+				if (Array.isArray(objValue) || Array.isArray(srcValue)) {
+					return srcValue;
+				}
+
+				return undefined;
+			};
+
+			const base = data.main || {};
+
+			const incomingMerged = mergeWith({}, base, data.current || {}, replaceArrays);
+
 			return {
-				base: data.main,
-				incoming: data.current,
+				base,
+				incoming: incomingMerged,
 				selectableDeltas: versions?.value ?? (version ? [version] : []),
 				comparisonType: 'version' as const,
 				outdated: data.outdated,
