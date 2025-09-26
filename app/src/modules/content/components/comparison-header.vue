@@ -94,7 +94,7 @@ function getDeltaOptionUser(deltaOption: any) {
 </script>
 
 <template>
-	<div class="comparison-header">
+	<div class="comparison-header" :class="{ 'has-dropdown': showDeltaDropdown }">
 		<div class="title-container">
 			<v-skeleton-loader v-if="loading" type="text" class="title-skeleton" />
 
@@ -159,7 +159,7 @@ function getDeltaOptionUser(deltaOption: any) {
 	flex-direction: column;
 	align-items: flex-start;
 	align-self: stretch;
-	gap: 12px 16px;
+	gap: 12px var(--theme--form--column-gap);
 
 	@media (min-width: 960px) {
 		block-size: 80px;
@@ -168,12 +168,26 @@ function getDeltaOptionUser(deltaOption: any) {
 		align-items: center;
 	}
 
-	.title-container {
-		display: flex;
-		align-items: center;
-		gap: 12px;
-		inline-size: 60%;
+	.title-container,
+	.header-meta {
+		inline-size: 100%;
+		min-inline-size: 0;
 
+		@media (min-width: 960px) {
+			inline-size: auto;
+		}
+	}
+
+	&.has-dropdown {
+		.title-container,
+		.header-meta {
+			@media (min-width: 1330px) {
+				inline-size: calc(50% - var(--theme--form--column-gap) / 2);
+			}
+		}
+	}
+
+	.title-container {
 		.title {
 			font-size: 20px;
 			font-weight: 600;
@@ -185,12 +199,6 @@ function getDeltaOptionUser(deltaOption: any) {
 
 	.header-meta {
 		flex-shrink: 0;
-		min-inline-size: 0;
-		inline-size: 100%;
-
-		@media (min-width: 960px) {
-			inline-size: auto;
-		}
 
 		.meta-content {
 			.meta-text {
@@ -234,6 +242,10 @@ function getDeltaOptionUser(deltaOption: any) {
 					.meta-text {
 						text-align: start;
 					}
+				}
+
+				@media (min-width: 1330px) {
+					inline-size: 100%;
 				}
 
 				&:hover {
