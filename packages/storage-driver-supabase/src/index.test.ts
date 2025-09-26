@@ -489,7 +489,7 @@ describe('#write', () => {
 			upload: vi.fn().mockResolvedValue({ data: null, error: uploadError }),
 		} as any;
 
-		await expect(driver.write(sample.path.input, sample.stream)).rejects.toThrow(uploadError);
+		await expect(driver.write(sample.path.input, sample.stream)).rejects.toThrow(new Error(`Error uploading file "${sample.path.input}"`, { cause: uploadError }));
 	});
 });
 
