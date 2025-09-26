@@ -41,13 +41,11 @@ export class AssetsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
-	filesService: FilesService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
-		this.filesService = new FilesService({ ...options, accountability: null });
 	}
 
 	async getAsset(
@@ -86,6 +84,8 @@ export class AssetsService {
 		 */
 		if (!isValidUuid(id)) throw new ForbiddenError();
 
+		let filesService: FilesService;
+
 		if (systemPublicKeys.includes(id) === false && this.accountability) {
 			await validateAccess(
 				{
@@ -96,9 +96,11 @@ export class AssetsService {
 				},
 				{ knex: this.knex, schema: this.schema },
 			);
-		}
 
-		const file = (await this.filesService.readOne(id, { limit: 1 })) as File;
+			filesService = new FilesService({ accountability: this.accountability, knex: this.knex, schema: this.schema });
+		} else filesService = new FilesService({ knex: this.knex, schema: this.schema });
+
+		const file = (await filesService.readOne(id, { limit: 1 })) as File;
 
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
