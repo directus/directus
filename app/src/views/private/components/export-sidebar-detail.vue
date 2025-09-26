@@ -6,10 +6,12 @@ import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
+import type { ValidationErrorWithDetails } from '@/utils/format-validation-error';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import { useCollection } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
+import { ErrorCode } from '@directus/errors';
 import type { AxiosProgressEvent } from 'axios';
 import { debounce, pick } from 'lodash';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
@@ -41,6 +43,9 @@ const file = ref<File | null>(null);
 const { uploading, progress, importing, uploadFile } = useUpload();
 
 const exportDialogActive = ref(false);
+
+const errorDialogActive = ref(false);
+const errorDialogRows = ref<ValidationErrorWithDetails[]>([]);
 
 const fileExtension = computed(() => {
 	if (file.value === null) return null;
@@ -285,14 +290,21 @@ function useUpload() {
 			});
 		} catch (error: any) {
 			const code = error?.response?.data?.errors?.[0]?.extensions?.code;
+			const rows = error?.response?.data?.errors?.[0]?.extensions?.rows;
 
-			notify({
-				title: te(`errors.${code}`) ? t(`errors.${code}`) : t('import_data_error'),
-				type: 'error',
-			});
+			// For CSV import errors with structured row data, show localized messages
+			if (code === ErrorCode.InvalidPayload && rows && Array.isArray(rows)) {
+				errorDialogRows.value = rows as ValidationErrorWithDetails[];
+				errorDialogActive.value = true;
+			} else {
+				notify({
+					title: te(`errors.${code}`) ? t(`errors.${code}`) : t('import_data_error'),
+					type: 'error',
+				});
 
-			if (code === 'INTERNAL_SERVER_ERROR') {
-				unexpectedError(error);
+				if (code === ErrorCode.Internal) {
+					unexpectedError(error);
+				}
 			}
 		} finally {
 			uploading.value = false;
@@ -599,6 +611,8 @@ async function exportDataFiles() {
 				</div>
 			</div>
 		</v-drawer>
+
+		<v-import-error-dialog v-model="errorDialogActive" :errors="errorDialogRows" />
 	</sidebar-detail>
 </template>
 
@@ -737,5 +751,14 @@ async function exportDataFiles() {
 		color: var(--theme--foreground-subdued);
 		cursor: not-allowed;
 	}
+}
+
+.error-content {
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+.v-card-text {
+	padding-block-start: 14px !important;
 }
 </style>
