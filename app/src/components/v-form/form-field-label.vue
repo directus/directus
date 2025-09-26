@@ -103,6 +103,8 @@ const { t } = useI18n();
 	.v-checkbox {
 		block-size: 18px; // Don't push down label with normal icon height (24px)
 		margin-inline-end: 4px;
+		display: inline-flex;
+		align-self: baseline;
 	}
 
 	.v-checkbox.comparison-checkbox {
@@ -197,16 +199,17 @@ const { t } = useI18n();
 		}
 	}
 
-	@media (min-width: 960px) {
-		display: block;
+	.field-name {
+		max-inline-size: 100%;
+		text-align: start;
+		display: flex;
+		flex-wrap: nowrap;
+	}
 
+	@media (min-width: 960px) {
 		.v-text-overflow {
 			display: initial;
 			white-space: nowrap;
-		}
-
-		.field-name {
-			display: flex;
 		}
 	}
 }

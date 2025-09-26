@@ -94,57 +94,55 @@ function getDeltaOptionUser(deltaOption: any) {
 </script>
 
 <template>
-	<div class="comparison-header">
-		<div class="header-content">
-			<div class="title-container">
-				<v-skeleton-loader v-if="loading" type="text" class="title-skeleton" />
+	<div class="comparison-header" :class="{ 'has-dropdown': showDeltaDropdown }">
+		<div class="title-container">
+			<v-skeleton-loader v-if="loading" type="text" class="title-skeleton" />
 
-				<v-text-overflow v-else :text="title" class="title" />
-			</div>
-			<div class="header-meta">
-				<v-skeleton-loader v-if="loading" type="text" class="meta-skeleton" />
+			<v-text-overflow v-else :text="title" class="title" />
+		</div>
+		<div class="header-meta">
+			<v-skeleton-loader v-if="loading" type="text" class="meta-skeleton" />
 
-				<template v-else>
-					<div class="meta-content">
-						<v-menu v-if="showDeltaDropdown" attached>
-							<template #activator="{ toggle }">
-								<button class="meta-selection" @click="toggle">
-									<div class="meta-text">
-										<div class="meta-date-time">{{ selectOptionTime }}</div>
-										<div class="meta-user-info">{{ t('edited_by') }} {{ selectOptionUser }}</div>
-									</div>
-									<v-icon name="expand_more" class="dropdown-icon" />
-								</button>
-							</template>
-
-							<v-list-item
-								v-for="option in deltaOptions"
-								:key="option.value"
-								:active="selectedDeltaId === option.value"
-								class="meta-selection-option"
-								clickable
-								@click="emit('delta-change', option.value)"
-							>
-								<div>
-									<div>{{ getDelataOptionTime(option) }}</div>
-									<div>{{ t('edited_by') }} {{ getDeltaOptionUser(option) }}</div>
+			<template v-else>
+				<div class="meta-content">
+					<v-menu v-if="showDeltaDropdown" attached>
+						<template #activator="{ toggle }">
+							<button class="meta-selection" @click="toggle">
+								<div class="meta-text">
+									<div class="meta-date-time">{{ selectOptionTime }}</div>
+									<div class="meta-user-info">{{ t('edited_by') }} {{ selectOptionUser }}</div>
 								</div>
-							</v-list-item>
-						</v-menu>
+								<v-icon name="expand_more" class="dropdown-icon" />
+							</button>
+						</template>
 
-						<div v-else class="meta-text">
-							<div v-if="formattedDateUpdated" class="meta-date-time">
-								{{ formattedDateUpdated }}
+						<v-list-item
+							v-for="option in deltaOptions"
+							:key="option.value"
+							:active="selectedDeltaId === option.value"
+							class="meta-selection-option"
+							clickable
+							@click="emit('delta-change', option.value)"
+						>
+							<div>
+								<div>{{ getDelataOptionTime(option) }}</div>
+								<div>{{ t('edited_by') }} {{ getDeltaOptionUser(option) }}</div>
 							</div>
-							<div v-if="userUpdatedName" class="meta-user-info">{{ t('edited_by') }} {{ userUpdatedName }}</div>
-							<div v-else-if="userLoading" class="meta-user-info">
-								{{ t('loading') }}
-							</div>
-							<div v-else class="meta-user-info">{{ t('edited_by') }} {{ t('unknown_user') }}</div>
+						</v-list-item>
+					</v-menu>
+
+					<div v-else class="meta-text">
+						<div v-if="formattedDateUpdated" class="meta-date-time">
+							{{ formattedDateUpdated }}
 						</div>
+						<div v-if="userUpdatedName" class="meta-user-info">{{ t('edited_by') }} {{ userUpdatedName }}</div>
+						<div v-else-if="userLoading" class="meta-user-info">
+							{{ t('loading') }}
+						</div>
+						<div v-else class="meta-user-info">{{ t('edited_by') }} {{ t('unknown_user') }}</div>
 					</div>
-				</template>
-			</div>
+				</div>
+			</template>
 		</div>
 	</div>
 </template>
@@ -157,52 +155,58 @@ function getDeltaOptionUser(deltaOption: any) {
 	display: flex;
 	padding-block: var(--comparison-header--padding-y);
 	padding-inline: var(--comparison-header--padding-x);
-	block-size: 140px;
+	block-size: 144px;
 	flex-direction: column;
 	align-items: flex-start;
 	align-self: stretch;
-	gap: 12px;
+	gap: 12px var(--theme--form--column-gap);
 
 	@media (min-width: 960px) {
 		block-size: 80px;
 		flex-direction: row;
 		justify-content: space-between;
 		align-items: center;
-		gap: 16px;
 	}
 
-	.header-content {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		flex: 1;
+	.title-container,
+	.header-meta {
 		inline-size: 100%;
+		min-inline-size: 0;
 
-		.title-container {
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			inline-size: 60%;
+		@media (min-width: 960px) {
+			inline-size: auto;
+		}
+	}
 
-			.title {
-				font-size: 20px;
-				font-weight: 600;
-				line-height: 32px;
-				color: var(--theme--foreground-accent);
-				margin: 0;
+	&.has-dropdown {
+		.title-container,
+		.header-meta {
+			@media (min-width: 1330px) {
+				inline-size: calc(50% - var(--theme--form--column-gap) / 2);
 			}
+		}
+	}
+
+	.title-container {
+		.title {
+			font-size: 20px;
+			font-weight: 600;
+			line-height: 32px;
+			color: var(--theme--foreground-accent);
+			margin: 0;
 		}
 	}
 
 	.header-meta {
 		flex-shrink: 0;
-		min-inline-size: 0;
 
 		.meta-content {
 			.meta-text {
+				padding-block-start: 10px;
 				text-align: start;
 
 				@media (min-width: 960px) {
+					padding-block-start: 0;
 					text-align: end;
 				}
 
@@ -230,15 +234,26 @@ function getDeltaOptionUser(deltaOption: any) {
 				border-radius: var(--theme--border-radius);
 				padding-inline: 16px;
 				padding-block: 8px;
+				inline-size: 100%;
 
 				@media (min-width: 960px) {
+					inline-size: auto;
+
 					.meta-text {
 						text-align: start;
 					}
 				}
 
+				@media (min-width: 1330px) {
+					inline-size: 100%;
+				}
+
 				&:hover {
 					border-color: var(--theme--border-color-accent);
+				}
+
+				.meta-text {
+					padding-block-start: 0;
 				}
 
 				.dropdown-icon {
