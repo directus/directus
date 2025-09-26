@@ -546,48 +546,21 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 
 .comparison-content {
 	:deep(.v-form) {
-		align-items: start !important;
+		align-items: start;
 
-		.field {
-			grid-column: start / fill;
-			@media (min-width: 706px) {
-				grid-column: start / fill !important;
-			}
-			@media (min-width: 1330px) {
-				grid-column: start / full !important;
-			}
+		.fill {
+			grid-column: start / full;
 		}
 
-		.half,
-		.half-left,
-		.half-space {
-			grid-column: start / fill;
-			@media (min-width: 706px) {
-				grid-column: start / fill !important;
-			}
-			@media (min-width: 1330px) {
-				grid-column: start / half !important;
-			}
-		}
-
-		.half + .half,
-		.half-right {
-			grid-column: start / fill;
-			@media (min-width: 706px) {
-				grid-column: start / fill !important;
-			}
-			@media (min-width: 1330px) {
-				grid-column: half / full !important;
-			}
-		}
-
-		.full {
-			grid-column: start / fill;
-			@media (min-width: 706px) {
-				grid-column: start / fill !important;
-			}
-			@media (min-width: 1330px) {
-				grid-column: start / full !important;
+		@media (max-width: 1330px) {
+			.fill,
+			.full,
+			.half,
+			.half + .half,
+			.half-left,
+			.half-right,
+			.half-space {
+				grid-column: start / fill;
 			}
 		}
 	}
