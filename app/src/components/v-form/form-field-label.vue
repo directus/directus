@@ -203,7 +203,6 @@ const { t } = useI18n();
 		max-inline-size: 100%;
 		text-align: start;
 		display: flex;
-		flex-wrap: wrap;
 		flex-wrap: nowrap;
 	}
 
