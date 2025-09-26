@@ -1,7 +1,7 @@
 export type Schema = {
 	categories: Categories[];
 	operators: Operators[];
-	singleton: Singleton
+	singleton: Singleton;
 	tracks: Tracks[];
 	trains: Trains[];
 	trains_operators: TrainsOperators[];
