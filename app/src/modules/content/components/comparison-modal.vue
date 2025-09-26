@@ -404,6 +404,11 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 		scroll-snap-stop: always;
 		inline-size: calc(var(--comparison-modal--width) - var(--comparison-modal--peek-width));
 
+		@media (min-width: 544px) {
+			flex: 0 0 66%;
+			inline-size: auto;
+		}
+
 		@media (min-width: 706px) {
 			flex: 0 0 50%;
 			inline-size: auto;
