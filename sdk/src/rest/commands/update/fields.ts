@@ -51,7 +51,7 @@ export const updateFields =
 		collection: DirectusField<Schema>['collection'],
 		items: NestedPartial<DirectusField<Schema>>[],
 		query?: TQuery,
-	): RestCommand<UpdateFieldOutput<Schema, TQuery>, Schema> =>
+	): RestCommand<UpdateFieldOutput<Schema, TQuery>[], Schema> =>
 	() => {
 		throwIfEmpty(collection, 'Keys cannot be empty');
 
