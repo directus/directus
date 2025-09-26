@@ -2,4 +2,4 @@
 '@directus/storage-driver-supabase': patch
 ---
 
-Fix Supabase upload failures by upgrading to v2.12.1 and adding proper error handling
+Fixed Supabase storage driver file uploads and improved error handling
