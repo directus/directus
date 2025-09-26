@@ -300,9 +300,6 @@ catalogs:
     '@types/node':
       specifier: 22.13.14
       version: 22.13.14
-    '@types/node-schedule':
-      specifier: 2.1.8
-      version: 2.1.8
     '@types/nodemailer':
       specifier: 6.4.17
       version: 6.4.17
@@ -432,9 +429,9 @@ catalogs:
     cors:
       specifier: 2.8.5
       version: 2.8.5
-    cron-parser:
-      specifier: 4.9.0
-      version: 4.9.0
+    cron:
+      specifier: 4.3.3
+      version: 4.3.3
     cropperjs:
       specifier: 1.6.2
       version: 1.6.2
@@ -657,9 +654,6 @@ catalogs:
     node-machine-id:
       specifier: 1.1.12
       version: 1.1.12
-    node-schedule:
-      specifier: 2.1.1
-      version: 2.1.1
     nodemailer:
       specifier: 7.0.5
       version: 7.0.5
@@ -1094,9 +1088,9 @@ importers:
       cors:
         specifier: 'catalog:'
         version: 2.8.5
-      cron-parser:
+      cron:
         specifier: 'catalog:'
-        version: 4.9.0
+        version: 4.3.3
       date-fns:
         specifier: 'catalog:'
         version: 4.1.0
@@ -1217,9 +1211,6 @@ importers:
       node-machine-id:
         specifier: 'catalog:'
         version: 1.1.12
-      node-schedule:
-        specifier: 'catalog:'
-        version: 2.1.1
       nodemailer:
         specifier: 'catalog:'
         version: 7.0.5
@@ -1392,9 +1383,6 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 22.13.14
-      '@types/node-schedule':
-        specifier: 'catalog:'
-        version: 2.1.8
       '@types/nodemailer':
         specifier: 'catalog:'
         version: 6.4.17
@@ -6307,6 +6295,9 @@ packages:
   '@types/lodash@4.17.20':
     resolution: {integrity: sha512-H3MHACvFUEiujabxhaI/ImO6gUrd8oOurg7LQtS7mbwIXA/cUqWrvBsaeJ23aZEPk1TAYkurjfMbSELfoCXlGA==}
 
+  '@types/luxon@3.7.1':
+    resolution: {integrity: sha512-H3iskjFIAn5SlJU7OuxUmTEpebK6TKB8rxZShDslBMZJ5u9S//KM1sbdAisiSrqwLQncVjnpi2OK2J51h+4lsg==}
+
   '@types/mapbox-gl@3.4.1':
     resolution: {integrity: sha512-NsGKKtgW93B+UaLPti6B7NwlxYlES5DpV5Gzj9F75rK5ALKsqSk15CiEHbOnTr09RGbr6ZYiCdI+59NNNcAImg==}
 
@@ -6336,9 +6327,6 @@ packages:
 
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
-
-  '@types/node-schedule@2.1.8':
-    resolution: {integrity: sha512-k00g6Yj/oUg/CDC+MeLHUzu0+OFxWbIqrFfDiLi6OPKxTujvpv29mHGM8GtKr7B+9Vv92FcK/8mRqi1DK5f3hA==}
 
   '@types/node@12.20.55':
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
@@ -7836,9 +7824,9 @@ packages:
   crelt@1.0.6:
     resolution: {integrity: sha512-VQ2MBenTq1fWZUH9DJNGti7kKv6EeAuYr3cLwxUWhIu1baTaXh4Ib5W2CqHVqib4/MqbYGJqiL3Zb8GJZr3l4g==}
 
-  cron-parser@4.9.0:
-    resolution: {integrity: sha512-p0SaNjrHOnQeR8/VnfGbmg9te2kfyYSQ7Sc/j/6DtPL3JQvKxmjO9TSjNFpujqV3vEYYBvNNvXSxzyksBWAx1Q==}
-    engines: {node: '>=12.0.0'}
+  cron@4.3.3:
+    resolution: {integrity: sha512-B/CJj5yL3sjtlun6RtYHvoSB26EmQ2NUmhq9ZiJSyKIM4K/fqfh9aelDFlIayD2YMeFZqWLi9hHV+c+pq2Djkw==}
+    engines: {node: '>=18.x'}
 
   croner@4.1.97:
     resolution: {integrity: sha512-/f6gpQuxDaqXu+1kwQYSckUglPaOrHdbIlBAu0YuW8/Cdb45XwXYNUBXg3r/9Mo6n540Kn/smKcZWko5x99KrQ==}
@@ -9834,9 +9822,6 @@ packages:
     resolution: {integrity: sha512-9ie8ItPR6tjY5uYJh8K/Zrv/RMZ5VOlOWvtZdEHYSTFKZfIBPQa9tOAEeAWhd+AnIneLJ22w5fjOYtoutpWq5w==}
     engines: {node: '>=18'}
 
-  long-timeout@0.1.1:
-    resolution: {integrity: sha512-BFRuQUqc7x2NWxfJBCyUrN8iYUYznzL9JROmRz1gZ6KlOIgmoD+njPVbb+VNn2nGMKggMsK79iUNErillsrx7w==}
-
   long@5.3.2:
     resolution: {integrity: sha512-mNAgZ1GmyNhD7AuqnTG3/VQ26o760+ZYBPKjPvugO8+nLbYfX6TVpJPseBvopbdY+qpZ/lKUnmEc1LeZYS3QAA==}
 
@@ -10343,10 +10328,6 @@ packages:
 
   node-rsa@1.1.1:
     resolution: {integrity: sha512-Jd4cvbJMryN21r5HgxQOpMEqv+ooke/korixNNK3mGqfGJmy0M77WDDzo/05969+OkMy3XW1UuZsSmW9KQm7Fw==}
-
-  node-schedule@2.1.1:
-    resolution: {integrity: sha512-OXdegQq03OmXEjt2hZP33W2YPs/E5BcFQks46+G2gAxs4gHOIVD1u7EqlYLYSKsaIpyKCK9Gbk0ta1/gjRSMRQ==}
-    engines: {node: '>=6'}
 
   node-xmllint@1.0.0:
     resolution: {integrity: sha512-71UV2HRUP+djvHpdyatiuv+Y1o8hI4ZI7bMfuuoACMLR1JJCErM4WXAclNeHd6BgHXkqeqnnAk3wpDkSQWmFXw==}
@@ -11998,9 +11979,6 @@ packages:
 
   sortablejs@1.14.0:
     resolution: {integrity: sha512-pBXvQCs5/33fdN1/39pPL0NZF20LeRbLQ5jtnheIPN9JQAaufGjKdWduZn4U7wCtVuzKhmRkI0DFYHYRbB2H1w==}
-
-  sorted-array-functions@1.3.0:
-    resolution: {integrity: sha512-2sqgzeFlid6N4Z2fUQ1cvFmTOLRi/sEDzSQ0OKYchqgoPmQBVyM3959qYx3fpS6Esef80KjmpgPeEr028dP3OA==}
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -17932,7 +17910,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 22.13.8
+      '@types/node': 24.2.0
       '@types/responselike': 1.0.3
 
   '@types/caseless@0.12.5': {}
@@ -17949,7 +17927,7 @@ snapshots:
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 22.13.8
+      '@types/node': 24.2.0
 
   '@types/content-disposition@0.5.9': {}
 
@@ -18006,7 +17984,7 @@ snapshots:
 
   '@types/fs-extra@9.0.13':
     dependencies:
-      '@types/node': 22.13.8
+      '@types/node': 24.2.0
 
   '@types/geojson@7946.0.16': {}
 
@@ -18040,7 +18018,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 22.13.8
+      '@types/node': 24.2.0
 
   '@types/ldapjs@2.2.5':
     dependencies:
@@ -18053,6 +18031,8 @@ snapshots:
       '@types/lodash': 4.17.20
 
   '@types/lodash@4.17.20': {}
+
+  '@types/luxon@3.7.1': {}
 
   '@types/mapbox-gl@3.4.1':
     dependencies:
@@ -18084,10 +18064,6 @@ snapshots:
   '@types/minimist@1.2.5': {}
 
   '@types/ms@2.1.0': {}
-
-  '@types/node-schedule@2.1.8':
-    dependencies:
-      '@types/node': 24.2.0
 
   '@types/node@12.20.55': {}
 
@@ -18133,13 +18109,13 @@ snapshots:
 
   '@types/readable-stream@4.0.21':
     dependencies:
-      '@types/node': 22.13.8
+      '@types/node': 24.2.0
     optional: true
 
   '@types/request@2.48.13':
     dependencies:
       '@types/caseless': 0.12.5
-      '@types/node': 22.13.8
+      '@types/node': 24.2.0
       '@types/tough-cookie': 4.0.5
       form-data: 2.5.5
 
@@ -18147,7 +18123,7 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 22.13.8
+      '@types/node': 24.2.0
 
   '@types/sanitize-html@2.16.0':
     dependencies:
@@ -18170,7 +18146,7 @@ snapshots:
 
   '@types/ssri@7.1.5':
     dependencies:
-      '@types/node': 22.13.8
+      '@types/node': 24.2.0
 
   '@types/stream-chain@2.1.0':
     dependencies:
@@ -19696,8 +19672,9 @@ snapshots:
 
   crelt@1.0.6: {}
 
-  cron-parser@4.9.0:
+  cron@4.3.3:
     dependencies:
+      '@types/luxon': 3.7.1
       luxon: 3.7.1
 
   croner@4.1.97: {}
@@ -20066,7 +20043,7 @@ snapshots:
   engine.io@6.6.4:
     dependencies:
       '@types/cors': 2.8.19
-      '@types/node': 22.13.8
+      '@types/node': 24.2.0
       accepts: 1.3.8
       base64id: 2.0.0
       cookie: 0.7.2
@@ -21865,8 +21842,6 @@ snapshots:
       strip-ansi: 7.1.0
       wrap-ansi: 9.0.0
 
-  long-timeout@0.1.1: {}
-
   long@5.3.2:
     optional: true
 
@@ -22406,12 +22381,6 @@ snapshots:
   node-rsa@1.1.1:
     dependencies:
       asn1: 0.2.6
-
-  node-schedule@2.1.1:
-    dependencies:
-      cron-parser: 4.9.0
-      long-timeout: 0.1.1
-      sorted-array-functions: 1.3.0
 
   node-xmllint@1.0.0: {}
 
@@ -24390,8 +24359,6 @@ snapshots:
       is-plain-obj: 2.1.0
 
   sortablejs@1.14.0: {}
-
-  sorted-array-functions@1.3.0: {}
 
   source-map-js@1.2.1: {}
 
