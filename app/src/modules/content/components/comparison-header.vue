@@ -194,9 +194,11 @@ function getDeltaOptionUser(deltaOption: any) {
 
 		.meta-content {
 			.meta-text {
+				padding-block-start: 10px;
 				text-align: start;
 
 				@media (min-width: 960px) {
+					padding-block-start: 0;
 					text-align: end;
 				}
 
@@ -236,6 +238,10 @@ function getDeltaOptionUser(deltaOption: any) {
 
 				&:hover {
 					border-color: var(--theme--border-color-accent);
+				}
+
+				.meta-text {
+					padding-block-start: 0;
 				}
 
 				.dropdown-icon {
