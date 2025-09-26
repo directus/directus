@@ -146,7 +146,9 @@ export class DriverSupabase implements TusDriver {
 			duplex: 'half',
 		});
 
-		if (error) throw new Error(`Error uploading file "${filepath}"`, { cause: error });
+		if (error) {
+			throw new Error(`Error uploading file "${filepath}"`, { cause: error });
+		}
 	}
 
 	async delete(filepath: string) {
