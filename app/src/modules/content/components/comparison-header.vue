@@ -157,7 +157,7 @@ function getDeltaOptionUser(deltaOption: any) {
 	display: flex;
 	padding-block: var(--comparison-header--padding-y);
 	padding-inline: var(--comparison-header--padding-x);
-	block-size: 140px;
+	block-size: 144px;
 	flex-direction: column;
 	align-items: flex-start;
 	align-self: stretch;
