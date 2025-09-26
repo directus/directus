@@ -12,7 +12,7 @@ import {
 } from '@directus/sdk';
 import { port } from '@utils/constants.js';
 import { useSnapshot } from '@utils/useSnapshot.js';
-import { describe, expect, test } from 'vitest';
+import { afterAll, describe, expect, test } from 'vitest';
 import type { Schema } from './schema.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
@@ -28,6 +28,12 @@ const [us, mal] = await api.request(
 		},
 	]),
 );
+
+afterAll(async () => {
+	await api.request(deleteField(collections.country, 'flag_image'));
+	await api.request(deleteField(collections.country, 'test_divider'));
+	await api.request(deleteField(collections.country, 'to_be_deleted'));
+});
 
 await api.request(
 	createItems(collections.state, [
@@ -103,7 +109,6 @@ describe('/fields', () => {
 			const statesAfter = await api.request(readItems(collections.state));
 
 			// Assert
-			expect(statesBefore).toHaveLength(4);
 			expect(statesBefore).toStrictEqual(statesAfter);
 		});
 

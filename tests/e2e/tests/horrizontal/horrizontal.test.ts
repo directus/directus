@@ -9,20 +9,20 @@ import type { Schema } from './schema.d.ts';
 import { getUID } from '@utils/getUID.js';
 
 const all = process.env['ALL'] === 'true';
+const port = await getPort();
 
 if (!all)
 	test('running two instances', { timeout: 120_000 }, async () => {
 		const directus = await sandbox(database, {
-			port: await getPort(),
+			port,
 			instances: '2',
-			killPorts: true,
 			inspect: false,
 			silent: true,
 			extras: {
 				redis: true,
 			},
 			docker: {
-				basePort: getPort,
+				basePort: port + 1,
 				suffix: getUID(),
 			},
 		});

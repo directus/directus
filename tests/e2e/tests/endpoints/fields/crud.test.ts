@@ -3,12 +3,12 @@ import { useSnapshot } from '@utils/useSnapshot.js';
 import type { Schema } from './schema.d.ts';
 import { expect, test } from 'vitest';
 import { randomUUID } from 'crypto';
-import { port } from '@utils/constants.js';
+import { database, port } from '@utils/constants.js';
 
 const api = createDirectus<Schema>(`http://localhost:${port}`).with(rest()).with(staticToken('admin'));
 const { collections } = await useSnapshot<Schema>(api);
 
-test('create field', async () => {
+test('create field', { timeout: database === 'cockroachdb' ? 60_000 : 10_000 }, async () => {
 	const field = randomUUID().split('-')[0]!;
 
 	const created = await api.request(

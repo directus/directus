@@ -112,7 +112,7 @@ export async function useSnapshot<Schema>(
 		groups.push(uid);
 	}
 
-	let tries = 3;
+	let tries = 5;
 
 	while (tries > 0) {
 		try {

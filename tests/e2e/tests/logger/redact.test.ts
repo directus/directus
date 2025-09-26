@@ -7,11 +7,12 @@ import { expect, test } from 'vitest';
 
 const all = process.env['ALL'] === 'true';
 
+const port = await getPort();
+
 if (!all)
 	test('running two instances', { timeout: 60_000 }, async () => {
 		const directus = await sandbox(database, {
-			port: await getPort(),
-			killPorts: true,
+			port,
 			inspect: false,
 			silent: true,
 			env: {
@@ -19,7 +20,7 @@ if (!all)
 				LOG_STYLE: 'raw',
 			},
 			docker: {
-				basePort: getPort,
+				basePort: port + 2,
 			},
 		});
 

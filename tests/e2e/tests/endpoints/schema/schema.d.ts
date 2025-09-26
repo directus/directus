@@ -7,6 +7,8 @@ export interface Schema {
 	tags: Tags[];
 	text_blocks: TextBlocks[];
 	users: Users[];
+	a: any;
+	b: any;
 }
 export type Articles = {
 	id: string | number;
