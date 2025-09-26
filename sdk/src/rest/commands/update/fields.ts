@@ -53,7 +53,7 @@ export const updateFields =
 		query?: TQuery,
 	): RestCommand<UpdateFieldOutput<Schema, TQuery>[], Schema> =>
 	() => {
-		throwIfEmpty(collection, 'Keys cannot be empty');
+		throwIfEmpty(collection, 'Collection cannot be empty');
 
 		return {
 			path: `/fields/${collection}`,
