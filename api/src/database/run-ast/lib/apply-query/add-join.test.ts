@@ -138,7 +138,37 @@ test('add join for a2o relation', async () => {
 	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(
-		`select * left join "images" as "alias" on "articles"."collection" = ? and "articles"."title_component" = CAST("alias"."id" AS CHAR(255))`,
+		`select * left join "images" as "alias" on "articles"."collection" = ? and CAST("articles"."title_component" AS CHAR(255)) = CAST("alias"."id" AS CHAR(255))`,
+	);
+
+	expect(rawQuery.bindings).toEqual(['images']);
+});
+
+test('add join for o2a relation', async () => {
+	const schema = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id();
+			c.field('title_component').a2o(['images', 'videos']);
+		})
+		.build();
+
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+	aliasFn.mockReturnValueOnce('alias');
+
+	addJoin({
+		aliasMap: {},
+		collection: 'images',
+		knex: db,
+		path: ['$FOLLOW(articles,title_component,collection)'],
+		rootQuery: queryBuilder,
+		schema,
+	});
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toEqual(
+		`select * left join "articles" as "alias" on "alias"."collection" = ? and CAST("alias"."title_component" AS CHAR(255)) = CAST("images"."id" AS CHAR(255))`,
 	);
 
 	expect(rawQuery.bindings).toEqual(['images']);

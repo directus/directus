@@ -145,6 +145,10 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return 'CAST(?? AS CHAR(255))';
 	}
 
+	compareCastA2oPrimaryKeys(): string {
+		return 'CAST(?? AS CHAR(255)) = CAST(?? AS CHAR(255))';
+	}
+
 	formatUUID(uuid: string): string {
 		return uuid; // no-op by default
 	}
