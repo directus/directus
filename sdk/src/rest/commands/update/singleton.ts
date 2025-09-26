@@ -1,4 +1,10 @@
-import type { ApplyQueryFields, CollectionType, NestedPartial, Query, SingletonCollections } from '../../../types/index.js';
+import type {
+	ApplyQueryFields,
+	CollectionType,
+	NestedPartial,
+	Query,
+	SingletonCollections,
+} from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfCoreCollection, throwIfEmpty } from '../../utils/index.js';
 
