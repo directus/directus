@@ -15,6 +15,7 @@ if (!all)
 		const directus = await sandbox(database, {
 			port: await getPort(),
 			instances: '2',
+			silent: true,
 			extras: {
 				redis: true,
 			},

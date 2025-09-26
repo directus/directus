@@ -13,6 +13,7 @@ import {
 	saveSchema,
 	startDirectus,
 } from './steps/index.js';
+import chalk from 'chalk';
 
 export type { Env } from './config.js';
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
@@ -244,10 +245,14 @@ export async function sandbox(database: Database, options?: DeepPartial<Options>
 	}
 
 	async function stop() {
+		const start = performance.now();
+		logger.info('Stopping sandbox');
 		clearInterval(interval);
 		build?.kill();
 		apis.forEach((api) => api.kill());
 		if (project && !opts.docker.keep) await dockerDown(project, env, logger);
+		const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
+		logger.info(`Stopped sandbox ${time}`);
 	}
 
 	return { stop, restartApi, env, logger };

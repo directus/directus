@@ -54,7 +54,7 @@ export async function buildDirectus(opts: Options, logger: Logger, onRebuild: ()
 	} else {
 		logger.pipe(build.stdout);
 		await new Promise((resolve) => build.on('close', resolve));
-		const time = chalk.gray(`(${Math.round(performance.now() - start) / 1000}ms)`);
+		const time = chalk.gray(`(${Math.round(performance.now() - start)}ms)`);
 		logger.info(`New Build Completed ${time}`);
 		return;
 	}

@@ -33,6 +33,7 @@ if (!all) {
 	await sandbox(database, {
 		port,
 		inspect: false,
+		silent: true,
 		docker: {
 			basePort: port + 2,
 			suffix: getUID(),

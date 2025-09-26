@@ -29,6 +29,7 @@ if (!all) {
 		port: directusMemPort,
 		schema: join(import.meta.dirname, 'snapshot.json'),
 		inspect: false,
+		silent: true,
 		docker: {
 			basePort: directusMemPort + 1,
 			suffix: `${uid}_mem`,
@@ -48,6 +49,7 @@ if (!all) {
 		port: directusMemPurgePort,
 		schema: join(import.meta.dirname, 'snapshot.json'),
 		inspect: false,
+		silent: true,
 		docker: {
 			basePort: directusMemPurgePort + 1,
 			suffix: `${uid}_mem_purge`,
@@ -67,6 +69,7 @@ if (!all) {
 		port: directusRedisPort,
 		schema: join(import.meta.dirname, 'snapshot.json'),
 		inspect: false,
+		silent: true,
 		docker: {
 			basePort: directusRedisPort + 1,
 			suffix: `${uid}_redis`,
@@ -89,6 +92,7 @@ if (!all) {
 		port: directusRedisPurgePort,
 		schema: join(import.meta.dirname, 'snapshot.json'),
 		inspect: false,
+		silent: true,
 		docker: {
 			basePort: directusRedisPurgePort + 1,
 			suffix: `${uid}_redis_purge`,

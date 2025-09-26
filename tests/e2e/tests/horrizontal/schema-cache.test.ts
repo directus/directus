@@ -22,6 +22,7 @@ if (!all)
 					port,
 					instances: '2',
 					inspect: false,
+					silent: true,
 					cache: true,
 					extras: {
 						redis: true,
@@ -98,6 +99,7 @@ if (!all)
 					port,
 					instances: '2',
 					inspect: false,
+					silent: true,
 					cache: true,
 					extras: {
 						redis: false,

@@ -62,6 +62,19 @@ test('reading health as admin', async () => {
 					threshold: 750,
 				},
 			],
+			...(options.cache
+				? {
+						'cache:responseTime': [
+							{
+								componentType: 'cache',
+								observedUnit: 'ms',
+								observedValue: expect.any(Number),
+								status: 'ok',
+								threshold: 150,
+							},
+						],
+					}
+				: {}),
 			...(options.extras?.minio
 				? {
 						'storage:minio:responseTime': [

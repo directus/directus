@@ -4,7 +4,6 @@ import type { Database, Options } from './sandbox.js';
 const isWindows = ['win32', 'win64'].includes(process.platform);
 
 const directusConfig = {
-	...process.env,
 	TZ: isWindows ? '0' : 'UTC',
 	ADMIN_EMAIL: 'admin@example.com',
 	ADMIN_PASSWORD: 'pw',
@@ -163,6 +162,7 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 		...(opts.extras.saml ? saml : {}),
 		...(opts.extras.maildev ? maildev : {}),
 		...opts.env,
+		...(process.env as Record<string, any>),
 	} satisfies Env;
 
 	// eslint-disable-next-line prefer-const
