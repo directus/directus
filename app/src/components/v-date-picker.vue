@@ -11,6 +11,7 @@ interface Props {
 	disabled?: boolean;
 	includeSeconds?: boolean;
 	use24?: boolean;
+	firstDayOfWeek?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -18,6 +19,7 @@ const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
 	includeSeconds: false,
 	use24: true,
+	firstDayOfWeek: 0,
 });
 
 const emit = defineEmits<{ 'update:modelValue': [value: string | null]; close: [] }>();
@@ -94,6 +96,7 @@ const flatpickrOptions = computed<Record<string, any>>(() => {
 		enableTime: ['dateTime', 'time', 'timestamp'].includes(props.type),
 		noCalendar: props.type === 'time',
 		time_24hr: props.use24,
+		firstDayOfWeek: props.firstDayOfWeek,
 	});
 });
 
