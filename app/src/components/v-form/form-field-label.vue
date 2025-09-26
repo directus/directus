@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import type { FormField } from './types';
+import type { FormField, ComparisonContext } from './types';
 
 withDefaults(
 	defineProps<{
@@ -16,6 +16,8 @@ withDefaults(
 		loading?: boolean;
 		rawEditorEnabled?: boolean;
 		rawEditorActive?: boolean;
+		comparison?: ComparisonContext;
+		comparisonActive?: boolean;
 	}>(),
 	{
 		batchMode: false,
@@ -45,8 +47,18 @@ const { t } = useI18n();
 				:value="field.field"
 				@update:model-value="$emit('toggle-batch', field)"
 			/>
+			<v-checkbox
+				v-if="comparison && comparison.side === 'incoming' && comparison.fields.has(field.field)"
+				class="comparison-checkbox"
+				:model-value="comparisonActive"
+				:value="field.field"
+				@update:model-value="comparison.onToggleField(field.field)"
+			/>
 			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 			<v-text-overflow :text="field.name" />
+			<span v-if="comparison?.fields?.has(field.field) && field.meta?.hidden" class="hidden-indicator">
+				({{ t('hidden') }})
+			</span>
 			<v-icon
 				v-if="field.meta?.required === true"
 				class="required"
@@ -91,6 +103,20 @@ const { t } = useI18n();
 	.v-checkbox {
 		block-size: 18px; // Don't push down label with normal icon height (24px)
 		margin-inline-end: 4px;
+		display: inline-flex;
+		align-self: baseline;
+	}
+
+	.v-checkbox.comparison-checkbox {
+		--v-checkbox-color: var(--theme--success);
+
+		margin-inline-end: 8px;
+
+		:deep(.checkbox) {
+			&:hover {
+				--v-icon-color: var(--theme--success);
+			}
+		}
 	}
 
 	.v-chip {
@@ -118,6 +144,11 @@ const { t } = useI18n();
 		&.active {
 			opacity: 1;
 		}
+	}
+
+	.hidden-indicator {
+		margin-inline-start: 0.25em;
+		color: var(--theme--foreground-subdued);
 	}
 
 	&:focus-within,
@@ -168,16 +199,17 @@ const { t } = useI18n();
 		}
 	}
 
-	@media (min-width: 960px) {
-		display: block;
+	.field-name {
+		max-inline-size: 100%;
+		text-align: start;
+		display: flex;
+		flex-wrap: nowrap;
+	}
 
+	@media (min-width: 960px) {
 		.v-text-overflow {
 			display: initial;
 			white-space: nowrap;
-		}
-
-		.field-name {
-			display: flex;
 		}
 	}
 }

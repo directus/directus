@@ -10,7 +10,7 @@ import { useUserStore } from '@/stores/user';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { userName } from '@/utils/user-name';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { useCollection } from '@directus/composables';
 import type { User } from '@directus/types';
@@ -40,7 +40,7 @@ const { breadcrumb } = useBreadcrumb();
 
 const { info: collectionInfo } = useCollection('directus_users');
 
-const revisionsDrawerDetail = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const revisionsSidebarDetail = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const {
 	isNew,
@@ -181,7 +181,7 @@ async function saveAndStay() {
 			const newPrimaryKey = savedItem.id;
 			router.replace(`/users/${newPrimaryKey}`);
 		} else {
-			revisionsDrawerDetail.value?.refresh?.();
+			revisionsSidebarDetail.value?.refresh?.();
 			refresh();
 		}
 	} catch {
@@ -450,9 +450,9 @@ function revert(values: Record<string, any>) {
 
 		<template #sidebar>
 			<user-info-sidebar-detail :is-new="isNew" :user="item" />
-			<revisions-drawer-detail
+			<revisions-sidebar-detail
 				v-if="isNew === false && revisionsAllowed"
-				ref="revisionsDrawerDetail"
+				ref="revisionsSidebarDetail"
 				collection="directus_users"
 				:primary-key="primaryKey"
 				@revert="revert"
