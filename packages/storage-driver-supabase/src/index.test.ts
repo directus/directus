@@ -1,23 +1,23 @@
-import { StorageClient } from '@supabase/storage-js';
 import {
 	randAlphaNumeric,
 	randGitBranch as randBucket,
 	randDirectoryPath,
 	randDomainName,
+	randFileName,
 	randFilePath,
 	randFileType,
 	randNumber,
 	randPastDate,
 	randText,
 	randGitShortSha as randUnique,
-	randFileName,
 } from '@ngneat/falso';
-import { Response, fetch } from 'undici';
+import { StorageClient } from '@supabase/storage-js';
 import { Readable } from 'node:stream';
+import { ReadableStream } from 'node:stream/web';
+import { Response, fetch } from 'undici';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverSupabaseConfig } from './index.js';
 import { DriverSupabase } from './index.js';
-import { ReadableStream } from 'node:stream/web';
 
 vi.mock('@supabase/storage-js');
 vi.mock('undici');
@@ -489,7 +489,9 @@ describe('#write', () => {
 			upload: vi.fn().mockResolvedValue({ data: null, error: uploadError }),
 		} as any;
 
-		await expect(driver.write(sample.path.input, sample.stream)).rejects.toThrow(new Error(`Error uploading file "${sample.path.input}"`, { cause: uploadError }));
+		await expect(driver.write(sample.path.input, sample.stream)).rejects.toThrow(
+			new Error(`Error uploading file "${sample.path.input}"`, { cause: uploadError }),
+		);
 	});
 });
 
