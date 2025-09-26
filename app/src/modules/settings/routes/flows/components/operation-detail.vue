@@ -121,7 +121,7 @@ function saveOperation() {
 
 	saving.value = true;
 
-	const defaultValues = operationOptions.value
+	const defaultValues = Array.isArray(operationOptions.value)
 		? getDefaultValuesFromFields(operationOptions.value as Field[]).value
 		: null;
 
