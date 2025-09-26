@@ -63,10 +63,10 @@ export class MetaService {
 			},
 		);
 
-		ast = await processAst(
+		({ ast } = await processAst(
 			{ ast, action: 'read', accountability: this.accountability },
 			{ knex: this.knex, schema: this.schema },
-		);
+		));
 
 		const records = await runAst(ast, this.schema, this.accountability, {
 			knex: this.knex,
