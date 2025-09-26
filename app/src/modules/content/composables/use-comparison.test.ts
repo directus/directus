@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ref } from 'vue';
+import { createTestingPinia } from '@pinia/testing';
+import { setActivePinia } from 'pinia';
 
 vi.mock('@/api', () => ({
 	default: {
@@ -19,6 +21,13 @@ import { itemVersions, versionComparison, versionRevisions } from './test-fixtur
 
 describe('normalizeComparisonData', () => {
 	beforeEach(() => {
+		setActivePinia(
+			createTestingPinia({
+				createSpy: vi.fn,
+				stubActions: false,
+			}),
+		);
+
 		vi.clearAllMocks();
 	});
 
