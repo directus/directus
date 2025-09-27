@@ -1411,6 +1411,10 @@ fields:
     public_registration_verify_email: Подтвердить эл. почту
     public_registration_verify_email_note: Отправить письмо регистрирующему пользователю с просьбой нажать на ссылку подтверждения, прежде чем они смогут войти.
     visual_editor_urls: URL-адреса визуального редактора
+    mcp_allow_deletes: Разрешить удаления
+    mcp_allow_deletes_note:
+      - 
+    mcp_prompts_collection: AI Prompts Collection
   directus_shares:
     name: Название
     role: Роль
