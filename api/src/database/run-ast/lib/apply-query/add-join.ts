@@ -90,12 +90,12 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex, c
 
 			if (relationType === 'm2o') {
 				// Optimization: if this is a terminal m2o hop (filter targets the FK directly),
-                // we don't need to join the related collection at all.
+				// we don't need to join the related collection at all.
 
 				aliasMap[aliasKey]!.collection = relation.related_collection!;
 
 				// Do not add a join; simply record the collection for downstream logic
-                if (pathParts.length !== 1 || context !== 'filter') {
+				if (pathParts.length !== 1 || context !== 'filter') {
 					// Prefer INNER JOIN when FK is non-nullable to help the optimizer
 					const parentFieldDef = schema.collections[parentCollection]?.fields[relation.field];
 					const joinMethod = parentFieldDef && !parentFieldDef.nullable ? 'innerJoin' : 'leftJoin';
@@ -106,7 +106,6 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex, c
 						`${alias}.${schema.collections[relation.related_collection!]!.primary}`,
 					);
 
-					
 					isJoinAdded = true;
 				}
 			} else if (relationType === 'a2o') {
@@ -155,7 +154,7 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex, c
 			} else if (relationType === 'o2m') {
 				// Do not add a join; simply record the collection for downstream logic
 				aliasMap[aliasKey]!.collection = relation.collection;
-					
+
 				if (pathParts.length !== 1 || context !== 'filter') {
 					// For sorting and field selection, we still need joins
 					rootQuery.leftJoin(

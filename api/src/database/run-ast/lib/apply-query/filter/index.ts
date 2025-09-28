@@ -67,13 +67,13 @@ export function applyFilter(
 				(!(key.includes('(') && key.includes(')')) && schema.collections[collection]?.fields[key]?.type === 'alias')
 			) {
 				// If this is an o2m relational filter, skip adding joins here so it can be handled via WHERE EXISTS
-                // in addWhereClauses. This avoids row multiplication from joins.
-                const pathRoot = filterPath[0]!.split(':')[0]!;
-                const { relationType } = getRelationInfo(relations, collection, pathRoot);
+				// in addWhereClauses. This avoids row multiplication from joins.
+				const pathRoot = filterPath[0]!.split(':')[0]!;
+				const { relationType } = getRelationInfo(relations, collection, pathRoot);
 
-                if (relationType === 'o2m') {
-                    continue;
-                }
+				if (relationType === 'o2m') {
+					continue;
+				}
 
 				const { hasMultiRelational, isJoinAdded } = addJoin({
 					path: filterPath,
@@ -81,7 +81,7 @@ export function applyFilter(
 					knex,
 					schema,
 					rootQuery,
-					aliasMap
+					aliasMap,
 				});
 
 				if (!hasJoins) {
@@ -104,195 +104,205 @@ export function applyFilter(
 		skipO2mRoots?: Set<string>,
 	) {
 		// Build a field-specific permission filter from top-level cases for the given root field
-        const buildFieldCases = (fieldRoot: string) => {
-            if (!cases || !Array.isArray(cases) || cases.length === 0) return null;
-            const combinedCases = { _or: cases };
-            return extractFieldFromFilter(combinedCases, fieldRoot) || null;
-        };
+		const buildFieldCases = (fieldRoot: string) => {
+			if (!cases || !Array.isArray(cases) || cases.length === 0) return null;
+			const combinedCases = { _or: cases };
+			return extractFieldFromFilter(combinedCases, fieldRoot) || null;
+		};
 
 		// Utility to compute grouped o2m for a specific filter object at this logical depth
-        const computeGroups = (flt: Filter) => {
-            const groups: Record<string, { pathForWhere: string[]; operation: { operator: string; value: any } }[]> = {};
-            const keys = new Set<string>();
+		const computeGroups = (flt: Filter) => {
+			const groups: Record<string, { pathForWhere: string[]; operation: { operator: string; value: any } }[]> = {};
+			const keys = new Set<string>();
 
-            for (const [k, v] of Object.entries(flt)) {
-                if (k === '_or' || k === '_and') continue;
-                const initial = getFilterPath(k, v);
-                let pth = initial;
-                if (pth.length === 1 && k.includes('.')) pth = k.split('.');
-                if (pth.length <= 1) continue;
-                const root = pth[0]!.split(':')[0]!;
-                const { relation: rel, relationType: rt } = getRelationInfo(relations, collection, root);
-                if (!rel || rt !== 'o2m') continue;
-                const op = getOperation(k, v);
-                if (!op) continue;
-                const childKey = Object.keys(v)?.[0];
-                if (childKey === '_none' || childKey === '_some') continue;
-                (groups[root] ||= []).push({ pathForWhere: pth, operation: op });
-                keys.add(k);
-            }
+			for (const [k, v] of Object.entries(flt)) {
+				if (k === '_or' || k === '_and') continue;
+				const initial = getFilterPath(k, v);
+				let pth = initial;
+				if (pth.length === 1 && k.includes('.')) pth = k.split('.');
+				if (pth.length <= 1) continue;
+				const root = pth[0]!.split(':')[0]!;
+				const { relation: rel, relationType: rt } = getRelationInfo(relations, collection, root);
+				if (!rel || rt !== 'o2m') continue;
+				const op = getOperation(k, v);
+				if (!op) continue;
+				const childKey = Object.keys(v)?.[0];
+				if (childKey === '_none' || childKey === '_some') continue;
+				(groups[root] ||= []).push({ pathForWhere: pth, operation: op });
+				keys.add(k);
+			}
 
-            return { groups, keys };
-        };
+			return { groups, keys };
+		};
 
-        const { groups: groupedO2m, keys: groupedKeys } = computeGroups(filter);
+		const { groups: groupedO2m, keys: groupedKeys } = computeGroups(filter);
 
-        // Emit a single EXISTS per grouped o2m root at this scope (unless explicitly skipped)
-        for (const [root, items] of Object.entries(groupedO2m)) {
-            if (skipO2mRoots && skipO2mRoots.has(root))
-                continue;
-            let subFilterCombined;
+		// Emit a single EXISTS per grouped o2m root at this scope (unless explicitly skipped)
+		for (const [root, items] of Object.entries(groupedO2m)) {
+			if (skipO2mRoots && skipO2mRoots.has(root)) continue;
+			let subFilterCombined;
 
-            if (logical === 'or') {
-                subFilterCombined = { _or: items.map(({ pathForWhere, operation }) => buildNestedFilterFromPath(pathForWhere.slice(1), { [operation.operator]: operation.value })) };
-            }
-            else {
-                const merged = {};
+			if (logical === 'or') {
+				subFilterCombined = {
+					_or: items.map(({ pathForWhere, operation }) =>
+						buildNestedFilterFromPath(pathForWhere.slice(1), { [operation.operator]: operation.value }),
+					),
+				};
+			} else {
+				const merged = {};
 
-                for (const { pathForWhere, operation } of items) {
-                    const cond = buildNestedFilterFromPath(pathForWhere.slice(1), { [operation.operator]: operation.value });
-                    mergeInto(merged, cond);
-                }
+				for (const { pathForWhere, operation } of items) {
+					const cond = buildNestedFilterFromPath(pathForWhere.slice(1), { [operation.operator]: operation.value });
+					mergeInto(merged, cond);
+				}
 
-                subFilterCombined = merged;
-            }
+				subFilterCombined = merged;
+			}
 
-            const { relation } = getRelationInfo(relations, collection, root);
+			const { relation } = getRelationInfo(relations, collection, root);
 
-            dbQuery[logical].whereExists((subQueryKnex) => {
-                const field = relation!.field;
-                const childCollection = relation!.collection;
-                const childFkColumn = `${childCollection}.${field}`;
-                const parentPkColumn = `${collection}.${schema.collections[relation!.related_collection!]!.primary}`;
+			dbQuery[logical].whereExists((subQueryKnex) => {
+				const field = relation!.field;
+				const childCollection = relation!.collection;
+				const childFkColumn = `${childCollection}.${field}`;
+				const parentPkColumn = `${collection}.${schema.collections[relation!.related_collection!]!.primary}`;
 
-                subQueryKnex
-                    .select(1)
-                    .from(childCollection)
-                    .where(knex.ref(childFkColumn), '=', knex.ref(parentPkColumn));
+				subQueryKnex.select(1).from(childCollection).where(knex.ref(childFkColumn), '=', knex.ref(parentPkColumn));
 
-                const fieldCases = buildFieldCases(root);
-                const finalFilter = fieldCases ? { _and: [subFilterCombined, fieldCases] } : subFilterCombined;
-                applyQuery(knex, relation!.collection, subQueryKnex, { filter: finalFilter }, schema, [], permissions);
-            });
-        }
+				const fieldCases = buildFieldCases(root);
+				const finalFilter = fieldCases ? { _and: [subFilterCombined, fieldCases] } : subFilterCombined;
+				applyQuery(knex, relation!.collection, subQueryKnex, { filter: finalFilter }, schema, [], permissions);
+			});
+		}
 
-        // Second pass: apply non-grouped conditions normally
-        for (const [key, value] of Object.entries(filter)) {
-            if (key === '_or' || key === '_and') {
-                // If the _or array contains an empty object (full permissions), we should short-circuit and ignore all other
-                // permission checks, as {} already matches full permissions.
-                if (key === '_or' && value.some((subFilter: Record<string, any>) => Object.keys(subFilter).length === 0)) {
-                    continue;
-                }
+		// Second pass: apply non-grouped conditions normally
+		for (const [key, value] of Object.entries(filter)) {
+			if (key === '_or' || key === '_and') {
+				// If the _or array contains an empty object (full permissions), we should short-circuit and ignore all other
+				// permission checks, as {} already matches full permissions.
+				if (key === '_or' && value.some((subFilter: Record<string, any>) => Object.keys(subFilter).length === 0)) {
+					continue;
+				}
 
-                /** @NOTE this callback function isn't called until Knex runs the query */
-                dbQuery[logical].where((subQuery) => {
-                    // Aggregate grouping across all sub-filters within this logical array
-                    const aggregated: Record<string, { pathForWhere: string[]; operation: { operator: string; value: any } }[]> = {};
-                    const aggregatedRoots = new Set<string>();
+				/** @NOTE this callback function isn't called until Knex runs the query */
+				dbQuery[logical].where((subQuery) => {
+					// Aggregate grouping across all sub-filters within this logical array
+					const aggregated: Record<string, { pathForWhere: string[]; operation: { operator: string; value: any } }[]> =
+						{};
+					const aggregatedRoots = new Set<string>();
 
-                    value.forEach((subFilter: Record<string, any>) => {
-                        const { groups: subGroups } = computeGroups(subFilter);
+					value.forEach((subFilter: Record<string, any>) => {
+						const { groups: subGroups } = computeGroups(subFilter);
 
-                        for (const [root, items] of Object.entries(subGroups)) {
-                            (aggregated[root] ||= []).push(...items);
-                            aggregatedRoots.add(root);
-                        }
-                    });
+						for (const [root, items] of Object.entries(subGroups)) {
+							(aggregated[root] ||= []).push(...items);
+							aggregatedRoots.add(root);
+						}
+					});
 
-                    // Emit EXISTS clauses for this logical group
-                    // Special-case _or: different o2m roots must be combined with OR between their EXISTS
-                    if (key === '_or') {
-                        subQuery.where((orGroup) => {
-                            const entries = Object.entries(aggregated);
+					// Emit EXISTS clauses for this logical group
+					// Special-case _or: different o2m roots must be combined with OR between their EXISTS
+					if (key === '_or') {
+						subQuery.where((orGroup) => {
+							const entries = Object.entries(aggregated);
 
-                            entries.forEach(([root, items], index) => {
-                                const { relation } = getRelationInfo(relations, collection, root);
-                                // Within a single root, keep OR across its items
-                                const subFilterCombined = { _or: items.map(({ pathForWhere, operation }) => buildNestedFilterFromPath(pathForWhere.slice(1), { [operation.operator]: operation.value })) };
+							entries.forEach(([root, items], index) => {
+								const { relation } = getRelationInfo(relations, collection, root);
+								// Within a single root, keep OR across its items
+								const subFilterCombined = {
+									_or: items.map(({ pathForWhere, operation }) =>
+										buildNestedFilterFromPath(pathForWhere.slice(1), { [operation.operator]: operation.value }),
+									),
+								};
 
-                                const existsBuilder = (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
-                                    const field = relation!.field;
-                                    const childCollection = relation!.collection;
-                                    const childFkColumn = `${childCollection}.${field}`;
-                                    const parentPkColumn = `${collection}.${schema.collections[relation!.related_collection!]!.primary}`;
+								const existsBuilder = (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
+									const field = relation!.field;
+									const childCollection = relation!.collection;
+									const childFkColumn = `${childCollection}.${field}`;
+									const parentPkColumn = `${collection}.${schema.collections[relation!.related_collection!]!.primary}`;
 
-                                    subQueryKnex
-                                        .select(1)
-                                        .from(childCollection)
-                                        .where(knex.ref(childFkColumn), '=', knex.ref(parentPkColumn));
+									subQueryKnex
+										.select(1)
+										.from(childCollection)
+										.where(knex.ref(childFkColumn), '=', knex.ref(parentPkColumn));
 
-                                    applyQuery(knex, relation!.collection, subQueryKnex, { filter: subFilterCombined }, schema, [], permissions);
-                                };
+									applyQuery(
+										knex,
+										relation!.collection,
+										subQueryKnex,
+										{ filter: subFilterCombined },
+										schema,
+										[],
+										permissions,
+									);
+								};
 
-                                if (index === 0) {
-                                    orGroup.whereExists(existsBuilder);
-                                }
-                                else {
-                                    // Use OR between roots
-                                    orGroup.orWhereExists(existsBuilder);
-                                }
-                            });
-                        });
-                    }
-                    else {
-                        for (const [root, items] of Object.entries(aggregated)) {
-                            const { relation } = getRelationInfo(relations, collection, root);
-                            const fieldCases = buildFieldCases(root);
-                            // Merge all item conditions for this root with AND semantics
-                            const merged = {};
+								if (index === 0) {
+									orGroup.whereExists(existsBuilder);
+								} else {
+									// Use OR between roots
+									orGroup.orWhereExists(existsBuilder);
+								}
+							});
+						});
+					} else {
+						for (const [root, items] of Object.entries(aggregated)) {
+							const { relation } = getRelationInfo(relations, collection, root);
+							const fieldCases = buildFieldCases(root);
+							// Merge all item conditions for this root with AND semantics
+							const merged = {};
 
-                            for (const { pathForWhere, operation } of items) {
-                                const cond = buildNestedFilterFromPath(pathForWhere.slice(1), { [operation.operator]: operation.value });
-                                mergeInto(merged, cond);
-                            }
+							for (const { pathForWhere, operation } of items) {
+								const cond = buildNestedFilterFromPath(pathForWhere.slice(1), {
+									[operation.operator]: operation.value,
+								});
+								mergeInto(merged, cond);
+							}
 
-                            const finalFilter = fieldCases ? { _and: [merged, fieldCases] } : merged;
+							const finalFilter = fieldCases ? { _and: [merged, fieldCases] } : merged;
 
-                            subQuery.whereExists((subQueryKnex) => {
-                                const field = relation!.field;
-                                const childCollection = relation!.collection;
-                                const childFkColumn = `${childCollection}.${field}`;
-                                const parentPkColumn = `${collection}.${schema.collections[relation!.related_collection!]!.primary}`;
+							subQuery.whereExists((subQueryKnex) => {
+								const field = relation!.field;
+								const childCollection = relation!.collection;
+								const childFkColumn = `${childCollection}.${field}`;
+								const parentPkColumn = `${collection}.${schema.collections[relation!.related_collection!]!.primary}`;
 
-                                subQueryKnex
-                                    .select(1)
-                                    .from(childCollection)
-                                    .where(knex.ref(childFkColumn), '=', knex.ref(parentPkColumn));
+								subQueryKnex
+									.select(1)
+									.from(childCollection)
+									.where(knex.ref(childFkColumn), '=', knex.ref(parentPkColumn));
 
-                                applyQuery(knex, relation!.collection, subQueryKnex, { filter: finalFilter }, schema, [], permissions);
-                            });
-                        }
-                    }
+								applyQuery(knex, relation!.collection, subQueryKnex, { filter: finalFilter }, schema, [], permissions);
+							});
+						}
+					}
 
-                    // Recurse into each sub-filter while skipping these aggregated roots to avoid duplicate EXISTS
-                    value.forEach((subFilter: Record<string, any>) => {
-                        addWhereClauses(knex, subQuery, subFilter, collection, key === '_and' ? 'and' : 'or', aggregatedRoots);
-                    });
-                });
+					// Recurse into each sub-filter while skipping these aggregated roots to avoid duplicate EXISTS
+					value.forEach((subFilter: Record<string, any>) => {
+						addWhereClauses(knex, subQuery, subFilter, collection, key === '_and' ? 'and' : 'or', aggregatedRoots);
+					});
+				});
 
-                continue;
-            }
+				continue;
+			}
 
-            if (groupedKeys.has(key))
-                continue;
-            const filterPath = getFilterPath(key, value);
-            /**
-             * For A2M fields, the path can contain an optional collection scope <field>:<scope>
-             */
-            let pathForWhere = filterPath;
+			if (groupedKeys.has(key)) continue;
+			const filterPath = getFilterPath(key, value);
+			/**
+			 * For A2M fields, the path can contain an optional collection scope <field>:<scope>
+			 */
+			let pathForWhere = filterPath;
 
-            if (pathForWhere.length === 1 && key.includes('.')) {
-                // Support dot-paths passed in directly (eg: "event.organizer"), which
-                // get-filter-path won't expand when operator object is used.
-                pathForWhere = key.split('.');
-            }
+			if (pathForWhere.length === 1 && key.includes('.')) {
+				// Support dot-paths passed in directly (eg: "event.organizer"), which
+				// get-filter-path won't expand when operator object is used.
+				pathForWhere = key.split('.');
+			}
 
-            const pathRoot = pathForWhere[0]!.split(':')[0]!;
-            if (skipO2mRoots && skipO2mRoots.has(pathRoot))
-                continue;
-            const { relation, relationType } = getRelationInfo(relations, collection, pathRoot);
-            const operation = getOperation(key, value);
+			const pathRoot = pathForWhere[0]!.split(':')[0]!;
+			if (skipO2mRoots && skipO2mRoots.has(pathRoot)) continue;
+			const { relation, relationType } = getRelationInfo(relations, collection, pathRoot);
+			const operation = getOperation(key, value);
 
 			if (!operation) continue;
 
@@ -350,24 +360,24 @@ export function applyFilter(
 						// For o2m relationships, we don't need the alias map since we're using WHERE EXISTS
 						// We can directly reference the table and field names
 						const subFilter = buildChildFilter(relation.collection, pathForWhere.slice(1), filterOperator, filterValue);
-                        const fieldCases = buildFieldCases(pathRoot);
+						const fieldCases = buildFieldCases(pathRoot);
 
-                        dbQuery[logical].whereExists((subQueryKnex) => {
-                            const field = relation.field;
-                            const childCollection = relation.collection;
-                            const childFkColumn = `${childCollection}.${field}`;
-                            const parentPkColumn = `${collection}.${schema.collections[relation!.related_collection!]!.primary}`;
+						dbQuery[logical].whereExists((subQueryKnex) => {
+							const field = relation.field;
+							const childCollection = relation.collection;
+							const childFkColumn = `${childCollection}.${field}`;
+							const parentPkColumn = `${collection}.${schema.collections[relation!.related_collection!]!.primary}`;
 
-                            subQueryKnex
-                                .select(1)
-                                .from(childCollection)
-                                .where(knex.raw(`${childFkColumn} = ${parentPkColumn}`));
+							subQueryKnex
+								.select(1)
+								.from(childCollection)
+								.where(knex.raw(`${childFkColumn} = ${parentPkColumn}`));
 
-                            const finalFilter = fieldCases ? { _and: [subFilter, fieldCases] } : subFilter;
-                            applyQuery(knex, relation.collection, subQueryKnex, { filter: finalFilter }, schema, [], permissions);
-                        });
+							const finalFilter = fieldCases ? { _and: [subFilter, fieldCases] } : subFilter;
+							applyQuery(knex, relation.collection, subQueryKnex, { filter: finalFilter }, schema, [], permissions);
+						});
 
-                        continue;
+						continue;
 					}
 				}
 
@@ -423,31 +433,37 @@ export function applyFilter(
 		}
 	}
 
+	function buildNestedFilterFromPath(pathParts: string[], terminal: Record<string, any>) {
+		return pathParts.reduceRight((acc, part) => ({ [part]: acc }), terminal);
+	}
 
-    function buildNestedFilterFromPath(pathParts: string[], terminal: Record<string, any>) {
-        return pathParts.reduceRight((acc, part) => ({ [part]: acc }), terminal);
-    }
+	function buildChildFilter(childCollection: string, remainingParts: string[], operator: string, value: any) {
+		if (!remainingParts || remainingParts.length === 0) {
+			const pk = schema.collections[childCollection]?.primary;
 
-    function buildChildFilter(childCollection: string, remainingParts: string[], operator: string, value: any) {
-        if (!remainingParts || remainingParts.length === 0) {
-            const pk = schema.collections[childCollection]?.primary;
+			if (pk) {
+				return { [pk]: { [operator]: value } };
+			}
+		}
 
-            if (pk) {
-                return { [pk]: { [operator]: value } };
-            }
-        }
+		return buildNestedFilterFromPath(remainingParts, { [operator]: value });
+	}
 
-        return buildNestedFilterFromPath(remainingParts, { [operator]: value });
-    }
-
-    function mergeInto(target: Record<string, any>, source: Record<string, any>) {
-        for (const [k, v] of Object.entries(source)) {
-            if (k in target && typeof target[k] === 'object' && target[k] !== null && typeof v === 'object' && v !== null && !Array.isArray(target[k]) && !Array.isArray(v)) {
-                mergeInto(target[k], v);
-            }
-            else {
-                target[k] = v;
-            }
-        }
-    }
+	function mergeInto(target: Record<string, any>, source: Record<string, any>) {
+		for (const [k, v] of Object.entries(source)) {
+			if (
+				k in target &&
+				typeof target[k] === 'object' &&
+				target[k] !== null &&
+				typeof v === 'object' &&
+				v !== null &&
+				!Array.isArray(target[k]) &&
+				!Array.isArray(v)
+			) {
+				mergeInto(target[k], v);
+			} else {
+				target[k] = v;
+			}
+		}
+	}
 }
