@@ -1170,7 +1170,6 @@ page_help_settings_datamodel_fields: >-
   **Modeli i të Dhënave: Koleksioni** — Një formë për menaxhimin e këtij koleksioni dhe fushave të tij.
 page_help_settings_system_logs: '**Regjistrat e Sistemit** — Aksesoni një transmetim të drejtpërdrejtë të regjistrave të sistemit.'
 page_help_settings_policies_collection: '**Shfleto Drejtimet** — Rendit të gjithë drejtimet brenda projektit.'
-page_help_settings_policies_item: "**Detajet e Drejtimit** — Menaxho lejet dhe cilësimet e tjera të një drejtimi."
 page_help_settings_roles_collection: '**Shfleto Rolet** — Rendit të gjithë rolet e përdoruesve brenda projektit.'
 page_help_settings_roles_item: "**Detajet e Rolit** — Menaxho lejet e rolit dhe cilësimet e tjera."
 page_help_settings_presets_collection: >-
@@ -1572,6 +1571,8 @@ unlimited_usage: Përdorim i Pakufizuar
 uses_left: Asnjë përdorim i mbetur | Një përdorim i mbetur | {n} përdorime të mbetura
 no_shares: Asnjë ndarje për t'u shfaqur
 new_share: Ndarje e Re
+mcp_prompts_collection_schema:
+  messages_role_user: Përdorues
 expired: Skaduar
 upcoming: E Ardhshme
 share: Ndaj

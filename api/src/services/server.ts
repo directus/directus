@@ -62,6 +62,8 @@ export class ServerService {
 
 		info['project'] = projectInfo;
 
+		info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
+
 		if (this.accountability?.user) {
 			if (env['RATE_LIMITER_ENABLED']) {
 				info['rateLimit'] = {

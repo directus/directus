@@ -24,6 +24,7 @@ import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { getSecret } from '../utils/get-secret.js';
 import { stall } from '../utils/stall.js';
 import { ActivityService } from './activity.js';
+import { RevisionsService } from './revisions.js';
 import { SettingsService } from './settings.js';
 import { TFAService } from './tfa.js';
 
@@ -139,6 +140,28 @@ export class AuthenticationService {
 					await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
 					user.status = 'suspended';
 
+					if (this.accountability) {
+						const activity = await this.activityService.createOne({
+							action: Action.UPDATE,
+							user: user.id,
+							ip: this.accountability.ip,
+							user_agent: this.accountability.userAgent,
+							origin: this.accountability.origin,
+							collection: 'directus_users',
+							item: user.id,
+						});
+
+						const revisionsService = new RevisionsService({ knex: this.knex, schema: this.schema });
+
+						await revisionsService.createOne({
+							activity: activity,
+							collection: 'directus_users',
+							item: user.id,
+							data: user,
+							delta: { status: 'suspended' },
+						});
+					}
+
 					// This means that new attempts after the user has been re-activated will be accepted
 					await loginAttemptsLimiter.set(user.id, 0, 0);
 				} else {
@@ -188,6 +211,24 @@ export class AuthenticationService {
 			app_access: globalAccess.app,
 			admin_access: globalAccess.admin,
 		};
+
+		// Add role-based enforcement to token payload for users who need to set up 2FA
+		if (!user.tfa_secret) {
+			// Check if user has role-based enforcement
+			const roleEnforcement = await this.knex
+				.select('directus_policies.enforce_tfa')
+				.from('directus_users')
+				.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
+				.leftJoin('directus_access', 'directus_roles.id', 'directus_access.role')
+				.leftJoin('directus_policies', 'directus_access.policy', 'directus_policies.id')
+				.where('directus_users.id', user.id)
+				.where('directus_policies.enforce_tfa', true)
+				.first();
+
+			if (roleEnforcement) {
+				tokenPayload.enforce_tfa = true;
+			}
+		}
 
 		const refreshToken = nanoid(64);
 		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
