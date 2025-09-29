@@ -189,7 +189,7 @@ export function applyFilter(
 					// Aggregate grouping across all sub-filters within this logical array
 					const aggregated: Record<string, { pathForWhere: string[]; operation: { operator: string; value: any } }[]> =
 						{};
-						
+
 					const aggregatedRoots = new Set<string>();
 
 					value.forEach((subFilter: Record<string, any>) => {
