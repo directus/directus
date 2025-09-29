@@ -1,5 +1,5 @@
 import type { DirectusWebhook } from '../../../schema/webhook.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreateWebhookOutput<
@@ -18,7 +18,7 @@ export type CreateWebhookOutput<
  */
 export const createWebhooks =
 	<Schema, const TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
-		items: Partial<DirectusWebhook<Schema>>[],
+		items: NestedPartial<DirectusWebhook<Schema>>[],
 		query?: TQuery,
 	): RestCommand<CreateWebhookOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createWebhooks =
  */
 export const createWebhook =
 	<Schema, const TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
-		item: Partial<DirectusWebhook<Schema>>,
+		item: NestedPartial<DirectusWebhook<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreateWebhookOutput<Schema, TQuery>, Schema> =>
 	() => ({

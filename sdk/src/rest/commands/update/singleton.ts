@@ -1,4 +1,10 @@
-import type { ApplyQueryFields, CollectionType, Query, SingletonCollections } from '../../../types/index.js';
+import type {
+	ApplyQueryFields,
+	CollectionType,
+	NestedPartial,
+	Query,
+	SingletonCollections,
+} from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfCoreCollection, throwIfEmpty } from '../../utils/index.js';
 
@@ -26,7 +32,7 @@ export const updateSingleton =
 		Item = Schema[Collection],
 	>(
 		collection: Collection,
-		item: Partial<Item>,
+		item: NestedPartial<Item>,
 		query?: TQuery,
 	): RestCommand<UpdateSingletonOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {
