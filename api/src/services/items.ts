@@ -243,10 +243,12 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			try {
-				// For MS SQL, we need to use includeTriggerModifications to handle tables with triggers
-				// MS SQL doesn't support OUTPUT clauses when triggers are present on the table
-				const client = getDatabaseClient(trx);
-				const returningOptions = client === 'mssql' ? { includeTriggerModifications: true } : undefined;
+				let returningOptions = undefined;
+
+				// Support MSSQL tables that have triggers.
+				if (getDatabaseClient(trx) === 'mssql') {
+					returningOptions = { includeTriggerModifications: true };
+				}
 
 				const result = await trx
 					.insert(payloadWithoutAliases)
