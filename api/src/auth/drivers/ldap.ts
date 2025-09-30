@@ -12,8 +12,7 @@ import {
 import type { Accountability } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
-import type { Client, Error, LDAPResult, SearchCallbackResponse, SearchEntry } from 'ldapjs';
-import ldap from 'ldapjs';
+import * as ldap from 'ldapts';
 import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
@@ -44,7 +43,7 @@ type SearchScope = 'base' | 'one' | 'sub';
 const INVALID_ACCOUNT_FLAGS = 0x800012;
 
 export class LDAPAuthDriver extends AuthDriver {
-	bindClient: Client;
+	bindClient: ldap.Client;
 	usersService: UsersService;
 	config: Record<string, any>;
 
@@ -66,12 +65,9 @@ export class LDAPAuthDriver extends AuthDriver {
 			throw new InvalidProviderConfigError({ provider });
 		}
 
-		const clientConfig = typeof config['client'] === 'object' ? config['client'] : {};
-
-		this.bindClient = ldap.createClient({ url: clientUrl, reconnect: true, ...clientConfig });
-
-		this.bindClient.on('error', (err: Error) => {
-			logger.warn(err);
+		this.bindClient = new ldap.Client({
+			url: clientUrl,
+			...(typeof config['client'] === 'object' ? config['client'] : {}),
 		});
 
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
@@ -83,46 +79,30 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		const { bindDn, bindPassword, provider } = this.config;
 
-		return new Promise((resolve, reject) => {
-			// Healthcheck bind user
-			this.bindClient.search(bindDn, {}, (err: Error | null, res: SearchCallbackResponse) => {
-				if (err) {
-					reject(handleError(err));
-					return;
-				}
+		try {
+			// Bind as the configured service/bind user
+			await this.bindClient.bind(bindDn, bindPassword);
 
-				res.on('searchEntry', () => {
-					resolve();
-				});
-
-				res.on('error', () => {
-					// Attempt to rebind on search error
-					this.bindClient.bind(bindDn, bindPassword, (err: Error | null) => {
-						if (err) {
-							const error = handleError(err);
-
-							if (isDirectusError(error, ErrorCode.InvalidCredentials)) {
-								logger.warn('Invalid bind user');
-								reject(new InvalidProviderConfigError({ provider }));
-							} else {
-								reject(error);
-							}
-						} else {
-							resolve();
-						}
-					});
-				});
-
-				res.on('end', (result: LDAPResult | null) => {
-					// Handle edge case where authenticated bind user cannot read their own DN
-					// Status `0` is success
-					if (result?.status !== 0) {
-						logger.warn('[LDAP] Failed to find bind user record');
-						reject(new UnexpectedResponseError());
-					}
-				});
+			// Healthcheck: make sure the bind DN exists
+			const { searchEntries } = await this.bindClient.search(bindDn, {
+				scope: 'base',
+				attributes: ['dn'],
 			});
-		});
+
+			if (searchEntries.length === 0) {
+				logger.warn('[LDAP] Failed to find bind user record');
+				throw new UnexpectedResponseError();
+			}
+		} catch (err: any) {
+			const error = handleError(err);
+
+			if (isDirectusError(error, ErrorCode.InvalidCredentials)) {
+				logger.warn('Invalid bind user');
+				throw new InvalidProviderConfigError({ provider });
+			}
+
+			throw error;
+		}
 	}
 
 	private async fetchUserInfo(
@@ -136,90 +116,81 @@ export class LDAPAuthDriver extends AuthDriver {
 		lastNameAttribute ??= 'sn';
 		mailAttribute ??= 'mail';
 
-		return new Promise((resolve, reject) => {
-			// Search for the user in LDAP by filter
-			this.bindClient.search(
-				baseDn,
-				{
-					filter,
-					scope,
-					attributes: ['uid', firstNameAttribute, lastNameAttribute, mailAttribute, 'userAccountControl'],
-				},
-				(err: Error | null, res: SearchCallbackResponse) => {
-					if (err) {
-						reject(handleError(err));
-						return;
-					}
+		try {
+			if (!scope || !filter) return undefined;
 
-					res.on('searchEntry', ({ object }: SearchEntry) => {
-						const user: UserInfo = {
-							dn: object['dn'],
-							userAccountControl: Number(getEntryValue(object['userAccountControl']) ?? 0),
-						};
+			const { searchEntries } = await this.bindClient.search(baseDn, {
+				filter,
+				scope,
+				attributes: ['uid', firstNameAttribute, lastNameAttribute, mailAttribute, 'userAccountControl'],
+			});
 
-						const firstName = getEntryValue(object[firstNameAttribute]);
-						if (firstName) user.firstName = firstName;
+			if (searchEntries.length === 0 || !searchEntries[0]) {
+				return undefined;
+			}
 
-						const lastName = getEntryValue(object[lastNameAttribute]);
-						if (lastName) user.lastName = lastName;
+			const entry = searchEntries[0];
 
-						const email = getEntryValue(object[mailAttribute]);
-						if (email) user.email = email;
+			const user: UserInfo = {
+				dn: entry.dn,
+				userAccountControl: Number(getEntryValue(entry['userAccountControl']) ?? 0),
+			};
 
-						const uid = getEntryValue(object['uid']);
-						if (uid) user.uid = uid;
+			const firstName = getEntryValue(entry[firstNameAttribute]);
+			if (firstName) user.firstName = firstName;
 
-						resolve(user);
-					});
+			const lastName = getEntryValue(entry[lastNameAttribute]);
+			if (lastName) user.lastName = lastName;
 
-					res.on('error', (err: Error) => {
-						reject(handleError(err));
-					});
+			const email = getEntryValue(entry[mailAttribute]);
+			if (email) user.email = email;
 
-					res.on('end', () => {
-						resolve(undefined);
-					});
-				},
-			);
-		});
+			const uid = getEntryValue(entry['uid']);
+			if (uid) user.uid = uid;
+
+			return user;
+		} catch (err) {
+			throw handleError(err as Error);
+		}
 	}
 
 	private async fetchUserGroups(baseDn: string, filter?: ldap.EqualityFilter, scope?: SearchScope): Promise<string[]> {
-		return new Promise((resolve, reject) => {
-			let userGroups: string[] = [];
+		if (!scope || !filter) {
+			return [];
+		}
 
-			// Search for the user info in LDAP by group attribute
-			this.bindClient.search(
-				baseDn,
-				{
-					filter,
-					scope,
-					attributes: ['cn'],
-				},
-				(err: Error | null, res: SearchCallbackResponse) => {
-					if (err) {
-						reject(handleError(err));
-						return;
-					}
+		try {
+			const { searchEntries } = await this.bindClient.search(baseDn, {
+				filter,
+				scope,
+				attributes: ['cn'],
+			});
 
-					res.on('searchEntry', ({ object }: SearchEntry) => {
-						if (typeof object['cn'] === 'object') {
-							userGroups = [...userGroups, ...object['cn']];
-						} else if (object['cn']) {
-							userGroups.push(object['cn']);
+			const userGroups: string[] = [];
+
+			for (const entry of searchEntries) {
+				const cn = entry['cn'];
+
+				if (Array.isArray(cn)) {
+					// cn can be string[] | Buffer[] | mixed
+					for (const c of cn) {
+						if (Buffer.isBuffer(c)) {
+							userGroups.push(c.toString('utf8'));
+						} else if (typeof c === 'string') {
+							userGroups.push(c);
 						}
-					});
+					}
+				} else if (typeof cn === 'string') {
+					userGroups.push(cn);
+				} else if (Buffer.isBuffer(cn)) {
+					userGroups.push(cn.toString('utf8'));
+				}
+			}
 
-					res.on('error', (err: Error) => {
-						reject(handleError(err));
-					});
-
-					res.on('end', () => {
-						resolve(userGroups);
-					});
-				},
-			);
-		});
+			return userGroups;
+		} catch (err) {
+			throw handleError(err as Error);
+		}
 	}
 
 	private async fetchUserId(userDn: string): Promise<string | undefined> {
@@ -358,29 +329,22 @@ export class LDAPAuthDriver extends AuthDriver {
 			throw new InvalidCredentialsError();
 		}
 
-		return new Promise((resolve, reject) => {
-			const clientConfig = typeof this.config['client'] === 'object' ? this.config['client'] : {};
+		const clientConfig = typeof this.config['client'] === 'object' ? this.config['client'] : {};
 
-			const client = ldap.createClient({
-				url: this.config['clientUrl'],
-				...clientConfig,
-				reconnect: false,
-			});
-
-			client.on('error', (err: Error) => {
-				reject(handleError(err));
-			});
-
-			client.bind(user.external_identifier!, password, (err: Error | null) => {
-				if (err) {
-					reject(handleError(err));
-				} else {
-					resolve();
-				}
-
-				client.destroy();
-			});
+		const client = new ldap.Client({
+			url: this.config['clientUrl'],
+			...clientConfig,
 		});
+
+		try {
+			// Try to bind with the user's DN and password
+			await client.bind(user.external_identifier, password);
+		} catch (err) {
+			throw handleError(err as Error);
+		} finally {
+			// Always release the connection
+			await client.unbind();
+		}
 	}
 
 	override async login(user: User, payload: Record<string, any>): Promise<void> {
@@ -400,9 +364,9 @@ export class LDAPAuthDriver extends AuthDriver {
 
 const handleError = (e: Error) => {
 	if (
-		e instanceof ldap.InappropriateAuthenticationError ||
+		e instanceof ldap.InappropriateAuthError ||
 		e instanceof ldap.InvalidCredentialsError ||
-		e instanceof ldap.InsufficientAccessRightsError
+		e instanceof ldap.InsufficientAccessError
 	) {
 		return new InvalidCredentialsError();
 	}
@@ -413,8 +377,17 @@ const handleError = (e: Error) => {
 	});
 };
 
-const getEntryValue = (value: string | string[] | undefined): string | undefined => {
-	return typeof value === 'object' ? value[0] : value;
+const getEntryValue = (value: string | string[] | Buffer | Buffer[] | undefined): string | undefined => {
+	if (Array.isArray(value)) {
+		const first = value[0];
+		if (typeof first === 'string') return first;
+		if (Buffer.isBuffer(first)) return first.toString();
+		return undefined;
+	}
+
+	if (typeof value === 'string') return value;
+	if (Buffer.isBuffer(value)) return value.toString();
+	return undefined;
 };
 
 export function createLDAPAuthRouter(provider: string): Router {
