@@ -30,6 +30,10 @@ draft: Návrh
 archived: Archivováno
 marketplace: Tržiště
 extensions: Rozšíření
+skip_link_nav: Přeskočit na navigaci
+skip_link_module_nav: Přeskočit na navigaci modulu
+skip_link_main: Přeskočit na hlavní obsah
+skip_link_sidebar: Přeskočit na postranní panel
 modules: Moduly
 module_bar: Panel modulů
 logs: Logy
@@ -42,6 +46,8 @@ location: Poloha
 collection_names_are_case_sensitive: Názvy kolekcí jsou citlivé na malá a velká písmena
 condition_rules: Pravidla
 input: Vstup
+invalid_input: Neplatný vstup
+not_a_number: Není číslo
 maps: Mapy
 switch_user: Přepnout uživatele
 item_creation: Vytvoření položky
@@ -108,6 +114,7 @@ hook: Hook
 fill_width: Celá šířka
 field_name_translations: Překlady názvu polí
 enter_password_to_enable_tfa: Zadejte své heslo pro zapnutí dvoufázového ověřování
+sso_tfa_setup_notice: Budete odhlášeni z vašeho účtu a musíte se přihlásit. Všechny neuložené změny budou zahozeny.
 add_field: Přidat pole
 role_name: Jméno role
 policy_name: Název oprávnění
