@@ -36,7 +36,7 @@ jobs:
     needs: check-version
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Create release
         env:
@@ -68,7 +68,7 @@ jobs:
       statuses: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -106,7 +106,7 @@ jobs:
       statuses: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
