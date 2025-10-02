@@ -1218,6 +1218,8 @@ inline: Inline
 comment: Comentari
 live_preview:
   new_window: Obre en una nova finestra
+mcp_prompts_collection_schema:
+  messages_role_user: Usuari
 relational_triggers: Disparadors relacionals
 referential_action_field_label_m2o: Si s'esborra de {collection}...
 referential_action_field_label_o2m: Si es deselecciona de {collection}...

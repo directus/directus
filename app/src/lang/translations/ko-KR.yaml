@@ -1194,7 +1194,6 @@ page_help_settings_datamodel_fields: >-
   **데이터 모델: 컬렉션** — 이 컬렉션과 해당 필드를 관리하기 위한 양식입니다.
 page_help_settings_system_logs: '**시스템 로그** — 시스템 로그의 라이브 스트림에 액세스합니다.'
 page_help_settings_policies_collection: '**Browse Policies** - 프로젝트 내의 모든 정책을 나열합니다.'
-page_help_settings_policies_item: "**정책 세부 정보** - 정책의 권한 및 기타 설정을 관리합니다."
 page_help_settings_roles_collection: '**역할 찾아보기** — 프로젝트 내의 모든 사용자 역할을 나열합니다.'
 page_help_settings_roles_item: "**역할 세부 정보** — 역할의 권한 및 기타 설정을 관리합니다."
 page_help_settings_presets_collection: >-
@@ -1599,6 +1598,8 @@ unlimited_usage: 무제한 사용
 uses_left: 남은 용도 없음 | 1회 사용 남음 | {n} 왼쪽 사용
 no_shares: 표시할 공유가 없습니다.
 new_share: 새 공유
+mcp_prompts_collection_schema:
+  messages_role_user: 사용자
 expired: 만료됨
 upcoming: 다가오는
 share: 공유하다

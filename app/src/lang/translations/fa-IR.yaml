@@ -1167,7 +1167,6 @@ page_help_settings_datamodel_fields: >-
   **مدل داده: مجموعه** - فرمی برای مدیریت مجموعه و فیلدهای آن.
 page_help_settings_system_logs: '**لاگ‌های سیستم** — دسترسی به جریان زنده لاگ‌های سیستم.'
 page_help_settings_policies_collection: '**مرور سیاست‌ها** — همه سیاست‌های داخل پروژه را فهرست می‌کند.'
-page_help_settings_policies_item: "**جزئیات سیاست** — مدیریت مجوزهای یک سیاست و سایر تنظیمات."
 page_help_settings_roles_collection: '**مرور نقش‌ها** - تمام نقش‌های کاربر در پروژه را لیست می‌کند.'
 page_help_settings_roles_item: "**جزئیات نقش** - مدیریت اجازه های یک نقش و سایر تنظیمات مربوط به آن."
 page_help_settings_presets_collection: >-
@@ -1572,6 +1571,8 @@ unlimited_usage: Unlimited usage
 uses_left: هیچ استفاده‌ای نمانده | یک استفاده مانده | {n} استفاده مانده
 no_shares: هیچ اشتراک گذاری برای نمایش نیست
 new_share: اشتراک گذاری جدید
+mcp_prompts_collection_schema:
+  messages_role_user: کاربر
 expired: منقضی شده
 upcoming: به زودی
 share: اشتراک‌گذاری
