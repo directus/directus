@@ -246,12 +246,9 @@ export function realtime(config: WebSocketConfig = {}) {
 					let resolved = false;
 					const ws = new client.globals.WebSocket(url);
 
-					const timeout = setTimeout(
-						() => {
-							reject('Connection attempt timed out.');
-						},
-						config.connect?.timeout ?? 10000,
-					);
+					const timeout = setTimeout(() => {
+						reject('Connection attempt timed out.');
+					}, config.connect?.timeout ?? 10000);
 
 					ws.addEventListener('open', async (evt: Event) => {
 						debug('info', `Connection open.`);
