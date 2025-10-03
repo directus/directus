@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Permission, Query } from '@directus/types';
 import { knex } from 'knex';
@@ -276,6 +277,24 @@ describe('MetaService', () => {
 			);
 
 			expect(result).toBe(10);
+		});
+
+		test('should propagate validateAccess errors', async () => {
+			const mockAccountability = createDefaultAccountability({ admin: false });
+
+			const service = new MetaService({
+				knex: db,
+				accountability: mockAccountability,
+				schema: mockSchema,
+			});
+
+			const mockError = new ForbiddenError({ reason: 'No access' });
+			vi.mocked(validateAccess).mockRejectedValue(mockError);
+
+			await expect(service.filterCount('test_collection', {})).rejects.toThrow(mockError);
+
+			expect(fetchPolicies).not.toHaveBeenCalled();
+			expect(applyQuery).not.toHaveBeenCalled();
 		});
 
 		test('should use countDistinct when query has joins', async () => {
