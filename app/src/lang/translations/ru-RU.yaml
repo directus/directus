@@ -2510,6 +2510,8 @@ operations:
     name: Сон
     description: Ожидать заданное количество миллисекунд
     milliseconds: Миллисекунды
+  throw-error:
+    message: Сообщение об ошибке
   transform:
     name: Содержание преобразования
     description: Изменить JSON-содержимое процесса
