@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, useTemplateRef, watch, nextTick } from 'vue';
+import { useFocusTrapManager } from '@/composables/use-focus-trap-manager';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useDialogRouteLeave } from '@/composables/use-dialog-route';
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
@@ -79,19 +80,22 @@ function nudge() {
 
 function useOverlayFocusTrap() {
 	const overlayEl = useTemplateRef<HTMLDivElement>('overlayEl');
+	const { addFocusTrap } = useFocusTrapManager();
 
-	const { activate, deactivate } = useFocusTrap(overlayEl, {
+	const focusTrap = useFocusTrap(overlayEl, {
 		escapeDeactivates: false,
 		initialFocus: false,
 	});
+
+	addFocusTrap(focusTrap);
 
 	watch(
 		internalActive,
 		async (newActive) => {
 			await nextTick();
 
-			if (newActive) activate();
-			else deactivate();
+			if (newActive) focusTrap.activate();
+			else focusTrap.deactivate();
 		},
 		{ immediate: true },
 	);
@@ -128,12 +132,12 @@ function useOverlayFocusTrap() {
 
 .container {
 	position: fixed;
-	top: 0;
-	left: 0;
+	inset-block-start: 0;
+	inset-inline-start: 0;
 	z-index: 500;
 	display: flex;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 
 	&.keep-behind {
 		z-index: 490;
@@ -142,7 +146,7 @@ function useOverlayFocusTrap() {
 
 .container > :slotted(*) {
 	z-index: 2;
-	box-shadow: 0px 4px 12px rgb(38 50 56 / 0.1);
+	box-shadow: 0 4px 12px rgb(38 50 56 / 0.1);
 }
 
 .container.center {
@@ -151,7 +155,7 @@ function useOverlayFocusTrap() {
 	z-index: 600;
 
 	&.keep-behind {
-		z-index: 490;
+		z-index: 500;
 	}
 }
 
@@ -166,6 +170,11 @@ function useOverlayFocusTrap() {
 
 .container.right.nudge > :slotted(*:not(:first-child)) {
 	transform-origin: right;
+
+	html[dir='rtl'] & {
+		transform-origin: left;
+	}
+
 	animation: shake 200ms;
 }
 
@@ -176,25 +185,24 @@ function useOverlayFocusTrap() {
 }
 
 .container :slotted(.v-card) .v-card-title {
-	padding-bottom: 8px;
+	padding-block-end: 8px;
 }
 
 .container :slotted(.v-card) .v-card-actions {
-	flex-direction: column-reverse;
-	flex-wrap: wrap;
+	flex-flow: column-reverse wrap;
 }
 
 .container :slotted(.v-card) .v-card-actions .v-button {
-	width: 100%;
+	inline-size: 100%;
 }
 
 .container :slotted(.v-card) .v-card-actions .v-button .button {
-	width: 100%;
+	inline-size: 100%;
 }
 
 .container :slotted(.v-card) .v-card-actions > .v-button + .v-button {
-	margin-bottom: 20px;
-	margin-left: 0;
+	margin-block-end: 20px;
+	margin-inline-start: 0;
 }
 
 .container :slotted(.v-sheet) {
@@ -217,16 +225,16 @@ function useOverlayFocusTrap() {
 	}
 
 	.container :slotted(.v-card) .v-card-actions .v-button {
-		width: auto;
+		inline-size: auto;
 	}
 
 	.container :slotted(.v-card) .v-card-actions .v-button .button {
-		width: auto;
+		inline-size: auto;
 	}
 
 	.container :slotted(.v-card) .v-card-actions > .v-button + .v-button {
-		margin-bottom: 0;
-		margin-left: 12px;
+		margin-block-end: 0;
+		margin-inline-start: 12px;
 	}
 }
 

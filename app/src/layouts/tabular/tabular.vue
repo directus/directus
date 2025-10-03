@@ -6,8 +6,7 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { Collection } from '@/types/collections';
 import { useSync } from '@directus/composables';
-import type { ShowSelect } from '@directus/extensions';
-import type { Field, Filter, Item } from '@directus/types';
+import type { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { ComponentPublicInstance, Ref, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -276,7 +275,7 @@ function removeField(fieldKey: string) {
 .layout-tabular {
 	display: contents;
 	margin: var(--content-padding);
-	margin-bottom: var(--content-padding-bottom);
+	margin-block-end: var(--content-padding-bottom);
 }
 
 .v-table {
@@ -285,22 +284,22 @@ function removeField(fieldKey: string) {
 	display: contents;
 
 	& > :deep(table) {
-		min-width: calc(100% - var(--content-padding)) !important;
-		margin-left: var(--content-padding);
+		min-inline-size: calc(100% - var(--content-padding)) !important;
+		margin-inline-start: var(--content-padding);
 
 		tr {
-			margin-right: var(--content-padding);
+			margin-inline-end: var(--content-padding);
 		}
 	}
 }
 
 .footer {
 	position: sticky;
-	left: 0;
+	inset-inline-start: 0;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	width: 100%;
+	inline-size: 100%;
 	padding: 32px var(--content-padding);
 
 	.pagination {
@@ -311,12 +310,12 @@ function removeField(fieldKey: string) {
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
-		width: 240px;
+		inline-size: 240px;
 		color: var(--theme--foreground-subdued);
 
 		span {
-			width: auto;
-			margin-right: 4px;
+			inline-size: auto;
+			margin-inline-end: 4px;
 		}
 
 		.v-select {

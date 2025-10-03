@@ -316,7 +316,7 @@ function revert(values: Record<string, any>) {
 				icon
 				rounded
 				:download="item?.filename_download"
-				:href="getAssetUrl(props.primaryKey, true)"
+				:href="getAssetUrl(props.primaryKey, { isDownload: true })"
 			>
 				<v-icon name="download" />
 			</v-button>
@@ -414,10 +414,10 @@ function revert(values: Record<string, any>) {
 
 .file-item {
 	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .preview {
-	margin-bottom: var(--theme--form--row-gap);
+	margin-block-end: var(--theme--form--row-gap);
 }
 </style>

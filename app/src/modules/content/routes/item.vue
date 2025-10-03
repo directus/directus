@@ -206,7 +206,7 @@ const actualPrimaryKey = computed(() => {
 	if (unref(isSingleton)) {
 		const singleton = unref(item);
 		const pkField = unref(primaryKeyField)?.field;
-		return (singleton && pkField ? singleton[pkField] ?? null : null) as PrimaryKey | null;
+		return (singleton && pkField ? (singleton[pkField] ?? null) : null) as PrimaryKey | null;
 	}
 
 	return props.primaryKey;
@@ -219,7 +219,7 @@ const internalPrimaryKey = computed(() => {
 	if (unref(isSingleton)) {
 		const singleton = unref(item);
 		const pkField = unref(primaryKeyField)?.field;
-		return (singleton && pkField ? singleton[pkField] ?? '+' : '+') as PrimaryKey;
+		return (singleton && pkField ? (singleton[pkField] ?? '+') : '+') as PrimaryKey;
 	}
 
 	return props.primaryKey;
@@ -362,7 +362,9 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 
 		if (action === 'main') {
 			currentVersion.value = null;
+			refresh();
 		} else if (action === 'stay') {
+			refresh();
 			revisionsDrawerDetailRef.value?.refresh?.();
 		} else if (action === 'quit') {
 			if (!props.singleton) router.push(`/content/${props.collection}`);
@@ -813,16 +815,16 @@ function useCollectionRoute() {
 
 .v-form {
 	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 
 	@media (min-width: 600px) {
 		padding: var(--content-padding);
-		padding-bottom: var(--content-padding-bottom);
+		padding-block-end: var(--content-padding-bottom);
 	}
 }
 
 .title-loader {
-	width: 260px;
+	inline-size: 260px;
 }
 
 .version-more-options.v-icon {
@@ -844,11 +846,11 @@ function useCollectionRoute() {
 
 		.headline {
 			opacity: 1;
-			top: 3px;
+			inset-block-start: 3px;
 		}
 
 		.title {
-			top: 4px;
+			inset-block-start: 4px;
 		}
 
 		@media (min-width: 600px) {

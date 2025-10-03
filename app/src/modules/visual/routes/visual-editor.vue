@@ -103,7 +103,7 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 		</live-preview>
 
 		<notification-dialogs />
-		<notifications-group />
+		<notifications-group no-sidebar />
 	</div>
 </template>
 
@@ -111,32 +111,18 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 .module {
 	position: relative;
 	display: flex;
-	height: 100%;
-	width: 100%;
+	block-size: 100%;
+	inline-size: 100%;
 	overflow: hidden;
 }
 
 .live-preview {
-	height: 100%;
-	width: 100%;
-	min-width: 0;
+	block-size: 100%;
+	inline-size: 100%;
+	min-inline-size: 0;
 }
 
 .spacer {
 	flex: 1;
-}
-
-.notifications-group {
-	top: auto;
-	right: 12px;
-	bottom: 12px;
-	left: auto;
-
-	@media (min-width: 960px) {
-		top: auto;
-		right: 12px;
-		bottom: 12px;
-		left: auto;
-	}
 }
 </style>

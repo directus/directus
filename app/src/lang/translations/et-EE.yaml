@@ -1044,6 +1044,8 @@ inline: Tekstisisene
 comment: Kommentaar
 live_preview:
   new_window: Ava Uues Aknas
+mcp_prompts_collection_schema:
+  messages_role_user: Kasutaja
 relational_triggers: Suhtelised lülitid
 referential_action_field_label_m2o: Andmekogu {collection} kustutamisel...
 referential_action_field_label_o2m: Andmekogu {collection} mittevalimisel...

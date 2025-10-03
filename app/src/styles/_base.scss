@@ -9,8 +9,6 @@
 	font-family: inherit;
 	line-height: inherit;
 	tab-size: 2;
-	-webkit-user-select: none;
-	user-select: none;
 	outline: none;
 
 	&::-moz-focus-inner,
@@ -27,7 +25,7 @@
 
 html {
 	font-size: 14px;
-	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	-webkit-tap-highlight-color: rgb(0 0 0 / 0);
 }
 
 body {
@@ -64,21 +62,8 @@ div:not([contenteditable='true']):focus-visible {
 html,
 body,
 #root {
-	width: 100%;
-	height: 100%;
-}
-
-input,
-textarea,
-[contenteditable],
-.selectable {
-	-webkit-user-select: text;
-	user-select: text;
-
-	* {
-		-webkit-user-select: text;
-		user-select: text;
-	}
+	inline-size: 100%;
+	block-size: 100%;
 }
 
 ::placeholder {
@@ -107,7 +92,7 @@ fieldset {
 	border: 0;
 
 	&.centered {
-		border-top: 1px solid var(--blue-grey-200);
+		border-block-start: 1px solid var(--blue-grey-200);
 
 		legend {
 			padding: 10px 20px;
@@ -135,7 +120,7 @@ code {
 
 dl > div {
 	display: flex;
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 }
 
 dt,
@@ -145,7 +130,7 @@ dd {
 
 dt {
 	flex-shrink: 0;
-	margin-right: 8px;
+	margin-inline-end: 8px;
 	font-weight: 600;
 }
 

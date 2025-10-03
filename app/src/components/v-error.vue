@@ -43,7 +43,7 @@ async function copyError() {
 </script>
 
 <template>
-	<div class="v-error selectable">
+	<div class="v-error">
 		<output>[{{ code }}] {{ message }}</output>
 		<v-icon
 			v-if="isCopySupported"
@@ -59,7 +59,7 @@ async function copyError() {
 
 <style lang="scss" scoped>
 .v-error {
-	max-height: 50vh;
+	max-block-size: 50vh;
 	padding: 6px 12px;
 	overflow: auto;
 	color: var(--theme--danger);
@@ -68,7 +68,7 @@ async function copyError() {
 	border-radius: var(--theme--border-radius);
 
 	.copy-error {
-		margin-left: 12px;
+		margin-inline-start: 12px;
 	}
 }
 </style>

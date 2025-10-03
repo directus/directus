@@ -3,20 +3,17 @@
 	font-size: 0;
 	line-height: 0;
 	direction: ltr;
-	-webkit-user-select: none;
-	user-select: none;
-	-ms-touch-action: none;
 	touch-action: none;
 }
 
 .cropper-container img {
 	display: block;
-	width: 100%;
-	min-width: 0 !important;
-	max-width: none !important;
-	height: 100%;
-	min-height: 0 !important;
-	max-height: none !important;
+	inline-size: 100%;
+	min-inline-size: 0 !important;
+	max-inline-size: none !important;
+	block-size: 100%;
+	min-block-size: 0 !important;
+	max-block-size: none !important;
 	image-orientation: 0deg;
 }
 
@@ -26,10 +23,8 @@
 .cropper-crop-box,
 .cropper-modal {
 	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
+	inset-block: 0;
+	inset-inline: 0;
 }
 
 .cropper-wrap-box,
@@ -49,8 +44,8 @@
 
 .cropper-view-box {
 	display: block;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	overflow: hidden;
 	outline: 1px solid var(--theme--primary);
 	outline-color: var(--theme--primary-subdued);
@@ -61,35 +56,35 @@
 	display: block;
 	border: 0 dashed #fff;
 	border-style: solid;
-	box-shadow: 0 0px 0px 1px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 0 0 1px rgb(0 0 0 / 0.3);
 	opacity: 0.4;
 }
 
 .cropper-dashed.dashed-h {
-	top: calc(100% / 3);
-	left: 0;
-	width: 100%;
-	height: calc(100% / 3);
-	border-top-width: 1px;
-	border-bottom-width: 1px;
+	inset-block-start: calc(100% / 3);
+	inset-inline-start: 0;
+	inline-size: 100%;
+	block-size: calc(100% / 3);
+	border-block-start-width: 1px;
+	border-block-end-width: 1px;
 }
 
 .cropper-dashed.dashed-v {
-	top: 0;
-	left: calc(100% / 3);
-	width: calc(100% / 3);
-	height: 100%;
-	border-right-width: 1px;
-	border-left-width: 1px;
+	inset-block-start: 0;
+	inset-inline-start: calc(100% / 3);
+	inline-size: calc(100% / 3);
+	block-size: 100%;
+	border-inline-end-width: 1px;
+	border-inline-start-width: 1px;
 }
 
 .cropper-center {
 	position: absolute;
-	top: 50%;
-	left: 50%;
+	inset-block-start: 50%;
+	inset-inline-start: 50%;
 	display: block;
-	width: 0;
-	height: 0;
+	inline-size: 0;
+	block-size: 0;
 	opacity: 0.75;
 }
 
@@ -102,17 +97,17 @@
 }
 
 .cropper-center::before {
-	top: 0;
-	left: -3px;
-	width: 7px;
-	height: 1px;
+	inset-block-start: 0;
+	inset-inline-start: -3px;
+	inline-size: 7px;
+	block-size: 1px;
 }
 
 .cropper-center::after {
-	top: -3px;
-	left: 0;
-	width: 1px;
-	height: 7px;
+	inset-block-start: -3px;
+	inset-inline-start: 0;
+	inline-size: 1px;
+	block-size: 7px;
 }
 
 .cropper-face,
@@ -120,14 +115,14 @@
 .cropper-point {
 	position: absolute;
 	display: block;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	opacity: 0.1;
 }
 
 .cropper-face {
-	top: 0;
-	left: 0;
+	inset-block-start: 0;
+	inset-inline-start: 0;
 	background-color: var(--foreground-inverted);
 }
 
@@ -137,100 +132,100 @@
 }
 
 .cropper-line.line-e {
-	top: 0;
-	right: -3px;
-	width: 5px;
+	inset-block-start: 0;
+	inset-inline-end: -3px;
+	inline-size: 5px;
 	cursor: ew-resize;
 }
 
 .cropper-line.line-n {
-	top: -3px;
-	left: 0;
-	height: 5px;
+	inset-block-start: -3px;
+	inset-inline-start: 0;
+	block-size: 5px;
 	cursor: ns-resize;
 }
 
 .cropper-line.line-w {
-	top: 0;
-	left: -3px;
-	width: 5px;
+	inset-block-start: 0;
+	inset-inline-start: -3px;
+	inline-size: 5px;
 	cursor: ew-resize;
 }
 
 .cropper-line.line-s {
-	bottom: -3px;
-	left: 0;
-	height: 5px;
+	inset-block-end: -3px;
+	inset-inline-start: 0;
+	block-size: 5px;
 	cursor: ns-resize;
 }
 
 .cropper-point {
-	width: 10px;
-	height: 10px;
+	inline-size: 10px;
+	block-size: 10px;
 	background: #fff;
 	border-radius: 50%;
 	opacity: 1;
 }
 
 .cropper-point.point-e {
-	top: 50%;
-	right: -5px;
-	margin-top: -5px;
+	inset-block-start: 50%;
+	inset-inline-end: -5px;
+	margin-block-start: -5px;
 	cursor: ew-resize;
 }
 
 .cropper-point.point-n {
-	top: -5px;
-	left: 50%;
-	margin-left: -5px;
+	inset-block-start: -5px;
+	inset-inline-start: 50%;
+	margin-inline-start: -5px;
 	cursor: ns-resize;
 }
 
 .cropper-point.point-w {
-	top: 50%;
-	left: -5px;
-	margin-top: -5px;
+	inset-block-start: 50%;
+	inset-inline-start: -5px;
+	margin-block-start: -5px;
 	cursor: ew-resize;
 }
 
 .cropper-point.point-s {
-	bottom: -5px;
-	left: 50%;
-	margin-left: -5px;
+	inset-block-end: -5px;
+	inset-inline-start: 50%;
+	margin-inline-start: -5px;
 	cursor: s-resize;
 }
 
 .cropper-point.point-ne {
-	top: -5px;
-	right: -5px;
+	inset-block-start: -5px;
+	inset-inline-end: -5px;
 	cursor: nesw-resize;
 }
 
 .cropper-point.point-nw {
-	top: -5px;
-	left: -5px;
+	inset-block-start: -5px;
+	inset-inline-start: -5px;
 	cursor: nwse-resize;
 }
 
 .cropper-point.point-sw {
-	bottom: -5px;
-	left: -5px;
+	inset-block-end: -5px;
+	inset-inline-start: -5px;
 	cursor: nesw-resize;
 }
 
 .cropper-point.point-se {
-	right: -5px;
-	bottom: -5px;
+	inset-inline-end: -5px;
+	inset-block-end: -5px;
 	cursor: nwse-resize;
 }
 
 .cropper-point.point-se::before {
 	position: absolute;
-	right: -50%;
-	bottom: -50%;
+	inset-inline-end: -50%;
+	inset-block-end: -50%;
 	display: block;
-	width: 200%;
-	height: 200%;
+	inline-size: 200%;
+	block-size: 200%;
 	background-color: var(--theme--primary);
 	opacity: 0;
 	content: ' ';
@@ -247,8 +242,8 @@
 .cropper-hide {
 	position: absolute;
 	display: block;
-	width: 0;
-	height: 0;
+	inline-size: 0;
+	block-size: 0;
 }
 
 .cropper-hidden {

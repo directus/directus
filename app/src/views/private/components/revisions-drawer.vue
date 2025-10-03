@@ -49,7 +49,7 @@ const tabs = computed(() => {
 					text: t('creation_preview'),
 					value: 'revision_preview',
 				},
-		  ]
+			]
 		: [
 				{
 					text: t('updates_made'),
@@ -59,7 +59,7 @@ const tabs = computed(() => {
 					text: t('revision_preview'),
 					value: 'revision_preview',
 				},
-		  ];
+			];
 });
 
 const hasPastRevision = computed(() => {
@@ -130,7 +130,6 @@ function revert() {
 <style lang="scss" scoped>
 .content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding);
+	padding-block: 0 var(--content-padding);
 }
 </style>

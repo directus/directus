@@ -1,4 +1,3 @@
-import { randomAlpha, randomInteger } from '@directus/random';
 import { beforeEach, expect, test } from 'vitest';
 import type { InvalidQueryErrorExtensions } from './invalid-query.js';
 import { messageConstructor } from './invalid-query.js';
@@ -7,7 +6,7 @@ let sample: InvalidQueryErrorExtensions;
 
 beforeEach(() => {
 	sample = {
-		reason: randomAlpha(randomInteger(2, 500)),
+		reason: 'Test query validation failed',
 	};
 });
 

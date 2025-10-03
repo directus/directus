@@ -30,6 +30,10 @@ draft: Borrador
 archived: Archivado
 marketplace: Mercado
 extensions: Extensiones
+skip_link_nav: Ir a Navegación
+skip_link_module_nav: Ir a Navegación de Módulos
+skip_link_main: Ir a Contenido principal
+skip_link_sidebar: Ir a Barra lateral
 modules: Módulos
 module_bar: Barra de módulos
 logs: Registros
@@ -42,6 +46,8 @@ location: Ubicación
 collection_names_are_case_sensitive: Los nombres de las colecciones son sensibles a mayúsculas
 condition_rules: Reglas condicionales
 input: Entrada
+invalid_input: Entrada no válida
+not_a_number: No es un número
 maps: Mapas
 switch_user: Cambiar de usuario
 item_creation: Creación de elementos
@@ -316,6 +322,8 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Restablecer preferencias de la página
 hidden_field: Campo oculto
 hidden_on_detail: Oculto en el detalle
+readonly_field_label: Desactivar el campo en la aplicación
+required_readonly_field_warning: Habilitar sólo lectura y requerido en un campo previene guardar un elemento si el valor está vacío.
 key: Llave
 alias: Alias
 bigInteger: Entero grande
@@ -421,6 +429,7 @@ field_key: Campo clave
 finish_setup: Finalizar configuración
 dismiss: Descartar
 toggle_raw_editor: Alternar editor raw
+toggle_variable_input: Alternar entrada de variables
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Valor raw
 copy_raw_value: Copiar valor raw
@@ -552,6 +561,9 @@ original: Original
 url: URL
 import_label: Importar
 file_details: Detalles de Archivo
+copy_id: Copiar ID
+copy_id_success: ID copiado
+copy_id_fail: ID no copiado
 dimensions: Dimensiones
 size: Tamaño
 created: Creado
@@ -725,6 +737,7 @@ errors:
   COLLECTION_NOT_FOUND: "La Colección no existe"
   CONTAINS_NULL_VALUES: El campo contiene valores nulos
   CONTENT_TOO_LARGE: El elemento/archivo enviado es demasiado grande
+  FAILED_VALIDATION: Verificación fallida
   FIELD_NOT_FOUND: Campo no encontrado
   FORBIDDEN: Prohibido
   GRAPHQL_VALIDATION: Validación GraphQL
@@ -941,6 +954,7 @@ run_flow_on_current: Ejecutar flujo en el elemento actual
 run_flow_on_current_edited_confirm: Este elemento puede ser actualizado por este flujo, ¿estás seguro que quieres ejecutarlo?
 run_flow_on_selected: Seleccione uno o más elementos primero | Ejecutar flujo en 1 elemento seleccionado | Ejecutar flujo en {n} elementos seleccionados
 run_flow: Ejecutar flujo
+trigger_flow_success: El flujo "{flow}" se ha activado correctamente
 field_name_placeholder: Ingresa el nombre del campo...
 field_key_placeholder: Ingresa la clave de campo...
 trigger: Disparador
@@ -980,7 +994,10 @@ operation_handle_reject: 'Rechazar: Haga clic para añadir o arrastrar para reen
 visual_editor: Editor visual
 toggle_navigation: Alternar navegación
 toggle_editable_elements: Alternar elementos editables
+no_url: Ninguna URL introducida
 no_url_copy: Por favor añada una URL en la configuración.
+invalid_url: URL no válida
+invalid_url_copy: La URL especificada no coincide con ninguna URL especificada en la configuración.
 insights: Informes
 dashboard: Tablero
 panel: Panel
@@ -1086,6 +1103,7 @@ wysiwyg_options:
   h4: Título 4
   h5: Título 5
   h6: Título 6
+  pre: Preformateado
   fontselect: Seleccionar Fuente
   fontsizeselect: Seleccionar Tamaño de Fuente
   indent: Indentar
@@ -1178,7 +1196,6 @@ page_help_settings_datamodel_fields: >-
   **Modelo de Datos: Colección** — Una manera de manejar esta colección y sus campos.
 page_help_settings_system_logs: '**Registros del sistema** — Accede a una transmisión en vivo de los registros del sistema.'
 page_help_settings_policies_collection: '**Examinar políticas** — Lista todas las políticas dentro del proyecto.'
-page_help_settings_policies_item: "**Detalle de la política** — Administra los permisos de una política y otros ajusstes."
 page_help_settings_roles_collection: '**Navegar roles** — Lista todos los roles de usuario dentro del proyecto.'
 page_help_settings_roles_item: "**Detalle de Rol** — Administra los permisos del Rol y otros ajustes."
 page_help_settings_presets_collection: >-
@@ -1321,6 +1338,7 @@ fields:
     tags: Etiquetas
     user_preferences: Preferencias de usuario
     language: Idioma
+    text_direction: Dirección del texto
     tfa_secret: Autenticación de dos factores
     admin_options: Opciones de administrador
     status: Estado
@@ -1576,11 +1594,14 @@ live_preview:
   new_window: Abrir en nueva ventana
   close_window: Abrir en vista dividida
   toggle_3d: Alterna 3D
+  iframe_title: Vista previa del sitio web en vivo
 shares: Compartido
 unlimited_usage: Uso ilimitado
 uses_left: Sin usos restantes | Un uso restante | {n} usos restantes
 no_shares: No hay acciones para mostrar
 new_share: Nueva parte
+mcp_prompts_collection_schema:
+  messages_role_user: Usuario
 expired: Expirado
 upcoming: Próximamente
 share: Compartir
@@ -1668,6 +1689,8 @@ reset_password: Restablecer Contraseña
 revisions: Revisiones
 no_revisions: Aún no hay revisiones
 no_logs: Todavía no hay registros
+show_failed_only: Mostrar solo fallidos
+no_logs_on_page: No hay registros en esta página
 revert: Revertir
 save: Guardar
 schema: Esquema
@@ -1703,7 +1726,6 @@ translation_placeholder: Ingresa una traducción...
 value: Valor
 view_project: Ver proyecto
 report_error: Reportar Error
-start: Iniciar
 table: Tabla
 list: Lista
 search_filter: Buscar & Filtrar
@@ -2017,6 +2039,7 @@ interfaces:
     folder_note: Carpeta para los archivos subidos. No afecta a los archivos existentes.
     imageToken: Token de acceso estático
     imageToken_label: Token de acceso estático se añade a la URL de los archivos
+    media_preview_iframe_title: Vista previa de multimedia
   input-block-editor:
     input-block-editor: Editor de Bloques
     description: Editor con estilo de bloque para historias de medios enriquecidos, genera datos limpios en JSON usando Editor.js
@@ -2286,6 +2309,8 @@ show_labels: Mostrar etiquetas
 show_legend: Mostrar leyenda
 right: Derecha
 left: Izquierda
+start: Iniciar
+end: Fin
 donut: Dona
 continuous: Continuo
 gap: Brecha
@@ -2355,6 +2380,7 @@ triggers:
     filter: 'Filtro (Bloqueando)'
   webhook:
     name: Webhook
+    error_on_reject: Error en el rechazo
     description: Activadores en una solicitud HTTP entrante
     method: Método
     async: Asincrónico
@@ -2433,12 +2459,16 @@ operations:
     name: Enviar email
     description: Enviar un email a una o más personas
     to: A
+    to_placeholder: Añada las direcciones de correo electrónico y presione Enter...
     body: Cuerpo
     template: Plantilla
     data: Datos
     cc: CC
+    cc_placeholder: Añada las direcciones CC de correo electrónico y presione Enter...
     bcc: CCO
+    bcc_placeholder: Añada las direcciones BCC de correo electrónico y presione Enter...
     reply_to: Responder a
+    reply_to_placeholder: Añada las direcciones de respuesta de correo electrónico y presione Enter...
   notification:
     name: Enviar notificación
     description: Enviar una notificación dentro de la aplicación a uno o más usuarios
@@ -2463,6 +2493,12 @@ operations:
     name: Dormir
     description: Espera un número dado de milisegundos
     milliseconds: Milisegundos
+  throw-error:
+    name: Lanzar error
+    description: Lanza un error en la ruta de rechazo
+    code: Código de error
+    status: Código de estado HTTP
+    message: Mensaje de error
   transform:
     name: Transformar payload
     description: Alterar la payload JSON del flujo
@@ -2522,3 +2558,16 @@ search_flow: Buscar Flujo...
 percent: Porcentaje
 show_password: Mostrar contraseña
 hide_password: Ocultar contraseña
+bsl_banner:
+  welcome_to_directus: '¡Le damos la bienvenida a Directus!'
+  directus_free_use: El uso de Directus es gratuito para entidades con ingresos, financiación o presupuesto operativo anuales inferiores a 5 millones de dólares.
+  organization_threshold: Las entidades por encima de este umbral requieren una licencia de pago.
+  license_agreement: Al hacer clic en "Aceptar", acepta los {directusBsl} y {privacyPolicy}.
+  directus_bsl: BSL de Directus 1.1
+  privacy_policy: Política de privacidad
+  accept_terms: Aceptar
+  get_license: Obtener una licencia
+accepted: Aceptado
+text_direction_auto: Automático (coincidir idioma)
+text_direction_ltr: Izquierda a derecha (LTR)
+text_direction_rtl: Derecha a izquierda (RTL)
