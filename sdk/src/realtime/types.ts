@@ -11,9 +11,11 @@ export interface WebSocketConfig {
 				retries: number;
 		  }
 		| false;
-	connect?: {
-		timeout: number; // in ms
-	};
+	connect?:
+		| {
+				timeout: number; // in ms
+		  }
+		| false;
 	heartbeat?: boolean;
 	debug?: boolean;
 	url?: string;
