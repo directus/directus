@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions",
-	"version": "3.0.8",
+	"version": "3.0.11",
 	"description": "Utilities and types for Directus extensions",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -25,8 +25,8 @@
 	],
 	"scripts": {
 		"build": "pnpm run '/^build:.*/'",
-		"build:node": "tsup src/node.ts --tsconfig src/node/tsconfig.json --out-dir dist --format=esm --dts",
-		"build:shared": "tsup src/index.ts --tsconfig src/tsconfig.json --out-dir dist --format=esm --dts",
+		"build:node": "tsdown src/node.ts --tsconfig src/node/tsconfig.json --out-dir dist --dts",
+		"build:shared": "tsdown src/index.ts --tsconfig src/tsconfig.json --out-dir dist --dts",
 		"dev": "pnpm run '/^build:.*/' --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
@@ -48,7 +48,7 @@
 		"@vitest/coverage-v8": "catalog:",
 		"knex": "catalog:",
 		"pino": "catalog:",
-		"tsup": "catalog:",
+		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",
 		"vue": "catalog:",

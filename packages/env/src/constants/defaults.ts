@@ -178,4 +178,6 @@ export const DEFAULTS = {
 	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
 
 	ACCEPT_TERMS: false,
+
+	MCP_ENABLED: true,
 } as const;

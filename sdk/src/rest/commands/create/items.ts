@@ -1,5 +1,5 @@
 import { isSystemCollection } from '../../utils/is-system-collection.js';
-import type { ApplyQueryFields, CollectionType, Query, UnpackList } from '../../../types/index.js';
+import type { ApplyQueryFields, CollectionType, NestedPartial, Query, UnpackList } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreateItemOutput<
@@ -20,7 +20,7 @@ export type CreateItemOutput<
 export const createItems =
 	<Schema, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
-		items: Partial<UnpackList<Schema[Collection]>>[],
+		items: NestedPartial<UnpackList<Schema[Collection]>>[],
 		query?: TQuery,
 	): RestCommand<CreateItemOutput<Schema, Collection, TQuery>[], Schema> =>
 	() => {
@@ -50,7 +50,7 @@ export const createItems =
 export const createItem =
 	<Schema, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
-		item: Partial<UnpackList<Schema[Collection]>>,
+		item: NestedPartial<UnpackList<Schema[Collection]>>,
 		query?: TQuery,
 	): RestCommand<CreateItemOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {

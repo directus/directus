@@ -79,6 +79,10 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 		&.center {
 			inset-inline-start: 50%;
 			transform: translate(-50%, 0);
+
+			html[dir='rtl'] & {
+				transform: translate(50%, 0);
+			}
 		}
 	}
 }

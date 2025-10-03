@@ -62,6 +62,8 @@ export class ServerService {
 
 		info['project'] = projectInfo;
 
+		info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
+
 		if (this.accountability?.user) {
 			if (env['RATE_LIMITER_ENABLED']) {
 				info['rateLimit'] = {
@@ -97,14 +99,14 @@ export class ServerService {
 					? {
 							authentication: env['WEBSOCKETS_REST_AUTH'],
 							path: env['WEBSOCKETS_REST_PATH'],
-					  }
+						}
 					: false;
 
 				info['websocket'].graphql = toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])
 					? {
 							authentication: env['WEBSOCKETS_GRAPHQL_AUTH'],
 							path: env['WEBSOCKETS_GRAPHQL_PATH'],
-					  }
+						}
 					: false;
 
 				info['websocket'].heartbeat = toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED'])
@@ -115,7 +117,7 @@ export class ServerService {
 					toBoolean(env['WEBSOCKETS_LOGS_ENABLED']) && this.accountability.admin
 						? {
 								allowedLogLevels: getAllowedLogLevels((env['WEBSOCKETS_LOGS_LEVEL'] as string) || 'info'),
-						  }
+							}
 						: false;
 			} else {
 				info['websocket'] = false;

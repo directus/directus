@@ -58,7 +58,10 @@ const imageInfo = computed(() => {
 		key = 'system-medium-contain';
 	}
 
-	const source = getAssetUrl(`${props.file.id}?key=${key}&modified=${props.file.modified_on}`);
+	const source = getAssetUrl(props.file.id, {
+		imageKey: key,
+		cacheBuster: props.file.modified_on,
+	});
 
 	return { source, fileType };
 });

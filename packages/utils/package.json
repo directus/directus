@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "13.0.8",
+	"version": "13.0.10",
 	"description": "Utilities shared between the Directus packages",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -25,9 +25,9 @@
 	],
 	"scripts": {
 		"build": "pnpm run '/^build:.*/'",
-		"build:browser": "tsup browser/index.ts --tsconfig browser/tsconfig.json --out-dir dist/browser --format=esm --dts",
-		"build:node": "tsup node/index.ts --tsconfig node/tsconfig.json --out-dir dist/node --format=esm --dts",
-		"build:shared": "tsup shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --format=esm --dts",
+		"build:browser": "tsdown browser/index.ts --tsconfig browser/tsconfig.json --out-dir dist/browser --dts",
+		"build:node": "tsdown node/index.ts --tsconfig node/tsconfig.json --out-dir dist/node --dts",
+		"build:shared": "tsdown shared/index.ts --tsconfig shared/tsconfig.json --out-dir dist/shared --dts",
 		"dev": "pnpm run '/^build:.*/' --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
@@ -53,7 +53,7 @@
 		"@types/tmp": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tmp": "catalog:",
-		"tsup": "catalog:",
+		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",
 		"vue": "catalog:"

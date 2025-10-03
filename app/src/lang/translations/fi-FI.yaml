@@ -1196,6 +1196,8 @@ inline: Rivitetty
 comment: Kommentti
 live_preview:
   new_window: Avaa uudessa ikkunassa
+mcp_prompts_collection_schema:
+  messages_role_user: Käyttäjänimi
 relational_triggers: Relatiiviset käynnistimet
 referential_action_no_action: Estä poisto
 choose_action: Valitse toiminto

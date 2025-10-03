@@ -1172,7 +1172,6 @@ page_help_settings_datamodel_fields: >-
   **डेटा मॉडेल: संकलन** — हा संग्रह आणि त्याची फील्ड व्यवस्थापित करण्यासाठी एक फॉर्म.
 page_help_settings_system_logs: '**सिस्टम लॉग** — सिस्टम लॉगच्या थेट प्रवाहात प्रवेश करा'
 page_help_settings_policies_collection: '**नीती ब्राउझ करा** — प्रकल्पातील सर्व धोरणांची सूची.'
-page_help_settings_policies_item: "**धोरण तपशील** — पॉलिसीच्या परवानग्या आणि इतर सेटिंग्ज व्यवस्थापित करा."
 page_help_settings_roles_collection: '**भूमिका ब्राउझ करा** — प्रकल्पातील सर्व वापरकर्त्यांच्या भूमिकांची सूची.'
 page_help_settings_roles_item: "**भूमिका तपशील** — भूमिकेच्या परवानग्या आणि इतर सेटिंग्ज व्यवस्थापित करा."
 page_help_settings_presets_collection: >-
@@ -1574,6 +1573,8 @@ unlimited_usage: अमर्याद वापर
 uses_left: "उपयोग नाही | एक वापर बाकी | {n} डावीकडे वापरते\n"
 no_shares: दाखवण्यासाठी कोणतेही शेअर्स नाहीत
 new_share: नवीन शेअर
+mcp_prompts_collection_schema:
+  messages_role_user: युजर
 expired: कालबाह्य
 upcoming: आगामी
 share: शेअर
