@@ -5,7 +5,7 @@ import { clone } from 'lodash-es';
 import type { AliasMap } from '../../../../utils/get-column-path.js';
 import { getRelationInfo } from '../../../../utils/get-relation-info.js';
 import { getHelpers } from '../../../helpers/index.js';
-import { generateAlias } from './index.js';
+import { generateJoinAlias } from '../../utils/generate-alias.js';
 
 /**
  * Apply a given filter object to the Knex QueryBuilder instance.
@@ -53,9 +53,10 @@ type AddJoinProps = {
 	rootQuery: Knex.QueryBuilder;
 	schema: SchemaOverview;
 	knex: Knex;
+	context?: 'filter' | 'sort' | 'field';
 };
 
-export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex }: AddJoinProps) {
+export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex, context = 'filter' }: AddJoinProps) {
 	let hasMultiRelational = false;
 	let isJoinAdded = false;
 
@@ -81,22 +82,32 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex }:
 			: aliasMap[pathParts[0]!]?.alias;
 
 		if (!existingAlias) {
-			const alias = generateAlias();
+			const alias = generateJoinAlias(parentCollection, pathParts, relationType, parentFields);
 			const aliasKey = parentFields ? `${parentFields}.${pathParts[0]}` : pathParts[0]!;
 			const aliasedParentCollection = aliasMap[parentFields ?? '']?.alias || parentCollection;
 
 			aliasMap[aliasKey] = { alias, collection: '' };
 
 			if (relationType === 'm2o') {
-				rootQuery.leftJoin(
-					{ [alias]: relation.related_collection! },
-					`${aliasedParentCollection}.${relation.field}`,
-					`${alias}.${schema.collections[relation.related_collection!]!.primary}`,
-				);
+				// Optimization: if this is a terminal m2o hop (filter targets the FK directly),
+				// we don't need to join the related collection at all.
 
 				aliasMap[aliasKey]!.collection = relation.related_collection!;
 
-				isJoinAdded = true;
+				// Do not add a join; simply record the collection for downstream logic
+				if (pathParts.length !== 1 || context !== 'filter') {
+					// Prefer INNER JOIN when FK is non-nullable to help the optimizer
+					const parentFieldDef = schema.collections[parentCollection]?.fields[relation.field];
+					const joinMethod = parentFieldDef && !parentFieldDef.nullable ? 'innerJoin' : 'leftJoin';
+
+					rootQuery[joinMethod](
+						{ [alias]: relation.related_collection! },
+						`${aliasedParentCollection}.${relation.field}`,
+						`${alias}.${schema.collections[relation.related_collection!]!.primary}`,
+					);
+
+					isJoinAdded = true;
+				}
 			} else if (relationType === 'a2o') {
 				const pathScope = pathParts[0]!.split(':')[1];
 
@@ -141,16 +152,20 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex }:
 				hasMultiRelational = true;
 				isJoinAdded = true;
 			} else if (relationType === 'o2m') {
-				rootQuery.leftJoin(
-					{ [alias]: relation.collection },
-					`${aliasedParentCollection}.${schema.collections[relation.related_collection!]!.primary}`,
-					`${alias}.${relation.field}`,
-				);
-
+				// Do not add a join; simply record the collection for downstream logic
 				aliasMap[aliasKey]!.collection = relation.collection;
 
-				hasMultiRelational = true;
-				isJoinAdded = true;
+				if (pathParts.length !== 1 || context !== 'filter') {
+					// For sorting and field selection, we still need joins
+					rootQuery.leftJoin(
+						{ [alias]: relation.collection },
+						`${aliasedParentCollection}.${schema.collections[relation.related_collection!]!.primary}`,
+						`${alias}.${relation.field}`,
+					);
+
+					hasMultiRelational = true;
+					isJoinAdded = true;
+				}
 			}
 		}
 
