@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Field, ValidationError } from '@directus/types';
+import type { ComparisonContext } from '@/components/v-form/types';
 
 withDefaults(
 	defineProps<{
@@ -11,6 +12,7 @@ withDefaults(
 		disabled?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
+		comparison?: ComparisonContext;
 		loading?: boolean;
 		validationErrors?: ValidationError[];
 		badge?: string;
@@ -38,6 +40,7 @@ defineEmits(['apply']);
 			:loading="loading"
 			:batch-mode="batchMode"
 			:disabled="disabled"
+			:comparison="comparison"
 			:badge="badge"
 			:raw-editor-enabled="rawEditorEnabled"
 			:direction="direction"

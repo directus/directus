@@ -8,6 +8,7 @@ import { useI18n } from 'vue-i18n';
 const props = defineProps<{
 	revision: Revision;
 	last?: boolean;
+	mostRecent?: boolean;
 }>();
 
 defineEmits<{
@@ -16,12 +17,14 @@ defineEmits<{
 
 const { t } = useI18n();
 
-const revisionCount = computed(() => (props.revision.delta ? Object.keys(props.revision.delta).length : 0));
+const revisionCount = computed(() => (props.revision.differentFields ? props.revision.differentFields.length : 0));
 
 const headerMessage = computed(() => {
+	if (props.mostRecent) return t('latest');
+
 	switch (props.revision.activity.action.toLowerCase()) {
 		case 'create':
-			return t('revision_delta_created');
+			return t('revision_delta_updated', revisionCount.value);
 		case 'update':
 			return t('revision_delta_updated', revisionCount.value);
 		case 'delete':
