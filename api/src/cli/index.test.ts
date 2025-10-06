@@ -36,10 +36,6 @@ vi.mock('./commands/users/create.js', () => ({
   default: vi.fn().mockResolvedValue(undefined),
 }));
 
-vi.mock('directus/version', () => ({
-  version: '1.0.0-test',
-}));
-
 describe('createCli', () => {
   let program: Command;
 
