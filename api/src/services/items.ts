@@ -1179,8 +1179,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		query.limit = 1;
 
-		const records = await this.readByQuery(query, opts);
-		const record = records[0];
+		let record;
+
+		if (query.version) {
+			const primaryKeyField = this.schema.collections[this.collection]!.primary;
+			const key = (await this.readByQuery({ limit: 1, fields: [primaryKeyField] }))[0]?.[primaryKeyField];
+			record = await handleVersion(this, key, query, opts);
+		} else {
+			record = (await this.readByQuery(query, opts))[0];
+		}
 
 		if (!record) {
 			let fields = Object.entries(this.schema.collections[this.collection]!.fields);
