@@ -5,6 +5,7 @@ import PrivateViewMain from './private-view-main.vue';
 import PrivateViewNav from './private-view-nav.vue';
 import ModuleBar from '../../components/module-bar.vue';
 import type { PrivateViewProps } from './private-view.vue';
+import PrivateViewResizeHandle from './private-view-resize-handle.vue';
 
 const navBarStore = useNavBarStore();
 
@@ -34,6 +35,10 @@ defineProps<PrivateViewProps>();
 				<PrivateViewNav>
 					<template #navigation><slot name="navigation" /></template>
 				</PrivateViewNav>
+			</template>
+
+			<template #divider>
+				<PrivateViewResizeHandle />
 			</template>
 
 			<template #end>

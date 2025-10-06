@@ -8,6 +8,8 @@ const contentEl = useTemplateRef('contentEl');
 provide('main-element', contentEl);
 
 const props = defineProps<PrivateViewProps>();
+
+defineOptions({ inheritAttrs: false });
 </script>
 
 <template>
