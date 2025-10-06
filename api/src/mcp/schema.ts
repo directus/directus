@@ -31,7 +31,7 @@ export const QueryInputSchema = z
 		version: z.string(),
 		versionRaw: z.boolean(),
 		export: z.string(),
-		group: z.array(z.string()),
+		groupBy: z.array(z.string()),
 	})
 	.partial();
 
