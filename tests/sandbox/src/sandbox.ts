@@ -91,16 +91,17 @@ export type Sandbox = {
 
 async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 	if ((options as any)?.schema === true) options!.schema = 'snapshot.json';
+	const port = await getPort({ port: 8055 });
 
 	return merge(
 		{
 			build: false,
 			dev: false,
 			watch: false,
-			port: await getPort({ port: 8055 }),
+			port,
 			docker: {
 				keep: false,
-				basePort: await getPort({ port: 6000 }),
+				basePort: port + 100,
 				name: undefined,
 				suffix: '',
 			},
