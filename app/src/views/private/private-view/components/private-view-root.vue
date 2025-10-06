@@ -4,8 +4,11 @@ import { useNavBarStore } from '../stores/nav-bar';
 import PrivateViewMain from './private-view-main.vue';
 import PrivateViewNav from './private-view-nav.vue';
 import ModuleBar from '../../components/module-bar.vue';
+import type { PrivateViewProps } from './private-view.vue';
 
 const navBarStore = useNavBarStore();
+
+defineProps<PrivateViewProps>();
 </script>
 
 <template>
@@ -34,7 +37,19 @@ const navBarStore = useNavBarStore();
 			</template>
 
 			<template #end>
-				<PrivateViewMain />
+				<PrivateViewMain v-bind="$props">
+					<template #actions:append><slot name="actions:append" /></template>
+					<template #actions:prepend><slot name="actions:prepend" /></template>
+					<template #actions><slot name="actions" /></template>
+					<template #headline><slot name="headline" /></template>
+					<template #title-outer:append><slot name="title-outer:append" /></template>
+					<template #title-outer:prepend><slot name="title-outer:prepend" /></template>
+					<template #title:append><slot name="title:append" /></template>
+					<template #title:prepend><slot name="title:prepend" /></template>
+					<template #title><slot name="title" /></template>
+
+					<slot />
+				</PrivateViewMain>
 			</template>
 		</SplitPanel>
 	</div>
@@ -54,5 +69,9 @@ const navBarStore = useNavBarStore();
 	flex-grow: 1;
 	block-size: 100%;
 	position: relative;
+}
+
+:deep(:is(.sp-start, .sp-end)) {
+	overflow-y: auto;
 }
 </style>

@@ -44,10 +44,6 @@ onUnmounted(() => {
 
 <template>
 	<header ref="headerEl" class="header-bar" :class="{ collapsed, small, shadow }">
-		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')">
-			<v-icon :name="primaryActionIcon" />
-		</v-button>
-
 		<div v-if="$slots['title-outer:prepend']" class="title-outer-prepend">
 			<slot name="title-outer:prepend" />
 		</div>
@@ -101,12 +97,6 @@ onUnmounted(() => {
 		box-shadow var(--medium) var(--transition),
 		margin var(--fast) var(--transition);
 	border-block-end: var(--theme--header--border-width) solid var(--theme--header--border-color);
-
-	.nav-toggle {
-		@media (min-width: 960px) {
-			display: none;
-		}
-	}
 
 	.title-outer-prepend {
 		display: none;
