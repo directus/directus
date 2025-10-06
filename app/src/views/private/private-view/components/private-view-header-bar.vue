@@ -2,8 +2,11 @@
 import VButton from '@/components/v-button.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import HeaderBar from '../../components/header-bar.vue';
+import { useNavBarStore } from '../stores/nav-bar';
 
 const props = defineProps<{ title?: string }>();
+
+const menuBarStore = useNavBarStore();
 </script>
 
 <template>
@@ -19,8 +22,8 @@ const props = defineProps<{ title?: string }>();
 		<template #headline><slot name="headline" /></template>
 		<template #title-outer:append><slot name="title-outer:append" /></template>
 		<template #title-outer:prepend>
-			<VButton secondary class="nav-toggle" icon rounded @click="$emit('primary')">
-				<VIcon name="menu" />
+			<VButton v-if="menuBarStore.collapsed" class="nav-toggle" icon rounded small @click="menuBarStore.collapsed = false">
+				<VIcon name="menu" small />
 			</VButton>
 
 			<slot name="title-outer:prepend" />
@@ -30,3 +33,14 @@ const props = defineProps<{ title?: string }>();
 		<template #title><slot name="title" /></template>
 	</HeaderBar>
 </template>
+
+<style scoped>
+.nav-toggle {
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--theme--foreground);
+	--v-button-color-active: var(--theme--foreground);
+	--v-button-background-color: transparent;
+	--v-button-background-color-hover: var(--theme--background-normal);
+	--v-button-background-color-active: var(--theme--background-normal);
+}
+</style>
