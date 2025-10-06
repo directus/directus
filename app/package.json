@@ -155,5 +155,8 @@
 		"vue-virtual-scroller": "catalog:",
 		"vuedraggable": "catalog:",
 		"wellknown": "catalog:"
+	},
+	"dependencies": {
+		"@directus/vue-split-panel": "catalog:"
 	}
 }

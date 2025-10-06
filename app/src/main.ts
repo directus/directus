@@ -14,6 +14,7 @@ import { loadExtensions, registerExtensions } from './extensions';
 import { i18n } from './lang/';
 import { router } from './router';
 import './styles/main.scss';
+import '@directus/vue-split-panel/index.css';
 import { registerViews } from './views/register';
 
 init();
