@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
+import { describe, expect, test, vi, beforeEach } from 'vitest';
 import { createCli } from './index.js';
 
 vi.mock('../emitter.js', () => ({
