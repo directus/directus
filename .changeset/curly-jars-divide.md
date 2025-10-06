@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed content versioning for singleton
+Fixed content versioning for singleton collections
