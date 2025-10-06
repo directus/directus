@@ -23,7 +23,7 @@ import { getCache } from '../cache.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import { getAstFromQuery } from '../database/get-ast-from-query/get-ast-from-query.js';
 import { getHelpers } from '../database/helpers/index.js';
-import getDatabase from '../database/index.js';
+import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { runAst } from '../database/run-ast/run-ast.js';
 import emitter from '../emitter.js';
 import { processAst } from '../permissions/modules/process-ast/process-ast.js';
@@ -197,6 +197,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				knex: trx,
 				schema: this.schema,
 				nested: this.nested,
+				overwriteDefaults: opts.overwriteDefaults,
 			});
 
 			const {
@@ -242,10 +243,17 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			try {
+				let returningOptions = undefined;
+
+				// Support MSSQL tables that have triggers.
+				if (getDatabaseClient(trx) === 'mssql') {
+					returningOptions = { includeTriggerModifications: true };
+				}
+
 				const result = await trx
 					.insert(payloadWithoutAliases)
 					.into(this.collection)
-					.returning(primaryKeyField)
+					.returning(primaryKeyField, returningOptions)
 					.then((result) => result[0]);
 
 				const returnedKey = typeof result === 'object' ? result[primaryKeyField] : result;
@@ -447,6 +455,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 					bypassEmitAction: (params) => nestedActionEvents.push(params),
 					mutationTracker: opts.mutationTracker,
+					overwriteDefaults: opts.overwriteDefaults?.[index],
 					bypassAutoIncrementSequenceReset,
 				});
 
@@ -582,7 +591,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		let results: Item[] = [];
 
 		if (query.version) {
-			results = (await handleVersion(this, key, queryWithKey, opts)) as Item[];
+			results = [await handleVersion(this, key, queryWithKey, opts)];
 		} else {
 			results = await this.readByQuery(queryWithKey, opts);
 		}
@@ -659,13 +668,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 				let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
 
-				for (const item of data) {
+				for (const index in data) {
+					const item = data[index]!;
 					const primaryKey = item[primaryKeyField];
 					if (!primaryKey) throw new InvalidPayloadError({ reason: `Item in update misses primary key` });
 
 					const combinedOpts: MutationOptions = {
 						autoPurgeCache: false,
 						...opts,
+						overwriteDefaults: opts.overwriteDefaults?.[index],
 						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 					};
 
@@ -777,6 +788,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				knex: trx,
 				schema: this.schema,
 				nested: this.nested,
+				overwriteDefaults: opts.overwriteDefaults,
 			});
 
 			const {
@@ -993,8 +1005,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			const primaryKeys: PrimaryKey[] = [];
 
-			for (const payload of payloads) {
-				const primaryKey = await service.upsertOne(payload, { ...(opts || {}), autoPurgeCache: false });
+			for (const index in payloads) {
+				const payload = payloads[index]!;
+
+				const primaryKey = await service.upsertOne(payload, {
+					...(opts || {}),
+					overwriteDefaults: opts.overwriteDefaults?.[index],
+					autoPurgeCache: false,
+				});
+
 				primaryKeys.push(primaryKey);
 			}
 
