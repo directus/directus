@@ -14,6 +14,7 @@ import {
 	startDirectus,
 } from './steps/index.js';
 import chalk from 'chalk';
+import getPort from 'get-port';
 
 export type { Env } from './config.js';
 export type Database = Exclude<DatabaseClient, 'redshift'> | 'maria';
@@ -88,7 +89,7 @@ export type Sandbox = {
 	logger: Logger;
 };
 
-function getOptions(options?: DeepPartial<Options>): Options {
+async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 	if ((options as any)?.schema === true) options!.schema = 'snapshot.json';
 
 	return merge(
@@ -96,10 +97,10 @@ function getOptions(options?: DeepPartial<Options>): Options {
 			build: false,
 			dev: false,
 			watch: false,
-			port: '8055',
+			port: await getPort({ port: 8055 }),
 			docker: {
 				keep: false,
-				basePort: '6000',
+				basePort: await getPort({ port: 6000 }),
 				name: undefined,
 				suffix: '',
 			},
@@ -146,7 +147,7 @@ export async function sandboxes(
 ): Promise<Sandboxes> {
 	if (!sandboxes.every((sandbox) => databases.includes(sandbox.database))) throw new Error('Invalid database provided');
 
-	const opts = getOptions(options);
+	const opts = await getOptions(options);
 
 	const logger = createLogger(process.env as Env, opts);
 
@@ -169,7 +170,7 @@ export async function sandboxes(
 
 		await Promise.all(
 			sandboxes.map(async ({ database, options }, index) => {
-				const opts = getOptions(options);
+				const opts = await getOptions(options);
 				const env = await getEnv(database, opts);
 				const logger = opts.prefix ? createLogger(env, opts, opts.prefix) : createLogger(env, opts);
 
@@ -212,7 +213,7 @@ export async function sandboxes(
 
 export async function sandbox(database: Database, options?: DeepPartial<Options>): Promise<Sandbox> {
 	if (!databases.includes(database)) throw new Error('Invalid database provided');
-	const opts = getOptions(options);
+	const opts = await getOptions(options);
 
 	const env = await getEnv(database, opts);
 	const logger = opts.prefix ? createLogger(env, opts, opts.prefix) : createLogger(env, opts);

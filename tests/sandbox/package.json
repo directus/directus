@@ -38,6 +38,7 @@
 		"chalk": "catalog:",
 		"commander": "catalog:",
 		"copyfiles": "catalog:",
+		"get-port": "catalog:",
 		"lodash-es": "catalog:",
 		"pid-port": "catalog:",
 		"tsup": "catalog:",
