@@ -44,7 +44,10 @@ const deltaOptions = computed(() => {
 	if (!props.showDeltaDropdown || !props.comparisonData?.selectableDeltas) return [];
 
 	const deltas = props.comparisonData.selectableDeltas;
-	return deltas.map((delta: any) => {
+	// Because the latest revision is equal to the base, there is no reason to include it here.
+	const filteredDeltas = deltas.slice(1);
+
+	return filteredDeltas.map((delta: any) => {
 		if (delta.activity?.timestamp) {
 			const formattedDate = formatDateTime(new Date(delta.activity.timestamp));
 
