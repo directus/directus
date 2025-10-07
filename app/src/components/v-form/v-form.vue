@@ -410,6 +410,7 @@ function useRawEditor() {
 					:raw-editor-enabled="rawEditorEnabled"
 					:direction="direction"
 					:version
+					:non-editable="!!nonEditable"
 					:comparison="comparison"
 					v-bind="fieldsMap[fieldName]!.meta?.options || {}"
 					@apply="apply"

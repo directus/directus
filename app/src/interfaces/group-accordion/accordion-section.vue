@@ -13,6 +13,7 @@ const props = withDefaults(
 		values: Record<string, unknown>;
 		initialValues: Record<string, unknown>;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
 		comparison?: ComparisonContext;
@@ -107,6 +108,7 @@ function handleModifier(event: MouseEvent, toggle: () => void) {
 						:validation-errors="validationErrors"
 						:loading="loading"
 						:batch-mode="batchMode"
+						:non-editable="!!nonEditable"
 						:disabled="disabled"
 						:comparison="comparison"
 						:direction="direction"
