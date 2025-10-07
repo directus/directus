@@ -69,11 +69,11 @@ function validFiles(files: FileList) {
 
 			return false;
 		}
-		
-		if (props.accept) {
-			const acceptTypes = props.accept.split(',').map(type => type.trim());
 
-			const isValidType = acceptTypes.some(acceptType => {
+		if (props.accept) {
+			const acceptTypes = props.accept.split(',').map((type) => type.trim());
+
+			const isValidType = acceptTypes.some((acceptType) => {
 				if (acceptType.endsWith('/*')) {
 					const baseType = acceptType.slice(0, -2);
 
@@ -82,7 +82,7 @@ function validFiles(files: FileList) {
 					return file.type === acceptType;
 				}
 			});
-			
+
 			if (!isValidType) {
 				notificationsStore.add({
 					title: t('invalid_file_type'),
@@ -369,7 +369,15 @@ defineExpose({ abort });
 		<template v-else>
 			<div class="actions">
 				<v-button v-if="fromUser" v-tooltip="t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
-					<input ref="input" class="browse" type="file" tabindex="-1" :multiple="multiple" :accept="accept" @input="onBrowseSelect" />
+					<input
+						ref="input"
+						class="browse"
+						type="file"
+						tabindex="-1"
+						:multiple="multiple"
+						:accept="accept"
+						@input="onBrowseSelect"
+					/>
 					<v-icon name="file_upload" />
 				</v-button>
 				<v-button
