@@ -31,6 +31,7 @@ const props = withDefaults(
 		batchMode?: boolean;
 		primaryKey?: string | number;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		validationErrors?: ValidationError[];
 		autofocus?: boolean;
 		group?: string | null;
@@ -428,6 +429,7 @@ function useRawEditor() {
 					:initial-value="(initialValues || {})[fieldName]"
 					:disabled="isDisabled(fieldsMap[fieldName]!)"
 					:batch-mode="batchMode"
+					:non-editable="!!nonEditable"
 					:batch-active="batchActiveFields.includes(fieldName)"
 					:comparison="comparison"
 					:comparison-active="comparison?.selectedFields.includes(fieldName)"

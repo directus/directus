@@ -207,7 +207,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 							</template>
 							<template v-else>
 								<v-form
-									disabled
+									non-editable
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.base || {}"
@@ -248,7 +248,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 							</template>
 							<template v-else>
 								<v-form
-									disabled
+									non-editable
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.incoming || {}"

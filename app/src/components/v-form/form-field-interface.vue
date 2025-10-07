@@ -14,6 +14,7 @@ const props = defineProps<{
 	modelValue?: string | number | boolean | Record<string, any> | Array<any>;
 	loading?: boolean;
 	disabled?: boolean;
+	nonEditable?: boolean;
 	autofocus?: boolean;
 	rawEditorEnabled?: boolean;
 	rawEditorActive?: boolean;
@@ -47,6 +48,7 @@ const value = computed(() =>
 		class="interface"
 		:class="{
 			subdued: batchMode && batchActive === false,
+			'non-editable': nonEditable,
 		}"
 	>
 		<v-skeleton-loader v-if="loading && field.hideLoader !== true" />
@@ -57,6 +59,7 @@ const value = computed(() =>
 				v-bind="(field.meta && field.meta.options) || {}"
 				:autofocus="disabled !== true && autofocus"
 				:disabled="disabled"
+				:non-editable="nonEditable"
 				:loading="loading"
 				:value="value"
 				:batch-mode="batchMode"
@@ -109,6 +112,10 @@ const value = computed(() =>
 
 	&.subdued {
 		opacity: 0.5;
+	}
+
+	&.non-editable {
+		pointer-events: none;
 	}
 }
 </style>

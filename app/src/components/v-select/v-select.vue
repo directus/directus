@@ -45,6 +45,8 @@ const props = withDefaults(
 		fullWidth?: boolean;
 		/** Disables any interaction */
 		disabled?: boolean;
+		/** Prevent interaction and hide action indicators */
+		nonEditable?: boolean;
 		/** Allow to deselect all currently selected items */
 		showDeselect?: boolean;
 		/** Allow to enter custom values */
@@ -252,7 +254,7 @@ function useDisplayValue() {
 <template>
 	<v-menu
 		class="v-select"
-		:disabled="disabled"
+		:disabled="disabled || nonEditable"
 		:attached="inline === false"
 		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
@@ -263,14 +265,14 @@ function useDisplayValue() {
 			<button
 				v-if="inline"
 				type="button"
-				:disabled="disabled"
+				:disabled="disabled || nonEditable"
 				:aria-pressed="active"
 				class="inline-display"
-				:class="{ placeholder: !displayValue.text, label, active, disabled }"
+				:class="{ placeholder: !displayValue.text, label, active, disabled, 'non-editable': nonEditable }"
 				@click="toggle"
 			>
 				<slot name="preview">{{ displayValue.text || placeholder }}</slot>
-				<v-icon name="expand_more" :class="{ active }" />
+				<v-icon v-if="!nonEditable" name="expand_more" :class="{ active }" />
 			</button>
 			<slot
 				v-else
@@ -287,6 +289,7 @@ function useDisplayValue() {
 					clickable
 					:placeholder="placeholder"
 					:disabled="disabled"
+					:non-editable="nonEditable"
 					:active="active"
 					@click="toggle"
 					@keydown:enter="toggle"
@@ -298,7 +301,7 @@ function useDisplayValue() {
 						<display-color v-else-if="displayValue.color" :value="displayValue.color" />
 					</template>
 					<template #append>
-						<v-icon name="expand_more" :class="{ active }" />
+						<v-icon v-if="!nonEditable" name="expand_more" :class="{ active }" />
 						<slot name="append" />
 					</template>
 				</v-input>
@@ -427,6 +430,12 @@ function useDisplayValue() {
 	--v-input-font-family: var(--v-select-font-family, var(--theme--fonts--sans--font-family));
 
 	cursor: pointer;
+
+	&.non-editable,
+	&.non-editable .input,
+	&.non-editable :deep(input) {
+		cursor: default !important;
+	}
 }
 
 .v-input .v-icon {
@@ -457,6 +466,10 @@ function useDisplayValue() {
 
 	&:not(.disabled) {
 		cursor: pointer;
+	}
+
+	&.non-editable {
+		pointer-events: none;
 	}
 }
 

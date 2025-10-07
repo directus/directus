@@ -12,6 +12,8 @@ interface Props {
 	autofocus?: boolean;
 	/** Set the disabled state for the input */
 	disabled?: boolean;
+	/** Prevent interaction and hide action indicators */
+	nonEditable?: boolean;
 	/** If the input should be clickable */
 	clickable?: boolean;
 	/** Prefix the users value with a value */
@@ -61,6 +63,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
 	autofocus: false,
 	disabled: false,
+	nonEditable: false,
 	clickable: false,
 	prefix: undefined,
 	suffix: undefined,
@@ -110,6 +113,7 @@ const classes = computed(() => [
 		'full-width': props.fullWidth,
 		'has-click': props.clickable,
 		disabled: props.disabled,
+		'non-editable': props.nonEditable,
 		small: props.small,
 		invalid: isInvalidInput.value,
 	},
@@ -297,7 +301,7 @@ function useInvalidInput() {
 		<div v-if="$slots['prepend-outer']" class="prepend-outer">
 			<slot name="prepend-outer" :value="modelValue" :disabled="disabled" />
 		</div>
-		<div class="input" :class="{ disabled, active }">
+		<div class="input" :class="{ disabled, active, 'non-editable': nonEditable }">
 			<div v-if="$slots.prepend" class="prepend">
 				<slot name="prepend" :value="modelValue" :disabled="disabled" />
 			</div>
@@ -315,6 +319,7 @@ function useInvalidInput() {
 					:max="max"
 					:step="step"
 					:disabled="disabled"
+					:non-editable="nonEditable"
 					:value="modelValue === undefined || modelValue === null ? '' : String(modelValue)"
 					v-on="listeners"
 					@keydown.space="$emit('keydown:space', $event)"
@@ -381,6 +386,9 @@ function useInvalidInput() {
 	}
 
 	.input {
+		&.non-editable {
+			pointer-events: none;
+		}
 		position: relative;
 		display: flex;
 		flex-grow: 1;
@@ -465,6 +473,24 @@ function useInvalidInput() {
 		.append {
 			flex-shrink: 0;
 			margin-inline-start: 8px;
+		}
+	}
+	&.non-editable {
+		.input {
+			pointer-events: none;
+			cursor: default;
+		}
+
+		.append,
+		.prepend,
+		.warning-invalid,
+		.step-up,
+		.step-down,
+		:deep(.v-icon),
+		:deep(button),
+		:deep([clickable]),
+		:deep([role='button']) {
+			display: none;
 		}
 	}
 
