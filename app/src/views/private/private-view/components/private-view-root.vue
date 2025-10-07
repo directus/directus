@@ -52,6 +52,7 @@ defineProps<PrivateViewProps>();
 					<template #title:append><slot name="title:append" /></template>
 					<template #title:prepend><slot name="title:prepend" /></template>
 					<template #title><slot name="title" /></template>
+					<template #sidebar><slot name="sidebar" /></template>
 
 					<slot />
 				</PrivateViewMain>
