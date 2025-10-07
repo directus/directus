@@ -52,7 +52,13 @@ const user = computed(() => {
 </script>
 
 <template>
-	<button type="button" class="revision-item" :class="{ last }" @click="$emit('click')">
+	<component
+		:is="mostRecent ? 'div' : 'button'"
+		:type="mostRecent ? undefined : 'button'"
+		class="revision-item"
+		:class="{ last, 'latest-revision': mostRecent }"
+		@click="!mostRecent && $emit('click')"
+	>
 		<div class="header">
 			<span class="dot" :class="revision.activity.action" />
 			{{ headerMessage }}
@@ -70,7 +76,7 @@ const user = computed(() => {
 
 			<span v-else>{{ t('private_user') }}</span>
 		</div>
-	</button>
+	</component>
 </template>
 
 <style lang="scss" scoped>
@@ -142,7 +148,7 @@ const user = computed(() => {
 		pointer-events: none;
 	}
 
-	&:hover {
+	&:hover:not(.latest-revision) {
 		cursor: pointer;
 
 		.header {
@@ -154,6 +160,10 @@ const user = computed(() => {
 		&::before {
 			opacity: 1;
 		}
+	}
+
+	&.latest-revision {
+		cursor: default;
 	}
 
 	& + & {
