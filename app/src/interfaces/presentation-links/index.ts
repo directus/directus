@@ -108,6 +108,26 @@ export default defineInterface({
 								],
 							},
 						},
+						{
+							field: 'flow',
+							type: 'string',
+							name: '$t:flow',
+							meta: {
+								width: 'full',
+								interface: 'system-flow-select',
+								options: {},
+								conditions: [
+									{
+										rule: {
+											actionType: {
+												_eq: 'link',
+											},
+										},
+										hidden: true,
+									},
+								],
+							},
+						},
 					],
 				},
 			},

@@ -13,6 +13,7 @@ type Link = {
 	type: string;
 	actionType: string;
 	url?: string;
+	flow?: string;
 };
 
 type ParsedLink = Omit<Link, 'url'> & {
@@ -92,6 +93,7 @@ const linksParsed = computed<ParsedLink[]>(() =>
 			icon: link.icon,
 			type: link.type,
 			label: link.label,
+			actionType: link.actionType,
 			to: isInternalLink ? interpolatedUrl : undefined,
 			href: isInternalLink ? undefined : interpolatedUrl,
 		};
