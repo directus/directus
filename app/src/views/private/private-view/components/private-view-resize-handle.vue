@@ -22,12 +22,7 @@ const toPosition = computed(() => isHovering.value ? Math.min(100, mousePosPerce
 			--via: ${mousePosPercentage}%;
 			--to: ${toPosition}%;
 		`"
-		:class="{ '-right-px': location === 'start' }"
-		class="
-			absolute my-3 h-[calc(100%-(--spacing(6)))] w-px bg-linear-to-b from-transparent via-primary-300 to-transparent
-			opacity-0 transition delay-0
-			hover:opacity-100 hover:delay-200
-		"
+		:class="{ start: location === 'start' }"
 	/>
 </template>
 
@@ -39,11 +34,14 @@ div {
 	inline-size: 1px;
 	block-size: 100%;
 	background: linear-gradient(to bottom, transparent var(--from), var(--theme--primary) var(--via), transparent var(--to));
-	inset-inline: -1px;
 
 	&:hover {
 		opacity: 1;
 		transition-delay: 200ms;
+	}
+
+	&.start {
+		inset-inline: -1px;
 	}
 }
 </style>
