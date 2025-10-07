@@ -3,6 +3,7 @@ import api from '@/api';
 import type { File, Filter } from '@directus/types';
 import { emitter, Events } from '@/events';
 import { useFilesStore } from '@/stores/files.js';
+import { useNotificationsStore } from '@/stores/notifications';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFile } from '@/utils/upload-file';
 import { uploadFiles } from '@/utils/upload-files';
@@ -27,6 +28,7 @@ interface Props {
 	fromLibrary?: boolean;
 	folder?: string;
 	filter?: Filter;
+	accept?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -40,6 +42,7 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
+const notificationsStore = useNotificationsStore();
 
 let uploadController: Upload | null = null;
 
@@ -55,10 +58,42 @@ onUnmounted(() => {
 });
 
 function validFiles(files: FileList) {
-	if (files.length === 0) return false;
-
 	for (const file of files) {
-		if (file.size === 0) return false;
+		if (file.size === 0) {
+			notificationsStore.add({
+				title: t('invalid_file_type'),
+				text: t('empty_file_error', { filename: file.name }),
+				type: 'error',
+				dialog: true,
+			});
+
+			return false;
+		}
+		
+		if (props.accept) {
+			const acceptTypes = props.accept.split(',').map(type => type.trim());
+
+			const isValidType = acceptTypes.some(acceptType => {
+				if (acceptType.endsWith('/*')) {
+					const baseType = acceptType.slice(0, -2);
+
+					return file.type.startsWith(baseType + '/');
+				} else {
+					return file.type === acceptType;
+				}
+			});
+			
+			if (!isValidType) {
+				notificationsStore.add({
+					title: t('invalid_file_type'),
+					text: t('file_type_not_allowed', { type: file.type, accept: props.accept }),
+					type: 'error',
+					dialog: true,
+				});
+
+				return false;
+			}
+		}
 	}
 
 	return true;
@@ -86,9 +121,7 @@ function useUpload() {
 		};
 
 		try {
-			if (!validFiles(files)) {
-				throw new Error('An error has occurred while uploading the files.');
-			}
+			if (!validFiles(files)) return;
 
 			if (props.multiple === true) {
 				const fileSizes = Array.from(files).map((file) => file.size);
@@ -336,7 +369,7 @@ defineExpose({ abort });
 		<template v-else>
 			<div class="actions">
 				<v-button v-if="fromUser" v-tooltip="t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
-					<input ref="input" class="browse" type="file" tabindex="-1" :multiple="multiple" @input="onBrowseSelect" />
+					<input ref="input" class="browse" type="file" tabindex="-1" :multiple="multiple" :accept="accept" @input="onBrowseSelect" />
 					<v-icon name="file_upload" />
 				</v-button>
 				<v-button
