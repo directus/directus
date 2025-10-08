@@ -9,7 +9,7 @@ import {
 	isDirectusError,
 	ServiceUnavailableError,
 } from '@directus/errors';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import type { Accountability } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import express, { Router } from 'express';
 import { flatten } from 'flat';
