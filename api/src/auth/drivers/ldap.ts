@@ -301,7 +301,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				};
 			}
 
-			const schema = await this.getCurrentSchema();
+			const schema = await getSchema();
 
 			const updatedUserPayload = await emitter.emitFilter(
 				`auth.update`,
