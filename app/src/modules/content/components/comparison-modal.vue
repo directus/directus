@@ -194,6 +194,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 							:date-updated="t('latest')"
 							:user-updated="mainItemUserUpdated"
 							:user-loading="mainItemUserLoading"
+							:tooltip-message="isRevisionMode ? `${t('changes_made')} ${t('no_relational_data')}` : undefined"
 						/>
 						<div class="comparison-content-divider"></div>
 						<div class="comparison-content">

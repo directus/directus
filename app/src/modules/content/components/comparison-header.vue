@@ -13,6 +13,7 @@ interface Props {
 	showDeltaDropdown?: boolean;
 	comparisonData?: any;
 	loading?: boolean;
+	tooltipMessage?: string;
 }
 
 const { t } = useI18n();
@@ -101,7 +102,10 @@ function getDeltaOptionUser(deltaOption: any) {
 		<div class="title-container">
 			<v-skeleton-loader v-if="loading" type="text" class="title-skeleton" />
 
-			<v-text-overflow v-else :text="title" class="title" />
+			<div v-else class="title-wrapper">
+				<v-text-overflow :text="title" class="title" />
+				<v-icon v-if="tooltipMessage" v-tooltip.right="tooltipMessage" class="info-icon" name="info" />
+			</div>
 		</div>
 		<div class="header-meta">
 			<v-skeleton-loader v-if="loading" type="text" class="meta-skeleton" />
@@ -191,12 +195,23 @@ function getDeltaOptionUser(deltaOption: any) {
 	}
 
 	.title-container {
+		.title-wrapper {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
 		.title {
 			font-size: 20px;
 			font-weight: 600;
 			line-height: 32px;
 			color: var(--theme--foreground-accent);
 			margin: 0;
+		}
+
+		.info-icon {
+			color: var(--theme--foreground-subdued);
+			flex-shrink: 0;
 		}
 	}
 
