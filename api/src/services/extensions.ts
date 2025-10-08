@@ -159,24 +159,24 @@ export class ExtensionsService {
 			});
 		}
 
-		for (const meta of bundled) {
-			const parentBundle = output.find((ext) => ext.id === meta.bundle);
+	for (const meta of bundled) {
+		const parentBundle = output.find((ext) => ext.id === meta.bundle);
 
-			if (!parentBundle) continue;
+		if (!parentBundle || !parentBundle.schema) continue;
 
-			const schema = (parentBundle.schema as BundleExtension | null)?.entries.find(
-				(entry) => entry.name === meta.folder,
-			);
+		const schema = (parentBundle.schema as BundleExtension | null)?.entries?.find(
+			(entry) => entry.name === meta.folder,
+		);
 
-			if (!schema) continue;
+		if (!schema) continue;
 
-			output.push({
-				id: meta.id,
-				bundle: meta.bundle,
-				meta: meta,
-				schema: schema,
-			});
-		}
+		output.push({
+			id: meta.id,
+			bundle: meta.bundle,
+			meta: meta,
+			schema: schema,
+		});
+	}
 
 		return output;
 	}
