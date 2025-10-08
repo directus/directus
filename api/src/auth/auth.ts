@@ -1,14 +1,25 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
+import { UsersService } from '../services/users.js';
 import type { AuthDriverOptions, User } from '../types/index.js';
+import { getSchema } from '../utils/get-schema.js';
 
 export abstract class AuthDriver {
 	knex: Knex;
-	schema: SchemaOverview;
 
 	constructor(options: AuthDriverOptions, _config: Record<string, any>) {
 		this.knex = options.knex;
-		this.schema = options.schema;
+	}
+
+	protected async getCurrentSchema(): Promise<SchemaOverview> {
+		return await getSchema();
+	}
+
+	protected async getUsersService(schema?: SchemaOverview): Promise<UsersService> {
+		return new UsersService({
+			knex: this.knex,
+			schema: schema ?? await this.getCurrentSchema(),
+		});
 	}
 
 	/**

@@ -21,7 +21,6 @@ import { useLogger } from '../../logger/index.js';
 import { respond } from '../../middleware/respond.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { AuthenticationService } from '../../services/authentication.js';
-import { UsersService } from '../../services/users.js';
 import type { AuthDriverOptions, AuthenticationMode, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
@@ -45,7 +44,6 @@ const INVALID_ACCOUNT_FLAGS = 0x800012;
 
 export class LDAPAuthDriver extends AuthDriver {
 	bindClient: Client;
-	usersService: UsersService;
 	config: Record<string, any>;
 
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
@@ -74,7 +72,6 @@ export class LDAPAuthDriver extends AuthDriver {
 			logger.warn(err);
 		});
 
-		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 		this.config = config;
 	}
 
@@ -304,15 +301,18 @@ export class LDAPAuthDriver extends AuthDriver {
 				};
 			}
 
+			const schema = await this.getCurrentSchema();
+
 			const updatedUserPayload = await emitter.emitFilter(
 				`auth.update`,
 				emitPayload,
 				{ identifier: userInfo.dn, provider: this.config['provider'], providerPayload: { userInfo, userRole } },
-				{ database: getDatabase(), schema: this.schema, accountability: null },
+				{ database: getDatabase(), schema, accountability: null },
 			);
 
 			// Update user to update properties that might have changed
-			await this.usersService.updateOne(userId, updatedUserPayload);
+			const usersService = await this.getUsersService(schema);
+			await usersService.updateOne(userId, updatedUserPayload);
 
 			return userId;
 		}
@@ -332,15 +332,18 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		// Run hook so the end user has the chance to augment the
 		// user that is about to be created
+		const schema = await this.getCurrentSchema();
+
 		const updatedUserPayload = await emitter.emitFilter(
 			`auth.create`,
 			userPayload,
 			{ identifier: userInfo.dn, provider: this.config['provider'], providerPayload: { userInfo, userRole } },
-			{ database: getDatabase(), schema: this.schema, accountability: null },
+			{ database: getDatabase(), schema, accountability: null },
 		);
 
 		try {
-			await this.usersService.createOne(updatedUserPayload);
+			const usersService = await this.getUsersService(schema);
+			await usersService.createOne(updatedUserPayload);
 		} catch (e) {
 			if (isDirectusError(e, ErrorCode.RecordNotUnique)) {
 				logger.warn(e, '[LDAP] Failed to register user. User not unique');

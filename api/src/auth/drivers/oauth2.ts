@@ -9,7 +9,7 @@ import {
 	isDirectusError,
 	ServiceUnavailableError,
 } from '@directus/errors';
-import type { Accountability } from '@directus/types';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import express, { Router } from 'express';
 import { flatten } from 'flat';
@@ -24,7 +24,6 @@ import { useLogger } from '../../logger/index.js';
 import { respond } from '../../middleware/respond.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { AuthenticationService } from '../../services/authentication.js';
-import { UsersService } from '../../services/users.js';
 import type { AuthData, AuthDriverOptions, User } from '../../types/index.js';
 import type { RoleMap } from '../../types/rolemap.js';
 import asyncHandler from '../../utils/async-handler.js';
@@ -39,7 +38,6 @@ import { LocalAuthDriver } from './local.js';
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
 	redirectUrl: string;
-	usersService: UsersService;
 	config: Record<string, any>;
 	roleMap: RoleMap;
 
@@ -64,7 +62,6 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		);
 
 		this.redirectUrl = redirectUrl.toString();
-		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 		this.config = additionalConfig;
 
 		this.roleMap = {};
@@ -238,6 +235,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				};
 			}
 
+			const schema = await this.getCurrentSchema();
+
 			const updatedUserPayload = await emitter.emitFilter(
 				`auth.update`,
 				emitPayload,
@@ -246,12 +245,13 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 					provider: this.config['provider'],
 					providerPayload: { accessToken: tokenSet.access_token, idToken: tokenSet.id_token, userInfo },
 				},
-				{ database: getDatabase(), schema: this.schema, accountability: null },
+				{ database: getDatabase(), schema, accountability: null },
 			);
 
 			// Update user to update refresh_token and other properties that might have changed
 			if (Object.values(updatedUserPayload).some((value) => value !== undefined)) {
-				await this.usersService.updateOne(userId, updatedUserPayload);
+				const usersService = await this.getUsersService(schema);
+				await usersService.updateOne(userId, updatedUserPayload);
 			}
 
 			return userId;
@@ -265,6 +265,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		// Run hook so the end user has the chance to augment the
 		// user that is about to be created
+		const schema = await this.getCurrentSchema();
+
 		const updatedUserPayload = await emitter.emitFilter(
 			`auth.create`,
 			userPayload,
@@ -273,11 +275,12 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				provider: this.config['provider'],
 				providerPayload: { accessToken: tokenSet.access_token, idToken: tokenSet.id_token, userInfo },
 			},
-			{ database: getDatabase(), schema: this.schema, accountability: null },
+			{ database: getDatabase(), schema, accountability: null },
 		);
 
 		try {
-			await this.usersService.createOne(updatedUserPayload);
+			const usersService = await this.getUsersService(schema);
+			await usersService.createOne(updatedUserPayload);
 		} catch (e) {
 			if (isDirectusError(e, ErrorCode.RecordNotUnique)) {
 				logger.warn(e, '[OAuth2] Failed to register user. User not unique');
@@ -313,7 +316,9 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 				// Update user refreshToken if provided
 				if (tokenSet.refresh_token) {
-					await this.usersService.updateOne(user.id, {
+					const usersService = await this.getUsersService();
+
+					await usersService.updateOne(user.id, {
 						auth_data: JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 					});
 				}
