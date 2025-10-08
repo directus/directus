@@ -515,8 +515,8 @@ import_data_indeterminate: Importing Data...
 import_data_success: Data successfully imported from {filename}
 import_data_error: This file's data structure doesn't match the collection.
 snapshot:
-  export: Export Snapshot
-  download: Download snapshot.json
+  export: Export Schema
+  download: Download Snapshot (JSON)
 label_import: Import
 label_export: Export
 import_export: Import / Export
