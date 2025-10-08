@@ -18,7 +18,7 @@ export abstract class AuthDriver {
 	protected async getUsersService(schema?: SchemaOverview): Promise<UsersService> {
 		return new UsersService({
 			knex: this.knex,
-			schema: schema ?? await this.getCurrentSchema(),
+			schema: schema ?? (await this.getCurrentSchema()),
 		});
 	}
 
