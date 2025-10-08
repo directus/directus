@@ -36,6 +36,7 @@ const sidebarStore = useSidebarStore();
 			:snap-threshold="6"
 			divider-hit-area="24px"
 			:transition-duration="150"
+			class="main-split"
 		>
 			<template #start>
 				<PrivateViewHeaderBar :title="props.title">
@@ -85,6 +86,22 @@ const sidebarStore = useSidebarStore();
 </template>
 
 <style scoped>
+#main-content {
+	block-size: 100%;
+
+	--content-padding: 32px;
+	--content-padding-bottom: 132px;
+}
+
+.main-split {
+	block-size: 100%;
+	position: relative;
+}
+
+:deep(:is(.sp-start, .sp-end)) {
+	overflow-y: auto;
+}
+
 #sidebar {
 	inline-size: 100%;
 	block-size: 100%;
