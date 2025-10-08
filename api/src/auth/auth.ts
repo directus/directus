@@ -13,7 +13,7 @@ export abstract class AuthDriver {
 	protected getUsersService(schema: SchemaOverview): UsersService {
 		return new UsersService({
 			knex: this.knex,
-			schema
+			schema,
 		});
 	}
 
