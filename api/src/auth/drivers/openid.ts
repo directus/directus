@@ -327,7 +327,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 			// Update user to update refresh_token and other properties that might have changed
 			if (Object.values(updatedUserPayload).some((value) => value !== undefined)) {
-				const usersService = await this.getUsersService(schema);
+				const usersService = this.getUsersService(schema);
 				await usersService.updateOne(userId, updatedUserPayload);
 			}
 
@@ -358,7 +358,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		);
 
 		try {
-			const usersService = await this.getUsersService(schema);
+			const usersService = this.getUsersService(schema);
 			await usersService.createOne(updatedUserPayload);
 		} catch (e) {
 			if (isDirectusError(e, ErrorCode.RecordNotUnique)) {
@@ -396,7 +396,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 				// Update user refreshToken if provided
 				if (tokenSet.refresh_token) {
-					const usersService = await this.getUsersService();
+					const usersService = this.getUsersService(await getSchema());
 
 					await usersService.updateOne(user.id, {
 						auth_data: JSON.stringify({ refreshToken: tokenSet.refresh_token }),

@@ -312,7 +312,7 @@ export class LDAPAuthDriver extends AuthDriver {
 			);
 
 			// Update user to update properties that might have changed
-			const usersService = await this.getUsersService(schema);
+			const usersService = this.getUsersService(schema);
 			await usersService.updateOne(userId, updatedUserPayload);
 
 			return userId;
@@ -343,7 +343,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		);
 
 		try {
-			const usersService = await this.getUsersService(schema);
+			const usersService = this.getUsersService(schema);
 			await usersService.createOne(updatedUserPayload);
 		} catch (e) {
 			if (isDirectusError(e, ErrorCode.RecordNotUnique)) {

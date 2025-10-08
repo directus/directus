@@ -96,7 +96,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		);
 
 		try {
-			const usersService = await this.getUsersService(schema);
+			const usersService = this.getUsersService(schema);
 			return await usersService.createOne(updatedUserPayload);
 		} catch (error) {
 			if (isDirectusError(error, ErrorCode.RecordNotUnique)) {
