@@ -49,7 +49,9 @@ condition_rules: Condition Rules
 input: Input
 invalid_input: Invalid Input
 invalid_file_type: Invalid File Type
-empty_file_error: 'Cannot upload empty file: "{filename}". Please select a file with content'
+invalid_files_selected: 'No invalid files | Invalid File Selected | {count} Invalid Files Selected'
+files_wrong_type: 'Files {files} have invalid types, expecting {expected} type.'
+files_are_empty: 'The following files are empty and cannot be uploaded: {files}'
 not_a_number: Not a Number
 maps: Maps
 switch_user: Switch User
@@ -923,7 +925,6 @@ upload_files_indeterminate: 'Uploading files {done}/{total}'
 upload_files_success: '{count} Files Uploaded'
 upload_pending: Upload Pending
 drag_file_here: Drag & Drop a File Here
-file_type_not_allowed: 'File type "{type}" is not allowed. Expected: {accept}'
 click_to_browse: Click to Browse
 interface_options: Interface Options
 display_options: Display Options

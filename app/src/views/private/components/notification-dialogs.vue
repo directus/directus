@@ -79,7 +79,7 @@ const done = async (notification: Snackbar) => {
 		<v-dialog v-for="notification in notifications" :key="notification.id" model-value persist>
 			<v-card :class="[notification.type]">
 				<v-card-title>{{ notification.title }}</v-card-title>
-				<v-card-text v-if="notification.text || notification.error">
+				<v-card-text v-if="notification.text || notification.error" class="notification-text">
 					{{ notification.text }}
 
 					<v-error v-if="notification.error" :error="notification.error" />
@@ -100,6 +100,10 @@ const done = async (notification: Snackbar) => {
 <style lang="scss" scoped>
 .notification-dialogs {
 	position: relative;
+}
+
+.notification-text {
+	white-space: pre-line;
 }
 
 .v-error {

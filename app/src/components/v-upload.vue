@@ -58,16 +58,13 @@ onUnmounted(() => {
 });
 
 function validFiles(files: FileList) {
+	const typeErrors: string[] = [];
+	const emptyErrors: string[] = [];
+
 	for (const file of files) {
 		if (file.size === 0) {
-			notificationsStore.add({
-				title: t('invalid_file_type'),
-				text: t('empty_file_error', { filename: file.name }),
-				type: 'error',
-				dialog: true,
-			});
-
-			return false;
+			emptyErrors.push(`"${file.name}"`);
+			continue;
 		}
 
 		if (props.accept) {
@@ -84,16 +81,41 @@ function validFiles(files: FileList) {
 			});
 
 			if (!isValidType) {
-				notificationsStore.add({
-					title: t('invalid_file_type'),
-					text: t('file_type_not_allowed', { type: file.type, accept: props.accept }),
-					type: 'error',
-					dialog: true,
-				});
-
-				return false;
+				typeErrors.push(`"${file.name}" (${file.type})`);
 			}
 		}
+	}
+
+	const totalErrors = typeErrors.length + emptyErrors.length;
+	
+	if (typeErrors.length + emptyErrors.length > 0) {
+		const errorParts: string[] = [];
+		
+		if (typeErrors.length > 0) {
+			errorParts.push(
+				t('files_wrong_type', { 
+					files: typeErrors.join(', '), 
+					expected: props.accept 
+				})
+			);
+		}
+		
+		if (emptyErrors.length > 0) {
+			errorParts.push(
+				t('files_are_empty', { 
+					files: emptyErrors.join(', ')
+				})
+			);
+		}
+		
+		notificationsStore.add({
+			title: t('invalid_files_selected', { count: totalErrors }, totalErrors),
+			text: errorParts.join('\n'),
+			type: 'error',
+			dialog: true,
+		});
+
+		return false;
 	}
 
 	return true;
