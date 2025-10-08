@@ -11,14 +11,10 @@ export abstract class AuthDriver {
 		this.knex = options.knex;
 	}
 
-	protected async getCurrentSchema(): Promise<SchemaOverview> {
-		return await getSchema();
-	}
-
 	protected async getUsersService(schema?: SchemaOverview): Promise<UsersService> {
 		return new UsersService({
 			knex: this.knex,
-			schema: schema ?? (await this.getCurrentSchema()),
+			schema: schema ?? (await getSchema()),
 		});
 	}
 
