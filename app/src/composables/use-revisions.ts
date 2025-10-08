@@ -212,6 +212,17 @@ export function useRevisions(
 							continue;
 						}
 
+						// Skip related item fields for revision comparison
+						const collectionFields = fieldsStore.getFieldsForCollection(unref(collection));
+						const fieldInfo = collectionFields.find((f) => f.field === field);
+
+						if (
+							fieldInfo?.meta?.special?.[0] &&
+							['m2o', 'o2m', 'm2m', 'm2a', 'files', 'translations'].includes(fieldInfo.meta.special[0])
+						) {
+							continue;
+						}
+
 						const newValue = (revisionData as any)[field];
 						const currentValue = (currentItemMerged as any)[field];
 						if (!isEqual(newValue, currentValue)) differentFields.push(field);

@@ -78,6 +78,7 @@ export type NormalizedComparison = {
 export function getFieldsWithDifferences(
 	comparedData: NormalizedComparison,
 	fieldMetadata?: Record<string, any>,
+	comparisonType?: 'version' | 'revision',
 ): string[] {
 	return Object.keys(comparedData.incoming).filter((fieldKey) => {
 		// Skip fields that don't exist in the collection's field metadata
@@ -88,6 +89,17 @@ export function getFieldsWithDifferences(
 		// Skip read-only fields. Even if they are different, they cannot be edited, so there is no point in showing them.
 		if (fieldMetadata && fieldMetadata[fieldKey]?.meta?.readonly === true) {
 			return false;
+		}
+
+		// Skip related item fields when comparing revisions
+		if (comparisonType === 'revision' && fieldMetadata && fieldMetadata[fieldKey]) {
+			const field = fieldMetadata[fieldKey];
+			const localType = field.meta?.special?.[0];
+
+			// Exclude relational field types from revision comparison
+			if (['m2o', 'o2m', 'm2m', 'm2a', 'files', 'translations'].includes(localType)) {
+				return false;
+			}
 		}
 
 		const incomingValue = comparedData.incoming[fieldKey];
@@ -288,7 +300,11 @@ export function normalizeComparisonData(
 		base: comparisonData.base,
 	};
 
-	const fieldsWithDifferences = getFieldsWithDifferences(normalizedComparison, fieldMetadata);
+	const fieldsWithDifferences = getFieldsWithDifferences(
+		normalizedComparison,
+		fieldMetadata,
+		comparisonData.comparisonType,
+	);
 
 	return {
 		base,

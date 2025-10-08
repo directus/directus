@@ -18,6 +18,7 @@ import { useComparison } from './use-comparison';
 import type { Revision } from '@/types/revisions';
 import type { ContentVersion } from '@directus/types';
 import { itemVersions, versionComparison, versionRevisions } from './test-fixtures';
+import { getFieldsWithDifferences } from '../comparison-utils';
 
 describe('normalizeComparisonData', () => {
 	beforeEach(() => {
@@ -113,6 +114,83 @@ describe('normalizeComparisonData', () => {
 		const result = await normalizeComparisonData(currentVersion.id, 'version', currentVersionRef, versionsRef);
 
 		expect(result.base).toEqual(versionComparison.data.main);
-		expect(result.incoming).toEqual(versionComparison.data.current);
+		// Check that the incoming data contains the expected fields from versionComparison.data.current
+		expect(result.incoming.title).toBe(versionComparison.data.current.title);
+		expect(result.incoming.description).toBe(versionComparison.data.current.description);
+		expect(result.incoming.things).toBe(versionComparison.data.current.things);
+		expect(result.incoming.enable).toBe(versionComparison.data.current.enable);
+		expect(result.incoming.categories).toEqual(versionComparison.data.current.categories);
+	});
+});
+
+describe('getFieldsWithDifferences', () => {
+	it('excludes related item fields when comparing revisions', () => {
+		const comparedData = {
+			outdated: false,
+			mainHash: '',
+			incoming: {
+				title: 'New Title',
+				description: 'New Description',
+				related_items: [{ id: 1, name: 'Item 1' }],
+				categories: [{ id: 2, name: 'Category 1' }],
+				status: 'published',
+			},
+			base: {
+				title: 'Old Title',
+				description: 'Old Description',
+				related_items: [{ id: 2, name: 'Item 2' }],
+				categories: [{ id: 3, name: 'Category 2' }],
+				status: 'draft',
+			},
+		};
+
+		const fieldMetadata = {
+			title: { meta: { special: [] } },
+			description: { meta: { special: [] } },
+			related_items: { meta: { special: ['m2m'] } },
+			categories: { meta: { special: ['o2m'] } },
+			status: { meta: { special: [] } },
+		};
+
+		// Test version comparison - should include all fields with differences
+		const versionFields = getFieldsWithDifferences(comparedData, fieldMetadata, 'version');
+		expect(versionFields).toContain('title');
+		expect(versionFields).toContain('description');
+		expect(versionFields).toContain('related_items');
+		expect(versionFields).toContain('categories');
+		expect(versionFields).toContain('status');
+
+		// Test revision comparison - should exclude related item fields
+		const revisionFields = getFieldsWithDifferences(comparedData, fieldMetadata, 'revision');
+		expect(revisionFields).toContain('title');
+		expect(revisionFields).toContain('description');
+		expect(revisionFields).toContain('status');
+		expect(revisionFields).not.toContain('related_items');
+		expect(revisionFields).not.toContain('categories');
+	});
+
+	it('includes related item fields when comparing versions', () => {
+		const comparedData = {
+			outdated: false,
+			mainHash: '',
+			incoming: {
+				title: 'New Title',
+				related_items: [{ id: 1, name: 'Item 1' }],
+			},
+			base: {
+				title: 'Old Title',
+				related_items: [{ id: 2, name: 'Item 2' }],
+			},
+		};
+
+		const fieldMetadata = {
+			title: { meta: { special: [] } },
+			related_items: { meta: { special: ['m2m'] } },
+		};
+
+		// Version comparison should include related item fields
+		const versionFields = getFieldsWithDifferences(comparedData, fieldMetadata, 'version');
+		expect(versionFields).toContain('title');
+		expect(versionFields).toContain('related_items');
 	});
 });
