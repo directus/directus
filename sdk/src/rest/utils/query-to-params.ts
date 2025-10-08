@@ -63,7 +63,9 @@ const knownQueryKeys = [
  *
  * @returns Flat query parameters
  */
-export const queryToParams = <Schema, Item>(query: ExtendedQuery<Schema, Item>): Record<string, string> => {
+export const queryToParams = <Schema = any, Item = Record<string, unknown>>(
+	query: ExtendedQuery<Schema, Item>,
+): Record<string, string> => {
 	const params: Record<string, string> = {};
 
 	if (Array.isArray(query.fields) && query.fields.length > 0) {
