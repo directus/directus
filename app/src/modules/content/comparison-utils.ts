@@ -97,7 +97,7 @@ export function getFieldsWithDifferences(
 			const localType = field.meta?.special?.[0];
 
 			// Exclude relational field types from revision comparison
-			if (['m2o', 'o2m', 'm2m', 'm2a', 'files', 'translations'].includes(localType)) {
+			if (isRelationalField(localType)) {
 				return false;
 			}
 		}
@@ -111,6 +111,10 @@ export function getFieldsWithDifferences(
 
 export function getVersionDisplayName(version: ContentVersion): string {
 	return isNil(version.name) ? version.key : version.name;
+}
+
+export function isRelationalField(localType: string | undefined): boolean {
+	return localType ? ['m2o', 'o2m', 'm2m', 'm2a', 'files', 'translations'].includes(localType) : false;
 }
 
 export function addFieldToSelection(selectedFields: string[], field: string): string[] {

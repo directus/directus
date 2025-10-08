@@ -12,4 +12,5 @@ export interface ComparisonContext {
 	fields: Set<string>;
 	selectedFields: string[];
 	onToggleField: (field: string) => void;
+	comparisonType?: 'version' | 'revision';
 }

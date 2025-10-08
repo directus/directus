@@ -217,6 +217,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 											fields: comparisonFields,
 											selectedFields: [],
 											onToggleField: () => {},
+											comparisonType: comparisonData?.comparisonType,
 										} as ComparisonContext
 									"
 									class="comparison-form--main"
@@ -258,6 +259,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 											fields: comparisonFields,
 											selectedFields: selectedComparisonFields,
 											onToggleField: toggleComparisonField,
+											comparisonType: comparisonData?.comparisonType,
 										} as ComparisonContext
 									"
 									class="comparison-form--current"

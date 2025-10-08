@@ -6,6 +6,7 @@ import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
+import { isRelationalField } from '@/modules/content/comparison-utils';
 import type { ContentVersion, Filter } from '@directus/types';
 import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
 import { groupBy, orderBy, isEqual, mergeWith } from 'lodash';
@@ -216,10 +217,7 @@ export function useRevisions(
 						const collectionFields = fieldsStore.getFieldsForCollection(unref(collection));
 						const fieldInfo = collectionFields.find((f) => f.field === field);
 
-						if (
-							fieldInfo?.meta?.special?.[0] &&
-							['m2o', 'o2m', 'm2m', 'm2a', 'files', 'translations'].includes(fieldInfo.meta.special[0])
-						) {
+						if (isRelationalField(fieldInfo?.meta?.special?.[0])) {
 							continue;
 						}
 
