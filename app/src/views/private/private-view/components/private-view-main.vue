@@ -70,7 +70,7 @@ const sidebarStore = useSidebarStore();
 					aria-label="Module Sidebar"
 				>
 					<div class="flex-container">
-						<SidebarDetailGroup :sidebar-open="sidebarStore.collapsed === false">
+						<SidebarDetailGroup :sidebar-open="!sidebarStore.collapsed">
 							<slot name="sidebar" />
 						</SidebarDetailGroup>
 
