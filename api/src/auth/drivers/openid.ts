@@ -342,10 +342,10 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsError();
 		}
 
-		// Run hook so the end user has the chance to augment the
-		// user that is about to be created
 		const schema = await getSchema();
 
+		// Run hook so the end user has the chance to augment the
+		// user that is about to be created
 		const updatedUserPayload = await emitter.emitFilter(
 			`auth.create`,
 			userPayload,
