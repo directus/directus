@@ -89,13 +89,11 @@ onUnmounted(() => {
 	justify-content: flex-start;
 	inline-size: 100%;
 	block-size: calc(var(--header-bar-height) + var(--theme--header--border-width));
-	margin: 0;
 	padding: 0 10px;
 	background-color: var(--theme--header--background);
 	box-shadow: none;
 	transition:
-		box-shadow var(--medium) var(--transition),
-		margin var(--fast) var(--transition);
+		box-shadow var(--medium) var(--transition);
 	border-block-end: var(--theme--header--border-width) solid var(--theme--header--border-color);
 
 	.title-outer-prepend {
@@ -212,23 +210,6 @@ onUnmounted(() => {
 
 	@media (min-width: 600px) {
 		padding: 0 20px;
-
-		&:not(.small) {
-			margin: 24px 0;
-
-			/* Somewhat hacky way to make sure we fill
-			the empty space caused by the margin with
-			the appropriate color */
-			&::before {
-				content: '';
-				inline-size: 100%;
-				block-size: 24px;
-				inset-block-end: 100%;
-				inset-inline-start: 0;
-				background-color: var(--theme--header--background);
-				position: absolute;
-			}
-		}
 	}
 }
 </style>
