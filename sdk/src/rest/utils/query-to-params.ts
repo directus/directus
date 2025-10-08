@@ -41,6 +41,21 @@ export const formatFields = (fields: (string | Record<string, any>)[]) => {
 	return fields.flatMap((value) => walkFields(value));
 };
 
+const knownQueryKeys = [
+	'fields',
+	'filter',
+	'search',
+	'sort',
+	'limit',
+	'offset',
+	'page',
+	'deep',
+	'backlink',
+	'alias',
+	'aggregate',
+	'groupBy',
+];
+
 /**
  * Transform nested query object to an url compatible format
  *
@@ -98,7 +113,7 @@ export const queryToParams = <Schema, Item>(query: ExtendedQuery<Schema, Item>):
 	}
 
 	for (const [key, value] of Object.entries(query)) {
-		if (key in params) continue;
+		if (key in knownQueryKeys) continue;
 
 		if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
 			params[key] = String(value);
