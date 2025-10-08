@@ -77,7 +77,7 @@ defineProps<PrivateViewProps>();
 	position: relative;
 }
 
-:deep(:is(.sp-start, .sp-end)) {
+:deep(.root-split > :is(.sp-start, .sp-end)) {
 	overflow-y: auto;
 }
 </style>

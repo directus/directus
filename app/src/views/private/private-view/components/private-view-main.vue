@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import SkipMenu from '../../components/skip-menu.vue';
-import PrivateViewHeaderBar from './private-view-header-bar.vue';
-import { provide, useTemplateRef } from 'vue';
-import type { PrivateViewProps } from './private-view.vue';
 import { SplitPanel } from '@directus/vue-split-panel';
-import { useSidebarStore } from '../stores/sidebar';
-import PrivateViewResizeHandle from './private-view-resize-handle.vue';
+import { useScroll } from '@vueuse/core';
+import { computed, provide, useTemplateRef } from 'vue';
 import SidebarDetailGroup from '../../components/sidebar-detail-group.vue';
+import SkipMenu from '../../components/skip-menu.vue';
+import { useSidebarStore } from '../stores/sidebar';
+import PrivateViewHeaderBar from './private-view-header-bar.vue';
+import PrivateViewResizeHandle from './private-view-resize-handle.vue';
+import type { PrivateViewProps } from './private-view.vue';
 
 const contentEl = useTemplateRef('contentEl');
 provide('main-element', contentEl);
@@ -16,6 +17,12 @@ const props = defineProps<PrivateViewProps>();
 defineOptions({ inheritAttrs: false });
 
 const sidebarStore = useSidebarStore();
+
+const scrollContainerEl = useTemplateRef('scrollContainer');
+
+const { y } = useScroll(scrollContainerEl);
+
+const showHeaderShadow = computed(() => y.value > 0);
 </script>
 
 <template>
@@ -39,21 +46,23 @@ const sidebarStore = useSidebarStore();
 			class="main-split"
 		>
 			<template #start>
-				<PrivateViewHeaderBar :title="props.title">
-					<template #actions:append><slot name="actions:append" /></template>
-					<template #actions:prepend><slot name="actions:prepend" /></template>
-					<template #actions><slot name="actions" /></template>
-					<template #headline><slot name="headline" /></template>
-					<template #title-outer:append><slot name="title-outer:append" /></template>
-					<template #title-outer:prepend><slot name="title-outer:prepend" /></template>
-					<template #title:append><slot name="title:append" /></template>
-					<template #title:prepend><slot name="title:prepend" /></template>
-					<template #title><slot name="title" /></template>
-				</PrivateViewHeaderBar>
+				<div ref="scrollContainer" class="scrolling-container">
+					<PrivateViewHeaderBar :title="props.title" :shadow="showHeaderShadow">
+						<template #actions:append><slot name="actions:append" /></template>
+						<template #actions:prepend><slot name="actions:prepend" /></template>
+						<template #actions><slot name="actions" /></template>
+						<template #headline><slot name="headline" /></template>
+						<template #title-outer:append><slot name="title-outer:append" /></template>
+						<template #title-outer:prepend><slot name="title-outer:prepend" /></template>
+						<template #title:append><slot name="title:append" /></template>
+						<template #title:prepend><slot name="title:prepend" /></template>
+						<template #title><slot name="title" /></template>
+					</PrivateViewHeaderBar>
 
-				<main>
-					<slot />
-				</main>
+					<main>
+						<slot />
+					</main>
+				</div>
 			</template>
 
 			<template #divider>
@@ -89,7 +98,7 @@ const sidebarStore = useSidebarStore();
 #main-content {
 	block-size: 100%;
 
-	--content-padding: 32px;
+	--content-padding: 20px;
 	--content-padding-bottom: 132px;
 }
 
@@ -98,8 +107,10 @@ const sidebarStore = useSidebarStore();
 	position: relative;
 }
 
-:deep(:is(.sp-start, .sp-end)) {
-	overflow-y: auto;
+.scrolling-container {
+	overflow: auto;
+	block-size: 100%;
+	inline-size: 100%;
 }
 
 #sidebar {

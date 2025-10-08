@@ -114,7 +114,7 @@ onUnmounted(() => {
 		inline-size: 100%;
 		max-inline-size: calc(100% - 12px - 44px - 120px - 12px - 8px);
 		block-size: 100%;
-		margin-inline-start: 16px;
+		margin-inline-start: 10px;
 		overflow: hidden;
 
 		@media (min-width: 600px) {
@@ -211,7 +211,7 @@ onUnmounted(() => {
 	}
 
 	@media (min-width: 600px) {
-		padding: 0 32px;
+		padding: 0 20px;
 
 		&:not(.small) {
 			margin: 24px 0;

@@ -4,7 +4,7 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import HeaderBar from '../../components/header-bar.vue';
 import { useNavBarStore } from '../stores/nav-bar';
 
-const props = defineProps<{ title?: string }>();
+defineProps<{ title?: string, shadow: boolean }>();
 
 const menuBarStore = useNavBarStore();
 </script>
@@ -13,8 +13,8 @@ const menuBarStore = useNavBarStore();
 	<HeaderBar
 		small
 		show-sidebar-toggle
-		:shadow="false"
-		:title="props.title"
+		:shadow
+		:title
 	>
 		<template #actions:append><slot name="actions:append" /></template>
 		<template #actions:prepend><slot name="actions:prepend" /></template>

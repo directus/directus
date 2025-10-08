@@ -76,8 +76,8 @@ function discardAndLeave() {
 			<v-breadcrumb :items="[{ name: t('settings_data_model'), to: '/settings/data-model' }]" />
 		</template>
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact to="/settings/data-model">
-				<v-icon name="arrow_back" />
+			<v-button small class="header-icon" rounded icon exact to="/settings/data-model">
+				<v-icon small name="arrow_back" />
 			</v-button>
 		</template>
 
@@ -92,9 +92,10 @@ function discardAndLeave() {
 						class="action-delete"
 						secondary
 						:disabled="!item"
+						small
 						@click="on"
 					>
-						<v-icon name="delete" />
+						<v-icon name="delete" small />
 					</v-button>
 				</template>
 
@@ -118,9 +119,10 @@ function discardAndLeave() {
 				icon
 				:loading="saving"
 				:disabled="hasEdits === false"
+				small
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" />
+				<v-icon name="check" small />
 			</v-button>
 		</template>
 
@@ -182,7 +184,7 @@ function discardAndLeave() {
 
 .collections-item {
 	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .fields {
