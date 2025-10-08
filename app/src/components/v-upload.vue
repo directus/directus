@@ -87,27 +87,27 @@ function validFiles(files: FileList) {
 	}
 
 	const totalErrors = typeErrors.length + emptyErrors.length;
-	
+
 	if (typeErrors.length + emptyErrors.length > 0) {
 		const errorParts: string[] = [];
-		
+
 		if (typeErrors.length > 0) {
 			errorParts.push(
-				t('files_wrong_type', { 
-					files: typeErrors.join(', '), 
-					expected: props.accept 
-				})
+				t('files_wrong_type', {
+					files: typeErrors.join(', '),
+					expected: props.accept,
+				}),
 			);
 		}
-		
+
 		if (emptyErrors.length > 0) {
 			errorParts.push(
-				t('files_are_empty', { 
-					files: emptyErrors.join(', ')
-				})
+				t('files_are_empty', {
+					files: emptyErrors.join(', '),
+				}),
 			);
 		}
-		
+
 		notificationsStore.add({
 			title: t('invalid_files_selected', { count: totalErrors }, totalErrors),
 			text: errorParts.join('\n'),
