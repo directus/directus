@@ -25,6 +25,7 @@ import type { AuthDriverOptions, AuthenticationMode, User } from '../../types/in
 import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { AuthDriver } from '../auth.js';
+import { getSchema } from '../../utils/get-schema.js';
 
 interface UserInfo {
 	dn: string;
@@ -332,7 +333,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		// Run hook so the end user has the chance to augment the
 		// user that is about to be created
-		const schema = await this.getCurrentSchema();
+		const schema = await getSchema();
 
 		const updatedUserPayload = await emitter.emitFilter(
 			`auth.create`,

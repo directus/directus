@@ -35,6 +35,7 @@ import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js
 import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
+import { getSchema } from '../../utils/get-schema.js';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: null | Client;
@@ -311,7 +312,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				};
 			}
 
-			const schema = await this.getCurrentSchema();
+			const schema = await getSchema();
 
 			const updatedUserPayload = await emitter.emitFilter(
 				`auth.update`,
@@ -343,7 +344,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		// Run hook so the end user has the chance to augment the
 		// user that is about to be created
-		const schema = await this.getCurrentSchema();
+		const schema = await getSchema();
 
 		const updatedUserPayload = await emitter.emitFilter(
 			`auth.create`,

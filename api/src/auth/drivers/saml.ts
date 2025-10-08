@@ -21,6 +21,7 @@ import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { LocalAuthDriver } from './local.js';
 import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
+import { getSchema } from '../../utils/get-schema.js';
 
 // Register the samlify schema validator
 samlify.setSchemaValidator(validator);
@@ -85,7 +86,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 
 		// Run hook so the end user has the chance to augment the
 		// user that is about to be created
-		const schema = await this.getCurrentSchema();
+		const schema = await getSchema();
 
 		const updatedUserPayload = await emitter.emitFilter(
 			`auth.create`,
