@@ -116,7 +116,7 @@ describe('queryToParams', () => {
 			const result = queryToParams({
 				filter: undefined,
 			});
-			
+
 			expect(result).toEqual({});
 		});
 	});
@@ -240,7 +240,7 @@ describe('queryToParams', () => {
 			const result = queryToParams({
 				limit: undefined,
 			});
-			
+
 			expect(result).toEqual({});
 		});
 	});
@@ -264,7 +264,7 @@ describe('queryToParams', () => {
 			const result = queryToParams(query);
 			expect(result).toEqual({});
 		});
-		
+
 		test('should format string offset parameter', () => {
 			const result = queryToParams({
 				// @ts-ignore
@@ -337,10 +337,10 @@ describe('queryToParams', () => {
 			const result = queryToParams({
 				page: undefined,
 			});
-			
+
 			expect(result).toEqual({});
 		});
-	})
+	});
 
 	describe('query.deep', () => {
 		test('should JSON format deep parameter', () => {
@@ -369,7 +369,7 @@ describe('queryToParams', () => {
 			const result = queryToParams({
 				deep: undefined,
 			});
-			
+
 			expect(result).toEqual({});
 		});
 	});
@@ -399,7 +399,7 @@ describe('queryToParams', () => {
 			const result = queryToParams({
 				alias: undefined,
 			});
-			
+
 			expect(result).toEqual({});
 		});
 	});
@@ -431,7 +431,7 @@ describe('queryToParams', () => {
 			const result = queryToParams({
 				aggregate: undefined,
 			});
-			
+
 			expect(result).toEqual({});
 		});
 	});
@@ -471,7 +471,7 @@ describe('queryToParams', () => {
 				// @ts-ignore
 				groupBy: '',
 			});
-			
+
 			expect(result).toEqual({});
 		});
 	});
