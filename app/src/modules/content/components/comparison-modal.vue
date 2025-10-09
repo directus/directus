@@ -62,6 +62,12 @@ const modalLoading = ref(false);
 // Show debug button only when debug query parameter is present
 const showDebugButton = computed(() => route.query.debug !== undefined);
 
+const incomingTooltipMessage = computed(() => {
+	if (isRevisionMode.value) return `${t('changes_made')} ${t('no_relational_data')}`;
+	if (comparisonData.value?.outdated) return t('main_updated_notice');
+	return undefined;
+});
+
 const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
 
 const emit = defineEmits<{
@@ -193,7 +199,6 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 							:date-updated="t('latest')"
 							:user-updated="mainItemUserUpdated"
 							:user-loading="mainItemUserLoading"
-							:tooltip-message="comparisonData?.outdated ? t('outdated_notice') : undefined"
 						/>
 						<div class="comparison-content-divider"></div>
 						<div class="comparison-content">
@@ -233,7 +238,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 							:user-loading="userLoading"
 							:show-delta-dropdown="isRevisionMode"
 							:comparison-data="comparisonData"
-							:tooltip-message="isRevisionMode ? `${t('changes_made')} ${t('no_relational_data')}` : undefined"
+							:tooltip-message="incomingTooltipMessage"
 							@delta-change="onDeltaSelectionChange"
 						/>
 						<div class="comparison-content-divider"></div>
@@ -270,7 +275,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 				<div class="columns">
 					<div class="col left">
 						<div class="fields-changed">
-							{{ t('updated_field_count', { count: availableFieldsCount }, availableFieldsCount) }}
+							{{ t('n_differences', { count: availableFieldsCount }, availableFieldsCount) }}
 						</div>
 					</div>
 					<div class="col right">

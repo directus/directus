@@ -186,8 +186,7 @@ promote_version: Promote Version
 apply: Apply
 no_changes: No Changes
 select_all_changes: Select All Changes
-outdated_notice: >-
-  The main item has been updated since this version was created.
+main_updated_notice: The main item has been updated since this version was created.
 delete_version: Delete Version
 delete_version_copy: >-
   Are you sure you want to delete the "{version}" version? This action cannot be undone.
@@ -481,12 +480,11 @@ title: Title
 revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_deleted: Deleted
-revision_delta_version_saved: '1 Difference | {count} Differences'
 revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
-revision_differences: 'No Differences | 1 Difference | {count} Differences'
+n_differences: 'No Differences | 1 Difference | {count} Differences'
 presentation_text_values_cannot_be_reimported: 'Uses presentation text, values can not be re-imported.'
 download_page_as_csv: 'Download Page as CSV'
 download_page_as_csv_unsupported: This layout does not support downloading the current page.
@@ -673,7 +671,6 @@ no_items_copy: There are no items in this collection yet.
 file_count: 'No Files | One File | {count} Files'
 no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'
-updated_field_count: 'Identical | 1 Difference | {count} Differences'
 no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
 webhooks_deprecation_notice: |
