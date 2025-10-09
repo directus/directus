@@ -89,12 +89,13 @@ export function useFlows(options: UseFlowsOptions) {
 		() => !!confirmRunFlow.value && (hasEdits?.value || false) && !confirmedUnsavedChanges.value,
 	);
 
-	const displayCustomConfirmDialog = computed(
-		() =>
+	const displayCustomConfirmDialog = computed(() => {
+		return (
 			!!confirmRunFlow.value &&
-			confirmDialogDetails.value &&
-			(!(hasEdits?.value || false) || confirmedUnsavedChanges.value),
-	);
+			!!confirmDialogDetails.value &&
+			(!(hasEdits?.value || false) || confirmedUnsavedChanges.value)
+		);
+	});
 
 	function getFlowTooltip(manualFlow: FlowRaw) {
 		if (location.value === 'item') return t('run_flow_on_current');
