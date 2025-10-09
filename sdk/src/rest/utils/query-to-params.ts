@@ -148,7 +148,7 @@ export const queryToParams = <Schema = any, Item = Record<string, unknown>>(
 		}
 
 		// backwards JS compatibility for string pages
-		if (typeof query.groupBy === 'string' && String(query.groupBy).length > 0) {
+		if (typeof query.groupBy === 'string') {
 			params['groupBy'] = query.groupBy;
 		}
 	}
