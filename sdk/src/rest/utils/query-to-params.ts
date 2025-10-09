@@ -172,13 +172,21 @@ export const queryToParams = <Schema = any, Item = Record<string, unknown>>(
 		}
 	}
 
+	// parse custom parameters
 	for (const [key, value] of Object.entries(query)) {
 		if (knownQueryKeys.includes(key)) continue;
+		let stringValue: string | undefined = undefined;
 
-		if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-			params[key] = String(value);
+		if (typeof value === 'string') {
+			stringValue = value;
 		} else {
-			params[key] = JSON.stringify(value);
+			// `JSON.stringify` can return `undefined` for types it cannot serialize
+			// Example: JSON.stringify(() => {}) -> undefined
+			stringValue = JSON.stringify(value) as (string | undefined);
+		}
+
+		if (stringValue) {
+			params[key] = stringValue;
 		}
 	}
 
