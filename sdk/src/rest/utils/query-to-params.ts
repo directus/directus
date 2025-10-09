@@ -3,6 +3,8 @@ import type { AggregationTypes, GroupByFields, Query } from '../../types/index.j
 type ExtendedQuery<Schema, Item> = Query<Schema, Item> & {
 	aggregate?: Partial<Record<keyof AggregationTypes, string>>;
 	groupBy?: (string | GroupByFields<Schema, Item>)[];
+	version?: string | undefined;
+	versionRaw?: boolean | undefined;
 } & Record<string, unknown>;
 
 export const formatFields = (fields: (string | Record<string, any>)[]) => {
@@ -54,6 +56,8 @@ const knownQueryKeys = [
 	'alias',
 	'aggregate',
 	'groupBy',
+	'version',
+	'versionRaw',
 ];
 
 /**
@@ -150,6 +154,21 @@ export const queryToParams = <Schema = any, Item = Record<string, unknown>>(
 		// backwards JS compatibility for `groupBy: "id,name"`
 		if (typeof query.groupBy === 'string') {
 			params['groupBy'] = query.groupBy;
+		}
+	}
+	
+	if (query.version && typeof query.version === 'string') {
+		params['version'] = query.version;
+	}
+	
+	if (query.versionRaw) {
+		if (typeof query.versionRaw === 'boolean') {
+			params['versionRaw'] = String(query.versionRaw);
+		}
+
+		// backwards JS compatibility for `versionRaw: "true"`
+		if (typeof query.versionRaw === 'string') {
+			params['versionRaw'] = query.versionRaw;
 		}
 	}
 
