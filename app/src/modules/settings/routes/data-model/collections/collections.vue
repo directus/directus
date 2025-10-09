@@ -268,6 +268,7 @@ async function downloadSnapshot() {
 			</sidebar-detail>
 			<sidebar-detail icon="download" :title="t('snapshot.export')">
 				<div class="fields">
+					<div v-md="t('snapshot.info')" class="page-description" />
 					<div class="field full">
 						<v-button small full-width @click="downloadSnapshot">
 							{{ t('snapshot.download') }}
