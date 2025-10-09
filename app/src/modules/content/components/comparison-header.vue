@@ -102,10 +102,10 @@ function getDeltaOptionUser(deltaOption: any) {
 		<div class="title-container">
 			<v-skeleton-loader v-if="loading" type="text" class="title-skeleton" />
 
-			<div v-else class="title-wrapper">
+			<template v-else>
 				<v-text-overflow :text="title" class="title" />
-				<v-icon v-if="tooltipMessage" v-tooltip.right="tooltipMessage" class="info-icon" name="info" />
-			</div>
+				<v-icon v-if="tooltipMessage" v-tooltip.bottom="tooltipMessage" name="error" class="icon" />
+			</template>
 		</div>
 		<div class="header-meta">
 			<v-skeleton-loader v-if="loading" type="text" class="meta-skeleton" />
@@ -195,11 +195,9 @@ function getDeltaOptionUser(deltaOption: any) {
 	}
 
 	.title-container {
-		.title-wrapper {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-		}
+		display: flex;
+		align-items: center;
+		gap: 8px;
 
 		.title {
 			font-size: 20px;
@@ -209,9 +207,12 @@ function getDeltaOptionUser(deltaOption: any) {
 			margin: 0;
 		}
 
-		.info-icon {
+		.v-icon {
 			color: var(--theme--foreground-subdued);
-			flex-shrink: 0;
+
+			&:hover {
+				color: var(--theme--warning);
+			}
 		}
 	}
 
