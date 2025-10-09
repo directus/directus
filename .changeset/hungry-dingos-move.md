@@ -6,4 +6,4 @@
 '@directus/app': patch
 ---
 
-Improve CSV/JSON import error handling with limits and structured responses
+Improved CSV/JSON import error handling with limits and structured responses
