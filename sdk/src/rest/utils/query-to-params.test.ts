@@ -89,6 +89,14 @@ describe('queryToParams', () => {
 
 			expect(result).toEqual({ fields: 'id,name' });
 		});
+
+		test('should skip undefined fields', () => {
+			const result = queryToParams({
+				fields: undefined,
+			});
+
+			expect(result).toEqual({});
+		});
 	});
 
 	describe('query.filter', () => {
