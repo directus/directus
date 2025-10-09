@@ -92,7 +92,7 @@ export const queryToParams = <Schema = any, Item = Record<string, unknown>>(
 			params['sort'] = query.sort.join(',');
 		}
 
-		if (typeof query.sort === 'string' && query.sort.length > 0) {
+		if (typeof query.sort === 'string') {
 			params['sort'] = query.sort;
 		}
 	}
