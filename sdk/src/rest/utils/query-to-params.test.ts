@@ -109,6 +109,29 @@ describe('queryToParams', () => {
 		expect(result2).toEqual({});
 	});
 
+	test('should accept strings as type workaround', () => {
+		const result = queryToParams({
+			// @ts-ignore
+			fields: 'id,name',
+			// @ts-ignore
+			limit: '10',
+			// @ts-ignore
+			offset: '20',
+			// @ts-ignore
+			page: '2',
+			// @ts-ignore
+			groupBy: 'category',
+		});
+
+		expect(result).toEqual({ 
+			fields: 'id,name',
+			limit: '10',
+			offset: '20',
+			page: '2',
+			groupBy: 'category',
+		});
+	});
+
 	test('should format query.fields parameter', () => {
 		const result = queryToParams({
 			fields: ['id', 'name', { author: ['name'] }],
@@ -117,15 +140,6 @@ describe('queryToParams', () => {
 		expect(result).toEqual({
 			fields: 'id,name,author.name',
 		});
-	});
-
-	test('should accept a direct string (type workaround)', () => {
-		const result = queryToParams({
-			// @ts-ignore
-			fields: 'id,name',
-		});
-
-		expect(result).toEqual({ fields: 'id,name' });
 	});
 
 	test('should JSON format filter parameter', () => {
@@ -190,31 +204,9 @@ describe('queryToParams', () => {
 		});
 	});
 
-	test('should format string limit parameter', () => {
-		const result = queryToParams({
-			// @ts-ignore
-			limit: '10',
-		});
-
-		expect(result).toEqual({
-			limit: '10',
-		});
-	});
-
 	test('should format numeric offset parameter', () => {
 		const result = queryToParams({
 			offset: 20,
-		});
-
-		expect(result).toEqual({
-			offset: '20',
-		});
-	});
-
-	test('should format string offset parameter', () => {
-		const result = queryToParams({
-			// @ts-ignore
-			offset: '20',
 		});
 
 		expect(result).toEqual({
@@ -225,17 +217,6 @@ describe('queryToParams', () => {
 	test('should format numeric page parameter', () => {
 		const result = queryToParams({
 			page: 2,
-		});
-
-		expect(result).toEqual({
-			page: '2',
-		});
-	});
-
-	test('should format string page parameter', () => {
-		const result = queryToParams({
-			// @ts-ignore
-			page: '2',
 		});
 
 		expect(result).toEqual({
@@ -289,17 +270,6 @@ describe('queryToParams', () => {
 
 		expect(result).toEqual({
 			groupBy: 'category,status',
-		});
-	});
-
-	test('should format string groupBy parameter', () => {
-		const result = queryToParams({
-			// @ts-ignore
-			groupBy: 'category',
-		});
-
-		expect(result).toEqual({
-			groupBy: 'category',
 		});
 	});
 
