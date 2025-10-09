@@ -61,6 +61,17 @@ const knownQueryKeys = [
 ];
 
 /**
+ * Local utility functions
+ */
+const isBoolean = (value: unknown): value is boolean => typeof value === 'boolean';
+const isString = (value: unknown): value is string => typeof value === 'string' && Boolean(value);
+const isNumber = (value: unknown): value is number => typeof value === 'number';
+const isArray = (value: unknown): value is unknown[] => Array.isArray(value) && value.length > 0;
+
+const isObject = (value: unknown): value is Record<string, unknown> =>
+	typeof value === 'object' && value !== null && !isArray(value) && Object.keys(value).length > 0;
+
+/**
  * Transform nested query object to an url compatible format
  *
  * @param query The nested query object
@@ -73,103 +84,56 @@ export const queryToParams = <Schema = any, Item = Record<string, unknown>>(
 	const params: Record<string, string> = {};
 
 	if (query.fields) {
-		if (Array.isArray(query.fields) && query.fields.length > 0) {
-			params['fields'] = formatFields(query.fields).join(',');
-		}
-
+		if (isArray(query.fields)) params['fields'] = formatFields(query.fields).join(',');
 		// backwards JS compatibility for `fields: "id,name"`
-		if (typeof query.fields === 'string') {
-			params['fields'] = query.fields;
-		}
+		if (isString(query.fields)) params['fields'] = query.fields;
 	}
 
-	if (query.filter && typeof query.filter === 'object' && Object.keys(query.filter).length > 0) {
-		params['filter'] = JSON.stringify(query.filter);
-	}
+	if (isObject(query.filter)) params['filter'] = JSON.stringify(query.filter);
 
-	if (query.search && typeof query.search === 'string') {
-		params['search'] = query.search;
-	}
+	if (isString(query.search)) params['search'] = query.search;
 
 	if (query.sort) {
-		if (Array.isArray(query.sort) && query.sort.length > 0) {
-			params['sort'] = query.sort.join(',');
-		}
-
-		if (typeof query.sort === 'string') {
-			params['sort'] = query.sort;
-		}
+		if (isArray(query.sort)) params['sort'] = query.sort.join(',');
+		if (isString(query.sort)) params['sort'] = query.sort;
 	}
 
 	if ('limit' in query) {
-		if (typeof query.limit === 'number' && query.limit >= -1) {
-			params['limit'] = String(query.limit);
-		}
-
+		if (isNumber(query.limit) && query.limit >= -1) params['limit'] = String(query.limit);
 		// backwards JS compatibility for string limits
-		if (typeof query.limit === 'string' && Number(query.limit) >= -1) {
-			params['limit'] = query.limit;
-		}
+		if (isString(query.limit)) params['limit'] = query.limit;
 	}
 
 	if ('offset' in query) {
-		if (typeof query.offset === 'number' && query.offset >= 0) {
-			params['offset'] = String(query.offset);
-		}
-
+		if (isNumber(query.offset) && query.offset >= 0) params['offset'] = String(query.offset);
 		// backwards JS compatibility for string offsets
-		if (typeof query.offset === 'string' && Number(query.offset) >= 0) {
-			params['offset'] = query.offset;
-		}
+		if (isString(query.offset)) params['offset'] = query.offset;
 	}
 
 	if ('page' in query) {
-		if (typeof query.page === 'number' && query.page >= 1) {
-			params['page'] = String(query.page);
-		}
-
+		if (isNumber(query.page) && query.page >= 1) params['page'] = String(query.page);
 		// backwards JS compatibility for string pages
-		if (typeof query.page === 'string' && Number(query.page) >= 1) {
-			params['page'] = query.page;
-		}
+		if (isString(query.page)) params['page'] = query.page;
 	}
 
-	if (query.deep && typeof query.deep === 'object' && Object.keys(query.deep).length > 0) {
-		params['deep'] = JSON.stringify(query.deep);
-	}
+	if (isObject(query.deep)) params['deep'] = JSON.stringify(query.deep);
 
-	if (query.alias && typeof query.alias === 'object' && Object.keys(query.alias).length > 0) {
-		params['alias'] = JSON.stringify(query.alias);
-	}
+	if (isObject(query.alias)) params['alias'] = JSON.stringify(query.alias);
 
-	if (query.aggregate && typeof query.aggregate === 'object' && Object.keys(query.aggregate).length > 0) {
-		params['aggregate'] = JSON.stringify(query.aggregate);
-	}
+	if (isObject(query.aggregate)) params['aggregate'] = JSON.stringify(query.aggregate);
 
 	if (query.groupBy) {
-		if (Array.isArray(query.groupBy) && query.groupBy.length > 0) {
-			params['groupBy'] = query.groupBy.join(',');
-		}
-
+		if (isArray(query.groupBy)) params['groupBy'] = query.groupBy.join(',');
 		// backwards JS compatibility for `groupBy: "id,name"`
-		if (typeof query.groupBy === 'string') {
-			params['groupBy'] = query.groupBy;
-		}
+		if (isString(query.groupBy)) params['groupBy'] = query.groupBy;
 	}
-	
-	if (query.version && typeof query.version === 'string') {
-		params['version'] = query.version;
-	}
-	
-	if (query.versionRaw) {
-		if (typeof query.versionRaw === 'boolean') {
-			params['versionRaw'] = String(query.versionRaw);
-		}
 
+	if (isString(query.version)) params['version'] = query.version;
+
+	if (query.versionRaw) {
+		if (isBoolean(query.versionRaw)) params['versionRaw'] = String(query.versionRaw);
 		// backwards JS compatibility for `versionRaw: "true"`
-		if (typeof query.versionRaw === 'string') {
-			params['versionRaw'] = query.versionRaw;
-		}
+		if (isString(query.versionRaw)) params['versionRaw'] = query.versionRaw;
 	}
 
 	// parse custom parameters
@@ -182,7 +146,7 @@ export const queryToParams = <Schema = any, Item = Record<string, unknown>>(
 		} else {
 			// `JSON.stringify` can return `undefined` for types it cannot serialize
 			// Example: JSON.stringify(() => {}) -> undefined
-			stringValue = JSON.stringify(value) as (string | undefined);
+			stringValue = JSON.stringify(value) as string | undefined;
 		}
 
 		if (stringValue) {

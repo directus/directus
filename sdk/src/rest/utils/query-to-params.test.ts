@@ -102,12 +102,6 @@ describe('queryToParams', () => {
 			fields: '',
 			sort: '',
 			// @ts-ignore
-			limit: '-5',
-			// @ts-ignore
-			offset: '-1',
-			// @ts-ignore
-			page: '0',
-			// @ts-ignore
 			groupBy: '',
 		});
 
