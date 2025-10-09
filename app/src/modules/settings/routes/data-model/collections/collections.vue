@@ -267,14 +267,10 @@ async function downloadSnapshot() {
 				<div v-md="t('page_help_settings_datamodel_collections')" class="page-description" />
 			</sidebar-detail>
 			<sidebar-detail icon="download" :title="t('snapshot.export')">
-				<div class="fields">
-					<div v-md="t('snapshot.info')" class="page-description" />
-					<div class="field full">
-						<v-button small full-width @click="downloadSnapshot">
-							{{ t('snapshot.download') }}
-						</v-button>
-					</div>
-				</div>
+				<div v-md="t('snapshot.info')" class="page-description" />
+				<v-button small full-width class="snapshot-download" @click="downloadSnapshot">
+					{{ t('snapshot.download') }}
+				</v-button>
 			</sidebar-detail>
 		</template>
 
@@ -356,5 +352,9 @@ async function downloadSnapshot() {
 
 .v-list.draggable-list {
 	padding-block-start: 0;
+}
+
+.snapshot-download {
+	margin-block-start: 12px;
 }
 </style>
