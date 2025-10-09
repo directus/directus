@@ -83,7 +83,7 @@ export const queryToParams = <Schema = any, Item = Record<string, unknown>>(
 		params['filter'] = JSON.stringify(query.filter);
 	}
 
-	if (query.search && typeof query.search === 'string' && query.search.length > 0) {
+	if (query.search && typeof query.search === 'string') {
 		params['search'] = query.search;
 	}
 
