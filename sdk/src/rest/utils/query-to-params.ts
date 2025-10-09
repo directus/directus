@@ -147,7 +147,7 @@ export const queryToParams = <Schema = any, Item = Record<string, unknown>>(
 			params['groupBy'] = query.groupBy.join(',');
 		}
 
-		// backwards JS compatibility for string pages
+		// backwards JS compatibility for `groupBy: "id,name"`
 		if (typeof query.groupBy === 'string') {
 			params['groupBy'] = query.groupBy;
 		}
