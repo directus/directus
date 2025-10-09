@@ -481,7 +481,7 @@ title: Title
 revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_deleted: Deleted
-revision_delta_version_saved: 'Version Save (Updated 1 Field) | Version Save (Updated {count} Fields)'
+revision_delta_version_saved: 'Version Save (1 Difference) | Version Save ({count} Differences)'
 revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
@@ -673,7 +673,7 @@ no_items_copy: There are no items in this collection yet.
 file_count: 'No Files | One File | {count} Files'
 no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'
-updated_field_count: 'Identical | Updated 1 Field | Updated {count} Fields'
+updated_field_count: 'Identical | 1 Difference | {count} Differences'
 no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
 webhooks_deprecation_notice: |
