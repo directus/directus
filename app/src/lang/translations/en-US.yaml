@@ -481,7 +481,7 @@ title: Title
 revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_deleted: Deleted
-revision_delta_version_saved: 'Version Save (1 Difference) | Version Save ({count} Differences)'
+revision_delta_version_saved: '1 Difference | {count} Differences'
 revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
