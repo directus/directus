@@ -6,7 +6,6 @@ import { ref, toRefs, unref, watch, computed, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
-import type { ComparisonContext } from '@/components/v-form/types';
 import { useComparison } from '../composables/use-comparison';
 import { type ComparisonData } from '../comparison-utils';
 import { isEqual } from 'lodash';
@@ -212,15 +211,13 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.base || {}"
-									:comparison="
-										{
-											side: 'base',
-											fields: comparisonFields,
-											selectedFields: [],
-											onToggleField: () => {},
-											comparisonType: comparisonData?.comparisonType,
-										}
-									"
+									:comparison="{
+										side: 'base',
+										fields: comparisonFields,
+										selectedFields: [],
+										onToggleField: () => {},
+										comparisonType: comparisonData?.comparisonType,
+									}"
 									class="comparison-form--main"
 								/>
 							</template>
@@ -254,15 +251,13 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.incoming || {}"
-									:comparison="
-										{
-											side: 'incoming',
-											fields: comparisonFields,
-											selectedFields: selectedComparisonFields,
-											onToggleField: toggleComparisonField,
-											comparisonType: comparisonData?.comparisonType,
-										}
-									"
+									:comparison="{
+										side: 'incoming',
+										fields: comparisonFields,
+										selectedFields: selectedComparisonFields,
+										onToggleField: toggleComparisonField,
+										comparisonType: comparisonData?.comparisonType,
+									}"
 									class="comparison-form--current"
 								/>
 							</template>
