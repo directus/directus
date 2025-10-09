@@ -73,7 +73,7 @@ catalog:
   '@supabase/storage-js': 2.12.1
   '@tinymce/tinymce-vue': 6.3.0
   '@turf/meta': 7.2.0
-  '@tus/server': 1.10.2
+  '@tus/server': 2.3.0
   '@tus/utils': 0.5.1
   '@types/async': 3.2.24
   '@types/base-64': 1.0.2
