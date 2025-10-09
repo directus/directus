@@ -2,6 +2,7 @@ import { ContentVersion, User } from '@directus/types';
 import { Revision } from '@/types/revisions';
 import { isNil, isEqual } from 'lodash';
 import { i18n } from '@/lang';
+import { getLocalTypeForField } from '@/utils/get-local-type';
 
 export type ComparisonData = {
 	base: Record<string, any>;
@@ -91,12 +92,11 @@ export function getFieldsWithDifferences(
 			return false;
 		}
 
-		// Skip related item fields when comparing revisions
+		// Exclude relational field types from diff since we cannot calculate that for revisions.
 		if (comparisonType === 'revision' && fieldMetadata && fieldMetadata[fieldKey]) {
 			const field = fieldMetadata[fieldKey];
-			const localType = field.meta?.special?.[0];
+			const localType = getLocalTypeForField(field.collection, field.field) ?? '';
 
-			// Exclude relational field types from revision comparison
 			if (isRelationalField(localType)) {
 				return false;
 			}

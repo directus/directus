@@ -12,6 +12,7 @@ import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
 import { groupBy, orderBy, isEqual, mergeWith } from 'lodash';
 import { Ref, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { getLocalTypeForField } from '@/utils/get-local-type';
 
 type UseRevisionsOptions = {
 	action?: Action;
@@ -213,12 +214,17 @@ export function useRevisions(
 							continue;
 						}
 
-						// Skip related item fields for revision comparison
+						// Ignore relational fields for diff and field counts
 						const collectionFields = fieldsStore.getFieldsForCollection(unref(collection));
 						const fieldInfo = collectionFields.find((f) => f.field === field);
+						let localType = '';
 
-						if (isRelationalField(fieldInfo?.meta?.special?.[0])) {
-							continue;
+						if (fieldInfo) {
+							localType = getLocalTypeForField(fieldInfo?.collection, fieldInfo?.field) ?? '';
+
+							if (isRelationalField(localType)) {
+								continue;
+							}
 						}
 
 						const newValue = (revisionData as any)[field];
