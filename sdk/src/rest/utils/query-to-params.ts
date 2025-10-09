@@ -154,7 +154,7 @@ export const queryToParams = <Schema = any, Item = Record<string, unknown>>(
 	}
 
 	for (const [key, value] of Object.entries(query)) {
-		if (key in params || knownQueryKeys.includes(key)) continue;
+   	if (knownQueryKeys.includes(key)) continue;
 
 		if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
 			params[key] = String(value);
