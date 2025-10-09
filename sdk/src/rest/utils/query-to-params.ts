@@ -175,7 +175,7 @@ export const queryToParams = <Schema = any, Item = Record<string, unknown>>(
 	// parse custom parameters
 	for (const [key, value] of Object.entries(query)) {
 		if (knownQueryKeys.includes(key)) continue;
-		let stringValue: string | undefined = undefined;
+		let stringValue: string | undefined;
 
 		if (typeof value === 'string') {
 			stringValue = value;
