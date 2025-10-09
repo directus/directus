@@ -123,7 +123,7 @@ describe('queryToParams', () => {
 			groupBy: 'category',
 		});
 
-		expect(result).toEqual({ 
+		expect(result).toEqual({
 			fields: 'id,name',
 			limit: '10',
 			offset: '20',
@@ -213,7 +213,7 @@ describe('queryToParams', () => {
 			offset: '20',
 		});
 	});
-	
+
 	test('should format numeric page parameter', () => {
 		const result = queryToParams({
 			page: 2,
