@@ -12,7 +12,6 @@ import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
 import { groupBy, orderBy, isEqual, mergeWith } from 'lodash';
 import { Ref, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { getLocalTypeForField } from '@/utils/get-local-type';
 
 type UseRevisionsOptions = {
 	action?: Action;
@@ -210,22 +209,12 @@ export function useRevisions(
 					const differentFields: string[] = [];
 
 					for (const field of Object.keys(revisionData)) {
-						if (isReadOnlyField(field)) {
-							continue;
-						}
+						if (isReadOnlyField(field)) continue;
 
 						// Ignore relational fields for diff and field counts
 						const collectionFields = fieldsStore.getFieldsForCollection(unref(collection));
 						const fieldInfo = collectionFields.find((f) => f.field === field);
-						let localType = '';
-
-						if (fieldInfo) {
-							localType = getLocalTypeForField(fieldInfo?.collection, fieldInfo?.field) ?? '';
-
-							if (isRelationalField(localType)) {
-								continue;
-							}
-						}
+						if (fieldInfo && isRelationalField(fieldInfo)) continue;
 
 						const newValue = (revisionData as any)[field];
 						const currentValue = (currentItemMerged as any)[field];

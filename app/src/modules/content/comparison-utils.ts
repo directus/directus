@@ -1,8 +1,7 @@
-import { ContentVersion, User } from '@directus/types';
+import { ContentVersion, Field, User } from '@directus/types';
 import { Revision } from '@/types/revisions';
 import { isNil, isEqual } from 'lodash';
 import { i18n } from '@/lang';
-import { getLocalTypeForField } from '@/utils/get-local-type';
 
 export type ComparisonData = {
 	base: Record<string, any>;
@@ -79,28 +78,15 @@ export type NormalizedComparison = {
 export function getFieldsWithDifferences(
 	comparedData: NormalizedComparison,
 	fieldMetadata?: Record<string, any>,
-	comparisonType?: 'version' | 'revision',
+	type?: 'version' | 'revision',
 ): string[] {
 	return Object.keys(comparedData.incoming).filter((fieldKey) => {
-		// Skip fields that don't exist in the collection's field metadata
-		if (fieldMetadata && !fieldMetadata[fieldKey]) {
-			return false;
-		}
+		const field = fieldMetadata?.[fieldKey];
+		if (!field) return false;
 
-		// Skip read-only fields. Even if they are different, they cannot be edited, so there is no point in showing them.
-		if (fieldMetadata && fieldMetadata[fieldKey]?.meta?.readonly === true) {
-			return false;
-		}
+		if (field.meta?.readonly) return false;
 
-		// Exclude relational field types from diff since we cannot calculate that for revisions.
-		if (comparisonType === 'revision' && fieldMetadata && fieldMetadata[fieldKey]) {
-			const field = fieldMetadata[fieldKey];
-			const localType = getLocalTypeForField(field.collection, field.field) ?? '';
-
-			if (isRelationalField(localType)) {
-				return false;
-			}
-		}
+		if (type === 'revision' && isRelationalField(field)) return false;
 
 		const incomingValue = comparedData.incoming[fieldKey];
 		const baseValue = comparedData.base[fieldKey];
@@ -113,8 +99,9 @@ export function getVersionDisplayName(version: ContentVersion): string {
 	return isNil(version.name) ? version.key : version.name;
 }
 
-export function isRelationalField(localType: string | undefined): boolean {
-	return localType ? ['m2o', 'o2m', 'm2m', 'm2a', 'files', 'translations'].includes(localType) : false;
+export function isRelationalField(field: Field): boolean {
+	const RELATIONAL_TYPES = ['file', 'files', 'm2o', 'o2m', 'm2m', 'm2a', 'translations'];
+	return field.meta?.special?.find((type) => RELATIONAL_TYPES.includes(type)) !== undefined;
 }
 
 export function addFieldToSelection(selectedFields: string[], field: string): string[] {
