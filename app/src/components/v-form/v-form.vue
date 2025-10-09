@@ -13,7 +13,6 @@ import type { MenuOptions } from './form-field-menu.vue';
 import FormField from './form-field.vue';
 import type { FormField as TFormField, ComparisonContext } from './types';
 import { getFormFields } from './utils/get-form-fields';
-import { isRelationalField } from '@/modules/content/comparison-utils';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
 import ValidationErrors from './validation-errors.vue';
@@ -255,16 +254,7 @@ function useForm() {
 
 	function isFieldVisible(field: Field | TFormField) {
 		// In comparison mode, show hidden fields but exclude read-only fields
-		if (props.comparison?.fields) {
-			// revision comparisons do not support related item fields, so we need to hide them
-			if (props.comparison.comparisonType === 'revision') {
-				const localType = field.meta?.special?.[0];
-
-				if (isRelationalField(localType)) {
-					return false;
-				}
-			}
-
+		if (props.comparison?.fields?.has(field.field)) {
 			return field.meta?.readonly !== true;
 		}
 
