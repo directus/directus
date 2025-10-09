@@ -18,9 +18,7 @@ defineOptions({ inheritAttrs: false });
 
 const sidebarStore = useSidebarStore();
 
-const scrollContainerEl = useTemplateRef('scrollContainer');
-
-const { y } = useScroll(scrollContainerEl);
+const { y } = useScroll(useTemplateRef('scrollContainer'));
 
 const showHeaderShadow = computed(() => y.value > 0);
 </script>
@@ -38,7 +36,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 			:collapsed-size="60"
 			:collapse-threshold="70"
 			:min-size="220"
-			:max-size="500"
+			:max-size="400"
 			:snap-points="[250]"
 			:snap-threshold="6"
 			divider-hit-area="24px"
@@ -59,7 +57,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 						<template #title><slot name="title" /></template>
 					</PrivateViewHeaderBar>
 
-					<main>
+					<main ref="mainEl">
 						<slot />
 					</main>
 				</div>

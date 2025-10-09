@@ -6,35 +6,60 @@ import PrivateViewNav from './private-view-nav.vue';
 import ModuleBar from '../../components/module-bar.vue';
 import type { PrivateViewProps } from './private-view.vue';
 import PrivateViewResizeHandle from './private-view-resize-handle.vue';
+import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
+import PrivateViewDrawer from './private-view-drawer.vue';
+import { computed } from 'vue';
+
+const { lg, xl } = useBreakpoints(breakpointsTailwind);
 
 const navBarStore = useNavBarStore();
 
 defineProps<PrivateViewProps>();
+
+const splitterCollapsed = computed({
+	get() {
+		if (xl.value === false) return true;
+		return navBarStore.collapsed;
+	},
+	set(val: boolean) {
+		if (xl.value === false) return;
+		navBarStore.collapsed = val;
+	},
+});
 </script>
 
 <template>
 	<div class="private-view">
-		<ModuleBar class="module-bar" />
+		<ModuleBar v-if="lg" class="module-bar" />
 
 		<SplitPanel
 			v-model:size="navBarStore.size"
-			v-model:collapsed="navBarStore.collapsed"
+			v-model:collapsed="splitterCollapsed"
 			size-unit="px"
 			collapsible
 			:collapse-threshold="70"
 			:min-size="220"
-			:max-size="500"
+			:max-size="340"
 			:snap-points="[250]"
 			:snap-threshold="6"
 			divider-hit-area="24px"
 			:transition-duration="150"
 			primary="start"
 			class="root-split"
+			:disabled="!xl"
 		>
 			<template #start>
-				<PrivateViewNav>
+				<PrivateViewNav v-if="xl">
 					<template #navigation><slot name="navigation" /></template>
 				</PrivateViewNav>
+
+				<PrivateViewDrawer v-else v-model:collapsed="navBarStore.collapsed" placement="left">
+					<ModuleBar v-if="!lg" class="module-bar" />
+
+					<PrivateViewNav class="mobile-nav">
+						<template #navigation><slot name="navigation" /></template>
+					</PrivateViewNav>
+				</PrivateViewDrawer>
 			</template>
 
 			<template #divider>
@@ -79,5 +104,10 @@ defineProps<PrivateViewProps>();
 
 :deep(.root-split > :is(.sp-start, .sp-end)) {
 	overflow-y: auto;
+}
+
+.mobile-nav {
+	max-inline-size: 340px;
+	inline-size: 100%;
 }
 </style>

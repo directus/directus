@@ -20,7 +20,7 @@ import ProjectInfo from '../../components/project-info.vue';
 	block-size: 100%;
 	inline-size: 100%;
 	position: relative;
-	display: inline-block;
+	display: block;
 	font-size: 1rem;
 	background: var(--theme--navigation--background);
 }
