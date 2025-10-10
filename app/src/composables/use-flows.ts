@@ -86,7 +86,7 @@ export function useFlows(options: UseFlowsOptions) {
 	});
 
 	const displayUnsavedChangesDialog = computed(
-		() => !!confirmRunFlow.value && (hasEdits?.value || false) && !confirmedUnsavedChanges.value,
+		() => !!confirmRunFlow.value && hasEdits.value && !confirmedUnsavedChanges.value,
 	);
 
 	const displayCustomConfirmDialog = computed(() => {
