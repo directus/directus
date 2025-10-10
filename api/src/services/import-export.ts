@@ -51,7 +51,7 @@ import { FailedValidationError } from '@directus/validation';
 const env = useEnv();
 const logger = useLogger();
 
-const MAX_IMPORT_ERRORS = 1000;
+const MAX_IMPORT_ERRORS = env['MAX_IMPORT_ERRORS'] as number;
 
 export class ImportService {
 	knex: Knex;
