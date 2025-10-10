@@ -1,0 +1,13 @@
+name: Check
+
+on:
+  pull_request:
+    types:
+      - synchronize
+      - labeled
+
+jobs:
+  blackbox-lts-tests:
+    name: Blackbox LTS Tests
+    if: contains(github.event.pull_request.labels.*.name, 'Run Blackbox (LTS)')
+    uses: ./.github/workflows/blackbox-lts.yml
