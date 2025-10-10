@@ -3,8 +3,7 @@ import type { EmailOptions } from '../../services/mail/index.js';
 import { MailService } from '../../services/mail/index.js';
 import { md } from '../../utils/md.js';
 import { useLogger } from '../../logger/index.js';
-import { getFlowsEmailRateLimiter } from './rate-limiter.js';
-import { HitRateLimitError } from '@directus/errors';
+import { useFlowsEmailRateLimiter } from './rate-limiter.js';
 
 export type Options = {
 	to: string;
@@ -25,26 +24,9 @@ export default defineOperationApi<Options>({
 
 	handler: async (
 		{ body, template, data, to, type, subject, cc, bcc, replyTo },
-		{ accountability, database, getSchema, flow, env },
+		{ accountability, database, getSchema, flow },
 	) => {
-		try {
-			await getFlowsEmailRateLimiter()?.consume(flow!.id, 1);
-		} catch (err: unknown) {
-			if (err instanceof Error) {
-				const resetIn = (err as unknown as any)?.msBeforeNext ?? Number(env['EMAIL_FLOWS_LIMITER_DURATION']) * 1000;
-				throw new HitRateLimitError(
-					{
-						limit: Number(env['EMAIL_FLOWS_LIMITER_POINTS'] as string),
-						reset: new Date(Date.now() + resetIn),
-					},
-					{
-						cause: err.message,
-					},
-				);
-			}
-
-			throw err;
-		}
+		await useFlowsEmailRateLimiter(flow!.id);
 
 		const mailService = new MailService({ schema: await getSchema({ database }), accountability, knex: database });
 		const mailObject: EmailOptions = { to, subject, cc, bcc, replyTo };

@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { HitRateLimitError, InvalidPayloadError } from '@directus/errors';
+import { InvalidPayloadError } from '@directus/errors';
 import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
 import { isObject } from '@directus/utils';
 import fse from 'fs-extra';
@@ -13,7 +13,7 @@ import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
 import getMailer from '../../mailer.js';
 import { Url } from '../../utils/url.js';
-import { getEmailRateLimiterQueue } from './rate-limiter.js';
+import { useEmailRateLimiterQueue } from './rate-limiter.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -55,24 +55,7 @@ export class MailService {
 	}
 
 	async send<T>(options: EmailOptions): Promise<T | null> {
-		try {
-			await getEmailRateLimiterQueue()?.removeTokens(1);
-		} catch (err: unknown) {
-			// they didnt export the RateLimiterQueueError for more precise error handling
-			if (err instanceof Error) {
-				throw new HitRateLimitError(
-					{
-						limit: Number(env['EMAIL_LIMITER_POINTS'] as string),
-						reset: new Date(Date.now() + Number(env['EMAIL_LIMITER_DURATION']) * 1000),
-					},
-					{
-						cause: err.message,
-					},
-				);
-			}
-
-			throw err;
-		}
+		await useEmailRateLimiterQueue();
 
 		const payload = await emitter.emitFilter(`email.send`, options, {});
 
