@@ -17,8 +17,15 @@ const menuBarStore = useNavBarStore();
 		<template #headline><slot name="headline" /></template>
 		<template #title-outer:append><slot name="title-outer:append" /></template>
 		<template #title-outer:prepend>
-			<VButton class="nav-toggle" icon rounded @click="menuBarStore.collapsed = !menuBarStore.collapsed">
-				<VIcon :name="menuBarStore.collapsed ? 'left_panel_open' : 'left_panel_close'" />
+			<VButton
+				v-if="menuBarStore.collapsed"
+				class="nav-toggle"
+				icon
+				rounded
+				small
+				@click="menuBarStore.collapsed = !menuBarStore.collapsed"
+			>
+				<VIcon :name="menuBarStore.collapsed ? 'left_panel_open' : 'left_panel_close'" small />
 			</VButton>
 
 			<slot name="title-outer:prepend" />

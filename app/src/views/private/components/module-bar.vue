@@ -55,7 +55,7 @@ const modules = computed(() => {
 				:key="modulePart.id"
 				v-tooltip.right="modulePart.name"
 				icon
-				x-large
+				large
 				:to="modulePart.to"
 				:href="modulePart.href"
 				tile
@@ -76,7 +76,7 @@ const modules = computed(() => {
 
 	display: flex;
 	flex-direction: column;
-	inline-size: 60px;
+	inline-size: 52px;
 	block-size: 100%;
 	background-color: var(--theme--navigation--modules--background);
 	border-inline-end: var(--theme--navigation--modules--border-width) solid

@@ -33,7 +33,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 			primary="end"
 			size-unit="px"
 			collapsible
-			:collapsed-size="60"
+			:collapsed-size="52"
 			:collapse-threshold="70"
 			:min-size="220"
 			:max-size="400"

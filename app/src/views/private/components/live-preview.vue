@@ -364,7 +364,7 @@ function useUrls() {
 	block-size: 100%;
 
 	&.header-expanded {
-		--preview--header--height: 60px;
+		--preview--header--height: 52px;
 
 		.header {
 			padding: 8px 16px;

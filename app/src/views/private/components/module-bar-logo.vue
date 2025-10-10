@@ -68,35 +68,35 @@ function stopSpinnerIfQueueIsEmpty() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 60px;
-	block-size: 60px;
-	padding: 12px;
+	inline-size: 52px;
+	block-size: 52px;
+	padding: 10px;
 	background-color: var(--project-color);
 
 	.v-progress-linear {
 		position: absolute;
 		inset-inline: 10px;
 		inset-block-end: 5px;
-		inline-size: 40px;
+		inline-size: 32px;
 	}
 
 	.custom-logo {
 		display: block;
-		inline-size: 40px;
-		block-size: 40px;
+		inline-size: 32px;
+		block-size: 32px;
 		object-fit: contain;
 	}
 
 	.logo {
 		position: absolute;
-		inset-block-start: 18px;
+		inset-block-start: 12px;
 		inset-inline-start: 10px;
-		inline-size: 40px;
+		inline-size: 32px;
 		block-size: 32px;
 		margin: 0 auto;
 		background-image: url('../../../assets/sprite.svg');
 		background-position: 0% 0%;
-		background-size: 600px 32px;
+		background-size: 480px 32px;
 	}
 
 	.running {

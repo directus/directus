@@ -45,7 +45,7 @@ const { sidebarOpen } = toRefs(appStore);
 	position: relative;
 	flex-shrink: 0;
 	inline-size: 100%;
-	block-size: 60px;
+	block-size: 52px;
 	color: var(--theme--foreground-accent);
 	background-color: var(--theme--background-accent);
 
@@ -53,7 +53,7 @@ const { sidebarOpen } = toRefs(appStore);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		inline-size: 60px;
+		inline-size: 52px;
 		block-size: 100%;
 	}
 

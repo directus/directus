@@ -52,7 +52,7 @@ const userFullName = userStore.fullName ?? undefined;
 				v-tooltip.right="t('notifications')"
 				tile
 				icon
-				x-large
+				large
 				class="notifications"
 				@click="notificationsDrawerOpen = true"
 			>
@@ -64,7 +64,7 @@ const userFullName = userStore.fullName ?? undefined;
 			<v-dialog v-model="signOutActive" @esc="signOutActive = false">
 				<template #activator="{ on }">
 					<transition name="sign-out">
-						<v-button v-tooltip.right="t('sign_out')" tile icon x-large class="sign-out" @click="on">
+						<v-button v-tooltip.right="t('sign_out')" tile icon large class="sign-out" @click="on">
 							<v-icon name="logout" />
 						</v-button>
 					</transition>
@@ -82,7 +82,7 @@ const userFullName = userStore.fullName ?? undefined;
 			</v-dialog>
 
 			<router-link :to="userProfileLink" class="avatar-btn">
-				<v-avatar v-tooltip.right="userFullName" tile large :class="{ 'no-avatar': !avatarURL }">
+				<v-avatar v-tooltip.right="userFullName" tile :class="{ 'no-avatar': !avatarURL }">
 					<img
 						v-if="avatarURL && !avatarError"
 						:src="avatarURL"
@@ -119,7 +119,7 @@ const userFullName = userStore.fullName ?? undefined;
 			&::after {
 				position: absolute;
 				inset-block-start: -1px;
-				inset-inline: 8px;
+				inset-inline: 7px;
 				block-size: var(--theme--border-width);
 				background-color: var(--theme--navigation--modules--button--foreground);
 				opacity: 0.25;
@@ -158,8 +158,8 @@ const userFullName = userStore.fullName ?? undefined;
 	}
 
 	.notifications-badge {
-		--v-badge-offset-x: 16px;
-		--v-badge-offset-y: 16px;
+		--v-badge-offset-x: 14px;
+		--v-badge-offset-y: 14px;
 	}
 
 	.notifications {
