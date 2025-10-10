@@ -119,6 +119,5 @@ const splitterCollapsed = computed({
 
 .mobile-nav {
 	max-inline-size: 340px;
-	inline-size: 100%;
 }
 </style>

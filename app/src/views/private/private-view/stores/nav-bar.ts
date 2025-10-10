@@ -9,11 +9,13 @@ export const useNavBarStore = defineStore('nav-bar-store', () => {
 	const expandHook = createEventHook();
 
 	const collapse = () => {
+		if (collapsed.value === true) return;
 		collapsed.value = true;
 		collapseHook.trigger();
 	};
 
 	const expand = () => {
+		if (collapsed.value === false) return;
 		collapsed.value = false;
 		expandHook.trigger();
 	};

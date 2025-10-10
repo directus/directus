@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
 import HeaderBar from '../../components/header-bar.vue';
 import { useNavBarStore } from '../stores/nav-bar';
 import { computed } from 'vue';
+import { useSidebarStore } from '../stores/sidebar';
+import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
 
 const navBarStore = useNavBarStore();
+const sidebarStore = useSidebarStore();
+
+const { sm } = useBreakpoints(breakpointsTailwind);
 
 const props = defineProps<{ title?: string, shadow: boolean, inlineNav: boolean }>();
 
@@ -14,6 +20,10 @@ const showNavToggle = computed(() => {
 
 	return true;
 });
+
+const showSidebarToggle = computed(() => {
+	return !sm.value;
+});
 </script>
 
 <template>
@@ -23,7 +33,10 @@ const showNavToggle = computed(() => {
 		:shadow
 		:title
 	>
-		<template #actions:append><slot name="actions:append" /></template>
+		<template #actions:append>
+			<VIcon v-if="showSidebarToggle" name="menu_open" clickable @click="sidebarStore.expand" />
+			<slot name="actions:append" />
+		</template>
 		<template #actions:prepend><slot name="actions:prepend" /></template>
 		<template #actions><slot name="actions" /></template>
 		<template #headline><slot name="headline" /></template>
