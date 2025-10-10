@@ -517,7 +517,7 @@ import_data_error: This file's data structure doesn't match the collection.
 snapshot:
   export: Export Schema
   download: Download Snapshot (JSON)
-  info: Exports the schema without content for quick sharing and reproduction
+  info: Schema-only export for sharing or debugging
 label_import: Import
 label_export: Export
 import_export: Import / Export
