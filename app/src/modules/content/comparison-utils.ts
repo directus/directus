@@ -3,6 +3,7 @@ import { ContentVersion, Field, RelationalType, User } from '@directus/types';
 import { Revision } from '@/types/revisions';
 import { isNil, isEqual } from 'lodash';
 import { i18n } from '@/lang';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 
 export type ComparisonData = {
 	base: Record<string, any>;
@@ -158,6 +159,25 @@ export function areAllFieldsSelected(selectedFields: string[], availableFields: 
 
 export function areSomeFieldsSelected(selectedFields: string[], availableFields: string[]): boolean {
 	return availableFields.length > 0 && availableFields.some((field) => selectedFields.includes(field));
+}
+
+export function mergeMainItemKeysIntoRevision(
+	revisionData: Record<string, any>,
+	mainItem: Record<string, any>,
+	fields?: Field[],
+): Record<string, any> {
+	const merged = { ...revisionData };
+
+	const defaultValues = fields ? getDefaultValuesFromFields(fields).value : {};
+
+	for (const [key] of Object.entries(mainItem)) {
+		if (!(key in merged)) {
+			const defaultValue = defaultValues[key] ?? null;
+			merged[key] = defaultValue;
+		}
+	}
+
+	return merged;
 }
 
 export function normalizeUser(user: User | string | null | undefined): NormalizedUser | null {

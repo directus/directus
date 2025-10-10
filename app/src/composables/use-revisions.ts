@@ -6,7 +6,7 @@ import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
-import { calculateFieldDifferences } from '@/modules/content/comparison-utils';
+import { calculateFieldDifferences, mergeMainItemKeysIntoRevision } from '@/modules/content/comparison-utils';
 import type { ContentVersion, Filter } from '@directus/types';
 import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
 import { groupBy, orderBy, mergeWith } from 'lodash';
@@ -203,7 +203,10 @@ export function useRevisions(
 					const collectionFields = fieldsStore.getFieldsForCollection(unref(collection));
 					const fieldMetadata = Object.fromEntries(collectionFields.map((field) => [field.field, field]));
 
-					const differentFields = calculateFieldDifferences(revisionData, currentItemMerged, fieldMetadata, {
+					// Enrich revision data with missing keys from main item (same logic as comparison modal)
+					const enrichedRevisionData = mergeMainItemKeysIntoRevision(revisionData, currentItemMerged, collectionFields);
+
+					const differentFields = calculateFieldDifferences(enrichedRevisionData, currentItemMerged, fieldMetadata, {
 						skipRelationalFields: true,
 						skipReadonlyFields: true,
 					});
