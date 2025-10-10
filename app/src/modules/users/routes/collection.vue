@@ -192,8 +192,8 @@ function clearFilters() {
 			</template>
 
 			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded disabled icon secondary>
-					<v-icon name="people_alt" />
+				<v-button class="header-icon" rounded disabled icon secondary small>
+					<v-icon name="people_alt" small />
 				</v-button>
 			</template>
 
@@ -202,7 +202,7 @@ function clearFilters() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" collection="directus_users" />
+				<search-input v-model="search" v-model:filter="filter" collection="directus_users" small />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
@@ -213,9 +213,10 @@ function clearFilters() {
 							icon
 							class="action-delete"
 							secondary
+							small
 							@click="on"
 						>
-							<v-icon name="delete" />
+							<v-icon name="delete" small />
 						</v-button>
 					</template>
 
@@ -240,9 +241,10 @@ function clearFilters() {
 					icon
 					secondary
 					:disabled="batchEditAllowed === false"
+					small
 					@click="batchEditActive = true"
 				>
-					<v-icon name="edit" />
+					<v-icon name="edit" small />
 				</v-button>
 
 				<v-button
@@ -251,9 +253,10 @@ function clearFilters() {
 					rounded
 					icon
 					secondary
+					small
 					@click="userInviteModalActive = true"
 				>
-					<v-icon name="person_add" />
+					<v-icon name="person_add" small />
 				</v-button>
 
 				<v-button
@@ -262,8 +265,9 @@ function clearFilters() {
 					icon
 					:to="addNewLink"
 					:disabled="createAllowed === false"
+					small
 				>
-					<v-icon name="add" />
+					<v-icon name="add" small />
 				</v-button>
 			</template>
 

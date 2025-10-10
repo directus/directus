@@ -78,7 +78,7 @@ function onClick() {
 		flex-shrink: 0;
 		justify-content: space-between;
 		inline-size: 100%;
-		block-size: calc(60px + var(--theme--sidebar--section--toggle--border-width));
+		block-size: calc(52px + var(--theme--sidebar--section--toggle--border-width));
 		color: var(--theme--sidebar--section--toggle--foreground);
 		background-color: var(--theme--sidebar--section--toggle--background);
 		border-block-end: var(--theme--sidebar--section--toggle--border-width) solid
@@ -90,7 +90,7 @@ function onClick() {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			inline-size: 60px;
+			inline-size: 52px;
 			block-size: 100%;
 		}
 
@@ -123,8 +123,8 @@ function onClick() {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		inline-size: 60px;
-		block-size: 60px;
+		inline-size: 52px;
+		block-size: 52px;
 		color: var(--theme--foreground);
 		transition:
 			opacity var(--fast) var(--transition),

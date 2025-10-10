@@ -108,9 +108,9 @@ function emitClick(event: MouseEvent) {
 .v-icon {
 	position: relative;
 	display: inline-block;
-	inline-size: var(--v-icon-size, 24px);
-	min-inline-size: var(--v-icon-size, 24px);
-	block-size: var(--v-icon-size, 24px);
+	inline-size: var(--v-icon-size, 20px);
+	min-inline-size: var(--v-icon-size, 20px);
+	block-size: var(--v-icon-size, 20px);
 	color: var(--v-icon-color, currentColor);
 	font-size: 0;
 	vertical-align: middle;
@@ -119,7 +119,7 @@ function emitClick(event: MouseEvent) {
 		display: block;
 		font-family: 'Material Symbols';
 		font-weight: normal;
-		font-size: var(--v-icon-size, 24px);
+		font-size: var(--v-icon-size, 20px);
 		font-style: normal;
 		line-height: 1;
 		letter-spacing: normal;

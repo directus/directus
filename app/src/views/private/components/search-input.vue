@@ -13,6 +13,7 @@ const props = withDefaults(
 		filter?: Filter | null;
 		autofocus?: boolean;
 		placeholder?: string;
+		small?: boolean;
 	}>(),
 	{
 		showFilter: true,
@@ -137,6 +138,7 @@ function emitValue() {
 				'has-content': !!modelValue,
 				'filter-border': filterBorder,
 				'show-filter': showFilter,
+				small,
 			}"
 			role="search"
 			@click="activate"
@@ -146,6 +148,7 @@ function emitValue() {
 				name="search"
 				class="icon-search"
 				:clickable="!active"
+				:small
 				@click="input?.focus()"
 			/>
 			<input
@@ -336,6 +339,49 @@ function emitValue() {
 			background-color: var(--theme--border-color-subdued);
 			content: '';
 			pointer-events: none;
+		}
+	}
+
+	&.small {
+		inline-size: 36px;
+		min-block-size: 36px;
+		box-sizing: border-box;
+
+		&.show-filter {
+			inline-size: 63px;
+		}
+
+		&.has-content {
+			inline-size: 200px;
+
+			&.show-filter {
+				inline-size: 200px;
+			}
+		}
+
+		&.active {
+			inline-size: 300px;
+		}
+
+		&.filter-active {
+			inline-size: 200px;
+
+			@media (min-width: 600px) {
+				inline-size: 250px;
+			}
+
+			@media (min-width: 960px) {
+				inline-size: 300px;
+			}
+
+			@media (min-width: 1260px) {
+				inline-size: 420px;
+			}
+		}
+
+		.filter {
+			border-end-end-radius: 18px;
+			border-end-start-radius: 18px;
 		}
 	}
 }

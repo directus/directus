@@ -14,8 +14,8 @@ const active = ref(false);
 
 <template>
 	<div class="actions" :class="{ active }">
-		<v-button class="expand" icon rounded secondary outlined @click="active = !active">
-			<v-icon name="arrow_left" />
+		<v-button class="expand" icon rounded secondary outlined small @click="active = !active">
+			<v-icon name="arrow_left" small/>
 		</v-button>
 
 		<div class="action-buttons">
@@ -26,9 +26,10 @@ const active = ref(false);
 				rounded
 				secondary
 				outlined
+				small
 				@click="$emit('toggle:sidebar')"
 			>
-				<v-icon name="info" />
+				<v-icon name="info" small/>
 			</v-button>
 
 			<slot />

@@ -235,8 +235,8 @@ function revert(values: Record<string, any>) {
 	<files-not-found v-if="!loading && !item" />
 	<private-view v-else :title="loading || !item ? t('loading') : item.title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="navigateBack">
-				<v-icon name="arrow_back" />
+			<v-button class="header-icon" rounded icon secondary exact small @click="navigateBack">
+				<v-icon name="arrow_back" small />
 			</v-button>
 		</template>
 
@@ -254,9 +254,10 @@ function revert(values: Record<string, any>) {
 						class="action-delete"
 						secondary
 						:disabled="item === null || deleteAllowed === false"
+						small
 						@click="on"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" outline small />
 					</v-button>
 				</template>
 
@@ -287,9 +288,10 @@ function revert(values: Record<string, any>) {
 						icon
 						secondary
 						:disabled="item === null || !updateAllowed"
+						small
 						@click="on"
 					>
-						<v-icon name="folder_move" />
+						<v-icon name="folder_move" small />
 					</v-button>
 				</template>
 
@@ -317,8 +319,9 @@ function revert(values: Record<string, any>) {
 				rounded
 				:download="item?.filename_download"
 				:href="getAssetUrl(props.primaryKey, { isDownload: true })"
+				small
 			>
-				<v-icon name="download" />
+				<v-icon name="download" small />
 			</v-button>
 
 			<v-button
@@ -327,9 +330,10 @@ function revert(values: Record<string, any>) {
 				rounded
 				icon
 				secondary
+				small
 				@click="editActive = true"
 			>
-				<v-icon name="tune" />
+				<v-icon name="tune" small />
 			</v-button>
 
 			<v-button
@@ -338,9 +342,10 @@ function revert(values: Record<string, any>) {
 				icon
 				:loading="saving"
 				:disabled="!isSavable"
+				small
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" />
+				<v-icon name="check" small />
 
 				<template #append-outer>
 					<save-options

@@ -420,13 +420,13 @@ onUnmounted(() => {
 	<private-view :title="t('settings_system_logs')">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="terminal" />
+			<v-button class="header-icon" rounded icon exact disabled small>
+				<v-icon name="terminal" small />
 			</v-button>
 		</template>
 
 		<template #actions>
-			<v-button v-if="shouldStream && !streamConnected" v-tooltip.bottom="t('loading')" rounded icon disabled>
+			<v-button v-if="shouldStream && !streamConnected" v-tooltip.bottom="t('loading')" rounded icon disabled small>
 				<v-progress-circular small indeterminate />
 			</v-button>
 			<v-button
@@ -434,12 +434,13 @@ onUnmounted(() => {
 				v-tooltip.bottom="t('resume_streaming_logs')"
 				rounded
 				icon
+				small
 				@click="resumeLogsStreaming"
 			>
-				<v-icon name="play_arrow" />
+				<v-icon name="play_arrow" small />
 			</v-button>
-			<v-button v-else v-tooltip.bottom="t('pause_streaming_logs')" rounded icon @click="pauseLogsStreaming">
-				<v-icon name="pause" />
+			<v-button v-else v-tooltip.bottom="t('pause_streaming_logs')" rounded icon small @click="pauseLogsStreaming">
+				<v-icon name="pause" small />
 			</v-button>
 			<v-button
 				v-tooltip.bottom="t('clear_logs')"
@@ -447,9 +448,10 @@ onUnmounted(() => {
 				icon
 				:disabled="logs.length === 0"
 				class="action-clear"
+				small
 				@click="clearLogs"
 			>
-				<v-icon name="mop" />
+				<v-icon name="mop" small />
 			</v-button>
 		</template>
 

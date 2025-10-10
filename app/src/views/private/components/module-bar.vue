@@ -55,12 +55,13 @@ const modules = computed(() => {
 				:key="modulePart.id"
 				v-tooltip.right="modulePart.name"
 				icon
-				x-large
+				large
 				:to="modulePart.to"
 				:href="modulePart.href"
 				tile
 			>
-				<v-icon :name="modulePart.icon" />
+				<v-icon :name="modulePart.icon" :class="{ 'default-icon': modulePart.href }" />
+				<v-icon v-if="modulePart.href" name="open_in_new" class="external-icon" />
 			</v-button>
 		</div>
 
@@ -76,7 +77,7 @@ const modules = computed(() => {
 
 	display: flex;
 	flex-direction: column;
-	inline-size: 60px;
+	inline-size: 52px;
 	block-size: 100%;
 	background-color: var(--theme--navigation--modules--background);
 	border-inline-end: var(--theme--navigation--modules--border-width) solid
@@ -101,10 +102,25 @@ const modules = computed(() => {
 		:deep(.active) {
 			--focus-ring-color: var(--v-button-color-active);
 		}
+
+		&:hover .external-icon {
+			opacity: 1;
+		}
 	}
 }
 
 .module-bar-logo {
 	--focus-ring-color: var(--foreground-inverted);
+}
+
+.external-icon {
+	opacity: 0;
+	background-color: var(--theme--navigation--modules--background);
+	border-radius: 50%;
+	position: absolute;
+	inset-block-start: 0;
+	inset-inline-end: 0;
+	transition: opacity var(--slow) var(--transition);
+	pointer-events: none;
 }
 </style>

@@ -310,8 +310,8 @@ function clearFilters() {
 			:sidebar-shadow="currentLayout?.sidebarShadow"
 		>
 			<template #title-outer:prepend>
-				<v-button class="header-icon" :class="{ archive }" rounded icon secondary disabled>
-					<v-icon :name="archive ? 'archive' : currentCollection.icon" :color="currentCollection.color" />
+				<v-button class="header-icon" :class="{ archive }" rounded icon secondary disabled small>
+					<v-icon :name="archive ? 'archive' : currentCollection.icon" :color="currentCollection.color" small />
 				</v-button>
 			</template>
 
@@ -374,7 +374,7 @@ function clearFilters() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" :collection="collection" />
+				<search-input v-model="search" v-model:filter="filter" :collection="collection" small />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
@@ -385,9 +385,10 @@ function clearFilters() {
 							icon
 							class="action-delete"
 							secondary
+							small
 							@click="on"
 						>
-							<v-icon name="delete" outline />
+							<v-icon name="delete" outline small />
 						</v-button>
 					</template>
 
@@ -423,9 +424,10 @@ function clearFilters() {
 							rounded
 							icon
 							secondary
+							small
 							@click="on"
 						>
-							<v-icon name="archive" outline />
+							<v-icon name="archive" outline small />
 						</v-button>
 					</template>
 
@@ -450,9 +452,10 @@ function clearFilters() {
 					icon
 					secondary
 					:disabled="batchEditAllowed === false"
+					small
 					@click="batchEditActive = true"
 				>
-					<v-icon name="edit" outline />
+					<v-icon name="edit" outline small />
 				</v-button>
 
 				<v-button
@@ -461,8 +464,9 @@ function clearFilters() {
 					icon
 					:to="addNewLink"
 					:disabled="createAllowed === false"
+					small
 				>
-					<v-icon name="add" />
+					<v-icon name="add" small />
 				</v-button>
 			</template>
 

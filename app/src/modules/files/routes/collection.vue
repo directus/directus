@@ -385,8 +385,8 @@ function useFileUpload() {
 			</template>
 
 			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded disabled icon secondary>
-					<v-icon name="folder" outline />
+				<v-button class="header-icon" rounded disabled icon secondary small>
+					<v-icon name="folder" outline small />
 				</v-button>
 			</template>
 
@@ -395,7 +395,7 @@ function useFileUpload() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" collection="directus_files" />
+				<search-input v-model="search" v-model:filter="filter" collection="directus_files" small />
 
 				<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
 
@@ -413,9 +413,10 @@ function useFileUpload() {
 							class="folder"
 							secondary
 							:disabled="!batchEditAllowed"
+							small
 							@click="on"
 						>
-							<v-icon name="folder_move" />
+							<v-icon name="folder_move" small />
 						</v-button>
 					</template>
 
@@ -446,9 +447,10 @@ function useFileUpload() {
 							icon
 							class="action-delete"
 							secondary
+							small
 							@click="on"
 						>
-							<v-icon name="delete" outline />
+							<v-icon name="delete" outline small />
 						</v-button>
 					</template>
 
@@ -473,9 +475,10 @@ function useFileUpload() {
 					icon
 					secondary
 					:disabled="batchEditAllowed === false"
+					small
 					@click="batchEditActive = true"
 				>
-					<v-icon name="edit" outline />
+					<v-icon name="edit" outline small />
 				</v-button>
 
 				<v-button
@@ -484,8 +487,9 @@ function useFileUpload() {
 					icon
 					:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
 					:disabled="createAllowed === false"
+					small
 				>
-					<v-icon name="add" />
+					<v-icon name="add" small />
 				</v-button>
 			</template>
 

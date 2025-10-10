@@ -138,7 +138,7 @@ export default defineTheme({
 
 		form: {
 			columnGap: '32px',
-			rowGap: '40px',
+			rowGap: '24px',
 
 			field: {
 				label: {
@@ -161,7 +161,7 @@ export default defineTheme({
 					boxShadowHover: 'none',
 					boxShadowFocus: '0 0 16px -8px var(--theme--primary)',
 
-					height: '60px',
+					height: '48px',
 					padding: '16px',
 				},
 			},
