@@ -146,8 +146,8 @@ function saveOperation() {
 		@apply="saveOperation"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="t('done')" icon rounded :disabled="saveDisabled" @click="saveOperation">
-				<v-icon name="check" />
+			<v-button v-tooltip.bottom="t('done')" icon rounded :disabled="saveDisabled" small @click="saveOperation">
+				<v-icon name="check" small />
 			</v-button>
 		</template>
 

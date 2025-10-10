@@ -481,8 +481,8 @@ function discardAndLeave() {
 				<v-breadcrumb :items="[{ name: t('settings_presets'), to: '/settings/presets' }]" />
 			</template>
 			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded icon exact to="/settings/presets">
-					<v-icon name="arrow_back" />
+				<v-button class="header-icon" rounded icon exact to="/settings/presets" small>
+					<v-icon name="arrow_back" small />
 				</v-button>
 			</template>
 
@@ -500,9 +500,10 @@ function discardAndLeave() {
 							class="action-delete"
 							secondary
 							:disabled="preset === null || id === '+'"
+							small
 							@click="on"
 						>
-							<v-icon name="delete" />
+							<v-icon name="delete" small />
 						</v-button>
 					</template>
 
@@ -526,9 +527,10 @@ function discardAndLeave() {
 					rounded
 					:disabled="hasEdits === false"
 					:loading="saving"
+					small
 					@click="save"
 				>
-					<v-icon name="check" />
+					<v-icon name="check" small />
 				</v-button>
 			</template>
 

@@ -77,8 +77,8 @@ watchEffect(async () => {
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="storefront" />
+			<v-button class="header-icon" rounded icon exact disabled small>
+				<v-icon name="storefront" small />
 			</v-button>
 		</template>
 

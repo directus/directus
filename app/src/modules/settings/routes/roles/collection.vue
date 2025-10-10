@@ -154,8 +154,8 @@ function navigateToRole({ item }: { item: Role }) {
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="group" />
+			<v-button class="header-icon" rounded icon exact disabled small>
+				<v-icon name="group" small />
 			</v-button>
 		</template>
 
@@ -166,10 +166,11 @@ function navigateToRole({ item }: { item: Role }) {
 				:autofocus="roles.length > 25"
 				:placeholder="t('search_role')"
 				:show-filter="false"
+				small
 			/>
 
-			<v-button v-tooltip.bottom="t('create_role')" rounded icon :to="addNewLink">
-				<v-icon name="add" />
+			<v-button v-tooltip.bottom="t('create_role')" rounded icon :to="addNewLink" small>
+				<v-icon name="add" small />
 			</v-button>
 		</template>
 

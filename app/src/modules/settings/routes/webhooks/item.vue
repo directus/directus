@@ -47,16 +47,16 @@ async function deleteAndQuit() {
 		</template>
 
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="`/settings/webhooks/`">
-				<v-icon name="arrow_back" />
+			<v-button class="header-icon" rounded icon exact :to="`/settings/webhooks/`" small>
+				<v-icon name="arrow_back" small />
 			</v-button>
 		</template>
 
 		<template #actions>
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on">
-						<v-icon name="delete" />
+					<v-button rounded icon class="action-delete" :disabled="item === null" small @click="on">
+						<v-icon name="delete" small />
 					</v-button>
 				</template>
 

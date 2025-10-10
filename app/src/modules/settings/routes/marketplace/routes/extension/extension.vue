@@ -54,8 +54,8 @@ const navigateBack = () => {
 <template>
 	<private-view :title="t('marketplace')">
 		<template #title-outer:prepend>
-			<v-button v-tooltip.bottom="t('back')" class="header-icon" rounded icon secondary exact @click="navigateBack">
-				<v-icon name="arrow_back" />
+			<v-button v-tooltip.bottom="t('back')" class="header-icon" rounded icon secondary exact small @click="navigateBack">
+				<v-icon name="arrow_back" small />
 			</v-button>
 		</template>
 

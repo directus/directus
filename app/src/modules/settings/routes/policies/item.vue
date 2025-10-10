@@ -111,8 +111,8 @@ function discardAndStay() {
 			<v-breadcrumb :items="[{ name: t('settings_permissions'), to: '/settings/policies' }]" />
 		</template>
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="`/settings/policies/`">
-				<v-icon name="arrow_back" />
+			<v-button class="header-icon" rounded icon exact :to="`/settings/policies/`" small>
+				<v-icon name="arrow_back" small />
 			</v-button>
 		</template>
 		<template #actions>
@@ -125,9 +125,10 @@ function discardAndStay() {
 						class="action-delete"
 						secondary
 						:disabled="item === null"
+						small
 						@click="on"
 					>
-						<v-icon name="delete" />
+						<v-icon name="delete" small />
 					</v-button>
 				</template>
 
@@ -145,8 +146,8 @@ function discardAndStay() {
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon :tooltip="t('save')" :loading="saving" :disabled="!hasEdits" @click="saveAndQuit">
-				<v-icon name="check" />
+			<v-button rounded icon :tooltip="t('save')" :loading="saving" :disabled="!hasEdits" small @click="saveAndQuit">
+				<v-icon name="check" small />
 
 				<template #append-outer>
 					<save-options

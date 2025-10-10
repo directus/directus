@@ -39,8 +39,8 @@ const extensionsByType = computed(() => {
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="category" />
+			<v-button class="header-icon" rounded icon exact disabled small>
+				<v-icon name="category" small />
 			</v-button>
 		</template>
 
