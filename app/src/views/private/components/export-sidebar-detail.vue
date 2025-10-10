@@ -8,6 +8,7 @@ import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
 import type { APIError } from '@/types/error';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
+import ImportErrorDialog from './import-error-dialog.vue';
 import { useCollection } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
@@ -611,7 +612,7 @@ async function exportDataFiles() {
 			</div>
 		</v-drawer>
 
-		<v-import-error-dialog v-model="errorDialogActive" :errors="errorDialogRows" :collection="collection" />
+		<import-error-dialog v-model="errorDialogActive" :errors="errorDialogRows" :collection="collection" />
 	</sidebar-detail>
 </template>
 

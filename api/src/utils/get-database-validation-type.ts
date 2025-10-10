@@ -4,9 +4,6 @@ import type { ClientFilterOperator } from '@directus/types';
  * Maps database error codes to validation types
  * Used when database errors don't include validation type information.
  *
- * This utility is used across import operations to provide consistent
- * error type mapping for all formats (CSV, JSON, XML, YAML, etc.).
- *
  * @param errorCode - The database error code (e.g., 'INVALID_FOREIGN_KEY')
  * @param extensions - Optional error extensions that might contain a type
  * @returns The validation type for frontend translation

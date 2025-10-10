@@ -9,6 +9,7 @@ import { ErrorCode } from '@directus/errors';
 import type { AxiosProgressEvent } from 'axios';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ImportErrorDialog from './import-error-dialog.vue';
 
 const props = defineProps<{
 	collection: string;
@@ -163,7 +164,7 @@ function useUpload() {
 			</template>
 		</div>
 
-		<v-import-error-dialog v-model="errorDialogActive" :errors="errorDialogRows" :collection="collection" />
+		<import-error-dialog v-model="errorDialogActive" :errors="errorDialogRows" :collection="collection" />
 	</sidebar-detail>
 </template>
 

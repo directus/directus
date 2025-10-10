@@ -39,7 +39,6 @@ import VHighlight from './v-highlight.vue';
 import VIcon from './v-icon/v-icon.vue';
 import VImage from './v-image.vue';
 import VIconFile from './v-icon-file.vue';
-import VImportErrorDialog from './v-import-error-dialog.vue';
 import VInfo from './v-info.vue';
 import VInput from './v-input.vue';
 import VItemGroup from './v-item-group.vue';
@@ -105,7 +104,6 @@ export function registerComponents(app: App): void {
 	app.component('VIcon', VIcon);
 	app.component('VImage', VImage);
 	app.component('VIconFile', VIconFile);
-	app.component('VImportErrorDialog', VImportErrorDialog);
 	app.component('VInfo', VInfo);
 	app.component('VInput', VInput);
 	app.component('VItemGroup', VItemGroup);
