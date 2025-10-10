@@ -140,7 +140,7 @@ export function useFlows(options: UseFlowsOptions) {
 		}
 	}
 
-	async function runManualFlow(flowId: string, isActionDisabled = false, onRefresh?: () => void) {
+	async function runManualFlow(flowId: string, isActionDisabled = false, onRefresh: () => void) {
 		if (isActionDisabled) return;
 
 		confirmRunFlow.value = null;
