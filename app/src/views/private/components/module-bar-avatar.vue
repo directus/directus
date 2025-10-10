@@ -64,7 +64,7 @@ const userFullName = userStore.fullName ?? undefined;
 			<v-dialog v-model="signOutActive" @esc="signOutActive = false">
 				<template #activator="{ on }">
 					<transition name="sign-out">
-						<v-button v-tooltip.right="t('sign_out')" tile icon large class="sign-out" @click="on">
+						<v-button v-tooltip.right="t('sign_out')" tile icon class="sign-out" @click="on">
 							<v-icon name="logout" />
 						</v-button>
 					</transition>
@@ -105,6 +105,8 @@ const userFullName = userStore.fullName ?? undefined;
 		--v-button-color: var(--theme--navigation--modules--button--foreground);
 		--v-button-color-hover: var(--white);
 		--v-avatar-color: var(--theme--navigation--modules--background);
+
+		inline-size: 52px;
 
 		position: relative;
 		z-index: 3;
@@ -175,9 +177,16 @@ const userFullName = userStore.fullName ?? undefined;
 		--v-button-background-color: var(--theme--navigation--modules--background);
 		--v-button-background-color-hover: var(--theme--navigation--modules--background);
 
+		.v-icon {
+			inline-size: 24px;
+			block-size: 24px;
+		}
+
 		position: absolute;
+		overflow: visible;
+		block-size: 52px;
 		inset-block-start: 0;
-		inset-inline-start: 0;
+		inset-inline-start: 4px;
 		z-index: 2;
 		transition: transform var(--fast) var(--transition);
 		opacity: 0;

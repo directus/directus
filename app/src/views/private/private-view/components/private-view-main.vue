@@ -96,7 +96,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 #main-content {
 	block-size: 100%;
 
-	--content-padding: 20px;
+	--content-padding: 24px;
 	--content-padding-bottom: 132px;
 }
 

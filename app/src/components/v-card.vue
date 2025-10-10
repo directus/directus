@@ -30,8 +30,6 @@ withDefaults(defineProps<Props>(), {
 */
 
 .v-card {
-	--theme--form--row-gap: 52px;
-
 	min-inline-size: var(--v-card-min-width, none);
 	max-inline-size: 400px;
 	block-size: auto;
