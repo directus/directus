@@ -103,4 +103,3 @@ const formattedErrors = computed(() => {
 	}
 }
 </style>
-
