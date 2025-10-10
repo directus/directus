@@ -11,7 +11,6 @@ import type {
 	AbstractServiceOptions,
 	Accountability,
 	ActionEventParams,
-	ClientFilterOperator,
 	ExportFormat,
 	File,
 	Query,
@@ -46,7 +45,12 @@ import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
 import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
 import { set } from 'lodash-es';
-import { FailedValidationError, type FailedValidationErrorExtensionsType } from '@directus/validation';
+import {
+	FailedValidationError,
+	type FailedValidationErrorExtensionsType,
+	type ImportRowLine,
+	type ImportRowRange,
+} from '@directus/validation';
 
 const env = useEnv();
 const logger = useLogger();
@@ -312,47 +316,39 @@ export class ImportService {
 						.pipe(fileWriteStream);
 				});
 			} catch (error) {
-				function convertToRanges(
-					rowNumbers: number[],
-				): Array<{ type: 'line'; row: number } | { type: 'range'; start: number; end: number }> {
-					if (rowNumbers.length === 0) return [];
+				function convertToRanges(rows: number[], minRangeSize = 3): Array<ImportRowLine | ImportRowRange> {
+					const sorted = Array.from(new Set(rows)).sort((a, b) => a - b);
+					const result: Array<ImportRowLine | ImportRowRange> = [];
 
-					const sorted = [...new Set(rowNumbers)].sort((a, b) => a - b);
-					const ranges: Array<{ type: 'line'; row: number } | { type: 'range'; start: number; end: number }> = [];
+					let start = sorted[0] as number;
+					let prev = sorted[0] as number;
+					let count = 1;
 
-					let start = sorted[0]!;
-					let end = sorted[0]!;
+					const flush = () => {
+						if (count >= minRangeSize) {
+							result.push({ type: 'range', start, end: prev });
+						} else {
+							for (let i = start; i <= prev; i++) {
+								result.push({ type: 'line', row: i });
+							}
+						}
+					};
 
 					for (let i = 1; i < sorted.length; i++) {
-						const current = sorted[i]!;
+						const current = sorted[i] as number;
 
-						if (current === end + 1) {
-							end = current;
+						if (current === prev + 1) {
+							prev = current;
+							count++;
 						} else {
-							if (end - start >= 2) {
-								ranges.push({ type: 'range', start, end });
-							} else if (start === end) {
-								ranges.push({ type: 'line', row: start });
-							} else {
-								ranges.push({ type: 'line', row: start });
-								ranges.push({ type: 'line', row: end });
-							}
-
-							start = current;
-							end = current;
+							flush();
+							start = prev = current;
+							count = 1;
 						}
 					}
 
-					if (end - start >= 2) {
-						ranges.push({ type: 'range', start, end });
-					} else if (start === end) {
-						ranges.push({ type: 'line', row: start });
-					} else {
-						ranges.push({ type: 'line', row: start });
-						ranges.push({ type: 'line', row: end });
-					}
-
-					return ranges;
+					flush();
+					return result;
 				}
 
 				if (!error && capturedErrorCount > 0) {
