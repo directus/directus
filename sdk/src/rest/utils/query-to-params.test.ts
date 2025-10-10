@@ -126,7 +126,7 @@ describe('queryToParams', () => {
 			// @ts-ignore
 			groupBy: 'category',
 			// @ts-ignore
-			versionRaw: 'true'
+			versionRaw: 'true',
 		});
 
 		expect(result).toEqual({
