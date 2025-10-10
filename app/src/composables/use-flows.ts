@@ -63,8 +63,8 @@ export function useFlows(options: UseFlowsOptions) {
 
 	const confirmButtonCTA = computed(() => {
 		if (unref(location) === 'item') return t('run_flow_on_current');
-		if (unref(selection || ref([])).length === 0) return t('run_flow');
-		return t('run_flow_on_selected', unref(selection || ref([])).length);
+		if (unref(selection).length === 0) return t('run_flow');
+		return t('run_flow_on_selected', unref(selection).length);
 	});
 
 	const confirmDialogDetails = computed(() => {
