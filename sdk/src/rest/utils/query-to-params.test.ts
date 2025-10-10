@@ -125,6 +125,8 @@ describe('queryToParams', () => {
 			page: '2',
 			// @ts-ignore
 			groupBy: 'category',
+			// @ts-ignore
+			versionRaw: 'true'
 		});
 
 		expect(result).toEqual({
@@ -133,6 +135,7 @@ describe('queryToParams', () => {
 			offset: '20',
 			page: '2',
 			groupBy: 'category',
+			versionRaw: 'true',
 		});
 	});
 
