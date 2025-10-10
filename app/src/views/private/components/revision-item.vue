@@ -8,6 +8,7 @@ import { useI18n } from 'vue-i18n';
 const props = defineProps<{
 	revision: Revision;
 	last?: boolean;
+	mostRecent?: boolean;
 }>();
 
 defineEmits<{
@@ -16,18 +17,20 @@ defineEmits<{
 
 const { t } = useI18n();
 
-const revisionCount = computed(() => (props.revision.delta ? Object.keys(props.revision.delta).length : 0));
+const revisionCount = computed(() => (props.revision.differentFields ? props.revision.differentFields.length : 0));
 
 const headerMessage = computed(() => {
+	if (props.mostRecent) return t('latest');
+
 	switch (props.revision.activity.action.toLowerCase()) {
 		case 'create':
-			return t('revision_delta_created');
+			return t('n_differences', revisionCount.value);
 		case 'update':
-			return t('revision_delta_updated', revisionCount.value);
+			return t('n_differences', revisionCount.value);
 		case 'delete':
 			return t('revision_delta_deleted');
 		case 'version_save':
-			return t('revision_delta_version_saved', revisionCount.value);
+			return t('n_differences', revisionCount.value);
 		case 'revert':
 			return t('revision_delta_reverted');
 		default:
@@ -49,7 +52,13 @@ const user = computed(() => {
 </script>
 
 <template>
-	<button type="button" class="revision-item" :class="{ last }" @click="$emit('click')">
+	<component
+		:is="mostRecent ? 'div' : 'button'"
+		:type="mostRecent ? undefined : 'button'"
+		class="revision-item"
+		:class="{ last, 'latest-revision': mostRecent }"
+		@click="!mostRecent && $emit('click')"
+	>
 		<div class="header">
 			<span class="dot" :class="revision.activity.action" />
 			{{ headerMessage }}
@@ -67,7 +76,7 @@ const user = computed(() => {
 
 			<span v-else>{{ t('private_user') }}</span>
 		</div>
-	</button>
+	</component>
 </template>
 
 <style lang="scss" scoped>
@@ -139,7 +148,7 @@ const user = computed(() => {
 		pointer-events: none;
 	}
 
-	&:hover {
+	&:hover:not(.latest-revision) {
 		cursor: pointer;
 
 		.header {
@@ -151,6 +160,10 @@ const user = computed(() => {
 		&::before {
 			opacity: 1;
 		}
+	}
+
+	&.latest-revision {
+		cursor: default;
 	}
 
 	& + & {
