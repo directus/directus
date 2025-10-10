@@ -104,7 +104,7 @@ export function useFlows(options: UseFlowsOptions) {
 			return t('run_flow_on_current_collection');
 		}
 
-		return t('run_flow_on_selected', selection?.value.length || 0);
+		return t('run_flow_on_selected', selection.value.length || 0);
 	}
 
 	function isFlowDisabled(manualFlow: FlowRaw) {
