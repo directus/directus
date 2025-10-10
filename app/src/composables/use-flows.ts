@@ -162,7 +162,7 @@ export function useFlows(options: UseFlowsOptions) {
 					collection: collection.value,
 				});
 			} else {
-				const keys = primaryKey?.value ? [primaryKey.value] : selection?.value || [];
+				const keys = primaryKey.value ? [primaryKey.value] : selection.value || [];
 
 				await api.post(`/flows/trigger/${flowId}`, {
 					...unref(confirmValues),
