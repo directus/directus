@@ -3,6 +3,7 @@ import { ContentVersion, Field, RelationalType, User } from '@directus/types';
 import { Revision } from '@/types/revisions';
 import { isNil, isEqual } from 'lodash';
 import { i18n } from '@/lang';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 
 export type ComparisonData = {
 	base: Record<string, any>;
@@ -81,19 +82,43 @@ export function getFieldsWithDifferences(
 	fieldMetadata?: Record<string, any>,
 	type?: 'version' | 'revision',
 ): string[] {
-	return Object.keys(comparedData.incoming).filter((fieldKey) => {
-		const field = fieldMetadata?.[fieldKey];
-		if (!field) return false;
+	if (!fieldMetadata) return [];
 
-		if (field.meta?.readonly) return false;
-
-		if (type === 'revision' && isRelationalField(field)) return false;
-
-		const incomingValue = comparedData.incoming[fieldKey];
-		const baseValue = comparedData.base[fieldKey];
-
-		return !isEqual(incomingValue, baseValue);
+	return calculateFieldDifferences(comparedData.incoming, comparedData.base, fieldMetadata, {
+		skipRelationalFields: type === 'revision',
+		skipReadonlyFields: true,
 	});
+}
+
+export function calculateFieldDifferences(
+	revisionData: Record<string, any>,
+	currentData: Record<string, any>,
+	fieldMetadata: Record<string, any>,
+	options: {
+		skipRelationalFields?: boolean;
+		skipReadonlyFields?: boolean;
+	} = {},
+): string[] {
+	const { skipRelationalFields = false, skipReadonlyFields = true } = options;
+	const differentFields: string[] = [];
+
+	for (const fieldKey of Object.keys(revisionData)) {
+		const field = fieldMetadata[fieldKey];
+		if (!field) continue;
+
+		if (skipReadonlyFields && field.meta?.readonly) continue;
+
+		if (skipRelationalFields && isRelationalField(field)) continue;
+
+		const newValue = revisionData[fieldKey];
+		const currentValue = currentData[fieldKey];
+
+		if (!isEqual(newValue, currentValue)) {
+			differentFields.push(fieldKey);
+		}
+	}
+
+	return differentFields;
 }
 
 export function getVersionDisplayName(version: ContentVersion): string {
@@ -134,6 +159,25 @@ export function areAllFieldsSelected(selectedFields: string[], availableFields: 
 
 export function areSomeFieldsSelected(selectedFields: string[], availableFields: string[]): boolean {
 	return availableFields.length > 0 && availableFields.some((field) => selectedFields.includes(field));
+}
+
+export function mergeMainItemKeysIntoRevision(
+	revisionData: Record<string, any>,
+	mainItem: Record<string, any>,
+	fields?: Field[],
+): Record<string, any> {
+	const merged = { ...revisionData };
+
+	const defaultValues = fields ? getDefaultValuesFromFields(fields).value : {};
+
+	for (const [key] of Object.entries(mainItem)) {
+		if (!(key in merged)) {
+			const defaultValue = defaultValues[key] ?? null;
+			merged[key] = defaultValue;
+		}
+	}
+
+	return merged;
 }
 
 export function normalizeUser(user: User | string | null | undefined): NormalizedUser | null {
