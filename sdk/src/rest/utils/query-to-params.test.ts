@@ -75,6 +75,9 @@ describe('queryToParams', () => {
 			deep: undefined,
 			alias: undefined,
 			aggregate: undefined,
+			groupBy: undefined,
+			version: undefined,
+			versionRaw: undefined,
 			customProp: undefined,
 		});
 
@@ -94,6 +97,7 @@ describe('queryToParams', () => {
 			alias: {},
 			aggregate: {},
 			groupBy: [],
+			version: '',
 			customProp: () => {},
 		});
 
@@ -270,6 +274,26 @@ describe('queryToParams', () => {
 
 		expect(result).toEqual({
 			groupBy: 'category,status',
+		});
+	});
+
+	test('should format version parameter', () => {
+		const result = queryToParams({
+			version: 'draft',
+		});
+
+		expect(result).toEqual({
+			version: 'draft',
+		});
+	});
+
+	test('should format version parameter', () => {
+		const result = queryToParams({
+			versionRaw: true,
+		});
+
+		expect(result).toEqual({
+			versionRaw: 'true',
 		});
 	});
 
