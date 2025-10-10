@@ -8,13 +8,13 @@ let emailRateLimiterQueue: RateLimiterQueue | undefined;
 const env = useEnv();
 
 export function getEmailRateLimiterQueue() {
-    if (!emailRateLimiterQueue && toBoolean(env['EMAIL_LIMITER_ENABLED']) === true) {
-	    const rateLimiter = createRateLimiter('EMAIL_LIMITER');
+	if (!emailRateLimiterQueue && toBoolean(env['EMAIL_LIMITER_ENABLED']) === true) {
+		const rateLimiter = createRateLimiter('EMAIL_LIMITER');
 
-        emailRateLimiterQueue = new RateLimiterQueue(rateLimiter, {
-            maxQueueSize: Number(env['EMAIL_LIMITER_QUEUE_SIZE']),
-        });
-    }
+		emailRateLimiterQueue = new RateLimiterQueue(rateLimiter, {
+			maxQueueSize: Number(env['EMAIL_LIMITER_QUEUE_SIZE']),
+		});
+	}
 
-    return emailRateLimiterQueue;
+	return emailRateLimiterQueue;
 }
