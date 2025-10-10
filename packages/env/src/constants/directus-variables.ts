@@ -86,8 +86,6 @@ export const DIRECTUS_VARIABLES = [
 	'CORS_MAX_AGE',
 
 	// rate limiting
-	'RATE_LIMITER_GLOBAL_.+',
-	'RATE_LIMITER_REGISTRATION_.+',
 	'RATE_LIMITER_.+',
 	'EMAIL_LIMITER_.+',
 	'EMAIL_FLOWS_LIMITER_.+',
