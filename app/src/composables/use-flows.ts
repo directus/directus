@@ -12,10 +12,10 @@ import { useI18n } from 'vue-i18n';
 
 export interface UseFlowsOptions {
 	collection: Ref<string>;
-	primaryKey?: Ref<string | number | undefined>;
-	selection?: Ref<(number | string)[]>;
+	primaryKey: Ref<string | number | undefined>;
+	selection: Ref<(number | string)[]>;
 	location: Ref<'collection' | 'item'>;
-	hasEdits?: Ref<boolean>;
+	hasEdits: Ref<boolean>;
 }
 
 export function useFlows(options: UseFlowsOptions) {
