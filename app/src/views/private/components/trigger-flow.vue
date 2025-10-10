@@ -10,6 +10,7 @@ interface Props {
 	selection?: (number | string)[];
 	location: 'collection' | 'item';
 	hasEdits?: boolean;
+	onRefresh: () => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -18,11 +19,9 @@ const props = withDefaults(defineProps<Props>(), {
 	hasEdits: false,
 });
 
-const emit = defineEmits(['refresh']);
-
 const { t } = useI18n();
 
-const { collection, primaryKey, selection, location, hasEdits } = toRefs(props);
+const { collection, hasEdits, location, primaryKey, selection } = toRefs(props);
 
 const {
 	runningFlows,
@@ -46,10 +45,11 @@ const {
 	selection,
 	location,
 	hasEdits,
+	onRefreshCallback: props.onRefresh,
 });
 
 function handleRunManualFlow(flowId: string, isActionDisabled = false) {
-	runManualFlow(flowId, isActionDisabled, () => emit('refresh'));
+	runManualFlow(flowId, isActionDisabled, props.onRefresh);
 }
 
 const flow = computed(() => manualFlows.value.find((f) => f.id === props.flowId));

@@ -16,10 +16,11 @@ export interface UseFlowsOptions {
 	selection: Ref<(number | string)[]>;
 	location: Ref<'collection' | 'item'>;
 	hasEdits: Ref<boolean>;
+	onRefreshCallback: () => void;
 }
 
 export function useFlows(options: UseFlowsOptions) {
-	const { collection, primaryKey, selection, location, hasEdits } = options;
+	const { collection, hasEdits, location, onRefreshCallback, primaryKey, selection } = options;
 
 	const { t } = useI18n();
 	const { primaryKeyField } = useCollection(collection);
@@ -122,7 +123,7 @@ export function useFlows(options: UseFlowsOptions) {
 		if (hasEdits.value || flow.options?.requireConfirmation) {
 			confirmRunFlow.value = flowId;
 		} else {
-			runManualFlow(flowId, false);
+			runManualFlow(flowId, false, onRefreshCallback);
 		}
 	}
 
@@ -132,7 +133,7 @@ export function useFlows(options: UseFlowsOptions) {
 		confirmedUnsavedChanges.value = true;
 
 		if (!confirmDialogDetails.value) {
-			runManualFlow(flowId, false);
+			runManualFlow(flowId, false, onRefreshCallback);
 		}
 	}
 

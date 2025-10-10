@@ -31,11 +31,12 @@ const { manualFlows } = useFlows({
 	selection,
 	location,
 	hasEdits,
+	onRefreshCallback: handleRefresh,
 });
 
-const handleRefresh = () => {
+function handleRefresh() {
 	emit('refresh');
-};
+}
 </script>
 
 <template>
