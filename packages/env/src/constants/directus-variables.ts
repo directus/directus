@@ -87,8 +87,9 @@ export const DIRECTUS_VARIABLES = [
 
 	// rate limiting
 	'RATE_LIMITER_GLOBAL_.+',
-	'RATE_LIMITER_.+',
+	'RATE_LIMITER_EMAIL_.+',
 	'RATE_LIMITER_REGISTRATION_.+',
+	'RATE_LIMITER_.+',
 
 	// cache
 	'CACHE_ENABLED',
