@@ -18,7 +18,7 @@ import NotificationDialogs from './components/notification-dialogs.vue';
 import NotificationsDrawer from './components/notifications-drawer.vue';
 import NotificationsGroup from './components/notifications-group.vue';
 import NotificationsPreview from './components/notifications-preview.vue';
-import ProjectInfo from './components/project-info.vue';
+import ProjectInfo from './private-view/components/private-view-nav-project-name.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group.vue';
 import LicenseBanner from './components/license-banner.vue';
 import { useSettingsStore } from '@/stores/settings';

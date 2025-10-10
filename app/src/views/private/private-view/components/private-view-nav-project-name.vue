@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import LatencyIndicator from './latency-indicator.vue';
 import { useServerStore } from '@/stores/server';
+import { useNavBarStore } from '../stores/nav-bar';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 const serverStore = useServerStore();
 
 const name = computed(() => serverStore.info?.project?.project_name);
 const descriptor = computed(() => serverStore.info?.project?.project_descriptor);
+const navBarStore = useNavBarStore();
 </script>
 
 <template>
 	<div class="project-info">
-		<latency-indicator />
 		<div class="name-container">
 			<v-text-overflow class="name" :text="name" placement="bottom" />
 			<v-text-overflow v-if="descriptor" class="descriptor" :text="descriptor" placement="bottom" />
 		</div>
+
+		<VIcon name="left_panel_close" clickable @click="navBarStore.collapse" />
 	</div>
 </template>
 
@@ -26,7 +29,7 @@ const descriptor = computed(() => serverStore.info?.project?.project_descriptor)
 	align-items: center;
 	inline-size: 100%;
 	block-size: calc(60px + var(--theme--navigation--project--border-width));
-	padding-inline-start: 20px;
+	padding-inline: 20px;
 	color: var(--theme--navigation--project--foreground);
 	text-align: start;
 	background: var(--theme--navigation--project--background);
@@ -36,7 +39,6 @@ const descriptor = computed(() => serverStore.info?.project?.project_descriptor)
 	.name-container {
 		flex-grow: 1;
 		inline-size: 100px;
-		margin-inline: 12px 8px;
 		line-height: 1.3;
 	}
 

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import SkipMenu from '../../components/skip-menu.vue';
-import ProjectInfo from '../../components/project-info.vue';
+import PrivateViewNavProjectName from './private-view-nav-project-name.vue';
 </script>
 
 <template>
 	<aside role="navigation" aria-label="Module Navigation" class="module-nav alt-colors">
 		<SkipMenu section="moduleNav" />
 
-		<ProjectInfo />
+		<PrivateViewNavProjectName />
 
 		<div id="module-navigation" class="module-nav-content">
 			<slot name="navigation" />

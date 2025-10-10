@@ -8,21 +8,32 @@ import type { PrivateViewProps } from './private-view.vue';
 import PrivateViewResizeHandle from './private-view-resize-handle.vue';
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
 import PrivateViewDrawer from './private-view-drawer.vue';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
+import { useSidebarStore } from '../stores/sidebar';
 
 const { lg, xl } = useBreakpoints(breakpointsTailwind);
 
 const navBarStore = useNavBarStore();
+const sidebarStore = useSidebarStore();
 
 defineProps<PrivateViewProps>();
 
+const inlineNav = computed(() => {
+	return sidebarStore.collapsed ? lg.value : xl.value;
+});
+
+watch(inlineNav, (inline) => {
+	if (!inline) navBarStore.collapse();
+	else navBarStore.expand();
+});
+
 const splitterCollapsed = computed({
 	get() {
-		if (xl.value === false) return true;
+		if (inlineNav.value === false) return true;
 		return navBarStore.collapsed;
 	},
 	set(val: boolean) {
-		if (xl.value === false) return;
+		if (inlineNav.value === false) return;
 		navBarStore.collapsed = val;
 	},
 });
@@ -46,15 +57,15 @@ const splitterCollapsed = computed({
 			:transition-duration="150"
 			primary="start"
 			class="root-split"
-			:disabled="!xl"
+			:disabled="!inlineNav"
 		>
 			<template #start>
-				<PrivateViewNav v-if="xl">
+				<PrivateViewNav v-if="inlineNav">
 					<template #navigation><slot name="navigation" /></template>
 				</PrivateViewNav>
 
 				<PrivateViewDrawer v-else v-model:collapsed="navBarStore.collapsed" placement="left">
-					<ModuleBar v-if="!lg" class="module-bar" />
+					<ModuleBar class="module-bar" />
 
 					<PrivateViewNav class="mobile-nav">
 						<template #navigation><slot name="navigation" /></template>
@@ -67,7 +78,7 @@ const splitterCollapsed = computed({
 			</template>
 
 			<template #end>
-				<PrivateViewMain v-bind="$props">
+				<PrivateViewMain v-bind="$props" :inline-nav>
 					<template #actions:append><slot name="actions:append" /></template>
 					<template #actions:prepend><slot name="actions:prepend" /></template>
 					<template #actions><slot name="actions" /></template>

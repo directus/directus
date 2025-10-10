@@ -12,7 +12,7 @@ import type { PrivateViewProps } from './private-view.vue';
 const contentEl = useTemplateRef('contentEl');
 provide('main-element', contentEl);
 
-const props = defineProps<PrivateViewProps>();
+const props = defineProps<PrivateViewProps & { inlineNav: boolean }>();
 
 defineOptions({ inheritAttrs: false });
 
@@ -45,7 +45,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 		>
 			<template #start>
 				<div ref="scrollContainer" class="scrolling-container">
-					<PrivateViewHeaderBar :title="props.title" :shadow="showHeaderShadow">
+					<PrivateViewHeaderBar :title="props.title" :shadow="showHeaderShadow" :inline-nav>
 						<template #actions:append><slot name="actions:append" /></template>
 						<template #actions:prepend><slot name="actions:prepend" /></template>
 						<template #actions><slot name="actions" /></template>
