@@ -87,7 +87,6 @@ function useUpload() {
 			const errors = error?.response?.data?.errors;
 			const code = errors?.[0]?.extensions?.code;
 
-			// For CSV import validation errors, show detailed error dialog
 			if (code === 'FAILED_VALIDATION' && Array.isArray(errors)) {
 				errorDialogRows.value = errors;
 				errorDialogActive.value = true;

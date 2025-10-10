@@ -243,26 +243,28 @@ export class ImportService {
 							streams.push(fileReadStream);
 
 							fileReadStream
-								.pipe(Papa.parse(Papa.NODE_STREAM_INPUT, {
-									header: true,
-									// Trim whitespaces in headers, including the byte order mark (BOM) zero-width no-break space
-									transformHeader: (header) => header.trim(),
-									transform: (value: string, _field?: string | number) => {
-										if (value.length === 0) return undefined;
+								.pipe(
+									Papa.parse(Papa.NODE_STREAM_INPUT, {
+										header: true,
+										// Trim whitespaces in headers, including the byte order mark (BOM) zero-width no-break space
+										transformHeader: (header) => header.trim(),
+										transform: (value: string, _field?: string | number) => {
+											if (value.length === 0) return undefined;
 
-										try {
-											const parsedJson = parseJSON(value);
+											try {
+												const parsedJson = parseJSON(value);
 
-											if (typeof parsedJson === 'number') {
+												if (typeof parsedJson === 'number') {
+													return value;
+												}
+
+												return parsedJson;
+											} catch {
 												return value;
 											}
-
-											return parsedJson;
-										} catch {
-											return value;
-										}
-									},
-								}))
+										},
+									}),
+								)
 								.on('data', (obj: Record<string, unknown>) => {
 									rowNumber++;
 
@@ -310,10 +312,9 @@ export class ImportService {
 						.pipe(fileWriteStream);
 				});
 			} catch (error) {
-				function convertToRanges(rowNumbers: number[]): Array<
-					| { type: 'line'; row: number }
-					| { type: 'range'; start: number; end: number }
-				> {
+				function convertToRanges(
+					rowNumbers: number[],
+				): Array<{ type: 'line'; row: number } | { type: 'range'; start: number; end: number }> {
 					if (rowNumbers.length === 0) return [];
 
 					const sorted = [...new Set(rowNumbers)].sort((a, b) => a - b);
@@ -363,9 +364,9 @@ export class ImportService {
 								field,
 								path: [],
 								type: type as ClientFilterOperator | 'required' | 'email',
-								rows: convertToRanges(rowNumbers)
+								rows: convertToRanges(rowNumbers),
 							});
-						})
+						}),
 					);
 				}
 

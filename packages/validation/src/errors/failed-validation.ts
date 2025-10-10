@@ -5,13 +5,13 @@ import { toArray } from '@directus/utils';
 export type ImportRowLine = {
 	type: 'line';
 	row: number;
-}
+};
 
 export type ImportRowRange = {
 	type: 'range';
 	start: number;
 	end: number;
-}
+};
 
 export interface FailedValidationErrorExtensions {
 	field: string;

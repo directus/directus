@@ -23,31 +23,31 @@ function closeDialog() {
 }
 
 function formatRows(rows: Array<ImportRowLine | ImportRowRange>): string {
-	return rows.map(r => {
-		if (r.type === 'line') return r.row.toString();
-		return `${r.start}-${r.end}`;
-	}).join(', ');
+	return rows
+		.map((r) => {
+			if (r.type === 'line') return r.row.toString();
+			return `${r.start}-${r.end}`;
+		})
+		.join(', ');
 }
 
 function getErrorMessage(error: APIError): string {
 	const field = fieldsStore.getField(props.collection, error.extensions.field);
 	const customMessage = field?.meta?.validation_message;
-	
+
 	return customMessage || error.message;
 }
 
 const totalErrors = computed(() => props.errors.length);
 
-const errorSummary = computed(() => 
-	t('import_data_error_summary', { count: totalErrors.value })
-);
+const errorSummary = computed(() => t('import_data_error_summary', { count: totalErrors.value }));
 
 const formattedErrors = computed(() => {
-	return props.errors.map(error => ({
+	return props.errors.map((error) => ({
 		...error,
 		formattedRows: formatRows(error.extensions.rows),
 		message: getErrorMessage(error),
-		rowCount: error.extensions.rows.length
+		rowCount: error.extensions.rows.length,
 	}));
 });
 </script>
@@ -60,14 +60,20 @@ const formattedErrors = computed(() => {
 				<v-notice type="danger">
 					<div>
 						<p>{{ errorSummary }}</p>
-					<ul class="validation-errors-list">
-						<li v-for="(error, index) in formattedErrors" :key="index" class="validation-error">
-							<strong v-if="error.rowCount > 0">
-								{{ $t('import_data_error_row', { count: error.rowCount, rows: error.formattedRows }, { escapeParameter: true }) }}
-							</strong>
-							<span>{{ error.message }}</span>
-						</li>
-					</ul>
+						<ul class="validation-errors-list">
+							<li v-for="(error, index) in formattedErrors" :key="index" class="validation-error">
+								<strong v-if="error.rowCount > 0">
+									{{
+										$t(
+											'import_data_error_row',
+											{ count: error.rowCount, rows: error.formattedRows },
+											{ escapeParameter: true },
+										)
+									}}
+								</strong>
+								<span>{{ error.message }}</span>
+							</li>
+						</ul>
 					</div>
 				</v-notice>
 			</div>
