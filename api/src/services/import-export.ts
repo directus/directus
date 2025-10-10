@@ -354,12 +354,12 @@ export class ImportService {
 				if (!error && capturedErrorCount > 0) {
 					throw Array.from(capturedErrors.entries()).flatMap(([, fieldMap]) =>
 						Array.from(fieldMap.entries()).map(([compositeKey, rowNumbers]) => {
-							const [field = '', type = ''] = compositeKey.split('_') as [string, string];
+							const [field, type] = compositeKey.split('_') as [string, FailedValidationErrorExtensionsType];
 
 							return new FailedValidationError({
 								field,
 								path: [],
-								type: type as FailedValidationErrorExtensionsType,
+								type,
 								rows: convertToRanges(rowNumbers),
 							});
 						}),
