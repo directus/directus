@@ -374,7 +374,7 @@ describe('displayCustomConfirmDialog', () => {
 	});
 });
 
-describe('isFlowDisabled', () => {
+describe('checkFlowDisabled', () => {
 	describe('false', () => {
 		test('location is "item"', () => {
 			const testUseFlowsOptions = {
@@ -382,21 +382,21 @@ describe('isFlowDisabled', () => {
 				location: ref('item' as const),
 			};
 
-			const { isFlowDisabled } = useFlows(testUseFlowsOptions);
+			const { checkFlowDisabled } = useFlows(testUseFlowsOptions);
 
-			expect(isFlowDisabled({} as any)).toEqual(false);
+			expect(checkFlowDisabled({} as any)).toEqual(false);
 		});
 
 		test('manualFlow.options.requireSelection is false', () => {
-			const { isFlowDisabled } = useFlows(useFlowsOptions);
+			const { checkFlowDisabled } = useFlows(useFlowsOptions);
 
-			expect(isFlowDisabled({ options: { requireSelection: false } } as any)).toEqual(false);
+			expect(checkFlowDisabled({ options: { requireSelection: false } } as any)).toEqual(false);
 		});
 
 		test('location is "collection" but has primaryKey', () => {
-			const { isFlowDisabled } = useFlows(useFlowsOptions);
+			const { checkFlowDisabled } = useFlows(useFlowsOptions);
 
-			expect(isFlowDisabled({ options: {} } as any)).toEqual(false);
+			expect(checkFlowDisabled({ options: {} } as any)).toEqual(false);
 		});
 	});
 
@@ -408,9 +408,9 @@ describe('isFlowDisabled', () => {
 				selection: ref([]),
 			};
 
-			const { isFlowDisabled } = useFlows(testUseFlowsOptions);
+			const { checkFlowDisabled } = useFlows(testUseFlowsOptions);
 
-			expect(isFlowDisabled({ options: { requireSelection: true } } as any)).toEqual(true);
+			expect(checkFlowDisabled({ options: { requireSelection: true } } as any)).toEqual(true);
 		});
 	});
 });

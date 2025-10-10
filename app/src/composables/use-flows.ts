@@ -90,11 +90,7 @@ export function useFlows(options: UseFlowsOptions) {
 	);
 
 	const displayCustomConfirmDialog = computed(() => {
-		return (
-			!!confirmRunFlow.value &&
-			!!confirmDialogDetails.value &&
-			(!hasEdits.value || confirmedUnsavedChanges.value)
-		);
+		return !!confirmRunFlow.value && !!confirmDialogDetails.value && (!hasEdits.value || confirmedUnsavedChanges.value);
 	});
 
 	function getFlowTooltip(manualFlow: FlowRaw) {
@@ -107,7 +103,7 @@ export function useFlows(options: UseFlowsOptions) {
 		return t('run_flow_on_selected', selection.value.length || 0);
 	}
 
-	function isFlowDisabled(manualFlow: FlowRaw) {
+	function checkFlowDisabled(manualFlow: FlowRaw) {
 		if (location.value === 'item' || manualFlow.options?.requireSelection === false) return false;
 		return !primaryKey.value && selection.value.length === 0;
 	}
@@ -126,7 +122,7 @@ export function useFlows(options: UseFlowsOptions) {
 		if (hasEdits.value || flow.options?.requireConfirmation) {
 			confirmRunFlow.value = flowId;
 		} else {
-			runManualFlow(flowId);
+			runManualFlow(flowId, false);
 		}
 	}
 
@@ -136,7 +132,7 @@ export function useFlows(options: UseFlowsOptions) {
 		confirmedUnsavedChanges.value = true;
 
 		if (!confirmDialogDetails.value) {
-			runManualFlow(flowId);
+			runManualFlow(flowId, false);
 		}
 	}
 
@@ -199,7 +195,7 @@ export function useFlows(options: UseFlowsOptions) {
 		displayUnsavedChangesDialog,
 		displayCustomConfirmDialog,
 		getFlowTooltip,
-		isFlowDisabled,
+		checkFlowDisabled,
 		resetConfirm,
 		onFlowClick,
 		confirmUnsavedChanges,
