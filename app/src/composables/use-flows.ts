@@ -171,9 +171,7 @@ export function useFlows(options: UseFlowsOptions) {
 				});
 			}
 
-			if (onRefresh) {
-				onRefresh();
-			}
+			onRefresh();
 
 			notify({
 				title: t('trigger_flow_success', { flow: selectedFlow.name }),
