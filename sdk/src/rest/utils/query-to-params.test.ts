@@ -287,7 +287,7 @@ describe('queryToParams', () => {
 		});
 	});
 
-	test('should format version parameter', () => {
+	test('should format versionRaw parameter', () => {
 		const result = queryToParams({
 			versionRaw: true,
 		});
