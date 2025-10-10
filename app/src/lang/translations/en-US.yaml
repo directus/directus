@@ -453,6 +453,7 @@ index: Index
 updated_on: Updated On
 updated_by: Updated By
 primary_key: Primary Key
+foreign_key: Foreign Key
 field_key: Field Key
 finish_setup: Finish Setup
 dismiss: Dismiss
