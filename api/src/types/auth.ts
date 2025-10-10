@@ -1,9 +1,7 @@
-import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 
 export interface AuthDriverOptions {
 	knex: Knex;
-	schema: SchemaOverview;
 }
 
 export interface User {

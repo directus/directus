@@ -21,17 +21,17 @@ export const QueryInputSchema = z
 		deep: z.record(z.string(), z.any()),
 		alias: z.record(z.string(), z.string()),
 		aggregate: z.object({
-			count: z.array(z.string()),
-			sum: z.array(z.string()),
-			avg: z.array(z.string()),
-			min: z.array(z.string()),
-			max: z.array(z.string()),
+			count: z.array(z.string()).optional(),
+			sum: z.array(z.string()).optional(),
+			avg: z.array(z.string()).optional(),
+			min: z.array(z.string()).optional(),
+			max: z.array(z.string()).optional(),
 		}),
 		backlink: z.boolean(),
 		version: z.string(),
 		versionRaw: z.boolean(),
 		export: z.string(),
-		group: z.array(z.string()),
+		groupBy: z.array(z.string()),
 	})
 	.partial();
 
