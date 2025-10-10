@@ -63,13 +63,7 @@ const formattedErrors = computed(() => {
 						<ul class="validation-errors-list">
 							<li v-for="(error, index) in formattedErrors" :key="index" class="validation-error">
 								<strong v-if="error.rowCount > 0">
-									{{
-										$t(
-											'import_data_error_row',
-											{ count: error.rowCount, rows: error.formattedRows },
-											{ escapeParameter: true },
-										)
-									}}
+									{{ $t('import_data_error_row', { count: error.rowCount, rows: error.formattedRows }) }}
 								</strong>
 								<span>{{ error.message }}</span>
 							</li>
