@@ -508,6 +508,10 @@ import_data_button: Start Import
 import_data_indeterminate: Importing Data...
 import_data_success: Data successfully imported from {filename}
 import_data_error: This file's data structure doesn't match the collection.
+snapshot:
+  export: Export Schema
+  download: Download Snapshot (JSON)
+  info: Schema-only export for sharing or debugging
 label_import: Import
 label_export: Export
 import_export: Import / Export
