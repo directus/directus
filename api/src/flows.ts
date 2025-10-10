@@ -390,6 +390,8 @@ class FlowManager {
 			[ENV_KEY]: this.envs,
 		};
 
+		context['flow'] ??= flow;
+
 		let nextOperation = flow.operation;
 		let lastOperationStatus: 'resolve' | 'reject' | 'unknown' = 'unknown';
 
