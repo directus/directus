@@ -123,7 +123,7 @@ export function useFlows(options: UseFlowsOptions) {
 
 		if (!flow) return;
 
-		if (hasEdits?.value || false || flow.options?.requireConfirmation) {
+		if (hasEdits.value || flow.options?.requireConfirmation) {
 			confirmRunFlow.value = flowId;
 		} else {
 			runManualFlow(flowId);
