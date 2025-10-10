@@ -751,13 +751,4 @@ async function exportDataFiles() {
 		cursor: not-allowed;
 	}
 }
-
-.error-content {
-	white-space: pre-wrap;
-	overflow-wrap: break-word;
-}
-
-.v-card-text {
-	padding-block-start: 14px !important;
-}
 </style>
