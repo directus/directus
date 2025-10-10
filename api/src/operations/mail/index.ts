@@ -29,12 +29,18 @@ export default defineOperationApi<Options>({
 	) => {
 		try {
 			await getFlowsEmailRateLimiter()?.consume(flow!.id, 1);
-		} catch (err: any) {
-			if (err && err.msBeforeNext) {
-				throw new HitRateLimitError({
-					limit: +(env['EMAIL_FLOWS_LIMITER_POINTS'] as string),
-					reset: new Date(Date.now() + err.msBeforeNext),
-				});
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				const resetIn = (err as unknown as any)?.msBeforeNext ?? Number(env['EMAIL_FLOWS_LIMITER_DURATION']) * 1000;
+				throw new HitRateLimitError(
+					{
+						limit: Number(env['EMAIL_FLOWS_LIMITER_POINTS'] as string),
+						reset: new Date(Date.now() + resetIn),
+					},
+					{
+						cause: err.message,
+					},
+				);
 			}
 
 			throw err;
