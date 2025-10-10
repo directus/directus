@@ -80,7 +80,7 @@ const done = async (notification: Snackbar) => {
 			<v-card :class="[notification.type]">
 				<v-card-title>{{ notification.title }}</v-card-title>
 				<v-card-text v-if="notification.text || notification.error">
-					{{ notification.text }}
+					<div v-if="notification.text">{{ notification.text }}</div>
 
 					<v-error v-if="notification.error" :error="notification.error" />
 				</v-card-text>

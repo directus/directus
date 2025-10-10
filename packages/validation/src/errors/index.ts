@@ -1,1 +1,7 @@
-export { FailedValidationError } from './failed-validation.js';
+export {
+	FailedValidationError,
+	type FailedValidationErrorExtensions,
+	type ImportRowLine,
+	type ImportRowRange,
+	type FailedValidationErrorExtensionsType,
+} from './failed-validation.js';

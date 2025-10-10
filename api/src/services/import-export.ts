@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import {
+	ErrorCode,
 	ForbiddenError,
 	InvalidPayloadError,
 	ServiceUnavailableError,
@@ -38,14 +39,23 @@ import { getService } from '../utils/get-service.js';
 import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
+import { getDatabaseValidationType } from '../utils/get-database-validation-type.js';
 import { FilesService } from './files.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
 import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
 import { set } from 'lodash-es';
+import {
+	FailedValidationError,
+	type FailedValidationErrorExtensionsType,
+	type ImportRowLine,
+	type ImportRowRange,
+} from '@directus/validation';
 
 const env = useEnv();
 const logger = useLogger();
+
+const MAX_IMPORT_ERRORS = env['MAX_IMPORT_ERRORS'] as number;
 
 export class ImportService {
 	knex: Knex;
@@ -150,115 +160,214 @@ export class ImportService {
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
-		return transaction(this.knex, (trx) => {
+		type ErrorKey = `${string}_${FailedValidationErrorExtensionsType}`;
+		const capturedErrors: Map<ErrorCode, Map<ErrorKey, number[]>> = new Map();
+		let capturedErrorCount = 0;
+
+		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
 				knex: trx,
 				schema: this.schema,
 				accountability: this.accountability,
 			});
 
-			const saveQueue = queue(async (value: Record<string, unknown>) => {
-				return await service.upsertOne(value, { bypassEmitAction: (action) => nestedActionEvents.push(action) });
-			});
+			try {
+				await new Promise<void>((resolve, reject) => {
+					const streams: Stream[] = [stream];
+					let rowNumber = 0;
+					let isRejected = false;
 
-			const transform = (value: string) => {
-				if (value.length === 0) return;
+					const cleanup = (destroy = true) => {
+						if (destroy) {
+							for (const stream of streams) {
+								destroyStream(stream);
+							}
+						}
 
-				try {
-					const parsedJson = parseJSON(value);
+						tmpFile.cleanup().catch(() => {
+							logger.warn(`Failed to cleanup temporary import file (${tmpFile.path})`);
+						});
+					};
 
-					if (typeof parsedJson === 'number') {
-						return value;
-					}
+					const addCapturedError = (err: any, rowNumber: number) => {
+						const field: string | null = err.extensions?.field ?? null;
+						const key = `${field}_${getDatabaseValidationType(err.code, err.extensions)}` as ErrorKey;
 
-					return parsedJson;
-				} catch {
-					return value;
-				}
-			};
+						if (!capturedErrors.has(err.code)) {
+							capturedErrors.set(err.code, new Map());
+						}
 
-			const PapaOptions: Papa.ParseConfig = {
-				header: true,
-				// Trim whitespaces in headers, including the byte order mark (BOM) zero-width no-break space
-				transformHeader: (header) => header.trim(),
-				transform,
-			};
+						const errorsByCode = capturedErrors.get(err.code)!;
 
-			return new Promise<void>((resolve, reject) => {
-				const streams: Stream[] = [stream];
+						if (!errorsByCode.has(key)) {
+							errorsByCode.set(key, []);
+						}
 
-				const cleanup = (destroy = true) => {
-					if (destroy) {
-						for (const stream of streams) {
-							destroyStream(stream);
+						errorsByCode.get(key)!.push(rowNumber);
+					};
+
+					const saveQueue = queue(async (task: { data: Record<string, unknown>; rowNumber: number }) => {
+						try {
+							const result = await service.upsertOne(task.data, {
+								bypassEmitAction: (action) => nestedActionEvents.push(action),
+							});
+
+							return result;
+						} catch (error: any) {
+							capturedErrorCount++;
+
+							const errors = Array.isArray(error) ? error : [error];
+
+							for (const err of errors) {
+								await addCapturedError(err, task.rowNumber);
+							}
+
+							if (capturedErrorCount >= MAX_IMPORT_ERRORS && !isRejected) {
+								isRejected = true;
+
+								cleanup(true);
+								reject();
+							}
+
+							return null;
+						}
+					});
+
+					const fileWriteStream = createWriteStream(tmpFile.path)
+						.on('error', (error) => {
+							cleanup();
+							reject(new Error('Error while writing import data to temporary file', { cause: error }));
+						})
+						.on('finish', () => {
+							const fileReadStream = createReadStream(tmpFile.path).on('error', (error) => {
+								cleanup();
+								reject(new Error('Error while reading import data from temporary file', { cause: error }));
+							});
+
+							streams.push(fileReadStream);
+
+							fileReadStream
+								.pipe(
+									Papa.parse(Papa.NODE_STREAM_INPUT, {
+										header: true,
+										// Trim whitespaces in headers, including the byte order mark (BOM) zero-width no-break space
+										transformHeader: (header) => header.trim(),
+										transform: (value: string, _field?: string | number) => {
+											if (value.length === 0) return undefined;
+
+											try {
+												const parsedJson = parseJSON(value);
+
+												if (typeof parsedJson === 'number') {
+													return value;
+												}
+
+												return parsedJson;
+											} catch {
+												return value;
+											}
+										},
+									}),
+								)
+								.on('data', (obj: Record<string, unknown>) => {
+									rowNumber++;
+
+									const result = {} as Record<string, unknown>;
+
+									for (const field in obj) {
+										if (obj[field] !== undefined) {
+											set(result, field, obj[field]);
+										}
+									}
+
+									saveQueue.push({ data: result, rowNumber });
+								})
+								.on('error', (error) => {
+									cleanup();
+									reject(new InvalidPayloadError({ reason: error.message }));
+								})
+								.on('end', () => {
+									cleanup(false);
+
+									// In case of empty CSV file
+									if (!saveQueue.started) return resolve();
+
+									saveQueue.drain(() => {
+										if (capturedErrorCount > 0) {
+											return reject();
+										}
+
+										for (const nestedActionEvent of nestedActionEvents) {
+											emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+										}
+
+										return resolve();
+									});
+								});
+						});
+
+					streams.push(fileWriteStream);
+
+					stream
+						.on('error', (error) => {
+							cleanup();
+							reject(new Error('Error while retrieving import data', { cause: error }));
+						})
+						.pipe(fileWriteStream);
+				});
+			} catch (error) {
+				function convertToRanges(rows: number[], minRangeSize = 3): Array<ImportRowLine | ImportRowRange> {
+					const sorted = Array.from(new Set(rows)).sort((a, b) => a - b);
+					const result: Array<ImportRowLine | ImportRowRange> = [];
+
+					let start = sorted[0] as number;
+					let prev = sorted[0] as number;
+					let count = 1;
+
+					const flush = () => {
+						if (count >= minRangeSize) {
+							result.push({ type: 'range', start, end: prev });
+						} else {
+							for (let i = start; i <= prev; i++) {
+								result.push({ type: 'line', row: i });
+							}
+						}
+					};
+
+					for (let i = 1; i < sorted.length; i++) {
+						const current = sorted[i] as number;
+
+						if (current === prev + 1) {
+							prev = current;
+							count++;
+						} else {
+							flush();
+							start = prev = current;
+							count = 1;
 						}
 					}
 
-					tmpFile.cleanup().catch(() => {
-						logger.warn(`Failed to cleanup temporary import file (${tmpFile.path})`);
-					});
-				};
+					flush();
+					return result;
+				}
 
-				saveQueue.error((error) => {
-					reject(error);
-				});
+				if (!error && capturedErrorCount > 0) {
+					throw Array.from(capturedErrors.entries()).flatMap(([, fieldMap]) =>
+						Array.from(fieldMap.entries()).map(([compositeKey, rowNumbers]) => {
+							const [field, type] = compositeKey.split('_') as [string, FailedValidationErrorExtensionsType];
 
-				const fileWriteStream = createWriteStream(tmpFile.path)
-					.on('error', (error) => {
-						cleanup();
-						reject(new Error('Error while writing import data to temporary file', { cause: error }));
-					})
-					.on('finish', () => {
-						const fileReadStream = createReadStream(tmpFile.path).on('error', (error) => {
-							cleanup();
-							reject(new Error('Error while reading import data from temporary file', { cause: error }));
-						});
-
-						streams.push(fileReadStream);
-
-						fileReadStream
-							.pipe(Papa.parse(Papa.NODE_STREAM_INPUT, PapaOptions))
-							.on('data', (obj: Record<string, unknown>) => {
-								const result = {};
-
-								// Filter out all undefined fields
-								for (const field in obj) {
-									if (obj[field] !== undefined) {
-										set(result, field, obj[field]);
-									}
-								}
-
-								saveQueue.push(result);
-							})
-							.on('error', (error) => {
-								cleanup();
-								reject(new InvalidPayloadError({ reason: error.message }));
-							})
-							.on('end', () => {
-								cleanup(false);
-
-								// In case of empty CSV file
-								if (!saveQueue.started) return resolve();
-
-								saveQueue.drain(() => {
-									for (const nestedActionEvent of nestedActionEvents) {
-										emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
-									}
-
-									return resolve();
-								});
+							return new FailedValidationError({
+								field,
+								path: [],
+								type,
+								rows: convertToRanges(rowNumbers),
 							});
-					});
+						}),
+					);
+				}
 
-				streams.push(fileWriteStream);
-
-				stream
-					.on('error', (error) => {
-						cleanup();
-						reject(new Error('Error while retrieving import data', { cause: error }));
-					})
-					.pipe(fileWriteStream);
-			});
+				throw error;
+			}
 		});
 	}
 }
