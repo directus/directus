@@ -1,4 +1,5 @@
-import { ContentVersion, Field, User } from '@directus/types';
+import { RELATIONAL_TYPES } from '@directus/constants';
+import { ContentVersion, Field, RelationalType, User } from '@directus/types';
 import { Revision } from '@/types/revisions';
 import { isNil, isEqual } from 'lodash';
 import { i18n } from '@/lang';
@@ -100,8 +101,7 @@ export function getVersionDisplayName(version: ContentVersion): string {
 }
 
 export function isRelationalField(field: Field): boolean {
-	const RELATIONAL_TYPES = ['file', 'files', 'm2o', 'o2m', 'm2m', 'm2a', 'translations'];
-	return field.meta?.special?.find((type) => RELATIONAL_TYPES.includes(type)) !== undefined;
+	return field.meta?.special?.find((type) => RELATIONAL_TYPES.includes(type as RelationalType)) !== undefined;
 }
 
 export function addFieldToSelection(selectedFields: string[], field: string): string[] {
