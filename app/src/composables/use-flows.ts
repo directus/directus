@@ -93,7 +93,7 @@ export function useFlows(options: UseFlowsOptions) {
 		return (
 			!!confirmRunFlow.value &&
 			!!confirmDialogDetails.value &&
-			(!(hasEdits?.value || false) || confirmedUnsavedChanges.value)
+			(!hasEdits.value || confirmedUnsavedChanges.value)
 		);
 	});
 
