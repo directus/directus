@@ -175,6 +175,7 @@ export const DEFAULTS = {
 	METRICS_ENABLED: false,
 	METRICS_SERVICES: 'database,cache,redis,storage',
 	METRICS_SCHEDULE: '*/1 * * * *',
+	METRICS_NAME_PREFIX: 'directus_',
 
 	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
 

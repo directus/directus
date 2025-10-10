@@ -520,6 +520,10 @@ import_data_errors: Import Errors
 import_data_error: This file's data structure doesn't match the collection.
 import_data_error_summary: '{count} import error(s)'
 import_data_error_row: "Row {rows}:\u00A0| Rows {rows}:\u00A0"
+snapshot:
+  export: Export Schema
+  download: Download Snapshot (JSON)
+  info: Schema-only export for sharing or debugging
 label_import: Import
 label_export: Export
 import_export: Import / Export
