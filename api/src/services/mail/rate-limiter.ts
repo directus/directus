@@ -1,21 +1,20 @@
 import { useEnv } from '@directus/env';
 import { RateLimiterQueue } from 'rate-limiter-flexible';
 import { createRateLimiter } from '../../rate-limiter.js';
+import { toBoolean } from '@directus/utils';
 
-let emailQueue: RateLimiterQueue | undefined;
+let emailRateLimiterQueue: RateLimiterQueue | undefined;
 
 const env = useEnv();
 
-if (Boolean(env['EMAIL_LIMITER_ENABLED']) === true) {
-	const rateLimiter = createRateLimiter('EMAIL_LIMITER');
+export function getEmailRateLimiterQueue() {
+    if (!emailRateLimiterQueue && toBoolean(env['EMAIL_LIMITER_ENABLED']) === true) {
+	    const rateLimiter = createRateLimiter('EMAIL_LIMITER');
 
-	emailQueue = new RateLimiterQueue(rateLimiter, {
-		maxQueueSize: Number(env['EMAIL_LIMITER_QUEUE_SIZE']),
-	});
-}
+        emailRateLimiterQueue = new RateLimiterQueue(rateLimiter, {
+            maxQueueSize: Number(env['EMAIL_LIMITER_QUEUE_SIZE']),
+        });
+    }
 
-export async function emailRateLimiterQueue() {
-	if (emailQueue) {
-		await emailQueue.removeTokens(1);
-	}
+    return emailRateLimiterQueue;
 }

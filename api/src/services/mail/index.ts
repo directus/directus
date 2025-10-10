@@ -13,7 +13,7 @@ import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
 import getMailer from '../../mailer.js';
 import { Url } from '../../utils/url.js';
-import { emailRateLimiterQueue } from './rate-limiter.js';
+import { getEmailRateLimiterQueue } from './rate-limiter.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -55,7 +55,11 @@ export class MailService {
 	}
 
 	async send<T>(options: EmailOptions): Promise<T | null> {
-		await emailRateLimiterQueue();
+		try {
+			await getEmailRateLimiterQueue()?.removeTokens(1);
+		} catch(err: unknown) {
+			throw err;
+		}
 
 		const payload = await emitter.emitFilter(`email.send`, options, {});
 

@@ -3,7 +3,7 @@ import type { EmailOptions } from '../../services/mail/index.js';
 import { MailService } from '../../services/mail/index.js';
 import { md } from '../../utils/md.js';
 import { useLogger } from '../../logger/index.js';
-import { emailFlowsRateLimiter } from './rate-limiter.js';
+import { getFlowsEmailRateLimiter } from './rate-limiter.js';
 import { HitRateLimitError } from '@directus/errors';
 
 export type Options = {
@@ -28,7 +28,7 @@ export default defineOperationApi<Options>({
 		{ accountability, database, getSchema, flow, env },
 	) => {
 		try {
-			await emailFlowsRateLimiter(flow!.id);
+			await getFlowsEmailRateLimiter()?.consume(flow!.id, 1);
 		} catch (err: any) {
 			if (err && err.msBeforeNext) {
 				throw new HitRateLimitError({
