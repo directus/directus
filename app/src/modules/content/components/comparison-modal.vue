@@ -275,7 +275,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 				<div class="columns">
 					<div class="col left">
 						<div class="fields-changed">
-							{{ t('n_differences', { count: availableFieldsCount }, availableFieldsCount) }}
+							{{ t('n_differences', { count: availableFieldsCount }) }}
 						</div>
 					</div>
 					<div class="col right">
