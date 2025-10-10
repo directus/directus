@@ -7,6 +7,7 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
+import { parsePrefillValues } from '@/utils/parse-prefill-values';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
@@ -39,6 +40,7 @@ const props = withDefaults(defineProps<Props>(), {
 const { t, te } = useI18n();
 
 const router = useRouter();
+const route = useRoute();
 const { collectionRoute } = useCollectionRoute();
 
 const form = ref<HTMLElement>();
@@ -64,6 +66,9 @@ const {
 	validationErrors: versionValidationErrors,
 } = useVersions(collection, isSingleton, primaryKey);
 
+// Extract prefill values from URL query parameters for new items
+const prefillValues = computed(() => parsePrefillValues(route.query));
+
 const {
 	isNew,
 	edits,
@@ -82,7 +87,7 @@ const {
 	saveAsCopy,
 	refresh,
 	validationErrors: itemValidationErrors,
-} = useItem(collection, primaryKey, query);
+} = useItem(collection, primaryKey, query, prefillValues);
 
 const validationErrors = computed(() => {
 	if (currentVersion.value === null) return itemValidationErrors.value;
