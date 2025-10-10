@@ -10,8 +10,8 @@ if (Boolean(env['EMAIL_FLOWS_LIMITER_ENABLED']) === true) {
     emailLimiter = createRateLimiter('EMAIL_FLOWS_LIMITER');
 }
 
-export async function emailFlowsRateLimiter() {
+export async function emailFlowsRateLimiter(flow_id: string) {
     if (emailLimiter) {
-        await emailLimiter.consume(1);
+        await emailLimiter.consume(flow_id, 1);
     }
 }

@@ -3,6 +3,8 @@ import type { EmailOptions } from '../../services/mail/index.js';
 import { MailService } from '../../services/mail/index.js';
 import { md } from '../../utils/md.js';
 import { useLogger } from '../../logger/index.js';
+import { emailFlowsRateLimiter } from './rate-limiter.js';
+import { HitRateLimitError } from '@directus/errors';
 
 export type Options = {
 	to: string;
@@ -23,8 +25,21 @@ export default defineOperationApi<Options>({
 
 	handler: async (
 		{ body, template, data, to, type, subject, cc, bcc, replyTo },
-		{ accountability, database, getSchema },
+		{ accountability, database, getSchema, flow, env },
 	) => {
+		try {
+			await emailFlowsRateLimiter(flow!.id);
+		} catch (err: any) {
+			if (err && err.msBeforeNext) {
+				throw new HitRateLimitError({
+					limit: +(env['EMAIL_FLOWS_LIMITER_POINTS'] as string),
+					reset: new Date(Date.now() + err.msBeforeNext),
+				});
+			}
+
+			throw err;
+		}
+
 		const mailService = new MailService({ schema: await getSchema({ database }), accountability, knex: database });
 		const mailObject: EmailOptions = { to, subject, cc, bcc, replyTo };
 		const safeBody = typeof body !== 'string' ? JSON.stringify(body) : body;
