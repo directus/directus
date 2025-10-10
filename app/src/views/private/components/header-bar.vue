@@ -176,7 +176,7 @@ onUnmounted(() => {
 
 	&.small {
 		inset-block-start: 0;
-		block-size: 56px;
+		block-size: 52px;
 	}
 
 	&.small .title-container .headline {
