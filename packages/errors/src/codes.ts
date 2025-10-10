@@ -1,10 +1,8 @@
 export enum ErrorCode {
 	ContainsNullValues = 'CONTAINS_NULL_VALUES',
 	ContentTooLarge = 'CONTENT_TOO_LARGE',
-	FailedValidation = 'FAILED_VALIDATION',
 	Forbidden = 'FORBIDDEN',
 	IllegalAssetTransformation = 'ILLEGAL_ASSET_TRANSFORMATION',
-	ImportStructureError = 'IMPORT_STRUCTURE_ERROR',
 	Internal = 'INTERNAL_SERVER_ERROR',
 	InvalidCredentials = 'INVALID_CREDENTIALS',
 	InvalidForeignKey = 'INVALID_FOREIGN_KEY',

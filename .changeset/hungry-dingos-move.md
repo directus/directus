@@ -1,7 +1,7 @@
 ---
 '@directus/api': minor
-'@directus/errors': patch
-'@directus/utils': patch
+'@directus/validation': patch
+'@directus/env': patch
 '@directus/app': patch
 ---
 
