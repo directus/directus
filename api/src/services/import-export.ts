@@ -46,7 +46,7 @@ import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
 import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
 import { set } from 'lodash-es';
-import { FailedValidationError } from '@directus/validation';
+import { FailedValidationError, type FailedValidationErrorExtensionsType } from '@directus/validation';
 
 const env = useEnv();
 const logger = useLogger();
@@ -156,7 +156,7 @@ export class ImportService {
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
-		type ErrorKey = `${string}_${ClientFilterOperator | 'required' | 'email'}`;
+		type ErrorKey = `${string}_${FailedValidationErrorExtensionsType}`;
 		const capturedErrors: Map<ErrorCode, Map<ErrorKey, number[]>> = new Map();
 		let capturedErrorCount = 0;
 
@@ -363,7 +363,7 @@ export class ImportService {
 							return new FailedValidationError({
 								field,
 								path: [],
-								type: type as ClientFilterOperator | 'required' | 'email',
+								type: type as FailedValidationErrorExtensionsType,
 								rows: convertToRanges(rowNumbers),
 							});
 						}),
