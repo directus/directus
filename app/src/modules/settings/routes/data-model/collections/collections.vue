@@ -137,8 +137,8 @@ async function onSort(updates: Collection[], removeGroup = false) {
 		</template>
 
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="database" />
+			<v-button class="header-icon" rounded icon exact disabled small>
+				<v-icon name="database" small />
 			</v-button>
 		</template>
 
@@ -148,18 +148,19 @@ async function onSort(updates: Collection[], removeGroup = false) {
 				:show-filter="false"
 				:autofocus="collectionsStore.collections.length - systemCollections.length > 25"
 				:placeholder="t('search_collection')"
+				small
 			/>
 
 			<collection-dialog v-model="collectionDialogActive">
 				<template #activator="{ on }">
-					<v-button v-tooltip.bottom="t('create_folder')" rounded icon secondary @click="on">
-						<v-icon name="create_new_folder" />
+					<v-button v-tooltip.bottom="t('create_folder')" rounded icon secondary small @click="on">
+						<v-icon name="create_new_folder" small />
 					</v-button>
 				</template>
 			</collection-dialog>
 
-			<v-button v-tooltip.bottom="t('create_collection')" rounded icon to="/settings/data-model/+">
-				<v-icon name="add" />
+			<v-button v-tooltip.bottom="t('create_collection')" rounded small icon to="/settings/data-model/+">
+				<v-icon name="add" small />
 			</v-button>
 		</template>
 

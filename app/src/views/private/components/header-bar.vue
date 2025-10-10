@@ -100,7 +100,8 @@ onUnmounted(() => {
 		display: none;
 
 		@media (min-width: 960px) {
-			display: block;
+			display: flex;
+			gap: 3px;
 		}
 	}
 

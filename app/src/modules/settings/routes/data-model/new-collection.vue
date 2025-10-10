@@ -494,9 +494,10 @@ function onApply() {
 				:disabled="!collectionName || collectionName.length === 0"
 				icon
 				rounded
+				small
 				@click="currentTab = ['optional_system_fields']"
 			>
-				<v-icon name="arrow_forward" />
+				<v-icon name="arrow_forward" small />
 			</v-button>
 			<v-button
 				v-if="currentTab[0] === 'optional_system_fields'"
@@ -504,9 +505,10 @@ function onApply() {
 				:loading="saving"
 				icon
 				rounded
+				small
 				@click="save"
 			>
-				<v-icon name="check" />
+				<v-icon name="check" small />
 			</v-button>
 		</template>
 	</v-drawer>

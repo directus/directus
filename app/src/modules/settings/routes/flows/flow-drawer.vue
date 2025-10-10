@@ -267,9 +267,10 @@ function onApply() {
 				:loading="saving"
 				icon
 				rounded
+				small
 				@click="onApplyFlowSetup"
 			>
-				<v-icon :name="isNew ? 'arrow_forward' : 'check'" />
+				<v-icon :name="isNew ? 'arrow_forward' : 'check'" small />
 			</v-button>
 			<v-button
 				v-if="currentTab[0] === 'trigger_setup'"
@@ -278,9 +279,10 @@ function onApply() {
 				:loading="saving"
 				icon
 				rounded
+				small
 				@click="save"
 			>
-				<v-icon name="check" />
+				<v-icon name="check" small />
 			</v-button>
 		</template>
 	</v-drawer>

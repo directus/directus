@@ -54,7 +54,7 @@ const roleFilter = ref<Filter | null>(null);
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" collection="directus_activity" />
+				<search-input v-model="search" v-model:filter="filter" collection="directus_activity" small />
 			</template>
 
 			<template #navigation>

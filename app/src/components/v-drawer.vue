@@ -116,8 +116,8 @@ const internalActive = computed({
 
 						<template #title-outer:prepend>
 							<slot name="title-outer:prepend">
-								<v-button class="header-icon" rounded icon secondary disabled>
-									<v-icon :name="icon" />
+								<v-button class="header-icon" rounded icon secondary disabled small>
+									<v-icon :name="icon" small />
 								</v-button>
 							</slot>
 						</template>

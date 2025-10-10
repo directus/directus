@@ -266,9 +266,10 @@ function useTab() {
 				icon
 				rounded
 				:loading="promoting"
+				small
 				@click="onPromoteClick"
 			>
-				<v-icon name="check" />
+				<v-icon name="check" small />
 			</v-button>
 		</template>
 	</v-drawer>

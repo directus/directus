@@ -121,8 +121,8 @@ function clearFilters() {
 			:sidebar-shadow="currentLayout?.sidebarShadow"
 		>
 			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded icon exact disabled>
-					<v-icon name="translate" />
+				<v-button class="header-icon" rounded icon exact disabled small>
+					<v-icon name="translate" small />
 				</v-button>
 			</template>
 
@@ -135,12 +135,12 @@ function clearFilters() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" collection="directus_translations" />
+				<search-input v-model="search" v-model:filter="filter" collection="directus_translations" small />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
-						<v-button v-tooltip.bottom="t('delete_label')" rounded icon class="action-delete" secondary @click="on">
-							<v-icon name="delete" outline />
+						<v-button v-tooltip.bottom="t('delete_label')" rounded icon class="action-delete" secondary small @click="on">
+							<v-icon name="delete" outline small />
 						</v-button>
 					</template>
 
@@ -164,13 +164,14 @@ function clearFilters() {
 					rounded
 					icon
 					secondary
+					small
 					@click="batchEditActive = true"
 				>
-					<v-icon name="edit" outline />
+					<v-icon name="edit" outline small />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('create_custom_translation')" rounded icon :to="addNewLink">
-					<v-icon name="add" />
+				<v-button v-tooltip.bottom="t('create_custom_translation')" rounded icon :to="addNewLink" small>
+					<v-icon name="add" small />
 				</v-button>
 			</template>
 

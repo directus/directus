@@ -4,26 +4,21 @@ import VIcon from '@/components/v-icon/v-icon.vue';
 import HeaderBar from '../../components/header-bar.vue';
 import { useNavBarStore } from '../stores/nav-bar';
 
-defineProps<{ title?: string, shadow: boolean }>();
+defineProps<{ title?: string; shadow: boolean }>();
 
 const menuBarStore = useNavBarStore();
 </script>
 
 <template>
-	<HeaderBar
-		small
-		show-sidebar-toggle
-		:shadow
-		:title
-	>
+	<HeaderBar small show-sidebar-toggle :shadow :title>
 		<template #actions:append><slot name="actions:append" /></template>
 		<template #actions:prepend><slot name="actions:prepend" /></template>
 		<template #actions><slot name="actions" /></template>
 		<template #headline><slot name="headline" /></template>
 		<template #title-outer:append><slot name="title-outer:append" /></template>
 		<template #title-outer:prepend>
-			<VButton v-if="menuBarStore.collapsed" class="nav-toggle" icon rounded small @click="menuBarStore.collapsed = false">
-				<VIcon name="menu" small />
+			<VButton class="nav-toggle" icon rounded @click="menuBarStore.collapsed = !menuBarStore.collapsed">
+				<VIcon :name="menuBarStore.collapsed ? 'left_panel_open' : 'left_panel_close'" />
 			</VButton>
 
 			<slot name="title-outer:prepend" />

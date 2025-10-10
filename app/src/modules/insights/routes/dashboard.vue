@@ -199,8 +199,8 @@ const refreshInterval = computed({
 	<insights-not-found v-if="!currentDashboard" />
 	<private-view v-else :title="currentDashboard.name">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon :name="currentDashboard.icon" />
+			<v-button class="header-icon" rounded disabled icon secondary small>
+				<v-icon :name="currentDashboard.icon" small />
 			</v-button>
 		</template>
 
@@ -215,14 +215,22 @@ const refreshInterval = computed({
 					class="clear-changes"
 					rounded
 					icon
+					small
 					outlined
 					@click="cancelChanges"
 				>
-					<v-icon name="clear" />
+					<v-icon name="clear" small />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('create_panel')" rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
-					<v-icon name="add" />
+				<v-button
+					v-tooltip.bottom="t('create_panel')"
+					rounded
+					icon
+					outlined
+					:to="`/insights/${currentDashboard.id}/+`"
+					small
+				>
+					<v-icon name="add" small />
 				</v-button>
 
 				<v-button
@@ -230,10 +238,11 @@ const refreshInterval = computed({
 					:disabled="!hasEdits"
 					rounded
 					icon
+					small
 					:loading="saving"
 					@click="saveChanges"
 				>
-					<v-icon name="check" />
+					<v-icon name="check" small />
 				</v-button>
 			</template>
 
@@ -244,10 +253,11 @@ const refreshInterval = computed({
 					class="zoom-to-fit"
 					rounded
 					icon
+					small
 					outlined
 					@click="toggleZoomToFit"
 				>
-					<v-icon name="aspect_ratio" />
+					<v-icon name="aspect_ratio" small />
 				</v-button>
 
 				<v-button
@@ -257,9 +267,10 @@ const refreshInterval = computed({
 					rounded
 					icon
 					outlined
+					small
 					@click="toggleFullScreen"
 				>
-					<v-icon name="fullscreen" />
+					<v-icon name="fullscreen" small />
 				</v-button>
 
 				<v-button
@@ -268,10 +279,11 @@ const refreshInterval = computed({
 					rounded
 					icon
 					outlined
+					small
 					:disabled="!updateAllowed"
 					@click="editMode = !editMode"
 				>
-					<v-icon name="edit" />
+					<v-icon name="edit" small />
 				</v-button>
 			</template>
 		</template>

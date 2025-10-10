@@ -82,8 +82,8 @@ function clearFilters() {
 			<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded icon exact disabled>
-					<v-icon name="anchor" />
+				<v-button class="header-icon" rounded icon exact disabled small>
+					<v-icon name="anchor" small />
 				</v-button>
 			</template>
 
@@ -92,12 +92,12 @@ function clearFilters() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" collection="directus_webhooks" />
+				<search-input v-model="search" collection="directus_webhooks" small />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
-						<v-button rounded icon class="action-delete" secondary @click="on">
-							<v-icon name="delete" />
+						<v-button rounded icon class="action-delete" secondary small @click="on">
+							<v-icon name="delete" small />
 						</v-button>
 					</template>
 

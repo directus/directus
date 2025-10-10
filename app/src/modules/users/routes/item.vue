@@ -281,8 +281,8 @@ function revert(values: Record<string, any>) {
 <template>
 	<private-view :title="title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="navigateBack">
-				<v-icon name="arrow_back" />
+			<v-button class="header-icon" rounded icon secondary exact small @click="navigateBack">
+				<v-icon name="arrow_back" small />
 			</v-button>
 		</template>
 
@@ -305,9 +305,10 @@ function revert(values: Record<string, any>) {
 						class="action-delete"
 						secondary
 						:disabled="item === null || deleteAllowed !== true"
+						small
 						@click="on"
 					>
-						<v-icon name="delete" />
+						<v-icon name="delete" small />
 					</v-button>
 				</template>
 
@@ -340,9 +341,10 @@ function revert(values: Record<string, any>) {
 						icon
 						secondary
 						:disabled="item === null || archiveAllowed !== true"
+						small
 						@click="on"
 					>
-						<v-icon :name="isArchived ? 'unarchive' : 'archive'" />
+						<v-icon :name="isArchived ? 'unarchive' : 'archive'" small />
 					</v-button>
 				</template>
 
@@ -366,9 +368,10 @@ function revert(values: Record<string, any>) {
 				icon
 				:loading="saving"
 				:disabled="!isSavable"
+				small
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" />
+				<v-icon name="check" small />
 
 				<template #append-outer>
 					<save-options
