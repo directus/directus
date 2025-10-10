@@ -13,17 +13,10 @@ import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
 import getMailer from '../../mailer.js';
 import { Url } from '../../utils/url.js';
-import { createRateLimiter } from '../../rate-limiter.js';
-import { RateLimiterQueue } from 'rate-limiter-flexible';
+import { emailRateLimiter } from './rate-limiter.js';
 
 const env = useEnv();
 const logger = useLogger();
-
-const mailLimiter = createRateLimiter('RATE_LIMITER_EMAIL');
-
-const mailQueue = new RateLimiterQueue(mailLimiter, {
-	maxQueueSize: 1_000_000,
-});
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -62,9 +55,7 @@ export class MailService {
 	}
 
 	async send<T>(options: EmailOptions): Promise<T | null> {
-		if (env['RATE_LIMITER_EMAIL_ENABLED'] === true) {
-			await mailQueue.removeTokens(1);
-		}
+		await emailRateLimiter();
 
 		const payload = await emitter.emitFilter(`email.send`, options, {});
 
