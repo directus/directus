@@ -6,6 +6,7 @@ import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
+import { isRelationalField } from '@/modules/content/comparison-utils';
 import type { ContentVersion, Filter } from '@directus/types';
 import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
 import { groupBy, orderBy, isEqual, mergeWith } from 'lodash';
@@ -208,9 +209,12 @@ export function useRevisions(
 					const differentFields: string[] = [];
 
 					for (const field of Object.keys(revisionData)) {
-						if (isReadOnlyField(field)) {
-							continue;
-						}
+						if (isReadOnlyField(field)) continue;
+
+						// Ignore relational fields for diff and field counts
+						const collectionFields = fieldsStore.getFieldsForCollection(unref(collection));
+						const fieldInfo = collectionFields.find((f) => f.field === field);
+						if (fieldInfo && isRelationalField(fieldInfo)) continue;
 
 						const newValue = (revisionData as any)[field];
 						const currentValue = (currentItemMerged as any)[field];

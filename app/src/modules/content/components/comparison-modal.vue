@@ -6,7 +6,6 @@ import { ref, toRefs, unref, watch, computed, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
-import type { ComparisonContext } from '@/components/v-form/types';
 import { useComparison } from '../composables/use-comparison';
 import { type ComparisonData } from '../comparison-utils';
 import { isEqual } from 'lodash';
@@ -62,6 +61,12 @@ const modalLoading = ref(false);
 
 // Show debug button only when debug query parameter is present
 const showDebugButton = computed(() => route.query.debug !== undefined);
+
+const incomingTooltipMessage = computed(() => {
+	if (isRevisionMode.value) return `${t('changes_made')} ${t('no_relational_data')}`;
+	if (comparisonData.value?.outdated) return t('main_updated_notice');
+	return undefined;
+});
 
 const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
 
@@ -211,14 +216,13 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.base || {}"
-									:comparison="
-										{
-											side: 'base',
-											fields: comparisonFields,
-											selectedFields: [],
-											onToggleField: () => {},
-										} as ComparisonContext
-									"
+									:comparison="{
+										side: 'base',
+										fields: comparisonFields,
+										selectedFields: [],
+										onToggleField: () => {},
+										comparisonType: comparisonData?.comparisonType,
+									}"
 									class="comparison-form--main"
 								/>
 							</template>
@@ -234,6 +238,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 							:user-loading="userLoading"
 							:show-delta-dropdown="isRevisionMode"
 							:comparison-data="comparisonData"
+							:tooltip-message="incomingTooltipMessage"
 							@delta-change="onDeltaSelectionChange"
 						/>
 						<div class="comparison-content-divider"></div>
@@ -252,14 +257,13 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.incoming || {}"
-									:comparison="
-										{
-											side: 'incoming',
-											fields: comparisonFields,
-											selectedFields: selectedComparisonFields,
-											onToggleField: toggleComparisonField,
-										} as ComparisonContext
-									"
+									:comparison="{
+										side: 'incoming',
+										fields: comparisonFields,
+										selectedFields: selectedComparisonFields,
+										onToggleField: toggleComparisonField,
+										comparisonType: comparisonData?.comparisonType,
+									}"
 									class="comparison-form--current"
 								/>
 							</template>
@@ -271,7 +275,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 				<div class="columns">
 					<div class="col left">
 						<div class="fields-changed">
-							{{ t('updated_field_count', { count: availableFieldsCount }, availableFieldsCount) }}
+							{{ t('n_differences', { count: availableFieldsCount }) }}
 						</div>
 					</div>
 					<div class="col right">
