@@ -14,7 +14,7 @@ if (Boolean(env['EMAIL_LIMITER_ENABLED']) === true) {
 	});
 }
 
-export async function emailRateLimiter() {
+export async function emailRateLimiterQueue() {
 	if (emailQueue) {
 		await emailQueue.removeTokens(1);
 	}
