@@ -4,10 +4,10 @@
 '@directus/app': patch
 ---
 
-Revived unused RELATIONAL_TYPES constant by removing non-relational types and applying where applicable
+Removed non-relational types from `RELATIONAL_TYPES` constant
 
 ::: notice
 
-Reintroducing and modifying the RELATIONAL_TYPES constant may break extensions or external code relying on the previous structure
+Extensions or external code using `RELATIONAL_TYPES` should note the excluded `presentation` and `group`.
 
 :::
