@@ -100,7 +100,7 @@ export function useFlows(options: UseFlowsOptions) {
 	function getFlowTooltip(manualFlow: FlowRaw) {
 		if (location.value === 'item') return t('run_flow_on_current');
 
-		if (manualFlow.options?.requireSelection === false && (selection?.value.length || 0) === 0) {
+		if (manualFlow.options?.requireSelection === false && selection.value.length === 0) {
 			return t('run_flow_on_current_collection');
 		}
 
