@@ -109,7 +109,7 @@ export function useFlows(options: UseFlowsOptions) {
 
 	function isFlowDisabled(manualFlow: FlowRaw) {
 		if (location.value === 'item' || manualFlow.options?.requireSelection === false) return false;
-		return !primaryKey?.value && (selection?.value.length || 0) === 0;
+		return !primaryKey.value && selection.value.length === 0;
 	}
 
 	function resetConfirm() {
