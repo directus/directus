@@ -453,7 +453,6 @@ index: Index
 updated_on: Updated On
 updated_by: Updated By
 primary_key: Primary Key
-foreign_key: Foreign Key
 field_key: Field Key
 finish_setup: Finish Setup
 dismiss: Dismiss
@@ -519,6 +518,7 @@ import_data_success: Data successfully imported from {filename}
 import_data_errors: Import Errors
 import_data_error: This file's data structure doesn't match the collection.
 import_data_error_summary: '{count} import error(s)'
+import_data_error_row: "Row {rows}:\u00A0| Rows {rows}:\u00A0"
 label_import: Import
 label_export: Export
 import_export: Import / Export

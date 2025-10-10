@@ -2,7 +2,6 @@ import { useEnv } from '@directus/env';
 import {
 	ErrorCode,
 	ForbiddenError,
-	InvalidImportError,
 	InvalidPayloadError,
 	ServiceUnavailableError,
 	UnsupportedMediaTypeError,
@@ -12,6 +11,7 @@ import type {
 	AbstractServiceOptions,
 	Accountability,
 	ActionEventParams,
+	ClientFilterOperator,
 	ExportFormat,
 	File,
 	Query,
@@ -46,13 +46,12 @@ import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
 import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
 import { set } from 'lodash-es';
-import type { Readable as NodeReadable } from 'node:stream';
+import { FailedValidationError } from '@directus/validation';
 
 const env = useEnv();
 const logger = useLogger();
 
-const MAX_IMPORT_ERRORS = 1000; // Maximum individual errors to collect before stopping
-const MAX_DISPLAY_ERRORS = 50; // Maximum error groups to return in API response
+const MAX_IMPORT_ERRORS = 1000;
 
 export class ImportService {
 	knex: Knex;
@@ -157,34 +156,9 @@ export class ImportService {
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
-		let csvReadStream: NodeReadable | null = null;
-		let hasReachedErrorLimit = false;
-
-		// Structured, machine-readable errors to return in error.extensions
-		const structuredRows: Array<{
-			row: number;
-			code?: string;
-			field?: string | null;
-			value?: unknown;
-			reason: string;
-			type: string;
-		}> = [];
-
-		const addStructuredError = (error: {
-			row: number;
-			code: string;
-			field: string | null;
-			value: unknown;
-			reason: string;
-			type: string;
-		}) => {
-			structuredRows.push(error);
-
-			if (structuredRows.length >= MAX_IMPORT_ERRORS) {
-				hasReachedErrorLimit = true;
-				if (csvReadStream) csvReadStream.destroy();
-			}
-		};
+		type ErrorKey = `${string}_${ClientFilterOperator | 'required' | 'email'}`;
+		const capturedErrors: Map<ErrorCode, Map<ErrorKey, number[]>> = new Map();
+		let capturedErrorCount = 0;
 
 		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
@@ -193,296 +167,210 @@ export class ImportService {
 				accountability: this.accountability,
 			});
 
-			const saveQueue = queue(async (task: { data: Record<string, unknown>; rowNumber: number }) => {
-				// Skip processing if we've already reached the error limit
-				if (hasReachedErrorLimit) return null;
+			try {
+				await new Promise<void>((resolve, reject) => {
+					const streams: Stream[] = [stream];
+					let rowNumber = 0;
+					let isRejected = false;
 
-				try {
-					const result = await service.upsertOne(task.data, {
-						bypassEmitAction: (action) => nestedActionEvents.push(action),
-					});
-
-					return result;
-				} catch (error: any) {
-					const processError = async (err: any): Promise<void> => {
-						const field: string | null = err.extensions?.field ?? null;
-						let customMessage = err.message || 'Validation error';
-
-						if (field) {
-							try {
-								const fieldMeta = await trx
-									.select('validation_message')
-									.from('directus_fields')
-									.where({ collection, field })
-									.first();
-
-								if (fieldMeta?.validation_message) {
-									customMessage = fieldMeta.validation_message;
-								}
-							} catch (dbError) {
-								logger.warn(
-									`Failed to fetch validation_message for field ${collection}.${field}: ${dbError instanceof Error ? dbError.message : String(dbError)}`,
-								);
+					const cleanup = (destroy = true) => {
+						if (destroy) {
+							for (const stream of streams) {
+								destroyStream(stream);
 							}
 						}
 
-						addStructuredError({
-							row: task.rowNumber,
-							code: err.code,
-							field: field ?? null,
-							value: field ? task.data[field] : undefined,
-							reason: customMessage,
-							type: getDatabaseValidationType(err.code, err.extensions),
+						tmpFile.cleanup().catch(() => {
+							logger.warn(`Failed to cleanup temporary import file (${tmpFile.path})`);
 						});
 					};
 
-					// Process single error or array of errors
-					const errors = Array.isArray(error) ? error : [error];
+					const addCapturedError = (err: any, rowNumber: number) => {
+						const field: string | null = err.extensions?.field ?? null;
+						const key = `${field}_${getDatabaseValidationType(err.code, err.extensions)}` as ErrorKey;
 
-					for (const err of errors) {
-						await processError(err);
-					}
-
-					return null;
-				}
-			});
-
-			const transform = (value: string, _field?: string | number) => {
-				if (value.length === 0) return undefined;
-
-				try {
-					const parsedJson = parseJSON(value);
-
-					if (typeof parsedJson === 'number') {
-						return value;
-					}
-
-					return parsedJson;
-				} catch {
-					return value;
-				}
-			};
-
-			const PapaOptions: Papa.ParseConfig = {
-				header: true,
-				skipEmptyLines: true,
-				// Trim whitespaces in headers, including the byte order mark (BOM) zero-width no-break space
-				transformHeader: (header) => header.trim(),
-				transform,
-			};
-
-			return new Promise<void>((resolve, reject) => {
-				const streams: Stream[] = [stream];
-				let rowNumber = 1;
-
-				const cleanup = (destroy = true) => {
-					if (destroy) {
-						for (const stream of streams) {
-							destroyStream(stream);
+						if (!capturedErrors.has(err.code)) {
+							capturedErrors.set(err.code, new Map());
 						}
-					}
 
-					tmpFile.cleanup().catch(() => {
-						logger.warn(`Failed to cleanup temporary import file (${tmpFile.path})`);
-					});
-				};
+						const errorsByCode = capturedErrors.get(err.code)!;
 
-				// Function to group similar errors for better UX and smaller payload
-				const groupSimilarErrors = (
-					errors: Array<{
-						row: number;
-						code?: string;
-						field?: string | null;
-						value?: unknown;
-						reason: string;
-						type: string;
-					}>,
-				) => {
-					const groups = new Map<
-						string,
-						{
-							rows: number[];
-							code?: string;
-							field?: string | null;
-							reason: string;
-							type: string;
-							sampleValue?: unknown;
+						if (!errorsByCode.has(key)) {
+							errorsByCode.set(key, []);
 						}
-					>();
 
-					// Group errors by field + reason + code
-					errors.forEach((error) => {
-						const key = `${error.field || 'unknown'}|${error.reason}|${error.code}`;
+						errorsByCode.get(key)!.push(rowNumber);
+					};
 
-						if (!groups.has(key)) {
-							groups.set(key, {
-								rows: [],
-								code: error.code || ErrorCode.FailedValidation,
-								field: error.field || null,
-								reason: error.reason,
-								type: error.type,
-								sampleValue: error.value,
+					const saveQueue = queue(async (task: { data: Record<string, unknown>; rowNumber: number }) => {
+						try {
+							const result = await service.upsertOne(task.data, {
+								bypassEmitAction: (action) => nestedActionEvents.push(action),
 							});
-						}
 
-						groups.get(key)!.rows.push(error.row);
-					});
+							return result;
+						} catch (error: any) {
+							capturedErrorCount++;
 
-					// Convert groups to final format with row ranges
-					return Array.from(groups.values()).map((group) => {
-						const sortedRows = group.rows.sort((a, b) => a - b);
+							const errors = Array.isArray(error) ? error : [error];
 
-						const ranges: string[] = [];
-						let start = sortedRows[0]!;
-						let end = sortedRows[0]!;
-
-						for (let i = 1; i < sortedRows.length; i++) {
-							if (sortedRows[i]! === end + 1) {
-								end = sortedRows[i]!;
-							} else {
-								ranges.push(start === end ? `${start}` : `${start}-${end}`);
-								start = end = sortedRows[i]!;
+							for (const err of errors) {
+								await addCapturedError(err, task.rowNumber);
 							}
+
+							if (capturedErrorCount >= MAX_IMPORT_ERRORS && !isRejected) {
+								isRejected = true;
+
+								cleanup(true);
+								reject();
+							}
+
+							return null;
 						}
-
-						ranges.push(start === end ? `${start}` : `${start}-${end}`);
-
-						return {
-							code: group.code!,
-							collection,
-							field: group.field || '',
-							type: group.type,
-							group: null,
-							rows: ranges.join(', '),
-							count: group.rows.length,
-							reason: group.reason,
-						};
 					});
-				};
 
-				saveQueue.drain(() => {
-					if (structuredRows.length > 0) {
-						cleanup();
-
-						const groupedErrors = groupSimilarErrors(structuredRows);
-						const limitedErrors = groupedErrors.slice(0, MAX_DISPLAY_ERRORS);
-						const hasMoreErrors = groupedErrors.length > MAX_DISPLAY_ERRORS;
-
-						reject(
-							new InvalidImportError({
-								reason: `Import failed with ${structuredRows.length} validation error(s)${structuredRows.length >= MAX_IMPORT_ERRORS ? ' (processing stopped due to error limit)' : ''}`,
-								rows: limitedErrors,
-								totalErrors: structuredRows.length,
-								...(hasMoreErrors && { hasMoreErrors: true, totalErrorGroups: groupedErrors.length }),
-							}),
-						);
-
-						return;
-					}
-
-					for (const nestedActionEvent of nestedActionEvents) {
-						emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
-					}
-
-					resolve();
-				});
-
-				const fileWriteStream = createWriteStream(tmpFile.path)
-					.on('error', (error) => {
-						cleanup();
-						reject(new Error('Error while writing import data to temporary file', { cause: error }));
-					})
-					.on('finish', () => {
-						const fileReadStream = createReadStream(tmpFile.path).on('error', (error) => {
+					const fileWriteStream = createWriteStream(tmpFile.path)
+						.on('error', (error) => {
 							cleanup();
-							reject(new Error('Error while reading import data from temporary file', { cause: error }));
+							reject(new Error('Error while writing import data to temporary file', { cause: error }));
+						})
+						.on('finish', () => {
+							const fileReadStream = createReadStream(tmpFile.path).on('error', (error) => {
+								cleanup();
+								reject(new Error('Error while reading import data from temporary file', { cause: error }));
+							});
+
+							streams.push(fileReadStream);
+
+							fileReadStream
+								.pipe(Papa.parse(Papa.NODE_STREAM_INPUT, {
+									header: true,
+									// Trim whitespaces in headers, including the byte order mark (BOM) zero-width no-break space
+									transformHeader: (header) => header.trim(),
+									transform: (value: string, _field?: string | number) => {
+										if (value.length === 0) return undefined;
+
+										try {
+											const parsedJson = parseJSON(value);
+
+											if (typeof parsedJson === 'number') {
+												return value;
+											}
+
+											return parsedJson;
+										} catch {
+											return value;
+										}
+									},
+								}))
+								.on('data', (obj: Record<string, unknown>) => {
+									rowNumber++;
+
+									const result = {} as Record<string, unknown>;
+
+									for (const field in obj) {
+										if (obj[field] !== undefined) {
+											set(result, field, obj[field]);
+										}
+									}
+
+									saveQueue.push({ data: result, rowNumber });
+								})
+								.on('error', (error) => {
+									cleanup();
+									reject(new InvalidPayloadError({ reason: error.message }));
+								})
+								.on('end', () => {
+									cleanup(false);
+
+									// In case of empty CSV file
+									if (!saveQueue.started) return resolve();
+
+									saveQueue.drain(() => {
+										if (capturedErrorCount > 0) {
+											return reject();
+										}
+
+										for (const nestedActionEvent of nestedActionEvents) {
+											emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+										}
+
+										return resolve();
+									});
+								});
 						});
 
-						csvReadStream = fileReadStream;
-						streams.push(fileReadStream);
+					streams.push(fileWriteStream);
 
-						fileReadStream
-							.pipe(Papa.parse(Papa.NODE_STREAM_INPUT, PapaOptions))
-							.on('data', (obj: Record<string, unknown>) => {
-								rowNumber++;
+					stream
+						.on('error', (error) => {
+							cleanup();
+							reject(new Error('Error while retrieving import data', { cause: error }));
+						})
+						.pipe(fileWriteStream);
+				});
+			} catch (error) {
+				function convertToRanges(rowNumbers: number[]): Array<
+					| { type: 'line'; row: number }
+					| { type: 'range'; start: number; end: number }
+				> {
+					if (rowNumbers.length === 0) return [];
 
-								// Check if we've reached the error limit before processing
-								if (hasReachedErrorLimit) return;
+					const sorted = [...new Set(rowNumbers)].sort((a, b) => a - b);
+					const ranges: Array<{ type: 'line'; row: number } | { type: 'range'; start: number; end: number }> = [];
 
-								const result = {} as Record<string, unknown>;
+					let start = sorted[0]!;
+					let end = sorted[0]!;
 
-								// Validate CSV structure
-								if (!obj || typeof obj !== 'object') {
-									addStructuredError({
-										row: rowNumber,
-										code: ErrorCode.ImportStructureError,
-										field: null,
-										value: obj,
-										reason: 'Invalid row data format',
-										type: 'structure',
-									});
+					for (let i = 1; i < sorted.length; i++) {
+						const current = sorted[i]!;
 
-									return;
-								}
+						if (current === end + 1) {
+							end = current;
+						} else {
+							if (end - start >= 2) {
+								ranges.push({ type: 'range', start, end });
+							} else if (start === end) {
+								ranges.push({ type: 'line', row: start });
+							} else {
+								ranges.push({ type: 'line', row: start });
+								ranges.push({ type: 'line', row: end });
+							}
 
-								// Filter out only undefined fields
-								for (const field in obj) {
-									if (obj[field] !== undefined) {
-										set(result, field, obj[field]);
-									}
-								}
+							start = current;
+							end = current;
+						}
+					}
 
-								// Skip completely empty rows
-								if (Object.keys(result).length === 0) {
-									return;
-								}
+					if (end - start >= 2) {
+						ranges.push({ type: 'range', start, end });
+					} else if (start === end) {
+						ranges.push({ type: 'line', row: start });
+					} else {
+						ranges.push({ type: 'line', row: start });
+						ranges.push({ type: 'line', row: end });
+					}
 
-								// Check for Papa Parse extra columns (CSV structure error)
-								if ('__parsed_extra' in result) {
-									const extraColumns = result['__parsed_extra'] as unknown[];
-									const errorMessage = `Row has ${extraColumns.length} extra column(s): ${extraColumns.join(', ')}. Please check your CSV structure.`;
+					return ranges;
+				}
 
-									// Add structured error for CSV structure issue
-									addStructuredError({
-										row: rowNumber,
-										code: ErrorCode.ImportStructureError,
-										field: null,
-										value: extraColumns,
-										reason: errorMessage,
-										type: 'structure',
-									});
-								}
+				if (!error && capturedErrorCount > 0) {
+					throw Array.from(capturedErrors.entries()).flatMap(([, fieldMap]) =>
+						Array.from(fieldMap.entries()).map(([compositeKey, rowNumbers]) => {
+							const [field = '', type = ''] = compositeKey.split('_') as [string, string];
 
-								saveQueue.push({ data: result, rowNumber });
-							})
-							.on('error', (error) => {
-								cleanup();
-
-								reject(
-									new InvalidPayloadError({
-										reason: `Import parsing error: ${error.message}`,
-									}),
-								);
-							})
-							.on('end', () => {
-								cleanup(false);
-
-								// In case of empty CSV file
-								if (!saveQueue.started) {
-									return resolve();
-								}
+							return new FailedValidationError({
+								field,
+								path: [],
+								type: type as ClientFilterOperator | 'required' | 'email',
+								rows: convertToRanges(rowNumbers)
 							});
-					});
+						})
+					);
+				}
 
-				streams.push(fileWriteStream);
-
-				stream
-					.on('error', (error) => {
-						cleanup();
-						reject(new Error('Error while retrieving import data', { cause: error }));
-					})
-					.pipe(fileWriteStream);
-			});
+				throw error;
+			}
 		});
 	}
 }

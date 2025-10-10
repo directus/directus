@@ -1,44 +1,73 @@
 <script setup lang="ts">
-import { formatValidationErrorMessage, type ValidationErrorWithDetails } from '@/utils/format-validation-error';
 import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
+import type { ImportRowLine, ImportRowRange } from '@directus/validation';
+import type { APIError } from '@/types/error';
+import { useFieldsStore } from '@/stores/fields';
 
 interface Props {
-	errors: ValidationErrorWithDetails[];
+	errors: APIError[];
+	collection: string;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
+
+const fieldsStore = useFieldsStore();
 
 const modelValue = defineModel<boolean>({ required: true });
 
-const { t, te } = useI18n();
+const { t } = useI18n();
 
 function closeDialog() {
 	modelValue.value = false;
 }
+
+function formatRows(rows: Array<ImportRowLine | ImportRowRange>): string {
+	return rows.map(r => {
+		if (r.type === 'line') return r.row.toString();
+		return `${r.start}-${r.end}`;
+	}).join(', ');
+}
+
+function getErrorMessage(error: APIError): string {
+	const field = fieldsStore.getField(props.collection, error.extensions.field);
+	const customMessage = field?.meta?.validation_message;
+	
+	return customMessage || error.message;
+}
+
+const totalErrors = computed(() => props.errors.length);
+
+const errorSummary = computed(() => 
+	t('import_data_error_summary', { count: totalErrors.value })
+);
+
+const formattedErrors = computed(() => {
+	return props.errors.map(error => ({
+		...error,
+		formattedRows: formatRows(error.extensions.rows),
+		message: getErrorMessage(error),
+		rowCount: error.extensions.rows.length
+	}));
+});
 </script>
 
 <template>
 	<v-dialog v-model="modelValue" persistent>
 		<v-card>
-			<v-card-title>{{ $t('import_data_errors') }}</v-card-title>
+			<v-card-title>{{ t('import_data_errors') }}</v-card-title>
 			<div class="dialog-content">
-				<v-notice type="danger" multiline>
-					<div class="error-content">
-						{{ t('validation_errors_notice') }}
-						<ul class="validation-errors-list">
-							<li v-for="(validationError, index) in errors" :key="index" class="validation-error">
-								<strong>
-									<span>
-										{{ validationError.count > 1 ? `Rows ${validationError.rows}` : `Row ${validationError.rows}` }}
-									</span>
-									<template v-if="validationError.field">
-										<strong>&nbsp;({{ validationError.field }})</strong>
-									</template>
-									<span>:</span>
-								</strong>
-								<span>&nbsp;{{ formatValidationErrorMessage(validationError, t, te) }}</span>
-							</li>
-						</ul>
+				<v-notice type="danger">
+					<div>
+						<p>{{ errorSummary }}</p>
+					<ul class="validation-errors-list">
+						<li v-for="(error, index) in formattedErrors" :key="index" class="validation-error">
+							<strong v-if="error.rowCount > 0">
+								{{ $t('import_data_error_row', { count: error.rowCount, rows: error.formattedRows }, { escapeParameter: true }) }}
+							</strong>
+							<span>{{ error.message }}</span>
+						</li>
+					</ul>
 					</div>
 				</v-notice>
 			</div>
@@ -66,10 +95,5 @@ function closeDialog() {
 			margin-block-end: 0;
 		}
 	}
-}
-
-.error-content {
-	white-space: pre-wrap;
-	overflow-wrap: break-word;
 }
 </style>

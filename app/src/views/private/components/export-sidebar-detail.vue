@@ -6,7 +6,7 @@ import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
-import type { ValidationErrorWithDetails } from '@/utils/format-validation-error';
+import type { APIError } from '@/types/error';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import { useCollection } from '@directus/composables';
 import { Filter } from '@directus/types';
@@ -45,7 +45,7 @@ const { uploading, progress, importing, uploadFile } = useUpload();
 const exportDialogActive = ref(false);
 
 const errorDialogActive = ref(false);
-const errorDialogRows = ref<ValidationErrorWithDetails[]>([]);
+const errorDialogRows = ref<APIError[]>([]);
 
 const fileExtension = computed(() => {
 	if (file.value === null) return null;
@@ -289,12 +289,12 @@ function useUpload() {
 				title: t('import_data_success', { filename: file.name }),
 			});
 		} catch (error: any) {
-			const code = error?.response?.data?.errors?.[0]?.extensions?.code;
-			const rows = error?.response?.data?.errors?.[0]?.extensions?.rows;
+			const errors = error?.response?.data?.errors;
+			const code = errors?.[0]?.extensions?.code;
 
-			// For CSV import errors with structured row data, show localized messages
-			if (code === ErrorCode.InvalidPayload && rows && Array.isArray(rows)) {
-				errorDialogRows.value = rows as ValidationErrorWithDetails[];
+			// For CSV import validation errors, show detailed error dialog
+			if (code === 'FAILED_VALIDATION' && Array.isArray(errors)) {
+				errorDialogRows.value = errors;
 				errorDialogActive.value = true;
 			} else {
 				notify({
@@ -612,7 +612,7 @@ async function exportDataFiles() {
 			</div>
 		</v-drawer>
 
-		<v-import-error-dialog v-model="errorDialogActive" :errors="errorDialogRows" />
+		<v-import-error-dialog v-model="errorDialogActive" :errors="errorDialogRows" :collection="collection" />
 	</sidebar-detail>
 </template>
 
