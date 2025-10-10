@@ -6,10 +6,10 @@ import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
-import { isRelationalField } from '@/modules/content/comparison-utils';
+import { calculateFieldDifferences } from '@/modules/content/comparison-utils';
 import type { ContentVersion, Filter } from '@directus/types';
 import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
-import { groupBy, orderBy, isEqual, mergeWith } from 'lodash';
+import { groupBy, orderBy, mergeWith } from 'lodash';
 import { Ref, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -27,12 +27,6 @@ export function useRevisions(
 	const { t } = useI18n();
 	const { info } = useServerStore();
 	const fieldsStore = useFieldsStore();
-
-	const isReadOnlyField = (fieldKey: string): boolean => {
-		const collectionFields = fieldsStore.getFieldsForCollection(unref(collection));
-		const field = collectionFields.find((f) => f.field === fieldKey);
-		return field?.meta?.readonly === true;
-	};
 
 	const revisions = ref<RevisionPartial[] | null>(null);
 	const revisionsByDate = ref<RevisionsByDate[] | null>(null);
@@ -206,20 +200,13 @@ export function useRevisions(
 
 					// Calculate fields that differ from the current item state
 					const revisionData = (revision as Revision)?.data || {};
-					const differentFields: string[] = [];
+					const collectionFields = fieldsStore.getFieldsForCollection(unref(collection));
+					const fieldMetadata = Object.fromEntries(collectionFields.map((field) => [field.field, field]));
 
-					for (const field of Object.keys(revisionData)) {
-						if (isReadOnlyField(field)) continue;
-
-						// Ignore relational fields for diff and field counts
-						const collectionFields = fieldsStore.getFieldsForCollection(unref(collection));
-						const fieldInfo = collectionFields.find((f) => f.field === field);
-						if (fieldInfo && isRelationalField(fieldInfo)) continue;
-
-						const newValue = (revisionData as any)[field];
-						const currentValue = (currentItemMerged as any)[field];
-						if (!isEqual(newValue, currentValue)) differentFields.push(field);
-					}
+					const differentFields = calculateFieldDifferences(revisionData, currentItemMerged, fieldMetadata, {
+						skipRelationalFields: true,
+						skipReadonlyFields: true,
+					});
 
 					revisions.push({
 						...revision,
