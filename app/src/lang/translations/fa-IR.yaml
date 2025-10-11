@@ -107,13 +107,14 @@ n_downloads: '{n} دانلود'
 downloads: دانلودها
 compatibility_not_guaranteed: سازگاری تضمین نشده
 compatibility_not_guaranteed_copy: سازنده سازگاری افزونه با نسخه {hostVersion} را مشخص کرده است، که با نسخه پروژه شما ({currentVersion}) انطباق ندارد
-enable: فعال سازی
+enable: فعال‌سازی
 disable: غیرفعال کردن
 custom: سفارشی
 hook: هوک
 fill_width: عرض کامل
 field_name_translations: ترجمه‌های نام فیلد
 enter_password_to_enable_tfa: برای فعال کردن احراز هویت دو عاملی، رمز عبور خود را وارد کنید
+enable_tfa: فعال‌سازی احراز هویت دو عاملی
 add_field: افزودن فیلد
 role_name: نام نقش
 policy_name: نام خط مشی
@@ -1398,6 +1399,19 @@ fields:
     public_registration_verify_email: تایید ایمیل
     public_registration_verify_email_note: ایمیلی برای کاربر در حال ثبت نام می‌فرستد که از آن‌ها می‌خواهد روی یک لینک تایید کلیک کنند تا به آن‌ها اجازه ثبت نام داده شود.
     visual_editor_urls: URLهای ویرایشگر بصری
+    mcp_enabled: سرور MCP
+    mcp_enabled_note: 'ابزارهای AI/LLM را از طریق <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">چارچوب زمینه مدل (MCP)</a> به پروژه دایرکتوس خود متصل کنید. این کار، دستیارهای هوش مصنوعی را قادر به خواندن و تعامل امن با داده دایرکتوس شما می‌کند.'
+    mcp_notice: 'چارچوب زمینه مدل (MCP)، استانداردی برای اتصال مدل‌های زبانی بزرگ (LLMها) به برنامه‌هایی شبیه دایرکتوس است. به محض فعالسازی، سرور MCP دایرکتوس در نشانی `/mcp` در دسترس خواهد بود. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">درباره MCP و روش اتصال بیشتر بدانید.</a>'
+    mcp_allow_deletes: اجازه حذف
+    mcp_allow_deletes_note:
+      - ممکن است منجر به از دست رفتن داده شود.</strong> به طور پیش‌فرض به دلایل ایمنی غیرفعال شده است.'
+    mcp_prompts_collection: مجموعه پرامپت‌های هوش مصنوعی
+    mcp_prompts_collection_note: 'مجموعه‌ای را برای نگهداری <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">قالب‌های پرامپت قابل استفاده مجدد</a> برای تعاملات هوش مصنوعی انتخاب کنید.'
+    mcp_system_prompt_divider: پیکربندی پرامپت سیستمی
+    mcp_system_prompt_enabled: استفاده از پرامپت سیستمی
+    mcp_system_prompt_enabled_note: "از <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>پرامپت سیستمی پیش‌فرض</a> برای هدایت رفتار LLM استفاده کنید. برای حذف یا جایگزین کردن با پرامپت خودتان در پایین غیرفعال کنید."
+    mcp_system_prompt: پرامپت سیستمی سفارشی
+    mcp_system_prompt_note: 'پرامپت سیستمی سفارشی برای جایگزینی با پیش‌فرض. برای استفاده از مقدار پیش‌فرض خالی بگذارید (اگر بالا فعال شده).'
   directus_shares:
     name: نام
     role: نقش
@@ -1581,8 +1595,30 @@ unlimited_usage: Unlimited usage
 uses_left: هیچ استفاده‌ای نمانده | یک استفاده مانده | {n} استفاده مانده
 no_shares: هیچ اشتراک گذاری برای نمایش نیست
 new_share: اشتراک گذاری جدید
+mcp_prompts_collection:
+  no_collection_selected: مجموعه‌ای انتخاب نشده است
+  no_collection_selected_copy: مجموعه‌ای را برای فعال‌سازی قالب‌های پرامپت قابل استفاده مجدد انتخاب کنید.
+  collection_not_found: مجموعه پیدا نشد
+  collection_not_found_description: مجموعه «{collection}» در پایگاه داده وجود ندارد.
+  generate: ایجاد مجموعه پرامپت‌های هوش مصنوعی...
+  already_exists: مجموعه پرامپت‌های هوش مصنوعی از قبل وجود دارد
+  generate_collection_dialog_title: ایجاد مجموعه پرامپت‌های هوش مصنوعی
+  generate_fields_dialog_title: ایجاد فیلدهای پرامپت‌های هوش مصنوعی
+  generate_collection_dialog_description: 'این کار، مجموعه «{collection}» جدیدی با فیلدهای ضروری و تنظیمات برای نگهداری قالب‌های پرامپت قابل استفاده مجدد ایجاد خواهد کرد.'
+  generate_fields_dialog_description: 'این کار، فیلدهای ضروری را در مجموعه «{collection}» شما ایجاد خواهد کرد.'
+  validation_success: 'مجموعه برای استفاده به عنوان مجموعه «پرامپت‌های هوش مصنوعی» آماده است.'
+  validation_error_invalid: مجموعه قابل استفاده نیست
+  validation_error_missing: مجموعه هنوز قابل استفاده نیست
+  invalid_fields: 'فیلدهای زیر موجود است؛ اما از نوع ناسازگار هستند:'
+  missing_fields: 'فیلدهای زیر ضروری، ولی ناموجود است:'
+  generate_missing: ایجاد فیلدهای ناموجود...
 mcp_prompts_collection_schema:
+  system_prompt_note: دستورالعمل‌هایی که روش پاسخ‌دهی LLM را شکل می‌دهد.
+  messages_note: 'اختیاری: ساختار مکالمه بین کاربر و LLMها را مشخص کنید. مورد استفاده برای افزودن زمینه و بهبود خروجی‌ها.'
   messages_role_user: کاربر
+  messages_role_assistant: دستیار
+  messages_role_note: چه کسی در این پیام صحبت می‌کند.
+  meta_prompts_notice: 'پرامپت‌ها، قالب‌های قابل استفاده مجدد هستند که می‌توانید در LLMها از طریق سرور MCP دایرکتوس، جریان‌ها یا سایر برنامه‌های هوش مصنوعی استفاده کنید. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">درباره ساخت پرامپت‌های مفید بیشتر بدانید.</a>'
 expired: منقضی شده
 upcoming: به زودی
 share: اشتراک‌گذاری
