@@ -1010,7 +1010,15 @@ no_data_in_flow: هیچ داده ای در این جریان تولید یا ب�
 accountability: مسئوليت
 payload: ظرفیت یا Payload
 details: جزئیات
+logs_session_resumed: نشست رخدادها ادامه یافت...
+logs_session_paused: نشست رخدادها متوقف شد...
+logs_beginning: این ابتدای نشست رخدادهای شماست...
+logs_waiting: 'در انتظار رخدادهای بیشتر...'
 logs_unread_count: '{count} خوانده نشده'
+clear_logs: حذف رخدادها
+search_logs: جستجوی رخدادها...
+all_log_levels: همه سطوح رخداد
+log_level_count: 'بدون سطح رخداد | یک سطح رخداد | {count} سطح رخداد'
 full_screen: تمام صفحه
 full_text_search: جستجوی تمام متن
 edit_panels: ادیت پنلها
@@ -1118,6 +1126,8 @@ settings_roles: نقش‌های کاربر
 settings_permissions: سیاست‌های دسترسی
 settings_project: تنظیمات
 settings_appearance: ظاهر
+settings_ai: هوش مصنوعی
+model_context_protocol: دستورالعمل زمینه مدل (MCP)
 settings_webhooks: هوک های تحت وب
 settings_flows: اتوماسیون
 settings_system_logs: لاگ‌های سیستم
