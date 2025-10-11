@@ -12,6 +12,7 @@ import type { RunASTOptions } from './types.js';
 import { applyParentFilters } from './utils/apply-parent-filters.js';
 import { mergeWithParentItems } from './utils/merge-with-parent-items.js';
 import { removeTemporaryFields } from './utils/remove-temporary-fields.js';
+import emitter from '../../emitter.js';
 
 /**
  * Execute a given AST using Knex. Returns array of items based on requested AST.
@@ -71,7 +72,7 @@ export async function runAst(
 		}
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = getDBQuery(
+		let dbQuery = getDBQuery(
 			{
 				table: collection,
 				fieldNodes,
@@ -83,7 +84,35 @@ export async function runAst(
 			{ schema, knex },
 		);
 
+		dbQuery = await emitter.emitFilter(
+			['items.db.select', `${collection}.db.select`],
+			dbQuery,
+			{
+				query,
+				collection,
+			},
+			{
+				database: knex,
+				schema,
+				accountability,
+			}
+		)
+
 		const rawItems: Item | Item[] = await dbQuery;
+
+		await emitter.emitFilter(
+			['items.db.selected', `${collection}.db.selected`],
+			rawItems,
+			{
+				query,
+				collection,
+			},
+			{
+				database: knex,
+				schema,
+				accountability,
+			}
+		)
 
 		if (!rawItems) return null;
 
