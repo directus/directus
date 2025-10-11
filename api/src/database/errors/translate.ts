@@ -51,5 +51,24 @@ export async function translateDatabaseError(error: SQLError, data: Partial<Item
 		},
 	);
 
-	return hookError;
+	const mainThreadError = hookError ? new Error(hookError.message, {
+		cause: hookError,
+	}) : undefined
+
+
+	if (mainThreadError) {
+		// @ts-expect-error data doesn't exist on Error
+		mainThreadError.data = data
+	}
+
+	return mainThreadError;
+}
+
+
+export async function throwDatabaseError(error: SQLError, data: Partial<Item>): Promise<any> {
+	const filteredError = await translateDatabaseError(error, data)
+
+	if (filteredError) {
+		throw filteredError
+	}
 }

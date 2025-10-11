@@ -15,7 +15,7 @@ import type { Knex } from 'knex';
 import { isEqual, isNil, merge } from 'lodash-es';
 import { clearSystemCache, getCache, getCacheValue, setCacheValue } from '../cache.js';
 import { ALIAS_TYPES, ALLOWED_DB_DEFAULT_FUNCTIONS } from '../constants.js';
-import { translateDatabaseError } from '../database/errors/translate.js';
+import { throwDatabaseError } from '../database/errors/translate.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
@@ -571,7 +571,11 @@ export class FieldsService {
 							});
 						});
 					} catch (err: any) {
-						throw await translateDatabaseError(err, field);
+						await throwDatabaseError(err, {
+								collection,
+								field,
+								existingColumn
+						});
 					}
 				}
 			}
@@ -976,16 +980,7 @@ export class FieldsService {
 				}
 			} else if (field.schema?.is_indexed === false) {
 				if (existing?.is_indexed === true) {
-					try {
-						// dropIndexIfExists is still not implemented https://github.com/knex/knex/issues/2167
-						table.dropIndex([field.field], this.helpers.schema.generateIndexName('index', collection, field.field));
-					}
-					catch (e) {
-						if (! (e as Error).message.match(/does not exist/)) {
-							// This works with PG:  "drop index \"banner_user_updated_index\" - index \"banner_user_updated_index\" does not exist"
-							throw e
-						}
-					}
+					table.dropIndex([field.field], this.helpers.schema.generateIndexName('index', collection, field.field));
 				}
 			}
 		}
