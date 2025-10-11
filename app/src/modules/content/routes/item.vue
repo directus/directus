@@ -753,6 +753,7 @@ function useCollectionRoute() {
 			:initial-values="item"
 			:loading="loading"
 			:disabled="isFormDisabled"
+			@refresh="refresh"
 		/>
 
 		<!-- Default Form -->
