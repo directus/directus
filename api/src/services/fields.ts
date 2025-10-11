@@ -426,10 +426,10 @@ export class FieldsService {
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
 					if (table) {
-						this.addColumnToTable(table, collection, hookAdjustedField as Field);
+						await this.addColumnToTable(trx, table, collection, hookAdjustedField as Field);
 					} else {
-						await trx.schema.alterTable(collection, (table) => {
-							this.addColumnToTable(table, collection, hookAdjustedField as Field);
+						await trx.schema.alterTable(collection, async (table) => {
+							await this.addColumnToTable(trx, table, collection, hookAdjustedField as Field);
 						});
 					}
 				}
@@ -567,7 +567,7 @@ export class FieldsService {
 						await transaction(this.knex, async (trx) => {
 							await trx.schema.alterTable(collection, async (table) => {
 								if (!hookAdjustedField.schema) return;
-								this.addColumnToTable(table, collection, field, existingColumn);
+								await this.addColumnToTable(trx, table, collection, field, existingColumn);
 							});
 						});
 					} catch (err: any) {
@@ -881,12 +881,13 @@ export class FieldsService {
 		}
 	}
 
-	public addColumnToTable(
+	public async addColumnToTable(
+		trx: Knex,
 		table: Knex.CreateTableBuilder,
 		collection: string,
 		field: RawField | Field,
 		existing: Column | null = null,
-	): void {
+	): Promise<void> {
 		let column: Knex.ColumnBuilder;
 
 		// Don't attempt to add a DB column for alias / corrupt fields
@@ -980,7 +981,36 @@ export class FieldsService {
 				}
 			} else if (field.schema?.is_indexed === false) {
 				if (existing?.is_indexed === true) {
-					table.dropIndex([field.field], this.helpers.schema.generateIndexName('index', collection, field.field));
+
+					const indexName = this.helpers.schema.generateIndexName('index', collection, field.field)
+
+					const indexes = await trx.raw(`
+						select
+								t.relname as table_name,
+								i.relname as index_name,
+								a.attname as column_name
+						from
+								pg_class t,
+								pg_class i,
+								pg_index ix,
+								pg_attribute a
+						where
+								t.oid = ix.indrelid
+								and i.oid = ix.indexrelid
+								and a.attrelid = t.oid
+								and a.attnum = ANY(ix.indkey)
+								and t.relkind = 'r'
+							-- and t.relname like 'mytable'
+						order by
+								t.relname,
+								i.relname;
+					`)
+
+					if (indexes.rows.find((row: Record<string, string>) => {
+						return row['index_name'] === indexName
+					})) {
+						table.dropIndex([field.field], indexName);
+					}
 				}
 			}
 		}
