@@ -976,7 +976,16 @@ export class FieldsService {
 				}
 			} else if (field.schema?.is_indexed === false) {
 				if (existing?.is_indexed === true) {
-					table.dropIndex([field.field], this.helpers.schema.generateIndexName('index', collection, field.field));
+					try {
+						// dropIndexIfExists is still not implemented https://github.com/knex/knex/issues/2167
+						table.dropIndex([field.field], this.helpers.schema.generateIndexName('index', collection, field.field));
+					}
+					catch (e) {
+						if (! (e as Error).message.match(/does not exist/)) {
+							// This works with PG:  "drop index \"banner_user_updated_index\" - index \"banner_user_updated_index\" does not exist"
+							throw e
+						}
+					}
 				}
 			}
 		}
