@@ -40,9 +40,18 @@ export async function translateDatabaseError(error: SQLError, data: Partial<Item
 			break;
 	}
 
+	const mainThreadError = new Error(defaultError.message, {
+		cause: defaultError,
+	})
+
+	if (mainThreadError) {
+		// @ts-expect-error data doesn't exist on Error
+		mainThreadError.data = data
+	}
+
 	const hookError = await emitter.emitFilter(
 		'database.error',
-		defaultError,
+		mainThreadError,
 		{ client },
 		{
 			database: getDatabase(),
@@ -51,17 +60,7 @@ export async function translateDatabaseError(error: SQLError, data: Partial<Item
 		},
 	);
 
-	const mainThreadError = hookError ? new Error(hookError.message, {
-		cause: hookError,
-	}) : undefined
-
-
-	if (mainThreadError) {
-		// @ts-expect-error data doesn't exist on Error
-		mainThreadError.data = data
-	}
-
-	return mainThreadError;
+	return hookError;
 }
 
 
