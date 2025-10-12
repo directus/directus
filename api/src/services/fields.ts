@@ -896,6 +896,33 @@ export class FieldsService {
 		field: RawField | Field,
 		existing: Column | null = null,
 	): Promise<void> {
+		// TODO
+		// - Use Knex instead of raw query
+		// - Seems closed by mistake https://github.com/knex/knex/issues/322
+		// - https://github.com/knex/knex/issues/1303
+		// - https://github.com/knex/knex/issues/2167
+		const existingIndexes = await trx.raw(`
+			select
+					t.relname as table_name,
+					i.relname as index_name,
+					a.attname as column_name
+			from
+					pg_class t,
+					pg_class i,
+					pg_index ix,
+					pg_attribute a
+			where
+					t.oid = ix.indrelid
+					and i.oid = ix.indexrelid
+					and a.attrelid = t.oid
+					and a.attnum = ANY(ix.indkey)
+					and t.relkind = 'r'
+				-- and t.relname like 'mytable'
+			order by
+					t.relname,
+					i.relname;
+		`)
+
 		let column: Knex.ColumnBuilder;
 
 		// Don't attempt to add a DB column for alias / corrupt fields
@@ -989,38 +1016,15 @@ export class FieldsService {
 				}
 			} else if (field.schema?.is_indexed === false) {
 				if (existing?.is_indexed === true) {
-
 					const indexName = this.helpers.schema.generateIndexName('index', collection, field.field)
 
-					const indexes = await trx.raw(`
-						select
-								t.relname as table_name,
-								i.relname as index_name,
-								a.attname as column_name
-						from
-								pg_class t,
-								pg_class i,
-								pg_index ix,
-								pg_attribute a
-						where
-								t.oid = ix.indrelid
-								and i.oid = ix.indexrelid
-								and a.attrelid = t.oid
-								and a.attnum = ANY(ix.indkey)
-								and t.relkind = 'r'
-							-- and t.relname like 'mytable'
-						order by
-								t.relname,
-								i.relname;
-					`)
-
-					if (indexes.rows.find((row: Record<string, string>) => {
+					if (existingIndexes.rows.find((row: Record<string, string>) => {
 						return row['index_name'] === indexName
 					})) {
 						table.dropIndex([field.field], indexName);
 					}
 					else {
-						console.log(`Index '${indexName}' not found so not dropped`)
+						console.log(`Index '${indexName}' not found so not dropped`) // eslint-disable-line no-console
 					}
 				}
 			}
