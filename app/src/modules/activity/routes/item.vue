@@ -105,7 +105,7 @@ function close() {
 		<div v-else-if="item" class="content">
 			<!-- @TODO add final design -->
 			<p class="type-label">{{ t('user') }}:</p>
-			<user v-if="item.user" display="name" :value="{...item.user, avatar: null}">
+			<user v-if="item.user" display="name" :value="{ ...item.user, avatar: null }">
 				{{ userName(item.user) }}
 			</user>
 
