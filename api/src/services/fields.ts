@@ -425,11 +425,19 @@ export class FieldsService {
 						: field;
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
-					if (table) {
-						await this.addColumnToTable(trx, table, collection, hookAdjustedField as Field);
-					} else {
-						await trx.schema.alterTable(collection, async (table) => {
+
+					try {
+						if (table) {
 							await this.addColumnToTable(trx, table, collection, hookAdjustedField as Field);
+						} else {
+							await trx.schema.alterTable(collection, async (table) => {
+								await this.addColumnToTable(trx, table, collection, hookAdjustedField as Field);
+							});
+						}
+					} catch (err: any) {
+						await throwDatabaseError(err, {
+								collection,
+								field,
 						});
 					}
 				}
@@ -1010,6 +1018,9 @@ export class FieldsService {
 						return row['index_name'] === indexName
 					})) {
 						table.dropIndex([field.field], indexName);
+					}
+					else {
+						console.log(`Index '${indexName}' not found so not dropped`)
 					}
 				}
 			}
