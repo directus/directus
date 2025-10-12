@@ -447,6 +447,8 @@ precision_scale: Precision & Scale
 readonly: Readonly
 unique: Unique
 index: Index
+searchable: Searchable
+field_searchable: Include field in search queries
 updated_on: Updated On
 updated_by: Updated By
 primary_key: Primary Key

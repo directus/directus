@@ -172,6 +172,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 					note: null,
 					validation: null,
 					alias: false,
+					searchable: true,
 				};
 			}),
 		};
@@ -187,8 +188,9 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 					special: string;
 					note: string | null;
 					validation: string | Record<string, any> | null;
+					searchable: boolean;
 				}[]
-			>('id', 'collection', 'field', 'special', 'note', 'validation')
+			>('id', 'collection', 'field', 'special', 'note', 'validation', 'searchable')
 			.from('directus_fields')),
 		...systemFieldRows,
 	].filter((field) => (field.special ? toArray(field.special) : []).includes('no-data') === false);
@@ -220,6 +222,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 			note: field.note,
 			alias: existing?.alias ?? true,
 			validation: (validation as Filter) ?? null,
+			searchable: field.searchable ?? true,
 		};
 	}
 

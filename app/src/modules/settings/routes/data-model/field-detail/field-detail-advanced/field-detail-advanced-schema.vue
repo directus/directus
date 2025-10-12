@@ -120,6 +120,7 @@ const nullable = syncFieldDetailStoreProperty('field.schema.is_nullable', true);
 const unique = syncFieldDetailStoreProperty('field.schema.is_unique', false);
 const indexed = syncFieldDetailStoreProperty('field.schema.is_indexed', false);
 const numericScale = syncFieldDetailStoreProperty('field.schema.numeric_scale');
+const searchable = syncFieldDetailStoreProperty('field.meta.searchable', true);
 
 const { t } = useI18n();
 
@@ -152,6 +153,17 @@ const isPrimaryKey = computed(() => {
 
 const isGenerated = computed(() => {
 	return fieldDetailStore.field.schema?.is_generated;
+});
+
+const isSearchableType = computed(() => {
+	// exclude alias fields (o2m, m2m, m2a) as they don't store searchable data
+	if (type.value === 'alias') return false;
+
+	// exclude relational fields except m2o, which stores foreign keys that are typically not useful for search
+	if (localType.value && localType.value !== 'standard') return false;
+
+	const searchableTypes = ['text', 'string', 'integer', 'bigInteger', 'float', 'decimal', 'uuid'];
+	return searchableTypes.includes(type.value);
 });
 
 function useOnCreate() {
@@ -451,6 +463,11 @@ function useOnUpdate() {
 			<div v-if="!isAlias" class="field half-left">
 				<div class="label type-label">{{ t('index') }}</div>
 				<v-checkbox v-model="indexed" :disabled="isGenerated || isPrimaryKey" :label="t('value_index')" block />
+			</div>
+
+			<div v-if="!isAlias && isSearchableType" class="field half-right">
+				<div class="label type-label">{{ t('searchable') }}</div>
+				<v-checkbox v-model="searchable" :label="t('field_searchable')" block />
 			</div>
 		</div>
 	</div>
