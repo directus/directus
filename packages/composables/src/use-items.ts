@@ -70,9 +70,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 	let loadingTimeout: NodeJS.Timeout | null = null;
 
-	const fetchItems = debounce(async (shouldUpdateCount: boolean) => {
-		// execute both requests in parallel to ensure they use the same query parameters
-		await Promise.all([getItems(), shouldUpdateCount ? getItemCount() : Promise.resolve()]);
+	const fetchItems = debounce((shouldUpdateCount: boolean) => {
+		Promise.all([getItems(), shouldUpdateCount ? getItemCount() : Promise.resolve()]);
 	}, 350);
 
 	watch(
