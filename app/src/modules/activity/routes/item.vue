@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import api from '@/api';
-import User from '@/displays/user/user.vue';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { i18n } from '@/lang';
 import { getItemRoute } from '@/utils/get-route';
@@ -105,9 +104,11 @@ function close() {
 		<div v-else-if="item" class="content">
 			<!-- @TODO add final design -->
 			<p class="type-label">{{ t('user') }}:</p>
-			<user v-if="item.user" display="name" :value="{ ...item.user, avatar: null }">
-				{{ userName(item.user) }}
-			</user>
+			<user-popover v-if="item.user" :user="item.user.id">
+				<span>
+					{{ userName(item.user) }}
+				</span>
+			</user-popover>
 
 			<p class="type-label">{{ t('action') }}:</p>
 			<p>{{ item.action_translated }}</p>
