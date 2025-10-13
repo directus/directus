@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Fixed activity item detail display to use user display component instead of user-popover
+Wrap user value in <span> to fix Activity Item details user popover
