@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { RateLimiterQueue, RateLimiterRes } from 'rate-limiter-flexible';
+import { RateLimiterQueue } from 'rate-limiter-flexible';
 import { createRateLimiter } from '../../rate-limiter.js';
 import { toBoolean } from '@directus/utils';
 import { EmailLimitExceededError } from '@directus/errors';
@@ -20,7 +20,7 @@ export async function useEmailRateLimiterQueue() {
 	try {
 		await emailRateLimiterQueue.removeTokens(1);
 	} catch (err: unknown) {
-		if (err instanceof RateLimiterRes) {
+		if (err instanceof Error) {
 			throw new EmailLimitExceededError({
 				points: 'EMAIL_LIMITER_POINTS' in env ? Number(env['EMAIL_LIMITER_POINTS']) : undefined,
 				duration: 'EMAIL_LIMITER_DURATION' in env ? Number(env['EMAIL_LIMITER_DURATION']) : undefined,

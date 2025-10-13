@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
+import { RateLimiterMemory, RateLimiterRedis, RateLimiterRes } from 'rate-limiter-flexible';
 import { createRateLimiter } from '../../rate-limiter.js';
 import { toBoolean } from '@directus/utils';
 import { EmailLimitExceededError } from '@directus/errors';
@@ -18,7 +18,7 @@ export async function useFlowsEmailRateLimiter(flow_id: string) {
 	try {
 		await emailRateLimiter.consume(flow_id, 1);
 	} catch (err: unknown) {
-		if (err instanceof Error) {
+		if (err instanceof RateLimiterRes) {
 			throw new EmailLimitExceededError({
 				points: 'EMAIL_LIMITER_POINTS' in env ? Number(env['EMAIL_LIMITER_POINTS']) : undefined,
 				duration: 'EMAIL_LIMITER_DURATION' in env ? Number(env['EMAIL_LIMITER_DURATION']) : undefined,
