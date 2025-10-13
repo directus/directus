@@ -9,9 +9,7 @@ let emailRateLimiterQueue: RateLimiterQueue | undefined;
 const env = useEnv();
 
 if (toBoolean(env['EMAIL_LIMITER_ENABLED']) === true) {
-	const rateLimiter = createRateLimiter('EMAIL_LIMITER');
-
-	emailRateLimiterQueue = new RateLimiterQueue(rateLimiter, {
+	emailRateLimiterQueue = new RateLimiterQueue(createRateLimiter('EMAIL_LIMITER'), {
 		maxQueueSize: Number(env['EMAIL_LIMITER_QUEUE_SIZE']),
 	});
 }
