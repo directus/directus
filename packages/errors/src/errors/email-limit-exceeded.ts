@@ -11,7 +11,7 @@ export const messageConstructor = (extensions: EmailLimitExceededErrorExtensions
 	const message = ['Email sending limit exceeded.'];
 
 	if (typeof extensions.points === 'number' && typeof extensions.duration === 'number') {
-		const duration = ms(extensions.duration, { long: true });
+		const duration = ms(extensions.duration * 1000, { long: true });
 		message.push(`Limit ${extensions.points} emails per ${duration}.`);
 	}
 
