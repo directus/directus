@@ -1,58 +1,17 @@
 <script setup lang="ts">
-import { useFlows } from '@/composables/use-flows';
-import { computed, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { injectUseFlows } from '@/composables/use-flows';
+import { FlowRaw } from '@directus/types';
+import { computed } from 'vue';
 
 interface Props {
 	flowId: string;
-	collection: string;
-	primaryKey?: string | number;
-	selection?: (number | string)[];
-	location: 'collection' | 'item';
-	hasEdits?: boolean;
-	onRefresh: () => void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-	primaryKey: undefined,
-	selection: () => [],
-	hasEdits: false,
-});
+const props = defineProps<Props>();
 
-const { t } = useI18n();
+const { runningFlows, manualFlows, getFlowTooltip, checkFlowDisabled, onFlowClick } = injectUseFlows();
 
-const { collection, hasEdits, location, primaryKey, selection } = toRefs(props);
-
-const {
-	runningFlows,
-	confirmRunFlow,
-	confirmValues,
-	manualFlows,
-	isConfirmButtonDisabled,
-	confirmButtonCTA,
-	confirmDialogDetails,
-	displayUnsavedChangesDialog,
-	displayCustomConfirmDialog,
-	getFlowTooltip,
-	checkFlowDisabled,
-	resetConfirm,
-	onFlowClick,
-	confirmUnsavedChanges,
-	runManualFlow,
-} = useFlows({
-	collection,
-	primaryKey,
-	selection,
-	location,
-	hasEdits,
-	onRefreshCallback: props.onRefresh,
-});
-
-function handleRunManualFlow(flowId: string, isActionDisabled = false) {
-	runManualFlow(flowId, isActionDisabled, props.onRefresh);
-}
-
-const flow = computed(() => manualFlows.value.find((f) => f.id === props.flowId));
+const flow = computed(() => manualFlows.value.find((f: FlowRaw) => f.id === props.flowId));
 
 const isFlowRunning = computed(() => runningFlows.value.includes(props.flowId));
 
@@ -83,60 +42,6 @@ const flowTooltip = computed(() => {
 			{{ flow.name }}
 		</v-button>
 	</slot>
-
-	<v-dialog
-		:model-value="displayUnsavedChangesDialog"
-		keep-behind
-		@esc="resetConfirm"
-		@apply="confirmUnsavedChanges(confirmRunFlow!)"
-	>
-		<v-card>
-			<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-			<v-card-text>{{ t('run_flow_on_current_edited_confirm') }}</v-card-text>
-
-			<v-card-actions>
-				<v-button secondary @click="resetConfirm">
-					{{ t('cancel') }}
-				</v-button>
-				<v-button :disabled="isConfirmButtonDisabled" @click="confirmUnsavedChanges(confirmRunFlow!)">
-					{{ confirmButtonCTA }}
-				</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
-
-	<v-dialog
-		:model-value="displayCustomConfirmDialog"
-		keep-behind
-		@esc="resetConfirm"
-		@apply="handleRunManualFlow(confirmRunFlow!, isConfirmButtonDisabled)"
-	>
-		<v-card>
-			<v-card-title>{{ confirmDialogDetails!.description ?? t('run_flow_confirm') }}</v-card-title>
-			<v-card-text class="confirm-form">
-				<v-form
-					v-if="confirmDialogDetails!.fields && confirmDialogDetails!.fields.length > 0"
-					:fields="confirmDialogDetails!.fields"
-					:model-value="confirmValues"
-					autofocus
-					primary-key="+"
-					@update:model-value="confirmValues = $event"
-				/>
-			</v-card-text>
-
-			<v-card-actions>
-				<v-button secondary @click="resetConfirm">
-					{{ t('cancel') }}
-				</v-button>
-				<v-button
-					:disabled="isConfirmButtonDisabled"
-					@click="handleRunManualFlow(confirmRunFlow!, isConfirmButtonDisabled)"
-				>
-					{{ confirmButtonCTA }}
-				</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
 </template>
 
 <style lang="scss" scoped>

@@ -7,7 +7,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection } from '@directus/composables';
 import formatTitle from '@directus/format-title';
 import { FlowRaw } from '@directus/types';
-import { computed, ref, unref, Ref } from 'vue';
+import { computed, ref, unref, Ref, provide, inject, ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export interface UseFlowsOptions {
@@ -137,6 +137,16 @@ export function useFlows(options: UseFlowsOptions) {
 		}
 	}
 
+	function provideUseFlows() {
+		provide('provide-use-flows', {
+			runningFlows,
+			manualFlows,
+			getFlowTooltip,
+			checkFlowDisabled,
+			onFlowClick,
+		});
+	}
+
 	async function runManualFlow(flowId: string, isActionDisabled = false, onRefresh: () => void) {
 		if (isActionDisabled) return;
 
@@ -185,21 +195,32 @@ export function useFlows(options: UseFlowsOptions) {
 	}
 
 	return {
-		runningFlows,
-		confirmRunFlow,
-		confirmValues,
-		confirmedUnsavedChanges,
-		manualFlows,
-		isConfirmButtonDisabled,
+		checkFlowDisabled,
 		confirmButtonCTA,
 		confirmDialogDetails,
-		displayUnsavedChangesDialog,
-		displayCustomConfirmDialog,
-		getFlowTooltip,
-		checkFlowDisabled,
-		resetConfirm,
-		onFlowClick,
+		confirmedUnsavedChanges,
+		confirmRunFlow,
 		confirmUnsavedChanges,
+		confirmValues,
+		displayCustomConfirmDialog,
+		displayUnsavedChangesDialog,
+		getFlowTooltip,
+		isConfirmButtonDisabled,
+		manualFlows,
+		onFlowClick,
+		provideUseFlows,
+		resetConfirm,
 		runManualFlow,
+		runningFlows,
+	};
+}
+
+export function injectUseFlows() {
+	return inject('provide-use-flows') as {
+		runningFlows: Ref<string[]>;
+		manualFlows: ComputedRef<FlowRaw[]>;
+		getFlowTooltip: (manualFlow: FlowRaw) => string;
+		checkFlowDisabled: (manualFlow: FlowRaw) => boolean;
+		onFlowClick: (flowId: string) => void;
 	};
 }
