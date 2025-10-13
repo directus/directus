@@ -12,7 +12,7 @@ export const messageConstructor = (extensions: EmailLimitExceededErrorExtensions
 
 	if (typeof extensions.points === 'number' && typeof extensions.duration === 'number') {
 		const duration = ms(extensions.duration * 1000, { long: true });
-		message.push(`Limit ${extensions.points} emails per ${duration}.`);
+		message.push(`Limit ${extensions.points} emails every ${duration}.`);
 	}
 
 	if (extensions.message) {
