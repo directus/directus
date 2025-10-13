@@ -1,6 +1,6 @@
 services:
   oracle:
-    image: gvenzl/oracle-xe:slim-faststart
+    image: gvenzl/oracle-xe:${DB_VERSION}
     ports:
       - ${DB_PORT}:1521
     environment:

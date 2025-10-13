@@ -30,6 +30,8 @@ export type Options = {
 	watch: boolean;
 	/** Port to start the api on */
 	port: Port;
+	/** Which version of the database to use */
+	version: string | undefined;
 	/** Configure the behavior of the spun up docker container */
 	docker: {
 		/** Keep containers running when stopping the sandbox */
@@ -99,6 +101,7 @@ async function getOptions(options?: DeepPartial<Options>): Promise<Options> {
 			dev: false,
 			watch: false,
 			port,
+			version: undefined,
 			docker: {
 				keep: false,
 				basePort: port + 100,

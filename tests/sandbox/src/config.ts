@@ -38,6 +38,7 @@ const maria = {
 	DB_PASSWORD: 'password',
 	DB_PORT: '$PORT',
 	DB_DATABASE: 'directus',
+	DB_VERSION: '11',
 	...directusConfig,
 } as const;
 
@@ -48,6 +49,7 @@ const mssql = {
 	DB_USER: 'sa',
 	DB_PASSWORD: 'Test@123',
 	DB_DATABASE: 'model',
+	DB_VERSION: '2022-latest',
 	...directusConfig,
 } as const;
 
@@ -58,6 +60,7 @@ const cockroachdb = {
 	DB_PASSWORD: '',
 	DB_PORT: '$PORT',
 	DB_DATABASE: 'defaultdb',
+	DB_VERSION: 'latest-v25.3',
 	COCKROACH_UI: '$PORT',
 	...directusConfig,
 } as const;
@@ -69,6 +72,7 @@ const mysql = {
 	DB_USER: 'root',
 	DB_PASSWORD: 'secret',
 	DB_DATABASE: 'directus',
+	DB_VERSION: '8.4',
 	...directusConfig,
 } as const;
 
@@ -79,6 +83,7 @@ const postgres = {
 	DB_PASSWORD: 'secret',
 	DB_PORT: '$PORT',
 	DB_DATABASE: 'directus',
+	DB_VERSION: '18-alpine',
 	...directusConfig,
 } as const;
 
@@ -95,6 +100,7 @@ const oracle = {
 	DB_USER: 'secretsysuser',
 	DB_PASSWORD: 'secretpassword',
 	DB_DATABASE: 'XEPDB1',
+	DB_VERSION: '21-slim-faststart' as string,
 	...directusConfig,
 } as const;
 
@@ -164,6 +170,10 @@ export async function getEnv(database: Database, opts: Options): Promise<Env> {
 		...opts.env,
 		...(process.env as Record<string, any>),
 	} satisfies Env;
+
+	if (opts.version && 'DB_VERSION' in env) {
+		env.DB_VERSION = opts.version;
+	}
 
 	// eslint-disable-next-line prefer-const
 	for (let [key, value] of Object.entries(env)) {

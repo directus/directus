@@ -8,6 +8,7 @@ program
 	.option('-w, --watch', 'Restart the api when changes are made')
 	.option('--inspect', 'Start the api with debugger', true)
 	.option('-p, --port <port>', 'Port to start the api on')
+	.option('-v, --version <version>', 'Which version of the database to use')
 	.option('-x, --export', 'Export the schema to a file every 2 seconds')
 	.option('-s, --schema [schema]', 'Load an additional schema snapshot on startup')
 	.option('--docker.basePort <dockerBasePort>', 'Minimum port number to use for docker containers')
@@ -39,14 +40,14 @@ const sb = await sandbox(program.args[0] as Database, {
 		: {},
 });
 
-await new Promise((resolve) => {
+await new Promise(() => {
 	process.on('SIGINT', async () => {
 		await sb.stop();
-		resolve(undefined);
+		process.exit();
 	});
 
 	process.on('SIGTERM', async () => {
 		await sb.stop();
-		resolve(undefined);
+		process.exit();
 	});
 });
