@@ -2,22 +2,24 @@ import ms from 'ms';
 import { createError, ErrorCode } from '../index.js';
 
 export interface EmailLimitExceededErrorExtensions {
-	points?: number;
-	duration?: number;
-	message?: string;
+	points?: number | undefined;
+	duration?: number | undefined;
+	message?: string | undefined;
 }
 
 export const messageConstructor = (extensions: EmailLimitExceededErrorExtensions) => {
-	if (extensions.message) {
-		return extensions.message;
-	}
+	const message = ['Email sending limit exceeded.'];
 
-	if ('points' in extensions && 'duration' in extensions) {
+	if (typeof extensions.points === 'number' && typeof extensions.duration === 'number') {
 		const duration = ms(extensions.duration, { long: true });
-		return `Email sending limit exceeded. Limit ${extensions.points} mails per ${duration}.`;
+		message.push(`Limit ${extensions.points} mails per ${duration}.`);
 	}
 
-	return `Email sending limit exceeded.`;
+	if (extensions.message) {
+		message.push(extensions.message);
+	}
+
+	return message.join(' ');
 };
 
 export const EmailLimitExceededError = createError<EmailLimitExceededErrorExtensions>(
