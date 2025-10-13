@@ -1194,7 +1194,6 @@ page_help_settings_datamodel_fields: >-
   **მონაცემთა მოდელი: კოლექცია** — ფორმა ამ კოლექციისა და მისი ველების სამართავად.
 page_help_settings_system_logs: '**სისტემის ჟურნალები** — წვდომა სისტემის ჟურნალების პირდაპირ სტრიმზე.'
 page_help_settings_policies_collection: '**პოლიტიკების დათვალიერება** — პროექტში არსებული ყველა პოლიტიკის სია.'
-page_help_settings_policies_item: "**პოლიტიკის დეტალები** — პოლიტიკის უფლებებისა და სხვა პარამეტრების მართვა."
 page_help_settings_roles_collection: '**როლების დათვალიერება** — პროექტში არსებული ყველა მომხმარებლის როლის სია.'
 page_help_settings_roles_item: "**როლის დეტალები** — როლის უფლებებისა და სხვა პარამეტრების მართვა."
 page_help_settings_presets_collection: >-
@@ -1597,6 +1596,8 @@ unlimited_usage: შეუზღუდავი გამოყენება
 uses_left: გამოყენება არ დარჩა | ერთი გამოყენება დარჩა | {n} გამოყენება დარჩა
 no_shares: საჩვენებელი გაზიარებები არ არის
 new_share: ახალი გაზიარება
+mcp_prompts_collection_schema:
+  messages_role_user: მომხმარებელი
 expired: ვადაგასული
 upcoming: მომავალი
 share: გაზიარება

@@ -7,7 +7,7 @@
 		"cli": "tsx src/cli.ts",
 		"build": "tsc && copyfiles src/docker/*.yml dist -u 1",
 		"dev": "tsc -w ",
-		"build:tests": "tsup src/index.ts  --format=esm",
+		"build:tests": "tsdown src/index.ts  --format=esm",
 		"docs": "typedoc --plugin typedoc-plugin-markdown --out ./docs",
 		"postinstall": "pnpm link"
 	},
@@ -41,7 +41,7 @@
 		"get-port": "catalog:",
 		"lodash-es": "catalog:",
 		"pid-port": "catalog:",
-		"tsup": "catalog:",
+		"tsdown": "catalog:",
 		"tsx": "catalog:",
 		"typedoc": "catalog:",
 		"typedoc-plugin-markdown": "catalog:",

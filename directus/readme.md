@@ -35,9 +35,10 @@ $15/month.
 
 [The Directus Documentation](https://docs.directus.io) is a great place to start, or explore these other channels:
 
-- [Discord](https://directus.chat) (Questions, Live Discussions)
+- [Community](https://community.directus.io) (Questions, Discussions)
+- [Discord](https://directus.chat) (Live Chat)
 - [GitHub Issues](https://github.com/directus/directus/issues) (Report Bugs)
-- [GitHub Discussions](https://github.com/directus/directus/discussions) (Feature Requests)
+- [Roadmap](https://roadmap.directus.io/) (Roadmap & Feature Requests)
 - [Twitter](https://twitter.com/directus) (Latest News)
 - [YouTube](https://www.youtube.com/c/DirectusVideos/featured) (Video Tutorials)
 

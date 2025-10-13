@@ -85,7 +85,8 @@ p {
 }
 a {
 	color: ${cssVar('--theme--primary-accent')};
-	text-decoration: none;
+	text-decoration: underline;
+	cursor: pointer;
 }
 ul, ol {
 	font-family: ${userFontFamily}, serif;

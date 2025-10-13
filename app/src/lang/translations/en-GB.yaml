@@ -1279,6 +1279,8 @@ shares: Shares
 unlimited_usage: Unlimited usage
 no_shares: No shares to show
 new_share: New Share
+mcp_prompts_collection_schema:
+  messages_role_user: User
 expired: Expired
 upcoming: Upcoming
 share: Share

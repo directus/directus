@@ -7,23 +7,24 @@ import {
 	ValueTooLongError,
 } from '@directus/errors';
 
+import type { Item } from '@directus/types';
 import getDatabase from '../../index.js';
 import type { MSSQLError } from './types.js';
-import type { Item } from '@directus/types';
 
 enum MSSQLErrorCodes {
 	FOREIGN_KEY_VIOLATION = 547,
 	NOT_NULL_VIOLATION = 515,
 	NUMERIC_VALUE_OUT_OF_RANGE = 220,
-	UNIQUE_VIOLATION = 2601, // or 2627
+	UNIQUE_VIOLATION_INDEX = 2601,
+	UNIQUE_VIOLATION_CONSTRAINT = 2627,
 	VALUE_LIMIT_VIOLATION = 2628,
 }
 
 export async function extractError(error: MSSQLError, data: Partial<Item>): Promise<MSSQLError | Error> {
 	switch (error.number) {
-		case MSSQLErrorCodes.UNIQUE_VIOLATION:
-		case 2627:
-			return await uniqueViolation();
+		case MSSQLErrorCodes.UNIQUE_VIOLATION_CONSTRAINT:
+		case MSSQLErrorCodes.UNIQUE_VIOLATION_INDEX:
+			return await uniqueViolation(error);
 		case MSSQLErrorCodes.NUMERIC_VALUE_OUT_OF_RANGE:
 			return numericValueOutOfRange();
 		case MSSQLErrorCodes.VALUE_LIMIT_VIOLATION:
@@ -36,14 +37,20 @@ export async function extractError(error: MSSQLError, data: Partial<Item>): Prom
 
 	return error;
 
-	async function uniqueViolation() {
+	async function uniqueViolation(error: MSSQLError) {
 		/**
 		 * NOTE:
-		 * SQL Server doesn't return the name of the offending column when a unique constraint is thrown:
+		 * SQL Server doesn't return the name of the offending column when a unique error is thrown:
 		 *
+		 * Constraint:
 		 * insert into [articles] ([unique]) values (@p0)
-		 * - Violation of UNIQUE KEY constraint 'UQ__articles__5A062640242004EB'.
-		 * Cannot insert duplicate key in object 'dbo.articles'. The duplicate key value is (rijk).
+		 * - Violation of UNIQUE KEY constraint 'unique_contraint_name'. Cannot insert duplicate key in object 'dbo.article'.
+		 * The duplicate key value is (rijk).
+		 *
+		 * Index:
+		 * insert into [articles] ([unique]) values (@p0)
+		 * - Cannot insert duplicate key row in object 'dbo.articles' with unique index 'unique_index_name'.
+		 * The duplicate key value is (rijk).
 		 *
 		 * While it's not ideal, the best next thing we can do is extract the column name from
 		 * information_schema when this happens
@@ -57,9 +64,12 @@ export async function extractError(error: MSSQLError, data: Partial<Item>): Prom
 
 		if (!quoteMatches || !parenMatches) return error;
 
-		const keyName = quoteMatches[1]!.slice(1, -1);
+		const [keyNameMatchIndex, collectionNameMatchIndex] =
+			error.number === MSSQLErrorCodes.UNIQUE_VIOLATION_INDEX ? [1, 0] : [0, 1];
 
-		let collection = quoteMatches[0]!.slice(1, -1);
+		const keyName = quoteMatches[keyNameMatchIndex]!.slice(1, -1);
+
+		let collection = quoteMatches[collectionNameMatchIndex]!.slice(1, -1);
 		let field: string | null = null;
 
 		if (keyName) {

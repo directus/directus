@@ -20,7 +20,7 @@ export type UpdateOperationOutput<
 export const updateOperations =
 	<Schema, const TQuery extends Query<Schema, DirectusOperation<Schema>>>(
 		keys: DirectusOperation<Schema>['id'][],
-		item: Partial<DirectusOperation<Schema>>,
+		item: NestedPartial<DirectusOperation<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateOperationOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -63,7 +63,7 @@ export const updateOperationsBatch =
 export const updateOperation =
 	<Schema, const TQuery extends Query<Schema, DirectusOperation<Schema>>>(
 		key: DirectusOperation<Schema>['id'],
-		item: Partial<DirectusOperation<Schema>>,
+		item: NestedPartial<DirectusOperation<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateOperationOutput<Schema, TQuery>, Schema> =>
 	() => {

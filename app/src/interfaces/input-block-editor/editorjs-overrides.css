@@ -53,7 +53,7 @@
 	border-color: var(--theme--form--field--input--border-color-hover);
 }
 
-.codex-editor .ce-popover {
+.codex-editor .ce-popover__container {
 	background: var(--theme--form--field--input--background-subdued);
 	border-color: var(--theme--form--field--input--border-color);
 	border-width: var(--theme--border-width);
@@ -98,6 +98,7 @@
 	background: transparent;
 	box-shadow: unset;
 	border: 1px solid var(--theme--foreground-subdued);
+	border-radius: 4px;
 }
 
 .codex-editor .ce-popover-item--active .ce-popover-item__icon {
