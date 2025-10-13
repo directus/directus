@@ -12,7 +12,8 @@ export const messageConstructor = (extensions: EmailLimitExceededErrorExtensions
 
 	if (typeof extensions.points === 'number' && typeof extensions.duration === 'number') {
 		const duration = ms(extensions.duration * 1000, { long: true });
-		message.push(`Limit of ${extensions.points} emails every ${duration}.`);
+		const plural = extensions.points !== 0 ? 's' : '';
+		message.push(`Limit of ${extensions.points} email${plural} every ${duration}.`);
 	}
 
 	if (extensions.message) {
