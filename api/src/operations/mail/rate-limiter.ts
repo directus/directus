@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
 import { createRateLimiter } from '../../rate-limiter.js';
 import { toBoolean } from '@directus/utils';
-import { HitRateLimitError } from '@directus/errors';
+import { EmailLimitExceededError } from '@directus/errors';
 
 let emailRateLimiter: RateLimiterRedis | RateLimiterMemory | undefined;
 
@@ -19,17 +19,11 @@ export async function useFlowsEmailRateLimiter(flow_id: string) {
 		await emailRateLimiter.consume(flow_id, 1);
 	} catch (err: unknown) {
 		if (err instanceof Error) {
-			const resetIn = (err as unknown as any)?.msBeforeNext ?? Number(env['EMAIL_FLOWS_LIMITER_DURATION']) * 1000;
-			// perhaps we should use an error that does not require `limit` and `reset`
-			throw new HitRateLimitError(
-				{
-					limit: Number(env['EMAIL_FLOWS_LIMITER_POINTS'] as string),
-					reset: new Date(Date.now() + resetIn),
-				},
-				{
-					cause: err.message,
-				},
-			);
+			throw new EmailLimitExceededError({
+				points: 'EMAIL_LIMITER_POINTS' in env ? Number(env['EMAIL_LIMITER_POINTS']) : undefined,
+				duration: 'EMAIL_LIMITER_DURATION' in env ? Number(env['EMAIL_LIMITER_DURATION']) : undefined,
+				message: 'EMAIL_LIMITER_ERROR_MESSAGE' in env ? String(env['EMAIL_LIMITER_ERROR_MESSAGE']) : undefined,
+			});
 		}
 
 		throw err;
