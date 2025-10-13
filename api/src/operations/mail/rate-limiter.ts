@@ -20,9 +20,9 @@ export async function useFlowsEmailRateLimiter(flow_id: string) {
 	} catch (err: unknown) {
 		if (err instanceof RateLimiterRes) {
 			throw new EmailLimitExceededError({
-				points: 'EMAIL_LIMITER_POINTS' in env ? Number(env['EMAIL_LIMITER_POINTS']) : undefined,
-				duration: 'EMAIL_LIMITER_DURATION' in env ? Number(env['EMAIL_LIMITER_DURATION']) : undefined,
-				message: 'EMAIL_LIMITER_ERROR_MESSAGE' in env ? String(env['EMAIL_LIMITER_ERROR_MESSAGE']) : undefined,
+				points: 'EMAIL_FLOWS_LIMITER_POINTS' in env ? Number(env['EMAIL_FLOWS_LIMITER_POINTS']) : undefined,
+				duration: 'EMAIL_FLOWS_LIMITER_DURATION' in env ? Number(env['EMAIL_FLOWS_LIMITER_DURATION']) : undefined,
+				message: 'EMAIL_FLOWS_LIMITER_ERROR_MESSAGE' in env ? String(env['EMAIL_FLOWS_LIMITER_ERROR_MESSAGE']) : undefined,
 			});
 		}
 
