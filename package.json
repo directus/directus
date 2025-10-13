@@ -33,7 +33,7 @@
 	},
 	"pnpm": {
 		"overrides": {
-			"tar-fs": "2.1.3"
+			"tar-fs": "2.1.4"
 		}
 	},
 	"packageManager": "pnpm@10.14.0",

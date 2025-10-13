@@ -23,7 +23,7 @@ body:
       label: To Reproduce
       description:
         Steps to reproduce the behavior. Contributors should be able to follow the steps provided in order to reproduce
-        the bug.
+        the bug. If applicable, export and attach a schema snapshot from **Settings > Data Model** sidebar.```
     validations:
       required: true
   - type: input
