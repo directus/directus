@@ -66,8 +66,10 @@ describe('createCli', () => {
 			expect(emitter.emitInit).toHaveBeenCalledWith('cli.after', { program: expect.any(Command) });
 		});
 
-		test('Should allow excess arguments', () => {
-			expect((program as any)._allowExcessArguments).toBe(true);
+		test('Should allow excess arguments', async () => {
+			await program.parseAsync(['node', 'directus', 'start', 'test']);
+
+			expect(program.args).toEqual(['start', 'test']);
 		});
 	});
 
