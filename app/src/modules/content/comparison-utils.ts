@@ -297,7 +297,7 @@ export function normalizeComparisonData(
 			? normalizeVersionItem(selected)
 			: {
 					id: undefined,
-					displayName: 'Unknown Version',
+					displayName: i18n.global.t('unknown_version'),
 					date: { raw: null, formatted: null, dateObject: null },
 					user: null,
 				};
@@ -310,7 +310,7 @@ export function normalizeComparisonData(
 			? normalizeRevisionItem(selected)
 			: {
 					id: undefined,
-					displayName: 'Unknown Revision',
+					displayName: i18n.global.t('unknown_revision'),
 					date: { raw: null, formatted: null, dateObject: null },
 					user: null,
 				};

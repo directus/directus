@@ -1163,6 +1163,8 @@ appearance_dark: Dark
 other: Other...
 adding_user: Adding User
 unknown_user: Unknown User
+unknown_version: Unknown Version
+unknown_revision: Unknown Revision
 creating_in: 'Creating Item in {collection}'
 editing_in: 'Editing Item in {collection}'
 viewing_in: 'Viewing Item in {collection}'
