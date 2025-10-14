@@ -103,7 +103,6 @@ const internalActive = computed({
 					<header-bar
 						:title="title"
 						primary-action-icon="close"
-						:small="smallHeader"
 						:shadow="headerShadow"
 						@primary="$emit('cancel')"
 					>
