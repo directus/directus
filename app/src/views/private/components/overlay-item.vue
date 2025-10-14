@@ -516,19 +516,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	return !dialogs.contains(e.target as Node);
 }
 
-const {
-	confirmButtonCTA,
-	confirmDialogDetails,
-	confirmRunFlow,
-	confirmUnsavedChanges,
-	confirmValues,
-	displayCustomConfirmDialog,
-	displayUnsavedChangesDialog,
-	isConfirmButtonDisabled,
-	provideUseFlows,
-	resetConfirm,
-	runManualFlow,
-} = useFlows({
+const { provideUseFlows } = useFlows({
 	collection,
 	primaryKey: computed(() => primaryKey.value),
 	selection: ref([]),
@@ -536,10 +524,6 @@ const {
 	hasEdits,
 	onRefreshCallback: refresh,
 });
-
-function handleRunManualFlow(flowId: string, isActionDisabled = false) {
-	runManualFlow(flowId, isActionDisabled, refresh);
-}
 
 provideUseFlows();
 </script>
@@ -573,60 +557,6 @@ provideUseFlows();
 			<v-button v-tooltip.bottom="getTooltip('save', t('save'))" icon rounded :disabled="!isSavable" @click="save">
 				<v-icon name="check" />
 			</v-button>
-
-			<v-dialog
-				:model-value="displayUnsavedChangesDialog"
-				keep-behind
-				@esc="resetConfirm"
-				@apply="confirmUnsavedChanges(confirmRunFlow!)"
-			>
-				<v-card>
-					<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-					<v-card-text>{{ t('run_flow_on_current_edited_confirm') }}</v-card-text>
-
-					<v-card-actions>
-						<v-button secondary @click="resetConfirm">
-							{{ t('cancel') }}
-						</v-button>
-						<v-button :disabled="isConfirmButtonDisabled" @click="confirmUnsavedChanges(confirmRunFlow!)">
-							{{ confirmButtonCTA }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
-
-			<v-dialog
-				:model-value="displayCustomConfirmDialog"
-				keep-behind
-				@esc="resetConfirm"
-				@apply="handleRunManualFlow(confirmRunFlow!, isConfirmButtonDisabled)"
-			>
-				<v-card>
-					<v-card-title>{{ confirmDialogDetails!.description ?? t('run_flow_confirm') }}</v-card-title>
-					<v-card-text class="confirm-form">
-						<v-form
-							v-if="confirmDialogDetails!.fields && confirmDialogDetails!.fields.length > 0"
-							:fields="confirmDialogDetails!.fields"
-							:model-value="confirmValues"
-							autofocus
-							primary-key="+"
-							@update:model-value="confirmValues = $event"
-						/>
-					</v-card-text>
-
-					<v-card-actions>
-						<v-button secondary @click="resetConfirm">
-							{{ t('cancel') }}
-						</v-button>
-						<v-button
-							:disabled="isConfirmButtonDisabled"
-							@click="handleRunManualFlow(confirmRunFlow!, isConfirmButtonDisabled)"
-						>
-							{{ confirmButtonCTA }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
 		</template>
 
 		<overlay-item-content

@@ -109,6 +109,11 @@ export function useFlows(options: UseFlowsOptions) {
 		return !primaryKey?.value && selection.value.length === 0;
 	}
 
+	function checkFlowRunning(manualFlow: FlowRaw) {
+		if (!manualFlow) return false;
+		return runningFlows.value.includes(manualFlow.id);
+	}
+
 	function resetConfirm() {
 		confirmRunFlow.value = null;
 		confirmValues.value = null;
@@ -139,11 +144,23 @@ export function useFlows(options: UseFlowsOptions) {
 
 	function provideUseFlows() {
 		provide('provide-use-flows', {
-			runningFlows,
-			manualFlows,
-			getFlowTooltip,
 			checkFlowDisabled,
+			checkFlowRunning,
+			confirmButtonCTA,
+			confirmDialogDetails,
+			confirmRunFlow,
+			confirmUnsavedChanges,
+			confirmValues,
+			displayCustomConfirmDialog,
+			displayUnsavedChangesDialog,
+			getFlowTooltip,
+			isConfirmButtonDisabled,
+			manualFlows,
 			onFlowClick,
+			onRefreshCallback,
+			resetConfirm,
+			runManualFlow,
+			runningFlows,
 		});
 	}
 
@@ -196,6 +213,7 @@ export function useFlows(options: UseFlowsOptions) {
 
 	return {
 		checkFlowDisabled,
+		checkFlowRunning,
 		confirmButtonCTA,
 		confirmDialogDetails,
 		confirmedUnsavedChanges,
@@ -208,6 +226,7 @@ export function useFlows(options: UseFlowsOptions) {
 		isConfirmButtonDisabled,
 		manualFlows,
 		onFlowClick,
+		onRefreshCallback,
 		provideUseFlows,
 		resetConfirm,
 		runManualFlow,
@@ -217,10 +236,22 @@ export function useFlows(options: UseFlowsOptions) {
 
 export function injectUseFlows() {
 	return inject('provide-use-flows') as {
-		runningFlows: Ref<string[]>;
-		manualFlows: ComputedRef<FlowRaw[]>;
-		getFlowTooltip: (manualFlow: FlowRaw) => string;
 		checkFlowDisabled: (manualFlow: FlowRaw) => boolean;
+		checkFlowRunning: (manualFlow: FlowRaw) => boolean;
+		confirmButtonCTA: any;
+		confirmDialogDetails: any;
+		confirmRunFlow: any;
+		confirmUnsavedChanges: any;
+		confirmValues: any;
+		displayCustomConfirmDialog: any;
+		displayUnsavedChangesDialog: any;
+		getFlowTooltip: (manualFlow: FlowRaw) => string;
+		isConfirmButtonDisabled: any;
+		manualFlows: ComputedRef<FlowRaw[]>;
 		onFlowClick: (flowId: string) => void;
+		onRefreshCallback: any;
+		resetConfirm: any;
+		runManualFlow: any;
+		runningFlows: Ref<string[]>;
 	};
 }
