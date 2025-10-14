@@ -18,7 +18,7 @@ const navBarStore = useNavBarStore();
 			<v-text-overflow v-if="descriptor" class="descriptor" :text="descriptor" placement="bottom" />
 		</div>
 
-		<VIcon name="left_panel_close" clickable @click="navBarStore.collapse" />
+		<VIcon small name="left_panel_close" clickable @click="navBarStore.collapse" />
 	</div>
 </template>
 
