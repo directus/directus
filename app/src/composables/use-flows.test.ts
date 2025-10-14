@@ -2,7 +2,7 @@ import { describe, beforeEach, expect, test, vi, afterEach } from 'vitest';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { useFlows } from './use-flows';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useFlowsStore } from '@/stores/flows';
 import api from '@/api';
 
@@ -67,11 +67,14 @@ function resetState() {
 	resetConfirm();
 }
 
+const mockOnRefresh = vi.fn();
+
 const useFlowsOptions = {
 	collection: ref('test_collection'),
-	primaryKey: ref('item_1'),
+	primaryKey: computed(() => 'item_1'),
 	location: ref('collection' as const),
 	hasEdits: ref(true),
+	onRefreshCallback: mockOnRefresh,
 };
 
 const mockFlows = [
@@ -404,7 +407,7 @@ describe('checkFlowDisabled', () => {
 		test('location is "collection", no primaryKey, no selection, requireSelection not false', () => {
 			const testUseFlowsOptions = {
 				...useFlowsOptions,
-				primaryKey: ref(undefined),
+				primaryKey: undefined,
 				selection: ref([]),
 			};
 
@@ -545,7 +548,7 @@ describe('runManualFlow', () => {
 
 		const { runManualFlow, runningFlows } = useFlows(useFlowsOptions);
 
-		await runManualFlow('flow-1', true);
+		await runManualFlow('flow-1', true, mockOnRefresh);
 
 		expect(runningFlows.value).toEqual([]);
 	});
@@ -559,7 +562,7 @@ describe('runManualFlow', () => {
 
 		const { runManualFlow, runningFlows } = useFlows(useFlowsOptions);
 
-		await runManualFlow('non-existent-flow');
+		await runManualFlow('non-existent-flow', false, mockOnRefresh);
 
 		expect(runningFlows.value).toEqual([]);
 	});
@@ -573,7 +576,7 @@ describe('runManualFlow', () => {
 
 		const { runManualFlow, runningFlows } = useFlows(useFlowsOptions);
 
-		await runManualFlow(mockFlows[1]!.id);
+		await runManualFlow(mockFlows[1]!.id, false, mockOnRefresh);
 
 		expect(runningFlows.value).toEqual([]);
 	});
@@ -596,7 +599,7 @@ describe('runManualFlow', () => {
 
 		confirmValues.value = { testField: 'testValue' };
 
-		await runManualFlow(mockFlows[4]!.id);
+		await runManualFlow(mockFlows[4]!.id, false, mockOnRefresh);
 
 		expect(api.post).toHaveBeenCalledWith(`/flows/trigger/${mockFlows[4]!.id}`, {
 			testField: 'testValue',
@@ -621,7 +624,7 @@ describe('runManualFlow', () => {
 
 		confirmValues.value = { testField: 'testValue' };
 
-		await runManualFlow(mockFlows[0]!.id);
+		await runManualFlow(mockFlows[0]!.id, false, mockOnRefresh);
 
 		expect(api.post).toHaveBeenCalledWith(`/flows/trigger/${mockFlows[0]!.id}`, {
 			testField: 'testValue',
@@ -645,17 +648,17 @@ describe('runManualFlow', () => {
 
 		const testOptions = {
 			...useFlowsOptions,
-			primaryKey: ref(undefined),
-			selection: ref(['item1', 'item2']),
+			primaryKey: undefined,
+			selection: ref([{ id: 'item1' }, { id: 'item2' }]),
 		};
 
 		const { runManualFlow } = useFlows(testOptions);
 
-		await runManualFlow(mockFlows[0]!.id);
+		await runManualFlow(mockFlows[0]!.id, false, mockOnRefresh);
 
 		expect(api.post).toHaveBeenCalledWith(`/flows/trigger/${mockFlows[0]!.id}`, {
 			collection: 'test_collection',
-			keys: ['item1', 'item2'],
+			keys: [{ id: 'item1' }, { id: 'item2' }],
 		});
 	});
 
@@ -667,8 +670,6 @@ describe('runManualFlow', () => {
 		vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
 
 		vi.mocked(api.post).mockResolvedValue({});
-
-		const mockOnRefresh = vi.fn();
 
 		const { runManualFlow } = useFlows(useFlowsOptions);
 
@@ -689,7 +690,7 @@ describe('runManualFlow', () => {
 
 		const { runManualFlow, runningFlows } = useFlows(useFlowsOptions);
 
-		await runManualFlow(mockFlows[0]!.id);
+		await runManualFlow(mockFlows[0]!.id, false, mockOnRefresh);
 
 		expect(runningFlows.value).toEqual([]);
 	});
@@ -707,7 +708,7 @@ describe('runManualFlow', () => {
 
 		expect(runningFlows.value).toEqual([]);
 
-		const runPromise = runManualFlow(mockFlows[0]!.id);
+		const runPromise = runManualFlow(mockFlows[0]!.id, false, mockOnRefresh);
 
 		expect(runningFlows.value).toContain(mockFlows[0]!.id);
 

@@ -530,7 +530,7 @@ const {
 	runManualFlow,
 } = useFlows({
 	collection,
-	primaryKey: computed(() => primaryKey.value ?? undefined),
+	primaryKey: computed(() => primaryKey.value),
 	selection: ref([]),
 	location: ref('item'),
 	hasEdits,

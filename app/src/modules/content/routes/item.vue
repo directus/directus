@@ -515,13 +515,13 @@ const {
 	displayCustomConfirmDialog,
 	displayUnsavedChangesDialog,
 	isConfirmButtonDisabled,
+	manualFlows,
 	provideUseFlows,
 	resetConfirm,
 	runManualFlow,
 } = useFlows({
 	collection,
-	primaryKey: computed(() => actualPrimaryKey.value ?? undefined),
-	selection: ref([]),
+	primaryKey: actualPrimaryKey,
 	location: ref('item'),
 	hasEdits,
 	onRefreshCallback: refresh,
@@ -870,14 +870,7 @@ provideUseFlows();
 					:primary-key="actualPrimaryKey"
 					:allowed="shareAllowed"
 				/>
-				<flow-sidebar-detail
-					v-if="currentVersion === null"
-					location="item"
-					:collection="collection"
-					:primary-key="actualPrimaryKey"
-					:has-edits="hasEdits"
-					@refresh="refresh"
-				/>
+				<flow-sidebar-detail v-if="manualFlows.length > 0" />
 			</template>
 		</template>
 	</private-view>

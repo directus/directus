@@ -23,6 +23,7 @@ import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
 import { isSystemCollection } from '@directus/system-data';
+import { useFlows } from '@/composables/use-flows';
 
 type Item = {
 	[field: string]: any;
@@ -283,6 +284,32 @@ function clearFilters() {
 	filter.value = null;
 	search.value = null;
 }
+
+function handleRunManualFlow(flowId: string, isActionDisabled = false) {
+	runManualFlow(flowId, isActionDisabled, refresh);
+}
+
+const {
+	confirmButtonCTA,
+	confirmDialogDetails,
+	confirmRunFlow,
+	confirmUnsavedChanges,
+	confirmValues,
+	displayCustomConfirmDialog,
+	displayUnsavedChangesDialog,
+	isConfirmButtonDisabled,
+	manualFlows,
+	provideUseFlows,
+	resetConfirm,
+	runManualFlow,
+} = useFlows({
+	collection,
+	selection,
+	location: ref('collection'),
+	onRefreshCallback: refresh,
+});
+
+provideUseFlows();
 </script>
 
 <template>
@@ -464,6 +491,60 @@ function clearFilters() {
 				>
 					<v-icon name="add" />
 				</v-button>
+
+				<v-dialog
+					:model-value="displayUnsavedChangesDialog"
+					keep-behind
+					@esc="resetConfirm"
+					@apply="confirmUnsavedChanges(confirmRunFlow!)"
+				>
+					<v-card>
+						<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+						<v-card-text>{{ t('run_flow_on_current_edited_confirm') }}</v-card-text>
+
+						<v-card-actions>
+							<v-button secondary @click="resetConfirm">
+								{{ t('cancel') }}
+							</v-button>
+							<v-button :disabled="isConfirmButtonDisabled" @click="confirmUnsavedChanges(confirmRunFlow!)">
+								{{ confirmButtonCTA }}
+							</v-button>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
+
+				<v-dialog
+					:model-value="displayCustomConfirmDialog"
+					keep-behind
+					@esc="resetConfirm"
+					@apply="handleRunManualFlow(confirmRunFlow!, isConfirmButtonDisabled)"
+				>
+					<v-card>
+						<v-card-title>{{ confirmDialogDetails!.description ?? t('run_flow_confirm') }}</v-card-title>
+						<v-card-text class="confirm-form">
+							<v-form
+								v-if="confirmDialogDetails!.fields && confirmDialogDetails!.fields.length > 0"
+								:fields="confirmDialogDetails!.fields"
+								:model-value="confirmValues"
+								autofocus
+								primary-key="+"
+								@update:model-value="confirmValues = $event"
+							/>
+						</v-card-text>
+
+						<v-card-actions>
+							<v-button secondary @click="resetConfirm">
+								{{ t('cancel') }}
+							</v-button>
+							<v-button
+								:disabled="isConfirmButtonDisabled"
+								@click="handleRunManualFlow(confirmRunFlow!, isConfirmButtonDisabled)"
+							>
+								{{ confirmButtonCTA }}
+							</v-button>
+						</v-card-actions>
+					</v-card>
+				</v-dialog>
 			</template>
 
 			<template #navigation>
@@ -550,12 +631,7 @@ function clearFilters() {
 					:on-download="downloadHandler"
 					@refresh="refresh"
 				/>
-				<flow-sidebar-detail
-					location="collection"
-					:collection="collection"
-					:selection="selection"
-					@refresh="batchRefresh"
-				/>
+				<flow-sidebar-detail v-if="manualFlows.length > 0" />
 			</template>
 
 			<v-dialog :model-value="deleteError !== null" @esc="deleteError = null">

@@ -9,7 +9,7 @@ const { manualFlows } = inject('provide-use-flows') as any;
 </script>
 
 <template>
-	<sidebar-detail v-if="manualFlows.length > 0" icon="bolt" :title="t('flows')">
+	<sidebar-detail icon="bolt" :title="t('flows')">
 		<div class="fields">
 			<div v-for="manualFlow in manualFlows" :key="manualFlow.id" class="field full">
 				<trigger-flow :flow-id="manualFlow.id" />

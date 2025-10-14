@@ -1,6 +1,6 @@
 import api from '@/api';
 import { computed, ref, unref, Ref, provide, inject, ComputedRef } from 'vue';
-import { FlowRaw } from '@directus/types';
+import { FlowRaw, Item, PrimaryKey } from '@directus/types';
 import { notify } from '@/utils/notify';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -12,15 +12,15 @@ import formatTitle from '@directus/format-title';
 
 export interface UseFlowsOptions {
 	collection: Ref<string>;
-	primaryKey: Ref<string | number | undefined>;
-	selection: Ref<(number | string)[]>;
+	primaryKey?: ComputedRef<PrimaryKey | null>;
+	selection?: Ref<Item[]>;
 	location: Ref<'collection' | 'item'>;
-	hasEdits: Ref<boolean>;
+	hasEdits?: Ref<boolean>;
 	onRefreshCallback: () => void;
 }
 
 export function useFlows(options: UseFlowsOptions) {
-	const { collection, hasEdits, location, onRefreshCallback, primaryKey, selection } = options;
+	const { collection, hasEdits = ref(false), location, onRefreshCallback, primaryKey, selection = ref([]) } = options;
 
 	const { t } = useI18n();
 	const { primaryKeyField } = useCollection(collection);
@@ -106,7 +106,7 @@ export function useFlows(options: UseFlowsOptions) {
 
 	function checkFlowDisabled(manualFlow: FlowRaw) {
 		if (location.value === 'item' || manualFlow.options?.requireSelection === false) return false;
-		return !primaryKey.value && selection.value.length === 0;
+		return !primaryKey?.value && selection.value.length === 0;
 	}
 
 	function resetConfirm() {
@@ -169,7 +169,7 @@ export function useFlows(options: UseFlowsOptions) {
 					collection: collection.value,
 				});
 			} else {
-				const keys = primaryKey.value ? [primaryKey.value] : selection.value || [];
+				const keys = primaryKey?.value ? [primaryKey.value] : selection.value || [];
 
 				await api.post(`/flows/trigger/${flowId}`, {
 					...unref(confirmValues),
