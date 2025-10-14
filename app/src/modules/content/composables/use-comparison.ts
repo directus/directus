@@ -17,6 +17,7 @@ import {
 	areSomeFieldsSelected,
 	normalizeComparisonData as normalizeComparisonDataUtil,
 	mergeMainItemKeysIntoRevision,
+	copyRelationalFieldsFromBaseToIncoming,
 } from '../comparison-utils';
 import { mergeWith } from 'lodash';
 
@@ -429,9 +430,11 @@ export function useComparison(options: UseComparisonOptions) {
 			incomingMerged.date_updated = (revision as any).activity.timestamp;
 		}
 
+		const incomingWithRelationalFields = copyRelationalFieldsFromBaseToIncoming(baseMerged, incomingMerged, fields);
+
 		return {
 			base: baseMerged,
-			incoming: incomingMerged,
+			incoming: incomingWithRelationalFields,
 			selectableDeltas: revisionsList,
 			comparisonType: 'revision',
 			outdated: false,

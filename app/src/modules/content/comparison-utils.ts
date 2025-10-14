@@ -182,6 +182,28 @@ export function mergeMainItemKeysIntoRevision(
 	return merged;
 }
 
+export function copyRelationalFieldsFromBaseToIncoming(
+	baseItem: Record<string, any>,
+	incomingItem: Record<string, any>,
+	fields?: Field[],
+): Record<string, any> {
+	if (!fields) return incomingItem;
+
+	const result = { ...incomingItem };
+
+	for (const field of fields) {
+		if (isRelationalField(field)) {
+			const fieldKey = field.field;
+
+			if (fieldKey in baseItem) {
+				result[fieldKey] = baseItem[fieldKey];
+			}
+		}
+	}
+
+	return result;
+}
+
 export function normalizeUser(user: User | string | null | undefined): NormalizedUser | null {
 	if (!user) return null;
 
