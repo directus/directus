@@ -156,18 +156,39 @@ function usePromoteDialog() {
 	}
 }
 
-async function onDeltaSelectionChange(newDeltaId: number) {
+async function onDeltaSelectionChange(newDeltaId: string | number) {
 	modalLoading.value = true;
 
 	try {
-		// Update the comparison data with the new delta
-		const newComparisonData: ComparisonData = await normalizeComparisonData(
-			String(newDeltaId),
-			comparisonData.value?.comparisonType || 'revision',
-			comparisonData.value?.currentVersion ? ref(comparisonData.value.currentVersion) : undefined,
-			undefined,
-			comparisonData.value?.selectableDeltas ? ref(comparisonData.value.selectableDeltas as any) : undefined,
-		);
+		const comparisonType = comparisonData.value?.comparisonType || 'revision';
+
+		const currentVersionRef = comparisonData.value?.currentVersion
+			? ref(comparisonData.value.currentVersion)
+			: undefined;
+
+		const selectableDeltasRef = comparisonData.value?.selectableDeltas
+			? ref(comparisonData.value.selectableDeltas as any)
+			: undefined;
+
+		let newComparisonData: ComparisonData;
+
+		if (comparisonType === 'version') {
+			newComparisonData = await normalizeComparisonData(
+				newDeltaId as string,
+				'version',
+				currentVersionRef,
+				undefined,
+				selectableDeltasRef,
+			);
+		} else {
+			newComparisonData = await normalizeComparisonData(
+				newDeltaId as number,
+				'revision',
+				currentVersionRef,
+				undefined,
+				selectableDeltasRef,
+			);
+		}
 
 		comparisonData.value = { ...comparisonData.value, ...newComparisonData };
 

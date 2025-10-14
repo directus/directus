@@ -227,15 +227,29 @@ export function useComparison(options: UseComparisonOptions) {
 
 	async function normalizeComparisonData(
 		id: string,
+		type: 'version',
+		currentVersion?: Ref<ContentVersion | null>,
+		versions?: Ref<ContentVersion[] | null>,
+		revisions?: Ref<Revision[] | null>,
+	): Promise<ComparisonData>;
+	async function normalizeComparisonData(
+		id: number,
+		type: 'revision',
+		currentVersion?: Ref<ContentVersion | null>,
+		versions?: Ref<ContentVersion[] | null>,
+		revisions?: Ref<Revision[] | null>,
+	): Promise<ComparisonData>;
+	async function normalizeComparisonData(
+		id: string | number,
 		type: 'version' | 'revision',
 		currentVersion?: Ref<ContentVersion | null>,
 		versions?: Ref<ContentVersion[] | null>,
 		revisions?: Ref<Revision[] | null>,
 	): Promise<ComparisonData> {
 		if (type === 'version') {
-			return await normalizeVersionComparison(id, currentVersion, versions);
+			return await normalizeVersionComparison(id as string, currentVersion, versions);
 		} else {
-			return await normalizeRevisionComparison(id, currentVersion, revisions);
+			return await normalizeRevisionComparison(id as number, currentVersion, revisions);
 		}
 	}
 
@@ -254,7 +268,7 @@ export function useComparison(options: UseComparisonOptions) {
 	}
 
 	async function normalizeRevisionComparison(
-		revisionId: string,
+		revisionId: number,
 		currentVersion?: Ref<ContentVersion | null>,
 		revisions?: Ref<Revision[] | null>,
 	): Promise<ComparisonData> {
@@ -283,10 +297,9 @@ export function useComparison(options: UseComparisonOptions) {
 		return null;
 	}
 
-	function getRevisionFromComposable(revisionId: string, revisions?: Ref<Revision[] | null>): Revision | null {
+	function getRevisionFromComposable(revisionId: number, revisions?: Ref<Revision[] | null>): Revision | null {
 		if (revisions?.value) {
-			const id = Number(revisionId);
-			return revisions.value.find((revision) => revision.id === id) || null;
+			return revisions.value.find((revision) => revision.id === revisionId) || null;
 		}
 
 		return null;
@@ -330,7 +343,7 @@ export function useComparison(options: UseComparisonOptions) {
 	}
 
 	async function fetchRevisionComparison(
-		revisionId: string,
+		revisionId: number,
 		currentVersion?: Ref<ContentVersion | null>,
 		revisions?: Ref<Revision[] | null>,
 	): Promise<ComparisonData> {

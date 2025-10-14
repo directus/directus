@@ -21,7 +21,7 @@ const { t } = useI18n();
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-	(e: 'delta-change', value: number): void;
+	(e: 'delta-change', value: string | number): void;
 }>();
 
 const userUpdatedName = computed(() => {

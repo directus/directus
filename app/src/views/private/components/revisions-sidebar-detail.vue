@@ -68,7 +68,7 @@ async function openModal(id: number) {
 	if (revision) {
 		try {
 			const normalizedData = await normalizeComparisonData(
-				String(id),
+				id,
 				'revision',
 				version as Ref<ContentVersion | null>,
 				undefined,

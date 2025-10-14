@@ -157,7 +157,7 @@ describe('normalizeComparisonData', () => {
 		const firstRevision = revisions[0]!;
 
 		const result = await normalizeComparisonData(
-			String(firstRevision.id),
+			firstRevision.id,
 			'revision',
 			currentVersionRef,
 			versionsRef,
