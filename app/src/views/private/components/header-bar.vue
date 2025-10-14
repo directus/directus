@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
 import HeaderBarActions from './header-bar-actions.vue';
 
 withDefaults(
 	defineProps<{
 		title?: string;
-		showSidebarToggle?: boolean;
 		primaryActionIcon?: string;
 		small?: boolean;
 		shadow?: boolean;
@@ -18,32 +16,11 @@ withDefaults(
 
 defineEmits<{
 	(e: 'primary'): void;
-	(e: 'toggle:sidebar'): void;
 }>();
-
-const headerEl = ref<Element>();
-
-const collapsed = ref(false);
-
-const observer = new IntersectionObserver(
-	([e]) => {
-		if (!e) return;
-		collapsed.value = e.boundingClientRect.y < 0;
-	},
-	{ threshold: [1] },
-);
-
-onMounted(() => {
-	observer.observe(headerEl.value as HTMLElement);
-});
-
-onUnmounted(() => {
-	observer.disconnect();
-});
 </script>
 
 <template>
-	<header ref="headerEl" class="header-bar" :class="{ collapsed, small, shadow }">
+	<header ref="headerEl" class="header-bar" :class="{ small, shadow }">
 		<div v-if="$slots['title-outer:prepend']" class="title-outer-prepend">
 			<slot name="title-outer:prepend" />
 		</div>
@@ -70,7 +47,7 @@ onUnmounted(() => {
 
 		<slot name="actions:prepend" />
 
-		<header-bar-actions :show-sidebar-toggle="showSidebarToggle" @toggle:sidebar="$emit('toggle:sidebar')">
+		<header-bar-actions>
 			<slot name="actions" />
 		</header-bar-actions>
 
@@ -175,7 +152,7 @@ onUnmounted(() => {
 		pointer-events: none;
 	}
 
-	&.collapsed.shadow,
+	&.shadow,
 	&.small.shadow {
 		box-shadow: var(--theme--header--box-shadow);
 
@@ -189,15 +166,6 @@ onUnmounted(() => {
 
 	.spacer {
 		flex-grow: 1;
-	}
-
-	.sidebar-toggle {
-		flex-shrink: 0;
-		margin-inline-start: 8px;
-
-		@media (min-width: 960px) {
-			display: none;
-		}
 	}
 
 	@media (min-width: 600px) {
