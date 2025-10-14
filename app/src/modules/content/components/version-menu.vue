@@ -32,7 +32,7 @@ const { t } = useI18n();
 
 const { collection, primaryKey, hasEdits, currentVersion, versions } = toRefs(props);
 
-const isVersionPromoteDrawerOpen = ref(false);
+const isComparisonModalOpen = ref(false);
 const comparisonData = ref<ComparisonData | null>(null);
 
 const { normalizeComparisonData } = useComparison({ comparisonData });

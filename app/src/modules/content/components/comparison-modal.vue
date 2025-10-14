@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { ContentVersion } from '@directus/types';
+import type { ContentVersion } from '@directus/types';
 import { ref, toRefs, unref, watch, computed, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
