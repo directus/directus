@@ -201,11 +201,6 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 		<template #headline>
 			<v-breadcrumb :items="[{ name: t('settings_roles'), to: '/settings/roles' }]" />
 		</template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`" small>
-				<v-icon name="arrow_back" small />
-			</v-button>
-		</template>
 
 		<template #actions>
 			<v-button rounded icon :tooltip="t('save')" :loading="saving" :disabled="!hasEdits" small @click="saveAndQuit">

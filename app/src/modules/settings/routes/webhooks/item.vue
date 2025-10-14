@@ -46,12 +46,6 @@ async function deleteAndQuit() {
 			<v-breadcrumb :items="[{ name: t('settings_webhooks'), to: '/settings/webhooks' }]" />
 		</template>
 
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="`/settings/webhooks/`" small>
-				<v-icon name="arrow_back" small />
-			</v-button>
-		</template>
-
 		<template #actions>
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">

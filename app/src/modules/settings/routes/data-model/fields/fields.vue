@@ -75,11 +75,6 @@ function discardAndLeave() {
 		<template #headline>
 			<v-breadcrumb :items="[{ name: t('settings_data_model'), to: '/settings/data-model' }]" />
 		</template>
-		<template #title-outer:prepend>
-			<v-button small class="header-icon" rounded icon exact to="/settings/data-model">
-				<v-icon small name="arrow_back" />
-			</v-button>
-		</template>
 
 		<template #actions>
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">

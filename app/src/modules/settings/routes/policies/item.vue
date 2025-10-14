@@ -110,11 +110,7 @@ function discardAndStay() {
 		<template #headline>
 			<v-breadcrumb :items="[{ name: t('settings_permissions'), to: '/settings/policies' }]" />
 		</template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="`/settings/policies/`" small>
-				<v-icon name="arrow_back" small />
-			</v-button>
-		</template>
+
 		<template #actions>
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">

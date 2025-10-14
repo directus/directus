@@ -59,11 +59,6 @@ function discardAndLeave() {
 <template>
 	<private-view :title="t('settings_ai')">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled small>
-				<v-icon name="smart_toy" small />
-			</v-button>
-		</template>
 
 		<template #title-outer:append>
 			<v-chip class="beta" outlined small>Beta</v-chip>

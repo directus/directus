@@ -120,12 +120,6 @@ function clearFilters() {
 			:header-shadow="currentLayout?.headerShadow"
 			:sidebar-shadow="currentLayout?.sidebarShadow"
 		>
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded icon exact disabled small>
-					<v-icon name="translate" small />
-				</v-button>
-			</template>
-
 			<template #headline>
 				<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
 			</template>

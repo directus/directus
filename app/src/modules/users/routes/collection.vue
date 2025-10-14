@@ -191,12 +191,6 @@ function clearFilters() {
 				<v-breadcrumb :items="breadcrumb" />
 			</template>
 
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded disabled icon secondary small>
-					<v-icon name="people_alt" small />
-				</v-button>
-			</template>
-
 			<template #actions:prepend>
 				<component :is="`layout-actions-${layout}`" v-bind="layoutState" />
 			</template>

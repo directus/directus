@@ -136,12 +136,6 @@ async function onSort(updates: Collection[], removeGroup = false) {
 			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
 		</template>
 
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled small>
-				<v-icon name="database" small />
-			</v-button>
-		</template>
-
 		<template #actions>
 			<search-input
 				v-model="search"

@@ -119,11 +119,7 @@ function discardAndStay() {
 		<template #headline>
 			<v-breadcrumb :items="[{ name: t('settings_roles'), to: '/settings/roles' }]" />
 		</template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`" small>
-				<v-icon name="arrow_back" small />
-			</v-button>
-		</template>
+
 		<template #actions>
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">

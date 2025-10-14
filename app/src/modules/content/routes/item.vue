@@ -532,34 +532,6 @@ function useCollectionRoute() {
 			</h1>
 		</template>
 
-		<template #title-outer:prepend>
-			<v-button
-				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				disabled
-				small
-			>
-				<v-icon :name="collectionInfo.icon" small />
-			</v-button>
-
-			<v-button
-				v-else
-				v-tooltip.bottom="t('back')"
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				exact
-				small
-				@click="navigateBack"
-			>
-				<v-icon name="arrow_back" small />
-			</v-button>
-		</template>
-
 		<template #headline>
 			<div class="headline-wrapper" :class="{ 'has-version-menu': shouldShowVersioning }">
 				<v-breadcrumb

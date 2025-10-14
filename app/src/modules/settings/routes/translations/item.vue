@@ -218,34 +218,6 @@ async function revert(values: Record<string, any>) {
 	<content-not-found v-if="error" />
 
 	<private-view v-else :title="primaryKey === '+' ? t('create_custom_translation') : t('edit_custom_translation')">
-		<template #title-outer:prepend>
-			<v-button
-				v-if="collectionInfo?.meta && collectionInfo.meta.singleton === true"
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				disabled
-				small
-			>
-				<v-icon :name="collectionInfo.icon" small />
-			</v-button>
-
-			<v-button
-				v-else
-				v-tooltip.bottom="t('back')"
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				exact
-				small
-				@click="navigateBack"
-			>
-				<v-icon name="arrow_back" small />
-			</v-button>
-		</template>
-
 		<template #headline>
 			<v-breadcrumb
 				v-if="collectionInfo?.meta && collectionInfo.meta.singleton === true"

@@ -143,12 +143,6 @@ function navigateToPolicy({ item }: { item: Policy }) {
 	<private-view :title="t('settings_permissions')">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled small>
-				<v-icon name="admin_panel_settings" small />
-			</v-button>
-		</template>
-
 		<template #actions>
 			<search-input
 				v-if="!loading"

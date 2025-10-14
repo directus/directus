@@ -198,12 +198,6 @@ const refreshInterval = computed({
 <template>
 	<insights-not-found v-if="!currentDashboard" />
 	<private-view v-else :title="currentDashboard.name">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary small>
-				<v-icon :name="currentDashboard.icon" small />
-			</v-button>
-		</template>
-
 		<template #headline>
 			<v-breadcrumb :items="[{ name: t('insights'), to: '/insights' }]" />
 		</template>

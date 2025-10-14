@@ -153,12 +153,6 @@ function navigateToRole({ item }: { item: Role }) {
 	<private-view :title="t('settings_roles')">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled small>
-				<v-icon name="group" small />
-			</v-button>
-		</template>
-
 		<template #actions>
 			<search-input
 				v-if="!loading"

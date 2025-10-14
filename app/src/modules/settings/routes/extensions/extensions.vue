@@ -38,12 +38,6 @@ const extensionsByType = computed(() => {
 	<private-view :title="t('extensions')">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled small>
-				<v-icon name="category" small />
-			</v-button>
-		</template>
-
 		<template #navigation>
 			<settings-navigation />
 		</template>

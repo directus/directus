@@ -115,12 +115,6 @@ function clearFilters() {
 				<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
 			</template>
 
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded icon exact disabled small>
-					<v-icon name="bookmark" small />
-				</v-button>
-			</template>
-
 			<template #actions:prepend>
 				<component :is="`layout-actions-${layout || 'tabular'}`" v-bind="layoutState" />
 			</template>

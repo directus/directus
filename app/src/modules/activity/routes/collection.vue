@@ -43,12 +43,6 @@ const roleFilter = ref<Filter | null>(null);
 			:small-header="currentLayout?.smallHeader"
 			:header-shadow="currentLayout?.headerShadow"
 		>
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded disabled icon secondary>
-					<v-icon name="access_time" />
-				</v-button>
-			</template>
-
 			<template #actions:prepend>
 				<component :is="`layout-actions-${layout}`" v-bind="layoutState" />
 			</template>

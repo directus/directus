@@ -594,12 +594,6 @@ function discardAndLeave() {
 <template>
 	<settings-not-found v-if="!flow && !loading" />
 	<private-view v-else :title="flow?.name ?? t('loading')">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact to="/settings/flows" small>
-				<v-icon name="arrow_back" small />
-			</v-button>
-		</template>
-
 		<template #headline>
 			<v-breadcrumb :items="[{ name: t('flows'), to: '/settings/flows' }]" />
 		</template>

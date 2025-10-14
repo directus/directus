@@ -480,11 +480,6 @@ function discardAndLeave() {
 			<template #headline>
 				<v-breadcrumb :items="[{ name: t('settings_presets'), to: '/settings/presets' }]" />
 			</template>
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded icon exact to="/settings/presets" small>
-					<v-icon name="arrow_back" small />
-				</v-button>
-			</template>
 
 			<template #navigation>
 				<settings-navigation />

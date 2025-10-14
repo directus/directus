@@ -36,29 +36,10 @@ watchEffect(async () => {
 		loading.value = false;
 	}
 });
-
-const navigateBack = () => {
-	const backState = router.options.history.state.back;
-
-	const isBackStateValid = backState && !(typeof backState === 'string' && backState.startsWith('/login'));
-
-	if (isBackStateValid) {
-		router.back();
-		return;
-	}
-
-	router.push('/settings/marketplace');
-};
 </script>
 
 <template>
 	<private-view :title="t('marketplace')">
-		<template #title-outer:prepend>
-			<v-button v-tooltip.bottom="t('back')" class="header-icon" rounded icon secondary exact small @click="navigateBack">
-				<v-icon name="arrow_back" small />
-			</v-button>
-		</template>
-
 		<template #navigation>
 			<settings-navigation />
 		</template>

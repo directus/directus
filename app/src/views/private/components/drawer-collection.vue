@@ -173,12 +173,6 @@ function useActions() {
 				<v-breadcrumb :items="[{ name: collectionInfo!.name, disabled: true }]" />
 			</template>
 
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded icon secondary disabled>
-					<v-icon :name="collectionInfo!.icon" :color="collectionInfo!.color" />
-				</v-button>
-			</template>
-
 			<template #actions:prepend><component :is="`layout-actions-${localLayout}`" v-bind="layoutState" /></template>
 
 			<template #actions>

@@ -128,12 +128,6 @@ function onFlowDrawerCompletion(id: string) {
 
 <template>
 	<private-view :title="t('flows')">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon small>
-				<v-icon name="bolt" small />
-			</v-button>
-		</template>
-
 		<template #headline>
 			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
 		</template>

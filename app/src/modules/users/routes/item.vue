@@ -280,12 +280,6 @@ function revert(values: Record<string, any>) {
 
 <template>
 	<private-view :title="title">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact small @click="navigateBack">
-				<v-icon name="arrow_back" small />
-			</v-button>
-		</template>
-
 		<template #headline>
 			<v-breadcrumb :items="breadcrumb" />
 		</template>

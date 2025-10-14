@@ -419,11 +419,6 @@ onUnmounted(() => {
 <template>
 	<private-view :title="t('settings_system_logs')">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled small>
-				<v-icon name="terminal" small />
-			</v-button>
-		</template>
 
 		<template #actions>
 			<v-button v-if="shouldStream && !streamConnected" v-tooltip.bottom="t('loading')" rounded icon disabled small>

@@ -196,12 +196,6 @@ async function batchDelete() {
 
 <template>
 	<private-view :title="t('insights')">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary small>
-				<v-icon name="insights" small />
-			</v-button>
-		</template>
-
 		<template #navigation>
 			<insights-navigation @create="createDialogActive = true" />
 		</template>
