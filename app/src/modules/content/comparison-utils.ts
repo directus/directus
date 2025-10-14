@@ -190,7 +190,7 @@ export function normalizeUser(user: User | string | null | undefined): Normalize
 			firstName: null,
 			lastName: null,
 			email: null,
-			displayName: 'Unknown User',
+			displayName: i18n.global.t('unknown_user')
 		};
 	}
 
@@ -199,7 +199,7 @@ export function normalizeUser(user: User | string | null | undefined): Normalize
 	const lastName = user.last_name || null;
 	const email = user.email || null;
 
-	let displayName = 'Unknown User';
+	let displayName = i18n.global.t('unknown_user')
 
 	if (firstName && lastName) {
 		displayName = `${firstName} ${lastName}`;
@@ -267,7 +267,7 @@ export function normalizeRevisionItem(revision: Revision): NormalizedItem {
 export function normalizeMainItem(mainData: Record<string, any>): NormalizedItem {
 	return {
 		id: 'base',
-		displayName: 'Main',
+		displayName: i18n.global.t('main_version'),
 		date: normalizeDate(mainData.date_updated),
 		user: normalizeUser(mainData.user_updated || mainData.user_created),
 	};
@@ -300,7 +300,7 @@ export function normalizeComparisonData(
 		incoming = selected
 			? normalizeVersionItem(selected)
 			: {
-					id: 'unknown',
+					id: undefined,
 					displayName: 'Unknown Version',
 					date: { raw: null, formatted: null, dateObject: null },
 					user: null,
@@ -313,7 +313,7 @@ export function normalizeComparisonData(
 		incoming = selected
 			? normalizeRevisionItem(selected)
 			: {
-					id: 'unknown',
+					id: undefined,
 					displayName: 'Unknown Revision',
 					date: { raw: null, formatted: null, dateObject: null },
 					user: null,

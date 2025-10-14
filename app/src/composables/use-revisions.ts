@@ -157,7 +157,7 @@ export function useRevisions(
 			let versionDeltaForComparison: Record<string, any> = {};
 
 			try {
-				if (version?.value) {
+				if (version.value) {
 					const versionCompare = await api.get(`/versions/${version.value.id}/compare`);
 					baseForComparison = versionCompare.data?.data?.main || {};
 					versionDeltaForComparison = versionCompare.data?.data?.current || {};

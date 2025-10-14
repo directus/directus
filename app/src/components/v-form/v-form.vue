@@ -253,12 +253,7 @@ function useForm() {
 	}
 
 	function isFieldVisible(field: Field | TFormField) {
-		// In comparison mode, show hidden fields but exclude read-only fields
-		if (props.comparison?.fields?.has(field.field)) {
-			return field.meta?.readonly !== true;
-		}
-
-		return field.meta?.hidden !== true;
+		return field.meta?.hidden !== true || props.comparison?.fields?.has(field.field);
 	}
 }
 

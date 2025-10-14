@@ -185,7 +185,7 @@ save_version: Save Version
 promote_version: Promote Version
 apply: Apply
 no_changes: No Changes
-select_all_changes: Select All Changes
+select_all_differences: Select All Differences
 main_updated_notice: The main item has been updated since this version was created.
 delete_version: Delete Version
 delete_version_copy: >-

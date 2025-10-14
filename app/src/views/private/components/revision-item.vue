@@ -17,7 +17,7 @@ defineEmits<{
 
 const { t } = useI18n();
 
-const revisionCount = computed(() => (props.revision.differentFields ? props.revision.differentFields.length : 0));
+const revisionCount = computed(() => props.revision.differentFields?.length ?? 0);
 
 const headerMessage = computed(() => {
 	if (props.mostRecent) return t('latest');
