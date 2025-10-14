@@ -308,7 +308,7 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 									:indeterminate="someFieldsSelected && !allFieldsSelected"
 									@update:model-value="toggleSelectAll"
 								>
-									{{ t('select_all_changes') }} ({{ selectedComparisonFields.length }}/{{ availableFieldsCount }})
+									{{ t('select_all_differences') }} ({{ selectedComparisonFields.length }}/{{ availableFieldsCount }})
 								</v-checkbox>
 							</div>
 							<div class="buttons-container">
