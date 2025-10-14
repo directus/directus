@@ -143,6 +143,7 @@ function emitValue() {
 		>
 			<v-icon
 				v-tooltip.bottom="!active ? t('search') : undefined"
+				small
 				name="search"
 				class="icon-search"
 				:clickable="!active"
@@ -168,13 +169,14 @@ function emitValue() {
 			<v-icon
 				v-if="modelValue"
 				v-tooltip.bottom="t('clear_value')"
+				small
 				clickable
 				class="icon-clear"
 				name="close"
 				@click.stop="clear"
 			/>
 			<template v-if="showFilter">
-				<v-icon v-tooltip.bottom="t('filter')" clickable class="icon-filter" name="filter_list" @click="toggleFilter" />
+				<v-icon v-tooltip.bottom="t('filter')" small clickable class="icon-filter" name="filter_list" @click="toggleFilter" />
 
 				<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
 					<div v-show="filterActive" ref="filterElement" class="filter" :class="{ active }">
@@ -202,20 +204,20 @@ function emitValue() {
 .search-input {
 	display: flex;
 	align-items: center;
-	inline-size: 42px;
-	min-block-size: 42px;
+	inline-size: 36px;
+	min-block-size: 36px;
 	max-inline-size: 100%;
 	box-sizing: content-box;
 	overflow: hidden;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-radius: calc((42px + var(--theme--border-width) * 2) / 2);
+	border-radius: calc((36px + var(--theme--border-width) * 2) / 2);
 	transition:
 		inline-size var(--slow) var(--transition),
 		border-end-start-radius var(--fast) var(--transition),
 		border-end-end-radius var(--fast) var(--transition);
 
 	&.show-filter {
-		inline-size: 69px;
+		inline-size: 64px;
 	}
 
 	input {
