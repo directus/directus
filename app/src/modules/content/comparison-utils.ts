@@ -378,6 +378,26 @@ export function normalizeComparisonData(
 	};
 }
 
+export function isSystemCollection(collection: string): boolean {
+	return collection.startsWith('directus_');
+}
+
+export function getSystemCollectionEndpoint(collection: string): string | null {
+	if (!isSystemCollection(collection)) {
+		return null;
+	}
+
+	const endpoint = collection.replace('directus_', '/');
+	return endpoint;
+}
+
+export function getSystemCollectionItemUrl(collection: string, itemId: string | number): string | null {
+	const endpoint = getSystemCollectionEndpoint(collection);
+	if (!endpoint) return null;
+
+	return `${endpoint}/${itemId}`;
+}
+
 export const COMPARISON_SIDES = {
 	BASE: 'base' as const,
 	INCOMING: 'incoming' as const,

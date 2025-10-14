@@ -4,6 +4,7 @@ import { computed, ref, watch, type Ref } from 'vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useFieldsStore } from '@/stores/fields';
+import { isSystemCollection, getSystemCollectionItemUrl } from '../comparison-utils';
 import type {
 	ComparisonData,
 	VersionComparisonResponse,
@@ -367,7 +368,7 @@ export function useComparison(options: UseComparisonOptions) {
 			const revision: RevisionComparisonResponse = response.data.data;
 
 			return await buildRevisionComparison(revision, currentVersion, revisions);
-		} catch (error) {
+		} catch (error: any) {
 			unexpectedError(error);
 			throw error;
 		}
@@ -383,11 +384,6 @@ export function useComparison(options: UseComparisonOptions) {
 		currentVersion?: Ref<ContentVersion | null>,
 		revisions?: Ref<Revision[] | null>,
 	): Promise<ComparisonData> {
-		const revisionData = revision.data || {};
-
-		const revisionsList = revisions?.value || [];
-		const revisionId = 'id' in revision ? revision.id : null;
-
 		// Resolve main item and current version delta
 		let mainItem: Record<string, any> = {};
 		let versionDelta: Record<string, any> = {};
@@ -397,13 +393,31 @@ export function useComparison(options: UseComparisonOptions) {
 			mainItem = versionComparison.base || {};
 			versionDelta = versionComparison.incoming || {};
 		} else if ('collection' in revision && 'item' in revision) {
-			try {
-				const { collection, item } = revision as { collection: string; item: string | number };
-				const itemResponse = await api.get(`/items/${collection}/${item}`);
-				mainItem = itemResponse.data?.data || {};
-			} catch (error) {
-				unexpectedError(error);
-				mainItem = {};
+			const { collection, item } = revision as { collection: string; item: string | number };
+
+			const isSystem = isSystemCollection(collection);
+
+			if (isSystem) {
+				const systemEndpoint = getSystemCollectionItemUrl(collection, item);
+
+				if (systemEndpoint) {
+					try {
+						const itemResponse = await api.get(systemEndpoint);
+						mainItem = itemResponse.data?.data || {};
+					} catch {
+						mainItem = {};
+					}
+				} else {
+					mainItem = {};
+				}
+			} else {
+				try {
+					const itemResponse = await api.get(`/items/${collection}/${item}`);
+					mainItem = itemResponse.data?.data || {};
+				} catch (error: any) {
+					unexpectedError(error);
+					mainItem = {};
+				}
 			}
 		}
 
@@ -423,6 +437,7 @@ export function useComparison(options: UseComparisonOptions) {
 		const baseMerged = mergeWith({}, mainItem, versionDelta || {}, replaceArrays);
 
 		// Merge main item keys into revision data with default values for missing fields
+		const revisionData = revision.data || {};
 		const revisionDataWithDefaults = mergeMainItemKeysIntoRevision(revisionData, baseMerged, fields);
 		const incomingMerged = mergeWith({}, revisionDataWithDefaults, replaceArrays);
 
@@ -431,6 +446,8 @@ export function useComparison(options: UseComparisonOptions) {
 		}
 
 		const incomingWithRelationalFields = copyRelationalFieldsFromBaseToIncoming(baseMerged, incomingMerged, fields);
+		const revisionsList = revisions?.value || [];
+		const revisionId = 'id' in revision ? revision.id : null;
 
 		return {
 			base: baseMerged,

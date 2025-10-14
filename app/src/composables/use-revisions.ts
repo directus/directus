@@ -8,6 +8,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
 import { calculateFieldDifferences, mergeMainItemKeysIntoRevision } from '@/modules/content/comparison-utils';
 import type { ContentVersion, Filter } from '@directus/types';
+import { isSystemCollection, getSystemCollectionItemUrl } from '@/modules/content/comparison-utils';
 import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
 import { groupBy, orderBy, mergeWith } from 'lodash';
 import { Ref, ref, unref, watch } from 'vue';
@@ -162,11 +163,32 @@ export function useRevisions(
 					baseForComparison = versionCompare.data?.data?.main || {};
 					versionDeltaForComparison = versionCompare.data?.data?.current || {};
 				} else {
-					const itemResp = await api.get(`/items/${unref(collection)}/${unref(primaryKey)}`);
-					baseForComparison = itemResp.data?.data || {};
-					versionDeltaForComparison = {};
+					const collectionName = unref(collection);
+					const isSystem = isSystemCollection(collectionName);
+
+					if (isSystem) {
+						const systemEndpoint = getSystemCollectionItemUrl(collectionName, unref(primaryKey));
+
+						if (systemEndpoint) {
+							try {
+								const itemResp = await api.get(systemEndpoint);
+								baseForComparison = itemResp.data?.data || {};
+								versionDeltaForComparison = {};
+							} catch {
+								baseForComparison = {};
+								versionDeltaForComparison = {};
+							}
+						} else {
+							baseForComparison = {};
+							versionDeltaForComparison = {};
+						}
+					} else {
+						const itemResp = await api.get(`/items/${unref(collection)}/${unref(primaryKey)}`);
+						baseForComparison = itemResp.data?.data || {};
+						versionDeltaForComparison = {};
+					}
 				}
-			} catch (error) {
+			} catch (error: any) {
 				baseForComparison = {};
 				versionDeltaForComparison = {};
 				unexpectedError(error);
