@@ -96,15 +96,6 @@ onUnmounted(() => {
 		box-shadow var(--medium) var(--transition);
 	border-block-end: var(--theme--header--border-width) solid var(--theme--header--border-color);
 
-	.title-outer-prepend {
-		display: none;
-
-		@media (min-width: 960px) {
-			display: flex;
-			gap: 3px;
-		}
-	}
-
 	.title-container {
 		position: relative;
 		display: flex;

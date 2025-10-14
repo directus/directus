@@ -16,7 +16,7 @@
 		transition: transform var(--slow) var(--transition-in);
 	}
 
-	&.right > *:not(.v-overlay) {
+	&:is(.right, .left) > *:not(.v-overlay) {
 		transform: translateX(0);
 		transition: transform var(--slow) var(--transition-in);
 
@@ -33,6 +33,15 @@
 	&.center > *:not(.v-overlay) {
 		transform: translateY(50px);
 		transition: transform var(--slow) var(--transition-out);
+	}
+
+	&.left > *:not(.v-overlay) {
+		transform: translateX(-50px);
+		transition: transform var(--slow) var(--transition-out);
+
+		html[dir='rtl'] & {
+			transform: translateX(50px);
+		}
 	}
 
 	&.right > *:not(.v-overlay) {

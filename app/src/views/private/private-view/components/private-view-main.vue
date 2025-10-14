@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useScroll } from '@vueuse/core';
-import { computed, provide, useTemplateRef } from 'vue';
-import SidebarDetailGroup from '../../components/sidebar-detail-group.vue';
+import { computed, provide, useTemplateRef, watch } from 'vue';
+import PrivateViewDrawer from './private-view-drawer.vue';
 import SkipMenu from '../../components/skip-menu.vue';
 import { useSidebarStore } from '../stores/sidebar';
 import PrivateViewHeaderBar from './private-view-header-bar.vue';
 import PrivateViewResizeHandle from './private-view-resize-handle.vue';
 import type { PrivateViewProps } from './private-view.vue';
+import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
+import PrivateViewSidebar from './private-view-sidebar.vue';
 
 const contentEl = useTemplateRef('contentEl');
 provide('main-element', contentEl);
 
-const props = defineProps<PrivateViewProps>();
+const props = defineProps<PrivateViewProps & { inlineNav: boolean }>();
 
 defineOptions({ inheritAttrs: false });
 
@@ -21,6 +23,19 @@ const sidebarStore = useSidebarStore();
 const { y } = useScroll(useTemplateRef('scrollContainer'));
 
 const showHeaderShadow = computed(() => y.value > 0);
+
+const { sm } = useBreakpoints(breakpointsTailwind);
+
+const splitterCollapsed = computed({
+	get() {
+		if (sm.value === false) return true;
+		return sidebarStore.collapsed;
+	},
+	set(val: boolean) {
+		if (sm.value === false) return;
+		sidebarStore.collapsed = val;
+	},
+});
 </script>
 
 <template>
@@ -29,11 +44,11 @@ const showHeaderShadow = computed(() => y.value > 0);
 	<div id="main-content" ref="contentEl" class="content">
 		<SplitPanel
 			v-model:size="sidebarStore.size"
-			v-model:collapsed="sidebarStore.collapsed"
+			v-model:collapsed="splitterCollapsed"
 			primary="end"
 			size-unit="px"
 			collapsible
-			:collapsed-size="60"
+			:collapsed-size="!sm ? 0 : 60"
 			:collapse-threshold="70"
 			:min-size="220"
 			:max-size="400"
@@ -42,10 +57,11 @@ const showHeaderShadow = computed(() => y.value > 0);
 			divider-hit-area="24px"
 			:transition-duration="150"
 			class="main-split"
+			:disabled="!sm"
 		>
 			<template #start>
 				<div ref="scrollContainer" class="scrolling-container">
-					<PrivateViewHeaderBar :title="props.title" :shadow="showHeaderShadow">
+					<PrivateViewHeaderBar :title="props.title" :shadow="showHeaderShadow" :inline-nav>
 						<template #actions:append><slot name="actions:append" /></template>
 						<template #actions:prepend><slot name="actions:prepend" /></template>
 						<template #actions><slot name="actions" /></template>
@@ -68,25 +84,13 @@ const showHeaderShadow = computed(() => y.value > 0);
 			</template>
 
 			<template #end>
-				<skip-menu section="sidebar" />
+				<PrivateViewSidebar v-if="sm"><template #sidebar><slot name="sidebar" /></template></PrivateViewSidebar>
 
-				<aside
-					id="sidebar"
-					ref="sidebarEl"
-					role="contentinfo"
-					class="alt-colors"
-					aria-label="Module Sidebar"
-				>
-					<div class="flex-container">
-						<SidebarDetailGroup :sidebar-open="!sidebarStore.collapsed">
-							<slot name="sidebar" />
-						</SidebarDetailGroup>
-
-						<div class="spacer" />
-
-						<!-- <notifications-preview v-model="notificationsPreviewActive" :sidebar-open="sidebarOpen" /> -->
-					</div>
-				</aside>
+				<PrivateViewDrawer v-else v-model:collapsed="sidebarStore.collapsed" placement="right">
+					<PrivateViewSidebar class="mobile-sidebar">
+						<template #sidebar><slot name="sidebar" /></template>
+					</PrivateViewSidebar>
+				</PrivateViewDrawer>
 			</template>
 		</SplitPanel>
 	</div>
@@ -111,40 +115,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 	inline-size: 100%;
 }
 
-#sidebar {
-	inline-size: 100%;
-	block-size: 100%;
-	overflow: hidden;
-	background-color: var(--theme--sidebar--background);
-	font-family: var(--theme--sidebar--font-family);
-	border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
-	min-inline-size: 220px;
-
-	html[dir='rtl'] & {
-		transform: translateX(-100%);
-	}
-
-	/* Explicitly render the border outside of the width of the bar itself */
-	box-sizing: content-box;
-
-	.spacer {
-		flex-grow: 1;
-	}
-
-	html[dir='rtl'] &.is-open,
-	&.is-open {
-		transform: translateX(0);
-	}
-
-	&.has-shadow {
-		box-shadow: var(--sidebar-shadow);
-	}
-
-	.flex-container {
-		display: flex;
-		flex-direction: column;
-		inline-size: 100%;
-		block-size: 100%;
-	}
+.mobile-sidebar {
+	max-inline-size: 340px;
 }
 </style>
