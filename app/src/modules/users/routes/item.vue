@@ -512,7 +512,7 @@ function revert(values: Record<string, any>) {
 			object-fit: cover;
 		}
 
-		@media (min-width: 600px) {
+		@media (width > 640px) {
 			inline-size: 144px;
 			block-size: 144px;
 			margin-inline-end: 22px;
@@ -562,7 +562,7 @@ function revert(values: Record<string, any>) {
 		}
 	}
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		block-size: 188px;
 
 		.user-box-content .location {

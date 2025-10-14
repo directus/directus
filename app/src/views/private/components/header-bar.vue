@@ -84,14 +84,14 @@ defineEmits<{
 		margin-inline-start: 10px;
 		overflow: hidden;
 
-		@media (min-width: 600px) {
+		@media (width > 640px) {
 			max-inline-size: 70%;
 		}
 
 		&.full {
 			margin-inline-end: 12px;
 			padding-inline-end: 0;
-			@media (min-width: 600px) {
+			@media (width > 640px) {
 				margin-inline-end: 20px;
 				padding-inline-end: 20px;
 			}
@@ -110,7 +110,7 @@ defineEmits<{
 			transition: opacity var(--fast) var(--transition);
 			font-family: var(--theme--header--headline--font-family);
 
-			@media (min-width: 600px) {
+			@media (width > 640px) {
 				inset-block-start: -2px;
 			}
 		}
@@ -168,7 +168,7 @@ defineEmits<{
 		flex-grow: 1;
 	}
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		padding: 0 20px;
 	}
 }

@@ -270,7 +270,7 @@ const stageChanges = () => {
 		--columns: 2;
 	}
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		--columns: 3;
 	}
 
@@ -362,7 +362,7 @@ const stageChanges = () => {
 		--columns: 2;
 	}
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		--columns: 3;
 	}
 

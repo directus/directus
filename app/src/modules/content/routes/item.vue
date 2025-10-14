@@ -796,7 +796,7 @@ function useCollectionRoute() {
 	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		padding: var(--content-padding);
 		padding-block-end: var(--content-padding-bottom);
 	}
@@ -832,7 +832,7 @@ function useCollectionRoute() {
 			inset-block-start: 4px;
 		}
 
-		@media (min-width: 600px) {
+		@media (width > 640px) {
 			opacity: 1;
 		}
 	}
@@ -854,12 +854,6 @@ function useCollectionRoute() {
 	:deep(.header-bar.small.shadow .title-container .headline) {
 		opacity: 1;
 		pointer-events: auto;
-	}
-}
-
-.headline-wrapper.has-version-menu .headline-breadcrumb {
-	@media (max-width: 600px) {
-		display: none;
 	}
 }
 </style>

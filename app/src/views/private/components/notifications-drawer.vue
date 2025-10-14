@@ -374,7 +374,7 @@ function clearFilters() {
 	white-space: nowrap;
 	align-self: center;
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		display: inline;
 	}
 }

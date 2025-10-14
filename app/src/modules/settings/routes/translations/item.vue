@@ -343,7 +343,7 @@ async function revert(values: Record<string, any>) {
 	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		padding: var(--content-padding);
 		padding-block-end: var(--content-padding-bottom);
 	}

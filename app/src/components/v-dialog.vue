@@ -229,7 +229,7 @@ function useOverlayFocusTrap() {
 	--v-overlay-z-index: 1;
 }
 
-@media (min-width: 600px) {
+@media (width > 640px) {
 	.container :slotted(.v-card) {
 		--v-card-min-width: 540px;
 	}

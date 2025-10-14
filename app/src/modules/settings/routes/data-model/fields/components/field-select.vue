@@ -496,7 +496,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 				opacity: 0;
 				transition: opacity var(--fast) var(--transition);
 
-				@media (min-width: 600px) {
+				@media (width > 640px) {
 					display: initial;
 				}
 			}

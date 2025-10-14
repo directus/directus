@@ -307,7 +307,7 @@ function emitValue() {
 			--v-icon-color: var(--theme--primary);
 		}
 
-		@media (min-width: 600px) {
+		@media (width > 640px) {
 			inline-size: 250px;
 		}
 

@@ -29,7 +29,7 @@ const navBarStore = useNavBarStore();
 	align-items: center;
 	inline-size: 100%;
 	block-size: calc(60px + var(--theme--navigation--project--border-width));
-	padding-inline: 20px;
+	padding-inline: var(--content-padding);
 	color: var(--theme--navigation--project--foreground);
 	text-align: start;
 	background: var(--theme--navigation--project--background);

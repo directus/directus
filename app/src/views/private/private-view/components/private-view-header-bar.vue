@@ -31,7 +31,7 @@ const showSidebarToggle = computed(() => {
 	<header class="header-bar" :class="{shadow}">
 		<VIcon v-if="showNavToggle" small class="nav-toggle" name="left_panel_open" clickable @click="navBarStore.expand" />
 
-		<div v-if="$slots['title-outer:prepend']" class="title-outer-prepend">
+		<div class="title-outer-prepend">
 			<slot name="title-outer:prepend" />
 		</div>
 
@@ -53,19 +53,19 @@ const showSidebarToggle = computed(() => {
 			</div>
 		</div>
 
-		<div v-if="$slots['title-outer:append']" class="title-outer-append">
+		<div class="title-outer-append">
 			<slot name="title-outer:append" />
 		</div>
 
 		<div class="spacer" />
 
-		<slot name="actions:prepend" />
 
 		<PrivateViewHeaderBarActions>
+			<template #prepend><slot name="actions:prepend" /></template>
 			<slot name="actions" />
+			<template #append><slot name="actions:append" /></template>
 		</PrivateViewHeaderBarActions>
 
-		<slot name="actions:append" />
 
 		<VIcon v-if="showSidebarToggle" name="menu_open" clickable @click="sidebarStore.expand" />
 	</header>
@@ -79,9 +79,10 @@ const showSidebarToggle = computed(() => {
 	background-color: var(--theme--header--background);
 	inline-size: 100%;
 	block-size: calc(var(--header-bar-height) + var(--theme--header--border-width));
+	/* TODO re-add border support themed */
 	display: flex;
 	align-items: center;
-	gap: calc(var(--content-padding) / 2);
+	gap: var(--content-padding);
 	padding-inline: var(--content-padding);
 	box-shadow: none;
 
@@ -91,8 +92,13 @@ const showSidebarToggle = computed(() => {
 	}
 }
 
+:is(.title-outer-prepend, .title-outer-append):empty {
+	display: contents;
+}
+
 .title-container {
 	position: relative;
+	overflow: hidden;
 }
 
 .headline {

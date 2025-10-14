@@ -21,7 +21,7 @@ defineProps<{
 	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		display: inline;
 	}
 }

@@ -239,7 +239,7 @@ const internalActive = computed({
 			overflow: auto;
 			scroll-padding-block-start: 100px;
 
-			@media (min-width: 600px) {
+			@media (width > 640px) {
 				--content-padding: 32px;
 				--content-padding-bottom: 132px;
 			}

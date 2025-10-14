@@ -459,12 +459,10 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	display: flex;
 	align-items: center;
 
-	@media (min-width: 600px) {
-		&::before {
-			content: '•';
-			padding-inline-end: 0.25rem;
-			color: var(--theme--foreground-subdued);
-		}
+	&::before {
+		content: '•';
+		padding-inline-end: 0.25rem;
+		color: var(--theme--foreground-subdued);
 	}
 }
 
