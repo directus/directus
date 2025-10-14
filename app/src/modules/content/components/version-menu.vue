@@ -260,14 +260,14 @@ async function openComparisonModal() {
 		const normalizedData = await normalizeComparisonData(currentVersion.value.id, 'version', currentVersion, versions);
 
 		comparisonData.value = normalizedData;
-		isVersionPromoteDrawerOpen.value = true;
+		isComparisonModalOpen.value = true;
 	} catch (error) {
 		unexpectedError(error);
 	}
 }
 
 async function onPromoteComplete(deleteOnPromote: boolean) {
-	isVersionPromoteDrawerOpen.value = false;
+	isComparisonModalOpen.value = false;
 	comparisonData.value = null;
 
 	if (deleteOnPromote) {
@@ -338,11 +338,11 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 		<comparison-modal
 			v-if="currentVersion !== null"
 			v-model:comparison-data="comparisonData"
-			:active="isVersionPromoteDrawerOpen"
+			:active="isComparisonModalOpen"
 			:delete-versions-allowed="deleteVersionsAllowed"
 			:collection="collection"
 			:primary-key="primaryKey"
-			@cancel="isVersionPromoteDrawerOpen = false"
+			@cancel="isComparisonModalOpen = false"
 			@promote="onPromoteComplete($event)"
 		/>
 

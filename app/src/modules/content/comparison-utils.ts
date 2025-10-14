@@ -106,6 +106,8 @@ export function calculateFieldDifferences(
 
 		if (skipRelationalFields && isRelationalField(field)) continue;
 
+		if (isAutoDateField(field)) continue;
+
 		const newValue = revisionData[fieldKey];
 		const currentValue = currentData[fieldKey];
 
@@ -123,6 +125,10 @@ export function getVersionDisplayName(version: ContentVersion): string {
 
 export function isRelationalField(field: Field): boolean {
 	return field.meta?.special?.find((type) => RELATIONAL_TYPES.includes(type as RelationalType)) !== undefined;
+}
+
+export function isAutoDateField(field: Field): boolean {
+	return field.meta?.special?.some((type) => type === 'date-created' || type === 'date-updated') ?? false;
 }
 
 export function addFieldToSelection(selectedFields: string[], field: string): string[] {
