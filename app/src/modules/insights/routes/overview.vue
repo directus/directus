@@ -197,8 +197,8 @@ async function batchDelete() {
 <template>
 	<private-view :title="t('insights')">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="insights" />
+			<v-button class="header-icon" rounded disabled icon secondary small>
+				<v-icon name="insights" small />
 			</v-button>
 		</template>
 
@@ -213,6 +213,7 @@ async function batchDelete() {
 				:show-filter="false"
 				:autofocus="insightsStore.dashboards.length > 25"
 				:placeholder="t('search_dashboard')"
+				small
 			/>
 
 			<v-button
@@ -222,9 +223,10 @@ async function batchDelete() {
 				rounded
 				icon
 				secondary
+				small
 				@click="exportDasboard(selection)"
 			>
-				<v-icon name="download" outline />
+				<v-icon name="download" outline small />
 			</v-button>
 
 			<v-dialog
@@ -241,9 +243,10 @@ async function batchDelete() {
 						icon
 						class="action-delete"
 						secondary
+						small
 						@click="on"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" outline small />
 					</v-button>
 				</template>
 
@@ -268,9 +271,10 @@ async function batchDelete() {
 						rounded
 						icon
 						:disabled="createAllowed === false"
+						small
 						@click="on"
 					>
-						<v-icon name="add" />
+						<v-icon name="add" small />
 					</v-button>
 				</template>
 			</dashboard-dialog>

@@ -226,8 +226,9 @@ async function revert(values: Record<string, any>) {
 				icon
 				secondary
 				disabled
+				small
 			>
-				<v-icon :name="collectionInfo.icon" />
+				<v-icon :name="collectionInfo.icon" small />
 			</v-button>
 
 			<v-button
@@ -238,9 +239,10 @@ async function revert(values: Record<string, any>) {
 				icon
 				secondary
 				exact
+				small
 				@click="navigateBack"
 			>
-				<v-icon name="arrow_back" />
+				<v-icon name="arrow_back" small />
 			</v-button>
 		</template>
 
@@ -263,9 +265,10 @@ async function revert(values: Record<string, any>) {
 						class="action-delete"
 						secondary
 						:disabled="item === null"
+						small
 						@click="on"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" outline small />
 					</v-button>
 				</template>
 
@@ -283,8 +286,8 @@ async function revert(values: Record<string, any>) {
 				</v-card>
 			</v-dialog>
 
-			<v-button v-tooltip.bottom="t('save')" rounded icon :loading="saving" :disabled="!isSavable" @click="saveAndQuit">
-				<v-icon name="check" />
+			<v-button v-tooltip.bottom="t('save')" rounded icon :loading="saving" :disabled="!isSavable" small @click="saveAndQuit">
+				<v-icon name="check" small />
 
 				<template #append-outer>
 					<save-options

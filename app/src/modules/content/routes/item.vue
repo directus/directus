@@ -540,8 +540,9 @@ function useCollectionRoute() {
 				icon
 				secondary
 				disabled
+				small
 			>
-				<v-icon :name="collectionInfo.icon" />
+				<v-icon :name="collectionInfo.icon" small />
 			</v-button>
 
 			<v-button
@@ -552,9 +553,10 @@ function useCollectionRoute() {
 				icon
 				secondary
 				exact
+				small
 				@click="navigateBack"
 			>
-				<v-icon name="arrow_back" />
+				<v-icon name="arrow_back" small />
 			</v-button>
 		</template>
 
@@ -593,9 +595,10 @@ function useCollectionRoute() {
 				icon
 				class="action-preview"
 				:secondary="livePreviewMode === null"
+				small
 				@click="toggleSplitView"
 			>
-				<v-icon name="visibility" outline />
+				<v-icon name="visibility" outline small />
 			</v-button>
 
 			<v-dialog
@@ -614,9 +617,10 @@ function useCollectionRoute() {
 						class="action-delete"
 						secondary
 						:disabled="item === null || deleteAllowed !== true"
+						small
 						@click="on"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" outline small />
 					</v-button>
 				</template>
 
@@ -649,9 +653,10 @@ function useCollectionRoute() {
 						icon
 						secondary
 						:disabled="item === null || archiveAllowed !== true"
+						small
 						@click="on"
 					>
-						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline />
+						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline small />
 					</v-button>
 				</template>
 
@@ -676,9 +681,10 @@ function useCollectionRoute() {
 				:tooltip="saveAllowed ? t('save') : t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
+				small
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" />
+				<v-icon name="check" small />
 
 				<template #append-outer>
 					<save-options
@@ -698,9 +704,10 @@ function useCollectionRoute() {
 				:tooltip="t('save_version')"
 				:loading="saveVersionLoading"
 				:disabled="!isSavable"
+				small
 				@click="saveVersionAction('stay')"
 			>
-				<v-icon name="beenhere" />
+				<v-icon name="beenhere" small />
 
 				<template #append-outer>
 					<v-menu v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true" show-arrow>
@@ -868,8 +875,13 @@ function useCollectionRoute() {
 		opacity: 1;
 		pointer-events: auto;
 	}
+	:deep(.header-bar.small .title-container .headline) {
+		opacity: 1;
+		pointer-events: auto;
+	}
 	:deep(.header-bar.small.shadow .title-container .headline) {
 		opacity: 1;
+		pointer-events: auto;
 	}
 }
 
