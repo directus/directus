@@ -275,7 +275,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 				<div class="columns">
 					<div class="col left">
 						<div class="fields-changed">
-							{{ t('n_differences', { count: availableFieldsCount }) }}
+							{{ t('differences_count', { count: availableFieldsCount }) }}
 						</div>
 					</div>
 					<div class="col right">
@@ -306,7 +306,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 								<v-button
 									v-tooltip.top="
 										selectedComparisonFields.length === 0
-											? t('no_changes')
+											? undefined
 											: `${t('apply')} (${translateShortcut(['meta', 'enter'])})`
 									"
 									:disabled="selectedComparisonFields.length === 0"

@@ -31,7 +31,7 @@ export type NormalizedDate = {
 };
 
 export type NormalizedItem = {
-	id: string | number;
+	id: string | number | undefined;
 	displayName: string;
 	date: NormalizedDate;
 	user: NormalizedUser | null;
@@ -86,7 +86,6 @@ export function getFieldsWithDifferences(
 
 	return calculateFieldDifferences(comparedData.incoming, comparedData.base, fieldMetadata, {
 		skipRelationalFields: type === 'revision',
-		skipReadonlyFields: true,
 	});
 }
 
@@ -96,17 +95,14 @@ export function calculateFieldDifferences(
 	fieldMetadata: Record<string, any>,
 	options: {
 		skipRelationalFields?: boolean;
-		skipReadonlyFields?: boolean;
 	} = {},
 ): string[] {
-	const { skipRelationalFields = false, skipReadonlyFields = true } = options;
+	const { skipRelationalFields = false } = options;
 	const differentFields: string[] = [];
 
 	for (const fieldKey of Object.keys(revisionData)) {
 		const field = fieldMetadata[fieldKey];
 		if (!field) continue;
-
-		if (skipReadonlyFields && field.meta?.readonly) continue;
 
 		if (skipRelationalFields && isRelationalField(field)) continue;
 
@@ -190,7 +186,7 @@ export function normalizeUser(user: User | string | null | undefined): Normalize
 			firstName: null,
 			lastName: null,
 			email: null,
-			displayName: i18n.global.t('unknown_user')
+			displayName: i18n.global.t('unknown_user'),
 		};
 	}
 
@@ -199,7 +195,7 @@ export function normalizeUser(user: User | string | null | undefined): Normalize
 	const lastName = user.last_name || null;
 	const email = user.email || null;
 
-	let displayName = i18n.global.t('unknown_user')
+	let displayName = i18n.global.t('unknown_user');
 
 	if (firstName && lastName) {
 		displayName = `${firstName} ${lastName}`;

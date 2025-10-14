@@ -184,7 +184,6 @@ compare_version: Compare Version
 save_version: Save Version
 promote_version: Promote Version
 apply: Apply
-no_changes: No Changes
 select_all_differences: Select All Differences
 main_updated_notice: The main item has been updated since this version was created.
 delete_version: Delete Version
@@ -484,7 +483,7 @@ revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
-n_differences: 'No Differences | 1 Difference | {count} Differences'
+differences_count: 'No Differences | 1 Difference | {count} Differences'
 presentation_text_values_cannot_be_reimported: 'Uses presentation text, values can not be re-imported.'
 download_page_as_csv: 'Download Page as CSV'
 download_page_as_csv_unsupported: This layout does not support downloading the current page.

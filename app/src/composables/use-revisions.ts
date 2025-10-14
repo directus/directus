@@ -208,7 +208,6 @@ export function useRevisions(
 
 					const differentFields = calculateFieldDifferences(enrichedRevisionData, currentItemMerged, fieldMetadata, {
 						skipRelationalFields: true,
-						skipReadonlyFields: true,
 					});
 
 					revisions.push({
