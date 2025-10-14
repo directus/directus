@@ -42,7 +42,7 @@ const showSidebarToggle = computed(() => {
 		<template #headline><slot name="headline" /></template>
 		<template #title-outer:append><slot name="title-outer:append" /></template>
 		<template #title-outer:prepend>
-			<VIcon v-if="showNavToggle" name="left_panel_open" clickable @click="navBarStore.expand" />
+			<VIcon v-if="showNavToggle" class="nav-toggle" name="left_panel_open" clickable @click="navBarStore.expand" />
 			<slot name="title-outer:prepend" />
 		</template>
 		<template #title:append><slot name="title:append" /></template>
@@ -50,3 +50,10 @@ const showSidebarToggle = computed(() => {
 		<template #title><slot name="title" /></template>
 	</HeaderBar>
 </template>
+
+<style scoped>
+.nav-toggle {
+	vertical-align: -3px;
+	margin-inline-end: 10px;
+}
+</style>
