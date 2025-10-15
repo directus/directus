@@ -6,6 +6,7 @@ import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
+import { useFlows } from '@/composables/use-flows';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
@@ -15,6 +16,7 @@ import LivePreview from '@/views/private/components/live-preview.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
+import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import { useCollection } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { useHead } from '@unhead/vue';
@@ -24,7 +26,6 @@ import { useRouter, useRoute } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
-import { useFlows } from '@/composables/use-flows';
 
 interface Props {
 	collection: string;
@@ -502,7 +503,7 @@ function useCollectionRoute() {
 	return { collectionRoute };
 }
 
-const { manualFlows, provideUseFlows } = useFlows({
+const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
 	collection,
 	primaryKey: actualPrimaryKey,
 	location: ref('item'),
@@ -510,7 +511,7 @@ const { manualFlows, provideUseFlows } = useFlows({
 	onRefreshCallback: refresh,
 });
 
-provideUseFlows();
+provideRunManualFlow();
 </script>
 
 <template>
@@ -738,6 +739,8 @@ provideUseFlows();
 					</v-menu>
 				</template>
 			</v-button>
+
+			<flow-dialogs v-bind="flowDialogsContext" />
 		</template>
 
 		<template #navigation>
@@ -799,7 +802,7 @@ provideUseFlows();
 					:primary-key="actualPrimaryKey"
 					:allowed="shareAllowed"
 				/>
-				<flow-sidebar-detail v-if="manualFlows.length > 0" />
+				<flow-sidebar-detail :manual-flows />
 			</template>
 		</template>
 	</private-view>

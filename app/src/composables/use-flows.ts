@@ -19,6 +19,24 @@ export interface UseFlowsOptions {
 	onRefreshCallback: () => void;
 }
 
+export interface FlowDialogsContext {
+	confirmButtonCTA: ComputedRef<string>;
+	confirmDialogDetails: ComputedRef<{
+		description: any;
+		fields: any;
+	} | null>;
+	confirmRunFlow: Ref<string | null>;
+	confirmUnsavedChanges: (flowId: string) => void;
+	confirmValues: Ref<Record<string, any> | null>;
+	displayCustomConfirmDialog: ComputedRef<boolean>;
+	displayUnsavedChangesDialog: ComputedRef<boolean>;
+	isConfirmButtonDisabled: ComputedRef<boolean>;
+	resetConfirm: () => void;
+	updateValues: (event: any) => void;
+}
+
+const runManualFlowSymbol = 'runManualFlow';
+
 export function useFlows(options: UseFlowsOptions) {
 	const { collection, hasEdits = ref(false), location, onRefreshCallback, primaryKey, selection = ref([]) } = options;
 
@@ -29,38 +47,21 @@ export function useFlows(options: UseFlowsOptions) {
 
 	const runningFlows = ref<string[]>([]);
 	const confirmRunFlow = ref<string | null>(null);
-	const confirmValues = ref<Record<string, any> | null>();
+	const confirmValues = ref<Record<string, any> | null>(null);
 	const confirmedUnsavedChanges = ref(false);
 
-	const manualFlows = computed(() =>
-		flowsStore
-			.getManualFlowsForCollection(collection.value)
-			.filter(
-				(flow) =>
-					!flow.options?.location || flow.options?.location === 'both' || flow.options?.location === location.value,
-			)
-			.map((flow) => ({
-				...flow,
-				options: flow.options ? translate(flow.options) : null,
-			})),
-	);
-
-	const isConfirmButtonDisabled = computed(() => {
-		if (!confirmRunFlow.value) return true;
-
-		for (const field of confirmDialogDetails.value?.fields || []) {
-			if (
-				field.meta?.required &&
-				(!confirmValues.value ||
-					confirmValues.value[field.field] === null ||
-					confirmValues.value[field.field] === undefined)
-			) {
-				return true;
-			}
-		}
-
-		return false;
-	});
+	const flowDialogsContext = computed(() => ({
+		confirmButtonCTA,
+		confirmDialogDetails,
+		confirmRunFlow,
+		confirmUnsavedChanges,
+		confirmValues,
+		displayCustomConfirmDialog,
+		displayUnsavedChangesDialog,
+		isConfirmButtonDisabled,
+		resetConfirm,
+		updateValues,
+	}));
 
 	const confirmButtonCTA = computed(() => {
 		if (unref(location) === 'item') return t('run_flow_on_current');
@@ -86,33 +87,68 @@ export function useFlows(options: UseFlowsOptions) {
 		};
 	});
 
-	const displayUnsavedChangesDialog = computed(
-		() => !!confirmRunFlow.value && hasEdits.value && !confirmedUnsavedChanges.value,
-	);
-
 	const displayCustomConfirmDialog = computed(() => {
 		return !!confirmRunFlow.value && !!confirmDialogDetails.value && (!hasEdits.value || confirmedUnsavedChanges.value);
 	});
 
-	function getFlowTooltip(manualFlow: FlowRaw) {
-		if (location.value === 'item') return t('run_flow_on_current');
+	const displayUnsavedChangesDialog = computed(
+		() => !!confirmRunFlow.value && hasEdits.value && !confirmedUnsavedChanges.value,
+	);
 
-		if (manualFlow.options?.requireSelection === false && selection.value.length === 0) {
-			return t('run_flow_on_current_collection');
+	const isConfirmButtonDisabled = computed(() => {
+		if (!confirmRunFlow.value) return true;
+
+		for (const field of confirmDialogDetails.value?.fields || []) {
+			if (
+				field.meta?.required &&
+				(!confirmValues.value ||
+					confirmValues.value[field.field] === null ||
+					confirmValues.value[field.field] === undefined)
+			) {
+				return true;
+			}
 		}
 
-		return t('run_flow_on_selected', selection.value.length || 0);
-	}
+		return false;
+	});
 
-	function checkFlowDisabled(manualFlow: FlowRaw) {
-		if (location.value === 'item' || manualFlow.options?.requireSelection === false) return false;
-		return !primaryKey?.value && selection.value.length === 0;
-	}
+	const manualFlows = computed(() => {
+		const manualFlows = flowsStore
+			.getManualFlowsForCollection(collection.value)
+			.filter(
+				(flow) =>
+					!flow.options?.location || flow.options?.location === 'both' || flow.options?.location === location.value,
+			)
+			.map((flow) => ({
+				...flow,
+				options: flow.options ? translate(flow.options) : null,
+				tooltip: getFlowTooltip(flow),
+				isFlowDisabled: checkFlowDisabled(flow),
+				isFlowRunning: checkFlowRunning(flow),
+			}));
 
-	function checkFlowRunning(manualFlow: FlowRaw) {
-		if (!manualFlow) return false;
-		return runningFlows.value.includes(manualFlow.id);
-	}
+		function getFlowTooltip(manualFlow: FlowRaw) {
+			if (location.value === 'item') return t('run_flow_on_current');
+
+			if (manualFlow.options?.requireSelection === false && selection.value.length === 0) {
+				return t('run_flow_on_current_collection');
+			}
+
+			return t('run_flow_on_selected', selection.value.length || 0);
+		}
+
+		function checkFlowDisabled(manualFlow: FlowRaw) {
+			if (location.value === 'item' || manualFlow.options?.requireSelection === false) return false;
+			return !primaryKey?.value && selection.value.length === 0;
+		}
+
+		function checkFlowRunning(manualFlow: FlowRaw) {
+			if (!manualFlow) return false;
+			return runningFlows.value.includes(manualFlow.id);
+		}
+
+		return manualFlows;
+	});
 
 	function resetConfirm() {
 		confirmRunFlow.value = null;
@@ -120,138 +156,98 @@ export function useFlows(options: UseFlowsOptions) {
 		confirmedUnsavedChanges.value = false;
 	}
 
-	function onFlowClick(flowId: string) {
+	function confirmUnsavedChanges(flowId: string) {
+		confirmedUnsavedChanges.value = true;
+
+		if (!confirmDialogDetails.value) {
+			runManualFlow(flowId, false);
+		}
+	}
+
+	function provideRunManualFlow() {
+		provide(runManualFlowSymbol, {
+			runManualFlow,
+		});
+	}
+
+	function updateValues(event: Record<string, any>) {
+		confirmValues.value = event;
+	}
+
+	async function runManualFlow(flowId: string, isActionDisabled = false) {
+		if (isActionDisabled) return;
+
 		const flow = unref(manualFlows).find((flow) => flow.id === flowId);
 
 		if (!flow) return;
 
-		if (hasEdits.value || flow.options?.requireConfirmation) {
+		if (
+			(hasEdits.value && !confirmedUnsavedChanges.value) ||
+			(flow.options?.requireConfirmation && confirmRunFlow.value !== flowId)
+		) {
 			confirmRunFlow.value = flowId;
+			return;
 		} else {
-			runManualFlow(flowId, false, onRefreshCallback);
-		}
-	}
+			confirmRunFlow.value = null;
 
-	function confirmUnsavedChanges(flowId: string) {
-		if (isConfirmButtonDisabled.value) return;
+			const selectedFlow = manualFlows.value.find((flow) => flow.id === flowId);
 
-		confirmedUnsavedChanges.value = true;
+			if (!selectedFlow || !primaryKeyField.value) return;
 
-		if (!confirmDialogDetails.value) {
-			runManualFlow(flowId, false, onRefreshCallback);
-		}
-	}
+			runningFlows.value = [...runningFlows.value, flowId];
 
-	function provideUseFlows() {
-		provide('provide-use-flows', {
-			checkFlowDisabled,
-			checkFlowRunning,
-			confirmButtonCTA,
-			confirmDialogDetails,
-			confirmRunFlow,
-			confirmUnsavedChanges,
-			confirmValues,
-			displayCustomConfirmDialog,
-			displayUnsavedChangesDialog,
-			getFlowTooltip,
-			isConfirmButtonDisabled,
-			manualFlows,
-			onFlowClick,
-			onRefreshCallback,
-			resetConfirm,
-			runManualFlow,
-			runningFlows,
-		});
-	}
+			try {
+				if (
+					location.value === 'collection' &&
+					selectedFlow.options?.requireSelection === false &&
+					(selection.value.length || 0) === 0
+				) {
+					await api.post(`/flows/trigger/${flowId}`, {
+						...(unref(confirmValues) ?? {}),
+						collection: collection.value,
+					});
+				} else {
+					const keys = primaryKey?.value ? [primaryKey.value] : selection.value || [];
 
-	async function runManualFlow(flowId: string, isActionDisabled = false, onRefresh: () => void) {
-		if (isActionDisabled) return;
+					await api.post(`/flows/trigger/${flowId}`, {
+						...unref(confirmValues),
+						collection: collection.value,
+						keys,
+					});
+				}
 
-		confirmRunFlow.value = null;
+				onRefreshCallback();
 
-		const selectedFlow = manualFlows.value.find((flow) => flow.id === flowId);
-
-		if (!selectedFlow || !primaryKeyField.value) return;
-
-		runningFlows.value = [...runningFlows.value, flowId];
-
-		try {
-			if (
-				location.value === 'collection' &&
-				selectedFlow.options?.requireSelection === false &&
-				(selection.value.length || 0) === 0
-			) {
-				await api.post(`/flows/trigger/${flowId}`, {
-					...(unref(confirmValues) ?? {}),
-					collection: collection.value,
+				notify({
+					title: t('trigger_flow_success', { flow: selectedFlow.name }),
 				});
-			} else {
-				const keys = primaryKey?.value ? [primaryKey.value] : selection.value || [];
 
-				await api.post(`/flows/trigger/${flowId}`, {
-					...unref(confirmValues),
-					collection: collection.value,
-					keys,
-				});
+				await notificationStore.refreshUnreadCount();
+
+				resetConfirm();
+			} catch (error) {
+				unexpectedError(error);
+			} finally {
+				runningFlows.value = runningFlows.value.filter((runningFlow) => runningFlow !== flowId);
 			}
-
-			onRefresh();
-
-			notify({
-				title: t('trigger_flow_success', { flow: selectedFlow.name }),
-			});
-
-			await notificationStore.refreshUnreadCount();
-
-			resetConfirm();
-		} catch (error) {
-			unexpectedError(error);
-		} finally {
-			runningFlows.value = runningFlows.value.filter((runningFlow) => runningFlow !== flowId);
 		}
 	}
 
 	return {
-		checkFlowDisabled,
-		checkFlowRunning,
-		confirmButtonCTA,
-		confirmDialogDetails,
-		confirmedUnsavedChanges,
-		confirmRunFlow,
-		confirmUnsavedChanges,
-		confirmValues,
-		displayCustomConfirmDialog,
-		displayUnsavedChangesDialog,
-		getFlowTooltip,
-		isConfirmButtonDisabled,
+		flowDialogsContext,
 		manualFlows,
-		onFlowClick,
-		onRefreshCallback,
-		provideUseFlows,
-		resetConfirm,
+		provideRunManualFlow,
 		runManualFlow,
-		runningFlows,
 	};
 }
 
-export function injectUseFlows() {
-	return inject('provide-use-flows') as {
-		checkFlowDisabled: (manualFlow: FlowRaw) => boolean;
-		checkFlowRunning: (manualFlow: FlowRaw) => boolean;
-		confirmButtonCTA: any;
-		confirmDialogDetails: any;
-		confirmRunFlow: any;
-		confirmUnsavedChanges: any;
-		confirmValues: any;
-		displayCustomConfirmDialog: any;
-		displayUnsavedChangesDialog: any;
-		getFlowTooltip: (manualFlow: FlowRaw) => string;
-		isConfirmButtonDisabled: any;
-		manualFlows: ComputedRef<FlowRaw[]>;
-		onFlowClick: (flowId: string) => void;
-		onRefreshCallback: any;
-		resetConfirm: any;
-		runManualFlow: any;
-		runningFlows: Ref<string[]>;
+/**
+ * In order to invoke injectRunManualFlow within a component, the parent component must first invoke provideRunManualFlow
+ *
+ * The parent component must also render the <flow-dialogs> component or the confirmation dialogs will not be reachable
+ */
+export function injectRunManualFlow() {
+	return inject(runManualFlowSymbol) as {
+		runManualFlow: (flowId: string, isActionDisabled: boolean) => void;
 	};
 }

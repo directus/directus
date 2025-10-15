@@ -516,7 +516,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	return !dialogs.contains(e.target as Node);
 }
 
-const { provideUseFlows } = useFlows({
+const { provideRunManualFlow } = useFlows({
 	collection,
 	primaryKey: computed(() => primaryKey.value),
 	selection: ref([]),
@@ -525,7 +525,7 @@ const { provideUseFlows } = useFlows({
 	onRefreshCallback: refresh,
 });
 
-provideUseFlows();
+provideRunManualFlow();
 </script>
 
 <template>

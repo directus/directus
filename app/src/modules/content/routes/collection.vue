@@ -3,6 +3,7 @@ import api from '@/api';
 import { useExtension } from '@/composables/use-extension';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
+import { useFlows } from '@/composables/use-flows';
 import { usePermissionsStore } from '@/stores/permissions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -23,7 +24,7 @@ import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
 import { isSystemCollection } from '@directus/system-data';
-import { useFlows } from '@/composables/use-flows';
+import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 
 type Item = {
 	[field: string]: any;
@@ -285,14 +286,14 @@ function clearFilters() {
 	search.value = null;
 }
 
-const { manualFlows, provideUseFlows } = useFlows({
+const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
 	collection,
 	selection,
 	location: ref('collection'),
 	onRefreshCallback: refresh,
 });
 
-provideUseFlows();
+provideRunManualFlow();
 </script>
 
 <template>
@@ -474,6 +475,8 @@ provideUseFlows();
 				>
 					<v-icon name="add" />
 				</v-button>
+
+				<flow-dialogs v-bind="flowDialogsContext" />
 			</template>
 
 			<template #navigation>
@@ -560,7 +563,7 @@ provideUseFlows();
 					:on-download="downloadHandler"
 					@refresh="refresh"
 				/>
-				<flow-sidebar-detail v-if="manualFlows.length > 0" />
+				<flow-sidebar-detail :manual-flows />
 			</template>
 
 			<v-dialog :model-value="deleteError !== null" @esc="deleteError = null">
