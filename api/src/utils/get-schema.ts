@@ -3,7 +3,7 @@ import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import { systemCollectionRows } from '@directus/system-data';
 import type { Filter, SchemaOverview } from '@directus/types';
-import { parseJSON, toArray } from '@directus/utils';
+import { parseJSON, toArray, toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import { mapValues } from 'lodash-es';
 import { useBus } from '../bus/index.js';
@@ -153,8 +153,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 		result.collections[collection] = {
 			collection,
 			primary: info.primary,
-			singleton:
-				collectionMeta?.singleton === true || collectionMeta?.singleton === 'true' || collectionMeta?.singleton === 1,
+			singleton: toBoolean(collectionMeta?.singleton),
 			note: collectionMeta?.note || null,
 			sortField: collectionMeta?.sort_field || null,
 			accountability: collectionMeta ? collectionMeta.accountability : 'all',
@@ -222,7 +221,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 			note: field.note,
 			alias: existing?.alias ?? true,
 			validation: (validation as Filter) ?? null,
-			searchable: field.searchable ?? true,
+			searchable: toBoolean(field.searchable) ?? true,
 		};
 	}
 
