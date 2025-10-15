@@ -131,6 +131,15 @@ export function isAutoDateField(field: Field): boolean {
 	return field.meta?.special?.some((type) => type === 'date-created' || type === 'date-updated') ?? false;
 }
 
+function isUserReferenceField(field: Field): boolean {
+	// Treat system-managed user reference fields like relational for comparison purposes
+	return field.meta?.special?.some((type) => type === 'user-created' || type === 'user-updated') ?? false;
+}
+
+function isPrimaryKeyField(field: Field): boolean {
+	return field.schema?.is_primary_key === true;
+}
+
 export function addFieldToSelection(selectedFields: string[], field: string): string[] {
 	return [...selectedFields, field];
 }
@@ -192,7 +201,7 @@ export function copyRelationalFieldsFromBaseToIncoming(
 	const result = { ...incomingItem };
 
 	for (const field of fields) {
-		if (isRelationalField(field)) {
+		if (isRelationalField(field) || isUserReferenceField(field) || isPrimaryKeyField(field)) {
 			const fieldKey = field.field;
 
 			if (fieldKey in baseItem) {
