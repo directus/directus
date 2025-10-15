@@ -63,6 +63,7 @@ const value = computed(() =>
 				:batch-active="batchActive"
 				:comparison-mode="!!comparison"
 				:comparison-active="comparison?.selectedFields.includes(field.field)"
+				:comparison="comparison"
 				:width="(field.meta && field.meta.width) || 'full'"
 				:type="field.type"
 				:collection="field.collection"

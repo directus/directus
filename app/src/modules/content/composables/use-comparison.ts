@@ -59,6 +59,10 @@ export function useComparison(options: UseComparisonOptions) {
 		return normalizedData.value?.fieldsWithDifferences || [];
 	});
 
+	const relationalDetails = computed(() => {
+		return normalizedData.value?.relationalDetails || {};
+	});
+
 	const allFieldsSelected = computed(() => {
 		return areAllFieldsSelected(selectedComparisonFields.value, fieldsWithDifferences.value);
 	});
@@ -470,6 +474,7 @@ export function useComparison(options: UseComparisonOptions) {
 		someFieldsSelected,
 		availableFieldsCount,
 		comparisonFields,
+		relationalDetails,
 		isVersionMode,
 		isRevisionMode,
 		userLoading,

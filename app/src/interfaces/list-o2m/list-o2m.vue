@@ -21,6 +21,7 @@ import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
+import type { ComparisonContext } from '@/components/v-form/types';
 
 const props = withDefaults(
 	defineProps<{
@@ -43,6 +44,7 @@ const props = withDefaults(
 		limit?: number;
 		sort?: string;
 		sortDirection?: '+' | '-';
+		comparison?: ComparisonContext;
 	}>(),
 	{
 		value: () => [],
@@ -255,6 +257,20 @@ const selectedPrimaryKeys = computed(() => {
 
 	return selected.value.map((item) => item[relatedPkField]);
 });
+
+function itemHasChanges(item: DisplayItem): boolean {
+	if (!relationInfo.value || !props.comparison?.relationalDetails) return false;
+
+	const changedIds = props.comparison.relationalDetails[props.field];
+	if (!changedIds || changedIds.length === 0) return false;
+
+	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
+	const itemId = item[relatedPkField];
+
+	if (itemId === undefined) return false;
+
+	return changedIds.some((id) => id == itemId || String(id) === String(itemId));
+}
 
 const currentlyEditing = ref<string | null>(null);
 const selectModalActive = ref(false);
@@ -486,7 +502,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 				v-model:sort="manualSort"
 				v-model:headers="headers"
 				v-model="selection"
-				:class="{ 'no-last-border': totalItemCount <= 10 }"
+				:class="{ 'no-last-border': totalItemCount <= 10, 'has-comparison': !!comparison }"
 				:loading="loading"
 				:items="displayItems"
 				:item-key="relationInfo.relatedPrimaryKeyField.field"
@@ -499,12 +515,14 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 				@update:items="sortItems"
 			>
 				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
-					<render-template
-						:title="header.value"
-						:collection="relationInfo.relatedCollection.collection"
-						:item="item"
-						:template="`{{${header.value}}}`"
-					/>
+					<div class="cell-content" :class="{ 'has-diff': itemHasChanges(item) }">
+						<render-template
+							:title="header.value"
+							:collection="relationInfo.relatedCollection.collection"
+							:item="item"
+							:template="`{{${header.value}}}`"
+						/>
+					</div>
 				</template>
 
 				<template #item-append="{ item }">
@@ -563,7 +581,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 							clickable
 							:disabled="disabled"
 							:dense="totalItemCount > 4"
-							:class="{ deleted: element.$type === 'deleted' }"
+							:class="{ deleted: element.$type === 'deleted', 'diff-indicator': itemHasChanges(element) }"
 							@click="editItem(element)"
 						>
 							<v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />

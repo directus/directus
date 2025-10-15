@@ -6,7 +6,7 @@ import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
-import { computeDifferentFields } from '@/modules/content/comparison-utils';
+import { computeDifferentFields, mergeMainItemKeysIntoRevision } from '@/modules/content/comparison-utils';
 import type { ContentVersion, Filter } from '@directus/types';
 import { isSystemCollection, getSystemCollectionItemUrl } from '@/modules/content/comparison-utils';
 import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
@@ -222,7 +222,15 @@ export function useRevisions(
 
 					const revisionData = (revision as Revision)?.data || {};
 					const collectionFields = fieldsStore.getFieldsForCollection(unref(collection));
-					const differentFields = computeDifferentFields('revision', currentItemMerged, revisionData, collectionFields);
+					// Enrich revision data with missing keys from main item (same logic as comparison modal)
+					const enrichedRevisionData = mergeMainItemKeysIntoRevision(revisionData, currentItemMerged, collectionFields);
+
+					const differentFields = computeDifferentFields(
+						'revision',
+						currentItemMerged,
+						enrichedRevisionData,
+						collectionFields,
+					);
 
 					revisions.push({
 						...revision,
