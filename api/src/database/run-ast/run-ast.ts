@@ -98,9 +98,9 @@ export async function runAst(
 			}
 		)
 
-		const rawItems: Item | Item[] = await dbQuery;
+		let rawItems: Item | Item[] = await dbQuery;
 
-		await emitter.emitFilter(
+		rawItems = await emitter.emitFilter(
 			['items.db.selected', `${collection}.db.selected`],
 			rawItems,
 			{
