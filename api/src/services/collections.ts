@@ -150,10 +150,12 @@ export class CollectionsService {
 
 					const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
 
-					await trx.schema.createTable(payload.collection, async (table) => {
+					const existingIndexes = await fieldsService.listExistingIndexes(trx);
+
+					await trx.schema.createTable(payload.collection, (table) => {
 						for (const field of payload.fields!) {
 							if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-								await fieldsService.addColumnToTable(trx, table, payload.collection, field);
+								fieldsService.addColumnToTable(table, payload.collection, field, null, existingIndexes);
 							}
 						}
 					});

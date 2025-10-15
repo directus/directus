@@ -427,11 +427,13 @@ export class FieldsService {
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
 
 					try {
+						const existingIndexes = await this.listExistingIndexes(trx)
+
 						if (table) {
-							await this.addColumnToTable(trx, table, collection, hookAdjustedField as Field);
+							this.addColumnToTable(table, collection, hookAdjustedField as Field, null, existingIndexes);
 						} else {
 							await trx.schema.alterTable(collection, async (table) => {
-								await this.addColumnToTable(trx, table, collection, hookAdjustedField as Field);
+								this.addColumnToTable(table, collection, hookAdjustedField as Field, null, existingIndexes);
 							});
 						}
 					} catch (err: any) {
@@ -573,9 +575,11 @@ export class FieldsService {
 				if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
 					try {
 						await transaction(this.knex, async (trx) => {
+							const existingIndexes = await this.listExistingIndexes(trx)
+
 							await trx.schema.alterTable(collection, async (table) => {
 								if (!hookAdjustedField.schema) return;
-								await this.addColumnToTable(trx, table, collection, field, existingColumn);
+								this.addColumnToTable(table, collection, field, existingColumn, existingIndexes);
 							});
 						});
 					} catch (err: any) {
@@ -889,24 +893,23 @@ export class FieldsService {
 		}
 	}
 
-	public async addColumnToTable(
-		trx: Knex,
-		table: Knex.CreateTableBuilder,
-		collection: string,
-		field: RawField | Field,
-		existing: Column | null = null,
-	): Promise<void> {
+	async listExistingIndexes(trx: Knex) {
 		// TODO
 		// - Use Knex instead of raw query
 		// - Seems closed by mistake https://github.com/knex/knex/issues/322
 		// - https://github.com/knex/knex/issues/1303
 		// - https://github.com/knex/knex/issues/2167
+		// - addColumnToTable() CAN'T BE ASYNC as calledBy createTable
+		//   https://github.com/knex/knex/issues/2836
+		//   So the followiong query MUST be called before addColumnToTable()
+
+
 		const existingIndexes = this.knex.client.config.client === 'postgres'
 		? await trx.raw(`
 			select
-					t.relname as table_name,
-					i.relname as index_name,
-					a.attname as column_name
+					t.relname as table,
+					a.attname as column
+					i.relname as index,
 			from
 					pg_class t,
 					pg_class i,
@@ -925,6 +928,20 @@ export class FieldsService {
 		`)
 		: []
 
+		return existingIndexes.rows as {
+			table: string,
+			column: string,
+			index: string,
+		}[]
+	}
+
+	public addColumnToTable(
+		table: Knex.CreateTableBuilder,
+		collection: string,
+		field: RawField | Field,
+		existing: Column | null = null,
+		existingIndexes: Awaited<ReturnType<typeof this.listExistingIndexes>> = [],
+	): void {
 		let column: Knex.ColumnBuilder;
 
 		// Don't attempt to add a DB column for alias / corrupt fields
@@ -1020,8 +1037,8 @@ export class FieldsService {
 				if (existing?.is_indexed === true) {
 					const indexName = this.helpers.schema.generateIndexName('index', collection, field.field)
 
-					if (existingIndexes.rows.find((row: Record<string, string>) => {
-						return row['index_name'] === indexName
+					if (existingIndexes.find((row: Record<string, string>) => {
+						return row['index'] === indexName
 					})) {
 						table.dropIndex([field.field], indexName);
 					}
