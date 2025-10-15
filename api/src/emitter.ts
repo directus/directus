@@ -31,6 +31,8 @@ export class Emitter {
 		};
 	}
 
+	// TODO: retaurns any[] instead of const dbQuery: Knex.QueryBuilder<{}, Partial<{}>[]>
+	// when payload is const dbQuery: Knex.QueryBuilder<{}, Partial<{}>[]>
 	public async emitFilter<TIn = unknown, TOut = TIn>(
 		event: string | string[],
 		payload: TIn,

@@ -264,13 +264,47 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			try {
-				const result = await trx
+
+				let dbQuery = trx
 					.insert(payloadWithoutAliases)
 					.into(this.collection)
 					.returning(primaryKeyField)
 					.then((result) => result[0]);
 
-				const returnedKey = typeof result === 'object' ? result[primaryKeyField] : result;
+				dbQuery = (await emitter.emitFilter(
+					['items.db.insert', `${this.collection}.db.insert`],
+					dbQuery,
+					{
+						collection: this.collection,
+						payload,
+						// payloadWithoutAliases,
+					},
+					{
+						database: trx,
+						schema: this.schema,
+						accountability: this.accountability,
+					},
+				)) as unknown as typeof dbQuery // TODO: fix emitFilter typing
+
+				const result = await dbQuery;
+
+				const filteredResult = (await emitter.emitFilter(
+					['items.db.inserted', `${this.collection}.db.inserted`],
+					result,
+					{
+						collection: this.collection,
+						payload,
+					},
+					{
+						database: trx,
+						schema: this.schema,
+						accountability: this.accountability,
+					},
+				))
+
+				const returnedKey = typeof filteredResult === 'object'
+					? filteredResult[primaryKeyField]
+					: filteredResult;
 
 				if (pkField!.type === 'uuid') {
 					primaryKey = getHelpers(trx).schema.formatUUID(primaryKey ?? returnedKey);
@@ -752,7 +786,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 
 			try {
-				const results = await trx
+				let dbQuery = trx
 				.batchInsert<Exclude<ItemValues, number | string>['payloadWithoutAliases']>(
 					this.collection,
 					itemsToInsert.map((v) => {
@@ -764,9 +798,42 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				)
 				.returning(primaryKeyField)
 
+
+				dbQuery = (await emitter.emitFilter(
+					['items.db.insert', `${this.collection}.db.insert`],
+					dbQuery,
+					{
+						collection: this.collection,
+						payload: data,
+					},
+					{
+						database: trx,
+						schema: this.schema,
+						accountability: this.accountability,
+					},
+				)) as unknown as typeof dbQuery // TODO: fix emitFilter typing
+
+				const results = await dbQuery;
+
 				// MySQL, MariaDB and Sqlite will only return the id of the last item
 				if (results.length === itemsToInsert.length) {
-					results.forEach((result, index) => {
+
+					const filteredResult = (await emitter.emitFilter(
+						['items.db.inserted', `${this.collection}.db.inserted`],
+						results,
+						{
+							collection: this.collection,
+							payload: data,
+						},
+						{
+							database: trx,
+							schema: this.schema,
+							accountability: this.accountability,
+						},
+					))
+
+
+					filteredResult.forEach((result, index) => {
 						const preparedValues = itemsToInsert[index]
 
 						if (! preparedValues) {
@@ -811,7 +878,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					})
 
 					// https://www.geeksforgeeks.org/sql/sql-query-to-get-the-latest-record-from-the-table/
-					const lastAddedRows = await trx.select(primaryKeyField, ...inputKeys)
+					const lastRows = await trx.select(primaryKeyField, ...inputKeys)
 					.from(this.collection)
 					.orderBy(primaryKeyField, 'desc')
 					.limit(itemsToInsertWithoutPk.length)
@@ -831,29 +898,44 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					// 	fieldTypes: Object.fromEntries( Object.entries(collectionSchema.fields).map(([fieldName, field]) => [fieldName, field.type])),
 					// }, null, 2))
 
+					const pkInInput = itemsToInsertWithPk.map(item => item.primaryKey)
+
+					const lastAddedRows = lastRows.filter((addedRow) => {
+						// If a fetched item already has an item, skip it as its order in the input may mismatch the fetched order (-by primary key)
+						return ! pkInInput.includes(addedRow[primaryKeyField])
+					})
+
+
+
+					// TODO should this filter be before the fake .returning() behavior?
+					const filteredLastAddedRows = (await emitter.emitFilter(
+						['items.db.inserted', `${this.collection}.db.inserted`],
+						lastAddedRows,
+						{
+							collection: this.collection,
+							payload: data,
+						},
+						{
+							database: trx,
+							schema: this.schema,
+							accountability: this.accountability,
+						},
+					))
+
 
 					// const collectionSchema = this.schema.collections[this.collection]!.fields[primaryKeyField]!.type === `uuid`
 
 					const emptyItemInput = Object.fromEntries(inputKeys.map(key => [key, undefined]))
 
-					const pkInInput = itemsToInsertWithPk.map(item => item.primaryKey)
-
 					const isMariaDb = await this.isMariaDb()
 
-					lastAddedRows
-					.filter((addedRow) => {
-						// If a fetched item already has an item, skip it as its order in the input may mismatch the fetched order (-by primary key)
-						return ! pkInInput.includes(addedRow[primaryKeyField])
-					})
-					.forEach((addedRow, index) => {
-
+					filteredLastAddedRows.map((addedRow, index) => {
 						const itemIndex = itemsToInsertWithoutPk.length - 1 - index
 						const item = itemsToInsertWithoutPk[itemIndex]
 
 						if (item === undefined) {
 							throw new Error(`Missing item to insert at ${itemIndex} during primary keys attribution for MySql / MariaDB / SQlite`) // should never happend
 						}
-
 
 						// The following check is overkill in production and may be replaced by proper testing
 						// but it helped to ensure the Sqlite / MySQL / MariaDB work (even if I don't use them)
@@ -1028,7 +1110,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 								)
 							}
 						}
+					})
 
+					filteredLastAddedRows.forEach((addedRow, index) => {
+						const itemIndex = itemsToInsertWithoutPk.length - 1 - index
+						const item = itemsToInsertWithoutPk[itemIndex]
+
+						if (item === undefined) {
+							throw new Error(`Missing item to insert at ${itemIndex} during primary keys attribution for MySql / MariaDB / SQlite`) // should never happend
+						}
 
 						item.primaryKey = addedRow.id
 
