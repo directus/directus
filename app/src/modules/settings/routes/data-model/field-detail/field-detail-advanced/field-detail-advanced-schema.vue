@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { TranslateResult, useI18n } from 'vue-i18n';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
+import { SEARCHABLE_TYPES } from '@directus/constants';
 
 type FieldTypeOption = { value: Type; text: TranslateResult | string; children?: FieldTypeOption[] };
 
@@ -162,8 +163,7 @@ const isSearchableType = computed(() => {
 	// exclude relational fields except m2o, which stores foreign keys that are typically not useful for search
 	if (localType.value && localType.value !== 'standard') return false;
 
-	const searchableTypes = ['text', 'string', 'integer', 'bigInteger', 'float', 'decimal', 'uuid'];
-	return searchableTypes.includes(type.value);
+	return SEARCHABLE_TYPES.includes(type.value);
 });
 
 function useOnCreate() {
