@@ -3,12 +3,12 @@ import { computed } from 'vue';
 
 export type FancySelectItem = (
 	| {
-			icon: string;
-			value?: string | number;
-			text: string;
-			description?: string;
-			iconRight?: string;
-	  }
+		icon: string;
+		value?: string | number;
+		text: string;
+		description?: string;
+		iconRight?: string;
+	}
 	| { divider: true }
 ) &
 	Record<string, any>;
@@ -58,17 +58,10 @@ function toggle(item: Record<string, any>) {
 		<transition-group tag="div" name="option">
 			<template v-for="(item, index) in visibleItems" :key="item[props.itemValue]">
 				<v-divider v-if="item.divider === true" />
-				<button
-					v-else
-					type="button"
-					:disabled="disabled"
-					class="v-fancy-select-option"
-					:class="{ active: item[itemValue] === modelValue, disabled }"
-					:style="{
+				<button v-else type="button" :disabled="disabled" class="v-fancy-select-option"
+					:class="{ active: item[itemValue] === modelValue, disabled }" :style="{
 						'--index': index,
-					}"
-					@click="toggle(item)"
-				>
+					}" @click="toggle(item)">
 					<div class="icon">
 						<v-icon :name="item.icon" />
 					</div>
@@ -78,12 +71,8 @@ function toggle(item: Record<string, any>) {
 						<div class="description">{{ item[itemDescription] }}</div>
 					</div>
 
-					<v-icon
-						v-if="modelValue === item[itemValue] && disabled === false"
-						name="cancel"
-						clickable
-						@click.stop="toggle(item)"
-					/>
+					<v-icon v-if="modelValue === item[itemValue] && disabled === false" name="cancel" clickable
+						@click.stop="toggle(item)" />
 					<v-icon v-else-if="item.iconRight" class="icon-right" :name="item.iconRight" />
 				</button>
 			</template>

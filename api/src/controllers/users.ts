@@ -5,7 +5,7 @@ import {
 	InvalidPayloadError,
 	isDirectusError,
 } from '@directus/errors';
-import type { PrimaryKey, RegisterUserInput } from '@directus/types';
+import type { Accountability, PrimaryKey, RegisterUserInput } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
 import checkRateLimit from '../middleware/rate-limiter-registration.js';
@@ -20,6 +20,7 @@ import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import { getDatabase } from '../database/index.js';
+import { ServerService } from '../services/server.js';
 
 const router = express.Router();
 

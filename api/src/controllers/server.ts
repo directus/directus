@@ -1,10 +1,13 @@
-import { RouteNotFoundError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
 import { format } from 'date-fns';
 import { Router } from 'express';
 import { respond } from '../middleware/respond.js';
 import { ServerService } from '../services/server.js';
 import { SpecificationService } from '../services/specifications.js';
 import asyncHandler from '../utils/async-handler.js';
+import { SettingsService, UsersService } from '../services/index.js';
+import type { Accountability } from '@directus/types';
+import { createAdmin } from '../utils/create-admin.js';
 
 const router = Router();
 
@@ -78,6 +81,44 @@ router.get(
 		if (data['status'] === 'error') res.status(503);
 		res.locals['payload'] = data;
 		res.locals['cache'] = false;
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/setup',
+	asyncHandler(async (req, res, next) => {
+		const serverService = new ServerService({ schema: req.schema });
+
+		if (await serverService.setupComplete()) {
+			throw new ForbiddenError();
+		}
+
+		try {
+			await createAdmin(req.schema, {
+				email: req.body.email,
+				password: req.body.password,
+				first_name: req.body.first_name,
+				last_name: req.body.last_name,
+			});
+
+			const settingsService = new SettingsService({ schema: req.schema });
+
+			settingsService.upsertSingleton({
+				project_owner: req.body.email,
+				accepted_terms: true,
+			});
+		} catch (error: any) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
+				return next();
+			}
+
+			throw error;
+		}
+
+		// TODO: Send contact info to Admin instance
+
 		return next();
 	}),
 	respond,

@@ -17,6 +17,7 @@ import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import { getAllowedLogLevels } from '../utils/get-allowed-log-levels.js';
 import { SettingsService } from './settings.js';
+import { UsersService } from './users.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -34,10 +35,23 @@ export class ServerService {
 		this.settingsService = new SettingsService({ knex: this.knex, schema: this.schema });
 	}
 
+	async setupComplete(): Promise<boolean> {
+		const { project_owner } = await this.settingsService.readSingleton({
+			fields: ['project_owner'],
+		});
+
+		if (project_owner) {
+			const anyUserExists = await this.knex('directus_users').first();
+			return Boolean(anyUserExists);
+		}
+
+		return false;
+	}
+
 	async serverInfo(): Promise<Record<string, any>> {
 		const info: Record<string, any> = {};
 
-		const projectInfo = await this.settingsService.readSingleton({
+		const { project_owner, ...projectInfo } = await this.settingsService.readSingleton({
 			fields: [
 				'project_name',
 				'project_descriptor',
@@ -57,12 +71,17 @@ export class ServerService {
 				'custom_css',
 				'public_registration',
 				'public_registration_verify_email',
+				'project_owner',
 			],
 		});
 
 		info['project'] = projectInfo;
 
 		info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
+
+		const anyUserExists = await this.knex('directus_users').first();
+
+		info['setup'] = Boolean(project_owner) && Boolean(anyUserExists);
 
 		if (this.accountability?.user) {
 			if (env['RATE_LIMITER_ENABLED']) {

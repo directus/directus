@@ -14,11 +14,37 @@ import { getRootPath } from '@/utils/get-root-path';
 import { useAppStore } from '@directus/stores';
 import { useLocalStorage } from '@/composables/use-local-storage';
 import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter, RouteRecordRaw } from 'vue-router';
+import Setup from '@/routes/setup/setup.vue';
 
 export const defaultRoutes: RouteRecordRaw[] = [
 	{
 		path: '/',
-		redirect: '/login',
+		redirect: () => {
+			const serverStore = useServerStore();
+
+			if (serverStore.info.setup) {
+				return '/login';
+			} else {
+				return '/setup';
+			}
+		},
+	},
+	{
+		name: 'setup',
+		path: '/setup',
+		component: Setup,
+		beforeEnter: async (_from, _to, next) => {
+			const serverStore = useServerStore();
+
+			if (serverStore.info.setup) {
+				return next('/login');
+			}
+
+			return next();
+		},
+		meta: {
+			public: true,
+		},
 	},
 	{
 		name: 'login',
