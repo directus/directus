@@ -901,7 +901,8 @@ export class FieldsService {
 		// - Seems closed by mistake https://github.com/knex/knex/issues/322
 		// - https://github.com/knex/knex/issues/1303
 		// - https://github.com/knex/knex/issues/2167
-		const existingIndexes = await trx.raw(`
+		const existingIndexes = this.knex.client.config.client === 'postgres'
+		? await trx.raw(`
 			select
 					t.relname as table_name,
 					i.relname as index_name,
@@ -922,6 +923,7 @@ export class FieldsService {
 					t.relname,
 					i.relname;
 		`)
+		: []
 
 		let column: Knex.ColumnBuilder;
 
