@@ -252,8 +252,8 @@ function useForm() {
 		return field;
 	}
 
-	function isFieldVisible(field: Field | TFormField) {
-		return field.meta?.hidden !== true || props.comparison?.fields?.has(field.field);
+	function isFieldVisible(field: Field | TFormField): boolean {
+		return field.meta?.hidden !== true || !!props.comparison?.fields?.has(field.field);
 	}
 }
 
