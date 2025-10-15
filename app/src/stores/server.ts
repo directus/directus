@@ -113,13 +113,6 @@ export const useServerStore = defineStore('serverStore', () => {
 		return options;
 	});
 
-	const setOwner = async (email: string) => {
-		await api.patch('/settings', {
-			project_owner: email,
-			accepted_terms: true,
-		});
-	};
-
 	const hydrate = async () => {
 		const [serverInfoResponse, authResponse] = await Promise.all([
 			api.get(`/server/info`),
@@ -158,7 +151,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		auth.disableDefault = false;
 	};
 
-	return { info, auth, providerOptions, hydrate, dehydrate, setOwner };
+	return { info, auth, providerOptions, hydrate, dehydrate };
 });
 
 if (import.meta.hot) {

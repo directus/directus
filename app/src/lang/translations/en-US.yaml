@@ -1932,6 +1932,11 @@ interfaces:
     collection: Collection
     description: Select between existing collections
     include_system_collections: Include System Collections
+  system-owner:
+    update: Update Instance Owner
+    edit: Edit Instance Owner
+    system-owner: System Owner
+    description: System Owner Interface
   system-collections:
     collections: Collections
     description: Select between existing collections

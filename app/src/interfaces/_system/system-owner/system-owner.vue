@@ -4,6 +4,9 @@ import { validateItem } from '@/utils/validate-item';
 import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SetupForm from '@/routes/setup/form.vue';
+import { useSettingsStore } from '@/stores/settings';
+
+const settingsStore = useSettingsStore()
 
 const props = withDefaults(
 	defineProps<{
@@ -16,12 +19,20 @@ const props = withDefaults(
 
 const { t } = useI18n();
 
+const emit = defineEmits(['input'])
+
 const errors = ref<Record<string, any>[]>([])
 const editing = ref(false);
 const isSaveDisabled = computed(() => !form.value.email || !form.value.license);
 
-function save() {
+async function save() {
 	errors.value = validateItem(form.value, unref(fields), true)
+
+	if (errors.value.length > 0) return
+
+	emit('input', form.value.email)
+
+	editing.value = false
 }
 
 const form = ref<Form>({ ...initialValues, email: props.value ?? '' })

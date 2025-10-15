@@ -6,8 +6,9 @@ import { validateItem } from '@/utils/validate-item';
 import { Form, initialValues, useFormFields } from '@/routes/setup/form';
 import SetupForm from '@/routes/setup/form.vue';
 import { useCookies } from '@vueuse/integrations/useCookies'
+import { useSettingsStore } from '@/stores/settings';
 
-const serverStore = useServerStore()
+const settingsStore = useSettingsStore()
 const cookies = useCookies(['license-banner-dismissed'])
 const { t } = useI18n();
 
@@ -17,8 +18,11 @@ const isSaveDisabled = computed(() => !form.value.email || !form.value.license);
 async function setOwner() {
 	errors.value = validateItem(form.value, unref(fields), true)
 
-	await serverStore.setOwner(form.value.email!)
-	await serverStore.hydrate()
+	await settingsStore.updateSettings({
+		project_owner: form.value.email
+	})
+
+	await settingsStore.hydrate()
 }
 
 async function remindLater() {
