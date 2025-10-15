@@ -14,12 +14,9 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits(['input']);
-
 const { t } = useI18n();
 
 const errors = ref<Record<string, any>[]>([])
-const loading = ref(false);
 const editing = ref(false);
 const isSaveDisabled = computed(() => !form.value.email || !form.value.license);
 

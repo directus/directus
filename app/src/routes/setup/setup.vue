@@ -58,8 +58,6 @@ async function launch() {
 	} catch (err: any) {
 		error.value = err
 	}
-
-
 }
 
 const errorMessage = computed(() => {

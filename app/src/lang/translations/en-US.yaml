@@ -2705,15 +2705,12 @@ percent: Percent
 show_password: Show password
 hide_password: Hide password
 bsl_banner:
-  welcome_to_directus: Welcome to Directus!
-  directus_free_use:
-    Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget.
-  organization_threshold: Entities above this threshold require a paid license.
-  license_agreement: By clicking "Accept", you agree to the {directusBsl} and {privacyPolicy}.
-  directus_bsl: Directus BSL 1.1
-  privacy_policy: Privacy Policy
-  accept_terms: Accept
-  get_license: Get a License
+  title: You have not set an instance owner.
+  license:
+    We need this to ensure compliance with our BSL 1.1 license. This should be the primary contact responsible for your
+    instance.
+  set_owner: Set Owner
+  remind_later: Remind Later
 accepted: Accepted
 text_direction_auto: Automatic (Match Language)
 text_direction_ltr: Left to Right (LTR)

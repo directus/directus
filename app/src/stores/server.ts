@@ -27,7 +27,7 @@ export type Info = {
 		public_registration_verify_email: boolean | null;
 	};
 	mcp_enabled: boolean;
-	setup: boolean;
+	setupComplete: boolean;
 	rateLimit?:
 		| false
 		| {
@@ -84,7 +84,7 @@ export const useServerStore = defineStore('serverStore', () => {
 	const info = reactive<Info>({
 		project: null,
 		mcp_enabled: true,
-		setup: false,
+		setupComplete: false,
 		extensions: undefined,
 		rateLimit: undefined,
 		queryLimit: undefined,
@@ -113,6 +113,13 @@ export const useServerStore = defineStore('serverStore', () => {
 		return options;
 	});
 
+	const setOwner = async (email: string) => {
+		await api.patch('/settings', {
+			project_owner: email,
+			accepted_terms: true,
+		});
+	};
+
 	const hydrate = async () => {
 		const [serverInfoResponse, authResponse] = await Promise.all([
 			api.get(`/server/info`),
@@ -121,7 +128,7 @@ export const useServerStore = defineStore('serverStore', () => {
 
 		info.project = serverInfoResponse.data.data?.project;
 		info.mcp_enabled = serverInfoResponse.data.data?.mcp_enabled;
-		info.setup = serverInfoResponse.data.data?.setup;
+		info.setupComplete = serverInfoResponse.data.data?.setup_complete;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 		info.extensions = serverInfoResponse.data.data?.extensions;
 		info.websocket = serverInfoResponse.data.data?.websocket;
@@ -151,7 +158,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		auth.disableDefault = false;
 	};
 
-	return { info, auth, providerOptions, hydrate, dehydrate };
+	return { info, auth, providerOptions, hydrate, dehydrate, setOwner };
 });
 
 if (import.meta.hot) {

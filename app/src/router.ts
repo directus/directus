@@ -22,7 +22,7 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		redirect: () => {
 			const serverStore = useServerStore();
 
-			if (serverStore.info.setup) {
+			if (serverStore.info.setupComplete) {
 				return '/login';
 			} else {
 				return '/setup';
@@ -36,7 +36,7 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		beforeEnter: async (_from, _to, next) => {
 			const serverStore = useServerStore();
 
-			if (serverStore.info.setup) {
+			if (serverStore.info.setupComplete) {
 				return next('/login');
 			}
 
