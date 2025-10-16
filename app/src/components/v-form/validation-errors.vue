@@ -12,7 +12,11 @@ defineEmits(['scroll-to-field']);
 
 const { t } = useI18n();
 
-const { validationErrorsWithDetails, getDefaultValidationMessage } = useValidationErrorDetails(props.validationErrors, props.fields, t);
+const { validationErrorsWithDetails, getDefaultValidationMessage } = useValidationErrorDetails(
+	props.validationErrors,
+	props.fields,
+	t,
+);
 </script>
 
 <template>

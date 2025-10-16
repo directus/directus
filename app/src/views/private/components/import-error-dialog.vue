@@ -29,7 +29,6 @@ type ValidationErrorWithRows = ValidationError & {
 	rows: ImportRowLine[] | ImportRowRange[];
 };
 
-
 function formatRows(rows: Array<ImportRowLine | ImportRowRange>): string {
 	return rows
 		.map((r) => {
@@ -40,33 +39,33 @@ function formatRows(rows: Array<ImportRowLine | ImportRowRange>): string {
 }
 
 const validationErrors = computed<ValidationError[]>(() =>
-  props.errors
-    .map((err: APIError) => ({
-      ...err.extensions,
-      collection: props.collection,
-    } as ValidationError))
+	props.errors.map(
+		(err: APIError) =>
+			({
+				...err.extensions,
+				collection: props.collection,
+			}) as ValidationError,
+	),
 );
 
 const validationTypesErrors = computed<ValidationError[]>(() =>
-  validationErrors.value
-    .filter((err: ValidationError) => VALIDATION_TYPES.includes(err?.code))
+	validationErrors.value.filter((err: ValidationError) => VALIDATION_TYPES.includes(err?.code)),
 );
 
-const otherErrors = computed<(ValidationError & { fieldName?: string, customValidationMessage?: string })[]>(() =>
-  validationErrors.value
-    .filter((err: ValidationError) => !VALIDATION_TYPES.includes(err?.code))
+const otherErrors = computed<(ValidationError & { fieldName?: string; customValidationMessage?: string })[]>(() =>
+	validationErrors.value.filter((err: ValidationError) => !VALIDATION_TYPES.includes(err?.code)),
 );
 
 const { validationErrorsWithDetails, getDefaultValidationMessage } = useValidationErrorDetails(
-	validationTypesErrors, 
+	validationTypesErrors,
 	fieldsStore.getFieldsForCollection(props.collection),
-	t
+	t,
 );
 
 const formattedErrors = computed(() => {
 	return [
-		...validationErrorsWithDetails.value.map((err) => ({ ...err, message: getDefaultValidationMessage(err) })), 
-		...otherErrors.value.map((err) => ({ ...err, message: t(`errors.${err.code}`, err) }))
+		...validationErrorsWithDetails.value.map((err) => ({ ...err, message: getDefaultValidationMessage(err) })),
+		...otherErrors.value.map((err) => ({ ...err, message: t(`errors.${err.code}`, err) })),
 	].map((err) => ({
 		...err,
 		formattedRows: formatRows((err as any as ValidationErrorWithRows).rows),
@@ -88,9 +87,15 @@ const errorSummary = computed(() => t('import_data_validation_errors_notice'));
 						<ul class="validation-errors-list">
 							<li v-for="(error, index) in formattedErrors" :key="index" class="validation-error">
 								<strong v-if="error.rowCount > 0">
-									{{ $t('import_data_error_row', { count: error.rowCount, rows: error.formattedRows, field: error?.fieldName ? ` (${error.fieldName})` : '' }) }}
+									{{
+										$t('import_data_error_row', {
+											count: error.rowCount,
+											rows: error.formattedRows,
+											field: error?.fieldName ? ` (${error.fieldName})` : '',
+										})
+									}}
 								</strong>
-								
+
 								<template v-if="error.customValidationMessage">
 									{{ error.customValidationMessage }}
 									<v-icon v-tooltip="error.message" small right name="help" />

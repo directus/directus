@@ -45,11 +45,11 @@ import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
 import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
 import { set } from 'lodash-es';
-import {
-	type FailedValidationErrorExtensions,
-	type FailedValidationErrorExtensionsType,
-	type ImportRowLine,
-	type ImportRowRange,
+import type {
+	FailedValidationErrorExtensions,
+	FailedValidationErrorExtensionsType,
+	ImportRowLine,
+	ImportRowRange,
 } from '@directus/validation';
 
 const env = useEnv();
