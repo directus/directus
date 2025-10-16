@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed requesting main version
+Fixed requesting a versioned item with the 'main' keyword returning forbidden
