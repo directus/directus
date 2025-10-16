@@ -6,7 +6,7 @@ import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
-import { calculateFieldDifferences, mergeMainItemKeysIntoRevision } from '@/modules/content/comparison-utils';
+import { computeDifferentFields } from '@/modules/content/comparison-utils';
 import type { ContentVersion, Filter } from '@directus/types';
 import { isSystemCollection, getSystemCollectionItemUrl } from '@/modules/content/comparison-utils';
 import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
@@ -220,17 +220,9 @@ export function useRevisions(
 					const steps = (revision as Revision)?.data?.steps;
 					const lastStepStatus = steps?.[steps.length - 1]?.status;
 
-					// Calculate fields that differ from the current item state
 					const revisionData = (revision as Revision)?.data || {};
 					const collectionFields = fieldsStore.getFieldsForCollection(unref(collection));
-					const fieldMetadata = Object.fromEntries(collectionFields.map((field) => [field.field, field]));
-
-					// Enrich revision data with missing keys from main item (same logic as comparison modal)
-					const enrichedRevisionData = mergeMainItemKeysIntoRevision(revisionData, currentItemMerged, collectionFields);
-
-					const differentFields = calculateFieldDifferences(enrichedRevisionData, currentItemMerged, fieldMetadata, {
-						skipRelationalFields: true,
-					});
+					const differentFields = computeDifferentFields('revision', currentItemMerged, revisionData, collectionFields);
 
 					revisions.push({
 						...revision,

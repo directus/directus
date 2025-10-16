@@ -1,7 +1,7 @@
 import { RELATIONAL_TYPES } from '@directus/constants';
 import { ContentVersion, Field, RelationalType, User } from '@directus/types';
 import { Revision } from '@/types/revisions';
-import { isNil, isEqual } from 'lodash';
+import { isNil, isEqual, mergeWith } from 'lodash';
 import { i18n } from '@/lang';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 
@@ -211,6 +211,37 @@ export function copyRelationalFieldsFromBaseToIncoming(
 	}
 
 	return result;
+}
+
+export function computeDifferentFields(
+	comparisonType: 'version' | 'revision',
+	base: Record<string, any>,
+	incoming: Record<string, any>,
+	fields: Field[] = [],
+): string[] {
+	const replaceArrays = (objValue: any, srcValue: any) => {
+		if (Array.isArray(objValue) || Array.isArray(srcValue)) return srcValue;
+		return undefined;
+	};
+
+	const preparedBase = base || {};
+	let preparedIncoming = incoming || {};
+
+	if (comparisonType === 'version') {
+		// Modal logic: incoming should be a full item = base + delta
+		preparedIncoming = mergeWith({}, preparedBase, preparedIncoming, replaceArrays);
+
+		const fieldMetadata = Object.fromEntries(fields.map((f) => [f.field, f]));
+		return calculateFieldDifferences(preparedIncoming, preparedBase, fieldMetadata, { skipRelationalFields: false });
+	} else {
+		const incomingWithDefaults = mergeMainItemKeysIntoRevision(preparedIncoming, preparedBase, fields);
+		// 2) Copy relational/user/PK fields from base into incoming
+		const incomingWithRelational = copyRelationalFieldsFromBaseToIncoming(preparedBase, incomingWithDefaults, fields);
+		const fieldMetadata = Object.fromEntries(fields.map((f) => [f.field, f]));
+		return calculateFieldDifferences(incomingWithRelational, preparedBase, fieldMetadata, {
+			skipRelationalFields: true,
+		});
+	}
 }
 
 export function normalizeUser(user: User | string | null | undefined): NormalizedUser | null {
