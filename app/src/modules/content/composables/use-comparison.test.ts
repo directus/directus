@@ -298,4 +298,108 @@ describe('getFieldsWithDifferences', () => {
 		expect(versionFields).toContain('title');
 		expect(versionFields).toContain('related_items');
 	});
+
+	it('detects m2o field changes when comparing versions', () => {
+		const comparedData = {
+			outdated: false,
+			mainHash: '',
+			incoming: {
+				title: 'New Title',
+				author: 2,
+				category: { id: 5, name: 'New Category' },
+			},
+			base: {
+				title: 'Old Title',
+				author: 1,
+				category: { id: 3, name: 'Old Category' },
+			},
+		};
+
+		const fieldMetadata = {
+			title: { meta: { special: [] } },
+			author: { meta: { special: ['m2o'] } },
+			category: { meta: { special: ['m2o'] } },
+		};
+
+		const versionFields = getFieldsWithDifferences(comparedData, fieldMetadata, 'version');
+		expect(versionFields).toContain('title');
+		expect(versionFields).toContain('author');
+		expect(versionFields).toContain('category');
+	});
+
+	it('does not detect m2o fields as different when IDs are the same', () => {
+		const comparedData = {
+			outdated: false,
+			mainHash: '',
+			incoming: {
+				author: 1,
+				category: { id: 3, name: 'Updated Category Name' },
+			},
+			base: {
+				author: { id: 1, name: 'Author Name' },
+				category: 3,
+			},
+		};
+
+		const fieldMetadata = {
+			author: { meta: { special: ['m2o'] } },
+			category: { meta: { special: ['m2o'] } },
+		};
+
+		const versionFields = getFieldsWithDifferences(comparedData, fieldMetadata, 'version');
+		expect(versionFields).not.toContain('author');
+		expect(versionFields).not.toContain('category');
+	});
+
+	it('detects m2a field changes when data comes as arrays', () => {
+		const comparedData = {
+			outdated: false,
+			mainHash: '',
+			incoming: {
+				blocks: [
+					{ id: 1, item: 'block1', collection: 'hero_blocks' },
+					{ id: 2, item: 'block2', collection: 'text_blocks' },
+				],
+			},
+			base: {
+				blocks: [
+					{ id: 1, item: 'block1', collection: 'hero_blocks' },
+					{ id: 3, item: 'block3', collection: 'gallery_blocks' },
+				],
+			},
+		};
+
+		const fieldMetadata = {
+			blocks: { meta: { special: ['m2a'] } },
+		};
+
+		const versionFields = getFieldsWithDifferences(comparedData, fieldMetadata, 'version');
+		expect(versionFields).toContain('blocks');
+	});
+
+	it('does not detect m2a fields as different when arrays are identical', () => {
+		const comparedData = {
+			outdated: false,
+			mainHash: '',
+			incoming: {
+				blocks: [
+					{ id: 1, item: 'block1', collection: 'hero_blocks' },
+					{ id: 2, item: 'block2', collection: 'text_blocks' },
+				],
+			},
+			base: {
+				blocks: [
+					{ id: 1, item: 'block1', collection: 'hero_blocks' },
+					{ id: 2, item: 'block2', collection: 'text_blocks' },
+				],
+			},
+		};
+
+		const fieldMetadata = {
+			blocks: { meta: { special: ['m2a'] } },
+		};
+
+		const versionFields = getFieldsWithDifferences(comparedData, fieldMetadata, 'version');
+		expect(versionFields).not.toContain('blocks');
+	});
 });
