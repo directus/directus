@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useScroll } from '@vueuse/core';
-import { computed, provide, useTemplateRef, watch } from 'vue';
+import { computed, provide, useTemplateRef } from 'vue';
 import PrivateViewDrawer from './private-view-drawer.vue';
 import SkipMenu from '../../components/skip-menu.vue';
 import { useSidebarStore } from '../stores/sidebar';
@@ -61,7 +61,7 @@ const splitterCollapsed = computed({
 		>
 			<template #start>
 				<div ref="scrollContainer" class="scrolling-container">
-					<PrivateViewHeaderBar :title="props.title" :shadow="showHeaderShadow" :inline-nav>
+					<PrivateViewHeaderBar :title="props.title" :shadow="showHeaderShadow" :inline-nav :icon :icon-color :show-back>
 						<template #actions:append><slot name="actions:append" /></template>
 						<template #actions:prepend><slot name="actions:prepend" /></template>
 						<template #actions><slot name="actions" /></template>

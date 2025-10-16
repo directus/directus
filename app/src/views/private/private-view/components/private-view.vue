@@ -1,6 +1,16 @@
 <script lang="ts">
 export interface PrivateViewProps {
+	/** Title to show in the header bar. Can be overriden through the #title slot */
 	title?: string,
+
+	/** Render an icon before the title */
+	icon?: string;
+
+	/** What color to render the icon in */
+	iconColor?: string;
+
+	/** Render a history back button in place of the title prepend icon */
+	showBack?: boolean;
 }
 </script>
 

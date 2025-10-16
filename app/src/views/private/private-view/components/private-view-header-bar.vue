@@ -1,18 +1,26 @@
 <script setup lang="ts">
 import VIcon from '@/components/v-icon/v-icon.vue';
-import PrivateViewHeaderBarActions from './private-view-header-bar-actions.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
-import { useNavBarStore } from '../stores/nav-bar';
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
 import { computed } from 'vue';
+import { useNavBarStore } from '../stores/nav-bar';
 import { useSidebarStore } from '../stores/sidebar';
-import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
+import PrivateViewHeaderBarActions from './private-view-header-bar-actions.vue';
+import PrivateViewHeaderBarIcon from './private-view-header-bar-icon.vue';
 
 const navBarStore = useNavBarStore();
 const sidebarStore = useSidebarStore();
 
 const { sm } = useBreakpoints(breakpointsTailwind);
 
-const props = defineProps<{ title?: string, shadow: boolean, inlineNav: boolean }>();
+const props = defineProps<{
+	title?: string,
+	shadow: boolean,
+	inlineNav: boolean,
+	icon?: string,
+	iconColor?: string,
+	showBack?: boolean
+}>();
 
 const showNavToggle = computed(() => {
 	if (props.inlineNav) {
@@ -30,6 +38,8 @@ const showSidebarToggle = computed(() => {
 <template>
 	<header class="header-bar" :class="{shadow}">
 		<VIcon v-if="showNavToggle" small class="nav-toggle" name="left_panel_open" clickable @click="navBarStore.expand" />
+
+		<PrivateViewHeaderBarIcon v-if="icon || showBack" :icon :show-back :icon-color />
 
 		<div class="title-outer-prepend">
 			<slot name="title-outer:prepend" />
@@ -59,13 +69,11 @@ const showSidebarToggle = computed(() => {
 
 		<div class="spacer" />
 
-
 		<PrivateViewHeaderBarActions>
 			<template #prepend><slot name="actions:prepend" /></template>
 			<slot name="actions" />
 			<template #append><slot name="actions:append" /></template>
 		</PrivateViewHeaderBarActions>
-
 
 		<VIcon v-if="showSidebarToggle" name="menu_open" clickable @click="sidebarStore.expand" />
 	</header>

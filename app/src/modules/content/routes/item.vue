@@ -9,6 +9,7 @@ import { useVersions } from '@/composables/use-versions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
+import PrivateView from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
@@ -20,7 +21,7 @@ import type { PrimaryKey } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter, useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
@@ -331,17 +332,6 @@ onBeforeUnmount(() => {
 	if (popupWindow) popupWindow.close();
 });
 
-function navigateBack() {
-	const backState = router.options.history.state.back;
-
-	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
-		router.back();
-		return;
-	}
-
-	router.push(collectionRoute.value);
-}
-
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [
 		{
@@ -507,12 +497,13 @@ function useCollectionRoute() {
 		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
 	/>
 
-	<private-view
+	<PrivateView
 		v-else
 		v-model:split-view="splitView"
 		:class="{ 'has-content-versioning': shouldShowVersioning }"
 		:split-view-min-width="310"
-		:title="title"
+		:title="'RIJK'"
+		show-back
 	>
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
 			<h1 class="type-title">
@@ -777,7 +768,7 @@ function useCollectionRoute() {
 				/>
 			</template>
 		</template>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>
