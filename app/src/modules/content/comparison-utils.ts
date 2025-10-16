@@ -136,28 +136,82 @@ export function calculateFieldDifferences(
 				continue;
 			}
 
-			if (relationalData && typeof relationalData === 'object' && !Array.isArray(relationalData)) {
+			if (relationalData && typeof relationalData === 'object') {
 				const allChangedIds: (string | number)[] = [];
 
+				if (Array.isArray(relationalData)) {
+					const currentRelationalData = currentData[fieldKey];
+
+					if (!isEqual(relationalData, currentRelationalData)) {
+						differentFields.push(fieldKey);
+					}
+
+					continue;
+				}
+
 				if (fieldType === 'o2m') {
+					let hasChanges = false;
+
 					['create', 'update', 'delete'].forEach((op) => {
-						if (Array.isArray(relationalData[op])) {
+						if (Array.isArray(relationalData[op]) && relationalData[op].length > 0) {
+							hasChanges = true;
+
 							relationalData[op].forEach((item: any) => {
 								if (item?.id) allChangedIds.push(item.id);
 							});
 						}
 					});
-				} else if (fieldType === 'm2m' || fieldType === 'm2a') {
-					if (Array.isArray(relationalData.delete)) {
-						relationalData.delete.forEach((id: any) => {
-							if (id !== null && id !== undefined) allChangedIds.push(id);
-						});
-					}
 
-					if (Array.isArray(relationalData.update)) {
-						relationalData.update.forEach((item: any) => {
-							if (item?.id) allChangedIds.push(item.id);
-						});
+					if (hasChanges && allChangedIds.length === 0) {
+						allChangedIds.push('has_changes');
+					}
+				} else if (fieldType === 'm2m') {
+					let hasChanges = false;
+
+					['create', 'update', 'delete'].forEach((op) => {
+						if (Array.isArray(relationalData[op]) && relationalData[op].length > 0) {
+							hasChanges = true;
+
+							if (op === 'delete') {
+								relationalData[op].forEach((id: any) => {
+									if (id !== null && id !== undefined) allChangedIds.push(id);
+								});
+							} else {
+								relationalData[op].forEach((item: any) => {
+									if (item?.id) allChangedIds.push(item.id);
+								});
+							}
+						}
+					});
+
+					if (hasChanges && allChangedIds.length === 0) {
+						allChangedIds.push('has_changes');
+					}
+				} else if (fieldType === 'm2a') {
+					let hasChanges = false;
+
+					['create', 'update', 'delete'].forEach((op) => {
+						if (Array.isArray(relationalData[op]) && relationalData[op].length > 0) {
+							hasChanges = true;
+
+							if (op === 'delete') {
+								relationalData[op].forEach((id: any) => {
+									if (id !== null && id !== undefined) allChangedIds.push(id);
+								});
+							} else {
+								relationalData[op].forEach((item: any) => {
+									const nestedItemId = item?.item?.id;
+
+									if (nestedItemId) {
+										allChangedIds.push(nestedItemId);
+									}
+								});
+							}
+						}
+					});
+
+					if (hasChanges && allChangedIds.length === 0) {
+						allChangedIds.push('has_changes');
 					}
 				}
 

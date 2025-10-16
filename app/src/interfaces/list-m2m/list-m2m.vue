@@ -301,6 +301,10 @@ function itemHasChanges(item: DisplayItem): boolean {
 	const changedIds = props.comparison.relationalDetails[props.field];
 	if (!changedIds || changedIds.length === 0) return false;
 
+	if (item.$type === 'created' || item.$type === 'deleted') {
+		return true;
+	}
+
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 	const itemId = item[junctionPkField];
 
