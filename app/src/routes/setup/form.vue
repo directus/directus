@@ -1,20 +1,21 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Form, initialValues, useFormFields } from './form';
+import { initialValues, useFormFields } from './form';
+import { SetupForm } from '@directus/types';
 
 const { t } = useI18n();
 
 const props = withDefaults(defineProps<{
 	register?: boolean;
-	modelValue?: Form;
+	modelValue?: SetupForm;
 	errors?: Record<string, any>[];
 }>(), {
 	register: true,
 	modelValue: () => initialValues,
 });
 
-const value = defineModel<Form>();
+const value = defineModel<SetupForm>();
 
 const license = computed({
 	get: () => value.value?.license ?? false,

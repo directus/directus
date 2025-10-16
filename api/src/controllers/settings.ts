@@ -25,6 +25,21 @@ router.get(
 	respond,
 );
 
+router.post(
+	'/owner',
+	asyncHandler(async (req, res, next) => {
+		const service = new SettingsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		await service.setOwner(req.body);
+
+		return next();
+	}),
+	respond,
+);
+
 router.patch(
 	'/',
 	asyncHandler(async (req, res, next) => {

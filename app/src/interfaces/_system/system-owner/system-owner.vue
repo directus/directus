@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { Form, initialValues, useFormFields } from '@/routes/setup/form';
+import { initialValues, useFormFields } from '@/routes/setup/form';
 import { validateItem } from '@/utils/validate-item';
 import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
+import { SetupForm as Form } from '@directus/types';
 
 const settingsStore = useSettingsStore()
 
@@ -29,6 +30,8 @@ async function save() {
 	errors.value = validateItem(form.value, unref(fields), true)
 
 	if (errors.value.length > 0) return
+
+	await settingsStore.setOwner(form.value)
 
 	emit('input', form.value.email)
 

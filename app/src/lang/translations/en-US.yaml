@@ -2716,6 +2716,7 @@ bsl_banner:
     instance.
   set_owner: Set Owner
   remind_later: Remind Later
+  remind_next_login: We'll remind you again on your next login.
 accepted: Accepted
 text_direction_auto: Automatic (Match Language)
 text_direction_ltr: Left to Right (LTR)

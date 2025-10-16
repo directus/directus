@@ -12,6 +12,8 @@ import { SettingsService } from '../../../services/settings.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { createAdmin } from '../../../utils/create-admin.js';
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {
 	const logger = useLogger();
 
@@ -39,9 +41,14 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 			logger.info('Skipping creation of default Admin user and role...');
 		}
 
+		const settingsService = new SettingsService({ schema });
+
 		if (env['PROJECT_NAME'] && typeof env['PROJECT_NAME'] === 'string' && env['PROJECT_NAME'].length > 0) {
-			const settingsService = new SettingsService({ schema });
 			await settingsService.upsertSingleton({ project_name: env['PROJECT_NAME'] });
+		}
+
+		if (env['PROJECT_OWNER'] && typeof env['PROJECT_OWNER'] === 'string' && emailRegex.test(env['PROJECT_OWNER'])) {
+			await settingsService.setOwner({ email: env['PROJECT_OWNER'], org_name: null, usage: null, marketing: false });
 		}
 	} else {
 		logger.info('Database already initialized, skipping install');

@@ -146,6 +146,11 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		}
 	}
 
+	if (!serverStore.info.setupComplete) {
+		if (to.fullPath === '/setup') return;
+		return '/setup';
+	}
+
 	if (to.meta?.public !== true) {
 		if (appStore.hydrated === false) {
 			appStore.hydrating = false;

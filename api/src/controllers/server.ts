@@ -105,10 +105,7 @@ router.post(
 
 			const settingsService = new SettingsService({ schema: req.schema });
 
-			settingsService.upsertSingleton({
-				project_owner: req.body.email,
-				accepted_terms: true,
-			});
+			settingsService.setOwner(req.body);
 		} catch (error: any) {
 			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
@@ -116,8 +113,6 @@ router.post(
 
 			throw error;
 		}
-
-		// TODO: Send contact info to Admin instance
 
 		return next();
 	}),

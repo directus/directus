@@ -5,11 +5,12 @@ import SetupForm from './form.vue';
 
 import { computed, ref, unref } from 'vue';
 import { validateItem } from '@/utils/validate-item';
-import { Form, initialValues, useFormFields } from './form';
+import { initialValues, useFormFields } from './form';
 import api from '@/api';
 import { login } from '@/auth';
 import { useRouter } from 'vue-router';
 import { translateAPIError } from '@/lang';
+import { SetupForm as Form } from '@directus/types';
 
 const { t } = useI18n();
 

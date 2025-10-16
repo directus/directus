@@ -1,18 +1,6 @@
-import { Field } from '@directus/types';
-import { computed, ComputedRef, MaybeRef, ModelRef, Ref, unref } from 'vue';
+import { Field, SetupForm } from '@directus/types';
+import { computed, ComputedRef, MaybeRef, ModelRef, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-
-export type Form = {
-	first_name: string | null;
-	last_name: string | null;
-	email: string | null;
-	password: string | null;
-	password_confirm: string | null;
-	usage: 'personal' | 'commercial' | 'community' | null;
-	org_name: string | null;
-	license: boolean;
-	marketing: boolean;
-};
 
 export const initialValues = {
 	first_name: null,
@@ -28,7 +16,7 @@ export const initialValues = {
 
 export function useFormFields(
 	register: MaybeRef<boolean>,
-	value: Ref<Form> | ModelRef<Form | undefined>,
+	value: Ref<SetupForm> | ModelRef<SetupForm | undefined>,
 ): ComputedRef<Field[]> {
 	const { t } = useI18n();
 
