@@ -7,7 +7,7 @@ import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { SetupForm as Form } from '@directus/types';
 
-const settingsStore = useSettingsStore()
+const settingsStore = useSettingsStore();
 
 const props = withDefaults(
 	defineProps<{
@@ -20,42 +20,51 @@ const props = withDefaults(
 
 const { t } = useI18n();
 
-const emit = defineEmits(['input'])
+const emit = defineEmits(['input']);
 
-const errors = ref<Record<string, any>[]>([])
+const errors = ref<Record<string, any>[]>([]);
 const editing = ref(false);
 const isSaveDisabled = computed(() => !form.value.email || !form.value.license);
 
 async function save() {
-	errors.value = validateItem(form.value, unref(fields), true)
+	errors.value = validateItem(form.value, unref(fields), true);
 
-	if (errors.value.length > 0) return
+	if (errors.value.length > 0) return;
 
-	await settingsStore.setOwner(form.value)
+	await settingsStore.setOwner(form.value);
 
-	emit('input', form.value.email)
+	emit('input', form.value.email);
 
-	editing.value = false
+	editing.value = false;
 }
 
-const form = ref<Form>({ ...initialValues, email: props.value ?? '' })
+const form = ref<Form>({ ...initialValues, email: props.value ?? '' });
 
-const fields = useFormFields(false, form)
-
+const fields = useFormFields(false, form);
 </script>
 
 <template>
 	<div class="system-owner">
 		<v-input :model-value="value" type="text" disabled readonly>
 			<template #append>
-				<v-icon v-tooltip="t('interfaces.system-owner.edit')" name="edit" class="edit" clickable
-					@click="editing = true" />
+				<v-icon
+					v-tooltip="t('interfaces.system-owner.edit')"
+					name="edit"
+					class="edit"
+					clickable
+					@click="editing = true"
+				/>
 			</template>
 		</v-input>
 	</div>
 
-	<v-drawer v-model="editing" :title="t('interfaces.system-owner.update')" icon="link" @cancel="editing = false"
-		@apply="save">
+	<v-drawer
+		v-model="editing"
+		:title="t('interfaces.system-owner.update')"
+		icon="link"
+		@cancel="editing = false"
+		@apply="save"
+	>
 		<template #actions>
 			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="isSaveDisabled" @click="save">
 				<v-icon name="check" />

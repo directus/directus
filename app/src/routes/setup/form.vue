@@ -6,14 +6,17 @@ import { SetupForm } from '@directus/types';
 
 const { t } = useI18n();
 
-const props = withDefaults(defineProps<{
-	register?: boolean;
-	modelValue?: SetupForm;
-	errors?: Record<string, any>[];
-}>(), {
-	register: true,
-	modelValue: () => initialValues,
-});
+const props = withDefaults(
+	defineProps<{
+		register?: boolean;
+		modelValue?: SetupForm;
+		errors?: Record<string, any>[];
+	}>(),
+	{
+		register: true,
+		modelValue: () => initialValues,
+	},
+);
 
 const value = defineModel<SetupForm>();
 
@@ -23,7 +26,7 @@ const license = computed({
 		if (value.value) {
 			value.value.license = val;
 		}
-	}
+	},
 });
 
 const marketing = computed({
@@ -32,11 +35,10 @@ const marketing = computed({
 		if (value.value) {
 			value.value.marketing = val;
 		}
-	}
+	},
 });
 
 const fields = useFormFields(props.register, value);
-
 </script>
 
 <template>
@@ -46,8 +48,13 @@ const fields = useFormFields(props.register, value);
 			<h1>{{ t('setup_welcome') }}</h1>
 			<p>{{ t('setup_info') }}</p>
 		</template>
-		<v-form v-model="value" :initial-values="initialValues" :validation-errors="errors"
-			:show-validation-errors="false" :fields="fields"></v-form>
+		<v-form
+			v-model="value"
+			:initial-values="initialValues"
+			:validation-errors="errors"
+			:show-validation-errors="false"
+			:fields="fields"
+		></v-form>
 		<v-notice><span v-md="t('setup_license_notice')"></span></v-notice>
 
 		<v-checkbox v-model="license">
@@ -56,7 +63,6 @@ const fields = useFormFields(props.register, value);
 		<v-checkbox v-if="register" v-model="marketing">
 			<span v-md="t('setup_marketing_emails')"></span>
 		</v-checkbox>
-
 	</div>
 </template>
 

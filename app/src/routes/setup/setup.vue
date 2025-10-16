@@ -18,68 +18,67 @@ useHead({
 	title: t('setup_project'),
 });
 
-const form = ref<Form>(initialValues)
-const router = useRouter()
+const form = ref<Form>(initialValues);
+const router = useRouter();
 
-const fields = useFormFields(true, form)
-const errors = ref<Record<string, any>[]>([])
-const error = ref<any>(null)
+const fields = useFormFields(true, form);
+const errors = ref<Record<string, any>[]>([]);
+const error = ref<any>(null);
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 async function launch() {
-	errors.value = validateItem(form.value, unref(fields), true)
+	errors.value = validateItem(form.value, unref(fields), true);
 
 	if (!emailRegex.test(form.value.email ?? '')) {
 		errors.value.push({
-			"field": "email",
-			"path": [],
-			"type": "email",
-		})
+			field: 'email',
+			path: [],
+			type: 'email',
+		});
 	}
 
 	if (form.value.password !== form.value.password_confirm) {
 		errors.value.push({
-			"field": "password_confirm",
-			"path": [],
-			"type": "confirm_password",
-		})
+			field: 'password_confirm',
+			path: [],
+			type: 'confirm_password',
+		});
 	}
 
 	try {
-		await api.post('server/setup', form.value)
+		await api.post('server/setup', form.value);
 
 		await login({
 			credentials: {
 				email: form.value.email!,
 				password: form.value.password!,
-			}
-		})
+			},
+		});
 
-		router.push('/content')
+		router.push('/content');
 	} catch (err: any) {
-		error.value = err
+		error.value = err;
 	}
 }
 
 const errorMessage = computed(() => {
-	return error.value?.response?.data?.errors?.[0]?.message ||
-		error.value?.message ||
-		t('unexpected_error');
-})
+	return error.value?.response?.data?.errors?.[0]?.message || error.value?.message || t('unexpected_error');
+});
 
 const formComplete = computed(() => {
 	return (['first_name', 'last_name', 'email', 'password', 'password_confirm', 'license'] as const).every((key) => {
 		return Boolean(form.value?.[key]);
 	});
 });
-
 </script>
 
 <template>
 	<div class="main">
 		<setup-form v-model="form" :errors="errors"></setup-form>
-		<v-button full-width :disabled="!formComplete" @click="launch()"><v-icon name="rocket_launch" />{{
-			t('setup_launch') }}</v-button>
+		<v-button full-width :disabled="!formComplete" @click="launch()">
+			<v-icon name="rocket_launch" />
+			{{ t('setup_launch') }}
+		</v-button>
 
 		<v-notice v-if="error" type="danger">
 			<p class="error-code">

@@ -4,36 +4,34 @@ import { computed, ref, unref } from 'vue';
 import { validateItem } from '@/utils/validate-item';
 import { initialValues, useFormFields } from '@/routes/setup/form';
 import SetupForm from '@/routes/setup/form.vue';
-import { useCookies } from '@vueuse/integrations/useCookies'
+import { useCookies } from '@vueuse/integrations/useCookies';
 import { useSettingsStore } from '@/stores/settings';
 import { notify } from '@/utils/notify';
 import type { SetupForm as Form } from '@directus/types';
 
-const settingsStore = useSettingsStore()
-const cookies = useCookies(['license-banner-dismissed'])
+const settingsStore = useSettingsStore();
+const cookies = useCookies(['license-banner-dismissed']);
 const { t } = useI18n();
 
-const errors = ref<Record<string, any>[]>([])
+const errors = ref<Record<string, any>[]>([]);
 const isSaveDisabled = computed(() => !form.value.email || !form.value.license);
 
 async function setOwner() {
-	errors.value = validateItem(form.value, unref(fields), true)
+	errors.value = validateItem(form.value, unref(fields), true);
 
-	await settingsStore.setOwner(form.value)
-	await settingsStore.hydrate()
+	await settingsStore.setOwner(form.value);
+	await settingsStore.hydrate();
 }
 
 async function remindLater() {
 	// 30 days, will be deleted on logout / session end
-	cookies.set('license-banner-dismissed', 'true', { expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) })
-	notify({ title: t('bsl_banner.remind_next_login'), type: 'info' })
+	cookies.set('license-banner-dismissed', 'true', { expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) });
+	notify({ title: t('bsl_banner.remind_next_login'), type: 'info' });
 }
 
+const form = ref<Form>(initialValues);
 
-const form = ref<Form>(initialValues)
-
-const fields = useFormFields(false, form)
-
+const fields = useFormFields(false, form);
 </script>
 
 <template>
@@ -41,7 +39,10 @@ const fields = useFormFields(false, form)
 		<v-card>
 			<div class="inner">
 				<v-card-title>
-					<span class="warning">{{ t('bsl_banner.title') }} <v-icon name="warning" filled /></span>
+					<span class="warning">
+						{{ t('bsl_banner.title') }}
+						<v-icon name="warning" filled />
+					</span>
 				</v-card-title>
 
 				<v-card-text>
@@ -57,7 +58,6 @@ const fields = useFormFields(false, form)
 						{{ t('bsl_banner.set_owner') }}
 					</v-button>
 				</v-card-actions>
-
 			</div>
 		</v-card>
 	</v-dialog>
