@@ -57,6 +57,111 @@ const logger = useLogger();
 
 const MAX_IMPORT_ERRORS = env['MAX_IMPORT_ERRORS'] as number;
 
+type ErrorKey = `${string}|||${FailedValidationErrorExtensionsType}`;
+type CapturedErrorData = {
+	message: string;
+	extensions: Omit<FailedValidationErrorExtensions, 'field' | 'type' | 'rows' | 'path'>;
+	rowNumbers: number[];
+};
+
+function createErrorTracker() {
+	const capturedErrors: Map<ErrorCode, Map<ErrorKey, CapturedErrorData>> = new Map();
+	let capturedErrorCount = 0;
+	let isLimitReached = false;
+
+	function convertToRanges(rows: number[], minRangeSize = 3): Array<ImportRowLine | ImportRowRange> {
+		const sorted = Array.from(new Set(rows)).sort((a, b) => a - b);
+		const result: Array<ImportRowLine | ImportRowRange> = [];
+
+		if (sorted.length === 0) return [];
+
+		let start = sorted[0] as number;
+		let prev = sorted[0] as number;
+		let count = 1;
+
+		const flush = () => {
+			if (count >= minRangeSize) {
+				result.push({ type: 'range', start, end: prev });
+			} else {
+				for (let i = start; i <= prev; i++) {
+					result.push({ type: 'line', row: i });
+				}
+			}
+		};
+
+		for (let i = 1; i < sorted.length; i++) {
+			const current = sorted[i] as number;
+
+			if (current === prev + 1) {
+				prev = current;
+				count++;
+			} else {
+				flush();
+				start = prev = current;
+				count = 1;
+			}
+		}
+
+		flush();
+		return result;
+	}
+
+	const addCapturedError = (err: any, rowNumber: number) => {
+		const field = err.extensions?.field;
+		const type = err.extensions?.type;
+		const key = `${field}|||${type}` as ErrorKey;
+
+		if (!capturedErrors.has(err.code)) {
+			capturedErrors.set(err.code, new Map());
+		}
+
+		const errorsByCode = capturedErrors.get(err.code)!;
+
+		if (!errorsByCode.has(key)) {
+			errorsByCode.set(key, {
+				message: err.message,
+				extensions: {
+					substring: err.extensions?.substring,
+					valid: err.extensions?.valid,
+					invalid: err.extensions?.invalid,
+				},
+				rowNumbers: [],
+			});
+		}
+
+		errorsByCode.get(key)!.rowNumbers.push(rowNumber);
+		capturedErrorCount++;
+
+		if (capturedErrorCount >= MAX_IMPORT_ERRORS) {
+			isLimitReached = true;
+		}
+	};
+
+	const buildFinalErrors = () => {
+		return Array.from(capturedErrors.entries()).flatMap(([code, fieldMap]) =>
+			Array.from(fieldMap.entries()).map(([compositeKey, errorData]) => {
+				const [field, type] = compositeKey.split('|||');
+
+				const ErrorClass = createError<any>(code, errorData.message, 400);
+				return new ErrorClass({
+					field,
+					type,
+					...errorData.extensions,
+					rows: convertToRanges(errorData.rowNumbers),
+				});
+			}),
+		);
+	};
+
+	return {
+		addCapturedError,
+		buildFinalErrors,
+		getCount: () => capturedErrorCount,
+		hasErrors: () => capturedErrorCount > 0,
+		isLimitReached: () => isLimitReached,
+	};
+}
+
 export class ImportService {
 	knex: Knex;
 	accountability: Accountability | null;
@@ -111,46 +216,80 @@ export class ImportService {
 	async importJSON(collection: string, stream: Readable): Promise<void> {
 		const extractJSON = StreamArray.withParser();
 		const nestedActionEvents: ActionEventParams[] = [];
+		const errorTracker = createErrorTracker();
 
-		return transaction(this.knex, (trx) => {
+		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
 				knex: trx,
 				schema: this.schema,
 				accountability: this.accountability,
 			});
 
-			const saveQueue = queue(async (value: Record<string, unknown>) => {
-				return await service.upsertOne(value, { bypassEmitAction: (params) => nestedActionEvents.push(params) });
-			});
+			try {
+				await new Promise<void>((resolve, reject) => {
+					let rowNumber = 0;
 
-			return new Promise<void>((resolve, reject) => {
-				stream.pipe(extractJSON);
+					const saveQueue = queue(async (task: { data: Record<string, unknown>; rowNumber: number }) => {
+						try {
+							const result = await service.upsertOne(task.data, {
+								bypassEmitAction: (params) => nestedActionEvents.push(params),
+							});
 
-				extractJSON.on('data', ({ value }: Record<string, any>) => {
-					saveQueue.push(value);
-				});
+							return result;
+						} catch (error: any) {
+							const errors = Array.isArray(error) ? error : [error];
 
-				extractJSON.on('error', (err: Error) => {
-					destroyStream(stream);
-					destroyStream(extractJSON);
+							for (const err of errors) {
+								errorTracker.addCapturedError(err, task.rowNumber);
+							}
 
-					reject(new InvalidPayloadError({ reason: err.message }));
-				});
+							if (errorTracker.isLimitReached()) {
+								destroyStream(stream);
+								destroyStream(extractJSON);
+								reject();
+							}
 
-				saveQueue.error((err) => {
-					reject(err);
-				});
-
-				extractJSON.on('end', () => {
-					saveQueue.drain(() => {
-						for (const nestedActionEvent of nestedActionEvents) {
-							emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+							return null;
 						}
+					});
 
-						return resolve();
+					stream.pipe(extractJSON);
+
+					extractJSON.on('data', ({ value }: Record<string, any>) => {
+						saveQueue.push({ data: value, rowNumber: rowNumber++ });
+					});
+
+					extractJSON.on('error', (err: Error) => {
+						destroyStream(stream);
+						destroyStream(extractJSON);
+
+						reject(new InvalidPayloadError({ reason: err.message }));
+					});
+
+					extractJSON.on('end', () => {
+						// In case of empty JSON file
+						if (!saveQueue.started) return resolve();
+
+						saveQueue.drain(() => {
+							if (errorTracker.hasErrors()) {
+								return reject();
+							}
+
+							for (const nestedActionEvent of nestedActionEvents) {
+								emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+							}
+
+							return resolve();
+						});
 					});
 				});
-			});
+			} catch (error) {
+				if (!error && errorTracker.hasErrors()) {
+					throw errorTracker.buildFinalErrors();
+				}
+
+				throw error;
+			}
 		});
 	}
 
@@ -159,15 +298,7 @@ export class ImportService {
 		if (!tmpFile) throw new Error('Failed to create temporary file for import');
 
 		const nestedActionEvents: ActionEventParams[] = [];
-
-		type ErrorKey = `${string}|||${FailedValidationErrorExtensionsType}`;
-		type CapturedErrorData = {
-			message: string;
-			extensions: Omit<FailedValidationErrorExtensions, 'field' | 'type' | 'rows' | 'path'>;
-			rowNumbers: number[];
-		};
-		const capturedErrors: Map<ErrorCode, Map<ErrorKey, CapturedErrorData>> = new Map();
-		let capturedErrorCount = 0;
+		const errorTracker = createErrorTracker();
 
 		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
@@ -180,7 +311,6 @@ export class ImportService {
 				await new Promise<void>((resolve, reject) => {
 					const streams: Stream[] = [stream];
 					let rowNumber = 0;
-					let isRejected = false;
 
 					const cleanup = (destroy = true) => {
 						if (destroy) {
@@ -194,32 +324,6 @@ export class ImportService {
 						});
 					};
 
-					const addCapturedError = (err: any, rowNumber: number) => {
-						const field: string | null = err.extensions?.field ?? null;
-						const type = err.extensions?.type;
-						const key = `${field}|||${type}` as ErrorKey;
-
-						if (!capturedErrors.has(err.code)) {
-							capturedErrors.set(err.code, new Map());
-						}
-
-						const errorsByCode = capturedErrors.get(err.code)!;
-
-						if (!errorsByCode.has(key)) {
-							errorsByCode.set(key, {
-								message: err.message,
-								extensions: {
-									substring: err.extensions?.substring,
-									valid: err.extensions?.valid,
-									invalid: err.extensions?.invalid,
-								},
-								rowNumbers: [],
-							});
-						}
-
-						errorsByCode.get(key)!.rowNumbers.push(rowNumber);
-					};
-
 					const saveQueue = queue(async (task: { data: Record<string, unknown>; rowNumber: number }) => {
 						try {
 							const result = await service.upsertOne(task.data, {
@@ -228,17 +332,13 @@ export class ImportService {
 
 							return result;
 						} catch (error: any) {
-							capturedErrorCount++;
-
 							const errors = Array.isArray(error) ? error : [error];
 
 							for (const err of errors) {
-								await addCapturedError(err, task.rowNumber);
+								errorTracker.addCapturedError(err, task.rowNumber);
 							}
 
-							if (capturedErrorCount >= MAX_IMPORT_ERRORS && !isRejected) {
-								isRejected = true;
-
+							if (errorTracker.isLimitReached()) {
 								cleanup(true);
 								reject();
 							}
@@ -307,7 +407,7 @@ export class ImportService {
 									if (!saveQueue.started) return resolve();
 
 									saveQueue.drain(() => {
-										if (capturedErrorCount > 0) {
+										if (errorTracker.hasErrors()) {
 											return reject();
 										}
 
@@ -330,55 +430,8 @@ export class ImportService {
 						.pipe(fileWriteStream);
 				});
 			} catch (error) {
-				function convertToRanges(rows: number[], minRangeSize = 3): Array<ImportRowLine | ImportRowRange> {
-					const sorted = Array.from(new Set(rows)).sort((a, b) => a - b);
-					const result: Array<ImportRowLine | ImportRowRange> = [];
-
-					let start = sorted[0] as number;
-					let prev = sorted[0] as number;
-					let count = 1;
-
-					const flush = () => {
-						if (count >= minRangeSize) {
-							result.push({ type: 'range', start, end: prev });
-						} else {
-							for (let i = start; i <= prev; i++) {
-								result.push({ type: 'line', row: i });
-							}
-						}
-					};
-
-					for (let i = 1; i < sorted.length; i++) {
-						const current = sorted[i] as number;
-
-						if (current === prev + 1) {
-							prev = current;
-							count++;
-						} else {
-							flush();
-							start = prev = current;
-							count = 1;
-						}
-					}
-
-					flush();
-					return result;
-				}
-
-				if (!error && capturedErrorCount > 0) {
-					throw Array.from(capturedErrors.entries()).flatMap(([code, fieldMap]) =>
-						Array.from(fieldMap.entries()).map(([compositeKey, error]) => {
-							const [field, type] = compositeKey.split('|||') as [string, FailedValidationErrorExtensionsType];
-
-							const ErrorClass = createError<any>(code, error.message, 400);
-							return new ErrorClass({
-								field,
-								type,
-								...error.extensions,
-								rows: convertToRanges(error.rowNumbers),
-							});
-						}),
-					);
+				if (!error && errorTracker.hasErrors()) {
+					throw errorTracker.buildFinalErrors();
 				}
 
 				throw error;
