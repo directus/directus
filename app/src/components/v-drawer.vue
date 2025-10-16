@@ -2,10 +2,11 @@
 import { i18n } from '@/lang';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import VDrawerHeader from '@/components/v-drawer-header.vue';
-import { computed, provide, ref } from 'vue';
+import { computed, provide, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { type ApplyShortcut } from './v-dialog.vue';
 import VResizeable from './v-resizeable.vue';
+import { useScroll } from '@vueuse/core';
 
 export interface Props {
 	title: string;
@@ -39,9 +40,9 @@ const { t } = useI18n();
 
 const localActive = ref(false);
 
-const mainEl = ref<Element>();
+const scrollContainer = useTemplateRef('scrollContainer');
 
-provide('main-element', mainEl);
+provide('main-element', scrollContainer);
 
 const sidebarWidth = 220;
 // Half of the space of the drawer (856 / 2 = 428)
@@ -56,6 +57,10 @@ const internalActive = computed({
 		emit('update:modelValue', newActive);
 	},
 });
+
+const { y } = useScroll(scrollContainer);
+
+const showHeaderShadow = computed(() => props.headerShadow && y.value > 0);
 </script>
 
 <template>
@@ -100,11 +105,11 @@ const internalActive = computed({
 					</nav>
 				</v-resizeable>
 
-				<main ref="mainEl" :class="{ main: true, 'small-search-input': $slots.sidebar }">
+				<main ref="scrollContainer" :class="{ main: true, 'small-search-input': $slots.sidebar }">
 					<v-drawer-header
 						:title="title"
 						primary-action-icon="close"
-						:shadow="headerShadow"
+						:shadow="showHeaderShadow"
 						:icon="icon"
 						:icon-color="iconColor"
 						@primary="$emit('cancel')"

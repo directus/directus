@@ -14,7 +14,7 @@ withDefaults(
 	}>(),
 	{
 		primaryActionIcon: 'menu',
-		shadow: true,
+		shadow: false,
 	},
 );
 
@@ -24,7 +24,7 @@ defineEmits<{
 </script>
 
 <template>
-	<header ref="headerEl" class="header-bar" :class="{ small, shadow }">
+	<header class="header-bar" :class="{ small, shadow }">
 
 		<PrivateViewHeaderBarIcon v-if="icon || showBack" :icon :show-back :icon-color />
 
@@ -159,16 +159,9 @@ defineEmits<{
 		pointer-events: none;
 	}
 
-	&.shadow,
-	&.small.shadow {
+	&.shadow {
 		box-shadow: var(--theme--header--box-shadow);
-
-		.title-container {
-			.headline {
-				opacity: 0;
-				pointer-events: none;
-			}
-		}
+		transition: box-shadow var(--fast) var(--transition);
 	}
 
 	.spacer {
