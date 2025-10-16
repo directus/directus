@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { i18n } from '@/lang';
 import { translateShortcut } from '@/utils/translate-shortcut';
-import HeaderBar from '@/views/private/components/header-bar.vue';
+import VDrawerHeader from '@/components/v-drawer-header.vue';
 import { computed, provide, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { type ApplyShortcut } from './v-dialog.vue';
@@ -13,6 +13,7 @@ export interface Props {
 	modelValue?: boolean;
 	persistent?: boolean;
 	icon?: string;
+	iconColor?: string;
 	sidebarResizeable?: boolean;
 	sidebarLabel?: string;
 	cancelable?: boolean;
@@ -100,10 +101,12 @@ const internalActive = computed({
 				</v-resizeable>
 
 				<main ref="mainEl" :class="{ main: true, 'small-search-input': $slots.sidebar }">
-					<header-bar
+					<v-drawer-header
 						:title="title"
 						primary-action-icon="close"
 						:shadow="headerShadow"
+						:icon="icon"
+						:icon-color="iconColor"
 						@primary="$emit('cancel')"
 					>
 						<template #title><slot name="title" /></template>
@@ -114,18 +117,14 @@ const internalActive = computed({
 						</template>
 
 						<template #title-outer:prepend>
-							<slot name="title-outer:prepend">
-								<v-button class="header-icon" rounded icon secondary disabled small>
-									<v-icon :name="icon" small />
-								</v-button>
-							</slot>
+							<slot name="title-outer:prepend" />
 						</template>
 
 						<template #actions:prepend><slot name="actions:prepend" /></template>
 						<template #actions><slot name="actions" /></template>
 
 						<template #title:append><slot name="header:append" /></template>
-					</header-bar>
+					</v-drawer-header>
 
 					<v-detail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel">
 						<nav>

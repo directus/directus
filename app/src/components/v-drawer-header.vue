@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import HeaderBarActions from './header-bar-actions.vue';
+import HeaderBarActions from '@/views/private/components/header-bar-actions.vue';
+import PrivateViewHeaderBarIcon from '@/views/private/private-view/components/private-view-header-bar-icon.vue';
 
 withDefaults(
 	defineProps<{
@@ -7,6 +8,9 @@ withDefaults(
 		primaryActionIcon?: string;
 		small?: boolean;
 		shadow?: boolean;
+		icon?: string;
+		iconColor?: string;
+		showBack?: boolean;
 	}>(),
 	{
 		primaryActionIcon: 'menu',
@@ -21,6 +25,9 @@ defineEmits<{
 
 <template>
 	<header ref="headerEl" class="header-bar" :class="{ small, shadow }">
+
+		<PrivateViewHeaderBarIcon v-if="icon || showBack" :icon :show-back :icon-color />
+
 		<div v-if="$slots['title-outer:prepend']" class="title-outer-prepend">
 			<slot name="title-outer:prepend" />
 		</div>
