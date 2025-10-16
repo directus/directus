@@ -76,6 +76,7 @@ function clearFilters() {
 	>
 		<private-view
 			:title="t('webhooks')"
+			icon="anchor"
 			:small-header="currentLayout?.smallHeader"
 			:header-shadow="currentLayout?.headerShadow"
 		>

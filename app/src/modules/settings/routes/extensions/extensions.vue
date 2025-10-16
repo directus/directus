@@ -35,7 +35,7 @@ const extensionsByType = computed(() => {
 </script>
 
 <template>
-	<private-view :title="t('extensions')">
+	<private-view :title="t('extensions')" icon="category">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #navigation>

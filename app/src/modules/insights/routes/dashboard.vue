@@ -197,7 +197,7 @@ const refreshInterval = computed({
 
 <template>
 	<insights-not-found v-if="!currentDashboard" />
-	<private-view v-else :title="currentDashboard.name">
+	<private-view v-else :title="currentDashboard.name" :icon="currentDashboard.icon">
 		<template #headline>
 			<v-breadcrumb :items="[{ name: t('insights'), to: '/insights' }]" />
 		</template>

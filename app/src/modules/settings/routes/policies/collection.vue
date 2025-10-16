@@ -140,7 +140,7 @@ function navigateToPolicy({ item }: { item: Policy }) {
 </script>
 
 <template>
-	<private-view :title="t('settings_permissions')">
+	<private-view :title="t('settings_permissions')" icon="admin_panel_settings">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #actions>

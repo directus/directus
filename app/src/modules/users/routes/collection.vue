@@ -184,6 +184,7 @@ function clearFilters() {
 	>
 		<private-view
 			:title="title"
+			icon="people_alt"
 			:small-header="currentLayout?.smallHeader"
 			:header-shadow="currentLayout?.headerShadow"
 		>

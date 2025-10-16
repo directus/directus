@@ -233,7 +233,7 @@ function revert(values: Record<string, any>) {
 
 <template>
 	<files-not-found v-if="!loading && !item" />
-	<private-view v-else :title="loading || !item ? t('loading') : item.title">
+	<private-view v-else :title="loading || !item ? t('loading') : item.title" show-back>
 		<template #headline>
 			<v-breadcrumb :items="breadcrumb" />
 		</template>
