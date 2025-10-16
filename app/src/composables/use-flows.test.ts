@@ -165,7 +165,7 @@ describe('manualFlows', () => {
 
 describe('isConfirmButtonDisabled', () => {
 	describe('true', () => {
-		test('confirmRunFlow is falsy', () => {
+		test('flowToConfirm is falsy', () => {
 			const mockFlowsStore = {
 				getManualFlowsForCollection: vi.fn().mockReturnValue(mockFlows),
 			};
@@ -174,9 +174,9 @@ describe('isConfirmButtonDisabled', () => {
 
 			const { flowDialogsContext } = useFlows(useFlowsOptions);
 
-			const { confirmRunFlow, isConfirmButtonDisabled } = flowDialogsContext.value;
+			const { flowToConfirm, isConfirmButtonDisabled } = flowDialogsContext.value;
 
-			confirmRunFlow.value = null;
+			flowToConfirm.value = null;
 
 			expect(isConfirmButtonDisabled.value).toEqual(true);
 		});
@@ -190,9 +190,9 @@ describe('isConfirmButtonDisabled', () => {
 
 			const { flowDialogsContext } = useFlows(useFlowsOptions);
 
-			const { confirmRunFlow, isConfirmButtonDisabled } = flowDialogsContext.value;
+			const { flowToConfirm, isConfirmButtonDisabled } = flowDialogsContext.value;
 
-			confirmRunFlow.value = mockFlows[0]!.id;
+			flowToConfirm.value = mockFlows[0]!.id;
 
 			expect(isConfirmButtonDisabled.value).toEqual(true);
 		});
@@ -208,9 +208,9 @@ describe('isConfirmButtonDisabled', () => {
 
 			const { flowDialogsContext } = useFlows(useFlowsOptions);
 
-			const { confirmRunFlow, isConfirmButtonDisabled } = flowDialogsContext.value;
+			const { flowToConfirm, isConfirmButtonDisabled } = flowDialogsContext.value;
 
-			confirmRunFlow.value = mockFlows[1]!.id;
+			flowToConfirm.value = mockFlows[1]!.id;
 
 			expect(isConfirmButtonDisabled.value).toEqual(false);
 		});
@@ -227,15 +227,15 @@ describe('displayUnsavedChangesDialog', () => {
 
 		const { flowDialogsContext } = useFlows(useFlowsOptions);
 
-		const { confirmRunFlow, displayUnsavedChangesDialog } = flowDialogsContext.value;
+		const { flowToConfirm, displayUnsavedChangesDialog } = flowDialogsContext.value;
 
-		confirmRunFlow.value = mockFlows[0]!.id;
+		flowToConfirm.value = mockFlows[0]!.id;
 
 		expect(displayUnsavedChangesDialog.value).toEqual(true);
 	});
 
 	describe('false', () => {
-		test('confirmRunFlow.value is falsy', () => {
+		test('flowToConfirm.value is falsy', () => {
 			const mockFlowsStore = {
 				getManualFlowsForCollection: vi.fn().mockReturnValue([mockFlows[0]]),
 			};
@@ -244,9 +244,9 @@ describe('displayUnsavedChangesDialog', () => {
 
 			const { flowDialogsContext } = useFlows(useFlowsOptions);
 
-			const { confirmRunFlow, displayUnsavedChangesDialog } = flowDialogsContext.value;
+			const { flowToConfirm, displayUnsavedChangesDialog } = flowDialogsContext.value;
 
-			confirmRunFlow.value = null;
+			flowToConfirm.value = null;
 
 			expect(displayUnsavedChangesDialog.value).toEqual(false);
 		});
@@ -265,9 +265,9 @@ describe('displayUnsavedChangesDialog', () => {
 
 			const { flowDialogsContext } = useFlows(testUseFlowsOptions);
 
-			const { confirmRunFlow, displayUnsavedChangesDialog } = flowDialogsContext.value;
+			const { flowToConfirm, displayUnsavedChangesDialog } = flowDialogsContext.value;
 
-			confirmRunFlow.value = mockFlows[0]!.id;
+			flowToConfirm.value = mockFlows[0]!.id;
 
 			expect(displayUnsavedChangesDialog.value).toEqual(false);
 		});
@@ -284,16 +284,16 @@ describe('displayCustomConfirmDialog', () => {
 
 		const { flowDialogsContext } = useFlows(useFlowsOptions);
 
-		const { confirmRunFlow, confirmUnsavedChanges, displayCustomConfirmDialog } = flowDialogsContext.value;
+		const { flowToConfirm, confirmUnsavedChanges, displayCustomConfirmDialog } = flowDialogsContext.value;
 
-		confirmRunFlow.value = mockFlows[0]!.id;
+		flowToConfirm.value = mockFlows[0]!.id;
 		confirmUnsavedChanges(mockFlows[0]!.id);
 
 		expect(displayCustomConfirmDialog.value).toEqual(true);
 	});
 
 	describe('false', () => {
-		test('confirmRunFlow.value is falsy', () => {
+		test('flowToConfirm.value is falsy', () => {
 			const mockFlowsStore = {
 				getManualFlowsForCollection: vi.fn().mockReturnValue([mockFlows[0]]),
 			};
@@ -302,12 +302,12 @@ describe('displayCustomConfirmDialog', () => {
 
 			const { flowDialogsContext } = useFlows(useFlowsOptions);
 
-			const { confirmRunFlow, displayCustomConfirmDialog } = flowDialogsContext.value;
+			const { flowToConfirm, displayCustomConfirmDialog } = flowDialogsContext.value;
 
-			confirmRunFlow.value = null;
+			flowToConfirm.value = null;
 
 			expect(displayCustomConfirmDialog.value).toEqual(false);
-			expect(confirmRunFlow.value).toBeFalsy();
+			expect(flowToConfirm.value).toBeFalsy();
 		});
 
 		test('confirmDialogDetails.value is falsy', () => {
@@ -319,12 +319,12 @@ describe('displayCustomConfirmDialog', () => {
 
 			const { flowDialogsContext } = useFlows(useFlowsOptions);
 
-			const { confirmRunFlow, displayCustomConfirmDialog } = flowDialogsContext.value;
+			const { flowToConfirm, displayCustomConfirmDialog } = flowDialogsContext.value;
 
-			confirmRunFlow.value = mockFlows[1]!.id;
+			flowToConfirm.value = mockFlows[1]!.id;
 
 			expect(displayCustomConfirmDialog.value).toEqual(false);
-			expect(confirmRunFlow.value).toBeTruthy();
+			expect(flowToConfirm.value).toBeTruthy();
 		});
 
 		test('hasEdits is falsy', () => {
@@ -341,12 +341,12 @@ describe('displayCustomConfirmDialog', () => {
 
 			const { flowDialogsContext } = useFlows(testUseFlowsOptions);
 
-			const { confirmRunFlow, confirmDialogDetails, displayCustomConfirmDialog } = flowDialogsContext.value;
+			const { flowToConfirm, confirmDialogDetails, displayCustomConfirmDialog } = flowDialogsContext.value;
 
-			confirmRunFlow.value = mockFlows[0]!.id;
+			flowToConfirm.value = mockFlows[0]!.id;
 
 			expect(displayCustomConfirmDialog.value).toEqual(true);
-			expect(confirmRunFlow.value).toBeTruthy();
+			expect(flowToConfirm.value).toBeTruthy();
 			expect(confirmDialogDetails.value).toBeTruthy();
 		});
 
@@ -364,12 +364,12 @@ describe('displayCustomConfirmDialog', () => {
 
 			const { flowDialogsContext } = useFlows(testUseFlowsOptions);
 
-			const { confirmRunFlow, confirmDialogDetails, displayCustomConfirmDialog } = flowDialogsContext.value;
+			const { flowToConfirm, confirmDialogDetails, displayCustomConfirmDialog } = flowDialogsContext.value;
 
-			confirmRunFlow.value = mockFlows[0]!.id;
+			flowToConfirm.value = mockFlows[0]!.id;
 
 			expect(displayCustomConfirmDialog.value).toEqual(false);
-			expect(confirmRunFlow.value).toBeTruthy();
+			expect(flowToConfirm.value).toBeTruthy();
 			expect(confirmDialogDetails.value).toBeTruthy();
 		});
 	});
@@ -525,7 +525,7 @@ describe('runManualFlow', () => {
 
 		const { runManualFlow, flowDialogsContext } = useFlows(testOptions);
 
-		const { confirmValues, confirmRunFlow, confirmUnsavedChanges } = flowDialogsContext.value;
+		const { confirmValues, flowToConfirm, confirmUnsavedChanges } = flowDialogsContext.value;
 
 		confirmValues.value = { testField: 'testValue' };
 
@@ -538,7 +538,7 @@ describe('runManualFlow', () => {
 			collection: 'test_collection',
 		});
 
-		expect(confirmRunFlow.value).toBeNull();
+		expect(flowToConfirm.value).toBeNull();
 	});
 
 	test('successfully runs flow with keys (primaryKey or selection)', async () => {
@@ -552,7 +552,7 @@ describe('runManualFlow', () => {
 
 		const { runManualFlow, flowDialogsContext } = useFlows(useFlowsOptions);
 
-		const { confirmValues, confirmRunFlow, confirmUnsavedChanges } = flowDialogsContext.value;
+		const { confirmValues, flowToConfirm, confirmUnsavedChanges } = flowDialogsContext.value;
 
 		confirmValues.value = { testField: 'testValue' };
 
@@ -566,7 +566,7 @@ describe('runManualFlow', () => {
 			keys: ['item_1'],
 		});
 
-		expect(confirmRunFlow.value).toBeNull();
+		expect(flowToConfirm.value).toBeNull();
 	});
 
 	test('uses selection when no primaryKey is available', async () => {

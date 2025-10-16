@@ -18,7 +18,7 @@ function handleRunManualFlow(flowId: string, isActionDisabled = false) {
 		:model-value="displayUnsavedChangesDialog.value"
 		keep-behind
 		@esc="resetConfirm"
-		@apply="confirmUnsavedChanges(confirmRunFlow.value!)"
+		@apply="confirmUnsavedChanges(flowToConfirm.value!)"
 	>
 		<v-card>
 			<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
@@ -28,7 +28,7 @@ function handleRunManualFlow(flowId: string, isActionDisabled = false) {
 				<v-button secondary @click="resetConfirm">
 					{{ t('cancel') }}
 				</v-button>
-				<v-button @click="confirmUnsavedChanges(confirmRunFlow.value!)">
+				<v-button @click="confirmUnsavedChanges(flowToConfirm.value!)">
 					{{ confirmButtonCTA }}
 				</v-button>
 			</v-card-actions>
@@ -39,7 +39,7 @@ function handleRunManualFlow(flowId: string, isActionDisabled = false) {
 		:model-value="displayCustomConfirmDialog.value"
 		keep-behind
 		@esc="resetConfirm"
-		@apply="handleRunManualFlow(confirmRunFlow.value!, isConfirmButtonDisabled.value)"
+		@apply="handleRunManualFlow(flowToConfirm.value!, isConfirmButtonDisabled.value)"
 	>
 		<v-card>
 			<v-card-title>{{ confirmDialogDetails.value?.description ?? t('run_flow_confirm') }}</v-card-title>
@@ -50,7 +50,7 @@ function handleRunManualFlow(flowId: string, isActionDisabled = false) {
 					:model-value="confirmValues.value"
 					autofocus
 					primary-key="+"
-					@update:model-value="updateValues($event)"
+					@update:model-value="updateFieldValues($event)"
 				/>
 			</v-card-text>
 
@@ -60,7 +60,7 @@ function handleRunManualFlow(flowId: string, isActionDisabled = false) {
 				</v-button>
 				<v-button
 					:disabled="isConfirmButtonDisabled.value"
-					@click="handleRunManualFlow(confirmRunFlow.value!, isConfirmButtonDisabled.value)"
+					@click="handleRunManualFlow(flowToConfirm.value!, isConfirmButtonDisabled.value)"
 				>
 					{{ confirmButtonCTA }}
 				</v-button>
