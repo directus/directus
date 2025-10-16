@@ -2,6 +2,7 @@ import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import { Field, ValidationError } from '@directus/types';
 import { computed, Ref, toRef } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export type ValidationErrorWithDetails = ValidationError & {
 	fieldName?: string;
@@ -12,8 +13,9 @@ export type ValidationErrorWithDetails = ValidationError & {
 export function useValidationErrorDetails(
 	validationErrors: Ref<ValidationError[]> | ValidationError[],
 	fields: Field[],
-	t: (key: string, values?: any) => string,
 ) {
+	const { t } = useI18n();
+
 	const validationErrorsWithDetails = computed<ValidationErrorWithDetails[]>(() => {
 		return toRef(validationErrors).value.map(
 			(validationError: ValidationError & { nestedNames?: Record<string, string>; validation_message?: string }) => {

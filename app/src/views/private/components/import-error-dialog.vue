@@ -59,7 +59,6 @@ const otherErrors = computed<(ValidationError & { fieldName?: string; customVali
 const { validationErrorsWithDetails, getDefaultValidationMessage } = useValidationErrorDetails(
 	validationTypesErrors,
 	fieldsStore.getFieldsForCollection(props.collection),
-	t,
 );
 
 const formattedErrors = computed(() => {
