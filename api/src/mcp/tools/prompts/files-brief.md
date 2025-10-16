@@ -1,0 +1,1 @@
+Manage files and uploads. ⚠️ DO NOT USE DIRECTLY - CALL tool-info FIRST: {"tools": ["files"]} to get required syntax and examples.

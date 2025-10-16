@@ -1,0 +1,1 @@
+Generate asset URLs with image transformations. ⚠️ DO NOT USE DIRECTLY - CALL tool-info FIRST: {"tools": ["assets"]} to get required syntax and examples.

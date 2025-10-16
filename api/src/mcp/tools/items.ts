@@ -53,7 +53,7 @@ const ItemsInputSchema = z.object({
 
 export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 	name: 'items',
-	description: prompts.items,
+	description: prompts.itemsBrief,
 	annotations: {
 		title: 'Directus - Items',
 	},

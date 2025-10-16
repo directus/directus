@@ -1,0 +1,1 @@
+Manage database collections (admin only). ⚠️ DO NOT USE DIRECTLY - CALL tool-info FIRST: {"tools": ["collections"]} to get required syntax and examples.

@@ -45,7 +45,7 @@ const FoldersInputSchema = z.object({
 
 export const folders = defineTool<z.infer<typeof FoldersValidateSchema>>({
 	name: 'folders',
-	description: prompts.folders,
+	description: prompts.foldersBrief,
 	annotations: {
 		title: 'Directus - Folders',
 	},

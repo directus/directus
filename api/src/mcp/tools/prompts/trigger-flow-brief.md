@@ -1,0 +1,1 @@
+Trigger manual flows programmatically. ⚠️ DO NOT USE DIRECTLY - CALL tool-info FIRST: {"tools": ["trigger-flow"]} to get required syntax and examples.

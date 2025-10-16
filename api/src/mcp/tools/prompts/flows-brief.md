@@ -1,0 +1,1 @@
+Manage automation flows. ⚠️ DO NOT USE DIRECTLY - CALL tool-info FIRST: {"tools": ["flows"]} to get required syntax and examples.

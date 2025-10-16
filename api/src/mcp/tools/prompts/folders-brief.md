@@ -1,0 +1,1 @@
+Manage file organization folders. ⚠️ DO NOT USE DIRECTLY - CALL tool-info FIRST: {"tools": ["folders"]} to get required syntax and examples.

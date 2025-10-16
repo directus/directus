@@ -1,0 +1,1 @@
+Manage flow operations. ⚠️ DO NOT USE DIRECTLY - CALL tool-info FIRST: {"tools": ["operations"]} to get required syntax and examples.

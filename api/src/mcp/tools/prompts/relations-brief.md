@@ -1,0 +1,1 @@
+Manage collection relationships (admin only). ⚠️ DO NOT USE DIRECTLY - CALL tool-info FIRST: {"tools": ["relations"]} to get required syntax and examples.

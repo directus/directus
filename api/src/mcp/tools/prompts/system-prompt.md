@@ -41,4 +41,16 @@ tools.
 
 1. Start with `schema()` to discover collections
 2. Use `schema(keys: ["collection_name"])` for field details relevant to the user task
-3. Perform operations based on user needs and permissions
+3. **Get detailed tool documentation**: Use `tool-info` with `{"tools": ["tool1", "tool2"]}` to get comprehensive documentation for the tools you need to use
+4. Perform operations based on user needs and permissions
+
+## Tool Documentation System
+
+🚨 **CRITICAL**: All MCP tools only show brief descriptions initially. You MUST call `tool-info` to get the actual syntax and examples before using any tool.
+
+**WORKFLOW REQUIREMENT**:
+1. **NEVER** call MCP tools directly without documentation
+2. **ALWAYS** call `tool-info` first: `{"tools": ["flows", "operations"]}`
+3. **THEN** use the tools with proper syntax from the documentation
+
+**Why this matters**: Brief descriptions lack required parameters, data formats, and validation rules. Using tools without documentation will result in errors.

@@ -1,0 +1,1 @@
+Get database schema information (admin only). ⚠️ DO NOT USE DIRECTLY - CALL tool-info FIRST: {"tools": ["schema"]} to get required syntax and examples.

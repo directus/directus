@@ -37,7 +37,7 @@ export const FlowsInputSchema = z.object({
 export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
 	name: 'flows',
 	admin: true,
-	description: prompts.flows,
+	description: prompts.flowsBrief,
 	annotations: {
 		title: 'Directus - Flows',
 	},

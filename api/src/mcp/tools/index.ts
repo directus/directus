@@ -10,10 +10,12 @@ import { operations } from './operations.js';
 import { relations } from './relations.js';
 import { schema } from './schema.js';
 import { system } from './system.js';
+import { toolInfo } from './tool-info.js';
 import { triggerFlow } from './trigger-flow.js';
 
 export const ALL_TOOLS: ToolConfig<any>[] = [
 	system,
+	toolInfo,
 	items,
 	files,
 	folders,
@@ -31,4 +33,4 @@ export const getAllMcpTools = () => ALL_TOOLS;
 
 export const findMcpTool = (name: string) => ALL_TOOLS.find((tool) => tool.name === name);
 
-export { collections, fields, files, flows, items, operations, relations, schema, system, triggerFlow };
+export { collections, fields, files, flows, folders, items, operations, relations, schema, system, triggerFlow };

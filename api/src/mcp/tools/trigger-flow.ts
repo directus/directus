@@ -8,7 +8,7 @@ import prompts from './prompts/index.js';
 
 export const triggerFlow = defineTool<z.infer<typeof TriggerFlowValidateSchema>>({
 	name: 'trigger-flow',
-	description: prompts.triggerFlow,
+	description: prompts.triggerFlowBrief,
 	annotations: {
 		title: 'Directus - Trigger Flow',
 	},

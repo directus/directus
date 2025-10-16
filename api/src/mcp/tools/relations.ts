@@ -45,7 +45,7 @@ const RelationsInputSchema = z.object({
 export const relations = defineTool<z.infer<typeof RelationsValidateSchema>>({
 	name: 'relations',
 	admin: true,
-	description: prompts.relations,
+	description: prompts.relationsBrief,
 	annotations: {
 		title: 'Directus - Relations',
 	},

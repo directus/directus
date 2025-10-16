@@ -1,0 +1,1 @@
+Manage collection fields (admin only). ⚠️ DO NOT USE DIRECTLY - CALL tool-info FIRST: {"tools": ["fields"]} to get required syntax and examples.

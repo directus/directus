@@ -1,0 +1,1 @@
+Perform CRUD operations on collection items. ⚠️ DO NOT USE DIRECTLY - CALL tool-info FIRST: {"tools": ["items"]} to get required syntax and examples.
