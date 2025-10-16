@@ -1181,7 +1181,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		let record;
 
-		if (query.version) {
+		if (query.version && query.version !== 'main') {
 			const primaryKeyField = this.schema.collections[this.collection]!.primary;
 			const key = (await this.knex.select(primaryKeyField).from(this.collection).first())?.[primaryKeyField];
 
