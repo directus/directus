@@ -18,8 +18,6 @@ export interface Props {
 	sidebarResizeable?: boolean;
 	sidebarLabel?: string;
 	cancelable?: boolean;
-	headerShadow?: boolean;
-	smallHeader?: boolean;
 	applyShortcut?: ApplyShortcut;
 }
 
@@ -30,8 +28,6 @@ const props = withDefaults(defineProps<Props>(), {
 	icon: 'box',
 	sidebarLabel: i18n.global.t('sidebar'),
 	cancelable: true,
-	headerShadow: true,
-	smallHeader: false,
 });
 
 const emit = defineEmits(['cancel', 'apply', 'update:modelValue']);
@@ -60,7 +56,7 @@ const internalActive = computed({
 
 const { y } = useScroll(scrollContainer);
 
-const showHeaderShadow = computed(() => props.headerShadow && y.value > 0);
+const showHeaderShadow = computed(() => y.value > 0);
 </script>
 
 <template>

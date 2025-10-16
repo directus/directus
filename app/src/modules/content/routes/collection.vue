@@ -306,9 +306,6 @@ function clearFilters() {
 		<private-view
 			v-else
 			:title="bookmark ? bookmarkTitle : currentCollection.name"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
-			:sidebar-shadow="currentLayout?.sidebarShadow"
 			:icon="archive ? 'archive' : currentCollection.icon"
 			:icon-color="currentCollection.color"
 		>

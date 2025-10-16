@@ -77,8 +77,6 @@ function clearFilters() {
 		<private-view
 			:title="t('webhooks')"
 			icon="anchor"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
 		>
 			<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
