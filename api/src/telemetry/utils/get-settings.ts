@@ -1,7 +1,7 @@
 import type { Knex } from 'knex';
 import { toBoolean } from '@directus/utils';
 
-type TelemetrySettings = {
+export type TelemetrySettings = {
 	project_id: string;
 	mcp_enabled: boolean;
 	mcp_allow_deletes: boolean;
