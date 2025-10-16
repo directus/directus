@@ -90,7 +90,7 @@ const showSidebarToggle = computed(() => {
 	/* TODO re-add border support themed */
 	display: flex;
 	align-items: center;
-	gap: var(--content-padding);
+	gap: 12px;
 	padding-inline: var(--content-padding);
 	box-shadow: none;
 
