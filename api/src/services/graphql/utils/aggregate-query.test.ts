@@ -1,8 +1,7 @@
 import { RelationBuilder, SchemaBuilder } from '@directus/schema-builder';
 import type { Query } from '@directus/types';
 import type { FieldNode, SelectionNode } from 'graphql';
-import { afterEach } from 'node:test';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import * as sanitizeQueryMod from '../../../utils/sanitize-query.js';
 import * as validateQueryMod from '../../../utils/validate-query.js';
 import { getAggregateQuery } from './aggregate-query.js';
@@ -36,7 +35,7 @@ const schema = new SchemaBuilder()
 
 describe('getAggregateQuery', () => {
 	afterEach(() => {
-		vi.restoreAllMocks();
+		vi.clearAllMocks();
 	});
 
 	describe('basic functionality', () => {
