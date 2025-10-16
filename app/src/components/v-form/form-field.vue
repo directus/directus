@@ -2,7 +2,7 @@
 import { useClipboard } from '@/composables/use-clipboard';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import { RELATIONAL_TYPES } from '@directus/constants';
-import { RelationalType, ValidationError } from '@directus/types';
+import { ValidationError } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
@@ -59,8 +59,10 @@ const isLabelHidden = computed(() => {
 	return props.field.hideLabel;
 });
 
-const isRelationalField = computed(() => {
-	return props.field.meta?.special?.find((type) => RELATIONAL_TYPES.includes(type as RelationalType)) !== undefined;
+const nestedRelationalTypes = RELATIONAL_TYPES.filter((type) => type !== 'm2o' && type !== 'file') as string[];
+
+const isNestedRelationalField = computed(() => {
+	return props.field.meta?.special?.find((type) => nestedRelationalTypes.includes(type)) !== undefined;
 });
 
 const { internalValue, isEdited, defaultValue } = useComputedValues();
@@ -176,7 +178,7 @@ function useComputedValues() {
 			field.meta?.width || 'full',
 			{
 				invalid: validationError,
-				'diff-indicator': comparison?.fields.has(field.field) && !isRelationalField,
+				'diff-indicator': comparison?.fields.has(field.field) && !isNestedRelationalField,
 			},
 		]"
 	>

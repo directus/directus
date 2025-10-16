@@ -120,10 +120,24 @@ export function calculateFieldDifferences(
 			if (skipRelationalFields) continue;
 
 			const relationalData = revisionData[fieldKey];
+			const fieldType = field.meta?.special?.[0];
+
+			if (fieldType === 'm2o') {
+				const newValue = revisionData[fieldKey];
+				const currentValue = currentData[fieldKey];
+
+				const newId = typeof newValue === 'object' && newValue !== null ? newValue.id : newValue;
+				const currentId = typeof currentValue === 'object' && currentValue !== null ? currentValue.id : currentValue;
+
+				if (!isEqual(newId, currentId)) {
+					differentFields.push(fieldKey);
+				}
+
+				continue;
+			}
 
 			if (relationalData && typeof relationalData === 'object' && !Array.isArray(relationalData)) {
 				const allChangedIds: (string | number)[] = [];
-				const fieldType = field.meta?.special?.[0];
 
 				if (fieldType === 'o2m') {
 					['create', 'update', 'delete'].forEach((op) => {
@@ -133,19 +147,7 @@ export function calculateFieldDifferences(
 							});
 						}
 					});
-				} else if (fieldType === 'm2m') {
-					if (Array.isArray(relationalData.delete)) {
-						relationalData.delete.forEach((id: any) => {
-							if (id !== null && id !== undefined) allChangedIds.push(id);
-						});
-					}
-
-					if (Array.isArray(relationalData.update)) {
-						relationalData.update.forEach((item: any) => {
-							if (item?.id) allChangedIds.push(item.id);
-						});
-					}
-				} else if (fieldType === 'm2a') {
+				} else if (fieldType === 'm2m' || fieldType === 'm2a') {
 					if (Array.isArray(relationalData.delete)) {
 						relationalData.delete.forEach((id: any) => {
 							if (id !== null && id !== undefined) allChangedIds.push(id);
