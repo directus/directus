@@ -100,6 +100,7 @@ export function useComparison(options: UseComparisonOptions) {
 
 		const fields = fieldsWithDifferences.value || [];
 		const selected = selectedComparisonFields.value || [];
+		const relDetails = relationalDetails.value || {};
 
 		const header = label ? `Comparison Debug: ${label}` : 'Comparison Debug';
 
@@ -155,6 +156,35 @@ export function useComparison(options: UseComparisonOptions) {
 
 				// eslint-disable-next-line no-console
 				console.info('Field diffs preview:', diffPreview);
+			}
+
+			const relationalFieldCount = Object.keys(relDetails).length;
+
+			if (relationalFieldCount > 0) {
+				// eslint-disable-next-line no-console
+				console.groupCollapsed(`Related Fields with Differences (${relationalFieldCount})`);
+
+				for (const [fieldKey, changedIds] of Object.entries(relDetails)) {
+					const baseValue = (comparisonData.value?.base as any)?.[fieldKey];
+					const incomingValue = (comparisonData.value?.incoming as any)?.[fieldKey];
+
+					// eslint-disable-next-line no-console
+					console.group(`Field: ${fieldKey} (${changedIds.length} changed IDs)`);
+					// eslint-disable-next-line no-console
+					console.info('Changed IDs:', changedIds);
+					// eslint-disable-next-line no-console
+					console.info('Base value:', baseValue);
+					// eslint-disable-next-line no-console
+					console.info('Incoming value:', incomingValue);
+					// eslint-disable-next-line no-console
+					console.groupEnd();
+				}
+
+				// eslint-disable-next-line no-console
+				console.groupEnd();
+			} else {
+				// eslint-disable-next-line no-console
+				console.info('No related fields with differences');
 			}
 		} catch (error) {
 			// eslint-disable-next-line no-console
