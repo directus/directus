@@ -13,11 +13,10 @@ export type ImportRowRange = {
 	end: number;
 };
 
-export type FailedValidationErrorExtensionsType = ClientFilterOperator | 'required' | 'email';
 export interface FailedValidationErrorExtensions {
 	field: string;
 	path: (string | number)[];
-	type: FailedValidationErrorExtensionsType;
+	type: ClientFilterOperator | 'required' | 'email';
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
 	substring?: string;

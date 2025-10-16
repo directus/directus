@@ -13,6 +13,10 @@ interface Props {
 	collection: string;
 }
 
+type ValidationErrorWithRows = ValidationError & {
+	rows: ImportRowLines[] | ImportRowRange[];
+};
+
 const props = defineProps<Props>();
 
 const fieldsStore = useFieldsStore();
@@ -20,23 +24,6 @@ const fieldsStore = useFieldsStore();
 const modelValue = defineModel<boolean>({ required: true });
 
 const { t } = useI18n();
-
-function closeDialog() {
-	modelValue.value = false;
-}
-
-type ValidationErrorWithRows = ValidationError & {
-	rows: ImportRowLines[] | ImportRowRange[];
-};
-
-function formatRows(rows: Array<ImportRowLines | ImportRowRange>): string {
-	return rows
-		.map((r) => {
-			if (r.type === 'lines') return r.rows.join(', ');
-			return `${r.start}–${r.end}`;
-		})
-		.join(', ');
-}
 
 const validationErrors = computed<ValidationError[]>(() =>
 	props.errors.map(
@@ -73,6 +60,19 @@ const formattedErrors = computed(() => {
 });
 
 const errorSummary = computed(() => t('import_data_validation_errors_notice'));
+
+function formatRows(rows: Array<ImportRowLines | ImportRowRange>): string {
+	return rows
+		.map((r) => {
+			if (r.type === 'lines') return r.rows.join(', ');
+			return `${r.start}–${r.end}`;
+		})
+		.join(', ');
+}
+
+function closeDialog() {
+	modelValue.value = false;
+}
 </script>
 
 <template>
