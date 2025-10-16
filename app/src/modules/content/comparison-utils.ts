@@ -86,6 +86,7 @@ export function getFieldsWithDifferences(
 
 	return calculateFieldDifferences(comparedData.incoming, comparedData.base, fieldMetadata, {
 		skipRelationalFields: type === 'revision',
+		skipPrimaryKeyFields: true,
 	});
 }
 
@@ -95,9 +96,10 @@ export function calculateFieldDifferences(
 	fieldMetadata: Record<string, any>,
 	options: {
 		skipRelationalFields?: boolean;
+		skipPrimaryKeyFields?: boolean;
 	} = {},
 ): string[] {
-	const { skipRelationalFields = false } = options;
+	const { skipRelationalFields = false, skipPrimaryKeyFields = false } = options;
 	const differentFields: string[] = [];
 
 	for (const fieldKey of Object.keys(revisionData)) {
@@ -105,6 +107,8 @@ export function calculateFieldDifferences(
 		if (!field) continue;
 
 		if (skipRelationalFields && isRelationalField(field)) continue;
+
+		if (skipPrimaryKeyFields && isPrimaryKeyField(field)) continue;
 
 		if (isAutoDateField(field)) continue;
 
@@ -232,7 +236,10 @@ export function computeDifferentFields(
 		preparedIncoming = mergeWith({}, preparedBase, preparedIncoming, replaceArrays);
 
 		const fieldMetadata = Object.fromEntries(fields.map((f) => [f.field, f]));
-		return calculateFieldDifferences(preparedIncoming, preparedBase, fieldMetadata, { skipRelationalFields: false });
+		return calculateFieldDifferences(preparedIncoming, preparedBase, fieldMetadata, {
+			skipRelationalFields: false,
+			skipPrimaryKeyFields: true,
+		});
 	} else {
 		const incomingWithDefaults = mergeMainItemKeysIntoRevision(preparedIncoming, preparedBase, fields);
 		// 2) Copy relational/user/PK fields from base into incoming
