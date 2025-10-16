@@ -2,11 +2,10 @@ import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '
 import { format } from 'date-fns';
 import { Router } from 'express';
 import { respond } from '../middleware/respond.js';
+import { SettingsService } from '../services/index.js';
 import { ServerService } from '../services/server.js';
 import { SpecificationService } from '../services/specifications.js';
 import asyncHandler from '../utils/async-handler.js';
-import { SettingsService, UsersService } from '../services/index.js';
-import type { Accountability } from '@directus/types';
 import { createAdmin } from '../utils/create-admin.js';
 
 const router = Router();
@@ -88,7 +87,7 @@ router.get(
 
 router.post(
 	'/setup',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const serverService = new ServerService({ schema: req.schema });
 
 		if (await serverService.setupComplete()) {

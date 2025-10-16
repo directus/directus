@@ -1,6 +1,5 @@
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, isDirectusError } from '@directus/errors';
 import express from 'express';
-import { ErrorCode } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { SettingsService } from '../services/settings.js';
@@ -27,7 +26,7 @@ router.get(
 
 router.post(
 	'/owner',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new SettingsService({
 			accountability: req.accountability,
 			schema: req.schema,
