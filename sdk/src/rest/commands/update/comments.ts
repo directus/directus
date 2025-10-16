@@ -1,5 +1,5 @@
 import type { DirectusComment } from '../../../schema/comment.js';
-import type { ApplyQueryFields, Query, NestedPartial } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 
@@ -20,7 +20,7 @@ export type UpdateCommentOutput<
 export const updateComments =
 	<Schema, const TQuery extends Query<Schema, DirectusComment<Schema>>>(
 		keysOrQuery: DirectusComment<Schema>['id'][] | Query<Schema, DirectusComment<Schema>>,
-		item: Partial<DirectusComment<Schema>>,
+		item: NestedPartial<DirectusComment<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateCommentOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -73,7 +73,7 @@ export const updateCommentsBatch =
 export const updateComment =
 	<Schema, const TQuery extends Query<Schema, DirectusComment<Schema>>>(
 		key: DirectusComment<Schema>['id'],
-		item: Partial<DirectusComment<Schema>>,
+		item: NestedPartial<DirectusComment<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateCommentOutput<Schema, TQuery>, Schema> =>
 	() => {
