@@ -72,6 +72,10 @@ import tusSchedule from './schedules/tus.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
 import { validateStorage } from './utils/validate-storage.js';
+import RequestTracker from './request/request-tracker.js';
+import https from 'https';
+
+
 
 const require = createRequire(import.meta.url);
 
@@ -79,6 +83,30 @@ export default async function createApp(): Promise<express.Application> {
 	const env = useEnv();
 	const logger = useLogger();
 	const helmet = await import('helmet');
+
+
+	if (env["NODE_ENV"] !== 'production') {
+		const tracker = new RequestTracker({
+			verbose: true,
+			logToConsole: true
+		});
+
+		tracker.start();
+
+		// Your app code here...
+		https.get('https://api.github.com/users/github', (res) => {
+			res.on('data', () => {});
+
+			res.on('end', () => {
+				const summary = tracker.getSummary();
+				console.log(summary);
+
+				tracker.printSummary();
+				tracker.stop();
+			});
+		});
+	}
+
 
 	injectErrorsDependencies(emitter, env);
 
