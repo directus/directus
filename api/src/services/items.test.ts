@@ -71,6 +71,12 @@ describe('Integration Tests', () => {
 			test('on readSingleton', async () => {
 				vi.mocked(handleVersion).mockReturnValueOnce(new Promise((resolve) => resolve([{ id: 1 }])));
 
+				vi.spyOn(db, 'select').mockReturnValueOnce({
+					from: () => ({
+						first: async () => ({ id: 1 }),
+					}),
+				} as any);
+
 				await service.readSingleton({ version: 'test' });
 
 				expect(handleVersion).toHaveBeenCalled();
