@@ -34,8 +34,6 @@ export async function createAdmin(
 	const logger = useLogger();
 	const env = useEnv();
 
-	const { nanoid } = await import('nanoid');
-
 	logger.info('Setting up first admin role...');
 	const accessService = new AccessService({ schema });
 	const policiesService = new PoliciesService({ schema });
@@ -46,24 +44,16 @@ export async function createAdmin(
 
 	await accessService.createOne({ policy, role });
 
-	logger.info('Adding first admin user...');
 	const usersService = new UsersService({ schema });
 
-	let adminEmail = admin?.email ?? env['ADMIN_EMAIL'];
+	const adminEmail = admin?.email ?? env['ADMIN_EMAIL'];
+	const adminPassword = admin?.password ?? env['ADMIN_PASSWORD'];
 
-	if (!adminEmail) {
-		logger.info('No admin email provided. Defaulting to "admin@example.com"');
-		adminEmail = 'admin@example.com';
-	}
-
-	let adminPassword = admin?.password ?? env['ADMIN_PASSWORD'];
-
-	if (!adminPassword) {
-		adminPassword = nanoid(12);
-		logger.info(`No admin password provided. Defaulting to "${adminPassword}"`);
-	}
+	if (!adminEmail || !adminPassword) return;
 
 	const token = env['ADMIN_TOKEN'] ?? null;
+
+	logger.info('Adding first admin user...');
 
 	await usersService.createOne({
 		...defaultAdminUser,
