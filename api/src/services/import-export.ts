@@ -47,8 +47,7 @@ import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js'
 import { set } from 'lodash-es';
 import type {
 	FailedValidationErrorExtensions,
-	FailedValidationErrorExtensionsType,
-	ImportRowLine,
+	ImportRowLines,
 	ImportRowRange,
 } from '@directus/validation';
 
@@ -57,34 +56,37 @@ const logger = useLogger();
 
 const MAX_IMPORT_ERRORS = env['MAX_IMPORT_ERRORS'] as number;
 
-type ErrorKey = `${string}|||${FailedValidationErrorExtensionsType}`;
 type CapturedErrorData = {
 	message: string;
-	extensions: Omit<FailedValidationErrorExtensions, 'field' | 'type' | 'rows' | 'path'>;
+	extensions?: Omit<FailedValidationErrorExtensions, 'field' | 'type' | 'rows' | 'path'>;
 	rowNumbers: number[];
 };
 
 function createErrorTracker() {
-	const capturedErrors: Map<ErrorCode, Map<ErrorKey, CapturedErrorData>> = new Map();
+	// For errors with field / type (joi validation or DB with field)
+	const fieldErrors: Map<ErrorCode, Map<string, CapturedErrorData>> = new Map();
+	// For errors without field (DB errors like SQLite FK)
+	const genericErrors: Map<ErrorCode, CapturedErrorData> = new Map();
 	let capturedErrorCount = 0;
 	let isLimitReached = false;
 
-	function convertToRanges(rows: number[], minRangeSize = 3): Array<ImportRowLine | ImportRowRange> {
+	function convertToRanges(rows: number[], minRangeSize = 4): Array<ImportRowLines | ImportRowRange> {
 		const sorted = Array.from(new Set(rows)).sort((a, b) => a - b);
-		const result: Array<ImportRowLine | ImportRowRange> = [];
+		const result: Array<ImportRowLines | ImportRowRange> = [];
 
 		if (sorted.length === 0) return [];
 
 		let start = sorted[0] as number;
 		let prev = sorted[0] as number;
 		let count = 1;
+		const nonConsecutive: number[] = [];
 
 		const flush = () => {
 			if (count >= minRangeSize) {
 				result.push({ type: 'range', start, end: prev });
 			} else {
 				for (let i = start; i <= prev; i++) {
-					result.push({ type: 'line', row: i });
+					nonConsecutive.push(i);
 				}
 			}
 		};
@@ -103,33 +105,52 @@ function createErrorTracker() {
 		}
 
 		flush();
+
+		// Add non-consecutive rows as a single "lines" entry
+		if (nonConsecutive.length > 0) {
+			result.push({ type: 'lines', rows: nonConsecutive });
+		}
+
 		return result;
 	}
 
 	const addCapturedError = (err: any, rowNumber: number) => {
 		const field = err.extensions?.field;
 		const type = err.extensions?.type;
-		const key = `${field}|||${type}` as ErrorKey;
 
-		if (!capturedErrors.has(err.code)) {
-			capturedErrors.set(err.code, new Map());
+		if (field) {
+			const key = type ? `${field}|${type}` : field;
+
+			if (!fieldErrors.has(err.code)) {
+				fieldErrors.set(err.code, new Map());
+			}
+
+			const errorsByCode = fieldErrors.get(err.code)!;
+
+			if (!errorsByCode.has(key)) {
+				errorsByCode.set(key, {
+					message: err.message,
+					extensions: {
+						substring: err.extensions?.substring,
+						valid: err.extensions?.valid,
+						invalid: err.extensions?.invalid,
+					},
+					rowNumbers: [],
+				});
+			}
+
+			errorsByCode.get(key)!.rowNumbers.push(rowNumber);
+		} else {
+			if (!genericErrors.has(err.code)) {
+				genericErrors.set(err.code, {
+					message: err.message,
+					rowNumbers: [],
+				});
+			}
+
+			genericErrors.get(err.code)!.rowNumbers.push(rowNumber);
 		}
 
-		const errorsByCode = capturedErrors.get(err.code)!;
-
-		if (!errorsByCode.has(key)) {
-			errorsByCode.set(key, {
-				message: err.message,
-				extensions: {
-					substring: err.extensions?.substring,
-					valid: err.extensions?.valid,
-					invalid: err.extensions?.invalid,
-				},
-				rowNumbers: [],
-			});
-		}
-
-		errorsByCode.get(key)!.rowNumbers.push(rowNumber);
 		capturedErrorCount++;
 
 		if (capturedErrorCount >= MAX_IMPORT_ERRORS) {
@@ -138,9 +159,11 @@ function createErrorTracker() {
 	};
 
 	const buildFinalErrors = () => {
-		return Array.from(capturedErrors.entries()).flatMap(([code, fieldMap]) =>
+		const fieldErrs = Array.from(fieldErrors.entries()).flatMap(([code, fieldMap]) =>
 			Array.from(fieldMap.entries()).map(([compositeKey, errorData]) => {
-				const [field, type] = compositeKey.split('|||');
+				const parts = compositeKey.split('|');
+				const field = parts[0];
+				const type = parts[1];
 
 				const ErrorClass = createError<any>(code, errorData.message, 400);
 				return new ErrorClass({
@@ -151,6 +174,16 @@ function createErrorTracker() {
 				});
 			}),
 		);
+
+		const genericErrs = Array.from(genericErrors.entries()).map(([code, errorData]) => {
+			const ErrorClass = createError<any>(code, errorData.message, 400);
+			return new ErrorClass({
+				...errorData.extensions,
+				rows: convertToRanges(errorData.rowNumbers),
+			});
+		});
+
+		return [...fieldErrs, ...genericErrs];
 	};
 
 	return {

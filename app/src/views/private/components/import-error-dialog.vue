@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
-import type { ImportRowLine, ImportRowRange } from '@directus/validation';
+import type { ImportRowLines, ImportRowRange } from '@directus/validation';
 import type { APIError } from '@/types/error';
 import { useFieldsStore } from '@/stores/fields';
 import { useValidationErrorDetails } from '@/composables/use-validation-error-details';
@@ -26,13 +26,13 @@ function closeDialog() {
 }
 
 type ValidationErrorWithRows = ValidationError & {
-	rows: ImportRowLine[] | ImportRowRange[];
+	rows: ImportRowLines[] | ImportRowRange[];
 };
 
-function formatRows(rows: Array<ImportRowLine | ImportRowRange>): string {
+function formatRows(rows: Array<ImportRowLines | ImportRowRange>): string {
 	return rows
 		.map((r) => {
-			if (r.type === 'line') return r.row.toString();
+			if (r.type === 'lines') return r.rows.join(', ');
 			return `${r.start}–${r.end}`;
 		})
 		.join(', ');

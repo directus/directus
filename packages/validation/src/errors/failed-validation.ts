@@ -2,9 +2,9 @@ import { createError } from '@directus/errors';
 import type { ClientFilterOperator } from '@directus/types';
 import { toArray } from '@directus/utils';
 
-export type ImportRowLine = {
-	type: 'line';
-	row: number;
+export type ImportRowLines = {
+	type: 'lines';
+	rows: number[];
 };
 
 export type ImportRowRange = {
@@ -21,7 +21,7 @@ export interface FailedValidationErrorExtensions {
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
 	substring?: string;
-	rows?: (ImportRowLine | ImportRowRange)[];
+	rows?: (ImportRowLines | ImportRowRange)[];
 }
 
 export const messageConstructor = (extensions: FailedValidationErrorExtensions): string => {
