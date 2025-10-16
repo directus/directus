@@ -255,9 +255,6 @@ validationError:
   nnull: Value can't be null
   required: Value is required
   unique: Value has to be unique
-  foreign_key: Invalid foreign key reference
-  out_of_range: Value is out of range
-  too_long: Value is too long
   email: Value has to be a valid email address
   regex: Value doesn't have the correct format
   starts_with: Value has to start with {substring}
@@ -516,10 +513,10 @@ import_data_input_placeholder: CSV or JSON...
 import_data_button: Start Import
 import_data_indeterminate: Importing Data...
 import_data_success: Data successfully imported from {filename}
-import_data_errors: Import Errors
+import_data_errors: Import Error
 import_data_error: This file's data structure doesn't match the collection.
-import_data_error_summary: '{count} import error(s)'
-import_data_error_row: "Row {rows}:\u00A0| Rows {rows}:\u00A0"
+import_data_validation_errors_notice: 'The following rows have invalid values:'
+import_data_error_row: "Row {rows}{field}:\u00A0| Rows {rows}{field}:\u00A0"
 snapshot:
   export: Export Schema
   download: Download Snapshot (JSON)

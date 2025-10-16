@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import {
+	createError,
 	ErrorCode,
 	ForbiddenError,
 	InvalidPayloadError,
@@ -39,14 +40,13 @@ import { getService } from '../utils/get-service.js';
 import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
-import { getDatabaseValidationType } from '../utils/get-database-validation-type.js';
 import { FilesService } from './files.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
 import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
 import { set } from 'lodash-es';
 import {
-	FailedValidationError,
+	type FailedValidationErrorExtensions,
 	type FailedValidationErrorExtensionsType,
 	type ImportRowLine,
 	type ImportRowRange,
@@ -160,8 +160,13 @@ export class ImportService {
 
 		const nestedActionEvents: ActionEventParams[] = [];
 
-		type ErrorKey = `${string}_${FailedValidationErrorExtensionsType}`;
-		const capturedErrors: Map<ErrorCode, Map<ErrorKey, number[]>> = new Map();
+		type ErrorKey = `${string}|||${FailedValidationErrorExtensionsType}`;
+		type CapturedErrorData = {
+			message: string;
+			extensions: Omit<FailedValidationErrorExtensions, 'field' | 'type' | 'rows' | 'path'>;
+			rowNumbers: number[];
+		};
+		const capturedErrors: Map<ErrorCode, Map<ErrorKey, CapturedErrorData>> = new Map();
 		let capturedErrorCount = 0;
 
 		return transaction(this.knex, async (trx) => {
@@ -191,7 +196,8 @@ export class ImportService {
 
 					const addCapturedError = (err: any, rowNumber: number) => {
 						const field: string | null = err.extensions?.field ?? null;
-						const key = `${field}_${getDatabaseValidationType(err.code, err.extensions)}` as ErrorKey;
+						const type = err.extensions?.type;
+						const key = `${field}|||${type}` as ErrorKey;
 
 						if (!capturedErrors.has(err.code)) {
 							capturedErrors.set(err.code, new Map());
@@ -200,10 +206,18 @@ export class ImportService {
 						const errorsByCode = capturedErrors.get(err.code)!;
 
 						if (!errorsByCode.has(key)) {
-							errorsByCode.set(key, []);
+							errorsByCode.set(key, {
+								message: err.message,
+								extensions: {
+									substring: err.extensions?.substring,
+									valid: err.extensions?.valid,
+									invalid: err.extensions?.invalid,
+								},
+								rowNumbers: [],
+							});
 						}
 
-						errorsByCode.get(key)!.push(rowNumber);
+						errorsByCode.get(key)!.rowNumbers.push(rowNumber);
 					};
 
 					const saveQueue = queue(async (task: { data: Record<string, unknown>; rowNumber: number }) => {
@@ -352,15 +366,16 @@ export class ImportService {
 				}
 
 				if (!error && capturedErrorCount > 0) {
-					throw Array.from(capturedErrors.entries()).flatMap(([, fieldMap]) =>
-						Array.from(fieldMap.entries()).map(([compositeKey, rowNumbers]) => {
-							const [field, type] = compositeKey.split('_') as [string, FailedValidationErrorExtensionsType];
+					throw Array.from(capturedErrors.entries()).flatMap(([code, fieldMap]) =>
+						Array.from(fieldMap.entries()).map(([compositeKey, error]) => {
+							const [field, type] = compositeKey.split('|||') as [string, FailedValidationErrorExtensionsType];
 
-							return new FailedValidationError({
+							const ErrorClass = createError<any>(code, error.message, 400);
+							return new ErrorClass({
 								field,
-								path: [],
 								type,
-								rows: convertToRanges(rowNumbers),
+								...error.extensions,
+								rows: convertToRanges(error.rowNumbers),
 							});
 						}),
 					);

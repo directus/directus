@@ -4,6 +4,9 @@ import { computed } from 'vue';
 import type { ImportRowLine, ImportRowRange } from '@directus/validation';
 import type { APIError } from '@/types/error';
 import { useFieldsStore } from '@/stores/fields';
+import { useValidationErrorDetails } from '@/composables/use-validation-error-details';
+import { VALIDATION_TYPES } from '@/constants';
+import { ValidationError } from '@directus/types';
 
 interface Props {
 	errors: APIError[];
@@ -22,34 +25,56 @@ function closeDialog() {
 	modelValue.value = false;
 }
 
+type ValidationErrorWithRows = ValidationError & {
+	rows: ImportRowLine[] | ImportRowRange[];
+};
+
+
 function formatRows(rows: Array<ImportRowLine | ImportRowRange>): string {
 	return rows
 		.map((r) => {
 			if (r.type === 'line') return r.row.toString();
-			return `${r.start}-${r.end}`;
+			return `${r.start}–${r.end}`;
 		})
 		.join(', ');
 }
 
-function getErrorMessage(error: APIError): string {
-	const field = fieldsStore.getField(props.collection, error.extensions.field);
-	const customMessage = field?.meta?.validation_message;
+const validationErrors = computed<ValidationError[]>(() =>
+  props.errors
+    .map((err: APIError) => ({
+      ...err.extensions,
+      collection: props.collection,
+    } as ValidationError))
+);
 
-	return customMessage || error.message;
-}
+const validationTypesErrors = computed<ValidationError[]>(() =>
+  validationErrors.value
+    .filter((err: ValidationError) => VALIDATION_TYPES.includes(err?.code))
+);
 
-const totalErrors = computed(() => props.errors.length);
+const otherErrors = computed<(ValidationError & { fieldName?: string, customValidationMessage?: string })[]>(() =>
+  validationErrors.value
+    .filter((err: ValidationError) => !VALIDATION_TYPES.includes(err?.code))
+);
 
-const errorSummary = computed(() => t('import_data_error_summary', { count: totalErrors.value }));
+const { validationErrorsWithDetails, getDefaultValidationMessage } = useValidationErrorDetails(
+	validationTypesErrors, 
+	fieldsStore.getFieldsForCollection(props.collection),
+	t
+);
 
 const formattedErrors = computed(() => {
-	return props.errors.map((error) => ({
-		...error,
-		formattedRows: formatRows(error.extensions.rows),
-		message: getErrorMessage(error),
-		rowCount: error.extensions.rows.length,
+	return [
+		...validationErrorsWithDetails.value.map((err) => ({ ...err, message: getDefaultValidationMessage(err) })), 
+		...otherErrors.value.map((err) => ({ ...err, message: t(`errors.${err.code}`, err) }))
+	].map((err) => ({
+		...err,
+		formattedRows: formatRows((err as any as ValidationErrorWithRows).rows),
+		rowCount: (err as any as ValidationErrorWithRows).rows.length,
 	}));
 });
+
+const errorSummary = computed(() => t('import_data_validation_errors_notice'));
 </script>
 
 <template>
@@ -63,9 +88,16 @@ const formattedErrors = computed(() => {
 						<ul class="validation-errors-list">
 							<li v-for="(error, index) in formattedErrors" :key="index" class="validation-error">
 								<strong v-if="error.rowCount > 0">
-									{{ $t('import_data_error_row', { count: error.rowCount, rows: error.formattedRows }) }}
+									{{ $t('import_data_error_row', { count: error.rowCount, rows: error.formattedRows, field: error?.fieldName ? ` (${error.fieldName})` : '' }) }}
 								</strong>
-								<span>{{ error.message }}</span>
+								
+								<template v-if="error.customValidationMessage">
+									{{ error.customValidationMessage }}
+									<v-icon v-tooltip="error.message" small right name="help" />
+								</template>
+								<template v-else>
+									<span>{{ error.message }}</span>
+								</template>
 							</li>
 						</ul>
 					</div>
@@ -93,6 +125,11 @@ const formattedErrors = computed(() => {
 	.validation-error {
 		&:last-child {
 			margin-block-end: 0;
+		}
+
+		.v-icon {
+			vertical-align: text-top;
+			margin-inline-start: 0 !important;
 		}
 	}
 }

@@ -4,12 +4,12 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { APIError } from '@/types/error';
 import { ErrorCode } from '@directus/errors';
 import type { AxiosProgressEvent } from 'axios';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ImportErrorDialog from './import-error-dialog.vue';
+import type { APIError } from '@/types/error';
 
 const props = defineProps<{
 	collection: string;
