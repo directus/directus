@@ -142,7 +142,6 @@ function emitValue() {
 			@click="activate"
 		>
 			<v-icon
-				v-tooltip.bottom="!active ? t('search') : undefined"
 				small
 				name="search"
 				class="icon-search"
