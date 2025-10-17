@@ -2,6 +2,17 @@ import { createError } from '@directus/errors';
 import type { ClientFilterOperator } from '@directus/types';
 import { toArray } from '@directus/utils';
 
+export type ImportRowLines = {
+	type: 'lines';
+	rows: number[];
+};
+
+export type ImportRowRange = {
+	type: 'range';
+	start: number;
+	end: number;
+};
+
 export interface FailedValidationErrorExtensions {
 	field: string;
 	path: (string | number)[];
@@ -9,6 +20,7 @@ export interface FailedValidationErrorExtensions {
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
 	substring?: string;
+	rows?: (ImportRowLines | ImportRowRange)[];
 }
 
 export const messageConstructor = (extensions: FailedValidationErrorExtensions): string => {

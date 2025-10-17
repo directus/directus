@@ -1,5 +1,7 @@
 import { useEnv } from '@directus/env';
 import {
+	createError,
+	ErrorCode,
 	ForbiddenError,
 	InvalidPayloadError,
 	ServiceUnavailableError,
@@ -43,9 +45,151 @@ import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
 import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
 import { set } from 'lodash-es';
+import type { FailedValidationErrorExtensions, ImportRowLines, ImportRowRange } from '@directus/validation';
 
 const env = useEnv();
 const logger = useLogger();
+
+const MAX_IMPORT_ERRORS = env['MAX_IMPORT_ERRORS'] as number;
+
+type CapturedErrorData = {
+	message: string;
+	extensions?: Omit<FailedValidationErrorExtensions, 'field' | 'type' | 'rows' | 'path'>;
+	rowNumbers: number[];
+};
+
+function createErrorTracker() {
+	// For errors with field / type (joi validation or DB with field)
+	const fieldErrors: Map<ErrorCode, Map<string, CapturedErrorData>> = new Map();
+	// For errors without field (DB errors like SQLite FK)
+	const genericErrors: Map<ErrorCode, CapturedErrorData> = new Map();
+	let capturedErrorCount = 0;
+	let isLimitReached = false;
+
+	function convertToRanges(rows: number[], minRangeSize = 4): Array<ImportRowLines | ImportRowRange> {
+		const sorted = Array.from(new Set(rows)).sort((a, b) => a - b);
+		const result: Array<ImportRowLines | ImportRowRange> = [];
+
+		if (sorted.length === 0) return [];
+
+		let start = sorted[0] as number;
+		let prev = sorted[0] as number;
+		let count = 1;
+		const nonConsecutive: number[] = [];
+
+		const flush = () => {
+			if (count >= minRangeSize) {
+				result.push({ type: 'range', start, end: prev });
+			} else {
+				for (let i = start; i <= prev; i++) {
+					nonConsecutive.push(i);
+				}
+			}
+		};
+
+		for (let i = 1; i < sorted.length; i++) {
+			const current = sorted[i] as number;
+
+			if (current === prev + 1) {
+				prev = current;
+				count++;
+			} else {
+				flush();
+				start = prev = current;
+				count = 1;
+			}
+		}
+
+		flush();
+
+		// Add non-consecutive rows as a single "lines" entry
+		if (nonConsecutive.length > 0) {
+			result.push({ type: 'lines', rows: nonConsecutive });
+		}
+
+		return result;
+	}
+
+	function addCapturedError(err: any, rowNumber: number) {
+		const field = err.extensions?.field;
+		const type = err.extensions?.type;
+
+		if (field) {
+			const key = type ? `${field}|${type}` : field;
+
+			if (!fieldErrors.has(err.code)) {
+				fieldErrors.set(err.code, new Map());
+			}
+
+			const errorsByCode = fieldErrors.get(err.code)!;
+
+			if (!errorsByCode.has(key)) {
+				errorsByCode.set(key, {
+					message: err.message,
+					extensions: {
+						substring: err.extensions?.substring,
+						valid: err.extensions?.valid,
+						invalid: err.extensions?.invalid,
+					},
+					rowNumbers: [],
+				});
+			}
+
+			errorsByCode.get(key)!.rowNumbers.push(rowNumber);
+		} else {
+			if (!genericErrors.has(err.code)) {
+				genericErrors.set(err.code, {
+					message: err.message,
+					rowNumbers: [],
+				});
+			}
+
+			genericErrors.get(err.code)!.rowNumbers.push(rowNumber);
+		}
+
+		capturedErrorCount++;
+
+		if (capturedErrorCount >= MAX_IMPORT_ERRORS) {
+			isLimitReached = true;
+		}
+	}
+
+	function buildFinalErrors() {
+		const fieldErrs = Array.from(fieldErrors.entries()).flatMap(([code, fieldMap]) =>
+			Array.from(fieldMap.entries()).map(([compositeKey, errorData]) => {
+				const parts = compositeKey.split('|');
+				const field = parts[0];
+				const type = parts[1];
+
+				const ErrorClass = createError<any>(code, errorData.message, 400);
+				return new ErrorClass({
+					field,
+					type,
+					...errorData.extensions,
+					rows: convertToRanges(errorData.rowNumbers),
+				});
+			}),
+		);
+
+		const genericErrs = Array.from(genericErrors.entries()).map(([code, errorData]) => {
+			const ErrorClass = createError<any>(code, errorData.message, 400);
+			return new ErrorClass({
+				...errorData.extensions,
+				rows: convertToRanges(errorData.rowNumbers),
+			});
+		});
+
+		return [...fieldErrs, ...genericErrs];
+	}
+
+	return {
+		addCapturedError,
+		buildFinalErrors,
+		getCount: () => capturedErrorCount,
+		hasErrors: () => capturedErrorCount > 0,
+		isLimitReached: () => isLimitReached,
+	};
+}
 
 export class ImportService {
 	knex: Knex;
@@ -101,46 +245,78 @@ export class ImportService {
 	async importJSON(collection: string, stream: Readable): Promise<void> {
 		const extractJSON = StreamArray.withParser();
 		const nestedActionEvents: ActionEventParams[] = [];
+		const errorTracker = createErrorTracker();
 
-		return transaction(this.knex, (trx) => {
+		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
 				knex: trx,
 				schema: this.schema,
 				accountability: this.accountability,
 			});
 
-			const saveQueue = queue(async (value: Record<string, unknown>) => {
-				return await service.upsertOne(value, { bypassEmitAction: (params) => nestedActionEvents.push(params) });
-			});
+			try {
+				await new Promise<void>((resolve, reject) => {
+					let rowNumber = 0;
 
-			return new Promise<void>((resolve, reject) => {
-				stream.pipe(extractJSON);
+					const saveQueue = queue(async (task: { data: Record<string, unknown>; rowNumber: number }) => {
+						try {
+							const result = await service.upsertOne(task.data, {
+								bypassEmitAction: (params) => nestedActionEvents.push(params),
+							});
 
-				extractJSON.on('data', ({ value }: Record<string, any>) => {
-					saveQueue.push(value);
-				});
+							return result;
+						} catch (error) {
+							for (const err of toArray(error)) {
+								errorTracker.addCapturedError(err, task.rowNumber);
+							}
 
-				extractJSON.on('error', (err: Error) => {
-					destroyStream(stream);
-					destroyStream(extractJSON);
+							if (errorTracker.isLimitReached()) {
+								destroyStream(stream);
+								destroyStream(extractJSON);
+								reject();
+							}
 
-					reject(new InvalidPayloadError({ reason: err.message }));
-				});
-
-				saveQueue.error((err) => {
-					reject(err);
-				});
-
-				extractJSON.on('end', () => {
-					saveQueue.drain(() => {
-						for (const nestedActionEvent of nestedActionEvents) {
-							emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+							return;
 						}
+					});
 
-						return resolve();
+					stream.pipe(extractJSON);
+
+					extractJSON.on('data', ({ value }: Record<string, any>) => {
+						saveQueue.push({ data: value, rowNumber: rowNumber++ });
+					});
+
+					extractJSON.on('error', (err: Error) => {
+						destroyStream(stream);
+						destroyStream(extractJSON);
+
+						reject(new InvalidPayloadError({ reason: err.message }));
+					});
+
+					extractJSON.on('end', () => {
+						// In case of empty JSON file
+						if (!saveQueue.started) return resolve();
+
+						saveQueue.drain(() => {
+							if (errorTracker.hasErrors()) {
+								return reject();
+							}
+
+							for (const nestedActionEvent of nestedActionEvents) {
+								emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+							}
+
+							return resolve();
+						});
 					});
 				});
-			});
+			} catch (error) {
+				if (!error && errorTracker.hasErrors()) {
+					throw errorTracker.buildFinalErrors();
+				}
+
+				throw error;
+			}
 		});
 	}
 
@@ -149,116 +325,144 @@ export class ImportService {
 		if (!tmpFile) throw new Error('Failed to create temporary file for import');
 
 		const nestedActionEvents: ActionEventParams[] = [];
+		const errorTracker = createErrorTracker();
 
-		return transaction(this.knex, (trx) => {
+		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
 				knex: trx,
 				schema: this.schema,
 				accountability: this.accountability,
 			});
 
-			const saveQueue = queue(async (value: Record<string, unknown>) => {
-				return await service.upsertOne(value, { bypassEmitAction: (action) => nestedActionEvents.push(action) });
-			});
+			try {
+				await new Promise<void>((resolve, reject) => {
+					const streams: Stream[] = [stream];
+					let rowNumber = 0;
 
-			const transform = (value: string) => {
-				if (value.length === 0) return;
-
-				try {
-					const parsedJson = parseJSON(value);
-
-					if (typeof parsedJson === 'number') {
-						return value;
-					}
-
-					return parsedJson;
-				} catch {
-					return value;
-				}
-			};
-
-			const PapaOptions: Papa.ParseConfig = {
-				header: true,
-				// Trim whitespaces in headers, including the byte order mark (BOM) zero-width no-break space
-				transformHeader: (header) => header.trim(),
-				transform,
-			};
-
-			return new Promise<void>((resolve, reject) => {
-				const streams: Stream[] = [stream];
-
-				const cleanup = (destroy = true) => {
-					if (destroy) {
-						for (const stream of streams) {
-							destroyStream(stream);
+					const cleanup = (destroy = true) => {
+						if (destroy) {
+							for (const stream of streams) {
+								destroyStream(stream);
+							}
 						}
-					}
 
-					tmpFile.cleanup().catch(() => {
-						logger.warn(`Failed to cleanup temporary import file (${tmpFile.path})`);
+						tmpFile.cleanup().catch(() => {
+							logger.warn(`Failed to cleanup temporary import file (${tmpFile.path})`);
+						});
+					};
+
+					const saveQueue = queue(async (task: { data: Record<string, unknown>; rowNumber: number }) => {
+						try {
+							const result = await service.upsertOne(task.data, {
+								bypassEmitAction: (action) => nestedActionEvents.push(action),
+							});
+
+							return result;
+						} catch (error: any) {
+							const errors = Array.isArray(error) ? error : [error];
+
+							for (const err of errors) {
+								errorTracker.addCapturedError(err, task.rowNumber);
+							}
+
+							if (errorTracker.isLimitReached()) {
+								cleanup(true);
+								reject();
+							}
+
+							return null;
+						}
 					});
-				};
 
-				saveQueue.error((error) => {
-					reject(error);
-				});
-
-				const fileWriteStream = createWriteStream(tmpFile.path)
-					.on('error', (error) => {
-						cleanup();
-						reject(new Error('Error while writing import data to temporary file', { cause: error }));
-					})
-					.on('finish', () => {
-						const fileReadStream = createReadStream(tmpFile.path).on('error', (error) => {
+					const fileWriteStream = createWriteStream(tmpFile.path)
+						.on('error', (error) => {
 							cleanup();
-							reject(new Error('Error while reading import data from temporary file', { cause: error }));
+							reject(new Error('Error while writing import data to temporary file', { cause: error }));
+						})
+						.on('finish', () => {
+							const fileReadStream = createReadStream(tmpFile.path).on('error', (error) => {
+								cleanup();
+								reject(new Error('Error while reading import data from temporary file', { cause: error }));
+							});
+
+							streams.push(fileReadStream);
+
+							fileReadStream
+								.pipe(
+									Papa.parse(Papa.NODE_STREAM_INPUT, {
+										header: true,
+										// Trim whitespaces in headers, including the byte order mark (BOM) zero-width no-break space
+										transformHeader: (header) => header.trim(),
+										transform: (value: string, _field?: string | number) => {
+											if (value.length === 0) return undefined;
+
+											try {
+												const parsedJson = parseJSON(value);
+
+												if (typeof parsedJson === 'number') {
+													return value;
+												}
+
+												return parsedJson;
+											} catch {
+												return value;
+											}
+										},
+									}),
+								)
+								.on('data', (obj: Record<string, unknown>) => {
+									rowNumber++;
+
+									const result = {} as Record<string, unknown>;
+
+									for (const field in obj) {
+										if (obj[field] !== undefined) {
+											set(result, field, obj[field]);
+										}
+									}
+
+									saveQueue.push({ data: result, rowNumber });
+								})
+								.on('error', (error) => {
+									cleanup();
+									reject(new InvalidPayloadError({ reason: error.message }));
+								})
+								.on('end', () => {
+									cleanup(false);
+
+									// In case of empty CSV file
+									if (!saveQueue.started) return resolve();
+
+									saveQueue.drain(() => {
+										if (errorTracker.hasErrors()) {
+											return reject();
+										}
+
+										for (const nestedActionEvent of nestedActionEvents) {
+											emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+										}
+
+										return resolve();
+									});
+								});
 						});
 
-						streams.push(fileReadStream);
+					streams.push(fileWriteStream);
 
-						fileReadStream
-							.pipe(Papa.parse(Papa.NODE_STREAM_INPUT, PapaOptions))
-							.on('data', (obj: Record<string, unknown>) => {
-								const result = {};
+					stream
+						.on('error', (error) => {
+							cleanup();
+							reject(new Error('Error while retrieving import data', { cause: error }));
+						})
+						.pipe(fileWriteStream);
+				});
+			} catch (error) {
+				if (!error && errorTracker.hasErrors()) {
+					throw errorTracker.buildFinalErrors();
+				}
 
-								// Filter out all undefined fields
-								for (const field in obj) {
-									if (obj[field] !== undefined) {
-										set(result, field, obj[field]);
-									}
-								}
-
-								saveQueue.push(result);
-							})
-							.on('error', (error) => {
-								cleanup();
-								reject(new InvalidPayloadError({ reason: error.message }));
-							})
-							.on('end', () => {
-								cleanup(false);
-
-								// In case of empty CSV file
-								if (!saveQueue.started) return resolve();
-
-								saveQueue.drain(() => {
-									for (const nestedActionEvent of nestedActionEvents) {
-										emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
-									}
-
-									return resolve();
-								});
-							});
-					});
-
-				streams.push(fileWriteStream);
-
-				stream
-					.on('error', (error) => {
-						cleanup();
-						reject(new Error('Error while retrieving import data', { cause: error }));
-					})
-					.pipe(fileWriteStream);
-			});
+				throw error;
+			}
 		});
 	}
 }
