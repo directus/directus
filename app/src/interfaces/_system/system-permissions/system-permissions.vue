@@ -102,7 +102,7 @@ function editItem(collection: string, action: PermissionsAction) {
 		: createEmptyPermission({
 				collection,
 				action,
-		  });
+			});
 
 	if (newItem.value || existingPermission?.$type === 'created') {
 		currentlyEditingKey.value = '+';
@@ -632,7 +632,7 @@ function useGroupedPermissions() {
 							appAccess
 								? appAccessMinimalPermissions.filter(
 										(permission) => permission.collection === group.collection.collection,
-								  )
+									)
 								: undefined
 						"
 						@edit-item="editItem(group.collection.collection, $event)"

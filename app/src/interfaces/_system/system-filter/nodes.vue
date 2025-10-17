@@ -81,7 +81,7 @@ const filterInfo = computed<(FilterInfo | FilterInfoField)[]>({
 						field: getField(node),
 						comparator: getComparator(node),
 						node,
-				  } as FilterInfoField)
+					} as FilterInfoField)
 				: ({ id, name, isField, node } as FilterInfo);
 		});
 	},

@@ -1259,6 +1259,8 @@ shares: Distribuiri
 unlimited_usage: Utilizare nelimitată
 no_shares: Nici o distribuire de afișat
 new_share: Distribuire nouă
+mcp_prompts_collection_schema:
+  messages_role_user: Utilizator
 expired: Expirat
 upcoming: Urmează
 share: Distribuie

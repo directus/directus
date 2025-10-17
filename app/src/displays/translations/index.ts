@@ -93,7 +93,7 @@ export default defineDisplay({
 						interfaceOptions: field?.meta?.options ?? {},
 						field: field ?? undefined,
 						collection: collection,
-				  })
+					})
 				: fieldValue;
 
 			set(stringValues, key, stringValue);

@@ -14,7 +14,6 @@ import getDatabase from './database/index.js';
 import { useLogger } from './logger/index.js';
 import type { AuthDriverOptions } from './types/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
-import { getSchema } from './utils/get-schema.js';
 
 const providers: Map<string, AuthDriver> = new Map();
 
@@ -32,7 +31,7 @@ export function getAuthProvider(provider: string): AuthDriver {
 export async function registerAuthProviders(): Promise<void> {
 	const env = useEnv();
 	const logger = useLogger();
-	const options = { knex: getDatabase(), schema: await getSchema() };
+	const options = { knex: getDatabase() };
 
 	const providerNames = toArray(env['AUTH_PROVIDERS'] as string);
 
