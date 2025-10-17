@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ComparisonContext } from '@/components/v-form/types';
 import { usePageSize } from '@/composables/use-page-size';
 import { useRelationM2A } from '@/composables/use-relation-m2a';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
@@ -29,6 +30,7 @@ const props = withDefaults(
 		limit?: number;
 		prefix?: string;
 		allowDuplicates?: boolean;
+		comparison?: ComparisonContext;
 	}>(),
 	{
 		value: () => [],
@@ -331,6 +333,37 @@ const createCollections = computed(() => {
 
 const canDrag = computed(() => relationInfo.value?.sortField !== undefined && !props.disabled && updateAllowed.value);
 const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitWritable.value);
+
+function itemHasChanges(item: DisplayItem): boolean {
+	if (!relationInfo.value || !props.comparison?.relationalDetails) return false;
+
+	const changedIds = props.comparison.relationalDetails[props.field];
+	if (!changedIds || changedIds.length === 0) return false;
+
+	if (item.$type === 'created' || item.$type === 'deleted') {
+		return true;
+	}
+
+	const junctionField = relationInfo.value.junctionField.field;
+	const nestedItem = item[junctionField];
+
+	if (!nestedItem || typeof nestedItem !== 'object') return false;
+
+	const collectionField = relationInfo.value.collectionField.field;
+	const collection = item[collectionField];
+
+	if (!collection) return false;
+
+	const relatedPkField = relationInfo.value.relationPrimaryKeyFields[collection]?.field;
+
+	if (!relatedPkField) return false;
+
+	const nestedItemId = nestedItem[relatedPkField];
+
+	if (nestedItemId === undefined) return false;
+
+	return changedIds.some((id) => id == nestedItemId || String(id) === String(nestedItemId));
+}
 </script>
 
 <template>
@@ -365,7 +398,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 						v-if="hasAllowedCollection(element)"
 						block
 						:dense="totalItemCount > 4"
-						:class="{ deleted: element.$type === 'deleted' }"
+						:class="{ deleted: element.$type === 'deleted', 'diff-indicator': itemHasChanges(element) }"
 						clickable
 						@click="editItem(element)"
 					>

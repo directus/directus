@@ -48,6 +48,7 @@ const {
 	deltaDisplayName,
 	normalizedData,
 	debugComparison,
+	relationalDetails,
 	toggleSelectAll,
 	toggleComparisonField,
 	fetchUserUpdated,
@@ -233,6 +234,7 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 										fields: comparisonFields,
 										selectedFields: [],
 										onToggleField: () => {},
+										relationalDetails: relationalDetails,
 										comparisonType: comparisonData?.comparisonType,
 									}"
 									class="comparison-form--main"
@@ -274,6 +276,7 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 										fields: comparisonFields,
 										selectedFields: selectedComparisonFields,
 										onToggleField: toggleComparisonField,
+										relationalDetails: relationalDetails,
 										comparisonType: comparisonData?.comparisonType,
 									}"
 									class="comparison-form--current"
@@ -613,5 +616,55 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 
 .comparison-form--current {
 	--comparison-indicator--color: var(--theme--success);
+}
+
+:deep(.v-list) {
+	&:has(.v-list-item.diff-indicator) {
+		overflow: visible;
+	}
+
+	.v-list-item.diff-indicator {
+		position: relative;
+		overflow: visible;
+
+		&::before {
+			content: '';
+			position: absolute;
+			inset-block: 0;
+			inset-inline-start: -12px;
+			inline-size: 4px;
+			z-index: 1;
+			background-color: var(--comparison-indicator--color);
+		}
+	}
+}
+
+:deep(.v-list-item.diff-indicator .preview) {
+	position: relative;
+
+	&::before {
+		content: '';
+		position: absolute;
+		inset-block: 0;
+		inset-inline-start: -12px;
+		inline-size: 4px;
+		z-index: 1;
+		background-color: var(--comparison-indicator--color);
+	}
+}
+
+:deep(.v-table.has-comparison td:first-of-type .cell-content.has-diff) {
+	position: relative;
+
+	&::before {
+		content: '';
+		position: absolute;
+		inset-block: -8px;
+		inset-inline-start: -12px;
+		inline-size: 4px;
+		block-size: calc(100% + 16px);
+		z-index: 1;
+		background-color: var(--comparison-indicator--color);
+	}
 }
 </style>

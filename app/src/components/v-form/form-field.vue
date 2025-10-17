@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useClipboard } from '@/composables/use-clipboard';
 import { formatFieldFunction } from '@/utils/format-field-function';
+import { RELATIONAL_TYPES } from '@directus/constants';
 import { ValidationError } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import { isEqual } from 'lodash';
@@ -56,6 +57,12 @@ const isDisabled = computed(() => {
 const isLabelHidden = computed(() => {
 	if (props.batchMode && !props.field.meta?.special?.includes('no-data')) return false;
 	return props.field.hideLabel;
+});
+
+const nestedRelationalTypes = RELATIONAL_TYPES.filter((type) => type !== 'm2o' && type !== 'file') as string[];
+
+const isNestedRelationalField = computed(() => {
+	return props.field.meta?.special?.find((type) => nestedRelationalTypes.includes(type)) !== undefined;
 });
 
 const { internalValue, isEdited, defaultValue } = useComputedValues();
@@ -171,7 +178,7 @@ function useComputedValues() {
 			field.meta?.width || 'full',
 			{
 				invalid: validationError,
-				'diff-indicator': comparison?.fields.has(field.field),
+				'diff-indicator': comparison?.fields.has(field.field) && !isNestedRelationalField,
 			},
 		]"
 	>

@@ -51,6 +51,7 @@ export type NormalizedComparisonData = {
 	currentVersion: ContentVersion | null;
 	initialSelectedDeltaId: number | string | null;
 	fieldsWithDifferences: string[];
+	relationalDetails: Record<string, string[]>;
 };
 
 export type VersionComparisonResponse = {
@@ -86,11 +87,18 @@ export function getFieldsWithDifferences(
 ): string[] {
 	if (!fieldMetadata) return [];
 
-	return calculateFieldDifferences(comparedData.incoming, comparedData.base, fieldMetadata, {
+	const result = calculateFieldDifferences(comparedData.incoming, comparedData.base, fieldMetadata, {
 		skipRelationalFields: type === 'revision',
 		skipPrimaryKeyFields: true,
 	});
+
+	return result.fields;
 }
+
+type FieldDifferencesResult = {
+	fields: string[];
+	relationalDetails: Record<string, string[]>;
+};
 
 function calculateFieldDifferences(
 	revisionData: Record<string, any>,
@@ -100,17 +108,123 @@ function calculateFieldDifferences(
 		skipRelationalFields?: boolean;
 		skipPrimaryKeyFields?: boolean;
 	} = {},
-): string[] {
-	const { skipRelationalFields = false, skipPrimaryKeyFields = false } = options;
+): FieldDifferencesResult {
+	const { skipRelationalFields = false, skipPrimaryKeyFields = true } = options;
 	const differentFields: string[] = [];
+	const relationalDetails: Record<string, string[]> = {};
 
 	for (const fieldKey of Object.keys(revisionData)) {
 		const field = fieldMetadata[fieldKey];
 		if (!field) continue;
-
-		if (skipRelationalFields && isRelationalField(field)) continue;
-
 		if (skipPrimaryKeyFields && isPrimaryKeyField(field)) continue;
+
+		if (isRelationalField(field)) {
+			if (skipRelationalFields) continue;
+
+			const relationalData = revisionData[fieldKey];
+			const fieldType = field.meta?.special?.[0];
+
+			if (fieldType === 'm2o') {
+				const newValue = revisionData[fieldKey];
+				const currentValue = currentData[fieldKey];
+
+				const newId = typeof newValue === 'object' && newValue !== null ? newValue.id : newValue;
+				const currentId = typeof currentValue === 'object' && currentValue !== null ? currentValue.id : currentValue;
+
+				if (!isEqual(newId, currentId)) {
+					differentFields.push(fieldKey);
+				}
+
+				continue;
+			}
+
+			if (relationalData && typeof relationalData === 'object') {
+				const allChangedIds: (string | number)[] = [];
+
+				if (Array.isArray(relationalData)) {
+					const currentRelationalData = currentData[fieldKey];
+
+					if (!isEqual(relationalData, currentRelationalData)) {
+						differentFields.push(fieldKey);
+					}
+
+					continue;
+				}
+
+				if (fieldType === 'o2m') {
+					let hasChanges = false;
+
+					['create', 'update', 'delete'].forEach((op) => {
+						if (Array.isArray(relationalData[op]) && relationalData[op].length > 0) {
+							hasChanges = true;
+
+							relationalData[op].forEach((item: any) => {
+								if (item?.id) allChangedIds.push(item.id);
+							});
+						}
+					});
+
+					if (hasChanges && allChangedIds.length === 0) {
+						allChangedIds.push('has_changes');
+					}
+				} else if (fieldType === 'm2m') {
+					let hasChanges = false;
+
+					['create', 'update', 'delete'].forEach((op) => {
+						if (Array.isArray(relationalData[op]) && relationalData[op].length > 0) {
+							hasChanges = true;
+
+							if (op === 'delete') {
+								relationalData[op].forEach((id: any) => {
+									if (id !== null && id !== undefined) allChangedIds.push(id);
+								});
+							} else {
+								relationalData[op].forEach((item: any) => {
+									if (item?.id) allChangedIds.push(item.id);
+								});
+							}
+						}
+					});
+
+					if (hasChanges && allChangedIds.length === 0) {
+						allChangedIds.push('has_changes');
+					}
+				} else if (fieldType === 'm2a') {
+					let hasChanges = false;
+
+					['create', 'update', 'delete'].forEach((op) => {
+						if (Array.isArray(relationalData[op]) && relationalData[op].length > 0) {
+							hasChanges = true;
+
+							if (op === 'delete') {
+								relationalData[op].forEach((id: any) => {
+									if (id !== null && id !== undefined) allChangedIds.push(id);
+								});
+							} else {
+								relationalData[op].forEach((item: any) => {
+									const nestedItemId = item?.item?.id;
+
+									if (nestedItemId) {
+										allChangedIds.push(nestedItemId);
+									}
+								});
+							}
+						}
+					});
+
+					if (hasChanges && allChangedIds.length === 0) {
+						allChangedIds.push('has_changes');
+					}
+				}
+
+				if (allChangedIds.length > 0) {
+					differentFields.push(fieldKey);
+					relationalDetails[fieldKey] = allChangedIds.map(String);
+				}
+			}
+
+			continue;
+		}
 
 		if (isAutoDateField(field)) continue;
 
@@ -122,7 +236,7 @@ function calculateFieldDifferences(
 		}
 	}
 
-	return differentFields;
+	return { fields: differentFields, relationalDetails };
 }
 
 export function getVersionDisplayName(version: ContentVersion): string {
@@ -241,7 +355,7 @@ export function computeDifferentFields(
 		return calculateFieldDifferences(preparedIncoming, preparedBase, fieldMetadata, {
 			skipRelationalFields: false,
 			skipPrimaryKeyFields: true,
-		});
+		}).fields;
 	} else {
 		const incomingWithDefaults = mergeMainItemKeysIntoRevision(preparedIncoming, preparedBase, fields);
 		const incomingWithRelational = copySpecialFieldsFromBaseToIncoming(preparedBase, incomingWithDefaults, fields);
@@ -249,7 +363,7 @@ export function computeDifferentFields(
 
 		return calculateFieldDifferences(incomingWithRelational, preparedBase, fieldMetadata, {
 			skipRelationalFields: true,
-		});
+		}).fields;
 	}
 }
 
@@ -408,10 +522,13 @@ export function normalizeComparisonData(
 		base: comparisonData.base,
 	};
 
-	const fieldsWithDifferences = getFieldsWithDifferences(
-		normalizedComparison,
-		fieldMetadata,
-		comparisonData.comparisonType,
+	const fieldDifferencesResult = calculateFieldDifferences(
+		normalizedComparison.incoming,
+		normalizedComparison.base,
+		fieldMetadata || {},
+		{
+			skipRelationalFields: comparisonData.comparisonType === 'revision',
+		},
 	);
 
 	return {
@@ -423,7 +540,8 @@ export function normalizeComparisonData(
 		mainHash: comparisonData.mainHash || '',
 		currentVersion: comparisonData.currentVersion || null,
 		initialSelectedDeltaId: comparisonData.initialSelectedDeltaId || null,
-		fieldsWithDifferences,
+		fieldsWithDifferences: fieldDifferencesResult.fields,
+		relationalDetails: fieldDifferencesResult.relationalDetails,
 	};
 }
 
