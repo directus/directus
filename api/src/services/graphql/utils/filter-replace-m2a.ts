@@ -59,7 +59,8 @@ export function filterReplaceM2ADeep(
 			} else if (type === 'm2o') {
 				deep[key] = filterReplaceM2ADeep(deep[key], relation.related_collection!, schema);
 			} else if (type === 'a2o' && any_collection && relation.meta?.one_allowed_collections?.includes(any_collection)) {
-				deep[key] = filterReplaceM2ADeep(deep[key], any_collection, schema);
+				deep[`${field}:${any_collection}`] = filterReplaceM2ADeep(deep[key], any_collection, schema);
+				delete deep[key];
 			}
 		}
 
