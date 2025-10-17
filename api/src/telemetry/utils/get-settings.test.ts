@@ -1,0 +1,64 @@
+import { describe, it, expect, vi } from 'vitest';
+import { getSettings } from './get-settings.js';
+import type { Knex } from 'knex';
+
+describe('getSettings', () => {
+	it('should return settings when they exist in the database', async () => {
+		const mockDb = {
+			select: vi.fn().mockReturnThis(),
+			from: vi.fn().mockReturnThis(),
+			first: vi.fn().mockResolvedValue({
+				project_id: 'test-project-id',
+				mcp_enabled: true,
+				mcp_allow_deletes: false,
+				mcp_system_prompt_enabled: true,
+				visual_editor_urls: '["https://example.com","https://example.org"]',
+				accepted_terms: false,
+			}),
+		} as unknown as Knex;
+
+		const result = await getSettings(mockDb);
+
+		expect(result).toEqual({
+			project_id: 'test-project-id',
+			mcp_enabled: true,
+			mcp_allow_deletes: false,
+			mcp_system_prompt_enabled: true,
+			visual_editor_urls: 2,
+			accepted_terms: false,
+		});
+	});
+
+	it('should coerce missing values to defaults when they are not set', async () => {
+		const mockDb = {
+			select: vi.fn().mockReturnThis(),
+			from: vi.fn().mockReturnThis(),
+			first: vi.fn().mockResolvedValue({
+				project_id: 'test-project-id',
+				// booleans omitted on purpose to ensure toBoolean handles undefined
+				visual_editor_urls: null,
+			}),
+		} as unknown as Knex;
+
+		const result = await getSettings(mockDb);
+
+		expect(result).toEqual({
+			project_id: 'test-project-id',
+			mcp_enabled: false,
+			mcp_allow_deletes: false,
+			mcp_system_prompt_enabled: false,
+			visual_editor_urls: 0,
+			accepted_terms: false,
+		});
+	});
+
+	it('should handle unexpected database errors gracefully', async () => {
+		const mockDb = {
+			select: vi.fn().mockReturnThis(),
+			from: vi.fn().mockReturnThis(),
+			first: vi.fn().mockRejectedValue(new Error('Database error')),
+		} as unknown as Knex;
+
+		await expect(getSettings(mockDb)).rejects.toThrow('Database error');
+	});
+});
