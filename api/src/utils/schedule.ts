@@ -18,9 +18,9 @@ export function scheduleSynchronizedJob(
 ): ScheduledJob {
 	const clock = new SynchronizedClock(`${id}:${rule}`);
 
-	const job = new CronJob(
-		rule,
-		async (fireDate: Date) => {
+	const job = CronJob.from({
+		cronTime: rule,
+		onTick: async (fireDate: Date) => {
 			// Get next execution time for synchronization
 			const nextDate = job.nextDate();
 			const nextTimestamp = nextDate.toMillis();
@@ -31,9 +31,8 @@ export function scheduleSynchronizedJob(
 				await cb(fireDate);
 			}
 		},
-		null,
-		true,
-	);
+		start: true,
+	});
 
 	const stop = async () => {
 		job.stop();

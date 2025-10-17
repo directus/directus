@@ -129,4 +129,36 @@ describe('scheduleSynchronizedJob', () => {
 			expect(callback).toHaveBeenCalledTimes(callsBeforeStop);
 		});
 	});
+
+	describe('CronJob execution timing', () => {
+		test('cron job fires at scheduled time', async () => {
+			vi.useFakeTimers();
+
+			const mockCallback = vi.fn();
+			const startTime = new Date('2025-01-01T23:55:00.000Z');
+
+			vi.setSystemTime(startTime);
+
+			const { CronJob } = await import('cron');
+
+			// Create a CronJob that fires every minute
+			CronJob.from({
+				cronTime: '* * * * *',
+				onTick: mockCallback,
+				start: true,
+			});
+
+			// Advance time by 1 minute
+			await vi.advanceTimersByTimeAsync(60 * 1000);
+
+			expect(mockCallback).toHaveBeenCalledTimes(1);
+
+			// Advance time by another minute
+			await vi.advanceTimersByTimeAsync(60 * 1000);
+
+			expect(mockCallback).toHaveBeenCalledTimes(2);
+
+			vi.useRealTimers();
+		});
+	});
 });

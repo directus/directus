@@ -47,7 +47,11 @@ export default async function schedule(): Promise<boolean> {
 		return false;
 	}
 
-	new CronJob(String(env['METRICS_SCHEDULE']), handleMetricsJob, null, true);
+	CronJob.from({
+		cronTime: String(env['METRICS_SCHEDULE']),
+		onTick: handleMetricsJob,
+		start: true,
+	});
 
 	return true;
 }

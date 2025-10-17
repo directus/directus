@@ -15,7 +15,10 @@ vi.mock('cron', async (importOriginal) => {
 
 	return {
 		...actual,
-		CronJob: vi.fn(),
+		CronJob: {
+			...actual.CronJob,
+			from: vi.fn(),
+		},
 	};
 });
 
@@ -50,7 +53,12 @@ describe('metrics', () => {
 		await metricsSchedule();
 
 		expect(schedule.validateCron).toHaveBeenCalledWith('0 0 * * *');
-		expect(CronJob).toHaveBeenCalledWith('0 0 * * *', handleMetricsJob, null, true);
+
+		expect(CronJob.from).toHaveBeenCalledWith({
+			cronTime: '0 0 * * *',
+			onTick: handleMetricsJob,
+			start: true,
+		});
 	});
 
 	test('Returns true on successful init', async () => {
