@@ -1,6 +1,7 @@
 export enum ErrorCode {
 	ContainsNullValues = 'CONTAINS_NULL_VALUES',
 	ContentTooLarge = 'CONTENT_TOO_LARGE',
+	EmailLimitExceeded = 'EMAIL_LIMIT_EXCEEDED',
 	Forbidden = 'FORBIDDEN',
 	IllegalAssetTransformation = 'ILLEGAL_ASSET_TRANSFORMATION',
 	Internal = 'INTERNAL_SERVER_ERROR',

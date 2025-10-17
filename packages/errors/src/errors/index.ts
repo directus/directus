@@ -1,5 +1,6 @@
 export { ContainsNullValuesError } from './contains-null-values.js';
 export { ContentTooLargeError } from './content-too-large.js';
+export { EmailLimitExceededError } from './email-limit-exceeded.js';
 export { ForbiddenError } from './forbidden.js';
 export { HitRateLimitError } from './hit-rate-limit.js';
 export { IllegalAssetTransformationError } from './illegal-asset-transformation.js';
