@@ -16,7 +16,7 @@ import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { Field, PrimaryKey, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { isEmpty, merge, set } from 'lodash';
+import { isArray, isEmpty, mergeWith, set } from 'lodash';
 import { computed, ref, toRefs, watch, unref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -424,7 +424,17 @@ function useActions() {
 	}
 
 	function validateForm({ defaultValues, existingValues, editsToValidate, fieldsToValidate }: Record<string, any>) {
-		return validateItem(merge({}, defaultValues, existingValues, editsToValidate), fieldsToValidate, isNew.value, true);
+		return validateItem(
+			mergeWith({}, defaultValues, existingValues, editsToValidate, customizer),
+			fieldsToValidate,
+			isNew.value,
+			true,
+		);
+
+		function customizer(objValue: unknown, srcValue: unknown) {
+			if (isArray(objValue)) return objValue.concat(srcValue);
+			return;
+		}
 	}
 
 	function save() {
