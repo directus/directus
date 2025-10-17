@@ -1,14 +1,18 @@
 import api from '@/api';
-import { useServerStore } from '@/stores/server';
+import {
+	computeDifferentFields,
+	replaceArraysInMergeCustomizer,
+	getSystemCollectionItemUrl,
+} from '@/modules/content/comparison-utils';
 import { useFieldsStore } from '@/stores/fields';
+import { useServerStore } from '@/stores/server';
 import type { Revision, RevisionPartial, RevisionWithTime, RevisionsByDate } from '@/types/revisions';
 import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
-import { computeDifferentFields, replaceArraysInMergeCustomizer } from '@/modules/content/comparison-utils';
+import { isSystemCollection } from '@directus/system-data';
 import type { ContentVersion, Filter } from '@directus/types';
-import { isSystemCollection, getSystemCollectionItemUrl } from '@/modules/content/comparison-utils';
 import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
 import { groupBy, orderBy, mergeWith } from 'lodash';
 import { Ref, ref, unref, watch } from 'vue';
@@ -163,11 +167,8 @@ export function useRevisions(
 					baseForComparison = versionCompare.data?.data?.main || {};
 					versionDeltaForComparison = versionCompare.data?.data?.current || {};
 				} else {
-					const collectionName = unref(collection);
-					const isSystem = isSystemCollection(collectionName);
-
-					if (isSystem) {
-						const systemEndpoint = getSystemCollectionItemUrl(collectionName, unref(primaryKey));
+					if (isSystemCollection(collection.value)) {
+						const systemEndpoint = getSystemCollectionItemUrl(collection.value, unref(primaryKey));
 
 						if (systemEndpoint) {
 							try {

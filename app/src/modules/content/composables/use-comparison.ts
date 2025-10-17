@@ -1,16 +1,9 @@
-import { ContentVersion, User } from '@directus/types';
-import { Revision } from '@/types/revisions';
-import { computed, ref, watch, type Ref } from 'vue';
 import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { useFieldsStore } from '@/stores/fields';
-import { isSystemCollection, getSystemCollectionItemUrl } from '../comparison-utils';
-import type {
-	ComparisonData,
-	VersionComparisonResponse,
-	RevisionComparisonResponse,
-	NormalizedComparisonData,
-} from '../comparison-utils';
+import type { Revision } from '@/types/revisions';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { isSystemCollection } from '@directus/system-data';
+import type { ContentVersion, User } from '@directus/types';
 import {
 	toggleFieldInSelection,
 	toggleAllFields,
@@ -20,8 +13,14 @@ import {
 	mergeMainItemKeysIntoRevision,
 	copyRelationalFieldsFromBaseToIncoming,
 	replaceArraysInMergeCustomizer,
+	getSystemCollectionItemUrl,
+	type ComparisonData,
+	type VersionComparisonResponse,
+	type RevisionComparisonResponse,
+	type NormalizedComparisonData,
 } from '../comparison-utils';
 import { mergeWith } from 'lodash';
+import { computed, ref, watch, type Ref } from 'vue';
 
 interface UseComparisonOptions {
 	comparisonData: Ref<ComparisonData | null>;

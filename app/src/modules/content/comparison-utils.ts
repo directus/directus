@@ -1,9 +1,10 @@
-import { RELATIONAL_TYPES } from '@directus/constants';
-import { ContentVersion, Field, RelationalType, User } from '@directus/types';
-import { Revision } from '@/types/revisions';
-import { isNil, isEqual, mergeWith } from 'lodash';
 import { i18n } from '@/lang';
+import type { Revision } from '@/types/revisions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { RELATIONAL_TYPES } from '@directus/constants';
+import { isSystemCollection } from '@directus/system-data';
+import type { ContentVersion, Field, RelationalType, User } from '@directus/types';
+import { isNil, isEqual, mergeWith } from 'lodash';
 
 export type ComparisonData = {
 	base: Record<string, any>;
@@ -423,10 +424,6 @@ export function normalizeComparisonData(
 		initialSelectedDeltaId: comparisonData.initialSelectedDeltaId || null,
 		fieldsWithDifferences,
 	};
-}
-
-export function isSystemCollection(collection: string): boolean {
-	return collection.startsWith('directus_');
 }
 
 export function getSystemCollectionEndpoint(collection: string): string | null {
