@@ -3,6 +3,7 @@ import api from '@/api';
 import { useExtension } from '@/composables/use-extension';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
+import { useFlows } from '@/composables/use-flows';
 import { usePermissionsStore } from '@/stores/permissions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -23,6 +24,7 @@ import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
 import { isSystemCollection } from '@directus/system-data';
+import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 
 type Item = {
 	[field: string]: any;
@@ -283,6 +285,15 @@ function clearFilters() {
 	filter.value = null;
 	search.value = null;
 }
+
+const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
+	collection,
+	selection,
+	location: ref('collection'),
+	onRefreshCallback: refresh,
+});
+
+provideRunManualFlow();
 </script>
 
 <template>
@@ -464,6 +475,8 @@ function clearFilters() {
 				>
 					<v-icon name="add" />
 				</v-button>
+
+				<flow-dialogs v-bind="flowDialogsContext" />
 			</template>
 
 			<template #navigation>
@@ -550,12 +563,7 @@ function clearFilters() {
 					:on-download="downloadHandler"
 					@refresh="refresh"
 				/>
-				<flow-sidebar-detail
-					location="collection"
-					:collection="collection"
-					:selection="selection"
-					@refresh="batchRefresh"
-				/>
+				<flow-sidebar-detail :manual-flows />
 			</template>
 
 			<v-dialog :model-value="deleteError !== null" @esc="deleteError = null">

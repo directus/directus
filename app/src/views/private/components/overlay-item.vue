@@ -21,6 +21,7 @@ import { computed, ref, toRefs, watch, unref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import OverlayItemContent from './overlay-item-content.vue';
+import { useFlows } from '@/composables/use-flows';
 
 export interface OverlayItemProps {
 	overlay?: 'drawer' | 'modal' | 'popover';
@@ -514,6 +515,17 @@ function popoverClickOutsideMiddleware(e: Event) {
 	if (!dialogs) return true;
 	return !dialogs.contains(e.target as Node);
 }
+
+const { provideRunManualFlow } = useFlows({
+	collection,
+	primaryKey: computed(() => primaryKey.value),
+	selection: ref([]),
+	location: ref('item'),
+	hasEdits,
+	onRefreshCallback: refresh,
+});
+
+provideRunManualFlow();
 </script>
 
 <template>
