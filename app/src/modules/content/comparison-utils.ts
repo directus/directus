@@ -2,6 +2,7 @@ import { i18n } from '@/lang';
 import type { Revision } from '@/types/revisions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { RELATIONAL_TYPES } from '@directus/constants';
+import formatTitle from '@directus/format-title';
 import type { ContentVersion, Field, RelationalType, User } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { isNil, isEqual, mergeWith } from 'lodash';
@@ -125,7 +126,7 @@ function calculateFieldDifferences(
 }
 
 export function getVersionDisplayName(version: ContentVersion): string {
-	return isNil(version.name) ? version.key : version.name;
+	return isNil(version.name) ? formatTitle(version.key) : version.name;
 }
 
 export function isRelationalField(field: Field): boolean {
