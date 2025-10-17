@@ -530,13 +530,15 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 					.button-text {
 						display: none;
 
-						@media (min-width: 706px) {
+						@media (min-width: 544px) {
 							display: inline;
 						}
 					}
 				}
 
 				.v-button {
+					--v-button-min-width: 0;
+
 					flex: 1;
 
 					:deep(.button) {
@@ -550,9 +552,13 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 					.v-icon {
 						margin: 0;
 
-						@media (min-width: 706px) {
+						@media (min-width: 544px) {
 							margin-inline-end: 8px;
 						}
+					}
+
+					@media (min-width: 544px) {
+						--v-button-min-width: 140px;
 					}
 				}
 			}
