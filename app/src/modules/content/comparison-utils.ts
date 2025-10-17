@@ -137,7 +137,6 @@ function isAutoDateField(field: Field): boolean {
 }
 
 function isUserReferenceField(field: Field): boolean {
-	// Treat system-managed user reference fields like relational for comparison purposes
 	return field.meta?.special?.some((type) => type === 'user-created' || type === 'user-updated') ?? false;
 }
 
