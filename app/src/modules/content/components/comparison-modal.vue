@@ -359,8 +359,9 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 
 <style lang="scss" scoped>
 .comparison-modal {
-	--comparison-modal--height: max(100% - 8vw, 100% - 120px);
-	--comparison-modal--width: max(100% - 8vw, 100% - 120px);
+	--header-bar-height: 60px;
+	--comparison-modal--width: max(100% - 8vw, 100% - var(--header-bar-height) * 2);
+	--comparison-modal--height: var(--comparison-modal--width);
 	--comparison-modal--padding-x: 28px;
 	--comparison-modal--padding-y: 20px;
 	--comparison-modal--border-radius: var(--theme--border-radius);
