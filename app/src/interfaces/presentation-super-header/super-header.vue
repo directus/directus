@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
-import formatTitle from '@directus/format-title';
-import { computed, inject, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, inject, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { render } from 'micromustache';
 import { translate } from './temp/translate-literal';
-import { useDrawerDialog } from './temp/useDrawerDialog';
-import { useFlows } from './temp/useFlows';
-import { useRouter } from 'vue-router';
 import dompurify from 'dompurify';
+import { injectRunManualFlow } from '@/composables/use-flows';
 
 export interface FlowIdentifier {
 	collection: string;
@@ -52,7 +49,6 @@ const props = withDefaults(
 const { t } = useI18n();
 
 const fieldsStore = useFieldsStore();
-const router = useRouter();
 
 const fields = computed(() => {
 	return fieldsStore.getFieldsForCollection(props.collection);
@@ -64,17 +60,7 @@ const isLoading = ref(false);
 
 const primaryKey = computed(() => props.primaryKey ?? null);
 
-const showReloadDialog = ref(false);
-
-const flowFormData = ref<Record<string, any>>({});
-
 const componentRoot = ref<HTMLElement | null>(null);
-
-const confirmReload = () => {
-	showReloadDialog.value = true;
-};
-
-const isDialogActive = () => !!displayConfirmDialog.value;
 
 const combinedItemData = computed(() => {
 	const result = { ...itemValues.value };
@@ -91,10 +77,6 @@ const combinedItemData = computed(() => {
 
 	return result;
 });
-
-function reloadPage() {
-	router.go(0);
-}
 
 const expanded = ref(false);
 const showHelpModal = ref(false);
@@ -163,11 +145,9 @@ async function handleActionClick(action: Action) {
 			effectiveValues.id = primaryKey.value;
 		}
 
-		runFlow(action.flow, effectiveValues, false);
+		runManualFlow(action.flow.key);
 	}
 }
-
-const { dialogKeepBehind, initializeDrawerDetection } = useDrawerDialog(isDialogActive);
 
 const helpText = computed(() => {
 	if (props.enableHelpTranslations && props.helpTranslationsString) {
@@ -179,45 +159,6 @@ const helpText = computed(() => {
 	}
 
 	return dompurify.sanitize(props.help);
-});
-
-const { runFlow, runningFlows, confirmRunFlow, resetConfirm, executeConfirmedFlow, getFlow } = useFlows(
-	props.collection,
-	primaryKey,
-	confirmReload,
-);
-
-const displayConfirmDialog = computed(() => !!confirmRunFlow.value && !!confirmDetails.value);
-
-const confirmDetails = computed(() => {
-	if (!confirmRunFlow.value) return null;
-
-	const flow = getFlow(confirmRunFlow.value);
-	if (!flow) return null;
-
-	if (!flow.options?.requireConfirmation) return null;
-
-	const formattedFields = (flow.options.fields ?? []).map((field: Record<string, any>) => ({
-		...field,
-		name: field.name || (field.field ? formatTitle(field.field) : ''),
-	}));
-
-	return {
-		description: flow.options.confirmationDescription || t('run_flow_confirm'),
-		fields: formattedFields,
-	};
-});
-
-const resetFlowForm = () => {
-	flowFormData.value = {};
-};
-
-onMounted(() => {
-	const cleanup = initializeDrawerDetection(componentRoot.value);
-
-	if (cleanup) {
-		onUnmounted(cleanup);
-	}
 });
 
 function getAllRequiredTemplateFields(): string[] {
@@ -261,6 +202,8 @@ watch(
 	},
 	{ immediate: true },
 );
+
+const { runManualFlow } = injectRunManualFlow();
 </script>
 
 <template>
@@ -308,8 +251,7 @@ watch(
 							v-else-if="primaryAction.actionType === 'flow' && primaryAction.flow"
 							:kind="primaryAction.type"
 							small
-							:loading="runningFlows.includes(primaryAction.flow.key)"
-							@click="handleActionClick(primaryAction)"
+							@click="runManualFlow(primaryAction.flow.key)"
 						>
 							{{ primaryAction.label }}
 							<v-icon v-if="primaryAction.icon" :name="primaryAction.icon" right />
@@ -385,7 +327,7 @@ watch(
 		</transition-expand>
 
 		<!-- Help Modal -->
-		<v-dialog v-model="showHelpModal" :keep-behind="dialogKeepBehind">
+		<v-dialog v-model="showHelpModal" keep-behind>
 			<v-card class="help-modal">
 				<v-button icon class="close-button" secondary small @click="showHelpModal = false">
 					<v-icon name="close" />
@@ -397,63 +339,6 @@ watch(
 				<v-card-actions>
 					<v-button @click="showHelpModal = false">
 						{{ t('dismiss') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-dialog v-model="displayConfirmDialog" :keep-behind="dialogKeepBehind" @esc="resetConfirm">
-			<v-card>
-				<v-card-title>{{ confirmDetails!.description ?? t('run_flow_confirm') }}</v-card-title>
-				<v-card-text class="confirm-form">
-					<v-form
-						v-if="confirmDetails?.fields && confirmDetails.fields.length > 0"
-						v-model="flowFormData"
-						:fields="confirmDetails.fields"
-						primary-key="+"
-						autofocus
-					/>
-				</v-card-text>
-				<v-card-actions>
-					<v-button
-						secondary
-						@click="
-							() => {
-								resetConfirm();
-								resetFlowForm();
-							}
-						"
-					>
-						{{ t('cancel') }}
-					</v-button>
-					<v-button
-						@click="
-							() => {
-								executeConfirmedFlow(confirmRunFlow || '', flowFormData);
-								resetFlowForm();
-							}
-						"
-					>
-						{{ t('run_flow') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-dialog v-model="showReloadDialog" :keep-behind="dialogKeepBehind">
-			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>
-					{{
-						'The item has been updated. Would you like to reload to see the latest changes? Any unsaved changes will be lost.'
-					}}
-				</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="showReloadDialog = false">
-						{{ t('dismiss') || 'Dismiss' }}
-					</v-button>
-					<v-button warning @click="reloadPage">
-						{{ t('reload_page') || 'Reload Page' }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -568,17 +453,6 @@ watch(
 .collapse-button-container {
 	display: flex;
 	justify-content: flex-end;
-}
-
-.confirm-form {
-	--theme--form--column-gap: 24px;
-	--theme--form--row-gap: 24px;
-
-	margin-block-start: var(--v-card-padding, 16px);
-
-	:deep(.type-label) {
-		font-size: 1rem;
-	}
 }
 
 .help-modal {

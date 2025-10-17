@@ -21,7 +21,6 @@ export default defineInterface({
 			meta: {
 				width: 'full',
 				interface: 'system-display-template',
-				note: '$t:interfaces.super-header.title.note',
 				options: {
 					collectionName: collection,
 				},
@@ -34,7 +33,6 @@ export default defineInterface({
 			meta: {
 				width: 'half',
 				interface: 'select-color',
-				note: '$t:interfaces.super-header.color.note',
 			},
 		},
 		{
@@ -44,7 +42,6 @@ export default defineInterface({
 			meta: {
 				width: 'half',
 				interface: 'select-icon',
-				note: '$t:interfaces.super-header.icon.note',
 			},
 		},
 		{
@@ -54,7 +51,6 @@ export default defineInterface({
 			meta: {
 				width: 'full',
 				interface: 'system-display-template',
-				note: '$t:interfaces.super-header.subtitle.note',
 				options: {
 					collectionName: collection,
 				},
@@ -80,7 +76,6 @@ export default defineInterface({
 			meta: {
 				width: 'half',
 				interface: 'select-dropdown',
-				note: '$t:interfaces.super-header.help_display_mode.note',
 				options: {
 					choices: [
 						{ text: '$t:interfaces.super-header.help_display_mode.inline', value: 'inline' },
@@ -95,7 +90,6 @@ export default defineInterface({
 			type: 'boolean',
 			meta: {
 				width: 'half',
-				note: '$t:interfaces.super-header.enable_help_translations.note',
 			},
 			schema: {
 				default_value: false,
@@ -108,7 +102,6 @@ export default defineInterface({
 			meta: {
 				width: 'full',
 				interface: 'system-input-translated-string',
-				note: '$t:interfaces.super-header.help_translations_string.note',
 				hidden: true,
 				conditions: [
 					{
