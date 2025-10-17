@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { injectRunManualFlow } from '@/composables/use-flows';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useApi } from '@directus/composables';
 import { PrimaryKey } from '@directus/types';
@@ -96,6 +97,7 @@ const linksParsed = computed<ParsedLink[]>(() =>
 			actionType: link.actionType,
 			to: isInternalLink ? interpolatedUrl : undefined,
 			href: isInternalLink ? undefined : interpolatedUrl,
+			flow: link.actionType === 'flow' ? link.flow : undefined,
 		};
 	}),
 );
@@ -114,23 +116,40 @@ function getRelatedFieldsFromTemplates() {
 
 	return relationalFields;
 }
+
+const { runManualFlow } = injectRunManualFlow();
 </script>
 
 <template>
 	<div class="presentation-links">
-		<v-button
-			v-for="(link, index) in linksParsed"
-			:key="index"
-			class="action"
-			:class="[link.type]"
-			:secondary="link.type !== 'primary'"
-			:icon="!link.label"
-			:href="link.href"
-			:to="link.to"
-		>
-			<v-icon v-if="link.icon" left :name="link.icon" />
-			<span v-if="link.label">{{ link.label }}</span>
-		</v-button>
+		<template v-for="(link, index) in linksParsed">
+			<v-button
+				v-if="link.actionType === 'link'"
+				:key="`url-${index}`"
+				class="action"
+				:class="[link.type]"
+				:secondary="link.type !== 'primary'"
+				:icon="!link.label"
+				:href="link.href"
+				:to="link.to"
+			>
+				<v-icon v-if="link.icon" left :name="link.icon" />
+				<span v-if="link.label">{{ link.label }}</span>
+			</v-button>
+
+			<v-button
+				v-else-if="link.flow"
+				:key="`flow-${index}`"
+				class="action"
+				:class="[link.type]"
+				:secondary="link.type !== 'primary'"
+				:icon="!link.label"
+				@click="runManualFlow(link.flow)"
+			>
+				<v-icon v-if="link.icon" left :name="link.icon" />
+				<span v-if="link.label">{{ link.label }}</span>
+			</v-button>
+		</template>
 	</div>
 </template>
 
