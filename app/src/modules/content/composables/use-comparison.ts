@@ -13,7 +13,7 @@ import {
 	mergeMainItemKeysIntoRevision,
 	copyRelationalFieldsFromBaseToIncoming,
 	replaceArraysInMergeCustomizer,
-	getSystemCollectionItemUrl,
+	getItemEndpoint,
 	type ComparisonData,
 	type VersionComparisonResponse,
 	type RevisionComparisonResponse,
@@ -385,7 +385,7 @@ export function useComparison(options: UseComparisonOptions) {
 			const { collection, item } = revision as { collection: string; item: string | number };
 
 			if (isSystemCollection(collection)) {
-				const systemEndpoint = getSystemCollectionItemUrl(collection, item);
+				const systemEndpoint = getItemEndpoint(collection, item);
 
 				if (systemEndpoint) {
 					try {

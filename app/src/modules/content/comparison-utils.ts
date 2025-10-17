@@ -2,8 +2,8 @@ import { i18n } from '@/lang';
 import type { Revision } from '@/types/revisions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { RELATIONAL_TYPES } from '@directus/constants';
-import { isSystemCollection } from '@directus/system-data';
 import type { ContentVersion, Field, RelationalType, User } from '@directus/types';
+import { getEndpoint } from '@directus/utils';
 import { isNil, isEqual, mergeWith } from 'lodash';
 
 export type ComparisonData = {
@@ -426,19 +426,8 @@ export function normalizeComparisonData(
 	};
 }
 
-export function getSystemCollectionEndpoint(collection: string): string | null {
-	if (!isSystemCollection(collection)) {
-		return null;
-	}
-
-	const endpoint = collection.replace('directus_', '/');
-	return endpoint;
-}
-
-export function getSystemCollectionItemUrl(collection: string, itemId: string | number): string | null {
-	const endpoint = getSystemCollectionEndpoint(collection);
-	if (!endpoint) return null;
-
+export function getItemEndpoint(collection: string, itemId: string | number): string | null {
+	const endpoint = getEndpoint(collection);
 	return `${endpoint}/${itemId}`;
 }
 

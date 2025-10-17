@@ -2,7 +2,7 @@ import api from '@/api';
 import {
 	computeDifferentFields,
 	replaceArraysInMergeCustomizer,
-	getSystemCollectionItemUrl,
+	getItemEndpoint,
 } from '@/modules/content/comparison-utils';
 import { useFieldsStore } from '@/stores/fields';
 import { useServerStore } from '@/stores/server';
@@ -168,7 +168,7 @@ export function useRevisions(
 					versionDeltaForComparison = versionCompare.data?.data?.current || {};
 				} else {
 					if (isSystemCollection(collection.value)) {
-						const systemEndpoint = getSystemCollectionItemUrl(collection.value, unref(primaryKey));
+						const systemEndpoint = getItemEndpoint(collection.value, unref(primaryKey));
 
 						if (systemEndpoint) {
 							try {
