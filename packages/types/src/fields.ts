@@ -53,6 +53,7 @@ export type FieldMeta = {
 	conditions: Condition[] | null;
 	validation: Filter | null;
 	validation_message: string | null;
+	searchable: boolean;
 	system?: true;
 	clear_hidden_value_on_save?: boolean;
 };

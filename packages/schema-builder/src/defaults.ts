@@ -28,6 +28,7 @@ export const FIELD_DEFAULTS = {
 	note: null,
 	validation: null,
 	alias: false,
+	searchable: true,
 } satisfies FieldDefaults;
 
 export const INTEGER_FIELD = {
