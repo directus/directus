@@ -83,14 +83,14 @@ const showSidebarToggle = computed(() => {
 .header-bar {
 	position: sticky;
 	inset-block-start: 0;
-	z-index: 2;
+	z-index: 4;
 	background-color: var(--theme--header--background);
 	inline-size: 100%;
 	block-size: calc(var(--header-bar-height) + var(--theme--header--border-width));
 	/* TODO re-add border support themed */
 	display: flex;
 	align-items: center;
-	gap: var(--content-padding);
+	gap: 12px;
 	padding-inline: var(--content-padding);
 	box-shadow: none;
 

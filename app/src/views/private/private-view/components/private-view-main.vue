@@ -102,6 +102,10 @@ const splitterCollapsed = computed({
 
 	--content-padding: 12px;
 	--content-padding-bottom: 60px;
+
+	@media (width > 640px) {
+		--content-padding: 20px;
+	}
 }
 
 .main-split {

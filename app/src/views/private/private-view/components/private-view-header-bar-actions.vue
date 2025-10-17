@@ -9,7 +9,7 @@
 </template>
 
 <style scoped>
-@media (width < 640px) {
+@media (width <= 640px) {
 	.actions-container {
 		position: fixed;
 		inline-size: 100%;
@@ -24,7 +24,7 @@
 	}
 }
 
-@media (width >= 640px) {
+@media (width > 640px) {
 	.actions-container {
 		display: contents;
 	}
