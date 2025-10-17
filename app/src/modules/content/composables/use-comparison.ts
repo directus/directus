@@ -2,7 +2,6 @@ import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
 import type { Revision } from '@/types/revisions';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { isSystemCollection } from '@directus/system-data';
 import type { ContentVersion, User } from '@directus/types';
 import {
 	toggleFieldInSelection,
@@ -383,28 +382,14 @@ export function useComparison(options: UseComparisonOptions) {
 			versionDelta = versionComparison.incoming || {};
 		} else if ('collection' in revision && 'item' in revision) {
 			const { collection, item } = revision as { collection: string; item: string | number };
+			const itemEndpoint = getItemEndpoint(collection, item);
 
-			if (isSystemCollection(collection)) {
-				const systemEndpoint = getItemEndpoint(collection, item);
-
-				if (systemEndpoint) {
-					try {
-						const itemResponse = await api.get(systemEndpoint);
-						mainItem = itemResponse.data?.data || {};
-					} catch {
-						mainItem = {};
-					}
-				} else {
-					mainItem = {};
-				}
-			} else {
-				try {
-					const itemResponse = await api.get(`/items/${collection}/${item}`);
-					mainItem = itemResponse.data?.data || {};
-				} catch (error: any) {
-					unexpectedError(error);
-					mainItem = {};
-				}
+			try {
+				const itemResponse = await api.get(itemEndpoint);
+				mainItem = itemResponse.data?.data || {};
+			} catch (error: any) {
+				unexpectedError(error);
+				mainItem = {};
 			}
 		}
 
