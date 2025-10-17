@@ -4,7 +4,7 @@ import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import UsersInvite from '@/views/private/components/users-invite.vue';
 import { Role } from '@directus/types';
@@ -28,7 +28,7 @@ const serverStore = useServerStore();
 const userInviteModalActive = ref(false);
 const { primaryKey } = toRefs(props);
 
-const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const { edits, hasEdits, item, saving, loading, save, remove, deleting, validationErrors } = useItem<Role>(
 	ref('directus_roles'),
@@ -63,7 +63,7 @@ async function saveAndStay() {
 	try {
 		await save();
 		await userStore.hydrate();
-		revisionsDrawerDetailRef.value?.refresh?.();
+		revisionsSidebarDetailRef.value?.refresh?.();
 	} catch {
 		// `save` shows unexpected error dialog
 	}
@@ -199,7 +199,7 @@ function discardAndStay() {
 
 		<template #sidebar>
 			<role-info-sidebar-detail :role="item" />
-			<revisions-drawer-detail ref="revisionsDrawerDetailRef" collection="directus_roles" :primary-key="primaryKey" />
+			<revisions-sidebar-detail ref="revisionsSidebarDetailRef" collection="directus_roles" :primary-key="primaryKey" />
 		</template>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
