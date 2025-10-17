@@ -384,9 +384,7 @@ export function useComparison(options: UseComparisonOptions) {
 		} else if ('collection' in revision && 'item' in revision) {
 			const { collection, item } = revision as { collection: string; item: string | number };
 
-			const isSystem = isSystemCollection(collection);
-
-			if (isSystem) {
+			if (isSystemCollection(collection)) {
 				const systemEndpoint = getSystemCollectionItemUrl(collection, item);
 
 				if (systemEndpoint) {
