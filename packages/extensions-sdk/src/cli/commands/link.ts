@@ -31,7 +31,7 @@ export default async function link(extensionsPath: string): Promise<void> {
 
 	const extensionManifest = ExtensionManifest.parse(manifestFile);
 
-	const extensionName = extensionManifest.name;
+	const extensionName = extensionManifest.name.replaceAll('/', '-');
 
 	if (!extensionName) {
 		log(`Extension name not found in package.json`, 'error');
