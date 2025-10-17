@@ -1,16 +1,9 @@
-import { ContentVersion, Field, User } from '@directus/types';
-import { Revision } from '@/types/revisions';
-import { computed, ref, watch, type Ref } from 'vue';
 import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { useFieldsStore } from '@/stores/fields';
-import { isSystemCollection, getSystemCollectionItemUrl } from '../comparison-utils';
-import type {
-	ComparisonData,
-	VersionComparisonResponse,
-	RevisionComparisonResponse,
-	NormalizedComparisonData,
-} from '../comparison-utils';
+import type { Revision } from '@/types/revisions';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { isSystemCollection } from '@directus/system-data';
+import type { ContentVersion, User } from '@directus/types';
 import {
 	toggleFieldInSelection,
 	toggleAllFields,
@@ -18,9 +11,16 @@ import {
 	areSomeFieldsSelected,
 	normalizeComparisonData as normalizeComparisonDataUtil,
 	mergeMainItemKeysIntoRevision,
-	copyRelationalFieldsFromBaseToIncoming,
+	copySpecialFieldsFromBaseToIncoming,
+	replaceArraysInMergeCustomizer,
+	getItemEndpoint,
+	type ComparisonData,
+	type VersionComparisonResponse,
+	type RevisionComparisonResponse,
+	type NormalizedComparisonData,
 } from '../comparison-utils';
 import { mergeWith } from 'lodash';
+import { computed, ref, watch, type Ref } from 'vue';
 
 interface UseComparisonOptions {
 	comparisonData: Ref<ComparisonData | null>;
@@ -128,7 +128,7 @@ export function useComparison(options: UseComparisonOptions) {
 			if (comparisonData.value?.comparisonType === 'revision') {
 				const selectedId = normalized?.initialSelectedDeltaId ?? null;
 
-				const revisions = (comparisonData.value.selectableDeltas as any[]) || [];
+				const revisions = (comparisonData.value.selectableDeltas as Revision[]) || [];
 
 				const matching =
 					typeof selectedId !== 'undefined' && selectedId !== null
@@ -264,23 +264,23 @@ export function useComparison(options: UseComparisonOptions) {
 	async function normalizeComparisonData(
 		id: string,
 		type: 'version',
-		currentVersion?: Ref<ContentVersion | null>,
-		versions?: Ref<ContentVersion[] | null>,
-		revisions?: Ref<Revision[] | null>,
+		currentVersion?: ContentVersion | null,
+		versions?: ContentVersion[] | null,
+		revisions?: Revision[] | null,
 	): Promise<ComparisonData>;
 	async function normalizeComparisonData(
 		id: number,
 		type: 'revision',
-		currentVersion?: Ref<ContentVersion | null>,
-		versions?: Ref<ContentVersion[] | null>,
-		revisions?: Ref<Revision[] | null>,
+		currentVersion?: ContentVersion | null,
+		versions?: ContentVersion[] | null,
+		revisions?: Revision[] | null,
 	): Promise<ComparisonData>;
 	async function normalizeComparisonData(
 		id: string | number,
 		type: 'version' | 'revision',
-		currentVersion?: Ref<ContentVersion | null>,
-		versions?: Ref<ContentVersion[] | null>,
-		revisions?: Ref<Revision[] | null>,
+		currentVersion?: ContentVersion | null,
+		versions?: ContentVersion[] | null,
+		revisions?: Revision[] | null,
 	): Promise<ComparisonData> {
 		if (type === 'version') {
 			return await normalizeVersionComparison(id as string, currentVersion, versions);
@@ -291,8 +291,8 @@ export function useComparison(options: UseComparisonOptions) {
 
 	async function normalizeVersionComparison(
 		versionId: string,
-		currentVersion?: Ref<ContentVersion | null>,
-		versions?: Ref<ContentVersion[] | null>,
+		currentVersion?: ContentVersion | null,
+		versions?: ContentVersion[] | null,
 	): Promise<ComparisonData> {
 		const version = getVersionFromComposable(versionId, currentVersion, versions);
 
@@ -305,8 +305,8 @@ export function useComparison(options: UseComparisonOptions) {
 
 	async function normalizeRevisionComparison(
 		revisionId: number,
-		currentVersion?: Ref<ContentVersion | null>,
-		revisions?: Ref<Revision[] | null>,
+		currentVersion?: ContentVersion | null,
+		revisions?: Revision[] | null,
 	): Promise<ComparisonData> {
 		const revision = getRevisionFromComposable(revisionId, revisions);
 
@@ -319,23 +319,23 @@ export function useComparison(options: UseComparisonOptions) {
 
 	function getVersionFromComposable(
 		versionId: string,
-		currentVersion?: Ref<ContentVersion | null>,
-		versions?: Ref<ContentVersion[] | null>,
+		currentVersion?: ContentVersion | null,
+		versions?: ContentVersion[] | null,
 	): ContentVersion | null {
-		if (currentVersion?.value && currentVersion.value.id === versionId) {
-			return currentVersion.value;
+		if (currentVersion?.id === versionId) {
+			return currentVersion;
 		}
 
-		if (versions?.value) {
-			return versions.value.find((version) => version.id === versionId) || null;
+		if (versions) {
+			return versions.find((version) => version.id === versionId) || null;
 		}
 
 		return null;
 	}
 
-	function getRevisionFromComposable(revisionId: number, revisions?: Ref<Revision[] | null>): Revision | null {
-		if (revisions?.value) {
-			return revisions.value.find((revision) => revision.id === revisionId) || null;
+	function getRevisionFromComposable(revisionId: number, revisions?: Revision[] | null): Revision | null {
+		if (revisions) {
+			return revisions.find((revision) => revision.id === revisionId) || null;
 		}
 
 		return null;
@@ -344,29 +344,18 @@ export function useComparison(options: UseComparisonOptions) {
 	async function fetchVersionComparison(
 		versionId: string,
 		version?: ContentVersion,
-		versions?: Ref<ContentVersion[] | null>,
+		versions?: ContentVersion[] | null,
 	): Promise<ComparisonData> {
 		try {
 			const response = await api.get(`/versions/${versionId}/compare`);
 			const data: VersionComparisonResponse = response.data.data;
-
-			// Ensure the incoming side is a full item: merge main with version delta
-			const replaceArrays = (objValue: any, srcValue: any) => {
-				if (Array.isArray(objValue) || Array.isArray(srcValue)) {
-					return srcValue;
-				}
-
-				return undefined;
-			};
-
 			const base = data.main || {};
-
-			const incomingMerged = mergeWith({}, base, data.current || {}, replaceArrays);
+			const incomingMerged = mergeWith({}, base, data.current || {}, replaceArraysInMergeCustomizer);
 
 			return {
 				base,
 				incoming: incomingMerged,
-				selectableDeltas: versions?.value ?? (version ? [version] : []),
+				selectableDeltas: versions ?? (version ? [version] : []),
 				comparisonType: 'version' as const,
 				outdated: data.outdated,
 				mainHash: data.mainHash,
@@ -380,8 +369,8 @@ export function useComparison(options: UseComparisonOptions) {
 
 	async function fetchRevisionComparison(
 		revisionId: number,
-		currentVersion?: Ref<ContentVersion | null>,
-		revisions?: Ref<Revision[] | null>,
+		currentVersion?: ContentVersion | null,
+		revisions?: Revision[] | null,
 	): Promise<ComparisonData> {
 		try {
 			const response = await api.get(`/revisions/${revisionId}`, {
@@ -415,24 +404,22 @@ export function useComparison(options: UseComparisonOptions) {
 	 */
 	async function buildRevisionComparison(
 		revision: Revision | RevisionComparisonResponse,
-		currentVersion?: Ref<ContentVersion | null>,
-		revisions?: Ref<Revision[] | null>,
+		currentVersion?: ContentVersion | null,
+		revisions?: Revision[] | null,
 	): Promise<ComparisonData> {
 		// Resolve main item and current version delta
 		let mainItem: Record<string, any> = {};
 		let versionDelta: Record<string, any> = {};
 
-		if (currentVersion?.value) {
-			const versionComparison = await fetchVersionComparison(currentVersion.value.id);
+		if (currentVersion) {
+			const versionComparison = await fetchVersionComparison(currentVersion.id);
 			mainItem = versionComparison.base || {};
 			versionDelta = versionComparison.incoming || {};
 		} else if ('collection' in revision && 'item' in revision) {
 			const { collection, item } = revision as { collection: string; item: string | number };
 
-			const isSystem = isSystemCollection(collection);
-
-			if (isSystem) {
-				const systemEndpoint = getSystemCollectionItemUrl(collection, item);
+			if (isSystemCollection(collection)) {
+				const systemEndpoint = getItemEndpoint(collection, item);
 
 				if (systemEndpoint) {
 					try {
@@ -455,32 +442,22 @@ export function useComparison(options: UseComparisonOptions) {
 			}
 		}
 
-		let fields: Field[] = [];
+		const baseMerged = mergeWith({}, mainItem, versionDelta || {}, replaceArraysInMergeCustomizer);
+
 		const targetCollection = revision.collection || collection?.value || '';
-		fields = fieldsStore.getFieldsForCollection(targetCollection);
-
-		// for field values that are arrays, we want to replace the array with the source array instead of merging them together
-		const replaceArrays = (objValue: any, srcValue: any) => {
-			if (Array.isArray(objValue) || Array.isArray(srcValue)) {
-				return srcValue;
-			}
-
-			return undefined;
-		};
-
-		const baseMerged = mergeWith({}, mainItem, versionDelta || {}, replaceArrays);
+		const fields = fieldsStore.getFieldsForCollection(targetCollection);
 
 		// Merge main item keys into revision data with default values for missing fields
 		const revisionData = revision.data || {};
 		const revisionDataWithDefaults = mergeMainItemKeysIntoRevision(revisionData, baseMerged, fields);
-		const incomingMerged = mergeWith({}, revisionDataWithDefaults, replaceArrays);
+		const incomingMerged = mergeWith({}, revisionDataWithDefaults, replaceArraysInMergeCustomizer);
 
 		if ('activity' in revision && (revision as any)?.activity?.timestamp) {
 			incomingMerged.date_updated = (revision as any).activity.timestamp;
 		}
 
-		const incomingWithRelationalFields = copyRelationalFieldsFromBaseToIncoming(baseMerged, incomingMerged, fields);
-		const revisionsList = revisions?.value || [];
+		const incomingWithRelationalFields = copySpecialFieldsFromBaseToIncoming(baseMerged, incomingMerged, fields);
+		const revisionsList = revisions || [];
 		const revisionId = 'id' in revision ? revision.id : null;
 
 		return {
@@ -490,7 +467,7 @@ export function useComparison(options: UseComparisonOptions) {
 			comparisonType: 'revision',
 			outdated: false,
 			mainHash: '',
-			currentVersion: currentVersion?.value || null,
+			currentVersion: currentVersion || null,
 			initialSelectedDeltaId: revisionId || undefined,
 		};
 	}
