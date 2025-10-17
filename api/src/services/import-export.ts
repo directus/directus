@@ -276,7 +276,7 @@ export class ImportService {
 								reject();
 							}
 
-							return null;
+							return;
 						}
 					});
 
