@@ -57,7 +57,7 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<private-view :title="t('settings_ai')">
+	<private-view :title="t('settings_ai')" icon="smart_toy">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:append>

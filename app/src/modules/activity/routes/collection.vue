@@ -40,6 +40,7 @@ const roleFilter = ref<Filter | null>(null);
 	>
 		<private-view
 			:title="t('activity_feed')"
+			icon="access_time"
 			:small-header="currentLayout?.smallHeader"
 			:header-shadow="currentLayout?.headerShadow"
 		>

@@ -127,7 +127,7 @@ function onFlowDrawerCompletion(id: string) {
 </script>
 
 <template>
-	<private-view :title="t('flows')">
+	<private-view :title="t('flows')" icon="bolt">
 		<template #headline>
 			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
 		</template>

@@ -376,6 +376,7 @@ function useFileUpload() {
 	>
 		<private-view
 			:title="title"
+			icon="folder"
 			:class="{ dragging }"
 			:small-header="currentLayout?.smallHeader"
 			:header-shadow="currentLayout?.headerShadow"

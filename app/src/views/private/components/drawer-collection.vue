@@ -159,6 +159,7 @@ function useActions() {
 		<v-drawer
 			v-model="internalActive"
 			:title="t('select_item')"
+			:icon="collectionInfo!.icon"
 			:small-header="currentLayout?.smallHeader"
 			:header-shadow="currentLayout?.headerShadow"
 			v-bind="drawerProps"

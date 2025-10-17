@@ -131,7 +131,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 </script>
 
 <template>
-	<private-view :title="t('settings_data_model')">
+	<private-view :title="t('settings_data_model')" icon="database">
 		<template #headline>
 			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
 		</template>

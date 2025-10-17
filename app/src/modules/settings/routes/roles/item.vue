@@ -115,7 +115,7 @@ function discardAndStay() {
 </script>
 
 <template>
-	<private-view :title="loading ? t('loading') : t('editing_role', { role: item && item.name })">
+	<private-view :title="loading ? t('loading') : t('editing_role', { role: item && item.name })" show-back>
 		<template #headline>
 			<v-breadcrumb :items="[{ name: t('settings_roles'), to: '/settings/roles' }]" />
 		</template>

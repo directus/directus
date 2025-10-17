@@ -65,7 +65,7 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<private-view :title="t('settings_project')">
+	<private-view :title="t('settings_project')" icon="tune">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #actions>

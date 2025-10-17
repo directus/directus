@@ -279,7 +279,7 @@ function revert(values: Record<string, any>) {
 </script>
 
 <template>
-	<private-view :title="title">
+	<private-view :title="title" show-back>
 		<template #headline>
 			<v-breadcrumb :items="breadcrumb" />
 		</template>

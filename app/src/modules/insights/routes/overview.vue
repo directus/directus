@@ -195,7 +195,7 @@ async function batchDelete() {
 </script>
 
 <template>
-	<private-view :title="t('insights')">
+	<private-view :title="t('insights')" icon="insights">
 		<template #navigation>
 			<insights-navigation @create="createDialogActive = true" />
 		</template>

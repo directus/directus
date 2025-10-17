@@ -150,7 +150,7 @@ function navigateToRole({ item }: { item: Role }) {
 </script>
 
 <template>
-	<private-view :title="t('settings_roles')">
+	<private-view :title="t('settings_roles')" icon="group">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #actions>

@@ -71,7 +71,7 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<private-view :title="formatTitle(collection)">
+	<private-view :title="formatTitle(collection)" show-back>
 		<template #headline>
 			<v-breadcrumb :items="[{ name: t('settings_data_model'), to: '/settings/data-model' }]" />
 		</template>

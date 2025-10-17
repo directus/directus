@@ -39,7 +39,7 @@ watchEffect(async () => {
 </script>
 
 <template>
-	<private-view :title="t('marketplace')">
+	<private-view :title="t('marketplace')" show-back>
 		<template #navigation>
 			<settings-navigation />
 		</template>
