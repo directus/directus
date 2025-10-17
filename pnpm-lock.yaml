@@ -199,8 +199,8 @@ catalogs:
       specifier: 7.2.0
       version: 7.2.0
     '@tus/server':
-      specifier: 1.10.2
-      version: 1.10.2
+      specifier: 2.3.0
+      version: 2.3.0
     '@tus/utils':
       specifier: 0.5.1
       version: 0.5.1
@@ -1048,7 +1048,7 @@ importers:
         version: 3.0.2(rollup@4.46.2)
       '@tus/server':
         specifier: 'catalog:'
-        version: 1.10.2
+        version: 2.3.0
       '@tus/utils':
         specifier: 'catalog:'
         version: 0.5.1
@@ -6158,13 +6158,17 @@ packages:
   '@turf/meta@7.2.0':
     resolution: {integrity: sha512-igzTdHsQc8TV1RhPuOLVo74Px/hyPrVgVOTgjWQZzt3J9BVseCdpfY/0cJBdlSRI4S/yTmmHl7gAqjhpYH5Yaw==}
 
-  '@tus/server@1.10.2':
-    resolution: {integrity: sha512-ig5MM886fDTSJ8l37kc/cWSEjl0eaaSv2JtksPSfzrwqx2UXdXwpCwBTLoonJIpMVCdY8nBLNRSCzVRG88KSVA==}
-    engines: {node: '>=16'}
+  '@tus/server@2.3.0':
+    resolution: {integrity: sha512-7sj4Q3EPvMjS5z9JaNOZ8gvT6HZvDeg/RjEP0ebbfpAo1V095ivkzpKqV/mDIK/ioBwOKj+bOhTtNuueTjVCfw==}
+    engines: {node: '>=20.19.0'}
 
   '@tus/utils@0.5.1':
     resolution: {integrity: sha512-2crDHBKX0hKZfQXgTF5QIQSccg5fzn8L+oxpVRWAuBbeAdAkBIm4zVXV/LfyuQ1FO5zXW7iV/BI9zNWG5merHQ==}
     engines: {node: '>=16'}
+
+  '@tus/utils@0.6.0':
+    resolution: {integrity: sha512-GpMpAQfVdC4UDhpsZrRPjGpdXg+JW5MquqMqtObUVsORwLBV6XI67iTT5be+z98THdqb6dl3bTLIElIdgPeo2g==}
+    engines: {node: '>=20.19.0'}
 
   '@tybys/wasm-util@0.10.0':
     resolution: {integrity: sha512-VyyPYFlOMNylG45GoAe0xDoLwWuowvf92F9kySqzYh8vmYm7D2u4iUJKa1tOUpS70Ku13ASrOkS4ScXFsTaCNQ==}
@@ -7774,6 +7778,9 @@ packages:
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
+
+  cookie-es@2.0.0:
+    resolution: {integrity: sha512-RAj4E421UYRgqokKUmotqAwuplYw15qtdXfY+hGzgCJ/MBjCVZcSoHK/kH9kocfjRjcDME7IiDWR/1WX1TM2Pg==}
 
   cookie-parser@1.4.7:
     resolution: {integrity: sha512-nGUvgXnotP3BsjiLX2ypbQnWoGUPIIfHQNZkkC668ntrzGWEZVW70HDEB1qnNGMicPje6EttlIgzo51YSwNQGw==}
@@ -11846,6 +11853,9 @@ packages:
   set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
 
+  set-cookie-parser@2.7.1:
+    resolution: {integrity: sha512-IOc8uWeOZgnb3ptbCURJWNjWUPcO3ZnTTdzsurqERrP6nPyv+paC55vJM0LpOlT2ne+Ix+9+CRG1MNLlyZ4GjQ==}
+
   setprototypeof@1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
 
@@ -12069,6 +12079,11 @@ packages:
   sqlstring@2.3.3:
     resolution: {integrity: sha512-qC9iz2FlN7DQl3+wjwn3802RTyjCx7sDvfQEXchwa6CWOx07/WVfh91gBmQ9fahw8snwGEWU3xGzOt4tFyHLxg==}
     engines: {node: '>= 0.6'}
+
+  srvx@0.8.15:
+    resolution: {integrity: sha512-poPs1GuctQLpiJ/1Pb8e+5b5lju9hQU7wxJ6NkYVUw7ZZExeRoYwyiaOekal+rDZc99MO/J2y9+SGFpHBKRSpQ==}
+    engines: {node: '>=20.16.0'}
+    hasBin: true
 
   ssri@10.0.5:
     resolution: {integrity: sha512-bSf16tAFkGeRlUNDjXu8FzaMQt6g2HZJrun7mtMbIPOddxt3GLMSz5VWUWcqTJUPfLEaDIepGxv+bYQW49596A==}
@@ -17892,11 +17907,13 @@ snapshots:
       '@turf/helpers': 7.2.0
       '@types/geojson': 7946.0.16
 
-  '@tus/server@1.10.2':
+  '@tus/server@2.3.0':
     dependencies:
-      '@tus/utils': 0.5.1
+      '@tus/utils': 0.6.0
       debug: 4.4.1(supports-color@5.5.0)
       lodash.throttle: 4.1.1
+      set-cookie-parser: 2.7.1
+      srvx: 0.8.15
     optionalDependencies:
       '@redis/client': 1.6.1
       ioredis: 5.7.0
@@ -17904,6 +17921,8 @@ snapshots:
       - supports-color
 
   '@tus/utils@0.5.1': {}
+
+  '@tus/utils@0.6.0': {}
 
   '@tybys/wasm-util@0.10.0':
     dependencies:
@@ -19641,6 +19660,8 @@ snapshots:
   content-type@1.0.5: {}
 
   convert-source-map@2.0.0: {}
+
+  cookie-es@2.0.0: {}
 
   cookie-parser@1.4.7:
     dependencies:
@@ -24164,6 +24185,8 @@ snapshots:
 
   set-blocking@2.0.0: {}
 
+  set-cookie-parser@2.7.1: {}
+
   setprototypeof@1.2.0: {}
 
   sharp@0.34.3:
@@ -24464,6 +24487,10 @@ snapshots:
 
   sqlstring@2.3.3:
     optional: true
+
+  srvx@0.8.15:
+    dependencies:
+      cookie-es: 2.0.0
 
   ssri@10.0.5:
     dependencies:
