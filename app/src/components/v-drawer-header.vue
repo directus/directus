@@ -6,7 +6,6 @@ withDefaults(
 	defineProps<{
 		title?: string;
 		primaryActionIcon?: string;
-		small?: boolean;
 		shadow?: boolean;
 		icon?: string;
 		iconColor?: string;
@@ -24,7 +23,7 @@ defineEmits<{
 </script>
 
 <template>
-	<header class="header-bar" :class="{ small, shadow }">
+	<header class="header-bar" :class="{ shadow }">
 
 		<PrivateViewHeaderBarIcon v-if="icon || showBack" :icon :show-back :icon-color />
 
@@ -147,16 +146,6 @@ defineEmits<{
 				}
 			}
 		}
-	}
-
-	&.small {
-		inset-block-start: 0;
-		block-size: 60px;
-	}
-
-	&.small .title-container .headline {
-		opacity: 0;
-		pointer-events: none;
 	}
 
 	&.shadow {
