@@ -104,11 +104,9 @@ const showHeaderShadow = computed(() => y.value > 0);
 				<main ref="scrollContainer" :class="{ main: true, 'small-search-input': $slots.sidebar }">
 					<v-drawer-header
 						:title="title"
-						primary-action-icon="close"
 						:shadow="showHeaderShadow"
 						:icon="icon"
 						:icon-color="iconColor"
-						@primary="$emit('cancel')"
 					>
 						<template #title><slot name="title" /></template>
 						<template #headline>

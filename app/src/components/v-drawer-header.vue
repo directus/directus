@@ -5,27 +5,20 @@ import PrivateViewHeaderBarIcon from '@/views/private/private-view/components/pr
 withDefaults(
 	defineProps<{
 		title?: string;
-		primaryActionIcon?: string;
 		shadow?: boolean;
 		icon?: string;
 		iconColor?: string;
 		showBack?: boolean;
 	}>(),
 	{
-		primaryActionIcon: 'menu',
 		shadow: false,
 	},
 );
-
-defineEmits<{
-	(e: 'primary'): void;
-}>();
 </script>
 
 <template>
 	<header class="header-bar" :class="{ shadow }">
-
-		<PrivateViewHeaderBarIcon v-if="icon || showBack" :icon :show-back :icon-color />
+		<private-view-header-bar-icon v-if="icon || showBack" :icon :show-back :icon-color />
 
 		<div v-if="$slots['title-outer:prepend']" class="title-outer-prepend">
 			<slot name="title-outer:prepend" />
