@@ -280,7 +280,6 @@ async function downloadSnapshot() {
 <style scoped lang="scss">
 .padding-box {
 	padding: var(--content-padding);
-	padding-block-start: 0;
 }
 
 .v-info {
