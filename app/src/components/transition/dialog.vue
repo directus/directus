@@ -9,16 +9,16 @@
 
 .dialog-enter-active,
 .dialog-leave-active {
-	transition: opacity var(--slow) var(--transition);
+	transition: opacity var(--medium) var(--transition);
 
 	&.center > *:not(.v-overlay) {
 		transform: translateY(0);
-		transition: transform var(--slow) var(--transition-in);
+		transition: transform var(--medium) var(--transition-in);
 	}
 
 	&:is(.right, .left) > *:not(.v-overlay) {
 		transform: translateX(0);
-		transition: transform var(--slow) var(--transition-in);
+		transition: transform var(--medium) var(--transition-in);
 
 		html[dir='rtl'] & {
 			transform: translateX(0);
@@ -32,12 +32,12 @@
 
 	&.center > *:not(.v-overlay) {
 		transform: translateY(50px);
-		transition: transform var(--slow) var(--transition-out);
+		transition: transform var(--medium) var(--transition-out);
 	}
 
 	&.left > *:not(.v-overlay) {
 		transform: translateX(-50px);
-		transition: transform var(--slow) var(--transition-out);
+		transition: transform var(--medium) var(--transition-out);
 
 		html[dir='rtl'] & {
 			transform: translateX(50px);
@@ -46,7 +46,7 @@
 
 	&.right > *:not(.v-overlay) {
 		transform: translateX(50px);
-		transition: transform var(--slow) var(--transition-out);
+		transition: transform var(--medium) var(--transition-out);
 
 		html[dir='rtl'] & {
 			transform: translateX(-50px);
