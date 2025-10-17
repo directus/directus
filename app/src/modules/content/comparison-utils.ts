@@ -426,7 +426,7 @@ export function normalizeComparisonData(
 	};
 }
 
-export function getItemEndpoint(collection: string, itemId: string | number): string | null {
+export function getItemEndpoint(collection: string, itemId: string | number) {
 	const endpoint = getEndpoint(collection);
 	return `${endpoint}/${itemId}`;
 }

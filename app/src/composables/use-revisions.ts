@@ -11,7 +11,6 @@ import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
-import { isSystemCollection } from '@directus/system-data';
 import type { ContentVersion, Filter } from '@directus/types';
 import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
 import { groupBy, orderBy, mergeWith } from 'lodash';
@@ -167,25 +166,14 @@ export function useRevisions(
 					baseForComparison = versionCompare.data?.data?.main || {};
 					versionDeltaForComparison = versionCompare.data?.data?.current || {};
 				} else {
-					if (isSystemCollection(collection.value)) {
-						const systemEndpoint = getItemEndpoint(collection.value, unref(primaryKey));
+					const itemEndpoint = getItemEndpoint(collection.value, primaryKey.value);
 
-						if (systemEndpoint) {
-							try {
-								const itemResp = await api.get(systemEndpoint);
-								baseForComparison = itemResp.data?.data || {};
-								versionDeltaForComparison = {};
-							} catch {
-								baseForComparison = {};
-								versionDeltaForComparison = {};
-							}
-						} else {
-							baseForComparison = {};
-							versionDeltaForComparison = {};
-						}
-					} else {
-						const itemResp = await api.get(`/items/${unref(collection)}/${unref(primaryKey)}`);
+					try {
+						const itemResp = await api.get(itemEndpoint);
 						baseForComparison = itemResp.data?.data || {};
+						versionDeltaForComparison = {};
+					} catch {
+						baseForComparison = {};
 						versionDeltaForComparison = {};
 					}
 				}
