@@ -238,7 +238,7 @@ function emitValue(event: InputEvent) {
 		// decimal input
 		if (props.float === true) {
 			/**
-			 * Normalize decimal separator to '.'
+			 * Normalize decimal separator from ',' to '.'
 			 * Thousands separators are not supported in the input
 			 */
 			value = value.replace(',', '.');
