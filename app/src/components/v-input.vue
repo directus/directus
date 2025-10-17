@@ -235,7 +235,7 @@ function emitValue(event: InputEvent) {
 			emit('update:modelValue', parsedNumber);
 		}
 	} else {
-		// decimal input
+		// decimal input marked as text
 		if (props.float === true) {
 			/**
 			 * Normalize decimal separator from ',' to '.'
