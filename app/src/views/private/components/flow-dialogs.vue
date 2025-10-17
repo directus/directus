@@ -1,16 +1,10 @@
 <script setup lang="ts">
-import { FlowDialogsContext, injectRunManualFlow } from '@/composables/use-flows';
+import { FlowDialogsContext } from '@/composables/use-flows';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 
 defineProps<FlowDialogsContext>();
-
-const { runManualFlow } = injectRunManualFlow();
-
-function handleRunManualFlow(flowId: string, isActionDisabled = false) {
-	runManualFlow(flowId, isActionDisabled);
-}
 </script>
 
 <template>
@@ -18,7 +12,7 @@ function handleRunManualFlow(flowId: string, isActionDisabled = false) {
 		:model-value="displayUnsavedChangesDialog.value"
 		keep-behind
 		@esc="resetConfirm"
-		@apply="confirmUnsavedChanges(flowToConfirm.value!)"
+		@apply="confirmUnsavedChanges(currentFlowId.value!)"
 	>
 		<v-card>
 			<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
@@ -28,7 +22,7 @@ function handleRunManualFlow(flowId: string, isActionDisabled = false) {
 				<v-button secondary @click="resetConfirm">
 					{{ t('cancel') }}
 				</v-button>
-				<v-button @click="confirmUnsavedChanges(flowToConfirm.value!)">
+				<v-button @click="confirmUnsavedChanges(currentFlowId.value!)">
 					{{ confirmButtonCTA }}
 				</v-button>
 			</v-card-actions>
@@ -39,7 +33,7 @@ function handleRunManualFlow(flowId: string, isActionDisabled = false) {
 		:model-value="displayCustomConfirmDialog.value"
 		keep-behind
 		@esc="resetConfirm"
-		@apply="handleRunManualFlow(flowToConfirm.value!, isConfirmButtonDisabled.value)"
+		@apply="confirmCustomDialog(currentFlowId.value!)"
 	>
 		<v-card>
 			<v-card-title>{{ confirmDialogDetails.value?.description ?? t('run_flow_confirm') }}</v-card-title>
@@ -58,10 +52,7 @@ function handleRunManualFlow(flowId: string, isActionDisabled = false) {
 				<v-button secondary @click="resetConfirm">
 					{{ t('cancel') }}
 				</v-button>
-				<v-button
-					:disabled="isConfirmButtonDisabled.value"
-					@click="handleRunManualFlow(flowToConfirm.value!, isConfirmButtonDisabled.value)"
-				>
+				<v-button :disabled="isConfirmButtonDisabled.value" @click="confirmCustomDialog(currentFlowId.value!)">
 					{{ confirmButtonCTA }}
 				</v-button>
 			</v-card-actions>

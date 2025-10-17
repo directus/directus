@@ -27,7 +27,7 @@ const { runManualFlow } = injectRunManualFlow();
 					:style="{ '--v-button-background-color': manualFlow.color }"
 					:loading="manualFlow.isFlowRunning"
 					:disabled="manualFlow.isFlowDisabled"
-					@click="runManualFlow(manualFlow.id, false)"
+					@click="runManualFlow(manualFlow.id)"
 				>
 					<v-icon :name="manualFlow.icon ?? 'bolt'" small left />
 					{{ manualFlow.name }}
