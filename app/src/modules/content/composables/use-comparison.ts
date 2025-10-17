@@ -1,4 +1,4 @@
-import { ContentVersion, Field, User } from '@directus/types';
+import { ContentVersion, User } from '@directus/types';
 import { Revision } from '@/types/revisions';
 import { computed, ref, watch, type Ref } from 'vue';
 import api from '@/api';
@@ -421,10 +421,6 @@ export function useComparison(options: UseComparisonOptions) {
 			}
 		}
 
-		let fields: Field[] = [];
-		const targetCollection = revision.collection || collection?.value || '';
-		fields = fieldsStore.getFieldsForCollection(targetCollection);
-
 		// for field values that are arrays, we want to replace the array with the source array instead of merging them together
 		const replaceArrays = (objValue: any, srcValue: any) => {
 			if (Array.isArray(objValue) || Array.isArray(srcValue)) {
@@ -435,6 +431,9 @@ export function useComparison(options: UseComparisonOptions) {
 		};
 
 		const baseMerged = mergeWith({}, mainItem, versionDelta || {}, replaceArrays);
+
+		const targetCollection = revision.collection || collection?.value || '';
+		const fields = fieldsStore.getFieldsForCollection(targetCollection);
 
 		// Merge main item keys into revision data with default values for missing fields
 		const revisionData = revision.data || {};
