@@ -430,10 +430,3 @@ export function getItemEndpoint(collection: string, itemId: string | number) {
 	const endpoint = getEndpoint(collection);
 	return `${endpoint}/${itemId}`;
 }
-
-const COMPARISON_SIDES = {
-	BASE: 'base' as const,
-	INCOMING: 'incoming' as const,
-};
-
-export type ComparisonSide = (typeof COMPARISON_SIDES)[keyof typeof COMPARISON_SIDES];
