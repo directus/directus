@@ -17,7 +17,7 @@ export type ComparisonData = {
 	initialSelectedDeltaId?: number | string;
 };
 
-export type NormalizedUser = {
+type NormalizedUser = {
 	id: string;
 	firstName: string | null;
 	lastName: string | null;
@@ -25,13 +25,13 @@ export type NormalizedUser = {
 	displayName: string;
 };
 
-export type NormalizedDate = {
+type NormalizedDate = {
 	raw: string | null;
 	formatted: string | null;
 	dateObject: Date | null;
 };
 
-export type NormalizedItem = {
+type NormalizedItem = {
 	id: string | number | undefined;
 	displayName: string;
 	date: NormalizedDate;
@@ -91,7 +91,7 @@ export function getFieldsWithDifferences(
 	});
 }
 
-export function calculateFieldDifferences(
+function calculateFieldDifferences(
 	revisionData: Record<string, any>,
 	currentData: Record<string, any>,
 	fieldMetadata: Record<string, any>,
@@ -132,7 +132,7 @@ export function isRelationalField(field: Field): boolean {
 	return field.meta?.special?.find((type) => RELATIONAL_TYPES.includes(type as RelationalType)) !== undefined;
 }
 
-export function isAutoDateField(field: Field): boolean {
+function isAutoDateField(field: Field): boolean {
 	return field.meta?.special?.some((type) => type === 'date-created' || type === 'date-updated') ?? false;
 }
 
@@ -145,11 +145,11 @@ function isPrimaryKeyField(field: Field): boolean {
 	return field.schema?.is_primary_key === true;
 }
 
-export function addFieldToSelection(selectedFields: string[], field: string): string[] {
+function addFieldToSelection(selectedFields: string[], field: string): string[] {
 	return [...selectedFields, field];
 }
 
-export function removeFieldFromSelection(selectedFields: string[], field: string): string[] {
+function removeFieldFromSelection(selectedFields: string[], field: string): string[] {
 	return selectedFields.filter((f: string) => f !== field);
 }
 
@@ -252,7 +252,7 @@ export function computeDifferentFields(
 	}
 }
 
-export function normalizeUser(user: User | string | null | undefined): NormalizedUser | null {
+function normalizeUser(user: User | string | null | undefined): NormalizedUser | null {
 	if (!user) return null;
 
 	// Handle string user ID
@@ -292,7 +292,7 @@ export function normalizeUser(user: User | string | null | undefined): Normalize
 	};
 }
 
-export function normalizeDate(dateString: string | null | undefined): NormalizedDate {
+function normalizeDate(dateString: string | null | undefined): NormalizedDate {
 	if (!dateString) {
 		return {
 			raw: null,
@@ -311,7 +311,7 @@ export function normalizeDate(dateString: string | null | undefined): Normalized
 	};
 }
 
-export function normalizeVersionItem(version: ContentVersion): NormalizedItem {
+function normalizeVersionItem(version: ContentVersion): NormalizedItem {
 	return {
 		id: version.id,
 		displayName: getVersionDisplayName(version),
@@ -322,7 +322,7 @@ export function normalizeVersionItem(version: ContentVersion): NormalizedItem {
 	};
 }
 
-export function normalizeRevisionItem(revision: Revision): NormalizedItem {
+function normalizeRevisionItem(revision: Revision): NormalizedItem {
 	const user = revision.activity?.user;
 	const timestamp = revision.activity?.timestamp;
 
@@ -336,7 +336,7 @@ export function normalizeRevisionItem(revision: Revision): NormalizedItem {
 	};
 }
 
-export function normalizeMainItem(mainData: Record<string, any>): NormalizedItem {
+function normalizeMainItem(mainData: Record<string, any>): NormalizedItem {
 	return {
 		id: 'base',
 		displayName: i18n.global.t('main_version'),
@@ -431,7 +431,7 @@ export function getItemEndpoint(collection: string, itemId: string | number) {
 	return `${endpoint}/${itemId}`;
 }
 
-export const COMPARISON_SIDES = {
+const COMPARISON_SIDES = {
 	BASE: 'base' as const,
 	INCOMING: 'incoming' as const,
 };
