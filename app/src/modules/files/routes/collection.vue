@@ -378,8 +378,6 @@ function useFileUpload() {
 			:title="title"
 			icon="folder"
 			:class="{ dragging }"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
 		>
 			<template v-if="breadcrumb" #headline>
 				<v-breadcrumb :items="breadcrumb" />

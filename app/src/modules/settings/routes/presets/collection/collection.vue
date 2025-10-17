@@ -109,8 +109,6 @@ function clearFilters() {
 		<private-view
 			:title="t('settings_presets')"
 			icon="bookmark"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
 		>
 			<template #headline>
 				<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />

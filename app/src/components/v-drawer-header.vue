@@ -1,26 +1,25 @@
 <script setup lang="ts">
-import HeaderBarActions from './header-bar-actions.vue';
+import HeaderBarActions from '@/views/private/components/header-bar-actions.vue';
+import PrivateViewHeaderBarIcon from '@/views/private/private-view/components/private-view-header-bar-icon.vue';
 
 withDefaults(
 	defineProps<{
 		title?: string;
-		primaryActionIcon?: string;
-		small?: boolean;
 		shadow?: boolean;
+		icon?: string;
+		iconColor?: string;
+		showBack?: boolean;
 	}>(),
 	{
-		primaryActionIcon: 'menu',
-		shadow: true,
+		shadow: false,
 	},
 );
-
-defineEmits<{
-	(e: 'primary'): void;
-}>();
 </script>
 
 <template>
-	<header ref="headerEl" class="header-bar" :class="{ small, shadow }">
+	<header class="header-bar" :class="{ shadow }">
+		<private-view-header-bar-icon v-if="icon || showBack" :icon :show-back :icon-color />
+
 		<div v-if="$slots['title-outer:prepend']" class="title-outer-prepend">
 			<slot name="title-outer:prepend" />
 		</div>
@@ -142,26 +141,9 @@ defineEmits<{
 		}
 	}
 
-	&.small {
-		inset-block-start: 0;
-		block-size: 60px;
-	}
-
-	&.small .title-container .headline {
-		opacity: 0;
-		pointer-events: none;
-	}
-
-	&.shadow,
-	&.small.shadow {
+	&.shadow {
 		box-shadow: var(--theme--header--box-shadow);
-
-		.title-container {
-			.headline {
-				opacity: 0;
-				pointer-events: none;
-			}
-		}
+		transition: box-shadow var(--fast) var(--transition);
 	}
 
 	.spacer {

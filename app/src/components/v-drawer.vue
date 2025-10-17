@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { i18n } from '@/lang';
 import { translateShortcut } from '@/utils/translate-shortcut';
-import HeaderBar from '@/views/private/components/header-bar.vue';
-import { computed, provide, ref } from 'vue';
+import VDrawerHeader from '@/components/v-drawer-header.vue';
+import { computed, provide, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { type ApplyShortcut } from './v-dialog.vue';
 import VResizeable from './v-resizeable.vue';
+import { useScroll } from '@vueuse/core';
 
 export interface Props {
 	title: string;
@@ -13,11 +14,10 @@ export interface Props {
 	modelValue?: boolean;
 	persistent?: boolean;
 	icon?: string;
+	iconColor?: string;
 	sidebarResizeable?: boolean;
 	sidebarLabel?: string;
 	cancelable?: boolean;
-	headerShadow?: boolean;
-	smallHeader?: boolean;
 	applyShortcut?: ApplyShortcut;
 }
 
@@ -28,8 +28,6 @@ const props = withDefaults(defineProps<Props>(), {
 	icon: 'box',
 	sidebarLabel: i18n.global.t('sidebar'),
 	cancelable: true,
-	headerShadow: true,
-	smallHeader: false,
 });
 
 const emit = defineEmits(['cancel', 'apply', 'update:modelValue']);
@@ -38,9 +36,9 @@ const { t } = useI18n();
 
 const localActive = ref(false);
 
-const mainEl = ref<Element>();
+const scrollContainer = useTemplateRef('scrollContainer');
 
-provide('main-element', mainEl);
+provide('main-element', scrollContainer);
 
 const sidebarWidth = 220;
 // Half of the space of the drawer (856 / 2 = 428)
@@ -55,6 +53,10 @@ const internalActive = computed({
 		emit('update:modelValue', newActive);
 	},
 });
+
+const { y } = useScroll(scrollContainer);
+
+const showHeaderShadow = computed(() => y.value > 0);
 </script>
 
 <template>
@@ -99,12 +101,12 @@ const internalActive = computed({
 					</nav>
 				</v-resizeable>
 
-				<main ref="mainEl" :class="{ main: true, 'small-search-input': $slots.sidebar }">
-					<header-bar
+				<main ref="scrollContainer" :class="{ main: true, 'small-search-input': $slots.sidebar }">
+					<v-drawer-header
 						:title="title"
-						primary-action-icon="close"
-						:shadow="headerShadow"
-						@primary="$emit('cancel')"
+						:shadow="showHeaderShadow"
+						:icon="icon"
+						:icon-color="iconColor"
 					>
 						<template #title><slot name="title" /></template>
 						<template #headline>
@@ -114,18 +116,14 @@ const internalActive = computed({
 						</template>
 
 						<template #title-outer:prepend>
-							<slot name="title-outer:prepend">
-								<v-button class="header-icon" rounded icon secondary disabled small>
-									<v-icon :name="icon" small />
-								</v-button>
-							</slot>
+							<slot name="title-outer:prepend" />
 						</template>
 
 						<template #actions:prepend><slot name="actions:prepend" /></template>
 						<template #actions><slot name="actions" /></template>
 
 						<template #title:append><slot name="header:append" /></template>
-					</header-bar>
+					</v-drawer-header>
 
 					<v-detail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel">
 						<nav>

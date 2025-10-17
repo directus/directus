@@ -475,8 +475,6 @@ function discardAndLeave() {
 		<private-view
 			:title="t('editing_preset')"
 			show-back
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
 		>
 			<template #headline>
 				<v-breadcrumb :items="[{ name: t('settings_presets'), to: '/settings/presets' }]" />

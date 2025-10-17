@@ -117,9 +117,6 @@ function clearFilters() {
 		<private-view
 			:title="t('settings_translations')"
 			icon="translate"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
-			:sidebar-shadow="currentLayout?.sidebarShadow"
 		>
 			<template #headline>
 				<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
