@@ -1,9 +1,9 @@
 import type { Filter, Permission, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import type { AliasMap } from '../../../utils/get-column-path.js';
-import { DatabaseHelper } from '../types.js';
-import { generateAlias } from '../../run-ast/lib/apply-query/index.js';
 import { applyFilter } from '../../run-ast/lib/apply-query/filter/index.js';
+import { generateRelationalQueryAlias } from '../../run-ast/utils/generate-alias.js';
+import { DatabaseHelper } from '../types.js';
 
 export type FnHelperOptions = {
 	type: string | undefined;
@@ -50,7 +50,7 @@ export abstract class FnHelper extends DatabaseHelper {
 		}
 
 		// generate a unique alias for the relation collection, to prevent collisions in self referencing relations
-		const alias = generateAlias();
+		const alias = generateRelationalQueryAlias(table, column, collectionName, options);
 
 		let countQuery = this.knex
 			.count('*')
