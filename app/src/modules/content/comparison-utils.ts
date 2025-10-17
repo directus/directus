@@ -196,7 +196,7 @@ export function mergeMainItemKeysIntoRevision(
 	return merged;
 }
 
-export function copyRelationalFieldsFromBaseToIncoming(
+export function copySpecialFieldsFromBaseToIncoming(
 	baseItem: Record<string, any>,
 	incomingItem: Record<string, any>,
 	fields?: Field[],
@@ -237,15 +237,16 @@ export function computeDifferentFields(
 		preparedIncoming = mergeWith({}, preparedBase, preparedIncoming, replaceArraysInMergeCustomizer);
 
 		const fieldMetadata = Object.fromEntries(fields.map((f) => [f.field, f]));
+
 		return calculateFieldDifferences(preparedIncoming, preparedBase, fieldMetadata, {
 			skipRelationalFields: false,
 			skipPrimaryKeyFields: true,
 		});
 	} else {
 		const incomingWithDefaults = mergeMainItemKeysIntoRevision(preparedIncoming, preparedBase, fields);
-		// 2) Copy relational/user/PK fields from base into incoming
-		const incomingWithRelational = copyRelationalFieldsFromBaseToIncoming(preparedBase, incomingWithDefaults, fields);
+		const incomingWithRelational = copySpecialFieldsFromBaseToIncoming(preparedBase, incomingWithDefaults, fields);
 		const fieldMetadata = Object.fromEntries(fields.map((f) => [f.field, f]));
+
 		return calculateFieldDifferences(incomingWithRelational, preparedBase, fieldMetadata, {
 			skipRelationalFields: true,
 		});

@@ -11,7 +11,7 @@ import {
 	areSomeFieldsSelected,
 	normalizeComparisonData as normalizeComparisonDataUtil,
 	mergeMainItemKeysIntoRevision,
-	copyRelationalFieldsFromBaseToIncoming,
+	copySpecialFieldsFromBaseToIncoming,
 	replaceArraysInMergeCustomizer,
 	getItemEndpoint,
 	type ComparisonData,
@@ -422,7 +422,7 @@ export function useComparison(options: UseComparisonOptions) {
 			incomingMerged.date_updated = (revision as any).activity.timestamp;
 		}
 
-		const incomingWithRelationalFields = copyRelationalFieldsFromBaseToIncoming(baseMerged, incomingMerged, fields);
+		const incomingWithRelationalFields = copySpecialFieldsFromBaseToIncoming(baseMerged, incomingMerged, fields);
 		const revisionsList = revisions || [];
 		const revisionId = 'id' in revision ? revision.id : null;
 
