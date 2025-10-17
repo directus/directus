@@ -231,21 +231,21 @@ export function useComparison(options: UseComparisonOptions) {
 		id: string,
 		type: 'version',
 		currentVersion?: ContentVersion | null,
-		versions?: Ref<ContentVersion[] | null>,
+		versions?: ContentVersion[] | null,
 		revisions?: Revision[] | null,
 	): Promise<ComparisonData>;
 	async function normalizeComparisonData(
 		id: number,
 		type: 'revision',
 		currentVersion?: ContentVersion | null,
-		versions?: Ref<ContentVersion[] | null>,
+		versions?: ContentVersion[] | null,
 		revisions?: Revision[] | null,
 	): Promise<ComparisonData>;
 	async function normalizeComparisonData(
 		id: string | number,
 		type: 'version' | 'revision',
 		currentVersion?: ContentVersion | null,
-		versions?: Ref<ContentVersion[] | null>,
+		versions?: ContentVersion[] | null,
 		revisions?: Revision[] | null,
 	): Promise<ComparisonData> {
 		if (type === 'version') {
@@ -258,7 +258,7 @@ export function useComparison(options: UseComparisonOptions) {
 	async function normalizeVersionComparison(
 		versionId: string,
 		currentVersion?: ContentVersion | null,
-		versions?: Ref<ContentVersion[] | null>,
+		versions?: ContentVersion[] | null,
 	): Promise<ComparisonData> {
 		const version = getVersionFromComposable(versionId, currentVersion, versions);
 
@@ -286,14 +286,14 @@ export function useComparison(options: UseComparisonOptions) {
 	function getVersionFromComposable(
 		versionId: string,
 		currentVersion?: ContentVersion | null,
-		versions?: Ref<ContentVersion[] | null>,
+		versions?: ContentVersion[] | null,
 	): ContentVersion | null {
 		if (currentVersion?.id === versionId) {
 			return currentVersion;
 		}
 
-		if (versions?.value) {
-			return versions.value.find((version) => version.id === versionId) || null;
+		if (versions) {
+			return versions.find((version) => version.id === versionId) || null;
 		}
 
 		return null;
@@ -310,7 +310,7 @@ export function useComparison(options: UseComparisonOptions) {
 	async function fetchVersionComparison(
 		versionId: string,
 		version?: ContentVersion,
-		versions?: Ref<ContentVersion[] | null>,
+		versions?: ContentVersion[] | null,
 	): Promise<ComparisonData> {
 		try {
 			const response = await api.get(`/versions/${versionId}/compare`);
@@ -321,7 +321,7 @@ export function useComparison(options: UseComparisonOptions) {
 			return {
 				base,
 				incoming: incomingMerged,
-				selectableDeltas: versions?.value ?? (version ? [version] : []),
+				selectableDeltas: versions ?? (version ? [version] : []),
 				comparisonType: 'version' as const,
 				outdated: data.outdated,
 				mainHash: data.mainHash,

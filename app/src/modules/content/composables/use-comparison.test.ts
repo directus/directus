@@ -151,10 +151,9 @@ describe('normalizeComparisonData', () => {
 		const comparisonData = ref(null);
 		const { normalizeComparisonData } = useComparison({ comparisonData });
 
-		const versionsRef = ref(versions as unknown as ContentVersion[] | null);
 		const firstRevision = revisions[0]!;
 
-		const result = await normalizeComparisonData(firstRevision.id, 'revision', currentVersion, versionsRef, revisions);
+		const result = await normalizeComparisonData(firstRevision.id, 'revision', currentVersion, versions, revisions);
 
 		// Base should be main item + version delta
 		expect(result.base.title).toBe(versionComparison.data.current.title);
@@ -205,9 +204,7 @@ describe('normalizeComparisonData', () => {
 		const comparisonData = ref(null);
 		const { normalizeComparisonData } = useComparison({ comparisonData });
 
-		const versionsRef = ref(versions as unknown as ContentVersion[] | null);
-
-		const result = await normalizeComparisonData(currentVersion.id, 'version', currentVersion, versionsRef);
+		const result = await normalizeComparisonData(currentVersion.id, 'version', currentVersion, versions);
 
 		expect(result.base).toEqual(versionComparison.data.main);
 		// Check that the incoming data contains the expected fields from versionComparison.data.current

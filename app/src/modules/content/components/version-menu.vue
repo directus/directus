@@ -3,12 +3,12 @@ import api from '@/api';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { ContentVersion } from '@directus/types';
+import slugify from '@sindresorhus/slugify';
+import { useComparison } from '../composables/use-comparison';
+import { type ComparisonData, getVersionDisplayName } from '../comparison-utils';
+import ComparisonModal from './comparison-modal.vue';
 import { ref, toRefs, unref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import slugify from '@sindresorhus/slugify';
-import ComparisonModal from './comparison-modal.vue';
-import { type ComparisonData, getVersionDisplayName } from '../comparison-utils';
-import { useComparison } from '../composables/use-comparison';
 
 interface Props {
 	collection: string;
@@ -261,7 +261,7 @@ async function openComparisonModal() {
 			currentVersion.value.id,
 			'version',
 			currentVersion.value,
-			versions,
+			versions.value,
 		);
 
 		comparisonData.value = normalizedData;
