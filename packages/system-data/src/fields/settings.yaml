@@ -32,6 +32,10 @@ fields:
       placeholder: en-US
     width: half
 
+  - field: project_owner
+    interface: system-owner
+    width: half
+
   - field: modules_divider
     interface: presentation-divider
     options:

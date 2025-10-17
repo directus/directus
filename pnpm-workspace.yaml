@@ -289,6 +289,7 @@ catalog:
   typescript: 5.8.3
   typescript-eslint: 8.38.0
   undici: 7.13.0
+  universal-cookie: 8.0.1
   unplugin-yaml: 3.0.4
   update-check: 1.5.4
   uuid: 11.1.0

@@ -21,6 +21,27 @@
 # 'Proxy', 'Intl'
 
 about: About
+setup_welcome: Welcome to Directus
+setup_info: Let's create your admin account and get your project up and running.
+setup_license_notice: >
+  Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget. <br><br>
+  Entities above this threshold require a paid license. You can continue evaluating Directus now and [contact our
+  team](https://directus.io) when you're ready for production use.
+setup_accept_license:
+  I accept the terms of the [Directus BSL 1.1](https://directus.io) and [Privacy Policy](https://directus.io)
+setup_marketing_emails: Send me product updates and release notes
+setup_launch: Launch Directus
+setup_project: Setup Project
+first_name: First Name
+last_name: Last Name
+admin_email: Admin Email
+owner_email: Owner Email
+email_address: Email Address
+organization_name: Organization Name
+how_do_you_use_directus: What are you using Directus for?
+personal: Personal / Learning
+commercial: Business / Commercial
+community: Open Source / Community
 identifier: Identifier
 avatar: Avatar
 application: Application
@@ -265,6 +286,7 @@ validationError:
   iends_with: Value has to end with {substring}
   nends_with: Value can't end with {substring}
   niends_with: Value can't end with {substring}
+  confirm_password: Passwords do not match
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
@@ -1910,6 +1932,11 @@ interfaces:
     collection: Collection
     description: Select between existing collections
     include_system_collections: Include System Collections
+  system-owner:
+    update: Update Instance Owner
+    edit: Edit Instance Owner
+    system-owner: System Owner
+    description: System Owner Interface
   system-collections:
     collections: Collections
     description: Select between existing collections
@@ -2683,15 +2710,13 @@ percent: Percent
 show_password: Show password
 hide_password: Hide password
 bsl_banner:
-  welcome_to_directus: Welcome to Directus!
-  directus_free_use:
-    Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget.
-  organization_threshold: Entities above this threshold require a paid license.
-  license_agreement: By clicking "Accept", you agree to the {directusBsl} and {privacyPolicy}.
-  directus_bsl: Directus BSL 1.1
-  privacy_policy: Privacy Policy
-  accept_terms: Accept
-  get_license: Get a License
+  title: You have not set an instance owner.
+  license:
+    We need this to ensure compliance with our BSL 1.1 license. This should be the primary contact responsible for your
+    instance.
+  set_owner: Set Owner
+  remind_later: Remind Later
+  remind_next_login: We'll remind you again on your next login.
 accepted: Accepted
 text_direction_auto: Automatic (Match Language)
 text_direction_ltr: Left to Right (LTR)
