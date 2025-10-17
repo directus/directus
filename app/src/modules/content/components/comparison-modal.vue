@@ -160,10 +160,6 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 	modalLoading.value = true;
 
 	try {
-		const currentVersionRef = comparisonData.value?.currentVersion
-			? ref(comparisonData.value.currentVersion)
-			: undefined;
-
 		const selectableDeltasRef = comparisonData.value?.selectableDeltas
 			? ref(comparisonData.value.selectableDeltas as any)
 			: undefined;
@@ -174,7 +170,7 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 			newComparisonData = await normalizeComparisonData(
 				newDeltaId as string,
 				'version',
-				currentVersionRef,
+				comparisonData.value?.currentVersion,
 				undefined,
 				selectableDeltasRef,
 			);
@@ -182,7 +178,7 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 			newComparisonData = await normalizeComparisonData(
 				newDeltaId as number,
 				'revision',
-				currentVersionRef,
+				comparisonData.value?.currentVersion,
 				undefined,
 				selectableDeltasRef,
 			);

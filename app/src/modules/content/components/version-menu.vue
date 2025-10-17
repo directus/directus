@@ -257,7 +257,12 @@ async function openComparisonModal() {
 	if (!currentVersion.value) return;
 
 	try {
-		const normalizedData = await normalizeComparisonData(currentVersion.value.id, 'version', currentVersion, versions);
+		const normalizedData = await normalizeComparisonData(
+			currentVersion.value.id,
+			'version',
+			currentVersion.value,
+			versions,
+		);
 
 		comparisonData.value = normalizedData;
 		isComparisonModalOpen.value = true;

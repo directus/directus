@@ -70,7 +70,7 @@ async function openModal(id: number) {
 			const normalizedData = await normalizeComparisonData(
 				id,
 				'revision',
-				version as Ref<ContentVersion | null>,
+				version.value,
 				undefined,
 				revisions as Ref<any[] | null>,
 			);

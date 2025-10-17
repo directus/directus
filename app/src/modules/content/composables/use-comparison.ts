@@ -230,21 +230,21 @@ export function useComparison(options: UseComparisonOptions) {
 	async function normalizeComparisonData(
 		id: string,
 		type: 'version',
-		currentVersion?: Ref<ContentVersion | null>,
+		currentVersion?: ContentVersion | null,
 		versions?: Ref<ContentVersion[] | null>,
 		revisions?: Ref<Revision[] | null>,
 	): Promise<ComparisonData>;
 	async function normalizeComparisonData(
 		id: number,
 		type: 'revision',
-		currentVersion?: Ref<ContentVersion | null>,
+		currentVersion?: ContentVersion | null,
 		versions?: Ref<ContentVersion[] | null>,
 		revisions?: Ref<Revision[] | null>,
 	): Promise<ComparisonData>;
 	async function normalizeComparisonData(
 		id: string | number,
 		type: 'version' | 'revision',
-		currentVersion?: Ref<ContentVersion | null>,
+		currentVersion?: ContentVersion | null,
 		versions?: Ref<ContentVersion[] | null>,
 		revisions?: Ref<Revision[] | null>,
 	): Promise<ComparisonData> {
@@ -257,7 +257,7 @@ export function useComparison(options: UseComparisonOptions) {
 
 	async function normalizeVersionComparison(
 		versionId: string,
-		currentVersion?: Ref<ContentVersion | null>,
+		currentVersion?: ContentVersion | null,
 		versions?: Ref<ContentVersion[] | null>,
 	): Promise<ComparisonData> {
 		const version = getVersionFromComposable(versionId, currentVersion, versions);
@@ -271,7 +271,7 @@ export function useComparison(options: UseComparisonOptions) {
 
 	async function normalizeRevisionComparison(
 		revisionId: number,
-		currentVersion?: Ref<ContentVersion | null>,
+		currentVersion?: ContentVersion | null,
 		revisions?: Ref<Revision[] | null>,
 	): Promise<ComparisonData> {
 		const revision = getRevisionFromComposable(revisionId, revisions);
@@ -285,11 +285,11 @@ export function useComparison(options: UseComparisonOptions) {
 
 	function getVersionFromComposable(
 		versionId: string,
-		currentVersion?: Ref<ContentVersion | null>,
+		currentVersion?: ContentVersion | null,
 		versions?: Ref<ContentVersion[] | null>,
 	): ContentVersion | null {
-		if (currentVersion?.value && currentVersion.value.id === versionId) {
-			return currentVersion.value;
+		if (currentVersion?.id === versionId) {
+			return currentVersion;
 		}
 
 		if (versions?.value) {
@@ -335,7 +335,7 @@ export function useComparison(options: UseComparisonOptions) {
 
 	async function fetchRevisionComparison(
 		revisionId: number,
-		currentVersion?: Ref<ContentVersion | null>,
+		currentVersion?: ContentVersion | null,
 		revisions?: Ref<Revision[] | null>,
 	): Promise<ComparisonData> {
 		try {
@@ -370,15 +370,15 @@ export function useComparison(options: UseComparisonOptions) {
 	 */
 	async function buildRevisionComparison(
 		revision: Revision | RevisionComparisonResponse,
-		currentVersion?: Ref<ContentVersion | null>,
+		currentVersion?: ContentVersion | null,
 		revisions?: Ref<Revision[] | null>,
 	): Promise<ComparisonData> {
 		// Resolve main item and current version delta
 		let mainItem: Record<string, any> = {};
 		let versionDelta: Record<string, any> = {};
 
-		if (currentVersion?.value) {
-			const versionComparison = await fetchVersionComparison(currentVersion.value.id);
+		if (currentVersion) {
+			const versionComparison = await fetchVersionComparison(currentVersion.id);
 			mainItem = versionComparison.base || {};
 			versionDelta = versionComparison.incoming || {};
 		} else if ('collection' in revision && 'item' in revision) {
@@ -435,7 +435,7 @@ export function useComparison(options: UseComparisonOptions) {
 			comparisonType: 'revision',
 			outdated: false,
 			mainHash: '',
-			currentVersion: currentVersion?.value || null,
+			currentVersion: currentVersion || null,
 			initialSelectedDeltaId: revisionId || undefined,
 		};
 	}
