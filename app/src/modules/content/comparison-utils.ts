@@ -1,9 +1,11 @@
-import { RELATIONAL_TYPES } from '@directus/constants';
-import { ContentVersion, Field, RelationalType, User } from '@directus/types';
-import { Revision } from '@/types/revisions';
-import { isNil, isEqual, mergeWith } from 'lodash';
 import { i18n } from '@/lang';
+import type { Revision } from '@/types/revisions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { RELATIONAL_TYPES } from '@directus/constants';
+import formatTitle from '@directus/format-title';
+import type { ContentVersion, Field, RelationalType, User } from '@directus/types';
+import { getEndpoint } from '@directus/utils';
+import { isNil, isEqual, mergeWith } from 'lodash';
 
 export type ComparisonData = {
 	base: Record<string, any>;
@@ -16,7 +18,7 @@ export type ComparisonData = {
 	initialSelectedDeltaId?: number | string;
 };
 
-export type NormalizedUser = {
+type NormalizedUser = {
 	id: string;
 	firstName: string | null;
 	lastName: string | null;
@@ -24,13 +26,13 @@ export type NormalizedUser = {
 	displayName: string;
 };
 
-export type NormalizedDate = {
+type NormalizedDate = {
 	raw: string | null;
 	formatted: string | null;
 	dateObject: Date | null;
 };
 
-export type NormalizedItem = {
+type NormalizedItem = {
 	id: string | number | undefined;
 	displayName: string;
 	date: NormalizedDate;
@@ -90,7 +92,7 @@ export function getFieldsWithDifferences(
 	});
 }
 
-export function calculateFieldDifferences(
+function calculateFieldDifferences(
 	revisionData: Record<string, any>,
 	currentData: Record<string, any>,
 	fieldMetadata: Record<string, any>,
@@ -124,19 +126,18 @@ export function calculateFieldDifferences(
 }
 
 export function getVersionDisplayName(version: ContentVersion): string {
-	return isNil(version.name) ? version.key : version.name;
+	return isNil(version.name) ? formatTitle(version.key) : version.name;
 }
 
 export function isRelationalField(field: Field): boolean {
 	return field.meta?.special?.find((type) => RELATIONAL_TYPES.includes(type as RelationalType)) !== undefined;
 }
 
-export function isAutoDateField(field: Field): boolean {
+function isAutoDateField(field: Field): boolean {
 	return field.meta?.special?.some((type) => type === 'date-created' || type === 'date-updated') ?? false;
 }
 
 function isUserReferenceField(field: Field): boolean {
-	// Treat system-managed user reference fields like relational for comparison purposes
 	return field.meta?.special?.some((type) => type === 'user-created' || type === 'user-updated') ?? false;
 }
 
@@ -144,11 +145,11 @@ function isPrimaryKeyField(field: Field): boolean {
 	return field.schema?.is_primary_key === true;
 }
 
-export function addFieldToSelection(selectedFields: string[], field: string): string[] {
+function addFieldToSelection(selectedFields: string[], field: string): string[] {
 	return [...selectedFields, field];
 }
 
-export function removeFieldFromSelection(selectedFields: string[], field: string): string[] {
+function removeFieldFromSelection(selectedFields: string[], field: string): string[] {
 	return selectedFields.filter((f: string) => f !== field);
 }
 
@@ -195,7 +196,7 @@ export function mergeMainItemKeysIntoRevision(
 	return merged;
 }
 
-export function copyRelationalFieldsFromBaseToIncoming(
+export function copySpecialFieldsFromBaseToIncoming(
 	baseItem: Record<string, any>,
 	incomingItem: Record<string, any>,
 	fields?: Field[],
@@ -217,41 +218,42 @@ export function copyRelationalFieldsFromBaseToIncoming(
 	return result;
 }
 
+export function replaceArraysInMergeCustomizer(objValue: unknown, srcValue: unknown) {
+	if (Array.isArray(objValue) || Array.isArray(srcValue)) return srcValue;
+	return undefined;
+}
+
 export function computeDifferentFields(
 	comparisonType: 'version' | 'revision',
 	base: Record<string, any>,
 	incoming: Record<string, any>,
 	fields: Field[] = [],
 ): string[] {
-	const replaceArrays = (objValue: any, srcValue: any) => {
-		if (Array.isArray(objValue) || Array.isArray(srcValue)) return srcValue;
-		return undefined;
-	};
-
 	const preparedBase = base || {};
 	let preparedIncoming = incoming || {};
 
 	if (comparisonType === 'version') {
 		// Modal logic: incoming should be a full item = base + delta
-		preparedIncoming = mergeWith({}, preparedBase, preparedIncoming, replaceArrays);
+		preparedIncoming = mergeWith({}, preparedBase, preparedIncoming, replaceArraysInMergeCustomizer);
 
 		const fieldMetadata = Object.fromEntries(fields.map((f) => [f.field, f]));
+
 		return calculateFieldDifferences(preparedIncoming, preparedBase, fieldMetadata, {
 			skipRelationalFields: false,
 			skipPrimaryKeyFields: true,
 		});
 	} else {
 		const incomingWithDefaults = mergeMainItemKeysIntoRevision(preparedIncoming, preparedBase, fields);
-		// 2) Copy relational/user/PK fields from base into incoming
-		const incomingWithRelational = copyRelationalFieldsFromBaseToIncoming(preparedBase, incomingWithDefaults, fields);
+		const incomingWithRelational = copySpecialFieldsFromBaseToIncoming(preparedBase, incomingWithDefaults, fields);
 		const fieldMetadata = Object.fromEntries(fields.map((f) => [f.field, f]));
+
 		return calculateFieldDifferences(incomingWithRelational, preparedBase, fieldMetadata, {
 			skipRelationalFields: true,
 		});
 	}
 }
 
-export function normalizeUser(user: User | string | null | undefined): NormalizedUser | null {
+function normalizeUser(user: User | string | null | undefined): NormalizedUser | null {
 	if (!user) return null;
 
 	// Handle string user ID
@@ -291,7 +293,7 @@ export function normalizeUser(user: User | string | null | undefined): Normalize
 	};
 }
 
-export function normalizeDate(dateString: string | null | undefined): NormalizedDate {
+function normalizeDate(dateString: string | null | undefined): NormalizedDate {
 	if (!dateString) {
 		return {
 			raw: null,
@@ -310,7 +312,7 @@ export function normalizeDate(dateString: string | null | undefined): Normalized
 	};
 }
 
-export function normalizeVersionItem(version: ContentVersion): NormalizedItem {
+function normalizeVersionItem(version: ContentVersion): NormalizedItem {
 	return {
 		id: version.id,
 		displayName: getVersionDisplayName(version),
@@ -321,7 +323,7 @@ export function normalizeVersionItem(version: ContentVersion): NormalizedItem {
 	};
 }
 
-export function normalizeRevisionItem(revision: Revision): NormalizedItem {
+function normalizeRevisionItem(revision: Revision): NormalizedItem {
 	const user = revision.activity?.user;
 	const timestamp = revision.activity?.timestamp;
 
@@ -335,7 +337,7 @@ export function normalizeRevisionItem(revision: Revision): NormalizedItem {
 	};
 }
 
-export function normalizeMainItem(mainData: Record<string, any>): NormalizedItem {
+function normalizeMainItem(mainData: Record<string, any>): NormalizedItem {
 	return {
 		id: 'base',
 		displayName: i18n.global.t('main_version'),
@@ -425,29 +427,7 @@ export function normalizeComparisonData(
 	};
 }
 
-export function isSystemCollection(collection: string): boolean {
-	return collection.startsWith('directus_');
-}
-
-export function getSystemCollectionEndpoint(collection: string): string | null {
-	if (!isSystemCollection(collection)) {
-		return null;
-	}
-
-	const endpoint = collection.replace('directus_', '/');
-	return endpoint;
-}
-
-export function getSystemCollectionItemUrl(collection: string, itemId: string | number): string | null {
-	const endpoint = getSystemCollectionEndpoint(collection);
-	if (!endpoint) return null;
-
+export function getItemEndpoint(collection: string, itemId: string | number) {
+	const endpoint = getEndpoint(collection);
 	return `${endpoint}/${itemId}`;
 }
-
-export const COMPARISON_SIDES = {
-	BASE: 'base' as const,
-	INCOMING: 'incoming' as const,
-};
-
-export type ComparisonSide = (typeof COMPARISON_SIDES)[keyof typeof COMPARISON_SIDES];

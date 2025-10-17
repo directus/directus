@@ -10,7 +10,7 @@ interface Props {
 	isFirstGroup?: boolean;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 defineEmits(['click']);
 
 const expand = ref(true);
@@ -24,7 +24,7 @@ const expand = ref(true);
 				:key="item.id"
 				:revision="item as Revision"
 				:last="index === group.revisions.length - 1"
-				:most-recent="props.isFirstGroup && index === 0"
+				:most-recent="isFirstGroup && index === 0"
 				@click="$emit('click', item.id)"
 			/>
 		</div>
