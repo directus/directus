@@ -39,8 +39,6 @@ const {
 	someFieldsSelected,
 	availableFieldsCount,
 	comparisonFields,
-	toggleSelectAll,
-	toggleComparisonField,
 	isVersionMode,
 	isRevisionMode,
 	userLoading,
@@ -49,12 +47,14 @@ const {
 	deltaDisplayName,
 	normalizedData,
 	debugComparison,
+	toggleSelectAll,
+	toggleComparisonField,
 	fetchUserUpdated,
 	fetchMainItemUserUpdated,
 	normalizeComparisonData,
 } = useComparison({
-	comparisonData: comparisonData,
-	collection: collection,
+	comparisonData,
+	collection,
 });
 
 const modalLoading = ref(false);
@@ -114,9 +114,9 @@ function usePromoteDialog() {
 		promoting.value = true;
 
 		try {
-			if (isVersionMode.value && comparisonData.value) {
+			if (isVersionMode.value) {
 				// Handle version promotion
-				const versionId = (comparisonData.value.selectableDeltas?.[0] as ContentVersion)?.id;
+				const versionId = (comparisonData.value!.selectableDeltas?.[0] as ContentVersion)?.id;
 
 				if (versionId) {
 					await api.post(
@@ -128,13 +128,13 @@ function usePromoteDialog() {
 				}
 
 				emit('promote', deleteOnPromote);
-			} else if (isRevisionMode.value && comparisonData.value) {
+			} else if (isRevisionMode.value) {
 				const restoreData: Record<string, any> = {};
 				const selectedFields = unref(selectedComparisonFields);
 
 				// Get the delta from the comparison data
-				const delta = comparisonData.value.incoming;
-				const base = comparisonData.value.base;
+				const delta = comparisonData.value!.incoming;
+				const base = comparisonData.value!.base;
 
 				for (const [field, newValue] of Object.entries(delta)) {
 					if (selectedFields.length > 0 && !selectedFields.includes(field)) continue;
@@ -160,8 +160,6 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 	modalLoading.value = true;
 
 	try {
-		const comparisonType = comparisonData.value?.comparisonType || 'revision';
-
 		const currentVersionRef = comparisonData.value?.currentVersion
 			? ref(comparisonData.value.currentVersion)
 			: undefined;
@@ -172,7 +170,7 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 
 		let newComparisonData: ComparisonData;
 
-		if (comparisonType === 'version') {
+		if (isVersionMode.value) {
 			newComparisonData = await normalizeComparisonData(
 				newDeltaId as string,
 				'version',
