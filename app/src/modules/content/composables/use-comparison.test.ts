@@ -152,16 +152,9 @@ describe('normalizeComparisonData', () => {
 		const { normalizeComparisonData } = useComparison({ comparisonData });
 
 		const versionsRef = ref(versions as unknown as ContentVersion[] | null);
-		const revisionsRef = ref(revisions);
 		const firstRevision = revisions[0]!;
 
-		const result = await normalizeComparisonData(
-			firstRevision.id,
-			'revision',
-			currentVersion,
-			versionsRef,
-			revisionsRef,
-		);
+		const result = await normalizeComparisonData(firstRevision.id, 'revision', currentVersion, versionsRef, revisions);
 
 		// Base should be main item + version delta
 		expect(result.base.title).toBe(versionComparison.data.current.title);

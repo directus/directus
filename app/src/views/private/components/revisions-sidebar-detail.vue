@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { useRevisions } from '@/composables/use-revisions';
+import ComparisonModal from '@/modules/content/components/comparison-modal.vue';
+import type { ComparisonData } from '@/modules/content/comparison-utils';
+import { useComparison } from '@/modules/content/composables/use-comparison';
+import type { Revision } from '@/types/revisions';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { useGroupable } from '@directus/composables';
 import { ContentVersion } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
-import { computed, onMounted, ref, toRefs, watch, type Ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { unexpectedError } from '@/utils/unexpected-error';
 import RevisionsDateGroup from './revisions-date-group.vue';
-import ComparisonModal from '@/modules/content/components/comparison-modal.vue';
-import { type ComparisonData } from '@/modules/content/comparison-utils';
-import { useComparison } from '@/modules/content/composables/use-comparison';
+import { computed, onMounted, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	collection: string;
@@ -72,7 +73,7 @@ async function openModal(id: number) {
 				'revision',
 				version.value,
 				undefined,
-				revisions as Ref<any[] | null>,
+				revisions.value as Revision[],
 			);
 
 			selectedRevision.value = revision.id;

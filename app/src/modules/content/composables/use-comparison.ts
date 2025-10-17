@@ -123,7 +123,7 @@ export function useComparison(options: UseComparisonOptions) {
 			if (comparisonData.value?.comparisonType === 'revision') {
 				const selectedId = normalized?.initialSelectedDeltaId ?? null;
 
-				const revisions = (comparisonData.value.selectableDeltas as any[]) || [];
+				const revisions = (comparisonData.value.selectableDeltas as Revision[]) || [];
 
 				const matching =
 					typeof selectedId !== 'undefined' && selectedId !== null
@@ -232,21 +232,21 @@ export function useComparison(options: UseComparisonOptions) {
 		type: 'version',
 		currentVersion?: ContentVersion | null,
 		versions?: Ref<ContentVersion[] | null>,
-		revisions?: Ref<Revision[] | null>,
+		revisions?: Revision[] | null,
 	): Promise<ComparisonData>;
 	async function normalizeComparisonData(
 		id: number,
 		type: 'revision',
 		currentVersion?: ContentVersion | null,
 		versions?: Ref<ContentVersion[] | null>,
-		revisions?: Ref<Revision[] | null>,
+		revisions?: Revision[] | null,
 	): Promise<ComparisonData>;
 	async function normalizeComparisonData(
 		id: string | number,
 		type: 'version' | 'revision',
 		currentVersion?: ContentVersion | null,
 		versions?: Ref<ContentVersion[] | null>,
-		revisions?: Ref<Revision[] | null>,
+		revisions?: Revision[] | null,
 	): Promise<ComparisonData> {
 		if (type === 'version') {
 			return await normalizeVersionComparison(id as string, currentVersion, versions);
@@ -272,7 +272,7 @@ export function useComparison(options: UseComparisonOptions) {
 	async function normalizeRevisionComparison(
 		revisionId: number,
 		currentVersion?: ContentVersion | null,
-		revisions?: Ref<Revision[] | null>,
+		revisions?: Revision[] | null,
 	): Promise<ComparisonData> {
 		const revision = getRevisionFromComposable(revisionId, revisions);
 
@@ -299,9 +299,9 @@ export function useComparison(options: UseComparisonOptions) {
 		return null;
 	}
 
-	function getRevisionFromComposable(revisionId: number, revisions?: Ref<Revision[] | null>): Revision | null {
-		if (revisions?.value) {
-			return revisions.value.find((revision) => revision.id === revisionId) || null;
+	function getRevisionFromComposable(revisionId: number, revisions?: Revision[] | null): Revision | null {
+		if (revisions) {
+			return revisions.find((revision) => revision.id === revisionId) || null;
 		}
 
 		return null;
@@ -336,7 +336,7 @@ export function useComparison(options: UseComparisonOptions) {
 	async function fetchRevisionComparison(
 		revisionId: number,
 		currentVersion?: ContentVersion | null,
-		revisions?: Ref<Revision[] | null>,
+		revisions?: Revision[] | null,
 	): Promise<ComparisonData> {
 		try {
 			const response = await api.get(`/revisions/${revisionId}`, {
@@ -371,7 +371,7 @@ export function useComparison(options: UseComparisonOptions) {
 	async function buildRevisionComparison(
 		revision: Revision | RevisionComparisonResponse,
 		currentVersion?: ContentVersion | null,
-		revisions?: Ref<Revision[] | null>,
+		revisions?: Revision[] | null,
 	): Promise<ComparisonData> {
 		// Resolve main item and current version delta
 		let mainItem: Record<string, any> = {};
@@ -425,7 +425,7 @@ export function useComparison(options: UseComparisonOptions) {
 		}
 
 		const incomingWithRelationalFields = copyRelationalFieldsFromBaseToIncoming(baseMerged, incomingMerged, fields);
-		const revisionsList = revisions?.value || [];
+		const revisionsList = revisions || [];
 		const revisionId = 'id' in revision ? revision.id : null;
 
 		return {

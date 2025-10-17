@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
 import type { ContentVersion } from '@directus/types';
+import api from '@/api';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import type { Revision } from '@/types/revisions';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { translateShortcut } from '@/utils/translate-shortcut';
+import { type ComparisonData } from '../comparison-utils';
+import { useComparison } from '../composables/use-comparison';
+import ComparisonHeader from './comparison-header.vue';
+import { isEqual } from 'lodash';
 import { ref, toRefs, unref, watch, computed, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ComparisonHeader from './comparison-header.vue';
-import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
-import { useComparison } from '../composables/use-comparison';
-import { type ComparisonData } from '../comparison-utils';
-import { isEqual } from 'lodash';
-import { translateShortcut } from '@/utils/translate-shortcut';
 import { useRoute } from 'vue-router';
 
 interface Props {
@@ -160,10 +161,6 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 	modalLoading.value = true;
 
 	try {
-		const selectableDeltasRef = comparisonData.value?.selectableDeltas
-			? ref(comparisonData.value.selectableDeltas as any)
-			: undefined;
-
 		let newComparisonData: ComparisonData;
 
 		if (isVersionMode.value) {
@@ -172,7 +169,7 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 				'version',
 				comparisonData.value?.currentVersion,
 				undefined,
-				selectableDeltasRef,
+				comparisonData.value?.selectableDeltas as Revision[] | undefined,
 			);
 		} else {
 			newComparisonData = await normalizeComparisonData(
@@ -180,7 +177,7 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 				'revision',
 				comparisonData.value?.currentVersion,
 				undefined,
-				selectableDeltasRef,
+				comparisonData.value?.selectableDeltas as Revision[] | undefined,
 			);
 		}
 
