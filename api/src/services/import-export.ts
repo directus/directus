@@ -110,7 +110,7 @@ function createErrorTracker() {
 		return result;
 	}
 
-	const addCapturedError = (err: any, rowNumber: number) => {
+	function addCapturedError(err: any, rowNumber: number) {
 		const field = err.extensions?.field;
 		const type = err.extensions?.type;
 
@@ -152,9 +152,9 @@ function createErrorTracker() {
 		if (capturedErrorCount >= MAX_IMPORT_ERRORS) {
 			isLimitReached = true;
 		}
-	};
+	}
 
-	const buildFinalErrors = () => {
+	function buildFinalErrors() {
 		const fieldErrs = Array.from(fieldErrors.entries()).flatMap(([code, fieldMap]) =>
 			Array.from(fieldMap.entries()).map(([compositeKey, errorData]) => {
 				const parts = compositeKey.split('|');
@@ -180,7 +180,7 @@ function createErrorTracker() {
 		});
 
 		return [...fieldErrs, ...genericErrs];
-	};
+	}
 
 	return {
 		addCapturedError,
@@ -265,10 +265,8 @@ export class ImportService {
 							});
 
 							return result;
-						} catch (error: any) {
-							const errors = Array.isArray(error) ? error : [error];
-
-							for (const err of errors) {
+						} catch (error) {
+							for (const err of toArray(error)) {
 								errorTracker.addCapturedError(err, task.rowNumber);
 							}
 
