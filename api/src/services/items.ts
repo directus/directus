@@ -23,7 +23,7 @@ import { getCache } from '../cache.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import { getAstFromQuery } from '../database/get-ast-from-query/get-ast-from-query.js';
 import { getHelpers } from '../database/helpers/index.js';
-import getDatabase from '../database/index.js';
+import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { runAst } from '../database/run-ast/run-ast.js';
 import emitter from '../emitter.js';
 import { processAst } from '../permissions/modules/process-ast/process-ast.js';
@@ -243,10 +243,17 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			try {
+				let returningOptions = undefined;
+
+				// Support MSSQL tables that have triggers.
+				if (getDatabaseClient(trx) === 'mssql') {
+					returningOptions = { includeTriggerModifications: true };
+				}
+
 				const result = await trx
 					.insert(payloadWithoutAliases)
 					.into(this.collection)
-					.returning(primaryKeyField)
+					.returning(primaryKeyField, returningOptions)
 					.then((result) => result[0]);
 
 				const returnedKey = typeof result === 'object' ? result[primaryKeyField] : result;
@@ -583,7 +590,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		let results: Item[] = [];
 
-		if (query.version) {
+		if (query.version && query.version !== 'main') {
 			results = [await handleVersion(this, key, queryWithKey, opts)];
 		} else {
 			results = await this.readByQuery(queryWithKey, opts);
@@ -1172,8 +1179,18 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		query.limit = 1;
 
-		const records = await this.readByQuery(query, opts);
-		const record = records[0];
+		let record;
+
+		if (query.version && query.version !== 'main') {
+			const primaryKeyField = this.schema.collections[this.collection]!.primary;
+			const key = (await this.knex.select(primaryKeyField).from(this.collection).first())?.[primaryKeyField];
+
+			if (key) {
+				record = await handleVersion(this, key, query, opts);
+			}
+		} else {
+			record = (await this.readByQuery(query, opts))[0];
+		}
 
 		if (!record) {
 			let fields = Object.entries(this.schema.collections[this.collection]!.fields);

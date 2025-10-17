@@ -1,6 +1,6 @@
+import { RelationBuilder, SchemaBuilder } from '@directus/schema-builder';
 import { expect, test } from 'vitest';
 import { filterReplaceM2A, filterReplaceM2ADeep } from './filter-replace-m2a.js';
-import { RelationBuilder, SchemaBuilder } from '@directus/schema-builder';
 
 const schema = new SchemaBuilder()
 	.collection('article', (c) => {
@@ -230,6 +230,36 @@ test('deep with filter having a2o', () => {
 				'anyitem:text': {
 					id: { _eq: 1 },
 					content: { _eq: 'Hello World' },
+				},
+			},
+		},
+	});
+});
+
+test('deep with nested filter having a2o', () => {
+	const result = filterReplaceM2ADeep(
+		{
+			blocks: {
+				anyitem__text: {
+					blocks: {
+						_filter: {
+							id: { _eq: 1 },
+						},
+					},
+				},
+			},
+		},
+		'article',
+		schema,
+	);
+
+	expect(result).toEqual({
+		blocks: {
+			'anyitem:text': {
+				blocks: {
+					_filter: {
+						id: { _eq: 1 },
+					},
 				},
 			},
 		},

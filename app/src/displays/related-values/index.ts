@@ -4,6 +4,7 @@ import { useRelationsStore } from '@/stores/relations';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
+import { RELATIONAL_TYPES } from '@directus/constants';
 import { defineDisplay } from '@directus/extensions';
 import type { Field } from '@directus/types';
 import { getFieldsFromTemplate } from '@directus/utils';
@@ -97,7 +98,7 @@ export default defineDisplay({
 		return renderPlainStringTemplate(options.template, stringValues);
 	},
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
-	localTypes: ['m2m', 'm2o', 'o2m', 'translations', 'm2a', 'file', 'files'],
+	localTypes: RELATIONAL_TYPES,
 	fields: (options: Options | null, { field, collection }) => {
 		const relatedCollectionData = getRelatedCollection(collection, field);
 
