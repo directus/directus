@@ -6,7 +6,7 @@ import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
-import { computeDifferentFields } from '@/modules/content/comparison-utils';
+import { computeDifferentFields, replaceArraysInMergeCustomizer } from '@/modules/content/comparison-utils';
 import type { ContentVersion, Filter } from '@directus/types';
 import { isSystemCollection, getSystemCollectionItemUrl } from '@/modules/content/comparison-utils';
 import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
@@ -194,12 +194,12 @@ export function useRevisions(
 				unexpectedError(error);
 			}
 
-			const replaceArrays = (objValue: any, srcValue: any) => {
-				if (Array.isArray(objValue) || Array.isArray(srcValue)) return srcValue;
-				return undefined;
-			};
-
-			const currentItemMerged = mergeWith({}, baseForComparison, versionDeltaForComparison, replaceArrays);
+			const currentItemMerged = mergeWith(
+				{},
+				baseForComparison,
+				versionDeltaForComparison,
+				replaceArraysInMergeCustomizer,
+			);
 
 			for (const [key, value] of Object.entries(revisionsGroupedByDate)) {
 				const date = new Date(key);

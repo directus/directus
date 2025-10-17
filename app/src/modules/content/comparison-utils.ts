@@ -217,23 +217,23 @@ export function copyRelationalFieldsFromBaseToIncoming(
 	return result;
 }
 
+export function replaceArraysInMergeCustomizer(objValue: unknown, srcValue: unknown) {
+	if (Array.isArray(objValue) || Array.isArray(srcValue)) return srcValue;
+	return undefined;
+}
+
 export function computeDifferentFields(
 	comparisonType: 'version' | 'revision',
 	base: Record<string, any>,
 	incoming: Record<string, any>,
 	fields: Field[] = [],
 ): string[] {
-	const replaceArrays = (objValue: any, srcValue: any) => {
-		if (Array.isArray(objValue) || Array.isArray(srcValue)) return srcValue;
-		return undefined;
-	};
-
 	const preparedBase = base || {};
 	let preparedIncoming = incoming || {};
 
 	if (comparisonType === 'version') {
 		// Modal logic: incoming should be a full item = base + delta
-		preparedIncoming = mergeWith({}, preparedBase, preparedIncoming, replaceArrays);
+		preparedIncoming = mergeWith({}, preparedBase, preparedIncoming, replaceArraysInMergeCustomizer);
 
 		const fieldMetadata = Object.fromEntries(fields.map((f) => [f.field, f]));
 		return calculateFieldDifferences(preparedIncoming, preparedBase, fieldMetadata, {

@@ -19,6 +19,7 @@ import {
 	normalizeComparisonData as normalizeComparisonDataUtil,
 	mergeMainItemKeysIntoRevision,
 	copyRelationalFieldsFromBaseToIncoming,
+	replaceArraysInMergeCustomizer,
 } from '../comparison-utils';
 import { mergeWith } from 'lodash';
 
@@ -315,19 +316,8 @@ export function useComparison(options: UseComparisonOptions) {
 		try {
 			const response = await api.get(`/versions/${versionId}/compare`);
 			const data: VersionComparisonResponse = response.data.data;
-
-			// Ensure the incoming side is a full item: merge main with version delta
-			const replaceArrays = (objValue: any, srcValue: any) => {
-				if (Array.isArray(objValue) || Array.isArray(srcValue)) {
-					return srcValue;
-				}
-
-				return undefined;
-			};
-
 			const base = data.main || {};
-
-			const incomingMerged = mergeWith({}, base, data.current || {}, replaceArrays);
+			const incomingMerged = mergeWith({}, base, data.current || {}, replaceArraysInMergeCustomizer);
 
 			return {
 				base,
@@ -421,16 +411,7 @@ export function useComparison(options: UseComparisonOptions) {
 			}
 		}
 
-		// for field values that are arrays, we want to replace the array with the source array instead of merging them together
-		const replaceArrays = (objValue: any, srcValue: any) => {
-			if (Array.isArray(objValue) || Array.isArray(srcValue)) {
-				return srcValue;
-			}
-
-			return undefined;
-		};
-
-		const baseMerged = mergeWith({}, mainItem, versionDelta || {}, replaceArrays);
+		const baseMerged = mergeWith({}, mainItem, versionDelta || {}, replaceArraysInMergeCustomizer);
 
 		const targetCollection = revision.collection || collection?.value || '';
 		const fields = fieldsStore.getFieldsForCollection(targetCollection);
@@ -438,7 +419,7 @@ export function useComparison(options: UseComparisonOptions) {
 		// Merge main item keys into revision data with default values for missing fields
 		const revisionData = revision.data || {};
 		const revisionDataWithDefaults = mergeMainItemKeysIntoRevision(revisionData, baseMerged, fields);
-		const incomingMerged = mergeWith({}, revisionDataWithDefaults, replaceArrays);
+		const incomingMerged = mergeWith({}, revisionDataWithDefaults, replaceArraysInMergeCustomizer);
 
 		if ('activity' in revision && (revision as any)?.activity?.timestamp) {
 			incomingMerged.date_updated = (revision as any).activity.timestamp;
