@@ -46,6 +46,8 @@ location: Konum
 collection_names_are_case_sensitive: Koleksiyon adları büyük/küçük harfe duyarlıdır
 condition_rules: Durum Kuralları
 input: Girdi
+invalid_input: Geçersiz Giriş
+not_a_number: Sayı değil
 maps: Haritalar
 switch_user: Kullanıcı Değiştir
 item_creation: Öğe Oluşturma
@@ -112,7 +114,12 @@ hook: Kanca
 fill_width: Genişliği Doldur
 field_name_translations: Alan Adı Çevirileri
 enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için parolanızı girin
-enable_tfa: 2FA'yı etkinleştir
+sso_tfa_setup_notice: Hesabınızdan çıkış yapılacak ve tekrar giriş yapmanız istenecektir. Kaydedilmemiş değişiklikler silinecektir.
+enable_tfa: 2FA'yı etkinleştirin
+cancel_tfa_setup: 2FA kurulumunu iptal et
+cancel_tfa_setup_notice: Kurulumu iptal etmek istediğinden emin misin?
+keep_setup: Kuruluma devam et
+cancel_setup: Kurulumu iptal et
 add_field: Alan Ekle
 role_name: Rol Adı
 policy_name: Politika İsmi
