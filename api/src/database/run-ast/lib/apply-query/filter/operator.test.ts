@@ -55,7 +55,7 @@ for (const { field, operator, value, sql, bindings } of [
 		field: 'articles.count(links)',
 		operator: '_eq',
 		value: '123',
-		sql: `select * where (select count(*) from "links" as "alias0" where "alias0"."article_id" = "articles"."id") = ?`,
+		sql: `select * where (select count(*) from "links" as "arvsw" where "arvsw"."article_id" = "articles"."id") = ?`,
 		bindings: [123],
 	},
 	{
@@ -99,7 +99,6 @@ for (const { field, operator, value, sql, bindings } of [
 
 		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 		const queryBuilder = db.queryBuilder();
-		aliasCount = 0;
 
 		applyOperator(db, queryBuilder, schema, field, operator, value);
 
