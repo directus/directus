@@ -112,6 +112,7 @@ hook: Kanca
 fill_width: Genişliği Doldur
 field_name_translations: Alan Adı Çevirileri
 enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için parolanızı girin
+enable_tfa: 2FA'yı etkinleştir
 add_field: Alan Ekle
 role_name: Rol Adı
 policy_name: Politika İsmi
