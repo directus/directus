@@ -1154,6 +1154,7 @@ page_help_files_item: >-
 page_help_settings_project: "**Ayarlar** - Projenizin global konfigürasyon ayarları."
 page_help_settings_appearance: "**Görünüş** - Projenizin görünüş ve tema ayarları."
 page_help_settings_extensions: '**Uzantılar** - Projenize yüklenmiş uzantılar.'
+page_help_settings_ai: "."
 page_help_settings_datamodel_collections: >-
   **Veri Modeli: Koleksiyonlar** — Tüm uygun koleksiyonları listeler. Bu görünür, gizli, sistem koleksiyonları ve dağınık veritabanı tablolarını içerir.
 page_help_settings_datamodel_fields: >-
