@@ -123,7 +123,7 @@ CREATE INDEX IF NOT EXISTS idx_cars_seller ON cars(seller_id);
 CREATE INDEX IF NOT EXISTS idx_cars_status ON cars(status);
 CREATE INDEX IF NOT EXISTS idx_cars_car_type ON cars(car_type);
 CREATE INDEX IF NOT EXISTS idx_cars_vin ON cars(vin);
-CREATE INDEX IF NOT EXISTS idx_cars_regnr ON cars(regnr);
+CREATE INDEX IF NOT EXISTS idx_cars_license_plate ON cars(license_plate);
 CREATE INDEX IF NOT EXISTS idx_cars_order_number ON cars(order_number);
 
 -- Composite index for common query patterns

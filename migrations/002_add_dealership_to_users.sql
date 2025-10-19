@@ -7,7 +7,7 @@ BEGIN;
 -- Add new fields to directus_users table
 ALTER TABLE directus_users
   ADD COLUMN IF NOT EXISTS dealership_id UUID,
-  ADD COLUMN IF NOT EXISTS role VARCHAR(100),
+  ADD COLUMN IF NOT EXISTS job_role VARCHAR(100),
   ADD COLUMN IF NOT EXISTS is_productive BOOLEAN DEFAULT false,
   ADD COLUMN IF NOT EXISTS hours_per_day DECIMAL(4,2);
 
@@ -21,10 +21,10 @@ ALTER TABLE directus_users
 -- Add index for performance (CRITICAL for multi-tenancy queries)
 CREATE INDEX IF NOT EXISTS idx_users_dealership ON directus_users(dealership_id);
 
--- Add check constraint for role
+-- Add check constraint for job_role
 ALTER TABLE directus_users
-  ADD CONSTRAINT check_user_role
-    CHECK (role IN (
+  ADD CONSTRAINT check_user_job_role
+    CHECK (job_role IN (
       'daglig_leder',
       'salgsjef',
       'nybilselger',
@@ -45,7 +45,7 @@ ALTER TABLE directus_users
 
 -- Add comments
 COMMENT ON COLUMN directus_users.dealership_id IS 'Forhandler brukeren tilhører (REQUIRED for multi-tenancy)';
-COMMENT ON COLUMN directus_users.role IS 'Brukerens rolle i systemet';
+COMMENT ON COLUMN directus_users.job_role IS 'Brukerens jobberolle i systemet (ikke Directus role)';
 COMMENT ON COLUMN directus_users.is_productive IS 'True hvis produktiv rolle (mekaniker, bilpleier) med tidsbank';
 COMMENT ON COLUMN directus_users.hours_per_day IS 'Timer tilgjengelig per dag (kun for produktive roller)';
 

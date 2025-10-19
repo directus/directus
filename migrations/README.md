@@ -6,11 +6,12 @@ SQL migrations for DirectApp schema changes.
 
 | # | File | Beskrivelse | Status |
 |---|------|-------------|--------|
-| 001 | `001_extend_dealership.sql` | Utvid dealership med multi-site felt | ⏸️ Ikke kjørt |
-| 002 | `002_add_dealership_to_users.sql` | Legg til dealership_id på users | ⏸️ Ikke kjørt |
-| 003 | `003_extend_cars_workflow.sql` | Utvid cars med alle workflow-felt | ⏸️ Ikke kjørt |
-| 004 | `004_create_notifications.sql` | Lag notifications collection | ⏸️ Ikke kjørt |
-| 005 | `005_create_resource_management.sql` | Lag generisk ressursstyring | ⏸️ Ikke kjørt |
+| 000 | `000_create_base_collections.sql` | Opprett base dealership og cars tabeller | ✅ Kjørt 2025-10-19 |
+| 001 | `001_extend_dealership.sql` | Utvid dealership med multi-site felt | ✅ Kjørt 2025-10-19 |
+| 002 | `002_add_dealership_to_users.sql` | Legg til dealership_id på users (job_role) | ✅ Kjørt 2025-10-19 |
+| 003 | `003_extend_cars_workflow.sql` | Utvid cars med alle workflow-felt | ✅ Kjørt 2025-10-19 |
+| 004 | `004_create_notifications.sql` | Lag notifications collection | ✅ Kjørt 2025-10-19 |
+| 005 | `005_create_resource_management.sql` | Lag generisk ressursstyring | ✅ Kjørt 2025-10-19 |
 
 ---
 

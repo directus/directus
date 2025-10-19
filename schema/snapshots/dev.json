@@ -1,0 +1,54 @@
+version: 1
+directus: 11.12.0
+vendor: postgres
+collections:
+  - collection: cars
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: status
+      archive_value: archived
+      collapse: open
+      collection: cars
+      color: null
+      display_template: '{{brand}} {{model}} ({{vin}})'
+      group: null
+      hidden: false
+      icon: directions_car
+      item_duplication_fields: null
+      note: Biler (ny og brukt)
+      preview_url: null
+      singleton: false
+      sort: null
+      sort_field: sort
+      translations: null
+      unarchive_value: draft
+      versioning: false
+    schema:
+      name: cars
+  - collection: dealership
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: status
+      archive_value: archived
+      collapse: open
+      collection: dealership
+      color: null
+      display_template: '{{dealership_number}} - {{dealership_name}}'
+      group: null
+      hidden: false
+      icon: store
+      item_duplication_fields: null
+      note: Bilforhandlere i Gumpen-nettverket
+      preview_url: null
+      singleton: false
+      sort: null
+      sort_field: sort
+      translations: null
+      unarchive_value: draft
+      versioning: false
+    schema:
+      name: dealership
+fields: []
+relations: []
