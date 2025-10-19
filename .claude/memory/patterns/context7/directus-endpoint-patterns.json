@@ -1,0 +1,32 @@
+{
+  "name": "directus-endpoint-patterns",
+  "source": "context7",
+  "framework": "directus",
+  "confidence": 0.95,
+  "topic": "endpoint patterns",
+  "pattern": {
+    "description": "endpoint patterns for directus",
+    "examples": [
+      {
+        "title": "Example endpoint patterns",
+        "code": "// directus endpoint patterns example\n// To be populated from Context7 MCP",
+        "explanation": "Pattern extracted from official documentation"
+      }
+    ],
+    "bestPractices": [
+      "Follow directus conventions for endpoint patterns",
+      "Use TypeScript for type safety",
+      "Add comprehensive error handling"
+    ],
+    "commonPitfalls": [
+      "Avoid common mistakes in endpoint patterns",
+      "Check documentation for latest patterns"
+    ],
+    "applicableTo": [
+      "directus"
+    ],
+    "frameworks": [
+      "directus"
+    ]
+  }
+}

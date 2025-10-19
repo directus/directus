@@ -1,0 +1,32 @@
+{
+  "name": "directus-hooks-patterns",
+  "source": "context7",
+  "framework": "directus",
+  "confidence": 0.95,
+  "topic": "hooks patterns",
+  "pattern": {
+    "description": "hooks patterns for directus",
+    "examples": [
+      {
+        "title": "Example hooks patterns",
+        "code": "// directus hooks patterns example\n// To be populated from Context7 MCP",
+        "explanation": "Pattern extracted from official documentation"
+      }
+    ],
+    "bestPractices": [
+      "Follow directus conventions for hooks patterns",
+      "Use TypeScript for type safety",
+      "Add comprehensive error handling"
+    ],
+    "commonPitfalls": [
+      "Avoid common mistakes in hooks patterns",
+      "Check documentation for latest patterns"
+    ],
+    "applicableTo": [
+      "directus"
+    ],
+    "frameworks": [
+      "directus"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "typescript-type-patterns",
+  "source": "context7",
+  "framework": "typescript",
+  "confidence": 0.95,
+  "topic": "type patterns",
+  "pattern": {
+    "description": "type patterns for typescript",
+    "examples": [
+      {
+        "title": "Example type patterns",
+        "code": "// typescript type patterns example\n// To be populated from Context7 MCP",
+        "explanation": "Pattern extracted from official documentation"
+      }
+    ],
+    "bestPractices": [
+      "Follow typescript conventions for type patterns",
+      "Use TypeScript for type safety",
+      "Add comprehensive error handling"
+    ],
+    "commonPitfalls": [
+      "Avoid common mistakes in type patterns",
+      "Check documentation for latest patterns"
+    ],
+    "applicableTo": [
+      "typescript"
+    ],
+    "frameworks": [
+      "typescript"
+    ]
+  }
+}

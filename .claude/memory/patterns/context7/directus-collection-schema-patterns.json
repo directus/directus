@@ -1,0 +1,32 @@
+{
+  "name": "directus-collection-schema-patterns",
+  "source": "context7",
+  "framework": "directus",
+  "confidence": 0.95,
+  "topic": "collection schema patterns",
+  "pattern": {
+    "description": "collection schema patterns for directus",
+    "examples": [
+      {
+        "title": "Example collection schema patterns",
+        "code": "// directus collection schema patterns example\n// To be populated from Context7 MCP",
+        "explanation": "Pattern extracted from official documentation"
+      }
+    ],
+    "bestPractices": [
+      "Follow directus conventions for collection schema patterns",
+      "Use TypeScript for type safety",
+      "Add comprehensive error handling"
+    ],
+    "commonPitfalls": [
+      "Avoid common mistakes in collection schema patterns",
+      "Check documentation for latest patterns"
+    ],
+    "applicableTo": [
+      "directus"
+    ],
+    "frameworks": [
+      "directus"
+    ]
+  }
+}

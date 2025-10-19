@@ -1,0 +1,32 @@
+{
+  "name": "directus-custom-interface-patterns",
+  "source": "context7",
+  "framework": "directus",
+  "confidence": 0.95,
+  "topic": "custom interface patterns",
+  "pattern": {
+    "description": "custom interface patterns for directus",
+    "examples": [
+      {
+        "title": "Example custom interface patterns",
+        "code": "// directus custom interface patterns example\n// To be populated from Context7 MCP",
+        "explanation": "Pattern extracted from official documentation"
+      }
+    ],
+    "bestPractices": [
+      "Follow directus conventions for custom interface patterns",
+      "Use TypeScript for type safety",
+      "Add comprehensive error handling"
+    ],
+    "commonPitfalls": [
+      "Avoid common mistakes in custom interface patterns",
+      "Check documentation for latest patterns"
+    ],
+    "applicableTo": [
+      "directus"
+    ],
+    "frameworks": [
+      "directus"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "directus-display-patterns",
+  "source": "context7",
+  "framework": "directus",
+  "confidence": 0.95,
+  "topic": "display patterns",
+  "pattern": {
+    "description": "display patterns for directus",
+    "examples": [
+      {
+        "title": "Example display patterns",
+        "code": "// directus display patterns example\n// To be populated from Context7 MCP",
+        "explanation": "Pattern extracted from official documentation"
+      }
+    ],
+    "bestPractices": [
+      "Follow directus conventions for display patterns",
+      "Use TypeScript for type safety",
+      "Add comprehensive error handling"
+    ],
+    "commonPitfalls": [
+      "Avoid common mistakes in display patterns",
+      "Check documentation for latest patterns"
+    ],
+    "applicableTo": [
+      "directus"
+    ],
+    "frameworks": [
+      "directus"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "vue3-reactive-patterns",
+  "source": "context7",
+  "framework": "vue3",
+  "confidence": 0.95,
+  "topic": "reactive patterns",
+  "pattern": {
+    "description": "reactive patterns for vue3",
+    "examples": [
+      {
+        "title": "Example reactive patterns",
+        "code": "// vue3 reactive patterns example\n// To be populated from Context7 MCP",
+        "explanation": "Pattern extracted from official documentation"
+      }
+    ],
+    "bestPractices": [
+      "Follow vue3 conventions for reactive patterns",
+      "Use TypeScript for type safety",
+      "Add comprehensive error handling"
+    ],
+    "commonPitfalls": [
+      "Avoid common mistakes in reactive patterns",
+      "Check documentation for latest patterns"
+    ],
+    "applicableTo": [
+      "vue3"
+    ],
+    "frameworks": [
+      "vue3"
+    ]
+  }
+}

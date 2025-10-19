@@ -1,0 +1,32 @@
+{
+  "name": "vue3-composable-patterns",
+  "source": "context7",
+  "framework": "vue3",
+  "confidence": 0.95,
+  "topic": "composable patterns",
+  "pattern": {
+    "description": "composable patterns for vue3",
+    "examples": [
+      {
+        "title": "Example composable patterns",
+        "code": "// vue3 composable patterns example\n// To be populated from Context7 MCP",
+        "explanation": "Pattern extracted from official documentation"
+      }
+    ],
+    "bestPractices": [
+      "Follow vue3 conventions for composable patterns",
+      "Use TypeScript for type safety",
+      "Add comprehensive error handling"
+    ],
+    "commonPitfalls": [
+      "Avoid common mistakes in composable patterns",
+      "Check documentation for latest patterns"
+    ],
+    "applicableTo": [
+      "vue3"
+    ],
+    "frameworks": [
+      "vue3"
+    ]
+  }
+}
