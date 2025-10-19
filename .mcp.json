@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "directapp-dev": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@directus/mcp-server",
+        "--url",
+        "${DIRECTUS_URL:-http://localhost:8055}",
+        "--token",
+        "${DIRECTUS_TOKEN}"
+      ],
+      "env": {
+        "DIRECTUS_URL": "http://localhost:8055"
+      }
+    }
+  }
+}
