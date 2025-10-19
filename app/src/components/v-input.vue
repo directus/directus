@@ -223,6 +223,12 @@ function emitValue(event: InputEvent) {
 	}
 
 	if (props.type === 'number') {
+
+		if (/^-?\d*\.?\d*$/.test(value)) {
+			emit('update:modelValue', value);
+			return;
+		}
+
 		const parsedNumber = Number(value);
 
 		if (props.integer === true && !Number.isInteger(parsedNumber) && Number.isNaN(parsedNumber) === false) {
