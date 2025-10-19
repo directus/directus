@@ -41,7 +41,7 @@ services:
       # ========================================
       # ADMIN ACCOUNT
       # ========================================
-      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@dev.local}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-DevPassword123!}
 
       # ========================================
@@ -179,7 +179,7 @@ services:
       - directapp-dev
 
     ports:
-      - "5432:5432"  # Exposed for direct access
+      - "5433:5432"  # Exposed for direct access (5433 to avoid conflicts)
 
     volumes:
       - postgres-dev-data:/var/lib/postgresql/data
@@ -206,7 +206,7 @@ services:
       - directapp-dev
 
     ports:
-      - "6379:6379"  # Exposed for direct access
+      - "6380:6379"  # Exposed for direct access (6380 to avoid conflicts)
 
     command:
       - "redis-server"
