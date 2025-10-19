@@ -61,7 +61,7 @@ services:
       # ========================================
       # PUBLIC URL
       # ========================================
-      PUBLIC_URL: ${PUBLIC_URL}  # https://staging.directapp.yourdomain.com
+      PUBLIC_URL: ${PUBLIC_URL}  # https://staging-gapp.coms.no
 
       # ========================================
       # FILE STORAGE (S3-Compatible)
@@ -174,7 +174,7 @@ services:
     # Traefik Labels (if using Dokploy)
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.directapp-staging.rule=Host(`staging.${DOMAIN}`)"
+      - "traefik.http.routers.directapp-staging.rule=Host(`staging-gapp.${DOMAIN}`)"
       - "traefik.http.routers.directapp-staging.entrypoints=websecure"
       - "traefik.http.routers.directapp-staging.tls.certresolver=letsencrypt"
       - "traefik.http.services.directapp-staging.loadbalancer.server.port=8055"
