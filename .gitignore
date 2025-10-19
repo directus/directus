@@ -51,3 +51,14 @@ TODO
 /tests/blackbox/server-log-*
 /tests/blackbox/sequencer-data.json
 /packages/extensions-sdk/temp-extension-*/
+
+# Dokploy / Docker deployment
+uploads/
+extensions/
+database/
+postgres-data/
+redis-data/
+backups/
+.env.production
+.env.local
+docker-compose.override.yml

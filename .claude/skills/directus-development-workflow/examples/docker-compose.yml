@@ -1,0 +1,224 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database with PostGIS
+  database:
+    image: postgis/postgis:15-alpine
+    container_name: directus_database
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups
+    environment:
+      POSTGRES_USER: ${DB_USER:-directus}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-directus}
+      POSTGRES_DB: ${DB_DATABASE:-directus}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=en_US.UTF-8"
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-directus}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - directus
+
+  # Redis Cache
+  cache:
+    image: redis:7-alpine
+    container_name: directus_cache
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - directus
+
+  # Directus Application
+  directus:
+    image: directus/directus:latest
+    container_name: directus_app
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8055}:8055"
+    volumes:
+      # Uploads
+      - ./uploads:/directus/uploads
+      # Extensions
+      - ./extensions:/directus/extensions
+      # Email templates
+      - ./templates:/directus/templates
+    environment:
+      # Database
+      DB_CLIENT: ${DB_CLIENT:-pg}
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE:-directus}
+      DB_USER: ${DB_USER:-directus}
+      DB_PASSWORD: ${DB_PASSWORD:-directus}
+
+      # Security
+      KEY: ${KEY:-replace-with-random-value}
+      SECRET: ${SECRET:-replace-with-random-value}
+
+      # Admin
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin}
+
+      # Public URL
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:8055}
+
+      # Cache
+      CACHE_ENABLED: ${CACHE_ENABLED:-true}
+      CACHE_STORE: redis
+      CACHE_REDIS: redis://cache:6379
+      CACHE_AUTO_PURGE: ${CACHE_AUTO_PURGE:-true}
+
+      # Rate Limiting
+      RATE_LIMITER_ENABLED: ${RATE_LIMITER_ENABLED:-true}
+      RATE_LIMITER_STORE: redis
+      RATE_LIMITER_REDIS: redis://cache:6379
+      RATE_LIMITER_POINTS: ${RATE_LIMITER_POINTS:-100}
+      RATE_LIMITER_DURATION: ${RATE_LIMITER_DURATION:-60}
+
+      # Storage
+      STORAGE_LOCATIONS: ${STORAGE_LOCATIONS:-local}
+      STORAGE_LOCAL_DRIVER: local
+      STORAGE_LOCAL_ROOT: /directus/uploads
+
+      # Email (using Mailhog in development)
+      EMAIL_TRANSPORT: smtp
+      EMAIL_FROM: ${EMAIL_FROM:-no-reply@directus.local}
+      EMAIL_SMTP_HOST: mailhog
+      EMAIL_SMTP_PORT: 1025
+      EMAIL_SMTP_SECURE: "false"
+
+      # Extensions
+      EXTENSIONS_AUTO_RELOAD: ${EXTENSIONS_AUTO_RELOAD:-true}
+
+      # Telemetry
+      TELEMETRY: ${TELEMETRY:-false}
+
+      # Logging
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      LOG_STYLE: ${LOG_STYLE:-pretty}
+
+      # AI Integration (optional)
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+
+      # Performance
+      NODE_ENV: ${NODE_ENV:-development}
+      MAX_PAYLOAD_SIZE: ${MAX_PAYLOAD_SIZE:-10mb}
+
+    depends_on:
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    networks:
+      - directus
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.directus.rule=Host(`directus.localhost`)"
+      - "traefik.http.services.directus.loadbalancer.server.port=8055"
+
+  # Development Mail Server
+  mailhog:
+    image: mailhog/mailhog
+    container_name: directus_mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP port
+      - "8025:8025"  # Web UI port
+    networks:
+      - directus
+
+  # Database Admin Tool
+  adminer:
+    image: adminer
+    container_name: directus_adminer
+    restart: unless-stopped
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: database
+      ADMINER_DESIGN: pepa-linha
+    depends_on:
+      - database
+    networks:
+      - directus
+
+  # Backup Service (runs daily at 2 AM)
+  backup:
+    image: postgres:15-alpine
+    container_name: directus_backup
+    volumes:
+      - ./backups:/backups
+      - ./scripts/backup.sh:/backup.sh:ro
+    environment:
+      PGHOST: database
+      PGDATABASE: ${DB_DATABASE:-directus}
+      PGUSER: ${DB_USER:-directus}
+      PGPASSWORD: ${DB_PASSWORD:-directus}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        while true; do
+          echo "Waiting until 2 AM for backup..."
+          sleep $$(( ($$(date -d "tomorrow 02:00" +%s) - $$(date +%s)) ))
+          echo "Starting backup..."
+          pg_dump -Fc -f /backups/directus_$$(date +%Y%m%d_%H%M%S).dump
+          echo "Backup completed"
+          # Keep only last 7 backups
+          ls -t /backups/*.dump | tail -n +8 | xargs -r rm
+        done
+    depends_on:
+      - database
+    networks:
+      - directus
+
+  # Optional: Traefik Reverse Proxy
+  # traefik:
+  #   image: traefik:v2.10
+  #   container_name: directus_traefik
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #     - "8090:8080"  # Traefik dashboard
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #     - ./traefik:/etc/traefik
+  #     - traefik_certs:/certificates
+  #   command:
+  #     - --api.dashboard=true
+  #     - --providers.docker=true
+  #     - --providers.docker.exposedbydefault=false
+  #     - --entrypoints.web.address=:80
+  #     - --entrypoints.websecure.address=:443
+  #   networks:
+  #     - directus
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  traefik_certs:
+    driver: local
+
+networks:
+  directus:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

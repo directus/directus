@@ -1,0 +1,317 @@
+# DirectApp - Staging Docker Compose
+# Directus fork for Norwegian car dealership management
+#
+# STAGING CONFIGURATION
+# - Production-like environment for testing
+# - S3 storage enabled
+# - Security headers enabled
+# - Real email testing via Resend
+# - Same as production but with:
+#   - Longer token TTLs for testing
+#   - More verbose logging
+#   - Port exposed for easier access
+#
+# Usage:
+#   cp .env.staging.example .env
+#   docker compose -f docker-compose.staging.yml up
+
+version: '3.8'
+
+services:
+  # Main Directus application
+  directus:
+    image: directus/directus:11.12.0  # PINNED for MCP support
+    container_name: directapp-staging
+    restart: unless-stopped
+
+    networks:
+      - dokploy-network
+      - directapp-staging
+
+    # Optional: Expose port for direct access (remove if using Traefik only)
+    ports:
+      - "8056:8055"  # Different port from dev to avoid conflicts
+
+    volumes:
+      - ../files/extensions:/directus/extensions
+
+    environment:
+      # ========================================
+      # SECURITY KEYS (REQUIRED - Different from prod!)
+      # ========================================
+      KEY: ${DIRECTUS_KEY}
+      SECRET: ${DIRECTUS_SECRET}
+
+      # ========================================
+      # ADMIN ACCOUNT
+      # ========================================
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+
+      # ========================================
+      # DATABASE
+      # ========================================
+      DB_CLIENT: pg
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+      # ========================================
+      # PUBLIC URL
+      # ========================================
+      PUBLIC_URL: ${PUBLIC_URL}  # https://staging.directapp.yourdomain.com
+
+      # ========================================
+      # FILE STORAGE (S3-Compatible)
+      # ========================================
+      STORAGE_LOCATIONS: s3
+      STORAGE_S3_DRIVER: s3
+      STORAGE_S3_KEY: ${S3_ACCESS_KEY}
+      STORAGE_S3_SECRET: ${S3_SECRET_KEY}
+      STORAGE_S3_BUCKET: ${S3_BUCKET:-directapp-staging}  # Separate staging bucket
+      STORAGE_S3_REGION: ${S3_REGION:-eu-north-1}
+
+      # Optional: S3 endpoint for MinIO or R2
+      # STORAGE_S3_ENDPOINT: ${S3_ENDPOINT}
+
+      # ========================================
+      # CACHE (Redis)
+      # ========================================
+      CACHE_ENABLED: "true"
+      CACHE_STORE: redis
+      CACHE_TTL: 15m
+      CACHE_NAMESPACE: directapp_staging
+      REDIS: redis://redis:6379
+
+      # ========================================
+      # EMAIL (Resend - Test in staging)
+      # ========================================
+      EMAIL_FROM: ${EMAIL_FROM}  # DirectApp Staging <staging@yourdomain.com>
+      EMAIL_TRANSPORT: smtp
+      EMAIL_SMTP_HOST: smtp.resend.com
+      EMAIL_SMTP_PORT: 587
+      EMAIL_SMTP_USER: resend
+      EMAIL_SMTP_PASSWORD: ${RESEND_API_KEY}
+      EMAIL_SMTP_SECURE: "false"
+
+      # ========================================
+      # NORWEGIAN VEHICLE REGISTRY API
+      # ========================================
+      # Use test environment token for staging
+      STATENS_VEGVESEN_TOKEN: ${STATENS_VEGVESEN_TOKEN}
+
+      # ========================================
+      # MONITORING (Sentry with staging environment)
+      # ========================================
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      SENTRY_ENVIRONMENT: staging
+
+      # ========================================
+      # EXTENSIONS
+      # ========================================
+      EXTENSIONS_PATH: /directus/extensions
+      EXTENSIONS_AUTO_RELOAD: "false"
+
+      # ========================================
+      # SECURITY (Production-like but relaxed for testing)
+      # ========================================
+      # Rate limiting
+      RATE_LIMITER_ENABLED: "true"
+      RATE_LIMITER_POINTS: 200  # Higher than prod
+      RATE_LIMITER_DURATION: 60
+      RATE_LIMITER_STORE: redis
+
+      # Access tokens (longer for testing)
+      ACCESS_TOKEN_TTL: 30m  # Longer than prod
+      REFRESH_TOKEN_TTL: 7d
+      REFRESH_TOKEN_COOKIE_SECURE: "true"
+      REFRESH_TOKEN_COOKIE_SAME_SITE: lax
+      REFRESH_TOKEN_COOKIE_DOMAIN: ${COOKIE_DOMAIN}
+
+      # Session
+      SESSION_COOKIE_SECURE: "true"
+      SESSION_COOKIE_SAME_SITE: lax
+
+      # Proxy trust
+      TRUST_PROXY: "true"
+
+      # CORS
+      CORS_ENABLED: "true"
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      CORS_CREDENTIALS: "true"
+
+      # Password policy (same as production)
+      AUTH_PASSWORD_POLICY: "/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{12,}$/"
+
+      # Content Security Policy
+      CONTENT_SECURITY_POLICY_DIRECTIVES__SCRIPT_SRC: "array:'self','unsafe-eval'"
+
+      # ========================================
+      # WEBSOCKETS
+      # ========================================
+      WEBSOCKETS_ENABLED: "true"
+      WEBSOCKETS_HEARTBEAT_PERIOD: 30s
+
+      # ========================================
+      # PERFORMANCE
+      # ========================================
+      QUERY_LIMIT_DEFAULT: 100
+      QUERY_LIMIT_MAX: 500
+
+      # ========================================
+      # LOGGING (More verbose than production)
+      # ========================================
+      LOG_LEVEL: ${LOG_LEVEL:-info}  # info instead of warn
+      LOG_STYLE: pretty
+
+      # ========================================
+      # MISC
+      # ========================================
+      TELEMETRY: "false"
+
+    # Traefik Labels (if using Dokploy)
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.directapp-staging.rule=Host(`staging.${DOMAIN}`)"
+      - "traefik.http.routers.directapp-staging.entrypoints=websecure"
+      - "traefik.http.routers.directapp-staging.tls.certresolver=letsencrypt"
+      - "traefik.http.services.directapp-staging.loadbalancer.server.port=8055"
+      - "traefik.docker.network=dokploy-network"
+
+      # Security headers
+      - "traefik.http.middlewares.directapp-staging-headers.headers.sslredirect=true"
+      - "traefik.http.middlewares.directapp-staging-headers.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.directapp-staging-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.directapp-staging-headers.headers.stsPreload=true"
+      - "traefik.http.routers.directapp-staging.middlewares=directapp-staging-headers"
+
+      # Basic auth (optional - protect staging from public access)
+      # - "traefik.http.middlewares.directapp-staging-auth.basicauth.users=admin:$$apr1$$..."
+      # - "traefik.http.routers.directapp-staging.middlewares=directapp-staging-auth"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8055/server/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15.6
+    container_name: directapp-staging-postgres
+    restart: unless-stopped
+
+    networks:
+      - directapp-staging
+
+    volumes:
+      - ../files/postgres-staging-data:/var/lib/postgresql/data
+
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=nb_NO.UTF-8 --lc-ctype=nb_NO.UTF-8"
+
+    user: postgres
+
+    command:
+      - "postgres"
+      - "-c"
+      - "shared_buffers=256MB"
+      - "-c"
+      - "max_connections=200"
+      - "-c"
+      - "work_mem=4MB"
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_DATABASE}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7.2.4-alpine
+    container_name: directapp-staging-redis
+    restart: unless-stopped
+
+    networks:
+      - directapp-staging
+
+    volumes:
+      - ../files/redis-staging-data:/data
+
+    command:
+      - "redis-server"
+      - "--appendonly"
+      - "yes"
+      - "--appendfsync"
+      - "everysec"
+      - "--maxmemory"
+      - "256mb"
+      - "--maxmemory-policy"
+      - "allkeys-lru"
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Automated Database Backups
+  backup:
+    image: prodrigestivill/postgres-backup-local:15-alpine
+    container_name: directapp-staging-backup
+    restart: unless-stopped
+
+    networks:
+      - directapp-staging
+
+    volumes:
+      - ../files/backups-staging:/backups
+
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_EXTRA_OPTS: "-Z9 --schema=public --blobs"
+
+      # Backup schedule (less frequent than production)
+      SCHEDULE: "@weekly"
+      BACKUP_KEEP_DAYS: 14
+      BACKUP_KEEP_WEEKS: 4
+      BACKUP_KEEP_MONTHS: 3
+
+      HEALTHCHECK_PORT: 8080
+
+    depends_on:
+      - postgres
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+# Networks
+networks:
+  # Dokploy network (if using Traefik)
+  dokploy-network:
+    external: true
+
+  # Internal network
+  directapp-staging:
+    driver: bridge
+
+# Volumes managed by Dokploy in ../files/

@@ -1,0 +1,214 @@
+# DirectApp - Dokploy Deployment Configuration
+# Directus fork for Norwegian car dealership management
+#
+# IMPORTANT: This file is optimized for Dokploy deployment
+# - Uses ../files/ for persistent volumes (required by Dokploy)
+# - Includes dokploy-network
+# - Contains Traefik labels for automatic HTTPS
+#
+# Deploy via Dokploy UI: Create new service → Docker Compose → paste this file
+
+version: '3.8'
+
+services:
+  # Main Directus application
+  directus:
+    image: directus/directus:11.12.0
+    container_name: directapp
+    restart: unless-stopped
+
+    # Dokploy network - REQUIRED
+    networks:
+      - dokploy-network
+      - directapp-internal
+
+    # Note: Port removed - Traefik handles routing via labels below
+    # DO NOT expose 8055 directly to host in production
+
+    # Persistent volumes - MUST use ../files/ path for Dokploy
+    volumes:
+      - ../files/uploads:/directus/uploads
+      - ../files/extensions:/directus/extensions
+
+    environment:
+      # Security Keys - CHANGE THESE!
+      KEY: ${DIRECTUS_KEY:-replace-with-random-32-character-string}
+      SECRET: ${DIRECTUS_SECRET:-replace-with-random-64-character-string}
+
+      # Admin Account
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@directapp.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-this-password}
+
+      # Database Configuration
+      DB_CLIENT: pg
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE:-directapp}
+      DB_USER: ${DB_USER:-directus}
+      DB_PASSWORD: ${DB_PASSWORD:-strong-password-here}
+
+      # Public URL - CHANGE THIS to your Dokploy domain
+      PUBLIC_URL: ${PUBLIC_URL:-https://directapp.yourdomain.com}
+
+      # Cache (Redis)
+      CACHE_ENABLED: "true"
+      CACHE_STORE: redis
+      REDIS: redis://redis:6379
+
+      # Rate Limiting
+      RATE_LIMITER_ENABLED: "true"
+      RATE_LIMITER_POINTS: 100
+      RATE_LIMITER_DURATION: 60
+
+      # Email Configuration (Resend)
+      EMAIL_FROM: ${EMAIL_FROM:-noreply@yourdomain.com}
+      EMAIL_TRANSPORT: smtp
+      EMAIL_SMTP_HOST: smtp.resend.com
+      EMAIL_SMTP_PORT: 587
+      EMAIL_SMTP_USER: resend
+      EMAIL_SMTP_PASSWORD: ${RESEND_API_KEY:-your-resend-api-key}
+
+      # Norwegian Vehicle Registry API
+      STATENS_VEGVESEN_TOKEN: ${STATENS_VEGVESEN_TOKEN:-}
+
+      # Monitoring (Sentry)
+      SENTRY_DSN: ${SENTRY_DSN:-}
+
+      # Extensions
+      EXTENSIONS_PATH: /directus/extensions
+      EXTENSIONS_AUTO_RELOAD: "false"
+
+      # File Storage
+      STORAGE_LOCATIONS: local
+      STORAGE_LOCAL_ROOT: /directus/uploads
+
+      # Websockets
+      WEBSOCKETS_ENABLED: "true"
+
+      # Security
+      ACCESS_TOKEN_TTL: 15m
+      REFRESH_TOKEN_TTL: 7d
+      REFRESH_TOKEN_COOKIE_SECURE: "true"
+      REFRESH_TOKEN_COOKIE_SAME_SITE: lax
+      REFRESH_TOKEN_COOKIE_NAME: directus_refresh_token
+
+      # Reverse Proxy Settings (REQUIRED for Traefik/Dokploy)
+      TRUST_PROXY: "true"
+
+      # CORS Configuration
+      CORS_ENABLED: "true"
+      CORS_ORIGIN: "true"
+      CORS_CREDENTIALS: "true"
+
+      # Misc
+      LOG_LEVEL: info
+      TELEMETRY: "false"
+
+    # Traefik Labels - Required for Dokploy automatic HTTPS
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.directapp.rule=Host(`${DOMAIN:-directapp.yourdomain.com}`)"
+      - "traefik.http.routers.directapp.entrypoints=websecure"
+      - "traefik.http.routers.directapp.tls.certresolver=letsencrypt"
+      - "traefik.http.services.directapp.loadbalancer.server.port=8055"
+      - "traefik.docker.network=dokploy-network"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8055/server/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL Database
+  postgres:
+    image: postgis/postgis:15-3.4-alpine
+    container_name: directapp-postgres
+    restart: unless-stopped
+
+    networks:
+      - directapp-internal
+
+    # Persistent database - MUST use ../files/ path
+    volumes:
+      - ../files/postgres-data:/var/lib/postgresql/data
+
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-directapp}
+      POSTGRES_USER: ${DB_USER:-directus}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-strong-password-here}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=nb_NO.UTF-8 --lc-ctype=nb_NO.UTF-8"
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-directus}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: directapp-redis
+    restart: unless-stopped
+
+    networks:
+      - directapp-internal
+
+    # Optional: Persist Redis data
+    volumes:
+      - ../files/redis-data:/data
+
+    command: redis-server --appendonly yes
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Automated Database Backups
+  backup:
+    image: prodrigestivill/postgres-backup-local:15-alpine
+    container_name: directapp-backup
+    restart: unless-stopped
+
+    networks:
+      - directapp-internal
+
+    # Backup storage - MUST use ../files/ path
+    volumes:
+      - ../files/backups:/backups
+
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${DB_DATABASE:-directapp}
+      POSTGRES_USER: ${DB_USER:-directus}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-strong-password-here}
+      POSTGRES_EXTRA_OPTS: -Z9 --schema=public --blobs
+      SCHEDULE: "@daily"
+      BACKUP_KEEP_DAYS: 30
+      BACKUP_KEEP_WEEKS: 4
+      BACKUP_KEEP_MONTHS: 6
+      HEALTHCHECK_PORT: 8080
+
+    depends_on:
+      - postgres
+
+# Networks
+networks:
+  # Dokploy network - REQUIRED for Traefik integration
+  dokploy-network:
+    external: true
+
+  # Internal network for database/cache
+  directapp-internal:
+    driver: bridge
+
+# Note: Volumes are mounted from ../files/ which is managed by Dokploy
+# This ensures data persists between deployments

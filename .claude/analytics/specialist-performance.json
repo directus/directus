@@ -1,0 +1,9 @@
+{
+  "specialists": {},
+  "metadata": {
+    "project": "directapp",
+    "created": "2025-10-18",
+    "version": "1.0.0",
+    "note": "Tracks performance of different specialist modes (frontend, backend, testing, etc.)"
+  }
+}

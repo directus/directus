@@ -1,0 +1,11 @@
+{
+  "owner": "gumpen-app",
+  "repo": "directapp",
+  "projectNumber": 1,
+  "token": null,
+  "upstream": {
+    "owner": "directus",
+    "repo": "directus"
+  },
+  "notes": "To complete GitHub Project integration: Generate a GitHub PAT (classic) with 'repo' and 'project' scopes and add it to the 'token' field. You can create one at: https://github.com/settings/tokens"
+}

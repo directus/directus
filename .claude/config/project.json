@@ -1,0 +1,24 @@
+{
+  "name": "DirectApp",
+  "slug": "directapp",
+  "type": "web",
+  "description": "Directus fork - Real-time API and App dashboard for managing SQL database content",
+  "tech_stack": [
+    "Node.js",
+    "Vue.js",
+    "TypeScript",
+    "pnpm",
+    "PostgreSQL",
+    "MySQL",
+    "SQLite",
+    "GraphQL",
+    "REST API"
+  ],
+  "monorepo": true,
+  "analytics_enabled": true,
+  "github_integration": true,
+  "github_repo": "gumpen-app/directapp",
+  "upstream_repo": "directus/directus",
+  "created": "2025-10-18",
+  "version": "1.0.0"
+}

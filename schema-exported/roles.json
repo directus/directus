@@ -1,0 +1,833 @@
+{
+    "roles": [
+        {
+            "id": "1abe0285-a26c-43f5-b010-26506250107d",
+            "name": "Nybil",
+            "icon": "supervised_user_circle",
+            "description": null,
+            "parent": null,
+            "role_dealership_code": null,
+            "children": [],
+            "policies": [],
+            "users": []
+        },
+        {
+            "id": "26a5cfc6-f09f-41c8-b97c-ea358267eb7a",
+            "name": "Administrator",
+            "icon": "verified",
+            "description": "$t:admin_description",
+            "parent": null,
+            "role_dealership_code": null,
+            "children": [],
+            "policies": [],
+            "users": []
+        },
+        {
+            "id": "37a82a62-b4e6-40cb-a1b8-a6299aed64ec",
+            "name": "Mottakskontroll.499",
+            "icon": "supervised_user_circle",
+            "description": "Mottakskontroll av biler ",
+            "parent": null,
+            "role_dealership_code": "ce6d4e54-d789-4a6e-837c-18047c2e004e",
+            "children": [],
+            "policies": [],
+            "users": []
+        },
+        {
+            "id": "73cec8d2-b17b-4a4e-945d-6e4dbb4e3454",
+            "name": "demo",
+            "icon": "supervised_user_circle",
+            "description": null,
+            "parent": null,
+            "role_dealership_code": "3eba4018-3cc7-4a82-993f-4099cb348033",
+            "children": [],
+            "policies": [],
+            "users": []
+        },
+        {
+            "id": "a3dfc257-b208-45a7-a497-a72402f3dd7b",
+            "name": "Bruktbil",
+            "icon": "supervised_user_circle",
+            "description": null,
+            "parent": null,
+            "role_dealership_code": null,
+            "children": [],
+            "policies": [],
+            "users": []
+        },
+        {
+            "id": "a6152961-af31-4342-a86c-0b8d93a28943",
+            "name": "Klargjoring",
+            "icon": "supervised_user_circle",
+            "description": null,
+            "parent": null,
+            "role_dealership_code": null,
+            "children": [],
+            "policies": [],
+            "users": []
+        },
+        {
+            "id": "a983f49c-eb55-4d13-9d89-26e7afa1f48d",
+            "name": "Booking",
+            "icon": "supervised_user_circle",
+            "description": null,
+            "parent": null,
+            "role_dealership_code": null,
+            "children": [],
+            "policies": [],
+            "users": []
+        }
+    ],
+    "policies": [
+        {
+            "id": "7f763604-b8f9-4c7f-b4fc-8f24d285b0fc",
+            "name": "Administrator",
+            "icon": "verified",
+            "description": "$t:admin_description",
+            "ip_access": null,
+            "enforce_tfa": true,
+            "admin_access": true,
+            "app_access": true,
+            "permissions": [],
+            "users": [],
+            "roles": []
+        },
+        {
+            "id": "844b48bc-1c54-4df6-8565-333ad9e1638d",
+            "name": "Bruktbilselger",
+            "icon": "badge",
+            "description": null,
+            "ip_access": null,
+            "enforce_tfa": true,
+            "admin_access": false,
+            "app_access": true,
+            "permissions": [],
+            "users": [],
+            "roles": []
+        },
+        {
+            "id": "b77df49f-8ee0-4eb7-b63c-fe39d0db596b",
+            "name": "Booking",
+            "icon": "badge",
+            "description": "Planleggint til verksted",
+            "ip_access": null,
+            "enforce_tfa": true,
+            "admin_access": false,
+            "app_access": true,
+            "permissions": [],
+            "users": [],
+            "roles": []
+        },
+        {
+            "id": "cac637c8-8d80-4cb4-8a6f-ead0c07a68eb",
+            "name": "Nybilselger",
+            "icon": "badge",
+            "description": null,
+            "ip_access": null,
+            "enforce_tfa": true,
+            "admin_access": false,
+            "app_access": true,
+            "permissions": [],
+            "users": [],
+            "roles": []
+        }
+    ],
+    "permissions": [
+        {
+            "collection": "cars",
+            "action": "delete",
+            "permissions": {
+                "_and": [
+                    {
+                        "dealership_id": {
+                            "_eq": "$CURRENT_USER.dealership_id"
+                        }
+                    },
+                    {
+                        "status": {
+                            "_eq": "registered"
+                        }
+                    }
+                ]
+            },
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "b77df49f-8ee0-4eb7-b63c-fe39d0db596b"
+        },
+        {
+            "collection": "cars",
+            "action": "share",
+            "permissions": null,
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "b77df49f-8ee0-4eb7-b63c-fe39d0db596b"
+        },
+        {
+            "collection": "dealership",
+            "action": "read",
+            "permissions": null,
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "b77df49f-8ee0-4eb7-b63c-fe39d0db596b"
+        },
+        {
+            "collection": "directus_users",
+            "action": "update",
+            "permissions": {
+                "id": {
+                    "_eq": "$CURRENT_USER.id"
+                }
+            },
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "first_name",
+                "last_name",
+                "avatar"
+            ],
+            "policy": "cac637c8-8d80-4cb4-8a6f-ead0c07a68eb"
+        },
+        {
+            "collection": "cars",
+            "action": "read",
+            "permissions": null,
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "cac637c8-8d80-4cb4-8a6f-ead0c07a68eb"
+        },
+        {
+            "collection": "cars",
+            "action": "create",
+            "permissions": null,
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "id",
+                "user_created",
+                "status",
+                "biltype",
+                "sort",
+                "date_created",
+                "user_updated",
+                "date_updated",
+                "bildata",
+                "dealership_id",
+                "vin",
+                "model",
+                "salg",
+                "nybil",
+                "customer_name",
+                "order_number",
+                "customer_phone",
+                "selgernummer",
+                "eta",
+                "delivery_date",
+                "tjenester",
+                "dekhotell",
+                "behanding",
+                "folie",
+                "comment",
+                "ankommet_forhandler",
+                "make"
+            ],
+            "policy": "cac637c8-8d80-4cb4-8a6f-ead0c07a68eb"
+        },
+        {
+            "collection": "dealership",
+            "action": "read",
+            "permissions": null,
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "cac637c8-8d80-4cb4-8a6f-ead0c07a68eb"
+        },
+        {
+            "collection": "directus_comments",
+            "action": "read",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_files",
+            "action": "create",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_files",
+            "action": "read",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_files",
+            "action": "update",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_files",
+            "action": "delete",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_dashboards",
+            "action": "create",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_dashboards",
+            "action": "read",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_dashboards",
+            "action": "update",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_dashboards",
+            "action": "delete",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_panels",
+            "action": "create",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_panels",
+            "action": "read",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_panels",
+            "action": "update",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_panels",
+            "action": "delete",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_folders",
+            "action": "create",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_folders",
+            "action": "read",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_folders",
+            "action": "update",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_folders",
+            "action": "delete",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": null,
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_users",
+            "action": "read",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_users",
+            "action": "update",
+            "permissions": {
+                "id": {
+                    "_eq": "$CURRENT_USER"
+                }
+            },
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "first_name",
+                "last_name",
+                "email",
+                "password",
+                "location",
+                "title",
+                "description",
+                "avatar",
+                "language",
+                "appearance",
+                "theme_light",
+                "theme_dark",
+                "theme_light_overrides",
+                "theme_dark_overrides",
+                "tfa_secret"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_roles",
+            "action": "read",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_shares",
+            "action": "read",
+            "permissions": {
+                "_or": [
+                    {
+                        "role": {
+                            "_eq": "$CURRENT_ROLE"
+                        }
+                    },
+                    {
+                        "role": {
+                            "_null": true
+                        }
+                    }
+                ]
+            },
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_shares",
+            "action": "create",
+            "permissions": {},
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_shares",
+            "action": "update",
+            "permissions": {
+                "user_created": {
+                    "_eq": "$CURRENT_USER"
+                }
+            },
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_shares",
+            "action": "delete",
+            "permissions": {
+                "user_created": {
+                    "_eq": "$CURRENT_USER"
+                }
+            },
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_flows",
+            "action": "read",
+            "permissions": {
+                "trigger": {
+                    "_eq": "manual"
+                }
+            },
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "id",
+                "status",
+                "name",
+                "icon",
+                "color",
+                "options",
+                "trigger"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "dealership",
+            "action": "read",
+            "permissions": null,
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "cars",
+            "action": "read",
+            "permissions": null,
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "user_created",
+                "biltype",
+                "status",
+                "id",
+                "sort",
+                "date_created",
+                "date_updated",
+                "user_updated",
+                "bildata",
+                "dealership_id",
+                "kjennemerke",
+                "vin",
+                "model",
+                "detaljer",
+                "make",
+                "bruktbil",
+                "ankommet_forhandler",
+                "klar_for_henting",
+                "solgt",
+                "tjenester",
+                "dekhotell",
+                "behanding",
+                "folie",
+                "comment",
+                "mottakskontroll",
+                "deler_bestilt",
+                "deler_ankommet",
+                "teknisk_klargjoring",
+                "kosmetisk_klargjoring",
+                "levert_forhandler",
+                "mekaniker",
+                "delelager",
+                "planlegging"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "cars",
+            "action": "create",
+            "permissions": null,
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "user_created",
+                "status",
+                "id",
+                "sort",
+                "date_created",
+                "date_updated",
+                "user_updated",
+                "bildata",
+                "dealership_id",
+                "kjennemerke",
+                "vin",
+                "model",
+                "detaljer",
+                "make",
+                "bruktbil",
+                "ankommet_forhandler",
+                "klar_for_henting",
+                "solgt",
+                "tjenester",
+                "dekhotell",
+                "behanding",
+                "folie",
+                "comment",
+                "mottakskontroll",
+                "biltype"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "directus_users",
+            "action": "read",
+            "permissions": null,
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "cac637c8-8d80-4cb4-8a6f-ead0c07a68eb"
+        },
+        {
+            "collection": "cars",
+            "action": "update",
+            "permissions": null,
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "vin",
+                "model",
+                "detaljer",
+                "make",
+                "selgernummer",
+                "delivery_date",
+                "comment",
+                "folie",
+                "dekhotell",
+                "behanding",
+                "solgt",
+                "tjenester",
+                "ankommet_forhandler",
+                "bruktbil",
+                "klar_for_henting",
+                "teknisk_klargjoring",
+                "kosmetisk_klargjoring",
+                "planlegging",
+                "mekaniker",
+                "levert_forhandler",
+                "eta"
+            ],
+            "policy": "b77df49f-8ee0-4eb7-b63c-fe39d0db596b"
+        },
+        {
+            "collection": "cars",
+            "action": "create",
+            "permissions": null,
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "teknisk_klargjoring",
+                "planlegging",
+                "kosmetisk_klargjoring",
+                "mekaniker",
+                "levert_forhandler"
+            ],
+            "policy": "b77df49f-8ee0-4eb7-b63c-fe39d0db596b"
+        },
+        {
+            "collection": "cars",
+            "action": "update",
+            "permissions": null,
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "biltype",
+                "bildata",
+                "dealership_id",
+                "kjennemerke",
+                "model",
+                "detaljer",
+                "make",
+                "tjenester",
+                "solgt",
+                "klar_for_henting",
+                "dekhotell",
+                "behanding",
+                "comment",
+                "folie"
+            ],
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d"
+        },
+        {
+            "collection": "cars",
+            "action": "update",
+            "permissions": null,
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "biltype",
+                "mottakskontroll",
+                "bildata",
+                "dealership_id",
+                "vin",
+                "kjennemerke",
+                "model",
+                "eta",
+                "make",
+                "detaljer",
+                "nybil",
+                "salg",
+                "customer_name",
+                "order_number",
+                "customer_phone",
+                "selgernummer",
+                "delivery_date"
+            ],
+            "policy": "cac637c8-8d80-4cb4-8a6f-ead0c07a68eb"
+        },
+        {
+            "collection": "cars",
+            "action": "read",
+            "permissions": null,
+            "validation": null,
+            "presets": null,
+            "fields": [
+                "*"
+            ],
+            "policy": "b77df49f-8ee0-4eb7-b63c-fe39d0db596b"
+        }
+    ],
+    "access": [
+        {
+            "id": "625603ae-ed19-415d-a4a1-359e917b884c",
+            "role": "73cec8d2-b17b-4a4e-945d-6e4dbb4e3454",
+            "user": null,
+            "policy": "b77df49f-8ee0-4eb7-b63c-fe39d0db596b",
+            "sort": 1
+        },
+        {
+            "id": "8528069f-7b45-43f1-a043-8f68d712a800",
+            "role": "73cec8d2-b17b-4a4e-945d-6e4dbb4e3454",
+            "user": null,
+            "policy": "844b48bc-1c54-4df6-8565-333ad9e1638d",
+            "sort": 2
+        },
+        {
+            "id": "dd84d193-5799-4fa4-a87b-52cb5ff388c8",
+            "role": "73cec8d2-b17b-4a4e-945d-6e4dbb4e3454",
+            "user": null,
+            "policy": "cac637c8-8d80-4cb4-8a6f-ead0c07a68eb",
+            "sort": 3
+        },
+        {
+            "id": "492f6443-506b-437b-8969-9f7e47929232",
+            "role": "a983f49c-eb55-4d13-9d89-26e7afa1f48d",
+            "user": null,
+            "policy": "b77df49f-8ee0-4eb7-b63c-fe39d0db596b",
+            "sort": null
+        },
+        {
+            "id": "dff0a8af-ab98-445a-b833-d877371ac6f0",
+            "role": "26a5cfc6-f09f-41c8-b97c-ea358267eb7a",
+            "user": null,
+            "policy": "7f763604-b8f9-4c7f-b4fc-8f24d285b0fc",
+            "sort": null
+        },
+        {
+            "id": "67c5e028-f0b8-4fd1-8831-fb7fd705b903",
+            "role": "1abe0285-a26c-43f5-b010-26506250107d",
+            "user": null,
+            "policy": "cac637c8-8d80-4cb4-8a6f-ead0c07a68eb",
+            "sort": null
+        }
+    ]
+}

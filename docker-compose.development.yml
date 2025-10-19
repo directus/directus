@@ -1,0 +1,230 @@
+# DirectApp - Development Docker Compose
+# Directus fork for Norwegian car dealership management
+#
+# DEVELOPMENT CONFIGURATION
+# - Hot reload enabled
+# - Extensions mounted from local directory
+# - Detailed logging
+# - Relaxed security for easier development
+#
+# Usage:
+#   cp .env.development.example .env
+#   docker compose -f docker-compose.development.yml up
+
+version: '3.8'
+
+services:
+  # Main Directus application
+  directus:
+    image: directus/directus:11.12.0  # PINNED for MCP support
+    container_name: directapp-dev
+    restart: unless-stopped
+
+    networks:
+      - directapp-dev
+
+    ports:
+      - "8055:8055"  # Exposed for development
+
+    # Local volumes for hot reload
+    volumes:
+      - ./extensions:/directus/extensions  # Hot reload extensions
+      - ./uploads:/directus/uploads  # Local file storage for dev
+
+    environment:
+      # ========================================
+      # SECURITY KEYS (Development - OK to commit)
+      # ========================================
+      KEY: ${DIRECTUS_KEY:-dev-key-change-in-production}
+      SECRET: ${DIRECTUS_SECRET:-dev-secret-change-in-production}
+
+      # ========================================
+      # ADMIN ACCOUNT
+      # ========================================
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@dev.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-DevPassword123!}
+
+      # ========================================
+      # DATABASE
+      # ========================================
+      DB_CLIENT: pg
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE:-directapp_dev}
+      DB_USER: ${DB_USER:-directus}
+      DB_PASSWORD: ${DB_PASSWORD:-dev_password}
+
+      # ========================================
+      # PUBLIC URL
+      # ========================================
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:8055}
+
+      # ========================================
+      # FILE STORAGE (Local for dev)
+      # ========================================
+      STORAGE_LOCATIONS: local
+      STORAGE_LOCAL_DRIVER: local
+      STORAGE_LOCAL_ROOT: /directus/uploads
+
+      # ========================================
+      # CACHE (Redis)
+      # ========================================
+      CACHE_ENABLED: "true"
+      CACHE_STORE: redis
+      CACHE_TTL: 5m  # Short TTL for dev
+      CACHE_NAMESPACE: directapp_dev
+      REDIS: redis://redis:6379
+
+      # ========================================
+      # EMAIL (Resend or fallback to console)
+      # ========================================
+      EMAIL_FROM: ${EMAIL_FROM:-DirectApp Dev <dev@localhost>}
+      EMAIL_TRANSPORT: ${EMAIL_TRANSPORT:-sendmail}  # Change to smtp for Resend
+
+      # Resend (optional for dev)
+      # EMAIL_TRANSPORT: smtp
+      # EMAIL_SMTP_HOST: smtp.resend.com
+      # EMAIL_SMTP_PORT: 587
+      # EMAIL_SMTP_USER: resend
+      # EMAIL_SMTP_PASSWORD: ${RESEND_API_KEY}
+      # EMAIL_SMTP_SECURE: "false"
+
+      # ========================================
+      # NORWEGIAN VEHICLE REGISTRY API (Optional)
+      # ========================================
+      STATENS_VEGVESEN_TOKEN: ${STATENS_VEGVESEN_TOKEN:-}
+
+      # ========================================
+      # MONITORING (Optional)
+      # ========================================
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      SENTRY_ENVIRONMENT: development
+
+      # ========================================
+      # EXTENSIONS (Hot Reload Enabled)
+      # ========================================
+      EXTENSIONS_PATH: /directus/extensions
+      EXTENSIONS_AUTO_RELOAD: "true"  # Enable hot reload for dev
+
+      # ========================================
+      # SECURITY (Relaxed for development)
+      # ========================================
+      # Rate limiting (higher limits)
+      RATE_LIMITER_ENABLED: "true"
+      RATE_LIMITER_POINTS: 1000
+      RATE_LIMITER_DURATION: 60
+      RATE_LIMITER_STORE: redis
+
+      # Access tokens (shorter for dev testing)
+      ACCESS_TOKEN_TTL: 30m
+      REFRESH_TOKEN_TTL: 7d
+      REFRESH_TOKEN_COOKIE_SECURE: "false"  # Allow HTTP
+      REFRESH_TOKEN_COOKIE_SAME_SITE: lax
+
+      # Session
+      SESSION_COOKIE_SECURE: "false"  # Allow HTTP
+      SESSION_COOKIE_SAME_SITE: lax
+
+      # CORS (allow all for dev)
+      CORS_ENABLED: "true"
+      CORS_ORIGIN: "true"  # Allow all origins
+      CORS_CREDENTIALS: "true"
+
+      # Password policy (relaxed)
+      AUTH_PASSWORD_POLICY: ""
+
+      # ========================================
+      # WEBSOCKETS
+      # ========================================
+      WEBSOCKETS_ENABLED: "true"
+      WEBSOCKETS_HEARTBEAT_PERIOD: 30s
+
+      # ========================================
+      # PERFORMANCE
+      # ========================================
+      QUERY_LIMIT_DEFAULT: 100
+      QUERY_LIMIT_MAX: 1000  # Higher for dev testing
+
+      # ========================================
+      # LOGGING (Verbose for development)
+      # ========================================
+      LOG_LEVEL: ${LOG_LEVEL:-debug}  # debug, info, warn, error
+      LOG_STYLE: pretty
+
+      # ========================================
+      # MISC
+      # ========================================
+      TELEMETRY: "false"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8055/server/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15.6
+    container_name: directapp-dev-postgres
+    restart: unless-stopped
+
+    networks:
+      - directapp-dev
+
+    ports:
+      - "5432:5432"  # Exposed for direct access
+
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-directapp_dev}
+      POSTGRES_USER: ${DB_USER:-directus}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-dev_password}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-directus} -d ${DB_DATABASE:-directapp_dev}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7.2.4-alpine
+    container_name: directapp-dev-redis
+    restart: unless-stopped
+
+    networks:
+      - directapp-dev
+
+    ports:
+      - "6379:6379"  # Exposed for direct access
+
+    command:
+      - "redis-server"
+      - "--maxmemory"
+      - "128mb"
+      - "--maxmemory-policy"
+      - "allkeys-lru"
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  directapp-dev:
+    driver: bridge
+
+volumes:
+  postgres-dev-data:
+    driver: local

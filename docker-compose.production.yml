@@ -1,0 +1,364 @@
+# DirectApp - Production Docker Compose
+# Directus fork for Norwegian car dealership management
+#
+# PRODUCTION-GRADE CONFIGURATION
+# - All versions pinned (no floating tags)
+# - No host port exposure (Traefik only)
+# - S3-compatible storage
+# - Security hardened
+# - Health checks on all services
+# - Secrets required (no defaults)
+#
+# Based on feedback from:
+# - Initial analysis (security & architecture)
+# - Codex engineering review (production practices)
+#
+# Deploy via Dokploy UI: Create new service → Docker Compose → paste this file
+
+version: '3.8'
+
+services:
+  # Main Directus application
+  directus:
+    image: directus/directus:11.12.0  # PINNED for MCP support - update deliberately
+    container_name: directapp
+    restart: unless-stopped
+
+    # Dokploy network - REQUIRED for Traefik integration
+    networks:
+      - dokploy-network
+      - directapp-internal
+
+    # NO host ports - Traefik handles all routing
+    # ports: removed for security
+
+    # Persistent volumes - Uses ../files/ path for Dokploy
+    # Note: ../files/database removed (not used with PostgreSQL)
+    volumes:
+      - ../files/extensions:/directus/extensions
+
+    environment:
+      # ========================================
+      # SECURITY KEYS (REQUIRED - NO DEFAULTS)
+      # ========================================
+      # These MUST be set in Dokploy secrets or .env
+      # Generate with: openssl rand -base64 32 && openssl rand -base64 64
+      KEY: ${DIRECTUS_KEY}
+      SECRET: ${DIRECTUS_SECRET}
+
+      # ========================================
+      # ADMIN ACCOUNT (Bootstrap only)
+      # ========================================
+      # Used ONLY on first startup to create admin user
+      # REMOVE these after initial setup and redeploy
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+
+      # ========================================
+      # DATABASE
+      # ========================================
+      DB_CLIENT: pg
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+      # ========================================
+      # PUBLIC URL (REQUIRED)
+      # ========================================
+      PUBLIC_URL: ${PUBLIC_URL}  # https://directapp.yourdomain.com
+
+      # ========================================
+      # FILE STORAGE (S3-Compatible)
+      # ========================================
+      # Option 1: S3 (AWS)
+      STORAGE_LOCATIONS: s3
+      STORAGE_S3_DRIVER: s3
+      STORAGE_S3_KEY: ${S3_ACCESS_KEY}
+      STORAGE_S3_SECRET: ${S3_SECRET_KEY}
+      STORAGE_S3_BUCKET: ${S3_BUCKET}
+      STORAGE_S3_REGION: ${S3_REGION:-eu-north-1}
+
+      # Option 2: MinIO (self-hosted) - uncomment and set S3_ENDPOINT
+      # STORAGE_S3_ENDPOINT: ${S3_ENDPOINT}  # http://minio:9000
+
+      # Option 3: Cloudflare R2 - set endpoint and region
+      # STORAGE_S3_ENDPOINT: https://${CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com
+      # STORAGE_S3_REGION: auto
+
+      # ========================================
+      # CACHE (Redis)
+      # ========================================
+      CACHE_ENABLED: "true"
+      CACHE_STORE: redis
+      CACHE_TTL: 30m
+      CACHE_NAMESPACE: directapp
+      REDIS: redis://redis:6379
+
+      # ========================================
+      # EMAIL (Resend)
+      # ========================================
+      EMAIL_FROM: ${EMAIL_FROM}  # DirectApp <noreply@yourdomain.com>
+      EMAIL_TRANSPORT: smtp
+      EMAIL_SMTP_HOST: smtp.resend.com
+      EMAIL_SMTP_PORT: 587
+      EMAIL_SMTP_USER: resend
+      EMAIL_SMTP_PASSWORD: ${RESEND_API_KEY}
+      EMAIL_SMTP_SECURE: "false"  # STARTTLS on 587
+
+      # ========================================
+      # NORWEGIAN VEHICLE REGISTRY API
+      # ========================================
+      STATENS_VEGVESEN_TOKEN: ${STATENS_VEGVESEN_TOKEN}
+
+      # ========================================
+      # MONITORING (Sentry - Optional)
+      # ========================================
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      SENTRY_ENVIRONMENT: production
+
+      # ========================================
+      # EXTENSIONS
+      # ========================================
+      EXTENSIONS_PATH: /directus/extensions
+      EXTENSIONS_AUTO_RELOAD: "false"  # Disable in production
+
+      # ========================================
+      # SECURITY
+      # ========================================
+      # Rate limiting
+      RATE_LIMITER_ENABLED: "true"
+      RATE_LIMITER_POINTS: 100
+      RATE_LIMITER_DURATION: 60
+      RATE_LIMITER_STORE: redis
+
+      # Access tokens
+      ACCESS_TOKEN_TTL: 15m
+      REFRESH_TOKEN_TTL: 7d
+      REFRESH_TOKEN_COOKIE_SECURE: "true"
+      REFRESH_TOKEN_COOKIE_SAME_SITE: lax
+      REFRESH_TOKEN_COOKIE_DOMAIN: ${COOKIE_DOMAIN}  # .yourdomain.com
+
+      # Session
+      SESSION_COOKIE_SECURE: "true"
+      SESSION_COOKIE_SAME_SITE: lax
+
+      # Proxy trust (behind Traefik)
+      TRUST_PROXY: "true"
+
+      # CORS
+      CORS_ENABLED: "true"
+      CORS_ORIGIN: ${CORS_ORIGIN}  # https://yourdomain.com,https://admin.yourdomain.com
+      CORS_CREDENTIALS: "true"
+
+      # Password policy
+      AUTH_PASSWORD_POLICY: "/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{12,}$/"
+
+      # Content Security Policy
+      CONTENT_SECURITY_POLICY_DIRECTIVES__SCRIPT_SRC: "array:'self','unsafe-eval'"
+
+      # ========================================
+      # WEBSOCKETS
+      # ========================================
+      WEBSOCKETS_ENABLED: "true"
+      WEBSOCKETS_HEARTBEAT_PERIOD: 30s
+
+      # ========================================
+      # PERFORMANCE
+      # ========================================
+      QUERY_LIMIT_DEFAULT: 100
+      QUERY_LIMIT_MAX: 500
+
+      # ========================================
+      # LOGGING
+      # ========================================
+      LOG_LEVEL: warn  # debug, info, warn, error
+      LOG_STYLE: pretty  # pretty or raw
+
+      # ========================================
+      # MISC
+      # ========================================
+      TELEMETRY: "false"
+
+    # Traefik Labels - Automatic HTTPS via Let's Encrypt
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.directapp.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.directapp.entrypoints=websecure"
+      - "traefik.http.routers.directapp.tls.certresolver=letsencrypt"
+      - "traefik.http.services.directapp.loadbalancer.server.port=8055"
+      - "traefik.docker.network=dokploy-network"
+
+      # Security headers
+      - "traefik.http.middlewares.directapp-headers.headers.sslredirect=true"
+      - "traefik.http.middlewares.directapp-headers.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.directapp-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.directapp-headers.headers.stsPreload=true"
+      - "traefik.http.routers.directapp.middlewares=directapp-headers"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8055/server/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL Database (Debian-based for locale support)
+  postgres:
+    image: postgres:15.6  # PINNED - Debian variant for nb_NO.UTF-8
+    container_name: directapp-postgres
+    restart: unless-stopped
+
+    networks:
+      - directapp-internal
+
+    # Persistent database
+    volumes:
+      - ../files/postgres-data:/var/lib/postgresql/data
+
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      # Norwegian locale support (Debian variant only)
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=nb_NO.UTF-8 --lc-ctype=nb_NO.UTF-8"
+
+    # Security: run as non-root
+    user: postgres
+
+    # Performance tuning
+    command:
+      - "postgres"
+      - "-c"
+      - "shared_buffers=256MB"
+      - "-c"
+      - "max_connections=200"
+      - "-c"
+      - "work_mem=4MB"
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_DATABASE}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7.2.4-alpine  # PINNED
+    container_name: directapp-redis
+    restart: unless-stopped
+
+    networks:
+      - directapp-internal
+
+    # Optional: Persist cache (can be ephemeral)
+    volumes:
+      - ../files/redis-data:/data
+
+    # Persistence configuration
+    command:
+      - "redis-server"
+      - "--appendonly"
+      - "yes"
+      - "--appendfsync"
+      - "everysec"
+      - "--maxmemory"
+      - "256mb"
+      - "--maxmemory-policy"
+      - "allkeys-lru"
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Automated Database Backups
+  backup:
+    image: prodrigestivill/postgres-backup-local:15-alpine  # PINNED
+    container_name: directapp-backup
+    restart: unless-stopped
+
+    networks:
+      - directapp-internal
+
+    # Backup storage
+    volumes:
+      - ../files/backups:/backups
+
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_EXTRA_OPTS: "-Z9 --schema=public --blobs"
+
+      # Backup schedule
+      SCHEDULE: "@daily"  # midnight UTC
+      BACKUP_KEEP_DAYS: 30
+      BACKUP_KEEP_WEEKS: 8
+      BACKUP_KEEP_MONTHS: 12
+
+      # Health monitoring
+      HEALTHCHECK_PORT: 8080
+
+    depends_on:
+      - postgres
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+  # Optional: MinIO (S3-compatible storage for dev/self-hosted)
+  # Uncomment if using self-hosted storage instead of AWS S3/R2
+  # minio:
+  #   image: minio/minio:RELEASE.2024-03-15T01-07-19Z  # PINNED
+  #   container_name: directapp-minio
+  #   restart: unless-stopped
+  #
+  #   networks:
+  #     - directapp-internal
+  #
+  #   volumes:
+  #     - ../files/minio-data:/data
+  #
+  #   environment:
+  #     MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+  #     MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+  #
+  #   command: server /data --console-address ":9001"
+  #
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.minio.rule=Host(`minio.${DOMAIN}`)"
+  #     - "traefik.http.routers.minio.entrypoints=websecure"
+  #     - "traefik.http.routers.minio.tls.certresolver=letsencrypt"
+  #     - "traefik.http.services.minio.loadbalancer.server.port=9000"
+  #
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+  #     interval: 30s
+  #     timeout: 20s
+  #     retries: 3
+
+# Networks
+networks:
+  # Dokploy network - REQUIRED for Traefik integration
+  dokploy-network:
+    external: true
+
+  # Internal network for database/cache
+  directapp-internal:
+    driver: bridge
+
+# Volumes are managed by Dokploy in ../files/
+# No named volumes needed - all use bind mounts

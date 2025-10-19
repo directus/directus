@@ -1,0 +1,3344 @@
+{
+    "collections": [
+        {
+            "collection": "dealership",
+            "meta": {
+                "collection": "dealership",
+                "icon": "villa",
+                "note": null,
+                "display_template": "{{dealership_name}} - {{dealership_code}} - {{dealership_location}}",
+                "hidden": true,
+                "singleton": false,
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Forhandler",
+                        "singular": "forhandler",
+                        "plural": "forhandlere"
+                    }
+                ],
+                "archive_field": null,
+                "archive_app_filter": true,
+                "archive_value": null,
+                "unarchive_value": null,
+                "sort_field": null,
+                "accountability": "all",
+                "color": "#B8D08B",
+                "item_duplication_fields": null,
+                "sort": 1,
+                "group": null,
+                "collapse": "open",
+                "preview_url": null,
+                "versioning": false
+            },
+            "schema": {}
+        },
+        {
+            "collection": "cars",
+            "meta": {
+                "collection": "cars",
+                "icon": "garage",
+                "note": null,
+                "display_template": null,
+                "hidden": false,
+                "singleton": false,
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Bilmanager",
+                        "singular": null
+                    }
+                ],
+                "archive_field": "status",
+                "archive_app_filter": true,
+                "archive_value": "archived",
+                "unarchive_value": "draft",
+                "sort_field": "sort",
+                "accountability": "all",
+                "color": "#477C65",
+                "item_duplication_fields": null,
+                "sort": 2,
+                "group": null,
+                "collapse": "open",
+                "preview_url": null,
+                "versioning": false
+            },
+            "schema": {}
+        },
+        {
+            "collection": "cars_files",
+            "meta": {
+                "collection": "cars_files",
+                "icon": "import_export",
+                "note": null,
+                "display_template": null,
+                "hidden": true,
+                "singleton": false,
+                "translations": null,
+                "archive_field": null,
+                "archive_app_filter": true,
+                "archive_value": null,
+                "unarchive_value": null,
+                "sort_field": null,
+                "accountability": "all",
+                "color": null,
+                "item_duplication_fields": null,
+                "sort": null,
+                "group": null,
+                "collapse": "open",
+                "preview_url": null,
+                "versioning": false
+            },
+            "schema": {}
+        }
+    ],
+    "fields": [
+        {
+            "collection": "dealership",
+            "field": "id",
+            "type": "uuid",
+            "schema": {
+                "name": "id",
+                "table": "dealership",
+                "data_type": "uuid",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": false,
+                "is_unique": true,
+                "is_indexed": false,
+                "is_primary_key": true,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "dealership",
+                "field": "id",
+                "special": null,
+                "interface": "input",
+                "options": null,
+                "display": null,
+                "display_options": null,
+                "readonly": true,
+                "hidden": true,
+                "sort": 1,
+                "width": "full",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "dealership",
+            "field": "dealership_dash_superheader",
+            "type": "alias",
+            "schema": null,
+            "meta": {
+                "collection": "dealership",
+                "field": "dealership_dash_superheader",
+                "special": [
+                    "alias",
+                    "no-data"
+                ],
+                "interface": "super-header",
+                "options": {
+                    "title": "Forhandlerdashboard",
+                    "color": "#3D5E36",
+                    "icon": "roofing",
+                    "subtitle": "forhandlerinnstillinger og innhold",
+                    "help": null,
+                    "actions": null
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 2,
+                "width": "fill",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "dealership",
+            "field": "dealership_name",
+            "type": "string",
+            "schema": {
+                "name": "dealership_name",
+                "table": "dealership",
+                "data_type": "character varying",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": 255,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "dealership",
+                "field": "dealership_name",
+                "special": null,
+                "interface": "input",
+                "options": {
+                    "placeholder": "feks; \"Gumpens Auto Vest\"",
+                    "iconLeft": "add_business"
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 3,
+                "width": "half",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Forhandlernavn"
+                    }
+                ],
+                "note": null,
+                "conditions": null,
+                "required": true,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "dealership",
+            "field": "dealership_code",
+            "type": "integer",
+            "schema": {
+                "name": "dealership_code",
+                "table": "dealership",
+                "data_type": "integer",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": 32,
+                "numeric_scale": 0,
+                "is_generated": false,
+                "is_nullable": false,
+                "is_unique": true,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "dealership",
+                "field": "dealership_code",
+                "special": null,
+                "interface": "input",
+                "options": {
+                    "min": 1,
+                    "max": 999,
+                    "placeholder": "490",
+                    "iconLeft": "grid_3x3"
+                },
+                "display": "raw",
+                "display_options": {
+                    "format": true
+                },
+                "readonly": false,
+                "hidden": false,
+                "sort": 4,
+                "width": "half",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "F.nummer"
+                    }
+                ],
+                "note": null,
+                "conditions": null,
+                "required": true,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "dealership",
+            "field": "dealership_functions",
+            "type": "json",
+            "schema": {
+                "name": "dealership_functions",
+                "table": "dealership",
+                "data_type": "json",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "dealership",
+                "field": "dealership_functions",
+                "special": [
+                    "cast-json"
+                ],
+                "interface": "select-multiple-dropdown",
+                "options": {
+                    "choices": [
+                        {
+                            "text": "Nybilsalg",
+                            "value": "dealership_f_newsales"
+                        },
+                        {
+                            "text": "Bruktbilsalg",
+                            "value": "dealership_f_usedsales"
+                        },
+                        {
+                            "text": "Bilpleie",
+                            "value": "dealership_f_cardetail"
+                        },
+                        {
+                            "text": "Mekanisk",
+                            "value": "dealership_f_mechanical"
+                        },
+                        {
+                            "text": "Delelager",
+                            "value": "dealership_f_parts"
+                        },
+                        {
+                            "text": "Skade",
+                            "value": "dealership_f_bodyrepair"
+                        },
+                        {
+                            "text": "Lakk",
+                            "value": "dealership_f_paint"
+                        }
+                    ],
+                    "previewThreshold": 4
+                },
+                "display": "labels",
+                "display_options": {
+                    "choices": [
+                        {
+                            "text": "Nybilsalg",
+                            "value": "dealership_f_newsales",
+                            "color": null,
+                            "background": "#2ECDA7",
+                            "foreground": "#FFFFFF"
+                        },
+                        {
+                            "text": "Bruktbilsalg",
+                            "value": "dealership_f_usedsales",
+                            "background": "#2ECDA7",
+                            "foreground": "#FFFFFF"
+                        },
+                        {
+                            "text": "Mekanisk",
+                            "value": "dealership_f_mechanical",
+                            "background": "#2ECDA7",
+                            "foreground": "#FFFFFF"
+                        },
+                        {
+                            "text": "Skade",
+                            "value": "dealership_f_bodyrepair",
+                            "background": "#2ECDA7",
+                            "foreground": "#FFFFFF"
+                        },
+                        {
+                            "text": "Lakk",
+                            "value": "dealership_f_paint",
+                            "background": "#2ECDA7",
+                            "foreground": "#FFFFFF"
+                        },
+                        {
+                            "text": "Bilpleie",
+                            "value": "dealership_f_cardetail",
+                            "background": "#2ECDA7",
+                            "foreground": "#FFFFFF"
+                        },
+                        {
+                            "text": "Delelager",
+                            "value": "dealership_f_parts",
+                            "background": "#2ECDA7",
+                            "foreground": "#FFFFFF"
+                        }
+                    ]
+                },
+                "readonly": false,
+                "hidden": false,
+                "sort": 5,
+                "width": "half",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Forhandlerfunksjon"
+                    }
+                ],
+                "note": null,
+                "conditions": null,
+                "required": true,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "dealership",
+            "field": "dealership_location",
+            "type": "string",
+            "schema": {
+                "name": "dealership_location",
+                "table": "dealership",
+                "data_type": "character varying",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": 255,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "dealership",
+                "field": "dealership_location",
+                "special": null,
+                "interface": null,
+                "options": {
+                    "defaultView": {
+                        "center": {
+                            "lng": 7.661919515586419,
+                            "lat": 58.896635607971604
+                        },
+                        "zoom": 5.718546754894867,
+                        "bearing": 0,
+                        "pitch": 0
+                    },
+                    "geometryType": "Point"
+                },
+                "display": "labels",
+                "display_options": {
+                    "choices": [
+                        {
+                            "text": "Kristiansand",
+                            "value": "dealership_loc_krswest",
+                            "background": "#B0D29D  ",
+                            "foreground": "#3D5E36"
+                        },
+                        {
+                            "text": "Sørlandsparken",
+                            "value": "dealership_loc_krseast",
+                            "background": "#B0D29D",
+                            "foreground": "#3D5E36"
+                        },
+                        {
+                            "text": "Mandal",
+                            "value": "dealership_loc_mandal",
+                            "background": "#B0D29D",
+                            "foreground": "#3D5E36"
+                        },
+                        {
+                            "text": "Lyngdal",
+                            "value": "dealership_loc_lyng",
+                            "background": "#B0D29D  ",
+                            "foreground": "#3D5E36"
+                        },
+                        {
+                            "text": "Notodden",
+                            "value": "dealership_loc_notod",
+                            "background": "#B0D29D",
+                            "foreground": "#3D5E36"
+                        },
+                        {
+                            "text": "Porsgrunn",
+                            "value": "dealership_loc_porsg",
+                            "background": "#B0D29D",
+                            "foreground": "#3D5E36"
+                        },
+                        {
+                            "text": "Skien",
+                            "value": "dealership_loc_skien",
+                            "background": "#B0D29D",
+                            "foreground": "#3D5E36"
+                        }
+                    ],
+                    "format": false
+                },
+                "readonly": false,
+                "hidden": false,
+                "sort": 6,
+                "width": "half",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Lokasjon"
+                    }
+                ],
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "dealership",
+            "field": "dealership_save_button",
+            "type": "alias",
+            "schema": null,
+            "meta": {
+                "collection": "dealership",
+                "field": "dealership_save_button",
+                "special": [
+                    "alias",
+                    "no-data"
+                ],
+                "interface": "quickifyai-save-and-stay-button",
+                "options": {
+                    "label": "Lagre",
+                    "classType": "success",
+                    "icon": "save"
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 8,
+                "width": "half",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Lagre"
+                    }
+                ],
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "id",
+            "type": "uuid",
+            "schema": {
+                "name": "id",
+                "table": "cars",
+                "data_type": "uuid",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": false,
+                "is_unique": true,
+                "is_indexed": false,
+                "is_primary_key": true,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "id",
+                "special": [
+                    "uuid"
+                ],
+                "interface": "input",
+                "options": null,
+                "display": null,
+                "display_options": null,
+                "readonly": true,
+                "hidden": true,
+                "sort": 1,
+                "width": "full",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "make",
+            "type": "string",
+            "schema": {
+                "name": "make",
+                "table": "cars",
+                "data_type": "character varying",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": 255,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "make",
+                "special": null,
+                "interface": "input",
+                "options": null,
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 1,
+                "width": "half",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Merke"
+                    }
+                ],
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "detaljer",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "customer_name",
+            "type": "string",
+            "schema": {
+                "name": "customer_name",
+                "table": "cars",
+                "data_type": "character varying",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": 255,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "customer_name",
+                "special": null,
+                "interface": "input",
+                "options": {
+                    "placeholder": "Ola Normann",
+                    "iconLeft": "frame_person"
+                },
+                "display": "raw",
+                "display_options": {},
+                "readonly": false,
+                "hidden": false,
+                "sort": 1,
+                "width": "full",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Kundenavn"
+                    }
+                ],
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "nybil",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "dekhotell",
+            "type": "string",
+            "schema": {
+                "name": "dekhotell",
+                "table": "cars",
+                "data_type": "character varying",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": 255,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "dekhotell",
+                "special": null,
+                "interface": "select-radio",
+                "options": {
+                    "choices": [
+                        {
+                            "text": "Ja",
+                            "value": "order_dh_yes",
+                            "icon": null
+                        },
+                        {
+                            "text": "Nei",
+                            "value": "order_dh_no"
+                        }
+                    ],
+                    "icon": "add_home",
+                    "placeholder": "Skal kunde ha dekkhotell?",
+                    "iconOn": "expand_circle_down",
+                    "iconOff": "circle",
+                    "color": "#2ECDA7"
+                },
+                "display": "raw",
+                "display_options": {},
+                "readonly": false,
+                "hidden": false,
+                "sort": 1,
+                "width": "full",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Dekkhotell"
+                    }
+                ],
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "tjenester",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "klar_for_henting",
+            "type": "boolean",
+            "schema": {
+                "name": "klar_for_henting",
+                "table": "cars",
+                "data_type": "boolean",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "klar_for_henting",
+                "special": [
+                    "cast-boolean"
+                ],
+                "interface": "boolean",
+                "options": {
+                    "label": "Bekreft"
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 1,
+                "width": "half",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "bruktbil",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "deler_bestilt",
+            "type": "dateTime",
+            "schema": {
+                "name": "deler_bestilt",
+                "table": "cars",
+                "data_type": "timestamp without time zone",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "deler_bestilt",
+                "special": null,
+                "interface": "datetime",
+                "options": {
+                    "format": "short",
+                    "use24": false
+                },
+                "display": "datetime",
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 1,
+                "width": "half",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Deler bestilt"
+                    }
+                ],
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "delelager",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "mottakskontroll",
+            "type": "string",
+            "schema": {
+                "name": "mottakskontroll",
+                "table": "cars",
+                "data_type": "character varying",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": 255,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "mottakskontroll",
+                "special": null,
+                "interface": "select-dropdown",
+                "options": {
+                    "choices": [
+                        {
+                            "text": "Godkjent",
+                            "value": "godkjent"
+                        },
+                        {
+                            "text": "Ikke godkjent",
+                            "value": "ikke godkjent"
+                        }
+                    ]
+                },
+                "display": "labels",
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 1,
+                "width": "full",
+                "translations": null,
+                "note": "Utføres av mottaksforhandler ved ankomst",
+                "conditions": null,
+                "required": false,
+                "group": "bildata",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "teknisk_klargjoring",
+            "type": "dateTime",
+            "schema": {
+                "name": "teknisk_klargjoring",
+                "table": "cars",
+                "data_type": "timestamp without time zone",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "teknisk_klargjoring",
+                "special": null,
+                "interface": "datetime",
+                "options": {
+                    "format": "short",
+                    "use24": false
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 1,
+                "width": "half",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "planlegging",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "nybil",
+            "type": "alias",
+            "schema": null,
+            "meta": {
+                "collection": "cars",
+                "field": "nybil",
+                "special": [
+                    "alias",
+                    "no-data",
+                    "group"
+                ],
+                "interface": "group-detail",
+                "options": {
+                    "headerColor": null,
+                    "headerIcon": "car_rental",
+                    "start": "closed"
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 1,
+                "width": "full",
+                "translations": null,
+                "note": null,
+                "conditions": [
+                    {
+                        "name": "Skjul ved annet",
+                        "rule": {
+                            "_and": [
+                                {
+                                    "biltype": {
+                                        "_in": [
+                                            "Bruktbil",
+                                            "outlet",
+                                            "Audi Approved Plus",
+                                            "ingen"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "hidden": true,
+                        "options": {
+                            "start": "open"
+                        }
+                    }
+                ],
+                "required": false,
+                "group": "salg",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "user_created",
+            "type": "uuid",
+            "schema": {
+                "name": "user_created",
+                "table": "cars",
+                "data_type": "uuid",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": "public",
+                "foreign_key_table": "directus_users",
+                "foreign_key_column": "id",
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "user_created",
+                "special": [
+                    "user-created"
+                ],
+                "interface": "select-dropdown-m2o",
+                "options": {
+                    "template": "{{avatar}} {{first_name}} {{last_name}}",
+                    "enableCreate": false
+                },
+                "display": "user",
+                "display_options": null,
+                "readonly": true,
+                "hidden": false,
+                "sort": 2,
+                "width": "half",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Kontaktperson"
+                    }
+                ],
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "order_number",
+            "type": "integer",
+            "schema": {
+                "name": "order_number",
+                "table": "cars",
+                "data_type": "integer",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": 32,
+                "numeric_scale": 0,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "order_number",
+                "special": null,
+                "interface": "input",
+                "options": {
+                    "placeholder": "fra salgsordren",
+                    "max": 9999999,
+                    "iconLeft": "draft_orders",
+                    "min": 1
+                },
+                "display": "raw",
+                "display_options": {
+                    "suffix": null,
+                    "conditionalFormatting": null,
+                    "format": true
+                },
+                "readonly": false,
+                "hidden": false,
+                "sort": 2,
+                "width": "full",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Ordrenummer"
+                    }
+                ],
+                "note": "*føres inn for å forbedre senere oppslag",
+                "conditions": null,
+                "required": false,
+                "group": "nybil",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "ankommet_forhandler",
+            "type": "dateTime",
+            "schema": {
+                "name": "ankommet_forhandler",
+                "table": "cars",
+                "data_type": "timestamp without time zone",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "ankommet_forhandler",
+                "special": null,
+                "interface": "datetime",
+                "options": {
+                    "format": "short",
+                    "use24": false
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 2,
+                "width": "half",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "bruktbil",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "behanding",
+            "type": "string",
+            "schema": {
+                "name": "behanding",
+                "table": "cars",
+                "data_type": "character varying",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": 255,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "behanding",
+                "special": null,
+                "interface": "select-dropdown",
+                "options": {
+                    "choices": [
+                        {
+                            "text": "Standard",
+                            "value": "standard",
+                            "icon": "check_circle",
+                            "color": "#2ECDA7"
+                        },
+                        {
+                            "text": "Premium",
+                            "value": "Premium",
+                            "icon": "check_circle",
+                            "color": "#FFC23B"
+                        },
+                        {
+                            "text": "Ultra",
+                            "value": "ultra"
+                        }
+                    ],
+                    "allowNone": true,
+                    "placeholder": "Angi coating standard eller ultra",
+                    "icon": "shield_with_heart"
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 2,
+                "width": "half",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "tjenester",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "dealership_id",
+            "type": "uuid",
+            "schema": {
+                "name": "dealership_id",
+                "table": "cars",
+                "data_type": "uuid",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": "public",
+                "foreign_key_table": "dealership",
+                "foreign_key_column": "id",
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "dealership_id",
+                "special": [
+                    "m2o"
+                ],
+                "interface": "select-dropdown-m2o",
+                "options": null,
+                "display": "related-values",
+                "display_options": {
+                    "template": "{{dealership_name}} - {{dealership_code}}"
+                },
+                "readonly": false,
+                "hidden": false,
+                "sort": 2,
+                "width": "full",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Forhandler"
+                    }
+                ],
+                "note": null,
+                "conditions": null,
+                "required": true,
+                "group": "bildata",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "deler_ankommet",
+            "type": "dateTime",
+            "schema": {
+                "name": "deler_ankommet",
+                "table": "cars",
+                "data_type": "timestamp without time zone",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "deler_ankommet",
+                "special": null,
+                "interface": "datetime",
+                "options": {
+                    "format": "short",
+                    "use24": false
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 2,
+                "width": "half",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Deler ankommet"
+                    }
+                ],
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "delelager",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "kosmetisk_klargjoring",
+            "type": "dateTime",
+            "schema": {
+                "name": "kosmetisk_klargjoring",
+                "table": "cars",
+                "data_type": "timestamp without time zone",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "kosmetisk_klargjoring",
+                "special": null,
+                "interface": "datetime",
+                "options": {
+                    "use24": false,
+                    "format": "short"
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 2,
+                "width": "half",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "planlegging",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "bruktbil",
+            "type": "alias",
+            "schema": null,
+            "meta": {
+                "collection": "cars",
+                "field": "bruktbil",
+                "special": [
+                    "alias",
+                    "no-data",
+                    "group"
+                ],
+                "interface": "group-detail",
+                "options": {
+                    "headerColor": "#84A145",
+                    "headerIcon": "car_repair",
+                    "start": "closed"
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 2,
+                "width": "full",
+                "translations": null,
+                "note": null,
+                "conditions": [
+                    {
+                        "name": "Skjul ved nybil",
+                        "rule": {
+                            "_and": [
+                                {
+                                    "biltype": {
+                                        "_in": [
+                                            "Nybil",
+                                            "ingen"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "hidden": true,
+                        "options": {
+                            "start": "open"
+                        }
+                    }
+                ],
+                "required": false,
+                "group": "salg",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "date_created",
+            "type": "timestamp",
+            "schema": {
+                "name": "date_created",
+                "table": "cars",
+                "data_type": "timestamp with time zone",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "date_created",
+                "special": [
+                    "date-created"
+                ],
+                "interface": "datetime",
+                "options": null,
+                "display": "datetime",
+                "display_options": {
+                    "relative": true
+                },
+                "readonly": true,
+                "hidden": true,
+                "sort": 3,
+                "width": "half",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "kjennemerke",
+            "type": "string",
+            "schema": {
+                "name": "kjennemerke",
+                "table": "cars",
+                "data_type": "character varying",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": 255,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "kjennemerke",
+                "special": null,
+                "interface": "input",
+                "options": null,
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 3,
+                "width": "half",
+                "translations": null,
+                "note": null,
+                "conditions": [
+                    {
+                        "name": "skjul ved nybil",
+                        "rule": {
+                            "_and": [
+                                {
+                                    "biltype": {
+                                        "_in": [
+                                            "Nybil",
+                                            "ingen"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "hidden": true,
+                        "options": {
+                            "font": "sans-serif",
+                            "trim": false,
+                            "masked": false,
+                            "clear": false,
+                            "slug": false
+                        }
+                    },
+                    {
+                        "name": "vis ved brukt",
+                        "rule": {
+                            "_and": [
+                                {
+                                    "biltype": {
+                                        "_in": [
+                                            "Audi Approved Plus",
+                                            "bruktbil",
+                                            "outlet"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "options": {
+                            "font": "sans-serif",
+                            "trim": false,
+                            "masked": false,
+                            "clear": false,
+                            "slug": false
+                        }
+                    }
+                ],
+                "required": false,
+                "group": "bildata",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "folie",
+            "type": "string",
+            "schema": {
+                "name": "folie",
+                "table": "cars",
+                "data_type": "character varying",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": 255,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "folie",
+                "special": null,
+                "interface": "select-dropdown",
+                "options": {
+                    "choices": [
+                        {
+                            "text": "Liten",
+                            "value": "new_car_foliage_s",
+                            "icon": "check_circle",
+                            "color": "#A2B5CD"
+                        },
+                        {
+                            "text": "Medium",
+                            "value": "new_car_foliage_m",
+                            "icon": "check_circle",
+                            "color": "#FFA439"
+                        },
+                        {
+                            "text": "Large",
+                            "value": "new_car_foliage_l",
+                            "icon": "check_circle",
+                            "color": "#2ECDA7"
+                        }
+                    ],
+                    "allowNone": true,
+                    "placeholder": "Angi type foliepakke bilen skal ha",
+                    "icon": "local_car_wash"
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 3,
+                "width": "half",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Foliepakke"
+                    }
+                ],
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "tjenester",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "solgt",
+            "type": "string",
+            "schema": {
+                "name": "solgt",
+                "table": "cars",
+                "data_type": "character varying",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": 255,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "solgt",
+                "special": null,
+                "interface": "select-dropdown",
+                "options": {
+                    "choices": [
+                        {
+                            "text": "Ja",
+                            "value": "ja"
+                        },
+                        {
+                            "text": "Nei",
+                            "value": "nei"
+                        }
+                    ]
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 3,
+                "width": "half",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "bruktbil",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "customer_phone",
+            "type": "string",
+            "schema": {
+                "name": "customer_phone",
+                "table": "cars",
+                "data_type": "character varying",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": 255,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "customer_phone",
+                "special": null,
+                "interface": "input",
+                "options": null,
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 3,
+                "width": "half",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Kundetlf"
+                    }
+                ],
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "nybil",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "mekaniker",
+            "type": "uuid",
+            "schema": {
+                "name": "mekaniker",
+                "table": "cars",
+                "data_type": "uuid",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": "public",
+                "foreign_key_table": "directus_users",
+                "foreign_key_column": "id",
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "mekaniker",
+                "special": [
+                    "m2o"
+                ],
+                "interface": "select-dropdown-m2o",
+                "options": null,
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 3,
+                "width": "full",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "planlegging",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "dokumenter",
+            "type": "alias",
+            "schema": null,
+            "meta": {
+                "collection": "cars",
+                "field": "dokumenter",
+                "special": [
+                    "files"
+                ],
+                "interface": "files",
+                "options": {
+                    "folder": "10f55517-15e2-4526-b880-f729955b2a99",
+                    "limit": 3
+                },
+                "display": "related-values",
+                "display_options": {
+                    "template": null
+                },
+                "readonly": false,
+                "hidden": false,
+                "sort": 3,
+                "width": "half",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "delelager",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "date_updated",
+            "type": "timestamp",
+            "schema": {
+                "name": "date_updated",
+                "table": "cars",
+                "data_type": "timestamp with time zone",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "date_updated",
+                "special": [
+                    "date-updated"
+                ],
+                "interface": "datetime",
+                "options": null,
+                "display": "datetime",
+                "display_options": {
+                    "relative": true
+                },
+                "readonly": true,
+                "hidden": true,
+                "sort": 4,
+                "width": "half",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "vin",
+            "type": "string",
+            "schema": {
+                "name": "vin",
+                "table": "cars",
+                "data_type": "character varying",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": 255,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "vin",
+                "special": null,
+                "interface": "input",
+                "options": {
+                    "showCopy": true,
+                    "font": "monospace"
+                },
+                "display": "field-actions",
+                "display_options": {
+                    "copyPrefix": null,
+                    "showCopy": true,
+                    "font": "monospace",
+                    "conditionalFormatting": [
+                        {
+                            "operator": "eq",
+                            "value": "Chassinr",
+                            "color": "#FFFFFF",
+                            "background": "#76DB98",
+                            "text": "Chassinr"
+                        }
+                    ],
+                    "bold": true,
+                    "background": "#2ECDA7",
+                    "color": "#FFFFFF",
+                    "clickAction": "copy"
+                },
+                "readonly": false,
+                "hidden": false,
+                "sort": 4,
+                "width": "half",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Chassinr"
+                    }
+                ],
+                "note": null,
+                "conditions": [
+                    {
+                        "name": "vis ved nybil",
+                        "rule": {
+                            "_and": [
+                                {
+                                    "biltype": {
+                                        "_eq": "Nybil"
+                                    }
+                                }
+                            ]
+                        },
+                        "hidden": false,
+                        "options": {
+                            "font": "sans-serif",
+                            "trim": false,
+                            "masked": false,
+                            "clear": false,
+                            "slug": false
+                        }
+                    },
+                    {
+                        "name": "skjul ved brukt",
+                        "rule": {
+                            "_and": [
+                                {
+                                    "biltype": {
+                                        "_in": [
+                                            "Audi Approved Plus",
+                                            "bruktbil",
+                                            "outlet",
+                                            "ingen"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "options": {
+                            "font": "sans-serif",
+                            "trim": false,
+                            "masked": false,
+                            "clear": false,
+                            "slug": false
+                        },
+                        "hidden": true
+                    }
+                ],
+                "required": false,
+                "group": "bildata",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "comment",
+            "type": "text",
+            "schema": {
+                "name": "comment",
+                "table": "cars",
+                "data_type": "text",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "comment",
+                "special": null,
+                "interface": "input-multiline",
+                "options": {
+                    "softLength": 255,
+                    "placeholder": null
+                },
+                "display": "formatted-value",
+                "display_options": {},
+                "readonly": false,
+                "hidden": false,
+                "sort": 4,
+                "width": "full",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Kommentar"
+                    }
+                ],
+                "note": "Er det noe spesielt klargjøringen må vite? legg til en kommentar her",
+                "conditions": null,
+                "required": false,
+                "group": "tjenester",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "selgernummer",
+            "type": "string",
+            "schema": {
+                "name": "selgernummer",
+                "table": "cars",
+                "data_type": "character varying",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": 255,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "selgernummer",
+                "special": null,
+                "interface": "input",
+                "options": null,
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 4,
+                "width": "half",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "nybil",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "levert_forhandler",
+            "type": "string",
+            "schema": {
+                "name": "levert_forhandler",
+                "table": "cars",
+                "data_type": "character varying",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": 255,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "levert_forhandler",
+                "special": null,
+                "interface": "input",
+                "options": null,
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 4,
+                "width": "full",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "planlegging",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "comment_parts",
+            "type": "text",
+            "schema": {
+                "name": "comment_parts",
+                "table": "cars",
+                "data_type": "text",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "comment_parts",
+                "special": null,
+                "interface": "input-multiline",
+                "options": {
+                    "softLength": 255,
+                    "placeholder": null
+                },
+                "display": "formatted-value",
+                "display_options": {},
+                "readonly": false,
+                "hidden": false,
+                "sort": 4,
+                "width": "half",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Kommentar"
+                    }
+                ],
+                "note": "Er det noe spesielt klargjøringen må vite? legg til en kommentar her",
+                "conditions": null,
+                "required": false,
+                "group": "delelager",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "user_updated",
+            "type": "uuid",
+            "schema": {
+                "name": "user_updated",
+                "table": "cars",
+                "data_type": "uuid",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": "public",
+                "foreign_key_table": "directus_users",
+                "foreign_key_column": "id",
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "user_updated",
+                "special": [
+                    "user-updated"
+                ],
+                "interface": "select-dropdown-m2o",
+                "options": {
+                    "template": "{{avatar}} {{first_name}} {{last_name}}"
+                },
+                "display": "user",
+                "display_options": null,
+                "readonly": true,
+                "hidden": false,
+                "sort": 5,
+                "width": "half",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Sist oppdatert av"
+                    }
+                ],
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "model",
+            "type": "string",
+            "schema": {
+                "name": "model",
+                "table": "cars",
+                "data_type": "character varying",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": 255,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "model",
+                "special": null,
+                "interface": "input",
+                "options": null,
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 5,
+                "width": "half",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Biltype"
+                    }
+                ],
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": "bildata",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "delivery_date",
+            "type": "date",
+            "schema": {
+                "name": "delivery_date",
+                "table": "cars",
+                "data_type": "date",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "delivery_date",
+                "special": null,
+                "interface": "datetime",
+                "options": {
+                    "format": "short"
+                },
+                "display": null,
+                "display_options": {
+                    "dateFormat": "D. MMM",
+                    "format": "short"
+                },
+                "readonly": false,
+                "hidden": false,
+                "sort": 5,
+                "width": "half",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Avtalt leveringsdato"
+                    }
+                ],
+                "note": "Avtalt leveringstidspunkt kunde",
+                "conditions": null,
+                "required": false,
+                "group": "nybil",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "sort",
+            "type": "integer",
+            "schema": {
+                "name": "sort",
+                "table": "cars",
+                "data_type": "integer",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": 32,
+                "numeric_scale": 0,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "sort",
+                "special": null,
+                "interface": "input",
+                "options": null,
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": true,
+                "sort": 6,
+                "width": "half",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "eta",
+            "type": "date",
+            "schema": {
+                "name": "eta",
+                "table": "cars",
+                "data_type": "date",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": true,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "eta",
+                "special": null,
+                "interface": "datetime",
+                "options": {
+                    "format": "short"
+                },
+                "display": "datetime",
+                "display_options": {
+                    "dateFormat": "D. MMM",
+                    "format": "short"
+                },
+                "readonly": false,
+                "hidden": false,
+                "sort": 6,
+                "width": "half",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "ETA"
+                    }
+                ],
+                "note": "Forventet leveringstidspunkt fra fabrikk",
+                "conditions": null,
+                "required": false,
+                "group": "bildata",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "header-nu5gyk",
+            "type": "alias",
+            "schema": null,
+            "meta": {
+                "collection": "cars",
+                "field": "header-nu5gyk",
+                "special": [
+                    "alias",
+                    "no-data"
+                ],
+                "interface": "super-header",
+                "options": {
+                    "title": "Bilmanager App",
+                    "subtitle": "Internt booking og oppfølingsystem for nye og brukte biler",
+                    "help": null,
+                    "color": "#477C65",
+                    "icon": "view_comfy"
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 7,
+                "width": "full",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "detaljer",
+            "type": "alias",
+            "schema": null,
+            "meta": {
+                "collection": "cars",
+                "field": "detaljer",
+                "special": [
+                    "alias",
+                    "no-data",
+                    "group"
+                ],
+                "interface": "group-detail",
+                "options": {
+                    "start": "closed",
+                    "headerIcon": "keyboard_arrow_right",
+                    "headerColor": null
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 7,
+                "width": "full",
+                "translations": null,
+                "note": null,
+                "conditions": [
+                    {
+                        "name": "skjul ved ingen",
+                        "rule": {
+                            "_and": [
+                                {
+                                    "biltype": {
+                                        "_in": [
+                                            "ingen",
+                                            "Nybil"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "hidden": true,
+                        "options": {
+                            "start": "closed"
+                        }
+                    }
+                ],
+                "required": false,
+                "group": "bildata",
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "biltype",
+            "type": "string",
+            "schema": {
+                "name": "biltype",
+                "table": "cars",
+                "data_type": "character varying",
+                "default_value": "ingen",
+                "generation_expression": null,
+                "max_length": 255,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": false,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "biltype",
+                "special": null,
+                "interface": "select-dropdown",
+                "options": {
+                    "choices": [
+                        {
+                            "text": "Nybil",
+                            "value": "Nybil"
+                        },
+                        {
+                            "text": "Nybil lager",
+                            "value": "nybil_lager"
+                        },
+                        {
+                            "text": "Bruktbil",
+                            "value": "Bruktbil"
+                        },
+                        {
+                            "text": "Audi Approved Plus",
+                            "value": "Audi Approved Plus"
+                        },
+                        {
+                            "text": "Outlet",
+                            "value": "outlet"
+                        },
+                        {
+                            "text": "Ingen",
+                            "value": "ingen"
+                        }
+                    ]
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 8,
+                "width": "half",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "status",
+            "type": "string",
+            "schema": {
+                "name": "status",
+                "table": "cars",
+                "data_type": "character varying",
+                "default_value": "Ubehandlet",
+                "generation_expression": null,
+                "max_length": 255,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars",
+                "field": "status",
+                "special": null,
+                "interface": "select-dropdown",
+                "options": {
+                    "choices": [
+                        {
+                            "text": "Ubehandlet",
+                            "value": "Ubehandlet",
+                            "color": "#E94E4E"
+                        },
+                        {
+                            "text": "Behandles",
+                            "value": "behandles",
+                            "color": "#FFA439"
+                        },
+                        {
+                            "text": "Planlagt",
+                            "value": "planlagt",
+                            "color": "#2ECDA7"
+                        },
+                        {
+                            "text": "Ferdig",
+                            "value": "ferdig",
+                            "color": "#6644FF"
+                        },
+                        {
+                            "text": "Klar for planlegging",
+                            "value": "klar_for_planlegging"
+                        }
+                    ]
+                },
+                "display": "formatted-value",
+                "display_options": {
+                    "showAsDot": true,
+                    "choices": [
+                        {
+                            "text": "ny_ordre",
+                            "value": "ny ordre",
+                            "color": "#E94E4E"
+                        },
+                        {
+                            "text": "Behandles",
+                            "value": "behandles",
+                            "color": "#FFA439"
+                        },
+                        {
+                            "text": "Planlagt",
+                            "value": "planlagt",
+                            "color": "#2ECDA7"
+                        },
+                        {
+                            "text": "Ferdig",
+                            "value": "ferdig",
+                            "color": "#6644FF"
+                        }
+                    ],
+                    "conditionalFormatting": [
+                        {
+                            "operator": "eq",
+                            "value": "Ubehandlet",
+                            "color": "#FFFFFF",
+                            "background": "#E35169",
+                            "text": "Ny ordre"
+                        },
+                        {
+                            "operator": "eq",
+                            "value": "behandles",
+                            "background": "#FFA439",
+                            "text": "Under behandling",
+                            "color": "#FFFFFF"
+                        },
+                        {
+                            "operator": "eq",
+                            "value": "klar_for_planlegging",
+                            "color": "#A2B5CD",
+                            "text": "Klar for planlegging"
+                        },
+                        {
+                            "operator": "eq",
+                            "value": "planlagt",
+                            "color": "#FFFFFF",
+                            "background": "#2ECDA7",
+                            "text": "Planlagt"
+                        },
+                        {
+                            "operator": "eq",
+                            "value": "ferdig",
+                            "color": "#FFFFFF",
+                            "background": "#6644FF",
+                            "text": "Ferdig"
+                        }
+                    ],
+                    "format": true,
+                    "icon": "avg_pace"
+                },
+                "readonly": false,
+                "hidden": false,
+                "sort": 9,
+                "width": "half",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "bildata",
+            "type": "alias",
+            "schema": null,
+            "meta": {
+                "collection": "cars",
+                "field": "bildata",
+                "special": [
+                    "alias",
+                    "no-data",
+                    "group"
+                ],
+                "interface": "group-detail",
+                "options": {
+                    "headerColor": null,
+                    "headerIcon": "car_crash"
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 10,
+                "width": "full",
+                "translations": null,
+                "note": null,
+                "conditions": [
+                    {
+                        "name": "skjul ved ingen",
+                        "rule": {
+                            "_and": [
+                                {
+                                    "biltype": {
+                                        "_eq": "ingen"
+                                    }
+                                }
+                            ]
+                        },
+                        "hidden": true,
+                        "options": {
+                            "start": "open"
+                        }
+                    }
+                ],
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "salg",
+            "type": "alias",
+            "schema": null,
+            "meta": {
+                "collection": "cars",
+                "field": "salg",
+                "special": [
+                    "alias",
+                    "no-data",
+                    "group"
+                ],
+                "interface": "group-raw",
+                "options": null,
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 11,
+                "width": "full",
+                "translations": null,
+                "note": null,
+                "conditions": [
+                    {
+                        "name": "Skjul ved biltype \"ingen\"",
+                        "rule": {
+                            "_and": [
+                                {
+                                    "biltype": {
+                                        "_eq": "ingen"
+                                    }
+                                }
+                            ]
+                        },
+                        "hidden": true,
+                        "options": {
+                            "start": "open"
+                        }
+                    }
+                ],
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "tjenester",
+            "type": "alias",
+            "schema": null,
+            "meta": {
+                "collection": "cars",
+                "field": "tjenester",
+                "special": [
+                    "alias",
+                    "no-data",
+                    "group"
+                ],
+                "interface": "group-detail",
+                "options": {
+                    "headerColor": null,
+                    "headerIcon": "add_shopping_cart",
+                    "start": "closed"
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 12,
+                "width": "full",
+                "translations": null,
+                "note": null,
+                "conditions": [
+                    {
+                        "name": "Skjul ved biltype \"ingen\"",
+                        "rule": {
+                            "_and": [
+                                {
+                                    "biltype": {
+                                        "_eq": "ingen"
+                                    }
+                                }
+                            ]
+                        },
+                        "hidden": true,
+                        "options": {
+                            "start": "open"
+                        }
+                    }
+                ],
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "delelager",
+            "type": "alias",
+            "schema": null,
+            "meta": {
+                "collection": "cars",
+                "field": "delelager",
+                "special": [
+                    "alias",
+                    "no-data",
+                    "group"
+                ],
+                "interface": "group-detail",
+                "options": {
+                    "start": "closed",
+                    "headerColor": null,
+                    "headerIcon": "shelf_position"
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 13,
+                "width": "full",
+                "translations": [
+                    {
+                        "language": "no-NO",
+                        "translation": "Delelager"
+                    }
+                ],
+                "note": null,
+                "conditions": [
+                    {
+                        "name": "Skjul ved biltype \"ingen\"",
+                        "rule": {
+                            "_and": [
+                                {
+                                    "biltype": {
+                                        "_eq": "ingen"
+                                    }
+                                }
+                            ]
+                        },
+                        "hidden": true,
+                        "options": {
+                            "start": "closed"
+                        }
+                    }
+                ],
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "planlegging",
+            "type": "alias",
+            "schema": null,
+            "meta": {
+                "collection": "cars",
+                "field": "planlegging",
+                "special": [
+                    "alias",
+                    "no-data",
+                    "group"
+                ],
+                "interface": "group-detail",
+                "options": {
+                    "start": "closed",
+                    "headerColor": null,
+                    "headerIcon": "build_circle"
+                },
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": false,
+                "sort": 14,
+                "width": "full",
+                "translations": null,
+                "note": null,
+                "conditions": [
+                    {
+                        "name": "Skjul ved biltype \"ingen\"",
+                        "rule": {
+                            "_and": [
+                                {
+                                    "biltype": {
+                                        "_eq": "ingen"
+                                    }
+                                }
+                            ]
+                        },
+                        "hidden": true,
+                        "options": {
+                            "start": "closed"
+                        }
+                    }
+                ],
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars_files",
+            "field": "id",
+            "type": "integer",
+            "schema": {
+                "name": "id",
+                "table": "cars_files",
+                "data_type": "integer",
+                "default_value": "nextval('cars_files_id_seq'::regclass)",
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": 32,
+                "numeric_scale": 0,
+                "is_generated": false,
+                "is_nullable": false,
+                "is_unique": true,
+                "is_indexed": false,
+                "is_primary_key": true,
+                "has_auto_increment": true,
+                "foreign_key_schema": null,
+                "foreign_key_table": null,
+                "foreign_key_column": null,
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars_files",
+                "field": "id",
+                "special": null,
+                "interface": null,
+                "options": null,
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": true,
+                "sort": 1,
+                "width": "full",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars_files",
+            "field": "cars_id",
+            "type": "uuid",
+            "schema": {
+                "name": "cars_id",
+                "table": "cars_files",
+                "data_type": "uuid",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": "public",
+                "foreign_key_table": "cars",
+                "foreign_key_column": "id",
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars_files",
+                "field": "cars_id",
+                "special": null,
+                "interface": null,
+                "options": null,
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": true,
+                "sort": 2,
+                "width": "full",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        },
+        {
+            "collection": "cars_files",
+            "field": "directus_files_id",
+            "type": "uuid",
+            "schema": {
+                "name": "directus_files_id",
+                "table": "cars_files",
+                "data_type": "uuid",
+                "default_value": null,
+                "generation_expression": null,
+                "max_length": null,
+                "numeric_precision": null,
+                "numeric_scale": null,
+                "is_generated": false,
+                "is_nullable": true,
+                "is_unique": false,
+                "is_indexed": false,
+                "is_primary_key": false,
+                "has_auto_increment": false,
+                "foreign_key_schema": "public",
+                "foreign_key_table": "directus_files",
+                "foreign_key_column": "id",
+                "comment": null
+            },
+            "meta": {
+                "collection": "cars_files",
+                "field": "directus_files_id",
+                "special": null,
+                "interface": null,
+                "options": null,
+                "display": null,
+                "display_options": null,
+                "readonly": false,
+                "hidden": true,
+                "sort": 3,
+                "width": "full",
+                "translations": null,
+                "note": null,
+                "conditions": null,
+                "required": false,
+                "group": null,
+                "validation": null,
+                "validation_message": null
+            }
+        }
+    ],
+    "relations": [
+        {
+            "collection": "cars",
+            "field": "user_created",
+            "related_collection": "directus_users",
+            "schema": {
+                "constraint_name": "cars_user_created_foreign",
+                "table": "cars",
+                "column": "user_created",
+                "foreign_key_schema": "public",
+                "foreign_key_table": "directus_users",
+                "foreign_key_column": "id",
+                "on_update": "NO ACTION",
+                "on_delete": "NO ACTION"
+            },
+            "meta": {
+                "many_collection": "cars",
+                "many_field": "user_created",
+                "one_collection": "directus_users",
+                "one_field": null,
+                "one_collection_field": null,
+                "one_allowed_collections": null,
+                "junction_field": null,
+                "sort_field": null,
+                "one_deselect_action": "nullify"
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "user_updated",
+            "related_collection": "directus_users",
+            "schema": {
+                "constraint_name": "cars_user_updated_foreign",
+                "table": "cars",
+                "column": "user_updated",
+                "foreign_key_schema": "public",
+                "foreign_key_table": "directus_users",
+                "foreign_key_column": "id",
+                "on_update": "NO ACTION",
+                "on_delete": "NO ACTION"
+            },
+            "meta": {
+                "many_collection": "cars",
+                "many_field": "user_updated",
+                "one_collection": "directus_users",
+                "one_field": null,
+                "one_collection_field": null,
+                "one_allowed_collections": null,
+                "junction_field": null,
+                "sort_field": null,
+                "one_deselect_action": "nullify"
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "dealership_id",
+            "related_collection": "dealership",
+            "schema": {
+                "constraint_name": "cars_dealership_id_foreign",
+                "table": "cars",
+                "column": "dealership_id",
+                "foreign_key_schema": "public",
+                "foreign_key_table": "dealership",
+                "foreign_key_column": "id",
+                "on_update": "NO ACTION",
+                "on_delete": "SET NULL"
+            },
+            "meta": {
+                "many_collection": "cars",
+                "many_field": "dealership_id",
+                "one_collection": "dealership",
+                "one_field": null,
+                "one_collection_field": null,
+                "one_allowed_collections": null,
+                "junction_field": null,
+                "sort_field": null,
+                "one_deselect_action": "nullify"
+            }
+        },
+        {
+            "collection": "cars",
+            "field": "mekaniker",
+            "related_collection": "directus_users",
+            "schema": {
+                "constraint_name": "cars_mekaniker_foreign",
+                "table": "cars",
+                "column": "mekaniker",
+                "foreign_key_schema": "public",
+                "foreign_key_table": "directus_users",
+                "foreign_key_column": "id",
+                "on_update": "NO ACTION",
+                "on_delete": "SET NULL"
+            },
+            "meta": {
+                "many_collection": "cars",
+                "many_field": "mekaniker",
+                "one_collection": "directus_users",
+                "one_field": null,
+                "one_collection_field": null,
+                "one_allowed_collections": null,
+                "junction_field": null,
+                "sort_field": null,
+                "one_deselect_action": "nullify"
+            }
+        },
+        {
+            "collection": "cars_files",
+            "field": "directus_files_id",
+            "related_collection": "directus_files",
+            "schema": {
+                "constraint_name": "cars_files_directus_files_id_foreign",
+                "table": "cars_files",
+                "column": "directus_files_id",
+                "foreign_key_schema": "public",
+                "foreign_key_table": "directus_files",
+                "foreign_key_column": "id",
+                "on_update": "NO ACTION",
+                "on_delete": "SET NULL"
+            },
+            "meta": {
+                "many_collection": "cars_files",
+                "many_field": "directus_files_id",
+                "one_collection": "directus_files",
+                "one_field": null,
+                "one_collection_field": null,
+                "one_allowed_collections": null,
+                "junction_field": "cars_id",
+                "sort_field": null,
+                "one_deselect_action": "nullify"
+            }
+        },
+        {
+            "collection": "cars_files",
+            "field": "cars_id",
+            "related_collection": "cars",
+            "schema": {
+                "constraint_name": "cars_files_cars_id_foreign",
+                "table": "cars_files",
+                "column": "cars_id",
+                "foreign_key_schema": "public",
+                "foreign_key_table": "cars",
+                "foreign_key_column": "id",
+                "on_update": "NO ACTION",
+                "on_delete": "SET NULL"
+            },
+            "meta": {
+                "many_collection": "cars_files",
+                "many_field": "cars_id",
+                "one_collection": "cars",
+                "one_field": "dokumenter",
+                "one_collection_field": null,
+                "one_allowed_collections": null,
+                "junction_field": "directus_files_id",
+                "sort_field": null,
+                "one_deselect_action": "nullify"
+            }
+        }
+    ]
+}
