@@ -222,8 +222,6 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
 
-    user: postgres
-
     command:
       - "postgres"
       - "-c"
