@@ -46,6 +46,7 @@ location: Emplacement
 collection_names_are_case_sensitive: Le nom des collections est sensible à la casse
 condition_rules: Règles de conditions
 input: Texte simple
+invalid_input: Saisie invalide
 not_a_number: Pas un nombre
 maps: Cartes
 switch_user: Changer d'utilisateur
@@ -114,6 +115,11 @@ fill_width: Remplir l'espace
 field_name_translations: Traductions du nom de champ
 enter_password_to_enable_tfa: Saisissez votre mot de passe pour activer l'authentification à deux facteurs
 sso_tfa_setup_notice: Vous allez être déconnecté de votre compte et devrez vous reconnecter. Toutes les modifications non enregistrées seront supprimées.
+enable_tfa: Activer la double authentification
+cancel_tfa_setup: Désactiver la configuration de la double authentification
+cancel_tfa_setup_notice: Êtes-vous sûr de vouloir désactiver la configuration de la double authentification ?
+keep_setup: Garder la configuration
+cancel_setup: Annuler la configuration
 add_field: Ajouter un champ
 role_name: Nom de rôle
 policy_name: Nom de la Règle
@@ -486,6 +492,8 @@ import_data_button: Commencer l'import
 import_data_indeterminate: Import des données...
 import_data_success: Données importées avec succès depuis {filename}
 import_data_error: La structure des données de ce fichier ne correspond pas à la collection.
+snapshot:
+  export: Exporter le schéma
 label_import: Importer
 label_export: Export
 import_export: Importer/Exporter
@@ -2303,6 +2311,7 @@ show_legend: Afficher la légende
 right: Droite
 left: Gauche
 start: Début
+end: Fin
 donut: Donut
 panels:
   metric:
@@ -2538,3 +2547,5 @@ search_flow: Rechercher le flux...
 percent: Pourcent
 show_password: Afficher le mot de passe
 hide_password: Masquer le mot de passe
+bsl_banner:
+  accept_terms: Accepter
