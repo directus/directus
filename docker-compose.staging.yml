@@ -313,3 +313,4 @@ networks:
     driver: bridge
 
 # Volumes managed by Dokploy in ../files/
+# Force redeploy
