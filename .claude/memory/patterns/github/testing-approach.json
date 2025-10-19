@@ -1,0 +1,34 @@
+{
+  "name": "testing-approach",
+  "source": "github",
+  "frequency": 1,
+  "quality": 0.5975,
+  "confidence": 0.5975,
+  "examples": [
+    "directus-community/example-extension",
+    "directus-labs/panel-template"
+  ],
+  "projectType": "directus-extension",
+  "pattern": {
+    "description": "Pattern found in 100% of analyzed repositories",
+    "category": "testing-approach",
+    "commonImplementation": {
+      "repo": "directus-community/example-extension",
+      "hasTests": true,
+      "framework": "vitest",
+      "coverage": true,
+      "e2eTests": false,
+      "confidence": "high",
+      "adoption": "2 repositories"
+    },
+    "alternatives": [],
+    "applicableTo": [
+      "directus-extension"
+    ],
+    "frameworks": [
+      "directus",
+      "vue3",
+      "typescript"
+    ]
+  }
+}
