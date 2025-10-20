@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, test, vi } from 'vitest';
-import { request } from '../src/utils/request.js';
+import { request } from './request.js';
 
 const fetchMock = vi.fn(async () => ({}));
 
