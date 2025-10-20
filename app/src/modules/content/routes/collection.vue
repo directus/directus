@@ -140,6 +140,15 @@ const archiveFilter = computed<Filter | null>(() => {
 	}
 });
 
+const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
+	collection,
+	selection,
+	location: ref('collection'),
+	onRefreshCallback: refresh,
+});
+
+provideRunManualFlow();
+
 async function refresh() {
 	await layoutRef.value?.state?.refresh?.();
 }
@@ -285,15 +294,6 @@ function clearFilters() {
 	filter.value = null;
 	search.value = null;
 }
-
-const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
-	collection,
-	selection,
-	location: ref('collection'),
-	onRefreshCallback: refresh,
-});
-
-provideRunManualFlow();
 </script>
 
 <template>

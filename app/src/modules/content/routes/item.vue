@@ -299,6 +299,16 @@ watch(
 	{ immediate: true },
 );
 
+const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
+	collection,
+	primaryKey: actualPrimaryKey,
+	location: ref('item'),
+	hasEdits,
+	onRefreshCallback: refresh,
+});
+
+provideRunManualFlow();
+
 function toggleSplitView() {
 	if (livePreviewMode.value === null) {
 		livePreviewMode.value = 'split';
@@ -502,16 +512,6 @@ function useCollectionRoute() {
 
 	return { collectionRoute };
 }
-
-const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
-	collection,
-	primaryKey: actualPrimaryKey,
-	location: ref('item'),
-	hasEdits,
-	onRefreshCallback: refresh,
-});
-
-provideRunManualFlow();
 </script>
 
 <template>
