@@ -28,3 +28,19 @@ export function getAssetUrl(
 
 	return assetUrl.href;
 }
+
+export function getFilesUrl(files: string[]) {
+	const assetUrl = new URL(`assets/files/${files.join(',')}`, getPublicURL());
+
+	assetUrl.searchParams.set('download', '');
+
+	return assetUrl.href;
+}
+
+export function getFolderUrl(folder: string) {
+	const assetUrl = new URL(`assets/folder/${folder}`, getPublicURL());
+
+	assetUrl.searchParams.set('download', '');
+
+	return assetUrl.href;
+}

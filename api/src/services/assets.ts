@@ -11,11 +11,12 @@ import type {
 	Accountability,
 	File,
 	Range,
-	Stat,
 	SchemaOverview,
+	Stat,
 	Transformation,
 	TransformationSet,
 } from '@directus/types';
+import archiver from 'archiver';
 import type { Knex } from 'knex';
 import { clamp } from 'lodash-es';
 import { contentType } from 'mime-types';
@@ -48,6 +49,60 @@ export class AssetsService {
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 		this.filesService = new FilesService({ ...options, accountability: null });
+	}
+
+	async getFileHierarchy(rootFolder: string) {
+		const fileTree = this.knex
+			.withRecursive('folders', ['id', 'name', 'parent'], (qb) => {
+				qb.select('id', 'name', 'parent')
+					.from('directus_folders')
+					.where('id', rootFolder)
+					.unionAll((qb) => {
+						qb.select(
+							'directus_folders.id',
+							this.knex.raw(`CONCAT(folders.name, '/', directus_folders.name)`),
+							'directus_folders.parent',
+						)
+							.from('directus_folders')
+							.join('folders', 'folders.id', 'directus_folders.parent');
+					});
+			})
+			.select<{ id: string; folder: string }[]>('directus_files.id', 'folders.name as folder')
+			.from('directus_files')
+			.rightJoin('folders', 'folders.id', 'directus_files.folder');
+
+		const results = await fileTree;
+
+		return results;
+	}
+
+	async getZip(files: { id: string; folder?: string }[]) {
+		const archive = archiver('zip', {
+			forceZip64: true,
+		});
+
+		const complete = async () => {
+			const storage = await getStorage();
+
+			for (const { id, folder } of files) {
+				const file = (await this.filesService.readOne(id, { limit: 1 })) as File;
+
+				const exists = await storage.location(file.storage).exists(file.filename_disk);
+
+				if (!exists) throw new ForbiddenError();
+
+				const modifiedOn = file.modified_on ? new Date(file.modified_on) : undefined;
+				const version = modifiedOn ? (modifiedOn.getTime() / 1000).toFixed() : undefined;
+
+				const assetStream = await storage.location(file.storage).read(file.filename_disk, { version });
+
+				archive.append(assetStream, { name: file.filename_download, prefix: folder });
+			}
+
+			await archive.finalize();
+		};
+
+		return { archive, complete };
 	}
 
 	async getAsset(

@@ -8,6 +8,7 @@ import NavigationFolder from '@/views/private/components/files-navigation-folder
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { FolderTarget } from '@/types/folders';
+import { getFolderUrl } from '@/utils/get-asset-url';
 
 const props = withDefaults(
 	defineProps<{
@@ -219,6 +220,14 @@ function useDeleteFolder() {
 					</v-list-item-icon>
 					<v-list-item-content>
 						<v-text-overflow :text="t('move_to_folder')" />
+					</v-list-item-content>
+				</v-list-item>
+				<v-list-item clickable download :href="getFolderUrl(folder.id)">
+					<v-list-item-icon>
+						<v-icon name="download" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						<v-text-overflow :text="t('download')" />
 					</v-list-item-content>
 				</v-list-item>
 				<v-list-item class="danger" clickable @click="deleteActive = true">
