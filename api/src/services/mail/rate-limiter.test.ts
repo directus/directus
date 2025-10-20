@@ -5,8 +5,8 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
 }));
 
-// importing it here once so the import time does not skew the timing of the tests
-// commenting this line out will add about 700ms to the first test of the file
+// without this import the first test doing this import gets a ~700ms time penalty
+// resulting in that test getting unfairly flagged as a "slow test"
 await import('./rate-limiter.js');
 
 describe('Email Rate Limiter', () => {
@@ -121,7 +121,7 @@ describe('Email Rate Limiter', () => {
 			await expect(Promise.all([
 				useEmailRateLimiterQueue(),
 				useEmailRateLimiterQueue(),
-			])).rejects.toThrowError(/^Email sending limit exceeded\..* My custom message\./);
+			])).rejects.toThrowError(/^Email sending limit exceeded\..*My custom message\.$/);
 		});
 	});
 });
