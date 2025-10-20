@@ -52,10 +52,10 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 			if (value !== undefined && value !== null) {
 				parsedItem[name] = display.value?.handler
 					? await display.value.handler(value, fieldsUsed[key]?.meta?.display_options ?? {}, {
-						interfaceOptions: fieldsUsed[key]?.meta?.options ?? {},
-						field: fieldsUsed[key] ?? undefined,
-						collection: collection,
-					})
+							interfaceOptions: fieldsUsed[key]?.meta?.options ?? {},
+							field: fieldsUsed[key] ?? undefined,
+							collection: collection,
+						})
 					: value;
 			} else {
 				parsedItem[name] = value;
