@@ -40,7 +40,6 @@ describe('scheduleSynchronizedJob', () => {
 
 			vi.setSystemTime(startTime);
 			const job = scheduleSynchronizedJob('test-daily', '0 23 * * *', callback);
-			await vi.runOnlyPendingTimersAsync();
 
 			const dayInMs = 24 * 60 * 60 * 1000;
 			const oneHourMs = 60 * 60 * 1000;
@@ -86,7 +85,6 @@ describe('scheduleSynchronizedJob', () => {
 
 			vi.setSystemTime(startTime);
 			const job = scheduleSynchronizedJob('test-30-days', '0 23 * * *', callback);
-			await vi.runOnlyPendingTimersAsync();
 
 			const dayInMs = 24 * 60 * 60 * 1000;
 			const oneHourMs = 60 * 60 * 1000;
