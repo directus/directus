@@ -108,7 +108,7 @@ catalog:
   '@types/mime-types': 3.0.1
   '@types/ms': 2.1.0
   '@types/node': 22.13.14
-  '@types/node-schedule': 2.1.8
+  '@types/cron': 3.0.11
   '@types/nodemailer': 6.4.17
   '@types/object-hash': 3.0.6
   '@types/papaparse': 5.3.16
@@ -153,7 +153,7 @@ catalog:
   cookie-parser: 1.4.7
   copyfiles: 2.4.1
   cors: 2.8.5
-  cron-parser: 4.9.0
+  cron: 4.3.3
   cropperjs: 1.6.2
   date-fns: 4.1.0
   decamelize: 6.0.0
@@ -229,7 +229,6 @@ catalog:
   mysql2: 3.14.3
   nanoid: 5.1.5
   node-machine-id: 1.1.12
-  node-schedule: 2.1.1
   nodemailer: 7.0.5
   nodemailer-mailgun-transport: 2.1.5
   npm-watch: 0.13.0
