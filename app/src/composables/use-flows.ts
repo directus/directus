@@ -205,45 +205,45 @@ export function useFlows(options: UseFlowsOptions) {
 			(isCustomDialogConfirmationRequired && !isCustomDialogConfirmed)
 		) {
 			return;
-		} else {
-			if (!primaryKeyField.value) return;
+		}
 
-			runningFlows.value = [...runningFlows.value, flowId];
+		if (!primaryKeyField.value) return;
 
-			try {
-				if (
-					location.value === 'collection' &&
-					currentFlow.value.options?.requireSelection === false &&
-					selection.value.length === 0
-				) {
-					await api.post(`/flows/trigger/${flowId}`, {
-						...(confirmValues.value ?? {}),
-						collection: collection.value,
-					});
-				} else {
-					const keys = primaryKey?.value ? [primaryKey.value] : selection.value || [];
+		runningFlows.value = [...runningFlows.value, flowId];
 
-					await api.post(`/flows/trigger/${flowId}`, {
-						...confirmValues.value,
-						collection: collection.value,
-						keys,
-					});
-				}
-
-				onRefreshCallback();
-
-				notify({
-					title: t('trigger_flow_success', { flow: currentFlow.value.name }),
+		try {
+			if (
+				location.value === 'collection' &&
+				currentFlow.value.options?.requireSelection === false &&
+				selection.value.length === 0
+			) {
+				await api.post(`/flows/trigger/${flowId}`, {
+					...(confirmValues.value ?? {}),
+					collection: collection.value,
 				});
+			} else {
+				const keys = primaryKey?.value ? [primaryKey.value] : selection.value || [];
 
-				await notificationStore.refreshUnreadCount();
-
-				resetConfirm();
-			} catch (error) {
-				unexpectedError(error);
-			} finally {
-				runningFlows.value = runningFlows.value.filter((runningFlow) => runningFlow !== flowId);
+				await api.post(`/flows/trigger/${flowId}`, {
+					...confirmValues.value,
+					collection: collection.value,
+					keys,
+				});
 			}
+
+			onRefreshCallback();
+
+			notify({
+				title: t('trigger_flow_success', { flow: currentFlow.value.name }),
+			});
+
+			await notificationStore.refreshUnreadCount();
+
+			resetConfirm();
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			runningFlows.value = runningFlows.value.filter((runningFlow) => runningFlow !== flowId);
 		}
 	}
 
