@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-
 interface FlowDialogsContext {
 	confirmButtonCTA: string;
 	confirmDialogDetails: {
@@ -18,8 +16,6 @@ interface FlowDialogsContext {
 	updateFieldValues: (event: any) => void;
 }
 
-const { t } = useI18n();
-
 defineProps<FlowDialogsContext>();
 </script>
 
@@ -31,12 +27,12 @@ defineProps<FlowDialogsContext>();
 		@apply="confirmUnsavedChanges(currentFlowId!)"
 	>
 		<v-card>
-			<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-			<v-card-text>{{ t('run_flow_on_current_edited_confirm') }}</v-card-text>
+			<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+			<v-card-text>{{ $t('run_flow_on_current_edited_confirm') }}</v-card-text>
 
 			<v-card-actions>
 				<v-button secondary @click="resetConfirm">
-					{{ t('cancel') }}
+					{{ $t('cancel') }}
 				</v-button>
 				<v-button @click="confirmUnsavedChanges(currentFlowId!)">
 					{{ confirmButtonCTA }}
@@ -52,7 +48,7 @@ defineProps<FlowDialogsContext>();
 		@apply="confirmCustomDialog(currentFlowId!)"
 	>
 		<v-card>
-			<v-card-title>{{ confirmDialogDetails?.description ?? t('run_flow_confirm') }}</v-card-title>
+			<v-card-title>{{ confirmDialogDetails?.description ?? $t('run_flow_confirm') }}</v-card-title>
 			<v-card-text class="confirm-form">
 				<v-form
 					v-if="confirmDialogDetails?.fields.length"
