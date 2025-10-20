@@ -1,6 +1,22 @@
-import { expect, test } from 'vitest';
-import { getHeadingsForCsvExport } from './import-export.js';
+import { describe, expect, test, vi } from 'vitest';
+import { getHeadingsForCsvExport, createErrorTracker } from './import-export.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/ast.js';
+
+vi.mock('@directus/env', () => ({
+	useEnv: () => ({
+		MAX_IMPORT_ERRORS: 1000,
+		EMAIL_TEMPLATES_PATH: './templates',
+		EXTENSIONS_PATH: './extensions',
+	}),
+}));
+
+vi.mock('../logger', () => ({
+	useLogger: () => ({
+		info: vi.fn(),
+		warn: vi.fn(),
+		error: vi.fn(),
+	}),
+}));
 
 test('Get the headings for CSV export from the field node tree', () => {
 	/**
@@ -293,4 +309,137 @@ test('Get the headings for CSV export from the field node tree', () => {
 	];
 
 	expect(res).toEqual(expectedHeadlinesForCsvExport);
+});
+
+describe('createErrorTracker', () => {
+	test('groups errors with same field and type', () => {
+		const tracker = createErrorTracker();
+
+		tracker.addCapturedError({
+			code: 'FAILED_VALIDATION',
+			message: 'test',
+			extensions: { field: 'email', type: 'nnull' },
+		}, 1);
+
+		tracker.addCapturedError({
+			code: 'FAILED_VALIDATION',
+			message: 'test',
+			extensions: { field: 'email', type: 'nnull' },
+		}, 3);
+
+		const errors: any[] = tracker.buildFinalErrors();
+
+		expect(errors).toHaveLength(1);
+		expect(errors[0].extensions.field).toBe('email');
+		expect(errors[0].extensions.type).toBe('nnull');
+		expect(errors[0].extensions.rows).toHaveLength(1);
+		expect(errors[0].extensions.rows[0]?.type).toBe('lines');
+		expect(errors[0].extensions.rows[0]?.rows).toEqual([1, 3]);
+	});
+
+	test('separates errors with different substring values', () => {
+		const tracker = createErrorTracker();
+
+		tracker.addCapturedError({
+			code: 'FAILED_VALIDATION',
+			message: 'test',
+			extensions: { field: 'email', type: 'contains', substring: 'later' },
+		}, 1);
+
+		tracker.addCapturedError({
+			code: 'FAILED_VALIDATION',
+			message: 'test',
+			extensions: { field: 'email', type: 'contains', substring: 'now' },
+		}, 2);
+
+		const errors: any[] = tracker.buildFinalErrors();
+
+		expect(errors).toHaveLength(2);
+		expect(errors[0].extensions.substring).toBe('later');
+		expect(errors[0].extensions.rows[0].rows).toEqual([1]);
+		expect(errors[1].extensions.substring).toBe('now');
+		expect(errors[1].extensions.rows[0].rows).toEqual([2]);
+	});
+
+	test('separates errors with different valid values', () => {
+		const tracker = createErrorTracker();
+		const code = 'FAILED_VALIDATION';
+
+		tracker.addCapturedError({
+			code,
+			message: 'test',
+			extensions: { field: 'age', type: 'eq', valid: 18 },
+		}, 1);
+
+		tracker.addCapturedError({
+			code,
+			message: 'test',
+			extensions: { field: 'age', type: 'eq', valid: 21 },
+		}, 2);
+
+		const errors: any[] = tracker.buildFinalErrors();
+
+		expect(errors).toHaveLength(2);
+		expect(errors[0].extensions.valid).toBe(18);
+		expect(errors[1].extensions.valid).toBe(21);
+	});
+
+	test('handles generic DB errors without field', () => {
+		const tracker = createErrorTracker();
+		const code = 'INVALID_FOREIGN_KEY';
+
+		tracker.addCapturedError({
+			code,
+			message: 'test',
+		}, 1);
+
+		tracker.addCapturedError({
+			code,
+			message: 'test',
+		}, 2);
+
+		const errors: any[] = tracker.buildFinalErrors();
+
+		expect(errors).toHaveLength(1);
+		expect(errors[0].code).toBe(code);
+		expect(errors[0].extensions.rows).toHaveLength(1);
+		expect(errors[0].extensions.rows[0].rows).toEqual([1, 2]);
+	});
+
+	test('converts consecutive rows to ranges', () => {
+		const tracker = createErrorTracker();
+
+		for (let i = 1; i <= 10; i++) {
+			tracker.addCapturedError({
+				code: 'FAILED_VALIDATION',
+				message: 'test',
+				extensions: { field: 'email', type: 'nnull' },
+			}, i);
+		}
+
+		const errors: any[] = tracker.buildFinalErrors();
+
+		expect(errors).toHaveLength(1);
+		expect(errors[0].extensions.rows).toHaveLength(1);
+		expect(errors[0].extensions.rows[0].type).toBe('range');
+		expect(errors[0].extensions.rows[0].start).toBe(1);
+		expect(errors[0].extensions.rows[0].end).toBe(10);
+	});
+
+	test('stops collecting errors at MAX_IMPORT_ERRORS', () => {
+		const tracker = createErrorTracker();
+
+		for (let i = 1; i <= 1500; i++) {
+			tracker.addCapturedError({
+				code: 'FAILED_VALIDATION',
+				message: 'test',
+				extensions: { field: 'email', type: 'nnull' },
+			}, i);
+
+			if (tracker.isLimitReached()) break;
+		}
+
+		expect(tracker.getCount()).toBe(1000);
+		expect(tracker.isLimitReached()).toBe(true);
+	});
 });

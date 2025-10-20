@@ -45,7 +45,7 @@ import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
 import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
 import { set } from 'lodash-es';
-import type { FailedValidationErrorExtensions, ImportRowLines, ImportRowRange } from '@directus/validation';
+import type { ImportRowLines, ImportRowRange } from '@directus/validation';
 
 const env = useEnv();
 const logger = useLogger();
@@ -54,11 +54,10 @@ const MAX_IMPORT_ERRORS = env['MAX_IMPORT_ERRORS'] as number;
 
 type CapturedErrorData = {
 	message: string;
-	extensions?: Omit<FailedValidationErrorExtensions, 'field' | 'type' | 'rows' | 'path'>;
 	rowNumbers: number[];
 };
 
-function createErrorTracker() {
+export function createErrorTracker() {
 	// For errors with field / type (joi validation or DB with field)
 	const fieldErrors: Map<ErrorCode, Map<string, CapturedErrorData>> = new Map();
 	// For errors without field (DB errors like SQLite FK)
@@ -113,9 +112,16 @@ function createErrorTracker() {
 	function addCapturedError(err: any, rowNumber: number) {
 		const field = err.extensions?.field;
 		const type = err.extensions?.type;
+		const substring = err.extensions?.substring;
+		const valid = err.extensions?.valid;
+		const invalid = err.extensions?.invalid;
 
 		if (field) {
-			const key = type ? `${field}|${type}` : field;
+			let key = type ? `${field}|${type}` : field;
+
+			if (substring !== undefined) key += `|substring:${substring}`;
+			if (valid !== undefined) key += `|valid:${JSON.stringify(valid)}`;
+			if (invalid !== undefined) key += `|invalid:${JSON.stringify(invalid)}`;
 
 			if (!fieldErrors.has(err.code)) {
 				fieldErrors.set(err.code, new Map());
@@ -126,11 +132,6 @@ function createErrorTracker() {
 			if (!errorsByCode.has(key)) {
 				errorsByCode.set(key, {
 					message: err.message,
-					extensions: {
-						substring: err.extensions?.substring,
-						valid: err.extensions?.valid,
-						invalid: err.extensions?.invalid,
-					},
 					rowNumbers: [],
 				});
 			}
@@ -161,11 +162,24 @@ function createErrorTracker() {
 				const field = parts[0];
 				const type = parts[1];
 
+				const extensions: any = {};
+
+				for (let i = 2; i < parts.length; i++) {
+					const [paramType, paramValue] = parts[i]?.split(':', 2) ?? [];
+					if (!paramType || paramValue === undefined) continue;
+
+					try {
+						extensions[paramType] = JSON.parse(paramValue);
+					} catch {
+						extensions[paramType] = paramValue;
+					}
+				}
+
 				const ErrorClass = createError<any>(code, errorData.message, 400);
 				return new ErrorClass({
 					field,
 					type,
-					...errorData.extensions,
+					...extensions,
 					rows: convertToRanges(errorData.rowNumbers),
 				});
 			}),
@@ -174,7 +188,6 @@ function createErrorTracker() {
 		const genericErrs = Array.from(genericErrors.entries()).map(([code, errorData]) => {
 			const ErrorClass = createError<any>(code, errorData.message, 400);
 			return new ErrorClass({
-				...errorData.extensions,
 				rows: convertToRanges(errorData.rowNumbers),
 			});
 		});
@@ -370,7 +383,7 @@ export class ImportService {
 								reject();
 							}
 
-							return null;
+							return;
 						}
 					});
 
