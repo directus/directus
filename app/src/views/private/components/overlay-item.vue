@@ -238,6 +238,16 @@ const overlayItemContentProps = computed(() => {
 	};
 });
 
+const { provideRunManualFlow } = useFlows({
+	collection,
+	primaryKey: computed(() => primaryKey.value),
+	location: ref('item'),
+	hasEdits,
+	onRefreshCallback: refresh,
+});
+
+provideRunManualFlow();
+
 function useActiveState() {
 	const localActive = ref(false);
 
@@ -515,17 +525,6 @@ function popoverClickOutsideMiddleware(e: Event) {
 	if (!dialogs) return true;
 	return !dialogs.contains(e.target as Node);
 }
-
-const { provideRunManualFlow } = useFlows({
-	collection,
-	primaryKey: computed(() => primaryKey.value),
-	selection: ref([]),
-	location: ref('item'),
-	hasEdits,
-	onRefreshCallback: refresh,
-});
-
-provideRunManualFlow();
 </script>
 
 <template>
