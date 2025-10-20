@@ -10,14 +10,6 @@ vi.mock('@directus/env', () => ({
 	}),
 }));
 
-vi.mock('../logger', () => ({
-	useLogger: () => ({
-		info: vi.fn(),
-		warn: vi.fn(),
-		error: vi.fn(),
-	}),
-}));
-
 test('Get the headings for CSV export from the field node tree', () => {
 	/**
 	 * this is an example result from parseFields
