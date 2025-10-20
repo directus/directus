@@ -10,8 +10,8 @@ vi.mock('@directus/env', () => ({
 await import('./rate-limiter.js');
 
 describe('Flows Email Operation Rate Limiter', () => {
-    const TEST_FLOW_ID_1 = '75f246b0-d48d-4644-afb8-52785bef01d1';
-    const TEST_FLOW_ID_2 = '444d478f-62f9-4a48-9ab6-58a201cbcd0c';
+	const TEST_FLOW_ID_1 = '75f246b0-d48d-4644-afb8-52785bef01d1';
+	const TEST_FLOW_ID_2 = '444d478f-62f9-4a48-9ab6-58a201cbcd0c';
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
@@ -26,10 +26,10 @@ describe('Flows Email Operation Rate Limiter', () => {
 
 			// dynamic import because useEnv is accessed in the file root
 			const { useFlowsEmailRateLimiter } = await import('./rate-limiter.js');
-			
+
 			await expect(useFlowsEmailRateLimiter(TEST_FLOW_ID_1)).resolves.toBeUndefined();
 		});
-		
+
 		test('should be able to consume all points without error', async () => {
 			vi.mocked(useEnv).mockReturnValue({
 				EMAIL_FLOWS_LIMITER_ENABLED: 'true',
@@ -41,13 +41,15 @@ describe('Flows Email Operation Rate Limiter', () => {
 			const { useFlowsEmailRateLimiter } = await import('./rate-limiter.js');
 
 			// consume 3 points
-			await expect(Promise.all([
-				useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
-				useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
-				useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
-			])).resolves.not.toThrowError();
+			await expect(
+				Promise.all([
+					useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
+					useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
+					useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
+				]),
+			).resolves.not.toThrowError();
 		});
-		
+
 		test('should throw an error after all points have been consumed', async () => {
 			vi.mocked(useEnv).mockReturnValue({
 				EMAIL_FLOWS_LIMITER_ENABLED: 'true',
@@ -59,32 +61,33 @@ describe('Flows Email Operation Rate Limiter', () => {
 			const { useFlowsEmailRateLimiter } = await import('./rate-limiter.js');
 
 			// consume 4 points
-			await expect(Promise.all([
-				useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
-				useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
-				useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
-				useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
-			])).rejects.toThrowError(/^Email sending limit exceeded\./);
+			await expect(
+				Promise.all([
+					useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
+					useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
+					useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
+					useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
+				]),
+			).rejects.toThrowError(/^Email sending limit exceeded\./);
 		});
-		
+
 		test('should include a custom message in the error', async () => {
 			vi.mocked(useEnv).mockReturnValue({
 				EMAIL_FLOWS_LIMITER_ENABLED: 'true',
 				EMAIL_FLOWS_LIMITER_POINTS: 1,
 				EMAIL_FLOWS_LIMITER_DURATION: 1,
-				EMAIL_FLOWS_LIMITER_ERROR_MESSAGE: 'My custom message.'
+				EMAIL_FLOWS_LIMITER_ERROR_MESSAGE: 'My custom message.',
 			});
 
 			// dynamic import because useEnv is accessed in the file root
 			const { useFlowsEmailRateLimiter } = await import('./rate-limiter.js');
 
 			// consume 2 points
-			await expect(Promise.all([
-				useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
-				useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
-			])).rejects.toThrowError(/^Email sending limit exceeded\..*My custom message\.$/);
+			await expect(
+				Promise.all([useFlowsEmailRateLimiter(TEST_FLOW_ID_1), useFlowsEmailRateLimiter(TEST_FLOW_ID_1)]),
+			).rejects.toThrowError(/^Email sending limit exceeded\..*My custom message\.$/);
 		});
-		
+
 		test('should be able to consume points from multiple flows without error', async () => {
 			vi.mocked(useEnv).mockReturnValue({
 				EMAIL_FLOWS_LIMITER_ENABLED: 'true',
@@ -96,11 +99,13 @@ describe('Flows Email Operation Rate Limiter', () => {
 			const { useFlowsEmailRateLimiter } = await import('./rate-limiter.js');
 
 			// consume 3 points
-			await expect(Promise.all([
-				useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
-				useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
-				useFlowsEmailRateLimiter(TEST_FLOW_ID_2),
-			])).resolves.not.toThrowError();
+			await expect(
+				Promise.all([
+					useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
+					useFlowsEmailRateLimiter(TEST_FLOW_ID_1),
+					useFlowsEmailRateLimiter(TEST_FLOW_ID_2),
+				]),
+			).resolves.not.toThrowError();
 		});
 	});
 });

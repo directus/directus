@@ -23,10 +23,10 @@ describe('Email Rate Limiter', () => {
 
 			// dynamic import because useEnv is accessed in the file root
 			const { useEmailRateLimiterQueue } = await import('./rate-limiter.js');
-			
+
 			await expect(useEmailRateLimiterQueue()).resolves.toBeUndefined();
 		});
-		
+
 		test('should be able to consume all points without error', async () => {
 			vi.mocked(useEnv).mockReturnValue({
 				EMAIL_LIMITER_ENABLED: 'true',
@@ -39,13 +39,11 @@ describe('Email Rate Limiter', () => {
 			const { useEmailRateLimiterQueue } = await import('./rate-limiter.js');
 
 			// consume 3 points
-			await expect(Promise.all([
-				useEmailRateLimiterQueue(),
-				useEmailRateLimiterQueue(),
-				useEmailRateLimiterQueue(),
-			])).resolves.not.toThrowError();
+			await expect(
+				Promise.all([useEmailRateLimiterQueue(), useEmailRateLimiterQueue(), useEmailRateLimiterQueue()]),
+			).resolves.not.toThrowError();
 		});
-		
+
 		test('should throw an error after all points have been consumed', async () => {
 			vi.mocked(useEnv).mockReturnValue({
 				EMAIL_LIMITER_ENABLED: 'true',
@@ -58,14 +56,16 @@ describe('Email Rate Limiter', () => {
 			const { useEmailRateLimiterQueue } = await import('./rate-limiter.js');
 
 			// consume 4 points
-			await expect(Promise.all([
-				useEmailRateLimiterQueue(),
-				useEmailRateLimiterQueue(),
-				useEmailRateLimiterQueue(),
-				useEmailRateLimiterQueue(),
-			])).rejects.toThrowError(/^Email sending limit exceeded\./);
+			await expect(
+				Promise.all([
+					useEmailRateLimiterQueue(),
+					useEmailRateLimiterQueue(),
+					useEmailRateLimiterQueue(),
+					useEmailRateLimiterQueue(),
+				]),
+			).rejects.toThrowError(/^Email sending limit exceeded\./);
 		});
-		
+
 		test('should be able to fill the queue without error', async () => {
 			vi.mocked(useEnv).mockReturnValue({
 				EMAIL_LIMITER_ENABLED: 'true',
@@ -78,13 +78,11 @@ describe('Email Rate Limiter', () => {
 			const { useEmailRateLimiterQueue } = await import('./rate-limiter.js');
 
 			// consume 1 point and fill the queue
-			await expect(Promise.all([
-				useEmailRateLimiterQueue(),
-				useEmailRateLimiterQueue(),
-				useEmailRateLimiterQueue(),
-			])).resolves.not.toThrowError();
+			await expect(
+				Promise.all([useEmailRateLimiterQueue(), useEmailRateLimiterQueue(), useEmailRateLimiterQueue()]),
+			).resolves.not.toThrowError();
 		});
-		
+
 		test('should throw an error after the queue is full', async () => {
 			vi.mocked(useEnv).mockReturnValue({
 				EMAIL_LIMITER_ENABLED: 'true',
@@ -97,31 +95,32 @@ describe('Email Rate Limiter', () => {
 			const { useEmailRateLimiterQueue } = await import('./rate-limiter.js');
 
 			// consume 1 point and overflow the queue
-			await expect(Promise.all([
-				useEmailRateLimiterQueue(),
-				useEmailRateLimiterQueue(),
-				useEmailRateLimiterQueue(),
-				useEmailRateLimiterQueue(),
-			])).rejects.toThrowError(/^Email sending limit exceeded\./);
+			await expect(
+				Promise.all([
+					useEmailRateLimiterQueue(),
+					useEmailRateLimiterQueue(),
+					useEmailRateLimiterQueue(),
+					useEmailRateLimiterQueue(),
+				]),
+			).rejects.toThrowError(/^Email sending limit exceeded\./);
 		});
-		
+
 		test('should include a custom message in the error', async () => {
 			vi.mocked(useEnv).mockReturnValue({
 				EMAIL_LIMITER_ENABLED: 'true',
 				EMAIL_LIMITER_POINTS: 1,
 				EMAIL_LIMITER_DURATION: 1,
 				EMAIL_LIMITER_QUEUE_SIZE: 0,
-				EMAIL_LIMITER_ERROR_MESSAGE: 'My custom message.'
+				EMAIL_LIMITER_ERROR_MESSAGE: 'My custom message.',
 			});
 
 			// dynamic import because useEnv is accessed in the file root
 			const { useEmailRateLimiterQueue } = await import('./rate-limiter.js');
 
 			// consume 2 points
-			await expect(Promise.all([
-				useEmailRateLimiterQueue(),
-				useEmailRateLimiterQueue(),
-			])).rejects.toThrowError(/^Email sending limit exceeded\..*My custom message\.$/);
+			await expect(Promise.all([useEmailRateLimiterQueue(), useEmailRateLimiterQueue()])).rejects.toThrowError(
+				/^Email sending limit exceeded\..*My custom message\.$/,
+			);
 		});
 	});
 });
