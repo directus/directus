@@ -3,6 +3,7 @@ import type {
 	FUNCTIONS,
 	GEOMETRY_FORMATS,
 	GEOMETRY_TYPES,
+	RELATIONAL_TYPES,
 	LOCAL_TYPES,
 	TYPES,
 	NUMERIC_TYPES,
@@ -29,6 +30,8 @@ export type NumericType = (typeof NUMERIC_TYPES)[number];
 export type GeometryType = (typeof GEOMETRY_TYPES)[number] | 'GeometryCollection' | undefined;
 
 export type GeometryFormat = (typeof GEOMETRY_FORMATS)[number];
+
+export type RelationalType = (typeof RELATIONAL_TYPES)[number];
 
 export type FieldMeta = {
 	id: number;
