@@ -333,6 +333,12 @@ export class ExportService {
 
 				let readCount = 0;
 
+				// Write UTF-8 BOM bytes for CSV Excel compatibility
+				if (format === 'csv' && batchesRequired > 0) {
+					const bom = Buffer.from([0xEF, 0xBB, 0xBF]);
+					await appendFile(tmpFile.path, bom);
+				}
+
 				for (let batch = 0; batch < batchesRequired; batch++) {
 					let limit = env['EXPORT_BATCH_SIZE'] as number;
 
@@ -507,7 +513,11 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 
 			let string = new CSVParser(transformOptions).parse(input);
 
-			if (options?.includeHeader === false) {
+			// Add UTF-8 BOM for Excel compatibility with special characters
+			if (options?.includeHeader !== false) {
+				// Prepend BOM as a string - will be encoded properly when sent as response
+				string = '\ufeff' + string;
+			} else {
 				string = '\n' + string;
 			}
 
