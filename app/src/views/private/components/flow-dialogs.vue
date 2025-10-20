@@ -1,6 +1,22 @@
 <script setup lang="ts">
-import { FlowDialogsContext } from '@/composables/use-flows';
 import { useI18n } from 'vue-i18n';
+
+interface FlowDialogsContext {
+	confirmButtonCTA: string;
+	confirmDialogDetails: {
+		description: any;
+		fields: any;
+	} | null;
+	confirmUnsavedChanges: (flowId: string) => void;
+	confirmCustomDialog: (flowId: string) => void;
+	confirmValues: { [key: string]: any } | null;
+	currentFlowId: string | null;
+	displayCustomConfirmDialog: boolean;
+	displayUnsavedChangesDialog: boolean;
+	isConfirmButtonDisabled: boolean;
+	resetConfirm: () => void;
+	updateFieldValues: (event: any) => void;
+}
 
 const { t } = useI18n();
 
@@ -9,10 +25,10 @@ defineProps<FlowDialogsContext>();
 
 <template>
 	<v-dialog
-		:model-value="displayUnsavedChangesDialog.value"
+		:model-value="displayUnsavedChangesDialog"
 		keep-behind
 		@esc="resetConfirm"
-		@apply="confirmUnsavedChanges(currentFlowId.value!)"
+		@apply="confirmUnsavedChanges(currentFlowId!)"
 	>
 		<v-card>
 			<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
@@ -22,7 +38,7 @@ defineProps<FlowDialogsContext>();
 				<v-button secondary @click="resetConfirm">
 					{{ t('cancel') }}
 				</v-button>
-				<v-button @click="confirmUnsavedChanges(currentFlowId.value!)">
+				<v-button @click="confirmUnsavedChanges(currentFlowId!)">
 					{{ confirmButtonCTA }}
 				</v-button>
 			</v-card-actions>
@@ -30,18 +46,18 @@ defineProps<FlowDialogsContext>();
 	</v-dialog>
 
 	<v-dialog
-		:model-value="displayCustomConfirmDialog.value"
+		:model-value="displayCustomConfirmDialog"
 		keep-behind
 		@esc="resetConfirm"
-		@apply="confirmCustomDialog(currentFlowId.value!)"
+		@apply="confirmCustomDialog(currentFlowId!)"
 	>
 		<v-card>
-			<v-card-title>{{ confirmDialogDetails.value?.description ?? t('run_flow_confirm') }}</v-card-title>
+			<v-card-title>{{ confirmDialogDetails?.description ?? t('run_flow_confirm') }}</v-card-title>
 			<v-card-text class="confirm-form">
 				<v-form
-					v-if="confirmDialogDetails.value?.fields.length"
-					:fields="confirmDialogDetails.value.fields"
-					:model-value="confirmValues.value"
+					v-if="confirmDialogDetails?.fields.length"
+					:fields="confirmDialogDetails.fields"
+					:model-value="confirmValues"
 					autofocus
 					primary-key="+"
 					@update:model-value="updateFieldValues($event)"
@@ -52,7 +68,7 @@ defineProps<FlowDialogsContext>();
 				<v-button secondary @click="resetConfirm">
 					{{ t('cancel') }}
 				</v-button>
-				<v-button :disabled="isConfirmButtonDisabled.value" @click="confirmCustomDialog(currentFlowId.value!)">
+				<v-button :disabled="isConfirmButtonDisabled" @click="confirmCustomDialog(currentFlowId!)">
 					{{ confirmButtonCTA }}
 				</v-button>
 			</v-card-actions>

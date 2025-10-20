@@ -10,30 +10,13 @@ import { useI18n } from 'vue-i18n';
 import { useNotificationsStore } from '@/stores/notifications';
 import formatTitle from '@directus/format-title';
 
-interface UseFlowsOptions {
+export interface UseFlowsOptions {
 	collection: Ref<string>;
 	primaryKey?: ComputedRef<PrimaryKey | null>;
 	selection?: Ref<Item[]>;
 	location: Ref<'collection' | 'item'>;
 	hasEdits?: Ref<boolean>;
 	onRefreshCallback: () => void;
-}
-
-export interface FlowDialogsContext {
-	confirmButtonCTA: ComputedRef<string>;
-	confirmDialogDetails: ComputedRef<{
-		description: any;
-		fields: any;
-	} | null>;
-	confirmUnsavedChanges: (flowId: string) => void;
-	confirmCustomDialog: (flowId: string) => void;
-	confirmValues: Ref<Record<string, any> | null>;
-	currentFlowId: Ref<string | null>;
-	displayCustomConfirmDialog: ComputedRef<boolean>;
-	displayUnsavedChangesDialog: ComputedRef<boolean>;
-	isConfirmButtonDisabled: ComputedRef<boolean>;
-	resetConfirm: () => void;
-	updateFieldValues: (event: any) => void;
 }
 
 const runManualFlowSymbol = 'runManualFlow';
@@ -70,15 +53,15 @@ export function useFlows(options: UseFlowsOptions) {
 	});
 
 	const flowDialogsContext = computed(() => ({
-		confirmButtonCTA,
-		confirmDialogDetails,
+		confirmButtonCTA: confirmButtonCTA.value,
+		confirmDialogDetails: confirmDialogDetails.value,
 		confirmUnsavedChanges,
 		confirmCustomDialog,
-		confirmValues,
-		currentFlowId,
-		displayCustomConfirmDialog,
-		displayUnsavedChangesDialog,
-		isConfirmButtonDisabled,
+		confirmValues: confirmValues.value,
+		currentFlowId: currentFlowId.value,
+		displayCustomConfirmDialog: displayCustomConfirmDialog.value,
+		displayUnsavedChangesDialog: displayUnsavedChangesDialog.value,
+		isConfirmButtonDisabled: isConfirmButtonDisabled.value,
 		resetConfirm,
 		updateFieldValues,
 	}));
