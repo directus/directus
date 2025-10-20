@@ -77,9 +77,7 @@ export class AssetsService {
 	}
 
 	async getZip(files: { id: string; folder?: string }[]) {
-		const archive = archiver('zip', {
-			forceZip64: true,
-		});
+		const archive = archiver('zip');
 
 		const complete = async () => {
 			const storage = await getStorage();
