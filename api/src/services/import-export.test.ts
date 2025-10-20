@@ -315,17 +315,23 @@ describe('createErrorTracker', () => {
 	test('groups errors with same field and type', () => {
 		const tracker = createErrorTracker();
 
-		tracker.addCapturedError({
-			code: 'FAILED_VALIDATION',
-			message: 'test',
-			extensions: { field: 'email', type: 'nnull' },
-		}, 1);
+		tracker.addCapturedError(
+			{
+				code: 'FAILED_VALIDATION',
+				message: 'test',
+				extensions: { field: 'email', type: 'nnull' },
+			},
+			1,
+		);
 
-		tracker.addCapturedError({
-			code: 'FAILED_VALIDATION',
-			message: 'test',
-			extensions: { field: 'email', type: 'nnull' },
-		}, 3);
+		tracker.addCapturedError(
+			{
+				code: 'FAILED_VALIDATION',
+				message: 'test',
+				extensions: { field: 'email', type: 'nnull' },
+			},
+			3,
+		);
 
 		const errors: any[] = tracker.buildFinalErrors();
 
@@ -340,17 +346,23 @@ describe('createErrorTracker', () => {
 	test('separates errors with different substring values', () => {
 		const tracker = createErrorTracker();
 
-		tracker.addCapturedError({
-			code: 'FAILED_VALIDATION',
-			message: 'test',
-			extensions: { field: 'email', type: 'contains', substring: 'later' },
-		}, 1);
+		tracker.addCapturedError(
+			{
+				code: 'FAILED_VALIDATION',
+				message: 'test',
+				extensions: { field: 'email', type: 'contains', substring: 'later' },
+			},
+			1,
+		);
 
-		tracker.addCapturedError({
-			code: 'FAILED_VALIDATION',
-			message: 'test',
-			extensions: { field: 'email', type: 'contains', substring: 'now' },
-		}, 2);
+		tracker.addCapturedError(
+			{
+				code: 'FAILED_VALIDATION',
+				message: 'test',
+				extensions: { field: 'email', type: 'contains', substring: 'now' },
+			},
+			2,
+		);
 
 		const errors: any[] = tracker.buildFinalErrors();
 
@@ -365,17 +377,23 @@ describe('createErrorTracker', () => {
 		const tracker = createErrorTracker();
 		const code = 'FAILED_VALIDATION';
 
-		tracker.addCapturedError({
-			code,
-			message: 'test',
-			extensions: { field: 'age', type: 'eq', valid: 18 },
-		}, 1);
+		tracker.addCapturedError(
+			{
+				code,
+				message: 'test',
+				extensions: { field: 'age', type: 'eq', valid: 18 },
+			},
+			1,
+		);
 
-		tracker.addCapturedError({
-			code,
-			message: 'test',
-			extensions: { field: 'age', type: 'eq', valid: 21 },
-		}, 2);
+		tracker.addCapturedError(
+			{
+				code,
+				message: 'test',
+				extensions: { field: 'age', type: 'eq', valid: 21 },
+			},
+			2,
+		);
 
 		const errors: any[] = tracker.buildFinalErrors();
 
@@ -388,15 +406,21 @@ describe('createErrorTracker', () => {
 		const tracker = createErrorTracker();
 		const code = 'INVALID_FOREIGN_KEY';
 
-		tracker.addCapturedError({
-			code,
-			message: 'test',
-		}, 1);
+		tracker.addCapturedError(
+			{
+				code,
+				message: 'test',
+			},
+			1,
+		);
 
-		tracker.addCapturedError({
-			code,
-			message: 'test',
-		}, 2);
+		tracker.addCapturedError(
+			{
+				code,
+				message: 'test',
+			},
+			2,
+		);
 
 		const errors: any[] = tracker.buildFinalErrors();
 
@@ -410,11 +434,14 @@ describe('createErrorTracker', () => {
 		const tracker = createErrorTracker();
 
 		for (let i = 1; i <= 10; i++) {
-			tracker.addCapturedError({
-				code: 'FAILED_VALIDATION',
-				message: 'test',
-				extensions: { field: 'email', type: 'nnull' },
-			}, i);
+			tracker.addCapturedError(
+				{
+					code: 'FAILED_VALIDATION',
+					message: 'test',
+					extensions: { field: 'email', type: 'nnull' },
+				},
+				i,
+			);
 		}
 
 		const errors: any[] = tracker.buildFinalErrors();
@@ -430,11 +457,14 @@ describe('createErrorTracker', () => {
 		const tracker = createErrorTracker();
 
 		for (let i = 1; i <= 1500; i++) {
-			tracker.addCapturedError({
-				code: 'FAILED_VALIDATION',
-				message: 'test',
-				extensions: { field: 'email', type: 'nnull' },
-			}, i);
+			tracker.addCapturedError(
+				{
+					code: 'FAILED_VALIDATION',
+					message: 'test',
+					extensions: { field: 'email', type: 'nnull' },
+				},
+				i,
+			);
 
 			if (tracker.isLimitReached()) break;
 		}
