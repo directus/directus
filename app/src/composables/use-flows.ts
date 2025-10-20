@@ -214,7 +214,7 @@ export function useFlows(options: UseFlowsOptions) {
 				if (
 					location.value === 'collection' &&
 					currentFlow.value.options?.requireSelection === false &&
-					(selection.value.length || 0) === 0
+					selection.value.length === 0
 				) {
 					await api.post(`/flows/trigger/${flowId}`, {
 						...(confirmValues.value ?? {}),
