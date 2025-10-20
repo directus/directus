@@ -59,8 +59,6 @@ const formattedErrors = computed(() => {
 	}));
 });
 
-const errorSummary = computed(() => t('import_data_validation_errors_notice'));
-
 function formatRows(rows: Array<ImportRowLines | ImportRowRange>): string {
 	return rows
 		.map((r) => {
@@ -79,62 +77,50 @@ function closeDialog() {
 	<v-dialog v-model="modelValue" persistent>
 		<v-card>
 			<v-card-title>{{ t('import_data_errors') }}</v-card-title>
-			<div class="dialog-content">
-				<v-notice type="danger">
-					<div>
-						<p>{{ errorSummary }}</p>
-						<ul class="validation-errors-list">
-							<li v-for="(error, index) in formattedErrors" :key="index" class="validation-error">
-								<strong v-if="error.rowCount > 0">
-									{{
-										$t('import_data_error_row', {
-											count: error.rowCount,
-											rows: error.formattedRows,
-											field: error?.fieldName ? ` (${error.fieldName})` : '',
-										})
-									}}
-								</strong>
+			<v-card-text>
+				<v-notice type="danger" multiline>
+					<p>{{ $t('import_data_validation_errors_notice') }}</p>
+					<ul class="validation-errors-list">
+						<li v-for="(error, index) in formattedErrors" :key="index" class="validation-error">
+							<strong v-if="error.rowCount > 0">
+								{{
+									$t('import_data_error_row', {
+										count: error.rowCount,
+										rows: error.formattedRows,
+										field: error?.fieldName ? ` (${error.fieldName})` : '',
+									})
+								}}
+							</strong>
 
-								<template v-if="error.customValidationMessage">
-									{{ error.customValidationMessage }}
-									<v-icon v-tooltip="error.message" small right name="help" />
-								</template>
-								<template v-else>
-									<span>{{ error.message }}</span>
-								</template>
-							</li>
-						</ul>
-					</div>
+							<template v-if="error.customValidationMessage">
+								{{ error.customValidationMessage }}
+								<v-icon v-tooltip="error.message" small right name="help" />
+							</template>
+							<template v-else>
+								<span>{{ error.message }}</span>
+							</template>
+						</li>
+					</ul>
 				</v-notice>
-			</div>
+			</v-card-text>
 			<v-card-actions>
-				<v-button @click="closeDialog">{{ t('dismiss') }}</v-button>
+				<v-button @click="closeDialog">{{ $t('dismiss') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
 </template>
 
 <style lang="scss" scoped>
-.dialog-content {
-	padding: var(--v-card-padding, 16px);
-	padding-block-start: 12px;
-	padding-block-end: 0 !important;
+.v-card-text {
+	padding-block: 12px 0;
 }
 
 .validation-errors-list {
-	margin-block-start: 8px;
 	padding-inline-start: 20px;
 	list-style-type: disc;
 
 	.validation-error {
-		&:last-child {
-			margin-block-end: 0;
-		}
-
-		.v-icon {
-			vertical-align: text-top;
-			margin-inline-start: 0 !important;
-		}
+		margin-block-start: 4px;
 	}
 }
 </style>
