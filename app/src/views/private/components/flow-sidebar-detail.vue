@@ -67,15 +67,4 @@ const { runManualFlow } = injectRunManualFlow();
 		margin-inline-end: 8px;
 	}
 }
-
-.confirm-form {
-	--theme--form--column-gap: 24px;
-	--theme--form--row-gap: 24px;
-
-	margin-block-start: var(--v-card-padding, 16px);
-
-	:deep(.type-label) {
-		font-size: 1rem;
-	}
-}
 </style>
