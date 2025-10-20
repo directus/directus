@@ -1,6 +1,6 @@
 import type { AbstractServiceOptions, OwnerInformation } from '@directus/types';
-import { ItemsService } from './items.js';
 import { useLogger } from '../logger/index.js';
+import { ItemsService } from './items.js';
 
 export class SettingsService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {

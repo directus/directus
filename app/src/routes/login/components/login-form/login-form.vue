@@ -3,6 +3,7 @@ import { RequestError } from '@/api';
 import { login } from '@/auth';
 import { translateAPIError } from '@/lang';
 import { useUserStore } from '@/stores/user';
+import { EMAIL_REGEX } from '@directus/constants';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -57,9 +58,8 @@ const errorFormatted = computed(() => {
 
 async function onSubmit() {
 	// Simple RegEx, not for validation, but to prevent unnecessary login requests when the value is clearly invalid
-	const emailRegex = /^\S+@\S+$/;
 
-	if (email.value === null || !emailRegex.test(email.value) || password.value === null) {
+	if (email.value === null || !EMAIL_REGEX.test(email.value) || password.value === null) {
 		error.value = 'INVALID_PAYLOAD';
 		return;
 	}
@@ -106,14 +106,8 @@ async function onSubmit() {
 		<interface-system-input-password :value="password" autocomplete="current-password" @input="password = $event" />
 
 		<transition-expand>
-			<v-input
-				v-if="requiresTFA"
-				v-model="otp"
-				type="text"
-				autocomplete="one-time-code"
-				:placeholder="t('otp')"
-				autofocus
-			/>
+			<v-input v-if="requiresTFA" v-model="otp" type="text" autocomplete="one-time-code" :placeholder="t('otp')"
+				autofocus />
 		</transition-expand>
 
 		<v-notice v-if="error" type="warning">

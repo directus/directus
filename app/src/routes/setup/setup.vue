@@ -11,6 +11,7 @@ import { login } from '@/auth';
 import { useRouter } from 'vue-router';
 import { translateAPIError } from '@/lang';
 import { SetupForm as Form } from '@directus/types';
+import { EMAIL_REGEX } from '@directus/constants';
 
 const { t } = useI18n();
 
@@ -24,12 +25,11 @@ const router = useRouter();
 const fields = useFormFields(true, form);
 const errors = ref<Record<string, any>[]>([]);
 const error = ref<any>(null);
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 async function launch() {
 	errors.value = validateItem(form.value, unref(fields), true);
 
-	if (!emailRegex.test(form.value.email ?? '')) {
+	if (!EMAIL_REGEX.test(form.value.email ?? '')) {
 		errors.value.push({
 			field: 'email',
 			path: [],
