@@ -256,9 +256,9 @@ export function useFlows(options: UseFlowsOptions) {
 }
 
 /**
- * In order to invoke injectRunManualFlow within a component, the parent component must first invoke provideRunManualFlow
+ * In order to invoke injectRunManualFlow within a component, a parent component must first invoke `provideRunManualFlow()`.
  *
- * The parent component must also render the <flow-dialogs> component or the confirmation dialogs will not be reachable
+ * This parent component must also render the <flow-dialogs> component or the confirmation dialogs will not be reachable.
  */
 export function injectRunManualFlow() {
 	return inject(runManualFlowSymbol) as {
