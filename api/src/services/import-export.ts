@@ -335,7 +335,7 @@ export class ExportService {
 
 				// Write UTF-8 BOM bytes for CSV Excel compatibility
 				if (format === 'csv' && batchesRequired > 0) {
-					const bom = Buffer.from([0xEF, 0xBB, 0xBF]);
+					const bom = Buffer.from([0xef, 0xbb, 0xbf]);
 					await appendFile(tmpFile.path, bom);
 				}
 
