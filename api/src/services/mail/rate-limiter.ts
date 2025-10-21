@@ -24,7 +24,8 @@ export async function useEmailRateLimiterQueue() {
 			throw new EmailLimitExceededError({
 				points: 'RATE_LIMITER_EMAIL_POINTS' in env ? Number(env['RATE_LIMITER_EMAIL_POINTS']) : undefined,
 				duration: 'RATE_LIMITER_EMAIL_DURATION' in env ? Number(env['RATE_LIMITER_EMAIL_DURATION']) : undefined,
-				message: 'RATE_LIMITER_EMAIL_ERROR_MESSAGE' in env ? String(env['RATE_LIMITER_EMAIL_ERROR_MESSAGE']) : undefined,
+				message:
+					'RATE_LIMITER_EMAIL_ERROR_MESSAGE' in env ? String(env['RATE_LIMITER_EMAIL_ERROR_MESSAGE']) : undefined,
 			});
 		}
 
