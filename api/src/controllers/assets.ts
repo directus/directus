@@ -24,6 +24,50 @@ const env = useEnv();
 router.use(useCollection('directus_files'));
 
 router.get(
+	'/folder/:id',
+	asyncHandler(async (req, res) => {
+		const service = new AssetsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const files = await service.getFileHierarchy(String(req.params['id']));
+
+		const { archive, complete } = await service.getZip(files);
+
+		res.setHeader('Content-Type', 'application/zip');
+		res.setHeader('Content-Disposition', `attachment; filename="folder-${new Date().toISOString()}.zip"`);
+
+		archive.pipe(res);
+
+		await complete();
+	}),
+);
+
+router.get(
+	'/files/:pks',
+	asyncHandler(async (req, res) => {
+		const service = new AssetsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const { archive, complete } = await service.getZip(
+			String(req.params['pks'])
+				.split(',')
+				.map((s) => ({ id: s })),
+		);
+
+		res.setHeader('Content-Type', 'application/zip');
+		res.setHeader('Content-Disposition', `attachment; filename="files-${new Date().toISOString()}.zip"`);
+
+		archive.pipe(res);
+
+		await complete();
+	}),
+);
+
+router.get(
 	'/:pk/:filename?',
 	// Validate query params
 	asyncHandler(async (req, res, next) => {

@@ -24,6 +24,7 @@ import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
 import { storeToRefs } from 'pinia';
+import { getAssetUrl, getFilesUrl } from '@/utils/get-asset-url';
 
 type Item = {
 	[field: string]: any;
@@ -42,7 +43,7 @@ const notificationsStore = useNotificationsStore();
 const { folders } = useFolders();
 
 const layoutRef = ref();
-const selection = ref<Item[]>([]);
+const selection = ref<string[]>([]);
 
 const userStore = useUserStore();
 
@@ -476,6 +477,18 @@ function useFileUpload() {
 					@click="batchEditActive = true"
 				>
 					<v-icon name="edit" outline />
+				</v-button>
+
+				<v-button
+					v-if="selection.length > 0"
+					v-tooltip.bottom="t('download')"
+					rounded
+					icon
+					secondary
+					download
+					:href="selection.length === 1 ? getAssetUrl(selection[0]!) : getFilesUrl(selection)"
+				>
+					<v-icon name="download" outline />
 				</v-button>
 
 				<v-button
