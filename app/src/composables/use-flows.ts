@@ -67,6 +67,7 @@ export function useFlows(options: UseFlowsOptions) {
 	}));
 
 	const confirmButtonCTA = computed(() => {
+		if (displayUnsavedChangesDialog.value) return t('run_flow_anyway');
 		if (location === 'item') return t('run_flow_on_current');
 		if (selection.value.length === 0) return t('run_flow');
 		return t('run_flow_on_selected', selection.value.length);
