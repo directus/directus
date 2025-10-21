@@ -291,8 +291,16 @@ function emitValue() {
 	}
 
 	&.active {
-		inline-size: 300px;
+		inline-size: 100%;
 		border-color: var(--theme--form--field--input--border-color-focus);
+
+		@media (width > 400px) {
+			inline-size: 150px;
+		}
+
+		@media (width > 640px) {
+			inline-size: 200px;
+		}
 
 		input {
 			opacity: 1;
@@ -300,14 +308,18 @@ function emitValue() {
 	}
 
 	&.filter-active {
-		inline-size: 200px;
+		inline-size: 100%;
 
 		.icon-filter {
 			--v-icon-color: var(--theme--primary);
 		}
 
+		@media (width > 400px) {
+			inline-size: 150px;
+		}
+
 		@media (width > 640px) {
-			inline-size: 250px;
+			inline-size: 200px;
 		}
 
 		@media (min-width: 960px) {

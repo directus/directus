@@ -37,45 +37,47 @@ const showSidebarToggle = computed(() => {
 
 <template>
 	<header class="header-bar" :class="{shadow}">
-		<VIcon v-if="showNavToggle" small class="nav-toggle" name="left_panel_open" clickable @click="navBarStore.expand" />
+		<div class="primary">
+			<VIcon v-if="showNavToggle" v-tooltip.bottom="$t('toggle_navigation')" small class="nav-toggle" name="left_panel_open" clickable @click="navBarStore.expand" />
 
-		<PrivateViewHeaderBarIcon v-if="icon || showBack" :icon :show-back :icon-color />
+			<PrivateViewHeaderBarIcon v-if="icon || showBack" class="icon" :icon :show-back :icon-color />
 
-		<div class="title-outer-prepend">
-			<slot name="title-outer:prepend" />
-		</div>
-
-		<div class="title-container">
-			<div class="headline">
-				<slot name="headline" />
+			<div class="title-outer-prepend">
+				<slot name="title-outer:prepend" />
 			</div>
 
-			<div class="title">
-				<slot name="title">
-					<slot name="title:prepend" />
+			<div class="title-container">
+				<div class="headline">
+					<slot name="headline" />
+				</div>
 
-					<h1 class="type-title">
-						<VTextOverflow :text="title" placement="bottom">{{ title }}</VTextOverflow>
-					</h1>
+				<div class="title">
+					<slot name="title">
+						<slot name="title:prepend" />
 
-					<slot name="title:append" />
-				</slot>
+						<h1 class="type-title">
+							<VTextOverflow :text="title" placement="bottom">{{ title }}</VTextOverflow>
+						</h1>
+
+						<slot name="title:append" />
+					</slot>
+				</div>
 			</div>
+
+			<div class="title-outer-append">
+				<slot name="title-outer:append" />
+			</div>
+
+			<div class="spacer" />
+
+			<VIcon v-if="showSidebarToggle" class="sidebar-toggle" small name="right_panel_open" clickable @click="sidebarStore.expand" />
 		</div>
 
-		<div class="title-outer-append">
-			<slot name="title-outer:append" />
-		</div>
-
-		<div class="spacer" />
-
-		<PrivateViewHeaderBarActions>
+		<PrivateViewHeaderBarActions class="actions">
 			<template #prepend><slot name="actions:prepend" /></template>
 			<slot name="actions" />
 			<template #append><slot name="actions:append" /></template>
 		</PrivateViewHeaderBarActions>
-
-		<VIcon v-if="showSidebarToggle" name="menu_open" clickable @click="sidebarStore.expand" />
 	</header>
 </template>
 
@@ -86,17 +88,40 @@ const showSidebarToggle = computed(() => {
 	z-index: 4;
 	background-color: var(--theme--header--background);
 	inline-size: 100%;
-	block-size: calc(var(--header-bar-height));
-	display: flex;
-	align-items: center;
-	gap: 12px;
 	padding-inline: var(--content-padding);
 	box-shadow: none;
 	border-block-end: var(--theme--header--border-width) solid var(--theme--header--border-color);
+	block-size: var(--header-bar-height);
+	grid-template-rows: repeat(2, 1fr);
 
 	&.shadow {
 		box-shadow: var(--theme--header--box-shadow);
 		transition: box-shadow var(--fast) var(--transition);
+	}
+
+	@media (width > 400px) {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+}
+
+.primary {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding-block: 12px;
+
+	@media (width > 400px) {
+		display: contents;
+	}
+}
+
+.icon {
+	display: none;
+
+	@media (width > 640px) {
+		display: flex;
 	}
 }
 
@@ -122,5 +147,9 @@ const showSidebarToggle = computed(() => {
 .spacer {
 	flex-basis: 0;
 	flex-grow: 1;
+}
+
+.sidebar-toggle {
+	order: 1;
 }
 </style>

@@ -502,7 +502,7 @@ function useCollectionRoute() {
 		v-model:split-view="splitView"
 		:class="{ 'has-content-versioning': shouldShowVersioning }"
 		:split-view-min-width="310"
-		:title="'RIJK'"
+		:title
 		show-back
 	>
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>

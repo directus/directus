@@ -28,6 +28,10 @@ defineProps<{
 </template>
 
 <style scoped>
+.back-button, .icon {
+	flex-shrink: 0;
+}
+
 .back-button {
 	--v-button-background-color: var(--theme--background-normal);
 	--v-button-color-active: var(--theme--foreground);
