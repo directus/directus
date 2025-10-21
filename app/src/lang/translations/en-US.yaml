@@ -2211,6 +2211,8 @@ interfaces:
   input-password:
     input-password: Input Password
     description: Password input with toggle to hide value
+  flow-select:
+    flow-select: Flow Select
 displays:
   translations:
     translations: Translations

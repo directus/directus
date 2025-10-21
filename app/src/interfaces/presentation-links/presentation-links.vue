@@ -124,7 +124,7 @@ const { runManualFlow } = injectRunManualFlow();
 	<div class="presentation-links">
 		<template v-for="(link, index) in linksParsed">
 			<v-button
-				v-if="link.actionType === 'link'"
+				v-if="link.actionType === 'url' && link.href"
 				:key="`url-${index}`"
 				class="action"
 				:class="[link.type]"

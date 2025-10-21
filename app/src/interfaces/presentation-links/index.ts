@@ -72,14 +72,14 @@ export default defineInterface({
 							type: 'string',
 							name: '$t:interfaces.presentation-links.action_type',
 							schema: {
-								default_value: 'link',
+								default_value: 'url',
 							},
 							meta: {
 								interface: 'select-dropdown',
 								options: {
 									choices: [
-										{ text: 'Link', value: 'link' },
-										{ text: 'Flow', value: 'flow' },
+										{ text: '$t:url', value: 'url' },
+										{ text: '$t:flow', value: 'flow' },
 									],
 								},
 							},
@@ -120,7 +120,7 @@ export default defineInterface({
 									{
 										rule: {
 											actionType: {
-												_eq: 'link',
+												_eq: 'url',
 											},
 										},
 										hidden: true,

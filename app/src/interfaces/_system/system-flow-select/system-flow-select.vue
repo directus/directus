@@ -16,6 +16,7 @@ const flows = ref(flowsStore.flows.map((flow) => ({ name: flow.name, id: flow.id
 		:items="flows"
 		:item-text="'name'"
 		:item-value="'id'"
+		show-deselect
 		@update:model-value="$emit('input', $event)"
 	/>
 </template>
