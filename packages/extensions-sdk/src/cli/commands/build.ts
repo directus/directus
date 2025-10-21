@@ -20,7 +20,7 @@ import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
 import path from 'path';
-import type { RollupError, RollupOptions, OutputOptions as RollupOutputOptions } from 'rollup';
+import type { RollupError, RollupOptions, OutputOptions as RollupOutputOptions, Plugin } from 'rollup';
 import { rollup, watch as rollupWatch } from 'rollup';
 import esbuild from 'rollup-plugin-esbuild';
 import styles from 'rollup-plugin-styler';
@@ -535,9 +535,11 @@ function getRollupOptions({
 		external: mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS,
 		plugins: [
 			typeof input !== 'string' ? virtual(input) : null,
-			mode === 'browser' ? vue({ isProduction: true }) : null,
+			// @ts-ignore - @vitejs/plugin-vue@6.0.1 types not yet compatible with Rollup 4.52+ (missing 'environment' property). Remove cast when plugin is updated.
+			mode === 'browser' ? (vue({ isProduction: true }) as Plugin) : null,
 			esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }),
-			mode === 'browser' ? styles() : null,
+			// @ts-ignore - rollup-plugin-styler@2.0.0 types not yet compatible with Rollup 4.52+ (missing 'environment' property). Remove cast when plugin is updated.
+			mode === 'browser' ? (styles() as Plugin) : null,
 			...plugins,
 			nodeResolve({ browser: mode === 'browser', preferBuiltins: mode === 'node' }),
 			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
@@ -551,7 +553,7 @@ function getRollupOptions({
 					})
 				: null,
 			minify ? terser() : null,
-		],
+		].filter(Boolean),
 		onwarn(warning, warn) {
 			if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.ids?.every((id) => /\bnode_modules\b/.test(id))) return;
 
