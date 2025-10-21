@@ -487,6 +487,7 @@ revision_delta_by: '{date} by {user}'
 updated_in_revision: Updated in this Revision
 updated_in_revision_matches_latest: Updated in this Revision but matches Latest
 differences_count: 'No Differences | 1 Difference | {count} Differences'
+revision_delta_count: 'No Updated Fields | 1 Updated Field | {count} Updated Fields'
 presentation_text_values_cannot_be_reimported: 'Uses presentation text, values can not be re-imported.'
 download_page_as_csv: 'Download Page as CSV'
 download_page_as_csv_unsupported: This layout does not support downloading the current page.
