@@ -62,7 +62,7 @@ defineProps<FlowDialogsContext>();
 
 			<v-card-actions>
 				<v-button secondary @click="resetConfirm">
-					{{ t('cancel') }}
+					{{ $t('cancel') }}
 				</v-button>
 				<v-button :disabled="isConfirmButtonDisabled" @click="confirmCustomDialog(currentFlowId!)">
 					{{ confirmButtonCTA }}
