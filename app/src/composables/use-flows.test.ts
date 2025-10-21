@@ -313,18 +313,19 @@ describe('runManualFlow', () => {
 
 		vi.mocked(api.post).mockResolvedValue({});
 
-		const { runManualFlow, flowDialogsContext } = useFlows(useFlowsOptions);
+		const testOptions = {
+			...useFlowsOptions,
+			hasEdits: ref(false),
+		};
 
-		const { currentFlowId, confirmUnsavedChanges, confirmCustomDialog } = flowDialogsContext.value;
+		const { runManualFlow, flowDialogsContext } = useFlows(testOptions);
 
-		confirmUnsavedChanges(mockFlows[0]!.id);
-		confirmCustomDialog(mockFlows[0]!.id);
+		const { currentFlowId } = flowDialogsContext.value;
 
-		await runManualFlow(mockFlows[0]!.id);
+		await runManualFlow(mockFlows[4]!.id);
 
-		expect(api.post).toHaveBeenCalledWith(`/flows/trigger/${mockFlows[0]!.id}`, {
+		expect(api.post).toHaveBeenCalledWith(`/flows/trigger/${mockFlows[4]!.id}`, {
 			collection: 'test_collection',
-			keys: ['item_1'],
 		});
 
 		expect(currentFlowId).toBeNull();
@@ -343,18 +344,14 @@ describe('runManualFlow', () => {
 			...useFlowsOptions,
 			primaryKey: undefined,
 			selection: ref([{ id: 'item1' }, { id: 'item2' }]),
+			hasEdits: ref(false),
 		};
 
-		const { runManualFlow, flowDialogsContext } = useFlows(testOptions);
+		const { runManualFlow } = useFlows(testOptions);
 
-		const { confirmUnsavedChanges, confirmCustomDialog } = flowDialogsContext.value;
+		await runManualFlow(mockFlows[4]!.id);
 
-		confirmUnsavedChanges(mockFlows[0]!.id);
-		confirmCustomDialog(mockFlows[0]!.id);
-
-		await runManualFlow(mockFlows[0]!.id);
-
-		expect(api.post).toHaveBeenCalledWith(`/flows/trigger/${mockFlows[0]!.id}`, {
+		expect(api.post).toHaveBeenCalledWith(`/flows/trigger/${mockFlows[4]!.id}`, {
 			collection: 'test_collection',
 			keys: [{ id: 'item1' }, { id: 'item2' }],
 		});
