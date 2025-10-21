@@ -11,6 +11,7 @@ export type ComparisonData = {
 	base: Record<string, any>;
 	incoming: Record<string, any>;
 	selectableDeltas?: Revision[] | ContentVersion[];
+	revisionFields?: Set<string>;
 	comparisonType: 'version' | 'revision';
 	outdated?: boolean;
 	mainHash?: string;
@@ -45,6 +46,7 @@ export type NormalizedComparisonData = {
 	base: NormalizedItem;
 	incoming: NormalizedItem;
 	selectableDeltas: NormalizedItem[];
+	revisionFields?: Set<string>;
 	comparisonType: 'version' | 'revision';
 	outdated: boolean;
 	mainHash: string;
@@ -418,6 +420,7 @@ export function normalizeComparisonData(
 		base,
 		incoming,
 		selectableDeltas,
+		revisionFields: comparisonData.revisionFields,
 		comparisonType: comparisonData.comparisonType,
 		outdated: comparisonData.outdated || false,
 		mainHash: comparisonData.mainHash || '',

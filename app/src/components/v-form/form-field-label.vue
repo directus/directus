@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import type { FormField, ComparisonContext } from './types';
+import { useI18n } from 'vue-i18n';
 
 withDefaults(
 	defineProps<{
@@ -36,6 +36,11 @@ withDefaults(
 defineEmits(['toggle-batch', 'toggle-raw']);
 
 const { t } = useI18n();
+
+function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
+	if (isDifferentFromLatest) return t('updated_in_revision');
+	return t('updated_in_revision_matches_latest');
+}
 </script>
 
 <template>
@@ -48,7 +53,7 @@ const { t } = useI18n();
 				@update:model-value="$emit('toggle-batch', field)"
 			/>
 			<v-checkbox
-				v-if="comparison && comparison.side === 'incoming' && comparison.fields.has(field.field)"
+				v-if="comparison?.side === 'incoming' && comparison.fields.has(field.field)"
 				class="comparison-checkbox"
 				:model-value="comparisonActive"
 				:value="field.field"
@@ -67,7 +72,7 @@ const { t } = useI18n();
 				name="star"
 				filled
 			/>
-			<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
+			<v-chip v-if="badge" class="badge" x-small>{{ badge }}</v-chip>
 			<v-icon
 				v-if="!disabled && rawEditorEnabled"
 				v-tooltip="t('toggle_raw_editor')"
@@ -79,6 +84,15 @@ const { t } = useI18n();
 				clickable
 				@click.stop="$emit('toggle-raw', !rawEditorActive)"
 			/>
+			<v-chip
+				v-if="comparison?.side === 'incoming' && comparison.revisionFields?.has(field.field)"
+				v-tooltip="getUpdatedInRevisionTooltip(comparison.fields.has(field.field))"
+				class="updated-badge"
+				x-small
+				:label="false"
+			>
+				{{ $t('updated') }}
+			</v-chip>
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</button>
 	</div>
@@ -119,7 +133,7 @@ const { t } = useI18n();
 		}
 	}
 
-	.v-chip {
+	.badge {
 		margin: 0;
 		flex-shrink: 0;
 		margin-inline-start: 3px;
@@ -178,6 +192,14 @@ const { t } = useI18n();
 			background-color: var(--theme--primary-background);
 			border-radius: 50%;
 		}
+	}
+
+	.updated-badge {
+		--v-chip-background-color: var(--theme--success-background);
+		--v-chip-color: var(--theme--success-accent);
+
+		flex-shrink: 0;
+		margin-inline-start: 6px;
 	}
 
 	&.edited {
