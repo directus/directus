@@ -351,6 +351,7 @@ export class ImportService {
 				await new Promise<void>((resolve, reject) => {
 					const streams: Stream[] = [stream];
 					let rowNumber = 0;
+					const QUEUE_MAX_SIZE = Math.min(MAX_IMPORT_ERRORS, 200);
 
 					const cleanup = (destroy = true) => {
 						if (destroy) {
@@ -365,6 +366,8 @@ export class ImportService {
 					};
 
 					const saveQueue = queue(async (task: { data: Record<string, unknown>; rowNumber: number }) => {
+						if (errorTracker.isLimitReached()) return;
+
 						try {
 							const result = await service.upsertOne(task.data, {
 								bypassEmitAction: (action) => nestedActionEvents.push(action),
@@ -376,16 +379,25 @@ export class ImportService {
 
 							for (const err of errors) {
 								errorTracker.addCapturedError(err, task.rowNumber);
-							}
 
-							if (errorTracker.isLimitReached()) {
-								cleanup(true);
-								reject();
+								if (errorTracker.isLimitReached()) {
+									saveQueue.pause();
+									cleanup(true);
+									reject();
+									break;
+								}
 							}
 
 							return;
+						} finally {
+							if (saveQueue.length() < QUEUE_MAX_SIZE / 2 && papaStream?.isPaused()) {
+								papaStream.resume();
+							}
 						}
 					});
+
+					let fileReadStream: ReturnType<typeof createReadStream> | null = null;
+					let papaStream: any = null;
 
 					const fileWriteStream = createWriteStream(tmpFile.path)
 						.on('error', (error) => {
@@ -393,36 +405,35 @@ export class ImportService {
 							reject(new Error('Error while writing import data to temporary file', { cause: error }));
 						})
 						.on('finish', () => {
-							const fileReadStream = createReadStream(tmpFile.path).on('error', (error) => {
+							fileReadStream = createReadStream(tmpFile.path).on('error', (error) => {
 								cleanup();
 								reject(new Error('Error while reading import data from temporary file', { cause: error }));
 							});
 
 							streams.push(fileReadStream);
 
+							papaStream = Papa.parse(Papa.NODE_STREAM_INPUT, {
+								header: true,
+								transformHeader: (header) => header.trim(),
+								transform: (value: string, _field?: string | number) => {
+									if (value.length === 0) return undefined;
+
+									try {
+										const parsedJson = parseJSON(value);
+
+										if (typeof parsedJson === 'number') {
+											return value;
+										}
+
+										return parsedJson;
+									} catch {
+										return value;
+									}
+								},
+							});
+
 							fileReadStream
-								.pipe(
-									Papa.parse(Papa.NODE_STREAM_INPUT, {
-										header: true,
-										// Trim whitespaces in headers, including the byte order mark (BOM) zero-width no-break space
-										transformHeader: (header) => header.trim(),
-										transform: (value: string, _field?: string | number) => {
-											if (value.length === 0) return undefined;
-
-											try {
-												const parsedJson = parseJSON(value);
-
-												if (typeof parsedJson === 'number') {
-													return value;
-												}
-
-												return parsedJson;
-											} catch {
-												return value;
-											}
-										},
-									}),
-								)
+								.pipe(papaStream)
 								.on('data', (obj: Record<string, unknown>) => {
 									rowNumber++;
 
@@ -435,6 +446,10 @@ export class ImportService {
 									}
 
 									saveQueue.push({ data: result, rowNumber });
+
+									if (saveQueue.length() >= QUEUE_MAX_SIZE) {
+										papaStream.pause();
+									}
 								})
 								.on('error', (error) => {
 									cleanup();
