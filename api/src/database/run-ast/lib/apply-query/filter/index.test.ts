@@ -5,6 +5,12 @@ import { describe, expect, test, vi } from 'vitest';
 import { DEFUAULT_PERMISSION } from '../../../../../permissions/utils/default-permission.js';
 import { Client_SQLite3 } from '../mock.js';
 
+const aliasFn = vi.fn();
+
+vi.doMock('nanoid/non-secure', () => ({
+	customAlphabet: () => aliasFn,
+}));
+
 const { applyFilter } = await import('./index.js');
 
 describe('boolean filter operators', () => {
