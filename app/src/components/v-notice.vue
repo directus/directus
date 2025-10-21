@@ -8,12 +8,17 @@ interface Props {
 	icon?: string | boolean | null;
 	/** Render notice content centered */
 	center?: boolean;
+	/** Allow text wrapping within notice */
+	multiline?: boolean;
+	/** Align the default slot’s content with the title slot’s content */
+	indentContent?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	icon: null,
 	type: 'info',
 	center: false,
+	multiline: false,
 });
 
 const iconName = computed(() => {
@@ -36,9 +41,14 @@ const iconName = computed(() => {
 </script>
 
 <template>
-	<div class="v-notice" :class="[type, { center }]">
-		<v-icon v-if="icon !== false" :name="iconName" left />
-		<slot />
+	<div class="v-notice" :class="[type, { center }, { multiline }]">
+		<div class="v-notice-title">
+			<v-icon v-if="icon !== false" :name="iconName" left></v-icon>
+			<slot name="title"></slot>
+		</div>
+		<div v-if="$slots.default" class="v-notice-content" :class="{ indent: indentContent && icon !== false }">
+			<slot></slot>
+		</div>
 	</div>
 </template>
 
@@ -54,6 +64,9 @@ const iconName = computed(() => {
 */
 
 .v-notice {
+	--icon-padding-inline-end: 16px;
+	--icon-size-default: 24px;
+
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -79,12 +92,23 @@ const iconName = computed(() => {
 	background-color: var(--v-notice-border-color, var(--theme--primary));
 }
 
+.v-notice-title {
+	display: flex;
+	align-items: center;
+	font-weight: var(--theme--form--field--label--font-weight);
+	color: var(--v-notice-color, var(--theme--foreground));
+}
+
 .v-icon {
 	--v-icon-color: var(--v-notice-icon-color, var(--theme--primary));
 }
 
 .v-icon.left {
-	margin-inline-end: 16px;
+	margin-inline-end: var(--icon-padding-inline-end);
+}
+
+.v-notice-content.indent {
+	padding-inline-start: calc(var(--icon-padding-inline-end) + var(--v-icon-size, var(--icon-size-default)));
 }
 
 .success {
@@ -116,5 +140,9 @@ const iconName = computed(() => {
 
 :slotted(a) {
 	text-decoration: underline;
+}
+
+.multiline {
+	flex-wrap: wrap;
 }
 </style>

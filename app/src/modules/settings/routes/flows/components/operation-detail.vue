@@ -109,7 +109,7 @@ const displayOperations = computed(() =>
 const operationOptions = computed(() => {
 	if (typeof selectedOperation.value?.options === 'function') {
 		return translate(selectedOperation.value.options(options.value));
-	} else if (typeof selectedOperation.value?.options === 'object') {
+	} else if (Array.isArray(selectedOperation.value?.options)) {
 		return selectedOperation.value.options;
 	}
 
@@ -172,7 +172,7 @@ function saveOperation() {
 							<v-icon name="vpn_key" />
 						</template>
 					</v-input>
-					<small v-if="!isOperationKeyUnique" class="error selectable">{{ t('operation_key_unique_error') }}</small>
+					<small v-if="!isOperationKeyUnique" class="error">{{ t('operation_key_unique_error') }}</small>
 				</div>
 			</div>
 

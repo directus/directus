@@ -32,7 +32,10 @@ const formattedTime = computed(() => {
 const avatarSource = computed(() => {
 	if (!props.comment.user_created?.avatar) return null;
 
-	return getAssetUrl(`${props.comment.user_created.avatar.id}?key=system-small-cover`);
+	return getAssetUrl(props.comment.user_created.avatar.id, {
+		imageKey: 'system-small-cover',
+		cacheBuster: props.comment.user_created.avatar.modified_on,
+	});
 });
 
 const { confirmDelete, deleting, remove } = useDelete();

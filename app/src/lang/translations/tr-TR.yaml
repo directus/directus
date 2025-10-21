@@ -1529,6 +1529,8 @@ shares: Paylaşımlar
 unlimited_usage: Limitsiz kullanım
 no_shares: Gösterilecek paylaşım yok
 new_share: Yeni Paylaşım
+mcp_prompts_collection_schema:
+  messages_role_user: Kullanıcı
 expired: Süresi Dolmuş
 upcoming: Yakında
 share: Paylaş

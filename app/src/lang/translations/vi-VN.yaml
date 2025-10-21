@@ -997,6 +997,8 @@ no_value: Không có giá trị
 comment: Bình luận
 live_preview:
   new_window: Mở trong Cửa Sổ Mới
+mcp_prompts_collection_schema:
+  messages_role_user: Người dùng
 expired: Đã hết hạn
 share: Chia sẻ
 share_access_not_found_desc: Vui lòng liên hệ với người dùng được ủy quyền của dự án này để yêu cầu quyền truy cập.

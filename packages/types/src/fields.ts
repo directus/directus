@@ -3,6 +3,7 @@ import type {
 	FUNCTIONS,
 	GEOMETRY_FORMATS,
 	GEOMETRY_TYPES,
+	RELATIONAL_TYPES,
 	LOCAL_TYPES,
 	TYPES,
 	NUMERIC_TYPES,
@@ -30,6 +31,8 @@ export type GeometryType = (typeof GEOMETRY_TYPES)[number] | 'GeometryCollection
 
 export type GeometryFormat = (typeof GEOMETRY_FORMATS)[number];
 
+export type RelationalType = (typeof RELATIONAL_TYPES)[number];
+
 export type FieldMeta = {
 	id: number;
 	collection: string;
@@ -51,6 +54,7 @@ export type FieldMeta = {
 	validation: Filter | null;
 	validation_message: string | null;
 	system?: true;
+	clear_hidden_value_on_save?: boolean;
 };
 
 export interface FieldRaw {
@@ -87,6 +91,7 @@ export type Condition = {
 	hidden?: boolean;
 	options?: Record<string, any>;
 	required?: boolean;
+	clear_hidden_value_on_save?: boolean;
 };
 
 export type AppField = Field & { schema: { default_value: any } };

@@ -62,6 +62,8 @@ export class ServerService {
 
 		info['project'] = projectInfo;
 
+		info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
+
 		if (this.accountability?.user) {
 			if (env['RATE_LIMITER_ENABLED']) {
 				info['rateLimit'] = {
@@ -97,14 +99,14 @@ export class ServerService {
 					? {
 							authentication: env['WEBSOCKETS_REST_AUTH'],
 							path: env['WEBSOCKETS_REST_PATH'],
-					  }
+						}
 					: false;
 
 				info['websocket'].graphql = toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])
 					? {
 							authentication: env['WEBSOCKETS_GRAPHQL_AUTH'],
 							path: env['WEBSOCKETS_GRAPHQL_PATH'],
-					  }
+						}
 					: false;
 
 				info['websocket'].heartbeat = toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED'])
@@ -115,7 +117,7 @@ export class ServerService {
 					toBoolean(env['WEBSOCKETS_LOGS_ENABLED']) && this.accountability.admin
 						? {
 								allowedLogLevels: getAllowedLogLevels((env['WEBSOCKETS_LOGS_LEVEL'] as string) || 'info'),
-						  }
+							}
 						: false;
 			} else {
 				info['websocket'] = false;
@@ -284,8 +286,8 @@ export class ServerService {
 			const startTime = performance.now();
 
 			try {
-				await cache!.set(`health-${checkID}`, true, 5);
-				await cache!.delete(`health-${checkID}`);
+				await cache!.set(`directus-health-${checkID}`, true, 5);
+				await cache!.delete(`directus-health-${checkID}`);
 			} catch (err: any) {
 				checks['cache:responseTime']![0]!.status = 'error';
 				checks['cache:responseTime']![0]!.output = err;
@@ -324,8 +326,8 @@ export class ServerService {
 			const startTime = performance.now();
 
 			try {
-				await rateLimiter.consume(`health-${checkID}`, 1);
-				await rateLimiter.delete(`health-${checkID}`);
+				await rateLimiter.consume(`directus-health-${checkID}`, 1);
+				await rateLimiter.delete(`directus-health-${checkID}`);
 			} catch (err: any) {
 				checks['rateLimiter:responseTime']![0]!.status = 'error';
 				checks['rateLimiter:responseTime']![0]!.output = err;
@@ -366,8 +368,8 @@ export class ServerService {
 			const startTime = performance.now();
 
 			try {
-				await rateLimiterGlobal.consume(`health-${checkID}`, 1);
-				await rateLimiterGlobal.delete(`health-${checkID}`);
+				await rateLimiterGlobal.consume(`directus-health-${checkID}`, 1);
+				await rateLimiterGlobal.delete(`directus-health-${checkID}`);
 			} catch (err: any) {
 				checks['rateLimiterGlobal:responseTime']![0]!.status = 'error';
 				checks['rateLimiterGlobal:responseTime']![0]!.output = err;
@@ -409,17 +411,7 @@ export class ServerService {
 				const startTime = performance.now();
 
 				try {
-					await disk.write(`health-${checkID}`, Readable.from(['check']));
-					const fileStream = await disk.read(`health-${checkID}`);
-
-					fileStream.on('data', async () => {
-						try {
-							fileStream.destroy();
-							await disk.delete(`health-${checkID}`);
-						} catch (error) {
-							logger.error(error);
-						}
-					});
+					await disk.write('directus-health-file', Readable.from([checkID]));
 				} catch (err: any) {
 					checks[`storage:${location}:responseTime`]![0]!.status = 'error';
 					checks[`storage:${location}:responseTime`]![0]!.output = err;

@@ -30,7 +30,18 @@ export type QueryOptions = {
 	emitEvents?: boolean;
 };
 
+export type DefaultOverwrite = {
+	_user: string;
+	_date: string;
+	[key: string]: DefaultOverwrite | DefaultOverwrite[] | any;
+};
+
 export type MutationOptions = {
+	/**
+	 * Callback function that's fired whenever a item is made in the mutation
+	 */
+	onItemCreate?: ((collection: string, pk: PrimaryKey) => void) | undefined;
+
 	/**
 	 * Callback function that's fired whenever a revision is made in the mutation
 	 */
@@ -61,6 +72,16 @@ export type MutationOptions = {
 	 * To bypass limits so that functions would work as intended
 	 */
 	bypassLimits?: boolean | undefined;
+
+	/**
+	 * Skips the creation of accountability and revision entries
+	 */
+	skipTracking?: boolean | undefined;
+
+	/**
+	 * Skips the overwriting of defaults like user-created
+	 */
+	overwriteDefaults?: DefaultOverwrite | undefined;
 
 	/**
 	 * To keep track of mutation limits

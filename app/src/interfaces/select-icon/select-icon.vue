@@ -294,7 +294,7 @@ function useIconsPerRow(
 
 .icon-row {
 	display: grid;
-	grid-gap: var(--gap, 8px);
+	gap: var(--gap, 8px);
 	grid-template-columns: repeat(var(--icons-per-row, 1), var(--icon-size, 24px));
 	justify-content: start;
 	color: var(--theme--form--field--input--foreground-subdued);

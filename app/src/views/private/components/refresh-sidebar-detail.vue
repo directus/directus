@@ -56,11 +56,11 @@ const items = computed(() => {
 			? {
 					text: t('refresh_interval_minutes', { minutes: seconds / 60 }, seconds / 60),
 					value: seconds,
-			  }
+				}
 			: {
 					text: t('refresh_interval_seconds', { seconds }, seconds),
 					value: seconds,
-			  };
+				};
 	});
 });
 </script>
