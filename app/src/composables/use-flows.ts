@@ -1,5 +1,5 @@
 import api from '@/api';
-import { computed, ref, Ref, provide, inject, ComputedRef } from 'vue';
+import { computed, ref, Ref, provide, inject } from 'vue';
 import { FlowRaw, Item, PrimaryKey } from '@directus/types';
 import { notify } from '@/utils/notify';
 import { translate } from '@/utils/translate-object-values';
@@ -172,6 +172,8 @@ export function useFlows(options: UseFlowsOptions) {
 	}
 
 	function confirmCustomDialog(flowId: string) {
+		if (isConfirmButtonDisabled.value) return;
+
 		confirmedCustomDialog.value = true;
 
 		runManualFlow(flowId);
