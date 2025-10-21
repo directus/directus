@@ -802,7 +802,7 @@ function useCollectionRoute() {
 					:primary-key="actualPrimaryKey"
 					:allowed="shareAllowed"
 				/>
-				<flow-sidebar-detail :manual-flows />
+				<flow-sidebar-detail v-if="currentVersion === null" :manual-flows />
 			</template>
 		</template>
 	</private-view>
