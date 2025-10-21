@@ -8,8 +8,8 @@ let emailRateLimiter: RateLimiterRedis | RateLimiterMemory | undefined;
 
 const env = useEnv();
 
-if (toBoolean(env['EMAIL_FLOWS_LIMITER_ENABLED']) === true) {
-	emailRateLimiter = createRateLimiter('EMAIL_FLOWS_LIMITER');
+if (toBoolean(env['RATE_LIMITER_EMAIL_FLOWS_ENABLED']) === true) {
+	emailRateLimiter = createRateLimiter('RATE_LIMITER_EMAIL_FLOWS');
 }
 
 export async function useFlowsEmailRateLimiter(flow_id: string) {
@@ -20,10 +20,10 @@ export async function useFlowsEmailRateLimiter(flow_id: string) {
 	} catch (err: unknown) {
 		if (err instanceof RateLimiterRes) {
 			throw new EmailLimitExceededError({
-				points: 'EMAIL_FLOWS_LIMITER_POINTS' in env ? Number(env['EMAIL_FLOWS_LIMITER_POINTS']) : undefined,
-				duration: 'EMAIL_FLOWS_LIMITER_DURATION' in env ? Number(env['EMAIL_FLOWS_LIMITER_DURATION']) : undefined,
+				points: 'RATE_LIMITER_EMAIL_FLOWS_POINTS' in env ? Number(env['RATE_LIMITER_EMAIL_FLOWS_POINTS']) : undefined,
+				duration: 'RATE_LIMITER_EMAIL_FLOWS_DURATION' in env ? Number(env['RATE_LIMITER_EMAIL_FLOWS_DURATION']) : undefined,
 				message:
-					'EMAIL_FLOWS_LIMITER_ERROR_MESSAGE' in env ? String(env['EMAIL_FLOWS_LIMITER_ERROR_MESSAGE']) : undefined,
+					'RATE_LIMITER_EMAIL_FLOWS_ERROR_MESSAGE' in env ? String(env['RATE_LIMITER_EMAIL_FLOWS_ERROR_MESSAGE']) : undefined,
 			});
 		}
 

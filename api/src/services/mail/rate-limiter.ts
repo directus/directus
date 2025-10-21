@@ -8,9 +8,9 @@ let emailRateLimiterQueue: RateLimiterQueue | undefined;
 
 const env = useEnv();
 
-if (toBoolean(env['EMAIL_LIMITER_ENABLED']) === true) {
-	emailRateLimiterQueue = new RateLimiterQueue(createRateLimiter('EMAIL_LIMITER'), {
-		maxQueueSize: Number(env['EMAIL_LIMITER_QUEUE_SIZE']),
+if (toBoolean(env['RATE_LIMITER_EMAIL_ENABLED']) === true) {
+	emailRateLimiterQueue = new RateLimiterQueue(createRateLimiter('RATE_LIMITER_EMAIL'), {
+		maxQueueSize: Number(env['RATE_LIMITER_EMAIL_QUEUE_SIZE']),
 	});
 }
 
@@ -22,9 +22,9 @@ export async function useEmailRateLimiterQueue() {
 	} catch (err: unknown) {
 		if (err instanceof Error) {
 			throw new EmailLimitExceededError({
-				points: 'EMAIL_LIMITER_POINTS' in env ? Number(env['EMAIL_LIMITER_POINTS']) : undefined,
-				duration: 'EMAIL_LIMITER_DURATION' in env ? Number(env['EMAIL_LIMITER_DURATION']) : undefined,
-				message: 'EMAIL_LIMITER_ERROR_MESSAGE' in env ? String(env['EMAIL_LIMITER_ERROR_MESSAGE']) : undefined,
+				points: 'RATE_LIMITER_EMAIL_POINTS' in env ? Number(env['RATE_LIMITER_EMAIL_POINTS']) : undefined,
+				duration: 'RATE_LIMITER_EMAIL_DURATION' in env ? Number(env['RATE_LIMITER_EMAIL_DURATION']) : undefined,
+				message: 'RATE_LIMITER_EMAIL_ERROR_MESSAGE' in env ? String(env['RATE_LIMITER_EMAIL_ERROR_MESSAGE']) : undefined,
 			});
 		}
 

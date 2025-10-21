@@ -21,7 +21,7 @@ describe('Flows Email Operation Rate Limiter', () => {
 	describe('useFlowsEmailRateLimiter', () => {
 		test('should resolve to undefined when rate limiter is not enabled', async () => {
 			vi.mocked(useEnv).mockReturnValue({
-				EMAIL_FLOWS_LIMITER_ENABLED: 'false',
+				RATE_LIMITER_EMAIL_FLOWS_ENABLED: 'false',
 			});
 
 			// dynamic import because useEnv is accessed in the file root
@@ -32,9 +32,9 @@ describe('Flows Email Operation Rate Limiter', () => {
 
 		test('should be able to consume all points without error', async () => {
 			vi.mocked(useEnv).mockReturnValue({
-				EMAIL_FLOWS_LIMITER_ENABLED: 'true',
-				EMAIL_FLOWS_LIMITER_POINTS: 3,
-				EMAIL_FLOWS_LIMITER_DURATION: 10,
+				RATE_LIMITER_EMAIL_FLOWS_ENABLED: 'true',
+				RATE_LIMITER_EMAIL_FLOWS_POINTS: 3,
+				RATE_LIMITER_EMAIL_FLOWS_DURATION: 10,
 			});
 
 			// dynamic import because useEnv is accessed in the file root
@@ -52,9 +52,9 @@ describe('Flows Email Operation Rate Limiter', () => {
 
 		test('should throw an error after all points have been consumed', async () => {
 			vi.mocked(useEnv).mockReturnValue({
-				EMAIL_FLOWS_LIMITER_ENABLED: 'true',
-				EMAIL_FLOWS_LIMITER_POINTS: 3,
-				EMAIL_FLOWS_LIMITER_DURATION: 10,
+				RATE_LIMITER_EMAIL_FLOWS_ENABLED: 'true',
+				RATE_LIMITER_EMAIL_FLOWS_POINTS: 3,
+				RATE_LIMITER_EMAIL_FLOWS_DURATION: 10,
 			});
 
 			// dynamic import because useEnv is accessed in the file root
@@ -73,10 +73,10 @@ describe('Flows Email Operation Rate Limiter', () => {
 
 		test('should include a custom message in the error', async () => {
 			vi.mocked(useEnv).mockReturnValue({
-				EMAIL_FLOWS_LIMITER_ENABLED: 'true',
-				EMAIL_FLOWS_LIMITER_POINTS: 1,
-				EMAIL_FLOWS_LIMITER_DURATION: 1,
-				EMAIL_FLOWS_LIMITER_ERROR_MESSAGE: 'My custom message.',
+				RATE_LIMITER_EMAIL_FLOWS_ENABLED: 'true',
+				RATE_LIMITER_EMAIL_FLOWS_POINTS: 1,
+				RATE_LIMITER_EMAIL_FLOWS_DURATION: 1,
+				RATE_LIMITER_EMAIL_FLOWS_ERROR_MESSAGE: 'My custom message.',
 			});
 
 			// dynamic import because useEnv is accessed in the file root
@@ -90,9 +90,9 @@ describe('Flows Email Operation Rate Limiter', () => {
 
 		test('should be able to consume points from multiple flows without error', async () => {
 			vi.mocked(useEnv).mockReturnValue({
-				EMAIL_FLOWS_LIMITER_ENABLED: 'true',
-				EMAIL_FLOWS_LIMITER_POINTS: 2,
-				EMAIL_FLOWS_LIMITER_DURATION: 10,
+				RATE_LIMITER_EMAIL_FLOWS_ENABLED: 'true',
+				RATE_LIMITER_EMAIL_FLOWS_POINTS: 2,
+				RATE_LIMITER_EMAIL_FLOWS_DURATION: 10,
 			});
 
 			// dynamic import because useEnv is accessed in the file root

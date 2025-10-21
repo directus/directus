@@ -18,7 +18,7 @@ describe('Email Rate Limiter', () => {
 	describe('useEmailRateLimiterQueue', () => {
 		test('should resolve to undefined when rate limiter is not enabled', async () => {
 			vi.mocked(useEnv).mockReturnValue({
-				EMAIL_LIMITER_ENABLED: 'false',
+				RATE_LIMITER_EMAIL_ENABLED: 'false',
 			});
 
 			// dynamic import because useEnv is accessed in the file root
@@ -29,10 +29,10 @@ describe('Email Rate Limiter', () => {
 
 		test('should be able to consume all points without error', async () => {
 			vi.mocked(useEnv).mockReturnValue({
-				EMAIL_LIMITER_ENABLED: 'true',
-				EMAIL_LIMITER_POINTS: 3,
-				EMAIL_LIMITER_DURATION: 10,
-				EMAIL_LIMITER_QUEUE_SIZE: 0,
+				RATE_LIMITER_EMAIL_ENABLED: 'true',
+				RATE_LIMITER_EMAIL_POINTS: 3,
+				RATE_LIMITER_EMAIL_DURATION: 10,
+				RATE_LIMITER_EMAIL_QUEUE_SIZE: 0,
 			});
 
 			// dynamic import because useEnv is accessed in the file root
@@ -46,10 +46,10 @@ describe('Email Rate Limiter', () => {
 
 		test('should throw an error after all points have been consumed', async () => {
 			vi.mocked(useEnv).mockReturnValue({
-				EMAIL_LIMITER_ENABLED: 'true',
-				EMAIL_LIMITER_POINTS: 3,
-				EMAIL_LIMITER_DURATION: 10,
-				EMAIL_LIMITER_QUEUE_SIZE: 0,
+				RATE_LIMITER_EMAIL_ENABLED: 'true',
+				RATE_LIMITER_EMAIL_POINTS: 3,
+				RATE_LIMITER_EMAIL_DURATION: 10,
+				RATE_LIMITER_EMAIL_QUEUE_SIZE: 0,
 			});
 
 			// dynamic import because useEnv is accessed in the file root
@@ -68,10 +68,10 @@ describe('Email Rate Limiter', () => {
 
 		test('should be able to fill the queue without error', async () => {
 			vi.mocked(useEnv).mockReturnValue({
-				EMAIL_LIMITER_ENABLED: 'true',
-				EMAIL_LIMITER_POINTS: 1,
-				EMAIL_LIMITER_DURATION: 0.02, // 20ms keep this low for test speed
-				EMAIL_LIMITER_QUEUE_SIZE: 2,
+				RATE_LIMITER_EMAIL_ENABLED: 'true',
+				RATE_LIMITER_EMAIL_POINTS: 1,
+				RATE_LIMITER_EMAIL_DURATION: 0.02, // 20ms keep this low for test speed
+				RATE_LIMITER_EMAIL_QUEUE_SIZE: 2,
 			});
 
 			// dynamic import because useEnv is accessed in the file root
@@ -85,10 +85,10 @@ describe('Email Rate Limiter', () => {
 
 		test('should throw an error after the queue is full', async () => {
 			vi.mocked(useEnv).mockReturnValue({
-				EMAIL_LIMITER_ENABLED: 'true',
-				EMAIL_LIMITER_POINTS: 1,
-				EMAIL_LIMITER_DURATION: 1,
-				EMAIL_LIMITER_QUEUE_SIZE: 2,
+				RATE_LIMITER_EMAIL_ENABLED: 'true',
+				RATE_LIMITER_EMAIL_POINTS: 1,
+				RATE_LIMITER_EMAIL_DURATION: 1,
+				RATE_LIMITER_EMAIL_QUEUE_SIZE: 2,
 			});
 
 			// dynamic import because useEnv is accessed in the file root
@@ -107,11 +107,11 @@ describe('Email Rate Limiter', () => {
 
 		test('should include a custom message in the error', async () => {
 			vi.mocked(useEnv).mockReturnValue({
-				EMAIL_LIMITER_ENABLED: 'true',
-				EMAIL_LIMITER_POINTS: 1,
-				EMAIL_LIMITER_DURATION: 1,
-				EMAIL_LIMITER_QUEUE_SIZE: 0,
-				EMAIL_LIMITER_ERROR_MESSAGE: 'My custom message.',
+				RATE_LIMITER_EMAIL_ENABLED: 'true',
+				RATE_LIMITER_EMAIL_POINTS: 1,
+				RATE_LIMITER_EMAIL_DURATION: 1,
+				RATE_LIMITER_EMAIL_QUEUE_SIZE: 0,
+				RATE_LIMITER_EMAIL_ERROR_MESSAGE: 'My custom message.',
 			});
 
 			// dynamic import because useEnv is accessed in the file root
