@@ -6,7 +6,7 @@ import { PrimaryKey } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { pickBy } from 'lodash';
 import { render } from 'micromustache';
-import { computed, inject, ref, toRefs, watch } from 'vue';
+import { computed, inject, ref, toRefs, useAttrs, watch } from 'vue';
 
 type Link = {
 	icon: string;
@@ -32,6 +32,8 @@ const props = withDefaults(
 		links: () => [],
 	},
 );
+
+const attrs = useAttrs();
 
 const api = useApi();
 const values = inject('values', ref<Record<string, any>>({}));
@@ -109,6 +111,7 @@ const buttonProps = computed(() =>
 			class: ['action', link.type],
 			secondary: link.type !== 'primary',
 			icon: !link.label,
+			disabled: link.actionType === 'flow' && attrs['batch-mode'],
 		};
 
 		if (link.actionType === 'url' && link.href) {
