@@ -127,7 +127,7 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 
 			return {
 				headers: {
-					'X-Directus-File-Id': upload.metadata!['id']!,
+					'Directus-File-Id': upload.metadata!['id']!,
 				},
 			};
 		},
