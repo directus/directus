@@ -16,8 +16,8 @@ catalogs:
       specifier: 3.913.0
       version: 3.913.0
     '@aws-sdk/lib-storage':
-      specifier: 3.858.0
-      version: 3.858.0
+      specifier: 3.913.0
+      version: 3.913.0
     '@azure/storage-blob':
       specifier: 12.28.0
       version: 12.28.0
@@ -2568,7 +2568,7 @@ importers:
         version: 3.913.0
       '@aws-sdk/lib-storage':
         specifier: 'catalog:'
-        version: 3.858.0(@aws-sdk/client-s3@3.913.0)
+        version: 3.913.0(@aws-sdk/client-s3@3.913.0)
       '@directus/storage':
         specifier: workspace:*
         version: link:../storage
@@ -3190,11 +3190,11 @@ packages:
     resolution: {integrity: sha512-urIbXWWG+cm54RwwTFQuRwPH0WPsMFSDF2/H9qO2J2fKoHRURuyblFCyYG3aVKZGvFBhOizJYexf5+5w3CJKBw==}
     engines: {node: '>=18.0.0'}
 
-  '@aws-sdk/lib-storage@3.858.0':
-    resolution: {integrity: sha512-+LL8eV3PfRprY9p40XPKCMOu5xoqy0b98LaczN5DzDjNnUN82qrKMaXhab26c16fJ05BBbauumY3g2U+CzOwMQ==}
+  '@aws-sdk/lib-storage@3.913.0':
+    resolution: {integrity: sha512-IOlCRCvq+DmN9d3o9LLBiGt9CFQDp11joKgZ4CziUQ59qkHonkaf0GOt6Oo4zITGBegJ0FvKsWj+sDgYoQ1U9g==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      '@aws-sdk/client-s3': ^3.858.0
+      '@aws-sdk/client-s3': ^3.913.0
 
   '@aws-sdk/middleware-bucket-endpoint@3.910.0':
     resolution: {integrity: sha512-8ZfA0WARwvAKQQ7vmoQTg6xFEewFqsQCltQIHd7NtNs3CLF1aU06Ixp0i7Mp68k6dUj9WJJO7mz3I5VFOecqHQ==}
@@ -13719,7 +13719,7 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/lib-storage@3.858.0(@aws-sdk/client-s3@3.913.0)':
+  '@aws-sdk/lib-storage@3.913.0(@aws-sdk/client-s3@3.913.0)':
     dependencies:
       '@aws-sdk/client-s3': 3.913.0
       '@smithy/abort-controller': 4.2.3
