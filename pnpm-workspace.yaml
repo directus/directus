@@ -280,7 +280,7 @@ catalog:
   swagger-ui-watcher: 2.1.14
   tar: 7.4.3
   tedious: 18.6.1
-  tinymce: 6.8.5
+  tinymce: 6.8.6
   tmp: 0.2.5
   tsdown: 0.14.2
   tsx: 4.20.3
