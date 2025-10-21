@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import type { FormField, ComparisonContext } from './types';
+import { useI18n } from 'vue-i18n';
 
 withDefaults(
 	defineProps<{
@@ -72,7 +72,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 				name="star"
 				filled
 			/>
-			<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
+			<v-chip v-if="badge" class="badge" x-small>{{ badge }}</v-chip>
 			<v-icon
 				v-if="!disabled && rawEditorEnabled"
 				v-tooltip="t('toggle_raw_editor')"
@@ -133,7 +133,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 		}
 	}
 
-	.v-chip {
+	.badge {
 		margin: 0;
 		flex-shrink: 0;
 		margin-inline-start: 3px;
