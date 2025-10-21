@@ -121,7 +121,7 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 				{
 					database: getDatabase(),
 					schema,
-					accountability: (req as any).accountability,
+					accountability: req.accountability,
 				},
 			);
 
