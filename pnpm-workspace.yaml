@@ -74,7 +74,7 @@ catalog:
   '@tinymce/tinymce-vue': 6.3.0
   '@turf/meta': 7.2.0
   '@tus/server': 2.3.0
-  '@tus/utils': 0.5.1
+  '@tus/utils': 0.6.0
   '@types/async': 3.2.24
   '@types/base-64': 1.0.2
   '@types/busboy': 1.5.4

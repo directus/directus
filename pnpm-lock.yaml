@@ -202,8 +202,8 @@ catalogs:
       specifier: 2.3.0
       version: 2.3.0
     '@tus/utils':
-      specifier: 0.5.1
-      version: 0.5.1
+      specifier: 0.6.0
+      version: 0.6.0
     '@types/async':
       specifier: 3.2.24
       version: 3.2.24
@@ -1045,7 +1045,7 @@ importers:
         version: 2.3.0
       '@tus/utils':
         specifier: 'catalog:'
-        version: 0.5.1
+        version: 0.6.0
       argon2:
         specifier: 'catalog:'
         version: 0.43.1
@@ -2583,7 +2583,7 @@ importers:
         version: 4.1.0
       '@tus/utils':
         specifier: 'catalog:'
-        version: 0.5.1
+        version: 0.6.0
       ms:
         specifier: 'catalog:'
         version: 2.1.3
@@ -6137,10 +6137,6 @@ packages:
   '@tus/server@2.3.0':
     resolution: {integrity: sha512-7sj4Q3EPvMjS5z9JaNOZ8gvT6HZvDeg/RjEP0ebbfpAo1V095ivkzpKqV/mDIK/ioBwOKj+bOhTtNuueTjVCfw==}
     engines: {node: '>=20.19.0'}
-
-  '@tus/utils@0.5.1':
-    resolution: {integrity: sha512-2crDHBKX0hKZfQXgTF5QIQSccg5fzn8L+oxpVRWAuBbeAdAkBIm4zVXV/LfyuQ1FO5zXW7iV/BI9zNWG5merHQ==}
-    engines: {node: '>=16'}
 
   '@tus/utils@0.6.0':
     resolution: {integrity: sha512-GpMpAQfVdC4UDhpsZrRPjGpdXg+JW5MquqMqtObUVsORwLBV6XI67iTT5be+z98THdqb6dl3bTLIElIdgPeo2g==}
@@ -17852,8 +17848,6 @@ snapshots:
       ioredis: 5.7.0
     transitivePeerDependencies:
       - supports-color
-
-  '@tus/utils@0.5.1': {}
 
   '@tus/utils@0.6.0': {}
 
