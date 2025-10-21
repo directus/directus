@@ -11,10 +11,10 @@ import { useNotificationsStore } from '@/stores/notifications';
 import formatTitle from '@directus/format-title';
 
 export interface UseFlowsOptions {
-	collection: Ref<string>;
-	primaryKey?: ComputedRef<PrimaryKey | null>;
+	collection: string;
+	primaryKey?: PrimaryKey | null;
 	selection?: Ref<Item[]>;
-	location: Ref<'collection' | 'item'>;
+	location: 'collection' | 'item';
 	hasEdits?: Ref<boolean>;
 	onRefreshCallback: () => void;
 }
@@ -67,7 +67,7 @@ export function useFlows(options: UseFlowsOptions) {
 	}));
 
 	const confirmButtonCTA = computed(() => {
-		if (location.value === 'item') return t('run_flow_on_current');
+		if (location === 'item') return t('run_flow_on_current');
 		if (selection.value.length === 0) return t('run_flow');
 		return t('run_flow_on_selected', selection.value.length);
 	});
@@ -121,10 +121,9 @@ export function useFlows(options: UseFlowsOptions) {
 
 	const manualFlows = computed(() => {
 		const manualFlows = flowsStore
-			.getManualFlowsForCollection(collection.value)
+			.getManualFlowsForCollection(collection)
 			.filter(
-				(flow) =>
-					!flow.options?.location || flow.options?.location === 'both' || flow.options?.location === location.value,
+				(flow) => !flow.options?.location || flow.options?.location === 'both' || flow.options?.location === location,
 			)
 			.map((flow) => ({
 				...flow,
@@ -135,7 +134,7 @@ export function useFlows(options: UseFlowsOptions) {
 			}));
 
 		function getFlowTooltip(manualFlow: FlowRaw) {
-			if (location.value === 'item') return t('run_flow_on_current');
+			if (location === 'item') return t('run_flow_on_current');
 
 			if (manualFlow.options?.requireSelection === false && selection.value.length === 0) {
 				return t('run_flow_on_current_collection');
@@ -145,8 +144,8 @@ export function useFlows(options: UseFlowsOptions) {
 		}
 
 		function checkFlowDisabled(manualFlow: FlowRaw) {
-			if (location.value === 'item' || manualFlow.options?.requireSelection === false) return false;
-			return !primaryKey?.value && selection.value.length === 0;
+			if (location === 'item' || manualFlow.options?.requireSelection === false) return false;
+			return !primaryKey && selection.value.length === 0;
 		}
 
 		function checkFlowRunning(manualFlow: FlowRaw) {
@@ -213,20 +212,20 @@ export function useFlows(options: UseFlowsOptions) {
 
 		try {
 			if (
-				location.value === 'collection' &&
+				location === 'collection' &&
 				currentFlow.value.options?.requireSelection === false &&
 				selection.value.length === 0
 			) {
 				await api.post(`/flows/trigger/${flowId}`, {
 					...(confirmValues.value ?? {}),
-					collection: collection.value,
+					collection: collection,
 				});
 			} else {
-				const keys = primaryKey?.value ? [primaryKey.value] : selection.value || [];
+				const keys = primaryKey ? [primaryKey] : selection.value || [];
 
 				await api.post(`/flows/trigger/${flowId}`, {
 					...confirmValues.value,
-					collection: collection.value,
+					collection: collection,
 					keys,
 				});
 			}

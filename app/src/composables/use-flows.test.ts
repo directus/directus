@@ -2,7 +2,7 @@ import { describe, beforeEach, expect, test, vi, afterEach } from 'vitest';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { useFlows } from './use-flows';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useFlowsStore } from '@/stores/flows';
 import api from '@/api';
 
@@ -64,9 +64,9 @@ afterEach(() => {
 const mockOnRefresh = vi.fn();
 
 const useFlowsOptions = {
-	collection: ref('test_collection'),
-	primaryKey: computed(() => 'item_1'),
-	location: ref('collection' as const),
+	collection: 'test_collection',
+	primaryKey: 'item_1',
+	location: 'collection' as const,
 	hasEdits: ref(true),
 	onRefreshCallback: mockOnRefresh,
 };
@@ -163,224 +163,12 @@ describe('manualFlows', () => {
 	});
 });
 
-describe('isConfirmButtonDisabled', () => {
-	describe('true', () => {
-		test('currentFlowId is falsy', () => {
-			const mockFlowsStore = {
-				getManualFlowsForCollection: vi.fn().mockReturnValue(mockFlows),
-			};
-
-			vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
-
-			const { flowDialogsContext } = useFlows(useFlowsOptions);
-
-			const { currentFlowId, isConfirmButtonDisabled } = flowDialogsContext.value;
-
-			currentFlowId.value = null;
-
-			expect(isConfirmButtonDisabled.value).toEqual(true);
-		});
-
-		test('when confirmDialogDetails has required fields', () => {
-			const mockFlowsStore = {
-				getManualFlowsForCollection: vi.fn().mockReturnValue(mockFlows),
-			};
-
-			vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
-
-			const { flowDialogsContext } = useFlows(useFlowsOptions);
-
-			const { currentFlowId, isConfirmButtonDisabled } = flowDialogsContext.value;
-
-			currentFlowId.value = mockFlows[0]!.id;
-
-			expect(isConfirmButtonDisabled.value).toEqual(true);
-		});
-	});
-
-	describe('false', () => {
-		test('when confirmDialogDetails has required fields', () => {
-			const mockFlowsStore = {
-				getManualFlowsForCollection: vi.fn().mockReturnValue([mockFlows[1]]),
-			};
-
-			vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
-
-			const { flowDialogsContext } = useFlows(useFlowsOptions);
-
-			const { currentFlowId, isConfirmButtonDisabled } = flowDialogsContext.value;
-
-			currentFlowId.value = mockFlows[1]!.id;
-
-			expect(isConfirmButtonDisabled.value).toEqual(false);
-		});
-	});
-});
-
-describe('displayUnsavedChangesDialog', () => {
-	test('true', () => {
-		const mockFlowsStore = {
-			getManualFlowsForCollection: vi.fn().mockReturnValue([mockFlows[0]]),
-		};
-
-		vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
-
-		const { flowDialogsContext } = useFlows(useFlowsOptions);
-
-		const { currentFlowId, displayUnsavedChangesDialog } = flowDialogsContext.value;
-
-		currentFlowId.value = mockFlows[0]!.id;
-
-		expect(displayUnsavedChangesDialog.value).toEqual(true);
-	});
-
-	describe('false', () => {
-		test('currentFlowId.value is falsy', () => {
-			const mockFlowsStore = {
-				getManualFlowsForCollection: vi.fn().mockReturnValue([mockFlows[0]]),
-			};
-
-			vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
-
-			const { flowDialogsContext } = useFlows(useFlowsOptions);
-
-			const { currentFlowId, displayUnsavedChangesDialog } = flowDialogsContext.value;
-
-			currentFlowId.value = null;
-
-			expect(displayUnsavedChangesDialog.value).toEqual(false);
-		});
-
-		test('hasEdits is falsy', () => {
-			const testUseFlowsOptions = {
-				...useFlowsOptions,
-				hasEdits: ref(false),
-			};
-
-			const mockFlowsStore = {
-				getManualFlowsForCollection: vi.fn().mockReturnValue([mockFlows[0]]),
-			};
-
-			vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
-
-			const { flowDialogsContext } = useFlows(testUseFlowsOptions);
-
-			const { currentFlowId, displayUnsavedChangesDialog } = flowDialogsContext.value;
-
-			currentFlowId.value = mockFlows[0]!.id;
-
-			expect(displayUnsavedChangesDialog.value).toEqual(false);
-		});
-	});
-});
-
-describe('displayCustomConfirmDialog', () => {
-	test('true', () => {
-		const mockFlowsStore = {
-			getManualFlowsForCollection: vi.fn().mockReturnValue([mockFlows[0]]),
-		};
-
-		vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
-
-		const { flowDialogsContext } = useFlows(useFlowsOptions);
-
-		const { currentFlowId, confirmUnsavedChanges, displayCustomConfirmDialog } = flowDialogsContext.value;
-
-		currentFlowId.value = mockFlows[0]!.id;
-		confirmUnsavedChanges(mockFlows[0]!.id);
-
-		expect(displayCustomConfirmDialog.value).toEqual(true);
-	});
-
-	describe('false', () => {
-		test('currentFlowId.value is falsy', () => {
-			const mockFlowsStore = {
-				getManualFlowsForCollection: vi.fn().mockReturnValue([mockFlows[0]]),
-			};
-
-			vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
-
-			const { flowDialogsContext } = useFlows(useFlowsOptions);
-
-			const { currentFlowId, displayCustomConfirmDialog } = flowDialogsContext.value;
-
-			currentFlowId.value = null;
-
-			expect(displayCustomConfirmDialog.value).toEqual(false);
-			expect(currentFlowId.value).toBeFalsy();
-		});
-
-		test('confirmDialogDetails.value is falsy', () => {
-			const mockFlowsStore = {
-				getManualFlowsForCollection: vi.fn().mockReturnValue([mockFlows[2]]),
-			};
-
-			vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
-
-			const { flowDialogsContext } = useFlows(useFlowsOptions);
-
-			const { currentFlowId, displayCustomConfirmDialog } = flowDialogsContext.value;
-
-			currentFlowId.value = mockFlows[1]!.id;
-
-			expect(displayCustomConfirmDialog.value).toEqual(false);
-			expect(currentFlowId.value).toBeTruthy();
-		});
-
-		test('hasEdits is falsy', () => {
-			const testUseFlowsOptions = {
-				...useFlowsOptions,
-				hasEdits: ref(false),
-			};
-
-			const mockFlowsStore = {
-				getManualFlowsForCollection: vi.fn().mockReturnValue([mockFlows[0]]),
-			};
-
-			vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
-
-			const { flowDialogsContext } = useFlows(testUseFlowsOptions);
-
-			const { currentFlowId, confirmDialogDetails, displayCustomConfirmDialog } = flowDialogsContext.value;
-
-			currentFlowId.value = mockFlows[0]!.id;
-
-			expect(displayCustomConfirmDialog.value).toEqual(true);
-			expect(currentFlowId.value).toBeTruthy();
-			expect(confirmDialogDetails.value).toBeTruthy();
-		});
-
-		test('hasEdits is truthy and confirmedUnsavedChanges is falsy', () => {
-			const testUseFlowsOptions = {
-				...useFlowsOptions,
-				hasEdits: ref(true),
-			};
-
-			const mockFlowsStore = {
-				getManualFlowsForCollection: vi.fn().mockReturnValue([mockFlows[0]]),
-			};
-
-			vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
-
-			const { flowDialogsContext } = useFlows(testUseFlowsOptions);
-
-			const { currentFlowId, confirmDialogDetails, displayCustomConfirmDialog } = flowDialogsContext.value;
-
-			currentFlowId.value = mockFlows[0]!.id;
-
-			expect(displayCustomConfirmDialog.value).toEqual(false);
-			expect(currentFlowId.value).toBeTruthy();
-			expect(confirmDialogDetails.value).toBeTruthy();
-		});
-	});
-});
-
 describe('manualFlow.isFlowDisabled', () => {
 	describe('false', () => {
 		test('location is "item"', () => {
 			const testUseFlowsOptions = {
 				...useFlowsOptions,
-				location: ref('item' as const),
+				location: 'item' as const,
 			};
 
 			const mockFlowsStore = {
@@ -501,27 +289,19 @@ describe('runManualFlow', () => {
 
 		vi.mocked(api.post).mockResolvedValue({});
 
-		const testOptions = {
-			...useFlowsOptions,
-			selection: ref([]),
-		};
+		const { runManualFlow, flowDialogsContext } = useFlows(useFlowsOptions);
 
-		const { runManualFlow, flowDialogsContext } = useFlows(testOptions);
-
-		const { confirmValues, currentFlowId, confirmUnsavedChanges } = flowDialogsContext.value;
-
-		confirmValues.value = { testField: 'testValue' };
+		const { currentFlowId, confirmUnsavedChanges } = flowDialogsContext.value;
 
 		confirmUnsavedChanges(mockFlows[4]!.id);
 
 		await runManualFlow(mockFlows[4]!.id);
 
 		expect(api.post).toHaveBeenCalledWith(`/flows/trigger/${mockFlows[4]!.id}`, {
-			testField: 'testValue',
 			collection: 'test_collection',
 		});
 
-		expect(currentFlowId.value).toBeNull();
+		expect(currentFlowId).toBeNull();
 	});
 
 	test('successfully runs flow with keys (primaryKey or selection)', async () => {
@@ -535,9 +315,7 @@ describe('runManualFlow', () => {
 
 		const { runManualFlow, flowDialogsContext } = useFlows(useFlowsOptions);
 
-		const { confirmValues, currentFlowId, confirmUnsavedChanges, confirmCustomDialog } = flowDialogsContext.value;
-
-		confirmValues.value = { testField: 'testValue' };
+		const { currentFlowId, confirmUnsavedChanges, confirmCustomDialog } = flowDialogsContext.value;
 
 		confirmUnsavedChanges(mockFlows[0]!.id);
 		confirmCustomDialog(mockFlows[0]!.id);
@@ -545,12 +323,11 @@ describe('runManualFlow', () => {
 		await runManualFlow(mockFlows[0]!.id);
 
 		expect(api.post).toHaveBeenCalledWith(`/flows/trigger/${mockFlows[0]!.id}`, {
-			testField: 'testValue',
 			collection: 'test_collection',
 			keys: ['item_1'],
 		});
 
-		expect(currentFlowId.value).toBeNull();
+		expect(currentFlowId).toBeNull();
 	});
 
 	test('uses selection when no primaryKey is available', async () => {

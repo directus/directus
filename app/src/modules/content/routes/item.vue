@@ -300,9 +300,9 @@ watch(
 );
 
 const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
-	collection,
-	primaryKey: actualPrimaryKey,
-	location: ref('item'),
+	collection: collection.value,
+	primaryKey: actualPrimaryKey.value,
+	location: 'item',
 	hasEdits,
 	onRefreshCallback: refresh,
 });
