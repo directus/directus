@@ -271,8 +271,8 @@ catalog:
   stream-json: 1.9.1
   string-width: 7.2.0
   strip-ansi: 7.1.0
-  stylelint: 16.23.0
-  stylelint-config-standard: 39.0.0
+  stylelint: 16.25.0
+  stylelint-config-standard: 39.0.1
   stylelint-config-standard-scss: 15.0.1
   stylelint-config-standard-vue: 1.0.0
   stylelint-use-logical: 2.1.2
