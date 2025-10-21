@@ -190,8 +190,8 @@ catalogs:
       specifier: 4.4.2
       version: 4.4.2
     '@supabase/storage-js':
-      specifier: 2.12.1
-      version: 2.12.1
+      specifier: 2.76.1
+      version: 2.76.1
     '@tinymce/tinymce-vue':
       specifier: 6.3.0
       version: 6.3.0
@@ -2626,7 +2626,7 @@ importers:
         version: link:../utils
       '@supabase/storage-js':
         specifier: 'catalog:'
-        version: 2.12.1
+        version: 2.76.1
       tus-js-client:
         specifier: 'catalog:'
         version: 4.3.1
@@ -5994,8 +5994,8 @@ packages:
     resolution: {integrity: sha512-1ibVeYUacxWYi9i0cf5efil6adJ9WRyZBLivgjs+AUpewx1F3xPi7gLgaASI2SmIQxPoCEjAsLAzKPgMJVgOUQ==}
     engines: {node: 4.x || >=6.0.0}
 
-  '@supabase/storage-js@2.12.1':
-    resolution: {integrity: sha512-QWg3HV6Db2J81VQx0PqLq0JDBn4Q8B1FYn1kYcbla8+d5WDmTdwwMr+EJAxNOSs9W4mhKMv+EYCpCrTFlTj4VQ==}
+  '@supabase/storage-js@2.76.1':
+    resolution: {integrity: sha512-OJiNT8tocI9tcTjTjv1SBVLabzgEnS1NorZuqivkiJ0gTYmeg2c2PFmqCARhoQ4whF6zR9MVsX/Mtj2oSv4i/w==}
 
   '@svgdotjs/svg.draggable.js@3.0.6':
     resolution: {integrity: sha512-7iJFm9lL3C40HQcqzEfezK2l+dW2CpoVY3b77KQGqc8GXWa6LhhmX5Ckv7alQfUXBuZbjpICZ+Dvq1czlGx7gA==}
@@ -17401,9 +17401,10 @@ snapshots:
     dependencies:
       whatwg-url: 5.0.0
 
-  '@supabase/storage-js@2.12.1':
+  '@supabase/storage-js@2.76.1':
     dependencies:
       '@supabase/node-fetch': 2.6.15
+      tslib: 2.8.1
 
   '@svgdotjs/svg.draggable.js@3.0.6(@svgdotjs/svg.js@3.2.4)':
     dependencies:
