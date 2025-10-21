@@ -157,8 +157,8 @@ catalogs:
       specifier: 5.1.1
       version: 5.1.1
     '@rollup/plugin-commonjs':
-      specifier: 28.0.6
-      version: 28.0.6
+      specifier: 28.0.8
+      version: 28.0.8
     '@rollup/plugin-json':
       specifier: 6.1.0
       version: 6.1.0
@@ -2137,7 +2137,7 @@ importers:
         version: link:../utils
       '@rollup/plugin-commonjs':
         specifier: 'catalog:'
-        version: 28.0.6(rollup@4.46.2)
+        version: 28.0.8(rollup@4.46.2)
       '@rollup/plugin-json':
         specifier: 'catalog:'
         version: 6.1.0(rollup@4.46.2)
@@ -5529,8 +5529,8 @@ packages:
       rollup:
         optional: true
 
-  '@rollup/plugin-commonjs@28.0.6':
-    resolution: {integrity: sha512-XSQB1K7FUU5QP+3lOQmVCE3I0FcbbNvmNT4VJSj93iUjayaARrTQeoRdiYQoftAJBLrR9t2agwAd3ekaTgHNlw==}
+  '@rollup/plugin-commonjs@28.0.8':
+    resolution: {integrity: sha512-o1Ug9PxYsF61R7/NXO/GgMZZproLd/WH2XA53Tp9ppf6bU1lMlTtC/gUM6zM3mesi2E0rypk+PNtVrELREyWEQ==}
     engines: {node: '>=16.0.0 || 14 >= 14.17'}
     peerDependencies:
       rollup: ^2.68.0||^3.0.0||^4.0.0
@@ -16894,7 +16894,7 @@ snapshots:
     optionalDependencies:
       rollup: 4.46.2
 
-  '@rollup/plugin-commonjs@28.0.6(rollup@4.46.2)':
+  '@rollup/plugin-commonjs@28.0.8(rollup@4.46.2)':
     dependencies:
       '@rollup/pluginutils': 5.2.0(rollup@4.46.2)
       commondir: 1.0.1

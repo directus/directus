@@ -59,7 +59,7 @@ catalog:
   '@pnpm/workspace.pkgs-graph': 1000.0.18
   '@popperjs/core': 2.11.8
   '@rollup/plugin-alias': 5.1.1
-  '@rollup/plugin-commonjs': 28.0.6
+  '@rollup/plugin-commonjs': 28.0.8
   '@rollup/plugin-json': 6.1.0
   '@rollup/plugin-node-resolve': 16.0.1
   '@rollup/plugin-replace': 6.0.2
