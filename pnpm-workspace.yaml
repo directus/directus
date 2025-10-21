@@ -75,7 +75,7 @@ catalog:
   '@turf/meta': 7.2.0
   '@tus/server': 1.10.2
   '@tus/utils': 0.5.1
-  '@types/async': 3.2.24
+  '@types/async': 3.2.25
   '@types/base-64': 1.0.2
   '@types/busboy': 1.5.4
   '@types/bytes': 3.1.5

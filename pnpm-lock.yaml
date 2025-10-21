@@ -205,8 +205,8 @@ catalogs:
       specifier: 0.5.1
       version: 0.5.1
     '@types/async':
-      specifier: 3.2.24
-      version: 3.2.24
+      specifier: 3.2.25
+      version: 3.2.25
     '@types/base-64':
       specifier: 1.0.2
       version: 1.0.2
@@ -1319,7 +1319,7 @@ importers:
         version: 8.0.2
       '@types/async':
         specifier: 'catalog:'
-        version: 3.2.24
+        version: 3.2.25
       '@types/busboy':
         specifier: 'catalog:'
         version: 1.5.4
@@ -6066,8 +6066,8 @@ packages:
   '@types/argparse@1.0.38':
     resolution: {integrity: sha512-ebDJ9b0e702Yr7pWgB0jzm+CX4Srzz8RcXtLJDJB+BSccqMa36uyH/zUsSYao5+BD1ytv3k3rPYCq4mAE1hsXA==}
 
-  '@types/async@3.2.24':
-    resolution: {integrity: sha512-8iHVLHsCCOBKjCF2KwFe0p9Z3rfM9mL+sSP8btyR5vTjJRAqpBYD28/ZLgXPf0pjG1VxOvtCV/BgXkQbpSe8Hw==}
+  '@types/async@3.2.25':
+    resolution: {integrity: sha512-O6Th/DI18XjrL9TX8LO9F/g26qAz5vynmQqlXt/qLGrskvzCKXKc5/tATz3G2N6lM8eOf3M8/StB14FncAmocg==}
 
   '@types/base-64@1.0.2':
     resolution: {integrity: sha512-uPgKMmM9fmn7I+Zi6YBqctOye4SlJsHKcisjHIMWpb2YKZRc36GpKyNuQ03JcT+oNXg1m7Uv4wU94EVltn8/cw==}
@@ -17472,7 +17472,7 @@ snapshots:
 
   '@types/argparse@1.0.38': {}
 
-  '@types/async@3.2.24': {}
+  '@types/async@3.2.25': {}
 
   '@types/base-64@1.0.2': {}
 
