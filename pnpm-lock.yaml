@@ -106,8 +106,8 @@ catalogs:
       specifier: 4.12.1
       version: 4.12.1
     '@google-cloud/storage':
-      specifier: 7.16.0
-      version: 7.16.0
+      specifier: 7.17.0
+      version: 7.17.0
     '@histoire/plugin-vue':
       specifier: 0.17.17
       version: 0.17.17
@@ -2506,7 +2506,7 @@ importers:
         version: link:../utils
       '@google-cloud/storage':
         specifier: 'catalog:'
-        version: 7.16.0(encoding@0.1.13)
+        version: 7.17.0(encoding@0.1.13)
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -4115,8 +4115,8 @@ packages:
     resolution: {integrity: sha512-Orxzlfb9c67A15cq2JQEyVc7wEsmFBmHjZWZYQMUyJ1qivXyMwdyNOs9odi79hze+2zqdTtu1E19IM/FtqZ10g==}
     engines: {node: '>=14'}
 
-  '@google-cloud/storage@7.16.0':
-    resolution: {integrity: sha512-7/5LRgykyOfQENcm6hDKP8SX/u9XxE5YOiWOkgkwcoO+cG8xT/cyOvp9wwN3IxfdYgpHs8CE7Nq2PKX2lNaEXw==}
+  '@google-cloud/storage@7.17.0':
+    resolution: {integrity: sha512-5m9GoZqKh52a1UqkxDBu/+WVFDALNtHg5up5gNmNbXQWBcV813tzJKsyDtKjOPrlR1em1TxtD7NSPCrObH7koQ==}
     engines: {node: '>=14'}
 
   '@gwhitney/detect-indent@7.0.1':
@@ -14894,7 +14894,7 @@ snapshots:
 
   '@google-cloud/promisify@4.0.0': {}
 
-  '@google-cloud/storage@7.16.0(encoding@0.1.13)':
+  '@google-cloud/storage@7.17.0(encoding@0.1.13)':
     dependencies:
       '@google-cloud/paginator': 5.0.2
       '@google-cloud/projectify': 4.0.0
