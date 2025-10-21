@@ -55,7 +55,7 @@ for (const { field, operator, value, sql, bindings } of [
 		field: 'articles.count(links)',
 		operator: '_eq',
 		value: '123',
-		sql: `select * where (select count(*) from "links" as "alias0" where "alias0"."article_id" = "articles"."id") = ?`,
+		sql: `select * where (select count(*) from "links" as "arvsw" where "arvsw"."article_id" = "articles"."id") = ?`,
 		bindings: [123],
 	},
 	{
