@@ -11,7 +11,7 @@ catalog:
   '@aws-sdk/client-s3': 3.913.0
   '@aws-sdk/client-sesv2': 3.913.0
   '@aws-sdk/lib-storage': 3.913.0
-  '@azure/storage-blob': 12.28.0
+  '@azure/storage-blob': 12.29.1
   '@changesets/cli': 2.29.5
   '@changesets/get-github-info': 0.6.0
   '@changesets/types': 6.1.0
