@@ -102,6 +102,32 @@ const linksParsed = computed<ParsedLink[]>(() =>
 	}),
 );
 
+const buttonProps = computed(() =>
+	linksParsed.value.map((link, index) => {
+		const baseProps = {
+			key: `${link.actionType}-${index}`,
+			class: ['action', link.type],
+			secondary: link.type !== 'primary',
+			icon: !link.label,
+		};
+
+		if (link.actionType === 'url' && link.href) {
+			return {
+				...baseProps,
+				href: link.href,
+				to: link.to,
+			};
+		} else if (link.flow) {
+			return {
+				...baseProps,
+				onClick: () => runManualFlow(link.flow!),
+			};
+		}
+
+		return baseProps;
+	}),
+);
+
 /**
  * Get all deduplicated relational fields from the link-templates.
  * For example:
@@ -122,30 +148,8 @@ const { runManualFlow } = injectRunManualFlow();
 
 <template>
 	<div class="presentation-links">
-		<template v-for="(link, index) in linksParsed">
-			<v-button
-				v-if="link.actionType === 'url' && link.href"
-				:key="`url-${index}`"
-				class="action"
-				:class="[link.type]"
-				:secondary="link.type !== 'primary'"
-				:icon="!link.label"
-				:href="link.href"
-				:to="link.to"
-			>
-				<v-icon v-if="link.icon" left :name="link.icon" />
-				<span v-if="link.label">{{ link.label }}</span>
-			</v-button>
-
-			<v-button
-				v-else-if="link.flow"
-				:key="`flow-${index}`"
-				class="action"
-				:class="[link.type]"
-				:secondary="link.type !== 'primary'"
-				:icon="!link.label"
-				@click="runManualFlow(link.flow)"
-			>
+		<template v-for="(link, index) in linksParsed" :key="`link-${index}`">
+			<v-button v-if="link.href || link.flow" v-bind="buttonProps[index]">
 				<v-icon v-if="link.icon" left :name="link.icon" />
 				<span v-if="link.label">{{ link.label }}</span>
 			</v-button>
