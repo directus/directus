@@ -216,7 +216,7 @@ catalog:
   lru-cache: 11.1.0
   mapbox-gl: 1.13.3
   maplibre-gl: 1.15.3
-  marked: 16.1.1
+  marked: 16.4.1
   micromustache: 8.0.3
   mime: 4.0.7
   mime-types: 3.0.1
