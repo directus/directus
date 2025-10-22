@@ -65,6 +65,10 @@ const isNestedRelationalField = computed(() => {
 	return props.field.meta?.special?.find((type) => nestedRelationalTypes.includes(type)) !== undefined;
 });
 
+const isComparisonField = computed(() => {
+	return props.comparison?.fields.has(props.field.field);
+});
+
 const { internalValue, isEdited, defaultValue } = useComputedValues();
 
 const { showRaw, copyRaw, pasteRaw, onRawValueSubmit } = useRaw();
@@ -178,7 +182,8 @@ function useComputedValues() {
 			field.meta?.width || 'full',
 			{
 				invalid: validationError,
-				'diff-indicator': comparison?.fields.has(field.field) && !isNestedRelationalField,
+				'diff-indicator': isComparisonField && !isNestedRelationalField,
+				'diff-track': isComparisonField && isNestedRelationalField,
 			},
 		]"
 	>
@@ -260,7 +265,8 @@ function useComputedValues() {
 .field {
 	position: relative;
 
-	&.diff-indicator {
+	&.diff-indicator,
+	&.diff-track {
 		&::before {
 			content: '';
 			position: absolute;
@@ -268,7 +274,18 @@ function useComputedValues() {
 			inset-inline-start: -12px;
 			inline-size: 4px;
 			z-index: 1;
+		}
+	}
+
+	&.diff-indicator {
+		&::before {
 			background-color: var(--comparison-indicator--color);
+		}
+	}
+
+	&.diff-track {
+		&::before {
+			background-color: var(--comparison-track--color);
 		}
 	}
 }

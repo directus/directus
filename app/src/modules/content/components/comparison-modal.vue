@@ -613,10 +613,12 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 
 .comparison-form--main {
 	--comparison-indicator--color: var(--theme--danger);
+	--comparison-track--color: var(--theme--danger-background);
 }
 
 .comparison-form--current {
 	--comparison-indicator--color: var(--theme--success);
+	--comparison-track--color: var(--theme--success-background);
 }
 
 :deep(.v-list) {
@@ -632,7 +634,7 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 			content: '';
 			position: absolute;
 			inset-block: 0;
-			inset-inline-start: -12px;
+			inset-inline-start: -14px;
 			inline-size: 4px;
 			z-index: 1;
 			background-color: var(--comparison-indicator--color);
