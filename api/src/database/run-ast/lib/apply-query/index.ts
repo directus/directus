@@ -38,7 +38,7 @@ export default function applyQuery(
 
 	const skipPaginationAndLimitWhenAggregating = Boolean(query?.aggregate && !query.group);
 
-    if (!skipPaginationAndLimitWhenAggregating) {
+	if (!skipPaginationAndLimitWhenAggregating) {
 		applyLimit(knex, dbQuery, query.limit);
 
 		if (query.offset) {
