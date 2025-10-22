@@ -132,8 +132,8 @@ catalog:
   argon2: 0.43.1
   async: 3.2.6
   async-mutex: 0.5.0
-  axios: 1.11.0
-  axios-cache-interceptor: 1.8.0
+  axios: 1.12.2
+  axios-cache-interceptor: 1.8.3
   base-64: 1.0.0
   boxen: 8.0.1
   busboy: 1.6.0
