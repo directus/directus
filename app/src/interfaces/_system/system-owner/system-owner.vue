@@ -24,7 +24,7 @@ const emit = defineEmits(['input']);
 
 const errors = ref<Record<string, any>[]>([]);
 const editing = ref(false);
-const isSaveDisabled = computed(() => !form.value.email || !form.value.license);
+const isSaveDisabled = computed(() => !form.value.email);
 
 async function save() {
 	errors.value = validateItem(form.value, unref(fields), true);
@@ -47,24 +47,14 @@ const fields = useFormFields(false, form);
 	<div class="system-owner">
 		<v-input :model-value="value" type="text" disabled readonly>
 			<template #append>
-				<v-icon
-					v-tooltip="t('interfaces.system-owner.edit')"
-					name="edit"
-					class="edit"
-					clickable
-					@click="editing = true"
-				/>
+				<v-icon v-tooltip="t('interfaces.system-owner.edit')" name="edit" class="edit" clickable
+					@click="editing = true" />
 			</template>
 		</v-input>
 	</div>
 
-	<v-drawer
-		v-model="editing"
-		:title="t('interfaces.system-owner.update')"
-		icon="link"
-		@cancel="editing = false"
-		@apply="save"
-	>
+	<v-drawer v-model="editing" :title="t('interfaces.system-owner.update')" icon="link" @cancel="editing = false"
+		@apply="save">
 		<template #actions>
 			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="isSaveDisabled" @click="save">
 				<v-icon name="check" />
@@ -72,7 +62,7 @@ const fields = useFormFields(false, form);
 		</template>
 
 		<div class="drawer-content">
-			<setup-form v-model="form" :errors="errors" :register="false"></setup-form>
+			<setup-form v-model="form" :errors="errors" :register="false" skip-license></setup-form>
 		</div>
 	</v-drawer>
 </template>

@@ -26,7 +26,12 @@ setup_info: Let's create your admin account and get your project up and running.
 setup_license_notice: >
   Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget. <br><br>
   Entities above this threshold require a paid license. You can continue evaluating Directus now and [contact our
-  team](https://directus.io) when you're ready for production use.
+  team](https://directus.io/demo) when you're ready to discuss production use.
+edit_license_notice: >
+  Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget. <br><br>
+  Entities above this threshold require a paid license. You can continue evaluating Directus now and [contact our
+  team](https://directus.io/demo) when you're ready to discuss production use. <br><br> By hitting save, you accept the
+  terms of the [Directus BSL 1.1](https://directus.io) and [Privacy Policy](https://directus.io).
 setup_accept_license:
   I accept the terms of the [Directus BSL 1.1](https://directus.io) and [Privacy Policy](https://directus.io)
 setup_marketing_emails: Send me product updates and release notes

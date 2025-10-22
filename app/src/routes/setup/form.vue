@@ -9,11 +9,13 @@ const { t } = useI18n();
 const props = withDefaults(
 	defineProps<{
 		register?: boolean;
+		skipLicense?: boolean;
 		modelValue?: SetupForm;
 		errors?: Record<string, any>[];
 	}>(),
 	{
 		register: true,
+		skipLicense: false,
 		modelValue: () => initialValues,
 	},
 );
@@ -42,22 +44,17 @@ const fields = useFormFields(props.register, value);
 </script>
 
 <template>
-	<div class="setup-form">
+	<div class="setup-form" :class="{ skipLicense }">
 		<template v-if="register">
 			<img src="@/assets/logo-dark.svg" class="logo" alt="Directus Logo" />
 			<h1>{{ t('setup_welcome') }}</h1>
 			<p>{{ t('setup_info') }}</p>
 		</template>
-		<v-form
-			v-model="value"
-			:initial-values="initialValues"
-			:validation-errors="errors"
-			:show-validation-errors="false"
-			:fields="fields"
-		></v-form>
-		<v-notice><span v-md="t('setup_license_notice')"></span></v-notice>
+		<v-form v-model="value" :initial-values="initialValues" :validation-errors="errors"
+			:show-validation-errors="false" :fields="fields"></v-form>
+		<v-notice><span v-md="t(skipLicense ? 'edit_license_notice' : 'setup_license_notice')"></span></v-notice>
 
-		<v-checkbox v-model="license">
+		<v-checkbox v-if="!skipLicense" v-model="license">
 			<span v-md="t('setup_accept_license')"></span>
 		</v-checkbox>
 		<v-checkbox v-if="register" v-model="marketing">
@@ -68,9 +65,14 @@ const fields = useFormFields(props.register, value);
 
 <style lang="scss" scoped>
 .setup-form {
-	display: flex;
-	flex-direction: column;
-	justify-content: stretch;
+	display: grid;
+
+	&.skipLicense {
+		.v-notice {
+			grid-row: 1;
+			margin-block-start: 0;
+		}
+	}
 }
 
 .logo {
