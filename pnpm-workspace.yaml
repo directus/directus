@@ -225,7 +225,7 @@ catalog:
   mnemonist: 0.40.3
   ms: 2.1.3
   mysql2: 3.14.3
-  nanoid: 5.1.5
+  nanoid: 5.1.6
   node-machine-id: 1.1.12
   nodemailer: 7.0.5
   nodemailer-mailgun-transport: 2.1.5
