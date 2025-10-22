@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { Field } from '@directus/types';
-import { mergeMissingMainItemKeysIntoRevision } from './comparison-utils';
+import { mergeMissingMainItemKeysIntoRevision, getFieldsWithDifferences } from './comparison-utils';
 
 describe('mergeMissingMainItemKeysIntoRevision', () => {
 	const fields: Field[] = [
@@ -150,5 +150,77 @@ describe('mergeMissingMainItemKeysIntoRevision', () => {
 			  "title": "test1",
 			}
 		`);
+	});
+});
+
+describe('getFieldsWithDifferences', () => {
+	it('excludes related item fields when comparing revisions', () => {
+		const comparedData = {
+			outdated: false,
+			mainHash: '',
+			incoming: {
+				title: 'New Title',
+				description: 'New Description',
+				related_items: [{ id: 1, name: 'Item 1' }],
+				categories: [{ id: 2, name: 'Category 1' }],
+				status: 'published',
+			},
+			base: {
+				title: 'Old Title',
+				description: 'Old Description',
+				related_items: [{ id: 2, name: 'Item 2' }],
+				categories: [{ id: 3, name: 'Category 2' }],
+				status: 'draft',
+			},
+		};
+
+		const fieldMetadata = {
+			title: { meta: { special: [] } },
+			description: { meta: { special: [] } },
+			related_items: { meta: { special: ['m2m'] } },
+			categories: { meta: { special: ['o2m'] } },
+			status: { meta: { special: [] } },
+		};
+
+		// Test version comparison - should include all fields with differences
+		const versionFields = getFieldsWithDifferences(comparedData, fieldMetadata, 'version');
+		expect(versionFields).toContain('title');
+		expect(versionFields).toContain('description');
+		expect(versionFields).toContain('related_items');
+		expect(versionFields).toContain('categories');
+		expect(versionFields).toContain('status');
+
+		// Test revision comparison - should exclude related item fields
+		const revisionFields = getFieldsWithDifferences(comparedData, fieldMetadata, 'revision');
+		expect(revisionFields).toContain('title');
+		expect(revisionFields).toContain('description');
+		expect(revisionFields).toContain('status');
+		expect(revisionFields).not.toContain('related_items');
+		expect(revisionFields).not.toContain('categories');
+	});
+
+	it('includes related item fields when comparing versions', () => {
+		const comparedData = {
+			outdated: false,
+			mainHash: '',
+			incoming: {
+				title: 'New Title',
+				related_items: [{ id: 1, name: 'Item 1' }],
+			},
+			base: {
+				title: 'Old Title',
+				related_items: [{ id: 2, name: 'Item 2' }],
+			},
+		};
+
+		const fieldMetadata = {
+			title: { meta: { special: [] } },
+			related_items: { meta: { special: ['m2m'] } },
+		};
+
+		// Version comparison should include related item fields
+		const versionFields = getFieldsWithDifferences(comparedData, fieldMetadata, 'version');
+		expect(versionFields).toContain('title');
+		expect(versionFields).toContain('related_items');
 	});
 });
