@@ -1,7 +1,7 @@
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import { Field, ValidationError } from '@directus/types';
-import { computed, Ref, toRef } from 'vue';
+import { computed, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 type ValidationErrorWithDetails = ValidationError & {
