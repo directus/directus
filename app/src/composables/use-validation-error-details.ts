@@ -4,10 +4,9 @@ import { Field, ValidationError } from '@directus/types';
 import { computed, Ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-export type ValidationErrorWithDetails = ValidationError & {
+type ValidationErrorWithDetails = ValidationError & {
 	fieldName?: string;
 	groupName?: string;
-	type: ValidationError['type'] | 'required' | 'unique';
 	customValidationMessage: string | null;
 };
 
