@@ -7,7 +7,6 @@ import RevisionItem from './revision-item.vue';
 
 interface Props {
 	group: RevisionsByDate;
-	isFirstGroup?: boolean;
 }
 
 defineProps<Props>();
