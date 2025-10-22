@@ -409,8 +409,8 @@ catalogs:
       specifier: 5.65.18
       version: 5.65.18
     color:
-      specifier: 5.0.0
-      version: 5.0.0
+      specifier: 5.0.2
+      version: 5.0.2
     commander:
       specifier: 14.0.0
       version: 14.0.0
@@ -1689,7 +1689,7 @@ importers:
         version: 5.65.18
       color:
         specifier: 'catalog:'
-        version: 5.0.0
+        version: 5.0.2
       cropperjs:
         specifier: 'catalog:'
         version: 1.6.2
@@ -7469,8 +7469,8 @@ packages:
     resolution: {integrity: sha512-1rXeuUUiGGrykh+CeBdu5Ie7OJwinCgQY0bc7GCRxy5xVHy+moaqkpL/jqQq0MtQOeYcrqEz4abc5f0KtU7W4A==}
     engines: {node: '>=12.5.0'}
 
-  color@5.0.0:
-    resolution: {integrity: sha512-16BlyiuyLq3MLxpRWyOTiWsO3ii/eLQLJUQXBSNcxMBBSnyt1ee9YUdaozQp03ifwm5woztEZGDbk9RGVuCsdw==}
+  color@5.0.2:
+    resolution: {integrity: sha512-e2hz5BzbUPcYlIRHo8ieAhYgoajrJr+hWoceg6E345TPsATMUKqDgzt8fSXZJJbxfpiPzkWyphz8yn8At7q3fA==}
     engines: {node: '>=18'}
 
   colord@2.9.3:
@@ -19474,7 +19474,7 @@ snapshots:
       color-convert: 2.0.1
       color-string: 1.9.1
 
-  color@5.0.0:
+  color@5.0.2:
     dependencies:
       color-convert: 3.1.0
       color-string: 2.0.1
