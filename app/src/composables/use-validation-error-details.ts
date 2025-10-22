@@ -11,7 +11,7 @@ type ValidationErrorWithDetails = ValidationError & {
 	customValidationMessage: string | null;
 };
 
-export function useValidationErrorDetails(validationErrors: Ref<ValidationError[]>, fields: Field[]) {
+export function useValidationErrorDetails(validationErrors: Ref<ValidationError[]>, fields: Ref<Field[]>) {
 	const { t } = useI18n();
 
 	const validationErrorsWithDetails = computed<ValidationErrorWithDetails[]>(() => {
@@ -19,8 +19,8 @@ export function useValidationErrorDetails(validationErrors: Ref<ValidationError[
 			(validationError: ValidationError & { nestedNames?: Record<string, string>; validation_message?: string }) => {
 				const { field: _fieldKey, fn: functionName } = extractFieldFromFunction(validationError.field);
 				const [fieldKey, ...nestedFieldKeys] = _fieldKey.split('.');
-				const field = fields.find((field) => field.field === fieldKey);
-				const group = fields.find((field) => field.field === validationError.group);
+				const field = fields.value.find((field) => field.field === fieldKey);
+				const group = fields.value.find((field) => field.field === validationError.group);
 				const fieldName = getFieldName() + getNestedFieldNames(nestedFieldKeys, validationError.nestedNames);
 				const isRequiredError = field?.meta?.required && validationError.type === 'nnull';
 				const isNotUniqueError = validationError.code === 'RECORD_NOT_UNIQUE';

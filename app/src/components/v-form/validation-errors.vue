@@ -15,7 +15,7 @@ const { t } = useI18n();
 
 const { validationErrorsWithDetails, getDefaultValidationMessage } = useValidationErrorDetails(
 	toRef(props.validationErrors),
-	props.fields,
+	toRef(props.fields),
 );
 </script>
 

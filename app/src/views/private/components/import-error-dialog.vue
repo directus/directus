@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { computed } from 'vue';
+import { computed, toRef } from 'vue';
 import type { ImportRowLines, ImportRowRange } from '@directus/validation';
 import type { APIError } from '@/types/error';
 import { useFieldsStore } from '@/stores/fields';
@@ -45,7 +45,7 @@ const otherErrors = computed<(ValidationError & { fieldName?: string; customVali
 
 const { validationErrorsWithDetails, getDefaultValidationMessage } = useValidationErrorDetails(
 	validationTypesErrors,
-	fieldsStore.getFieldsForCollection(props.collection),
+	toRef(fieldsStore.getFieldsForCollection(props.collection)),
 );
 
 const formattedErrors = computed(() => {
@@ -77,7 +77,7 @@ function closeDialog() {
 	<v-dialog v-model="modelValue" persistent>
 		<v-card>
 			<v-card-title>{{ t('import_data_errors') }}</v-card-title>
-			<v-card-text>
+			<v-card-text class="validation-errors-wrapper">
 				<v-notice type="danger" multiline>
 					<p>{{ $t('import_data_validation_errors_notice') }}</p>
 					<ul class="validation-errors-list">
