@@ -27,6 +27,7 @@ const props = withDefaults(
 		links?: Link[];
 		collection: string;
 		primaryKey?: PrimaryKey;
+		disabled?: boolean;
 	}>(),
 	{
 		links: () => [],
@@ -111,7 +112,7 @@ const buttonProps = computed(() =>
 			class: ['action', link.type],
 			secondary: link.type !== 'primary',
 			icon: !link.label,
-			disabled: link.actionType === 'flow' && attrs['batch-mode'],
+			disabled: (link.actionType === 'flow' && attrs['batch-mode']) || props.disabled,
 		};
 
 		if (link.actionType === 'url' && link.href) {
