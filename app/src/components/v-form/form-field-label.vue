@@ -46,12 +46,15 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 <template>
 	<div class="field-label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
 		<button type="button" class="field-name" @click="toggle">
+			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot" />
+
 			<v-checkbox
 				v-if="batchMode"
 				:model-value="batchActive"
 				:value="field.field"
 				@update:model-value="$emit('toggle-batch', field)"
 			/>
+
 			<v-checkbox
 				v-if="comparison?.side === 'incoming' && comparison.fields.has(field.field)"
 				class="comparison-checkbox"
@@ -59,40 +62,48 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 				:value="field.field"
 				@update:model-value="comparison.onToggleField(field.field)"
 			/>
-			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
-			<v-text-overflow :text="field.name" />
-			<span v-if="comparison?.fields?.has(field.field) && field.meta?.hidden" class="hidden-indicator">
-				({{ t('hidden') }})
-			</span>
-			<v-icon
-				v-if="field.meta?.required === true"
-				class="required"
-				:class="{ 'has-badge': badge }"
-				sup
-				name="star"
-				filled
-			/>
-			<v-chip v-if="badge" class="badge" x-small>{{ badge }}</v-chip>
-			<v-icon
-				v-if="!disabled && rawEditorEnabled"
-				v-tooltip="t('toggle_raw_editor')"
-				class="raw-editor-toggle"
-				:class="{ active: rawEditorActive }"
-				name="data_object"
-				:filled="!rawEditorActive"
-				small
-				clickable
-				@click.stop="$emit('toggle-raw', !rawEditorActive)"
-			/>
-			<v-chip
-				v-if="comparison?.side === 'incoming' && comparison.revisionFields?.has(field.field)"
-				v-tooltip="getUpdatedInRevisionTooltip(comparison.fields.has(field.field))"
-				class="updated-badge"
-				x-small
-				:label="false"
-			>
-				{{ $t('updated') }}
-			</v-chip>
+
+			<div class="field-label-content">
+				<v-text-overflow :text="field.name" />
+
+				<span v-if="comparison?.fields?.has(field.field) && field.meta?.hidden" class="hidden-indicator">
+					({{ t('hidden') }})
+				</span>
+
+				<v-icon
+					v-if="field.meta?.required === true"
+					class="required"
+					:class="{ 'has-badge': badge }"
+					sup
+					name="star"
+					filled
+				/>
+
+				<v-chip v-if="badge" class="badge" x-small>{{ badge }}</v-chip>
+
+				<v-icon
+					v-if="!disabled && rawEditorEnabled"
+					v-tooltip="t('toggle_raw_editor')"
+					class="raw-editor-toggle"
+					:class="{ active: rawEditorActive }"
+					name="data_object"
+					:filled="!rawEditorActive"
+					small
+					clickable
+					@click.stop="$emit('toggle-raw', !rawEditorActive)"
+				/>
+
+				<v-chip
+					v-if="comparison?.side === 'incoming' && comparison.revisionFields?.has(field.field)"
+					v-tooltip="getUpdatedInRevisionTooltip(comparison.fields.has(field.field))"
+					class="updated-badge"
+					x-small
+					:label="false"
+				>
+					{{ $t('updated') }}
+				</v-chip>
+			</div>
+
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</button>
 	</div>
@@ -108,6 +119,11 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 	.v-text-overflow {
 		display: inline;
 		white-space: normal;
+
+		@media (min-width: 960px) {
+			display: initial;
+			white-space: nowrap;
+		}
 	}
 
 	&.readonly button {
@@ -130,6 +146,14 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			&:hover {
 				--v-icon-color: var(--theme--success);
 			}
+		}
+	}
+
+	.field-label-content {
+		display: inline;
+
+		@media (min-width: 960px) {
+			display: contents;
 		}
 	}
 
@@ -226,13 +250,6 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 		text-align: start;
 		display: flex;
 		flex-wrap: nowrap;
-	}
-
-	@media (min-width: 960px) {
-		.v-text-overflow {
-			display: initial;
-			white-space: nowrap;
-		}
 	}
 }
 
