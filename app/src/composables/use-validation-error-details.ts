@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n';
 export type ValidationErrorWithDetails = ValidationError & {
 	fieldName?: string;
 	groupName?: string;
+	type: ValidationError['type'] | 'required' | 'unique';
 	customValidationMessage: string | null;
 };
 
@@ -22,19 +23,27 @@ export function useValidationErrorDetails(
 				const { field: _fieldKey, fn: functionName } = extractFieldFromFunction(validationError.field);
 				const [fieldKey, ...nestedFieldKeys] = _fieldKey.split('.');
 				const field = fields.find((field) => field.field === fieldKey);
-				const group = fields.find((field) => field.field === validationError.group);
-				const fieldName = getFieldName() + getNestedFieldNames(nestedFieldKeys, validationError.nestedNames);
 				const isRequiredError = field?.meta?.required && validationError.type === 'nnull';
 				const isNotUniqueError = validationError.code === 'RECORD_NOT_UNIQUE';
 
-				return {
+				const result: ValidationErrorWithDetails = {
 					...validationError,
 					field: fieldKey!,
-					fieldName,
-					groupName: group?.name ?? validationError.group,
-					type: getValidationType(),
+					fieldName:
+						getFieldName() +
+						(validationError.nestedNames && nestedFieldKeys.length
+							? getNestedFieldNames(nestedFieldKeys, validationError.nestedNames)
+							: ''),
+					type: getValidationType() as ValidationErrorWithDetails['type'],
 					customValidationMessage: getCustomValidationMessage(),
-				} as ValidationErrorWithDetails;
+				};
+
+				if (validationError.group) {
+					const group = fields.find((f) => f.field === validationError.group);
+					result.groupName = group?.name ?? validationError.group;
+				}
+
+				return result;
 
 				function getFieldName() {
 					if (!field) return validationError.field;
@@ -43,7 +52,6 @@ export function useValidationErrorDetails(
 				}
 
 				function getNestedFieldNames(nestedFieldKeys: string[], nestedNames?: Record<string, string>) {
-					if (!nestedFieldKeys?.length) return '';
 					const separator = ' → ';
 					return `${separator}${nestedFieldKeys.map((name) => nestedNames?.[name] ?? name).join(separator)}`;
 				}

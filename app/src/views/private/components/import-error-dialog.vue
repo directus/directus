@@ -77,18 +77,21 @@ function closeDialog() {
 	<v-dialog v-model="modelValue" persistent>
 		<v-card>
 			<v-card-title>{{ t('import_data_errors') }}</v-card-title>
-			<v-card-text>
+			<v-card-text class="validation-errors-wrapper">
 				<v-notice type="danger" multiline>
 					<p>{{ $t('import_data_validation_errors_notice') }}</p>
 					<ul class="validation-errors-list">
 						<li v-for="(error, index) in formattedErrors" :key="index" class="validation-error">
 							<strong v-if="error.rowCount > 0">
 								{{
-									$t('import_data_error_row', {
-										count: error.rowCount,
-										rows: error.formattedRows,
-										field: error?.fieldName ? ` (${error.fieldName})` : '',
-									})
+									$t(
+										'import_data_error_row',
+										{
+											rows: error.formattedRows,
+											field: error?.fieldName ? ` (${error.fieldName})` : '',
+										},
+										error.rowCount,
+									)
 								}}
 							</strong>
 
@@ -111,7 +114,7 @@ function closeDialog() {
 </template>
 
 <style lang="scss" scoped>
-.v-card-text {
+.validation-errors-wrapper {
 	padding-block: 12px 0;
 }
 
