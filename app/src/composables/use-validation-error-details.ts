@@ -11,38 +11,30 @@ type ValidationErrorWithDetails = ValidationError & {
 };
 
 export function useValidationErrorDetails(
-	validationErrors: Ref<ValidationError[]> | ValidationError[],
+	validationErrors: Ref<ValidationError[]>,
 	fields: Field[],
 ) {
 	const { t } = useI18n();
 
 	const validationErrorsWithDetails = computed<ValidationErrorWithDetails[]>(() => {
-		return toRef(validationErrors).value.map(
+		return validationErrors.value.map(
 			(validationError: ValidationError & { nestedNames?: Record<string, string>; validation_message?: string }) => {
 				const { field: _fieldKey, fn: functionName } = extractFieldFromFunction(validationError.field);
 				const [fieldKey, ...nestedFieldKeys] = _fieldKey.split('.');
 				const field = fields.find((field) => field.field === fieldKey);
+				const group = fields.find((field) => field.field === validationError.group);
+				const fieldName = getFieldName() + getNestedFieldNames(nestedFieldKeys, validationError.nestedNames);
 				const isRequiredError = field?.meta?.required && validationError.type === 'nnull';
 				const isNotUniqueError = validationError.code === 'RECORD_NOT_UNIQUE';
 
-				const result: ValidationErrorWithDetails = {
+				return {
 					...validationError,
 					field: fieldKey!,
-					fieldName:
-						getFieldName() +
-						(validationError.nestedNames && nestedFieldKeys.length
-							? getNestedFieldNames(nestedFieldKeys, validationError.nestedNames)
-							: ''),
-					type: getValidationType() as ValidationErrorWithDetails['type'],
+					fieldName,
+					groupName: group?.name ?? validationError.group,
+					type: getValidationType(),
 					customValidationMessage: getCustomValidationMessage(),
-				};
-
-				if (validationError.group) {
-					const group = fields.find((f) => f.field === validationError.group);
-					result.groupName = group?.name ?? validationError.group;
-				}
-
-				return result;
+				} as ValidationErrorWithDetails;
 
 				function getFieldName() {
 					if (!field) return validationError.field;
@@ -51,6 +43,7 @@ export function useValidationErrorDetails(
 				}
 
 				function getNestedFieldNames(nestedFieldKeys: string[], nestedNames?: Record<string, string>) {
+					if (!nestedFieldKeys?.length) return '';
 					const separator = ' → ';
 					return `${separator}${nestedFieldKeys.map((name) => nestedNames?.[name] ?? name).join(separator)}`;
 				}

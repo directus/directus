@@ -2,6 +2,7 @@
 import { useI18n } from 'vue-i18n';
 import { ValidationError, Field } from '@directus/types';
 import { useValidationErrorDetails } from '@/composables/use-validation-error-details';
+import { toRef } from 'vue';
 
 const props = defineProps<{
 	validationErrors: ValidationError[];
@@ -13,7 +14,7 @@ defineEmits(['scroll-to-field']);
 const { t } = useI18n();
 
 const { validationErrorsWithDetails, getDefaultValidationMessage } = useValidationErrorDetails(
-	props.validationErrors,
+	toRef(props.validationErrors),
 	props.fields,
 );
 </script>
