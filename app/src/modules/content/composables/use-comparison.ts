@@ -9,7 +9,7 @@ import {
 	areAllFieldsSelected,
 	areSomeFieldsSelected,
 	normalizeComparisonData as normalizeComparisonDataUtil,
-	mergeMainItemKeysIntoRevision,
+	mergeMissingMainItemKeysIntoRevision,
 	copySpecialFieldsFromBaseToIncoming,
 	replaceArraysInMergeCustomizer,
 	getItemEndpoint,
@@ -398,10 +398,9 @@ export function useComparison(options: UseComparisonOptions) {
 		const targetCollection = revision.collection || collection?.value || '';
 		const fields = fieldsStore.getFieldsForCollection(targetCollection);
 
-		// Merge main item keys into revision data with default values for missing fields
 		const revisionData = revision.data || {};
-		const revisionDataWithDefaults = mergeMainItemKeysIntoRevision(revisionData, baseMerged, fields);
-		const incomingMerged = mergeWith({}, revisionDataWithDefaults, replaceArraysInMergeCustomizer);
+		const revisionDataWithDefaults = mergeMissingMainItemKeysIntoRevision(revisionData, baseMerged, fields);
+		const incomingMerged = mergeWith({}, baseMerged, revisionDataWithDefaults, replaceArraysInMergeCustomizer);
 
 		if ('activity' in revision && (revision as any)?.activity?.timestamp) {
 			incomingMerged.date_updated = (revision as any).activity.timestamp;

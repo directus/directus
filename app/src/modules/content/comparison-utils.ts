@@ -179,7 +179,7 @@ export function areSomeFieldsSelected(selectedFields: string[], availableFields:
 	return availableFields.length > 0 && availableFields.some((field) => selectedFields.includes(field));
 }
 
-export function mergeMainItemKeysIntoRevision(
+export function mergeMissingMainItemKeysIntoRevision(
 	revisionData: Record<string, any>,
 	mainItem: Record<string, any>,
 	fields?: Field[],
@@ -188,10 +188,13 @@ export function mergeMainItemKeysIntoRevision(
 
 	const defaultValues = fields ? getDefaultValuesFromFields(fields).value : {};
 
-	for (const [key] of Object.entries(mainItem)) {
-		if (!(key in merged)) {
-			const defaultValue = defaultValues[key] ?? null;
-			merged[key] = defaultValue;
+	for (const [fieldKey, value] of Object.entries(mainItem)) {
+		if (!(fieldKey in merged)) {
+			const defaultValue = defaultValues[fieldKey] ?? null;
+			const fieldHasValue = value !== defaultValue;
+			if (fieldHasValue) continue;
+
+			merged[fieldKey] = defaultValue;
 		}
 	}
 
@@ -245,7 +248,7 @@ export function computeDifferentFields(
 			skipPrimaryKeyFields: true,
 		});
 	} else {
-		const incomingWithDefaults = mergeMainItemKeysIntoRevision(preparedIncoming, preparedBase, fields);
+		const incomingWithDefaults = mergeMissingMainItemKeysIntoRevision(preparedIncoming, preparedBase, fields);
 		const incomingWithRelational = copySpecialFieldsFromBaseToIncoming(preparedBase, incomingWithDefaults, fields);
 		const fieldMetadata = Object.fromEntries(fields.map((f) => [f.field, f]));
 
