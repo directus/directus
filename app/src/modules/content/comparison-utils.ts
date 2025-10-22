@@ -5,7 +5,7 @@ import { RELATIONAL_TYPES } from '@directus/constants';
 import formatTitle from '@directus/format-title';
 import type { ContentVersion, Field, RelationalType, User } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { isNil, isEqual, mergeWith } from 'lodash';
+import { isNil, isEqual } from 'lodash';
 
 export type ComparisonData = {
 	base: Record<string, any>;
@@ -223,36 +223,6 @@ export function copySpecialFieldsFromBaseToIncoming(
 export function replaceArraysInMergeCustomizer(objValue: unknown, srcValue: unknown) {
 	if (Array.isArray(objValue) || Array.isArray(srcValue)) return srcValue;
 	return undefined;
-}
-
-export function computeDifferentFields(
-	comparisonType: 'version' | 'revision',
-	base: Record<string, any>,
-	incoming: Record<string, any>,
-	fields: Field[] = [],
-): string[] {
-	const preparedBase = base || {};
-	let preparedIncoming = incoming || {};
-
-	if (comparisonType === 'version') {
-		// Modal logic: incoming should be a full item = base + delta
-		preparedIncoming = mergeWith({}, preparedBase, preparedIncoming, replaceArraysInMergeCustomizer);
-
-		const fieldMetadata = Object.fromEntries(fields.map((f) => [f.field, f]));
-
-		return calculateFieldDifferences(preparedIncoming, preparedBase, fieldMetadata, {
-			skipRelationalFields: false,
-			skipPrimaryKeyFields: true,
-		});
-	} else {
-		const incomingWithDefaults = mergeMainItemKeysIntoRevision(preparedIncoming, preparedBase, fields);
-		const incomingWithRelational = copySpecialFieldsFromBaseToIncoming(preparedBase, incomingWithDefaults, fields);
-		const fieldMetadata = Object.fromEntries(fields.map((f) => [f.field, f]));
-
-		return calculateFieldDifferences(incomingWithRelational, preparedBase, fieldMetadata, {
-			skipRelationalFields: true,
-		});
-	}
 }
 
 function normalizeUser(user: User | string | null | undefined): NormalizedUser | null {
