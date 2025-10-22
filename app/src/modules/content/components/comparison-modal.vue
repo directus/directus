@@ -274,6 +274,7 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 									:comparison="{
 										side: 'incoming',
 										fields: comparisonFields,
+										revisionFields: comparisonData?.revisionFields,
 										selectedFields: selectedComparisonFields,
 										onToggleField: toggleComparisonField,
 										relationalDetails: relationalDetails,

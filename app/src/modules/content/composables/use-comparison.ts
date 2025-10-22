@@ -445,10 +445,13 @@ export function useComparison(options: UseComparisonOptions) {
 		const revisionsList = revisions || [];
 		const revisionId = 'id' in revision ? revision.id : null;
 
+		const revisionFields = new Set(Object.keys(revision.delta ?? {}));
+
 		return {
 			base: baseMerged,
 			incoming: incomingWithRelationalFields,
 			selectableDeltas: revisionsList,
+			revisionFields,
 			comparisonType: 'revision',
 			outdated: false,
 			mainHash: '',
