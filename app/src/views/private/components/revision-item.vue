@@ -21,13 +21,13 @@ const revisionCount = computed(() => Object.keys(props.revision.delta ?? {}).len
 const headerMessage = computed(() => {
 	switch (props.revision.activity.action.toLowerCase()) {
 		case 'create':
-			return t('revision_delta_count', revisionCount.value);
+			return t('revision_delta_updated', revisionCount.value);
 		case 'update':
-			return t('revision_delta_count', revisionCount.value);
+			return t('revision_delta_updated', revisionCount.value);
 		case 'delete':
 			return t('revision_delta_deleted');
 		case 'version_save':
-			return t('revision_delta_count', revisionCount.value);
+			return t('revision_delta_updated', revisionCount.value);
 		case 'revert':
 			return t('revision_delta_reverted');
 		default:
