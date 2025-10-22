@@ -4,7 +4,6 @@ import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fiel
 import { RELATIONAL_TYPES } from '@directus/constants';
 import formatTitle from '@directus/format-title';
 import type { ContentVersion, Field, RelationalType, User } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
 import { isNil, isEqual } from 'lodash';
 
 export type ComparisonData = {
@@ -398,9 +397,4 @@ export function normalizeComparisonData(
 		initialSelectedDeltaId: comparisonData.initialSelectedDeltaId || null,
 		fieldsWithDifferences,
 	};
-}
-
-export function getItemEndpoint(collection: string, itemId: string | number) {
-	const endpoint = getEndpoint(collection);
-	return `${endpoint}/${itemId}`;
 }

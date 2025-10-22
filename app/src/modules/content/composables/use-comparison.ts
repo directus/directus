@@ -3,6 +3,7 @@ import { useFieldsStore } from '@/stores/fields';
 import type { Revision } from '@/types/revisions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import type { ContentVersion, User } from '@directus/types';
+import { getEndpoint } from '@directus/utils';
 import {
 	toggleFieldInSelection,
 	toggleAllFields,
@@ -12,7 +13,6 @@ import {
 	mergeMainItemKeysIntoRevision,
 	copySpecialFieldsFromBaseToIncoming,
 	replaceArraysInMergeCustomizer,
-	getItemEndpoint,
 	type ComparisonData,
 	type VersionComparisonResponse,
 	type RevisionComparisonResponse,
@@ -424,6 +424,11 @@ export function useComparison(options: UseComparisonOptions) {
 			currentVersion: currentVersion || null,
 			initialSelectedDeltaId: revisionId || undefined,
 		};
+
+		function getItemEndpoint(collection: string, itemId: string | number) {
+			const endpoint = getEndpoint(collection);
+			return `${endpoint}/${itemId}`;
+		}
 	}
 
 	return {
