@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n';
 type ValidationErrorWithDetails = ValidationError & {
 	fieldName?: string;
 	groupName?: string;
+	type: ValidationError['type'] | 'required' | 'unique';
 	customValidationMessage: string | null;
 };
 
