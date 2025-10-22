@@ -24,7 +24,6 @@ const expand = ref(true);
 				:key="item.id"
 				:revision="item as Revision"
 				:last="index === group.revisions.length - 1"
-				:most-recent="isFirstGroup && index === 0"
 				@click="$emit('click', item.id)"
 			/>
 		</div>

@@ -1,10 +1,4 @@
 import api from '@/api';
-import {
-	computeDifferentFields,
-	replaceArraysInMergeCustomizer,
-	getItemEndpoint,
-} from '@/modules/content/comparison-utils';
-import { useFieldsStore } from '@/stores/fields';
 import { useServerStore } from '@/stores/server';
 import type { Revision, RevisionPartial, RevisionWithTime, RevisionsByDate } from '@/types/revisions';
 import { localizedFormat } from '@/utils/localized-format';
@@ -13,7 +7,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
 import type { ContentVersion, Filter } from '@directus/types';
 import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
-import { groupBy, orderBy, mergeWith } from 'lodash';
+import { groupBy, orderBy } from 'lodash';
 import { Ref, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -30,7 +24,6 @@ export function useRevisions(
 ) {
 	const { t } = useI18n();
 	const { info } = useServerStore();
-	const fieldsStore = useFieldsStore();
 
 	const revisions = ref<RevisionPartial[] | null>(null);
 	const revisionsByDate = ref<RevisionsByDate[] | null>(null);
@@ -156,39 +149,6 @@ export function useRevisions(
 			);
 
 			const revisionsGrouped: RevisionsByDate[] = [];
-			// Create a diff between this revision and the current state of its associated version or item
-			let baseForComparison: Record<string, any> = {};
-			let versionDeltaForComparison: Record<string, any> = {};
-
-			try {
-				if (version.value) {
-					const versionCompare = await api.get(`/versions/${version.value.id}/compare`);
-					baseForComparison = versionCompare.data?.data?.main || {};
-					versionDeltaForComparison = versionCompare.data?.data?.current || {};
-				} else {
-					const itemEndpoint = getItemEndpoint(collection.value, primaryKey.value);
-
-					try {
-						const itemResp = await api.get(itemEndpoint);
-						baseForComparison = itemResp.data?.data || {};
-						versionDeltaForComparison = {};
-					} catch {
-						baseForComparison = {};
-						versionDeltaForComparison = {};
-					}
-				}
-			} catch (error: any) {
-				baseForComparison = {};
-				versionDeltaForComparison = {};
-				unexpectedError(error);
-			}
-
-			const currentItemMerged = mergeWith(
-				{},
-				baseForComparison,
-				versionDeltaForComparison,
-				replaceArraysInMergeCustomizer,
-			);
 
 			for (const [key, value] of Object.entries(revisionsGroupedByDate)) {
 				const date = new Date(key);
@@ -209,9 +169,8 @@ export function useRevisions(
 					const steps = (revision as Revision)?.data?.steps;
 					const lastStepStatus = steps?.[steps.length - 1]?.status;
 
-					const revisionData = (revision as Revision)?.data || {};
-					const collectionFields = fieldsStore.getFieldsForCollection(unref(collection));
-					const differentFields = computeDifferentFields('revision', currentItemMerged, revisionData, collectionFields);
+					const revisionDelta = (revision as Revision)?.delta || {};
+					const differentFields = Object.keys(revisionDelta);
 
 					revisions.push({
 						...revision,

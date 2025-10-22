@@ -8,7 +8,6 @@ import { useI18n } from 'vue-i18n';
 const props = defineProps<{
 	revision: Revision;
 	last?: boolean;
-	mostRecent?: boolean;
 }>();
 
 defineEmits<{
@@ -17,20 +16,18 @@ defineEmits<{
 
 const { t } = useI18n();
 
-const revisionCount = computed(() => props.revision.differentFields?.length ?? 0);
+const revisionCount = computed(() => Object.keys(props.revision.delta ?? {}).length);
 
 const headerMessage = computed(() => {
-	if (props.mostRecent) return t('latest');
-
 	switch (props.revision.activity.action.toLowerCase()) {
 		case 'create':
-			return t('differences_count', revisionCount.value);
+			return t('revision_delta_count', revisionCount.value);
 		case 'update':
-			return t('differences_count', revisionCount.value);
+			return t('revision_delta_count', revisionCount.value);
 		case 'delete':
 			return t('revision_delta_deleted');
 		case 'version_save':
-			return t('differences_count', revisionCount.value);
+			return t('revision_delta_count', revisionCount.value);
 		case 'revert':
 			return t('revision_delta_reverted');
 		default:
@@ -52,13 +49,7 @@ const user = computed(() => {
 </script>
 
 <template>
-	<component
-		:is="mostRecent ? 'div' : 'button'"
-		:type="mostRecent ? undefined : 'button'"
-		class="revision-item"
-		:class="{ last, 'latest-revision': mostRecent }"
-		@click="!mostRecent && $emit('click')"
-	>
+	<button type="button" class="revision-item" :class="{ last }" @click="$emit('click')">
 		<div class="header">
 			<span class="dot" :class="revision.activity.action" />
 			{{ headerMessage }}
@@ -76,7 +67,7 @@ const user = computed(() => {
 
 			<span v-else>{{ t('private_user') }}</span>
 		</div>
-	</component>
+	</button>
 </template>
 
 <style lang="scss" scoped>
@@ -148,7 +139,7 @@ const user = computed(() => {
 		pointer-events: none;
 	}
 
-	&:hover:not(.latest-revision) {
+	&:hover {
 		cursor: pointer;
 
 		.header {
@@ -160,10 +151,6 @@ const user = computed(() => {
 		&::before {
 			opacity: 1;
 		}
-	}
-
-	&.latest-revision {
-		cursor: default;
 	}
 
 	& + & {
