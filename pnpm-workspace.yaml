@@ -188,7 +188,7 @@ catalog:
   graphql: 16.11.0
   graphql-compose: 9.1.0
   graphql-ws: 6.0.6
-  happy-dom: 18.0.1
+  happy-dom: 20.0.8
   helmet: 8.1.0
   histoire: 0.17.17
   html-entities: 2.6.0
