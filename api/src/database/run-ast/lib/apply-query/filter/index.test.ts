@@ -227,7 +227,7 @@ test(`filtering o2m relation`, async () => {
 	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(
-		`select * left join "links_list" as "uhmis" on "article"."id" = "uhmis"."article_id" where "uhmis"."name" = ?`,
+		`select * where exists (select 1 from "links_list" where "links_list"."article_id" = "article"."id" and "links_list"."name" = ?)`,
 	);
 
 	expect(rawQuery.bindings).toEqual([2]);
@@ -259,15 +259,11 @@ for (const quantifier of ['_some', '_none']) {
 
 		const rawQuery = queryBuilder.toSQL();
 
-		if (quantifier === '_none') {
-			expect(rawQuery.sql).toEqual(
-				`select * left join "links_list" as "vjhrm" on "article"."id" = "vjhrm"."article_id" where "article"."id" not in (select "links_list"."article_id" as "article_id" from "links_list" where "links_list"."article_id" is not null and "links_list"."name" = ?)`,
-			);
-		} else {
-			expect(rawQuery.sql).toEqual(
-				`select * left join "links_list" as "dbjyi" on "article"."id" = "dbjyi"."article_id" where "article"."id" in (select "links_list"."article_id" as "article_id" from "links_list" where "links_list"."article_id" is not null and "links_list"."name" = ?)`,
-			);
-		}
+		expect(rawQuery.sql).toEqual(
+			`select * where "article"."id"${
+				quantifier === '_none' ? ' not' : ''
+			} in (select "links_list"."article_id" as "article_id" from "links_list" where "links_list"."article_id" is not null and "links_list"."name" = ?)`,
+		);
 
 		expect(rawQuery.bindings).toEqual([2]);
 	});
@@ -518,7 +514,7 @@ test(`filtering $FOLLOW against reverse o2m`, async () => {
 	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(
-		`select * left join "article" as "caibp" on "users"."id" = "caibp"."author" where "caibp"."id" = ?`,
+		`select * where exists (select 1 from "article" where "article"."author" = "users"."id" and "article"."id" = ?)`,
 	);
 
 	expect(rawQuery.bindings).toEqual([1]);
@@ -569,7 +565,6 @@ test(`filtering on links with existing alias map`, async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-
 	const aliasMap = {};
 
 	applyFilter(
@@ -608,10 +603,8 @@ test(`filtering on links with existing alias map`, async () => {
 
 	const rawQuery = queryBuilder.toSQL();
 
-	expect(aliasMap).toEqual({ links: { alias: 'ythdb', collection: 'links' } });
-
 	expect(rawQuery.sql).toEqual(
-		`select * left join "links" as "ythdb" on "article"."id" = "ythdb"."article_id" where "ythdb"."id" < ? and "ythdb"."id" > ?`,
+		`select * where exists (select 1 from "links" where "links"."article_id" = "article"."id" and "links"."id" < ?) and exists (select 1 from "links" where "links"."article_id" = "article"."id" and "links"."id" > ?)`,
 	);
 
 	expect(rawQuery.bindings).toEqual([5, 1]);

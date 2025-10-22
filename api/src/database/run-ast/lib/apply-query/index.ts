@@ -36,14 +36,18 @@ export default function applyQuery(
 	let hasJoins = false;
 	let hasMultiRelationalFilter = false;
 
-	applyLimit(knex, dbQuery, query.limit);
+	const skipPaginationAndLimitWhenAggregating = Boolean(query?.aggregate && !query.group);
 
-	if (query.offset) {
-		applyOffset(knex, dbQuery, query.offset);
-	}
+    if (!skipPaginationAndLimitWhenAggregating) {
+		applyLimit(knex, dbQuery, query.limit);
 
-	if (query.page && query.limit && query.limit !== -1) {
-		applyOffset(knex, dbQuery, query.limit * (query.page - 1));
+		if (query.offset) {
+			applyOffset(knex, dbQuery, query.offset);
+		}
+
+		if (query.page && query.limit && query.limit !== -1) {
+			applyOffset(knex, dbQuery, query.limit * (query.page - 1));
+		}
 	}
 
 	if (query.sort && !options?.isInnerQuery && !options?.hasMultiRelationalSort) {
