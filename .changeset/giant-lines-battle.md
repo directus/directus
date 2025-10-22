@@ -24,5 +24,5 @@ Updated the following dependencies:
 - Updated @rollup/plugin-commonjs dependency from 28.0.6 to 28.0.8
 - Updated @rollup/plugin-node-resolve dependency from 16.0.1 to 16.0.3
 - Updated @smithy/node-http-handler dependency from 4.1.0 to 4.4.2
-- Updated @supabase/storage-js dependency from 2.12.1 to 2.75.1
+- Updated @supabase/storage-js dependency from 2.12.1 to 2.76.1
 - Updated @types/async dependency from 3.2.24 to 3.2.25
