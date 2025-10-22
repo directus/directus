@@ -865,8 +865,8 @@ catalogs:
       specifier: 11.1.12
       version: 11.1.12
     vue-router:
-      specifier: 4.5.1
-      version: 4.5.1
+      specifier: 4.6.3
+      version: 4.6.3
     vue-tsc:
       specifier: 3.0.5
       version: 3.0.5
@@ -1668,7 +1668,7 @@ importers:
         version: 13.6.0(axios@1.11.0)(focus-trap@7.6.5)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.5.18(typescript@5.8.3))
       '@vueuse/router':
         specifier: 'catalog:'
-        version: 13.6.0(vue-router@4.5.1(vue@3.5.18(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))
+        version: 13.6.0(vue-router@4.6.3(vue@3.5.18(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))
       apexcharts:
         specifier: 'catalog:'
         version: 4.5.0
@@ -1812,7 +1812,7 @@ importers:
         version: 11.1.12(vue@3.5.18(typescript@5.8.3))
       vue-router:
         specifier: 'catalog:'
-        version: 4.5.1(vue@3.5.18(typescript@5.8.3))
+        version: 4.6.3(vue@3.5.18(typescript@5.8.3))
       vue-tsc:
         specifier: 'catalog:'
         version: 3.0.5(typescript@5.8.3)
@@ -2076,7 +2076,7 @@ importers:
         version: 3.5.18(typescript@5.8.3)
       vue-router:
         specifier: 'catalog:'
-        version: 4.5.1(vue@3.5.18(typescript@5.8.3))
+        version: 4.6.3(vue@3.5.18(typescript@5.8.3))
 
   packages/extensions-registry:
     dependencies:
@@ -2794,7 +2794,7 @@ importers:
         version: 0.34.3
       vue-router:
         specifier: 'catalog:'
-        version: 4.5.1(vue@3.5.18(typescript@5.8.3))
+        version: 4.6.3(vue@3.5.18(typescript@5.8.3))
       ws:
         specifier: 'catalog:'
         version: 8.18.3
@@ -13300,10 +13300,10 @@ packages:
     peerDependencies:
       vue: ^3.0.0
 
-  vue-router@4.5.1:
-    resolution: {integrity: sha512-ogAF3P97NPm8fJsE4by9dwSYtDwXIY1nFY9T6DyQnGHd1E2Da94w9JIolpe42LJGIl0DwOHBi8TcRPlPGwbTtw==}
+  vue-router@4.6.3:
+    resolution: {integrity: sha512-ARBedLm9YlbvQomnmq91Os7ck6efydTSpRP3nuOKCvgJOHNrhRoJDSKtee8kcL1Vf7nz6U+PMBL+hTvR3bTVQg==}
     peerDependencies:
-      vue: ^3.2.0
+      vue: ^3.5.0
 
   vue-tsc@3.0.5:
     resolution: {integrity: sha512-PsTFN9lo1HJCrZw9NoqjYcAbYDXY0cOKyuW2E7naX5jcaVyWpqEsZOHN9Dws5890E8e5SDAD4L4Zam3dxG3/Cw==}
@@ -18862,11 +18862,11 @@ snapshots:
 
   '@vueuse/metadata@13.6.0': {}
 
-  '@vueuse/router@13.6.0(vue-router@4.5.1(vue@3.5.18(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))':
+  '@vueuse/router@13.6.0(vue-router@4.6.3(vue@3.5.18(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))':
     dependencies:
       '@vueuse/shared': 13.6.0(vue@3.5.18(typescript@5.8.3))
       vue: 3.5.18(typescript@5.8.3)
-      vue-router: 4.5.1(vue@3.5.18(typescript@5.8.3))
+      vue-router: 4.6.3(vue@3.5.18(typescript@5.8.3))
 
   '@vueuse/shared@13.6.0(vue@3.5.18(typescript@5.8.3))':
     dependencies:
@@ -25971,7 +25971,7 @@ snapshots:
     dependencies:
       vue: 3.5.18(typescript@5.8.3)
 
-  vue-router@4.5.1(vue@3.5.18(typescript@5.8.3)):
+  vue-router@4.6.3(vue@3.5.18(typescript@5.8.3)):
     dependencies:
       '@vue/devtools-api': 6.6.4
       vue: 3.5.18(typescript@5.8.3)
