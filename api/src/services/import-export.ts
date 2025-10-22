@@ -281,9 +281,7 @@ export class ImportService {
 
 							return result;
 						} catch (error) {
-							const errors = Array.isArray(error) ? error : [error];
-
-							for (const err of errors) {
+							for (const err of toArray(error)) {
 								errorTracker.addCapturedError(err, task.rowNumber);
 
 								if (errorTracker.isLimitReached()) {
@@ -383,9 +381,7 @@ export class ImportService {
 
 							return result;
 						} catch (error: any) {
-							const errors = Array.isArray(error) ? error : [error];
-
-							for (const err of errors) {
+							for (const err of toArray(error)) {
 								errorTracker.addCapturedError(err, task.rowNumber);
 
 								if (errorTracker.isLimitReached()) {
