@@ -389,11 +389,14 @@ export class ImportService {
 								errorTracker.addCapturedError(err, task.rowNumber);
 
 								if (errorTracker.isLimitReached()) {
-									saveQueue.pause();
-									cleanup(true);
-									reject();
 									break;
 								}
+							}
+
+							if (errorTracker.isLimitReached()) {
+								saveQueue.kill();
+								cleanup(true);
+								reject();
 							}
 
 							return;
@@ -418,8 +421,8 @@ export class ImportService {
 									Papa.parse(Papa.NODE_STREAM_INPUT, {
 										header: true,
 										transformHeader: (header) => header.trim(),
-										transform: (value: string, _field?: string | number) => {
-											if (value.length === 0) return undefined;
+										transform: (value: string) => {
+											if (value.length === 0) return;
 
 											try {
 												const parsedJson = parseJSON(value);
@@ -438,7 +441,7 @@ export class ImportService {
 								.on('data', (obj: Record<string, unknown>) => {
 									rowNumber++;
 
-									const result = {} as Record<string, unknown>;
+									const result: Record<string, unknown> = {};
 
 									for (const field in obj) {
 										if (obj[field] !== undefined) {
