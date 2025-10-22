@@ -189,6 +189,7 @@ export function applyFilter(
 					// Aggregate grouping across all sub-filters within this logical array
 					const aggregated: Record<string, { pathForWhere: string[]; operation: { operator: string; value: any } }[]> =
 						{};
+						
 					const aggregatedRoots = new Set<string>();
 
 					value.forEach((subFilter: Record<string, any>) => {
@@ -208,6 +209,7 @@ export function applyFilter(
 
 							entries.forEach(([root, items], index) => {
 								const { relation } = getRelationInfo(relations, collection, root);
+
 								// Within a single root, keep OR across its items
 								const subFilterCombined = {
 									_or: items.map(({ pathForWhere, operation }) =>
@@ -256,6 +258,7 @@ export function applyFilter(
 								const cond = buildNestedFilterFromPath(pathForWhere.slice(1), {
 									[operation.operator]: operation.value,
 								});
+
 								mergeInto(merged, cond);
 							}
 
