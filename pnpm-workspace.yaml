@@ -218,7 +218,7 @@ catalog:
   maplibre-gl: 1.15.3
   marked: 16.4.1
   micromustache: 8.0.3
-  mime: 4.0.7
+  mime: 4.1.0
   mime-types: 3.0.1
   minimatch: 10.0.3
   mitt: 3.0.1
