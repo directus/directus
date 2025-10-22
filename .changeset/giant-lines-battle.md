@@ -20,9 +20,9 @@ Updated the following dependencies:
 - Updated @aws-sdk/lib-storage dependency from 3.858.0 to 3.913.0
 - Updated @azure/storage-blob dependency from 12.28.0 to 12.29.1
 - Updated @google-cloud/storage dependency from 7.16.0 to 7.17.2
-- Updated @modelcontextprotocol/sdk from 1.17.1 to 1.20.1
-- Updated @rollup/plugin-commonjs from 28.0.6 to 28.0.8
-- Updated @rollup/plugin-node-resolve from 16.0.1 to 16.0.3
-- Updated @smithy/node-http-handler from 4.1.0 to 4.4.2
-- Updated @supabase/storage-js from 2.12.1 to 2.75.1
-- Updated @types/async from 3.2.24 to 3.2.25
+- Updated @modelcontextprotocol/sdk dependency from 1.17.1 to 1.20.1
+- Updated @rollup/plugin-commonjs dependency from 28.0.6 to 28.0.8
+- Updated @rollup/plugin-node-resolve dependency from 16.0.1 to 16.0.3
+- Updated @smithy/node-http-handler dependency from 4.1.0 to 4.4.2
+- Updated @supabase/storage-js dependency from 2.12.1 to 2.75.1
+- Updated @types/async dependency from 3.2.24 to 3.2.25
