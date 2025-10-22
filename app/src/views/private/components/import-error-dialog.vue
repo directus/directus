@@ -84,13 +84,10 @@ function closeDialog() {
 						<li v-for="(error, index) in formattedErrors" :key="index" class="validation-error">
 							<strong v-if="error.rowCount > 0">
 								{{
-									$t(
-										'import_data_error_row',
-										{
-											rows: error.formattedRows,
-											field: error?.fieldName ? ` (${error.fieldName})` : '',
-										}
-									) + ' '
+									$t('import_data_error_row', {
+										rows: error.formattedRows,
+										field: error?.fieldName ? ` (${error.fieldName})` : '',
+									}) + ' '
 								}}
 							</strong>
 

@@ -11,10 +11,7 @@ type ValidationErrorWithDetails = ValidationError & {
 	customValidationMessage: string | null;
 };
 
-export function useValidationErrorDetails(
-	validationErrors: Ref<ValidationError[]>,
-	fields: Field[],
-) {
+export function useValidationErrorDetails(validationErrors: Ref<ValidationError[]>, fields: Field[]) {
 	const { t } = useI18n();
 
 	const validationErrorsWithDetails = computed<ValidationErrorWithDetails[]>(() => {
