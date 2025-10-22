@@ -51,6 +51,7 @@ const env = useEnv();
 const logger = useLogger();
 
 const MAX_IMPORT_ERRORS = env['MAX_IMPORT_ERRORS'] as number;
+const QUEUE_MAX_SIZE = Math.min(MAX_IMPORT_ERRORS, 200);
 
 type CapturedErrorData = {
 	message: string;
@@ -272,6 +273,8 @@ export class ImportService {
 					let rowNumber = 0;
 
 					const saveQueue = queue(async (task: { data: Record<string, unknown>; rowNumber: number }) => {
+						if (errorTracker.isLimitReached()) return;
+
 						try {
 							const result = await service.upsertOne(task.data, {
 								bypassEmitAction: (params) => nestedActionEvents.push(params),
@@ -279,17 +282,28 @@ export class ImportService {
 
 							return result;
 						} catch (error) {
-							for (const err of toArray(error)) {
+							const errors = Array.isArray(error) ? error : [error];
+
+							for (const err of errors) {
 								errorTracker.addCapturedError(err, task.rowNumber);
+
+								if (errorTracker.isLimitReached()) {
+									break;
+								}
 							}
 
 							if (errorTracker.isLimitReached()) {
+								saveQueue.kill();
 								destroyStream(stream);
 								destroyStream(extractJSON);
 								reject();
 							}
 
 							return;
+						} finally {
+							if (saveQueue.length() < QUEUE_MAX_SIZE / 2 && extractJSON?.isPaused()) {
+								extractJSON.resume();
+							}
 						}
 					});
 
@@ -297,6 +311,10 @@ export class ImportService {
 
 					extractJSON.on('data', ({ value }: Record<string, any>) => {
 						saveQueue.push({ data: value, rowNumber: rowNumber++ });
+
+						if (saveQueue.length() >= QUEUE_MAX_SIZE) {
+							extractJSON.pause();
+						}
 					});
 
 					extractJSON.on('error', (err: Error) => {
@@ -351,7 +369,6 @@ export class ImportService {
 				await new Promise<void>((resolve, reject) => {
 					const streams: Stream[] = [stream];
 					let rowNumber = 0;
-					const QUEUE_MAX_SIZE = Math.min(MAX_IMPORT_ERRORS, 200);
 
 					const cleanup = (destroy = true) => {
 						if (destroy) {
@@ -451,7 +468,7 @@ export class ImportService {
 										papaStream.pause();
 									}
 								})
-								.on('error', (error) => {
+								.on('error', (error: Error) => {
 									cleanup();
 									reject(new InvalidPayloadError({ reason: error.message }));
 								})
