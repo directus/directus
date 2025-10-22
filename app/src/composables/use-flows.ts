@@ -10,7 +10,7 @@ import { useI18n } from 'vue-i18n';
 import { useNotificationsStore } from '@/stores/notifications';
 import formatTitle from '@directus/format-title';
 
-export interface UseFlowsOptions {
+interface UseFlowsOptions {
 	collection: string;
 	primaryKey?: PrimaryKey | null;
 	selection?: Ref<Item[]>;
