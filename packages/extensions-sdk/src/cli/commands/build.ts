@@ -535,7 +535,7 @@ function getRollupOptions({
 		external: mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS,
 		plugins: [
 			typeof input !== 'string' ? virtual(input) : null,
-			mode === 'browser' ? vue({ isProduction: true }) : null,
+			mode === 'browser' ? (vue({ isProduction: true }) as any) : null,
 			esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }),
 			mode === 'browser' ? styles() : null,
 			...plugins,
@@ -555,7 +555,7 @@ function getRollupOptions({
 					})
 				: null,
 			minify ? terser() : null,
-		],
+		].filter(Boolean),
 		onwarn(warning, warn) {
 			if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.ids?.every((id) => /\bnode_modules\b/.test(id))) return;
 
