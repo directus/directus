@@ -169,7 +169,7 @@ function calculateFieldDifferences(
 					if (hasChanges && allChangedIds.length === 0) {
 						allChangedIds.push('has_changes');
 					}
-				} else if (fieldType === 'm2m') {
+				} else if (fieldType === 'm2m' || fieldType === 'files') {
 					let hasChanges = false;
 
 					['create', 'update', 'delete'].forEach((op) => {

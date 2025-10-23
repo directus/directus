@@ -14,6 +14,7 @@ import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
+import type { ComparisonContext } from '@/components/v-form/types';
 
 const props = withDefaults(
 	defineProps<{
@@ -30,6 +31,7 @@ const props = withDefaults(
 		filter?: Filter;
 		showNavigation?: boolean;
 		limit?: number;
+		comparison?: ComparisonContext;
 	}>(),
 	{
 		template: null,
@@ -299,6 +301,26 @@ const allowDrag = computed(
 		!props.disabled &&
 		updateAllowed.value,
 );
+
+function itemHasChanges(item: DisplayItem): boolean {
+	if (!relationInfo.value || !props.comparison?.relationalDetails) return false;
+
+	const changedIds = props.comparison.relationalDetails[props.field];
+	if (!changedIds || changedIds.length === 0) return false;
+
+	if (item.$type === 'created' || item.$type === 'deleted') {
+		return true;
+	}
+
+	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
+	const itemId = item[junctionPkField];
+
+	if (itemId === undefined) return false;
+
+	const hasChanges = changedIds.some((id) => id == itemId || String(id) === String(itemId));
+
+	return hasChanges;
+}
 </script>
 
 <template>
@@ -327,7 +349,10 @@ const allowDrag = computed(
 			>
 				<template #item="{ element }">
 					<v-list-item
-						:class="{ deleted: element.$type === 'deleted' }"
+						:class="{
+							deleted: element.$type === 'deleted',
+							'diff-indicator': itemHasChanges(element),
+						}"
 						:dense="totalItemCount > 4"
 						:disabled="disabled"
 						block
