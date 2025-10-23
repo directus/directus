@@ -586,8 +586,8 @@ catalogs:
       specifier: 9.0.2
       version: 9.0.2
     keyv:
-      specifier: 5.4.0
-      version: 5.4.0
+      specifier: 5.5.3
+      version: 5.5.3
     knex:
       specifier: 3.1.0
       version: 3.1.0
@@ -1174,7 +1174,7 @@ importers:
         version: 9.0.2
       keyv:
         specifier: 'catalog:'
-        version: 5.4.0
+        version: 5.5.3
       knex:
         specifier: 'catalog:'
         version: 3.1.0(mysql2@3.14.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
@@ -4672,6 +4672,9 @@ packages:
 
   '@keyv/serialize@1.1.0':
     resolution: {integrity: sha512-RlDgexML7Z63Q8BSaqhXdCYNBy/JQnqYIwxofUrNLGCblOMHp+xux2Q8nLMLlPpgHQPoU0Do8Z6btCpRBEqZ8g==}
+
+  '@keyv/serialize@1.1.1':
+    resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
 
   '@lezer/common@1.2.3':
     resolution: {integrity: sha512-w7ojc8ejBqr2REPsWxJjrMFsA/ysDCFICn8zEOR9mrqzOu2amhITYuLD8ag6XZf0CFXDrhKqw7+tW8cX66NaDA==}
@@ -9682,11 +9685,11 @@ packages:
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
-  keyv@5.4.0:
-    resolution: {integrity: sha512-TMckyVjEoacG5IteUpUrOBsFORtheqziVyyY2dLUwg1jwTb8u48LX4TgmtogkNl9Y9unaEJ1luj10fGyjMGFOQ==}
-
   keyv@5.5.0:
     resolution: {integrity: sha512-QG7qR2tijh1ftOvClut4YKKg1iW6cx3GZsKoGyJPxHkGWK9oJhG9P3j5deP0QQOGDowBMVQFaP+Vm4NpGYvmIQ==}
+
+  keyv@5.5.3:
+    resolution: {integrity: sha512-h0Un1ieD+HUrzBH6dJXhod3ifSghk5Hw/2Y4/KHBziPlZecrFyE9YOTPU6eOs0V9pYl8gOs86fkr/KN8lUX39A==}
 
   kind-of@6.0.3:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
@@ -15660,6 +15663,8 @@ snapshots:
 
   '@keyv/serialize@1.1.0': {}
 
+  '@keyv/serialize@1.1.1': {}
+
   '@lezer/common@1.2.3': {}
 
   '@lezer/highlight@1.2.1':
@@ -21520,13 +21525,13 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  keyv@5.4.0:
-    dependencies:
-      '@keyv/serialize': 1.1.0
-
   keyv@5.5.0:
     dependencies:
       '@keyv/serialize': 1.1.0
+
+  keyv@5.5.3:
+    dependencies:
+      '@keyv/serialize': 1.1.1
 
   kind-of@6.0.3: {}
 
