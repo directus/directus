@@ -95,7 +95,7 @@ catalog:
   '@types/fs-extra': 11.0.4
   '@types/geojson': 7946.0.16
   '@types/glob-to-regexp': 0.4.4
-  '@types/inquirer': 9.0.8
+  '@types/inquirer': 9.0.9
   '@types/js-yaml': 4.0.9
   '@types/json2csv': 5.0.7
   '@types/jsonwebtoken': 9.0.10
@@ -193,7 +193,7 @@ catalog:
   histoire: 0.17.17
   html-entities: 2.6.0
   icc: 3.0.0
-  inquirer: 12.9.0
+  inquirer: 12.10.0
   ioredis: 5.7.0
   ip-matching: 2.1.2
   isolated-vm: 5.0.3
