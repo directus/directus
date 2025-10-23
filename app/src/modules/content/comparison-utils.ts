@@ -164,7 +164,7 @@ function calculateFieldDifferences(
 			const relationalData = revisionData[fieldKey];
 			const fieldType = field.meta?.special?.[0];
 
-			if (fieldType === 'm2o') {
+			if (fieldType === 'm2o' || fieldType === 'file') {
 				const newValue = revisionData[fieldKey];
 				const currentValue = currentData[fieldKey];
 
