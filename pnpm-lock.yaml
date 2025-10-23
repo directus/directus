@@ -457,8 +457,8 @@ catalogs:
       specifier: 3.2.6
       version: 3.2.6
     dotenv:
-      specifier: 17.2.1
-      version: 17.2.1
+      specifier: 17.2.3
+      version: 17.2.3
     editorjs-toggle-block:
       specifier: 0.3.16
       version: 0.3.16
@@ -1105,7 +1105,7 @@ importers:
         version: link:../directus
       dotenv:
         specifier: 'catalog:'
-        version: 17.2.1
+        version: 17.2.3
       encodeurl:
         specifier: 'catalog:'
         version: 2.0.0
@@ -1959,7 +1959,7 @@ importers:
         version: link:../utils
       dotenv:
         specifier: 'catalog:'
-        version: 17.2.1
+        version: 17.2.3
       lodash-es:
         specifier: 'catalog:'
         version: 4.17.21
@@ -8063,8 +8063,8 @@ packages:
   dot-case@3.0.4:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
 
-  dotenv@17.2.1:
-    resolution: {integrity: sha512-kQhDYKZecqnM0fCnzI5eIv5L4cAe/iRI+HqMbO/hbRdTAeXDG+M9FjipUxNfbARuEg4iHIbhnhs78BCHNbSxEQ==}
+  dotenv@17.2.3:
+    resolution: {integrity: sha512-JVUnt+DUIzu87TABbhPmNfVdBDt18BLOWjMUFJMSi/Qqg7NTYtabbvSNJGOJ7afbRuv9D/lngizHtP7QyLQ+9w==}
     engines: {node: '>=12'}
 
   dts-resolver@2.1.2:
@@ -19559,7 +19559,7 @@ snapshots:
       no-case: 3.0.4
       tslib: 2.8.1
 
-  dotenv@17.2.1: {}
+  dotenv@17.2.3: {}
 
   dts-resolver@2.1.2: {}
 
