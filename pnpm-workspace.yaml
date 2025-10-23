@@ -163,7 +163,7 @@ catalog:
   dotenv: 17.2.3
   editorjs-toggle-block: 0.3.16
   encodeurl: 2.0.0
-  esbuild: 0.25.9
+  esbuild: 0.25.11
   esbuild-plugin-replace: 1.4.0
   esbuild-yaml: 3.0.3
   escape-string-regexp: 5.0.0
