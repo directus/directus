@@ -601,8 +601,8 @@ catalogs:
       specifier: 2.3.3
       version: 2.3.3
     liquidjs:
-      specifier: 10.21.1
-      version: 10.21.1
+      specifier: 10.23.0
+      version: 10.23.0
     lodash:
       specifier: 4.17.21
       version: 4.17.21
@@ -1183,7 +1183,7 @@ importers:
         version: 2.3.3
       liquidjs:
         specifier: 'catalog:'
-        version: 10.21.1
+        version: 10.23.0
       lodash-es:
         specifier: 'catalog:'
         version: 4.17.21
@@ -9772,9 +9772,9 @@ packages:
   linkify-it@3.0.3:
     resolution: {integrity: sha512-ynTsyrFSdE5oZ/O9GEf00kPngmOfVwazR5GKDq6EYfhlpFug3J2zybX56a2PRRpc9P+FuSoGNAwjlbDs9jJBPQ==}
 
-  liquidjs@10.21.1:
-    resolution: {integrity: sha512-NZXmCwv3RG5nire3fmIn9HsOyJX3vo+ptp0yaXUHAMzSNBhx74Hm+dAGJvscUA6lNqbLuYfXgNavRQ9UbUJhQQ==}
-    engines: {node: '>=14'}
+  liquidjs@10.23.0:
+    resolution: {integrity: sha512-Chm3luYvACZUj+Wlq7Nxwi0YvGXJv3vx+LPIGfa6n1FaUoMxe8T2M+5S1m2YkSToqJcsxZRK0VeCPZNrSa2yOw==}
+    engines: {node: '>=16'}
     hasBin: true
 
   listr2@9.0.1:
@@ -21607,7 +21607,7 @@ snapshots:
     dependencies:
       uc.micro: 1.0.6
 
-  liquidjs@10.21.1:
+  liquidjs@10.23.0:
     dependencies:
       commander: 10.0.1
 

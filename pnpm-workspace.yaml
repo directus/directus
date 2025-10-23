@@ -209,7 +209,7 @@ catalog:
   knex-mock-client: 3.0.2
   ky: 1.8.2
   ldapjs: 2.3.3
-  liquidjs: 10.21.1
+  liquidjs: 10.23.0
   lodash: 4.17.21
   lodash-es: 4.17.21
   log-symbols: 7.0.1
