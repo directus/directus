@@ -2,9 +2,7 @@
 import { useFieldsStore } from '@/stores/fields';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { computed, inject, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { render } from 'micromustache';
-import { translate } from './temp/translate-literal';
 import dompurify from 'dompurify';
 import { injectRunManualFlow } from '@/composables/use-flows';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -47,8 +45,6 @@ const props = withDefaults(
 		helpTranslationsString: undefined,
 	},
 );
-
-const { t } = useI18n();
 
 const fieldsStore = useFieldsStore();
 
@@ -151,18 +147,6 @@ async function handleActionClick(action: Action) {
 	}
 }
 
-const helpText = computed(() => {
-	if (props.enableHelpTranslations && props.helpTranslationsString) {
-		const translated = translate(props.helpTranslationsString);
-
-		if (translated) {
-			return dompurify.sanitize(translated);
-		}
-	}
-
-	return dompurify.sanitize(props.help);
-});
-
 function getAllRequiredTemplateFields(): string[] {
 	const fieldsFromTitle = props.title ? getFieldsFromTemplate(props.title) : [];
 	const fieldsFromSubtitle = props.subtitle ? getFieldsFromTemplate(props.subtitle) : [];
@@ -263,10 +247,10 @@ const { runManualFlow } = injectRunManualFlow();
 						<template #activator="{ toggle }">
 							<div>
 								<v-button secondary small class="full-button" @click="toggle">
-									{{ t('actions') }}
+									{{ $t('actions') }}
 									<v-icon name="expand_more" right />
 								</v-button>
-								<v-button v-tooltip="t('actions')" secondary small class="icon-button" icon @click="toggle">
+								<v-button v-tooltip="$t('actions')" secondary small class="icon-button" icon @click="toggle">
 									<v-icon name="expand_more" />
 								</v-button>
 							</div>
@@ -287,21 +271,21 @@ const { runManualFlow } = injectRunManualFlow();
 										<template v-if="isInternalLink(action.url || '').isInternal">
 											<router-link :to="isInternalLink(action.url || '').processedUrl">
 												<v-list-item-title>
-													{{ t(action.label) }}
+													{{ $t(action.label) }}
 												</v-list-item-title>
 											</router-link>
 										</template>
 										<template v-else>
 											<a :href="action.url" target="_blank" rel="noopener noreferrer">
 												<v-list-item-title>
-													{{ t(action.label) }}
+													{{ $t(action.label) }}
 												</v-list-item-title>
 											</a>
 										</template>
 									</template>
 									<template v-else>
 										<v-list-item-title>
-											{{ t(action.label) }}
+											{{ $t(action.label) }}
 										</v-list-item-title>
 									</template>
 								</v-list-item-content>
@@ -317,7 +301,7 @@ const { runManualFlow } = injectRunManualFlow();
 		<transition-expand>
 			<div v-if="expanded && help && helpDisplayMode !== 'modal'" class="help-text">
 				<!-- eslint-disable-next-line vue/no-v-html -->
-				<div v-html="helpText" />
+				<div v-html="dompurify.sanitize(props.helpTranslationsString ?? props.help)" />
 				<div class="collapse-button-container">
 					<v-button class="collapse-button" small secondary @click="toggleHelp">
 						{{ `${t('collapse')} ${t('help')}` }}
@@ -335,11 +319,11 @@ const { runManualFlow } = injectRunManualFlow();
 				</v-button>
 				<v-card-text>
 					<!-- eslint-disable-next-line vue/no-v-html -->
-					<div v-html="helpText" />
+					<div v-html="dompurify.sanitize(props.helpTranslationsString ?? props.help)" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button @click="showHelpModal = false">
-						{{ t('dismiss') }}
+						{{ $t('dismiss') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
