@@ -590,7 +590,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		let results: Item[] = [];
 
-		if (query.version) {
+		if (query.version && query.version !== 'main') {
 			results = [await handleVersion(this, key, queryWithKey, opts)];
 		} else {
 			results = await this.readByQuery(queryWithKey, opts);
@@ -1179,8 +1179,18 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		query.limit = 1;
 
-		const records = await this.readByQuery(query, opts);
-		const record = records[0];
+		let record;
+
+		if (query.version && query.version !== 'main') {
+			const primaryKeyField = this.schema.collections[this.collection]!.primary;
+			const key = (await this.knex.select(primaryKeyField).from(this.collection).first())?.[primaryKeyField];
+
+			if (key) {
+				record = await handleVersion(this, key, query, opts);
+			}
+		} else {
+			record = (await this.readByQuery(query, opts))[0];
+		}
 
 		if (!record) {
 			let fields = Object.entries(this.schema.collections[this.collection]!.fields);
