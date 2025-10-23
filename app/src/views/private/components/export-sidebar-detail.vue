@@ -302,7 +302,7 @@ function useUpload() {
 					type: 'error',
 				});
 
-				if (code === ErrorCode.Internal || code === ErrorCode.Forbidden) {
+				if (code === ErrorCode.Internal) {
 					unexpectedError(error);
 				}
 			}
