@@ -227,7 +227,7 @@ catalog:
   mysql2: 3.14.3
   nanoid: 5.1.5
   node-machine-id: 1.1.12
-  nodemailer: 7.0.5
+  nodemailer: 7.0.7
   nodemailer-mailgun-transport: 2.1.5
   npm-watch: 0.13.0
   object-hash: 3.0.0
@@ -291,7 +291,7 @@ catalog:
   unplugin-yaml: 3.0.4
   update-check: 1.5.4
   uuid: 11.1.0
-  vite: 7.1.3
+  vite: 7.1.11
   vite-plugin-dts: 4.5.4
   vite-plugin-vue-devtools: 7.7.2
   vitest: 3.2.4
