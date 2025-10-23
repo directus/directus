@@ -1,7 +1,9 @@
 ---
+'create-directus-extension': patch
 '@directus/app': patch
 '@directus/composables': patch
 '@directus/extensions': patch
+"@directus/extensions-registry": patch
 '@directus/extensions-sdk': patch
 '@directus/stores': patch
 '@directus/themes': patch
