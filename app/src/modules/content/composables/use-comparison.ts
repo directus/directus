@@ -1,15 +1,15 @@
 import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
 import type { Revision } from '@/types/revisions';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { unexpectedError } from '@/utils/unexpected-error';
-import type { ContentVersion, User } from '@directus/types';
+import type { ContentVersion, PrimaryKey, User } from '@directus/types';
 import {
 	toggleFieldInSelection,
 	toggleAllFields,
 	areAllFieldsSelected,
 	areSomeFieldsSelected,
 	normalizeComparisonData as normalizeComparisonDataUtil,
-	mergeMainItemKeysIntoRevision,
 	copySpecialFieldsFromBaseToIncoming,
 	replaceArraysInMergeCustomizer,
 	getItemEndpoint,
@@ -306,32 +306,6 @@ export function useComparison(options: UseComparisonOptions) {
 		return null;
 	}
 
-	async function fetchVersionComparison(
-		versionId: string,
-		version?: ContentVersion,
-		versions?: ContentVersion[] | null,
-	): Promise<ComparisonData> {
-		try {
-			const response = await api.get(`/versions/${versionId}/compare`);
-			const data: VersionComparisonResponse = response.data.data;
-			const base = data.main || {};
-			const incomingMerged = mergeWith({}, base, data.current || {}, replaceArraysInMergeCustomizer);
-
-			return {
-				base,
-				incoming: incomingMerged,
-				selectableDeltas: versions ?? (version ? [version] : []),
-				comparisonType: 'version' as const,
-				outdated: data.outdated,
-				mainHash: data.mainHash,
-				initialSelectedDeltaId: version?.id,
-			};
-		} catch (error) {
-			unexpectedError(error);
-			throw error;
-		}
-	}
-
 	async function fetchRevisionComparison(
 		revisionId: number,
 		currentVersion?: ContentVersion | null,
@@ -362,60 +336,96 @@ export function useComparison(options: UseComparisonOptions) {
 		}
 	}
 
-	/**
-	 * Builds comparison data from revision data
-	 * - main: complete item state BEFORE this revision was applied
-	 * - current: complete item state AFTER this revision was applied
-	 */
+	async function fetchVersionComparison(
+		versionId: string,
+		version?: ContentVersion,
+		versions?: ContentVersion[] | null,
+	): Promise<ComparisonData> {
+		try {
+			const response = await api.get(`/versions/${versionId}/compare`);
+			const data: VersionComparisonResponse = response.data.data;
+			const base = data.main || {};
+			const incomingMerged = mergeWith({}, base, data.current || {}, replaceArraysInMergeCustomizer);
+
+			return {
+				base,
+				incoming: incomingMerged,
+				selectableDeltas: versions ?? (version ? [version] : []),
+				comparisonType: 'version' as const,
+				outdated: data.outdated,
+				mainHash: data.mainHash,
+				initialSelectedDeltaId: version?.id,
+			};
+		} catch (error) {
+			unexpectedError(error);
+			throw error;
+		}
+	}
+
+	async function fetchVersionComparisonForRevision(versionId: string) {
+		try {
+			const response = await api.get(`/versions/${versionId}/compare`);
+			const data: VersionComparisonResponse = response.data.data;
+			const main = data.main || {};
+			const mainMergedWithVersionLatest = mergeWith({}, main, data.current || {}, replaceArraysInMergeCustomizer);
+
+			return {
+				main,
+				base: mainMergedWithVersionLatest,
+			};
+		} catch (error) {
+			unexpectedError(error);
+			throw error;
+		}
+	}
+
+	async function fetchMainVersion(collection: string, item: PrimaryKey): Promise<Record<string, any>> {
+		const itemEndpoint = getItemEndpoint(collection, item);
+
+		try {
+			const itemResponse = await api.get(itemEndpoint);
+			return itemResponse.data?.data || {};
+		} catch (error) {
+			unexpectedError(error);
+			throw error;
+		}
+	}
+
 	async function buildRevisionComparison(
 		revision: Revision | RevisionComparisonResponse,
 		currentVersion?: ContentVersion | null,
 		revisions?: Revision[] | null,
 	): Promise<ComparisonData> {
-		// Resolve main item and current version delta
-		let mainItem: Record<string, any> = {};
-		let versionDelta: Record<string, any> = {};
-
-		if (currentVersion) {
-			const versionComparison = await fetchVersionComparison(currentVersion.id);
-			mainItem = versionComparison.base || {};
-			versionDelta = versionComparison.incoming || {};
-		} else if ('collection' in revision && 'item' in revision) {
-			const { collection, item } = revision as { collection: string; item: string | number };
-			const itemEndpoint = getItemEndpoint(collection, item);
-
-			try {
-				const itemResponse = await api.get(itemEndpoint);
-				mainItem = itemResponse.data?.data || {};
-			} catch (error: any) {
-				unexpectedError(error);
-				mainItem = {};
-			}
-		}
-
-		const baseMerged = mergeWith({}, mainItem, versionDelta || {}, replaceArraysInMergeCustomizer);
-
+		let base: Record<string, any> = {};
+		let incoming = revision.data || {};
 		const targetCollection = revision.collection || collection?.value || '';
 		const fields = fieldsStore.getFieldsForCollection(targetCollection);
 
-		// Merge main item keys into revision data with default values for missing fields
-		const revisionData = revision.data || {};
-		const revisionDataWithDefaults = mergeMainItemKeysIntoRevision(revisionData, baseMerged, fields);
-		const incomingMerged = mergeWith({}, revisionDataWithDefaults, replaceArraysInMergeCustomizer);
-
-		if ('activity' in revision && (revision as any)?.activity?.timestamp) {
-			incomingMerged.date_updated = (revision as any).activity.timestamp;
+		if (currentVersion) {
+			const versionComparison = await fetchVersionComparisonForRevision(currentVersion.id);
+			base = versionComparison.base;
+			incoming = mergeWith({}, versionComparison.main, incoming, replaceArraysInMergeCustomizer);
+		} else if ('collection' in revision && 'item' in revision) {
+			const { collection, item } = revision as { collection: string; item: string | number };
+			base = await fetchMainVersion(collection, item);
+			const defaultValues = getDefaultValuesFromFields(fields).value;
+			incoming = mergeWith({}, defaultValues, incoming, replaceArraysInMergeCustomizer);
 		}
 
-		const incomingWithRelationalFields = copySpecialFieldsFromBaseToIncoming(baseMerged, incomingMerged, fields);
+		// Revisions don’t support relational fields, so we need to merge them into incoming. Primary Key and User Reference fields (user_created, user_updated) as well.
+		incoming = copySpecialFieldsFromBaseToIncoming(base, incoming, fields);
+
+		if ('activity' in revision && (revision as any)?.activity?.timestamp) {
+			incoming.date_updated = (revision as any).activity.timestamp;
+		}
+
 		const revisionsList = revisions || [];
 		const revisionId = 'id' in revision ? revision.id : null;
-
 		const revisionFields = new Set(Object.keys(revision.delta ?? {}));
 
 		return {
-			base: baseMerged,
-			incoming: incomingWithRelationalFields,
+			base,
+			incoming,
 			selectableDeltas: revisionsList,
 			revisionFields,
 			comparisonType: 'revision',
