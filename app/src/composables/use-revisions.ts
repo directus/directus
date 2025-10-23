@@ -1,6 +1,7 @@
 import api from '@/api';
 import {
 	computeDifferentFields,
+	mergeMainItemKeysIntoRevision,
 	replaceArraysInMergeCustomizer,
 	getItemEndpoint,
 } from '@/modules/content/comparison-utils';
@@ -211,7 +212,15 @@ export function useRevisions(
 
 					const revisionData = (revision as Revision)?.data || {};
 					const collectionFields = fieldsStore.getFieldsForCollection(unref(collection));
-					const differentFields = computeDifferentFields('revision', currentItemMerged, revisionData, collectionFields);
+					// Enrich revision data with missing keys from main item (same logic as comparison modal)
+					const enrichedRevisionData = mergeMainItemKeysIntoRevision(revisionData, currentItemMerged, collectionFields);
+
+					const differentFields = computeDifferentFields(
+						'revision',
+						currentItemMerged,
+						enrichedRevisionData,
+						collectionFields,
+					);
 
 					revisions.push({
 						...revision,

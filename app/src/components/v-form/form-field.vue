@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useClipboard } from '@/composables/use-clipboard';
 import { formatFieldFunction } from '@/utils/format-field-function';
+import { RELATIONAL_TYPES } from '@directus/constants';
 import { ValidationError } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import { isEqual } from 'lodash';
@@ -56,6 +57,16 @@ const isDisabled = computed(() => {
 const isLabelHidden = computed(() => {
 	if (props.batchMode && !props.field.meta?.special?.includes('no-data')) return false;
 	return props.field.hideLabel;
+});
+
+const nestedRelationalTypes = RELATIONAL_TYPES.filter((type) => type !== 'm2o' && type !== 'file') as string[];
+
+const isNestedRelationalField = computed(() => {
+	return props.field.meta?.special?.find((type) => nestedRelationalTypes.includes(type)) !== undefined;
+});
+
+const isComparisonField = computed(() => {
+	return props.comparison?.fields.has(props.field.field);
 });
 
 const { internalValue, isEdited, defaultValue } = useComputedValues();
@@ -171,7 +182,8 @@ function useComputedValues() {
 			field.meta?.width || 'full',
 			{
 				invalid: validationError,
-				'diff-indicator': comparison?.fields.has(field.field),
+				'diff-indicator': isComparisonField && !isNestedRelationalField,
+				'diff-track': isComparisonField && isNestedRelationalField,
 			},
 		]"
 	>
@@ -253,7 +265,8 @@ function useComputedValues() {
 .field {
 	position: relative;
 
-	&.diff-indicator {
+	&.diff-indicator,
+	&.diff-track {
 		&::before {
 			content: '';
 			position: absolute;
@@ -261,7 +274,18 @@ function useComputedValues() {
 			inset-inline-start: -12px;
 			inline-size: 4px;
 			z-index: 1;
+		}
+	}
+
+	&.diff-indicator {
+		&::before {
 			background-color: var(--comparison-indicator--color);
+		}
+	}
+
+	&.diff-track {
+		&::before {
+			background-color: var(--comparison-track--color);
 		}
 	}
 }

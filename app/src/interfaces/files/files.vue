@@ -11,9 +11,11 @@ import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil, set } from 'lodash';
 import { render } from 'micromustache';
-import { computed, inject, ref, toRefs } from 'vue';
+import { computed, inject, ref, toRef, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
+import type { ComparisonContext } from '@/components/v-form/types';
+import { useGranularIndicator } from '@/modules/content/composables/use-granular-indicator';
 
 const props = withDefaults(
 	defineProps<{
@@ -30,6 +32,7 @@ const props = withDefaults(
 		filter?: Filter;
 		showNavigation?: boolean;
 		limit?: number;
+		comparison?: ComparisonContext;
 	}>(),
 	{
 		template: null,
@@ -112,6 +115,8 @@ const {
 } = useRelationMultiple(value, query, relationInfo, primaryKey, version);
 
 const { createAllowed, updateAllowed, selectAllowed, deleteAllowed } = useRelationPermissionsM2M(relationInfo);
+
+const { itemHasChanges } = useGranularIndicator(toRef(props, 'comparison'), toRef(props, 'field'), relationInfo);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
@@ -327,7 +332,10 @@ const allowDrag = computed(
 			>
 				<template #item="{ element }">
 					<v-list-item
-						:class="{ deleted: element.$type === 'deleted' }"
+						:class="{
+							deleted: element.$type === 'deleted',
+							'diff-indicator': itemHasChanges(element),
+						}"
 						:dense="totalItemCount > 4"
 						:disabled="disabled"
 						block

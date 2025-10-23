@@ -13,4 +13,6 @@ export interface ComparisonContext {
 	revisionFields?: Set<string>;
 	selectedFields: string[];
 	onToggleField: (field: string) => void;
+	relationalDetails?: Record<string, string[]>;
+	comparisonType?: 'version' | 'revision';
 }

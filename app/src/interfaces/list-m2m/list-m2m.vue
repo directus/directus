@@ -18,9 +18,11 @@ import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil, merge, set } from 'lodash';
 import { render } from 'micromustache';
-import { computed, inject, ref, toRefs, watch } from 'vue';
+import { computed, inject, ref, toRef, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
+import type { ComparisonContext } from '@/components/v-form/types';
+import { useGranularIndicator } from '@/modules/content/composables/use-granular-indicator';
 
 const props = withDefaults(
 	defineProps<{
@@ -44,6 +46,7 @@ const props = withDefaults(
 		allowDuplicates?: boolean;
 		junctionFieldLocation?: string;
 		junctionFilter?: Filter | null;
+		comparison?: ComparisonContext;
 	}>(),
 	{
 		value: () => [],
@@ -181,6 +184,8 @@ const {
 } = useRelationMultiple(value, query, relationInfo, primaryKey, version);
 
 const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelationPermissionsM2M(relationInfo);
+
+const { itemHasChanges } = useGranularIndicator(toRef(props, 'comparison'), toRef(props, 'field'), relationInfo);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
@@ -525,7 +530,7 @@ function getLinkForItem(item: DisplayItem) {
 				v-model:sort="sort"
 				v-model:headers="headers"
 				v-model="selection"
-				:class="{ 'no-last-border': totalItemCount <= 10 }"
+				:class="{ 'no-last-border': totalItemCount <= 10, 'has-comparison': !!comparison }"
 				:loading="loading"
 				:items="displayItems"
 				:item-key="relationInfo.junctionPrimaryKeyField.field"
@@ -538,12 +543,14 @@ function getLinkForItem(item: DisplayItem) {
 				@update:items="sortItems"
 			>
 				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
-					<render-template
-						:title="header.value"
-						:collection="relationInfo.junctionCollection.collection"
-						:item="item"
-						:template="`{{${header.value}}}`"
-					/>
+					<div class="cell-content" :class="{ 'has-diff': itemHasChanges(item) }">
+						<render-template
+							:title="header.value"
+							:collection="relationInfo.junctionCollection.collection"
+							:item="item"
+							:template="`{{${header.value}}}`"
+						/>
+					</div>
 				</template>
 
 				<template #item-append="{ item }">
@@ -602,7 +609,7 @@ function getLinkForItem(item: DisplayItem) {
 							clickable
 							:disabled="disabled"
 							:dense="totalItemCount > 4"
-							:class="{ deleted: element.$type === 'deleted' }"
+							:class="{ deleted: element.$type === 'deleted', 'diff-indicator': itemHasChanges(element) }"
 							@click="editItem(element)"
 						>
 							<v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
