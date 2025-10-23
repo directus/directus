@@ -7,6 +7,7 @@ import { render } from 'micromustache';
 import { translate } from './temp/translate-literal';
 import dompurify from 'dompurify';
 import { injectRunManualFlow } from '@/composables/use-flows';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export interface FlowIdentifier {
 	collection: string;
@@ -193,8 +194,7 @@ watch(
 
 			fetchedTemplateData.value = response.data.data;
 		} catch (error) {
-			// TODO: Figure out how log error
-			// console.error('Failed to fetch template data:', error);
+			unexpectedError(error);
 			fetchedTemplateData.value = {};
 		} finally {
 			isLoading.value = false;
