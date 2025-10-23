@@ -8,6 +8,7 @@ import { translate } from './temp/translate-literal';
 import dompurify from 'dompurify';
 import { injectRunManualFlow } from '@/composables/use-flows';
 import { unexpectedError } from '@/utils/unexpected-error';
+import api from '@/api';
 
 export interface FlowIdentifier {
 	collection: string;
