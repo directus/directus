@@ -154,7 +154,7 @@ catalog:
   cron: 4.3.3
   cropperjs: 1.6.2
   date-fns: 4.1.0
-  decamelize: 6.0.0
+  decamelize: 6.0.1
   deep-diff: 1.0.2
   destroy: 1.2.0
   diacritics: 1.3.0

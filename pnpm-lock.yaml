@@ -439,8 +439,8 @@ catalogs:
       specifier: 4.1.0
       version: 4.1.0
     decamelize:
-      specifier: 6.0.0
-      version: 6.0.0
+      specifier: 6.0.1
+      version: 6.0.1
     deep-diff:
       specifier: 1.0.2
       version: 1.0.2
@@ -2703,7 +2703,7 @@ importers:
         version: link:../utils
       decamelize:
         specifier: 'catalog:'
-        version: 6.0.0
+        version: 6.0.1
       flat:
         specifier: 'catalog:'
         version: 6.0.1
@@ -7909,8 +7909,8 @@ packages:
     resolution: {integrity: sha512-z2S+W9X73hAUUki+N+9Za2lBlun89zigOyGrsax+KUQ6wKW4ZoWpEYBkGhQjwAjjDCkWxhY0VKEhk8wzY7F5cA==}
     engines: {node: '>=0.10.0'}
 
-  decamelize@6.0.0:
-    resolution: {integrity: sha512-Fv96DCsdOgB6mdGl67MT5JaTNKRzrzill5OH5s8bjYJXVlcXyPYGyPsUkWyGV5p1TXI5esYIYMMeDJL0hEIwaA==}
+  decamelize@6.0.1:
+    resolution: {integrity: sha512-G7Cqgaelq68XHJNGlZ7lrNQyhZGsFqpwtGFexqUv4IQdjKoSYF7ipZ9UuTJZUSQXFj/XaoBLuEVIVqr8EJngEQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   decimal.js@10.6.0:
@@ -19428,7 +19428,7 @@ snapshots:
 
   decamelize@1.2.0: {}
 
-  decamelize@6.0.0: {}
+  decamelize@6.0.1: {}
 
   decimal.js@10.6.0: {}
 
