@@ -145,7 +145,7 @@ catalog:
   chroma-js: 3.1.2
   codemirror: 5.65.18
   color: 5.0.0
-  commander: 14.0.0
+  commander: 14.0.1
   content-disposition: 0.5.4
   cookie: 1.0.2
   cookie-parser: 1.4.7
