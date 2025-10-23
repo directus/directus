@@ -4,6 +4,7 @@ import {
 	ErrorCode,
 	ForbiddenError,
 	InvalidPayloadError,
+	isDirectusError,
 	ServiceUnavailableError,
 	UnsupportedMediaTypeError,
 } from '@directus/errors';
@@ -12,6 +13,7 @@ import type {
 	AbstractServiceOptions,
 	Accountability,
 	ActionEventParams,
+	DirectusError,
 	ExportFormat,
 	File,
 	Query,
@@ -58,6 +60,7 @@ type CapturedErrorData = {
 };
 
 export function createErrorTracker() {
+	let forbiddenError: DirectusError | undefined;
 	// For errors with field / type (joi validation or DB with field)
 	const fieldErrors: Map<ErrorCode, Map<string, CapturedErrorData>> = new Map();
 	// For errors without field (DB errors like SQLite FK)
@@ -110,6 +113,12 @@ export function createErrorTracker() {
 	}
 
 	function addCapturedError(err: any, rowNumber: number) {
+		if (err.code === ErrorCode.Forbidden) {
+			forbiddenError = err;
+
+			return;
+		}
+
 		const field = err.extensions?.field;
 		const type = err.extensions?.type;
 		const substring = err.extensions?.substring;
@@ -138,6 +147,10 @@ export function createErrorTracker() {
 
 			errorsByCode.get(key)!.rowNumbers.push(rowNumber);
 		} else {
+			if (!isDirectusError(err)) {
+				err.code = ErrorCode.Internal;
+			}
+
 			if (!genericErrors.has(err.code)) {
 				genericErrors.set(err.code, {
 					message: err.message,
@@ -155,7 +168,15 @@ export function createErrorTracker() {
 		}
 	}
 
+	function hasForbiddenError() {
+		return forbiddenError !== undefined;
+	}
+
 	function buildFinalErrors() {
+		if (hasForbiddenError()) {
+			return [forbiddenError];
+		}
+
 		const fieldErrs = Array.from(fieldErrors.entries()).flatMap(([code, fieldMap]) =>
 			Array.from(fieldMap.entries()).map(([compositeKey, errorData]) => {
 				const parts = compositeKey.split('|');
@@ -199,8 +220,9 @@ export function createErrorTracker() {
 		addCapturedError,
 		buildFinalErrors,
 		getCount: () => capturedErrorCount,
-		hasErrors: () => capturedErrorCount > 0,
-		isLimitReached: () => isLimitReached,
+		hasErrors: () => capturedErrorCount > 0 || hasForbiddenError(),
+		shouldStop: () => isLimitReached || hasForbiddenError(),
+		hasForbiddenError,
 	};
 }
 
@@ -269,10 +291,10 @@ export class ImportService {
 
 			try {
 				await new Promise<void>((resolve, reject) => {
-					let rowNumber = 0;
+					let rowNumber = 1;
 
 					const saveQueue = queue(async (task: { data: Record<string, unknown>; rowNumber: number }) => {
-						if (errorTracker.isLimitReached()) return;
+						if (errorTracker.shouldStop()) return;
 
 						try {
 							const result = await service.upsertOne(task.data, {
@@ -284,12 +306,12 @@ export class ImportService {
 							for (const err of toArray(error)) {
 								errorTracker.addCapturedError(err, task.rowNumber);
 
-								if (errorTracker.isLimitReached()) {
+								if (errorTracker.shouldStop()) {
 									break;
 								}
 							}
 
-							if (errorTracker.isLimitReached()) {
+							if (errorTracker.shouldStop()) {
 								saveQueue.kill();
 								destroyStream(stream);
 								destroyStream(extractJSON);
@@ -372,7 +394,7 @@ export class ImportService {
 					};
 
 					const saveQueue = queue(async (task: { data: Record<string, unknown>; rowNumber: number }) => {
-						if (errorTracker.isLimitReached()) return;
+						if (errorTracker.shouldStop()) return;
 
 						try {
 							const result = await service.upsertOne(task.data, {
@@ -384,12 +406,12 @@ export class ImportService {
 							for (const err of toArray(error)) {
 								errorTracker.addCapturedError(err, task.rowNumber);
 
-								if (errorTracker.isLimitReached()) {
+								if (errorTracker.shouldStop()) {
 									break;
 								}
 							}
 
-							if (errorTracker.isLimitReached()) {
+							if (errorTracker.shouldStop()) {
 								saveQueue.kill();
 								cleanup(true);
 								reject();
@@ -452,12 +474,12 @@ export class ImportService {
 									reject(new InvalidPayloadError({ reason: error.message }));
 								})
 								.on('end', () => {
-									cleanup(false);
-
 									// In case of empty CSV file
 									if (!saveQueue.started) return resolve();
 
 									saveQueue.drain(() => {
+										if (!errorTracker.shouldStop()) cleanup(false);
+
 										if (errorTracker.hasErrors()) {
 											return reject();
 										}
