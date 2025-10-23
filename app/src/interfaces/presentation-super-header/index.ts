@@ -214,7 +214,9 @@ export default defineInterface({
 							meta: {
 								width: 'full',
 								interface: 'system-flow-select',
-								options: {},
+								options: {
+									collectionName: collection,
+								},
 								conditions: [
 									{
 										rule: {

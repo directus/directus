@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useFieldsStore } from '@/stores/fields';
-import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
-import { computed, inject, ref, watch } from 'vue';
-import { render } from 'micromustache';
 import dompurify from 'dompurify';
-import { injectRunManualFlow } from '@/composables/use-flows';
-import { unexpectedError } from '@/utils/unexpected-error';
+import { render } from 'micromustache';
+import { computed, inject, ref, useAttrs, watch } from 'vue';
 import api from '@/api';
+import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
+import { injectRunManualFlow } from '@/composables/use-flows';
+import { useFieldsStore } from '@/stores/fields';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export interface FlowIdentifier {
 	collection: string;
@@ -20,6 +20,11 @@ type Link = {
 	actionType: string;
 	url?: string;
 	flow?: string;
+};
+
+type ParsedLink = Omit<Link, 'url'> & {
+	to?: string;
+	href?: string;
 };
 
 const props = withDefaults(
@@ -36,6 +41,7 @@ const props = withDefaults(
 		color?: string;
 		collection: string;
 		primaryKey?: string | number | null;
+		disabled?: boolean;
 	}>(),
 	{
 		links: () => [],
@@ -53,6 +59,7 @@ const fields = computed(() => {
 });
 
 const itemValues = inject('values', ref<Record<string, any>>({}));
+const resolvedRelationalValues = ref<Record<string, any>>({});
 const fetchedTemplateData = ref<Record<string, any>>({});
 const isLoading = ref(false);
 
@@ -76,6 +83,72 @@ const combinedItemData = computed(() => {
 	return result;
 });
 
+const attrs = useAttrs();
+
+const linksParsed = computed<ParsedLink[]>(() =>
+	props.links.map((link) => {
+		/*
+		 * Resolve related fields for interpolation.
+		 * If the values from v-form already include related fields,
+		 * we use them because those represent the current unstaged edits.
+		 * Otherwise we use the fetched values from the API.
+		 */
+
+		const scope = { ...itemValues.value };
+
+		Object.keys(resolvedRelationalValues.value).forEach((key) => {
+			if (scope[key]?.constructor !== Object && scope[key] !== null) {
+				scope[key] = resolvedRelationalValues.value[key];
+			}
+		});
+
+		const interpolatedUrl = link.url ? render(link.url, scope) : '';
+
+		/*
+		 * This incorrectly matches new links starting with two slashes but(!)
+		 * updating this line would change existing behavior.
+		 */
+		const isInternalLink = interpolatedUrl?.startsWith('/');
+
+		return {
+			icon: link.icon,
+			type: link.type,
+			label: link.label,
+			actionType: link.actionType,
+			to: isInternalLink ? interpolatedUrl : undefined,
+			href: isInternalLink ? undefined : interpolatedUrl,
+			flow: link.actionType === 'flow' ? link.flow : undefined,
+		};
+	}),
+);
+
+const buttonProps = computed(() =>
+	linksParsed.value.map((link, index) => {
+		const baseProps = {
+			key: `${link.actionType}-${index}`,
+			class: ['action', link.type],
+			secondary: link.type !== 'primary',
+			icon: !link.label,
+			disabled: (link.actionType === 'flow' && attrs['batch-mode']) || props.disabled,
+		};
+
+		if (link.actionType === 'url' && link.href) {
+			return {
+				...baseProps,
+				href: link.href,
+				to: link.to,
+			};
+		} else if (link.flow) {
+			return {
+				...baseProps,
+				onClick: () => runManualFlow(link.flow!),
+			};
+		}
+
+		return baseProps;
+	}),
+);
+
 const expanded = ref(false);
 const showHelpModal = ref(false);
 
@@ -87,55 +160,7 @@ function toggleHelp() {
 	}
 }
 
-const actionList = computed(() => {
-	if (!props.links || !props.links?.length) return [];
-
-	const formattedActions = props.links.map((action) => {
-		if (action.actionType === 'url') {
-			return {
-				...action,
-				url: render(action.url ?? '', combinedItemData.value),
-			};
-		}
-
-		return action;
-	});
-
-	return formattedActions;
-});
-
-const hasMultipleActions = computed(() => {
-	if (!actionList.value || !actionList.value?.length) return false;
-	return actionList.value?.length > 1;
-});
-
-const primaryAction = computed(() => {
-	if (!actionList.value || !actionList.value?.length) return null;
-	return actionList.value[0] || null;
-});
-
-function isInternalLink(url: string) {
-	const isInternal = url.startsWith('/') || url.startsWith('admin');
-
-	let processedUrl = url;
-
-	if (isInternal) {
-		const adminPrefixes = ['/admin/', '/admin', 'admin/', 'admin'];
-
-		for (const prefix of adminPrefixes) {
-			if (processedUrl.startsWith(prefix)) {
-				processedUrl = processedUrl.slice(prefix.length);
-				break;
-			}
-		}
-
-		processedUrl = processedUrl.startsWith('/') ? processedUrl : `/${processedUrl}`;
-	}
-
-	return { isInternal, processedUrl };
-}
-
-async function handleActionClick(action: Action) {
+async function handleActionClick(action: Link) {
 	if (action.actionType === 'flow' && action.flow) {
 		const effectiveValues = { ...combinedItemData.value };
 
@@ -188,6 +213,30 @@ watch(
 	{ immediate: true },
 );
 
+const primaryLink = computed(() => {
+	if (linksParsed.value.length === 1) {
+		return linksParsed.value[0];
+	}
+
+	return null;
+});
+
+const primaryLinkProps = computed(() => {
+	if (primaryLink.value) {
+		return buttonProps.value[0];
+	}
+
+	return null;
+});
+
+const helpString = computed(() => {
+	if (props.enableHelpTranslations && props.helpTranslationsString) {
+		return dompurify.sanitize(props.helpTranslationsString);
+	}
+
+	return dompurify.sanitize(props.help);
+});
+
 const { runManualFlow } = injectRunManualFlow();
 </script>
 
@@ -207,91 +256,68 @@ const { runManualFlow } = injectRunManualFlow();
 							<v-icon name="help_outline" />
 						</v-button>
 					</template>
-					<template v-if="!hasMultipleActions && primaryAction">
-						<template v-if="primaryAction.actionType === 'url'">
-							<v-button
-								v-if="isInternalLink(primaryAction.url || '').isInternal"
-								:to="isInternalLink(primaryAction.url || '').processedUrl"
-								small
-								:kind="primaryAction.type"
-							>
-								{{ primaryAction.label }}
-								<v-icon v-if="primaryAction.icon" :name="primaryAction.icon" right />
-							</v-button>
-							<v-button
-								v-else
-								tag="a"
-								:href="primaryAction.url || ''"
-								target="_blank"
-								rel="noopener noreferrer"
-								small
-								:kind="primaryAction.type"
-							>
-								{{ primaryAction.label }}
-								<v-icon v-if="primaryAction.icon" :name="primaryAction.icon" right />
-							</v-button>
-						</template>
 
+					<template v-if="primaryLink">
 						<v-button
-							v-else-if="primaryAction.actionType === 'flow' && primaryAction.flow"
-							:kind="primaryAction.type"
+							v-if="primaryLink!.href || primaryLink!.flow"
+							v-bind="primaryLinkProps"
 							small
-							@click="runManualFlow(primaryAction.flow)"
+							:kind="primaryLink!.type"
 						>
-							{{ primaryAction.label }}
-							<v-icon v-if="primaryAction.icon" :name="primaryAction.icon" right />
+							<v-icon v-if="primaryLink!.icon" left :name="primaryLink!.icon" />
+							<span v-if="primaryLink!.label">{{ primaryLink!.label }}</span>
 						</v-button>
 					</template>
 
-					<v-menu v-else-if="hasMultipleActions" placement="bottom-end">
-						<template #activator="{ toggle }">
-							<div>
-								<v-button secondary small class="full-button" @click="toggle">
-									{{ $t('actions') }}
-									<v-icon name="expand_more" right />
-								</v-button>
-								<v-button v-tooltip="$t('actions')" secondary small class="icon-button" icon @click="toggle">
-									<v-icon name="expand_more" />
-								</v-button>
-							</div>
-						</template>
+					<template v-else>
+						<v-menu placement="bottom-end">
+							<template #activator="{ toggle }">
+								<div>
+									<v-button secondary small class="full-button" @click="toggle">
+										{{ $t('actions') }}
+										<v-icon name="expand_more" right />
+									</v-button>
+									<v-button v-tooltip="$t('actions')" secondary small class="icon-button" icon @click="toggle">
+										<v-icon name="expand_more" />
+									</v-button>
+								</div>
+							</template>
 
-						<v-list>
-							<v-list-item
-								v-for="(action, index) in actionList"
-								:key="index"
-								clickable
-								@click="action.actionType === 'flow' ? handleActionClick(action) : null"
-							>
-								<v-list-item-icon v-if="action.icon">
-									<v-icon :name="action.icon" />
-								</v-list-item-icon>
-								<v-list-item-content>
-									<template v-if="action.actionType === 'url'">
-										<template v-if="isInternalLink(action.url || '').isInternal">
-											<router-link :to="isInternalLink(action.url || '').processedUrl">
+							<v-list>
+								<v-list-item
+									v-for="(link, index) in linksParsed"
+									:key="index"
+									clickable
+									@click="link.actionType === 'flow' ? handleActionClick(link) : null"
+								>
+									<v-list-item-icon v-if="link.icon">
+										<v-icon :name="link.icon" />
+									</v-list-item-icon>
+									<v-list-item-content>
+										<template v-if="link.actionType === 'url'">
+											<router-link v-if="link.to" :to="link.to">
 												<v-list-item-title>
-													{{ $t(action.label) }}
+													{{ $t(link.label) }}
 												</v-list-item-title>
 											</router-link>
+											<template v-else-if="link.href">
+												<a :href="link.href" target="_blank" rel="noopener noreferrer">
+													<v-list-item-title>
+														{{ $t(link.label) }}
+													</v-list-item-title>
+												</a>
+											</template>
 										</template>
 										<template v-else>
-											<a :href="action.url" target="_blank" rel="noopener noreferrer">
-												<v-list-item-title>
-													{{ $t(action.label) }}
-												</v-list-item-title>
-											</a>
+											<v-list-item-title>
+												{{ $t(link.label) }}
+											</v-list-item-title>
 										</template>
-									</template>
-									<template v-else>
-										<v-list-item-title>
-											{{ $t(action.label) }}
-										</v-list-item-title>
-									</template>
-								</v-list-item-content>
-							</v-list-item>
-						</v-list>
-					</v-menu>
+									</v-list-item-content>
+								</v-list-item>
+							</v-list>
+						</v-menu>
+					</template>
 				</div>
 			</div>
 		</div>
@@ -301,10 +327,10 @@ const { runManualFlow } = injectRunManualFlow();
 		<transition-expand>
 			<div v-if="expanded && help && helpDisplayMode !== 'modal'" class="help-text">
 				<!-- eslint-disable-next-line vue/no-v-html -->
-				<div v-html="dompurify.sanitize(props.helpTranslationsString ?? props.help)" />
+				<div v-html="helpString" />
 				<div class="collapse-button-container">
 					<v-button class="collapse-button" small secondary @click="toggleHelp">
-						{{ `${t('collapse')} ${t('help')}` }}
+						{{ `${$t('collapse')} ${$t('help')}` }}
 						<v-icon name="expand_less" right />
 					</v-button>
 				</div>
@@ -319,7 +345,7 @@ const { runManualFlow } = injectRunManualFlow();
 				</v-button>
 				<v-card-text>
 					<!-- eslint-disable-next-line vue/no-v-html -->
-					<div v-html="dompurify.sanitize(props.helpTranslationsString ?? props.help)" />
+					<div v-html="helpString" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button @click="showHelpModal = false">
@@ -433,16 +459,22 @@ const { runManualFlow } = injectRunManualFlow();
 		max-inline-size: 100%;
 		overflow-x: auto;
 	}
+
+	:deep(img) {
+		max-inline-size: 100%;
+		block-size: auto;
+		display: block;
+	}
 }
 
 .collapse-button-container {
 	display: flex;
 	justify-content: flex-end;
+	margin-block-start: 16px;
 }
 
 .help-modal {
 	position: relative;
-
 	padding-block-start: var(--v-card-padding, 16px);
 
 	.close-button {
@@ -453,6 +485,12 @@ const { runManualFlow } = injectRunManualFlow();
 		:deep(.button) {
 			border-radius: 100%;
 		}
+	}
+
+	:deep(img) {
+		max-inline-size: 100%;
+		block-size: auto;
+		display: block;
 	}
 }
 </style>
