@@ -555,7 +555,7 @@ function getRollupOptions({
 					})
 				: null,
 			minify ? terser() : null,
-		].filter(Boolean),
+		],
 		onwarn(warning, warn) {
 			if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.ids?.every((id) => /\bnode_modules\b/.test(id))) return;
 
