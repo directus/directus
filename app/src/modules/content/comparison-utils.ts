@@ -302,10 +302,13 @@ export function mergeMainItemKeysIntoRevision(
 
 	const defaultValues = fields ? getDefaultValuesFromFields(fields).value : {};
 
-	for (const [key] of Object.entries(mainItem)) {
-		if (!(key in merged)) {
-			const defaultValue = defaultValues[key] ?? null;
-			merged[key] = defaultValue;
+	for (const [fieldKey, value] of Object.entries(mainItem)) {
+		if (!(fieldKey in merged)) {
+			const defaultValue = defaultValues[fieldKey] ?? null;
+			const fieldHasValue = value !== defaultValue;
+			if (fieldHasValue) continue;
+
+			merged[fieldKey] = defaultValue;
 		}
 	}
 
