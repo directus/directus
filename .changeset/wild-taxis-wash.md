@@ -10,7 +10,7 @@
 ---
 
 Updated the following dependencies:
-- Updated sass-embedded dependency from 1.89.2to 1.93.2
+- Updated sass-embedded dependency from 1.89.2 to 1.93.2
 - Updated stylelint-config-standard dependency from 39.0.0 to 39.0.1
 - Updated stylelint dependency from 16.23.0 to 16.25.0
 - Updated tinymce dependency from 6.8.5 to 6.8.6
