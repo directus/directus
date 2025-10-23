@@ -18,10 +18,11 @@ import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil } from 'lodash';
 import { render } from 'micromustache';
-import { computed, inject, ref, toRefs, watch } from 'vue';
+import { computed, inject, ref, toRef, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import type { ComparisonContext } from '@/components/v-form/types';
+import { useGranularIndicator } from '@/modules/content/composables/use-granular-indicator';
 
 const props = withDefaults(
 	defineProps<{
@@ -155,6 +156,17 @@ const {
 
 const { createAllowed, deleteAllowed, updateAllowed } = useRelationPermissionsO2M(relationInfo);
 
+const { itemHasChanges: baseItemHasChanges } = useGranularIndicator(
+	toRef(props, 'comparison'),
+	toRef(props, 'field'),
+	relationInfo,
+);
+
+const itemHasChanges = (item: DisplayItem) =>
+	baseItemHasChanges(item, {
+		pkFieldAccessor: (item: DisplayItem) => item[relationInfo.value?.relatedPrimaryKeyField.field || 'id'],
+	});
+
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
 const showingCount = computed(() =>
@@ -257,24 +269,6 @@ const selectedPrimaryKeys = computed(() => {
 
 	return selected.value.map((item) => item[relatedPkField]);
 });
-
-function itemHasChanges(item: DisplayItem): boolean {
-	if (!relationInfo.value || !props.comparison?.relationalDetails) return false;
-
-	const changedIds = props.comparison.relationalDetails[props.field];
-	if (!changedIds || changedIds.length === 0) return false;
-
-	if (item.$type === 'created' || item.$type === 'deleted') {
-		return true;
-	}
-
-	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
-	const itemId = item[relatedPkField];
-
-	if (itemId === undefined) return false;
-
-	return changedIds.some((id) => id == itemId || String(id) === String(itemId));
-}
 
 const currentlyEditing = ref<string | null>(null);
 const selectModalActive = ref(false);

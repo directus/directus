@@ -18,10 +18,11 @@ import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil, merge, set } from 'lodash';
 import { render } from 'micromustache';
-import { computed, inject, ref, toRefs, watch } from 'vue';
+import { computed, inject, ref, toRef, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import type { ComparisonContext } from '@/components/v-form/types';
+import { useGranularIndicator } from '@/modules/content/composables/use-granular-indicator';
 
 const props = withDefaults(
 	defineProps<{
@@ -184,6 +185,8 @@ const {
 
 const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelationPermissionsM2M(relationInfo);
 
+const { itemHasChanges } = useGranularIndicator(toRef(props, 'comparison'), toRef(props, 'field'), relationInfo);
+
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
 const showingCount = computed(() =>
@@ -294,24 +297,6 @@ const selectedPrimaryKeys = computed(() => {
 
 	return selected.value.map((item) => item[junctionField][relatedPkField]);
 });
-
-function itemHasChanges(item: DisplayItem): boolean {
-	if (!relationInfo.value || !props.comparison?.relationalDetails) return false;
-
-	const changedIds = props.comparison.relationalDetails[props.field];
-	if (!changedIds || changedIds.length === 0) return false;
-
-	if (item.$type === 'created' || item.$type === 'deleted') {
-		return true;
-	}
-
-	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
-	const itemId = item[junctionPkField];
-
-	if (itemId === undefined) return false;
-
-	return changedIds.some((id) => id == itemId || String(id) === String(itemId));
-}
 
 const editModalActive = ref(false);
 const currentlyEditing = ref<string | number | null>(null);

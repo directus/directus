@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ComparisonContext } from '@/components/v-form/types';
+import { useGranularIndicator } from '@/modules/content/composables/use-granular-indicator';
 import { usePageSize } from '@/composables/use-page-size';
 import { useRelationM2A } from '@/composables/use-relation-m2a';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
@@ -13,7 +14,7 @@ import DrawerItem from '@/views/private/components/drawer-item.vue';
 import type { ContentVersion, Filter } from '@directus/types';
 import { getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil, set } from 'lodash';
-import { computed, ref, toRefs, unref, watch } from 'vue';
+import { computed, ref, toRef, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 
@@ -322,6 +323,33 @@ const customFilter = computed(() => {
 
 const { createAllowed, deleteAllowed, selectAllowed, updateAllowed } = useRelationPermissionsM2A(relationInfo);
 
+const { itemHasChanges: baseItemHasChanges } = useGranularIndicator(
+	toRef(props, 'comparison'),
+	toRef(props, 'field'),
+	relationInfo,
+);
+
+const itemHasChanges = (item: DisplayItem) =>
+	baseItemHasChanges(item, {
+		pkFieldAccessor: (item: DisplayItem) => {
+			const junctionField = relationInfo.value?.junctionField.field;
+			const nestedItem = item[junctionField!];
+
+			if (!nestedItem || typeof nestedItem !== 'object') return undefined;
+
+			const collectionField = relationInfo.value?.collectionField.field;
+			const collection = item[collectionField!];
+
+			if (!collection) return undefined;
+
+			const relatedPkField = relationInfo.value?.relationPrimaryKeyFields[collection]?.field;
+
+			if (!relatedPkField) return undefined;
+
+			return nestedItem[relatedPkField];
+		},
+	});
+
 const createCollections = computed(() => {
 	const info = relationInfo.value;
 	if (!info) return [];
@@ -333,37 +361,6 @@ const createCollections = computed(() => {
 
 const canDrag = computed(() => relationInfo.value?.sortField !== undefined && !props.disabled && updateAllowed.value);
 const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitWritable.value);
-
-function itemHasChanges(item: DisplayItem): boolean {
-	if (!relationInfo.value || !props.comparison?.relationalDetails) return false;
-
-	const changedIds = props.comparison.relationalDetails[props.field];
-	if (!changedIds || changedIds.length === 0) return false;
-
-	if (item.$type === 'created' || item.$type === 'deleted') {
-		return true;
-	}
-
-	const junctionField = relationInfo.value.junctionField.field;
-	const nestedItem = item[junctionField];
-
-	if (!nestedItem || typeof nestedItem !== 'object') return false;
-
-	const collectionField = relationInfo.value.collectionField.field;
-	const collection = item[collectionField];
-
-	if (!collection) return false;
-
-	const relatedPkField = relationInfo.value.relationPrimaryKeyFields[collection]?.field;
-
-	if (!relatedPkField) return false;
-
-	const nestedItemId = nestedItem[relatedPkField];
-
-	if (nestedItemId === undefined) return false;
-
-	return changedIds.some((id) => id == nestedItemId || String(id) === String(nestedItemId));
-}
 </script>
 
 <template>

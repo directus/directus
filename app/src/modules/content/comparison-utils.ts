@@ -102,6 +102,44 @@ type FieldDifferencesResult = {
 	relationalDetails: Record<string, string[]>;
 };
 
+function processOperationChanges(
+	relationalData: Record<string, any>,
+	options: {
+		operations?: ('create' | 'update' | 'delete')[];
+		extractId?: (item: any, operation: string) => any;
+	} = {},
+): (string | number)[] {
+	const { operations = ['create', 'update', 'delete'], extractId } = options;
+	const allChangedIds: (string | number)[] = [];
+	let hasChanges = false;
+
+	operations.forEach((op) => {
+		if (Array.isArray(relationalData[op]) && relationalData[op].length > 0) {
+			hasChanges = true;
+
+			relationalData[op].forEach((item: any) => {
+				const id = extractId ? extractId(item, op) : item?.id;
+
+				if (id !== null && id !== undefined) {
+					allChangedIds.push(id);
+				}
+			});
+		}
+	});
+
+	// Version data does not always include ids, such as when an item is created
+	/* relationalData = {
+			create: [{ name: 'New Item' }], // No ID field
+			...,
+		}
+	*/
+	if (hasChanges && allChangedIds.length === 0) {
+		allChangedIds.push('has_changes');
+	}
+
+	return allChangedIds;
+}
+
 function calculateFieldDifferences(
 	revisionData: Record<string, any>,
 	currentData: Record<string, any>,
@@ -154,68 +192,43 @@ function calculateFieldDifferences(
 				}
 
 				if (fieldType === 'o2m') {
-					let hasChanges = false;
-
-					['create', 'update', 'delete'].forEach((op) => {
-						if (Array.isArray(relationalData[op]) && relationalData[op].length > 0) {
-							hasChanges = true;
-
-							relationalData[op].forEach((item: any) => {
-								if (item?.id) allChangedIds.push(item.id);
-							});
-						}
+					const changedIds = processOperationChanges(relationalData, {
+						operations: ['create', 'update', 'delete'],
+						extractId: (item: any) => item?.id,
 					});
 
-					if (hasChanges && allChangedIds.length === 0) {
-						allChangedIds.push('has_changes');
+					if (changedIds.length > 0) {
+						allChangedIds.push(...changedIds);
 					}
 				} else if (fieldType === 'm2m' || fieldType === 'files') {
-					let hasChanges = false;
-
-					['create', 'update', 'delete'].forEach((op) => {
-						if (Array.isArray(relationalData[op]) && relationalData[op].length > 0) {
-							hasChanges = true;
-
-							if (op === 'delete') {
-								relationalData[op].forEach((id: any) => {
-									if (id !== null && id !== undefined) allChangedIds.push(id);
-								});
-							} else {
-								relationalData[op].forEach((item: any) => {
-									if (item?.id) allChangedIds.push(item.id);
-								});
+					const changedIds = processOperationChanges(relationalData, {
+						operations: ['create', 'update', 'delete'],
+						extractId: (item: any, operation: string) => {
+							if (operation === 'delete') {
+								return item;
 							}
-						}
+
+							return item?.id;
+						},
 					});
 
-					if (hasChanges && allChangedIds.length === 0) {
-						allChangedIds.push('has_changes');
+					if (changedIds.length > 0) {
+						allChangedIds.push(...changedIds);
 					}
 				} else if (fieldType === 'm2a') {
-					let hasChanges = false;
-
-					['create', 'update', 'delete'].forEach((op) => {
-						if (Array.isArray(relationalData[op]) && relationalData[op].length > 0) {
-							hasChanges = true;
-
-							if (op === 'delete') {
-								relationalData[op].forEach((id: any) => {
-									if (id !== null && id !== undefined) allChangedIds.push(id);
-								});
-							} else {
-								relationalData[op].forEach((item: any) => {
-									const nestedItemId = item?.item?.id;
-
-									if (nestedItemId) {
-										allChangedIds.push(nestedItemId);
-									}
-								});
+					const changedIds = processOperationChanges(relationalData, {
+						operations: ['create', 'update', 'delete'],
+						extractId: (item: any, operation: string) => {
+							if (operation === 'delete') {
+								return item;
 							}
-						}
+
+							return item?.item?.id;
+						},
 					});
 
-					if (hasChanges && allChangedIds.length === 0) {
-						allChangedIds.push('has_changes');
+					if (changedIds.length > 0) {
+						allChangedIds.push(...changedIds);
 					}
 				}
 
