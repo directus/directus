@@ -373,8 +373,8 @@ catalogs:
       specifier: 0.5.0
       version: 0.5.0
     axios:
-      specifier: 1.12.2
-      version: 1.12.2
+      specifier: 1.12.0
+      version: 1.12.0
     axios-cache-interceptor:
       specifier: 1.8.3
       version: 1.8.3
@@ -1057,7 +1057,7 @@ importers:
         version: 0.5.0
       axios:
         specifier: 'catalog:'
-        version: 1.12.2
+        version: 1.12.0
       busboy:
         specifier: 'catalog:'
         version: 1.6.0
@@ -1665,7 +1665,7 @@ importers:
         version: 13.6.0(vue@3.5.18(typescript@5.8.3))
       '@vueuse/integrations':
         specifier: 'catalog:'
-        version: 13.6.0(axios@1.12.2)(focus-trap@7.6.5)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.5.18(typescript@5.8.3))
+        version: 13.6.0(axios@1.12.0)(focus-trap@7.6.5)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.5.18(typescript@5.8.3))
       '@vueuse/router':
         specifier: 'catalog:'
         version: 13.6.0(vue-router@4.5.1(vue@3.5.18(typescript@5.8.3)))(vue@3.5.18(typescript@5.8.3))
@@ -1674,7 +1674,7 @@ importers:
         version: 4.5.0
       axios:
         specifier: 'catalog:'
-        version: 1.12.2
+        version: 1.12.0
       base-64:
         specifier: 'catalog:'
         version: 1.0.0
@@ -1845,7 +1845,7 @@ importers:
         version: link:../utils
       axios:
         specifier: 'catalog:'
-        version: 1.12.2
+        version: 1.12.0
       lodash-es:
         specifier: 'catalog:'
         version: 4.17.21
@@ -2822,10 +2822,10 @@ importers:
     dependencies:
       axios:
         specifier: 'catalog:'
-        version: 1.12.2
+        version: 1.12.0
       axios-cache-interceptor:
         specifier: 'catalog:'
-        version: 1.8.3(axios@1.12.2)
+        version: 1.8.3(axios@1.12.0)
       boxen:
         specifier: 'catalog:'
         version: 8.0.1
@@ -3025,8 +3025,8 @@ importers:
         specifier: 8.0.0
         version: 8.0.0
       axios:
-        specifier: 'catalog:'
-        version: 1.12.2
+        specifier: 1.8.4
+        version: 1.8.4
       get-port:
         specifier: 7.1.0
         version: 7.1.0
@@ -6965,8 +6965,11 @@ packages:
     peerDependencies:
       axios: ^1
 
-  axios@1.12.2:
-    resolution: {integrity: sha512-vMJzPewAlRyOgxV2dU0Cuz2O8zzzx9VYtbJOaBgXFeLc4IV/Eg50n4LowmehOOR61S8ZMpc2K5Sa7g6A4jfkUw==}
+  axios@1.12.0:
+    resolution: {integrity: sha512-oXTDccv8PcfjZmPGlWsPSwtOJCZ/b6W5jAMCNcfwJbCzDckwG0jrYJFaWH1yvivfCXjVzV/SPDEhMB3Q+DSurg==}
+
+  axios@1.8.4:
+    resolution: {integrity: sha512-eBSYY4Y68NNlHbHBMdeDmKNtDgXWhQsJcGqzO3iLUM0GraQFSS9cVgPX5I9b3lbdFKyYoAEGAZF1DwhTaljNAw==}
 
   backoff@2.5.0:
     resolution: {integrity: sha512-wC5ihrnUXmR2douXmXLCe5O3zg3GKIyvRi/hi58a/XyRxVI+3/yM0PYueQOZXPXQ9pxBislYkw+sF9b7C/RuMA==}
@@ -18202,13 +18205,13 @@ snapshots:
       '@vueuse/shared': 13.6.0(vue@3.5.18(typescript@5.8.3))
       vue: 3.5.18(typescript@5.8.3)
 
-  '@vueuse/integrations@13.6.0(axios@1.12.2)(focus-trap@7.6.5)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.5.18(typescript@5.8.3))':
+  '@vueuse/integrations@13.6.0(axios@1.12.0)(focus-trap@7.6.5)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.5.18(typescript@5.8.3))':
     dependencies:
       '@vueuse/core': 13.6.0(vue@3.5.18(typescript@5.8.3))
       '@vueuse/shared': 13.6.0(vue@3.5.18(typescript@5.8.3))
       vue: 3.5.18(typescript@5.8.3)
     optionalDependencies:
-      axios: 1.12.2
+      axios: 1.12.0
       focus-trap: 7.6.5
       qrcode: 1.5.4
       sortablejs: 1.14.0
@@ -18581,14 +18584,22 @@ snapshots:
   aws-ssl-profiles@1.1.2:
     optional: true
 
-  axios-cache-interceptor@1.8.3(axios@1.12.2):
+  axios-cache-interceptor@1.8.3(axios@1.12.0):
     dependencies:
-      axios: 1.12.2
+      axios: 1.12.0
       cache-parser: 1.2.5
       fast-defer: 1.1.8
       object-code: 1.3.3
 
-  axios@1.12.2:
+  axios@1.12.0:
+    dependencies:
+      follow-redirects: 1.15.11(debug@4.3.7)
+      form-data: 4.0.4
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
+  axios@1.8.4:
     dependencies:
       follow-redirects: 1.15.11(debug@4.3.7)
       form-data: 4.0.4
@@ -21471,7 +21482,7 @@ snapshots:
 
   mailgun.js@8.2.2:
     dependencies:
-      axios: 1.12.2
+      axios: 1.12.0
       base-64: 1.0.0
       url-join: 4.0.1
     transitivePeerDependencies:
