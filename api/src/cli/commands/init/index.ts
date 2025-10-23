@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import chalk from 'chalk';
 import { execa } from 'execa';
 import inquirer from 'inquirer';
@@ -14,6 +15,8 @@ import createEnv from '../../utils/create-env/index.js';
 import { defaultAdminPolicy, defaultAdminRole, defaultAdminUser } from '../../utils/defaults.js';
 import { drivers, getDriverForClient } from '../../utils/drivers.js';
 import { databaseQuestions } from './questions.js';
+
+const env = useEnv();
 
 export default async function init(): Promise<void> {
 	const rootPath = process.cwd();
@@ -78,7 +81,9 @@ export default async function init(): Promise<void> {
 			message: 'Email',
 			default: 'admin@example.com',
 			validate: (input: string) => {
-				const emailSchema = Joi.string().email().required();
+				const emailSchema = env['EMAIL_TLD_VALIDATION']
+					? Joi.string().email().required()
+					: Joi.string().email({ tlds: false }).required();
 				const { error } = emailSchema.validate(input.trim());
 				if (error) throw new Error('The email entered is not a valid email address!');
 				return true;

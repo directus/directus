@@ -73,6 +73,8 @@ export const DIRECTUS_VARIABLES = [
 	'CONTENT_SECURITY_POLICY_.+',
 	'HSTS_.+',
 
+	'EMAIL_TLD_VALIDATION',
+
 	// hashing
 	'HASH_.+',
 

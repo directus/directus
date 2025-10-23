@@ -67,6 +67,8 @@ export const DEFAULTS = {
 
 	ROOT_REDIRECT: './admin',
 
+	EMAIL_TLD_VALIDATION: true,
+
 	CORS_ENABLED: false,
 	CORS_ORIGIN: false,
 	CORS_METHODS: 'GET,POST,PATCH,DELETE',
