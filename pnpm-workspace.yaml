@@ -12,7 +12,7 @@ catalog:
   '@aws-sdk/client-sesv2': 3.864.0
   '@aws-sdk/lib-storage': 3.858.0
   '@azure/storage-blob': 12.28.0
-  '@changesets/cli': 2.29.5
+  '@changesets/cli': 2.29.7
   '@changesets/get-github-info': 0.6.0
   '@changesets/types': 6.1.0
   '@directus/schema-builder': workspace:*
@@ -54,9 +54,9 @@ catalog:
   '@ngneat/falso': 8.0.2
   '@npm/types': 2.1.0
   '@pinia/testing': 1.0.2
-  '@pnpm/logger': 1001.0.0
-  '@pnpm/workspace.find-packages': 1000.0.31
-  '@pnpm/workspace.pkgs-graph': 1000.0.18
+  '@pnpm/logger': 1001.0.1
+  '@pnpm/workspace.find-packages': 1000.0.41
+  '@pnpm/workspace.pkgs-graph': 1000.0.23
   '@popperjs/core': 2.11.8
   '@rollup/plugin-alias': 5.1.1
   '@rollup/plugin-commonjs': 28.0.6
@@ -67,7 +67,7 @@ catalog:
   '@rollup/plugin-virtual': 3.0.2
   '@rollup/plugin-yaml': 4.1.2
   '@shopify/semaphore': 3.1.0
-  '@sinclair/typebox': 0.34.38
+  '@sinclair/typebox': 0.34.41
   '@sindresorhus/slugify': 2.2.1
   '@smithy/node-http-handler': 4.1.0
   '@supabase/storage-js': 2.12.1
@@ -115,7 +115,7 @@ catalog:
   '@types/qrcode': 1.5.5
   '@types/qs': 6.14.0
   '@types/sanitize-html': 2.16.0
-  '@types/semver': 7.7.0
+  '@types/semver': 7.7.1
   '@types/stream-json': 1.7.8
   '@types/tmp': 0.2.6
   '@types/wellknown': 0.5.8
@@ -167,9 +167,9 @@ catalog:
   esbuild-plugin-replace: 1.4.0
   esbuild-yaml: 3.0.3
   escape-string-regexp: 5.0.0
-  eslint: 9.32.0
+  eslint: 9.38.0
   eslint-config-prettier: 10.1.8
-  eslint-plugin-vue: 10.4.0
+  eslint-plugin-vue: 10.5.1
   eventemitter2: 6.4.9
   execa: 9.6.0
   exif-reader: 2.0.2
@@ -207,7 +207,7 @@ catalog:
   keyv: 5.4.0
   knex: 3.1.0
   knex-mock-client: 3.0.2
-  ky: 1.8.2
+  ky: 1.12.0
   ldapjs: 2.3.3
   liquidjs: 10.21.1
   lodash: 4.17.21
@@ -264,13 +264,13 @@ catalog:
   samlify: 2.10.1
   sanitize-html: 2.17.0
   sass-embedded: 1.89.2
-  semver: 7.7.2
+  semver: 7.7.3
   sharp: 0.34.3
   snappy: 7.3.0
   sqlite3: 5.1.7
   stream-json: 1.9.1
   string-width: 7.2.0
-  strip-ansi: 7.1.0
+  strip-ansi: 7.1.2
   stylelint: 16.23.0
   stylelint-config-standard: 39.0.0
   stylelint-config-standard-scss: 15.0.1

@@ -117,7 +117,7 @@ export async function processPackages(): Promise<{
 		if (version) {
 			newVersion = version;
 		} else if (workspacePackage.manifest.version) {
-			newVersion = semver.inc(workspacePackage.manifest.version, isPrerelease ? 'prerelease' : 'patch', prereleaseId);
+			newVersion = semver.inc(workspacePackage.manifest.version, isPrerelease ? 'prerelease' : 'patch', prereleaseId!);
 		}
 
 		if (!newVersion) return;
