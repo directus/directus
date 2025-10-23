@@ -13,7 +13,7 @@ interface FlowDialogsContext {
 	displayUnsavedChangesDialog: boolean;
 	isConfirmButtonDisabled: boolean;
 	resetConfirm: () => void;
-	updateFieldValues: (event: any) => void;
+	updateFieldValues: (event: Record<string, any>) => void;
 }
 
 defineProps<FlowDialogsContext>();
