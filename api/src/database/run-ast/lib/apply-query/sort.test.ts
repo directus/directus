@@ -4,12 +4,6 @@ import { createTracker } from 'knex-mock-client';
 import { expect, test, vi } from 'vitest';
 import { Client_SQLite3 } from './mock.js';
 
-const aliasFn = vi.fn();
-
-vi.doMock('nanoid/non-secure', () => ({
-	customAlphabet: () => aliasFn,
-}));
-
 const { applySort } = await import('./sort.js');
 
 const schema = new SchemaBuilder()
@@ -146,7 +140,6 @@ test('sorting of count(*) with aggregation', async () => {
 test('sorting of count(links)', async () => {
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
 
 	applySort(db, schema, queryBuilder, ['count(links)'], undefined, 'articles', {});
 
@@ -168,7 +161,6 @@ test('sorting of count(links)', async () => {
 test('sorting of count(links) with aggregation', async () => {
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
 
 	applySort(
 		db,

@@ -3,12 +3,6 @@ import knex from 'knex';
 import { expect, test, vi } from 'vitest';
 import { Client_SQLite3 } from '../lib/apply-query/mock.js';
 
-const aliasFn = vi.fn();
-
-vi.doMock('nanoid/non-secure', () => ({
-	customAlphabet: () => aliasFn,
-}));
-
 const { getColumn } = await import('./get-column.js');
 
 test('column for simple field', async () => {
@@ -50,7 +44,7 @@ test('column for count function', async () => {
 		.build();
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
-	aliasFn.mockReturnValueOnce('alias');
+
 
 	const rawQuery = getColumn(db, 'articles', 'count(links)', undefined, schema).toSQL();
 

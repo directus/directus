@@ -3,12 +3,6 @@ import knex from 'knex';
 import { expect, test, vi } from 'vitest';
 import { Client_SQLite3 } from './mock.js';
 
-const aliasFn = vi.fn();
-
-vi.doMock('nanoid/non-secure', () => ({
-	customAlphabet: () => aliasFn,
-}));
-
 const { addJoin } = await import('./add-join.js');
 
 test('add join non existed relation', async () => {
@@ -20,7 +14,6 @@ test('add join non existed relation', async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
 
 	addJoin({
 		aliasMap: {},
@@ -47,7 +40,6 @@ test('add join for m2o relation', async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
 
 	addJoin({
 		aliasMap: {},
@@ -74,7 +66,6 @@ test('add join for o2m relation', async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
 
 	addJoin({
 		aliasMap: {},
@@ -124,7 +115,6 @@ test('add join for a2o relation', async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
 
 	addJoin({
 		aliasMap: {},
@@ -158,8 +148,6 @@ test('add join for m2m relation', async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
-	aliasFn.mockReturnValueOnce('alias2');
 
 	addJoin({
 		aliasMap: {},

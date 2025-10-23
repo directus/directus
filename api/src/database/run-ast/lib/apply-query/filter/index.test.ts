@@ -5,12 +5,6 @@ import { describe, expect, test, vi } from 'vitest';
 import { DEFUAULT_PERMISSION } from '../../../../../permissions/utils/default-permission.js';
 import { Client_SQLite3 } from '../mock.js';
 
-const aliasFn = vi.fn();
-
-vi.doMock('nanoid/non-secure', () => ({
-	customAlphabet: () => aliasFn,
-}));
-
 const { applyFilter } = await import('./index.js');
 
 describe('boolean filter operators', () => {
@@ -165,7 +159,7 @@ test(`filtering m2o relation`, async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
+
 
 	applyFilter(
 		db,
@@ -207,7 +201,7 @@ const o2m_schema = new SchemaBuilder()
 test(`filtering o2m relation`, async () => {
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
+
 
 	applyFilter(
 		db,
@@ -239,7 +233,7 @@ for (const quantifier of ['_some', '_none']) {
 	test(`filtering o2m relation with ${quantifier}`, async () => {
 		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 		const queryBuilder = db.queryBuilder();
-		aliasFn.mockReturnValueOnce('alias');
+	
 
 		applyFilter(
 			db,
@@ -286,8 +280,8 @@ test(`filtering a2o relation`, async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias123');
-	aliasFn.mockReturnValueOnce('alias456');
+
+
 
 	applyFilter(
 		db,
@@ -502,7 +496,7 @@ test(`filtering $FOLLOW against reverse o2m`, async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
+
 
 	applyFilter(
 		db,
@@ -540,7 +534,7 @@ test(`filtering on count(links)`, async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
+
 
 	applyFilter(
 		db,
@@ -576,7 +570,7 @@ test(`filtering on links with existing alias map`, async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
+
 	const aliasMap = {};
 
 	applyFilter(
@@ -643,7 +637,7 @@ test(`filter with partial field permissions`, async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
+
 	const aliasMap = {};
 
 	applyFilter(

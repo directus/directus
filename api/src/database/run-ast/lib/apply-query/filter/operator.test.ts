@@ -3,16 +3,6 @@ import knex from 'knex';
 import { expect, test, vi } from 'vitest';
 import { Client_SQLite3 } from '../mock.js';
 
-let aliasCount = 0;
-
-const aliasFn = vi.fn(() => {
-	return 'alias' + aliasCount++;
-});
-
-vi.doMock('nanoid/non-secure', () => ({
-	customAlphabet: () => aliasFn,
-}));
-
 const { applyOperator } = await import('./operator.js');
 
 for (const { field, operator, value, sql, bindings } of [
@@ -99,7 +89,6 @@ for (const { field, operator, value, sql, bindings } of [
 
 		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 		const queryBuilder = db.queryBuilder();
-		aliasCount = 0;
 
 		applyOperator(db, queryBuilder, schema, field, operator, value);
 
