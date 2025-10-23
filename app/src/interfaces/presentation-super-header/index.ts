@@ -16,7 +16,7 @@ export default defineInterface({
 	options: ({ collection }) => [
 		{
 			field: 'title',
-			name: '$t:interfaces.super-header.title.title',
+			name: '$t:title',
 			type: 'string',
 			meta: {
 				width: 'full',
@@ -28,7 +28,7 @@ export default defineInterface({
 		},
 		{
 			field: 'color',
-			name: '$t:interfaces.super-header.color.name',
+			name: '$t:color',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -37,7 +37,7 @@ export default defineInterface({
 		},
 		{
 			field: 'icon',
-			name: '$t:interfaces.super-header.icon.name',
+			name: '$t:icon',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -46,7 +46,7 @@ export default defineInterface({
 		},
 		{
 			field: 'subtitle',
-			name: '$t:interfaces.super-header.subtitle.name',
+			name: '$t:subtitle',
 			type: 'string',
 			meta: {
 				width: 'full',
@@ -58,17 +58,16 @@ export default defineInterface({
 		},
 		{
 			field: 'help',
-			name: '$t:interfaces.super-header.help.name',
+			name: '$t:interfaces.super-header.help',
 			type: 'text',
 			meta: {
 				width: 'full',
 				interface: 'input-rich-text-html',
-				note: '$t:interfaces.super-header.help.note',
 			},
 		},
 		{
 			field: 'helpDisplayMode',
-			name: '$t:interfaces.super-header.help_display_mode.name',
+			name: '$t:interfaces.super-header.help_display_mode',
 			type: 'string',
 			schema: {
 				default_value: 'inline',
@@ -78,15 +77,15 @@ export default defineInterface({
 				interface: 'select-dropdown',
 				options: {
 					choices: [
-						{ text: '$t:interfaces.super-header.help_display_mode.inline', value: 'inline' },
-						{ text: '$t:interfaces.super-header.help_display_mode.modal', value: 'modal' },
+						{ text: '$t:inline', value: 'inline' },
+						{ text: '$t:modal', value: 'modal' },
 					],
 				},
 			},
 		},
 		{
 			field: 'enableHelpTranslations',
-			name: '$t:interfaces.super-header.enable_help_translations.name',
+			name: '$t:interfaces.super-header.enable_help_translations',
 			type: 'boolean',
 			meta: {
 				width: 'half',
@@ -97,7 +96,7 @@ export default defineInterface({
 		},
 		{
 			field: 'helpTranslationsString',
-			name: '$t:interfaces.super-header.help_translations_string.name',
+			name: '$t:interfaces.super-header.help_translations_string',
 			type: 'json',
 			meta: {
 				width: 'full',
@@ -116,54 +115,50 @@ export default defineInterface({
 			},
 		},
 		{
-			field: 'actions',
-			name: '$t:interfaces.super-header.actions.name',
+			field: 'links',
+			name: '$t:interfaces.super-header.links',
 			type: 'json',
 			meta: {
 				interface: 'list',
-				note: '$t:interfaces.super-header.actions.note',
 				options: {
 					fields: [
 						{
 							field: 'label',
 							type: 'string',
-							name: '$t:interfaces.super-header.actions.label.name',
+							name: '$t:label',
 							meta: {
 								width: 'full',
 								interface: 'system-input-translated-string',
-								note: '$t:interfaces.super-header.actions.label.note',
 								options: {
-									placeholder: 'label',
+									placeholder: '$t:label',
 								},
 							},
 						},
 						{
 							field: 'icon',
-							name: '$t:interfaces.super-header.actions.icon.name',
+							name: '$t:icon',
 							type: 'string',
 							meta: {
 								width: 'half',
-								note: '$t:interfaces.super-header.actions.icon.note',
 								interface: 'select-icon',
 							},
 						},
 						{
 							field: 'type',
-							name: '$t:interfaces.super-header.actions.type.name',
+							name: '$t:type',
 							type: 'string',
 							meta: {
 								width: 'half',
-								note: '$t:interfaces.super-header.actions.type.note',
 								interface: 'select-dropdown',
 								default_value: 'normal',
 								options: {
 									choices: [
-										{ text: '$t:interfaces.super-header.actions.type.choices.primary', value: 'normal' },
-										{ text: '$t:interfaces.super-header.actions.type.choices.secondary', value: 'secondary' },
-										{ text: '$t:interfaces.super-header.actions.type.choices.info', value: 'info' },
-										{ text: '$t:interfaces.super-header.actions.type.choices.success', value: 'success' },
-										{ text: '$t:interfaces.super-header.actions.type.choices.warning', value: 'warning' },
-										{ text: '$t:interfaces.super-header.actions.type.choices.danger', value: 'danger' },
+										{ text: '$t:normal', value: 'normal' },
+										{ text: '$t:primary', value: 'primary' },
+										{ text: '$t:info', value: 'info' },
+										{ text: '$t:success', value: 'success' },
+										{ text: '$t:warning', value: 'warning' },
+										{ text: '$t:danger', value: 'danger' },
 									],
 								},
 							},
@@ -173,67 +168,32 @@ export default defineInterface({
 						},
 						{
 							field: 'actionType',
-							name: '$t:interfaces.super-header.actions.action_type.name',
 							type: 'string',
+							name: '$t:interfaces.super-header.action_type',
+							schema: {
+								default_value: 'url',
+							},
 							meta: {
-								width: 'half',
 								interface: 'select-dropdown',
-								note: '$t:interfaces.super-header.actions.action_type.note',
 								options: {
 									choices: [
-										{ text: '$t:interfaces.super-header.actions.action_type.link', value: 'link' },
-										{ text: '$t:interfaces.super-header.actions.action_type.flow', value: 'flow' },
+										{ text: '$t:url', value: 'url' },
+										{ text: '$t:flow', value: 'flow' },
 									],
 								},
-							},
-							schema: {
-								default_value: 'link',
 							},
 						},
 						{
 							field: 'url',
 							type: 'string',
-							name: '$t:interfaces.super-header.actions.url.name',
+							name: '$t:url',
 							meta: {
 								width: 'full',
 								interface: 'system-display-template',
-								note: '$t:interfaces.super-header.actions.action_type.url.note',
 								options: {
 									collectionName: collection,
 									font: 'monospace',
-									placeholder: '$t:interfaces.super-header.actions.action_type.url.placeholder',
-								},
-								hidden: true,
-								conditions: [
-									{
-										rule: {
-											actionType: {
-												_eq: 'link',
-											},
-										},
-										hidden: false,
-									},
-								],
-							},
-						},
-						{
-							field: 'flow',
-							type: 'string',
-							name: '$t:interfaces.super-header.actions.action_type.flow.name',
-							meta: {
-								width: 'full',
-								interface: 'collection-item-dropdown',
-								note: '$t:interfaces.super-header.actions.action_type.flow.note',
-								hidden: true,
-								options: {
-									selectedCollection: 'directus_flows',
-									placeholder: '$t:interfaces.super-header.actions.action_type.flow.placeholder',
-									template: '{{ name }}',
-									filter: {
-										trigger: {
-											_eq: 'manual',
-										},
-									},
+									placeholder: 'https://example.com/articles/{{ id }}/{{ slug }}',
 								},
 								conditions: [
 									{
@@ -242,7 +202,27 @@ export default defineInterface({
 												_eq: 'flow',
 											},
 										},
-										hidden: false,
+										hidden: true,
+									},
+								],
+							},
+						},
+						{
+							field: 'flow',
+							type: 'string',
+							name: '$t:flow',
+							meta: {
+								width: 'full',
+								interface: 'system-flow-select',
+								options: {},
+								conditions: [
+									{
+										rule: {
+											actionType: {
+												_eq: 'url',
+											},
+										},
+										hidden: true,
 									},
 								],
 							},

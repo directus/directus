@@ -13,21 +13,21 @@ export interface FlowIdentifier {
 	key: string;
 }
 
-export interface Action {
+type Link = {
+	icon: string;
 	label: string;
-	icon?: string;
-	type?: 'normal' | 'secondary' | 'info' | 'success' | 'warning' | 'danger';
-	actionType: 'link' | 'flow';
+	type: string;
+	actionType: string;
 	url?: string;
-	flow?: FlowIdentifier;
-}
+	flow?: string;
+};
 
 const props = withDefaults(
 	defineProps<{
 		icon?: string;
 		title?: string;
 		subtitle?: string;
-		actions?: Action[];
+		links?: Link[];
 		help?: string;
 		helpDisplayMode?: 'inline' | 'modal';
 		enableHelpTranslations?: boolean;
@@ -38,7 +38,7 @@ const props = withDefaults(
 		primaryKey?: string | number | null;
 	}>(),
 	{
-		actions: () => [],
+		links: () => [],
 		help: '',
 		helpDisplayMode: 'inline',
 		enableHelpTranslations: false,
@@ -88,10 +88,10 @@ function toggleHelp() {
 }
 
 const actionList = computed(() => {
-	if (!props.actions || !props.actions?.length) return [];
+	if (!props.links || !props.links?.length) return [];
 
-	const formattedActions = props.actions.map((action) => {
-		if (action.actionType === 'link') {
+	const formattedActions = props.links.map((action) => {
+		if (action.actionType === 'url') {
 			return {
 				...action,
 				url: render(action.url ?? '', combinedItemData.value),
@@ -143,7 +143,7 @@ async function handleActionClick(action: Action) {
 			effectiveValues.id = primaryKey.value;
 		}
 
-		runManualFlow(action.flow.key);
+		runManualFlow(action.flow);
 	}
 }
 
@@ -152,8 +152,8 @@ function getAllRequiredTemplateFields(): string[] {
 	const fieldsFromSubtitle = props.subtitle ? getFieldsFromTemplate(props.subtitle) : [];
 
 	const fieldsFromLinks =
-		props.actions
-			?.filter((action) => action.actionType === 'link' && action.url)
+		props.links
+			?.filter((action) => action.actionType === 'url' && action.url)
 			.flatMap((action) => getFieldsFromTemplate(action.url || '')) || [];
 
 	const allFields = [...fieldsFromTitle, ...fieldsFromSubtitle, ...fieldsFromLinks];
@@ -208,7 +208,7 @@ const { runManualFlow } = injectRunManualFlow();
 						</v-button>
 					</template>
 					<template v-if="!hasMultipleActions && primaryAction">
-						<template v-if="primaryAction.actionType === 'link'">
+						<template v-if="primaryAction.actionType === 'url'">
 							<v-button
 								v-if="isInternalLink(primaryAction.url || '').isInternal"
 								:to="isInternalLink(primaryAction.url || '').processedUrl"
@@ -236,7 +236,7 @@ const { runManualFlow } = injectRunManualFlow();
 							v-else-if="primaryAction.actionType === 'flow' && primaryAction.flow"
 							:kind="primaryAction.type"
 							small
-							@click="runManualFlow(primaryAction.flow.key)"
+							@click="runManualFlow(primaryAction.flow)"
 						>
 							{{ primaryAction.label }}
 							<v-icon v-if="primaryAction.icon" :name="primaryAction.icon" right />
@@ -267,7 +267,7 @@ const { runManualFlow } = injectRunManualFlow();
 									<v-icon :name="action.icon" />
 								</v-list-item-icon>
 								<v-list-item-content>
-									<template v-if="action.actionType === 'link'">
+									<template v-if="action.actionType === 'url'">
 										<template v-if="isInternalLink(action.url || '').isInternal">
 											<router-link :to="isInternalLink(action.url || '').processedUrl">
 												<v-list-item-title>
