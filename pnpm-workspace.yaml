@@ -8,10 +8,10 @@ packages:
 
 catalog:
   '@authenio/samlify-node-xmllint': 2.0.0
-  '@aws-sdk/client-s3': 3.858.0
-  '@aws-sdk/client-sesv2': 3.864.0
-  '@aws-sdk/lib-storage': 3.858.0
-  '@azure/storage-blob': 12.28.0
+  '@aws-sdk/client-s3': 3.913.0
+  '@aws-sdk/client-sesv2': 3.913.0
+  '@aws-sdk/lib-storage': 3.913.0
+  '@azure/storage-blob': 12.29.1
   '@changesets/cli': 2.29.5
   '@changesets/get-github-info': 0.6.0
   '@changesets/types': 6.1.0
@@ -42,7 +42,7 @@ catalog:
   '@fullcalendar/list': 6.1.18
   '@fullcalendar/timegrid': 6.1.18
   '@godaddy/terminus': 4.12.1
-  '@google-cloud/storage': 7.16.0
+  '@google-cloud/storage': 7.17.0
   '@histoire/plugin-vue': 0.17.17
   '@joeattardi/emoji-button': 4.6.4
   '@json2csv/plainjs': 7.0.6
@@ -50,7 +50,7 @@ catalog:
   '@mapbox/mapbox-gl-draw': 1.5.0
   '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
   '@mapbox/mapbox-gl-geocoder': 5.1.0
-  '@modelcontextprotocol/sdk': 1.17.1
+  '@modelcontextprotocol/sdk': 1.20.1
   '@ngneat/falso': 8.0.2
   '@npm/types': 2.1.0
   '@pinia/testing': 1.0.2
@@ -59,9 +59,9 @@ catalog:
   '@pnpm/workspace.pkgs-graph': 1000.0.18
   '@popperjs/core': 2.11.8
   '@rollup/plugin-alias': 5.1.1
-  '@rollup/plugin-commonjs': 28.0.6
+  '@rollup/plugin-commonjs': 28.0.8
   '@rollup/plugin-json': 6.1.0
-  '@rollup/plugin-node-resolve': 16.0.1
+  '@rollup/plugin-node-resolve': 16.0.3
   '@rollup/plugin-replace': 6.0.2
   '@rollup/plugin-terser': 0.4.4
   '@rollup/plugin-virtual': 3.0.2
@@ -69,13 +69,13 @@ catalog:
   '@shopify/semaphore': 3.1.0
   '@sinclair/typebox': 0.34.38
   '@sindresorhus/slugify': 2.2.1
-  '@smithy/node-http-handler': 4.1.0
-  '@supabase/storage-js': 2.12.1
+  '@smithy/node-http-handler': 4.4.2
+  '@supabase/storage-js': 2.76.1
   '@tinymce/tinymce-vue': 6.3.0
   '@turf/meta': 7.2.0
   '@tus/server': 2.3.0
   '@tus/utils': 0.6.0
-  '@types/async': 3.2.24
+  '@types/async': 3.2.25
   '@types/base-64': 1.0.2
   '@types/busboy': 1.5.4
   '@types/bytes': 3.1.5
@@ -129,10 +129,10 @@ catalog:
   '@vueuse/integrations': 13.6.0
   '@vueuse/router': 13.6.0
   apexcharts: 4.5.0
-  argon2: 0.43.1
+  argon2: 0.44.0
   async: 3.2.6
   async-mutex: 0.5.0
-  axios: 1.11.0
+  axios: 1.12.2
   axios-cache-interceptor: 1.8.0
   base-64: 1.0.0
   boxen: 8.0.1
@@ -188,7 +188,7 @@ catalog:
   graphql: 16.11.0
   graphql-compose: 9.1.0
   graphql-ws: 6.0.6
-  happy-dom: 18.0.1
+  happy-dom: 20.0.8
   helmet: 8.1.0
   histoire: 0.17.17
   html-entities: 2.6.0
