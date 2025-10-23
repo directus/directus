@@ -160,7 +160,6 @@ test(`filtering m2o relation`, async () => {
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
-
 	applyFilter(
 		db,
 		schema,
@@ -202,7 +201,6 @@ test(`filtering o2m relation`, async () => {
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
-
 	applyFilter(
 		db,
 		o2m_schema,
@@ -233,7 +231,6 @@ for (const quantifier of ['_some', '_none']) {
 	test(`filtering o2m relation with ${quantifier}`, async () => {
 		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 		const queryBuilder = db.queryBuilder();
-	
 
 		applyFilter(
 			db,
@@ -280,8 +277,6 @@ test(`filtering a2o relation`, async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-
-
 
 	applyFilter(
 		db,
@@ -497,7 +492,6 @@ test(`filtering $FOLLOW against reverse o2m`, async () => {
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
-
 	applyFilter(
 		db,
 		schema,
@@ -534,7 +528,6 @@ test(`filtering on count(links)`, async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-
 
 	applyFilter(
 		db,

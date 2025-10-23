@@ -45,7 +45,6 @@ test('column for count function', async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 
-
 	const rawQuery = getColumn(db, 'articles', 'count(links)', undefined, schema).toSQL();
 
 	expect(rawQuery.sql).toEqual(
