@@ -301,8 +301,8 @@ catalogs:
       specifier: 22.13.14
       version: 22.13.14
     '@types/nodemailer':
-      specifier: 6.4.17
-      version: 6.4.17
+      specifier: 7.0.2
+      version: 7.0.2
     '@types/object-hash':
       specifier: 3.0.6
       version: 3.0.6
@@ -655,8 +655,8 @@ catalogs:
       specifier: 1.1.12
       version: 1.1.12
     nodemailer:
-      specifier: 7.0.5
-      version: 7.0.5
+      specifier: 7.0.10
+      version: 7.0.10
     nodemailer-mailgun-transport:
       specifier: 2.1.5
       version: 2.1.5
@@ -1213,7 +1213,7 @@ importers:
         version: 1.1.12
       nodemailer:
         specifier: 'catalog:'
-        version: 7.0.5
+        version: 7.0.10
       object-hash:
         specifier: 'catalog:'
         version: 3.0.0
@@ -1385,7 +1385,7 @@ importers:
         version: 22.13.14
       '@types/nodemailer':
         specifier: 'catalog:'
-        version: 6.4.17
+        version: 7.0.2
       '@types/object-hash':
         specifier: 'catalog:'
         version: 3.0.6
@@ -2767,7 +2767,7 @@ importers:
         version: 7946.0.16
       '@types/nodemailer':
         specifier: 'catalog:'
-        version: 6.4.17
+        version: 7.0.2
       '@types/ws':
         specifier: 'catalog:'
         version: 8.18.1
@@ -2782,7 +2782,7 @@ importers:
         version: 16.11.0
       nodemailer:
         specifier: 'catalog:'
-        version: 7.0.5
+        version: 7.0.10
       openapi3-ts:
         specifier: 'catalog:'
         version: 4.5.0
@@ -6412,8 +6412,8 @@ packages:
   '@types/node@24.2.0':
     resolution: {integrity: sha512-3xyG3pMCq3oYCNg7/ZP+E1ooTaGB4cG8JWRsqqOYQdbWNY4zbaV0Ennrd7stjiJEFZCaybcIgpTjJWHRfBSIDw==}
 
-  '@types/nodemailer@6.4.17':
-    resolution: {integrity: sha512-I9CCaIp6DTldEg7vyUTZi8+9Vo0hi1/T8gv3C89yk1rSAAzoKQ8H8ki/jBYJSFoH/BisgLP8tkZMlQ91CIquww==}
+  '@types/nodemailer@7.0.2':
+    resolution: {integrity: sha512-Zo6uOA9157WRgBk/ZhMpTQ/iCWLMk7OIs/Q9jvHarMvrzUUP/MDdPHL2U1zpf57HrrWGv4nYQn5uIxna0xY3xw==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -10425,8 +10425,8 @@ packages:
   nodemailer-mailgun-transport@2.1.5:
     resolution: {integrity: sha512-hF7POkaxFgMvYEd5aHLaQJI2511ld+aQlQi7JH6bGjhjlZ33cIbTB9PimlIrLu5XC3z76Kde6e65OIwL9lOdTA==}
 
-  nodemailer@7.0.5:
-    resolution: {integrity: sha512-nsrh2lO3j4GkLLXoeEksAMgAOqxOv6QumNRVQTJwKH4nuiww6iC2y7GyANs9kRAxCexg3+lTWM3PZ91iLlVjfg==}
+  nodemailer@7.0.10:
+    resolution: {integrity: sha512-Us/Se1WtT0ylXgNFfyFSx4LElllVLJXQjWi2Xz17xWw7amDKO2MLtFnVp1WACy7GkVGs+oBlRopVNUzlrGSw1w==}
     engines: {node: '>=6.0.0'}
 
   nodemon@3.1.10:
@@ -17943,9 +17943,12 @@ snapshots:
     dependencies:
       undici-types: 7.10.0
 
-  '@types/nodemailer@6.4.17':
+  '@types/nodemailer@7.0.2':
     dependencies:
+      '@aws-sdk/client-sesv2': 3.913.0
       '@types/node': 24.2.0
+    transitivePeerDependencies:
+      - aws-crt
 
   '@types/normalize-package-data@2.4.4': {}
 
@@ -22351,7 +22354,7 @@ snapshots:
       - whiskers
     optional: true
 
-  nodemailer@7.0.5: {}
+  nodemailer@7.0.10: {}
 
   nodemon@3.1.10:
     dependencies:
