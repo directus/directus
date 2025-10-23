@@ -37,7 +37,7 @@ const props = withDefaults(
 const attrs = useAttrs();
 
 const api = useApi();
-const values = inject('values', ref<Record<string, any>>({}));
+const itemValues = inject('values', ref<Record<string, any>>({}));
 const resolvedRelationalValues = ref<Record<string, any>>({});
 const { primaryKey } = toRefs(props);
 
@@ -77,7 +77,7 @@ const linksParsed = computed<ParsedLink[]>(() =>
 		 * Otherwise we use the fetched values from the API.
 		 */
 
-		const scope = { ...values.value };
+		const scope = { ...itemValues.value };
 
 		Object.keys(resolvedRelationalValues.value).forEach((key) => {
 			if (scope[key]?.constructor !== Object && scope[key] !== null) {
