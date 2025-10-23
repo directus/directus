@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import {
 	ErrorCode,
 	ForbiddenError,
@@ -21,6 +22,7 @@ import { sanitizeQuery } from '../utils/sanitize-query.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import { getDatabase } from '../database/index.js';
 
+const env = useEnv();
 const router = express.Router();
 
 router.use(useCollection('directus_users'));
@@ -446,7 +448,7 @@ router.post(
 );
 
 const registerSchema = Joi.object<RegisterUserInput>({
-	email: Joi.string().email().required(),
+	email: env['EMAIL_TLD_VALIDATION'] ? Joi.string().email().required() : Joi.string().email({ tlds: false }).required(),
 	password: Joi.string().required(),
 	verification_url: Joi.string().uri(),
 	first_name: Joi.string(),

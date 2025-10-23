@@ -166,7 +166,9 @@ export class UsersService extends ItemsService {
 	private validateEmail(input: string | string[]) {
 		const emails = Array.isArray(input) ? input : [input];
 
-		const schema = Joi.string().email().required();
+		const schema = env['EMAIL_TLD_VALIDATION']
+			? Joi.string().email().required()
+			: Joi.string().email({ tlds: false }).required();
 
 		for (const email of emails) {
 			const { error } = schema.validate(email);
