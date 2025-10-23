@@ -213,7 +213,7 @@ catalog:
   lodash: 4.17.21
   lodash-es: 4.17.21
   log-symbols: 7.0.1
-  lru-cache: 11.1.0
+  lru-cache: 11.2.2
   mapbox-gl: 1.13.3
   maplibre-gl: 1.15.3
   marked: 16.1.1

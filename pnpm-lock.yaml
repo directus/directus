@@ -613,8 +613,8 @@ catalogs:
       specifier: 7.0.1
       version: 7.0.1
     lru-cache:
-      specifier: 11.1.0
-      version: 11.1.0
+      specifier: 11.2.2
+      version: 11.2.2
     mapbox-gl:
       specifier: 1.13.3
       version: 1.13.3
@@ -2249,7 +2249,7 @@ importers:
         version: 5.8.2
       lru-cache:
         specifier: 'catalog:'
-        version: 11.1.0
+        version: 11.2.2
       rate-limiter-flexible:
         specifier: 'catalog:'
         version: 7.2.0
@@ -9929,6 +9929,10 @@ packages:
 
   lru-cache@11.1.0:
     resolution: {integrity: sha512-QIXZUBJUx+2zHUdQujWejBkcD9+cs94tLn0+YL8UrCh+D5sCXZ4c7LaEH48pNwRY3MLDgqUFyhlCyjJPf1WP0A==}
+    engines: {node: 20 || >=22}
+
+  lru-cache@11.2.2:
+    resolution: {integrity: sha512-F9ODfyqML2coTIsQpSkRHnLSZMtkU8Q+mSfcaIyKwy58u+8k5nvAYeiNhsyMARvzNcXJ9QfWVrcPsC9e9rAxtg==}
     engines: {node: 20 || >=22}
 
   lru-cache@5.1.1:
@@ -21759,6 +21763,8 @@ snapshots:
   lru-cache@10.4.3: {}
 
   lru-cache@11.1.0: {}
+
+  lru-cache@11.2.2: {}
 
   lru-cache@5.1.1:
     dependencies:
