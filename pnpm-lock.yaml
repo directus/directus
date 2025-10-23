@@ -514,8 +514,8 @@ catalogs:
       specifier: 4.0.4
       version: 4.0.4
     fs-extra:
-      specifier: 11.3.0
-      version: 11.3.0
+      specifier: 11.3.2
+      version: 11.3.2
     geojson:
       specifier: 0.5.0
       version: 0.5.0
@@ -1126,7 +1126,7 @@ importers:
         version: 6.0.1
       fs-extra:
         specifier: 'catalog:'
-        version: 11.3.0
+        version: 11.3.2
       glob-to-regexp:
         specifier: 'catalog:'
         version: 0.4.1
@@ -1931,7 +1931,7 @@ importers:
         version: 9.6.0
       fs-extra:
         specifier: 'catalog:'
-        version: 11.3.0
+        version: 11.3.2
       log-symbols:
         specifier: 'catalog:'
         version: 7.0.1
@@ -2033,7 +2033,7 @@ importers:
         version: 4.17.21
       fs-extra:
         specifier: 'catalog:'
-        version: 11.3.0
+        version: 11.3.2
       lodash-es:
         specifier: 'catalog:'
         version: 4.17.21
@@ -2170,7 +2170,7 @@ importers:
         version: 9.6.0
       fs-extra:
         specifier: 'catalog:'
-        version: 11.3.0
+        version: 11.3.2
       inquirer:
         specifier: 'catalog:'
         version: 12.9.0(@types/node@24.2.0)
@@ -2880,7 +2880,7 @@ importers:
         version: 4.1.0
       fs-extra:
         specifier: 'catalog:'
-        version: 11.3.0
+        version: 11.3.2
       joi:
         specifier: 'catalog:'
         version: 18.0.1
@@ -8775,6 +8775,10 @@ packages:
 
   fs-extra@11.3.0:
     resolution: {integrity: sha512-Z4XaCL6dUDHfP/jT25jJKMmtxvuwbkrD1vNSMFlo9lNLY2c5FHYSQgHPRZUjAB26TpDEoW9HCOgplrdbaPV/ew==}
+    engines: {node: '>=14.14'}
+
+  fs-extra@11.3.2:
+    resolution: {integrity: sha512-Xr9F6z6up6Ws+NjzMCZc6WXg2YFRlrLP9NQDO3VQrWrfiojdhS56TzueT88ze0uBdCTwEIhQ3ptnmKeWGFAe0A==}
     engines: {node: '>=14.14'}
 
   fs-extra@7.0.1:
@@ -20515,6 +20519,12 @@ snapshots:
       jsonfile: 6.1.0
       universalify: 2.0.1
 
+  fs-extra@11.3.2:
+    dependencies:
+      graceful-fs: 4.2.11
+      jsonfile: 6.1.0
+      universalify: 2.0.1
+
   fs-extra@7.0.1:
     dependencies:
       graceful-fs: 4.2.11
@@ -23676,7 +23686,7 @@ snapshots:
       '@rollup/pluginutils': 5.2.0(rollup@4.46.2)
       cosmiconfig: 8.3.6(typescript@5.8.3)
       cssnano: 7.1.0(postcss@8.5.6)
-      fs-extra: 11.3.0
+      fs-extra: 11.3.2
       icss-utils: 5.1.0(postcss@8.5.6)
       mime-types: 2.1.35
       p-queue: 8.1.0
