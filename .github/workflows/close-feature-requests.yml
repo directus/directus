@@ -17,7 +17,7 @@ jobs:
         with:
           script: |
             const discussionId = context.payload.discussion.node_id;
-            
+
             // Add comment first
             await github.graphql(`
               mutation($discussionId: ID!, $body: String!) {
@@ -31,7 +31,7 @@ jobs:
               discussionId: discussionId,
               body: 'This discussion has been automatically closed. Please submit feature requests at https://roadmap.directus.io/roadmap'
             });
-            
+
             // Close the discussion
             await github.graphql(`
               mutation($discussionId: ID!) {
