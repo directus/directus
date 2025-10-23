@@ -1,6 +1,5 @@
 import { i18n } from '@/lang';
 import type { Revision } from '@/types/revisions';
-import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { RELATIONAL_TYPES } from '@directus/constants';
 import formatTitle from '@directus/format-title';
 import type { ContentVersion, Field, RelationalType, User } from '@directus/types';
@@ -176,28 +175,6 @@ export function areAllFieldsSelected(selectedFields: string[], availableFields: 
 
 export function areSomeFieldsSelected(selectedFields: string[], availableFields: string[]): boolean {
 	return availableFields.length > 0 && availableFields.some((field) => selectedFields.includes(field));
-}
-
-export function mergeMainItemKeysIntoRevision(
-	revisionData: Record<string, any>,
-	mainItem: Record<string, any>,
-	fields?: Field[],
-): Record<string, any> {
-	const merged = { ...revisionData };
-
-	const defaultValues = fields ? getDefaultValuesFromFields(fields).value : {};
-
-	for (const [fieldKey, value] of Object.entries(mainItem)) {
-		if (!(fieldKey in merged)) {
-			const defaultValue = defaultValues[fieldKey] ?? null;
-			const fieldHasValue = value !== defaultValue;
-			if (fieldHasValue) continue;
-
-			merged[fieldKey] = defaultValue;
-		}
-	}
-
-	return merged;
 }
 
 export function copySpecialFieldsFromBaseToIncoming(
