@@ -179,7 +179,7 @@ export function areSomeFieldsSelected(selectedFields: string[], availableFields:
 	return availableFields.length > 0 && availableFields.some((field) => selectedFields.includes(field));
 }
 
-export function mergeMissingMainItemKeysIntoRevision(
+export function mergeMainItemKeysIntoRevision(
 	revisionData: Record<string, any>,
 	mainItem: Record<string, any>,
 	fields?: Field[],
@@ -248,7 +248,7 @@ export function computeDifferentFields(
 			skipPrimaryKeyFields: true,
 		});
 	} else {
-		const incomingWithDefaults = mergeMissingMainItemKeysIntoRevision(preparedIncoming, preparedBase, fields);
+		const incomingWithDefaults = mergeMainItemKeysIntoRevision(preparedIncoming, preparedBase, fields);
 		const incomingWithRelational = copySpecialFieldsFromBaseToIncoming(preparedBase, incomingWithDefaults, fields);
 		const fieldMetadata = Object.fromEntries(fields.map((f) => [f.field, f]));
 

@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import type { Field } from '@directus/types';
-import { mergeMissingMainItemKeysIntoRevision, getFieldsWithDifferences } from './comparison-utils';
+import { mergeMainItemKeysIntoRevision, getFieldsWithDifferences } from './comparison-utils';
 
-describe('mergeMissingMainItemKeysIntoRevision', () => {
+describe('mergeMainItemKeysIntoRevision', () => {
 	const fields: Field[] = [
 		{
 			collection: 'test_collection',
@@ -98,7 +98,7 @@ describe('mergeMissingMainItemKeysIntoRevision', () => {
 			title: 'Incoming Title',
 		};
 
-		const result = mergeMissingMainItemKeysIntoRevision(revisionData, base, fields);
+		const result = mergeMainItemKeysIntoRevision(revisionData, base, fields);
 
 		expect(result).toMatchInlineSnapshot(`
 			{
@@ -120,7 +120,7 @@ describe('mergeMissingMainItemKeysIntoRevision', () => {
 			description: 'Incoming Description',
 		};
 
-		const result = mergeMissingMainItemKeysIntoRevision(revisionData, base, fields);
+		const result = mergeMainItemKeysIntoRevision(revisionData, base, fields);
 
 		expect(result).toMatchInlineSnapshot(`
 			{
@@ -141,7 +141,7 @@ describe('mergeMissingMainItemKeysIntoRevision', () => {
 			count: null,
 		};
 
-		const result = mergeMissingMainItemKeysIntoRevision(revisionData, base, fields);
+		const result = mergeMainItemKeysIntoRevision(revisionData, base, fields);
 
 		expect(result).toMatchInlineSnapshot(`
 			{
