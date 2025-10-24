@@ -83,7 +83,6 @@ const sizeClass = useSizeClass(props);
 
 const component = computed(() => {
 	if (props.disabled) return 'button';
-	if (props.flow) return 'button';
 	if (!isNil(props.href)) return 'a';
 	if (props.to) return 'router-link';
 	return 'button';
@@ -132,7 +131,6 @@ async function onClick(event: MouseEvent) {
 	if (props.loading === true) return;
 	// Toggles the active state in the parent groupable element. Allows buttons to work ootb in button-groups
 	toggle();
-
 	emit('click', event);
 }
 </script>
