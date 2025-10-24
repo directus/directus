@@ -246,7 +246,7 @@ catalog:
   pino-http: 10.5.0
   pino-http-print: 3.1.0
   pino-pretty: 13.1.1
-  pm2: 6.0.8
+  pm2: 6.0.9
   postcss-html: 1.8.0
   prettier: 3.6.2
   pretty-ms: 9.2.0
@@ -291,7 +291,7 @@ catalog:
   unplugin-yaml: 3.0.4
   update-check: 1.5.4
   uuid: 11.1.0
-  vite: 7.1.11
+  vite: 7.1.12
   vite-plugin-dts: 4.5.4
   vite-plugin-vue-devtools: 7.7.2
   vitest: 3.2.4
