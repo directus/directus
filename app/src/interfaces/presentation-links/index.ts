@@ -114,18 +114,11 @@ export default defineInterface({
 							name: '$t:flow',
 							meta: {
 								width: 'full',
-								interface: 'collection-item-dropdown',
+								interface: 'system-flow-select',
 								hidden: true,
 								note: '$t:interfaces.presentation-links.select_flow_note',
 								options: {
-									selectedCollection: 'directus_flows',
-									placeholder: 'select_a_flow',
-									template: '{{ name }}',
-									filter: {
-										trigger: {
-											_eq: 'manual',
-										},
-									},
+									collectionName: collection,
 								},
 								conditions: [
 									{
