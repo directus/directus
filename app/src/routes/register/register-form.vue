@@ -86,8 +86,14 @@ async function onSubmit() {
 
 <template>
 	<form novalidate @submit.prevent="onSubmit">
-		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')"
-			:disabled="isLoading" />
+		<v-input
+			v-model="email"
+			autofocus
+			autocomplete="username"
+			type="email"
+			:placeholder="t('email')"
+			:disabled="isLoading"
+		/>
 		<interface-system-input-password :value="password" :disabled="isLoading" @input="password = $event" />
 
 		<v-notice v-if="error" type="warning">

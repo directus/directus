@@ -106,8 +106,14 @@ async function onSubmit() {
 		<interface-system-input-password :value="password" autocomplete="current-password" @input="password = $event" />
 
 		<transition-expand>
-			<v-input v-if="requiresTFA" v-model="otp" type="text" autocomplete="one-time-code" :placeholder="t('otp')"
-				autofocus />
+			<v-input
+				v-if="requiresTFA"
+				v-model="otp"
+				type="text"
+				autocomplete="one-time-code"
+				:placeholder="t('otp')"
+				autofocus
+			/>
 		</transition-expand>
 
 		<v-notice v-if="error" type="warning">
