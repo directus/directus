@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { RevisionsByDate } from '@/types/revisions';
+import { RevisionsByDate, Revision } from '@/types/revisions';
+
 import { ref } from 'vue';
 
 import RevisionItem from './revision-item.vue';
@@ -20,7 +21,7 @@ const expand = ref(true);
 			<revision-item
 				v-for="(item, index) in group.revisions"
 				:key="item.id"
-				:revision="item"
+				:revision="item as Revision"
 				:last="index === group.revisions.length - 1"
 				@click="$emit('click', item.id)"
 			/>
