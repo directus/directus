@@ -55,6 +55,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const {
 			items,
 			loading,
+			loadingItemCount,
 			error,
 			totalPages,
 			itemCount,
@@ -95,6 +96,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			tableHeaders,
 			items,
 			loading,
+			loadingItemCount,
 			error,
 			totalPages,
 			tableSort,
