@@ -75,5 +75,8 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 		.toString()
 		.padStart(2, '0')}`;
 
-	saveAs(new Blob([csvContent], { type: 'text/csv;charset=utf-8' }), `${collection}-${dateString}.csv`);
+	// Add UTF-8 BOM for Excel compatibility with special characters (é, è, ç, à)
+	const csvContentWithBOM = '\ufeff' + csvContent;
+
+	saveAs(new Blob([csvContentWithBOM], { type: 'text/csv;charset=utf-8' }), `${collection}-${dateString}.csv`);
 }
