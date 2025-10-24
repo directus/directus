@@ -169,9 +169,6 @@ export function useRevisions(
 					const steps = (revision as Revision)?.data?.steps;
 					const lastStepStatus = steps?.[steps.length - 1]?.status;
 
-					const revisionDelta = (revision as Revision)?.delta || {};
-					const differentFields = Object.keys(revisionDelta);
-
 					revisions.push({
 						...revision,
 						timestampFormatted: `${localizedFormat(
@@ -185,7 +182,6 @@ export function useRevisions(
 							addSuffix: true,
 						})})`,
 						status: lastStepStatus,
-						differentFields,
 					});
 				}
 
