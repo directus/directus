@@ -1,0 +1,28 @@
+title: 'Feature Request - Please use our Public Roadmap'
+labels:
+  - redirect
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Feature requests have moved to our Public Roadmap**
+
+        Please submit your request here: https://roadmap.directus.io/roadmap
+
+        This allows you to:
+        - ✅ Vote on features you'd like to see
+        - 📊 See what we're currently working on
+        - 📅 See what is planned
+        - 🎯 Track feature status in real-time, directly integrated with our Linear projects
+
+        **Not a feature request?** If you'd like to engage with our community, ask questions, or get help, please visit [community.directus.io](https://community.directus.io)
+
+        Please note: New discussions opened here will be automatically closed. We appreciate your understanding!
+
+  - type: checkboxes
+    id: understand
+    attributes:
+      label: 'Next steps'
+      options:
+        - label: "I'll submit my feature request at roadmap.directus.io (please do not start discussion)"
+          required: true

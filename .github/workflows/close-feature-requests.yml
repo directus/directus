@@ -1,0 +1,46 @@
+name: Close Feature Request Discussions
+
+on:
+  discussion:
+    types: [created]
+
+permissions:
+  discussions: write
+
+jobs:
+  close-discussion:
+    runs-on: ubuntu-latest
+    if: github.event.discussion.category.name == 'Feature Requests'
+    steps:
+      - name: Close discussion and add comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const discussionId = context.payload.discussion.node_id;
+
+            // Add comment first
+            await github.graphql(`
+              mutation($discussionId: ID!, $body: String!) {
+                addDiscussionComment(input: {discussionId: $discussionId, body: $body}) {
+                  comment {
+                    id
+                  }
+                }
+              }
+            `, {
+              discussionId: discussionId,
+              body: 'This discussion has been automatically closed. Please submit feature requests at https://roadmap.directus.io/roadmap'
+            });
+
+            // Close the discussion
+            await github.graphql(`
+              mutation($discussionId: ID!) {
+                closeDiscussion(input: {discussionId: $discussionId}) {
+                  discussion {
+                    id
+                  }
+                }
+              }
+            `, {
+              discussionId: discussionId
+            });
