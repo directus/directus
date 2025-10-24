@@ -656,16 +656,21 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 	}
 }
 
-:deep(.v-table.has-comparison td:first-of-type .cell-content.has-diff) {
+:deep(.v-table.has-comparison) {
+	overflow-y: visible;
+}
+
+:deep(.v-table.has-comparison tr:has(.cell-content.has-diff)) {
 	position: relative;
+	overflow: visible;
 
 	&::before {
 		content: '';
 		position: absolute;
-		inset-block: -8px;
-		inset-inline-start: -12px;
+		margin-block: 2px;
+		inset-inline-start: -30px;
 		inline-size: 4px;
-		block-size: calc(100% + 16px);
+		block-size: 90%;
 		z-index: 1;
 		background-color: var(--comparison-indicator--color);
 	}
