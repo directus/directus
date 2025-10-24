@@ -73,7 +73,7 @@ const formComplete = computed(() => {
 </script>
 
 <template>
-	<div class="main">
+	<public-view wide>
 		<setup-form v-model="form" :errors="errors"></setup-form>
 		<v-button full-width :disabled="!formComplete" @click="launch()">
 			<v-icon name="rocket_launch" />
@@ -88,16 +88,12 @@ const formComplete = computed(() => {
 				{{ errorMessage }}
 			</p>
 		</v-notice>
-	</div>
+	</public-view>
 </template>
 
 <style lang="scss" scoped>
-.main {
-	padding-block: 100px;
-	margin: 0 auto;
-	align-items: center;
-	inline-size: 540px;
-	max-inline-size: 90%;
+.setup-form {
+	margin-block-start: 100px;
 }
 
 .v-button {

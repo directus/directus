@@ -11,7 +11,7 @@ export const initialValues = {
 	usage: null,
 	org_name: null,
 	license: false,
-	marketing: false,
+	email_news: false,
 };
 
 export function useFormFields(
@@ -92,7 +92,7 @@ export function useFormFields(
 						name: t('how_do_you_use_directus'),
 						meta: {
 							required: false,
-							interface: 'system-fancy-select',
+							interface: 'select-dropdown',
 							options: {
 								items: [
 									{ icon: 'account_circle', value: 'personal', text: t('personal') },

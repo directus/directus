@@ -16,6 +16,11 @@ export class SettingsService extends ItemsService {
 			`TODO: This would now send owner info to telemetry: Owner ${data.email}, Usage: ${data.usage}, Company: ${data.org_name}`,
 		);
 
-		return await this.upsertSingleton({ project_owner: data.email });
+		return await this.upsertSingleton({
+			project_owner: data.email,
+			usage: data.usage,
+			org_name: data.org_name,
+			email_news: data.email_news,
+		});
 	}
 }

@@ -28,6 +28,7 @@ const props = withDefaults(
 		rawEditorEnabled?: boolean;
 		rawEditorActive?: boolean;
 		disabledMenuOptions?: MenuOptions[];
+		disabledMenu?: boolean;
 		direction?: string;
 	}>(),
 	{
@@ -167,7 +168,7 @@ function useComputedValues() {
 		class="field"
 		:class="[field.meta?.width || 'full', { invalid: validationError }]"
 	>
-		<v-menu v-if="!isLabelHidden" placement="bottom-start" show-arrow arrow-placement="start">
+		<v-menu v-if="!isLabelHidden" :disabled="disabledMenu" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
 				<form-field-label
 					:field="field"
@@ -181,6 +182,7 @@ function useComputedValues() {
 					:raw-editor-enabled="rawEditorEnabled"
 					:raw-editor-active="rawEditorActive"
 					:loading="loading"
+					:disabled-menu="disabledMenu"
 					@toggle-batch="$emit('toggle-batch', $event)"
 					@toggle-raw="$emit('toggle-raw', $event)"
 				/>

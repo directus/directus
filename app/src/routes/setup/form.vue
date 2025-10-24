@@ -31,11 +31,11 @@ const license = computed({
 	},
 });
 
-const marketing = computed({
-	get: () => value.value?.marketing ?? false,
+const email_news = computed({
+	get: () => value.value?.email_news ?? false,
 	set: (val: boolean) => {
 		if (value.value) {
-			value.value.marketing = val;
+			value.value.email_news = val;
 		}
 	},
 });
@@ -46,18 +46,23 @@ const fields = useFormFields(props.register, value);
 <template>
 	<div class="setup-form" :class="{ skipLicense }">
 		<template v-if="register">
-			<img src="@/assets/logo-dark.svg" class="logo" alt="Directus Logo" />
 			<h1>{{ t('setup_welcome') }}</h1>
 			<p>{{ t('setup_info') }}</p>
 		</template>
-		<v-form v-model="value" :initial-values="initialValues" :validation-errors="errors"
-			:show-validation-errors="false" :fields="fields"></v-form>
+		<v-form
+			v-model="value"
+			:initial-values="initialValues"
+			:validation-errors="errors"
+			:show-validation-errors="false"
+			:fields="fields"
+			disabled-menu
+		></v-form>
 		<v-notice><span v-md="t(skipLicense ? 'edit_license_notice' : 'setup_license_notice')"></span></v-notice>
 
 		<v-checkbox v-if="!skipLicense" v-model="license">
 			<span v-md="t('setup_accept_license')"></span>
 		</v-checkbox>
-		<v-checkbox v-if="register" v-model="marketing">
+		<v-checkbox v-model="email_news">
 			<span v-md="t('setup_marketing_emails')"></span>
 		</v-checkbox>
 	</div>
@@ -70,21 +75,19 @@ const fields = useFormFields(props.register, value);
 	&.skipLicense {
 		.v-notice {
 			grid-row: 1;
-			margin-block-start: 0;
+			margin-block: 0 20px;
+		}
+
+		.v-checkbox {
+			grid-row: 2;
+			margin-block-end: 32px;
 		}
 	}
 }
 
-.logo {
-	block-size: 40px;
-	margin-block: 0 54px;
-	margin-inline: auto;
-}
-
 h1 {
-	text-align: center;
-	font-size: 32px;
-	font-style: normal;
+	color: var(--theme--foreground-accent);
+	font-size: 40px;
 	font-weight: 600;
 	line-height: 48px;
 
@@ -92,9 +95,7 @@ h1 {
 }
 
 p {
-	text-align: center;
 	font-size: 14px;
-	font-style: normal;
 	font-weight: 500;
 	line-height: 20px;
 	margin-block-end: 32px;

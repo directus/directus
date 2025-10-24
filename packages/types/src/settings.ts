@@ -70,7 +70,7 @@ export type OwnerInformation = {
 	email: string | null;
 	usage: 'personal' | 'commercial' | 'community' | null;
 	org_name: string | null;
-	marketing: boolean;
+	email_news: boolean;
 };
 
 export type SetupForm = {

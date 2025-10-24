@@ -36,6 +36,17 @@ fields:
     interface: system-owner
     width: half
 
+  - field: usage
+    hidden: true
+
+  - field: org_name
+    hidden: true
+
+  - field: email_news
+    hidden: true
+    special:
+      - cast-boolean
+
   - field: modules_divider
     interface: presentation-divider
     options:

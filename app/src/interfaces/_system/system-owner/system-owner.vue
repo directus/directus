@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { initialValues, useFormFields } from '@/routes/setup/form';
 import { validateItem } from '@/utils/validate-item';
-import { computed, ref, unref } from 'vue';
+import { computed, inject, Ref, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
@@ -47,7 +47,25 @@ async function save() {
 	editing.value = false;
 }
 
-const form = ref<Form>({ ...initialValues, email: props.value ?? '' });
+const values = inject<Ref<Record<string, any>>>('values')!;
+
+const form = ref<Form>({
+	...initialValues,
+	email: props.value ?? '',
+});
+
+watch(
+	() => values,
+	() => {
+		form.value = {
+			...form.value,
+			usage: values.value.usage,
+			org_name: values.value.org_name,
+			email_news: values.value.email_news,
+		};
+	},
+	{ immediate: true },
+);
 
 const fields = useFormFields(false, form);
 </script>
@@ -56,14 +74,24 @@ const fields = useFormFields(false, form);
 	<div class="system-owner">
 		<v-input :model-value="value" type="text" disabled readonly>
 			<template #append>
-				<v-icon v-tooltip="t('interfaces.system-owner.edit')" name="edit" class="edit" clickable
-					@click="editing = true" />
+				<v-icon
+					v-tooltip="t('interfaces.system-owner.edit')"
+					name="edit"
+					class="edit"
+					clickable
+					@click="editing = true"
+				/>
 			</template>
 		</v-input>
 	</div>
 
-	<v-drawer v-model="editing" :title="t('interfaces.system-owner.update')" icon="link" @cancel="editing = false"
-		@apply="save">
+	<v-drawer
+		v-model="editing"
+		:title="t('interfaces.system-owner.update')"
+		icon="link"
+		@cancel="editing = false"
+		@apply="save"
+	>
 		<template #actions>
 			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="isSaveDisabled" @click="save">
 				<v-icon name="check" />
