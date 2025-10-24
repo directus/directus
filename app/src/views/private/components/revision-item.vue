@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { getRevisionFields } from '@/modules/content/comparison-utils';
+import { useFieldsStore } from '@/stores/fields';
 import { Revision } from '@/types/revisions';
 import { userName } from '@/utils/user-name';
 import { format } from 'date-fns';
@@ -16,7 +18,14 @@ defineEmits<{
 
 const { t } = useI18n();
 
-const revisionCount = computed(() => Object.keys(props.revision.delta ?? {}).length);
+const fieldsStore = useFieldsStore();
+const fields = fieldsStore.getFieldsForCollection(props.revision.collection);
+
+const revisionCount = computed(() => {
+	const revisionDelta = Object.keys(props.revision.delta ?? {});
+	const revisionFields = getRevisionFields(revisionDelta, fields);
+	return revisionFields.length;
+});
 
 const headerMessage = computed(() => {
 	switch (props.revision.activity.action.toLowerCase()) {

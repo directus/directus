@@ -86,38 +86,32 @@ export function getFieldsWithDifferences(
 ): string[] {
 	if (!fieldMetadata) return [];
 
-	return calculateFieldDifferences(comparedData.incoming, comparedData.base, fieldMetadata, {
-		skipRelationalFields: type === 'revision',
-		skipPrimaryKeyFields: true,
-	});
+	return calculateFieldDifferences(comparedData.incoming, comparedData.base, fieldMetadata, type === 'revision');
 }
 
 function calculateFieldDifferences(
-	revisionData: Record<string, any>,
-	currentData: Record<string, any>,
+	incoming: Record<string, any>,
+	base: Record<string, any>,
 	fieldMetadata: Record<string, any>,
-	options: {
-		skipRelationalFields?: boolean;
-		skipPrimaryKeyFields?: boolean;
-	} = {},
+	skipRelationalFields: boolean,
 ): string[] {
-	const { skipRelationalFields = false, skipPrimaryKeyFields = false } = options;
 	const differentFields: string[] = [];
 
-	for (const fieldKey of Object.keys(revisionData)) {
+	for (const fieldKey of Object.keys(incoming)) {
 		const field = fieldMetadata[fieldKey];
 		if (!field) continue;
 
+		if (isPrimaryKeyField(field)) continue;
+
+		if (field.meta?.hidden && isDateCreatedField(field)) continue;
+		if (isDateUpdatedField(field)) continue;
+
+		if (field.meta?.hidden && isUserCreatedField(field)) continue;
+		if (isUserUpdatedField(field)) continue;
+
 		if (skipRelationalFields && isRelationalField(field)) continue;
 
-		if (skipPrimaryKeyFields && isPrimaryKeyField(field)) continue;
-
-		if (isAutoDateField(field)) continue;
-
-		const newValue = revisionData[fieldKey];
-		const currentValue = currentData[fieldKey];
-
-		if (!isEqual(newValue, currentValue)) {
+		if (!isEqual(incoming[fieldKey], base[fieldKey])) {
 			differentFields.push(fieldKey);
 		}
 	}
@@ -125,20 +119,82 @@ function calculateFieldDifferences(
 	return differentFields;
 }
 
-export function getVersionDisplayName(version: ContentVersion): string {
-	return isNil(version.name) ? formatTitle(version.key) : version.name;
+export function applyValuesToSpecialFields(
+	fields: Field[],
+	incomingItem: Record<string, any>,
+	baseItem: Record<string, any>,
+	activity: RevisionComparisonResponse['activity'] | undefined,
+): Record<string, any> {
+	if (!fields) return incomingItem;
+
+	const result: Record<string, any> = {};
+
+	for (const field of fields) {
+		const fieldKey = field.field;
+
+		if (activity?.action === 'create' && !incomingItem[fieldKey]) {
+			if (isDateCreatedField(field) && activity?.timestamp) {
+				if (field.schema?.data_type === 'time') continue;
+
+				result[fieldKey] = activity?.timestamp;
+				continue;
+			}
+
+			if (isUserCreatedField(field) && activity?.user) {
+				result[fieldKey] = activity?.user?.id || activity?.user;
+				continue;
+			}
+		}
+
+		if (isRelationalField(field) || isPrimaryKeyField(field)) {
+			if (fieldKey in baseItem) result[fieldKey] = baseItem[fieldKey];
+		}
+	}
+
+	return result;
 }
 
-export function isRelationalField(field: Field): boolean {
+export function getRevisionFields(revisionFields: string[], fields: Field[]) {
+	const filteredFields = revisionFields.filter((fieldKey) => {
+		const field = fields.find((field) => field.field === fieldKey);
+		if (!field) return false;
+
+		if (field.meta?.hidden && isDateCreatedField(field)) return false;
+		if (field.meta?.hidden && isDateUpdatedField(field)) return false;
+		if (field.meta?.hidden && isUserCreatedField(field)) return false;
+		if (field.meta?.hidden && isUserUpdatedField(field)) return false;
+
+		if (isRelationalField(field)) return false;
+
+		return true;
+	});
+
+	const specialFields = fields
+		.filter((field) => !filteredFields.includes(field.field))
+		.filter((field) => !field.meta?.hidden && (isDateCreatedField(field) || isUserCreatedField(field)))
+		.map((field) => field.field);
+
+	return [...filteredFields, ...specialFields];
+}
+
+function isRelationalField(field: Field): boolean {
 	return field.meta?.special?.find((type) => RELATIONAL_TYPES.includes(type as RelationalType)) !== undefined;
 }
 
-function isAutoDateField(field: Field): boolean {
-	return field.meta?.special?.some((type) => type === 'date-created' || type === 'date-updated') ?? false;
+function isDateUpdatedField(field: Field): boolean {
+	return field.meta?.special?.some((type) => type === 'date-updated') ?? false;
 }
 
-function isUserReferenceField(field: Field): boolean {
-	return field.meta?.special?.some((type) => type === 'user-created' || type === 'user-updated') ?? false;
+function isDateCreatedField(field: Field): boolean {
+	return field.meta?.special?.some((type) => type === 'date-created') ?? false;
+}
+
+function isUserUpdatedField(field: Field): boolean {
+	return field.meta?.special?.some((type) => type === 'user-updated') ?? false;
+}
+
+function isUserCreatedField(field: Field): boolean {
+	return field.meta?.special?.some((type) => type === 'user-created') ?? false;
 }
 
 function isPrimaryKeyField(field: Field): boolean {
@@ -175,28 +231,6 @@ export function areAllFieldsSelected(selectedFields: string[], availableFields: 
 
 export function areSomeFieldsSelected(selectedFields: string[], availableFields: string[]): boolean {
 	return availableFields.length > 0 && availableFields.some((field) => selectedFields.includes(field));
-}
-
-export function copySpecialFieldsFromBaseToIncoming(
-	baseItem: Record<string, any>,
-	incomingItem: Record<string, any>,
-	fields?: Field[],
-): Record<string, any> {
-	if (!fields) return incomingItem;
-
-	const result = { ...incomingItem };
-
-	for (const field of fields) {
-		if (isRelationalField(field) || isUserReferenceField(field) || isPrimaryKeyField(field)) {
-			const fieldKey = field.field;
-
-			if (fieldKey in baseItem) {
-				result[fieldKey] = baseItem[fieldKey];
-			}
-		}
-	}
-
-	return result;
 }
 
 export function replaceArraysInMergeCustomizer(objValue: unknown, srcValue: unknown) {
@@ -377,4 +411,8 @@ export function normalizeComparisonData(
 		initialSelectedDeltaId: comparisonData.initialSelectedDeltaId || null,
 		fieldsWithDifferences,
 	};
+}
+
+export function getVersionDisplayName(version: ContentVersion): string {
+	return isNil(version.name) ? formatTitle(version.key) : version.name;
 }
