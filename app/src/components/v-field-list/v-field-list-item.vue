@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { FieldNode } from '@/composables/use-field-tree';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import formatTitle from '@directus/format-title';
-import { getFunctionsForType } from '@directus/utils';
+import { getFunctionsForType, getRelationType } from '@directus/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -35,10 +37,31 @@ const props = withDefaults(
 const emit = defineEmits(['add']);
 
 const { t } = useI18n();
+const fieldsStore = useFieldsStore();
+const relationsStore = useRelationsStore();
 
 const supportedFunctions = computed(() => {
 	if (!props.includeFunctions || props.field.group) return [];
 	return getFunctionsForType(props.field.type);
+});
+
+// Check if field is o2m or m2m for _none support
+const isNoneSupported = computed(() => {
+	if (!props.field.relatedCollection || props.field.group) return false;
+
+	const field = fieldsStore.getField(props.field.collection, props.field.field);
+	if (!field || field.type !== 'alias') return false;
+
+	const relations = relationsStore.getRelationsForField(props.field.collection, props.field.field);
+	if (!relations[0]) return false;
+
+	const relationType = getRelationType({
+		relation: relations[0],
+		collection: props.field.collection,
+		field: props.field.field,
+	});
+
+	return relationType === 'o2m' || relationType === 'm2a';
 });
 
 const selectAllDisabled = computed(() => props.field.children?.every((field: FieldInfo) => field.disabled === true));
@@ -94,8 +117,27 @@ const openWhileSearching = computed(() => {
 				</v-list-item-content>
 			</v-list-item>
 
-			<v-divider v-if="field.children && field.children.length > 0" />
+			<v-divider v-if="isNoneSupported || (field.children && field.children.length > 0)" />
 		</div>
+
+		<template v-if="isNoneSupported">
+			<v-list-item
+				:disabled="field.disabled"
+				clickable
+				@click="$emit('add', [`$none:${field.key}`])"
+			>
+				<v-list-item-icon>
+					<v-icon name="close" small color="var(--theme--danger)" />
+				</v-list-item-icon>
+				<v-list-item-content>
+					<v-text-overflow
+						:text="`${t('interfaces.filter.none')} (${rawFieldNames ? field.field : field.name || formatTitle(field.field)})`"
+						:highlight="search"
+					/>
+				</v-list-item-content>
+			</v-list-item>
+			<v-divider v-if="field.children && field.children.length > 0" />
+		</template>
 
 		<template v-if="allowSelectAll">
 			<v-list-item clickable :disabled="selectAllDisabled" @click="addAll">

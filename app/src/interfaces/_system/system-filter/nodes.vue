@@ -12,13 +12,20 @@ import {
 	LogicalFilterOR,
 	Type,
 } from '@directus/types';
-import { getFilterOperatorsForType, getOutputTypeForFunction, toArray } from '@directus/utils';
+import { getFilterOperatorsForType, getOutputTypeForFunction, getRelationType, toArray } from '@directus/utils';
 import { get } from 'lodash';
 import { computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import InputGroup from './input-group.vue';
-import { fieldHasFunction, fieldToFilter, getComparator, getField, getNodeName } from './utils';
+import {
+	fieldHasFunction,
+	fieldToFilter,
+	getComparator,
+	getField,
+	getNodeName,
+	stripRelationshipPrefix,
+} from './utils';
 
 type FilterInfo = {
 	id: number;
@@ -34,6 +41,7 @@ type FilterInfoField = {
 	node: Filter;
 	field: string;
 	comparator: string;
+	isNoneGroup?: boolean;
 };
 
 interface Props {
@@ -73,16 +81,23 @@ const filterInfo = computed<(FilterInfo | FilterInfoField)[]>({
 			const name = getNodeName(node);
 			const isField = name.startsWith('_') === false;
 
-			return isField
-				? ({
-						id,
-						isField,
-						name,
-						field: getField(node),
-						comparator: getComparator(node),
-						node,
-					} as FilterInfoField)
-				: ({ id, name, isField, node } as FilterInfo);
+			if (isField) {
+				const field = getField(node);
+				const comparator = getComparator(node);
+				const isNoneGroup = comparator === '_none';
+
+				return {
+					id,
+					isField,
+					name,
+					field,
+					comparator,
+					node,
+					isNoneGroup,
+				} as FilterInfoField;
+			}
+
+			return { id, name, isField, node } as FilterInfo;
 		});
 	},
 	set(newVal) {
@@ -135,8 +150,7 @@ function getIndex(item: Filter) {
 
 function toggleLogic(index: number) {
 	const nodeInfo = filterInfo.value[index];
-
-	if (filterInfo.value[index].isField) return;
+	if (!nodeInfo || nodeInfo.isField) return;
 
 	if ('_and' in nodeInfo.node) {
 		filterSync.value = filterSync.value.map((filter, filterIndex) => {
@@ -159,10 +173,11 @@ function toggleLogic(index: number) {
 
 function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 	const nodeInfo = filterInfo.value[index];
-	if (nodeInfo.isField === false) return;
+	if (!nodeInfo || nodeInfo.isField === false) return;
+	const fieldInfo = nodeInfo as FilterInfoField;
 
-	const valuePath = nodeInfo.field + '.' + nodeInfo.comparator;
-	const value = get(nodeInfo.node, valuePath);
+	const valuePath = fieldInfo.field + '.' + fieldInfo.comparator;
+	const value = get(fieldInfo.node, valuePath);
 
 	switch (operator) {
 		case '_in':
@@ -202,10 +217,11 @@ function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 	}
 
 	function update(value: any) {
-		if (nodeInfo.isField === false) return;
+		if (!nodeInfo || nodeInfo.isField === false) return;
+		const fieldInfo = nodeInfo as FilterInfoField;
 
 		filterSync.value = filterSync.value.map((filter, filterIndex) => {
-			if (filterIndex === index) return fieldToFilter(nodeInfo.field, operator, value);
+			if (filterIndex === index) return fieldToFilter(fieldInfo.field, operator, value);
 			return filter;
 		});
 	}
@@ -213,18 +229,20 @@ function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 
 function updateField(index: number, newField: string) {
 	const nodeInfo = filterInfo.value[index];
-	const oldFieldInfo = fieldsStore.getField(props.collection, nodeInfo.name);
+	if (!nodeInfo || nodeInfo.isField === false) return;
+	const fieldInfo = nodeInfo as FilterInfoField;
+
+	const oldFieldInfo = fieldsStore.getField(props.collection, fieldInfo.name);
 	const newFieldInfo = fieldsStore.getField(props.collection, newField);
 
-	if (nodeInfo.isField === false) return;
-
-	const valuePath = nodeInfo.field + '.' + nodeInfo.comparator;
-	let value = get(nodeInfo.node, valuePath);
-	let comparator = nodeInfo.comparator;
+	const valuePath = fieldInfo.field + '.' + fieldInfo.comparator;
+	let value = get(fieldInfo.node, valuePath);
+	let comparator = fieldInfo.comparator;
 
 	if (oldFieldInfo?.type !== newFieldInfo?.type) {
 		value = null;
-		comparator = getCompareOptions(newField)[0].value;
+		const compareOptions = getCompareOptions(newField);
+		comparator = compareOptions[0]?.value || '_eq';
 	}
 
 	filterSync.value = filterSync.value.map((filter, filterIndex) => {
@@ -257,7 +275,8 @@ function getCompareOptions(name: string) {
 			const relations = relationsStore.getRelationsForField(props.collection, name);
 
 			if (relations[0]) {
-				type = fieldsStore.getField(relations[0].collection, relations[0].field)?.type || 'unknown';
+				const relatedField = fieldsStore.getField(relations[0].collection, relations[0].field);
+				type = relatedField?.type || 'unknown';
 			}
 		}
 	}
@@ -282,6 +301,164 @@ function isExistingField(node: Record<string, any>): boolean {
 	const field = fieldsStore.getField(props.collection, fieldKey);
 	return !!field;
 }
+
+function getRelatedCollectionForField(fieldPath: string): string | null {
+	if (!props.collection) return null;
+
+	const field = fieldsStore.getField(props.collection, fieldPath);
+	if (!field) return null;
+
+	// For alias fields (o2m, m2m), get the related collection
+	if (field.type === 'alias') {
+		const relations = relationsStore.getRelationsForField(props.collection, fieldPath);
+
+		if (relations[0]) {
+			const relationType = getRelationType({
+				relation: relations[0],
+				collection: props.collection,
+				field: fieldPath,
+			});
+
+			if (relationType === 'o2m') {
+				return relations[0].collection;
+			}
+
+			// Check if it's m2m by looking for junction field
+			// m2m relationships have a junction_field in the relation meta
+			const junctionField = relations[0].meta?.junction_field;
+
+			if (junctionField) {
+				// For m2m, the junction table connects to the related collection
+				const junctionRelations = relationsStore.getRelationsForField(
+					relations[0].collection,
+					junctionField,
+				);
+
+				if (junctionRelations[0]?.related_collection) {
+					return junctionRelations[0].related_collection;
+				}
+			}
+		}
+	}
+
+	return null;
+}
+
+function handleNoneGroupFilter(index: number, newFilters: Filter[]) {
+	const nodeInfo = filterInfo.value[index];
+	if (!nodeInfo || !nodeInfo.isField || !(nodeInfo as FilterInfoField).isNoneGroup) return;
+	const fieldInfo = nodeInfo as FilterInfoField;
+
+	const relationshipField = fieldInfo.field;
+	// Filters within _none should NOT have the relationship prefix in the stored JSON
+	// The backend handles the relationship context automatically
+	const filtersWithoutPrefix = stripRelationshipPrefix(newFilters, relationshipField);
+
+	// _none expects a single Filter object, not an array
+	// If we have multiple filters, wrap them in _and, otherwise use the single filter
+	let noneFilter: Filter;
+
+	if (filtersWithoutPrefix.length === 0) {
+		noneFilter = {};
+	} else if (filtersWithoutPrefix.length === 1) {
+		noneFilter = filtersWithoutPrefix[0] || {};
+	} else {
+		noneFilter = { _and: filtersWithoutPrefix };
+	}
+
+	// Ensure no prefix in the final filter
+	noneFilter = stripRelationshipPrefixFromFilter(noneFilter, relationshipField);
+
+	// Update the node with the new filters
+	filterSync.value = filterSync.value.map((filter, filterIndex) => {
+		if (filterIndex === index) {
+			return {
+				[relationshipField]: {
+					_none: noneFilter,
+				},
+			} as any;
+		}
+
+		return filter;
+	});
+}
+
+function stripRelationshipPrefixFromFilter(filter: Filter, relationshipField: string): Filter {
+	const result: Record<string, any> = {};
+
+	for (const [key, value] of Object.entries(filter)) {
+		if (key === '_and' || key === '_or') {
+			result[key] = stripRelationshipPrefix(value as Filter[], relationshipField);
+		} else if (key.startsWith(relationshipField + '.')) {
+			const newKey = key.slice(relationshipField.length + 1);
+			result[newKey] = value;
+		} else {
+			result[key] = value;
+		}
+	}
+
+	return result as Filter;
+}
+
+function handleNoneGroupRemoveNode(index: number, removeIds: string[]) {
+	const nodeInfo = filterInfo.value[index];
+	if (!nodeInfo || !nodeInfo.isField) return;
+	const fieldInfo = nodeInfo as FilterInfoField;
+	if (!fieldInfo.isNoneGroup) return;
+
+	const currentFilters = getNoneGroupFilters(fieldInfo);
+	const removeIndex = Number(removeIds[0]);
+	const newFilters = currentFilters.filter((_, i) => i !== removeIndex);
+	handleNoneGroupFilter(index, newFilters);
+}
+
+function getNoneGroupFilters(nodeInfo: FilterInfoField): Filter[] {
+	if (!nodeInfo.isNoneGroup) return [];
+
+	const noneFilter = get(nodeInfo.node, `${nodeInfo.field}._none`, {}) as Filter;
+	const relationshipField = nodeInfo.field;
+
+	if (!noneFilter || Object.keys(noneFilter).length === 0) return [];
+
+	// Strip prefix for display (in case it exists from old data or was accidentally added)
+	// Filters within _none should not have the prefix in stored JSON
+	const strippedFilter = stripRelationshipPrefixFromFilter(noneFilter, relationshipField);
+	
+	// If the filter has _and or _or, return the array, otherwise wrap in _and array for the nodes component
+	if ('_and' in strippedFilter) {
+		return strippedFilter._and as Filter[];
+	} else if ('_or' in strippedFilter) {
+		return strippedFilter._or as Filter[];
+	} else {
+		// Single field filter - wrap in _and array for nodes component
+		return [strippedFilter];
+	}
+}
+
+function handleNoneGroupAddField(index: number, fieldKey: string) {
+	const nodeInfo = filterInfo.value[index];
+	if (!nodeInfo || !nodeInfo.isField || !(nodeInfo as FilterInfoField).isNoneGroup) return;
+	const fieldInfo = nodeInfo as FilterInfoField;
+
+	const relatedCollection = getRelatedCollectionForField(fieldInfo.field) || props.collection;
+	const currentFilters = getNoneGroupFilters(fieldInfo);
+
+	// Create a new filter node for the selected field
+	const field = fieldsStore.getField(relatedCollection, fieldKey);
+	if (!field) return;
+
+	const fieldType = field.type || 'unknown';
+	const filterOperators = getFilterOperatorsForType(fieldType, { includeValidation: props.includeValidation });
+	const operator = filterOperators[0] || 'eq';
+	const booleanOperators: string[] = ['empty', 'nempty', 'null', 'nnull'];
+	const initialValue = booleanOperators.includes(operator) ? true : null;
+
+	// Create filter with the field key (without prefix, will be added automatically)
+	const newFilter = fieldToFilter(fieldKey, `_${operator}`, initialValue);
+	const updatedFilters = [...currentFilters, newFilter];
+
+	handleNoneGroupFilter(index, updatedFilters);
+}
 </script>
 
 <template>
@@ -299,97 +476,162 @@ function isExistingField(node: Record<string, any>): boolean {
 	>
 		<template #item="{ element, index }">
 			<li class="row">
-				<div v-if="filterInfo[index].isField" block class="node field">
-					<div class="header" :class="{ inline, 'raw-field-names': rawFieldNames }">
-						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
-						<span v-if="field || !isExistingField(element)" class="plain-name">
-							{{ getFieldPreview(element) }}
-						</span>
-						<v-menu v-else placement="bottom-start" show-arrow>
-							<template #activator="{ toggle }">
-								<button class="name" @click="toggle">
-									<span>{{ getFieldPreview(element) }}</span>
-								</button>
-							</template>
-
-							<v-field-list
-								:collection="collection"
-								:field="field"
-								include-functions
-								:include-relations="includeRelations"
-								:relational-field-selectable="relationalFieldSelectable"
-								:allow-select-all="false"
-								:raw-field-names="rawFieldNames"
-								@add="updateField(index, $event[0])"
-							/>
-						</v-menu>
-						<v-select
-							inline
-							class="comparator"
-							placement="bottom-start"
-							:model-value="(filterInfo[index] as FilterInfoField).comparator"
-							:items="getCompareOptions((filterInfo[index] as FilterInfoField).field)"
-							@update:model-value="updateComparator(index, $event)"
-						/>
-						<input-group
-							:field="element"
-							:collection="collection"
-							:variable-input-enabled="variableInputEnabled"
-							@update:field="replaceNode(index, $event)"
-						/>
-						<span class="delete">
-							<v-icon
-								v-tooltip="t('delete_label')"
-								name="close"
-								small
-								clickable
-								@click="$emit('remove-node', [index])"
-							/>
-						</span>
-					</div>
-				</div>
-
-				<div v-else class="node logic">
-					<div class="header" :class="{ inline }">
-						<v-icon name="drag_indicator" class="drag-handle" small />
-						<div class="logic-type" :class="{ or: filterInfo[index].name === '_or' }">
-							<span class="key" @click="toggleLogic(index)">
-								{{
-									filterInfo[index].name === '_and'
-										? t('interfaces.filter.logic_type_and')
-										: t('interfaces.filter.logic_type_or')
-								}}
-							</span>
-							<span class="text">
-								{{
-									`— ${filterInfo[index].name === '_and' ? t('interfaces.filter.all') : t('interfaces.filter.any')} ${t(
-										'interfaces.filter.of_the_following',
-									)}`
-								}}
+				<!-- _none group -->
+				<template v-if="filterInfo[index]?.isField && (filterInfo[index] as FilterInfoField).isNoneGroup">
+					<div class="node none-group">
+						<div class="header" :class="{ inline }">
+							<v-icon name="drag_indicator" class="drag-handle" small />
+							<div class="logic-type none">
+								<span class="key">{{ getFieldPreview(element) }}</span>
+								<span class="text">
+									{{ `— ${t('interfaces.filter.none_of_the_following')}` }}
+								</span>
+							</div>
+							<v-menu placement="bottom-start" show-arrow>
+								<template #activator="{ toggle }">
+									<v-icon
+										v-tooltip="t('interfaces.filter.add_filter')"
+										name="add"
+										class="add-filter"
+										small
+										clickable
+										@click="toggle"
+									/>
+								</template>
+								<v-field-list
+									:collection="getRelatedCollectionForField((filterInfo[index] as FilterInfoField).field) || collection"
+									include-functions
+									:include-relations="includeRelations"
+									:relational-field-selectable="relationalFieldSelectable"
+									:allow-select-all="false"
+									:raw-field-names="rawFieldNames"
+									@add="handleNoneGroupAddField(index, $event[0])"
+								/>
+							</v-menu>
+							<span class="delete">
+								<v-icon
+									v-tooltip="t('delete_label')"
+									name="close"
+									small
+									clickable
+									@click="$emit('remove-node', [index])"
+								/>
 							</span>
 						</div>
-						<span class="delete">
-							<v-icon
-								v-tooltip="t('delete_label')"
-								name="close"
-								small
-								clickable
-								@click="$emit('remove-node', [index])"
-							/>
-						</span>
+						<nodes
+							:filter="getNoneGroupFilters(filterInfo[index] as FilterInfoField)"
+							:collection="getRelatedCollectionForField((filterInfo[index] as FilterInfoField).field) || collection"
+							:depth="depth + 1"
+							:inline="inline"
+							:raw-field-names="rawFieldNames"
+							:variable-input-enabled="variableInputEnabled"
+							:include-validation="includeValidation"
+							:include-relations="includeRelations"
+							:relational-field-selectable="relationalFieldSelectable"
+							@change="$emit('change')"
+							@remove-node="handleNoneGroupRemoveNode(index, $event)"
+							@update:filter="handleNoneGroupFilter(index, $event)"
+						/>
 					</div>
-					<nodes
-						:filter="element[filterInfo[index].name]"
-						:collection="collection"
-						:depth="depth + 1"
-						:inline="inline"
-						:raw-field-names="rawFieldNames"
-						:variable-input-enabled="variableInputEnabled"
-						@change="$emit('change')"
-						@remove-node="$emit('remove-node', [`${index}.${filterInfo[index].name}`, ...$event])"
-						@update:filter="replaceNode(index, { [filterInfo[index].name]: $event })"
-					/>
-				</div>
+				</template>
+
+				<!-- Regular field filter -->
+				<template v-else-if="filterInfo[index]?.isField && !(filterInfo[index] as FilterInfoField).isNoneGroup">
+					<div block class="node field">
+						<div class="header" :class="{ inline, 'raw-field-names': rawFieldNames }">
+							<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
+							<span v-if="field || !isExistingField(element)" class="plain-name">
+								{{ getFieldPreview(element) }}
+							</span>
+							<v-menu v-else placement="bottom-start" show-arrow>
+								<template #activator="{ toggle }">
+									<button class="name" @click="toggle">
+										<span>{{ getFieldPreview(element) }}</span>
+									</button>
+								</template>
+
+								<v-field-list
+									:collection="collection"
+									:field="field"
+									include-functions
+									:include-relations="includeRelations"
+									:relational-field-selectable="relationalFieldSelectable"
+									:allow-select-all="false"
+									:raw-field-names="rawFieldNames"
+									@add="updateField(index, $event[0])"
+								/>
+							</v-menu>
+							<v-select
+								inline
+								class="comparator"
+								placement="bottom-start"
+								:model-value="(filterInfo[index] as FilterInfoField).comparator"
+								:items="getCompareOptions((filterInfo[index] as FilterInfoField).field)"
+								@update:model-value="updateComparator(index, $event)"
+							/>
+							<input-group
+								:field="element"
+								:collection="collection"
+								:variable-input-enabled="variableInputEnabled"
+								@update:field="replaceNode(index, $event)"
+							/>
+							<span class="delete">
+								<v-icon
+									v-tooltip="t('delete_label')"
+									name="close"
+									small
+									clickable
+									@click="$emit('remove-node', [index])"
+								/>
+							</span>
+						</div>
+					</div>
+				</template>
+
+				<!-- Logical group (_and/_or) -->
+				<template v-else-if="filterInfo[index] && !filterInfo[index].isField">
+					<div class="node logic">
+						<div class="header" :class="{ inline }">
+							<v-icon name="drag_indicator" class="drag-handle" small />
+							<div class="logic-type" :class="{ or: filterInfo[index].name === '_or' }">
+								<span class="key" @click="toggleLogic(index)">
+									{{
+										filterInfo[index].name === '_and'
+											? t('interfaces.filter.logic_type_and')
+											: t('interfaces.filter.logic_type_or')
+									}}
+								</span>
+								<span class="text">
+									{{
+										`— ${filterInfo[index].name === '_and' ? t('interfaces.filter.all') : t('interfaces.filter.any')} ${t(
+											'interfaces.filter.of_the_following',
+										)}`
+									}}
+								</span>
+							</div>
+							<span class="delete">
+								<v-icon
+									v-tooltip="t('delete_label')"
+									name="close"
+									small
+									clickable
+									@click="$emit('remove-node', [index])"
+								/>
+							</span>
+						</div>
+						<nodes
+							:filter="element[filterInfo[index].name]"
+							:collection="collection"
+							:depth="depth + 1"
+							:inline="inline"
+							:raw-field-names="rawFieldNames"
+							:variable-input-enabled="variableInputEnabled"
+							@change="$emit('change')"
+							@remove-node="$emit('remove-node', [`${index}.${filterInfo[index].name}`, ...$event])"
+							@update:filter="replaceNode(index, { [filterInfo[index].name]: $event })"
+						/>
+					</div>
+				</template>
 			</li>
 		</template>
 	</draggable>
@@ -436,6 +678,23 @@ function isExistingField(node: Record<string, any>): boolean {
 				background-color: var(--secondary-25);
 			}
 		}
+
+		&.none .key {
+			color: var(--theme--danger);
+			background-color: var(--theme--danger-background);
+			cursor: default;
+
+			&:hover {
+				background-color: var(--theme--danger-subdued);
+			}
+		}
+	}
+
+	.add-filter {
+		--v-icon-color: var(--theme--primary);
+		--v-icon-color-hover: var(--theme--primary-accent);
+
+		margin-inline-start: 8px;
 	}
 
 	:deep(.inline-display) {

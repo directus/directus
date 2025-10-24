@@ -100,6 +100,16 @@ function emitValue() {
 function addNode(key: string) {
 	if (key === '$group') {
 		innerValue.value = innerValue.value.concat({ _and: [] });
+	} else if (key === '$none') {
+		// Special key to create a _none filter - the actual field will be passed as metadata
+		// This is handled by the field list component
+		return;
+	} else if (key.startsWith('$none:')) {
+		// Handle _none filter creation: format is $none:fieldName
+		// _none expects a Filter object, not an array
+		const relationshipField = key.replace('$none:', '');
+		const node = set({}, relationshipField, { _none: {} });
+		innerValue.value = innerValue.value.concat(node);
 	} else {
 		let type: Type;
 		const field = fieldsStore.getField(collection.value, key);

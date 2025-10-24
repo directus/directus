@@ -1867,6 +1867,8 @@ interfaces:
     all: All
     any: Any
     and: and
+    none: None
+    none_of_the_following: None of the following
     of_the_following: of the following
     no_rules: No configured rules
     change_value: Click to change value
