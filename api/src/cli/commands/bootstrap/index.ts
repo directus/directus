@@ -47,7 +47,12 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 		}
 
 		if (env['PROJECT_OWNER'] && typeof env['PROJECT_OWNER'] === 'string' && EMAIL_REGEX.test(env['PROJECT_OWNER'])) {
-			await settingsService.setOwner({ email: env['PROJECT_OWNER'], org_name: null, usage: null, email_news: false });
+			await settingsService.setOwner({
+				email: env['PROJECT_OWNER'],
+				org_name: null,
+				project_usage: null,
+				product_updates: false,
+			});
 		}
 	} else {
 		logger.info('Database already initialized, skipping install');
