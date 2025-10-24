@@ -1,16 +1,11 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { FlowRaw } from '@directus/types';
-import { injectRunManualFlow } from '@/composables/use-flows';
+import { injectRunManualFlow, ManualFlow } from '@/composables/use-flows';
 
 const { t } = useI18n();
 
 defineProps<{
-	manualFlows: (FlowRaw & {
-		tooltip: string;
-		isFlowDisabled: boolean;
-		isFlowRunning: boolean;
-	})[];
+	manualFlows: ManualFlow[];
 }>();
 
 const { runManualFlow } = injectRunManualFlow();

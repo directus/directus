@@ -68,6 +68,23 @@ export default defineInterface({
 							},
 						},
 						{
+							field: 'actionType',
+							type: 'string',
+							name: '$t:interfaces.presentation-links.action_type',
+							schema: {
+								default_value: 'url',
+							},
+							meta: {
+								interface: 'select-dropdown',
+								options: {
+									choices: [
+										{ text: '$t:url', value: 'url' },
+										{ text: '$t:flow', value: 'flow' },
+									],
+								},
+							},
+						},
+						{
 							field: 'url',
 							type: 'string',
 							name: '$t:url',
@@ -79,6 +96,40 @@ export default defineInterface({
 									font: 'monospace',
 									placeholder: 'https://example.com/articles/{{ id }}/{{ slug }}',
 								},
+								conditions: [
+									{
+										rule: {
+											actionType: {
+												_eq: 'flow',
+											},
+										},
+										hidden: true,
+									},
+								],
+							},
+						},
+						{
+							field: 'flow',
+							type: 'string',
+							name: '$t:flow',
+							meta: {
+								width: 'full',
+								interface: 'system-flow-select',
+								hidden: true,
+								note: '$t:interfaces.presentation-links.select_flow_note',
+								options: {
+									collectionName: collection,
+								},
+								conditions: [
+									{
+										rule: {
+											actionType: {
+												_eq: 'flow',
+											},
+										},
+										hidden: false,
+									},
+								],
 							},
 						},
 					],

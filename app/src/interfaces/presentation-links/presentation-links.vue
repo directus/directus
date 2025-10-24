@@ -1,17 +1,20 @@
 <script setup lang="ts">
+import { injectRunManualFlow, ManualFlow } from '@/composables/use-flows';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useApi } from '@directus/composables';
 import { PrimaryKey } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { pickBy } from 'lodash';
 import { render } from 'micromustache';
-import { computed, inject, ref, toRefs, watch } from 'vue';
+import { computed, inject, ref, toRefs, useAttrs, watch } from 'vue';
 
 type Link = {
 	icon: string;
 	label: string;
 	type: string;
+	actionType: string;
 	url?: string;
+	flow?: string;
 };
 
 type ParsedLink = Omit<Link, 'url'> & {
@@ -21,14 +24,17 @@ type ParsedLink = Omit<Link, 'url'> & {
 
 const props = withDefaults(
 	defineProps<{
-		links: Link[];
+		links?: Link[];
 		collection: string;
 		primaryKey?: PrimaryKey;
+		disabled?: boolean;
 	}>(),
 	{
 		links: () => [],
 	},
 );
+
+const attrs = useAttrs();
 
 const api = useApi();
 const values = inject('values', ref<Record<string, any>>({}));
@@ -91,11 +97,43 @@ const linksParsed = computed<ParsedLink[]>(() =>
 			icon: link.icon,
 			type: link.type,
 			label: link.label,
+			actionType: link.actionType,
 			to: isInternalLink ? interpolatedUrl : undefined,
 			href: isInternalLink ? undefined : interpolatedUrl,
+			flow: link.actionType === 'flow' ? link.flow : undefined,
 		};
 	}),
 );
+
+const buttonProps = computed(() =>
+	linksParsed.value.map((link, index) => {
+		const baseProps = {
+			key: `${link.actionType}-${index}`,
+			class: ['action', link.type],
+			secondary: link.type !== 'primary',
+			icon: !link.label,
+			disabled: (link.actionType === 'flow' && attrs['batch-mode']) || props.disabled,
+		};
+
+		if (link.actionType === 'url' && link.href) {
+			return {
+				...baseProps,
+				href: link.href,
+			};
+		} else if (link.flow) {
+			return {
+				...baseProps,
+				onClick: () => runManualFlow(link.flow!),
+			};
+		}
+
+		return baseProps;
+	}),
+);
+
+const loadingFlows = computed(() => {
+	return manualFlows.value.filter((flow: ManualFlow) => flow.isFlowRunning).map((flow: ManualFlow) => flow.id);
+});
 
 /**
  * Get all deduplicated relational fields from the link-templates.
@@ -111,23 +149,28 @@ function getRelatedFieldsFromTemplates() {
 
 	return relationalFields;
 }
+
+const { runManualFlow, manualFlows } = injectRunManualFlow();
 </script>
 
 <template>
 	<div class="presentation-links">
-		<v-button
-			v-for="(link, index) in linksParsed"
-			:key="index"
-			class="action"
-			:class="[link.type]"
-			:secondary="link.type !== 'primary'"
-			:icon="!link.label"
-			:href="link.href"
-			:to="link.to"
-		>
-			<v-icon v-if="link.icon" left :name="link.icon" />
-			<span v-if="link.label">{{ link.label }}</span>
-		</v-button>
+		<template v-for="(link, index) in linksParsed" :key="`link-${index}`">
+			<v-button
+				v-if="link.href || link.flow"
+				v-bind="buttonProps[index]"
+				:loading="link.flow && loadingFlows.includes(link.flow)"
+			>
+				<v-icon v-if="link.icon" left :name="link.icon" />
+				<span v-if="link.label">{{ link.label }}</span>
+			</v-button>
+			<router-link v-else-if="link.to" :to="link.to">
+				<v-button v-bind="buttonProps[index]">
+					<v-icon v-if="link.icon" left :name="link.icon" />
+					<span v-if="link.label">{{ link.label }}</span>
+				</v-button>
+			</router-link>
+		</template>
 	</div>
 </template>
 
