@@ -837,6 +837,9 @@ catalogs:
     undici:
       specifier: 7.13.0
       version: 7.13.0
+    universal-cookie:
+      specifier: 8.0.1
+      version: 8.0.1
     unplugin-yaml:
       specifier: 3.0.4
       version: 3.0.4
@@ -1665,7 +1668,7 @@ importers:
         version: 13.6.0(vue@3.5.22(typescript@5.8.3))
       '@vueuse/integrations':
         specifier: 'catalog:'
-        version: 13.6.0(axios@1.12.2)(focus-trap@7.6.5)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.5.22(typescript@5.8.3))
+        version: 13.6.0(axios@1.12.2)(focus-trap@7.6.5)(qrcode@1.5.4)(sortablejs@1.14.0)(universal-cookie@8.0.1)(vue@3.5.22(typescript@5.8.3))
       '@vueuse/router':
         specifier: 'catalog:'
         version: 13.6.0(vue-router@4.6.3(vue@3.5.22(typescript@5.8.3)))(vue@3.5.22(typescript@5.8.3))
@@ -1795,6 +1798,9 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.8.3
+      universal-cookie:
+        specifier: 'catalog:'
+        version: 8.0.1
       vite:
         specifier: 'catalog:'
         version: 7.1.11(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(tsx@4.20.3)(yaml@2.8.1)
@@ -13145,6 +13151,9 @@ packages:
     resolution: {integrity: sha512-uNaeirEPvpZWSgzwsPGtU2zVSTrn/8L5q/IexZmH0eH6SA73CmAA5U4GwORTxQAZs95TAXLNqeLoPPNO5gZfWg==}
     engines: {node: '>=8'}
 
+  universal-cookie@8.0.1:
+    resolution: {integrity: sha512-B6ks9FLLnP1UbPPcveOidfvB9pHjP+wekP2uRYB9YDfKVpvcjKgy1W5Zj+cEXJ9KTPnqOKGfVDQBmn8/YCQfRg==}
+
   universalify@0.1.2:
     resolution: {integrity: sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==}
     engines: {node: '>= 4.0.0'}
@@ -14010,7 +14019,7 @@ snapshots:
       '@smithy/middleware-serde': 4.2.3
       '@smithy/middleware-stack': 4.2.3
       '@smithy/node-config-provider': 4.3.3
-      '@smithy/node-http-handler': 4.4.2
+      '@smithy/node-http-handler': 4.4.3
       '@smithy/protocol-http': 5.3.3
       '@smithy/smithy-client': 4.9.1
       '@smithy/types': 4.8.0
@@ -16319,7 +16328,7 @@ snapshots:
 
   '@npmcli/fs@4.0.0':
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.3
 
   '@npmcli/move-file@1.1.2':
     dependencies:
@@ -16677,7 +16686,7 @@ snapshots:
       pretty-ms: 7.0.1
       ramda: '@pnpm/ramda@0.28.1'
       rxjs: 7.8.2
-      semver: 7.7.2
+      semver: 7.7.3
       stacktracey: 2.1.8
       string-length: 4.0.2
 
@@ -16704,7 +16713,7 @@ snapshots:
     dependencies:
       '@pnpm/crypto.hash': 1000.2.0
       '@pnpm/types': 1000.7.0
-      semver: 7.7.2
+      semver: 7.7.3
 
   '@pnpm/directory-fetcher@1000.1.10(@pnpm/logger@1001.0.0)':
     dependencies:
@@ -16827,7 +16836,7 @@ snapshots:
       '@pnpm/resolver-base': 1005.0.0
       graceful-git: 4.0.0
       hosted-git-info: '@pnpm/hosted-git-info@1.0.0'
-      semver: 7.7.2
+      semver: 7.7.3
     transitivePeerDependencies:
       - '@pnpm/logger'
       - domexception
@@ -16888,7 +16897,7 @@ snapshots:
       normalize-path: 3.0.0
       p-settle: 4.1.1
       ramda: '@pnpm/ramda@0.28.1'
-      semver: 7.7.2
+      semver: 7.7.3
       symlink-dir: 6.0.5
 
   '@pnpm/local-resolver@1002.1.0(@pnpm/logger@1001.0.0)':
@@ -16990,7 +16999,7 @@ snapshots:
       '@pnpm/fetching-types': 1000.2.0
       '@pnpm/resolver-base': 1005.0.0
       '@pnpm/types': 1000.7.0
-      semver: 7.7.2
+      semver: 7.7.3
       version-selector-type: 3.0.0
     transitivePeerDependencies:
       - '@pnpm/logger'
@@ -17021,7 +17030,7 @@ snapshots:
   '@pnpm/npm-package-arg@2.0.0':
     dependencies:
       hosted-git-info: 4.1.0
-      semver: 7.7.2
+      semver: 7.7.3
       validate-npm-package-name: 4.0.0
 
   '@pnpm/npm-resolver@1004.1.3(@pnpm/logger@1001.0.0)':
@@ -17050,7 +17059,7 @@ snapshots:
       path-temp: 2.1.0
       ramda: '@pnpm/ramda@0.28.1'
       rename-overwrite: 6.0.3
-      semver: 7.7.2
+      semver: 7.7.3
       semver-utils: 1.1.4
       ssri: 10.0.5
       version-selector-type: 3.0.0
@@ -17079,7 +17088,7 @@ snapshots:
       detect-libc: 2.1.2
       execa: safe-execa@0.1.2
       mem: 8.1.1
-      semver: 7.7.2
+      semver: 7.7.3
 
   '@pnpm/package-requester@1006.0.0(@pnpm/logger@1001.0.0)(@pnpm/worker@1000.1.11(@pnpm/logger@1001.0.0)(@types/node@22.13.14))':
     dependencies:
@@ -17103,7 +17112,7 @@ snapshots:
       p-queue: 6.6.2
       promise-share: 1.0.0
       ramda: '@pnpm/ramda@0.28.1'
-      semver: 7.7.2
+      semver: 7.7.3
       ssri: 10.0.5
 
   '@pnpm/package-store@1002.0.9(@pnpm/logger@1001.0.0)(@pnpm/worker@1000.1.11(@pnpm/logger@1001.0.0)(@types/node@22.13.14))':
@@ -17201,7 +17210,7 @@ snapshots:
 
   '@pnpm/resolve-workspace-range@1000.0.0':
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.3
 
   '@pnpm/resolver-base@1005.0.0':
     dependencies:
@@ -17221,7 +17230,7 @@ snapshots:
       '@pnpm/types': 1000.7.0
       '@pnpm/util.lex-comparator': 3.0.2
       '@pnpm/worker': 1000.1.11(@pnpm/logger@1001.0.0)(@types/node@22.13.14)
-      semver: 7.7.2
+      semver: 7.7.3
     transitivePeerDependencies:
       - '@pnpm/logger'
       - '@types/node'
@@ -17243,7 +17252,7 @@ snapshots:
       '@pnpm/types': 1000.7.0
       '@pnpm/util.lex-comparator': 3.0.2
       '@pnpm/worker': 1000.1.11(@pnpm/logger@1001.0.0)(@types/node@22.13.14)
-      semver: 7.7.2
+      semver: 7.7.3
     transitivePeerDependencies:
       - '@pnpm/logger'
       - '@types/node'
@@ -18285,11 +18294,11 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/busboy@1.5.4':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/bytes@3.1.5': {}
 
@@ -18315,7 +18324,7 @@ snapshots:
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/content-disposition@0.5.9': {}
 
@@ -18327,7 +18336,7 @@ snapshots:
 
   '@types/cors@2.8.19':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/deep-diff@1.0.5': {}
 
@@ -18335,7 +18344,7 @@ snapshots:
 
   '@types/destroy@1.0.3':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/diacritics@1.3.3': {}
 
@@ -18347,7 +18356,7 @@ snapshots:
 
   '@types/express-serve-static-core@4.19.6':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
       '@types/qs': 6.14.0
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.0
@@ -18368,7 +18377,7 @@ snapshots:
   '@types/fs-extra@11.0.4':
     dependencies:
       '@types/jsonfile': 6.1.4
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/fs-extra@9.0.13':
     dependencies:
@@ -18393,16 +18402,16 @@ snapshots:
 
   '@types/json2csv@5.0.7':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/jsonfile@6.1.4':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/jsonwebtoken@9.0.10':
     dependencies:
       '@types/ms': 2.1.0
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/keyv@3.1.4':
     dependencies:
@@ -18410,7 +18419,7 @@ snapshots:
 
   '@types/ldapjs@2.2.5':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/linkify-it@5.0.0': {}
 
@@ -18469,7 +18478,7 @@ snapshots:
 
   '@types/nodemailer@6.4.17':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/normalize-package-data@2.4.4': {}
 
@@ -18477,11 +18486,11 @@ snapshots:
 
   '@types/papaparse@5.3.16':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/proxy-addr@2.0.3':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/qrcode@1.5.5':
     dependencies:
@@ -18493,7 +18502,7 @@ snapshots:
 
   '@types/readable-stream@4.0.21':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
     optional: true
 
   '@types/request@2.48.13':
@@ -18520,29 +18529,29 @@ snapshots:
   '@types/send@0.17.5':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/send@1.2.0':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/serve-static@1.15.9':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
       '@types/send': 0.17.5
 
   '@types/ssri@7.1.5':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/stream-chain@2.1.0':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/stream-json@1.7.8':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
       '@types/stream-chain': 2.1.0
 
   '@types/superagent@8.1.9':
@@ -18563,7 +18572,7 @@ snapshots:
 
   '@types/through@0.0.33':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/tmp@0.2.6': {}
 
@@ -18580,7 +18589,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
 
   '@types/ws@8.5.14':
     dependencies:
@@ -19012,7 +19021,7 @@ snapshots:
       '@vueuse/shared': 13.6.0(vue@3.5.22(typescript@5.8.3))
       vue: 3.5.22(typescript@5.8.3)
 
-  '@vueuse/integrations@13.6.0(axios@1.12.2)(focus-trap@7.6.5)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.5.22(typescript@5.8.3))':
+  '@vueuse/integrations@13.6.0(axios@1.12.2)(focus-trap@7.6.5)(qrcode@1.5.4)(sortablejs@1.14.0)(universal-cookie@8.0.1)(vue@3.5.22(typescript@5.8.3))':
     dependencies:
       '@vueuse/core': 13.6.0(vue@3.5.22(typescript@5.8.3))
       '@vueuse/shared': 13.6.0(vue@3.5.22(typescript@5.8.3))
@@ -19022,6 +19031,7 @@ snapshots:
       focus-trap: 7.6.5
       qrcode: 1.5.4
       sortablejs: 1.14.0
+      universal-cookie: 8.0.1
 
   '@vueuse/metadata@13.6.0': {}
 
@@ -19577,7 +19587,7 @@ snapshots:
 
   builtins@5.1.0:
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.3
 
   bundle-name@4.1.0:
     dependencies:
@@ -20410,7 +20420,7 @@ snapshots:
       '@one-ini/wasm': 0.1.1
       commander: 10.0.1
       minimatch: 9.0.1
-      semver: 7.7.2
+      semver: 7.7.3
 
   editorjs-toggle-block@0.3.16:
     dependencies:
@@ -22343,7 +22353,7 @@ snapshots:
 
   mailgun.js@8.2.2:
     dependencies:
-      axios: 1.12.2
+      axios: 1.8.4
       base-64: 1.0.0
       url-join: 4.0.1
     transitivePeerDependencies:
@@ -22797,7 +22807,7 @@ snapshots:
       make-fetch-happen: 14.0.3
       nopt: 8.1.0
       proc-log: 5.0.0
-      semver: 7.7.2
+      semver: 7.7.3
       tar: 7.5.1
       tinyglobby: 0.2.15
       which: 5.0.0
@@ -22941,13 +22951,13 @@ snapshots:
     dependencies:
       hosted-git-info: 4.1.0
       is-core-module: 2.16.1
-      semver: 7.7.2
+      semver: 7.7.3
       validate-npm-package-license: 3.0.4
 
   normalize-package-data@7.0.1:
     dependencies:
       hosted-git-info: 8.1.0
-      semver: 7.7.2
+      semver: 7.7.3
       validate-npm-package-license: 3.0.4
 
   normalize-path@3.0.0: {}
@@ -24281,7 +24291,7 @@ snapshots:
       '@rollup/pluginutils': 5.3.0(rollup@4.46.2)
       cosmiconfig: 8.3.6(typescript@5.8.3)
       cssnano: 7.1.1(postcss@8.5.6)
-      fs-extra: 11.3.0
+      fs-extra: 11.3.2
       icss-utils: 5.1.0(postcss@8.5.6)
       mime-types: 2.1.35
       p-queue: 8.1.1
@@ -25391,7 +25401,7 @@ snapshots:
       '@azure/identity': 4.13.0
       '@azure/keyvault-keys': 4.10.0
       '@js-joda/core': 5.6.5
-      '@types/node': 22.13.14
+      '@types/node': 24.9.1
       bl: 6.1.4
       iconv-lite: 0.6.3
       js-md4: 0.3.2
@@ -25707,6 +25717,10 @@ snapshots:
     dependencies:
       crypto-random-string: 2.0.0
 
+  universal-cookie@8.0.1:
+    dependencies:
+      cookie: 1.0.2
+
   universalify@0.1.2: {}
 
   universalify@0.2.0: {}
@@ -25832,7 +25846,7 @@ snapshots:
 
   version-selector-type@3.0.0:
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.3
 
   vite-hot-client@2.1.0(vite@7.1.11(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(tsx@4.20.3)(yaml@2.8.1)):
     dependencies:
@@ -26030,7 +26044,7 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
       postcss: 8.5.6
-      rollup: 4.46.2
+      rollup: 4.52.5
       tinyglobby: 0.2.15
     optionalDependencies:
       '@types/node': 22.13.14
@@ -26048,7 +26062,7 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
       postcss: 8.5.6
-      rollup: 4.46.2
+      rollup: 4.52.5
       tinyglobby: 0.2.15
     optionalDependencies:
       '@types/node': 24.9.1
@@ -26367,7 +26381,7 @@ snapshots:
     dependencies:
       ansi-styles: 6.2.3
       string-width: 7.2.0
-      strip-ansi: 7.1.0
+      strip-ansi: 7.1.2
 
   wrappy@1.0.2: {}
 

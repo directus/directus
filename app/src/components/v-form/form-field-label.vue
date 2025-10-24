@@ -16,6 +16,7 @@ withDefaults(
 		loading?: boolean;
 		rawEditorEnabled?: boolean;
 		rawEditorActive?: boolean;
+		disabledMenu?: boolean;
 	}>(),
 	{
 		batchMode: false,
@@ -28,6 +29,7 @@ withDefaults(
 		loading: false,
 		rawEditorEnabled: false,
 		rawEditorActive: false,
+		disabledMenu: false,
 	},
 );
 
@@ -38,7 +40,7 @@ const { t } = useI18n();
 
 <template>
 	<div class="field-label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
-		<button type="button" class="field-name" @click="toggle">
+		<component :is="disabledMenu ? 'div' : 'button'" type="button" class="field-name" @click="toggle">
 			<v-checkbox
 				v-if="batchMode"
 				:model-value="batchActive"
@@ -67,8 +69,8 @@ const { t } = useI18n();
 				clickable
 				@click.stop="$emit('toggle-raw', !rawEditorActive)"
 			/>
-			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
-		</button>
+			<v-icon v-if="!disabled && !disabledMenu" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
+		</component>
 	</div>
 </template>
 
