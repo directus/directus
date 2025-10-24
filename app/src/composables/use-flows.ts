@@ -1,5 +1,5 @@
 import api from '@/api';
-import { computed, ref, Ref, provide, inject } from 'vue';
+import { computed, ref, Ref, provide, inject, ComputedRef } from 'vue';
 import { FlowRaw, Item, PrimaryKey } from '@directus/types';
 import { notify } from '@/utils/notify';
 import { translate } from '@/utils/translate-object-values';
@@ -18,6 +18,12 @@ interface UseFlowsOptions {
 	hasEdits?: Ref<boolean>;
 	onRefreshCallback: () => void;
 }
+
+export type ManualFlow = FlowRaw & {
+	tooltip: string;
+	isFlowDisabled: boolean;
+	isFlowRunning: boolean;
+};
 
 const runManualFlowSymbol = 'runManualFlow';
 
@@ -120,7 +126,7 @@ export function useFlows(options: UseFlowsOptions) {
 		return false;
 	});
 
-	const manualFlows = computed(() => {
+	const manualFlows = computed<ManualFlow[]>(() => {
 		const manualFlows = flowsStore
 			.getManualFlowsForCollection(collection)
 			.filter(
@@ -183,6 +189,7 @@ export function useFlows(options: UseFlowsOptions) {
 	function provideRunManualFlow() {
 		provide(runManualFlowSymbol, {
 			runManualFlow,
+			manualFlows,
 		});
 	}
 
@@ -265,5 +272,6 @@ export function useFlows(options: UseFlowsOptions) {
 export function injectRunManualFlow() {
 	return inject(runManualFlowSymbol) as {
 		runManualFlow: (flowId: string) => void;
+		manualFlows: ComputedRef<ManualFlow[]>;
 	};
 }

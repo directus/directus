@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { injectRunManualFlow } from '@/composables/use-flows';
+import { injectRunManualFlow, ManualFlow } from '@/composables/use-flows';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useApi } from '@directus/composables';
 import { PrimaryKey } from '@directus/types';
@@ -131,6 +131,10 @@ const buttonProps = computed(() =>
 	}),
 );
 
+const loadingFlows = computed(() => {
+	return manualFlows.value.filter((flow: ManualFlow) => flow.isFlowRunning).map((flow: ManualFlow) => flow.id);
+});
+
 /**
  * Get all deduplicated relational fields from the link-templates.
  * For example:
@@ -146,13 +150,17 @@ function getRelatedFieldsFromTemplates() {
 	return relationalFields;
 }
 
-const { runManualFlow } = injectRunManualFlow();
+const { runManualFlow, manualFlows } = injectRunManualFlow();
 </script>
 
 <template>
 	<div class="presentation-links">
 		<template v-for="(link, index) in linksParsed" :key="`link-${index}`">
-			<v-button v-if="link.href || link.flow" v-bind="buttonProps[index]">
+			<v-button
+				v-if="link.href || link.flow"
+				v-bind="buttonProps[index]"
+				:loading="link.flow && loadingFlows.includes(link.flow)"
+			>
 				<v-icon v-if="link.icon" left :name="link.icon" />
 				<span v-if="link.label">{{ link.label }}</span>
 			</v-button>
