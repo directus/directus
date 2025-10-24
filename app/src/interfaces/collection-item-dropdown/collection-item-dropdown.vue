@@ -8,7 +8,6 @@ import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import { Filter } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { computed, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 type Value = {
 	key: (string | number) | null;
@@ -22,6 +21,7 @@ const props = withDefaults(
 		template?: string | null;
 		disabled?: boolean;
 		filter?: Filter | null;
+		placeholder?: string;
 	}>(),
 	{
 		value: () => ({ key: null, collection: '' }),
@@ -29,8 +29,6 @@ const props = withDefaults(
 		filter: null,
 	},
 );
-
-const { t } = useI18n();
 
 const emit = defineEmits(['input']);
 
@@ -114,7 +112,7 @@ function onSelection(selectedIds: (number | string)[] | null) {
 			<div v-if="displayItem" class="preview">
 				<render-template :collection="selectedCollection" :item="displayItem" :template="displayTemplate" />
 			</div>
-			<div v-else class="placeholder">{{ t('select_an_item') }}</div>
+			<div v-else class="placeholder">{{ $t(placeholder || 'select_an_item') }}</div>
 
 			<div class="spacer" />
 
