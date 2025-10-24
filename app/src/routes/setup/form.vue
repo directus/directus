@@ -31,11 +31,11 @@ const license = computed({
 	},
 });
 
-const email_news = computed({
-	get: () => value.value?.email_news ?? false,
+const product_updates = computed({
+	get: () => value.value?.product_updates ?? false,
 	set: (val: boolean) => {
 		if (value.value) {
-			value.value.email_news = val;
+			value.value.product_updates = val;
 		}
 	},
 });
@@ -62,7 +62,7 @@ const fields = useFormFields(props.register, value);
 		<v-checkbox v-if="!skipLicense" v-model="license">
 			<span v-md="t('setup_accept_license')"></span>
 		</v-checkbox>
-		<v-checkbox v-model="email_news">
+		<v-checkbox v-model="product_updates">
 			<span v-md="t('setup_marketing_emails')"></span>
 		</v-checkbox>
 	</div>

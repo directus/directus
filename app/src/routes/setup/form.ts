@@ -8,10 +8,10 @@ export const initialValues = {
 	email: null,
 	password: null,
 	password_confirm: null,
-	usage: null,
+	project_usage: null,
 	org_name: null,
 	license: false,
-	email_news: false,
+	product_updates: false,
 };
 
 export function useFormFields(
@@ -88,7 +88,7 @@ export function useFormFields(
 							}
 						: null,
 					{
-						field: 'usage',
+						field: 'project_usage',
 						name: t('how_do_you_use_directus'),
 						meta: {
 							required: false,
@@ -103,7 +103,7 @@ export function useFormFields(
 							width: 'full',
 						},
 					},
-					value.value?.usage === 'commercial'
+					value.value?.project_usage === 'commercial'
 						? {
 								field: 'org_name',
 								name: t('organization_name'),

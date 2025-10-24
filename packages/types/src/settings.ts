@@ -68,9 +68,9 @@ export type Settings = {
 
 export type OwnerInformation = {
 	email: string | null;
-	usage: 'personal' | 'commercial' | 'community' | null;
+	project_usage: 'personal' | 'commercial' | 'community' | null;
 	org_name: string | null;
-	email_news: boolean;
+	product_updates: boolean;
 };
 
 export type SetupForm = {

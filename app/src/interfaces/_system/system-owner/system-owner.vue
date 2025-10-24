@@ -59,9 +59,9 @@ watch(
 	() => {
 		form.value = {
 			...form.value,
-			usage: values.value.usage,
+			project_usage: values.value.project_usage,
 			org_name: values.value.org_name,
-			email_news: values.value.email_news,
+			product_updates: values.value.product_updates,
 		};
 	},
 	{ immediate: true },
