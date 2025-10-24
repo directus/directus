@@ -11,13 +11,7 @@ export type TelemetrySettings = {
 
 export const getSettings = async (db: Knex): Promise<TelemetrySettings> => {
 	const settings = await db
-		.select(
-			'project_id',
-			'mcp_enabled',
-			'mcp_allow_deletes',
-			'mcp_system_prompt_enabled',
-			'visual_editor_urls',
-		)
+		.select('project_id', 'mcp_enabled', 'mcp_allow_deletes', 'mcp_system_prompt_enabled', 'visual_editor_urls')
 		.from('directus_settings')
 		.first();
 
