@@ -2,7 +2,7 @@
 '@directus/api': major
 ---
 
-Fixed `items.delete` filter hook running after permission check. Fixed keys returned by the hook not being used in place of the original keys.
+Fixed `<scope>.delete` filter hook running after permission check. Fixed keys returned by the hook not being used in place of the original keys.
 
 ::: notice
 
