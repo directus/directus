@@ -30,6 +30,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 'number',
 
 	MAX_BATCH_MUTATION: 'number',
+	MAX_IMPORT_ERRORS: 'number',
 
 	SERVER_SHUTDOWN_TIMEOUT: 'number',
 

@@ -4,9 +4,12 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { ErrorCode } from '@directus/errors';
 import type { AxiosProgressEvent } from 'axios';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ImportErrorDialog from './import-error-dialog.vue';
+import type { APIError } from '@/types/error';
 
 const props = defineProps<{
 	collection: string;
@@ -24,6 +27,9 @@ const fileInput = ref<HTMLInputElement | null>(null);
 
 const file = ref<File | null>(null);
 const { uploading, progress, importing, uploadFile } = useUpload();
+
+const errorDialogActive = ref(false);
+const errorDialogRows = ref<APIError[]>([]);
 
 const fileExtension = computed(() => {
 	if (file.value === null) return null;
@@ -79,15 +85,21 @@ function useUpload() {
 				title: t('import_data_success', { filename: file.name }),
 			});
 		} catch (error: any) {
-			const code = error?.response?.data?.errors?.[0]?.extensions?.code;
+			const errors = error?.response?.data?.errors;
+			const code = errors?.[0]?.extensions?.code;
 
-			notify({
-				title: te(`errors.${code}`) ? t(`errors.${code}`) : t('import_data_error'),
-				type: 'error',
-			});
+			if (code === 'FAILED_VALIDATION' && Array.isArray(errors)) {
+				errorDialogRows.value = errors;
+				errorDialogActive.value = true;
+			} else {
+				notify({
+					title: te(`errors.${code}`) ? t(`errors.${code}`) : t('import_data_error'),
+					type: 'error',
+				});
 
-			if (code === 'INTERNAL_SERVER_ERROR') {
-				unexpectedError(error);
+				if (code === ErrorCode.Internal) {
+					unexpectedError(error);
+				}
 			}
 		} finally {
 			uploading.value = false;
@@ -151,6 +163,8 @@ function useUpload() {
 				</div>
 			</template>
 		</div>
+
+		<import-error-dialog v-model="errorDialogActive" :errors="errorDialogRows" :collection="collection" />
 	</sidebar-detail>
 </template>
 
