@@ -71,7 +71,6 @@ beforeEach(() => {
 		mcp_allow_deletes: false,
 		mcp_system_prompt_enabled: true,
 		visual_editor_urls: 2,
-		accepted_terms: false,
 	};
 
 	vi.mocked(useEnv).mockReturnValue(mockEnv);
@@ -182,5 +181,4 @@ test('Runs and returns settings', async () => {
 	expect(report.mcp_allow_deletes).toBe(mockSettings.mcp_allow_deletes);
 	expect(report.mcp_system_prompt_enabled).toBe(mockSettings.mcp_system_prompt_enabled);
 	expect(report.visual_editor_urls).toBe(mockSettings.visual_editor_urls);
-	expect(report.accepted_terms).toBe(mockSettings.accepted_terms);
 });

@@ -13,7 +13,6 @@ describe('getSettings', () => {
 				mcp_allow_deletes: false,
 				mcp_system_prompt_enabled: true,
 				visual_editor_urls: '["https://example.com","https://example.org"]',
-				accepted_terms: false,
 			}),
 		} as unknown as Knex;
 
@@ -25,7 +24,6 @@ describe('getSettings', () => {
 			mcp_allow_deletes: false,
 			mcp_system_prompt_enabled: true,
 			visual_editor_urls: 2,
-			accepted_terms: false,
 		});
 	});
 
@@ -48,7 +46,6 @@ describe('getSettings', () => {
 			mcp_allow_deletes: false,
 			mcp_system_prompt_enabled: false,
 			visual_editor_urls: 0,
-			accepted_terms: false,
 		});
 	});
 

@@ -113,9 +113,4 @@ export interface TelemetryReport {
 	 * Number of Visual Editor URLs configured in the system
 	 */
 	visual_editor_urls: number;
-
-	/**
-	 * Whether the user has accepted the license terms
-	 */
-	accepted_terms: boolean;
 }

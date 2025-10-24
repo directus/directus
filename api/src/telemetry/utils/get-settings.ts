@@ -7,7 +7,6 @@ export type TelemetrySettings = {
 	mcp_allow_deletes: boolean;
 	mcp_system_prompt_enabled: boolean;
 	visual_editor_urls: number;
-	accepted_terms: boolean;
 };
 
 export const getSettings = async (db: Knex): Promise<TelemetrySettings> => {
@@ -18,7 +17,6 @@ export const getSettings = async (db: Knex): Promise<TelemetrySettings> => {
 			'mcp_allow_deletes',
 			'mcp_system_prompt_enabled',
 			'visual_editor_urls',
-			'accepted_terms',
 		)
 		.from('directus_settings')
 		.first();
@@ -29,6 +27,5 @@ export const getSettings = async (db: Knex): Promise<TelemetrySettings> => {
 		mcp_allow_deletes: toBoolean(settings?.mcp_allow_deletes),
 		mcp_system_prompt_enabled: toBoolean(settings?.mcp_system_prompt_enabled),
 		visual_editor_urls: settings.visual_editor_urls ? JSON.parse(settings.visual_editor_urls).length : 0,
-		accepted_terms: toBoolean(settings?.accepted_terms),
 	};
 };
