@@ -1,7 +1,6 @@
 import type { AbstractServiceOptions, OwnerInformation } from '@directus/types';
-import { useLogger } from '../logger/index.js';
-import { ItemsService } from './items.js';
 import { sendOwnerReport } from '../telemetry/lib/send-owner-report.js';
+import { ItemsService } from './items.js';
 
 export class SettingsService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -10,12 +9,6 @@ export class SettingsService extends ItemsService {
 
 	async setOwner(data: OwnerInformation) {
 		sendOwnerReport(data);
-
-		const logger = useLogger();
-
-		logger.info(
-			`TODO: This would now send owner info to telemetry: Owner ${data.email}, Usage: ${data.project_usage}, Company: ${data.org_name}`,
-		);
 
 		return await this.upsertSingleton({
 			project_owner: data.email,
