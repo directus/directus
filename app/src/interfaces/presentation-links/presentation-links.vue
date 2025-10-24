@@ -119,7 +119,6 @@ const buttonProps = computed(() =>
 			return {
 				...baseProps,
 				href: link.href,
-				to: link.to,
 			};
 		} else if (link.flow) {
 			return {
@@ -157,6 +156,12 @@ const { runManualFlow } = injectRunManualFlow();
 				<v-icon v-if="link.icon" left :name="link.icon" />
 				<span v-if="link.label">{{ link.label }}</span>
 			</v-button>
+			<router-link v-else-if="link.to" :to="link.to">
+				<v-button v-bind="buttonProps[index]">
+					<v-icon v-if="link.icon" left :name="link.icon" />
+					<span v-if="link.label">{{ link.label }}</span>
+				</v-button>
+			</router-link>
 		</template>
 	</div>
 </template>
