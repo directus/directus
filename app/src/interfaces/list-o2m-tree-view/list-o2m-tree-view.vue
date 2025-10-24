@@ -9,6 +9,7 @@ import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import type { ComparisonContext } from '@/components/v-form/types';
 import NestedDraggable from './nested-draggable.vue';
 
 const props = withDefaults(
@@ -23,6 +24,7 @@ const props = withDefaults(
 		enableCreate?: boolean;
 		enableSelect?: boolean;
 		filter?: Filter | null;
+		comparison?: ComparisonContext;
 	}>(),
 	{
 		value: () => [],
@@ -137,6 +139,7 @@ const fields = computed(() => {
 			:custom-filter="customFilter"
 			:items-moved="itemsMoved"
 			:version
+			:comparison
 			root
 		/>
 	</div>

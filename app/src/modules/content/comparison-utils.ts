@@ -192,13 +192,56 @@ function calculateFieldDifferences(
 				}
 
 				if (fieldType === 'o2m') {
-					const changedIds = processOperationChanges(relationalData, {
-						operations: ['create', 'update', 'delete'],
-						extractId: (item: any) => item?.id,
-					});
+					const isTreeField = field.meta?.interface === 'list-o2m-tree-view';
 
-					if (changedIds.length > 0) {
-						allChangedIds.push(...changedIds);
+					if (isTreeField) {
+						// For tree fields, recursively process nested children
+						const changedIds = processOperationChanges(relationalData, {
+							operations: ['create', 'update', 'delete'],
+							extractId: (item: any) => {
+								const id = item?.id;
+
+								if (id && item[fieldKey] && typeof item[fieldKey] === 'object') {
+									const nestedChanges = processOperationChanges(item[fieldKey], {
+										operations: ['create', 'update', 'delete'],
+										extractId: (nestedItem: any) => nestedItem?.id,
+									});
+
+									// Add nested IDs to the result
+									return { id, nestedIds: nestedChanges };
+								}
+
+								return id;
+							},
+						});
+
+						if (changedIds.length > 0) {
+							const flattenedIds: (string | number)[] = [];
+
+							changedIds.forEach((idOrObj: any) => {
+								if (typeof idOrObj === 'object' && idOrObj.id) {
+									flattenedIds.push(idOrObj.id);
+
+									if (idOrObj.nestedIds) {
+										flattenedIds.push(...idOrObj.nestedIds);
+									}
+								} else {
+									flattenedIds.push(idOrObj);
+								}
+							});
+
+							allChangedIds.push(...flattenedIds);
+						}
+					} else {
+						// Regular O2M field processing
+						const changedIds = processOperationChanges(relationalData, {
+							operations: ['create', 'update', 'delete'],
+							extractId: (item: any) => item?.id,
+						});
+
+						if (changedIds.length > 0) {
+							allChangedIds.push(...changedIds);
+						}
 					}
 				} else if (fieldType === 'm2m' || fieldType === 'files') {
 					const changedIds = processOperationChanges(relationalData, {

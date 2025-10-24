@@ -12,9 +12,11 @@ import DrawerItem from '@/views/private/components/drawer-item.vue';
 import type { ContentVersion, Filter } from '@directus/types';
 import { moveInArray } from '@directus/utils';
 import { cloneDeep } from 'lodash';
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
+import type { ComparisonContext } from '@/components/v-form/types';
+import { useGranularIndicator } from '@/modules/content/composables/use-granular-indicator';
 import ItemPreview from './item-preview.vue';
 
 type ChangeEvent =
@@ -55,6 +57,7 @@ const props = withDefaults(
 		enableSelect: boolean;
 		customFilter: Filter;
 		itemsMoved: (string | number)[];
+		comparison?: ComparisonContext;
 	}>(),
 	{
 		disabled: false,
@@ -93,6 +96,62 @@ const query = computed<RelationQueryMultiple>(() => ({
 
 const { displayItems, loading, create, update, remove, select, cleanItem, isLocalItem, getItemEdits } =
 	useRelationMultiple(value, query, relationInfo, primaryKey, version);
+
+const { itemHasChanges: baseItemHasChanges } = useGranularIndicator(
+	toRef(props, 'comparison'),
+	toRef(props, 'field'),
+	relationInfo,
+);
+
+const itemHasChanges = (item: DisplayItem) =>
+	baseItemHasChanges(item, {
+		pkFieldAccessor: (item: DisplayItem) => item[relationInfo.value?.relatedPrimaryKeyField.field || 'id'],
+	});
+
+// Check if item has changes OR any of its descendants have changes
+const itemHasChangesOrDescendantChanges = (item: DisplayItem): boolean => {
+	const hasDirectChanges = itemHasChanges(item);
+
+	if (hasDirectChanges) {
+		return true;
+	}
+
+	const itemField = item[field.value];
+
+	if (itemField && typeof itemField === 'object' && !Array.isArray(itemField)) {
+		const changesItem = itemField as ChangesItem;
+
+		// Check all items in create, update, and delete arrays
+		const allItems = [...(changesItem.create || []), ...(changesItem.update || []), ...(changesItem.delete || [])];
+
+		if (changesItem.delete && changesItem.delete.length > 0) {
+			const changedIds = props.comparison?.relationalDetails?.[field.value];
+
+			if (changedIds && changedIds.some((id) => changesItem.delete!.includes(String(id)))) {
+				return true;
+			}
+		}
+
+		// For create and update items, recursively check if they have changes
+		for (const childItem of allItems) {
+			if (typeof childItem === 'object' && childItem !== null) {
+				const childHasChanges = baseItemHasChanges(childItem, {
+					pkFieldAccessor: (item: DisplayItem) => item[relationInfo.value?.relatedPrimaryKeyField.field || 'id'],
+				});
+
+				if (childHasChanges) {
+					return true;
+				}
+
+				if (itemHasChangesOrDescendantChanges(childItem)) {
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
+};
 
 const selectDrawer = ref(false);
 
@@ -217,6 +276,7 @@ function stageEdits(item: Record<string, any>) {
 					:open="open[element[relationInfo.relatedPrimaryKeyField.field]] ?? false"
 					:deleted="element.$type === 'deleted'"
 					:is-local-item="isLocalItem(element)"
+					:has-changes="itemHasChangesOrDescendantChanges(element)"
 					@update:open="open[element[relationInfo.relatedPrimaryKeyField.field]] = $event"
 					@input="stageEdits"
 					@deselect="remove(element)"
@@ -235,6 +295,8 @@ function stageEdits(item: Record<string, any>) {
 					:relation-info="relationInfo"
 					:primary-key="element[relationInfo.relatedPrimaryKeyField.field]"
 					:items-moved="itemsMoved"
+					:comparison="comparison"
+					:version
 					@update:model-value="updateModelValue($event, index)"
 				/>
 			</v-list-item>

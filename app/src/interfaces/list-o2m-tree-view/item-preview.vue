@@ -15,6 +15,7 @@ const props = withDefaults(
 		open?: boolean;
 		deleted: boolean;
 		isLocalItem: boolean;
+		hasChanges?: boolean;
 	}>(),
 	{
 		disabled: false,
@@ -28,7 +29,7 @@ const editActive = ref(false);
 </script>
 
 <template>
-	<div class="preview" :class="{ open, deleted }">
+	<div class="preview" :class="{ open, deleted, 'diff-indicator': hasChanges }">
 		<v-icon
 			v-if="relationInfo.relatedPrimaryKeyField.field in item"
 			:name="props.open ? 'expand_more' : 'chevron_right'"
@@ -73,6 +74,20 @@ const editActive = ref(false);
 
 	.spacer {
 		flex-grow: 1;
+	}
+
+	&.diff-indicator {
+		position: relative;
+
+		&::before {
+			content: '';
+			position: absolute;
+			inset-block: 0;
+			inset-inline-start: -1px;
+			inline-size: 4px;
+			background-color: var(--comparison-indicator--color);
+			border-radius: 2px;
+		}
 	}
 
 	.row &.deleted {
