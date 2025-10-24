@@ -90,7 +90,7 @@ router.post(
 	asyncHandler(async (req, _res, next) => {
 		const serverService = new ServerService({ schema: req.schema });
 
-		if (await serverService.setupComplete()) {
+		if (await serverService.isSetupCompleted()) {
 			throw new ForbiddenError();
 		}
 

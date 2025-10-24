@@ -34,7 +34,7 @@ export class ServerService {
 		this.settingsService = new SettingsService({ knex: this.knex, schema: this.schema });
 	}
 
-	async setupComplete(): Promise<boolean> {
+	async isSetupCompleted(): Promise<boolean> {
 		return Boolean(await this.knex('directus_users').first());
 	}
 
@@ -68,7 +68,7 @@ export class ServerService {
 
 		info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
 
-		info['setup_complete'] = await this.setupComplete();
+		info['setup_complete'] = await this.isSetupCompleted();
 
 		if (this.accountability?.user) {
 			if (env['RATE_LIMITER_ENABLED']) {
