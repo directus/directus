@@ -4,15 +4,16 @@ import type { Revision } from '@/types/revisions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 import type { ContentVersion, PrimaryKey, User } from '@directus/types';
+import { getEndpoint } from '@directus/utils';
 import {
 	toggleFieldInSelection,
 	toggleAllFields,
 	areAllFieldsSelected,
 	areSomeFieldsSelected,
 	normalizeComparisonData as normalizeComparisonDataUtil,
-	copySpecialFieldsFromBaseToIncoming,
+	applyValuesToSpecialFields,
+	getRevisionFields,
 	replaceArraysInMergeCustomizer,
-	getItemEndpoint,
 	type ComparisonData,
 	type VersionComparisonResponse,
 	type RevisionComparisonResponse,
@@ -380,7 +381,8 @@ export function useComparison(options: UseComparisonOptions) {
 	}
 
 	async function fetchMainVersion(collection: string, item: PrimaryKey): Promise<Record<string, any>> {
-		const itemEndpoint = getItemEndpoint(collection, item);
+		const endpoint = getEndpoint(collection);
+		const itemEndpoint = `${endpoint}/${item}`;
 
 		try {
 			const itemResponse = await api.get(itemEndpoint);
@@ -398,8 +400,13 @@ export function useComparison(options: UseComparisonOptions) {
 	): Promise<ComparisonData> {
 		let base: Record<string, any> = {};
 		let incoming = revision.data || {};
+		const activity = revision?.activity;
+		const revisionsList = revisions || [];
+		const revisionId = 'id' in revision ? revision.id : null;
 		const targetCollection = revision.collection || collection?.value || '';
 		const fields = fieldsStore.getFieldsForCollection(targetCollection);
+		const revisionDelta = Object.keys(revision.delta ?? {});
+		const revisionFields = new Set(getRevisionFields(revisionDelta, fields));
 
 		if (currentVersion) {
 			const versionComparison = await fetchVersionComparisonForRevision(currentVersion.id);
@@ -412,16 +419,9 @@ export function useComparison(options: UseComparisonOptions) {
 			incoming = mergeWith({}, defaultValues, incoming, replaceArraysInMergeCustomizer);
 		}
 
-		// Revisions don’t support relational fields, so we need to merge them into incoming. Primary Key and User Reference fields (user_created, user_updated) as well.
-		incoming = copySpecialFieldsFromBaseToIncoming(base, incoming, fields);
-
-		if ('activity' in revision && (revision as any)?.activity?.timestamp) {
-			incoming.date_updated = (revision as any).activity.timestamp;
-		}
-
-		const revisionsList = revisions || [];
-		const revisionId = 'id' in revision ? revision.id : null;
-		const revisionFields = new Set(Object.keys(revision.delta ?? {}));
+		// Revisions do not support relational fields. Therefore, we merge these fields, as well as the primary key, from the base into the incoming object. For date_created and user_created, we populate them from the activity if available.
+		const specialFields = applyValuesToSpecialFields(fields, incoming, base, activity);
+		incoming = mergeWith({}, incoming, specialFields, replaceArraysInMergeCustomizer);
 
 		return {
 			base,
