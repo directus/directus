@@ -8,7 +8,9 @@ export class SettingsService extends ItemsService {
 	}
 
 	async setOwner(data: OwnerInformation) {
-		sendOwnerReport(data);
+		const project_id = await this.knex.select('project_id').from('directus_settings').first();
+
+		sendOwnerReport({ ...data, project_id });
 
 		return await this.upsertSingleton({
 			project_owner: data.email,

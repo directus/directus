@@ -5,7 +5,7 @@ import { URL } from 'node:url';
 /**
  * Post owner report to the centralized intake server
  */
-export async function sendOwnerReport(report: OwnerInformation) {
+export async function sendOwnerReport(report: OwnerInformation & { project_id: string }) {
 	const env = useEnv();
 
 	const url = new URL('/v1/owner', env['TELEMETRY_URL'] as string);
