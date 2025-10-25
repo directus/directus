@@ -1,7 +1,7 @@
 import type { Item, Query } from '@directus/types';
 import { getEndpoint, moveInArray } from '@directus/utils';
 import axios from 'axios';
-import { isEqual, throttle } from 'lodash-es';
+import { debounce, isEqual } from 'lodash-es';
 import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
 import { computed, ref, toRef, unref, watch } from 'vue';
 import { useCollection } from './use-collection.js';
@@ -70,7 +70,9 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 	let loadingTimeout: NodeJS.Timeout | null = null;
 
-	const fetchItems = throttle(getItems, 500);
+	const fetchItems = debounce((shouldUpdateCount: boolean) => {
+		Promise.all([getItems(), shouldUpdateCount ? getItemCount() : Promise.resolve()]);
+	}, 350);
 
 	watch(
 		[collection, limit, sort, search, filter, fields, page, toRef(alias), toRef(deep)],
@@ -97,11 +99,11 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 				}
 			}
 
-			if (newCollection !== oldCollection || !isEqual(newFilter, oldFilter) || newSearch !== oldSearch) {
-				getItemCount();
-			}
+			// determine if the count needs to be updated based on changes to a collection, filter, or search
+			const shouldUpdateCount =
+				newCollection !== oldCollection || !isEqual(newFilter, oldFilter) || newSearch !== oldSearch;
 
-			fetchItems();
+			fetchItems(shouldUpdateCount);
 		},
 		{ deep: true, immediate: true },
 	);

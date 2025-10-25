@@ -82,6 +82,7 @@ export type FieldMeta = {
 	conditions: Condition[] | null;
 	validation: Filter | null;
 	validation_message: string | null;
+	searchable: boolean;
 	system?: true;
 };
 
