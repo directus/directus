@@ -99,7 +99,7 @@ const {
 const value = computed<unknown | unknown[]>({
 	get() {
 		if (!isVariableInputActive.value && ['_in', '_nin'].includes(comparator.value)) {
-			return [...(fieldValue.value as string[]).filter((val) => val !== null && val !== ''), null];
+			return [...(fieldValue.value as (string | number)[]).filter((val) => val !== null && val !== ''), null];
 		}
 
 		return fieldValue.value;
@@ -108,7 +108,7 @@ const value = computed<unknown | unknown[]>({
 		let value;
 
 		if (!isVariableInputActive.value && ['_in', '_nin'].includes(comparator.value)) {
-			value = (newVal as string[]).filter((val) => val !== null && val !== '').map((val) => val.trim());
+			value = (newVal as string[]).filter((val) => val !== null && val !== '').map((val) => typeof val === 'string' ? val.trim() : val);
 		} else {
 			value = newVal;
 		}
@@ -142,7 +142,7 @@ function handleCommaKeyPressed(index: number) {
 
 function handleCommaValuePasted(newValue: string) {
 	const newValueArray = [
-		...(value.value as string[]),
+		...(value.value as (string | number)[]),
 		...newValue.split(',').filter((val) => val !== null && val !== ''),
 	];
 
