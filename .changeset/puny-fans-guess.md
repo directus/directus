@@ -29,10 +29,11 @@
 '@directus/utils': patch
 '@directus/validation': patch
 '@directus/sdk': patch
-'tests-blackbox': patch
+'create-directus-extension': patch
+'create-directus-project': patch
 ---
 
-Updated the following dependencies:
+Updated/Removed the following dependencies 
 - Updated oracledb from 6.9.0 to 6.10.0
 - Updated p-limit from 7.1.1 to 7.2.0
 - Updated pino-pretty from 13.1.1 to 13.1.2
@@ -49,4 +50,4 @@ Updated the following dependencies:
 - Updated undici from 7.13.0 to 7.16.0
 - Updated unplugin-yaml from 3.0.4 to 3.0.6
 - Updated zod from 4.0.14 to 4.1.12
-- Updated esbuild-yaml from 3.0.3 to 3.0.4
+- Removed unused esbuild-yaml

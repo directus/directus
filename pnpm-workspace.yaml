@@ -165,7 +165,6 @@ catalog:
   encodeurl: 2.0.0
   esbuild: 0.25.11
   esbuild-plugin-replace: 1.4.0
-  esbuild-yaml: 3.0.4
   escape-string-regexp: 5.0.0
   eslint: 9.32.0
   eslint-config-prettier: 10.1.8
