@@ -224,6 +224,7 @@ function useComputedValues() {
 			:raw-editor-active="rawEditorActive"
 			:direction="direction"
 			:comparison="comparison"
+			:comparison-active="comparisonActive"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>

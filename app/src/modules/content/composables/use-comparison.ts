@@ -1,6 +1,6 @@
 import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
-import type { Revision } from '@/types/revisions';
+import type { Revision, RevisionPartial } from '@/types/revisions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 import type { ContentVersion, PrimaryKey, User } from '@directus/types';
@@ -10,7 +10,7 @@ import {
 	toggleAllFields,
 	areAllFieldsSelected,
 	areSomeFieldsSelected,
-	normalizeComparisonData as normalizeComparisonDataUtil,
+	getNormalizedComparisonData,
 	applyValuesToSpecialFields,
 	getRevisionFields,
 	replaceArraysInMergeCustomizer,
@@ -18,17 +18,19 @@ import {
 	type VersionComparisonResponse,
 	type RevisionComparisonResponse,
 	type NormalizedComparisonData,
+	type NormalizedUser,
 } from '../comparison-utils';
-import { mergeWith } from 'lodash';
+import { has, mergeWith } from 'lodash';
 import { computed, ref, watch, type Ref } from 'vue';
 
 interface UseComparisonOptions {
 	comparisonData: Ref<ComparisonData | null>;
-	collection?: Ref<string>;
+	collection: Ref<string>;
+	primaryKey: Ref<PrimaryKey>;
 }
 
 export function useComparison(options: UseComparisonOptions) {
-	const { comparisonData, collection } = options;
+	const { comparisonData, collection, primaryKey } = options;
 	const selectedComparisonFields = ref<string[]>([]);
 	const userUpdated = ref<User | null>(null);
 	const mainItemUserUpdated = ref<User | null>(null);
@@ -40,17 +42,13 @@ export function useComparison(options: UseComparisonOptions) {
 	const isVersionMode = computed(() => comparisonData.value?.comparisonType === 'version');
 	const isRevisionMode = computed(() => comparisonData.value?.comparisonType === 'revision');
 
-	const normalizedData = computed((): NormalizedComparisonData | null => {
+	const normalizedData = computed<NormalizedComparisonData | null>(() => {
 		if (!comparisonData.value) return null;
 
-		let fieldMetadata: Record<string, any> | undefined;
+		const collectionFields = fieldsStore.getFieldsForCollection(collection.value);
+		const fieldMetadata = Object.fromEntries(collectionFields.map((field) => [field.field, field]));
 
-		if (collection?.value) {
-			const collectionFields = fieldsStore.getFieldsForCollection(collection.value);
-			fieldMetadata = Object.fromEntries(collectionFields.map((field) => [field.field, field]));
-		}
-
-		return normalizeComparisonDataUtil(comparisonData.value, fieldMetadata);
+		return getNormalizedComparisonData(comparisonData.value, fieldMetadata);
 	});
 
 	const mainHash = computed(() => normalizedData.value?.mainHash ?? '');
@@ -76,90 +74,12 @@ export function useComparison(options: UseComparisonOptions) {
 	});
 
 	const baseDisplayName = computed(() => {
-		return normalizedData.value?.base?.displayName || 'Current';
+		return normalizedData.value?.base?.displayName || '';
 	});
 
 	const deltaDisplayName = computed(() => {
 		return normalizedData.value?.incoming?.displayName || '';
 	});
-
-	function debugComparison(label?: string) {
-		const normalized = normalizedData.value;
-
-		let mode = 'unknown';
-
-		if (isRevisionMode.value) {
-			mode = 'revision';
-		} else if (isVersionMode.value) {
-			mode = 'version';
-		}
-
-		const fields = fieldsWithDifferences.value || [];
-		const selected = selectedComparisonFields.value || [];
-
-		const header = label ? `Comparison Debug: ${label}` : 'Comparison Debug';
-
-		// eslint-disable-next-line no-console
-		console.groupCollapsed(header);
-
-		try {
-			// eslint-disable-next-line no-console
-			console.info('Mode:', mode);
-			// eslint-disable-next-line no-console
-			console.info('Available fields with differences (%d):', fields.length, fields);
-			// eslint-disable-next-line no-console
-			console.info('Selected fields (%d):', selected.length, selected);
-
-			if (normalized) {
-				// eslint-disable-next-line no-console
-				console.info('Base item:', normalized.base);
-				// eslint-disable-next-line no-console
-				console.info('Incoming item:', normalized.incoming);
-			} else {
-				// eslint-disable-next-line no-console
-				console.warn('No normalized data available');
-			}
-
-			if (comparisonData.value?.comparisonType === 'revision') {
-				const selectedId = normalized?.initialSelectedDeltaId ?? null;
-
-				const revisions = (comparisonData.value.selectableDeltas as Revision[]) || [];
-
-				const matching =
-					typeof selectedId !== 'undefined' && selectedId !== null
-						? revisions.find((r) => r && 'id' in r && r.id === selectedId)
-						: revisions[0];
-
-				if (matching) {
-					// eslint-disable-next-line no-console
-					console.info('Revision (from drawer list):', matching);
-				} else {
-					// eslint-disable-next-line no-console
-					console.warn('No matching revision found for selectedId:', selectedId);
-				}
-
-				// Provide a quick diff map for changed fields
-
-				const diffPreview: Record<string, { base: any; incoming: any }> = {};
-
-				for (const key of fields) {
-					diffPreview[key] = {
-						base: (comparisonData.value.base as any)?.[key],
-						incoming: (comparisonData.value.incoming as any)?.[key],
-					};
-				}
-
-				// eslint-disable-next-line no-console
-				console.info('Field diffs preview:', diffPreview);
-			}
-		} catch (error) {
-			// eslint-disable-next-line no-console
-			console.error('Error in debugComparison:', error);
-		} finally {
-			// eslint-disable-next-line no-console
-			console.groupEnd();
-		}
-	}
 
 	function toggleSelectAll() {
 		selectedComparisonFields.value = toggleAllFields(
@@ -185,46 +105,39 @@ export function useComparison(options: UseComparisonOptions) {
 		{ immediate: true },
 	);
 
-	async function fetchUserUpdated() {
-		const normalized = normalizedData.value;
-		if (!normalized?.incoming?.user?.id) return;
+	async function fetchUserDetails(user: NormalizedUser | null | undefined, loading: Ref<boolean>) {
+		if (!user) return;
 
-		userLoading.value = true;
+		const fields = ['id', 'first_name', 'last_name', 'email'];
+
+		if (fields.every((field) => has(user, field))) {
+			return user as unknown as User;
+		}
+
+		const userId = user.id ?? user;
+		if (typeof userId !== 'string') return;
+
+		loading.value = true;
 
 		try {
-			const response = await api.get(`/users/${normalized.incoming.user.id}`, {
-				params: {
-					fields: ['id', 'first_name', 'last_name', 'email'],
-				},
+			const response = await api.get(`/users/${userId}`, {
+				params: { fields },
 			});
 
-			userUpdated.value = response.data.data;
+			return response.data.data;
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
-			userLoading.value = false;
+			loading.value = false;
 		}
 	}
 
+	async function fetchUserUpdated() {
+		userUpdated.value = (await fetchUserDetails(normalizedData.value?.incoming?.user, userLoading)) ?? null;
+	}
+
 	async function fetchMainItemUserUpdated() {
-		const normalized = normalizedData.value;
-		if (!normalized?.base.user?.id) return;
-
-		mainItemUserLoading.value = true;
-
-		try {
-			const response = await api.get(`/users/${normalized.base.user.id}`, {
-				params: {
-					fields: ['id', 'first_name', 'last_name', 'email'],
-				},
-			});
-
-			mainItemUserUpdated.value = response.data.data;
-		} catch (error) {
-			unexpectedError(error);
-		} finally {
-			mainItemUserLoading.value = false;
-		}
+		mainItemUserUpdated.value = (await fetchUserDetails(normalizedData.value?.base?.user, mainItemUserLoading)) ?? null;
 	}
 
 	async function normalizeComparisonData(
@@ -348,15 +261,46 @@ export function useComparison(options: UseComparisonOptions) {
 			const base = data.main || {};
 			const incomingMerged = mergeWith({}, base, data.current || {}, replaceArraysInMergeCustomizer);
 
+			const mainVersionMeta = await fetchLatestRevisionActivityOfMainVersion(collection.value, primaryKey.value);
+
 			return {
 				base,
 				incoming: incomingMerged,
+				mainVersionMeta,
 				selectableDeltas: versions ?? (version ? [version] : []),
 				comparisonType: 'version' as const,
 				outdated: data.outdated,
 				mainHash: data.mainHash,
 				initialSelectedDeltaId: version?.id,
 			};
+		} catch (error) {
+			unexpectedError(error);
+			throw error;
+		}
+	}
+
+	async function fetchLatestRevisionActivityOfMainVersion(collection: string, item: PrimaryKey) {
+		try {
+			type RevisionResponse = { data: Pick<RevisionPartial, 'activity'>[] };
+
+			const response = await api.get<RevisionResponse>('/revisions', {
+				params: {
+					filter: {
+						_and: [{ collection: { _eq: collection } }, { item: { _eq: item } }, { version: { _null: true } }],
+					},
+					sort: '-id',
+					limit: 1,
+					fields: [
+						'activity.timestamp',
+						'activity.user.id',
+						'activity.user.email',
+						'activity.user.first_name',
+						'activity.user.last_name',
+					],
+				},
+			});
+
+			return response.data.data?.[0]?.activity as ComparisonData['mainVersionMeta'] | undefined;
 		} catch (error) {
 			unexpectedError(error);
 			throw error;
@@ -403,7 +347,7 @@ export function useComparison(options: UseComparisonOptions) {
 		const activity = revision?.activity;
 		const revisionsList = revisions || [];
 		const revisionId = 'id' in revision ? revision.id : null;
-		const targetCollection = revision.collection || collection?.value || '';
+		const targetCollection = revision.collection || collection.value || '';
 		const fields = fieldsStore.getFieldsForCollection(targetCollection);
 		const revisionDelta = Object.keys(revision.delta ?? {});
 		const revisionFields = new Set(getRevisionFields(revisionDelta, fields));
@@ -452,7 +396,6 @@ export function useComparison(options: UseComparisonOptions) {
 		baseDisplayName,
 		deltaDisplayName,
 		normalizedData,
-		debugComparison,
 		toggleSelectAll,
 		toggleComparisonField,
 		fetchUserUpdated,

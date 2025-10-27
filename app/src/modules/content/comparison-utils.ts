@@ -1,5 +1,6 @@
 import { i18n } from '@/lang';
 import type { Revision } from '@/types/revisions';
+import type { Activity } from '@/types/activity';
 import { RELATIONAL_TYPES } from '@directus/constants';
 import formatTitle from '@directus/format-title';
 import type { ContentVersion, Field, RelationalType, User } from '@directus/types';
@@ -8,6 +9,7 @@ import { isNil, isEqual } from 'lodash';
 export type ComparisonData = {
 	base: Record<string, any>;
 	incoming: Record<string, any>;
+	mainVersionMeta?: Pick<Activity, 'timestamp' | 'user'>;
 	selectableDeltas?: Revision[] | ContentVersion[];
 	revisionFields?: Set<string>;
 	comparisonType: 'version' | 'revision';
@@ -17,7 +19,7 @@ export type ComparisonData = {
 	initialSelectedDeltaId?: number | string;
 };
 
-type NormalizedUser = {
+export type NormalizedUser = {
 	id: string;
 	firstName: string | null;
 	lastName: string | null;
@@ -297,7 +299,16 @@ function normalizeDate(dateString: string | null | undefined): NormalizedDate {
 	};
 }
 
-function normalizeVersionItem(version: ContentVersion): NormalizedItem {
+function normalizeVersionItem(version: ContentVersion | undefined): NormalizedItem {
+	if (!version) {
+		return {
+			id: undefined,
+			displayName: i18n.global.t('unknown_version'),
+			date: normalizeDate(null),
+			user: normalizeUser(null),
+		};
+	}
+
 	return {
 		id: version.id,
 		displayName: getVersionDisplayName(version),
@@ -308,44 +319,63 @@ function normalizeVersionItem(version: ContentVersion): NormalizedItem {
 	};
 }
 
-function normalizeRevisionItem(revision: Revision): NormalizedItem {
-	const user = revision.activity?.user;
-	const timestamp = revision.activity?.timestamp;
+function normalizeRevisionItem(revision: Revision | undefined): NormalizedItem {
+	const { date, user } = getNormalizedDateAndUser(revision);
+
+	if (!revision) {
+		return {
+			id: undefined,
+			displayName: i18n.global.t('unknown_revision'),
+			date,
+			user,
+		};
+	}
 
 	return {
 		id: revision.id,
 		displayName: i18n.global.t('item_revision'),
-		date: normalizeDate(timestamp),
-		user: normalizeUser(user as any),
+		date,
+		user,
 		collection: revision.collection,
 		item: revision.item,
 	};
 }
 
-function normalizeMainItem(mainData: Record<string, any>): NormalizedItem {
+function getNormalizedDateAndUser(revision: Revision | null | undefined): Pick<NormalizedItem, 'date' | 'user'> {
+	const user = revision?.activity?.user as User | string | null | undefined;
+	const timestamp = revision?.activity?.timestamp;
+
 	return {
-		id: 'base',
-		displayName: i18n.global.t('main_version'),
-		date: normalizeDate(mainData.date_updated),
-		user: normalizeUser(mainData.user_updated || mainData.user_created),
+		date: normalizeDate(timestamp),
+		user: normalizeUser(user),
 	};
 }
 
-export function normalizeComparisonData(
+export function getNormalizedComparisonData(
 	comparisonData: ComparisonData,
-	fieldMetadata?: Record<string, any>,
+	fieldMetadata: Record<string, any>,
 ): NormalizedComparisonData {
 	let base: NormalizedItem;
 
-	if (comparisonData.comparisonType === 'revision' && comparisonData.currentVersion) {
+	if (comparisonData.comparisonType === 'revision') {
+		const revisions = (comparisonData.selectableDeltas as Revision[]) || [];
+		const latestRevision = revisions?.[0] ?? null;
+		const { date, user } = getNormalizedDateAndUser(latestRevision);
+
+		const displayName = comparisonData.currentVersion
+			? getVersionDisplayName(comparisonData.currentVersion)
+			: i18n.global.t('main_version');
+
+		base = { id: 'base', displayName, date, user };
+	} else {
 		base = {
 			id: 'base',
-			displayName: getVersionDisplayName(comparisonData.currentVersion),
-			date: normalizeDate(comparisonData.base.date_updated),
-			user: normalizeUser(comparisonData.base.user_updated || comparisonData.base.user_created),
+			displayName: i18n.global.t('main_version'),
+			date: normalizeDate(comparisonData.mainVersionMeta?.timestamp || comparisonData.base.date_updated),
+			user: normalizeUser(
+				comparisonData.mainVersionMeta?.user || comparisonData.base.user_updated || comparisonData.base.user_created,
+			),
 		};
-	} else {
-		base = normalizeMainItem(comparisonData.base);
 	}
 
 	let incoming: NormalizedItem;
@@ -355,27 +385,13 @@ export function normalizeComparisonData(
 		const selectedId = (comparisonData.initialSelectedDeltaId as string | undefined) || undefined;
 		const selected = selectedId ? versions.find((v) => v.id === selectedId) : versions[0];
 
-		incoming = selected
-			? normalizeVersionItem(selected)
-			: {
-					id: undefined,
-					displayName: i18n.global.t('unknown_version'),
-					date: { raw: null, formatted: null, dateObject: null },
-					user: null,
-				};
+		incoming = normalizeVersionItem(selected);
 	} else {
 		const revisions = (comparisonData.selectableDeltas as Revision[]) || [];
 		const selectedId = (comparisonData.initialSelectedDeltaId as number | undefined) || undefined;
 		const selected = typeof selectedId !== 'undefined' ? revisions.find((r) => r.id === selectedId) : revisions[0];
 
-		incoming = selected
-			? normalizeRevisionItem(selected)
-			: {
-					id: undefined,
-					displayName: i18n.global.t('unknown_revision'),
-					date: { raw: null, formatted: null, dateObject: null },
-					user: null,
-				};
+		incoming = normalizeRevisionItem(selected);
 	}
 
 	const selectableDeltas: NormalizedItem[] = (comparisonData.selectableDeltas || []).map((item) => {
