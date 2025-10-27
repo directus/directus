@@ -60,11 +60,9 @@ type CapturedErrorData = {
 };
 
 export function createErrorTracker() {
-	let forbiddenError: DirectusError | undefined;
+	let genericError: DirectusError | undefined;
 	// For errors with field / type (joi validation or DB with field)
 	const fieldErrors: Map<ErrorCode, Map<string, CapturedErrorData>> = new Map();
-	// For errors without field (DB errors like SQLite FK)
-	const genericErrors: Map<ErrorCode, CapturedErrorData> = new Map();
 	let capturedErrorCount = 0;
 	let isLimitReached = false;
 
@@ -114,7 +112,7 @@ export function createErrorTracker() {
 
 	function addCapturedError(err: any, rowNumber: number) {
 		if (err.code === ErrorCode.Forbidden) {
-			forbiddenError = err;
+			genericError = err;
 
 			return;
 		}
@@ -151,14 +149,7 @@ export function createErrorTracker() {
 				err.code = ErrorCode.Internal;
 			}
 
-			if (!genericErrors.has(err.code)) {
-				genericErrors.set(err.code, {
-					message: err.message,
-					rowNumbers: [],
-				});
-			}
-
-			genericErrors.get(err.code)!.rowNumbers.push(rowNumber);
+			genericError = err;
 		}
 
 		capturedErrorCount++;
@@ -168,16 +159,16 @@ export function createErrorTracker() {
 		}
 	}
 
-	function hasForbiddenError() {
-		return forbiddenError !== undefined;
+	function hasGenericError() {
+		return genericError !== undefined;
 	}
 
 	function buildFinalErrors() {
-		if (hasForbiddenError()) {
-			return [forbiddenError];
+		if (genericError) {
+			return [genericError];
 		}
 
-		const fieldErrs = Array.from(fieldErrors.entries()).flatMap(([code, fieldMap]) =>
+		return Array.from(fieldErrors.entries()).flatMap(([code, fieldMap]) =>
 			Array.from(fieldMap.entries()).map(([compositeKey, errorData]) => {
 				const parts = compositeKey.split('|');
 				const field = parts[0];
@@ -204,25 +195,16 @@ export function createErrorTracker() {
 					rows: convertToRanges(errorData.rowNumbers),
 				});
 			}),
-		);
-
-		const genericErrs = Array.from(genericErrors.entries()).map(([code, errorData]) => {
-			const ErrorClass = createError<any>(code, errorData.message, 400);
-			return new ErrorClass({
-				rows: convertToRanges(errorData.rowNumbers),
-			});
-		});
-
-		return [...fieldErrs, ...genericErrs];
+		)
 	}
 
 	return {
 		addCapturedError,
 		buildFinalErrors,
 		getCount: () => capturedErrorCount,
-		hasErrors: () => capturedErrorCount > 0 || hasForbiddenError(),
-		shouldStop: () => isLimitReached || hasForbiddenError(),
-		hasForbiddenError,
+		hasErrors: () => capturedErrorCount > 0 || hasGenericError(),
+		shouldStop: () => isLimitReached || hasGenericError(),
+		hasGenericError,
 	};
 }
 

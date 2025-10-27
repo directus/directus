@@ -302,9 +302,7 @@ function useUpload() {
 					type: 'error',
 				});
 
-				if (code === ErrorCode.Internal) {
 					unexpectedError(error);
-				}
 			}
 		} finally {
 			uploading.value = false;
