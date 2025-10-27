@@ -446,7 +446,11 @@ export class ImportService {
 								})
 								.on('end', () => {
 									// In case of empty CSV file
-									if (!saveQueue.started) return resolve();
+									if (!saveQueue.started) {
+										cleanup(false);
+
+										return resolve();
+									}
 
 									saveQueue.drain(() => {
 										if (!errorTracker.shouldStop()) cleanup(false);
