@@ -1,13 +1,13 @@
 import { defineInterface } from '@directus/extensions';
-import InterfaceSuperHeader from './super-header.vue';
+import InterfaceHeader from './header.vue';
 import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
-	id: 'super-header',
-	name: '$t:interfaces.super-header.super-header',
-	description: '$t:interfaces.super-header.description',
+	id: 'header',
+	name: '$t:interfaces.header.header',
+	description: '$t:interfaces.header.description',
 	icon: 'exercise',
-	component: InterfaceSuperHeader,
+	component: InterfaceHeader,
 	types: ['alias'],
 	localTypes: ['presentation'],
 	group: 'presentation',
@@ -58,7 +58,7 @@ export default defineInterface({
 		},
 		{
 			field: 'help',
-			name: '$t:interfaces.super-header.help',
+			name: '$t:interfaces.header.help',
 			type: 'text',
 			meta: {
 				width: 'full',
@@ -67,7 +67,7 @@ export default defineInterface({
 		},
 		{
 			field: 'helpDisplayMode',
-			name: '$t:interfaces.super-header.help_display_mode',
+			name: '$t:interfaces.header.help_display_mode',
 			type: 'string',
 			schema: {
 				default_value: 'inline',
@@ -85,7 +85,7 @@ export default defineInterface({
 		},
 		{
 			field: 'enableHelpTranslations',
-			name: '$t:interfaces.super-header.enable_help_translations',
+			name: '$t:interfaces.header.enable_help_translations',
 			type: 'boolean',
 			meta: {
 				width: 'half',
@@ -96,7 +96,7 @@ export default defineInterface({
 		},
 		{
 			field: 'helpTranslationsString',
-			name: '$t:interfaces.super-header.help_translations_string',
+			name: '$t:interfaces.header.help_translations_string',
 			type: 'json',
 			meta: {
 				width: 'full',
@@ -116,7 +116,7 @@ export default defineInterface({
 		},
 		{
 			field: 'links',
-			name: '$t:interfaces.super-header.links',
+			name: '$t:interfaces.header.links',
 			type: 'json',
 			meta: {
 				interface: 'list',
@@ -169,7 +169,7 @@ export default defineInterface({
 						{
 							field: 'actionType',
 							type: 'string',
-							name: '$t:interfaces.super-header.action_type',
+							name: '$t:interfaces.header.action_type',
 							schema: {
 								default_value: 'url',
 							},
