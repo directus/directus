@@ -960,6 +960,7 @@ flows: 플로우
 flow: 플로우
 select_a_flow: 플로우 선택
 run_flow_confirm: 이 규칙을 실행하시겠습니까?
+run_flow_anyway: 어쨌든 플로우를 실행
 run_flow_on_current_collection: 현재 컬렉션에서 플로우 실행
 run_flow_on_current: 현재 항목에서 플로우 실행
 run_flow_on_current_edited_confirm: 이 항목은 이 플로우에 의해 업데이트될 수 있습니다. 실행하시겠습니까?
