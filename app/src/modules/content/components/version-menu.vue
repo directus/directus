@@ -35,7 +35,10 @@ const { collection, primaryKey, hasEdits, currentVersion, versions } = toRefs(pr
 const isComparisonModalOpen = ref(false);
 const comparisonData = ref<ComparisonData | null>(null);
 
-const { normalizeComparisonData } = useComparison({ comparisonData });
+const { normalizeComparisonData } = useComparison({
+	comparisonData,
+	collection,
+});
 
 const {
 	createAllowed: createVersionsAllowed,

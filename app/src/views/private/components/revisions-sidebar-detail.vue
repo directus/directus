@@ -36,7 +36,7 @@ const selectedRevision = ref<number | undefined>(undefined);
 const comparisonData = ref<ComparisonData | null>(null);
 const page = ref<number>(1);
 
-const { normalizeComparisonData } = useComparison({ comparisonData });
+const { normalizeComparisonData } = useComparison({ comparisonData, collection });
 
 const {
 	revisions,

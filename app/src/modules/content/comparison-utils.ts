@@ -351,7 +351,7 @@ function getNormalizedDateAndUser(revision: Revision | null | undefined): Pick<N
 
 export function normalizeComparisonData(
 	comparisonData: ComparisonData,
-	fieldMetadata?: Record<string, any>,
+	fieldMetadata: Record<string, any>,
 ): NormalizedComparisonData {
 	let base: NormalizedItem;
 

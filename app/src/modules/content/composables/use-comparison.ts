@@ -24,7 +24,7 @@ import { computed, ref, watch, type Ref } from 'vue';
 
 interface UseComparisonOptions {
 	comparisonData: Ref<ComparisonData | null>;
-	collection?: Ref<string>;
+	collection: Ref<string>;
 }
 
 export function useComparison(options: UseComparisonOptions) {
@@ -40,15 +40,11 @@ export function useComparison(options: UseComparisonOptions) {
 	const isVersionMode = computed(() => comparisonData.value?.comparisonType === 'version');
 	const isRevisionMode = computed(() => comparisonData.value?.comparisonType === 'revision');
 
-	const normalizedData = computed((): NormalizedComparisonData | null => {
+	const normalizedData = computed<NormalizedComparisonData | null>(() => {
 		if (!comparisonData.value) return null;
 
-		let fieldMetadata: Record<string, any> | undefined;
-
-		if (collection?.value) {
-			const collectionFields = fieldsStore.getFieldsForCollection(collection.value);
-			fieldMetadata = Object.fromEntries(collectionFields.map((field) => [field.field, field]));
-		}
+		const collectionFields = fieldsStore.getFieldsForCollection(collection.value);
+		const fieldMetadata = Object.fromEntries(collectionFields.map((field) => [field.field, field]));
 
 		return normalizeComparisonDataUtil(comparisonData.value, fieldMetadata);
 	});
@@ -325,7 +321,7 @@ export function useComparison(options: UseComparisonOptions) {
 		const activity = revision?.activity;
 		const revisionsList = revisions || [];
 		const revisionId = 'id' in revision ? revision.id : null;
-		const targetCollection = revision.collection || collection?.value || '';
+		const targetCollection = revision.collection || collection.value || '';
 		const fields = fieldsStore.getFieldsForCollection(targetCollection);
 		const revisionDelta = Object.keys(revision.delta ?? {});
 		const revisionFields = new Set(getRevisionFields(revisionDelta, fields));
