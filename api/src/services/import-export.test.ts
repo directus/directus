@@ -394,7 +394,6 @@ describe('createErrorTracker', () => {
 		expect(errors[1].extensions.valid).toBe(21);
 	});
 
-
 	test('converts consecutive rows to ranges', () => {
 		const tracker = createErrorTracker();
 
@@ -445,7 +444,7 @@ describe('createErrorTracker', () => {
 			code: 'INVALID_FOREIGN_KEY',
 			message: 'test',
 			extensions: {},
-		}
+		};
 
 		tracker.addCapturedError(
 			{
@@ -456,7 +455,7 @@ describe('createErrorTracker', () => {
 			1,
 		);
 
-		tracker.addCapturedError(nonFieldError, 2,);
+		tracker.addCapturedError(nonFieldError, 2);
 
 		expect(tracker.shouldStop()).toBe(true);
 		expect(tracker.hasGenericError()).toBe(true);
