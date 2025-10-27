@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ContentVersion } from '@directus/types';
+import type { ContentVersion, PrimaryKey } from '@directus/types';
 import api from '@/api';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import type { Revision } from '@/types/revisions';
@@ -16,7 +16,7 @@ interface Props {
 	active: boolean;
 	deleteVersionsAllowed: boolean;
 	collection: string;
-	primaryKey: string | number;
+	primaryKey: PrimaryKey;
 }
 
 const { t } = useI18n();
