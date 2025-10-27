@@ -10,7 +10,7 @@ import {
 	toggleAllFields,
 	areAllFieldsSelected,
 	areSomeFieldsSelected,
-	normalizeComparisonData as normalizeComparisonDataUtil,
+	getNormalizedComparisonData,
 	applyValuesToSpecialFields,
 	getRevisionFields,
 	replaceArraysInMergeCustomizer,
@@ -46,7 +46,7 @@ export function useComparison(options: UseComparisonOptions) {
 		const collectionFields = fieldsStore.getFieldsForCollection(collection.value);
 		const fieldMetadata = Object.fromEntries(collectionFields.map((field) => [field.field, field]));
 
-		return normalizeComparisonDataUtil(comparisonData.value, fieldMetadata);
+		return getNormalizedComparisonData(comparisonData.value, fieldMetadata);
 	});
 
 	const mainHash = computed(() => normalizedData.value?.mainHash ?? '');

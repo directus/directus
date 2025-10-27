@@ -349,7 +349,7 @@ function getNormalizedDateAndUser(revision: Revision | null | undefined): Pick<N
 	};
 }
 
-export function normalizeComparisonData(
+export function getNormalizedComparisonData(
 	comparisonData: ComparisonData,
 	fieldMetadata: Record<string, any>,
 ): NormalizedComparisonData {
