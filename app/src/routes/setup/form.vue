@@ -140,6 +140,10 @@ const fields = useFormFields(props.register, value);
 	}
 }
 
+.v-form {
+	--theme--form--row-gap: 32px;
+}
+
 h1 {
 	color: var(--theme--foreground-accent);
 	font-size: 40px;
@@ -157,7 +161,7 @@ p {
 }
 
 .v-notice {
-	margin-block: var(--theme--form--row-gap);
+	margin-block: 32px;
 }
 
 .v-checkbox {
