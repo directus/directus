@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useServerStore } from '@/stores/server';
+import { storeToRefs } from 'pinia';
 import { initialValues, useFormFields } from './form';
 import { SetupForm } from '@directus/types';
 
 const { t } = useI18n();
+
+const { info } = storeToRefs(useServerStore());
 
 const props = withDefaults(
 	defineProps<{
@@ -57,10 +61,61 @@ const fields = useFormFields(props.register, value);
 			:fields="fields"
 			disabled-menu
 		></v-form>
-		<v-notice><span v-md="t(skipLicense ? 'edit_license_notice' : 'setup_license_notice')"></span></v-notice>
+		<v-notice>
+			<span v-md="t('setup_license_notice')"></span>
+			<br />
+			<i18n-t keypath="setup_license_follow_up" tag="span">
+				<template #contactOurTeam>
+					<a
+						:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=contact_our_team_link`"
+						target="_blank"
+					>
+						{{ t('contact_our_team') }}
+					</a>
+				</template>
+			</i18n-t>
+			<span v-if="skipLicense">
+				<br />
+				<i18n-t v-if="skipLicense" keypath="setup_save_accept_license" tag="span">
+					<template #directusBsl>
+						<a
+							:href="`https://directus.io/bsl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=bsl_1.1_link`"
+							target="_blank"
+						>
+							{{ t('directus_bsl') }}
+						</a>
+					</template>
+					<template #privacyPolicy>
+						<a
+							:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=privacy_link`"
+							target="_blank"
+						>
+							{{ t('privacy_policy') }}
+						</a>
+					</template>
+				</i18n-t>
+			</span>
+		</v-notice>
 
 		<v-checkbox v-if="!skipLicense" v-model="license">
-			<span v-md="t('setup_accept_license')"></span>
+			<i18n-t keypath="setup_accept_license" tag="span">
+				<template #directusBsl>
+					<a
+						:href="`https://directus.io/bsl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=bsl_1.1_link`"
+						target="_blank"
+					>
+						{{ t('directus_bsl') }}
+					</a>
+				</template>
+				<template #privacyPolicy>
+					<a
+						:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=privacy_link`"
+						target="_blank"
+					>
+						{{ t('privacy_policy') }}
+					</a>
+				</template>
+			</i18n-t>
 		</v-checkbox>
 		<v-checkbox v-model="product_updates">
 			<span v-md="t('setup_marketing_emails')"></span>
