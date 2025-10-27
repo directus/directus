@@ -195,7 +195,7 @@ export function createErrorTracker() {
 					rows: convertToRanges(errorData.rowNumbers),
 				});
 			}),
-		)
+		);
 	}
 
 	return {

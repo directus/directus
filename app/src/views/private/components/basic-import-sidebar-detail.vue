@@ -97,7 +97,7 @@ function useUpload() {
 					type: 'error',
 				});
 
-					unexpectedError(error);
+				unexpectedError(error);
 			}
 		} finally {
 			uploading.value = false;
