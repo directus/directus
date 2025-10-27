@@ -22,7 +22,7 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		redirect: () => {
 			const serverStore = useServerStore();
 
-			if (serverStore.info.setupComplete) {
+			if (serverStore.info.setupCompleted) {
 				return '/login';
 			} else {
 				return '/setup';
@@ -36,7 +36,7 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		beforeEnter: async (_from, _to, next) => {
 			const serverStore = useServerStore();
 
-			if (serverStore.info.setupComplete) {
+			if (serverStore.info.setupCompleted) {
 				return next('/login');
 			}
 
@@ -146,7 +146,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		}
 	}
 
-	if (!serverStore.info.setupComplete) {
+	if (!serverStore.info.setupCompleted) {
 		if (to.fullPath === '/setup') return;
 		return '/setup';
 	}

@@ -32,7 +32,7 @@ vi.mock('@/stores/server', () => ({
 	useServerStore: vi.fn().mockReturnValue({
 		info: {
 			project: null,
-			setupComplete: true,
+			setupCompleted: true,
 		},
 		hydrate: vi.fn(),
 	}),

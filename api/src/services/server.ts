@@ -68,7 +68,7 @@ export class ServerService {
 
 		info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
 
-		info['setup_complete'] = await this.isSetupCompleted();
+		info['setupCompleted'] = await this.isSetupCompleted();
 
 		if (this.accountability?.user) {
 			if (env['RATE_LIMITER_ENABLED']) {
