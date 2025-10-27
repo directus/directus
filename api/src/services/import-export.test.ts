@@ -394,33 +394,6 @@ describe('createErrorTracker', () => {
 		expect(errors[1].extensions.valid).toBe(21);
 	});
 
-	test('handles generic DB errors without field', () => {
-		const tracker = createErrorTracker();
-		const code = 'INVALID_FOREIGN_KEY';
-
-		tracker.addCapturedError(
-			{
-				code,
-				message: 'test',
-			},
-			1,
-		);
-
-		tracker.addCapturedError(
-			{
-				code,
-				message: 'test',
-			},
-			2,
-		);
-
-		const errors: any[] = tracker.buildFinalErrors();
-
-		expect(errors).toHaveLength(1);
-		expect(errors[0].code).toBe(code);
-		expect(errors[0].extensions.rows).toHaveLength(1);
-		expect(errors[0].extensions.rows[0].rows).toEqual([1, 2]);
-	});
 
 	test('converts consecutive rows to ranges', () => {
 		const tracker = createErrorTracker();
@@ -458,10 +431,38 @@ describe('createErrorTracker', () => {
 				i,
 			);
 
-			if (tracker.isLimitReached()) break;
+			if (tracker.shouldStop()) break;
 		}
 
 		expect(tracker.getCount()).toBe(1000);
-		expect(tracker.isLimitReached()).toBe(true);
+		expect(tracker.shouldStop()).toBe(true);
+	});
+
+	test('stops immediately on error without field', () => {
+		const tracker = createErrorTracker();
+
+		const nonFieldError = {
+			code: 'INVALID_FOREIGN_KEY',
+			message: 'test',
+			extensions: {},
+		}
+
+		tracker.addCapturedError(
+			{
+				code: 'FAILED_VALIDATION',
+				message: 'validation failed',
+				extensions: { field: 'email', type: 'nnull' },
+			},
+			1,
+		);
+
+		tracker.addCapturedError(nonFieldError, 2,);
+
+		expect(tracker.shouldStop()).toBe(true);
+		expect(tracker.hasGenericError()).toBe(true);
+
+		const errors: any[] = tracker.buildFinalErrors();
+		expect(errors).toHaveLength(1);
+		expect(errors[0]).toBe(nonFieldError);
 	});
 });

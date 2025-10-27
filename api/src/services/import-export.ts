@@ -4,7 +4,6 @@ import {
 	ErrorCode,
 	ForbiddenError,
 	InvalidPayloadError,
-	isDirectusError,
 	ServiceUnavailableError,
 	UnsupportedMediaTypeError,
 } from '@directus/errors';
@@ -111,19 +110,13 @@ export function createErrorTracker() {
 	}
 
 	function addCapturedError(err: any, rowNumber: number) {
-		if (err.code === ErrorCode.Forbidden) {
-			genericError = err;
-
-			return;
-		}
-
 		const field = err.extensions?.field;
-		const type = err.extensions?.type;
-		const substring = err.extensions?.substring;
-		const valid = err.extensions?.valid;
-		const invalid = err.extensions?.invalid;
 
 		if (field) {
+			const type = err.extensions?.type;
+			const substring = err.extensions?.substring;
+			const valid = err.extensions?.valid;
+			const invalid = err.extensions?.invalid;
 			let key = type ? `${field}|${type}` : field;
 
 			if (substring !== undefined) key += `|substring:${substring}`;
@@ -145,10 +138,6 @@ export function createErrorTracker() {
 
 			errorsByCode.get(key)!.rowNumbers.push(rowNumber);
 		} else {
-			if (!isDirectusError(err)) {
-				err.code = ErrorCode.Internal;
-			}
-
 			genericError = err;
 		}
 
