@@ -1,6 +1,6 @@
 import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
-import type { Revision } from '@/types/revisions';
+import type { Revision, RevisionPartial } from '@/types/revisions';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 import type { ContentVersion, PrimaryKey, User } from '@directus/types';
@@ -25,10 +25,11 @@ import { computed, ref, watch, type Ref } from 'vue';
 interface UseComparisonOptions {
 	comparisonData: Ref<ComparisonData | null>;
 	collection: Ref<string>;
+	primaryKey: Ref<PrimaryKey>;
 }
 
 export function useComparison(options: UseComparisonOptions) {
-	const { comparisonData, collection } = options;
+	const { comparisonData, collection, primaryKey } = options;
 	const selectedComparisonFields = ref<string[]>([]);
 	const userUpdated = ref<User | null>(null);
 	const mainItemUserUpdated = ref<User | null>(null);
@@ -266,15 +267,46 @@ export function useComparison(options: UseComparisonOptions) {
 			const base = data.main || {};
 			const incomingMerged = mergeWith({}, base, data.current || {}, replaceArraysInMergeCustomizer);
 
+			const mainVersionMeta = await fetchLatestRevisionActivityOfMainVersion(collection.value, primaryKey.value);
+
 			return {
 				base,
 				incoming: incomingMerged,
+				mainVersionMeta,
 				selectableDeltas: versions ?? (version ? [version] : []),
 				comparisonType: 'version' as const,
 				outdated: data.outdated,
 				mainHash: data.mainHash,
 				initialSelectedDeltaId: version?.id,
 			};
+		} catch (error) {
+			unexpectedError(error);
+			throw error;
+		}
+	}
+
+	async function fetchLatestRevisionActivityOfMainVersion(collection: string, item: PrimaryKey) {
+		try {
+			type RevisionResponse = { data: Pick<RevisionPartial, 'activity'>[] };
+
+			const response = await api.get<RevisionResponse>('/revisions', {
+				params: {
+					filter: {
+						_and: [{ collection: { _eq: collection } }, { item: { _eq: item } }, { version: { _null: true } }],
+					},
+					sort: '-id',
+					limit: 1,
+					fields: [
+						'activity.timestamp',
+						'activity.user.id',
+						'activity.user.email',
+						'activity.user.first_name',
+						'activity.user.last_name',
+					],
+				},
+			});
+
+			return response.data.data?.[0]?.activity as ComparisonData['mainVersionMeta'] | undefined;
 		} catch (error) {
 			unexpectedError(error);
 			throw error;

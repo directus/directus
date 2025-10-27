@@ -38,6 +38,7 @@ const comparisonData = ref<ComparisonData | null>(null);
 const { normalizeComparisonData } = useComparison({
 	comparisonData,
 	collection,
+	primaryKey,
 });
 
 const {

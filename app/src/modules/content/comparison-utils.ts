@@ -1,5 +1,6 @@
 import { i18n } from '@/lang';
 import type { Revision } from '@/types/revisions';
+import type { Activity } from '@/types/activity';
 import { RELATIONAL_TYPES } from '@directus/constants';
 import formatTitle from '@directus/format-title';
 import type { ContentVersion, Field, RelationalType, User } from '@directus/types';
@@ -8,6 +9,7 @@ import { isNil, isEqual } from 'lodash';
 export type ComparisonData = {
 	base: Record<string, any>;
 	incoming: Record<string, any>;
+	mainVersionMeta?: Pick<Activity, 'timestamp' | 'user'>;
 	selectableDeltas?: Revision[] | ContentVersion[];
 	revisionFields?: Set<string>;
 	comparisonType: 'version' | 'revision';
@@ -369,8 +371,10 @@ export function getNormalizedComparisonData(
 		base = {
 			id: 'base',
 			displayName: i18n.global.t('main_version'),
-			date: normalizeDate(comparisonData.base.date_updated),
-			user: normalizeUser(comparisonData.base.user_updated || comparisonData.base.user_created),
+			date: normalizeDate(comparisonData.mainVersionMeta?.timestamp || comparisonData.base.date_updated),
+			user: normalizeUser(
+				comparisonData.mainVersionMeta?.user || comparisonData.base.user_updated || comparisonData.base.user_created,
+			),
 		};
 	}
 

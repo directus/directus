@@ -53,6 +53,7 @@ const {
 } = useComparison({
 	comparisonData,
 	collection,
+	primaryKey,
 });
 
 const modalLoading = ref(false);
