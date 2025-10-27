@@ -18,8 +18,9 @@ import {
 	type VersionComparisonResponse,
 	type RevisionComparisonResponse,
 	type NormalizedComparisonData,
+	type NormalizedUser,
 } from '../comparison-utils';
-import { mergeWith } from 'lodash';
+import { has, mergeWith } from 'lodash';
 import { computed, ref, watch, type Ref } from 'vue';
 
 interface UseComparisonOptions {
@@ -73,7 +74,7 @@ export function useComparison(options: UseComparisonOptions) {
 	});
 
 	const baseDisplayName = computed(() => {
-		return normalizedData.value?.base?.displayName || 'Current';
+		return normalizedData.value?.base?.displayName || '';
 	});
 
 	const deltaDisplayName = computed(() => {
@@ -104,46 +105,39 @@ export function useComparison(options: UseComparisonOptions) {
 		{ immediate: true },
 	);
 
-	async function fetchUserUpdated() {
-		const normalized = normalizedData.value;
-		if (!normalized?.incoming?.user?.id) return;
+	async function fetchUserDetails(user: NormalizedUser | null | undefined, loading: Ref<boolean>) {
+		if (!user) return;
 
-		userLoading.value = true;
+		const fields = ['id', 'first_name', 'last_name', 'email'];
+
+		if (fields.every((field) => has(user, field))) {
+			return user as unknown as User;
+		}
+
+		const userId = user.id ?? user;
+		if (typeof userId !== 'string') return;
+
+		loading.value = true;
 
 		try {
-			const response = await api.get(`/users/${normalized.incoming.user.id}`, {
-				params: {
-					fields: ['id', 'first_name', 'last_name', 'email'],
-				},
+			const response = await api.get(`/users/${userId}`, {
+				params: { fields },
 			});
 
-			userUpdated.value = response.data.data;
+			return response.data.data;
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
-			userLoading.value = false;
+			loading.value = false;
 		}
 	}
 
+	async function fetchUserUpdated() {
+		userUpdated.value = (await fetchUserDetails(normalizedData.value?.incoming?.user, userLoading)) ?? null;
+	}
+
 	async function fetchMainItemUserUpdated() {
-		const normalized = normalizedData.value;
-		if (!normalized?.base.user?.id) return;
-
-		mainItemUserLoading.value = true;
-
-		try {
-			const response = await api.get(`/users/${normalized.base.user.id}`, {
-				params: {
-					fields: ['id', 'first_name', 'last_name', 'email'],
-				},
-			});
-
-			mainItemUserUpdated.value = response.data.data;
-		} catch (error) {
-			unexpectedError(error);
-		} finally {
-			mainItemUserLoading.value = false;
-		}
+		mainItemUserUpdated.value = (await fetchUserDetails(normalizedData.value?.base?.user, mainItemUserLoading)) ?? null;
 	}
 
 	async function normalizeComparisonData(

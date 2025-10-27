@@ -19,7 +19,7 @@ export type ComparisonData = {
 	initialSelectedDeltaId?: number | string;
 };
 
-type NormalizedUser = {
+export type NormalizedUser = {
 	id: string;
 	firstName: string | null;
 	lastName: string | null;
