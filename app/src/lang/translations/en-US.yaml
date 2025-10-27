@@ -44,9 +44,9 @@ owner_email: Owner Email
 email_address: Email Address
 organization_name: Organization Name
 how_do_you_use_directus: What are you using Directus for?
-personal: Personal / Learning
-commercial: Business / Commercial
-community: Open Source / Community
+usage_personal: Personal / Learning
+usage_commercial: Business / Commercial
+usage_community: Open Source / Community
 identifier: Identifier
 avatar: Avatar
 application: Application

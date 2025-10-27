@@ -95,9 +95,9 @@ export function useFormFields(
 							interface: 'select-dropdown',
 							options: {
 								items: [
-									{ icon: 'account_circle', value: 'personal', text: t('personal') },
-									{ icon: 'domain', value: 'commercial', text: t('commercial') },
-									{ icon: 'groups', value: 'community', text: t('community') },
+									{ icon: 'account_circle', value: 'personal', text: t('usage_personal') },
+									{ icon: 'domain', value: 'commercial', text: t('usage_commercial') },
+									{ icon: 'groups', value: 'community', text: t('usage_community') },
 								],
 							},
 							width: 'full',
