@@ -120,6 +120,7 @@
     - title
     - description
     - tags
+    - provider
     - preferences_divider
     - avatar
     - language
