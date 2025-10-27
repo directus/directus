@@ -296,11 +296,6 @@ function useUpload() {
 				errorDialogRows.value = errors;
 				errorDialogActive.value = true;
 			} else {
-				notify({
-					title: te(`errors.${code}`) ? t(`errors.${code}`) : t('import_data_error'),
-					type: 'error',
-				});
-
 				unexpectedError(error);
 			}
 		} finally {
