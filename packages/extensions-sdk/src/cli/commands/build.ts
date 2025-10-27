@@ -541,16 +541,20 @@ function getRollupOptions({
 			// @ts-ignore - rollup-plugin-styler@2.0.0 types not yet compatible with Rollup 4.52+ (missing 'environment' property). Remove cast when plugin is updated.
 			mode === 'browser' ? (styles() as Plugin) : null,
 			...plugins,
-			nodeResolve({ browser: mode === 'browser', preferBuiltins: mode === 'node' }),
+			nodeResolve({
+				browser: mode === 'browser',
+				exportConditions: mode === 'node' ? ['node'] : [],
+				preferBuiltins: mode === 'node',
+			}),
 			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
 			json(),
 			mode === 'browser'
 				? replace({
-						values: {
-							'process.env.NODE_ENV': JSON.stringify('production'),
-						},
-						preventAssignment: true,
-					})
+					values: {
+						'process.env.NODE_ENV': JSON.stringify('production'),
+					},
+					preventAssignment: true,
+				})
 				: null,
 			minify ? terser() : null,
 		].filter(Boolean),
@@ -594,9 +598,8 @@ function getRollupOutputOptions({
 function formatRollupError(error: RollupError): string {
 	let message = '';
 
-	message += `${chalk.bold.red(`[${error.name}]`)} ${error.message}${
-		error.plugin ? ` (plugin ${error.plugin})` : ''
-	}\n`;
+	message += `${chalk.bold.red(`[${error.name}]`)} ${error.message}${error.plugin ? ` (plugin ${error.plugin})` : ''
+		}\n`;
 
 	if (error.url) {
 		message += '\n' + chalk.green(error.url);
