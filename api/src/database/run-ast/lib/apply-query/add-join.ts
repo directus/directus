@@ -5,7 +5,7 @@ import { clone } from 'lodash-es';
 import type { AliasMap } from '../../../../utils/get-column-path.js';
 import { getRelationInfo } from '../../../../utils/get-relation-info.js';
 import { getHelpers } from '../../../helpers/index.js';
-import { generateAlias } from './index.js';
+import { generateJoinAlias } from '../../utils/generate-alias.js';
 
 /**
  * Apply a given filter object to the Knex QueryBuilder instance.
@@ -81,7 +81,7 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex }:
 			: aliasMap[pathParts[0]!]?.alias;
 
 		if (!existingAlias) {
-			const alias = generateAlias();
+			const alias = generateJoinAlias(parentCollection, pathParts, relationType, parentFields);
 			const aliasKey = parentFields ? `${parentFields}.${pathParts[0]}` : pathParts[0]!;
 			const aliasedParentCollection = aliasMap[parentFields ?? '']?.alias || parentCollection;
 
