@@ -4,7 +4,7 @@ import { render } from 'micromustache';
 import { computed, inject, ref, useAttrs, watch } from 'vue';
 import api from '@/api';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
-import { injectRunManualFlow } from '@/composables/use-flows';
+import { injectRunManualFlow, ManualFlow } from '@/composables/use-flows';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -130,6 +130,7 @@ const buttonProps = computed(() =>
 			secondary: link.type !== 'primary',
 			icon: !link.label,
 			disabled: (link.actionType === 'flow' && attrs['batch-mode']) || props.disabled,
+			loading: link.flow && loadingFlows.value.includes(link.flow),
 		};
 
 		if (link.actionType === 'url' && link.href) {
@@ -141,7 +142,7 @@ const buttonProps = computed(() =>
 		} else if (link.flow) {
 			return {
 				...baseProps,
-				onClick: () => runManualFlow(link.flow!),
+				onClick: () => handleActionClick(link),
 			};
 		}
 
@@ -162,6 +163,8 @@ function toggleHelp() {
 
 async function handleActionClick(action: Link) {
 	if (action.actionType === 'flow' && action.flow) {
+		if (loadingFlows.value.includes(action.flow)) return;
+
 		const effectiveValues = { ...combinedItemData.value };
 
 		if (!effectiveValues.id && primaryKey.value && primaryKey.value !== '+') {
@@ -237,7 +240,11 @@ const helpString = computed(() => {
 	return dompurify.sanitize(props.help);
 });
 
-const { runManualFlow } = injectRunManualFlow();
+const loadingFlows = computed(() => {
+	return manualFlows.value.filter((flow: ManualFlow) => flow.isFlowRunning).map((flow: ManualFlow) => flow.id);
+});
+
+const { runManualFlow, manualFlows } = injectRunManualFlow();
 </script>
 
 <template>
@@ -287,7 +294,8 @@ const { runManualFlow } = injectRunManualFlow();
 								<v-list-item
 									v-for="(link, index) in linksParsed"
 									:key="index"
-									clickable
+									:clickable="!link.flow || (link.flow && !loadingFlows.includes(link.flow))"
+									:disabled="link.flow && loadingFlows.includes(link.flow)"
 									@click="link.actionType === 'flow' ? handleActionClick(link) : null"
 								>
 									<v-list-item-icon v-if="link.icon">
@@ -296,22 +304,21 @@ const { runManualFlow } = injectRunManualFlow();
 									<v-list-item-content>
 										<template v-if="link.actionType === 'url'">
 											<router-link v-if="link.to" :to="link.to">
-												<v-list-item-title>
-													{{ $t(link.label) }}
-												</v-list-item-title>
+												{{ $t(link.label) }}
 											</router-link>
 											<template v-else-if="link.href">
 												<a :href="link.href" target="_blank" rel="noopener noreferrer">
-													<v-list-item-title>
-														{{ $t(link.label) }}
-													</v-list-item-title>
+													{{ $t(link.label) }}
 												</a>
 											</template>
 										</template>
 										<template v-else>
-											<v-list-item-title>
+											<template v-if="link.flow && loadingFlows.includes(link.flow)">
+												<v-progress-circular small indeterminate />
+											</template>
+											<template v-else>
 												{{ $t(link.label) }}
-											</v-list-item-title>
+											</template>
 										</template>
 									</v-list-item-content>
 								</v-list-item>
