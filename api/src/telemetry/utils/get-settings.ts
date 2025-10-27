@@ -1,5 +1,5 @@
-import type { Knex } from 'knex';
 import { toBoolean } from '@directus/utils';
+import type { Knex } from 'knex';
 
 export type TelemetrySettings = {
 	project_id: string;

@@ -8,9 +8,9 @@ import { getExtensionCount, type ExtensionCount } from '../utils/get-extension-c
 import { getFieldCount, type FieldCount } from '../utils/get-field-count.js';
 import { getFilesizeSum, type FilesizeSum } from '../utils/get-filesize-sum.js';
 import { getItemCount } from '../utils/get-item-count.js';
+import { getSettings, type TelemetrySettings } from '../utils/get-settings.js';
 import { getUserItemCount, type UserItemCount } from '../utils/get-user-item-count.js';
 import { getReport } from './get-report.js';
-import { getSettings, type TelemetrySettings } from '../utils/get-settings.js';
 
 vi.mock('../../database/index.js');
 

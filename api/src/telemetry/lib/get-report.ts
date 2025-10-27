@@ -8,8 +8,8 @@ import { getExtensionCount } from '../utils/get-extension-count.js';
 import { getFieldCount } from '../utils/get-field-count.js';
 import { getFilesizeSum } from '../utils/get-filesize-sum.js';
 import { getItemCount } from '../utils/get-item-count.js';
-import { getUserItemCount } from '../utils/get-user-item-count.js';
 import { getSettings } from '../utils/get-settings.js';
+import { getUserItemCount } from '../utils/get-user-item-count.js';
 
 const basicCountTasks = [
 	{ collection: 'directus_dashboards' },

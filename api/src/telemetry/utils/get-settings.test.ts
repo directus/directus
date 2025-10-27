@@ -1,6 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
-import { getSettings } from './get-settings.js';
 import type { Knex } from 'knex';
+import { describe, expect, it, vi } from 'vitest';
+import { getSettings } from './get-settings.js';
 
 describe('getSettings', () => {
 	it('should return settings when they exist in the database', async () => {
