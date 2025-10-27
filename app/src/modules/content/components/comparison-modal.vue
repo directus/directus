@@ -11,7 +11,6 @@ import ComparisonHeader from './comparison-header.vue';
 import { isEqual } from 'lodash';
 import { ref, toRefs, unref, watch, computed, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
 
 interface Props {
 	active: boolean;
@@ -21,7 +20,6 @@ interface Props {
 }
 
 const { t } = useI18n();
-const route = useRoute();
 
 const props = defineProps<Props>();
 
@@ -47,7 +45,6 @@ const {
 	baseDisplayName,
 	deltaDisplayName,
 	normalizedData,
-	debugComparison,
 	toggleSelectAll,
 	toggleComparisonField,
 	fetchUserUpdated,
@@ -59,9 +56,6 @@ const {
 });
 
 const modalLoading = ref(false);
-
-// Show debug button only when debug query parameter is present
-const showDebugButton = computed(() => route.query.debug !== undefined);
 
 const incomingTooltipMessage = computed(() => {
 	if (isRevisionMode.value) return `${t('changes_made')} ${t('no_relational_data')}`;
@@ -311,10 +305,6 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 								>
 									<v-icon name="close" left />
 									<span class="button-text">{{ t('cancel') }}</span>
-								</v-button>
-								<v-button v-if="showDebugButton" secondary @click="debugComparison('Manual debug')">
-									<v-icon name="bug_report" left />
-									<span class="button-text">Debug</span>
 								</v-button>
 								<v-button
 									v-tooltip.top="
