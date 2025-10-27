@@ -2255,8 +2255,8 @@ interfaces:
     description: Password input with toggle to hide value
   flow-select:
     flow-select: Flow Select
-  super-header:
-    super-header: Super Header
+  header:
+    header: Header
     description: Create a header with a title, subtitle, help information, and/or links to help users navigate or run Flows.
     links: Links
     action_type: Action Type
