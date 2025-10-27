@@ -9,6 +9,7 @@ import { MetaService } from '../services/meta.js';
 import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { splitRecursive } from '../utils/versioning/split-recursive.js';
 
 const router = express.Router();
 
@@ -214,9 +215,12 @@ router.get(
 		const delta = version.delta ?? {};
 		delta[req.schema.collections[version.collection]!.primary] = version.item;
 
+		const excludeMetadata = req.query['excludeMetadata'] === 'true';
+		const deltaToReturn = excludeMetadata ? splitRecursive(delta).rawDelta : delta;
+
 		const main = await service.getMainItem(version['collection'], version['item']);
 
-		res.locals['payload'] = { data: { outdated, mainHash, current: delta, main } };
+		res.locals['payload'] = { data: { outdated, mainHash, current: deltaToReturn, main } };
 
 		return next();
 	}),

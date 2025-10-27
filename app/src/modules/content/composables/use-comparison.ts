@@ -343,7 +343,7 @@ export function useComparison(options: UseComparisonOptions) {
 		versions?: ContentVersion[] | null,
 	): Promise<ComparisonData> {
 		try {
-			const response = await api.get(`/versions/${versionId}/compare`);
+			const response = await api.get(`/versions/${versionId}/compare?excludeMetadata=true`);
 			const data: VersionComparisonResponse = response.data.data;
 			const base = data.main || {};
 			const incomingMerged = mergeWith({}, base, data.current || {}, replaceArraysInMergeCustomizer);
@@ -365,7 +365,7 @@ export function useComparison(options: UseComparisonOptions) {
 
 	async function fetchVersionComparisonForRevision(versionId: string) {
 		try {
-			const response = await api.get(`/versions/${versionId}/compare`);
+			const response = await api.get(`/versions/${versionId}/compare?excludeMetadata=true`);
 			const data: VersionComparisonResponse = response.data.data;
 			const main = data.main || {};
 			const mainMergedWithVersionLatest = mergeWith({}, main, data.current || {}, replaceArraysInMergeCustomizer);
