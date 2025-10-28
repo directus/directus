@@ -62,7 +62,11 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 		}
 	}
 
-	override async createIndex(collection: string, field: string, options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
+	override async createIndex(
+		collection: string,
+		field: string,
+		options: CreateIndexOptions = {},
+	): Promise<Knex.SchemaBuilder> {
 		const isUnique = Boolean(options.unique);
 		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
 

@@ -79,7 +79,11 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		const isUnique = Boolean(options.unique);
 		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
 
-		const blockingQuery = this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
+		const blockingQuery = this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [
+			constraintName,
+			collection,
+			field,
+		]);
 
 		if (options.attemptConcurrentIndex) {
 			/*
