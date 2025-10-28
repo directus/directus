@@ -42,10 +42,10 @@ export function useComparison(options: UseComparisonOptions) {
 
 	const selectedComparisonFields = ref<string[]>([]);
 	const userUpdated = ref<User | null>(null);
-	const mainItemUserUpdated = ref<User | null>(null);
+	const baseUserUpdated = ref<User | null>(null);
 
 	const userLoading = ref(false);
-	const mainItemUserLoading = ref(false);
+	const baseUserLoading = ref(false);
 	const fieldsStore = useFieldsStore();
 
 	const comparisonData = ref<ComparisonData | null>(null);
@@ -109,14 +109,14 @@ export function useComparison(options: UseComparisonOptions) {
 		comparisonData,
 		selectedComparisonFields,
 		userUpdated,
-		mainItemUserUpdated,
+		baseUserUpdated,
 		mainHash,
 		allFieldsSelected,
 		someFieldsSelected,
 		availableFieldsCount,
 		comparisonFields,
 		userLoading,
-		mainItemUserLoading,
+		baseUserLoading,
 		baseDisplayName,
 		deltaDisplayName,
 		normalizedData,
@@ -124,7 +124,7 @@ export function useComparison(options: UseComparisonOptions) {
 		toggleComparisonField,
 		fetchComparisonData,
 		fetchUserUpdated,
-		fetchMainItemUserUpdated,
+		fetchBaseItemUserUpdated,
 	};
 
 	function toggleSelectAll() {
@@ -202,8 +202,8 @@ export function useComparison(options: UseComparisonOptions) {
 		userUpdated.value = (await fetchUserDetails(normalizedData.value?.incoming?.user, userLoading)) ?? null;
 	}
 
-	async function fetchMainItemUserUpdated() {
-		mainItemUserUpdated.value = (await fetchUserDetails(normalizedData.value?.base?.user, mainItemUserLoading)) ?? null;
+	async function fetchBaseItemUserUpdated() {
+		baseUserUpdated.value = (await fetchUserDetails(normalizedData.value?.base?.user, baseUserLoading)) ?? null;
 	}
 
 	async function fetchLatestRevisionActivityOfMainVersion(collection: string, item: PrimaryKey) {

@@ -40,14 +40,14 @@ const {
 	comparisonData,
 	selectedComparisonFields,
 	userUpdated,
-	mainItemUserUpdated,
+	baseUserUpdated,
 	mainHash,
 	allFieldsSelected,
 	someFieldsSelected,
 	availableFieldsCount,
 	comparisonFields,
 	userLoading,
-	mainItemUserLoading,
+	baseUserLoading,
 	baseDisplayName,
 	deltaDisplayName,
 	normalizedData,
@@ -55,7 +55,7 @@ const {
 	toggleComparisonField,
 	fetchComparisonData,
 	fetchUserUpdated,
-	fetchMainItemUserUpdated,
+	fetchBaseItemUserUpdated,
 } = useComparison({
 	collection,
 	primaryKey,
@@ -85,7 +85,7 @@ watch(
 		try {
 			await fetchComparisonData();
 			await fetchUserUpdated();
-			await fetchMainItemUserUpdated();
+			await fetchBaseItemUserUpdated();
 		} finally {
 			modalLoading.value = false;
 		}
@@ -181,8 +181,8 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 							:loading="modalLoading"
 							:title="baseDisplayName"
 							:date-updated="t('latest')"
-							:user-updated="mainItemUserUpdated"
-							:user-loading="mainItemUserLoading"
+							:user-updated="baseUserUpdated"
+							:user-loading="baseUserLoading"
 						/>
 						<div class="comparison-content-divider"></div>
 						<div class="comparison-content">
@@ -207,7 +207,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										onToggleField: () => {},
 										comparisonType: comparisonData?.comparisonType,
 									}"
-									class="comparison-form--main"
+									class="comparison-form--base"
 								/>
 							</template>
 						</div>
@@ -249,7 +249,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										onToggleField: toggleComparisonField,
 										comparisonType: comparisonData?.comparisonType,
 									}"
-									class="comparison-form--current"
+									class="comparison-form--incoming"
 								/>
 							</template>
 						</div>
@@ -576,11 +576,11 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	gap: var(--theme--form--row-gap) var(--theme--form--column-gap);
 }
 
-.comparison-form--main {
+.comparison-form--base {
 	--comparison-indicator--color: var(--theme--danger);
 }
 
-.comparison-form--current {
+.comparison-form--incoming {
 	--comparison-indicator--color: var(--theme--success);
 }
 </style>
