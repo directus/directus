@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useCollectionPermissions } from '@/composables/use-permissions';
+import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import { unexpectedError } from '@/utils/unexpected-error';
+import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 import { ContentVersion, PrimaryKey } from '@directus/types';
 import slugify from '@sindresorhus/slugify';
-import { useComparison } from '../composables/use-comparison';
-import { type ComparisonData, getVersionDisplayName } from '../comparison-utils';
-import ComparisonModal from './comparison-modal.vue';
-import { ref, toRefs, unref, watch, computed } from 'vue';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 interface Props {
@@ -32,14 +31,7 @@ const { t } = useI18n();
 
 const { collection, primaryKey, hasEdits, currentVersion, versions } = toRefs(props);
 
-const isComparisonModalOpen = ref(false);
-const comparisonData = ref<ComparisonData | null>(null);
-
-const { normalizeComparisonData } = useComparison({
-	comparisonData,
-	collection,
-	primaryKey,
-});
+const comparisonModalActive = ref(false);
 
 const {
 	createAllowed: createVersionsAllowed,
@@ -180,7 +172,7 @@ function useRenameDialog() {
 	};
 
 	async function renameVersion() {
-		if (isRenameDisabled.value || updating.value) return;
+		if (isRenameDisabled.value || updating.value || newVersionKey.value === null) return;
 
 		updating.value = true;
 
@@ -257,27 +249,8 @@ function useDeleteDialog() {
 	}
 }
 
-async function openComparisonModal() {
-	if (!currentVersion.value) return;
-
-	try {
-		const normalizedData = await normalizeComparisonData(
-			currentVersion.value.id,
-			'version',
-			currentVersion.value,
-			versions.value,
-		);
-
-		comparisonData.value = normalizedData;
-		isComparisonModalOpen.value = true;
-	} catch (error) {
-		unexpectedError(error);
-	}
-}
-
 async function onPromoteComplete(deleteOnPromote: boolean) {
-	isComparisonModalOpen.value = false;
-	comparisonData.value = null;
+	comparisonModalActive.value = false;
 
 	if (deleteOnPromote) {
 		await deleteVersion();
@@ -293,11 +266,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 			<template #activator="{ toggle }">
 				<button class="version-button" type="button" @click="toggle">
 					<v-icon name="published_with_changes" />
-					<v-text-overflow
-						class="version-name"
-						:text="currentVersion ? getVersionDisplayName(currentVersion) : t('main_version')"
-						placement="bottom"
-					/>
+					<v-text-overflow class="version-name" :text="getVersionDisplayName(currentVersion)" placement="bottom" />
 					<v-icon small name="arrow_drop_down" />
 				</button>
 			</template>
@@ -329,7 +298,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 				<template v-if="currentVersion !== null">
 					<v-divider />
 
-					<v-list-item v-if="updateAllowed" clickable @click="openComparisonModal">
+					<v-list-item v-if="updateAllowed" clickable @click="comparisonModalActive = true">
 						{{ t('promote_version') }}
 					</v-list-item>
 
@@ -346,12 +315,13 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 
 		<comparison-modal
 			v-if="currentVersion !== null"
-			v-model:comparison-data="comparisonData"
-			:active="isComparisonModalOpen"
-			:delete-versions-allowed="deleteVersionsAllowed"
-			:collection="collection"
-			:primary-key="primaryKey"
-			@cancel="isComparisonModalOpen = false"
+			v-model="comparisonModalActive"
+			:delete-versions-allowed
+			:collection
+			:primary-key
+			mode="version"
+			:current-version
+			@cancel="comparisonModalActive = false"
 			@promote="onPromoteComplete($event)"
 		/>
 

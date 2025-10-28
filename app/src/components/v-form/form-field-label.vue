@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import type { FormField, ComparisonContext } from './types';
+import { isDateUpdated, isUserUpdated } from '@/utils/field-utils';
+import type { Field } from '@directus/types';
 import { useI18n } from 'vue-i18n';
+import type { ComparisonContext, FormField } from './types';
 
-withDefaults(
+const props = withDefaults(
 	defineProps<{
 		field: FormField;
 		toggle: (event: Event) => any;
@@ -38,7 +40,9 @@ defineEmits(['toggle-batch', 'toggle-raw']);
 const { t } = useI18n();
 
 function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
-	if (isDifferentFromLatest) return t('updated_in_revision');
+	const isAutoUpdatedField = isDateUpdated(props.field as Field) || isUserUpdated(props.field as Field);
+
+	if (isDifferentFromLatest || isAutoUpdatedField) return t('updated_in_revision');
 	return t('updated_in_revision_matches_latest');
 }
 </script>
