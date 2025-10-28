@@ -951,6 +951,7 @@ describe('ImportService', () => {
 			await expect(service.importCSV('test_collection', errorStream)).rejects.toThrow(
 				'Error while retrieving import data',
 			);
+
 			expect(mockCleanup).toHaveBeenCalled();
 		});
 
