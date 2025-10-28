@@ -180,6 +180,22 @@ describe('Services / Schema', () => {
 
 			await expect(service.diff(testSnapshot, { currentSnapshot: testSnapshot, force: true })).resolves.toBeNull();
 		});
+
+
+		it('should return null for missing systeFields', async () => {
+			const testSnapshot = {
+				directus: '0.0.0',
+				version: 1,
+				vendor: 'postgres',
+				collections: [],
+				fields: [],
+				relations: [],
+			} as unknown as Snapshot;
+
+			const service = new SchemaService({ knex: db, accountability: { role: 'admin', admin: true } as Accountability });
+
+			await expect(service.diff(testSnapshot, { currentSnapshot: testSnapshot, force: true })).resolves.toBeNull();
+		});
 	});
 
 	describe('getHashedSnapshot', () => {
