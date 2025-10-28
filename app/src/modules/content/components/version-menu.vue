@@ -2,7 +2,7 @@
 import api from '@/api';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { ContentVersion } from '@directus/types';
+import { ContentVersion, PrimaryKey } from '@directus/types';
 import slugify from '@sindresorhus/slugify';
 import { useComparison } from '../composables/use-comparison';
 import { type ComparisonData, getVersionDisplayName } from '../comparison-utils';
@@ -12,7 +12,7 @@ import { useI18n } from 'vue-i18n';
 
 interface Props {
 	collection: string;
-	primaryKey: string | number;
+	primaryKey: PrimaryKey;
 	updateAllowed: boolean;
 	hasEdits: boolean;
 	currentVersion: ContentVersion | null;
@@ -35,7 +35,11 @@ const { collection, primaryKey, hasEdits, currentVersion, versions } = toRefs(pr
 const isComparisonModalOpen = ref(false);
 const comparisonData = ref<ComparisonData | null>(null);
 
-const { normalizeComparisonData } = useComparison({ comparisonData });
+const { normalizeComparisonData } = useComparison({
+	comparisonData,
+	collection,
+	primaryKey,
+});
 
 const {
 	createAllowed: createVersionsAllowed,

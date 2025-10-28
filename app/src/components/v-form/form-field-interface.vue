@@ -10,6 +10,7 @@ const props = defineProps<{
 	batchMode?: boolean;
 	batchActive?: boolean;
 	comparison?: ComparisonContext;
+	comparisonActive?: boolean;
 	primaryKey?: string | number | null;
 	modelValue?: string | number | boolean | Record<string, any> | Array<any>;
 	loading?: boolean;
@@ -62,7 +63,7 @@ const value = computed(() =>
 				:batch-mode="batchMode"
 				:batch-active="batchActive"
 				:comparison-mode="!!comparison"
-				:comparison-active="comparison?.selectedFields.includes(field.field)"
+				:comparison-active="comparisonActive"
 				:width="(field.meta && field.meta.width) || 'full'"
 				:type="field.type"
 				:collection="field.collection"

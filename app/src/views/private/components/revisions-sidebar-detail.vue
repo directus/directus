@@ -6,7 +6,7 @@ import { useComparison } from '@/modules/content/composables/use-comparison';
 import type { Revision } from '@/types/revisions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useGroupable } from '@directus/composables';
-import { ContentVersion } from '@directus/types';
+import { ContentVersion, PrimaryKey } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import RevisionsDateGroup from './revisions-date-group.vue';
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
@@ -14,7 +14,7 @@ import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	collection: string;
-	primaryKey: string | number;
+	primaryKey: PrimaryKey;
 	version?: ContentVersion | null;
 }>();
 
@@ -36,7 +36,7 @@ const selectedRevision = ref<number | undefined>(undefined);
 const comparisonData = ref<ComparisonData | null>(null);
 const page = ref<number>(1);
 
-const { normalizeComparisonData } = useComparison({ comparisonData });
+const { normalizeComparisonData } = useComparison({ comparisonData, collection, primaryKey });
 
 const {
 	revisions,
