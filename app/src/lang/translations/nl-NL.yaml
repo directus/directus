@@ -888,7 +888,7 @@ items: Items
 upload_file: Upload Bestand
 upload_file_indeterminate: Bestand uploaden...
 upload_file_success: Bestand geüpload
-upload_files_indeterminate: 'Bestanden can het uploaden {done}/{total}'
+upload_files_indeterminate: 'Bestanden aan het uploaden {done}/{total}'
 upload_files_success: '{count} bestanden geüpload'
 upload_pending: Uploaden in afwachting
 drag_file_here: Sleep een bestand hierheen
