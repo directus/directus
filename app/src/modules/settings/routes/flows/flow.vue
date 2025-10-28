@@ -15,7 +15,7 @@ import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import SettingsNotFound from '../not-found.vue';
-import Arrows from './components/arrows.vue';
+import Arrows from './components/arrows/arrows.vue';
 import LogsSidebarDetail from './components/logs-sidebar-detail.vue';
 import Operation, { ArrowInfo, Target } from './components/operation.vue';
 import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
@@ -788,7 +788,7 @@ function discardAndLeave() {
 }
 
 .status-dot {
-	margin-left: 6px;
+	margin-inline-start: 6px;
 }
 
 .container {
@@ -797,7 +797,7 @@ function discardAndLeave() {
 	--gap-size: 40px;
 
 	&.center {
-		height: calc(100% - 48px - var(--header-bar-height));
+		block-size: calc(100% - 48px - var(--header-bar-height));
 		display: grid;
 		place-items: center;
 	}
@@ -818,7 +818,7 @@ function discardAndLeave() {
 	grid-template-rows: repeat(auto-fit, var(--row-size));
 	grid-template-columns: repeat(auto-fit, var(--column-size));
 	gap: var(--gap-size);
-	min-width: calc(var(--column-size) * 2);
-	min-height: calc(var(--row-size) * 2);
+	min-inline-size: calc(var(--column-size) * 2);
+	min-block-size: calc(var(--row-size) * 2);
 }
 </style>

@@ -222,6 +222,13 @@ function useMovetoFolder() {
 		}
 	}
 }
+
+function revert(values: Record<string, any>) {
+	edits.value = {
+		...edits.value,
+		...values,
+	};
+}
 </script>
 
 <template>
@@ -309,7 +316,7 @@ function useMovetoFolder() {
 				icon
 				rounded
 				:download="item?.filename_download"
-				:href="getAssetUrl(props.primaryKey, true)"
+				:href="getAssetUrl(props.primaryKey, { isDownload: true })"
 			>
 				<v-icon name="download" />
 			</v-button>
@@ -388,6 +395,7 @@ function useMovetoFolder() {
 				ref="revisionsDrawerDetailRef"
 				collection="directus_files"
 				:primary-key="primaryKey"
+				@revert="revert"
 			/>
 			<comments-sidebar-detail v-if="isNew === false" collection="directus_files" :primary-key="primaryKey" />
 		</template>
@@ -406,10 +414,10 @@ function useMovetoFolder() {
 
 .file-item {
 	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .preview {
-	margin-bottom: var(--theme--form--row-gap);
+	margin-block-end: var(--theme--form--row-gap);
 }
 </style>

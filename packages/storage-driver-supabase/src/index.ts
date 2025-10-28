@@ -1,5 +1,6 @@
 import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
-import type { ChunkedUploadContext, ReadOptions, TusDriver } from '@directus/storage';
+import type { TusDriver } from '@directus/storage';
+import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
 import { normalizePath } from '@directus/utils';
 import { StorageClient } from '@supabase/storage-js';
 import { join } from 'node:path';
@@ -138,12 +139,16 @@ export class DriverSupabase implements TusDriver {
 	}
 
 	async write(filepath: string, content: Readable, type?: string) {
-		await this.bucket.upload(this.fullPath(filepath), content, {
+		const { error } = await this.bucket.upload(this.fullPath(filepath), content, {
 			contentType: type ?? '',
 			cacheControl: '3600',
 			upsert: true,
 			duplex: 'half',
 		});
+
+		if (error) {
+			throw new Error(`Error uploading file "${filepath}"`, { cause: error });
+		}
 	}
 
 	async delete(filepath: string) {
@@ -185,7 +190,7 @@ export class DriverSupabase implements TusDriver {
 		 */
 		const isDirectory = prefix.endsWith('/');
 		const prefixDirectory = isDirectory ? prefix : dirname(prefix);
-		const search = isDirectory ? '' : prefix.split('/').pop() ?? '';
+		const search = isDirectory ? '' : (prefix.split('/').pop() ?? '');
 
 		do {
 			const { data, error } = await this.bucket.list(prefixDirectory, {

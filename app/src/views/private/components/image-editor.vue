@@ -167,28 +167,25 @@ function useImage() {
 				?.getCroppedCanvas({
 					imageSmoothingQuality: 'high',
 				})
-				.toBlob(
-					async (blob) => {
-						if (blob === null) {
-							return reject(`Couldn't process and save edited image`);
-						}
+				.toBlob(async (blob) => {
+					if (blob === null) {
+						return reject(`Couldn't process and save edited image`);
+					}
 
-						const formData = new FormData();
+					const formData = new FormData();
 
-						if (focalPoint) {
-							formData.append('focal_point_x' as keyof File, focalPoint.x?.toString() ?? '');
-							formData.append('focal_point_y' as keyof File, focalPoint.y?.toString() ?? '');
-						}
+					if (focalPoint) {
+						formData.append('focal_point_x' as keyof File, focalPoint.x?.toString() ?? '');
+						formData.append('focal_point_y' as keyof File, focalPoint.y?.toString() ?? '');
+					}
 
-						formData.append('file', blob, imageData.value?.filename_download);
+					formData.append('file', blob, imageData.value?.filename_download);
 
-						api.patch(`/files/${props.id}`, formData).then(
-							() => resolve(),
-							(err) => reject(err),
-						);
-					},
-					imageData.value?.type ?? undefined,
-				);
+					api.patch(`/files/${props.id}`, formData).then(
+						() => resolve(),
+						(err) => reject(err),
+					);
+				}, imageData.value?.type ?? undefined);
 		});
 	}
 
@@ -610,15 +607,15 @@ function setAspectRatio() {
 }
 
 .editor-container {
-	width: 100%;
-	height: calc(100% - (65px + 24px + 24px)); /* header height + 2x margin */
+	inline-size: 100%;
+	block-size: calc(100% - (65px + 24px + 24px)); /* header height + 2x margin */
 	overflow: hidden;
 	background-color: var(--theme--background-subdued);
 
 	.editor {
 		flex-grow: 1;
-		width: 100%;
-		height: calc(100% - 60px);
+		inline-size: 100%;
+		block-size: calc(100% - 60px);
 	}
 
 	img {
@@ -631,22 +628,22 @@ function setAspectRatio() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 }
 
 .toolbar {
 	display: flex;
 	align-items: center;
-	width: 100%;
-	height: 60px;
+	inline-size: 100%;
+	block-size: 60px;
 	padding: 0 24px;
 	color: var(--white);
 	background-color: #263238;
 
 	.v-icon {
 		display: inline-block;
-		margin-right: 16px;
+		margin-inline-end: 16px;
 	}
 }
 
@@ -655,7 +652,7 @@ function setAspectRatio() {
 }
 
 .dimensions {
-	margin-right: 12px;
+	margin-inline-end: 12px;
 	color: var(--theme--foreground-subdued);
 	font-feature-settings: 'tnum';
 }
@@ -677,8 +674,7 @@ function setAspectRatio() {
 }
 
 .drag-mode {
-	margin-right: 16px;
-	margin-left: -8px;
+	margin-inline: -8px 16px;
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
@@ -686,7 +682,7 @@ function setAspectRatio() {
 	gap: 8px;
 
 	.v-icon {
-		margin-right: 0;
+		margin-inline-end: 0;
 		opacity: 0.5;
 
 		&.active {
@@ -696,7 +692,6 @@ function setAspectRatio() {
 }
 
 .cancel {
-	padding-right: 16px;
-	padding-left: 16px;
+	padding-inline: 16px;
 }
 </style>

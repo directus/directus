@@ -1259,6 +1259,8 @@ shares: Megosztások
 unlimited_usage: Korlátlan használat
 no_shares: Nincs megjeleníthető megosztás
 new_share: Új megosztás
+mcp_prompts_collection_schema:
+  messages_role_user: Felhasználó
 expired: Lejárt
 upcoming: Közelgő
 share: Megosztás
@@ -1366,7 +1368,6 @@ translation_placeholder: Fordítás megadása...
 value: Érték
 view_project: Projekt megtekintése
 report_error: Hiba jelentése
-start: Start
 table: Táblázat
 list: Lista
 search_filter: Keresés és szűrő
@@ -1909,6 +1910,7 @@ show_labels: Címkék megjelenítése
 show_legend: Mutasd a magyarázatot
 right: Jobb
 left: Balra
+start: Start
 donut: Fánk
 panels:
   metric:

@@ -83,8 +83,11 @@ const src = computed(() => {
 
 	if (image.value.type.includes('image')) {
 		const fit = props.crop ? 'cover' : 'contain';
-		const url = getAssetUrl(`${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}`);
-		return url;
+
+		return getAssetUrl(image.value.id, {
+			imageKey: `system-large-${fit}`,
+			cacheBuster: image.value.modified_on,
+		});
 	}
 
 	return null;
@@ -205,7 +208,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 					v-tooltip="t('download')"
 					icon
 					rounded
-					:href="getAssetUrl(image.id, true)"
+					:href="getAssetUrl(image.id, { isDownload: true })"
 					:download="image.filename_download"
 				>
 					<v-icon name="download" />
@@ -239,7 +242,13 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				@input="update"
 			>
 				<template #actions>
-					<v-button secondary rounded icon :download="image.filename_download" :href="getAssetUrl(image.id, true)">
+					<v-button
+						secondary
+						rounded
+						icon
+						:download="image.filename_download"
+						:href="getAssetUrl(image.id, { isDownload: true })"
+					>
 						<v-icon name="download" />
 					</v-button>
 				</template>
@@ -262,20 +271,11 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 </template>
 
 <style lang="scss" scoped>
-.image-preview {
-	position: relative;
-	width: 100%;
-	height: var(--input-height-tall);
-	overflow: hidden;
-	background-color: var(--theme--background-normal);
-	border-radius: var(--theme--border-radius);
-}
-
 img {
 	z-index: 1;
-	width: 100%;
-	height: 100%;
-	max-height: inherit;
+	inline-size: 100%;
+	block-size: 100%;
+	max-block-size: inherit;
 	object-fit: contain;
 }
 
@@ -288,36 +288,43 @@ img {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	height: 100%;
+	block-size: 100%;
 	color: var(--theme--form--field--input--foreground-subdued);
 	background-color: var(--theme--background-normal);
 	padding: 32px;
 
 	.v-icon {
-		margin-bottom: 6px;
+		margin-block-end: 6px;
 	}
 
 	.message {
-		max-width: 300px;
+		max-inline-size: 300px;
 		padding: 0 16px;
 		text-align: center;
 	}
 }
 
 .image-preview {
+	position: relative;
+	inline-size: 100%;
+	block-size: var(--input-height-tall);
+	overflow: hidden;
+	background-color: var(--theme--background-normal);
+	border-radius: var(--theme--border-radius);
+
 	.shadow {
 		position: absolute;
-		bottom: 0;
-		left: 0;
+		inset-block-end: 0;
+		inset-inline-start: 0;
 		z-index: 2;
-		width: 100%;
-		height: 40px;
+		inline-size: 100%;
+		block-size: 40px;
 		overflow: hidden;
 		line-height: 1;
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.25) 100%);
-		transition: height var(--fast) var(--transition);
+		transition: block-size var(--fast) var(--transition);
 	}
 
 	.actions {
@@ -327,19 +334,19 @@ img {
 		--v-button-background-color-hover: var(--white);
 
 		position: absolute;
-		top: calc(50% - 32px);
-		left: 0;
+		inset-block-start: calc(50% - 32px);
+		inset-inline-start: 0;
 		z-index: 3;
 		display: flex;
 		justify-content: center;
-		width: 100%;
+		inline-size: 100%;
 		gap: 12px;
 
 		::v-deep(.v-button) {
 			transform: translateY(10px);
 			opacity: 0;
 			transition: var(--medium) var(--transition);
-			transition-property: opacity transform;
+			transition-property: opacity, transform;
 
 			@for $i from 0 through 4 {
 				&:nth-of-type(#{$i + 1}) {
@@ -351,10 +358,10 @@ img {
 
 	.info {
 		position: absolute;
-		bottom: 0;
-		left: 0;
+		inset-block-end: 0;
+		inset-inline-start: 0;
 		z-index: 3;
-		width: 100%;
+		inline-size: 100%;
 		padding: 8px 12px;
 		line-height: 1.2;
 	}
@@ -364,28 +371,28 @@ img {
 	}
 
 	.meta {
-		height: 17px;
-		max-height: 0;
+		block-size: 17px;
+		max-block-size: 0;
 		overflow: hidden;
 		color: rgb(255 255 255 / 0.75);
-		transition: max-height var(--fast) var(--transition);
+		transition: max-block-size var(--fast) var(--transition);
 	}
 }
 
 .image-preview:focus-within,
 .image-preview:hover {
 	.shadow {
-		height: 100%;
+		block-size: 100%;
 		background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.5) 100%);
 	}
 
 	.actions ::v-deep(.v-button) {
-		transform: translateY(0px);
+		transform: translateY(0);
 		opacity: 1;
 	}
 
 	.meta {
-		max-height: 17px;
+		max-block-size: 17px;
 	}
 }
 
@@ -393,8 +400,8 @@ img {
 	&.full,
 	&.fill {
 		.image-preview {
-			height: auto;
-			max-height: 400px;
+			block-size: auto;
+			max-block-size: 400px;
 		}
 	}
 
@@ -408,7 +415,7 @@ img {
 }
 
 .disabled-placeholder {
-	height: var(--input-height-tall);
+	block-size: var(--input-height-tall);
 }
 
 .fallback {
@@ -416,7 +423,7 @@ img {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: var(--input-height-tall);
+	block-size: var(--input-height-tall);
 	border-radius: var(--theme--border-radius);
 }
 </style>

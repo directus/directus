@@ -57,7 +57,12 @@ const comparedFields = computed<Field[]>(() => {
 
 	return Object.keys(comparedData.value.current)
 		.map((fieldKey) => fieldsStore.getField(unref(currentVersion).collection, fieldKey))
-		.filter((field) => !!field && !isPrimaryKey(field)) as Field[];
+		.filter(
+			(field) =>
+				!!field &&
+				!isPrimaryKey(field) &&
+				comparedData.value?.current[field.field] !== comparedData.value?.main[field.field],
+		) as Field[];
 
 	function isPrimaryKey(field: Field) {
 		return (
@@ -274,8 +279,7 @@ function useTab() {
 
 .content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding-bottom);
+	padding-block: 0 var(--content-padding-bottom);
 
 	.grid {
 		@include mixins.form-grid;
@@ -285,7 +289,7 @@ function useTab() {
 .compare {
 	display: flex;
 	align-items: center;
-	width: 100%;
+	inline-size: 100%;
 	padding: 8px;
 	gap: 8px;
 	color: var(--theme--foreground-subdued);
@@ -302,6 +306,7 @@ function useTab() {
 
 	&.main {
 		border-radius: var(--theme--border-radius) var(--theme--border-radius) 0 0;
+
 		&.active {
 			color: var(--theme--secondary);
 			background-color: var(--secondary-alt);
@@ -316,6 +321,7 @@ function useTab() {
 
 	&.current {
 		border-radius: 0 0 var(--theme--border-radius) var(--theme--border-radius);
+
 		&.active {
 			color: var(--theme--primary);
 			background-color: var(--theme--primary-background);

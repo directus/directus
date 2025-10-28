@@ -159,7 +159,7 @@ function onSelection(selectedIds: (number | string)[] | null) {
 .preview {
 	display: block;
 	flex-grow: 1;
-	height: calc(100% - 16px);
+	block-size: calc(100% - 16px);
 	overflow: hidden;
 }
 </style>

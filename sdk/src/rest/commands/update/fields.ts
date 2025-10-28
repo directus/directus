@@ -40,6 +40,7 @@ export const updateField =
 
 /**
  * Updates the multiple field in the given collection.
+ * Update multiple existing fields.
  * @param collection
  * @param items
  * @param query
@@ -53,7 +54,7 @@ export const updateFields =
 		query?: TQuery,
 	): RestCommand<UpdateFieldOutput<Schema, TQuery>[], Schema> =>
 	() => {
-		throwIfEmpty(collection, 'Keys cannot be empty');
+		throwIfEmpty(collection, 'Collection cannot be empty');
 
 		return {
 			path: `/fields/${collection}`,

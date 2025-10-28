@@ -1,13 +1,14 @@
 import type { Column } from '@directus/schema';
-import type { Field, Relation } from '@directus/types';
-import { pick } from 'lodash-es';
 import type {
-	Collection,
+	Field,
+	Relation,
 	SnapshotCollection,
 	SnapshotField,
 	SnapshotRelation,
 	SnapshotSystemField,
-} from '../types/index.js';
+} from '@directus/types';
+import { pick } from 'lodash-es';
+import type { Collection } from '../types/index.js';
 
 /**
  * Pick certain database vendor specific collection properties that should be compared when performing diff
@@ -50,7 +51,7 @@ export function sanitizeField(field: Field, sanitizeAllSchema = false) {
 				'schema.has_auto_increment',
 				'schema.foreign_key_table',
 				'schema.foreign_key_column',
-		  ];
+			];
 
 	return pick(field, pickedPaths) as SnapshotField;
 }

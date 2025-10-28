@@ -16,13 +16,12 @@ const props = withDefaults(
 );
 
 const src = computed(() => {
-	if (props.value === null) return null;
+	if (props.value === null || !props.value.avatar?.id) return null;
 
-	if (props.value.avatar?.id) {
-		return getAssetUrl(`${props.value.avatar.id}?key=system-small-cover`);
-	}
-
-	return null;
+	return getAssetUrl(props.value.avatar.id, {
+		imageKey: 'system-small-cover',
+		cacheBuster: props.value.avatar.modified_on,
+	});
 });
 </script>
 
@@ -52,13 +51,13 @@ const src = computed(() => {
 .user {
 	display: inline-flex;
 	align-items: center;
-	height: 100%;
+	block-size: 100%;
 	vertical-align: middle;
 
 	img {
 		display: inline-block;
-		width: auto;
-		height: 100%;
+		inline-size: auto;
+		block-size: 100%;
 		vertical-align: -67%;
 		border-radius: 4px;
 
@@ -69,7 +68,7 @@ const src = computed(() => {
 
 	&.both {
 		img {
-			margin-right: 8px;
+			margin-inline-end: 8px;
 		}
 	}
 }

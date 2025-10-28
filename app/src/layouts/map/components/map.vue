@@ -2,7 +2,7 @@
 import { useSettingsStore } from '@/stores/settings';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
-import type { ShowSelect } from '@directus/extensions';
+import type { ShowSelect } from '@directus/types';
 import { useAppStore } from '@directus/stores';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import maplibre, {
@@ -357,7 +357,7 @@ function hoverCluster(event: MapLayerMouseEvent) {
 
 #map-container {
 	position: relative;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 }
 </style>

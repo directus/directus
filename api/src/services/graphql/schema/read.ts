@@ -616,7 +616,7 @@ export async function getReadableTypes(
 				? ReadCollectionTypes[collection.collection]!
 				: new GraphQLNonNull(
 						new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
-				  ),
+					),
 			resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 				const result = await resolveQuery(gql, info);
 				context['data'] = result;
@@ -708,7 +708,7 @@ export async function getReadableTypes(
 					: {
 							version: new GraphQLNonNull(GraphQLString),
 							id: new GraphQLNonNull(GraphQLID),
-					  },
+						},
 				resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 					const result = await resolveQuery(gql, info);
 					context['data'] = result;
@@ -812,16 +812,16 @@ export async function getReadableTypes(
 				});
 			}
 		} else if (relation.meta?.one_allowed_collections) {
-			ReadableCollectionQuantifierFilterTypes[relation.collection]?.removeField('item');
-			ReadableCollectionFilterTypes[relation.collection]?.removeField('item');
+			ReadableCollectionQuantifierFilterTypes[relation.collection]?.removeField(relation.field);
+			ReadableCollectionFilterTypes[relation.collection]?.removeField(relation.field);
 
 			for (const collection of relation.meta.one_allowed_collections) {
 				ReadableCollectionQuantifierFilterTypes[relation.collection]?.addFields({
-					[`item__${collection}`]: ReadableCollectionFilterTypes[collection]!,
+					[`${relation.field}__${collection}`]: ReadableCollectionFilterTypes[collection]!,
 				});
 
 				ReadableCollectionFilterTypes[relation.collection]?.addFields({
-					[`item__${collection}`]: ReadableCollectionFilterTypes[collection]!,
+					[`${relation.field}__${collection}`]: ReadableCollectionFilterTypes[collection]!,
 				});
 			}
 		}

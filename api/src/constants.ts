@@ -1,5 +1,5 @@
 import type { CookieOptions } from 'express';
-import type { TransformationParams } from './types/index.js';
+import type { TransformationParams } from '@directus/types';
 import { getMilliseconds } from './utils/get-milliseconds.js';
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
@@ -61,7 +61,15 @@ export const DEFAULT_AUTH_PROVIDER = 'default';
 
 export const COLUMN_TRANSFORMS = ['year', 'month', 'day', 'weekday', 'hour', 'minute', 'second'];
 
-export const GENERATE_SPECIAL = ['uuid', 'date-created', 'role-created', 'user-created'] as const;
+export const GENERATE_SPECIAL = [
+	'uuid',
+	'date-created',
+	'date-updated',
+	'role-created',
+	'role-updated',
+	'user-created',
+	'user-updated',
+] as const;
 
 export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
 

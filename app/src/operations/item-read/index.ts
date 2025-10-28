@@ -55,6 +55,7 @@ export default defineOperationApp({
 			name: '$t:collection',
 			type: 'string',
 			meta: {
+				required: true,
 				width: 'half',
 				interface: 'system-collection',
 			},

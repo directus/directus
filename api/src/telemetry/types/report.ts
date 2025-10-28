@@ -88,4 +88,29 @@ export interface TelemetryReport {
 	 * Total size of the files in bytes
 	 */
 	files_size_total: number;
+
+	/**
+	 * Unique project identifier
+	 */
+	project_id: string;
+
+	/**
+	 * Whether the project has enabled MCP
+	 */
+	mcp_enabled: boolean;
+
+	/**
+	 * Whether the project allows deletes in MCP
+	 */
+	mcp_allow_deletes: boolean;
+
+	/**
+	 * Whether the project has enabled MCP system prompt
+	 */
+	mcp_system_prompt_enabled: boolean;
+
+	/**
+	 * Number of Visual Editor URLs configured in the system
+	 */
+	visual_editor_urls: number;
 }

@@ -3,10 +3,11 @@ import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatItemsCountRelative } from '@/utils/format-items-count';
 import { getRootPath } from '@/utils/get-root-path';
 import { translate } from '@/utils/translate-literal';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
 import { Field, User, PermissionsAction } from '@directus/types';
@@ -330,17 +331,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 				if (item !== undefined && to !== undefined) await changeManualSort({ item, to });
 			} else if (event.added) {
-				items.value = items.value.map((item) => {
-					if (item[pkField] === event.added?.element.id) {
-						return {
-							...item,
-							[gField]: group.id,
-						};
-					}
-
-					return item;
-				});
-
 				if (group.items.length > 0) {
 					const item = event.added.element;
 					const before = group.items[event.added.newIndex - 1] as Item | undefined;
@@ -355,8 +345,23 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					}
 				}
 
-				await api.patch(`${getEndpoint(collection.value)}/${event.added.element.id}`, {
-					[gField]: group.id,
+				try {
+					await api.patch(`${getEndpoint(collection.value)}/${event.added.element.id}`, {
+						[gField]: group.id,
+					});
+				} catch (error: unknown) {
+					return unexpectedError(error);
+				}
+
+				items.value = items.value.map((item) => {
+					if (item[pkField] === event.added?.element.id) {
+						return {
+							...item,
+							[gField]: group.id,
+						};
+					}
+
+					return item;
 				});
 			}
 		}
@@ -526,7 +531,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				search: ref(null),
 			});
 
-			const choices = computed(() => (isRelational.value ? [] : selectedGroup.value?.meta?.options?.choices ?? []));
+			const choices = computed(() => (isRelational.value ? [] : (selectedGroup.value?.meta?.options?.choices ?? [])));
 
 			watch(
 				() => groupField.value,
@@ -550,8 +555,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				if (groupOrder.value.groupField !== groupField.value || !groupOrder.value.sortMap) return choices.value;
 
 				choices.value.sort((a: Record<string, string>, b: Record<string, string>) => {
-					const aOrder = a.value ? groupOrder.value.sortMap[a.value] ?? 0 : 0;
-					const bOrder = b.value ? groupOrder.value.sortMap[b.value] ?? 0 : 0;
+					const aOrder = a.value ? (groupOrder.value.sortMap[a.value] ?? 0) : 0;
+					const bOrder = b.value ? (groupOrder.value.sortMap[b.value] ?? 0) : 0;
 					return aOrder - bOrder;
 				});
 

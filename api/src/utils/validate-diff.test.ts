@@ -9,7 +9,7 @@ import type {
 	SnapshotRelation,
 	SnapshotSystemField,
 	SnapshotWithHash,
-} from '../types/snapshot.js';
+} from '@directus/types';
 import { validateApplyDiff } from './validate-diff.js';
 
 test('should fail on invalid diff schema', () => {

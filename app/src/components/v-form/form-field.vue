@@ -51,6 +51,11 @@ const isDisabled = computed(() => {
 	return false;
 });
 
+const isLabelHidden = computed(() => {
+	if (props.batchMode && !props.field.meta?.special?.includes('no-data')) return false;
+	return props.field.hideLabel;
+});
+
 const { internalValue, isEdited, defaultValue } = useComputedValues();
 
 const { showRaw, copyRaw, pasteRaw, onRawValueSubmit } = useRaw();
@@ -73,6 +78,15 @@ const validationPrefix = computed(() => {
 	}
 
 	return null;
+});
+
+const showCustomValidationMessage = computed(() => {
+	if (!props.validationError) return false;
+
+	const customValidationMessage = !!props.field.meta?.validation_message;
+	const hasCustomValidation = !!props.field.meta?.validation;
+
+	return customValidationMessage && (!hasCustomValidation || props.validationError.code === 'FAILED_VALIDATION');
 });
 
 function emitValue(value: any) {
@@ -153,7 +167,7 @@ function useComputedValues() {
 		class="field"
 		:class="[field.meta?.width || 'full', { invalid: validationError }]"
 	>
-		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow arrow-placement="start">
+		<v-menu v-if="!isLabelHidden" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
 				<form-field-label
 					:field="field"
@@ -214,8 +228,8 @@ function useComputedValues() {
 
 		<small v-if="field.meta && field.meta.note" v-md="{ value: field.meta.note, target: '_blank' }" class="type-note" />
 
-		<small v-if="validationError" class="validation-error selectable">
-			<template v-if="field.meta?.validation_message">
+		<small v-if="validationError" class="validation-error">
+			<template v-if="showCustomValidationMessage">
 				{{ field.meta?.validation_message }}
 				<v-icon v-tooltip="validationMessage" small right name="help" />
 			</template>
@@ -232,8 +246,8 @@ function useComputedValues() {
 .type-note {
 	position: relative;
 	display: block;
-	max-width: 520px;
-	margin-top: 4px;
+	max-inline-size: 520px;
+	margin-block-start: 4px;
 
 	:deep(a) {
 		color: var(--theme--primary);
@@ -256,12 +270,12 @@ function useComputedValues() {
 .validation-error {
 	display: flex;
 	align-items: center;
-	margin-top: 4px;
+	margin-block-start: 4px;
 	color: var(--theme--danger);
 	font-style: italic;
 }
 
 .label-spacer {
-	height: 28px;
+	block-size: 28px;
 }
 </style>

@@ -1,4 +1,3 @@
-import { randomAlpha, randomInteger } from '@directus/random';
 import { beforeEach, expect, test } from 'vitest';
 import { messageConstructor } from './contains-null-values.js';
 
@@ -9,8 +8,8 @@ let sample: {
 
 beforeEach(() => {
 	sample = {
-		collection: randomAlpha(randomInteger(2, 50)),
-		field: randomAlpha(randomInteger(2, 50)),
+		collection: 'test_collection',
+		field: 'test_field',
 	};
 });
 

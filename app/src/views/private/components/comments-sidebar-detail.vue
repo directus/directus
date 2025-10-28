@@ -93,6 +93,7 @@ function useComments(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 							'user_created.first_name',
 							'user_created.last_name',
 							'user_created.avatar.id',
+							'user_created.avatar.modified_on',
 						],
 					},
 				})
@@ -261,21 +262,19 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 
 .v-divider {
 	position: sticky;
-	top: 0;
+	inset-block-start: 0;
 	z-index: 2;
-	margin-top: 12px;
-	margin-bottom: 2px;
-	padding-top: 4px;
-	padding-bottom: 4px;
+	margin-block: 12px 2px;
+	padding-block: 4px;
 	background-color: var(--theme--background-normal);
 	box-shadow: 0 0 4px 2px var(--theme--background-normal);
+
 	--v-divider-label-color: var(--theme--foreground-subdued);
 }
 
 .empty {
-	margin-top: 16px;
-	margin-bottom: 8px;
-	margin-left: 2px;
+	margin-block: 16px 8px;
+	margin-inline-start: 2px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }

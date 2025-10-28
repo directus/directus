@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { Field, ValidationError } from '@directus/types';
-import { isNil, merge } from 'lodash';
+import { merge } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { getFieldsInGroup } from '@/utils/get-fields-in-group';
 
 const props = withDefaults(
 	defineProps<{
@@ -38,7 +39,7 @@ const fieldsInSection = computed(() => {
 	const fields: Field[] = [merge({}, props.field, { hideLabel: true })];
 
 	if (props.field.meta?.special?.includes('group')) {
-		fields.push(...getFieldsForGroup(props.field.meta?.field));
+		fields.push(...getFieldsInGroup(props.field.field, props.fields));
 	}
 
 	return fields;
@@ -73,21 +74,6 @@ function handleModifier(event: MouseEvent, toggle: () => void) {
 	} else {
 		toggle();
 	}
-}
-
-function getFieldsForGroup(group: null | string, passed: string[] = []): Field[] {
-	const fieldsInGroup: Field[] = props.fields.filter((field) => {
-		return field.meta?.group === group || (group === null && isNil(field.meta));
-	});
-
-	for (const field of fieldsInGroup) {
-		if (field.meta?.special?.includes('group') && !passed.includes(field.meta!.field)) {
-			passed.push(field.meta!.field);
-			fieldsInGroup.push(...getFieldsForGroup(field.meta!.field, passed));
-		}
-	}
-
-	return fieldsInGroup;
 }
 </script>
 
@@ -133,10 +119,10 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 
 <style lang="scss" scoped>
 .accordion-section {
-	border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
 	&:last-child {
-		border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+		border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	}
 }
 
@@ -144,7 +130,7 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 	position: relative;
 	display: flex;
 	align-items: center;
-	width: 100%;
+	inline-size: 100%;
 	margin: 8px 0;
 
 	cursor: pointer;
@@ -166,22 +152,22 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 	.required {
 		--v-icon-color: var(--theme--primary);
 
-		margin-top: -12px;
-		margin-left: 2px;
+		margin-block-start: -12px;
+		margin-inline-start: 2px;
 	}
 
 	.v-chip {
 		margin: 0;
-		margin-left: 8px;
+		margin-inline-start: 8px;
 	}
 
 	.edit-dot {
 		position: absolute;
-		top: 14px;
-		left: -7px;
+		inset-block-start: 14px;
+		inset-inline-start: -7px;
 		display: block;
-		width: 4px;
-		height: 4px;
+		inline-size: 4px;
+		block-size: 4px;
 		background-color: var(--theme--form--field--input--foreground-subdued);
 		border-radius: 4px;
 		content: '';
@@ -189,7 +175,7 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 }
 
 .icon {
-	margin-right: 12px;
+	margin-inline-end: 12px;
 	transform: rotate(-90deg);
 	transition: transform var(--fast) var(--transition);
 
@@ -199,7 +185,7 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 }
 
 .warning {
-	margin-left: 8px;
+	margin-inline-start: 8px;
 	color: var(--theme--danger);
 }
 

@@ -6,6 +6,7 @@ import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
+import { useFlows } from '@/composables/use-flows';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
@@ -15,12 +16,13 @@ import LivePreview from '@/views/private/components/live-preview.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
+import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import { useCollection } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
@@ -39,6 +41,7 @@ const props = withDefaults(defineProps<Props>(), {
 const { t, te } = useI18n();
 
 const router = useRouter();
+const { collectionRoute } = useCollectionRoute();
 
 const form = ref<HTMLElement>();
 
@@ -205,7 +208,7 @@ const actualPrimaryKey = computed(() => {
 	if (unref(isSingleton)) {
 		const singleton = unref(item);
 		const pkField = unref(primaryKeyField)?.field;
-		return (singleton && pkField ? singleton[pkField] ?? null : null) as PrimaryKey | null;
+		return (singleton && pkField ? (singleton[pkField] ?? null) : null) as PrimaryKey | null;
 	}
 
 	return props.primaryKey;
@@ -218,7 +221,7 @@ const internalPrimaryKey = computed(() => {
 	if (unref(isSingleton)) {
 		const singleton = unref(item);
 		const pkField = unref(primaryKeyField)?.field;
-		return (singleton && pkField ? singleton[pkField] ?? '+' : '+') as PrimaryKey;
+		return (singleton && pkField ? (singleton[pkField] ?? '+') : '+') as PrimaryKey;
 	}
 
 	return props.primaryKey;
@@ -296,6 +299,16 @@ watch(
 	{ immediate: true },
 );
 
+const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
+	collection: collection.value,
+	primaryKey: actualPrimaryKey.value,
+	location: 'item',
+	hasEdits,
+	onRefreshCallback: refresh,
+});
+
+provideRunManualFlow();
+
 function toggleSplitView() {
 	if (livePreviewMode.value === null) {
 		livePreviewMode.value = 'split';
@@ -338,14 +351,14 @@ function navigateBack() {
 		return;
 	}
 
-	router.push(getCollectionRoute(props.collection));
+	router.push(collectionRoute.value);
 }
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [
 		{
 			name: collectionInfo.value?.name,
-			to: getCollectionRoute(props.collection),
+			to: collectionRoute.value,
 		},
 	]);
 
@@ -361,7 +374,9 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 
 		if (action === 'main') {
 			currentVersion.value = null;
+			refresh();
 		} else if (action === 'stay') {
+			refresh();
 			revisionsDrawerDetailRef.value?.refresh?.();
 		} else if (action === 'quit') {
 			if (!props.singleton) router.push(`/content/${props.collection}`);
@@ -422,7 +437,7 @@ async function saveAndQuit() {
 
 	try {
 		await save();
-		if (props.singleton === false) router.push(getCollectionRoute(props.collection));
+		if (props.singleton === false) router.push(collectionRoute.value);
 	} catch {
 		// Save shows unexpected error dialog
 	}
@@ -434,7 +449,7 @@ async function deleteAndQuit() {
 	try {
 		await remove();
 		edits.value = {};
-		router.replace(getCollectionRoute(props.collection));
+		router.replace(collectionRoute.value);
 	} catch {
 		// `remove` will show the unexpected error dialog
 	} finally {
@@ -449,7 +464,7 @@ async function toggleArchive() {
 		await archive();
 
 		if (isArchived.value === true) {
-			router.push(getCollectionRoute(props.collection));
+			router.push(collectionRoute.value);
 		} else {
 			confirmArchive.value = false;
 		}
@@ -485,6 +500,18 @@ const shouldShowVersioning = computed(
 		readVersionsAllowed.value &&
 		!versionsLoading.value,
 );
+
+function useCollectionRoute() {
+	const route = useRoute();
+
+	const collectionRoute = computed(() => {
+		const collectionPath = getCollectionRoute(props.collection);
+		if (route.query.bookmark) return `${collectionPath}?bookmark=${route.query.bookmark}`;
+		return collectionPath;
+	});
+
+	return { collectionRoute };
+}
 </script>
 
 <template>
@@ -512,7 +539,7 @@ const shouldShowVersioning = computed(
 				<render-template
 					:collection="collectionInfo.collection"
 					:item="templateData"
-					:template="collectionInfo.meta.display_template"
+					:template="collectionInfo.meta!.display_template"
 				/>
 			</h1>
 		</template>
@@ -712,6 +739,8 @@ const shouldShowVersioning = computed(
 					</v-menu>
 				</template>
 			</v-button>
+
+			<flow-dialogs v-bind="flowDialogsContext" />
 		</template>
 
 		<template #navigation>
@@ -773,14 +802,7 @@ const shouldShowVersioning = computed(
 					:primary-key="actualPrimaryKey"
 					:allowed="shareAllowed"
 				/>
-				<flow-sidebar-detail
-					v-if="currentVersion === null"
-					location="item"
-					:collection="collection"
-					:primary-key="actualPrimaryKey"
-					:has-edits="hasEdits"
-					@refresh="refresh"
-				/>
+				<flow-sidebar-detail v-if="currentVersion === null" :manual-flows />
 			</template>
 		</template>
 	</private-view>
@@ -800,16 +822,16 @@ const shouldShowVersioning = computed(
 
 .v-form {
 	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 
 	@media (min-width: 600px) {
 		padding: var(--content-padding);
-		padding-bottom: var(--content-padding-bottom);
+		padding-block-end: var(--content-padding-bottom);
 	}
 }
 
 .title-loader {
-	width: 260px;
+	inline-size: 260px;
 }
 
 .version-more-options.v-icon {
@@ -831,11 +853,11 @@ const shouldShowVersioning = computed(
 
 		.headline {
 			opacity: 1;
-			top: 3px;
+			inset-block-start: 3px;
 		}
 
 		.title {
-			top: 4px;
+			inset-block-start: 4px;
 		}
 
 		@media (min-width: 600px) {
