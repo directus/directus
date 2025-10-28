@@ -138,6 +138,168 @@ describe('should throw accurate error', () => {
 			'Provided diff is trying to delete relation "test.test-> relation" but it does not exist',
 		);
 	});
+
+	describe('systemFields validation', () => {
+		test('should throw error when trying to create a system field', () => {
+			const diff = baseDiff({
+				systemFields: [
+					{
+						collection: 'test',
+						field: 'test_field',
+						diff: [
+							{
+								kind: 'N',
+								rhs: {
+									collection: 'test',
+									field: 'test_field',
+									type: 'uuid',
+									meta: {},
+									schema: {
+										is_indexed: false,
+									},
+								} as SnapshotSystemField,
+							},
+						],
+					},
+				],
+			});
+
+			expect(() => validateApplyDiff(diff, baseSnapshot())).toThrowError(
+				'Provided diff is trying to create field "test.test_field" but this action is not supported',
+			);
+		});
+
+		test('should throw error when trying to delete a system field', () => {
+			const diff = baseDiff({
+				systemFields: [
+					{
+						collection: 'test',
+						field: 'test_field',
+						diff: [
+							{
+								kind: 'D',
+								lhs: {
+									collection: 'test',
+									field: 'test_field',
+									type: 'uuid',
+									meta: {},
+									schema: {
+										is_indexed: false,
+									},
+								} as SnapshotSystemField,
+							},
+						],
+					},
+				],
+			});
+
+			expect(() => validateApplyDiff(diff, baseSnapshot())).toThrowError(
+				'Provided diff is trying to delete field "test.test_field" but this action is not supported',
+			);
+		});
+
+		test('should throw error when trying to perform array operation on a system field', () => {
+			const diff = baseDiff({
+				systemFields: [
+					{
+						collection: 'test',
+						field: 'test_field',
+						diff: [{ kind: 'A', path: ['schema'], index: 0, item: { kind: 'N', rhs: 'value' } }] as any,
+					},
+				],
+			});
+
+			expect(() => validateApplyDiff(diff, baseSnapshot())).toThrowError(
+				'Provided diff is trying to update array field "test.test_field" but this action is not supported',
+			);
+		});
+
+		test('should throw error when trying to edit non-indexed property of system field', () => {
+			const diff = baseDiff({
+				systemFields: [
+					{
+						collection: 'test',
+						field: 'test_field',
+						diff: [{ kind: 'E', path: ['schema', 'some_other_property'], lhs: 'old', rhs: 'new' }] as any,
+					},
+				],
+			});
+
+			expect(() => validateApplyDiff(diff, baseSnapshot())).toThrowError(
+				'Provided diff is trying to alter property "schema.some_other_property" on "test.test_field" but currently only "schema.is_indexed" is supported',
+			);
+		});
+
+		test('should throw error when trying to edit with empty path', () => {
+			const diff = baseDiff({
+				systemFields: [
+					{
+						collection: 'test',
+						field: 'test_field',
+						diff: [{ kind: 'E', path: [], lhs: 'old', rhs: 'new' }] as any,
+					},
+				],
+			});
+
+			expect(() => validateApplyDiff(diff, baseSnapshot())).toThrowError(
+				'Provided diff is trying to alter property "" on "test.test_field" but currently only "schema.is_indexed" is supported',
+			);
+		});
+
+		test('should throw error when trying to edit with no path', () => {
+			const diff = baseDiff({
+				systemFields: [
+					{
+						collection: 'test',
+						field: 'test_field',
+						diff: [{ kind: 'E', lhs: 'old', rhs: 'new' }] as any,
+					},
+				],
+			});
+
+			expect(() => validateApplyDiff(diff, baseSnapshot())).toThrowError(
+				'Provided diff is trying to alter property "" on "test.test_field" but currently only "schema.is_indexed" is supported',
+			);
+		});
+
+		test('should allow editing schema.is_indexed property', () => {
+			const diff = baseDiff({
+				systemFields: [
+					{
+						collection: 'test',
+						field: 'test_field',
+						diff: [{ kind: 'E', path: ['schema', 'is_indexed'], lhs: false, rhs: true }] as any,
+					},
+				],
+			});
+
+			const snapshot = {
+				...baseSnapshot(),
+				hash: 'abc',
+			};
+
+			expect(() => validateApplyDiff(diff, snapshot)).not.toThrow();
+		});
+
+		test('should continue when systemField diff is empty', () => {
+			const diff = baseDiff({
+				systemFields: [
+					{
+						collection: 'test',
+						field: 'test_field',
+						diff: [],
+					},
+				],
+			});
+
+			const snapshot = {
+				...baseSnapshot(),
+				hash: 'abc',
+			};
+
+			expect(() => validateApplyDiff(diff, snapshot)).not.toThrow();
+		});
+	});
 });
 
 test('should not throw error for diffs with varying types of lhs/rhs', () => {
@@ -321,6 +483,28 @@ test('should pass on valid diff', () => {
 	const diff = {
 		hash: 'abc',
 		diff: { collections: [{ collection: 'test', diff: [] }], fields: [], systemFields: [], relations: [] },
+	};
+
+	const snapshot = { hash: 'abc' } as SnapshotWithHash;
+
+	expect(validateApplyDiff(diff, snapshot)).toBe(true);
+});
+
+test('should pass on valid diff with systemFields editing is_indexed', () => {
+	const diff: any = {
+		hash: 'abc',
+		diff: {
+			collections: [],
+			fields: [],
+			systemFields: [
+				{
+					collection: 'test',
+					field: 'id',
+					diff: [{ kind: 'E', path: ['schema', 'is_indexed'], lhs: false, rhs: true }],
+				},
+			],
+			relations: [],
+		},
 	};
 
 	const snapshot = { hash: 'abc' } as SnapshotWithHash;
