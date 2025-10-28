@@ -20,7 +20,7 @@ export type UpdateNotificationOutput<
 export const updateNotifications =
 	<Schema, const TQuery extends Query<Schema, DirectusNotification<Schema>>>(
 		keys: DirectusNotification<Schema>['id'][],
-		item: Partial<DirectusNotification<Schema>>,
+		item: NestedPartial<DirectusNotification<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateNotificationOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -63,7 +63,7 @@ export const updateNotificationsBatch =
 export const updateNotification =
 	<Schema, const TQuery extends Query<Schema, DirectusNotification<Schema>>>(
 		key: DirectusNotification<Schema>['id'],
-		item: Partial<DirectusNotification<Schema>>,
+		item: NestedPartial<DirectusNotification<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateNotificationOutput<Schema, TQuery>, Schema> =>
 	() => {
