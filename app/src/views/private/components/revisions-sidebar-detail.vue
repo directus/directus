@@ -1,16 +1,13 @@
 <script setup lang="ts">
 import { useRevisions } from '@/composables/use-revisions';
 import ComparisonModal from '@/modules/content/components/comparison-modal.vue';
-import type { ComparisonData } from '@/modules/content/comparison-utils';
-import { useComparison } from '@/modules/content/composables/use-comparison';
 import type { Revision } from '@/types/revisions';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { useGroupable } from '@directus/composables';
 import { ContentVersion, PrimaryKey } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
-import RevisionsDateGroup from './revisions-date-group.vue';
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import RevisionsDateGroup from './revisions-date-group.vue';
 
 const props = defineProps<{
 	collection: string;
@@ -32,11 +29,8 @@ const { active: open } = useGroupable({
 const { collection, primaryKey, version } = toRefs(props);
 
 const comparisonModalActive = ref(false);
-const selectedRevision = ref<number | undefined>(undefined);
-const comparisonData = ref<ComparisonData | null>(null);
+const currentRevision = ref<Revision | null>(null);
 const page = ref<number>(1);
-
-const { normalizeComparisonData } = useComparison({ comparisonData, collection, primaryKey });
 
 const {
 	revisions,
@@ -63,26 +57,14 @@ watch(
 	},
 );
 
-async function openModal(id: number) {
-	const revision = revisions.value?.find((r) => r.id === id);
+function openModal(id: number) {
+	currentRevision.value = (revisions.value as Revision[])?.find((revision) => revision.id === id) ?? null;
+	comparisonModalActive.value = true;
+}
 
-	if (revision) {
-		try {
-			const normalizedData = await normalizeComparisonData(
-				id,
-				'revision',
-				version.value,
-				undefined,
-				revisions.value as Revision[],
-			);
-
-			selectedRevision.value = revision.id;
-			comparisonData.value = normalizedData;
-			comparisonModalActive.value = true;
-		} catch (error) {
-			unexpectedError(error);
-		}
-	}
+function closeModal() {
+	comparisonModalActive.value = false;
+	currentRevision.value = null;
 }
 
 function onToggle(open: boolean) {
@@ -123,16 +105,16 @@ defineExpose({
 		</template>
 
 		<comparison-modal
-			v-model:comparison-data="comparisonData"
-			:active="comparisonModalActive"
+			v-model="comparisonModalActive"
 			:delete-versions-allowed="false"
-			:collection="collection"
-			:primary-key="primaryKey"
+			:collection
+			:primary-key
+			mode="revision"
+			:current-version="version"
+			:current-revision
+			:revisions="revisions as Revision[]"
 			@confirm="$emit('revert', $event)"
-			@cancel="
-				comparisonModalActive = false;
-				comparisonData = null;
-			"
+			@cancel="closeModal"
 		/>
 	</sidebar-detail>
 </template>

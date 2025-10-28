@@ -1,35 +1,43 @@
 <script setup lang="ts">
-import type { ContentVersion, PrimaryKey } from '@directus/types';
 import api from '@/api';
 import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import type { Revision } from '@/types/revisions';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { translateShortcut } from '@/utils/translate-shortcut';
-import { type ComparisonData } from '../comparison-utils';
+import { unexpectedError } from '@/utils/unexpected-error';
+import type { ContentVersion, PrimaryKey } from '@directus/types';
+import { isEqual } from 'lodash';
+import { computed, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useComparison } from '../composables/use-comparison';
 import ComparisonHeader from './comparison-header.vue';
-import { isEqual } from 'lodash';
-import { ref, toRefs, unref, watch, computed, type Ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 interface Props {
-	active: boolean;
 	deleteVersionsAllowed: boolean;
 	collection: string;
 	primaryKey: PrimaryKey;
+	mode: 'version' | 'revision';
+	currentVersion: ContentVersion | null | undefined;
+	currentRevision?: Revision | null;
+	revisions?: Revision[] | null;
 }
+
+const props = defineProps<Props>();
+const active = defineModel<boolean>();
+
+const emit = defineEmits<{
+	cancel: [];
+	promote: [deleteOnPromote: boolean];
+	confirm: [data?: Record<string, any>];
+}>();
 
 const { t } = useI18n();
 
-const props = defineProps<Props>();
-
-const comparisonData = defineModel<ComparisonData | null>('comparisonData', {
-	required: false,
-}) as Ref<ComparisonData | null>;
-
-const { active, deleteVersionsAllowed, collection, primaryKey } = toRefs(props);
+const { deleteVersionsAllowed, collection, primaryKey, mode, currentVersion, revisions } = toRefs(props);
+const internalRevision = ref<Revision | null>(null);
+const currentRevision = computed(() => internalRevision.value ?? props.currentRevision);
 
 const {
+	comparisonData,
 	selectedComparisonFields,
 	userUpdated,
 	mainItemUserUpdated,
@@ -38,8 +46,6 @@ const {
 	someFieldsSelected,
 	availableFieldsCount,
 	comparisonFields,
-	isVersionMode,
-	isRevisionMode,
 	userLoading,
 	mainItemUserLoading,
 	baseDisplayName,
@@ -47,42 +53,41 @@ const {
 	normalizedData,
 	toggleSelectAll,
 	toggleComparisonField,
+	fetchComparisonData,
 	fetchUserUpdated,
 	fetchMainItemUserUpdated,
-	normalizeComparisonData,
 } = useComparison({
-	comparisonData,
 	collection,
 	primaryKey,
+	mode,
+	currentVersion,
+	currentRevision,
+	revisions,
 });
 
-const modalLoading = ref(false);
-
 const incomingTooltipMessage = computed(() => {
-	if (isRevisionMode.value) return `${t('changes_made')} ${t('no_relational_data')}`;
+	if (props.mode === 'revision') return `${t('changes_made')} ${t('no_relational_data')}`;
 	if (comparisonData.value?.outdated) return t('main_updated_notice');
 	return undefined;
 });
 
 const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
 
-const emit = defineEmits<{
-	cancel: [];
-	promote: [deleteOnPromote: boolean];
-	confirm: [data?: Record<string, any>];
-}>();
+const modalLoading = ref(false);
 
 watch(
-	active,
-	async (value) => {
-		if (value) {
-			modalLoading.value = true;
+	[active, currentRevision],
+	async ([isActive]) => {
+		if (!isActive) return;
 
-			try {
-				await Promise.allSettled([fetchUserUpdated(), fetchMainItemUserUpdated()]);
-			} finally {
-				modalLoading.value = false;
-			}
+		modalLoading.value = true;
+
+		try {
+			await fetchComparisonData();
+			await fetchUserUpdated();
+			await fetchMainItemUserUpdated();
+		} finally {
+			modalLoading.value = false;
 		}
 	},
 	{ immediate: true },
@@ -110,7 +115,7 @@ function usePromoteDialog() {
 		promoting.value = true;
 
 		try {
-			if (isVersionMode.value) {
+			if (props.mode === 'version') {
 				// Handle version promotion
 				const versionId = (comparisonData.value!.selectableDeltas?.[0] as ContentVersion)?.id;
 
@@ -124,7 +129,7 @@ function usePromoteDialog() {
 				}
 
 				emit('promote', deleteOnPromote);
-			} else if (isRevisionMode.value) {
+			} else {
 				const restoreData: Record<string, any> = {};
 				const selectedFields = unref(selectedComparisonFields);
 
@@ -152,38 +157,10 @@ function usePromoteDialog() {
 	}
 }
 
-async function onDeltaSelectionChange(newDeltaId: string | number) {
-	modalLoading.value = true;
+function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
+	if (props.mode !== 'revision') return;
 
-	try {
-		let newComparisonData: ComparisonData;
-
-		if (isVersionMode.value) {
-			newComparisonData = await normalizeComparisonData(
-				newDeltaId as string,
-				'version',
-				comparisonData.value?.currentVersion,
-				undefined,
-				comparisonData.value?.selectableDeltas as Revision[] | undefined,
-			);
-		} else {
-			newComparisonData = await normalizeComparisonData(
-				newDeltaId as number,
-				'revision',
-				comparisonData.value?.currentVersion,
-				undefined,
-				comparisonData.value?.selectableDeltas as Revision[] | undefined,
-			);
-		}
-
-		comparisonData.value = { ...comparisonData.value, ...newComparisonData };
-
-		await Promise.allSettled([fetchUserUpdated(), fetchMainItemUserUpdated()]);
-	} catch (error) {
-		unexpectedError(error);
-	} finally {
-		modalLoading.value = false;
-	}
+	internalRevision.value = revisions.value?.find((revision) => revision.id === newDeltaId) ?? null;
 }
 </script>
 
@@ -243,10 +220,10 @@ async function onDeltaSelectionChange(newDeltaId: string | number) {
 							:date-updated="normalizedData?.incoming.date.dateObject || null"
 							:user-updated="userUpdated"
 							:user-loading="userLoading"
-							:show-delta-dropdown="isRevisionMode"
+							:show-delta-dropdown="mode === 'revision'"
 							:comparison-data="comparisonData"
 							:tooltip-message="incomingTooltipMessage"
-							@delta-change="onDeltaSelectionChange"
+							@delta-change="onIncomingSelectionChange"
 						/>
 						<div class="comparison-content-divider"></div>
 						<div class="comparison-content">

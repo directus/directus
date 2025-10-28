@@ -1,10 +1,10 @@
 import { i18n } from '@/lang';
-import type { Revision } from '@/types/revisions';
 import type { Activity } from '@/types/activity';
+import type { Revision } from '@/types/revisions';
 import { RELATIONAL_TYPES } from '@directus/constants';
 import formatTitle from '@directus/format-title';
 import type { ContentVersion, Field, RelationalType, User } from '@directus/types';
-import { isNil, isEqual } from 'lodash';
+import { isEqual, isNil } from 'lodash';
 
 export type ComparisonData = {
 	base: Record<string, any>;
@@ -62,18 +62,6 @@ export type VersionComparisonResponse = {
 	main: Record<string, any>;
 };
 
-export type RevisionComparisonResponse = {
-	data: Record<string, any> | null;
-	delta: Record<string, any> | null;
-	collection: string;
-	item: string | number;
-	activity: {
-		action: string;
-		timestamp: string;
-		user: any;
-	};
-};
-
 export type NormalizedComparison = {
 	outdated: boolean;
 	mainHash: string;
@@ -125,7 +113,7 @@ export function applyValuesToSpecialFields(
 	fields: Field[],
 	incomingItem: Record<string, any>,
 	baseItem: Record<string, any>,
-	activity: RevisionComparisonResponse['activity'] | undefined,
+	activity: Revision['activity'] | undefined,
 ): Record<string, any> {
 	if (!fields) return incomingItem;
 
@@ -143,7 +131,7 @@ export function applyValuesToSpecialFields(
 			}
 
 			if (isUserCreatedField(field) && activity?.user) {
-				result[fieldKey] = activity?.user?.id || activity?.user;
+				result[fieldKey] = typeof activity.user === 'object' ? activity.user.id : activity.user;
 				continue;
 			}
 		}

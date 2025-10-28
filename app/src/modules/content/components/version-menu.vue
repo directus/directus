@@ -4,11 +4,10 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { ContentVersion, PrimaryKey } from '@directus/types';
 import slugify from '@sindresorhus/slugify';
-import { useComparison } from '../composables/use-comparison';
-import { type ComparisonData, getVersionDisplayName } from '../comparison-utils';
-import ComparisonModal from './comparison-modal.vue';
-import { ref, toRefs, unref, watch, computed } from 'vue';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { getVersionDisplayName } from '../comparison-utils';
+import ComparisonModal from './comparison-modal.vue';
 
 interface Props {
 	collection: string;
@@ -32,14 +31,7 @@ const { t } = useI18n();
 
 const { collection, primaryKey, hasEdits, currentVersion, versions } = toRefs(props);
 
-const isComparisonModalOpen = ref(false);
-const comparisonData = ref<ComparisonData | null>(null);
-
-const { normalizeComparisonData } = useComparison({
-	comparisonData,
-	collection,
-	primaryKey,
-});
+const comparisonModalActive = ref(false);
 
 const {
 	createAllowed: createVersionsAllowed,
@@ -257,27 +249,8 @@ function useDeleteDialog() {
 	}
 }
 
-async function openComparisonModal() {
-	if (!currentVersion.value) return;
-
-	try {
-		const normalizedData = await normalizeComparisonData(
-			currentVersion.value.id,
-			'version',
-			currentVersion.value,
-			versions.value,
-		);
-
-		comparisonData.value = normalizedData;
-		isComparisonModalOpen.value = true;
-	} catch (error) {
-		unexpectedError(error);
-	}
-}
-
 async function onPromoteComplete(deleteOnPromote: boolean) {
-	isComparisonModalOpen.value = false;
-	comparisonData.value = null;
+	comparisonModalActive.value = false;
 
 	if (deleteOnPromote) {
 		await deleteVersion();
@@ -329,7 +302,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 				<template v-if="currentVersion !== null">
 					<v-divider />
 
-					<v-list-item v-if="updateAllowed" clickable @click="openComparisonModal">
+					<v-list-item v-if="updateAllowed" clickable @click="comparisonModalActive = true">
 						{{ t('promote_version') }}
 					</v-list-item>
 
@@ -346,12 +319,13 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 
 		<comparison-modal
 			v-if="currentVersion !== null"
-			v-model:comparison-data="comparisonData"
-			:active="isComparisonModalOpen"
-			:delete-versions-allowed="deleteVersionsAllowed"
-			:collection="collection"
-			:primary-key="primaryKey"
-			@cancel="isComparisonModalOpen = false"
+			v-model="comparisonModalActive"
+			:delete-versions-allowed
+			:collection
+			:primary-key
+			mode="version"
+			:current-version
+			@cancel="comparisonModalActive = false"
 			@promote="onPromoteComplete($event)"
 		/>
 
