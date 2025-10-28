@@ -1,5 +1,5 @@
 import getDatabase from '../database/index.js';
-import { sendOwnerReport } from '../telemetry/lib/send-owner-report.js';
+import { sendReport } from '../telemetry/index.js';
 import { scheduleSynchronizedJob } from '../utils/schedule.js';
 
 /**
@@ -17,7 +17,7 @@ export default async function schedule() {
 		if (project_status !== 'pending') return;
 
 		try {
-			await sendOwnerReport(ownerInfo);
+			await sendReport(ownerInfo);
 			await db.update('project_status', '').from('directus_settings');
 		} catch (_error) {
 			// Empty catch
