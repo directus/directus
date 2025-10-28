@@ -1,6 +1,19 @@
 import { DeepPartial, Field, SetupForm } from '@directus/types';
 import { computed, ComputedRef, MaybeRef, ModelRef, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import z from 'zod';
+
+export const FormValidator = z.object({
+	first_name: z.string(),
+	last_name: z.string(),
+	email: z.email(),
+	password: z.string(),
+	password_confirm: z.string(),
+	project_usage: z.enum(['personal', 'commercial', 'community']).optional(),
+	org_name: z.string().optional(),
+	license: z.boolean(),
+	product_updates: z.boolean().optional(),
+});
 
 export const initialValues: SetupForm = {
 	first_name: null,

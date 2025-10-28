@@ -5,7 +5,7 @@ import SetupForm from './form.vue';
 
 import { computed, ref, unref } from 'vue';
 import { validateItem } from '@/utils/validate-item';
-import { initialValues, useFormFields } from './form';
+import { FormValidator, initialValues, useFormFields } from './form';
 import api from '@/api';
 import { login } from '@/auth';
 import { useRouter } from 'vue-router';
@@ -65,11 +65,7 @@ const errorMessage = computed(() => {
 	return error.value?.response?.data?.errors?.[0]?.message || error.value?.message || t('unexpected_error');
 });
 
-const formComplete = computed(() => {
-	return (['first_name', 'last_name', 'email', 'password', 'password_confirm', 'license'] as const).every((key) => {
-		return Boolean(form.value?.[key]);
-	});
-});
+const formComplete = computed(() => FormValidator.safeParse(form.value).success);
 </script>
 
 <template>
