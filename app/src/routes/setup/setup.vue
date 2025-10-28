@@ -91,7 +91,7 @@ const formComplete = computed(() => {
 	</public-view>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .setup-form {
 	margin-block-start: 100px;
 }

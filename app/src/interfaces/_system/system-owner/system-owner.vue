@@ -21,7 +21,9 @@ const props = withDefaults(
 
 const { t } = useI18n();
 
-const emit = defineEmits(['input']);
+const emit = defineEmits<{
+	input: [value: string];
+}>();
 
 const errors = ref<Record<string, any>[]>([]);
 const editing = ref(false);
@@ -42,7 +44,7 @@ async function save() {
 
 	await settingsStore.setOwner(form.value);
 
-	emit('input', form.value.email);
+	emit('input', form.value.email!);
 
 	editing.value = false;
 }

@@ -125,7 +125,7 @@ const fields = useFormFields(props.register, value);
 	</div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .setup-form {
 	display: grid;
 
