@@ -2,7 +2,7 @@ import type { Diff } from 'deep-diff';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 import { ForbiddenError } from '@directus/errors';
 import type { Accountability, Snapshot, SnapshotDiffWithHash } from '@directus/types';
 import type { Collection } from '../types/collection.js';
@@ -77,7 +77,7 @@ afterEach(() => {
 
 describe('Services / Schema', () => {
 	describe('snapshot', () => {
-		it('should throw ForbiddenError for non-admin user', async () => {
+		test('should throw ForbiddenError for non-admin user', async () => {
 			vi.mocked(getSnapshot).mockResolvedValueOnce(testSnapshot);
 
 			const service = new SchemaService({ knex: db, accountability: { role: 'test', admin: false } as Accountability });
@@ -85,7 +85,7 @@ describe('Services / Schema', () => {
 			await expect(service.snapshot()).rejects.toThrowError(ForbiddenError);
 		});
 
-		it('should return snapshot for admin user', async () => {
+		test('should return snapshot for admin user', async () => {
 			vi.mocked(getSnapshot).mockResolvedValueOnce(testSnapshot);
 
 			const service = new SchemaService({ knex: db, accountability: { role: 'admin', admin: true } as Accountability });
@@ -105,7 +105,7 @@ describe('Services / Schema', () => {
 			},
 		} satisfies SnapshotDiffWithHash;
 
-		it('should throw ForbiddenError for non-admin user', async () => {
+		test('should throw ForbiddenError for non-admin user', async () => {
 			vi.mocked(getSnapshot).mockResolvedValueOnce(testSnapshot);
 
 			const service = new SchemaService({ knex: db, accountability: { role: 'test', admin: false } as Accountability });
@@ -114,7 +114,7 @@ describe('Services / Schema', () => {
 			expect(vi.mocked(applyDiff)).not.toHaveBeenCalledOnce();
 		});
 
-		it('should apply for admin user', async () => {
+		test('should apply for admin user', async () => {
 			vi.mocked(getSnapshot).mockResolvedValueOnce(testSnapshot);
 
 			const service = new SchemaService({ knex: db, accountability: { role: 'admin', admin: true } as Accountability });
@@ -156,7 +156,7 @@ describe('Services / Schema', () => {
 			relations: [],
 		} satisfies Snapshot;
 
-		it('should throw ForbiddenError for non-admin user', async () => {
+		test('should throw ForbiddenError for non-admin user', async () => {
 			const service = new SchemaService({ knex: db, accountability: { role: 'test', admin: false } as Accountability });
 
 			await expect(service.diff(snapshotToApply, { currentSnapshot: testSnapshot, force: true })).rejects.toThrowError(
@@ -164,7 +164,7 @@ describe('Services / Schema', () => {
 			);
 		});
 
-		it('should return diff for admin user', async () => {
+		test('should return diff for admin user', async () => {
 			const service = new SchemaService({ knex: db, accountability: { role: 'admin', admin: true } as Accountability });
 
 			await expect(service.diff(snapshotToApply, { currentSnapshot: testSnapshot, force: true })).resolves.toEqual({
@@ -175,14 +175,13 @@ describe('Services / Schema', () => {
 			});
 		});
 
-		it('should return null for empty diff', async () => {
+		test('should return null for empty diff', async () => {
 			const service = new SchemaService({ knex: db, accountability: { role: 'admin', admin: true } as Accountability });
 
 			await expect(service.diff(testSnapshot, { currentSnapshot: testSnapshot, force: true })).resolves.toBeNull();
 		});
 
-
-		it('should return null for missing systeFields', async () => {
+		test('should return null for missing systeFields', async () => {
 			const testSnapshot = {
 				directus: '0.0.0',
 				version: 1,
@@ -199,7 +198,7 @@ describe('Services / Schema', () => {
 	});
 
 	describe('getHashedSnapshot', () => {
-		it('should return snapshot for admin user', async () => {
+		test('should return snapshot for admin user', async () => {
 			const service = new SchemaService({ knex: db, accountability: { role: 'admin', admin: true } as Accountability });
 
 			expect(service.getHashedSnapshot(testSnapshot)).toEqual(
