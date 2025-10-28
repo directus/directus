@@ -699,7 +699,7 @@ describe('ImportService', () => {
 			knex: db,
 			schema: {} as any,
 		});
-	})
+	});
 
 	afterEach(() => {
 		tracker.reset();
@@ -899,7 +899,7 @@ describe('ImportService', () => {
 		test('stops immediately on error without field', async () => {
 			const mockUpsertOne = vi.fn().mockRejectedValue({
 				code: ErrorCode.InvalidForeignKey,
-				message: 'test'
+				message: 'test',
 			});
 
 			vi.mocked(getService).mockReturnValue({
@@ -948,7 +948,9 @@ describe('ImportService', () => {
 				},
 			});
 
-			await expect(service.importCSV('test_collection', errorStream)).rejects.toThrow('Error while retrieving import data');
+			await expect(service.importCSV('test_collection', errorStream)).rejects.toThrow(
+				'Error while retrieving import data',
+			);
 			expect(mockCleanup).toHaveBeenCalled();
 		});
 
@@ -987,7 +989,7 @@ describe('ImportService', () => {
 			const data = [
 				{ id: 1, name: 'John Doe', email: 'john@example.com' },
 				{ id: 2, name: 'Jane Smith', email: 'jane@example.com' },
-			]
+			];
 
 			const jsonData = JSON.stringify(data);
 
