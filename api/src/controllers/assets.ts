@@ -34,7 +34,7 @@ router.get(
 
 		const files = await service.getFileHierarchy(String(req.params['id']));
 
-		const { archive, complete } = await service.getZip(files);
+		const { archive, complete } = await service.getZip(files, true);
 
 		res.setHeader('Content-Type', 'application/zip');
 		res.setHeader('Content-Disposition', `attachment; filename="folder-${new Date().toISOString()}.zip"`);

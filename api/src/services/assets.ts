@@ -77,30 +77,37 @@ export class AssetsService {
 		return results;
 	}
 
-	async getZip(files: Files) {
+	async getZip(files: Files, skipUnaccessable = false) {
 		const archive = archiver('zip');
-
-		for (const { id } of files) {
-			if (!isValidUuid(id)) throw new ForbiddenError();
-		}
-
-		if (this.accountability) {
-			await validateAccess(
-				{
-					accountability: this.accountability,
-					action: 'read',
-					collection: 'directus_files',
-					primaryKeys: files.map((file) => file.id),
-				},
-				{ knex: this.knex, schema: this.schema },
-			);
-		}
 
 		const complete = async () => {
 			const fileDeduper = new FileDeduper();
 			const storage = await getStorage();
 
 			for (const { id, folder } of files) {
+				if (!isValidUuid(id)) throw new ForbiddenError();
+				let accessError;
+
+				if (this.accountability) {
+					try {
+						await validateAccess(
+							{
+								accountability: this.accountability,
+								action: 'read',
+								collection: 'directus_files',
+								primaryKeys: [id],
+							},
+							{ knex: this.knex, schema: this.schema },
+						);
+					} catch (error) {
+						accessError = error;
+					}
+
+					if (!skipUnaccessable && accessError) {
+						throw accessError;
+					}
+				}
+
 				const file = (await this.filesService.readOne(id)) as File;
 
 				const exists = await storage.location(file.storage).exists(file.filename_disk);
