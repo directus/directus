@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useCollectionPermissions } from '@/composables/use-permissions';
+import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { ContentVersion, PrimaryKey } from '@directus/types';
 import slugify from '@sindresorhus/slugify';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { getVersionDisplayName } from '../comparison-utils';
 import ComparisonModal from './comparison-modal.vue';
 
 interface Props {
@@ -266,11 +266,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 			<template #activator="{ toggle }">
 				<button class="version-button" type="button" @click="toggle">
 					<v-icon name="published_with_changes" />
-					<v-text-overflow
-						class="version-name"
-						:text="currentVersion ? getVersionDisplayName(currentVersion) : t('main_version')"
-						placement="bottom"
-					/>
+					<v-text-overflow class="version-name" :text="getVersionDisplayName(currentVersion)" placement="bottom" />
 					<v-icon small name="arrow_drop_down" />
 				</button>
 			</template>

@@ -1,26 +1,87 @@
 import api from '@/api';
+import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
+import type { Activity } from '@/types/activity';
 import type { Revision } from '@/types/revisions';
-import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { unexpectedError } from '@/utils/unexpected-error';
-import type { ContentVersion, PrimaryKey, User } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
-import { has, mergeWith } from 'lodash';
-import { computed, ref, watch, type Ref } from 'vue';
 import {
-	applyValuesToSpecialFields,
-	areAllFieldsSelected,
-	areSomeFieldsSelected,
-	getNormalizedComparisonData,
-	getRevisionFields,
-	replaceArraysInMergeCustomizer,
-	toggleAllFields,
-	toggleFieldInSelection,
-	type ComparisonData,
-	type NormalizedComparisonData,
-	type NormalizedUser,
-	type VersionComparisonResponse,
-} from '../comparison-utils';
+	isDateCreated,
+	isDateUpdated,
+	isPrimaryKey,
+	isRelational,
+	isUserCreated,
+	isUserUpdated,
+} from '@/utils/field-utils';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { getRevisionFields } from '@/utils/get-revision-fields';
+import { getVersionDisplayName } from '@/utils/get-version-display-name';
+import { unexpectedError } from '@/utils/unexpected-error';
+import type { ContentVersion, Field, PrimaryKey, User } from '@directus/types';
+import { getEndpoint } from '@directus/utils';
+import { has, isEqual, mergeWith } from 'lodash';
+import { computed, ref, watch, type Ref } from 'vue';
+
+type VersionComparisonResponse = {
+	outdated: boolean;
+	mainHash: string;
+	current: Record<string, any>;
+	main: Record<string, any>;
+};
+
+type NormalizedDate = {
+	raw: string | null;
+	formatted: string | null;
+	dateObject: Date | null;
+};
+
+type NormalizedUser = {
+	id: string;
+	firstName: string | null;
+	lastName: string | null;
+	email: string | null;
+	displayName: string;
+};
+
+type NormalizedItem = {
+	id: string | number | undefined;
+	displayName: string;
+	date: NormalizedDate;
+	user: NormalizedUser | null;
+	collection?: string;
+	item?: string | number;
+};
+
+type NormalizedComparisonData = {
+	base: NormalizedItem;
+	incoming: NormalizedItem;
+	selectableDeltas: NormalizedItem[];
+	revisionFields?: Set<string>;
+	comparisonType: 'version' | 'revision';
+	outdated: boolean;
+	mainHash: string;
+	currentVersion: ContentVersion | null;
+	initialSelectedDeltaId: number | string | null;
+	fieldsWithDifferences: string[];
+};
+
+type NormalizedComparison = {
+	outdated: boolean;
+	mainHash: string;
+	incoming: Record<string, any>;
+	base: Record<string, any>;
+};
+
+type ComparisonData = {
+	base: Record<string, any>;
+	incoming: Record<string, any>;
+	mainVersionMeta?: Pick<Activity, 'timestamp' | 'user'>;
+	selectableDeltas?: Revision[] | ContentVersion[];
+	revisionFields?: Set<string>;
+	comparisonType: 'version' | 'revision';
+	outdated?: boolean;
+	mainHash?: string;
+	currentVersion?: ContentVersion | null;
+	initialSelectedDeltaId?: number | string;
+};
 
 interface UseComparisonOptions {
 	collection: Ref<string>;
@@ -59,13 +120,17 @@ export function useComparison(options: UseComparisonOptions) {
 		return normalizedData.value?.fieldsWithDifferences || [];
 	});
 
-	const allFieldsSelected = computed(() => {
-		return areAllFieldsSelected(selectedComparisonFields.value, fieldsWithDifferences.value);
-	});
+	const allFieldsSelected = computed(
+		() =>
+			fieldsWithDifferences.value.length &&
+			fieldsWithDifferences.value.every((field) => selectedComparisonFields.value.includes(field)),
+	);
 
-	const someFieldsSelected = computed(() => {
-		return areSomeFieldsSelected(selectedComparisonFields.value, fieldsWithDifferences.value);
-	});
+	const someFieldsSelected = computed(
+		() =>
+			fieldsWithDifferences.value.length &&
+			fieldsWithDifferences.value.some((field) => selectedComparisonFields.value.includes(field)),
+	);
 
 	const availableFieldsCount = computed(() => {
 		return fieldsWithDifferences.value.length;
@@ -95,22 +160,60 @@ export function useComparison(options: UseComparisonOptions) {
 		{ immediate: true },
 	);
 
+	return {
+		comparisonData,
+		selectedComparisonFields,
+		userUpdated,
+		mainItemUserUpdated,
+		mainHash,
+		allFieldsSelected,
+		someFieldsSelected,
+		availableFieldsCount,
+		comparisonFields,
+		userLoading,
+		mainItemUserLoading,
+		baseDisplayName,
+		deltaDisplayName,
+		normalizedData,
+		toggleSelectAll,
+		toggleComparisonField,
+		fetchComparisonData,
+		fetchUserUpdated,
+		fetchMainItemUserUpdated,
+	};
+
 	function toggleSelectAll() {
-		selectedComparisonFields.value = toggleAllFields(
-			selectedComparisonFields.value,
-			fieldsWithDifferences.value,
-			allFieldsSelected.value,
-		);
+		if (allFieldsSelected.value) {
+			selectedComparisonFields.value = [];
+			return;
+		}
+
+		selectedComparisonFields.value = [...new Set([...selectedComparisonFields.value, ...fieldsWithDifferences.value])];
 	}
 
 	function toggleComparisonField(fieldKey: string) {
-		selectedComparisonFields.value = toggleFieldInSelection(selectedComparisonFields.value, fieldKey);
+		if (selectedComparisonFields.value.includes(fieldKey)) {
+			removeFieldFromSelection(fieldKey);
+			return;
+		}
+
+		addFieldToSelection(fieldKey);
+	}
+
+	function addFieldToSelection(fieldKey: string) {
+		selectedComparisonFields.value = [...selectedComparisonFields.value, fieldKey];
+	}
+
+	function removeFieldFromSelection(fieldKey: string) {
+		selectedComparisonFields.value = selectedComparisonFields.value.filter(
+			(selectedKey: string) => selectedKey !== fieldKey,
+		);
 	}
 
 	async function fetchComparisonData() {
 		try {
 			if (mode.value === 'version' && currentVersion.value) {
-				comparisonData.value = await fetchVersionComparison(currentVersion.value);
+				comparisonData.value = await buildVersionComparison(currentVersion.value);
 			} else if (mode.value === 'revision' && currentRevision.value) {
 				comparisonData.value = await buildRevisionComparison(
 					currentRevision.value,
@@ -158,31 +261,6 @@ export function useComparison(options: UseComparisonOptions) {
 		mainItemUserUpdated.value = (await fetchUserDetails(normalizedData.value?.base?.user, mainItemUserLoading)) ?? null;
 	}
 
-	async function fetchVersionComparison(version: ContentVersion): Promise<ComparisonData> {
-		try {
-			const response = await api.get(`/versions/${version.id}/compare`);
-			const data: VersionComparisonResponse = response.data.data;
-			const base = data.main || {};
-			const incomingMerged = mergeWith({}, base, data.current || {}, replaceArraysInMergeCustomizer);
-
-			const mainVersionMeta = await fetchLatestRevisionActivityOfMainVersion(collection.value, primaryKey.value);
-
-			return {
-				base,
-				incoming: incomingMerged,
-				mainVersionMeta,
-				selectableDeltas: [version],
-				comparisonType: 'version',
-				outdated: data.outdated,
-				mainHash: data.mainHash,
-				initialSelectedDeltaId: version.id,
-			};
-		} catch (error) {
-			unexpectedError(error);
-			throw error;
-		}
-	}
-
 	async function fetchLatestRevisionActivityOfMainVersion(collection: string, item: PrimaryKey) {
 		try {
 			type RevisionResponse = { data: Pick<Revision, 'activity'>[] };
@@ -205,6 +283,31 @@ export function useComparison(options: UseComparisonOptions) {
 			});
 
 			return response.data.data?.[0]?.activity as ComparisonData['mainVersionMeta'] | undefined;
+		} catch (error) {
+			unexpectedError(error);
+			throw error;
+		}
+	}
+
+	async function buildVersionComparison(version: ContentVersion): Promise<ComparisonData> {
+		try {
+			const response = await api.get(`/versions/${version.id}/compare`);
+			const data: VersionComparisonResponse = response.data.data;
+			const base = data.main || {};
+			const incomingMerged = mergeWith({}, base, data.current || {}, replaceArraysInMergeCustomizer);
+
+			const mainVersionMeta = await fetchLatestRevisionActivityOfMainVersion(collection.value, primaryKey.value);
+
+			return {
+				base,
+				incoming: incomingMerged,
+				mainVersionMeta,
+				selectableDeltas: [version],
+				comparisonType: 'version',
+				outdated: data.outdated,
+				mainHash: data.mainHash,
+				initialSelectedDeltaId: version.id,
+			};
 		} catch (error) {
 			unexpectedError(error);
 			throw error;
@@ -284,25 +387,270 @@ export function useComparison(options: UseComparisonOptions) {
 		};
 	}
 
-	return {
-		comparisonData,
-		selectedComparisonFields,
-		userUpdated,
-		mainItemUserUpdated,
-		mainHash,
-		allFieldsSelected,
-		someFieldsSelected,
-		availableFieldsCount,
-		comparisonFields,
-		userLoading,
-		mainItemUserLoading,
-		baseDisplayName,
-		deltaDisplayName,
-		normalizedData,
-		toggleSelectAll,
-		toggleComparisonField,
-		fetchComparisonData,
-		fetchUserUpdated,
-		fetchMainItemUserUpdated,
-	};
+	function applyValuesToSpecialFields(
+		fields: Field[],
+		incomingItem: Record<string, any>,
+		baseItem: Record<string, any>,
+		activity: Revision['activity'] | undefined,
+	): Record<string, any> {
+		if (!fields) return incomingItem;
+
+		const result: Record<string, any> = {};
+
+		for (const field of fields) {
+			const fieldKey = field.field;
+
+			if (activity?.action === 'create' && !incomingItem[fieldKey]) {
+				if (isDateCreated(field) && activity?.timestamp) {
+					if (field.schema?.data_type === 'time') continue;
+
+					result[fieldKey] = activity?.timestamp;
+					continue;
+				}
+
+				if (isUserCreated(field) && activity?.user) {
+					result[fieldKey] = typeof activity.user === 'object' ? activity.user.id : activity.user;
+					continue;
+				}
+			}
+
+			if (isRelational(field) || isPrimaryKey(field)) {
+				if (fieldKey in baseItem) result[fieldKey] = baseItem[fieldKey];
+			}
+		}
+
+		return result;
+	}
+
+	function getNormalizedComparisonData(
+		comparisonData: ComparisonData,
+		fieldMetadata: Record<string, any>,
+	): NormalizedComparisonData {
+		let base: NormalizedItem;
+
+		if (comparisonData.comparisonType === 'revision') {
+			const revisions = (comparisonData.selectableDeltas as Revision[]) || [];
+			const latestRevision = revisions?.[0] ?? null;
+			const { date, user } = getNormalizedDateAndUser(latestRevision);
+
+			const displayName = getVersionDisplayName(comparisonData.currentVersion ?? null);
+
+			base = { id: 'base', displayName, date, user };
+		} else {
+			base = {
+				id: 'base',
+				displayName: i18n.global.t('main_version'),
+				date: normalizeDate(comparisonData.mainVersionMeta?.timestamp || comparisonData.base.date_updated),
+				user: normalizeUser(
+					comparisonData.mainVersionMeta?.user || comparisonData.base.user_updated || comparisonData.base.user_created,
+				),
+			};
+		}
+
+		let incoming: NormalizedItem;
+
+		if (comparisonData.comparisonType === 'version') {
+			const versions = (comparisonData.selectableDeltas as ContentVersion[]) || [];
+			const selectedId = (comparisonData.initialSelectedDeltaId as string | undefined) || undefined;
+			const selected = selectedId ? versions.find((v) => v.id === selectedId) : versions[0];
+
+			incoming = normalizeVersionItem(selected);
+		} else {
+			const revisions = (comparisonData.selectableDeltas as Revision[]) || [];
+			const selectedId = (comparisonData.initialSelectedDeltaId as number | undefined) || undefined;
+			const selected = typeof selectedId !== 'undefined' ? revisions.find((r) => r.id === selectedId) : revisions[0];
+
+			incoming = normalizeRevisionItem(selected);
+		}
+
+		const selectableDeltas: NormalizedItem[] = (comparisonData.selectableDeltas || []).map((item) => {
+			if (comparisonData.comparisonType === 'version') {
+				return normalizeVersionItem(item as ContentVersion);
+			} else {
+				return normalizeRevisionItem(item as Revision);
+			}
+		});
+
+		const normalizedComparison = {
+			outdated: comparisonData.outdated || false,
+			mainHash: comparisonData.mainHash || '',
+			incoming: comparisonData.incoming,
+			base: comparisonData.base,
+		};
+
+		const fieldsWithDifferences = getFieldsWithDifferences(
+			normalizedComparison,
+			fieldMetadata,
+			comparisonData.comparisonType,
+		);
+
+		return {
+			base,
+			incoming,
+			selectableDeltas,
+			revisionFields: comparisonData.revisionFields,
+			comparisonType: comparisonData.comparisonType,
+			outdated: comparisonData.outdated || false,
+			mainHash: comparisonData.mainHash || '',
+			currentVersion: comparisonData.currentVersion || null,
+			initialSelectedDeltaId: comparisonData.initialSelectedDeltaId || null,
+			fieldsWithDifferences,
+		};
+	}
+
+	function getFieldsWithDifferences(
+		comparedData: NormalizedComparison,
+		fieldMetadata?: Record<string, any>,
+		type?: 'version' | 'revision',
+	): string[] {
+		if (!fieldMetadata) return [];
+
+		return calculateFieldDifferences(comparedData.incoming, comparedData.base, fieldMetadata, type === 'revision');
+	}
+
+	function calculateFieldDifferences(
+		incoming: Record<string, any>,
+		base: Record<string, any>,
+		fieldMetadata: Record<string, any>,
+		skipRelationalFields: boolean,
+	): string[] {
+		const differentFields: string[] = [];
+
+		for (const fieldKey of Object.keys(incoming)) {
+			const field = fieldMetadata[fieldKey];
+			if (!field) continue;
+
+			if (isPrimaryKey(field)) continue;
+
+			if (field.meta?.hidden && isDateCreated(field)) continue;
+			if (isDateUpdated(field)) continue;
+
+			if (field.meta?.hidden && isUserCreated(field)) continue;
+			if (isUserUpdated(field)) continue;
+
+			if (skipRelationalFields && isRelational(field)) continue;
+
+			if (!isEqual(incoming[fieldKey], base[fieldKey])) {
+				differentFields.push(fieldKey);
+			}
+		}
+
+		return differentFields;
+	}
+
+	function normalizeVersionItem(version: ContentVersion | undefined): NormalizedItem {
+		if (!version) {
+			return {
+				id: undefined,
+				displayName: i18n.global.t('unknown_version'),
+				date: normalizeDate(null),
+				user: normalizeUser(null),
+			};
+		}
+
+		return {
+			id: version.id,
+			displayName: getVersionDisplayName(version),
+			date: normalizeDate(version.date_updated),
+			user: normalizeUser(version.user_updated || version.user_created),
+			collection: version.collection,
+			item: version.item,
+		};
+	}
+
+	function normalizeRevisionItem(revision: Revision | undefined): NormalizedItem {
+		const { date, user } = getNormalizedDateAndUser(revision);
+
+		if (!revision) {
+			return {
+				id: undefined,
+				displayName: i18n.global.t('unknown_revision'),
+				date,
+				user,
+			};
+		}
+
+		return {
+			id: revision.id,
+			displayName: i18n.global.t('item_revision'),
+			date,
+			user,
+			collection: revision.collection,
+			item: revision.item,
+		};
+	}
+
+	function getNormalizedDateAndUser(revision: Revision | null | undefined): Pick<NormalizedItem, 'date' | 'user'> {
+		const user = revision?.activity?.user as User | string | null | undefined;
+		const timestamp = revision?.activity?.timestamp;
+
+		return {
+			date: normalizeDate(timestamp),
+			user: normalizeUser(user),
+		};
+	}
+
+	function normalizeUser(user: User | string | null | undefined): NormalizedUser | null {
+		if (!user) return null;
+
+		// Handle string user ID
+		if (typeof user === 'string') {
+			return {
+				id: user,
+				firstName: null,
+				lastName: null,
+				email: null,
+				displayName: i18n.global.t('unknown_user'),
+			};
+		}
+
+		// Handle full user object
+		const firstName = user.first_name || null;
+		const lastName = user.last_name || null;
+		const email = user.email || null;
+
+		let displayName = i18n.global.t('unknown_user');
+
+		if (firstName && lastName) {
+			displayName = `${firstName} ${lastName}`;
+		} else if (firstName) {
+			displayName = firstName;
+		} else if (lastName) {
+			displayName = lastName;
+		} else if (email) {
+			displayName = email;
+		}
+
+		return {
+			id: user.id,
+			firstName,
+			lastName,
+			email,
+			displayName,
+		};
+	}
+
+	function normalizeDate(dateString: string | null | undefined): NormalizedDate {
+		if (!dateString) {
+			return {
+				raw: null,
+				formatted: null,
+				dateObject: null,
+			};
+		}
+
+		const dateObject = new Date(dateString);
+		const isValid = !isNaN(dateObject.getTime());
+
+		return {
+			raw: dateString,
+			formatted: isValid ? dateString : null,
+			dateObject: isValid ? dateObject : null,
+		};
+	}
+
+	function replaceArraysInMergeCustomizer(objValue: unknown, srcValue: unknown) {
+		if (Array.isArray(objValue) || Array.isArray(srcValue)) return srcValue;
+		return undefined;
+	}
 }
