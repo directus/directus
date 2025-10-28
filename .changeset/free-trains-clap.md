@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Improved the content comparison for versions and revisions to make changes easier to understand
+Introduced the Content Comparison Modal, an enhanced side-by-side interface for reviewing content changes between versions and revisions.
