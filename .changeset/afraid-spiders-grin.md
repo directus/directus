@@ -13,7 +13,6 @@
 '@directus/format-title': patch
 '@directus/memory': patch
 '@directus/pressure': patch
-'@directus/release-notes-generator': patch
 '@directus/schema': patch
 '@directus/schema-builder': patch
 '@directus/storage': patch
