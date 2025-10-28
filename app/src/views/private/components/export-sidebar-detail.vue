@@ -33,7 +33,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['refresh']);
 
-const { t, n, te } = useI18n();
+const { t, n } = useI18n();
 
 const { collection } = toRefs(props);
 
