@@ -78,6 +78,12 @@ export class AssetsService {
 	}
 
 	async getZip(files: Files, skipUnaccessable = false) {
+		const filesService = new FilesService({
+			schema: this.schema,
+			knex: this.knex,
+			accountability: this.accountability,
+		});
+
 		const archive = archiver('zip');
 
 		const complete = async () => {
@@ -108,7 +114,7 @@ export class AssetsService {
 					}
 				}
 
-				const file = (await this.filesService.readOne(id)) as File;
+				const file = (await filesService.readOne(id)) as File;
 
 				const exists = await storage.location(file.storage).exists(file.filename_disk);
 
