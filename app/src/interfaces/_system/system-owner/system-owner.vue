@@ -99,7 +99,7 @@ const fields = useFormFields(false, form);
 		</template>
 
 		<div class="drawer-content">
-			<setup-form v-model="form" :errors="errors" :register="false" skip-license></setup-form>
+			<setup-form v-model="form" :errors="errors" :register="false" skip-license utm-location="settings"></setup-form>
 		</div>
 	</v-drawer>
 </template>

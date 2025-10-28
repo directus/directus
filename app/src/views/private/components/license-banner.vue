@@ -58,7 +58,7 @@ const fields = useFormFields(false, form);
 
 				<v-card-text>
 					<div class="sub">{{ t('bsl_banner.license') }}</div>
-					<setup-form v-model="form" :errors="errors" :register="false"></setup-form>
+					<setup-form v-model="form" :errors="errors" :register="false" utm-location="banner"></setup-form>
 				</v-card-text>
 
 				<v-card-actions>

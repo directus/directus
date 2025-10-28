@@ -16,10 +16,12 @@ const props = withDefaults(
 		skipLicense?: boolean;
 		modelValue?: SetupForm;
 		errors?: Record<string, any>[];
+		utmLocation?: string;
 	}>(),
 	{
 		register: true,
 		skipLicense: false,
+		utmLocation: '',
 		modelValue: () => initialValues,
 	},
 );
@@ -67,7 +69,7 @@ const fields = useFormFields(props.register, value);
 			<i18n-t keypath="setup_license_follow_up" tag="span">
 				<template #contactOurTeam>
 					<a
-						:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=contact_our_team_link`"
+						:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=${utmLocation}_contact_our_team_link`"
 						target="_blank"
 					>
 						{{ t('contact_our_team') }}
@@ -79,7 +81,7 @@ const fields = useFormFields(props.register, value);
 				<i18n-t v-if="skipLicense" keypath="setup_save_accept_license" tag="span">
 					<template #directusBsl>
 						<a
-							:href="`https://directus.io/bsl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=bsl_1.1_link`"
+							:href="`https://directus.io/bsl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=${utmLocation}_bsl_1.1_link`"
 							target="_blank"
 						>
 							{{ t('directus_bsl') }}
@@ -87,7 +89,7 @@ const fields = useFormFields(props.register, value);
 					</template>
 					<template #privacyPolicy>
 						<a
-							:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=privacy_link`"
+							:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_10_kyc&utm_term=${info.version}&utm_content=${utmLocation}_privacy_link`"
 							target="_blank"
 						>
 							{{ t('privacy_policy') }}

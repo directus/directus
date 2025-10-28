@@ -74,7 +74,7 @@ const formComplete = computed(() => {
 
 <template>
 	<public-view wide>
-		<setup-form v-model="form" :errors="errors"></setup-form>
+		<setup-form v-model="form" :errors="errors" utm-location="onboarding"></setup-form>
 		<v-button full-width :disabled="!formComplete" @click="launch()">
 			<v-icon name="rocket_launch" />
 			{{ t('setup_launch') }}
