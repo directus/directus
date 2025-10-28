@@ -16,6 +16,7 @@ import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import * as z from 'zod';
 
 const router = Router();
 
@@ -44,19 +45,21 @@ router.get(
 	}),
 );
 
-router.get(
-	'/files/:pks',
+router.post(
+	'/files/',
 	asyncHandler(async (req, res) => {
 		const service = new AssetsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const { archive, complete } = await service.getZip(
-			String(req.params['pks'])
-				.split(',')
-				.map((s) => ({ id: s })),
-		);
+		const { ids } = z
+			.object({
+				ids: z.array(z.union([z.string(), z.number()])),
+			})
+			.parse(req.body);
+
+		const { archive, complete } = await service.getZip(ids.map((id) => ({ id: String(id) })));
 
 		res.setHeader('Content-Type', 'application/zip');
 		res.setHeader('Content-Disposition', `attachment; filename="files-${new Date().toISOString()}.zip"`);

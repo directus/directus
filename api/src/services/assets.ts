@@ -34,6 +34,7 @@ import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { FilesService } from './files.js';
 import { getSharpInstance } from './files/lib/get-sharp-instance.js';
+import { FileDeduper, type Files } from './assets/dedupe-files.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -76,25 +77,43 @@ export class AssetsService {
 		return results;
 	}
 
-	async getZip(files: { id: string; folder?: string }[]) {
+	async getZip(files: Files) {
 		const archive = archiver('zip');
 
+		for (const { id } of files) {
+			if (!isValidUuid(id)) throw new ForbiddenError();
+		}
+
+		if (this.accountability) {
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection: 'directus_files',
+					primaryKeys: files.map((file) => file.id),
+				},
+				{ knex: this.knex, schema: this.schema },
+			);
+		}
+
 		const complete = async () => {
+			const fileDeduper = new FileDeduper();
 			const storage = await getStorage();
 
 			for (const { id, folder } of files) {
-				const file = (await this.filesService.readOne(id, { limit: 1 })) as File;
+				const file = (await this.filesService.readOne(id)) as File;
 
 				const exists = await storage.location(file.storage).exists(file.filename_disk);
 
 				if (!exists) throw new ForbiddenError();
 
-				const modifiedOn = file.modified_on ? new Date(file.modified_on) : undefined;
-				const version = modifiedOn ? (modifiedOn.getTime() / 1000).toFixed() : undefined;
+				const version = file.modified_on ? (new Date(file.modified_on).getTime() / 1000).toFixed() : undefined;
 
 				const assetStream = await storage.location(file.storage).read(file.filename_disk, { version });
 
-				archive.append(assetStream, { name: file.filename_download, prefix: folder });
+				const name = fileDeduper.add(file.filename_download ?? file.id);
+
+				archive.append(assetStream, { name, prefix: folder });
 			}
 
 			await archive.finalize();
