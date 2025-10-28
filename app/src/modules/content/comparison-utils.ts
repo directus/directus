@@ -183,7 +183,7 @@ function isRelationalField(field: Field): boolean {
 	return field.meta?.special?.find((type) => RELATIONAL_TYPES.includes(type as RelationalType)) !== undefined;
 }
 
-function isDateUpdatedField(field: Field): boolean {
+export function isDateUpdatedField(field: Field): boolean {
 	return field.meta?.special?.some((type) => type === 'date-updated') ?? false;
 }
 
@@ -191,7 +191,7 @@ function isDateCreatedField(field: Field): boolean {
 	return field.meta?.special?.some((type) => type === 'date-created') ?? false;
 }
 
-function isUserUpdatedField(field: Field): boolean {
+export function isUserUpdatedField(field: Field): boolean {
 	return field.meta?.special?.some((type) => type === 'user-updated') ?? false;
 }
 
