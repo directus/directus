@@ -1,7 +1,6 @@
 import api from '@/api';
 import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
-import type { Activity } from '@/types/activity';
 import type { Revision } from '@/types/revisions';
 import {
 	isDateCreated,
@@ -19,69 +18,15 @@ import type { ContentVersion, Field, PrimaryKey, User } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { has, isEqual, mergeWith } from 'lodash';
 import { computed, ref, watch, type Ref } from 'vue';
-
-type VersionComparisonResponse = {
-	outdated: boolean;
-	mainHash: string;
-	current: Record<string, any>;
-	main: Record<string, any>;
-};
-
-type NormalizedDate = {
-	raw: string | null;
-	formatted: string | null;
-	dateObject: Date | null;
-};
-
-type NormalizedUser = {
-	id: string;
-	firstName: string | null;
-	lastName: string | null;
-	email: string | null;
-	displayName: string;
-};
-
-type NormalizedItem = {
-	id: string | number | undefined;
-	displayName: string;
-	date: NormalizedDate;
-	user: NormalizedUser | null;
-	collection?: string;
-	item?: string | number;
-};
-
-type NormalizedComparisonData = {
-	base: NormalizedItem;
-	incoming: NormalizedItem;
-	selectableDeltas: NormalizedItem[];
-	revisionFields?: Set<string>;
-	comparisonType: 'version' | 'revision';
-	outdated: boolean;
-	mainHash: string;
-	currentVersion: ContentVersion | null;
-	initialSelectedDeltaId: number | string | null;
-	fieldsWithDifferences: string[];
-};
-
-type NormalizedComparison = {
-	outdated: boolean;
-	mainHash: string;
-	incoming: Record<string, any>;
-	base: Record<string, any>;
-};
-
-type ComparisonData = {
-	base: Record<string, any>;
-	incoming: Record<string, any>;
-	mainVersionMeta?: Pick<Activity, 'timestamp' | 'user'>;
-	selectableDeltas?: Revision[] | ContentVersion[];
-	revisionFields?: Set<string>;
-	comparisonType: 'version' | 'revision';
-	outdated?: boolean;
-	mainHash?: string;
-	currentVersion?: ContentVersion | null;
-	initialSelectedDeltaId?: number | string;
-};
+import type {
+	ComparisonData,
+	NormalizedComparison,
+	NormalizedComparisonData,
+	NormalizedDate,
+	NormalizedItem,
+	NormalizedUser,
+	VersionComparisonResponse,
+} from './types';
 
 interface UseComparisonOptions {
 	collection: Ref<string>;
