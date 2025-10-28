@@ -39,5 +39,4 @@ Updated the following dependencies:
 - Updated ky dependency from 1.8.2 to 1.13.0
 - Updated semver dependency from 7.7.2 to 7.7.3
 - Updated strip-ansi dependency from 7.1.0 to 7.1.2
-
-
+- Updated cross-spawn dependency from 7.0.3 to 7.0.6
