@@ -1,8 +1,7 @@
 import { describe, test, expect, vi, beforeEach, type Mock } from 'vitest';
 import type { Knex } from 'knex';
-import type { Field, Relation, SchemaOverview, Snapshot } from '@directus/types';
+import type { SchemaOverview } from '@directus/types';
 import { getSnapshot } from './get-snapshot.js';
-import { version } from 'directus/version';
 
 // Mock dependencies
 vi.mock('directus/version', () => ({
