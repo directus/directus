@@ -18,9 +18,13 @@ export async function sendOwnerReport(report: OwnerInformation & { project_id: s
 		headers['Authorization'] = env['TELEMETRY_AUTHORIZATION'] as string;
 	}
 
-	await fetch(url, {
+	const res = await fetch(url, {
 		method: 'POST',
 		body: JSON.stringify(report),
 		headers,
 	});
+
+	if (!res.ok) {
+		throw new Error(`[${res.status}] ${await res.text()}`);
+	}
 }

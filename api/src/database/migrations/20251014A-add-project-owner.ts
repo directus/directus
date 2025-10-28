@@ -12,6 +12,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('project_usage');
 		table.string('org_name');
 		table.boolean('product_updates');
+		table.string('project_status');
 		table.dropColumn('accepted_terms');
 	});
 
@@ -37,6 +38,7 @@ export async function down(knex: Knex): Promise<void> {
 		table.dropColumn('project_usage');
 		table.dropColumn('org_name');
 		table.dropColumn('product_updates');
+		table.dropColumn('project_status');
 		table.boolean('accepted_terms').defaultTo(acceptedTerms);
 	});
 }
