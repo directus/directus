@@ -3,12 +3,6 @@ import knex from 'knex';
 import { expect, test, vi } from 'vitest';
 import { Client_SQLite3 } from './mock.js';
 
-const aliasFn = vi.fn();
-
-vi.doMock('nanoid/non-secure', () => ({
-	customAlphabet: () => aliasFn,
-}));
-
 const { addJoin } = await import('./add-join.js');
 
 test('add join non existed relation', async () => {
@@ -20,7 +14,6 @@ test('add join non existed relation', async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
 
 	addJoin({
 		aliasMap: {},
@@ -47,7 +40,6 @@ test('add join for m2o relation', async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
 
 	addJoin({
 		aliasMap: {},
@@ -60,7 +52,7 @@ test('add join for m2o relation', async () => {
 
 	const rawQuery = queryBuilder.toSQL();
 
-	expect(rawQuery.sql).toEqual(`select * left join "users" as "alias" on "articles"."author" = "alias"."id"`);
+	expect(rawQuery.sql).toEqual(`select * left join "users" as "ydsed" on "articles"."author" = "ydsed"."id"`);
 	expect(rawQuery.bindings).toEqual([]);
 });
 
@@ -74,7 +66,6 @@ test('add join for o2m relation', async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
 
 	addJoin({
 		aliasMap: {},
@@ -87,7 +78,7 @@ test('add join for o2m relation', async () => {
 
 	const rawQuery = queryBuilder.toSQL();
 
-	expect(rawQuery.sql).toEqual(`select * left join "links_list" as "alias" on "articles"."id" = "alias"."article_id"`);
+	expect(rawQuery.sql).toEqual(`select * left join "links_list" as "qljec" on "articles"."id" = "qljec"."article_id"`);
 	expect(rawQuery.bindings).toEqual([]);
 });
 
@@ -124,7 +115,6 @@ test('add join for a2o relation', async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
 
 	addJoin({
 		aliasMap: {},
@@ -138,7 +128,7 @@ test('add join for a2o relation', async () => {
 	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(
-		`select * left join "images" as "alias" on "articles"."collection" = ? and "articles"."title_component" = CAST("alias"."id" AS CHAR(255))`,
+		`select * left join "images" as "dvlav" on "articles"."collection" = ? and "articles"."title_component" = CAST("dvlav"."id" AS CHAR(255))`,
 	);
 
 	expect(rawQuery.bindings).toEqual(['images']);
@@ -158,8 +148,6 @@ test('add join for m2m relation', async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
-	aliasFn.mockReturnValueOnce('alias2');
 
 	addJoin({
 		aliasMap: {},
@@ -173,7 +161,7 @@ test('add join for m2m relation', async () => {
 	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(
-		`select * left join "articles_tags_list_junction" as "alias" on "articles"."id" = "alias"."articles_id" left join "tags_list" as "alias2" on "alias"."tags_list_id" = "alias2"."id"`,
+		`select * left join "articles_tags_list_junction" as "oxuxz" on "articles"."id" = "oxuxz"."articles_id" left join "tags_list" as "oojot" on "oxuxz"."tags_list_id" = "oojot"."id"`,
 	);
 
 	expect(rawQuery.bindings).toEqual([]);
