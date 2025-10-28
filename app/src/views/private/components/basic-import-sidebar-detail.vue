@@ -16,7 +16,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['refresh', 'download']);
 
-const { t, te } = useI18n();
+const { t } = useI18n();
 
 const { collection } = toRefs(props);
 
