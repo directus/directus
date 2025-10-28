@@ -40,7 +40,11 @@ const { t } = useI18n();
 
 <template>
 	<div class="field-label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
-		<component :is="disabledMenu ? 'div' : 'button'" type="button" class="field-name" @click="toggle">
+		<component
+			:is="disabledMenu ? 'div' : 'button'"
+			class="field-name"
+			v-bind="!disabledMenu ? { type: 'button', click: toggle } : {}"
+		>
 			<v-checkbox
 				v-if="batchMode"
 				:model-value="batchActive"

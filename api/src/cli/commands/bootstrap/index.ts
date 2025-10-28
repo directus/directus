@@ -11,7 +11,7 @@ import { useLogger } from '../../../logger/index.js';
 import { SettingsService } from '../../../services/settings.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { createAdmin } from '../../../utils/create-admin.js';
-import { EMAIL_REGEX } from '@directus/constants';
+import { email } from 'zod';
 
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {
 	const logger = useLogger();
@@ -46,7 +46,7 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 			await settingsService.upsertSingleton({ project_name: env['PROJECT_NAME'] });
 		}
 
-		if (env['PROJECT_OWNER'] && typeof env['PROJECT_OWNER'] === 'string' && EMAIL_REGEX.test(env['PROJECT_OWNER'])) {
+		if (email().safeParse(env['PROJECT_OWNER']).success) {
 			await settingsService.setOwner({
 				email: env['PROJECT_OWNER'],
 				org_name: null,

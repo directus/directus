@@ -8,7 +8,7 @@ import { useCookies } from '@vueuse/integrations/useCookies';
 import { useSettingsStore } from '@/stores/settings';
 import { notify } from '@/utils/notify';
 import type { SetupForm as Form } from '@directus/types';
-import { EMAIL_REGEX } from '@directus/constants';
+import z from 'zod';
 
 const settingsStore = useSettingsStore();
 const cookies = useCookies(['license-banner-dismissed']);
@@ -20,7 +20,7 @@ const isSaveDisabled = computed(() => !form.value.email || !form.value.license);
 async function setOwner() {
 	errors.value = validateItem(form.value, unref(fields), true);
 
-	if (!EMAIL_REGEX.test(form.value.email ?? '')) {
+	if (!z.email().safeParse(form.value.email).success) {
 		errors.value.push({
 			field: 'email',
 			path: [],

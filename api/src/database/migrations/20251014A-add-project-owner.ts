@@ -1,10 +1,9 @@
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
-import { env } from 'process';
 import { SettingsService } from '../../services/settings.js';
 import { getSchema } from '../../utils/get-schema.js';
-import { EMAIL_REGEX } from '@directus/constants';
+import { email } from 'zod';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_settings', (table) => {
@@ -20,7 +19,7 @@ export async function up(knex: Knex): Promise<void> {
 
 	const settingsService = new SettingsService({ schema: await getSchema() });
 
-	if (env['PROJECT_OWNER'] && typeof env['PROJECT_OWNER'] === 'string' && EMAIL_REGEX.test(env['PROJECT_OWNER'])) {
+	if (email().safeParse(env['PROJECT_OWNER']).success) {
 		await settingsService.setOwner({
 			email: env['PROJECT_OWNER'],
 			org_name: null,
@@ -31,6 +30,8 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
+	const env = useEnv();
+
 	const acceptedTerms: boolean = toBoolean(env['ACCEPT_TERMS']);
 
 	await knex.schema.alterTable('directus_settings', (table) => {

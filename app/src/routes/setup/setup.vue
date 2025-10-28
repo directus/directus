@@ -11,7 +11,7 @@ import { login } from '@/auth';
 import { useRouter } from 'vue-router';
 import { translateAPIError } from '@/lang';
 import { SetupForm as Form } from '@directus/types';
-import { EMAIL_REGEX } from '@directus/constants';
+import z from 'zod';
 
 const { t } = useI18n();
 
@@ -29,7 +29,7 @@ const error = ref<any>(null);
 async function launch() {
 	errors.value = validateItem(form.value, unref(fields), true);
 
-	if (!EMAIL_REGEX.test(form.value.email ?? '')) {
+	if (!z.email().safeParse(form.value.email).success) {
 		errors.value.push({
 			field: 'email',
 			path: [],

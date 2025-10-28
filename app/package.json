@@ -145,6 +145,7 @@
 		"tinymce": "catalog:",
 		"tus-js-client": "catalog:",
 		"typescript": "catalog:",
+		"universal-cookie": "catalog:",
 		"vite": "catalog:",
 		"vite-plugin-vue-devtools": "catalog:",
 		"vitest": "catalog:",
@@ -154,7 +155,9 @@
 		"vue-tsc": "catalog:",
 		"vue-virtual-scroller": "catalog:",
 		"vuedraggable": "catalog:",
-		"wellknown": "catalog:",
-		"universal-cookie": "catalog:"
+		"wellknown": "catalog:"
+	},
+	"dependencies": {
+		"zod": "catalog:"
 	}
 }

@@ -4,11 +4,11 @@ import { login } from '@/auth';
 import { translateAPIError } from '@/lang';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
-import { EMAIL_REGEX } from '@directus/constants';
 import { ErrorCode } from '@directus/errors';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import z from 'zod';
 
 type Credentials = {
 	email: string;
@@ -46,7 +46,7 @@ const errorFormatted = computed(() => {
 async function onSubmit() {
 	// Simple RegEx, not for validation, but to prevent unnecessary login requests when the value is clearly invalid
 
-	if (email.value === null || !EMAIL_REGEX.test(email.value) || password.value === null) {
+	if (!z.email().safeParse(email.value).success || password.value === null) {
 		error.value = ErrorCode.InvalidPayload;
 		return;
 	}
@@ -55,7 +55,7 @@ async function onSubmit() {
 		isLoading.value = true;
 
 		const credentials: Credentials = {
-			email: email.value,
+			email: email.value!,
 			password: password.value,
 		};
 

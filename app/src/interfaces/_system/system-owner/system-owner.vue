@@ -6,7 +6,7 @@ import { useI18n } from 'vue-i18n';
 import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { SetupForm as Form } from '@directus/types';
-import { EMAIL_REGEX } from '@directus/constants';
+import { email } from 'zod';
 
 const settingsStore = useSettingsStore();
 
@@ -30,7 +30,7 @@ const isSaveDisabled = computed(() => !form.value.email);
 async function save() {
 	errors.value = validateItem(form.value, unref(fields), true);
 
-	if (!EMAIL_REGEX.test(form.value.email ?? '')) {
+	if (email().safeParse(form.value.email).success) {
 		errors.value.push({
 			field: 'email',
 			path: [],
