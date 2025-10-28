@@ -55,8 +55,8 @@ catalog:
   '@npm/types': 2.1.0
   '@pinia/testing': 1.0.2
   '@pnpm/logger': 1001.0.1
-  '@pnpm/workspace.find-packages': 1000.0.41
-  '@pnpm/workspace.pkgs-graph': 1000.0.23
+  '@pnpm/workspace.find-packages': 1000.0.42
+  '@pnpm/workspace.pkgs-graph': 1000.0.24
   '@popperjs/core': 2.11.8
   '@rollup/plugin-alias': 5.1.1
   '@rollup/plugin-commonjs': 28.0.8
@@ -206,7 +206,7 @@ catalog:
   keyv: 5.5.3
   knex: 3.1.0
   knex-mock-client: 3.0.2
-  ky: 1.12.0
+  ky: 1.13.0
   ldapjs: 2.3.3
   liquidjs: 10.23.0
   lodash: 4.17.21
