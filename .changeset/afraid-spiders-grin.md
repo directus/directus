@@ -2,6 +2,7 @@
 '@directus/api': patch
 '@directus/app': patch
 '@directus/composables': patch
+'@directus/constants': patch
 'create-directus-extension': patch
 'create-directus-project': patch
 '@directus/env': patch
@@ -9,9 +10,11 @@
 '@directus/extensions': patch
 '@directus/extensions-registry': patch
 '@directus/extensions-sdk': patch
+'@directus/format-title': patch
 '@directus/memory': patch
 '@directus/pressure': patch
 '@directus/release-notes-generator': patch
+'@directus/schema': patch
 '@directus/schema-builder': patch
 '@directus/storage': patch
 '@directus/storage-driver-azure': patch
@@ -20,9 +23,11 @@
 '@directus/storage-driver-local': patch
 '@directus/storage-driver-s3': patch
 '@directus/storage-driver-supabase': patch
+'@directus/stores': patch
 '@directus/system-data': patch
 '@directus/themes': patch
 '@directus/types': patch
+'@directus/update-check': patch
 '@directus/utils': patch
 '@directus/validation': patch
 '@directus/sdk': patch
@@ -44,6 +49,7 @@ Updated the following dependencies:
 - Updated focus-trap dependency from 7.6.5 to 7.6.6
 - Updated liquidjs dependency from 10.23.0 to 10.24.0
 - Updated ofetch dependency from 1.4.1 to 1.5.0
+- Updated tsdown dependency from 0.15.8 to 0.15.11
 - Updated typescript-eslint dependency from 8.46.1 to 8.46.2
 - Updated unplugin-yaml dependency from 3.0.6 to 3.0.7
 - Updated vite dependency from 7.1.11 to 7.1.12
