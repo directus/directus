@@ -8,8 +8,8 @@ import type { ContentVersion, PrimaryKey } from '@directus/types';
 import { isEqual } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useComparison } from '../composables/use-comparison';
 import ComparisonHeader from './comparison-header.vue';
+import { useComparison } from './use-comparison';
 
 interface Props {
 	deleteVersionsAllowed: boolean;

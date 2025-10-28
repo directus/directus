@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRevisions } from '@/composables/use-revisions';
-import ComparisonModal from '@/modules/content/components/comparison-modal.vue';
+import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 import type { Revision } from '@/types/revisions';
 import { useGroupable } from '@directus/composables';
 import { ContentVersion, PrimaryKey } from '@directus/types';

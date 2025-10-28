@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { userName } from '@/utils/user-name';
 import { localizedFormat } from '@/utils/localized-format';
+import { userName } from '@/utils/user-name';
 import { User } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
