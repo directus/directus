@@ -1,6 +1,7 @@
 ---
 "@directus/api": major
 "@directus/system-data": patch
+"@directus/types": patch
 ---
 
-Prevented editing/deleting system collection fields
+Restricted system collection fields to only allow indexing

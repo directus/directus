@@ -43,6 +43,12 @@ export function hasSystemIndex(collection: string, field: string): boolean {
 	return Boolean(systemIndexRows.find((row) => row.collection === collection && row.field === field));
 }
 
+export function isSystemField(collection: string, field: string): boolean {
+	if (!collection.startsWith('directus_')) return false;
+
+	return Boolean(systemFieldRows.find((fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field));
+}
+
 processFields(accessFields);
 processFields(activityFields);
 processFields(collectionFields);
