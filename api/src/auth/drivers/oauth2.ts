@@ -35,6 +35,7 @@ import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 import { getSchema } from '../../utils/get-schema.js';
+import { validateAuthOrigin } from '../../utils/validate-auth-origin.js';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
@@ -112,7 +113,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		return generators.codeVerifier();
 	}
 
-	generateAuthUrl(codeVerifier: string, prompt = false): string {
+	generateAuthUrl(codeVerifier: string, prompt = false, redirectUri?: string): string {
 		const { plainCodeChallenge } = this.config;
 
 		try {
@@ -128,6 +129,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				code_challenge_method: plainCodeChallenge ? 'plain' : 'S256',
 				// Some providers require state even with PKCE
 				state: codeChallenge,
+				// Allow overriding redirect_uri for dynamic multi-domain support
+				...(redirectUri && { redirect_uri: redirectUri }),
 			});
 		} catch (e) {
 			throw handleError(e);
@@ -162,8 +165,13 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				? payload['codeVerifier']
 				: generators.codeChallenge(payload['codeVerifier']);
 
+			// Use dynamic callback URL if provided, otherwise fall back to public URL
+			const callbackUrl = payload['originUrl']
+				? `${payload['originUrl']}/auth/login/${this.config['provider']}/callback`
+				: this.redirectUrl;
+
 			tokenSet = await this.client.oauthCallback(
-				this.redirectUrl,
+				callbackUrl,
 				{ code: payload['code'], state: payload['state'] },
 				{ code_verifier: payload['codeVerifier'], state: codeChallenge },
 			);
@@ -373,17 +381,29 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt, otp }, getSecret(), {
-				expiresIn: '5m',
-				issuer: 'directus',
-			});
+			const originUrl: string | undefined = validateAuthOrigin(req, 'OAuth2');
+
+			const token = jwt.sign(
+				{
+					verifier: codeVerifier,
+					redirect,
+					prompt,
+					otp,
+					...(originUrl ? { originUrl } : {}),
+				},
+				getSecret(),
+				{
+					expiresIn: '5m',
+					issuer: 'directus',
+				},
+			);
 
 			res.cookie(`oauth2.${providerName}`, token, {
 				httpOnly: true,
 				sameSite: 'lax',
 			});
 
-			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt));
+			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt, originUrl));
 		},
 		respond,
 	);
@@ -410,13 +430,14 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 					redirect?: string;
 					prompt: boolean;
 					otp?: string;
+					originUrl?: string;
 				};
 			} catch (e: any) {
 				logger.warn(e, `[OAuth2] Couldn't verify OAuth2 cookie`);
 				throw new InvalidCredentialsError();
 			}
 
-			const { verifier, prompt, otp } = tokenData;
+			const { verifier, prompt, otp, originUrl } = tokenData;
 			let { redirect } = tokenData;
 
 			const accountability: Accountability = createDefaultAccountability({
@@ -447,6 +468,8 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 						code: req.query['code'],
 						codeVerifier: verifier,
 						state: req.query['state'],
+						// Pass originUrl for dynamic callback URL validation
+						...(originUrl && { originUrl }),
 					},
 					{ session: authMode === 'session', ...(otp ? { otp: String(otp) } : {}) },
 				);

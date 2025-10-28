@@ -50,6 +50,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	EXTENSIONS_ROLLDOWN: 'boolean',
 	EMAIL_SMTP_PASSWORD: 'string',
 	REDIS_PASSWORD: 'string',
+	AUTH_ALLOWED_DOMAINS: 'array',
 	'AUTH_.+_BIND_PASSWORD': 'string',
 	'STORAGE_.+_SECRET': 'string',
 } as const;
