@@ -14,6 +14,7 @@ import CollectionDialog from './components/collection-dialog.vue';
 import CollectionItem from './components/collection-item.vue';
 import CollectionOptions from './components/collection-options.vue';
 import { useExpandCollapse } from './composables/use-expand-collapse';
+import { saveAs } from 'file-saver';
 
 const { t } = useI18n();
 
@@ -127,6 +128,15 @@ async function onSort(updates: Collection[], removeGroup = false) {
 	} catch (error) {
 		unexpectedError(error);
 	}
+}
+
+async function downloadSnapshot() {
+	const snapshot = await api.get(`/schema/snapshot`);
+
+	saveAs(
+		new Blob([JSON.stringify(snapshot.data, null, 2)], { type: 'application/json;charset=utf-8' }),
+		`snapshot.json`,
+	);
 }
 </script>
 
@@ -256,6 +266,12 @@ async function onSort(updates: Collection[], removeGroup = false) {
 			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_settings_datamodel_collections')" class="page-description" />
 			</sidebar-detail>
+			<sidebar-detail icon="download" :title="t('snapshot.export')">
+				<div v-md="t('snapshot.info')" class="page-description" />
+				<v-button small full-width class="snapshot-download" @click="downloadSnapshot">
+					{{ t('snapshot.download') }}
+				</v-button>
+			</sidebar-detail>
 		</template>
 
 		<collection-dialog
@@ -336,5 +352,9 @@ async function onSort(updates: Collection[], removeGroup = false) {
 
 .v-list.draggable-list {
 	padding-block-start: 0;
+}
+
+.snapshot-download {
+	margin-block-start: 12px;
 }
 </style>
