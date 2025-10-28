@@ -172,7 +172,7 @@ function useRenameDialog() {
 	};
 
 	async function renameVersion() {
-		if (isRenameDisabled.value || updating.value) return;
+		if (isRenameDisabled.value || updating.value || newVersionKey.value === null) return;
 
 		updating.value = true;
 
