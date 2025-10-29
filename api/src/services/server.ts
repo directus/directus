@@ -40,6 +40,7 @@ export class ServerService {
 
 	async serverInfo(): Promise<Record<string, any>> {
 		const info: Record<string, any> = {};
+		const setupComplete = await this.isSetupCompleted();
 
 		const projectInfo = await this.settingsService.readSingleton({
 			fields: [
@@ -68,7 +69,7 @@ export class ServerService {
 
 		info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
 
-		info['setupCompleted'] = await this.isSetupCompleted();
+		info['setupCompleted'] = setupComplete;
 
 		if (this.accountability?.user) {
 			if (env['RATE_LIMITER_ENABLED']) {
@@ -134,9 +135,9 @@ export class ServerService {
 					chunkSize: RESUMABLE_UPLOADS.CHUNK_SIZE,
 				};
 			}
-
-			info['version'] = version;
 		}
+
+		if (this.accountability?.user || !setupComplete) info['version'] = version;
 
 		return info;
 	}

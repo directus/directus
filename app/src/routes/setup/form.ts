@@ -9,8 +9,8 @@ export const FormValidator = z.object({
 	email: z.email(),
 	password: z.string(),
 	password_confirm: z.string(),
-	project_usage: z.enum(['personal', 'commercial', 'community']).optional(),
-	org_name: z.string().optional(),
+	project_usage: z.enum(['personal', 'commercial', 'community']).nullable().optional(),
+	org_name: z.string().nullable().optional(),
 	license: z.boolean(),
 	product_updates: z.boolean().optional(),
 });
@@ -99,23 +99,6 @@ export function useFormFields(
 				},
 			});
 		}
-
-		fields.push({
-			field: 'project_usage',
-			name: t('how_do_you_use_directus'),
-			meta: {
-				required: false,
-				interface: 'select-dropdown',
-				options: {
-					items: [
-						{ icon: 'account_circle', value: 'personal', text: t('usage_personal') },
-						{ icon: 'domain', value: 'commercial', text: t('usage_commercial') },
-						{ icon: 'groups', value: 'community', text: t('usage_community') },
-					],
-				},
-				width: 'full',
-			},
-		});
 
 		fields.push({
 			field: 'project_usage',

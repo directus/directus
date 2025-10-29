@@ -76,6 +76,7 @@ const fields = useFormFields(props.register, value);
 					</a>
 				</template>
 			</i18n-t>
+			<br />
 			<span v-if="skipLicense">
 				<br />
 				<i18n-t v-if="skipLicense" keypath="setup_save_accept_license" tag="span">

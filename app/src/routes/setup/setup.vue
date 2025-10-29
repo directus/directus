@@ -45,6 +45,8 @@ async function launch() {
 		});
 	}
 
+	if (errors.value.length > 0) return;
+
 	try {
 		await api.post('server/setup', form.value);
 
