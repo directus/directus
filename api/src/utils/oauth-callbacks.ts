@@ -30,7 +30,6 @@ export function getCallbackFromOriginUrl(redirectUris: URL[], originUrl?: string
 export function getCallbackFromRequest(req: Request, redirectUris: URL[], context: string): URL {
 	const logger = useLogger();
 
-	// In dynamic mode, build origin from request
 	const originUrl = `${req.protocol}://${req.get('host')}`;
 	let origin: URL;
 
@@ -46,7 +45,7 @@ export function getCallbackFromRequest(req: Request, redirectUris: URL[], contex
 
 /**
  * Generate all possible redirect URIs for OAuth client registration
- * Includes PUBLIC_URL + all domains from AUTH_ALLOWED_DOMAINS if configured
+ * Includes PUBLIC_URL + all domains from AUTH_ALLOWED_DOMAINS
  *
  * @param providerName OAuth provider name
  * @param context Logging context (e.g. 'OAuth2', 'OpenID')
@@ -55,28 +54,23 @@ export function getCallbackFromRequest(req: Request, redirectUris: URL[], contex
 export function generateRedirectUrls(providerName: string, context: string): URL[] {
 	const env = useEnv();
 	const logger = useLogger();
-	const redirectUrisSet = new Set<URL>();
+	const redirectUris: URL[] = [];
 
 	// Always include PUBLIC_URL
 	const publicUrlCallback = new Url(env['PUBLIC_URL'] as string)
 		.addPath('auth', 'login', providerName, 'callback')
 		.toString();
 
-	redirectUrisSet.add(new URL(publicUrlCallback));
+	redirectUris.push(new URL(publicUrlCallback));
 
-	// Add all allowed domains if multi-domain is enabled
-	const allowedDomains = env['AUTH_ALLOWED_DOMAINS'];
+	toArray(env['AUTH_ALLOWED_DOMAINS'] as string).forEach((domain) => {
+		try {
+			const domainCallback = new Url(domain).addPath('auth', 'login', providerName, 'callback').toString();
+			redirectUris.push(new URL(domainCallback));
+		} catch {
+			logger.warn(`[${context}] Invalid domain in AUTH_ALLOWED_DOMAINS: ${domain}`);
+		}
+	});
 
-	if (allowedDomains) {
-		toArray(allowedDomains as string).forEach((domain) => {
-			try {
-				const domainCallback = new Url(domain).addPath('auth', 'login', providerName, 'callback').toString();
-				redirectUrisSet.add(new URL(domainCallback));
-			} catch {
-				logger.warn(`[${context}] Invalid domain in AUTH_ALLOWED_DOMAINS: ${domain}`);
-			}
-		});
-	}
-
-	return Array.from(redirectUrisSet);
+	return redirectUris;
 }

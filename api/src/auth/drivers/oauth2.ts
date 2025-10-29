@@ -126,8 +126,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				code_challenge_method: plainCodeChallenge ? 'plain' : 'S256',
 				// Some providers require state even with PKCE
 				state: codeChallenge,
-				// Allow overriding redirect_uri for dynamic multi-domain support
-				...(redirectUri && { redirect_uri: redirectUri }),
+				redirect_uri: redirectUri
 			});
 		} catch (e) {
 			throw handleError(e);

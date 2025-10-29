@@ -197,8 +197,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				// Some providers require state even with PKCE
 				state: codeChallenge,
 				nonce: codeChallenge,
-				// Allow overriding redirect_uri for dynamic multi-domain support
-				...(redirectUri && { redirect_uri: redirectUri }),
+				redirect_uri: redirectUri
 			});
 		} catch (e) {
 			throw handleError(e);
