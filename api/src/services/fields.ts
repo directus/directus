@@ -390,6 +390,8 @@ export class FieldsService {
 				addFieldFlag(field, flagToAdd);
 			}
 
+			let hookAdjustedField = field;
+
 			await transaction(this.knex, async (trx) => {
 				const itemsService = new ItemsService('directus_fields', {
 					knex: trx,
@@ -397,7 +399,7 @@ export class FieldsService {
 					schema: this.schema,
 				});
 
-				const hookAdjustedField =
+				hookAdjustedField =
 					opts?.emitEvents !== false
 						? await emitter.emitFilter(
 								`fields.create`,
@@ -421,11 +423,6 @@ export class FieldsService {
 							this.addColumnToTable(table, collection, hookAdjustedField as Field);
 						});
 					}
-
-					await this.addColumnIndex(collection, hookAdjustedField as Field, {
-						attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
-						knex: trx,
-					});
 				}
 
 				if (hookAdjustedField.meta) {
@@ -467,6 +464,12 @@ export class FieldsService {
 					nestedActionEvents.push(actionEvent);
 				}
 			});
+
+			if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
+				await this.addColumnIndex(collection, hookAdjustedField as Field, {
+					attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
+				});
+			}
 		} finally {
 			if (runPostColumnChange) {
 				await this.helpers.schema.postColumnChange();
@@ -556,12 +559,11 @@ export class FieldsService {
 								if (!hookAdjustedField.schema) return;
 								this.addColumnToTable(table, collection, field, existingColumn);
 							});
+						});
 
-							await this.addColumnIndex(collection, field, {
-								existing: existingColumn,
-								attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
-								knex: trx,
-							});
+						await this.addColumnIndex(collection, field, {
+							existing: existingColumn,
+							attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
 						});
 					} catch (err: any) {
 						throw await translateDatabaseError(err, field);

@@ -155,15 +155,6 @@ export class CollectionsService {
 						}
 					});
 
-					for (const field of payload.fields!) {
-						if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-							await fieldsService.addColumnIndex(payload.collection, field, {
-								attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
-								knex: trx,
-							});
-						}
-					}
-
 					const fieldItemsService = new ItemsService('directus_fields', {
 						knex: trx,
 						accountability: this.accountability,
@@ -223,6 +214,18 @@ export class CollectionsService {
 
 				return payload.collection;
 			});
+
+			if (payload.schema && Array.isArray(payload.fields)) {
+				const fieldsService = new FieldsService({ schema: this.schema });
+
+				for (const field of payload.fields!) {
+					if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+						await fieldsService.addColumnIndex(payload.collection, field, {
+							attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
+						});
+					}
+				}
+			}
 
 			return payload.collection;
 		} finally {
