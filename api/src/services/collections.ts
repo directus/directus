@@ -88,6 +88,8 @@ export class CollectionsService {
 				throw new InvalidPayloadError({ reason: `Collection "${payload.collection}" already exists` });
 			}
 
+			const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
+
 			// Create the collection/fields in a transaction so it'll be reverted in case of errors or
 			// permission problems. This might not work reliably in MySQL, as it doesn't support DDL in
 			// transactions.
@@ -150,7 +152,9 @@ export class CollectionsService {
 					await trx.schema.createTable(payload.collection, (table) => {
 						for (const field of payload.fields!) {
 							if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-								fieldsService.addColumnToTable(table, payload.collection, field);
+								fieldsService.addColumnToTable(table, payload.collection, field, {
+									attemptConcurrentIndex,
+								});
 							}
 						}
 					});
@@ -215,13 +219,14 @@ export class CollectionsService {
 				return payload.collection;
 			});
 
-			if (payload.schema && Array.isArray(payload.fields)) {
+			// concurrent index creation cannot be done inside the transaction
+			if (attemptConcurrentIndex && payload.schema && Array.isArray(payload.fields)) {
 				const fieldsService = new FieldsService({ schema: this.schema });
 
-				for (const field of payload.fields!) {
+				for (const field of payload.fields) {
 					if (field.type && ALIAS_TYPES.includes(field.type) === false) {
 						await fieldsService.addColumnIndex(payload.collection, field, {
-							attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
+							attemptConcurrentIndex,
 						});
 					}
 				}

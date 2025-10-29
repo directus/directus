@@ -391,6 +391,7 @@ export class FieldsService {
 			}
 
 			let hookAdjustedField = field;
+			const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
 			await transaction(this.knex, async (trx) => {
 				const itemsService = new ItemsService('directus_fields', {
@@ -417,10 +418,14 @@ export class FieldsService {
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
 					if (table) {
-						this.addColumnToTable(table, collection, hookAdjustedField as Field);
+						this.addColumnToTable(table, collection, hookAdjustedField as Field, {
+							attemptConcurrentIndex,
+						});
 					} else {
 						await trx.schema.alterTable(collection, (table) => {
-							this.addColumnToTable(table, collection, hookAdjustedField as Field);
+							this.addColumnToTable(table, collection, hookAdjustedField as Field, {
+								attemptConcurrentIndex,
+							});
 						});
 					}
 				}
@@ -465,7 +470,8 @@ export class FieldsService {
 				}
 			});
 
-			if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
+			// concurrent index creation cannot be done inside the transaction
+			if (attemptConcurrentIndex && hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
 				await this.addColumnIndex(collection, hookAdjustedField as Field, {
 					attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
 				});
@@ -554,17 +560,26 @@ export class FieldsService {
 
 				if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
 					try {
+						const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
+
 						await transaction(this.knex, async (trx) => {
 							await trx.schema.alterTable(collection, (table) => {
 								if (!hookAdjustedField.schema) return;
-								this.addColumnToTable(table, collection, field, existingColumn);
+
+								this.addColumnToTable(table, collection, field, {
+									existing: existingColumn,
+									attemptConcurrentIndex,
+								});
 							});
 						});
 
-						await this.addColumnIndex(collection, field, {
-							existing: existingColumn,
-							attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
-						});
+						// concurrent index creation cannot be done inside the transaction
+						if (attemptConcurrentIndex) {
+							await this.addColumnIndex(collection, field, {
+								existing: existingColumn,
+								attemptConcurrentIndex,
+							});
+						}
 					} catch (err: any) {
 						throw await translateDatabaseError(err, field);
 					}
@@ -872,7 +887,7 @@ export class FieldsService {
 		table: Knex.CreateTableBuilder,
 		collection: string,
 		field: RawField | Field,
-		existing: Column | null = null,
+		options?: { attemptConcurrentIndex?: boolean; existing?: Column | null },
 	): void {
 		let column: Knex.ColumnBuilder;
 
@@ -886,14 +901,14 @@ export class FieldsService {
 				column = table.increments(field.field);
 			}
 		} else if (field.type === 'string') {
-			column = table.string(field.field, field.schema?.max_length ?? existing?.max_length ?? undefined);
+			column = table.string(field.field, field.schema?.max_length ?? options?.existing?.max_length ?? undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
 			const type = field.type as 'float' | 'decimal';
 
 			column = table[type](
 				field.field,
-				field.schema?.numeric_precision ?? existing?.numeric_precision ?? DEFAULT_NUMERIC_PRECISION,
-				field.schema?.numeric_scale ?? existing?.numeric_scale ?? DEFAULT_NUMERIC_SCALE,
+				field.schema?.numeric_precision ?? options?.existing?.numeric_precision ?? DEFAULT_NUMERIC_PRECISION,
+				field.schema?.numeric_scale ?? options?.existing?.numeric_scale ?? DEFAULT_NUMERIC_SCALE,
 			);
 		} else if (field.type === 'csv') {
 			column = table.text(field.field);
@@ -915,7 +930,7 @@ export class FieldsService {
 		 * The column nullability must be set on every alter or it will be dropped
 		 * This is due to column.alter() not being incremental per https://knexjs.org/guide/schema-builder.html#alter
 		 */
-		this.helpers.schema.setNullable(column, field, existing);
+		this.helpers.schema.setNullable(column, field, options?.existing ?? null);
 
 		/**
 		 * The default value must be set on every alter or it will be dropped
@@ -923,7 +938,7 @@ export class FieldsService {
 		 */
 
 		const defaultValue =
-			field.schema?.default_value !== undefined ? field.schema?.default_value : existing?.default_value;
+			field.schema?.default_value !== undefined ? field.schema?.default_value : options?.existing?.default_value;
 
 		if (defaultValue !== undefined) {
 			const newDefaultValueIsString = typeof defaultValue === 'string';
@@ -949,18 +964,30 @@ export class FieldsService {
 
 		if (field.schema?.is_primary_key) {
 			column.primary().notNullable();
-		} else if (!existing?.is_primary_key) {
+		} else if (!options?.existing?.is_primary_key) {
 			// primary key will already have unique/index constraints
-			if (field.schema?.is_unique === false && existing?.is_unique === true) {
+			if (field.schema?.is_unique === true) {
+				if ((!options?.existing || options?.existing.is_unique === false) && !options?.attemptConcurrentIndex) {
+					column.unique({ indexName: this.helpers.schema.generateIndexName('unique', collection, field.field) });
+				}
+			} else if (field.schema?.is_unique === false && options?.existing?.is_unique === true) {
 				table.dropUnique([field.field], this.helpers.schema.generateIndexName('unique', collection, field.field));
 			}
 
-			if (field.schema?.is_indexed === false && existing?.is_indexed === true) {
-				table.dropIndex([field.field], this.helpers.schema.generateIndexName('index', collection, field.field));
+			if (field.schema?.is_indexed === true) {
+				if (!options?.existing || options?.existing.is_indexed === false) {
+					if (!options?.attemptConcurrentIndex) {
+						column.index(this.helpers.schema.generateIndexName('index', collection, field.field));
+					}
+				}
+			} else if (field.schema?.is_indexed === false) {
+				if (options?.existing?.is_indexed === true) {
+					table.dropIndex([field.field], this.helpers.schema.generateIndexName('index', collection, field.field));
+				}
 			}
 		}
 
-		if (existing) {
+		if (options?.existing) {
 			column.alter();
 		}
 	}
