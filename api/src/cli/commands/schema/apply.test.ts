@@ -1,11 +1,5 @@
 import { DiffKind } from '@directus/types';
-import type {
-	Snapshot,
-	SnapshotDiff,
-	SnapshotField,
-	SnapshotRelation,
-	SnapshotSystemField,
-} from '@directus/types';
+import type { Snapshot, SnapshotDiff, SnapshotField, SnapshotRelation, SnapshotSystemField } from '@directus/types';
 import type { ApiCollection } from '@directus/types';
 import type { Diff } from 'deep-diff';
 import { promises as fs } from 'fs';
@@ -68,8 +62,16 @@ describe('apply command', () => {
 			const snapshotDiff: SnapshotDiff = {
 				collections: [],
 				fields: [
-					{ collection: 'posts', field: 'title', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<SnapshotField | undefined>] },
-					{ collection: 'posts', field: 'content', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<SnapshotField | undefined>] },
+					{
+						collection: 'posts',
+						field: 'title',
+						diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<SnapshotField | undefined>],
+					},
+					{
+						collection: 'posts',
+						field: 'content',
+						diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<SnapshotField | undefined>],
+					},
 				],
 				systemFields: [],
 				relations: [],
@@ -83,11 +85,25 @@ describe('apply command', () => {
 
 		test('should filter out all fields in a collection when collection is filtered', () => {
 			const snapshotDiff: SnapshotDiff = {
-				collections: [{ collection: 'posts', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<ApiCollection | undefined>] }],
+				collections: [
+					{ collection: 'posts', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<ApiCollection | undefined>] },
+				],
 				fields: [
-					{ collection: 'posts', field: 'title', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<SnapshotField | undefined>] },
-					{ collection: 'posts', field: 'content', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<SnapshotField | undefined>] },
-					{ collection: 'users', field: 'name', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<SnapshotField | undefined>] },
+					{
+						collection: 'posts',
+						field: 'title',
+						diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<SnapshotField | undefined>],
+					},
+					{
+						collection: 'posts',
+						field: 'content',
+						diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<SnapshotField | undefined>],
+					},
+					{
+						collection: 'users',
+						field: 'name',
+						diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<SnapshotField | undefined>],
+					},
 				],
 				systemFields: [],
 				relations: [],
@@ -159,8 +175,16 @@ describe('apply command', () => {
 					{ collection: 'posts', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<ApiCollection | undefined>] },
 				],
 				fields: [
-					{ collection: 'posts', field: 'title', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<SnapshotField | undefined>] },
-					{ collection: 'posts', field: 'content', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<SnapshotField | undefined>] },
+					{
+						collection: 'posts',
+						field: 'title',
+						diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<SnapshotField | undefined>],
+					},
+					{
+						collection: 'posts',
+						field: 'content',
+						diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<SnapshotField | undefined>],
+					},
 				],
 				systemFields: [],
 				relations: [],
@@ -176,9 +200,15 @@ describe('apply command', () => {
 
 		test('should return all items when no filters provided', () => {
 			const snapshotDiff: SnapshotDiff = {
-				collections: [{ collection: 'users', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<ApiCollection | undefined>] }],
+				collections: [
+					{ collection: 'users', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<ApiCollection | undefined>] },
+				],
 				fields: [
-					{ collection: 'posts', field: 'title', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<SnapshotField | undefined>] },
+					{
+						collection: 'posts',
+						field: 'title',
+						diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<SnapshotField | undefined>],
+					},
 				],
 				systemFields: [],
 				relations: [],
@@ -311,7 +341,6 @@ describe('apply command', () => {
 		});
 
 		test('should read YAML snapshot file', async () => {
-
 			const mockSnapshot: Snapshot = {
 				version: 1,
 				directus: '10.0.0',
@@ -345,7 +374,6 @@ relations: []
 		});
 
 		test('should exit if no changes to apply', async () => {
-
 			const mockSnapshot: Snapshot = {
 				version: 1,
 				directus: '10.0.0',
@@ -373,7 +401,6 @@ relations: []
 		});
 
 		test('should apply snapshot with --yes flag without prompting', async () => {
-
 			const mockSnapshot: Snapshot = {
 				version: 1,
 				directus: '10.0.0',
@@ -384,7 +411,9 @@ relations: []
 			};
 
 			const mockDiff: SnapshotDiff = {
-				collections: [{ collection: 'posts', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<ApiCollection | undefined>] }],
+				collections: [
+					{ collection: 'posts', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<ApiCollection | undefined>] },
+				],
 				fields: [],
 				systemFields: [],
 				relations: [],
@@ -408,7 +437,6 @@ relations: []
 		});
 
 		test('should display changes and exit in dry-run mode', async () => {
-
 			const mockSnapshot: Snapshot = {
 				version: 1,
 				directus: '10.0.0',
@@ -419,7 +447,9 @@ relations: []
 			};
 
 			const mockDiff: SnapshotDiff = {
-				collections: [{ collection: 'posts', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<ApiCollection | undefined>] }],
+				collections: [
+					{ collection: 'posts', diff: [{ kind: DiffKind.NEW, rhs: {} } as Diff<ApiCollection | undefined>] },
+				],
 				fields: [],
 				systemFields: [],
 				relations: [],
@@ -441,7 +471,6 @@ relations: []
 		});
 
 		test('should filter snapshot diff when ignoreRules provided', async () => {
-
 			const mockSnapshot: Snapshot = {
 				version: 1,
 				directus: '10.0.0',
@@ -479,7 +508,6 @@ relations: []
 		});
 
 		test('should handle errors and log them', async () => {
-
 			const error = new Error('File not found');
 			vi.mocked(fs.readFile).mockRejectedValue(error);
 
@@ -495,7 +523,6 @@ relations: []
 		});
 
 		test('should display collection changes with proper formatting', async () => {
-
 			const mockSnapshot: Snapshot = {
 				version: 1,
 				directus: '10.0.0',
