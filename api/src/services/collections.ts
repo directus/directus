@@ -150,11 +150,7 @@ export class CollectionsService {
 					await trx.schema.createTable(payload.collection, (table) => {
 						for (const field of payload.fields!) {
 							if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-								fieldsService.addColumnToTable(
-									table,
-									payload.collection,
-									field,
-								);
+								fieldsService.addColumnToTable(table, payload.collection, field);
 							}
 						}
 					});

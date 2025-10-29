@@ -417,18 +417,10 @@ export class FieldsService {
 					const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
 					if (table) {
-						this.addColumnToTable(
-							table,
-							collection,
-							hookAdjustedField as Field,
-						);
+						this.addColumnToTable(table, collection, hookAdjustedField as Field);
 					} else {
 						await trx.schema.alterTable(collection, (table) => {
-							this.addColumnToTable(
-								table,
-								collection,
-								hookAdjustedField as Field,
-							);
+							this.addColumnToTable(table, collection, hookAdjustedField as Field);
 						});
 					}
 
@@ -968,7 +960,12 @@ export class FieldsService {
 		}
 	}
 
-	public async addColumnIndex(collection: string, field: Field | RawField, existing: Column | null = null, attemptConcurrentIndex = false): Promise<void> {
+	public async addColumnIndex(
+		collection: string,
+		field: Field | RawField,
+		existing: Column | null = null,
+		attemptConcurrentIndex = false,
+	): Promise<void> {
 		// primary key will already have unique/index constraints
 		if (existing?.is_primary_key) return;
 
@@ -982,7 +979,7 @@ export class FieldsService {
 		if (field.schema?.is_indexed === true && (!existing || existing.is_indexed === false)) {
 			return this.helpers.schema.createIndex(collection, field.field, {
 				unique: false,
-				attemptConcurrentIndex
+				attemptConcurrentIndex,
 			});
 		}
 	}
