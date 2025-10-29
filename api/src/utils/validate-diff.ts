@@ -38,6 +38,15 @@ const applyJoiSchema = Joi.object({
 				}),
 			)
 			.required(),
+		systemFields: Joi.array()
+			.items(
+				Joi.object({
+					collection: Joi.string().required(),
+					field: Joi.string().required(),
+					diff: Joi.array().items(deepDiffSchema).required(),
+				}),
+			)
+			.required(),
 		relations: Joi.array()
 			.items(
 				Joi.object({
@@ -64,6 +73,7 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 	if (
 		applyDiff.diff.collections.length === 0 &&
 		applyDiff.diff.fields.length === 0 &&
+		applyDiff.diff.systemFields.length === 0 &&
 		applyDiff.diff.relations.length === 0
 	) {
 		return false;
@@ -121,6 +131,34 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 					reason: `Provided diff is trying to delete field "${field}" but it does not exist. Please generate a new diff and try again`,
 				});
 			}
+		}
+	}
+
+	for (const diffSystemField of applyDiff.diff.systemFields) {
+		const systemField = `${diffSystemField.collection}.${diffSystemField.field}`;
+
+		if (!diffSystemField.diff[0]) continue;
+
+		if (diffSystemField.diff[0].kind !== DiffKind.EDIT) {
+			let action = 'update array'; // DiffKind.ARRAY
+
+			if (diffSystemField.diff[0].kind === DiffKind.NEW) {
+				action = 'create';
+			} else if (diffSystemField.diff[0].kind === DiffKind.DELETE) {
+				action = 'delete';
+			}
+
+			throw new InvalidPayloadError({
+				reason: `Provided diff is trying to ${action} field "${systemField}" but this action is not supported. Please generate a new diff and try again`,
+			});
+		}
+
+		const pathString = diffSystemField.diff[0].path?.join('.') ?? '';
+
+		if (pathString.length === 0 || pathString !== 'schema.is_indexed') {
+			throw new InvalidPayloadError({
+				reason: `Provided diff is trying to alter property "${pathString}" on "${systemField}" but currently only "schema.is_indexed" is supported. Please generate a new diff and try again`,
+			});
 		}
 	}
 

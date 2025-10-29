@@ -55,7 +55,12 @@ export class SchemaService {
 		const currentSnapshot = options?.currentSnapshot ?? (await getSnapshot({ database: this.knex }));
 		const diff = getSnapshotDiff(currentSnapshot, snapshot);
 
-		if (diff.collections.length === 0 && diff.fields.length === 0 && diff.relations.length === 0) {
+		if (
+			diff.collections.length === 0 &&
+			diff.fields.length === 0 &&
+			diff.relations.length === 0 &&
+			(!diff.systemFields || diff.systemFields.length === 0)
+		) {
 			return null;
 		}
 
