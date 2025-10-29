@@ -7,6 +7,7 @@ import { getDatabaseClient } from '../index.js';
 
 const RETENTION_INDEXES = [
 	{ collection: 'directus_activity', field: 'timestamp', ignore: [] },
+	// MySQL is ignored because it already has an index on revisions.parent
 	{ collection: 'directus_revisions', field: 'parent', ignore: ['mysql'] },
 ];
 
