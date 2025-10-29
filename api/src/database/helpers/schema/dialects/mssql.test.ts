@@ -1,5 +1,5 @@
-import { describe, expect, test, vi } from 'vitest';
 import type { Knex } from 'knex';
+import { describe, expect, test, vi } from 'vitest';
 
 vi.mock('../../index.js', () => ({
 	getDatabaseClient: vi.fn(),
@@ -32,6 +32,7 @@ describe('SchemaHelperMSSQL', () => {
 		await helper.createIndex('users', 'email', { unique: true });
 
 		expect(mockRaw).toHaveBeenNthCalledWith(1, `SELECT SERVERPROPERTY('edition') AS edition`);
+
 		expect(mockRaw).toHaveBeenNthCalledWith(2, 'CREATE UNIQUE INDEX ?? ON ?? (??)', [
 			'users_email_unique',
 			'users',
@@ -56,6 +57,7 @@ describe('SchemaHelperMSSQL', () => {
 		await helper.createIndex('orders', 'status', { attemptConcurrentIndex: true });
 
 		expect(mockRaw).toHaveBeenNthCalledWith(1, `SELECT SERVERPROPERTY('edition') AS edition`);
+
 		// Falls back to blocking index for non-Enterprise editions
 		expect(mockRaw).toHaveBeenNthCalledWith(2, 'CREATE INDEX ?? ON ?? (??)', [
 			'orders_status_index',
@@ -71,6 +73,7 @@ describe('SchemaHelperMSSQL', () => {
 		await helper.createIndex('orders', 'status', { attemptConcurrentIndex: true });
 
 		expect(mockRaw).toHaveBeenNthCalledWith(1, `SELECT SERVERPROPERTY('edition') AS edition`);
+
 		// Uses ONLINE for Enterprise edition
 		expect(mockRaw).toHaveBeenNthCalledWith(2, 'CREATE INDEX ?? ON ?? (??) WITH (ONLINE = ON)', [
 			'orders_status_index',
@@ -86,6 +89,7 @@ describe('SchemaHelperMSSQL', () => {
 		await helper.createIndex('users', 'username', { attemptConcurrentIndex: true, unique: true });
 
 		expect(mockRaw).toHaveBeenNthCalledWith(1, `SELECT SERVERPROPERTY('edition') AS edition`);
+
 		expect(mockRaw).toHaveBeenNthCalledWith(2, 'CREATE UNIQUE INDEX ?? ON ?? (??) WITH (ONLINE = ON)', [
 			'users_username_unique',
 			'users',
@@ -100,6 +104,7 @@ describe('SchemaHelperMSSQL', () => {
 		await helper.createIndex('posts', 'slug', { attemptConcurrentIndex: true, unique: true });
 
 		expect(mockRaw).toHaveBeenNthCalledWith(1, `SELECT SERVERPROPERTY('edition') AS edition`);
+
 		// Falls back to blocking unique index
 		expect(mockRaw).toHaveBeenNthCalledWith(2, 'CREATE UNIQUE INDEX ?? ON ?? (??)', [
 			'posts_slug_unique',
@@ -115,6 +120,7 @@ describe('SchemaHelperMSSQL', () => {
 		await helper.createIndex('categories', 'name', {});
 
 		expect(mockRaw).toHaveBeenNthCalledWith(1, `SELECT SERVERPROPERTY('edition') AS edition`);
+
 		expect(mockRaw).toHaveBeenNthCalledWith(2, 'CREATE INDEX ?? ON ?? (??)', [
 			'categories_name_index',
 			'categories',
@@ -129,6 +135,7 @@ describe('SchemaHelperMSSQL', () => {
 		await helper.createIndex('orders', 'status', { attemptConcurrentIndex: true });
 
 		expect(mockRaw).toHaveBeenNthCalledWith(1, `SELECT SERVERPROPERTY('edition') AS edition`);
+
 		// Falls back to blocking when edition is undefined
 		expect(mockRaw).toHaveBeenNthCalledWith(2, 'CREATE INDEX ?? ON ?? (??)', [
 			'orders_status_index',
@@ -144,6 +151,7 @@ describe('SchemaHelperMSSQL', () => {
 		await helper.createIndex('orders', 'status', { attemptConcurrentIndex: true });
 
 		expect(mockRaw).toHaveBeenNthCalledWith(1, `SELECT SERVERPROPERTY('edition') AS edition`);
+
 		// Falls back to blocking when edition is not a string
 		expect(mockRaw).toHaveBeenNthCalledWith(2, 'CREATE INDEX ?? ON ?? (??)', [
 			'orders_status_index',
@@ -159,6 +167,7 @@ describe('SchemaHelperMSSQL', () => {
 		await helper.createIndex('orders', 'status', { attemptConcurrentIndex: true });
 
 		expect(mockRaw).toHaveBeenNthCalledWith(1, `SELECT SERVERPROPERTY('edition') AS edition`);
+
 		// Falls back because it checks for case-sensitive 'Enterprise' at the start
 		expect(mockRaw).toHaveBeenNthCalledWith(2, 'CREATE INDEX ?? ON ?? (??)', [
 			'orders_status_index',
@@ -174,6 +183,7 @@ describe('SchemaHelperMSSQL', () => {
 		await helper.createIndex('my_custom_table', 'my_custom_column');
 
 		expect(mockRaw).toHaveBeenNthCalledWith(1, `SELECT SERVERPROPERTY('edition') AS edition`);
+
 		expect(mockRaw).toHaveBeenNthCalledWith(2, 'CREATE INDEX ?? ON ?? (??)', [
 			'my_custom_table_my_custom_column_index',
 			'my_custom_table',

@@ -1,5 +1,5 @@
-import { describe, expect, test, vi } from 'vitest';
 import type { Knex } from 'knex';
+import { describe, expect, test, vi } from 'vitest';
 
 vi.mock('../../index.js', () => ({
 	getDatabaseClient: vi.fn(),
@@ -12,6 +12,7 @@ describe('SchemaHelperMySQL', () => {
 		const mockRaw = vi.fn().mockReturnValue({
 			catch: vi.fn().mockResolvedValue(undefined),
 		});
+
 		const mockKnex = { raw: mockRaw } as unknown as Knex;
 		const helper = new SchemaHelperMySQL(mockKnex);
 		return { helper, mockRaw };
@@ -67,8 +68,9 @@ describe('SchemaHelperMySQL', () => {
 		let callCount = 0;
 		const blockingQueryMock = {}; // This represents the blocking query object
 
-		const mockRaw = vi.fn().mockImplementation((sql: string) => {
+		const mockRaw = vi.fn().mockImplementation(() => {
 			callCount++;
+
 			if (callCount === 1) {
 				// First call is for blockingQuery (CREATE INDEX without ALGORITHM)
 				return blockingQueryMock;
@@ -81,8 +83,10 @@ describe('SchemaHelperMySQL', () => {
 					},
 				};
 			}
+
 			return {};
 		});
+
 		const mockKnex = { raw: mockRaw } as unknown as Knex;
 		const helper = new SchemaHelperMySQL(mockKnex);
 
