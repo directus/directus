@@ -967,7 +967,7 @@ export class FieldsService {
 		attemptConcurrentIndex = false,
 	): Promise<void> {
 		// primary key will already have unique/index constraints
-		if (existing?.is_primary_key) return;
+		if (field.schema?.is_primary_key || existing?.is_primary_key) return;
 
 		if (field.schema?.is_unique === true && (!existing || existing.is_unique == false)) {
 			return this.helpers.schema.createIndex(collection, field.field, {
