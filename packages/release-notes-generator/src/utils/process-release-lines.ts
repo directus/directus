@@ -1,5 +1,5 @@
 import type { ChangelogFunctions, GetDependencyReleaseLine, GetReleaseLine } from '@changesets/types';
-import type { Changesets } from '../types.js';
+import type { Changesets, DependencyChange } from '../types.js';
 
 export function processReleaseLines(): { defaultChangelogFunctions: ChangelogFunctions; changesets: Changesets } {
 	const changesets: Changesets = new Map();
@@ -7,8 +7,19 @@ export function processReleaseLines(): { defaultChangelogFunctions: ChangelogFun
 	const getReleaseLine: GetReleaseLine = async (changeset) => {
 		const { id, summary, ...rest } = changeset;
 
+		let finalSummary = summary;
+
 		if (changesets.has(id)) {
 			return '';
+		}
+
+		const dependencies: DependencyChange[] = [];
+
+		const matches = summary.matchAll(/^- Updated (.+?) dependency from (.+) to (.+)$/gm);
+
+		for (const [match, name, from, to] of matches) {
+			finalSummary = finalSummary.replace(match, '');
+			dependencies.push({ package: name!, from: from!, to: to! });
 		}
 
 		// Find text inside a notice box with the following pattern and
@@ -19,10 +30,10 @@ export function processReleaseLines(): { defaultChangelogFunctions: ChangelogFun
 		//   :::
 		//
 		//   <normal-changeset-summary>
-		const finalSummary = summary.replace(/^::: notice\n[\s\S]*^:::$/m, '').trim();
+		finalSummary = finalSummary.replace(/^::: notice\n[\s\S]*^:::$/m, '').trim();
 		const notice = summary.match(/::: notice\n+([\s\S]*)(?<!\n)\n+:::$/m)?.[1];
 
-		changesets.set(id, { summary: finalSummary, notice, ...rest });
+		changesets.set(id, { summary: finalSummary, notice, dependencies, ...rest });
 
 		return '';
 	};

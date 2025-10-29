@@ -5,12 +5,21 @@ type AsyncReturnType<T extends (...args: any) => Promise<any>> = T extends (...a
 
 type GithubInfo = AsyncReturnType<typeof getInfo>;
 
-export type Changesets = Map<string, Omit<NewChangesetWithCommit, 'id'> & { notice: string | undefined }>;
+export type Changesets = Map<
+	string,
+	Omit<NewChangesetWithCommit, 'id'> & { notice: string | undefined; dependencies: DependencyChange[] }
+>;
 
 export interface Change {
 	summary: string;
 	commit: string | undefined;
 	githubInfo: GithubInfo | undefined;
+}
+
+export interface DependencyChange {
+	package: string;
+	from: string;
+	to: string;
 }
 
 export interface Notice {
@@ -47,6 +56,8 @@ export interface Config {
 	typedTitles: Record<VersionType, string>;
 	/** Titles for untyped packages. */
 	untypedPackageTitles: Record<string, string>;
+	/** Title for dependency changes */
+	dependenciesTitle: string;
 	/** Title for list of published versions. */
 	versionTitle: string;
 	/** Under which version type notices should appear. */

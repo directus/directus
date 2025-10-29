@@ -1,11 +1,12 @@
 import config from '../config.js';
-import type { Change, Notice, Package, PackageVersion, Type, UntypedPackage } from '../types.js';
+import type { Change, DependencyChange, Notice, Package, PackageVersion, Type, UntypedPackage } from '../types.js';
 
 type Section = Type & { notices: Notice[] };
 
 export function generateMarkdown(
 	notices: Notice[],
 	types: Type[],
+	dependencies: DependencyChange[],
 	untypedPackages: UntypedPackage[],
 	packageVersions: PackageVersion[],
 ): string {
@@ -32,6 +33,8 @@ export function generateMarkdown(
 	output.push(formatSections(sections));
 
 	output.push(formatUntypedPackages(untypedPackages));
+
+	output.push(formatDependencies(dependencies));
 
 	output.push(formatPackageVersions(packageVersions));
 
@@ -113,6 +116,22 @@ function formatUntypedPackages(untypedPackages: UntypedPackage[]): string {
 	return output.join('\n\n');
 }
 
+function formatDependencies(dependencies: DependencyChange[]): string {
+	if (dependencies.length === 0) return '';
+
+	const output = [];
+
+	const title = `### ${config.dependenciesTitle}\n`;
+
+	output.push(title);
+
+	for (const { package: name, from, to } of dependencies) {
+		output.push(`- Updated ${name} dependency from ${from} to ${to}`);
+	}
+
+	return output.join('\n');
+}
+
 function formatChanges(changes: Change[]): string[] {
 	return changes.map((change) => {
 		const lines = [];
@@ -145,11 +164,7 @@ function formatChange(change: Change, short?: boolean): string {
 		refUserContent.push(`by @${change.githubInfo.user}`);
 	}
 
-	if (refUserContent.length > 0) {
-		refUser = ' (';
-		refUser += refUserContent.join(' ');
-		refUser += ')';
-	}
+	if (refUserContent.length > 0) refUser = ` (${refUserContent.join(' ')})`;
 
 	const [firstSummaryLine, ...remainingSummaryLines] = change.summary.split('\n');
 

@@ -15,14 +15,14 @@ process.on('beforeExit', async () => {
 async function run() {
 	const { mainVersion, isPrerelease, prereleaseId, packageVersions } = await processPackages();
 
-	const { types, untypedPackages, notices } = await getInfo(changesets);
+	const { types, untypedPackages, notices, dependencies } = await getInfo(changesets);
 
 	if (types.length === 0 && untypedPackages.length === 0 && packageVersions.length === 0) {
 		// eslint-disable-next-line no-console
 		console.warn('WARN: No processable changesets found');
 	}
 
-	const markdown = generateMarkdown(notices, types, untypedPackages, packageVersions);
+	const markdown = generateMarkdown(notices, types, dependencies, untypedPackages, packageVersions);
 
 	const divider = '==============================================================';
 	// eslint-disable-next-line no-console

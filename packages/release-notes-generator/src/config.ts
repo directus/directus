@@ -14,6 +14,7 @@ const config: Config = {
 		'tests-blackbox': '🧪 Blackbox Tests',
 	},
 	versionTitle: '📦 Published Versions',
+	dependenciesTitle: '📦 Updated Dependencies',
 	noticeType: 'major',
 	// '@directus/app' should always be listed before '@directus/api', other packages don't matter
 	packageOrder: ['@directus/app', '@directus/api'],

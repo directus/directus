@@ -63,7 +63,7 @@ test('should generate basic release notes', () => {
 		{ name: '@directus/app', version: '10.0.0' },
 	];
 
-	const markdown = generateMarkdown([], types, untypedPackages, packageVersions);
+	const markdown = generateMarkdown([], types, [], untypedPackages, packageVersions);
 
 	expect(markdown).toMatchInlineSnapshot(`
 		"### ✨ New Features & Improvements
@@ -104,7 +104,7 @@ describe('notices', () => {
 	];
 
 	test('should create section with notices when no changes', () => {
-		const markdown = generateMarkdown(notices, [], [], []);
+		const markdown = generateMarkdown(notices, [], [], [], []);
 
 		expect(markdown).toMatchInlineSnapshot(`
 			"### ⚠️ Potential Breaking Changes
@@ -130,7 +130,7 @@ describe('notices', () => {
 			},
 		];
 
-		const markdown = generateMarkdown(notices, types, [], []);
+		const markdown = generateMarkdown(notices, types, [], [], []);
 
 		expect(markdown).toMatchInlineSnapshot(`
 			"### ⚠️ Potential Breaking Changes
@@ -146,4 +146,72 @@ describe('notices', () => {
 			    And here's some additional context"
 		`);
 	});
+});
+
+test('rendering of dependencies', () => {
+	const types: Type[] = [
+		{
+			title: config.typedTitles.minor,
+			packages: [
+				{
+					name: '@directus/api',
+					changes: [change1],
+				},
+			],
+		},
+		{
+			title: config.typedTitles.patch,
+			packages: [
+				{
+					name: '@directus/app',
+					changes: [change1, change2],
+				},
+			],
+		},
+	];
+
+	const packageVersions: PackageVersion[] = [
+		{ name: '@directus/api', version: '10.0.0' },
+		{ name: '@directus/app', version: '10.0.0' },
+	];
+
+	const dependencies = [
+		{
+			package: 'abc',
+			from: '1.0.0',
+			to: '1.1.0',
+		},
+		{
+			package: 'def',
+			from: '2.3.4',
+			to: '3.0.0',
+		},
+	];
+
+	const markdown = generateMarkdown([], types, dependencies, [], packageVersions);
+
+	expect(markdown).toMatchInlineSnapshot(`
+		"### ✨ New Features & Improvements
+
+		- **@directus/api**
+		  - Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1) by @directus)
+		    And here's some additional context
+
+		### 🐛 Bug Fixes & Optimizations
+
+		- **@directus/app**
+		  - Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1) by @directus)
+		    And here's some additional context
+		  - Improved some things a little ([#2](https://github.com/directus/directus/pull/2) by @directus)
+
+		### 📦 Updated Dependencies
+
+		- Updated abc dependency from 1.0.0 to 1.1.0
+		- Updated def dependency from 2.3.4 to 3.0.0
+
+		### 📦 Published Versions
+
+		- \`@directus/api@10.0.0\`
+		- \`@directus/app@10.0.0\`"
+	`);
 });

@@ -30,6 +30,7 @@ const changesets: Changesets = new Map([
 			summary: 'Made Directus even more magical',
 			notice: undefined,
 			releases: [{ name: 'directus', type: 'patch' }],
+			dependencies: [],
 		},
 	],
 	[
@@ -39,6 +40,7 @@ const changesets: Changesets = new Map([
 			summary: 'Improved some things a little',
 			notice: 'This is an example notice.',
 			releases: [{ name: 'docs', type: 'minor' }],
+			dependencies: [],
 		},
 	],
 ]);
@@ -48,6 +50,7 @@ test('should compose info from changesets', async () => {
 
 	expect(info).toMatchInlineSnapshot(`
 		{
+		  "dependencies": [],
 		  "notices": [
 		    {
 		      "change": {
@@ -88,5 +91,64 @@ test('should compose info from changesets', async () => {
 		    },
 		  ],
 		}
+	`);
+});
+
+test('deduplicate dependency changes', async () => {
+	const info = await getInfo(
+		new Map([
+			[
+				'1',
+				{
+					commit: 'abcd123',
+					summary: 'Made Directus even more magical',
+					notice: undefined,
+					releases: [],
+					dependencies: [
+						{
+							package: 'abc',
+							from: '1.0.0',
+							to: '1.0.1',
+						},
+						{
+							package: 'def',
+							from: '2.0.1',
+							to: '2.1.0',
+						},
+					],
+				},
+			],
+			[
+				'2',
+				{
+					commit: 'efgh456',
+					summary: 'Improved some things a little',
+					notice: 'This is an example notice.',
+					releases: [],
+					dependencies: [
+						{
+							package: 'abc',
+							from: '1.0.0',
+							to: '1.0.1',
+						},
+					],
+				},
+			],
+		]),
+	);
+
+	expect(info.dependencies).toMatchInlineSnapshot(`
+		[
+		  {
+		    "from": "1.0.0",
+		    "package": "abc",
+		    "to": "1.0.1",
+		  },
+		  {
+		    "from": "2.0.1",
+		    "package": "def",
+		    "to": "2.1.0",
+		  },
+		]
 	`);
 });
