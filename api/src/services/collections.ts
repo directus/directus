@@ -157,7 +157,10 @@ export class CollectionsService {
 
 					for (const field of payload.fields!) {
 						if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-							await fieldsService.addColumnIndex(payload.collection, field, undefined, opts?.attemptConcurrentIndex);
+							await fieldsService.addColumnIndex(payload.collection, field, {
+								attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
+								knex: trx,
+							});
 						}
 					}
 

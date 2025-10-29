@@ -414,8 +414,6 @@ export class FieldsService {
 						: field;
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
-					const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
-
 					if (table) {
 						this.addColumnToTable(table, collection, hookAdjustedField as Field);
 					} else {
@@ -424,7 +422,10 @@ export class FieldsService {
 						});
 					}
 
-					await this.addColumnIndex(collection, hookAdjustedField as Field, undefined, attemptConcurrentIndex);
+					await this.addColumnIndex(collection, hookAdjustedField as Field, {
+						attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
+						knex: trx,
+					});
 				}
 
 				if (hookAdjustedField.meta) {
@@ -549,8 +550,6 @@ export class FieldsService {
 					opts?.bypassLimits && opts.autoPurgeSystemCache === false ? sanitizeColumn(existingColumn) : existingColumn;
 
 				if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
-					const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
-
 					try {
 						await transaction(this.knex, async (trx) => {
 							await trx.schema.alterTable(collection, (table) => {
@@ -558,7 +557,11 @@ export class FieldsService {
 								this.addColumnToTable(table, collection, field, existingColumn);
 							});
 
-							await this.addColumnIndex(collection, field, existingColumn, attemptConcurrentIndex);
+							await this.addColumnIndex(collection, field, {
+								existing: existingColumn,
+								attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
+								knex: trx,
+							});
 						});
 					} catch (err: any) {
 						throw await translateDatabaseError(err, field);
@@ -963,21 +966,29 @@ export class FieldsService {
 	public async addColumnIndex(
 		collection: string,
 		field: Field | RawField,
-		existing: Column | null = null,
-		attemptConcurrentIndex = false,
+		options?: { attemptConcurrentIndex?: boolean; knex?: Knex; existing?: Column | null },
 	): Promise<void> {
+		const attemptConcurrentIndex = Boolean(options?.attemptConcurrentIndex);
+		const knex = options?.knex ?? this.knex;
+		const existing = options?.existing ?? null;
+
+		// Don't attempt to index a DB column for alias / corrupt fields
+		if (field.type === 'alias' || field.type === 'unknown') return;
+
 		// primary key will already have unique/index constraints
 		if (field.schema?.is_primary_key || existing?.is_primary_key) return;
 
+		const helpers = getHelpers(knex);
+
 		if (field.schema?.is_unique === true && (!existing || existing.is_unique == false)) {
-			return this.helpers.schema.createIndex(collection, field.field, {
+			return helpers.schema.createIndex(collection, field.field, {
 				unique: true,
 				attemptConcurrentIndex,
 			});
 		}
 
 		if (field.schema?.is_indexed === true && (!existing || existing.is_indexed === false)) {
-			return this.helpers.schema.createIndex(collection, field.field, {
+			return helpers.schema.createIndex(collection, field.field, {
 				unique: false,
 				attemptConcurrentIndex,
 			});
