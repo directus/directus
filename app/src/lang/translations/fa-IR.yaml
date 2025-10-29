@@ -28,7 +28,7 @@ method: شیوه
 published: منتشر شد
 draft: پیش‌نویس
 archived: بایگانی‌شده
-marketplace: بازار
+marketplace: بازارچه
 extensions: افزونه‌ها
 skip_link_nav: پرش به منوی ناوبری
 skip_link_module_nav: پرش به منوی ماژول‌ها
@@ -74,25 +74,25 @@ extension_theme: پوسته
 extension_hook: هوک
 extension_endpoint: نقطه اتصال
 extension_operation: عملیات
-extension_bundle: پکیج ها
+extension_bundle: بسته
 extension_interfaces: رابط‌های کاربری
 extension_displays: نحوه نمایش
 extension_layouts: چیدمان‌ها
 extension_modules: ماژول‌ها
 extension_panels: پنل‌ها
 extension_themes: پوسته‌ها
-extension_hooks: هوکها
-extension_endpoints: نقطه اتصال
-extension_operations: عملیات
-extension_bundles: پکیج ها
+extension_hooks: هوک‌ها
+extension_endpoints: نقاط اتصال
+extension_operations: عملیات‌ها
+extension_bundles: بسته‌ها
 extension_missing: گم شده
-extension_reload_required: صفحه به بازنشانی مجدد نیاز دارد
-extension_reload_required_copy: جهت مشاهده تغییرات پس از فعالی یا غیرفعالسازی افزونه ها لازم است صفحه بازنشانی مجدد گردد.
-extension_reload_now: هم اکنون بازنشانی گردد
-published_relative: منتشر شده در {relativeTime}
+extension_reload_required: صفحه به بارگزاری مجدد نیاز دارد
+extension_reload_required_copy: برای مشاهده تغییرات پس از فعال‌سازی یا غیرفعال‌سازی افزونه‌ها، لازم است صفحه مجدد بارگزاری شود.
+extension_reload_now: همین حالا بارگزاری مجدد کن
+published_relative: '{relativeTime} منتشر شده'
 compatible_with_your_project: سازگار با پروژه شما
 compatible_with_your_project_copy: سازنده سازگاری افزونه با نسخه {hostVersion} را مشخص کرده است، که با نسخه پروژه شما ({currentVersion}) انطباق دارد
-last_updated_relative: آخرین به روزرسانی {relativeTime}
+last_updated_relative: '{relativeTime} به‌روزرسانی شده'
 n_files: '{n} فایل'
 verified: تایید شده
 homepage: صفحه اصلی
@@ -2228,6 +2228,7 @@ displays:
     description: Display a formatted version of the object
   hash:
     hash: هش
+    description: نسخه سانسورشده از مقدار را نمایش بده
   icon:
     icon: آیکن
     description: نمایش یک آیکن
@@ -2323,6 +2324,7 @@ layouts:
     user_placeholder: کادر اختیاری کاربر...
     image: تصویر تابلو
     image_placeholder: کادر تصویر اختیاری...
+    image_fit: تناسب تصویر کارت
     crop: برش
     advanced: پیشرفته
     edit_group: ویرایش گروه
@@ -2352,6 +2354,7 @@ thin: نازک
 medium: میانه
 broad: گسترده
 show_labels: نمایش برچسب
+show_legend: نمایش علائم
 right: راست
 left: چپ
 start: آغاز
@@ -2366,6 +2369,7 @@ panels:
     field: فیلد
   metric_list:
     name: فهرست شاخص‌ها
+    description: شاخص‌های تجمعی از یک مجموعه را فهرست و بصری‌سازی کن
   time_series:
     name: سری زمانی
     description: نمودار خطی را بر اساس مقادیر در طول زمان ارائه دهید
@@ -2404,9 +2408,11 @@ panels:
     description: نمودار دایره ای که نسبت گروه ها را روی یک ستون نشان می دهد
   variable:
     name: متغیر کلی
+    description: تنظیم یک مقدار سراسری برای استفاده در فیلترهای سایر پنل‌ها
     variable_key: کلید متغیر
   relational-variable:
     name: متغیر رابطه ای کل
+    description: تنظیم یک مقدار سراسری رابطه‌ای برای استفاده در فیلترهای سایر پنل‌ها
     variable_key: کلید متغیر
     multiple: چندگانه
     multiple-label: انتخاب چند مورد
@@ -2417,6 +2423,8 @@ triggers:
     response_body_last: داده‌های آخرین عملیات
   event:
     name: هوک رویداد
+    action: 'اقدام (غیر مسدودکننده)'
+    filter: 'فیلتر (مسدودکننده)'
   webhook:
     name: وب‌هوک
     error_on_reject: خطا هنگام رد درخواست
@@ -2442,6 +2450,7 @@ triggers:
 a_flow_uuid: یک جریان را جهت راه‌اندازی انتخاب کنید...
 any_string_or_json: Json یا هر رشته‌ای...
 item_payload_placeholder: این JSON برای به‌روزرسانی مقادیر فیلد به‌کارگیری می‌شود...
+operation_variables_note: شما می‌توانید با متغیرهایی نظیر **{'{'}{'{'}$last{'}'}{'}'}**، **{'{'}{'{'}$trigger{'}'}{'}'}** و **{'{'}{'{'}$accountability{'}'}{'}'}** به داده‌های جریان دسترسی پیدا کنید؛ یا با **{'{'}{'{'}operation_key{'}'}{'}'}** به عملیات‌های قبلی ارجاع بدهید.
 operations:
   condition:
     name: شرط
@@ -2526,6 +2535,12 @@ operations:
     name: وقفه
     description: بر اساس عدد مقابل به میلی‌ثانیه صبر کنید
     milliseconds: میلی‌ثانیه
+  throw-error:
+    name: خطا برگردان
+    description: در مسیر ردشده یک خطا برگردان
+    code: کد خطا
+    status: کد وضعیت HTTP
+    message: پیام خطا
   transform:
     name: انتقال بار
     description: تغییر حامل JSON جریان
@@ -2583,6 +2598,13 @@ show_password: نمایش رمز عبور
 hide_password: مخفی کردن رمز عبور
 bsl_banner:
   welcome_to_directus: به دایرکتوس خوش آمدید!
+  organization_threshold: نهادهای بالاتر از این آستانه نیاز به مجوز پولی دارند.
+  license_agreement: با کلیک روی «پذیرفتن»، با {directusBsl} و {privacyPolicy} اعلام موافقت می‌کنید.
+  directus_bsl: مجوز BSL 1.1 دایرکتوس
+  privacy_policy: سیاست حفظ حریم خصوصی
+  accept_terms: پذیرفتن
+  get_license: دریافت مجوز
+accepted: پذیرفته شده
 text_direction_auto: خودکار (مطابق زبان)
 text_direction_ltr: چپ به راست (LTR)
 text_direction_rtl: راست به چپ (RTL)
