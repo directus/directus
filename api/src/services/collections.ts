@@ -8,11 +8,11 @@ import type {
 	Accountability,
 	ActionEventParams,
 	FieldMeta,
+	FieldMutationOptions,
 	MutationOptions,
+	RawCollection,
 	RawField,
 	SchemaOverview,
-	RawCollection,
-	FieldMutationOptions,
 } from '@directus/types';
 import { addFieldFlag } from '@directus/utils';
 import type Keyv from 'keyv';
@@ -150,7 +150,13 @@ export class CollectionsService {
 					await trx.schema.createTable(payload.collection, (table) => {
 						for (const field of payload.fields!) {
 							if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-								fieldsService.addColumnToTable(table, payload.collection, field, undefined, opts?.attemptConcurrentIndex);
+								fieldsService.addColumnToTable(
+									table,
+									payload.collection,
+									field,
+									undefined,
+									opts?.attemptConcurrentIndex,
+								);
 							}
 						}
 					});

@@ -8,21 +8,24 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
+import { isSystemField } from '@directus/system-data';
 import type {
 	AbstractServiceOptions,
 	Accountability,
 	ActionEventParams,
 	Field,
 	FieldMeta,
+	FieldMutationOptions,
 	MutationOptions,
 	RawField,
 	SchemaOverview,
-	Type, FieldMutationOptions,
+	Type,
 } from '@directus/types';
 import { addFieldFlag, getRelations, toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { isEqual, isNil, merge } from 'lodash-es';
+import { z } from 'zod';
 import { clearSystemCache, getCache, getCacheValue, setCacheValue } from '../cache.js';
 import { ALIAS_TYPES, ALLOWED_DB_DEFAULT_FUNCTIONS } from '../constants.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
@@ -46,8 +49,6 @@ import { getCollectionRelationList } from './fields/get-collection-relation-list
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
-import { isSystemField } from '@directus/system-data';
-import { z } from 'zod';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 const env = useEnv();
@@ -416,10 +417,22 @@ export class FieldsService {
 					const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
 					if (table) {
-						await this.addColumnToTable(table, collection, hookAdjustedField as Field, undefined, attemptConcurrentIndex);
+						await this.addColumnToTable(
+							table,
+							collection,
+							hookAdjustedField as Field,
+							undefined,
+							attemptConcurrentIndex,
+						);
 					} else {
 						await trx.schema.alterTable(collection, async (table) => {
-							await this.addColumnToTable(table, collection, hookAdjustedField as Field, undefined, attemptConcurrentIndex);
+							await this.addColumnToTable(
+								table,
+								collection,
+								hookAdjustedField as Field,
+								undefined,
+								attemptConcurrentIndex,
+							);
 						});
 					}
 				}
@@ -487,11 +500,7 @@ export class FieldsService {
 		}
 	}
 
-	async updateField(
-		collection: string,
-		field: RawField,
-		opts?: FieldMutationOptions,
-	): Promise<string> {
+	async updateField(collection: string, field: RawField, opts?: FieldMutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -634,11 +643,7 @@ export class FieldsService {
 		}
 	}
 
-	async updateFields(
-		collection: string,
-		fields: RawField[],
-		opts?: FieldMutationOptions,
-	): Promise<string[]> {
+	async updateFields(collection: string, fields: RawField[], opts?: FieldMutationOptions): Promise<string[]> {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
