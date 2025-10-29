@@ -13,7 +13,7 @@ import { applySnapshot } from '../../../utils/apply-snapshot.js';
 import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
 import { getSnapshot } from '../../../utils/get-snapshot.js';
 
-function filterSnapshotDiff(snapshot: SnapshotDiff, filters: string[]): SnapshotDiff {
+export function filterSnapshotDiff(snapshot: SnapshotDiff, filters: string[]): SnapshotDiff {
 	const filterSet = new Set(filters);
 
 	function shouldKeep(item: { collection: string; field?: string }): boolean {
@@ -225,7 +225,7 @@ export async function apply(
 	}
 }
 
-function formatPath(path: any[]): string {
+export function formatPath(path: any[]): string {
 	if (path.length === 1) {
 		return path.toString();
 	}
@@ -233,7 +233,7 @@ function formatPath(path: any[]): string {
 	return path.slice(1).join('.');
 }
 
-function formatRelatedCollection(relatedCollection: string | null): string {
+export function formatRelatedCollection(relatedCollection: string | null): string {
 	// Related collection doesn't exist for a2o relationship types
 	if (relatedCollection) {
 		return ` → ${relatedCollection}`;
