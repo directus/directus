@@ -3,4 +3,4 @@
 '@directus/api': patch
 ---
 
-Add Multi-domain OAuth/OpenID support
+Add multi-domain OAuth/OpenID support

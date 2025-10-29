@@ -32,22 +32,25 @@ import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { getSecret } from '../../utils/get-secret.js';
 import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
-import { validateAuthOrigin } from '../../utils/validate-auth-origin.js';
 import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 import { getSchema } from '../../utils/get-schema.js';
+import {
+	generateRedirectUrls,
+	getCallbackFromRequest,
+	getCallbackFromOriginUrl,
+} from '../../utils/get-oauth-callback-url.js';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: null | Client;
-	redirectUrl: string;
+	redirectUris: URL[];
 	config: Record<string, any>;
 	roleMap: RoleMap;
 
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
 
-		const env = useEnv();
 		const logger = useLogger();
 
 		const {
@@ -67,9 +70,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidProviderConfigError({ provider });
 		}
 
-		const redirectUrl = new Url(env['PUBLIC_URL'] as string).addPath('auth', 'login', provider, 'callback');
-
-		this.redirectUrl = redirectUrl.toString();
+		this.redirectUris = generateRedirectUrls(provider, 'OpenID');
 		this.config = config;
 		this.roleMap = {};
 
@@ -153,7 +154,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			{
 				client_id: clientId,
 				...(!isPrivateKeyJwtAuthMethod && { client_secret: clientSecret }),
-				redirect_uris: [this.redirectUrl],
+				redirect_uris: this.redirectUris.map((uri) => uri.toString()),
 				response_types: ['code'],
 				...clientOptionsOverrides,
 			},
@@ -234,13 +235,10 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				? payload['codeVerifier']
 				: generators.codeChallenge(payload['codeVerifier']);
 
-			// Use origin URL if provided, otherwise fall back to public URL
-			const callbackUrl = payload['originUrl']
-				? `${payload['originUrl']}/auth/login/${this.config['provider']}/callback`
-				: this.redirectUrl;
+			const callbackUrl = getCallbackFromOriginUrl(this.redirectUris, payload['originUrl']);
 
 			tokenSet = await client.callback(
-				callbackUrl,
+				callbackUrl.toString(),
 				{ code: payload['code'], state: payload['state'], iss: payload['iss'] },
 				{ code_verifier: payload['codeVerifier'], state: codeChallenge, nonce: codeChallenge },
 			);
@@ -450,7 +448,6 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 	router.get(
 		'/',
 		asyncHandler(async (req, res) => {
-			const logger = useLogger();
 			const provider = getAuthProvider(providerName) as OpenIDAuthDriver;
 			const codeVerifier = provider.generateCodeVerifier();
 			const prompt = !!req.query['prompt'];
@@ -461,17 +458,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			let dynamicCallbackUrl: string | undefined;
-			const originUrl = validateAuthOrigin(req, 'OpenID');
-
-			if (originUrl) {
-				// Dynamic mode: use origin from request
-				dynamicCallbackUrl = `${originUrl}/auth/login/${providerName}/callback`;
-				logger.debug(`[OpenID] Using dynamic callback URL: ${dynamicCallbackUrl}`);
-			} else {
-				// Legacy mode: use PUBLIC_URL
-				logger.debug(`[OpenID] Using static callback URL from PUBLIC_URL`);
-			}
+			const callback = getCallbackFromRequest(req, provider.redirectUris, 'OpenID');
 
 			const token = jwt.sign(
 				{
@@ -479,8 +466,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 					redirect,
 					prompt,
 					otp,
-					// Store origin for callback validation
-					...(dynamicCallbackUrl && { originUrl }),
+					originUrl: callback.origin,
 				},
 				getSecret(),
 				{
@@ -495,7 +481,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			});
 
 			try {
-				return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt, dynamicCallbackUrl));
+				return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt, callback.href));
 			} catch {
 				return res.redirect(
 					new Url(env['PUBLIC_URL'] as string)

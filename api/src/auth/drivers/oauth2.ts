@@ -35,18 +35,21 @@ import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 import { getSchema } from '../../utils/get-schema.js';
-import { validateAuthOrigin } from '../../utils/validate-auth-origin.js';
+import {
+	generateRedirectUris,
+	getCallbackFromRequest,
+	getCallbackFromOriginUrl,
+} from '../../utils/get-oauth-callback-url.js';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
-	redirectUrl: string;
+	redirectUris: URL[];
 	config: Record<string, any>;
 	roleMap: RoleMap;
 
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
 
-		const env = useEnv();
 		const logger = useLogger();
 
 		const { authorizeUrl, accessUrl, profileUrl, clientId, clientSecret, ...additionalConfig } = config;
@@ -56,14 +59,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			throw new InvalidProviderConfigError({ provider: additionalConfig['provider'] });
 		}
 
-		const redirectUrl = new Url(env['PUBLIC_URL'] as string).addPath(
-			'auth',
-			'login',
-			additionalConfig['provider'],
-			'callback',
-		);
-
-		this.redirectUrl = redirectUrl.toString();
+		// Build redirect URIs: include PUBLIC_URL + all AUTH_ALLOWED_DOMAINS
+		this.redirectUris = generateRedirectUris(additionalConfig['provider'], 'OAuth2');
 		this.config = additionalConfig;
 
 		this.roleMap = {};
@@ -103,7 +100,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		this.client = new issuer.Client({
 			client_id: clientId,
 			client_secret: clientSecret,
-			redirect_uris: [this.redirectUrl],
+			redirect_uris: this.redirectUris.map((uri) => uri.toString()),
 			response_types: ['code'],
 			...clientOptionsOverrides,
 		});
@@ -165,13 +162,10 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				? payload['codeVerifier']
 				: generators.codeChallenge(payload['codeVerifier']);
 
-			// Use dynamic callback URL if provided, otherwise fall back to public URL
-			const callbackUrl = payload['originUrl']
-				? `${payload['originUrl']}/auth/login/${this.config['provider']}/callback`
-				: this.redirectUrl;
+			const callbackUrl = getCallbackFromOriginUrl(this.redirectUris, payload['originUrl']);
 
 			tokenSet = await this.client.oauthCallback(
-				callbackUrl,
+				callbackUrl.toString(),
 				{ code: payload['code'], state: payload['state'] },
 				{ code_verifier: payload['codeVerifier'], state: codeChallenge },
 			);
@@ -381,7 +375,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			const originUrl: string | undefined = validateAuthOrigin(req, 'OAuth2');
+			const callback = getCallbackFromRequest(req, provider.redirectUris, 'OAuth2');
 
 			const token = jwt.sign(
 				{
@@ -389,7 +383,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 					redirect,
 					prompt,
 					otp,
-					...(originUrl ? { originUrl } : {}),
+					originUrl: callback.origin,
 				},
 				getSecret(),
 				{
@@ -403,7 +397,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				sameSite: 'lax',
 			});
 
-			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt, originUrl));
+			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt, callback.href));
 		},
 		respond,
 	);
