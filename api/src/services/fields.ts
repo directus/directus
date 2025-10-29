@@ -894,6 +894,8 @@ export class FieldsService {
 		// Don't attempt to add a DB column for alias / corrupt fields
 		if (field.type === 'alias' || field.type === 'unknown') return;
 
+		const existing = options?.existing ?? null;
+
 		if (field.schema?.has_auto_increment) {
 			if (field.type === 'bigInteger') {
 				column = table.bigIncrements(field.field);
@@ -901,14 +903,14 @@ export class FieldsService {
 				column = table.increments(field.field);
 			}
 		} else if (field.type === 'string') {
-			column = table.string(field.field, field.schema?.max_length ?? options?.existing?.max_length ?? undefined);
+			column = table.string(field.field, field.schema?.max_length ?? existing?.max_length ?? undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
 			const type = field.type as 'float' | 'decimal';
 
 			column = table[type](
 				field.field,
-				field.schema?.numeric_precision ?? options?.existing?.numeric_precision ?? DEFAULT_NUMERIC_PRECISION,
-				field.schema?.numeric_scale ?? options?.existing?.numeric_scale ?? DEFAULT_NUMERIC_SCALE,
+				field.schema?.numeric_precision ?? existing?.numeric_precision ?? DEFAULT_NUMERIC_PRECISION,
+				field.schema?.numeric_scale ?? existing?.numeric_scale ?? DEFAULT_NUMERIC_SCALE,
 			);
 		} else if (field.type === 'csv') {
 			column = table.text(field.field);
@@ -930,7 +932,7 @@ export class FieldsService {
 		 * The column nullability must be set on every alter or it will be dropped
 		 * This is due to column.alter() not being incremental per https://knexjs.org/guide/schema-builder.html#alter
 		 */
-		this.helpers.schema.setNullable(column, field, options?.existing ?? null);
+		this.helpers.schema.setNullable(column, field, existing);
 
 		/**
 		 * The default value must be set on every alter or it will be dropped
@@ -938,7 +940,7 @@ export class FieldsService {
 		 */
 
 		const defaultValue =
-			field.schema?.default_value !== undefined ? field.schema?.default_value : options?.existing?.default_value;
+			field.schema?.default_value !== undefined ? field.schema?.default_value : existing?.default_value;
 
 		if (defaultValue !== undefined) {
 			const newDefaultValueIsString = typeof defaultValue === 'string';
@@ -964,26 +966,22 @@ export class FieldsService {
 
 		if (field.schema?.is_primary_key) {
 			column.primary().notNullable();
-		} else if (!options?.existing?.is_primary_key) {
+		} else if (!existing?.is_primary_key) {
 			// primary key will already have unique/index constraints
 			if (field.schema?.is_unique === true) {
-				if ((!options?.existing || options?.existing.is_unique === false) && !options?.attemptConcurrentIndex) {
+				if ((!existing || existing.is_unique === false) && !options?.attemptConcurrentIndex) {
 					column.unique({ indexName: this.helpers.schema.generateIndexName('unique', collection, field.field) });
 				}
-			} else if (field.schema?.is_unique === false && options?.existing?.is_unique === true) {
+			} else if (field.schema?.is_unique === false && existing?.is_unique === true) {
 				table.dropUnique([field.field], this.helpers.schema.generateIndexName('unique', collection, field.field));
 			}
 
 			if (field.schema?.is_indexed === true) {
-				if (!options?.existing || options?.existing.is_indexed === false) {
-					if (!options?.attemptConcurrentIndex) {
-						column.index(this.helpers.schema.generateIndexName('index', collection, field.field));
-					}
+				if ((!existing || existing.is_indexed === false) && !options?.attemptConcurrentIndex) {
+					column.index(this.helpers.schema.generateIndexName('index', collection, field.field));
 				}
-			} else if (field.schema?.is_indexed === false) {
-				if (options?.existing?.is_indexed === true) {
-					table.dropIndex([field.field], this.helpers.schema.generateIndexName('index', collection, field.field));
-				}
+			} else if (field.schema?.is_indexed === false && existing?.is_indexed === true) {
+				table.dropIndex([field.field], this.helpers.schema.generateIndexName('index', collection, field.field));
 			}
 		}
 
