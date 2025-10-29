@@ -69,6 +69,7 @@ const value = computed(() =>
 				:length="field.schema && field.schema.max_length"
 				:direction="direction"
 				:raw-editor-enabled="rawEditorEnabled"
+				:template="field.meta?.display_options?.template"
 				@input="$emit('update:modelValue', $event)"
 				@set-field-value="$emit('setFieldValue', $event)"
 			/>
