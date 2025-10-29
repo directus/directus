@@ -5,7 +5,7 @@ import { useLogger } from '../logger/index.js';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 
 /**
- * Validate if an origin is allowed for dynamic OAuth redirect URIs
+ * Validate if an origin is allowed for dynamic Auth redirect URIs
  * @param req Express request object
  * @param context Context for logging (e.g. 'OAuth2', 'OpenID')
  * @returns The validated origin URL if allowed, undefined if AUTH_ALLOWED_DOMAINS is not set
@@ -26,7 +26,7 @@ export function validateAuthOrigin(req: Request, context: string): string | unde
   try {
     origin = new URL(originUrl);
   } catch {
-    throw new InvalidPayloadError({ reason: `[${context}] Invalid origin URL: ${originUrl}` });
+    throw new InvalidPayloadError({ reason: `Invalid origin URL: ${originUrl}` });
   }
 
   const allowedOrigins = toArray(allowedDomains as string)
@@ -43,5 +43,5 @@ export function validateAuthOrigin(req: Request, context: string): string | unde
 
 
   if (allowedOrigins.includes(origin.origin)) return originUrl;
-  throw new ForbiddenError({ reason: `[${context}] Domain ${originUrl} is not allowed` });
+  throw new ForbiddenError({ reason: `Domain ${originUrl} is not allowed` });
 }
