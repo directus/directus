@@ -8,9 +8,9 @@ packages:
 
 catalog:
   '@authenio/samlify-node-xmllint': 2.0.0
-  '@aws-sdk/client-s3': 3.918.0
-  '@aws-sdk/client-sesv2': 3.918.0
-  '@aws-sdk/lib-storage': 3.918.0
+  '@aws-sdk/client-s3': 3.919.0
+  '@aws-sdk/client-sesv2': 3.919.0
+  '@aws-sdk/lib-storage': 3.919.0
   '@azure/storage-blob': 12.29.1
   '@changesets/cli': 2.29.7
   '@changesets/get-github-info': 0.6.0
@@ -62,7 +62,7 @@ catalog:
   '@rollup/plugin-commonjs': 28.0.9
   '@rollup/plugin-json': 6.1.0
   '@rollup/plugin-node-resolve': 16.0.3
-  '@rollup/plugin-replace': 6.0.2
+  '@rollup/plugin-replace': 6.0.3
   '@rollup/plugin-terser': 0.4.4
   '@rollup/plugin-virtual': 3.0.2
   '@rollup/plugin-yaml': 4.1.2
@@ -70,7 +70,7 @@ catalog:
   '@sinclair/typebox': 0.34.41
   '@sindresorhus/slugify': 2.2.1
   '@smithy/node-http-handler': 4.4.3
-  '@supabase/storage-js': 2.76.1
+  '@supabase/storage-js': 2.77.0
   '@tinymce/tinymce-vue': 6.3.0
   '@turf/meta': 7.2.0
   '@tus/server': 2.3.0
@@ -132,7 +132,7 @@ catalog:
   argon2: 0.44.0
   async: 3.2.6
   async-mutex: 0.5.0
-  axios: 1.12.2
+  axios: 1.13.1
   axios-cache-interceptor: 1.8.3
   base-64: 1.0.0
   boxen: 8.0.1
