@@ -36,10 +36,10 @@ import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 import { getSchema } from '../../utils/get-schema.js';
 import {
-	generateRedirectUris,
+	generateRedirectUrls,
 	getCallbackFromRequest,
 	getCallbackFromOriginUrl,
-} from '../../utils/get-oauth-callback-url.js';
+} from '../../utils/oauth-callbacks.js';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
@@ -60,7 +60,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		}
 
 		// Build redirect URIs: include PUBLIC_URL + all AUTH_ALLOWED_DOMAINS
-		this.redirectUris = generateRedirectUris(additionalConfig['provider'], 'OAuth2');
+		this.redirectUris = generateRedirectUrls(additionalConfig['provider'], 'OAuth2');
 		this.config = additionalConfig;
 
 		this.roleMap = {};

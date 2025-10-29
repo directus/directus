@@ -40,7 +40,7 @@ import {
 	generateRedirectUrls,
 	getCallbackFromRequest,
 	getCallbackFromOriginUrl,
-} from '../../utils/get-oauth-callback-url.js';
+} from '../../utils/oauth-callbacks.js';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: null | Client;
