@@ -67,13 +67,13 @@ export function useComparison(options: UseComparisonOptions) {
 
 	const allFieldsSelected = computed(
 		() =>
-			fieldsWithDifferences.value.length &&
+			!!fieldsWithDifferences.value.length &&
 			fieldsWithDifferences.value.every((field) => selectedComparisonFields.value.includes(field)),
 	);
 
 	const someFieldsSelected = computed(
 		() =>
-			fieldsWithDifferences.value.length &&
+			!!fieldsWithDifferences.value.length &&
 			fieldsWithDifferences.value.some((field) => selectedComparisonFields.value.includes(field)),
 	);
 
