@@ -1,444 +1,910 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ref } from 'vue';
-import { createTestingPinia } from '@pinia/testing';
-import { setActivePinia } from 'pinia';
+
+// Mock API
+const mockApi = {
+	get: vi.fn(),
+};
 
 vi.mock('@/api', () => ({
 	default: {
-		get: vi.fn(),
+		get: (...args: any[]) => mockApi.get(...args),
 	},
 }));
 
+// Mock unexpectedError
 vi.mock('@/utils/unexpected-error', () => ({
 	unexpectedError: vi.fn(),
 }));
 
-import api from '@/api';
-import { useComparison } from './use-comparison';
-import type { Revision } from '@/types/revisions';
-import type { ContentVersion } from '@directus/types';
+import { useComparison } from '@/views/private/components/comparison/use-comparison';
 
-const itemVersions = {
-	data: [
-		{
-			id: 'cbbd19f9-a826-4850-9038-85f68508300f',
-			key: 'comparison-item-1-version-1',
-			name: 'Comparison Item 1 - Version 1',
-			collection: 'comparison_tests',
-			item: '1',
-			date_created: '2025-09-19T20:09:42.498Z',
-			date_updated: '2025-09-19T20:10:52.897Z',
-			user_created: '821f48c3-3606-4903-b424-a3f1c35315bf',
-			user_updated: null,
-			hash: '0ef0f677fcef0f9201fd35e1eca71060b9178884',
-		},
-	],
+// Mock Fields Store
+const mockFieldsStore = {
+	getFieldsForCollection: vi.fn(),
 };
 
-const versionComparison = {
-	data: {
-		outdated: false,
-		mainHash: '0ef0f677fcef0f9201fd35e1eca71060b9178884',
-		current: {
-			title: 'Comparison Item 1 - Version 1 - Revision 1',
-			description:
-				'Id ad eiusmod pariatur nulla id. Lorem anim aliqua labore pariatur occaecat. Ea anim consequat magna minim tempor officia adipisicing sunt velit ad. Voluptate aliqua aute fugiat.\nrevision 1',
-			things: 'guitar',
-			enable: true,
-			categories: {
-				create: [],
-				update: [
-					{
-						category_id: '1',
-						id: 2,
-					},
-				],
-				delete: [],
-			},
-		},
-		main: {
-			id: 1,
-			status: 'draft',
-			sort: null,
-			user_created: '821f48c3-3606-4903-b424-a3f1c35315bf',
-			date_created: '2025-09-19T20:08:20.419Z',
-			user_updated: null,
-			date_updated: null,
-			title: 'Comparison Item 1',
-			description:
-				'Id ad eiusmod pariatur nulla id. Lorem anim aliqua labore pariatur occaecat. Ea anim consequat magna minim tempor officia adipisicing sunt velit ad. Voluptate aliqua aute fugiat.',
-			things: 'apple',
-			enable: null,
-			categories: [1],
-		},
-	},
-};
+vi.mock('@/stores/fields', () => ({
+	useFieldsStore: () => mockFieldsStore,
+}));
 
-const versionRevisions = {
-	data: [
-		{
-			id: 804,
-			data: {
-				title: 'Comparison Item 1 - Version 1 - Revision 1',
-				description:
-					'Id ad eiusmod pariatur nulla id. Lorem anim aliqua labore pariatur occaecat. Ea anim consequat magna minim tempor officia adipisicing sunt velit ad. Voluptate aliqua aute fugiat.\nrevision 1',
-				things: 'guitar',
-				enable: true,
-				categories: {
-					create: [],
-					update: [
-						{
-							category_id: '1',
-							id: 2,
-						},
-					],
-					delete: [],
-				},
-			},
-			delta: {
-				title: 'Comparison Item 1 - Version 1 - Revision 1',
-				description:
-					'Id ad eiusmod pariatur nulla id. Lorem anim aliqua labore pariatur occaecat. Ea anim consequat magna minim tempor officia adipisicing sunt velit ad. Voluptate aliqua aute fugiat.\nrevision 1',
-				things: 'guitar',
-				enable: true,
-				categories: {
-					create: [],
-					update: [
-						{
-							category_id: '1',
-							id: 2,
-						},
-					],
-					delete: [],
-				},
-			},
-			collection: 'comparison_tests',
-			version: 'cbbd19f9-a826-4850-9038-85f68508300f',
-			item: '1',
-			activity: {
-				action: 'version_save',
-				timestamp: '2025-09-19T20:10:52.890Z',
-				user: '821f48c3-3606-4903-b424-a3f1c35315bf',
-			},
-		},
-	],
-};
+// Tests
 
-describe('normalizeComparisonData', () => {
+describe('useComparison', () => {
 	beforeEach(() => {
-		setActivePinia(
-			createTestingPinia({
-				createSpy: vi.fn,
-				stubActions: false,
-			}),
-		);
-
 		vi.clearAllMocks();
+		mockFieldsStore.getFieldsForCollection.mockImplementation(getFieldData);
 	});
 
-	it('normalizes revision comparison using provided revisions list (no API calls)', async () => {
-		const currentVersion = itemVersions.data[0] as unknown as ContentVersion;
+	describe('with visible user- & date-created/-updated', () => {
+		beforeEach(() => {
+			vi.clearAllMocks();
 
-		const versions = [currentVersion] as unknown as ContentVersion[];
-
-		const revisions: Revision[] = versionRevisions.data as unknown as Revision[];
-
-		(api.get as any).mockResolvedValueOnce({
-			data: { data: versionComparison.data },
+			mockFieldsStore.getFieldsForCollection.mockImplementation(() =>
+				getFieldData({ hideUserFields: false, hideDateFields: false }),
+			);
 		});
 
-		const comparisonData = ref(null);
-		const { normalizeComparisonData } = useComparison({ comparisonData });
-
-		const firstRevision = revisions[0]!;
-
-		const result = await normalizeComparisonData(firstRevision.id, 'revision', currentVersion, versions, revisions);
-
-		// Base should be main item + version delta
-		expect(result.base.title).toBe(versionComparison.data.current.title);
-		expect(result.base.things).toBe(versionComparison.data.current.things);
-		expect(result.base.enable).toBe(true);
-
-		expect(result.incoming.categories).toEqual({
-			create: [],
-			delete: [],
-			update: [
-				{
-					category_id: '1',
-					id: 2,
+		it('should include "created_at" and "created_by" in revisionFields and comparisonFields', async () => {
+			const testCase = getTestData('revision', {
+				currentRevisionOverwrites: {
+					data: {
+						description: 'tets',
+						created_at: '2025-10-29T19:00:00.000Z',
+						created_by: 'other-user-id',
+					},
+					delta: {
+						created_at: '2025-10-29T19:00:00.000Z',
+						created_by: 'other-user-id',
+					},
 				},
-			],
+			});
+
+			mockApi.get.mockImplementationOnce(testCase.mockApiGet);
+
+			const { comparisonData, comparisonFields, fetchComparisonData, fetchUserUpdated, fetchBaseItemUserUpdated } =
+				useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+			await fetchUserUpdated();
+			await fetchBaseItemUserUpdated();
+
+			const revisionFieldsArray = Array.from(comparisonData.value?.revisionFields ?? []);
+			expect(revisionFieldsArray).toEqual(expect.arrayContaining(['created_at', 'created_by']));
+
+			const comparisonFieldsArray = Array.from(comparisonFields.value ?? []);
+			expect(comparisonFieldsArray).toEqual(expect.arrayContaining(['created_at', 'created_by']));
 		});
 
-		expect(result.base.date_updated).toBeNull();
-
-		// Incoming should merge revision data and set date_updated from activity.timestamp
-		expect(result.incoming.title).toBe(versionRevisions.data[0]!.data.title);
-		expect(result.incoming.things).toBe('guitar');
-		expect(result.incoming.enable).toBe(true);
-
-		expect(result.incoming.categories).toEqual({
-			create: [],
-			delete: [],
-			update: [
-				{
-					category_id: '1',
-					id: 2,
+		it('should include "updated_at" and "updated_by" in revisionFields, but not in comparisonFields', async () => {
+			const testCase = getTestData('revision', {
+				currentRevisionOverwrites: {
+					data: {
+						updated_at: '2025-10-29T17:00:00.000Z',
+						updated_by: 'other-user-id',
+					},
+					delta: {
+						updated_at: '2025-10-29T17:00:00.000Z',
+						updated_by: 'other-user-id',
+					},
 				},
-			],
-		});
+			});
 
-		expect(result.incoming.date_updated).toBe(versionRevisions.data[0]!.activity.timestamp);
+			mockApi.get.mockImplementationOnce(testCase.mockApiGet);
+
+			const { comparisonData, comparisonFields, fetchComparisonData, fetchUserUpdated, fetchBaseItemUserUpdated } =
+				useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+			await fetchUserUpdated();
+			await fetchBaseItemUserUpdated();
+
+			const revisionFieldsArray = Array.from(comparisonData.value?.revisionFields ?? []);
+			expect(revisionFieldsArray).toEqual(expect.arrayContaining(['updated_at', 'updated_by']));
+
+			const comparisonFieldsArray = Array.from(comparisonFields.value ?? []);
+			expect(comparisonFieldsArray).not.toEqual(expect.arrayContaining(['updated_at', 'updated_by']));
+		});
 	});
 
-	it('normalizes version comparison using provided versions list', async () => {
-		const currentVersion = itemVersions.data[0] as unknown as ContentVersion;
+	describe('with hidden user- & date-created/-updated', () => {
+		it('should not include "created_at" and "created_by" in revisionFields and comparisonFields', async () => {
+			const testCase = getTestData('revision', {
+				currentRevisionOverwrites: {
+					data: {
+						title: 'update',
+						created_at: '2025-10-29T17:00:00.000Z',
+						created_by: 'other-user-id',
+					},
+					delta: {
+						title: 'update',
+						created_at: '2025-10-29T17:00:00.000Z',
+						created_by: 'other-user-id',
+					},
+				},
+			});
 
-		const versions = [currentVersion] as unknown as ContentVersion[];
+			mockApi.get.mockImplementationOnce(testCase.mockApiGet);
 
-		(api.get as any).mockResolvedValueOnce({
-			data: { data: versionComparison.data },
+			const { comparisonData, comparisonFields, fetchComparisonData, fetchUserUpdated, fetchBaseItemUserUpdated } =
+				useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+			await fetchUserUpdated();
+			await fetchBaseItemUserUpdated();
+
+			const revisionFieldsArray = Array.from(comparisonData.value?.revisionFields ?? []);
+			expect(revisionFieldsArray).not.toEqual(expect.arrayContaining(['created_at', 'created_by']));
+
+			const comparisonFieldsArray = Array.from(comparisonFields.value ?? []);
+			expect(comparisonFieldsArray).not.toEqual(expect.arrayContaining(['created_at', 'created_by']));
 		});
 
-		const comparisonData = ref(null);
-		const { normalizeComparisonData } = useComparison({ comparisonData });
+		it('should not include "updated_at" and "updated_by" in revisionFields and comparisonFields', async () => {
+			const testCase = getTestData('revision', {
+				currentRevisionOverwrites: {
+					data: {
+						updated_at: '2025-10-29T17:00:00.000Z',
+						updated_by: 'other-user-id',
+					},
+					delta: {
+						updated_at: '2025-10-29T17:00:00.000Z',
+						updated_by: 'other-user-id',
+					},
+				},
+			});
 
-		const result = await normalizeComparisonData(currentVersion.id, 'version', currentVersion, versions);
+			mockApi.get.mockImplementationOnce(testCase.mockApiGet);
 
-		expect(result.base).toEqual(versionComparison.data.main);
-		// Check that the incoming data contains the expected fields from versionComparison.data.current
-		expect(result.incoming.title).toBe(versionComparison.data.current.title);
-		expect(result.incoming.description).toBe(versionComparison.data.current.description);
-		expect(result.incoming.things).toBe(versionComparison.data.current.things);
-		expect(result.incoming.enable).toBe(versionComparison.data.current.enable);
-		expect(result.incoming.categories).toEqual(versionComparison.data.current.categories);
+			const { comparisonData, comparisonFields, fetchComparisonData, fetchUserUpdated, fetchBaseItemUserUpdated } =
+				useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+			await fetchUserUpdated();
+			await fetchBaseItemUserUpdated();
+
+			const revisionFieldsArray = Array.from(comparisonData.value?.revisionFields ?? []);
+			expect(revisionFieldsArray).not.toEqual(expect.arrayContaining(['updated_at', 'updated_by']));
+
+			const comparisonFieldsArray = Array.from(comparisonFields.value ?? []);
+			expect(comparisonFieldsArray).not.toEqual(expect.arrayContaining(['updated_at', 'updated_by']));
+		});
+	});
+
+	describe('revision comparison', () => {
+		it('should exclude all relational fields from revisionFields and comparisonFields', async () => {
+			const testCase = getTestData('revision', {
+				currentRevisionOverwrites: {
+					data: {
+						description: 'test',
+						m2o: 1,
+						o2m: 2,
+						m2m: 3,
+						m2a: 4,
+					},
+					delta: {
+						description: 'test',
+						m2o: 1,
+						o2m: 2,
+						m2m: 3,
+						m2a: 4,
+					},
+				},
+			});
+
+			mockApi.get.mockImplementationOnce(testCase.mockApiGet);
+
+			const { comparisonData, comparisonFields, fetchComparisonData, fetchUserUpdated, fetchBaseItemUserUpdated } =
+				useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+			await fetchUserUpdated();
+			await fetchBaseItemUserUpdated();
+
+			const revisionFieldsArray = Array.from(comparisonData.value?.revisionFields ?? []);
+			expect(revisionFieldsArray).not.toEqual(expect.arrayContaining(['m2o', 'o2m', 'm2m', 'm2a']));
+
+			const comparisonFieldsArray = Array.from(comparisonFields.value ?? []);
+			expect(comparisonFieldsArray).not.toEqual(expect.arrayContaining(['m2o', 'o2m', 'm2m', 'm2a']));
+		});
 	});
 });
 
-// TODO: (re-)write tests ;)
-/* BACKUP
-describe('mergeMainItemKeysIntoRevision', () => {
-	const fields: Field[] = [
+function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Record<string, any> = {}) {
+	const { currentVersionOverwrites = {}, currentRevisionOverwrites = {}, mainItemOverwrites = {} } = overwrites;
+
+	const collection = 'test_collection';
+	const primaryKey = 1;
+	const versionCompareHash = '2b0ca481b8b806ca320d628ce13c6b15c9bc4d09';
+
+	const adminUser = {
+		id: 'c42659fa-c936-4a06-9b99-ed9471a2d6df',
+		email: 'admin@example.com',
+		first_name: 'Admin',
+		last_name: 'User',
+	};
+
+	const currentVersion = {
+		id: 'a1b8e4d2-ca52-4f54-b0d9-6895c34efdd4',
+		key: 'draft',
+		name: 'Draft',
+		collection,
+		item: primaryKey,
+		hash: versionCompareHash,
+		date_created: '2025-10-29T09:00:00.000Z',
+		date_updated: '2025-10-29T10:00:00.000Z',
+		user_created: adminUser.id,
+		user_updated: adminUser.id,
+		delta: null,
+		...currentVersionOverwrites,
+	};
+
+	const currentRevision = {
+		id: 1234,
+		collection: collection,
+		item: primaryKey,
+		data: {},
+		delta: {},
+		activity: {
+			action: 'create',
+			timestamp: '2025-10-29T10:00:00.000Z',
+			user: adminUser,
+		},
+		...currentRevisionOverwrites,
+	};
+
+	const mainItem = {
+		id: primaryKey,
+		created_by: adminUser.id,
+		created_at: '2025-10-29T08:00:00.000Z',
+		updated_by: null,
+		updated_at: null,
+		title: 'Main title',
+		description: null,
+		hide_description: false,
+		m2o: null,
+		o2m_parent_id: null,
+		o2m: [],
+		m2m: [],
+		m2a: [],
+		...mainItemOverwrites,
+	};
+
+	const versionCompare = {
+		outdated: false,
+		mainHash: versionCompareHash,
+		current: {
+			id: primaryKey,
+			updated_by: adminUser.id,
+			updated_at: '2025-10-29T11:30:00.000Z',
+			title: 'updated version',
+		},
+		main: mainItem,
+	};
+
+	const revisions = [currentRevision];
+
+	const testCase = {
+		collection,
+		primaryKey,
+		mode,
+		currentVersion,
+		currentRevision,
+		revisions,
+		responseData: {
+			user: adminUser,
+			latestMainRevisionActivity: [
+				{
+					activity: {
+						timestamp: '2025-10-29T08:30:00.000Z',
+						user: adminUser,
+					},
+				},
+			],
+			versionCompare,
+			mainItem: mainItem,
+		},
+		mockApiGet,
+		comparisonOptions: {
+			collection: ref(collection),
+			primaryKey: ref(primaryKey),
+			mode: ref(mode),
+			currentVersion: ref(currentVersion),
+			currentRevision: ref(currentRevision),
+			revisions: ref(revisions),
+		},
+	};
+
+	return testCase;
+
+	function mockApiGet(path: string) {
+		if (path === `/versions/${testCase.currentVersion?.id ?? ''}/compare`) {
+			return Promise.resolve({ data: { data: testCase.responseData.versionCompare } });
+		}
+
+		if (path === '/revisions') {
+			return Promise.resolve({ data: { data: testCase.responseData.latestMainRevisionActivity } });
+		}
+
+		if (path === '/users') {
+			return Promise.resolve({ data: { data: testCase.responseData.user } });
+		}
+
+		if (path === `/items/${testCase.collection}/${testCase.primaryKey}`) {
+			return Promise.resolve({ data: { data: testCase.responseData.mainItem } });
+		}
+
+		return Promise.reject(new Error(`Path "${path}" is not mocked in this test`));
+	}
+}
+
+function getFieldData({ hideUserFields = true, hideDateFields = true } = {}) {
+	const collection = 'test_collection';
+
+	return [
 		{
-			collection: 'test_collection',
-			field: 'title',
-			name: 'Title',
+			collection: collection,
+			field: 'id',
+			type: 'integer',
+			schema: {
+				name: 'id',
+				table: collection,
+				data_type: 'integer',
+				default_value: null,
+				max_length: null,
+				numeric_precision: null,
+				numeric_scale: null,
+				is_generated: false,
+				generation_expression: null,
+				is_nullable: false,
+				is_unique: false,
+				is_indexed: false,
+				is_primary_key: true,
+				has_auto_increment: true,
+				foreign_key_column: null,
+				foreign_key_table: null,
+			},
+			meta: {
+				id: 192,
+				collection: collection,
+				field: 'id',
+				special: null,
+				interface: 'input',
+				options: null,
+				display: null,
+				display_options: null,
+				readonly: true,
+				hidden: true,
+				sort: 1,
+				width: 'full',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: null,
+				validation: null,
+				validation_message: null,
+			},
+			name: 'ID',
+		},
+		{
+			collection: collection,
+			field: 'created_by',
 			type: 'string',
-			meta: null,
+			schema: {
+				name: 'created_by',
+				table: collection,
+				data_type: 'char',
+				default_value: null,
+				max_length: 36,
+				numeric_precision: null,
+				numeric_scale: null,
+				is_generated: false,
+				generation_expression: null,
+				is_nullable: true,
+				is_unique: false,
+				is_indexed: false,
+				is_primary_key: false,
+				has_auto_increment: false,
+				foreign_key_column: 'id',
+				foreign_key_table: 'directus_users',
+			},
+			meta: {
+				id: 193,
+				collection: collection,
+				field: 'created_by',
+				special: ['user-created'],
+				interface: 'select-dropdown-m2o',
+				options: {
+					template: '{{avatar}} {{first_name}} {{last_name}}',
+				},
+				display: 'user',
+				display_options: null,
+				readonly: true,
+				hidden: hideUserFields,
+				sort: 2,
+				width: 'half',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: null,
+				validation: null,
+				validation_message: null,
+			},
+			name: 'Created By',
+		},
+		{
+			collection: collection,
+			field: 'created_at',
+			type: 'timestamp',
+			schema: {
+				name: 'created_at',
+				table: collection,
+				data_type: 'datetime',
+				default_value: null,
+				max_length: null,
+				numeric_precision: null,
+				numeric_scale: null,
+				is_generated: false,
+				generation_expression: null,
+				is_nullable: true,
+				is_unique: false,
+				is_indexed: false,
+				is_primary_key: false,
+				has_auto_increment: false,
+				foreign_key_column: null,
+				foreign_key_table: null,
+			},
+			meta: {
+				id: 194,
+				collection: collection,
+				field: 'created_at',
+				special: ['date-created', 'cast-timestamp'],
+				interface: 'datetime',
+				options: null,
+				display: 'datetime',
+				display_options: {
+					relative: true,
+				},
+				readonly: true,
+				hidden: hideDateFields,
+				sort: 3,
+				width: 'half',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: null,
+				validation: null,
+				validation_message: null,
+			},
+			name: 'Created At',
+		},
+		{
+			collection: collection,
+			field: 'updated_by',
+			type: 'string',
+			schema: {
+				name: 'updated_by',
+				table: collection,
+				data_type: 'char',
+				default_value: null,
+				max_length: 36,
+				numeric_precision: null,
+				numeric_scale: null,
+				is_generated: false,
+				generation_expression: null,
+				is_nullable: true,
+				is_unique: false,
+				is_indexed: false,
+				is_primary_key: false,
+				has_auto_increment: false,
+				foreign_key_column: 'id',
+				foreign_key_table: 'directus_users',
+			},
+			meta: {
+				id: 195,
+				collection: collection,
+				field: 'updated_by',
+				special: ['user-updated'],
+				interface: 'select-dropdown-m2o',
+				options: {
+					template: '{{avatar}} {{first_name}} {{last_name}}',
+				},
+				display: 'user',
+				display_options: null,
+				readonly: true,
+				hidden: hideUserFields,
+				sort: 4,
+				width: 'half',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: null,
+				validation: null,
+				validation_message: null,
+			},
+			name: 'Updated By',
+		},
+		{
+			collection: collection,
+			field: 'updated_at',
+			type: 'timestamp',
+			schema: {
+				name: 'updated_at',
+				table: collection,
+				data_type: 'datetime',
+				default_value: null,
+				max_length: null,
+				numeric_precision: null,
+				numeric_scale: null,
+				is_generated: false,
+				generation_expression: null,
+				is_nullable: true,
+				is_unique: false,
+				is_indexed: false,
+				is_primary_key: false,
+				has_auto_increment: false,
+				foreign_key_column: null,
+				foreign_key_table: null,
+			},
+			meta: {
+				id: 196,
+				collection: collection,
+				field: 'updated_at',
+				special: ['date-updated', 'cast-timestamp'],
+				interface: 'datetime',
+				options: null,
+				display: 'datetime',
+				display_options: {
+					relative: true,
+				},
+				readonly: true,
+				hidden: hideDateFields,
+				sort: 5,
+				width: 'half',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: null,
+				validation: null,
+				validation_message: null,
+			},
+			name: 'Updated At',
+		},
+		{
+			collection: collection,
+			field: 'title',
+			type: 'string',
 			schema: {
 				name: 'title',
-				table: 'test_collection',
-				schema: 'public',
-				is_nullable: true,
-				default_value: 'test1',
+				table: collection,
+				data_type: 'varchar',
+				default_value: null,
 				max_length: 255,
-				comment: null,
 				numeric_precision: null,
 				numeric_scale: null,
+				is_generated: false,
+				generation_expression: null,
+				is_nullable: true,
 				is_unique: false,
+				is_indexed: false,
 				is_primary_key: false,
 				has_auto_increment: false,
-				foreign_key_schema: null,
-				foreign_key_table: null,
 				foreign_key_column: null,
-				data_type: 'string',
-				is_indexed: false,
-				is_generated: false,
+				foreign_key_table: null,
 			},
+			meta: {
+				id: 197,
+				collection: collection,
+				field: 'title',
+				special: null,
+				interface: 'input',
+				options: null,
+				display: null,
+				display_options: null,
+				readonly: false,
+				hidden: false,
+				sort: 6,
+				width: 'full',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: null,
+				validation: null,
+				validation_message: null,
+			},
+			name: 'Title',
 		},
 		{
-			collection: 'test_collection',
+			collection: collection,
 			field: 'description',
-			name: 'Description',
-			type: 'string',
-			meta: null,
+			type: 'text',
 			schema: {
 				name: 'description',
-				table: 'test_collection',
-				schema: 'public',
-				is_nullable: true,
+				table: collection,
+				data_type: 'text',
 				default_value: null,
-				max_length: 255,
-				comment: null,
+				max_length: null,
 				numeric_precision: null,
 				numeric_scale: null,
+				is_generated: false,
+				generation_expression: null,
+				is_nullable: true,
 				is_unique: false,
+				is_indexed: false,
 				is_primary_key: false,
 				has_auto_increment: false,
-				foreign_key_schema: null,
-				foreign_key_table: null,
 				foreign_key_column: null,
-				data_type: 'string',
-				is_indexed: false,
-				is_generated: false,
+				foreign_key_table: null,
 			},
+			meta: {
+				id: 198,
+				collection: collection,
+				field: 'description',
+				special: null,
+				interface: 'input-multiline',
+				options: null,
+				display: null,
+				display_options: null,
+				readonly: false,
+				hidden: false,
+				sort: 7,
+				width: 'half',
+				translations: null,
+				note: null,
+				conditions: [
+					{
+						name: 'Hide if toggle is enabled',
+						rule: {
+							_and: [
+								{
+									hide_description: {
+										_eq: true,
+									},
+								},
+							],
+						},
+						hidden: false,
+					},
+				],
+				required: false,
+				group: null,
+				validation: null,
+				validation_message: null,
+			},
+			name: 'Description',
 		},
 		{
-			collection: 'test_collection',
-			field: 'count',
-			name: 'Count',
-			type: 'string',
-			meta: null,
+			collection: collection,
+			field: 'hide_description',
+			type: 'boolean',
 			schema: {
-				name: 'count',
-				table: 'test_collection',
-				schema: 'public',
-				is_nullable: true,
-				default_value: null,
-				max_length: 255,
-				comment: null,
+				name: 'hide_description',
+				table: collection,
+				data_type: 'boolean',
+				default_value: false,
+				max_length: null,
 				numeric_precision: null,
 				numeric_scale: null,
+				is_generated: false,
+				generation_expression: null,
+				is_nullable: false,
 				is_unique: false,
+				is_indexed: false,
 				is_primary_key: false,
 				has_auto_increment: false,
-				foreign_key_schema: null,
-				foreign_key_table: null,
 				foreign_key_column: null,
-				data_type: 'string',
-				is_indexed: false,
-				is_generated: false,
+				foreign_key_table: null,
 			},
+			meta: {
+				id: 199,
+				collection: collection,
+				field: 'hide_description',
+				special: ['cast-boolean'],
+				interface: 'boolean',
+				options: null,
+				display: null,
+				display_options: null,
+				readonly: false,
+				hidden: false,
+				sort: 8,
+				width: 'half',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: null,
+				validation: null,
+				validation_message: null,
+			},
+			name: 'Hide Description',
+		},
+		{
+			collection: collection,
+			field: 'm2o',
+			type: 'integer',
+			schema: {
+				name: 'm2o',
+				table: collection,
+				data_type: 'integer',
+				default_value: null,
+				max_length: null,
+				numeric_precision: null,
+				numeric_scale: null,
+				is_generated: false,
+				generation_expression: null,
+				is_nullable: true,
+				is_unique: false,
+				is_indexed: false,
+				is_primary_key: false,
+				has_auto_increment: false,
+				foreign_key_column: 'id',
+				foreign_key_table: collection,
+			},
+			meta: {
+				id: 200,
+				collection: collection,
+				field: 'm2o',
+				special: ['m2o'],
+				interface: 'select-dropdown-m2o',
+				options: {
+					template: '{{title}}',
+				},
+				display: null,
+				display_options: null,
+				readonly: false,
+				hidden: false,
+				sort: 9,
+				width: 'full',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: null,
+				validation: null,
+				validation_message: null,
+			},
+			name: 'M2O',
+		},
+		{
+			collection: collection,
+			field: 'o2m',
+			type: 'alias',
+			schema: null,
+			meta: {
+				id: 201,
+				collection: collection,
+				field: 'o2m',
+				special: ['o2m'],
+				interface: 'list-o2m',
+				options: {
+					sort: null,
+					template: '{{title}}',
+				},
+				display: null,
+				display_options: null,
+				readonly: false,
+				hidden: false,
+				sort: 10,
+				width: 'full',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: null,
+				validation: null,
+				validation_message: null,
+			},
+			name: 'O2M',
+		},
+		{
+			collection: collection,
+			field: 'o2m_parent_id',
+			type: 'integer',
+			schema: {
+				name: 'o2m_parent_id',
+				table: collection,
+				data_type: 'integer',
+				default_value: null,
+				max_length: null,
+				numeric_precision: null,
+				numeric_scale: null,
+				is_generated: false,
+				generation_expression: null,
+				is_nullable: true,
+				is_unique: false,
+				is_indexed: false,
+				is_primary_key: false,
+				has_auto_increment: false,
+				foreign_key_column: 'id',
+				foreign_key_table: collection,
+			},
+			meta: {
+				id: 202,
+				collection: collection,
+				field: 'o2m_parent_id',
+				special: null,
+				interface: 'select-dropdown-m2o',
+				options: null,
+				display: null,
+				display_options: null,
+				readonly: false,
+				hidden: true,
+				sort: 11,
+				width: 'half',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: null,
+				validation: null,
+				validation_message: null,
+			},
+			name: 'O2M Parent ID',
+		},
+		{
+			collection: collection,
+			field: 'm2m',
+			type: 'alias',
+			schema: null,
+			meta: {
+				id: 203,
+				collection: collection,
+				field: 'm2m',
+				special: ['m2m'],
+				interface: 'list-m2m',
+				options: {
+					layout: 'table',
+					fields: [`${collection}_id.title`],
+				},
+				display: null,
+				display_options: null,
+				readonly: false,
+				hidden: false,
+				sort: 12,
+				width: 'full',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: null,
+				validation: null,
+				validation_message: null,
+			},
+			name: 'M2M',
+		},
+		{
+			collection: collection,
+			field: 'm2a',
+			type: 'alias',
+			schema: null,
+			meta: {
+				id: 207,
+				collection: collection,
+				field: 'm2a',
+				special: ['m2a'],
+				interface: 'list-m2a',
+				options: null,
+				display: null,
+				display_options: null,
+				readonly: false,
+				hidden: false,
+				sort: 13,
+				width: 'full',
+				translations: null,
+				note: null,
+				conditions: null,
+				required: false,
+				group: null,
+				validation: null,
+				validation_message: null,
+			},
+			name: 'M2A',
 		},
 	];
-
-	it('should merge missing keys with default values into incoming', () => {
-		const base = {
-			title: 'Base Title',
-			description: null,
-			count: null,
-		};
-
-		const revisionData = {
-			title: 'Incoming Title',
-		};
-
-		const result = mergeMainItemKeysIntoRevision(revisionData, base, fields);
-
-		expect(result).toMatchInlineSnapshot(`
-			{
-			  "count": null,
-			  "description": null,
-			  "title": "Incoming Title",
-			}
-		`);
-	});
-
-	it('should not merge keys into incoming that have a non-default value', () => {
-		const base = {
-			title: 'Base Title',
-			description: 'Base Description',
-			count: 5,
-		};
-
-		const revisionData = {
-			description: 'Incoming Description',
-		};
-
-		const result = mergeMainItemKeysIntoRevision(revisionData, base, fields);
-
-		expect(result).toMatchInlineSnapshot(`
-			{
-			  "description": "Incoming Description",
-			}
-		`);
-	});
-
-	it('should merge missing keys when value equals default value', () => {
-		const base = {
-			title: 'test1',
-			description: 'Base Description',
-			count: 5,
-		};
-
-		const revisionData = {
-			description: 'Incoming Description',
-			count: null,
-		};
-
-		const result = mergeMainItemKeysIntoRevision(revisionData, base, fields);
-
-		expect(result).toMatchInlineSnapshot(`
-			{
-			  "count": null,
-			  "description": "Incoming Description",
-			  "title": "test1",
-			}
-		`);
-	});
-});
-
-describe('getFieldsWithDifferences', () => {
-	it('excludes related item fields when comparing revisions', () => {
-		const comparedData = {
-			outdated: false,
-			mainHash: '',
-			incoming: {
-				title: 'New Title',
-				description: 'New Description',
-				related_items: [{ id: 1, name: 'Item 1' }],
-				categories: [{ id: 2, name: 'Category 1' }],
-				status: 'published',
-			},
-			base: {
-				title: 'Old Title',
-				description: 'Old Description',
-				related_items: [{ id: 2, name: 'Item 2' }],
-				categories: [{ id: 3, name: 'Category 2' }],
-				status: 'draft',
-			},
-		};
-
-		const fieldMetadata = {
-			title: { meta: { special: [] } },
-			description: { meta: { special: [] } },
-			related_items: { meta: { special: ['m2m'] } },
-			categories: { meta: { special: ['o2m'] } },
-			status: { meta: { special: [] } },
-		};
-
-		// Test version comparison - should include all fields with differences
-		const versionFields = getFieldsWithDifferences(comparedData, fieldMetadata, 'version');
-		expect(versionFields).toContain('title');
-		expect(versionFields).toContain('description');
-		expect(versionFields).toContain('related_items');
-		expect(versionFields).toContain('categories');
-		expect(versionFields).toContain('status');
-
-		// Test revision comparison - should exclude related item fields
-		const revisionFields = getFieldsWithDifferences(comparedData, fieldMetadata, 'revision');
-		expect(revisionFields).toContain('title');
-		expect(revisionFields).toContain('description');
-		expect(revisionFields).toContain('status');
-		expect(revisionFields).not.toContain('related_items');
-		expect(revisionFields).not.toContain('categories');
-	});
-
-	it('includes related item fields when comparing versions', () => {
-		const comparedData = {
-			outdated: false,
-			mainHash: '',
-			incoming: {
-				title: 'New Title',
-				related_items: [{ id: 1, name: 'Item 1' }],
-			},
-			base: {
-				title: 'Old Title',
-				related_items: [{ id: 2, name: 'Item 2' }],
-			},
-		};
-
-		const fieldMetadata = {
-			title: { meta: { special: [] } },
-			related_items: { meta: { special: ['m2m'] } },
-		};
-
-		// Version comparison should include related item fields
-		const versionFields = getFieldsWithDifferences(comparedData, fieldMetadata, 'version');
-		expect(versionFields).toContain('title');
-		expect(versionFields).toContain('related_items');
-	});
-});
-
-
-*/
+}
