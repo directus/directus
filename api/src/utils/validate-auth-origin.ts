@@ -13,35 +13,33 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
  * @throws {ForbiddenError} If the origin is not in AUTH_ALLOWED_DOMAINS
  */
 export function validateAuthOrigin(req: Request, context: string): string | undefined {
-  const originUrl = `${req.protocol}://${req.get('host')}`
-  const env = useEnv();
-  const logger = useLogger();
-  const allowedDomains = env['AUTH_ALLOWED_DOMAINS'];
+	const originUrl = `${req.protocol}://${req.get('host')}`;
+	const env = useEnv();
+	const logger = useLogger();
+	const allowedDomains = env['AUTH_ALLOWED_DOMAINS'];
 
-  // Legacy mode use PUBLIC_URL
-  if (!allowedDomains) return;
+	// Legacy mode use PUBLIC_URL
+	if (!allowedDomains) return;
 
-  let origin: URL;
+	let origin: URL;
 
-  try {
-    origin = new URL(originUrl);
-  } catch {
-    throw new InvalidPayloadError({ reason: `Invalid origin URL: ${originUrl}` });
-  }
+	try {
+		origin = new URL(originUrl);
+	} catch {
+		throw new InvalidPayloadError({ reason: `Invalid origin URL: ${originUrl}` });
+	}
 
-  const allowedOrigins = toArray(allowedDomains as string)
-    .map((domain) => {
-      try {
-        return new URL(domain).origin;
-      } catch {
-        logger.warn(`[${context}] Invalid domain in AUTH_ALLOWED_DOMAINS: ${domain}`);
-        return;
-      }
-    })
-    .filter((o): o is string => o !== undefined);
+	const allowedOrigins = toArray(allowedDomains as string)
+		.map((domain) => {
+			try {
+				return new URL(domain).origin;
+			} catch {
+				logger.warn(`[${context}] Invalid domain in AUTH_ALLOWED_DOMAINS: ${domain}`);
+				return;
+			}
+		})
+		.filter((o): o is string => o !== undefined);
 
-
-
-  if (allowedOrigins.includes(origin.origin)) return originUrl;
-  throw new ForbiddenError({ reason: `Domain ${originUrl} is not allowed` });
+	if (allowedOrigins.includes(origin.origin)) return originUrl;
+	throw new ForbiddenError({ reason: `Domain ${originUrl} is not allowed` });
 }
