@@ -147,10 +147,10 @@ export class CollectionsService {
 
 					const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
 
-					await trx.schema.createTable(payload.collection, async (table) => {
+					await trx.schema.createTable(payload.collection, (table) => {
 						for (const field of payload.fields!) {
 							if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-								await fieldsService.addColumnToTable(
+								fieldsService.addColumnToTable(
 									table,
 									payload.collection,
 									field,
