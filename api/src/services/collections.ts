@@ -154,12 +154,16 @@ export class CollectionsService {
 									table,
 									payload.collection,
 									field,
-									undefined,
-									opts?.attemptConcurrentIndex,
 								);
 							}
 						}
 					});
+
+					for (const field of payload.fields!) {
+						if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+							await fieldsService.addColumnIndex(payload.collection, field, undefined, opts?.attemptConcurrentIndex);
+						}
+					}
 
 					const fieldItemsService = new ItemsService('directus_fields', {
 						knex: trx,

@@ -417,24 +417,22 @@ export class FieldsService {
 					const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
 					if (table) {
-						await this.addColumnToTable(
+						this.addColumnToTable(
 							table,
 							collection,
 							hookAdjustedField as Field,
-							undefined,
-							attemptConcurrentIndex,
 						);
 					} else {
-						await trx.schema.alterTable(collection, async (table) => {
-							await this.addColumnToTable(
+						await trx.schema.alterTable(collection, (table) => {
+							this.addColumnToTable(
 								table,
 								collection,
 								hookAdjustedField as Field,
-								undefined,
-								attemptConcurrentIndex,
 							);
 						});
 					}
+
+					await this.addColumnIndex(collection, hookAdjustedField as Field, undefined, attemptConcurrentIndex);
 				}
 
 				if (hookAdjustedField.meta) {
@@ -563,10 +561,12 @@ export class FieldsService {
 
 					try {
 						await transaction(this.knex, async (trx) => {
-							await trx.schema.alterTable(collection, async (table) => {
+							await trx.schema.alterTable(collection, (table) => {
 								if (!hookAdjustedField.schema) return;
-								await this.addColumnToTable(table, collection, field, existingColumn, attemptConcurrentIndex);
+								this.addColumnToTable(table, collection, field, existingColumn);
 							});
+
+							await this.addColumnIndex(collection, field, existingColumn, attemptConcurrentIndex);
 						});
 					} catch (err: any) {
 						throw await translateDatabaseError(err, field);
@@ -871,13 +871,12 @@ export class FieldsService {
 		}
 	}
 
-	public async addColumnToTable(
+	public addColumnToTable(
 		table: Knex.CreateTableBuilder,
 		collection: string,
 		field: RawField | Field,
 		existing: Column | null = null,
-		attemptConcurrentIndex = false, // do we want to default to concurrent creation?
-	): Promise<void> {
+	): void {
 		let column: Knex.ColumnBuilder;
 
 		// Don't attempt to add a DB column for alias / corrupt fields
@@ -951,52 +950,40 @@ export class FieldsService {
 			}
 		}
 
-		const createIndexes: { unique: boolean }[] = [];
-
 		if (field.schema?.is_primary_key) {
 			column.primary().notNullable();
 		} else if (!existing?.is_primary_key) {
 			// primary key will already have unique/index constraints
-			if (field.schema?.is_unique === true) {
-				if (!existing || existing.is_unique === false) {
-					if (attemptConcurrentIndex) {
-						createIndexes.push({ unique: true });
-					} else {
-						column.unique({ indexName: this.helpers.schema.generateIndexName('unique', collection, field.field) });
-					}
-				}
-			} else if (field.schema?.is_unique === false) {
-				if (existing?.is_unique === true) {
-					table.dropUnique([field.field], this.helpers.schema.generateIndexName('unique', collection, field.field));
-				}
+			if (field.schema?.is_unique === false && existing?.is_unique === true) {
+				table.dropUnique([field.field], this.helpers.schema.generateIndexName('unique', collection, field.field));
 			}
 
-			if (field.schema?.is_indexed === true) {
-				if (!existing || existing.is_indexed === false) {
-					if (attemptConcurrentIndex) {
-						createIndexes.push({ unique: false });
-					} else {
-						column.index(this.helpers.schema.generateIndexName('index', collection, field.field));
-					}
-				}
-			} else if (field.schema?.is_indexed === false) {
-				if (existing?.is_indexed === true) {
-					table.dropIndex([field.field], this.helpers.schema.generateIndexName('index', collection, field.field));
-				}
+			if (field.schema?.is_indexed === false && existing?.is_indexed === true) {
+				table.dropIndex([field.field], this.helpers.schema.generateIndexName('index', collection, field.field));
 			}
 		}
 
 		if (existing) {
 			column.alter();
 		}
+	}
 
-		if (createIndexes.length > 0) {
-			for (const { unique } of createIndexes) {
-				await this.helpers.schema.createIndex(collection, field.field, {
-					attemptConcurrentIndex,
-					unique,
-				});
-			}
+	public async addColumnIndex(collection: string, field: Field | RawField, existing: Column | null = null, attemptConcurrentIndex = false): Promise<void> {
+		// primary key will already have unique/index constraints
+		if (existing?.is_primary_key) return;
+
+		if (field.schema?.is_unique === true && (!existing || existing.is_unique == false)) {
+			return this.helpers.schema.createIndex(collection, field.field, {
+				unique: true,
+				attemptConcurrentIndex,
+			});
+		}
+
+		if (field.schema?.is_indexed === true && (!existing || existing.is_indexed === false)) {
+			return this.helpers.schema.createIndex(collection, field.field, {
+				unique: false,
+				attemptConcurrentIndex
+			});
 		}
 	}
 }
