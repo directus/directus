@@ -2684,6 +2684,9 @@ importers:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.8)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       esbuild:
         specifier: 'catalog:'
         version: 0.25.11
@@ -2696,6 +2699,9 @@ importers:
       unplugin-yaml:
         specifier: 'catalog:'
         version: 3.0.6(esbuild@0.25.11)(rollup@4.52.5)(vite@7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+      vitest:
+        specifier: 'catalog:'
+        version: 3.2.4(@types/node@24.9.1)(happy-dom@20.0.8)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/themes:
     dependencies:
