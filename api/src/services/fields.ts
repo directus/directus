@@ -473,7 +473,7 @@ export class FieldsService {
 			// concurrent index creation cannot be done inside the transaction
 			if (attemptConcurrentIndex && hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
 				await this.addColumnIndex(collection, hookAdjustedField as Field, {
-					attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
+					attemptConcurrentIndex,
 				});
 			}
 		} finally {
