@@ -12,7 +12,7 @@ type Link = {
 	icon: string;
 	label: string;
 	type: string;
-	actionType: string;
+	actionType: 'url' | 'flow';
 	url?: string;
 	flow?: string;
 };
