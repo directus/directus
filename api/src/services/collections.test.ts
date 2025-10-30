@@ -4,7 +4,7 @@ import type { Accountability, Collection, FieldMutationOptions } from '@directus
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
 import * as getSchemaModule from '../utils/get-schema.js';
-import { createMockKnex, resetKnexMocks, setupDeleteOperationMocks } from '../__mocks__/knex.js';
+import { createMockKnex, resetKnexMocks, setupSystemCollectionMocks } from '../__mocks__/knex.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
@@ -793,7 +793,7 @@ describe('Integration Tests', () => {
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
 
 				// Setup common tracker responses
-				setupDeleteOperationMocks(tracker);
+				setupSystemCollectionMocks(tracker);
 			});
 
 			it('should throw ForbiddenError for non-admin users', async () => {

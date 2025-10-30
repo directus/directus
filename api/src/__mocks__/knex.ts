@@ -28,19 +28,125 @@ export function createMockKnex() {
 	const db = vi.mocked(knex.default({ client: MockClient }));
 	const tracker = createTracker(db);
 
-	// Mock schema builder methods
+	// Mock schema builder methods with functional callbacks
 	const mockSchema = {
-		createTable: vi.fn().mockResolvedValue(undefined),
+		createTable: vi.fn((_tableName, callback) => {
+			callback(createMockTableBuilder());
+			return Promise.resolve();
+		}),
 		dropTable: vi.fn().mockResolvedValue(undefined),
 		hasTable: vi.fn().mockResolvedValue(false),
-		table: vi.fn().mockResolvedValue(undefined),
-		alterTable: vi.fn().mockResolvedValue(undefined),
+		table: vi.fn((_tableName, callback) => {
+			callback(createMockTableBuilder());
+			return Promise.resolve();
+		}),
+		alterTable: vi.fn((_tableName, callback) => {
+			callback(createMockTableBuilder());
+			return Promise.resolve();
+		}),
+		dropTableIfExists: vi.fn().mockResolvedValue(undefined),
+		renameTable: vi.fn().mockResolvedValue(undefined),
+		raw: vi.fn().mockResolvedValue(undefined),
 	};
 
 	Object.defineProperty(db, 'schema', {
 		get: () => mockSchema,
 		configurable: true,
 	});
+
+	// Add common query builder methods to the knex instance
+	// Using defineProperties to avoid conflicts with read-only properties
+
+	// Chainable query builder methods (return db for fluent API)
+	const chainableMethods = [
+		'select',
+		'where',
+		'whereIn',
+		'whereNotIn',
+		'whereNull',
+		'whereNotNull',
+		'whereBetween',
+		'whereNotBetween',
+		'whereRaw',
+		'orWhere',
+		'orWhereIn',
+		'orWhereNotIn',
+		'orWhereNull',
+		'orWhereNotNull',
+		'andWhere',
+		'insert',
+		'update',
+		'delete',
+		'del',
+		'returning',
+		'from',
+		'into',
+		'join',
+		'innerJoin',
+		'leftJoin',
+		'leftOuterJoin',
+		'rightJoin',
+		'rightOuterJoin',
+		'fullOuterJoin',
+		'crossJoin',
+		'orderBy',
+		'groupBy',
+		'having',
+		'havingRaw',
+		'limit',
+		'offset',
+		'distinct',
+		'count',
+		'countDistinct',
+		'min',
+		'max',
+		'sum',
+		'sumDistinct',
+		'avg',
+		'avgDistinct',
+		'increment',
+		'decrement',
+		'clone',
+		'modify',
+		'debug',
+		'transacting',
+		'connection',
+		'options',
+		'withSchema',
+		'queryContext',
+		'as',
+		'union',
+		'unionAll',
+		'intersect',
+		'except',
+		'with',
+		'withRecursive',
+		'onConflict',
+		'merge',
+		'ignore',
+	];
+
+	// Terminal methods (return resolved values)
+	const terminalMethods: Record<string, any> = {
+		first: vi.fn().mockResolvedValue(null),
+		pluck: vi.fn().mockResolvedValue([]),
+		truncate: vi.fn().mockResolvedValue(undefined),
+		columnInfo: vi.fn().mockResolvedValue({}),
+		batchInsert: vi.fn().mockResolvedValue(undefined),
+	};
+
+	const queryMethodDescriptors = Object.fromEntries([
+		...chainableMethods.map((method) => [
+			method,
+			{ value: vi.fn().mockReturnValue(db), writable: true, configurable: true },
+		]),
+		...Object.entries(terminalMethods).map(([method, mock]) => [
+			method,
+			{ value: mock, writable: true, configurable: true },
+		]),
+	]);
+
+	Object.defineProperties(db, queryMethodDescriptors);
 
 	return { db, tracker, mockSchema };
 }
@@ -59,33 +165,82 @@ export function createMockKnex() {
  */
 export function createMockTableBuilder() {
 	return {
+		// Column types
 		string: vi.fn().mockReturnThis(),
-		integer: vi.fn().mockReturnThis(),
 		text: vi.fn().mockReturnThis(),
-		boolean: vi.fn().mockReturnThis(),
-		increments: vi.fn().mockReturnThis(),
-		bigIncrements: vi.fn().mockReturnThis(),
-		decimal: vi.fn().mockReturnThis(),
+		integer: vi.fn().mockReturnThis(),
+		bigInteger: vi.fn().mockReturnThis(),
+		tinyint: vi.fn().mockReturnThis(),
+		smallint: vi.fn().mockReturnThis(),
+		mediumint: vi.fn().mockReturnThis(),
+		bigint: vi.fn().mockReturnThis(),
 		float: vi.fn().mockReturnThis(),
-		dateTime: vi.fn().mockReturnThis(),
-		timestamp: vi.fn().mockReturnThis(),
+		double: vi.fn().mockReturnThis(),
+		decimal: vi.fn().mockReturnThis(),
+		boolean: vi.fn().mockReturnThis(),
 		date: vi.fn().mockReturnThis(),
+		datetime: vi.fn().mockReturnThis(),
+		dateTime: vi.fn().mockReturnThis(),
 		time: vi.fn().mockReturnThis(),
+		timestamp: vi.fn().mockReturnThis(),
+		timestamps: vi.fn().mockReturnThis(),
+		binary: vi.fn().mockReturnThis(),
+		enum: vi.fn().mockReturnThis(),
+		enu: vi.fn().mockReturnThis(),
 		json: vi.fn().mockReturnThis(),
 		jsonb: vi.fn().mockReturnThis(),
 		uuid: vi.fn().mockReturnThis(),
-		binary: vi.fn().mockReturnThis(),
+		geometry: vi.fn().mockReturnThis(),
+		geography: vi.fn().mockReturnThis(),
+		point: vi.fn().mockReturnThis(),
+		linestring: vi.fn().mockReturnThis(),
+		polygon: vi.fn().mockReturnThis(),
+		multipoint: vi.fn().mockReturnThis(),
+		multilinestring: vi.fn().mockReturnThis(),
+		multipolygon: vi.fn().mockReturnThis(),
+		geometrycollection: vi.fn().mockReturnThis(),
 		specificType: vi.fn().mockReturnThis(),
+
+		// Auto-increment columns
+		increments: vi.fn().mockReturnThis(),
+		bigIncrements: vi.fn().mockReturnThis(),
+
+		// Column modifiers
 		defaultTo: vi.fn().mockReturnThis(),
 		notNullable: vi.fn().mockReturnThis(),
 		nullable: vi.fn().mockReturnThis(),
+		unsigned: vi.fn().mockReturnThis(),
+		comment: vi.fn().mockReturnThis(),
+		collate: vi.fn().mockReturnThis(),
+		charset: vi.fn().mockReturnThis(),
+		first: vi.fn().mockReturnThis(),
+		after: vi.fn().mockReturnThis(),
+
+		// Constraints
+		primary: vi.fn().mockReturnThis(),
 		unique: vi.fn().mockReturnThis(),
 		index: vi.fn().mockReturnThis(),
-		primary: vi.fn().mockReturnThis(),
+		references: vi.fn().mockReturnThis(),
+		inTable: vi.fn().mockReturnThis(),
+		onDelete: vi.fn().mockReturnThis(),
+		onUpdate: vi.fn().mockReturnThis(),
+		foreign: vi.fn().mockReturnThis(),
+
+		// Schema alterations
 		alter: vi.fn().mockReturnThis(),
 		dropColumn: vi.fn().mockReturnThis(),
+		dropColumns: vi.fn().mockReturnThis(),
+		renameColumn: vi.fn().mockReturnThis(),
+		dropPrimary: vi.fn().mockReturnThis(),
 		dropUnique: vi.fn().mockReturnThis(),
 		dropIndex: vi.fn().mockReturnThis(),
+		dropForeign: vi.fn().mockReturnThis(),
+		dropTimestamps: vi.fn().mockReturnThis(),
+
+		// Table options
+		engine: vi.fn().mockReturnThis(),
+		inherits: vi.fn().mockReturnThis(),
+		queryContext: vi.fn().mockReturnThis(),
 	};
 }
 
@@ -98,11 +253,11 @@ export function createMockTableBuilder() {
  * @example
  * ```typescript
  * const { db, tracker, mockSchema } = createMockKnex();
- * setupDeleteOperationMocks(tracker);
+ * setupSystemCollectionMocks(tracker);
  * // Now all CRUD operations on system collections are mocked
  * ```
  */
-export function setupDeleteOperationMocks(tracker: Tracker) {
+export function setupSystemCollectionMocks(tracker: Tracker) {
 	// Mock all CRUD operations for all system collections
 	for (const collection of systemCollectionNames) {
 		tracker.on.select(collection).response([]);
@@ -142,42 +297,29 @@ export function resetKnexMocks(tracker: Tracker, mockSchema: ReturnType<typeof c
 }
 
 /**
- * Helper to mock empty select responses for common Directus tables
- * Useful for tests that need to mock "no existing records" scenarios
+ * Creates a mock createTable function for testing table creation
+ * Returns a vi.fn() that calls the callback with a mock table builder
  *
- * @param tracker The knex-mock-client tracker instance
- * @param tables Array of table names to mock empty responses for
- *
- * @example
- * ```typescript
- * const { tracker } = createMockKnex();
- * mockEmptySelects(tracker, ['directus_collections', 'directus_fields']);
- * // Now SELECT queries to these tables will return empty arrays
- * ```
- */
-export function mockEmptySelects(tracker: Tracker, tables: string[]) {
-	for (const table of tables) {
-		tracker.on.select(table).response([]);
-	}
-}
-
-/**
- * Helper to mock DDL operations (Data Definition Language)
- * Sets up mocks for common schema alteration operations
- *
- * @param tracker The knex-mock-client tracker instance
+ * @returns Mock function for db.schema.createTable
  *
  * @example
  * ```typescript
- * const { tracker } = createMockKnex();
- * mockDDLOperations(tracker);
- * // Now ALTER TABLE, CREATE TABLE, etc. operations are mocked
+ * const { db } = createMockKnex();
+ * const createTableSpy = mockCreateTable();
+ * db.schema.createTable = createTableSpy as any;
+ *
+ * // Now when createTable is called, it will invoke the callback with a mock table builder
+ * await db.schema.createTable('users', (table) => {
+ *   table.increments('id');
+ *   table.string('name');
+ * });
  * ```
  */
-export function mockDDLOperations(tracker: Tracker) {
-	tracker.on.any(/alter table/i).response([]);
-	tracker.on.any(/create table/i).response([]);
-	tracker.on.any(/drop table/i).response([]);
+export function mockCreateTable() {
+	return vi.fn((_tableName, callback) => {
+		callback(createMockTableBuilder());
+		return Promise.resolve();
+	});
 }
 
 /**
