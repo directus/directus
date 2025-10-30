@@ -211,7 +211,12 @@ describe('useComparison', () => {
 });
 
 function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Record<string, any> = {}) {
-	const { currentVersionOverwrites = {}, currentRevisionOverwrites = {}, mainItemOverwrites = {} } = overwrites;
+	const {
+		currentVersionOverwrites = {},
+		currentRevisionOverwrites = {},
+		mainItemOverwrites = {},
+		versionCompareOverwrites = {},
+	} = overwrites;
 
 	const collection = 'test_collection';
 	const primaryKey = 1;
@@ -280,30 +285,26 @@ function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Recor
 			title: 'updated version',
 		},
 		main: mainItem,
+		...versionCompareOverwrites,
 	};
 
 	const revisions = [currentRevision];
 
-	const testCase = {
-		collection,
-		primaryKey,
-		mode,
-		currentVersion,
-		currentRevision,
-		revisions,
-		responseData: {
-			user: adminUser,
-			latestMainRevisionActivity: [
-				{
-					activity: {
-						timestamp: '2025-10-29T08:30:00.000Z',
-						user: adminUser,
-					},
+	const responseData = {
+		user: adminUser,
+		latestMainRevisionActivity: [
+			{
+				activity: {
+					timestamp: '2025-10-29T08:30:00.000Z',
+					user: adminUser,
 				},
-			],
-			versionCompare,
-			mainItem: mainItem,
-		},
+			},
+		],
+		versionCompare,
+		mainItem: mainItem,
+	};
+
+	return {
 		mockApiGet,
 		comparisonOptions: {
 			collection: ref(collection),
@@ -315,23 +316,21 @@ function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Recor
 		},
 	};
 
-	return testCase;
-
 	function mockApiGet(path: string) {
-		if (path === `/versions/${testCase.currentVersion?.id ?? ''}/compare`) {
-			return Promise.resolve({ data: { data: testCase.responseData.versionCompare } });
+		if (path === `/versions/${currentVersion?.id ?? ''}/compare`) {
+			return Promise.resolve({ data: { data: responseData.versionCompare } });
 		}
 
 		if (path === '/revisions') {
-			return Promise.resolve({ data: { data: testCase.responseData.latestMainRevisionActivity } });
+			return Promise.resolve({ data: { data: responseData.latestMainRevisionActivity } });
 		}
 
 		if (path === '/users') {
-			return Promise.resolve({ data: { data: testCase.responseData.user } });
+			return Promise.resolve({ data: { data: responseData.user } });
 		}
 
-		if (path === `/items/${testCase.collection}/${testCase.primaryKey}`) {
-			return Promise.resolve({ data: { data: testCase.responseData.mainItem } });
+		if (path === `/items/${collection}/${primaryKey}`) {
+			return Promise.resolve({ data: { data: responseData.mainItem } });
 		}
 
 		return Promise.reject(new Error(`Path "${path}" is not mocked in this test`));
