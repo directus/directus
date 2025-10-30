@@ -1,6 +1,6 @@
 import type { Activity } from '@/types/activity';
 import type { Revision } from '@/types/revisions';
-import type { ContentVersion } from '@directus/types';
+import type { ContentVersion, User } from '@directus/types';
 
 export type VersionComparisonResponse = {
 	outdated: boolean;
@@ -15,19 +15,11 @@ export type NormalizedDate = {
 	dateObject: Date | null;
 };
 
-export type NormalizedUser = {
-	id: string;
-	firstName: string | null;
-	lastName: string | null;
-	email: string | null;
-	displayName: string;
-};
-
 export type NormalizedItem = {
 	id: string | number | undefined;
 	displayName: string;
 	date: NormalizedDate;
-	user: NormalizedUser | null;
+	user: string | User | null | undefined;
 	collection?: string;
 	item?: string | number;
 };

@@ -36,7 +36,7 @@ describe('useComparison', () => {
 		mockFieldsStore.getFieldsForCollection.mockImplementation(getFieldData);
 	});
 
-	describe('with visible user- & date-created/-updated', () => {
+	describe('with visible user & date fields', () => {
 		beforeEach(() => {
 			vi.clearAllMocks();
 
@@ -60,7 +60,7 @@ describe('useComparison', () => {
 				},
 			});
 
-			mockApi.get.mockImplementationOnce(testCase.mockApiGet);
+			mockApi.get.mockImplementation(testCase.mockApiGet);
 
 			const { comparisonData, comparisonFields, fetchComparisonData, fetchUserUpdated, fetchBaseItemUserUpdated } =
 				useComparison(testCase.comparisonOptions);
@@ -90,7 +90,7 @@ describe('useComparison', () => {
 				},
 			});
 
-			mockApi.get.mockImplementationOnce(testCase.mockApiGet);
+			mockApi.get.mockImplementation(testCase.mockApiGet);
 
 			const { comparisonData, comparisonFields, fetchComparisonData, fetchUserUpdated, fetchBaseItemUserUpdated } =
 				useComparison(testCase.comparisonOptions);
@@ -107,7 +107,7 @@ describe('useComparison', () => {
 		});
 	});
 
-	describe('with hidden user- & date-created/-updated', () => {
+	describe('with hidden user & date fields', () => {
 		it('should not include "created_at" and "created_by" in revisionFields and comparisonFields', async () => {
 			const testCase = getTestData('revision', {
 				currentRevisionOverwrites: {
@@ -124,7 +124,7 @@ describe('useComparison', () => {
 				},
 			});
 
-			mockApi.get.mockImplementationOnce(testCase.mockApiGet);
+			mockApi.get.mockImplementation(testCase.mockApiGet);
 
 			const { comparisonData, comparisonFields, fetchComparisonData, fetchUserUpdated, fetchBaseItemUserUpdated } =
 				useComparison(testCase.comparisonOptions);
@@ -154,7 +154,7 @@ describe('useComparison', () => {
 				},
 			});
 
-			mockApi.get.mockImplementationOnce(testCase.mockApiGet);
+			mockApi.get.mockImplementation(testCase.mockApiGet);
 
 			const { comparisonData, comparisonFields, fetchComparisonData, fetchUserUpdated, fetchBaseItemUserUpdated } =
 				useComparison(testCase.comparisonOptions);
@@ -192,7 +192,7 @@ describe('useComparison', () => {
 				},
 			});
 
-			mockApi.get.mockImplementationOnce(testCase.mockApiGet);
+			mockApi.get.mockImplementation(testCase.mockApiGet);
 
 			const { comparisonData, comparisonFields, fetchComparisonData, fetchUserUpdated, fetchBaseItemUserUpdated } =
 				useComparison(testCase.comparisonOptions);
@@ -208,10 +208,71 @@ describe('useComparison', () => {
 			expect(comparisonFieldsArray).not.toEqual(expect.arrayContaining(['m2o', 'o2m', 'm2m', 'm2a']));
 		});
 	});
+
+	describe('user updated', () => {
+		const testCase = getTestData('version');
+		mockApi.get.mockImplementation(testCase.mockApiGet);
+
+		it('should fetch and set userUpdated and baseUserUpdated correctly', async () => {
+			const { userUpdated, baseUserUpdated, fetchComparisonData, fetchUserUpdated, fetchBaseItemUserUpdated } =
+				useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+			await fetchUserUpdated();
+			await fetchBaseItemUserUpdated();
+
+			expect(userUpdated.value).toBeDefined();
+			expect(baseUserUpdated.value).toBeDefined();
+		});
+
+		it('should fetch userUpdated correctly when date fields are excluded', async () => {
+			mockFieldsStore.getFieldsForCollection.mockImplementation(() =>
+				getFieldData({ includeDateFields: false, includeUserFields: false }),
+			);
+
+			const { userUpdated, baseUserUpdated, fetchComparisonData, fetchUserUpdated, fetchBaseItemUserUpdated } =
+				useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+			await fetchUserUpdated();
+			await fetchBaseItemUserUpdated();
+
+			expect(userUpdated.value).toBeDefined();
+			expect(baseUserUpdated.value).toBeDefined();
+		});
+
+		it('should return null for baseUserUpdated when no activity is present', async () => {
+			const testCaseNoActivity = getTestData('version', {
+				latestMainRevisionActivityOverwrites: {},
+			});
+
+			mockApi.get.mockImplementation(testCaseNoActivity.mockApiGet);
+
+			mockFieldsStore.getFieldsForCollection.mockImplementation(() =>
+				getFieldData({ includeDateFields: false, includeUserFields: false }),
+			);
+
+			const { userUpdated, baseUserUpdated, fetchComparisonData, fetchUserUpdated, fetchBaseItemUserUpdated } =
+				useComparison(testCaseNoActivity.comparisonOptions);
+
+			await fetchComparisonData();
+			await fetchUserUpdated();
+			await fetchBaseItemUserUpdated();
+
+			expect(userUpdated.value).toBeDefined();
+			expect(baseUserUpdated.value).toBeNull();
+		});
+	});
 });
 
 function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Record<string, any> = {}) {
-	const { currentVersionOverwrites = {}, currentRevisionOverwrites = {}, mainItemOverwrites = {} } = overwrites;
+	const {
+		currentVersionOverwrites = {},
+		currentRevisionOverwrites = {},
+		mainItemOverwrites = {},
+		versionCompareOverwrites = {},
+		latestMainRevisionActivityOverwrites = null,
+	} = overwrites;
 
 	const collection = 'test_collection';
 	const primaryKey = 1;
@@ -280,30 +341,21 @@ function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Recor
 			title: 'updated version',
 		},
 		main: mainItem,
+		...versionCompareOverwrites,
 	};
 
 	const revisions = [currentRevision];
 
-	const testCase = {
-		collection,
-		primaryKey,
-		mode,
-		currentVersion,
-		currentRevision,
-		revisions,
-		responseData: {
-			user: adminUser,
-			latestMainRevisionActivity: [
-				{
-					activity: {
-						timestamp: '2025-10-29T08:30:00.000Z',
-						user: adminUser,
-					},
-				},
-			],
-			versionCompare,
-			mainItem: mainItem,
+	const latestMainRevisionActivity = [
+		{
+			activity: latestMainRevisionActivityOverwrites ?? {
+				timestamp: '2025-10-29T08:30:00.000Z',
+				user: adminUser,
+			},
 		},
+	];
+
+	return {
 		mockApiGet,
 		comparisonOptions: {
 			collection: ref(collection),
@@ -315,30 +367,33 @@ function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Recor
 		},
 	};
 
-	return testCase;
-
 	function mockApiGet(path: string) {
-		if (path === `/versions/${testCase.currentVersion?.id ?? ''}/compare`) {
-			return Promise.resolve({ data: { data: testCase.responseData.versionCompare } });
+		if (path === `/versions/${currentVersion?.id ?? ''}/compare`) {
+			return Promise.resolve({ data: { data: versionCompare } });
 		}
 
 		if (path === '/revisions') {
-			return Promise.resolve({ data: { data: testCase.responseData.latestMainRevisionActivity } });
+			return Promise.resolve({ data: { data: latestMainRevisionActivity } });
 		}
 
-		if (path === '/users') {
-			return Promise.resolve({ data: { data: testCase.responseData.user } });
+		if (path === `/users/${adminUser.id}`) {
+			return Promise.resolve({ data: { data: adminUser } });
 		}
 
-		if (path === `/items/${testCase.collection}/${testCase.primaryKey}`) {
-			return Promise.resolve({ data: { data: testCase.responseData.mainItem } });
+		if (path === `/items/${collection}/${primaryKey}`) {
+			return Promise.resolve({ data: { data: mainItem } });
 		}
 
 		return Promise.reject(new Error(`Path "${path}" is not mocked in this test`));
 	}
 }
 
-function getFieldData({ hideUserFields = true, hideDateFields = true } = {}) {
+function getFieldData({
+	hideUserFields = true,
+	hideDateFields = true,
+	includeDateFields = true,
+	includeUserFields = true,
+} = {}) {
 	const collection = 'test_collection';
 
 	return [
@@ -387,194 +442,203 @@ function getFieldData({ hideUserFields = true, hideDateFields = true } = {}) {
 			},
 			name: 'ID',
 		},
-		{
-			collection: collection,
-			field: 'created_by',
-			type: 'string',
-			schema: {
-				name: 'created_by',
-				table: collection,
-				data_type: 'char',
-				default_value: null,
-				max_length: 36,
-				numeric_precision: null,
-				numeric_scale: null,
-				is_generated: false,
-				generation_expression: null,
-				is_nullable: true,
-				is_unique: false,
-				is_indexed: false,
-				is_primary_key: false,
-				has_auto_increment: false,
-				foreign_key_column: 'id',
-				foreign_key_table: 'directus_users',
-			},
-			meta: {
-				id: 193,
-				collection: collection,
-				field: 'created_by',
-				special: ['user-created'],
-				interface: 'select-dropdown-m2o',
-				options: {
-					template: '{{avatar}} {{first_name}} {{last_name}}',
-				},
-				display: 'user',
-				display_options: null,
-				readonly: true,
-				hidden: hideUserFields,
-				sort: 2,
-				width: 'half',
-				translations: null,
-				note: null,
-				conditions: null,
-				required: false,
-				group: null,
-				validation: null,
-				validation_message: null,
-			},
-			name: 'Created By',
-		},
-		{
-			collection: collection,
-			field: 'created_at',
-			type: 'timestamp',
-			schema: {
-				name: 'created_at',
-				table: collection,
-				data_type: 'datetime',
-				default_value: null,
-				max_length: null,
-				numeric_precision: null,
-				numeric_scale: null,
-				is_generated: false,
-				generation_expression: null,
-				is_nullable: true,
-				is_unique: false,
-				is_indexed: false,
-				is_primary_key: false,
-				has_auto_increment: false,
-				foreign_key_column: null,
-				foreign_key_table: null,
-			},
-			meta: {
-				id: 194,
-				collection: collection,
-				field: 'created_at',
-				special: ['date-created', 'cast-timestamp'],
-				interface: 'datetime',
-				options: null,
-				display: 'datetime',
-				display_options: {
-					relative: true,
-				},
-				readonly: true,
-				hidden: hideDateFields,
-				sort: 3,
-				width: 'half',
-				translations: null,
-				note: null,
-				conditions: null,
-				required: false,
-				group: null,
-				validation: null,
-				validation_message: null,
-			},
-			name: 'Created At',
-		},
-		{
-			collection: collection,
-			field: 'updated_by',
-			type: 'string',
-			schema: {
-				name: 'updated_by',
-				table: collection,
-				data_type: 'char',
-				default_value: null,
-				max_length: 36,
-				numeric_precision: null,
-				numeric_scale: null,
-				is_generated: false,
-				generation_expression: null,
-				is_nullable: true,
-				is_unique: false,
-				is_indexed: false,
-				is_primary_key: false,
-				has_auto_increment: false,
-				foreign_key_column: 'id',
-				foreign_key_table: 'directus_users',
-			},
-			meta: {
-				id: 195,
-				collection: collection,
-				field: 'updated_by',
-				special: ['user-updated'],
-				interface: 'select-dropdown-m2o',
-				options: {
-					template: '{{avatar}} {{first_name}} {{last_name}}',
-				},
-				display: 'user',
-				display_options: null,
-				readonly: true,
-				hidden: hideUserFields,
-				sort: 4,
-				width: 'half',
-				translations: null,
-				note: null,
-				conditions: null,
-				required: false,
-				group: null,
-				validation: null,
-				validation_message: null,
-			},
-			name: 'Updated By',
-		},
-		{
-			collection: collection,
-			field: 'updated_at',
-			type: 'timestamp',
-			schema: {
-				name: 'updated_at',
-				table: collection,
-				data_type: 'datetime',
-				default_value: null,
-				max_length: null,
-				numeric_precision: null,
-				numeric_scale: null,
-				is_generated: false,
-				generation_expression: null,
-				is_nullable: true,
-				is_unique: false,
-				is_indexed: false,
-				is_primary_key: false,
-				has_auto_increment: false,
-				foreign_key_column: null,
-				foreign_key_table: null,
-			},
-			meta: {
-				id: 196,
-				collection: collection,
-				field: 'updated_at',
-				special: ['date-updated', 'cast-timestamp'],
-				interface: 'datetime',
-				options: null,
-				display: 'datetime',
-				display_options: {
-					relative: true,
-				},
-				readonly: true,
-				hidden: hideDateFields,
-				sort: 5,
-				width: 'half',
-				translations: null,
-				note: null,
-				conditions: null,
-				required: false,
-				group: null,
-				validation: null,
-				validation_message: null,
-			},
-			name: 'Updated At',
-		},
+		...(includeDateFields
+			? [
+					{
+						collection: collection,
+						field: 'created_at',
+						type: 'timestamp',
+						schema: {
+							name: 'created_at',
+							table: collection,
+							data_type: 'datetime',
+							default_value: null,
+							max_length: null,
+							numeric_precision: null,
+							numeric_scale: null,
+							is_generated: false,
+							generation_expression: null,
+							is_nullable: true,
+							is_unique: false,
+							is_indexed: false,
+							is_primary_key: false,
+							has_auto_increment: false,
+							foreign_key_column: null,
+							foreign_key_table: null,
+						},
+						meta: {
+							id: 194,
+							collection: collection,
+							field: 'created_at',
+							special: ['date-created', 'cast-timestamp'],
+							interface: 'datetime',
+							options: null,
+							display: 'datetime',
+							display_options: {
+								relative: true,
+							},
+							readonly: true,
+							hidden: hideDateFields,
+							sort: 3,
+							width: 'half',
+							translations: null,
+							note: null,
+							conditions: null,
+							required: false,
+							group: null,
+							validation: null,
+							validation_message: null,
+						},
+						name: 'Created At',
+					},
+					{
+						collection: collection,
+						field: 'updated_at',
+						type: 'timestamp',
+						schema: {
+							name: 'updated_at',
+							table: collection,
+							data_type: 'datetime',
+							default_value: null,
+							max_length: null,
+							numeric_precision: null,
+							numeric_scale: null,
+							is_generated: false,
+							generation_expression: null,
+							is_nullable: true,
+							is_unique: false,
+							is_indexed: false,
+							is_primary_key: false,
+							has_auto_increment: false,
+							foreign_key_column: null,
+							foreign_key_table: null,
+						},
+						meta: {
+							id: 196,
+							collection: collection,
+							field: 'updated_at',
+							special: ['date-updated', 'cast-timestamp'],
+							interface: 'datetime',
+							options: null,
+							display: 'datetime',
+							display_options: {
+								relative: true,
+							},
+							readonly: true,
+							hidden: hideDateFields,
+							sort: 5,
+							width: 'half',
+							translations: null,
+							note: null,
+							conditions: null,
+							required: false,
+							group: null,
+							validation: null,
+							validation_message: null,
+						},
+						name: 'Updated At',
+					},
+				]
+			: []),
+
+		...(includeUserFields
+			? [
+					{
+						collection: collection,
+						field: 'created_by',
+						type: 'string',
+						schema: {
+							name: 'created_by',
+							table: collection,
+							data_type: 'char',
+							default_value: null,
+							max_length: 36,
+							numeric_precision: null,
+							numeric_scale: null,
+							is_generated: false,
+							generation_expression: null,
+							is_nullable: true,
+							is_unique: false,
+							is_indexed: false,
+							is_primary_key: false,
+							has_auto_increment: false,
+							foreign_key_column: 'id',
+							foreign_key_table: 'directus_users',
+						},
+						meta: {
+							id: 193,
+							collection: collection,
+							field: 'created_by',
+							special: ['user-created'],
+							interface: 'select-dropdown-m2o',
+							options: {
+								template: '{{avatar}} {{first_name}} {{last_name}}',
+							},
+							display: 'user',
+							display_options: null,
+							readonly: true,
+							hidden: hideUserFields,
+							sort: 2,
+							width: 'half',
+							translations: null,
+							note: null,
+							conditions: null,
+							required: false,
+							group: null,
+							validation: null,
+							validation_message: null,
+						},
+						name: 'Created By',
+					},
+					{
+						collection: collection,
+						field: 'updated_by',
+						type: 'string',
+						schema: {
+							name: 'updated_by',
+							table: collection,
+							data_type: 'char',
+							default_value: null,
+							max_length: 36,
+							numeric_precision: null,
+							numeric_scale: null,
+							is_generated: false,
+							generation_expression: null,
+							is_nullable: true,
+							is_unique: false,
+							is_indexed: false,
+							is_primary_key: false,
+							has_auto_increment: false,
+							foreign_key_column: 'id',
+							foreign_key_table: 'directus_users',
+						},
+						meta: {
+							id: 195,
+							collection: collection,
+							field: 'updated_by',
+							special: ['user-updated'],
+							interface: 'select-dropdown-m2o',
+							options: {
+								template: '{{avatar}} {{first_name}} {{last_name}}',
+							},
+							display: 'user',
+							display_options: null,
+							readonly: true,
+							hidden: hideUserFields,
+							sort: 4,
+							width: 'half',
+							translations: null,
+							note: null,
+							conditions: null,
+							required: false,
+							group: null,
+							validation: null,
+							validation_message: null,
+						},
+						name: 'Updated By',
+					},
+				]
+			: []),
 		{
 			collection: collection,
 			field: 'title',

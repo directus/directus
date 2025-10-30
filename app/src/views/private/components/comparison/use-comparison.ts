@@ -24,7 +24,6 @@ import type {
 	NormalizedComparisonData,
 	NormalizedDate,
 	NormalizedItem,
-	NormalizedUser,
 	VersionComparisonResponse,
 } from './types';
 
@@ -171,7 +170,7 @@ export function useComparison(options: UseComparisonOptions) {
 		}
 	}
 
-	async function fetchUserDetails(user: NormalizedUser | null | undefined, loading: Ref<boolean>) {
+	async function fetchUserDetails(user: User | string | null | undefined, loading: Ref<boolean>) {
 		if (!user) return;
 
 		const fields = ['id', 'first_name', 'last_name', 'email'];
@@ -180,8 +179,7 @@ export function useComparison(options: UseComparisonOptions) {
 			return user as unknown as User;
 		}
 
-		const userId = user.id ?? user;
-		if (typeof userId !== 'string') return;
+		const userId = typeof user === 'string' ? user : user.id;
 
 		loading.value = true;
 
@@ -386,9 +384,8 @@ export function useComparison(options: UseComparisonOptions) {
 				id: 'base',
 				displayName: i18n.global.t('main_version'),
 				date: normalizeDate(comparisonData.mainVersionMeta?.timestamp || comparisonData.base.date_updated),
-				user: normalizeUser(
-					comparisonData.mainVersionMeta?.user || comparisonData.base.user_updated || comparisonData.base.user_created,
-				),
+				user:
+					comparisonData.mainVersionMeta?.user ?? comparisonData.base.user_updated ?? comparisonData.base.user_created,
 			};
 		}
 
@@ -489,7 +486,7 @@ export function useComparison(options: UseComparisonOptions) {
 				id: undefined,
 				displayName: i18n.global.t('unknown_version'),
 				date: normalizeDate(null),
-				user: normalizeUser(null),
+				user: null,
 			};
 		}
 
@@ -497,7 +494,7 @@ export function useComparison(options: UseComparisonOptions) {
 			id: version.id,
 			displayName: getVersionDisplayName(version),
 			date: normalizeDate(version.date_updated),
-			user: normalizeUser(version.user_updated || version.user_created),
+			user: version.user_updated ?? version.user_created,
 			collection: version.collection,
 			item: version.item,
 		};
@@ -531,47 +528,7 @@ export function useComparison(options: UseComparisonOptions) {
 
 		return {
 			date: normalizeDate(timestamp),
-			user: normalizeUser(user),
-		};
-	}
-
-	function normalizeUser(user: User | string | null | undefined): NormalizedUser | null {
-		if (!user) return null;
-
-		// Handle string user ID
-		if (typeof user === 'string') {
-			return {
-				id: user,
-				firstName: null,
-				lastName: null,
-				email: null,
-				displayName: i18n.global.t('unknown_user'),
-			};
-		}
-
-		// Handle full user object
-		const firstName = user.first_name || null;
-		const lastName = user.last_name || null;
-		const email = user.email || null;
-
-		let displayName = i18n.global.t('unknown_user');
-
-		if (firstName && lastName) {
-			displayName = `${firstName} ${lastName}`;
-		} else if (firstName) {
-			displayName = firstName;
-		} else if (lastName) {
-			displayName = lastName;
-		} else if (email) {
-			displayName = email;
-		}
-
-		return {
-			id: user.id,
-			firstName,
-			lastName,
-			email,
-			displayName,
+			user: user,
 		};
 	}
 

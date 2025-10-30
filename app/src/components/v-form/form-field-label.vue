@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { isDateUpdated, isUserUpdated } from '@/utils/field-utils';
 import type { Field } from '@directus/types';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { ComparisonContext, FormField } from './types';
 
@@ -39,6 +40,12 @@ defineEmits(['toggle-batch', 'toggle-raw']);
 
 const { t } = useI18n();
 
+const showHiddenIndicator = computed(
+	() =>
+		(props.comparison?.fields?.has(props.field.field) || props.comparison?.revisionFields?.has(props.field.field)) &&
+		props.field.meta?.hidden,
+);
+
 function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 	const isAutoUpdatedField = isDateUpdated(props.field as Field) || isUserUpdated(props.field as Field);
 
@@ -70,9 +77,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			<div class="field-label-content">
 				<v-text-overflow :text="field.name" />
 
-				<span v-if="comparison?.fields?.has(field.field) && field.meta?.hidden" class="hidden-indicator">
-					({{ t('hidden') }})
-				</span>
+				<span v-if="showHiddenIndicator" class="hidden-indicator">({{ t('hidden') }})</span>
 
 				<v-icon
 					v-if="field.meta?.required === true"
