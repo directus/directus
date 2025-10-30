@@ -241,9 +241,6 @@ describe('Integration Tests', () => {
 		});
 
 		describe('readAll', () => {
-			beforeEach(() => {
-				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([]);
-			});
 
 			test('should read all fields for admin users', async () => {
 				const mockColumns = [
@@ -381,7 +378,6 @@ describe('Integration Tests', () => {
 
 		describe('createField', () => {
 			beforeEach(() => {
-				vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue(1);
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
 			});
 
@@ -591,8 +587,6 @@ describe('Integration Tests', () => {
 
 		describe('updateField', () => {
 			beforeEach(() => {
-				vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue('field');
-				vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue(1);
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
 			});
 
@@ -846,7 +840,6 @@ describe('Integration Tests', () => {
 
 		describe('deleteField', () => {
 			beforeEach(() => {
-				vi.spyOn(ItemsService.prototype, 'deleteByQuery').mockResolvedValue([]);
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
 			});
 

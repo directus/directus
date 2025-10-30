@@ -58,9 +58,9 @@ vi.mock('../utils/should-clear-cache.js', () => ({
 
 vi.mock('./fields.js', () => {
 	const FieldsService = vi.fn();
-	FieldsService.prototype.addColumnToTable = vi.fn();
-	FieldsService.prototype.addColumnIndex = vi.fn();
-	FieldsService.prototype.deleteField = vi.fn();
+	FieldsService.prototype.addColumnToTable = vi.fn().mockImplementation(() => {});
+	FieldsService.prototype.addColumnIndex = vi.fn().mockResolvedValue(undefined);
+	FieldsService.prototype.deleteField = vi.fn().mockResolvedValue(undefined);
 	return { FieldsService };
 });
 
@@ -131,9 +131,6 @@ describe('Integration Tests', () => {
 
 		describe('createOne', () => {
 			beforeEach(() => {
-				vi.spyOn(FieldsService.prototype, 'addColumnToTable').mockImplementation(vi.fn());
-				vi.spyOn(ItemsService.prototype, 'createMany').mockResolvedValue([1]);
-				vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue('test_collection');
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
 			});
 
@@ -359,7 +356,6 @@ describe('Integration Tests', () => {
 
 		describe('createMany', () => {
 			beforeEach(() => {
-				vi.spyOn(CollectionsService.prototype, 'createOne').mockResolvedValue('test_collection');
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
 			});
 
@@ -402,9 +398,6 @@ describe('Integration Tests', () => {
 		});
 
 		describe('readByQuery', () => {
-			beforeEach(() => {
-				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([]);
-			});
 
 			it('should read collections for admin users', async () => {
 				const mockTableInfo = [{ name: 'test_collection' }];
@@ -572,8 +565,6 @@ describe('Integration Tests', () => {
 
 		describe('updateOne', () => {
 			beforeEach(() => {
-				vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue('test_collection');
-				vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue('test_collection');
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
 			});
 
@@ -661,7 +652,6 @@ describe('Integration Tests', () => {
 
 		describe('updateBatch', () => {
 			beforeEach(() => {
-				vi.spyOn(CollectionsService.prototype, 'updateOne').mockResolvedValue('test_collection');
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
 			});
 
@@ -735,7 +725,6 @@ describe('Integration Tests', () => {
 
 		describe('updateMany', () => {
 			beforeEach(() => {
-				vi.spyOn(CollectionsService.prototype, 'updateOne').mockResolvedValue('test_collection');
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
 			});
 
@@ -788,11 +777,7 @@ describe('Integration Tests', () => {
 
 		describe('deleteOne', () => {
 			beforeEach(() => {
-				vi.spyOn(FieldsService.prototype, 'deleteField').mockResolvedValue(undefined as any);
-				vi.spyOn(ItemsService.prototype, 'deleteOne').mockResolvedValue('collection');
-				vi.spyOn(ItemsService.prototype, 'deleteByQuery').mockResolvedValue(['field']);
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
-
 				// Setup common tracker responses
 				setupSystemCollectionMocks(tracker);
 			});
@@ -912,7 +897,6 @@ describe('Integration Tests', () => {
 
 		describe('deleteMany', () => {
 			beforeEach(() => {
-				vi.spyOn(CollectionsService.prototype, 'deleteOne').mockResolvedValue('test_collection');
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
 			});
 

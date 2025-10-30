@@ -23,16 +23,17 @@ import { vi } from 'vitest';
  */
 export function mockItemsService() {
 	const ItemsService = vi.fn();
-	ItemsService.prototype.createOne = vi.fn();
-	ItemsService.prototype.createMany = vi.fn();
+	// Provide sensible default return values for common operations
+	ItemsService.prototype.createOne = vi.fn().mockResolvedValue(1);
+	ItemsService.prototype.createMany = vi.fn().mockResolvedValue([1]);
 	ItemsService.prototype.readByQuery = vi.fn().mockResolvedValue([]);
-	ItemsService.prototype.readOne = vi.fn();
-	ItemsService.prototype.readMany = vi.fn();
-	ItemsService.prototype.updateOne = vi.fn();
-	ItemsService.prototype.updateMany = vi.fn();
-	ItemsService.prototype.updateByQuery = vi.fn();
-	ItemsService.prototype.deleteOne = vi.fn();
-	ItemsService.prototype.deleteMany = vi.fn();
-	ItemsService.prototype.deleteByQuery = vi.fn();
+	ItemsService.prototype.readOne = vi.fn().mockResolvedValue({});
+	ItemsService.prototype.readMany = vi.fn().mockResolvedValue([]);
+	ItemsService.prototype.updateOne = vi.fn().mockResolvedValue(1);
+	ItemsService.prototype.updateMany = vi.fn().mockResolvedValue([1]);
+	ItemsService.prototype.updateByQuery = vi.fn().mockResolvedValue([1]);
+	ItemsService.prototype.deleteOne = vi.fn().mockResolvedValue(1);
+	ItemsService.prototype.deleteMany = vi.fn().mockResolvedValue([1]);
+	ItemsService.prototype.deleteByQuery = vi.fn().mockResolvedValue([1]);
 	return { ItemsService };
 }
