@@ -135,6 +135,8 @@ const loadingFlows = computed(() => {
 	return manualFlows.value.filter((flow: ManualFlow) => flow.isFlowRunning).map((flow: ManualFlow) => flow.id);
 });
 
+const { runManualFlow, manualFlows } = injectRunManualFlow();
+
 /**
  * Get all deduplicated relational fields from the link-templates.
  * For example:
@@ -149,8 +151,6 @@ function getRelatedFieldsFromTemplates() {
 
 	return relationalFields;
 }
-
-const { runManualFlow, manualFlows } = injectRunManualFlow();
 </script>
 
 <template>
