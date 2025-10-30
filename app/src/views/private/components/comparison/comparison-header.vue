@@ -25,7 +25,10 @@ const emit = defineEmits<{
 }>();
 
 const userUpdatedName = computed(() => {
-	if (!props.userUpdated) return null;
+	if (!props.userUpdated?.first_name && !props.userUpdated?.last_name && !props.userUpdated?.email) {
+		return t('unknown_user');
+	}
+
 	return userName(props.userUpdated);
 });
 
