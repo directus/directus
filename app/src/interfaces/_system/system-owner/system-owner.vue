@@ -32,7 +32,7 @@ const isSaveDisabled = computed(() => !form.value.email);
 async function save() {
 	errors.value = validateItem(form.value, unref(fields), true);
 
-	if (email().safeParse(form.value.email).success) {
+	if (!email().safeParse(form.value.email).success) {
 		errors.value.push({
 			field: 'email',
 			path: [],

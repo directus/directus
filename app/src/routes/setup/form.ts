@@ -3,17 +3,22 @@ import { computed, ComputedRef, MaybeRef, ModelRef, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import z from 'zod';
 
-export const FormValidator = z.object({
-	first_name: z.string(),
-	last_name: z.string(),
-	email: z.email(),
-	password: z.string(),
-	password_confirm: z.string(),
-	project_usage: z.enum(['personal', 'commercial', 'community']).nullable().optional(),
-	org_name: z.string().nullable().optional(),
-	license: z.boolean(),
-	product_updates: z.boolean().optional(),
-});
+export const FormValidator = z
+	.object({
+		first_name: z.string(),
+		last_name: z.string(),
+		email: z.email(),
+		password: z.string(),
+		password_confirm: z.string(),
+		project_usage: z.enum(['personal', 'commercial', 'community']).nullable().optional(),
+		org_name: z.string().nullable().optional(),
+		license: z.literal(true),
+		product_updates: z.boolean().optional(),
+	})
+	.refine((val) => val.project_usage !== 'commercial' || (val.org_name !== null && val.org_name !== undefined), {
+		error: 'org_name has to be defined',
+		path: ['org_name'],
+	});
 
 export const initialValues: SetupForm = {
 	first_name: null,
