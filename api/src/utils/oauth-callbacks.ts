@@ -6,14 +6,13 @@ import type { Request } from 'express';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 
 /**
- * Find matching callback URL from origin URL
+ * Find matching callback URL from origin URLœ
  *
  * @param redirectUris Pre-validated array of redirect URIs
  * @param originUrl Origin URL
  * @returns Matching callback URL string
  */
 export function getCallbackFromOriginUrl(redirectUris: URL[], originUrl?: string): URL | undefined {
-	// If originUrl is not provided, fallback to PUBLIC_URL (legacy compatibility)
 	if (!originUrl) return redirectUris[0];
 
 	const callback = redirectUris.find((uri) => uri.origin === originUrl);
@@ -33,7 +32,7 @@ export function getCallbackFromOriginUrl(redirectUris: URL[], originUrl?: string
  * @param context Logging context (e.g. 'OAuth2', 'OpenID')
  * @returns Matching callback URL string
  */
-export function getCallbackFromRequest(req: Request, redirectUris: URL[], context: string): URL {
+export function getCallbackFromRequest(req: Request, redirectUris: URL[], context: string): URL | undefined {
 	const env = useEnv();
 	const logger = useLogger();
 

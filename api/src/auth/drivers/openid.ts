@@ -461,7 +461,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 					redirect,
 					prompt,
 					otp,
-					originUrl: callback.origin,
+					...(callback && { originUrl: callback.origin }),
 				},
 				getSecret(),
 				{
