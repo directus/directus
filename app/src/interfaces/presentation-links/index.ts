@@ -22,6 +22,7 @@ export default defineInterface({
 			meta: {
 				interface: 'list',
 				options: {
+					template: '{{ actionType }} {{ label }}',
 					fields: [
 						{
 							field: 'label',
@@ -82,6 +83,7 @@ export default defineInterface({
 										{ text: '$t:flow', value: 'flow' },
 									],
 								},
+								display: 'labels',
 							},
 						},
 						{
