@@ -5,7 +5,7 @@ import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
 import * as getSchemaModule from '../utils/get-schema.js';
-import { createMockKnex, createMockTableBuilder, mockAlterTable, mockSchemaTable, resetKnexMocks } from '../__mocks__/knex.js';
+import { createMockKnex, createMockTableBuilder, mockAlterTable, mockSchemaTable, resetKnexMocks, setupSystemCollectionMocks } from '../__mocks__/knex.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
@@ -687,6 +687,7 @@ describe('Integration Tests', () => {
 		describe('deleteField', () => {
 			beforeEach(() => {
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
+				setupSystemCollectionMocks(tracker);
 			});
 
 			test('should throw ForbiddenError for non-admin users', async () => {
@@ -706,10 +707,8 @@ describe('Integration Tests', () => {
 					accountability: null,
 				});
 
-				tracker.on.select('directus_collections').response([]);
+				// Override default empty response with specific field data
 				tracker.on.select('directus_fields').response([{ collection: 'test_collection', field: 'name' }]);
-				tracker.on.update('directus_fields').response([]);
-				tracker.on.update('directus_collections').response([]);
 				// Mock any DDL queries
 				tracker.on.any(/alter table/i).response([]);
 
@@ -738,10 +737,8 @@ describe('Integration Tests', () => {
 					accountability: null,
 				});
 
-				tracker.on.select('directus_collections').response([]);
+				// Override default empty response with specific field data
 				tracker.on.select('directus_fields').response([{ collection: 'test_collection', field: 'name' }]);
-				tracker.on.update('directus_fields').response([]);
-				tracker.on.update('directus_collections').response([]);
 				// Mock any DDL queries
 				tracker.on.any(/alter table/i).response([]);
 

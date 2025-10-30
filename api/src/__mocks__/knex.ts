@@ -91,7 +91,7 @@ export function createMockTableBuilder() {
 		jsonb: vi.fn().mockReturnThis(),
 		uuid: vi.fn().mockReturnThis(),
 
-		// Column types - unused (commented out to reduce noise)
+		// Column types - unused
 		// tinyint: vi.fn().mockReturnThis(),
 		// smallint: vi.fn().mockReturnThis(),
 		// mediumint: vi.fn().mockReturnThis(),
@@ -127,7 +127,7 @@ export function createMockTableBuilder() {
 		index: vi.fn().mockReturnThis(),
 		alter: vi.fn().mockReturnThis(),
 
-		// Column modifiers - unused (commented out to reduce noise)
+		// Column modifiers - unused
 		// unsigned: vi.fn().mockReturnThis(),
 		// comment: vi.fn().mockReturnThis(),
 		// collate: vi.fn().mockReturnThis(),
@@ -145,14 +145,14 @@ export function createMockTableBuilder() {
 		dropUnique: vi.fn().mockReturnThis(),
 		dropIndex: vi.fn().mockReturnThis(),
 
-		// Schema alterations - unused (commented out to reduce noise)
+		// Schema alterations - unused
 		// dropColumns: vi.fn().mockReturnThis(),
 		// renameColumn: vi.fn().mockReturnThis(),
 		// dropPrimary: vi.fn().mockReturnThis(),
 		// dropForeign: vi.fn().mockReturnThis(),
 		// dropTimestamps: vi.fn().mockReturnThis(),
 
-		// Table options - unused (commented out to reduce noise)
+		// Table options - unused
 		// engine: vi.fn().mockReturnThis(),
 		// inherits: vi.fn().mockReturnThis(),
 		// queryContext: vi.fn().mockReturnThis(),
