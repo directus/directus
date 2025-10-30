@@ -146,21 +146,9 @@ vi.mock('../utils/get-field-system-rows.js', () => ({
 	getSystemFieldRowsWithAuthProviders: vi.fn().mockReturnValue([]),
 }));
 
-vi.mock('../utils/get-local-type.js', () => ({
-	default: vi.fn((column, field) => {
-		if (field?.type) return field.type;
-		if (!column) return 'alias';
-		return 'string';
-	}),
-}));
-
-vi.mock('./items.js', () => {
-	const ItemsService = vi.fn();
-	ItemsService.prototype.createOne = vi.fn();
-	ItemsService.prototype.readByQuery = vi.fn().mockResolvedValue([]);
-	ItemsService.prototype.updateOne = vi.fn();
-	ItemsService.prototype.deleteByQuery = vi.fn();
-	return { ItemsService };
+vi.mock('./items.js', async () => {
+	const { mockItemsService } = await import('../__mocks__/items-service.js');
+	return mockItemsService();
 });
 
 vi.mock('./payload.js', () => {

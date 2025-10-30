@@ -109,20 +109,9 @@ vi.mock('../utils/transaction.js', () => ({
 	transaction: vi.fn((knex, callback) => callback(knex)),
 }));
 
-vi.mock('./items.js', () => {
-	const ItemsService = vi.fn();
-	ItemsService.prototype.createOne = vi.fn();
-	ItemsService.prototype.createMany = vi.fn();
-	ItemsService.prototype.readByQuery = vi.fn();
-	ItemsService.prototype.readOne = vi.fn();
-	ItemsService.prototype.readMany = vi.fn();
-	ItemsService.prototype.updateOne = vi.fn();
-	ItemsService.prototype.updateMany = vi.fn();
-	ItemsService.prototype.updateByQuery = vi.fn();
-	ItemsService.prototype.deleteOne = vi.fn();
-	ItemsService.prototype.deleteMany = vi.fn();
-	ItemsService.prototype.deleteByQuery = vi.fn();
-	return { ItemsService };
+vi.mock('./items.js', async () => {
+	const { mockItemsService } = await import('../__mocks__/items-service.js');
+	return mockItemsService();
 });
 
 vi.mock('./fields.js', () => {
