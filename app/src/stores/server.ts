@@ -26,6 +26,7 @@ export type Info = {
 		public_registration: boolean | null;
 		public_registration_verify_email: boolean | null;
 	};
+	mcp_enabled: boolean;
 	rateLimit?:
 		| false
 		| {
@@ -81,6 +82,7 @@ export type Auth = {
 export const useServerStore = defineStore('serverStore', () => {
 	const info = reactive<Info>({
 		project: null,
+		mcp_enabled: true,
 		extensions: undefined,
 		rateLimit: undefined,
 		queryLimit: undefined,
@@ -116,6 +118,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		]);
 
 		info.project = serverInfoResponse.data.data?.project;
+		info.mcp_enabled = serverInfoResponse.data.data?.mcp_enabled;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 		info.extensions = serverInfoResponse.data.data?.extensions;
 		info.websocket = serverInfoResponse.data.data?.websocket;

@@ -17,13 +17,14 @@ const isPM2 = 'PM2_HOME' in process.env;
 const METRICS_SYNC_PACKET = 'directus:metrics---data-sync';
 
 const listApps = promisify(pm2.list.bind(pm2));
-const sendDataToProcessId = promisify(pm2.sendDataToProcessId.bind(pm2));
+const sendDataToProcessId = promisify<number, object>(pm2.sendDataToProcessId.bind(pm2));
 
 export function createMetrics() {
 	const env = useEnv();
 	const logger = useLogger();
 
 	const services: MetricService[] = (env['METRICS_SERVICES'] as MetricService[] | undefined) ?? [];
+	const metricNamePrefix = env['METRICS_NAME_PREFIX'] ?? 'directus_';
 	const aggregates = new Map();
 
 	/**
@@ -117,11 +118,11 @@ export function createMetrics() {
 
 		const client = env['DB_CLIENT'];
 
-		let metric = register.getSingleMetric(`directus_db_${client}_connection_errors`) as Counter | undefined;
+		let metric = register.getSingleMetric(`${metricNamePrefix}db_${client}_connection_errors`) as Counter | undefined;
 
 		if (!metric) {
 			metric = new Counter({
-				name: `directus_db_${client}_connection_errors`,
+				name: `${metricNamePrefix}db_${client}_connection_errors`,
 				help: `${client} Database connection error count`,
 			});
 		}
@@ -136,11 +137,11 @@ export function createMetrics() {
 
 		const client = env['DB_CLIENT'];
 
-		let metric = register.getSingleMetric(`directus_db_${client}_response_time_ms`) as Histogram | undefined;
+		let metric = register.getSingleMetric(`${metricNamePrefix}db_${client}_response_time_ms`) as Histogram | undefined;
 
 		if (!metric) {
 			metric = new Histogram({
-				name: `directus_db_${client}_response_time_ms`,
+				name: `${metricNamePrefix}db_${client}_response_time_ms`,
 				help: `${client} Database connection response time`,
 				buckets: [1, 10, 20, 40, 60, 80, 100, 200, 500, 750, 1000],
 			});
@@ -158,13 +159,13 @@ export function createMetrics() {
 			return null;
 		}
 
-		let metric = register.getSingleMetric(`directus_cache_${env['CACHE_STORE']}_connection_errors`) as
+		let metric = register.getSingleMetric(`${metricNamePrefix}cache_${env['CACHE_STORE']}_connection_errors`) as
 			| Counter
 			| undefined;
 
 		if (!metric) {
 			metric = new Counter({
-				name: `directus_cache_${env['CACHE_STORE']}_connection_errors`,
+				name: `${metricNamePrefix}cache_${env['CACHE_STORE']}_connection_errors`,
 				help: 'Cache connection error count',
 			});
 		}
@@ -177,11 +178,11 @@ export function createMetrics() {
 			return null;
 		}
 
-		let metric = register.getSingleMetric('directus_redis_connection_errors') as Counter | undefined;
+		let metric = register.getSingleMetric(`${metricNamePrefix}redis_connection_errors`) as Counter | undefined;
 
 		if (!metric) {
 			metric = new Counter({
-				name: `directus_redis_connection_errors`,
+				name: `${metricNamePrefix}redis_connection_errors`,
 				help: 'Redis connection error count',
 			});
 		}
@@ -194,11 +195,13 @@ export function createMetrics() {
 			return null;
 		}
 
-		let metric = register.getSingleMetric(`directus_storage_${location}_connection_errors`) as Counter | undefined;
+		let metric = register.getSingleMetric(`${metricNamePrefix}storage_${location}_connection_errors`) as
+			| Counter
+			| undefined;
 
 		if (!metric) {
 			metric = new Counter({
-				name: `directus_storage_${location}_connection_errors`,
+				name: `${metricNamePrefix}storage_${location}_connection_errors`,
 				help: `${location} storage connection error count`,
 			});
 		}
@@ -236,8 +239,8 @@ export function createMetrics() {
 		}
 
 		try {
-			await cache.set(`metrics-${checkId}`, '1', 5);
-			await cache.delete(`metrics-${checkId}`);
+			await cache.set(`directus-metric-${checkId}`, '1', 5);
+			await cache.delete(`directus-metric-${checkId}`);
 		} catch {
 			metric.inc();
 		}
@@ -253,8 +256,8 @@ export function createMetrics() {
 		const redis = useRedis();
 
 		try {
-			await redis.set(`metrics-${checkId}`, '1');
-			await redis.del(`metrics-${checkId}`);
+			await redis.set(`directus-metric-${checkId}`, '1');
+			await redis.del(`directus-metric-${checkId}`);
 		} catch {
 			metric.inc();
 		}
@@ -277,17 +280,7 @@ export function createMetrics() {
 			}
 
 			try {
-				await disk.write(`metric-${checkId}`, Readable.from(['check']));
-				const fileStream = await disk.read(`metric-${checkId}`);
-
-				fileStream.on('data', async () => {
-					try {
-						fileStream.destroy();
-						await disk.delete(`metric-${checkId}`);
-					} catch (error) {
-						logger.error(error);
-					}
-				});
+				await disk.write('directus-metric-file', Readable.from([checkId]));
 			} catch {
 				metric.inc();
 			}

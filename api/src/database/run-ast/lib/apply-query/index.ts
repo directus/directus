@@ -1,18 +1,15 @@
 import type { Filter, Permission, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { customAlphabet } from 'nanoid/non-secure';
+import type { AliasMap } from '../../../../utils/get-column-path.js';
 import { getHelpers } from '../../../helpers/index.js';
 import { applyCaseWhen } from '../../utils/apply-case-when.js';
-import type { AliasMap } from '../../../../utils/get-column-path.js';
 import { getColumn } from '../../utils/get-column.js';
-import { applyLimit, applyOffset } from './pagination.js';
-import { joinFilterWithCases } from './join-filter-with-cases.js';
-import { applySort } from './sort.js';
-import { applyFilter } from './filter/index.js';
-import { applySearch } from './search.js';
 import { applyAggregate } from './aggregate.js';
-
-export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
+import { applyFilter } from './filter/index.js';
+import { joinFilterWithCases } from './join-filter-with-cases.js';
+import { applyLimit, applyOffset } from './pagination.js';
+import { applySearch } from './search.js';
+import { applySort } from './sort.js';
 
 type ApplyQueryOptions = {
 	aliasMap?: AliasMap;

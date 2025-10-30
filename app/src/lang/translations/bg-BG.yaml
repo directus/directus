@@ -1491,6 +1491,8 @@ shares: Споделяния
 unlimited_usage: Неограничено използване
 no_shares: Не е споделено
 new_share: Ново споделяне
+mcp_prompts_collection_schema:
+  messages_role_user: Потребител
 expired: Просрочен
 upcoming: Предстоящ
 share: Споделяне

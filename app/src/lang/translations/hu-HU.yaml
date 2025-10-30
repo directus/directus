@@ -1259,6 +1259,8 @@ shares: Megosztások
 unlimited_usage: Korlátlan használat
 no_shares: Nincs megjeleníthető megosztás
 new_share: Új megosztás
+mcp_prompts_collection_schema:
+  messages_role_user: Felhasználó
 expired: Lejárt
 upcoming: Közelgő
 share: Megosztás

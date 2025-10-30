@@ -46,9 +46,23 @@ import { getCollectionRelationList } from './fields/get-collection-relation-list
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
+import { isSystemField } from '@directus/system-data';
+import { z } from 'zod';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 const env = useEnv();
+
+export const systemFieldUpdateSchema = z
+	.object({
+		collection: z.string().optional(),
+		field: z.string().optional(),
+		schema: z
+			.object({
+				is_indexed: z.boolean().optional(),
+			})
+			.strict(),
+	})
+	.strict();
 
 export class FieldsService {
 	knex: Knex;
@@ -125,20 +139,21 @@ export class FieldsService {
 			);
 		}
 
-		const nonAuthorizedItemsService = new ItemsService('directus_fields', {
+		const nonAuthorizedItemsService = new ItemsService<FieldMeta, 'directus_fields'>('directus_fields', {
 			knex: this.knex,
 			schema: this.schema,
 		});
 
 		if (collection) {
-			fields = (await nonAuthorizedItemsService.readByQuery({
+			fields = await nonAuthorizedItemsService.readByQuery({
 				filter: { collection: { _eq: collection } },
 				limit: -1,
-			})) as FieldMeta[];
+			});
 
 			fields.push(...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection));
 		} else {
-			fields = (await nonAuthorizedItemsService.readByQuery({ limit: -1 })) as FieldMeta[];
+			fields = await nonAuthorizedItemsService.readByQuery({ limit: -1 });
+
 			fields.push(...systemFieldRows);
 		}
 
@@ -460,7 +475,7 @@ export class FieldsService {
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema();
+				const updatedSchema = await getSchema({ database: this.knex });
 
 				for (const nestedActionEvent of nestedActionEvents) {
 					nestedActionEvent.context.schema = updatedSchema;
@@ -542,7 +557,8 @@ export class FieldsService {
 				}
 			}
 
-			if (hookAdjustedField.meta) {
+			// Only create/update a database record if this is not a system field
+			if (hookAdjustedField.meta && !isSystemField(collection, hookAdjustedField.field)) {
 				if (record) {
 					await this.itemsService.updateOne(
 						record.id,
@@ -600,7 +616,7 @@ export class FieldsService {
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema();
+				const updatedSchema = await getSchema({ database: this.knex });
 
 				for (const nestedActionEvent of nestedActionEvents) {
 					nestedActionEvent.context.schema = updatedSchema;
@@ -637,7 +653,7 @@ export class FieldsService {
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema();
+				const updatedSchema = await getSchema({ database: this.knex });
 
 				for (const nestedActionEvent of nestedActionEvents) {
 					nestedActionEvent.context.schema = updatedSchema;
@@ -826,7 +842,7 @@ export class FieldsService {
 			}
 
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema();
+				const updatedSchema = await getSchema({ database: this.knex });
 
 				for (const nestedActionEvent of nestedActionEvents) {
 					nestedActionEvent.context.schema = updatedSchema;

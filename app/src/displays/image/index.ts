@@ -26,5 +26,5 @@ export default defineDisplay({
 			},
 		},
 	],
-	fields: ['id', 'type', 'title'],
+	fields: ['id', 'type', 'title', 'modified_on'],
 });

@@ -105,7 +105,9 @@ function close() {
 			<!-- @TODO add final design -->
 			<p class="type-label">{{ t('user') }}:</p>
 			<user-popover v-if="item.user" :user="item.user.id">
-				{{ userName(item.user) }}
+				<span>
+					{{ userName(item.user) }}
+				</span>
 			</user-popover>
 
 			<p class="type-label">{{ t('action') }}:</p>
