@@ -3,7 +3,7 @@ import { toArray } from '@directus/utils';
 import { useLogger } from '../logger/index.js';
 import { Url } from './url.js';
 import type { Request } from 'express';
-import { InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 
 /**
  * Find matching callback URL from origin URL
@@ -16,7 +16,13 @@ export function getCallbackFromOriginUrl(redirectUris: URL[], originUrl?: string
 	// If originUrl is not provided, it's legacy mode (no AUTH_ALLOWED_DOMAINS) -> use PUBLIC_URL
 	if (!originUrl) return redirectUris[0]!;
 
-	return redirectUris.find((uri) => uri.origin === originUrl) ?? redirectUris[0]!;
+	const callback = redirectUris.find((uri) => uri.origin === originUrl);
+
+	if (!callback) {
+		throw new ForbiddenError({ reason: `No matching callback URL found for ${originUrl}` });
+	}
+
+	return callback;
 }
 
 /**
@@ -28,9 +34,15 @@ export function getCallbackFromOriginUrl(redirectUris: URL[], originUrl?: string
  * @returns Matching callback URL string
  */
 export function getCallbackFromRequest(req: Request, redirectUris: URL[], context: string): URL {
+	const env = useEnv();
 	const logger = useLogger();
 
-	const originUrl = `${req.protocol}://${req.get('host')}`;
+	// Read host: use X-Forwarded-Host only if behind trusted proxy
+	const host = env['IP_TRUST_PROXY'] ? req.get('x-forwarded-host') || req.get('host') : req.get('host');
+	const protocol = env['IP_TRUST_PROXY'] ? req.get('x-forwarded-proto') || req.protocol : req.protocol;
+
+	const originUrl = `${protocol}://${host}`;
+
 	let origin: URL;
 
 	try {
@@ -40,12 +52,12 @@ export function getCallbackFromRequest(req: Request, redirectUris: URL[], contex
 		throw new InvalidPayloadError({ reason: 'Invalid origin URL' });
 	}
 
+	logger.debug(`[${context}] Request origin: ${origin.origin}`);
 	return getCallbackFromOriginUrl(redirectUris, origin.origin);
 }
 
 /**
  * Generate all possible redirect URIs for OAuth client registration
- * Includes PUBLIC_URL + all domains from AUTH_ALLOWED_DOMAINS
  *
  * @param providerName OAuth provider name
  * @param context Logging context (e.g. 'OAuth2', 'OpenID')
@@ -55,22 +67,19 @@ export function generateRedirectUrls(providerName: string, context: string): URL
 	const env = useEnv();
 	const logger = useLogger();
 	const redirectUris: URL[] = [];
+	const envKey = `AUTH_${providerName.toUpperCase()}_REDIRECT_ALLOW_LIST`;
 
-	// Always include PUBLIC_URL
-	const publicUrlCallback = new Url(env['PUBLIC_URL'] as string)
-		.addPath('auth', 'login', providerName, 'callback')
-		.toString();
-
-	redirectUris.push(new URL(publicUrlCallback));
-
-	toArray(env['AUTH_ALLOWED_DOMAINS'] as string).forEach((domain) => {
-		try {
-			const domainCallback = new Url(domain).addPath('auth', 'login', providerName, 'callback').toString();
-			redirectUris.push(new URL(domainCallback));
-		} catch {
-			logger.warn(`[${context}] Invalid domain in AUTH_ALLOWED_DOMAINS: ${domain}`);
-		}
-	});
+	if (envKey in env) {
+		toArray(env[envKey] as string).forEach((domain) => {
+			try {
+				const url = new URL(domain);
+				const domainCallback = new Url(url.origin).addPath('auth', 'login', providerName, 'callback').toString();
+				redirectUris.push(new URL(domainCallback));
+			} catch {
+				logger.warn(`[${context}] Invalid domain in ${envKey}: ${domain}`);
+			}
+		});
+	}
 
 	return redirectUris;
 }

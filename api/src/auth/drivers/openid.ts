@@ -36,11 +36,7 @@ import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 import { getSchema } from '../../utils/get-schema.js';
-import {
-	generateRedirectUrls,
-	getCallbackFromRequest,
-	getCallbackFromOriginUrl,
-} from '../../utils/oauth-callbacks.js';
+import { generateRedirectUrls, getCallbackFromRequest, getCallbackFromOriginUrl } from '../../utils/oauth-callbacks.js';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: null | Client;
@@ -197,7 +193,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				// Some providers require state even with PKCE
 				state: codeChallenge,
 				nonce: codeChallenge,
-				redirect_uri: redirectUri
+				redirect_uri: redirectUri,
 			});
 		} catch (e) {
 			throw handleError(e);

@@ -35,11 +35,7 @@ import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 import { getSchema } from '../../utils/get-schema.js';
-import {
-	generateRedirectUrls,
-	getCallbackFromRequest,
-	getCallbackFromOriginUrl,
-} from '../../utils/oauth-callbacks.js';
+import { generateRedirectUrls, getCallbackFromRequest, getCallbackFromOriginUrl } from '../../utils/oauth-callbacks.js';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
@@ -126,7 +122,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				code_challenge_method: plainCodeChallenge ? 'plain' : 'S256',
 				// Some providers require state even with PKCE
 				state: codeChallenge,
-				redirect_uri: redirectUri
+				redirect_uri: redirectUri,
 			});
 		} catch (e) {
 			throw handleError(e);
