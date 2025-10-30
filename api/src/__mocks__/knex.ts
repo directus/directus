@@ -54,99 +54,10 @@ export function createMockKnex() {
 		configurable: true,
 	});
 
-	// Add common query builder methods to the knex instance
-	// Using defineProperties to avoid conflicts with read-only properties
-
-	// Chainable query builder methods (return db for fluent API)
-	const chainableMethods = [
-		'select',
-		'where',
-		'whereIn',
-		'whereNotIn',
-		'whereNull',
-		'whereNotNull',
-		'whereBetween',
-		'whereNotBetween',
-		'whereRaw',
-		'orWhere',
-		'orWhereIn',
-		'orWhereNotIn',
-		'orWhereNull',
-		'orWhereNotNull',
-		'andWhere',
-		'insert',
-		'update',
-		'delete',
-		'del',
-		'returning',
-		'from',
-		'into',
-		'join',
-		'innerJoin',
-		'leftJoin',
-		'leftOuterJoin',
-		'rightJoin',
-		'rightOuterJoin',
-		'fullOuterJoin',
-		'crossJoin',
-		'orderBy',
-		'groupBy',
-		'having',
-		'havingRaw',
-		'limit',
-		'offset',
-		'distinct',
-		'count',
-		'countDistinct',
-		'min',
-		'max',
-		'sum',
-		'sumDistinct',
-		'avg',
-		'avgDistinct',
-		'increment',
-		'decrement',
-		'clone',
-		'modify',
-		'debug',
-		'transacting',
-		'connection',
-		'options',
-		'withSchema',
-		'queryContext',
-		'as',
-		'union',
-		'unionAll',
-		'intersect',
-		'except',
-		'with',
-		'withRecursive',
-		'onConflict',
-		'merge',
-		'ignore',
-	];
-
-	// Terminal methods (return resolved values)
-	const terminalMethods: Record<string, any> = {
-		first: vi.fn().mockResolvedValue(null),
-		pluck: vi.fn().mockResolvedValue([]),
-		truncate: vi.fn().mockResolvedValue(undefined),
-		columnInfo: vi.fn().mockResolvedValue({}),
-		batchInsert: vi.fn().mockResolvedValue(undefined),
-	};
-
-	const queryMethodDescriptors = Object.fromEntries([
-		...chainableMethods.map((method) => [
-			method,
-			{ value: vi.fn().mockReturnValue(db), writable: true, configurable: true },
-		]),
-		...Object.entries(terminalMethods).map(([method, mock]) => [
-			method,
-			{ value: mock, writable: true, configurable: true },
-		]),
-	]);
-
-	Object.defineProperties(db, queryMethodDescriptors);
+	// Note: We do NOT override the query builder methods (select, where, from, etc.)
+	// because knex-mock-client already provides them and connects them to the tracker.
+	// Overriding them would break the tracker connection and cause queries to not return
+	// the mocked responses.
 
 	return { db, tracker, mockSchema };
 }
