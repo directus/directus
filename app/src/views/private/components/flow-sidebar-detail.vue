@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { injectRunManualFlow, ManualFlow } from '@/composables/use-flows';
+import { injectRunManualFlow, type ManualFlow } from '@/composables/use-flows';
 
 const { t } = useI18n();
 
