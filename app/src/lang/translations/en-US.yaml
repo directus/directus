@@ -983,7 +983,7 @@ icon_off: Icon Off
 label: Label
 flows: Flows
 flow: Flow
-select_a_flow: Select a flow...
+select_a_flow: Select a flow
 run_flow_confirm: Are you sure you want to execute this flow?
 run_flow_anyway: Run Flow Anyway
 run_flow_on_current_collection: Run Flow on Current Collection
@@ -1880,7 +1880,7 @@ interfaces:
     accordion_mode: Accordion Mode
     max_one_section_open: Max 1 Section Open
   presentation-links:
-    presentation-links: Button Links
+    presentation-links: Buttons
     links: Links
     description: Configurable link buttons for launching dynamic URLs or triggering flows
     style: Style
