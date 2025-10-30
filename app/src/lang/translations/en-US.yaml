@@ -292,6 +292,7 @@ validationError:
   nends_with: Value can't end with {substring}
   niends_with: Value can't end with {substring}
   confirm_password: Passwords do not match
+  org_name: Please include an organization name
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom

@@ -155,9 +155,7 @@
 		"vue-tsc": "catalog:",
 		"vue-virtual-scroller": "catalog:",
 		"vuedraggable": "catalog:",
-		"wellknown": "catalog:"
-	},
-	"dependencies": {
+		"wellknown": "catalog:",
 		"zod": "catalog:"
 	}
 }

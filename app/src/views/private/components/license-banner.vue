@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed, ref, unref } from 'vue';
-import { validateItem } from '@/utils/validate-item';
-import { initialValues, useFormFields } from '@/routes/setup/form';
+import { initialValues, useFormFields, validate } from '@/routes/setup/form';
 import SetupForm from '@/routes/setup/form.vue';
-import { useCookies } from '@vueuse/integrations/useCookies';
 import { useSettingsStore } from '@/stores/settings';
 import { notify } from '@/utils/notify';
 import type { SetupForm as Form } from '@directus/types';
-import z from 'zod';
+import { useCookies } from '@vueuse/integrations/useCookies';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const settingsStore = useSettingsStore();
 const cookies = useCookies(['license-banner-dismissed']);
@@ -18,15 +16,7 @@ const errors = ref<Record<string, any>[]>([]);
 const isSaveDisabled = computed(() => !form.value.email || !form.value.license);
 
 async function setOwner() {
-	errors.value = validateItem(form.value, unref(fields), true);
-
-	if (!z.email().safeParse(form.value.email).success) {
-		errors.value.push({
-			field: 'email',
-			path: [],
-			type: 'email',
-		});
-	}
+	errors.value = validate(form.value, fields);
 
 	if (errors.value.length > 0) return;
 

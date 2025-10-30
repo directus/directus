@@ -1,24 +1,34 @@
+import { validateItem } from '@/utils/validate-item';
 import { DeepPartial, Field, SetupForm } from '@directus/types';
-import { computed, ComputedRef, MaybeRef, ModelRef, Ref } from 'vue';
+import { FailedValidationErrorExtensions } from '@directus/validation';
+import { computed, ComputedRef, MaybeRef, ModelRef, ref, Ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import z from 'zod';
 
-export const FormValidator = z
-	.object({
+export const FormValidator = z.discriminatedUnion('project_usage', [
+	z.object({
 		first_name: z.string(),
 		last_name: z.string(),
 		email: z.email(),
 		password: z.string(),
 		password_confirm: z.string(),
-		project_usage: z.enum(['personal', 'commercial', 'community']).nullable().optional(),
+		project_usage: z.enum(['personal', 'community']).nullable().optional(),
 		org_name: z.string().nullable().optional(),
 		license: z.literal(true),
 		product_updates: z.boolean().optional(),
-	})
-	.refine((val) => val.project_usage !== 'commercial' || (val.org_name !== null && val.org_name !== undefined), {
-		error: 'org_name has to be defined',
-		path: ['org_name'],
-	});
+	}),
+	z.object({
+		first_name: z.string(),
+		last_name: z.string(),
+		email: z.email(),
+		password: z.string(),
+		password_confirm: z.string(),
+		project_usage: z.literal('commercial'),
+		org_name: z.string(),
+		license: z.literal(true),
+		product_updates: z.boolean().optional(),
+	}),
+]);
 
 export const initialValues: SetupForm = {
 	first_name: null,
@@ -31,6 +41,38 @@ export const initialValues: SetupForm = {
 	license: false,
 	product_updates: false,
 };
+
+export type ValidationError = Omit<FailedValidationErrorExtensions, 'type'> & { type: string };
+
+export function validate(value: Record<string, any>, fields: MaybeRef<Field[]>, register = false) {
+	let errors: ValidationError[] = validateItem(value, unref(fields), true);
+
+	if (!z.email().safeParse(value.email).success) {
+		errors.push({
+			field: 'email',
+			path: [],
+			type: 'email',
+		});
+	}
+
+	if (register && value.password !== value.password_confirm) {
+		errors.push({
+			field: 'password_confirm',
+			path: [],
+			type: 'confirm_password',
+		});
+	}
+
+	errors = errors.map((error) => {
+		if (error.field === 'org_name' && (error.type === 'nnull' || error.type === 'required')) {
+			error.type = 'org_name';
+		}
+
+		return error;
+	});
+
+	return errors;
+}
 
 export function useFormFields(
 	register: MaybeRef<boolean>,

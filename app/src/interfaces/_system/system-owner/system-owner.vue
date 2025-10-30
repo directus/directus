@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { initialValues, useFormFields } from '@/routes/setup/form';
-import { validateItem } from '@/utils/validate-item';
-import { computed, inject, Ref, ref, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { initialValues, useFormFields, validate } from '@/routes/setup/form';
 import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
+import { validateItem } from '@/utils/validate-item';
 import { SetupForm as Form } from '@directus/types';
-import { email } from 'zod';
+import { computed, inject, Ref, ref, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const settingsStore = useSettingsStore();
 
@@ -30,15 +29,7 @@ const editing = ref(false);
 const isSaveDisabled = computed(() => !form.value.email);
 
 async function save() {
-	errors.value = validateItem(form.value, unref(fields), true);
-
-	if (!email().safeParse(form.value.email).success) {
-		errors.value.push({
-			field: 'email',
-			path: [],
-			type: 'email',
-		});
-	}
+	errors.value = validate(form.value, fields);
 
 	if (errors.value.length > 0) return;
 

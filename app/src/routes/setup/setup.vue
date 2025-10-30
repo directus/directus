@@ -3,15 +3,15 @@ import { useHead } from '@unhead/vue';
 import { useI18n } from 'vue-i18n';
 import SetupForm from './form.vue';
 
-import { computed, ref, unref } from 'vue';
-import { validateItem } from '@/utils/validate-item';
-import { FormValidator, initialValues, useFormFields } from './form';
 import api from '@/api';
 import { login } from '@/auth';
-import { useRouter } from 'vue-router';
 import { translateAPIError } from '@/lang';
+import { validateItem } from '@/utils/validate-item';
 import { SetupForm as Form } from '@directus/types';
-import z from 'zod';
+import { FailedValidationErrorExtensions } from '@directus/validation';
+import { computed, ref, unref } from 'vue';
+import { useRouter } from 'vue-router';
+import { FormValidator, initialValues, useFormFields, validate, ValidationError } from './form';
 
 const { t } = useI18n();
 
@@ -23,27 +23,11 @@ const form = ref<Form>(initialValues);
 const router = useRouter();
 
 const fields = useFormFields(true, form);
-const errors = ref<Record<string, any>[]>([]);
+const errors = ref<ValidationError[]>([]);
 const error = ref<any>(null);
 
 async function launch() {
-	errors.value = validateItem(form.value, unref(fields), true);
-
-	if (!z.email().safeParse(form.value.email).success) {
-		errors.value.push({
-			field: 'email',
-			path: [],
-			type: 'email',
-		});
-	}
-
-	if (form.value.password !== form.value.password_confirm) {
-		errors.value.push({
-			field: 'password_confirm',
-			path: [],
-			type: 'confirm_password',
-		});
-	}
+	errors.value = validate(form.value, fields, true);
 
 	if (errors.value.length > 0) return;
 
