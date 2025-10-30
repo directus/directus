@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { ForbiddenError, InternalServerError, InvalidPayloadError } from '@directus/errors';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import { systemCollectionRows, type BaseCollectionMeta } from '@directus/system-data';
@@ -227,6 +227,8 @@ export class CollectionsService {
 					if (field.type && ALIAS_TYPES.includes(field.type) === false) {
 						await fieldsService.addColumnIndex(payload.collection, field, {
 							attemptConcurrentIndex,
+						}).catch(() => {
+							throw new InternalServerError()
 						});
 					}
 				}
