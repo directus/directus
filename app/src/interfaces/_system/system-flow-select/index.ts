@@ -8,14 +8,5 @@ export default defineInterface({
 	component: SystemFlowSelect,
 	types: ['string'],
 	system: true,
-	options: [
-		{
-			field: 'flowField',
-			type: 'string',
-			meta: {
-				width: 'full',
-				interface: 'input',
-			},
-		},
-	],
+	options: [],
 });
