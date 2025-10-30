@@ -66,46 +66,6 @@ vi.mock('../utils/should-clear-cache.js', () => ({
 	shouldClearCache: vi.fn().mockReturnValue(true),
 }));
 
-vi.mock('../utils/get-default-value.js', () => ({
-	default: vi.fn((column) => column.default_value),
-}));
-
-vi.mock('../utils/get-field-system-rows.js', () => ({
-	getSystemFieldRowsWithAuthProviders: vi.fn().mockReturnValue([]),
-}));
-
-vi.mock('./payload.js', () => {
-	const PayloadService = vi.fn();
-	PayloadService.prototype.processValues = vi.fn((_, data) => Promise.resolve(data));
-	return { PayloadService };
-});
-
-vi.mock('./relations.js', () => {
-	const RelationsService = vi.fn();
-	RelationsService.prototype.deleteOne = vi.fn();
-	return { RelationsService };
-});
-
-vi.mock('./fields/build-collection-and-field-relations.js', () => ({
-	buildCollectionAndFieldRelations: vi.fn().mockResolvedValue({
-		collectionRelationTree: new Map(),
-		fieldToCollectionList: new Map(),
-	}),
-}));
-
-vi.mock('./fields/get-collection-relation-list.js', () => ({
-	getCollectionRelationList: vi.fn().mockReturnValue(new Set()),
-}));
-
-vi.mock('./fields/get-collection-meta-updates.js', () => ({
-	getCollectionMetaUpdates: vi.fn().mockReturnValue([]),
-}));
-
-vi.mock('@directus/system-data', () => ({
-	isSystemField: vi.fn().mockReturnValue(false),
-}));
-
-// Import after mocks
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';

@@ -1,7 +1,7 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Collection, FieldMutationOptions } from '@directus/types';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
 import * as getSchemaModule from '../utils/get-schema.js';
 import { createMockKnex, resetKnexMocks, setupSystemCollectionMocks } from '../__mocks__/knex.js';
@@ -79,7 +79,6 @@ vi.mock('./fields/get-collection-meta-updates.js', () => ({
 	getCollectionMetaUpdates: vi.fn().mockReturnValue([]),
 }));
 
-// Import after mocks
 import { CollectionsService } from './collections.js';
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
@@ -99,105 +98,62 @@ const schema = new SchemaBuilder()
 describe('Integration Tests', () => {
 	const { db, tracker, mockSchema } = createMockKnex();
 
+	// Common setup
+	beforeEach(() => {
+		vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
+	});
+
 	afterEach(() => {
 		resetKnexMocks(tracker, mockSchema);
 	});
 
 	describe('Services / Collections', () => {
 		describe('Constructor', () => {
-			it('should initialize with required dependencies', () => {
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-				});
+			test('should initialize with provided dependencies', () => {
+				const accountability = { role: 'test-role', admin: true } as Accountability;
+				const service = new CollectionsService({ knex: db, schema, accountability });
 
 				expect(service.knex).toBe(db);
 				expect(service.schema).toBe(schema);
-				expect(service.accountability).toBe(null);
-			});
-
-			it('should initialize with accountability', () => {
-				const accountability = { role: 'test-role', admin: true } as Accountability;
-
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability,
-				});
-
 				expect(service.accountability).toBe(accountability);
 			});
 		});
 
 		describe('createOne', () => {
-			beforeEach(() => {
-				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
-			});
-
-			it('should throw ForbiddenError for non-admin users', async () => {
+			test('should throw ForbiddenError for non-admin users', async () => {
 				const service = new CollectionsService({
 					knex: db,
 					schema,
 					accountability: { role: 'test', admin: false } as Accountability,
 				});
 
-				const payload = {
-					collection: 'test_collection',
-				};
-
-				await expect(service.createOne(payload)).rejects.toThrow(ForbiddenError);
+				await expect(service.createOne({ collection: 'test_collection' })).rejects.toThrow(ForbiddenError);
 			});
 
-			it('should throw InvalidPayloadError when collection name is missing', async () => {
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
+			const invalidPayloads: Array<[any, string]> = [
+				[{}, 'collection name is missing'],
+				[{ collection: '' }, 'collection name is empty'],
+				[{ collection: 'directus_test' }, 'collection names start with "directus_"'],
+			];
 
-				await expect(service.createOne({} as any)).rejects.toThrow(InvalidPayloadError);
-			});
+			test.each(invalidPayloads)(
+				'should throw InvalidPayloadError when %s',
+				async (payload, _description) => {
+					const service = new CollectionsService({ knex: db, schema, accountability: null });
+					await expect(service.createOne(payload)).rejects.toThrow(InvalidPayloadError);
+				},
+			);
 
-			it('should throw InvalidPayloadError when collection name is empty', async () => {
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				await expect(service.createOne({ collection: '' })).rejects.toThrow(InvalidPayloadError);
-			});
-
-			it('should throw InvalidPayloadError for collection names starting with "directus_"', async () => {
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				await expect(service.createOne({ collection: 'directus_test' })).rejects.toThrow(InvalidPayloadError);
-			});
-
-			it('should throw InvalidPayloadError for existing collection', async () => {
+			test('should throw InvalidPayloadError for existing collection', async () => {
 				tracker.on.select('directus_collections').response([{ collection: 'existing_collection' }]);
-
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
+				const service = new CollectionsService({ knex: db, schema, accountability: null });
 
 				await expect(service.createOne({ collection: 'existing_collection' })).rejects.toThrow(InvalidPayloadError);
 			});
 
-			it('should create collection with schema and default primary key', async () => {
+			test('should create collection with schema and default primary key', async () => {
 				tracker.on.select('directus_collections').response([]);
-
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
+				const service = new CollectionsService({ knex: db, schema, accountability: null });
 
 				const result = await service.createOne({
 					collection: 'new_collection',
@@ -208,7 +164,7 @@ describe('Integration Tests', () => {
 				expect(mockSchema.createTable).toHaveBeenCalledWith('new_collection', expect.any(Function));
 			});
 
-			it('should create collection with meta only', async () => {
+			test('should create collection with meta only', async () => {
 				tracker.on.select('directus_collections').response([]);
 
 				const createOneSpy = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue('meta_collection');
@@ -231,7 +187,7 @@ describe('Integration Tests', () => {
 				expect(createOneSpy).toHaveBeenCalled();
 			});
 
-			it('should create collection with fields', async () => {
+			test('should create collection with fields', async () => {
 				tracker.on.select('directus_collections').response([]);
 
 				const createManySpy = vi.spyOn(ItemsService.prototype, 'createMany').mockResolvedValue([1, 2]);
@@ -261,7 +217,7 @@ describe('Integration Tests', () => {
 				expect(createManySpy).toHaveBeenCalled();
 			});
 
-			it('should throw InvalidPayloadError when fields is not an array', async () => {
+			test('should throw InvalidPayloadError when fields is not an array', async () => {
 				tracker.on.select('directus_collections').response([]);
 
 				const service = new CollectionsService({
@@ -279,7 +235,7 @@ describe('Integration Tests', () => {
 				).rejects.toThrow(InvalidPayloadError);
 			});
 
-			it('should inject primary key field when none provided', async () => {
+			test('should inject primary key field when none provided', async () => {
 				tracker.on.select('directus_collections').response([]);
 
 				const service = new CollectionsService({
@@ -299,7 +255,7 @@ describe('Integration Tests', () => {
 				expect(mockSchema.createTable).toHaveBeenCalled();
 			});
 
-			it('should clear cache after creation', async () => {
+			test('should clear cache after creation', async () => {
 				tracker.on.select('directus_collections').response([]);
 				const clearSpy = vi.fn();
 
@@ -322,7 +278,7 @@ describe('Integration Tests', () => {
 				expect(clearSpy).toHaveBeenCalled();
 			});
 
-			it('should respect attemptConcurrentIndex option', async () => {
+			test('should respect attemptConcurrentIndex option', async () => {
 				tracker.on.select('directus_collections').response([]);
 				const createTableSpy = vi.fn();
 
@@ -359,7 +315,7 @@ describe('Integration Tests', () => {
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
 			});
 
-			it('should create multiple collections', async () => {
+			test('should create multiple collections', async () => {
 				const createOneSpy = vi.spyOn(CollectionsService.prototype, 'createOne').mockResolvedValue('test');
 
 				const service = new CollectionsService({
@@ -377,7 +333,7 @@ describe('Integration Tests', () => {
 				expect(createOneSpy).toHaveBeenCalledTimes(2);
 			});
 
-			it('should clear cache after creating many', async () => {
+			test('should clear cache after creating many', async () => {
 				const clearSpy = vi.fn();
 
 				vi.mocked(cacheModule.getCache).mockReturnValue({
@@ -399,7 +355,7 @@ describe('Integration Tests', () => {
 
 		describe('readByQuery', () => {
 
-			it('should read collections for admin users', async () => {
+			test('should read collections for admin users', async () => {
 				const mockTableInfo = [{ name: 'test_collection' }];
 				const mockMeta = [{ collection: 'test_collection' }];
 
@@ -420,7 +376,7 @@ describe('Integration Tests', () => {
 				expect(result.some((c) => c.collection === 'test_collection')).toBe(true);
 			});
 
-			it('should filter collections for non-admin users', async () => {
+			test('should filter collections for non-admin users', async () => {
 				const mockTableInfo = [{ name: 'test_collection' }];
 				const mockMeta = [{ collection: 'test_collection' }];
 
@@ -446,7 +402,7 @@ describe('Integration Tests', () => {
 				expect(fetchAllowedCollections).toHaveBeenCalled();
 			});
 
-			it('should include collections without meta', async () => {
+			test('should include collections without meta', async () => {
 				const mockTableInfo = [{ name: 'no_meta_collection' }];
 
 				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([]);
@@ -464,7 +420,7 @@ describe('Integration Tests', () => {
 				expect(result.some((c) => c.collection === 'no_meta_collection')).toBe(true);
 			});
 
-			it('should respect DB_EXCLUDE_TABLES environment variable', async () => {
+			test('should respect DB_EXCLUDE_TABLES environment variable', async () => {
 				const mockTableInfo = [{ name: 'excluded_table' }, { name: 'included_table' }];
 
 				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([]);
@@ -491,7 +447,7 @@ describe('Integration Tests', () => {
 		});
 
 		describe('readOne', () => {
-			it('should read a single collection', async () => {
+			test('should read a single collection', async () => {
 				const service = new CollectionsService({
 					knex: db,
 					schema,
@@ -511,7 +467,7 @@ describe('Integration Tests', () => {
 				expect(result).toEqual(mockCollection);
 			});
 
-			it('should throw ForbiddenError when collection not found', async () => {
+			test('should throw ForbiddenError when collection not found', async () => {
 				const service = new CollectionsService({
 					knex: db,
 					schema,
@@ -525,7 +481,7 @@ describe('Integration Tests', () => {
 		});
 
 		describe('readMany', () => {
-			it('should read multiple collections by keys', async () => {
+			test('should read multiple collections by keys', async () => {
 				const service = new CollectionsService({
 					knex: db,
 					schema,
@@ -544,7 +500,7 @@ describe('Integration Tests', () => {
 				expect(result).toHaveLength(2);
 			});
 
-			it('should validate access for each collection with accountability', async () => {
+			test('should validate access for each collection with accountability', async () => {
 				const service = new CollectionsService({
 					knex: db,
 					schema,
@@ -568,7 +524,7 @@ describe('Integration Tests', () => {
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
 			});
 
-			it('should throw ForbiddenError for non-admin users', async () => {
+			test('should throw ForbiddenError for non-admin users', async () => {
 				const service = new CollectionsService({
 					knex: db,
 					schema,
@@ -578,7 +534,7 @@ describe('Integration Tests', () => {
 				await expect(service.updateOne('test_collection', {})).rejects.toThrow(ForbiddenError);
 			});
 
-			it('should return early when no meta provided', async () => {
+			test('should return early when no meta provided', async () => {
 				const service = new CollectionsService({
 					knex: db,
 					schema,
@@ -590,7 +546,7 @@ describe('Integration Tests', () => {
 				expect(result).toBe('test_collection');
 			});
 
-			it('should update existing collection meta', async () => {
+			test('should update existing collection meta', async () => {
 				tracker.on.select('directus_collections').response([{ collection: 'test_collection' }]);
 
 				const updateOneSpy = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue('test_collection');
@@ -608,7 +564,7 @@ describe('Integration Tests', () => {
 				expect(updateOneSpy).toHaveBeenCalled();
 			});
 
-			it('should create collection meta if not exists', async () => {
+			test('should create collection meta if not exists', async () => {
 				tracker.on.select('directus_collections').response([]);
 
 				const createOneSpy = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue('test_collection');
@@ -626,7 +582,7 @@ describe('Integration Tests', () => {
 				expect(createOneSpy).toHaveBeenCalled();
 			});
 
-			it('should clear cache after update', async () => {
+			test('should clear cache after update', async () => {
 				tracker.on.select('directus_collections').response([{ collection: 'test_collection' }]);
 
 				const clearSpy = vi.fn();
@@ -655,7 +611,7 @@ describe('Integration Tests', () => {
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
 			});
 
-			it('should throw ForbiddenError for non-admin users', async () => {
+			test('should throw ForbiddenError for non-admin users', async () => {
 				const service = new CollectionsService({
 					knex: db,
 					schema,
@@ -665,7 +621,7 @@ describe('Integration Tests', () => {
 				await expect(service.updateBatch([])).rejects.toThrow(ForbiddenError);
 			});
 
-			it('should throw InvalidPayloadError when data is not an array', async () => {
+			test('should throw InvalidPayloadError when data is not an array', async () => {
 				const service = new CollectionsService({
 					knex: db,
 					schema,
@@ -675,7 +631,7 @@ describe('Integration Tests', () => {
 				await expect(service.updateBatch('not-an-array' as any)).rejects.toThrow(InvalidPayloadError);
 			});
 
-			it('should throw InvalidPayloadError when collection key is missing', async () => {
+			test('should throw InvalidPayloadError when collection key is missing', async () => {
 				const service = new CollectionsService({
 					knex: db,
 					schema,
@@ -685,7 +641,7 @@ describe('Integration Tests', () => {
 				await expect(service.updateBatch([{ meta: {} } as any])).rejects.toThrow(InvalidPayloadError);
 			});
 
-			it('should update multiple collections', async () => {
+			test('should update multiple collections', async () => {
 				const updateOneSpy = vi.spyOn(CollectionsService.prototype, 'updateOne').mockResolvedValue('test');
 
 				const service = new CollectionsService({
@@ -703,7 +659,7 @@ describe('Integration Tests', () => {
 				expect(updateOneSpy).toHaveBeenCalledTimes(2);
 			});
 
-			it('should clear cache after batch update', async () => {
+			test('should clear cache after batch update', async () => {
 				const clearSpy = vi.fn();
 
 				vi.mocked(cacheModule.getCache).mockReturnValue({
@@ -728,7 +684,7 @@ describe('Integration Tests', () => {
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
 			});
 
-			it('should throw ForbiddenError for non-admin users', async () => {
+			test('should throw ForbiddenError for non-admin users', async () => {
 				const service = new CollectionsService({
 					knex: db,
 					schema,
@@ -738,7 +694,7 @@ describe('Integration Tests', () => {
 				await expect(service.updateMany([], {})).rejects.toThrow(ForbiddenError);
 			});
 
-			it('should update multiple collections with same data', async () => {
+			test('should update multiple collections with same data', async () => {
 				const updateOneSpy = vi.spyOn(CollectionsService.prototype, 'updateOne').mockResolvedValue('test');
 
 				const service = new CollectionsService({
@@ -755,7 +711,7 @@ describe('Integration Tests', () => {
 				expect(updateOneSpy).toHaveBeenCalledTimes(2);
 			});
 
-			it('should clear cache after updating many', async () => {
+			test('should clear cache after updating many', async () => {
 				const clearSpy = vi.fn();
 
 				vi.mocked(cacheModule.getCache).mockReturnValue({
@@ -782,7 +738,7 @@ describe('Integration Tests', () => {
 				setupSystemCollectionMocks(tracker);
 			});
 
-			it('should throw ForbiddenError for non-admin users', async () => {
+			test('should throw ForbiddenError for non-admin users', async () => {
 				const service = new CollectionsService({
 					knex: db,
 					schema,
@@ -792,7 +748,7 @@ describe('Integration Tests', () => {
 				await expect(service.deleteOne('test_collection')).rejects.toThrow(ForbiddenError);
 			});
 
-			it('should throw ForbiddenError when collection does not exist', async () => {
+			test('should throw ForbiddenError when collection does not exist', async () => {
 				const service = new CollectionsService({
 					knex: db,
 					schema,
@@ -804,7 +760,7 @@ describe('Integration Tests', () => {
 				await expect(service.deleteOne('nonexistent')).rejects.toThrow(ForbiddenError);
 			});
 
-			it('should delete collection with schema', async () => {
+			test('should delete collection with schema', async () => {
 				const service = new CollectionsService({
 					knex: db,
 					schema,
@@ -824,7 +780,7 @@ describe('Integration Tests', () => {
 				expect(mockSchema.dropTable).toHaveBeenCalledWith('test_collection');
 			});
 
-			it('should delete collection meta', async () => {
+			test('should delete collection meta', async () => {
 				const deleteOneSpy = vi.spyOn(ItemsService.prototype, 'deleteOne').mockResolvedValue('test_collection');
 
 				const service = new CollectionsService({
@@ -846,7 +802,7 @@ describe('Integration Tests', () => {
 				expect(deleteOneSpy).toHaveBeenCalled();
 			});
 
-			it('should clear references to deleted collection as group', async () => {
+			test('should clear references to deleted collection as group', async () => {
 				const service = new CollectionsService({
 					knex: db,
 					schema,
@@ -867,7 +823,7 @@ describe('Integration Tests', () => {
 				expect(tracker.history.update.length).toBeGreaterThan(0);
 			});
 
-			it('should clear cache after deletion', async () => {
+			test('should clear cache after deletion', async () => {
 				const clearSpy = vi.fn();
 
 				vi.mocked(cacheModule.getCache).mockReturnValue({
@@ -900,7 +856,7 @@ describe('Integration Tests', () => {
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
 			});
 
-			it('should throw ForbiddenError for non-admin users', async () => {
+			test('should throw ForbiddenError for non-admin users', async () => {
 				const service = new CollectionsService({
 					knex: db,
 					schema,
@@ -910,7 +866,7 @@ describe('Integration Tests', () => {
 				await expect(service.deleteMany([])).rejects.toThrow(ForbiddenError);
 			});
 
-			it('should delete multiple collections', async () => {
+			test('should delete multiple collections', async () => {
 				const deleteOneSpy = vi.spyOn(CollectionsService.prototype, 'deleteOne').mockResolvedValue('test');
 
 				const service = new CollectionsService({
@@ -925,7 +881,7 @@ describe('Integration Tests', () => {
 				expect(deleteOneSpy).toHaveBeenCalledTimes(2);
 			});
 
-			it('should clear cache after deleting many', async () => {
+			test('should clear cache after deleting many', async () => {
 				const clearSpy = vi.fn();
 
 				vi.mocked(cacheModule.getCache).mockReturnValue({
