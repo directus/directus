@@ -12,8 +12,9 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
  * @param originUrl Origin URL
  * @returns Matching callback URL string
  */
-export function getCallbackFromOriginUrl(redirectUris: URL[], originUrl?: string): URL {
-	if (!originUrl) return redirectUris[0]!;
+export function getCallbackFromOriginUrl(redirectUris: URL[], originUrl?: string): URL | undefined {
+	// If originUrl is not provided, fallback to PUBLIC_URL (legacy compatibility)
+	if (!originUrl) return redirectUris[0];
 
 	const callback = redirectUris.find((uri) => uri.origin === originUrl);
 

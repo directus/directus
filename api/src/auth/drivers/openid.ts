@@ -233,7 +233,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			const callbackUrl = getCallbackFromOriginUrl(this.redirectUris, payload['originUrl']);
 
 			tokenSet = await client.callback(
-				callbackUrl.toString(),
+				callbackUrl?.toString(),
 				{ code: payload['code'], state: payload['state'], iss: payload['iss'] },
 				{ code_verifier: payload['codeVerifier'], state: codeChallenge, nonce: codeChallenge },
 			);
