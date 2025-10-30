@@ -55,7 +55,6 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			throw new InvalidProviderConfigError({ provider: additionalConfig['provider'] });
 		}
 
-		// Build redirect URIs: include PUBLIC_URL + all AUTH_ALLOWED_DOMAINS
 		this.redirectUris = generateRedirectUrls(additionalConfig['provider'], 'OAuth2');
 		this.config = additionalConfig;
 
