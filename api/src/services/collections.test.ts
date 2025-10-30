@@ -35,6 +35,11 @@ vi.mock('./items.js', async () => {
 	return mockItemsService();
 });
 
+vi.mock('../utils/transaction.js', async () => {
+	const { mockTransaction } = await import('../__mocks__/database.js');
+	return mockTransaction();
+});
+
 vi.mock('../utils/get-schema.js', () => ({
 	getSchema: vi.fn(),
 }));
@@ -49,10 +54,6 @@ vi.mock('../permissions/modules/validate-access/validate-access.js', () => ({
 
 vi.mock('../utils/should-clear-cache.js', () => ({
 	shouldClearCache: vi.fn().mockReturnValue(true),
-}));
-
-vi.mock('../utils/transaction.js', () => ({
-	transaction: vi.fn((knex, callback) => callback(knex)),
 }));
 
 vi.mock('./fields.js', () => {

@@ -33,3 +33,24 @@ export function mockDatabase(client: DatabaseClient = 'postgres') {
 		getSchemaInspector: vi.fn(),
 	};
 }
+
+/**
+ * Creates a mock for the transaction utility
+ * By default, the mock simply executes the callback with the provided knex instance
+ * (no actual transaction wrapper, which is fine for most service tests)
+ *
+ * @returns Mock module object for vi.mock()
+ *
+ * @example
+ * ```typescript
+ * vi.mock('../utils/transaction.js', async () => {
+ *   const { mockTransaction } = await import('../__mocks__/database.js');
+ *   return mockTransaction();
+ * });
+ * ```
+ */
+export function mockTransaction() {
+	return {
+		transaction: vi.fn((knex, callback) => callback(knex)),
+	};
+}
