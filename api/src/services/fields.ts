@@ -1008,14 +1008,14 @@ export class FieldsService {
 		const helpers = getHelpers(knex);
 
 		if (field.schema?.is_unique === true && (!existing || existing.is_unique == false)) {
-			return helpers.schema.createIndex(collection, field.field, {
+			await helpers.schema.createIndex(collection, field.field, {
 				unique: true,
 				attemptConcurrentIndex,
 			});
 		}
 
 		if (field.schema?.is_indexed === true && (!existing || existing.is_indexed === false)) {
-			return helpers.schema.createIndex(collection, field.field, {
+			await helpers.schema.createIndex(collection, field.field, {
 				unique: false,
 				attemptConcurrentIndex,
 			});
