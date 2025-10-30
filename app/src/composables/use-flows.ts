@@ -1,5 +1,5 @@
 import api from '@/api';
-import { computed, ref, Ref, provide, inject, ComputedRef } from 'vue';
+import { computed, ref, Ref, provide, inject } from 'vue';
 import { FlowRaw, Item, PrimaryKey } from '@directus/types';
 import { notify } from '@/utils/notify';
 import { translate } from '@/utils/translate-object-values';
@@ -189,7 +189,6 @@ export function useFlows(options: UseFlowsOptions) {
 	function provideRunManualFlow() {
 		provide(runManualFlowSymbol, {
 			runManualFlow,
-			manualFlows,
 		});
 	}
 
@@ -265,13 +264,12 @@ export function useFlows(options: UseFlowsOptions) {
 }
 
 /**
- * In order to invoke injectRunManualFlow within a component, a parent component must first invoke `provideRunManualFlow()`.
+ * In order to invoke useInjectRunManualFlow within a component, a parent component must first invoke `provideRunManualFlow()`.
  *
  * This parent component must also render the <flow-dialogs> component or the confirmation dialogs will not be reachable.
  */
-export function injectRunManualFlow() {
+export function useInjectRunManualFlow() {
 	return inject(runManualFlowSymbol) as {
 		runManualFlow: (flowId: string) => void;
-		manualFlows: ComputedRef<ManualFlow[]>;
 	};
 }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { injectRunManualFlow, type ManualFlow } from '@/composables/use-flows';
+import { useInjectRunManualFlow, type ManualFlow } from '@/composables/use-flows';
 
 const { t } = useI18n();
 
@@ -8,7 +8,7 @@ defineProps<{
 	manualFlows: ManualFlow[];
 }>();
 
-const { runManualFlow } = injectRunManualFlow();
+const { runManualFlow } = useInjectRunManualFlow();
 </script>
 
 <template>

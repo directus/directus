@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { injectRunManualFlow } from '@/composables/use-flows';
+import { useInjectRunManualFlow } from '@/composables/use-flows';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useApi } from '@directus/composables';
 import { PrimaryKey } from '@directus/types';
@@ -103,7 +103,7 @@ const linksParsed = computed<ParsedLink[]>(() =>
 	}),
 );
 
-const { runManualFlow } = injectRunManualFlow();
+const { runManualFlow } = useInjectRunManualFlow();
 
 function handleRunManualFlow(flow: string) {
 	runManualFlow(flow);
