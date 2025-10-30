@@ -4,7 +4,11 @@ import type { Accountability, Collection, FieldMutationOptions } from '@directus
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
 import * as getSchemaModule from '../utils/get-schema.js';
-import { createMockKnex, resetMocks, setupDeleteOperationMocks } from '../__mocks__/knex.js';
+import { createMockKnex, resetKnexMocks, setupDeleteOperationMocks } from '../__mocks__/knex.js';
+
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn().mockReturnValue({}),
+}));
 
 vi.mock('../../src/database/index', async () => {
 	const { mockDatabase } = await import('../__mocks__/database.js');
@@ -20,10 +24,6 @@ vi.mock('../cache.js', async () => {
 	const { mockCache } = await import('../__mocks__/cache.js');
 	return mockCache();
 });
-
-vi.mock('@directus/env', () => ({
-	useEnv: vi.fn().mockReturnValue({}),
-}));
 
 vi.mock('../emitter.js', async () => {
 	const { mockEmitter } = await import('../__mocks__/emitter.js');
@@ -99,7 +99,7 @@ describe('Integration Tests', () => {
 	const { db, tracker, mockSchema } = createMockKnex();
 
 	afterEach(() => {
-		resetMocks(tracker, mockSchema);
+		resetKnexMocks(tracker, mockSchema);
 	});
 
 	describe('Services / Collections', () => {

@@ -3,6 +3,7 @@
  * Provides mock knex instances, table builders, and tracker utilities
  */
 
+import { systemCollectionNames } from '@directus/system-data';
 import knex from 'knex';
 import { MockClient, createTracker, type Tracker } from 'knex-mock-client';
 import { vi } from 'vitest';
@@ -89,8 +90,8 @@ export function createMockTableBuilder() {
 }
 
 /**
- * Sets up common database operation mock handlers
- * Useful for deleteOne operations that require multiple queries
+ * Sets up common database operation mock handlers for all system collections
+ * Automatically mocks CRUD operations (select, insert, update, delete) for all Directus system collections
  *
  * @param tracker The knex-mock-client tracker instance
  *
@@ -98,20 +99,17 @@ export function createMockTableBuilder() {
  * ```typescript
  * const { db, tracker, mockSchema } = createMockKnex();
  * setupDeleteOperationMocks(tracker);
- * // Now all common delete operations are mocked
+ * // Now all CRUD operations on system collections are mocked
  * ```
  */
 export function setupDeleteOperationMocks(tracker: Tracker) {
-	tracker.on.update('directus_collections').response([]);
-	tracker.on.update('directus_relations').response([]);
-	tracker.on.select('directus_revisions').response([]);
-	tracker.on.update('directus_revisions').response([]);
-	tracker.on.delete('directus_revisions').response([]);
-	tracker.on.delete('directus_presets').response([]);
-	tracker.on.delete('directus_activity').response([]);
-	tracker.on.delete('directus_permissions').response([]);
-	tracker.on.delete('directus_relations').response([]);
-	tracker.on.select('directus_collections').response([]);
+	// Mock all CRUD operations for all system collections
+	for (const collection of systemCollectionNames) {
+		tracker.on.select(collection).response([]);
+		tracker.on.insert(collection).response([]);
+		tracker.on.update(collection).response([]);
+		tracker.on.delete(collection).response([]);
+	}
 }
 
 /**
@@ -130,7 +128,7 @@ export function setupDeleteOperationMocks(tracker: Tracker) {
  * });
  * ```
  */
-export function resetMocks(tracker: Tracker, mockSchema: ReturnType<typeof createMockKnex>['mockSchema']) {
+export function resetKnexMocks(tracker: Tracker, mockSchema: ReturnType<typeof createMockKnex>['mockSchema']) {
 	tracker.reset();
 	vi.clearAllMocks();
 	mockSchema.createTable.mockClear();
@@ -180,4 +178,54 @@ export function mockDDLOperations(tracker: Tracker) {
 	tracker.on.any(/alter table/i).response([]);
 	tracker.on.any(/create table/i).response([]);
 	tracker.on.any(/drop table/i).response([]);
+}
+
+/**
+ * Creates a mock alterTable function for testing schema alterations
+ * Returns a vi.fn() that calls the callback with a mock table builder
+ *
+ * @returns Mock function for db.schema.alterTable
+ *
+ * @example
+ * ```typescript
+ * const { db } = createMockKnex();
+ * const alterTableSpy = mockAlterTable();
+ * db.schema.alterTable = alterTableSpy as any;
+ *
+ * // Now when alterTable is called, it will invoke the callback with a mock table builder
+ * await db.schema.alterTable('users', (table) => {
+ *   table.string('name');
+ * });
+ * ```
+ */
+export function mockAlterTable() {
+	return vi.fn((_tableName, callback) => {
+		callback(createMockTableBuilder());
+		return Promise.resolve();
+	});
+}
+
+/**
+ * Creates a mock schema.table function for testing schema operations
+ * Returns a vi.fn() that calls the callback with a mock table builder
+ *
+ * @returns Mock function for db.schema.table
+ *
+ * @example
+ * ```typescript
+ * const { db } = createMockKnex();
+ * const schemaTableSpy = mockSchemaTable();
+ * db.schema.table = schemaTableSpy as any;
+ *
+ * // Now when schema.table is called, it will invoke the callback with a mock table builder
+ * await db.schema.table('users', (table) => {
+ *   table.dropColumn('name');
+ * });
+ * ```
+ */
+export function mockSchemaTable() {
+	return vi.fn((_tableName, callback) => {
+		callback(createMockTableBuilder());
+		return Promise.resolve();
+	});
 }

@@ -5,7 +5,7 @@ import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
 import * as getSchemaModule from '../utils/get-schema.js';
-import { createMockKnex, createMockTableBuilder, resetMocks } from '../__mocks__/knex.js';
+import { createMockKnex, createMockTableBuilder, mockAlterTable, mockSchemaTable, resetKnexMocks } from '../__mocks__/knex.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
@@ -126,26 +126,10 @@ describe('Integration Tests', () => {
 	const { db, tracker, mockSchema } = createMockKnex();
 
 	afterEach(() => {
-		resetMocks(tracker, mockSchema);
+		resetKnexMocks(tracker, mockSchema);
 	});
 
 	describe('Services / Fields', () => {
-		// Helper to mock alterTable
-		const mockAlterTable = () => {
-			return vi.fn((_tableName, callback) => {
-				callback(createMockTableBuilder());
-				return Promise.resolve();
-			});
-		};
-
-		// Helper to mock schema.table
-		const mockSchemaTable = () => {
-			return vi.fn((_tableName, callback) => {
-				callback(createMockTableBuilder());
-				return Promise.resolve();
-			});
-		};
-
 		describe('Constructor', () => {
 			test('should initialize with required dependencies', () => {
 				const service = new FieldsService({
