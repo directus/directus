@@ -2,26 +2,78 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Collection, FieldMutationOptions } from '@directus/types';
 import knex from 'knex';
-import { MockClient, createTracker } from 'knex-mock-client';
+import { MockClient, createTracker, type Tracker } from 'knex-mock-client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
 import * as getSchemaModule from '../utils/get-schema.js';
 
-vi.mock('../../src/database/index', () => ({
-	default: vi.fn(),
-	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
-	getSchemaInspector: vi.fn(),
-}));
+/**
+ * Creates a mocked knex instance with tracker and schema builder support
+ */
+function createMockKnex() {
+	const db = vi.mocked(knex.default({ client: MockClient }));
+	const tracker = createTracker(db);
 
-vi.mock('@directus/schema', () => ({
-	createInspector: vi.fn().mockReturnValue({
-		tableInfo: vi.fn().mockResolvedValue([]),
-		columnInfo: vi.fn().mockResolvedValue([]),
-		primary: vi.fn().mockResolvedValue('id'),
-		foreignKeys: vi.fn().mockResolvedValue([]),
-		withSchema: vi.fn().mockReturnThis(),
-	}),
-}));
+	// Mock schema builder methods
+	const mockSchema = {
+		createTable: vi.fn().mockResolvedValue(undefined),
+		dropTable: vi.fn().mockResolvedValue(undefined),
+		hasTable: vi.fn().mockResolvedValue(false),
+		table: vi.fn().mockResolvedValue(undefined),
+		alterTable: vi.fn().mockResolvedValue(undefined),
+	};
+
+	Object.defineProperty(db, 'schema', {
+		get: () => mockSchema,
+		configurable: true,
+	});
+
+	return { db, tracker, mockSchema };
+}
+
+/**
+ * Sets up common database operation mock handlers
+ * Useful for deleteOne operations that require multiple queries
+ */
+function setupDeleteOperationMocks(tracker: Tracker) {
+	tracker.on.update('directus_collections').response([]);
+	tracker.on.update('directus_relations').response([]);
+	tracker.on.select('directus_revisions').response([]);
+	tracker.on.update('directus_revisions').response([]);
+	tracker.on.delete('directus_revisions').response([]);
+	tracker.on.delete('directus_presets').response([]);
+	tracker.on.delete('directus_activity').response([]);
+	tracker.on.delete('directus_permissions').response([]);
+	tracker.on.delete('directus_relations').response([]);
+	tracker.on.select('directus_collections').response([]);
+}
+
+/**
+ * Resets all mock states
+ * Should be called in afterEach hooks
+ */
+function resetMocks(tracker: Tracker, mockSchema: ReturnType<typeof createMockKnex>['mockSchema']) {
+	tracker.reset();
+	vi.clearAllMocks();
+	mockSchema.createTable.mockClear();
+	mockSchema.dropTable.mockClear();
+	mockSchema.hasTable.mockClear();
+	mockSchema.table.mockClear();
+
+	if (mockSchema.alterTable) {
+		mockSchema.alterTable.mockClear();
+	}
+}
+
+vi.mock('../../src/database/index', async () => {
+	const { mockDatabase } = await import('../__mocks__/database.js');
+	return mockDatabase();
+});
+
+vi.mock('@directus/schema', async () => {
+	const { mockSchema } = await import('../__mocks__/schema.js');
+	return mockSchema();
+});
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
@@ -122,29 +174,10 @@ const schema = new SchemaBuilder()
 	.build();
 
 describe('Integration Tests', () => {
-	const db = vi.mocked(knex.default({ client: MockClient }));
-	const tracker = createTracker(db);
-
-	// Mock schema builder methods
-	const mockSchema = {
-		createTable: vi.fn().mockResolvedValue(undefined),
-		dropTable: vi.fn().mockResolvedValue(undefined),
-		hasTable: vi.fn().mockResolvedValue(false),
-		table: vi.fn().mockResolvedValue(undefined),
-	};
-
-	Object.defineProperty(db, 'schema', {
-		get: () => mockSchema,
-		configurable: true,
-	});
+	const { db, tracker, mockSchema } = createMockKnex();
 
 	afterEach(() => {
-		tracker.reset();
-		vi.clearAllMocks();
-		mockSchema.createTable.mockClear();
-		mockSchema.dropTable.mockClear();
-		mockSchema.hasTable.mockClear();
-		mockSchema.table.mockClear();
+		resetMocks(tracker, mockSchema);
 	});
 
 	describe('Services / Collections', () => {
@@ -838,16 +871,7 @@ describe('Integration Tests', () => {
 				vi.mocked(getSchemaModule.getSchema).mockResolvedValue(schema);
 
 				// Setup common tracker responses
-				tracker.on.update('directus_collections').response([]);
-				tracker.on.update('directus_relations').response([]);
-				tracker.on.select('directus_revisions').response([]);
-				tracker.on.update('directus_revisions').response([]);
-				tracker.on.delete('directus_revisions').response([]);
-				tracker.on.delete('directus_presets').response([]);
-				tracker.on.delete('directus_activity').response([]);
-				tracker.on.delete('directus_permissions').response([]);
-				tracker.on.delete('directus_relations').response([]);
-				tracker.on.select('directus_collections').response([]);
+				setupDeleteOperationMocks(tracker);
 			});
 
 			it('should throw ForbiddenError for non-admin users', async () => {

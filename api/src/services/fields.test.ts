@@ -3,30 +3,101 @@ import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability, Field, RawField } from '@directus/types';
 import { useEnv } from '@directus/env';
 import knex from 'knex';
-import { MockClient, createTracker } from 'knex-mock-client';
+import { MockClient, createTracker, type Tracker } from 'knex-mock-client';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
 import * as getSchemaModule from '../utils/get-schema.js';
+
+/**
+ * Creates a mocked knex instance with tracker and schema builder support
+ */
+function createMockKnex() {
+	const db = vi.mocked(knex.default({ client: MockClient }));
+	const tracker = createTracker(db);
+
+	// Mock schema builder methods
+	const mockSchema = {
+		createTable: vi.fn().mockResolvedValue(undefined),
+		dropTable: vi.fn().mockResolvedValue(undefined),
+		hasTable: vi.fn().mockResolvedValue(false),
+		table: vi.fn().mockResolvedValue(undefined),
+		alterTable: vi.fn().mockResolvedValue(undefined),
+	};
+
+	Object.defineProperty(db, 'schema', {
+		get: () => mockSchema,
+		configurable: true,
+	});
+
+	return { db, tracker, mockSchema };
+}
+
+/**
+ * Creates a mock table builder for schema operations
+ * Used for testing column creation and alteration
+ */
+function createMockTableBuilder() {
+	return {
+		string: vi.fn().mockReturnThis(),
+		integer: vi.fn().mockReturnThis(),
+		text: vi.fn().mockReturnThis(),
+		boolean: vi.fn().mockReturnThis(),
+		increments: vi.fn().mockReturnThis(),
+		bigIncrements: vi.fn().mockReturnThis(),
+		decimal: vi.fn().mockReturnThis(),
+		float: vi.fn().mockReturnThis(),
+		dateTime: vi.fn().mockReturnThis(),
+		timestamp: vi.fn().mockReturnThis(),
+		date: vi.fn().mockReturnThis(),
+		time: vi.fn().mockReturnThis(),
+		json: vi.fn().mockReturnThis(),
+		jsonb: vi.fn().mockReturnThis(),
+		uuid: vi.fn().mockReturnThis(),
+		binary: vi.fn().mockReturnThis(),
+		specificType: vi.fn().mockReturnThis(),
+		defaultTo: vi.fn().mockReturnThis(),
+		notNullable: vi.fn().mockReturnThis(),
+		nullable: vi.fn().mockReturnThis(),
+		unique: vi.fn().mockReturnThis(),
+		index: vi.fn().mockReturnThis(),
+		primary: vi.fn().mockReturnThis(),
+		alter: vi.fn().mockReturnThis(),
+		dropColumn: vi.fn().mockReturnThis(),
+		dropUnique: vi.fn().mockReturnThis(),
+		dropIndex: vi.fn().mockReturnThis(),
+	};
+}
+
+/**
+ * Resets all mock states
+ * Should be called in afterEach hooks
+ */
+function resetMocks(tracker: Tracker, mockSchema: ReturnType<typeof createMockKnex>['mockSchema']) {
+	tracker.reset();
+	vi.clearAllMocks();
+	mockSchema.createTable.mockClear();
+	mockSchema.dropTable.mockClear();
+	mockSchema.hasTable.mockClear();
+	mockSchema.table.mockClear();
+
+	if (mockSchema.alterTable) {
+		mockSchema.alterTable.mockClear();
+	}
+}
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
 }));
 
-vi.mock('../../src/database/index', () => ({
-	default: vi.fn(),
-	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
-	getSchemaInspector: vi.fn(),
-}));
+vi.mock('../../src/database/index', async () => {
+	const { mockDatabase } = await import('../__mocks__/database.js');
+	return mockDatabase();
+});
 
-vi.mock('@directus/schema', () => ({
-	createInspector: vi.fn().mockReturnValue({
-		tableInfo: vi.fn().mockResolvedValue([]),
-		columnInfo: vi.fn().mockResolvedValue([]),
-		primary: vi.fn().mockResolvedValue('id'),
-		foreignKeys: vi.fn().mockResolvedValue([]),
-		withSchema: vi.fn().mockReturnThis(),
-	}),
-}));
+vi.mock('@directus/schema', async () => {
+	const { mockSchema } = await import('../__mocks__/schema.js');
+	return mockSchema();
+});
 
 vi.mock('../cache.js', () => ({
 	getCache: vi.fn().mockReturnValue({
@@ -157,46 +228,13 @@ const schema = new SchemaBuilder()
 	.build();
 
 describe('Integration Tests', () => {
-	const db = vi.mocked(knex.default({ client: MockClient }));
-	const tracker = createTracker(db);
+	const { db, tracker, mockSchema } = createMockKnex();
 
 	afterEach(() => {
-		tracker.reset();
-		vi.clearAllMocks();
+		resetMocks(tracker, mockSchema);
 	});
 
 	describe('Services / Fields', () => {
-		// Helper to create a mock table builder for schema operations
-		const createMockTableBuilder = () => ({
-			string: vi.fn().mockReturnThis(),
-			integer: vi.fn().mockReturnThis(),
-			text: vi.fn().mockReturnThis(),
-			boolean: vi.fn().mockReturnThis(),
-			increments: vi.fn().mockReturnThis(),
-			bigIncrements: vi.fn().mockReturnThis(),
-			decimal: vi.fn().mockReturnThis(),
-			float: vi.fn().mockReturnThis(),
-			dateTime: vi.fn().mockReturnThis(),
-			timestamp: vi.fn().mockReturnThis(),
-			date: vi.fn().mockReturnThis(),
-			time: vi.fn().mockReturnThis(),
-			json: vi.fn().mockReturnThis(),
-			jsonb: vi.fn().mockReturnThis(),
-			uuid: vi.fn().mockReturnThis(),
-			binary: vi.fn().mockReturnThis(),
-			specificType: vi.fn().mockReturnThis(),
-			defaultTo: vi.fn().mockReturnThis(),
-			notNullable: vi.fn().mockReturnThis(),
-			nullable: vi.fn().mockReturnThis(),
-			unique: vi.fn().mockReturnThis(),
-			index: vi.fn().mockReturnThis(),
-			primary: vi.fn().mockReturnThis(),
-			alter: vi.fn().mockReturnThis(),
-			dropColumn: vi.fn().mockReturnThis(),
-			dropUnique: vi.fn().mockReturnThis(),
-			dropIndex: vi.fn().mockReturnThis(),
-		});
-
 		// Helper to mock alterTable
 		const mockAlterTable = () => {
 			return vi.fn((_tableName, callback) => {
