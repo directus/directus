@@ -5,6 +5,7 @@
 '@directus/types': patch
 '@directus/api': patch
 '@directus/app': patch
+'@directus/schema-builder': patch
 ---
 
 Added field-level searchable option to improve search performance
