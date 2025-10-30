@@ -76,82 +76,86 @@ export function createMockKnex() {
  */
 export function createMockTableBuilder() {
 	return {
-		// Column types
+		// Column types - actively used
 		string: vi.fn().mockReturnThis(),
 		text: vi.fn().mockReturnThis(),
 		integer: vi.fn().mockReturnThis(),
 		bigInteger: vi.fn().mockReturnThis(),
-		tinyint: vi.fn().mockReturnThis(),
-		smallint: vi.fn().mockReturnThis(),
-		mediumint: vi.fn().mockReturnThis(),
-		bigint: vi.fn().mockReturnThis(),
 		float: vi.fn().mockReturnThis(),
-		double: vi.fn().mockReturnThis(),
 		decimal: vi.fn().mockReturnThis(),
 		boolean: vi.fn().mockReturnThis(),
 		date: vi.fn().mockReturnThis(),
-		datetime: vi.fn().mockReturnThis(),
 		dateTime: vi.fn().mockReturnThis(),
-		time: vi.fn().mockReturnThis(),
 		timestamp: vi.fn().mockReturnThis(),
-		timestamps: vi.fn().mockReturnThis(),
-		binary: vi.fn().mockReturnThis(),
-		enum: vi.fn().mockReturnThis(),
-		enu: vi.fn().mockReturnThis(),
 		json: vi.fn().mockReturnThis(),
 		jsonb: vi.fn().mockReturnThis(),
 		uuid: vi.fn().mockReturnThis(),
-		geometry: vi.fn().mockReturnThis(),
-		geography: vi.fn().mockReturnThis(),
-		point: vi.fn().mockReturnThis(),
-		linestring: vi.fn().mockReturnThis(),
-		polygon: vi.fn().mockReturnThis(),
-		multipoint: vi.fn().mockReturnThis(),
-		multilinestring: vi.fn().mockReturnThis(),
-		multipolygon: vi.fn().mockReturnThis(),
-		geometrycollection: vi.fn().mockReturnThis(),
-		specificType: vi.fn().mockReturnThis(),
+
+		// Column types - unused (commented out to reduce noise)
+		// tinyint: vi.fn().mockReturnThis(),
+		// smallint: vi.fn().mockReturnThis(),
+		// mediumint: vi.fn().mockReturnThis(),
+		// bigint: vi.fn().mockReturnThis(),
+		// double: vi.fn().mockReturnThis(),
+		// datetime: vi.fn().mockReturnThis(),
+		// time: vi.fn().mockReturnThis(),
+		// timestamps: vi.fn().mockReturnThis(),
+		// binary: vi.fn().mockReturnThis(),
+		// enum: vi.fn().mockReturnThis(),
+		// enu: vi.fn().mockReturnThis(),
+		// geometry: vi.fn().mockReturnThis(),
+		// geography: vi.fn().mockReturnThis(),
+		// point: vi.fn().mockReturnThis(),
+		// linestring: vi.fn().mockReturnThis(),
+		// polygon: vi.fn().mockReturnThis(),
+		// multipoint: vi.fn().mockReturnThis(),
+		// multilinestring: vi.fn().mockReturnThis(),
+		// multipolygon: vi.fn().mockReturnThis(),
+		// geometrycollection: vi.fn().mockReturnThis(),
+		// specificType: vi.fn().mockReturnThis(),
 
 		// Auto-increment columns
 		increments: vi.fn().mockReturnThis(),
 		bigIncrements: vi.fn().mockReturnThis(),
 
-		// Column modifiers
+		// Column modifiers - actively used
 		defaultTo: vi.fn().mockReturnThis(),
 		notNullable: vi.fn().mockReturnThis(),
 		nullable: vi.fn().mockReturnThis(),
-		unsigned: vi.fn().mockReturnThis(),
-		comment: vi.fn().mockReturnThis(),
-		collate: vi.fn().mockReturnThis(),
-		charset: vi.fn().mockReturnThis(),
-		first: vi.fn().mockReturnThis(),
-		after: vi.fn().mockReturnThis(),
-
-		// Constraints
 		primary: vi.fn().mockReturnThis(),
 		unique: vi.fn().mockReturnThis(),
 		index: vi.fn().mockReturnThis(),
-		references: vi.fn().mockReturnThis(),
-		inTable: vi.fn().mockReturnThis(),
-		onDelete: vi.fn().mockReturnThis(),
-		onUpdate: vi.fn().mockReturnThis(),
-		foreign: vi.fn().mockReturnThis(),
-
-		// Schema alterations
 		alter: vi.fn().mockReturnThis(),
+
+		// Column modifiers - unused (commented out to reduce noise)
+		// unsigned: vi.fn().mockReturnThis(),
+		// comment: vi.fn().mockReturnThis(),
+		// collate: vi.fn().mockReturnThis(),
+		// charset: vi.fn().mockReturnThis(),
+		// first: vi.fn().mockReturnThis(),
+		// after: vi.fn().mockReturnThis(),
+		// references: vi.fn().mockReturnThis(),
+		// inTable: vi.fn().mockReturnThis(),
+		// onDelete: vi.fn().mockReturnThis(),
+		// onUpdate: vi.fn().mockReturnThis(),
+		// foreign: vi.fn().mockReturnThis(),
+
+		// Schema alterations - actively used
 		dropColumn: vi.fn().mockReturnThis(),
-		dropColumns: vi.fn().mockReturnThis(),
-		renameColumn: vi.fn().mockReturnThis(),
-		dropPrimary: vi.fn().mockReturnThis(),
 		dropUnique: vi.fn().mockReturnThis(),
 		dropIndex: vi.fn().mockReturnThis(),
-		dropForeign: vi.fn().mockReturnThis(),
-		dropTimestamps: vi.fn().mockReturnThis(),
 
-		// Table options
-		engine: vi.fn().mockReturnThis(),
-		inherits: vi.fn().mockReturnThis(),
-		queryContext: vi.fn().mockReturnThis(),
+		// Schema alterations - unused (commented out to reduce noise)
+		// dropColumns: vi.fn().mockReturnThis(),
+		// renameColumn: vi.fn().mockReturnThis(),
+		// dropPrimary: vi.fn().mockReturnThis(),
+		// dropForeign: vi.fn().mockReturnThis(),
+		// dropTimestamps: vi.fn().mockReturnThis(),
+
+		// Table options - unused (commented out to reduce noise)
+		// engine: vi.fn().mockReturnThis(),
+		// inherits: vi.fn().mockReturnThis(),
+		// queryContext: vi.fn().mockReturnThis(),
 	};
 }
 
