@@ -13,7 +13,6 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
  * @returns Matching callback URL string
  */
 export function getCallbackFromOriginUrl(redirectUris: URL[], originUrl?: string): URL {
-	// If originUrl is not provided, it's legacy mode (no AUTH_ALLOWED_DOMAINS) -> use PUBLIC_URL
 	if (!originUrl) return redirectUris[0]!;
 
 	const callback = redirectUris.find((uri) => uri.origin === originUrl);
