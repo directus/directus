@@ -75,20 +75,13 @@ vi.mock('@directus/schema', async () => {
 	return mockSchema();
 });
 
+vi.mock('../cache.js', async () => {
+	const { mockCache } = await import('../__mocks__/cache.js');
+	return mockCache();
+});
+
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
-}));
-
-vi.mock('../cache.js', () => ({
-	getCache: vi.fn().mockReturnValue({
-		cache: {
-			clear: vi.fn(),
-		},
-		systemCache: {
-			clear: vi.fn(),
-		},
-	}),
-	clearSystemCache: vi.fn(),
 }));
 
 vi.mock('../emitter.js', () => ({
