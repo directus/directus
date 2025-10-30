@@ -203,6 +203,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 									:comparison="{
 										side: 'base',
 										fields: comparisonFields,
+										revisionFields: comparisonData?.revisionFields,
 										selectedFields: [],
 										onToggleField: () => {},
 										comparisonType: comparisonData?.comparisonType,
