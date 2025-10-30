@@ -985,7 +985,7 @@ export class FieldsService {
 			}
 		}
 
-		if (options?.existing) {
+		if (existing) {
 			column.alter();
 		}
 	}
