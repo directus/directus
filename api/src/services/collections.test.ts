@@ -84,11 +84,10 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
 }));
 
-vi.mock('../emitter.js', () => ({
-	default: {
-		emitAction: vi.fn(),
-	},
-}));
+vi.mock('../emitter.js', async () => {
+	const { mockEmitter } = await import('../__mocks__/emitter.js');
+	return mockEmitter();
+});
 
 vi.mock('../utils/get-schema.js', () => ({
 	getSchema: vi.fn(),

@@ -104,12 +104,10 @@ vi.mock('../cache.js', async () => {
 	return mockCache();
 });
 
-vi.mock('../emitter.js', () => ({
-	default: {
-		emitAction: vi.fn(),
-		emitFilter: vi.fn((_, payload) => Promise.resolve(payload)),
-	},
-}));
+vi.mock('../emitter.js', async () => {
+	const { mockEmitter } = await import('../__mocks__/emitter.js');
+	return mockEmitter();
+});
 
 vi.mock('../utils/get-schema.js', () => ({
 	getSchema: vi.fn(),
