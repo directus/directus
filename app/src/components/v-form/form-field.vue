@@ -54,7 +54,7 @@ const isDisabled = computed(() => {
 });
 
 const isLabelHidden = computed(() => {
-	if (props.batchMode && !props.field.meta?.special?.includes('no-data')) return false;
+	if ((props.batchMode || !!props.comparison) && !props.field.meta?.special?.includes('no-data')) return false;
 	return props.field.hideLabel;
 });
 
