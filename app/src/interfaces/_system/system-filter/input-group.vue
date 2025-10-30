@@ -108,7 +108,7 @@ const value = computed<unknown | unknown[]>({
 		let value;
 
 		if (!isVariableInputActive.value && ['_in', '_nin'].includes(comparator.value)) {
-			value = (newVal as string[])
+			value = (newVal as (string | number | null)[])
 				.filter((val) => val !== null && val !== '')
 				.map((val) => (typeof val === 'string' ? val.trim() : val));
 		} else {
