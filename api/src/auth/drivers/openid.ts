@@ -476,7 +476,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			});
 
 			try {
-				return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt, callback.href));
+				return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt, callback?.href));
 			} catch {
 				return res.redirect(
 					new Url(env['PUBLIC_URL'] as string)

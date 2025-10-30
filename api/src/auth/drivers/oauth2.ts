@@ -392,7 +392,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				sameSite: 'lax',
 			});
 
-			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt, callback.href));
+			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt, callback?.href));
 		},
 		respond,
 	);
