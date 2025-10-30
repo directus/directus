@@ -1,22 +1,23 @@
 <script setup lang="ts">
 import { useFlowsStore } from '@/stores/flows';
-import { ref } from 'vue';
+import { FlowRaw } from '@directus/types';
+import { computed } from 'vue';
 
 const props = defineProps<{ value: Record<string, unknown>; collectionName: string }>();
 defineEmits<{ input: [value: string | null] }>();
 
 const flowsStore = useFlowsStore();
 
-const flows = ref(
+const flows = computed(() =>
 	flowsStore.flows
 		.filter(
-			(flow) =>
+			(flow: FlowRaw) =>
 				flow.options &&
 				flow.options.collections &&
 				flow.options.collections.includes(props.collectionName) &&
 				flow.options.location !== 'collection',
 		)
-		.map((flow) => ({
+		.map((flow: FlowRaw) => ({
 			id: flow.id,
 			displayText: `${flow.name}${(flow.description && ': ' + flow.description) || ''}`,
 		})),
