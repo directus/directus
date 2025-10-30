@@ -225,13 +225,9 @@ export class CollectionsService {
 
 				for (const field of payload.fields) {
 					if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-						await fieldsService
-							.addColumnIndex(payload.collection, field, {
-								attemptConcurrentIndex,
-							})
-							.catch(() => {
-								throw new InternalServerError();
-							});
+						await fieldsService.addColumnIndex(payload.collection, field, {
+							attemptConcurrentIndex,
+						});
 					}
 				}
 			}
