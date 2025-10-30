@@ -1,69 +1,28 @@
 <script setup lang="ts">
 import api from '@/api';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
+import type { Revision } from '@/types/revisions';
+import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { ContentVersion } from '@directus/types';
-import { ref, toRefs, unref, watch, computed, type Ref } from 'vue';
+import type { ContentVersion, PrimaryKey } from '@directus/types';
+import { isEqual } from 'lodash';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ComparisonHeader from './comparison-header.vue';
-import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
-import type { ComparisonContext } from '@/components/v-form/types';
-import { useComparison } from '../composables/use-comparison';
-import { type ComparisonData } from '../comparison-utils';
-import { isEqual } from 'lodash';
-import { translateShortcut } from '@/utils/translate-shortcut';
-import { useRoute } from 'vue-router';
+import { useComparison } from './use-comparison';
 
 interface Props {
-	active: boolean;
 	deleteVersionsAllowed: boolean;
 	collection: string;
-	primaryKey: string | number;
+	primaryKey: PrimaryKey;
+	mode: 'version' | 'revision';
+	currentVersion: ContentVersion | null | undefined;
+	currentRevision?: Revision | null;
+	revisions?: Revision[] | null;
 }
 
-const { t } = useI18n();
-const route = useRoute();
-
 const props = defineProps<Props>();
-
-const comparisonData = defineModel<ComparisonData | null>('comparisonData', {
-	required: false,
-}) as Ref<ComparisonData | null>;
-
-const { active, deleteVersionsAllowed, collection, primaryKey } = toRefs(props);
-
-const {
-	selectedComparisonFields,
-	userUpdated,
-	mainItemUserUpdated,
-	mainHash,
-	allFieldsSelected,
-	someFieldsSelected,
-	availableFieldsCount,
-	comparisonFields,
-	toggleSelectAll,
-	toggleComparisonField,
-	isVersionMode,
-	isRevisionMode,
-	userLoading,
-	mainItemUserLoading,
-	baseDisplayName,
-	deltaDisplayName,
-	normalizedData,
-	debugComparison,
-	fetchUserUpdated,
-	fetchMainItemUserUpdated,
-	normalizeComparisonData,
-} = useComparison({
-	comparisonData: comparisonData,
-	collection: collection,
-});
-
-const modalLoading = ref(false);
-
-// Show debug button only when debug query parameter is present
-const showDebugButton = computed(() => route.query.debug !== undefined);
-
-const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
+const active = defineModel<boolean>();
 
 const emit = defineEmits<{
 	cancel: [];
@@ -71,17 +30,64 @@ const emit = defineEmits<{
 	confirm: [data?: Record<string, any>];
 }>();
 
-watch(
-	active,
-	async (value) => {
-		if (value) {
-			modalLoading.value = true;
+const { t } = useI18n();
 
-			try {
-				await Promise.allSettled([fetchUserUpdated(), fetchMainItemUserUpdated()]);
-			} finally {
-				modalLoading.value = false;
-			}
+const { deleteVersionsAllowed, collection, primaryKey, mode, currentVersion, revisions } = toRefs(props);
+const internalRevision = ref<Revision | null>(null);
+const currentRevision = computed(() => internalRevision.value ?? props.currentRevision);
+
+const {
+	comparisonData,
+	selectedComparisonFields,
+	userUpdated,
+	baseUserUpdated,
+	mainHash,
+	allFieldsSelected,
+	someFieldsSelected,
+	availableFieldsCount,
+	comparisonFields,
+	userLoading,
+	baseUserLoading,
+	baseDisplayName,
+	deltaDisplayName,
+	normalizedData,
+	toggleSelectAll,
+	toggleComparisonField,
+	fetchComparisonData,
+	fetchUserUpdated,
+	fetchBaseItemUserUpdated,
+} = useComparison({
+	collection,
+	primaryKey,
+	mode,
+	currentVersion,
+	currentRevision,
+	revisions,
+});
+
+const incomingTooltipMessage = computed(() => {
+	if (props.mode === 'revision') return `${t('changes_made')} ${t('no_relational_data')}`;
+	if (comparisonData.value?.outdated) return t('main_updated_notice');
+	return undefined;
+});
+
+const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
+
+const modalLoading = ref(false);
+
+watch(
+	[active, currentRevision],
+	async ([isActive]) => {
+		if (!isActive) return;
+
+		modalLoading.value = true;
+
+		try {
+			await fetchComparisonData();
+			await fetchUserUpdated();
+			await fetchBaseItemUserUpdated();
+		} finally {
+			modalLoading.value = false;
 		}
 	},
 	{ immediate: true },
@@ -109,9 +115,9 @@ function usePromoteDialog() {
 		promoting.value = true;
 
 		try {
-			if (isVersionMode.value && comparisonData.value) {
+			if (props.mode === 'version') {
 				// Handle version promotion
-				const versionId = (comparisonData.value.selectableDeltas?.[0] as ContentVersion)?.id;
+				const versionId = (comparisonData.value!.selectableDeltas?.[0] as ContentVersion)?.id;
 
 				if (versionId) {
 					await api.post(
@@ -123,13 +129,13 @@ function usePromoteDialog() {
 				}
 
 				emit('promote', deleteOnPromote);
-			} else if (isRevisionMode.value && comparisonData.value) {
+			} else {
 				const restoreData: Record<string, any> = {};
 				const selectedFields = unref(selectedComparisonFields);
 
 				// Get the delta from the comparison data
-				const delta = comparisonData.value.incoming;
-				const base = comparisonData.value.base;
+				const delta = comparisonData.value!.incoming;
+				const base = comparisonData.value!.base;
 
 				for (const [field, newValue] of Object.entries(delta)) {
 					if (selectedFields.length > 0 && !selectedFields.includes(field)) continue;
@@ -151,27 +157,10 @@ function usePromoteDialog() {
 	}
 }
 
-async function onDeltaSelectionChange(newDeltaId: number) {
-	modalLoading.value = true;
+function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
+	if (props.mode !== 'revision') return;
 
-	try {
-		// Update the comparison data with the new delta
-		const newComparisonData: ComparisonData = await normalizeComparisonData(
-			String(newDeltaId),
-			comparisonData.value?.comparisonType || 'revision',
-			comparisonData.value?.currentVersion ? ref(comparisonData.value.currentVersion) : undefined,
-			undefined,
-			comparisonData.value?.selectableDeltas ? ref(comparisonData.value.selectableDeltas as any) : undefined,
-		);
-
-		comparisonData.value = { ...comparisonData.value, ...newComparisonData };
-
-		await Promise.allSettled([fetchUserUpdated(), fetchMainItemUserUpdated()]);
-	} catch (error) {
-		unexpectedError(error);
-	} finally {
-		modalLoading.value = false;
-	}
+	internalRevision.value = revisions.value?.find((revision) => revision.id === newDeltaId) ?? null;
 }
 </script>
 
@@ -192,8 +181,8 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 							:loading="modalLoading"
 							:title="baseDisplayName"
 							:date-updated="t('latest')"
-							:user-updated="mainItemUserUpdated"
-							:user-loading="mainItemUserLoading"
+							:user-updated="baseUserUpdated"
+							:user-loading="baseUserLoading"
 						/>
 						<div class="comparison-content-divider"></div>
 						<div class="comparison-content">
@@ -211,15 +200,15 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.base || {}"
-									:comparison="
-										{
-											side: 'base',
-											fields: comparisonFields,
-											selectedFields: [],
-											onToggleField: () => {},
-										} as ComparisonContext
-									"
-									class="comparison-form--main"
+									:comparison="{
+										side: 'base',
+										fields: comparisonFields,
+										revisionFields: comparisonData?.revisionFields,
+										selectedFields: [],
+										onToggleField: () => {},
+										comparisonType: comparisonData?.comparisonType,
+									}"
+									class="comparison-form--base"
 								/>
 							</template>
 						</div>
@@ -232,9 +221,10 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 							:date-updated="normalizedData?.incoming.date.dateObject || null"
 							:user-updated="userUpdated"
 							:user-loading="userLoading"
-							:show-delta-dropdown="isRevisionMode"
+							:show-delta-dropdown="mode === 'revision'"
 							:comparison-data="comparisonData"
-							@delta-change="onDeltaSelectionChange"
+							:tooltip-message="incomingTooltipMessage"
+							@delta-change="onIncomingSelectionChange"
 						/>
 						<div class="comparison-content-divider"></div>
 						<div class="comparison-content">
@@ -252,15 +242,15 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.incoming || {}"
-									:comparison="
-										{
-											side: 'incoming',
-											fields: comparisonFields,
-											selectedFields: selectedComparisonFields,
-											onToggleField: toggleComparisonField,
-										} as ComparisonContext
-									"
-									class="comparison-form--current"
+									:comparison="{
+										side: 'incoming',
+										fields: comparisonFields,
+										revisionFields: comparisonData?.revisionFields,
+										selectedFields: selectedComparisonFields,
+										onToggleField: toggleComparisonField,
+										comparisonType: comparisonData?.comparisonType,
+									}"
+									class="comparison-form--incoming"
 								/>
 							</template>
 						</div>
@@ -271,7 +261,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 				<div class="columns">
 					<div class="col left">
 						<div class="fields-changed">
-							{{ t('updated_field_count', { count: availableFieldsCount }, availableFieldsCount) }}
+							{{ t('differences_count', { count: availableFieldsCount }) }}
 						</div>
 					</div>
 					<div class="col right">
@@ -283,7 +273,7 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 									:indeterminate="someFieldsSelected && !allFieldsSelected"
 									@update:model-value="toggleSelectAll"
 								>
-									{{ t('select_all_changes') }} ({{ selectedComparisonFields.length }}/{{ availableFieldsCount }})
+									{{ t('select_all_differences') }} ({{ selectedComparisonFields.length }}/{{ availableFieldsCount }})
 								</v-checkbox>
 							</div>
 							<div class="buttons-container">
@@ -295,14 +285,10 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 									<v-icon name="close" left />
 									<span class="button-text">{{ t('cancel') }}</span>
 								</v-button>
-								<v-button v-if="showDebugButton" secondary @click="debugComparison('Manual debug')">
-									<v-icon name="bug_report" left />
-									<span class="button-text">Debug</span>
-								</v-button>
 								<v-button
 									v-tooltip.top="
 										selectedComparisonFields.length === 0
-											? t('no_changes')
+											? undefined
 											: `${t('apply')} (${translateShortcut(['meta', 'enter'])})`
 									"
 									:disabled="selectedComparisonFields.length === 0"
@@ -343,8 +329,9 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 
 <style lang="scss" scoped>
 .comparison-modal {
-	--comparison-modal--height: max(100% - 8vw, 100% - 120px);
-	--comparison-modal--width: max(100% - 8vw, 100% - 120px);
+	--header-bar-height: 60px;
+	--comparison-modal--width: max(100% - 8vw, 100% - var(--header-bar-height) * 2);
+	--comparison-modal--height: var(--comparison-modal--width);
 	--comparison-modal--padding-x: 28px;
 	--comparison-modal--padding-y: 20px;
 	--comparison-modal--border-radius: var(--theme--border-radius);
@@ -513,13 +500,15 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 					.button-text {
 						display: none;
 
-						@media (min-width: 706px) {
+						@media (min-width: 544px) {
 							display: inline;
 						}
 					}
 				}
 
 				.v-button {
+					--v-button-min-width: 0;
+
 					flex: 1;
 
 					:deep(.button) {
@@ -533,9 +522,13 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 					.v-icon {
 						margin: 0;
 
-						@media (min-width: 706px) {
+						@media (min-width: 544px) {
 							margin-inline-end: 8px;
 						}
+					}
+
+					@media (min-width: 544px) {
+						--v-button-min-width: 140px;
 					}
 				}
 			}
@@ -584,11 +577,11 @@ async function onDeltaSelectionChange(newDeltaId: number) {
 	gap: var(--theme--form--row-gap) var(--theme--form--column-gap);
 }
 
-.comparison-form--main {
+.comparison-form--base {
 	--comparison-indicator--color: var(--theme--danger);
 }
 
-.comparison-form--current {
+.comparison-form--incoming {
 	--comparison-indicator--color: var(--theme--success);
 }
 </style>

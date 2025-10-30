@@ -57,7 +57,7 @@ const isDisabled = computed(() => {
 const isNonEditable = computed(() => !!props.nonEditable);
 
 const isLabelHidden = computed(() => {
-	if (props.batchMode && !props.field.meta?.special?.includes('no-data')) return false;
+	if ((props.batchMode || !!props.comparison) && !props.field.meta?.special?.includes('no-data')) return false;
 	return props.field.hideLabel;
 });
 
@@ -245,6 +245,7 @@ function useComputedValues() {
 			:raw-editor-active="rawEditorActive"
 			:direction="direction"
 			:comparison="comparison"
+			:comparison-active="comparisonActive"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>

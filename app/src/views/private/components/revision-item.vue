@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { useFieldsStore } from '@/stores/fields';
 import { Revision } from '@/types/revisions';
+import { getRevisionFields } from '@/utils/get-revision-fields';
 import { userName } from '@/utils/user-name';
 import { format } from 'date-fns';
 import { computed } from 'vue';
@@ -8,7 +10,6 @@ import { useI18n } from 'vue-i18n';
 const props = defineProps<{
 	revision: Revision;
 	last?: boolean;
-	mostRecent?: boolean;
 }>();
 
 defineEmits<{
@@ -17,11 +18,16 @@ defineEmits<{
 
 const { t } = useI18n();
 
-const revisionCount = computed(() => (props.revision.differentFields ? props.revision.differentFields.length : 0));
+const fieldsStore = useFieldsStore();
+const fields = fieldsStore.getFieldsForCollection(props.revision.collection);
+
+const revisionCount = computed(() => {
+	const revisionDelta = Object.keys(props.revision.delta ?? {});
+	const revisionFields = getRevisionFields(revisionDelta, fields);
+	return revisionFields.length;
+});
 
 const headerMessage = computed(() => {
-	if (props.mostRecent) return t('latest');
-
 	switch (props.revision.activity.action.toLowerCase()) {
 		case 'create':
 			return t('revision_delta_updated', revisionCount.value);
@@ -30,7 +36,7 @@ const headerMessage = computed(() => {
 		case 'delete':
 			return t('revision_delta_deleted');
 		case 'version_save':
-			return t('revision_delta_version_saved', revisionCount.value);
+			return t('revision_delta_updated', revisionCount.value);
 		case 'revert':
 			return t('revision_delta_reverted');
 		default:

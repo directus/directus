@@ -1,6 +1,5 @@
 import api from '@/api';
 import { useServerStore } from '@/stores/server';
-import { useFieldsStore } from '@/stores/fields';
 import type { Revision, RevisionPartial, RevisionWithTime, RevisionsByDate } from '@/types/revisions';
 import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
@@ -8,7 +7,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { Action } from '@directus/constants';
 import type { ContentVersion, Filter } from '@directus/types';
 import { format, isThisYear, isToday, isYesterday, parseISO } from 'date-fns';
-import { groupBy, orderBy, isEqual, mergeWith } from 'lodash';
+import { groupBy, orderBy } from 'lodash';
 import { Ref, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -25,13 +24,6 @@ export function useRevisions(
 ) {
 	const { t } = useI18n();
 	const { info } = useServerStore();
-	const fieldsStore = useFieldsStore();
-
-	const isReadOnlyField = (fieldKey: string): boolean => {
-		const collectionFields = fieldsStore.getFieldsForCollection(unref(collection));
-		const field = collectionFields.find((f) => f.field === fieldKey);
-		return field?.meta?.readonly === true;
-	};
 
 	const revisions = ref<RevisionPartial[] | null>(null);
 	const revisionsByDate = ref<RevisionsByDate[] | null>(null);
@@ -157,32 +149,6 @@ export function useRevisions(
 			);
 
 			const revisionsGrouped: RevisionsByDate[] = [];
-			// Create a diff between this revision and the current state of its associated version or item
-			let baseForComparison: Record<string, any> = {};
-			let versionDeltaForComparison: Record<string, any> = {};
-
-			try {
-				if (version?.value) {
-					const versionCompare = await api.get(`/versions/${version.value.id}/compare`);
-					baseForComparison = versionCompare.data?.data?.main || {};
-					versionDeltaForComparison = versionCompare.data?.data?.current || {};
-				} else {
-					const itemResp = await api.get(`/items/${unref(collection)}/${unref(primaryKey)}`);
-					baseForComparison = itemResp.data?.data || {};
-					versionDeltaForComparison = {};
-				}
-			} catch (error) {
-				baseForComparison = {};
-				versionDeltaForComparison = {};
-				unexpectedError(error);
-			}
-
-			const replaceArrays = (objValue: any, srcValue: any) => {
-				if (Array.isArray(objValue) || Array.isArray(srcValue)) return srcValue;
-				return undefined;
-			};
-
-			const currentItemMerged = mergeWith({}, baseForComparison, versionDeltaForComparison, replaceArrays);
 
 			for (const [key, value] of Object.entries(revisionsGroupedByDate)) {
 				const date = new Date(key);
@@ -203,20 +169,6 @@ export function useRevisions(
 					const steps = (revision as Revision)?.data?.steps;
 					const lastStepStatus = steps?.[steps.length - 1]?.status;
 
-					// Calculate fields that differ from the current item state
-					const revisionData = (revision as Revision)?.data || {};
-					const differentFields: string[] = [];
-
-					for (const field of Object.keys(revisionData)) {
-						if (isReadOnlyField(field)) {
-							continue;
-						}
-
-						const newValue = (revisionData as any)[field];
-						const currentValue = (currentItemMerged as any)[field];
-						if (!isEqual(newValue, currentValue)) differentFields.push(field);
-					}
-
 					revisions.push({
 						...revision,
 						timestampFormatted: `${localizedFormat(
@@ -230,7 +182,6 @@ export function useRevisions(
 							addSuffix: true,
 						})})`,
 						status: lastStepStatus,
-						differentFields,
 					});
 				}
 

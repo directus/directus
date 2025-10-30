@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { userName } from '@/utils/user-name';
 import { localizedFormat } from '@/utils/localized-format';
+import { userName } from '@/utils/user-name';
 import { User } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -13,6 +13,7 @@ interface Props {
 	showDeltaDropdown?: boolean;
 	comparisonData?: any;
 	loading?: boolean;
+	tooltipMessage?: string;
 }
 
 const { t } = useI18n();
@@ -20,11 +21,14 @@ const { t } = useI18n();
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-	(e: 'delta-change', value: number): void;
+	(e: 'delta-change', value: string | number): void;
 }>();
 
 const userUpdatedName = computed(() => {
-	if (!props.userUpdated) return null;
+	if (!props.userUpdated?.first_name && !props.userUpdated?.last_name && !props.userUpdated?.email) {
+		return t('unknown_user');
+	}
+
 	return userName(props.userUpdated);
 });
 
@@ -44,6 +48,7 @@ const deltaOptions = computed(() => {
 	if (!props.showDeltaDropdown || !props.comparisonData?.selectableDeltas) return [];
 
 	const deltas = props.comparisonData.selectableDeltas;
+
 	return deltas.map((delta: any) => {
 		if (delta.activity?.timestamp) {
 			const formattedDate = formatDateTime(new Date(delta.activity.timestamp));
@@ -98,7 +103,10 @@ function getDeltaOptionUser(deltaOption: any) {
 		<div class="title-container">
 			<v-skeleton-loader v-if="loading" type="text" class="title-skeleton" />
 
-			<v-text-overflow v-else :text="title" class="title" />
+			<template v-else>
+				<v-text-overflow :text="title" class="title" />
+				<v-icon v-if="tooltipMessage" v-tooltip.bottom="tooltipMessage" name="error" class="icon" />
+			</template>
 		</div>
 		<div class="header-meta">
 			<v-skeleton-loader v-if="loading" type="text" class="meta-skeleton" />
@@ -188,12 +196,24 @@ function getDeltaOptionUser(deltaOption: any) {
 	}
 
 	.title-container {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+
 		.title {
 			font-size: 20px;
 			font-weight: 600;
 			line-height: 32px;
 			color: var(--theme--foreground-accent);
 			margin: 0;
+		}
+
+		.v-icon {
+			color: var(--theme--foreground-subdued);
+
+			&:hover {
+				color: var(--theme--warning);
+			}
 		}
 	}
 

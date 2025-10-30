@@ -61,6 +61,7 @@ group: Group
 popular: Popular
 recent: Recent
 latest: Latest
+updated: Updated
 export_items: Export Items
 and: And
 or: Or
@@ -184,11 +185,8 @@ compare_version: Compare Version
 save_version: Save Version
 promote_version: Promote Version
 apply: Apply
-no_changes: No Changes
-select_all_changes: Select All Changes
-outdated_notice: >-
-  The main item has been updated since this version was created. Please review all the field values below, and confirm
-  which version should be used when promoting this version into the main item.
+select_all_differences: Select All Differences
+main_updated_notice: The main item has been updated since this version was created.
 delete_version: Delete Version
 delete_version_copy: >-
   Are you sure you want to delete the "{version}" version? This action cannot be undone.
@@ -483,11 +481,13 @@ revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
 revision_delta_deleted: Deleted
-revision_delta_version_saved: 'Version Save (Updated 1 Field) | Version Save (Updated {count} Fields)'
 revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
+updated_in_revision: Updated in this Revision
+updated_in_revision_matches_latest: Updated in this Revision but matches Latest
+differences_count: 'No Differences | 1 Difference | {count} Differences'
 presentation_text_values_cannot_be_reimported: 'Uses presentation text, values can not be re-imported.'
 download_page_as_csv: 'Download Page as CSV'
 download_page_as_csv_unsupported: This layout does not support downloading the current page.
@@ -510,7 +510,14 @@ import_data_input_placeholder: CSV or JSON...
 import_data_button: Start Import
 import_data_indeterminate: Importing Data...
 import_data_success: Data successfully imported from {filename}
+import_data_errors: Import Error
 import_data_error: This file's data structure doesn't match the collection.
+import_data_validation_errors_notice: 'The following rows have invalid values:'
+import_data_error_row: 'Row {rows}{field}:'
+snapshot:
+  export: Export Schema
+  download: Download Snapshot (JSON)
+  info: Schema-only export for sharing or debugging
 label_import: Import
 label_export: Export
 import_export: Import / Export
@@ -674,7 +681,6 @@ no_items_copy: There are no items in this collection yet.
 file_count: 'No Files | One File | {count} Files'
 no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'
-updated_field_count: 'Updated 0 Fields | Updated 1 Field | Updated {count} Fields'
 no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
 webhooks_deprecation_notice: |
@@ -979,6 +985,7 @@ flows: Flows
 flow: Flow
 select_a_flow: Select a Flow
 run_flow_confirm: Are you sure you want to execute this flow?
+run_flow_anyway: Run Flow Anyway
 run_flow_on_current_collection: Run Flow on Current Collection
 run_flow_on_current: Run Flow on Current Item
 run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
@@ -1164,6 +1171,8 @@ appearance_dark: Dark
 other: Other...
 adding_user: Adding User
 unknown_user: Unknown User
+unknown_version: Unknown Version
+unknown_revision: Unknown Revision
 creating_in: 'Creating Item in {collection}'
 editing_in: 'Editing Item in {collection}'
 viewing_in: 'Viewing Item in {collection}'

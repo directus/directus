@@ -32,6 +32,12 @@ import type { FieldMeta } from '../types.js';
 
 export const systemFieldRows: FieldMeta[] = [];
 
+export function isSystemField(collection: string, field: string): boolean {
+	if (!collection.startsWith('directus_')) return false;
+
+	return Boolean(systemFieldRows.find((fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field));
+}
+
 processFields(accessFields);
 processFields(activityFields);
 processFields(collectionFields);
