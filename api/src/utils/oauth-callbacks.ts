@@ -65,7 +65,7 @@ export function getCallbackFromRequest(req: Request, redirectUris: URL[], contex
 export function generateRedirectUrls(providerName: string, context: string): URL[] {
 	const env = useEnv();
 	const logger = useLogger();
-	const redirectUris: URL[] = [];
+	const callbacksSet = new Set<string>();
 	const envKey = `AUTH_${providerName.toUpperCase()}_REDIRECT_ALLOW_LIST`;
 
 	if (envKey in env) {
@@ -73,12 +73,12 @@ export function generateRedirectUrls(providerName: string, context: string): URL
 			try {
 				const url = new URL(domain);
 				const domainCallback = new Url(url.origin).addPath('auth', 'login', providerName, 'callback').toString();
-				redirectUris.push(new URL(domainCallback));
+				callbacksSet.add(domainCallback);
 			} catch {
 				logger.warn(`[${context}] Invalid domain in ${envKey}: ${domain}`);
 			}
 		});
 	}
 
-	return redirectUris;
+	return Array.from(callbacksSet).map((uri) => new URL(uri));
 }
