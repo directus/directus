@@ -36,7 +36,7 @@ describe('useComparison', () => {
 		mockFieldsStore.getFieldsForCollection.mockImplementation(getFieldData);
 	});
 
-	describe('with visible user- & date-created/-updated', () => {
+	describe('with visible user & date fields', () => {
 		beforeEach(() => {
 			vi.clearAllMocks();
 
@@ -107,7 +107,7 @@ describe('useComparison', () => {
 		});
 	});
 
-	describe('with hidden user- & date-created/-updated', () => {
+	describe('with hidden user & date fields', () => {
 		it('should not include "created_at" and "created_by" in revisionFields and comparisonFields', async () => {
 			const testCase = getTestData('revision', {
 				currentRevisionOverwrites: {
