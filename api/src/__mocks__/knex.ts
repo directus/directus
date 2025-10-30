@@ -29,7 +29,7 @@ export function createMockKnex() {
 	const tracker = createTracker(db);
 
 	// Mock schema builder methods with functional callbacks
-	const mockSchema = {
+	const mockSchemaBuilder = {
 		createTable: vi.fn((_tableName, callback) => {
 			callback(createMockTableBuilder());
 			return Promise.resolve();
@@ -50,7 +50,7 @@ export function createMockKnex() {
 	};
 
 	Object.defineProperty(db, 'schema', {
-		get: () => mockSchema,
+		get: () => mockSchemaBuilder,
 		configurable: true,
 	});
 
@@ -59,7 +59,7 @@ export function createMockKnex() {
 	// Overriding them would break the tracker connection and cause queries to not return
 	// the mocked responses.
 
-	return { db, tracker, mockSchema };
+	return { db, tracker, mockSchemaBuilder };
 }
 
 /**
@@ -194,7 +194,7 @@ export function setupSystemCollectionMocks(tracker: Tracker) {
  * });
  * ```
  */
-export function resetKnexMocks(tracker: Tracker, mockSchema: ReturnType<typeof createMockKnex>['mockSchema']) {
+export function resetKnexMocks(tracker: Tracker, mockSchema: ReturnType<typeof createMockKnex>['mockSchemaBuilder']) {
 	tracker.reset();
 	vi.clearAllMocks();
 	mockSchema.createTable.mockClear();

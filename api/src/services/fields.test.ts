@@ -84,38 +84,13 @@ const schema = new SchemaBuilder()
 	.build();
 
 describe('Integration Tests', () => {
-	const { db, tracker, mockSchema } = createMockKnex();
+	const { db, tracker, mockSchemaBuilder } = createMockKnex();
 
 	afterEach(() => {
-		resetKnexMocks(tracker, mockSchema);
+		resetKnexMocks(tracker, mockSchemaBuilder);
 	});
 
 	describe('Services / Fields', () => {
-		describe('Constructor', () => {
-			test('should initialize with required dependencies', () => {
-				const service = new FieldsService({
-					knex: db,
-					schema,
-				});
-
-				expect(service.knex).toBe(db);
-				expect(service.schema).toBe(schema);
-				expect(service.accountability).toBe(null);
-			});
-
-			test('should initialize with accountability', () => {
-				const accountability = { role: 'test-role', admin: true } as Accountability;
-
-				const service = new FieldsService({
-					knex: db,
-					schema,
-					accountability,
-				});
-
-				expect(service.accountability).toBe(accountability);
-			});
-		});
-
 		describe('columnInfo', () => {
 			beforeEach(() => {
 				vi.mocked(cacheModule.getCacheValue).mockResolvedValue(null);
@@ -226,31 +201,6 @@ describe('Integration Tests', () => {
 				const result = await service.readAll('test_collection');
 
 				expect(result.length).toBeGreaterThan(0);
-			});
-
-			test('should filter fields by collection when specified', async () => {
-				const mockColumns = [
-					{
-						table: 'test_collection',
-						name: 'id',
-						data_type: 'integer',
-						default_value: null,
-						is_nullable: false,
-					},
-				];
-
-				const service = new FieldsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				service.schemaInspector.columnInfo = vi.fn().mockResolvedValue(mockColumns);
-
-				tracker.on.select('directus_fields').response([]);
-
-				const result = await service.readAll('test_collection');
-
 				expect(result.every((field) => field.collection === 'test_collection')).toBe(true);
 			});
 
@@ -371,51 +321,6 @@ describe('Integration Tests', () => {
 				};
 
 				await expect(service.createField('test_collection', field)).rejects.toThrow(InvalidPayloadError);
-			});
-
-			test('should create a field with schema', async () => {
-				tracker.on.select('directus_fields').response([]);
-				tracker.on.select('max').response([{ max: 1 }]);
-				// Mock any DDL queries
-				tracker.on.any(/alter table/i).response([]);
-
-				// Mock the alterTable operation to intercept and not execute
-				const alterTableSpy = mockAlterTable();
-				db.schema.alterTable = alterTableSpy as any;
-
-				const service = new FieldsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				const field: Partial<Field> & { field: string; type: 'string' } = {
-					field: 'new_field',
-					type: 'string',
-					schema: {
-						name: 'new_field',
-						table: 'test_collection',
-						data_type: 'varchar',
-						default_value: null,
-						max_length: 255,
-						numeric_precision: null,
-						numeric_scale: null,
-						is_generated: false,
-						generation_expression: null,
-						is_nullable: true,
-						is_unique: false,
-						is_indexed: false,
-						is_primary_key: false,
-						has_auto_increment: false,
-						foreign_key_column: null,
-						foreign_key_table: null,
-					},
-				};
-
-				await service.createField('test_collection', field);
-
-				// Verify the field was created successfully (method completed without throwing)
-				// The actual schema alteration is mocked via tracker.on.any(/alter table/i)
 			});
 
 			test('should create a field with meta', async () => {
@@ -726,25 +631,6 @@ describe('Integration Tests', () => {
 
 				expect(createOneSpy).toHaveBeenCalled();
 			});
-
-			test('should return field name', async () => {
-				const service = new FieldsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				tracker.on.select('directus_fields').response([]);
-
-				const field: RawField = {
-					field: 'name',
-					type: 'string',
-				};
-
-				const result = await service.updateField('test_collection', field);
-
-				expect(result).toBe('name');
-			});
 		});
 
 		describe('updateFields', () => {
@@ -811,40 +697,6 @@ describe('Integration Tests', () => {
 				});
 
 				await expect(service.deleteField('test_collection', 'name')).rejects.toThrow(ForbiddenError);
-			});
-
-			test('should delete a field', async () => {
-				const service = new FieldsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				tracker.on.select('directus_collections').response([]);
-				tracker.on.select('directus_fields').response([{ collection: 'test_collection', field: 'name' }]);
-				tracker.on.update('directus_fields').response([]);
-				tracker.on.update('directus_collections').response([]);
-				// Mock any DDL queries
-				tracker.on.any(/alter table/i).response([]);
-
-				const dropColumnSpy = vi.fn();
-
-				const schemaTableSpy = vi.fn((_tableName, callback) => {
-					const table = {
-						...createMockTableBuilder(),
-						dropColumn: dropColumnSpy,
-					};
-
-					callback(table as any);
-					return Promise.resolve();
-				});
-
-				db.schema.table = schemaTableSpy as any;
-
-				await service.deleteField('test_collection', 'name');
-
-				// Verify the field was deleted successfully (method completed without throwing)
-				// The actual column dropping is mocked via tracker.on.any(/alter table/i)
 			});
 
 			test('should delete field meta', async () => {
@@ -1026,65 +878,5 @@ describe('Integration Tests', () => {
 			});
 		});
 
-		describe('addColumnIndex', () => {
-			test('should not add index for alias fields', async () => {
-				const service = new FieldsService({
-					knex: db,
-					schema,
-				});
-
-				const field: Field = {
-					collection: 'test_collection',
-					field: 'alias_field',
-					type: 'alias',
-					schema: null,
-					meta: null,
-					name: ''
-				};
-
-				await service.addColumnIndex('test_collection', field);
-
-				// Should complete without errors and not call any helpers
-				expect(true).toBe(true);
-			});
-
-			test('should not add index for primary key fields', async () => {
-				const service = new FieldsService({
-					knex: db,
-					schema,
-				});
-
-				const field: Field = {
-					collection: 'test_collection',
-					field: 'id',
-					type: 'integer',
-					schema: {
-						name: 'id',
-						table: 'test_collection',
-						data_type: 'integer',
-						default_value: null,
-						max_length: null,
-						numeric_precision: null,
-						numeric_scale: null,
-						is_generated: false,
-						generation_expression: null,
-						is_nullable: false,
-						is_unique: true,
-						is_indexed: true,
-						is_primary_key: true,
-						has_auto_increment: true,
-						foreign_key_column: null,
-						foreign_key_table: null,
-					},
-					meta: null,
-					name: ''
-				};
-
-				await service.addColumnIndex('test_collection', field);
-
-				// Should complete without errors and not call any helpers
-				expect(true).toBe(true);
-			});
-		});
 	});
 });

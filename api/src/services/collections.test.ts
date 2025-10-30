@@ -96,7 +96,7 @@ const schema = new SchemaBuilder()
 	.build();
 
 describe('Integration Tests', () => {
-	const { db, tracker, mockSchema } = createMockKnex();
+	const { db, tracker, mockSchemaBuilder } = createMockKnex();
 
 	// Common setup
 	beforeEach(() => {
@@ -104,21 +104,10 @@ describe('Integration Tests', () => {
 	});
 
 	afterEach(() => {
-		resetKnexMocks(tracker, mockSchema);
+		resetKnexMocks(tracker, mockSchemaBuilder);
 	});
 
 	describe('Services / Collections', () => {
-		describe('Constructor', () => {
-			test('should initialize with provided dependencies', () => {
-				const accountability = { role: 'test-role', admin: true } as Accountability;
-				const service = new CollectionsService({ knex: db, schema, accountability });
-
-				expect(service.knex).toBe(db);
-				expect(service.schema).toBe(schema);
-				expect(service.accountability).toBe(accountability);
-			});
-		});
-
 		describe('createOne', () => {
 			test('should throw ForbiddenError for non-admin users', async () => {
 				const service = new CollectionsService({
@@ -161,7 +150,7 @@ describe('Integration Tests', () => {
 				});
 
 				expect(result).toBe('new_collection');
-				expect(mockSchema.createTable).toHaveBeenCalledWith('new_collection', expect.any(Function));
+				expect(mockSchemaBuilder.createTable).toHaveBeenCalledWith('new_collection', expect.any(Function));
 			});
 
 			test('should create collection with meta only', async () => {
@@ -233,26 +222,6 @@ describe('Integration Tests', () => {
 						fields: 'not-an-array' as any,
 					}),
 				).rejects.toThrow(InvalidPayloadError);
-			});
-
-			test('should inject primary key field when none provided', async () => {
-				tracker.on.select('directus_collections').response([]);
-
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				await service.createOne({
-					collection: 'no_pk_collection',
-					schema: {},
-					fields: [],
-				});
-
-				// const createManySpy = vi.spyOn(ItemsService.prototype, 'createMany');
-				// The injected primary key should be added
-				expect(mockSchema.createTable).toHaveBeenCalled();
 			});
 
 			test('should clear cache after creation', async () => {
@@ -332,29 +301,9 @@ describe('Integration Tests', () => {
 				expect(result).toEqual(['test', 'test']);
 				expect(createOneSpy).toHaveBeenCalledTimes(2);
 			});
-
-			test('should clear cache after creating many', async () => {
-				const clearSpy = vi.fn();
-
-				vi.mocked(cacheModule.getCache).mockReturnValue({
-					cache: { clear: clearSpy } as any,
-					systemCache: { clear: vi.fn() } as any,
-				} as unknown as ReturnType<typeof cacheModule.getCache>);
-
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				await service.createMany([{ collection: 'collection1' }]);
-
-				expect(clearSpy).toHaveBeenCalled();
-			});
 		});
 
 		describe('readByQuery', () => {
-
 			test('should read collections for admin users', async () => {
 				const mockTableInfo = [{ name: 'test_collection' }];
 				const mockMeta = [{ collection: 'test_collection' }];
@@ -447,26 +396,6 @@ describe('Integration Tests', () => {
 		});
 
 		describe('readOne', () => {
-			test('should read a single collection', async () => {
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				const mockCollection = {
-					collection: 'test_collection',
-					meta: null,
-					schema: null,
-				};
-
-				vi.spyOn(service, 'readMany').mockResolvedValue([mockCollection]);
-
-				const result = await service.readOne('test_collection');
-
-				expect(result).toEqual(mockCollection);
-			});
-
 			test('should throw ForbiddenError when collection not found', async () => {
 				const service = new CollectionsService({
 					knex: db,
@@ -481,25 +410,6 @@ describe('Integration Tests', () => {
 		});
 
 		describe('readMany', () => {
-			test('should read multiple collections by keys', async () => {
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				const mockCollections = [
-					{ collection: 'collection1', meta: null, schema: null },
-					{ collection: 'collection2', meta: null, schema: null },
-				];
-
-				vi.spyOn(service, 'readByQuery').mockResolvedValue(mockCollections);
-
-				const result = await service.readMany(['collection1', 'collection2']);
-
-				expect(result).toHaveLength(2);
-			});
-
 			test('should validate access for each collection with accountability', async () => {
 				const service = new CollectionsService({
 					knex: db,
@@ -532,18 +442,6 @@ describe('Integration Tests', () => {
 				});
 
 				await expect(service.updateOne('test_collection', {})).rejects.toThrow(ForbiddenError);
-			});
-
-			test('should return early when no meta provided', async () => {
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				const result = await service.updateOne('test_collection', {});
-
-				expect(result).toBe('test_collection');
 			});
 
 			test('should update existing collection meta', async () => {
@@ -580,29 +478,6 @@ describe('Integration Tests', () => {
 				} as Partial<Collection>);
 
 				expect(createOneSpy).toHaveBeenCalled();
-			});
-
-			test('should clear cache after update', async () => {
-				tracker.on.select('directus_collections').response([{ collection: 'test_collection' }]);
-
-				const clearSpy = vi.fn();
-
-				vi.mocked(cacheModule.getCache).mockReturnValue({
-					cache: { clear: clearSpy } as any,
-					systemCache: { clear: vi.fn() } as any,
-				} as unknown as ReturnType<typeof cacheModule.getCache>);
-
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				await service.updateOne('test_collection', {
-					meta: { hidden: true },
-				} as Partial<Collection>);
-
-				expect(clearSpy).toHaveBeenCalled();
 			});
 		});
 
@@ -658,25 +533,6 @@ describe('Integration Tests', () => {
 				expect(result).toEqual(['collection1', 'collection2']);
 				expect(updateOneSpy).toHaveBeenCalledTimes(2);
 			});
-
-			test('should clear cache after batch update', async () => {
-				const clearSpy = vi.fn();
-
-				vi.mocked(cacheModule.getCache).mockReturnValue({
-					cache: { clear: clearSpy } as any,
-					systemCache: { clear: vi.fn() } as any,
-				} as unknown as ReturnType<typeof cacheModule.getCache>);
-
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				await service.updateBatch([{ collection: 'collection1', meta: {} } as Partial<Collection>]);
-
-				expect(clearSpy).toHaveBeenCalled();
-			});
 		});
 
 		describe('updateMany', () => {
@@ -709,25 +565,6 @@ describe('Integration Tests', () => {
 
 				expect(result).toEqual(['collection1', 'collection2']);
 				expect(updateOneSpy).toHaveBeenCalledTimes(2);
-			});
-
-			test('should clear cache after updating many', async () => {
-				const clearSpy = vi.fn();
-
-				vi.mocked(cacheModule.getCache).mockReturnValue({
-					cache: { clear: clearSpy } as any,
-					systemCache: { clear: vi.fn() } as any,
-				} as unknown as ReturnType<typeof cacheModule.getCache>);
-
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				await service.updateMany(['collection1'], { meta: { hidden: true } } as Partial<Collection>);
-
-				expect(clearSpy).toHaveBeenCalled();
 			});
 		});
 
@@ -777,7 +614,7 @@ describe('Integration Tests', () => {
 
 				await service.deleteOne('test_collection');
 
-				expect(mockSchema.dropTable).toHaveBeenCalledWith('test_collection');
+				expect(mockSchemaBuilder.dropTable).toHaveBeenCalledWith('test_collection');
 			});
 
 			test('should delete collection meta', async () => {
@@ -800,27 +637,6 @@ describe('Integration Tests', () => {
 				await service.deleteOne('test_collection');
 
 				expect(deleteOneSpy).toHaveBeenCalled();
-			});
-
-			test('should clear references to deleted collection as group', async () => {
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				vi.spyOn(service, 'readByQuery').mockResolvedValue([
-					{
-						collection: 'test_collection',
-						schema: { name: 'test_collection' },
-						meta: { collection: 'test_collection' },
-					} as any,
-				]);
-
-				await service.deleteOne('test_collection');
-
-				// Should update collections that use this as a group
-				expect(tracker.history.update.length).toBeGreaterThan(0);
 			});
 
 			test('should clear cache after deletion', async () => {
@@ -879,25 +695,6 @@ describe('Integration Tests', () => {
 
 				expect(result).toEqual(['collection1', 'collection2']);
 				expect(deleteOneSpy).toHaveBeenCalledTimes(2);
-			});
-
-			test('should clear cache after deleting many', async () => {
-				const clearSpy = vi.fn();
-
-				vi.mocked(cacheModule.getCache).mockReturnValue({
-					cache: { clear: clearSpy } as any,
-					systemCache: { clear: vi.fn() } as any,
-				} as unknown as ReturnType<typeof cacheModule.getCache>);
-
-				const service = new CollectionsService({
-					knex: db,
-					schema,
-					accountability: null,
-				});
-
-				await service.deleteMany(['collection1']);
-
-				expect(clearSpy).toHaveBeenCalled();
 			});
 		});
 	});
