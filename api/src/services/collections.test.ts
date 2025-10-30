@@ -125,13 +125,10 @@ describe('Integration Tests', () => {
 				[{ collection: 'directus_test' }, 'collection names start with "directus_"'],
 			];
 
-			test.each(invalidPayloads)(
-				'should throw InvalidPayloadError when %s',
-				async (payload, _description) => {
-					const service = new CollectionsService({ knex: db, schema, accountability: null });
-					await expect(service.createOne(payload)).rejects.toThrow(InvalidPayloadError);
-				},
-			);
+			test.each(invalidPayloads)('should throw InvalidPayloadError when %s', async (payload, _description) => {
+				const service = new CollectionsService({ knex: db, schema, accountability: null });
+				await expect(service.createOne(payload)).rejects.toThrow(InvalidPayloadError);
+			});
 
 			test('should throw InvalidPayloadError for existing collection', async () => {
 				tracker.on.select('directus_collections').response([{ collection: 'existing_collection' }]);
@@ -293,10 +290,7 @@ describe('Integration Tests', () => {
 					accountability: null,
 				});
 
-				const result = await service.createMany([
-					{ collection: 'collection1' },
-					{ collection: 'collection2' },
-				]);
+				const result = await service.createMany([{ collection: 'collection1' }, { collection: 'collection2' }]);
 
 				expect(result).toEqual(['test', 'test']);
 				expect(createOneSpy).toHaveBeenCalledTimes(2);
@@ -419,9 +413,7 @@ describe('Integration Tests', () => {
 
 				const { validateAccess } = await import('../permissions/modules/validate-access/validate-access.js');
 
-				vi.spyOn(service, 'readByQuery').mockResolvedValue([
-					{ collection: 'collection1', meta: null, schema: null },
-				]);
+				vi.spyOn(service, 'readByQuery').mockResolvedValue([{ collection: 'collection1', meta: null, schema: null }]);
 
 				await service.readMany(['collection1']);
 

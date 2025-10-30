@@ -5,7 +5,14 @@ import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
 import * as getSchemaModule from '../utils/get-schema.js';
-import { createMockKnex, createMockTableBuilder, mockAlterTable, mockSchemaTable, resetKnexMocks, setupSystemCollectionMocks } from '../__mocks__/knex.js';
+import {
+	createMockKnex,
+	createMockTableBuilder,
+	mockAlterTable,
+	mockSchemaTable,
+	resetKnexMocks,
+	setupSystemCollectionMocks,
+} from '../__mocks__/knex.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
@@ -176,7 +183,6 @@ describe('Integration Tests', () => {
 		});
 
 		describe('readAll', () => {
-
 			test('should read all fields for admin users', async () => {
 				const mockColumns = [
 					{
@@ -270,7 +276,7 @@ describe('Integration Tests', () => {
 						validation: null,
 						presets: undefined,
 						policy: null,
-						action: 'read'
+						action: 'read',
 					},
 				]);
 
@@ -362,7 +368,7 @@ describe('Integration Tests', () => {
 						group: null,
 						validation: null,
 						validation_message: null,
-						id: 0
+						id: 0,
 					},
 				};
 
@@ -406,7 +412,7 @@ describe('Integration Tests', () => {
 						group: null,
 						validation: null,
 						validation_message: null,
-						id: 0
+						id: 0,
 					},
 				};
 
@@ -422,7 +428,7 @@ describe('Integration Tests', () => {
 					cache: { clear: clearSpy } as any,
 					systemCache: { clear: vi.fn() } as any,
 					localSchemaCache: { get: vi.fn(), set: vi.fn() } as any,
-					lockCache: undefined
+					lockCache: undefined,
 				} as unknown as ReturnType<typeof cacheModule.getCache>);
 
 				const service = new FieldsService({
@@ -665,7 +671,7 @@ describe('Integration Tests', () => {
 					cache: { clear: clearSpy } as any,
 					systemCache: { clear: vi.fn() } as any,
 					localSchemaCache: { get: vi.fn(), set: vi.fn() } as any,
-					lockCache: undefined
+					lockCache: undefined,
 				} as unknown as ReturnType<typeof cacheModule.getCache>);
 
 				const service = new FieldsService({
@@ -728,7 +734,7 @@ describe('Integration Tests', () => {
 					cache: { clear: clearSpy } as any,
 					systemCache: { clear: vi.fn() } as any,
 					localSchemaCache: { get: vi.fn(), set: vi.fn() } as any,
-					lockCache: undefined
+					lockCache: undefined,
 				} as unknown as ReturnType<typeof cacheModule.getCache>);
 
 				const service = new FieldsService({
@@ -767,7 +773,7 @@ describe('Integration Tests', () => {
 					type: 'alias',
 					schema: null,
 					meta: null,
-					name: ''
+					name: '',
 				};
 
 				service.addColumnToTable(table as any, 'test_collection', field);
@@ -817,7 +823,7 @@ describe('Integration Tests', () => {
 						foreign_key_table: null,
 					},
 					meta: null,
-					name: ''
+					name: '',
 				};
 
 				service.addColumnToTable(table as any, 'test_collection', field);
@@ -865,7 +871,7 @@ describe('Integration Tests', () => {
 						foreign_key_table: null,
 					},
 					meta: null,
-					name: ''
+					name: '',
 				};
 
 				service.addColumnToTable(table as any, 'test_collection', field);
@@ -874,6 +880,5 @@ describe('Integration Tests', () => {
 				expect(columnBuilder.primary).toHaveBeenCalled();
 			});
 		});
-
 	});
 });

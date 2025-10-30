@@ -1,6 +1,7 @@
 # Service Test Mocks
 
-Shared mocking utilities for service layer tests. These utilities help reduce code duplication and provide consistent mocking patterns across service tests.
+Shared mocking utilities for service layer tests. These utilities help reduce code duplication and provide consistent
+mocking patterns across service tests.
 
 ## Overview
 
@@ -22,23 +23,23 @@ import { createMockKnex, resetKnexMocks } from '../__mocks__/knex.js';
 
 // Set up mocks
 vi.mock('../../src/database/index', async () => {
-  const { mockDatabase } = await import('../__mocks__/database.js');
-  return mockDatabase();
+	const { mockDatabase } = await import('../__mocks__/database.js');
+	return mockDatabase();
 });
 
 vi.mock('../cache.js', async () => {
-  const { mockCache } = await import('../__mocks__/cache.js');
-  return mockCache();
+	const { mockCache } = await import('../__mocks__/cache.js');
+	return mockCache();
 });
 
 describe('YourService Tests', () => {
-  const { db, tracker, mockSchemaBuilder } = createMockKnex();
+	const { db, tracker, mockSchemaBuilder } = createMockKnex();
 
-  afterEach(() => {
-    resetKnexMocks(tracker, mockSchemaBuilder);
-  });
+	afterEach(() => {
+		resetKnexMocks(tracker, mockSchemaBuilder);
+	});
 
-  // Your tests here
+	// Your tests here
 });
 ```
 
@@ -53,11 +54,13 @@ Provides Knex mocking utilities including the database client, query tracker, an
 Creates a complete mocked Knex instance with tracker and schema builder support.
 
 **Returns:** `{ db, tracker, mockSchemaBuilder }`
+
 - `db`: Mocked Knex client (connected to knex-mock-client)
 - `tracker`: Query tracker for mocking database responses
 - `mockSchemaBuilder`: Mocked schema builder with createTable, dropTable, alterTable, etc.
 
 **Example:**
+
 ```typescript
 const { db, tracker, mockSchemaBuilder } = createMockKnex();
 
@@ -79,6 +82,7 @@ Creates a mock Knex table builder with all column types, modifiers, and constrai
 **Returns:** Mock table builder with chainable methods
 
 **Example:**
+
 ```typescript
 const table = createMockTableBuilder();
 table.string('name', 255).notNullable().index();
@@ -90,9 +94,11 @@ table.integer('age').unsigned().nullable();
 Sets up default CRUD operation mocks for all Directus system collections (directus_collections, directus_fields, etc.).
 
 **Parameters:**
+
 - `tracker`: The knex-mock-client tracker instance
 
 **Example:**
+
 ```typescript
 const { tracker } = createMockKnex();
 setupSystemCollectionMocks(tracker);
@@ -104,15 +110,17 @@ setupSystemCollectionMocks(tracker);
 Resets all mock states. Should be called in `afterEach` hooks.
 
 **Parameters:**
+
 - `tracker`: The knex-mock-client tracker instance
 - `mockSchemaBuilder`: The mock schema builder object from createMockKnex
 
 **Example:**
+
 ```typescript
 const { db, tracker, mockSchemaBuilder } = createMockKnex();
 
 afterEach(() => {
-  resetKnexMocks(tracker, mockSchemaBuilder);
+	resetKnexMocks(tracker, mockSchemaBuilder);
 });
 ```
 
@@ -123,14 +131,15 @@ Creates a mock for `db.schema.createTable` that executes the callback with a moc
 **Returns:** `vi.fn()` that can be assigned to `db.schema.createTable`
 
 **Example:**
+
 ```typescript
 const { db } = createMockKnex();
 const createTableSpy = mockCreateTable();
 db.schema.createTable = createTableSpy as any;
 
 await db.schema.createTable('users', (table) => {
-  table.increments('id');
-  table.string('name');
+	table.increments('id');
+	table.string('name');
 });
 
 expect(createTableSpy).toHaveBeenCalledWith('users', expect.any(Function));
@@ -143,13 +152,14 @@ Creates a mock for `db.schema.alterTable` that executes the callback with a mock
 **Returns:** `vi.fn()` that can be assigned to `db.schema.alterTable`
 
 **Example:**
+
 ```typescript
 const { db } = createMockKnex();
 const alterTableSpy = mockAlterTable();
 db.schema.alterTable = alterTableSpy as any;
 
 await db.schema.alterTable('users', (table) => {
-  table.string('email');
+	table.string('email');
 });
 ```
 
@@ -160,13 +170,14 @@ Creates a mock for `db.schema.table` that executes the callback with a mock tabl
 **Returns:** `vi.fn()` that can be assigned to `db.schema.table`
 
 **Example:**
+
 ```typescript
 const { db } = createMockKnex();
 const schemaTableSpy = mockSchemaTable();
 db.schema.table = schemaTableSpy as any;
 
 await db.schema.table('users', (table) => {
-  table.dropColumn('old_field');
+	table.dropColumn('old_field');
 });
 ```
 
@@ -181,23 +192,25 @@ Provides database module mocking utilities including database client detection a
 Creates a standard database module mock for service tests.
 
 **Parameters:**
+
 - `client` (optional): Database client to mock (default: `'postgres'`)
   - Supported values: `'postgres'`, `'mysql'`, `'sqlite3'`, `'mssql'`, `'oracledb'`, `'cockroachdb'`
 
 **Returns:** Mock module object with `getDatabaseClient` and `getSchemaInspector`
 
 **Example:**
+
 ```typescript
 // Standard PostgreSQL mock
 vi.mock('../../src/database/index', async () => {
-  const { mockDatabase } = await import('../__mocks__/database.js');
-  return mockDatabase();
+	const { mockDatabase } = await import('../__mocks__/database.js');
+	return mockDatabase();
 });
 
 // MySQL-specific mock
 vi.mock('../../src/database/index', async () => {
-  const { mockDatabase } = await import('../__mocks__/database.js');
-  return mockDatabase('mysql');
+	const { mockDatabase } = await import('../__mocks__/database.js');
+	return mockDatabase('mysql');
 });
 
 // Dynamically change client during tests
@@ -207,21 +220,23 @@ vi.mocked(getDatabaseClient).mockReturnValue('sqlite3');
 
 #### `mockTransaction()`
 
-Creates a mock for the transaction utility. By default, executes the callback with the provided Knex instance (no actual transaction wrapper).
+Creates a mock for the transaction utility. By default, executes the callback with the provided Knex instance (no actual
+transaction wrapper).
 
 **Returns:** Mock module object with `transaction` function
 
 **Example:**
+
 ```typescript
 vi.mock('../utils/transaction.js', async () => {
-  const { mockTransaction } = await import('../__mocks__/database.js');
-  return mockTransaction();
+	const { mockTransaction } = await import('../__mocks__/database.js');
+	return mockTransaction();
 });
 
 // Transaction callback is executed immediately with the same knex instance
 await transaction(db, async (trx) => {
-  // trx === db in tests
-  await trx('users').insert({ name: 'John' });
+	// trx === db in tests
+	await trx('users').insert({ name: 'John' });
 });
 ```
 
@@ -233,9 +248,11 @@ Provides cache system mocking utilities.
 
 #### `mockCache()`
 
-Creates a standard cache module mock with getCache, getCacheValue, setCacheValue, and clearSystemCache. Returns both the mocks for vi.mock() declarations and spies for testing cache behavior.
+Creates a standard cache module mock with getCache, getCacheValue, setCacheValue, and clearSystemCache. Returns both the
+mocks for vi.mock() declarations and spies for testing cache behavior.
 
 **Returns:** Object with mock functions and spies
+
 - `getCache`: Mock function returning cache object
 - `getCacheValue`: Mock function returning null
 - `setCacheValue`: Mock function returning undefined
@@ -248,11 +265,12 @@ Creates a standard cache module mock with getCache, getCacheValue, setCacheValue
   - `mockCacheReturn`: The mock cache object to pass to vi.mocked()
 
 **Example:**
+
 ```typescript
 // Standard usage for vi.mock()
 vi.mock('../cache.js', async () => {
-  const { mockCache } = await import('../__mocks__/cache.js');
-  return mockCache();
+	const { mockCache } = await import('../__mocks__/cache.js');
+	return mockCache();
 });
 
 // Testing cache clearing with spies
@@ -260,13 +278,13 @@ import { getCache } from '../cache.js';
 import { mockCache } from '../__mocks__/cache.js';
 
 test('should clear cache after update', async () => {
-  const { spies } = mockCache();
-  vi.mocked(getCache).mockReturnValue(spies.mockCacheReturn as any);
+	const { spies } = mockCache();
+	vi.mocked(getCache).mockReturnValue(spies.mockCacheReturn as any);
 
-  const service = new YourService({ knex: db, schema });
-  await service.updateOne('1', { name: 'Updated' });
+	const service = new YourService({ knex: db, schema });
+	await service.updateOne('1', { name: 'Updated' });
 
-  expect(spies.clearSpy).toHaveBeenCalled();
+	expect(spies.clearSpy).toHaveBeenCalled();
 });
 ```
 
@@ -283,24 +301,25 @@ Creates a standard schema inspector mock with tableInfo, columnInfo, primary, fo
 **Returns:** Mock module object for `vi.mock()`
 
 **Example:**
+
 ```typescript
 // Standard usage
 vi.mock('@directus/schema', async () => {
-  const { mockSchema } = await import('../__mocks__/schema.js');
-  return mockSchema();
+	const { mockSchema } = await import('../__mocks__/schema.js');
+	return mockSchema();
 });
 
 // Dynamically change inspector behavior during tests
 import { createInspector } from '@directus/schema';
 vi.mocked(createInspector).mockReturnValue({
-  tableInfo: vi.fn().mockResolvedValue([{ name: 'users' }, { name: 'posts' }]),
-  columnInfo: vi.fn().mockResolvedValue([
-    { table: 'users', name: 'id', data_type: 'integer', is_nullable: false },
-    { table: 'users', name: 'name', data_type: 'varchar', is_nullable: true },
-  ]),
-  primary: vi.fn().mockResolvedValue('id'),
-  foreignKeys: vi.fn().mockResolvedValue([]),
-  withSchema: vi.fn().mockReturnThis(),
+	tableInfo: vi.fn().mockResolvedValue([{ name: 'users' }, { name: 'posts' }]),
+	columnInfo: vi.fn().mockResolvedValue([
+		{ table: 'users', name: 'id', data_type: 'integer', is_nullable: false },
+		{ table: 'users', name: 'name', data_type: 'varchar', is_nullable: true },
+	]),
+	primary: vi.fn().mockResolvedValue('id'),
+	foreignKeys: vi.fn().mockResolvedValue([]),
+	withSchema: vi.fn().mockReturnThis(),
 } as any);
 ```
 
@@ -317,11 +336,12 @@ Creates a standard emitter mock with emitAction, emitFilter, emitInit, and event
 **Returns:** Mock module object for `vi.mock()`
 
 **Example:**
+
 ```typescript
 // Standard usage
 vi.mock('../emitter.js', async () => {
-  const { mockEmitter } = await import('../__mocks__/emitter.js');
-  return mockEmitter();
+	const { mockEmitter } = await import('../__mocks__/emitter.js');
+	return mockEmitter();
 });
 
 // Dynamically change emitter behavior during tests
@@ -333,9 +353,9 @@ vi.mocked(emitter.emitFilter).mockResolvedValue({ modified: true });
 // Verify action was emitted
 await service.createOne(data);
 expect(emitter.emitAction).toHaveBeenCalledWith(
-  'items.create',
-  expect.objectContaining({ collection: 'test_collection' }),
-  expect.any(Object)
+	'items.create',
+	expect.objectContaining({ collection: 'test_collection' }),
+	expect.any(Object),
 );
 ```
 
@@ -352,6 +372,7 @@ Creates a standard ItemsService mock with all CRUD methods pre-configured with s
 **Returns:** Mock module object with `ItemsService` class
 
 **Default return values:**
+
 - `createOne` → `1`
 - `createMany` → `[1]`
 - `readByQuery` → `[]`
@@ -365,28 +386,26 @@ Creates a standard ItemsService mock with all CRUD methods pre-configured with s
 - `deleteByQuery` → `[1]`
 
 **Example:**
+
 ```typescript
 // Standard usage
 vi.mock('./items.js', async () => {
-  const { mockItemsService } = await import('../__mocks__/items-service.js');
-  return mockItemsService();
+	const { mockItemsService } = await import('../__mocks__/items-service.js');
+	return mockItemsService();
 });
 
 // Override specific methods during tests
 import { ItemsService } from './items.js';
 
-const createOneSpy = vi.spyOn(ItemsService.prototype, 'createOne')
-  .mockResolvedValue('custom-id');
+const createOneSpy = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue('custom-id');
 
 await service.createOne(data);
-expect(createOneSpy).toHaveBeenCalledWith(
-  expect.objectContaining({ field: 'value' })
-);
+expect(createOneSpy).toHaveBeenCalledWith(expect.objectContaining({ field: 'value' }));
 
 // Mock readByQuery to return specific data
 vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValue([
-  { collection: 'users', name: 'John' },
-  { collection: 'posts', name: 'My Post' },
+	{ collection: 'users', name: 'John' },
+	{ collection: 'posts', name: 'My Post' },
 ]);
 ```
 
@@ -403,6 +422,7 @@ Creates a standard FieldsService mock with common methods pre-configured.
 **Returns:** Mock module object with `FieldsService` class
 
 **Mocked methods:**
+
 - `addColumnToTable` → no-op function
 - `addColumnIndex` → resolves to undefined
 - `deleteField` → resolves to undefined
@@ -410,6 +430,7 @@ Creates a standard FieldsService mock with common methods pre-configured.
 - `updateField` → resolves to 'field'
 
 **Example:**
+
 ```typescript
 // Standard usage in CollectionsService tests
 vi.mock('./fields.js', async () => {
@@ -440,33 +461,33 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 // Mock all dependencies (before imports)
 vi.mock('../../src/database/index', async () => {
-  const { mockDatabase } = await import('../__mocks__/database.js');
-  return mockDatabase();
+	const { mockDatabase } = await import('../__mocks__/database.js');
+	return mockDatabase();
 });
 
 vi.mock('@directus/schema', async () => {
-  const { mockSchema } = await import('../__mocks__/schema.js');
-  return mockSchema();
+	const { mockSchema } = await import('../__mocks__/schema.js');
+	return mockSchema();
 });
 
 vi.mock('../cache.js', async () => {
-  const { mockCache } = await import('../__mocks__/cache.js');
-  return mockCache();
+	const { mockCache } = await import('../__mocks__/cache.js');
+	return mockCache();
 });
 
 vi.mock('../emitter.js', async () => {
-  const { mockEmitter } = await import('../__mocks__/emitter.js');
-  return mockEmitter();
+	const { mockEmitter } = await import('../__mocks__/emitter.js');
+	return mockEmitter();
 });
 
 vi.mock('./items.js', async () => {
-  const { mockItemsService } = await import('../__mocks__/items-service.js');
-  return mockItemsService();
+	const { mockItemsService } = await import('../__mocks__/items-service.js');
+	return mockItemsService();
 });
 
 vi.mock('../utils/transaction.js', async () => {
-  const { mockTransaction } = await import('../__mocks__/database.js');
-  return mockTransaction();
+	const { mockTransaction } = await import('../__mocks__/database.js');
+	return mockTransaction();
 });
 
 // Import after mocks
@@ -474,30 +495,30 @@ import { YourService } from './your-service.js';
 
 // Define test schema
 const schema = new SchemaBuilder()
-  .collection('users', (c) => {
-    c.field('id').integer().primary();
-    c.field('name').string();
-  })
-  .build();
+	.collection('users', (c) => {
+		c.field('id').integer().primary();
+		c.field('name').string();
+	})
+	.build();
 
 describe('Integration Tests', () => {
-  const { db, tracker, mockSchemaBuilder } = createMockKnex();
+	const { db, tracker, mockSchemaBuilder } = createMockKnex();
 
-  afterEach(() => {
-    resetKnexMocks(tracker, mockSchemaBuilder);
-  });
+	afterEach(() => {
+		resetKnexMocks(tracker, mockSchemaBuilder);
+	});
 
-  describe('Services / YourService', () => {
-    test('should create a user', async () => {
-      tracker.on.select('users').response([]);
-      tracker.on.insert('users').response([1]);
+	describe('Services / YourService', () => {
+		test('should create a user', async () => {
+			tracker.on.select('users').response([]);
+			tracker.on.insert('users').response([1]);
 
-      const service = new YourService({ knex: db, schema });
-      const result = await service.createOne({ name: 'John' });
+			const service = new YourService({ knex: db, schema });
+			const result = await service.createOne({ name: 'John' });
 
-      expect(result).toBe(1);
-    });
-  });
+			expect(result).toBe(1);
+		});
+	});
 });
 ```
 
@@ -507,23 +528,23 @@ describe('Integration Tests', () => {
 import { mockCreateTable, mockAlterTable, createMockTableBuilder } from '../__mocks__/knex.js';
 
 test('should create table with correct schema', async () => {
-  const { db, mockSchemaBuilder } = createMockKnex();
-  const service = new YourService({ knex: db, schema });
+	const { db, mockSchemaBuilder } = createMockKnex();
+	const service = new YourService({ knex: db, schema });
 
-  await service.createCollection('users');
+	await service.createCollection('users');
 
-  expect(mockSchemaBuilder.createTable).toHaveBeenCalledWith('users', expect.any(Function));
+	expect(mockSchemaBuilder.createTable).toHaveBeenCalledWith('users', expect.any(Function));
 });
 
 test('should alter table to add column', async () => {
-  const { db } = createMockKnex();
-  const alterTableSpy = mockAlterTable();
-  db.schema.alterTable = alterTableSpy as any;
+	const { db } = createMockKnex();
+	const alterTableSpy = mockAlterTable();
+	db.schema.alterTable = alterTableSpy as any;
 
-  const service = new YourService({ knex: db, schema });
-  await service.addField('users', { field: 'email', type: 'string' });
+	const service = new YourService({ knex: db, schema });
+	await service.addField('users', { field: 'email', type: 'string' });
 
-  expect(alterTableSpy).toHaveBeenCalledWith('users', expect.any(Function));
+	expect(alterTableSpy).toHaveBeenCalledWith('users', expect.any(Function));
 });
 ```
 
@@ -534,13 +555,13 @@ import { getCache } from '../cache.js';
 import { mockCache } from '../__mocks__/cache.js';
 
 test('should clear cache after update', async () => {
-  const { spies } = mockCache();
-  vi.mocked(getCache).mockReturnValue(spies.mockCacheReturn as any);
+	const { spies } = mockCache();
+	vi.mocked(getCache).mockReturnValue(spies.mockCacheReturn as any);
 
-  const service = new YourService({ knex: db, schema });
-  await service.updateOne('1', { name: 'Updated' });
+	const service = new YourService({ knex: db, schema });
+	await service.updateOne('1', { name: 'Updated' });
 
-  expect(spies.clearSpy).toHaveBeenCalled();
+	expect(spies.clearSpy).toHaveBeenCalled();
 });
 ```
 
@@ -548,35 +569,35 @@ test('should clear cache after update', async () => {
 
 ```typescript
 test('should allow admin to create collection', async () => {
-  const service = new CollectionsService({
-    knex: db,
-    schema,
-    accountability: { role: 'admin', admin: true } as Accountability,
-  });
+	const service = new CollectionsService({
+		knex: db,
+		schema,
+		accountability: { role: 'admin', admin: true } as Accountability,
+	});
 
-  await expect(service.createOne({ collection: 'test' })).resolves.toBeDefined();
+	await expect(service.createOne({ collection: 'test' })).resolves.toBeDefined();
 });
 
 test('should deny non-admin from creating collection', async () => {
-  const service = new CollectionsService({
-    knex: db,
-    schema,
-    accountability: { role: 'editor', admin: false } as Accountability,
-  });
+	const service = new CollectionsService({
+		knex: db,
+		schema,
+		accountability: { role: 'editor', admin: false } as Accountability,
+	});
 
-  await expect(service.createOne({ collection: 'test' })).rejects.toThrow(ForbiddenError);
+	await expect(service.createOne({ collection: 'test' })).rejects.toThrow(ForbiddenError);
 });
 
 test('should read column info', async () => {
-  const mockColumns = [
-    createMockColumn({ table: 'users', name: 'id', data_type: 'integer', is_primary_key: true }),
-    createMockColumn({ table: 'users', name: 'email', data_type: 'varchar', max_length: 255 }),
-  ];
+	const mockColumns = [
+		createMockColumn({ table: 'users', name: 'id', data_type: 'integer', is_primary_key: true }),
+		createMockColumn({ table: 'users', name: 'email', data_type: 'varchar', max_length: 255 }),
+	];
 
-  service.schemaInspector.columnInfo = vi.fn().mockResolvedValue(mockColumns);
-  const result = await service.columnInfo('users');
+	service.schemaInspector.columnInfo = vi.fn().mockResolvedValue(mockColumns);
+	const result = await service.columnInfo('users');
 
-  expect(result).toEqual(mockColumns);
+	expect(result).toEqual(mockColumns);
 });
 ```
 
@@ -586,24 +607,22 @@ test('should read column info', async () => {
 import { setupSystemCollectionMocks } from '../__mocks__/knex.js';
 
 describe('Service Tests', () => {
-  const { db, tracker, mockSchemaBuilder } = createMockKnex();
+	const { db, tracker, mockSchemaBuilder } = createMockKnex();
 
-  beforeEach(() => {
-    // Automatically mock all CRUD operations for system collections
-    setupSystemCollectionMocks(tracker);
-  });
+	beforeEach(() => {
+		// Automatically mock all CRUD operations for system collections
+		setupSystemCollectionMocks(tracker);
+	});
 
-  test('should query directus_fields', async () => {
-    // Override the default empty response for specific tests
-    tracker.on.select('directus_fields').response([
-      { id: 1, collection: 'users', field: 'name' }
-    ]);
+	test('should query directus_fields', async () => {
+		// Override the default empty response for specific tests
+		tracker.on.select('directus_fields').response([{ id: 1, collection: 'users', field: 'name' }]);
 
-    const service = new YourService({ knex: db, schema });
-    const fields = await service.getFields('users');
+		const service = new YourService({ knex: db, schema });
+		const fields = await service.getFields('users');
 
-    expect(fields).toHaveLength(1);
-  });
+		expect(fields).toHaveLength(1);
+	});
 });
 ```
 
@@ -612,26 +631,26 @@ describe('Service Tests', () => {
 ```typescript
 // Mock environment variables
 vi.mock('@directus/env', () => ({
-  useEnv: vi.fn().mockReturnValue({
-    CACHE_SCHEMA: true,
-    DB_CLIENT: 'postgres'
-  }),
+	useEnv: vi.fn().mockReturnValue({
+		CACHE_SCHEMA: true,
+		DB_CLIENT: 'postgres',
+	}),
 }));
 
 // Mock getSchema utility
 vi.mock('../utils/get-schema.js', () => ({
-  getSchema: vi.fn(),
+	getSchema: vi.fn(),
 }));
 
 // Mock permissions utilities
 vi.mock('../permissions/lib/fetch-permissions.js', () => ({
-  fetchPermissions: vi.fn().mockResolvedValue([
-    {
-      collection: 'test_collection',
-      fields: ['*'],
-      action: 'read'
-    },
-  ]),
+	fetchPermissions: vi.fn().mockResolvedValue([
+		{
+			collection: 'test_collection',
+			fields: ['*'],
+			action: 'read',
+		},
+	]),
 }));
 
 // Use in tests
@@ -644,6 +663,7 @@ vi.mocked(getSchema).mockResolvedValue(schema);
 ## Examples
 
 See these files for complete examples:
+
 - [collections.test.ts](../services/collections.test.ts) - Full service test with schema operations
 - [fields.test.ts](../services/fields.test.ts) - Complex service test with field management
 
@@ -652,13 +672,14 @@ See these files for complete examples:
 ## Best Practices
 
 ### Mock Declaration Order
+
 Always declare `vi.mock()` calls **before** importing the modules they mock:
 
 ```typescript
 // ✅ Correct - mocks first
 vi.mock('../cache.js', async () => {
-  const { mockCache } = await import('../__mocks__/cache.js');
-  return mockCache();
+	const { mockCache } = await import('../__mocks__/cache.js');
+	return mockCache();
 });
 
 import { YourService } from './your-service.js';
@@ -667,60 +688,61 @@ import { YourService } from './your-service.js';
 import { YourService } from './your-service.js';
 
 vi.mock('../cache.js', async () => {
-  const { mockCache } = await import('../__mocks__/cache.js');
-  return mockCache();
+	const { mockCache } = await import('../__mocks__/cache.js');
+	return mockCache();
 });
 ```
 
 ### Resetting Mocks Between Tests
+
 Always reset mocks in `afterEach` to prevent test interference:
 
 ```typescript
 afterEach(() => {
-  resetKnexMocks(tracker, mockSchemaBuilder);
-  vi.clearAllMocks(); // Clear any additional spies
+	resetKnexMocks(tracker, mockSchemaBuilder);
+	vi.clearAllMocks(); // Clear any additional spies
 });
 ```
 
 ### Tracker Response Patterns
+
 Set up tracker responses for every database query your test will execute:
 
 ```typescript
 test('should create and read item', async () => {
-  // Mock all queries that will run
-  tracker.on.select('users').response([]);  // Check if exists
-  tracker.on.insert('users').response([1]); // Create
-  tracker.on.select('users').response([{ id: 1, name: 'John' }]); // Read back
+	// Mock all queries that will run
+	tracker.on.select('users').response([]); // Check if exists
+	tracker.on.insert('users').response([1]); // Create
+	tracker.on.select('users').response([{ id: 1, name: 'John' }]); // Read back
 
-  // Your test code...
+	// Your test code...
 });
 ```
 
 ### Using TypeScript with Mocks
+
 Add type assertions when needed to satisfy TypeScript:
 
 ```typescript
 vi.mocked(getCache).mockReturnValue({
-  cache: { clear: vi.fn() },
-  systemCache: { clear: vi.fn() },
-  localSchemaCache: { get: vi.fn(), set: vi.fn() },
-  lockCache: undefined
+	cache: { clear: vi.fn() },
+	systemCache: { clear: vi.fn() },
+	localSchemaCache: { get: vi.fn(), set: vi.fn() },
+	lockCache: undefined,
 } as any);
 ```
 
 ### Spying on Service Methods
+
 Use `vi.spyOn` to override specific methods while keeping the rest of the service intact:
 
 ```typescript
 import { ItemsService } from './items.js';
 
-const createOneSpy = vi.spyOn(ItemsService.prototype, 'createOne')
-  .mockResolvedValue('new-id');
+const createOneSpy = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue('new-id');
 
 // Test your code
-expect(createOneSpy).toHaveBeenCalledWith(
-  expect.objectContaining({ field: 'value' })
-);
+expect(createOneSpy).toHaveBeenCalledWith(expect.objectContaining({ field: 'value' }));
 ```
 
 ---
@@ -728,6 +750,7 @@ expect(createOneSpy).toHaveBeenCalledWith(
 ## Contributing
 
 When adding new mock utilities:
+
 1. Create or update the appropriate mock file
 2. Add comprehensive JSDoc comments with examples
 3. Document the utility in this README
