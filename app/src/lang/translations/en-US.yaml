@@ -482,6 +482,7 @@ confirm_revert_body: This will revert the item to the selected state.
 display: Display
 settings_update_success: Settings updated
 title: Title
+subtitle: Subtitle
 revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
@@ -2218,6 +2219,15 @@ interfaces:
     description: Password input with toggle to hide value
   flow-select:
     flow-select: Flow Select
+  header:
+    header: Header
+    description: Create a header with a title, subtitle, help information, and/or links to help users navigate or run Flows.
+    links: Links
+    action_type: Action Type
+    help: Help
+    help_display_mode: Help Display Mode
+    enable_help_translations: Enable Help Translations
+    help_translations_string: Help Translations String
 displays:
   translations:
     translations: Translations

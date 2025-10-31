@@ -1,28 +1,126 @@
 import { defineInterface } from '@directus/extensions';
-import InterfacePresentationLinks from './presentation-links.vue';
+import InterfaceHeader from './header.vue';
 import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
-	id: 'presentation-links',
-	name: '$t:interfaces.presentation-links.presentation-links',
-	description: '$t:interfaces.presentation-links.description',
-	icon: 'smart_button',
-	component: InterfacePresentationLinks,
-	hideLabel: true,
-	hideLoader: true,
-	autoKey: true,
+	id: 'header',
+	name: '$t:interfaces.header.header',
+	description: '$t:interfaces.header.description',
+	icon: 'exercise',
+	component: InterfaceHeader,
 	types: ['alias'],
 	localTypes: ['presentation'],
 	group: 'presentation',
+	autoKey: true,
+	hideLabel: true,
 	options: ({ collection }) => [
 		{
+			field: 'title',
+			name: '$t:title',
+			type: 'string',
+			meta: {
+				width: 'full',
+				interface: 'system-display-template',
+				options: {
+					collectionName: collection,
+				},
+			},
+		},
+		{
+			field: 'color',
+			name: '$t:color',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'select-color',
+			},
+		},
+		{
+			field: 'icon',
+			name: '$t:icon',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'select-icon',
+			},
+		},
+		{
+			field: 'subtitle',
+			name: '$t:subtitle',
+			type: 'string',
+			meta: {
+				width: 'full',
+				interface: 'system-display-template',
+				options: {
+					collectionName: collection,
+				},
+			},
+		},
+		{
+			field: 'help',
+			name: '$t:interfaces.header.help',
+			type: 'text',
+			meta: {
+				width: 'full',
+				interface: 'input-rich-text-html',
+			},
+		},
+		{
+			field: 'helpDisplayMode',
+			name: '$t:interfaces.header.help_display_mode',
+			type: 'string',
+			schema: {
+				default_value: 'inline',
+			},
+			meta: {
+				width: 'half',
+				interface: 'select-dropdown',
+				options: {
+					choices: [
+						{ text: '$t:inline', value: 'inline' },
+						{ text: '$t:modal', value: 'modal' },
+					],
+				},
+			},
+		},
+		{
+			field: 'enableHelpTranslations',
+			name: '$t:interfaces.header.enable_help_translations',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+			},
+			schema: {
+				default_value: false,
+			},
+		},
+		{
+			field: 'helpTranslationsString',
+			name: '$t:interfaces.header.help_translations_string',
+			type: 'json',
+			meta: {
+				width: 'full',
+				interface: 'system-input-translated-string',
+				hidden: true,
+				conditions: [
+					{
+						rule: {
+							enableHelpTranslations: {
+								_eq: true,
+							},
+						},
+						hidden: false,
+					},
+				],
+			},
+		},
+		{
 			field: 'links',
-			name: '$t:interfaces.presentation-links.links',
+			name: '$t:interfaces.header.links',
 			type: 'json',
 			meta: {
 				interface: 'list',
 				options: {
-					template: '{{ actionType }} {{ label }}',
 					fields: [
 						{
 							field: 'label',
@@ -71,7 +169,7 @@ export default defineInterface({
 						{
 							field: 'actionType',
 							type: 'string',
-							name: '$t:interfaces.presentation-links.action_type',
+							name: '$t:interfaces.header.action_type',
 							schema: {
 								default_value: 'url',
 							},
@@ -83,7 +181,6 @@ export default defineInterface({
 										{ text: '$t:flow', value: 'flow' },
 									],
 								},
-								display: 'labels',
 							},
 						},
 						{
@@ -117,8 +214,6 @@ export default defineInterface({
 							meta: {
 								width: 'full',
 								interface: 'system-flow-select',
-								hidden: true,
-								note: '$t:interfaces.presentation-links.select_flow_note',
 								options: {
 									collectionName: collection,
 								},
@@ -126,10 +221,10 @@ export default defineInterface({
 									{
 										rule: {
 											actionType: {
-												_eq: 'flow',
+												_eq: 'url',
 											},
 										},
-										hidden: false,
+										hidden: true,
 									},
 								],
 							},

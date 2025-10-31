@@ -1,0 +1,503 @@
+<script setup lang="ts">
+import dompurify from 'dompurify';
+import { render } from 'micromustache';
+import { computed, inject, ref, useAttrs, watch } from 'vue';
+import api from '@/api';
+import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
+import { injectRunManualFlow, ManualFlow } from '@/composables/use-flows';
+import { useFieldsStore } from '@/stores/fields';
+import { unexpectedError } from '@/utils/unexpected-error';
+
+export interface FlowIdentifier {
+	collection: string;
+	key: string;
+}
+
+type Link = {
+	icon: string;
+	label: string;
+	type: string;
+	actionType: string;
+	url?: string;
+	flow?: string;
+};
+
+type ParsedLink = Omit<Link, 'url'> & {
+	to?: string;
+	href?: string;
+};
+
+const props = withDefaults(
+	defineProps<{
+		icon?: string;
+		title?: string;
+		subtitle?: string;
+		links?: Link[];
+		help?: string;
+		helpDisplayMode?: 'inline' | 'modal';
+		enableHelpTranslations?: boolean;
+		helpTranslationsString?: string;
+		values: Record<string, any>;
+		color?: string;
+		collection: string;
+		primaryKey?: string | number | null;
+		disabled?: boolean;
+	}>(),
+	{
+		links: () => [],
+		help: '',
+		helpDisplayMode: 'inline',
+		enableHelpTranslations: false,
+		helpTranslationsString: undefined,
+	},
+);
+
+const fieldsStore = useFieldsStore();
+
+const fields = computed(() => {
+	return fieldsStore.getFieldsForCollection(props.collection);
+});
+
+const itemValues = inject('values', ref<Record<string, any>>({}));
+const resolvedRelationalValues = ref<Record<string, any>>({});
+const fetchedTemplateData = ref<Record<string, any>>({});
+const isLoading = ref(false);
+
+const primaryKey = computed(() => props.primaryKey ?? null);
+
+const componentRoot = ref<HTMLElement | null>(null);
+
+const combinedItemData = computed(() => {
+	const result = { ...itemValues.value };
+
+	Object.entries(fetchedTemplateData.value).forEach(([key, value]) => {
+		if (
+			value !== null &&
+			typeof value === 'object' &&
+			(!result[key] || typeof result[key] !== 'object' || result[key] === null)
+		) {
+			result[key] = value;
+		}
+	});
+
+	return result;
+});
+
+const attrs = useAttrs();
+
+const linksParsed = computed<ParsedLink[]>(() =>
+	props.links.map((link) => {
+		/*
+		 * Resolve related fields for interpolation.
+		 * If the values from v-form already include related fields,
+		 * we use them because those represent the current unstaged edits.
+		 * Otherwise we use the fetched values from the API.
+		 */
+
+		const scope = { ...itemValues.value };
+
+		Object.keys(resolvedRelationalValues.value).forEach((key) => {
+			if (scope[key]?.constructor !== Object && scope[key] !== null) {
+				scope[key] = resolvedRelationalValues.value[key];
+			}
+		});
+
+		const interpolatedUrl = link.url ? render(link.url, scope) : '';
+
+		/*
+		 * This incorrectly matches new links starting with two slashes but(!)
+		 * updating this line would change existing behavior.
+		 */
+		const isInternalLink = interpolatedUrl?.startsWith('/');
+
+		return {
+			icon: link.icon,
+			type: link.type,
+			label: link.label,
+			actionType: link.actionType,
+			to: isInternalLink ? interpolatedUrl : undefined,
+			href: isInternalLink ? undefined : interpolatedUrl,
+			flow: link.actionType === 'flow' ? link.flow : undefined,
+		};
+	}),
+);
+
+const buttonProps = computed(() =>
+	linksParsed.value.map((link, index) => {
+		const baseProps = {
+			key: `${link.actionType}-${index}`,
+			class: ['action', link.type],
+			secondary: link.type !== 'primary',
+			icon: !link.label,
+			disabled: (link.actionType === 'flow' && attrs['batch-mode']) || props.disabled,
+			loading: link.flow && loadingFlows.value.includes(link.flow),
+		};
+
+		if (link.actionType === 'url' && link.href) {
+			return {
+				...baseProps,
+				href: link.href,
+				to: link.to,
+			};
+		} else if (link.flow) {
+			return {
+				...baseProps,
+				onClick: () => handleActionClick(link),
+			};
+		}
+
+		return baseProps;
+	}),
+);
+
+const expanded = ref(false);
+const showHelpModal = ref(false);
+
+function toggleHelp() {
+	if (props.helpDisplayMode === 'modal') {
+		showHelpModal.value = true;
+	} else {
+		expanded.value = !expanded.value;
+	}
+}
+
+async function handleActionClick(action: Link) {
+	if (action.actionType === 'flow' && action.flow) {
+		if (loadingFlows.value.includes(action.flow)) return;
+
+		const effectiveValues = { ...combinedItemData.value };
+
+		if (!effectiveValues.id && primaryKey.value && primaryKey.value !== '+') {
+			effectiveValues.id = primaryKey.value;
+		}
+
+		runManualFlow(action.flow);
+	}
+}
+
+function getAllRequiredTemplateFields(): string[] {
+	const fieldsFromTitle = props.title ? getFieldsFromTemplate(props.title) : [];
+	const fieldsFromSubtitle = props.subtitle ? getFieldsFromTemplate(props.subtitle) : [];
+
+	const fieldsFromLinks =
+		props.links
+			?.filter((action) => action.actionType === 'url' && action.url)
+			.flatMap((action) => getFieldsFromTemplate(action.url || '')) || [];
+
+	const allFields = [...fieldsFromTitle, ...fieldsFromSubtitle, ...fieldsFromLinks];
+	return [...new Set(allFields)];
+}
+
+watch(
+	[primaryKey, () => getAllRequiredTemplateFields()],
+	async ([value, fields]) => {
+		if (!value || value === '+' || fields.length === 0) {
+			fetchedTemplateData.value = {};
+			return;
+		}
+
+		isLoading.value = true;
+
+		try {
+			const response = await api.get(`${getEndpoint(props.collection)}/${value}`, {
+				params: {
+					fields,
+				},
+			});
+
+			fetchedTemplateData.value = response.data.data;
+		} catch (error) {
+			unexpectedError(error);
+			fetchedTemplateData.value = {};
+		} finally {
+			isLoading.value = false;
+		}
+	},
+	{ immediate: true },
+);
+
+const primaryLink = computed(() => {
+	if (linksParsed.value.length === 1) {
+		return linksParsed.value[0];
+	}
+
+	return null;
+});
+
+const primaryLinkProps = computed(() => {
+	if (primaryLink.value) {
+		return buttonProps.value[0];
+	}
+
+	return null;
+});
+
+const helpString = computed(() => {
+	if (props.enableHelpTranslations && props.helpTranslationsString) {
+		return dompurify.sanitize(props.helpTranslationsString);
+	}
+
+	return dompurify.sanitize(props.help);
+});
+
+const loadingFlows = computed(() => {
+	return manualFlows.value.filter((flow: ManualFlow) => flow.isFlowRunning).map((flow: ManualFlow) => flow.id);
+});
+
+const { runManualFlow, manualFlows } = injectRunManualFlow();
+</script>
+
+<template>
+	<div ref="componentRoot" class="page-header">
+		<div class="header-content" :style="{ '--header-color': color }">
+			<div class="text-content">
+				<p v-if="title" class="text-title">
+					<v-icon v-if="icon" :name="icon" />
+					<render-template :collection="collection" :fields="fields" :item="combinedItemData" :template="title" />
+				</p>
+			</div>
+			<div class="actions-wrapper">
+				<div class="actions-container">
+					<template v-if="help">
+						<v-button :secondary="!expanded" small class="help-button" icon @click="toggleHelp">
+							<v-icon name="help_outline" />
+						</v-button>
+					</template>
+
+					<template v-if="primaryLink">
+						<v-button
+							v-if="primaryLink!.href || primaryLink!.flow"
+							v-bind="primaryLinkProps"
+							small
+							:kind="primaryLink!.type"
+						>
+							<v-icon v-if="primaryLink!.icon" left :name="primaryLink!.icon" />
+							<span v-if="primaryLink!.label">{{ primaryLink!.label }}</span>
+						</v-button>
+					</template>
+
+					<template v-else>
+						<v-menu placement="bottom-end">
+							<template #activator="{ toggle }">
+								<div>
+									<v-button secondary small class="full-button" @click="toggle">
+										{{ $t('actions') }}
+										<v-icon name="expand_more" right />
+									</v-button>
+									<v-button v-tooltip="$t('actions')" secondary small class="icon-button" icon @click="toggle">
+										<v-icon name="expand_more" />
+									</v-button>
+								</div>
+							</template>
+
+							<v-list>
+								<v-list-item
+									v-for="(link, index) in linksParsed"
+									:key="index"
+									:clickable="!link.flow || (link.flow && !loadingFlows.includes(link.flow))"
+									:disabled="link.flow && loadingFlows.includes(link.flow)"
+									@click="link.actionType === 'flow' ? handleActionClick(link) : null"
+								>
+									<v-list-item-icon v-if="link.icon">
+										<v-icon :name="link.icon" />
+									</v-list-item-icon>
+									<v-list-item-content>
+										<template v-if="link.actionType === 'url'">
+											<router-link v-if="link.to" :to="link.to">
+												{{ $t(link.label) }}
+											</router-link>
+											<template v-else-if="link.href">
+												<a :href="link.href" target="_blank" rel="noopener noreferrer">
+													{{ $t(link.label) }}
+												</a>
+											</template>
+										</template>
+										<template v-else>
+											<template v-if="link.flow && loadingFlows.includes(link.flow)">
+												<v-progress-circular small indeterminate />
+											</template>
+											<template v-else>
+												{{ $t(link.label) }}
+											</template>
+										</template>
+									</v-list-item-content>
+								</v-list-item>
+							</v-list>
+						</v-menu>
+					</template>
+				</div>
+			</div>
+		</div>
+		<p v-if="subtitle" class="text-subtitle">
+			<render-template :collection="collection" :fields="fields" :item="combinedItemData" :template="subtitle" />
+		</p>
+		<transition-expand>
+			<div v-if="expanded && help && helpDisplayMode !== 'modal'" class="help-text">
+				<!-- eslint-disable-next-line vue/no-v-html -->
+				<div v-html="helpString" />
+				<div class="collapse-button-container">
+					<v-button class="collapse-button" small secondary @click="toggleHelp">
+						{{ `${$t('collapse')} ${$t('help')}` }}
+						<v-icon name="expand_less" right />
+					</v-button>
+				</div>
+			</div>
+		</transition-expand>
+
+		<!-- Help Modal -->
+		<v-dialog v-model="showHelpModal" keep-behind>
+			<v-card class="help-modal">
+				<v-button icon class="close-button" secondary small @click="showHelpModal = false">
+					<v-icon name="close" />
+				</v-button>
+				<v-card-text>
+					<!-- eslint-disable-next-line vue/no-v-html -->
+					<div v-html="helpString" />
+				</v-card-text>
+				<v-card-actions>
+					<v-button @click="showHelpModal = false">
+						{{ $t('dismiss') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+	</div>
+</template>
+
+<style scoped lang="scss">
+.page-header {
+	position: relative;
+	display: block;
+	inline-size: 100%;
+}
+
+.header-content {
+	container-type: inline-size;
+	inline-size: 100%;
+	display: flex;
+	gap: calc(var(--theme--form--column-gap) / 2);
+	padding-block-end: 8px;
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	color: var(--header-color, var(--theme--foreground));
+	align-items: baseline;
+	justify-content: space-between;
+	min-inline-size: 0;
+}
+
+.text-title {
+	display: flex;
+	color: var(--theme--foreground-accent);
+	overflow: hidden;
+	gap: 8px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 24px;
+	font-weight: 600;
+
+	.v-icon {
+		--v-icon-color: var(--header-color);
+		margin-block-start: 2px;
+		flex-shrink: 0;
+	}
+}
+
+.actions-wrapper {
+	flex-shrink: 0;
+}
+
+.text-subtitle {
+	margin-block-start: 4px;
+	font-size: 14px;
+	color: color-mix(in srgb, var(--theme--foreground), var(--theme--background) 25%);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.actions-container {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+
+	.v-button {
+		inline-size: 100%;
+		justify-content: center;
+		position: relative;
+	}
+
+	.full-button,
+	.help-button {
+		display: block;
+		position: relative;
+	}
+
+	.icon-button {
+		display: none;
+		position: relative;
+	}
+
+	@container (max-width: 600px) {
+		align-items: stretch;
+		inline-size: 100%;
+
+		.full-button {
+			display: none;
+			position: relative;
+		}
+
+		.icon-button {
+			display: block;
+			position: relative;
+		}
+	}
+}
+
+.help-text {
+	padding-block: 40px;
+	padding-inline: 32px;
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
+	max-block-size: 540px;
+	overflow-y: scroll;
+	background-color: var(--theme--background-subdued);
+
+	:deep(.helper-text) {
+		padding: var(--v-card-padding, 16px);
+		padding-block-start: 0;
+		max-inline-size: 100%;
+		overflow-x: auto;
+	}
+
+	:deep(img) {
+		max-inline-size: 100%;
+		block-size: auto;
+		display: block;
+	}
+}
+
+.collapse-button-container {
+	display: flex;
+	justify-content: flex-end;
+	margin-block-start: 16px;
+}
+
+.help-modal {
+	position: relative;
+	padding-block-start: var(--v-card-padding, 16px);
+
+	.close-button {
+		position: absolute;
+		inset-block-start: 16px;
+		inset-inline-end: 16px;
+
+		:deep(.button) {
+			border-radius: 100%;
+		}
+	}
+
+	:deep(img) {
+		max-inline-size: 100%;
+		block-size: auto;
+		display: block;
+	}
+}
+</style>
