@@ -101,9 +101,6 @@ create_version: Ustvari različico
 rename_version: Preimenuj različico
 compare_version: Primerjaj različico
 save_version: Shrani različico
-promote_version_disabled: Ni sprememb
-promote_version_changes: Spremembe
-promote_version_preview: Predogled
 delete_version: Izbriši različico
 reset_bookmark: Ponastavi zaznamek
 update_bookmark: Posodobi zaznamek
