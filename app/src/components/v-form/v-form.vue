@@ -6,12 +6,12 @@ import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fiel
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { useElementSize } from '@directus/composables';
 import { ContentVersion, Field, ValidationError } from '@directus/types';
-import { assign, cloneDeep, isEqual, isEmpty, isNil, omit } from 'lodash';
+import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
 import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { MenuOptions } from './form-field-menu.vue';
 import FormField from './form-field.vue';
-import type { FormField as TFormField, ComparisonContext } from './types';
+import type { ComparisonContext, FormField as TFormField } from './types';
 import { getFormFields } from './utils/get-form-fields';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
@@ -361,6 +361,30 @@ function useRawEditor() {
 		}
 	}
 }
+
+function getFirstVisibleFieldClass(index: number) {
+	return index === firstVisibleFieldIndex.value ? 'first-visible-field' : '';
+}
+
+function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
+	if (isComparisonDiff()) {
+		if (field.comparisonIndicator === 'on') return 'diff-indicator';
+		if (field.comparisonIndicator === 'guide') return 'diff-guide';
+	}
+
+	return '';
+
+	function isComparisonDiff() {
+		if (field.comparisonIndicator === 'off' || !props.comparison) return false;
+
+		if (isGroup) {
+			const groupFields = getFieldsForGroup(field.meta?.field ?? null);
+			return groupFields.some((groupField) => props.comparison!.fields.has(groupField.field));
+		}
+
+		return props.comparison.fields.has(field.field);
+	}
+}
 </script>
 
 <template>
@@ -392,7 +416,8 @@ function useRawEditor() {
 					"
 					:class="[
 						fieldsMap[fieldName]!.meta?.width || 'full',
-						index === firstVisibleFieldIndex ? 'first-visible-field' : '',
+						getFirstVisibleFieldClass(index),
+						getComparisonIndicatorClasses(fieldsMap[fieldName]!, true),
 					]"
 					:field="fieldsMap[fieldName]"
 					:fields="fieldsForGroup[index] || []"
@@ -420,7 +445,7 @@ function useRawEditor() {
 							formFieldEls[fieldName] = el;
 						}
 					"
-					:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
+					:class="[getFirstVisibleFieldClass(index), getComparisonIndicatorClasses(fieldsMap[fieldName]!)]"
 					:field="fieldsMap[fieldName]!"
 					:autofocus="index === firstEditableFieldIndex && autofocus"
 					:model-value="(values || {})[fieldName]"
@@ -474,5 +499,13 @@ function useRawEditor() {
 .v-divider {
 	margin-block-end: 50px;
 	grid-column: 1 / 3;
+}
+
+.diff-indicator {
+	@include mixins.comparison-indicator;
+}
+
+.diff-guide {
+	@include mixins.comparison-indicator('guide');
 }
 </style>

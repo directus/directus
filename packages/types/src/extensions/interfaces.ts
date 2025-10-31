@@ -24,6 +24,7 @@ export interface InterfaceConfig {
 	relational?: boolean;
 	hideLabel?: boolean;
 	hideLoader?: boolean;
+	comparisonIndicator?: 'on' | 'off' | 'guide';
 	autoKey?: boolean;
 	system?: boolean;
 	recommendedDisplays?: string[];
