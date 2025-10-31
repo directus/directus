@@ -41,6 +41,8 @@ export function getFormFields(fields: Ref<Field[]>): ComputedRef<Field[]> {
 				(field as FormField).hideLoader = true;
 			}
 
+			(field as FormField).comparisonIndicator = interfaceUsed?.comparisonIndicator ?? 'auto';
+
 			(field.meta.system ? systemFields : userFields).push(field);
 		}
 
