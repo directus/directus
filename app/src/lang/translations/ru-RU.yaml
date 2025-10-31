@@ -176,19 +176,9 @@ rename_version: Переименовать Версию
 compare_version: Сравнить Версии
 save_version: Сохранить Версию
 promote_version: Повысить версию
-promote_version_disabled: Без изменений
-promote_version_drawer_title: Сделать {version} главной
-promote_version_changes: Изменения
-promote_version_preview: Предпросмотр
-outdated_notice: >-
-  Главный пункт был обновлен с момента создания этой версии. Пожалуйста, ознакомьтесь со всеми значениями полей ниже, и подтвердите, какая версия должна быть использована при продвижении этой версии в основной элемент.
-promote_notice: >-
-  Пожалуйста, ознакомьтесь со всеми значениями полей ниже, и подтвердите, какая версия должна быть использована при продвижении этой версии в основной элемент.
 delete_version: Удалить версию
 delete_version_copy: >-
   Вы уверены, что хотите удалить версию «{version}»? Это действие нельзя отменить.
-delete_on_promote_copy: >-
-  Вы хотите удалить или сохранить версию «{version}» после продвижения?
 reset_bookmark: Сбросить закладку
 update_bookmark: Обновить закладку
 delete_bookmark: Удалить закладку
@@ -468,7 +458,6 @@ revision_delta_created: Создано
 revision_delta_created_externally: Создано извне
 revision_delta_updated: 'Обновлено 1 поле | Обновлено {count} полей'
 revision_delta_deleted: Удалено
-revision_delta_version_saved: 'Версия Сохранена (Обновлено 1 поле) | Версия Сохранена (Обновлено {count} полей)'
 revision_delta_reverted: Восстановлено
 revision_delta_update_message: Это поле было обновлено, но его значение скрывается по соображениям безопасности.
 revision_delta_other: Редакция
