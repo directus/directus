@@ -201,7 +201,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 
 			<div class="shadow" />
 
-			<div v-if="!nonEditable" class="actions">
+			<div v-if="!disabled" class="actions">
 				<v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
 					<v-icon name="zoom_in" />
 				</v-button>
@@ -237,7 +237,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			<drawer-item
 				v-if="image"
 				v-model:active="editImageDetails"
-				:disabled="internalDisabled || nonEditable"
+				:disabled="internalDisabled"
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"
@@ -256,17 +256,12 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				</template>
 			</drawer-item>
 
-			<image-editor
-				v-if="!internalDisabled && !nonEditable"
-				:id="image.id"
-				v-model="editImageEditor"
-				@refresh="refresh"
-			/>
+			<image-editor v-if="!internalDisabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
 
 			<file-lightbox v-model="lightboxActive" :file="image" />
 		</div>
 		<v-upload
-			v-else-if="!nonEditable"
+			v-else-if="!disabled"
 			from-url
 			:from-user="createAllowed && enableCreate"
 			:from-library="enableSelect"

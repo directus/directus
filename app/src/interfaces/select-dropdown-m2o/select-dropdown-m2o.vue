@@ -122,7 +122,7 @@ const edits = computed(() => {
 });
 
 function onPreviewClick() {
-	if (props.disabled || props.nonEditable) return;
+	if (props.disabled) return;
 
 	// Prevent double dialog in case the edit dialog is already open
 	if (editModalActive.value === true) return;
@@ -136,7 +136,7 @@ function onPreviewClick() {
 }
 
 function onDrawerItemInput(event: any) {
-	if (props.disabled || props.nonEditable) return;
+	if (props.disabled) return;
 	update(event);
 }
 
@@ -187,7 +187,7 @@ function getLinkForItem() {
 	<div v-else class="many-to-one" :class="{ 'non-editable': nonEditable }">
 		<v-skeleton-loader v-if="loading" type="input" />
 
-		<v-list-item v-else block clickable :disabled="disabled || nonEditable" @click="onPreviewClick">
+		<v-list-item v-else block clickable :disabled="disabled" @click="onPreviewClick">
 			<div v-if="displayItem" class="preview">
 				<render-template
 					:collection="relationInfo.relatedCollection.collection"
@@ -211,16 +211,10 @@ function getLinkForItem() {
 						<v-icon name="launch" />
 					</router-link>
 
-					<v-icon
-						v-if="!disabled && !nonEditable"
-						v-tooltip="t('edit_item')"
-						name="edit"
-						clickable
-						@click="editModalActive = true"
-					/>
+					<v-icon v-if="!disabled" v-tooltip="t('edit_item')" name="edit" clickable @click="editModalActive = true" />
 
 					<v-remove
-						v-if="!disabled && !nonEditable"
+						v-if="!disabled"
 						deselect
 						:item-info="relationInfo"
 						:item-edits="edits"
@@ -230,7 +224,7 @@ function getLinkForItem() {
 
 				<template v-else>
 					<v-icon
-						v-if="!disabled && !nonEditable && createAllowed && enableCreate"
+						v-if="!disabled && createAllowed && enableCreate"
 						v-tooltip="t('create_item')"
 						class="add"
 						name="add"
@@ -249,12 +243,12 @@ function getLinkForItem() {
 			:primary-key="currentPrimaryKey"
 			:edits="edits"
 			:circular-field="relationInfo.relation.meta?.one_field ?? undefined"
-			:disabled="disabled || nonEditable"
+			:disabled="disabled"
 			@input="onDrawerItemInput"
 		/>
 
 		<drawer-collection
-			v-if="!disabled && !nonEditable"
+			v-if="!disabled"
 			v-model:active="selectModalActive"
 			:collection="relationInfo.relatedCollection.collection"
 			:selection="selection"
