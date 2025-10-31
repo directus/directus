@@ -8,7 +8,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import { Filter } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
-import { computed, ref, toRefs, unref, watch } from 'vue';
+import { computed, nextTick, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 
@@ -73,7 +73,17 @@ const requiredFields = computed(() => {
 	return adjustFieldsForDisplays(getFieldsFromTemplate(displayTemplate.value), unref(selectedCollection));
 });
 
-watch(values, getDisplayItems, { immediate: true });
+const sortingInProgress = ref(false);
+
+watch(
+	values,
+	() => {
+		if (!sortingInProgress.value) {
+			getDisplayItems();
+		}
+	},
+	{ immediate: true },
+);
 
 async function getDisplayItems() {
 	if (!values.value || values.value.length === 0) {
@@ -130,12 +140,19 @@ function removeItem(item: Record<string, any>) {
 }
 
 function onSort(sortedItems: Record<string, any>[]) {
+	displayItems.value = sortedItems;
+	sortingInProgress.value = true;
+
 	const newValues = sortedItems.map((item) => ({
 		key: item[primaryKey.value],
 		collection: unref(selectedCollection),
 	}));
 
 	values.value = newValues;
+
+	nextTick(() => {
+		sortingInProgress.value = false;
+	});
 }
 </script>
 
