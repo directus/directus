@@ -103,7 +103,7 @@ const linksParsed = computed<ParsedLink[]>(() =>
 	}),
 );
 
-const { runManualFlow, runningFlows } = useInjectRunManualFlow();
+const { runManualFlow, runningFlows, activeFlows } = useInjectRunManualFlow();
 
 function handleRunManualFlow(flow: string) {
 	runManualFlow(flow);
@@ -127,22 +127,23 @@ function getRelatedFieldsFromTemplates() {
 
 <template>
 	<div class="presentation-links">
-		<v-button
-			v-for="(link, index) in linksParsed"
-			:key="index"
-			class="action"
-			:class="[link.type]"
-			:secondary="link.type !== 'primary'"
-			:icon="!link.label"
-			:href="link.href"
-			:to="link.to"
-			:loading="link.flow && runningFlows.includes(link.flow)"
-			:disabled="link.actionType === 'flow' && (props.disabled || props.primaryKey === '+')"
-			@click="() => handleRunManualFlow(link.flow!)"
-		>
-			<v-icon v-if="link.icon" left :name="link.icon" />
-			<span v-if="link.label">{{ link.label }}</span>
-		</v-button>
+		<template v-for="(link, index) in linksParsed" :key="index">
+			<v-button
+				v-if="link.actionType !== 'flow' || activeFlows.includes(link.flow!)"
+				class="action"
+				:class="[link.type]"
+				:secondary="link.type !== 'primary'"
+				:icon="!link.label"
+				:href="link.href"
+				:to="link.to"
+				:loading="link.flow && runningFlows.includes(link.flow)"
+				:disabled="link.actionType === 'flow' && (props.disabled || props.primaryKey === '+')"
+				@click="() => handleRunManualFlow(link.flow!)"
+			>
+				<v-icon v-if="link.icon" left :name="link.icon" />
+				<span v-if="link.label">{{ link.label }}</span>
+			</v-button>
+		</template>
 	</div>
 </template>
 
