@@ -96,6 +96,7 @@ it('should arrange system and user fields and inject system divider', () => {
 	expect(formFields.value).toMatchInlineSnapshot(`
 		[
 		  {
+		    "comparisonIndicator": "on",
 		    "field": "system_field",
 		    "meta": {
 		      "interface": "input",
@@ -113,6 +114,7 @@ it('should arrange system and user fields and inject system divider', () => {
 		    "type": "alias",
 		  },
 		  {
+		    "comparisonIndicator": "on",
 		    "field": "user_field",
 		    "meta": {
 		      "interface": "input",
