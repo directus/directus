@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import type { ComparisonContext } from '@/components/v-form/types';
+import { getFieldsInGroup } from '@/utils/get-fields-in-group';
 import { Field, ValidationError } from '@directus/types';
 import { merge } from 'lodash';
-import type { ComparisonContext } from '@/components/v-form/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { getFieldsInGroup } from '@/utils/get-fields-in-group';
 
 const props = withDefaults(
 	defineProps<{
@@ -134,8 +134,7 @@ function handleModifier(event: MouseEvent, toggle: () => void) {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	margin: 8px 0;
-
+	padding: 8px 0;
 	cursor: pointer;
 
 	&:hover,
@@ -193,6 +192,6 @@ function handleModifier(event: MouseEvent, toggle: () => void) {
 }
 
 .fields {
-	margin: var(--theme--form--row-gap) 0;
+	padding: var(--theme--form--row-gap) 0;
 }
 </style>

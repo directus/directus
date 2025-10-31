@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import type { ComparisonContext } from '@/components/v-form/types';
 import { Field, ValidationError } from '@directus/types';
 import { isEqual } from 'lodash';
-import type { ComparisonContext } from '@/components/v-form/types';
 import { ref, watch } from 'vue';
 import AccordionSection from './accordion-section.vue';
 
@@ -47,7 +47,7 @@ watch(
 		}
 
 		if (start === 'first') {
-			selection.value = [groupFields.value[0].field];
+			selection.value = [groupFields.value[0]!.field];
 		}
 	},
 	{ immediate: true },
@@ -136,3 +136,9 @@ function useComputedGroup() {
 		/>
 	</v-item-group>
 </template>
+
+<style lang="scss" scoped>
+.group-accordion {
+	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+}
+</style>
