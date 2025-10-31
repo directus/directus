@@ -967,8 +967,8 @@ export class PayloadService {
 							autoPurgeCache: opts?.autoPurgeCache,
 							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 							skipTracking: opts?.skipTracking,
-							overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['delete'],
 							onItemCreate: opts?.onItemCreate,
+							overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!],
 							mutationTracker: opts?.mutationTracker,
 						});
 					} else {
@@ -984,7 +984,7 @@ export class PayloadService {
 								autoPurgeCache: opts?.autoPurgeCache,
 								autoPurgeSystemCache: opts?.autoPurgeSystemCache,
 								skipTracking: opts?.skipTracking,
-								overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['delete'],
+								overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!],
 								onItemCreate: opts?.onItemCreate,
 								mutationTracker: opts?.mutationTracker,
 							},
