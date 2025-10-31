@@ -201,6 +201,10 @@ function onSort(sortedItems: Record<string, any>[]) {
 <style lang="scss" scoped>
 @use '@/styles/mixins';
 
+.v-list {
+	@include mixins.list-interface($deleteable: true);
+}
+
 .v-list-item {
 	&:focus-within,
 	&:focus-visible {
@@ -224,5 +228,9 @@ function onSort(sortedItems: Record<string, any>[]) {
 	flex-grow: 1;
 	block-size: calc(100% - 16px);
 	overflow: hidden;
+}
+
+.actions {
+	@include mixins.list-interface-actions;
 }
 </style>
