@@ -142,6 +142,7 @@ function trimIfEnabled() {
 
 	&.non-editable {
 		pointer-events: none;
+		cursor: default;
 	}
 
 	&:hover:not(.disabled) {

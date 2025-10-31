@@ -638,8 +638,4 @@ onMounted(() => {
 	padding: var(--content-padding);
 	padding-block: 0 var(--content-padding);
 }
-
-.wysiwyg.non-editable :deep(.tox-tinymce) {
-	pointer-events: none;
-}
 </style>

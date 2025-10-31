@@ -424,10 +424,6 @@ img {
 	}
 }
 
-.image.non-editable {
-	pointer-events: none;
-}
-
 .disabled-placeholder {
 	block-size: var(--input-height-tall);
 }

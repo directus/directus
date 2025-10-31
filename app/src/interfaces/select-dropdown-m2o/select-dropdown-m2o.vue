@@ -281,6 +281,14 @@ function getLinkForItem() {
 
 .many-to-one.non-editable {
 	pointer-events: none;
+
+	:deep(.v-list-item) {
+		opacity: 1;
+		color: var(--theme--foreground);
+		background-color: var(--theme--form--field--input--background);
+
+		--v-list-item-border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
+	}
 }
 
 .v-list-item {

@@ -395,9 +395,6 @@ function useInvalidInput() {
 	}
 
 	.input {
-		&.non-editable {
-			pointer-events: none;
-		}
 		position: relative;
 		display: flex;
 		flex-grow: 1;

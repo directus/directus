@@ -431,10 +431,12 @@ function useDisplayValue() {
 
 	cursor: pointer;
 
-	&.non-editable,
-	&.non-editable .input,
-	&.non-editable :deep(input) {
-		cursor: default !important;
+	/* Non-editable: keep normal visuals, hide icons/buttons, block edits */
+	&.non-editable {
+		cursor: default;
+		:deep(.v-icon) {
+			display: none;
+		}
 	}
 }
 
@@ -470,6 +472,7 @@ function useDisplayValue() {
 
 	&.non-editable {
 		pointer-events: none;
+		cursor: default;
 	}
 }
 

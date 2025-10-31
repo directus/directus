@@ -67,6 +67,8 @@ const { t } = useI18n();
 
 const emit = defineEmits(['update:modelValue']);
 
+const isNonEditable = computed(() => !!props.nonEditable);
+
 const values = computed(() => {
 	return Object.assign({}, cloneDeep(props.initialValues), cloneDeep(props.modelValue));
 });
@@ -399,7 +401,7 @@ function useRawEditor() {
 					:fields="fieldsForGroup[index] || []"
 					:values="modelValue || {}"
 					:initial-values="initialValues || {}"
-					:disabled="disabled"
+					:disabled="disabled || isNonEditable"
 					:batch-mode="batchMode"
 					:batch-active-fields="batchActiveFields"
 					:primary-key="primaryKey"
@@ -409,7 +411,7 @@ function useRawEditor() {
 					:raw-editor-enabled="rawEditorEnabled"
 					:direction="direction"
 					:version
-					:non-editable="!!nonEditable"
+					:non-editable="isNonEditable"
 					:comparison="comparison"
 					v-bind="fieldsMap[fieldName]!.meta?.options || {}"
 					@apply="apply"
@@ -427,9 +429,9 @@ function useRawEditor() {
 					:autofocus="index === firstEditableFieldIndex && autofocus"
 					:model-value="(values || {})[fieldName]"
 					:initial-value="(initialValues || {})[fieldName]"
-					:disabled="isDisabled(fieldsMap[fieldName]!)"
+					:disabled="isDisabled(fieldsMap[fieldName]!) || isNonEditable"
 					:batch-mode="batchMode"
-					:non-editable="!!nonEditable"
+					:non-editable="isNonEditable"
 					:batch-active="batchActiveFields.includes(fieldName)"
 					:comparison="comparison"
 					:comparison-active="comparison?.selectedFields.includes(fieldName)"
