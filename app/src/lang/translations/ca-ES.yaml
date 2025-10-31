@@ -119,7 +119,6 @@ delete_folder: Suprimeix carpeta
 prefix: Prefix
 suffix: Sufix
 keep: Manté
-promote_version_preview: Vista prèvia
 reset_bookmark: Reinicia marcador
 update_bookmark: Actualitza marcador
 delete_bookmark: Eliminar marcador
