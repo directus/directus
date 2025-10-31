@@ -6,12 +6,12 @@ import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fiel
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { useElementSize } from '@directus/composables';
 import { ContentVersion, Field, ValidationError } from '@directus/types';
-import { assign, cloneDeep, isEqual, isEmpty, isNil, omit } from 'lodash';
+import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
 import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { MenuOptions } from './form-field-menu.vue';
 import FormField from './form-field.vue';
-import type { FormField as TFormField, ComparisonContext } from './types';
+import type { ComparisonContext, FormField as TFormField } from './types';
 import { getFormFields } from './utils/get-form-fields';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
@@ -358,6 +358,10 @@ function useRawEditor() {
 	}
 }
 
+function getFirstVisibleFieldClass(index: number) {
+	return index === firstVisibleFieldIndex.value ? 'first-visible-field' : '';
+}
+
 function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 	if (isComparisonDiff()) {
 		if (field.comparisonIndicator === 'auto') return 'diff-indicator';
@@ -408,7 +412,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					"
 					:class="[
 						fieldsMap[fieldName]!.meta?.width || 'full',
-						index === firstVisibleFieldIndex ? 'first-visible-field' : '',
+						getFirstVisibleFieldClass(index),
 						getComparisonIndicatorClasses(fieldsMap[fieldName]!, true),
 					]"
 					:field="fieldsMap[fieldName]"
@@ -437,10 +441,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 							formFieldEls[fieldName] = el;
 						}
 					"
-					:class="[
-						index === firstVisibleFieldIndex ? 'first-visible-field' : '',
-						getComparisonIndicatorClasses(fieldsMap[fieldName]!),
-					]"
+					:class="[getFirstVisibleFieldClass(index), getComparisonIndicatorClasses(fieldsMap[fieldName]!)]"
 					:field="fieldsMap[fieldName]!"
 					:autofocus="index === firstEditableFieldIndex && autofocus"
 					:model-value="(values || {})[fieldName]"
