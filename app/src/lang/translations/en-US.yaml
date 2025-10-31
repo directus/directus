@@ -60,6 +60,8 @@ full_width: Full Width
 group: Group
 popular: Popular
 recent: Recent
+latest: Latest
+updated: Updated
 export_items: Export Items
 and: And
 or: Or
@@ -182,21 +184,14 @@ rename_version: Rename Version
 compare_version: Compare Version
 save_version: Save Version
 promote_version: Promote Version
-promote_version_disabled: No Changes
-promote_version_drawer_title: Promote {version} into Main
-promote_version_changes: Changes
-promote_version_preview: Preview
-outdated_notice: >-
-  The main item has been updated since this version was created. Please review all the field values below, and confirm
-  which version should be used when promoting this version into the main item.
-promote_notice: >-
-  Please review all the field values below, and confirm which version should be used when promoting this version into
-  the main item.
+apply: Apply
+select_all_differences: Select All Differences
+main_updated_notice: The main item has been updated since this version was created.
 delete_version: Delete Version
 delete_version_copy: >-
   Are you sure you want to delete the "{version}" version? This action cannot be undone.
-delete_on_promote_copy: >-
-  Do you want to delete or keep the "{version}" version after promoting?
+delete_on_apply_copy: >-
+  You are about to promote “{version}” to Main. What should happen to “{version}” after promotion?
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -488,11 +483,13 @@ revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
 revision_delta_deleted: Deleted
-revision_delta_version_saved: 'Version Save (Updated 1 Field) | Version Save (Updated {count} Fields)'
 revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
+updated_in_revision: Updated in this Revision
+updated_in_revision_matches_latest: Updated in this Revision but matches Latest
+differences_count: 'No Differences | 1 Difference | {count} Differences'
 presentation_text_values_cannot_be_reimported: 'Uses presentation text, values can not be re-imported.'
 download_page_as_csv: 'Download Page as CSV'
 download_page_as_csv_unsupported: This layout does not support downloading the current page.
@@ -1176,6 +1173,8 @@ appearance_dark: Dark
 other: Other...
 adding_user: Adding User
 unknown_user: Unknown User
+unknown_version: Unknown Version
+unknown_revision: Unknown Revision
 creating_in: 'Creating Item in {collection}'
 editing_in: 'Editing Item in {collection}'
 viewing_in: 'Viewing Item in {collection}'
