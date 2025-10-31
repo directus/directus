@@ -103,7 +103,7 @@ const linksParsed = computed<ParsedLink[]>(() =>
 	}),
 );
 
-const { runManualFlow } = useInjectRunManualFlow();
+const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 
 function handleRunManualFlow(flow: string) {
 	runManualFlow(flow);
@@ -136,8 +136,9 @@ function getRelatedFieldsFromTemplates() {
 			:icon="!link.label"
 			:href="link.href"
 			:to="link.to"
+			:loading="link.flow && runningFlows.includes(link.flow)"
 			:disabled="link.actionType === 'flow' && (props.disabled || props.primaryKey === '+')"
-			@click="() => handleRunManualFlow(link.flow)"
+			@click="() => handleRunManualFlow(link.flow!)"
 		>
 			<v-icon v-if="link.icon" left :name="link.icon" />
 			<span v-if="link.label">{{ link.label }}</span>

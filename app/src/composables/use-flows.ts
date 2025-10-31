@@ -1,5 +1,5 @@
 import api from '@/api';
-import { computed, ref, Ref, provide, inject } from 'vue';
+import { computed, ref, Ref, provide, inject, ComputedRef } from 'vue';
 import { FlowRaw, Item, PrimaryKey } from '@directus/types';
 import { notify } from '@/utils/notify';
 import { translate } from '@/utils/translate-object-values';
@@ -22,7 +22,6 @@ interface UseFlowsOptions {
 export type ManualFlow = FlowRaw & {
 	tooltip: string;
 	isFlowDisabled: boolean;
-	isFlowRunning: boolean;
 };
 
 const runManualFlowSymbol = 'runManualFlow';
@@ -137,7 +136,6 @@ export function useFlows(options: UseFlowsOptions) {
 				options: flow.options ? translate(flow.options) : null,
 				tooltip: getFlowTooltip(flow),
 				isFlowDisabled: checkFlowDisabled(flow),
-				isFlowRunning: checkFlowRunning(flow),
 			}));
 
 		function getFlowTooltip(manualFlow: FlowRaw) {
@@ -153,11 +151,6 @@ export function useFlows(options: UseFlowsOptions) {
 		function checkFlowDisabled(manualFlow: FlowRaw) {
 			if (location === 'item' || manualFlow.options?.requireSelection === false) return false;
 			return !primaryKey && selection.value.length === 0;
-		}
-
-		function checkFlowRunning(manualFlow: FlowRaw) {
-			if (!manualFlow) return false;
-			return runningFlows.value.includes(manualFlow.id);
 		}
 
 		return manualFlows;
@@ -189,6 +182,7 @@ export function useFlows(options: UseFlowsOptions) {
 	function provideRunManualFlow() {
 		provide(runManualFlowSymbol, {
 			runManualFlow,
+			runningFlows,
 		});
 	}
 
@@ -271,5 +265,6 @@ export function useFlows(options: UseFlowsOptions) {
 export function useInjectRunManualFlow() {
 	return inject(runManualFlowSymbol) as {
 		runManualFlow: (flowId: string) => void;
+		runningFlows: Ref<string[]>;
 	};
 }

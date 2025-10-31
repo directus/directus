@@ -8,7 +8,7 @@ defineProps<{
 	manualFlows: ManualFlow[];
 }>();
 
-const { runManualFlow } = useInjectRunManualFlow();
+const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 </script>
 
 <template>
@@ -20,7 +20,7 @@ const { runManualFlow } = useInjectRunManualFlow();
 					small
 					full-width
 					:style="{ '--v-button-background-color': manualFlow.color }"
-					:loading="manualFlow.isFlowRunning"
+					:loading="runningFlows.includes(manualFlow.id)"
 					:disabled="manualFlow.isFlowDisabled"
 					@click="runManualFlow(manualFlow.id)"
 				>
