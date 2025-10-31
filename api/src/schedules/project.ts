@@ -16,8 +16,6 @@ export default async function schedule() {
 			.from('directus_settings')
 			.first();
 
-		console.log(project_status, ownerInfo);
-
 		if (project_status !== 'pending') return;
 
 		try {

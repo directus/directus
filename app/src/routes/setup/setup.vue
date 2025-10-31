@@ -6,10 +6,8 @@ import SetupForm from './form.vue';
 import api from '@/api';
 import { login } from '@/auth';
 import { translateAPIError } from '@/lang';
-import { validateItem } from '@/utils/validate-item';
 import { SetupForm as Form } from '@directus/types';
-import { FailedValidationErrorExtensions } from '@directus/validation';
-import { computed, ref, unref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { FormValidator, initialValues, useFormFields, validate, ValidationError } from './form';
 
