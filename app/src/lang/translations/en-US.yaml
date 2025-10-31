@@ -442,6 +442,8 @@ precision_scale: Precision & Scale
 readonly: Readonly
 unique: Unique
 index: Index
+searchable: Searchable
+field_searchable: Include field in search queries
 updated_on: Updated On
 updated_by: Updated By
 primary_key: Primary Key
@@ -510,7 +512,10 @@ import_data_input_placeholder: CSV or JSON...
 import_data_button: Start Import
 import_data_indeterminate: Importing Data...
 import_data_success: Data successfully imported from {filename}
+import_data_errors: Import Error
 import_data_error: This file's data structure doesn't match the collection.
+import_data_validation_errors_notice: 'The following rows have invalid values:'
+import_data_error_row: 'Row {rows}{field}:'
 snapshot:
   export: Export Schema
   download: Download Snapshot (JSON)

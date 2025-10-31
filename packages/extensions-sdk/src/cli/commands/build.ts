@@ -535,7 +535,7 @@ function getRollupOptions({
 		external: mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS,
 		plugins: [
 			typeof input !== 'string' ? virtual(input) : null,
-			mode === 'browser' ? (vue({ isProduction: true }) as any) : null,
+			mode === 'browser' ? vue({ isProduction: true }) : null,
 			esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }),
 			mode === 'browser' ? styles() : null,
 			...plugins,
