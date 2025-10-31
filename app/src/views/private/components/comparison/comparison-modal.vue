@@ -578,9 +578,11 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 
 .comparison-form--base {
 	--comparison-indicator--color: var(--theme--danger);
+	--comparison-track--color: var(--theme--danger-background);
 }
 
 .comparison-form--incoming {
 	--comparison-indicator--color: var(--theme--success);
+	--comparison-track--color: var(--theme--success-background);
 }
 </style>
