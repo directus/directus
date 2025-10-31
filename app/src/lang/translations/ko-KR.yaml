@@ -176,19 +176,9 @@ rename_version: 버전 이름 변경
 compare_version: 버전 비교
 save_version: 버전 저장
 promote_version: 버전 승격
-promote_version_disabled: 변경 사항 없음
-promote_version_drawer_title: '{version}을(를) 메인으로 승격'
-promote_version_changes: 변경 사항
-promote_version_preview: 미리보기
-outdated_notice: >-
-  이 버전이 생성된 이후 메인 항목이 업데이트되었습니다. 아래의 모든 필드 값을 검토하고 이 버전을 메인 항목으로 승격할 때 사용할 버전을 확인하세요.
-promote_notice: >-
-  아래의 모든 필드 값을 검토하고 이 버전을 메인 항목으로 승격할 때 사용할 버전을 확인하세요.
 delete_version: 버전 삭제
 delete_version_copy: >-
   "{version}" 버전을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
-delete_on_promote_copy: >-
-  승격 후 "{version}" 버전을 삭제하거나 유지하시겠습니까?
 reset_bookmark: 북마크 초기화
 update_bookmark: 북마크 업데이트
 delete_bookmark: 북마크 삭제
@@ -468,7 +458,6 @@ revision_delta_created: 생성됨
 revision_delta_created_externally: 외부에서 생성됨
 revision_delta_updated: '업데이트 된 1개의 필드 | 업데이트 된 {count}개의 필드'
 revision_delta_deleted: 삭제됨
-revision_delta_version_saved: '버전 저장 (1개 필드 업데이트) | 버전 저장 ({count} 필드 업데이트)'
 revision_delta_reverted: 되돌림
 revision_delta_update_message: 이 필드는 업데이트되었지만 보안상의 이유로 해당 값이 숨겨져 있습니다.
 revision_delta_other: 리비전
