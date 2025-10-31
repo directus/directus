@@ -4,39 +4,39 @@ import type { Accountability, Collection, FieldMutationOptions } from '@directus
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as cacheModule from '../cache.js';
 import * as getSchemaModule from '../utils/get-schema.js';
-import { createMockKnex, resetKnexMocks, setupSystemCollectionMocks } from '../__mocks__/knex.js';
+import { createMockKnex, resetKnexMocks, setupSystemCollectionMocks } from '../__test-utils__/knex.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
 }));
 
 vi.mock('../../src/database/index', async () => {
-	const { mockDatabase } = await import('../__mocks__/database.js');
+	const { mockDatabase } = await import('../__test-utils__/database.js');
 	return mockDatabase();
 });
 
 vi.mock('@directus/schema', async () => {
-	const { mockSchema } = await import('../__mocks__/schema.js');
+	const { mockSchema } = await import('../__test-utils__/schema.js');
 	return mockSchema();
 });
 
 vi.mock('../cache.js', async () => {
-	const { mockCache } = await import('../__mocks__/cache.js');
+	const { mockCache } = await import('../__test-utils__/cache.js');
 	return mockCache();
 });
 
 vi.mock('../emitter.js', async () => {
-	const { mockEmitter } = await import('../__mocks__/emitter.js');
+	const { mockEmitter } = await import('../__test-utils__/emitter.js');
 	return mockEmitter();
 });
 
 vi.mock('./items.js', async () => {
-	const { mockItemsService } = await import('../__mocks__/items-service.js');
+	const { mockItemsService } = await import('../__test-utils__/items-service.js');
 	return mockItemsService();
 });
 
 vi.mock('../utils/transaction.js', async () => {
-	const { mockTransaction } = await import('../__mocks__/database.js');
+	const { mockTransaction } = await import('../__test-utils__/database.js');
 	return mockTransaction();
 });
 
