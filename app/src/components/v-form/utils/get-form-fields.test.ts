@@ -2,7 +2,8 @@ import * as useExtension from '@/composables/use-extension';
 import type { InterfaceConfig } from '@directus/extensions';
 import type { DeepPartial, Field } from '@directus/types';
 import { expect, it, vi } from 'vitest';
-import { ref } from 'vue';
+import { ref, type Ref } from 'vue';
+import type { FormField } from '../types';
 import { getFormFields } from './get-form-fields';
 
 vi.mock('@/utils/get-default-interface-for-type', () => ({
@@ -122,4 +123,16 @@ it('should arrange system and user fields and inject system divider', () => {
 		  },
 		]
 	`);
+});
+
+it('should set comparisonIndicator to "off" for group fields', () => {
+	const fields: DeepPartial<Field>[] = [{ field: 'field', meta: {} }];
+	const formFields: Ref<FormField[]> = getFormFields(ref(fields as Field[]));
+	expect(formFields.value[0]!.comparisonIndicator).toBe('on');
+});
+
+it('should set comparisonIndicator to "off" for group fields', () => {
+	const fields: DeepPartial<Field>[] = [{ field: 'group_field', meta: { special: ['group'] } }];
+	const formFields: Ref<FormField[]> = getFormFields(ref(fields as Field[]));
+	expect(formFields.value[0]!.comparisonIndicator).toBe('off');
 });
