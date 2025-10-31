@@ -176,19 +176,9 @@ rename_version: Renommer la version
 compare_version: Comparer la version
 save_version: Enregistrer la version
 promote_version: Promouvoir la version
-promote_version_disabled: Aucun changement
-promote_version_drawer_title: Mettre {version} en Main
-promote_version_changes: Changements
-promote_version_preview: Prévisualiser
-outdated_notice: >-
-  L'élément principal a été mis à jour depuis la création de cette version. Veuillez vérifier toutes les valeurs de champ ci-dessous et confirmer quelle version doit être utilisée lors de la sélection de cette version dans l'élément principal.
-promote_notice: >-
-  Veuillez vérifier toutes les valeurs de champ ci-dessous, et confirmer quelle version doit être utilisée lors de la promotion de cette version dans l'élément principal.
 delete_version: Supprimer la version
 delete_version_copy: >-
   Êtes-vous sûr de vouloir supprimer la version "{version}"? Cette action est irréversible.
-delete_on_promote_copy: >-
-  Voulez-vous supprimer ou conserver la version "{version}" après la promotion ?
 reset_bookmark: Réinitialiser le favori
 update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
@@ -464,7 +454,6 @@ revision_delta_created: Créé
 revision_delta_created_externally: Créé en externe
 revision_delta_updated: '1 champ mis à jour | {count} champs mis à jour'
 revision_delta_deleted: Supprimé
-revision_delta_version_saved: 'Sauvegarde de la version (1 champ mis à jour) | Sauvegarde de la version ({count} champs mis à jour)'
 revision_delta_reverted: Restauré
 revision_delta_update_message: Ce champ a été mis à jour, mais sa valeur a été cachée pour des raisons de sécurité.
 revision_delta_other: Historique
