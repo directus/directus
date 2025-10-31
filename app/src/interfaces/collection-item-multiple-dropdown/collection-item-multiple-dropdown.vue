@@ -3,28 +3,30 @@ import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { hideDragImage } from '@/utils/hide-drag-image';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import { Filter } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
 
-type Value = {
-	key: (string | number) | null;
+type ValueItem = {
+	key: string | number;
 	collection: string;
 };
 
 const props = withDefaults(
 	defineProps<{
-		value?: Value | null;
+		value?: ValueItem[] | null;
 		selectedCollection: string;
 		template?: string | null;
 		disabled?: boolean;
 		filter?: Filter | null;
 	}>(),
 	{
-		value: () => ({ key: null, collection: '' }),
+		value: () => [],
 		template: null,
 		filter: null,
 	},
@@ -41,18 +43,20 @@ const fieldStore = useFieldsStore();
 
 const loading = ref(false);
 const selectDrawerOpen = ref(false);
-const displayItem = ref<Record<string, any> | null>(null);
+const displayItems = ref<Record<string, any>[]>([]);
 
-const value = computed({
-	get: () => props.value,
-	set: (value) => {
-		if (value && typeof value === 'object' && value.key) {
-			emit('input', value);
+const values = computed({
+	get: () => props.value ?? [],
+	set: (newValues) => {
+		if (Array.isArray(newValues) && newValues.length > 0) {
+			emit('input', newValues);
 		} else {
 			emit('input', null);
 		}
 	},
 });
+
+const selectedKeys = computed(() => values.value.map((item) => item.key));
 
 const primaryKey = computed(() => fieldStore.getPrimaryKeyFieldForCollection(unref(selectedCollection))?.field ?? '');
 
@@ -69,11 +73,11 @@ const requiredFields = computed(() => {
 	return adjustFieldsForDisplays(getFieldsFromTemplate(displayTemplate.value), unref(selectedCollection));
 });
 
-watch(value, getDisplayItem, { immediate: true });
+watch(values, getDisplayItems, { immediate: true });
 
-async function getDisplayItem() {
-	if (!value.value || !value.value.key) {
-		displayItem.value = null;
+async function getDisplayItems() {
+	if (!values.value || values.value.length === 0) {
+		displayItems.value = [];
 		return;
 	}
 
@@ -88,11 +92,15 @@ async function getDisplayItem() {
 		const response = await api.get(getEndpoint(unref(selectedCollection)), {
 			params: {
 				fields: Array.from(fields),
-				filter: { [primaryKey.value]: { _eq: value.value.key } },
+				filter: { [primaryKey.value]: { _in: selectedKeys.value } },
 			},
 		});
 
-		displayItem.value = response.data.data?.[0] ?? null;
+		const fetchedItems = response.data.data ?? [];
+
+		displayItems.value = selectedKeys.value
+			.map((key) => fetchedItems.find((item: any) => item[primaryKey.value] === key))
+			.filter(Boolean);
 	} catch (error) {
 		unexpectedError(error);
 	} finally {
@@ -102,33 +110,88 @@ async function getDisplayItem() {
 
 function onSelection(selectedIds: (number | string)[] | null) {
 	selectDrawerOpen.value = false;
-	value.value = { key: Array.isArray(selectedIds) ? selectedIds[0] : null, collection: unref(selectedCollection) };
+
+	if (!selectedIds || selectedIds.length === 0) {
+		values.value = [];
+		return;
+	}
+
+	const newValues = selectedIds.map((key) => ({
+		key,
+		collection: unref(selectedCollection),
+	}));
+
+	values.value = newValues;
+}
+
+function removeItem(item: Record<string, any>) {
+	const keyToRemove = item[primaryKey.value];
+	values.value = values.value.filter((v) => v.key !== keyToRemove);
+}
+
+function onSort(sortedItems: Record<string, any>[]) {
+	const newValues = sortedItems.map((item) => ({
+		key: item[primaryKey.value],
+		collection: unref(selectedCollection),
+	}));
+
+	values.value = newValues;
 }
 </script>
 
 <template>
-	<div class="collection-item-dropdown">
+	<div class="collection-item-multiple-dropdown">
 		<v-skeleton-loader v-if="loading" type="input" />
 
-		<v-list-item v-else :disabled block clickable @click="selectDrawerOpen = true">
-			<div v-if="displayItem" class="preview">
-				<render-template :collection="selectedCollection" :item="displayItem" :template="displayTemplate" />
-			</div>
-			<div v-else class="placeholder">{{ t('select_an_item') }}</div>
+		<template v-else>
+			<v-notice v-if="displayItems.length === 0">
+				{{ t('no_items') }}
+			</v-notice>
 
-			<div class="spacer" />
+			<draggable
+				v-else
+				:model-value="displayItems"
+				tag="v-list"
+				item-key="id"
+				handle=".drag-handle"
+				:disabled="disabled"
+				:set-data="hideDragImage"
+				v-bind="{ 'force-fallback': true }"
+				@update:model-value="onSort($event)"
+			>
+				<template #item="{ element }">
+					<v-list-item :disabled="disabled" :dense="displayItems.length > 4" block>
+						<v-icon v-if="!disabled" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 
-			<div class="item-actions">
-				<v-remove v-if="displayItem" deselect @action="value = null" />
-				<v-icon v-else class="expand" name="expand_more" />
-			</div>
-		</v-list-item>
+						<render-template
+							:collection="selectedCollection"
+							:item="element"
+							:template="displayTemplate"
+							class="preview"
+						/>
+
+						<div class="spacer" />
+
+						<div class="item-actions">
+							<v-remove v-if="!disabled" @action="removeItem(element)" />
+						</div>
+					</v-list-item>
+				</template>
+			</draggable>
+		</template>
+
+		<div class="actions">
+			<v-button v-if="!disabled" @click="selectDrawerOpen = true">
+				{{ t('select_item') }}
+			</v-button>
+		</div>
 
 		<drawer-collection
 			v-model:active="selectDrawerOpen"
 			:collection="selectedCollection"
-			:selection="value?.key ? [value.key] : []"
+			:selection="selectedKeys"
 			:filter="filter!"
+			multiple
 			@input="onSelection"
 			@update:active="selectDrawerOpen = false"
 		/>
