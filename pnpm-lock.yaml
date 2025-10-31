@@ -1459,10 +1459,6 @@ importers:
         version: 18.6.1
 
   app:
-    dependencies:
-      zod:
-        specifier: 'catalog:'
-        version: 4.1.12
     devDependencies:
       '@directus/composables':
         specifier: workspace:*
@@ -1836,6 +1832,9 @@ importers:
       wellknown:
         specifier: 'catalog:'
         version: 0.5.0
+      zod:
+        specifier: 'catalog:'
+        version: 4.1.12
 
   directus:
     dependencies:
