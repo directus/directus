@@ -501,25 +501,11 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 	grid-column: 1 / 3;
 }
 
-.diff-indicator,
+.diff-indicator {
+	@include mixins.comparison-indicator;
+}
+
 .diff-track {
-	position: relative;
-
-	&::before {
-		content: '';
-		position: absolute;
-		inset-block: 0;
-		inset-inline-start: -12px;
-		inline-size: 4px;
-		z-index: 1;
-	}
-}
-
-.diff-indicator::before {
-	background-color: var(--comparison-indicator--color, var(--theme--foreground-subdued));
-}
-
-.diff-track::before {
-	background-color: var(--comparison-track--color, var(--theme--background-accent));
+	@include mixins.comparison-indicator('track');
 }
 </style>
