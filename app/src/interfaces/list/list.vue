@@ -17,6 +17,7 @@ const props = withDefaults(
 		sort?: string;
 		limit?: number;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		headerPlaceholder?: string;
 		collection?: string;
 		placeholder?: string;
@@ -105,6 +106,7 @@ const edits = ref({} as Record<string, any>);
 const confirmDiscard = ref(false);
 
 function openItem(index: number) {
+	if ((props as any).nonEditable) return;
 	isNewItem.value = false;
 
 	edits.value = { ...internalValue.value?.[index] };
@@ -163,6 +165,7 @@ function removeItem(item: Record<string, any>) {
 }
 
 function addNew() {
+	if ((props as any).nonEditable) return;
 	isNewItem.value = true;
 
 	const newDefaults: any = {};
@@ -207,7 +210,7 @@ function closeDrawer() {
 </script>
 
 <template>
-	<div class="repeater">
+	<div class="repeater" :class="{ 'non-editable': nonEditable }">
 		<v-notice v-if="(Array.isArray(internalValue) && internalValue.length === 0) || internalValue == null">
 			{{ placeholder }}
 		</v-notice>
@@ -218,7 +221,7 @@ function closeDrawer() {
 		<draggable
 			v-if="Array.isArray(internalValue) && internalValue.length > 0"
 			tag="v-list"
-			:disabled="disabled"
+			:disabled="disabled || nonEditable"
 			:model-value="internalValue"
 			item-key="id"
 			handle=".drag-handle"
@@ -227,7 +230,13 @@ function closeDrawer() {
 		>
 			<template #item="{ element, index }">
 				<v-list-item :dense="internalValue.length > 4" block clickable @click="openItem(index)">
-					<v-icon v-if="!disabled && !sort" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+					<v-icon
+						v-if="!disabled && !nonEditable && !sort"
+						name="drag_handle"
+						class="drag-handle"
+						left
+						@click.stop="() => {}"
+					/>
 
 					<render-template
 						:fields="fields"
@@ -239,14 +248,14 @@ function closeDrawer() {
 					<div class="spacer" />
 
 					<div class="item-actions">
-						<v-remove v-if="!disabled" confirm @action="removeItem(element)" />
+						<v-remove v-if="!disabled && !nonEditable" confirm @action="removeItem(element)" />
 					</div>
 				</v-list-item>
 			</template>
 		</draggable>
 
 		<div class="actions">
-			<v-button v-if="showAddNew" :disabled @click="addNew">
+			<v-button v-if="showAddNew && !nonEditable" :disabled @click="addNew">
 				{{ addLabel }}
 			</v-button>
 		</div>
@@ -274,6 +283,7 @@ function closeDrawer() {
 			<div class="drawer-item-content">
 				<v-form
 					:disabled="disabled"
+					:non-editable="!!nonEditable"
 					:fields="fieldsWithNames"
 					:model-value="activeItem"
 					:direction="direction"

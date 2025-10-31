@@ -114,9 +114,5 @@ const value = computed(() =>
 	&.subdued {
 		opacity: 0.5;
 	}
-
-	&.non-editable {
-		pointer-events: none;
-	}
 }
 </style>

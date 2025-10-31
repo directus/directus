@@ -178,7 +178,7 @@ function useComputedValues() {
 			},
 		]"
 	>
-		<v-menu v-if="!isLabelHidden && !isNonEditable" placement="bottom-start" show-arrow arrow-placement="start">
+		<v-menu v-if="!isLabelHidden" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
 				<form-field-label
 					:field="field"
@@ -191,7 +191,7 @@ function useComputedValues() {
 					:edited="isEdited"
 					:has-error="!!validationError"
 					:badge="badge"
-					:raw-editor-enabled="rawEditorEnabled"
+					:raw-editor-enabled="rawEditorEnabled && !isNonEditable"
 					:raw-editor-active="rawEditorActive"
 					:loading="loading"
 					@toggle-batch="$emit('toggle-batch', $event)"
@@ -203,7 +203,7 @@ function useComputedValues() {
 				:field="field"
 				:model-value="internalValue"
 				:initial-value="initialValue"
-				:restricted="isDisabled"
+				:restricted="isDisabled || isNonEditable"
 				:disabled-options="disabledMenuOptions"
 				@update:model-value="emitValue($event)"
 				@unset="$emit('unset', $event)"
@@ -212,23 +212,7 @@ function useComputedValues() {
 				@paste-raw="pasteRaw"
 			/>
 		</v-menu>
-		<form-field-label
-			v-else-if="!isLabelHidden"
-			:field="field"
-			:toggle="() => {}"
-			:active="false"
-			:batch-mode="batchMode"
-			:batch-active="batchActive"
-			:comparison="comparison"
-			:comparison-active="comparisonActive"
-			:edited="isEdited"
-			:has-error="!!validationError"
-			:badge="badge"
-			:raw-editor-enabled="false"
-			:raw-editor-active="false"
-			:loading="loading"
-			disabled
-		/>
+
 		<div v-else-if="['full', 'fill'].includes(field.meta?.width ?? '') === false" class="label-spacer" />
 
 		<form-field-interface
@@ -254,7 +238,7 @@ function useComputedValues() {
 			:show-modal="showRaw"
 			:field="field"
 			:current-value="internalValue"
-			:disabled="isDisabled"
+			:disabled="isDisabled || isNonEditable"
 			@cancel="showRaw = false"
 			@set-raw-value="onRawValueSubmit"
 		/>

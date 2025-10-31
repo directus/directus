@@ -20,6 +20,7 @@ const props = withDefaults(
 	defineProps<{
 		value: string | Record<string, any> | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		loading?: boolean;
 		folder?: string;
 		filter?: Filter;
@@ -35,6 +36,7 @@ const props = withDefaults(
 		crop: true,
 		enableCreate: true,
 		enableSelect: true,
+		nonEditable: false,
 	},
 );
 
@@ -166,7 +168,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 </script>
 
 <template>
-	<div class="image" :class="[width, { crop }]">
+	<div class="image" :class="[width, { crop, 'non-editable': nonEditable }]">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
 		<v-notice v-else-if="internalDisabled && !image" class="disabled-placeholder" center icon="hide_image">
@@ -199,7 +201,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 
 			<div class="shadow" />
 
-			<div class="actions">
+			<div v-if="!nonEditable" class="actions">
 				<v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
 					<v-icon name="zoom_in" />
 				</v-button>
@@ -235,7 +237,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			<drawer-item
 				v-if="image"
 				v-model:active="editImageDetails"
-				:disabled="internalDisabled"
+				:disabled="internalDisabled || nonEditable"
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"
@@ -254,12 +256,17 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				</template>
 			</drawer-item>
 
-			<image-editor v-if="!internalDisabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
+			<image-editor
+				v-if="!internalDisabled && !nonEditable"
+				:id="image.id"
+				v-model="editImageEditor"
+				@refresh="refresh"
+			/>
 
 			<file-lightbox v-model="lightboxActive" :file="image" />
 		</div>
 		<v-upload
-			v-else
+			v-else-if="!nonEditable"
 			from-url
 			:from-user="createAllowed && enableCreate"
 			:from-library="enableSelect"
@@ -267,6 +274,9 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			:filter="customFilter"
 			@input="onUpload"
 		/>
+		<v-notice v-else class="disabled-placeholder" center icon="hide_image">
+			{{ t('no_image_selected') }}
+		</v-notice>
 	</div>
 </template>
 
@@ -412,6 +422,10 @@ img {
 			}
 		}
 	}
+}
+
+.image.non-editable {
+	pointer-events: none;
 }
 
 .disabled-placeholder {
