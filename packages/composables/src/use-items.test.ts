@@ -2,7 +2,7 @@ import type { Field, Filter } from '@directus/types';
 import { flushPromises } from '@vue/test-utils';
 import type { AxiosRequestConfig } from 'axios';
 import { isEqual } from 'lodash-es';
-import { afterEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { computed, ref, unref } from 'vue';
 import { useCollection } from './use-collection.js';
 import { useItems } from './use-items.js';
@@ -54,6 +54,11 @@ vi.mock('./use-system.js', () => ({
 
 vi.mock('./use-collection.js');
 
+beforeEach(() => {
+	// use fake timers to control debounce timing
+	vi.useFakeTimers();
+});
+
 afterEach(() => {
 	vi.clearAllMocks();
 });
@@ -70,8 +75,8 @@ test('should fetch filter count and total count only once', async () => {
 		page: ref(1),
 	});
 
-	// Wait until computed values are updated
-	await flushPromises();
+	// advance timers past debounce delay
+	await vi.advanceTimersByTimeAsync(350);
 
 	expect(unref(totalCount)).toBe(mockCountData.count);
 	expect(unref(itemCount)).toBe(mockCountData.count);
@@ -92,8 +97,8 @@ test('should fetch distinct filter count and total count only once', async () =>
 		page: ref(1),
 	});
 
-	// Wait until computed values are updated
-	await flushPromises();
+	// advance timers past debounce delay
+	await vi.advanceTimersByTimeAsync(350);
 
 	expect(unref(totalCount)).toBe(mockCountDistinctData.countDistinct.id);
 	expect(unref(itemCount)).toBe(mockCountDistinctData.countDistinct.id);
@@ -116,11 +121,14 @@ test('should not re-fetch filter count when changing fields query', async () => 
 		page: ref(1),
 	});
 
+	// advance timers for initial fetch
+	await vi.advanceTimersByTimeAsync(350);
+
 	// update fields query
 	fields.value = ['id'];
 
-	// Wait until computed values are updated
-	await flushPromises();
+	// advance timers for second fetch
+	await vi.advanceTimersByTimeAsync(350);
 
 	expect(mockApiGet.mock.calls.filter((call) => isFilterCountRequest(call[1])).length).toBe(1);
 });
@@ -139,11 +147,14 @@ test('should re-fetch filter count when changing filters query', async () => {
 		page: ref(1),
 	});
 
+	// advance timers for initial fetch
+	await vi.advanceTimersByTimeAsync(350);
+
 	// update filter query
 	filter.value = { id: { _eq: 1 } };
 
-	// Wait until computed values are updated
-	await flushPromises();
+	// advance timers for second fetch
+	await vi.advanceTimersByTimeAsync(350);
 
 	expect(mockApiGet.mock.calls.filter((call) => isTotalCountRequest(call[1])).length).toBe(1);
 	expect(mockApiGet.mock.calls.filter((call) => isFilterCountRequest(call[1])).length).toBe(2);
@@ -164,10 +175,13 @@ test('should re-fetch total count when changing system filter', async () => {
 		page: ref(1),
 	});
 
+	// advance timers for initial fetch
+	await vi.advanceTimersByTimeAsync(350);
+
 	// update filter query
 	filterSystem.value = { id: { _eq: 1 } };
 
-	// Wait until computed values are updated
+	// system filter change is not debounced, just flush promises
 	await flushPromises();
 
 	expect(mockApiGet.mock.calls.filter((call) => isFilterCountRequest(call[1])).length).toBe(1);
@@ -188,11 +202,14 @@ test('should re-fetch filter count when changing search query', async () => {
 		page: ref(1),
 	});
 
+	// advance timers for initial fetch
+	await vi.advanceTimersByTimeAsync(350);
+
 	// update search query
 	search.value = 'test';
 
-	// Wait until computed values are updated
-	await flushPromises();
+	// advance timers for second fetch
+	await vi.advanceTimersByTimeAsync(350);
 
 	expect(mockApiGet.mock.calls.filter((call) => isTotalCountRequest(call[1])).length).toBe(1);
 	expect(mockApiGet.mock.calls.filter((call) => isFilterCountRequest(call[1])).length).toBe(2);
@@ -214,6 +231,8 @@ test('should reset when collection changes', async () => {
 
 	// Wait until computed values are updated
 	await flushPromises();
+	// advance timers for initial fetch
+	await vi.advanceTimersByTimeAsync(350);
 
 	expect(unref(items)).toEqual([mockData]);
 
@@ -224,6 +243,10 @@ test('should reset when collection changes', async () => {
 	await flushPromises();
 
 	expect(unref(items)).toEqual([]);
+
+	// advance timers for second fetch
+	await vi.advanceTimersByTimeAsync(350);
+
 	expect(mockApiGet.mock.calls.filter((call) => isTotalCountRequest(call[1])).length).toBe(2);
 	expect(mockApiGet.mock.calls.filter((call) => isFilterCountRequest(call[1])).length).toBe(2);
 });
@@ -242,8 +265,8 @@ test('should append $thumbnail to fetched items when collection is directus_file
 		page: ref(1),
 	});
 
-	// Wait until computed values are updated
-	await flushPromises();
+	// advance timers past debounce delay
+	await vi.advanceTimersByTimeAsync(350);
 
 	expect(unref(items)).toEqual([{ id: mockData.id, $thumbnail: mockData }]);
 });
