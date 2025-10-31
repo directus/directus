@@ -17,12 +17,12 @@ interface Props {
 	primaryKey: PrimaryKey;
 	mode: 'version' | 'revision';
 	currentVersion: ContentVersion | null | undefined;
-	currentRevision?: Revision | null;
 	revisions?: Revision[] | null;
 }
 
 const props = defineProps<Props>();
 const active = defineModel<boolean>();
+const currentRevision = defineModel<Revision | null>('current-revision');
 
 const emit = defineEmits<{
 	cancel: [];
@@ -33,8 +33,6 @@ const emit = defineEmits<{
 const { t } = useI18n();
 
 const { deleteVersionsAllowed, collection, primaryKey, mode, currentVersion, revisions } = toRefs(props);
-const internalRevision = ref<Revision | null>(null);
-const currentRevision = computed(() => internalRevision.value ?? props.currentRevision);
 
 const {
 	comparisonData,
@@ -160,7 +158,7 @@ function usePromoteDialog() {
 function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	if (props.mode !== 'revision') return;
 
-	internalRevision.value = revisions.value?.find((revision) => revision.id === newDeltaId) ?? null;
+	currentRevision.value = revisions.value?.find((revision) => revision.id === newDeltaId) ?? null;
 }
 </script>
 
