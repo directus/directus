@@ -1,4 +1,3 @@
-import type { Activity } from '@/types/activity';
 import type { Revision } from '@/types/revisions';
 import type { ContentVersion, User } from '@directus/types';
 
@@ -47,7 +46,6 @@ export type NormalizedComparison = {
 export type ComparisonData = {
 	base: Record<string, any>;
 	incoming: Record<string, any>;
-	mainVersionMeta?: Pick<Activity, 'timestamp' | 'user'>;
 	selectableDeltas?: Revision[] | ContentVersion[];
 	revisionFields?: Set<string>;
 	comparisonType: 'version' | 'revision';

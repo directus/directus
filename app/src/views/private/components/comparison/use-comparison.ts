@@ -37,7 +37,7 @@ interface UseComparisonOptions {
 }
 
 export function useComparison(options: UseComparisonOptions) {
-	const { collection, primaryKey, mode, currentVersion, currentRevision, revisions } = options;
+	const { collection, mode, currentVersion, currentRevision, revisions } = options;
 
 	const selectedComparisonFields = ref<string[]>([]);
 	const userUpdated = ref<User | null>(null);
@@ -204,52 +204,24 @@ export function useComparison(options: UseComparisonOptions) {
 		baseUserUpdated.value = (await fetchUserDetails(normalizedData.value?.base?.user, baseUserLoading)) ?? null;
 	}
 
-	async function fetchLatestRevisionActivityOfMainVersion(collection: string, item: PrimaryKey) {
-		try {
-			type RevisionResponse = { data: Pick<Revision, 'activity'>[] };
-
-			const response = await api.get<RevisionResponse>('/revisions', {
-				params: {
-					filter: {
-						_and: [{ collection: { _eq: collection } }, { item: { _eq: item } }, { version: { _null: true } }],
-					},
-					sort: '-id',
-					limit: 1,
-					fields: [
-						'activity.timestamp',
-						'activity.user.id',
-						'activity.user.email',
-						'activity.user.first_name',
-						'activity.user.last_name',
-					],
-				},
-			});
-
-			return response.data.data?.[0]?.activity as ComparisonData['mainVersionMeta'] | undefined;
-		} catch (error) {
-			unexpectedError(error);
-			throw error;
-		}
-	}
-
 	async function buildVersionComparison(version: ContentVersion): Promise<ComparisonData> {
 		try {
-			const response = await api.get(`/versions/${version.id}/compare`);
-			const data: VersionComparisonResponse = response.data.data;
+			const compareResponse = await api.get(`/versions/${version.id}/compare`);
+			const data: VersionComparisonResponse = compareResponse.data.data;
 			const base = data.main || {};
 			const incomingMerged = mergeWith({}, base, data.current || {}, replaceArraysInMergeCustomizer);
 
-			const mainVersionMeta = await fetchLatestRevisionActivityOfMainVersion(collection.value, primaryKey.value);
+			const freshVersionResponse = await api.get(`/versions/${version.id}`);
+			const freshVersion: ContentVersion = freshVersionResponse.data.data;
 
 			return {
 				base,
 				incoming: incomingMerged,
-				mainVersionMeta,
-				selectableDeltas: [version],
+				selectableDeltas: [freshVersion],
 				comparisonType: 'version',
 				outdated: data.outdated,
 				mainHash: data.mainHash,
-				initialSelectedDeltaId: version.id,
+				initialSelectedDeltaId: freshVersion.id,
 			};
 		} catch (error) {
 			unexpectedError(error);
@@ -383,9 +355,8 @@ export function useComparison(options: UseComparisonOptions) {
 			base = {
 				id: 'base',
 				displayName: i18n.global.t('main_version'),
-				date: normalizeDate(comparisonData.mainVersionMeta?.timestamp || comparisonData.base.date_updated),
-				user:
-					comparisonData.mainVersionMeta?.user ?? comparisonData.base.user_updated ?? comparisonData.base.user_created,
+				date: normalizeDate(comparisonData.base.date_updated || comparisonData.base.date_created),
+				user: comparisonData.base.user_updated ?? comparisonData.base.user_created,
 			};
 		}
 
