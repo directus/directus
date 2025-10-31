@@ -81,6 +81,43 @@ export async function SaveVersion(
 	return response.body.data;
 }
 
+export async function CompareVersion(
+	vendor: Vendor,
+	options: {
+		id: string;
+	},
+) {
+	const response = await request(getUrl(vendor))
+		.get(`/versions/${options.id}/compare`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
+
+	return response.body.data;
+}
+
+export async function PromoteVersion(
+	vendor: Vendor,
+	options: {
+		id: string;
+		hash: string;
+		fields?: string[];
+	},
+) {
+	const payload: { mainHash: string; fields?: string[] } = {
+		mainHash: options.hash,
+	};
+
+	if (options.fields) {
+		payload.fields = options.fields;
+	}
+
+	const response = await request(getUrl(vendor))
+		.post(`/versions/${options.id}/promote`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
+		.send(payload);
+
+	return response.body.data;
+}
+
 export async function CreateRole(vendor: Vendor, options: OptionsCreateRole) {
 	// Action
 	const roleResponse = await request(getUrl(vendor))
