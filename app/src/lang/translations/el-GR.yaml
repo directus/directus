@@ -149,10 +149,6 @@ rename_version: Μετονομασία Έκδοσης
 compare_version: Σύγκριση Έκδοσης
 save_version: Αποθήκευση Έκδοσης
 promote_version: Προώθηση Έκδοσης
-promote_version_disabled: Καμία Αλλαγή
-promote_version_drawer_title: Προώθηση του {version} στον Κύριο
-promote_version_changes: Αλλαγές
-promote_version_preview: Προεπισκόπηση
 reset_bookmark: Επαναφορά Σελιδοδείκτη
 update_bookmark: Ενημέρωση Σελιδοδείκτη
 delete_bookmark: Διαγραφή σελιδοδείκτη
