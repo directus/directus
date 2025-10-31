@@ -73,6 +73,34 @@ vi.mock('../utils/should-clear-cache.js', () => ({
 	shouldClearCache: vi.fn().mockReturnValue(true),
 }));
 
+const mockCreateIndexSpy = vi.fn().mockResolvedValue(undefined);
+
+vi.mock('../database/helpers/index.js', () => ({
+	getHelpers: vi.fn(() => ({
+		schema: {
+			createIndex: mockCreateIndexSpy,
+			processFieldType: vi.fn((field) => field.type),
+			preColumnChange: vi.fn().mockResolvedValue(true),
+			postColumnChange: vi.fn().mockResolvedValue(undefined),
+			setNullable: vi.fn(),
+			generateIndexName: vi.fn((type, collection, field) => `${collection}_${field}_${type}`),
+		},
+		date: {
+			fieldFlagForField: vi.fn().mockReturnValue(null),
+		},
+		st: {
+			createColumn: vi.fn((_table, _field) => ({
+				defaultTo: vi.fn().mockReturnThis(),
+				notNullable: vi.fn().mockReturnThis(),
+				nullable: vi.fn().mockReturnThis(),
+				unique: vi.fn().mockReturnThis(),
+				index: vi.fn().mockReturnThis(),
+				primary: vi.fn().mockReturnThis(),
+			})),
+		},
+	})),
+}));
+
 import { FieldsService } from './fields.js';
 import { ItemsService } from './items.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
@@ -753,6 +781,459 @@ describe('Integration Tests', () => {
 				await service.deleteField('test_collection', 'name');
 
 				expect(clearSpy).toHaveBeenCalled();
+			});
+		});
+
+		describe('addColumnIndex', () => {
+			beforeEach(() => {
+				mockCreateIndexSpy.mockClear();
+			});
+
+			test('should not add index for alias fields', async () => {
+				const service = new FieldsService({
+					knex: db,
+					schema,
+				});
+
+				const field: Field = {
+					collection: 'test_collection',
+					field: 'alias_field',
+					type: 'alias',
+					schema: null,
+					meta: null,
+					name: '',
+				};
+
+				await expect(service.addColumnIndex('test_collection', field)).resolves.not.toThrow();
+			});
+
+			test('should not add index for primary key fields', async () => {
+				const service = new FieldsService({
+					knex: db,
+					schema,
+				});
+
+				const field: Field = {
+					collection: 'test_collection',
+					field: 'id',
+					type: 'integer',
+					schema: {
+						name: 'id',
+						table: 'test_collection',
+						data_type: 'integer',
+						default_value: null,
+						max_length: null,
+						numeric_precision: null,
+						numeric_scale: null,
+						is_generated: false,
+						generation_expression: null,
+						is_nullable: false,
+						is_unique: true,
+						is_indexed: true,
+						is_primary_key: true,
+						has_auto_increment: true,
+						foreign_key_column: null,
+						foreign_key_table: null,
+					},
+					meta: null,
+					name: '',
+				};
+
+				await expect(service.addColumnIndex('test_collection', field)).resolves.not.toThrow();
+			});
+
+			test('should not add index when existing column is primary key', async () => {
+				const service = new FieldsService({
+					knex: db,
+					schema,
+				});
+
+				const field: Field = {
+					collection: 'test_collection',
+					field: 'id',
+					type: 'integer',
+					schema: {
+						name: 'id',
+						table: 'test_collection',
+						data_type: 'integer',
+						default_value: null,
+						max_length: null,
+						numeric_precision: null,
+						numeric_scale: null,
+						is_generated: false,
+						generation_expression: null,
+						is_nullable: false,
+						is_unique: false,
+						is_indexed: false,
+						is_primary_key: false,
+						has_auto_increment: true,
+						foreign_key_column: null,
+						foreign_key_table: null,
+					},
+					meta: null,
+					name: '',
+				};
+
+				const existingColumn = {
+					name: 'id',
+					table: 'test_collection',
+					data_type: 'integer',
+					default_value: null,
+					max_length: null,
+					numeric_precision: null,
+					numeric_scale: null,
+					is_generated: false,
+					generation_expression: null,
+					is_nullable: false,
+					is_unique: true,
+					is_indexed: true,
+					is_primary_key: true,
+					has_auto_increment: true,
+					foreign_key_column: null,
+					foreign_key_table: null,
+				};
+
+				await expect(
+					service.addColumnIndex('test_collection', field, { existing: existingColumn }),
+				).resolves.not.toThrow();
+			});
+
+			test('should create unique index when field schema is_unique is true', async () => {
+				const service = new FieldsService({
+					knex: db,
+					schema,
+				});
+
+				const field: Field = {
+					collection: 'test_collection',
+					field: 'email',
+					type: 'string',
+					schema: {
+						name: 'email',
+						table: 'test_collection',
+						data_type: 'varchar',
+						default_value: null,
+						max_length: 255,
+						numeric_precision: null,
+						numeric_scale: null,
+						is_generated: false,
+						generation_expression: null,
+						is_nullable: true,
+						is_unique: true,
+						is_indexed: false,
+						is_primary_key: false,
+						has_auto_increment: false,
+						foreign_key_column: null,
+						foreign_key_table: null,
+					},
+					meta: null,
+					name: '',
+				};
+
+				await service.addColumnIndex('test_collection', field);
+
+				expect(mockCreateIndexSpy).toHaveBeenCalledWith('test_collection', 'email', {
+					unique: true,
+					attemptConcurrentIndex: false,
+				});
+			});
+
+			test('should create regular index when field schema is_indexed is true', async () => {
+				const service = new FieldsService({
+					knex: db,
+					schema,
+				});
+
+				const field: Field = {
+					collection: 'test_collection',
+					field: 'name',
+					type: 'string',
+					schema: {
+						name: 'name',
+						table: 'test_collection',
+						data_type: 'varchar',
+						default_value: null,
+						max_length: 255,
+						numeric_precision: null,
+						numeric_scale: null,
+						is_generated: false,
+						generation_expression: null,
+						is_nullable: true,
+						is_unique: false,
+						is_indexed: true,
+						is_primary_key: false,
+						has_auto_increment: false,
+						foreign_key_column: null,
+						foreign_key_table: null,
+					},
+					meta: null,
+					name: '',
+				};
+
+				await service.addColumnIndex('test_collection', field);
+
+				expect(mockCreateIndexSpy).toHaveBeenCalledWith('test_collection', 'name', {
+					unique: false,
+					attemptConcurrentIndex: false,
+				});
+			});
+
+			test('should create unique index with concurrent flag when attemptConcurrentIndex is true', async () => {
+				const service = new FieldsService({
+					knex: db,
+					schema,
+				});
+
+				const field: Field = {
+					collection: 'test_collection',
+					field: 'email',
+					type: 'string',
+					schema: {
+						name: 'email',
+						table: 'test_collection',
+						data_type: 'varchar',
+						default_value: null,
+						max_length: 255,
+						numeric_precision: null,
+						numeric_scale: null,
+						is_generated: false,
+						generation_expression: null,
+						is_nullable: true,
+						is_unique: true,
+						is_indexed: false,
+						is_primary_key: false,
+						has_auto_increment: false,
+						foreign_key_column: null,
+						foreign_key_table: null,
+					},
+					meta: null,
+					name: '',
+				};
+
+				await service.addColumnIndex('test_collection', field, { attemptConcurrentIndex: true });
+
+				expect(mockCreateIndexSpy).toHaveBeenCalledWith('test_collection', 'email', {
+					unique: true,
+					attemptConcurrentIndex: true,
+				});
+			});
+
+			test('should not create unique index when existing column already has unique constraint', async () => {
+				const service = new FieldsService({
+					knex: db,
+					schema,
+				});
+
+				const field: Field = {
+					collection: 'test_collection',
+					field: 'email',
+					type: 'string',
+					schema: {
+						name: 'email',
+						table: 'test_collection',
+						data_type: 'varchar',
+						default_value: null,
+						max_length: 255,
+						numeric_precision: null,
+						numeric_scale: null,
+						is_generated: false,
+						generation_expression: null,
+						is_nullable: true,
+						is_unique: true,
+						is_indexed: false,
+						is_primary_key: false,
+						has_auto_increment: false,
+						foreign_key_column: null,
+						foreign_key_table: null,
+					},
+					meta: null,
+					name: '',
+				};
+
+				const existingColumn = {
+					name: 'email',
+					table: 'test_collection',
+					data_type: 'varchar',
+					default_value: null,
+					max_length: 255,
+					numeric_precision: null,
+					numeric_scale: null,
+					is_generated: false,
+					generation_expression: null,
+					is_nullable: true,
+					is_unique: true,
+					is_indexed: false,
+					is_primary_key: false,
+					has_auto_increment: false,
+					foreign_key_column: null,
+					foreign_key_table: null,
+				};
+
+				await service.addColumnIndex('test_collection', field, { existing: existingColumn });
+
+				expect(mockCreateIndexSpy).not.toHaveBeenCalled();
+			});
+
+			test('should not create regular index when existing column already has index', async () => {
+				const service = new FieldsService({
+					knex: db,
+					schema,
+				});
+
+				const field: Field = {
+					collection: 'test_collection',
+					field: 'name',
+					type: 'string',
+					schema: {
+						name: 'name',
+						table: 'test_collection',
+						data_type: 'varchar',
+						default_value: null,
+						max_length: 255,
+						numeric_precision: null,
+						numeric_scale: null,
+						is_generated: false,
+						generation_expression: null,
+						is_nullable: true,
+						is_unique: false,
+						is_indexed: true,
+						is_primary_key: false,
+						has_auto_increment: false,
+						foreign_key_column: null,
+						foreign_key_table: null,
+					},
+					meta: null,
+					name: '',
+				};
+
+				const existingColumn = {
+					name: 'name',
+					table: 'test_collection',
+					data_type: 'varchar',
+					default_value: null,
+					max_length: 255,
+					numeric_precision: null,
+					numeric_scale: null,
+					is_generated: false,
+					generation_expression: null,
+					is_nullable: true,
+					is_unique: false,
+					is_indexed: true,
+					is_primary_key: false,
+					has_auto_increment: false,
+					foreign_key_column: null,
+					foreign_key_table: null,
+				};
+
+				await service.addColumnIndex('test_collection', field, { existing: existingColumn });
+
+				expect(mockCreateIndexSpy).not.toHaveBeenCalled();
+			});
+
+			test('should create index when existing column does not have index but new field does', async () => {
+				const service = new FieldsService({
+					knex: db,
+					schema,
+				});
+
+				const field: Field = {
+					collection: 'test_collection',
+					field: 'name',
+					type: 'string',
+					schema: {
+						name: 'name',
+						table: 'test_collection',
+						data_type: 'varchar',
+						default_value: null,
+						max_length: 255,
+						numeric_precision: null,
+						numeric_scale: null,
+						is_generated: false,
+						generation_expression: null,
+						is_nullable: true,
+						is_unique: false,
+						is_indexed: true,
+						is_primary_key: false,
+						has_auto_increment: false,
+						foreign_key_column: null,
+						foreign_key_table: null,
+					},
+					meta: null,
+					name: '',
+				};
+
+				const existingColumn = {
+					name: 'name',
+					table: 'test_collection',
+					data_type: 'varchar',
+					default_value: null,
+					max_length: 255,
+					numeric_precision: null,
+					numeric_scale: null,
+					is_generated: false,
+					generation_expression: null,
+					is_nullable: true,
+					is_unique: false,
+					is_indexed: false,
+					is_primary_key: false,
+					has_auto_increment: false,
+					foreign_key_column: null,
+					foreign_key_table: null,
+				};
+
+				await service.addColumnIndex('test_collection', field, { existing: existingColumn });
+
+				expect(mockCreateIndexSpy).toHaveBeenCalledWith('test_collection', 'name', {
+					unique: false,
+					attemptConcurrentIndex: false,
+				});
+			});
+
+			test('should create both unique and regular indexes when both are needed', async () => {
+				const service = new FieldsService({
+					knex: db,
+					schema,
+				});
+
+				const field: Field = {
+					collection: 'test_collection',
+					field: 'email',
+					type: 'string',
+					schema: {
+						name: 'email',
+						table: 'test_collection',
+						data_type: 'varchar',
+						default_value: null,
+						max_length: 255,
+						numeric_precision: null,
+						numeric_scale: null,
+						is_generated: false,
+						generation_expression: null,
+						is_nullable: true,
+						is_unique: true,
+						is_indexed: true,
+						is_primary_key: false,
+						has_auto_increment: false,
+						foreign_key_column: null,
+						foreign_key_table: null,
+					},
+					meta: null,
+					name: '',
+				};
+
+				await service.addColumnIndex('test_collection', field);
+
+				expect(mockCreateIndexSpy).toHaveBeenCalledTimes(2);
+
+				expect(mockCreateIndexSpy).toHaveBeenCalledWith('test_collection', 'email', {
+					unique: true,
+					attemptConcurrentIndex: false,
+				});
+
+				expect(mockCreateIndexSpy).toHaveBeenCalledWith('test_collection', 'email', {
+					unique: false,
+					attemptConcurrentIndex: false,
+				});
 			});
 		});
 
