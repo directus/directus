@@ -99,7 +99,7 @@ const {
 const value = computed<unknown | unknown[]>({
 	get() {
 		if (!isVariableInputActive.value && ['_in', '_nin'].includes(comparator.value)) {
-			return [...(fieldValue.value as (string | number)[]).filter((val) => val !== null && val !== ''), null];
+			return [...(fieldValue.value as (string | number | null)[]).filter((val) => val !== null && val !== ''), null];
 		}
 
 		return fieldValue.value;
