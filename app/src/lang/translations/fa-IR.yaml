@@ -176,19 +176,9 @@ rename_version: ویرایش نسخه
 compare_version: مقایسه نسخه
 save_version: ذخیره‌سازی نسخه
 promote_version: ارتقای نسخه
-promote_version_disabled: بدون تغییر
-promote_version_drawer_title: ارتقای {version} به اصلی
-promote_version_changes: تغییرات
-promote_version_preview: پيش نمايش
-outdated_notice: >-
-  نسخه اصلی از زمان ایجاد این نسخه به‌روزرسانی شده است. لطفا مقادیر تمام فیلدهای پایین را بازبینی کنید و تایید کنید که وقتی این نسخه را به نسخه اصلی ارتقا می‌دهید، کدام نسخه باید استفاده شود.
-promote_notice: >-
-  لطفا مقادیر تمام فیلدهای پایین را بازبینی کنید و تایید کنید که وقتی این نسخه را به نسخه اصلی ارتقا می‌دهید، کدام نسخه باید استفاده شود.
 delete_version: حذف نسخه
 delete_version_copy: >-
   آیا از حذف نسخه «{version}» مطمئنید؟ این اقدام غیر قابل بازگشت است.
-delete_on_promote_copy: >-
-  می‌خواهید نسخه «{version}» را بعد از ارتقا نگه دارید یا حذف کنید؟
 reset_bookmark: بازنشانی نشانک
 update_bookmark: به روزرسانی نشانک
 delete_bookmark: حذف نشانک
@@ -468,7 +458,6 @@ revision_delta_created: ایجاد شد
 revision_delta_created_externally: به شکل خارجی ایجاد شد
 revision_delta_updated: 'یک فیلد برورزسانی شد | {count} فیلد بروزرسانی شدند'
 revision_delta_deleted: حذف شده
-revision_delta_version_saved: 'ذخیره‌سازی نسخه (یک فیلد به روز شده است) | ذخیره‌سازی نسخه ({count} فیلد به روز شده است)'
 revision_delta_reverted: بازگردانده شد
 revision_delta_update_message: این فیلد به روز شده است اما ارزش آن به دلایل امنیتی پنهان شده است.
 revision_delta_other: نسخه
