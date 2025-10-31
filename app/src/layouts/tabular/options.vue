@@ -5,11 +5,11 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import { useSync } from '@directus/composables';
 import { Field } from '@directus/types';
+import { useI18n } from 'vue-i18n';
 
-interface Props {
+export interface Props {
 	fields: string[];
 	activeFields: Field[];
 	tableSpacing: 'compact' | 'cozy' | 'comfortable';
