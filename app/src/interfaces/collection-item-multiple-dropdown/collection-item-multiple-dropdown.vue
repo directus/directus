@@ -173,7 +173,7 @@ function onSort(sortedItems: Record<string, any>[]) {
 						<div class="spacer" />
 
 						<div class="item-actions">
-							<v-remove v-if="!disabled" @action="removeItem(element)" />
+							<v-remove v-if="!disabled" deselect @action="removeItem(element)" />
 						</div>
 					</v-list-item>
 				</template>
