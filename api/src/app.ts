@@ -71,6 +71,7 @@ import metricsSchedule from './schedules/metrics.js';
 import retentionSchedule from './schedules/retention.js';
 import telemetrySchedule from './schedules/telemetry.js';
 import tusSchedule from './schedules/tus.js';
+import projectSchedule from './schedules/project.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
 import { validateStorage } from './utils/validate-storage.js';
@@ -340,6 +341,7 @@ export default async function createApp(): Promise<express.Application> {
 	await telemetrySchedule();
 	await tusSchedule();
 	await metricsSchedule();
+	await projectSchedule();
 
 	await emitter.emitInit('app.after', { app });
 

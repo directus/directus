@@ -84,6 +84,7 @@ catalog:
   '@types/content-disposition': 0.5.9
   '@types/cookie-parser': 1.4.10
   '@types/cors': 2.8.19
+  '@types/cron': 3.0.11
   '@types/deep-diff': 1.0.5
   '@types/destroy': 1.0.3
   '@types/diacritics': 1.3.3
@@ -107,7 +108,6 @@ catalog:
   '@types/mime-types': 3.0.1
   '@types/ms': 2.1.0
   '@types/node': 22.13.14
-  '@types/cron': 3.0.11
   '@types/nodemailer': 7.0.3
   '@types/object-hash': 3.0.6
   '@types/papaparse': 5.3.16
@@ -288,6 +288,7 @@ catalog:
   typescript-eslint: 8.46.2
   undici: 7.16.0
   unplugin-yaml: 3.0.7
+  universal-cookie: 8.0.1
   update-check: 1.5.4
   uuid: 11.1.0
   vite: 7.1.12

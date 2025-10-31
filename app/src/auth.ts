@@ -15,6 +15,7 @@ import { useAppStore } from '@directus/stores';
 import { RouteLocationRaw } from 'vue-router';
 import { Events, emitter } from './events';
 import { useServerStore } from './stores/server';
+import { useCookies } from '@vueuse/integrations/useCookies';
 
 type LoginCredentials = {
 	identifier?: string;
@@ -29,6 +30,8 @@ type LoginParams = {
 	provider?: string;
 	share?: boolean;
 };
+
+const cookies = useCookies(['license-banner-dismissed']);
 
 export async function login({ credentials, provider, share }: LoginParams): Promise<void> {
 	const appStore = useAppStore();
@@ -70,6 +73,7 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 	}
 
 	appStore.accessTokenExpiry = Date.now() + (response.expires ?? 0);
+	cookies.remove('license-banner-dismissed');
 	appStore.authenticated = true;
 
 	// Reload server store to get authenticated data
