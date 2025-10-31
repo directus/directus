@@ -97,7 +97,7 @@ function useComparisonIndicator() {
 			<div
 				:class="{
 					'diff-indicator': !active && isFieldWithDifference,
-					'diff-track': (active && isFieldWithDifference) || isRevisionUpdateOnly,
+					'diff-guide': (active && isFieldWithDifference) || isRevisionUpdateOnly,
 				}"
 			>
 				<button
@@ -161,8 +161,8 @@ function useComparisonIndicator() {
 	}
 }
 
-.diff-track {
-	@include mixins.comparison-indicator('track');
+.diff-guide {
+	@include mixins.comparison-indicator('guide');
 
 	&::before {
 		transition: background-color var(--slow) var(--transition) var(--fast);

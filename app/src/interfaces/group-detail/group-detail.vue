@@ -39,7 +39,7 @@ const { t } = useI18n();
 
 const detailOpen = ref(props.start === 'open');
 
-const { isComparisonDiffIndicator, isComparisonDiffTrack } = useComparisonIndicator();
+const { isComparisonDiffIndicator, isComparisonDiffGuide } = useComparisonIndicator();
 
 // In case that conditions change the start prop after the group already got rendered
 // caused by the async loading of data to run the conditions against
@@ -98,7 +98,7 @@ function useComparisonIndicator() {
 
 	const isComparisonDiffIndicator = computed(() => !detailOpen.value && isGroupWithFieldDifferences.value);
 
-	const isComparisonDiffTrack = computed(() => {
+	const isComparisonDiffGuide = computed(() => {
 		if (!props.comparison) return false;
 		if (detailOpen.value && isGroupWithFieldDifferences.value) return true;
 		return (
@@ -109,7 +109,7 @@ function useComparisonIndicator() {
 
 	return {
 		isComparisonDiffIndicator,
-		isComparisonDiffTrack,
+		isComparisonDiffGuide,
 	};
 }
 </script>
@@ -121,7 +121,7 @@ function useComparisonIndicator() {
 		class="group-detail"
 		:class="{
 			'diff-indicator': isComparisonDiffIndicator,
-			'diff-track': isComparisonDiffTrack,
+			'diff-guide': isComparisonDiffGuide,
 		}"
 	>
 		<template #activator="{ toggle, active }">
@@ -180,8 +180,8 @@ function useComparisonIndicator() {
 		}
 	}
 
-	&.diff-track {
-		@include mixins.comparison-indicator('track');
+	&.diff-guide {
+		@include mixins.comparison-indicator('guide');
 
 		&::before {
 			transition: background-color var(--slow) var(--transition) var(--fast);

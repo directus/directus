@@ -9,8 +9,8 @@
 		inline-size: 4px;
 		z-index: 1;
 
-		@if $type == 'track' {
-			background-color: var(--comparison-track--color, var(--theme--background-accent));
+		@if $type == 'guide' {
+			background-color: var(--comparison-guide--color, var(--theme--background-accent));
 		} @else {
 			background-color: var(--comparison-indicator--color, var(--theme--foreground-subdued));
 		}

@@ -369,7 +369,7 @@ function getFirstVisibleFieldClass(index: number) {
 function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 	if (isComparisonDiff()) {
 		if (field.comparisonIndicator === 'on') return 'diff-indicator';
-		if (field.comparisonIndicator === 'guide') return 'diff-track';
+		if (field.comparisonIndicator === 'guide') return 'diff-guide';
 	}
 
 	return '';
@@ -505,7 +505,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 	@include mixins.comparison-indicator;
 }
 
-.diff-track {
-	@include mixins.comparison-indicator('track');
+.diff-guide {
+	@include mixins.comparison-indicator('guide');
 }
 </style>
