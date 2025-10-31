@@ -41,7 +41,7 @@ export function getFormFields(fields: Ref<Field[]>): ComputedRef<Field[]> {
 				(field as FormField).hideLoader = true;
 			}
 
-			const comparisonIndicatorDefaultValue = field.meta?.special?.includes('group') ? 'none' : 'auto';
+			const comparisonIndicatorDefaultValue = field.meta?.special?.includes('group') ? 'off' : 'on';
 			(field as FormField).comparisonIndicator = interfaceUsed?.comparisonIndicator ?? comparisonIndicatorDefaultValue;
 
 			(field.meta.system ? systemFields : userFields).push(field);

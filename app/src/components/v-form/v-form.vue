@@ -368,14 +368,14 @@ function getFirstVisibleFieldClass(index: number) {
 
 function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 	if (isComparisonDiff()) {
-		if (field.comparisonIndicator === 'auto') return 'diff-indicator';
-		if (field.comparisonIndicator === 'track') return 'diff-track';
+		if (field.comparisonIndicator === 'on') return 'diff-indicator';
+		if (field.comparisonIndicator === 'guide') return 'diff-track';
 	}
 
 	return '';
 
 	function isComparisonDiff() {
-		if (field.comparisonIndicator === 'none' || !props.comparison) return false;
+		if (field.comparisonIndicator === 'off' || !props.comparison) return false;
 
 		if (isGroup) {
 			const groupFields = getFieldsForGroup(field.meta?.field ?? null);
