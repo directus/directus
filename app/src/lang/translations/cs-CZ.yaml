@@ -171,19 +171,9 @@ rename_version: Přejmenovat verzi
 compare_version: Porovnat verzi
 save_version: Uložit verzi
 promote_version: Povýšit verzi
-promote_version_disabled: Beze změn
-promote_version_drawer_title: Povýšit verzi {version} na hlavní
-promote_version_changes: Změny
-promote_version_preview: Náhled
-outdated_notice: >-
-  Hlavní položka byla od vytvoření této verze aktualizována. Přečtěte si prosím všechny níže uvedené hodnoty polí a potvrďte, která verze by měla být použita při povýšení této verze na hlavní.
-promote_notice: >-
-  Přečtěte si prosím všechny níže uvedené hodnoty polí a potvrďte, která verze by měla být použita při povýšení této verze na hlavní.
 delete_version: Smazat verzi
 delete_version_copy: >-
   Opravdu chcete smazat verzi "{version}"? Tuto akci nelze vrátit zpět.
-delete_on_promote_copy: >-
-  Chcete po povýšení odstranit nebo ponechat verzi "{version}"?
 reset_bookmark: Obnovit záložku
 update_bookmark: Aktualizovat záložku
 delete_bookmark: Smazat záložku
@@ -458,7 +448,6 @@ revision_delta_created: Vytvořena
 revision_delta_created_externally: Vytvořena externě
 revision_delta_updated: 'Aktualizováno 1 pole | Aktualizováno {count} polí'
 revision_delta_deleted: Odstraněna
-revision_delta_version_saved: 'Uložit verzi (Aktualizováno 1 pole) | Uložit verzi (Aktualizováno {count} polí)'
 revision_delta_reverted: Vrácena
 revision_delta_update_message: Toto pole bylo aktualizováno, ale jeho hodnota je skryta z bezpečnostních důvodů.
 revision_delta_other: Revize
