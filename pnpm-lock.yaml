@@ -808,8 +808,8 @@ catalogs:
       specifier: 2.1.14
       version: 2.1.14
     tar:
-      specifier: 7.5.1
-      version: 7.5.1
+      specifier: 7.5.2
+      version: 7.5.2
     tedious:
       specifier: 18.6.1
       version: 18.6.1
@@ -1289,7 +1289,7 @@ importers:
         version: 1.9.1
       tar:
         specifier: 'catalog:'
-        version: 7.5.1
+        version: 7.5.2
       tsx:
         specifier: 'catalog:'
         version: 4.20.6
@@ -12563,6 +12563,10 @@ packages:
 
   tar@7.5.1:
     resolution: {integrity: sha512-nlGpxf+hv0v7GkWBK2V9spgactGOp0qvfWRxUMjqHyzrt3SgwE48DIv/FhqPHJYLHpgW1opq3nERbz5Anq7n1g==}
+    engines: {node: '>=18'}
+
+  tar@7.5.2:
+    resolution: {integrity: sha512-7NyxrTE4Anh8km8iEy7o0QYPs+0JKBTj5ZaqHg6B39erLg0qYXN3BijtShwbsNSvQ+LN75+KV+C4QR/f6Gwnpg==}
     engines: {node: '>=18'}
 
   tarn@3.0.2:
@@ -24921,6 +24925,14 @@ snapshots:
     optional: true
 
   tar@7.5.1:
+    dependencies:
+      '@isaacs/fs-minipass': 4.0.1
+      chownr: 3.0.0
+      minipass: 7.1.2
+      minizlib: 3.1.0
+      yallist: 5.0.0
+
+  tar@7.5.2:
     dependencies:
       '@isaacs/fs-minipass': 4.0.1
       chownr: 3.0.0
