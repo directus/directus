@@ -1,19 +1,14 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { FlowRaw } from '@directus/types';
-import { injectRunManualFlow } from '@/composables/use-flows';
+import { useInjectRunManualFlow, type ManualFlow } from '@/composables/use-flows';
 
 const { t } = useI18n();
 
 defineProps<{
-	manualFlows: (FlowRaw & {
-		tooltip: string;
-		isFlowDisabled: boolean;
-		isFlowRunning: boolean;
-	})[];
+	manualFlows: ManualFlow[];
 }>();
 
-const { runManualFlow } = injectRunManualFlow();
+const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 </script>
 
 <template>
@@ -25,7 +20,7 @@ const { runManualFlow } = injectRunManualFlow();
 					small
 					full-width
 					:style="{ '--v-button-background-color': manualFlow.color }"
-					:loading="manualFlow.isFlowRunning"
+					:loading="runningFlows.includes(manualFlow.id)"
 					:disabled="manualFlow.isFlowDisabled"
 					@click="runManualFlow(manualFlow.id)"
 				>

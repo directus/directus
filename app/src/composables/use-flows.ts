@@ -1,5 +1,5 @@
 import api from '@/api';
-import { computed, ref, Ref, provide, inject } from 'vue';
+import { computed, ref, Ref, provide, inject, ComputedRef } from 'vue';
 import { FlowRaw, Item, PrimaryKey } from '@directus/types';
 import { notify } from '@/utils/notify';
 import { translate } from '@/utils/translate-object-values';
@@ -18,6 +18,11 @@ interface UseFlowsOptions {
 	hasEdits?: Ref<boolean>;
 	onRefreshCallback: () => void;
 }
+
+export type ManualFlow = FlowRaw & {
+	tooltip: string;
+	isFlowDisabled: boolean;
+};
 
 const runManualFlowSymbol = 'runManualFlow';
 
@@ -120,7 +125,11 @@ export function useFlows(options: UseFlowsOptions) {
 		return false;
 	});
 
-	const manualFlows = computed(() => {
+	const activeFlows = computed(() =>
+		manualFlows.value.filter((flow) => flow.status === 'active').map((flow) => flow.id),
+	);
+
+	const manualFlows = computed<ManualFlow[]>(() => {
 		const manualFlows = flowsStore
 			.getManualFlowsForCollection(collection)
 			.filter(
@@ -131,7 +140,6 @@ export function useFlows(options: UseFlowsOptions) {
 				options: flow.options ? translate(flow.options) : null,
 				tooltip: getFlowTooltip(flow),
 				isFlowDisabled: checkFlowDisabled(flow),
-				isFlowRunning: checkFlowRunning(flow),
 			}));
 
 		function getFlowTooltip(manualFlow: FlowRaw) {
@@ -147,11 +155,6 @@ export function useFlows(options: UseFlowsOptions) {
 		function checkFlowDisabled(manualFlow: FlowRaw) {
 			if (location === 'item' || manualFlow.options?.requireSelection === false) return false;
 			return !primaryKey && selection.value.length === 0;
-		}
-
-		function checkFlowRunning(manualFlow: FlowRaw) {
-			if (!manualFlow) return false;
-			return runningFlows.value.includes(manualFlow.id);
 		}
 
 		return manualFlows;
@@ -183,6 +186,8 @@ export function useFlows(options: UseFlowsOptions) {
 	function provideRunManualFlow() {
 		provide(runManualFlowSymbol, {
 			runManualFlow,
+			runningFlows,
+			activeFlows,
 		});
 	}
 
@@ -258,12 +263,14 @@ export function useFlows(options: UseFlowsOptions) {
 }
 
 /**
- * In order to invoke injectRunManualFlow within a component, a parent component must first invoke `provideRunManualFlow()`.
+ * In order to invoke useInjectRunManualFlow within a component, a parent component must first invoke `provideRunManualFlow()`.
  *
  * This parent component must also render the <flow-dialogs> component or the confirmation dialogs will not be reachable.
  */
-export function injectRunManualFlow() {
+export function useInjectRunManualFlow() {
 	return inject(runManualFlowSymbol) as {
 		runManualFlow: (flowId: string) => void;
+		runningFlows: Ref<string[]>;
+		activeFlows: ComputedRef<string[]>;
 	};
 }

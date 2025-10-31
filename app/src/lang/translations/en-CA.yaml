@@ -1216,9 +1216,9 @@ interfaces:
     accordion_mode: Accordion Mode
     max_one_section_open: Max 1 Section Open
   presentation-links:
-    presentation-links: Button Links
+    presentation-links: Buttons
     links: Links
-    description: Configurable link buttons for launching dynamic URLs
+    description: Configurable link buttons for launching dynamic URLs or triggering flows
     style: Style
     primary: Primary
     link: Links
