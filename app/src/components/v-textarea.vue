@@ -178,5 +178,12 @@ function trimIfEnabled() {
 		color: var(--theme--foreground-subdued);
 		background-color: var(--theme--form--field--input--background-subdued);
 	}
+
+	&.non-editable.disabled {
+		textarea {
+			color: var(--theme--foreground);
+			background-color: transparent;
+		}
+	}
 }
 </style>

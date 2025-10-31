@@ -481,10 +481,18 @@ function useInvalidInput() {
 			margin-inline-start: 8px;
 		}
 	}
+
 	&.non-editable {
 		.input {
 			pointer-events: none;
 			cursor: default;
+			color: var(--v-input-color, var(--theme--form--field--input--foreground));
+			background-color: var(v-input-background-color, var(--theme--form--field--input--background));
+			border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
+		}
+
+		input {
+			color: var(--v-input-color, var(--theme--form--field--input--foreground));
 		}
 
 		.append,
