@@ -357,6 +357,26 @@ function useRawEditor() {
 		}
 	}
 }
+
+function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
+	if (isComparisonDiff()) {
+		if (field.comparisonIndicator === 'auto') return 'diff-indicator';
+		if (field.comparisonIndicator === 'track') return 'diff-track';
+	}
+
+	return '';
+
+	function isComparisonDiff() {
+		if (field.comparisonIndicator === 'none' || !props.comparison) return false;
+
+		if (isGroup) {
+			const groupFields = getFieldsForGroup(field.meta?.field ?? null);
+			return groupFields.some((groupField) => props.comparison!.fields.has(groupField.field));
+		}
+
+		return props.comparison.fields.has(field.field);
+	}
+}
 </script>
 
 <template>
@@ -389,6 +409,7 @@ function useRawEditor() {
 					:class="[
 						fieldsMap[fieldName]!.meta?.width || 'full',
 						index === firstVisibleFieldIndex ? 'first-visible-field' : '',
+						getComparisonIndicatorClasses(fieldsMap[fieldName]!, true),
 					]"
 					:field="fieldsMap[fieldName]"
 					:fields="fieldsForGroup[index] || []"
@@ -416,7 +437,10 @@ function useRawEditor() {
 							formFieldEls[fieldName] = el;
 						}
 					"
-					:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
+					:class="[
+						index === firstVisibleFieldIndex ? 'first-visible-field' : '',
+						getComparisonIndicatorClasses(fieldsMap[fieldName]!),
+					]"
 					:field="fieldsMap[fieldName]!"
 					:autofocus="index === firstEditableFieldIndex && autofocus"
 					:model-value="(values || {})[fieldName]"
@@ -470,5 +494,27 @@ function useRawEditor() {
 .v-divider {
 	margin-block-end: 50px;
 	grid-column: 1 / 3;
+}
+
+.diff-indicator,
+.diff-track {
+	position: relative;
+
+	&::before {
+		content: '';
+		position: absolute;
+		inset-block: 0;
+		inset-inline-start: -12px;
+		inline-size: 4px;
+		z-index: 1;
+	}
+}
+
+.diff-indicator::before {
+	background-color: var(--comparison-indicator--color, var(--theme--foreground-subdued));
+}
+
+.diff-track::before {
+	background-color: var(--comparison-track--color, var(--theme--background-accent));
 }
 </style>
