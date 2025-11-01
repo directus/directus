@@ -35,17 +35,17 @@ import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 import { getSchema } from '../../utils/get-schema.js';
+import { generateRedirectUrls, getCallbackFromRequest, getCallbackFromOriginUrl } from '../../utils/oauth-callbacks.js';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
-	redirectUrl: string;
+	redirectUris: URL[];
 	config: Record<string, any>;
 	roleMap: RoleMap;
 
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
 
-		const env = useEnv();
 		const logger = useLogger();
 
 		const { authorizeUrl, accessUrl, profileUrl, clientId, clientSecret, ...additionalConfig } = config;
@@ -55,14 +55,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			throw new InvalidProviderConfigError({ provider: additionalConfig['provider'] });
 		}
 
-		const redirectUrl = new Url(env['PUBLIC_URL'] as string).addPath(
-			'auth',
-			'login',
-			additionalConfig['provider'],
-			'callback',
-		);
-
-		this.redirectUrl = redirectUrl.toString();
+		this.redirectUris = generateRedirectUrls(additionalConfig['provider'], 'OAuth2');
 		this.config = additionalConfig;
 
 		this.roleMap = {};
@@ -102,7 +95,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		this.client = new issuer.Client({
 			client_id: clientId,
 			client_secret: clientSecret,
-			redirect_uris: [this.redirectUrl],
+			redirect_uris: this.redirectUris.map((uri) => uri.toString()),
 			response_types: ['code'],
 			...clientOptionsOverrides,
 		});
@@ -112,7 +105,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		return generators.codeVerifier();
 	}
 
-	generateAuthUrl(codeVerifier: string, prompt = false): string {
+	generateAuthUrl(codeVerifier: string, prompt = false, redirectUri?: string): string {
 		const { plainCodeChallenge } = this.config;
 
 		try {
@@ -128,6 +121,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				code_challenge_method: plainCodeChallenge ? 'plain' : 'S256',
 				// Some providers require state even with PKCE
 				state: codeChallenge,
+				redirect_uri: redirectUri,
 			});
 		} catch (e) {
 			throw handleError(e);
@@ -162,8 +156,10 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				? payload['codeVerifier']
 				: generators.codeChallenge(payload['codeVerifier']);
 
+			const callbackUrl = getCallbackFromOriginUrl(this.redirectUris, payload['originUrl']);
+
 			tokenSet = await this.client.oauthCallback(
-				this.redirectUrl,
+				callbackUrl?.toString(),
 				{ code: payload['code'], state: payload['state'] },
 				{ code_verifier: payload['codeVerifier'], state: codeChallenge },
 			);
@@ -373,17 +369,29 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt, otp }, getSecret(), {
-				expiresIn: '5m',
-				issuer: 'directus',
-			});
+			const callback = getCallbackFromRequest(req, provider.redirectUris, 'OAuth2');
+
+			const token = jwt.sign(
+				{
+					verifier: codeVerifier,
+					redirect,
+					prompt,
+					otp,
+					...(callback && { originUrl: callback.origin }),
+				},
+				getSecret(),
+				{
+					expiresIn: '5m',
+					issuer: 'directus',
+				},
+			);
 
 			res.cookie(`oauth2.${providerName}`, token, {
 				httpOnly: true,
 				sameSite: 'lax',
 			});
 
-			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt));
+			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt, callback?.href));
 		},
 		respond,
 	);
@@ -410,13 +418,14 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 					redirect?: string;
 					prompt: boolean;
 					otp?: string;
+					originUrl?: string;
 				};
 			} catch (e: any) {
 				logger.warn(e, `[OAuth2] Couldn't verify OAuth2 cookie`);
 				throw new InvalidCredentialsError();
 			}
 
-			const { verifier, prompt, otp } = tokenData;
+			const { verifier, prompt, otp, originUrl } = tokenData;
 			let { redirect } = tokenData;
 
 			const accountability: Accountability = createDefaultAccountability({
@@ -447,6 +456,8 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 						code: req.query['code'],
 						codeVerifier: verifier,
 						state: req.query['state'],
+						// Pass originUrl for dynamic callback URL validation
+						...(originUrl && { originUrl }),
 					},
 					{ session: authMode === 'session', ...(otp ? { otp: String(otp) } : {}) },
 				);
