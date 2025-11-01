@@ -73,6 +73,7 @@ catalog:
   '@supabase/storage-js': 2.76.1
   '@tinymce/tinymce-vue': 6.3.0
   '@turf/meta': 7.2.0
+  '@types/archiver': 6.0.3
   '@tus/server': 2.3.0
   '@tus/utils': 0.6.0
   '@types/async': 3.2.25
@@ -125,6 +126,7 @@ catalog:
   '@vitejs/plugin-vue': 6.0.1
   '@vitest/coverage-v8': 3.2.4
   '@vue/test-utils': 2.4.6
+  archiver: 7.0.1
   '@vueuse/core': 14.0.0
   '@vueuse/integrations': 14.0.0
   '@vueuse/router': 14.0.0

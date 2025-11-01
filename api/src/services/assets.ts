@@ -11,11 +11,12 @@ import type {
 	Accountability,
 	File,
 	Range,
-	Stat,
 	SchemaOverview,
+	Stat,
 	Transformation,
 	TransformationSet,
 } from '@directus/types';
+import archiver from 'archiver';
 import type { Knex } from 'knex';
 import { clamp } from 'lodash-es';
 import { contentType } from 'mime-types';
@@ -33,6 +34,7 @@ import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { FilesService } from './files.js';
 import { getSharpInstance } from './files/lib/get-sharp-instance.js';
+import { FileDeduper, type Files } from './assets/dedupe-files.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -48,6 +50,89 @@ export class AssetsService {
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 		this.filesService = new FilesService({ ...options, accountability: null });
+	}
+
+	async getFileHierarchy(rootFolder: string) {
+		const fileTree = this.knex
+			.withRecursive('folders', ['id', 'name', 'parent'], (qb) => {
+				qb.select('id', 'name', 'parent')
+					.from('directus_folders')
+					.where('id', rootFolder)
+					.unionAll((qb) => {
+						qb.select(
+							'directus_folders.id',
+							this.knex.raw(`CONCAT(folders.name, '/', directus_folders.name)`),
+							'directus_folders.parent',
+						)
+							.from('directus_folders')
+							.join('folders', 'folders.id', 'directus_folders.parent');
+					});
+			})
+			.select<{ id: string; folder: string }[]>('directus_files.id', 'folders.name as folder')
+			.from('directus_files')
+			.rightJoin('folders', 'folders.id', 'directus_files.folder');
+
+		const results = await fileTree;
+
+		return results;
+	}
+
+	async getZip(files: Files, skipUnaccessable = false) {
+		const filesService = new FilesService({
+			schema: this.schema,
+			knex: this.knex,
+			accountability: this.accountability,
+		});
+
+		const archive = archiver('zip');
+
+		const complete = async () => {
+			const fileDeduper = new FileDeduper();
+			const storage = await getStorage();
+
+			for (const { id, folder } of files) {
+				if (!isValidUuid(id)) throw new ForbiddenError();
+				let accessError;
+
+				if (this.accountability) {
+					try {
+						await validateAccess(
+							{
+								accountability: this.accountability,
+								action: 'read',
+								collection: 'directus_files',
+								primaryKeys: [id],
+							},
+							{ knex: this.knex, schema: this.schema },
+						);
+					} catch (error) {
+						accessError = error;
+					}
+
+					if (!skipUnaccessable && accessError) {
+						throw accessError;
+					}
+				}
+
+				const file = (await filesService.readOne(id)) as File;
+
+				const exists = await storage.location(file.storage).exists(file.filename_disk);
+
+				if (!exists) throw new ForbiddenError();
+
+				const version = file.modified_on ? (new Date(file.modified_on).getTime() / 1000).toFixed() : undefined;
+
+				const assetStream = await storage.location(file.storage).read(file.filename_disk, { version });
+
+				const name = fileDeduper.add(file.filename_download ?? file.id);
+
+				archive.append(assetStream, { name, prefix: folder });
+			}
+
+			await archive.finalize();
+		};
+
+		return { archive, complete };
 	}
 
 	async getAsset(
