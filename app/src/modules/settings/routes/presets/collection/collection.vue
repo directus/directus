@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useExtension } from '@/composables/use-extension';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { usePresetsStore } from '@/stores/presets';
@@ -28,8 +27,6 @@ const { info: currentCollection } = useCollection(collection);
 const { layoutWrapper } = useLayout(layout);
 
 const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
-
-const currentLayout = useExtension('layout', layout);
 
 const {
 	updateAllowed: batchEditAllowed,

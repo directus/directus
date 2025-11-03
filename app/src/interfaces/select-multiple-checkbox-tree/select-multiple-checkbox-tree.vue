@@ -11,7 +11,7 @@ export type Choice = {
 
 const props = withDefaults(
 	defineProps<{
-		value: string[] | null;
+		value?: string[] | null;
 		disabled?: boolean;
 		choices?: Choice[];
 		valueCombining?: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useExtension } from '@/composables/use-extension';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useExtensions } from '@/extensions';
 import { useCollectionsStore } from '@/stores/collections';
@@ -64,8 +63,6 @@ const layoutFilter = computed<any>({
 });
 
 const layout = computed(() => values.value.layout);
-
-const currentLayout = useExtension('layout', layout);
 
 const { layoutWrapper } = useLayout(layout);
 

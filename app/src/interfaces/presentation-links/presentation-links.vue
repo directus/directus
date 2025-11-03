@@ -21,7 +21,7 @@ type ParsedLink = Omit<Link, 'url'> & {
 
 const props = withDefaults(
 	defineProps<{
-		links: Link[];
+		links?: Link[];
 		collection: string;
 		primaryKey?: PrimaryKey;
 	}>(),

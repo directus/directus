@@ -11,9 +11,9 @@ import type { Field } from '@directus/types';
 const props = withDefaults(
 	defineProps<{
 		field: FormField;
-		showModal: boolean;
-		disabled: boolean;
-		currentValue: unknown;
+		showModal?: boolean;
+		disabled?: boolean;
+		currentValue?: unknown;
 	}>(),
 	{
 		showModal: false,

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useEventListener } from '@/composables/use-event-listener';
-import { useExtension } from '@/composables/use-extension';
 import { Folder, useFolders } from '@/composables/use-folders';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
@@ -47,8 +46,6 @@ const selection = ref<Item[]>([]);
 const userStore = useUserStore();
 
 const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_files'));
-
-const currentLayout = useExtension('layout', layout);
 
 const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
 

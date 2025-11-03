@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import api from '@/api';
-import { useExtension } from '@/composables/use-extension';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { useServerStore } from '@/stores/server';
@@ -34,8 +33,6 @@ const selection = ref<string[]>([]);
 
 const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_users'));
 const { addNewLink } = useLinks();
-
-const currentLayout = useExtension('layout', layout);
 
 const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
 

@@ -138,17 +138,6 @@ const archiveTooltip = computed(() => {
 useShortcut('meta+s', saveAndStay, form);
 useShortcut('meta+shift+s', saveAndAddNew, form);
 
-function navigateBack() {
-	const backState = router.options.history.state.back;
-
-	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
-		router.back();
-		return;
-	}
-
-	router.push('/users');
-}
-
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [
 		{

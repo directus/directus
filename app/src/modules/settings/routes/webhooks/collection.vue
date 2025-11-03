@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import api from '@/api';
-import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
@@ -22,8 +21,6 @@ const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('di
 const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 
 const { layoutWrapper } = useLayout(layout);
-
-const currentLayout = useExtension('layout', layout);
 
 async function refresh() {
 	await layoutRef.value?.state?.refresh?.();
