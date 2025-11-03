@@ -113,7 +113,7 @@ function removeField(fieldKey: string) {
 <template>
 	<div class="layout-tabular">
 		<v-table
-			v-if="loading || ((items.length ?? 0) > 0 && !error)"
+			v-if="loading || (items.length > 0 && !error)"
 			ref="table"
 			v-model="selectionWritable"
 			v-model:headers="tableHeadersWritable"
