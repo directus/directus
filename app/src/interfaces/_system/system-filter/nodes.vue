@@ -329,10 +329,7 @@ function getRelatedCollectionForField(fieldPath: string): string | null {
 
 			if (junctionField) {
 				// For m2m, the junction table connects to the related collection
-				const junctionRelations = relationsStore.getRelationsForField(
-					relations[0].collection,
-					junctionField,
-				);
+				const junctionRelations = relationsStore.getRelationsForField(relations[0].collection, junctionField);
 
 				if (junctionRelations[0]?.related_collection) {
 					return junctionRelations[0].related_collection;

@@ -814,7 +814,7 @@ describe('#parseFilter', () => {
 					},
 					logs: {
 						event: {
-							_eq: 'deleted'
+							_eq: 'deleted',
 						},
 					},
 				},
@@ -829,7 +829,7 @@ describe('#parseFilter', () => {
 					},
 					logs: {
 						event: {
-							_eq: 'deleted'
+							_eq: 'deleted',
 						},
 					},
 				},
@@ -849,7 +849,7 @@ describe('#parseFilter', () => {
 					},
 					logs: {
 						event: {
-							_eq: 'deleted'
+							_eq: 'deleted',
 						},
 					},
 				},
@@ -864,7 +864,7 @@ describe('#parseFilter', () => {
 					},
 					logs: {
 						event: {
-							_eq: 'deleted'
+							_eq: 'deleted',
 						},
 					},
 				},

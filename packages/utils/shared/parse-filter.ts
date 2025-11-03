@@ -139,11 +139,7 @@ function parseFilterEntry(
 			const parsedFields: Record<string, any> = {};
 
 			for (const [fieldKey, fieldValue] of Object.entries(value)) {
-				const parsedField = parseFilterRecursive(
-					{ [fieldKey]: fieldValue } as Filter,
-					accountability,
-					context,
-				);
+				const parsedField = parseFilterRecursive({ [fieldKey]: fieldValue } as Filter, accountability, context);
 
 				if (parsedField && typeof parsedField === 'object') {
 					Object.assign(parsedFields, parsedField);

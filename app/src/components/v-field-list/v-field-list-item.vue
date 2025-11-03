@@ -121,11 +121,7 @@ const openWhileSearching = computed(() => {
 		</div>
 
 		<template v-if="isNoneSupported">
-			<v-list-item
-				:disabled="field.disabled"
-				clickable
-				@click="$emit('add', [`$none:${field.key}`])"
-			>
+			<v-list-item :disabled="field.disabled" clickable @click="$emit('add', [`$none:${field.key}`])">
 				<v-list-item-icon>
 					<v-icon name="close" small color="var(--theme--danger)" />
 				</v-list-item-icon>
