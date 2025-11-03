@@ -3,7 +3,7 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { useApi } from '@directus/composables';
 import { Alterations, Item, Policy } from '@directus/types';
@@ -79,7 +79,7 @@ const edits = ref<{ policies?: Alterations<Access> | null }>({});
 
 const hasEdits = computed(() => !isEmpty(edits.value) && !isEqual(initialValue.value, edits.value));
 
-const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
@@ -155,7 +155,7 @@ async function save() {
 async function saveAndStay() {
 	try {
 		await save();
-		revisionsDrawerDetailRef.value?.refresh?.();
+		revisionsSidebarDetailRef.value?.refresh?.();
 	} catch {
 		// `save` shows unexpected error dialog
 	}

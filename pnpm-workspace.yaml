@@ -277,7 +277,7 @@ catalog:
   stylelint-use-logical: 2.1.2
   swagger-cli: 4.0.4
   swagger-ui-watcher: 2.1.14
-  tar: 7.5.1
+  tar: 7.5.2
   tedious: 18.6.1
   tinymce: 6.8.6
   tmp: 0.2.5
