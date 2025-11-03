@@ -835,10 +835,7 @@ describe('#parseFilter', () => {
 						_eq: 'published',
 					},
 					logs: {
-						_or: [
-							{ event: { _eq: 'deleted' } },
-							{ event: { _eq: 'archived' } },
-						],
+						_or: [{ event: { _eq: 'deleted' } }, { event: { _eq: 'archived' } }],
 					},
 				},
 			},
@@ -851,10 +848,7 @@ describe('#parseFilter', () => {
 						_eq: 'published',
 					},
 					logs: {
-						_or: [
-							{ event: { _eq: 'deleted' } },
-							{ event: { _eq: 'archived' } },
-						],
+						_or: [{ event: { _eq: 'deleted' } }, { event: { _eq: 'archived' } }],
 					},
 				},
 			},
@@ -871,10 +865,7 @@ describe('#parseFilter', () => {
 						_eq: 'published',
 					},
 					logs: {
-						_and: [
-							{ event: { _eq: 'deleted' } },
-							{ timestamp: { _gte: '2024-01-01' } },
-						],
+						_and: [{ event: { _eq: 'deleted' } }, { timestamp: { _gte: '2024-01-01' } }],
 					},
 				},
 			},
@@ -887,10 +878,7 @@ describe('#parseFilter', () => {
 						_eq: 'published',
 					},
 					logs: {
-						_and: [
-							{ event: { _eq: 'deleted' } },
-							{ timestamp: { _gte: '2024-01-01' } },
-						],
+						_and: [{ event: { _eq: 'deleted' } }, { timestamp: { _gte: '2024-01-01' } }],
 					},
 				},
 			},
@@ -935,17 +923,11 @@ describe('#parseFilter', () => {
 
 	it('handles _or with simple filters', () => {
 		const mockFilter = {
-			_or: [
-				{ skill: { _eq: 2 } },
-				{ skill: { _eq: 3 } },
-			],
+			_or: [{ skill: { _eq: 2 } }, { skill: { _eq: 3 } }],
 		} as Filter;
 
 		const mockResult = {
-			_or: [
-				{ skill: { _eq: 2 } },
-				{ skill: { _eq: 3 } },
-			],
+			_or: [{ skill: { _eq: 2 } }, { skill: { _eq: 3 } }],
 		} as Filter;
 
 		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
@@ -953,19 +935,13 @@ describe('#parseFilter', () => {
 
 	it('handles _or with nested _and groups', () => {
 		const mockFilter = {
-			_or: [
-				{ skill: { _eq: 2 } },
-				{ _and: [{ skill: { _eq: 3 } }] },
-			],
+			_or: [{ skill: { _eq: 2 } }, { _and: [{ skill: { _eq: 3 } }] }],
 		} as Filter;
 
 		const result = parseFilter(mockFilter, null);
 
 		const mockResult = {
-			_or: [
-				{ skill: { _eq: 2 } },
-				{ _and: [{ skill: { _eq: 3 } }] },
-			],
+			_or: [{ skill: { _eq: 2 } }, { _and: [{ skill: { _eq: 3 } }] }],
 		} as Filter;
 
 		expect(result).toStrictEqual(mockResult);
@@ -983,10 +959,7 @@ describe('#parseFilter', () => {
 		const result = parseFilter(mockFilter, null);
 
 		const mockResult = {
-			_or: [
-				{ skill: { _eq: 2 } },
-				{ _and: [{ skill: { _eq: 3 } }] },
-			],
+			_or: [{ skill: { _eq: 2 } }, { _and: [{ skill: { _eq: 3 } }] }],
 		} as Filter;
 
 		expect(result).toStrictEqual(mockResult);

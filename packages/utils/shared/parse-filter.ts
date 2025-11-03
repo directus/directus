@@ -150,7 +150,7 @@ function unwrapBracketKey(key: string, value: any): { key: string; value: any } 
 	}
 
 	// Multiple brackets: "[level][_eq]" -> { level: { _eq: value } }
-	const parts = bracketMatches.map(m => m.slice(1, -1));
+	const parts = bracketMatches.map((m) => m.slice(1, -1));
 
 	// Build nested structure from parts (right to left)
 	let nestedValue: any = value;
@@ -205,7 +205,11 @@ function parseFilterEntry(
 					}
 				} else {
 					// Single bracket or no bracket: parse normally
-					const parsedField = parseFilterRecursive({ [unwrapped.key]: unwrapped.value } as Filter, accountability, context);
+					const parsedField = parseFilterRecursive(
+						{ [unwrapped.key]: unwrapped.value } as Filter,
+						accountability,
+						context,
+					);
 
 					if (parsedField && typeof parsedField === 'object') {
 						Object.assign(parsedFields, parsedField);
