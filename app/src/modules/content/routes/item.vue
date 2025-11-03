@@ -11,7 +11,7 @@ import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import PrivateView from '@/views/private';
-import AiSidebarDetail from '@/views/private/components/ai-sidebar-detail.vue';
+import AiSidebarDetail from '@/ai/components/ai-sidebar-detail.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
