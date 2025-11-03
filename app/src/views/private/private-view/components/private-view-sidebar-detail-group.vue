@@ -8,7 +8,7 @@ const sidebarStore = useSidebarStore();
 const openDetail = useSessionStorage<string[]>('sidebar-open-detail', []);
 const mandatory = ref(false);
 
-sidebarStore.onCollapse(() => openDetail.value = []);
+sidebarStore.onCollapse(() => (openDetail.value = []));
 
 sidebarStore.onExpand(async () => {
 	// Ensures the first item in the sidebar is automatically opened whenever the sidebar opens

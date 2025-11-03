@@ -106,10 +106,7 @@ function clearFilters() {
 		:collection="collection"
 		:clear-filters="clearFilters"
 	>
-		<private-view
-			:title="t('settings_presets')"
-			icon="bookmark"
-		>
+		<private-view :title="t('settings_presets')" icon="bookmark">
 			<template #headline>
 				<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
 			</template>

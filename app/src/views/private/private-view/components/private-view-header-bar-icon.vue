@@ -9,16 +9,7 @@ defineProps<{
 </script>
 
 <template>
-	<VButton
-		v-if="showBack"
-		class="back-button"
-		rounded
-		icon
-		secondary
-		exact
-		small
-		@click="$router.back()"
-	>
+	<VButton v-if="showBack" class="back-button" rounded icon secondary exact small @click="$router.back()">
 		<v-icon name="arrow_back" small />
 	</VButton>
 
@@ -28,7 +19,8 @@ defineProps<{
 </template>
 
 <style scoped>
-.back-button, .icon {
+.back-button,
+.icon {
 	flex-shrink: 0;
 }
 

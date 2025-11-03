@@ -309,11 +309,11 @@ catalog:
 catalogMode: strict
 
 onlyBuiltDependencies:
-  - "@fortawesome/fontawesome-common-types"
-  - "@fortawesome/fontawesome-svg-core"
-  - "@fortawesome/free-regular-svg-icons"
-  - "@fortawesome/free-solid-svg-icons"
-  - "@parcel/watcher"
+  - '@fortawesome/fontawesome-common-types'
+  - '@fortawesome/fontawesome-svg-core'
+  - '@fortawesome/free-regular-svg-icons'
+  - '@fortawesome/free-solid-svg-icons'
+  - '@parcel/watcher'
   - argon2
   - esbuild
   - isolated-vm

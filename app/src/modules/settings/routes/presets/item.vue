@@ -472,10 +472,7 @@ function discardAndLeave() {
 		:collection="values.collection"
 		readonly
 	>
-		<private-view
-			:title="t('editing_preset')"
-			show-back
-		>
+		<private-view :title="t('editing_preset')" show-back>
 			<template #headline>
 				<v-breadcrumb :items="[{ name: t('settings_presets'), to: '/settings/presets' }]" />
 			</template>

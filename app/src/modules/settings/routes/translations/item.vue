@@ -217,7 +217,11 @@ async function revert(values: Record<string, any>) {
 <template>
 	<content-not-found v-if="error" />
 
-	<private-view v-else :title="primaryKey === '+' ? t('create_custom_translation') : t('edit_custom_translation')" show-back>
+	<private-view
+		v-else
+		:title="primaryKey === '+' ? t('create_custom_translation') : t('edit_custom_translation')"
+		show-back
+	>
 		<template #headline>
 			<v-breadcrumb
 				v-if="collectionInfo?.meta && collectionInfo.meta.singleton === true"
@@ -258,7 +262,15 @@ async function revert(values: Record<string, any>) {
 				</v-card>
 			</v-dialog>
 
-			<v-button v-tooltip.bottom="t('save')" rounded icon :loading="saving" :disabled="!isSavable" small @click="saveAndQuit">
+			<v-button
+				v-tooltip.bottom="t('save')"
+				rounded
+				icon
+				:loading="saving"
+				:disabled="!isSavable"
+				small
+				@click="saveAndQuit"
+			>
 				<v-icon name="check" small />
 
 				<template #append-outer>

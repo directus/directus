@@ -1,5 +1,5 @@
-import { useLocalStorage, createEventHook } from "@vueuse/core";
-import { defineStore } from "pinia";
+import { useLocalStorage, createEventHook } from '@vueuse/core';
+import { defineStore } from 'pinia';
 
 export const useSidebarStore = defineStore('sidebar-store', () => {
 	const collapsed = useLocalStorage('sidebar-collapsed', false);

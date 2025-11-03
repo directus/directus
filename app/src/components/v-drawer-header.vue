@@ -68,8 +68,7 @@ withDefaults(
 	padding: 0 10px;
 	background-color: var(--theme--header--background);
 	box-shadow: none;
-	transition:
-		box-shadow var(--medium) var(--transition);
+	transition: box-shadow var(--medium) var(--transition);
 	border-block-end: var(--theme--header--border-width) solid var(--theme--header--border-color);
 
 	.title-container {

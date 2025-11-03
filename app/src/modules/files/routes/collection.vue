@@ -374,11 +374,7 @@ function useFileUpload() {
 		collection="directus_files"
 		:reset-preset="resetPreset"
 	>
-		<private-view
-			:title="title"
-			icon="folder"
-			:class="{ dragging }"
-		>
+		<private-view :title="title" icon="folder" :class="{ dragging }">
 			<template v-if="breadcrumb" #headline>
 				<v-breadcrumb :items="breadcrumb" />
 			</template>

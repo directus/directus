@@ -141,13 +141,7 @@ function emitValue() {
 			role="search"
 			@click="activate"
 		>
-			<v-icon
-				small
-				name="search"
-				class="icon-search"
-				:clickable="!active"
-				@click="input?.focus()"
-			/>
+			<v-icon small name="search" class="icon-search" :clickable="!active" @click="input?.focus()" />
 			<input
 				ref="input"
 				:value="modelValue"
@@ -175,7 +169,14 @@ function emitValue() {
 				@click.stop="clear"
 			/>
 			<template v-if="showFilter">
-				<v-icon v-tooltip.bottom="t('filter')" small clickable class="icon-filter" name="filter_list" @click="toggleFilter" />
+				<v-icon
+					v-tooltip.bottom="t('filter')"
+					small
+					clickable
+					class="icon-filter"
+					name="filter_list"
+					@click="toggleFilter"
+				/>
 
 				<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
 					<div v-show="filterActive" ref="filterElement" class="filter" :class="{ active }">

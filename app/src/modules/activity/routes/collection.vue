@@ -38,10 +38,7 @@ const roleFilter = ref<Filter | null>(null);
 		show-select="none"
 		collection="directus_activity"
 	>
-		<private-view
-			:title="t('activity_feed')"
-			icon="access_time"
-		>
+		<private-view :title="t('activity_feed')" icon="access_time">
 			<template #actions:prepend>
 				<component :is="`layout-actions-${layout}`" v-bind="layoutState" />
 			</template>
