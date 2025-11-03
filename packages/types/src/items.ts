@@ -107,3 +107,7 @@ export type MutationOptions = {
 	 */
 	onRequireUserIntegrityCheck?: ((flags: UserIntegrityCheckFlag) => void) | undefined;
 };
+
+export type FieldMutationOptions = MutationOptions & {
+	attemptConcurrentIndex?: boolean;
+};
