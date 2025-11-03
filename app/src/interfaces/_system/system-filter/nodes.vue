@@ -302,6 +302,22 @@ function isExistingField(node: Record<string, any>): boolean {
 	return !!field;
 }
 
+/**
+ * Gets the target collection for filtering when using an alias field (o2m, m2m).
+ *
+ * This function is specifically used in filter contexts where you need to determine
+ * which collection to use for nested filters when filtering by a relational alias field.
+ * For example, when filtering by a "posts" alias field (o2m) on a "users" collection,
+ * the target collection would be "posts" since that's where the actual filter conditions
+ * should be applied.
+ *
+ * @param fieldPath - The path to the alias field (e.g., "posts" or "categories")
+ * @returns The target collection name for filtering, or null if:
+ *   - The collection is not provided
+ *   - The field doesn't exist
+ *   - The field is not an alias field
+ *   - The relation type is not o2m or m2m
+ */
 function getRelatedCollectionForField(fieldPath: string): string | null {
 	if (!props.collection) return null;
 
@@ -309,31 +325,30 @@ function getRelatedCollectionForField(fieldPath: string): string | null {
 	if (!field) return null;
 
 	// For alias fields (o2m, m2m), get the related collection
-	if (field.type === 'alias') {
-		const relations = relationsStore.getRelationsForField(props.collection, fieldPath);
+	if (field.type !== 'alias') return null;
+	const relations = relationsStore.getRelationsForField(props.collection, fieldPath);
 
-		if (relations[0]) {
-			const relationType = getRelationType({
-				relation: relations[0],
-				collection: props.collection,
-				field: fieldPath,
-			});
+	if (relations[0]) {
+		const relationType = getRelationType({
+			relation: relations[0],
+			collection: props.collection,
+			field: fieldPath,
+		});
 
-			if (relationType === 'o2m') {
-				return relations[0].collection;
-			}
+		if (relationType === 'o2m') {
+			return relations[0].collection;
+		}
 
-			// Check if it's m2m by looking for junction field
-			// m2m relationships have a junction_field in the relation meta
-			const junctionField = relations[0].meta?.junction_field;
+		// Check if it's m2m by looking for junction field
+		// m2m relationships have a junction_field in the relation meta
+		const junctionField = relations[0].meta?.junction_field;
 
-			if (junctionField) {
-				// For m2m, the junction table connects to the related collection
-				const junctionRelations = relationsStore.getRelationsForField(relations[0].collection, junctionField);
+		if (junctionField) {
+			// For m2m, the junction table connects to the related collection
+			const junctionRelations = relationsStore.getRelationsForField(relations[0].collection, junctionField);
 
-				if (junctionRelations[0]?.related_collection) {
-					return junctionRelations[0].related_collection;
-				}
+			if (junctionRelations[0]?.related_collection) {
+				return junctionRelations[0].related_collection;
 			}
 		}
 	}
