@@ -99,6 +99,10 @@ export default async function createApp(): Promise<express.Application> {
 		);
 	}
 
+	if (typeof env['SECRET'] === 'string' && env['SECRET'].length < 32) {
+		logger.warn('"SECRET" env variable is shorter than 32 bytes which is insecure. This is not appropriate for production usage.');
+	}
+
 	if (!new Url(env['PUBLIC_URL'] as string).isAbsolute()) {
 		logger.warn('"PUBLIC_URL" should be a full URL');
 	}
