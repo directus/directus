@@ -129,6 +129,39 @@ export function parsePreset(
 	});
 }
 
+/**
+ * Unwraps bracket-wrapped keys from qs parsing (e.g., "[_eq]" or "[level][_eq]")
+ * Returns either a cleaned key-value pair or a nested structure to be parsed
+ */
+function unwrapBracketKey(key: string, value: any): { key: string; value: any } | { nested: Record<string, any> } {
+	if (!key.startsWith('[') || !key.endsWith(']')) {
+		return { key, value };
+	}
+
+	const bracketMatches = key.match(/\[([^\]]+)\]/g);
+
+	if (!bracketMatches) {
+		return { key, value };
+	}
+
+	if (bracketMatches.length === 1) {
+		// Single bracket: "[_eq]" -> "_eq"
+		return { key: key.slice(1, -1), value };
+	}
+
+	// Multiple brackets: "[level][_eq]" -> { level: { _eq: value } }
+	const parts = bracketMatches.map(m => m.slice(1, -1));
+
+	// Build nested structure from parts (right to left)
+	let nestedValue: any = value;
+
+	for (let i = parts.length - 1; i >= 0; i--) {
+		nestedValue = { [parts[i]!]: nestedValue };
+	}
+
+	return { nested: { [parts[0]!]: nestedValue[parts[0]!] } };
+}
+
 function parseFilterEntry(
 	[key, value]: [string, any],
 	accountability: BasicAccountability | null,
@@ -161,10 +194,22 @@ function parseFilterEntry(
 			const parsedFields: Record<string, any> = {};
 
 			for (const [fieldKey, fieldValue] of Object.entries(value)) {
-				const parsedField = parseFilterRecursive({ [fieldKey]: fieldValue } as Filter, accountability, context);
+				const unwrapped = unwrapBracketKey(fieldKey, fieldValue);
 
-				if (parsedField && typeof parsedField === 'object') {
-					Object.assign(parsedFields, parsedField);
+				if ('nested' in unwrapped) {
+					// Combined bracket key: parse the nested structure
+					const parsedField = parseFilterRecursive(unwrapped.nested as Filter, accountability, context);
+
+					if (parsedField && typeof parsedField === 'object') {
+						Object.assign(parsedFields, parsedField);
+					}
+				} else {
+					// Single bracket or no bracket: parse normally
+					const parsedField = parseFilterRecursive({ [unwrapped.key]: unwrapped.value } as Filter, accountability, context);
+
+					if (parsedField && typeof parsedField === 'object') {
+						Object.assign(parsedFields, parsedField);
+					}
 				}
 			}
 
@@ -196,29 +241,38 @@ function parseFilterEntry(
 		// and unwrap them, and also check for nested operator structures
 		if (isObjectLike(value) && !Array.isArray(value)) {
 			const valueEntries = Object.entries(value);
-			
-			// Check if any keys are bracket-wrapped operators (e.g., "[_eq]" should become "_eq")
-			// This happens when qs parses nested array structures like filter[_and][0][field][_eq]=value
 			const cleanedValue: Record<string, any> = {};
 			let hasBracketKeys = false;
 
+			// Unwrap any bracket-wrapped keys
 			for (const [innerKey, innerValue] of valueEntries) {
-				// Unwrap bracket-wrapped keys: "[_eq]" -> "_eq"
-				let cleanedKey = innerKey;
+				const unwrapped = unwrapBracketKey(innerKey, innerValue);
 
-				if (cleanedKey.startsWith('[') && cleanedKey.endsWith(']')) {
-					cleanedKey = cleanedKey.slice(1, -1);
+				if ('nested' in unwrapped) {
+					// Combined bracket key: merge nested structure
 					hasBracketKeys = true;
-				}
+					const firstKey = Object.keys(unwrapped.nested)[0]!;
 
-				cleanedValue[cleanedKey] = innerValue;
+					if (!cleanedValue[firstKey]) {
+						cleanedValue[firstKey] = {};
+					}
+
+					Object.assign(cleanedValue[firstKey], unwrapped.nested[firstKey]);
+				} else {
+					// Single bracket or no bracket: use cleaned key
+					if (unwrapped.key !== innerKey) {
+						hasBracketKeys = true;
+					}
+
+					cleanedValue[unwrapped.key] = unwrapped.value;
+				}
 			}
-			
+
 			// If we cleaned any keys, use the cleaned value
 			if (hasBracketKeys) {
 				value = cleanedValue;
 			}
-			
+
 			// Check for nested operator structures (e.g., { _eq: { _eq: '4' } })
 			const cleanedEntries = Object.entries(value);
 

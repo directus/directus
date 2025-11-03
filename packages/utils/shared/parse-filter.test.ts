@@ -30,10 +30,11 @@ describe('#parseFilter', () => {
 
 	it('returns the filter when passed accountability with only a role', () => {
 		const mockFilter = { _and: [{ field: { _eq: 'field' } }] } as Filter;
+		const mockAccountability = { role: 'admin' };
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockFilter);
 	});
 
-null('properly shifts up implicit logical operator', () => {
+	it('properly shifts up implicit logical operator', () => {
 		const mockFilter = {
 			date_field: {
 				_and: [
@@ -612,7 +613,8 @@ null('properly shifts up implicit logical operator', () => {
 			],
 		} as Filter;
 
-		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
+		const mockAccountability = { role: 'admin', roles: ['admin'] };
+		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
 	});
 
 	it('replaces the roles from accountability to $CURRENT_ROLES', () => {
@@ -1096,6 +1098,64 @@ null('properly shifts up implicit logical operator', () => {
 					status: {
 						_neq: 'archived',
 					},
+				},
+			],
+		} as Filter;
+
+		expect(result).toStrictEqual(mockResult);
+	});
+
+	it('handles combined bracket-wrapped keys from qs parsing (e.g., "[level][_eq]" should become { level: { _eq: value } })', () => {
+		// When qs parses deeply nested structures with _none filters, it can create combined bracket keys
+		// like "[level][_eq]" instead of separate nested structure
+		const mockFilter = {
+			_and: [
+				{
+					_and: [
+						{
+							_or: [
+								{
+									_and: [
+										{
+											skills: {
+												_none: {
+													'[level][_eq]': '4', // qs can create this when parsing nested arrays
+												},
+											},
+										},
+									],
+								},
+							],
+						},
+					],
+				},
+			],
+		} as any;
+
+		const result = parseFilter(mockFilter, null);
+
+		const mockResult = {
+			_and: [
+				{
+					_and: [
+						{
+							_or: [
+								{
+									_and: [
+										{
+											skills: {
+												_none: {
+													level: {
+														_eq: '4',
+													},
+												},
+											},
+										},
+									],
+								},
+							],
+						},
+					],
 				},
 			],
 		} as Filter;
