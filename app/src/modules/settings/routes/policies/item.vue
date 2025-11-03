@@ -3,13 +3,14 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useUserStore } from '@/stores/user';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { Policy } from '@directus/types';
 import { ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
+import PolicyInfoSidebarDetail from './policy-info-sidebar-detail.vue';
 
 const props = defineProps<{
 	primaryKey: string;
@@ -23,7 +24,7 @@ const router = useRouter();
 const userStore = useUserStore();
 const { primaryKey } = toRefs(props);
 
-const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const { edits, hasEdits, item, saving, loading, save, remove, deleting, validationErrors } = useItem<Policy>(
 	ref('directus_policies'),
@@ -52,7 +53,7 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 async function saveAndStay() {
 	try {
 		await save();
-		revisionsDrawerDetailRef.value?.refresh?.();
+		revisionsSidebarDetailRef.value?.refresh?.();
 		await userStore.hydrate();
 	} catch {
 		// 'save' shows unexpected error dialog
@@ -175,8 +176,9 @@ function discardAndStay() {
 		</div>
 
 		<template #sidebar>
-			<revisions-drawer-detail
-				ref="revisionsDrawerDetailRef"
+			<policy-info-sidebar-detail :policy="item" />
+			<revisions-sidebar-detail
+				ref="revisionsSidebarDetailRef"
 				collection="directus_policies"
 				:primary-key="primaryKey"
 			/>

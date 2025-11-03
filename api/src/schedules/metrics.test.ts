@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { scheduleJob } from 'node-schedule';
+import { CronJob } from 'cron';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as schedule from '../utils/schedule.js';
 import { handleMetricsJob, default as metricsSchedule } from './metrics.js';
@@ -8,11 +8,19 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
 }));
 
-vi.mock('node-schedule', () => ({
-	scheduleJob: vi.fn().mockReturnValue({}),
-}));
-
 vi.spyOn(schedule, 'validateCron');
+
+vi.mock('cron', async (importOriginal) => {
+	const actual = (await importOriginal()) as any;
+
+	return {
+		...actual,
+		CronJob: {
+			...actual.CronJob,
+			from: vi.fn(),
+		},
+	};
+});
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue({ METRICS_ENABLED: true, METRICS_SCHEDULE: '0 0 * * *' });
@@ -45,7 +53,12 @@ describe('metrics', () => {
 		await metricsSchedule();
 
 		expect(schedule.validateCron).toHaveBeenCalledWith('0 0 * * *');
-		expect(scheduleJob).toHaveBeenCalledWith('metrics', '0 0 * * *', handleMetricsJob);
+
+		expect(CronJob.from).toHaveBeenCalledWith({
+			cronTime: '0 0 * * *',
+			onTick: handleMetricsJob,
+			start: true,
+		});
 	});
 
 	test('Returns true on successful init', async () => {

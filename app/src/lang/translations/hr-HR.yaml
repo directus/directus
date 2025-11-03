@@ -1540,6 +1540,8 @@ shares: Dijeljenja
 unlimited_usage: Neograničena upotreba
 no_shares: Nema dijeljenja za prikaz
 new_share: Novo dijeljenje
+mcp_prompts_collection_schema:
+  messages_role_user: Korisnik
 expired: Isteklo
 upcoming: Nadolazeće
 share: Podijeli
