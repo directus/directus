@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
@@ -19,8 +18,6 @@ const { t } = useI18n();
 const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('directus_activity'));
 
 const { layoutWrapper } = useLayout(layout);
-
-const currentLayout = useExtension('layout', layout);
 
 const roleFilter = ref<Filter | null>(null);
 </script>

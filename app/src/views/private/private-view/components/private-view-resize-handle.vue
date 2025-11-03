@@ -12,6 +12,7 @@ const { elementY, elementHeight } = useMouseInElement(draggerEl);
 const mousePosPercentage = computed(() =>
 	isHovering.value ? Math.round((elementY.value / elementHeight.value) * 100) : 0,
 );
+
 const fromPosition = computed(() => (isHovering.value ? Math.max(0, mousePosPercentage.value - 25) : 0));
 const toPosition = computed(() => (isHovering.value ? Math.min(100, mousePosPercentage.value + 25) : 0));
 </script>

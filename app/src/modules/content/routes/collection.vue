@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import api from '@/api';
-import { useExtension } from '@/composables/use-extension';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { useFlows } from '@/composables/use-flows';
@@ -82,8 +81,6 @@ const {
 } = useBatch();
 
 const { bookmarkDialogActive, creatingBookmark, createBookmark } = useBookmarks();
-
-const currentLayout = useExtension('layout', layout);
 
 watch(
 	collection,

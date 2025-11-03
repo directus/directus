@@ -4,7 +4,6 @@ import VBanner from '@/components/v-banner.vue';
 import type { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../../components/navigation.vue';
 import ExtensionBanner from './components/extension-banner.vue';
 import ExtensionInfoSidebarDetail from './components/extension-info-sidebar-detail.vue';
@@ -15,7 +14,6 @@ const props = defineProps<{
 	extensionId: string;
 }>();
 
-const router = useRouter();
 const { t } = useI18n();
 
 const loading = ref(false);

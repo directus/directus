@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useCollection, useLayout } from '@directus/composables';
@@ -45,8 +44,6 @@ const { layout, layoutOptions, layoutQuery, search, filter: presetFilter } = use
 const localLayout = ref(layout.value || 'tabular');
 const localOptions = ref(layoutOptions.value);
 const localQuery = ref(layoutQuery.value);
-
-const currentLayout = useExtension('layout', localLayout);
 
 const layoutSelection = computed<any>({
 	get() {

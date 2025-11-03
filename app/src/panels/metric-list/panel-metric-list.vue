@@ -23,9 +23,9 @@ type DataPoint = Aggregate & { group: Group };
 const props = withDefaults(
 	defineProps<{
 		showHeader?: boolean;
-		groupByField: string;
-		aggregateField: string;
-		aggregateFunction: string;
+		groupByField?: string;
+		aggregateField?: string;
+		aggregateFunction?: string;
 		sortDirection?: string;
 
 		notation?: Notation;
@@ -38,7 +38,7 @@ const props = withDefaults(
 		conditionalFormatting?: Record<string, any>[];
 		collection: string;
 		dashboard: string;
-		data: Array<DataPoint>;
+		data?: Array<DataPoint>;
 	}>(),
 	{
 		showHeader: false,

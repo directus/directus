@@ -55,7 +55,7 @@ const linkFields: DeepPartial<Field>[] = [
 
 const props = withDefaults(
 	defineProps<{
-		value: Settings['module_bar'];
+		value?: Settings['module_bar'];
 	}>(),
 	{
 		value: () => MODULE_BAR_DEFAULT as Settings['module_bar'],

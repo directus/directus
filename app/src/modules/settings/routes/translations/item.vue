@@ -100,17 +100,6 @@ const disabledOptions = computed(() => {
 	return [];
 });
 
-function navigateBack() {
-	const backState = router.options.history.state.back;
-
-	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
-		router.back();
-		return;
-	}
-
-	router.push(`/settings/translations`);
-}
-
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [
 		{

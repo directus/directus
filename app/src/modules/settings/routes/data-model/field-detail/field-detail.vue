@@ -19,7 +19,7 @@ const props = withDefaults(
 	defineProps<{
 		collection: string;
 		field: string;
-		type: LocalType | null;
+		type?: LocalType | null;
 	}>(),
 	{
 		type: null,

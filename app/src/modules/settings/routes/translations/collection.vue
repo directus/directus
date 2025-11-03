@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import api from '@/api';
-import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
@@ -43,8 +42,6 @@ const { layout, layoutOptions, layoutQuery, filter, search, resetPreset, refresh
 const { layoutWrapper } = useLayout(layout);
 
 const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
-
-const currentLayout = useExtension('layout', layout);
 
 async function refresh() {
 	await layoutRef.value?.state?.refresh?.();
