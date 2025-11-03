@@ -702,6 +702,28 @@ fields:
       - no-data
       - group
 
+  - field: ai_divider
+    interface: presentation-divider
+    options:
+      icon: chat
+      title: $t:ai_chat
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: ai_notice
+    interface: presentation-notice
+    options:
+      icon: info
+      text: $t:fields.directus_settings.ai_notice
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
   - field: ai_openai_api_key
     special:
       - encrypt
