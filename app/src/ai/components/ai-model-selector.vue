@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
 import {
 	SelectArrow,
 	SelectContent,
@@ -9,86 +8,41 @@ import {
 	SelectItemText,
 	SelectRoot,
 	SelectTrigger,
-	SelectValue,
 } from 'reka-ui';
 
-interface Model {
-	provider: string;
-	model: string;
-	icon: string;
-}
+import { useAiStore } from '../stores/use-ai';
 
-const props = withDefaults(
-	defineProps<{
-		models?: Model[];
-		selectedModel?: Model | null;
-	}>(),
-	{
-		models: () => [],
-	},
-);
+const { models, selectedModel } = useAiStore();
 
-const emit = defineEmits<{
-	'update:selectedModel': [model: Model];
-}>();
 
-const selectedValue = ref(
-	props.models && props.models.length > 0 ? props.models[0] : null,
-);
-
-const selectedModel = computed(() => {
-	if (!selectedValue.value) return null;
-	return props.models?.find((m) => m.provider === selectedValue.value!.provider && m.model === selectedValue.value!.model);
-});
-
-function handleValueChange(value: string) {
-	selectedValue.value = props.models?.find((m) => m.provider === provider && m.model === model);
-	const [provider, model] = value.split('/');
-	const selected = props.models?.find((m) => m.provider === provider && m.model === model);
-
-	if (selected) {
-		emit('update:selectedModel', selected);
-	}
-}
 </script>
 
 <template>
-	<SelectRoot :model-value="selectedValue" @update:model-value="handleValueChange">
+	<SelectRoot v-model="selectedModel">
 		<SelectTrigger class="select-trigger">
-			<SelectValue>
-				{{ selectedModel?.model }}
-			</SelectValue>
+			{{ selectedModel }}
 			<SelectIcon class="select-icon">
 				<v-icon name="expand_more" x-small />
 			</SelectIcon>
 		</SelectTrigger>
 
+		<SelectContent class="select-content" position="popper" side="bottom" align="start" :side-offset="8">
+			<SelectArrow class="select-arrow">
+				<div class="arrow-triangle" />
+			</SelectArrow>
 
-			<SelectContent class="select-content" position="popper" side="bottom" align="start" :side-offset="8">
-				<SelectArrow class="select-arrow">
-					<div class="arrow-triangle" />
-				</SelectArrow>
-
-
-					<SelectItem
-						v-for="model in models"
-						:key="`${model.provider}-${model.model}`"
-						:value="`${model.provider}/${model.model}`"
-						class="select-item"
-					>
-						<div class="select-item-content">
-							<v-icon :name="model.icon" small class="select-item-icon" />
-							<SelectItemText class="select-item-text">
-								<v-text-overflow :text="`${model.provider}/${model.model}`" />
-							</SelectItemText>
-							<SelectItemIndicator class="select-item-indicator">
-								<v-icon name="check" x-small />
-							</SelectItemIndicator>
-						</div>
-					</SelectItem>
-
-			</SelectContent>
-
+			<SelectItem v-for="model in models" :key="model" :value="model" class="select-item">
+				<div class="select-item-content">
+					<v-icon name="smart_toy" small class="select-item-icon" />
+					<SelectItemText class="select-item-text">
+						<v-text-overflow :text="model" />
+					</SelectItemText>
+					<SelectItemIndicator class="select-item-indicator">
+						<v-icon name="check" x-small />
+					</SelectItemIndicator>
+				</div>
+			</SelectItem>
+		</SelectContent>
 	</SelectRoot>
 </template>
 
@@ -140,7 +94,6 @@ function handleValueChange(value: string) {
 }
 
 :deep(.select-content) {
-
 	z-index: 600;
 	min-inline-size: 100px;
 	background-color: var(--theme--popover--menu--background);
@@ -177,88 +130,6 @@ function handleValueChange(value: string) {
 	}
 }
 
-
-
-
-
-:deep(.select-arrow) {
-	position: absolute;
-	z-index: 1;
-	inline-size: 10px;
-	block-size: 10px;
-}
-
-:deep(.arrow-triangle),
-:deep(.arrow-triangle::before),
-:deep(.arrow-triangle::after) {
-	position: absolute;
-	inline-size: 10px;
-	block-size: 10px;
-}
-
-.arrow-triangle {
-	overflow: visible clip;
-
-	&::before,
-	&::after {
-		content: '';
-		background: var(--theme--popover--menu--background);
-		transform: rotate(45deg);
-	}
-
-	&::after {
-		box-shadow: var(--theme--popover--menu--box-shadow);
-		opacity: 0.75;
-	}
-}
-
-[data-side='top'] .select-arrow {
-	inset-block-end: -10px;
-
-	.arrow-triangle {
-		&::before,
-		&::after {
-			inset-block-end: 7px;
-		}
-	}
-}
-
-[data-side='bottom'] .select-arrow {
-	inset-block-start: -10px;
-
-	.arrow-triangle {
-		&::before,
-		&::after {
-			inset-block-start: 7px;
-		}
-	}
-}
-
-[data-side='right'] .select-arrow {
-	inset-inline-start: -10px;
-
-	.arrow-triangle {
-		overflow: clip visible;
-
-		&::before,
-		&::after {
-			inset-inline-start: 7px;
-		}
-	}
-}
-
-[data-side='left'] .select-arrow {
-	inset-inline-end: -10px;
-
-	.arrow-triangle {
-		overflow: clip visible;
-
-		&::before,
-		&::after {
-			inset-inline-end: 7px;
-		}
-	}
-}
 
 :deep(.select-item) {
 	position: relative;

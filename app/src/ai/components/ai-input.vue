@@ -68,10 +68,12 @@ function handleBlur() {
 			<v-button x-small secondary icon>
 				<v-icon name="add" />
 			</v-button>
-			<AiModelSelector />
 			<v-button x-small secondary icon>
 				<v-icon name="language" />
 			</v-button>
+			<AiModelSelector />
+
+
 			<div class="spacer"></div>
 			<v-button class="cancel" x-small secondary @click="handleCancel">
 				{{ t('cancel') }}
@@ -114,8 +116,6 @@ function handleBlur() {
 		--v-button-background-color-disabled: var(--theme--background-accent);
 	}
 }
-
-
 
 .spacer {
 	flex-grow: 1;
