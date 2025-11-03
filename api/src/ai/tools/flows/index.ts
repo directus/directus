@@ -1,10 +1,10 @@
 import { requireText } from '@/utils/require-text.js';
 import type { FlowRaw } from '@directus/types';
 import { isObject } from '@directus/utils';
+import { resolve } from 'node:path';
 import { z } from 'zod';
 import { FlowsService } from '../../../services/flows.js';
 import { defineTool } from '../define-tool.js';
-import { resolve } from 'node:path';
 import { FlowItemInputSchema, FlowItemValidateSchema, QueryInputSchema, QueryValidateSchema } from '../schema.js';
 
 export const FlowsValidateSchema = z.discriminatedUnion('action', [
@@ -35,7 +35,7 @@ export const FlowsInputSchema = z.object({
 	key: z.string().optional(),
 });
 
-	export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
+export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
 	name: 'flows',
 	admin: true,
 	description: requireText(resolve(__dirname, './prompt.md')),
