@@ -69,7 +69,7 @@ describe('encrypt/decrypt (AES-256-GCM with scrypt KDF, v1 envelope)', () => {
 		const tamperedTag = tag.replace(/[A-Za-z0-9]/, (c: string) => (c === 'A' ? 'B' : 'A'));
 
 		const tampered = [parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], iv, cipherText, tamperedTag].join(
-			'|',
+			'||',
 		);
 
 		await expect(decrypt(tampered, key)).rejects.toThrow();
