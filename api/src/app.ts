@@ -74,6 +74,7 @@ import tusSchedule from './schedules/tus.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
 import { validateStorage } from './utils/validate-storage.js';
+import { aiChatRouter } from './ai/chat/router.js';
 
 const require = createRequire(import.meta.url);
 
@@ -308,6 +309,8 @@ export default async function createApp(): Promise<express.Application> {
 	if (toBoolean(env['MCP_ENABLED']) === true) {
 		app.use('/mcp', mcpRouter);
 	}
+
+	app.use('/ai/chat', aiChatRouter);
 
 	if (env['METRICS_ENABLED'] === true) {
 		app.use('/metrics', metricsRouter);

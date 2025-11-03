@@ -1,0 +1,22 @@
+import { SettingsService } from '@/services/settings.js';
+import asyncHandler from '@/utils/async-handler.js';
+import { getSchema } from '@/utils/get-schema.js';
+
+export const loadSettings = asyncHandler(async (_req, res, next) => {
+	const service = new SettingsService({
+		schema: await getSchema(),
+	});
+
+	const { ai_openai_api_key, ai_anthropic_api_key } = await service.readSingleton({
+		fields: ['ai_openai_api_key', 'ai_anthropic_api_key'],
+	});
+
+	res.locals['ai'] = {
+		apiKeys: {
+			openai: ai_openai_api_key,
+			anthropic: ai_anthropic_api_key,
+		},
+	};
+
+	return next();
+});
