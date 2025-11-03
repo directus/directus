@@ -28,10 +28,13 @@ describe('fetch-share-info', () => {
 		};
 
 		mockReadOne = vi.fn();
-		
-		vi.mocked(SharesService).mockImplementation(() => ({
-			readOne: mockReadOne,
-		}) as any);
+
+		vi.mocked(SharesService).mockImplementation(
+			() =>
+				({
+					readOne: mockReadOne,
+				}) as any,
+		);
 	});
 
 	describe('_fetchShareInfo', () => {
