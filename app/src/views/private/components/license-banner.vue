@@ -13,7 +13,10 @@ const cookies = useCookies(['license-banner-dismissed']);
 const { t } = useI18n();
 
 const errors = ref<Record<string, any>[]>([]);
-const isSaveDisabled = computed(() => !form.value.email || !form.value.license);
+
+const isSaveDisabled = computed(
+	() => !form.value.email || !form.value.license || (form.value.project_usage === 'commercial' && !form.value.org_name),
+);
 
 async function setOwner() {
 	errors.value = validate(form.value, fields);

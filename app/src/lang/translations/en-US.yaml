@@ -23,14 +23,14 @@
 about: About
 directus_bsl: Directus BSL 1.1
 privacy_policy: Privacy Policy
-contact_our_team: Contac our Team
+contact_our_team: Contact our Team
 setup_welcome: Welcome to Directus
 setup_info: Let's create your admin account and get your project up and running.
 setup_license_notice: >
   Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget.
 setup_license_follow_up: >
-  Entities above this threshold require a paid license. You&nbsp;can continue evaluating Directus now and
-  {contactOurTeam} when you're ready to discuss production use.
+  Entities above this threshold require a paid license. You can continue evaluating Directus now and {contactOurTeam}
+  when you're ready to discuss production use.
 setup_save_accept_license: >
   By hitting save, you accept the terms of the {directusBsl} and {privacyPolicy}.
 setup_accept_license: I accept the terms of the {directusBsl} and {privacyPolicy}
