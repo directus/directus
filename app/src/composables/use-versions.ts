@@ -142,6 +142,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 					filter,
 					sort: '-date_created',
 					fields: ['*'],
+					versionRaw: true,
 				},
 			});
 

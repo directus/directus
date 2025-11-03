@@ -493,8 +493,8 @@ export function useComparison(options: UseComparisonOptions) {
 		return {
 			id: version.id,
 			displayName: getVersionDisplayName(version),
-			date: normalizeDate(version.date_updated),
-			user: version.user_updated ?? version.user_created,
+			date: normalizeDate(version.delta?._date ?? version.date_created),
+			user: version.delta?._user ?? version.user_created,
 			collection: version.collection,
 			item: version.item,
 		};
