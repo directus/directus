@@ -11,7 +11,7 @@ const scryptAsync = promisify(crypto.scrypt) as (
 	password: string | Buffer,
 	salt: string | Buffer,
 	keylen: number,
-	options: crypto.ScryptOptions
+	options: crypto.ScryptOptions,
 ) => Promise<Buffer>;
 
 const deriveKey = async (password: string, salt: Buffer, opts: ScryptOpts = SCRYPT_DEFAULTS): Promise<Buffer> => {

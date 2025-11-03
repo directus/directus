@@ -174,7 +174,7 @@ export class PayloadService {
 			}
 
 			return value;
-		}
+		},
 	};
 
 	processValues(action: PayloadAction, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
