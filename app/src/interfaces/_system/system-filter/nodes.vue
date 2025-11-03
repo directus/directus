@@ -356,16 +356,17 @@ function handleNoneGroupFilter(index: number, newFilters: Filter[]) {
 	// preserved as-is since they're already correctly structured for the collection context
 	const filtersWithoutPrefix = stripRelationshipPrefix(newFilters, relationshipField);
 
-	// _none expects a single Filter object, not an array
-	// If we have multiple filters, wrap them in _and, otherwise use the single filter
-	let noneFilter: Filter;
+	// _none expects a single Filter object with flat fields (not wrapped in _and)
+	// Multiple conditions are implicitly ANDed by having multiple top-level fields
+	// Merge all filters into a single flat object
+	let noneFilter: Filter = {};
 
-	if (filtersWithoutPrefix.length === 0) {
-		noneFilter = {};
-	} else if (filtersWithoutPrefix.length === 1) {
-		noneFilter = filtersWithoutPrefix[0] || {};
-	} else {
-		noneFilter = { _and: filtersWithoutPrefix };
+	if (filtersWithoutPrefix.length > 0) {
+		for (const filter of filtersWithoutPrefix) {
+			if (filter && typeof filter === 'object') {
+				noneFilter = { ...noneFilter, ...filter };
+			}
+		}
 	}
 
 	// Update the node with the new filters
@@ -409,15 +410,18 @@ function getNoneGroupFilters(nodeInfo: FilterInfoField): Filter[] {
 
 	if (!strippedFilter) return [];
 
-	// If the filter has _and or _or, return the array, otherwise wrap in _and array for the nodes component
-	if ('_and' in strippedFilter) {
-		return strippedFilter._and as Filter[];
-	} else if ('_or' in strippedFilter) {
-		return strippedFilter._or as Filter[];
-	} else {
-		// Single field filter - wrap in _and array for nodes component
-		return [strippedFilter];
+	// _none filters use flat objects with multiple fields (not _and/_or)
+	// Convert the flat object into an array of single-field filters for the nodes component
+	// Each top-level key becomes its own filter
+	const fieldFilters: Filter[] = [];
+
+	for (const [key, value] of Object.entries(strippedFilter)) {
+		if (key !== '_and' && key !== '_or' && value !== undefined) {
+			fieldFilters.push({ [key]: value } as Filter);
+		}
 	}
+
+	return fieldFilters;
 }
 
 function handleNoneGroupAddField(index: number, fieldKey: string) {

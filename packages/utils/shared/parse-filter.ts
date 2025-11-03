@@ -132,7 +132,29 @@ function parseFilterEntry(
 		return {
 			[key]: parseDynamicVariable(typeof value === 'string' ? parseJSON(value) : value, accountability, context),
 		};
-	} else if (String(key).startsWith('_') && !bypassOperators.includes(key)) {
+	} else if (bypassOperators.includes(key)) {
+		// _none and _some expect a flat Filter object with multiple fields, not wrapped in _and
+		// Parse each field recursively but merge them into a flat object
+		if (isObjectLike(value)) {
+			const parsedFields: Record<string, any> = {};
+
+			for (const [fieldKey, fieldValue] of Object.entries(value)) {
+				const parsedField = parseFilterRecursive(
+					{ [fieldKey]: fieldValue } as Filter,
+					accountability,
+					context,
+				);
+
+				if (parsedField && typeof parsedField === 'object') {
+					Object.assign(parsedFields, parsedField);
+				}
+			}
+
+			return { [key]: parsedFields } as Filter;
+		}
+
+		return { [key]: parseDynamicVariable(value, accountability, context) };
+	} else if (String(key).startsWith('_')) {
 		return { [key]: parseDynamicVariable(value, accountability, context) };
 	} else {
 		return { [key]: parseFilterRecursive(value, accountability, context) } as Filter;

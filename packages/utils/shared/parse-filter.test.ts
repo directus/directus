@@ -804,4 +804,74 @@ describe('#parseFilter', () => {
 		const mockContext = { $CURRENT_POLICIES: [{ key: 'policy-key' }] as unknown as Policy[] };
 		expect(parseFilter(mockFilter, mockAccountability, mockContext)).toStrictEqual(mockResult);
 	});
+
+	it('keeps _none filter flat with multiple fields (no _and wrapping)', () => {
+		const mockFilter = {
+			children: {
+				_none: {
+					status: {
+						_eq: 'published',
+					},
+					logs: {
+						event: {
+							_eq: 'deleted'
+						},
+					},
+				},
+			},
+		} as Filter;
+
+		const mockResult = {
+			children: {
+				_none: {
+					status: {
+						_eq: 'published',
+					},
+					logs: {
+						event: {
+							_eq: 'deleted'
+						},
+					},
+				},
+			},
+		} as Filter;
+
+		const mockAccountability = { role: 'admin' };
+		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+	});
+
+	it('keeps _some filter flat with multiple fields (no _and wrapping)', () => {
+		const mockFilter = {
+			children: {
+				_some: {
+					status: {
+						_eq: 'published',
+					},
+					logs: {
+						event: {
+							_eq: 'deleted'
+						},
+					},
+				},
+			},
+		} as Filter;
+
+		const mockResult = {
+			children: {
+				_some: {
+					status: {
+						_eq: 'published',
+					},
+					logs: {
+						event: {
+							_eq: 'deleted'
+						},
+					},
+				},
+			},
+		} as Filter;
+
+		const mockAccountability = { role: 'admin' };
+		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+	});
 });
