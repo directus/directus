@@ -61,7 +61,14 @@ const splitterCollapsed = computed({
 		>
 			<template #start>
 				<div ref="scrollContainer" class="scrolling-container">
-					<PrivateViewHeaderBar :title="props.title" :shadow="showHeaderShadow" :inline-nav :icon :icon-color :show-back>
+					<PrivateViewHeaderBar
+						:title="props.title"
+						:shadow="showHeaderShadow"
+						:inline-nav
+						:icon
+						:icon-color
+						:show-back
+					>
 						<template #actions:append><slot name="actions:append" /></template>
 						<template #actions:prepend><slot name="actions:prepend" /></template>
 						<template #actions><slot name="actions" /></template>
@@ -84,7 +91,9 @@ const splitterCollapsed = computed({
 			</template>
 
 			<template #end>
-				<PrivateViewSidebar v-if="sm"><template #sidebar><slot name="sidebar" /></template></PrivateViewSidebar>
+				<PrivateViewSidebar v-if="sm">
+					<template #sidebar><slot name="sidebar" /></template>
+				</PrivateViewSidebar>
 
 				<PrivateViewDrawer v-else v-model:collapsed="sidebarStore.collapsed" placement="right">
 					<PrivateViewSidebar class="mobile-sidebar">

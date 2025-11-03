@@ -182,10 +182,7 @@ function clearFilters() {
 		collection="directus_users"
 		:reset-preset="resetPreset"
 	>
-		<private-view
-			:title="title"
-			icon="people_alt"
-		>
+		<private-view :title="title" icon="people_alt">
 			<template v-if="breadcrumb" #headline>
 				<v-breadcrumb :items="breadcrumb" />
 			</template>

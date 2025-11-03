@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useCollectionPermissions } from '@/composables/use-permissions';
+import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { ContentVersion } from '@directus/types';
-import { isNil } from 'lodash';
-import { ref, toRefs, unref, watch, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
+import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
+import { ContentVersion, PrimaryKey } from '@directus/types';
 import slugify from '@sindresorhus/slugify';
-import VersionPromoteDrawer from './version-promote-drawer.vue';
+import { computed, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 interface Props {
 	collection: string;
-	primaryKey: string | number;
+	primaryKey: PrimaryKey;
 	updateAllowed: boolean;
 	hasEdits: boolean;
 	currentVersion: ContentVersion | null;
@@ -29,9 +29,9 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const { collection, primaryKey, hasEdits, currentVersion } = toRefs(props);
+const { collection, primaryKey, hasEdits, currentVersion, versions } = toRefs(props);
 
-const isVersionPromoteDrawerOpen = ref(false);
+const comparisonModalActive = ref(false);
 
 const {
 	createAllowed: createVersionsAllowed,
@@ -172,7 +172,7 @@ function useRenameDialog() {
 	};
 
 	async function renameVersion() {
-		if (isRenameDisabled.value || updating.value) return;
+		if (isRenameDisabled.value || updating.value || newVersionKey.value === null) return;
 
 		updating.value = true;
 
@@ -249,12 +249,8 @@ function useDeleteDialog() {
 	}
 }
 
-function getVersionDisplayName(version: ContentVersion) {
-	return isNil(version.name) ? version.key : version.name;
-}
-
 async function onPromoteComplete(deleteOnPromote: boolean) {
-	isVersionPromoteDrawerOpen.value = false;
+	comparisonModalActive.value = false;
 
 	if (deleteOnPromote) {
 		await deleteVersion();
@@ -270,11 +266,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 			<template #activator="{ toggle }">
 				<button class="version-button" type="button" @click="toggle">
 					<v-icon name="published_with_changes" />
-					<v-text-overflow
-						class="version-name"
-						:text="currentVersion ? getVersionDisplayName(currentVersion) : t('main_version')"
-						placement="bottom"
-					/>
+					<v-text-overflow class="version-name" :text="getVersionDisplayName(currentVersion)" placement="bottom" />
 					<v-icon small name="arrow_drop_down" />
 				</button>
 			</template>
@@ -306,7 +298,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 				<template v-if="currentVersion !== null">
 					<v-divider />
 
-					<v-list-item v-if="updateAllowed" clickable @click="isVersionPromoteDrawerOpen = true">
+					<v-list-item v-if="updateAllowed" clickable @click="comparisonModalActive = true">
 						{{ t('promote_version') }}
 					</v-list-item>
 
@@ -321,12 +313,15 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 			</v-list>
 		</v-menu>
 
-		<version-promote-drawer
+		<comparison-modal
 			v-if="currentVersion !== null"
-			:active="isVersionPromoteDrawerOpen"
-			:current-version="currentVersion"
-			:delete-versions-allowed="deleteVersionsAllowed"
-			@cancel="isVersionPromoteDrawerOpen = false"
+			v-model="comparisonModalActive"
+			:delete-versions-allowed
+			:collection
+			:primary-key
+			mode="version"
+			:current-version
+			@cancel="comparisonModalActive = false"
 			@promote="onPromoteComplete($event)"
 		/>
 

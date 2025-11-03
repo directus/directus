@@ -14,7 +14,7 @@ import PrivateView from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
 import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
@@ -49,7 +49,7 @@ const form = ref<HTMLElement>();
 const { collection, primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
 
-const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
 
@@ -367,7 +367,7 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 			refresh();
 		} else if (action === 'stay') {
 			refresh();
-			revisionsDrawerDetailRef.value?.refresh?.();
+			revisionsSidebarDetailRef.value?.refresh?.();
 		} else if (action === 'quit') {
 			if (!props.singleton) router.push(`/content/${props.collection}`);
 		}
@@ -387,7 +387,7 @@ async function saveAndStay() {
 
 			router.replace(getItemRoute(props.collection, newPrimaryKey));
 		} else {
-			revisionsDrawerDetailRef.value?.refresh?.();
+			revisionsSidebarDetailRef.value?.refresh?.();
 			refresh();
 		}
 	} catch {
@@ -752,9 +752,9 @@ function useCollectionRoute() {
 				<div v-md="t('page_help_collections_item')" class="page-description" />
 			</sidebar-detail>
 			<template v-if="isNew === false && actualPrimaryKey">
-				<revisions-drawer-detail
+				<revisions-sidebar-detail
 					v-if="revisionsAllowed && accountabilityScope === 'all'"
-					ref="revisionsDrawerDetailRef"
+					ref="revisionsSidebarDetailRef"
 					:collection="collection"
 					:primary-key="actualPrimaryKey"
 					:version="currentVersion"

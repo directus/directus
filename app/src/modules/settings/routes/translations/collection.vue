@@ -114,10 +114,7 @@ function clearFilters() {
 		:reset-preset="resetPreset"
 		:clear-filters="clearFilters"
 	>
-		<private-view
-			:title="t('settings_translations')"
-			icon="translate"
-		>
+		<private-view :title="t('settings_translations')" icon="translate">
 			<template #headline>
 				<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
 			</template>
@@ -131,7 +128,15 @@ function clearFilters() {
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
-						<v-button v-tooltip.bottom="t('delete_label')" rounded icon class="action-delete" secondary small @click="on">
+						<v-button
+							v-tooltip.bottom="t('delete_label')"
+							rounded
+							icon
+							class="action-delete"
+							secondary
+							small
+							@click="on"
+						>
 							<v-icon name="delete" outline small />
 						</v-button>
 					</template>

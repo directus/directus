@@ -14,12 +14,12 @@ const sidebarStore = useSidebarStore();
 const { sm } = useBreakpoints(breakpointsTailwind);
 
 const props = defineProps<{
-	title?: string,
-	shadow: boolean,
-	inlineNav: boolean,
-	icon?: string,
-	iconColor?: string,
-	showBack?: boolean
+	title?: string;
+	shadow: boolean;
+	inlineNav: boolean;
+	icon?: string;
+	iconColor?: string;
+	showBack?: boolean;
 }>();
 
 const showNavToggle = computed(() => {
@@ -36,9 +36,17 @@ const showSidebarToggle = computed(() => {
 </script>
 
 <template>
-	<header class="header-bar" :class="{shadow}">
+	<header class="header-bar" :class="{ shadow }">
 		<div class="primary">
-			<VIcon v-if="showNavToggle" v-tooltip.bottom="$t('toggle_navigation')" small class="nav-toggle" name="left_panel_open" clickable @click="navBarStore.expand" />
+			<VIcon
+				v-if="showNavToggle"
+				v-tooltip.bottom="$t('toggle_navigation')"
+				small
+				class="nav-toggle"
+				name="left_panel_open"
+				clickable
+				@click="navBarStore.expand"
+			/>
 
 			<PrivateViewHeaderBarIcon v-if="icon || showBack" class="icon" :icon :show-back :icon-color />
 
@@ -70,7 +78,14 @@ const showSidebarToggle = computed(() => {
 
 			<div class="spacer" />
 
-			<VIcon v-if="showSidebarToggle" class="sidebar-toggle" small name="right_panel_open" clickable @click="sidebarStore.expand" />
+			<VIcon
+				v-if="showSidebarToggle"
+				class="sidebar-toggle"
+				small
+				name="right_panel_open"
+				clickable
+				@click="sidebarStore.expand"
+			/>
 		</div>
 
 		<PrivateViewHeaderBarActions class="actions">

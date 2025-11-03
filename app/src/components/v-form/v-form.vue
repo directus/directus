@@ -11,7 +11,7 @@ import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { MenuOptions } from './form-field-menu.vue';
 import FormField from './form-field.vue';
-import type { FormField as TFormField } from './types';
+import type { FormField as TFormField, ComparisonContext } from './types';
 import { getFormFields } from './utils/get-form-fields';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
@@ -44,6 +44,7 @@ const props = withDefaults(
 		showDivider?: boolean;
 		inline?: boolean;
 		version?: ContentVersion | null;
+		comparison?: ComparisonContext;
 	}>(),
 	{
 		collection: undefined,
@@ -89,7 +90,16 @@ onBeforeUpdate(() => {
 	formFieldEls.value = {};
 });
 
-const { fields: finalFields, fieldNames, fieldsMap, getFieldsForGroup, fieldsForGroup, isDisabled } = useForm();
+const {
+	fields: finalFields,
+	fieldNames,
+	fieldsMap,
+	fieldsForGroup,
+	isDisabled,
+	getFieldsForGroup,
+	isFieldVisible,
+} = useForm();
+
 const { toggleBatchField, batchActiveFields } = useBatch();
 const { toggleRawField, rawActiveFields } = useRawEditor();
 
@@ -97,7 +107,7 @@ const firstEditableFieldIndex = computed(() => {
 	for (const [index, fieldName] of fieldNames.value.entries()) {
 		const field = fieldsMap.value[fieldName];
 
-		if (field?.meta && !field.meta?.readonly && !field.meta?.hidden) {
+		if (field?.meta && !field.meta?.readonly && isFieldVisible(field)) {
 			return index;
 		}
 	}
@@ -109,7 +119,7 @@ const firstVisibleFieldIndex = computed(() => {
 	for (const [index, fieldName] of fieldNames.value.entries()) {
 		const field = fieldsMap.value[fieldName];
 
-		if (field?.meta && !field.meta?.hidden) {
+		if (field?.meta && isFieldVisible(field)) {
 			return index;
 		}
 	}
@@ -119,7 +129,7 @@ const firstVisibleFieldIndex = computed(() => {
 
 const noVisibleFields = computed(() => {
 	return Object.keys(fieldsMap.value).every((fieldKey) => {
-		return fieldsMap.value[fieldKey]?.meta?.hidden === true;
+		return !isFieldVisible(fieldsMap.value[fieldKey]!);
 	});
 });
 
@@ -161,8 +171,8 @@ function useForm() {
 		);
 
 		fields = pushGroupOptionsDown(fields);
-		updateSystemDivider(fields);
-		updateFieldWidths(fields);
+		updateSystemDivider(fields, isFieldVisible);
+		updateFieldWidths(fields, isFieldVisible);
 
 		return fields;
 	});
@@ -183,7 +193,7 @@ function useForm() {
 		return fieldNames.value.map((name) => getFieldsForGroup(fieldsMap.value[name]?.meta?.field || null));
 	});
 
-	return { fields, fieldNames, fieldsMap, isDisabled, getFieldsForGroup, fieldsForGroup };
+	return { fields, fieldNames, fieldsMap, fieldsForGroup, isDisabled, getFieldsForGroup, isFieldVisible };
 
 	function isDisabled(field: TFormField | undefined) {
 		if (!field) return true;
@@ -240,6 +250,14 @@ function useForm() {
 		}
 
 		return field;
+	}
+
+	function isFieldVisible(field: Field | TFormField): boolean {
+		return (
+			field.meta?.hidden !== true ||
+			!!props.comparison?.fields?.has(field.field) ||
+			!!props.comparison?.revisionFields?.has(field.field)
+		);
 	}
 }
 
@@ -366,7 +384,7 @@ function useRawEditor() {
 			<template v-if="fieldsMap[fieldName]">
 				<component
 					:is="`interface-${fieldsMap[fieldName]!.meta?.interface || 'group-standard'}`"
-					v-if="fieldsMap[fieldName]!.meta?.special?.includes('group') && !fieldsMap[fieldName]!.meta?.hidden"
+					v-if="fieldsMap[fieldName]!.meta?.special?.includes('group') && isFieldVisible(fieldsMap[fieldName])"
 					:ref="
 						(el: Element) => {
 							formFieldEls[fieldName] = el;
@@ -390,12 +408,13 @@ function useRawEditor() {
 					:raw-editor-enabled="rawEditorEnabled"
 					:direction="direction"
 					:version
+					:comparison="comparison"
 					v-bind="fieldsMap[fieldName]!.meta?.options || {}"
 					@apply="apply"
 				/>
 
 				<form-field
-					v-else-if="!fieldsMap[fieldName]!.meta?.hidden"
+					v-else-if="isFieldVisible(fieldsMap[fieldName])"
 					:ref="
 						(el) => {
 							formFieldEls[fieldName] = el;
@@ -409,6 +428,8 @@ function useRawEditor() {
 					:disabled="isDisabled(fieldsMap[fieldName]!)"
 					:batch-mode="batchMode"
 					:batch-active="batchActiveFields.includes(fieldName)"
+					:comparison="comparison"
+					:comparison-active="comparison?.selectedFields.includes(fieldName)"
 					:primary-key="primaryKey"
 					:loading="loading"
 					:validation-error="

@@ -74,10 +74,7 @@ function clearFilters() {
 		:search="search"
 		collection="directus_webhooks"
 	>
-		<private-view
-			:title="t('webhooks')"
-			icon="anchor"
-		>
+		<private-view :title="t('webhooks')" icon="anchor">
 			<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 			<template #navigation>

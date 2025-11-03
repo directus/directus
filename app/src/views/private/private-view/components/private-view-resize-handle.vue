@@ -9,9 +9,11 @@ const draggerEl = useTemplateRef('private-view-resize-handle');
 const isHovering = useElementHover(draggerEl);
 const { elementY, elementHeight } = useMouseInElement(draggerEl);
 
-const mousePosPercentage = computed(() => isHovering.value ? Math.round(elementY.value / elementHeight.value * 100) : 0);
-const fromPosition = computed(() => isHovering.value ? Math.max(0, mousePosPercentage.value - 25) : 0);
-const toPosition = computed(() => isHovering.value ? Math.min(100, mousePosPercentage.value + 25) : 0);
+const mousePosPercentage = computed(() =>
+	isHovering.value ? Math.round((elementY.value / elementHeight.value) * 100) : 0,
+);
+const fromPosition = computed(() => (isHovering.value ? Math.max(0, mousePosPercentage.value - 25) : 0));
+const toPosition = computed(() => (isHovering.value ? Math.min(100, mousePosPercentage.value + 25) : 0));
 </script>
 
 <template>
@@ -33,7 +35,12 @@ div {
 	transition: opacity var(--fast) var(--transition);
 	inline-size: 1px;
 	block-size: 100%;
-	background: linear-gradient(to bottom, transparent var(--from), var(--theme--primary) var(--via), transparent var(--to));
+	background: linear-gradient(
+		to bottom,
+		transparent var(--from),
+		var(--theme--primary) var(--via),
+		transparent var(--to)
+	);
 
 	&:hover {
 		opacity: 1;

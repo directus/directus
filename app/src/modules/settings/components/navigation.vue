@@ -69,7 +69,6 @@ const links = computed<Link[][]>(() => [
 					icon: 'smart_toy',
 					name: t('settings_ai'),
 					to: `/settings/ai`,
-					chip: t('beta'),
 				}
 			: undefined,
 	].filter((link) => link) as Link[],

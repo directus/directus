@@ -4,14 +4,7 @@ import SkipMenu from '../../components/skip-menu.vue';
 </script>
 
 <template>
-
-	<aside
-	id="sidebar"
-	ref="sidebarEl"
-	role="contentinfo"
-	class="alt-colors"
-	aria-label="Module Sidebar"
-	>
+	<aside id="sidebar" ref="sidebarEl" role="contentinfo" class="alt-colors" aria-label="Module Sidebar">
 		<SkipMenu section="sidebar" />
 		<div class="flex-container">
 			<SidebarDetailGroup>
