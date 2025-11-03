@@ -1,4 +1,4 @@
-<script setup lang="ts">
+\<script setup lang="ts">
 import { computed } from 'vue';
 
 export interface AiMessagePart {
@@ -125,6 +125,7 @@ v-for="(action, index) in actions" :key="index"
 	display: flex;
 	width: 100%;
 
+
 	&[data-side='right'] {
 		justify-content: flex-end;
 
@@ -162,7 +163,7 @@ v-for="(action, index) in actions" :key="index"
 }
 
 .message-text {
-	padding: var(--ai-message-padding, 1rem);
+	padding: var(--ai-message-padding, 0.5rem);
 	border-radius: var(--ai-message-border-radius, var(--theme--border-radius));
 	background-color: var(--ai-message-background, var(--theme--background-subdued));
 	color: var(--ai-message-color, var(--theme--foreground));
