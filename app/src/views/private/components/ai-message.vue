@@ -91,8 +91,10 @@ const hasLeading = computed(() => {
 			</div>
 
 			<div v-if="actions && actions.length > 0" class="message-actions">
-				<v-tooltip v-for="(action, index) in actions" :key="index" :text="action.label">
+
 					<v-button
+v-for="(action, index) in actions" :key="index"
+					v-tooltip="action.label"
 						x-small
 						icon
 						secondary
@@ -102,7 +104,7 @@ const hasLeading = computed(() => {
 					>
 						<v-icon :name="action.icon" small />
 					</v-button>
-				</v-tooltip>
+
 			</div>
 		</div>
 	</article>

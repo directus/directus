@@ -40,10 +40,14 @@ const loading = ref(false);
 
 const { collection, primaryKey } = toRefs(props);
 
-// Mock refresh function - replace with actual implementation
-const refresh = async () => {
-	// TODO: Implement refresh logic
-};
+function addMessage(message: string) {
+
+	messages.value.push({
+		id: Date.now().toString(),
+		content: message,
+		role: 'user',
+	});
+}
 </script>
 
 <template>
@@ -59,21 +63,21 @@ const refresh = async () => {
 			/>
 		</div>
 
-		<ai-input :refresh="refresh" :collection="collection" :primary-key="primaryKey" />
-
 		<v-progress-linear v-if="loading" indeterminate />
+
+		<ai-input :collection="collection" :primary-key="primaryKey" @send="addMessage" />
 	</sidebar-detail>
 </template>
 
 <style lang="scss" scoped>
-.v-progress-linear {
-	margin: 24px 0;
-}
-
 .messages-container {
 	flex: 1;
 	overflow-y: auto;
 	display: flex;
 	flex-direction: column;
+}
+
+.v-progress-linear {
+	margin: 24px 0;
 }
 </style>

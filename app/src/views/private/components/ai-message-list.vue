@@ -210,8 +210,8 @@ function updateLastMessageHeight() {
 	const parentRect = parent.value.getBoundingClientRect();
 	const parentHeight = parentRect.height;
 
-	const lastMessage = props.messages.find((m: AiMessage) => m.role === 'user');
-	if (!lastMessage) return;
+	const lastMessage = props.messages?.[props.messages.length - 1];
+	if (!lastMessage || lastMessage.role !== 'user') return;
 
 	const lastMessageEl = messagesRefs.value.get(lastMessage.id);
 	if (!lastMessageEl) return;

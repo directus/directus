@@ -9,7 +9,7 @@ defineProps<{
 	primaryKey: string | number;
 }>();
 
-const emit = defineEmits(['submit', 'cancel']);
+const emit = defineEmits(['send', 'cancel']);
 
 const { t } = useI18n();
 const textareaElement = ref<HTMLTextAreaElement>();
@@ -35,7 +35,7 @@ function handleSubmit() {
 	sending.value = true;
 
 	// Emit submit event with content
-	emit('submit', content.value);
+	emit('send', content.value);
 
 	// Clear input after submit
 	content.value = '';
