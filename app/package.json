@@ -157,6 +157,7 @@
 		"wellknown": "catalog:"
 	},
 	"dependencies": {
+		"@ai-sdk/vue": "catalog:",
 		"@directus/vue-split-panel": "catalog:",
 		"reka-ui": "catalog:"
 	}

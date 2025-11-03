@@ -7,6 +7,7 @@ packages:
   - tests/*
 
 catalog:
+  '@ai-sdk/vue': 2.0.86
   '@authenio/samlify-node-xmllint': 2.0.0
   '@aws-sdk/client-s3': 3.918.0
   '@aws-sdk/client-sesv2': 3.918.0
