@@ -65,14 +65,12 @@ function handleBlur() {
 			@blur="handleBlur"
 		/>
 		<div class="buttons">
-			<v-button x-small secondary icon>
-				<v-icon name="add" />
-			</v-button>
+			<!-- Enable Web Search Tool -->
 			<v-button x-small secondary icon>
 				<v-icon name="language" />
 			</v-button>
-			<AiModelSelector />
 
+			<AiModelSelector />
 
 			<div class="spacer"></div>
 			<v-button class="cancel" x-small secondary @click="handleCancel">

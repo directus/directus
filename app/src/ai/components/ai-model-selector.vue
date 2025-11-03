@@ -14,7 +14,6 @@ import { useAiStore } from '../stores/use-ai';
 
 const { models, selectedModel } = useAiStore();
 
-
 </script>
 
 <template>
