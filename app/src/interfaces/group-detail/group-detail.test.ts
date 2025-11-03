@@ -9,16 +9,16 @@ const global: GlobalMountOptions = {
 };
 
 describe('group detail comparison indicator', () => {
-	it('should render the diff-indicator class when closed on start', () => {
+	it('should render the indicator-active class when closed on start', () => {
 		const wrapper = mount(GroupDetail, {
 			global,
 			props,
 		});
 
-		expect(wrapper.html()).toContain('diff-indicator');
+		expect(wrapper.html()).toContain('indicator-active');
 	});
 
-	it('should render the diff-guide class when opened on start', () => {
+	it('should render the indicator-muted class when opened on start', () => {
 		const wrapper = mount(GroupDetail, {
 			global,
 			props: {
@@ -27,10 +27,10 @@ describe('group detail comparison indicator', () => {
 			},
 		});
 
-		expect(wrapper.html()).toContain('diff-guide');
+		expect(wrapper.html()).toContain('indicator-muted');
 	});
 
-	it('should render the diff-guide class when there are no field differences but updates exist in the revision', () => {
+	it('should render the indicator-muted class when there are no field differences but updates exist in the revision', () => {
 		const wrapper = mount(GroupDetail, {
 			global,
 			props: {
@@ -42,7 +42,7 @@ describe('group detail comparison indicator', () => {
 			},
 		});
 
-		expect(wrapper.html()).toContain('diff-guide');
+		expect(wrapper.html()).toContain('indicator-muted');
 	});
 
 	const props = {

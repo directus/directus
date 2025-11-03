@@ -39,7 +39,7 @@ const { t } = useI18n();
 
 const detailOpen = ref(props.start === 'open');
 
-const { isComparisonDiffIndicator, isComparisonDiffGuide } = useComparisonIndicator();
+const { isComparisonIndicatorActive, isComparisonIndicatorMuted } = useComparisonIndicator();
 
 // In case that conditions change the start prop after the group already got rendered
 // caused by the async loading of data to run the conditions against
@@ -96,11 +96,12 @@ function useComparisonIndicator() {
 		() => props.comparison && props.fields.some((field) => props.comparison!.fields.has(field.field)),
 	);
 
-	const isComparisonDiffIndicator = computed(() => !detailOpen.value && isGroupWithFieldDifferences.value);
+	const isComparisonIndicatorActive = computed(() => !detailOpen.value && isGroupWithFieldDifferences.value);
 
-	const isComparisonDiffGuide = computed(() => {
+	const isComparisonIndicatorMuted = computed(() => {
 		if (!props.comparison) return false;
 		if (detailOpen.value && isGroupWithFieldDifferences.value) return true;
+
 		return (
 			!isGroupWithFieldDifferences.value &&
 			props.fields.some((field) => props.comparison!.revisionFields?.has(field.field))
@@ -108,8 +109,8 @@ function useComparisonIndicator() {
 	});
 
 	return {
-		isComparisonDiffIndicator,
-		isComparisonDiffGuide,
+		isComparisonIndicatorActive,
+		isComparisonIndicatorMuted,
 	};
 }
 </script>
@@ -120,8 +121,8 @@ function useComparisonIndicator() {
 		:start-open="start === 'open'"
 		class="group-detail"
 		:class="{
-			'diff-indicator': isComparisonDiffIndicator,
-			'diff-guide': isComparisonDiffGuide,
+			'indicator-active': isComparisonIndicatorActive,
+			'indicator-muted': isComparisonIndicatorMuted,
 		}"
 	>
 		<template #activator="{ toggle, active }">
@@ -172,16 +173,16 @@ function useComparisonIndicator() {
 }
 
 .group-detail {
-	&.diff-indicator {
-		@include mixins.comparison-indicator;
+	&.indicator-active {
+		@include mixins.field-indicator;
 
 		&::before {
 			transition: background-color var(--slow) var(--transition);
 		}
 	}
 
-	&.diff-guide {
-		@include mixins.comparison-indicator('guide');
+	&.indicator-muted {
+		@include mixins.field-indicator('muted');
 
 		&::before {
 			transition: background-color var(--slow) var(--transition) var(--fast);

@@ -97,8 +97,8 @@ it('should arrange system and user fields and inject system divider', () => {
 	expect(formFields.value).toMatchInlineSnapshot(`
 		[
 		  {
-		    "comparisonIndicator": "on",
 		    "field": "system_field",
+		    "indicatorStyle": "active",
 		    "meta": {
 		      "interface": "input",
 		      "system": true,
@@ -115,8 +115,8 @@ it('should arrange system and user fields and inject system divider', () => {
 		    "type": "alias",
 		  },
 		  {
-		    "comparisonIndicator": "on",
 		    "field": "user_field",
+		    "indicatorStyle": "active",
 		    "meta": {
 		      "interface": "input",
 		    },
@@ -125,14 +125,14 @@ it('should arrange system and user fields and inject system divider', () => {
 	`);
 });
 
-it('should set comparisonIndicator to "off" for group fields', () => {
+it('should set indicatorStyle to "hidden" for group fields', () => {
 	const fields: DeepPartial<Field>[] = [{ field: 'field', meta: {} }];
 	const formFields: Ref<FormField[]> = getFormFields(ref(fields as Field[]));
-	expect(formFields.value[0]!.comparisonIndicator).toBe('on');
+	expect(formFields.value[0]!.indicatorStyle).toBe('active');
 });
 
-it('should set comparisonIndicator to "off" for group fields', () => {
+it('should set indicatorStyle to "hidden" for group fields', () => {
 	const fields: DeepPartial<Field>[] = [{ field: 'group_field', meta: { special: ['group'] } }];
 	const formFields: Ref<FormField[]> = getFormFields(ref(fields as Field[]));
-	expect(formFields.value[0]!.comparisonIndicator).toBe('off');
+	expect(formFields.value[0]!.indicatorStyle).toBe('hidden');
 });

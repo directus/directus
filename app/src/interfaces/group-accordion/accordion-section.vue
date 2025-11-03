@@ -96,8 +96,8 @@ function useComparisonIndicator() {
 		<template #default="{ active, toggle }">
 			<div
 				:class="{
-					'diff-indicator': !active && isFieldWithDifference,
-					'diff-guide': (active && isFieldWithDifference) || isRevisionUpdateOnly,
+					'indicator-active': !active && isFieldWithDifference,
+					'indicator-muted': (active && isFieldWithDifference) || isRevisionUpdateOnly,
 				}"
 			>
 				<button
@@ -153,16 +153,16 @@ function useComparisonIndicator() {
 	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 
-.diff-indicator {
-	@include mixins.comparison-indicator;
+.indicator-active {
+	@include mixins.field-indicator;
 
 	&::before {
 		transition: background-color var(--slow) var(--transition);
 	}
 }
 
-.diff-guide {
-	@include mixins.comparison-indicator('guide');
+.indicator-muted {
+	@include mixins.field-indicator('muted');
 
 	&::before {
 		transition: background-color var(--slow) var(--transition) var(--fast);

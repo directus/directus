@@ -576,12 +576,12 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 }
 
 .comparison-form--base {
-	--comparison-indicator--color: var(--theme--danger);
-	--comparison-guide--color: var(--theme--danger-background);
+	--field-indicator--color-active: var(--theme--danger);
+	--field-indicator--color-muted: var(--theme--danger-background);
 }
 
 .comparison-form--incoming {
-	--comparison-indicator--color: var(--theme--success);
-	--comparison-guide--color: var(--theme--success-background);
+	--field-indicator--color-active: var(--theme--success);
+	--field-indicator--color-muted: var(--theme--success-background);
 }
 </style>

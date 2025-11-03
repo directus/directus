@@ -368,14 +368,14 @@ function getFirstVisibleFieldClass(index: number) {
 
 function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 	if (isComparisonDiff()) {
-		if (field.comparisonIndicator === 'on') return 'diff-indicator';
-		if (field.comparisonIndicator === 'guide') return 'diff-guide';
+		if (field.indicatorStyle === 'active') return 'indicator-active';
+		if (field.indicatorStyle === 'muted') return 'indicator-muted';
 	}
 
 	return '';
 
 	function isComparisonDiff() {
-		if (field.comparisonIndicator === 'off' || !props.comparison) return false;
+		if (field.indicatorStyle === 'hidden' || !props.comparison) return false;
 
 		if (isGroup) {
 			const groupFields = getFieldsForGroup(field.meta?.field ?? null);
@@ -501,11 +501,11 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 	grid-column: 1 / 3;
 }
 
-.diff-indicator {
-	@include mixins.comparison-indicator;
+.indicator-active {
+	@include mixins.field-indicator;
 }
 
-.diff-guide {
-	@include mixins.comparison-indicator('guide');
+.indicator-muted {
+	@include mixins.field-indicator('muted');
 }
 </style>

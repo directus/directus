@@ -3,4 +3,4 @@
 '@directus/app': minor
 ---
 
-Added interface config option to control comparison indicator visibility
+Added interface config option to control indicator appearance

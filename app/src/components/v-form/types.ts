@@ -3,7 +3,7 @@ import { DeepPartial, Field, InterfaceConfig } from '@directus/types';
 export type FormField = DeepPartial<Field> & {
 	field: string;
 	name: string;
-} & Pick<InterfaceConfig, 'hideLabel' | 'hideLoader' | 'comparisonIndicator'>;
+} & Pick<InterfaceConfig, 'hideLabel' | 'hideLoader' | 'indicatorStyle'>;
 
 export interface ComparisonContext {
 	side: 'base' | 'incoming';
