@@ -1,0 +1,408 @@
+<script setup lang="ts">
+import type { ComponentPublicInstance } from 'vue';
+import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
+import AiMessage from './ai-message.vue';
+import type { AiMessageAction, AiMessageAvatar } from './ai-message.vue';
+
+export interface AiMessage {
+	id: string;
+	content?: string;
+	parts?: Array<{
+		type: 'text' | 'image' | 'tool-call' | 'tool-result';
+		text?: string;
+		[key: string]: any;
+	}>;
+	role: 'user' | 'assistant' | 'system';
+	timestamp?: Date | string;
+}
+
+export type AiStatus = 'idle' | 'streaming' | 'submitted' | 'error';
+
+export interface MessageConfig {
+	variant?: 'primary' | 'subdued' | 'accent' | 'normal';
+	side?: 'left' | 'right';
+	avatar?: AiMessageAvatar;
+	actions?: AiMessageAction[];
+}
+
+interface Props {
+	/** Array of messages to display */
+	messages?: AiMessage[];
+	/** Current status of the AI interaction */
+	status?: AiStatus;
+	/** Auto-scroll to bottom when streaming */
+	shouldAutoScroll?: boolean;
+	/** Scroll to bottom on mount */
+	shouldScrollToBottom?: boolean;
+	/** Show auto-scroll button */
+	autoScroll?: boolean;
+	/** Icon for auto-scroll button */
+	autoScrollIcon?: string;
+	/** User message configuration */
+	userConfig?: MessageConfig;
+	/** Assistant message configuration */
+	assistantConfig?: MessageConfig;
+	/** Compact mode for dense layouts */
+	compact?: boolean;
+	/** Spacing offset for sticky elements (px) */
+	spacingOffset?: number;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	messages: () => [],
+	status: 'idle',
+	shouldAutoScroll: false,
+	shouldScrollToBottom: true,
+	autoScroll: true,
+	autoScrollIcon: 'arrow_downward',
+	userConfig: () => ({ side: 'right', variant: 'primary' }),
+	assistantConfig: () => ({ side: 'left', variant: 'subdued' }),
+	compact: false,
+	spacingOffset: 0,
+});
+
+const el = ref<HTMLElement | null>(null);
+const parent = ref<HTMLElement | null>(null);
+const messagesRefs = ref(new Map<string, HTMLElement>());
+
+const showAutoScroll = ref(false);
+const lastMessageHeight = ref(0);
+const lastMessageSubmitted = ref(false);
+const lastScrollTop = ref(0);
+const userScrolledUp = ref(false);
+
+function registerMessageRef(id: string, element: ComponentPublicInstance | null) {
+	const elInstance = element?.$el;
+
+	if (elInstance) {
+		messagesRefs.value.set(id, elInstance);
+	}
+}
+
+function scrollToMessage(id: string) {
+	const element = messagesRefs.value.get(id);
+
+	if (element) {
+		element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+	}
+}
+
+function scrollToBottom(smooth: boolean = true) {
+	if (!parent.value) return;
+
+	if (smooth) {
+		parent.value.scrollTo({ top: parent.value.scrollHeight, behavior: 'smooth' });
+	} else {
+		parent.value.scrollTop = parent.value.scrollHeight;
+	}
+}
+
+// Throttle helper function
+function throttle<T extends (...args: any[]) => void>(func: T, delay: number): T {
+	let lastCall = 0;
+	return ((...args: Parameters<T>) => {
+		const now = Date.now();
+
+		if (now - lastCall >= delay) {
+			lastCall = now;
+			func(...args);
+		}
+	}) as T;
+}
+
+// Watch messages and status for streaming auto-scroll
+let throttledScrollCheck: (() => void) | null = null;
+
+watch(
+	[() => props.messages, () => props.status],
+	([_, status]) => {
+		if (status !== 'streaming') return;
+
+		if (!props.shouldAutoScroll) {
+			checkScrollPosition();
+			return;
+		}
+
+		// Scroll to bottom when message is streaming if shouldAutoScroll is true
+		nextTick(() => {
+			if (!parent.value || userScrolledUp.value) return;
+
+			const scrollThreshold = 150;
+
+			const distanceFromBottom =
+				parent.value.scrollHeight - parent.value.scrollTop - parent.value.clientHeight;
+
+			if (distanceFromBottom < scrollThreshold) {
+				scrollToBottom(false);
+			}
+		});
+	},
+	{ deep: true },
+);
+
+watch(
+	() => props.status,
+	(status) => {
+		if (status !== 'submitted') return;
+
+		const lastMessage = props.messages?.[props.messages.length - 1];
+		if (!lastMessage || lastMessage.role !== 'user') return;
+
+		userScrolledUp.value = false;
+
+		nextTick(() => {
+			lastMessageSubmitted.value = true;
+			updateLastMessageHeight();
+
+			nextTick(() => {
+				scrollToMessage(lastMessage.id);
+			});
+		});
+	},
+);
+
+function checkScrollPosition() {
+	if (!parent.value) return;
+
+	const scrollPosition = parent.value.scrollTop + parent.value.clientHeight;
+	const scrollHeight = parent.value.scrollHeight;
+	const threshold = 100;
+
+	showAutoScroll.value = scrollHeight - scrollPosition >= threshold;
+
+	// Detect user scrolling up
+	if (parent.value.scrollTop < lastScrollTop.value) {
+		userScrolledUp.value = true;
+	} else if (scrollHeight - scrollPosition < threshold) {
+		userScrolledUp.value = false;
+	}
+
+	lastScrollTop.value = parent.value.scrollTop;
+}
+
+function onAutoScrollClick() {
+	userScrolledUp.value = false;
+	scrollToBottom();
+}
+
+function getScrollParent(node: HTMLElement | null): HTMLElement | null {
+	if (!node) return null;
+
+	const overflowRegex = /auto|scroll/;
+	let current: HTMLElement | null = node;
+
+	while (current && current !== document.body && current !== document.documentElement) {
+		const style = window.getComputedStyle(current);
+
+		if (overflowRegex.test(style.overflowY)) {
+			return current;
+		}
+
+		current = current.parentElement;
+	}
+
+	return document.documentElement;
+}
+
+function updateLastMessageHeight() {
+	if (!el.value || !parent.value || !props.messages?.length || !lastMessageSubmitted.value) return;
+
+	const parentRect = parent.value.getBoundingClientRect();
+	const parentHeight = parentRect.height;
+
+	const lastMessage = props.messages.find((m: AiMessage) => m.role === 'user');
+	if (!lastMessage) return;
+
+	const lastMessageEl = messagesRefs.value.get(lastMessage.id);
+	if (!lastMessageEl) return;
+
+	let spacingOffset = props.spacingOffset || 0;
+	const elComputedStyle = window.getComputedStyle(el.value);
+	const parentComputedStyle = window.getComputedStyle(parent.value);
+
+	spacingOffset += parseFloat(elComputedStyle.rowGap) || parseFloat(elComputedStyle.gap) || 0;
+	spacingOffset += parseFloat(parentComputedStyle.paddingTop) || 0;
+	spacingOffset += parseFloat(parentComputedStyle.paddingBottom) || 0;
+
+	lastMessageHeight.value = Math.max(parentHeight - lastMessageEl.offsetHeight - spacingOffset, 0);
+}
+
+function handleResize() {
+	nextTick(updateLastMessageHeight);
+}
+
+onMounted(() => {
+	// Find first scrollable parent element
+	parent.value = getScrollParent(el.value);
+	if (!parent.value) return;
+
+	lastScrollTop.value = parent.value.scrollTop;
+
+	// Create throttled scroll check
+	throttledScrollCheck = throttle(checkScrollPosition, 50);
+
+	// Wait for content to fully render
+	setTimeout(() => {
+		if (props.shouldScrollToBottom) {
+			scrollToBottom(false);
+		} else {
+			checkScrollPosition();
+		}
+	}, 100);
+
+	// Add event listeners
+	if (throttledScrollCheck) {
+		parent.value.addEventListener('scroll', throttledScrollCheck);
+	}
+
+	window.addEventListener('resize', handleResize);
+});
+
+onBeforeUnmount(() => {
+	if (parent.value && throttledScrollCheck) {
+		parent.value.removeEventListener('scroll', throttledScrollCheck);
+	}
+
+	window.removeEventListener('resize', handleResize);
+});
+
+function getMessageConfig(role: string): MessageConfig {
+	return role === 'user' ? props.userConfig : props.assistantConfig;
+}
+</script>
+
+<template>
+	<div
+		ref="el"
+		:data-status="status"
+		class="ai-message-list"
+		:style="{ '--last-message-height': `${lastMessageHeight}px` }"
+	>
+		<slot>
+			<AiMessage
+				v-for="message in messages"
+				:key="message.id"
+				v-bind="{ ...message, ...getMessageConfig(message.role) }"
+				:ref="(el) => registerMessageRef(message.id, el as ComponentPublicInstance)"
+				:compact="compact"
+			/>
+		</slot>
+
+		<AiMessage
+			v-if="status === 'submitted'"
+			id="indicator"
+			role="assistant"
+			v-bind="{ ...assistantConfig, actions: undefined, parts: [] }"
+			:compact="compact"
+		>
+			<template #content>
+				<slot name="indicator">
+					<div class="loading-indicator">
+						<span />
+						<span />
+						<span />
+					</div>
+				</slot>
+			</template>
+		</AiMessage>
+
+		<Transition name="auto-scroll">
+			<div v-if="showAutoScroll && autoScroll" class="auto-scroll-container">
+				<slot name="viewport" :on-click="onAutoScrollClick">
+					<v-button
+						:icon="autoScrollIcon"
+						x-small
+						secondary
+						class="auto-scroll-button"
+						@click="onAutoScrollClick"
+					/>
+				</slot>
+			</div>
+		</Transition>
+	</div>
+</template>
+
+<style lang="scss" scoped>
+/*
+  Available Variables:
+  --ai-message-list-gap          [1rem]
+  --ai-message-list-padding      [1rem]
+*/
+
+.ai-message-list {
+	display: flex;
+	flex-direction: column;
+	gap: var(--ai-message-list-gap, 1rem);
+	padding: var(--ai-message-list-padding, 1rem);
+	position: relative;
+}
+
+.loading-indicator {
+	display: flex;
+	gap: 0.375rem;
+	padding: 1rem;
+	align-items: center;
+
+	span {
+		width: 0.5rem;
+		height: 0.5rem;
+		background-color: var(--theme--foreground-subdued);
+		border-radius: 50%;
+		animation: loading-bounce 1.4s infinite ease-in-out both;
+
+		&:nth-child(1) {
+			animation-delay: -0.32s;
+		}
+
+		&:nth-child(2) {
+			animation-delay: -0.16s;
+		}
+	}
+}
+
+@keyframes loading-bounce {
+	0%,
+	80%,
+	100% {
+		transform: scale(0.8);
+		opacity: 0.5;
+	}
+
+	40% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+.auto-scroll-container {
+	position: sticky;
+	bottom: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-block-start: 1rem;
+	pointer-events: none;
+}
+
+.auto-scroll-button {
+	pointer-events: all;
+	box-shadow: var(--theme--shadow);
+
+	--v-button-background-color: var(--theme--background);
+	--v-button-background-color-hover: var(--theme--background-accent);
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--theme--foreground-accent);
+}
+
+// Transition for auto-scroll button
+.auto-scroll-enter-active,
+.auto-scroll-leave-active {
+	transition: opacity var(--fast) var(--transition), transform var(--fast) var(--transition);
+}
+
+.auto-scroll-enter-from,
+.auto-scroll-leave-to {
+	opacity: 0;
+	transform: translateY(0.5rem);
+}
+</style>
