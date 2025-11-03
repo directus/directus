@@ -28,6 +28,8 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import { generateHash } from '../utils/generate-hash.js';
+import { encrypt } from '../utils/encrypt.js';
+import { getSecret } from '../utils/get-secret.js';
 
 type Transformers = {
 	[type: string]: (context: {
@@ -163,6 +165,16 @@ export class PayloadService {
 
 			return value;
 		},
+		async encrypt({ action, value }) {
+			if (action === 'read') return value ? '**********' : null;
+
+			if (typeof value === 'string') {
+				const key = getSecret();
+				return encrypt(value, key);
+			}
+
+			return value;
+		}
 	};
 
 	processValues(action: PayloadAction, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
