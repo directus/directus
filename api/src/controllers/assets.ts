@@ -61,10 +61,10 @@ router.post(
 
 		const { archive, complete } = await service.getZip(ids.map((id) => ({ id: String(id) })));
 
+		archive.pipe(res);
+
 		res.setHeader('Content-Type', 'application/zip');
 		res.setHeader('Content-Disposition', `attachment; filename="files-${new Date().toISOString()}.zip"`);
-
-		archive.pipe(res);
 
 		await complete();
 	}),

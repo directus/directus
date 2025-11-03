@@ -29,8 +29,8 @@ export function getAssetUrl(
 	return assetUrl.href;
 }
 
-export function getFilesUrl(files: string[]) {
-	const assetUrl = new URL(`assets/files/${files.join(',')}`, getPublicURL());
+export function getFilesUrl() {
+	const assetUrl = new URL(`assets/files`, getPublicURL());
 
 	assetUrl.searchParams.set('download', '');
 

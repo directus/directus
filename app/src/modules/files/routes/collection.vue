@@ -358,6 +358,31 @@ function useFileUpload() {
 		emitter.emit(Events.upload);
 	}
 }
+
+async function downloadFiles() {
+	let response;
+
+	if (selection.value.length === 1) {
+		response = await fetch(getAssetUrl(selection.value[0]!));
+	} else {
+		response = await fetch(getFilesUrl(), {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ ids: selection.value }),
+		});
+	}
+
+	const blob = await response.blob();
+	const filename = response.headers.get('Content-Disposition')?.match(/filename="(.*?)"/)?.[1];
+
+	const url = window.URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = filename ?? 'unknown file';
+	a.click();
+}
 </script>
 
 <template>
@@ -486,7 +511,7 @@ function useFileUpload() {
 					icon
 					secondary
 					download
-					:href="selection.length === 1 ? getAssetUrl(selection[0]!) : getFilesUrl(selection)"
+					@click="downloadFiles"
 				>
 					<v-icon name="download" outline />
 				</v-button>
