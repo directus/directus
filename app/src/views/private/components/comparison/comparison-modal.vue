@@ -204,7 +204,6 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: [],
 										onToggleField: () => {},
-										comparisonType: comparisonData?.comparisonType,
 									}"
 									class="comparison-form--base"
 								/>
@@ -246,7 +245,6 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: selectedComparisonFields,
 										onToggleField: toggleComparisonField,
-										comparisonType: comparisonData?.comparisonType,
 									}"
 									class="comparison-form--incoming"
 								/>
