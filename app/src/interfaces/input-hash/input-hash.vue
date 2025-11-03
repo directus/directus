@@ -10,12 +10,15 @@ export default defineComponent({
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	value: string | null;
 	disabled?: boolean;
 	placeholder?: string;
 	masked?: boolean;
-}>();
+	type?: 'password' | 'text';
+}>(), {
+	type: 'text',
+});
 
 const emit = defineEmits(['input']);
 
@@ -46,7 +49,7 @@ function emitValue(newValue: string) {
 	<v-input
 		:placeholder="internalPlaceholder"
 		:disabled="disabled"
-		:type="masked ? 'password' : 'text'"
+		:type="type"
 		:autocomplete="masked ? 'new-password' : 'off'"
 		:model-value="localValue"
 		:class="{ hashed: isHashed && !localValue }"

@@ -702,6 +702,26 @@ fields:
       - no-data
       - group
 
+  - field: ai_openai_api_key
+    special:
+      - encrypt
+    interface: input-hash
+    options:
+      iconRight: lock
+      masked: true
+    width: half
+    group: ai_group
+
+  - field: ai_anthropic_api_key
+    special:
+      - encrypt
+    interface: input-hash
+    options:
+      iconRight: lock
+      masked: true
+    width: half
+    group: ai_group
+
   - field: mcp_divider
     interface: presentation-divider
     options:
