@@ -87,7 +87,23 @@ function parseFilterRecursive(
 		return { _eq: parseDynamicVariable(filter, accountability, context) };
 	}
 
-	const filters = Object.entries(filter).map((entry) => parseFilterEntry(entry, accountability, context));
+	const entries = Object.entries(filter);
+
+	// If the filter has _and or _or as the only key, preserve the structure
+	// But first, convert object-form arrays to actual arrays (from query params)
+	if (entries.length === 1 && ['_and', '_or'].includes(entries[0]![0]!)) {
+		const [key, value] = entries[0]!;
+
+		// Convert object-form arrays to arrays before processing
+		if (isObject(value) && !Array.isArray(value)) {
+			const convertedValue = Object.values(value);
+			return parseFilterEntry([key, convertedValue], accountability, context);
+		}
+
+		return parseFilterEntry(entries[0]!, accountability, context);
+	}
+
+	const filters = entries.map((entry) => parseFilterEntry(entry, accountability, context));
 
 	if (filters.length === 0) {
 		return {};
@@ -119,7 +135,13 @@ function parseFilterEntry(
 	context: ParseFilterContext,
 ): Filter {
 	if (['_or', '_and'].includes(String(key))) {
-		return { [key]: value.map((filter: Filter) => parseFilterRecursive(filter, accountability, context)) };
+		// When array indices are above 20 (default value),
+		// the query parser (qs) parses them as a key-value pair object instead of an array,
+		// so we will need to convert them back to an array
+		const val = isObject(value) && !Array.isArray(value) ? Object.values(value) : value;
+		return {
+			[key]: toArray(val).map((filter: Filter) => parseFilterRecursive(filter, accountability, context)),
+		} as Filter;
 	} else if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
 		// When array indices are above 20 (default value),
 		// the query parser (qs) parses them as a key-value pair object instead of an array,
@@ -151,8 +173,71 @@ function parseFilterEntry(
 
 		return { [key]: parseDynamicVariable(value, accountability, context) };
 	} else if (String(key).startsWith('_')) {
+		// If the value is an object with a single key that matches the operator key,
+		// it might be a nested operator structure from query params (e.g., { _eq: { _eq: '4' } })
+		// In this case, unwrap it to just the operator with the inner value
+		if (isObjectLike(value) && !Array.isArray(value)) {
+			const valueEntries = Object.entries(value);
+
+			if (valueEntries.length === 1) {
+				const [innerKey, innerValue] = valueEntries[0]!;
+
+				// If the inner key matches the outer key (operator), unwrap it
+				if (innerKey === key && String(key).startsWith('_')) {
+					return { [key]: parseDynamicVariable(innerValue, accountability, context) };
+				}
+			}
+		}
+
 		return { [key]: parseDynamicVariable(value, accountability, context) };
 	} else {
+		// For regular field keys, recursively parse the value
+		// But first check if the value has bracket-wrapped operator keys (e.g., "[_eq]" from qs parsing)
+		// and unwrap them, and also check for nested operator structures
+		if (isObjectLike(value) && !Array.isArray(value)) {
+			const valueEntries = Object.entries(value);
+			
+			// Check if any keys are bracket-wrapped operators (e.g., "[_eq]" should become "_eq")
+			// This happens when qs parses nested array structures like filter[_and][0][field][_eq]=value
+			const cleanedValue: Record<string, any> = {};
+			let hasBracketKeys = false;
+
+			for (const [innerKey, innerValue] of valueEntries) {
+				// Unwrap bracket-wrapped keys: "[_eq]" -> "_eq"
+				let cleanedKey = innerKey;
+
+				if (cleanedKey.startsWith('[') && cleanedKey.endsWith(']')) {
+					cleanedKey = cleanedKey.slice(1, -1);
+					hasBracketKeys = true;
+				}
+
+				cleanedValue[cleanedKey] = innerValue;
+			}
+			
+			// If we cleaned any keys, use the cleaned value
+			if (hasBracketKeys) {
+				value = cleanedValue;
+			}
+			
+			// Check for nested operator structures (e.g., { _eq: { _eq: '4' } })
+			const cleanedEntries = Object.entries(value);
+
+			if (cleanedEntries.length === 1) {
+				const [innerKey, innerValue] = cleanedEntries[0]!;
+
+				// If the inner key is an operator (starts with _) and the inner value is also an object with the same operator key,
+				// unwrap one level (this handles query param structures like field[_eq][_eq]=value)
+				if (String(innerKey).startsWith('_') && isObjectLike(innerValue) && !Array.isArray(innerValue)) {
+					const innerValueEntries = Object.entries(innerValue as Record<string, unknown>);
+
+					if (innerValueEntries.length === 1 && innerValueEntries[0]![0] === innerKey) {
+						// Unwrap: { _eq: { _eq: '4' } } -> { _eq: '4' }
+						return { [key]: { [innerKey]: innerValueEntries[0]![1] } } as Filter;
+					}
+				}
+			}
+		}
+
 		return { [key]: parseFilterRecursive(value, accountability, context) } as Filter;
 	}
 }

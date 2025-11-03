@@ -30,11 +30,10 @@ describe('#parseFilter', () => {
 
 	it('returns the filter when passed accountability with only a role', () => {
 		const mockFilter = { _and: [{ field: { _eq: 'field' } }] } as Filter;
-		const mockAccountability = { role: 'admin' };
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockFilter);
 	});
 
-	it('properly shifts up implicit logical operator', () => {
+null('properly shifts up implicit logical operator', () => {
 		const mockFilter = {
 			date_field: {
 				_and: [
@@ -63,8 +62,7 @@ describe('#parseFilter', () => {
 			],
 		} as Filter;
 
-		const mockAccountability = { role: 'admin' };
-		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
 	});
 
 	it('properly shifts up implicit logical operator twice', () => {
@@ -102,8 +100,7 @@ describe('#parseFilter', () => {
 			],
 		} as Filter;
 
-		const mockAccountability = { role: 'admin' };
-		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
 	});
 
 	it('properly shifts up implicit logical operator three times', () => {
@@ -147,8 +144,7 @@ describe('#parseFilter', () => {
 			],
 		} as Filter;
 
-		const mockAccountability = { role: 'admin' };
-		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
 	});
 
 	it('properly shifts up nested implicit logical operators', () => {
@@ -220,8 +216,7 @@ describe('#parseFilter', () => {
 			],
 		} as Filter;
 
-		const mockAccountability = { role: 'admin' };
-		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
 	});
 
 	it('properly shifts up nested implicit logical operators', () => {
@@ -303,8 +298,7 @@ describe('#parseFilter', () => {
 			],
 		} as Filter;
 
-		const mockAccountability = { role: 'admin' };
-		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
 	});
 
 	it('properly shifts up nested implicit logical operators', () => {
@@ -360,8 +354,7 @@ describe('#parseFilter', () => {
 			],
 		} as Filter;
 
-		const mockAccountability = { role: 'admin' };
-		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
 	});
 
 	it('leaves explicit logical operator as is', () => {
@@ -395,8 +388,7 @@ describe('#parseFilter', () => {
 			],
 		} as Filter;
 
-		const mockAccountability = { role: 'admin' };
-		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
 	});
 
 	it('returns the filter includes an _in it parses the filter with a deepMap', () => {
@@ -420,8 +412,7 @@ describe('#parseFilter', () => {
 			],
 		} as Filter;
 
-		const mockAccountability = { role: 'admin' };
-		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
 	});
 
 	it('returns the filter includes an _in it parses the filter with a deepMap', () => {
@@ -445,8 +436,7 @@ describe('#parseFilter', () => {
 			],
 		} as Filter;
 
-		const mockAccountability = { role: 'admin' };
-		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
 	});
 
 	it('returns the date', () => {
@@ -470,8 +460,7 @@ describe('#parseFilter', () => {
 			],
 		} as Filter;
 
-		const mockAccountability = { role: 'admin' };
-		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
 	});
 
 	it('returns the filter includes an _in it parses the filter with a deepMap', () => {
@@ -485,8 +474,7 @@ describe('#parseFilter', () => {
 			],
 		} as Filter;
 
-		const mockAccountability = { role: 'admin' };
-		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockFilter);
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockFilter);
 	});
 
 	it('does proper type casting', () => {
@@ -530,8 +518,7 @@ describe('#parseFilter', () => {
 			],
 		};
 
-		const mockAccountability = { role: 'admin' };
-		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
 	});
 
 	it('properly skips type casting', () => {
@@ -575,7 +562,7 @@ describe('#parseFilter', () => {
 			],
 		};
 
-		const mockAccountability = { role: 'admin' };
+		const mockAccountability = null;
 		expect(parseFilter(mockFilter, mockAccountability, undefined, true)).toStrictEqual(mockResult);
 	});
 
@@ -625,8 +612,7 @@ describe('#parseFilter', () => {
 			],
 		} as Filter;
 
-		const mockAccountability = { role: 'admin' };
-		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
 	});
 
 	it('replaces the roles from accountability to $CURRENT_ROLES', () => {
@@ -836,8 +822,79 @@ describe('#parseFilter', () => {
 			},
 		} as Filter;
 
-		const mockAccountability = { role: 'admin' };
-		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
+	});
+
+	it('keeps _none filter flat with nested _or groups', () => {
+		const mockFilter = {
+			children: {
+				_none: {
+					status: {
+						_eq: 'published',
+					},
+					logs: {
+						_or: [
+							{ event: { _eq: 'deleted' } },
+							{ event: { _eq: 'archived' } },
+						],
+					},
+				},
+			},
+		} as Filter;
+
+		const mockResult = {
+			children: {
+				_none: {
+					status: {
+						_eq: 'published',
+					},
+					logs: {
+						_or: [
+							{ event: { _eq: 'deleted' } },
+							{ event: { _eq: 'archived' } },
+						],
+					},
+				},
+			},
+		} as Filter;
+
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
+	});
+
+	it('keeps _none filter flat with nested _and groups', () => {
+		const mockFilter = {
+			children: {
+				_none: {
+					status: {
+						_eq: 'published',
+					},
+					logs: {
+						_and: [
+							{ event: { _eq: 'deleted' } },
+							{ timestamp: { _gte: '2024-01-01' } },
+						],
+					},
+				},
+			},
+		} as Filter;
+
+		const mockResult = {
+			children: {
+				_none: {
+					status: {
+						_eq: 'published',
+					},
+					logs: {
+						_and: [
+							{ event: { _eq: 'deleted' } },
+							{ timestamp: { _gte: '2024-01-01' } },
+						],
+					},
+				},
+			},
+		} as Filter;
+
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
 	});
 
 	it('keeps _some filter flat with multiple fields (no _and wrapping)', () => {
@@ -871,7 +928,178 @@ describe('#parseFilter', () => {
 			},
 		} as Filter;
 
-		const mockAccountability = { role: 'admin' };
-		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
+	});
+
+	it('handles _or with simple filters', () => {
+		const mockFilter = {
+			_or: [
+				{ skill: { _eq: 2 } },
+				{ skill: { _eq: 3 } },
+			],
+		} as Filter;
+
+		const mockResult = {
+			_or: [
+				{ skill: { _eq: 2 } },
+				{ skill: { _eq: 3 } },
+			],
+		} as Filter;
+
+		expect(parseFilter(mockFilter, null)).toStrictEqual(mockResult);
+	});
+
+	it('handles _or with nested _and groups', () => {
+		const mockFilter = {
+			_or: [
+				{ skill: { _eq: 2 } },
+				{ _and: [{ skill: { _eq: 3 } }] },
+			],
+		} as Filter;
+
+		const result = parseFilter(mockFilter, null);
+
+		const mockResult = {
+			_or: [
+				{ skill: { _eq: 2 } },
+				{ _and: [{ skill: { _eq: 3 } }] },
+			],
+		} as Filter;
+
+		expect(result).toStrictEqual(mockResult);
+	});
+
+	it('handles _or with nested _and groups when parsed as object (query params)', () => {
+		// When query parser converts arrays to objects (e.g., when indices > 20)
+		const mockFilter = {
+			_or: {
+				0: { skill: { _eq: 2 } },
+				1: { _and: { 0: { skill: { _eq: 3 } } } },
+			},
+		} as any;
+
+		const result = parseFilter(mockFilter, null);
+
+		const mockResult = {
+			_or: [
+				{ skill: { _eq: 2 } },
+				{ _and: [{ skill: { _eq: 3 } }] },
+			],
+		} as Filter;
+
+		expect(result).toStrictEqual(mockResult);
+	});
+
+	it('handles nested operator structures from query params (e.g., field[_eq][_eq]=value)', () => {
+		// When query params create nested operator structures like { level: { _eq: { _eq: '4' } } }
+		const mockFilter = {
+			_and: [
+				{
+					skills: {
+						level: {
+							_eq: {
+								_eq: '4',
+							},
+						},
+					},
+				},
+			],
+		} as any;
+
+		const result = parseFilter(mockFilter, null);
+
+		const mockResult = {
+			_and: [
+				{
+					skills: {
+						level: {
+							_eq: '4',
+						},
+					},
+				},
+			],
+		} as Filter;
+
+		expect(result).toStrictEqual(mockResult);
+	});
+
+	it('handles bracket-wrapped operator keys from qs parsing (e.g., "[_eq]" should become "_eq")', () => {
+		// When qs parses nested array structures like filter[_and][0][_and][0][_or][1][_and][0][skills][level][_eq]=4
+		// it can create bracket-wrapped keys like "[_eq]" instead of "_eq"
+		const mockFilter = {
+			_and: [
+				{
+					_and: [
+						{
+							_or: [
+								{
+									skills: {
+										level: {
+											_eq: '3',
+										},
+									},
+								},
+								{
+									_and: [
+										{
+											skills: {
+												level: {
+													'[_eq]': '4', // qs can create this when parsing nested arrays
+												},
+											},
+										},
+									],
+								},
+							],
+						},
+					],
+				},
+				{
+					status: {
+						_neq: 'archived',
+					},
+				},
+			],
+		} as any;
+
+		const result = parseFilter(mockFilter, null);
+
+		const mockResult = {
+			_and: [
+				{
+					_and: [
+						{
+							_or: [
+								{
+									skills: {
+										level: {
+											_eq: '3',
+										},
+									},
+								},
+								{
+									_and: [
+										{
+											skills: {
+												level: {
+													_eq: '4',
+												},
+											},
+										},
+									],
+								},
+							],
+						},
+					],
+				},
+				{
+					status: {
+						_neq: 'archived',
+					},
+				},
+			],
+		} as Filter;
+
+		expect(result).toStrictEqual(mockResult);
 	});
 });
