@@ -1,11 +1,14 @@
 import { requireText } from '@/utils/require-text.js';
 import type { FlowRaw } from '@directus/types';
 import { isObject } from '@directus/utils';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 import { FlowsService } from '../../../services/flows.js';
 import { defineTool } from '../define-tool.js';
 import { FlowItemInputSchema, FlowItemValidateSchema, QueryInputSchema, QueryValidateSchema } from '../schema.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const FlowsValidateSchema = z.discriminatedUnion('action', [
 	z.strictObject({

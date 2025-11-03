@@ -5,7 +5,10 @@ import { UnsupportedMediaTypeError } from '@directus/errors';
 import type { TransformationSet } from '@directus/types';
 import { z } from 'zod';
 import { defineTool } from '../define-tool.js';
-import { resolve } from 'path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const AssetsValidateSchema = z.strictObject({
 	id: z.string(),

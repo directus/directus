@@ -4,8 +4,11 @@ import { requireText } from '@/utils/require-text.js';
 import { InvalidPayloadError } from '@directus/errors';
 import { z } from 'zod';
 import { defineTool } from '../define-tool.js';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { TriggerFlowInputSchema, TriggerFlowValidateSchema } from '../schema.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const triggerFlow = defineTool<z.infer<typeof TriggerFlowValidateSchema>>({
 	name: 'trigger-flow',

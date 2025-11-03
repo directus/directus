@@ -7,7 +7,8 @@ import { toArray } from '@directus/utils';
 import { isObject } from 'graphql-compose';
 import { z } from 'zod';
 import { defineTool } from '../define-tool.js';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
 	ItemInputSchema,
 	ItemValidateSchema,
@@ -16,6 +17,8 @@ import {
 	QueryInputSchema,
 	QueryValidateSchema,
 } from '../schema.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const PartialItemInputSchema = z.strictObject({
 	collection: z.string(),

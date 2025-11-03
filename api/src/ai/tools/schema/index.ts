@@ -6,7 +6,10 @@ import { requireText } from '@/utils/require-text.js';
 import type { Field, Relation } from '@directus/types';
 import { z } from 'zod';
 import { defineTool } from '../define-tool.js';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export interface fieldOverviewOutput {
 	type: string;

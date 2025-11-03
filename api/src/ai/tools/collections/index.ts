@@ -4,13 +4,16 @@ import { isObject, toArray } from '@directus/utils';
 import { z } from 'zod';
 import { CollectionsService } from '../../../services/collections.js';
 import { defineTool } from '../define-tool.js';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
 	CollectionItemInputSchema,
 	CollectionItemValidateCreateSchema,
 	CollectionItemValidateUpdateSchema,
 } from '../schema.js';
 import { requireText } from '@/utils/require-text.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const CollectionsValidateSchema = z.discriminatedUnion('action', [
 	z.strictObject({

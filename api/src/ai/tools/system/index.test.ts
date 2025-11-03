@@ -1,8 +1,11 @@
 import { requireText } from '@/utils/require-text.js';
 import type { Accountability, SchemaOverview } from '@directus/types';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, test } from 'vitest';
 import { system } from './index.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('system tool', () => {
 	describe('prompt override', () => {

@@ -3,7 +3,8 @@ import { isObject } from '@directus/utils';
 import { z } from 'zod';
 import { FilesService } from '@/services/files.js';
 import { defineTool } from '../define-tool.js';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
 	FileImportItemInputSchema,
 	FileImportItemValidateSchema,
@@ -15,6 +16,8 @@ import {
 	QueryValidateSchema,
 } from '../schema.js';
 import { requireText } from '@/utils/require-text.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const FilesValidateSchema = z.discriminatedUnion('action', [
 	z.strictObject({

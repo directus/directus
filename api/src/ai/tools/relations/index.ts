@@ -4,12 +4,15 @@ import { InvalidPayloadError } from '@directus/errors';
 import type { Relation } from '@directus/types';
 import { z } from 'zod';
 import { defineTool } from '../define-tool.js';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
 	RelationItemInputSchema,
 	RelationItemValidateCreateSchema,
 	RelationItemValidateUpdateSchema,
 } from '../schema.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const RelationsValidateSchema = z.discriminatedUnion('action', [
 	z.object({

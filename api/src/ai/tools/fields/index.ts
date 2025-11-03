@@ -10,13 +10,16 @@ import type { Field, Item, RawField, Type } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
 import { defineTool } from '../define-tool.js';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
 	FieldItemInputSchema,
 	FieldItemValidateSchema,
 	RawFieldItemInputSchema,
 	RawFieldItemValidateSchema,
 } from '../schema.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 type FieldCreateItem = Partial<Field> & {
 	field: string;
