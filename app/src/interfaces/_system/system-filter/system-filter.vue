@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { ClientFilterOperator, FieldFunction, Filter, Type } from '@directus/types';
+import { ClientFilterOperator, FieldFunction, Filter, LogicalFilterAND, Type } from '@directus/types';
 import {
 	getFilterOperatorsForType,
 	getOutputTypeForFunction,
@@ -75,7 +75,17 @@ const innerValue = computed<Filter[]>({
 		const name = getNodeName(filterValue);
 
 		if (name === '_and') {
-			return cloneDeep(filterValue['_and']);
+			const items = cloneDeep(filterValue['_and']);
+			// Flatten any nested _and groups at the top level (they're redundant since we always wrap in _and)
+			return items.flatMap((item: Filter) => {
+				const itemName = getNodeName(item);
+
+				if (itemName === '_and' && '_and' in item) {
+					return (item as LogicalFilterAND)._and as Filter[];
+				}
+
+				return [item];
+			});
 		} else {
 			return cloneDeep([filterValue]);
 		}

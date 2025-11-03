@@ -352,6 +352,8 @@ function handleNoneGroupFilter(index: number, newFilters: Filter[]) {
 	const relationshipField = fieldInfo.field;
 	// Filters within _none should NOT have the relationship prefix in the stored JSON
 	// The backend handles the relationship context automatically
+	// Note: Nested relationship filters (e.g., groupId: { status: { _eq: ... } }) should be
+	// preserved as-is since they're already correctly structured for the collection context
 	const filtersWithoutPrefix = stripRelationshipPrefix(newFilters, relationshipField);
 
 	// _none expects a single Filter object, not an array
@@ -366,9 +368,6 @@ function handleNoneGroupFilter(index: number, newFilters: Filter[]) {
 		noneFilter = { _and: filtersWithoutPrefix };
 	}
 
-	// Ensure no prefix in the final filter
-	noneFilter = stripRelationshipPrefixFromFilter(noneFilter, relationshipField);
-
 	// Update the node with the new filters
 	filterSync.value = filterSync.value.map((filter, filterIndex) => {
 		if (filterIndex === index) {
@@ -381,23 +380,6 @@ function handleNoneGroupFilter(index: number, newFilters: Filter[]) {
 
 		return filter;
 	});
-}
-
-function stripRelationshipPrefixFromFilter(filter: Filter, relationshipField: string): Filter {
-	const result: Record<string, any> = {};
-
-	for (const [key, value] of Object.entries(filter)) {
-		if (key === '_and' || key === '_or') {
-			result[key] = stripRelationshipPrefix(value as Filter[], relationshipField);
-		} else if (key.startsWith(relationshipField + '.')) {
-			const newKey = key.slice(relationshipField.length + 1);
-			result[newKey] = value;
-		} else {
-			result[key] = value;
-		}
-	}
-
-	return result as Filter;
 }
 
 function handleNoneGroupRemoveNode(index: number, removeIds: string[]) {
@@ -422,8 +404,11 @@ function getNoneGroupFilters(nodeInfo: FilterInfoField): Filter[] {
 
 	// Strip prefix for display (in case it exists from old data or was accidentally added)
 	// Filters within _none should not have the prefix in stored JSON
-	const strippedFilter = stripRelationshipPrefixFromFilter(noneFilter, relationshipField);
-	
+	const strippedFilters = stripRelationshipPrefix([noneFilter], relationshipField);
+	const strippedFilter = strippedFilters[0];
+
+	if (!strippedFilter) return [];
+
 	// If the filter has _and or _or, return the array, otherwise wrap in _and array for the nodes component
 	if ('_and' in strippedFilter) {
 		return strippedFilter._and as Filter[];
