@@ -263,6 +263,56 @@ describe('useComparison', () => {
 			expect(baseUserUpdated.value).toBeNull();
 		});
 	});
+
+	describe('version delta date and user extraction', () => {
+		it('should use delta._date when available', async () => {
+			const deltaDate = '2025-10-29T15:30:00.000Z';
+			const otherUser = 'other-user-id';
+
+			const testCase = getTestData('version', {
+				currentVersionOverwrites: {
+					delta: {
+						_date: deltaDate,
+						_user: otherUser,
+					},
+					date_created: '2025-10-29T09:00:00.000Z',
+					user_created: 'original-user-id',
+				},
+			});
+
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { normalizedData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			const incoming = normalizedData.value?.incoming;
+			expect(incoming?.date.raw).toBe(deltaDate);
+		});
+
+		it('should use delta._user when available', async () => {
+			const deltaUser = 'delta-user-id';
+			const userCreated = 'original-user-id';
+
+			const testCase = getTestData('version', {
+				currentVersionOverwrites: {
+					delta: {
+						_user: deltaUser,
+					},
+					user_created: userCreated,
+				},
+			});
+
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { normalizedData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			const incoming = normalizedData.value?.incoming;
+			expect(incoming?.user).toBe(deltaUser);
+		});
+	});
 });
 
 function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Record<string, any> = {}) {
