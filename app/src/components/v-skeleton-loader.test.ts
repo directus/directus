@@ -1,5 +1,5 @@
-import { test, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { expect, test } from 'vitest';
 
 import VSkeletonLoader from './v-skeleton-loader.vue';
 
@@ -16,7 +16,15 @@ test('Mount component', () => {
 });
 
 test('type prop', () => {
-	const types = ['input', 'input-tall', 'block-list-item', 'block-list-item-dense', 'text', 'list-item-icon'] as const;
+	const types = [
+		'input',
+		'input-tall',
+		'block-list-item',
+		'block-list-item-dense',
+		'text',
+		'list-item-icon',
+		'pagination',
+	] as const;
 
 	for (const type of types) {
 		const wrapper = mount(VSkeletonLoader, {
