@@ -25,7 +25,10 @@ const emit = defineEmits<{
 
 const errors = ref<Record<string, any>[]>([]);
 const editing = ref(false);
-const allowSave = computed(() => form.value.email || form.value.project_usage || form.value.org_name);
+
+const allowSave = computed(
+	() => form.value.email || form.value.project_usage || form.value.org_name || form.value.product_updates,
+);
 
 async function save() {
 	const value = { ...initialValues.value, ...form.value };

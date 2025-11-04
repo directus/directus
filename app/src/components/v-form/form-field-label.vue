@@ -61,7 +61,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 		<component
 			:is="disabledMenu ? 'div' : 'button'"
 			class="field-name"
-			v-bind="!disabledMenu ? { type: 'button', click: toggle } : {}"
+			v-bind="!disabledMenu ? { type: 'button', onClick: toggle } : {}"
 		>
 			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot" />
 			<v-checkbox
