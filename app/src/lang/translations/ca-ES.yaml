@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Quant a
+first_name: Nom
+last_name: Cognoms
 identifier: Indentificador
 avatar: Foto
 application: Aplicació
