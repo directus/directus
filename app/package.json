@@ -161,5 +161,8 @@
 		"vuedraggable": "catalog:",
 		"wellknown": "catalog:",
 		"zod": "catalog:"
+	},
+	"dependencies": {
+		"reka-ui": "catalog:"
 	}
 }
