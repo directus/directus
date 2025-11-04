@@ -1,4 +1,6 @@
 ---
+first_name: Ime
+last_name: Priimek
 identifier: Identifikator
 avatar: Avatar
 application: Aplikacija
