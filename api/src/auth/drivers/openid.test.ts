@@ -1,18 +1,14 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { BASE_MOCK_ENV } from './__test-utils__/auth-driver.test-utils.js';
 
-// CRITICAL: Setup mocks BEFORE importing anything else
-// Mock @directus/env BEFORE any imports that use it (like constants.ts)
 vi.mock('@directus/env', () => ({
   useEnv: vi.fn(() => BASE_MOCK_ENV),
 }));
 
-// Mock core dependencies
 vi.mock('../../logger');
 vi.mock('../../database');
 vi.mock('../../emitter');
 
-// Mock app and middleware to prevent full server initialization
 vi.mock('../../app', () => ({
   default: {},
 }));
@@ -25,7 +21,6 @@ vi.mock('../../middleware/use-collection', () => ({
   useCollection: vi.fn(() => vi.fn()),
 }));
 
-// Mock utility functions
 vi.mock('../../utils/get-secret', () => ({
   getSecret: () => 'test-secret',
 }));
@@ -38,14 +33,12 @@ vi.mock('../../utils/async-handler', () => ({
   default: (fn: any) => fn,
 }));
 
-// Mock our OAuth callback utilities
 vi.mock('../../utils/oauth-callbacks.js', () => ({
   generateRedirectUrls: vi.fn(),
   getCallbackFromOriginUrl: vi.fn(),
   getCallbackFromRequest: vi.fn(),
 }));
 
-// Mock openid-client for OpenID
 vi.mock('openid-client', () => {
   const mockClient = {
     authorizationUrl: vi.fn((params) => `https://test.com/authorize?${JSON.stringify(params)}`),
@@ -53,6 +46,11 @@ vi.mock('openid-client', () => {
     callback: vi.fn(),
     userinfo: vi.fn(),
     refresh: vi.fn(),
+    issuer: {
+      metadata: {
+        userinfo_endpoint: 'https://test.com/userinfo',
+      },
+    },
   };
 
   return {
@@ -98,10 +96,8 @@ vi.mock('openid-client', () => {
   };
 });
 
-// Now import test utilities and the module under test
 import {
   createMockEnv,
-  createOpenIDConfig,
 } from './__test-utils__/auth-driver.test-utils.js';
 import { useEnv } from '@directus/env';
 import { useLogger } from '../../logger/index.js';
@@ -127,13 +123,25 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
+const provider = 'okta';
+
+const createOpenIDConfig = (overrides: Record<string, any> = {}) => ({
+  provider,
+  issuerUrl: `https://${provider}.com`,
+  clientId: 'test-client-id',
+  clientSecret: 'test-client-secret',
+  issuerDiscoveryMustSucceed: false,
+  ...overrides,
+});
+
+
 describe('OpenIDAuthDriver', () => {
   describe('Constructor', () => {
     describe('Validation', () => {
       test.each([
-        { field: 'issuerUrl', config: { provider: 'okta', clientId: 'id', clientSecret: 'secret' } },
-        { field: 'clientId', config: { provider: 'okta', issuerUrl: 'url', clientSecret: 'secret' } },
-        { field: 'clientSecret', config: { provider: 'okta', issuerUrl: 'url', clientId: 'id' } },
+        { field: 'issuerUrl', config: { provider, clientId: 'id', clientSecret: 'secret' } },
+        { field: 'clientId', config: { provider, issuerUrl: 'url', clientSecret: 'secret' } },
+        { field: 'clientSecret', config: { provider, issuerUrl: 'url', clientId: 'id' } },
         { field: 'provider', config: { issuerUrl: 'url', clientId: 'id', clientSecret: 'secret' } },
       ])('throws InvalidProviderConfigError when $field is missing', ({ config }) => {
         expect(() => new OpenIDAuthDriver({ knex: {} as any }, config as any)).toThrow(InvalidProviderConfigError);
@@ -141,7 +149,7 @@ describe('OpenIDAuthDriver', () => {
       });
 
       test('throws InvalidProviderError when roleMapping is an Array instead of Object', () => {
-        const config = createOpenIDConfig('okta', {
+        const config = createOpenIDConfig({
           roleMapping: ['role1', 'role2'],
         });
 
@@ -153,7 +161,7 @@ describe('OpenIDAuthDriver', () => {
       });
 
       test('creates driver successfully with all required config', () => {
-        const config = createOpenIDConfig('okta');
+        const config = createOpenIDConfig();
         const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
         expect(driver).toBeDefined();
@@ -164,39 +172,115 @@ describe('OpenIDAuthDriver', () => {
     describe('Configuration', () => {
       test('generates redirectUris using generateRedirectUrls utility', () => {
         const mockRedirectUris = [
-          new URL('http://external.com/auth/login/okta/callback'),
-          new URL('http://internal.com/auth/login/okta/callback'),
+          new URL('http://external.com/auth/login/${provider}/callback'),
+          new URL('http://internal.com/auth/login/${provider}/callback'),
         ];
 
         vi.mocked(generateRedirectUrls).mockReturnValue(mockRedirectUris);
 
         vi.mocked(useEnv).mockReturnValue(
           createMockEnv({
-            AUTH_OKTA_REDIRECT_ALLOW_LIST: 'http://external.com,http://internal.com',
+            [`AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`]: 'http://external.com,http://internal.com',
           }),
         );
 
-        const config = createOpenIDConfig('okta');
+        const config = createOpenIDConfig();
         const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
-        expect(generateRedirectUrls).toHaveBeenCalledWith('okta', 'OpenID');
+        expect(generateRedirectUrls).toHaveBeenCalledWith(provider, 'OpenID');
         expect(driver.redirectUris).toEqual(mockRedirectUris);
       });
 
       test('sets empty redirectUris when no REDIRECT_ALLOW_LIST', () => {
         vi.mocked(generateRedirectUrls).mockReturnValue([]);
 
-        const config = createOpenIDConfig('okta');
+        const config = createOpenIDConfig();
         const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
         expect(driver.redirectUris).toEqual([]);
+      });
+    });
+
+    describe('Client preload', () => {
+      test('initializes with client=null and preloads client asynchronously', () => {
+        const config = createOpenIDConfig();
+        const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+        expect(driver.client).toBeNull();
+      });
+
+      test('logs error when client preload fails', async () => {
+        const getClientSpy = vi.spyOn(OpenIDAuthDriver.prototype as any, 'getClient')
+          .mockRejectedValue(new Error('Discovery failed'));
+
+        const config = createOpenIDConfig({
+          issuerDiscoveryMustSucceed: false,
+        });
+
+        new OpenIDAuthDriver({ knex: {} as any }, config);
+
+        // Flush microtasks for .catch()
+        await Promise.resolve();
+
+        expect(mockLogger.error).toHaveBeenCalledWith(
+          expect.any(Error),
+          '[OpenID] Failed to fetch provider config',
+        );
+
+        getClientSpy.mockRestore();
+      });
+
+      test('does not call process.exit when issuerDiscoveryMustSucceed is false', async () => {
+        const processExitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+
+        const getClientSpy = vi.spyOn(OpenIDAuthDriver.prototype as any, 'getClient')
+          .mockRejectedValue(new Error('Discovery failed'));
+
+        const config = createOpenIDConfig({
+          issuerDiscoveryMustSucceed: false,
+        });
+
+        new OpenIDAuthDriver({ knex: {} as any }, config);
+
+        // Flush microtasks for .catch()
+        await Promise.resolve();
+
+        expect(processExitSpy).not.toHaveBeenCalled();
+
+        processExitSpy.mockRestore();
+        getClientSpy.mockRestore();
+      });
+
+      test('calls process.exit(1) when issuerDiscoveryMustSucceed is not false and discovery fails', async () => {
+        const processExitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+
+        const getClientSpy = vi.spyOn(OpenIDAuthDriver.prototype as any, 'getClient')
+          .mockRejectedValue(new Error('Discovery failed'));
+
+        const config = createOpenIDConfig({
+          issuerDiscoveryMustSucceed: true,
+        });
+
+        new OpenIDAuthDriver({ knex: {} as any }, config);
+
+        // Flush microtasks .catch()
+        await Promise.resolve();
+
+        expect(mockLogger.error).toHaveBeenCalledWith(
+          expect.stringContaining(`AUTH_${provider.toUpperCase()}_ISSUER_DISCOVERY_MUST_SUCCEED is enabled and discovery failed, exiting`),
+        );
+
+        expect(processExitSpy).toHaveBeenCalledWith(1);
+
+        processExitSpy.mockRestore();
+        getClientSpy.mockRestore();
       });
     });
   });
 
   describe('generateCodeVerifier', () => {
     test('returns a code verifier string', () => {
-      const config = createOpenIDConfig('okta');
+      const config = createOpenIDConfig();
       const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
       const verifier = driver.generateCodeVerifier();
@@ -207,7 +291,7 @@ describe('OpenIDAuthDriver', () => {
 
   describe('generateAuthUrl', () => {
     test('generates authorization URL with default parameters', async () => {
-      const config = createOpenIDConfig('okta');
+      const config = createOpenIDConfig();
       const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
       await driver['getClient']();
@@ -220,7 +304,7 @@ describe('OpenIDAuthDriver', () => {
     });
 
     test('includes prompt parameter when prompt=true', async () => {
-      const config = createOpenIDConfig('okta');
+      const config = createOpenIDConfig();
       const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
       await driver['getClient']();
@@ -233,13 +317,13 @@ describe('OpenIDAuthDriver', () => {
     });
 
     test('uses custom redirectUri when provided', async () => {
-      const config = createOpenIDConfig('okta');
+      const config = createOpenIDConfig();
       const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
       await driver['getClient']();
 
       const codeVerifier = driver.generateCodeVerifier();
-      const customRedirectUri = 'http://external.com/auth/login/okta/callback';
+      const customRedirectUri = `http://external.com/auth/login/${provider}/callback`;
       const authUrl = await driver.generateAuthUrl(codeVerifier, false, customRedirectUri);
 
       expect(authUrl).toBeDefined();
@@ -251,8 +335,8 @@ describe('OpenIDAuthDriver', () => {
     describe('Multi-domain callbacks', () => {
       test('uses getCallbackFromOriginUrl to find correct callback for originUrl', async () => {
         const mockRedirectUris = [
-          new URL('http://localhost:8080/auth/login/okta/callback'),
-          new URL('http://external.com/auth/login/okta/callback'),
+          new URL(`http://localhost:8080/auth/login/${provider}/callback`),
+          new URL(`http://external.com/auth/login/${provider}/callback`),
         ];
 
         vi.mocked(generateRedirectUrls).mockReturnValue(mockRedirectUris);
@@ -260,23 +344,22 @@ describe('OpenIDAuthDriver', () => {
         const externalCallback = mockRedirectUris[1]!;
         vi.mocked(getCallbackFromOriginUrl).mockReturnValue(externalCallback);
 
-        const config = createOpenIDConfig('okta', {
-          defaultRoleId: 'test-role-id',
-          identifierKey: 'sub',
+        const config = createOpenIDConfig({
+          allowPublicRegistration: true
         });
 
         const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
         await driver['getClient']();
 
+        const mockUserInfo = {
+          email: 'test@example.com',
+        };
+
         const mockTokenSet = {
           access_token: 'test-access-token',
           refresh_token: 'test-refresh-token',
-        };
-
-        const mockUserInfo = {
-          sub: '12345',
-          email: 'test@example.com',
+          claims: () => mockUserInfo,
         };
 
         vi.spyOn(driver.client!, 'callbackParams').mockReturnValue({});
@@ -295,11 +378,7 @@ describe('OpenIDAuthDriver', () => {
           originUrl: 'http://external.com',
         };
 
-        try {
-          await driver.getUserID(payload);
-        } catch {
-          // Ignore errors
-        }
+        await driver.getUserID(payload);
 
         expect(getCallbackFromOriginUrl).toHaveBeenCalledWith(mockRedirectUris, 'http://external.com');
 
@@ -314,7 +393,7 @@ describe('OpenIDAuthDriver', () => {
 
   describe('login', () => {
     test('does nothing (empty implementation)', async () => {
-      const config = createOpenIDConfig('okta');
+      const config = createOpenIDConfig();
       const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
       const user = { id: 'user-123' } as any;
@@ -325,7 +404,7 @@ describe('OpenIDAuthDriver', () => {
 
   describe('refresh', () => {
     test('does nothing when user has no auth_data', async () => {
-      const config = createOpenIDConfig('okta');
+      const config = createOpenIDConfig();
       const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
       await driver['getClient']();
@@ -340,7 +419,7 @@ describe('OpenIDAuthDriver', () => {
     });
 
     test('does nothing when auth_data has no refreshToken', async () => {
-      const config = createOpenIDConfig('okta');
+      const config = createOpenIDConfig();
       const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
       await driver['getClient']();
@@ -355,7 +434,7 @@ describe('OpenIDAuthDriver', () => {
     });
 
     test('parses auth_data when it is a JSON string', async () => {
-      const config = createOpenIDConfig('okta');
+      const config = createOpenIDConfig();
       const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
       await driver['getClient']();
@@ -378,7 +457,7 @@ describe('OpenIDAuthDriver', () => {
     });
 
     test('logs warning when auth_data string is invalid JSON', async () => {
-      const config = createOpenIDConfig('okta');
+      const config = createOpenIDConfig();
       const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
       await driver['getClient']();
@@ -400,7 +479,7 @@ describe('OpenIDAuthDriver', () => {
     });
 
     test('calls client.refresh with refreshToken from auth_data object', async () => {
-      const config = createOpenIDConfig('okta');
+      const config = createOpenIDConfig();
       const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
       await driver['getClient']();
@@ -423,7 +502,7 @@ describe('OpenIDAuthDriver', () => {
     });
 
     test('updates user with new refresh_token when provided', async () => {
-      const config = createOpenIDConfig('okta');
+      const config = createOpenIDConfig();
       const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
       await driver['getClient']();
@@ -450,7 +529,7 @@ describe('OpenIDAuthDriver', () => {
     });
 
     test('does not update user when no new refresh_token provided', async () => {
-      const config = createOpenIDConfig('okta');
+      const config = createOpenIDConfig();
       const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
       await driver['getClient']();
@@ -475,7 +554,7 @@ describe('OpenIDAuthDriver', () => {
     });
 
     test('throws error from handleError when client.refresh fails', async () => {
-      const config = createOpenIDConfig('okta');
+      const config = createOpenIDConfig();
       const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
       await driver['getClient']();

@@ -121,7 +121,9 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-const createOAuth2Config = (provider: string, overrides: Record<string, any> = {}) => ({
+const provider = 'github';
+
+const createOAuth2Config = (overrides: Record<string, any> = {}) => ({
   provider,
   authorizeUrl: `https://${provider}.com/oauth/authorize`,
   accessUrl: `https://${provider}.com/oauth/token`,
@@ -135,11 +137,11 @@ describe('OAuth2AuthDriver', () => {
   describe('Constructor', () => {
     describe('Validation', () => {
       test.each([
-        { field: 'authorizeUrl', config: { provider: 'github', accessUrl: 'url', profileUrl: 'url', clientId: 'id', clientSecret: 'secret' } },
-        { field: 'accessUrl', config: { provider: 'github', authorizeUrl: 'url', profileUrl: 'url', clientId: 'id', clientSecret: 'secret' } },
-        { field: 'profileUrl', config: { provider: 'github', authorizeUrl: 'url', accessUrl: 'url', clientId: 'id', clientSecret: 'secret' } },
-        { field: 'clientId', config: { provider: 'github', authorizeUrl: 'url', accessUrl: 'url', profileUrl: 'url', clientSecret: 'secret' } },
-        { field: 'clientSecret', config: { provider: 'github', authorizeUrl: 'url', accessUrl: 'url', profileUrl: 'url', clientId: 'id' } },
+        { field: 'authorizeUrl', config: { provider, accessUrl: 'url', profileUrl: 'url', clientId: 'id', clientSecret: 'secret' } },
+        { field: 'accessUrl', config: { provider, authorizeUrl: 'url', profileUrl: 'url', clientId: 'id', clientSecret: 'secret' } },
+        { field: 'profileUrl', config: { provider, authorizeUrl: 'url', accessUrl: 'url', clientId: 'id', clientSecret: 'secret' } },
+        { field: 'clientId', config: { provider, authorizeUrl: 'url', accessUrl: 'url', profileUrl: 'url', clientSecret: 'secret' } },
+        { field: 'clientSecret', config: { provider, authorizeUrl: 'url', accessUrl: 'url', profileUrl: 'url', clientId: 'id' } },
         { field: 'provider', config: { authorizeUrl: 'url', accessUrl: 'url', profileUrl: 'url', clientId: 'id', clientSecret: 'secret' } },
       ])('throws InvalidProviderConfigError when $field is missing', ({ config }) => {
         expect(() => new OAuth2AuthDriver({ knex: {} as any }, config as any)).toThrow(InvalidProviderConfigError);
@@ -147,7 +149,7 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('creates driver successfully with all required config', () => {
-        const validConfig = createOAuth2Config('github');
+        const validConfig = createOAuth2Config();
         const driver = new OAuth2AuthDriver({ knex: {} as any }, validConfig);
 
         expect(driver).toBeDefined();
@@ -157,7 +159,7 @@ describe('OAuth2AuthDriver', () => {
 
     describe('Configuration', () => {
       test('creates Issuer with correct configuration from provider config', () => {
-        const config = createOAuth2Config('github');
+        const config = createOAuth2Config();
 
         new OAuth2AuthDriver({ knex: {} as any }, config);
 
@@ -170,7 +172,7 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('passes correct parameters to openid-client Client constructor', () => {
-        const config = createOAuth2Config('github');
+        const config = createOAuth2Config();
         const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
         expect(mockClientConstructor).toHaveBeenCalledWith({
@@ -188,7 +190,7 @@ describe('OAuth2AuthDriver', () => {
           }),
         );
 
-        const config = createOAuth2Config('github');
+        const config = createOAuth2Config();
         new OAuth2AuthDriver({ knex: {} as any }, config);
 
         expect(mockClientConstructor).toHaveBeenCalledWith(expect.objectContaining({
@@ -197,7 +199,7 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('throws InvalidProviderError when roleMapping is an Array instead of Object', () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           roleMapping: ['role1', 'role2'],
         });
 
@@ -217,11 +219,11 @@ describe('OAuth2AuthDriver', () => {
           }),
         );
 
-        const config = createOAuth2Config('github');
+        const config = createOAuth2Config();
 
         const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
-        expect(spy).toHaveBeenCalledWith('github', 'OAuth2');
+        expect(spy).toHaveBeenCalledWith(provider, 'OAuth2');
         expect(driver.redirectUris[0]?.toString()).contain('http://external.com')
         expect(driver.redirectUris[1]?.toString()).contain('http://internal.com')
 
@@ -232,7 +234,7 @@ describe('OAuth2AuthDriver', () => {
 
   describe('generateCodeVerifier', () => {
     test('returns a code verifier string', () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const verifier = driver.generateCodeVerifier();
@@ -243,7 +245,7 @@ describe('OAuth2AuthDriver', () => {
 
   describe('generateAuthUrl', () => {
     test('generates authorization URL with correct default parameters', () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const codeVerifier = driver.generateCodeVerifier();
@@ -264,7 +266,7 @@ describe('OAuth2AuthDriver', () => {
     });
 
     test('includes prompt=consent when prompt=true', () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const codeVerifier = driver.generateCodeVerifier();
@@ -278,7 +280,7 @@ describe('OAuth2AuthDriver', () => {
     });
 
     test('uses custom scope from config', () => {
-      const config = createOAuth2Config('github', { scope: 'test' });
+      const config = createOAuth2Config({ scope: 'test' });
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const codeVerifier = driver.generateCodeVerifier();
@@ -292,7 +294,7 @@ describe('OAuth2AuthDriver', () => {
     });
 
     test('uses custom redirectUri when provided', () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const codeVerifier = driver.generateCodeVerifier();
@@ -307,7 +309,7 @@ describe('OAuth2AuthDriver', () => {
     });
 
     test('merges params from config with default params', () => {
-      const config = createOAuth2Config('github', {
+      const config = createOAuth2Config({
         params: {
           test: 'test',
         },
@@ -326,7 +328,7 @@ describe('OAuth2AuthDriver', () => {
     });
 
     test('calls generators.codeChallenge in S256 mode', () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       driver.generateAuthUrl('my-verifier');
@@ -342,7 +344,7 @@ describe('OAuth2AuthDriver', () => {
     });
 
     test('does not call generators.codeChallenge in plain mode', () => {
-      const config = createOAuth2Config('github', { plainCodeChallenge: true });
+      const config = createOAuth2Config({ plainCodeChallenge: true });
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       driver.generateAuthUrl('my-verifier');
@@ -365,7 +367,7 @@ describe('OAuth2AuthDriver', () => {
         { field: 'codeVerifier', payload: { code: 'test-code', state: 'test-state' } },
         { field: 'state', payload: { code: 'test-code', codeVerifier: 'test-verifier' } },
       ])(`throws InvalidCredentialsError when $field is missing`, async ({ payload }) => {
-        const config = createOAuth2Config('github');
+        const config = createOAuth2Config();
         const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
         await expect(driver.getUserID(payload)).rejects.toThrow(InvalidCredentialsError);
@@ -375,7 +377,7 @@ describe('OAuth2AuthDriver', () => {
 
     describe('PKCE', () => {
       test('calls codeChallenge and passes hashed state to oauthCallback (S256 mode)', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           identifierKey: 'sub',
         });
 
@@ -406,7 +408,7 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('does not call codeChallenge and passes codeVerifier as state (plain mode)', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           plainCodeChallenge: true,
           identifierKey: 'sub',
         });
@@ -438,7 +440,7 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('calls userinfo with access_token from oauthCallback', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           identifierKey: 'sub',
         });
 
@@ -465,7 +467,7 @@ describe('OAuth2AuthDriver', () => {
 
     describe('Group mapping', () => {
       test('uses defaultRoleId when no groups in userInfo', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           identifierKey: 'sub',
           defaultRoleId: 'default-role-123',
           allowPublicRegistration: true,
@@ -498,7 +500,7 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('maps group to role when user is in roleMap group', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           identifierKey: 'sub',
           defaultRoleId: 'default-role',
           allowPublicRegistration: true,
@@ -540,7 +542,7 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('uses custom groupClaimName to read groups from userInfo', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           identifierKey: 'sub',
           defaultRoleId: 'default-role',
           allowPublicRegistration: true,
@@ -582,7 +584,7 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('logs debug when groupClaim is empty but roleMap is configured', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           identifierKey: 'sub',
           defaultRoleId: 'default-role',
           roleMapping: {
@@ -623,7 +625,7 @@ describe('OAuth2AuthDriver', () => {
 
     describe('Identifier extraction', () => {
       test('extracts identifier from custom identifierKey', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           identifierKey: 'user_id',
         });
 
@@ -650,7 +652,7 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('falls back to email when identifierKey not found', async () => {
-        const config = createOAuth2Config('github');
+        const config = createOAuth2Config();
 
         const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
@@ -674,7 +676,7 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('throws InvalidCredentialsError when no identifier found', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           identifierKey: 'sub',
         });
 
@@ -697,7 +699,7 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('uses custom emailKey for fallback', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           emailKey: 'mail',
         });
 
@@ -725,7 +727,7 @@ describe('OAuth2AuthDriver', () => {
 
     describe('UserPayload construction', () => {
       test('extracts first_name and last_name from userInfo', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           allowPublicRegistration: true,
           firstNameKey: 'given_name',
           lastNameKey: 'family_name',
@@ -763,7 +765,7 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('includes auth_data with refresh_token when present', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           defaultRoleId: 'role-id',
           allowPublicRegistration: true,
         });
@@ -800,7 +802,7 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('does not include auth_data when no refresh_token', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           defaultRoleId: 'role-id',
           allowPublicRegistration: true,
         });
@@ -839,7 +841,7 @@ describe('OAuth2AuthDriver', () => {
 
     describe('Update existing user', () => {
       test('includes role in update payload when roleMapping exists', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           roleMapping: {
             'admin-group': 'admin-role-id',
           },
@@ -879,7 +881,7 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('includes user info in update payload when syncUserInfo is true', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           syncUserInfo: true,
           firstNameKey: 'first_name',
           lastNameKey: 'last_name',
@@ -921,7 +923,7 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('does not call updateOne when payload is empty', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           defaultRoleId: 'role-id',
         });
 
@@ -955,7 +957,7 @@ describe('OAuth2AuthDriver', () => {
 
     describe('Create new user', () => {
       test('throws InvalidCredentialsError when allowPublicRegistration is false and user not found', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           allowPublicRegistration: false,
         });
 
@@ -983,7 +985,7 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('throws InvalidProviderError when user creation fails with RecordNotUnique', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           identifierKey: 'sub',
           defaultRoleId: 'role-id',
           allowPublicRegistration: true,
@@ -1024,7 +1026,7 @@ describe('OAuth2AuthDriver', () => {
 
     describe('Error handling', () => {
       test('throws error from handleError when oauthCallback fails', async () => {
-        const config = createOAuth2Config('github');
+        const config = createOAuth2Config();
 
         const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
@@ -1041,7 +1043,7 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('throws error from handleError when userinfo fails', async () => {
-        const config = createOAuth2Config('github', {
+        const config = createOAuth2Config({
           identifierKey: 'sub',
         });
 
@@ -1065,8 +1067,8 @@ describe('OAuth2AuthDriver', () => {
     describe('Multi-domain callbacks', () => {
       test('uses getCallbackFromOriginUrl to find correct callback for originUrl', async () => {
         const mockRedirectUris = [
-          new URL('http://localhost:8080/auth/login/github/callback'),
-          new URL('http://external.com/auth/login/github/callback'),
+          new URL(`http://localhost:8080/auth/login/${provider}/callback`),
+          new URL(`http://external.com/auth/login/${provider}/callback`),
         ];
 
         const generateRedirectUrlsSpy = vi.spyOn(oauthCallbacks, 'generateRedirectUrls').mockReturnValue(mockRedirectUris);
@@ -1075,10 +1077,8 @@ describe('OAuth2AuthDriver', () => {
         const externalCallback = mockRedirectUris[1]!;
         getCallbackFromOriginUrlSpy.mockReturnValue(externalCallback);
 
-        const config = createOAuth2Config('github', {
-          defaultRoleId: 'test-role-id',
-          emailKey: 'email',
-          identifierKey: 'id',
+        const config = createOAuth2Config({
+          allowPublicRegistration: true
         });
 
         const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
@@ -1089,17 +1089,14 @@ describe('OAuth2AuthDriver', () => {
         };
 
         const mockUserInfo = {
-          id: '12345',
           email: 'test@example.com',
         };
 
         vi.spyOn(driver.client, 'oauthCallback').mockResolvedValue(mockTokenSet as any);
         vi.spyOn(driver.client, 'userinfo').mockResolvedValue(mockUserInfo as any);
 
-        // Mock fetchUserId to return undefined (user doesn't exist yet)
         vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue(undefined);
 
-        // Mock getUsersService to allow user creation
         vi.spyOn(driver as any, 'getUsersService').mockReturnValue({
           createOne: vi.fn().mockResolvedValue('new-user-id'),
         });
@@ -1111,16 +1108,10 @@ describe('OAuth2AuthDriver', () => {
           originUrl: 'http://external.com',
         };
 
-        try {
-          await driver.getUserID(payload);
-        } catch {
-          // getUserID might throw if user creation fails, but we're testing the callback logic
-        }
+        await driver.getUserID(payload);
 
-        // Verify getCallbackFromOriginUrl was called with correct params
         expect(getCallbackFromOriginUrlSpy).toHaveBeenCalledWith(mockRedirectUris, 'http://external.com');
 
-        // Verify oauthCallback was called with the correct callback URL
         expect(driver.client.oauthCallback).toHaveBeenCalledWith(
           externalCallback.toString(),
           expect.any(Object),
@@ -1135,7 +1126,7 @@ describe('OAuth2AuthDriver', () => {
 
   describe('login', () => {
     test('calls refresh method', async () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const refreshSpy = vi.spyOn(driver, 'refresh').mockResolvedValue();
@@ -1149,7 +1140,7 @@ describe('OAuth2AuthDriver', () => {
 
   describe('refresh', () => {
     test('does nothing when user has no auth_data', async () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const refreshClientSpy = vi.spyOn(driver.client, 'refresh');
@@ -1161,7 +1152,7 @@ describe('OAuth2AuthDriver', () => {
     });
 
     test('does nothing when auth_data has no refreshToken', async () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const refreshClientSpy = vi.spyOn(driver.client, 'refresh');
@@ -1176,7 +1167,7 @@ describe('OAuth2AuthDriver', () => {
     });
 
     test('parses auth_data when it is a JSON string', async () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const mockTokenSet = { access_token: 'new-token', refresh_token: 'new-refresh' };
@@ -1196,7 +1187,7 @@ describe('OAuth2AuthDriver', () => {
     });
 
     test('logs warning when auth_data string is invalid JSON', async () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const refreshClientSpy = vi.spyOn(driver.client, 'refresh');
@@ -1215,7 +1206,7 @@ describe('OAuth2AuthDriver', () => {
     });
 
     test('calls client.refresh with refreshToken from auth_data object', async () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const mockTokenSet = { access_token: 'new-token', refresh_token: 'new-refresh' };
@@ -1235,7 +1226,7 @@ describe('OAuth2AuthDriver', () => {
     });
 
     test('updates user with new refresh_token when provided', async () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const mockTokenSet = { access_token: 'new-token', refresh_token: 'new-refresh-token' };
@@ -1260,7 +1251,7 @@ describe('OAuth2AuthDriver', () => {
     });
 
     test('does not update user when no new refresh_token provided', async () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const mockTokenSet = { access_token: 'new-token' };
@@ -1282,7 +1273,7 @@ describe('OAuth2AuthDriver', () => {
     });
 
     test('throws error from handleError when client.refresh fails', async () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const refreshError = new Error('Refresh failed');
@@ -1299,7 +1290,7 @@ describe('OAuth2AuthDriver', () => {
 
   describe('handleError', () => {
     test('returns InvalidTokenError for OPError with invalid_grant', async () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const opError = new openidErrors.OPError({ error: 'invalid_grant' });
@@ -1312,7 +1303,7 @@ describe('OAuth2AuthDriver', () => {
     });
 
     test('returns ServiceUnavailableError for OPError with other errors', async () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const opError = new openidErrors.OPError({
@@ -1329,7 +1320,7 @@ describe('OAuth2AuthDriver', () => {
     });
 
     test('returns InvalidCredentialsError for RPError', async () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const rpError = new openidErrors.RPError('RP Error');
@@ -1342,7 +1333,7 @@ describe('OAuth2AuthDriver', () => {
     });
 
     test('returns error as-is for unknown error types', async () => {
-      const config = createOAuth2Config('github');
+      const config = createOAuth2Config();
       const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
       const unknownError = new Error('Unknown error');
