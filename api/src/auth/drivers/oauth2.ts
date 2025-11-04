@@ -62,10 +62,6 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		const roleMapping = this.config['roleMapping'];
 
-		if (roleMapping) {
-			this.roleMap = roleMapping;
-		}
-
 		// role mapping will fail on login if AUTH_<provider>_ROLE_MAPPING is an array instead of an object.
 		// This happens if the 'json:' prefix is missing from the variable declaration. To save the user from exhaustive debugging, we'll try to fail early here.
 		if (roleMapping instanceof Array) {
@@ -74,6 +70,10 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			);
 
 			throw new InvalidProviderError();
+		}
+
+		if (roleMapping) {
+			this.roleMap = roleMapping;
 		}
 
 		const issuer = new Issuer({
