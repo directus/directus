@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: אודות
+first_name: שם פרטי
+last_name: שם משפחה
 identifier: מזהה
 avatar: צלמית
 application: יישום
