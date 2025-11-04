@@ -34,7 +34,7 @@ describe('sanitizeBlockData', () => {
 		});
 
 		test('should return null for undefined input', () => {
-			expect(sanitizeValue(undefined)).toBeUndefined();
+			expect(sanitizeBlockData(undefined)).toBeUndefined();
 		});
 	});
 
