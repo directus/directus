@@ -33,20 +33,4 @@
 'create-directus-project': patch
 ---
 
-Updated the following dependencies 
-- Updated oracledb from 6.9.0 to 6.10.0
-- Updated p-limit from 7.1.1 to 7.2.0
-- Updated pino-pretty from 13.1.1 to 13.1.2
-- Updated pm2 from 6.0.8 to 6.0.13
-- Updated rollup-plugin-node-externals from 8.0.1 to 8.1.1
-- Updated rollup from 4.46.2 to 4.52.5
-- Updated sharp from 0.34.3 to 0.34.4
-- Updated snappy from 7.3.0 to 7.3.3
-- Updated tar from 7.4.3 to 7.5.1
-- Updated tsdown from 0.14.2 to 0.15.8
-- Updated tsx from 4.20.3 to 4.20.6
-- Updated typescript-eslint from 8.38.0 to 8.46.1
-- Updated typescript from 5.8.3 to 5.9.3
-- Updated undici from 7.13.0 to 7.16.0
-- Updated unplugin-yaml from 3.0.4 to 3.0.6
-- Updated zod from 4.0.14 to 4.1.12
+Updated dependencies
