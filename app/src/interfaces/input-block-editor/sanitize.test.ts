@@ -38,7 +38,7 @@ describe('sanitizeBlockData', () => {
 		});
 	});
 
-	describe(() => {
+	describe('purify', () => {
 		test('should sanitize string data in blocks', () => {
 			const result = sanitizeBlockData({
 				type: 'paragraph',
