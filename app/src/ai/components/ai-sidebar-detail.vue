@@ -5,10 +5,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AiConversation from './ai-conversation.vue';
 
-const props = defineProps<{
-	collection: string;
-	primaryKey: PrimaryKey;
-}>();
+// TODO: If context-aware AI features are added, reintroduce collection and primaryKey props.
 
 const { t } = useI18n();
 
