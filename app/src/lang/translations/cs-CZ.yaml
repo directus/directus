@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: O nás
+first_name: Křestní jméno
+last_name: Příjmení
 identifier: Identifikátor
 avatar: Avatar
 application: Aplikace
