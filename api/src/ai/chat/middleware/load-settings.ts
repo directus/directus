@@ -1,8 +1,8 @@
 import { SettingsService } from '@/services/settings.js';
-import asyncHandler from '@/utils/async-handler.js';
 import { getSchema } from '@/utils/get-schema.js';
+import type { RequestHandler } from 'express';
 
-export const loadSettings = asyncHandler(async (_req, res, next) => {
+export const loadSettings: RequestHandler = async (_req, res, next) => {
 	const service = new SettingsService({
 		schema: await getSchema(),
 	});
@@ -19,4 +19,4 @@ export const loadSettings = asyncHandler(async (_req, res, next) => {
 	};
 
 	return next();
-});
+};
