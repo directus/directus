@@ -180,7 +180,11 @@ function onSort(sortedItems: Record<string, any>[]) {
 				@update:model-value="onSort($event)"
 			>
 				<template #item="{ element }">
-					<v-list-item :disabled="disabled" :dense="displayItems.length > 4" block>
+					<v-list-item
+						block
+						:disabled="disabled"
+						:dense="displayItems.length > 4"
+					>
 						<v-icon v-if="!disabled" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 
 						<render-template
