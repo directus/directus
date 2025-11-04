@@ -8,7 +8,7 @@ vi.mock('ai', () => ({
 	safeValidateUIMessages: vi.fn(),
 }));
 
-vi.mock('../create-ui-stream.js', () => ({
+vi.mock('../lib/create-ui-stream.js', () => ({
 	createUiStream: vi.fn(),
 }));
 
@@ -41,7 +41,7 @@ describe('aiChatPostHandler', () => {
 			},
 		} as any;
 
-		vi.mocked(createUiStream).mockReturnValue(mockStream as any);
+		vi.mocked(createUiStream).mockImplementation(() => mockStream as any);
 
 		vi.mocked(safeValidateUIMessages).mockResolvedValue({
 			success: true,
