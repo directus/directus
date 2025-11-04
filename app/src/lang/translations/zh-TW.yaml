@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 關於
+first_name: 名字
+last_name: 姓氏
 identifier: 識別
 avatar: 頭像
 application: 應用程式
