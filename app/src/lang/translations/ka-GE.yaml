@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: შესახებ
+first_name: სახელი
+last_name: გვარი
 identifier: იდენტიფიკატორი
 avatar: პროფილის ფოტო
 application: აპლიკაცია
@@ -2536,13 +2538,4 @@ search_flow: Flow-ს ძებნა...
 percent: პროცენტი
 show_password: პაროლის ჩვენება
 hide_password: პაროლის დამალვა
-bsl_banner:
-  welcome_to_directus: კეთილი იყოს თქვენი მობრძანება Directus-ში!
-  directus_free_use: Directus-ის გამოყენება უფასოა ორგანიზაციებისთვის, რომელთა წლიური შემოსავალი, დაფინანსება ან საოპერაციო ბიუჯეტი 5 მილიონ დოლარზე ნაკლებია.
-  organization_threshold: ამ ზღვარზე მაღალი მაჩვენებლის მქონე ორგანიზაციებისთვის საჭიროა ფასიანი ლიცენზია.
-  license_agreement: '„ვეთანხმები“-ზე დაჭერით, თქვენ ეთანხმებით {directusBsl}-სა და {privacyPolicy}-ს.'
-  directus_bsl: Directus BSL 1.1
-  privacy_policy: კონფიდენციალურობის პოლიტიკა
-  accept_terms: ვეთანხმები
-  get_license: ლიცენზიის მიღება
 accepted: დათანხმება
