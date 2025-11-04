@@ -9,7 +9,10 @@ import { extractRequiredDynamicVariableContext } from '../../utils/extract-requi
 import { fetchDynamicVariableData } from '../../utils/fetch-dynamic-variable-data.js';
 import { contextHasDynamicVariables } from '../process-ast/utils/context-has-dynamic-variables.js';
 import { isFieldNullable } from './lib/is-field-nullable.js';
-import { createCollectionForbiddenError, createFieldsForbiddenError } from '../process-ast/utils/validate-path/create-error.js';
+import {
+	createCollectionForbiddenError,
+	createFieldsForbiddenError,
+} from '../process-ast/utils/validate-path/create-error.js';
 
 export interface ProcessPayloadOptions {
 	accountability: Accountability;
