@@ -5,11 +5,6 @@ import { useI18n } from 'vue-i18n';
 import AiModelSelector from './ai-model-selector.vue';
 import AiTextarea from './ai-textarea.vue';
 
-defineProps<{
-	collection: string;
-	primaryKey: string | number;
-}>();
-
 const emit = defineEmits(['send']);
 
 const { t } = useI18n();
@@ -28,10 +23,8 @@ function handleSubmit() {
 
 	sending.value = true;
 
-	// Emit submit event with content
 	emit('send', content.value);
 
-	// Clear input after submit
 	content.value = '';
 	sending.value = false;
 }
@@ -41,7 +34,6 @@ function handleFocus() {
 }
 
 function handleBlur() {
-	// Only blur if there's no content
 	if (!content.value) {
 		focused.value = false;
 	}
@@ -54,7 +46,7 @@ function handleBlur() {
 			<AiTextarea
 				ref="textareaComponent"
 				v-model="content"
-				:placeholder="t('ai_prompt_input_placeholder')"
+				:placeholder="t('ai.prompt_input_placeholder')"
 				:disabled="sending"
 				@focus="handleFocus"
 				@blur="handleBlur"
@@ -62,8 +54,7 @@ function handleBlur() {
 			<div class="input-controls">
 				<AiModelSelector />
 				<v-button :disabled="!canSubmit" :loading="sending" class="submit-button" x-small icon @click="handleSubmit">
-					<!-- {{ t('submit') }} -->
-					  <v-icon name="arrow_upward" />
+					<v-icon name="arrow_upward" />
 				</v-button>
 			</div>
 		</div>

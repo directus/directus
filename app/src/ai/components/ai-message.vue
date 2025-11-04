@@ -1,13 +1,11 @@
 \
 <script setup lang="ts">
-import { computed } from 'vue';
 import type { UIMessagePart as SDKUIMessagePart, UIDataTypes, UITools } from 'ai';
 
 import AiMessageFile from './parts/ai-message-file.vue';
 import AiMessageReasoning from './parts/ai-message-reasoning.vue';
 import AiMessageSourceDocument from './parts/ai-message-source-document.vue';
 import AiMessageSourceUrl from './parts/ai-message-source-url.vue';
-import AiMessageStep from './parts/ai-message-step.vue';
 import AiMessageText from './parts/ai-message-text.vue';
 import AiMessageTool from './parts/ai-message-tool.vue';
 
@@ -51,53 +49,27 @@ interface Props {
 	timestamp?: Date | string;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
 	parts: () => [],
 	variant: 'subdued',
 	side: 'left',
 	compact: false,
-});
-
-const hasContent = computed(() => {
-	return props.content || props.parts.length > 0;
-});
-
-const hasLeading = computed(() => {
-	return !!props.avatar?.icon || !!props.avatar?.src;
 });
 </script>
 
 <template>
 	<article :data-role="role" :data-side="side" :data-variant="variant" :class="['ai-message', { compact }]">
 		<div class="message-container">
-			<div v-if="hasLeading" class="message-leading">
-				<!-- <v-avatar :x-small="compact" :small="!compact">
-					<v-image v-if="avatar?.src" :src="avatar.src" :alt="avatar?.alt || `${role} avatar`" />
-					<v-icon v-else-if="avatar?.icon" :name="avatar.icon" />
-					<v-icon v-else :name="role === 'user' ? 'person' : 'smart_toy'" />
-				</v-avatar> -->
-			</div>
+			<div class="message-content">
+				<template v-for="(part, index) in parts" :key="`${id}-${part.type}-${index}`">
+					<AiMessageText v-if="part.type === 'text'" :text="part.text" :state="part.state || 'done'" />
+					<AiMessageReasoning v-else-if="part.type === 'reasoning'" :text="part.text" :state="part.state ?? 'done'" />
+					<AiMessageFile v-else-if="part.type === 'file'" :part="part" />
+					<AiMessageSourceUrl v-else-if="part.type === 'source-url'" :part="part" />
+					<AiMessageSourceDocument v-else-if="part.type === 'source-document'" :part="part" />
 
-			<div v-if="hasContent" class="message-content">
-				<slot name="content">
-					<div v-if="content" v-md="content" class="message-text"></div>
-					<template v-else>
-						<template v-for="(part, index) in parts" :key="`${id}-${part.type}-${index}`">
-							<AiMessageText v-if="part.type === 'text'" :part="part" />
-							<AiMessageReasoning v-else-if="part.type === 'reasoning'" :part="part" />
-							<AiMessageFile v-else-if="part.type === 'file'" :part="part" />
-							<AiMessageSourceUrl v-else-if="part.type === 'source-url'" :part="part" />
-							<AiMessageSourceDocument v-else-if="part.type === 'source-document'" :part="part" />
-							<AiMessageStep v-else-if="part.type === 'step-start'" :part="part" />
-							<AiMessageTool v-else-if="part.type.startsWith('tool-')" :part="part" />
-
-							<!-- Fallback for unknown part types -->
-							<div v-else class="message-part">
-								<small>Unsupported part type: {{ part.type }}</small>
-							</div>
-						</template>
-					</template>
-				</slot>
+					<AiMessageTool v-else-if="part.type.startsWith('tool-')" :part="part" />
+				</template>
 			</div>
 
 			<div v-if="actions && actions.length > 0" class="message-actions">
@@ -132,10 +104,10 @@ const hasLeading = computed(() => {
 
 .ai-message {
 	display: flex;
-	width: 100%;
 
 	&[data-side='right'] {
 		justify-content: flex-end;
+		margin-right: 1rem;
 
 		.message-container {
 			flex-direction: row-reverse;
@@ -148,6 +120,7 @@ const hasLeading = computed(() => {
 
 	&[data-side='left'] {
 		justify-content: flex-start;
+		margin-left: 1rem;
 	}
 }
 
@@ -155,7 +128,7 @@ const hasLeading = computed(() => {
 	display: flex;
 	gap: var(--ai-message-gap, 0.75rem);
 	align-items: flex-start;
-	max-width: var(--ai-message-max-width, 80%);
+	max-width: 100%;
 }
 
 .message-leading {
@@ -272,7 +245,6 @@ const hasLeading = computed(() => {
 .ai-message.compact {
 	--ai-message-padding: 0.5rem 0.75rem;
 	--ai-message-gap: 0.5rem;
-	--ai-message-max-width: 85%;
 
 	.message-text {
 		font-size: 0.875rem;

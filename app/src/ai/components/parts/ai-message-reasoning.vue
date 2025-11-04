@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
-import type { ReasoningUIPart } from 'ai';
 
 defineProps<{
-	part: ReasoningUIPart;
+	text: string;
+	state: 'streaming' | 'done';
 }>();
 </script>
 
@@ -11,11 +11,11 @@ defineProps<{
 	<CollapsibleRoot class="message-reasoning" :default-open="false">
 		<CollapsibleTrigger class="reasoning-header">
 			<v-icon name="psychology" x-small />
-			<span>Reasoning</span>
+			<span>{{ state === 'streaming' ? 'Thinking...' : 'Reasoning' }}</span>
 			<v-icon name="expand_more" x-small class="chevron" />
 		</CollapsibleTrigger>
 		<CollapsibleContent class="reasoning-content-wrapper">
-			<div v-md="part.text || ''" class="reasoning-content"></div>
+			<div v-md="text || ''" class="reasoning-content" :data-state="state"></div>
 		</CollapsibleContent>
 	</CollapsibleRoot>
 </template>

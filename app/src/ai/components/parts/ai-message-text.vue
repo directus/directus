@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { TextUIPart } from 'ai';
 
 defineProps<{
-	part: TextUIPart;
+	text: string;
+	state: 'streaming' | 'done';
 }>();
 </script>
 
 <template>
-	<div v-md="part.text || ''" class="message-text"></div>
+	<div v-md="text || ''" class="message-text" :data-state="state"></div>
 </template>
 
 <style lang="scss" scoped>

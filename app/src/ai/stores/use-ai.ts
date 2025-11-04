@@ -1,47 +1,39 @@
 import { useLocalStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
-import { Chat } from '@ai-sdk/vue';
+import { ref, computed } from 'vue';
 import { DefaultChatTransport, type UIMessage } from 'ai';
-
 import { AI_MODELS } from '../models';
+import { Chat } from '@ai-sdk/vue';
 
 export const useAiStore = defineStore('ai-store', () => {
 	const selectedModel = useLocalStorage<string | null>('selected-ai-model', AI_MODELS[0] ?? null);
 
+	const currentProvider = computed(() => selectedModel.value?.split('/')[0] ?? 'openai');
+	const currentModel = computed(() => selectedModel.value?.split('/')[1] ?? 'gpt-5');
+
 	const clientTools = ref<Record<string, (args: any) => Promise<any>>>({});
 
 	const chat = new Chat<UIMessage>({
-		messages: [],
 		transport: new DefaultChatTransport({
 			api: '/ai/chat',
-			body: {},
+			body: () => ({
+				provider: currentProvider.value,
+				model: currentModel.value,
+			}),
+			credentials: 'include',
 		}),
-		onToolCall: async ({ toolCall }) => {
-			const { name: toolName, args, toolCallId } = toolCall as any;
-
-			const clientTool = clientTools.value[toolName];
-
-			if (clientTool) {
-				try {
-					const output = await clientTool(args);
-
-					await chat.addToolResult({
-						tool: toolName,
-						toolCallId,
-						output,
-					});
-				} catch (_error) {
-					await chat.addToolResult({
-						state: 'output-error',
-						tool: toolName,
-						toolCallId,
-						errorText: _error instanceof Error ? _error.message : 'Unknown error',
-					});
-				}
-			}
-		},
 	});
+
+	const messages = computed(() => chat.messages);
+	const status = computed(() => chat.status);
+
+	function updateSelectedModel(model: string) {
+		selectedModel.value = model;
+	}
+
+	function addMessage(message: string) {
+		chat.sendMessage({ text: message });
+	}
 
 	function registerClientTool(name: string, handler: (args: any) => Promise<any>) {
 		clientTools.value[name] = handler;
@@ -52,10 +44,16 @@ export const useAiStore = defineStore('ai-store', () => {
 	}
 
 	return {
+		currentProvider,
+		currentModel,
+		addMessage,
+		chat,
+		messages,
+		status,
 		models: AI_MODELS,
 		selectedModel,
-		chat,
 		registerClientTool,
 		unregisterClientTool,
+		updateSelectedModel,
 	};
 });

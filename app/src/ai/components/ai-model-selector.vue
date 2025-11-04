@@ -12,13 +12,13 @@ import {
 
 import { useAiStore } from '../stores/use-ai';
 
-const { models, selectedModel } = useAiStore();
+const aiStore = useAiStore();
 </script>
 
 <template>
-	<SelectRoot v-model="selectedModel">
+	<SelectRoot v-model:model-value="aiStore.selectedModel" @update:model-value="(value) => aiStore.updateSelectedModel(value ?? '')">
 		<SelectTrigger class="select-trigger">
-			{{ selectedModel }}
+			{{ aiStore.currentModel }}
 			<SelectIcon class="select-icon">
 				<v-icon name="expand_more" x-small />
 			</SelectIcon>
@@ -29,10 +29,10 @@ const { models, selectedModel } = useAiStore();
 				<div class="arrow-triangle" />
 			</SelectArrow>
 
-			<SelectItem v-for="model in models" :key="model" :value="model" class="select-item">
+			<SelectItem v-for="model in aiStore.models" :key="model" :value="model" class="select-item">
 				<div class="select-item-content">
 					<SelectItemText class="select-item-text">
-						<v-text-overflow :text="model" />
+						<v-text-overflow :text="model.split('/')[1]" />
 					</SelectItemText>
 					<SelectItemIndicator class="select-item-indicator">
 						<v-icon name="check" x-small />

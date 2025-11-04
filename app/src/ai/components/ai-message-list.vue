@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ComponentPublicInstance } from 'vue';
-import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
 import AiMessage from './ai-message.vue';
 import type { AiMessageAction, AiMessageAvatar } from './ai-message.vue';
 
@@ -41,8 +41,6 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	messages: () => [],
-	status: 'ready',
 	shouldAutoScroll: false,
 	shouldScrollToBottom: true,
 	autoScroll: true,
