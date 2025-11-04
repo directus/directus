@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Over
+first_name: Voornaam
+last_name: Achternaam
 identifier: ID
 avatar: Profielafbeelding
 application: Applicatie
@@ -2550,15 +2552,6 @@ search_flow: Zoek Flow...
 percent: Procent
 show_password: Toon wachtwoord
 hide_password: Verberg wachtwoord
-bsl_banner:
-  welcome_to_directus: Welkom bij Directus!
-  directus_free_use: Directus is gratis te gebruiken voor entiteiten met een jaarlijkse omzet, financiering of operationeel budget onder $5 miljoen.
-  organization_threshold: Entiteiten boven deze drempel hebben een betaalde licentie nodig.
-  license_agreement: Door op "Accepteren" te klikken, ga je akkoord met de {directusBsl} en {privacyPolicy}.
-  directus_bsl: Directus BSL 1.1
-  privacy_policy: Privacy beleid
-  accept_terms: Accepteren
-  get_license: Licentie verkrijgen
 accepted: Geaccepteerd
 text_direction_auto: Automatisch (gelijk aan taal)
 text_direction_ltr: Links naar rechts (LTR)
