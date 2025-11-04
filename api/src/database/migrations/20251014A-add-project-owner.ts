@@ -21,7 +21,7 @@ export async function up(knex: Knex): Promise<void> {
 
 	if (email().safeParse(env['PROJECT_OWNER']).success) {
 		await settingsService.setOwner({
-			email: env['PROJECT_OWNER'] as string,
+			project_owner: env['PROJECT_OWNER'] as string,
 			org_name: null,
 			project_usage: null,
 			product_updates: false,

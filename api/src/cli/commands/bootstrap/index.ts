@@ -48,7 +48,7 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 
 		if (email().safeParse(env['PROJECT_OWNER']).success) {
 			await settingsService.setOwner({
-				email: env['PROJECT_OWNER'] as string,
+				project_owner: env['PROJECT_OWNER'] as string,
 				org_name: null,
 				project_usage: null,
 				product_updates: false,
