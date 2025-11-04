@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Rreth
+first_name: Emri
+last_name: Mbiemri
 identifier: Identifikues
 avatar: Avatar
 application: Aplikacion
