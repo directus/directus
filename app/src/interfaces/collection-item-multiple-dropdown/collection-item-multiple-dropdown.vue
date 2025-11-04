@@ -72,7 +72,6 @@ const requiredFields = computed(() => {
 	return adjustFieldsForDisplays(getFieldsFromTemplate(displayTemplate.value), unref(selectedCollection));
 });
 
-
 watch(
 	values,
 	(newValues, oldValues) => {
@@ -156,7 +155,6 @@ function onSort(sortedItems: Record<string, any>[]) {
 
 <template>
 	<div class="collection-item-multiple-dropdown">
-
 		<v-notice v-if="displayItems.length === 0">
 			{{ t('no_items') }}
 		</v-notice>
@@ -173,11 +171,7 @@ function onSort(sortedItems: Record<string, any>[]) {
 			@update:model-value="onSort($event)"
 		>
 			<template #item="{ element }">
-				<v-list-item
-					block
-					:disabled="disabled"
-					:dense="displayItems.length > 4"
-				>
+				<v-list-item block :disabled="disabled" :dense="displayItems.length > 4">
 					<v-icon v-if="!disabled" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 
 					<render-template
