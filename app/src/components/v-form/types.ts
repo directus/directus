@@ -1,11 +1,9 @@
-import { DeepPartial, Field } from '@directus/types';
+import { DeepPartial, Field, InterfaceConfig } from '@directus/types';
 
 export type FormField = DeepPartial<Field> & {
 	field: string;
 	name: string;
-	hideLabel?: boolean;
-	hideLoader?: boolean;
-};
+} & Pick<InterfaceConfig, 'hideLabel' | 'hideLoader' | 'indicatorStyle'>;
 
 export interface ComparisonContext {
 	side: 'base' | 'incoming';
