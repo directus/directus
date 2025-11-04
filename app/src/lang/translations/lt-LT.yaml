@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Apie
+first_name: Vardas
+last_name: Pavardė
 identifier: Identifikatorius
 avatar: Nuotrauka
 application: Aplikacija
