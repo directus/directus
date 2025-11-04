@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { BASE_MOCK_ENV } from './__test-utils__/auth-driver.test-utils.js';
 
 vi.mock('@directus/env', () => ({
-  useEnv: vi.fn(() => BASE_MOCK_ENV),
+  useEnv: vi.fn(() => ({
+    EMAIL_TEMPLATES_PATH: './templates',
+  })),
 }));
 
 vi.mock('../../logger');
@@ -15,14 +16,6 @@ vi.mock('../../app', () => ({
 
 vi.mock('../../middleware/respond', () => ({
   respond: vi.fn(),
-}));
-
-vi.mock('../../middleware/use-collection', () => ({
-  useCollection: vi.fn(() => vi.fn()),
-}));
-
-vi.mock('../../utils/get-secret', () => ({
-  getSecret: () => 'test-secret',
 }));
 
 vi.mock('../../utils/get-schema', () => ({
@@ -96,15 +89,16 @@ vi.mock('openid-client', () => {
   };
 });
 
-import {
-  createMockEnv,
-} from './__test-utils__/auth-driver.test-utils.js';
 import { useEnv } from '@directus/env';
 import { useLogger } from '../../logger/index.js';
 import { generateRedirectUrls, getCallbackFromOriginUrl } from '../../utils/oauth-callbacks.js';
 import { OpenIDAuthDriver } from './openid.js';
 import type { Logger } from 'pino';
 import { InvalidProviderConfigError, InvalidProviderError } from '@directus/errors';
+
+const createMockEnv = (overrides: Record<string, any> = {}) => ({
+  ...overrides,
+});
 
 let mockLogger: Logger;
 

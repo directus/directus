@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { BASE_MOCK_ENV } from './__test-utils__/auth-driver.test-utils.js';
 
 vi.mock('@directus/env', () => ({
-  useEnv: vi.fn(() => BASE_MOCK_ENV),
+  useEnv: vi.fn(() => ({
+    EMAIL_TEMPLATES_PATH: './templates',
+  })),
 }));
 
 vi.mock('../../logger');
@@ -22,20 +23,8 @@ vi.mock('../../middleware/respond', () => ({
   respond: vi.fn(),
 }));
 
-vi.mock('../../middleware/use-collection', () => ({
-  useCollection: vi.fn(() => vi.fn()),
-}));
-
-vi.mock('../../utils/get-secret', () => ({
-  getSecret: () => 'test-secret',
-}));
-
 vi.mock('../../utils/get-schema', () => ({
   getSchema: vi.fn(),
-}));
-
-vi.mock('../../utils/async-handler', () => ({
-  default: (fn: any) => fn,
 }));
 
 const mockIssuerConstructor = vi.fn();
@@ -43,7 +32,6 @@ const mockClientConstructor = vi.fn();
 const mockAuthorizationUrl = vi.fn((params) => `https://test.com/authorize?${JSON.stringify(params)}`);
 
 vi.mock('openid-client', () => {
-  // Define error classes inside the factory to avoid hoisting issues
   class MockOPError extends Error {
     error: string;
     error_description: string | undefined;
@@ -86,10 +74,6 @@ vi.mock('openid-client', () => {
   };
 });
 
-// Now import modules
-import {
-  createMockEnv,
-} from './__test-utils__/auth-driver.test-utils.js';
 import { useEnv } from '@directus/env';
 import { useLogger } from '../../logger/index.js';
 import * as oauthCallbacks from '../../utils/oauth-callbacks.js';
@@ -109,7 +93,6 @@ beforeEach(() => {
   } as unknown as Logger;
 
   vi.mocked(useLogger).mockReturnValue(mockLogger);
-  vi.mocked(useEnv).mockReturnValue(createMockEnv());
   mockIssuerConstructor.mockClear();
   mockClientConstructor.mockClear();
   mockAuthorizationUrl.mockClear();
@@ -184,11 +167,9 @@ describe('OAuth2AuthDriver', () => {
       });
 
       test('passes clientOptionsOverrides from env to Client constructor', () => {
-        vi.mocked(useEnv).mockReturnValue(
-          createMockEnv({
-            AUTH_GITHUB_CLIENT_TEST: 'test',
-          }),
-        );
+        vi.mocked(useEnv).mockReturnValue({
+          AUTH_GITHUB_CLIENT_TEST: 'test',
+        });
 
         const config = createOAuth2Config();
         new OAuth2AuthDriver({ knex: {} as any }, config);
@@ -213,11 +194,9 @@ describe('OAuth2AuthDriver', () => {
       test('calls generateRedirectUrls with correct parameters for multi-domain', () => {
         const spy = vi.spyOn(oauthCallbacks, 'generateRedirectUrls');
 
-        vi.mocked(useEnv).mockReturnValue(
-          createMockEnv({
-            AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'http://external.com,http://internal.com',
-          }),
-        );
+        vi.mocked(useEnv).mockReturnValue({
+          AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'http://external.com,http://internal.com',
+        });
 
         const config = createOAuth2Config();
 
