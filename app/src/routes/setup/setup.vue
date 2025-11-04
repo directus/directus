@@ -34,7 +34,7 @@ async function launch() {
 
 		await login({
 			credentials: {
-				email: form.value.email!,
+				email: form.value.project_owner!,
 				password: form.value.password!,
 			},
 		});

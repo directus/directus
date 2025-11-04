@@ -15,7 +15,10 @@ const { t } = useI18n();
 const errors = ref<Record<string, any>[]>([]);
 
 const isSaveDisabled = computed(
-	() => !form.value.email || !form.value.license || (form.value.project_usage === 'commercial' && !form.value.org_name),
+	() =>
+		!form.value.project_owner ||
+		!form.value.license ||
+		(form.value.project_usage === 'commercial' && !form.value.org_name),
 );
 
 async function setOwner() {

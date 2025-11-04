@@ -27,7 +27,7 @@ const errors = ref<Record<string, any>[]>([]);
 const editing = ref(false);
 
 const allowSave = computed(
-	() => form.value.email || form.value.project_usage || form.value.org_name || form.value.product_updates,
+	() => form.value.project_owner || form.value.project_usage || form.value.org_name || form.value.product_updates,
 );
 
 async function save() {
@@ -39,14 +39,14 @@ async function save() {
 
 	await settingsStore.setOwner(value as Form);
 	await settingsStore.hydrate();
-	emit('input', form.value.email ?? initialValues.value.email);
+	emit('input', form.value.project_owner ?? initialValues.value.project_owner);
 	editing.value = false;
 }
 
 const values = inject<Ref<Record<string, any>>>('values')!;
 
 const initialValues = computed(() => ({
-	email: props.value,
+	project_owner: props.value,
 	project_usage: values.value.project_usage,
 	org_name: values.value.org_name,
 	product_updates: values.value.product_updates,

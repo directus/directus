@@ -9,7 +9,7 @@ export const FormValidator = z.discriminatedUnion('project_usage', [
 	z.object({
 		first_name: z.string(),
 		last_name: z.string(),
-		email: z.email(),
+		project_owner: z.email(),
 		password: z.string(),
 		password_confirm: z.string(),
 		project_usage: z.enum(['personal', 'community']).nullable().optional(),
@@ -20,7 +20,7 @@ export const FormValidator = z.discriminatedUnion('project_usage', [
 	z.object({
 		first_name: z.string(),
 		last_name: z.string(),
-		email: z.email(),
+		project_owner: z.email(),
 		password: z.string(),
 		password_confirm: z.string(),
 		project_usage: z.literal('commercial'),
@@ -33,7 +33,7 @@ export const FormValidator = z.discriminatedUnion('project_usage', [
 export const defaultValues: SetupForm = {
 	first_name: null,
 	last_name: null,
-	email: null,
+	project_owner: null,
 	password: null,
 	password_confirm: null,
 	project_usage: null,
@@ -47,9 +47,9 @@ export type ValidationError = Omit<FailedValidationErrorExtensions, 'type'> & { 
 export function validate(value: Record<string, any>, fields: MaybeRef<Field[]>, register = false) {
 	let errors: ValidationError[] = validateItem(value, unref(fields), true);
 
-	if (!z.email().safeParse(value.email).success) {
+	if (!z.email().safeParse(value.project_owner).success) {
 		errors.push({
-			field: 'email',
+			field: 'project_owner',
 			path: [],
 			type: 'email',
 		});
@@ -113,7 +113,7 @@ export function useFormFields(
 		}
 
 		fields.push({
-			field: 'email',
+			field: 'project_owner',
 			name: t(register ? 'admin_email' : 'owner_email'),
 			meta: {
 				required: true,
