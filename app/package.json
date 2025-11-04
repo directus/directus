@@ -47,6 +47,7 @@
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@directus/validation": "workspace:*",
+		"@directus/vue-split-panel": "catalog:",
 		"@editorjs/attaches": "catalog:",
 		"@editorjs/checklist": "catalog:",
 		"@editorjs/code": "catalog:",
@@ -145,6 +146,7 @@
 		"tinymce": "catalog:",
 		"tus-js-client": "catalog:",
 		"typescript": "catalog:",
+		"universal-cookie": "catalog:",
 		"vite": "catalog:",
 		"vite-plugin-vue-devtools": "catalog:",
 		"vitest": "catalog:",
@@ -154,9 +156,7 @@
 		"vue-tsc": "catalog:",
 		"vue-virtual-scroller": "catalog:",
 		"vuedraggable": "catalog:",
-		"wellknown": "catalog:"
-	},
-	"dependencies": {
-		"@directus/vue-split-panel": "catalog:"
+		"wellknown": "catalog:",
+		"zod": "catalog:"
 	}
 }

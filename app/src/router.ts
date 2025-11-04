@@ -14,11 +14,37 @@ import { getRootPath } from '@/utils/get-root-path';
 import { useAppStore } from '@directus/stores';
 import { useLocalStorage } from '@/composables/use-local-storage';
 import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter, RouteRecordRaw } from 'vue-router';
+import Setup from '@/routes/setup/setup.vue';
 
 export const defaultRoutes: RouteRecordRaw[] = [
 	{
 		path: '/',
-		redirect: '/login',
+		redirect: () => {
+			const serverStore = useServerStore();
+
+			if (serverStore.info.setupCompleted) {
+				return '/login';
+			} else {
+				return '/setup';
+			}
+		},
+	},
+	{
+		name: 'setup',
+		path: '/setup',
+		component: Setup,
+		beforeEnter: async (_from, _to, next) => {
+			const serverStore = useServerStore();
+
+			if (serverStore.info.setupCompleted) {
+				return next('/login');
+			}
+
+			return next();
+		},
+		meta: {
+			public: true,
+		},
 	},
 	{
 		name: 'login',
@@ -118,6 +144,11 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		} catch (error: any) {
 			appStore.error = error;
 		}
+	}
+
+	if (!serverStore.info.setupCompleted) {
+		if (to.fullPath === '/setup') return;
+		return '/setup';
 	}
 
 	if (to.meta?.public !== true) {

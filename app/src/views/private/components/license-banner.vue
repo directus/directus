@@ -1,65 +1,70 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
+import { defaultValues, useFormFields, validate } from '@/routes/setup/form';
+import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
-import { useServerStore } from '@/stores/server';
-import { storeToRefs } from 'pinia';
-import BannerSVG from '../../../assets/directus-bsl-banner.svg?raw';
-
-const { t } = useI18n();
+import { notify } from '@/utils/notify';
+import type { SetupForm as Form } from '@directus/types';
+import { useCookies } from '@vueuse/integrations/useCookies';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const settingsStore = useSettingsStore();
+const cookies = useCookies(['license-banner-dismissed']);
+const { t } = useI18n();
 
-async function acceptTerms() {
-	await settingsStore.updateSettings({ accepted_terms: true });
-	settingsStore.hydrate();
+const errors = ref<Record<string, any>[]>([]);
+
+const isSaveDisabled = computed(
+	() =>
+		!form.value.project_owner ||
+		!form.value.license ||
+		(form.value.project_usage === 'commercial' && !form.value.org_name),
+);
+
+async function setOwner() {
+	errors.value = validate(form.value, fields);
+
+	if (errors.value.length > 0) return;
+
+	await settingsStore.setOwner(form.value);
+	await settingsStore.hydrate();
 }
 
-const { info } = storeToRefs(useServerStore());
+async function remindLater() {
+	// 30 days, will be deleted on logout / session end
+	cookies.set('license-banner-dismissed', 'true', { expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) });
+	notify({ title: t('bsl_banner.remind_next_login'), type: 'info' });
+}
+
+const form = ref<Form>(defaultValues);
+
+const fields = useFormFields(false, form);
 </script>
 
 <template>
 	<v-dialog>
 		<v-card>
 			<div class="inner">
-				<!-- eslint-disable-next-line vue/no-v-html -->
-				<div class="banner-svg" v-html="BannerSVG"></div>
+				<v-card-title>
+					<span class="warning">
+						{{ t('bsl_banner.title') }}
+						<v-icon name="warning" filled />
+					</span>
+				</v-card-title>
 
-				<div class="left">
-					<div class="message-copy">
-						<v-card-title>{{ t('bsl_banner.welcome_to_directus') }}</v-card-title>
-						<p>{{ t('bsl_banner.directus_free_use') }}</p>
-						<p>{{ t('bsl_banner.organization_threshold') }}</p>
-						<i18n-t keypath="bsl_banner.license_agreement" tag="p">
-							<template #directusBsl>
-								<a
-									:href="`https://directus.io/bsl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_06_license_banner&utm_term=${info.version}&utm_content=bsl_1.1_link`"
-								>
-									{{ t('bsl_banner.directus_bsl') }}
-								</a>
-							</template>
-							<template #privacyPolicy>
-								<a
-									:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_06_license_banner&utm_term=${info.version}&utm_content=privacy_link`"
-								>
-									{{ t('bsl_banner.privacy_policy') }}
-								</a>
-							</template>
-						</i18n-t>
-					</div>
+				<v-card-text>
+					<div class="sub">{{ t('bsl_banner.license') }}</div>
+					<setup-form v-model="form" :errors="errors" :register="false" utm-location="banner"></setup-form>
+				</v-card-text>
 
-					<v-card-actions>
-						<v-button @click="acceptTerms">
-							{{ t('bsl_banner.accept_terms') }}
-						</v-button>
-						<v-button
-							secondary
-							:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_06_license_banner&utm_term=${info.version}&utm_content=get_a_license_button`"
-						>
-							{{ t('bsl_banner.get_license') }}
-							<v-icon name="arrow_outward" small />
-						</v-button>
-					</v-card-actions>
-				</div>
+				<v-card-actions>
+					<v-button secondary @click="remindLater">
+						{{ t('bsl_banner.remind_later') }}
+					</v-button>
+					<v-button :disabled="isSaveDisabled" @click="setOwner">
+						{{ t('bsl_banner.set_owner') }}
+					</v-button>
+				</v-card-actions>
 			</div>
 		</v-card>
 	</v-dialog>
@@ -68,8 +73,15 @@ const { info } = storeToRefs(useServerStore());
 <style scoped>
 .v-card {
 	max-inline-size: unset;
-	padding: 30px;
-	inline-size: 80vw;
+	inline-size: 540px;
+}
+
+.v-card-title {
+	color: var(--theme--danger);
+}
+
+.sub {
+	margin-block-end: 24px;
 }
 
 .v-card a {
@@ -80,92 +92,6 @@ const { info } = storeToRefs(useServerStore());
 
 	&:hover {
 		color: var(--theme--foreground);
-	}
-}
-
-.v-card .inner {
-	display: grid;
-	align-items: center;
-}
-
-@media (min-width: 900px) {
-	.v-card {
-		padding: 56px;
-		inline-size: initial;
-	}
-
-	.v-card .inner {
-		grid-template-columns: 60% 40%;
-		inline-size: 706px;
-	}
-
-	.left {
-		order: -1;
-	}
-}
-
-.v-card-title {
-	padding: 0;
-	align-items: flex-start;
-	font-size: 28px;
-	line-height: 44px;
-	font-weight: 700;
-}
-
-.v-card .left {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 28px;
-	text-wrap: pretty;
-}
-
-.v-card .left .message-copy {
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
-	max-inline-size: 435px;
-}
-
-.v-card .left .v-card-actions {
-	display: flex;
-	flex-direction: row;
-	padding: 0;
-	gap: 12px;
-	inline-size: 100%;
-}
-
-.banner-svg {
-	display: flex;
-	justify-content: center;
-}
-
-.banner-svg > * {
-	inline-size: 200px;
-}
-
-@media (width > 640px) {
-	.v-card .left .v-card-actions {
-		gap: unset;
-		padding-inline-end: initial;
-		inline-size: initial;
-	}
-
-	.banner-svg > * {
-		inline-size: 257px;
-	}
-
-	.v-card .inner {
-		gap: 30px;
-	}
-
-	.v-card {
-		padding: 60px;
-		inline-size: fit-content;
-	}
-
-	.v-card-title {
-		font-size: 32px;
 	}
 }
 </style>
