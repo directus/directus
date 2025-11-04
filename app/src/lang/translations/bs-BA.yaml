@@ -1,4 +1,6 @@
 ---
+first_name: Ime
+last_name: Prezime
 identifier: Identifikator
 application: Aplikacija
 default_provider: Zadano
