@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Тухай
+first_name: Нэр
+last_name: Овог
 identifier: Тодохойлогч
 avatar: Аватар
 application: Аппликейшн
