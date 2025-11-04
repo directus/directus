@@ -34,7 +34,7 @@ afterEach(() => {
 });
 
 test('Schedules synchronized job', async () => {
-	tracker.on.select('directus_settings').response([]);
+	tracker.on.select('directus_settings').response([{ project_status: undefined }]);
 
 	await projectSchedule();
 

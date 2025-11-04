@@ -90,7 +90,7 @@ test('Sends to /v1/owner on owner payload', async () => {
 	});
 
 	await sendReport({
-		email: '',
+		project_owner: '',
 		version: '',
 		org_name: '',
 		product_updates: false,
