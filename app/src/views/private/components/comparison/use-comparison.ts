@@ -493,7 +493,7 @@ export function useComparison(options: UseComparisonOptions) {
 		return {
 			id: version.id,
 			displayName: getVersionDisplayName(version),
-			// workaround to make sure the date is in the local timezone
+			// we use date_updated only when user_updated exists; during version creation, the engine sets date_updated using an incorrect format, so we use date_created instead
 			date: normalizeDate(version.user_updated ? version.date_updated : version.date_created),
 			user: version.user_updated ?? version.user_created,
 			collection: version.collection,
