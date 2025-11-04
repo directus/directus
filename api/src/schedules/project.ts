@@ -22,7 +22,7 @@ export default async function schedule() {
 		try {
 			await sendReport({ version, ...ownerInfo });
 			await db.update('project_status', '').from('directus_settings');
-		} catch (_error) {
+		} catch {
 			// Empty catch
 		}
 	});
