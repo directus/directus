@@ -931,7 +931,7 @@ run_flow_on_current: Vykdyti procesą šiam įrašui
 run_flow_on_current_edited_confirm: Procesas atnaujins šį įrašą. Neišsaugoti pakeitimai bus prarasti. Ar tikrai norite jį įvykdyti?
 run_flow_on_selected: Pasirinkite vieną ar daugiau įrašų | Vykdyti procesą pasirinktam įrašui | Vykdyti procesą {n} įrašams
 run_flow: Vykdyti procesą
-trigger_flow_success: Procesas „{{name}}“ sėkmingai paleistas
+trigger_flow_success: Procesas "{flow}" sėkmingai paleistas
 field_name_placeholder: Įveskite lauko pavadinimą...
 field_key_placeholder: Įveskite lauko identifikatorių...
 trigger: Trigeris
@@ -940,7 +940,7 @@ view_trigger: Peržiūrėti trigerį
 create_trigger: Sukurti trigerį
 trigger_setup: Trigerio sukūrimas
 change_trigger: Pakeisti trigerį
-flow_delete_confirm: Ar tikrai norite ištrinti procesą „{{name}}“? Šis veiksmas negali būti atšauktas.
+flow_delete_confirm: Ar tikrai norite ištrinti procesą "{flow}"? Šis veiksmas negali būti atšauktas.
 set_flow_active: Nustatyti procesą kaip aktyvų
 set_flow_inactive: Nustatyti procesą kaip neaktyvų
 edit_flow: Redaguoti procesą
