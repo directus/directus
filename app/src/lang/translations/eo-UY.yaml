@@ -833,6 +833,8 @@ live_preview:
 shares: Konigoj
 unlimited_usage: Senlima uzado
 new_share: Nova konigo
+mcp_prompts_collection_schema:
+  messages_role_user: Uzanto
 expired: Eksvalidiĝinta
 share: Konigi
 share_item: Konigi la eron

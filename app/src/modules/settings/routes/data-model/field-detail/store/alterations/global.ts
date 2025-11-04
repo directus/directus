@@ -1,4 +1,5 @@
 import { useExtension } from '@/composables/use-extension';
+import { useFieldDetailStore } from '../index';
 import { set } from 'lodash';
 import { State, StateUpdates } from '../types';
 
@@ -13,9 +14,9 @@ export function resetSchema(updates: StateUpdates, state: State) {
 }
 
 /**
- * When an interface is chosen before a local type is set (which is the case when using the
- * simple flow), we'll set the localType to match whatever the first supported localType is of
- * the interface
+ * When an interface is chosen, we set the localType to match the interface's supported localTypes.
+ * If the localType is already compatible with the interface, we keep it.
+ * If not, we fall back to the first supported localType.
  */
 export function setLocalTypeForInterface(updates: StateUpdates) {
 	if (!updates.field?.meta?.interface) return;
@@ -24,7 +25,16 @@ export function setLocalTypeForInterface(updates: StateUpdates) {
 
 	if (!chosenInterface.value) return;
 
-	const localType = chosenInterface.value?.localTypes?.[0] ?? 'standard';
+	// Get the localType from the store state
+	const fieldDetailStore = useFieldDetailStore();
+	const currentLocalType = fieldDetailStore.localType;
+
+	// Check if localType is compatible with interface
+	const supportedLocalTypes = chosenInterface.value?.localTypes ?? ['standard'];
+	const isCurrentTypeCompatible = supportedLocalTypes.length > 0 && supportedLocalTypes.includes(currentLocalType);
+
+	// Use localType if compatible, otherwise use first supported type or fallback to standard
+	const localType = isCurrentTypeCompatible ? currentLocalType : (supportedLocalTypes[0] ?? 'standard');
 	set(updates, 'localType', localType);
 }
 
