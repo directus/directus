@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { useRevisions } from '@/composables/use-revisions';
+import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
+import type { Revision } from '@/types/revisions';
 import { useGroupable } from '@directus/composables';
-import { ContentVersion } from '@directus/types';
+import { ContentVersion, PrimaryKey } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import RevisionsDateGroup from './revisions-date-group.vue';
-import RevisionsDrawer from './revisions-drawer.vue';
 
 const props = defineProps<{
 	collection: string;
-	primaryKey: string | number;
+	primaryKey: PrimaryKey;
 	version?: ContentVersion | null;
 }>();
 
@@ -27,8 +28,8 @@ const { active: open } = useGroupable({
 
 const { collection, primaryKey, version } = toRefs(props);
 
-const modalActive = ref(false);
-const modalCurrentRevision = ref<number | null>(null);
+const comparisonModalActive = ref(false);
+const currentRevision = ref<Revision | null>(null);
 const page = ref<number>(1);
 
 const {
@@ -57,8 +58,13 @@ watch(
 );
 
 function openModal(id: number) {
-	modalCurrentRevision.value = id;
-	modalActive.value = true;
+	currentRevision.value = (revisions.value as Revision[])?.find((revision) => revision.id === id) ?? null;
+	comparisonModalActive.value = true;
+}
+
+function closeModal() {
+	comparisonModalActive.value = false;
+	currentRevision.value = null;
 }
 
 function onToggle(open: boolean) {
@@ -98,12 +104,17 @@ defineExpose({
 			<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
 		</template>
 
-		<revisions-drawer
-			v-if="revisions"
-			v-model:current="modalCurrentRevision"
-			v-model:active="modalActive"
-			:revisions="revisions"
-			@revert="$emit('revert', $event)"
+		<comparison-modal
+			v-model="comparisonModalActive"
+			v-model:current-revision="currentRevision"
+			:delete-versions-allowed="false"
+			:collection
+			:primary-key
+			mode="revision"
+			:current-version="version"
+			:revisions="revisions as Revision[]"
+			@confirm="$emit('revert', $event)"
+			@cancel="closeModal"
 		/>
 	</sidebar-detail>
 </template>

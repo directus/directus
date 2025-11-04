@@ -75,3 +75,6 @@ fields:
         - collection
         - item
     width: half
+
+indexed:
+  - field: timestamp

@@ -10,13 +10,15 @@ import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu, { type MenuOptions } from './form-field-menu.vue';
 import FormFieldRawEditor from './form-field-raw-editor.vue';
-import type { FormField } from './types';
+import type { FormField, ComparisonContext } from './types';
 
 const props = withDefaults(
 	defineProps<{
 		field: FormField;
 		batchMode?: boolean;
 		batchActive?: boolean;
+		comparison?: ComparisonContext;
+		comparisonActive?: boolean;
 		disabled?: boolean;
 		modelValue?: any;
 		initialValue?: any;
@@ -28,6 +30,7 @@ const props = withDefaults(
 		rawEditorEnabled?: boolean;
 		rawEditorActive?: boolean;
 		disabledMenuOptions?: MenuOptions[];
+		disabledMenu?: boolean;
 		direction?: string;
 	}>(),
 	{
@@ -52,7 +55,7 @@ const isDisabled = computed(() => {
 });
 
 const isLabelHidden = computed(() => {
-	if (props.batchMode && !props.field.meta?.special?.includes('no-data')) return false;
+	if ((props.batchMode || !!props.comparison) && !props.field.meta?.special?.includes('no-data')) return false;
 	return props.field.hideLabel;
 });
 
@@ -165,9 +168,15 @@ function useComputedValues() {
 		:data-collection="field.collection"
 		:data-field="field.field"
 		class="field"
-		:class="[field.meta?.width || 'full', { invalid: validationError }]"
+		:class="[
+			field.meta?.width || 'full',
+			{
+				invalid: validationError,
+				'diff-indicator': comparison?.fields.has(field.field),
+			},
+		]"
 	>
-		<v-menu v-if="!isLabelHidden" placement="bottom-start" show-arrow arrow-placement="start">
+		<v-menu v-if="!isLabelHidden" :disabled="disabledMenu" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
 				<form-field-label
 					:field="field"
@@ -175,12 +184,15 @@ function useComputedValues() {
 					:active="active"
 					:batch-mode="batchMode"
 					:batch-active="batchActive"
+					:comparison="comparison"
+					:comparison-active="comparisonActive"
 					:edited="isEdited"
 					:has-error="!!validationError"
 					:badge="badge"
 					:raw-editor-enabled="rawEditorEnabled"
 					:raw-editor-active="rawEditorActive"
 					:loading="loading"
+					:disabled-menu="disabledMenu"
 					@toggle-batch="$emit('toggle-batch', $event)"
 					@toggle-raw="$emit('toggle-raw', $event)"
 				/>
@@ -213,6 +225,8 @@ function useComputedValues() {
 			:raw-editor-enabled="rawEditorEnabled"
 			:raw-editor-active="rawEditorActive"
 			:direction="direction"
+			:comparison="comparison"
+			:comparison-active="comparisonActive"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>
@@ -241,6 +255,18 @@ function useComputedValues() {
 <style lang="scss" scoped>
 .field {
 	position: relative;
+
+	&.diff-indicator {
+		&::before {
+			content: '';
+			position: absolute;
+			inset-block: 0;
+			inset-inline-start: -12px;
+			inline-size: 4px;
+			z-index: 1;
+			background-color: var(--comparison-indicator--color);
+		}
+	}
 }
 
 .type-note {

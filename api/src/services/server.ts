@@ -34,8 +34,13 @@ export class ServerService {
 		this.settingsService = new SettingsService({ knex: this.knex, schema: this.schema });
 	}
 
+	async isSetupCompleted(): Promise<boolean> {
+		return Boolean(await this.knex('directus_users').first());
+	}
+
 	async serverInfo(): Promise<Record<string, any>> {
 		const info: Record<string, any> = {};
+		const setupComplete = await this.isSetupCompleted();
 
 		const projectInfo = await this.settingsService.readSingleton({
 			fields: [
@@ -63,6 +68,8 @@ export class ServerService {
 		info['project'] = projectInfo;
 
 		info['mcp_enabled'] = toBoolean(env['MCP_ENABLED'] ?? true);
+
+		info['setupCompleted'] = setupComplete;
 
 		if (this.accountability?.user) {
 			if (env['RATE_LIMITER_ENABLED']) {
@@ -128,9 +135,9 @@ export class ServerService {
 					chunkSize: RESUMABLE_UPLOADS.CHUNK_SIZE,
 				};
 			}
-
-			info['version'] = version;
 		}
+
+		if (this.accountability?.user || !setupComplete) info['version'] = version;
 
 		return info;
 	}
