@@ -1,4 +1,4 @@
-import type { Accountability, Query } from '@directus/types';
+import type { Accountability, Item, Query } from '@directus/types';
 import type { IncomingMessage } from 'http';
 import type internal from 'stream';
 import type { WebSocket } from 'ws';
@@ -27,6 +27,15 @@ export type Subscription = {
 	event?: SubscriptionEvent;
 	collection: string;
 	client: WebSocketClient;
+};
+
+export type CollabRoom = {
+	uid: string;
+	collection: string;
+	item: string | number;
+	version: string | undefined;
+	changes: Item;
+	clients: WebSocketClient[];
 };
 
 export type UpgradeContext = {
