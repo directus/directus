@@ -132,6 +132,7 @@ catalog:
   '@vueuse/integrations': 14.0.0
   '@vueuse/router': 14.0.0
   ai: 5.0.86
+  ajv: 8.17.1
   apexcharts: 4.7.0
   argon2: 0.44.0
   async: 3.2.6
@@ -206,6 +207,7 @@ catalog:
   json-to-graphql-query: 2.3.0
   json2csv: 5.0.7
   jsonlint-mod: 1.7.6
+  jsonschema: 1.5.0
   jsonwebtoken: 9.0.2
   keyv: 5.5.3
   knex: 3.1.0
@@ -291,8 +293,8 @@ catalog:
   typescript: 5.9.3
   typescript-eslint: 8.46.2
   undici: 7.16.0
-  unplugin-yaml: 3.0.7
   universal-cookie: 8.0.1
+  unplugin-yaml: 3.0.7
   update-check: 1.5.4
   uuid: 11.1.0
   vite: 7.1.12
