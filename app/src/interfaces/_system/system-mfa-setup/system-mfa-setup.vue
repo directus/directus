@@ -39,7 +39,7 @@ const profileUser = computed(() => {
 const isSSOUser = computed(() => {
 	// Use profile user data when viewing a different user, otherwise use current user
 	const user = profileUser.value && !isCurrentUser.value ? profileUser.value : userStore.currentUser;
-	return user && !('share' in user) && user.provider !== DEFAULT_AUTH_DRIVER;
+	return user && !('share' in user) && user.provider !== undefined && user.provider !== DEFAULT_AUTH_DRIVER;
 });
 
 const effectiveTFAEnabled = computed(() => {

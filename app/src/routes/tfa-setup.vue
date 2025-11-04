@@ -48,7 +48,11 @@ watch(
 // Check if the current user is an OAuth user
 const isOAuthUser = computed(() => {
 	const user = userStore.currentUser;
-	return user && !('share' in user) && user.provider !== DEFAULT_AUTH_DRIVER;
+	const result = user && !('share' in user) && (user.provider !== DEFAULT_AUTH_DRIVER && user.provider !== undefined);
+	console.log('isOAuthUser:', result);
+	console.log('user.provider:', user?.provider);
+	console.log('DEFAULT_AUTH_DRIVER:', DEFAULT_AUTH_DRIVER);
+	return result;
 });
 
 // Check if the user has role that requires TFA

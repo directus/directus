@@ -42,24 +42,43 @@ export function useTFASetup(initialEnabled: boolean) {
 	};
 
 	async function generateTFA(requiresPassword: boolean = true) {
-		if (loading.value === true) return;
+	if (loading.value === true) return;
 
-		loading.value = true;
-
-		try {
-			const payload = requiresPassword ? { password: password.value } : {};
-			const response = await api.post('/users/me/tfa/generate', payload);
-			const url = response.data.data.otpauth_url;
-			secret.value = response.data.data.secret;
-			await qrcode.toCanvas(document.getElementById(canvasID), url);
-			tfaGenerated.value = true;
-			error.value = null;
-		} catch (err: any) {
-			error.value = err;
-		} finally {
-			loading.value = false;
-		}
+	// 检查用户是否存在
+	const user = userStore.currentUser;
+	if (!user || 'share' in user) {
+		error.value = new Error('User not found');
+		return;
 	}
+
+	// 记录用户信息和参数
+	console.log('User:', user);
+	console.log('requiresPassword:', requiresPassword);
+	console.log('password.value:', password.value);
+
+	if (requiresPassword && !password.value) {
+		error.value = new Error('Password is required');
+		return;
+	}
+
+	loading.value = true;
+
+	try {
+		const payload = requiresPassword ? { password: password.value } : {};
+		console.log('Request payload:', payload);
+		const response = await api.post('/users/me/tfa/generate', payload);
+		const url = response.data.data.otpauth_url;
+		secret.value = response.data.data.secret;
+		await qrcode.toCanvas(document.getElementById(canvasID), url);
+		tfaGenerated.value = true;
+		error.value = null;
+	} catch (err: any) {
+		console.error('Error:', err);
+		error.value = err;
+	} finally {
+		loading.value = false;
+	}
+}
 
 	async function enableTFA() {
 		if (loading.value === true) return;

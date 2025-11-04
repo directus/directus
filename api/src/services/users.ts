@@ -194,6 +194,11 @@ export class UsersService extends ItemsService {
 			if ('password' in data) {
 				await this.checkPasswordPolicy([data['password']]);
 			}
+
+			// Set default provider if not specified
+			if (!('provider' in data) || data['provider'] === undefined) {
+				data['provider'] = DEFAULT_AUTH_PROVIDER;
+			}
 		} catch (err: any) {
 			opts.preMutationError = err;
 		}
