@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Om
+first_name: Förnamn
+last_name: Efternamn
 identifier: Identifierare
 avatar: Profilbild
 application: Applikation
@@ -2195,10 +2197,4 @@ date_precision: Datumprecision
 percent: Procent
 show_password: Visa lösenord
 hide_password: Dölj lösenord
-bsl_banner:
-  welcome_to_directus: Välkommen till Directus!
-  directus_bsl: Directus BSL 1.1
-  privacy_policy: Integritetspolicy
-  accept_terms: Acceptera
-  get_license: Skaffa en licens
 accepted: Accepterad
