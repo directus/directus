@@ -25,7 +25,7 @@ export function applySearch(
 	let fields = Object.entries(schema.collections[collection]!.fields);
 
 	// filter out fields that are not searchable
-	fields = fields.filter(([_name, field]) => field.searchable !== false);
+	fields = fields.filter(([_name, field]) => field.searchable !== false || field.special.includes('conceal') !== true);
 
 	const { cases, caseMap } = getCases(collection, permissions, []);
 
@@ -33,8 +33,6 @@ export function applySearch(
 	if (cases.length !== 0 && !allowedFields.has('*')) {
 		fields = fields.filter((field) => allowedFields.has(field[0]));
 	}
-
-	fields = fields.filter(([_, field]) => field.special.includes('conceal') !== true);
 
 	dbQuery.andWhere(function (queryBuilder) {
 		let needsFallbackCondition = true;
