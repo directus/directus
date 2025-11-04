@@ -41,7 +41,6 @@ const { selectedCollection, template } = toRefs(props);
 const collectionsStore = useCollectionsStore();
 const fieldStore = useFieldsStore();
 
-const loading = ref(false);
 const selectDrawerOpen = ref(false);
 const displayItems = ref<Record<string, any>[]>([]);
 
@@ -105,8 +104,6 @@ async function getDisplayItems() {
 	fields.add(primaryKey.value);
 
 	try {
-		loading.value = true;
-
 		const response = await api.get(getEndpoint(unref(selectedCollection)), {
 			params: {
 				fields: Array.from(fields),
@@ -121,8 +118,6 @@ async function getDisplayItems() {
 			.filter(Boolean);
 	} catch (error) {
 		unexpectedError(error);
-	} finally {
-		loading.value = false;
 	}
 }
 
@@ -161,48 +156,45 @@ function onSort(sortedItems: Record<string, any>[]) {
 
 <template>
 	<div class="collection-item-multiple-dropdown">
-		<v-skeleton-loader v-if="loading" type="input" />
 
-		<template v-else>
-			<v-notice v-if="displayItems.length === 0">
-				{{ t('no_items') }}
-			</v-notice>
+		<v-notice v-if="displayItems.length === 0">
+			{{ t('no_items') }}
+		</v-notice>
 
-			<draggable
-				v-else
-				:model-value="displayItems"
-				tag="v-list"
-				item-key="id"
-				handle=".drag-handle"
-				:disabled="disabled"
-				:set-data="hideDragImage"
-				v-bind="{ 'force-fallback': true }"
-				@update:model-value="onSort($event)"
-			>
-				<template #item="{ element }">
-					<v-list-item
-						block
-						:disabled="disabled"
-						:dense="displayItems.length > 4"
-					>
-						<v-icon v-if="!disabled" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+		<draggable
+			v-else
+			:model-value="displayItems"
+			tag="v-list"
+			item-key="id"
+			handle=".drag-handle"
+			:disabled="disabled"
+			:set-data="hideDragImage"
+			v-bind="{ 'force-fallback': true }"
+			@update:model-value="onSort($event)"
+		>
+			<template #item="{ element }">
+				<v-list-item
+					block
+					:disabled="disabled"
+					:dense="displayItems.length > 4"
+				>
+					<v-icon v-if="!disabled" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 
-						<render-template
-							:collection="selectedCollection"
-							:item="element"
-							:template="displayTemplate"
-							class="preview"
-						/>
+					<render-template
+						:collection="selectedCollection"
+						:item="element"
+						:template="displayTemplate"
+						class="preview"
+					/>
 
-						<div class="spacer" />
+					<div class="spacer" />
 
-						<div class="item-actions">
-							<v-remove v-if="!disabled" deselect @action="removeItem(element)" />
-						</div>
-					</v-list-item>
-				</template>
-			</draggable>
-		</template>
+					<div class="item-actions">
+						<v-remove v-if="!disabled" deselect @action="removeItem(element)" />
+					</div>
+				</v-list-item>
+			</template>
+		</draggable>
 
 		<div class="actions">
 			<v-button v-if="!disabled" @click="selectDrawerOpen = true">
