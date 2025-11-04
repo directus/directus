@@ -1,7 +1,14 @@
 <script setup lang="ts">
 interface Props {
 	/** Name of another component to mirror */
-	type?: 'input' | 'input-tall' | 'block-list-item' | 'block-list-item-dense' | 'list-item-icon' | 'text';
+	type?:
+		| 'input'
+		| 'input-tall'
+		| 'block-list-item'
+		| 'block-list-item-dense'
+		| 'list-item-icon'
+		| 'text'
+		| 'pagination';
 }
 
 withDefaults(defineProps<Props>(), {
@@ -14,6 +21,9 @@ withDefaults(defineProps<Props>(), {
 		<template v-if="type === 'list-item-icon'">
 			<div class="icon" />
 			<div class="text" />
+		</template>
+		<template v-if="type === 'pagination'">
+			<v-button class="page" small disabled></v-button>
 		</template>
 	</div>
 </template>
@@ -139,6 +149,24 @@ withDefaults(defineProps<Props>(), {
 		border-radius: 6px;
 
 		@include loader;
+	}
+}
+
+.pagination {
+	.v-button {
+		@include loader;
+		border-radius: var(--theme--border-radius);
+		display: none;
+	}
+
+	.v-button :deep(.small) {
+		--v-button-min-width: 32px;
+	}
+
+	@media (min-width: 600px) {
+		.v-button {
+			display: inline;
+		}
 	}
 }
 

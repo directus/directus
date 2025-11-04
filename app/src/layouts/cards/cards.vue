@@ -124,7 +124,8 @@ watch(innerWidth, (value) => {
 
 			<div class="footer">
 				<div class="pagination">
-					<v-progress-circular v-if="!loading && loadingItemCount" indeterminate rounded />
+					<v-skeleton-loader v-if="!loading && loadingItemCount" type="pagination" />
+
 					<v-pagination
 						v-else-if="totalPages > 1"
 						:length="totalPages"
