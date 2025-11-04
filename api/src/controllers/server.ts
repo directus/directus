@@ -1,10 +1,12 @@
-import { RouteNotFoundError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
 import { format } from 'date-fns';
 import { Router } from 'express';
 import { respond } from '../middleware/respond.js';
+import { SettingsService } from '../services/index.js';
 import { ServerService } from '../services/server.js';
 import { SpecificationService } from '../services/specifications.js';
 import asyncHandler from '../utils/async-handler.js';
+import { createAdmin } from '../utils/create-admin.js';
 
 const router = Router();
 
@@ -78,6 +80,39 @@ router.get(
 		if (data['status'] === 'error') res.status(503);
 		res.locals['payload'] = data;
 		res.locals['cache'] = false;
+		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/setup',
+	asyncHandler(async (req, _res, next) => {
+		const serverService = new ServerService({ schema: req.schema });
+
+		if (await serverService.isSetupCompleted()) {
+			throw new ForbiddenError();
+		}
+
+		try {
+			await createAdmin(req.schema, {
+				email: req.body.project_owner,
+				password: req.body.password,
+				first_name: req.body.first_name,
+				last_name: req.body.last_name,
+			});
+
+			const settingsService = new SettingsService({ schema: req.schema });
+
+			settingsService.setOwner(req.body);
+		} catch (error: any) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
 	}),
 	respond,

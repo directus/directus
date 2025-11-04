@@ -40,6 +40,7 @@ const props = withDefaults(
 		/* Enable the raw editor toggler on fields */
 		rawEditorEnabled?: boolean;
 		disabledMenuOptions?: MenuOptions[];
+		disabledMenu?: boolean;
 		direction?: string;
 		showDivider?: boolean;
 		inline?: boolean;
@@ -443,6 +444,7 @@ function useRawEditor() {
 					:raw-editor-enabled="rawEditorEnabled"
 					:raw-editor-active="rawActiveFields.has(fieldName)"
 					:disabled-menu-options="disabledMenuOptions"
+					:disabled-menu="disabledMenu"
 					:direction="direction"
 					@update:model-value="setValue(fieldName, $event)"
 					@set-field-value="setValue($event.field, $event.value, { force: true })"
