@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: درباره
+first_name: نام
+last_name: نام خانوادگی
 identifier: شناساگر
 avatar: آواتار
 application: برنامه
@@ -2585,14 +2587,6 @@ search_flow: جستجوی جریان...
 percent: درصد
 show_password: نمایش رمز عبور
 hide_password: مخفی کردن رمز عبور
-bsl_banner:
-  welcome_to_directus: به دایرکتوس خوش آمدید!
-  organization_threshold: نهادهای بالاتر از این آستانه نیاز به مجوز پولی دارند.
-  license_agreement: با کلیک روی «پذیرفتن»، با {directusBsl} و {privacyPolicy} اعلام موافقت می‌کنید.
-  directus_bsl: مجوز BSL 1.1 دایرکتوس
-  privacy_policy: سیاست حفظ حریم خصوصی
-  accept_terms: پذیرفتن
-  get_license: دریافت مجوز
 accepted: پذیرفته شده
 text_direction_auto: خودکار (مطابق زبان)
 text_direction_ltr: چپ به راست (LTR)
