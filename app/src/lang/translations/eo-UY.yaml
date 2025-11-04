@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Pri
+first_name: Pesona nomo
+last_name: Familia nomo
 identifier: Identigilo
 avatar: Profilbildo
 application: Aplikaĵo
