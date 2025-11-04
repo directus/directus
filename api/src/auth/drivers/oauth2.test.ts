@@ -1000,8 +1000,8 @@ describe('OAuth2AuthDriver', () => {
 
         vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue(undefined);
 
-        const recordNotUniqueError = new InvalidProviderError();
-        (recordNotUniqueError as any).code = ErrorCode.RecordNotUnique;
+        const recordNotUniqueError: any = new InvalidProviderError();
+        recordNotUniqueError.code = ErrorCode.RecordNotUnique;
 
         vi.spyOn(driver as any, 'getUsersService').mockReturnValue({
           createOne: vi.fn().mockRejectedValue(recordNotUniqueError),
@@ -1024,9 +1024,7 @@ describe('OAuth2AuthDriver', () => {
 
     describe('Error handling', () => {
       test('throws error from handleError when oauthCallback fails', async () => {
-        const config = createOAuth2Config('github', {
-          identifierKey: 'sub',
-        });
+        const config = createOAuth2Config('github');
 
         const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
