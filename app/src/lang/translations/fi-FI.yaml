@@ -1,4 +1,6 @@
 ---
+first_name: Etunimi
+last_name: Sukunimi
 identifier: Tunniste
 avatar: Avatari
 application: Sovellus
@@ -81,7 +83,6 @@ rename_folder: Nimeä kansio uudelleen
 delete_folder: Poista kansio
 prefix: Etuliite
 suffix: Jälkiliite
-promote_version_preview: Esikatselu
 reset_bookmark: Nollaa kirjanmerkki
 update_bookmark: Päivitä kirjanmerkki
 delete_bookmark: Poista kirjanmerkki
