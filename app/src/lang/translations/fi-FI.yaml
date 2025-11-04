@@ -1,4 +1,6 @@
 ---
+first_name: Etunimi
+last_name: Sukunimi
 identifier: Tunniste
 avatar: Avatari
 application: Sovellus
