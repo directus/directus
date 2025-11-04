@@ -21,7 +21,7 @@ test('useFormFields for setup', () => {
 	expect(result.value.map((field) => field.field)).toEqual([
 		'first_name',
 		'last_name',
-		'email',
+		'project_owner',
 		'password',
 		'password_confirm',
 		'project_usage',
@@ -31,13 +31,13 @@ test('useFormFields for setup', () => {
 test('useFormFields for modal/edit', () => {
 	const result = useFormFields(false, ref(defaultValues));
 
-	expect(result.value.map((field) => field.field)).toEqual(['email', 'project_usage']);
+	expect(result.value.map((field) => field.field)).toEqual(['project_owner', 'project_usage']);
 });
 
 test('useFormFields with project_usage = commercial', () => {
 	const result = useFormFields(false, ref({ ...defaultValues, project_usage: 'commercial' }));
 
-	expect(result.value.map((field) => field.field)).toEqual(['email', 'project_usage', 'org_name']);
+	expect(result.value.map((field) => field.field)).toEqual(['project_owner', 'project_usage', 'org_name']);
 });
 
 test('validate on invalid setup form', () => {
@@ -54,7 +54,7 @@ test('validate on valid setup form', () => {
 		{
 			first_name: 'Admin',
 			last_name: 'User',
-			email: 'admin@example.com',
+			project_owner: 'admin@example.com',
 			password: 'pw',
 			password_confirm: 'pw',
 			project_usage: null,
@@ -75,7 +75,7 @@ test('validate with unequal password', () => {
 		{
 			first_name: 'Admin',
 			last_name: 'User',
-			email: 'admin@example.com',
+			project_owner: 'admin@example.com',
 			password: 'pw',
 			password_confirm: 'invalid',
 			project_usage: null,
