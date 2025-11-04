@@ -1,4 +1,3 @@
-\
 <script setup lang="ts">
 import type { UIMessagePart as SDKUIMessagePart, UIDataTypes, UITools } from 'ai';
 

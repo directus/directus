@@ -36,7 +36,7 @@ const aiStore = useAiStore();
 	min-height: 0;
 }
 
-.ai-sidebar-footer {
+.input-container {
 	flex-shrink: 0;
 	padding-top: 0;
 }
