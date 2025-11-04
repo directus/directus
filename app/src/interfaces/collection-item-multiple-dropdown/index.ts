@@ -50,5 +50,5 @@ export default defineInterface({
 			},
 		},
 	],
-	// preview: PreviewSVG, // TODO: add new SVG preview
+	preview: PreviewSVG,
 });
