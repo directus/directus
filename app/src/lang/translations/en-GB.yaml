@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: About
+first_name: First Name
+last_name: Last Name
 identifier: Identifier
 avatar: Avatar
 application: Application
