@@ -13,7 +13,6 @@ import {
 import { useAiStore } from '../stores/use-ai';
 
 const { models, selectedModel } = useAiStore();
-
 </script>
 
 <template>
@@ -32,7 +31,6 @@ const { models, selectedModel } = useAiStore();
 
 			<SelectItem v-for="model in models" :key="model" :value="model" class="select-item">
 				<div class="select-item-content">
-					<v-icon name="smart_toy" small class="select-item-icon" />
 					<SelectItemText class="select-item-text">
 						<v-text-overflow :text="model" />
 					</SelectItemText>
@@ -51,33 +49,36 @@ const { models, selectedModel } = useAiStore();
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	gap: 4px;
 
-	padding: 0 6px;
-	background: var(--theme--form--field--input--background);
-	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	padding: 4px 8px;
+	background: transparent;
+	border: var(--theme--border-width) solid transparent;
 	border-radius: var(--theme--border-radius);
-	color: var(--theme--form--field--input--foreground);
+	color: var(--theme--foreground-subdued);
 	font-family: var(--theme--fonts--sans--font-family);
+	font-size: 12px;
 	cursor: pointer;
-	transition: border-color var(--fast) var(--transition);
+	transition: all var(--fast) var(--transition);
 	text-align: left;
 
 	&:hover:not(:disabled) {
-		border-color: var(--theme--form--field--input--border-color-hover, var(--theme--primary));
+		background: var(--theme--background-subdued);
+		color: var(--theme--foreground);
 	}
 
 	&:focus,
 	&:focus-visible {
-		border-color: var(--theme--primary);
+		background: var(--theme--background-subdued);
+		color: var(--theme--foreground);
 		outline: none !important;
 		outline-offset: 0 !important;
-		box-shadow: 0 0 0 2px var(--theme--primary-25);
 	}
 
 	&:disabled {
-		background: var(--theme--form--field--input--background-subdued);
-		color: var(--theme--form--field--input--foreground-subdued);
+		color: var(--theme--foreground-subdued);
 		cursor: not-allowed;
+		opacity: 0.5;
 	}
 }
 
@@ -128,7 +129,6 @@ const { models, selectedModel } = useAiStore();
 		transform: scale(0.95);
 	}
 }
-
 
 :deep(.select-item) {
 	position: relative;
