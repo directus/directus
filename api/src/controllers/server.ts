@@ -96,7 +96,7 @@ router.post(
 
 		try {
 			await createAdmin(req.schema, {
-				email: req.body.email,
+				email: req.body.project_owner,
 				password: req.body.password,
 				first_name: req.body.first_name,
 				last_name: req.body.last_name,
