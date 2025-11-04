@@ -170,7 +170,7 @@ watch(innerWidth, (value) => {
 	justify-content: space-between;
 	padding-block-start: 40px;
 
-	.pagination {
+	.pagination:not(.v-skeleton-loader) {
 		display: inline-block;
 	}
 

@@ -23,7 +23,7 @@ withDefaults(defineProps<Props>(), {
 			<div class="text" />
 		</template>
 		<template v-if="type === 'pagination'">
-			<v-button class="page" small disabled></v-button>
+			<v-button v-for="page in 3" :key="page" class="page" small disabled></v-button>
 		</template>
 	</div>
 </template>
@@ -153,20 +153,34 @@ withDefaults(defineProps<Props>(), {
 }
 
 .pagination {
-	.v-button {
-		@include loader;
-		border-radius: var(--theme--border-radius);
-		display: none;
-	}
+	display: flex;
 
-	.v-button :deep(.small) {
-		--v-button-min-width: 32px;
+	.gap {
+		display: none;
+		margin: 0 4px;
+		line-height: 2em;
 	}
 
 	@media (min-width: 600px) {
-		.v-button {
+		.gap {
 			display: inline;
 		}
+	}
+
+	.v-button {
+		margin: 0 2px;
+		@include loader;
+		border-radius: var(--theme--border-radius);
+		inline-size: 36px;
+		block-size: 36px;
+	}
+
+	.v-button:first-child {
+		margin-inline-start: 0;
+	}
+
+	.v-button:last-child {
+		margin-inline-end: 0;
 	}
 }
 
