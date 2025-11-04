@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: À propos
+first_name: Prénom
+last_name: Nom
 identifier: Identifiant
 avatar: Avatar
 application: Application
@@ -2536,5 +2538,3 @@ search_flow: Rechercher le flux...
 percent: Pourcent
 show_password: Afficher le mot de passe
 hide_password: Masquer le mot de passe
-bsl_banner:
-  accept_terms: Accepter
