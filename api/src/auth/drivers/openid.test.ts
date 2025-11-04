@@ -8,7 +8,12 @@ vi.mock('@directus/env', () => ({
 
 vi.mock('../../logger');
 vi.mock('../../database');
-vi.mock('../../emitter');
+
+vi.mock('../../emitter', () => ({
+  default: {
+    emitFilter: vi.fn().mockImplementation((_event, payload) => Promise.resolve(payload)),
+  },
+}));
 
 vi.mock('../../app', () => ({
   default: {},
@@ -94,7 +99,8 @@ import { useLogger } from '../../logger/index.js';
 import { generateRedirectUrls, getCallbackFromOriginUrl } from '../../utils/oauth-callbacks.js';
 import { OpenIDAuthDriver } from './openid.js';
 import type { Logger } from 'pino';
-import { InvalidProviderConfigError, InvalidProviderError } from '@directus/errors';
+import { InvalidProviderConfigError, InvalidProviderError, InvalidCredentialsError, InvalidTokenError, ServiceUnavailableError } from '@directus/errors';
+import { errors as openidErrors } from 'openid-client';
 
 const createMockEnv = (overrides: Record<string, any> = {}) => ({
   ...overrides,
@@ -326,6 +332,114 @@ describe('OpenIDAuthDriver', () => {
   });
 
   describe('getUserID', () => {
+    describe('Validation', () => {
+      test.each([
+        { field: 'code', payload: { codeVerifier: 'test-verifier', state: 'test-state' } },
+        { field: 'codeVerifier', payload: { code: 'test-code', state: 'test-state' } },
+        { field: 'state', payload: { code: 'test-code', codeVerifier: 'test-verifier' } },
+      ])(`throws InvalidCredentialsError when $field is missing`, async ({ payload }) => {
+        const config = createOpenIDConfig();
+        const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+        await expect(driver.getUserID(payload)).rejects.toThrow(InvalidCredentialsError);
+        expect(mockLogger.warn).toHaveBeenCalledWith('[OpenID] No code, codeVerifier or state in payload');
+      });
+    });
+
+    describe('PKCE', () => {
+      test('calls codeChallenge and passes hashed state to callback (S256 mode)', async () => {
+        const driver = new OpenIDAuthDriver({ knex: {} as any }, createOpenIDConfig());
+        await driver['getClient']();
+
+        const mockTokenSet = {
+          access_token: 'test-access-token',
+          claims: () => ({ sub: '123', email: 'test@test.com' }),
+        };
+
+        const callbackSpy = vi.spyOn(driver.client!, 'callback').mockResolvedValue(mockTokenSet as any);
+        vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue('user-id');
+
+        const payload = {
+          code: 'test-code',
+          codeVerifier: 'test-verifier',
+          state: 'test-state',
+        };
+
+        await driver.getUserID(payload);
+
+        const callbackArgs = callbackSpy.mock.calls[0];
+
+        expect(callbackArgs?.[2]).toEqual({
+          code_verifier: 'test-verifier',
+          state: 'challenge-test-verifier',
+          nonce: 'challenge-test-verifier',
+        });
+      });
+
+      test('does not call codeChallenge and passes codeVerifier as state (plain mode)', async () => {
+        const config = createOpenIDConfig({
+          plainCodeChallenge: true,
+        });
+
+        const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+        await driver['getClient']();
+
+        const callbackSpy = vi.spyOn(driver.client!, 'callback').mockResolvedValue({
+          claims: () => { }
+        } as any);
+
+        vi.spyOn(driver.client!, 'userinfo').mockResolvedValue({ sub: '123', email: 'test@test.com' } as any);
+        vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue('user-id');
+
+        const payload = {
+          code: 'test-code',
+          codeVerifier: 'test-verifier',
+          state: 'test-state',
+        };
+
+        await driver.getUserID(payload);
+
+        const callbackArgs = callbackSpy.mock.calls[0];
+
+        expect(callbackArgs?.[2]).toEqual({
+          code_verifier: 'test-verifier',
+          state: 'test-verifier',
+          nonce: 'test-verifier',
+        });
+      });
+
+      test('merges claims from tokenSet and userinfo endpoint', async () => {
+        const config = createOpenIDConfig();
+
+        const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+        await driver['getClient']();
+
+        const mockTokenSet = {
+          access_token: 'test-access-token',
+          claims: () => ({ sub: '123', email: 'test@test.com' }),
+        };
+
+        vi.spyOn(driver.client!, 'callback').mockResolvedValue(mockTokenSet as any);
+
+        const userinfoSpy = vi.spyOn(driver.client!, 'userinfo').mockResolvedValue({
+          email: 'test@test.com',
+        } as any);
+
+        vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue('user-id');
+        vi.spyOn(driver as any, 'getUsersService').mockReturnValue({ updateOne: vi.fn() });
+
+        const payload = {
+          code: 'test-code',
+          codeVerifier: 'test-verifier',
+          state: 'test-state',
+        };
+
+        await driver.getUserID(payload);
+
+        expect(userinfoSpy).toHaveBeenCalledWith(mockTokenSet.access_token);
+      });
+    });
+
     describe('Multi-domain callbacks', () => {
       test('uses getCallbackFromOriginUrl to find correct callback for originUrl', async () => {
         const mockRedirectUris = [
@@ -562,6 +676,72 @@ describe('OpenIDAuthDriver', () => {
       } as any;
 
       await expect(driver.refresh(user)).rejects.toThrow();
+    });
+  });
+
+  describe('handleError', () => {
+    test('returns InvalidTokenError for OPError with invalid_grant', async () => {
+      const config = createOpenIDConfig();
+      const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+      await driver['getClient']();
+
+      const opError = new openidErrors.OPError({ error: 'invalid_grant' });
+      vi.spyOn(driver.client!, 'refresh').mockRejectedValue(opError);
+
+      const user = { id: 'user-123', auth_data: { refreshToken: 'invalid' } } as any;
+
+      await expect(driver.refresh(user)).rejects.toThrow(InvalidTokenError);
+      expect(mockLogger.warn).toHaveBeenCalledWith(opError, '[OpenID] Invalid grant');
+    });
+
+    test('returns ServiceUnavailableError for OPError with other errors', async () => {
+      const config = createOpenIDConfig();
+      const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+      await driver['getClient']();
+
+      const opError = new openidErrors.OPError({
+        error: 'server_error',
+        error_description: 'Internal server error',
+      });
+
+      vi.spyOn(driver.client!, 'refresh').mockRejectedValue(opError);
+
+      const user = { id: 'user-123', auth_data: { refreshToken: 'test' } } as any;
+
+      await expect(driver.refresh(user)).rejects.toThrow(ServiceUnavailableError);
+      expect(mockLogger.warn).toHaveBeenCalledWith(opError, '[OpenID] Unknown OP error');
+    });
+
+    test('returns InvalidCredentialsError for RPError', async () => {
+      const config = createOpenIDConfig();
+      const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+      await driver['getClient']();
+
+      const rpError = new openidErrors.RPError('RP Error');
+      vi.spyOn(driver.client!, 'refresh').mockRejectedValue(rpError);
+
+      const user = { id: 'user-123', auth_data: { refreshToken: 'test' } } as any;
+
+      await expect(driver.refresh(user)).rejects.toThrow(InvalidCredentialsError);
+      expect(mockLogger.warn).toHaveBeenCalledWith(rpError, '[OpenID] Unknown RP error');
+    });
+
+    test('returns error as-is for unknown error types', async () => {
+      const config = createOpenIDConfig();
+      const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+      await driver['getClient']();
+
+      const unknownError = new Error('Unknown error');
+      vi.spyOn(driver.client!, 'refresh').mockRejectedValue(unknownError);
+
+      const user = { id: 'user-123', auth_data: { refreshToken: 'test' } } as any;
+
+      await expect(driver.refresh(user)).rejects.toThrow(unknownError);
+      expect(mockLogger.warn).toHaveBeenCalledWith(unknownError, '[OpenID] Unknown error');
     });
   });
 });
