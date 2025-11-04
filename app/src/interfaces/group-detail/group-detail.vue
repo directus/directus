@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import { Field, ValidationError } from '@directus/types';
+import type { ComparisonContext } from '@/components/v-form/types';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -15,6 +16,7 @@ const props = withDefaults(
 		disabled?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
+		comparison?: ComparisonContext;
 		loading?: boolean;
 		validationErrors?: ValidationError[];
 		badge?: string;
@@ -36,6 +38,8 @@ defineEmits(['apply']);
 const { t } = useI18n();
 
 const detailOpen = ref(props.start === 'open');
+
+const { isComparisonIndicatorActive, isComparisonIndicatorMuted } = useComparisonIndicator();
 
 // In case that conditions change the start prop after the group already got rendered
 // caused by the async loading of data to run the conditions against
@@ -86,12 +90,43 @@ watch(validationMessages, (newVal, oldVal) => {
 	if (isEqual(newVal, oldVal)) return;
 	detailOpen.value = validationMessages.value.length > 0;
 });
+
+function useComparisonIndicator() {
+	const isGroupWithFieldDifferences = computed(
+		() => props.comparison && props.fields.some((field) => props.comparison!.fields.has(field.field)),
+	);
+
+	const isComparisonIndicatorActive = computed(() => !detailOpen.value && isGroupWithFieldDifferences.value);
+
+	const isComparisonIndicatorMuted = computed(() => {
+		if (!props.comparison) return false;
+		if (detailOpen.value && isGroupWithFieldDifferences.value) return true;
+
+		return (
+			!isGroupWithFieldDifferences.value &&
+			props.fields.some((field) => props.comparison!.revisionFields?.has(field.field))
+		);
+	});
+
+	return {
+		isComparisonIndicatorActive,
+		isComparisonIndicatorMuted,
+	};
+}
 </script>
 
 <template>
-	<v-detail v-model="detailOpen" :start-open="start === 'open'" class="group-detail">
+	<v-detail
+		v-model="detailOpen"
+		:start-open="start === 'open'"
+		class="group-detail"
+		:class="{
+			'indicator-active': isComparisonIndicatorActive,
+			'indicator-muted': isComparisonIndicatorMuted,
+		}"
+	>
 		<template #activator="{ toggle, active }">
-			<button class="toggle-btn" type="button" @click="toggle">
+			<button type="button" class="toggle-btn" @click="toggle">
 				<v-divider :class="{ active, edited }" :inline-title="false" large>
 					<template v-if="headerIcon" #icon><v-icon :name="headerIcon" class="header-icon" /></template>
 					<template v-if="field.name">
@@ -124,20 +159,41 @@ watch(validationMessages, (newVal, oldVal) => {
 			:direction="direction"
 			:show-no-visible-fields="false"
 			:show-validation-errors="false"
+			:comparison="comparison"
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</v-detail>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@use '@/styles/mixins';
+
 .v-form {
-	padding-top: calc(var(--theme--form--row-gap) / 2);
+	padding-block-start: calc(var(--theme--form--row-gap) / 2);
+}
+
+.group-detail {
+	&.indicator-active {
+		@include mixins.field-indicator;
+
+		&::before {
+			transition: background-color var(--slow) var(--transition);
+		}
+	}
+
+	&.indicator-muted {
+		@include mixins.field-indicator('muted');
+
+		&::before {
+			transition: background-color var(--slow) var(--transition) var(--fast);
+		}
+	}
 }
 
 .toggle-btn {
 	display: block;
-	width: 100%;
-	text-align: left;
+	inline-size: 100%;
+	text-align: start;
 
 	&:focus-visible :deep(hr) {
 		opacity: 0;
@@ -149,7 +205,7 @@ watch(validationMessages, (newVal, oldVal) => {
 }
 
 .v-divider .expand-icon {
-	float: right;
+	float: inline-end;
 	transform: rotate(90deg) !important;
 	transition: transform var(--fast) var(--transition);
 }
@@ -164,22 +220,22 @@ watch(validationMessages, (newVal, oldVal) => {
 
 .v-divider.edited:not(.active) .edit-dot {
 	position: absolute;
-	top: 7px;
-	left: -7px;
+	inset-block-start: 7px;
+	inset-inline-start: -7px;
 	display: block;
-	width: 4px;
-	height: 4px;
+	inline-size: 4px;
+	block-size: 4px;
 	background-color: var(--theme--form--field--input--foreground-subdued);
 	border-radius: 4px;
 	content: '';
 }
 
 .header-icon {
-	margin-right: 12px !important;
+	margin-inline-end: 12px !important;
 }
 
 .warning {
-	margin-left: 8px;
+	margin-inline-start: 8px;
 	color: var(--theme--danger);
 }
 </style>

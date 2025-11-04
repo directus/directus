@@ -1,0 +1,13 @@
+flag_management:
+  default_rules:
+    carryforward: true
+    statuses:
+      - type: project
+        target: auto
+        threshold: 5%
+      - type: patch
+        target: 80%
+
+comment:
+  layout: 'header, diff, flags'
+  require_changes: 'coverage_drop AND uncovered_patch'

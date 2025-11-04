@@ -6,7 +6,9 @@ import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
+import type { APIError } from '@/types/error';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
+import ImportErrorDialog from './import-error-dialog.vue';
 import { useCollection } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
@@ -31,7 +33,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['refresh']);
 
-const { t, n, te } = useI18n();
+const { t, n } = useI18n();
 
 const { collection } = toRefs(props);
 
@@ -41,6 +43,9 @@ const file = ref<File | null>(null);
 const { uploading, progress, importing, uploadFile } = useUpload();
 
 const exportDialogActive = ref(false);
+
+const errorDialogActive = ref(false);
+const errorDialogRows = ref<APIError[]>([]);
 
 const fileExtension = computed(() => {
 	if (file.value === null) return null;
@@ -120,10 +125,10 @@ const getItemCount = async () => {
 		const aggregate = primaryKeyField.value?.field
 			? {
 					countDistinct: [primaryKeyField.value.field],
-			  }
+				}
 			: {
 					count: ['*'],
-			  };
+				};
 
 		const response = await api.get(getEndpoint(collection.value), {
 			params: {
@@ -284,14 +289,13 @@ function useUpload() {
 				title: t('import_data_success', { filename: file.name }),
 			});
 		} catch (error: any) {
-			const code = error?.response?.data?.errors?.[0]?.extensions?.code;
+			const errors = error?.response?.data?.errors;
+			const code = errors?.[0]?.extensions?.code;
 
-			notify({
-				title: te(`errors.${code}`) ? t(`errors.${code}`) : t('import_data_error'),
-				type: 'error',
-			});
-
-			if (code === 'INTERNAL_SERVER_ERROR') {
+			if (code === 'FAILED_VALIDATION' && Array.isArray(errors)) {
+				errorDialogRows.value = errors;
+				errorDialogActive.value = true;
+			} else {
 				unexpectedError(error);
 			}
 		} finally {
@@ -599,6 +603,8 @@ async function exportDataFiles() {
 				</div>
 			</div>
 		</v-drawer>
+
+		<import-error-dialog v-model="errorDialogActive" :errors="errorDialogRows" :collection="collection" />
 	</sidebar-detail>
 </template>
 
@@ -641,13 +647,13 @@ async function exportDataFiles() {
 	--folder-picker-background-color: var(--theme--background-subdued);
 	--folder-picker-color: var(--theme--background-normal);
 
-	margin-top: 24px;
+	margin-block-start: 24px;
 	padding: var(--content-padding);
 }
 
 .v-checkbox {
-	width: 100%;
-	margin-top: 8px;
+	inline-size: 100%;
+	margin-block-start: 8px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -660,10 +666,9 @@ async function exportDataFiles() {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	height: var(--theme--form--field--input--height);
+	block-size: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
-	padding-top: 0;
-	padding-bottom: 0;
+	padding-block: 0;
 	color: var(--white);
 	background-color: var(--theme--primary);
 	border: var(--theme--border-width) solid var(--theme--primary);
@@ -672,12 +677,12 @@ async function exportDataFiles() {
 	.type-text {
 		display: flex;
 		justify-content: space-between;
-		margin-bottom: 4px;
+		margin-block-end: 4px;
 		color: var(--white);
 	}
 
 	.v-progress-linear {
-		margin-bottom: 4px;
+		margin-block-end: 4px;
 	}
 }
 
@@ -687,9 +692,9 @@ async function exportDataFiles() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 40px;
-	height: 40px;
-	margin-left: -8px;
+	inline-size: 40px;
+	block-size: 40px;
+	margin-inline-start: -8px;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
@@ -726,8 +731,8 @@ async function exportDataFiles() {
 	color: var(--theme--foreground-subdued);
 	text-align: center;
 	display: block;
-	width: 100%;
-	margin-top: 8px;
+	inline-size: 100%;
+	margin-block-start: 8px;
 	transition: color var(--fast) var(--transition);
 
 	&:hover {

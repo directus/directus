@@ -15,10 +15,10 @@ export type Merge<A, B, TypeA = NeverToUnknown<A>, TypeB = NeverToUnknown<B>> = 
 	[K in keyof TypeA | keyof TypeB]: K extends keyof TypeA & keyof TypeB
 		? TypeA[K] | TypeB[K]
 		: K extends keyof TypeB
-		  ? TypeB[K]
-		  : K extends keyof TypeA
-		    ? TypeA[K]
-		    : never;
+			? TypeB[K]
+			: K extends keyof TypeA
+				? TypeA[K]
+				: never;
 };
 
 /**
@@ -50,9 +50,10 @@ type ExtractOne<Union> = ExtractParm<UnionToSect<UnionToParm<Union>>>;
 
 export type ToTuple<Union> = ToTupleRec<Union, []>;
 
-type ToTupleRec<Union, Rslt extends any[]> = SpliceOne<Union> extends never
-	? [ExtractOne<Union>, ...Rslt]
-	: ToTupleRec<SpliceOne<Union>, [ExtractOne<Union>, ...Rslt]>;
+type ToTupleRec<Union, Rslt extends any[]> =
+	SpliceOne<Union> extends never
+		? [ExtractOne<Union>, ...Rslt]
+		: ToTupleRec<SpliceOne<Union>, [ExtractOne<Union>, ...Rslt]>;
 
 export type TupleToUnion<T extends unknown[]> = T[number];
 
@@ -64,15 +65,16 @@ export type NestedPartial<Item> = Item extends any[]
 		? NestedPartial<RawItem>[]
 		: never
 	: Item extends object
-	  ? { [Key in keyof Item]?: NestedUnion<Item[Key]> }
-	  : Item;
+		? { [Key in keyof Item]?: NestedUnion<Item[Key]> }
+		: Item;
 
 type NestedUnion<Item> = TupleToUnion<ToTuplePartial<Item>>;
 
 type ToTuplePartial<Union> = ToTuplePartialRec<Union, []>;
-type ToTuplePartialRec<Union, Rslt extends any[]> = SpliceOne<Union> extends never
-	? [NestedPartial<ExtractOne<Union>>, ...Rslt]
-	: ToTuplePartialRec<SpliceOne<Union>, [NestedPartial<ExtractOne<Union>>, ...Rslt]>;
+type ToTuplePartialRec<Union, Rslt extends any[]> =
+	SpliceOne<Union> extends never
+		? [NestedPartial<ExtractOne<Union>>, ...Rslt]
+		: ToTuplePartialRec<SpliceOne<Union>, [NestedPartial<ExtractOne<Union>>, ...Rslt]>;
 
 /**
  * Reduces a complex object type to make it readable in IDEs.

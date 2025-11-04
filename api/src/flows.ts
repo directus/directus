@@ -1,7 +1,6 @@
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
-import type { OperationHandler } from '@directus/extensions';
 import { isSystemCollection } from '@directus/system-data';
 import type {
 	Accountability,
@@ -11,6 +10,7 @@ import type {
 	Operation,
 	PrimaryKey,
 	SchemaOverview,
+	OperationHandler,
 } from '@directus/types';
 import { applyOptionsData, deepMap, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
@@ -328,9 +328,9 @@ class FlowManager {
 								},
 							);
 
-							const allowedKeys: PrimaryKey[] = keys.map((key) => key[primaryField]);
+							const allowedKeys: PrimaryKey[] = keys.map((key) => String(key[primaryField]));
 
-							if (targetKeys.some((key: PrimaryKey) => !allowedKeys.includes(key))) {
+							if (targetKeys.some((key: PrimaryKey) => !allowedKeys.includes(String(key)))) {
 								logger.warn(`Triggering keys ${targetKeys} is not allowed`);
 								throw new ForbiddenError();
 							}
@@ -389,6 +389,8 @@ class FlowManager {
 			[ACCOUNTABILITY_KEY]: context?.['accountability'] ?? null,
 			[ENV_KEY]: this.envs,
 		};
+
+		context['flow'] ??= flow;
 
 		let nextOperation = flow.operation;
 		let lastOperationStatus: 'resolve' | 'reject' | 'unknown' = 'unknown';

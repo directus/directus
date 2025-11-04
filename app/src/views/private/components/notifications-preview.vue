@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n';
 import SidebarButton from './sidebar-button.vue';
 import NotificationItem from './notification-item.vue';
 import { useNotificationsStore } from '@/stores/notifications';
-import { useId } from 'vue';
 
 defineProps<{
 	sidebarOpen?: boolean;
@@ -64,32 +63,33 @@ const { lastFour } = storeToRefs(notificationsStore);
 	}
 
 	&.has-items {
-		margin-bottom: 12px;
+		margin-block-end: 12px;
 	}
 }
 
 .transition {
 	position: relative;
-	width: 100%;
+	inline-size: 100%;
 }
 
 .sidebar-button {
 	color: var(--theme--sidebar--section--toggle--foreground);
 	background-color: var(--theme--sidebar--section--toggle--background);
+
 	--v-icon-color: var(--theme--sidebar--section--toggle--icon--foreground);
 }
 
 .inline {
 	position: absolute;
-	right: 0;
-	bottom: 100%;
-	width: 100%;
+	inset-inline-end: 0;
+	inset-block-end: 100%;
+	inline-size: 100%;
 	background-color: var(--theme--background-normal);
-	box-shadow: 0px -4px 12px rgb(38 50 56 / 0.1);
+	box-shadow: 0 -4px 12px rgb(38 50 56 / 0.1);
 
 	.padding-box {
 		position: relative;
-		width: 100%;
+		inline-size: 100%;
 		padding: 12px;
 	}
 }

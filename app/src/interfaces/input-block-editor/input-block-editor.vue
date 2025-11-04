@@ -192,6 +192,7 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 	background-color: #0d6efd;
 	border-color: #0d6efd;
 }
+
 .btn--gray {
 	color: #fff !important;
 	background-color: #7c7c7c;
@@ -234,22 +235,21 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 
 .uploader-drawer-content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding);
+	padding-block: 0 var(--content-padding);
 }
 
 .uploader-preview-image {
-	margin-bottom: var(--theme--form--row-gap);
+	margin-block-end: var(--theme--form--row-gap);
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 }
 
 .uploader-preview-image img {
 	display: block;
-	width: auto;
-	max-width: 100%;
-	height: auto;
-	max-height: 40vh;
+	inline-size: auto;
+	max-inline-size: 100%;
+	block-size: auto;
+	max-block-size: 40vh;
 	margin: 0 auto;
 	object-fit: contain;
 }

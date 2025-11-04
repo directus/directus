@@ -105,7 +105,9 @@ function close() {
 			<!-- @TODO add final design -->
 			<p class="type-label">{{ t('user') }}:</p>
 			<user-popover v-if="item.user" :user="item.user.id">
-				{{ userName(item.user) }}
+				<span>
+					{{ userName(item.user) }}
+				</span>
 			</user-popover>
 
 			<p class="type-label">{{ t('action') }}:</p>
@@ -140,12 +142,11 @@ function close() {
 
 <style lang="scss" scoped>
 .type-label:not(:first-child) {
-	margin-top: 24px;
+	margin-block-start: 24px;
 }
 
 .content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding);
+	padding-block: 0 var(--content-padding);
 }
 </style>

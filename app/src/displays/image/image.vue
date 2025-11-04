@@ -6,6 +6,7 @@ type Image = {
 	id: string;
 	type: string;
 	title: string;
+	modified_on: Date;
 };
 
 const props = defineProps<{
@@ -17,7 +18,11 @@ const imageError = ref(false);
 
 const src = computed(() => {
 	if (props.value?.id === null || props.value?.id === undefined) return null;
-	return getAssetUrl(`${props.value.id}?key=system-small-cover`);
+
+	return getAssetUrl(props.value.id, {
+		imageKey: 'system-small-cover',
+		cacheBuster: props.value.modified_on,
+	});
 });
 </script>
 
@@ -37,8 +42,8 @@ const src = computed(() => {
 <style lang="scss" scoped>
 img {
 	display: inline-block;
-	width: auto;
-	height: 100%;
+	inline-size: auto;
+	block-size: 100%;
 	vertical-align: -30%;
 	border-radius: var(--theme--border-radius);
 

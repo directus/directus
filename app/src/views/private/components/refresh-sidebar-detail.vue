@@ -56,11 +56,11 @@ const items = computed(() => {
 			? {
 					text: t('refresh_interval_minutes', { minutes: seconds / 60 }, seconds / 60),
 					value: seconds,
-			  }
+				}
 			: {
 					text: t('refresh_interval_seconds', { seconds }, seconds),
 					value: seconds,
-			  };
+				};
 	});
 });
 </script>
@@ -90,6 +90,6 @@ const items = computed(() => {
 }
 
 .v-checkbox {
-	margin-top: 8px;
+	margin-block-start: 8px;
 }
 </style>

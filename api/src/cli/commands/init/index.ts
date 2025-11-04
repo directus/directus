@@ -11,7 +11,7 @@ import { generateHash } from '../../../utils/generate-hash.js';
 import type { Credentials } from '../../utils/create-db-connection.js';
 import createDBConnection from '../../utils/create-db-connection.js';
 import createEnv from '../../utils/create-env/index.js';
-import { defaultAdminPolicy, defaultAdminRole, defaultAdminUser } from '../../utils/defaults.js';
+import { defaultAdminPolicy, defaultAdminRole, defaultAdminUser } from '../../../utils/create-admin.js';
 import { drivers, getDriverForClient } from '../../utils/drivers.js';
 import { databaseQuestions } from './questions.js';
 
@@ -79,7 +79,7 @@ export default async function init(): Promise<void> {
 			default: 'admin@example.com',
 			validate: (input: string) => {
 				const emailSchema = Joi.string().email().required();
-				const { error } = emailSchema.validate(input);
+				const { error } = emailSchema.validate(input.trim());
 				if (error) throw new Error('The email entered is not a valid email address!');
 				return true;
 			},
@@ -108,7 +108,7 @@ export default async function init(): Promise<void> {
 	await db('directus_users').insert({
 		...defaultAdminUser,
 		id: randomUUID(),
-		email: firstUser.email,
+		email: firstUser.email.trim(),
 		password: firstUser.password,
 		role,
 	});

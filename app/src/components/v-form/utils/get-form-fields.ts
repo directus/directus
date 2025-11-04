@@ -41,6 +41,9 @@ export function getFormFields(fields: Ref<Field[]>): ComputedRef<Field[]> {
 				(field as FormField).hideLoader = true;
 			}
 
+			const indicatorStyleDefaultValue = field.meta?.special?.includes('group') ? 'hidden' : 'active';
+			(field as FormField).indicatorStyle = interfaceUsed?.indicatorStyle ?? indicatorStyleDefaultValue;
+
 			(field.meta.system ? systemFields : userFields).push(field);
 		}
 
@@ -55,7 +58,7 @@ export function getFormFields(fields: Ref<Field[]>): ComputedRef<Field[]> {
 							hideLabel: true,
 							hideLoader: true,
 						} as unknown as Field,
-				  ]
+					]
 				: []),
 			...userFields,
 		];

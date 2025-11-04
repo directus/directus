@@ -11,7 +11,7 @@ import {
 	snapshotCreateCollectionNotNested,
 } from '../__utils__/snapshots.js';
 import { CollectionsService, FieldsService } from '../services/index.js';
-import type { Snapshot, SnapshotField } from '../types/index.js';
+import type { Snapshot, SnapshotField } from '@directus/types';
 import { applySnapshot } from './apply-snapshot.js';
 import * as getSchema from './get-schema.js';
 
@@ -50,7 +50,8 @@ describe('applySnapshot', () => {
 					item_duplication_fields: null,
 					note: null,
 					singleton: false,
-					translations: {},
+					translations: null,
+					system: false,
 					versioning: false,
 				},
 				schema: { name: 'test_table_2' },
@@ -73,7 +74,7 @@ describe('applySnapshot', () => {
 							required: false,
 							sort: null,
 							special: null,
-							translations: {},
+							translations: null,
 							validation: null,
 							validation_message: null,
 							width: 'full',
@@ -132,8 +133,9 @@ describe('applySnapshot', () => {
 					item_duplication_fields: null,
 					note: null,
 					singleton: false,
-					translations: {},
+					translations: null,
 					versioning: false,
+					system: false,
 				},
 				schema: { name: 'test_table_2' },
 				fields: [
@@ -155,7 +157,7 @@ describe('applySnapshot', () => {
 							required: false,
 							sort: null,
 							special: null,
-							translations: {},
+							translations: null,
 							validation: null,
 							validation_message: null,
 							width: 'full',
@@ -203,7 +205,7 @@ describe('applySnapshot', () => {
 							required: false,
 							sort: null,
 							special: null,
-							translations: {},
+							translations: null,
 							validation: null,
 							validation_message: null,
 							width: 'full',
@@ -237,8 +239,9 @@ describe('applySnapshot', () => {
 					item_duplication_fields: null,
 					note: null,
 					singleton: false,
-					translations: {},
+					translations: null,
 					versioning: false,
+					system: false,
 				},
 				schema: { name: 'test_table_3' },
 			};
@@ -286,7 +289,9 @@ describe('applySnapshot', () => {
 								item_duplication_fields: null,
 								note: null,
 								singleton: false,
-								translations: {},
+								translations: null,
+								system: false,
+								versioning: false,
 							},
 							schema: { name: 'test_uuid_table' },
 						},
@@ -295,7 +300,9 @@ describe('applySnapshot', () => {
 						{
 							collection: 'test_uuid_table',
 							field: 'id',
+							name: 'id',
 							meta: {
+								id: 1,
 								collection: 'test_uuid_table',
 								conditions: null,
 								display: null,
@@ -310,7 +317,7 @@ describe('applySnapshot', () => {
 								required: false,
 								sort: null,
 								special: null,
-								translations: {},
+								translations: null,
 								validation: null,
 								validation_message: null,
 								width: 'full',
@@ -337,6 +344,7 @@ describe('applySnapshot', () => {
 							type: 'uuid',
 						} as SnapshotField,
 					],
+					systemFields: [],
 					relations: [],
 				};
 
@@ -351,14 +359,18 @@ describe('applySnapshot', () => {
 						item_duplication_fields: null,
 						note: null,
 						singleton: false,
-						translations: {},
+						translations: null,
+						versioning: false,
+						system: false,
 					},
 					schema: { name: 'test_uuid_table' },
 					fields: [
 						{
 							collection: 'test_uuid_table',
 							field: 'id',
+							name: 'id',
 							meta: {
+								id: 1,
 								collection: 'test_uuid_table',
 								conditions: null,
 								display: null,
@@ -373,7 +385,7 @@ describe('applySnapshot', () => {
 								required: false,
 								sort: null,
 								special: null,
-								translations: {},
+								translations: null,
 								validation: null,
 								validation_message: null,
 								width: 'full',
@@ -413,6 +425,7 @@ describe('applySnapshot', () => {
 						directus: '0.0.0',
 						collections: [],
 						fields: [],
+						systemFields: [],
 						relations: [],
 					},
 					schema: snapshotApplyTestSchema,
@@ -431,6 +444,7 @@ describe('applySnapshot', () => {
 				directus: '0.0.0',
 				collections: [],
 				fields: [],
+				systemFields: [],
 				relations: [],
 			};
 

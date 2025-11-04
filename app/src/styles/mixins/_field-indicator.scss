@@ -1,0 +1,18 @@
+@mixin field-indicator($type: 'active') {
+	position: relative;
+
+	&::before {
+		content: '';
+		position: absolute;
+		inset-block: 0;
+		inset-inline-start: -12px;
+		inline-size: 4px;
+		z-index: 1;
+
+		@if $type == 'muted' {
+			background-color: var(--field-indicator--color-muted, var(--theme--background-accent));
+		} @else {
+			background-color: var(--field-indicator--color-active, var(--theme--foreground-subdued));
+		}
+	}
+}

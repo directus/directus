@@ -3,12 +3,14 @@ import { useExtension } from '@/composables/use-extension';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { FormField } from './types';
+import type { FormField, ComparisonContext } from './types';
 
 const props = defineProps<{
 	field: FormField;
 	batchMode?: boolean;
 	batchActive?: boolean;
+	comparison?: ComparisonContext;
+	comparisonActive?: boolean;
 	primaryKey?: string | number | null;
 	modelValue?: string | number | boolean | Record<string, any> | Array<any>;
 	loading?: boolean;
@@ -37,7 +39,7 @@ const componentName = computed(() => {
 });
 
 const value = computed(() =>
-	props.modelValue === undefined ? props.field.schema?.default_value ?? null : props.modelValue,
+	props.modelValue === undefined ? (props.field.schema?.default_value ?? null) : props.modelValue,
 );
 </script>
 
@@ -60,6 +62,8 @@ const value = computed(() =>
 				:value="value"
 				:batch-mode="batchMode"
 				:batch-active="batchActive"
+				:comparison-mode="!!comparison"
+				:comparison-active="comparisonActive"
 				:width="(field.meta && field.meta.width) || 'full'"
 				:type="field.type"
 				:collection="field.collection"
@@ -97,11 +101,11 @@ const value = computed(() =>
 
 	.v-skeleton-loader {
 		position: absolute;
-		top: 0;
-		left: 0;
+		inset-block-start: 0;
+		inset-inline-start: 0;
 		z-index: 2;
-		width: 100%;
-		height: 100%;
+		inline-size: 100%;
+		block-size: 100%;
 	}
 
 	&.subdued {

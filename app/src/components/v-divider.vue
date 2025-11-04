@@ -21,7 +21,7 @@ withDefaults(defineProps<Props>(), {
 			<slot name="icon" class="icon" />
 			<span v-if="!vertical && $slots.default" class="type-text"><slot /></span>
 		</span>
-		<hr role="separator" :aria-orientation="vertical ? 'vertical' : 'horizontal'" />
+		<hr :aria-orientation="vertical ? 'vertical' : 'horizontal'" />
 	</div>
 </template>
 
@@ -37,9 +37,7 @@ withDefaults(defineProps<Props>(), {
 */
 
 .v-divider {
-	flex-basis: 0px;
-	flex-grow: 1;
-	flex-shrink: 1;
+	flex: 1 1 0;
 	flex-wrap: wrap;
 	align-items: center;
 	overflow: visible;
@@ -47,8 +45,8 @@ withDefaults(defineProps<Props>(), {
 	hr {
 		flex-grow: 1;
 		order: 1;
-		max-width: 100%;
-		margin-top: 8px;
+		max-inline-size: 100%;
+		margin-block-start: 8px;
 		border: solid;
 		border-color: var(--v-divider-color, var(--theme--form--field--input--border-color));
 		border-width: var(--v-divider-thickness, var(--theme--border-width)) 0 0 0;
@@ -59,13 +57,13 @@ withDefaults(defineProps<Props>(), {
 		color: var(--v-divider-label-color, var(--theme--foreground-accent));
 
 		:slotted(.v-icon) {
-			margin-right: 4px;
+			margin-inline-end: 4px;
 			transform: translateY(-1px);
 		}
 	}
 
 	.type-text {
-		width: 100%;
+		inline-size: 100%;
 		color: var(--v-divider-label-color, var(--theme--foreground-accent));
 		font-weight: 600;
 		transition: color var(--fast) var(--transition);
@@ -82,7 +80,7 @@ withDefaults(defineProps<Props>(), {
 
 		span.wrapper {
 			order: 0;
-			margin-right: 8px;
+			margin-inline-end: 8px;
 			font-weight: 600;
 			font-size: 14px;
 		}
@@ -96,11 +94,11 @@ withDefaults(defineProps<Props>(), {
 		display: inline-flex;
 		flex-direction: column;
 		align-self: stretch;
-		height: 100%;
+		block-size: 100%;
 
 		hr {
-			width: 0px;
-			max-width: 0px;
+			inline-size: 0;
+			max-inline-size: 0;
 			border-width: 0 var(--theme--border-width) 0 0;
 		}
 

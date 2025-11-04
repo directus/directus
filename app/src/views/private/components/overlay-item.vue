@@ -21,6 +21,7 @@ import { computed, ref, toRefs, watch, unref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import OverlayItemContent from './overlay-item-content.vue';
+import { useFlows } from '@/composables/use-flows';
 
 export interface OverlayItemProps {
 	overlay?: 'drawer' | 'modal' | 'popover';
@@ -101,10 +102,10 @@ const title = computed(() => {
 		return isNew.value
 			? t('creating_unit', {
 					unit: t(`collection_names_singular.${collection.collection}`),
-			  })
+				})
 			: t('editing_unit', {
 					unit: t(`collection_names_singular.${collection.collection}`),
-			  });
+				});
 	}
 
 	return isNew.value
@@ -207,7 +208,7 @@ const templatePrimaryKey = computed(() =>
 const templateCollection = computed(() => relatedCollectionInfo.value || collectionInfo.value);
 
 const isSavable = computed(() => {
-	if (props.disabled) return false;
+	if (props.disabled || !hasEdits.value) return false;
 	if (!relatedCollection.value) return saveAllowed.value;
 	return saveAllowed.value || saveRelatedCollectionAllowed.value;
 });
@@ -232,9 +233,20 @@ const overlayItemContentProps = computed(() => {
 		junctionFieldLocation: props.junctionFieldLocation,
 		relatedCollectionFields: relatedCollectionFields.value,
 		relatedPrimaryKey: props.relatedPrimaryKey,
+		relatedPrimaryKeyField: relatedPrimaryKeyField.value?.field ?? null,
 		refresh,
 	};
 });
+
+const { provideRunManualFlow } = useFlows({
+	collection: collection.value,
+	primaryKey: primaryKey.value,
+	location: 'item',
+	hasEdits,
+	onRefreshCallback: refresh,
+});
+
+provideRunManualFlow();
 
 function useActiveState() {
 	const localActive = ref(false);
@@ -423,7 +435,7 @@ function useActions() {
 	}
 
 	function validateForm({ defaultValues, existingValues, editsToValidate, fieldsToValidate }: Record<string, any>) {
-		return validateItem(merge({}, defaultValues, existingValues, editsToValidate), fieldsToValidate, isNew.value);
+		return validateItem(merge({}, defaultValues, existingValues, editsToValidate), fieldsToValidate, isNew.value, true);
 	}
 
 	function save() {
@@ -667,8 +679,10 @@ function popoverClickOutsideMiddleware(e: Event) {
 }
 
 .modal-card {
-	width: calc(2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--v-card-padding)) !important;
-	max-width: 90vw !important;
+	inline-size: calc(
+		2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--v-card-padding)
+	) !important;
+	max-inline-size: 90vw !important;
 
 	@media (min-height: 375px) {
 		--button-height: var(--v-button-height, 44px);
@@ -679,10 +693,10 @@ function popoverClickOutsideMiddleware(e: Event) {
 		.v-card-actions {
 			z-index: 100;
 			position: sticky;
-			bottom: calc(var(--button-gap) - var(--v-card-padding));
-			padding-top: var(--button-gap);
+			inset-block-end: calc(var(--button-gap) - var(--v-card-padding));
+			padding-block-start: var(--button-gap);
 			background: var(--v-card-background-color);
-			box-shadow: 0 0 var(--shadow-height) 0 rgba(0, 0, 0, 0.2);
+			box-shadow: 0 0 var(--shadow-height) 0 rgb(0 0 0 / 0.2);
 
 			.dark & {
 				box-shadow: 0 0 var(--shadow-height) 0 black;
@@ -692,17 +706,17 @@ function popoverClickOutsideMiddleware(e: Event) {
 		.shadow-cover {
 			z-index: 101;
 			position: sticky;
-			bottom: calc(var(--button-gap) + var(--button-height) + var(--button-gap) - var(--shadow-cover-height));
-			height: calc(var(--v-card-padding) - var(--button-gap));
-			width: 100%;
+			inset-block-end: calc(var(--button-gap) + var(--button-height) + var(--button-gap) - var(--shadow-cover-height));
+			block-size: calc(var(--v-card-padding) - var(--button-gap));
+			inline-size: 100%;
 
-			&:after {
+			&::after {
 				content: '';
 				position: absolute;
-				bottom: 0;
-				left: 0;
-				width: 100%;
-				height: var(--shadow-cover-height);
+				inset-block-end: 0;
+				inset-inline-start: 0;
+				inline-size: 100%;
+				block-size: var(--shadow-cover-height);
 				background: var(--v-card-background-color);
 			}
 		}
@@ -710,50 +724,50 @@ function popoverClickOutsideMiddleware(e: Event) {
 }
 
 .modal-title-icon {
-	margin-right: 8px;
+	margin-inline-end: 8px;
 }
 
 .modal-item-content {
 	padding: var(--v-card-padding);
-	padding-bottom: var(--theme--form--column-gap);
+	padding-block-end: var(--theme--form--column-gap);
 }
 
 .popover-item-content {
 	--content-padding: var(--theme--form--column-gap);
 	--content-padding-bottom: var(--theme--form--row-gap);
 
-	padding-top: var(--content-padding-bottom);
+	padding-block-start: var(--content-padding-bottom);
 	position: relative;
 	z-index: 0;
-	width: calc(2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--content-padding));
-	max-width: 90vw;
+	inline-size: calc(2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--content-padding));
+	max-inline-size: 90vw;
 
 	:deep(.v-form:first-child .first-visible-field .field-label),
 	:deep(.v-form:first-child .first-visible-field.half + .half-right .field-label) {
 		--popover-action-width: 100px; // 3 * 28 (button) + 2 * 8 (gap)
 
-		max-width: calc(100% - var(--popover-action-width));
+		max-inline-size: calc(100% - var(--popover-action-width));
 	}
 
 	&.empty {
-		min-height: 232px;
+		min-block-size: 232px;
 	}
 }
 
 .popover-actions {
 	position: sticky;
-	top: 0;
-	left: 0;
+	inset-block-start: 0;
+	inset-inline-start: 0;
 	z-index: 1;
 }
 
 .popover-actions-inner {
 	position: relative;
 	display: flex;
-	justify-content: right;
+	justify-content: end;
 	gap: 8px;
-	top: 12px;
-	right: 16px;
+	inset-block-start: 12px;
+	inset-inline-end: 16px;
 }
 
 // Puts the action buttons closer to the field

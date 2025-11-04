@@ -7,6 +7,8 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import type { AxiosProgressEvent } from 'axios';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ImportErrorDialog from './import-error-dialog.vue';
+import type { APIError } from '@/types/error';
 
 const props = defineProps<{
 	collection: string;
@@ -14,7 +16,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['refresh', 'download']);
 
-const { t, te } = useI18n();
+const { t } = useI18n();
 
 const { collection } = toRefs(props);
 
@@ -24,6 +26,9 @@ const fileInput = ref<HTMLInputElement | null>(null);
 
 const file = ref<File | null>(null);
 const { uploading, progress, importing, uploadFile } = useUpload();
+
+const errorDialogActive = ref(false);
+const errorDialogRows = ref<APIError[]>([]);
 
 const fileExtension = computed(() => {
 	if (file.value === null) return null;
@@ -79,14 +84,13 @@ function useUpload() {
 				title: t('import_data_success', { filename: file.name }),
 			});
 		} catch (error: any) {
-			const code = error?.response?.data?.errors?.[0]?.extensions?.code;
+			const errors = error?.response?.data?.errors;
+			const code = errors?.[0]?.extensions?.code;
 
-			notify({
-				title: te(`errors.${code}`) ? t(`errors.${code}`) : t('import_data_error'),
-				type: 'error',
-			});
-
-			if (code === 'INTERNAL_SERVER_ERROR') {
+			if (code === 'FAILED_VALIDATION' && Array.isArray(errors)) {
+				errorDialogRows.value = errors;
+				errorDialogActive.value = true;
+			} else {
 				unexpectedError(error);
 			}
 		} finally {
@@ -120,15 +124,15 @@ function useUpload() {
 								</div>
 							</template>
 							<template #input>
-								<input
-									id="import-file"
-									ref="fileInput"
-									type="file"
-									accept="text/csv, application/json"
-									hidden
-									@change="onChange"
-								/>
-								<label v-tooltip="file && file.name" for="import-file" class="import-file-label"></label>
+								<label v-tooltip="file && file.name" for="import-file" class="import-file-label">
+									<input
+										id="import-file"
+										ref="fileInput"
+										type="file"
+										accept="text/csv, application/json"
+										@change="onChange"
+									/>
+								</label>
 								<span class="import-file-text" :class="{ 'no-file': !file }">
 									{{ file ? file.name : t('import_data_input_placeholder') }}
 								</span>
@@ -151,6 +155,8 @@ function useUpload() {
 				</div>
 			</template>
 		</div>
+
+		<import-error-dialog v-model="errorDialogActive" :errors="errorDialogRows" :collection="collection" />
 	</sidebar-detail>
 </template>
 
@@ -182,13 +188,13 @@ function useUpload() {
 	--folder-picker-background-color: var(--theme--background-subdued);
 	--folder-picker-color: var(--theme--background-normal);
 
-	margin-top: 24px;
+	margin-block-start: 24px;
 	padding: var(--content-padding);
 }
 
 .v-checkbox {
-	width: 100%;
-	margin-top: 8px;
+	inline-size: 100%;
+	margin-block-start: 8px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -201,10 +207,9 @@ function useUpload() {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	height: var(--theme--form--field--input--height);
+	block-size: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
-	padding-top: 0px;
-	padding-bottom: 0px;
+	padding-block: 0;
 	color: var(--white);
 	background-color: var(--theme--primary);
 	border: var(--theme--border-width) solid var(--theme--primary);
@@ -213,12 +218,12 @@ function useUpload() {
 	.type-text {
 		display: flex;
 		justify-content: space-between;
-		margin-bottom: 4px;
+		margin-block-end: 4px;
 		color: var(--white);
 	}
 
 	.v-progress-linear {
-		margin-bottom: 4px;
+		margin-block-end: 4px;
 	}
 }
 
@@ -228,9 +233,9 @@ function useUpload() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 40px;
-	height: 40px;
-	margin-left: -8px;
+	inline-size: 40px;
+	block-size: 40px;
+	margin-inline-start: -8px;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
@@ -249,14 +254,15 @@ function useUpload() {
 
 .import-file-label {
 	position: absolute;
-	top: 0;
-	left: 0;
+	inset-block-start: 0;
+	inset-inline-start: 0;
 	display: block;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	cursor: pointer;
 	opacity: 0;
 	appearance: none;
+	overflow: hidden;
 }
 
 .import-file-text {
@@ -279,8 +285,8 @@ function useUpload() {
 	color: var(--theme--foreground-subdued);
 	text-align: center;
 	display: block;
-	width: 100%;
-	margin-top: 8px;
+	inline-size: 100%;
+	margin-block-start: 8px;
 	transition: color var(--fast) var(--transition);
 
 	&:hover {

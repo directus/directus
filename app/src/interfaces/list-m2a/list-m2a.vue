@@ -9,7 +9,7 @@ import { hideDragImage } from '@/utils/hide-drag-image';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { Filter } from '@directus/types';
+import type { ContentVersion, Filter } from '@directus/types';
 import { getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil, set } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
@@ -23,6 +23,7 @@ const props = withDefaults(
 		collection: string;
 		field: string;
 		disabled?: boolean;
+		version: ContentVersion | null;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
 		limit?: number;
@@ -41,7 +42,7 @@ const props = withDefaults(
 
 const emit = defineEmits(['input']);
 const { t, te } = useI18n();
-const { collection, field, primaryKey, limit } = toRefs(props);
+const { collection, field, primaryKey, limit, version } = toRefs(props);
 const { relationInfo } = useRelationM2A(collection, field);
 
 const value = computed({
@@ -121,7 +122,7 @@ const {
 	isItemSelected,
 	isLocalItem,
 	getItemEdits,
-} = useRelationMultiple(value, query, relationInfo, primaryKey);
+} = useRelationMultiple(value, query, relationInfo, primaryKey, version);
 
 function sortItems(items: DisplayItem[]) {
 	const info = relationInfo.value;
@@ -131,7 +132,7 @@ function sortItems(items: DisplayItem[]) {
 	const sortedItems = items.map((item, index) => {
 		const junctionId = item?.[info.junctionPrimaryKeyField.field];
 		const collection = item?.[info.collectionField.field];
-		const pkField = info.relationPrimaryKeyFields[collection].field;
+		const pkField = info.relationPrimaryKeyFields[collection]!.field;
 		const relatedId = item?.[info.junctionField.field]?.[pkField];
 
 		const changes: Record<string, any> = {
@@ -187,7 +188,7 @@ function editItem(item: DisplayItem) {
 	if (!relationInfo.value) return;
 
 	const relationPkField =
-		relationInfo.value.relationPrimaryKeyFields[item[relationInfo.value.collectionField.field]].field;
+		relationInfo.value.relationPrimaryKeyFields[item[relationInfo.value.collectionField.field]]!.field;
 
 	const junctionField = relationInfo.value.junctionField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
@@ -297,7 +298,7 @@ const customFilter = computed(() => {
 
 	const selectedPrimaryKeys = selected.value.reduce(
 		(acc, item) => {
-			const relatedPKField = info.relationPrimaryKeyFields[item[info.collectionField.field]].field;
+			const relatedPKField = info.relationPrimaryKeyFields[item[info.collectionField.field]]!.field;
 			if (item[info.collectionField.field] === selectingFrom.value) acc.push(item[junctionField][relatedPKField]);
 			return acc;
 		},
@@ -306,7 +307,7 @@ const customFilter = computed(() => {
 
 	if (selectedPrimaryKeys.length > 0) {
 		filter._and.push({
-			[info.relationPrimaryKeyFields[selectingFrom.value].field]: {
+			[info.relationPrimaryKeyFields[selectingFrom.value]!.field]: {
 				_nin: selectedPrimaryKeys,
 			},
 		});
@@ -356,6 +357,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 				:set-data="hideDragImage"
 				:disabled="!allowDrag"
 				v-bind="{ 'force-fallback': true }"
+				handle=".drag-handle"
 				@update:model-value="sortItems"
 			>
 				<template #item="{ element }">
@@ -368,7 +370,6 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 						@click="editItem(element)"
 					>
 						<v-icon v-if="allowDrag" class="drag-handle" left name="drag_handle" @click.stop />
-
 						<span class="collection">{{ getPrefix(element) }}:</span>
 
 						<render-template
@@ -506,7 +507,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 	@include mixins.list-interface($deleteable: true);
 
 	.v-notice + & {
-		margin-top: 12px;
+		margin-block-start: 12px;
 	}
 }
 
@@ -514,7 +515,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 	.collection {
 		color: var(--theme--primary);
 		white-space: nowrap;
-		margin-right: 1ch;
+		margin-inline-end: 1ch;
 	}
 
 	&.deleted .collection {
@@ -534,7 +535,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 	}
 
 	.pagination {
-		margin-left: auto;
+		margin-inline-start: auto;
 		display: flex;
 		gap: 8px 16px;
 
@@ -545,8 +546,8 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 			color: var(--theme--foreground-subdued);
 
 			span {
-				width: auto;
-				margin-right: 4px;
+				inline-size: auto;
+				margin-inline-end: 4px;
 			}
 
 			.v-select {

@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/extensions';
 import { defineAsyncComponent } from 'vue';
+import toolbarDefault from './toolbar-default';
 import PreviewSVG from './preview.svg?raw';
 
 const InterfaceWYSIWYG = defineAsyncComponent(() => import('./input-rich-text-html.vue'));
@@ -20,24 +21,7 @@ export default defineInterface({
 				name: '$t:interfaces.input-rich-text-html.toolbar',
 				type: 'json',
 				schema: {
-					default_value: [
-						'bold',
-						'italic',
-						'underline',
-						'h1',
-						'h2',
-						'h3',
-						'numlist',
-						'bullist',
-						'removeformat',
-						'blockquote',
-						'customLink',
-						'customImage',
-						'customMedia',
-						'hr',
-						'code',
-						'fullscreen',
-					],
+					default_value: toolbarDefault,
 				},
 				meta: {
 					width: 'half',
@@ -107,6 +91,10 @@ export default defineInterface({
 							{
 								value: 'h6',
 								text: '$t:wysiwyg_options.h6',
+							},
+							{
+								value: 'customPre',
+								text: '$t:wysiwyg_options.pre',
 							},
 							{
 								value: 'alignleft',
@@ -181,6 +169,10 @@ export default defineInterface({
 								text: '$t:wysiwyg_options.blockquote',
 							},
 							{
+								value: 'customInlineCode',
+								text: '$t:wysiwyg_options.codeblock',
+							},
+							{
 								value: 'customLink',
 								text: '$t:wysiwyg_options.link',
 							},
@@ -205,10 +197,6 @@ export default defineInterface({
 								text: '$t:wysiwyg_options.hr',
 							},
 							{
-								value: 'code',
-								text: '$t:wysiwyg_options.source_code',
-							},
-							{
 								value: 'fullscreen',
 								text: '$t:wysiwyg_options.fullscreen',
 							},
@@ -219,6 +207,10 @@ export default defineInterface({
 							{
 								value: 'ltr rtl',
 								text: '$t:wysiwyg_options.directionality',
+							},
+							{
+								value: 'code',
+								text: '$t:wysiwyg_options.source_code',
 							},
 						],
 					},

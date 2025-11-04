@@ -1,7 +1,7 @@
 import deepDiff from 'deep-diff';
-import type { Snapshot, SnapshotDiff } from '../types/index.js';
-import { DiffKind } from '../types/index.js';
-import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema.js';
+import type { Snapshot, SnapshotDiff, SnapshotSystemField } from '@directus/types';
+import { DiffKind } from '@directus/types';
+import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
 export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDiff {
 	const diffedSnapshot: SnapshotDiff = {
@@ -11,9 +11,11 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					(afterCollection) => afterCollection.collection === currentCollection.collection,
 				);
 
+				const afterCollectionSanitized = afterCollection ? sanitizeCollection(afterCollection) : undefined;
+
 				return {
 					collection: currentCollection.collection,
-					diff: deepDiff.diff(sanitizeCollection(currentCollection), sanitizeCollection(afterCollection)),
+					diff: deepDiff.diff(sanitizeCollection(currentCollection), afterCollectionSanitized),
 				};
 			}),
 			...after.collections
@@ -47,20 +49,16 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					return {
 						collection: currentField.collection,
 						field: currentField.field,
-						diff: deepDiff.diff(
-							sanitizeField(currentField, isAutoIncrementPrimaryKey),
-							sanitizeField(undefined, isAutoIncrementPrimaryKey),
-						),
+						diff: deepDiff.diff(sanitizeField(currentField, isAutoIncrementPrimaryKey), undefined),
 					};
 				}
+
+				const afterFieldSanitized = afterField ? sanitizeField(afterField, isAutoIncrementPrimaryKey) : undefined;
 
 				return {
 					collection: currentField.collection,
 					field: currentField.field,
-					diff: deepDiff.diff(
-						sanitizeField(currentField, isAutoIncrementPrimaryKey),
-						sanitizeField(afterField, isAutoIncrementPrimaryKey),
-					),
+					diff: deepDiff.diff(sanitizeField(currentField, isAutoIncrementPrimaryKey), afterFieldSanitized),
 				};
 			}),
 			...after.fields
@@ -87,7 +85,54 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					diff: deepDiff.diff(undefined, sanitizeField(afterField)),
 				})),
 		].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['fields'],
+		systemFields: [
+			...(current.systemFields ?? []).map((currentSystemField) => {
+				const afterSystemField = (after.systemFields ?? []).find(
+					(afterSystemField) =>
+						afterSystemField.collection === currentSystemField.collection &&
+						afterSystemField.field === currentSystemField.field,
+				);
 
+				const afterSystemFieldSanitized = afterSystemField
+					? sanitizeSystemField(afterSystemField)
+					: invertIndexed(currentSystemField);
+
+				return {
+					collection: currentSystemField.collection,
+					field: currentSystemField.field,
+					diff: deepDiff.diff(sanitizeSystemField(currentSystemField), afterSystemFieldSanitized),
+				};
+			}),
+			...(after.systemFields ?? [])
+				.filter((afterSystemField) => {
+					if (!afterSystemField.schema.is_indexed) return false;
+
+					const currentSystemField = (current.systemFields ?? []).find(
+						(currentSystemField) =>
+							currentSystemField.collection === afterSystemField.collection &&
+							afterSystemField.field === currentSystemField.field,
+					);
+
+					return Boolean(currentSystemField) === false;
+				})
+				.map((afterSystemField) => {
+					const currentSystemField = (current.systemFields ?? []).find(
+						(currentSystemField) =>
+							currentSystemField.collection === afterSystemField.collection &&
+							currentSystemField.field === afterSystemField.field,
+					);
+
+					const currentSystemFieldSanitized = currentSystemField
+						? sanitizeSystemField(currentSystemField)
+						: invertIndexed(afterSystemField);
+
+					return {
+						collection: afterSystemField.collection,
+						field: afterSystemField.field,
+						diff: deepDiff.diff(currentSystemFieldSanitized, sanitizeSystemField(afterSystemField)),
+					};
+				}),
+		].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['systemFields'],
 		relations: [
 			...current.relations.map((currentRelation) => {
 				const afterRelation = after.relations.find(
@@ -95,11 +140,13 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 						afterRelation.collection === currentRelation.collection && afterRelation.field === currentRelation.field,
 				);
 
+				const afterRelationSanitized = afterRelation ? sanitizeRelation(afterRelation) : undefined;
+
 				return {
 					collection: currentRelation.collection,
 					field: currentRelation.field,
 					related_collection: currentRelation.related_collection,
-					diff: deepDiff.diff(sanitizeRelation(currentRelation), sanitizeRelation(afterRelation)),
+					diff: deepDiff.diff(sanitizeRelation(currentRelation), afterRelationSanitized),
 				};
 			}),
 			...after.relations
@@ -137,4 +184,14 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 	);
 
 	return diffedSnapshot;
+}
+
+function invertIndexed(field: SnapshotSystemField): SnapshotSystemField {
+	const newSchema: SnapshotSystemField['schema'] = { ...field.schema };
+
+	if ('is_indexed' in field.schema) {
+		newSchema.is_indexed = !field.schema.is_indexed;
+	}
+
+	return { ...field, schema: newSchema };
 }

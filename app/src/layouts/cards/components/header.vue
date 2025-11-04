@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
-import type { ShowSelect } from '@directus/extensions';
-import type { Field } from '@directus/types';
+import type { Field, ShowSelect } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -125,25 +124,25 @@ function onClickSelect() {
 <style lang="scss" scoped>
 .cards-header {
 	position: sticky;
-	top: var(--layout-offset-top);
+	inset-block-start: var(--layout-offset-top);
 	z-index: 4;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	width: 100%;
-	height: 52px;
-	margin-bottom: 36px;
+	inline-size: 100%;
+	block-size: 52px;
+	margin-block-end: 36px;
 	padding: 0 8px;
 	background-color: var(--theme--background);
-	border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	box-shadow: 0 0 0 2px var(--theme--background);
 }
 
 .start {
 	.label {
 		display: inline-block;
-		margin-left: 4px;
+		margin-inline-start: 4px;
 		transform: translateY(1px);
 	}
 
@@ -163,7 +162,7 @@ function onClickSelect() {
 	color: var(--theme--foreground-subdued);
 
 	.size-selector {
-		margin-right: 16px;
+		margin-inline-end: 16px;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
@@ -172,7 +171,7 @@ function onClickSelect() {
 	}
 
 	.sort-selector {
-		margin-right: 8px;
+		margin-inline-end: 8px;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {

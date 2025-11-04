@@ -3,8 +3,8 @@ import Joi from 'joi';
 import { ALIAS_TYPES } from '../constants.js';
 import { getDatabaseClient } from '../database/index.js';
 import { InvalidPayloadError } from '@directus/errors';
-import type { Snapshot } from '../types/index.js';
-import { DatabaseClients } from '../types/index.js';
+import type { Snapshot } from '@directus/types';
+import { DatabaseClients } from '@directus/types';
 import { version } from 'directus/version';
 
 const snapshotJoiSchema = Joi.object({
@@ -37,6 +37,15 @@ const snapshotJoiSchema = Joi.object({
 			type: Joi.string()
 				.valid(...TYPES, ...ALIAS_TYPES)
 				.allow(null),
+		}),
+	),
+	systemFields: Joi.array().items(
+		Joi.object({
+			collection: Joi.string(),
+			field: Joi.string(),
+			schema: Joi.object({
+				is_indexed: Joi.bool(),
+			}),
 		}),
 	),
 	relations: Joi.array().items(

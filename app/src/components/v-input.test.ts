@@ -1,11 +1,13 @@
 import { Focus } from '@/__utils__/focus';
 import type { GlobalMountOptions } from '@/__utils__/types';
+import { i18n } from '@/lang';
 import { mount } from '@vue/test-utils';
-import { describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import VInput from './v-input.vue';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon'],
+	plugins: [i18n],
 	directives: {
 		focus: Focus,
 	},
@@ -173,6 +175,36 @@ describe('emitValue', () => {
 		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual([1]);
 	});
 
+	test('should replace "," with "." for decimal separator when decimal types marked as text', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'text',
+				modelValue: '1,22',
+				float: true,
+			},
+			global,
+		});
+
+		await wrapper.find('input').trigger('input');
+
+		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['1.22']);
+	});
+
+	test('should emit number without a thousandths separator', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'text',
+				modelValue: '1,222,220',
+				float: true,
+			},
+			global,
+		});
+
+		await wrapper.find('input').trigger('input');
+
+		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['1.222220']);
+	});
+
 	test('should turn ending space into slug separator for slug input', async () => {
 		const wrapper = mount(VInput, {
 			props: {
@@ -227,5 +259,79 @@ describe('emitValue', () => {
 		await wrapper.find('input').trigger('input');
 
 		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['a_test_field']);
+	});
+});
+
+describe('invalid warning', () => {
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
+	const validityMock: ValidityState = {
+		badInput: false,
+		customError: false,
+		patternMismatch: false,
+		rangeOverflow: false,
+		rangeUnderflow: false,
+		stepMismatch: false,
+		tooLong: false,
+		tooShort: false,
+		typeMismatch: false,
+		valid: true,
+		valueMissing: false,
+	};
+
+	test('should appear for invalid input', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				integer: true,
+			},
+			global,
+		});
+
+		const input = wrapper.find('input');
+		const inputEl = input.element as HTMLInputElement;
+		const validitySpy = vi.spyOn(inputEl, 'validity', 'get').mockReturnValue({ ...validityMock, badInput: true });
+
+		expect(inputEl.validity.badInput).toBe(true);
+		expect((wrapper.vm as any).isInvalidInput).toBe(false);
+
+		await input.trigger('input');
+		await wrapper.vm.$nextTick();
+
+		expect((wrapper.vm as any).isInvalidInput).toBe(true);
+		expect(wrapper.find('.v-input.invalid').exists()).toBe(true);
+		expect(wrapper.find('v-icon-stub.warning-invalid').exists()).toBe(true);
+		expect(validitySpy).toHaveBeenCalledTimes(2);
+
+		expect(wrapper.html()).toMatchSnapshot();
+	});
+
+	test('should not appear for valid input', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				integer: true,
+			},
+			global,
+		});
+
+		const input = wrapper.find('input');
+		const inputEl = input.element as HTMLInputElement;
+		const validitySpy = vi.spyOn(inputEl, 'validity', 'get').mockReturnValue(validityMock);
+
+		expect(inputEl.validity.badInput).toBe(false);
+		expect((wrapper.vm as any).isInvalidInput).toBe(false);
+
+		await input.trigger('input');
+		await wrapper.vm.$nextTick();
+
+		expect((wrapper.vm as any).isInvalidInput).toBe(false);
+		expect(wrapper.find('.v-input.invalid').exists()).toBe(false);
+		expect(wrapper.find('v-icon-stub.warning-invalid').exists()).toBe(false);
+		expect(validitySpy).toHaveBeenCalledTimes(2);
+
+		expect(wrapper.html()).toMatchSnapshot();
 	});
 });

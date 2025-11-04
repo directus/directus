@@ -29,7 +29,7 @@ export default definePanel({
 			? undefined
 			: {
 					[options.function]: [options.field || '*'],
-			  };
+				};
 
 		const panelQuery: PanelQuery = {
 			collection: options.collection,
@@ -419,16 +419,16 @@ export default definePanel({
 					options: {
 						choices: [
 							{
-								text: '$t:left',
-								value: 'left',
+								text: '$t:start',
+								value: 'start',
 							},
 							{
 								text: '$t:center',
 								value: 'center',
 							},
 							{
-								text: '$t:right',
-								value: 'right',
+								text: '$t:end',
+								value: 'end',
 							},
 							{
 								text: '$t:justify',

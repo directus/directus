@@ -1,6 +1,5 @@
 import { mockedStore } from '@/__utils__/store';
 import { usePermissionsStore } from '@/stores/permissions';
-import { randomIdentifier } from '@directus/random';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, expect, it, describe, vi } from 'vitest';
@@ -18,7 +17,7 @@ beforeEach(() => {
 	);
 
 	sample = {
-		collection: randomIdentifier(),
+		collection: 'test_collection',
 	};
 });
 

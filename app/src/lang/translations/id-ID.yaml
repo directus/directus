@@ -1241,6 +1241,8 @@ live_preview:
   disable: Nonaktifkan Pratinjau
   refresh: Segarkan pratinjau
   new_window: Buka di Jendela Baru
+mcp_prompts_collection_schema:
+  messages_role_user: Pengguna
 expired: Kedaluwarsa
 share: Bagikan
 share_item: Bagikan Item
@@ -1309,7 +1311,6 @@ translation_placeholder: Masukkan terjemahan...
 value: Nilai
 view_project: Lihat Proyek
 report_error: Lapor Kesalahan
-start: Mulai
 table: Tabel
 list: Daftar
 search_filter: Saring dan Cari
@@ -1505,6 +1506,7 @@ layouts:
     crop: Potong
     advanced: Tingkat lanjut
 both: Keduanya
+start: Mulai
 panels:
   label:
     name: Label

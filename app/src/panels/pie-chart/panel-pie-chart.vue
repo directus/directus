@@ -275,8 +275,8 @@ function checkMatchingConditionalFill(value: string | number, format: Conditiona
 
 <style scoped>
 .pie-chart {
-	height: 100%;
-	width: 100%;
+	block-size: 100%;
+	inline-size: 100%;
 }
 </style>
 
@@ -287,7 +287,7 @@ function checkMatchingConditionalFill(value: string | number, format: Conditiona
 
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
 	border-color: var(--theme--form--field--input--border-color) !important;
-	margin-bottom: 0;
+	margin-block-end: 0;
 	padding: 0 4px;
 	font-weight: 600 !important;
 	font-size: 10px !important;
@@ -310,8 +310,7 @@ function checkMatchingConditionalFill(value: string | number, format: Conditiona
 }
 
 .apexcharts-tooltip-series-group:last-child {
-	padding-top: 0;
-	padding-bottom: 0;
+	padding-block: 0;
 }
 
 .apexcharts-tooltip-text {

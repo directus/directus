@@ -81,14 +81,13 @@ const defaults = computed(() => {
 	return values;
 });
 
-const fieldsWithNames = computed(
-	() =>
-		props.fields?.map((field) => {
-			return {
-				...field,
-				name: formatTitle(field.name ?? field.field!),
-			};
-		}),
+const fieldsWithNames = computed(() =>
+	props.fields?.map((field) => {
+		return {
+			...field,
+			name: formatTitle(field.name ?? field.field!),
+		};
+	}),
 );
 
 const internalValue = computed({
@@ -317,6 +316,6 @@ function closeDrawer() {
 
 .drawer-item-content {
 	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 </style>

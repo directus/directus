@@ -108,7 +108,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 			startIndex?: number;
 		},
 	): Promise<WebSocketResponse[] | undefined> => {
-		const targetMessages = options?.uid ? messages[options.uid] ?? (messages[options.uid] = []) : messagesDefault;
+		const targetMessages = options?.uid ? (messages[options.uid] ?? (messages[options.uid] = [])) : messagesDefault;
 		let startMessageIndex: number;
 
 		if (options?.startIndex) {
@@ -233,7 +233,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 				return;
 			}
 
-			const targetMessages = message.uid ? messages[message.uid] ?? (messages[message.uid] = []) : messagesDefault;
+			const targetMessages = message.uid ? (messages[message.uid] ?? (messages[message.uid] = [])) : messagesDefault;
 			targetMessages.push(message);
 		});
 	});
@@ -348,7 +348,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 			startIndex?: number;
 		},
 	): Promise<WebSocketResponse[] | undefined> => {
-		const targetMessages = options?.uid ? messages[options.uid] ?? (messages[options.uid] = []) : messagesDefault;
+		const targetMessages = options?.uid ? (messages[options.uid] ?? (messages[options.uid] = [])) : messagesDefault;
 		let startMessageIndex: number;
 
 		if (options?.startIndex) {
@@ -404,7 +404,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 	};
 
 	const subscribe = async (options: WebSocketSubscriptionOptionsGql) => {
-		const targetMessages = options.uid ? messages[options.uid] ?? (messages[options.uid] = []) : messagesDefault;
+		const targetMessages = options.uid ? (messages[options.uid] ?? (messages[options.uid] = [])) : messagesDefault;
 		const subscriptionKey = `${options.collection}_mutated`;
 
 		const onNext = (data: any) => {

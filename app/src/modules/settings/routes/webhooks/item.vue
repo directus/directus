@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useItem } from '@/composables/use-item';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -16,7 +16,7 @@ const router = useRouter();
 
 const { primaryKey } = toRefs(props);
 
-const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const { isNew, edits, item, loading, remove, deleting, validationErrors } = useItem(
 	ref('directus_webhooks'),
@@ -98,9 +98,9 @@ async function deleteAndQuit() {
 			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_settings_webhooks_item')" class="page-description" />
 			</sidebar-detail>
-			<revisions-drawer-detail
+			<revisions-sidebar-detail
 				v-if="isNew === false"
-				ref="revisionsDrawerDetailRef"
+				ref="revisionsSidebarDetailRef"
 				collection="directus_webhooks"
 				:primary-key="primaryKey"
 			/>
@@ -111,7 +111,7 @@ async function deleteAndQuit() {
 <style lang="scss" scoped>
 .deprecation-notice-wrapper {
 	padding: 0 var(--content-padding);
-	width: fit-content;
+	inline-size: fit-content;
 	:deep(a) {
 		text-decoration: underline;
 	}
@@ -126,7 +126,7 @@ async function deleteAndQuit() {
 
 .v-form {
 	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .header-icon {

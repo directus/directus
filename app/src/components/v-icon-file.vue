@@ -33,23 +33,27 @@ defineProps<Props>();
 	.label {
 		position: absolute;
 		text-transform: uppercase;
-		left: 50%;
-		transform: translateX(-50%);
-		top: 55%;
+		inset-inline-start: 50%;
+		inset-block-start: 55%;
 		font-size: 12px;
 		font-weight: 800;
 		line-height: 1;
 		padding: 2px 0;
 		text-align: center;
+		transform: translateX(-50%);
+
+		html[dir='rtl'] & {
+			transform: translateX(50%);
+		}
 	}
 
 	&.right {
 		.label {
 			background-color: var(--v-icon-file-background-color, var(--theme--background-normal));
-			left: calc(100% - 12px - 3ch);
-			text-align: left;
+			inset-inline-start: calc(100% - 12px - 3ch);
+			text-align: start;
 			transform: none;
-			padding-right: 8px;
+			padding-inline-end: 8px;
 		}
 	}
 }

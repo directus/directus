@@ -2,7 +2,7 @@
 import { useFieldTree, type FieldNode } from '@/composables/use-field-tree';
 import { useSync } from '@directus/composables';
 import type { Permission, Policy } from '@directus/types';
-import { ref, computed } from 'vue';
+import { ref, computed, useId } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AppMinimal from './app-minimal.vue';
 
@@ -23,6 +23,7 @@ const emit = defineEmits(['update:permission']);
 
 const { t } = useI18n();
 
+const labelId = useId();
 const permissionSync = useSync(props, 'permission', emit);
 const collection = computed(() => props.permission.collection);
 const isReadAction = computed(() => props.permission.action === 'read');
@@ -138,7 +139,7 @@ function useExpandCollapseAll() {
 		</v-notice>
 
 		<div class="label-wrapper">
-			<label class="type-label">{{ t('field', 0) }}</label>
+			<div :id="labelId" class="type-label">{{ t('field', 0) }}</div>
 
 			<div v-if="isExpandable" class="expand-collapse-action">
 				{{ t('expand') }}
@@ -151,6 +152,7 @@ function useExpandCollapseAll() {
 		<v-checkbox-tree
 			class="permissions-field-tree"
 			:model-value="selectedValues"
+			:aria-labelledby="labelId"
 			:choices="treeFields"
 			value-combining="indeterminate"
 			:open-groups="openGroups"
@@ -164,7 +166,7 @@ function useExpandCollapseAll() {
 
 <style lang="scss" scoped>
 .v-notice {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 
 .label-wrapper {
@@ -174,7 +176,7 @@ function useExpandCollapseAll() {
 }
 
 .type-label {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 }
 
 .expand-collapse-action {

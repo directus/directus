@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { ComparisonContext } from '@/components/v-form/types';
+import { getFieldsInGroup } from '@/utils/get-fields-in-group';
 import { Field, ValidationError } from '@directus/types';
-import { isNil, merge } from 'lodash';
+import { merge } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -13,6 +15,7 @@ const props = withDefaults(
 		disabled?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
+		comparison?: ComparisonContext;
 		primaryKey: number | string;
 		loading?: boolean;
 		validationErrors?: ValidationError[];
@@ -34,11 +37,13 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
+const { isFieldWithDifference, isRevisionUpdateOnly } = useComparisonIndicator();
+
 const fieldsInSection = computed(() => {
 	const fields: Field[] = [merge({}, props.field, { hideLabel: true })];
 
 	if (props.field.meta?.special?.includes('group')) {
-		fields.push(...getFieldsForGroup(props.field.meta?.field));
+		fields.push(...getFieldsInGroup(props.field.field, props.fields));
 	}
 
 	return fields;
@@ -75,68 +80,92 @@ function handleModifier(event: MouseEvent, toggle: () => void) {
 	}
 }
 
-function getFieldsForGroup(group: null | string, passed: string[] = []): Field[] {
-	const fieldsInGroup: Field[] = props.fields.filter((field) => {
-		return field.meta?.group === group || (group === null && isNil(field.meta));
+function useComparisonIndicator() {
+	const isFieldWithDifference = computed(() => props.comparison?.fields.has(props.field.field));
+
+	const isRevisionUpdateOnly = computed(() => {
+		return !isFieldWithDifference.value && props.comparison?.revisionFields?.has(props.field.field);
 	});
 
-	for (const field of fieldsInGroup) {
-		if (field.meta?.special?.includes('group') && !passed.includes(field.meta!.field)) {
-			passed.push(field.meta!.field);
-			fieldsInGroup.push(...getFieldsForGroup(field.meta!.field, passed));
-		}
-	}
-
-	return fieldsInGroup;
+	return { isFieldWithDifference, isRevisionUpdateOnly };
 }
 </script>
 
 <template>
 	<v-item v-if="!field.meta?.hidden" :value="field.field" scope="group-accordion" class="accordion-section">
 		<template #default="{ active, toggle }">
-			<button
-				type="button"
-				class="label type-title"
-				:class="{ active, edited }"
-				@click="handleModifier($event, toggle)"
+			<div
+				:class="{
+					'indicator-active': !active && isFieldWithDifference,
+					'indicator-muted': (active && isFieldWithDifference) || isRevisionUpdateOnly,
+				}"
 			>
-				<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
-				<v-icon class="icon" :class="{ active }" name="expand_more" />
-				<span class="field-name">{{ field.name }}</span>
-				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" filled />
-				<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
-				<v-icon v-if="!active && validationMessage" v-tooltip="validationMessage" class="warning" name="error" small />
-			</button>
-
-			<transition-expand>
-				<div v-if="active" class="fields">
-					<v-form
-						:initial-values="initialValues"
-						:fields="fieldsInSection"
-						:model-value="values"
-						:primary-key="primaryKey"
-						:group="group"
-						:validation-errors="validationErrors"
-						:loading="loading"
-						:batch-mode="batchMode"
-						:disabled="disabled"
-						:direction="direction"
-						:show-no-visible-fields="false"
-						:show-validation-errors="false"
-						@update:model-value="$emit('apply', $event)"
+				<button
+					type="button"
+					class="label type-title"
+					:class="{ active, edited }"
+					@click="handleModifier($event, toggle)"
+				>
+					<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
+					<v-icon class="icon" :class="{ active }" name="expand_more" />
+					<span class="field-name">{{ field.name }}</span>
+					<v-icon v-if="field.meta?.required === true" class="required" sup name="star" filled />
+					<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
+					<v-icon
+						v-if="!active && validationMessage"
+						v-tooltip="validationMessage"
+						class="warning"
+						name="error"
+						small
 					/>
-				</div>
-			</transition-expand>
+				</button>
+
+				<transition-expand>
+					<div v-if="active">
+						<v-form
+							class="fields"
+							:initial-values="initialValues"
+							:fields="fieldsInSection"
+							:model-value="values"
+							:primary-key="primaryKey"
+							:group="group"
+							:validation-errors="validationErrors"
+							:loading="loading"
+							:batch-mode="batchMode"
+							:disabled="disabled"
+							:comparison="comparison"
+							:direction="direction"
+							:show-no-visible-fields="false"
+							:show-validation-errors="false"
+							@update:model-value="$emit('apply', $event)"
+						/>
+					</div>
+				</transition-expand>
+			</div>
 		</template>
 	</v-item>
 </template>
 
 <style lang="scss" scoped>
-.accordion-section {
-	border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+@use '@/styles/mixins';
 
-	&:last-child {
-		border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+.accordion-section {
+	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+}
+
+.indicator-active {
+	@include mixins.field-indicator;
+
+	&::before {
+		transition: background-color var(--slow) var(--transition);
+	}
+}
+
+.indicator-muted {
+	@include mixins.field-indicator('muted');
+
+	&::before {
+		transition: background-color var(--slow) var(--transition) var(--fast);
 	}
 }
 
@@ -144,9 +173,8 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 	position: relative;
 	display: flex;
 	align-items: center;
-	width: 100%;
-	margin: 8px 0;
-
+	inline-size: 100%;
+	padding: 8px 0;
 	cursor: pointer;
 
 	&:hover,
@@ -166,22 +194,22 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 	.required {
 		--v-icon-color: var(--theme--primary);
 
-		margin-top: -12px;
-		margin-left: 2px;
+		margin-block-start: -12px;
+		margin-inline-start: 2px;
 	}
 
 	.v-chip {
 		margin: 0;
-		margin-left: 8px;
+		margin-inline-start: 8px;
 	}
 
 	.edit-dot {
 		position: absolute;
-		top: 14px;
-		left: -7px;
+		inset-block-start: 14px;
+		inset-inline-start: -7px;
 		display: block;
-		width: 4px;
-		height: 4px;
+		inline-size: 4px;
+		block-size: 4px;
 		background-color: var(--theme--form--field--input--foreground-subdued);
 		border-radius: 4px;
 		content: '';
@@ -189,7 +217,7 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 }
 
 .icon {
-	margin-right: 12px;
+	margin-inline-end: 12px;
 	transform: rotate(-90deg);
 	transition: transform var(--fast) var(--transition);
 
@@ -199,11 +227,11 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 }
 
 .warning {
-	margin-left: 8px;
+	margin-inline-start: 8px;
 	color: var(--theme--danger);
 }
 
 .fields {
-	margin: var(--theme--form--row-gap) 0;
+	padding: var(--theme--form--row-gap) 0;
 }
 </style>

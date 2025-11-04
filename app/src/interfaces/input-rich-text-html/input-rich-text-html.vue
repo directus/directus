@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { i18n } from '@/lang';
+import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { SettingsStorageAssetPreset } from '@directus/types';
@@ -8,10 +9,13 @@ import { cloneDeep, isEqual } from 'lodash';
 import { ComponentPublicInstance, computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getEditorStyles from './get-editor-styles';
+import toolbarDefault from './toolbar-default';
 import useImage from './useImage';
 import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
+import usePre from './usePre';
+import useInlineCode from './useInlineCode';
 import tinymce from 'tinymce/tinymce';
 
 import 'tinymce/skins/ui/oxide/skin.css';
@@ -58,23 +62,7 @@ const props = withDefaults(
 		direction?: string;
 	}>(),
 	{
-		toolbar: () => [
-			'bold',
-			'italic',
-			'underline',
-			'h1',
-			'h2',
-			'h3',
-			'numlist',
-			'bullist',
-			'removeformat',
-			'blockquote',
-			'customLink',
-			'customImage',
-			'customMedia',
-			'code',
-			'fullscreen',
-		],
+		toolbar: () => toolbarDefault,
 		font: 'sans-serif',
 		customFormats: () => [],
 	},
@@ -126,6 +114,9 @@ const {
 const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, isLinkSaveable } = useLink(editorRef);
 
 const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
+
+const { preButton } = usePre(editorRef);
+const { inlineCodeButton } = useInlineCode(editorRef);
 
 const internalValue = computed({
 	get() {
@@ -180,7 +171,9 @@ const editorOptions = computed(() => {
 				.replace(/^link$/g, 'customLink')
 				.replace(/^media$/g, 'customMedia')
 				.replace(/^code$/g, 'customCode')
-				.replace(/^image$/g, 'customImage'),
+				.replace(/^image$/g, 'customImage')
+				.replace(/^pre$/g, 'customPre')
+				.replace(/^inlinecode$/g, 'customInlineCode'),
 		)
 		.join(' ');
 
@@ -223,6 +216,7 @@ const editorOptions = computed(() => {
 		paste_data_images: false,
 		setup,
 		language: i18n.global.locale.value,
+		ui_mode: 'split',
 		...(props.tinymceOverrides && cloneDeep(props.tinymceOverrides)),
 	};
 });
@@ -268,9 +262,12 @@ function setup(editor: any) {
 
 	const linkShortcut = 'meta+k';
 
+	editor.ui.registry.addToggleButton('customPre', preButton);
 	editor.ui.registry.addToggleButton('customImage', imageButton);
 	editor.ui.registry.addToggleButton('customMedia', mediaButton);
 	editor.ui.registry.addToggleButton('customLink', { ...linkButton, shortcut: linkShortcut });
+
+	editor.ui.registry.addToggleButton('customInlineCode', inlineCodeButton);
 	editor.ui.registry.addButton('customCode', sourceCodeButton);
 
 	editor.on('init', function () {
@@ -302,6 +299,41 @@ function setup(editor: any) {
 			}
 		}
 	});
+
+	let pausedFocusTrap = false;
+	editor.on('OpenWindow', onOpenWindow);
+	editor.on('CloseWindow', onCloseWindow);
+
+	const { pauseFocusTrap, unpauseFocusTrap } = useInjectFocusTrapManager();
+
+	function onOpenWindow() {
+		const toxDialogEl = document.querySelector('.tox-dialog') as HTMLElement | null;
+		if (toxDialogEl === null) return;
+
+		const firstFocusableElement = getFirstFocusableElement(toxDialogEl);
+		if (!firstFocusableElement) return;
+
+		pausedFocusTrap = true;
+		pauseFocusTrap();
+		firstFocusableElement.focus();
+	}
+
+	function getFirstFocusableElement(toxDialogEl: HTMLElement) {
+		// TinyMCE adds tabindex="-1" to all focusable elements in the dialog
+		const findElement = toxDialogEl.querySelector('[tabindex="-1"]') as HTMLElement | null;
+		if (!findElement) return;
+
+		// To shift the focus to this dialog, we need to make this element focusable
+		findElement.tabIndex = 0;
+		return findElement;
+	}
+
+	function onCloseWindow() {
+		if (!pausedFocusTrap) return;
+
+		pausedFocusTrap = false;
+		unpauseFocusTrap();
+	}
 }
 
 function setFocus(val: boolean) {
@@ -517,6 +549,7 @@ onMounted(() => {
 							</video>
 							<iframe
 								v-if="mediaSelection.tag === 'iframe'"
+								:title="$t('interfaces.input-rich-text-html.media_preview_iframe_title')"
 								class="media-preview"
 								:src="mediaSelection.previewUrl"
 							></iframe>
@@ -570,11 +603,11 @@ onMounted(() => {
 
 .remaining {
 	position: absolute;
-	right: 10px;
-	bottom: 5px;
+	inset-inline-end: 10px;
+	inset-block-end: 5px;
 	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
-	text-align: right;
+	text-align: end;
 	vertical-align: middle;
 	font-feature-settings: 'tnum';
 }
@@ -589,16 +622,15 @@ onMounted(() => {
 
 .image-preview,
 .media-preview {
-	width: 100%;
-	height: var(--input-height-tall);
-	margin-bottom: 24px;
+	inline-size: 100%;
+	block-size: var(--input-height-tall);
+	margin-block-end: 24px;
 	object-fit: cover;
 	border-radius: var(--theme--border-radius);
 }
 
 .content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding);
+	padding-block: 0 var(--content-padding);
 }
 </style>
