@@ -8,12 +8,14 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
+import { isSystemField } from '@directus/system-data';
 import type {
 	AbstractServiceOptions,
 	Accountability,
 	ActionEventParams,
 	Field,
 	FieldMeta,
+	FieldMutationOptions,
 	MutationOptions,
 	RawField,
 	SchemaOverview,
@@ -23,6 +25,7 @@ import { addFieldFlag, getRelations, toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { isEqual, isNil, merge } from 'lodash-es';
+import { z } from 'zod';
 import { clearSystemCache, getCache, getCacheValue, setCacheValue } from '../cache.js';
 import { ALIAS_TYPES, ALLOWED_DB_DEFAULT_FUNCTIONS } from '../constants.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
@@ -49,6 +52,18 @@ import { RelationsService } from './relations.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 const env = useEnv();
+
+export const systemFieldUpdateSchema = z
+	.object({
+		collection: z.string().optional(),
+		field: z.string().optional(),
+		schema: z
+			.object({
+				is_indexed: z.boolean().optional(),
+			})
+			.strict(),
+	})
+	.strict();
 
 export class FieldsService {
 	knex: Knex;
@@ -125,20 +140,21 @@ export class FieldsService {
 			);
 		}
 
-		const nonAuthorizedItemsService = new ItemsService('directus_fields', {
+		const nonAuthorizedItemsService = new ItemsService<FieldMeta, 'directus_fields'>('directus_fields', {
 			knex: this.knex,
 			schema: this.schema,
 		});
 
 		if (collection) {
-			fields = (await nonAuthorizedItemsService.readByQuery({
+			fields = await nonAuthorizedItemsService.readByQuery({
 				filter: { collection: { _eq: collection } },
 				limit: -1,
-			})) as FieldMeta[];
+			});
 
 			fields.push(...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection));
 		} else {
-			fields = (await nonAuthorizedItemsService.readByQuery({ limit: -1 })) as FieldMeta[];
+			fields = await nonAuthorizedItemsService.readByQuery({ limit: -1 });
+
 			fields.push(...systemFieldRows);
 		}
 
@@ -344,7 +360,7 @@ export class FieldsService {
 		collection: string,
 		field: Partial<Field> & { field: string; type: Type | null },
 		table?: Knex.CreateTableBuilder, // allows collection creation to
-		opts?: MutationOptions,
+		opts?: FieldMutationOptions,
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
@@ -374,6 +390,9 @@ export class FieldsService {
 				addFieldFlag(field, flagToAdd);
 			}
 
+			let hookAdjustedField = field;
+			const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
+
 			await transaction(this.knex, async (trx) => {
 				const itemsService = new ItemsService('directus_fields', {
 					knex: trx,
@@ -381,7 +400,7 @@ export class FieldsService {
 					schema: this.schema,
 				});
 
-				const hookAdjustedField =
+				hookAdjustedField =
 					opts?.emitEvents !== false
 						? await emitter.emitFilter(
 								`fields.create`,
@@ -399,10 +418,14 @@ export class FieldsService {
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
 					if (table) {
-						this.addColumnToTable(table, collection, hookAdjustedField as Field);
+						this.addColumnToTable(table, collection, hookAdjustedField as Field, {
+							attemptConcurrentIndex,
+						});
 					} else {
 						await trx.schema.alterTable(collection, (table) => {
-							this.addColumnToTable(table, collection, hookAdjustedField as Field);
+							this.addColumnToTable(table, collection, hookAdjustedField as Field, {
+								attemptConcurrentIndex,
+							});
 						});
 					}
 				}
@@ -446,6 +469,13 @@ export class FieldsService {
 					nestedActionEvents.push(actionEvent);
 				}
 			});
+
+			// concurrent index creation cannot be done inside the transaction
+			if (attemptConcurrentIndex && hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
+				await this.addColumnIndex(collection, hookAdjustedField as Field, {
+					attemptConcurrentIndex,
+				});
+			}
 		} finally {
 			if (runPostColumnChange) {
 				await this.helpers.schema.postColumnChange();
@@ -470,7 +500,7 @@ export class FieldsService {
 		}
 	}
 
-	async updateField(collection: string, field: RawField, opts?: MutationOptions): Promise<string> {
+	async updateField(collection: string, field: RawField, opts?: FieldMutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -530,19 +560,34 @@ export class FieldsService {
 
 				if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
 					try {
+						const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
+
 						await transaction(this.knex, async (trx) => {
-							await trx.schema.alterTable(collection, async (table) => {
+							await trx.schema.alterTable(collection, (table) => {
 								if (!hookAdjustedField.schema) return;
-								this.addColumnToTable(table, collection, field, existingColumn);
+
+								this.addColumnToTable(table, collection, field, {
+									existing: existingColumn,
+									attemptConcurrentIndex,
+								});
 							});
 						});
+
+						// concurrent index creation cannot be done inside the transaction
+						if (attemptConcurrentIndex) {
+							await this.addColumnIndex(collection, field, {
+								existing: existingColumn,
+								attemptConcurrentIndex,
+							});
+						}
 					} catch (err: any) {
 						throw await translateDatabaseError(err, field);
 					}
 				}
 			}
 
-			if (hookAdjustedField.meta) {
+			// Only create/update a database record if this is not a system field
+			if (hookAdjustedField.meta && !isSystemField(collection, hookAdjustedField.field)) {
 				if (record) {
 					await this.itemsService.updateOne(
 						record.id,
@@ -610,11 +655,12 @@ export class FieldsService {
 		}
 	}
 
-	async updateFields(collection: string, fields: RawField[], opts?: MutationOptions): Promise<string[]> {
+	async updateFields(collection: string, fields: RawField[], opts?: FieldMutationOptions): Promise<string[]> {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
 			const fieldNames = [];
+			const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
 			for (const field of fields) {
 				fieldNames.push(
@@ -622,6 +668,7 @@ export class FieldsService {
 						autoPurgeCache: false,
 						autoPurgeSystemCache: false,
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						attemptConcurrentIndex,
 					}),
 				);
 			}
@@ -840,12 +887,14 @@ export class FieldsService {
 		table: Knex.CreateTableBuilder,
 		collection: string,
 		field: RawField | Field,
-		existing: Column | null = null,
+		options?: { attemptConcurrentIndex?: boolean; existing?: Column | null },
 	): void {
 		let column: Knex.ColumnBuilder;
 
 		// Don't attempt to add a DB column for alias / corrupt fields
 		if (field.type === 'alias' || field.type === 'unknown') return;
+
+		const existing = options?.existing ?? null;
 
 		if (field.schema?.has_auto_increment) {
 			if (field.type === 'bigInteger') {
@@ -920,28 +969,56 @@ export class FieldsService {
 		} else if (!existing?.is_primary_key) {
 			// primary key will already have unique/index constraints
 			if (field.schema?.is_unique === true) {
-				if (!existing || existing.is_unique === false) {
+				if ((!existing || existing.is_unique === false) && !options?.attemptConcurrentIndex) {
 					column.unique({ indexName: this.helpers.schema.generateIndexName('unique', collection, field.field) });
 				}
-			} else if (field.schema?.is_unique === false) {
-				if (existing?.is_unique === true) {
-					table.dropUnique([field.field], this.helpers.schema.generateIndexName('unique', collection, field.field));
-				}
+			} else if (field.schema?.is_unique === false && existing?.is_unique === true) {
+				table.dropUnique([field.field], this.helpers.schema.generateIndexName('unique', collection, field.field));
 			}
 
 			if (field.schema?.is_indexed === true) {
-				if (!existing || existing.is_indexed === false) {
+				if ((!existing || existing.is_indexed === false) && !options?.attemptConcurrentIndex) {
 					column.index(this.helpers.schema.generateIndexName('index', collection, field.field));
 				}
-			} else if (field.schema?.is_indexed === false) {
-				if (existing?.is_indexed === true) {
-					table.dropIndex([field.field], this.helpers.schema.generateIndexName('index', collection, field.field));
-				}
+			} else if (field.schema?.is_indexed === false && existing?.is_indexed === true) {
+				table.dropIndex([field.field], this.helpers.schema.generateIndexName('index', collection, field.field));
 			}
 		}
 
 		if (existing) {
 			column.alter();
+		}
+	}
+
+	public async addColumnIndex(
+		collection: string,
+		field: Field | RawField,
+		options?: { attemptConcurrentIndex?: boolean; knex?: Knex; existing?: Column | null },
+	): Promise<void> {
+		const attemptConcurrentIndex = Boolean(options?.attemptConcurrentIndex);
+		const knex = options?.knex ?? this.knex;
+		const existing = options?.existing ?? null;
+
+		// Don't attempt to index a DB column for alias / corrupt fields
+		if (field.type === 'alias' || field.type === 'unknown') return;
+
+		// primary key will already have unique/index constraints
+		if (field.schema?.is_primary_key || existing?.is_primary_key) return;
+
+		const helpers = getHelpers(knex);
+
+		if (field.schema?.is_unique === true && (!existing || existing.is_unique == false)) {
+			await helpers.schema.createIndex(collection, field.field, {
+				unique: true,
+				attemptConcurrentIndex,
+			});
+		}
+
+		if (field.schema?.is_indexed === true && (!existing || existing.is_indexed === false)) {
+			await helpers.schema.createIndex(collection, field.field, {
+				unique: false,
+				attemptConcurrentIndex,
+			});
 		}
 	}
 }

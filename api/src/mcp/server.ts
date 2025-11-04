@@ -264,7 +264,7 @@ export class DirectusMCP {
 							...args['query'],
 						},
 						req.schema,
-						req.accountability || null,
+						req.accountability,
 					);
 				}
 

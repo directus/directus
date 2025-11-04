@@ -8,7 +8,7 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { refreshCurrentLanguage } from '@/lang/refresh-current-language';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { useCollection } from '@directus/composables';
 import { useRouter } from 'vue-router';
@@ -32,7 +32,7 @@ const form = ref<HTMLElement>();
 const { primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
 
-const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const {
 	info: collectionInfo,
@@ -141,7 +141,7 @@ async function saveAndStay() {
 		const savedItem: Record<string, any> = await save();
 		await refreshCurrentLanguage();
 
-		revisionsDrawerDetailRef.value?.refresh?.();
+		revisionsSidebarDetailRef.value?.refresh?.();
 
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem[primaryKeyField.value!.field];
@@ -331,9 +331,9 @@ async function revert(values: Record<string, any>) {
 				<div v-md="t('page_help_settings_translations_item')" class="page-description" />
 			</sidebar-detail>
 			<template v-if="isNew === false && loading === false && internalPrimaryKey">
-				<revisions-drawer-detail
+				<revisions-sidebar-detail
 					v-if="accountabilityScope === 'all'"
-					ref="revisionsDrawerDetailRef"
+					ref="revisionsSidebarDetailRef"
 					collection="directus_translations"
 					:primary-key="internalPrimaryKey"
 					:scope="accountabilityScope"

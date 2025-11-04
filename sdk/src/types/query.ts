@@ -29,6 +29,13 @@ export interface QueryItem<Schema, Item> extends Query<Schema, Item> {
 }
 
 /**
+ * All query options with an additional concurrentIndexCreation query option for updating fields with indexes
+ */
+export interface FieldQuery<Schema, Item> extends Query<Schema, Item> {
+	readonly concurrentIndexCreation?: boolean;
+}
+
+/**
  * Returns Item types that are available in the root Schema
  */
 export type ExtractItem<Schema, Item> = Extract<UnpackList<Item>, ItemType<Schema>>;

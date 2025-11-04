@@ -11,7 +11,7 @@ import FilePreviewReplace from '@/views/private/components/file-preview-replace.
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import type { Field, File } from '@directus/types';
 import { computed, ref, toRefs, watch } from 'vue';
@@ -32,7 +32,7 @@ const form = ref<HTMLElement>();
 const { primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
 
-const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const {
 	isNew,
@@ -141,7 +141,7 @@ async function saveAndQuit() {
 async function saveAndStay() {
 	try {
 		await save();
-		revisionsDrawerDetailRef.value?.refresh?.();
+		revisionsSidebarDetailRef.value?.refresh?.();
 		refresh();
 	} catch {
 		// `save` will show unexpected error dialog
@@ -390,9 +390,9 @@ function revert(values: Record<string, any>) {
 
 		<template #sidebar>
 			<file-info-sidebar-detail :file="item" :is-new="isNew" />
-			<revisions-drawer-detail
+			<revisions-sidebar-detail
 				v-if="isNew === false && revisionsAllowed"
-				ref="revisionsDrawerDetailRef"
+				ref="revisionsSidebarDetailRef"
 				collection="directus_files"
 				:primary-key="primaryKey"
 				@revert="revert"

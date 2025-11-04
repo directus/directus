@@ -137,7 +137,7 @@ jobs:
       - name: Create release PR
         id: create-pr
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.RELEASE_PAT }}
         run: |
           VERSION=${{ github.event.inputs.version }}
           TAG="v$VERSION"

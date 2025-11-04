@@ -1,9 +1,9 @@
 name: Release
 
 on:
-  pull_request:
-    types: [closed]
-    branches: [main]
+  push:
+    tags:
+      - 'v[0-9]*'
 
 permissions:
   contents: write
@@ -17,42 +17,9 @@ env:
   COSIGN_REPOSITORY: docker.io/${{ github.repository }}-signatures
 
 jobs:
-  extract:
-    name: Extract Metadata
-    if:
-      github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'Release') &&
-      startsWith(github.event.pull_request.title, 'Release ')
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.extract.outputs.version }}
-      tag: ${{ steps.extract.outputs.tag }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Extract Metadata
-        id: extract
-        run: |
-          # Read version from directus package.json
-          VERSION=$(node -p "require('./directus/package.json').version")
-          TAG="v$VERSION"
-
-          echo "Found version: $VERSION"
-          echo "Tag will be: $TAG"
-
-          if [[ -z "$TAG" || -z "$VERSION" ]]; then
-            echo "Failed to extract tag or version"
-            exit 1
-          fi
-
-          # Output variables
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
-
   check-version:
     name: Check Version
     runs-on: ubuntu-latest
-    needs: extract
     outputs:
       prerelease: ${{ steps.version.outputs.prerelease && true || false }}
     steps:
@@ -60,62 +27,30 @@ jobs:
         uses: madhead/semver-utils@v4
         id: version
         with:
-          version: ${{ needs.extract.outputs.tag }}
+          version: ${{ github.ref_name }}
           lenient: false
 
   create-release:
     name: Create Release
     runs-on: ubuntu-latest
-    needs: [extract, check-version]
-    permissions:
-      contents: write
-      issues: write
+    needs: check-version
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create Tag and Release
+      - name: Create release
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ needs.extract.outputs.tag }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Extract the release notes from the PR body
-          PR_BODY=$(cat <<'EOF'
-          ${{ github.event.pull_request.body }}
-          EOF
-          )
-          PR_BODY=$(printf '%s' "$PR_BODY" | sed 's/\r//g')
-          RELEASE_NOTES=$(awk '/^```md$/{flag=1; next} /^```$/{flag=0} flag' <<< "$PR_BODY")
-
-          gh release create "$TAG" \
-            --target "${{ github.event.pull_request.base.ref }}" \
-            --title "$TAG" \
+          gh release create \
+            "$GITHUB_REF_NAME" \
             ${{ needs.check-version.outputs.prerelease == 'true' && '--prerelease' || '' }} \
-            --notes "$RELEASE_NOTES"
-
-      - name: Close & Rename Milestone
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ needs.extract.outputs.tag }}
-        run: |
-          REPO="${{ github.repository }}"
-          # Find the open milestone titled "Next Release"
-          MILESTONE_NUMBER=$(gh api repos/$REPO/milestones \
-            --jq '.[] | select(.title=="Next Release" and .state=="open") .number')
-          if [ -n "$MILESTONE_NUMBER" ]; then
-            echo "Closing milestone #$MILESTONE_NUMBER and renaming to '$TAG'"
-            gh api repos/$REPO/milestones/$MILESTONE_NUMBER \
-              -X PATCH \
-              -F state=closed \
-              -F title="$TAG"
-          else
-            echo "No open 'Next Release' milestone found."
-          fi
+            --notes "Directus $GITHUB_REF_NAME"
 
   publish-npm:
     name: Publish to NPM
     runs-on: ubuntu-latest
-    needs: [check-version, create-release]
+    needs: check-version
     permissions:
       actions: write
       attestations: write
@@ -134,9 +69,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          fetch-tags: true
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -156,7 +88,7 @@ jobs:
   build-images:
     name: Build Images
     runs-on: ubuntu-latest
-    needs: [check-version, create-release]
+    needs: check-version
     permissions:
       actions: write
       attestations: write
@@ -175,9 +107,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          fetch-tags: true
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
@@ -252,19 +181,3 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-  notify-slack:
-    name: Notify Slack
-    needs: [extract, create-release, publish-npm, build-images]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Notify Slack
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_CMS_RELEASE }}
-        run: |
-          PAYLOAD=$(jq -n \
-            --arg tag   "${{ needs.extract.outputs.tag }}" \
-            '{tag: $tag}')
-          curl -X POST -H 'Content-Type: application/json' \
-            --data "$PAYLOAD" \
-            "$SLACK_WEBHOOK_URL"

@@ -21,6 +21,7 @@ import { computed, ref, toRefs, watch, unref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import OverlayItemContent from './overlay-item-content.vue';
+import { useFlows } from '@/composables/use-flows';
 
 export interface OverlayItemProps {
 	overlay?: 'drawer' | 'modal' | 'popover';
@@ -236,6 +237,16 @@ const overlayItemContentProps = computed(() => {
 		refresh,
 	};
 });
+
+const { provideRunManualFlow } = useFlows({
+	collection: collection.value,
+	primaryKey: primaryKey.value,
+	location: 'item',
+	hasEdits,
+	onRefreshCallback: refresh,
+});
+
+provideRunManualFlow();
 
 function useActiveState() {
 	const localActive = ref(false);
