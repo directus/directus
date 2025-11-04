@@ -1,6 +1,6 @@
 import { useLocalStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import {  computed } from 'vue';
 import { DefaultChatTransport, type UIMessage } from 'ai';
 import { AI_MODELS } from '../models';
 import { Chat } from '@ai-sdk/vue';
@@ -11,7 +11,6 @@ export const useAiStore = defineStore('ai-store', () => {
 	const currentProvider = computed(() => selectedModel.value?.split('/')[0] ?? 'openai');
 	const currentModel = computed(() => selectedModel.value?.split('/')[1] ?? 'gpt-5');
 
-	const clientTools = ref<Record<string, (args: any) => Promise<any>>>({});
 
 	const chat = new Chat<UIMessage>({
 		transport: new DefaultChatTransport({
@@ -35,13 +34,6 @@ export const useAiStore = defineStore('ai-store', () => {
 		chat.sendMessage({ text: message });
 	}
 
-	function registerClientTool(name: string, handler: (args: any) => Promise<any>) {
-		clientTools.value[name] = handler;
-	}
-
-	function unregisterClientTool(name: string) {
-		delete clientTools.value[name];
-	}
 
 	return {
 		currentProvider,
@@ -52,8 +44,6 @@ export const useAiStore = defineStore('ai-store', () => {
 		status,
 		models: AI_MODELS,
 		selectedModel,
-		registerClientTool,
-		unregisterClientTool,
 		updateSelectedModel,
 	};
 });
