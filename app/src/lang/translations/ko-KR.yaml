@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 앱 정보
+first_name: 이름/별명
+last_name: 성
 identifier: 식별자
 avatar: 아바타
 application: 애플리케이션
@@ -2599,15 +2601,6 @@ search_flow: 흐름 검색...
 percent: 퍼센트
 show_password: 비밀번호 보이기
 hide_password: 비밀번호 숨기기
-bsl_banner:
-  welcome_to_directus: Directus에 오신 것을 환영합니다!
-  directus_free_use: Directus는 연간 매출, 자금 또는 운영 예산이 500만 달러 미만인 기업에 무료로 사용할 수 있습니다.
-  organization_threshold: 이 임계값을 초과하는 엔터티에는 유료 라이선스가 필요합니다.
-  license_agreement: '"동의"를 클릭하면 {directusBsl} 및 {privacyPolicy}에 동의하는 것입니다.'
-  directus_bsl: 다이렉터스 BSL 1.1
-  privacy_policy: 개인정보처리방침
-  accept_terms: 승인
-  get_license: 라이선스 받기
 accepted: 수락됨
 text_direction_auto: 자동(일치 언어)
 text_direction_ltr: 왼쪽에서 오른쪽으로(LTR)
