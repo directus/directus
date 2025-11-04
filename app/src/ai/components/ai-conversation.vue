@@ -27,18 +27,21 @@ const aiStore = useAiStore();
 </template>
 
 <style lang="scss" scoped>
+.ai-conversation {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-height: 0;
+}
+
 .messages-container {
 	flex: 1;
 	overflow-y: auto;
-	display: flex;
-	flex-direction: column;
-	padding-bottom: 0;
 	min-height: 0;
 }
 
 .input-container {
 	flex-shrink: 0;
-	padding-top: 0;
 }
 
 .v-progress-linear {
