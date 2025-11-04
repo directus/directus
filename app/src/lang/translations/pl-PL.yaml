@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: O aplikacji
+first_name: Imię
+last_name: Nazwisko
 identifier: Identyfikator
 avatar: Awatar
 application: Aplikacja
