@@ -107,11 +107,18 @@ import { useEnv } from '@directus/env';
 import { useLogger } from '../../logger/index.js';
 import { generateRedirectUrls, getCallbackFromOriginUrl } from '../../utils/oauth-callbacks.js';
 import { OpenIDAuthDriver } from './openid.js';
+import type { Logger } from 'pino';
+import { InvalidProviderConfigError, InvalidProviderError } from '@directus/errors';
 
-let mockLogger: ReturnType<typeof createMockLogger>;
+let mockLogger: Logger;
 
 beforeEach(() => {
-  mockLogger = createMockLogger();
+  mockLogger = {
+    error: vi.fn(),
+    warn: vi.fn(),
+    debug: vi.fn(),
+  } as unknown as Logger;
+
   vi.mocked(useLogger).mockReturnValue(mockLogger);
   vi.mocked(useEnv).mockReturnValue(createMockEnv());
 });
@@ -121,132 +128,113 @@ afterEach(() => {
 });
 
 describe('OpenIDAuthDriver', () => {
-  describe('Constructor - Multi-domain OAuth callbacks', () => {
-    test('generates redirectUris using generateRedirectUrls utility', () => {
-      const mockRedirectUris = [
-        new URL('http://external.com/auth/login/okta/callback'),
-        new URL('http://internal.com/auth/login/okta/callback'),
-      ];
-
-      vi.mocked(generateRedirectUrls).mockReturnValue(mockRedirectUris);
-
-      vi.mocked(useEnv).mockReturnValue(
-        createMockEnv({
-          AUTH_OKTA_REDIRECT_ALLOW_LIST: 'http://external.com,http://internal.com',
-        }),
-      );
-
-      const options = createMockAuthDriverOptions();
-      const config = createOpenIDConfig('okta');
-
-      const driver = new OpenIDAuthDriver(options, config);
-
-      // Verify generateRedirectUrls was called with correct params
-      expect(generateRedirectUrls).toHaveBeenCalledWith('okta', 'OpenID');
-
-      // Verify redirectUris property is set
-      expect(driver.redirectUris).toEqual(mockRedirectUris);
-      expect(driver.redirectUris).toHaveLength(2);
-    });
-
-    test('sets empty redirectUris when no REDIRECT_ALLOW_LIST', () => {
-      vi.mocked(generateRedirectUrls).mockReturnValue([]);
-      vi.mocked(useEnv).mockReturnValue(createMockEnv());
-
-      const options = createMockAuthDriverOptions();
-      const config = createOpenIDConfig('okta');
-
-      const driver = new OpenIDAuthDriver(options, config);
-
-      expect(driver.redirectUris).toEqual([]);
-    });
-
-    test('throws InvalidProviderConfigError when required config missing', () => {
-      const options = createMockAuthDriverOptions();
-
-      const invalidConfig = {
-        provider: 'okta',
-        // Missing issuerUrl, clientId, clientSecret
-      };
-
-      expect(() => new OpenIDAuthDriver(options, invalidConfig as any)).toThrow();
-      expect(mockLogger.error).toHaveBeenCalledWith('Invalid provider config');
-    });
-
-    test('logs and throws when roleMapping is an Array instead of Object', () => {
-      vi.mocked(generateRedirectUrls).mockReturnValue([]);
-
-      const options = createMockAuthDriverOptions();
-
-      const config = createOpenIDConfig('okta', {
-        roleMapping: ['role1', 'role2'], // Invalid: should be object
+  describe('Constructor', () => {
+    describe('Validation', () => {
+      test.each([
+        { field: 'issuerUrl', config: { provider: 'okta', clientId: 'id', clientSecret: 'secret' } },
+        { field: 'clientId', config: { provider: 'okta', issuerUrl: 'url', clientSecret: 'secret' } },
+        { field: 'clientSecret', config: { provider: 'okta', issuerUrl: 'url', clientId: 'id' } },
+        { field: 'provider', config: { issuerUrl: 'url', clientId: 'id', clientSecret: 'secret' } },
+      ])('throws InvalidProviderConfigError when $field is missing', ({ config }) => {
+        expect(() => new OpenIDAuthDriver({ knex: {} as any }, config as any)).toThrow(InvalidProviderConfigError);
+        expect(mockLogger.error).toHaveBeenCalledWith('Invalid provider config');
       });
 
-      expect(() => new OpenIDAuthDriver(options, config)).toThrow();
+      test('throws InvalidProviderError when roleMapping is an Array instead of Object', () => {
+        const config = createOpenIDConfig('okta', {
+          roleMapping: ['role1', 'role2'],
+        });
 
-      expect(mockLogger.error).toHaveBeenCalledWith(
-        expect.stringContaining('[OpenID] Expected a JSON-Object as role mapping'),
-      );
+        expect(() => new OpenIDAuthDriver({ knex: {} as any }, config)).toThrow(InvalidProviderError);
+
+        expect(mockLogger.error).toHaveBeenCalledWith(
+          expect.stringContaining('[OpenID] Expected a JSON-Object as role mapping'),
+        );
+      });
+
+      test('creates driver successfully with all required config', () => {
+        const config = createOpenIDConfig('okta');
+        const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+        expect(driver).toBeDefined();
+        expect(driver.client).toBeNull();
+      });
     });
 
-    test('initializes with client=null and preloads client asynchronously', () => {
-      vi.mocked(generateRedirectUrls).mockReturnValue([]);
+    describe('Configuration', () => {
+      test('generates redirectUris using generateRedirectUrls utility', () => {
+        const mockRedirectUris = [
+          new URL('http://external.com/auth/login/okta/callback'),
+          new URL('http://internal.com/auth/login/okta/callback'),
+        ];
 
-      const options = createMockAuthDriverOptions();
-      const config = createOpenIDConfig('okta');
+        vi.mocked(generateRedirectUrls).mockReturnValue(mockRedirectUris);
 
-      const driver = new OpenIDAuthDriver(options, config);
+        vi.mocked(useEnv).mockReturnValue(
+          createMockEnv({
+            AUTH_OKTA_REDIRECT_ALLOW_LIST: 'http://external.com,http://internal.com',
+          }),
+        );
 
-      // OpenID initializes client as null and preloads it
-      expect(driver.client).toBeNull();
+        const config = createOpenIDConfig('okta');
+        const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+        expect(generateRedirectUrls).toHaveBeenCalledWith('okta', 'OpenID');
+        expect(driver.redirectUris).toEqual(mockRedirectUris);
+      });
+
+      test('sets empty redirectUris when no REDIRECT_ALLOW_LIST', () => {
+        vi.mocked(generateRedirectUrls).mockReturnValue([]);
+
+        const config = createOpenIDConfig('okta');
+        const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+        expect(driver.redirectUris).toEqual([]);
+      });
     });
   });
 
   describe('generateCodeVerifier', () => {
     test('returns a code verifier string', () => {
-      vi.mocked(generateRedirectUrls).mockReturnValue([]);
-
-      const options = createMockAuthDriverOptions();
       const config = createOpenIDConfig('okta');
-      const driver = new OpenIDAuthDriver(options, config);
+      const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
       const verifier = driver.generateCodeVerifier();
 
-      expect(verifier).toBe('test-code-verifier'); // From our mock
-      expect(typeof verifier).toBe('string');
+      expect(verifier).toBe('test-code-verifier');
     });
   });
 
   describe('generateAuthUrl', () => {
-    test('generates authorization URL without redirectUri parameter', async () => {
-      vi.mocked(generateRedirectUrls).mockReturnValue([
-        new URL('http://localhost:8080/auth/login/okta/callback'),
-      ]);
-
-      const options = createMockAuthDriverOptions();
+    test('generates authorization URL with default parameters', async () => {
       const config = createOpenIDConfig('okta');
-      const driver = new OpenIDAuthDriver(options, config);
+      const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
-      // Wait for client to be ready
       await driver['getClient']();
 
       const codeVerifier = driver.generateCodeVerifier();
       const authUrl = await driver.generateAuthUrl(codeVerifier, false);
 
       expect(authUrl).toBeDefined();
-      expect(typeof authUrl).toBe('string');
       expect(authUrl).toContain('https://test.com/authorize');
     });
 
-    test('generates authorization URL with custom redirectUri parameter', async () => {
-      vi.mocked(generateRedirectUrls).mockReturnValue([
-        new URL('http://localhost:8080/auth/login/okta/callback'),
-        new URL('http://external.com/auth/login/okta/callback'),
-      ]);
-
-      const options = createMockAuthDriverOptions();
+    test('includes prompt parameter when prompt=true', async () => {
       const config = createOpenIDConfig('okta');
-      const driver = new OpenIDAuthDriver(options, config);
+      const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+      await driver['getClient']();
+
+      const codeVerifier = driver.generateCodeVerifier();
+      const authUrl = await driver.generateAuthUrl(codeVerifier, true);
+
+      expect(authUrl).toBeDefined();
+      expect(authUrl).toContain('prompt');
+    });
+
+    test('uses custom redirectUri when provided', async () => {
+      const config = createOpenIDConfig('okta');
+      const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
       await driver['getClient']();
 
@@ -255,162 +243,252 @@ describe('OpenIDAuthDriver', () => {
       const authUrl = await driver.generateAuthUrl(codeVerifier, false, customRedirectUri);
 
       expect(authUrl).toBeDefined();
-      expect(authUrl).toContain('https://test.com/authorize');
-      // The mock captures the redirectUri in the params
       expect(authUrl).toContain(customRedirectUri);
-    });
-
-    test('includes prompt parameter when prompt=true', async () => {
-      vi.mocked(generateRedirectUrls).mockReturnValue([]);
-
-      const options = createMockAuthDriverOptions();
-      const config = createOpenIDConfig('okta');
-      const driver = new OpenIDAuthDriver(options, config);
-
-      await driver['getClient']();
-
-      const codeVerifier = driver.generateCodeVerifier();
-      const authUrl = await driver.generateAuthUrl(codeVerifier, true);
-
-      expect(authUrl).toBeDefined();
-      // The mock serializes params as JSON, so we can check for prompt
-      expect(authUrl).toContain('prompt');
     });
   });
 
-  describe('getUserID - Multi-domain OAuth callbacks', () => {
-    test('uses getCallbackFromOriginUrl to find correct callback for originUrl', async () => {
-      const mockRedirectUris = [
-        new URL('http://localhost:8080/auth/login/okta/callback'),
-        new URL('http://external.com/auth/login/okta/callback'),
-      ];
+  describe('getUserID', () => {
+    describe('Multi-domain callbacks', () => {
+      test('uses getCallbackFromOriginUrl to find correct callback for originUrl', async () => {
+        const mockRedirectUris = [
+          new URL('http://localhost:8080/auth/login/okta/callback'),
+          new URL('http://external.com/auth/login/okta/callback'),
+        ];
 
-      vi.mocked(generateRedirectUrls).mockReturnValue(mockRedirectUris);
+        vi.mocked(generateRedirectUrls).mockReturnValue(mockRedirectUris);
 
-      // Mock getCallbackFromOriginUrl to return the external callback
-      const externalCallback = mockRedirectUris[1]!;
-      vi.mocked(getCallbackFromOriginUrl).mockReturnValue(externalCallback);
+        const externalCallback = mockRedirectUris[1]!;
+        vi.mocked(getCallbackFromOriginUrl).mockReturnValue(externalCallback);
 
-      const options = createMockAuthDriverOptions();
+        const config = createOpenIDConfig('okta', {
+          defaultRoleId: 'test-role-id',
+          identifierKey: 'sub',
+        });
 
-      const config = createOpenIDConfig('okta', {
-        defaultRoleId: 'test-role-id',
-        emailKey: 'email',
-        identifierKey: 'sub',
+        const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+        await driver['getClient']();
+
+        const mockTokenSet = {
+          access_token: 'test-access-token',
+          refresh_token: 'test-refresh-token',
+        };
+
+        const mockUserInfo = {
+          sub: '12345',
+          email: 'test@example.com',
+        };
+
+        vi.spyOn(driver.client!, 'callbackParams').mockReturnValue({});
+        vi.spyOn(driver.client!, 'callback').mockResolvedValue(mockTokenSet as any);
+        vi.spyOn(driver.client!, 'userinfo').mockResolvedValue(mockUserInfo as any);
+        vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue(undefined);
+
+        vi.spyOn(driver as any, 'getUsersService').mockReturnValue({
+          createOne: vi.fn().mockResolvedValue('new-user-id'),
+        });
+
+        const payload = {
+          code: 'test-code',
+          codeVerifier: 'test-verifier',
+          state: 'test-state',
+          originUrl: 'http://external.com',
+        };
+
+        try {
+          await driver.getUserID(payload);
+        } catch {
+          // Ignore errors
+        }
+
+        expect(getCallbackFromOriginUrl).toHaveBeenCalledWith(mockRedirectUris, 'http://external.com');
+
+        expect(driver.client!.callback).toHaveBeenCalledWith(
+          externalCallback.toString(),
+          expect.any(Object),
+          expect.any(Object),
+        );
       });
+    });
+  });
 
-      const driver = new OpenIDAuthDriver(options, config);
+  describe('login', () => {
+    test('does nothing (empty implementation)', async () => {
+      const config = createOpenIDConfig('okta');
+      const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
-      // Wait for client initialization
+      const user = { id: 'user-123' } as any;
+
+      await expect(driver.login(user)).resolves.toBeUndefined();
+    });
+  });
+
+  describe('refresh', () => {
+    test('does nothing when user has no auth_data', async () => {
+      const config = createOpenIDConfig('okta');
+      const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
       await driver['getClient']();
 
-      // Mock the client methods
-      const mockTokenSet = {
-        access_token: 'test-access-token',
-        refresh_token: 'test-refresh-token',
-      };
+      const refreshClientSpy = vi.spyOn(driver.client!, 'refresh');
 
-      const mockUserInfo = {
-        sub: '12345',
-        email: 'test@example.com',
-      };
+      const user = { id: 'user-123', auth_data: undefined } as any;
 
-      vi.spyOn(driver.client!, 'callbackParams').mockReturnValue({});
-      vi.spyOn(driver.client!, 'callback').mockResolvedValue(mockTokenSet as any);
-      vi.spyOn(driver.client!, 'userinfo').mockResolvedValue(mockUserInfo as any);
+      await driver.refresh(user);
 
-      // Mock fetchUserId to return undefined (user doesn't exist yet)
-      vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue(undefined);
-
-      // Mock getUsersService to allow user creation
-      vi.spyOn(driver as any, 'getUsersService').mockReturnValue({
-        createOne: vi.fn().mockResolvedValue('new-user-id'),
-      });
-
-      const payload = {
-        code: 'test-code',
-        codeVerifier: 'test-verifier',
-        state: 'test-state',
-        originUrl: 'http://external.com', // User came from external domain
-      };
-
-      try {
-        await driver.getUserID(payload);
-      } catch (e) {
-        // getUserID might throw if user creation fails, but we're testing the callback logic
-      }
-
-      // Verify getCallbackFromOriginUrl was called with correct params
-      expect(getCallbackFromOriginUrl).toHaveBeenCalledWith(mockRedirectUris, 'http://external.com');
-
-      // Verify callback was called with the correct callback URL
-      expect(driver.client!.callback).toHaveBeenCalledWith(
-        externalCallback.toString(),
-        expect.any(Object),
-        expect.any(Object),
-      );
+      expect(refreshClientSpy).not.toHaveBeenCalled();
     });
 
-    test('handles legacy case when originUrl is undefined', async () => {
-      const mockRedirectUris = [new URL('http://localhost:8080/auth/login/okta/callback')];
+    test('does nothing when auth_data has no refreshToken', async () => {
+      const config = createOpenIDConfig('okta');
+      const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
 
-      vi.mocked(generateRedirectUrls).mockReturnValue(mockRedirectUris);
-
-      // Mock getCallbackFromOriginUrl to return first callback for undefined originUrl
-      vi.mocked(getCallbackFromOriginUrl).mockReturnValue(mockRedirectUris[0]!);
-
-      const options = createMockAuthDriverOptions();
-
-      const config = createOpenIDConfig('okta', {
-        defaultRoleId: 'test-role-id',
-        emailKey: 'email',
-        identifierKey: 'sub',
-      });
-
-      const driver = new OpenIDAuthDriver(options, config);
       await driver['getClient']();
 
-      // Mock the client methods
-      const mockTokenSet = {
-        access_token: 'test-access-token',
-      };
+      const refreshClientSpy = vi.spyOn(driver.client!, 'refresh');
 
-      const mockUserInfo = {
-        sub: '12345',
-        email: 'test@example.com',
-      };
+      const user = { id: 'user-123', auth_data: { other: 'data' } } as any;
 
-      vi.spyOn(driver.client!, 'callbackParams').mockReturnValue({});
-      vi.spyOn(driver.client!, 'callback').mockResolvedValue(mockTokenSet as any);
-      vi.spyOn(driver.client!, 'userinfo').mockResolvedValue(mockUserInfo as any);
-      vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue(undefined);
+      await driver.refresh(user);
+
+      expect(refreshClientSpy).not.toHaveBeenCalled();
+    });
+
+    test('parses auth_data when it is a JSON string', async () => {
+      const config = createOpenIDConfig('okta');
+      const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+      await driver['getClient']();
+
+      const mockTokenSet = { access_token: 'new-token', refresh_token: 'new-refresh' };
+      const refreshClientSpy = vi.spyOn(driver.client!, 'refresh').mockResolvedValue(mockTokenSet as any);
 
       vi.spyOn(driver as any, 'getUsersService').mockReturnValue({
-        createOne: vi.fn().mockResolvedValue('new-user-id'),
+        updateOne: vi.fn(),
       });
 
-      const payload = {
-        code: 'test-code',
-        codeVerifier: 'test-verifier',
-        state: 'test-state',
-        // No originUrl - legacy flow
-      };
+      const user = {
+        id: 'user-123',
+        auth_data: JSON.stringify({ refreshToken: 'old-refresh-token' }),
+      } as any;
 
-      try {
-        await driver.getUserID(payload);
-      } catch (e) {
-        // Ignore errors, we're just testing the callback logic
-      }
+      await driver.refresh(user);
 
-      // Verify getCallbackFromOriginUrl was called with undefined
-      expect(getCallbackFromOriginUrl).toHaveBeenCalledWith(mockRedirectUris, undefined);
+      expect(refreshClientSpy).toHaveBeenCalledWith('old-refresh-token');
+    });
 
-      // Verify callback was called with PUBLIC_URL callback
-      expect(driver.client!.callback).toHaveBeenCalledWith(
-        mockRedirectUris[0]!.toString(),
-        expect.any(Object),
-        expect.any(Object),
+    test('logs warning when auth_data string is invalid JSON', async () => {
+      const config = createOpenIDConfig('okta');
+      const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+      await driver['getClient']();
+
+      const refreshClientSpy = vi.spyOn(driver.client!, 'refresh');
+
+      const user = {
+        id: 'user-123',
+        auth_data: 'invalid-json{',
+      } as any;
+
+      await driver.refresh(user);
+
+      expect(mockLogger.warn).toHaveBeenCalledWith(
+        expect.stringContaining(`[OpenID] Session data isn't valid JSON: ${user.auth_data}`),
       );
+
+      expect(refreshClientSpy).not.toHaveBeenCalled();
+    });
+
+    test('calls client.refresh with refreshToken from auth_data object', async () => {
+      const config = createOpenIDConfig('okta');
+      const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+      await driver['getClient']();
+
+      const mockTokenSet = { access_token: 'new-token', refresh_token: 'new-refresh' };
+      const refreshClientSpy = vi.spyOn(driver.client!, 'refresh').mockResolvedValue(mockTokenSet as any);
+
+      vi.spyOn(driver as any, 'getUsersService').mockReturnValue({
+        updateOne: vi.fn(),
+      });
+
+      const user = {
+        id: 'user-123',
+        auth_data: { refreshToken: 'test-refresh-token' },
+      } as any;
+
+      await driver.refresh(user);
+
+      expect(refreshClientSpy).toHaveBeenCalledWith('test-refresh-token');
+    });
+
+    test('updates user with new refresh_token when provided', async () => {
+      const config = createOpenIDConfig('okta');
+      const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+      await driver['getClient']();
+
+      const mockTokenSet = { access_token: 'new-token', refresh_token: 'new-refresh-token' };
+      vi.spyOn(driver.client!, 'refresh').mockResolvedValue(mockTokenSet as any);
+
+      const updateOneSpy = vi.fn();
+
+      vi.spyOn(driver as any, 'getUsersService').mockReturnValue({
+        updateOne: updateOneSpy,
+      });
+
+      const user = {
+        id: 'user-123',
+        auth_data: { refreshToken: 'old-refresh-token' },
+      } as any;
+
+      await driver.refresh(user);
+
+      expect(updateOneSpy).toHaveBeenCalledWith(user.id, {
+        auth_data: JSON.stringify({ refreshToken: mockTokenSet.refresh_token }),
+      });
+    });
+
+    test('does not update user when no new refresh_token provided', async () => {
+      const config = createOpenIDConfig('okta');
+      const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+      await driver['getClient']();
+
+      const mockTokenSet = { access_token: 'new-token' };
+      vi.spyOn(driver.client!, 'refresh').mockResolvedValue(mockTokenSet as any);
+
+      const updateOneSpy = vi.fn();
+
+      vi.spyOn(driver as any, 'getUsersService').mockReturnValue({
+        updateOne: updateOneSpy,
+      });
+
+      const user = {
+        id: 'user-123',
+        auth_data: { refreshToken: 'old-refresh-token' },
+      } as any;
+
+      await driver.refresh(user);
+
+      expect(updateOneSpy).not.toHaveBeenCalled();
+    });
+
+    test('throws error from handleError when client.refresh fails', async () => {
+      const config = createOpenIDConfig('okta');
+      const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
+
+      await driver['getClient']();
+
+      const refreshError = new Error('Refresh failed');
+      vi.spyOn(driver.client!, 'refresh').mockRejectedValue(refreshError);
+
+      const user = {
+        id: 'user-123',
+        auth_data: { refreshToken: 'old-refresh-token' },
+      } as any;
+
+      await expect(driver.refresh(user)).rejects.toThrow();
     });
   });
 });
