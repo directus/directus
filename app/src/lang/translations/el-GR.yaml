@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Σχετικά
+first_name: Όνομα
+last_name: Επώνυμο
 identifier: Ταυτοποιητής
 avatar: Άβαταρ
 application: Εφαρμογή
