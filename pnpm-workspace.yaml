@@ -102,6 +102,7 @@ catalog:
   '@types/glob-to-regexp': 0.4.4
   '@types/inquirer': 9.0.9
   '@types/js-yaml': 4.0.9
+  '@types/json-schema': 7.0.15
   '@types/json2csv': 5.0.7
   '@types/jsonwebtoken': 9.0.10
   '@types/ldapjs': 2.2.5
@@ -293,8 +294,8 @@ catalog:
   typescript: 5.9.3
   typescript-eslint: 8.46.2
   undici: 7.16.0
-  unplugin-yaml: 3.0.7
   universal-cookie: 8.0.1
+  unplugin-yaml: 3.0.7
   update-check: 1.5.4
   uuid: 11.1.0
   vite: 7.1.12

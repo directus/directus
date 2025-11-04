@@ -32,6 +32,7 @@
 		"typecheck": "vue-tsc --noEmit"
 	},
 	"devDependencies": {
+		"@ai-sdk/vue": "catalog:",
 		"@directus/composables": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/errors": "workspace:*",
@@ -90,6 +91,7 @@
 		"@types/diff": "catalog:",
 		"@types/file-saver": "catalog:",
 		"@types/geojson": "catalog:",
+		"@types/json-schema": "catalog:",
 		"@types/lodash": "catalog:",
 		"@types/mapbox__mapbox-gl-draw": "catalog:",
 		"@types/mapbox__mapbox-gl-geocoder": "catalog:",
@@ -104,6 +106,7 @@
 		"@vueuse/core": "catalog:",
 		"@vueuse/integrations": "catalog:",
 		"@vueuse/router": "catalog:",
+		"ai": "catalog:",
 		"apexcharts": "catalog:",
 		"axios": "catalog:",
 		"base-64": "catalog:",
