@@ -25,7 +25,13 @@ export function applySearch(
 	let fields = Object.entries(schema.collections[collection]!.fields);
 
 	// filter out fields that are not searchable
-	fields = fields.filter(([_name, field]) => field.searchable !== false || field.special.includes('conceal') !== true);
+	fields = fields.filter(([_name, field]) => {
+		if (field.special.includes('conceal') === true) {
+			return false;
+		}
+
+		return field.searchable !== false;
+	});
 
 	const { cases, caseMap } = getCases(collection, permissions, []);
 
