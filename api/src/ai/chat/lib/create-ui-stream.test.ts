@@ -1,0 +1,59 @@
+import { ServiceUnavailableError } from '@directus/errors';
+import type { UIMessage } from 'ai';
+import { describe, expect, it, vi } from 'vitest';
+import { createUiStream } from './create-ui-stream.js';
+
+// Mocks
+vi.mock('@ai-sdk/openai', () => ({
+	createOpenAI: vi.fn(() => (model: string) => ({ id: `openai:${model}` })),
+}));
+
+vi.mock('@ai-sdk/anthropic', () => ({
+	createAnthropic: vi.fn(() => (model: string) => ({ id: `anthropic:${model}` })),
+}));
+
+const mockStreamTextResult = {
+	toDataStreamResponse: vi.fn(),
+	pipeDataStreamToResponse: vi.fn(),
+	toTextStreamResponse: vi.fn(),
+	pipeTextStreamToResponse: vi.fn(),
+};
+
+vi.mock('ai', () => ({
+	streamText: vi.fn(() => mockStreamTextResult),
+	convertToModelMessages: vi.fn((messages: UIMessage[]) => messages.map((m) => ({ ...m, converted: true }))),
+}));
+
+describe('createUiStream', () => {
+	const messages: UIMessage[] = [
+		{ id: '1', role: 'user', parts: [{ type: 'text', text: 'Hello' }] },
+		{ id: '2', role: 'assistant', parts: [{ type: 'text', text: 'Hi there!' }] },
+	];
+
+	const apiKeys = { openai: 'openai-key', anthropic: 'anthropic-key' };
+
+	it('should create a stream for OpenAI provider', () => {
+		const result = createUiStream('openai', 'gpt-3.5', messages, apiKeys);
+		expect(result).toBe(mockStreamTextResult);
+	});
+
+	it('should create a stream for Anthropic provider', () => {
+		const result = createUiStream('anthropic', 'claude-2', messages, apiKeys);
+		expect(result).toBe(mockStreamTextResult);
+	});
+
+	it('should throw ServiceUnavailableError if API key is missing for provider', () => {
+		expect(() => createUiStream('openai', 'gpt-3.5', messages, { ...apiKeys, openai: null })).toThrow(
+			ServiceUnavailableError,
+		);
+
+		expect(() => createUiStream('anthropic', 'claude-2', messages, { ...apiKeys, anthropic: null })).toThrow(
+			ServiceUnavailableError,
+		);
+	});
+
+	it('should throw Error for unknown provider', () => {
+		// @ts-expect-error Testing invalid provider
+		expect(() => createUiStream('unknown', 'model', messages, apiKeys)).toThrow('Unexpected provider given: "unknown"');
+	});
+});
