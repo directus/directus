@@ -130,6 +130,7 @@ catalog:
   '@vueuse/core': 14.0.0
   '@vueuse/integrations': 14.0.0
   '@vueuse/router': 14.0.0
+  ai: 5.0.87
   apexcharts: 4.7.0
   argon2: 0.44.0
   async: 3.2.6

@@ -366,6 +366,9 @@ catalogs:
     '@vueuse/router':
       specifier: 14.0.0
       version: 14.0.0
+    ai:
+      specifier: 5.0.87
+      version: 5.0.87
     apexcharts:
       specifier: 4.7.0
       version: 4.7.0
@@ -1472,6 +1475,9 @@ importers:
       '@directus/vue-split-panel':
         specifier: 'catalog:'
         version: 0.8.0(vue@3.5.22(typescript@5.9.3))
+      ai:
+        specifier: 'catalog:'
+        version: 5.0.87(zod@4.1.12)
       reka-ui:
         specifier: 'catalog:'
         version: 2.6.0(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
@@ -3107,8 +3113,20 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
+  '@ai-sdk/gateway@2.0.6':
+    resolution: {integrity: sha512-FmhR6Tle09I/RUda8WSPpJ57mjPWzhiVVlB50D+k+Qf/PBW0CBtnbAUxlNSR5v+NIZNLTK3C56lhb23ntEdxhQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+
   '@ai-sdk/provider-utils@3.0.15':
     resolution: {integrity: sha512-kOc6Pxb7CsRlNt+sLZKL7/VGQUd7ccl3/tIK+Bqf5/QhHR0Qm3qRBMz1IwU1RmjJEZA73x+KB5cUckbDl2WF7Q==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+
+  '@ai-sdk/provider-utils@3.0.16':
+    resolution: {integrity: sha512-lsWQY9aDXHitw7C1QRYIbVGmgwyT98TF3MfM8alNIXKpdJdi+W782Rzd9f1RyOfgRmZ08gJ2EYNDhWNK7RqpEA==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -7105,6 +7123,12 @@ packages:
 
   ai@5.0.86:
     resolution: {integrity: sha512-ooHwNTkLdedFf98iQhtSc5btc/P4UuXuOpYneoifq0190vqosLunNdW8Hs6CiE0Am7YOGNplDK56JIPlHZIL4w==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+
+  ai@5.0.87:
+    resolution: {integrity: sha512-9Cjx7o8IY9zAczigX0Tk/BaQwjPe/M6DpEjejKSBNrf8mOPIvyM+pJLqJSC10IsKci3FPsnaizJeJhoetU1Wfw==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -14048,7 +14072,21 @@ snapshots:
       '@vercel/oidc': 3.0.3
       zod: 4.1.12
 
+  '@ai-sdk/gateway@2.0.6(zod@4.1.12)':
+    dependencies:
+      '@ai-sdk/provider': 2.0.0
+      '@ai-sdk/provider-utils': 3.0.16(zod@4.1.12)
+      '@vercel/oidc': 3.0.3
+      zod: 4.1.12
+
   '@ai-sdk/provider-utils@3.0.15(zod@4.1.12)':
+    dependencies:
+      '@ai-sdk/provider': 2.0.0
+      '@standard-schema/spec': 1.0.0
+      eventsource-parser: 3.0.6
+      zod: 4.1.12
+
+  '@ai-sdk/provider-utils@3.0.16(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
       '@standard-schema/spec': 1.0.0
@@ -19388,6 +19426,14 @@ snapshots:
       '@ai-sdk/gateway': 2.0.5(zod@4.1.12)
       '@ai-sdk/provider': 2.0.0
       '@ai-sdk/provider-utils': 3.0.15(zod@4.1.12)
+      '@opentelemetry/api': 1.9.0
+      zod: 4.1.12
+
+  ai@5.0.87(zod@4.1.12):
+    dependencies:
+      '@ai-sdk/gateway': 2.0.6(zod@4.1.12)
+      '@ai-sdk/provider': 2.0.0
+      '@ai-sdk/provider-utils': 3.0.16(zod@4.1.12)
       '@opentelemetry/api': 1.9.0
       zod: 4.1.12
 

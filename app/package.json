@@ -159,6 +159,7 @@
 	"dependencies": {
 		"@ai-sdk/vue": "catalog:",
 		"@directus/vue-split-panel": "catalog:",
+		"ai": "catalog:",
 		"reka-ui": "catalog:"
 	}
 }
