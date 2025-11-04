@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Относно
+first_name: Име
+last_name: Фамилия
 identifier: Идентификатор
 avatar: Аватар
 application: Приложение
