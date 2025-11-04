@@ -8,7 +8,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import { Filter } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
-import { computed, nextTick, ref, toRefs, unref, watch } from 'vue';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 
@@ -73,17 +73,25 @@ const requiredFields = computed(() => {
 	return adjustFieldsForDisplays(getFieldsFromTemplate(displayTemplate.value), unref(selectedCollection));
 });
 
-const sortingInProgress = ref(false);
 
 watch(
 	values,
-	() => {
-		if (!sortingInProgress.value) {
+	(newValues, oldValues) => {
+		if (!oldValues || selectionHasChanged(newValues, oldValues)) {
 			getDisplayItems();
 		}
 	},
 	{ immediate: true },
 );
+
+function selectionHasChanged(newValues: ValueItem[], oldValues: ValueItem[]) {
+	if (newValues.length !== oldValues.length) return true;
+
+	const newKeys = new Set(newValues.map((v) => `${v.collection}_${v.key}`));
+	const oldKeys = new Set(oldValues.map((v) => `${v.collection}_${v.key}`));
+
+	return ![...newKeys].every((key) => oldKeys.has(key));
+}
 
 async function getDisplayItems() {
 	if (!values.value || values.value.length === 0) {
@@ -141,7 +149,6 @@ function removeItem(item: Record<string, any>) {
 
 function onSort(sortedItems: Record<string, any>[]) {
 	displayItems.value = sortedItems;
-	sortingInProgress.value = true;
 
 	const newValues = sortedItems.map((item) => ({
 		key: item[primaryKey.value],
@@ -149,10 +156,6 @@ function onSort(sortedItems: Record<string, any>[]) {
 	}));
 
 	values.value = newValues;
-
-	nextTick(() => {
-		sortingInProgress.value = false;
-	});
 }
 </script>
 
