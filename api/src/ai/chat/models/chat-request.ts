@@ -6,7 +6,8 @@ export const ChatRequestTool = z.union([
 	z.object({
 		name: z.string(),
 		description: z.string(),
-		inputSchema: z.custom<JSONSchema7>((schema) => {
+		inputSchema: z.custom<JSONSchema7>((_schema) => {
+			// TODO validate that `schema` is a valid JSON Schema draft-07 structure
 			return true;
 		}, { message: 'Invalid JSON schema' }),
 	}),
