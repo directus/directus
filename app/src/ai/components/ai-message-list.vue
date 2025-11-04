@@ -1,22 +1,14 @@
 <script setup lang="ts">
 import type { ComponentPublicInstance } from 'vue';
-import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
 import AiMessage from './ai-message.vue';
 import type { AiMessageAction, AiMessageAvatar } from './ai-message.vue';
 
-export interface AiMessage {
-	id: string;
-	content?: string;
-	parts?: Array<{
-		type: 'text' | 'image' | 'tool-call' | 'tool-result';
-		text?: string;
-		[key: string]: any;
-	}>;
-	role: 'user' | 'assistant' | 'system';
-	timestamp?: Date | string;
-}
+import type { UIMessage } from 'ai';
 
-export type AiStatus = 'idle' | 'streaming' | 'submitted' | 'error';
+export type AiMessage = UIMessage;
+
+export type AiStatus = 'ready' | 'streaming' | 'submitted' | 'error';
 
 export interface MessageConfig {
 	variant?: 'primary' | 'subdued' | 'accent' | 'normal';
@@ -27,7 +19,7 @@ export interface MessageConfig {
 
 interface Props {
 	/** Array of messages to display */
-	messages?: AiMessage[];
+	messages?: UIMessage[];
 	/** Current status of the AI interaction */
 	status?: AiStatus;
 	/** Auto-scroll to bottom when streaming */
@@ -50,7 +42,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	messages: () => [],
-	status: 'idle',
+	status: 'ready',
 	shouldAutoScroll: false,
 	shouldScrollToBottom: true,
 	autoScroll: true,
@@ -310,12 +302,15 @@ function getMessageConfig(role: string): MessageConfig {
 			<div v-if="showAutoScroll && autoScroll" class="auto-scroll-container">
 				<slot name="viewport" :on-click="onAutoScrollClick">
 					<v-button
-						:icon="autoScrollIcon"
 						x-small
 						secondary
 						class="auto-scroll-button"
+						icon
+						rounded
 						@click="onAutoScrollClick"
-					/>
+					>
+						<v-icon name="arrow_downward" />
+					</v-button>
 				</slot>
 			</div>
 		</Transition>
@@ -326,14 +321,13 @@ function getMessageConfig(role: string): MessageConfig {
 /*
   Available Variables:
   --ai-message-list-gap          [1rem]
-  --ai-message-list-padding      [1rem]
 */
 
 .ai-message-list {
 	display: flex;
 	flex-direction: column;
 	gap: var(--ai-message-list-gap, 1rem);
-	padding: var(--ai-message-list-padding, 1rem);
+	padding-bottom: 1rem;
 	position: relative;
 }
 
@@ -387,6 +381,7 @@ function getMessageConfig(role: string): MessageConfig {
 .auto-scroll-button {
 	pointer-events: all;
 	box-shadow: var(--theme--shadow);
+	padding: 4px;
 
 	--v-button-background-color: var(--theme--background);
 	--v-button-background-color-hover: var(--theme--background-accent);
@@ -394,7 +389,6 @@ function getMessageConfig(role: string): MessageConfig {
 	--v-button-color-hover: var(--theme--foreground-accent);
 }
 
-// Transition for auto-scroll button
 .auto-scroll-enter-active,
 .auto-scroll-leave-active {
 	transition: opacity var(--fast) var(--transition), transform var(--fast) var(--transition);
