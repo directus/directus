@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Derbarê
+first_name: Navê Pêşîn
+last_name: Navê Paşîn
 identifier: Nasname
 avatar: Avatar
 application: Serlêdan
