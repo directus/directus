@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Sobre
+first_name: Primeiro Nome
+last_name: Sobrenome
 identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
@@ -2526,14 +2528,6 @@ search_flow: Procurar Fluxo...
 percent: Porcentagem
 show_password: Mostrar senha
 hide_password: Ocultar Senha
-bsl_banner:
-  welcome_to_directus: Boas-vindas ao Directus!
-  organization_threshold: Entidades acima dessa limiar necessitam de uma licença paga.
-  license_agreement: Ao clicar em "Aceito", você concorda com {directusBsl} e {privacyPolicy}.
-  directus_bsl: Directus BSL 1.1
-  privacy_policy: Políticas de Privacidade
-  accept_terms: Aceitar
-  get_license: Obtenha a sua licença
 accepted: Aceitado
 text_direction_auto: Automático (Adequar o Idioma)
 text_direction_ltr: Da Esquerda para a Direita (EPD)
