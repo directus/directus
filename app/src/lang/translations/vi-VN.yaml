@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Về chúng tôi
+first_name: Tên
+last_name: Họ
 identifier: Định danh
 avatar: Ảnh đại diện
 application: Ứng dụng
