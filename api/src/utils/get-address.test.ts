@@ -47,17 +47,20 @@ describe('getAddress', async () => {
 		});
 
 		expect(getAddress(server)).toBe(`${serverHost}:${serverPort}`);
+		server.close();
 	});
 
 	test('Should return unix socket when path is provided', async () => {
 		const server = await createServer({ path: serverSocket });
 
 		expect(getAddress(server)).toBe(serverSocket);
+		server.close();
 	});
 
 	test('Should return host + port when path is undefined', async () => {
 		const server = await createServer({ host: serverHost, port: serverPort });
 
 		expect(getAddress(server)).toBe(`${serverHost}:${serverPort}`);
+		server.close();
 	});
 });
