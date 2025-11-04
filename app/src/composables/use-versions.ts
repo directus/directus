@@ -42,9 +42,10 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 				version = newVersions.find((version) => version.key === newQueryVersion);
 			}
 
-			if (version?.key === currentVersion.value?.key) return;
+			if (version?.key !== currentVersion.value?.key) {
+				validationErrors.value = [];
+			}
 
-			validationErrors.value = [];
 			currentVersion.value = version ?? null;
 		},
 		{ immediate: true },
@@ -142,7 +143,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 					filter,
 					sort: '-date_created',
 					fields: ['*'],
-					versionRaw: true,
 				},
 			});
 
@@ -221,6 +221,8 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			// Update local item with the saved changes
 			Object.assign(item.value, savedData);
 			edits.value = {};
+
+			await getVersions();
 
 			return savedData;
 		} catch (error) {

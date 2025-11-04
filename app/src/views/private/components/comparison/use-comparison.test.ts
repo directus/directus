@@ -264,19 +264,14 @@ describe('useComparison', () => {
 		});
 	});
 
-	describe('version delta date and user extraction', () => {
-		it('should use delta._date when available', async () => {
-			const deltaDate = '2025-10-29T15:30:00.000Z';
-			const otherUser = 'other-user-id';
-
+	describe('normalizeVersionItem date and user selection', () => {
+		it('should use date_updated and user_updated when user_updated exists', async () => {
 			const testCase = getTestData('version', {
 				currentVersionOverwrites: {
-					delta: {
-						_date: deltaDate,
-						_user: otherUser,
-					},
 					date_created: '2025-10-29T09:00:00.000Z',
-					user_created: 'original-user-id',
+					date_updated: '2025-10-29T10:00:00.000Z',
+					user_created: 'user-created-id',
+					user_updated: 'user-updated-id',
 				},
 			});
 
@@ -286,20 +281,17 @@ describe('useComparison', () => {
 
 			await fetchComparisonData();
 
-			const incoming = normalizedData.value?.incoming;
-			expect(incoming?.date.raw).toBe(deltaDate);
+			expect(normalizedData.value?.incoming?.date?.raw).toBe('2025-10-29T10:00:00.000Z');
+			expect(normalizedData.value?.incoming?.user).toBe('user-updated-id');
 		});
 
-		it('should use delta._user when available', async () => {
-			const deltaUser = 'delta-user-id';
-			const userCreated = 'original-user-id';
-
+		it('should use date_created and user_created when user_updated does not exist', async () => {
 			const testCase = getTestData('version', {
 				currentVersionOverwrites: {
-					delta: {
-						_user: deltaUser,
-					},
-					user_created: userCreated,
+					date_created: '2025-10-29T09:00:00.000Z',
+					date_updated: null,
+					user_created: 'user-created-id',
+					user_updated: null,
 				},
 			});
 
@@ -309,8 +301,8 @@ describe('useComparison', () => {
 
 			await fetchComparisonData();
 
-			const incoming = normalizedData.value?.incoming;
-			expect(incoming?.user).toBe(deltaUser);
+			expect(normalizedData.value?.incoming?.date?.raw).toBe('2025-10-29T09:00:00.000Z');
+			expect(normalizedData.value?.incoming?.user).toBe('user-created-id');
 		});
 	});
 });

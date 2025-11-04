@@ -493,8 +493,9 @@ export function useComparison(options: UseComparisonOptions) {
 		return {
 			id: version.id,
 			displayName: getVersionDisplayName(version),
-			date: normalizeDate(version.delta?._date ?? version.date_created),
-			user: version.delta?._user ?? version.user_created,
+			// workaround to make sure the date is in the local timezone
+			date: normalizeDate(version.user_updated ? version.date_updated : version.date_created),
+			user: version.user_updated ?? version.user_created,
 			collection: version.collection,
 			item: version.item,
 		};
