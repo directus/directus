@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Hakkında
+first_name: Ad
+last_name: Soyad
 identifier: Tanımlayıcı
 avatar: Avatar
 application: Uygulama
