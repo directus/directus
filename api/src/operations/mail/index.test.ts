@@ -16,6 +16,7 @@ describe('Operations / Mail', () => {
 			accountability: null,
 			database: vi.mocked(knex.default({ client: MockClient })),
 			getSchema: vi.fn().mockResolvedValue({}),
+			flow: {},
 		};
 
 		mailServiceSendSpy = vi.spyOn(MailService.prototype, 'send').mockResolvedValue(true);

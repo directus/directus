@@ -3,6 +3,7 @@ import type {
 	FUNCTIONS,
 	GEOMETRY_FORMATS,
 	GEOMETRY_TYPES,
+	RELATIONAL_TYPES,
 	LOCAL_TYPES,
 	TYPES,
 	NUMERIC_TYPES,
@@ -30,6 +31,8 @@ export type GeometryType = (typeof GEOMETRY_TYPES)[number] | 'GeometryCollection
 
 export type GeometryFormat = (typeof GEOMETRY_FORMATS)[number];
 
+export type RelationalType = (typeof RELATIONAL_TYPES)[number];
+
 export type FieldMeta = {
 	id: number;
 	collection: string;
@@ -50,6 +53,7 @@ export type FieldMeta = {
 	conditions: Condition[] | null;
 	validation: Filter | null;
 	validation_message: string | null;
+	searchable: boolean;
 	system?: true;
 	clear_hidden_value_on_save?: boolean;
 };

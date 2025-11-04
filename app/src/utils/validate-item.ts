@@ -1,5 +1,9 @@
 import { useRelationsStore } from '@/stores/relations';
-import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
+import {
+	FailedValidationError,
+	FailedValidationErrorExtensions,
+	joiValidationErrorItemToErrorExtensions,
+} from '@directus/validation';
 import { ContentVersion, Field, LogicalFilterAND } from '@directus/types';
 import { validatePayload } from '@directus/utils';
 import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';
@@ -11,7 +15,7 @@ export function validateItem(
 	isNew: boolean,
 	includeCustomValidations = false,
 	currentVersion: ContentVersion | null = null,
-) {
+): FailedValidationErrorExtensions[] {
 	const relationsStore = useRelationsStore();
 	const validationRules: LogicalFilterAND = { _and: [] };
 	const updatedItem = cloneDeep(item);
