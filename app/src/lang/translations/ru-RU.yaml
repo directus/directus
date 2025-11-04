@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: О программе
+first_name: Имя
+last_name: Фамилия
 identifier: Индентификатор
 avatar: Аватар
 application: Приложение
@@ -2560,13 +2562,4 @@ search_flow: Последовательность поиска...
 percent: Процент
 show_password: Показать пароль
 hide_password: Скрыть пароль
-bsl_banner:
-  welcome_to_directus: Добро пожаловать в Directus!
-  directus_free_use: Directus бесплатен для организаций с годовым доходом, финансированием или операционным бюджетом менее 5 миллионов долларов.
-  organization_threshold: Для организаций, превышающих этот порог, требуется платная лицензия.
-  license_agreement: Нажимая кнопку «Принять», вы соглашаетесь с {directusBsl} и {privacyPolicy}.
-  directus_bsl: Directus BSL 1.1
-  privacy_policy: Политика конфиденциальности
-  accept_terms: Принять
-  get_license: Получить лицензию
 accepted: Принято
