@@ -67,7 +67,7 @@ export type Settings = {
 };
 
 export type OwnerInformation = {
-	email: string | null;
+	project_owner: string | null;
 	project_usage: 'personal' | 'commercial' | 'community' | null;
 	org_name: string | null;
 	product_updates: boolean;
