@@ -844,8 +844,7 @@ export class FieldsService {
 				const permissionRows: { id: number; collection: string; fields: string }[] = await trx
 					.select('id', 'collection', 'fields')
 					.from('directus_permissions')
-					.where('collection', collection)
-					.andWhereLike('fields', '%' + field + '%');
+					.whereRaw('?? = ? AND ?? LIKE ?', ['collection', collection, 'fields', '%' + field + '%']);
 
 				if (permissionRows.length > 0) {
 					for (const permissionRow of permissionRows) {
