@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: دەربارە
+first_name: ناوی یەکەم
+last_name: ناوی باوک
 identifier: ناسەرەوە
 avatar: وێنۆچکە
 application: ئەپڵیکەیشن
