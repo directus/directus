@@ -294,6 +294,7 @@ catalog:
   typescript-eslint: 8.46.2
   undici: 7.16.0
   unplugin-yaml: 3.0.7
+  universal-cookie: 8.0.1
   update-check: 1.5.4
   uuid: 11.1.0
   vite: 7.1.12

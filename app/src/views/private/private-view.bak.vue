@@ -21,8 +21,9 @@ import NotificationsPreview from './components/notifications-preview.vue';
 import ProjectInfo from './private-view/components/private-view-nav-project-name.vue';
 import SidebarDetailGroup from './private-view/components/private-view-sidebar-detail-group.vue';
 import LicenseBanner from './components/license-banner.vue';
-import { useSettingsStore } from '@/stores/settings';
+import { useCookies } from '@vueuse/integrations/useCookies';
 import SkipMenu from './components/skip-menu.vue';
+import { useSettingsStore } from '@/stores/settings';
 
 const SIZES = {
 	moduleBarWidth: 60,
@@ -55,6 +56,7 @@ const router = useRouter();
 const headTitle = computed(() => props.title ?? null);
 
 const splitViewWritable = useSync(props, 'splitView', emit);
+const cookies = useCookies(['license-banner-dismissed']);
 
 const contentEl = ref<HTMLElement>();
 const headerBarEl = ref();
@@ -217,7 +219,6 @@ const mainResizeOptions = computed<ResizeableOptions>(() => {
 const navOpen = ref(false);
 const userStore = useUserStore();
 const appStore = useAppStore();
-const settingsStore = useSettingsStore();
 
 const appAccess = computed(() => {
 	if (!userStore.currentUser) return true;
@@ -256,7 +257,11 @@ function getWidth(input: unknown, fallback: number): number {
 	return input && !Number.isNaN(input) ? Number(input) : fallback;
 }
 
-const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.settings?.accepted_terms === false);
+const settingsStore = useSettingsStore();
+
+const showLicenseBanner = computed(
+	() => userStore.isAdmin && !settingsStore.settings?.project_owner && !cookies.get('license-banner-dismissed'),
+);
 </script>
 
 <template>
