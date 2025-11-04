@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Reused the permission error creation
+Improved error consistency
