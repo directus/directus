@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: माहिती
+first_name: पहिले नाव
+last_name: आडनाव
 identifier: ओळखकर्ता
 avatar: अवतार
 application: अर्ज
