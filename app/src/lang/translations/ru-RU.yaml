@@ -112,6 +112,7 @@ hook: Хук
 fill_width: В ширину
 field_name_translations: Переводы названия поля
 enter_password_to_enable_tfa: Введите свой пароль для включения двухфакторной аутентификации
+sso_tfa_setup_notice: Вы будете отключены от своего аккаунта и вам потребуется снова войти в систему. Любые несохранённые изменения будут потеряны.
 add_field: Добавить поле
 role_name: Название роли
 policy_name: Название политики
@@ -1190,7 +1191,6 @@ page_help_settings_datamodel_fields: >-
   **Модель данных: коллекция** — форма для управления этой коллекцией и её полями.
 page_help_settings_system_logs: '**Системные журналы** — доступ к потоку системных журналов.'
 page_help_settings_policies_collection: '**Просмотреть политики** — список всех политик проекта.'
-page_help_settings_policies_item: "**Подробнее о политике** — Управление разрешениями политики и другими настройками."
 page_help_settings_roles_collection: '**Обзор ролей** — список всех ролей в проекте.'
 page_help_settings_roles_item: "**Карточка роли** — управление разрешениями роли и другими настройками."
 page_help_settings_presets_collection: >-
@@ -1593,6 +1593,8 @@ unlimited_usage: Неограниченное использование
 uses_left: Не осталось использования | 1 использование осталось | осталось {n} использований
 no_shares: Нет элементов Общего доступа
 new_share: Новая публикация
+mcp_prompts_collection_schema:
+  messages_role_user: Пользователь
 expired: Истекло
 upcoming: Предстоящие
 share: Поделиться

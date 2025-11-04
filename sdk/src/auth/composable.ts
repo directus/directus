@@ -91,7 +91,6 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 		const refresh = async (options: Omit<RefreshOptions, 'refresh_token'> = {}) => {
 			const awaitRefresh = async () => {
 				const authData = await storage.get();
-				await resetStorage();
 
 				const fetchOptions: RequestInit = {
 					method: 'POST',
@@ -114,9 +113,12 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 
 				const requestUrl = getRequestUrl(client.url, '/auth/refresh');
 
-				return request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch).then((data) =>
-					setCredentials(data).then(() => data),
-				);
+				const data = await request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch);
+
+				await resetStorage();
+				await setCredentials(data);
+
+				return data;
 			};
 
 			refreshPromise = awaitRefresh();
@@ -127,8 +129,6 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 		function login(payload: LocalLoginPayload, options?: LoginOptions): Promise<AuthenticationData>;
 		function login(payload: LDAPLoginPayload, options?: LoginOptions): Promise<AuthenticationData>;
 		async function login(payload: LoginPayload, options: LoginOptions = {}) {
-			await resetStorage();
-
 			const authData: Record<string, string> = payload;
 			if ('otp' in options) authData['otp'] = options.otp;
 			authData['mode'] = options.mode ?? mode;
@@ -150,7 +150,9 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 
 			const data = await request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch);
 
+			await resetStorage();
 			await setCredentials(data);
+
 			return data;
 		}
 

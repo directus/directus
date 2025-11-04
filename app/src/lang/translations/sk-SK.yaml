@@ -1170,7 +1170,6 @@ page_help_settings_datamodel_fields: >-
   **Data Model: Zbierka** — Formulár na správu tejto zbierky a jej polí.
 page_help_settings_system_logs: '**Systémové logy** — Prístup k streamu systémových logov.'
 page_help_settings_policies_collection: '**Prehliadať politiky** - Zoznam všetkých politík v projekte.'
-page_help_settings_policies_item: "**Detaily politiky** - Spravuje povolenia politiky a iné nastavenia."
 page_help_settings_roles_collection: '**Prehliadať role** - Zoznam všetkých rolí v projekte.'
 page_help_settings_roles_item: "**Podrobnosti role** — Spravuje oprávnenia rolí a iné nastavenia."
 page_help_settings_presets_collection: >-
@@ -1570,6 +1569,8 @@ unlimited_usage: Neobmedzené používanie
 uses_left: Žiadne zostávajúce použitia | Jedno zostávajúce použitie | {n} zostávajúcich použití
 no_shares: Žiadne zdieľania
 new_share: Nové zdieľanie
+mcp_prompts_collection_schema:
+  messages_role_user: Používateľ
 expired: Vypršalo
 upcoming: Nadchádzajúce
 share: Zdielať

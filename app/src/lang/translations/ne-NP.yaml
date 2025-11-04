@@ -1199,6 +1199,8 @@ live_preview:
 shares: शेयरहरू
 no_shares: "देखाउनको लागि कुनै साझेदारी छैन\n"
 new_share: नयाँ साझेदारी
+mcp_prompts_collection_schema:
+  messages_role_user: प्रयोगकर्ता
 expired: म्याद सकिएको
 upcoming: आगामी
 share: "शेयर गर्नु\nअरुलाई पठाउनु"

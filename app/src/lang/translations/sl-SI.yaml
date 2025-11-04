@@ -978,6 +978,8 @@ inline: V vrstici
 comment: Komentar
 live_preview:
   new_window: Odpri v novem oknu
+mcp_prompts_collection_schema:
+  messages_role_user: Uporabnik
 relational_triggers: Povezani prožilci
 referential_action_field_label_m2o: Ob brisanju v {collection} ...
 referential_action_field_label_o2m: Pri deselektiranju iz {collection} ...

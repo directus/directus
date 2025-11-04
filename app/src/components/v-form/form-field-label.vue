@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { isDateUpdated, isUserUpdated } from '@/utils/field-utils';
+import type { Field } from '@directus/types';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { FormField } from './types';
+import type { ComparisonContext, FormField } from './types';
 
-withDefaults(
+const props = withDefaults(
 	defineProps<{
 		field: FormField;
 		toggle: (event: Event) => any;
@@ -16,6 +19,9 @@ withDefaults(
 		loading?: boolean;
 		rawEditorEnabled?: boolean;
 		rawEditorActive?: boolean;
+		disabledMenu?: boolean;
+		comparison?: ComparisonContext;
+		comparisonActive?: boolean;
 	}>(),
 	{
 		batchMode: false,
@@ -28,47 +34,92 @@ withDefaults(
 		loading: false,
 		rawEditorEnabled: false,
 		rawEditorActive: false,
+		disabledMenu: false,
 	},
 );
 
 defineEmits(['toggle-batch', 'toggle-raw']);
 
 const { t } = useI18n();
+
+const showHiddenIndicator = computed(
+	() =>
+		(props.comparison?.fields?.has(props.field.field) || props.comparison?.revisionFields?.has(props.field.field)) &&
+		props.field.meta?.hidden,
+);
+
+function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
+	const isAutoUpdatedField = isDateUpdated(props.field as Field) || isUserUpdated(props.field as Field);
+
+	if (isDifferentFromLatest || isAutoUpdatedField) return t('updated_in_revision');
+	return t('updated_in_revision_matches_latest');
+}
 </script>
 
 <template>
 	<div class="field-label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
-		<button type="button" class="field-name" @click="toggle">
+		<component
+			:is="disabledMenu ? 'div' : 'button'"
+			class="field-name"
+			v-bind="!disabledMenu ? { type: 'button', onClick: toggle } : {}"
+		>
+			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot" />
 			<v-checkbox
 				v-if="batchMode"
 				:model-value="batchActive"
 				:value="field.field"
 				@update:model-value="$emit('toggle-batch', field)"
 			/>
-			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
-			<v-text-overflow :text="field.name" />
-			<v-icon
-				v-if="field.meta?.required === true"
-				class="required"
-				:class="{ 'has-badge': badge }"
-				sup
-				name="star"
-				filled
+
+			<v-checkbox
+				v-if="comparison?.side === 'incoming' && comparison.fields.has(field.field)"
+				class="comparison-checkbox"
+				:model-value="comparisonActive"
+				:value="field.field"
+				@update:model-value="comparison.onToggleField(field.field)"
 			/>
-			<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
-			<v-icon
-				v-if="!disabled && rawEditorEnabled"
-				v-tooltip="t('toggle_raw_editor')"
-				class="raw-editor-toggle"
-				:class="{ active: rawEditorActive }"
-				name="data_object"
-				:filled="!rawEditorActive"
-				small
-				clickable
-				@click.stop="$emit('toggle-raw', !rawEditorActive)"
-			/>
-			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
-		</button>
+
+			<div class="field-label-content">
+				<v-text-overflow :text="field.name" />
+
+				<span v-if="showHiddenIndicator" class="hidden-indicator">({{ t('hidden') }})</span>
+
+				<v-icon
+					v-if="field.meta?.required === true"
+					class="required"
+					:class="{ 'has-badge': badge }"
+					sup
+					name="star"
+					filled
+				/>
+
+				<v-chip v-if="badge" class="badge" x-small>{{ badge }}</v-chip>
+
+				<v-icon
+					v-if="!disabled && rawEditorEnabled"
+					v-tooltip="t('toggle_raw_editor')"
+					class="raw-editor-toggle"
+					:class="{ active: rawEditorActive }"
+					name="data_object"
+					:filled="!rawEditorActive"
+					small
+					clickable
+					@click.stop="$emit('toggle-raw', !rawEditorActive)"
+				/>
+
+				<v-chip
+					v-if="comparison?.side === 'incoming' && comparison.revisionFields?.has(field.field)"
+					v-tooltip="getUpdatedInRevisionTooltip(comparison.fields.has(field.field))"
+					class="updated-badge"
+					x-small
+					:label="false"
+				>
+					{{ $t('updated') }}
+				</v-chip>
+			</div>
+
+			<v-icon v-if="!disabled && !disabledMenu" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
+		</component>
 	</div>
 </template>
 
@@ -82,6 +133,11 @@ const { t } = useI18n();
 	.v-text-overflow {
 		display: inline;
 		white-space: normal;
+
+		@media (min-width: 960px) {
+			display: initial;
+			white-space: nowrap;
+		}
 	}
 
 	&.readonly button {
@@ -91,9 +147,31 @@ const { t } = useI18n();
 	.v-checkbox {
 		block-size: 18px; // Don't push down label with normal icon height (24px)
 		margin-inline-end: 4px;
+		display: inline-flex;
+		align-self: baseline;
 	}
 
-	.v-chip {
+	.v-checkbox.comparison-checkbox {
+		--v-checkbox-color: var(--theme--success);
+
+		margin-inline-end: 8px;
+
+		:deep(.checkbox) {
+			&:hover {
+				--v-icon-color: var(--theme--success);
+			}
+		}
+	}
+
+	.field-label-content {
+		display: inline;
+
+		@media (min-width: 960px) {
+			display: contents;
+		}
+	}
+
+	.badge {
 		margin: 0;
 		flex-shrink: 0;
 		margin-inline-start: 3px;
@@ -118,6 +196,11 @@ const { t } = useI18n();
 		&.active {
 			opacity: 1;
 		}
+	}
+
+	.hidden-indicator {
+		margin-inline-start: 0.25em;
+		color: var(--theme--foreground-subdued);
 	}
 
 	&:focus-within,
@@ -149,6 +232,14 @@ const { t } = useI18n();
 		}
 	}
 
+	.updated-badge {
+		--v-chip-background-color: var(--theme--success-background);
+		--v-chip-color: var(--theme--success-accent);
+
+		flex-shrink: 0;
+		margin-inline-start: 6px;
+	}
+
 	&.edited {
 		.edit-dot {
 			position: absolute;
@@ -168,17 +259,11 @@ const { t } = useI18n();
 		}
 	}
 
-	@media (min-width: 960px) {
-		display: block;
-
-		.v-text-overflow {
-			display: initial;
-			white-space: nowrap;
-		}
-
-		.field-name {
-			display: flex;
-		}
+	.field-name {
+		max-inline-size: 100%;
+		text-align: start;
+		display: flex;
+		flex-wrap: nowrap;
 	}
 }
 

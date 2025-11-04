@@ -1347,6 +1347,8 @@ shares: 分享
 unlimited_usage: 無限制使用
 no_shares: 目前沒有分享
 new_share: 新增分享
+mcp_prompts_collection_schema:
+  messages_role_user: 用戶
 expired: 已過期
 upcoming: 即將開始
 share: 分享

@@ -1,5 +1,4 @@
 import { useEnv } from '@directus/env';
-import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import getDatabase, {
 	hasDatabaseConnection,
@@ -9,13 +8,10 @@ import getDatabase, {
 import runMigrations from '../../../database/migrations/run.js';
 import installDatabase from '../../../database/seeds/run.js';
 import { useLogger } from '../../../logger/index.js';
-import { AccessService } from '../../../services/access.js';
-import { PoliciesService } from '../../../services/policies.js';
-import { RolesService } from '../../../services/roles.js';
 import { SettingsService } from '../../../services/settings.js';
-import { UsersService } from '../../../services/users.js';
 import { getSchema } from '../../../utils/get-schema.js';
-import { defaultAdminPolicy, defaultAdminRole, defaultAdminUser } from '../../utils/defaults.js';
+import { createAdmin } from '../../../utils/create-admin.js';
+import { email } from 'zod';
 
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {
 	const logger = useLogger();
@@ -39,14 +35,24 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 		const schema = await getSchema();
 
 		if (skipAdminInit == null) {
-			await createDefaultAdmin(schema);
+			await createAdmin(schema);
 		} else {
 			logger.info('Skipping creation of default Admin user and role...');
 		}
 
+		const settingsService = new SettingsService({ schema });
+
 		if (env['PROJECT_NAME'] && typeof env['PROJECT_NAME'] === 'string' && env['PROJECT_NAME'].length > 0) {
-			const settingsService = new SettingsService({ schema });
 			await settingsService.upsertSingleton({ project_name: env['PROJECT_NAME'] });
+		}
+
+		if (email().safeParse(env['PROJECT_OWNER']).success) {
+			await settingsService.setOwner({
+				project_owner: env['PROJECT_OWNER'] as string,
+				org_name: null,
+				project_usage: null,
+				product_updates: false,
+			});
 		}
 	} else {
 		logger.info('Database already initialized, skipping install');
@@ -75,42 +81,4 @@ async function waitForDatabase(database: Knex) {
 	await validateDatabaseConnection(database);
 
 	return database;
-}
-
-async function createDefaultAdmin(schema: SchemaOverview) {
-	const logger = useLogger();
-	const env = useEnv();
-
-	const { nanoid } = await import('nanoid');
-
-	logger.info('Setting up first admin role...');
-	const accessService = new AccessService({ schema });
-	const policiesService = new PoliciesService({ schema });
-	const rolesService = new RolesService({ schema });
-
-	const role = await rolesService.createOne(defaultAdminRole);
-	const policy = await policiesService.createOne(defaultAdminPolicy);
-
-	await accessService.createOne({ policy, role });
-
-	logger.info('Adding first admin user...');
-	const usersService = new UsersService({ schema });
-
-	let adminEmail = env['ADMIN_EMAIL'];
-
-	if (!adminEmail) {
-		logger.info('No admin email provided. Defaulting to "admin@example.com"');
-		adminEmail = 'admin@example.com';
-	}
-
-	let adminPassword = env['ADMIN_PASSWORD'];
-
-	if (!adminPassword) {
-		adminPassword = nanoid(12);
-		logger.info(`No admin password provided. Defaulting to "${adminPassword}"`);
-	}
-
-	const token = env['ADMIN_TOKEN'] ?? null;
-
-	await usersService.createOne({ ...defaultAdminUser, email: adminEmail, password: adminPassword, token, role });
 }

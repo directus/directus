@@ -32,6 +32,7 @@ export function applyConditions(item: Record<string, any>, field: Field, version
 						options: matchingCondition.options,
 						hidden: matchingCondition.hidden,
 						required: matchingCondition.required,
+						clear_hidden_value_on_save: matchingCondition.clear_hidden_value_on_save,
 					},
 					(objValue, srcValue) => {
 						if (isArray(objValue) && isArray(srcValue)) {
