@@ -30,7 +30,7 @@ export const FormValidator = z.discriminatedUnion('project_usage', [
 	}),
 ]);
 
-export const initialValues: SetupForm = {
+export const defaultValues: SetupForm = {
 	first_name: null,
 	last_name: null,
 	email: null,
@@ -76,7 +76,8 @@ export function validate(value: Record<string, any>, fields: MaybeRef<Field[]>, 
 
 export function useFormFields(
 	register: MaybeRef<boolean>,
-	value: Ref<SetupForm> | ModelRef<SetupForm | undefined>,
+	value: Ref<Partial<SetupForm>> | ModelRef<Partial<SetupForm> | undefined>,
+	initialValues?: Ref<Partial<SetupForm>> | ModelRef<Partial<SetupForm> | undefined>,
 ): ComputedRef<Field[]> {
 	const { t } = useI18n();
 
@@ -164,7 +165,7 @@ export function useFormFields(
 			},
 		});
 
-		if (value.value?.project_usage === 'commercial')
+		if ((value.value?.project_usage ?? initialValues?.value?.project_usage) === 'commercial')
 			fields.push({
 				field: 'org_name',
 				name: t('organization_name'),

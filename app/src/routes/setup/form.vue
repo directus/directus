@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useServerStore } from '@/stores/server';
 import { storeToRefs } from 'pinia';
-import { initialValues, useFormFields } from './form';
+import { defaultValues, useFormFields } from './form';
 import { SetupForm } from '@directus/types';
 
 const { t } = useI18n();
@@ -14,17 +14,21 @@ const props = withDefaults(
 	defineProps<{
 		register?: boolean;
 		skipLicense?: boolean;
-		modelValue?: SetupForm;
+		modelValue?: Partial<SetupForm>;
 		errors?: Record<string, any>[];
+		initialValues?: SetupForm;
 		utmLocation?: string;
 	}>(),
 	{
 		register: true,
 		skipLicense: false,
 		utmLocation: '',
-		modelValue: () => initialValues,
+		initialValues: () => defaultValues,
+		modelValue: () => ({}),
 	},
 );
+
+const initialValues = toRef(props, 'initialValues');
 
 const value = defineModel<SetupForm>();
 
@@ -46,7 +50,7 @@ const product_updates = computed({
 	},
 });
 
-const fields = useFormFields(props.register, value);
+const fields = useFormFields(props.register, value, initialValues);
 </script>
 
 <template>

@@ -3,7 +3,7 @@ import { URL } from 'node:url';
 import type { TelemetryReport } from '../types/report.js';
 import type { OwnerInformation } from '@directus/types';
 
-export type OwnerReport = OwnerInformation & { project_id: string };
+export type OwnerReport = OwnerInformation & { project_id: string; version: string };
 
 /**
  * Post an anonymous usage report to the centralized intake server
@@ -11,7 +11,10 @@ export type OwnerReport = OwnerInformation & { project_id: string };
 export const sendReport = async (report: TelemetryReport | OwnerReport) => {
 	const env = useEnv();
 
-	const url = new URL('email' in report ? '/v1/owner' : '/v1/metrics', env['TELEMETRY_URL'] as string);
+	const url =
+		'email' in report
+			? new URL('/v1/owner', String(env['COMPLIANCE_URL']))
+			: new URL('/v1/metrics', String(env['TELEMETRY_URL']));
 
 	const headers: ResponseInit['headers'] = {
 		'Content-Type': 'application/json',

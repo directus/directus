@@ -9,7 +9,7 @@ import { translateAPIError } from '@/lang';
 import { SetupForm as Form } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { FormValidator, initialValues, useFormFields, validate, ValidationError } from './form';
+import { FormValidator, defaultValues, useFormFields, validate, ValidationError } from './form';
 
 const { t } = useI18n();
 
@@ -17,7 +17,7 @@ useHead({
 	title: t('setup_project'),
 });
 
-const form = ref<Form>(initialValues);
+const form = ref<Form>(defaultValues);
 const router = useRouter();
 
 const fields = useFormFields(true, form);

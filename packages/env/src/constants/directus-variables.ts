@@ -232,6 +232,7 @@ export const DIRECTUS_VARIABLES = [
 	// telemetry
 	'TELEMETRY',
 	'TELEMETRY_URL',
+	'COMPLIANCE_URL',
 	'TELEMETRY_AUTHORIZATION',
 
 	// limits & optimization

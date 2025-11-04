@@ -85,12 +85,13 @@ test('Sends to /v1/owner on owner payload', async () => {
 	const mockIngress = 'https://example.com';
 
 	vi.mocked(useEnv).mockReturnValue({
-		TELEMETRY_URL: mockIngress,
+		COMPLIANCE_URL: mockIngress,
 		TELEMETRY_AUTHORIZATION: 'test-auth',
 	});
 
 	await sendReport({
 		email: '',
+		version: '',
 		org_name: '',
 		product_updates: false,
 		project_id: '',

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { initialValues, useFormFields, validate } from '@/routes/setup/form';
+import { defaultValues, useFormFields, validate } from '@/routes/setup/form';
 import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { notify } from '@/utils/notify';
@@ -33,7 +33,7 @@ async function remindLater() {
 	notify({ title: t('bsl_banner.remind_next_login'), type: 'info' });
 }
 
-const form = ref<Form>(initialValues);
+const form = ref<Form>(defaultValues);
 
 const fields = useFormFields(false, form);
 </script>

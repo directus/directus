@@ -2,6 +2,7 @@ import { random } from 'lodash-es';
 import getDatabase from '../database/index.js';
 import { sendReport } from '../telemetry/index.js';
 import { scheduleSynchronizedJob } from '../utils/schedule.js';
+import { version } from 'directus/version';
 
 /**
  * Schedule the project status job
@@ -19,7 +20,7 @@ export default async function schedule() {
 		if (project_status !== 'pending') return;
 
 		try {
-			await sendReport(ownerInfo);
+			await sendReport({ version, ...ownerInfo });
 			await db.update('project_status', '').from('directus_settings');
 		} catch (_error) {
 			// Empty catch
