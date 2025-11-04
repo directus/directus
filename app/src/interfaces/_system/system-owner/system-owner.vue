@@ -19,6 +19,10 @@ const props = withDefaults(
 
 const { t } = useI18n();
 
+const emit = defineEmits<{
+	input: [value: string | null];
+}>();
+
 const errors = ref<Record<string, any>[]>([]);
 const editing = ref(false);
 const allowSave = computed(() => form.value.email || form.value.project_usage || form.value.org_name);
@@ -32,6 +36,7 @@ async function save() {
 
 	await settingsStore.setOwner(value as Form);
 	await settingsStore.hydrate();
+	emit('input', form.value.email ?? initialValues.value.email);
 	editing.value = false;
 }
 
