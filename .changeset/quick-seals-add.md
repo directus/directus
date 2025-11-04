@@ -6,4 +6,4 @@
 '@directus/app': minor
 ---
 
-Add setup flow and license agreement banner
+Added setup flow and license agreement banner
