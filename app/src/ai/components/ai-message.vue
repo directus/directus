@@ -38,7 +38,6 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const side = props.role === 'user' ? 'right' : 'left';
-const variant = props.role === 'user' ? 'primary' : 'subdued';
 </script>
 
 <template>
