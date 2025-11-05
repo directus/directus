@@ -254,7 +254,7 @@ function useDisplayValue() {
 <template>
 	<v-menu
 		class="v-select"
-		:disabled="disabled || nonEditable"
+		:disabled="disabled"
 		:attached="inline === false"
 		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
@@ -265,14 +265,14 @@ function useDisplayValue() {
 			<button
 				v-if="inline"
 				type="button"
-				:disabled="disabled || nonEditable"
+				:disabled="disabled"
 				:aria-pressed="active"
 				class="inline-display"
 				:class="{ placeholder: !displayValue.text, label, active, disabled, 'non-editable': nonEditable }"
 				@click="toggle"
 			>
 				<slot name="preview">{{ displayValue.text || placeholder }}</slot>
-				<v-icon v-if="!nonEditable" name="expand_more" :class="{ active }" />
+				<v-icon name="expand_more" :class="{ active }" />
 			</button>
 			<slot
 				v-else
@@ -301,7 +301,7 @@ function useDisplayValue() {
 						<display-color v-else-if="displayValue.color" :value="displayValue.color" />
 					</template>
 					<template #append>
-						<v-icon v-if="!nonEditable" name="expand_more" :class="{ active }" />
+						<v-icon name="expand_more" :class="{ active }" />
 						<slot name="append" />
 					</template>
 				</v-input>
@@ -431,7 +431,6 @@ function useDisplayValue() {
 
 	cursor: pointer;
 
-	/* Non-editable: keep normal visuals, hide icons/buttons, block edits */
 	&.non-editable {
 		cursor: default;
 		:deep(.v-icon) {

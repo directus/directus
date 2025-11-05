@@ -55,8 +55,6 @@ const isDisabled = computed(() => {
 	return false;
 });
 
-const isNonEditable = computed(() => !!props.nonEditable);
-
 const isLabelHidden = computed(() => {
 	if ((props.batchMode || !!props.comparison) && !props.field.meta?.special?.includes('no-data')) return false;
 	return props.field.hideLabel;
@@ -191,7 +189,7 @@ function useComputedValues() {
 					:edited="isEdited"
 					:has-error="!!validationError"
 					:badge="badge"
-					:raw-editor-enabled="rawEditorEnabled && !isNonEditable"
+					:raw-editor-enabled="rawEditorEnabled"
 					:raw-editor-active="rawEditorActive"
 					:loading="loading"
 					:disabled-menu="disabledMenu"
@@ -204,7 +202,7 @@ function useComputedValues() {
 				:field="field"
 				:model-value="internalValue"
 				:initial-value="initialValue"
-				:restricted="isDisabled || isNonEditable"
+				:restricted="isDisabled"
 				:disabled-options="disabledMenuOptions"
 				@update:model-value="emitValue($event)"
 				@unset="$emit('unset', $event)"
@@ -223,8 +221,8 @@ function useComputedValues() {
 			:loading="loading"
 			:batch-mode="batchMode"
 			:batch-active="batchActive"
-			:disabled="isDisabled || isNonEditable"
-			:non-editable="isNonEditable"
+			:disabled="isDisabled"
+			:non-editable="!!props.nonEditable"
 			:primary-key="primaryKey"
 			:raw-editor-enabled="rawEditorEnabled"
 			:raw-editor-active="rawEditorActive"
@@ -239,7 +237,7 @@ function useComputedValues() {
 			:show-modal="showRaw"
 			:field="field"
 			:current-value="internalValue"
-			:disabled="isDisabled || isNonEditable"
+			:disabled="isDisabled"
 			@cancel="showRaw = false"
 			@set-raw-value="onRawValueSubmit"
 		/>

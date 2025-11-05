@@ -401,7 +401,7 @@ onMounted(() => {
 </script>
 
 <template>
-	<div :id="field" class="wysiwyg" :class="{ disabled, 'non-editable': nonEditable }">
+	<div :id="field" class="wysiwyg" :class="{ disabled }">
 		<editor
 			:key="editorKey"
 			ref="editorElement"

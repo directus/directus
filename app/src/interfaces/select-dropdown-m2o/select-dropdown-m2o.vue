@@ -232,7 +232,7 @@ function getLinkForItem() {
 						@click="editModalActive = true"
 					/>
 
-					<v-icon v-if="enableSelect && !nonEditable" class="expand" name="expand_more" />
+					<v-icon v-if="enableSelect" class="expand" name="expand_more" />
 				</template>
 			</div>
 		</v-list-item>
