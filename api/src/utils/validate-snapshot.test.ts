@@ -28,6 +28,12 @@ describe('should fail on invalid snapshot schema', () => {
 
 		expect(() => validateSnapshot(snapshot)).toThrowError('"collections" must be an array');
 	});
+
+	test('invalid systemFields schema', () => {
+		const snapshot = { version: 1, directus: '10.0.0', vendor: 'sqlite', systemFields: {} } as Snapshot;
+
+		expect(() => validateSnapshot(snapshot)).toThrowError('"systemFields" must be an array');
+	});
 });
 
 describe('should require force option on version / vendor mismatch', () => {
@@ -37,6 +43,12 @@ describe('should require force option on version / vendor mismatch', () => {
 		expect(() => validateSnapshot(snapshot)).toThrowError(
 			"Provided snapshot's directus version 9.26.0 does not match the current instance's version 10.0.0",
 		);
+	});
+
+	test('missing vendor property', () => {
+		const snapshot = { version: 1, directus: '10.0.0' } as Snapshot;
+
+		expect(() => validateSnapshot(snapshot)).toThrowError('Provided snapshot does not contain the "vendor" property');
 	});
 
 	test('db vendor mismatch', () => {

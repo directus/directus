@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
+import { SEARCHABLE_TYPES } from '@directus/constants';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -12,10 +13,21 @@ const hidden = syncFieldDetailStoreProperty('field.meta.hidden', false);
 const required = syncFieldDetailStoreProperty('field.meta.required', false);
 const note = syncFieldDetailStoreProperty('field.meta.note');
 const translations = syncFieldDetailStoreProperty('field.meta.translations');
-const { loading, field } = storeToRefs(fieldDetailStore);
+const { loading, field, localType } = storeToRefs(fieldDetailStore);
 const type = computed(() => field.value.type);
 const isGenerated = computed(() => field.value.schema?.is_generated);
 const userStore = useUserStore();
+const searchable = syncFieldDetailStoreProperty('field.meta.searchable', true);
+
+const isSearchableType = computed(() => {
+	// exclude alias fields (o2m, m2m, m2a) as they don't store searchable data
+	if (type.value === 'alias') return false;
+
+	// exclude relational fields except m2o, which stores foreign keys that are typically not useful for search
+	if (localType.value && localType.value !== 'standard') return false;
+
+	return SEARCHABLE_TYPES.includes(type.value);
+});
 </script>
 
 <template>
@@ -37,6 +49,11 @@ const userStore = useUserStore();
 		<div class="field half-left">
 			<div class="label type-label">{{ t('hidden') }}</div>
 			<v-checkbox v-model="hidden" :label="t('hidden_on_detail')" block />
+		</div>
+
+		<div v-if="isSearchableType" class="field half-right">
+			<div class="label type-label">{{ t('searchable') }}</div>
+			<v-checkbox v-model="searchable" :label="t('field_searchable')" block />
 		</div>
 
 		<div v-if="type !== 'group'" class="field full">

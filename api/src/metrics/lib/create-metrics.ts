@@ -17,7 +17,7 @@ const isPM2 = 'PM2_HOME' in process.env;
 const METRICS_SYNC_PACKET = 'directus:metrics---data-sync';
 
 const listApps = promisify(pm2.list.bind(pm2));
-const sendDataToProcessId = promisify(pm2.sendDataToProcessId.bind(pm2));
+const sendDataToProcessId = promisify<number, object>(pm2.sendDataToProcessId.bind(pm2));
 
 export function createMetrics() {
 	const env = useEnv();
