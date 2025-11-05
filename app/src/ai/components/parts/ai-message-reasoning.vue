@@ -69,11 +69,11 @@ watch(
 	overflow: hidden;
 
 	&[data-state='open'] {
-		animation: slideDown 200ms ease-out;
+		animation: slideDown var(--medium) var(--transition-out);
 	}
 
 	&[data-state='closed'] {
-		animation: slideUp 200ms ease-out;
+		animation: slideUp var(--medium) var(--transition-out);
 	}
 }
 
