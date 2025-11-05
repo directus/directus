@@ -7,8 +7,8 @@ export const loadSettings: RequestHandler = async (_req, res, next) => {
 		schema: await getSchema(),
 	});
 
-	const { ai_openai_api_key, ai_anthropic_api_key } = await service.readSingleton({
-		fields: ['ai_openai_api_key', 'ai_anthropic_api_key'],
+	const { ai_openai_api_key, ai_anthropic_api_key, ai_system_prompt } = await service.readSingleton({
+		fields: ['ai_openai_api_key', 'ai_anthropic_api_key', 'ai_system_prompt'],
 	});
 
 	res.locals['ai'] = {
@@ -16,6 +16,7 @@ export const loadSettings: RequestHandler = async (_req, res, next) => {
 			openai: ai_openai_api_key,
 			anthropic: ai_anthropic_api_key,
 		},
+		systemPrompt: ai_system_prompt,
 	};
 
 	return next();
