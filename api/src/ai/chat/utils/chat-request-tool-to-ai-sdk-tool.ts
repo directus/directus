@@ -15,7 +15,7 @@ export const chatRequestToolToAiSdkTool = (
 		const directusTool = ALL_TOOLS.find(({ name }) => name === chatRequestTool);
 
 		if (!directusTool) {
-			throw new Error(`Tool with name "${chatRequestTool}" does not exist`);
+			throw new InvalidPayloadError({ reason: `Tool with name "${chatRequestTool}" does not exist` });
 		}
 
 		return tool({
