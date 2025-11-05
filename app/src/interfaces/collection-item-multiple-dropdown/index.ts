@@ -1,5 +1,5 @@
 import { defineInterface } from '@directus/extensions';
-import InterfaceSimpleDropdownM2o from './collection-item-multiple-dropdown.vue';
+import CollectionItemMultipleDropdown from './collection-item-multiple-dropdown.vue';
 import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
@@ -7,7 +7,7 @@ export default defineInterface({
 	name: '$t:interfaces.collection-item-multiple-dropdown.collection-item-multiple-dropdown',
 	description: '$t:interfaces.collection-item-multiple-dropdown.description',
 	icon: 'arrow_right_alt',
-	component: InterfaceSimpleDropdownM2o,
+	component: CollectionItemMultipleDropdown,
 	types: ['json'],
 	options: [
 		{
