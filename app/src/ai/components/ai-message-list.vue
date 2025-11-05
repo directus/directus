@@ -148,7 +148,14 @@ function updateLastMessageHeight() {
 	const { height: parentHeight } = useElementBounding(parent.value);
 
 	// Find last user message (findLast not available in current TS lib)
-	const lastMessage = [...props.messages].reverse().find((m) => m.role === 'user');
+	let lastMessage: UIMessage | undefined = undefined;
+
+	for (let i = props.messages.length - 1; i >= 0; i--) {
+		if (props.messages[i]?.role === 'user') {
+			lastMessage = props.messages[i];
+			break;
+		}
+	}
 
 	if (!lastMessage) {
 		return;
