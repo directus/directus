@@ -1,5 +1,5 @@
 ---
-'@directus/app': patch
+'@directus/app': minor
 ---
 
-Adds a new interface to select multiple items from a collection in JSON format
+Added a new interface to select multiple items from a collection in JSON format
