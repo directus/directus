@@ -11,6 +11,14 @@ defineProps<{
 </template>
 
 <style scoped>
+.message-text {
+	padding: var(--ai-message-padding, 0.5rem);
+	border-radius: var(--ai-message-border-radius, var(--theme--border-radius));
+	background-color: var(--ai-message-background);
+	color: var(--ai-message-color, var(--theme--foreground));
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+}
 /* Headings */
 :deep(h1) {
 	font-size: 1.5rem;

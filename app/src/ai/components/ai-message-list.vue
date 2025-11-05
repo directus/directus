@@ -297,7 +297,7 @@ onBeforeUnmount(() => {
 	</div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 /*
   Available Variables:
   --ai-message-list-gap          [1rem]
@@ -345,7 +345,6 @@ onBeforeUnmount(() => {
 		transform: scale(0.8);
 		opacity: 0.5;
 	}
-
 	40% {
 		transform: scale(1);
 		opacity: 1;
@@ -366,7 +365,6 @@ onBeforeUnmount(() => {
 	pointer-events: all;
 	box-shadow: var(--theme--shadow);
 	padding: 4px;
-
 	--v-button-background-color: var(--theme--background);
 	--v-button-background-color-hover: var(--theme--background-accent);
 	--v-button-color: var(--theme--foreground);
