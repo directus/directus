@@ -82,7 +82,6 @@ const variant = props.role === 'user' ? 'primary' : 'subdued';
   --ai-message-color            [variant-based]
   --ai-message-border-radius    [var(--theme--border-radius)]
   --ai-message-padding          [1rem]
-  --ai-message-max-width        [80%]
   --ai-message-gap              [0.75rem]
 */
 
@@ -91,7 +90,7 @@ const variant = props.role === 'user' ? 'primary' : 'subdued';
 
 	&[data-side='right'] {
 		justify-content: flex-end;
-		margin-right: 1rem;
+		margin-inline-start: 1rem;
 
 		.message-container {
 			flex-direction: row-reverse;
@@ -104,7 +103,7 @@ const variant = props.role === 'user' ? 'primary' : 'subdued';
 
 	&[data-side='left'] {
 		justify-content: flex-start;
-		margin-left: 1rem;
+		margin-inline-end: 1rem;
 	}
 }
 
