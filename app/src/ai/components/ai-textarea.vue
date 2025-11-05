@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, watch, nextTick, onMounted } from 'vue';
+import { nextTick, onMounted, ref, watch } from 'vue';
+
+const modelValue = defineModel<string | undefined>();
 
 interface Props {
-	modelValue?: string;
 	placeholder?: string;
 	disabled?: boolean;
 	rows?: number;
@@ -10,24 +11,16 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	modelValue: '',
 	rows: 1,
 	maxRows: 8,
 });
 
 const emit = defineEmits<{
-	'update:modelValue': [value: string];
 	focus: [event: FocusEvent];
 	blur: [event: FocusEvent];
 }>();
 
 const textareaRef = ref<HTMLTextAreaElement>();
-
-function onInput(event: Event) {
-	const value = (event.target as HTMLTextAreaElement).value;
-	emit('update:modelValue', value);
-	autoResize();
-}
 
 function onFocus(event: FocusEvent) {
 	emit('focus', event);
@@ -64,7 +57,7 @@ function autoResize() {
 	textareaRef.value.style.overflow = overflow;
 }
 
-watch(() => props.modelValue, () => {
+watch(modelValue, () => {
 	nextTick(autoResize);
 });
 
@@ -80,12 +73,11 @@ defineExpose({
 <template>
 	<textarea
 		ref="textareaRef"
-		:value="modelValue"
+		v-model="modelValue"
 		:placeholder="placeholder"
 		:disabled="disabled"
 		:rows="rows"
 		class="ai-textarea"
-		@input="onInput"
 		@focus="onFocus"
 		@blur="onBlur"
 	/>
