@@ -277,7 +277,7 @@ export async function CreateCollection(vendor: Vendor, options: Partial<OptionsC
 		}
 	}
 
-	for (const autoRemovedKey of ['primaryKeyType', 'systemField']) {
+	for (const autoRemovedKey of ['primaryKeyType', 'systemFields']) {
 		if (autoRemovedKey in options) {
 			delete options[autoRemovedKey as keyof OptionsCreateCollection];
 		}
