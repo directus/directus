@@ -108,8 +108,8 @@ const selectedModel = computed({
 	opacity: 1;
 	transform: scale(1);
 	transition:
-		opacity 150ms var(--transition-in),
-		transform 150ms var(--transition-in);
+		opacity var(--fast) var(--transition-in),
+		transform var(--fast) var(--transition-in);
 
 	&[data-state='closed'] {
 		opacity: 0;
