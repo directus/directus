@@ -2046,7 +2046,7 @@ interfaces:
     collection-item-dropdown: Collection Item Dropdown
     description: Select an item from a collection in JSON format
   collection-item-multiple-dropdown:
-    collection-item-multiple-dropdown: Collection Item Dropdown (multiple)
+    collection-item-multiple-dropdown: Collection Item Dropdown (Multiple)
     description: Select multiple items from a collection in JSON format
   input-rich-text-md:
     markdown: Markdown
