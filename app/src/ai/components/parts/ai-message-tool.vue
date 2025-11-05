@@ -30,26 +30,26 @@ const statusConfig = computed(() => {
 	<CollapsibleRoot class="message-tool" :default-open="false">
 		<CollapsibleTrigger class="tool-header">
 			<v-icon name="build" x-small />
-			<span class="tool-name">{{ part.type.replace('tool-', '') }}</span>
-			<div class="tool-status" :class="statusConfig.class">
+			<p class="tool-name">{{ part.type.replace('tool-', '') }}</p>
+			<p class="tool-status" :class="statusConfig.class">
 				<v-icon :name="statusConfig.icon" x-small />
 				<span class="status-label">{{ statusConfig.label }}</span>
-			</div>
+			</p>
 			<v-icon name="expand_more" x-small class="chevron" />
 		</CollapsibleTrigger>
 		<CollapsibleContent class="tool-content-wrapper">
 			<div v-if="'input' in part" class="tool-input">
-				<div class="label">Input:</div>
+				<p class="label">{{ $t('ai.input') }}</p>
 				<code>{{ part.input }}</code>
 			</div>
 			<div v-if="'output' in part && part.state === 'output-available'" class="tool-output">
-				<div class="label">Output:</div>
+				<p class="label">{{ $t('ai.output') }}</p>
 				<code>{{ part.output }}</code>
 			</div>
-			<div v-if="'errorText' in part && part.state === 'output-error'" class="tool-error">
+			<p v-if="'errorText' in part && part.state === 'output-error'" class="tool-error">
 				<v-icon name="error" x-small />
 				<span>{{ part.errorText }}</span>
-			</div>
+			</p>
 		</CollapsibleContent>
 	</CollapsibleRoot>
 </template>
@@ -77,7 +77,7 @@ const statusConfig = computed(() => {
 	inline-size: 100%;
 
 	&:hover {
-		opacity: 0.8;
+		background-color: var(--theme--background-normal);
 	}
 
 	.chevron {

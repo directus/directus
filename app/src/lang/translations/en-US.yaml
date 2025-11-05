@@ -1717,6 +1717,8 @@ no_shares: No shares to show
 new_share: New Share
 ai:
   thinking: Thinking...
+  input: Input
+  output: Output
   reasoning: Reasoning
   label: Streaming...
   ready: Ready
