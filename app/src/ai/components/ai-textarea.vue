@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { useTextareaAutosize } from '@vueuse/core'
+import { useTemplateRef } from 'vue';
 
 const modelValue = defineModel<string | undefined>();
 
@@ -10,9 +11,8 @@ interface Props {
 	maxRows?: number;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
 	rows: 1,
-	maxRows: 8,
 });
 
 const emit = defineEmits<{
@@ -20,7 +20,8 @@ const emit = defineEmits<{
 	blur: [event: FocusEvent];
 }>();
 
-const textareaRef = ref<HTMLTextAreaElement>();
+const textareaRef = useTemplateRef<HTMLTextAreaElement>('textarea-ref');
+useTextareaAutosize({ input: modelValue.value, element: textareaRef })
 
 function onFocus(event: FocusEvent) {
 	emit('focus', event);
@@ -30,41 +31,6 @@ function onBlur(event: FocusEvent) {
 	emit('blur', event);
 }
 
-function autoResize() {
-	if (!textareaRef.value) return;
-
-	// Reset to base rows
-	textareaRef.value.rows = props.rows;
-
-	// Hide overflow to get accurate scrollHeight
-	const overflow = textareaRef.value.style.overflow;
-	textareaRef.value.style.overflow = 'hidden';
-
-	const styles = window.getComputedStyle(textareaRef.value);
-	const paddingTop = Number.parseInt(styles.paddingTop);
-	const paddingBottom = Number.parseInt(styles.paddingBottom);
-	const padding = paddingTop + paddingBottom;
-	const lineHeight = Number.parseInt(styles.lineHeight);
-	const { scrollHeight } = textareaRef.value;
-
-	const newRows = (scrollHeight - padding) / lineHeight;
-
-	if (newRows > props.rows) {
-		textareaRef.value.rows = Math.min(newRows, props.maxRows);
-	}
-
-	// Restore overflow
-	textareaRef.value.style.overflow = overflow;
-}
-
-watch(modelValue, () => {
-	nextTick(autoResize);
-});
-
-onMounted(() => {
-	autoResize();
-});
-
 defineExpose({
 	textareaRef,
 });
@@ -72,10 +38,10 @@ defineExpose({
 
 <template>
 	<textarea
-		ref="textareaRef"
+		ref="textarea-ref"
 		v-model="modelValue"
 		:placeholder="placeholder"
-		:disabled="disabled"
+		:disabled
 		:rows="rows"
 		class="ai-textarea"
 		@focus="onFocus"
@@ -100,12 +66,14 @@ defineExpose({
 	}
 
 	&:disabled {
-		opacity: 0.5;
+		opacity: var(--theme--form--field--input--opacity-disabled);
 		cursor: not-allowed;
 	}
 
 	&::placeholder {
 		color: var(--theme--foreground-subdued);
 	}
+
+	max-block-size: 120px;
 }
 </style>

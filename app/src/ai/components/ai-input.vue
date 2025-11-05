@@ -80,6 +80,11 @@ function handleBlur() {
 	background-color: var(--theme--form--field--input--background);
 	transition: border-color var(--fast) var(--transition);
 
+	&:has(.ai-textarea:disabled) {
+		background-color: var(--theme--form--field--input--background-subdued);
+		border-color: var(--theme--form--field--input--border-color);
+	}
+
 	&:hover {
 		border-color: var(--theme--form--field--input--border-color-hover);
 	}
