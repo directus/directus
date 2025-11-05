@@ -83,25 +83,25 @@ watch(
 .reasoning-content {
 	font-size: 0.875rem;
 	opacity: 0.7;
-	padding-top: 0.5rem;
-	padding-left: 1.25rem;
+	padding-block-start: 0.5rem;
+	padding-inline-start: 1.25rem;
 }
 
 @keyframes slideDown {
 	from {
-		height: 0;
+		block-size: 0;
 	}
 	to {
-		height: var(--reka-collapsible-content-height);
+		block-size: var(--reka-collapsible-content-height);
 	}
 }
 
 @keyframes slideUp {
 	from {
-		height: var(--reka-collapsible-content-height);
+		block-size: var(--reka-collapsible-content-height);
 	}
 	to {
-		height: 0;
+		block-size: 0;
 	}
 }
 </style>

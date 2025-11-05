@@ -15,9 +15,10 @@ defineProps<{
 	border-radius: var(--ai-message-border-radius, var(--theme--border-radius));
 	background-color: var(--ai-message-background);
 	color: var(--ai-message-color, var(--theme--foreground));
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 	overflow-wrap: break-word;
 }
+
 /* Headings */
 :deep(h1) {
 	font-size: 1.5rem;
@@ -26,7 +27,7 @@ defineProps<{
 	margin: 1rem 0 0.5rem;
 
 	&:first-child {
-		margin-top: 0;
+		margin-block-start: 0;
 	}
 }
 
@@ -37,7 +38,7 @@ defineProps<{
 	margin: 0.875rem 0 0.5rem;
 
 	&:first-child {
-		margin-top: 0;
+		margin-block-start: 0;
 	}
 }
 
@@ -48,7 +49,7 @@ defineProps<{
 	margin: 0.75rem 0 0.5rem;
 
 	&:first-child {
-		margin-top: 0;
+		margin-block-start: 0;
 	}
 }
 
@@ -59,7 +60,7 @@ defineProps<{
 	margin: 0.75rem 0 0.375rem;
 
 	&:first-child {
-		margin-top: 0;
+		margin-block-start: 0;
 	}
 }
 
@@ -70,7 +71,7 @@ defineProps<{
 	margin: 0.625rem 0 0.375rem;
 
 	&:first-child {
-		margin-top: 0;
+		margin-block-start: 0;
 	}
 }
 
@@ -81,7 +82,7 @@ defineProps<{
 	margin: 0.5rem 0 0.375rem;
 
 	&:first-child {
-		margin-top: 0;
+		margin-block-start: 0;
 	}
 }
 
@@ -91,11 +92,11 @@ defineProps<{
 	line-height: 1.6;
 
 	&:first-child {
-		margin-top: 0;
+		margin-block-start: 0;
 	}
 
 	&:last-child {
-		margin-bottom: 0;
+		margin-block-end: 0;
 	}
 }
 
@@ -142,7 +143,7 @@ defineProps<{
 :deep(ul),
 :deep(ol) {
 	margin: 0.5rem 0;
-	padding-left: 1.5rem;
+	padding-inline-start: 1.5rem;
 }
 
 :deep(li) {
@@ -159,7 +160,7 @@ defineProps<{
 
 /* Task lists */
 :deep(input[type='checkbox']) {
-	margin-right: 0.5rem;
+	margin-inline-end: 0.5rem;
 }
 
 /* Links */
@@ -176,16 +177,16 @@ defineProps<{
 :deep(blockquote) {
 	margin: 1rem 0;
 	padding: 0.75rem 1rem;
-	border-left: 0.25rem solid var(--theme--border-color);
+	border-inline-start: 0.25rem solid var(--theme--border-color);
 	background-color: var(--theme--background-subdued);
 	color: var(--theme--foreground-subdued);
 
 	p:first-child {
-		margin-top: 0;
+		margin-block-start: 0;
 	}
 
 	p:last-child {
-		margin-bottom: 0;
+		margin-block-end: 0;
 	}
 }
 
@@ -193,7 +194,7 @@ defineProps<{
 :deep(hr) {
 	margin: 1.5rem 0;
 	border: none;
-	border-top: 1px solid var(--theme--border-color);
+	border-block-start: 1px solid var(--theme--border-color);
 }
 
 /* Tables */
@@ -213,7 +214,7 @@ defineProps<{
 :deep(td) {
 	padding: 0.5rem 0.75rem;
 	border: 1px solid var(--theme--border-color);
-	text-align: left;
+	text-align: start;
 }
 
 :deep(th) {

@@ -59,7 +59,7 @@ const aiStore = useAiStore();
 	font-size: 12px;
 	cursor: pointer;
 	transition: all var(--fast) var(--transition);
-	text-align: left;
+	text-align: start;
 
 	&:hover:not(:disabled) {
 		background: var(--theme--background-subdued);
@@ -133,8 +133,8 @@ const aiStore = useAiStore();
 	position: relative;
 	display: flex;
 	align-items: center;
-	min-height: 40px;
-	padding: 8px 8px;
+	min-block-size: 40px;
+	padding: 8px;
 	color: var(--theme--foreground);
 	background-color: transparent;
 	border-radius: var(--theme--border-radius);

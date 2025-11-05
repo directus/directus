@@ -314,11 +314,11 @@ onBeforeUnmount(() => {
 	display: flex;
 	flex-direction: column;
 	gap: var(--ai-message-list-gap, 1rem);
-	padding-bottom: 1rem;
+	padding-block-end: 1rem;
 	position: relative;
 
 	:deep(article:last-of-type) {
-		min-height: var(--last-message-height, 0);
+		min-block-size: var(--last-message-height, 0);
 	}
 }
 
@@ -330,7 +330,7 @@ onBeforeUnmount(() => {
 
 	span {
 		inline-size: 0.5rem;
-		height: 0.5rem;
+		block-size: 0.5rem;
 		background-color: var(--theme--foreground-subdued);
 		border-radius: 50%;
 		animation: loading-bounce 1.4s infinite ease-in-out both;
@@ -360,7 +360,7 @@ onBeforeUnmount(() => {
 
 .auto-scroll-container {
 	position: sticky;
-	bottom: 0;
+	inset-block-end: 0;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -372,6 +372,7 @@ onBeforeUnmount(() => {
 	pointer-events: all;
 	box-shadow: var(--theme--shadow);
 	padding: 4px;
+
 	--v-button-background-color: var(--theme--background);
 	--v-button-background-color-hover: var(--theme--background-accent);
 	--v-button-color: var(--theme--foreground);

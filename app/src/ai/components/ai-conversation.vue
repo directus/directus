@@ -28,14 +28,14 @@ const aiStore = useAiStore();
 	display: flex;
 	flex-direction: column;
 	flex: 1;
-	min-height: 0;
+	min-block-size: 0;
 }
 
 .messages-container {
 	position: relative;
 	flex: 1;
 	overflow-y: auto;
-	min-height: 0;
+	min-block-size: 0;
 }
 
 .input-container {
