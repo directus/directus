@@ -1716,6 +1716,8 @@ uses_left: No uses left | One use left | {n} uses left
 no_shares: No shares to show
 new_share: New Share
 ai:
+  thinking: Thinking...
+  reasoning: Reasoning
   prompt_input_placeholder: Type your message here...
 mcp_prompts_collection:
   no_collection_selected: No collection selected
