@@ -105,32 +105,18 @@ const selectedModel = computed({
 	border-radius: var(--theme--border-radius);
 	box-shadow: var(--theme--popover--menu--box-shadow);
 	transform-origin: var(--reka-select-content-transform-origin);
-	animation: scaleIn 150ms var(--transition-in);
+	opacity: 1;
+	transform: scale(1);
+	transition:
+		opacity 150ms var(--transition-in),
+		transform 150ms var(--transition-in);
 
 	&[data-state='closed'] {
-		animation: scaleOut 150ms var(--transition-out);
-	}
-}
-
-@keyframes scaleIn {
-	from {
 		opacity: 0;
 		transform: scale(0.95);
-	}
-	to {
-		opacity: 1;
-		transform: scale(1);
-	}
-}
-
-@keyframes scaleOut {
-	from {
-		opacity: 1;
-		transform: scale(1);
-	}
-	to {
-		opacity: 0;
-		transform: scale(0.95);
+		transition:
+			opacity 150ms var(--transition-out),
+			transform 150ms var(--transition-out);
 	}
 }
 
