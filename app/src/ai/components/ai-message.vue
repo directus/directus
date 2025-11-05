@@ -19,41 +19,26 @@ export interface AiMessageAction {
 	loading?: boolean;
 }
 
-export interface AiMessageAvatar {
-	src?: string;
-	icon?: string;
-	alt?: string;
-}
-
 interface Props {
 	/** Message ID for tracking */
 	id?: string;
 	/** Message role */
 	role: 'user' | 'assistant' | 'system';
-	/** @deprecated Use `parts` instead for structured content */
-	content?: string;
 	/** Message parts for structured content */
 	parts?: AiMessagePart[];
-	/** Visual variant using Directus theme colors */
-	variant?: 'primary' | 'subdued' | 'accent' | 'normal';
-	/** Message alignment side */
-	side?: 'left' | 'right';
-	/** Avatar configuration */
-	avatar?: AiMessageAvatar;
 	/** Action buttons displayed below message */
 	actions?: AiMessageAction[];
 	/** Compact mode for dense layouts */
 	compact?: boolean;
-	/** Message timestamp */
-	timestamp?: Date | string;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
 	parts: () => [],
-	variant: 'subdued',
-	side: 'left',
 	compact: false,
 });
+
+const side = props.role === 'user' ? 'right' : 'left';
+const variant = props.role === 'user' ? 'primary' : 'subdued';
 </script>
 
 <template>
