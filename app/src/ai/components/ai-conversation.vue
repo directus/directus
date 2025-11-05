@@ -18,13 +18,12 @@ const aiStore = useAiStore();
 		</div>
 
 		<div class="input-container">
-			<v-progress-linear v-if="aiStore.status === 'streaming' || aiStore.status === 'submitted'" indeterminate />
 			<ai-input @send="aiStore.addMessage" />
 		</div>
 	</div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .ai-conversation {
 	display: flex;
 	flex-direction: column;
@@ -41,9 +40,5 @@ const aiStore = useAiStore();
 
 .input-container {
 	flex-shrink: 0;
-}
-
-.v-progress-linear {
-	margin-bottom: var(--content-padding);
 }
 </style>
