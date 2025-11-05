@@ -17,7 +17,7 @@ export default defineInterface({
 	options: ({ collection }) => [
 		{
 			field: 'links',
-			name: '$t:interfaces.presentation-links.links',
+			name: '$t:interfaces.presentation-links.presentation-links',
 			type: 'json',
 			meta: {
 				interface: 'list',
