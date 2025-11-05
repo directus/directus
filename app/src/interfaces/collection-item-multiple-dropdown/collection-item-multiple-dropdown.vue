@@ -41,6 +41,7 @@ const { selectedCollection, template } = toRefs(props);
 const collectionsStore = useCollectionsStore();
 const fieldStore = useFieldsStore();
 
+const loading = ref(false);
 const selectDrawerOpen = ref(false);
 const displayItems = ref<Record<string, any>[]>([]);
 
@@ -103,6 +104,8 @@ async function getDisplayItems() {
 	fields.add(primaryKey.value);
 
 	try {
+		loading.value = true;
+
 		const response = await api.get(getEndpoint(unref(selectedCollection)), {
 			params: {
 				fields: Array.from(fields),
@@ -117,6 +120,8 @@ async function getDisplayItems() {
 			.filter(Boolean);
 	} catch (error) {
 		unexpectedError(error);
+	} finally {
+		loading.value = false;
 	}
 }
 
@@ -158,6 +163,14 @@ function onSort(sortedItems: Record<string, any>[]) {
 		<v-notice v-if="displayItems.length === 0">
 			{{ t('no_items') }}
 		</v-notice>
+
+		<template v-else-if="loading">
+			<v-skeleton-loader
+				v-for="num in displayItems.length"
+				:key="num"
+				:type="displayItems.length > 4 ? 'block-list-item-dense' : 'block-list-item'"
+			/>
+		</template>
 
 		<draggable
 			v-else
