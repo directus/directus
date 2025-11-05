@@ -1,11 +1,10 @@
 import { ItemsService } from '@/services/items.js';
 import { requireText } from '@/utils/require-text.js';
-import { sanitizeQuery } from '@/utils/sanitize-query.js';
+import { buildSanitizedQueryFromArgs } from '../utils.js';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type { PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
-import type { Query } from 'express-serve-static-core';
 import { isObject } from 'graphql-compose';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -73,18 +72,7 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 		return ['content', input.collection, data['id']];
 	},
 	async handler({ args, schema, accountability }) {
-		let sanitizedQuery = {};
-
-		if ('query' in args && args['query']) {
-			sanitizedQuery = await sanitizeQuery(
-				{
-					fields: (args['query'] as Query)['fields'] || '*',
-					...args['query'],
-				},
-				schema,
-				accountability,
-			);
-		}
+		const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 
 		if (isSystemCollection(args.collection)) {
 			throw new InvalidPayloadError({ reason: 'Cannot provide a core collection' });

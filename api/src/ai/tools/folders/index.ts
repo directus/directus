@@ -1,9 +1,8 @@
 import { FoldersService } from '@/services/folders.js';
 import { requireText } from '@/utils/require-text.js';
-import { sanitizeQuery } from '@/utils/sanitize-query.js';
+import { buildSanitizedQueryFromArgs } from '../utils.js';
 import type { PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
-import type { Query } from 'express-serve-static-core';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
@@ -58,18 +57,7 @@ export const folders = defineTool<z.infer<typeof FoldersValidateSchema>>({
 	inputSchema: FoldersInputSchema,
 	validateSchema: FoldersValidateSchema,
 	async handler({ args, schema, accountability }) {
-		let sanitizedQuery = {};
-
-		if ('query' in args && args['query']) {
-			sanitizedQuery = await sanitizeQuery(
-				{
-					fields: (args['query'] as Query)['fields'] || '*',
-					...args['query'],
-				},
-				schema,
-				accountability,
-			);
-		}
+		const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 
 		const service = new FoldersService({
 			schema,

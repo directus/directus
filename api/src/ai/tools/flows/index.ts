@@ -7,8 +7,7 @@ import { z } from 'zod';
 import { FlowsService } from '../../../services/flows.js';
 import { defineTool } from '../define-tool.js';
 import { FlowItemInputSchema, FlowItemValidateSchema, QueryInputSchema, QueryValidateSchema } from '../schema.js';
-import { sanitizeQuery } from '@/utils/sanitize-query.js';
-import type { Query } from 'express-serve-static-core';
+import { buildSanitizedQueryFromArgs } from '../utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -57,18 +56,7 @@ export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
 		return ['settings', 'flows', data['id'] as string];
 	},
 	async handler({ args, schema, accountability }) {
-		let sanitizedQuery = {};
-
-		if ('query' in args && args['query']) {
-			sanitizedQuery = await sanitizeQuery(
-				{
-					fields: (args['query'] as Query)['fields'] || '*',
-					...args['query'],
-				},
-				schema,
-				accountability,
-			);
-		}
+		const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 
 		const flowsService = new FlowsService({
 			schema,

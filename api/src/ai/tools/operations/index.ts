@@ -11,8 +11,7 @@ import {
 	QueryInputSchema,
 	QueryValidateSchema,
 } from '../schema.js';
-import { sanitizeQuery } from '@/utils/sanitize-query.js';
-import type { Query } from 'express-serve-static-core';
+import { buildSanitizedQueryFromArgs } from '../utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -53,18 +52,7 @@ export const operations = defineTool<z.infer<typeof OperationsValidationSchema>>
 	inputSchema: OperationsInputSchema,
 	validateSchema: OperationsValidationSchema,
 	async handler({ args, schema, accountability }) {
-		let sanitizedQuery = {};
-
-		if ('query' in args && args['query']) {
-			sanitizedQuery = await sanitizeQuery(
-				{
-					fields: (args['query'] as Query)['fields'] || '*',
-					...args['query'],
-				},
-				schema,
-				accountability,
-			);
-		}
+		const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 
 		const operationService = new OperationsService({
 			schema,

@@ -1,7 +1,7 @@
 import { FilesService } from '@/services/files.js';
 import { requireText } from '@/utils/require-text.js';
-import { sanitizeQuery } from '@/utils/sanitize-query.js';
-import type { File, PrimaryKey, Query } from '@directus/types';
+import { buildSanitizedQueryFromArgs } from '../utils.js';
+import type { File, PrimaryKey } from '@directus/types';
 import { isObject } from '@directus/utils';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -65,18 +65,7 @@ export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
 		return ['files', data['id'] as string];
 	},
 	async handler({ args, schema, accountability }) {
-		let sanitizedQuery = {};
-
-		if ('query' in args && args['query']) {
-			sanitizedQuery = await sanitizeQuery(
-				{
-					fields: (args['query'] as Query)['fields'] || '*',
-					...args['query'],
-				},
-				schema,
-				accountability,
-			);
-		}
+		const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 
 		const service = new FilesService({
 			schema,
