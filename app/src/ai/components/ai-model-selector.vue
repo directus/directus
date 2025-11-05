@@ -115,8 +115,8 @@ const selectedModel = computed({
 		opacity: 0;
 		transform: scale(0.95);
 		transition:
-			opacity 150ms var(--transition-out),
-			transform 150ms var(--transition-out);
+			opacity var(--fast) var(--transition-out),
+			transform var(--fast) var(--transition-out);
 	}
 }
 
