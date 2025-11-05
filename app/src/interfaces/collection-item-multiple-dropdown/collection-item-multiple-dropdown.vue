@@ -191,7 +191,7 @@ function onSort(sortedItems: Record<string, any>[]) {
 		</draggable>
 
 		<div class="actions">
-			<v-button v-if="!disabled" @click="selectDrawerOpen = true">
+			<v-button :disabled="disabled" @click="selectDrawerOpen = true">
 				{{ t('select_item') }}
 			</v-button>
 		</div>
