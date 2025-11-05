@@ -1,11 +1,12 @@
 import { FoldersService } from '@/services/folders.js';
 import { requireText } from '@/utils/require-text.js';
+import { buildSanitizedQueryFromArgs } from '../utils.js';
 import type { PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
-import { z } from 'zod';
-import { defineTool } from '../define-tool.js';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { z } from 'zod';
+import { defineTool } from '../define-tool.js';
 import {
 	FolderItemInputSchema,
 	FolderItemValidateSchema,
@@ -55,7 +56,9 @@ export const folders = defineTool<z.infer<typeof FoldersValidateSchema>>({
 	},
 	inputSchema: FoldersInputSchema,
 	validateSchema: FoldersValidateSchema,
-	async handler({ args, schema, accountability, sanitizedQuery }) {
+	async handler({ args, schema, accountability }) {
+		const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
+
 		const service = new FoldersService({
 			schema,
 			accountability,

@@ -1,16 +1,17 @@
 import { OperationsService } from '@/services/operations.js';
 import { requireText } from '@/utils/require-text.js';
 import type { OperationRaw } from '@directus/types';
-import { z } from 'zod';
-import { defineTool } from '../define-tool.js';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { z } from 'zod';
+import { defineTool } from '../define-tool.js';
 import {
 	OperationItemInputSchema,
 	OperationItemValidateSchema,
 	QueryInputSchema,
 	QueryValidateSchema,
 } from '../schema.js';
+import { buildSanitizedQueryFromArgs } from '../utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -50,7 +51,9 @@ export const operations = defineTool<z.infer<typeof OperationsValidationSchema>>
 	},
 	inputSchema: OperationsInputSchema,
 	validateSchema: OperationsValidationSchema,
-	async handler({ args, schema, accountability, sanitizedQuery }) {
+	async handler({ args, schema, accountability }) {
+		const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
+
 		const operationService = new OperationsService({
 			schema,
 			accountability,

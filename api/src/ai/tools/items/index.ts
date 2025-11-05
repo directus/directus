@@ -1,14 +1,15 @@
 import { ItemsService } from '@/services/items.js';
 import { requireText } from '@/utils/require-text.js';
+import { buildSanitizedQueryFromArgs } from '../utils.js';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type { PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { isObject } from 'graphql-compose';
-import { z } from 'zod';
-import { defineTool } from '../define-tool.js';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { z } from 'zod';
+import { defineTool } from '../define-tool.js';
 import {
 	ItemInputSchema,
 	ItemValidateSchema,
@@ -70,7 +71,9 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 
 		return ['content', input.collection, data['id']];
 	},
-	async handler({ args, schema, accountability, sanitizedQuery }) {
+	async handler({ args, schema, accountability }) {
+		const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
+
 		if (isSystemCollection(args.collection)) {
 			throw new InvalidPayloadError({ reason: 'Cannot provide a core collection' });
 		}

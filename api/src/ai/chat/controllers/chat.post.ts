@@ -1,48 +1,41 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import { safeValidateUIMessages } from 'ai';
+import { safeValidateUIMessages, type Tool } from 'ai';
 import type { RequestHandler } from 'express';
+import { fromZodError } from 'zod-validation-error';
 import { createUiStream } from '../lib/create-ui-stream.js';
-import { z } from 'zod';
-
-const ChatInput = z.intersection(
-	z.discriminatedUnion('provider', [
-		z.object({
-			provider: z.literal('openai'),
-			model: z.union([z.literal('gpt-5')]),
-		}),
-		z.object({
-			provider: z.literal('anthropic'),
-			model: z.union([z.literal('claude-sonnet-4-5')]),
-		}),
-	]),
-	z.object({
-		messages: z.array(z.looseObject({})),
-	}),
-);
+import { ChatRequest } from '../models/chat-request.js';
+import { chatRequestToolToAiSdkTool } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
 
 export const aiChatPostHandler: RequestHandler = async (req, res) => {
 	if (!req.accountability) {
 		throw new ForbiddenError(); // TODO should this be a policy flag?
 	}
 
-	const result = ChatInput.safeParse(req.body);
+	const result = ChatRequest.safeParse(req.body);
 
 	if (!result.success) {
-		throw new InvalidPayloadError({ reason: result.error.message });
+		throw new InvalidPayloadError({ reason: fromZodError(result.error).message });
 	}
 
-	const { provider, model, messages: rawMessages } = result.data;
+	const { provider, model, messages: rawMessages, tools } = result.data;
 
 	if (rawMessages.length === 0) {
 		throw new InvalidPayloadError({ reason: `"messages" must not be empty` });
 	}
 
-	const validationResult = await safeValidateUIMessages({ messages: rawMessages });
+	const aiSdkTools = tools.reduce<{ [x: string]: Tool<unknown, unknown> }>((acc, t) => {
+		const name = typeof t === 'string' ? t : t.name;
+		const tool = chatRequestToolToAiSdkTool(t, req.accountability!, req.schema) as Tool<unknown, unknown>;
+		acc[name] = tool;
+		return acc;
+	}, {});
+
+	const validationResult = await safeValidateUIMessages({ messages: rawMessages, tools: aiSdkTools });
 
 	if (validationResult.success === false) {
 		throw new InvalidPayloadError({ reason: validationResult.error.message });
 	}
 
-	const stream = createUiStream(provider, model, validationResult.data, res.locals['ai'].apiKeys);
+	const stream = createUiStream(provider, model, validationResult.data, aiSdkTools, res.locals['ai'].apiKeys);
 	stream.pipeUIMessageStreamToResponse(res);
 };
