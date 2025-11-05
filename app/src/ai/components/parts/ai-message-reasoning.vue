@@ -37,61 +37,60 @@ watch(
 	</CollapsibleRoot>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .message-reasoning {
 	margin: 0.25rem 0;
+}
 
-	.reasoning-header {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.375rem;
-		font-size: 0.875rem;
-		font-weight: 500;
-		color: var(--theme--foreground);
-		cursor: pointer;
-		user-select: none;
-		background: none;
-		border: none;
-		padding: 0;
+.reasoning-header {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	font-size: 0.875rem;
+	font-weight: 500;
+	color: var(--theme--foreground);
+	cursor: pointer;
+	user-select: none;
+	background: none;
+	border: none;
+	padding: 0;
 
-		&:hover {
-			color: var(--theme--foreground-accent);
-		}
-
-		.chevron {
-			transition: transform 150ms ease;
-		}
-
-		&[data-state='open'] .chevron {
-			transform: rotate(180deg);
-		}
+	&:hover {
+		color: var(--theme--foreground-accent);
 	}
 
-	.reasoning-content-wrapper {
-		overflow: hidden;
+	&[data-state='open'] .chevron {
+		transform: rotate(180deg);
+	}
+}
 
-		&[data-state='open'] {
-			animation: slideDown 200ms ease-out;
-		}
+.chevron {
+	transition: transform 150ms ease;
+}
 
-		&[data-state='closed'] {
-			animation: slideUp 200ms ease-out;
-		}
+.reasoning-content-wrapper {
+	overflow: hidden;
+
+	&[data-state='open'] {
+		animation: slideDown 200ms ease-out;
 	}
 
-	.reasoning-content {
-		font-size: 0.875rem;
-		opacity: 0.7;
-		padding-top: 0.5rem;
-		padding-left: 1.25rem;
+	&[data-state='closed'] {
+		animation: slideUp 200ms ease-out;
 	}
+}
+
+.reasoning-content {
+	font-size: 0.875rem;
+	opacity: 0.7;
+	padding-top: 0.5rem;
+	padding-left: 1.25rem;
 }
 
 @keyframes slideDown {
 	from {
 		height: 0;
 	}
-
 	to {
 		height: var(--reka-collapsible-content-height);
 	}
@@ -101,7 +100,6 @@ watch(
 	from {
 		height: var(--reka-collapsible-content-height);
 	}
-
 	to {
 		height: 0;
 	}

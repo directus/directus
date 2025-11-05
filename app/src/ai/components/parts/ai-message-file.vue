@@ -16,7 +16,7 @@ defineProps<{
 	</div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .message-file {
 	margin: 0.5rem 0;
 

@@ -91,7 +91,7 @@ defineExpose({
 	/>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .ai-textarea {
 	width: 100%;
 	padding: 0;

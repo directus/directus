@@ -61,7 +61,7 @@ function handleBlur() {
 	</div>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .ai-input-container {
 	padding: 0;
 }

@@ -16,23 +16,23 @@ defineProps<{
 	</div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .message-source {
 	margin: 0.5rem 0;
+}
 
-	.source-document {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-		padding: 0.5rem 0.75rem;
-		border-radius: var(--theme--border-radius);
-		background-color: var(--theme--background-subdued);
-		font-size: 0.875rem;
+.source-document {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	padding: 0.5rem 0.75rem;
+	border-radius: var(--theme--border-radius);
+	background-color: var(--theme--background-subdued);
+	font-size: 0.875rem;
+}
 
-		small {
-			opacity: 0.7;
-			font-size: 0.75rem;
-		}
-	}
+small {
+	opacity: 0.7;
+	font-size: 0.75rem;
 }
 </style>

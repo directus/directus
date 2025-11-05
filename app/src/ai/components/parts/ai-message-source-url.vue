@@ -15,7 +15,7 @@ defineProps<{
 	</div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .message-source {
 	margin: 0.5rem 0;
 
