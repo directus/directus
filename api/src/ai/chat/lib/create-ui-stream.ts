@@ -3,12 +3,20 @@ import { createOpenAI, type OpenAIProvider } from '@ai-sdk/openai';
 import { ServiceUnavailableError } from '@directus/errors';
 import { convertToModelMessages, streamText, type UIMessage, type Tool } from 'ai';
 
+export interface CreateUiStreamOptions {
+	provider: 'openai' | 'anthropic';
+	model: string;
+	tools: { [x: string]: Tool };
+	apiKeys: {
+		openai: string | null;
+		anthropic: string | null;
+	};
+	systemPrompt?: string;
+}
+
 export const createUiStream = (
-	provider: 'openai' | 'anthropic',
-	model: string,
 	messages: UIMessage[],
-	tools: { [x: string]: Tool },
-	apiKeys: { openai: string | null; anthropic: string | null },
+	{ provider, model, tools, apiKeys, systemPrompt }: CreateUiStreamOptions,
 ) => {
 	if (apiKeys[provider] === null) {
 		throw new ServiceUnavailableError({ service: provider, reason: 'No API key configured for LLM provider' });
@@ -28,5 +36,6 @@ export const createUiStream = (
 		model: modelProvider(model),
 		messages: convertToModelMessages(messages),
 		tools,
+		system: systemPrompt || '',
 	});
 };
