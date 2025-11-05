@@ -246,7 +246,13 @@ describe('aiChatPostHandler', () => {
 
 			await aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn());
 
-			expect(vi.mocked(createUiStream)).toHaveBeenCalledWith('openai', 'gpt-5', expect.any(Array), {}, customApiKeys);
+			expect(vi.mocked(createUiStream)).toHaveBeenCalledWith(expect.any(Array), {
+				provider: 'openai',
+				model: 'gpt-5',
+				tools: {},
+				apiKeys: customApiKeys,
+				systemPrompt: undefined,
+			});
 		});
 	});
 
@@ -286,13 +292,13 @@ describe('aiChatPostHandler', () => {
 				tools: expectedTools,
 			});
 
-			expect(vi.mocked(createUiStream)).toHaveBeenCalledWith(
-				'openai',
-				'gpt-5',
-				expect.any(Array),
-				expectedTools,
-				mockRes.locals!['ai'].apiKeys,
-			);
+			expect(vi.mocked(createUiStream)).toHaveBeenCalledWith(expect.any(Array), {
+				provider: 'openai',
+				model: 'gpt-5',
+				tools: expectedTools,
+				apiKeys: mockRes.locals!['ai'].apiKeys,
+				systemPrompt: undefined,
+			});
 		});
 	});
 });
