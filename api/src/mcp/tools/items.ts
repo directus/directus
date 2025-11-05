@@ -1,5 +1,4 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import { isSystemCollection } from '@directus/system-data';
 import type { PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { isObject } from 'graphql-compose';
@@ -67,10 +66,6 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 		return ['content', input.collection, data['id']];
 	},
 	async handler({ args, schema, accountability, sanitizedQuery }) {
-		if (isSystemCollection(args.collection)) {
-			throw new InvalidPayloadError({ reason: 'Cannot provide a core collection' });
-		}
-
 		if (args.collection in schema.collections === false) {
 			throw new ForbiddenError();
 		}

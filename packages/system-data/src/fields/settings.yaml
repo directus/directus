@@ -768,6 +768,22 @@ fields:
             _neq: true
         readonly: true
 
+  - field: mcp_allow_system_collections
+    interface: boolean
+    group: ai_group
+    special:
+      - cast-boolean
+    note: $t:fields.directus_settings.mcp_allow_system_collections_note
+    width: half
+    options:
+      label: $t:fields.directus_settings.mcp_allow_system_collections
+    conditions:
+      - name: mcp_enabled
+        rule:
+          mcp_enabled:
+            _neq: true
+        readonly: true
+
   - field: mcp_prompts_collection
     interface: system-collection
     group: ai_group

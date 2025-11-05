@@ -192,4 +192,5 @@ export const DEFAULTS = {
 	ACCEPT_TERMS: false,
 
 	MCP_ENABLED: true,
+	MCP_ALLOW_SYSTEM_COLLECTIONS: false,
 } as const;

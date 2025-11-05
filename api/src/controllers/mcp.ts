@@ -11,16 +11,23 @@ const mcpHandler = asyncHandler(async (req, res) => {
 		schema: req.schema,
 	});
 
-	const { mcp_enabled, mcp_allow_deletes, mcp_prompts_collection, mcp_system_prompt, mcp_system_prompt_enabled } =
-		await settings.readSingleton({
-			fields: [
-				'mcp_enabled',
-				'mcp_allow_deletes',
-				'mcp_prompts_collection',
-				'mcp_system_prompt',
-				'mcp_system_prompt_enabled',
-			],
-		});
+	const {
+		mcp_enabled,
+		mcp_allow_deletes,
+		mcp_allow_system_collections,
+		mcp_prompts_collection,
+		mcp_system_prompt,
+		mcp_system_prompt_enabled,
+	} = await settings.readSingleton({
+		fields: [
+			'mcp_enabled',
+			'mcp_allow_deletes',
+			'mcp_allow_system_collections',
+			'mcp_prompts_collection',
+			'mcp_system_prompt',
+			'mcp_system_prompt_enabled',
+		],
+	});
 
 	if (!mcp_enabled) {
 		throw new ForbiddenError({ reason: 'MCP must be enabled' });
@@ -29,6 +36,7 @@ const mcpHandler = asyncHandler(async (req, res) => {
 	const mcp = new DirectusMCP({
 		promptsCollection: mcp_prompts_collection,
 		allowDeletes: mcp_allow_deletes,
+		allowSystemCollections: mcp_allow_system_collections,
 		systemPromptEnabled: mcp_system_prompt_enabled,
 		systemPrompt: mcp_system_prompt,
 	});
