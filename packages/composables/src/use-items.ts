@@ -18,6 +18,7 @@ export type UsableItems = {
 	items: Ref<Item[]>;
 	totalPages: ComputedRef<number>;
 	loading: Ref<boolean>;
+	loadingItemCount: Ref<boolean>;
 	error: Ref<any>;
 	changeManualSort: (data: ManualSortData) => Promise<void>;
 	getItems: () => Promise<void>;
@@ -51,6 +52,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 	const items = ref<Item[]>([]);
 	const loading = ref(false);
+	const loadingItemCount = ref(false);
 	const error = ref<any>(null);
 
 	const itemCount = ref<number | null>(null);
@@ -124,6 +126,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		items,
 		totalPages,
 		loading,
+		loadingItemCount,
 		error,
 		changeManualSort,
 		getItems,
@@ -279,6 +282,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	async function getItemCount() {
 		if (!endpoint.value) return;
 
+		loadingItemCount.value = true;
+
 		try {
 			if (existingRequests.filter) existingRequests.filter.abort();
 			existingRequests.filter = new AbortController();
@@ -311,6 +316,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			if (!axios.isCancel(err)) {
 				throw err;
 			}
+		} finally {
+			loadingItemCount.value = false;
 		}
 	}
 }
