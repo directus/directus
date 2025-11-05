@@ -9,14 +9,19 @@ import {
 	SelectRoot,
 	SelectTrigger,
 } from 'reka-ui';
-
+import { computed } from 'vue';
 import { useAiStore } from '../stores/use-ai';
 
 const aiStore = useAiStore();
+
+const selectedModel = computed({
+	get: () => aiStore.selectedModel,
+	set: (value) => aiStore.updateSelectedModel(value ?? ''),
+});
 </script>
 
 <template>
-	<SelectRoot v-model:model-value="aiStore.selectedModel" @update:model-value="(value) => aiStore.updateSelectedModel(value ?? '')">
+	<SelectRoot v-model="selectedModel">
 		<SelectTrigger class="select-trigger">
 			{{ aiStore.currentModel }}
 			<SelectIcon class="select-icon">
