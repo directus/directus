@@ -2,7 +2,7 @@
 import { useElementBounding } from '@vueuse/core';
 import { throttle } from 'lodash';
 import type { ComponentPublicInstance } from 'vue';
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import AiMessage from './ai-message.vue';
 
 import type { UIMessage } from 'ai';
@@ -47,6 +47,7 @@ const showAutoScroll = ref(false);
 const lastScrollTop = ref(0);
 const userScrolledUp = ref(false);
 const lastMessageHeight = ref(0);
+const lastMessageHeightPx = computed(() => `${lastMessageHeight.value}px`);
 const lastMessageSubmitted = ref(false);
 
 function registerMessageRef(id: string, element: ComponentPublicInstance | null) {
@@ -253,7 +254,6 @@ onBeforeUnmount(() => {
 		ref="el"
 		:data-status="status"
 		class="ai-message-list"
-		:style="{ '--last-message-height': `${lastMessageHeight}px` }"
 	>
 		<slot>
 			<AiMessage
@@ -303,7 +303,7 @@ onBeforeUnmount(() => {
 	position: relative;
 
 	:deep(article:last-of-type) {
-		min-block-size: var(--last-message-height, 0);
+		min-block-size: v-bind(lastMessageHeightPx);
 	}
 }
 
