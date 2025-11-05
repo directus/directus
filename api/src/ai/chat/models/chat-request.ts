@@ -1,15 +1,23 @@
 import { type JSONSchema7 } from 'ai';
 import { z } from 'zod';
+import { parseJsonSchema7 } from '../utils/parse-json-schema-7.js';
 
 export const ChatRequestTool = z.union([
 	z.string(),
 	z.object({
 		name: z.string(),
 		description: z.string(),
-		inputSchema: z.custom<JSONSchema7>((_schema) => {
-			// TODO validate that `schema` is a valid JSON Schema draft-07 structure
-			return true;
-		}, { message: 'Invalid JSON schema' }),
+		inputSchema: z.custom<JSONSchema7>(
+			(schema: unknown): schema is JSONSchema7 => {
+				try {
+					parseJsonSchema7(schema as unknown);
+					return true;
+				} catch {
+					return false;
+				}
+			},
+			{ message: 'Invalid JSON schema' },
+		),
 	}),
 ]);
 
