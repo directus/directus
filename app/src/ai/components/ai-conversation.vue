@@ -12,8 +12,6 @@ const aiStore = useAiStore();
 			<ai-message-list
 				:messages="aiStore.messages"
 				:status="aiStore.status"
-				:user-config="{ variant: 'primary', side: 'right', avatar: { icon: 'person' } }"
-				:assistant-config="{ variant: 'subdued', side: 'left', avatar: { icon: 'smart_toy' } }"
 				should-auto-scroll
 				should-scroll-to-bottom
 			/>

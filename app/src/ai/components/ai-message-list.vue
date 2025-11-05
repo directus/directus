@@ -1,21 +1,13 @@
 <script setup lang="ts">
 import type { ComponentPublicInstance } from 'vue';
-import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
 import AiMessage from './ai-message.vue';
-import type { AiMessageAction, AiMessageAvatar } from './ai-message.vue';
 
 import type { UIMessage } from 'ai';
 
 export type AiMessage = UIMessage;
 
 export type AiStatus = 'ready' | 'streaming' | 'submitted' | 'error';
-
-export interface MessageConfig {
-	variant?: 'primary' | 'subdued' | 'accent' | 'normal';
-	side?: 'left' | 'right';
-	avatar?: AiMessageAvatar;
-	actions?: AiMessageAction[];
-}
 
 interface Props {
 	/** Array of messages to display */
@@ -30,10 +22,6 @@ interface Props {
 	autoScroll?: boolean;
 	/** Icon for auto-scroll button */
 	autoScrollIcon?: string;
-	/** User message configuration */
-	userConfig?: MessageConfig;
-	/** Assistant message configuration */
-	assistantConfig?: MessageConfig;
 	/** Compact mode for dense layouts */
 	compact?: boolean;
 	/** Spacing offset for sticky elements (px) */
@@ -45,8 +33,6 @@ const props = withDefaults(defineProps<Props>(), {
 	shouldScrollToBottom: true,
 	autoScroll: true,
 	autoScrollIcon: 'arrow_downward',
-	userConfig: () => ({ side: 'right', variant: 'primary' }),
-	assistantConfig: () => ({ side: 'left', variant: 'subdued' }),
 	compact: false,
 	spacingOffset: 0,
 });
@@ -255,10 +241,6 @@ onBeforeUnmount(() => {
 
 	window.removeEventListener('resize', handleResize);
 });
-
-function getMessageConfig(role: string): MessageConfig {
-	return role === 'user' ? props.userConfig : props.assistantConfig;
-}
 </script>
 
 <template>
@@ -272,19 +254,13 @@ function getMessageConfig(role: string): MessageConfig {
 			<AiMessage
 				v-for="message in messages"
 				:key="message.id"
-				v-bind="{ ...message, ...getMessageConfig(message.role) }"
 				:ref="(el) => registerMessageRef(message.id, el as ComponentPublicInstance)"
+				v-bind="message"
 				:compact="compact"
 			/>
 		</slot>
 
-		<AiMessage
-			v-if="status === 'submitted'"
-			id="indicator"
-			role="assistant"
-			v-bind="{ ...assistantConfig, actions: undefined, parts: [] }"
-			:compact="compact"
-		>
+		<AiMessage v-if="status === 'submitted'" id="indicator" role="assistant" :parts="[]" :compact="compact">
 			<template #content>
 				<slot name="indicator">
 					<div class="loading-indicator">
@@ -327,6 +303,10 @@ function getMessageConfig(role: string): MessageConfig {
 	gap: var(--ai-message-list-gap, 1rem);
 	padding-bottom: 1rem;
 	position: relative;
+
+	> :last-child {
+		min-height: var(--last-message-height);
+	}
 }
 
 .loading-indicator {
