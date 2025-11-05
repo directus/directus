@@ -120,7 +120,7 @@ async function getDisplayItems() {
 	}
 }
 
-function onSelection(selectedIds: (number | string)[] | null) {
+function onSelection(selectedIds: PrimaryKey[] | null) {
 	selectDrawerOpen.value = false;
 
 	if (!selectedIds || selectedIds.length === 0) {
