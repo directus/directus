@@ -252,6 +252,7 @@ export class ImportService {
 		const extractJSON = StreamArray.withParser();
 		const nestedActionEvents: ActionEventParams[] = [];
 		const errorTracker = createErrorTracker();
+		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
 
 		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
@@ -268,11 +269,15 @@ export class ImportService {
 						if (errorTracker.shouldStop()) return;
 
 						try {
-							const result = await service.upsertOne(task.data, {
-								bypassEmitAction: (params) => nestedActionEvents.push(params),
-							});
-
-							return result;
+							if (isSingleton) {
+								return await service.upsertSingleton(task.data, {
+									bypassEmitAction: (params) => nestedActionEvents.push(params),
+								});
+							} else {
+								return await service.upsertOne(task.data, {
+									bypassEmitAction: (params) => nestedActionEvents.push(params),
+								});
+							}
 						} catch (error) {
 							for (const err of toArray(error)) {
 								errorTracker.addCapturedError(err, task.rowNumber);
@@ -296,6 +301,20 @@ export class ImportService {
 					stream.pipe(extractJSON);
 
 					extractJSON.on('data', ({ value }: Record<string, any>) => {
+						if (isSingleton && rowNumber > 1) {
+							saveQueue.kill();
+							destroyStream(stream);
+							destroyStream(extractJSON);
+
+							reject(
+								new InvalidPayloadError({
+									reason: `Cannot import multiple records into singleton collection "${collection}". Only one record is allowed.`,
+								}),
+							);
+
+							return;
+						}
+
 						saveQueue.push({ data: value, rowNumber: rowNumber++ });
 					});
 
@@ -339,6 +358,7 @@ export class ImportService {
 
 		const nestedActionEvents: ActionEventParams[] = [];
 		const errorTracker = createErrorTracker();
+		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
 
 		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
@@ -368,11 +388,15 @@ export class ImportService {
 						if (errorTracker.shouldStop()) return;
 
 						try {
-							const result = await service.upsertOne(task.data, {
-								bypassEmitAction: (action) => nestedActionEvents.push(action),
-							});
-
-							return result;
+							if (isSingleton) {
+								return await service.upsertSingleton(task.data, {
+									bypassEmitAction: (action) => nestedActionEvents.push(action),
+								});
+							} else {
+								return await service.upsertOne(task.data, {
+									bypassEmitAction: (action) => nestedActionEvents.push(action),
+								});
+							}
 						} catch (error: any) {
 							for (const err of toArray(error)) {
 								errorTracker.addCapturedError(err, task.rowNumber);
@@ -429,6 +453,19 @@ export class ImportService {
 								)
 								.on('data', (obj: Record<string, unknown>) => {
 									rowNumber++;
+
+									if (isSingleton && rowNumber > 1) {
+										saveQueue.kill();
+										cleanup(true);
+
+										reject(
+											new InvalidPayloadError({
+												reason: `Cannot import multiple records into singleton collection "${collection}". Only one record is allowed.`,
+											}),
+										);
+
+										return;
+									}
 
 									const result: Record<string, unknown> = {};
 
