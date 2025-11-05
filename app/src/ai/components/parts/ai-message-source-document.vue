@@ -32,7 +32,7 @@ defineProps<{
 }
 
 small {
-	opacity: 0.7;
+	color: var(--theme--foreground-subdued);
 	font-size: 0.75rem;
 }
 </style>
