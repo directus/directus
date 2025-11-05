@@ -1,4 +1,6 @@
 ---
+first_name: Nama Depan
+last_name: Nama belakang
 identifier: Pengenal
 avatar: Avatar
 application: Aplikasi
@@ -94,7 +96,6 @@ version: Versi
 version_key: Versi kunci
 version_name: Nama Versi
 main_version: Utama
-promote_version_preview: Pratinjau
 reset_bookmark: Hapus Markah
 update_bookmark: Hapus Markah
 delete_bookmark: Hapus Markah

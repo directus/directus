@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Quant a
+first_name: Nom
+last_name: Cognoms
 identifier: Indentificador
 avatar: Foto
 application: Aplicació
@@ -119,7 +121,6 @@ delete_folder: Suprimeix carpeta
 prefix: Prefix
 suffix: Sufix
 keep: Manté
-promote_version_preview: Vista prèvia
 reset_bookmark: Reinicia marcador
 update_bookmark: Actualitza marcador
 delete_bookmark: Eliminar marcador
