@@ -1,14 +1,28 @@
 <script setup lang="ts">
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
+import { ref, watch } from 'vue';
 
-defineProps<{
+const props = defineProps<{
 	text: string;
 	state: 'streaming' | 'done';
 }>();
+
+const isOpen = ref(props.state === 'streaming');
+
+watch(
+	() => props.state,
+	(newState, oldState) => {
+		if (oldState === 'streaming' && newState === 'done') {
+			isOpen.value = false;
+		} else if (newState === 'streaming') {
+			isOpen.value = true;
+		}
+	},
+);
 </script>
 
 <template>
-	<CollapsibleRoot class="message-reasoning" :default-open="false">
+	<CollapsibleRoot v-model:open="isOpen" class="message-reasoning">
 		<CollapsibleTrigger class="reasoning-header">
 			<v-icon name="psychology" x-small />
 			<span>{{ state === 'streaming' ? 'Thinking...' : 'Reasoning' }}</span>
