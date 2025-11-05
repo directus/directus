@@ -143,6 +143,7 @@
 		"pinia": "catalog:",
 		"pretty-ms": "catalog:",
 		"qrcode": "catalog:",
+		"reka-ui": "catalog:",
 		"sass-embedded": "catalog:",
 		"semver": "catalog:",
 		"string-width": "catalog:",
@@ -161,8 +162,5 @@
 		"vuedraggable": "catalog:",
 		"wellknown": "catalog:",
 		"zod": "catalog:"
-	},
-	"dependencies": {
-		"reka-ui": "catalog:"
 	}
 }
