@@ -263,6 +263,48 @@ describe('useComparison', () => {
 			expect(baseUserUpdated.value).toBeNull();
 		});
 	});
+
+	describe('normalizeVersionItem date and user selection', () => {
+		it('should use date_updated and user_updated when user_updated exists', async () => {
+			const testCase = getTestData('version', {
+				currentVersionOverwrites: {
+					date_created: '2025-10-29T09:00:00.000Z',
+					date_updated: '2025-10-29T10:00:00.000Z',
+					user_created: 'user-created-id',
+					user_updated: 'user-updated-id',
+				},
+			});
+
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { normalizedData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			expect(normalizedData.value?.incoming?.date?.raw).toBe('2025-10-29T10:00:00.000Z');
+			expect(normalizedData.value?.incoming?.user).toBe('user-updated-id');
+		});
+
+		it('should use date_created and user_created when user_updated does not exist', async () => {
+			const testCase = getTestData('version', {
+				currentVersionOverwrites: {
+					date_created: '2025-10-29T09:00:00.000Z',
+					date_updated: null,
+					user_created: 'user-created-id',
+					user_updated: null,
+				},
+			});
+
+			mockApi.get.mockImplementation(testCase.mockApiGet);
+
+			const { normalizedData, fetchComparisonData } = useComparison(testCase.comparisonOptions);
+
+			await fetchComparisonData();
+
+			expect(normalizedData.value?.incoming?.date?.raw).toBe('2025-10-29T09:00:00.000Z');
+			expect(normalizedData.value?.incoming?.user).toBe('user-created-id');
+		});
+	});
 });
 
 function getTestData(mode: 'version' | 'revision' = 'version', overwrites: Record<string, any> = {}) {

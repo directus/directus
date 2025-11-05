@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import type { ComparisonContext } from '@/components/v-form/types';
+import { getFieldsInGroup } from '@/utils/get-fields-in-group';
 import { Field, ValidationError } from '@directus/types';
 import { merge } from 'lodash';
-import type { ComparisonContext } from '@/components/v-form/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { getFieldsInGroup } from '@/utils/get-fields-in-group';
 
 const props = withDefaults(
 	defineProps<{
@@ -37,6 +37,8 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
+
+const { isFieldWithDifference, isRevisionUpdateOnly } = useComparisonIndicator();
 
 const fieldsInSection = computed(() => {
 	const fields: Field[] = [merge({}, props.field, { hideLabel: true })];
@@ -78,56 +80,94 @@ function handleModifier(event: MouseEvent, toggle: () => void) {
 		toggle();
 	}
 }
+
+function useComparisonIndicator() {
+	const isFieldWithDifference = computed(() => props.comparison?.fields.has(props.field.field));
+
+	const isRevisionUpdateOnly = computed(() => {
+		return !isFieldWithDifference.value && props.comparison?.revisionFields?.has(props.field.field);
+	});
+
+	return { isFieldWithDifference, isRevisionUpdateOnly };
+}
 </script>
 
 <template>
 	<v-item v-if="!field.meta?.hidden" :value="field.field" scope="group-accordion" class="accordion-section">
 		<template #default="{ active, toggle }">
-			<button
-				type="button"
-				class="label type-title"
-				:class="{ active, edited }"
-				@click="handleModifier($event, toggle)"
+			<div
+				:class="{
+					'indicator-active': !active && isFieldWithDifference,
+					'indicator-muted': (active && isFieldWithDifference) || isRevisionUpdateOnly,
+				}"
 			>
-				<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
-				<v-icon class="icon" :class="{ active }" name="expand_more" />
-				<span class="field-name">{{ field.name }}</span>
-				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" filled />
-				<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
-				<v-icon v-if="!active && validationMessage" v-tooltip="validationMessage" class="warning" name="error" small />
-			</button>
-
-			<transition-expand>
-				<div v-if="active" class="fields">
-					<v-form
-						:initial-values="initialValues"
-						:fields="fieldsInSection"
-						:model-value="values"
-						:primary-key="primaryKey"
-						:group="group"
-						:validation-errors="validationErrors"
-						:loading="loading"
-						:batch-mode="batchMode"
-						:non-editable="!!nonEditable"
-						:disabled="disabled"
-						:comparison="comparison"
-						:direction="direction"
-						:show-no-visible-fields="false"
-						:show-validation-errors="false"
-						@update:model-value="$emit('apply', $event)"
+				<button
+					type="button"
+					class="label type-title"
+					:class="{ active, edited }"
+					@click="handleModifier($event, toggle)"
+				>
+					<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
+					<v-icon class="icon" :class="{ active }" name="expand_more" />
+					<span class="field-name">{{ field.name }}</span>
+					<v-icon v-if="field.meta?.required === true" class="required" sup name="star" filled />
+					<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
+					<v-icon
+						v-if="!active && validationMessage"
+						v-tooltip="validationMessage"
+						class="warning"
+						name="error"
+						small
 					/>
-				</div>
-			</transition-expand>
+				</button>
+
+				<transition-expand>
+					<div v-if="active">
+						<v-form
+							class="fields"
+							:initial-values="initialValues"
+							:fields="fieldsInSection"
+							:model-value="values"
+							:primary-key="primaryKey"
+							:group="group"
+							:validation-errors="validationErrors"
+							:loading="loading"
+							:batch-mode="batchMode"
+							:disabled="disabled"
+							:non-editable="!!nonEditable"
+							:comparison="comparison"
+							:direction="direction"
+							:show-no-visible-fields="false"
+							:show-validation-errors="false"
+							@update:model-value="$emit('apply', $event)"
+						/>
+					</div>
+				</transition-expand>
+			</div>
 		</template>
 	</v-item>
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .accordion-section {
 	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+}
 
-	&:last-child {
-		border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+.indicator-active {
+	@include mixins.field-indicator;
+
+	&::before {
+		transition: background-color var(--slow) var(--transition);
+	}
+}
+
+.indicator-muted {
+	@include mixins.field-indicator('muted');
+
+	&::before {
+		transition: background-color var(--slow) var(--transition) var(--fast);
 	}
 }
 
@@ -136,8 +176,7 @@ function handleModifier(event: MouseEvent, toggle: () => void) {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	margin: 8px 0;
-
+	padding: 8px 0;
 	cursor: pointer;
 
 	&:hover,
@@ -195,6 +234,6 @@ function handleModifier(event: MouseEvent, toggle: () => void) {
 }
 
 .fields {
-	margin: var(--theme--form--row-gap) 0;
+	padding: var(--theme--form--row-gap) 0;
 }
 </style>

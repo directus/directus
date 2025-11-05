@@ -17,12 +17,12 @@ interface Props {
 	primaryKey: PrimaryKey;
 	mode: 'version' | 'revision';
 	currentVersion: ContentVersion | null | undefined;
-	currentRevision?: Revision | null;
 	revisions?: Revision[] | null;
 }
 
 const props = defineProps<Props>();
 const active = defineModel<boolean>();
+const currentRevision = defineModel<Revision | null>('current-revision');
 
 const emit = defineEmits<{
 	cancel: [];
@@ -33,8 +33,6 @@ const emit = defineEmits<{
 const { t } = useI18n();
 
 const { deleteVersionsAllowed, collection, primaryKey, mode, currentVersion, revisions } = toRefs(props);
-const internalRevision = ref<Revision | null>(null);
-const currentRevision = computed(() => internalRevision.value ?? props.currentRevision);
 
 const {
 	comparisonData,
@@ -160,7 +158,7 @@ function usePromoteDialog() {
 function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 	if (props.mode !== 'revision') return;
 
-	internalRevision.value = revisions.value?.find((revision) => revision.id === newDeltaId) ?? null;
+	currentRevision.value = revisions.value?.find((revision) => revision.id === newDeltaId) ?? null;
 }
 </script>
 
@@ -196,7 +194,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 							</template>
 							<template v-else>
 								<v-form
-									non-editable
+									disabled
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.base || {}"
@@ -206,7 +204,6 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: [],
 										onToggleField: () => {},
-										comparisonType: comparisonData?.comparisonType,
 									}"
 									class="comparison-form--base"
 								/>
@@ -238,7 +235,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 							</template>
 							<template v-else>
 								<v-form
-									non-editable
+									disabled
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.incoming || {}"
@@ -248,7 +245,6 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: selectedComparisonFields,
 										onToggleField: toggleComparisonField,
-										comparisonType: comparisonData?.comparisonType,
 									}"
 									class="comparison-form--incoming"
 								/>
@@ -578,10 +574,12 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 }
 
 .comparison-form--base {
-	--comparison-indicator--color: var(--theme--danger);
+	--field-indicator--color-active: var(--theme--danger);
+	--field-indicator--color-muted: var(--theme--danger-background);
 }
 
 .comparison-form--incoming {
-	--comparison-indicator--color: var(--theme--success);
+	--field-indicator--color-active: var(--theme--success);
+	--field-indicator--color-muted: var(--theme--success-background);
 }
 </style>

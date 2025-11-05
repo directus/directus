@@ -8,9 +8,9 @@ packages:
 
 catalog:
   '@authenio/samlify-node-xmllint': 2.0.0
-  '@aws-sdk/client-s3': 3.913.0
-  '@aws-sdk/client-sesv2': 3.913.0
-  '@aws-sdk/lib-storage': 3.913.0
+  '@aws-sdk/client-s3': 3.918.0
+  '@aws-sdk/client-sesv2': 3.918.0
+  '@aws-sdk/lib-storage': 3.918.0
   '@azure/storage-blob': 12.29.1
   '@changesets/cli': 2.29.7
   '@changesets/get-github-info': 0.6.0
@@ -42,7 +42,7 @@ catalog:
   '@fullcalendar/list': 6.1.19
   '@fullcalendar/timegrid': 6.1.19
   '@godaddy/terminus': 4.12.1
-  '@google-cloud/storage': 7.17.0
+  '@google-cloud/storage': 7.17.2
   '@histoire/plugin-vue': 0.17.17
   '@joeattardi/emoji-button': 4.6.4
   '@json2csv/plainjs': 7.0.6
@@ -50,16 +50,16 @@ catalog:
   '@mapbox/mapbox-gl-draw': 1.5.0
   '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
   '@mapbox/mapbox-gl-geocoder': 5.1.2
-  '@modelcontextprotocol/sdk': 1.20.1
+  '@modelcontextprotocol/sdk': 1.20.2
   '@ngneat/falso': 8.0.2
   '@npm/types': 2.1.0
   '@pinia/testing': 1.0.2
   '@pnpm/logger': 1001.0.1
-  '@pnpm/workspace.find-packages': 1000.0.42
-  '@pnpm/workspace.pkgs-graph': 1000.0.24
+  '@pnpm/workspace.find-packages': 1000.0.43
+  '@pnpm/workspace.pkgs-graph': 1000.0.25
   '@popperjs/core': 2.11.8
   '@rollup/plugin-alias': 5.1.1
-  '@rollup/plugin-commonjs': 28.0.8
+  '@rollup/plugin-commonjs': 28.0.9
   '@rollup/plugin-json': 6.1.0
   '@rollup/plugin-node-resolve': 16.0.3
   '@rollup/plugin-replace': 6.0.2
@@ -69,7 +69,7 @@ catalog:
   '@shopify/semaphore': 3.1.0
   '@sinclair/typebox': 0.34.41
   '@sindresorhus/slugify': 2.2.1
-  '@smithy/node-http-handler': 4.4.2
+  '@smithy/node-http-handler': 4.4.3
   '@supabase/storage-js': 2.76.1
   '@tinymce/tinymce-vue': 6.3.0
   '@turf/meta': 7.2.0
@@ -79,11 +79,12 @@ catalog:
   '@types/base-64': 1.0.2
   '@types/busboy': 1.5.4
   '@types/bytes': 3.1.5
-  '@types/chroma-js': 3.1.1
+  '@types/chroma-js': 3.1.2
   '@types/codemirror': 5.60.16
   '@types/content-disposition': 0.5.9
-  '@types/cookie-parser': 1.4.9
+  '@types/cookie-parser': 1.4.10
   '@types/cors': 2.8.19
+  '@types/cron': 3.0.11
   '@types/deep-diff': 1.0.5
   '@types/destroy': 1.0.3
   '@types/diacritics': 1.3.3
@@ -107,12 +108,11 @@ catalog:
   '@types/mime-types': 3.0.1
   '@types/ms': 2.1.0
   '@types/node': 22.13.14
-  '@types/cron': 3.0.11
-  '@types/nodemailer': 7.0.2
+  '@types/nodemailer': 7.0.3
   '@types/object-hash': 3.0.6
   '@types/papaparse': 5.3.16
   '@types/proxy-addr': 2.0.3
-  '@types/qrcode': 1.5.5
+  '@types/qrcode': 1.5.6
   '@types/qs': 6.14.0
   '@types/sanitize-html': 2.16.0
   '@types/semver': 7.7.1
@@ -145,7 +145,7 @@ catalog:
   chroma-js: 3.1.2
   codemirror: 5.65.18
   color: 5.0.2
-  commander: 14.0.1
+  commander: 14.0.2
   content-disposition: 0.5.4
   cookie: 1.0.2
   cookie-parser: 1.4.7
@@ -177,7 +177,7 @@ catalog:
   find-cache-directory: 6.0.0
   flat: 6.0.1
   flatpickr: 4.6.13
-  focus-trap: 7.6.5
+  focus-trap: 7.6.6
   form-data: 4.0.4
   fs-extra: 11.3.2
   geojson: 0.5.0
@@ -187,7 +187,7 @@ catalog:
   graphql: 16.11.0
   graphql-compose: 9.1.0
   graphql-ws: 6.0.6
-  happy-dom: 20.0.8
+  happy-dom: 20.0.10
   helmet: 8.1.0
   histoire: 0.17.17
   html-entities: 2.6.0
@@ -208,7 +208,7 @@ catalog:
   knex-mock-client: 3.0.2
   ky: 1.13.0
   ldapjs: 2.3.3
-  liquidjs: 10.23.0
+  liquidjs: 10.24.0
   lodash: 4.17.21
   lodash-es: 4.17.21
   log-symbols: 7.0.1
@@ -219,7 +219,7 @@ catalog:
   micromustache: 8.0.3
   mime: 4.1.0
   mime-types: 3.0.1
-  minimatch: 10.0.3
+  minimatch: 10.1.1
   mitt: 3.0.1
   mnemonist: 0.40.3
   ms: 2.1.3
@@ -230,7 +230,7 @@ catalog:
   nodemailer-mailgun-transport: 2.1.5
   npm-watch: 0.13.0
   object-hash: 3.0.0
-  ofetch: 1.4.1
+  ofetch: 1.5.0
   openapi3-ts: 4.5.0
   openid-client: 5.7.1
   ora: 8.2.0
@@ -277,33 +277,34 @@ catalog:
   stylelint-use-logical: 2.1.2
   swagger-cli: 4.0.4
   swagger-ui-watcher: 2.1.14
-  tar: 7.5.1
+  tar: 7.5.2
   tedious: 18.6.1
   tinymce: 6.8.6
   tmp: 0.2.5
-  tsdown: 0.15.8
+  tsdown: 0.15.11
   tsx: 4.20.6
   tus-js-client: 4.3.1
   typescript: 5.9.3
-  typescript-eslint: 8.46.1
+  typescript-eslint: 8.46.2
   undici: 7.16.0
-  unplugin-yaml: 3.0.6
+  unplugin-yaml: 3.0.7
+  universal-cookie: 8.0.1
   update-check: 1.5.4
   uuid: 11.1.0
-  vite: 7.1.11
+  vite: 7.1.12
   vite-plugin-dts: 4.5.4
   vite-plugin-vue-devtools: 7.7.2
   vitest: 3.2.4
   vue: 3.5.22
   vue-i18n: 11.1.12
   vue-router: 4.6.3
-  vue-tsc: 3.1.1
+  vue-tsc: 3.1.2
   vue-virtual-scroller: 2.0.0-beta.8
   vuedraggable: 4.1.0
   wellknown: 0.5.0
   ws: 8.18.3
   zod: 4.1.12
-  zod-validation-error: 4.0.1
+  zod-validation-error: 4.0.2
 
 catalogMode: strict
 
