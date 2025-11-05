@@ -2,11 +2,14 @@
 import { useFlowsStore } from '@/stores/flows';
 import { FlowRaw } from '@directus/types';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{ value: Record<string, unknown>; collectionName: string }>();
 defineEmits<{ input: [value: string | null] }>();
 
 const flowsStore = useFlowsStore();
+
+const { t } = useI18n();
 
 const flows = computed(() =>
 	flowsStore.flows
@@ -19,8 +22,8 @@ const flows = computed(() =>
 				flow.options.location !== 'collection',
 		)
 		.map((flow: FlowRaw) => ({
-			id: flow.id,
-			displayText: `${flow.name}${(flow.description && ': ' + flow.description) || ''}`,
+			value: flow.id,
+			text: `${flow.name}${(flow.description && ': ' + flow.description) || ''}${flow.status === 'inactive' ? ` (${t('inactive')})` : ''}`,
 		})),
 );
 </script>
@@ -29,8 +32,7 @@ const flows = computed(() =>
 	<v-select
 		:model-value="value"
 		:items="flows"
-		:item-text="'displayText'"
-		:item-value="'id'"
+		:item-text="'text'"
 		show-deselect
 		:placeholder="$t('select_a_flow')"
 		@update:model-value="$emit('input', $event)"
