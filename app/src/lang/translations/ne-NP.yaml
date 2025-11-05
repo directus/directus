@@ -1,4 +1,6 @@
 ---
+first_name: नाम
+last_name: थर
 identifier: पहिचान
 avatar: अवतार
 application: अनुप्रयोग
@@ -82,7 +84,6 @@ rename_folder: फोल्डरको नाम बदल्नुहोस्
 delete_folder: फोल्डर मेटाउनुहोस्
 prefix: उपसर्ग
 suffix: प्रत्यय
-promote_version_preview: पूर्वावलोकन
 reset_bookmark: बुकमार्क रिसेट गर्नुहोस्
 update_bookmark: बुकमार्क अपडेट गर्नुहोस्
 delete_bookmark: बुकमार्क मेट्नुहोस्

@@ -10,7 +10,7 @@ import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu, { type MenuOptions } from './form-field-menu.vue';
 import FormFieldRawEditor from './form-field-raw-editor.vue';
-import type { FormField, ComparisonContext } from './types';
+import type { ComparisonContext, FormField } from './types';
 
 const props = withDefaults(
 	defineProps<{
@@ -172,7 +172,6 @@ function useComputedValues() {
 			field.meta?.width || 'full',
 			{
 				invalid: validationError,
-				'diff-indicator': comparison?.fields.has(field.field),
 			},
 		]"
 	>
@@ -253,22 +252,6 @@ function useComputedValues() {
 </template>
 
 <style lang="scss" scoped>
-.field {
-	position: relative;
-
-	&.diff-indicator {
-		&::before {
-			content: '';
-			position: absolute;
-			inset-block: 0;
-			inset-inline-start: -12px;
-			inline-size: 4px;
-			z-index: 1;
-			background-color: var(--comparison-indicator--color);
-		}
-	}
-}
-
 .type-note {
 	position: relative;
 	display: block;
