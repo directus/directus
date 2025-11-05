@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Om
+first_name: Fornavn
+last_name: Etternavn
 identifier: Identifikator
 avatar: Profilbilde
 application: Applikasjon

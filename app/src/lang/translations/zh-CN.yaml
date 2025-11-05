@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 关于
+first_name: 名
+last_name: 姓
 identifier: 标识符（identifier）
 avatar: 头像
 application: 应用程序
@@ -166,19 +168,9 @@ rename_version: 重命名版本
 compare_version: 对比版本
 save_version: 保存版本
 promote_version: 推广版本
-promote_version_disabled: 无变化
-promote_version_drawer_title: 将版本"{version}"推入主干
-promote_version_changes: 更改
-promote_version_preview: 预览
-outdated_notice: >-
-  自此版本创建以来，主条目已更新。 请查看下面的所有字段值，并确认在将此版本推广到主干时应使用哪个版本。
-promote_notice: >-
-  请查看下面的所有字段值，并确认在将此版本推广到主干时应使用哪个版本。
 delete_version: 删除版本
 delete_version_copy: >-
   你确定要删除"{version}" 这个版本吗? 此操作无法撤销。
-delete_on_promote_copy: >-
-  你想在并入之后删除还是保留 " {version} " 版本？
 reset_bookmark: 重置书签
 update_bookmark: 更新书签
 delete_bookmark: 删除书签
@@ -454,7 +446,6 @@ revision_delta_created: 已创建
 revision_delta_created_externally: 外部创建
 revision_delta_updated: '更新了 1 个字段 | 更新了 {count} 个字段'
 revision_delta_deleted: 已删除
-revision_delta_version_saved: '版本保存（更新了1个字段）| 版本保存（更新了"{count}"个字段）'
 revision_delta_reverted: Reverted
 revision_delta_update_message: 此字段已更新，但由于安全原因，其值被隐藏。
 revision_delta_other: 修订版本
@@ -2536,8 +2527,3 @@ search_flow: 搜索流程...
 percent: 百分比
 show_password: 显示密码
 hide_password: 隐藏密码
-bsl_banner:
-  welcome_to_directus: 欢迎使用 Directus！
-  directus_free_use: Directus对年收入、资金或经营预算低于500万美元的实体免费开放。
-  organization_threshold: 超过这一限额的实体需要付费许可证。
-  directus_bsl: Directus BSL 1.1

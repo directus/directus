@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Về chúng tôi
+first_name: Tên
+last_name: Họ
 identifier: Định danh
 avatar: Ảnh đại diện
 application: Ứng dụng
@@ -146,8 +148,6 @@ prefix: Tiền tố
 suffix: Hậu tố
 version: Phiên bản
 switch_version_copy: .
-promote_version_disabled: Không có thay đổi
-promote_version_changes: Thay đổi
 reset_bookmark: Đặt lại Dấu trang
 update_bookmark: Cập nhật Dấu trang
 delete_bookmark: Xoá dấu trang
