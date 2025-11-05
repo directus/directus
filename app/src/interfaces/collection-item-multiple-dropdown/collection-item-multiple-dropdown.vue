@@ -215,10 +215,6 @@ function onSort(sortedItems: Record<string, any>[]) {
 	@include mixins.list-interface($deleteable: true);
 }
 
-.placeholder {
-	color: var(--v-input-placeholder-color, var(--theme--foreground-subdued));
-}
-
 .item-actions {
 	@include mixins.list-interface-item-actions;
 }
