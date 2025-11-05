@@ -10,7 +10,7 @@ const props = defineProps<{
 const open = defineModel<boolean>('open', { required: true });
 
 const isOpen = computed({
-	get: () => props.state === 'streaming',
+	get: () => props.state === 'streaming' || open.value,
 	set: () => {
 		open.value = !open.value;
 	},
@@ -25,7 +25,7 @@ const isOpen = computed({
 			<v-icon name="expand_more" x-small class="chevron" />
 		</CollapsibleTrigger>
 		<CollapsibleContent class="reasoning-content-wrapper">
-			<div v-md="text || ''" class="reasoning-content" :data-state="state"></div>
+			<div v-md="text || ''" class="reasoning-content"></div>
 		</CollapsibleContent>
 	</CollapsibleRoot>
 </template>
@@ -65,22 +65,22 @@ const isOpen = computed({
 	overflow: hidden;
 
 	&[data-state='open'] {
-		animation: slideDown var(--medium) var(--transition-out);
+		animation: slide-down var(--medium) var(--transition-out);
 	}
 
 	&[data-state='closed'] {
-		animation: slideUp var(--medium) var(--transition-out);
+		animation: slide-up var(--medium) var(--transition-out);
 	}
 }
 
 .reasoning-content {
 	font-size: 0.875rem;
-	opacity: 0.7;
+	color: var(--theme--foreground-normal);
 	padding-block-start: 0.5rem;
 	padding-inline-start: 1.25rem;
 }
 
-@keyframes slideDown {
+@keyframes slide-down {
 	from {
 		block-size: 0;
 	}
@@ -89,7 +89,7 @@ const isOpen = computed({
 	}
 }
 
-@keyframes slideUp {
+@keyframes slide-up {
 	from {
 		block-size: var(--reka-collapsible-content-height);
 	}
