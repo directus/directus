@@ -1,6 +1,7 @@
 import { type JSONSchema7 } from 'ai';
 import { z } from 'zod';
 import { parseJsonSchema7 } from '../utils/parse-json-schema-7.js';
+import { ProviderAnthropic, ProviderOpenAi } from './providers.js';
 
 export const ChatRequestTool = z.union([
 	z.string(),
@@ -24,16 +25,7 @@ export const ChatRequestTool = z.union([
 export type ChatRequestTool = z.infer<typeof ChatRequestTool>;
 
 export const ChatRequest = z.intersection(
-	z.discriminatedUnion('provider', [
-		z.object({
-			provider: z.literal('openai'),
-			model: z.union([z.literal('gpt-5')]),
-		}),
-		z.object({
-			provider: z.literal('anthropic'),
-			model: z.union([z.literal('claude-sonnet-4-5')]),
-		}),
-	]),
+	z.discriminatedUnion('provider', [ProviderOpenAi, ProviderAnthropic]),
 	z.object({
 		tools: z.array(ChatRequestTool),
 		messages: z.array(z.looseObject({})),
