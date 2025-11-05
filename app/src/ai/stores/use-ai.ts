@@ -1,15 +1,27 @@
+import { useSettingsStore } from '@/stores/settings';
+import { Chat } from '@ai-sdk/vue';
 import { useLocalStorage } from '@vueuse/core';
+import { DefaultChatTransport, type UIMessage } from 'ai';
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
-import { DefaultChatTransport, type UIMessage } from 'ai';
 import { AI_MODELS } from '../models';
-import { Chat } from '@ai-sdk/vue';
 
 export const useAiStore = defineStore('ai-store', () => {
-	const selectedModel = useLocalStorage<string | null>('selected-ai-model', AI_MODELS[0] ?? null);
+	const settingsStore = useSettingsStore();
 
-	const currentProvider = computed(() => selectedModel.value?.split('/')[0] ?? 'openai');
-	const currentModel = computed(() => selectedModel.value?.split('/')[1] ?? 'gpt-5');
+	const models = computed(() => AI_MODELS.filter((model) => {
+		const provider = model.split('/')[0]!;
+		return settingsStore.availableAiProviders.includes(provider);
+	}));
+
+	const defaultProvider = computed(() => models.value[0]?.split('/')[0] ?? null);
+
+	const defaultModel = computed(() => models.value[0]?.split('/')[1] ?? null);
+
+	const selectedModel = useLocalStorage<string | null>('selected-ai-model', defaultModel.value);
+
+	const currentProvider = computed(() => selectedModel.value?.split('/')[0] ?? defaultProvider.value);
+	const currentModel = computed(() => selectedModel.value?.split('/')[1] ?? defaultModel.value);
 
 	const chat = new Chat<UIMessage>({
 		transport: new DefaultChatTransport({
@@ -40,8 +52,8 @@ export const useAiStore = defineStore('ai-store', () => {
 		chat,
 		messages,
 		status,
-		models: AI_MODELS,
 		selectedModel,
 		updateSelectedModel,
+		models,
 	};
 });
