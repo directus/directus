@@ -43,14 +43,13 @@ const aiStore = useAiStore();
 	</SelectRoot>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .select-trigger {
 	position: relative;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 4px;
-
 	padding: 4px 8px;
 	background: transparent;
 	border: var(--theme--border-width) solid transparent;
@@ -87,10 +86,10 @@ const aiStore = useAiStore();
 	align-items: center;
 	justify-content: center;
 	transition: transform var(--fast) var(--transition);
+}
 
-	[data-state='open'] & {
-		transform: rotate(180deg);
-	}
+[data-state='open'] .select-icon {
+	transform: rotate(180deg);
 }
 
 :deep(.select-content) {
