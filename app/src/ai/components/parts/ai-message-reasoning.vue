@@ -1,24 +1,20 @@
 <script setup lang="ts">
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
-import { ref, watch } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps<{
 	text: string;
 	state: 'streaming' | 'done';
 }>();
 
-const isOpen = ref(props.state === 'streaming');
+const open = defineModel<boolean>('open', { required: true });
 
-watch(
-	() => props.state,
-	(newState, oldState) => {
-		if (oldState === 'streaming' && newState === 'done') {
-			isOpen.value = false;
-		} else if (newState === 'streaming') {
-			isOpen.value = true;
-		}
+const isOpen = computed({
+	get: () => props.state === 'streaming',
+	set: () => {
+		open.value = !open.value;
 	},
-);
+});
 </script>
 
 <template>
