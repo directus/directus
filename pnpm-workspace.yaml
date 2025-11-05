@@ -134,6 +134,7 @@ catalog:
   '@vueuse/integrations': 14.0.0
   '@vueuse/router': 14.0.0
   ai: 5.0.86
+  ajv: 8.17.1
   apexcharts: 4.7.0
   argon2: 0.44.0
   async: 3.2.6
@@ -208,6 +209,7 @@ catalog:
   json-to-graphql-query: 2.3.0
   json2csv: 5.0.7
   jsonlint-mod: 1.7.6
+  jsonschema: 1.5.0
   jsonwebtoken: 9.0.2
   keyv: 5.5.3
   knex: 3.1.0

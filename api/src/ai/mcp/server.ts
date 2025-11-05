@@ -254,24 +254,12 @@ export class DirectusMCP {
 					throw new InvalidPayloadError({ reason: '"arguments" must be an object' });
 				}
 
-				if ('action' in args && args['action'] === 'delete' && !this.allowDeletes) {
+				if (this.allowDeletes === false && 'action' in args && args['action'] === 'delete') {
 					throw new InvalidPayloadError({ reason: 'Delete actions are disabled' });
-				}
-
-				if ('query' in args && args['query']) {
-					sanitizedQuery = await sanitizeQuery(
-						{
-							fields: (args['query'] as Query)['fields'] || '*',
-							...args['query'],
-						},
-						req.schema,
-						req.accountability,
-					);
 				}
 
 				const result = await tool.handler({
 					args,
-					sanitizedQuery,
 					schema: req.schema,
 					accountability: req.accountability,
 				});

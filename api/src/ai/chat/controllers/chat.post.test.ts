@@ -12,8 +12,13 @@ vi.mock('../lib/create-ui-stream.js', () => ({
 	createUiStream: vi.fn(),
 }));
 
+vi.mock('../utils/chat-request-tool-to-ai-sdk-tool.js', () => ({
+	chatRequestToolToAiSdkTool: vi.fn(),
+}));
+
 import { safeValidateUIMessages } from 'ai';
 import { createUiStream } from '../lib/create-ui-stream.js';
+import { chatRequestToolToAiSdkTool } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
 
 describe('aiChatPostHandler', () => {
 	let mockReq: Partial<Request>;
@@ -43,6 +48,8 @@ describe('aiChatPostHandler', () => {
 
 		vi.mocked(createUiStream).mockImplementation(() => mockStream as any);
 
+		vi.mocked(chatRequestToolToAiSdkTool).mockImplementation((tool: any) => ({ tool }) as any);
+
 		vi.mocked(safeValidateUIMessages).mockResolvedValue({
 			success: true,
 			data: [{ role: 'user', content: 'test message' }],
@@ -57,17 +64,13 @@ describe('aiChatPostHandler', () => {
 		it('should throw ForbiddenError when accountability is missing', async () => {
 			delete (mockReq as any).accountability;
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
-				ForbiddenError,
-			);
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(ForbiddenError);
 		});
 
 		it('should throw ForbiddenError when accountability is null', async () => {
 			mockReq.accountability = null as any;
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
-				ForbiddenError,
-			);
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(ForbiddenError);
 		});
 	});
 
@@ -76,6 +79,7 @@ describe('aiChatPostHandler', () => {
 			mockReq.body = {
 				model: 'gpt-5',
 				messages: [{ role: 'user', content: 'Hello' }],
+				tools: [],
 			};
 
 			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
@@ -87,6 +91,7 @@ describe('aiChatPostHandler', () => {
 			mockReq.body = {
 				provider: 'openai',
 				messages: [{ role: 'user', content: 'Hello' }],
+				tools: [],
 			};
 
 			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
@@ -98,6 +103,7 @@ describe('aiChatPostHandler', () => {
 			mockReq.body = {
 				provider: 'openai',
 				model: 'gpt-5',
+				tools: [],
 			};
 
 			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
@@ -110,6 +116,7 @@ describe('aiChatPostHandler', () => {
 				provider: 'invalid-provider',
 				model: 'gpt-5',
 				messages: [{ role: 'user', content: 'Hello' }],
+				tools: [],
 			};
 
 			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
@@ -122,6 +129,7 @@ describe('aiChatPostHandler', () => {
 				provider: 'openai',
 				model: 'invalid-model',
 				messages: [{ role: 'user', content: 'Hello' }],
+				tools: [],
 			};
 
 			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
@@ -134,6 +142,7 @@ describe('aiChatPostHandler', () => {
 				provider: 'anthropic',
 				model: 'invalid-model',
 				messages: [{ role: 'user', content: 'Hello' }],
+				tools: [],
 			};
 
 			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
@@ -146,6 +155,7 @@ describe('aiChatPostHandler', () => {
 				provider: 'openai',
 				model: 'gpt-5',
 				messages: 'not-an-array',
+				tools: [],
 			};
 
 			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
@@ -158,6 +168,7 @@ describe('aiChatPostHandler', () => {
 				provider: 'openai',
 				model: 'gpt-5',
 				messages: [],
+				tools: [],
 			};
 
 			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
@@ -181,6 +192,7 @@ describe('aiChatPostHandler', () => {
 				provider: 'openai',
 				model: 'gpt-5',
 				messages: [{ role: 'invalid', content: 'test' }],
+				tools: [],
 			};
 
 			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
@@ -189,6 +201,7 @@ describe('aiChatPostHandler', () => {
 
 			expect(vi.mocked(safeValidateUIMessages)).toHaveBeenCalledWith({
 				messages: [{ role: 'invalid', content: 'test' }],
+				tools: {},
 			});
 		});
 
@@ -202,11 +215,12 @@ describe('aiChatPostHandler', () => {
 				provider: 'openai',
 				model: 'gpt-5',
 				messages,
+				tools: [],
 			};
 
 			await aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn());
 
-			expect(vi.mocked(safeValidateUIMessages)).toHaveBeenCalledWith({ messages });
+			expect(vi.mocked(safeValidateUIMessages)).toHaveBeenCalledWith({ messages, tools: {} });
 		});
 	});
 
@@ -227,11 +241,58 @@ describe('aiChatPostHandler', () => {
 				provider: 'openai',
 				model: 'gpt-5',
 				messages: [{ role: 'user', content: 'test' }],
+				tools: [],
 			};
 
 			await aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn());
 
-			expect(vi.mocked(createUiStream)).toHaveBeenCalledWith('openai', 'gpt-5', expect.any(Array), customApiKeys);
+			expect(vi.mocked(createUiStream)).toHaveBeenCalledWith('openai', 'gpt-5', expect.any(Array), {}, customApiKeys);
+		});
+	});
+
+	describe('tools mapping', () => {
+		it('should transform provided tools and pass them to validation and stream', async () => {
+			const tools = [
+				'search',
+				{
+					name: 'custom',
+					description: 'Custom tool',
+					inputSchema: { type: 'object', properties: { q: { type: 'string' } }, required: ['q'] },
+				},
+			];
+
+			// Map tool name to a distinct mock tool value for easier assertions
+			vi.mocked(chatRequestToolToAiSdkTool).mockImplementation((t: any) => {
+				const name = typeof t === 'string' ? t : t.name;
+				return { name, mocked: true } as any;
+			});
+
+			mockReq.body = {
+				provider: 'openai',
+				model: 'gpt-5',
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools,
+			};
+
+			await aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn());
+
+			const expectedTools = {
+				search: { name: 'search', mocked: true },
+				custom: { name: 'custom', mocked: true },
+			};
+
+			expect(vi.mocked(safeValidateUIMessages)).toHaveBeenCalledWith({
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools: expectedTools,
+			});
+
+			expect(vi.mocked(createUiStream)).toHaveBeenCalledWith(
+				'openai',
+				'gpt-5',
+				expect.any(Array),
+				expectedTools,
+				mockRes.locals!['ai'].apiKeys,
+			);
 		});
 	});
 });

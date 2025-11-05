@@ -23,7 +23,6 @@ export type ToolResult = TextToolResult | AssetToolResult;
 export type ToolHandler<T> = {
 	(options: {
 		args: T;
-		sanitizedQuery: Query;
 		schema: SchemaOverview;
 		accountability: Accountability | undefined;
 	}): Promise<ToolResult | undefined>;

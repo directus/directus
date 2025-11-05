@@ -1,12 +1,13 @@
 import { createAnthropic, type AnthropicProvider } from '@ai-sdk/anthropic';
 import { createOpenAI, type OpenAIProvider } from '@ai-sdk/openai';
 import { ServiceUnavailableError } from '@directus/errors';
-import { convertToModelMessages, streamText, type UIMessage } from 'ai';
+import { convertToModelMessages, streamText, type UIMessage, type Tool } from 'ai';
 
 export const createUiStream = (
 	provider: 'openai' | 'anthropic',
 	model: string,
 	messages: UIMessage[],
+	tools: { [x: string]: Tool },
 	apiKeys: { openai: string | null; anthropic: string | null },
 ) => {
 	if (apiKeys[provider] === null) {
@@ -31,5 +32,6 @@ export const createUiStream = (
 				reasoningSummary: 'detailed',
 			},
 		},
+		tools,
 	});
 };

@@ -1,10 +1,12 @@
+import { FilesService } from '@/services/files.js';
+import { requireText } from '@/utils/require-text.js';
+import { buildSanitizedQueryFromArgs } from '../utils.js';
 import type { File, PrimaryKey } from '@directus/types';
 import { isObject } from '@directus/utils';
-import { z } from 'zod';
-import { FilesService } from '@/services/files.js';
-import { defineTool } from '../define-tool.js';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { z } from 'zod';
+import { defineTool } from '../define-tool.js';
 import {
 	FileImportItemInputSchema,
 	FileImportItemValidateSchema,
@@ -15,7 +17,6 @@ import {
 	QueryInputSchema,
 	QueryValidateSchema,
 } from '../schema.js';
-import { requireText } from '@/utils/require-text.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -63,7 +64,9 @@ export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
 
 		return ['files', data['id'] as string];
 	},
-	async handler({ args, schema, accountability, sanitizedQuery }) {
+	async handler({ args, schema, accountability }) {
+		const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
+
 		const service = new FilesService({
 			schema,
 			accountability,
