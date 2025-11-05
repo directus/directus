@@ -1530,6 +1530,8 @@ fields:
     mcp_system_prompt: Custom System Prompt
     mcp_system_prompt_note:
       'Custom system prompt to replace the default. Leave empty to use default (if enabled above).'
+    ai_system_prompt: AI System Prompt
+    ai_system_prompt_note: 'Custom AI system prompt to guide LLM behavior in AI Chat interactions.'
 
   directus_shares:
     name: Name

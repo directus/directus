@@ -33,27 +33,55 @@ describe('createUiStream', () => {
 	const apiKeys = { openai: 'openai-key', anthropic: 'anthropic-key' };
 
 	it('should create a stream for OpenAI provider', () => {
-		const result = createUiStream('openai', 'gpt-3.5', messages, apiKeys);
+		const result = createUiStream(messages, {
+			provider: 'openai',
+			model: 'gpt-3.5',
+			tools: {},
+			apiKeys,
+		});
+
 		expect(result).toBe(mockStreamTextResult);
 	});
 
 	it('should create a stream for Anthropic provider', () => {
-		const result = createUiStream('anthropic', 'claude-2', messages, apiKeys);
+		const result = createUiStream(messages, {
+			provider: 'anthropic',
+			model: 'claude-2',
+			tools: {},
+			apiKeys,
+		});
+
 		expect(result).toBe(mockStreamTextResult);
 	});
 
 	it('should throw ServiceUnavailableError if API key is missing for provider', () => {
-		expect(() => createUiStream('openai', 'gpt-3.5', messages, { ...apiKeys, openai: null })).toThrow(
-			ServiceUnavailableError,
-		);
+		expect(() =>
+			createUiStream(messages, {
+				provider: 'openai',
+				model: 'gpt-3.5',
+				tools: {},
+				apiKeys: { ...apiKeys, openai: null },
+			}),
+		).toThrow(ServiceUnavailableError);
 
-		expect(() => createUiStream('anthropic', 'claude-2', messages, { ...apiKeys, anthropic: null })).toThrow(
-			ServiceUnavailableError,
-		);
+		expect(() =>
+			createUiStream(messages, {
+				provider: 'anthropic',
+				model: 'claude-2',
+				tools: {},
+				apiKeys: { ...apiKeys, anthropic: null },
+			}),
+		).toThrow(ServiceUnavailableError);
 	});
 
 	it('should throw Error for unknown provider', () => {
-		// @ts-expect-error Testing invalid provider
-		expect(() => createUiStream('unknown', 'model', messages, apiKeys)).toThrow('Unexpected provider given: "unknown"');
+		expect(() =>
+			createUiStream(messages, {
+				provider: 'unknown',
+				model: 'model',
+				tools: {},
+				apiKeys,
+			}),
+		).toThrow('Unexpected provider given: "unknown"');
 	});
 });

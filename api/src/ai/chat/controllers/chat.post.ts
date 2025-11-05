@@ -36,6 +36,13 @@ export const aiChatPostHandler: RequestHandler = async (req, res) => {
 		throw new InvalidPayloadError({ reason: validationResult.error.message });
 	}
 
-	const stream = createUiStream(provider, model, validationResult.data, aiSdkTools, res.locals['ai'].apiKeys);
+	const stream = createUiStream(validationResult.data, {
+		provider,
+		model,
+		tools: aiSdkTools,
+		apiKeys: res.locals['ai'].apiKeys,
+		systemPrompt: res.locals['ai'].systemPrompt,
+	});
+
 	stream.pipeUIMessageStreamToResponse(res);
 };
