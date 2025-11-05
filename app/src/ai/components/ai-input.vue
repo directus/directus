@@ -73,8 +73,8 @@ function handleBlur() {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
-	gap: 8px;
-	padding: 12px;
+	gap: 0.5rem;
+	padding: 0.75rem;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--form--field--input--background);
@@ -92,7 +92,7 @@ function handleBlur() {
 .input-controls {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 0.5rem;
 	flex-shrink: 0;
 
 	.submit-button {
