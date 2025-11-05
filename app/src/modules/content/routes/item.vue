@@ -26,6 +26,7 @@ import { useRouter, useRoute } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
+import { useCollab } from '@/composables/use-collab';
 
 interface Props {
 	collection: string;
@@ -85,6 +86,8 @@ const {
 	refresh,
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, query);
+
+const { onSave } = useCollab(collection, primaryKey, currentVersion, edits, refresh);
 
 const validationErrors = computed(() => {
 	if (currentVersion.value === null) return itemValidationErrors.value;
@@ -391,6 +394,7 @@ async function saveAndStay() {
 
 	try {
 		const savedItem: Record<string, any> = await save();
+		onSave();
 
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem[primaryKeyField.value!.field];
@@ -411,6 +415,7 @@ async function saveAndAddNew() {
 
 	try {
 		await save();
+		onSave();
 
 		if (isNew.value === true) {
 			refresh();
@@ -425,6 +430,7 @@ async function saveAndAddNew() {
 async function saveAsCopyAndNavigate() {
 	try {
 		const newPrimaryKey = await saveAsCopy();
+		onSave();
 
 		if (newPrimaryKey) router.replace(getItemRoute(props.collection, newPrimaryKey));
 	} catch {
@@ -437,6 +443,7 @@ async function saveAndQuit() {
 
 	try {
 		await save();
+		onSave();
 		if (props.singleton === false) router.push(collectionRoute.value);
 	} catch {
 		// Save shows unexpected error dialog

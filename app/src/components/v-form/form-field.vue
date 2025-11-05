@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useClipboard } from '@/composables/use-clipboard';
 import { formatFieldFunction } from '@/utils/format-field-function';
-import { ValidationError } from '@directus/types';
+import { COLLAB, ValidationError } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import { isEqual } from 'lodash';
-import { computed, ref, watch } from 'vue';
+import { computed, inject, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
@@ -42,14 +42,30 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelValue', 'setFieldValue']);
+const emit = defineEmits([
+	'toggle-batch',
+	'toggle-raw',
+	'unset',
+	'update:modelValue',
+	'setFieldValue',
+	'focusField',
+	'blurField',
+]);
 
 const { t } = useI18n();
+
+const collab = inject(COLLAB);
+
+const { onFieldUpdate, onFieldUnset, onBlur, focusedBy, onFocus } =
+	typeof collab === 'function'
+		? collab(props.field.field)
+		: { onFieldUpdate: () => {}, onFieldUnset: () => {}, onBlur: () => {}, onFocus: () => {}, focusedBy: ref() };
 
 const isDisabled = computed(() => {
 	if (props.disabled) return true;
 	if (props.field?.meta?.readonly === true) return true;
 	if (props.batchMode && props.batchActive === false) return true;
+	if (focusedBy.value) return true;
 	return false;
 });
 
@@ -96,8 +112,10 @@ function emitValue(value: any) {
 		(isEqual(value, props.initialValue) || (props.initialValue === undefined && isEqual(value, defaultValue.value))) &&
 		props.batchMode === false
 	) {
+		onFieldUnset();
 		emit('unset', props.field);
 	} else {
+		onFieldUpdate(value);
 		emit('update:modelValue', value);
 	}
 }
@@ -227,6 +245,8 @@ function useComputedValues() {
 			:comparison-active="comparisonActive"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
+			@focus-field="onFocus"
+			@blur-field="onBlur"
 		/>
 
 		<form-field-raw-editor

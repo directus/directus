@@ -31,7 +31,7 @@ import type { Relation } from './relations.js';
 import type { RegisterUserInput } from './users.js';
 import type { Snapshot, SnapshotDiffWithHash, SnapshotDiff, SnapshotWithHash } from './snapshot.js';
 import type { Webhook } from './webhooks.js';
-import type { WebSocketClient, WebSocketMessage } from './websockets.js';
+import type { WebSocketClient, WebSocketMessage } from './websockets/index.js';
 import type { ContentVersion } from './versions.js';
 
 export type AbstractServiceOptions = {

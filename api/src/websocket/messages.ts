@@ -120,35 +120,3 @@ export type WebSocketEvent = z.infer<typeof WebSocketEvent>;
 
 export const AuthMode = z.union([z.literal('public'), z.literal('handshake'), z.literal('strict')]);
 export type AuthMode = z.infer<typeof AuthMode>;
-
-const BaseCollabMessage = WebSocketMessage.extend({
-	type: z.literal('collab'),
-	room: z.uuid(),
-});
-
-export const WebSocketCollabMessage = z.discriminatedUnion('action', [
-	WebSocketMessage.extend({
-		type: z.literal('collab'),
-		action: z.literal('join'),
-		collection: z.string(),
-		item: zodStringOrNumber,
-		version: z.string().optional(),
-		initialChanges: ZodItem.optional(),
-	}),
-	BaseCollabMessage.extend({
-		action: z.literal('leave'),
-	}),
-	BaseCollabMessage.extend({
-		action: z.literal('save'),
-	}),
-	BaseCollabMessage.extend({
-		action: z.literal('update'),
-		field: z.string(),
-		changes: z.unknown(),
-	}),
-	BaseCollabMessage.extend({
-		action: z.literal('focus'),
-		field: z.string(),
-	}),
-]);
-export type WebSocketCollabMessage = z.infer<typeof WebSocketCollabMessage>;

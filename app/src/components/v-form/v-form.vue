@@ -64,7 +64,7 @@ const props = withDefaults(
 
 const { t } = useI18n();
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'updateField', 'unsetField', 'focusField', 'blurField']);
 
 const values = computed(() => {
 	return Object.assign({}, cloneDeep(props.initialValues), cloneDeep(props.modelValue));
@@ -268,6 +268,7 @@ function setValue(fieldKey: string, value: any, opts?: { force?: boolean }) {
 
 	const edits = props.modelValue ? cloneDeep(props.modelValue) : {};
 	edits[fieldKey] = value;
+	emit('updateField', fieldKey, value);
 	emit('update:modelValue', edits);
 }
 
@@ -308,6 +309,7 @@ function unsetValue(field: TFormField | undefined) {
 		const newEdits = { ...props.modelValue };
 		delete newEdits[field.field];
 		emit('update:modelValue', newEdits);
+		emit('unsetField', field.field);
 	}
 }
 
@@ -449,6 +451,8 @@ function useRawEditor() {
 					@unset="unsetValue(fieldsMap[fieldName]!)"
 					@toggle-batch="toggleBatchField(fieldsMap[fieldName]!)"
 					@toggle-raw="toggleRawField(fieldsMap[fieldName]!)"
+					@focus-field="$emit('focusField', $event)"
+					@blur-field="$emit('blurField', $event)"
 				/>
 			</template>
 		</template>
