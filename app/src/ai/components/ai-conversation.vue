@@ -33,6 +33,7 @@ const aiStore = useAiStore();
 }
 
 .messages-container {
+	position: relative;
 	flex: 1;
 	overflow-y: auto;
 	min-height: 0;

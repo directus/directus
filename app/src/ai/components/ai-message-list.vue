@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ComponentPublicInstance } from 'vue';
 import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
+import { useElementBounding } from '@vueuse/core';
 import AiMessage from './ai-message.vue';
 
 import type { UIMessage } from 'ai';
@@ -24,7 +25,7 @@ interface Props {
 	autoScrollIcon?: string;
 	/** Compact mode for dense layouts */
 	compact?: boolean;
-	/** Spacing offset for sticky elements (px) */
+	/** Spacing offset for last message in px */
 	spacingOffset?: number;
 }
 
@@ -42,10 +43,10 @@ const parent = ref<HTMLElement | null>(null);
 const messagesRefs = ref(new Map<string, HTMLElement>());
 
 const showAutoScroll = ref(false);
-const lastMessageHeight = ref(0);
-const lastMessageSubmitted = ref(false);
 const lastScrollTop = ref(0);
 const userScrolledUp = ref(false);
+const lastMessageHeight = ref(0);
+const lastMessageSubmitted = ref(false);
 
 function registerMessageRef(id: string, element: ComponentPublicInstance | null) {
 	const elInstance = element?.$el;
@@ -88,6 +89,7 @@ function throttle<T extends (...args: any[]) => void>(func: T, delay: number): T
 
 // Watch messages and status for streaming auto-scroll
 let throttledScrollCheck: (() => void) | null = null;
+let resizeHandler: (() => void) | null = null;
 
 watch(
 	[() => props.messages, () => props.status],
@@ -128,6 +130,7 @@ watch(
 
 		nextTick(() => {
 			lastMessageSubmitted.value = true;
+
 			updateLastMessageHeight();
 
 			nextTick(() => {
@@ -136,6 +139,37 @@ watch(
 		});
 	},
 );
+
+function updateLastMessageHeight() {
+	if (!el.value || !parent.value || !props.messages?.length || !lastMessageSubmitted.value) {
+		return;
+	}
+
+	const { height: parentHeight } = useElementBounding(parent.value);
+
+	// Find last user message (findLast not available in current TS lib)
+	const lastMessage = [...props.messages].reverse().find((m) => m.role === 'user');
+
+	if (!lastMessage) {
+		return;
+	}
+
+	const lastMessageEl = messagesRefs.value.get(lastMessage.id);
+
+	if (!lastMessageEl) {
+		return;
+	}
+
+	let spacingOffset = props.spacingOffset || 0;
+	const elComputedStyle = window.getComputedStyle(el.value);
+	const parentComputedStyle = window.getComputedStyle(parent.value);
+
+	spacingOffset += Number.parseFloat(elComputedStyle.rowGap) || Number.parseFloat(elComputedStyle.gap) || 0;
+	spacingOffset += Number.parseFloat(parentComputedStyle.paddingTop) || 0;
+	spacingOffset += Number.parseFloat(parentComputedStyle.paddingBottom) || 0;
+
+	lastMessageHeight.value = Math.max(parentHeight.value - lastMessageEl.offsetHeight - spacingOffset, 0);
+}
 
 function checkScrollPosition() {
 	if (!parent.value) return;
@@ -180,33 +214,6 @@ function getScrollParent(node: HTMLElement | null): HTMLElement | null {
 	return document.documentElement;
 }
 
-function updateLastMessageHeight() {
-	if (!el.value || !parent.value || !props.messages?.length || !lastMessageSubmitted.value) return;
-
-	const parentRect = parent.value.getBoundingClientRect();
-	const parentHeight = parentRect.height;
-
-	const lastMessage = props.messages?.[props.messages.length - 1];
-	if (!lastMessage || lastMessage.role !== 'user') return;
-
-	const lastMessageEl = messagesRefs.value.get(lastMessage.id);
-	if (!lastMessageEl) return;
-
-	let spacingOffset = props.spacingOffset || 0;
-	const elComputedStyle = window.getComputedStyle(el.value);
-	const parentComputedStyle = window.getComputedStyle(parent.value);
-
-	spacingOffset += parseFloat(elComputedStyle.rowGap) || parseFloat(elComputedStyle.gap) || 0;
-	spacingOffset += parseFloat(parentComputedStyle.paddingTop) || 0;
-	spacingOffset += parseFloat(parentComputedStyle.paddingBottom) || 0;
-
-	lastMessageHeight.value = Math.max(parentHeight - lastMessageEl.offsetHeight - spacingOffset, 0);
-}
-
-function handleResize() {
-	nextTick(updateLastMessageHeight);
-}
-
 onMounted(() => {
 	// Find first scrollable parent element
 	parent.value = getScrollParent(el.value);
@@ -231,7 +238,9 @@ onMounted(() => {
 		parent.value.addEventListener('scroll', throttledScrollCheck);
 	}
 
-	window.addEventListener('resize', handleResize);
+	// Add resize listener to update last message height
+	resizeHandler = () => nextTick(updateLastMessageHeight);
+	window.addEventListener('resize', resizeHandler);
 });
 
 onBeforeUnmount(() => {
@@ -239,17 +248,14 @@ onBeforeUnmount(() => {
 		parent.value.removeEventListener('scroll', throttledScrollCheck);
 	}
 
-	window.removeEventListener('resize', handleResize);
+	if (resizeHandler) {
+		window.removeEventListener('resize', resizeHandler);
+	}
 });
 </script>
 
 <template>
-	<div
-		ref="el"
-		:data-status="status"
-		class="ai-message-list"
-		:style="{ '--last-message-height': `${lastMessageHeight}px` }"
-	>
+	<div ref="el" :data-status="status" class="ai-message-list" :style="{ '--last-message-height': `${lastMessageHeight}px` }">
 		<slot>
 			<AiMessage
 				v-for="message in messages"
@@ -304,8 +310,8 @@ onBeforeUnmount(() => {
 	padding-bottom: 1rem;
 	position: relative;
 
-	> :last-child {
-		min-height: var(--last-message-height);
+	:deep(article:last-of-type) {
+		min-height: var(--last-message-height, 0);
 	}
 }
 
