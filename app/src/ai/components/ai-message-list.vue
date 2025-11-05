@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { useElementBounding } from '@vueuse/core';
-import { throttle } from 'lodash';
 import type { ComponentPublicInstance } from 'vue';
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import AiMessage from './ai-message.vue';
 
 import type { UIMessage } from 'ai';
@@ -16,256 +14,39 @@ interface Props {
 	messages?: UIMessage[];
 	/** Current status of the AI interaction */
 	status?: AiStatus;
-	/** Auto-scroll to bottom when streaming */
-	shouldAutoScroll?: boolean;
-	/** Scroll to bottom on mount */
-	shouldScrollToBottom?: boolean;
-	/** Show auto-scroll button */
-	autoScroll?: boolean;
-	/** Icon for auto-scroll button */
-	autoScrollIcon?: string;
-	/** Compact mode for dense layouts */
-	compact?: boolean;
-	/** Spacing offset for last message in px */
-	spacingOffset?: number;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-	shouldAutoScroll: false,
-	shouldScrollToBottom: true,
-	autoScroll: true,
-	autoScrollIcon: 'arrow_downward',
-	compact: false,
-	spacingOffset: 0,
-});
+defineProps<Props>();
 
 const el = ref<HTMLElement | null>(null);
-const parent = ref<HTMLElement | null>(null);
-const messagesRefs = ref(new Map<string, HTMLElement>());
+// const messagesRefs = ref(new Map<string, HTMLElement>());
 
-const showAutoScroll = ref(false);
-const lastScrollTop = ref(0);
-const userScrolledUp = ref(false);
-const lastMessageHeight = ref(0);
-const lastMessageHeightPx = computed(() => `${lastMessageHeight.value}px`);
-const lastMessageSubmitted = ref(false);
+// function registerMessageRef(id: string, element: ComponentPublicInstance | null) {
+// 	const elInstance = element?.$el;
 
-function registerMessageRef(id: string, element: ComponentPublicInstance | null) {
-	const elInstance = element?.$el;
-
-	if (elInstance) {
-		messagesRefs.value.set(id, elInstance);
-	}
-}
-
-function scrollToMessage(id: string) {
-	const element = messagesRefs.value.get(id);
-
-	if (element) {
-		element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-	}
-}
-
-function scrollToBottom(smooth: boolean = true) {
-	if (!parent.value) return;
-
-	if (smooth) {
-		parent.value.scrollTo({ top: parent.value.scrollHeight, behavior: 'smooth' });
-	} else {
-		parent.value.scrollTop = parent.value.scrollHeight;
-	}
-}
-
-// Watch messages and status for streaming auto-scroll
-let throttledScrollCheck: (() => void) | null = null;
-let resizeHandler: (() => void) | null = null;
-
-watch(
-	[() => props.messages, () => props.status],
-	([_, status]) => {
-		if (status !== 'streaming') return;
-
-		if (!props.shouldAutoScroll) {
-			checkScrollPosition();
-			return;
-		}
-
-		// Scroll to bottom when message is streaming if shouldAutoScroll is true
-		nextTick(() => {
-			if (!parent.value || userScrolledUp.value) return;
-
-			const scrollThreshold = 150;
-
-			const distanceFromBottom = parent.value.scrollHeight - parent.value.scrollTop - parent.value.clientHeight;
-
-			if (distanceFromBottom < scrollThreshold) {
-				scrollToBottom(false);
-			}
-		});
-	},
-	{ deep: true },
-);
-
-watch(
-	() => props.status,
-	(status) => {
-		if (status !== 'submitted') return;
-
-		const lastMessage = props.messages?.[props.messages.length - 1];
-		if (!lastMessage || lastMessage.role !== 'user') return;
-
-		userScrolledUp.value = false;
-
-		nextTick(() => {
-			lastMessageSubmitted.value = true;
-
-			updateLastMessageHeight();
-
-			nextTick(() => {
-				scrollToMessage(lastMessage.id);
-			});
-		});
-	},
-);
-
-function updateLastMessageHeight() {
-	if (!el.value || !parent.value || !props.messages?.length || !lastMessageSubmitted.value) {
-		return;
-	}
-
-	const { height: parentHeight } = useElementBounding(parent.value);
-
-	// Find last user message (findLast not available in current TS lib)
-	let lastMessage: UIMessage | undefined = undefined;
-
-	for (let i = props.messages.length - 1; i >= 0; i--) {
-		if (props.messages[i]?.role === 'user') {
-			lastMessage = props.messages[i];
-			break;
-		}
-	}
-
-	if (!lastMessage) {
-		return;
-	}
-
-	const lastMessageEl = messagesRefs.value.get(lastMessage.id);
-
-	if (!lastMessageEl) {
-		return;
-	}
-
-	let spacingOffset = props.spacingOffset || 0;
-	const elComputedStyle = window.getComputedStyle(el.value);
-	const parentComputedStyle = window.getComputedStyle(parent.value);
-
-	spacingOffset += Number.parseFloat(elComputedStyle.rowGap) || Number.parseFloat(elComputedStyle.gap) || 0;
-	spacingOffset += Number.parseFloat(parentComputedStyle.paddingTop) || 0;
-	spacingOffset += Number.parseFloat(parentComputedStyle.paddingBottom) || 0;
-
-	lastMessageHeight.value = Math.max(parentHeight.value - lastMessageEl.offsetHeight - spacingOffset, 0);
-}
-
-function checkScrollPosition() {
-	if (!parent.value) return;
-
-	const scrollPosition = parent.value.scrollTop + parent.value.clientHeight;
-	const scrollHeight = parent.value.scrollHeight;
-	const threshold = 100;
-
-	showAutoScroll.value = scrollHeight - scrollPosition >= threshold;
-
-	// Detect user scrolling up
-	if (parent.value.scrollTop < lastScrollTop.value) {
-		userScrolledUp.value = true;
-	} else if (scrollHeight - scrollPosition < threshold) {
-		userScrolledUp.value = false;
-	}
-
-	lastScrollTop.value = parent.value.scrollTop;
-}
-
-function onAutoScrollClick() {
-	userScrolledUp.value = false;
-	scrollToBottom();
-}
-
-function getScrollParent(node: HTMLElement | null): HTMLElement | null {
-	if (!node) return null;
-
-	const overflowRegex = /auto|scroll/;
-	let current: HTMLElement | null = node;
-
-	while (current && current !== document.body && current !== document.documentElement) {
-		const style = window.getComputedStyle(current);
-
-		if (overflowRegex.test(style.overflowY)) {
-			return current;
-		}
-
-		current = current.parentElement;
-	}
-
-	return document.documentElement;
-}
+// 	if (elInstance) {
+// 		messagesRefs.value.set(id, elInstance);
+// 	}
+// }
 
 onMounted(() => {
-	// Find first scrollable parent element
-	parent.value = getScrollParent(el.value);
-	if (!parent.value) return;
-
-	lastScrollTop.value = parent.value.scrollTop;
-
-	// Create throttled scroll check
-	throttledScrollCheck = throttle(checkScrollPosition, 50);
-
-	// Wait for content to fully render
-	setTimeout(() => {
-		if (props.shouldScrollToBottom) {
-			scrollToBottom(false);
-		} else {
-			checkScrollPosition();
-		}
-	}, 100);
-
-	// Add event listeners
-	if (throttledScrollCheck) {
-		parent.value.addEventListener('scroll', throttledScrollCheck);
-	}
-
-	// Add resize listener to update last message height
-	resizeHandler = () => nextTick(updateLastMessageHeight);
-	window.addEventListener('resize', resizeHandler);
-});
-
-onBeforeUnmount(() => {
-	if (parent.value && throttledScrollCheck) {
-		parent.value.removeEventListener('scroll', throttledScrollCheck);
-	}
-
-	if (resizeHandler) {
-		window.removeEventListener('resize', resizeHandler);
-	}
+	// Scroll 1 pixel down to trigger the scroll anchor
+	el.value?.scroll(0,1)
 });
 </script>
 
 <template>
-	<div
-		ref="el"
-		:data-status="status"
-		class="ai-message-list"
-	>
+	<div ref="el" :data-status="status" class="ai-message-list">
 		<slot>
 			<AiMessage
 				v-for="message in messages"
 				:key="message.id"
-				:ref="(el) => registerMessageRef(message.id, el as ComponentPublicInstance)"
 				v-bind="message"
-				:compact="compact"
-			/>
+				/>
+				<!-- :ref="(el) => registerMessageRef(message.id, el as ComponentPublicInstance)" -->
 		</slot>
 
-		<AiMessage v-if="status === 'submitted'" id="indicator" role="assistant" :parts="[]" :compact="compact">
+		<AiMessage v-if="status === 'submitted'" id="indicator" role="assistant" :parts="[]">
 			<template #content>
 				<slot name="indicator">
 					<div class="loading-indicator">
@@ -277,15 +58,7 @@ onBeforeUnmount(() => {
 			</template>
 		</AiMessage>
 
-		<Transition name="auto-scroll">
-			<div v-if="showAutoScroll && autoScroll" class="auto-scroll-container">
-				<slot name="viewport" :on-click="onAutoScrollClick">
-					<v-button x-small secondary class="auto-scroll-button" icon rounded @click="onAutoScrollClick">
-						<v-icon name="arrow_downward" />
-					</v-button>
-				</slot>
-			</div>
-		</Transition>
+		<div id="anchor"></div>
 	</div>
 </template>
 
@@ -301,10 +74,15 @@ onBeforeUnmount(() => {
 	gap: var(--ai-message-list-gap, 1rem);
 	padding-block-end: 1rem;
 	position: relative;
+}
 
-	:deep(article:last-of-type) {
-		min-block-size: v-bind(lastMessageHeightPx);
-	}
+.ai-message-list * {
+	overflow-anchor: none;
+}
+
+#anchor {
+	overflow-anchor: auto;
+	block-size: 1px;
 }
 
 .loading-indicator {

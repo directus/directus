@@ -7,7 +7,7 @@ const props = defineProps<{
 	state: 'streaming' | 'done';
 }>();
 
-const open = defineModel<boolean>('open', { required: true });
+const open = defineModel<boolean>('open');
 
 const isOpen = computed({
 	get: () => props.state === 'streaming' || open.value,

@@ -28,18 +28,15 @@ interface Props {
 	parts?: AiMessagePart[];
 	/** Action buttons displayed below message */
 	actions?: AiMessageAction[];
-	/** Compact mode for dense layouts */
-	compact?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
 	parts: () => [],
-	compact: false,
 });
 </script>
 
 <template>
-	<article :data-role="role" :class="['ai-message', { compact }]">
+	<article :data-role="role" :class="['ai-message']">
 		<div class="message-container">
 			<div class="message-content">
 				<template v-for="(part, index) in parts" :key="`${id}-${part.type}-${index}`">
@@ -110,13 +107,6 @@ withDefaults(defineProps<Props>(), {
 		.message-content {
 			align-items: flex-end;
 		}
-	}
-
-	&.compact {
-		--ai-message-padding: 0.5rem 0.75rem;
-		--ai-message-gap: 0.5rem;
-
-		font-size: 0.875rem;
 	}
 }
 
