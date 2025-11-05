@@ -12,7 +12,9 @@ export async function up(knex: Knex): Promise<void> {
 			.andWhere('directus_permissions.collection', '=', 'directus_users')
 			.andWhere('directus_permissions.action', '=', 'read')
 			.andWhereNot('directus_permissions.fields', 'LIKE', '*')
-			.andWhereNot('directus_permissions.fields', 'LIKE', '%provider%')
+			.andWhereNot('directus_permissions.fields', 'LIKE', '%,provider')
+			.andWhereNot('directus_permissions.fields', 'LIKE', 'provider,%')
+			.andWhereNot('directus_permissions.fields', 'LIKE', '%,provider,%')
 			.limit(rowsLimit);
 
 		if (policies.length === 0) {
@@ -21,7 +23,7 @@ export async function up(knex: Knex): Promise<void> {
 		}
 
 		for (const policy of policies) {
-			if (policy.id && typeof policy.fields === 'string') {
+			if (policy && 'id' in policy && typeof policy.fields === 'string') {
 				await knex('directus_permissions')
 					.update({
 						fields: policy.fields + ',provider',
