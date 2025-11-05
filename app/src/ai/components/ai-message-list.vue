@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import type { ComponentPublicInstance } from 'vue';
-import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
 import { useElementBounding } from '@vueuse/core';
+import { throttle } from 'lodash';
+import type { ComponentPublicInstance } from 'vue';
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import AiMessage from './ai-message.vue';
 
 import type { UIMessage } from 'ai';
@@ -74,19 +75,6 @@ function scrollToBottom(smooth: boolean = true) {
 	}
 }
 
-// Throttle helper function
-function throttle<T extends (...args: any[]) => void>(func: T, delay: number): T {
-	let lastCall = 0;
-	return ((...args: Parameters<T>) => {
-		const now = Date.now();
-
-		if (now - lastCall >= delay) {
-			lastCall = now;
-			func(...args);
-		}
-	}) as T;
-}
-
 // Watch messages and status for streaming auto-scroll
 let throttledScrollCheck: (() => void) | null = null;
 let resizeHandler: (() => void) | null = null;
@@ -107,8 +95,7 @@ watch(
 
 			const scrollThreshold = 150;
 
-			const distanceFromBottom =
-				parent.value.scrollHeight - parent.value.scrollTop - parent.value.clientHeight;
+			const distanceFromBottom = parent.value.scrollHeight - parent.value.scrollTop - parent.value.clientHeight;
 
 			if (distanceFromBottom < scrollThreshold) {
 				scrollToBottom(false);
@@ -262,7 +249,12 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-	<div ref="el" :data-status="status" class="ai-message-list" :style="{ '--last-message-height': `${lastMessageHeight}px` }">
+	<div
+		ref="el"
+		:data-status="status"
+		class="ai-message-list"
+		:style="{ '--last-message-height': `${lastMessageHeight}px` }"
+	>
 		<slot>
 			<AiMessage
 				v-for="message in messages"
@@ -288,14 +280,7 @@ onBeforeUnmount(() => {
 		<Transition name="auto-scroll">
 			<div v-if="showAutoScroll && autoScroll" class="auto-scroll-container">
 				<slot name="viewport" :on-click="onAutoScrollClick">
-					<v-button
-						x-small
-						secondary
-						class="auto-scroll-button"
-						icon
-						rounded
-						@click="onAutoScrollClick"
-					>
+					<v-button x-small secondary class="auto-scroll-button" icon rounded @click="onAutoScrollClick">
 						<v-icon name="arrow_downward" />
 					</v-button>
 				</slot>
@@ -381,7 +366,9 @@ onBeforeUnmount(() => {
 
 .auto-scroll-enter-active,
 .auto-scroll-leave-active {
-	transition: opacity var(--fast) var(--transition), transform var(--fast) var(--transition);
+	transition:
+		opacity var(--fast) var(--transition),
+		transform var(--fast) var(--transition);
 }
 
 .auto-scroll-enter-from,
