@@ -82,7 +82,7 @@ const statusConfig = computed(() => {
 
 	.chevron {
 		margin-inline-start: auto;
-		transition: transform 150ms ease;
+		transition: transform var(--fast) var(--transition);
 	}
 
 	&[data-state='open'] .chevron {
