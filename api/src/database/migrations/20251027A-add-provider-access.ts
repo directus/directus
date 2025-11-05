@@ -2,6 +2,7 @@ import type { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
 	const rowsLimit = 100;
+	let rowsOffset = 0;
 	let hasMore = true;
 
 	while (hasMore) {
@@ -12,10 +13,9 @@ export async function up(knex: Knex): Promise<void> {
 			.andWhere('directus_permissions.collection', '=', 'directus_users')
 			.andWhere('directus_permissions.action', '=', 'read')
 			.andWhereNot('directus_permissions.fields', 'LIKE', '*')
-			.andWhereNot('directus_permissions.fields', 'LIKE', '%,provider')
-			.andWhereNot('directus_permissions.fields', 'LIKE', 'provider,%')
-			.andWhereNot('directus_permissions.fields', 'LIKE', '%,provider,%')
-			.limit(rowsLimit);
+			.andWhereNot('directus_permissions.fields', 'LIKE', '%provider%')
+			.limit(rowsLimit)
+			.offset(rowsOffset);
 
 		if (policies.length === 0) {
 			hasMore = false;
@@ -24,13 +24,21 @@ export async function up(knex: Knex): Promise<void> {
 
 		for (const policy of policies) {
 			if (policy && 'id' in policy && typeof policy.fields === 'string') {
-				await knex('directus_permissions')
-					.update({
-						fields: policy.fields + ',provider',
-					})
-					.where('id', '=', policy.id);
+				const fields = policy.fields.split(',');
+
+				if (!fields.includes('provider')) {
+					fields.push('provider');
+
+					await knex('directus_permissions')
+						.update({
+							fields: fields.join(','),
+						})
+						.where('id', '=', policy.id);
+				}
 			}
 		}
+
+		rowsOffset += rowsLimit;
 	}
 }
 
