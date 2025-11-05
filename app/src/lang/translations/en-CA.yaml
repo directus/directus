@@ -1218,7 +1218,7 @@ interfaces:
   presentation-links:
     presentation-links: Buttons
     links: Links
-    description: Configurable link buttons for launching dynamic URLs or triggering flows
+    description: Configurable link buttons for launching dynamic URLs or triggering Flows
     style: Style
     primary: Primary
     link: Links
