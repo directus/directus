@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
-import { useI18n } from 'vue-i18n';
 import { ref, watch } from 'vue';
-
-const { t } = useI18n();
 
 const props = defineProps<{
 	text: string;
@@ -28,7 +25,7 @@ watch(
 	<CollapsibleRoot v-model:open="isOpen" class="message-reasoning">
 		<CollapsibleTrigger class="reasoning-header">
 			<v-icon name="psychology" x-small />
-			<span>{{ state === 'streaming' ? t('ai.thinking') : t('ai.reasoning') }}</span>
+			<span>{{ state === 'streaming' ? $t('ai.thinking') : $t('ai.reasoning') }}</span>
 			<v-icon name="expand_more" x-small class="chevron" />
 		</CollapsibleTrigger>
 		<CollapsibleContent class="reasoning-content-wrapper">
