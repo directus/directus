@@ -1,4 +1,6 @@
 ---
+first_name: Fornafn
+last_name: Eftirnafn
 identifier: Auðkenni
 avatar: Auðkennismynd
 application: Forrit
@@ -48,7 +50,6 @@ emails: Tölvupóstar
 primary: Aðal
 delete_folder: Eyða Möppu
 prefix: Forskeyti
-promote_version_preview: Forskoða
 reset_bookmark: Endursetja Bókamerki
 update_bookmark: Uppfæra bókamerki
 delete_bookmark: Eyða bókamerki
