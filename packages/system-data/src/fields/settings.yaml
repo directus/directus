@@ -762,6 +762,14 @@ fields:
     width: half
     group: ai_group
 
+  - field: ai_system_prompt
+    interface: input-rich-text-md
+    group: ai_group
+    width: full
+    note: $t:fields.directus_settings.ai_system_prompt_note
+    options:
+      label: $t:fields.directus_settings.ai_system_prompt
+
   - field: mcp_divider
     interface: presentation-divider
     options:
