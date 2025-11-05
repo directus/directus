@@ -32,16 +32,14 @@ interface Props {
 	compact?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
 	parts: () => [],
 	compact: false,
 });
-
-const side = props.role === 'user' ? 'right' : 'left';
 </script>
 
 <template>
-	<article :data-role="role" :data-side="side" :class="['ai-message', { compact }]">
+	<article :data-role="role" :class="['ai-message', { compact }]">
 		<div class="message-container">
 			<div class="message-content">
 				<template v-for="(part, index) in parts" :key="`${id}-${part.type}-${index}`">
@@ -50,7 +48,6 @@ const side = props.role === 'user' ? 'right' : 'left';
 					<AiMessageFile v-else-if="part.type === 'file'" :part="part" />
 					<AiMessageSourceUrl v-else-if="part.type === 'source-url'" :part="part" />
 					<AiMessageSourceDocument v-else-if="part.type === 'source-document'" :part="part" />
-
 					<AiMessageTool v-else-if="part.type.startsWith('tool-')" :part="part" />
 				</template>
 			</div>
@@ -87,7 +84,22 @@ const side = props.role === 'user' ? 'right' : 'left';
 .ai-message {
 	display: flex;
 
-	&[data-side='right'] {
+	&:hover .message-actions {
+		opacity: 1;
+	}
+
+	&[data-role='assistant'] {
+		--ai-message-background: var(--theme--background-subdued);
+		--ai-message-color: var(--theme--foreground);
+
+		justify-content: flex-start;
+		margin-inline-end: 1.5rem;
+	}
+
+	&[data-role='user'] {
+		--ai-message-background: var(--theme--primary);
+		--ai-message-color: var(--theme--background);
+
 		justify-content: flex-end;
 		margin-inline-start: 1.5rem;
 
@@ -98,25 +110,6 @@ const side = props.role === 'user' ? 'right' : 'left';
 		.message-content {
 			align-items: flex-end;
 		}
-	}
-
-	&[data-side='left'] {
-		justify-content: flex-start;
-		margin-inline-end: 1.5rem;
-	}
-
-	&:hover .message-actions {
-		opacity: 1;
-	}
-
-	&[data-role='assistant'] {
-		--ai-message-background: var(--theme--background-subdued);
-		--ai-message-color: var(--theme--foreground);
-	}
-
-	&[data-role='user'] {
-		--ai-message-background: var(--theme--primary);
-		--ai-message-color: var(--theme--background);
 	}
 
 	&.compact {
