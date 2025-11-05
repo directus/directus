@@ -7,8 +7,8 @@ export async function up(knex: Knex): Promise<void> {
 			.where('directus_policies.app_access', '=', 1)
 			.andWhere('directus_permissions.collection', '=', 'directus_users')
 			.andWhere('directus_permissions.action', '=', 'read')
-			.andWhereNot('directus_permissions.fields', 'LIKE', '%provider%')
-			.andWhereNot('directus_permissions.fields', '=', '*');
+			.andWhereNot('directus_permissions.fields', 'LIKE', '*')
+			.andWhereNot('directus_permissions.fields', 'LIKE', '%provider%');
 
 		for (const policy of policies) {
 			if (typeof policy.fields === 'string') {
