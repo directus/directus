@@ -205,6 +205,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										selectedFields: [],
 										onToggleField: () => {},
 									}"
+									non-editable
 									class="comparison-form--base"
 								/>
 							</template>
@@ -246,6 +247,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										selectedFields: selectedComparisonFields,
 										onToggleField: toggleComparisonField,
 									}"
+									non-editable
 									class="comparison-form--incoming"
 								/>
 							</template>
