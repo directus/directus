@@ -1,5 +1,5 @@
 import api from '@/api';
-import { computed, ref, Ref, provide, inject, ComputedRef } from 'vue';
+import { computed, ref, provide, inject, type Ref, type ComputedRef } from 'vue';
 import { FlowRaw, Item, PrimaryKey } from '@directus/types';
 import { notify } from '@/utils/notify';
 import { translate } from '@/utils/translate-object-values';
