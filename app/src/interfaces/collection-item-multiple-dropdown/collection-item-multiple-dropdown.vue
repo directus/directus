@@ -163,7 +163,7 @@ function onSort(sortedItems: Record<string, any>[]) {
 			v-else
 			:model-value="displayItems"
 			tag="v-list"
-			item-key="id"
+			:item-key="primaryKey"
 			handle=".drag-handle"
 			:disabled="disabled"
 			:set-data="hideDragImage"
