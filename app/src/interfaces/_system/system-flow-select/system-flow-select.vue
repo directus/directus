@@ -31,6 +31,7 @@ const flows = computed(() =>
 		:item-text="'displayText'"
 		:item-value="'id'"
 		show-deselect
+		:placeholder="$t('select_a_flow')"
 		@update:model-value="$emit('input', $event)"
 	/>
 </template>
