@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { ComponentPublicInstance } from 'vue';
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useAiStore } from '../stores/use-ai';
 import AiMessage from './ai-message.vue';
 
 import type { UIMessage } from 'ai';
@@ -9,44 +9,23 @@ export type AiMessage = UIMessage;
 
 export type AiStatus = 'ready' | 'streaming' | 'submitted' | 'error';
 
-interface Props {
-	/** Array of messages to display */
-	messages?: UIMessage[];
-	/** Current status of the AI interaction */
-	status?: AiStatus;
-}
-
-defineProps<Props>();
+const aiStore = useAiStore();
 
 const el = ref<HTMLElement | null>(null);
-// const messagesRefs = ref(new Map<string, HTMLElement>());
-
-// function registerMessageRef(id: string, element: ComponentPublicInstance | null) {
-// 	const elInstance = element?.$el;
-
-// 	if (elInstance) {
-// 		messagesRefs.value.set(id, elInstance);
-// 	}
-// }
 
 onMounted(() => {
 	// Scroll 1 pixel down to trigger the scroll anchor
-	el.value?.scroll(0,1)
+	el.value?.scroll(0, 1);
 });
 </script>
 
 <template>
-	<div ref="el" :data-status="status" class="ai-message-list">
+	<div ref="el" :data-status="aiStore.status" class="ai-message-list">
 		<slot>
-			<AiMessage
-				v-for="message in messages"
-				:key="message.id"
-				v-bind="message"
-				/>
-				<!-- :ref="(el) => registerMessageRef(message.id, el as ComponentPublicInstance)" -->
+			<AiMessage v-for="message in aiStore.messages" :key="message.hash" v-bind="message" />
 		</slot>
 
-		<AiMessage v-if="status === 'submitted'" id="indicator" role="assistant" :parts="[]">
+		<AiMessage v-if="aiStore.status === 'submitted'" id="indicator" role="assistant" :parts="[]">
 			<template #content>
 				<slot name="indicator">
 					<div class="loading-indicator">
