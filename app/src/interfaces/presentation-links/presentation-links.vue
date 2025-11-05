@@ -105,10 +105,6 @@ const linksParsed = computed<ParsedLink[]>(() =>
 
 const { runManualFlow, runningFlows, isActiveFlow } = useInjectRunManualFlow();
 
-function handleRunManualFlow(flow: string) {
-	runManualFlow(flow);
-}
-
 /**
  * Get all deduplicated relational fields from the link-templates.
  * For example:
@@ -138,7 +134,7 @@ function getRelatedFieldsFromTemplates() {
 				:to="link.to"
 				:loading="link.flow && runningFlows.includes(link.flow)"
 				:disabled="link.actionType === 'flow' && (props.disabled || props.primaryKey === '+')"
-				@click="() => handleRunManualFlow(link.flow!)"
+				@click="() => runManualFlow(link.flow!)"
 			>
 				<v-icon v-if="link.icon" left :name="link.icon" />
 				<span v-if="link.label">{{ link.label }}</span>
