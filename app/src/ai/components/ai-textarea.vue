@@ -93,7 +93,7 @@ defineExpose({
 
 <style scoped>
 .ai-textarea {
-	width: 100%;
+	inline-size: 100%;
 	padding: 0;
 	border: none;
 	background: none;

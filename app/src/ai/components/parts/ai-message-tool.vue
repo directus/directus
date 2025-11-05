@@ -74,14 +74,14 @@ const statusConfig = computed(() => {
 	background: none;
 	border: none;
 	padding: 0;
-	width: 100%;
+	inline-size: 100%;
 
 	&:hover {
 		opacity: 0.8;
 	}
 
 	.chevron {
-		margin-left: auto;
+		margin-inline-start: auto;
 		transition: transform 150ms ease;
 	}
 
@@ -150,8 +150,7 @@ const statusConfig = computed(() => {
 	font-weight: 600;
 	text-transform: uppercase;
 	opacity: 0.7;
-	margin-bottom: 0.25rem;
-	margin-top: 0.5rem;
+	margin-block: 0.5rem 0.25rem;
 }
 
 .tool-input,
@@ -172,7 +171,7 @@ const statusConfig = computed(() => {
 	align-items: center;
 	gap: 0.375rem;
 	padding: 0.5rem;
-	margin-top: 0.5rem;
+	margin-block-start: 0.5rem;
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--danger);
 	color: var(--white);
@@ -181,19 +180,19 @@ const statusConfig = computed(() => {
 
 @keyframes slideDown {
 	from {
-		height: 0;
+		block-size: 0;
 	}
 	to {
-		height: var(--reka-collapsible-content-height);
+		block-size: var(--reka-collapsible-content-height);
 	}
 }
 
 @keyframes slideUp {
 	from {
-		height: var(--reka-collapsible-content-height);
+		block-size: var(--reka-collapsible-content-height);
 	}
 	to {
-		height: 0;
+		block-size: 0;
 	}
 }
 </style>

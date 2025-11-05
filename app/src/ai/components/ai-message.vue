@@ -124,7 +124,7 @@ withDefaults(defineProps<Props>(), {
 	display: flex;
 	gap: var(--ai-message-gap, 0.75rem);
 	align-items: flex-start;
-	max-width: 100%;
+	max-inline-size: 100%;
 }
 
 .message-content {
@@ -132,14 +132,14 @@ withDefaults(defineProps<Props>(), {
 	flex-direction: column;
 	gap: 0.5rem;
 	flex: 1;
-	min-width: 0;
+	min-inline-size: 0;
 }
 
 .message-actions {
 	display: flex;
 	gap: 0.25rem;
 	align-items: center;
-	margin-top: 0.25rem;
+	margin-block-start: 0.25rem;
 	opacity: 0;
 	transition: opacity var(--fast) var(--transition);
 }

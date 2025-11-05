@@ -329,7 +329,7 @@ onBeforeUnmount(() => {
 	align-items: center;
 
 	span {
-		width: 0.5rem;
+		inline-size: 0.5rem;
 		height: 0.5rem;
 		background-color: var(--theme--foreground-subdued);
 		border-radius: 50%;

@@ -69,7 +69,7 @@ function handleBlur() {
 }
 
 .input-wrapper {
-	width: 100%;
+	inline-size: 100%;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;

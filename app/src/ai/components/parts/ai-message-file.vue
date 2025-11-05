@@ -21,7 +21,7 @@ defineProps<{
 	margin: 0.5rem 0;
 
 	.v-image {
-		max-width: 100%;
+		max-inline-size: 100%;
 		border-radius: var(--theme--border-radius);
 	}
 

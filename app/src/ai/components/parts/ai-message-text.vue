@@ -198,7 +198,7 @@ defineProps<{
 
 /* Tables */
 :deep(table) {
-	width: 100%;
+	inline-size: 100%;
 	border-collapse: collapse;
 	margin: 1rem 0;
 	overflow: auto;
@@ -226,8 +226,8 @@ defineProps<{
 
 /* Images */
 :deep(img) {
-	max-width: 100%;
-	height: auto;
+	max-inline-size: 100%;
+	block-size: auto;
 	border-radius: var(--theme--border-radius);
 	margin: 0.5rem 0;
 }
