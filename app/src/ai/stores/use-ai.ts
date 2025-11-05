@@ -29,6 +29,7 @@ export const useAiStore = defineStore('ai-store', () => {
 			body: () => ({
 				provider: currentProvider.value,
 				model: currentModel.value,
+				tools: [],
 			}),
 			credentials: 'include',
 		}),
