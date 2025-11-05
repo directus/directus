@@ -20,6 +20,7 @@ interface Props {
 	showSelect?: ShowSelect;
 	items: Item[];
 	loading: boolean;
+	loadingItemCount: boolean;
 	error?: any;
 	totalPages: number;
 	tableSort?: { by: string; desc: boolean } | null;
@@ -112,7 +113,7 @@ function removeField(fieldKey: string) {
 <template>
 	<div class="layout-tabular">
 		<v-table
-			v-if="loading || (itemCount && itemCount > 0 && !error)"
+			v-if="loading || (items.length > 0 && !error)"
 			ref="table"
 			v-model="selectionWritable"
 			v-model:headers="tableHeadersWritable"
@@ -242,8 +243,9 @@ function removeField(fieldKey: string) {
 			<template #footer>
 				<div class="footer">
 					<div class="pagination">
+						<v-skeleton-loader v-if="!loading && loadingItemCount && items.length === limit" type="pagination" />
 						<v-pagination
-							v-if="totalPages > 1"
+							v-else-if="totalPages > 1"
 							:length="totalPages"
 							:total-visible="7"
 							show-first-last
@@ -302,7 +304,7 @@ function removeField(fieldKey: string) {
 	inline-size: 100%;
 	padding: 32px var(--content-padding);
 
-	.pagination {
+	.pagination:not(.v-skeleton-loader) {
 		display: inline-block;
 	}
 
