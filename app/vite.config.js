@@ -66,8 +66,9 @@ export default defineConfig({
 					configure: (proxy) => {
 						proxy.on('proxyReq', (proxyReq, req) => {
 							// Forward origin headers for Oauth callback
-							proxyReq.setHeader('X-Forwarded-Host', req.headers.host);
-							proxyReq.setHeader('X-Forwarded-Proto', req.protocol);
+							if (req.headers.host) proxyReq.setHeader('X-Forwarded-Host', req.headers.host);
+							if (req.headers['x-forwarded-proto'])
+								proxyReq.setHeader('X-Forwarded-Proto', req.headers['x-forwarded-proto']);
 						});
 					},
 				},
