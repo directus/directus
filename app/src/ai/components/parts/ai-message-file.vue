@@ -11,7 +11,7 @@ defineProps<{
 		<v-image v-if="part.mediaType?.startsWith('image/')" :src="part.url" :alt="part.filename" />
 		<div v-else class="file-attachment">
 			<v-icon name="attach_file" small />
-			<span>{{ part.filename || 'File' }}</span>
+			<span>{{ part.filename || $t('file') }}</span>
 		</div>
 	</div>
 </template>

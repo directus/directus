@@ -5,10 +5,12 @@ import { useI18n } from 'vue-i18n';
 import AiModelSelector from './ai-model-selector.vue';
 import AiTextarea from './ai-textarea.vue';
 
-const emit = defineEmits(['send']);
+const emit = defineEmits<{
+	send: [message: string];
+}>();
 
 const { t } = useI18n();
-const textareaComponent = useTemplateRef<InstanceType<typeof AiTextarea>>('textareaComponent');
+const textareaComponent = useTemplateRef<InstanceType<typeof AiTextarea>>('textarea-component');
 
 useShortcut('meta+enter', handleSubmit, textareaComponent as any);
 
@@ -44,7 +46,7 @@ function handleBlur() {
 	<div class="ai-input-container">
 		<div class="input-wrapper">
 			<AiTextarea
-				ref="textareaComponent"
+				ref="textarea-component"
 				v-model="content"
 				:placeholder="t('ai.prompt_input_placeholder')"
 				:disabled="sending"

@@ -2,23 +2,26 @@
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
 import type { UIMessagePart, UIDataTypes, UITools } from 'ai';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	part: Extract<UIMessagePart<UIDataTypes, UITools>, { type: `tool-${string}` }>;
 }>();
 
+const { t } = useI18n();
+
 const statusConfig = computed(() => {
 	switch (props.part.state) {
 		case 'input-streaming':
-			return { icon: 'pending', label: 'Streaming...', class: 'status-streaming' };
+			return { icon: 'pending', label: t('ai.streaming'), class: 'status-streaming' };
 		case 'input-available':
-			return { icon: 'hourglass_empty', label: 'Ready', class: 'status-ready' };
+			return { icon: 'hourglass_empty', label: t('ai.ready'), class: 'status-ready' };
 		case 'output-available':
-			return { icon: 'check_circle', label: 'Complete', class: 'status-complete' };
+			return { icon: 'check_circle', label: t('ai.complete'), class: 'status-complete' };
 		case 'output-error':
-			return { icon: 'error', label: 'Error', class: 'status-error' };
+			return { icon: 'error', label: t('ai.error'), class: 'status-error' };
 		default:
-			return { icon: 'help', label: 'Unknown', class: 'status-unknown' };
+			return { icon: 'help', label: t('ai.unknown'), class: 'status-unknown' };
 	}
 });
 </script>

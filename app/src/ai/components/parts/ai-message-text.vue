@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 defineProps<{
 	text: string;
 	state: 'streaming' | 'done';
@@ -7,7 +6,7 @@ defineProps<{
 </script>
 
 <template>
-	<div v-md="text || ''" class="message-text" :data-state="state"></div>
+	<div v-md="text || ''" class="message-text"></div>
 </template>
 
 <style scoped>

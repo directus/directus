@@ -1718,6 +1718,11 @@ new_share: New Share
 ai:
   thinking: Thinking...
   reasoning: Reasoning
+  label: Streaming...
+  ready: Ready
+  complete: Complete
+  error: Error
+  unknown: Unknown
   prompt_input_placeholder: Type your message here...
 mcp_prompts_collection:
   no_collection_selected: No collection selected
