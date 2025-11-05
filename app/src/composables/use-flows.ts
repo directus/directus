@@ -1,5 +1,5 @@
 import api from '@/api';
-import { computed, ref, provide, inject, type Ref, type ComputedRef } from 'vue';
+import { computed, ref, provide, inject, type Ref } from 'vue';
 import { FlowRaw, Item, PrimaryKey } from '@directus/types';
 import { notify } from '@/utils/notify';
 import { translate } from '@/utils/translate-object-values';
@@ -125,10 +125,6 @@ export function useFlows(options: UseFlowsOptions) {
 		return false;
 	});
 
-	const activeFlows = computed(() =>
-		manualFlows.value.filter((flow) => flow.status === 'active').map((flow) => flow.id),
-	);
-
 	const manualFlows = computed<ManualFlow[]>(() => {
 		const manualFlows = flowsStore
 			.getManualFlowsForCollection(collection)
@@ -160,6 +156,12 @@ export function useFlows(options: UseFlowsOptions) {
 		return manualFlows;
 	});
 
+	function isActiveFlow(flowId: string) {
+		const flow = manualFlows.value.find((flow) => flow.id === flowId);
+
+		return flow && flow.status === 'active';
+	}
+
 	function resetConfirm() {
 		currentFlowId.value = null;
 		confirmValues.value = null;
@@ -187,7 +189,7 @@ export function useFlows(options: UseFlowsOptions) {
 		provide(runManualFlowSymbol, {
 			runManualFlow,
 			runningFlows,
-			activeFlows,
+			isActiveFlow,
 		});
 	}
 
@@ -271,6 +273,6 @@ export function useInjectRunManualFlow() {
 	return inject(runManualFlowSymbol) as {
 		runManualFlow: (flowId: string) => void;
 		runningFlows: Ref<string[]>;
-		activeFlows: ComputedRef<string[]>;
+		isActiveFlow: (flowId: string) => boolean;
 	};
 }

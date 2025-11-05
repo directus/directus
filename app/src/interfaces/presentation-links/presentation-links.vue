@@ -103,7 +103,7 @@ const linksParsed = computed<ParsedLink[]>(() =>
 	}),
 );
 
-const { runManualFlow, runningFlows, activeFlows } = useInjectRunManualFlow();
+const { runManualFlow, runningFlows, isActiveFlow } = useInjectRunManualFlow();
 
 function handleRunManualFlow(flow: string) {
 	runManualFlow(flow);
@@ -129,7 +129,7 @@ function getRelatedFieldsFromTemplates() {
 	<div class="presentation-links">
 		<template v-for="(link, index) in linksParsed" :key="index">
 			<v-button
-				v-if="link.actionType !== 'flow' || activeFlows.includes(link.flow!)"
+				v-if="link.actionType !== 'flow' || isActiveFlow(link.flow!)"
 				class="action"
 				:class="[link.type]"
 				:secondary="link.type !== 'primary'"
