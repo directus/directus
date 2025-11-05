@@ -12,6 +12,7 @@ const flows = computed(() =>
 	flowsStore.flows
 		.filter(
 			(flow: FlowRaw) =>
+				flow.trigger === 'manual' &&
 				flow.options &&
 				flow.options.collections &&
 				flow.options.collections.includes(props.collectionName) &&
