@@ -35,6 +35,7 @@ describe('loadSettings', () => {
 		mockReadSingleton.mockResolvedValue({
 			ai_openai_api_key: 'test-openai-key',
 			ai_anthropic_api_key: 'test-anthropic-key',
+			ai_system_prompt: 'You are Directus.',
 		});
 
 		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -42,7 +43,7 @@ describe('loadSettings', () => {
 		expect(mockGetSchema).toHaveBeenCalledTimes(1);
 
 		expect(mockReadSingleton).toHaveBeenCalledWith({
-			fields: ['ai_openai_api_key', 'ai_anthropic_api_key'],
+			fields: ['ai_openai_api_key', 'ai_anthropic_api_key', 'ai_system_prompt'],
 		});
 
 		expect(mockResponse.locals).toEqual({
@@ -51,6 +52,7 @@ describe('loadSettings', () => {
 					openai: 'test-openai-key',
 					anthropic: 'test-anthropic-key',
 				},
+				systemPrompt: 'You are Directus.',
 			},
 		});
 
@@ -61,6 +63,7 @@ describe('loadSettings', () => {
 		mockReadSingleton.mockResolvedValue({
 			ai_openai_api_key: undefined,
 			ai_anthropic_api_key: undefined,
+			ai_system_prompt: undefined,
 		});
 
 		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -68,7 +71,7 @@ describe('loadSettings', () => {
 		expect(mockGetSchema).toHaveBeenCalledTimes(1);
 
 		expect(mockReadSingleton).toHaveBeenCalledWith({
-			fields: ['ai_openai_api_key', 'ai_anthropic_api_key'],
+			fields: ['ai_openai_api_key', 'ai_anthropic_api_key', 'ai_system_prompt'],
 		});
 
 		expect(mockResponse.locals).toEqual({
@@ -77,6 +80,7 @@ describe('loadSettings', () => {
 					openai: undefined,
 					anthropic: undefined,
 				},
+				systemPrompt: undefined,
 			},
 		});
 
@@ -87,6 +91,7 @@ describe('loadSettings', () => {
 		mockReadSingleton.mockResolvedValue({
 			ai_openai_api_key: 'test-openai-key',
 			ai_anthropic_api_key: undefined,
+			ai_system_prompt: 'System prompt here',
 		});
 
 		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -97,6 +102,7 @@ describe('loadSettings', () => {
 					openai: 'test-openai-key',
 					anthropic: undefined,
 				},
+				systemPrompt: 'System prompt here',
 			},
 		});
 
@@ -107,6 +113,7 @@ describe('loadSettings', () => {
 		mockReadSingleton.mockResolvedValue({
 			ai_openai_api_key: undefined,
 			ai_anthropic_api_key: 'test-anthropic-key',
+			ai_system_prompt: undefined,
 		});
 
 		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -117,6 +124,7 @@ describe('loadSettings', () => {
 					openai: undefined,
 					anthropic: 'test-anthropic-key',
 				},
+				systemPrompt: undefined,
 			},
 		});
 
@@ -127,9 +135,9 @@ describe('loadSettings', () => {
 		const error = new Error('Database error');
 		mockReadSingleton.mockRejectedValue(error);
 
-		await expect(
-			loadSettings(mockRequest as Request, mockResponse as Response, nextFunction),
-		).rejects.toThrow('Database error');
+		await expect(loadSettings(mockRequest as Request, mockResponse as Response, nextFunction)).rejects.toThrow(
+			'Database error',
+		);
 
 		expect(mockGetSchema).toHaveBeenCalledTimes(1);
 		expect(nextFunction).not.toHaveBeenCalled();
@@ -157,6 +165,7 @@ describe('loadSettings', () => {
 		mockReadSingleton.mockResolvedValue({
 			ai_openai_api_key: null,
 			ai_anthropic_api_key: null,
+			ai_system_prompt: null,
 		});
 
 		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -167,6 +176,7 @@ describe('loadSettings', () => {
 					openai: null,
 					anthropic: null,
 				},
+				systemPrompt: null,
 			},
 		});
 
@@ -177,6 +187,7 @@ describe('loadSettings', () => {
 		mockReadSingleton.mockResolvedValue({
 			ai_openai_api_key: '',
 			ai_anthropic_api_key: '',
+			ai_system_prompt: '',
 		});
 
 		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -187,6 +198,7 @@ describe('loadSettings', () => {
 					openai: '',
 					anthropic: '',
 				},
+				systemPrompt: '',
 			},
 		});
 
