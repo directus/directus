@@ -16,7 +16,6 @@ defineProps<{
 	background-color: var(--ai-message-background);
 	color: var(--ai-message-color, var(--theme--foreground));
 	overflow-wrap: break-word;
-	overflow-wrap: break-word;
 }
 
 /* Headings */
