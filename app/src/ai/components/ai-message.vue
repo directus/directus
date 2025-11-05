@@ -42,7 +42,7 @@ const variant = props.role === 'user' ? 'primary' : 'subdued';
 </script>
 
 <template>
-	<article :data-role="role" :data-side="side"  :class="['ai-message', { compact }]">
+	<article :data-role="role" :data-side="side" :class="['ai-message', { compact }]">
 		<div class="message-container">
 			<div class="message-content">
 				<template v-for="(part, index) in parts" :key="`${id}-${part.type}-${index}`">
