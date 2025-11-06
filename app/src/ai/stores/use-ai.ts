@@ -59,7 +59,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	}
 
 	function clearConversation() {
-		chat.clearError()
+		chat.clearError();
 		chat.messages = [];
 	}
 
