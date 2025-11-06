@@ -3,31 +3,22 @@ import { useFormFields, validate } from '@/routes/setup/form';
 import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { SetupForm as Form } from '@directus/types';
-import { computed, inject, Ref, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const settingsStore = useSettingsStore();
 
-const props = withDefaults(
-	defineProps<{
-		value?: string | null;
-	}>(),
-	{
-		value: null,
-	},
-);
-
 const { t } = useI18n();
-
-const emit = defineEmits<{
-	input: [value: string | null];
-}>();
 
 const errors = ref<Record<string, any>[]>([]);
 const editing = ref(false);
 
 const allowSave = computed(
-	() => form.value.project_owner || form.value.project_usage || form.value.org_name || form.value.product_updates,
+	() =>
+		form.value.project_owner ||
+		form.value.project_usage ||
+		form.value.org_name ||
+		('product_updates' in form.value && form.value.product_updates !== initialValues.value.product_updates),
 );
 
 async function save() {
@@ -39,17 +30,14 @@ async function save() {
 
 	await settingsStore.setOwner(value as Form);
 	await settingsStore.hydrate();
-	emit('input', form.value.project_owner ?? initialValues.value.project_owner);
 	editing.value = false;
 }
 
-const values = inject<Ref<Record<string, any>>>('values')!;
-
 const initialValues = computed(() => ({
-	project_owner: props.value,
-	project_usage: values.value.project_usage,
-	org_name: values.value.org_name,
-	product_updates: values.value.product_updates,
+	project_owner: settingsStore.settings?.project_owner,
+	project_usage: settingsStore.settings?.project_usage,
+	org_name: settingsStore.settings?.org_name,
+	product_updates: settingsStore.settings?.product_updates,
 }));
 
 const form = ref<Partial<Form>>({});
@@ -60,7 +48,7 @@ const fields = useFormFields(false, form);
 <template>
 	<div class="system-owner">
 		<v-list-item type="text" block clickable @click="editing = true">
-			{{ value }}
+			{{ form.project_owner ?? initialValues.project_owner }}
 			<div class="spacer" />
 			<div class="item-actions">
 				<v-icon v-tooltip="t('interfaces.system-owner.edit')" name="edit" clickable />
