@@ -427,13 +427,6 @@ function useDisplayValue() {
 	--v-input-font-family: var(--v-select-font-family, var(--theme--fonts--sans--font-family));
 
 	cursor: pointer;
-
-	&.non-editable {
-		cursor: default;
-		:deep(.v-icon) {
-			display: none;
-		}
-	}
 }
 
 .v-input .v-icon {
@@ -464,11 +457,6 @@ function useDisplayValue() {
 
 	&:not(.disabled) {
 		cursor: pointer;
-	}
-
-	&.non-editable {
-		pointer-events: none;
-		cursor: default;
 	}
 }
 

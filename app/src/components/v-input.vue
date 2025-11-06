@@ -477,20 +477,6 @@ function useInvalidInput() {
 		}
 	}
 
-
-		.append,
-		.prepend,
-		.warning-invalid,
-		.step-up,
-		.step-down,
-		:deep(.v-icon),
-		:deep(button),
-		:deep([clickable]),
-		:deep([role='button']) {
-			display: none;
-		}
-	}
-
 	input {
 		flex-grow: 1;
 		inline-size: 20px; /* allows flex to grow/shrink to allow for slots */
