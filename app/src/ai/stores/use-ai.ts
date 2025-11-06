@@ -3,7 +3,7 @@ import { Chat } from '@ai-sdk/vue';
 import { useLocalStorage } from '@vueuse/core';
 import { DefaultChatTransport, type UIMessage } from 'ai';
 import { defineStore } from 'pinia';
-import { computed } from 'vue';
+import { computed, } from 'vue';
 import { AI_MODELS } from '../models';
 import { getSimpleHash } from '@directus/utils';
 
@@ -36,7 +36,10 @@ export const useAiStore = defineStore('ai-store', () => {
 			}),
 			credentials: 'include',
 		}),
+
 	});
+
+	const error = computed(() => chat.error);
 
 	const messages = computed(() =>
 		chat.messages.map((msg) => ({
@@ -55,15 +58,28 @@ export const useAiStore = defineStore('ai-store', () => {
 		chat.sendMessage({ text: message });
 	}
 
+	function clearConversation() {
+		chat.clearError()
+		chat.messages = [];
+	}
+
+	function retry() {
+		chat.clearError();
+		chat.regenerate();
+	}
+
 	return {
 		currentProvider,
 		currentModel,
 		addMessage,
+		clearConversation,
 		chat,
 		messages,
 		status,
 		selectedModel,
 		updateSelectedModel,
 		models,
+		error,
+		retry,
 	};
 });
