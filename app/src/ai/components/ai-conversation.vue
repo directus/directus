@@ -2,19 +2,29 @@
 import { useAiStore } from '../stores/use-ai';
 import AiMessageList from './ai-message-list.vue';
 import AiInput from './ai-input.vue';
+import AiSuggestions from './ai-suggestions.vue';
 
 const aiStore = useAiStore();
+
+const suggestions =  [
+	'Tell me a dad joke',
+	'Write a blog post about rabbits',
+	'Humanize the content',
+]
 </script>
 
 <template>
 	<div class="ai-conversation">
 		<div class="messages-container">
 			<ai-message-list
+				v-if="aiStore.messages.length > 0"
 				:messages="aiStore.messages"
 				:status="aiStore.status"
 				should-auto-scroll
 				should-scroll-to-bottom
 			/>
+			<ai-suggestions v-else class="suggestions-container" :suggestions="suggestions" />
+
 			<v-notice v-if="aiStore.error" multiline type="danger" class="error-notice">
 				<template #title>
 					{{ $t('ai.error') }}
@@ -54,6 +64,12 @@ const aiStore = useAiStore();
 	flex: 1;
 	overflow-y: auto;
 	min-block-size: 0;
+}
+
+.suggestions-container {
+	padding-block: 2rem;
+	padding-inline: 1rem;
+	max-inline-size: 100%;
 }
 
 .input-container {

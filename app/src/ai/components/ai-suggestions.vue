@@ -32,6 +32,11 @@ defineProps<{
 	align-items: center;
 	justify-content: center;
 	gap: 0.5rem;
+}
 
+.suggestion-button {
+	--v-button-min-width: 0;
+	flex: 0 1 auto;
+	max-inline-size: 100%;
 }
 </style>
