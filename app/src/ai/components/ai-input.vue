@@ -2,7 +2,6 @@
 import { useShortcut } from '@/composables/use-shortcut';
 import { computed, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
-import AiModelSelector from './ai-model-selector.vue';
 import AiTextarea from './ai-textarea.vue';
 
 const emit = defineEmits<{
@@ -54,7 +53,6 @@ function handleBlur() {
 				@blur="handleBlur"
 			/>
 			<div class="input-controls">
-				<AiModelSelector />
 				<v-button :disabled="!canSubmit" :loading="sending" class="submit-button" x-small icon @click="handleSubmit">
 					<v-icon name="arrow_upward" />
 				</v-button>

@@ -163,7 +163,7 @@ function onClick() {
 	}
 
 	.content {
-		padding: 16px;
+		padding: 12px;
 		border-block-end: var(--theme--sidebar--section--toggle--border-width) solid
 			var(--theme--sidebar--section--toggle--border-color);
 

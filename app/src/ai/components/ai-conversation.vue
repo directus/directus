@@ -24,7 +24,7 @@ const aiStore = useAiStore();
 
 				<div class="error-buttons-container">
 					<v-button outlined class="retry-button" x-small danger @click="aiStore.retry()"><v-icon name="refresh" x-small />{{ $t('ai.retry') }}</v-button>
-					<v-button class="clear-button" outline x-small danger @click="aiStore.clearConversation()">{{ $t('ai.clear_conversation') }}</v-button>
+					<v-button class="clear-button" outline x-small danger @click="aiStore.reset()">{{ $t('ai.clear_conversation') }}</v-button>
 				</div>
 			</v-notice>
 		</div>

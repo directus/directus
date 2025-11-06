@@ -90,7 +90,7 @@ withDefaults(defineProps<Props>(), {
 		--ai-message-color: var(--theme--foreground);
 
 		justify-content: flex-start;
-		margin-inline-end: 1.5rem;
+		margin-inline-end: 12px;
 	}
 
 	&[data-role='user'] {
@@ -98,7 +98,7 @@ withDefaults(defineProps<Props>(), {
 		--ai-message-color: var(--theme--background);
 
 		justify-content: flex-end;
-		margin-inline-start: 1.5rem;
+		margin-inline-start: 12px;
 
 		.message-container {
 			flex-direction: row-reverse;
