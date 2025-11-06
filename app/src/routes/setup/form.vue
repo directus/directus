@@ -33,7 +33,7 @@ const initialValues = toRef(props, 'initialValues');
 const value = defineModel<SetupForm>();
 
 const license = computed({
-	get: () => value.value?.license ?? false,
+	get: () => value.value?.license ?? initialValues.value.license,
 	set: (val: boolean) => {
 		if (value.value) {
 			value.value.license = val;
@@ -42,7 +42,7 @@ const license = computed({
 });
 
 const product_updates = computed({
-	get: () => value.value?.product_updates ?? false,
+	get: () => value.value?.product_updates ?? initialValues.value.product_updates,
 	set: (val: boolean) => {
 		if (value.value) {
 			value.value.product_updates = val;
