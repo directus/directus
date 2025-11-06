@@ -108,7 +108,14 @@ const componentUid = getCurrentInstance()!.uid;
 defineTool({
 	name: `read-form-values-${componentUid}`,
 	description: 'Read values of the form on the current page',
-	inputSchema: computed(() => z.object({ fields: z.array(z.enum(fieldNames.value)) })),
+	inputSchema: computed(() => {
+		return z.object({
+			fields:
+				fieldNames.value.length > 0
+					? z.array(z.enum(fieldNames.value))
+					: z.array(z.string()),
+		});
+	}),
 	execute: ({ fields }) => {
 		const output: Record<string, unknown> = {};
 
