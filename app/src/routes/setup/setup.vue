@@ -10,6 +10,7 @@ import { SetupForm as Form } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { FormValidator, defaultValues, useFormFields, validate, ValidationError } from './form';
+import { watch } from 'vue';
 
 const { t } = useI18n();
 
@@ -54,6 +55,12 @@ const errorMessage = computed(() => {
 });
 
 const formComplete = computed(() => FormValidator.safeParse(form.value).success);
+
+watch(form, () => {
+	if (form.value.project_usage !== 'commercial') {
+		form.value.org_name = null;
+	}
+});
 </script>
 
 <template>
