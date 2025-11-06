@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { getHeadingsForCsvExport, createErrorTracker, ImportService } from './import-export.js';
+import { getHeadingsForCsvExport, createErrorTracker, ImportService, ExportService } from './import-export.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/ast.js';
 import { Readable } from 'node:stream';
 import knex, { type Knex } from 'knex';
@@ -1070,6 +1070,86 @@ describe('ImportService', () => {
 			]);
 
 			expect(mockUpsertOne).toHaveBeenCalledTimes(1);
+		});
+	});
+});
+
+describe('ExportService', () => {
+	let service: ExportService;
+
+	beforeEach(() => {
+		service = new ExportService({
+			knex: {} as any,
+			schema: {} as any,
+		});
+	});
+
+	describe('transform', () => {
+		describe('CSV format', () => {
+			test('adds UTF-8 BOM at beginning of file for Excel compatibility', () => {
+				const input = [
+					{ bug: 'Excel ≠ UTF-8', status: "Won't fix since 1997™" },
+					{ bug: 'Test encoding', status: 'Encoding goes brrr 💥' },
+				];
+
+				const result = service.transform(input, 'csv', { includeHeader: true });
+
+				expect(result.startsWith('\uFEFF')).toBe(true);
+			});
+
+			test('returns empty string for empty input', () => {
+				const result = service.transform([], 'csv');
+
+				expect(result).toBe('');
+			});
+
+			test('only includes BOM if includeHeader is true', () => {
+				const input = [{ id: 1, dev: 'test' }];
+
+				const result = service.transform(input, 'csv', {
+					includeHeader: true,
+				});
+
+				const resultWithoutBOM = service.transform(input, 'csv', {
+					includeHeader: false,
+				});
+
+				expect(result.startsWith('\uFEFF')).toBe(true);
+				expect(resultWithoutBOM.startsWith('\uFEFF')).toBe(false);
+			});
+		});
+
+		describe('JSON format', () => {
+			test('transforms to JSON format', () => {
+				const input = [{ name: 'Test', value: 123 }];
+
+				const result = service.transform(input, 'json');
+
+				const parsed = JSON.parse(result);
+				expect(parsed).toEqual(input);
+			});
+		});
+
+		describe('XML format', () => {
+			test('transforms to XML format', () => {
+				const input = [{ name: 'Test', value: 123 }];
+
+				const result = service.transform(input, 'xml');
+
+				expect(result).toContain('<data>');
+				expect(result).toContain('</data>');
+			});
+		});
+
+		describe('YAML format', () => {
+			test('transforms to YAML format', () => {
+				const input = [{ name: 'Test', value: 123 }];
+
+				const result = service.transform(input, 'yaml');
+
+				expect(result).toContain('name: Test');
+				expect(result).toContain('value: 123');
+			});
 		});
 	});
 });

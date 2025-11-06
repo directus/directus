@@ -727,8 +727,8 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 			const header = options?.includeHeader !== false;
 
 			const transformOptions = options?.fields
-				? { transforms, header, fields: options?.fields }
-				: { transforms, header };
+				? { transforms, header, fields: options?.fields, withBOM: header }
+				: { transforms, header, withBOM: header };
 
 			let string = new CSVParser(transformOptions).parse(input);
 

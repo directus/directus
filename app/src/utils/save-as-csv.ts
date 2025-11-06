@@ -65,7 +65,7 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 		parsedItems.push(parsedItem);
 	}
 
-	const parser = new Parser();
+	const parser = new Parser({ withBOM: true });
 	const csvContent = parser.parse(parsedItems);
 
 	const now = new Date();

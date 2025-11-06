@@ -88,7 +88,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 
 		if (req.sanitizedQuery.export === 'csv') {
 			res.attachment(`${filename}.csv`);
-			res.set('Content-Type', 'text/csv');
+			res.set('Content-Type', 'text/csv; charset=utf-8');
 			return res.status(200).send(exportService.transform(res.locals['payload']?.data, 'csv'));
 		}
 
