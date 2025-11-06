@@ -36,7 +36,6 @@ export type Settings = {
 	project_name: string;
 	project_descriptor: string | null;
 	project_url: string | null;
-	project_owner: string | null;
 	report_error_url: string | null;
 	report_bug_url: string | null;
 	report_feature_url: string | null;
@@ -66,7 +65,7 @@ export type Settings = {
 	project_id: string | null;
 	ai_openai_api_key: '**********' | null;
 	ai_anthropic_api_key: '**********' | null;
-};
+} & OwnerInformation;
 
 export type OwnerInformation = {
 	project_owner: string | null;
