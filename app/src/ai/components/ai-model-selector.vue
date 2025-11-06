@@ -3,10 +3,6 @@ import { formatTitle } from '@directus/format-title';
 import { useAiStore } from '../stores/use-ai';
 
 const aiStore = useAiStore();
-
-function selectModel(model: string) {
-	aiStore.updateSelectedModel(model);
-}
 </script>
 
 <template>
@@ -24,7 +20,7 @@ function selectModel(model: string) {
 				:key="model"
 				:active="aiStore.selectedModel === model"
 				clickable
-				@click="selectModel(model)"
+				@click="aiStore.selectedModel = model"
 			>
 				<v-list-item-content>
 					<v-text-overflow :text="formatTitle(model.split('/')[1] || '')" />

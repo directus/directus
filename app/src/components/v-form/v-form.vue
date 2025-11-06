@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { defineTool } from '@/ai/composables/define-tool';
 import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
@@ -7,8 +8,9 @@ import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { useElementSize } from '@directus/composables';
 import { ContentVersion, Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
-import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { computed, getCurrentInstance, onBeforeUpdate, provide, ref, watch } from 'vue';
+import { z } from 'zod';
+import { useInputSchema } from './composables/use-input-schema';
 import type { MenuOptions } from './form-field-menu.vue';
 import FormField from './form-field.vue';
 import type { ComparisonContext, FormField as TFormField } from './types';
@@ -63,8 +65,6 @@ const props = withDefaults(
 	},
 );
 
-const { t } = useI18n();
-
 const emit = defineEmits(['update:modelValue']);
 
 const values = computed(() => {
@@ -100,6 +100,48 @@ const {
 	getFieldsForGroup,
 	isFieldVisible,
 } = useForm();
+
+const { inputSchema: writeInputSchema } = useInputSchema(finalFields);
+
+const componentUid = getCurrentInstance()!.uid;
+
+defineTool({
+	name: `read-form-values-${componentUid}`,
+	description: 'Read values of the form on the current page',
+	inputSchema: computed(() => {
+		return z.object({
+			fields:
+				fieldNames.value.length > 0
+					? z.array(z.enum(fieldNames.value))
+					: z.array(z.string()),
+		});
+	}),
+	execute: ({ fields }) => {
+		const output: Record<string, unknown> = {};
+
+		for (const field of fields) {
+			output[field] = values.value[field];
+		}
+
+		return output;
+	},
+});
+
+defineTool({
+	name: `set-form-values-${componentUid}`,
+	description: `Set values of form on the current page`,
+	inputSchema: writeInputSchema,
+	execute: (args) => {
+		const output: string[] = [];
+
+		for (const [key, value] of Object.entries(args)) {
+			setValue(key, value);
+			output.push(`Successfully set form field ${key} to value ${value}`);
+		}
+
+		return output;
+	},
+});
 
 const { toggleBatchField, batchActiveFields } = useBatch();
 const { toggleRawField, rawActiveFields } = useRawEditor();
@@ -399,11 +441,11 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 		<v-info
 			v-if="noVisibleFields && showNoVisibleFields && !loading"
 			class="no-fields-info"
-			:title="t('no_visible_fields')"
+			:title="$t('no_visible_fields')"
 			:icon="inline ? false : 'search'"
 			:center="!inline"
 		>
-			{{ t('no_visible_fields_copy') }}
+			{{ $t('no_visible_fields_copy') }}
 		</v-info>
 		<template v-for="(fieldName, index) in fieldNames" :key="fieldName">
 			<template v-if="fieldsMap[fieldName]">
