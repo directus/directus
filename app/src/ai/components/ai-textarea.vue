@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useTextareaAutosize } from '@vueuse/core'
-import { useTemplateRef } from 'vue';
+import { useTextareaAutosize } from '@vueuse/core';
+import { nextTick, useTemplateRef, watch } from 'vue';
 
 const modelValue = defineModel<string | undefined>();
 
@@ -8,7 +8,6 @@ interface Props {
 	placeholder?: string;
 	disabled?: boolean;
 	rows?: number;
-	maxRows?: number;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -21,7 +20,17 @@ const emit = defineEmits<{
 }>();
 
 const textareaRef = useTemplateRef<HTMLTextAreaElement>('textarea-ref');
-useTextareaAutosize({ input: modelValue.value, element: textareaRef })
+
+const { triggerResize } = useTextareaAutosize({
+	styleProp: 'height',
+	element: textareaRef,
+});
+
+watch(modelValue, () => {
+	nextTick(() => {
+		triggerResize();
+	});
+});
 
 function onFocus(event: FocusEvent) {
 	emit('focus', event);
@@ -60,6 +69,8 @@ defineExpose({
 	font-size: 14px;
 	line-height: 1.5;
 	resize: none;
+	max-block-size: 120px;
+	overflow-y: auto;
 
 	&:focus {
 		outline: none;
@@ -73,7 +84,5 @@ defineExpose({
 	&::placeholder {
 		color: var(--theme--foreground-subdued);
 	}
-
-	max-block-size: 120px;
 }
 </style>
