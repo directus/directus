@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 关于
+setup_welcome: 欢迎使用 Directus
+setup_info: 让我们创建您的管理员帐户并启动您的项目。
 first_name: 名
 last_name: 姓
 identifier: 标识符（identifier）
