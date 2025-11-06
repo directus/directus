@@ -2,4 +2,4 @@
 '@directus/system-data': patch
 ---
 
-Added directus_users provider field to minimum app permissions
+Fixed accounts with minimum access permissions unable to add 2fa
