@@ -1726,7 +1726,7 @@ ai:
   ready: Ready
   complete: Complete
   error: An error occurred
-  regenerate: Regenerate Last Message
+  retry: Retry
   unknown_error: Unknown Error
   prompt_input_placeholder: Type your message here...
   clear_conversation: Clear Conversation
