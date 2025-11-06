@@ -6,7 +6,10 @@ import { requestQueue } from './api';
 import { SDK_AUTH_REFRESH_BEFORE_EXPIRES } from './constants';
 import { useRequestsStore } from './stores/requests';
 
-export type SdkClient = DirectusClient<any> & AuthenticationClient<any> & RestClient<any> & WebSocketClient<any>;
+export type SdkClient = DirectusClient<unknown> &
+	AuthenticationClient<unknown> &
+	RestClient<unknown> &
+	WebSocketClient<unknown>;
 
 type OptionsWithId = FetchContext['options'] & { id: string };
 

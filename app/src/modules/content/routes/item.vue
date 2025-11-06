@@ -87,7 +87,7 @@ const {
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, query);
 
-const { onSave } = useCollab(collection, primaryKey, currentVersion, edits, refresh);
+const { onSave, users: collabUsers } = useCollab(collection, primaryKey, currentVersion, edits, refresh);
 
 const validationErrors = computed(() => {
 	if (currentVersion.value === null) return itemValidationErrors.value;
@@ -602,7 +602,9 @@ function useCollectionRoute() {
 			</div>
 		</template>
 
-		<template #title-outer:append></template>
+		<template #title-outer:append>
+			{{ collabUsers }}
+		</template>
 
 		<template #actions>
 			<v-button

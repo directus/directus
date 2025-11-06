@@ -54,10 +54,17 @@ export class Room {
 			user: client.accountability!.user!,
 		});
 
+		const users: Set<string> = new Set();
+
+		for (const client of this.clients) {
+			users.add(client.accountability!.user!);
+		}
+
 		this.send(client, {
 			action: 'init',
 			changes: this.changes,
 			focuses: this.focuses,
+			users: Array.from(users),
 		});
 
 		this.clients.add(client);

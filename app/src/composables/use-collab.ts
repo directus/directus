@@ -1,6 +1,7 @@
 import sdk from '@/sdk';
 import { useUserStore } from '@/stores/user';
-import { ClientCollabMessage, COLLAB, ContentVersion, Item, PrimaryKey } from '@directus/types';
+import { readUser, readUsers } from '@directus/sdk';
+import { ClientCollabMessage, COLLAB, ContentVersion, Item, PrimaryKey, User } from '@directus/types';
 import { isEqual } from 'lodash';
 import { computed, provide, ref, Ref } from 'vue';
 
@@ -15,6 +16,7 @@ export function useCollab(
 	const userStore = useUserStore();
 
 	const roomId = ref<string | null>(null);
+	const users = ref<(Pick<User, 'id' | 'first_name' | 'last_name'> & { avatar: any })[]>([]);
 	const focused = ref<Record<string, any>>({});
 
 	sdk.onWebSocket('open', () => {
@@ -27,11 +29,22 @@ export function useCollab(
 			initialChanges: edits.value,
 		});
 
-		sdk.onWebSocket('message', (message: ClientCollabMessage) => {
+		sdk.onWebSocket('message', async (message: ClientCollabMessage) => {
 			if (message.action === 'init') {
 				roomId.value = message.room;
 
 				if (!isEqual(message.changes, edits.value)) edits.value = message.changes;
+
+				users.value = await sdk.request(
+					readUsers({
+						filter: {
+							id: {
+								_in: message.users,
+							},
+						},
+						fields: ['id', 'first_name', 'last_name', 'avatar'],
+					}),
+				);
 			}
 
 			if (message.action === 'update') {
@@ -41,6 +54,16 @@ export function useCollab(
 				} else {
 					delete edits.value[message.field];
 				}
+			}
+
+			if (message.action === 'join') {
+				const user = await sdk.request(readUser(message.user, { fields: ['id', 'first_name', 'last_name', 'avatar'] }));
+
+				users.value = [...users.value, user];
+			}
+
+			if (message.action === 'leave') {
+				users.value = users.value.filter((user) => user.id === message.user);
 			}
 
 			if (message.action === 'save') {
@@ -125,5 +148,5 @@ export function useCollab(
 		});
 	}
 
-	return { onSave };
+	return { onSave, users };
 }

@@ -46,7 +46,7 @@ export type ClientCollabMessage = {
 } & ClientBaseCollabMessage;
 
 export type ClientBaseCollabMessage =
-	| { action: 'init'; changes: Item; focuses: Record<string, string> }
+	| { action: 'init'; changes: Item; focuses: Record<string, string>; users: string[] }
 	| {
 			action: 'join';
 			user: string;
