@@ -17,6 +17,7 @@ const props = withDefaults(
 	defineProps<{
 		value: string | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		placeholder?: string;
 		editorFont?: 'sans-serif' | 'serif' | 'monospace';
 		previewFont?: 'sans-serif' | 'serif' | 'monospace';
@@ -32,6 +33,7 @@ const props = withDefaults(
 		editorFont: 'sans-serif',
 		previewFont: 'sans-serif',
 		defaultView: 'editor',
+		nonEditable: false,
 		toolbar: () => [
 			'heading',
 			'bold',
@@ -204,7 +206,11 @@ function edit(type: Alteration, options?: Record<string, any>) {
 </script>
 
 <template>
-	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="[view, { disabled }]">
+	<div
+		ref="markdownInterface"
+		class="interface-input-rich-text-md"
+		:class="[view, { disabled, 'non-editable': nonEditable }]"
+	>
 		<div class="toolbar">
 			<template v-if="view === 'editor'">
 				<v-menu v-if="toolbar?.includes('heading')" show-arrow placement="bottom-start">
@@ -439,7 +445,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 	max-block-size: min(1000px, 80vh);
 }
 
-.interface-input-rich-text-md.disabled {
+.interface-input-rich-text-md.disabled:not(.non-editable) {
 	background-color: var(--theme--form--field--input--background-subdued);
 }
 
@@ -486,7 +492,7 @@ textarea {
 	color: var(--theme--danger);
 }
 
-.interface-input-rich-text-md.disabled .preview-box {
+.interface-input-rich-text-md.disabled:not(.non-editable) .preview-box {
 	color: var(--theme--form--field--input--foreground-subdued);
 }
 
