@@ -308,7 +308,7 @@ export class ImportService {
 
 							reject(
 								new InvalidPayloadError({
-									reason: `Cannot import multiple records into singleton collection "${collection}". Only one record is allowed.`,
+									reason: `Cannot import multiple records into singleton collection ${collection}`,
 								}),
 							);
 
@@ -460,7 +460,7 @@ export class ImportService {
 
 										reject(
 											new InvalidPayloadError({
-												reason: `Cannot import multiple records into singleton collection "${collection}". Only one record is allowed.`,
+												reason: `Cannot import multiple records into singleton collection ${collection}`,
 											}),
 										);
 
