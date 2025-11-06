@@ -81,5 +81,4 @@ const aiStore = useAiStore();
 	}
 }
 
-
 </style>
