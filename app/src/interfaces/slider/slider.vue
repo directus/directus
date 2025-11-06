@@ -3,6 +3,7 @@ import { computed } from 'vue';
 
 interface BaseProps {
 	disabled?: boolean;
+	nonEditable?: boolean;
 	minValue?: number;
 	maxValue?: number;
 	stepInterval?: number;
@@ -34,6 +35,7 @@ defineEmits(['input']);
 
 <template>
 	<v-slider
+		:class="{ 'non-editable': nonEditable }"
 		:model-value="value"
 		:disabled="disabled"
 		:min="minValue"
