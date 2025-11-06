@@ -23,6 +23,7 @@ const props = withDefaults(
 		collection: string;
 		field: string;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		version: ContentVersion | null;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
@@ -33,6 +34,7 @@ const props = withDefaults(
 	{
 		value: () => [],
 		disabled: false,
+		nonEditable: false,
 		enableCreate: true,
 		enableSelect: true,
 		limit: 15,
@@ -415,7 +417,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 		</template>
 
 		<div class="actions">
-			<v-menu v-if="enableCreate && createCollections.length > 0" :disabled="disabled" show-arrow>
+			<v-menu v-if="!nonEditable && enableCreate && createCollections.length > 0" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button :disabled="disabled" @click="toggle">
 						{{ t('create_new') }}
@@ -438,7 +440,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 				</v-list>
 			</v-menu>
 
-			<v-menu v-if="enableSelect && selectAllowed" :disabled="disabled" show-arrow>
+			<v-menu v-if="!nonEditable && enableSelect && selectAllowed" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button :disabled="disabled" @click="toggle">
 						{{ t('add_existing') }}

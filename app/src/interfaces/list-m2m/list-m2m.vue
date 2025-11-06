@@ -35,6 +35,7 @@ const props = withDefaults(
 		fields?: Array<string>;
 		template?: string | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
 		filter?: Filter | null;
@@ -52,6 +53,7 @@ const props = withDefaults(
 		fields: () => ['id'],
 		template: null,
 		disabled: false,
+		nonEditable: false,
 		enableCreate: true,
 		enableSelect: true,
 		filter: null,
@@ -499,7 +501,7 @@ function getLinkForItem(item: DisplayItem) {
 				</v-button>
 
 				<v-button
-					v-if="!disabled && enableSelect && selectAllowed"
+					v-if="!disabled && !nonEditable && enableSelect && selectAllowed"
 					v-tooltip.bottom="selectAllowed ? t('add_existing') : t('not_allowed')"
 					rounded
 					icon
@@ -510,7 +512,7 @@ function getLinkForItem(item: DisplayItem) {
 				</v-button>
 
 				<v-button
-					v-if="!disabled && enableCreate && createAllowed && selectAllowed"
+					v-if="!disabled && !nonEditable && enableCreate && createAllowed && selectAllowed"
 					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 					rounded
 					icon
@@ -659,11 +661,15 @@ function getLinkForItem(item: DisplayItem) {
 					</template>
 				</template>
 				<template v-else>
-					<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="createItem">
+					<v-button v-if="!nonEditable && enableCreate && createAllowed" :disabled="disabled" @click="createItem">
 						{{ t('create_new') }}
 					</v-button>
 
-					<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
+					<v-button
+						v-if="!nonEditable && enableSelect && selectAllowed"
+						:disabled="disabled"
+						@click="selectModalActive = true"
+					>
 						{{ t('add_existing') }}
 					</v-button>
 
