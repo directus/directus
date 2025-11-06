@@ -1,7 +1,7 @@
 import { createAnthropic, type AnthropicProvider } from '@ai-sdk/anthropic';
 import { createOpenAI, type OpenAIProvider } from '@ai-sdk/openai';
 import { ServiceUnavailableError } from '@directus/errors';
-import { convertToModelMessages, streamText, type UIMessage, type Tool } from 'ai';
+import { convertToModelMessages, stepCountIs, streamText, type Tool, type UIMessage } from 'ai';
 
 export interface CreateUiStreamOptions {
 	provider: 'openai' | 'anthropic';
@@ -32,15 +32,22 @@ export const createUiStream = (
 		throw new Error(`Unexpected provider given: "${provider}"`);
 	}
 
+	const optionalStreamingParameters: { system?: string } = {};
+
+	if (systemPrompt) {
+		optionalStreamingParameters.system = systemPrompt;
+	}
+
 	return streamText({
+		...optionalStreamingParameters,
 		model: modelProvider(model),
 		messages: convertToModelMessages(messages),
+		stopWhen: [stepCountIs(10)],
 		providerOptions: {
 			openai: {
 				reasoningSummary: 'detailed',
 			},
 		},
 		tools,
-		system: systemPrompt || '',
 	});
 };
