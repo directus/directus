@@ -13,6 +13,7 @@ export async function up(knex: Knex): Promise<void> {
 			.andWhere('directus_permissions.collection', '=', 'directus_users')
 			.andWhere('directus_permissions.action', '=', 'read')
 			.andWhereNot('directus_permissions.fields', 'LIKE', '*')
+			.orderBy('directus_permissions.id', 'asc')
 			.limit(rowsLimit)
 			.offset(rowsOffset);
 
