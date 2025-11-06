@@ -172,9 +172,7 @@ export function useFormFields(
 				meta: {
 					required: true,
 					interface: 'input',
-					options: {
-						label: t('organization_name_optional'),
-					},
+					options: {},
 					width: 'full',
 				},
 			});
