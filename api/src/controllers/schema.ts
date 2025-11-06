@@ -1,6 +1,6 @@
 import { InvalidPayloadError, UnsupportedMediaTypeError } from '@directus/errors';
-import { parseJSON } from '@directus/utils';
 import type { Snapshot, SnapshotDiffWithHash } from '@directus/types';
+import { parseJSON } from '@directus/utils';
 import Busboy from 'busboy';
 import type { RequestHandler } from 'express';
 import express from 'express';
@@ -105,7 +105,7 @@ router.post(
 	asyncHandler(async (req, res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });
 		const snapshot: Snapshot = res.locals['upload'];
-		const currentSnapshot = await service.snapshot();
+		const currentSnapshot = await service.snapshot({ includeUntracked: true });
 		const snapshotDiff = await service.diff(snapshot, { currentSnapshot, force: 'force' in req.query });
 		if (!snapshotDiff) return next();
 

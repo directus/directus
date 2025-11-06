@@ -1,7 +1,7 @@
-import { describe, test, expect, vi } from 'vitest';
+import type { Snapshot } from '@directus/types';
+import { describe, expect, test, vi } from 'vitest';
 import { getSnapshotDiff } from './get-snapshot-diff.js';
 import { sanitizeField } from './sanitize-schema.js';
-import type { Snapshot } from '@directus/types';
 
 // Mock the sanitize functions
 vi.mock('./sanitize-schema', () => ({
@@ -52,7 +52,7 @@ describe('getSnapshotDiff', () => {
 
 		test('should detect collection deletion', () => {
 			const current = createMockSnapshot({
-				collections: [{ collection: 'posts', meta: null, schema: { name: 'posts' } }],
+				collections: [{ collection: 'posts', meta: {}, schema: { name: 'posts' } }],
 			});
 
 			const after = createMockSnapshot({
@@ -64,6 +64,22 @@ describe('getSnapshotDiff', () => {
 			expect(result.collections).toHaveLength(1);
 			expect(result.collections[0]!.collection).toBe('posts');
 			expect(result.collections[0]!.diff).toBeDefined();
+		});
+
+		test('should detect collection upgrade from db-only', () => {
+			const current = createMockSnapshot({
+				collections: [{ collection: 'posts', meta: null, schema: { name: 'posts' } }],
+			});
+
+			const after = createMockSnapshot({
+				collections: [{ collection: 'posts', meta: { hidden: false }, schema: { name: 'posts' } }],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.collections).toHaveLength(1);
+			expect(result.collections[0]!.collection).toBe('posts');
+			expect(result.collections[0]!.diff[0]!.kind).toBe('E');
 		});
 
 		test('should detect collection modification', () => {
@@ -81,9 +97,23 @@ describe('getSnapshotDiff', () => {
 			expect(result.collections[0]!.collection).toBe('posts');
 		});
 
-		test('should filter out fields and relations when collection is deleted', () => {
+		test('should filter out db-only collections that are not modified', () => {
 			const current = createMockSnapshot({
 				collections: [{ collection: 'posts', meta: null, schema: { name: 'posts' } }],
+			});
+
+			const after = createMockSnapshot({
+				collections: [],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.collections).toHaveLength(0);
+		});
+
+		test('should filter out fields and relations when collection is deleted', () => {
+			const current = createMockSnapshot({
+				collections: [{ collection: 'posts', meta: {}, schema: { name: 'posts' } }],
 				fields: [
 					{ collection: 'posts', field: 'id', type: 'integer', meta: null, schema: null },
 					{ collection: 'posts', field: 'title', type: 'string', meta: null, schema: null },
@@ -132,7 +162,7 @@ describe('getSnapshotDiff', () => {
 
 		test('should detect field deletion', () => {
 			const current = createMockSnapshot({
-				fields: [{ collection: 'posts', field: 'title', type: 'string', meta: null, schema: null }],
+				fields: [{ collection: 'posts', field: 'title', type: 'string', meta: {}, schema: null }],
 			});
 
 			const after = createMockSnapshot({
@@ -144,6 +174,23 @@ describe('getSnapshotDiff', () => {
 			expect(result.fields).toHaveLength(1);
 			expect(result.fields[0]!.collection).toBe('posts');
 			expect(result.fields[0]!.field).toBe('title');
+		});
+
+		test('should detect field upgrade', () => {
+			const current = createMockSnapshot({
+				fields: [{ collection: 'posts', field: 'title', type: 'string', meta: null, schema: null }],
+			});
+
+			const after = createMockSnapshot({
+				fields: [{ collection: 'posts', field: 'title', type: 'string', meta: { hidden: true }, schema: null }],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.fields).toHaveLength(1);
+			expect(result.fields[0]!.collection).toBe('posts');
+			expect(result.fields[0]!.field).toBe('title');
+			expect(result.fields[0]!.diff[0]?.kind).toBe('E');
 		});
 
 		test('should detect field modification (meta changes)', () => {
@@ -178,6 +225,20 @@ describe('getSnapshotDiff', () => {
 			expect(result.fields[0]!.collection).toBe('posts');
 			expect(result.fields[0]!.field).toBe('count');
 			expect(result.fields[0]!.diff).toBeDefined();
+		});
+
+		test('should filter out db-only fields that are not modified', () => {
+			const current = createMockSnapshot({
+				fields: [{ collection: 'posts', field: 'title', type: 'string', meta: null, schema: null }],
+			});
+
+			const after = createMockSnapshot({
+				fields: [],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.fields).toHaveLength(0);
 		});
 
 		test('should handle type change from regular field to alias', () => {
@@ -366,7 +427,7 @@ describe('getSnapshotDiff', () => {
 						collection: 'posts',
 						field: 'author_id',
 						related_collection: 'users',
-						meta: null,
+						meta: {},
 						schema: null,
 					},
 				],
@@ -381,6 +442,22 @@ describe('getSnapshotDiff', () => {
 			expect(result.relations).toHaveLength(1);
 			expect(result.relations[0]!.collection).toBe('posts');
 			expect(result.relations[0]!.field).toBe('author_id');
+		});
+
+		test('should detect relation upgrade', () => {
+			const current = createMockSnapshot({
+				relations: [{ collection: 'posts', meta: null, schema: { name: 'posts' } }],
+			});
+
+			const after = createMockSnapshot({
+				relations: [{ collection: 'posts', meta: { hidden: false }, schema: { name: 'posts' } }],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.relations).toHaveLength(1);
+			expect(result.relations[0]!.collection).toBe('posts');
+			expect(result.relations[0]!.diff[0]!.kind).toBe('E');
 		});
 
 		test('should detect relation modification', () => {
@@ -411,6 +488,20 @@ describe('getSnapshotDiff', () => {
 			const result = getSnapshotDiff(current, after);
 
 			expect(result.relations).toBeDefined();
+		});
+
+		test('should filter out db-only relations that are not modified', () => {
+			const current = createMockSnapshot({
+				relations: [{ collection: 'posts', meta: null, schema: { name: 'posts' } }],
+			});
+
+			const after = createMockSnapshot({
+				relations: [],
+			});
+
+			const result = getSnapshotDiff(current, after);
+
+			expect(result.relations).toHaveLength(0);
 		});
 	});
 
@@ -518,9 +609,9 @@ describe('getSnapshotDiff', () => {
 		test('should handle multiple fields being added, modified, and deleted', () => {
 			const current = createMockSnapshot({
 				fields: [
-					{ collection: 'posts', field: 'id', type: 'integer', meta: null, schema: null },
+					{ collection: 'posts', field: 'id', type: 'integer', meta: {}, schema: null },
 					{ collection: 'posts', field: 'title', type: 'string', meta: { hidden: false }, schema: null },
-					{ collection: 'posts', field: 'old_field', type: 'string', meta: null, schema: null },
+					{ collection: 'posts', field: 'old_field', type: 'string', meta: {}, schema: null },
 				],
 			});
 
@@ -795,7 +886,7 @@ describe('getSnapshotDiff', () => {
 		test('should not filter fields when parent collection is only modified', () => {
 			const current = createMockSnapshot({
 				collections: [{ collection: 'posts', meta: { hidden: false }, schema: { name: 'posts' } }],
-				fields: [{ collection: 'posts', field: 'title', type: 'string', meta: null, schema: null }],
+				fields: [{ collection: 'posts', field: 'title', type: 'string', meta: {}, schema: null }],
 			});
 
 			const after = createMockSnapshot({
@@ -811,36 +902,36 @@ describe('getSnapshotDiff', () => {
 		test('should handle deletion of multiple collections with their fields and relations', () => {
 			const current = createMockSnapshot({
 				collections: [
-					{ collection: 'posts', meta: null, schema: { name: 'posts' } },
-					{ collection: 'comments', meta: null, schema: { name: 'comments' } },
-					{ collection: 'users', meta: null, schema: { name: 'users' } },
+					{ collection: 'posts', meta: {}, schema: { name: 'posts' } },
+					{ collection: 'comments', meta: {}, schema: { name: 'comments' } },
+					{ collection: 'users', meta: {}, schema: { name: 'users' } },
 				],
 				fields: [
-					{ collection: 'posts', field: 'title', type: 'string', meta: null, schema: null },
-					{ collection: 'comments', field: 'text', type: 'string', meta: null, schema: null },
-					{ collection: 'users', field: 'name', type: 'string', meta: null, schema: null },
+					{ collection: 'posts', field: 'title', type: 'string', meta: {}, schema: null },
+					{ collection: 'comments', field: 'text', type: 'string', meta: {}, schema: null },
+					{ collection: 'users', field: 'name', type: 'string', meta: {}, schema: null },
 				],
 				relations: [
 					{
 						collection: 'posts',
 						field: 'author_id',
 						related_collection: 'users',
-						meta: null,
+						meta: {},
 						schema: null,
 					},
 					{
 						collection: 'comments',
 						field: 'post_id',
 						related_collection: 'posts',
-						meta: null,
+						meta: {},
 						schema: null,
 					},
 				],
 			});
 
 			const after = createMockSnapshot({
-				collections: [{ collection: 'users', meta: null, schema: { name: 'users' } }],
-				fields: [{ collection: 'users', field: 'name', type: 'string', meta: null, schema: null }],
+				collections: [{ collection: 'users', meta: {}, schema: { name: 'users' } }],
+				fields: [{ collection: 'users', field: 'name', type: 'string', meta: {}, schema: null }],
 				relations: [],
 			});
 
@@ -854,18 +945,18 @@ describe('getSnapshotDiff', () => {
 		test('should preserve field deletions from collections that still exist', () => {
 			const current = createMockSnapshot({
 				collections: [
-					{ collection: 'posts', meta: null, schema: { name: 'posts' } },
-					{ collection: 'users', meta: null, schema: { name: 'users' } },
+					{ collection: 'posts', meta: {}, schema: { name: 'posts' } },
+					{ collection: 'users', meta: {}, schema: { name: 'users' } },
 				],
 				fields: [
-					{ collection: 'posts', field: 'title', type: 'string', meta: null, schema: null },
-					{ collection: 'users', field: 'name', type: 'string', meta: null, schema: null },
+					{ collection: 'posts', field: 'title', type: 'string', meta: {}, schema: null },
+					{ collection: 'users', field: 'name', type: 'string', meta: {}, schema: null },
 				],
 			});
 
 			const after = createMockSnapshot({
-				collections: [{ collection: 'users', meta: null, schema: { name: 'users' } }],
-				fields: [{ collection: 'users', field: 'name', type: 'string', meta: null, schema: null }],
+				collections: [{ collection: 'users', meta: {}, schema: { name: 'users' } }],
+				fields: [{ collection: 'users', field: 'name', type: 'string', meta: {}, schema: null }],
 			});
 
 			const result = getSnapshotDiff(current, after);

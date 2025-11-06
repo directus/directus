@@ -1,6 +1,6 @@
-import { describe, test, expect, vi, beforeEach, type Mock } from 'vitest';
-import type { Knex } from 'knex';
 import type { SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
+import { beforeEach, describe, expect, test, vi, type Mock } from 'vitest';
 import { getSnapshot } from './get-snapshot.js';
 
 // Mock dependencies
@@ -154,21 +154,98 @@ describe('getSnapshot', () => {
 			);
 		});
 
-		test('should exclude untracked items (with null meta)', async () => {
+		test('should exclude untracked items (with null meta) by default', async () => {
+			const collections = [
+				{
+					collection: 'test',
+					meta: null,
+					schema: {},
+				},
+				{
+					collection: 'lorem',
+					meta: {},
+					schema: {},
+				},
+			];
+
 			const fields = [
 				{ field: 'id', collection: 'test', meta: null },
 				{ field: 'name', collection: 'test', meta: {} },
 				{ field: 'description', collection: 'test', meta: { interface: 'input' } },
 			];
 
-			mockCollectionsService.readByQuery.mockResolvedValue([]);
+			const relations = [
+				{
+					collection: 'dolor',
+					meta: null,
+					schema: {},
+				},
+				{
+					collection: 'sat',
+					meta: {},
+					schema: {},
+				},
+			];
+
+			mockCollectionsService.readByQuery.mockResolvedValue(collections);
 			mockFieldsService.readAll.mockResolvedValue(fields);
-			mockRelationsService.readAll.mockResolvedValue([]);
+			mockRelationsService.readAll.mockResolvedValue(relations);
 
 			const snapshot = await getSnapshot();
 
+			expect(snapshot.collections).toHaveLength(1);
+			expect(snapshot.collections[0]!.collection).toEqual('lorem');
 			expect(snapshot.fields).toHaveLength(2);
 			expect(snapshot.fields.map((f: any) => f.field)).toEqual(['name', 'description']);
+			expect(snapshot.relations).toHaveLength(1);
+			expect(snapshot.relations[0]!.collection).toEqual('sat');
+		});
+
+		test('should include untracked items (with null meta) when includeUntracked true', async () => {
+			const collections = [
+				{
+					collection: 'test',
+					meta: null,
+					schema: {},
+				},
+				{
+					collection: 'lorem',
+					meta: {},
+					schema: {},
+				},
+			];
+
+			const fields = [
+				{ field: 'id', collection: 'test', meta: null },
+				{ field: 'name', collection: 'test', meta: {} },
+				{ field: 'description', collection: 'test', meta: { interface: 'input' } },
+			];
+
+			const relations = [
+				{
+					collection: 'dolor',
+					meta: null,
+					schema: {},
+				},
+				{
+					collection: 'sat',
+					meta: {},
+					schema: {},
+				},
+			];
+
+			mockCollectionsService.readByQuery.mockResolvedValue(collections);
+			mockFieldsService.readAll.mockResolvedValue(fields);
+			mockRelationsService.readAll.mockResolvedValue(relations);
+
+			const snapshot = await getSnapshot({ includeUntracked: true });
+
+			expect(snapshot.collections).toHaveLength(2);
+			expect(snapshot.collections.map((c) => c.collection)).toEqual(['lorem', 'test']);
+			expect(snapshot.fields).toHaveLength(3);
+			expect(snapshot.fields.map((f) => f.field)).toEqual(['id', 'name', 'description']);
+			expect(snapshot.relations).toHaveLength(2);
+			expect(snapshot.relations.map((r) => r.collection)).toEqual(['dolor', 'sat']);
 		});
 
 		test('should include indexed system fields in systemFields', async () => {

@@ -1,6 +1,6 @@
-import deepDiff from 'deep-diff';
 import type { Snapshot, SnapshotDiff, SnapshotSystemField } from '@directus/types';
 import { DiffKind } from '@directus/types';
+import deepDiff from 'deep-diff';
 import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
 export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDiff {
@@ -10,6 +10,10 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 				const afterCollection = after.collections.find(
 					(afterCollection) => afterCollection.collection === currentCollection.collection,
 				);
+
+				if (currentCollection.meta === null && !afterCollection) {
+					return {};
+				}
 
 				const afterCollectionSanitized = afterCollection ? sanitizeCollection(afterCollection) : undefined;
 
@@ -36,6 +40,10 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 				const afterField = after.fields.find(
 					(afterField) => afterField.collection === currentField.collection && afterField.field === currentField.field,
 				);
+
+				if (currentField.meta === null && !afterField) {
+					return {};
+				}
 
 				const isAutoIncrementPrimaryKey =
 					!!currentField.schema?.is_primary_key && !!currentField.schema?.has_auto_increment;
@@ -139,6 +147,10 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					(afterRelation) =>
 						afterRelation.collection === currentRelation.collection && afterRelation.field === currentRelation.field,
 				);
+
+				if (currentRelation.meta === null && !afterRelation) {
+					return {};
+				}
 
 				const afterRelationSanitized = afterRelation ? sanitizeRelation(afterRelation) : undefined;
 

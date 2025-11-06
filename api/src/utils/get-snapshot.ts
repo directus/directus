@@ -9,10 +9,15 @@ import { RelationsService } from '../services/relations.js';
 import { getSchema } from './get-schema.js';
 import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
-export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOverview }): Promise<Snapshot> {
+export async function getSnapshot(options?: {
+	database?: Knex;
+	schema?: SchemaOverview;
+	includeUntracked?: boolean | undefined;
+}): Promise<Snapshot> {
 	const database = options?.database ?? getDatabase();
 	const vendor = getDatabaseClient(database);
 	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
+	const includeUntracked = options?.includeUntracked ?? false;
 
 	const collectionsService = new CollectionsService({ knex: database, schema });
 	const fieldsService = new FieldsService({ knex: database, schema });
@@ -24,9 +29,18 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 		relationsService.readAll(),
 	]);
 
-	const collectionsFiltered = collectionsRaw.filter((item) => excludeSystem(item) && excludeUntracked(item));
-	const fieldsFiltered = fieldsRaw.filter((item) => excludeSystem(item) && excludeUntracked(item));
-	const relationsFiltered = relationsRaw.filter((item) => excludeSystem(item) && excludeUntracked(item));
+	const collectionsFiltered = collectionsRaw.filter(
+		(item) => excludeSystem(item) && (includeUntracked || excludeUntracked(item)),
+	);
+
+	const fieldsFiltered = fieldsRaw.filter(
+		(item) => excludeSystem(item) && (includeUntracked || excludeUntracked(item)),
+	);
+
+	const relationsFiltered = relationsRaw.filter(
+		(item) => excludeSystem(item) && (includeUntracked || excludeUntracked(item)),
+	);
+
 	const systemFieldsFiltered = fieldsRaw.filter((item) => systemFieldWithIndex(item));
 
 	const collectionsSorted = sortBy(mapValues(collectionsFiltered, sortDeep), ['collection']).map((collection) =>

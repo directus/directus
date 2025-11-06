@@ -1,6 +1,6 @@
-import { parseJSON } from '@directus/utils';
 import type { Snapshot, SnapshotDiff } from '@directus/types';
 import { DiffKind } from '@directus/types';
+import { parseJSON } from '@directus/utils';
 import chalk from 'chalk';
 import { promises as fs } from 'fs';
 import inquirer from 'inquirer';
@@ -61,7 +61,7 @@ export async function apply(
 			snapshot = parseJSON(fileContents) as Snapshot;
 		}
 
-		const currentSnapshot = await getSnapshot({ database });
+		const currentSnapshot = await getSnapshot({ database, includeUntracked: true });
 		let snapshotDiff = getSnapshotDiff(currentSnapshot, snapshot);
 
 		if (options?.ignoreRules) {
