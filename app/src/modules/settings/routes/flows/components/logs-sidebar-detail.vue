@@ -68,6 +68,7 @@ function onToggle(open: boolean) {
 
 <template>
 	<sidebar-detail
+		id="logs"
 		:title
 		icon="fact_check"
 		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"

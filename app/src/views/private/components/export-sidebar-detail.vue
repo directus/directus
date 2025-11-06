@@ -374,7 +374,7 @@ async function exportDataFiles() {
 </script>
 
 <template>
-	<sidebar-detail icon="import_export" :title="t('import_export')">
+	<sidebar-detail id="export" icon="import_export" :title="t('import_export')">
 		<div class="fields">
 			<template v-if="createAllowed">
 				<div class="field full">

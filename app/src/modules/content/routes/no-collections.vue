@@ -27,12 +27,6 @@ const userStore = useUserStore();
 				<v-button to="/settings/data-model/+">{{ t('create_collection') }}</v-button>
 			</template>
 		</v-info>
-
-		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_collections_overview')" class="page-description" />
-			</sidebar-detail>
-		</template>
 	</private-view>
 </template>
 

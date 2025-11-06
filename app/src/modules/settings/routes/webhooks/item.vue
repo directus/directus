@@ -89,9 +89,6 @@ async function deleteAndQuit() {
 		/>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_webhooks_item')" class="page-description" />
-			</sidebar-detail>
 			<revisions-sidebar-detail
 				v-if="isNew === false"
 				ref="revisionsSidebarDetailRef"

@@ -146,12 +146,6 @@ function discardAndLeave() {
 			/>
 		</div>
 
-		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_datamodel_fields')" class="page-description" />
-			</sidebar-detail>
-		</template>
-
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>

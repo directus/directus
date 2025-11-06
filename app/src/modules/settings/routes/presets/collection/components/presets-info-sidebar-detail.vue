@@ -35,7 +35,7 @@ async function fetchCounts() {
 </script>
 
 <template>
-	<sidebar-detail icon="info" :title="t('information')" close>
+	<sidebar-detail id="presets" icon="info" :title="t('information')" close>
 		<dl>
 			<div>
 				<dt>{{ t('bookmarks') }}</dt>

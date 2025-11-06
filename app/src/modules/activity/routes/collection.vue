@@ -65,9 +65,6 @@ const roleFilter = ref<Filter | null>(null);
 			<router-view name="detail" :primary-key="primaryKey" />
 
 			<template #sidebar>
-				<sidebar-detail icon="info" :title="t('information')" close>
-					<div v-md="t('page_help_activity_collection')" class="page-description" />
-				</sidebar-detail>
 				<layout-sidebar-detail v-model="layout">
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
 				</layout-sidebar-detail>

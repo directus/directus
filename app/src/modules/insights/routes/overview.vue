@@ -275,9 +275,6 @@ async function batchDelete() {
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_insights_overview')" class="page-description" />
-			</sidebar-detail>
 			<basic-import-sidebar-detail collection="directus_dashboards" @refresh="refresh" />
 		</template>
 

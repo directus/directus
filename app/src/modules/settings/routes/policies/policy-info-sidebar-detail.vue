@@ -13,7 +13,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 </script>
 
 <template>
-	<sidebar-detail icon="info" :title="t('information')" close>
+	<sidebar-detail id="policy" icon="info" :title="t('information')" close>
 		<template v-if="policy">
 			<dl>
 				<div class="description-list">

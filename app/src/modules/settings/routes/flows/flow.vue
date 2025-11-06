@@ -645,10 +645,6 @@ function discardAndLeave() {
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_flows_item')" class="page-description" />
-			</sidebar-detail>
-
 			<logs-sidebar-detail v-if="flow" :flow="flow" />
 		</template>
 

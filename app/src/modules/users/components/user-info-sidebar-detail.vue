@@ -30,7 +30,7 @@ watch(
 </script>
 
 <template>
-	<sidebar-detail icon="info" :title="t('information')" close>
+	<sidebar-detail id="user-info" icon="info" :title="t('information')" close>
 		<dl v-if="isNew === false && user">
 			<div v-if="user.id" class="description-list">
 				<dt>{{ t('key') }}</dt>

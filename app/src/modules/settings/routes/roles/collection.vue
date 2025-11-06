@@ -172,12 +172,6 @@ function navigateToRole({ item }: { item: Role }) {
 			<settings-navigation />
 		</template>
 
-		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_roles_collection')" class="page-description" />
-			</sidebar-detail>
-		</template>
-
 		<div v-if="!search || filteredRoles.length > 0" class="roles">
 			<v-table
 				v-model:headers="tableHeaders"

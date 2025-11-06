@@ -258,10 +258,7 @@ async function downloadSnapshot() {
 		<router-view name="add" />
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_datamodel_collections')" class="page-description" />
-			</sidebar-detail>
-			<sidebar-detail icon="download" :title="t('snapshot.export')">
+			<sidebar-detail id="download-snapshot" icon="download" :title="t('snapshot.export')">
 				<div v-md="t('snapshot.info')" class="page-description" />
 				<v-button small full-width class="snapshot-download" @click="downloadSnapshot">
 					{{ t('snapshot.download') }}

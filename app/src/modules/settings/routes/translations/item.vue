@@ -303,9 +303,6 @@ async function revert(values: Record<string, any>) {
 		</v-dialog>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_translations_item')" class="page-description" />
-			</sidebar-detail>
 			<template v-if="isNew === false && loading === false && internalPrimaryKey">
 				<revisions-sidebar-detail
 					v-if="accountabilityScope === 'all'"

@@ -1246,56 +1246,6 @@ discard_changes_copy: Are you sure you want to discard all the changes made?
 show_x_axis: Show X Axis
 show_y_axis: Show Y Axis
 keep_editing: Keep Editing
-page_help_collections_overview: '**Collections Overview** — List of all collections you have access to.'
-page_help_collections_collection: >-
-  **Browse Items** — Lists all {collection} items you have access to. Customize layout, filters, and sorting to tailor
-  your view, and even save bookmarks of these different configurations for quick access.
-page_help_collections_item: >-
-  **Item Detail** — A form for viewing and managing this item. This sidebar also contains a full history of revisions,
-  and embedded comments.
-page_help_activity_collection: >-
-  **Browse Activity** — A comprehensive listing of all your user's system and content activity.
-page_help_docs_global: >-
-  **Documentation Overview** — Docs tailored specifically to this project's version and schema.
-page_help_files_collection: >-
-  **File Library** — Lists all file assets uploaded to this project. Customize layout, filters, and sorting to tailor
-  your view, and even save bookmarks of these different configurations for quick access.
-page_help_files_item: >-
-  **File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.
-page_help_settings_project: "**Settings** — Your project's global configuration options."
-page_help_settings_appearance: "**Appearance** — Your project's appearance and theming options."
-page_help_settings_extensions: '**Extensions** — The extensions installed in your project.'
-page_help_settings_ai: "**AI** — Your project's artificial intelligence configuration options."
-page_help_settings_datamodel_collections: >-
-  **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
-  as well as unmanaged database tables that can be added.
-page_help_settings_datamodel_fields: >-
-  **Data Model: Collection** — A form for managing this collection and its fields.
-page_help_settings_system_logs: '**System Logs** — Access a live stream of the system logs.'
-page_help_settings_policies_collection: '**Browse Policies** — Lists all policies within the project.'
-page_help_settings_policies_item: '**Policy Detail** — Manage a policies permissions and other settings.'
-page_help_settings_roles_collection: '**Browse Roles** — Lists the all user roles within the project.'
-page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
-page_help_settings_presets_collection: >-
-  **Browse Presets** — Lists all presets in the project, including: user, role, and global bookmarks, as well as default
-  views.
-page_help_settings_presets_item: >-
-  **Preset Detail** — A form for managing bookmarks and default collection presets.
-page_help_settings_webhooks_collection: '**Browse Webhooks** — Lists all webhooks within the project.'
-page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating and managing project webhooks.'
-page_help_settings_flows_collection: '**Browse Flows** — Lists all Flows within the project.'
-page_help_settings_flows_item: '**Flow Detail** — Workspace for managing one or more operations.'
-page_help_settings_translations_collection:
-  '**Browse Custom Translations** — Lists all custom translations within the project.'
-page_help_settings_translations_item: '**Custom Translations Detail** — A form for viewing and managing this item.'
-page_help_users_collection: '**User Directory** — Lists all system users within this project.'
-page_help_users_item: >-
-  **User Detail** — Manage your account information, or view the details of other users.
-page_help_insights_overview: '**Insights** — List of dashboards you have access to.'
-page_help_insights_dashboard: '**Dashboard** — Workspace for managing one or more panels'
-page_help_marketplace_account: '**Account** — Publisher or maintainer of a published extension.'
-page_help_marketplace_registry: '**Registry** — Extensions available in the Directus Marketplace.'
-page_help_marketplace_extension: '**Extension** — Extension in the Directus Marketplace.'
 activity_feed: Activity Feed
 add_new: Add New
 create_new: Create New

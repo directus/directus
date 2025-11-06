@@ -17,7 +17,7 @@ useGroupable({
 </script>
 
 <template>
-	<sidebar-detail :title icon="smart_toy" class="ai-sidebar">
+	<sidebar-detail id="ai" :title icon="smart_toy" class="ai-sidebar">
 		<ai-header />
 		<div class="ai-sidebar-content">
 			<ai-conversation v-if="!sidebarStore.collapsed" />

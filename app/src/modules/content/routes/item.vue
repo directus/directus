@@ -749,9 +749,6 @@ function useCollectionRoute() {
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_collections_item')" class="page-description" />
-			</sidebar-detail>
 			<template v-if="isNew === false && actualPrimaryKey">
 				<revisions-sidebar-detail
 					v-if="revisionsAllowed && accountabilityScope === 'all'"
