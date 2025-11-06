@@ -11,6 +11,7 @@
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
+		"tus-js-client": "catalog:",
 		"@types/js-yaml": "4.0.9",
 		"@types/lodash-es": "catalog:",
 		"@types/seedrandom": "3.0.8",

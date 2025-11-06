@@ -3073,6 +3073,9 @@ importers:
       supertest:
         specifier: 7.0.0
         version: 7.0.0
+      tus-js-client:
+        specifier: 'catalog:'
+        version: 4.3.1
       typescript:
         specifier: 'catalog:'
         version: 5.9.3

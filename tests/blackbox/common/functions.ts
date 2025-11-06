@@ -786,7 +786,7 @@ export async function CreatePolicy(vendor: Vendor, options: OptionsCreatePolicy)
 
 export type OptionsCreatePermission = {
 	role: keyof typeof ROLE;
-	permission: Omit<Partial<Permission>, 'id' | 'role' | 'system'>;
+	permissions: Omit<Partial<Permission>, 'id' | 'role' | 'system' | 'policy'>[];
 	policy?: string;
 	policyName?: string;
 };
@@ -799,7 +799,7 @@ export async function CreatePermission(vendor: Vendor, options: OptionsCreatePer
 		const role = await request(getUrl(vendor))
 			.get('/roles')
 			.query({ filter: { name: { _eq: ROLE[roleId].NAME } } })
-			.set('Authorization', `Bearer ${USER.APP_ACCESS.TOKEN}`);
+			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 		roleId = role.body.data[0].id;
 	}
@@ -817,12 +817,31 @@ export async function CreatePermission(vendor: Vendor, options: OptionsCreatePer
 
 	const response = await request(getUrl(vendor))
 		.patch(`/policies/${policyId}`)
-		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
-		.send({ permissions: { create: [{ ...options.permission, policy: options.policy }], update: [], delete: [] } });
+		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+		.send({
+			permissions: {
+				create: options.permissions.map((p) => ({ ...p, policy: policyId })),
+				update: [],
+				delete: [],
+			},
+		});
 
 	return response.body.data;
 }
 
+export type OptionsDeletePermission = {
+	policyId: string;
+};
+
+export async function DeletePermission(vendor: Vendor, options: OptionsDeletePermission) {
+	const policyId = options.policyId;
+
+	const response = await request(getUrl(vendor))
+		.delete(`/policies/${policyId}`)
+		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+	return response.body;
+}
+
 // TODO
 // export async function UpdatePermission() {}
-// export async function DeletePermission() {}
