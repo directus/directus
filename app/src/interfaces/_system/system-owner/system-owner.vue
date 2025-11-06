@@ -13,13 +13,22 @@ const { t } = useI18n();
 const errors = ref<Record<string, any>[]>([]);
 const editing = ref(false);
 
+const form = ref<Partial<Form>>({});
+const fields = useFormFields(false, form);
+
 const allowSave = computed(
 	() =>
 		form.value.project_owner ||
 		form.value.project_usage ||
-		form.value.org_name ||
 		('product_updates' in form.value && form.value.product_updates !== initialValues.value.product_updates),
 );
+
+const initialValues = computed(() => ({
+	project_owner: settingsStore.settings?.project_owner,
+	project_usage: settingsStore.settings?.project_usage,
+	org_name: settingsStore.settings?.org_name,
+	product_updates: settingsStore.settings?.product_updates,
+}));
 
 async function save() {
 	const value = { ...initialValues.value, ...form.value };
@@ -30,19 +39,14 @@ async function save() {
 
 	await settingsStore.setOwner(value as Form);
 	await settingsStore.hydrate();
-	editing.value = false;
+	reset();
 }
 
-const initialValues = computed(() => ({
-	project_owner: settingsStore.settings?.project_owner,
-	project_usage: settingsStore.settings?.project_usage,
-	org_name: settingsStore.settings?.org_name,
-	product_updates: settingsStore.settings?.product_updates,
-}));
-
-const form = ref<Partial<Form>>({});
-
-const fields = useFormFields(false, form);
+async function reset() {
+	form.value = {};
+	editing.value = false;
+	errors.value = [];
+}
 </script>
 
 <template>
@@ -56,13 +60,7 @@ const fields = useFormFields(false, form);
 		</v-list-item>
 	</div>
 
-	<v-drawer
-		v-model="editing"
-		:title="t('interfaces.system-owner.update')"
-		icon="link"
-		@cancel="editing = false"
-		@apply="save"
-	>
+	<v-drawer v-model="editing" :title="t('interfaces.system-owner.update')" icon="link" @cancel="reset" @apply="save">
 		<template #actions>
 			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!allowSave" @click="save">
 				<v-icon name="check" />
