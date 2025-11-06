@@ -22,6 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
 	modelValue: null,
 	label: null,
 	disabled: false,
+	nonEditable: false,
 	iconOn: 'radio_button_checked',
 	iconOff: 'radio_button_unchecked',
 	block: false,
@@ -48,11 +49,11 @@ function emitValue(): void {
 		type="button"
 		:aria-pressed="isChecked ? 'true' : 'false'"
 		:disabled="disabled"
-		:class="{ checked: isChecked, block }"
+		:class="{ checked: isChecked, block, 'non-editable': nonEditable }"
 		@click="emitValue"
 	>
 		<v-icon :name="icon" />
-		<span class="label type-text">
+		<span class="label type-text" :class="{ 'non-editable': nonEditable }">
 			<slot name="label">{{ label }}</slot>
 		</span>
 	</button>
@@ -97,7 +98,7 @@ function emitValue(): void {
 		}
 
 		.v-icon {
-			--v-icon-color: var(--theme--foreground-subdued);
+			--v-icon-color: var(var(--form--icon--disabled), var(--theme--foreground-subdued));
 		}
 	}
 

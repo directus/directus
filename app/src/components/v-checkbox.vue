@@ -11,6 +11,8 @@ interface Props {
 	label?: string | null;
 	/** Disable the checkbox */
 	disabled?: boolean;
+	/** Set the non-editable state for the checkbox */
+	nonEditable?: boolean;
 	/** Renders the checkbox neither selected nor unselected */
 	indeterminate?: boolean;
 	/** What icon to use for the on state */
@@ -34,6 +36,7 @@ const props = withDefaults(defineProps<Props>(), {
 	modelValue: null,
 	label: null,
 	disabled: false,
+	nonEditable: false,
 	indeterminate: false,
 	iconOn: 'check_box',
 	iconOff: 'check_box_outline_blank',
@@ -189,7 +192,7 @@ function onClickIcon(e: MouseEvent): void {
 		}
 
 		.checkbox {
-			--v-icon-color: var(--theme--foreground-subdued);
+			--v-icon-color: var(--form--icon--disabled, var(--theme--foreground-subdued));
 		}
 	}
 
@@ -235,7 +238,7 @@ function onClickIcon(e: MouseEvent): void {
 		}
 	}
 
-	&:not(:disabled):not(.indeterminate) {
+	&:not(:disabled:not(.non-editable)):not(.indeterminate) {
 		.label {
 			color: var(--theme--foreground);
 		}
@@ -247,7 +250,7 @@ function onClickIcon(e: MouseEvent): void {
 		}
 	}
 
-	&:not(:disabled):not(.indeterminate).checked {
+	&:not(:disabled:not(.non-editable)):not(.indeterminate).checked {
 		.checkbox {
 			--v-icon-color: var(--v-checkbox-color, var(--theme--primary));
 		}

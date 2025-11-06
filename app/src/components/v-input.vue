@@ -12,6 +12,8 @@ interface Props {
 	autofocus?: boolean;
 	/** Set the disabled state for the input */
 	disabled?: boolean;
+	/** Set the non-editable state for the input */
+	nonEditable?: boolean;
 	/** If the input should be clickable */
 	clickable?: boolean;
 	/** Prefix the users value with a value */
@@ -61,6 +63,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
 	autofocus: false,
 	disabled: false,
+	nonEditable: false,
 	clickable: false,
 	prefix: undefined,
 	suffix: undefined,
@@ -110,6 +113,7 @@ const classes = computed(() => [
 		'full-width': props.fullWidth,
 		'has-click': props.clickable,
 		disabled: props.disabled,
+		'non-editable': props.nonEditable,
 		small: props.small,
 		invalid: isInvalidInput.value,
 	},
@@ -461,8 +465,11 @@ function useInvalidInput() {
 		&.disabled {
 			--arrow-color: var(--v-input-border-color);
 
-			color: var(--theme--foreground-subdued);
-			background-color: var(--theme--form--field--input--background-subdued);
+			color: var(--form--field--input--disabled--foreground, var(--theme--foreground-subdued));
+			background-color: var(
+				--form--field--input--disabled--background,
+				var(--theme--form--field--input--background-subdued)
+			);
 			border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
 		}
 
