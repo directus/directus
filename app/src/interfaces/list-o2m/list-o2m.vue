@@ -461,7 +461,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 				</v-button>
 
 				<v-button
-					v-if="!disabled && enableSelect && updateAllowed"
+					v-if="!disabled && !nonEditable && enableSelect && updateAllowed"
 					v-tooltip.bottom="t('add_existing')"
 					rounded
 					icon
@@ -472,7 +472,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 				</v-button>
 
 				<v-button
-					v-if="!disabled && enableCreate && createAllowed"
+					v-if="!disabled && !nonEditable && enableCreate && createAllowed"
 					v-tooltip.bottom="t('create_item')"
 					rounded
 					icon
@@ -622,14 +622,14 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 				</template>
 				<template v-else>
 					<v-button
-						v-if="enableCreate && createAllowed && !hasSatisfiedUniqueConstraint"
+						v-if="!nonEditable && enableCreate && createAllowed && !hasSatisfiedUniqueConstraint"
 						:disabled="disabled"
 						@click="createItem"
 					>
 						{{ t('create_new') }}
 					</v-button>
 					<v-button
-						v-if="enableSelect && updateAllowed && !hasSatisfiedUniqueConstraint"
+						v-if="!nonEditable && enableSelect && updateAllowed && !hasSatisfiedUniqueConstraint"
 						:disabled="disabled"
 						@click="selectModalActive = true"
 					>
