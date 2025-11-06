@@ -1962,8 +1962,8 @@ interfaces:
     description: Select between existing collections
     include_system_collections: Include System Collections
   system-owner:
-    update: Update Instance Owner
-    edit: Edit Instance Owner
+    update: Update Project Owner
+    edit: Edit Project Owner
     system-owner: System Owner
     description: System Owner Interface
   system-collections:
@@ -2739,10 +2739,10 @@ percent: Percent
 show_password: Show password
 hide_password: Hide password
 bsl_banner:
-  title: You have not set an instance owner.
+  title: You have not set a project owner.
   license:
     We need this to ensure compliance with our BSL 1.1 license. This should be the primary contact responsible for your
-    instance.
+    project.
   set_owner: Set Owner
   remind_later: Remind Later
   remind_next_login: We'll remind you again on your next login.
