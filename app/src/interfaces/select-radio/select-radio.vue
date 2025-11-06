@@ -13,6 +13,7 @@ const props = withDefaults(
 	defineProps<{
 		value: string | number | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		choices?: Option[];
 
 		allowOther?: boolean;
@@ -55,7 +56,7 @@ const customIcon = computed(() => {
 	<div
 		v-else
 		class="radio-buttons"
-		:class="gridClass"
+		:class="[gridClass, { 'non-editable': nonEditable }]"
 		:style="{
 			'--v-radio-color': color,
 		}"
@@ -82,6 +83,7 @@ const customIcon = computed(() => {
 				active: !disabled && usesOtherValue,
 				'has-value': !disabled && otherValue,
 				disabled,
+				'non-editable': nonEditable,
 			}"
 		>
 			<v-icon
@@ -183,7 +185,7 @@ const customIcon = computed(() => {
 		}
 	}
 
-	&.disabled {
+	&.disabled:not(.non-editable) {
 		background-color: var(--theme--form--field--input--background-subdued);
 		border-color: transparent;
 		cursor: not-allowed;
