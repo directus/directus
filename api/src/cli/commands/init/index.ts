@@ -11,7 +11,7 @@ import { generateHash } from '../../../utils/generate-hash.js';
 import type { Credentials } from '../../utils/create-db-connection.js';
 import createDBConnection from '../../utils/create-db-connection.js';
 import createEnv from '../../utils/create-env/index.js';
-import { defaultAdminPolicy, defaultAdminRole, defaultAdminUser } from '../../utils/defaults.js';
+import { defaultAdminPolicy, defaultAdminRole, defaultAdminUser } from '../../../utils/create-admin.js';
 import { drivers, getDriverForClient } from '../../utils/drivers.js';
 import { databaseQuestions } from './questions.js';
 

@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: O aplikaciji
+first_name: Ime
+last_name: Prezime
 identifier: Identifikator
 avatar: Avatar
 application: Aplikacija
@@ -164,19 +166,9 @@ rename_version: Preimenuj Verziju
 compare_version: Usporedi Verziju
 save_version: Spasi Verziju
 promote_version: Promoviraj Verziju
-promote_version_disabled: Bez promjena
-promote_version_drawer_title: Promoviraj {version} u Glavnu
-promote_version_changes: Promjene
-promote_version_preview: Pretpregled
-outdated_notice: >-
-  Glavna stavka je ažurirana otkako je ova verzija stvorena. Molimo pregledajte sve vrijednosti polja ispod i potvrdite koja verzija bi trebala biti korištena prilikom promicanja ove verzije u glavnu stavku.
-promote_notice: >-
-  Molimo pregledajte sve vrijednosti polja ispod i potvrdite koja verzija bi trebala biti korištena prilikom promicanja ove verzije u glavnu stavku.
 delete_version: Obriši Verziju
 delete_version_copy: >-
   Jeste li sigurni da želite izbrisati verziju "{version}"? Ova se radnja ne može poništiti.
-delete_on_promote_copy: >-
-  Želite li izbrisati ili zadržati verziju "{version}" nakon promicanja?
 reset_bookmark: Poništi oznaku
 update_bookmark: Ažuriraj oznaku
 delete_bookmark: Obriši oznaku
@@ -451,7 +443,6 @@ revision_delta_created: Kreirano
 revision_delta_created_externally: Kreirano izvana
 revision_delta_updated: 'Ažurirano 1 polje | Ažurirano {count} polja'
 revision_delta_deleted: Obrisano
-revision_delta_version_saved: 'Spremi verziju (Ažurirano 1 polje) | Spremi verziju (Ažurirano {count} polja)'
 revision_delta_reverted: Vraćeno
 revision_delta_update_message: Ovo polje je ažurirano, ali je njegova vrijednost skrivena iz sigurnosnih razloga.
 revision_delta_other: Revizija
