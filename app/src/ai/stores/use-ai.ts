@@ -85,6 +85,8 @@ export const useAiStore = defineStore('ai-store', () => {
 		},
 	});
 
+	const error = computed(() => chat.error);
+
 	const messages = computed(() =>
 		chat.messages.map((msg) => ({
 			hash: getSimpleHash(JSON.stringify(msg.parts)),
@@ -110,10 +112,22 @@ export const useAiStore = defineStore('ai-store', () => {
 		localTools.value = localTools.value.filter((t) => t.name !== name);
 	};
 
+	function clearConversation() {
+		chat.clearError();
+		chat.messages = [];
+	}
+
+	function retry() {
+		chat.clearError();
+		chat.regenerate();
+	}
+
 	return {
 		currentProvider,
 		currentModel,
 		addMessage,
+		clearConversation,
+		chat,
 		messages,
 		status,
 		selectedModel,
@@ -123,5 +137,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		deregisterLocalTool,
 		systemTools,
 		localTools,
+		error,
+		retry,
 	};
 });
