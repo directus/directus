@@ -1,0 +1,190 @@
+<script setup lang="ts">
+import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
+import type { UIMessagePart, UIDataTypes, UITools } from 'ai';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const props = defineProps<{
+	part: Extract<UIMessagePart<UIDataTypes, UITools>, { type: `tool-${string}` }>;
+}>();
+
+const { t } = useI18n();
+
+const statusConfig = computed(() => {
+	switch (props.part.state) {
+		case 'input-streaming':
+			return { icon: 'pending', label: t('ai.streaming'), class: 'status-streaming' };
+		case 'input-available':
+			return { icon: 'hourglass_empty', label: t('ai.ready'), class: 'status-ready' };
+		case 'output-available':
+			return { icon: 'check_circle', label: t('ai.complete'), class: 'status-complete' };
+		case 'output-error':
+			return { icon: 'error', label: t('ai.error'), class: 'status-error' };
+		default:
+			return { icon: 'help', label: t('ai.unknown'), class: 'status-unknown' };
+	}
+});
+</script>
+
+<template>
+	<CollapsibleRoot class="message-tool" :default-open="false">
+		<CollapsibleTrigger class="tool-header">
+			<v-icon name="build" x-small />
+			<p class="tool-name">{{ part.type.replace('tool-', '') }}</p>
+			<v-chip class="tool-status" :class="statusConfig.class" x-small :label="false">
+				<v-icon :name="statusConfig.icon" x-small />
+				{{ statusConfig.label }}
+			</v-chip>
+			<v-icon name="expand_more" x-small class="chevron" />
+		</CollapsibleTrigger>
+		<CollapsibleContent class="tool-content-wrapper">
+			<div v-if="'input' in part" class="tool-input">
+				<p class="label">{{ $t('ai.input') }}</p>
+				<code>{{ part.input }}</code>
+			</div>
+			<div v-if="'output' in part && part.state === 'output-available'" class="tool-output">
+				<p class="label">{{ $t('ai.output') }}</p>
+				<code>{{ part.output }}</code>
+			</div>
+			<p v-if="'errorText' in part && part.state === 'output-error'" class="tool-error">
+				<v-icon name="error" x-small />
+				<span>{{ part.errorText }}</span>
+			</p>
+		</CollapsibleContent>
+	</CollapsibleRoot>
+</template>
+
+<style scoped>
+.message-tool {
+	inline-size: 100%;
+	padding: 0.5rem;
+	border-radius: var(--theme--border-radius);
+	background-color: var(--theme--background-subdued);
+}
+
+.tool-header {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.875rem;
+	font-weight: 600;
+	inline-size: 100%;
+
+	&:hover {
+		color: var(--theme--foreground-accent);
+	}
+
+	.chevron {
+		margin-inline-start: auto;
+		transition: transform var(--fast) var(--transition);
+	}
+
+	&[data-state='open'] .chevron {
+		transform: rotate(180deg);
+	}
+}
+
+.tool-name {
+	flex-shrink: 0;
+}
+
+.tool-status {
+	.v-icon {
+		margin-inline-end: 0.25rem;
+		border: none;
+	}
+
+	&.status-streaming {
+		--v-chip-background-color: var(--theme--primary-background);
+		--v-chip-color: var(--theme--primary-foreground);
+		--v-chip-border-color: var(--theme--primary-background);
+	}
+
+	&.status-ready {
+		--v-chip-background-color: var(--theme--warning-background);
+		--v-chip-color: var(--theme--warning-accent);
+		--v-chip-border-color: var(--theme--warning-background);
+	}
+
+	&.status-complete {
+		--v-chip-background-color: var(--theme--success-background);
+		--v-chip-color: var(--theme--success-accent);
+		--v-chip-border-color: var(--theme--success-background);
+	}
+
+	&.status-error {
+		--v-chip-background-color: var(--theme--danger-background);
+		--v-chip-color: var(--theme--danger-accent);
+		--v-chip-border-color: var(--theme--danger-background);
+	}
+
+	&.status-unknown {
+		--v-chip-background-color: var(--theme--foreground-subdued);
+		--v-chip-color: var(--theme--foreground-subdued);
+		--v-chip-border-color: var(--theme--foreground-subdued);
+	}
+}
+
+.tool-content-wrapper {
+	overflow: hidden;
+
+	&[data-state='open'] {
+		animation: slide-down 200ms ease-out;
+	}
+
+	&[data-state='closed'] {
+		animation: slide-up 200ms ease-out;
+	}
+}
+
+.label {
+	font-size: 0.75rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	margin-block: 0.5rem 0.25rem;
+}
+
+.tool-input,
+.tool-output {
+	padding: 0.5rem;
+	border-radius: var(--theme--border-radius);
+	background-color: var(--theme--background);
+	font-size: 0.875rem;
+
+	code {
+		font-size: 0.75rem;
+		white-space: pre-wrap;
+		overflow-wrap: break-word;
+	}
+}
+
+.tool-error {
+	display: flex;
+	align-items: center;
+	gap: 0.375rem;
+	padding: 0.5rem;
+	margin-block-start: 0.5rem;
+	border-radius: var(--theme--border-radius);
+	background-color: var(--theme--danger-background);
+	color: var(--theme--foreground);
+	font-size: 0.875rem;
+}
+
+@keyframes slide-down {
+	from {
+		block-size: 0;
+	}
+	to {
+		block-size: var(--reka-collapsible-content-height);
+	}
+}
+
+@keyframes slide-up {
+	from {
+		block-size: var(--reka-collapsible-content-height);
+	}
+	to {
+		block-size: 0;
+	}
+}
+</style>

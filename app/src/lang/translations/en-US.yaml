@@ -1717,6 +1717,17 @@ unlimited_usage: Unlimited usage
 uses_left: No uses left | One use left | {n} uses left
 no_shares: No shares to show
 new_share: New Share
+ai:
+  thinking: Thinking...
+  input: Input
+  output: Output
+  reasoning: Reasoning
+  label: Streaming...
+  ready: Ready
+  complete: Complete
+  error: Error
+  unknown: Unknown
+  prompt_input_placeholder: Type your message here...
 mcp_prompts_collection:
   no_collection_selected: No collection selected
   no_collection_selected_copy: Select a collection to enable reusable prompt templates.

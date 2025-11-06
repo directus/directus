@@ -9,6 +9,7 @@ packages:
 catalog:
   '@ai-sdk/anthropic': 2.0.40
   '@ai-sdk/openai': 2.0.61
+  '@ai-sdk/vue': 2.0.86
   '@authenio/samlify-node-xmllint': 2.0.0
   '@aws-sdk/client-s3': 3.918.0
   '@aws-sdk/client-sesv2': 3.918.0
@@ -101,6 +102,7 @@ catalog:
   '@types/glob-to-regexp': 0.4.4
   '@types/inquirer': 9.0.9
   '@types/js-yaml': 4.0.9
+  '@types/json-schema': 7.0.15
   '@types/json2csv': 5.0.7
   '@types/jsonwebtoken': 9.0.10
   '@types/ldapjs': 2.2.5
@@ -260,6 +262,7 @@ catalog:
   qrcode: 1.5.4
   qs: 6.14.0
   rate-limiter-flexible: 7.2.0
+  reka-ui: 2.6.0
   rimraf: 6.0.1
   rolldown: 1.0.0-beta.31
   rollup: 4.52.5

@@ -35,6 +35,11 @@ export const createUiStream = (
 	return streamText({
 		model: modelProvider(model),
 		messages: convertToModelMessages(messages),
+		providerOptions: {
+			openai: {
+				reasoningSummary: 'detailed',
+			},
+		},
 		tools,
 		system: systemPrompt || '',
 	});
