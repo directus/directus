@@ -25,6 +25,7 @@ const emit = defineEmits<{
 
 const errors = ref<Record<string, any>[]>([]);
 const editing = ref(false);
+const isSaving = ref(false);
 
 const allowSave = computed(
 	() => form.value.project_owner || form.value.project_usage || form.value.org_name || form.value.product_updates,
@@ -37,9 +38,11 @@ async function save() {
 
 	if (errors.value.length > 0) return;
 
+	isSaving.value = true;
 	await settingsStore.setOwner(value as Form);
 	await settingsStore.hydrate();
 	emit('input', form.value.project_owner ?? initialValues.value.project_owner);
+	isSaving.value = false;
 	editing.value = false;
 }
 
@@ -76,7 +79,7 @@ const fields = useFormFields(false, form);
 		@apply="save"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!allowSave" @click="save">
+			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!allowSave" :loading="isSaving" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
