@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Prevent multiple record imports into singleton collections
+Amended file imports to disallow importing multiple records into singleton collections
