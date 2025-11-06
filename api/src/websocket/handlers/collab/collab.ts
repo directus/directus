@@ -30,7 +30,6 @@ export class CollabHandler {
 
 			try {
 				const validMessage = WebSocketCollabMessage.parse(message);
-				console.log('collabMSG', validMessage);
 				this[`on${capitalize(validMessage.action)}`](client, message);
 			} catch (error) {
 				handleWebSocketError(client, error, 'subscribe');
@@ -72,6 +71,8 @@ export class CollabHandler {
 					room.leave(client);
 				}
 			}
+
+			this.rooms.cleanupRooms();
 		} catch (err) {
 			handleWebSocketError(client, err, 'leave');
 		}

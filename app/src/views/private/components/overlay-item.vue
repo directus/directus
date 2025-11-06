@@ -22,6 +22,8 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import OverlayItemContent from './overlay-item-content.vue';
 import { useFlows } from '@/composables/use-flows';
+import { useCollab } from '@/composables/use-collab';
+import HeaderCollab from '@/views/private/components/header-collab.vue';
 
 export interface OverlayItemProps {
 	overlay?: 'drawer' | 'modal' | 'popover';
@@ -79,6 +81,15 @@ const { save, cancel, overlayActive, getTooltip } = useActions();
 const { collection, primaryKey, relatedPrimaryKey } = toRefs(props);
 
 const { info: collectionInfo, primaryKeyField } = useCollection(collection);
+
+const { users: collabUsers, connected } = useCollab(
+	collection,
+	primaryKey,
+	ref(null),
+	internalEdits,
+	refresh,
+	overlayActive,
+);
 
 const isNew = computed(() => props.primaryKey === '+' && props.relatedPrimaryKey === '+');
 
@@ -550,6 +561,10 @@ function popoverClickOutsideMiddleware(e: Event) {
 			<v-breadcrumb :items="[{ name: collectionInfo?.name, disabled: true }]" />
 		</template>
 
+		<template #actions:prepend>
+			<header-collab :model-value="collabUsers" :connected="connected" small />
+		</template>
+
 		<template #actions>
 			<slot name="actions" />
 
@@ -721,6 +736,10 @@ function popoverClickOutsideMiddleware(e: Event) {
 			}
 		}
 	}
+}
+
+.header-collab {
+	margin-right: 16px;
 }
 
 .modal-title-icon {

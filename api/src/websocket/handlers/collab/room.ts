@@ -1,15 +1,28 @@
-import { COLLAB, type ClientBaseCollabMessage, type Item, type WebSocketClient } from '@directus/types';
+import {
+	COLLAB,
+	COLLAB_COLORS,
+	type ClientBaseCollabMessage,
+	type ClientID,
+	type CollabColor,
+	type Item,
+	type WebSocketClient,
+} from '@directus/types';
 import { createHash } from 'crypto';
+import { random } from 'lodash-es';
 
 export class CollabRooms {
 	rooms: Record<string, Room> = {};
 
 	createRoom(collection: string, item: string | number, version: string | undefined, initialChanges?: Item) {
+		console.log('get room', collection, item, version);
 		const uid = getRoomHash(collection, item, version);
 
 		if (!(uid in this.rooms)) {
 			this.rooms[uid] = new Room(uid, collection, item, version, initialChanges);
+			console.log('Room Created', this.rooms[uid]);
 		}
+
+		console.log(this.rooms);
 
 		return this.rooms[uid]!;
 	}
@@ -19,7 +32,16 @@ export class CollabRooms {
 	}
 
 	getClientRooms(client: WebSocketClient) {
-		return Object.values(this.rooms).filter((room) => room.clients.has(client));
+		return Object.values(this.rooms).filter((room) => room.hasClient(client));
+	}
+
+	cleanupRooms() {
+		for (const room of Object.values(this.rooms)) {
+			if (room.clients.length === 0) {
+				console.log('Delete Room', room.uid);
+				delete this.rooms[room.uid];
+			}
+		}
 	}
 }
 
@@ -29,8 +51,9 @@ export class Room {
 	item: string | number;
 	version: string | undefined;
 	changes: Item;
-	clients: Set<WebSocketClient> = new Set();
-	focuses: Record<string, string> = {};
+	clients: WebSocketClient[] = [];
+	clientColors: Record<ClientID, CollabColor> = {};
+	focuses: Record<string, ClientID> = {};
 
 	constructor(
 		uid: string,
@@ -46,28 +69,37 @@ export class Room {
 		this.changes = initialChanges ?? {};
 	}
 
+	hasClient(client: WebSocketClient) {
+		return this.clients.findIndex((c) => c.uid === client.uid) !== -1;
+	}
+
 	join(client: WebSocketClient) {
-		if (this.clients.has(client)) return;
+		if (this.hasClient(client)) return;
+
+		const clientColor = COLLAB_COLORS[random(COLLAB_COLORS.length - 1)]!;
+
+		this.clientColors[client.uid] = clientColor;
 
 		this.sendAll({
 			action: 'join',
 			user: client.accountability!.user!,
+			connection: client.uid,
+			color: clientColor,
 		});
 
-		const users: Set<string> = new Set();
-
-		for (const client of this.clients) {
-			users.add(client.accountability!.user!);
-		}
+		this.clients.push(client);
 
 		this.send(client, {
 			action: 'init',
 			changes: this.changes,
 			focuses: this.focuses,
-			users: Array.from(users),
+			connection: client.uid,
+			users: Array.from(this.clients).map((client) => ({
+				user: client.accountability!.user!,
+				connection: client.uid,
+				color: this.clientColors[client.uid]!,
+			})),
 		});
-
-		this.clients.add(client);
 
 		client.on('close', () => {
 			this.leave(client);
@@ -75,13 +107,13 @@ export class Room {
 	}
 
 	leave(client: WebSocketClient) {
-		if (!this.clients.has(client)) return;
+		if (!this.hasClient(client)) return;
 
-		this.clients.delete(client);
+		this.clients = this.clients.filter((c) => c.uid === client.uid);
 
 		this.sendAll({
 			action: 'leave',
-			user: client.accountability!.user!,
+			connection: client.uid,
 		});
 	}
 
@@ -117,16 +149,14 @@ export class Room {
 
 	focus(client: WebSocketClient, field: string | null) {
 		if (!field) {
-			this.focuses = Object.fromEntries(
-				Object.entries(this.focuses).filter(([_, user]) => user !== client.accountability!.user),
-			);
+			this.focuses = Object.fromEntries(Object.entries(this.focuses).filter(([_, user]) => user !== client.uid));
 		} else {
-			this.focuses[field] = client.accountability!.user!;
+			this.focuses[field] = client.uid;
 		}
 
 		this.sendAll({
 			action: 'focus',
-			user: client.accountability!.user!,
+			connection: client.uid,
 			field,
 		});
 	}
@@ -143,7 +173,6 @@ export class Room {
 		const msg = JSON.stringify({ ...message, type: COLLAB, room: this.uid });
 
 		for (const client of this.clients) {
-			console.log(client.uid, exclude.uid, client.uid !== exclude.uid);
 			if (client.uid !== exclude.uid) client.send(msg);
 		}
 	}

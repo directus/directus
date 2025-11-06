@@ -56,10 +56,17 @@ const { t } = useI18n();
 
 const collab = inject(COLLAB);
 
-const { onFieldUpdate, onFieldUnset, onBlur, focusedBy, onFocus } =
+const { onFieldUpdate, onFieldUnset, onBlur, focusedBy, onFocus, style } =
 	typeof collab === 'function'
 		? collab(props.field.field)
-		: { onFieldUpdate: () => {}, onFieldUnset: () => {}, onBlur: () => {}, onFocus: () => {}, focusedBy: ref() };
+		: {
+				onFieldUpdate: () => {},
+				onFieldUnset: () => {},
+				onBlur: () => {},
+				onFocus: () => {},
+				focusedBy: ref(),
+				style: ref({}),
+			};
 
 const isDisabled = computed(() => {
 	if (props.disabled) return true;
@@ -209,6 +216,7 @@ function useComputedValues() {
 					:raw-editor-enabled="rawEditorEnabled"
 					:raw-editor-active="rawEditorActive"
 					:loading="loading"
+					:focused-by="focusedBy"
 					@toggle-batch="$emit('toggle-batch', $event)"
 					@toggle-raw="$emit('toggle-raw', $event)"
 				/>
@@ -243,6 +251,7 @@ function useComputedValues() {
 			:direction="direction"
 			:comparison="comparison"
 			:comparison-active="comparisonActive"
+			:style="style"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 			@focus-field="onFocus"

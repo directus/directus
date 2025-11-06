@@ -1,9 +1,24 @@
 import sdk from '@/sdk';
-import { useUserStore } from '@/stores/user';
 import { readUser, readUsers } from '@directus/sdk';
-import { ClientCollabMessage, COLLAB, ContentVersion, Item, PrimaryKey, User } from '@directus/types';
+import {
+	Avatar,
+	ClientCollabMessage,
+	ClientID,
+	COLLAB,
+	CollabColor,
+	ContentVersion,
+	Item,
+	PrimaryKey,
+	User,
+} from '@directus/types';
 import { isEqual } from 'lodash';
-import { computed, provide, ref, Ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, provide, ref, Ref, watch } from 'vue';
+
+export type CollabUser = Pick<User, 'id' | 'first_name' | 'last_name'> & {
+	connection: ClientID;
+	color: CollabColor;
+	avatar?: Avatar;
+};
 
 export function useCollab(
 	collection: Ref<string>,
@@ -11,15 +26,51 @@ export function useCollab(
 	version: Ref<ContentVersion | null>,
 	edits: Ref<Item>,
 	refresh: () => void,
+	active?: Ref<boolean>,
 ) {
-	sdk.connect();
-	const userStore = useUserStore();
+	const connected = ref(false);
 
 	const roomId = ref<string | null>(null);
-	const users = ref<(Pick<User, 'id' | 'first_name' | 'last_name'> & { avatar: any })[]>([]);
-	const focused = ref<Record<string, any>>({});
+	const connectionId = ref<ClientID | null>(null);
+	const users = ref<CollabUser[]>([]);
+	const focused = ref<Record<string, CollabUser>>({});
+
+	onMounted(() => {
+		if (active) return;
+		join();
+	});
+
+	onBeforeUnmount(() => {
+		if (active) return;
+		leave();
+	});
+
+	watch([active], () => {
+		if (active?.value) {
+			join();
+		} else {
+			leave();
+		}
+	});
 
 	sdk.onWebSocket('open', () => {
+		connected.value = true;
+		join();
+	});
+
+	sdk.onWebSocket('close', () => {
+		connected.value = false;
+		roomId.value = null;
+		connectionId.value = null;
+		users.value = [];
+		focused.value = {};
+	});
+
+	function join() {
+		if (roomId.value || !collection.value || !primaryKey.value || primaryKey.value === '+') return;
+
+		console.log('join', collection.value, primaryKey.value, version.value);
+
 		sdk.sendMessage({
 			type: COLLAB,
 			action: 'join',
@@ -28,72 +79,133 @@ export function useCollab(
 			version: version.value,
 			initialChanges: edits.value,
 		});
+	}
 
-		sdk.onWebSocket('message', async (message: ClientCollabMessage) => {
-			if (message.action === 'init') {
-				roomId.value = message.room;
+	function leave() {
+		sdk.sendMessage({
+			type: COLLAB,
+			action: 'leave',
+			room: roomId.value,
+		});
 
-				if (!isEqual(message.changes, edits.value)) edits.value = message.changes;
+		roomId.value = null;
+		connectionId.value = null;
+	}
 
-				users.value = await sdk.request(
-					readUsers({
-						filter: {
-							id: {
-								_in: message.users,
-							},
+	sdk.onWebSocket('message', async (message: ClientCollabMessage) => {
+		if (roomId.value && roomId.value !== message.room) return;
+
+		if (message.action === 'init') {
+			roomId.value = message.room;
+			connectionId.value = message.connection;
+
+			console.log('joined', message.room);
+
+			if (!isEqual(message.changes, edits.value)) edits.value = message.changes;
+
+			if (message.users.length === 0) return;
+
+			const usersInfo = await sdk.request(
+				readUsers({
+					filter: {
+						id: {
+							_in: Array.from(new Set(message.users.map((user) => user.user))),
 						},
-						fields: ['id', 'first_name', 'last_name', 'avatar'],
-					}),
+					},
+					fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'],
+				}),
+			);
+
+			users.value = message.users
+				.map(({ user, color, connection }) => {
+					const info = usersInfo.find((u) => u.id === user) as any;
+
+					return {
+						...info,
+						color,
+						connection,
+					};
+				})
+				.sort((a, b) => {
+					if (a.connection === message.connection) return -1;
+					if (b.connection === message.connection) return 1;
+					return 0;
+				});
+
+			focused.value = Object.fromEntries(
+				Object.entries(message.focuses).map(([field, user]) => {
+					return [field, users.value.find((u) => u.id === user)!];
+				}),
+			);
+		}
+
+		if (message.action === 'update') {
+			if ('changes' in message) {
+				if (!isEqual(message.changes, edits.value[message.field]))
+					edits.value = { ...edits.value, [message.field]: message.changes };
+			} else {
+				delete edits.value[message.field];
+			}
+		}
+
+		if (message.action === 'join') {
+			const existingInfo = users.value.find((user) => user.id === message.user);
+
+			const user = existingInfo
+				? existingInfo
+				: await sdk.request<CollabUser>(
+						readUser(message.user, { fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'] }),
+					);
+
+			users.value = [...users.value, { ...user, color: message.color, connection: message.connection }];
+		}
+
+		if (message.action === 'leave') {
+			users.value = users.value.filter((user) => user.connection !== message.connection);
+
+			focused.value = Object.fromEntries(
+				Object.entries(focused.value).filter(([_, user]) => user.connection !== message.connection),
+			);
+		}
+
+		if (message.action === 'save') {
+			edits.value = {};
+			refresh();
+		}
+
+		if (message.action === 'focus') {
+			if (connectionId.value === message.connection) return;
+
+			if (message.field) {
+				const user = users.value.find((user) => user.connection === message.connection)!;
+
+				focused.value = { ...focused.value, [message.field]: user };
+			} else {
+				focused.value = Object.fromEntries(
+					Object.entries(focused.value).filter(([_, user]) => user.connection !== message.connection),
 				);
 			}
-
-			if (message.action === 'update') {
-				if ('changes' in message) {
-					if (!isEqual(message.changes, edits.value[message.field]))
-						edits.value = { ...edits.value, [message.field]: message.changes };
-				} else {
-					delete edits.value[message.field];
-				}
-			}
-
-			if (message.action === 'join') {
-				const user = await sdk.request(readUser(message.user, { fields: ['id', 'first_name', 'last_name', 'avatar'] }));
-
-				users.value = [...users.value, user];
-			}
-
-			if (message.action === 'leave') {
-				users.value = users.value.filter((user) => user.id === message.user);
-			}
-
-			if (message.action === 'save') {
-				edits.value = {};
-				refresh();
-			}
-
-			if (message.action === 'focus') {
-				if (userStore.currentUser && 'id' in userStore.currentUser && message.user === userStore.currentUser.id) return;
-
-				if (message.field) {
-					focused.value = { ...focused.value, [message.field]: message.user };
-				} else {
-					focused.value = Object.fromEntries(
-						Object.entries(focused.value).filter(([_, user]) => user !== message.user),
-					);
-				}
-			}
-		});
+		}
 	});
 
 	provide(COLLAB, (field: string) => {
-		const focusedBy = computed<string | undefined>(() => {
+		const focusedBy = computed(() => {
 			return focused.value[field];
+		});
+
+		const style = computed(() => {
+			if (!focusedBy.value) return {};
+			return {
+				'box-shadow': `0 0 16px -8px var(--${focusedBy.value?.color})`,
+				'--theme--form--field--input--border-color': `var(--${focusedBy.value?.color})`,
+			};
 		});
 
 		return {
 			onFieldUpdate: (value: unknown) => onFieldUpdate(field, value),
 			onFieldUnset: () => onFieldUnset(field),
 			onBlur,
+			style,
 			focusedBy,
 			onFocus: () => onFocus(field),
 		};
@@ -148,5 +260,5 @@ export function useCollab(
 		});
 	}
 
-	return { onSave, users };
+	return { onSave, users, connected };
 }

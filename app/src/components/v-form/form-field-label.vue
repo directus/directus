@@ -4,6 +4,8 @@ import type { Field } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { ComparisonContext, FormField } from './types';
+import { CollabUser } from '@/composables/use-collab';
+import HeaderCollab from '@/views/private/components/header-collab.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -21,6 +23,7 @@ const props = withDefaults(
 		rawEditorActive?: boolean;
 		comparison?: ComparisonContext;
 		comparisonActive?: boolean;
+		focusedBy?: CollabUser;
 	}>(),
 	{
 		batchMode: false,
@@ -115,6 +118,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</button>
+		<header-collab :model-value="focusedBy" hide-current x-small />
 	</div>
 </template>
 
@@ -264,5 +268,11 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 
 .type-label {
 	font-family: var(--theme--form--field--label--font-family);
+}
+
+:deep(.v-avatar) {
+	position: absolute;
+	bottom: 0;
+	right: 0;
 }
 </style>

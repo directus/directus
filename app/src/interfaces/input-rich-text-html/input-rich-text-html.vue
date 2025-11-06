@@ -68,7 +68,7 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits(['input']);
+const emit = defineEmits(['input', 'focus', 'blur']);
 
 const { t } = useI18n();
 const editorRef = ref<any | null>(null);
@@ -343,8 +343,10 @@ function setFocus(val: boolean) {
 	if (body == null) return;
 
 	if (val) {
+		emit('focus');
 		body.classList.add('focus');
 	} else {
+		emit('blur');
 		body.classList.remove('focus');
 	}
 }

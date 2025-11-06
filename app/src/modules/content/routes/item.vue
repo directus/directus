@@ -1,32 +1,33 @@
 <script setup lang="ts">
+import { useCollab } from '@/composables/use-collab';
 import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
 import { useLocalStorage } from '@/composables/use-local-storage';
 import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
-import { useFlows } from '@/composables/use-flows';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
+import HeaderCollab from '@/views/private/components/header-collab.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
-import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import { useCollection } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter, useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
-import { useCollab } from '@/composables/use-collab';
 
 interface Props {
 	collection: string;
@@ -87,7 +88,7 @@ const {
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, query);
 
-const { onSave, users: collabUsers } = useCollab(collection, primaryKey, currentVersion, edits, refresh);
+const { onSave, users: collabUsers, connected } = useCollab(collection, primaryKey, currentVersion, edits, refresh);
 
 const validationErrors = computed(() => {
 	if (currentVersion.value === null) return itemValidationErrors.value;
@@ -603,7 +604,7 @@ function useCollectionRoute() {
 		</template>
 
 		<template #title-outer:append>
-			{{ collabUsers }}
+			<header-collab :model-value="collabUsers" :connected="connected" small />
 		</template>
 
 		<template #actions>

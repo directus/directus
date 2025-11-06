@@ -3,6 +3,9 @@ import type { Item } from '../items.js';
 import { WebSocketMessage, zodStringOrNumber } from './base.js';
 
 export const COLLAB = 'collab';
+export const COLLAB_COLORS = ['purple', 'pink', 'blue', 'green', 'yellow', 'orange', 'red'] as const;
+
+export type CollabColor = (typeof COLLAB_COLORS)[number];
 
 const BaseCollabMessage = WebSocketMessage.extend({
 	type: z.literal(COLLAB),
@@ -45,15 +48,26 @@ export type ClientCollabMessage = {
 	room: string;
 } & ClientBaseCollabMessage;
 
+export type UserID = string;
+export type ClientID = string | number;
+
 export type ClientBaseCollabMessage =
-	| { action: 'init'; changes: Item; focuses: Record<string, string>; users: string[] }
+	| {
+			action: 'init';
+			changes: Item;
+			connection: ClientID;
+			focuses: Record<string, ClientID>;
+			users: { user: UserID; connection: ClientID; color: CollabColor }[];
+	  }
 	| {
 			action: 'join';
-			user: string;
+			user: UserID;
+			color: CollabColor;
+			connection: ClientID;
 	  }
 	| {
 			action: 'leave';
-			user: string;
+			connection: ClientID;
 	  }
 	| {
 			action: 'save';
@@ -65,6 +79,6 @@ export type ClientBaseCollabMessage =
 	  }
 	| {
 			action: 'focus';
-			user: string;
+			connection: ClientID;
 			field: string | null;
 	  };
