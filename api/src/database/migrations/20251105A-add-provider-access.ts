@@ -36,7 +36,7 @@ export async function up(knex: Knex): Promise<void> {
 				}
 			}
 		}
-		
+
 		rowsOffset += rowsLimit;
 
 		if (policies.length < rowsLimit) {
