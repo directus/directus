@@ -3,7 +3,7 @@ import { Chat } from '@ai-sdk/vue';
 import { useLocalStorage } from '@vueuse/core';
 import { DefaultChatTransport, type UIMessage } from 'ai';
 import { defineStore } from 'pinia';
-import { computed, } from 'vue';
+import { computed } from 'vue';
 import { AI_MODELS } from '../models';
 import { getSimpleHash } from '@directus/utils';
 
