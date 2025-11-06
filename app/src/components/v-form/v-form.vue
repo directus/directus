@@ -129,7 +129,7 @@ defineTool({
 
 		for (const [key, value] of Object.entries(args)) {
 			setValue(key, value);
-			output.push(`Successfully form field ${key} to value ${value}`);
+			output.push(`Successfully set form field ${key} to value ${value}`);
 		}
 
 		return output;
