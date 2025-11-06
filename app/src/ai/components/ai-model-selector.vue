@@ -6,7 +6,7 @@ const aiStore = useAiStore();
 </script>
 
 <template>
-	<v-menu placement="top-end" show-arrow>
+	<v-menu placement="bottom-start" show-arrow>
 		<template #activator="{ toggle }">
 			<button class="select-trigger" @click="toggle">
 				{{ formatTitle(aiStore.currentModel || '') }}
