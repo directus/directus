@@ -1725,9 +1725,11 @@ ai:
   label: Streaming...
   ready: Ready
   complete: Complete
-  error: Error
-  unknown: Unknown
+  error: An error occurred
+  retry: Retry
+  unknown_error: Unknown Error
   prompt_input_placeholder: Type your message here...
+  clear_conversation: Clear Conversation
 mcp_prompts_collection:
   no_collection_selected: No collection selected
   no_collection_selected_copy: Select a collection to enable reusable prompt templates.
