@@ -6,7 +6,7 @@ import { AccordionRoot } from 'reka-ui';
 <template>
 	<aside id="sidebar" ref="sidebarEl" role="contentinfo" class="alt-colors" aria-label="Module Sidebar">
 		<SkipMenu section="sidebar" />
-		<AccordionRoot type="single" collapsible>
+		<AccordionRoot type="single" collapsible class="accordion-root">
 			<slot name="sidebar" />
 		</AccordionRoot>
 	</aside>
@@ -24,5 +24,11 @@ import { AccordionRoot } from 'reka-ui';
 
 	/* Explicitly render the border outside of the width of the bar itself */
 	box-sizing: content-box;
+}
+
+.accordion-root {
+	block-size: 100%;
+	display: flex;
+	flex-direction: column;
 }
 </style>
