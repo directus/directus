@@ -72,7 +72,7 @@ export const useInputSchema = (finalFields: MaybeRefOrGetter<Field[]>) => {
 					}
 
 					if (field.meta?.note) {
-						type.describe(field.meta.note);
+						type = type.describe(field.meta.note);
 					}
 
 					acc[field.field] = type.optional();
