@@ -12,6 +12,7 @@ const { t } = useI18n();
 
 const errors = ref<Record<string, any>[]>([]);
 const editing = ref(false);
+const isSaving = ref(false);
 
 const form = ref<Partial<Form>>({});
 const fields = useFormFields(false, form);
@@ -37,9 +38,11 @@ async function save() {
 
 	if (errors.value.length > 0) return;
 
+	isSaving.value = true;
 	await settingsStore.setOwner(value as Form);
 	await settingsStore.hydrate();
 	reset();
+	isSaving.value = false;
 }
 
 async function reset() {
@@ -62,7 +65,7 @@ async function reset() {
 
 	<v-drawer v-model="editing" :title="t('interfaces.system-owner.update')" icon="link" @cancel="reset" @apply="save">
 		<template #actions>
-			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!allowSave" @click="save">
+			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!allowSave" :loading="isSaving" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>

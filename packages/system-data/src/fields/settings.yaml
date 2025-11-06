@@ -575,15 +575,6 @@ fields:
   - field: project_id
     hidden: true
 
-  - field: accepted_terms
-    interface: boolean
-    width: half
-    hidden: true
-    options:
-      label: $t:accepted
-    special:
-      - cast-boolean
-
   ### Appearance Settings ###
   # The theming_group is rendered on the Appearance page in the app
 
