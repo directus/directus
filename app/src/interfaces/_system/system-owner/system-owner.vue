@@ -17,7 +17,7 @@ const isSaving = ref(false);
 const form = ref<Partial<Form>>({});
 const fields = useFormFields(false, form);
 
-const allowSave = computed(
+const isSaveAllowed = computed(
 	() =>
 		form.value.project_owner ||
 		form.value.project_usage ||
@@ -65,7 +65,7 @@ async function reset() {
 
 	<v-drawer v-model="editing" :title="t('interfaces.system-owner.update')" icon="link" @cancel="reset" @apply="save">
 		<template #actions>
-			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!allowSave" :loading="isSaving" @click="save">
+			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!isSaveAllowed" :loading="isSaving" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
