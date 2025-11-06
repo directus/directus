@@ -1,4 +1,4 @@
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import type { ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
 import type { ZodType } from 'zod';
 
