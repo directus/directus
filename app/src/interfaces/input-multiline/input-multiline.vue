@@ -6,6 +6,7 @@ const props = withDefaults(
 		value: string | null;
 		clear?: boolean;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		placeholder?: string;
 		trim?: boolean;
 		font?: 'sans-serif' | 'serif' | 'monospace';
@@ -47,7 +48,7 @@ const percentageRemaining = computed(() => {
 		:model-value="value"
 		:nullable="!clear"
 		:disabled="disabled"
-		:class="font"
+		:class="[font, { 'non-editable': nonEditable }]"
 		:dir="direction"
 		@update:model-value="$emit('input', $event)"
 	>
