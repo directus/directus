@@ -39,7 +39,6 @@ const aiStore = useAiStore();
 	align-items: center;
 	justify-content: space-between;
 	gap: 4px;
-	padding: 4px 8px;
 	background: transparent;
 	border: var(--theme--border-width) solid transparent;
 	border-radius: var(--theme--border-radius);
@@ -48,18 +47,6 @@ const aiStore = useAiStore();
 	font-size: 12px;
 	cursor: pointer;
 	transition: all var(--fast) var(--transition);
-
-	&:hover:not(:disabled) {
-		background: var(--theme--background-subdued);
-		color: var(--theme--foreground);
-	}
-
-	&:focus,
-	&:focus-visible {
-		background: var(--theme--background-subdued);
-		color: var(--theme--foreground);
-		outline: none;
-	}
 
 	&:disabled {
 		color: var(--theme--foreground-subdued);
