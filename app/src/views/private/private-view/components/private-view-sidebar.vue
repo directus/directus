@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import SkipMenu from '../../components/skip-menu.vue';
 import { AccordionRoot } from 'reka-ui';
+import AiSidebarDetail from '@/ai/components/ai-sidebar-detail.vue';
 </script>
 
 <template>
@@ -8,6 +9,8 @@ import { AccordionRoot } from 'reka-ui';
 		<SkipMenu section="sidebar" />
 		<AccordionRoot type="single" collapsible class="accordion-root">
 			<slot name="sidebar" />
+			<div class="spacer" />
+			<ai-sidebar-detail />
 		</AccordionRoot>
 	</aside>
 </template>
@@ -30,5 +33,9 @@ import { AccordionRoot } from 'reka-ui';
 	block-size: 100%;
 	display: flex;
 	flex-direction: column;
+}
+
+.spacer {
+	flex-grow: 1;
 }
 </style>

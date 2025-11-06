@@ -1,23 +1,13 @@
 <script setup lang="ts">
-import { useGroupable } from '@directus/composables';
-import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import AiConversation from './ai-conversation.vue';
 import AiHeader from './ai-header.vue';
-import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
-const { t } = useI18n();
 const sidebarStore = useSidebarStore();
-const title = computed(() => t('ai_chat'));
-
-useGroupable({
-	value: title.value,
-	group: 'sidebar-detail',
-});
 </script>
 
 <template>
-	<sidebar-detail id="ai" :title icon="smart_toy" class="ai-sidebar">
+	<sidebar-detail id="ai" :title="$t('ai_chat')" icon="smart_toy" class="ai-sidebar">
 		<ai-header />
 		<div class="ai-sidebar-content">
 			<ai-conversation v-if="!sidebarStore.collapsed" />
