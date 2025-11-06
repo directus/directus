@@ -60,7 +60,6 @@ const statusConfig = computed(() => {
 	padding: 0.5rem;
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--background-subdued);
-	border: 1px solid var(--theme--border-color-subdued);
 }
 
 .tool-header {
@@ -69,11 +68,6 @@ const statusConfig = computed(() => {
 	gap: 0.5rem;
 	font-size: 0.875rem;
 	font-weight: 600;
-	cursor: pointer;
-	user-select: none;
-	background: none;
-	border: none;
-	padding: 0;
 	inline-size: 100%;
 
 	&:hover {
@@ -171,8 +165,8 @@ const statusConfig = computed(() => {
 	padding: 0.5rem;
 	margin-block-start: 0.5rem;
 	border-radius: var(--theme--border-radius);
-	background-color: var(--theme--danger);
-	color: var(--white);
+	background-color: var(--theme--danger-background);
+	color: var(--theme--foreground);
 	font-size: 0.875rem;
 }
 
