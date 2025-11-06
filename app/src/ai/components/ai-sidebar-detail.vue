@@ -24,11 +24,27 @@ useGroupable({
 </template>
 
 <style scoped>
-.ai-sidebar :deep(.content) {
+.ai-sidebar :deep(.toggle.open ~ .scroll-container) {
+	overflow: visible;
+	display: flex;
+	flex-direction: column;
+	flex-grow: 999;
+	min-block-size: 0;
+}
+
+.ai-sidebar :deep(.scroll-container > div) {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-block-size: 0;
+}
+
+.ai-sidebar :deep(.scroll-container > div > .content) {
 	padding: 0;
 	display: flex;
 	flex-direction: column;
-	block-size: 100%;
+	flex: 1;
+	min-block-size: 0;
 }
 
 .ai-sidebar-content {

@@ -25,10 +25,11 @@ const aiStore = useAiStore();
 
 <style scoped>
 .ai-conversation {
-	display: flex;
-	flex-direction: column;
-	flex: 1;
+	display: grid;
+	grid-template-rows: 1fr auto;
+	flex: 1 1 0;
 	min-block-size: 0;
+	overflow: hidden;
 }
 
 .messages-container {
