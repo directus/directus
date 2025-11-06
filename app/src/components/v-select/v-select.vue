@@ -45,8 +45,6 @@ const props = withDefaults(
 		fullWidth?: boolean;
 		/** Disables any interaction */
 		disabled?: boolean;
-		/** Prevent interaction and hide action indicators */
-		nonEditable?: boolean;
 		/** Allow to deselect all currently selected items */
 		showDeselect?: boolean;
 		/** Allow to enter custom values */
@@ -268,7 +266,7 @@ function useDisplayValue() {
 				:disabled="disabled"
 				:aria-pressed="active"
 				class="inline-display"
-				:class="{ placeholder: !displayValue.text, label, active, disabled, 'non-editable': nonEditable }"
+				:class="{ placeholder: !displayValue.text, label, active, disabled }"
 				@click="toggle"
 			>
 				<slot name="preview">{{ displayValue.text || placeholder }}</slot>
@@ -289,7 +287,6 @@ function useDisplayValue() {
 					clickable
 					:placeholder="placeholder"
 					:disabled="disabled"
-					:non-editable="nonEditable"
 					:active="active"
 					@click="toggle"
 					@keydown:enter="toggle"
