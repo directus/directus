@@ -36,7 +36,7 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-	<article :data-role="role" :class="['ai-message']">
+	<article :data-role="role" class="ai-message">
 		<div class="message-container">
 			<div class="message-content">
 				<template v-for="(part, index) in parts" :key="`${id}-${part.type}-${index}`">
