@@ -2721,10 +2721,10 @@ percent: Percent
 show_password: Show password
 hide_password: Hide password
 bsl_banner:
-  title: You have not set an instance owner.
+  title: You have not set a project owner.
   license:
     We need this to ensure compliance with our BSL 1.1 license. This should be the primary contact responsible for your
-    instance.
+    project.
   set_owner: Set Owner
   remind_later: Remind Later
   remind_next_login: We'll remind you again on your next login.
