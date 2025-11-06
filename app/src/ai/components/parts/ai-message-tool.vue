@@ -31,10 +31,10 @@ const statusConfig = computed(() => {
 		<CollapsibleTrigger class="tool-header">
 			<v-icon name="build" x-small />
 			<p class="tool-name">{{ part.type.replace('tool-', '') }}</p>
-			<p class="tool-status" :class="statusConfig.class">
+			<v-chip class="tool-status" :class="statusConfig.class" x-small :label="false">
 				<v-icon :name="statusConfig.icon" x-small />
-				<span class="status-label">{{ statusConfig.label }}</span>
-			</p>
+				{{ statusConfig.label }}
+			</v-chip>
 			<v-icon name="expand_more" x-small class="chevron" />
 		</CollapsibleTrigger>
 		<CollapsibleContent class="tool-content-wrapper">
@@ -56,8 +56,8 @@ const statusConfig = computed(() => {
 
 <style scoped>
 .message-tool {
-	margin: 0.5rem 0;
-	padding: 0.75rem;
+	inline-size: 100%;
+	padding: 0.5rem;
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--background-subdued);
 	border: 1px solid var(--theme--border-color-subdued);
@@ -77,7 +77,7 @@ const statusConfig = computed(() => {
 	inline-size: 100%;
 
 	&:hover {
-		background-color: var(--theme--background-normal);
+		color: var(--theme--foreground-accent);
 	}
 
 	.chevron {
@@ -95,53 +95,51 @@ const statusConfig = computed(() => {
 }
 
 .tool-status {
-	display: flex;
-	align-items: center;
-	gap: 0.25rem;
-	padding: 0.125rem 0.5rem;
-	border-radius: 1rem;
-	font-size: 0.75rem;
-	font-weight: 500;
+	.v-icon {
+		margin-inline-end: 0.25rem;
+		border: none;
+	}
 
 	&.status-streaming {
-		background-color: color-mix(in srgb, var(--theme--primary) 15%, transparent);
-		color: var(--theme--primary);
+		--v-chip-background-color: var(--theme--primary-background);
+		--v-chip-color: var(--theme--primary-foreground);
+		--v-chip-border-color: var(--theme--primary-background);
 	}
 
 	&.status-ready {
-		background-color: color-mix(in srgb, var(--theme--warning) 15%, transparent);
-		color: var(--theme--warning);
+		--v-chip-background-color: var(--theme--warning-background);
+		--v-chip-color: var(--theme--warning-accent);
+		--v-chip-border-color: var(--theme--warning-background);
 	}
 
 	&.status-complete {
-		background-color: color-mix(in srgb, var(--theme--success) 15%, transparent);
-		color: var(--theme--success);
+		--v-chip-background-color: var(--theme--success-background);
+		--v-chip-color: var(--theme--success-accent);
+		--v-chip-border-color: var(--theme--success-background);
 	}
 
 	&.status-error {
-		background-color: color-mix(in srgb, var(--theme--danger) 15%, transparent);
-		color: var(--theme--danger);
+		--v-chip-background-color: var(--theme--danger-background);
+		--v-chip-color: var(--theme--danger-accent);
+		--v-chip-border-color: var(--theme--danger-background);
 	}
 
 	&.status-unknown {
-		background-color: color-mix(in srgb, var(--theme--foreground) 10%, transparent);
-		opacity: 0.6;
+		--v-chip-background-color: var(--theme--foreground-subdued);
+		--v-chip-color: var(--theme--foreground-subdued);
+		--v-chip-border-color: var(--theme--foreground-subdued);
 	}
-}
-
-.status-label {
-	font-size: 0.75rem;
 }
 
 .tool-content-wrapper {
 	overflow: hidden;
 
 	&[data-state='open'] {
-		animation: slideDown 200ms ease-out;
+		animation: slide-down 200ms ease-out;
 	}
 
 	&[data-state='closed'] {
-		animation: slideUp 200ms ease-out;
+		animation: slide-up 200ms ease-out;
 	}
 }
 
@@ -149,7 +147,6 @@ const statusConfig = computed(() => {
 	font-size: 0.75rem;
 	font-weight: 600;
 	text-transform: uppercase;
-	opacity: 0.7;
 	margin-block: 0.5rem 0.25rem;
 }
 
@@ -161,8 +158,9 @@ const statusConfig = computed(() => {
 	font-size: 0.875rem;
 
 	code {
+		font-size: 0.75rem;
 		white-space: pre-wrap;
-		word-break: break-word;
+		overflow-wrap: break-word;
 	}
 }
 
@@ -178,7 +176,7 @@ const statusConfig = computed(() => {
 	font-size: 0.875rem;
 }
 
-@keyframes slideDown {
+@keyframes slide-down {
 	from {
 		block-size: 0;
 	}
@@ -187,7 +185,7 @@ const statusConfig = computed(() => {
 	}
 }
 
-@keyframes slideUp {
+@keyframes slide-up {
 	from {
 		block-size: var(--reka-collapsible-content-height);
 	}
