@@ -11,7 +11,7 @@ defineProps<{
 
 <style scoped>
 .message-text {
-	padding: var(--ai-message-padding, 0.5rem);
+	padding: 0.8rem 1rem;
 	border-radius: var(--ai-message-border-radius, var(--theme--border-radius));
 	background-color: var(--ai-message-background);
 	color: var(--ai-message-color, var(--theme--foreground));
