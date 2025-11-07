@@ -36,7 +36,6 @@ export type Settings = {
 	project_name: string;
 	project_descriptor: string | null;
 	project_url: string | null;
-	project_owner: string | null;
 	report_error_url: string | null;
 	report_bug_url: string | null;
 	report_feature_url: string | null;
@@ -64,7 +63,7 @@ export type Settings = {
 	theme_light_overrides: Record<string, unknown> | null;
 	theme_dark_overrides: Record<string, unknown> | null;
 	project_id: string | null;
-};
+} & OwnerInformation;
 
 export type OwnerInformation = {
 	project_owner: string | null;
