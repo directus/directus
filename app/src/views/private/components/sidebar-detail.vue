@@ -1,12 +1,22 @@
 <script setup lang="ts">
+import VBadge from '@/components/v-badge.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { AccordionContent, AccordionHeader, AccordionItem, AccordionTrigger } from 'reka-ui';
 import { onUnmounted, watch } from 'vue';
 import { useSidebarStore } from '../private-view/stores/sidebar';
 
-const props = withDefaults(defineProps<{ id: string; title: string; icon: string; placement?: 'start' | 'end' }>(), {
-	placement: 'start',
-});
+const props = withDefaults(
+	defineProps<{
+		id: string;
+		title: string;
+		icon: string;
+		placement?: 'start' | 'end';
+		badge?: boolean | string | number;
+	}>(),
+	{
+		placement: 'start',
+	},
+);
 
 const sidebarStore = useSidebarStore();
 
@@ -40,7 +50,9 @@ onUnmounted(() => {
 				class="accordion-trigger"
 				:class="{ collapsed: sidebarStore.collapsed }"
 			>
-				<VIcon class="accordion-trigger-icon" :name="icon" />
+				<VBadge :dot="badge === true" bordered :value="badge" :disabled="!badge">
+					<VIcon class="accordion-trigger-icon" :name="icon" />
+				</VBadge>
 				<span class="accordion-trigger-title">{{ title }}</span>
 				<VIcon class="accordion-trigger-chevron" name="chevron_left" />
 			</AccordionTrigger>
@@ -68,6 +80,12 @@ onUnmounted(() => {
 		var(--theme--sidebar--section--toggle--border-color);
 	color: var(--theme--sidebar--section--toggle--foreground);
 	padding-inline: 18px 9px;
+
+	--v-badge-offset-x: 15px;
+	--v-badge-offset-y: 4px;
+	--v-badge-border-color: var(--theme--sidebar--section--toggle--background);
+	--v-badge-background-color: var(--theme--primary);
+	--v-badge-color: var(--theme--background-normal);
 }
 
 .accordion-trigger-icon {

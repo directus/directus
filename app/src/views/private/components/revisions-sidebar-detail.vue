@@ -84,7 +84,6 @@ defineExpose({
 		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
 		@toggle="onToggle"
 	>
-		<!-- TODO @toggle no longer exists -->
 		<v-progress-linear v-if="!revisions && loading" indeterminate />
 
 		<div v-else-if="revisionsCount === 0" class="empty">

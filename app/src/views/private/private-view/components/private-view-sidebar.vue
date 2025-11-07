@@ -12,7 +12,6 @@ const sidebarStore = useSidebarStore();
 		<SkipMenu section="sidebar" />
 		<AccordionRoot v-model="sidebarStore.activeAccordionItem" type="single" collapsible class="accordion-root">
 			<slot name="sidebar" />
-			<div class="spacer" />
 			<ai-sidebar-detail class="ai-sidebar-detail" />
 		</AccordionRoot>
 	</aside>
