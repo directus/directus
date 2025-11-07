@@ -1671,7 +1671,6 @@ ai:
   thinking: Thinking...
   input: Input
   output: Output
-  reasoning: Reasoning
   label: Streaming...
   ready: Ready
   complete: Complete

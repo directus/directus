@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UIMessagePart as SDKUIMessagePart, UIDataTypes, UITools } from 'ai';
+import type { UIMessagePart as SDKUIMessagePart, UIDataTypes, DynamicToolUIPart, UITools } from 'ai';
 
 import AiMessageFile from './parts/ai-message-file.vue';
 import AiMessageReasoning from './parts/ai-message-reasoning.vue';
@@ -37,33 +37,36 @@ withDefaults(defineProps<Props>(), {
 
 <template>
 	<article :data-role="role" class="ai-message">
-		<div class="message-container">
-			<div class="message-content">
-				<template v-for="(part, index) in parts" :key="`${id}-${part.type}-${index}`">
+		<div class="message-content">
+			<slot>
+				<template
+					v-for="(part, index) in parts"
+					:key="`${id}-${part.type}-${index}-${'state' in part ? `-${part.state}` : ''}`"
+				>
 					<AiMessageText v-if="part.type === 'text'" :text="part.text" :state="part.state || 'done'" />
 					<AiMessageReasoning v-else-if="part.type === 'reasoning'" :text="part.text" :state="part.state ?? 'done'" />
 					<AiMessageFile v-else-if="part.type === 'file'" :part="part" />
 					<AiMessageSourceUrl v-else-if="part.type === 'source-url'" :part="part" />
 					<AiMessageSourceDocument v-else-if="part.type === 'source-document'" :part="part" />
-					<AiMessageTool v-else-if="part.type.startsWith('tool-')" :part="part" />
+					<AiMessageTool v-else-if="part.type.startsWith('tool-')" :part="part as DynamicToolUIPart" />
 				</template>
-			</div>
+			</slot>
+		</div>
 
-			<div v-if="actions && actions.length > 0" class="message-actions">
-				<v-button
-					v-for="(action, index) in actions"
-					:key="index"
-					v-tooltip="action.label"
-					x-small
-					icon
-					secondary
-					:disabled="action.disabled"
-					:loading="action.loading"
-					@click="action.onClick?.($event)"
-				>
-					<v-icon :name="action.icon" small />
-				</v-button>
-			</div>
+		<div v-if="actions && actions.length > 0" class="message-actions">
+			<v-button
+				v-for="(action, index) in actions"
+				:key="index"
+				v-tooltip="action.label"
+				x-small
+				icon
+				secondary
+				:disabled="action.disabled"
+				:loading="action.loading"
+				@click="action.onClick?.($event)"
+			>
+				<v-icon :name="action.icon" small />
+			</v-button>
 		</div>
 	</article>
 </template>
@@ -80,6 +83,9 @@ withDefaults(defineProps<Props>(), {
 
 .ai-message {
 	display: flex;
+	gap: var(--ai-message-gap, 0.75rem);
+	align-items: flex-start;
+	max-inline-size: 100%;
 
 	&:hover .message-actions {
 		opacity: 1;
@@ -99,22 +105,12 @@ withDefaults(defineProps<Props>(), {
 
 		justify-content: flex-end;
 		margin-inline-start: 12px;
-
-		.message-container {
-			flex-direction: row-reverse;
-		}
+		flex-direction: row-reverse;
 
 		.message-content {
 			align-items: flex-end;
 		}
 	}
-}
-
-.message-container {
-	display: flex;
-	gap: var(--ai-message-gap, 0.75rem);
-	align-items: flex-start;
-	max-inline-size: 100%;
 }
 
 .message-content {
@@ -123,6 +119,10 @@ withDefaults(defineProps<Props>(), {
 	gap: 0.5rem;
 	flex: 1;
 	min-inline-size: 0;
+}
+
+.message-content :deep(.message-reasoning + .message-reasoning) {
+	margin-block-start: -0.5rem;
 }
 
 .message-actions {

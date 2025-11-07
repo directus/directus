@@ -22,19 +22,15 @@ onMounted(() => {
 <template>
 	<div ref="el" :data-status="aiStore.status" class="ai-message-list">
 		<slot>
-			<AiMessage v-for="message in aiStore.messages" :key="message.hash" v-bind="message" />
+			<AiMessage v-for="message in aiStore.messages" :key="message.id" v-bind="message" />
 		</slot>
 
 		<AiMessage v-if="aiStore.status === 'submitted'" id="indicator" role="assistant" :parts="[]">
-			<template #content>
-				<slot name="indicator">
-					<div class="loading-indicator">
-						<span />
-						<span />
-						<span />
-					</div>
-				</slot>
-			</template>
+			<div class="loading-indicator">
+				<span />
+				<span />
+				<span />
+			</div>
 		</AiMessage>
 
 		<div id="anchor"></div>
@@ -67,22 +63,35 @@ onMounted(() => {
 .loading-indicator {
 	display: flex;
 	gap: 0.375rem;
-	padding: 1rem;
+	padding-inline: 3px;
 	align-items: center;
+	margin-block-start: 1rem;
 
 	span {
+		--delay: 0;
+		--duration: 800ms;
+
 		inline-size: 0.5rem;
 		block-size: 0.5rem;
-		background-color: var(--theme--foreground-subdued);
+		background-color: var(--theme--foreground);
 		border-radius: 50%;
-		animation: loading-bounce var(--slow) infinite var(--transition) both;
+		animation: loading-bounce;
+		animation-timing-function: var(--transition);
+		animation-iteration-count: infinite;
+		animation-fill-mode: both;
+		animation-duration: 800ms;
+		animation-delay: var(--delay);
 
 		&:nth-child(1) {
-			animation-delay: -0.32s;
+			--delay: var(--slow);
 		}
 
 		&:nth-child(2) {
-			animation-delay: -0.16s;
+			--delay: calc(var(--slow) + 200ms);
+		}
+
+		&:nth-child(3) {
+			--delay: calc(var(--slow) + 400ms);
 		}
 	}
 }
@@ -91,7 +100,6 @@ onMounted(() => {
 	0%,
 	80%,
 	100% {
-		transform: scale(0.8);
 		opacity: 0.5;
 	}
 	40% {
