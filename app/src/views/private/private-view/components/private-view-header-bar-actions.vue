@@ -1,14 +1,16 @@
 <template>
-	<div>
-		<slot name="prepend" />
-		<div class="actions">
-			<slot />
-		</div>
-		<slot name="append" />
+	<slot name="prepend" />
+	<div class="actions">
+		<slot />
 	</div>
+	<slot name="append" />
 </template>
 
 <style scoped>
+.actions-container {
+	display: contents;
+}
+
 .actions {
 	position: relative;
 	display: flex;

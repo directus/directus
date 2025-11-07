@@ -89,7 +89,7 @@ const showSidebarToggle = computed(() => {
 			/>
 		</div>
 
-		<PrivateViewHeaderBarActions class="actions">
+		<PrivateViewHeaderBarActions>
 			<template #prepend><slot name="actions:prepend" /></template>
 			<slot name="actions" />
 			<template #append><slot name="actions:append" /></template>
