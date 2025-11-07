@@ -204,7 +204,6 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: [],
 										onToggleField: () => {},
-										comparisonType: comparisonData?.comparisonType,
 									}"
 									class="comparison-form--base"
 								/>
@@ -246,7 +245,6 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: selectedComparisonFields,
 										onToggleField: toggleComparisonField,
-										comparisonType: comparisonData?.comparisonType,
 									}"
 									class="comparison-form--incoming"
 								/>
@@ -576,10 +574,12 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 }
 
 .comparison-form--base {
-	--comparison-indicator--color: var(--theme--danger);
+	--field-indicator--color-active: var(--theme--danger);
+	--field-indicator--color-muted: var(--theme--danger-background);
 }
 
 .comparison-form--incoming {
-	--comparison-indicator--color: var(--theme--success);
+	--field-indicator--color-active: var(--theme--success);
+	--field-indicator--color-muted: var(--theme--success-background);
 }
 </style>

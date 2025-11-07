@@ -57,16 +57,26 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { size, icon, imageSource, title, subtitle, imageFit } = useLayoutOptions();
 		const { sort, limit, page, fields } = useLayoutQuery();
 
-		const { items, loading, error, totalPages, itemCount, totalCount, getItems, getTotalCount, getItemCount } =
-			useItems(collection, {
-				sort,
-				limit,
-				page,
-				fields,
-				filter,
-				search,
-				filterSystem,
-			});
+		const {
+			items,
+			loading,
+			loadingItemCount,
+			error,
+			totalPages,
+			itemCount,
+			totalCount,
+			getItems,
+			getTotalCount,
+			getItemCount,
+		} = useItems(collection, {
+			sort,
+			limit,
+			page,
+			fields,
+			filter,
+			search,
+			filterSystem,
+		});
 
 		const showingCount = computed(() => {
 			// Don't show count if there are no items
@@ -92,6 +102,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		return {
 			items,
 			loading,
+			loadingItemCount,
 			error,
 			totalPages,
 			page,

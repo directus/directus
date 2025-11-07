@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Om
+first_name: Förnamn
+last_name: Efternamn
 identifier: Identifierare
 avatar: Profilbild
 application: Applikation
@@ -176,19 +178,9 @@ rename_version: Byt namn på version
 compare_version: Jämför versioner
 save_version: Spara version
 promote_version: Promota version
-promote_version_disabled: Inga ändringar
-promote_version_drawer_title: Uppgradera {version} till primär
-promote_version_changes: Ändringar
-promote_version_preview: Förhandsgranska
-outdated_notice: >-
-  Den primära versionen har uppdaterats sedan denna version skapades. Vänligen granska alla fält nedan och bekräfta vilken version som ska användas när denna uppgraderas till primär.
-promote_notice: >-
-  Vänligen granska alla fält nedan och bekräfta vilken version som ska användas när denna uppgraderas till primär.
 delete_version: Ta bort version
 delete_version_copy: >-
   Är du säker på att du vill ta bort versionen "{version}"? Denna åtgärd kan inte ångras.
-delete_on_promote_copy: >-
-  Vill du ta bort eller behålla version "{version}" efter uppgradering?
 reset_bookmark: Återställ bokmärke
 update_bookmark: Uppdatera bokmärke
 delete_bookmark: Radera bokmärke
@@ -2203,10 +2195,4 @@ date_precision: Datumprecision
 percent: Procent
 show_password: Visa lösenord
 hide_password: Dölj lösenord
-bsl_banner:
-  welcome_to_directus: Välkommen till Directus!
-  directus_bsl: Directus BSL 1.1
-  privacy_policy: Integritetspolicy
-  accept_terms: Acceptera
-  get_license: Skaffa en licens
 accepted: Accepterad

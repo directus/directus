@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Acerca de
+first_name: Primer nombre
+last_name: Apellido
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
@@ -170,19 +172,9 @@ rename_version: Renombrar Versión
 compare_version: Comparar Versión
 save_version: Guardar Versión
 promote_version: Promocionar Versión
-promote_version_disabled: Sin cambios
-promote_version_drawer_title: Promocionar {version} como Principal
-promote_version_changes: Cambios
-promote_version_preview: Vista previa
-outdated_notice: >-
-  El ítem principal ha sido actualizado desde que se creó esta versión. Por favor, revise todos los valores de campo a continuación, y confirme qué versión debe utilizarse para promocionar esta versión al elemento Principal.
-promote_notice: >-
-  Por favor, revise todos los valores de campo a continuación, y confirme qué versión debe utilizarse para promocionar esta versión al elemento Principal.
 delete_version: Eliminar Versión
 delete_version_copy: >-
   ¿Está seguro de que desea eliminar la versión '{version}'? Esta acción no se puede deshacer.
-delete_on_promote_copy: >-
-  ¿Quieres eliminar o conservar la versión '{version}' después de promocionarla?
 reset_bookmark: Restablecer el marcador
 update_bookmark: Actualizar el marcador
 delete_bookmark: Eliminar Marcador
@@ -460,7 +452,6 @@ revision_delta_created: Creado
 revision_delta_created_externally: Creado Externamente
 revision_delta_updated: '1 Campo Actualizado | {count} Campos Actualizados'
 revision_delta_deleted: Eliminado
-revision_delta_version_saved: 'Versión guardada (1 campo actualizado) | Versión guardada ({count} campos actualizados)'
 revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo ha sido actualizado, pero su valor está siendo ocultado por razones de seguridad.
 revision_delta_other: Revisión
@@ -2556,15 +2547,6 @@ search_flow: Buscar Flujo...
 percent: Porcentaje
 show_password: Mostrar Contraseña
 hide_password: Ocultar Contraseña
-bsl_banner:
-  welcome_to_directus: '¡Le damos la bienvenida a Directus!'
-  directus_free_use: El Directo es libre de usar para entidades menores de 5 millones de dólares en ingresos anuales, financiamiento o presupuesto operativo.
-  organization_threshold: Las entidades por encima de este umbral requieren una licencia de pago.
-  license_agreement: Al hacer clic en "Aceptar", acepta los {directusBsl} y {privacyPolicy}.
-  directus_bsl: BSL de Directus 1,1
-  privacy_policy: Política de Privacidad
-  accept_terms: Aceptar
-  get_license: Obtener una licencia
 accepted: Aceptado
 text_direction_auto: Automático (coincidir idioma)
 text_direction_ltr: Izquierda a derecha (LTR)

@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Hakkında
+first_name: Ad
+last_name: Soyad
 identifier: Tanımlayıcı
 avatar: Avatar
 application: Uygulama
@@ -46,6 +48,8 @@ location: Konum
 collection_names_are_case_sensitive: Koleksiyon adları büyük/küçük harfe duyarlıdır
 condition_rules: Durum Kuralları
 input: Girdi
+invalid_input: Geçersiz Giriş
+not_a_number: Sayı değil
 maps: Haritalar
 switch_user: Kullanıcı Değiştir
 item_creation: Öğe Oluşturma
@@ -112,6 +116,12 @@ hook: Kanca
 fill_width: Genişliği Doldur
 field_name_translations: Alan Adı Çevirileri
 enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için parolanızı girin
+sso_tfa_setup_notice: Hesabınızdan çıkış yapılacak ve tekrar giriş yapmanız istenecektir. Kaydedilmemiş değişiklikler silinecektir.
+enable_tfa: 2FA'yı etkinleştirin
+cancel_tfa_setup: 2FA kurulumunu iptal et
+cancel_tfa_setup_notice: Kurulumu iptal etmek istediğinden emin misin?
+keep_setup: Kuruluma devam et
+cancel_setup: Kurulumu iptal et
 add_field: Alan Ekle
 role_name: Rol Adı
 policy_name: Politika İsmi
@@ -168,20 +178,9 @@ rename_version: Sürümü Yeniden Adlandır
 compare_version: Sürümü Karşılaştır
 save_version: Sürümü Kaydet
 promote_version: Sürümü Yükselt
-promote_version_disabled: Değişiklik Yok
-promote_version_drawer_title: '{version} Temele geliştir'
-promote_version_changes: Değişiklikler
-promote_version_preview: Önizleme
-outdated_notice: >-
-  Bu versiyon yaratıldığı için temel eşya güncellenmiştir.
-  Lütfen aşağıdaki bütün alan değerlerini inceleyiniz. ve bu sürümü ana öğe ye yükseltirken hangi sürümün kullanılması gerektiğini onaylayın.
-promote_notice: >-
-  Lütfen aşağıdaki bütün alan değerlerini inceleyiniz, ve bu sürümü ana öğeye yükseltirken hangi sürümün kullanılması gerektirdiğini onaylayın.
 delete_version: Sürümü Sil
 delete_version_copy: >-
   {version} versiyonu silme kararında emin misiniz? Bu eylem geri alınamaz.
-delete_on_promote_copy: >-
-  {version}'nu yükselttikten sonra silmek mi yoksa saklamak mı istersiniz?
 reset_bookmark: Yer İşaretini Sıfırla
 update_bookmark: Yer İşaretini Güncelle
 delete_bookmark: Yer İşaretini Kaldır
@@ -452,7 +451,6 @@ revision_delta_created: Oluşturulma Tarihi
 revision_delta_created_externally: Harici Olarak Oluşturuldu
 revision_delta_updated: '1 Alan Güncellendi | {count} Alan güncellendi'
 revision_delta_deleted: Silindi
-revision_delta_version_saved: 'Versiyon Kayedet (Alan 1 Güncelleştirildi) | Versiyon Kaydet ({count} alanı Güncelleştirldi)'
 revision_delta_reverted: Geri Alındı
 revision_delta_update_message: Bu alan güncellenmiştir ancak değeri güvenlik nedeniyle gizlenmektedir.
 revision_delta_other: Revizyon
@@ -1154,6 +1152,7 @@ page_help_files_item: >-
 page_help_settings_project: "**Ayarlar** - Projenizin global konfigürasyon ayarları."
 page_help_settings_appearance: "**Görünüş** - Projenizin görünüş ve tema ayarları."
 page_help_settings_extensions: '**Uzantılar** - Projenize yüklenmiş uzantılar.'
+page_help_settings_ai: "."
 page_help_settings_datamodel_collections: >-
   **Veri Modeli: Koleksiyonlar** — Tüm uygun koleksiyonları listeler. Bu görünür, gizli, sistem koleksiyonları ve dağınık veritabanı tablolarını içerir.
 page_help_settings_datamodel_fields: >-

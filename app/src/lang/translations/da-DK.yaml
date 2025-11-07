@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Om
+first_name: Fornavn
+last_name: Efternavn
 identifier: Identifier
 avatar: Profilbillede
 application: Anvendelse
@@ -156,7 +158,6 @@ switch_version: Skift Version
 switch_version_copy: Er du sikker på, at du vil skifte til "{version}"-versionen? Ændringer, der ikke er gemt, går tabt.
 create_version: Opret Version
 rename_version: Omdøb Version
-promote_version_preview: Eksempelvisning
 reset_bookmark: Nustil bogmærke
 update_bookmark: Opdater bogmærke
 delete_bookmark: Slet Bogmærke

@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Info
+first_name: Eesnimi
+last_name: Perekonnanimi
 identifier: Identifikaator
 avatar: Avatar
 application: Rakendus
@@ -143,7 +145,6 @@ keep: Säilita
 version: Versioon
 version_key: Versiooni võti
 version_name: Versiooni nimi
-promote_version_preview: Eelvaade
 reset_bookmark: Kustuta Järjehoidja
 update_bookmark: Järjehoidja Uuendamine
 delete_bookmark: Kustuta Järjehoidja

@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Інформація про
+first_name: Ім'я
+last_name: Прізвище
 identifier: Ідентифікатор
 avatar: Аватар
 application: Додаток
@@ -164,19 +166,9 @@ rename_version: Перейменувати версію
 compare_version: Порівняти версію
 save_version: Зберегти версію
 promote_version: Просування версії
-promote_version_disabled: Жодних змін
-promote_version_drawer_title: Просувати {version} на Головну
-promote_version_changes: Зміни
-promote_version_preview: Перегляд
-outdated_notice: >-
-  Основний елемент було оновлено після створення цієї версії. Перегляньте всі значення полів нижче та підтвердьте, яку версію слід використовувати під час підвищення цієї версії до основного елемента.
-promote_notice: >-
-  Перегляньте всі значення полів нижче та підтвердьте, яку версію слід використовувати під час підвищення цієї версії до основного елемента.
 delete_version: Видалити версію
 delete_version_copy: >-
   Ви впевнені, що хочете видалити версію "{version}"? Цю дію не можна скасувати.
-delete_on_promote_copy: >-
-  Ви бажаєте видалити або зберегти версію "{version}" після підвищення?
 reset_bookmark: Скинути закладку
 update_bookmark: Оновити закладку
 delete_bookmark: Видалити закладку
@@ -451,7 +443,6 @@ revision_delta_created: Створено
 revision_delta_created_externally: Створено ззовні
 revision_delta_updated: 'Оновлено 1 поле | Оновлено {count} полів'
 revision_delta_deleted: Видалено
-revision_delta_version_saved: 'Збереження версії (оновлено 1 поле) | Збереження версії (оновлено {count} полів)'
 revision_delta_reverted: Відновлено
 revision_delta_update_message: Це поле оновлено, але його значення приховується з міркувань безпеки.
 revision_delta_other: Редакція

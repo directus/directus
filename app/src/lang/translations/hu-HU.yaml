@@ -1,4 +1,6 @@
 ---
+first_name: Keresztnév
+last_name: Vezetéknév
 identifier: Azonosító
 avatar: Profilkép
 application: Alkalmazás
@@ -82,7 +84,6 @@ rename_folder: Mappa átnevezése
 delete_folder: Mappa törlése
 prefix: Előtag
 suffix: Utótag
-promote_version_preview: Előnézet
 reset_bookmark: Könyvjelző visszaállítása
 update_bookmark: Könyvjelző frissítése
 delete_bookmark: Könyvjelző törlése

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/types",
-	"version": "13.2.3",
+	"version": "13.3.0",
 	"description": "Shared types for Directus",
 	"homepage": "https://directus.io",
 	"repository": {

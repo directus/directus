@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: О программе
+first_name: Имя
+last_name: Фамилия
 identifier: Индентификатор
 avatar: Аватар
 application: Приложение
@@ -46,6 +48,8 @@ location: Расположение
 collection_names_are_case_sensitive: Названия коллекций чувствительны к регистру
 condition_rules: Правила условий
 input: Ввод текста
+invalid_input: Некорректное значение
+not_a_number: Не число
 maps: Карты
 switch_user: Сменить пользователя
 item_creation: Создание элемента
@@ -113,6 +117,11 @@ fill_width: В ширину
 field_name_translations: Переводы названия поля
 enter_password_to_enable_tfa: Введите свой пароль для включения двухфакторной аутентификации
 sso_tfa_setup_notice: Вы будете отключены от своего аккаунта и вам потребуется снова войти в систему. Любые несохранённые изменения будут потеряны.
+enable_tfa: Включить 2FA
+cancel_tfa_setup: Отменить установку 2FA
+cancel_tfa_setup_notice: Вы уверены что хотите отменить установку 2FA?
+keep_setup: Продолжить установку
+cancel_setup: Отменить установку
 add_field: Добавить поле
 role_name: Название роли
 policy_name: Название политики
@@ -169,19 +178,9 @@ rename_version: Переименовать Версию
 compare_version: Сравнить Версии
 save_version: Сохранить Версию
 promote_version: Повысить версию
-promote_version_disabled: Без изменений
-promote_version_drawer_title: Сделать {version} главной
-promote_version_changes: Изменения
-promote_version_preview: Предпросмотр
-outdated_notice: >-
-  Главный пункт был обновлен с момента создания этой версии. Пожалуйста, ознакомьтесь со всеми значениями полей ниже, и подтвердите, какая версия должна быть использована при продвижении этой версии в основной элемент.
-promote_notice: >-
-  Пожалуйста, ознакомьтесь со всеми значениями полей ниже, и подтвердите, какая версия должна быть использована при продвижении этой версии в основной элемент.
 delete_version: Удалить версию
 delete_version_copy: >-
   Вы уверены, что хотите удалить версию «{version}»? Это действие нельзя отменить.
-delete_on_promote_copy: >-
-  Вы хотите удалить или сохранить версию «{version}» после продвижения?
 reset_bookmark: Сбросить закладку
 update_bookmark: Обновить закладку
 delete_bookmark: Удалить закладку
@@ -321,6 +320,8 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Сбросить настройки страницы
 hidden_field: Скрытое поле
 hidden_on_detail: Скрывать в карточке
+clear_hidden_field: Очистить значение(я)
+clear_value_on_save_when_hidden: При сохранении очистить скрытые значения
 readonly_field_label: Отключите это поле в приложении
 required_readonly_field_warning: Включение для поля режимов readonly и required предотвращает сохранение элемента, если его значение пусто.
 key: Ключ
@@ -459,7 +460,6 @@ revision_delta_created: Создано
 revision_delta_created_externally: Создано извне
 revision_delta_updated: 'Обновлено 1 поле | Обновлено {count} полей'
 revision_delta_deleted: Удалено
-revision_delta_version_saved: 'Версия Сохранена (Обновлено 1 поле) | Версия Сохранена (Обновлено {count} полей)'
 revision_delta_reverted: Восстановлено
 revision_delta_update_message: Это поле было обновлено, но его значение скрывается по соображениям безопасности.
 revision_delta_other: Редакция
@@ -560,6 +560,9 @@ original: Исходный
 url: URL-адрес
 import_label: Импорт
 file_details: Информация о файле
+copy_id: Скопировать ID
+copy_id_success: ID скопирован
+copy_id_fail: ID не скопирован
 dimensions: Размеры
 size: Размер
 created: Создано
@@ -723,6 +726,7 @@ enabled_dev_tooltip: Расширения приложения всегда вк
 disable_tfa: Отключить 2FA
 admin_disable_tfa_text: Вы уверены, что хотите отключить 2FA для этого пользователя?
 tfa_setup: Настроить двухфакторную аутентификацию (2FA)
+tfa_setup_description: Установите двухфакторную аутентификацию для защиты вашей учетной записи
 tfa_scan_code: Сканируйте код в приложении-аутентификаторе для завершения настройки 2FA
 enter_otp_to_disable_tfa: Введите OTP для отключения 2FA
 create_account: Создать учётную запись
@@ -1099,6 +1103,7 @@ wysiwyg_options:
   h4: Заголовок 4
   h5: Заголовок 5
   h6: Заголовок 6
+  pre: Предварительно отформатировано
   fontselect: Выберите шрифт
   fontsizeselect: Выберите размер шрифта
   indent: Отступ
@@ -1141,6 +1146,8 @@ settings_roles: Роли пользователей
 settings_permissions: Политики доступа
 settings_project: Настройки
 settings_appearance: Внешний вид
+settings_ai: ИИ
+model_context_protocol: Model Context Protocol
 settings_webhooks: Веб-хуки
 settings_flows: Процессы
 settings_system_logs: Системные логи
@@ -1185,12 +1192,14 @@ page_help_files_item: >-
 page_help_settings_project: "**Настройки проекта** — глобальные параметры конфигурации проекта."
 page_help_settings_appearance: "**Вид** — внешний вид вашего проекта и возможности его оформления."
 page_help_settings_extensions: '**Расширения** — расширения, установленные в вашем проекте.'
+page_help_settings_ai: "**ИИ** — параметры конфигурации искусственного интеллекта вашего проекта."
 page_help_settings_datamodel_collections: >-
   **Модель данных: коллекции** – список всех доступных коллекций. Включает в себя видимые, скрытые и системные коллекции, а также ненастроенные таблицы базы данных, которые можно добавить.
 page_help_settings_datamodel_fields: >-
   **Модель данных: коллекция** — форма для управления этой коллекцией и её полями.
 page_help_settings_system_logs: '**Системные журналы** — доступ к потоку системных журналов.'
 page_help_settings_policies_collection: '**Просмотреть политики** — список всех политик проекта.'
+page_help_settings_policies_item: '**Настройка прав ** — Управление разрешениями прав и другими настройками.'
 page_help_settings_roles_collection: '**Обзор ролей** — список всех ролей в проекте.'
 page_help_settings_roles_item: "**Карточка роли** — управление разрешениями роли и другими настройками."
 page_help_settings_presets_collection: >-
@@ -1333,6 +1342,7 @@ fields:
     tags: Теги
     user_preferences: Пользовательские настройки
     language: Язык
+    text_direction: Направление текста
     tfa_secret: Двухфакторная аутентификация
     admin_options: Параметры администратора
     status: Статус
@@ -1411,6 +1421,11 @@ fields:
     public_registration_verify_email: Подтвердить эл. почту
     public_registration_verify_email_note: Отправить письмо регистрирующему пользователю с просьбой нажать на ссылку подтверждения, прежде чем они смогут войти.
     visual_editor_urls: URL-адреса визуального редактора
+    mcp_enabled: MCP сервер
+    mcp_enabled_note: 'Подключите инструменты AI/LLM к вашему проекту Directus через <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. Это позволяет ИИ ассистентам безопасно считывать и взаимодействовать с данными Directus.'
+    mcp_notice: 'Model Context Protocol — это стандарт для подключения LLM к таким приложениям, как Directus. Единожды настроенный, Directus MCP сервер будет доступен по `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Узнать больше про MCP и его установку.</a>'
+    mcp_allow_deletes: Разрешить удаления
+    mcp_prompts_collection: AI Prompts Collection
   directus_shares:
     name: Название
     role: Роль
@@ -2482,6 +2497,8 @@ operations:
     name: Сон
     description: Ожидать заданное количество миллисекунд
     milliseconds: Миллисекунды
+  throw-error:
+    message: Сообщение об ошибке
   transform:
     name: Содержание преобразования
     description: Изменить JSON-содержимое процесса
@@ -2541,13 +2558,4 @@ search_flow: Последовательность поиска...
 percent: Процент
 show_password: Показать пароль
 hide_password: Скрыть пароль
-bsl_banner:
-  welcome_to_directus: Добро пожаловать в Directus!
-  directus_free_use: Directus бесплатен для организаций с годовым доходом, финансированием или операционным бюджетом менее 5 миллионов долларов.
-  organization_threshold: Для организаций, превышающих этот порог, требуется платная лицензия.
-  license_agreement: Нажимая кнопку «Принять», вы соглашаетесь с {directusBsl} и {privacyPolicy}.
-  directus_bsl: Directus BSL 1.1
-  privacy_policy: Политика конфиденциальности
-  accept_terms: Принять
-  get_license: Получить лицензию
 accepted: Принято

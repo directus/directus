@@ -114,6 +114,7 @@ export const DEFAULTS = {
 
 	TELEMETRY: true,
 	TELEMETRY_URL: 'https://telemetry.directus.io',
+	COMPLIANCE_URL: 'https://telemetry.directus.io',
 
 	ASSETS_CACHE_TTL: '30d',
 	ASSETS_TRANSFORM_MAX_CONCURRENT: 25,

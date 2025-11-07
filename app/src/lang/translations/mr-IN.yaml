@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: माहिती
+first_name: पहिले नाव
+last_name: आडनाव
 identifier: ओळखकर्ता
 avatar: अवतार
 application: अर्ज
@@ -175,8 +177,6 @@ promote_notice: >-
 delete_version: व्हर्जन डिलीट करा
 delete_version_copy: >-
   तुम्हाला खात्री आहे की तुम्ही "{version}" व्हर्जन डिलीट करू इच्छिता? ही क्रिया पूर्ववत केली जाऊ शकत नाही.
-delete_on_promote_copy: >-
-  प्रमोट केल्यानंतर तुम्ही "{version}" व्हर्जन हटवू किंवा ठेवू इच्छिता?
 reset_bookmark: बुकमार्क पुन्हा सेट करा
 update_bookmark: बुकमार्क अपडेट करा
 delete_bookmark: बुकमार्क डिलीट करा
@@ -451,7 +451,6 @@ revision_delta_created: तयार केले
 revision_delta_created_externally: बाहेरून तयार केले
 revision_delta_updated: '1 फील्ड अपडेट केली | {count} फील्ड अपडेट केली'
 revision_delta_deleted: डिलीट केले
-revision_delta_version_saved: 'व्हर्जन जतन करा (1 फील्ड अपडेट केली ) | आवृत्ती जतन ({count} फील्ड अपडेट केली)'
 revision_delta_reverted: पूर्ववत केले
 revision_delta_update_message: हे फील्ड अपडेट केले गेले आहे परंतु सुरक्षिततेच्या कारणास्तव त्याचे व्हॅल्यू लपवले जात आहे.
 revision_delta_other: पडताळणी
