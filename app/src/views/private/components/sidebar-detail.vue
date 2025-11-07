@@ -2,11 +2,13 @@
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { AccordionContent, AccordionHeader, AccordionItem, AccordionTrigger } from 'reka-ui';
 
-defineProps<{ id: string; title: string; icon: string }>();
+withDefaults(defineProps<{ id: string; title: string; icon: string, placement?: 'start' | 'end' }>(), {
+	placement: 'start',
+});
 </script>
 
 <template>
-	<AccordionItem class="accordion-item" :value="id">
+	<AccordionItem class="accordion-item" :class="placement" :value="id">
 		<AccordionHeader>
 			<AccordionTrigger class="accordion-trigger">
 				<VIcon class="accordion-trigger-icon" :name="icon" />
@@ -22,7 +24,6 @@ defineProps<{ id: string; title: string; icon: string }>();
 </template>
 
 <style lang="scss" scoped>
-
 .accordion-item {
 	display: contents;
 }

@@ -10,7 +10,7 @@ import AiSidebarDetail from '@/ai/components/ai-sidebar-detail.vue';
 		<AccordionRoot type="single" collapsible class="accordion-root">
 			<slot name="sidebar" />
 			<div class="spacer" />
-			<ai-sidebar-detail />
+			<ai-sidebar-detail class="ai-sidebar-detail" />
 		</AccordionRoot>
 	</aside>
 </template>
@@ -19,6 +19,7 @@ import AiSidebarDetail from '@/ai/components/ai-sidebar-detail.vue';
 #sidebar {
 	inline-size: 100%;
 	block-size: 100%;
+	position: relative;
 	overflow: hidden;
 	background-color: var(--theme--sidebar--background);
 	font-family: var(--theme--sidebar--font-family);
@@ -30,12 +31,13 @@ import AiSidebarDetail from '@/ai/components/ai-sidebar-detail.vue';
 }
 
 .accordion-root {
-	block-size: 100%;
+	block-size: calc(100% - 60px);
 	display: flex;
 	flex-direction: column;
 }
 
-.spacer {
-	flex-grow: 1;
+.ai-sidebar-detail {
+	position: absolute;
+	inset-block-end: 0;
 }
 </style>

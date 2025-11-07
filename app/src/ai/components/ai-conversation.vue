@@ -47,6 +47,7 @@ const aiStore = useAiStore();
 	flex-direction: column;
 	flex: 1;
 	min-block-size: 0;
+	block-size: 100%;
 }
 
 .messages-container {
