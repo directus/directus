@@ -87,11 +87,11 @@ onMounted(() => {
 		}
 
 		&:nth-child(2) {
-			--delay: calc(var(--slow) + var(--duration) / 4);
+			--delay: calc(var(--slow) + 200ms);
 		}
 
 		&:nth-child(3) {
-			--delay: calc(var(--slow) + var(--duration) / 2);
+			--delay: calc(var(--slow) + 400ms);
 		}
 	}
 }
