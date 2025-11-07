@@ -55,10 +55,6 @@ watch(
 				<dd>{{ lastAccessDate }}</dd>
 			</div>
 		</dl>
-
-		<v-divider />
-
-		<div v-md="t('page_help_users_item')" class="page-description" />
 	</sidebar-detail>
 </template>
 

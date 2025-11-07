@@ -46,10 +46,6 @@ async function fetchCounts() {
 				<dd>{{ presetsCount }}</dd>
 			</div>
 		</dl>
-
-		<v-divider />
-
-		<div v-md="t('page_help_settings_presets_collection')" class="page-description" />
 	</sidebar-detail>
 </template>
 

@@ -312,10 +312,6 @@ async function copyFileId() {
 				</div>
 			</template>
 		</dl>
-
-		<v-divider />
-
-		<div v-md="t('page_help_files_item')" class="page-description" />
 	</sidebar-detail>
 </template>
 
