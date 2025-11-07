@@ -54,10 +54,21 @@ export const useAiStore = defineStore('ai-store', () => {
 			body: () => ({
 				provider: currentProvider.value,
 				model: currentModel.value,
-				tools: [...localTools.value.map(toApiTool)],
+				tools: [...systemTools.value, ...localTools.value.map(toApiTool)]
 			}),
 		}),
 		sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+		onFinish: ({ isAbort, message }) => {
+			if (isAbort) {
+				// Update the state to done and delete the providermeta from the aborted message.parts where part.type === 'reasoning' to prevent OpenAI reasoning issues
+				message.parts.forEach((part) => {
+					if (part.type === 'reasoning') {
+						part.state = 'done';
+						delete part.providerMetadata;
+					}
+				});
+			}
+		},
 		onToolCall: async ({ toolCall }) => {
 			if (toolCall.dynamic) {
 				return;
