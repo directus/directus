@@ -201,7 +201,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 
 			<div class="shadow" />
 
-			<div v-if="!disabled" class="actions">
+			<div v-if="!disabled || nonEditable" class="actions">
 				<v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
 					<v-icon name="zoom_in" />
 				</v-button>
@@ -216,16 +216,29 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 					<v-icon name="download" />
 				</v-button>
 
-				<template v-if="!internalDisabled">
+				<template v-if="!internalDisabled || nonEditable">
 					<v-button v-tooltip="t('edit_item')" icon rounded @click="editImageDetails = true">
 						<v-icon name="edit" />
 					</v-button>
 
-					<v-button v-if="updateAllowed" v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
+					<v-button
+						v-if="updateAllowed && !nonEditable"
+						v-tooltip="t('edit_image')"
+						icon
+						rounded
+						@click="editImageEditor = true"
+					>
 						<v-icon name="tune" />
 					</v-button>
 
-					<v-remove button deselect :item-info="relationInfo" :item-edits="edits" @action="deselect" />
+					<v-remove
+						v-if="!nonEditable"
+						button
+						deselect
+						:item-info="relationInfo"
+						:item-edits="edits"
+						@action="deselect"
+					/>
 				</template>
 			</div>
 
