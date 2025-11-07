@@ -21,7 +21,7 @@ const content = ref('');
 const focused = ref(false);
 const sending = ref(false);
 
-const canSubmit = computed(() => content.value.trim().length > 0);
+const canSubmit = computed(() => content.value.trim().length > 0 && !sending.value);
 
 function handleSubmit() {
 	if (!canSubmit.value) return;
