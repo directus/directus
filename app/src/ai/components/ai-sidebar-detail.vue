@@ -2,23 +2,14 @@
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
-import { ref, watch } from 'vue';
 import AiConversation from './ai-conversation.vue';
 import AiHeader from './ai-header.vue';
 
 const sidebarStore = useSidebarStore();
-
-const open = ref(false);
-
-sidebarStore.onCollapse(() => (open.value = false));
-
-watch(open, (newOpen) => {
-	if (newOpen) sidebarStore.expand();
-});
 </script>
 
 <template>
-	<CollapsibleRoot v-model:open="open" class="collapsible-root">
+	<CollapsibleRoot v-model:open="sidebarStore.aiChatActive" class="collapsible-root">
 		<CollapsibleTrigger class="collapsible-trigger">
 			<VIcon name="smart_toy" class="collapsible-trigger-icon" />
 			<span v-show="!sidebarStore.collapsed" class="collapsible-trigger-title">{{ $t('ai_chat') }}</span>
