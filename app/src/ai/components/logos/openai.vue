@@ -1,5 +1,5 @@
 <template>
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 260">
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 260" aria-hidden="true">
 		<!-- Icon from SVG Logos by Gil Barbara - https://raw.githubusercontent.com/gilbarbara/logos/master/LICENSE.txt -->
 		<path
 			fill="currentColor"
