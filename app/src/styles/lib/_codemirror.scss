@@ -17,9 +17,12 @@
 	box-shadow: var(--theme--form--field--input--box-shadow);
 }
 
-.disabled:not(.non-editable) .CodeMirror {
-	color: var(--theme--foreground-subdued);
-	background-color: var(--theme--form--field--input--background-subdued);
+.disabled .CodeMirror {
+	color: var(--form--field--input--disabled--foreground, var(--theme--foreground-subdued));
+	background-color: var(
+		var(--form--field--input--disabled--background),
+		var(--theme--form--field--input--background-subdued)
+	);
 }
 
 .CodeMirror .CodeMirror-placeholder {
@@ -31,7 +34,7 @@
 	box-shadow: var(--theme--form--field--input--box-shadow-hover);
 }
 
-.disabled:not(.non-editable) .CodeMirror:hover {
+.disabled .CodeMirror:hover {
 	border-color: var(--theme--form--field--input--border-color);
 }
 

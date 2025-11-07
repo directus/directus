@@ -36,6 +36,7 @@ defineEmits<{
 		:model-value="value"
 		:indeterminate="value === null"
 		:disabled="disabled"
+		:non-editable="nonEditable"
 		:style="{
 			'--v-checkbox-color': colorOn,
 			'--v-checkbox-unchecked-color': colorOff,

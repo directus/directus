@@ -188,7 +188,7 @@ function onClickIcon(e: MouseEvent): void {
 		cursor: not-allowed;
 
 		.label {
-			color: var(--theme--foreground-subdued);
+			color: var(--form--field--disabled--primary, var(--theme--foreground-subdued));
 		}
 
 		.checkbox {
@@ -209,7 +209,10 @@ function onClickIcon(e: MouseEvent): void {
 		transition: all var(--fast) var(--transition);
 
 		&:disabled {
-			background-color: var(--theme--form--field--input--background-subdued);
+			background-color: var(
+				var(--form--field--input--disabled--background),
+				var(--theme--form--field--input--background-subdued)
+			);
 		}
 
 		&::before {
@@ -238,7 +241,7 @@ function onClickIcon(e: MouseEvent): void {
 		}
 	}
 
-	&:not(:disabled:not(.non-editable)):not(.indeterminate) {
+	&:not(:disabled):not(.indeterminate) {
 		.label {
 			color: var(--theme--foreground);
 		}

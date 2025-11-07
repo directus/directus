@@ -45,6 +45,8 @@ const props = withDefaults(
 		fullWidth?: boolean;
 		/** Disables any interaction */
 		disabled?: boolean;
+		/** Set the non-editable state for the select */
+		nonEditable?: boolean;
 		/** Allow to deselect all currently selected items */
 		showDeselect?: boolean;
 		/** Allow to enter custom values */
@@ -287,6 +289,7 @@ function useDisplayValue() {
 					clickable
 					:placeholder="placeholder"
 					:disabled="disabled"
+					:non-editable="nonEditable"
 					:active="active"
 					@click="toggle"
 					@keydown:enter="toggle"
@@ -310,6 +313,7 @@ function useDisplayValue() {
 				<v-list-item
 					clickable
 					:disabled="modelValue === null || (Array.isArray(modelValue) && !modelValue.length)"
+					:non-editable="nonEditable"
 					@click="$emit('update:modelValue', null)"
 				>
 					<v-list-item-icon v-if="multiple === true">

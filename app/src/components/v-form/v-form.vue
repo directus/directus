@@ -392,7 +392,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 </script>
 
 <template>
-	<div ref="el" :class="['v-form', gridClass, { inline }]">
+	<div ref="el" :class="['v-form', gridClass, { inline, 'non-editable': isNonEditable }]">
 		<validation-errors
 			v-if="showValidationErrors && validationErrors.length > 0"
 			:validation-errors="validationErrors"
@@ -493,6 +493,17 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 
 .v-form {
 	@include mixins.form-grid;
+
+	--form--field--input--disabled--background: var(--theme--form--field--input--background-subdued);
+	--form--field--input--disabled--foreground: var(--theme--form--field--input--foreground-subdued);
+	--form--icon--disabled: var(--theme--foreground-subdued);
+	--form--field--disabled--primary: var(--theme--foreground-subdued);
+	&.non-editable {
+		--form--field--input--disabled--background: var(--theme--form--field--input--background);
+		--form--field--input--disabled--foreground: var(--theme--form--field--input--foreground);
+		--form--icon--disabled: var(--theme--primary);
+		--form--field--disabled--primary: var(--theme--primary);
+	}
 
 	.first-visible-field :deep(.presentation-divider) {
 		margin-block-start: 0;

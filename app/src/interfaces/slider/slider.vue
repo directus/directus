@@ -38,6 +38,7 @@ defineEmits(['input']);
 		:class="{ 'non-editable': nonEditable }"
 		:model-value="value"
 		:disabled="disabled"
+		:non-editable="nonEditable"
 		:min="minValue"
 		:max="maxValue"
 		:step="stepInterval"

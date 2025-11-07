@@ -211,7 +211,13 @@ function getLinkForItem() {
 						<v-icon name="launch" />
 					</router-link>
 
-					<v-icon v-if="!disabled" v-tooltip="t('edit_item')" name="edit" clickable @click="editModalActive = true" />
+					<v-icon
+						v-if="!disabled || nonEditable"
+						v-tooltip="t('edit_item')"
+						name="edit"
+						clickable
+						@click="editModalActive = true"
+					/>
 
 					<v-remove
 						v-if="!disabled"
@@ -269,20 +275,14 @@ function getLinkForItem() {
 	}
 }
 
-.many-to-one {
-	position: relative;
+.many-to-one.non-editable .item-actions {
+	:deep(.v-icon) {
+		--v-icon-color-hover: var(--theme--form--field--input--foreground);
+	}
 }
 
-.many-to-one.non-editable {
-	pointer-events: none;
-
-	:deep(.v-list-item) {
-		opacity: 1;
-		color: var(--theme--foreground);
-		background-color: var(--theme--form--field--input--background);
-
-		--v-list-item-border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
-	}
+.many-to-one {
+	position: relative;
 }
 
 .v-list-item {
