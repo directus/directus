@@ -64,7 +64,7 @@ const expandedText = computed(() => {
 	align-items: start;
 	text-align: start;
 	gap: 0.375rem;
-	font-size: rem;
+	font-size: 12px;
 	font-weight: 500;
 	color: var(--theme--foreground);
 
