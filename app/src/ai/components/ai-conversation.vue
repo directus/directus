@@ -2,6 +2,7 @@
 import { useAiStore } from '../stores/use-ai';
 import AiMessageList from './ai-message-list.vue';
 import AiInput from './ai-input.vue';
+import VInfo from '@/components/v-info.vue';
 
 const aiStore = useAiStore();
 </script>
@@ -15,6 +16,11 @@ const aiStore = useAiStore();
 				should-auto-scroll
 				should-scroll-to-bottom
 			/>
+
+			<VInfo v-if="aiStore.messages.length === 0" icon="smart_toy" :title="$t('ai.build_with_chat')" type="primary" class="empty-state">
+				{{ $t('ai.responses_may_be_inaccurate') }}
+			</VInfo>
+
 			<v-notice v-if="aiStore.error" multiline type="danger" class="error-notice">
 				<template #title>
 					{{ $t('ai.error') }}
@@ -82,4 +88,7 @@ const aiStore = useAiStore();
 	}
 }
 
+.empty-state {
+	margin-block-start: 30%;
+}
 </style>

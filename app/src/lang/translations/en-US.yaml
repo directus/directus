@@ -1680,6 +1680,8 @@ ai:
   unknown_error: Unknown Error
   prompt_input_placeholder: Type your message here...
   clear_conversation: Clear Conversation
+  build_with_chat: Build with AI Chat
+  responses_may_be_inaccurate: AI responses may be inaccurate
 mcp_prompts_collection:
   no_collection_selected: No collection selected
   no_collection_selected_copy: Select a collection to enable reusable prompt templates.
