@@ -85,10 +85,15 @@ const {
 	isArchived,
 	saveAsCopy,
 	refresh,
+	getItem,
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, query);
 
-const { onSave, users: collabUsers, connected } = useCollab(collection, primaryKey, currentVersion, edits, refresh);
+const {
+	onSave,
+	users: collabUsers,
+	connected,
+} = useCollab(collection, primaryKey, currentVersion, item, edits, getItem);
 
 const validationErrors = computed(() => {
 	if (currentVersion.value === null) return itemValidationErrors.value;

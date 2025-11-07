@@ -5,6 +5,7 @@ import { handleWebSocketError } from '../../errors.js';
 import { getMessageType } from '../../utils/message.js';
 import { CollabRooms } from './room.js';
 import type { FocusMessage, JoinMessage, LeaveMessage, SaveMessage, UpdateMessage } from './types.js';
+import type { SchemaOverview } from '@directus/types';
 
 /**
  * Handler responsible for subscriptions
@@ -15,8 +16,8 @@ export class CollabHandler {
 	/**
 	 * Initialize the handler
 	 */
-	constructor() {
-		this.rooms = new CollabRooms();
+	constructor(schema: SchemaOverview) {
+		this.rooms = new CollabRooms(schema);
 		this.bindWebSocket();
 	}
 
@@ -46,7 +47,7 @@ export class CollabHandler {
 			const room = this.rooms.createRoom(
 				message.collection,
 				message.item,
-				message.version ?? undefined,
+				message.version ?? null,
 				message.initialChanges,
 			);
 

@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import {
 	COLLAB,
 	COLLAB_COLORS,
@@ -5,6 +6,7 @@ import {
 	type ClientID,
 	type CollabColor,
 	type Item,
+	type SchemaOverview,
 	type WebSocketClient,
 } from '@directus/types';
 import { createHash } from 'crypto';
@@ -12,17 +14,20 @@ import { random } from 'lodash-es';
 
 export class CollabRooms {
 	rooms: Record<string, Room> = {};
+	schema: SchemaOverview;
 
-	createRoom(collection: string, item: string | number, version: string | undefined, initialChanges?: Item) {
-		console.log('get room', collection, item, version);
+	constructor(schema: SchemaOverview) {
+		this.schema = schema;
+	}
+
+	createRoom(collection: string, item: string, version: string | null, initialChanges?: Item) {
+		if (!(collection in this.schema.collections) || item === '+') throw new ForbiddenError();
+
 		const uid = getRoomHash(collection, item, version);
 
 		if (!(uid in this.rooms)) {
 			this.rooms[uid] = new Room(uid, collection, item, version, initialChanges);
-			console.log('Room Created', this.rooms[uid]);
 		}
-
-		console.log(this.rooms);
 
 		return this.rooms[uid]!;
 	}
@@ -38,7 +43,6 @@ export class CollabRooms {
 	cleanupRooms() {
 		for (const room of Object.values(this.rooms)) {
 			if (room.clients.length === 0) {
-				console.log('Delete Room', room.uid);
 				delete this.rooms[room.uid];
 			}
 		}
@@ -48,20 +52,14 @@ export class CollabRooms {
 export class Room {
 	uid: string;
 	collection: string;
-	item: string | number;
-	version: string | undefined;
+	item: string;
+	version: string | null;
 	changes: Item;
 	clients: WebSocketClient[] = [];
 	clientColors: Record<ClientID, CollabColor> = {};
 	focuses: Record<string, ClientID> = {};
 
-	constructor(
-		uid: string,
-		collection: string,
-		item: string | number,
-		version: string | undefined,
-		initialChanges?: Item,
-	) {
+	constructor(uid: string, collection: string, item: string, version: string | null, initialChanges?: Item) {
 		this.uid = uid;
 		this.collection = collection;
 		this.item = item;
@@ -74,23 +72,25 @@ export class Room {
 	}
 
 	join(client: WebSocketClient) {
-		if (this.hasClient(client)) return;
+		if (!this.hasClient(client)) {
+			const clientColor = COLLAB_COLORS[random(COLLAB_COLORS.length - 1)]!;
+			this.clientColors[client.uid] = clientColor;
 
-		const clientColor = COLLAB_COLORS[random(COLLAB_COLORS.length - 1)]!;
+			this.sendAll({
+				action: 'join',
+				user: client.accountability!.user!,
+				connection: client.uid,
+				color: clientColor,
+			});
 
-		this.clientColors[client.uid] = clientColor;
-
-		this.sendAll({
-			action: 'join',
-			user: client.accountability!.user!,
-			connection: client.uid,
-			color: clientColor,
-		});
-
-		this.clients.push(client);
+			this.clients.push(client);
+		}
 
 		this.send(client, {
 			action: 'init',
+			collection: this.collection,
+			item: this.item,
+			version: this.version,
 			changes: this.changes,
 			focuses: this.focuses,
 			connection: client.uid,
@@ -109,7 +109,7 @@ export class Room {
 	leave(client: WebSocketClient) {
 		if (!this.hasClient(client)) return;
 
-		this.clients = this.clients.filter((c) => c.uid === client.uid);
+		this.clients = this.clients.filter((c) => c.uid !== client.uid);
 
 		this.sendAll({
 			action: 'leave',
@@ -183,6 +183,6 @@ export class Room {
 	}
 }
 
-export function getRoomHash(collection: string, item: string | number, version?: string) {
+export function getRoomHash(collection: string, item: string | number, version: string | null) {
 	return createHash('sha256').update([collection, item, version].join('-')).digest('hex');
 }

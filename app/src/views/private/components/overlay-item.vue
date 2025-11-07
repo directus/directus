@@ -86,6 +86,7 @@ const { users: collabUsers, connected } = useCollab(
 	collection,
 	primaryKey,
 	ref(null),
+	initialValues,
 	internalEdits,
 	refresh,
 	overlayActive,

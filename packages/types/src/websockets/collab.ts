@@ -1,6 +1,6 @@
 import z from 'zod';
 import type { Item } from '../items.js';
-import { WebSocketMessage, zodStringOrNumber } from './base.js';
+import { WebSocketMessage } from './base.js';
 
 export const COLLAB = 'collab';
 export const COLLAB_COLORS = ['purple', 'pink', 'blue', 'green', 'yellow', 'orange', 'red'] as const;
@@ -20,7 +20,7 @@ export const WebSocketCollabMessage = z.discriminatedUnion('action', [
 		type: z.literal(COLLAB),
 		action: z.literal('join'),
 		collection: z.string(),
-		item: zodStringOrNumber,
+		item: z.string(),
 		version: z.string().nullable(),
 		initialChanges: ZodItem.optional(),
 	}),
@@ -54,6 +54,9 @@ export type ClientID = string | number;
 export type ClientBaseCollabMessage =
 	| {
 			action: 'init';
+			collection: string;
+			item: string;
+			version: string | null;
 			changes: Item;
 			connection: ClientID;
 			focuses: Record<string, ClientID>;
