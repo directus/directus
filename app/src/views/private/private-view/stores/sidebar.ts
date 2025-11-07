@@ -6,12 +6,6 @@ export const useSidebarStore = defineStore('sidebar-store', () => {
 	const collapsed = useLocalStorage('sidebar-collapsed', false);
 	const size = useLocalStorage('sidebar-size', 250);
 
-	const aiChatActive = ref<boolean>(false);
-
-	watch(aiChatActive, (newActive) => {
-		if (newActive) expand();
-	});
-
 	const activeAccordionItem = ref<string>();
 
 	watch(activeAccordionItem, (newActiveItem) => {
@@ -21,7 +15,6 @@ export const useSidebarStore = defineStore('sidebar-store', () => {
 	watch(collapsed, (newCollapsed) => {
 		if (newCollapsed) {
 			activeAccordionItem.value = undefined;
-			aiChatActive.value = false;
 			collapseHook.trigger();
 		} else {
 			expandHook.trigger();
@@ -55,6 +48,5 @@ export const useSidebarStore = defineStore('sidebar-store', () => {
 		onCollapse: collapseHook.on,
 		onExpand: expandHook.on,
 		activeAccordionItem,
-		aiChatActive,
 	};
 });
