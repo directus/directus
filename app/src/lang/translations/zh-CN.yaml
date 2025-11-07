@@ -1889,6 +1889,8 @@ interfaces:
     description: 在现有模型之间选择
     include_system_collections: 包含系统模型
   system-owner:
+    update: 更新项目所有者
+    edit: 编辑项目所有者
     system-owner: 系统所有者
     description: 系统所有者接口
   system-collections:
@@ -2649,6 +2651,8 @@ percent: 百分比
 show_password: 显示密码
 hide_password: 隐藏密码
 bsl_banner:
+  title: 您没有设置项目的所有者。
+  license: 我们需要此信息以确保符合我们的 BSL 1.1 许可证。这应该是负责您项目的主要联系人。
   set_owner: 设置所有者
   remind_later: 稍后提醒
   remind_next_login: 我们会在您下次登录时再次提醒。
