@@ -12,7 +12,8 @@ const open = defineModel<boolean>('open', { default: false });
 const summaryText = computed(() => {
 	const titleSentence = props.text.split('\n\n')[0];
 
-	if (titleSentence) return titleSentence;
+	if (titleSentence) return titleSentence.replaceAll('**', '');
+
 	return null;
 });
 

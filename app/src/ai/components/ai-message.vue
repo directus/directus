@@ -77,7 +77,6 @@ withDefaults(defineProps<Props>(), {
   --ai-message-background       [role-based]
   --ai-message-color            [role-based]
   --ai-message-border-radius    [var(--theme--border-radius)]
-  --ai-message-padding          [1rem]
   --ai-message-gap              [0.75rem]
 */
 
