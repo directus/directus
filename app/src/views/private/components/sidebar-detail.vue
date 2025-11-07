@@ -104,7 +104,7 @@ onUnmounted(() => {
 
 .accordion-trigger-chevron {
 	color: var(--theme--foreground-subdued);
-	transform: rotate(0);
+	transform: rotate(0deg);
 	transition: var(--fast) var(--transition);
 	transition-property: transform, opacity;
 

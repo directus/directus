@@ -222,7 +222,7 @@ function useComparisonIndicator() {
 	transition: transform var(--fast) var(--transition);
 
 	&.active {
-		transform: rotate(0);
+		transform: rotate(0deg);
 	}
 }
 
