@@ -65,7 +65,7 @@ export const useAiStore = defineStore('ai-store', () => {
 			body: () => ({
 				provider: currentProvider.value,
 				model: currentModel.value,
-				tools: [...systemTools.value, ...localTools.value.map(toApiTool)]
+				tools: [...systemTools.value, ...localTools.value.map(toApiTool)],
 			}),
 		}),
 		sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
@@ -81,7 +81,9 @@ export const useAiStore = defineStore('ai-store', () => {
 			}
 		},
 		onToolCall: async ({ toolCall }) => {
-			if (toolCall.dynamic) {
+			const isServerTool = toolCall.dynamic || systemTools.value.includes(toolCall.toolName);
+
+			if (isServerTool) {
 				return;
 			}
 
