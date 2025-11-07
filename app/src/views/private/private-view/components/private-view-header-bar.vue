@@ -80,6 +80,7 @@ const showSidebarToggle = computed(() => {
 
 			<VIcon
 				v-if="showSidebarToggle"
+				v-tooltip.bottom="$t('toggle_sidebar')"
 				class="sidebar-toggle"
 				small
 				:name="sidebarStore.collapsed ? 'right_panel_open' : 'right_panel_close'"

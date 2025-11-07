@@ -1060,6 +1060,7 @@ operation_handle_resolve: 'Resolve: Click to Add or Drag to Reroute'
 operation_handle_reject: 'Reject: Click to Add or Drag to Reroute'
 visual_editor: Visual Editor
 toggle_navigation: Toggle Navigation
+toggle_sidebar: Toggle Sidebar
 toggle_editable_elements: Toggle Editable Elements
 no_url: No URL provided
 no_url_copy: Please add a URL in the settings.
