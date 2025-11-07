@@ -1,19 +1,45 @@
 <script setup lang="ts">
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { AccordionContent, AccordionHeader, AccordionItem, AccordionTrigger } from 'reka-ui';
+import { onUnmounted, watch } from 'vue';
 import { useSidebarStore } from '../private-view/stores/sidebar';
 
-withDefaults(defineProps<{ id: string; title: string; icon: string; placement?: 'start' | 'end' }>(), {
+const props = withDefaults(defineProps<{ id: string; title: string; icon: string; placement?: 'start' | 'end' }>(), {
 	placement: 'start',
 });
 
 const sidebarStore = useSidebarStore();
+
+const emit = defineEmits<{
+	toggle: [open: boolean];
+}>();
+
+watch(
+	() => sidebarStore.activeAccordionItem,
+	(newActive, oldActive) => {
+		if (newActive === props.id && newActive !== oldActive) {
+			emit('toggle', true);
+		} else if (oldActive === props.id && newActive !== props.id) {
+			emit('toggle', false);
+		}
+	},
+);
+
+onUnmounted(() => {
+	if (sidebarStore.activeAccordionItem === props.id) {
+		sidebarStore.activeAccordionItem = undefined;
+	}
+});
 </script>
 
 <template>
 	<AccordionItem class="accordion-item" :class="placement" :value="id">
 		<AccordionHeader>
-			<AccordionTrigger v-tooltip.left="sidebarStore.collapsed && title" class="accordion-trigger" :class="{ collapsed: sidebarStore.collapsed }">
+			<AccordionTrigger
+				v-tooltip.left="sidebarStore.collapsed && title"
+				class="accordion-trigger"
+				:class="{ collapsed: sidebarStore.collapsed }"
+			>
 				<VIcon class="accordion-trigger-icon" :name="icon" />
 				<span class="accordion-trigger-title">{{ title }}</span>
 				<VIcon class="accordion-trigger-chevron" name="chevron_left" />
