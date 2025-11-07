@@ -691,13 +691,21 @@ describe('ImportService', () => {
 	let tracker: Tracker;
 	let service: ImportService;
 
+	const baseSchema = {
+		collections: {
+			test_collection: {
+				singleton: false,
+			},
+		},
+	} as any;
+
 	beforeEach(() => {
 		db = knex.default({ client: MockClient }) as unknown as Knex;
 		tracker = createTracker(db);
 
 		service = new ImportService({
 			knex: db,
-			schema: {} as any,
+			schema: baseSchema,
 		});
 	});
 
@@ -723,7 +731,7 @@ describe('ImportService', () => {
 		test('validates create and update permissions', async () => {
 			const importService = new ImportService({
 				knex: db,
-				schema: {} as any,
+				schema: baseSchema,
 				accountability: createDefaultAccountability({
 					admin: false,
 				}),
@@ -754,7 +762,7 @@ describe('ImportService', () => {
 					collection: 'test_collection',
 				},
 				{
-					schema: {},
+					schema: baseSchema,
 					knex: db,
 				},
 			);
@@ -767,7 +775,7 @@ describe('ImportService', () => {
 					collection: 'test_collection',
 				},
 				{
-					schema: {},
+					schema: baseSchema,
 					knex: db,
 				},
 			);
@@ -896,6 +904,65 @@ describe('ImportService', () => {
 			expect(mockCleanup).toHaveBeenCalled();
 		});
 
+		test('imports single row into singleton collection using upsertSingleton', async () => {
+			const mockUpsertSingleton = vi.fn().mockResolvedValue(1);
+
+			const singletonService = new ImportService({
+				knex: db,
+				schema: {
+					collections: {
+						test_collection: {
+							singleton: true,
+						},
+					},
+				} as any,
+			});
+
+			vi.mocked(getService).mockReturnValue({
+				upsertSingleton: mockUpsertSingleton,
+			} as any);
+
+			const csvData = 'id,name\n999,Test';
+			const stream = Readable.from([csvData]);
+
+			await singletonService.importCSV('test_collection', stream);
+
+			expect(mockUpsertSingleton).toHaveBeenCalledTimes(1);
+
+			expect(mockUpsertSingleton).toHaveBeenCalledWith({ id: '999', name: 'Test' }, expect.any(Object));
+
+			expect(mockCleanup).toHaveBeenCalled();
+		});
+
+		test('rejects multiple rows for singleton collection', async () => {
+			const mockUpsertSingleton = vi.fn().mockResolvedValue(1);
+
+			const singletonService = new ImportService({
+				knex: db,
+				schema: {
+					collections: {
+						test_collection: {
+							singleton: true,
+						},
+					},
+				} as any,
+			});
+
+			vi.mocked(getService).mockReturnValue({
+				upsertSingleton: mockUpsertSingleton,
+			} as any);
+
+			const csvData = 'id,name\n1,Test One\n2,Test Two';
+			const stream = Readable.from([csvData]);
+
+			await expect(singletonService.importCSV('test_collection', stream)).rejects.toMatchObject({
+				code: 'INVALID_PAYLOAD',
+				message: expect.stringContaining('Cannot import multiple records into singleton collection'),
+			});
+
+			expect(mockCleanup).toHaveBeenCalled();
+		});
+
 		test('stops immediately on error without field', async () => {
 			const mockUpsertOne = vi.fn().mockRejectedValue({
 				code: ErrorCode.InvalidForeignKey,
@@ -1001,6 +1068,70 @@ describe('ImportService', () => {
 			expect(mockUpsertOne).toHaveBeenCalledTimes(2);
 			expect(mockUpsertOne).toHaveBeenCalledWith(data[0], expect.any(Object));
 			expect(mockUpsertOne).toHaveBeenCalledWith(data[1], expect.any(Object));
+		});
+
+		test('imports single object into singleton collection using upsertSingleton', async () => {
+			const mockUpsertSingleton = vi.fn().mockResolvedValue(1);
+
+			const singletonService = new ImportService({
+				knex: db,
+				schema: {
+					...baseSchema,
+					collections: {
+						...baseSchema.collections,
+						site_settings: {
+							singleton: true,
+						},
+					},
+				},
+			});
+
+			vi.mocked(getService).mockReturnValue({
+				upsertSingleton: mockUpsertSingleton,
+			} as any);
+
+			const data = [{ id: 999, site_name: 'My Site', theme: 'dark' }];
+			const jsonData = JSON.stringify(data);
+			const stream = Readable.from([jsonData]);
+
+			await singletonService.importJSON('site_settings', stream);
+
+			expect(mockUpsertSingleton).toHaveBeenCalledTimes(1);
+			expect(mockUpsertSingleton).toHaveBeenCalledWith(data[0], expect.any(Object));
+		});
+
+		test('rejects multiple objects for singleton collection', async () => {
+			const mockUpsertSingleton = vi.fn().mockResolvedValue(1);
+
+			const singletonService = new ImportService({
+				knex: db,
+				schema: {
+					...baseSchema,
+					collections: {
+						...baseSchema.collections,
+						site_settings: {
+							singleton: true,
+						},
+					},
+				},
+			});
+
+			vi.mocked(getService).mockReturnValue({
+				upsertSingleton: mockUpsertSingleton,
+			} as any);
+
+			const data = [
+				{ id: 1, site_name: 'Site One', theme: 'dark' },
+				{ id: 2, site_name: 'Site Two', theme: 'light' },
+			];
+
+			const jsonData = JSON.stringify(data);
+			const stream = Readable.from([jsonData]);
+
+			await expect(singletonService.importJSON('site_settings', stream)).rejects.toMatchObject({
+				code: 'INVALID_PAYLOAD',
+				message: expect.stringContaining('Cannot import multiple records into singleton collection'),
+			});
 		});
 
 		test('handles empty JSON array', async () => {
