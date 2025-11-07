@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { useRevisions } from '@/composables/use-revisions';
-import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 import type { Revision } from '@/types/revisions';
+import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 import { useGroupable } from '@directus/composables';
 import { ContentVersion, PrimaryKey } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
-import { computed, onMounted, ref, toRefs, useTemplateRef, watch } from 'vue';
+import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import RevisionsDateGroup from './revisions-date-group.vue';
-import { useTemplateData } from '@/composables/use-template-data';
 
 const props = defineProps<{
 	collection: string;
@@ -85,7 +84,7 @@ defineExpose({
 		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
 		@toggle="onToggle"
 	>
-	<!-- TODO @toggle no longer exists -->
+		<!-- TODO @toggle no longer exists -->
 		<v-progress-linear v-if="!revisions && loading" indeterminate />
 
 		<div v-else-if="revisionsCount === 0" class="empty">

@@ -1,9 +1,11 @@
 <template>
-	<slot name="prepend" />
-	<div class="actions">
-		<slot />
+	<div>
+		<slot name="prepend" />
+		<div class="actions">
+			<slot />
+		</div>
+		<slot name="append" />
 	</div>
-	<slot name="append" />
 </template>
 
 <style scoped>

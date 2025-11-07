@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import VIcon from '@/components/v-icon/v-icon.vue';
-import { AccordionContent, AccordionHeader, AccordionItem, AccordionTrigger, DropdownMenuArrow } from 'reka-ui';
+import { AccordionContent, AccordionHeader, AccordionItem, AccordionTrigger } from 'reka-ui';
 import { useSidebarStore } from '../private-view/stores/sidebar';
 
-withDefaults(defineProps<{ id: string; title: string; icon: string, placement?: 'start' | 'end' }>(), {
+withDefaults(defineProps<{ id: string; title: string; icon: string; placement?: 'start' | 'end' }>(), {
 	placement: 'start',
 });
 
@@ -13,10 +13,10 @@ const sidebarStore = useSidebarStore();
 <template>
 	<AccordionItem class="accordion-item" :class="placement" :value="id">
 		<AccordionHeader>
-			<AccordionTrigger v-tooltip.left="sidebarStore.collapsed && title" class="accordion-trigger">
+			<AccordionTrigger v-tooltip.left="sidebarStore.collapsed && title" class="accordion-trigger" :class="{ collapsed: sidebarStore.collapsed }">
 				<VIcon class="accordion-trigger-icon" :name="icon" />
-				<span v-show="!sidebarStore.collapsed" class="accordion-trigger-title">{{ title }}</span>
-				<VIcon v-show="!sidebarStore.collapsed" class="accordion-trigger-chevron" name="chevron_left" />
+				<span class="accordion-trigger-title">{{ title }}</span>
+				<VIcon class="accordion-trigger-chevron" name="chevron_left" />
 			</AccordionTrigger>
 		</AccordionHeader>
 		<AccordionContent class="accordion-content">
@@ -51,15 +51,25 @@ const sidebarStore = useSidebarStore();
 .accordion-trigger-title {
 	flex-grow: 1;
 	text-align: start;
+	transition: opacity var(--fast) var(--transition);
+
+	.collapsed & {
+		opacity: 0;
+	}
 }
 
 .accordion-trigger-chevron {
 	color: var(--theme--foreground-subdued);
 	transform: rotate(0);
-	transition: transform var(--fast) var(--transition);
+	transition: var(--fast) var(--transition);
+	transition-property: transform, opacity;
+
+	.collapsed & {
+		opacity: 0;
+	}
 }
 
-.accordion-trigger[data-state="open"] {
+.accordion-trigger[data-state='open'] {
 	.accordion-trigger-chevron {
 		transform: rotate(-90deg);
 	}
