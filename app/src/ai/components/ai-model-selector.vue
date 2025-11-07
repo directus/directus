@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { formatTitle } from '@directus/format-title';
-import { useAiStore } from '../stores/use-ai';
+import { useAiStore } from '@/ai/stores/use-ai';
+import Openai from '@/ai/components/logos/openai.vue';
+import Anthropic from '@/ai/components/logos/anthropic.vue';
+
+const modelIcons = {
+	openai: Openai,
+	anthropic: Anthropic,
+};
 
 const aiStore = useAiStore();
 </script>
@@ -9,6 +16,7 @@ const aiStore = useAiStore();
 	<v-menu placement="bottom-start" show-arrow>
 		<template #activator="{ toggle }">
 			<button class="select-trigger" @click="toggle">
+				<component :is="modelIcons[aiStore.currentProvider as keyof typeof modelIcons]" class="model-icon small" />
 				{{ formatTitle(aiStore.currentModel || '') }}
 				<v-icon name="expand_more" x-small class="select-icon" />
 			</button>
@@ -23,7 +31,10 @@ const aiStore = useAiStore();
 				@click="aiStore.selectedModel = model"
 			>
 				<v-list-item-content>
-					<v-text-overflow :text="formatTitle(model.split('/')[1] || '')" />
+					<div class="model-list-item-content">
+						<component :is="modelIcons[model.split('/')[0] as keyof typeof modelIcons]" class="model-icon" />
+						<v-text-overflow :text="formatTitle(model.split('/')[1] || '')" />
+					</div>
 				</v-list-item-content>
 				<template v-if="aiStore.selectedModel === model" #append>
 					<v-icon name="check" x-small />
@@ -52,6 +63,22 @@ const aiStore = useAiStore();
 		color: var(--theme--foreground-subdued);
 		cursor: not-allowed;
 	}
+}
+
+.model-icon {
+	inline-size: 16px;
+	block-size: 16px;
+
+	&.small {
+		inline-size: 12px;
+		block-size: 12px;
+	}
+}
+
+.model-list-item-content {
+	display: flex;
+	align-items: center;
+	gap: 4px;
 }
 
 .select-icon {
