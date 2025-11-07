@@ -211,7 +211,7 @@ function useComparisonIndicator() {
 }
 
 .v-divider.active .expand-icon {
-	transform: rotate(0) !important;
+	transform: rotate(0deg) !important;
 }
 
 .v-divider :deep(.type-text) {

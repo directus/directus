@@ -162,12 +162,6 @@ function navigateToPolicy({ item }: { item: Policy }) {
 			<settings-navigation />
 		</template>
 
-		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_policies_collection')" class="page-description" />
-			</sidebar-detail>
-		</template>
-
 		<div v-if="!search || filteredPolicies.length > 0" class="policies">
 			<v-table
 				v-model:headers="tableHeaders"

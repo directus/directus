@@ -553,12 +553,6 @@ function clearFilters() {
 			/>
 
 			<template #sidebar>
-				<sidebar-detail icon="info" :title="t('information')" close>
-					<div
-						v-md="t('page_help_collections_collection', { collection: currentCollection.name })"
-						class="page-description"
-					/>
-				</sidebar-detail>
 				<layout-sidebar-detail v-model="layout">
 					<component :is="`layout-options-${layout || 'tabular'}`" v-bind="layoutState" />
 				</layout-sidebar-detail>

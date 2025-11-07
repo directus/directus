@@ -6,7 +6,6 @@ import { ref, watchEffect } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../../../components/navigation.vue';
 import ExtensionBanner from './components/extension-banner.vue';
-import ExtensionInfoSidebarDetail from './components/extension-info-sidebar-detail.vue';
 import ExtensionMetadata from './components/extension-metadata.vue';
 import ExtensionReadme from './components/extension-readme.vue';
 
@@ -40,10 +39,6 @@ watchEffect(async () => {
 	<private-view :title="t('marketplace')" show-back>
 		<template #navigation>
 			<settings-navigation />
-		</template>
-
-		<template #sidebar>
-			<extension-info-sidebar-detail />
 		</template>
 
 		<div class="extension-content">

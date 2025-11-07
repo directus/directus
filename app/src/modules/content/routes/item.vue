@@ -11,7 +11,6 @@ import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import PrivateView from '@/views/private';
-import AiSidebarDetail from '@/ai/components/ai-sidebar-detail.vue';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
@@ -749,9 +748,6 @@ function useCollectionRoute() {
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_collections_item')" class="page-description" />
-			</sidebar-detail>
 			<template v-if="isNew === false && actualPrimaryKey">
 				<revisions-sidebar-detail
 					v-if="revisionsAllowed && accountabilityScope === 'all'"
@@ -774,8 +770,6 @@ function useCollectionRoute() {
 					:allowed="shareAllowed"
 				/>
 				<flow-sidebar-detail v-if="currentVersion === null" :manual-flows />
-				<ai-sidebar-detail :collection :primary-key="actualPrimaryKey" />
-
 			</template>
 		</template>
 	</PrivateView>

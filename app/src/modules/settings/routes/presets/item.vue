@@ -547,10 +547,6 @@ function discardAndLeave() {
 			</div>
 
 			<template #sidebar>
-				<sidebar-detail icon="info" :title="t('information')" close>
-					<div v-md="t('page_help_settings_presets_item')" class="page-description" />
-				</sidebar-detail>
-
 				<div class="layout-sidebar">
 					<component
 						:is="`layout-sidebar-${values.layout}`"
@@ -558,7 +554,7 @@ function discardAndLeave() {
 						v-bind="layoutState"
 					/>
 
-					<sidebar-detail icon="layers" :title="t('layout_options')">
+					<sidebar-detail id="layout-options" icon="layers" :title="t('layout_options')">
 						<div class="layout-options">
 							<component
 								:is="`layout-options-${values.layout}`"

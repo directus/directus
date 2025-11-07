@@ -18,6 +18,7 @@ const aiStore = useAiStore();
 .ai-header {
 	display: flex;
 	align-items: center;
+	padding-block-end: 12px;
 }
 
 .spacer {

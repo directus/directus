@@ -7,7 +7,6 @@ import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../../../components/navigation.vue';
 import ExtensionListItem from '../../components/extension-list-item.vue';
 import AccountBanner from './components/account-banner.vue';
-import AccountInfoSidebarDetail from './components/account-info-sidebar-detail.vue';
 import AccountMetadata from './components/account-metadata.vue';
 
 const props = defineProps<{
@@ -59,10 +58,6 @@ watchEffect(async () => {
 	<private-view :title="t('marketplace')" show-back>
 		<template #navigation>
 			<settings-navigation />
-		</template>
-
-		<template #sidebar>
-			<account-info-sidebar-detail />
 		</template>
 
 		<div class="account-content">

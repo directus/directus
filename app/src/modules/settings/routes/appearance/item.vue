@@ -74,10 +74,6 @@ function discardAndLeave() {
 			<v-form v-model="edits" :initial-values="initialValues" :fields="fields" :primary-key="1" />
 		</div>
 
-		<template #sidebar>
-			<theming-info-sidebar-detail />
-		</template>
-
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>

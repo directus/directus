@@ -9,7 +9,6 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
-import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
 
 const { t } = useI18n();
 
@@ -81,10 +80,6 @@ function discardAndLeave() {
 		<div class="settings">
 			<v-form v-model="edits" :initial-values="initialValues" :fields="fields" :primary-key="1" />
 		</div>
-
-		<template #sidebar>
-			<project-info-sidebar-detail />
-		</template>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>

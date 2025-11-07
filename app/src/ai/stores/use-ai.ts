@@ -1,15 +1,27 @@
 import { useSettingsStore } from '@/stores/settings';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { Chat } from '@ai-sdk/vue';
 import { useLocalStorage } from '@vueuse/core';
 import { DefaultChatTransport, type UIMessage, lastAssistantMessageIsCompleteWithToolCalls } from 'ai';
 import { defineStore } from 'pinia';
-import { computed, shallowRef } from 'vue';
+import { computed, ref, shallowRef, watch } from 'vue';
 import { z } from 'zod';
 import { StaticToolDefinition } from '../composables/define-tool';
 import { AI_MODELS } from '../models';
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
+	const sidebarStore = useSidebarStore();
+
+	const chatOpen = ref<boolean>(false);
+
+	watch(chatOpen, (newOpen) => {
+		if (newOpen === true) sidebarStore.expand();
+	});
+
+	sidebarStore.onCollapse(() => {
+		chatOpen.value = false;
+	});
 
 	const models = computed(() =>
 		AI_MODELS.filter((model) => {
@@ -158,5 +170,6 @@ export const useAiStore = defineStore('ai-store', () => {
 		retry,
 		stop,
 		reset,
+		chatOpen,
 	};
 });

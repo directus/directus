@@ -1,20 +1,19 @@
 <script lang="ts" setup>
-import SidebarDetailGroup from './private-view-sidebar-detail-group.vue';
+import AiSidebarDetail from '@/ai/components/ai-sidebar-detail.vue';
+import { AccordionRoot } from 'reka-ui';
 import SkipMenu from '../../components/skip-menu.vue';
+import { useSidebarStore } from '../stores/sidebar';
+
+const sidebarStore = useSidebarStore();
 </script>
 
 <template>
 	<aside id="sidebar" ref="sidebarEl" role="contentinfo" class="alt-colors" aria-label="Module Sidebar">
 		<SkipMenu section="sidebar" />
-		<div class="flex-container">
-			<SidebarDetailGroup>
-				<slot name="sidebar" />
-			</SidebarDetailGroup>
-
-			<div class="spacer" />
-
-			<!-- TODO <notifications-preview v-model="notificationsPreviewActive" :sidebar-open="sidebarOpen" /> -->
-		</div>
+		<AccordionRoot v-model="sidebarStore.activeAccordionItem" type="single" collapsible class="accordion-root">
+			<slot name="sidebar" />
+			<ai-sidebar-detail class="ai-sidebar-detail" />
+		</AccordionRoot>
 	</aside>
 </template>
 
@@ -22,29 +21,26 @@ import SkipMenu from '../../components/skip-menu.vue';
 #sidebar {
 	inline-size: 100%;
 	block-size: 100%;
+	position: relative;
 	overflow: hidden;
 	background-color: var(--theme--sidebar--background);
 	font-family: var(--theme--sidebar--font-family);
 	border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
-	min-inline-size: 220px;
+	min-inline-size: 280px;
 
 	/* Explicitly render the border outside of the width of the bar itself */
 	box-sizing: content-box;
+}
 
-	.spacer {
-		flex-grow: 1;
-	}
+.accordion-root {
+	block-size: calc(100% - 60px);
+	display: flex;
+	flex-direction: column;
+}
 
-	/* TODO */
-	&.has-shadow {
-		box-shadow: var(--sidebar-shadow);
-	}
-
-	.flex-container {
-		display: flex;
-		flex-direction: column;
-		inline-size: 100%;
-		block-size: 100%;
-	}
+.ai-sidebar-detail {
+	position: absolute;
+	inset-block-end: 0;
+	z-index: 2;
 }
 </style>

@@ -83,7 +83,7 @@ const user = computed(() => {
 .revision-item {
 	position: relative;
 	display: block;
-	inline-size: 100%;
+	inline-size: calc(100% - 16px);
 	margin-block-end: 12px;
 	margin-inline-start: 16px;
 	text-align: start;

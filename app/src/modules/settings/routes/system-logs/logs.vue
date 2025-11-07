@@ -13,7 +13,6 @@ import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import InlineFilter from './components/inline-filter.vue';
 import LogsDisplay from './components/logs-display.vue';
-import SystemLogsSidebarDetail from './components/system-logs-sidebar-detail.vue';
 import { Log } from './types';
 
 const { t } = useI18n();
@@ -509,10 +508,6 @@ onUnmounted(() => {
 				</transition>
 			</div>
 		</div>
-
-		<template #sidebar>
-			<system-logs-sidebar-detail />
-		</template>
 	</private-view>
 </template>
 

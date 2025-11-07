@@ -31,7 +31,7 @@ const showNavToggle = computed(() => {
 });
 
 const showSidebarToggle = computed(() => {
-	return !sm.value;
+	return sidebarStore.collapsed === false || !sm.value;
 });
 </script>
 
@@ -80,15 +80,16 @@ const showSidebarToggle = computed(() => {
 
 			<VIcon
 				v-if="showSidebarToggle"
+				v-tooltip.bottom="$t('toggle_sidebar')"
 				class="sidebar-toggle"
 				small
-				name="right_panel_open"
+				:name="sidebarStore.collapsed ? 'right_panel_open' : 'right_panel_close'"
 				clickable
-				@click="sidebarStore.expand"
+				@click="sidebarStore.toggle"
 			/>
 		</div>
 
-		<PrivateViewHeaderBarActions class="actions">
+		<PrivateViewHeaderBarActions>
 			<template #prepend><slot name="actions:prepend" /></template>
 			<slot name="actions" />
 			<template #append><slot name="actions:append" /></template>

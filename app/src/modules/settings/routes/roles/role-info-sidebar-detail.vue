@@ -13,26 +13,21 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 </script>
 
 <template>
-	<sidebar-detail icon="info" :title="t('information')" close>
-		<template v-if="role">
-			<dl>
-				<div class="description-list">
-					<dt>{{ t('primary_key') }}</dt>
-					<dd>{{ role.id }}</dd>
-					<v-icon
-						v-if="isCopySupported"
-						name="content_copy"
-						small
-						clickable
-						class="clipboard-icon"
-						@click="copyToClipboard(role!.id)"
-					/>
-				</div>
-			</dl>
-
-			<v-divider />
-		</template>
-		<div v-md="t('page_help_settings_roles_item')" class="page-description" />
+	<sidebar-detail v-if="role" id="role" icon="info" :title="t('information')">
+		<dl>
+			<div class="description-list">
+				<dt>{{ t('primary_key') }}</dt>
+				<dd>{{ role.id }}</dd>
+				<v-icon
+					v-if="isCopySupported"
+					name="content_copy"
+					small
+					clickable
+					class="clipboard-icon"
+					@click="copyToClipboard(role!.id)"
+				/>
+			</div>
+		</dl>
 	</sidebar-detail>
 </template>
 
