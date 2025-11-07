@@ -3,6 +3,10 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { computed, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AiTextarea from './ai-textarea.vue';
+import AiInputSubmit from './ai-input-submit.vue';
+import { useAiStore } from '../stores/use-ai';
+
+const aiStore = useAiStore();
 
 const emit = defineEmits<{
 	send: [message: string];
@@ -53,9 +57,7 @@ function handleBlur() {
 				@blur="handleBlur"
 			/>
 			<div class="input-controls">
-				<v-button :disabled="!canSubmit" :loading="sending" class="submit-button" x-small icon @click="handleSubmit">
-					<v-icon name="arrow_upward" />
-				</v-button>
+				<ai-input-submit :status="aiStore.status" :can-submit="canSubmit" @stop="aiStore.stop" @reload="aiStore.retry" @submit="handleSubmit" />
 			</div>
 		</div>
 	</div>

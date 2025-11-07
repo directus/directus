@@ -44,7 +44,7 @@ withDefaults(defineProps<Props>(), {
 					:key="`${id}-${part.type}-${index}-${'state' in part ? `-${part.state}` : ''}`"
 				>
 					<AiMessageText v-if="part.type === 'text'" :text="part.text" :state="part.state || 'done'" />
-					<AiMessageReasoning v-else-if="part.type === 'reasoning'" :text="part.text" :state="part.state ?? 'done'" />
+					<AiMessageReasoning v-else-if="part.type === 'reasoning' && (part.text || part.state === 'streaming')" :text="part.text" :state="part.state ?? 'done'" />
 					<AiMessageFile v-else-if="part.type === 'file'" :part="part" />
 					<AiMessageSourceUrl v-else-if="part.type === 'source-url'" :part="part" />
 					<AiMessageSourceDocument v-else-if="part.type === 'source-document'" :part="part" />
