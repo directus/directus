@@ -3,7 +3,7 @@ import { formatTitle } from '@directus/format-title';
 import { useAiStore } from '@/ai/stores/use-ai';
 import { computed, type Component } from 'vue';
 import Openai from '@/ai/components/logos/openai.vue';
-import Anthropic from '@/ai/components/logos/anthropic.vue';
+import Claude from '@/ai/components/logos/claude.vue';
 
 interface ModelIcons {
 	[key: string]: Component;
@@ -11,7 +11,7 @@ interface ModelIcons {
 
 const modelIcons: ModelIcons = {
 	openai: Openai,
-	anthropic: Anthropic,
+	anthropic: Claude,
 };
 
 const aiStore = useAiStore();
