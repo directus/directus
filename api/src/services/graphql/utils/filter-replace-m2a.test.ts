@@ -29,6 +29,33 @@ describe('filterReplaceM2A', () => {
 		expect(result).toEqual({});
 	});
 
+	test('filter with aliases field', () => {
+		const result = filterReplaceM2A(
+			{
+				id: { _eq: 1 },
+				aliased_blocks: {
+					anyitem__text: {
+						id: { _eq: 1 },
+						content: { _eq: 'Hello World' },
+					},
+				},
+			},
+			'article',
+			schema,
+			{ aliasMap: { aliased_blocks: 'blocks' } },
+		);
+
+		expect(result).toEqual({
+			id: { _eq: 1 },
+			aliased_blocks: {
+				'anyitem:text': {
+					id: { _eq: 1 },
+					content: { _eq: 'Hello World' },
+				},
+			},
+		});
+	});
+
 	test('filter with no relations', () => {
 		const result = filterReplaceM2A(
 			{
@@ -187,6 +214,12 @@ describe('filterReplaceM2A', () => {
 });
 
 describe('filterReplaceM2aDeep', () => {
+	test('empty filter', () => {
+		const result = filterReplaceM2ADeep({}, 'article', { collections: {}, relations: [] });
+
+		expect(result).toEqual({});
+	});
+
 	test('deep with filter', () => {
 		const result = filterReplaceM2ADeep(
 			{
@@ -206,6 +239,88 @@ describe('filterReplaceM2aDeep', () => {
 				_filter: {
 					id: { _eq: 1 },
 					content: { _eq: 'Hello World' },
+				},
+			},
+		});
+	});
+
+	test('filter with aliased relation', () => {
+		const result = filterReplaceM2ADeep(
+			{
+				aliased_blocks: {
+					_filter: {
+						anyitem__text: {
+							id: { _eq: 1 },
+							content: { _eq: 'Hello World' },
+						},
+					},
+				},
+			},
+			'article',
+			schema,
+			{ aliasMap: { aliased_blocks: 'blocks' } },
+		);
+
+		expect(result).toEqual({
+			aliased_blocks: {
+				_filter: {
+					'anyitem:text': {
+						id: { _eq: 1 },
+						content: { _eq: 'Hello World' },
+					},
+				},
+			},
+		});
+	});
+
+	test('filter with nested aliased relation', () => {
+		const result = filterReplaceM2ADeep(
+			{
+				aliased_blocks: {
+					article_id: {
+						_alias: { aliased_blocks: 'blocks' },
+						aliased_blocks: {
+							_filter: {
+								anyitem__text: {
+									id: { _eq: 1 },
+									content: { _eq: 'Hello World' },
+								},
+							},
+						},
+					},
+					_filter: {
+						anyitem__text: {
+							id: { _eq: 1 },
+							content: { _eq: 'Hello World' },
+						},
+					},
+				},
+			},
+			'article',
+			schema,
+			{ aliasMap: { aliased_blocks: 'blocks' } },
+		);
+
+		expect(result).toEqual({
+			aliased_blocks: {
+				article_id: {
+					_alias: {
+						aliased_blocks: 'blocks',
+					},
+					aliased_blocks: {
+						_filter: {
+							'anyitem:text': {
+								id: { _eq: 1 },
+								content: { _eq: 'Hello World' },
+							},
+						},
+					},
+				},
+				_filter: {
+					'anyitem:text': {
+						id: { _eq: 1 },
+						content: { _eq: 'Hello World' },
+					},
 				},
 			},
 		});
