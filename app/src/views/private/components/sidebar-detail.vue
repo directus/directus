@@ -5,18 +5,12 @@ import { AccordionContent, AccordionHeader, AccordionItem, AccordionTrigger } fr
 import { onUnmounted, watch } from 'vue';
 import { useSidebarStore } from '../private-view/stores/sidebar';
 
-const props = withDefaults(
-	defineProps<{
-		id: string;
-		title: string;
-		icon: string;
-		placement?: 'start' | 'end';
-		badge?: boolean | string | number;
-	}>(),
-	{
-		placement: 'start',
-	},
-);
+const props = defineProps<{
+	id: string;
+	title: string;
+	icon: string;
+	badge?: boolean | string | number;
+}>();
 
 const sidebarStore = useSidebarStore();
 
@@ -43,7 +37,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<AccordionItem class="accordion-item" :class="placement" :value="id">
+	<AccordionItem class="accordion-item" :value="id">
 		<AccordionHeader>
 			<AccordionTrigger
 				v-tooltip.left="sidebarStore.collapsed && title"
