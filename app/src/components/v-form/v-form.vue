@@ -18,6 +18,9 @@ import { getFormFields } from './utils/get-form-fields';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
 import ValidationErrors from './validation-errors.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 type FieldValues = {
 	[field: string]: any;
@@ -107,6 +110,7 @@ const componentUid = getCurrentInstance()!.uid;
 
 defineTool({
 	name: `read-form-values-${componentUid}`,
+	displayName: t('ai_tools.read_form_values'),
 	description: 'Read values of the form on the current page',
 	inputSchema: computed(() => {
 		return z.object({
@@ -129,6 +133,7 @@ defineTool({
 
 defineTool({
 	name: `set-form-values-${componentUid}`,
+	displayName: t('ai_tools.update_form_values'),
 	description: `Set values of form on the current page`,
 	inputSchema: writeInputSchema,
 	execute: (args) => {

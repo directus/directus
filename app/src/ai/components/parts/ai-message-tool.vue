@@ -3,6 +3,10 @@ import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui
 import type { UIMessagePart, UIDataTypes, UITools } from 'ai';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useAiStore } from '@/ai/stores/use-ai';
+import formatTitle from '@directus/format-title';
+
+const aiStore = useAiStore();
 
 const props = defineProps<{
 	part: Extract<UIMessagePart<UIDataTypes, UITools>, { type: `tool-${string}` }>;
@@ -24,13 +28,27 @@ const statusConfig = computed(() => {
 			return { icon: 'help', label: t('ai.unknown'), class: 'status-unknown' };
 	}
 });
+
+const toolName = computed(() => {
+	return props.part.type.replace('tool-', '');
+});
+
+const toolDisplayName = computed(() => {
+	const localTool = aiStore.localTools.find((t) => t.name === toolName.value);
+
+	if (localTool) {
+		return localTool.displayName;
+	}
+
+	return formatTitle(toolName.value);
+});
 </script>
 
 <template>
 	<CollapsibleRoot class="message-tool" :default-open="false">
 		<CollapsibleTrigger class="tool-header">
 			<v-icon name="build" x-small />
-			<p class="tool-name">{{ part.type.replace('tool-', '') }}</p>
+			<p class="tool-name">{{ toolDisplayName }}</p>
 			<v-chip class="tool-status" :class="statusConfig.class" x-small :label="false">
 				<v-icon :name="statusConfig.icon" x-small />
 				{{ statusConfig.label }}
