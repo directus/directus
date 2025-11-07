@@ -54,7 +54,7 @@ export const useAiStore = defineStore('ai-store', () => {
 			body: () => ({
 				provider: currentProvider.value,
 				model: currentModel.value,
-				tools: [...systemTools.value, ...localTools.value.map(toApiTool)],
+				tools: [...localTools.value.map(toApiTool)],
 			}),
 		}),
 		sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
@@ -117,6 +117,10 @@ export const useAiStore = defineStore('ai-store', () => {
 		chat.regenerate();
 	};
 
+	const stop = () => {
+		chat.stop();
+	};
+
 	const reset = () => {
 		chat.clearError();
 		chat.messages.splice(0, chat.messages.length);
@@ -138,6 +142,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		localTools,
 		error,
 		retry,
+		stop,
 		reset,
 	};
 });
