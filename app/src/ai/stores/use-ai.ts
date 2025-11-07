@@ -1,6 +1,5 @@
 import { useSettingsStore } from '@/stores/settings';
 import { Chat } from '@ai-sdk/vue';
-import { getSimpleHash } from '@directus/utils';
 import { useLocalStorage } from '@vueuse/core';
 import { DefaultChatTransport, type UIMessage, lastAssistantMessageIsCompleteWithToolCalls } from 'ai';
 import { defineStore } from 'pinia';
@@ -88,9 +87,13 @@ export const useAiStore = defineStore('ai-store', () => {
 	const error = computed(() => chat.error);
 
 	const messages = computed(() =>
+		// Ensure Vue notices changes within msg.parts when the Chat SDK mutates the array in place.
+		// By spreading msg.parts we create a fresh array reference which is fully reactive for consumers.
+		// This keeps "parts" immutable from the perspective of the UI layer and guarantees rerenders
+		// on content changes (push/replace) performed internally by the chat instance.
 		chat.messages.map((msg) => ({
-			hash: getSimpleHash(JSON.stringify(msg.parts)),
 			...msg,
+			parts: [...(msg.parts ?? [])],
 		})),
 	);
 
