@@ -32,7 +32,6 @@ const flows = computed(() =>
 	<v-select
 		:model-value="value"
 		:items="flows"
-		:item-text="'text'"
 		show-deselect
 		:placeholder="$t('select_a_flow')"
 		@update:model-value="$emit('input', $event)"
