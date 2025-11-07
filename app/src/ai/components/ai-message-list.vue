@@ -22,19 +22,15 @@ onMounted(() => {
 <template>
 	<div ref="el" :data-status="aiStore.status" class="ai-message-list">
 		<slot>
-			<AiMessage v-for="message in aiStore.messages" :key="message.hash" v-bind="message" />
+			<AiMessage v-for="message in aiStore.messages" :key="message.id" v-bind="message" />
 		</slot>
 
 		<AiMessage v-if="aiStore.status === 'submitted'" id="indicator" role="assistant" :parts="[]">
-			<template #content>
-				<slot name="indicator">
-					<div class="loading-indicator">
-						<span />
-						<span />
-						<span />
-					</div>
-				</slot>
-			</template>
+			<div class="loading-indicator">
+				<span />
+				<span />
+				<span />
+			</div>
 		</AiMessage>
 
 		<div id="anchor"></div>
@@ -73,16 +69,16 @@ onMounted(() => {
 	span {
 		inline-size: 0.5rem;
 		block-size: 0.5rem;
-		background-color: var(--theme--foreground-subdued);
+		background-color: var(--theme--foreground);
 		border-radius: 50%;
-		animation: loading-bounce var(--slow) infinite var(--transition) both;
+		animation: loading-bounce calc(var(--slow) * 2) infinite var(--transition) both;
 
 		&:nth-child(1) {
-			animation-delay: -0.32s;
+			animation-delay: var(--slow);
 		}
 
 		&:nth-child(2) {
-			animation-delay: -0.16s;
+			animation-delay: calc(var(--slow) / 2);
 		}
 	}
 }
