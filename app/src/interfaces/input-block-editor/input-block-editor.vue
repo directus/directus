@@ -20,6 +20,7 @@ const RedactorDomChanged = 'redactor dom changed';
 const props = withDefaults(
 	defineProps<{
 		disabled?: boolean;
+		nonEditable?: boolean;
 		autofocus?: boolean;
 		value?: Record<string, any> | null;
 		bordered?: boolean;
@@ -200,9 +201,12 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 }
 
 .disabled {
-	color: var(--theme--form--field--input--foreground-subdued);
-	background-color: var(--theme--form--field--input--background-subdued);
-	border-color: var(--theme--form--field--input--border-color);
+	color: var(--form--field--input--disabled--foreground, var(--theme--form--field--input--foreground-subdued));
+	background-color: var(
+		var(--form--field--input--disabled--background),
+		var(--theme--form--field--input--background-subdued)
+	);
+	border-color: var(--form--field--input--disabled--border-color, var(--theme--form--field--input--border-color));
 	pointer-events: none;
 }
 
