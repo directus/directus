@@ -60,7 +60,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
 		onFinish: ({ isAbort, message }) => {
 			if (isAbort) {
-				// Update the state to done and delete the providermeta from the aborted message.parts where part.type === 'reasoning' to prevent OpenAI reasoning issues
+				// Update the state to done and delete the providerMetadata from the aborted message.parts where part.type === 'reasoning' to prevent OpenAI reasoning issues
 				message.parts.forEach((part) => {
 					if (part.type === 'reasoning') {
 						part.state = 'done';
