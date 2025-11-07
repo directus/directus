@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { AccordionContent, AccordionHeader, AccordionItem, AccordionTrigger } from 'reka-ui';
+import { useSidebarStore } from '../private-view/stores/sidebar';
 
 withDefaults(defineProps<{ id: string; title: string; icon: string, placement?: 'start' | 'end' }>(), {
 	placement: 'start',
 });
+
+const sidebarStore = useSidebarStore();
 </script>
 
 <template>
 	<AccordionItem class="accordion-item" :class="placement" :value="id">
 		<AccordionHeader>
-			<AccordionTrigger class="accordion-trigger">
+			<AccordionTrigger v-tooltip.left="sidebarStore.collapsed && title" class="accordion-trigger">
 				<VIcon class="accordion-trigger-icon" :name="icon" />
-				<span>{{ title }}</span>
+				<span v-if="!sidebarStore.collapsed">{{ title }}</span>
 			</AccordionTrigger>
 		</AccordionHeader>
 		<AccordionContent class="accordion-content">
@@ -37,7 +40,7 @@ withDefaults(defineProps<{ id: string; title: string; icon: string, placement?: 
 	border-block-end: var(--theme--sidebar--section--toggle--border-width) solid
 		var(--theme--sidebar--section--toggle--border-color);
 	color: var(--theme--sidebar--section--toggle--foreground);
-	padding-inline: 12px;
+	padding-inline: 18px;
 }
 
 .accordion-trigger-icon {
