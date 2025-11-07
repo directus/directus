@@ -44,23 +44,26 @@ const modelsWithMeta = computed(() => {
 		</template>
 
 		<v-list>
-			<v-list-item
-				v-for="item in modelsWithMeta"
-				:key="item.model"
-				:active="aiStore.selectedModel === item.model"
-				clickable
-				@click="aiStore.selectedModel = item.model"
-			>
-				<v-list-item-content>
-					<div class="model-list-item-content">
+			<template v-for="(item, index) in modelsWithMeta" :key="item.model">
+				<v-divider v-if="index !== 0 && item.provider !== modelsWithMeta[index - 1]?.provider" />
+				<v-list-item
+					:active="aiStore.selectedModel === item.model"
+					clickable
+					@click="aiStore.selectedModel = item.model"
+				>
+					<v-list-item-icon>
 						<component :is="item.icon" v-if="item.icon" class="model-icon" />
-						<v-text-overflow :text="formatTitle(item.name)" />
-					</div>
-				</v-list-item-content>
-				<template v-if="aiStore.selectedModel === item.model" #append>
-					<v-icon name="check" x-small />
-				</template>
-			</v-list-item>
+					</v-list-item-icon>
+					<v-list-item-content>
+						<div class="model-list-item-content">
+							<v-text-overflow :text="formatTitle(item.name)" />
+						</div>
+					</v-list-item-content>
+					<template v-if="aiStore.selectedModel === item.model" #append>
+						<v-icon name="check" x-small />
+					</template>
+				</v-list-item>
+			</template>
 		</v-list>
 	</v-menu>
 </template>
