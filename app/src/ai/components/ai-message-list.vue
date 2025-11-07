@@ -63,22 +63,35 @@ onMounted(() => {
 .loading-indicator {
 	display: flex;
 	gap: 0.375rem;
-	padding: 1rem;
+	padding-inline: 3px;
 	align-items: center;
+	margin-block-start: 1rem;
 
 	span {
+		--delay: 0;
+		--duration: 800ms;
+
 		inline-size: 0.5rem;
 		block-size: 0.5rem;
 		background-color: var(--theme--foreground);
 		border-radius: 50%;
-		animation: loading-bounce calc(var(--slow) * 2) infinite var(--transition) both;
+		animation: loading-bounce;
+		animation-timing-function: var(--transition);
+		animation-iteration-count: infinite;
+		animation-fill-mode: both;
+		animation-duration: 800ms;
+		animation-delay: var(--delay);
 
 		&:nth-child(1) {
-			animation-delay: var(--slow);
+			--delay: var(--slow);
 		}
 
 		&:nth-child(2) {
-			animation-delay: calc(var(--slow) / 2);
+			--delay: calc(var(--slow) + var(--duration) / 4);
+		}
+
+		&:nth-child(3) {
+			--delay: calc(var(--slow) + var(--duration) / 2);
 		}
 	}
 }
@@ -87,7 +100,6 @@ onMounted(() => {
 	0%,
 	80%,
 	100% {
-		transform: scale(0.8);
 		opacity: 0.5;
 	}
 	40% {
