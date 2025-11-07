@@ -10,6 +10,8 @@ interface Props {
 	label?: string | null;
 	/** Disable the radio button */
 	disabled?: boolean;
+	/** Set the non-editable state for the radio */
+	nonEditable?: boolean;
 	/** Change the icon to display when enabled */
 	iconOn?: string;
 	/** Change the icon to display when disabled */
@@ -91,14 +93,45 @@ function emitValue(): void {
 	}
 
 	&:disabled {
-		cursor: not-allowed;
+		cursor: var(--form--field--disabled--cursor, not-allowed);
 
 		.label {
-			color: var(--theme--foreground-subdued);
+			color: var(--form--field--disabled--primary, var(--theme--foreground-subdued));
 		}
 
 		.v-icon {
-			--v-icon-color: var(var(--form--icon--disabled), var(--theme--foreground-subdued));
+			--v-icon-color: var(--form--icon--disabled, var(--theme--foreground-subdued));
+		}
+
+		&.non-editable {
+			cursor: pointer;
+
+			.label {
+				color: var(--form--field--disabled--primary, var(--theme--foreground));
+			}
+
+			.v-icon {
+				--v-icon-color: var(--form--icon--disabled, var(--theme--primary));
+			}
+
+			&.checked {
+				.v-icon {
+					--v-icon-color: var(--v-radio-color, var(--theme--primary));
+				}
+
+				&.block {
+					border-color: var(--v-radio-color, var(--theme--primary));
+
+					.label {
+						color: var(--v-radio-color, var(--theme--primary));
+					}
+
+					&::before {
+						background-color: var(--v-radio-color, var(--theme--primary));
+						opacity: 0.1;
+					}
+				}
+			}
 		}
 	}
 

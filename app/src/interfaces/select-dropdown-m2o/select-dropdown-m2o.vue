@@ -187,7 +187,7 @@ function getLinkForItem() {
 	<div v-else class="many-to-one" :class="{ 'non-editable': nonEditable }">
 		<v-skeleton-loader v-if="loading" type="input" />
 
-		<v-list-item v-else block clickable :disabled="disabled" @click="onPreviewClick">
+		<v-list-item v-else block clickable :disabled="disabled" :non-editable="nonEditable" @click="onPreviewClick">
 			<div v-if="displayItem" class="preview">
 				<render-template
 					:collection="relationInfo.relatedCollection.collection"

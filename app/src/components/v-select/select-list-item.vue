@@ -9,12 +9,14 @@ const props = withDefaults(
 		modelValue?: string | number | (string | number)[] | null;
 		multiple?: boolean;
 		allowOther?: boolean;
+		nonEditable?: boolean;
 	}>(),
 	{
 		itemLabelFontFamily: 'var(--v-select-font-family)',
 		modelValue: null,
 		multiple: true,
 		allowOther: false,
+		nonEditable: false,
 	},
 );
 
@@ -42,8 +44,8 @@ const isActive = computed(() => {
 		:active="isActive"
 		:disabled="item.disabled"
 		:value="item.value"
-		:clickable="!multiple"
-		@click="multiple ? undefined : $emit('update:modelValue', item.value)"
+		:clickable="!multiple && !nonEditable"
+		@click="multiple || nonEditable ? undefined : $emit('update:modelValue', item.value)"
 	>
 		<v-list-item-icon v-if="multiple === false && allowOther === false && (item.icon || item.color)">
 			<v-icon v-if="item.icon" :name="item.icon" :color="item.color" />
@@ -64,7 +66,8 @@ const isActive = computed(() => {
 				:label="item.text"
 				:value="item.value"
 				:disabled="item.disabled"
-				@update:model-value="$emit('update:modelValue', $event.length > 0 ? $event : null)"
+				:non-editable="nonEditable"
+				@update:model-value="nonEditable ? undefined : $emit('update:modelValue', $event.length > 0 ? $event : null)"
 			/>
 		</v-list-item-content>
 	</v-list-item>

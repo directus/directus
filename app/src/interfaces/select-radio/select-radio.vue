@@ -68,6 +68,7 @@ const customIcon = computed(() => {
 			:value="item.value"
 			:label="item.text"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:icon-on="iconOn"
 			:icon-off="iconOff"
 			:model-value="value"

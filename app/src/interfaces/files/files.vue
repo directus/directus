@@ -22,6 +22,7 @@ const props = withDefaults(
 		collection: string;
 		field: string;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		version: ContentVersion | null;
 		template?: string | null;
 		enableCreate?: boolean;
@@ -36,6 +37,7 @@ const props = withDefaults(
 		enableCreate: true,
 		enableSelect: true,
 		limit: 15,
+		nonEditable: false,
 	},
 );
 
@@ -330,6 +332,7 @@ const allowDrag = computed(
 						:class="{ deleted: element.$type === 'deleted' }"
 						:dense="totalItemCount > 4"
 						:disabled="disabled"
+						:non-editable="nonEditable"
 						block
 						clickable
 						@click="editItem(element)"
@@ -361,7 +364,9 @@ const allowDrag = computed(
 
 								<v-list>
 									<v-list-item clickable :href="getAssetUrl(getFilename(element))">
-										<v-list-item-icon><v-icon name="launch" /></v-list-item-icon>
+										<v-list-item-icon>
+											<v-icon name="launch" />
+										</v-list-item-icon>
 										<v-list-item-content>{{ t('open_file_in_tab') }}</v-list-item-content>
 									</v-list-item>
 									<v-list-item
@@ -381,10 +386,14 @@ const allowDrag = computed(
 		</template>
 
 		<div class="actions">
-			<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="showUpload = true">
+			<v-button v-if="enableCreate && createAllowed && !nonEditable" :disabled="disabled" @click="showUpload = true">
 				{{ t('upload_file') }}
 			</v-button>
-			<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
+			<v-button
+				v-if="enableSelect && selectAllowed && !nonEditable"
+				:disabled="disabled"
+				@click="selectModalActive = true"
+			>
 				{{ t('add_existing') }}
 			</v-button>
 			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />

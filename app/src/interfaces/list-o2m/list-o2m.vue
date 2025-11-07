@@ -563,6 +563,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 							block
 							clickable
 							:disabled="disabled"
+							:non-editable="nonEditable"
 							:dense="totalItemCount > 4"
 							:class="{ deleted: element.$type === 'deleted' }"
 							@click="editItem(element)"

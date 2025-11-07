@@ -100,6 +100,14 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 	(value) => emit('update:modelValue', value),
 );
 
+const isMenuDisabled = computed(() => {
+	if (!props.multiple) {
+		return props.disabled || props.nonEditable;
+	}
+
+	return props.disabled && !props.nonEditable;
+});
+
 const search = ref<string | null>(null);
 
 watch(
@@ -254,7 +262,8 @@ function useDisplayValue() {
 <template>
 	<v-menu
 		class="v-select"
-		:disabled="disabled"
+		:disabled="isMenuDisabled"
+		:non-editable="nonEditable"
 		:attached="inline === false"
 		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
@@ -314,7 +323,7 @@ function useDisplayValue() {
 					clickable
 					:disabled="modelValue === null || (Array.isArray(modelValue) && !modelValue.length)"
 					:non-editable="nonEditable"
-					@click="$emit('update:modelValue', null)"
+					@click="nonEditable ? undefined : $emit('update:modelValue', null)"
 				>
 					<v-list-item-icon v-if="multiple === true">
 						<v-icon name="close" />
@@ -354,6 +363,7 @@ function useDisplayValue() {
 					:multiple="multiple"
 					:allow-other="allowOther"
 					:group-selectable="groupSelectable"
+					:non-editable="nonEditable"
 					@update:model-value="$emit('update:modelValue', $event)"
 				/>
 				<select-list-item
@@ -363,6 +373,7 @@ function useDisplayValue() {
 					:item-label-font-family="itemLabelFontFamily"
 					:multiple="multiple"
 					:allow-other="allowOther"
+					:non-editable="nonEditable"
 					@update:model-value="$emit('update:modelValue', $event)"
 				/>
 			</template>
@@ -394,6 +405,7 @@ function useDisplayValue() {
 							:value="otherVal.value"
 							custom-value
 							:autofocus-custom-input="otherVal.focus"
+							:non-editable="nonEditable"
 							@update:model-value="$emit('update:modelValue', $event)"
 							@update:value="setOtherValue(otherVal.key, $event)"
 							@blur:custom-input="onBlurCustomInput(otherVal)"

@@ -16,6 +16,8 @@ interface Props {
 	href?: string;
 	/** Disables the item */
 	disabled?: boolean;
+	/** If the item is non-editable */
+	nonEditable?: boolean;
 	/** If the item should be clickable */
 	clickable?: boolean;
 	/** If the item should be active or not */
@@ -45,6 +47,7 @@ const props = withDefaults(defineProps<Props>(), {
 	to: '',
 	href: undefined,
 	disabled: false,
+	nonEditable: false,
 	clickable: false,
 	active: undefined,
 	dashed: false,
@@ -87,7 +90,7 @@ const additionalProps = computed(() => {
 	if (component.value === 'button') {
 		return {
 			type: 'button',
-			disabled: props.disabled,
+			disabled: props.disabled && !props.nonEditable,
 		};
 	}
 
@@ -122,7 +125,7 @@ const isActiveRoute = computed(() => {
 });
 
 function onClick(event: PointerEvent) {
-	if (props.disabled === true) return;
+	if (props.disabled === true && !props.nonEditable) return;
 	emit('click', event);
 }
 </script>
@@ -252,9 +255,9 @@ function onClick(event: PointerEvent) {
 	}
 
 	&.disabled {
-		--v-list-item-color: var(--theme--foreground-subdued) !important;
+		--v-list-item-color: var(--form--field--input--disabled--foreground, var(--theme--foreground-subdued)) !important;
 
-		cursor: not-allowed;
+		cursor: var(--form--field--disabled--cursor, not-allowed);
 	}
 
 	&.dense {

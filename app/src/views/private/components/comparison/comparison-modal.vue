@@ -194,7 +194,6 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 							</template>
 							<template v-else>
 								<v-form
-									disabled
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.base || {}"
@@ -236,7 +235,6 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 							</template>
 							<template v-else>
 								<v-form
-									disabled
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.incoming || {}"

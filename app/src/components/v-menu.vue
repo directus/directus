@@ -34,6 +34,8 @@ interface Props {
 	arrowPadding?: number;
 	/** Menu does not appear */
 	disabled?: boolean;
+	/** Set the non-editable state for the menu */
+	nonEditable?: boolean;
 	/** Activate the menu on a trigger */
 	trigger?: 'hover' | 'click' | 'keyDown' | null;
 	/** Time in ms before menu activates after trigger */

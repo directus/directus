@@ -78,7 +78,7 @@ onMounted(() => {
 });
 
 function toggleInput(): void {
-	if (props.disabled) return;
+	if (props.disabled || props.nonEditable) return;
 
 	if (props.indeterminate === true) {
 		emit('update:indeterminate', false);

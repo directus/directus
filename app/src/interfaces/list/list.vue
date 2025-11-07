@@ -227,7 +227,13 @@ function closeDrawer() {
 			@update:model-value="$emit('input', $event)"
 		>
 			<template #item="{ element, index }">
-				<v-list-item :dense="internalValue.length > 4" block clickable @click="openItem(index)">
+				<v-list-item
+					:dense="internalValue.length > 4"
+					:non-editable="nonEditable"
+					block
+					clickable
+					@click="openItem(index)"
+				>
 					<v-icon v-if="!disabled && !sort" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 
 					<render-template

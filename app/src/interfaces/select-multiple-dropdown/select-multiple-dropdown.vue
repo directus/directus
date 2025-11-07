@@ -11,6 +11,7 @@ const props = withDefaults(
 	defineProps<{
 		value?: string[];
 		disabled?: boolean;
+		nonEditable?: boolean;
 		choices?: Option[];
 		icon?: string;
 
@@ -21,6 +22,7 @@ const props = withDefaults(
 	}>(),
 	{
 		previewThreshold: 3,
+		nonEditable: false,
 	},
 );
 
@@ -44,9 +46,10 @@ function updateValue(value: string[]) {
 		:model-value="value"
 		:items="items"
 		:disabled="disabled"
+		:non-editable="nonEditable"
 		:show-deselect="allowNone"
 		:placeholder="placeholder"
-		:allow-other="allowOther"
+		:allow-other="allowOther && !nonEditable"
 		:close-on-content-click="false"
 		:multiple-preview-threshold="previewThreshold"
 		@update:model-value="updateValue($event)"

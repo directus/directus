@@ -11,6 +11,7 @@ withDefaults(
 	defineProps<{
 		value: string | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		width?: string;
 	}>(),
 	{
@@ -200,7 +201,7 @@ function useIconsPerRow(
 				<template #append>
 					<div class="item-actions">
 						<v-remove
-							v-if="value !== null"
+							v-if="value !== null && !nonEditable"
 							deselect
 							@action="
 								() => {

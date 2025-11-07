@@ -11,6 +11,7 @@ const { t } = useI18n();
 
 interface Props {
 	disabled?: boolean;
+	nonEditable?: boolean;
 	value?: string | null;
 	placeholder?: string;
 	presets?: { name: string; color: string }[];
@@ -20,6 +21,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
+	nonEditable: false,
 	value: null,
 	placeholder: undefined,
 	opacity: false,
@@ -339,7 +341,7 @@ function useColor() {
 				</template>
 				<template #append>
 					<div class="item-actions">
-						<v-remove v-if="isValidColor" deselect @action="unsetColor" />
+						<v-remove v-if="isValidColor && !nonEditable" deselect @action="unsetColor" />
 
 						<v-icon v-else name="palette" clickable @click="toggle" />
 					</div>
