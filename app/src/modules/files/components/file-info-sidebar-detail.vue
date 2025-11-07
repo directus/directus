@@ -187,7 +187,7 @@ async function copyFileId() {
 </script>
 
 <template>
-	<sidebar-detail id="file-info" icon="info" :title="t('file_details')" close>
+	<sidebar-detail id="file-info" icon="info" :title="t('file_details')">
 		<dl v-if="file">
 			<div v-if="file.type">
 				<dt>{{ t('type') }}</dt>
