@@ -20,10 +20,17 @@ const currentProviderIcon = computed(() => {
 	return aiStore.currentProvider ? modelIcons[aiStore.currentProvider] : null;
 });
 
-const getProviderIcon = (provider: string | undefined) => {
-	if (!provider) return null;
-	return modelIcons[provider] ?? null;
-};
+const modelsWithMeta = computed(() => {
+	return aiStore.models.map((model) => {
+		const [provider = '', name = ''] = model.split('/');
+		return {
+			model,
+			provider,
+			name,
+			icon: modelIcons[provider] ?? null,
+		};
+	});
+});
 </script>
 
 <template>
@@ -38,19 +45,19 @@ const getProviderIcon = (provider: string | undefined) => {
 
 		<v-list>
 			<v-list-item
-				v-for="model in aiStore.models"
-				:key="model"
-				:active="aiStore.selectedModel === model"
+				v-for="item in modelsWithMeta"
+				:key="item.model"
+				:active="aiStore.selectedModel === item.model"
 				clickable
-				@click="aiStore.selectedModel = model"
+				@click="aiStore.selectedModel = item.model"
 			>
 				<v-list-item-content>
 					<div class="model-list-item-content">
-						<component :is="getProviderIcon(model.split('/')[0])" v-if="getProviderIcon(model.split('/')[0])" class="model-icon" />
-						<v-text-overflow :text="formatTitle(model.split('/')[1] || '')" />
+						<component :is="item.icon" v-if="item.icon" class="model-icon" />
+						<v-text-overflow :text="formatTitle(item.name)" />
 					</div>
 				</v-list-item-content>
-				<template v-if="aiStore.selectedModel === model" #append>
+				<template v-if="aiStore.selectedModel === item.model" #append>
 					<v-icon name="check" x-small />
 				</template>
 			</v-list-item>
