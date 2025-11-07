@@ -3,37 +3,22 @@ import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui
 import { computed } from 'vue';
 
 const props = defineProps<{
-	text: string | string[];
+	text: string;
 	state: 'streaming' | 'done';
 }>();
 
 const open = defineModel<boolean>('open', { default: false });
 
-const textContent = computed(() => {
-	return Array.isArray(props.text) ? (props.text[0] ?? '') : (props.text ?? '');
-});
-
-const boldMatch = computed(() => textContent.value.match(/\*\*(.+?)\*\*/));
-
 const summaryText = computed(() => {
-	// Extract first bold text: **title**
-	if (boldMatch.value?.[1]) return boldMatch.value[1].trim();
+	const titleSentence = props.text.split('\n\n')[0];
 
-	const text = textContent.value;
-
-	// Fallback: first sentence (up to . ! ? ; : — or newline)
-	const sentenceMatch = text.match(/^([^.\n!?;:—]+)/);
-	if (sentenceMatch?.[1]) return sentenceMatch[1].trim();
-
-	// Last fallback: truncate to 50 chars
-	return text.slice(0, 50).trim() + (text.length > 50 ? '...' : '');
+	if (titleSentence) return titleSentence;
+	return null;
 });
 
 const expandedText = computed(() => {
-	// Strip the bold summary from the expanded content
-	return boldMatch.value
-		? textContent.value.replace(/\*\*[^*]+\*\*\s*/, '').trim()
-		: textContent.value;
+	const [, ...rest] = props.text.split('\n\n');
+	return rest.join();
 });
 </script>
 
@@ -45,7 +30,7 @@ const expandedText = computed(() => {
 				:aria-label="state === 'streaming' ? $t('ai.thinking') : $t('ai.complete')"
 				x-small
 			/>
-			<span class="reasoning-summary" :class="state">{{ summaryText || $t('ai.thinking') }}</span>
+			<span v-md="summaryText || $t('ai.thinking')" class="reasoning-summary" :class="state" />
 			<v-icon name="expand_more" x-small class="chevron" aria-hidden="true" />
 		</CollapsibleTrigger>
 		<CollapsibleContent class="reasoning-content-wrapper">
