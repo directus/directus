@@ -11,7 +11,7 @@ const aiStore = useAiStore();
 </script>
 
 <template>
-	<CollapsibleRoot v-model:open="aiStore.chatOpen" class="collapsible-root">
+	<CollapsibleRoot v-model:open="aiStore.chatOpen" v-tooltip.left="!aiStore.chatOpen && $t('ai_chat')" class="collapsible-root">
 		<CollapsibleTrigger class="collapsible-trigger">
 			<VIcon name="smart_toy" class="collapsible-trigger-icon" />
 			<span v-show="!sidebarStore.collapsed" class="collapsible-trigger-title">{{ $t('ai_chat') }}</span>
