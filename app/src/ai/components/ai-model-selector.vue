@@ -1,22 +1,36 @@
 <script setup lang="ts">
 import { formatTitle } from '@directus/format-title';
 import { useAiStore } from '@/ai/stores/use-ai';
+import { computed, type Component } from 'vue';
 import Openai from '@/ai/components/logos/openai.vue';
 import Anthropic from '@/ai/components/logos/anthropic.vue';
 
-const modelIcons = {
+interface ModelIcons {
+	[key: string]: Component;
+}
+
+const modelIcons: ModelIcons = {
 	openai: Openai,
 	anthropic: Anthropic,
 };
 
 const aiStore = useAiStore();
+
+const currentProviderIcon = computed(() => {
+	return aiStore.currentProvider ? modelIcons[aiStore.currentProvider] : null;
+});
+
+const getProviderIcon = (provider: string | undefined) => {
+	if (!provider) return null;
+	return modelIcons[provider] ?? null;
+};
 </script>
 
 <template>
 	<v-menu placement="bottom-start" show-arrow>
 		<template #activator="{ toggle }">
 			<button class="select-trigger" @click="toggle">
-				<component :is="modelIcons[aiStore.currentProvider as keyof typeof modelIcons]" class="model-icon small" />
+				<component :is="currentProviderIcon" v-if="currentProviderIcon" class="model-icon small" />
 				{{ formatTitle(aiStore.currentModel || '') }}
 				<v-icon name="expand_more" x-small class="select-icon" />
 			</button>
@@ -32,7 +46,7 @@ const aiStore = useAiStore();
 			>
 				<v-list-item-content>
 					<div class="model-list-item-content">
-						<component :is="modelIcons[model.split('/')[0] as keyof typeof modelIcons]" class="model-icon" />
+						<component :is="getProviderIcon(model.split('/')[0])" v-if="getProviderIcon(model.split('/')[0])" class="model-icon" />
 						<v-text-overflow :text="formatTitle(model.split('/')[1] || '')" />
 					</div>
 				</v-list-item-content>
