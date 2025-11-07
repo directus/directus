@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import VIcon from '@/components/v-icon/v-icon.vue';
-import { AccordionContent, AccordionHeader, AccordionItem, AccordionTrigger } from 'reka-ui';
+import { AccordionContent, AccordionHeader, AccordionItem, AccordionTrigger, DropdownMenuArrow } from 'reka-ui';
 import { useSidebarStore } from '../private-view/stores/sidebar';
 
 withDefaults(defineProps<{ id: string; title: string; icon: string, placement?: 'start' | 'end' }>(), {
@@ -15,7 +15,8 @@ const sidebarStore = useSidebarStore();
 		<AccordionHeader>
 			<AccordionTrigger v-tooltip.left="sidebarStore.collapsed && title" class="accordion-trigger">
 				<VIcon class="accordion-trigger-icon" :name="icon" />
-				<span v-if="!sidebarStore.collapsed">{{ title }}</span>
+				<span v-show="!sidebarStore.collapsed" class="accordion-trigger-title">{{ title }}</span>
+				<VIcon v-show="!sidebarStore.collapsed" class="accordion-trigger-chevron" name="chevron_left" />
 			</AccordionTrigger>
 		</AccordionHeader>
 		<AccordionContent class="accordion-content">
@@ -40,11 +41,28 @@ const sidebarStore = useSidebarStore();
 	border-block-end: var(--theme--sidebar--section--toggle--border-width) solid
 		var(--theme--sidebar--section--toggle--border-color);
 	color: var(--theme--sidebar--section--toggle--foreground);
-	padding-inline: 18px;
+	padding-inline: 18px 9px;
 }
 
 .accordion-trigger-icon {
 	margin-inline-end: 12px;
+}
+
+.accordion-trigger-title {
+	flex-grow: 1;
+	text-align: start;
+}
+
+.accordion-trigger-chevron {
+	color: var(--theme--foreground-subdued);
+	transform: rotate(0);
+	transition: transform var(--fast) var(--transition);
+}
+
+.accordion-trigger[data-state="open"] {
+	.accordion-trigger-chevron {
+		transform: rotate(-90deg);
+	}
 }
 
 .accordion-content {

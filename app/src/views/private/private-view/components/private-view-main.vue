@@ -50,12 +50,12 @@ const splitterCollapsed = computed({
 			collapsible
 			:collapsed-size="!sm ? 0 : 60"
 			:collapse-threshold="70"
-			:min-size="250"
+			:min-size="280"
 			:max-size="600"
-			:snap-points="[300]"
+			:snap-points="[370]"
 			:snap-threshold="6"
 			divider-hit-area="24px"
-			:transition-duration="150"
+			:transition-duration="125"
 			class="main-split"
 			:disabled="!sm"
 		>
