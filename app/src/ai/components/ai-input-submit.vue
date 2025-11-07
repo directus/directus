@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useAiStore } from '../stores/use-ai';
-
-const aiStore = useAiStore();
+import type { AiStatus } from './ai-message-list.vue';
 
 const props = defineProps<{
-	disabled?: boolean;
+	status: AiStatus;
 	canSubmit: boolean;
 }>();
 
@@ -15,53 +13,32 @@ const emits = defineEmits<{
 	submit: [];
 }>();
 
+const isProcessing = computed(() => props.status === 'streaming' || props.status === 'submitted');
+
 const icon = computed(() => {
-	if (aiStore.status === 'streaming' || aiStore.status === 'submitted') {
-		return 'stop_circle';
-	}
-
-	if (aiStore.status === 'error') {
-		return 'replay';
-	}
-
+	if (isProcessing.value) return 'stop_circle';
+	if (props.status === 'error') return 'replay';
 	return 'arrow_upward';
 });
 
 const isDisabled = computed(() => {
-	// Always allow stopping during streaming/submitted
-	if (aiStore.status === 'streaming' || aiStore.status === 'submitted') {
-		return false;
-	}
-
-	// Always allow retry on error
-	if (aiStore.status === 'error') {
-		return false;
-	}
-
-	// Only disable submit when no content
+	if (isProcessing.value || props.status === 'error') return false;
 	return !props.canSubmit;
 });
 
 const handleClick = () => {
-	switch (aiStore.status) {
-		case 'streaming':
-			emits('stop');
-			break;
-		case 'submitted':
-			emits('reload');
-			break;
-		case 'error':
-			emits('reload');
-			break;
-		default:
-			emits('submit');
-			break;
+	if (isProcessing.value) {
+		emits('stop');
+	} else if (props.status === 'error') {
+		emits('reload');
+	} else {
+		emits('submit');
 	}
 };
 </script>
 
 <template>
-	<v-button :disabled="isDisabled" class="submit-button" x-small :danger="aiStore.status === 'error'" icon @click="handleClick">
+	<v-button :disabled="isDisabled" class="submit-button" x-small :danger="props.status === 'error'" icon @click="handleClick">
 		<v-icon :name="icon" />
 	</v-button>
 </template>

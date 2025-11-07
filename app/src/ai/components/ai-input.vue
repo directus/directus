@@ -57,7 +57,7 @@ function handleBlur() {
 				@blur="handleBlur"
 			/>
 			<div class="input-controls">
-				<ai-input-submit :can-submit="canSubmit" @stop="aiStore.stop()" @reload="aiStore.retry()" @submit="handleSubmit" />
+				<ai-input-submit :status="aiStore.status" :can-submit="canSubmit" @stop="aiStore.stop" @reload="aiStore.retry" @submit="handleSubmit" />
 			</div>
 		</div>
 	</div>
