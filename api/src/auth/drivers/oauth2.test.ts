@@ -179,20 +179,22 @@ describe('OAuth2AuthDriver', () => {
 				});
 			});
 
-			test('passes correct parameters to openid-client Client constructor', () => {
+			test('passes correct base parameters to openid-client Client constructor', () => {
 				const config = createOAuth2Config();
-				const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
+				new OAuth2AuthDriver({ knex: {} as any }, config);
 
-				expect(mockClientConstructor).toHaveBeenCalledWith({
-					client_id: config.clientId,
-					client_secret: config.clientSecret,
-					redirect_uris: driver.redirectUris.map((uri) => uri.toString()),
-					response_types: ['code'],
-				});
+				expect(mockClientConstructor).toHaveBeenCalledWith(
+					expect.objectContaining({
+						client_id: config.clientId,
+						client_secret: config.clientSecret,
+						response_types: ['code'],
+					}),
+				);
 			});
 
 			test('passes clientOptionsOverrides from env to Client constructor', () => {
 				vi.mocked(useEnv).mockReturnValue({
+					EMAIL_TEMPLATES_PATH: './templates',
 					AUTH_GITHUB_CLIENT_TEST: 'test',
 				});
 
@@ -226,12 +228,15 @@ describe('OAuth2AuthDriver', () => {
 				});
 
 				const config = createOAuth2Config();
-
 				const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
-				expect(spy).toHaveBeenCalledWith(provider, 'OAuth2');
-				expect(driver.redirectUris[0]?.toString()).contain('http://external.com');
-				expect(driver.redirectUris[1]?.toString()).contain('http://internal.com');
+				// Verify the utility was called correctly
+				expect(spy).toHaveBeenCalledWith('github', 'OAuth2');
+
+				// Verify the result is correct
+				expect(driver.redirectUris).toHaveLength(2);
+				expect(driver.redirectUris[0]?.toString()).toBe('http://external.com/auth/login/github/callback');
+				expect(driver.redirectUris[1]?.toString()).toBe('http://internal.com/auth/login/github/callback');
 
 				spy.mockRestore();
 			});
@@ -1067,20 +1072,10 @@ describe('OAuth2AuthDriver', () => {
 		});
 
 		describe('Multi-domain callbacks', () => {
-			test('uses getCallbackFromOriginUrl to find correct callback for originUrl', async () => {
-				const mockRedirectUris = [
-					new URL(`http://localhost:8080/auth/login/${provider}/callback`),
-					new URL(`http://external.com/auth/login/${provider}/callback`),
-				];
-
-				const generateRedirectUrlsSpy = vi
-					.spyOn(oauthCallbacks, 'generateRedirectUrls')
-					.mockReturnValue(mockRedirectUris);
-
-				const getCallbackFromOriginUrlSpy = vi.spyOn(oauthCallbacks, 'getCallbackFromOriginUrl');
-
-				const externalCallback = mockRedirectUris[1]!;
-				getCallbackFromOriginUrlSpy.mockReturnValue(externalCallback);
+			test('uses correct callback URL based on originUrl in payload', async () => {
+				vi.mocked(useEnv).mockReturnValue({
+					AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'http://localhost:8080,http://external.com',
+				});
 
 				const config = createOAuth2Config({
 					allowPublicRegistration: true,
@@ -1088,7 +1083,7 @@ describe('OAuth2AuthDriver', () => {
 
 				const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
 
-				vi.spyOn(driver.client, 'oauthCallback').mockResolvedValue({
+				const oauthCallbackSpy = vi.spyOn(driver.client, 'oauthCallback').mockResolvedValue({
 					access_token: 'test-access-token',
 					refresh_token: 'test-refresh-token',
 				} as any);
@@ -1112,16 +1107,12 @@ describe('OAuth2AuthDriver', () => {
 
 				await driver.getUserID(payload);
 
-				expect(getCallbackFromOriginUrlSpy).toHaveBeenCalledWith(mockRedirectUris, 'http://external.com');
-
-				expect(driver.client.oauthCallback).toHaveBeenCalledWith(
-					externalCallback.toString(),
+				// Verify oauthCallback was called with the correct callback URL for external.com
+				expect(oauthCallbackSpy).toHaveBeenCalledWith(
+					'http://external.com/auth/login/github/callback',
 					expect.any(Object),
 					expect.any(Object),
 				);
-
-				generateRedirectUrlsSpy.mockRestore();
-				getCallbackFromOriginUrlSpy.mockRestore();
 			});
 		});
 	});

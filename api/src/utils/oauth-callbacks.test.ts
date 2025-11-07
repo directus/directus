@@ -4,7 +4,12 @@ import type { Request } from 'express';
 import type { Logger } from 'pino';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useLogger } from '../logger/index.js';
-import { generateRedirectUrls, getCallbackFromOriginUrl, getCallbackFromRequest } from './oauth-callbacks.js';
+import {
+	generateRedirectUrls,
+	getCallbackFromOriginUrl,
+	getCallbackFromRequest,
+	getCallbackUrlFromOriginUrl,
+} from './oauth-callbacks.js';
 
 vi.mock('@directus/env');
 vi.mock('../logger');
@@ -56,80 +61,32 @@ describe('getCallbackFromOriginUrl', () => {
 	});
 });
 
+describe('getCallbackUrlFromOriginUrl', () => {
+	test('constructs correct callback URL from origin and provider', () => {
+		const result = getCallbackUrlFromOriginUrl('http://localhost:8080', 'github');
+
+		expect(result.toString()).toBe('http://localhost:8080/auth/login/github/callback');
+	});
+});
+
 describe('getCallbackFromRequest', () => {
-	test('uses Host header when IP_TRUST_PROXY is false', () => {
-		vi.mocked(useEnv).mockReturnValue({
-			IP_TRUST_PROXY: false,
-		});
-
+	test('constructs origin from req.protocol and req.hostname', () => {
 		const req = {
-			get: vi.fn((header: string) => {
-				if (header === 'host') return 'localhost:8080';
-				return undefined;
-			}),
 			protocol: 'http',
+			hostname: 'localhost',
 		} as unknown as Request;
 
-		const redirectUris = [new URL('http://localhost:8080/auth/login/github/callback')];
+		const redirectUris = [new URL('http://localhost/auth/login/github/callback')];
 
 		const result = getCallbackFromRequest(req, redirectUris, 'OAuth2');
 
 		expect(result).toBe(redirectUris[0]);
-		expect(req.get).toHaveBeenCalledWith('host');
-	});
-
-	test('uses X-Forwarded-Host and X-Forwarded-Proto when IP_TRUST_PROXY is true', () => {
-		vi.mocked(useEnv).mockReturnValue({
-			IP_TRUST_PROXY: true,
-		});
-
-		const req = {
-			get: vi.fn((header: string) => {
-				if (header === 'x-forwarded-host') return 'external.com:443';
-				if (header === 'x-forwarded-proto') return 'https';
-				return undefined;
-			}),
-			protocol: 'http',
-		} as unknown as Request;
-
-		const redirectUris = [new URL('https://external.com/auth/login/github/callback')];
-
-		const result = getCallbackFromRequest(req, redirectUris, 'OAuth2');
-
-		expect(result).toBe(redirectUris[0]);
-		expect(req.get).toHaveBeenCalledWith('x-forwarded-host');
-		expect(req.get).toHaveBeenCalledWith('x-forwarded-proto');
-	});
-
-	test('falls back to Host when X-Forwarded-Host is not present', () => {
-		vi.mocked(useEnv).mockReturnValue({
-			IP_TRUST_PROXY: true,
-		});
-
-		const req = {
-			get: vi.fn((header: string) => {
-				if (header === 'host') return 'localhost:8080';
-				return undefined;
-			}),
-			protocol: 'http',
-		} as unknown as Request;
-
-		const redirectUris = [new URL('http://localhost:8080/auth/login/github/callback')];
-
-		const result = getCallbackFromRequest(req, redirectUris, 'OAuth2');
-
-		expect(result?.href).toBe('http://localhost:8080/auth/login/github/callback');
-		expect(req.get).toHaveBeenCalledWith('host');
 	});
 
 	test('throws InvalidPayloadError when origin URL is invalid', () => {
-		vi.mocked(useEnv).mockReturnValue({
-			IP_TRUST_PROXY: false,
-		});
-
 		const req = {
-			get: vi.fn(() => 'not a valid host'),
 			protocol: 'http',
+			hostname: '',
 		} as unknown as Request;
 
 		const redirectUris = [new URL('http://localhost:8080/auth/login/github/callback')];
@@ -140,13 +97,9 @@ describe('getCallbackFromRequest', () => {
 	});
 
 	test('throws ForbiddenError when origin is not in redirectUris', () => {
-		vi.mocked(useEnv).mockReturnValue({
-			IP_TRUST_PROXY: false,
-		});
-
 		const req = {
-			get: vi.fn(() => 'fail.com'),
 			protocol: 'http',
+			hostname: 'fail.com',
 		} as unknown as Request;
 
 		const redirectUris = [new URL('http://localhost:8080/auth/login/github/callback')];

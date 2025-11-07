@@ -35,7 +35,11 @@ import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 import { getSchema } from '../../utils/get-schema.js';
-import { generateRedirectUrls, getCallbackFromRequest, getCallbackFromOriginUrl } from '../../utils/oauth-callbacks.js';
+import {
+	generateRedirectUrls,
+	getCallbackFromRequest,
+	getCallbackUrlFromOriginUrl,
+} from '../../utils/oauth-callbacks.js';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
@@ -95,7 +99,6 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		this.client = new issuer.Client({
 			client_id: clientId,
 			client_secret: clientSecret,
-			redirect_uris: this.redirectUris.map((uri) => uri.toString()),
 			response_types: ['code'],
 			...clientOptionsOverrides,
 		});
@@ -156,10 +159,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				? payload['codeVerifier']
 				: generators.codeChallenge(payload['codeVerifier']);
 
-			const callbackUrl = getCallbackFromOriginUrl(this.redirectUris, payload['originUrl']);
-
 			tokenSet = await this.client.oauthCallback(
-				callbackUrl?.toString(),
+				getCallbackUrlFromOriginUrl(payload['originUrl'], this.config['provider']).toString(),
 				{ code: payload['code'], state: payload['state'] },
 				{ code_verifier: payload['codeVerifier'], state: codeChallenge },
 			);
@@ -456,8 +457,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 						code: req.query['code'],
 						codeVerifier: verifier,
 						state: req.query['state'],
-						// Pass originUrl for dynamic callback URL validation
-						...(originUrl && { originUrl }),
+						originUrl,
 					},
 					{ session: authMode === 'session', ...(otp ? { otp: String(otp) } : {}) },
 				);

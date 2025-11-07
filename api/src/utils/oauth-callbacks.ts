@@ -33,14 +33,9 @@ export function getCallbackFromOriginUrl(redirectUris: URL[], originUrl?: string
  * @returns Matching callback URL string
  */
 export function getCallbackFromRequest(req: Request, redirectUris: URL[], context: string): URL | undefined {
-	const env = useEnv();
 	const logger = useLogger();
 
-	// Read host: use X-Forwarded-Host only if behind trusted proxy
-	const host = env['IP_TRUST_PROXY'] ? req.get('x-forwarded-host') || req.get('host') : req.get('host');
-	const protocol = env['IP_TRUST_PROXY'] ? req.get('x-forwarded-proto') || req.protocol : req.protocol;
-
-	const originUrl = `${protocol}://${host}`;
+	const originUrl = `${req.protocol}://${req.hostname}`;
 
 	let origin: URL;
 
@@ -53,6 +48,17 @@ export function getCallbackFromRequest(req: Request, redirectUris: URL[], contex
 
 	logger.debug(`[${context}] Request origin: ${origin.origin}`);
 	return getCallbackFromOriginUrl(redirectUris, origin.origin);
+}
+
+/**
+ * Get callback URL from origin URL
+ *
+ * @param originUrl Origin URL
+ * @param providerName OAuth provider name
+ * @returns Url
+ */
+export function getCallbackUrlFromOriginUrl(originUrl: string, providerName: string): Url {
+	return new Url(originUrl).addPath('auth', 'login', providerName, 'callback');
 }
 
 /**
@@ -72,7 +78,7 @@ export function generateRedirectUrls(providerName: string, context: string): URL
 		toArray(env[envKey] as string).forEach((domain) => {
 			try {
 				const url = new URL(domain);
-				const domainCallback = new Url(url.origin).addPath('auth', 'login', providerName, 'callback').toString();
+				const domainCallback = getCallbackUrlFromOriginUrl(url.origin, providerName).toString();
 				callbacksSet.add(domainCallback);
 			} catch {
 				logger.warn(`[${context}] Invalid domain in ${envKey}: ${domain}`);
