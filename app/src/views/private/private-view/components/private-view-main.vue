@@ -119,6 +119,7 @@ const splitterCollapsed = computed({
 	overflow: auto;
 	block-size: 100%;
 	inline-size: 100%;
+	position: relative;
 }
 
 .mobile-sidebar {
