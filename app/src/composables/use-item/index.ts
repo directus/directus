@@ -49,6 +49,7 @@ export function useItem<T extends Item>(
 	collection: Ref<string>,
 	primaryKey: Ref<PrimaryKey | null>,
 	query: MaybeRef<Query> = {},
+	prefillValues: MaybeRef<Record<string, any>> = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
@@ -86,9 +87,33 @@ export function useItem<T extends Item>(
 		return `${getEndpoint(collection.value)}/${encodeURIComponent(primaryKey.value as string)}`;
 	});
 
-	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
+	const defaultValues = computed(() => {
+		const schemaDefaults = getDefaultValuesFromFields(fieldsWithPermissions).value;
 
-	watch([collection, primaryKey, ...(isRef(query) ? [query] : [])], refresh);
+		// For new items, merge in prefill values from URL parameters
+		if (isNew.value) {
+			const prefill = unref(prefillValues);
+			return { ...schemaDefaults, ...prefill };
+		}
+
+		return schemaDefaults;
+	});
+
+	watch(
+		[collection, primaryKey, ...(isRef(query) ? [query] : []), ...(isRef(prefillValues) ? [prefillValues] : [])],
+		refresh,
+	);
+
+	// Watch for changes in defaultValues for new items to update the item value
+	watch(
+		defaultValues,
+		(newDefaults) => {
+			if (isNew.value) {
+				item.value = newDefaults as T;
+			}
+		},
+		{ deep: true },
+	);
 
 	refreshItem();
 
@@ -536,7 +561,8 @@ export function useItem<T extends Item>(
 
 	function refreshItem() {
 		if (isNew.value) {
-			item.value = null;
+			// For new items, set item to default values (including prefill values)
+			item.value = defaultValues.value as T;
 		} else {
 			getItem();
 		}
