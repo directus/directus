@@ -59,24 +59,15 @@ export default defineConfig({
 	...(!process.env.HISTOIRE && {
 		server: {
 			port: 8080,
-			proxy: {
-				'^/(?!admin)': {
-					target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
-					changeOrigin: true,
-					configure: (proxy) => {
-						proxy.on('proxyReq', (proxyReq, req) => {
-							// Forward origin headers for Oauth callback
-							if (req.headers.host) proxyReq.setHeader('X-Forwarded-Host', req.headers.host);
-							if (req.headers['x-forwarded-proto'])
-								proxyReq.setHeader('X-Forwarded-Proto', req.headers['x-forwarded-proto']);
-						});
-					},
-				},
-				'/websocket/logs': {
-					target: process.env.API_URL ? process.env.API_URL : 'ws://127.0.0.1:8055/',
-					changeOrigin: true,
-				},
+		proxy: {
+			'^/(?!admin)': {
+				target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
 			},
+			'/websocket/logs': {
+				target: process.env.API_URL ? process.env.API_URL : 'ws://127.0.0.1:8055/',
+				changeOrigin: true,
+			},
+		},
 			fs: {
 				allow: [searchForWorkspaceRoot(process.cwd()), ...getExtensionsRealPaths()],
 			},
