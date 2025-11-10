@@ -318,7 +318,7 @@ function useDisplayValue() {
 		</template>
 
 		<v-list class="list" :mandatory="mandatory" @toggle="$emit('group-toggle', $event)">
-			<template v-if="showDeselect">
+			<template v-if="showDeselect && !(nonEditable && multiple)">
 				<v-list-item
 					clickable
 					:disabled="modelValue === null || (Array.isArray(modelValue) && !modelValue.length)"
