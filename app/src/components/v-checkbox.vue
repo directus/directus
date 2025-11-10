@@ -210,7 +210,7 @@ function onClickIcon(e: MouseEvent): void {
 
 		&:disabled {
 			background-color: var(
-				var(--form--field--input--disabled--background),
+				--form--field--input--disabled--background,
 				var(--theme--form--field--input--background-subdued)
 			);
 		}
