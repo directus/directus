@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { computed, onMounted, onBeforeUnmount, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import CodeMirror from 'codemirror';
-import 'codemirror/addon/display/placeholder.js';
-import 'codemirror/mode/markdown/markdown';
+import { EditorView, placeholder as placeholderExtension } from '@codemirror/view';
+import { EditorState, Compartment, Annotation } from '@codemirror/state';
+import { markdown } from '@codemirror/lang-markdown';
+
+const setValueAnnotation = Annotation.define<boolean>();
 
 import { useShortcut } from '@/composables/use-shortcut';
 import { useWindowSize } from '@/composables/use-window-size';
@@ -58,9 +60,14 @@ const { t } = useI18n();
 const { width } = useWindowSize();
 
 const markdownInterface = ref<HTMLElement>();
-const codemirrorEl = ref<HTMLTextAreaElement>();
-let codemirror: CodeMirror.Editor | null = null;
+const codemirrorEl = ref<HTMLElement>();
+let editorView: EditorView | null = null;
 let previousContent: string | null = null;
+
+const readOnlyCompartment = new Compartment();
+const editableCompartment = new Compartment();
+const directionCompartment = new Compartment();
+const placeholderCompartment = new Compartment();
 
 const view = ref(props.defaultView);
 
@@ -70,39 +77,62 @@ const count = ref(0);
 
 const readOnly = computed(() => {
 	if (width.value < 600) {
-		// mobile requires 'nocursor' to avoid bringing up the keyboard
-		return props.disabled ? 'nocursor' : false;
+		return props.disabled;
 	} else {
-		// desktop cannot use 'nocursor' as it prevents copy/paste
 		return props.disabled;
 	}
 });
 
 onMounted(async () => {
 	if (codemirrorEl.value) {
-		codemirror = CodeMirror(codemirrorEl.value, {
-			mode: 'markdown',
-			configureMouse: () => ({ addNew: false }),
-			lineWrapping: true,
-			readOnly: readOnly.value,
-			direction: props.direction === 'rtl' ? props.direction : 'ltr',
-			cursorBlinkRate: props.disabled ? -1 : 530,
-			placeholder: props.placeholder,
-			value: props.value || '',
-			spellcheck: true,
-			inputStyle: 'contenteditable',
+		const updateListener = EditorView.updateListener.of((update) => {
+			if (update.docChanged) {
+				const content = update.state.doc.toString();
+
+				// prevent duplicate emits with same content
+				if (content === previousContent) return;
+				previousContent = content;
+
+				if (update.transactions.some((tr) => tr.annotation(setValueAnnotation))) {
+					return;
+				}
+
+				emit('input', content);
+			}
 		});
 
-		codemirror.on('change', (cm, { origin }) => {
-			const content = cm.getValue();
+		const state = EditorState.create({
+			doc: props.value || '',
+			extensions: [
+				markdown(),
+				EditorView.lineWrapping,
+				readOnlyCompartment.of(EditorState.readOnly.of(readOnly.value)),
+				editableCompartment.of(EditorView.editable.of(!readOnly.value)),
+				directionCompartment.of(
+					EditorView.contentAttributes.of({
+						dir: props.direction === 'rtl' ? 'rtl' : 'ltr',
+					}),
+				),
+				placeholderCompartment.of(props.placeholder ? placeholderExtension(props.placeholder) : []),
+				EditorView.contentAttributes.of({ spellcheck: 'true' }),
+				EditorView.theme({
+					'&': {
+						fontFamily: editFamily.value,
+					},
+					'.cm-content': {
+						padding: '20px',
+					},
+					'.cm-focused': {
+						outline: 'none',
+					},
+				}),
+				updateListener,
+			],
+		});
 
-			// prevent duplicate emits with same content
-			if (content === previousContent) return;
-			previousContent = content;
-
-			if (origin === 'setValue') return;
-
-			emit('input', content);
+		editorView = new EditorView({
+			state,
+			parent: codemirrorEl.value,
 		});
 	}
 
@@ -119,27 +149,44 @@ onMounted(async () => {
 	}
 });
 
+onBeforeUnmount(() => {
+	if (editorView) {
+		editorView.destroy();
+		editorView = null;
+	}
+});
+
 watch(
 	() => props.value,
 	(newValue) => {
-		if (!codemirror) return;
+		if (!editorView) return;
 
-		const existingValue = codemirror.getValue();
+		const existingValue = editorView.state.doc.toString();
 
 		if (existingValue !== newValue) {
-			codemirror.setValue('');
-			codemirror.clearHistory();
-			codemirror.setValue(newValue ?? '');
-			codemirror.refresh();
+			editorView.dispatch({
+				changes: {
+					from: 0,
+					to: editorView.state.doc.length,
+					insert: newValue ?? '',
+				},
+				annotations: [setValueAnnotation.of(true)],
+			});
 		}
 	},
 );
 
 watch(
 	() => props.disabled,
-	(disabled) => {
-		codemirror?.setOption('readOnly', readOnly.value);
-		codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
+	() => {
+		if (!editorView) return;
+
+		editorView.dispatch({
+			effects: [
+				readOnlyCompartment.reconfigure(EditorState.readOnly.of(readOnly.value)),
+				editableCompartment.reconfigure(EditorView.editable.of(!readOnly.value)),
+			],
+		});
 	},
 	{ immediate: true },
 );
@@ -147,7 +194,28 @@ watch(
 watch(
 	() => props.direction,
 	(direction) => {
-		codemirror?.setOption('direction', direction === 'rtl' ? direction : 'ltr');
+		if (!editorView) return;
+
+		editorView.dispatch({
+			effects: [
+				directionCompartment.reconfigure(
+					EditorView.contentAttributes.of({
+						dir: direction === 'rtl' ? 'rtl' : 'ltr',
+					}),
+				),
+			],
+		});
+	},
+);
+
+watch(
+	() => props.placeholder,
+	(ph) => {
+		if (!editorView) return;
+
+		editorView.dispatch({
+			effects: [placeholderCompartment.reconfigure(ph ? placeholderExtension(ph) : [])],
+		});
 	},
 );
 
@@ -183,7 +251,7 @@ useShortcut('meta+alt+5', () => edit('heading', { level: 5 }), markdownInterface
 useShortcut('meta+alt+6', () => edit('heading', { level: 6 }), markdownInterface);
 
 function onImageUpload(image: any) {
-	if (!codemirror) return;
+	if (!editorView) return;
 
 	let url = getAssetUrl(image.id);
 
@@ -191,14 +259,27 @@ function onImageUpload(image: any) {
 		url += '?access_token=' + props.imageToken;
 	}
 
-	codemirror.replaceSelection(`![${codemirror.getSelection()}](${url})`);
+	const selection = editorView.state.selection.main;
+	const selectedText = editorView.state.sliceDoc(selection.from, selection.to);
 
+	editorView.dispatch({
+		changes: {
+			from: selection.from,
+			to: selection.to,
+			insert: `![${selectedText}](${url})`,
+		},
+		selection: {
+			anchor: selection.from + selectedText.length + 4 + url.length + 1,
+		},
+	});
+
+	editorView.focus();
 	imageDialogOpen.value = false;
 }
 
 function edit(type: Alteration, options?: Record<string, any>) {
-	if (codemirror) {
-		applyEdit(codemirror, type, options);
+	if (editorView) {
+		applyEdit(editorView, type, options);
 	}
 }
 </script>
@@ -378,7 +459,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 			</v-item-group>
 		</div>
 
-		<div ref="codemirrorEl"></div>
+		<div ref="codemirrorEl" class="codemirror-container"></div>
 		<template v-if="softLength">
 			<span
 				class="remaining"
@@ -435,7 +516,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 	transition-property: box-shadow, border-color;
 }
 
-.interface-input-rich-text-md :deep(.CodeMirror-scroll) {
+.interface-input-rich-text-md .codemirror-container :deep(.cm-scroller) {
 	max-block-size: min(1000px, 80vh);
 }
 
@@ -490,29 +571,18 @@ textarea {
 	color: var(--theme--form--field--input--foreground-subdued);
 }
 
-.interface-input-rich-text-md :deep(.CodeMirror) {
-	font-family: v-bind(editFamily), sans-serif;
+.interface-input-rich-text-md .codemirror-container :deep(.cm-editor) {
 	border: none;
 	border-radius: 0;
 	box-shadow: none;
 }
 
-.interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines) {
-	padding: 0 20px;
+.interface-input-rich-text-md .codemirror-container :deep(.cm-editor .cm-scroller) {
+	font-family: v-bind(editFamily), sans-serif;
 }
 
-.interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines:first-of-type) {
-	margin-block-start: 20px;
-}
-
-.interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines:last-of-type) {
-	margin-block-end: 20px;
-}
-
-.interface-input-rich-text-md.preview :deep(.CodeMirror) {
-	visibility: hidden;
-	position: absolute;
-	pointer-events: none;
+.interface-input-rich-text-md.preview .codemirror-container {
+	display: none;
 }
 
 .toolbar {
