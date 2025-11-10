@@ -36,16 +36,11 @@ import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 import { getSchema } from '../../utils/get-schema.js';
-import {
-	generateRedirectUrls,
-	getCallbackFromRequest,
-	getCallbackFromOriginUrl,
-	getCallbackUrlFromOriginUrl,
-} from '../../utils/oauth-callbacks.js';
+import { isLoginOriginRedirectAllowed } from '../utils/is-login-origin-redirect-allowed.js';
+import { generateAuthCallbackUrl } from '../utils/generate-auth-callback-url.js';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: null | Client;
-	redirectUris: URL[];
 	config: Record<string, any>;
 	roleMap: RoleMap;
 
@@ -71,7 +66,6 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidProviderConfigError({ provider });
 		}
 
-		this.redirectUris = generateRedirectUrls(provider, 'OpenID');
 		this.config = config;
 		this.roleMap = {};
 
@@ -235,7 +229,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				: generators.codeChallenge(payload['codeVerifier']);
 
 			tokenSet = await client.callback(
-				getCallbackUrlFromOriginUrl(payload['originUrl'], this.config['provider']).toString(),
+				payload['callbackUrl'],
 				{ code: payload['code'], state: payload['state'], iss: payload['iss'] },
 				{ code_verifier: payload['codeVerifier'], state: codeChallenge, nonce: codeChallenge },
 			);
@@ -455,7 +449,11 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			const callback = getCallbackFromRequest(req, provider.redirectUris, 'OpenID');
+			if (isLoginOriginRedirectAllowed(req, providerName) === false) {
+				throw new InvalidPayloadError({ reason: `Origin URL "${req.get('origin')}" is not allowed` });
+			}
+
+			const callbackUrl = generateAuthCallbackUrl(req, providerName).toString()
 
 			const token = jwt.sign(
 				{
@@ -463,7 +461,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 					redirect,
 					prompt,
 					otp,
-					...(callback && { originUrl: callback.origin }),
+					callbackUrl,
 				},
 				getSecret(),
 				{
@@ -478,7 +476,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			});
 
 			try {
-				return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt, callback?.href));
+				return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt, callbackUrl));
 			} catch {
 				return res.redirect(
 					new Url(env['PUBLIC_URL'] as string)
@@ -514,7 +512,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 					redirect?: string;
 					prompt: boolean;
 					otp?: string;
-					originUrl?: string;
+					callbackUrl?: string;
 				};
 			} catch (e: any) {
 				logger.warn(e, `[OpenID] Couldn't verify OpenID cookie`);
@@ -522,7 +520,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				return res.redirect(`${url.toString()}?reason=${ErrorCode.InvalidCredentials}`);
 			}
 
-			const { verifier, prompt, otp, originUrl } = tokenData;
+			const { verifier, prompt, otp, callbackUrl } = tokenData;
 			let { redirect } = tokenData;
 
 			const accountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
@@ -552,8 +550,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 						codeVerifier: verifier,
 						state: req.query['state'],
 						iss: req.query['iss'],
-						// Pass originUrl for dynamic callback URL validation
-						...(originUrl && { originUrl }),
+						callbackUrl
 					},
 					{ session: authMode === 'session', ...(otp ? { otp: String(otp) } : {}) },
 				);
