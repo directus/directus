@@ -16,12 +16,59 @@ import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import * as z from 'zod';
 
 const router = Router();
 
 const env = useEnv();
 
 router.use(useCollection('directus_files'));
+
+router.get(
+	'/folder/:id',
+	asyncHandler(async (req, res) => {
+		const service = new AssetsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const files = await service.getFileHierarchy(String(req.params['id']));
+
+		const { archive, complete } = await service.getZip(files, true);
+
+		res.setHeader('Content-Type', 'application/zip');
+		res.setHeader('Content-Disposition', `attachment; filename="folder-${new Date().toISOString()}.zip"`);
+
+		archive.pipe(res);
+
+		await complete();
+	}),
+);
+
+router.post(
+	'/files/',
+	asyncHandler(async (req, res) => {
+		const service = new AssetsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const { ids } = z
+			.object({
+				ids: z.array(z.union([z.string(), z.number()])),
+			})
+			.parse(req.body);
+
+		const { archive, complete } = await service.getZip(ids.map((id) => ({ id: String(id) })));
+
+		archive.pipe(res);
+
+		res.setHeader('Content-Type', 'application/zip');
+		res.setHeader('Content-Disposition', `attachment; filename="files-${new Date().toISOString()}.zip"`);
+
+		await complete();
+	}),
+);
 
 router.get(
 	'/:pk/:filename?',

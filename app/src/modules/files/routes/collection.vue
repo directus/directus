@@ -24,6 +24,7 @@ import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
 import { storeToRefs } from 'pinia';
+import { getAssetUrl, getFilesUrl } from '@/utils/get-asset-url';
 
 type Item = {
 	[field: string]: any;
@@ -42,7 +43,7 @@ const notificationsStore = useNotificationsStore();
 const { folders } = useFolders();
 
 const layoutRef = ref();
-const selection = ref<Item[]>([]);
+const selection = ref<string[]>([]);
 
 const userStore = useUserStore();
 
@@ -357,6 +358,31 @@ function useFileUpload() {
 		emitter.emit(Events.upload);
 	}
 }
+
+async function downloadFiles() {
+	let response;
+
+	if (selection.value.length === 1) {
+		response = await fetch(getAssetUrl(selection.value[0]!));
+	} else {
+		response = await fetch(getFilesUrl(), {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ ids: selection.value }),
+		});
+	}
+
+	const blob = await response.blob();
+	const filename = response.headers.get('Content-Disposition')?.match(/filename="(.*?)"/)?.[1];
+
+	const url = window.URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = filename ?? 'unknown file';
+	a.click();
+}
 </script>
 
 <template>
@@ -476,6 +502,18 @@ function useFileUpload() {
 					@click="batchEditActive = true"
 				>
 					<v-icon name="edit" outline />
+				</v-button>
+
+				<v-button
+					v-if="selection.length > 0"
+					v-tooltip.bottom="t('download')"
+					rounded
+					icon
+					secondary
+					download
+					@click="downloadFiles"
+				>
+					<v-icon name="download" outline />
 				</v-button>
 
 				<v-button
