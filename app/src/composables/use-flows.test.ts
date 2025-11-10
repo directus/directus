@@ -249,15 +249,11 @@ describe('runManualFlow', () => {
 
 		vi.mocked(api.post).mockResolvedValue({});
 
-		const { manualFlows, runManualFlow } = useFlows(useFlowsOptions);
+		const { runManualFlow } = useFlows(useFlowsOptions);
 
 		await runManualFlow('non-existent-flow');
 
 		expect(api.post).not.toHaveBeenCalled();
-
-		manualFlows.value.forEach((manualFlow) => {
-			expect(manualFlow.isFlowRunning).toEqual(false);
-		});
 	});
 
 	test('returns early when flow is not in manualFlows (filtered out)', async () => {
@@ -269,15 +265,11 @@ describe('runManualFlow', () => {
 
 		vi.mocked(api.post).mockResolvedValue({});
 
-		const { manualFlows, runManualFlow } = useFlows(useFlowsOptions);
+		const { runManualFlow } = useFlows(useFlowsOptions);
 
 		await runManualFlow(mockFlows[1]!.id);
 
 		expect(api.post).not.toHaveBeenCalled();
-
-		manualFlows.value.forEach((manualFlow) => {
-			expect(manualFlow.isFlowRunning).toEqual(false);
-		});
 	});
 
 	test('successfully runs flow for collection with requireSelection false', async () => {

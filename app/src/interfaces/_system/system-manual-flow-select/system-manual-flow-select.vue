@@ -4,7 +4,7 @@ import { FlowRaw } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = defineProps<{ value: Record<string, unknown>; collectionName: string }>();
+const props = defineProps<{ value: Record<string, unknown> | null; collectionName: string }>();
 defineEmits<{ input: [value: string | null] }>();
 
 const flowsStore = useFlowsStore();
