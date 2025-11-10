@@ -2,13 +2,15 @@
 import api from '@/api';
 import { type ApplyShortcut } from '@/components/v-dialog.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useFlows } from '@/composables/use-flows';
+import { useNestedValidation } from '@/composables/use-nested-validation';
 import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
-import { useNestedValidation } from '@/composables/use-nested-validation';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { mergeItemData } from '@/utils/merge-item-data';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
@@ -16,12 +18,11 @@ import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { Field, PrimaryKey, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { isArray, isEmpty, mergeWith, set } from 'lodash';
-import { computed, ref, toRefs, watch, unref, type Ref } from 'vue';
+import { isEmpty, set } from 'lodash';
+import { computed, ref, toRefs, unref, watch, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import OverlayItemContent from './overlay-item-content.vue';
-import { useFlows } from '@/composables/use-flows';
 
 export interface OverlayItemProps {
 	overlay?: 'drawer' | 'modal' | 'popover';
@@ -436,16 +437,11 @@ function useActions() {
 
 	function validateForm({ defaultValues, existingValues, editsToValidate, fieldsToValidate }: Record<string, any>) {
 		return validateItem(
-			mergeWith({}, defaultValues, existingValues, editsToValidate, customizer),
+			mergeItemData(defaultValues, existingValues, editsToValidate),
 			fieldsToValidate,
 			isNew.value,
 			true,
 		);
-
-		function customizer(objValue: unknown, srcValue: unknown) {
-			if (isArray(objValue)) return objValue.concat(srcValue);
-			return;
-		}
 	}
 
 	function save() {
