@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: À propos
+first_name: Prénom
+last_name: Nom
 identifier: Identifiant
 avatar: Avatar
 application: Application
@@ -30,6 +32,10 @@ draft: Brouillon
 archived: Archivé
 marketplace: Marketplace
 extensions: Extensions
+skip_link_nav: Passer à la navigation
+skip_link_module_nav: Passer au module de navigation
+skip_link_main: Passer au contenu principal
+skip_link_sidebar: Passer à la barre latérale
 modules: Modules
 module_bar: Barre de modules
 logs: Journaux
@@ -42,6 +48,8 @@ location: Emplacement
 collection_names_are_case_sensitive: Le nom des collections est sensible à la casse
 condition_rules: Règles de conditions
 input: Texte simple
+invalid_input: Saisie invalide
+not_a_number: Pas un nombre
 maps: Cartes
 switch_user: Changer d'utilisateur
 item_creation: Création d'élément
@@ -108,6 +116,12 @@ hook: Crochet
 fill_width: Remplir l'espace
 field_name_translations: Traductions du nom de champ
 enter_password_to_enable_tfa: Saisissez votre mot de passe pour activer l'authentification à deux facteurs
+sso_tfa_setup_notice: Vous allez être déconnecté de votre compte et devrez vous reconnecter. Toutes les modifications non enregistrées seront supprimées.
+enable_tfa: Activer la double authentification
+cancel_tfa_setup: Désactiver la configuration de la double authentification
+cancel_tfa_setup_notice: Êtes-vous sûr de vouloir désactiver la configuration de la double authentification ?
+keep_setup: Garder la configuration
+cancel_setup: Annuler la configuration
 add_field: Ajouter un champ
 role_name: Nom de rôle
 policy_name: Nom de la Règle
@@ -164,19 +178,9 @@ rename_version: Renommer la version
 compare_version: Comparer la version
 save_version: Enregistrer la version
 promote_version: Promouvoir la version
-promote_version_disabled: Aucun changement
-promote_version_drawer_title: Mettre {version} en Main
-promote_version_changes: Changements
-promote_version_preview: Prévisualiser
-outdated_notice: >-
-  L'élément principal a été mis à jour depuis la création de cette version. Veuillez vérifier toutes les valeurs de champ ci-dessous et confirmer quelle version doit être utilisée lors de la sélection de cette version dans l'élément principal.
-promote_notice: >-
-  Veuillez vérifier toutes les valeurs de champ ci-dessous, et confirmer quelle version doit être utilisée lors de la promotion de cette version dans l'élément principal.
 delete_version: Supprimer la version
 delete_version_copy: >-
   Êtes-vous sûr de vouloir supprimer la version "{version}"? Cette action est irréversible.
-delete_on_promote_copy: >-
-  Voulez-vous supprimer ou conserver la version "{version}" après la promotion ?
 reset_bookmark: Réinitialiser le favori
 update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
@@ -452,7 +456,6 @@ revision_delta_created: Créé
 revision_delta_created_externally: Créé en externe
 revision_delta_updated: '1 champ mis à jour | {count} champs mis à jour'
 revision_delta_deleted: Supprimé
-revision_delta_version_saved: 'Sauvegarde de la version (1 champ mis à jour) | Sauvegarde de la version ({count} champs mis à jour)'
 revision_delta_reverted: Restauré
 revision_delta_update_message: Ce champ a été mis à jour, mais sa valeur a été cachée pour des raisons de sécurité.
 revision_delta_other: Historique
@@ -480,6 +483,8 @@ import_data_button: Commencer l'import
 import_data_indeterminate: Import des données...
 import_data_success: Données importées avec succès depuis {filename}
 import_data_error: La structure des données de ce fichier ne correspond pas à la collection.
+snapshot:
+  export: Exporter le schéma
 label_import: Importer
 label_export: Export
 import_export: Importer/Exporter
@@ -553,6 +558,9 @@ original: Initial
 url: URL
 import_label: Importer
 file_details: Détails du fichier
+copy_id: Copier l'identifiant
+copy_id_success: Identifiant copié
+copy_id_fail: Identifiant non copié
 dimensions: Dimensions
 size: Taille
 created: Créé
@@ -716,6 +724,7 @@ enabled_dev_tooltip: Les extensions d'applications sont toujours activées en mo
 disable_tfa: Désactiver l'A2F
 admin_disable_tfa_text: Voulez-vous vraiment désactiver 2FA pour cet utilisateur ?
 tfa_setup: Configurer 2FA
+tfa_setup_description: Configurez l'authentification à deux facteurs pour protéger votre compte
 tfa_scan_code: Scannez le code dans votre application d'authentification pour terminer la configuration de l'A2F
 enter_otp_to_disable_tfa: Entrez l'OTP pour désactiver l'A2F
 create_account: Créer un Compte
@@ -726,6 +735,7 @@ errors:
   COLLECTION_NOT_FOUND: "La collection n'existe pas"
   CONTAINS_NULL_VALUES: Le champ contient des valeurs nulles
   CONTENT_TOO_LARGE: L'élément/fichier soumis est trop volumineux
+  FAILED_VALIDATION: Échec de la validation
   FIELD_NOT_FOUND: Champ introuvable
   FORBIDDEN: Non autorisé
   GRAPHQL_VALIDATION: Validation GraphQL
@@ -1131,6 +1141,7 @@ settings_roles: Rôles Utilisateur
 settings_permissions: Règles d'accès
 settings_project: Réglages
 settings_appearance: Personnalisation du Thème
+settings_ai: IA
 settings_webhooks: Webhooks
 settings_flows: Flux
 settings_system_logs: Journaux système
@@ -1181,7 +1192,6 @@ page_help_settings_datamodel_fields: >-
   **Modèle de données : Collection** — Un formulaire pour gérer cette collection et ses champs.
 page_help_settings_system_logs: '**System Logs** — Accédez au flux en direct des journaux du système.'
 page_help_settings_policies_collection: '**Parcourir les polices** — Liste toutes les polices du projet.'
-page_help_settings_policies_item: "**Détail de la police** — Gestion des permissions d'une police et d'autres paramètres."
 page_help_settings_roles_collection: '**Parcourir les Rôles** — Liste tous les rôles utilisateur du projet.'
 page_help_settings_roles_item: "**Détail du rôle** — Gérer les autorisations et les autres paramètres d'un rôle."
 page_help_settings_presets_collection: >-
@@ -1583,6 +1593,8 @@ unlimited_usage: Utilisation illimitée
 uses_left: Pas d'utilisation restante | Une utilisation restante | {n} utilisations restantes
 no_shares: Aucun partage pour l'instant
 new_share: Nouveau partage
+mcp_prompts_collection_schema:
+  messages_role_user: Utilisateur
 expired: Expiré
 upcoming: À venir
 share: Partage
@@ -2290,6 +2302,7 @@ show_legend: Afficher la légende
 right: Droite
 left: Gauche
 start: Début
+end: Fin
 donut: Donut
 panels:
   metric:

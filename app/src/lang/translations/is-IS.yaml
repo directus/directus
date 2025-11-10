@@ -1,4 +1,6 @@
 ---
+first_name: Fornafn
+last_name: Eftirnafn
 identifier: Auðkenni
 avatar: Auðkennismynd
 application: Forrit
@@ -48,7 +50,6 @@ emails: Tölvupóstar
 primary: Aðal
 delete_folder: Eyða Möppu
 prefix: Forskeyti
-promote_version_preview: Forskoða
 reset_bookmark: Endursetja Bókamerki
 update_bookmark: Uppfæra bókamerki
 delete_bookmark: Eyða bókamerki
@@ -406,6 +407,8 @@ do_nothing: Gera Ekkert
 comment: Athugasemd
 live_preview:
   new_window: Opna í Nýjum Glugga
+mcp_prompts_collection_schema:
+  messages_role_user: Notandi
 share_copy_link: Afrita Hlekk
 delete_label: Eyða
 description: Lýsing

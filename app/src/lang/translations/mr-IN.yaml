@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: माहिती
+first_name: पहिले नाव
+last_name: आडनाव
 identifier: ओळखकर्ता
 avatar: अवतार
 application: अर्ज
@@ -164,19 +166,9 @@ rename_version: व्हर्जन नाव बदला
 compare_version: व्हर्जन तुलना करा
 save_version: व्हर्जन जतन करा
 promote_version: व्हर्जन प्रमोट करा
-promote_version_disabled: बदल नाही
-promote_version_drawer_title: '{version} ला मेन मध्ये प्रमोट करा'
-promote_version_changes: बदल
-promote_version_preview: प्रिव्हियू 
-outdated_notice: >-
-  हे व्हर्जन तयार केल्यापासून मुख्य आयटम अपडेट केला गेला आहे. कृपया खालील सर्व फील्ड व्हॅल्यू चेक करा आणि मुख्य आयटम मध्ये हे व्हर्जन प्रमोट करताना कोणते व्हर्जन वापरले जावे याची पुष्टी करा.
-promote_notice: >-
-  कृपया खालील सर्व फील्ड व्हॅल्यू चेक करा आणि मुख्य आयटम मध्ये या आवृत्तीचा प्रचार करताना कोणती आवृत्ती वापरली जावी याची पुष्टी करा.
 delete_version: व्हर्जन डिलीट करा
 delete_version_copy: >-
   तुम्हाला खात्री आहे की तुम्ही "{version}" व्हर्जन डिलीट करू इच्छिता? ही क्रिया पूर्ववत केली जाऊ शकत नाही.
-delete_on_promote_copy: >-
-  प्रमोट केल्यानंतर तुम्ही "{version}" व्हर्जन हटवू किंवा ठेवू इच्छिता?
 reset_bookmark: बुकमार्क पुन्हा सेट करा
 update_bookmark: बुकमार्क अपडेट करा
 delete_bookmark: बुकमार्क डिलीट करा
@@ -451,7 +443,6 @@ revision_delta_created: तयार केले
 revision_delta_created_externally: बाहेरून तयार केले
 revision_delta_updated: '1 फील्ड अपडेट केली | {count} फील्ड अपडेट केली'
 revision_delta_deleted: डिलीट केले
-revision_delta_version_saved: 'व्हर्जन जतन करा (1 फील्ड अपडेट केली ) | आवृत्ती जतन ({count} फील्ड अपडेट केली)'
 revision_delta_reverted: पूर्ववत केले
 revision_delta_update_message: हे फील्ड अपडेट केले गेले आहे परंतु सुरक्षिततेच्या कारणास्तव त्याचे व्हॅल्यू लपवले जात आहे.
 revision_delta_other: पडताळणी
@@ -1172,7 +1163,6 @@ page_help_settings_datamodel_fields: >-
   **डेटा मॉडेल: संकलन** — हा संग्रह आणि त्याची फील्ड व्यवस्थापित करण्यासाठी एक फॉर्म.
 page_help_settings_system_logs: '**सिस्टम लॉग** — सिस्टम लॉगच्या थेट प्रवाहात प्रवेश करा'
 page_help_settings_policies_collection: '**नीती ब्राउझ करा** — प्रकल्पातील सर्व धोरणांची सूची.'
-page_help_settings_policies_item: "**धोरण तपशील** — पॉलिसीच्या परवानग्या आणि इतर सेटिंग्ज व्यवस्थापित करा."
 page_help_settings_roles_collection: '**भूमिका ब्राउझ करा** — प्रकल्पातील सर्व वापरकर्त्यांच्या भूमिकांची सूची.'
 page_help_settings_roles_item: "**भूमिका तपशील** — भूमिकेच्या परवानग्या आणि इतर सेटिंग्ज व्यवस्थापित करा."
 page_help_settings_presets_collection: >-
@@ -1574,6 +1564,8 @@ unlimited_usage: अमर्याद वापर
 uses_left: "उपयोग नाही | एक वापर बाकी | {n} डावीकडे वापरते\n"
 no_shares: दाखवण्यासाठी कोणतेही शेअर्स नाहीत
 new_share: नवीन शेअर
+mcp_prompts_collection_schema:
+  messages_role_user: युजर
 expired: कालबाह्य
 upcoming: आगामी
 share: शेअर

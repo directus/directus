@@ -1,5 +1,5 @@
 import type { DirectusComment } from '../../../schema/comment.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreateCommentOutput<
@@ -18,7 +18,7 @@ export type CreateCommentOutput<
  */
 export const createComments =
 	<Schema, const TQuery extends Query<Schema, DirectusComment<Schema>>>(
-		items: Partial<DirectusComment<Schema>>[],
+		items: NestedPartial<DirectusComment<Schema>>[],
 		query?: TQuery,
 	): RestCommand<CreateCommentOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createComments =
  */
 export const createComment =
 	<Schema, const TQuery extends Query<Schema, DirectusComment<Schema>>>(
-		item: Partial<DirectusComment<Schema>>,
+		item: NestedPartial<DirectusComment<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreateCommentOutput<Schema, TQuery>, Schema> =>
 	() => ({

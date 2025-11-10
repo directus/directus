@@ -1,4 +1,6 @@
 ---
+first_name: ชื่อ
+last_name: นามสกุล
 identifier: ตัวบ่งชี้
 avatar: ภาพประจำตัว
 application: แอพลิเคชัน
@@ -79,11 +81,6 @@ rename_folder: เปลี่ยนชื่อโฟลเดอร์
 delete_folder: ลบโฟลเดอร์
 prefix: คำนำหน้า
 suffix: คำต่อท้าย
-promote_version_preview: ดูตัวอย่าง
-outdated_notice: >-
-  รายการหลักได้รับการอัปเดตหลังจากที่เวอร์ชันนี้ถูกสร้างขึ้น กรุณาตรวจสอบค่าทั้งหมดด้านล่าง และยืนยันว่าเวอร์ชันใดควรถูกใช้เมื่อทำการโปรโมตเวอร์ชันนี้ไปยังรายการหลัก
-promote_notice: >-
-  โปรดตรวจสอบค่าของทุกฟิลด์ด้านล่าง และยืนยันว่าเวอร์ชันใดควรถูกนำไปใช้เมื่อมีการโปรโมตเวอร์ชันนี้เข้าสู่รายการหลัก
 reset_bookmark: รีเซ็ตบุ๊คมาร์ค
 update_bookmark: ปรับปรุงบุ๊คมาร์ค
 delete_bookmark: ลบ​บุ๊ค​มา​ร์ค
@@ -985,6 +982,8 @@ inline: แบบอินไลน์
 comment: ความคิดเห็น
 live_preview:
   new_window: เปิดในหน้าต่างใหม่
+mcp_prompts_collection_schema:
+  messages_role_user: ผู้ใช้
 relational_triggers: ทริกเกอร์เชิงสัมพันธ์
 referential_action_field_label_m2o: เมื่อลบ {collection}...
 referential_action_field_label_o2m: เมื่อยกเลิกการเลือก {collection}...

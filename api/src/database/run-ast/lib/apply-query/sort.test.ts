@@ -1,14 +1,8 @@
 import { SchemaBuilder } from '@directus/schema-builder';
-import { expect, test, vi } from 'vitest';
-import { Client_SQLite3 } from './mock.js';
 import knex from 'knex';
 import { createTracker } from 'knex-mock-client';
-
-const aliasFn = vi.fn();
-
-vi.doMock('nanoid/non-secure', () => ({
-	customAlphabet: () => aliasFn,
-}));
+import { expect, test, vi } from 'vitest';
+import { Client_SQLite3 } from './mock.js';
 
 const { applySort } = await import('./sort.js');
 
@@ -146,7 +140,6 @@ test('sorting of count(*) with aggregation', async () => {
 test('sorting of count(links)', async () => {
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
 
 	applySort(db, schema, queryBuilder, ['count(links)'], undefined, 'articles', {});
 
@@ -158,7 +151,7 @@ test('sorting of count(links)', async () => {
 	const rawQuery = tracker.history.all[0]!;
 
 	expect(rawQuery.sql).toEqual(
-		`select * order by (select count(*) from "link_list" as "alias" where "alias"."article_id" = "articles"."id") asc`,
+		`select * order by (select count(*) from "link_list" as "arvsw" where "arvsw"."article_id" = "articles"."id") asc`,
 	);
 
 	expect(rawQuery.bindings).toEqual([]);
@@ -168,7 +161,6 @@ test('sorting of count(links)', async () => {
 test('sorting of count(links) with aggregation', async () => {
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
 
 	applySort(
 		db,
@@ -190,7 +182,7 @@ test('sorting of count(links) with aggregation', async () => {
 	const rawQuery = tracker.history.all[0]!;
 
 	expect(rawQuery.sql).toEqual(
-		`select * left join "link_list" as "alias" on "articles"."id" = "alias"."article_id" order by "alias"."id" asc`,
+		`select * left join "link_list" as "qljec" on "articles"."id" = "qljec"."article_id" order by "qljec"."id" asc`,
 	);
 
 	expect(rawQuery.bindings).toEqual([]);

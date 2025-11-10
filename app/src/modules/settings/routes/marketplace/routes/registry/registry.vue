@@ -82,10 +82,6 @@ watchEffect(async () => {
 			</v-button>
 		</template>
 
-		<template #title-outer:append>
-			<v-chip class="beta" outlined small>Beta</v-chip>
-		</template>
-
 		<template #navigation>
 			<settings-navigation />
 		</template>
@@ -173,12 +169,6 @@ watchEffect(async () => {
 
 .extension-group + .extension-group {
 	margin-block-start: 24px;
-}
-
-.beta {
-	--v-chip-color: var(--theme--primary);
-	--v-chip-background-color: var(--theme--primary-subdued);
-	margin-inline-start: 10px;
 }
 
 .filter {

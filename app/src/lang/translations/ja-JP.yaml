@@ -1,4 +1,6 @@
 ---
+first_name: 名
+last_name: 姓
 identifier: 識別子
 avatar: プロフィール画像
 application: アプリケーション
@@ -110,10 +112,6 @@ create_version: バージョンを作成
 compare_version: バージョンを比較
 save_version: バージョンを保存
 promote_version: バージョンを反映
-promote_version_disabled: 変更なし
-promote_version_drawer_title: '{version} をメインに反映'
-promote_version_changes: 差分
-promote_version_preview: プレビュー
 delete_version: バージョンを削除
 reset_bookmark: ブックマークをリセット
 update_bookmark: ブックマークを更新
@@ -1178,6 +1176,8 @@ inline: インライン
 comment: コメント
 live_preview:
   new_window: 新しいウィンドウで開く
+mcp_prompts_collection_schema:
+  messages_role_user: ユーザー
 referential_action_set_null: '{field} フィールドを Null にする'
 creating_webhook: Webhookの作成
 default_label: デフォルト

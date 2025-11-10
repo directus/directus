@@ -11,6 +11,7 @@ export type Role = {
 
 export type Avatar = {
 	id: string;
+	modified_on?: Date;
 };
 
 export type User = {

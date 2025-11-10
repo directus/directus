@@ -224,7 +224,7 @@ const downloadName = computed(() => {
 
 const downloadUrl = computed(() => {
 	if (relatedPrimaryKey.value === null || relationInfo.value?.relatedCollection.collection !== 'directus_files') return;
-	return getAssetUrl(String(relatedPrimaryKey.value), true);
+	return getAssetUrl(String(relatedPrimaryKey.value), { isDownload: true });
 });
 
 function getFilename(junctionRow: Record<string, any>) {
@@ -367,7 +367,7 @@ const allowDrag = computed(
 									<v-list-item
 										clickable
 										:download="getDownloadName(element)"
-										:href="getAssetUrl(getFilename(element), true)"
+										:href="getAssetUrl(getFilename(element), { isDownload: true })"
 									>
 										<v-list-item-icon><v-icon name="download" /></v-list-item-icon>
 										<v-list-item-content>{{ t('download_file') }}</v-list-item-content>

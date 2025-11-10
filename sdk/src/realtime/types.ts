@@ -1,5 +1,5 @@
-import type { Query } from '../types/query.js';
 import type { ApplyQueryFields, CollectionType, WebSocketInterface } from '../index.js';
+import type { Query } from '../types/query.js';
 
 export type WebSocketAuthModes = 'public' | 'handshake' | 'strict';
 
@@ -9,6 +9,11 @@ export interface WebSocketConfig {
 		| {
 				delay: number; // in ms
 				retries: number;
+		  }
+		| false;
+	connect?:
+		| {
+				timeout: number; // in ms
 		  }
 		| false;
 	heartbeat?: boolean;

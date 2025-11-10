@@ -1,4 +1,6 @@
 ---
+first_name: Ime
+last_name: Prezime
 identifier: Identifikator
 avatar: Avatar
 application: Aplikacija
@@ -842,6 +844,8 @@ inline: Linijski
 comment: Komentar
 live_preview:
   new_window: Otvori u Novom Prozoru
+mcp_prompts_collection_schema:
+  messages_role_user: Korisnik
 relational_triggers: Relacioni Okidači
 referential_action_field_label_m2o: Kod Brisanja {collection}...
 referential_action_field_label_o2m: Kod Poništenog odabira {collection}...

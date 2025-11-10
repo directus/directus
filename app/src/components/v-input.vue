@@ -235,6 +235,15 @@ function emitValue(event: InputEvent) {
 			emit('update:modelValue', parsedNumber);
 		}
 	} else {
+		// decimal input marked as text
+		if (props.float === true) {
+			/**
+			 * Normalize decimal separator from ',' to '.'
+			 * Thousands separators are not supported in the input
+			 */
+			value = value.replace(',', '.');
+		}
+
 		if (props.slug === true) {
 			const endsWithSpace = value.endsWith(' ');
 			value = slugify(value, { separator: props.slugSeparator, preserveTrailingDash: true });

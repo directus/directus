@@ -77,8 +77,10 @@ function parseAvatar(file: Record<string, any>) {
 	if (!file || !file.type) return;
 	if (file.type.startsWith('image') === false) return;
 
-	const url = getAssetUrl(`${file.id}?modified=${file.modified_on}&key=system-small-cover`);
-	return url;
+	return getAssetUrl(file.id, {
+		imageKey: 'system-small-cover',
+		cacheBuster: file.modified_on,
+	});
 }
 
 function cancelChanges() {

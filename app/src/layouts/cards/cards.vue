@@ -32,6 +32,7 @@ const props = withDefaults(
 		resetPresetAndRefresh: () => Promise<void>;
 		sort: string[];
 		loading: boolean;
+		loadingItemCount: boolean;
 		showSelect?: ShowSelect;
 		error?: any;
 		itemCount: number | null;
@@ -86,7 +87,7 @@ watch(innerWidth, (value) => {
 
 <template>
 	<div ref="layoutElement" class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
-		<template v-if="loading || ((itemCount ?? 0) > 0 && !error)">
+		<template v-if="loading || (items.length > 0 && !error)">
 			<cards-header
 				v-model:size="sizeWritable"
 				v-model:selection="selectionWritable"
@@ -96,7 +97,9 @@ watch(innerWidth, (value) => {
 				@select-all="selectAll"
 			/>
 
-			<div class="grid" :class="{ 'single-row': isSingleRow }">
+			<v-progress-circular v-if="loading" indeterminate rounded />
+
+			<div v-else class="grid" :class="{ 'single-row': isSingleRow }">
 				<card
 					v-for="item in items"
 					:key="item[primaryKeyField!.field]"
@@ -121,8 +124,9 @@ watch(innerWidth, (value) => {
 
 			<div class="footer">
 				<div class="pagination">
+					<v-skeleton-loader v-if="!loading && loadingItemCount && items.length === limit" type="pagination" />
 					<v-pagination
-						v-if="totalPages > 1"
+						v-else-if="totalPages > 1"
 						:length="totalPages"
 						:total-visible="7"
 						show-first-last
@@ -166,7 +170,7 @@ watch(innerWidth, (value) => {
 	justify-content: space-between;
 	padding-block-start: 40px;
 
-	.pagination {
+	.pagination:not(.v-skeleton-loader) {
 		display: inline-block;
 	}
 

@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Over
+first_name: Voornaam
+last_name: Achternaam
 identifier: ID
 avatar: Profielafbeelding
 application: Applicatie
@@ -170,19 +172,9 @@ rename_version: Versie hernoemen
 compare_version: Versies vergelijken
 save_version: Versie opslaan
 promote_version: Versie promoveren
-promote_version_disabled: Geen wijzigingen
-promote_version_drawer_title: Promoveer {version} naar Hoofd
-promote_version_changes: Veranderingen
-promote_version_preview: Voorvertoning
-outdated_notice: >-
-  Het hoofditem is bijgewerkt sinds deze versie is gemaakt. Controleer alle onderstaande veldwaarden en bevestig welke versie moet worden gebruikt wanneer deze versie wordt gepromoot in het hoofditem.
-promote_notice: >-
-  Controleer alle onderstaande veldwaarden en bevestig welke versie moet worden gebruikt als deze versie wordt gepromoot in het hoofditem.
 delete_version: Versie verwijderen
 delete_version_copy: >-
   Weet je zeker dat je de versie "{version}" wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
-delete_on_promote_copy: >-
-  Wil je de "{version}" versie verwijderen of behouden na het promoten?
 reset_bookmark: Reset Bladwijzer
 update_bookmark: Update Bladwijzer
 delete_bookmark: Verwijder Bladwijzer
@@ -322,6 +314,8 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Pagina-voorkeuren resetten
 hidden_field: Verborgen veld
 hidden_on_detail: Verborgen op het detail scherm
+clear_hidden_field: Wis waarde(s)
+clear_value_on_save_when_hidden: Wis waarde(s) bij opslaan bij verbergen
 readonly_field_label: Veld uitschakelen (alleen-lezen) in de app
 required_readonly_field_warning: Het inschakelen van zowel alleen-lezen als vereist op een veld voorkomt het opslaan van een item als de waarde leeg is.
 key: Key
@@ -460,7 +454,6 @@ revision_delta_created: Aangemaakt
 revision_delta_created_externally: Extern aangemaakt
 revision_delta_updated: '1 veld bijgewerkt | {count} velden bijgewerkt'
 revision_delta_deleted: Verwijderd
-revision_delta_version_saved: 'Versie opslaan (1 veld bijgewerkt) | Versie opslaan ({count} velden bijgewerkte)'
 revision_delta_reverted: Teruggedraaid
 revision_delta_update_message: Dit veld is bijgewerkt, maar de waarde wordt verborgen om veiligheidsredenen.
 revision_delta_other: Revisie
@@ -1197,7 +1190,6 @@ page_help_settings_datamodel_fields: >-
   **Gegevensmodel: Verzameling** - Een formulier voor het beheren van deze collectie en haar velden.
 page_help_settings_system_logs: '**Systeemlogs** ­— Toegang tot een livestream van systeemlogs.'
 page_help_settings_policies_collection: '**Bladeren door Policies** — Toont alle policies binnen het project.'
-page_help_settings_policies_item: "**Policy Detail** — Beheer de permissies en andere instellingen van een policy."
 page_help_settings_roles_collection: '**Bladeren door Rollen** — Toont alle gebruikersrollen binnen het project.'
 page_help_settings_roles_item: "**Rol Detail** - Beheer de rechten van de rol en andere instellingen."
 page_help_settings_presets_collection: >-
@@ -1513,7 +1505,7 @@ field_options:
     plural_unit: Meervoudige eenheid
     archive_divider: Archiveren
     archive_field_placeholder: Kies een veld...
-    archive_app_filter: App Rrchief filter inschakelen
+    archive_app_filter: App archief filter inschakelen
     archive_value: Waarde ingesteld bij archiveren...
     unarchive_value: Waarde ingesteld bij dearchiveren...
     sort_divider: Sorteren
@@ -1602,6 +1594,8 @@ unlimited_usage: Onbeperkt gebruik
 uses_left: Geen gebruik over | Één gebruik over | {n} gebruik over
 no_shares: Geen delingen om weer te geven
 new_share: Delen
+mcp_prompts_collection_schema:
+  messages_role_user: Gebruiker
 expired: Verlopen
 upcoming: Aankomend
 share: Delen
@@ -2558,15 +2552,6 @@ search_flow: Zoek Flow...
 percent: Procent
 show_password: Toon wachtwoord
 hide_password: Verberg wachtwoord
-bsl_banner:
-  welcome_to_directus: Welkom bij Directus!
-  directus_free_use: Directus is gratis te gebruiken voor entiteiten met een jaarlijkse omzet, financiering of operationeel budget onder $5 miljoen.
-  organization_threshold: Entiteiten boven deze drempel hebben een betaalde licentie nodig.
-  license_agreement: Door op "Accepteren" te klikken, ga je akkoord met de {directusBsl} en {privacyPolicy}.
-  directus_bsl: Directus BSL 1.1
-  privacy_policy: Privacy beleid
-  accept_terms: Accepteren
-  get_license: Licentie verkrijgen
 accepted: Geaccepteerd
 text_direction_auto: Automatisch (gelijk aan taal)
 text_direction_ltr: Links naar rechts (LTR)

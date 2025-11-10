@@ -24,6 +24,7 @@ export type DirectusField<Schema = any> = {
 			note: string | null;
 			conditions: FieldMetaConditionType[] | null;
 			required: boolean;
+			searchable: boolean;
 			group: string | null;
 			validation: Record<string, any> | null;
 			validation_message: string | null;

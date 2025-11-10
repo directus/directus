@@ -10,11 +10,11 @@ import { useUserStore } from '@/stores/user';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { userName } from '@/utils/user-name';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { useCollection } from '@directus/composables';
 import type { User } from '@directus/types';
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, provide } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
@@ -40,7 +40,7 @@ const { breadcrumb } = useBreadcrumb();
 
 const { info: collectionInfo } = useCollection('directus_users');
 
-const revisionsDrawerDetail = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const revisionsSidebarDetail = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const {
 	isNew,
@@ -64,7 +64,7 @@ const {
 	primaryKey,
 	props.primaryKey !== '+'
 		? {
-				fields: ['*', 'role.*'],
+				fields: ['*', 'role.*', 'avatar.id', 'avatar.modified_on'],
 			}
 		: undefined,
 );
@@ -90,9 +90,17 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
 
-const avatarSrc = computed(() =>
-	item.value?.avatar ? getAssetUrl(`${item.value.avatar}?key=system-medium-cover`) : null,
-);
+// Provide the discard functionality to field interfaces
+provide('discardAllChanges', discardAndStay);
+
+const avatarSrc = computed(() => {
+	if (!item.value?.avatar) return null;
+
+	return getAssetUrl(item.value.avatar.id, {
+		imageKey: 'system-medium-cover',
+		cacheBuster: item.value.avatar.modified_on,
+	});
+});
 
 const avatarError = ref(null);
 
@@ -173,7 +181,7 @@ async function saveAndStay() {
 			const newPrimaryKey = savedItem.id;
 			router.replace(`/users/${newPrimaryKey}`);
 		} else {
-			revisionsDrawerDetail.value?.refresh?.();
+			revisionsSidebarDetail.value?.refresh?.();
 			refresh();
 		}
 	} catch {
@@ -442,9 +450,9 @@ function revert(values: Record<string, any>) {
 
 		<template #sidebar>
 			<user-info-sidebar-detail :is-new="isNew" :user="item" />
-			<revisions-drawer-detail
+			<revisions-sidebar-detail
 				v-if="isNew === false && revisionsAllowed"
-				ref="revisionsDrawerDetail"
+				ref="revisionsSidebarDetail"
 				collection="directus_users"
 				:primary-key="primaryKey"
 				@revert="revert"

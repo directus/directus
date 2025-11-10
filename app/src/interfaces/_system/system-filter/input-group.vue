@@ -2,13 +2,13 @@
 import { useFakeVersionField } from '@/composables/use-fake-version-field';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { useCollection } from '@directus/composables';
 import { FieldFilter } from '@directus/types';
 import { clone, get } from 'lodash';
-import { ref, computed, onBeforeMount, toRef, nextTick } from 'vue';
+import { computed, nextTick, onBeforeMount, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import InputComponent from './input-component.vue';
 import { fieldToFilter, getComparator, getField } from './utils';
-import { useCollection } from '@directus/composables';
 
 // Workaround because you cannot cast directly to union types inside
 // the template block without running into eslint/prettier issues
@@ -99,7 +99,7 @@ const {
 const value = computed<unknown | unknown[]>({
 	get() {
 		if (!isVariableInputActive.value && ['_in', '_nin'].includes(comparator.value)) {
-			return [...(fieldValue.value as string[]).filter((val) => val !== null && val !== ''), null];
+			return [...(fieldValue.value as (string | number | null)[]).filter((val) => val !== null && val !== ''), null];
 		}
 
 		return fieldValue.value;
@@ -108,7 +108,9 @@ const value = computed<unknown | unknown[]>({
 		let value;
 
 		if (!isVariableInputActive.value && ['_in', '_nin'].includes(comparator.value)) {
-			value = (newVal as string[]).filter((val) => val !== null && val !== '').map((val) => val.trim());
+			value = (newVal as (string | number | null)[])
+				.filter((val) => val !== null && val !== '')
+				.map((val) => (typeof val === 'string' ? val.trim() : val));
 		} else {
 			value = newVal;
 		}
@@ -142,7 +144,7 @@ function handleCommaKeyPressed(index: number) {
 
 function handleCommaValuePasted(newValue: string) {
 	const newValueArray = [
-		...(value.value as string[]),
+		...(value.value as (string | number)[]),
 		...newValue.split(',').filter((val) => val !== null && val !== ''),
 	];
 

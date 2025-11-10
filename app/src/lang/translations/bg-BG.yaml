@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Относно
+first_name: Име
+last_name: Фамилия
 identifier: Идентификатор
 avatar: Аватар
 application: Приложение
@@ -161,19 +163,9 @@ rename_version: Преименуване на версията
 compare_version: Сравнете версията
 save_version: Запазване на версията
 promote_version: Популяризирайте версията
-promote_version_disabled: Без промени
-promote_version_drawer_title: Повишете {version} до основната
-promote_version_changes: Промени
-promote_version_preview: Преглед
-outdated_notice: >-
-  Основният елемент е актуализиран след създаването на тази версия. Проверете всички стойности в следните полета и потвърдете коя версия трябва да се използва при популяризиране на тази версия в основния елемент.
-promote_notice: >-
-  Моля, прегледайте всички стойности на полетата по-долу и потвърдете коя версия трябва да се използва при повишаване на тази версия в основния елемент.
 delete_version: Изтриване на версията
 delete_version_copy: >-
   Сигурни ли сте, че искате да изтриете версията „{version}“? Това действие не може да бъде отменено.
-delete_on_promote_copy: >-
-  Искате ли да изтриете или запазите версията „{version}“ след повишението?
 reset_bookmark: Нулиране на отметки
 update_bookmark: Обновяване на отметка
 delete_bookmark: Изтриване на отметката
@@ -438,7 +430,6 @@ revision_delta_created: Създаден
 revision_delta_created_externally: Външно-създаден запис
 revision_delta_updated: '1 поле е обновено | {count} полета са обновени'
 revision_delta_deleted: Изтрито
-revision_delta_version_saved: 'Версия Запазване (Актуализирано 1 поле) | Запазване на версията (Актуализирани {count} полета)'
 revision_delta_reverted: Възстановен
 revision_delta_update_message: Това поле бе обновено, но поради мерки за сигурност стойността му е прикрита.
 revision_delta_other: Ревизия
@@ -1491,6 +1482,8 @@ shares: Споделяния
 unlimited_usage: Неограничено използване
 no_shares: Не е споделено
 new_share: Ново споделяне
+mcp_prompts_collection_schema:
+  messages_role_user: Потребител
 expired: Просрочен
 upcoming: Предстоящ
 share: Споделяне

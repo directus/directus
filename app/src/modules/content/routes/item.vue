@@ -6,6 +6,7 @@ import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
+import { useFlows } from '@/composables/use-flows';
 import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
@@ -13,9 +14,10 @@ import { translateShortcut } from '@/utils/translate-shortcut';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
+import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import { useCollection } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { useHead } from '@unhead/vue';
@@ -49,7 +51,7 @@ const form = ref<HTMLElement>();
 const { collection, primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
 
-const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(collection);
 
@@ -300,6 +302,16 @@ watch(
 	{ immediate: true },
 );
 
+const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
+	collection: collection.value,
+	primaryKey: actualPrimaryKey.value,
+	location: 'item',
+	hasEdits,
+	onRefreshCallback: refresh,
+});
+
+provideRunManualFlow();
+
 function toggleSplitView() {
 	if (livePreviewMode.value === null) {
 		livePreviewMode.value = 'split';
@@ -365,8 +377,10 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 
 		if (action === 'main') {
 			currentVersion.value = null;
+			refresh();
 		} else if (action === 'stay') {
-			revisionsDrawerDetailRef.value?.refresh?.();
+			refresh();
+			revisionsSidebarDetailRef.value?.refresh?.();
 		} else if (action === 'quit') {
 			if (!props.singleton) router.push(`/content/${props.collection}`);
 		}
@@ -386,7 +400,7 @@ async function saveAndStay() {
 
 			router.replace(getItemRoute(props.collection, newPrimaryKey));
 		} else {
-			revisionsDrawerDetailRef.value?.refresh?.();
+			revisionsSidebarDetailRef.value?.refresh?.();
 			refresh();
 		}
 	} catch {
@@ -728,6 +742,8 @@ function useCollectionRoute() {
 					</v-menu>
 				</template>
 			</v-button>
+
+			<flow-dialogs v-bind="flowDialogsContext" />
 		</template>
 
 		<template #navigation>
@@ -770,9 +786,9 @@ function useCollectionRoute() {
 				<div v-md="t('page_help_collections_item')" class="page-description" />
 			</sidebar-detail>
 			<template v-if="isNew === false && actualPrimaryKey">
-				<revisions-drawer-detail
+				<revisions-sidebar-detail
 					v-if="revisionsAllowed && accountabilityScope === 'all'"
-					ref="revisionsDrawerDetailRef"
+					ref="revisionsSidebarDetailRef"
 					:collection="collection"
 					:primary-key="actualPrimaryKey"
 					:version="currentVersion"
@@ -790,14 +806,7 @@ function useCollectionRoute() {
 					:primary-key="actualPrimaryKey"
 					:allowed="shareAllowed"
 				/>
-				<flow-sidebar-detail
-					v-if="currentVersion === null"
-					location="item"
-					:collection="collection"
-					:primary-key="actualPrimaryKey"
-					:has-edits="hasEdits"
-					@refresh="refresh"
-				/>
+				<flow-sidebar-detail v-if="currentVersion === null" :manual-flows />
 			</template>
 		</template>
 	</private-view>

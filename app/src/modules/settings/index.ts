@@ -5,6 +5,7 @@ import { useFlowsStore } from '@/stores/flows';
 import RouterPass from '@/utils/router-passthrough';
 import { defineModule } from '@directus/extensions';
 import Appearance from './routes/appearance/item.vue';
+import AiOverview from './routes/ai/overview.vue';
 import Collections from './routes/data-model/collections/collections.vue';
 import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
 import Fields from './routes/data-model/fields/fields.vue';
@@ -216,6 +217,10 @@ export default defineModule({
 					props: true,
 				},
 			],
+		},
+		{
+			path: 'ai',
+			component: AiOverview,
 		},
 		{
 			path: 'flows',

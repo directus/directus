@@ -8,8 +8,8 @@ import type {
 	Accountability,
 	ActionEventParams,
 	Item as AnyItem,
-	MutationTracker,
 	MutationOptions,
+	MutationTracker,
 	PrimaryKey,
 	Query,
 	QueryOptions,
@@ -23,7 +23,7 @@ import { getCache } from '../cache.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import { getAstFromQuery } from '../database/get-ast-from-query/get-ast-from-query.js';
 import { getHelpers } from '../database/helpers/index.js';
-import getDatabase from '../database/index.js';
+import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { runAst } from '../database/run-ast/run-ast.js';
 import emitter from '../emitter.js';
 import { processAst } from '../permissions/modules/process-ast/process-ast.js';
@@ -197,6 +197,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				knex: trx,
 				schema: this.schema,
 				nested: this.nested,
+				overwriteDefaults: opts.overwriteDefaults,
 			});
 
 			const {
@@ -242,10 +243,17 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			try {
+				let returningOptions = undefined;
+
+				// Support MSSQL tables that have triggers.
+				if (getDatabaseClient(trx) === 'mssql') {
+					returningOptions = { includeTriggerModifications: true };
+				}
+
 				const result = await trx
 					.insert(payloadWithoutAliases)
 					.into(this.collection)
-					.returning(primaryKeyField)
+					.returning(primaryKeyField, returningOptions)
 					.then((result) => result[0]);
 
 				const returnedKey = typeof result === 'object' ? result[primaryKeyField] : result;
@@ -447,6 +455,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 					bypassEmitAction: (params) => nestedActionEvents.push(params),
 					mutationTracker: opts.mutationTracker,
+					overwriteDefaults: opts.overwriteDefaults?.[index],
 					bypassAutoIncrementSequenceReset,
 				});
 
@@ -581,8 +590,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		let results: Item[] = [];
 
-		if (query.version) {
-			results = (await handleVersion(this, key, queryWithKey, opts)) as Item[];
+		if (query.version && query.version !== 'main') {
+			results = [await handleVersion(this, key, queryWithKey, opts)];
 		} else {
 			results = await this.readByQuery(queryWithKey, opts);
 		}
@@ -659,13 +668,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 				let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
 
-				for (const item of data) {
+				for (const index in data) {
+					const item = data[index]!;
 					const primaryKey = item[primaryKeyField];
 					if (!primaryKey) throw new InvalidPayloadError({ reason: `Item in update misses primary key` });
 
 					const combinedOpts: MutationOptions = {
 						autoPurgeCache: false,
 						...opts,
+						overwriteDefaults: opts.overwriteDefaults?.[index],
 						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 					};
 
@@ -777,6 +788,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				knex: trx,
 				schema: this.schema,
 				nested: this.nested,
+				overwriteDefaults: opts.overwriteDefaults,
 			});
 
 			const {
@@ -993,8 +1005,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			const primaryKeys: PrimaryKey[] = [];
 
-			for (const payload of payloads) {
-				const primaryKey = await service.upsertOne(payload, { ...(opts || {}), autoPurgeCache: false });
+			for (const index in payloads) {
+				const payload = payloads[index]!;
+
+				const primaryKey = await service.upsertOne(payload, {
+					...(opts || {}),
+					overwriteDefaults: opts.overwriteDefaults?.[index],
+					autoPurgeCache: false,
+				});
+
 				primaryKeys.push(primaryKey);
 			}
 
@@ -1048,13 +1067,31 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
+		const keysAfterHooks =
+			opts.emitEvents !== false
+				? await emitter.emitFilter(
+						this.eventScope === 'items'
+							? ['items.delete', `${this.collection}.items.delete`]
+							: `${this.eventScope}.delete`,
+						keys,
+						{
+							collection: this.collection,
+						},
+						{
+							database: this.knex,
+							schema: this.schema,
+							accountability: this.accountability,
+						},
+					)
+				: keys;
+
 		if (this.accountability) {
 			await validateAccess(
 				{
 					accountability: this.accountability,
 					action: 'delete',
 					collection: this.collection,
-					primaryKeys: keys,
+					primaryKeys: keysAfterHooks,
 				},
 				{
 					knex: this.knex,
@@ -1067,23 +1104,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			throw opts.preMutationError;
 		}
 
-		if (opts.emitEvents !== false) {
-			await emitter.emitFilter(
-				this.eventScope === 'items' ? ['items.delete', `${this.collection}.items.delete`] : `${this.eventScope}.delete`,
-				keys,
-				{
-					collection: this.collection,
-				},
-				{
-					database: this.knex,
-					schema: this.schema,
-					accountability: this.accountability,
-				},
-			);
-		}
-
 		await transaction(this.knex, async (trx) => {
-			await trx(this.collection).whereIn(primaryKeyField, keys).delete();
+			await trx(this.collection).whereIn(primaryKeyField, keysAfterHooks).delete();
 
 			if (opts.userIntegrityCheckFlags) {
 				if (opts.onRequireUserIntegrityCheck) {
@@ -1106,7 +1128,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				});
 
 				await activityService.createMany(
-					keys.map((key) => ({
+					keysAfterHooks.map((key) => ({
 						action: Action.DELETE,
 						user: this.accountability!.user,
 						collection: this.collection,
@@ -1131,8 +1153,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						? ['items.delete', `${this.collection}.items.delete`]
 						: `${this.eventScope}.delete`,
 				meta: {
-					payload: keys,
-					keys: keys,
+					payload: keysAfterHooks,
+					keys: keysAfterHooks,
 					collection: this.collection,
 				},
 				context: {
@@ -1149,7 +1171,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 		}
 
-		return keys;
+		return keysAfterHooks;
 	}
 
 	/**
@@ -1160,8 +1182,18 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		query.limit = 1;
 
-		const records = await this.readByQuery(query, opts);
-		const record = records[0];
+		let record;
+
+		if (query.version && query.version !== 'main') {
+			const primaryKeyField = this.schema.collections[this.collection]!.primary;
+			const key = (await this.knex.select(primaryKeyField).from(this.collection).first())?.[primaryKeyField];
+
+			if (key) {
+				record = await handleVersion(this, key, query, opts);
+			}
+		} else {
+			record = (await this.readByQuery(query, opts))[0];
+		}
 
 		if (!record) {
 			let fields = Object.entries(this.schema.collections[this.collection]!.fields);

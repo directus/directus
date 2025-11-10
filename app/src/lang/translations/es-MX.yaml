@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Acerca de
+first_name: Nombre
+last_name: Apellido
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
@@ -170,19 +172,9 @@ rename_version: Renombrar versión
 compare_version: Comparar versión
 save_version: Guardar versión
 promote_version: Promover versión
-promote_version_disabled: Sin cambios
-promote_version_drawer_title: Promover {version} como Main
-promote_version_changes: Cambios
-promote_version_preview: Vista previa
-outdated_notice: >-
-  El elemento principal ha sido actualizado desde la creación de esta versión. Por favor, revise todos los valores de campo a continuación, y confirme que versión debe utilizarse al promover esta versión al elemento principal.
-promote_notice: >-
-  Por favor, revise todos los valores de campo a continuación, y confirm que versión debe utilizarse para promover esta versión en el elemento principal.
 delete_version: Eleminar versión
 delete_version_copy: >-
   ¿Está seguro que desea eliminar la versión "{version}"? Esta acción no se puede deshacer.
-delete_on_promote_copy: >-
-  ¿Desea eliminar o conservar la versión "{version}" después de promover?
 reset_bookmark: Restablecer marcador
 update_bookmark: Actualizar marcador
 delete_bookmark: Eliminar marcador
@@ -460,7 +452,6 @@ revision_delta_created: Creado
 revision_delta_created_externally: Creado externamente
 revision_delta_updated: 'Campo Actualizado | {count} Campos Actualizados'
 revision_delta_deleted: Eliminado
-revision_delta_version_saved: 'Version guardada (1 campo actualizado) | Versión guardada ({count} campos actualizados)'
 revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo ha sido actualizado, pero su valor está siendo ocultado por razones de seguridad.
 revision_delta_other: Revisión
@@ -1196,7 +1187,6 @@ page_help_settings_datamodel_fields: >-
   **Modelo de Datos: Colección** — Una manera de manejar esta colección y sus campos.
 page_help_settings_system_logs: '**Registros del sistema** — Accede a una transmisión en vivo de los registros del sistema.'
 page_help_settings_policies_collection: '**Examinar políticas** — Lista todas las políticas dentro del proyecto.'
-page_help_settings_policies_item: "**Detalle de la política** — Administra los permisos de una política y otros ajusstes."
 page_help_settings_roles_collection: '**Navegar roles** — Lista todos los roles de usuario dentro del proyecto.'
 page_help_settings_roles_item: "**Detalle de Rol** — Administra los permisos del Rol y otros ajustes."
 page_help_settings_presets_collection: >-
@@ -1601,6 +1591,8 @@ unlimited_usage: Uso ilimitado
 uses_left: Sin usos restantes | Un uso restante | {n} usos restantes
 no_shares: No hay acciones para mostrar
 new_share: Nueva parte
+mcp_prompts_collection_schema:
+  messages_role_user: Usuario
 expired: Expirado
 upcoming: Próximamente
 share: Compartir
@@ -2557,15 +2549,6 @@ search_flow: Buscar Flujo...
 percent: Porcentaje
 show_password: Mostrar contraseña
 hide_password: Ocultar contraseña
-bsl_banner:
-  welcome_to_directus: '¡Le damos la bienvenida a Directus!'
-  directus_free_use: El uso de Directus es gratuito para entidades con ingresos, financiación o presupuesto operativo anuales inferiores a 5 millones de dólares.
-  organization_threshold: Las entidades por encima de este umbral requieren una licencia de pago.
-  license_agreement: Al hacer clic en "Aceptar", acepta los {directusBsl} y {privacyPolicy}.
-  directus_bsl: BSL de Directus 1.1
-  privacy_policy: Política de privacidad
-  accept_terms: Aceptar
-  get_license: Obtener una licencia
 accepted: Aceptado
 text_direction_auto: Automático (coincidir idioma)
 text_direction_ltr: Izquierda a derecha (LTR)

@@ -3,7 +3,6 @@ import api from '@/api';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
-import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
 import { readableMimeType } from '@/utils/readable-mime-type';
@@ -52,7 +51,7 @@ const value = computed({
 });
 
 const query = ref<RelationQuerySingle>({
-	fields: ['id', 'title', 'type', 'filename_download'],
+	fields: ['id', 'title', 'type', 'filename_download', 'modified_on'],
 });
 
 const { collection, field } = toRefs(props);
@@ -78,16 +77,21 @@ const fileExtension = computed(() => {
 	return readableMimeType(file.value.type, true);
 });
 
-const assetURL = computed(() => {
-	const id = typeof props.value === 'string' ? props.value : props.value?.id;
-	return getAssetUrl(id);
-});
-
 const imageThumbnail = computed(() => {
 	if (file.value === null || props.value === null) return null;
-	if (file.value.type.includes('svg')) return assetURL.value;
+
 	if (file.value.type.includes('image') === false) return null;
-	return addQueryToPath(assetURL.value, { key: 'system-small-cover' });
+
+	if (file.value.type.includes('svg')) {
+		return getAssetUrl(file.value.id, {
+			cacheBuster: file.value.modified_on,
+		});
+	}
+
+	return getAssetUrl(file.value.id, {
+		imageKey: 'system-small-cover',
+		cacheBuster: file.value.modified_on,
+	});
 });
 
 const imageThumbnailError = ref<any>(null);
@@ -248,7 +252,7 @@ function useURLImport() {
 
 			<v-list>
 				<template v-if="file">
-					<v-list-item clickable :download="file.filename_download" :href="getAssetUrl(file.id, true)">
+					<v-list-item clickable :download="file.filename_download" :href="getAssetUrl(file.id, { isDownload: true })">
 						<v-list-item-icon><v-icon name="get_app" /></v-list-item-icon>
 						<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
 					</v-list-item>
@@ -290,7 +294,13 @@ function useURLImport() {
 			@input="update"
 		>
 			<template #actions>
-				<v-button secondary rounded icon :download="file.filename_download" :href="getAssetUrl(file.id, true)">
+				<v-button
+					secondary
+					rounded
+					icon
+					:download="file.filename_download"
+					:href="getAssetUrl(file.id, { isDownload: true })"
+				>
 					<v-icon name="download" />
 				</v-button>
 			</template>
