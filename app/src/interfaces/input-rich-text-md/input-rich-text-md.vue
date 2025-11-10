@@ -78,11 +78,6 @@ const readOnly = computed(() => {
 	}
 });
 
-// Use the direction prop directly from the form (determined by user's language)
-const textDirection = computed(() => {
-	return props.direction || 'ltr';
-});
-
 onMounted(async () => {
 	if (codemirrorEl.value) {
 		codemirror = CodeMirror(codemirrorEl.value, {
@@ -90,7 +85,7 @@ onMounted(async () => {
 			configureMouse: () => ({ addNew: false }),
 			lineWrapping: true,
 			readOnly: readOnly.value,
-			direction: textDirection.value as 'ltr' | 'rtl' | undefined,
+			direction: props.direction === 'rtl' ? props.direction : 'ltr',
 			cursorBlinkRate: props.disabled ? -1 : 530,
 			placeholder: props.placeholder,
 			value: props.value || '',
@@ -152,7 +147,7 @@ watch(
 watch(
 	() => props.direction,
 	(direction) => {
-		codemirror?.setOption('direction', textDirection.value);
+		codemirror?.setOption('direction', direction === 'rtl' ? direction : 'ltr');
 	},
 );
 
@@ -398,7 +393,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 		<div
 			v-md="markdownString"
 			class="preview-box"
-			:style="{ display: view === 'preview' ? 'block' : 'none', direction: textDirection }"
+			:style="{ display: view === 'preview' ? 'block' : 'none', direction: direction === 'rtl' ? direction : 'ltr' }"
 		></div>
 
 		<v-dialog
