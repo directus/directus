@@ -2,9 +2,8 @@ import { useEnv } from '@directus/env';
 import { toArray } from '@directus/utils';
 import { useLogger } from '../../logger/index.js';
 import isUrlAllowed from '../../utils/is-url-allowed.js';
-import type { Request } from 'express';
 
-export function isLoginRedirectAllowed(redirect: unknown, request: Request, provider: string): boolean {
+export function isLoginRedirectAllowed(redirect: unknown, origin: string, provider: string): boolean {
 	if (!redirect) return true; // empty redirect
 	if (typeof redirect !== 'string') return false; // invalid type
 
@@ -21,14 +20,14 @@ export function isLoginRedirectAllowed(redirect: unknown, request: Request, prov
 		return false;
 	}
 
-	const { protocol: redirectProtocol, host: redirectHost } = new URL(redirect);
+	const { origin: redirectOrigin } = new URL(redirect);
 
-	if (`${redirectProtocol}//${redirectHost}` !== `${request.protocol}://${request.get('host')}`) return false;
+	if (redirectOrigin !== origin) return false;
 
 	const envKey = `AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`;
 
 	if (envKey in env) {
-		if (isUrlAllowed(redirect, toArray(env[envKey] as string))) return true;
+		if (isUrlAllowed(redirect, [...toArray(env[envKey] as string), publicUrl])) return true;
 	}
 
 	if (URL.canParse(publicUrl) === false) {
@@ -37,7 +36,5 @@ export function isLoginRedirectAllowed(redirect: unknown, request: Request, prov
 	}
 
 	// allow redirects to the defined PUBLIC_URL
-	const { protocol: publicProtocol, hostname: publicDomain } = new URL(publicUrl);
-
-	return `${redirectProtocol}//${redirectHost}` === `${publicProtocol}//${publicDomain}`;
+	return redirectOrigin === new URL(publicUrl).origin;
 }

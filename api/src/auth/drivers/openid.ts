@@ -444,7 +444,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const redirect = req.query['redirect'];
 			const otp = req.query['otp'];
 
-			if (!isLoginRedirectAllowed(redirect, req, providerName)) {
+			if (!isLoginRedirectAllowed(redirect, `${req.protocol}://${req.get('host')}`, providerName)) {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
