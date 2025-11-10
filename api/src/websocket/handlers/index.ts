@@ -5,7 +5,6 @@ import { ItemsHandler } from './items.js';
 import { LogsHandler } from './logs.js';
 import { SubscribeHandler } from './subscribe.js';
 import { CollabHandler } from './collab/collab.js';
-import { getSchema } from '../../utils/get-schema.js';
 
 export function startWebSocketHandlers() {
 	const env = useEnv();
@@ -31,10 +30,7 @@ export function startWebSocketHandlers() {
 		new LogsHandler();
 	}
 
-	(async () => {
-		const schema = await getSchema();
-		new CollabHandler(schema);
-	})();
+	new CollabHandler();
 }
 
 export * from './heartbeat.js';

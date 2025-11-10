@@ -6,22 +6,21 @@ import {
 	type ClientID,
 	type CollabColor,
 	type Item,
-	type SchemaOverview,
 	type WebSocketClient,
 } from '@directus/types';
 import { createHash } from 'crypto';
 import { random } from 'lodash-es';
+import { sanitizePayload } from './sanitize-payload.js';
+import { getSchema } from '../../../utils/get-schema.js';
+import getDatabase from '../../../database/index.js';
 
 export class CollabRooms {
 	rooms: Record<string, Room> = {};
-	schema: SchemaOverview;
 
-	constructor(schema: SchemaOverview) {
-		this.schema = schema;
-	}
+	async createRoom(collection: string, item: string, version: string | null, initialChanges?: Item) {
+		const schema = await getSchema();
 
-	createRoom(collection: string, item: string, version: string | null, initialChanges?: Item) {
-		if (!(collection in this.schema.collections) || item === '+') throw new ForbiddenError();
+		if (!(collection in schema.collections) || item === '+') throw new ForbiddenError();
 
 		const uid = getRoomHash(collection, item, version);
 
@@ -71,7 +70,7 @@ export class Room {
 		return this.clients.findIndex((c) => c.uid === client.uid) !== -1;
 	}
 
-	join(client: WebSocketClient) {
+	async join(client: WebSocketClient) {
 		if (!this.hasClient(client)) {
 			const clientColor = COLLAB_COLORS[random(COLLAB_COLORS.length - 1)]!;
 			this.clientColors[client.uid] = clientColor;
@@ -91,7 +90,11 @@ export class Room {
 			collection: this.collection,
 			item: this.item,
 			version: this.version,
-			changes: this.changes,
+			changes: await sanitizePayload(this.collection, this.changes, {
+				knex: getDatabase(),
+				schema: await getSchema(),
+				accountability: client.accountability!,
+			}),
 			focuses: this.focuses,
 			connection: client.uid,
 			users: Array.from(this.clients).map((client) => ({
@@ -128,14 +131,24 @@ export class Room {
 		);
 	}
 
-	update(field: string, changes: unknown) {
+	async update(field: string, changes: unknown) {
 		this.changes[field] = changes;
 
-		this.sendAll({
-			action: 'update',
-			field: field,
-			changes: this.changes[field],
-		});
+		for (const client of this.clients) {
+			const item = await await sanitizePayload(this.collection, this.changes, {
+				knex: getDatabase(),
+				schema: await getSchema(),
+				accountability: client.accountability!,
+			});
+
+			if (field in item) {
+				this.send(client, {
+					action: 'update',
+					field,
+					changes: item[field],
+				});
+			}
+		}
 	}
 
 	unset(field: string) {
@@ -148,6 +161,7 @@ export class Room {
 	}
 
 	focus(client: WebSocketClient, field: string | null) {
+		// TODO check read permission for the field
 		if (!field) {
 			this.focuses = Object.fromEntries(Object.entries(this.focuses).filter(([_, user]) => user !== client.uid));
 		} else {

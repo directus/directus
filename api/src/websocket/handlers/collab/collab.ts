@@ -5,7 +5,6 @@ import { handleWebSocketError } from '../../errors.js';
 import { getMessageType } from '../../utils/message.js';
 import { CollabRooms } from './room.js';
 import type { FocusMessage, JoinMessage, LeaveMessage, SaveMessage, UpdateMessage } from './types.js';
-import type { SchemaOverview } from '@directus/types';
 
 /**
  * Handler responsible for subscriptions
@@ -16,8 +15,8 @@ export class CollabHandler {
 	/**
 	 * Initialize the handler
 	 */
-	constructor(schema: SchemaOverview) {
-		this.rooms = new CollabRooms(schema);
+	constructor() {
+		this.rooms = new CollabRooms();
 		this.bindWebSocket();
 	}
 
@@ -26,12 +25,12 @@ export class CollabHandler {
 	 */
 	bindWebSocket() {
 		// listen to incoming messages on the connected websockets
-		emitter.onAction('websocket.message', ({ client, message }) => {
+		emitter.onAction('websocket.message', async ({ client, message }) => {
 			if (getMessageType(message) !== COLLAB) return;
 
 			try {
 				const validMessage = WebSocketCollabMessage.parse(message);
-				this[`on${capitalize(validMessage.action)}`](client, message);
+				await this[`on${capitalize(validMessage.action)}`](client, message);
 			} catch (error) {
 				handleWebSocketError(client, error, 'subscribe');
 			}
@@ -42,16 +41,16 @@ export class CollabHandler {
 		emitter.onAction('websocket.close', ({ client }) => this.onLeave(client));
 	}
 
-	onJoin(client: WebSocketClient, message: JoinMessage) {
+	async onJoin(client: WebSocketClient, message: JoinMessage) {
 		try {
-			const room = this.rooms.createRoom(
+			const room = await this.rooms.createRoom(
 				message.collection,
 				message.item,
 				message.version ?? null,
 				message.initialChanges,
 			);
 
-			room.join(client);
+			await room.join(client);
 		} catch (err) {
 			handleWebSocketError(client, err, 'join');
 		}
