@@ -72,6 +72,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 	let loadingTimeout: NodeJS.Timeout | null = null;
 
+	// Throttle is used to ensure we send the first trigger instantly, debounce will not.
 	const fetchItems = throttle((shouldUpdateCount: boolean) => {
 		Promise.all([getItems(), shouldUpdateCount ? getItemCount() : Promise.resolve()]);
 	}, 500);
