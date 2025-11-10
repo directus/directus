@@ -2,4 +2,4 @@
 '@directus/composables': patch
 ---
 
-Fixed `useItems` item list loaded after delay
+Fixed tabular view loading items after delay
