@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { mergeItemData } from './merge-item-data';
 
 describe('mergeItemData', () => {
-	it('should use existing if edits is undefined', () => {
+	it('should use existing if field is undefined in edits', () => {
 		const defaults = { x: 'default' };
 		const existing = { x: 'existing' };
 		const edits = {};
@@ -10,7 +10,7 @@ describe('mergeItemData', () => {
 		expect(result.x).toMatchInlineSnapshot(`"existing"`);
 	});
 
-	it('should use default if both existing and edits are undefined', () => {
+	it('should use default if field is undefined in both existing and edits', () => {
 		const defaults = { x: 'default' };
 		const existing = {};
 		const edits = {};
