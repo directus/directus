@@ -30,14 +30,12 @@ import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { getSecret } from '../../utils/get-secret.js';
-import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
 import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 import { getSchema } from '../../utils/get-schema.js';
-import { isLoginOriginRedirectAllowed } from '../utils/is-login-origin-redirect-allowed.js';
-import { generateAuthCallbackUrl } from '../utils/generate-auth-callback-url.js';
-
+import { generateProviderCallbackUrl } from '../utils/generate-provider-callback-url.js';
+import { isLoginRedirectAllowed } from '../utils/is-login-redirect-allowed.js';
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
 	config: Record<string, any>;
@@ -358,18 +356,14 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			const provider = getAuthProvider(providerName) as OAuth2AuthDriver;
 			const codeVerifier = provider.generateCodeVerifier();
 			const prompt = !!req.query['prompt'];
-			const redirect = req.query['redirect'];
 			const otp = req.query['otp'];
+			const redirect = req.query['redirect'];
 
-			if (isLoginRedirectAllowed(redirect, providerName) === false) {
+			if (!isLoginRedirectAllowed(redirect, req, providerName)) {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			if (isLoginOriginRedirectAllowed(req, providerName) === false) {
-				throw new InvalidPayloadError({ reason: 'Origin URL is not allowed' });
-			}
-
-			const callbackUrl = generateAuthCallbackUrl(req, providerName).toString();
+			const callbackUrl = generateProviderCallbackUrl(req, providerName)
 
 			const token = jwt.sign(
 				{
