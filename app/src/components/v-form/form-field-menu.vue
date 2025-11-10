@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useClipboard } from '@/composables/use-clipboard';
+import { RELATIONAL_TYPES } from '@directus/constants';
+import type { RelationalType } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { FormField } from './types';
@@ -76,10 +78,7 @@ const showDivider = computed(() => {
 });
 
 const relational = computed(
-	() =>
-		props.field.meta?.special?.find((type) =>
-			['file', 'files', 'm2o', 'o2m', 'm2m', 'm2a', 'translations'].includes(type),
-		) !== undefined,
+	() => props.field.meta?.special?.find((type) => RELATIONAL_TYPES.includes(type as RelationalType)) !== undefined,
 );
 </script>
 

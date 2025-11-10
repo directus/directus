@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "31.0.0",
+	"version": "32.0.1",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -112,7 +112,6 @@
 		"cookie": "catalog:",
 		"cookie-parser": "catalog:",
 		"cors": "catalog:",
-		"cron-parser": "catalog:",
 		"date-fns": "catalog:",
 		"deep-diff": "catalog:",
 		"destroy": "catalog:",
@@ -153,7 +152,7 @@
 		"ms": "catalog:",
 		"nanoid": "catalog:",
 		"node-machine-id": "catalog:",
-		"node-schedule": "catalog:",
+		"cron": "catalog:",
 		"nodemailer": "catalog:",
 		"object-hash": "catalog:",
 		"openapi3-ts": "catalog:",
@@ -214,7 +213,6 @@
 		"@types/mime-types": "catalog:",
 		"@types/ms": "catalog:",
 		"@types/node": "catalog:",
-		"@types/node-schedule": "catalog:",
 		"@types/nodemailer": "catalog:",
 		"@types/object-hash": "catalog:",
 		"@types/papaparse": "catalog:",

@@ -65,10 +65,6 @@ function discardAndLeave() {
 			</v-button>
 		</template>
 
-		<template #title-outer:append>
-			<v-chip class="beta" outlined small>Beta</v-chip>
-		</template>
-
 		<template #actions>
 			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!hasEdits" :loading="saving" @click="save">
 				<v-icon name="check" />

@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: माहिती
+first_name: पहिले नाव
+last_name: आडनाव
 identifier: ओळखकर्ता
 avatar: अवतार
 application: अर्ज
@@ -164,19 +166,9 @@ rename_version: व्हर्जन नाव बदला
 compare_version: व्हर्जन तुलना करा
 save_version: व्हर्जन जतन करा
 promote_version: व्हर्जन प्रमोट करा
-promote_version_disabled: बदल नाही
-promote_version_drawer_title: '{version} ला मेन मध्ये प्रमोट करा'
-promote_version_changes: बदल
-promote_version_preview: प्रिव्हियू 
-outdated_notice: >-
-  हे व्हर्जन तयार केल्यापासून मुख्य आयटम अपडेट केला गेला आहे. कृपया खालील सर्व फील्ड व्हॅल्यू चेक करा आणि मुख्य आयटम मध्ये हे व्हर्जन प्रमोट करताना कोणते व्हर्जन वापरले जावे याची पुष्टी करा.
-promote_notice: >-
-  कृपया खालील सर्व फील्ड व्हॅल्यू चेक करा आणि मुख्य आयटम मध्ये या आवृत्तीचा प्रचार करताना कोणती आवृत्ती वापरली जावी याची पुष्टी करा.
 delete_version: व्हर्जन डिलीट करा
 delete_version_copy: >-
   तुम्हाला खात्री आहे की तुम्ही "{version}" व्हर्जन डिलीट करू इच्छिता? ही क्रिया पूर्ववत केली जाऊ शकत नाही.
-delete_on_promote_copy: >-
-  प्रमोट केल्यानंतर तुम्ही "{version}" व्हर्जन हटवू किंवा ठेवू इच्छिता?
 reset_bookmark: बुकमार्क पुन्हा सेट करा
 update_bookmark: बुकमार्क अपडेट करा
 delete_bookmark: बुकमार्क डिलीट करा
@@ -451,7 +443,6 @@ revision_delta_created: तयार केले
 revision_delta_created_externally: बाहेरून तयार केले
 revision_delta_updated: '1 फील्ड अपडेट केली | {count} फील्ड अपडेट केली'
 revision_delta_deleted: डिलीट केले
-revision_delta_version_saved: 'व्हर्जन जतन करा (1 फील्ड अपडेट केली ) | आवृत्ती जतन ({count} फील्ड अपडेट केली)'
 revision_delta_reverted: पूर्ववत केले
 revision_delta_update_message: हे फील्ड अपडेट केले गेले आहे परंतु सुरक्षिततेच्या कारणास्तव त्याचे व्हॅल्यू लपवले जात आहे.
 revision_delta_other: पडताळणी

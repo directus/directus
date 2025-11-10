@@ -8,10 +8,11 @@ import type {
 	Accountability,
 	ActionEventParams,
 	FieldMeta,
+	FieldMutationOptions,
 	MutationOptions,
+	RawCollection,
 	RawField,
 	SchemaOverview,
-	RawCollection,
 } from '@directus/types';
 import { addFieldFlag } from '@directus/utils';
 import type Keyv from 'keyv';
@@ -59,7 +60,7 @@ export class CollectionsService {
 	/**
 	 * Create a single new collection
 	 */
-	async createOne(payload: RawCollection, opts?: MutationOptions): Promise<string> {
+	async createOne(payload: RawCollection, opts?: FieldMutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -86,6 +87,8 @@ export class CollectionsService {
 			if (existingCollections.includes(payload.collection)) {
 				throw new InvalidPayloadError({ reason: `Collection "${payload.collection}" already exists` });
 			}
+
+			const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
 			// Create the collection/fields in a transaction so it'll be reverted in case of errors or
 			// permission problems. This might not work reliably in MySQL, as it doesn't support DDL in
@@ -149,7 +152,9 @@ export class CollectionsService {
 					await trx.schema.createTable(payload.collection, (table) => {
 						for (const field of payload.fields!) {
 							if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-								fieldsService.addColumnToTable(table, payload.collection, field);
+								fieldsService.addColumnToTable(table, payload.collection, field, {
+									attemptConcurrentIndex,
+								});
 							}
 						}
 					});
@@ -214,6 +219,19 @@ export class CollectionsService {
 				return payload.collection;
 			});
 
+			// concurrent index creation cannot be done inside the transaction
+			if (attemptConcurrentIndex && payload.schema && Array.isArray(payload.fields)) {
+				const fieldsService = new FieldsService({ schema: this.schema });
+
+				for (const field of payload.fields) {
+					if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+						await fieldsService.addColumnIndex(payload.collection, field, {
+							attemptConcurrentIndex,
+						});
+					}
+				}
+			}
+
 			return payload.collection;
 		} finally {
 			if (shouldClearCache(this.cache, opts)) {
@@ -238,7 +256,7 @@ export class CollectionsService {
 	/**
 	 * Create multiple new collections
 	 */
-	async createMany(payloads: RawCollection[], opts?: MutationOptions): Promise<string[]> {
+	async createMany(payloads: RawCollection[], opts?: FieldMutationOptions): Promise<string[]> {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
@@ -256,6 +274,7 @@ export class CollectionsService {
 						autoPurgeCache: false,
 						autoPurgeSystemCache: false,
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
 					});
 
 					collectionNames.push(name);

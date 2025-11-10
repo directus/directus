@@ -2,6 +2,7 @@ import type { Accountability, Aggregate, Query, SchemaOverview } from '@directus
 import type { FieldNode, SelectionNode } from 'graphql';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { validateQuery } from '../../../utils/validate-query.js';
+import { filterReplaceM2A } from './filter-replace-m2a.js';
 import { replaceFuncs } from './replace-funcs.js';
 
 /**
@@ -12,6 +13,7 @@ export async function getAggregateQuery(
 	selections: readonly SelectionNode[],
 	schema: SchemaOverview,
 	accountability?: Accountability | null,
+	collection?: string,
 ): Promise<Query> {
 	const query: Query = await sanitizeQuery(rawQuery, schema, accountability);
 
@@ -39,6 +41,10 @@ export async function getAggregateQuery(
 
 	if (query.filter) {
 		query.filter = replaceFuncs(query.filter);
+	}
+
+	if (collection && query.filter) {
+		query.filter = filterReplaceM2A(query.filter, collection, schema);
 	}
 
 	validateQuery(query);
