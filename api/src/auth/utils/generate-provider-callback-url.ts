@@ -11,5 +11,5 @@ import type { Request } from 'express';
 export function generateProviderCallbackUrl(req: Request, providerName: string): string {
 	const originUrl = `${req.protocol}://${req.get('host')}`;
 
-	return new Url(originUrl).addPath('auth', 'login', providerName, 'callback').toString()
+	return new Url(originUrl).addPath('auth', 'login', providerName, 'callback').toString();
 }
