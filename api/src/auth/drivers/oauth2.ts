@@ -412,14 +412,14 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 					redirect?: string;
 					prompt: boolean;
 					otp?: string;
-					originUrl?: string;
+					callbackUrl?: string;
 				};
 			} catch (e: any) {
 				logger.warn(e, `[OAuth2] Couldn't verify OAuth2 cookie`);
 				throw new InvalidCredentialsError();
 			}
 
-			const { verifier, prompt, otp, originUrl } = tokenData;
+			const { verifier, prompt, otp, callbackUrl } = tokenData;
 			let { redirect } = tokenData;
 
 			const accountability: Accountability = createDefaultAccountability({
@@ -450,7 +450,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 						code: req.query['code'],
 						codeVerifier: verifier,
 						state: req.query['state'],
-						originUrl,
+						callbackUrl,
 					},
 					{ session: authMode === 'session', ...(otp ? { otp: String(otp) } : {}) },
 				);
