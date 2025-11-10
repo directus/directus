@@ -9,7 +9,7 @@ import type { Request } from 'express';
  * @returns Url
  */
 export function generateAuthCallbackUrl(req: Request, providerName: string): Url {
-  const originUrl = `${req.protocol}://${req.get('host')}`;
+	const originUrl = `${req.protocol}://${req.get('host')}`;
 
-  return new Url(originUrl).addPath('auth', 'login', providerName, 'callback');
+	return new Url(originUrl).addPath('auth', 'login', providerName, 'callback');
 }

@@ -453,7 +453,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				throw new InvalidPayloadError({ reason: `Origin URL "${req.get('origin')}" is not allowed` });
 			}
 
-			const callbackUrl = generateAuthCallbackUrl(req, providerName).toString()
+			const callbackUrl = generateAuthCallbackUrl(req, providerName).toString();
 
 			const token = jwt.sign(
 				{
@@ -550,7 +550,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 						codeVerifier: verifier,
 						state: req.query['state'],
 						iss: req.query['iss'],
-						callbackUrl
+						callbackUrl,
 					},
 					{ session: authMode === 'session', ...(otp ? { otp: String(otp) } : {}) },
 				);

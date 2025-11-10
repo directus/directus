@@ -369,7 +369,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				throw new InvalidPayloadError({ reason: 'Origin URL is not allowed' });
 			}
 
-			const callbackUrl = generateAuthCallbackUrl(req, providerName).toString()
+			const callbackUrl = generateAuthCallbackUrl(req, providerName).toString();
 
 			const token = jwt.sign(
 				{
