@@ -3,22 +3,17 @@ import { toArray } from '@directus/utils';
 import { useLogger } from '../../logger/index.js';
 import isUrlAllowed from '../../utils/is-url-allowed.js';
 
-type IsLoginRedirectAllowedOptions = {
-	protocol: string;
-	hostname: string;
-};
-
 /**
  * Check if the redirect URL is allowed
- * @param redirect URL to redirect to
+ * @param originUrl Origin URL
  * @param provider OAuth provider name
- * @param options Request options
+ * @param redirect URL to redirect to
  * @returns True if the redirect is allowed, false otherwise
  */
 export function isLoginRedirectAllowed(
-	redirect: unknown,
+	originUrl: string,
 	provider: string,
-	options: IsLoginRedirectAllowedOptions,
+	redirect: unknown,
 ): boolean {
 	if (!redirect) return true; // empty redirect
 	if (typeof redirect !== 'string') return false; // invalid type
@@ -40,7 +35,7 @@ export function isLoginRedirectAllowed(
 	const redirectUrl = `${redirectProtocol}//${redirectDomain}`;
 
 	// Security check: redirect URL must match the request origin
-	if (redirectUrl !== `${options.protocol}://${options.hostname}`) return false;
+	if (redirectUrl !== originUrl) return false;
 
 	const envKey = `AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`;
 
