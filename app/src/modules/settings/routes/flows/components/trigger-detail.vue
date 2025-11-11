@@ -58,7 +58,7 @@ const currentTriggerOptionFields = computed(() => {
 		@cancel="$emit('update:open', false)"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="t('done')" icon rounded :disabled="!currentTrigger" @click="saveTrigger">
+			<v-button v-tooltip.bottom="$t('done')" icon rounded :disabled="!currentTrigger" @click="saveTrigger">
 				<v-icon name="check" />
 			</v-button>
 		</template>

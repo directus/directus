@@ -204,7 +204,7 @@ function clearFilters() {
 		v-model="notificationsDrawerOpen"
 		icon="notifications"
 		:title="$t('notifications')"
-		:sidebar-label="t('folders')"
+		:sidebar-label="$t('folders')"
 		@cancel="notificationsDrawerOpen = false"
 		@apply="toggleArchive"
 	>
@@ -227,7 +227,7 @@ function clearFilters() {
 			>
 				<template #activator="{ on }">
 					<v-button
-						v-tooltip.bottom="t('delete_label')"
+						v-tooltip.bottom="$t('delete_label')"
 						rounded
 						icon
 						class="action-delete"

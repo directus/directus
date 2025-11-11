@@ -14,7 +14,7 @@ const emit = defineEmits<{
 
 <template>
 	<div class="actions">
-		<v-button v-tooltip.bottom="t('save')" icon rounded @click="emit('save')">
+		<v-button v-tooltip.bottom="$t('save')" icon rounded @click="emit('save')">
 			<v-icon name="check" />
 		</v-button>
 	</div>

@@ -84,7 +84,7 @@ function discardAndLeave() {
 				<template #activator="{ on }">
 					<v-button
 						v-if="isSystemCollection(collection) === false"
-						v-tooltip.bottom="t('delete_collection')"
+						v-tooltip.bottom="$t('delete_collection')"
 						rounded
 						icon
 						class="action-delete"
@@ -111,7 +111,7 @@ function discardAndLeave() {
 			</v-dialog>
 
 			<v-button
-				v-tooltip.bottom="t('save')"
+				v-tooltip.bottom="$t('save')"
 				rounded
 				icon
 				:loading="saving"

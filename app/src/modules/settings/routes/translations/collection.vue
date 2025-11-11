@@ -137,7 +137,7 @@ function clearFilters() {
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
-						<v-button v-tooltip.bottom="t('delete_label')" rounded icon class="action-delete" secondary @click="on">
+						<v-button v-tooltip.bottom="$t('delete_label')" rounded icon class="action-delete" secondary @click="on">
 							<v-icon name="delete" outline />
 						</v-button>
 					</template>
@@ -158,7 +158,7 @@ function clearFilters() {
 
 				<v-button
 					v-if="selection.length > 0"
-					v-tooltip.bottom="t('edit')"
+					v-tooltip.bottom="$t('edit')"
 					rounded
 					icon
 					secondary
@@ -167,7 +167,7 @@ function clearFilters() {
 					<v-icon name="edit" outline />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('create_custom_translation')" rounded icon :to="addNewLink">
+				<v-button v-tooltip.bottom="$t('create_custom_translation')" rounded icon :to="addNewLink">
 					<v-icon name="add" />
 				</v-button>
 			</template>

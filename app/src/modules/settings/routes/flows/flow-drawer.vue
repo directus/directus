@@ -170,7 +170,7 @@ function onApply() {
 		class="new-flow"
 		persistent
 		:model-value="active"
-		:sidebar-label="t(currentTab[0] as string)"
+		:sidebar-label="$t(currentTab[0] as string)"
 		@cancel="$emit('cancel')"
 		@apply="onApply"
 	>

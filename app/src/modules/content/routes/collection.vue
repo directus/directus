@@ -339,7 +339,7 @@ function clearFilters() {
 						@save="createBookmark"
 					>
 						<template #activator="{ on }">
-							<v-icon v-tooltip.right="t('create_bookmark')" class="toggle" clickable name="bookmark" @click="on" />
+							<v-icon v-tooltip.right="$t('create_bookmark')" class="toggle" clickable name="bookmark" @click="on" />
 						</template>
 					</bookmark-add>
 
@@ -347,7 +347,7 @@ function clearFilters() {
 
 					<template v-else-if="bookmarkIsMine">
 						<v-icon
-							v-tooltip.bottom="t('update_bookmark')"
+							v-tooltip.bottom="$t('update_bookmark')"
 							class="save"
 							clickable
 							name="bookmark_save"
@@ -363,13 +363,13 @@ function clearFilters() {
 						@save="createBookmark"
 					>
 						<template #activator="{ on }">
-							<v-icon v-tooltip.bottom="t('create_bookmark')" class="toggle" name="bookmark" clickable @click="on" />
+							<v-icon v-tooltip.bottom="$t('create_bookmark')" class="toggle" name="bookmark" clickable @click="on" />
 						</template>
 					</bookmark-add>
 
 					<v-icon
 						v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
-						v-tooltip.bottom="t('reset_bookmark')"
+						v-tooltip.bottom="$t('reset_bookmark')"
 						name="settings_backup_restore"
 						clickable
 						class="clear"

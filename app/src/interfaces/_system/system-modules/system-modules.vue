@@ -248,7 +248,7 @@ function remove(id: string) {
 		<v-button @click="edit('+')">{{ $t('add_link') }}</v-button>
 
 		<v-drawer
-			:title="t('custom_link')"
+			:title="$t('custom_link')"
 			:model-value="!!editing"
 			icon="link"
 			@update:model-value="editing = null"
@@ -256,7 +256,7 @@ function remove(id: string) {
 			@apply="save"
 		>
 			<template #actions>
-				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="isSaveDisabled" @click="save">
+				<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="isSaveDisabled" @click="save">
 					<v-icon name="check" />
 				</v-button>
 			</template>

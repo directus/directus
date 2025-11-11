@@ -488,7 +488,7 @@ function getLinkForItem(item: DisplayItem) {
 
 				<v-button
 					v-if="!disabled && updateAllowed && selectedKeys.length"
-					v-tooltip.bottom="t('edit')"
+					v-tooltip.bottom="$t('edit')"
 					rounded
 					icon
 					secondary

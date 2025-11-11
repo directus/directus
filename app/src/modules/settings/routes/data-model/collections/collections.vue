@@ -160,13 +160,13 @@ async function downloadSnapshot() {
 
 			<collection-dialog v-model="collectionDialogActive">
 				<template #activator="{ on }">
-					<v-button v-tooltip.bottom="t('create_folder')" rounded icon secondary @click="on">
+					<v-button v-tooltip.bottom="$t('create_folder')" rounded icon secondary @click="on">
 						<v-icon name="create_new_folder" />
 					</v-button>
 				</template>
 			</collection-dialog>
 
-			<v-button v-tooltip.bottom="t('create_collection')" rounded icon to="/settings/data-model/+">
+			<v-button v-tooltip.bottom="$t('create_collection')" rounded icon to="/settings/data-model/+">
 				<v-icon name="add" />
 			</v-button>
 		</template>

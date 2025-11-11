@@ -134,7 +134,7 @@ const stageChanges = () => {
 		@apply="stageChanges"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="t('done')" :disabled="!panel.type" icon rounded @click="stageChanges">
+			<v-button v-tooltip.bottom="$t('done')" :disabled="!panel.type" icon rounded @click="stageChanges">
 				<v-icon name="check" />
 			</v-button>
 		</template>

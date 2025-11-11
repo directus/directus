@@ -473,21 +473,21 @@ function setAspectRatio() {
 			<div class="toolbar">
 				<div class="drag-mode toolbar-button">
 					<v-icon
-						v-tooltip.top.inverted="t('move_tool')"
+						v-tooltip.top.inverted="$t('move_tool')"
 						name="pan_tool"
 						:class="{ active: localDragMode === 'move' }"
 						clickable
 						@click="dragMode = 'move'"
 					/>
 					<v-icon
-						v-tooltip.top.inverted="t('crop_tool')"
+						v-tooltip.top.inverted="$t('crop_tool')"
 						name="crop"
 						:class="{ active: localDragMode === 'crop' }"
 						clickable
 						@click="dragMode = 'crop'"
 					/>
 					<v-icon
-						v-tooltip.top.inverted="t('focal_point_tool')"
+						v-tooltip.top.inverted="$t('focal_point_tool')"
 						name="location_searching"
 						:class="{ active: localDragMode === 'focal_point' }"
 						clickable
@@ -495,20 +495,20 @@ function setAspectRatio() {
 					/>
 				</div>
 
-				<v-icon v-tooltip.top.inverted="t('rotate')" name="rotate_90_degrees_ccw" clickable @click="rotate" />
+				<v-icon v-tooltip.top.inverted="$t('rotate')" name="rotate_90_degrees_ccw" clickable @click="rotate" />
 
 				<v-icon
-					v-tooltip.top.inverted="t('flip_horizontal')"
+					v-tooltip.top.inverted="$t('flip_horizontal')"
 					name="flip_horizontal"
 					clickable
 					@click="flip('horizontal')"
 				/>
 
-				<v-icon v-tooltip.top.inverted="t('flip_vertical')" name="flip_vertical" clickable @click="flip('vertical')" />
+				<v-icon v-tooltip.top.inverted="$t('flip_vertical')" name="flip_vertical" clickable @click="flip('vertical')" />
 
 				<v-menu placement="top" show-arrow>
 					<template #activator="{ toggle }">
-						<v-icon v-tooltip.top.inverted="t('aspect_ratio')" :name="aspectRatioIcon" clickable @click="toggle" />
+						<v-icon v-tooltip.top.inverted="$t('aspect_ratio')" :name="aspectRatioIcon" clickable @click="toggle" />
 					</template>
 
 					<v-list>
@@ -563,7 +563,7 @@ function setAspectRatio() {
 
 				<div class="spacer" />
 
-				<v-icon v-tooltip.top.inverted="t('reset')" name="restart_alt" clickable @click="reset" />
+				<v-icon v-tooltip.top.inverted="$t('reset')" name="restart_alt" clickable @click="reset" />
 
 				<div v-if="imageData" class="dimensions">
 					{{ dimensionsString }}
@@ -576,7 +576,7 @@ function setAspectRatio() {
 		</div>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="t('save')" :loading="saving" icon rounded :disabled="!hasEdits" @click="save">
+			<v-button v-tooltip.bottom="$t('save')" :loading="saving" icon rounded :disabled="!hasEdits" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>

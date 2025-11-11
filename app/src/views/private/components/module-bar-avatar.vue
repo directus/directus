@@ -47,7 +47,7 @@ const userFullName = userStore.fullName ?? undefined;
 	<div class="module-bar-avatar">
 		<v-badge :value="unread" :disabled="unread == 0" class="notifications-badge">
 			<v-button
-				v-tooltip.right="t('notifications')"
+				v-tooltip.right="$t('notifications')"
 				tile
 				icon
 				x-large
@@ -62,7 +62,7 @@ const userFullName = userStore.fullName ?? undefined;
 			<v-dialog v-model="signOutActive" @esc="signOutActive = false">
 				<template #activator="{ on }">
 					<transition name="sign-out">
-						<v-button v-tooltip.right="t('sign_out')" tile icon x-large class="sign-out" @click="on">
+						<v-button v-tooltip.right="$t('sign_out')" tile icon x-large class="sign-out" @click="on">
 							<v-icon name="logout" />
 						</v-button>
 					</transition>

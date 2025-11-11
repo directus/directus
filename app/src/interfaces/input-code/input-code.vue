@@ -298,7 +298,7 @@ function isInterpolation(value: any) {
 	<div class="input-code codemirror-custom-styles" :class="{ disabled }" dir="ltr">
 		<div ref="codemirrorEl"></div>
 
-		<v-button v-if="template" v-tooltip.left="t('fill_template')" small icon secondary @click="fillTemplate">
+		<v-button v-if="template" v-tooltip.left="$t('fill_template')" small icon secondary @click="fillTemplate">
 			<v-icon name="playlist_add" />
 		</v-button>
 	</div>

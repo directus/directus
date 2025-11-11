@@ -80,7 +80,7 @@ function onClickSelect() {
 		</div>
 		<div class="end">
 			<v-icon
-				v-tooltip.top="t('card_size')"
+				v-tooltip.top="$t('card_size')"
 				class="size-selector"
 				:name="`grid_${7 - size}`"
 				clickable
@@ -89,7 +89,7 @@ function onClickSelect() {
 
 			<v-menu show-arrow placement="bottom">
 				<template #activator="{ toggle }">
-					<button v-tooltip.top="t('sort_field')" type="button" class="sort-selector" @click="toggle">
+					<button v-tooltip.top="$t('sort_field')" type="button" class="sort-selector" @click="toggle">
 						{{ sortField && sortField.name }}
 					</button>
 				</template>
@@ -108,7 +108,7 @@ function onClickSelect() {
 				</v-list>
 			</v-menu>
 			<v-icon
-				v-tooltip.top="t('sort_direction')"
+				v-tooltip.top="$t('sort_direction')"
 				class="sort-direction"
 				:class="{ descending }"
 				name="sort"

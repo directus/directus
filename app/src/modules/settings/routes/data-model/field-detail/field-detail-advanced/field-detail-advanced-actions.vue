@@ -11,7 +11,7 @@ const { saving, readyToSave } = storeToRefs(fieldDetailStore);
 
 <template>
 	<v-button
-		v-tooltip.bottom="t('save')"
+		v-tooltip.bottom="$t('save')"
 		:disabled="readyToSave === false"
 		:loading="saving"
 		icon

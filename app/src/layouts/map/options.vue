@@ -39,7 +39,7 @@ const { basemap } = toRefs(appStore);
 
 	<template v-if="geometryFields.length == 0">
 		<div class="field">
-			<v-input type="text" disabled :prefix="t('layouts.map.no_compatible_fields')"></v-input>
+			<v-input type="text" disabled :prefix="$t('layouts.map.no_compatible_fields')"></v-input>
 		</div>
 	</template>
 	<template v-else>

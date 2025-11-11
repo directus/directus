@@ -209,7 +209,7 @@ const refreshInterval = computed({
 		<template #actions>
 			<template v-if="editMode">
 				<v-button
-					v-tooltip.bottom="t('clear_changes')"
+					v-tooltip.bottom="$t('clear_changes')"
 					class="clear-changes"
 					rounded
 					icon
@@ -219,12 +219,12 @@ const refreshInterval = computed({
 					<v-icon name="clear" />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('create_panel')" rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
+				<v-button v-tooltip.bottom="$t('create_panel')" rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
 					<v-icon name="add" />
 				</v-button>
 
 				<v-button
-					v-tooltip.bottom="t('save')"
+					v-tooltip.bottom="$t('save')"
 					:disabled="!hasEdits"
 					rounded
 					icon
@@ -237,7 +237,7 @@ const refreshInterval = computed({
 
 			<template v-else>
 				<v-button
-					v-tooltip.bottom="t('fit_to_screen')"
+					v-tooltip.bottom="$t('fit_to_screen')"
 					:active="zoomToFit"
 					class="zoom-to-fit"
 					rounded
@@ -249,7 +249,7 @@ const refreshInterval = computed({
 				</v-button>
 
 				<v-button
-					v-tooltip.bottom="t('full_screen')"
+					v-tooltip.bottom="$t('full_screen')"
 					:active="fullScreen"
 					class="fullscreen"
 					rounded
@@ -261,7 +261,7 @@ const refreshInterval = computed({
 				</v-button>
 
 				<v-button
-					v-tooltip.bottom="t('edit_panels')"
+					v-tooltip.bottom="$t('edit_panels')"
 					class="edit"
 					rounded
 					icon

@@ -230,7 +230,7 @@ async function revert(values: Record<string, any>) {
 
 			<v-button
 				v-else
-				v-tooltip.bottom="t('back')"
+				v-tooltip.bottom="$t('back')"
 				class="header-icon"
 				rounded
 				icon
@@ -255,7 +255,7 @@ async function revert(values: Record<string, any>) {
 				<template #activator="{ on }">
 					<v-button
 						v-if="collectionInfo!.meta && collectionInfo!.meta.singleton === false"
-						v-tooltip.bottom="t('delete_label')"
+						v-tooltip.bottom="$t('delete_label')"
 						rounded
 						icon
 						class="action-delete"
@@ -281,7 +281,7 @@ async function revert(values: Record<string, any>) {
 				</v-card>
 			</v-dialog>
 
-			<v-button v-tooltip.bottom="t('save')" rounded icon :loading="saving" :disabled="!isSavable" @click="saveAndQuit">
+			<v-button v-tooltip.bottom="$t('save')" rounded icon :loading="saving" :disabled="!isSavable" @click="saveAndQuit">
 				<v-icon name="check" />
 
 				<template #append-outer>

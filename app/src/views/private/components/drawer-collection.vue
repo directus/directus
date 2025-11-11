@@ -182,7 +182,7 @@ function useActions() {
 			<template #actions>
 				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />
 
-				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!hasSelectionChanged" @click="save">
+				<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="!hasSelectionChanged" @click="save">
 					<v-icon name="check" />
 				</v-button>
 			</template>

@@ -126,7 +126,7 @@ function discardAndStay() {
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<v-button
-						v-tooltip.bottom="t('delete_label')"
+						v-tooltip.bottom="$t('delete_label')"
 						rounded
 						icon
 						class="action-delete"
@@ -154,7 +154,7 @@ function discardAndStay() {
 
 			<v-button
 				v-if="canInviteUsers"
-				v-tooltip.bottom="t('invite_users')"
+				v-tooltip.bottom="$t('invite_users')"
 				rounded
 				icon
 				secondary

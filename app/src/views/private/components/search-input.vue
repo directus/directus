@@ -165,14 +165,14 @@ function emitValue() {
 			<div class="spacer" />
 			<v-icon
 				v-if="modelValue"
-				v-tooltip.bottom="t('clear_value')"
+				v-tooltip.bottom="$t('clear_value')"
 				clickable
 				class="icon-clear"
 				name="close"
 				@click.stop="clear"
 			/>
 			<template v-if="showFilter">
-				<v-icon v-tooltip.bottom="t('filter')" clickable class="icon-filter" name="filter_list" @click="toggleFilter" />
+				<v-icon v-tooltip.bottom="$t('filter')" clickable class="icon-filter" name="filter_list" @click="toggleFilter" />
 
 				<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
 					<div v-show="filterActive" ref="filterElement" class="filter" :class="{ active }">

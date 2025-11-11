@@ -449,7 +449,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 				<v-button
 					v-if="!disabled && updateAllowed && selectedKeys.length"
-					v-tooltip.bottom="t('edit')"
+					v-tooltip.bottom="$t('edit')"
 					rounded
 					icon
 					secondary
@@ -460,7 +460,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 				<v-button
 					v-if="!disabled && enableSelect && updateAllowed"
-					v-tooltip.bottom="t('add_existing')"
+					v-tooltip.bottom="$t('add_existing')"
 					rounded
 					icon
 					:secondary="enableCreate"
@@ -471,7 +471,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 				<v-button
 					v-if="!disabled && enableCreate && createAllowed"
-					v-tooltip.bottom="t('create_item')"
+					v-tooltip.bottom="$t('create_item')"
 					rounded
 					icon
 					@click="createItem"
