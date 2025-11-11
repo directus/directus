@@ -62,7 +62,7 @@ catalog:
   '@rollup/plugin-commonjs': 28.0.9
   '@rollup/plugin-json': 6.1.0
   '@rollup/plugin-node-resolve': 16.0.3
-  '@rollup/plugin-replace': 6.0.2
+  '@rollup/plugin-replace': 6.0.3
   '@rollup/plugin-terser': 0.4.4
   '@rollup/plugin-virtual': 3.0.2
   '@rollup/plugin-yaml': 4.1.2
