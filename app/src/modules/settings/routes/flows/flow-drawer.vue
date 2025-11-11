@@ -166,7 +166,7 @@ function onApply() {
 
 <template>
 	<v-drawer
-		:title="isNew ? t('creating_new_flow') : t('updating_flow')"
+		:title="isNew ? $t('creating_new_flow') : $t('updating_flow')"
 		class="new-flow"
 		persistent
 		:model-value="active"

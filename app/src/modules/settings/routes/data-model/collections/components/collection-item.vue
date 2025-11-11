@@ -68,7 +68,7 @@ function onGroupSortChange(collections: Collection[]) {
 
 			<v-icon
 				v-if="nestedCollections?.length"
-				v-tooltip="!isCollapsed ? t('collapse') : t('expand')"
+				v-tooltip="!isCollapsed ? $t('collapse') : $t('expand')"
 				:name="!isCollapsed ? 'unfold_less' : 'unfold_more'"
 				clickable
 				class="collapse-toggle"

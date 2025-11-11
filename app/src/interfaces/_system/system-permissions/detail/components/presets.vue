@@ -61,15 +61,15 @@ const fieldWarnings = computed(() => {
 	<div>
 		<v-notice>
 			{{
-				t('presets_for_policy', {
-					action: t(permission.action).toLowerCase(),
-					policy: policy ? policy.name : t('public_label'),
+				$t('presets_for_policy', {
+					action: $t(permission.action).toLowerCase(),
+					policy: policy ? policy.name : $t('public_label'),
 				})
 			}}
 		</v-notice>
 		<v-notice v-for="field in fieldWarnings" :key="field" type="warning">
 			{{
-				t('presets_field_warning', {
+				$t('presets_field_warning', {
 					field,
 				})
 			}}

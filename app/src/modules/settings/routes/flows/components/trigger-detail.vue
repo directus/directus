@@ -52,7 +52,7 @@ const currentTriggerOptionFields = computed(() => {
 	<v-drawer
 		:model-value="open"
 		:title="$t('change_trigger')"
-		:subtitle="t('trigger_options')"
+		:subtitle="$t('trigger_options')"
 		icon="offline_bolt"
 		persistent
 		@cancel="$emit('update:open', false)"

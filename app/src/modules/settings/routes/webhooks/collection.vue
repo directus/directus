@@ -77,7 +77,7 @@ function clearFilters() {
 			:small-header="currentLayout?.smallHeader"
 			:header-shadow="currentLayout?.headerShadow"
 		>
-			<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
+			<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded icon exact disabled>

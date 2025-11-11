@@ -126,8 +126,8 @@ const stageChanges = () => {
 <template>
 	<v-drawer
 		:model-value="isOpen"
-		:title="panel?.name || t('panel')"
-		:subtitle="t('panel_options')"
+		:title="panel?.name || $t('panel')"
+		:subtitle="$t('panel_options')"
 		:icon="panel?.icon || 'insert_chart'"
 		persistent
 		@cancel="router.push(`/insights/${dashboardKey}`)"

@@ -71,7 +71,7 @@ const steps = computed(() => {
 <template>
 	<v-drawer
 		:model-value="!!revision"
-		:title="revision ? revision.timestampFormatted : t('logs')"
+		:title="revision ? revision.timestampFormatted : $t('logs')"
 		icon="fact_check"
 		@cancel="emit('close')"
 	>

@@ -4,6 +4,6 @@
 
 <template>
 	<sidebar-detail icon="info" :title="$t('information')" close>
-		<div v-md="t('page_help_marketplace_extension')" />
+		<div v-md="$t('page_help_marketplace_extension')" />
 	</sidebar-detail>
 </template>

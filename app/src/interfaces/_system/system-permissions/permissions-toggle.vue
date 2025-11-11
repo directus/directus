@@ -53,7 +53,7 @@ const appMinimalLevel = computed(() => {
 <template>
 	<div
 		v-tooltip="
-			(appMinimal && t('required_for_app_access')) || t(`permissionsLevel.${permissionLevel}`, { action: t(action) })
+			(appMinimal && $t('required_for_app_access')) || $t(`permissionsLevel.${permissionLevel}`, { action: $t(action) })
 		"
 		:class="[{ 'has-app-minimal': !!appMinimal }, appMinimalLevel]"
 	>

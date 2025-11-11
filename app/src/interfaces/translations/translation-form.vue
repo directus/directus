@@ -149,7 +149,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 
 					<v-icon
 						v-else
-						v-tooltip="!activatorDisabled ? t('enable') : null"
+						v-tooltip="!activatorDisabled ? $t('enable') : null"
 						:class="{ disabled: activatorDisabled }"
 						:name="iconName"
 						:disabled="activatorDisabled"

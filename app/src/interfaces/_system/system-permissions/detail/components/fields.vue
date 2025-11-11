@@ -129,9 +129,9 @@ function useExpandCollapseAll() {
 	<div>
 		<v-notice>
 			{{
-				t('fields_for_policy', {
-					policy: policy ? policy.name : t('public_label'),
-					action: t(permission.action).toLowerCase(),
+				$t('fields_for_policy', {
+					policy: policy ? policy.name : $t('public_label'),
+					action: $t(permission.action).toLowerCase(),
 				})
 			}}
 		</v-notice>

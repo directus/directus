@@ -129,7 +129,7 @@ function useDeleteBookmark() {
 		<v-menu placement="bottom-start" show-arrow>
 			<template #activator="{ toggle, active }">
 				<v-icon
-					v-tooltip.bottom="!hasPermission && t(`cannot_edit_${scope}_bookmarks`)"
+					v-tooltip.bottom="!hasPermission && $t(`cannot_edit_${scope}_bookmarks`)"
 					:name="hasPermission ? 'more_vert' : 'lock'"
 					:clickable="hasPermission"
 					small

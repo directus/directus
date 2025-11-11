@@ -74,7 +74,7 @@ const unsortableJunctionFields = computed(() => {
 			<div class="field">
 				<div class="type-label">
 					{{
-						t('referential_action_field_label_o2m', {
+						$t('referential_action_field_label_o2m', {
 							collection: relatedCollection || 'related',
 						})
 					}}
@@ -84,11 +84,11 @@ const unsortableJunctionFields = computed(() => {
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: t('referential_action_set_null', { field: relatedField }),
+							text: $t('referential_action_set_null', { field: relatedField }),
 							value: 'nullify',
 						},
 						{
-							text: t('referential_action_cascade', {
+							text: $t('referential_action_cascade', {
 								collection: relatedCollection,
 								field: relatedField,
 							}),
@@ -101,7 +101,7 @@ const unsortableJunctionFields = computed(() => {
 			<div class="field">
 				<div class="type-label">
 					{{
-						t('referential_action_field_label_m2o', {
+						$t('referential_action_field_label_m2o', {
 							collection: collection || 'related',
 						})
 					}}
@@ -112,22 +112,22 @@ const unsortableJunctionFields = computed(() => {
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: t('referential_action_set_null', { field: relatedField }),
+							text: $t('referential_action_set_null', { field: relatedField }),
 							value: 'SET NULL',
 						},
 						{
-							text: t('referential_action_set_default', { field: relatedField }),
+							text: $t('referential_action_set_default', { field: relatedField }),
 							value: 'SET DEFAULT',
 						},
 						{
-							text: t('referential_action_cascade', {
+							text: $t('referential_action_cascade', {
 								collection: relatedCollection,
 								field: relatedField,
 							}),
 							value: 'CASCADE',
 						},
 						{
-							text: t('referential_action_no_action'),
+							text: $t('referential_action_no_action'),
 							value: 'NO ACTION',
 						},
 					]"

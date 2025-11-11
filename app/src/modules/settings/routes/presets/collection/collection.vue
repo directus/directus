@@ -110,7 +110,7 @@ function clearFilters() {
 			:header-shadow="currentLayout?.headerShadow"
 		>
 			<template #headline>
-				<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
+				<v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
 			</template>
 
 			<template #title-outer:prepend>

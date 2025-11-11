@@ -76,7 +76,7 @@ const relatedPrimaryKey = computed(
 			<div class="field">
 				<div class="type-label">
 					{{
-						t('referential_action_field_label_o2m', {
+						$t('referential_action_field_label_o2m', {
 							collection: junctionCollection || '',
 						})
 					}}
@@ -86,14 +86,14 @@ const relatedPrimaryKey = computed(
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: t('referential_action_set_null', {
+							text: $t('referential_action_set_null', {
 								collection: junctionCollection,
 								field: junctionFieldCurrent,
 							}),
 							value: 'nullify',
 						},
 						{
-							text: t('referential_action_cascade', {
+							text: $t('referential_action_cascade', {
 								collection: junctionCollection,
 								field: junctionFieldCurrent,
 							}),
@@ -106,7 +106,7 @@ const relatedPrimaryKey = computed(
 			<div class="field">
 				<div class="type-label">
 					{{
-						t('referential_action_field_label_m2o', {
+						$t('referential_action_field_label_m2o', {
 							collection: collection || 'related',
 						})
 					}}
@@ -117,22 +117,22 @@ const relatedPrimaryKey = computed(
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: t('referential_action_set_null', { field: junctionFieldCurrent }),
+							text: $t('referential_action_set_null', { field: junctionFieldCurrent }),
 							value: 'SET NULL',
 						},
 						{
-							text: t('referential_action_set_default', { field: junctionFieldCurrent }),
+							text: $t('referential_action_set_default', { field: junctionFieldCurrent }),
 							value: 'SET DEFAULT',
 						},
 						{
-							text: t('referential_action_cascade', {
+							text: $t('referential_action_cascade', {
 								collection: junctionCollection,
 								field: junctionFieldCurrent,
 							}),
 							value: 'CASCADE',
 						},
 						{
-							text: t('referential_action_no_action'),
+							text: $t('referential_action_no_action'),
 							value: 'NO ACTION',
 						},
 					]"
@@ -142,7 +142,7 @@ const relatedPrimaryKey = computed(
 			<div class="field">
 				<div class="type-label">
 					{{
-						t('referential_action_field_label_m2o', {
+						$t('referential_action_field_label_m2o', {
 							collection: relatedCollection || 'related',
 						})
 					}}
@@ -153,22 +153,22 @@ const relatedPrimaryKey = computed(
 					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
-							text: t('referential_action_set_null', { field: junctionFieldRelated }),
+							text: $t('referential_action_set_null', { field: junctionFieldRelated }),
 							value: 'SET NULL',
 						},
 						{
-							text: t('referential_action_set_default', { field: junctionFieldRelated }),
+							text: $t('referential_action_set_default', { field: junctionFieldRelated }),
 							value: 'SET DEFAULT',
 						},
 						{
-							text: t('referential_action_cascade', {
+							text: $t('referential_action_cascade', {
 								collection: junctionCollection,
 								field: junctionFieldRelated,
 							}),
 							value: 'CASCADE',
 						},
 						{
-							text: t('referential_action_no_action'),
+							text: $t('referential_action_no_action'),
 							value: 'NO ACTION',
 						},
 					]"

@@ -50,7 +50,7 @@ const atLimit = computed(() => {
 
 	<v-button
 		v-else
-		v-tooltip="atLimit ? t('reached_maximum_number_of_extensions', { n: limit }) : null"
+		v-tooltip="atLimit ? $t('reached_maximum_number_of_extensions', { n: limit }) : null"
 		:loading="installing"
 		:disabled="atLimit"
 		class="install"

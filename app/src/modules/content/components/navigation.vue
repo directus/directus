@@ -77,7 +77,7 @@ const hasHiddenCollections = computed(
 							<v-icon :name="showHidden ? 'visibility_off' : 'visibility'" />
 						</v-list-item-icon>
 						<v-list-item-content>
-							<v-text-overflow :text="showHidden ? t('hide_hidden_collections') : t('show_hidden_collections')" />
+							<v-text-overflow :text="showHidden ? $t('hide_hidden_collections') : $t('show_hidden_collections')" />
 						</v-list-item-content>
 					</v-list-item>
 				</v-list>

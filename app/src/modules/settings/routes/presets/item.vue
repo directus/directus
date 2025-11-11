@@ -476,7 +476,7 @@ function discardAndLeave() {
 			:header-shadow="currentLayout?.headerShadow"
 		>
 			<template #headline>
-				<v-breadcrumb :items="[{ name: t('settings_presets'), to: '/settings/presets' }]" />
+				<v-breadcrumb :items="[{ name: $t('settings_presets'), to: '/settings/presets' }]" />
 			</template>
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded icon exact to="/settings/presets">

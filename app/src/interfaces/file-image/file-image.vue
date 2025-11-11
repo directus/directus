@@ -177,7 +177,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				<v-icon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
 
 				<span class="message">
-					{{ src ? $t(`errors.${imageError}`) : t('errors.UNSUPPORTED_MEDIA_TYPE') }}
+					{{ src ? $t(`errors.${imageError}`) : $t('errors.UNSUPPORTED_MEDIA_TYPE') }}
 				</span>
 			</div>
 

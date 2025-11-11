@@ -174,7 +174,7 @@ function cancelAndClose() {
 <template>
 	<div>
 		<v-checkbox block :model-value="tfaEnabled" :disabled="disabled || (!isCurrentUser && !tfaEnabled)" @click="toggle">
-			{{ tfaEnabled ? $t('enabled') : t('disabled') }}
+			{{ tfaEnabled ? $t('enabled') : $t('disabled') }}
 			<div class="spacer" />
 			<template #append>
 				<v-icon name="launch" class="checkbox-icon" :class="{ enabled: tfaEnabled }" />

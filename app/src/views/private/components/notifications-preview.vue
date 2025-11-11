@@ -21,7 +21,7 @@ const { lastFour } = storeToRefs(notificationsStore);
 <template>
 	<div class="notifications-preview">
 		<sidebar-button
-			v-tooltip.left="!sidebarOpen && t('activity_log')"
+			v-tooltip.left="!sidebarOpen && $t('activity_log')"
 			:active="modelValue"
 			class="toggle"
 			icon="pending_actions"

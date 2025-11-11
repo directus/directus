@@ -48,7 +48,7 @@ async function addFolder() {
 	<v-dialog v-model="dialogActive" @esc="dialogActive = false" @apply="addFolder">
 		<template #activator="{ on }">
 			<v-button
-				v-tooltip.bottom="disabled ? t('not_allowed') : t('create_folder')"
+				v-tooltip.bottom="disabled ? $t('not_allowed') : $t('create_folder')"
 				rounded
 				icon
 				secondary

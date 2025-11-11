@@ -10,7 +10,7 @@ const { t, d } = useI18n();
 <template>
 	<MetadataItem v-tooltip="d(publishDate, 'long')" has-tooltip icon="event">
 		{{
-			t('last_updated_relative', {
+			$t('last_updated_relative', {
 				relativeTime: localizedFormatDistanceStrict(new Date(publishDate), new Date(), {
 					addSuffix: true,
 				}),

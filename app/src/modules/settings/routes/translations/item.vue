@@ -215,7 +215,7 @@ async function revert(values: Record<string, any>) {
 <template>
 	<content-not-found v-if="error" />
 
-	<private-view v-else :title="primaryKey === '+' ? t('create_custom_translation') : t('edit_custom_translation')">
+	<private-view v-else :title="primaryKey === '+' ? $t('create_custom_translation') : $t('edit_custom_translation')">
 		<template #title-outer:prepend>
 			<v-button
 				v-if="collectionInfo?.meta && collectionInfo.meta.singleton === true"

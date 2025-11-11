@@ -141,7 +141,7 @@ async function downloadSnapshot() {
 <template>
 	<private-view :title="$t('settings_data_model')">
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
+			<v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
 		</template>
 
 		<template #title-outer:prepend>

@@ -74,7 +74,7 @@ const isSearchableType = computed(() => {
 					{
 						field: 'language',
 						type: 'string',
-						name: t('language'),
+						name: $t('language'),
 						meta: {
 							interface: 'system-language',
 							width: 'full',
@@ -92,13 +92,13 @@ const isSearchableType = computed(() => {
 					{
 						field: 'translation',
 						type: 'string',
-						name: t('translation'),
+						name: $t('translation'),
 						meta: {
 							interface: 'input-multiline',
 							width: 'full',
 							required: true,
 							options: {
-								placeholder: t('translation_placeholder'),
+								placeholder: $t('translation_placeholder'),
 							},
 						},
 					},

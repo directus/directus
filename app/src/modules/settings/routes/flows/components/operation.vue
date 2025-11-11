@@ -206,7 +206,7 @@ function pointerLeave() {
 				rounded
 				@pointerdown.stop="pointerdown('resolve')"
 			>
-				<v-icon v-tooltip="editMode && t('operation_handle_resolve')" name="check_circle" />
+				<v-icon v-tooltip="editMode && $t('operation_handle_resolve')" name="check_circle" />
 			</div>
 			<transition name="fade">
 				<div
@@ -226,7 +226,7 @@ function pointerLeave() {
 				class="button add-reject"
 				@pointerdown.stop="pointerdown('reject')"
 			>
-				<v-icon v-tooltip="editMode && t('operation_handle_reject')" name="cancel" />
+				<v-icon v-tooltip="editMode && $t('operation_handle_reject')" name="cancel" />
 			</div>
 			<transition name="fade">
 				<div

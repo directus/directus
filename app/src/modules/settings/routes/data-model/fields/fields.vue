@@ -71,7 +71,7 @@ function discardAndLeave() {
 <template>
 	<private-view :title="formatTitle(collection)">
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings_data_model'), to: '/settings/data-model' }]" />
+			<v-breadcrumb :items="[{ name: $t('settings_data_model'), to: '/settings/data-model' }]" />
 		</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact to="/settings/data-model">

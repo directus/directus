@@ -499,7 +499,7 @@ function getLinkForItem(item: DisplayItem) {
 
 				<v-button
 					v-if="!disabled && enableSelect && selectAllowed"
-					v-tooltip.bottom="selectAllowed ? t('add_existing') : t('not_allowed')"
+					v-tooltip.bottom="selectAllowed ? $t('add_existing') : $t('not_allowed')"
 					rounded
 					icon
 					:secondary="enableCreate"
@@ -510,7 +510,7 @@ function getLinkForItem(item: DisplayItem) {
 
 				<v-button
 					v-if="!disabled && enableCreate && createAllowed && selectAllowed"
-					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
+					v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
 					rounded
 					icon
 					@click="createItem"

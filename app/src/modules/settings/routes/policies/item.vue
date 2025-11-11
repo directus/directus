@@ -104,9 +104,9 @@ function discardAndStay() {
 </script>
 
 <template>
-	<private-view :title="loading ? t('loading') : t('editing_policy', { policy: item && item.name })">
+	<private-view :title="loading ? $t('loading') : $t('editing_policy', { policy: item && item.name })">
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings_permissions'), to: '/settings/policies' }]" />
+			<v-breadcrumb :items="[{ name: $t('settings_permissions'), to: '/settings/policies' }]" />
 		</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/policies/`">

@@ -47,7 +47,7 @@ async function fetchCounts() {
 
 		<v-divider />
 
-		<div v-md="t('page_help_settings_presets_collection')" class="page-description" />
+		<div v-md="$t('page_help_settings_presets_collection')" class="page-description" />
 	</sidebar-detail>
 </template>
 

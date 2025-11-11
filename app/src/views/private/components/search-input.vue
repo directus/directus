@@ -140,7 +140,7 @@ function emitValue() {
 			@click="activate"
 		>
 			<v-icon
-				v-tooltip.bottom="!active ? t('search') : undefined"
+				v-tooltip.bottom="!active ? $t('search') : undefined"
 				name="search"
 				class="icon-search"
 				:clickable="!active"
@@ -149,7 +149,7 @@ function emitValue() {
 			<input
 				ref="input"
 				:value="modelValue"
-				:placeholder="placeholder ?? t('search_items')"
+				:placeholder="placeholder ?? $t('search_items')"
 				type="search"
 				spellcheck="false"
 				autocapitalize="off"

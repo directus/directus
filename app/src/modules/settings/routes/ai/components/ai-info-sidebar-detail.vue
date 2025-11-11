@@ -4,7 +4,7 @@
 
 <template>
 	<sidebar-detail icon="info" :title="$t('information')" close>
-		<div v-md="t('page_help_settings_ai')" class="page-description" />
+		<div v-md="$t('page_help_settings_ai')" class="page-description" />
 	</sidebar-detail>
 </template>
 

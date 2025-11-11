@@ -185,7 +185,7 @@ function useIconsPerRow(
 			<v-input
 				v-model="searchQuery"
 				:disabled="disabled"
-				:placeholder="value ? formatTitle(value) : t('interfaces.select-icon.search_for_icon')"
+				:placeholder="value ? formatTitle(value) : $t('interfaces.select-icon.search_for_icon')"
 				:class="{ 'has-value': value }"
 				:nullable="false"
 				@click="onClickInput($event, toggle)"

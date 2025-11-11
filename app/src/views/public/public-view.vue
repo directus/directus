@@ -66,7 +66,7 @@ const logoURL = computed<string | null>(() => {
 					<h1 class="type-title"><v-text-overflow :text="info?.project?.project_name" placement="bottom" /></h1>
 					<v-text-overflow
 						class="subtitle"
-						:text="info?.project?.project_descriptor ?? t('application')"
+						:text="info?.project?.project_descriptor ?? $t('application')"
 						placement="bottom"
 					/>
 				</div>
