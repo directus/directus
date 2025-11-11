@@ -7,6 +7,7 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useFlows } from '@/composables/use-flows';
+import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
@@ -42,6 +43,8 @@ const { t, te } = useI18n();
 
 const router = useRouter();
 const { collectionRoute } = useCollectionRoute();
+
+const userStore = useUserStore();
 
 const form = ref<HTMLElement>();
 
@@ -758,6 +761,7 @@ function useCollectionRoute() {
 			:primary-key="internalPrimaryKey"
 			:validation-errors="validationErrors"
 			:version="currentVersion"
+			:direction="userStore.textDirection"
 		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
