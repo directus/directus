@@ -88,7 +88,7 @@ const toolDisplayName = computed(() => {
 .tool-header {
 	display: flex;
 	align-items: center;
-	padding: 0.5rem;
+	padding: 0.8rem 1rem;
 	justify-content: space-between;
 	gap: 0.5rem;
 	font-size: 0.875rem;
