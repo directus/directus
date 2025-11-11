@@ -110,7 +110,7 @@ const { t } = useI18n();
 - [x] interfaces/_system/system-display-template/system-display-template.vue
 - [x] interfaces/_system/system-display/system-display.vue
 - [x] interfaces/_system/system-field-tree/system-field-tree.vue
-- [ ] interfaces/_system/system-field/system-field.vue
+- [x] interfaces/_system/system-field/system-field.vue
 - [ ] interfaces/_system/system-fields/system-fields.vue
 - [ ] interfaces/_system/system-filter/input-component.vue
 - [ ] interfaces/_system/system-filter/input-group.vue
