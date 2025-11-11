@@ -98,7 +98,7 @@ async function onSubmit() {
 			{{ errorFormatted }}
 		</v-notice>
 		<div class="buttons">
-			<v-button type="submit" :loading="isLoading" :disabled="isLoading" large>{{ $$t('register') }}</v-button>
+			<v-button type="submit" :loading="isLoading" :disabled="isLoading" large>{{ $t('register') }}</v-button>
 		</div>
 	</form>
 </template>

@@ -5,8 +5,8 @@
 <template>
 	<thead class="permissions-overview-header">
 		<tr>
-			<th>{{ $$t('collection') }}</th>
-			<th colspan="6">{{ $$t('actions') }}</th>
+			<th>{{ $t('collection') }}</th>
+			<th colspan="6">{{ $t('actions') }}</th>
 		</tr>
 	</thead>
 </template>

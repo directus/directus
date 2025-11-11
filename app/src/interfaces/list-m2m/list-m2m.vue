@@ -464,10 +464,10 @@ function getLinkForItem(item: DisplayItem) {
 
 <template>
 	<v-notice v-if="!relationInfo" type="warning">
-		{{ $$t('relationship_not_setup') }}
+		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
-		{{ $$t('no_singleton_relations') }}
+		{{ $t('no_singleton_relations') }}
 	</v-notice>
 	<div v-else class="many-to-many">
 		<div :class="[`layout-${layout}`, { bordered: layout === LAYOUTS.TABLE }]">
@@ -583,7 +583,7 @@ function getLinkForItem(item: DisplayItem) {
 
 			<template v-else>
 				<v-notice v-if="displayItems.length === 0">
-					{{ $$t('no_items') }}
+					{{ $t('no_items') }}
 				</v-notice>
 
 				<draggable
@@ -652,18 +652,18 @@ function getLinkForItem(item: DisplayItem) {
 						<div class="spacer" />
 
 						<div v-if="loading === false" class="per-page">
-							<span>{{ $$t('per_page') }}</span>
+							<span>{{ $t('per_page') }}</span>
 							<v-select v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
 						</div>
 					</template>
 				</template>
 				<template v-else>
 					<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="createItem">
-						{{ $$t('create_new') }}
+						{{ $t('create_new') }}
 					</v-button>
 
 					<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
-						{{ $$t('add_existing') }}
+						{{ $t('add_existing') }}
 					</v-button>
 
 					<div class="spacer" />

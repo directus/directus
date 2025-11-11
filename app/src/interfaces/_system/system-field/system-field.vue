@@ -62,10 +62,10 @@ const selectItems = computed(() =>
 
 <template>
 	<v-notice v-if="!collectionField && !collectionName" type="warning">
-		{{ $$t('collection_field_not_setup') }}
+		{{ $t('collection_field_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="selectItems.length === 0" type="warning">
-		{{ $$t('select_a_collection') }}
+		{{ $t('select_a_collection') }}
 	</v-notice>
 	<v-select
 		v-else

@@ -505,14 +505,14 @@ function discardAndLeave() {
 					</template>
 
 					<v-card>
-						<v-card-title>{{ $$t('delete_are_you_sure') }}</v-card-title>
+						<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
 
 						<v-card-actions>
 							<v-button secondary @click="confirmDelete = false">
-								{{ $$t('cancel') }}
+								{{ $t('cancel') }}
 							</v-button>
 							<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-								{{ $$t('delete_label') }}
+								{{ $t('delete_label') }}
 							</v-button>
 						</v-card-actions>
 					</v-card>
@@ -537,19 +537,19 @@ function discardAndLeave() {
 					<component :is="`layout-${values.layout}`" v-if="values.layout && values.collection" v-bind="layoutState">
 						<template #no-results>
 							<v-info :title="$t('no_results')" icon="search" center>
-								{{ $$t('no_results_copy') }}
+								{{ $t('no_results_copy') }}
 							</v-info>
 						</template>
 
 						<template #no-items>
 							<v-info :title="$t('item_count', 0)" center>
-								{{ $$t('no_items_copy') }}
+								{{ $t('no_items_copy') }}
 							</v-info>
 						</template>
 					</component>
 
 					<v-notice v-else>
-						{{ $$t('no_layout_collection_selected_yet') }}
+						{{ $t('no_layout_collection_selected_yet') }}
 					</v-notice>
 				</div>
 			</div>
@@ -580,13 +580,13 @@ function discardAndLeave() {
 
 			<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 				<v-card>
-					<v-card-title>{{ $$t('unsaved_changes') }}</v-card-title>
-					<v-card-text>{{ $$t('unsaved_changes_copy') }}</v-card-text>
+					<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+					<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 					<v-card-actions>
 						<v-button secondary @click="discardAndLeave">
-							{{ $$t('discard_changes') }}
+							{{ $t('discard_changes') }}
 						</v-button>
-						<v-button @click="confirmLeave = false">{{ $$t('keep_editing') }}</v-button>
+						<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>

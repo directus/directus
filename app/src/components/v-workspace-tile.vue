@@ -296,7 +296,7 @@ function useDragDrop() {
 							<v-icon class="move-icon" name="input" />
 						</v-list-item-icon>
 						<v-list-item-content>
-							{{ $$t('copy_to') }}
+							{{ $t('copy_to') }}
 						</v-list-item-content>
 					</v-list-item>
 
@@ -304,14 +304,14 @@ function useDragDrop() {
 						<v-list-item-icon>
 							<v-icon name="control_point_duplicate" />
 						</v-list-item-icon>
-						<v-list-item-content>{{ $$t('duplicate') }}</v-list-item-content>
+						<v-list-item-content>{{ $t('duplicate') }}</v-list-item-content>
 					</v-list-item>
 
 					<v-list-item class="delete-action" clickable @click="$emit('delete')">
 						<v-list-item-icon>
 							<v-icon name="delete" />
 						</v-list-item-icon>
-						<v-list-item-content>{{ $$t('delete') }}</v-list-item-content>
+						<v-list-item-content>{{ $t('delete') }}</v-list-item-content>
 					</v-list-item>
 				</v-list>
 			</v-menu>

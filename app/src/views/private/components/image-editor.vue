@@ -452,7 +452,7 @@ function setAspectRatio() {
 		</template>
 
 		<template #subtitle>
-			<span class="warning">{{ $$t('changes_are_permanent') }}</span>
+			<span class="warning">{{ $t('changes_are_permanent') }}</span>
 		</template>
 
 		<div v-if="loading" class="loader">
@@ -543,11 +543,11 @@ function setAspectRatio() {
 						</v-list-item>
 						<v-list-item clickable :active="aspectRatio === 1 / 1" @click="aspectRatio = 1 / 1">
 							<v-list-item-icon><v-icon name="crop_square" /></v-list-item-icon>
-							<v-list-item-content>{{ $$t('square') }}</v-list-item-content>
+							<v-list-item-content>{{ $t('square') }}</v-list-item-content>
 						</v-list-item>
 						<v-list-item clickable :active="Number.isNaN(aspectRatio)" @click="aspectRatio = NaN">
 							<v-list-item-icon><v-icon name="crop_free" /></v-list-item-icon>
-							<v-list-item-content>{{ $$t('free') }}</v-list-item-content>
+							<v-list-item-content>{{ $t('free') }}</v-list-item-content>
 						</v-list-item>
 						<v-list-item
 							v-if="imageData && imageData.width && imageData.height"
@@ -556,7 +556,7 @@ function setAspectRatio() {
 							@click="setAspectRatio"
 						>
 							<v-list-item-icon><v-icon name="crop_original" /></v-list-item-icon>
-							<v-list-item-content>{{ $$t('original') }}</v-list-item-content>
+							<v-list-item-content>{{ $t('original') }}</v-list-item-content>
 						</v-list-item>
 					</v-list>
 				</v-menu>

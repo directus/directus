@@ -18,7 +18,7 @@ const newestVersion = computed(() => props.extension.versions.at(0)!);
 <template>
 	<VBanner :icon="icon">
 		<template #headline>
-			<v-chip outlined x-small>{{ $$t(`extension_${extension.type}`) }}</v-chip>
+			<v-chip outlined x-small>{{ $t(`extension_${extension.type}`) }}</v-chip>
 		</template>
 
 		<h2 class="name">{{ formatName(extension) }}</h2>

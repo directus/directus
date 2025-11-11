@@ -122,7 +122,7 @@ async function onSubmit() {
 				<v-text-overflow :text="$t('sign_in')" />
 			</v-button>
 			<router-link to="/reset-password" class="forgot-password">
-				{{ $$t('forgot_password') }}
+				{{ $t('forgot_password') }}
 			</router-link>
 		</div>
 	</form>

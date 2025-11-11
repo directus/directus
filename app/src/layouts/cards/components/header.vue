@@ -70,11 +70,11 @@ function onClickSelect() {
 			<button type="button" :class="{ 'no-selection': !selectionSync.length }" @click="onClickSelect">
 				<template v-if="selectionSync.length">
 					<v-icon name="cancel" outline />
-					<span class="label">{{ $$t('n_items_selected', selectionSync.length) }}</span>
+					<span class="label">{{ $t('n_items_selected', selectionSync.length) }}</span>
 				</template>
 				<template v-else>
 					<v-icon name="check_circle" outline />
-					<span class="label">{{ $$t(showSelect === 'multiple' ? 'select_all' : 'select_an_item') }}</span>
+					<span class="label">{{ $t(showSelect === 'multiple' ? 'select_all' : 'select_an_item') }}</span>
 				</template>
 			</button>
 		</div>

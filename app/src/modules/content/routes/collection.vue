@@ -401,14 +401,14 @@ function clearFilters() {
 					</template>
 
 					<v-card>
-						<v-card-title>{{ $$t('batch_delete_confirm', selection.length) }}</v-card-title>
+						<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 						<v-card-actions>
 							<v-button secondary @click="confirmDelete = false">
-								{{ $$t('cancel') }}
+								{{ $t('cancel') }}
 							</v-button>
 							<v-button kind="danger" :loading="deleting" @click="batchDelete">
-								{{ $$t('delete_label') }}
+								{{ $t('delete_label') }}
 							</v-button>
 						</v-card-actions>
 					</v-card>
@@ -439,14 +439,14 @@ function clearFilters() {
 					</template>
 
 					<v-card>
-						<v-card-title>{{ $$t('archive_confirm_count', selection.length) }}</v-card-title>
+						<v-card-title>{{ $t('archive_confirm_count', selection.length) }}</v-card-title>
 
 						<v-card-actions>
 							<v-button secondary @click="confirmArchive = false">
-								{{ $$t('cancel') }}
+								{{ $t('cancel') }}
 							</v-button>
 							<v-button kind="warning" :loading="archiving" @click="archiveItems">
-								{{ $$t('archive') }}
+								{{ $t('archive') }}
 							</v-button>
 						</v-card-actions>
 					</v-card>
@@ -488,11 +488,11 @@ function clearFilters() {
 				icon="bookmark"
 				center
 			>
-				{{ $$t('bookmark_doesnt_exist_copy') }}
+				{{ $t('bookmark_doesnt_exist_copy') }}
 
 				<template #append>
 					<v-button :to="currentCollectionLink">
-						{{ $$t('bookmark_doesnt_exist_cta') }}
+						{{ $t('bookmark_doesnt_exist_cta') }}
 					</v-button>
 				</template>
 			</v-info>
@@ -500,33 +500,33 @@ function clearFilters() {
 			<component :is="`layout-${layout || 'tabular'}`" v-else v-bind="layoutState">
 				<template #no-results>
 					<v-info :title="$t('no_results')" icon="search" center>
-						{{ $$t('no_results_copy') }}
+						{{ $t('no_results_copy') }}
 
 						<template #append>
-							<v-button @click="clearFilters">{{ $$t('clear_filters') }}</v-button>
+							<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
 						</template>
 					</v-info>
 				</template>
 
 				<template #no-items>
 					<v-info :title="$t('item_count', 0)" :icon="currentCollection.icon" center>
-						{{ $$t('no_items_copy') }}
+						{{ $t('no_items_copy') }}
 
 						<template v-if="createAllowed" #append>
-							<v-button :to="getItemRoute(collection, '+')">{{ $$t('create_item') }}</v-button>
+							<v-button :to="getItemRoute(collection, '+')">{{ $t('create_item') }}</v-button>
 						</template>
 					</v-info>
 				</template>
 
 				<template #error="{ error, reset }">
 					<v-info type="danger" :title="$t('unexpected_error')" icon="error" center>
-						{{ $$t('unexpected_error_copy') }}
+						{{ $t('unexpected_error_copy') }}
 
 						<template #append>
 							<v-error :error="error" />
 
 							<v-button small class="reset-preset" @click="reset">
-								{{ $$t('reset_page_preferences') }}
+								{{ $t('reset_page_preferences') }}
 							</v-button>
 						</template>
 					</v-info>
@@ -566,12 +566,12 @@ function clearFilters() {
 
 			<v-dialog :model-value="deleteError !== null" @esc="deleteError = null">
 				<v-card>
-					<v-card-title>{{ $$t('something_went_wrong') }}</v-card-title>
+					<v-card-title>{{ $t('something_went_wrong') }}</v-card-title>
 					<v-card-text>
 						<v-error :error="deleteError" />
 					</v-card-text>
 					<v-card-actions>
-						<v-button @click="deleteError = null">{{ $$t('done') }}</v-button>
+						<v-button @click="deleteError = null">{{ $t('done') }}</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>

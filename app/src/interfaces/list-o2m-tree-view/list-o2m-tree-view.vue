@@ -115,10 +115,10 @@ const fields = computed(() => {
 
 <template>
 	<v-notice v-if="!relationInfo || collection !== relationInfo?.relatedCollection.collection" type="warning">
-		{{ $$t('interfaces.list-o2m-tree-view.recursive_only') }}
+		{{ $t('interfaces.list-o2m-tree-view.recursive_only') }}
 	</v-notice>
 	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
-		{{ $$t('no_singleton_relations') }}
+		{{ $t('no_singleton_relations') }}
 	</v-notice>
 	<div v-else class="tree-view">
 		<nested-draggable

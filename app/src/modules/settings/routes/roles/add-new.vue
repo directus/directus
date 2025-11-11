@@ -18,7 +18,7 @@ const { saving, save } = useSave({ name });
 	<v-dialog :model-value="isOpen" persistent @esc="router.push('/settings/roles')" @apply="save">
 		<v-card>
 			<v-card-title>
-				{{ $$t('create_role') }}
+				{{ $t('create_role') }}
 			</v-card-title>
 			<v-card-text>
 				<div class="form-grid">
@@ -28,8 +28,8 @@ const { saving, save } = useSave({ name });
 				</div>
 			</v-card-text>
 			<v-card-actions>
-				<v-button to="/settings/roles" secondary>{{ $$t('cancel') }}</v-button>
-				<v-button :disabled="name === null" :loading="saving" @click="save">{{ $$t('save') }}</v-button>
+				<v-button to="/settings/roles" secondary>{{ $t('cancel') }}</v-button>
+				<v-button :disabled="name === null" :loading="saving" @click="save">{{ $t('save') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>

@@ -88,7 +88,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 		></v-detail>
 
 		<v-notice v-if="items.length === 0 && !allowOther" type="info">
-			{{ $$t('no_options_available') }}
+			{{ $t('no_options_available') }}
 		</v-notice>
 
 		<template v-if="allowOther">
@@ -114,7 +114,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 
 			<button v-if="allowOther" type="button" :disabled class="add-new custom" @click="addOtherValue('', true)">
 				<v-icon name="add" />
-				{{ $$t('other') }}
+				{{ $t('other') }}
 			</button>
 		</template>
 	</div>

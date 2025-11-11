@@ -143,14 +143,14 @@ function clearFilters() {
 					</template>
 
 					<v-card>
-						<v-card-title>{{ $$t('batch_delete_confirm', selection.length) }}</v-card-title>
+						<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 						<v-card-actions>
 							<v-button secondary @click="confirmDelete = false">
-								{{ $$t('cancel') }}
+								{{ $t('cancel') }}
 							</v-button>
 							<v-button kind="danger" :loading="deleting" @click="batchDelete">
-								{{ $$t('delete_label') }}
+								{{ $t('delete_label') }}
 							</v-button>
 						</v-card-actions>
 					</v-card>
@@ -179,20 +179,20 @@ function clearFilters() {
 			<component :is="`layout-${layout || 'tabular'}`" v-bind="layoutState">
 				<template #no-results>
 					<v-info :title="$t('no_results')" icon="search" center>
-						{{ $$t('no_results_copy') }}
+						{{ $t('no_results_copy') }}
 
 						<template #append>
-							<v-button @click="clearFilters">{{ $$t('clear_filters') }}</v-button>
+							<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
 						</template>
 					</v-info>
 				</template>
 
 				<template #no-items>
 					<v-info :title="$t('no_custom_translations')" :icon="currentCollection!.icon" center>
-						{{ $$t('no_custom_translations_copy') }}
+						{{ $t('no_custom_translations_copy') }}
 
 						<template #append>
-							<v-button :to="`/settings/translations/+`">{{ $$t('create_custom_translation') }}</v-button>
+							<v-button :to="`/settings/translations/+`">{{ $t('create_custom_translation') }}</v-button>
 						</template>
 					</v-info>
 				</template>
@@ -232,12 +232,12 @@ function clearFilters() {
 
 			<v-dialog :model-value="deleteError !== null">
 				<v-card>
-					<v-card-title>{{ $$t('something_went_wrong') }}</v-card-title>
+					<v-card-title>{{ $t('something_went_wrong') }}</v-card-title>
 					<v-card-text>
 						<v-error :error="deleteError" />
 					</v-card-text>
 					<v-card-actions>
-						<v-button @click="deleteError = null">{{ $$t('done') }}</v-button>
+						<v-button @click="deleteError = null">{{ $t('done') }}</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>

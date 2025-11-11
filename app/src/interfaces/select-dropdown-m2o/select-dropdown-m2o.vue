@@ -168,16 +168,16 @@ function getLinkForItem() {
 
 <template>
 	<v-notice v-if="!relationInfo" type="warning">
-		{{ $$t('relationship_not_setup') }}
+		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
-		{{ $$t('no_singleton_relations') }}
+		{{ $t('no_singleton_relations') }}
 	</v-notice>
 	<v-notice v-else-if="!displayTemplate" type="warning">
-		{{ $$t('display_template_not_setup') }}
+		{{ $t('display_template_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="!enableCreate && !enableSelect && !displayItem">
-		{{ $$t('no_items') }}
+		{{ $t('no_items') }}
 	</v-notice>
 
 	<div v-else class="many-to-one">
@@ -191,7 +191,7 @@ function getLinkForItem() {
 					:template="displayTemplate"
 				/>
 			</div>
-			<div v-else class="placeholder">{{ $$t(enableSelect ? 'select_an_item' : 'create_item') }}</div>
+			<div v-else class="placeholder">{{ $t(enableSelect ? 'select_an_item' : 'create_item') }}</div>
 
 			<div class="spacer" />
 

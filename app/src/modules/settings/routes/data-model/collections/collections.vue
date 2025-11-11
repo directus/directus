@@ -177,20 +177,20 @@ async function downloadSnapshot() {
 
 		<div class="padding-box">
 			<v-info v-if="collections.length === 0" icon="box" :title="$t('no_collections')">
-				{{ $$t('no_collections_copy_admin') }}
+				{{ $t('no_collections_copy_admin') }}
 
 				<template #append>
-					<v-button to="/settings/data-model/+">{{ $$t('create_collection') }}</v-button>
+					<v-button to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
 				</template>
 			</v-info>
 
 			<template v-else>
 				<transition-expand>
 					<div v-if="hasExpandableCollections" class="expand-collapse-button">
-						{{ $$t('expand') }}
-						<button @click="expandAll">{{ $$t('all') }}</button>
+						{{ $t('expand') }}
+						<button @click="expandAll">{{ $t('all') }}</button>
 						/
-						<button @click="collapseAll">{{ $$t('none') }}</button>
+						<button @click="collapseAll">{{ $t('none') }}</button>
 					</div>
 				</transition-expand>
 				<draggable
@@ -267,7 +267,7 @@ async function downloadSnapshot() {
 			<sidebar-detail icon="download" :title="$t('snapshot.export')">
 				<div v-md="t('snapshot.info')" class="page-description" />
 				<v-button small full-width class="snapshot-download" @click="downloadSnapshot">
-					{{ $$t('snapshot.download') }}
+					{{ $t('snapshot.download') }}
 				</v-button>
 			</sidebar-detail>
 		</template>

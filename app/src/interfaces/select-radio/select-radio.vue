@@ -48,7 +48,7 @@ const customIcon = computed(() => {
 
 <template>
 	<v-notice v-if="!items" type="warning">
-		{{ $$t('choices_option_configured_incorrectly') }}
+		{{ $t('choices_option_configured_incorrectly') }}
 	</v-notice>
 	<div
 		v-else
@@ -71,7 +71,7 @@ const customIcon = computed(() => {
 			@update:model-value="$emit('input', $event)"
 		/>
 		<v-notice v-if="items.length === 0 && !allowOther" type="info">
-			{{ $$t('no_options_available') }}
+			{{ $t('no_options_available') }}
 		</v-notice>
 		<div
 			v-if="allowOther"

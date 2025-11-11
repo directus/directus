@@ -400,7 +400,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 			:icon="inline ? false : 'search'"
 			:center="!inline"
 		>
-			{{ $$t('no_visible_fields_copy') }}
+			{{ $t('no_visible_fields_copy') }}
 		</v-info>
 		<template v-for="(fieldName, index) in fieldNames" :key="fieldName">
 			<template v-if="fieldsMap[fieldName]">

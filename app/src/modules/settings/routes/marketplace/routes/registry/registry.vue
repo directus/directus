@@ -102,7 +102,7 @@ watchEffect(async () => {
 						/>
 					</svg>
 				</template>
-				{{ $$t('marketplace') }}
+				{{ $t('marketplace') }}
 			</VBanner>
 
 			<InlineFilter
@@ -134,7 +134,7 @@ watchEffect(async () => {
 				class="no-results"
 				icon="extension"
 			>
-				{{ $$t('no_results_copy') }}
+				{{ $t('no_results_copy') }}
 			</v-info>
 
 			<v-pagination

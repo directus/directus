@@ -85,7 +85,7 @@ const done = async (notification: Snackbar) => {
 				<v-card-actions>
 					<v-button v-if="notification.type === 'error' && isAdmin && notification.code === 'UNKNOWN'" secondary>
 						<a target="_blank" :href="getErrorUrl(notification.error)">
-							{{ $$t('report_error') }}
+							{{ $t('report_error') }}
 						</a>
 					</v-button>
 					<v-button @click="done(notification)">{{ notification.dismissText ?? $t('dismiss') }}</v-button>

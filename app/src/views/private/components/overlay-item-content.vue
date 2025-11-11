@@ -110,7 +110,7 @@ function useValidationScrollToField() {
 		<file-preview-replace v-if="file" class="preview" :file="file" in-modal @replace="refresh" />
 
 		<v-info v-if="emptyForm" :title="$t('no_visible_fields')" icon="search" center>
-			{{ $$t('no_visible_fields_copy') }}
+			{{ $t('no_visible_fields_copy') }}
 		</v-info>
 
 		<div v-else class="overlay-item-order" :class="{ swap: swapFormOrder }">

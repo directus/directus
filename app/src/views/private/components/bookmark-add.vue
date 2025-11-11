@@ -54,7 +54,7 @@ function cancel() {
 		</template>
 
 		<v-card>
-			<v-card-title>{{ $$t('create_bookmark') }}</v-card-title>
+			<v-card-title>{{ $t('create_bookmark') }}</v-card-title>
 
 			<v-card-text>
 				<div class="fields">
@@ -73,10 +73,10 @@ function cancel() {
 
 			<v-card-actions>
 				<v-button secondary @click="cancel">
-					{{ $$t('cancel') }}
+					{{ $t('cancel') }}
 				</v-button>
 				<v-button :disabled="bookmarkValue.name === null" :loading="saving" @click="save">
-					{{ $$t('save') }}
+					{{ $t('save') }}
 				</v-button>
 			</v-card-actions>
 		</v-card>

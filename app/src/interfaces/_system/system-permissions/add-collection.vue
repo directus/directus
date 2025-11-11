@@ -59,7 +59,7 @@ function notExcluded({ collection }: Collection) {
 		>
 			<template #preview="{ toggle }">
 				<v-button @click="toggle">
-					{{ $$t('permission_add_collection') }}
+					{{ $t('permission_add_collection') }}
 					<v-icon name="arrow_drop_down" right />
 				</v-button>
 			</template>

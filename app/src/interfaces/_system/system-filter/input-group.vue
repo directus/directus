@@ -312,7 +312,7 @@ function useVariableInput() {
 				:value="(value as (string | number)[])[0] ?? ''"
 				@input="setValueAt(0, $event)"
 			/>
-			<div class="and">{{ $$t('interfaces.filter.and') }}</div>
+			<div class="and">{{ $t('interfaces.filter.and') }}</div>
 			<input-component
 				:is="interfaceType"
 				:choices="choices"

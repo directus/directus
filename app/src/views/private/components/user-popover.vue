@@ -93,7 +93,7 @@ function navigateToUser() {
 			<div class="data">
 				<div class="name type-title">{{ userName(data) }}</div>
 				<v-chip class="status" :class="data.status" small>
-					{{ $$t(`fields.directus_users.status_${data.status}`) }}
+					{{ $t(`fields.directus_users.status_${data.status}`) }}
 				</v-chip>
 				<v-chip v-if="data.role?.name" small>{{ data.role.name }}</v-chip>
 				<div class="email">{{ data.email }}</div>

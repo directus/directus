@@ -212,7 +212,7 @@ const newTranslationDefaults = computed(() => {
 						<v-icon name="add" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ $$t('interfaces.input-translated-string.new_custom_translation') }}
+						{{ $t('interfaces.input-translated-string.new_custom_translation') }}
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>

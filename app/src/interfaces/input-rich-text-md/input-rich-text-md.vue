@@ -310,11 +310,11 @@ function edit(type: Alteration, options?: Record<string, any>) {
 					<template #default="{ deactivate }">
 						<div class="table-options">
 							<div class="field half">
-								<p class="type-label">{{ $$t('rows') }}</p>
+								<p class="type-label">{{ $t('rows') }}</p>
 								<v-input v-model="table.rows" :min="1" type="number" />
 							</div>
 							<div class="field half">
-								<p class="type-label">{{ $$t('columns') }}</p>
+								<p class="type-label">{{ $t('columns') }}</p>
 								<v-input v-model="table.columns" :min="1" type="number" />
 							</div>
 							<div class="field full">
@@ -368,10 +368,10 @@ function edit(type: Alteration, options?: Record<string, any>) {
 				@update:model-value="([value]: ['editor' | 'preview']) => (view = value)"
 			>
 				<v-button x-small value="editor" :class="[{ active: view !== 'preview' }]">
-					{{ $$t('interfaces.input-rich-text-md.edit') }}
+					{{ $t('interfaces.input-rich-text-md.edit') }}
 				</v-button>
 				<v-button x-small value="preview" :class="[{ active: view === 'preview' }]">
-					{{ $$t('interfaces.input-rich-text-md.preview') }}
+					{{ $t('interfaces.input-rich-text-md.preview') }}
 				</v-button>
 			</v-item-group>
 		</div>
@@ -401,12 +401,12 @@ function edit(type: Alteration, options?: Record<string, any>) {
 			@update:model-value="imageDialogOpen = false"
 		>
 			<v-card>
-				<v-card-title>{{ $$t('upload_from_device') }}</v-card-title>
+				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
 				<v-card-text>
 					<v-upload from-url from-library :folder="folder" @input="onImageUpload" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="imageDialogOpen = false">{{ $$t('cancel') }}</v-button>
+					<v-button secondary @click="imageDialogOpen = false">{{ $t('cancel') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

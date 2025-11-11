@@ -22,7 +22,7 @@ const navItems = computed(() =>
 <template>
 	<v-list nav>
 		<v-button v-if="navItems.length === 0 && createAllowed" full-width outlined dashed @click="$emit('create')">
-			{{ $$t('create_dashboard') }}
+			{{ $t('create_dashboard') }}
 		</v-button>
 
 		<v-list-item v-for="navItem in navItems" v-else :key="navItem.to" :to="navItem.to">

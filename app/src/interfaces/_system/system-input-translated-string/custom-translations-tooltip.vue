@@ -62,7 +62,7 @@ const clicked = (toggleTooltip: () => void) => {
 					<v-list-item-content>
 						<div class="header">
 							<div class="lang">
-								{{ $$t('loading') }}
+								{{ $t('loading') }}
 							</div>
 						</div>
 					</v-list-item-content>

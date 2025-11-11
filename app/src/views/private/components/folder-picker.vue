@@ -121,7 +121,7 @@ function parseFolder(id: string) {
 						<v-list-item-icon>
 							<v-icon name="folder_special" outline />
 						</v-list-item-icon>
-						<v-list-item-content>{{ $$t('file_library') }}</v-list-item-content>
+						<v-list-item-content>{{ $t('file_library') }}</v-list-item-content>
 					</template>
 
 					<folder-picker-list-item

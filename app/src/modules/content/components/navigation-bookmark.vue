@@ -164,7 +164,7 @@ function useDeleteBookmark() {
 
 		<v-dialog v-model="editActive" persistent @esc="editCancel" @apply="editSave">
 			<v-card>
-				<v-card-title>{{ $$t('edit_personal_bookmark') }}</v-card-title>
+				<v-card-title>{{ $t('edit_personal_bookmark') }}</v-card-title>
 				<v-card-text>
 					<div class="fields">
 						<interface-system-input-translated-string
@@ -178,9 +178,9 @@ function useDeleteBookmark() {
 					</div>
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="editCancel">{{ $$t('cancel') }}</v-button>
+					<v-button secondary @click="editCancel">{{ $t('cancel') }}</v-button>
 					<v-button :disabled="isEditDisabled" :loading="editSaving" @click="editSave">
-						{{ $$t('save') }}
+						{{ $t('save') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -188,11 +188,11 @@ function useDeleteBookmark() {
 
 		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false" @apply="deleteSave">
 			<v-card>
-				<v-card-title>{{ $$t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</v-card-title>
+				<v-card-title>{{ $t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</v-card-title>
 				<v-card-actions>
-					<v-button secondary @click="deleteActive = false">{{ $$t('cancel') }}</v-button>
+					<v-button secondary @click="deleteActive = false">{{ $t('cancel') }}</v-button>
 					<v-button :loading="deleteSaving" kind="danger" @click="deleteSave">
-						{{ $$t('delete_label') }}
+						{{ $t('delete_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

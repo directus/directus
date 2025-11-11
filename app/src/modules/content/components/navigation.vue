@@ -59,7 +59,7 @@ const hasHiddenCollections = computed(
 				dashed
 				to="/settings/data-model/+"
 			>
-				{{ $$t('create_collection') }}
+				{{ $t('create_collection') }}
 			</v-button>
 
 			<navigation-item

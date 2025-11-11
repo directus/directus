@@ -184,7 +184,7 @@ function stageEdits(item: Record<string, any>) {
 
 	<template v-else-if="root && filteredDisplayItems.length === 0">
 		<v-notice>
-			{{ $$t('no_items') }}
+			{{ $t('no_items') }}
 		</v-notice>
 	</template>
 
@@ -241,8 +241,8 @@ function stageEdits(item: Record<string, any>) {
 
 	<template v-if="root">
 		<div class="actions">
-			<v-button v-if="enableCreate" :disabled @click="addNewActive = true">{{ $$t('create_new') }}</v-button>
-			<v-button v-if="enableSelect" :disabled @click="selectDrawer = true">{{ $$t('add_existing') }}</v-button>
+			<v-button v-if="enableCreate" :disabled @click="addNewActive = true">{{ $t('create_new') }}</v-button>
+			<v-button v-if="enableSelect" :disabled @click="selectDrawer = true">{{ $t('add_existing') }}</v-button>
 		</div>
 
 		<drawer-item

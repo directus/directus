@@ -62,7 +62,7 @@ function onSelection(data: (number | string)[] | null) {
 <template>
 	<div class="relational-variable" :class="{ 'show-header': showHeader, centered: !multiple }">
 		<v-notice v-if="!collection" type="warning">
-			{{ $$t('collection_field_not_setup') }}
+			{{ $t('collection_field_not_setup') }}
 		</v-notice>
 
 		<multiple-relation

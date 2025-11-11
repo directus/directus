@@ -90,7 +90,7 @@ async function onValueChange(value: string, activate: () => void, deactivate: ()
 
 <template>
 	<v-notice v-if="!url" type="warning">
-		{{ $$t('one_or_more_options_are_missing') }}
+		{{ $t('one_or_more_options_are_missing') }}
 	</v-notice>
 	<div v-else>
 		<v-menu attached :disabled="disabled">

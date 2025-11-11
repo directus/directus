@@ -34,7 +34,7 @@ function deleteItem(elem: Record<string, any>) {
 		</template>
 
 		<v-notice v-else-if="displayItems.length === 0">
-			{{ $$t('no_items') }}
+			{{ $t('no_items') }}
 		</v-notice>
 
 		<v-list v-else>
@@ -51,10 +51,10 @@ function deleteItem(elem: Record<string, any>) {
 
 		<div class="actions">
 			<button v-if="totalItemCount < limit" @click="$emit('select')">
-				{{ $$t('add_existing') }}
+				{{ $t('add_existing') }}
 			</button>
 			<button v-if="totalItemCount > 0" @click="$emit('input', undefined)">
-				{{ $$t('clear_items') }}
+				{{ $t('clear_items') }}
 			</button>
 		</div>
 	</div>

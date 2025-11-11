@@ -20,7 +20,7 @@ const { saving, save } = useSave({ name, appAccess, adminAccess });
 	<v-dialog :model-value="isOpen" persistent @esc="router.push('/settings/policies')" @apply="save">
 		<v-card>
 			<v-card-title>
-				{{ $$t('create_policy') }}
+				{{ $t('create_policy') }}
 			</v-card-title>
 			<v-card-text>
 				<div class="form-grid">
@@ -29,19 +29,19 @@ const { saving, save } = useSave({ name, appAccess, adminAccess });
 					</div>
 
 					<div class="field half">
-						<p class="type-label">{{ $$t('fields.directus_policies.app_access') }}</p>
+						<p class="type-label">{{ $t('fields.directus_policies.app_access') }}</p>
 						<v-checkbox v-model="appAccess" block :label="$t('enabled')" />
 					</div>
 
 					<div class="field half">
-						<p class="type-label">{{ $$t('fields.directus_policies.admin_access') }}</p>
+						<p class="type-label">{{ $t('fields.directus_policies.admin_access') }}</p>
 						<v-checkbox v-model="adminAccess" block :label="$t('enabled')" />
 					</div>
 				</div>
 			</v-card-text>
 			<v-card-actions>
-				<v-button to="/settings/policies" secondary>{{ $$t('cancel') }}</v-button>
-				<v-button :disabled="name === null" :loading="saving" @click="save">{{ $$t('save') }}</v-button>
+				<v-button to="/settings/policies" secondary>{{ $t('cancel') }}</v-button>
+				<v-button :disabled="name === null" :loading="saving" @click="save">{{ $t('save') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>

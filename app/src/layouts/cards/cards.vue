@@ -134,7 +134,7 @@ watch(innerWidth, (value) => {
 				</div>
 
 				<div v-if="loading === false && items.length >= 25" class="per-page">
-					<span>{{ $$t('per_page') }}</span>
+					<span>{{ $t('per_page') }}</span>
 					<v-select :model-value="`${limit}`" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
 				</div>
 			</div>

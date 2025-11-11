@@ -35,19 +35,19 @@ const relatedPrimaryKey = computed(
 	<div>
 		<div class="grid">
 			<div class="field">
-				<div class="type-label">{{ $$t('this_collection') }}</div>
+				<div class="type-label">{{ $t('this_collection') }}</div>
 				<v-input disabled :model-value="collection" />
 			</div>
 
 			<div class="field">
-				<div class="type-label">{{ $$t('translations_collection') }}</div>
+				<div class="type-label">{{ $t('translations_collection') }}</div>
 				<related-collection-select
 					v-model="junctionCollection"
 					:disabled="autoGenerateJunctionRelation || isExisting"
 				/>
 			</div>
 			<div class="field">
-				<div class="type-label">{{ $$t('languages_collection') }}</div>
+				<div class="type-label">{{ $t('languages_collection') }}</div>
 				<related-collection-select v-model="relatedCollection" :disabled="type === 'files' || isExisting" />
 			</div>
 			<v-input disabled :model-value="currentPrimaryKey" />
@@ -71,7 +71,7 @@ const relatedPrimaryKey = computed(
 		</div>
 
 		<div class="relational-triggers">
-			<v-divider class="field full" large :inline-title="false">{{ $$t('relational_triggers') }}</v-divider>
+			<v-divider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</v-divider>
 
 			<div class="field">
 				<div class="type-label">

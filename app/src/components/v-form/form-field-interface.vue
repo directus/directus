@@ -75,7 +75,7 @@ const value = computed(() =>
 			/>
 
 			<template #fallback>
-				<v-notice type="warning">{{ $$t('unexpected_error') }}</v-notice>
+				<v-notice type="warning">{{ $t('unexpected_error') }}</v-notice>
 			</template>
 		</v-error-boundary>
 
@@ -87,7 +87,7 @@ const value = computed(() =>
 		/>
 
 		<v-notice v-else type="warning">
-			{{ $$t('interface_not_found', { interface: field.meta && field.meta.interface }) }}
+			{{ $t('interface_not_found', { interface: field.meta && field.meta.interface }) }}
 		</v-notice>
 	</div>
 </template>
