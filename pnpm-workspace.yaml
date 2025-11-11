@@ -53,7 +53,7 @@ catalog:
   '@modelcontextprotocol/sdk': 1.21.1
   '@ngneat/falso': 8.0.2
   '@npm/types': 2.1.0
-  '@pinia/testing': 1.0.2
+  '@pinia/testing': 1.0.3
   '@pnpm/logger': 1001.0.1
   '@pnpm/workspace.find-packages': 1000.0.43
   '@pnpm/workspace.pkgs-graph': 1000.0.25
