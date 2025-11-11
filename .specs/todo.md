@@ -120,10 +120,10 @@ const { t } = useI18n();
 - [ ] ~~interfaces/_system/system-inline-fields/system-inline-fields.vue~~ (uses t in script computed)
 - [x] interfaces/_system/system-input-password/input-password.vue
 - [x] interfaces/_system/system-input-translated-string/custom-translations-tooltip.vue
-- [ ] interfaces/_system/system-input-translated-string/input-translated-string.vue
-- [ ] interfaces/_system/system-interface-options/system-interface-options.vue
-- [ ] interfaces/_system/system-interface/system-interface.vue
-- [ ] interfaces/_system/system-language/system-language.vue
+- [x] interfaces/_system/system-input-translated-string/input-translated-string.vue
+- [x] interfaces/_system/system-interface-options/system-interface-options.vue
+- [x] interfaces/_system/system-interface/system-interface.vue
+- [ ] ~~interfaces/_system/system-language/system-language.vue~~ (uses t in script)
 - [ ] interfaces/_system/system-mcp-prompts-collection-validation/system-mcp-prompts-collection-generate-dialog.vue
 - [ ] interfaces/_system/system-mcp-prompts-collection-validation/system-mcp-prompts-collection-validation-existing.vue
 - [ ] interfaces/_system/system-mcp-prompts-collection-validation/system-mcp-prompts-collection-validation-new.vue
