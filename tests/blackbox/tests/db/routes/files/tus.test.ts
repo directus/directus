@@ -1,7 +1,8 @@
 import { getUrl } from '@common/config';
 import { CreatePermission, DeletePermission } from '@common/functions';
-import vendors from '@common/get-dbs-to-test';
+import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
+import type { Query } from '@directus/types';
 import request, { type Response } from 'supertest';
 import { Upload } from 'tus-js-client';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -13,6 +14,49 @@ const file = {
 };
 
 const policies = new Map();
+
+function createUpload(vendor: Vendor, payload: { filename_download: string; type: string; id?: string }) {
+	return new Promise<Response>((resolve, reject) => {
+		const upload = new Upload(Buffer.from(file.content), {
+			headers: {
+				Authorization: `Bearer ${USER.APP_ACCESS.TOKEN}`,
+			},
+			endpoint: getUrl(vendor) + `/files/tus`,
+			chunkSize: Buffer.from(file.content).byteLength,
+			metadata: payload,
+			removeFingerprintOnSuccess: true,
+			onError(error: unknown) {
+				reject(error);
+			},
+			async onSuccess() {
+				const query: Query = {
+					filter: { filename_download: { _eq: payload.filename_download } },
+					fields: ['id'],
+					limit: 1,
+				};
+
+				if (payload.id) {
+					query.filter = {
+						...query.filter,
+						id: { _eq: payload.id },
+					};
+				}
+
+				const response = await request(getUrl(vendor))
+					.get('/files')
+					.query(query)
+					.set('Authorization', `Bearer ${USER.APP_ACCESS.TOKEN}`);
+
+				resolve(response);
+			},
+			onShouldRetry() {
+				return false;
+			},
+		});
+
+		upload.start();
+	});
+}
 
 beforeAll(async () => {
 	for (const vendor of vendors) {
@@ -65,37 +109,7 @@ describe('/files/tus', () => {
 	describe('POST /files/tus', () => {
 		it.each(vendors)('%s', async (vendor) => {
 			// Action
-			const response = await new Promise<Response>((resolve, reject) => {
-				const upload = new Upload(Buffer.from(file.content), {
-					headers: {
-						Authorization: `Bearer ${USER.APP_ACCESS.TOKEN}`,
-					},
-					endpoint: getUrl(vendor) + `/files/tus`,
-					chunkSize: Buffer.from(file.content).byteLength,
-					metadata: { filename_download: file.name, type: file.type },
-					removeFingerprintOnSuccess: true,
-					onError(error) {
-						reject(error);
-					},
-					async onSuccess() {
-						const response = await request(getUrl(vendor))
-							.get('/files')
-							.query({
-								filename_download: { _eq: file.name },
-								fields: ['id'],
-								limit: 1,
-							})
-							.set('Authorization', `Bearer ${USER.APP_ACCESS.TOKEN}`);
-
-						resolve(response);
-					},
-					onShouldRetry() {
-						return false;
-					},
-				});
-
-				upload.start();
-			});
+			const response = await createUpload(vendor, { filename_download: file.name, type: file.type });
 
 			// Assert
 			expect(response.statusCode).toBe(200);
@@ -117,36 +131,10 @@ describe('/files/tus', () => {
 			file.name = `changed_${file.name}`;
 
 			// Action
-			const response = await new Promise<Response>((resolve, reject) => {
-				const upload = new Upload(Buffer.from(file.content), {
-					headers: {
-						Authorization: `Bearer ${USER.APP_ACCESS.TOKEN}`,
-					},
-					endpoint: getUrl(vendor) + `/files/tus`,
-					chunkSize: Buffer.from(file.content).byteLength,
-					metadata: { filename_download: file.name, type: file.type, id: fileResponse.body.data?.[0]?.id },
-					removeFingerprintOnSuccess: true,
-					onError(error) {
-						reject(error);
-					},
-					async onSuccess() {
-						const response = await request(getUrl(vendor))
-							.get('/files')
-							.query({
-								filename_download: { _eq: file.name },
-								fields: ['id'],
-								limit: 1,
-							})
-							.set('Authorization', `Bearer ${USER.APP_ACCESS.TOKEN}`);
-
-						resolve(response);
-					},
-					onShouldRetry() {
-						return false;
-					},
-				});
-
-				upload.start();
+			const response = await createUpload(vendor, {
+				filename_download: file.name,
+				type: file.type,
+				id: fileResponse.body.data?.[0]?.id,
 			});
 
 			// Assert
