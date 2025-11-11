@@ -258,7 +258,7 @@ catalog:
   rolldown: 1.0.0-beta.31
   rollup: 4.52.5
   rollup-plugin-esbuild: 6.2.1
-  rollup-plugin-node-externals: 8.1.1
+  rollup-plugin-node-externals: 8.1.2
   rollup-plugin-styler: 2.0.0
   samlify: 2.10.1
   sanitize-html: 2.17.0
