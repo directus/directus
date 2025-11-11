@@ -124,9 +124,9 @@ const { t } = useI18n();
 - [x] interfaces/_system/system-interface-options/system-interface-options.vue
 - [x] interfaces/_system/system-interface/system-interface.vue
 - [ ] ~~interfaces/_system/system-language/system-language.vue~~ (uses t in script)
-- [ ] interfaces/_system/system-mcp-prompts-collection-validation/system-mcp-prompts-collection-generate-dialog.vue
-- [ ] interfaces/_system/system-mcp-prompts-collection-validation/system-mcp-prompts-collection-validation-existing.vue
-- [ ] interfaces/_system/system-mcp-prompts-collection-validation/system-mcp-prompts-collection-validation-new.vue
+- [ ] ~~interfaces/_system/system-mcp-prompts-collection-validation/system-mcp-prompts-collection-generate-dialog.vue~~ (uses t in script)
+- [x] interfaces/_system/system-mcp-prompts-collection-validation/system-mcp-prompts-collection-validation-existing.vue
+- [x] interfaces/_system/system-mcp-prompts-collection-validation/system-mcp-prompts-collection-validation-new.vue
 - [ ] interfaces/_system/system-mfa-setup/system-mfa-setup.vue
 - [ ] interfaces/_system/system-modules/system-modules.vue
 - [ ] interfaces/_system/system-owner/system-owner.vue
