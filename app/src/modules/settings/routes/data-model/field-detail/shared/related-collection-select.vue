@@ -53,7 +53,7 @@ const systemCollections = collectionsStore.crudSafeSystemCollections;
 					<v-divider />
 
 					<v-list-group>
-						<template #activator>{{ $t('system') }}</template>
+						<template #activator>{{ $$t('system') }}</template>
 						<v-list-item
 							v-for="systemCollection in systemCollections"
 							:key="systemCollection.collection"

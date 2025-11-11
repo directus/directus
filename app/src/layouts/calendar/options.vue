@@ -41,17 +41,17 @@ const firstDayOptions: { text: string; value: number }[] = [...Array(7).keys()].
 
 <template>
 	<div class="field">
-		<div class="type-label">{{ $t('display_template') }}</div>
+		<div class="type-label">{{ $$t('display_template') }}</div>
 		<v-collection-field-template v-model="templateWritable" :collection="collection" />
 	</div>
 
 	<div class="field">
-		<div class="type-label">{{ $t('layouts.calendar.start_date_field') }}</div>
+		<div class="type-label">{{ $$t('layouts.calendar.start_date_field') }}</div>
 		<v-select v-model="startDateFieldWritable" show-deselect :items="dateFields" item-text="name" item-value="field" />
 	</div>
 
 	<div class="field">
-		<div class="type-label">{{ $t('layouts.calendar.end_date_field') }}</div>
+		<div class="type-label">{{ $$t('layouts.calendar.end_date_field') }}</div>
 		<v-select
 			v-model="endDateFieldWritable"
 			show-deselect
@@ -63,7 +63,7 @@ const firstDayOptions: { text: string; value: number }[] = [...Array(7).keys()].
 	</div>
 
 	<div class="field">
-		<div class="type-label">{{ $t('layouts.calendar.first_day') }}</div>
+		<div class="type-label">{{ $$t('layouts.calendar.first_day') }}</div>
 		<v-select v-model="firstDayWritable" :items="firstDayOptions" />
 	</div>
 </template>

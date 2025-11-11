@@ -31,31 +31,31 @@ const isSearchableType = computed(() => {
 <template>
 	<div class="form">
 		<div v-if="!isGenerated" class="field half-left">
-			<div class="label type-label">{{ $t('readonly') }}</div>
+			<div class="label type-label">{{ $$t('readonly') }}</div>
 			<v-checkbox v-model="readonly" :label="$t('readonly_field_label')" block />
 		</div>
 
 		<div v-if="!isGenerated" class="field half-right">
-			<div class="label type-label">{{ $t('required') }}</div>
+			<div class="label type-label">{{ $$t('required') }}</div>
 			<v-checkbox v-model="required" :label="$t('require_value_to_be_set')" block />
 		</div>
 
 		<v-notice v-if="readonly && required" type="warning" class="full no-margin">
-			{{ $t('required_readonly_field_warning') }}
+			{{ $$t('required_readonly_field_warning') }}
 		</v-notice>
 
 		<div class="field half-left">
-			<div class="label type-label">{{ $t('hidden') }}</div>
+			<div class="label type-label">{{ $$t('hidden') }}</div>
 			<v-checkbox v-model="hidden" :label="$t('hidden_on_detail')" block />
 		</div>
 
 		<div v-if="isSearchableType" class="field half-right">
-			<div class="label type-label">{{ $t('searchable') }}</div>
+			<div class="label type-label">{{ $$t('searchable') }}</div>
 			<v-checkbox v-model="searchable" :label="$t('field_searchable')" block />
 		</div>
 
 		<div v-if="type !== 'group'" class="field full">
-			<div class="label type-label">{{ $t('note') }}</div>
+			<div class="label type-label">{{ $$t('note') }}</div>
 			<v-skeleton-loader v-if="loading" />
 			<interface-system-input-translated-string
 				v-else
@@ -66,7 +66,7 @@ const isSearchableType = computed(() => {
 		</div>
 
 		<div class="field full">
-			<div class="label type-label">{{ $t('field_name_translations') }}</div>
+			<div class="label type-label">{{ $$t('field_name_translations') }}</div>
 
 			<interface-list
 				:template="'[{{ language }}] {{ translation }}'"

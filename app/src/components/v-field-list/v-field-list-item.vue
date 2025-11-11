@@ -96,7 +96,7 @@ const openWhileSearching = computed(() => {
 
 		<template v-if="allowSelectAll">
 			<v-list-item clickable :disabled="selectAllDisabled" @click="addAll">
-				{{ $t('select_all') }}
+				{{ $$t('select_all') }}
 			</v-list-item>
 
 			<v-divider />

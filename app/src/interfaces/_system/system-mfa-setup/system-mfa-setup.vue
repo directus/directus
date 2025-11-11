@@ -174,7 +174,7 @@ function cancelAndClose() {
 <template>
 	<div>
 		<v-checkbox block :model-value="tfaEnabled" :disabled="disabled || (!isCurrentUser && !tfaEnabled)" @click="toggle">
-			{{ tfaEnabled ? t('enabled') : t('disabled') }}
+			{{ tfaEnabled ? $t('enabled') : t('disabled') }}
 			<div class="spacer" />
 			<template #append>
 				<v-icon name="launch" class="checkbox-icon" :class="{ enabled: tfaEnabled }" />
@@ -186,15 +186,15 @@ function cancelAndClose() {
 				<!-- SSO user flow -->
 				<div v-if="isSSOUser && tfaEnabled === false && tfaGenerated === false && loading === false">
 					<v-card-title>
-						{{ $t('enable_tfa') }}
+						{{ $$t('enable_tfa') }}
 					</v-card-title>
 					<v-card-text>
-						<p>{{ $t('sso_tfa_setup_notice') }}</p>
+						<p>{{ $$t('sso_tfa_setup_notice') }}</p>
 						<v-error v-if="error" :error="error" />
 					</v-card-text>
 					<v-card-actions>
-						<v-button type="button" secondary @click="cancelAndClose">{{ $t('cancel') }}</v-button>
-						<v-button type="submit" :loading="loading" @click="enableSSO">{{ $t('enable_tfa') }}</v-button>
+						<v-button type="button" secondary @click="cancelAndClose">{{ $$t('cancel') }}</v-button>
+						<v-button type="submit" :loading="loading" @click="enableSSO">{{ $$t('enable_tfa') }}</v-button>
 					</v-card-actions>
 				</div>
 
@@ -204,7 +204,7 @@ function cancelAndClose() {
 					@submit.prevent="generateForPasswordUser"
 				>
 					<v-card-title>
-						{{ $t('enter_password_to_enable_tfa') }}
+						{{ $$t('enter_password_to_enable_tfa') }}
 					</v-card-title>
 					<v-card-text>
 						<v-input v-model="password" :nullable="false" type="password" :placeholder="$t('password')" autofocus />
@@ -212,8 +212,8 @@ function cancelAndClose() {
 						<v-error v-if="error" :error="error" />
 					</v-card-text>
 					<v-card-actions>
-						<v-button type="button" secondary @click="cancelAndClose">{{ $t('cancel') }}</v-button>
-						<v-button type="submit" :loading="loading">{{ $t('next') }}</v-button>
+						<v-button type="button" secondary @click="cancelAndClose">{{ $$t('cancel') }}</v-button>
+						<v-button type="submit" :loading="loading">{{ $$t('next') }}</v-button>
 					</v-card-actions>
 				</form>
 
@@ -222,7 +222,7 @@ function cancelAndClose() {
 				<div v-show="tfaEnabled === false && tfaGenerated === true && loading === false">
 					<form @submit.prevent="enable">
 						<v-card-title>
-							{{ $t('tfa_scan_code') }}
+							{{ $$t('tfa_scan_code') }}
 						</v-card-title>
 						<v-card-text>
 							<canvas :id="canvasID" class="qr" />
@@ -231,8 +231,8 @@ function cancelAndClose() {
 							<v-error v-if="error" :error="error" />
 						</v-card-text>
 						<v-card-actions>
-							<v-button type="button" secondary @click="cancelAndClose">{{ $t('cancel') }}</v-button>
-							<v-button type="submit" :disabled="otp.length !== 6" @click="enable">{{ $t('done') }}</v-button>
+							<v-button type="button" secondary @click="cancelAndClose">{{ $$t('cancel') }}</v-button>
+							<v-button type="submit" :disabled="otp.length !== 6" @click="enable">{{ $$t('done') }}</v-button>
 						</v-card-actions>
 					</form>
 				</div>
@@ -243,31 +243,31 @@ function cancelAndClose() {
 			<v-card>
 				<form v-if="isCurrentUser" @submit.prevent="disable">
 					<v-card-title>
-						{{ $t('enter_otp_to_disable_tfa') }}
+						{{ $$t('enter_otp_to_disable_tfa') }}
 					</v-card-title>
 					<v-card-text>
 						<v-input v-model="otp" type="text" :placeholder="$t('otp')" :nullable="false" autofocus />
 						<v-error v-if="error" :error="error" />
 					</v-card-text>
 					<v-card-actions>
-						<v-button type="button" secondary @click="cancelAndClose">{{ $t('cancel') }}</v-button>
+						<v-button type="button" secondary @click="cancelAndClose">{{ $$t('cancel') }}</v-button>
 						<v-button type="submit" kind="danger" :loading="loading" :disabled="otp.length !== 6">
-							{{ $t('disable_tfa') }}
+							{{ $$t('disable_tfa') }}
 						</v-button>
 					</v-card-actions>
 				</form>
 				<form v-else @submit.prevent="disable">
 					<v-card-title>
-						{{ $t('disable_tfa') }}
+						{{ $$t('disable_tfa') }}
 					</v-card-title>
 					<v-card-text>
-						{{ $t('admin_disable_tfa_text') }}
+						{{ $$t('admin_disable_tfa_text') }}
 						<v-error v-if="error" :error="error" />
 					</v-card-text>
 					<v-card-actions>
-						<v-button type="button" secondary @click="cancelAndClose">{{ $t('cancel') }}</v-button>
+						<v-button type="button" secondary @click="cancelAndClose">{{ $$t('cancel') }}</v-button>
 						<v-button type="submit" kind="danger" :loading="loading">
-							{{ $t('disable_tfa') }}
+							{{ $$t('disable_tfa') }}
 						</v-button>
 					</v-card-actions>
 				</form>
@@ -277,15 +277,15 @@ function cancelAndClose() {
 		<v-dialog v-model="cancelSetupActive" persistent @esc="cancelAndClose">
 			<v-card>
 				<v-card-title>
-					{{ $t('cancel_tfa_setup') }}
+					{{ $$t('cancel_tfa_setup') }}
 				</v-card-title>
 				<v-card-text>
-					<p>{{ $t('cancel_tfa_setup_notice') }}</p>
+					<p>{{ $$t('cancel_tfa_setup_notice') }}</p>
 					<v-error v-if="error" :error="error" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button type="button" secondary @click="cancelAndClose">{{ $t('keep_setup') }}</v-button>
-					<v-button type="submit" :loading="loading" @click="cancelSetup">{{ $t('cancel_setup') }}</v-button>
+					<v-button type="button" secondary @click="cancelAndClose">{{ $$t('keep_setup') }}</v-button>
+					<v-button type="submit" :loading="loading" @click="cancelSetup">{{ $$t('cancel_setup') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

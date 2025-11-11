@@ -29,9 +29,9 @@ const emit = defineEmits<{
 			<div>
 				<div v-tooltip.left="collection.name" class="name">{{ collection.collection }}</div>
 				<div class="shortcuts">
-					<button type="button" class="all" @click="emit('setFullAccessAll')">{{ $t('all') }}</button>
+					<button type="button" class="all" @click="emit('setFullAccessAll')">{{ $$t('all') }}</button>
 					<span class="divider">/</span>
-					<button type="button" class="none" @click="emit('setNoAccessAll')">{{ $t('none') }}</button>
+					<button type="button" class="none" @click="emit('setNoAccessAll')">{{ $$t('none') }}</button>
 				</div>
 			</div>
 		</td>

@@ -91,25 +91,25 @@ async function loadRoles() {
 		@apply="inviteUsers"
 	>
 		<v-card>
-			<v-card-title>{{ $t('invite_users') }}</v-card-title>
+			<v-card-title>{{ $$t('invite_users') }}</v-card-title>
 
 			<v-card-text>
 				<div class="grid">
 					<div class="field">
-						<div class="type-label">{{ $t('emails') }}</div>
+						<div class="type-label">{{ $$t('emails') }}</div>
 						<v-textarea v-model="emails" :nullable="false" placeholder="admin@example.com, user@example.com..." />
 					</div>
 					<div v-if="!role" class="field">
-						<div class="type-label">{{ $t('role') }}</div>
+						<div class="type-label">{{ $$t('role') }}</div>
 						<v-select v-model="roleSelected" :items="roles" />
 					</div>
 					<v-notice v-if="uniqueValidationErrors.length > 0" class="field" type="danger">
 						<div v-for="(err, i) in uniqueValidationErrors" :key="i">
 							<template v-if="(err as any).extensions.invalid">
-								{{ $t('email_already_invited', { email: (err as any).extensions.invalid }) }}
+								{{ $$t('email_already_invited', { email: (err as any).extensions.invalid }) }}
 							</template>
 							<template v-else-if="i === 0">
-								{{ $t('validationError.unique') }}
+								{{ $$t('validationError.unique') }}
 							</template>
 						</div>
 					</v-notice>
@@ -117,9 +117,9 @@ async function loadRoles() {
 			</v-card-text>
 
 			<v-card-actions>
-				<v-button secondary @click="$emit('update:modelValue', false)">{{ $t('cancel') }}</v-button>
+				<v-button secondary @click="$emit('update:modelValue', false)">{{ $$t('cancel') }}</v-button>
 				<v-button :disabled="emails.length === 0" :loading="loading" @click="inviteUsers">
-					{{ $t('invite') }}
+					{{ $$t('invite') }}
 				</v-button>
 			</v-card-actions>
 		</v-card>

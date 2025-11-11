@@ -43,7 +43,7 @@ const items = computed(() => {
 
 <template>
 	<v-notice v-if="selectedType === undefined">
-		{{ $t('select_field_type') }}
+		{{ $$t('select_field_type') }}
 	</v-notice>
 	<v-select
 		v-else

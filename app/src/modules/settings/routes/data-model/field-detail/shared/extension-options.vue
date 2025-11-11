@@ -72,7 +72,7 @@ const optionsValues = computed({
 
 <template>
 	<v-notice v-if="usesCustomComponent === false && optionsFields.length === 0">
-		{{ $t('no_options_available') }}
+		{{ $$t('no_options_available') }}
 	</v-notice>
 
 	<v-form
@@ -95,7 +95,7 @@ const optionsValues = computed({
 			@input="optionsValues = $event"
 		/>
 		<template #fallback>
-			<v-notice type="warning">{{ $t('unexpected_error') }}</v-notice>
+			<v-notice type="warning">{{ $$t('unexpected_error') }}</v-notice>
 		</template>
 	</v-error-boundary>
 </template>

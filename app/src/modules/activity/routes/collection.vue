@@ -62,13 +62,13 @@ const roleFilter = ref<Filter | null>(null);
 			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
 					<v-info :title="$t('no_results')" icon="search" center>
-						{{ $t('no_results_copy') }}
+						{{ $$t('no_results_copy') }}
 					</v-info>
 				</template>
 
 				<template #no-items>
 					<v-info :title="$t('item_count', 0)" icon="access_time" center>
-						{{ $t('no_items_copy') }}
+						{{ $$t('no_items_copy') }}
 					</v-info>
 				</template>
 			</component>

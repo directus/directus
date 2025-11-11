@@ -39,26 +39,26 @@ export default defineComponent({
 
 <template>
 	<div class="field">
-		<div class="type-label">{{ $t('layouts.cards.image_source') }}</div>
+		<div class="type-label">{{ $$t('layouts.cards.image_source') }}</div>
 		<v-select v-model="imageSourceWritable" show-deselect item-value="field" item-text="name" :items="fileFields" />
 	</div>
 
 	<div class="field">
-		<div class="type-label">{{ $t('layouts.cards.title') }}</div>
+		<div class="type-label">{{ $$t('layouts.cards.title') }}</div>
 		<v-collection-field-template v-model="titleWritable" :collection="collection" />
 	</div>
 
 	<div class="field">
-		<div class="type-label">{{ $t('layouts.cards.subtitle') }}</div>
+		<div class="type-label">{{ $$t('layouts.cards.subtitle') }}</div>
 		<v-collection-field-template v-model="subtitleWritable" :collection="collection" />
 	</div>
 
 	<v-detail class="field">
-		<template #title>{{ $t('advanced') }}</template>
+		<template #title>{{ $$t('advanced') }}</template>
 
 		<div class="nested-options">
 			<div class="field">
-				<div class="type-label">{{ $t('layouts.cards.image_fit') }}</div>
+				<div class="type-label">{{ $$t('layouts.cards.image_fit') }}</div>
 				<v-select
 					v-model="imageFitWritable"
 					:disabled="imageSource === null"
@@ -76,7 +76,7 @@ export default defineComponent({
 			</div>
 
 			<div class="field">
-				<div class="type-label">{{ $t('fallback_icon') }}</div>
+				<div class="type-label">{{ $$t('fallback_icon') }}</div>
 				<interface-select-icon :value="icon" @input="iconWritable = $event" />
 			</div>
 		</div>

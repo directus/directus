@@ -69,12 +69,12 @@ const userFullName = userStore.fullName ?? undefined;
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $t('sign_out_confirm') }}</v-card-title>
+					<v-card-title>{{ $$t('sign_out_confirm') }}</v-card-title>
 					<v-card-actions>
 						<v-button secondary @click="signOutActive = !signOutActive">
-							{{ $t('cancel') }}
+							{{ $$t('cancel') }}
 						</v-button>
-						<v-button :to="signOutLink">{{ $t('sign_out') }}</v-button>
+						<v-button :to="signOutLink">{{ $$t('sign_out') }}</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>

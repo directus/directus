@@ -36,11 +36,11 @@ async function fetchCounts() {
 	<sidebar-detail icon="info" :title="$t('information')" close>
 		<dl>
 			<div>
-				<dt>{{ $t('bookmarks') }}</dt>
+				<dt>{{ $$t('bookmarks') }}</dt>
 				<dd>{{ bookmarksCount }}</dd>
 			</div>
 			<div>
-				<dt>{{ $t('presets') }}</dt>
+				<dt>{{ $$t('presets') }}</dt>
 				<dd>{{ presetsCount }}</dd>
 			</div>
 		</dl>

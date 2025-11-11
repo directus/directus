@@ -42,7 +42,7 @@ const searchDebounced = ref('');
 
 <template>
 	<v-notice v-if="items.length === 0" type="info">
-		{{ $t('no_options_available') }}
+		{{ $$t('no_options_available') }}
 	</v-notice>
 	<div v-else class="select-multiple-checkbox-tree">
 		<div v-if="items.length > 10" class="search">
@@ -69,7 +69,7 @@ const searchDebounced = ref('');
 
 		<div class="footer">
 			<button :class="{ active: showSelectionOnly === false }" @click="showSelectionOnly = false">
-				{{ $t('interfaces.select-multiple-checkbox-tree.show_all') }}
+				{{ $$t('interfaces.select-multiple-checkbox-tree.show_all') }}
 			</button>
 			/
 			<button
@@ -77,7 +77,7 @@ const searchDebounced = ref('');
 				:disabled="value == null || value.length === 0"
 				@click="showSelectionOnly = true"
 			>
-				{{ $t('interfaces.select-multiple-checkbox-tree.show_selected') }}
+				{{ $$t('interfaces.select-multiple-checkbox-tree.show_selected') }}
 			</button>
 		</div>
 	</div>

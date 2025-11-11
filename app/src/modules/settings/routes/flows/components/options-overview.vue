@@ -15,7 +15,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 
 <template>
 	<div v-tooltip="panel.key" class="name">
-		{{ panel.id === '$trigger' ? t(`triggers.${panel.type}.name`) : panel.name }}
+		{{ panel.id === '$trigger' ? $t(`triggers.${panel.type}.name`) : panel.name }}
 	</div>
 	<dl class="options-overview">
 		<div

@@ -7,7 +7,7 @@ defineProps<{
 </script>
 
 <template>
-	<v-notice v-if="!readme" class="notice">{{ $t('extension_readme_missing') }}</v-notice>
+	<v-notice v-if="!readme" class="notice">{{ $$t('extension_readme_missing') }}</v-notice>
 	<div v-else v-md="{ value: readme, target: '_blank' }" class="readme" />
 </template>
 

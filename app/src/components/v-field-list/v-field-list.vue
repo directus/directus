@@ -156,7 +156,7 @@ function filter(field: Field, parent?: FieldNode): boolean {
 
 		<template v-if="allowSelectAll">
 			<v-list-item clickable :disabled="selectAllDisabled" @click="addAll">
-				{{ $t('select_all') }}
+				{{ $$t('select_all') }}
 			</v-list-item>
 
 			<v-divider />

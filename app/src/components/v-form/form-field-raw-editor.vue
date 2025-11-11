@@ -65,7 +65,7 @@ const setRawValue = () => {
 <template>
 	<v-dialog :model-value="showModal" persistent @esc="$emit('cancel')" @apply="setRawValue">
 		<v-card>
-			<v-card-title>{{ disabled ? $t('view_raw_value') : $t('edit_raw_value') }}</v-card-title>
+			<v-card-title>{{ disabled ? $$t('view_raw_value') : $t('edit_raw_value') }}</v-card-title>
 			<v-card-text>
 				<interface-input-code
 					v-if="type === 'object'"
@@ -88,8 +88,8 @@ const setRawValue = () => {
 				/>
 			</v-card-text>
 			<v-card-actions>
-				<v-button secondary @click="$emit('cancel')">{{ $t('cancel') }}</v-button>
-				<v-button @click.prevent="setRawValue">{{ $t('done') }}</v-button>
+				<v-button secondary @click="$emit('cancel')">{{ $$t('cancel') }}</v-button>
+				<v-button @click.prevent="setRawValue">{{ $$t('done') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>

@@ -45,7 +45,7 @@ const atLimit = computed(() => {
 <template>
 	<v-button v-if="installed" class="install" align="left" full-width to="/settings/extensions">
 		<v-icon name="settings" left />
-		{{ $t('manage') }}
+		{{ $$t('manage') }}
 	</v-button>
 
 	<v-button
@@ -59,7 +59,7 @@ const atLimit = computed(() => {
 		@click="install"
 	>
 		<v-icon name="download" left />
-		{{ $t('install_extension') }}
+		{{ $$t('install_extension') }}
 	</v-button>
 </template>
 

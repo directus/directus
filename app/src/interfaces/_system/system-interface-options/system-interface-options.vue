@@ -84,11 +84,11 @@ const optionsFields = computed(() => {
 
 <template>
 	<v-notice v-if="!selectedInterface">
-		{{ $t('select_interface') }}
+		{{ $$t('select_interface') }}
 	</v-notice>
 
 	<v-notice v-else-if="usesCustomComponent === false && optionsFields.length === 0">
-		{{ $t('no_options_available') }}
+		{{ $$t('no_options_available') }}
 	</v-notice>
 
 	<div v-else class="inset">

@@ -43,7 +43,7 @@ function renderValue(input: Record<string, any> | Record<string, any>[]) {
 			<span class="toggle" @click.stop="toggle">
 				<span class="label">
 					{{ displayValue.length }}
-					{{ $t('items') }}
+					{{ $$t('items') }}
 				</span>
 			</span>
 		</template>

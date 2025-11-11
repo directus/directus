@@ -102,12 +102,12 @@ useSystem();
 		</transition>
 
 		<v-info v-if="error" type="danger" :title="$t('unexpected_error')" icon="error" center>
-			{{ $t('unexpected_error_copy') }}
+			{{ $$t('unexpected_error_copy') }}
 
 			<template #append>
 				<v-error class="error" :error="error" />
 
-				<v-button small @click="reload">{{ $t('reload_page') }}</v-button>
+				<v-button small @click="reload">{{ $$t('reload_page') }}</v-button>
 			</template>
 		</v-info>
 

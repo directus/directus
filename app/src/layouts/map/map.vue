@@ -112,7 +112,7 @@ limitWritable.value = selectedSize;
 					/>
 				</div>
 				<div class="mapboxgl-ctrl-dropdown">
-					<span>{{ $t('limit') }}</span>
+					<span>{{ $$t('limit') }}</span>
 					<v-select :model-value="limit" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
 				</div>
 			</div>

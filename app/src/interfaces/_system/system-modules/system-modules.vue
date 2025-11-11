@@ -245,7 +245,7 @@ function remove(id: string) {
 			</template>
 		</draggable>
 
-		<v-button @click="edit('+')">{{ $t('add_link') }}</v-button>
+		<v-button @click="edit('+')">{{ $$t('add_link') }}</v-button>
 
 		<v-drawer
 			:title="$t('custom_link')"

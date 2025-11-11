@@ -24,10 +24,10 @@ const { treeList, loadFieldRelations } = useFieldTree(chosenCollection);
 
 <template>
 	<v-notice v-if="!collectionField && !collectionName" type="warning">
-		{{ $t('collection_field_not_setup') }}
+		{{ $$t('collection_field_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="!chosenCollection" type="warning">
-		{{ $t('select_a_collection') }}
+		{{ $$t('select_a_collection') }}
 	</v-notice>
 	<div v-else class="system-field-tree">
 		<v-checkbox-tree

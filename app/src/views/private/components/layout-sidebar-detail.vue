@@ -32,7 +32,7 @@ const currentLayout = computed(() => selectedLayout.value ?? fallbackLayout.valu
 	<sidebar-detail icon="layers" :title="$t('layout_options')">
 		<div class="layout-options">
 			<div class="field">
-				<div class="type-label">{{ $t('layout') }}</div>
+				<div class="type-label">{{ $$t('layout') }}</div>
 				<v-select v-model="layout" :items="layouts" item-text="name" item-value="id" item-icon="icon">
 					<template v-if="currentLayout!.icon" #prepend>
 						<v-icon :name="currentLayout!.icon" />

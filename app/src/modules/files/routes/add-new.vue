@@ -20,12 +20,12 @@ function close() {
 <template>
 	<v-dialog :model-value="isOpen" @update:model-value="close" @esc="close">
 		<v-card>
-			<v-card-title>{{ $t('add_file') }}</v-card-title>
+			<v-card-title>{{ $$t('add_file') }}</v-card-title>
 			<v-card-text>
 				<v-upload :folder="props.folder" multiple from-url @input="close" />
 			</v-card-text>
 			<v-card-actions>
-				<v-button secondary @click="close">{{ $t('done') }}</v-button>
+				<v-button secondary @click="close">{{ $$t('done') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>

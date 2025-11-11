@@ -81,7 +81,7 @@ const steps = computed(() => {
 					<div class="header">
 						<span class="dot" />
 						<span class="type-label">
-							{{ $t('trigger') }}
+							{{ $$t('trigger') }}
 							<span class="subdued">&nbsp;{{ usedTrigger?.name }}</span>
 						</span>
 					</div>

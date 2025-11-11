@@ -43,7 +43,7 @@ const logoURL = computed<string | null>(() => {
 						<div class="title">
 							<p class="subtitle">{{ serverInfo?.project?.project_name }}</p>
 							<slot name="title">
-								<h1 class="type-title">{{ title ?? t('share_access_page') }}</h1>
+								<h1 class="type-title">{{ title ?? $$t('share_access_page') }}</h1>
 							</slot>
 						</div>
 					</div>

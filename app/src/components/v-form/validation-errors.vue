@@ -19,7 +19,7 @@ const { validationErrorsWithDetails, getDefaultValidationMessage } = useValidati
 <template>
 	<v-notice type="danger" class="full">
 		<div>
-			<p>{{ $t('validation_errors_notice') }}</p>
+			<p>{{ $$t('validation_errors_notice') }}</p>
 			<ul class="validation-errors-list">
 				<li v-for="(validationError, index) of validationErrorsWithDetails" :key="index" class="validation-error">
 					<strong class="field" @click="$emit('scroll-to-field', validationError.group || validationError.field)">

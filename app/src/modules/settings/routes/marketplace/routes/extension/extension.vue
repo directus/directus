@@ -78,7 +78,7 @@ const navigateBack = () => {
 
 			<v-banner v-else-if="loading" icon="plugin">
 				<template #avatar><v-progress-circular indeterminate /></template>
-				{{ $t('loading') }}
+				{{ $$t('loading') }}
 			</v-banner>
 
 			<v-error v-else :error="error" />

@@ -174,12 +174,12 @@ const stageChanges = () => {
 							/>
 							<v-divider :inline-title="false" large>
 								<template #icon><v-icon name="info" /></template>
-								<template #default>{{ $t('panel_header') }}</template>
+								<template #default>{{ $$t('panel_header') }}</template>
 							</v-divider>
 
 							<div class="form-grid">
 								<div class="field half-left">
-									<p class="type-label">{{ $t('visible') }}</p>
+									<p class="type-label">{{ $$t('visible') }}</p>
 									<v-checkbox
 										:model-value="panel.show_header"
 										block
@@ -189,7 +189,7 @@ const stageChanges = () => {
 								</div>
 
 								<div class="field half-right">
-									<p class="type-label">{{ $t('name') }}</p>
+									<p class="type-label">{{ $$t('name') }}</p>
 									<v-input
 										:model-value="panel.name"
 										:nullable="false"
@@ -200,7 +200,7 @@ const stageChanges = () => {
 								</div>
 
 								<div class="field half-left">
-									<p class="type-label">{{ $t('icon') }}</p>
+									<p class="type-label">{{ $$t('icon') }}</p>
 									<interface-select-icon
 										:value="panel.icon"
 										:disabled="panel.show_header !== true"
@@ -209,7 +209,7 @@ const stageChanges = () => {
 								</div>
 
 								<div class="field half-right">
-									<p class="type-label">{{ $t('color') }}</p>
+									<p class="type-label">{{ $$t('color') }}</p>
 									<interface-select-color
 										:value="panel.color"
 										:disabled="panel.show_header !== true"
@@ -219,7 +219,7 @@ const stageChanges = () => {
 								</div>
 
 								<div class="field full">
-									<p class="type-label">{{ $t('note') }}</p>
+									<p class="type-label">{{ $$t('note') }}</p>
 									<v-input
 										:model-value="panel.note"
 										:disabled="panel.show_header !== true"

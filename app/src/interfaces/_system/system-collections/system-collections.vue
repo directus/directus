@@ -43,7 +43,7 @@ const items = computed(() => {
 
 <template>
 	<v-notice v-if="items.length === 0">
-		{{ $t('no_collections') }}
+		{{ $$t('no_collections') }}
 	</v-notice>
 	<interface-select-multiple-checkbox
 		v-else

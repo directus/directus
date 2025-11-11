@@ -11,7 +11,7 @@ import SettingsNavigation from '../components/navigation.vue';
 
 		<div class="not-found">
 			<v-info :title="$t('page_not_found')" icon="not_interested">
-				{{ $t('page_not_found_body') }}
+				{{ $$t('page_not_found_body') }}
 			</v-info>
 		</div>
 	</private-view>

@@ -84,7 +84,7 @@ onUnmounted(() => {
 <template>
 	<div class="form-grid">
 		<div v-if="!nativeGeometryType && field?.type !== 'csv'" class="field half-left">
-			<div class="type-label">{{ $t('interfaces.map.geometry_type') }}</div>
+			<div class="type-label">{{ $$t('interfaces.map.geometry_type') }}</div>
 			<v-select
 				v-model="geometryType"
 				:placeholder="$t('any')"
@@ -93,7 +93,7 @@ onUnmounted(() => {
 			/>
 		</div>
 		<div class="field">
-			<div class="type-label">{{ $t('interfaces.map.default_view') }}</div>
+			<div class="type-label">{{ $$t('interfaces.map.default_view') }}</div>
 			<div ref="mapContainer" class="map"></div>
 		</div>
 	</div>

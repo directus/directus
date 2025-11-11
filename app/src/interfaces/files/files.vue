@@ -300,7 +300,7 @@ const allowDrag = computed(
 </script>
 
 <template>
-	<v-notice v-if="!relationInfo" type="warning">{{ $t('relationship_not_setup') }}</v-notice>
+	<v-notice v-if="!relationInfo" type="warning">{{ $$t('relationship_not_setup') }}</v-notice>
 	<div v-else class="many-to-many">
 		<template v-if="loading">
 			<v-skeleton-loader
@@ -311,7 +311,7 @@ const allowDrag = computed(
 		</template>
 
 		<template v-else>
-			<v-notice v-if="displayItems.length === 0">{{ $t('no_items') }}</v-notice>
+			<v-notice v-if="displayItems.length === 0">{{ $$t('no_items') }}</v-notice>
 
 			<draggable
 				v-else
@@ -360,7 +360,7 @@ const allowDrag = computed(
 								<v-list>
 									<v-list-item clickable :href="getAssetUrl(getFilename(element))">
 										<v-list-item-icon><v-icon name="launch" /></v-list-item-icon>
-										<v-list-item-content>{{ $t('open_file_in_tab') }}</v-list-item-content>
+										<v-list-item-content>{{ $$t('open_file_in_tab') }}</v-list-item-content>
 									</v-list-item>
 									<v-list-item
 										clickable
@@ -368,7 +368,7 @@ const allowDrag = computed(
 										:href="getAssetUrl(getFilename(element), { isDownload: true })"
 									>
 										<v-list-item-icon><v-icon name="download" /></v-list-item-icon>
-										<v-list-item-content>{{ $t('download_file') }}</v-list-item-content>
+										<v-list-item-content>{{ $$t('download_file') }}</v-list-item-content>
 									</v-list-item>
 								</v-list>
 							</v-menu>
@@ -380,10 +380,10 @@ const allowDrag = computed(
 
 		<div class="actions">
 			<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="showUpload = true">
-				{{ $t('upload_file') }}
+				{{ $$t('upload_file') }}
 			</v-button>
 			<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
-				{{ $t('add_existing') }}
+				{{ $$t('add_existing') }}
 			</v-button>
 			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
 		</div>
@@ -425,12 +425,12 @@ const allowDrag = computed(
 
 		<v-dialog v-if="!disabled" v-model="showUpload">
 			<v-card>
-				<v-card-title>{{ $t('upload_file') }}</v-card-title>
+				<v-card-title>{{ $$t('upload_file') }}</v-card-title>
 				<v-card-text>
 					<v-upload multiple from-url :folder="folder" @input="onUpload" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button @click="showUpload = false">{{ $t('done') }}</v-button>
+					<v-button @click="showUpload = false">{{ $$t('done') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

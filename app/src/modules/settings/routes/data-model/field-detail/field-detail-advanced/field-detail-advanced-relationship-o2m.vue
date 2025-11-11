@@ -39,12 +39,12 @@ const unsortableJunctionFields = computed(() => {
 	<div>
 		<div class="grid">
 			<div class="field">
-				<div class="type-label">{{ $t('this_collection') }}</div>
+				<div class="type-label">{{ $$t('this_collection') }}</div>
 				<v-input disabled :model-value="collection" />
 			</div>
 
 			<div class="field">
-				<div class="type-label">{{ $t('related_collection') }}</div>
+				<div class="type-label">{{ $$t('related_collection') }}</div>
 				<related-collection-select v-model="relatedCollection" :disabled="isExisting" />
 			</div>
 
@@ -56,7 +56,7 @@ const unsortableJunctionFields = computed(() => {
 		</div>
 
 		<div class="sort-field">
-			<v-divider large :inline-title="false">{{ $t('sort_field') }}</v-divider>
+			<v-divider large :inline-title="false">{{ $$t('sort_field') }}</v-divider>
 
 			<related-field-select
 				v-model="sortField"
@@ -69,7 +69,7 @@ const unsortableJunctionFields = computed(() => {
 		</div>
 
 		<div class="relational-triggers">
-			<v-divider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</v-divider>
+			<v-divider class="field full" large :inline-title="false">{{ $$t('relational_triggers') }}</v-divider>
 
 			<div class="field">
 				<div class="type-label">
@@ -137,7 +137,7 @@ const unsortableJunctionFields = computed(() => {
 
 		<v-notice v-if="generationInfo.length > 0" class="generated-data" type="warning">
 			<span>
-				{{ $t('new_data_alert') }}
+				{{ $$t('new_data_alert') }}
 
 				<ul>
 					<li v-for="(data, index) in generationInfo" :key="index">

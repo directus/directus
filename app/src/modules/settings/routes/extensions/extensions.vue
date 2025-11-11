@@ -69,7 +69,7 @@ const extensionsByType = computed(() => {
 			</template>
 
 			<v-info v-else icon="error" center :title="$t('no_extensions')">
-				{{ $t('no_extensions_copy') }}
+				{{ $$t('no_extensions_copy') }}
 			</v-info>
 		</div>
 	</private-view>

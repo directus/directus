@@ -68,13 +68,13 @@ const maintainers = computed(() => {
 				<ExtensionMetadataLicense :license="extension.license" />
 				<ExtensionMetadataSize :unpacked-size="latestVersion.unpacked_size" :file-count="latestVersion.file_count" />
 				<MetadataItem v-if="latestVersion.url_homepage" icon="link" :href="latestVersion.url_homepage">
-					{{ $t('homepage') }}
+					{{ $$t('homepage') }}
 				</MetadataItem>
 				<MetadataItem v-if="latestVersion.url_repository" icon="commit" :href="latestVersion.url_repository">
-					{{ $t('repository') }}
+					{{ $$t('repository') }}
 				</MetadataItem>
 				<MetadataItem v-if="latestVersion.url_bugs" icon="bug_report" :href="latestVersion.url_bugs">
-					{{ $t('report_an_issue') }}
+					{{ $$t('report_an_issue') }}
 				</MetadataItem>
 			</div>
 		</v-list>

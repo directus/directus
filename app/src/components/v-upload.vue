@@ -315,7 +315,7 @@ defineExpose({ abort });
 	>
 		<template v-if="dragging && fromUser">
 			<v-icon class="upload-icon" x-large name="file_upload" />
-			<p class="type-label">{{ $t('drop_to_upload') }}</p>
+			<p class="type-label">{{ $$t('drop_to_upload') }}</p>
 		</template>
 
 		<template v-else-if="uploading">
@@ -358,7 +358,7 @@ defineExpose({ abort });
 				</v-button>
 			</div>
 
-			<p class="type-label">{{ $t(fromUser ? 'drag_file_here' : 'choose_from_library') }}</p>
+			<p class="type-label">{{ $$t(fromUser ? 'drag_file_here' : 'choose_from_library') }}</p>
 
 			<template v-if="fromUrl !== false || fromLibrary !== false">
 				<drawer-files
@@ -378,16 +378,16 @@ defineExpose({ abort });
 					@update:model-value="activeDialog = null"
 				>
 					<v-card>
-						<v-card-title>{{ $t('import_from_url') }}</v-card-title>
+						<v-card-title>{{ $$t('import_from_url') }}</v-card-title>
 						<v-card-text>
 							<v-input v-model="url" autofocus :placeholder="$t('url')" :nullable="false" :disabled="urlLoading" />
 						</v-card-text>
 						<v-card-actions>
 							<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
-								{{ $t('cancel') }}
+								{{ $$t('cancel') }}
 							</v-button>
 							<v-button :loading="urlLoading" :disabled="!isValidURL" @click="importFromURL">
-								{{ $t('import_label') }}
+								{{ $$t('import_label') }}
 							</v-button>
 						</v-card-actions>
 					</v-card>

@@ -169,7 +169,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
 		<v-notice v-else-if="internalDisabled && !image" class="disabled-placeholder" center icon="hide_image">
-			{{ $t('no_image_selected') }}
+			{{ $$t('no_image_selected') }}
 		</v-notice>
 
 		<div v-else-if="image" class="image-preview">
@@ -177,7 +177,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				<v-icon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
 
 				<span class="message">
-					{{ src ? t(`errors.${imageError}`) : t('errors.UNSUPPORTED_MEDIA_TYPE') }}
+					{{ src ? $t(`errors.${imageError}`) : t('errors.UNSUPPORTED_MEDIA_TYPE') }}
 				</span>
 			</div>
 

@@ -15,7 +15,7 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 		<template v-if="role">
 			<dl>
 				<div class="description-list">
-					<dt>{{ $t('primary_key') }}</dt>
+					<dt>{{ $$t('primary_key') }}</dt>
 					<dd>{{ role.id }}</dd>
 					<v-icon
 						v-if="isCopySupported"

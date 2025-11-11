@@ -7,5 +7,5 @@ defineProps<{ fileCount: number; unpackedSize: number }>();
 </script>
 
 <template>
-	<MetadataItem icon="folder_open">{{ formatFilesize(unpackedSize) }} ({{ $t('n_files', fileCount) }})</MetadataItem>
+	<MetadataItem icon="folder_open">{{ formatFilesize(unpackedSize) }} ({{ $$t('n_files', fileCount) }})</MetadataItem>
 </template>

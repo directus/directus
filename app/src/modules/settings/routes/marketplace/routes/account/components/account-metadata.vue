@@ -24,7 +24,7 @@ const npmLink = computed(() => {
 <template>
 	<div class="metadata">
 		<div v-if="account.github_bio" class="about">
-			<p class="type-label">{{ $t('about') }}</p>
+			<p class="type-label">{{ $$t('about') }}</p>
 			<p>{{ account.github_bio }}</p>
 			<v-divider class="divider" />
 		</div>
@@ -35,7 +35,7 @@ const npmLink = computed(() => {
 					{{ account.github_username }}
 				</MetadataItem>
 				<MetadataItem v-if="account.github_blog" icon="link" :href="account.github_blog">
-					{{ $t('website') }}
+					{{ $$t('website') }}
 				</MetadataItem>
 			</div>
 		</v-list>

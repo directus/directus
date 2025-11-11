@@ -252,7 +252,7 @@ function useURLImport() {
 				<template v-if="file">
 					<v-list-item clickable :download="file.filename_download" :href="getAssetUrl(file.id, { isDownload: true })">
 						<v-list-item-icon><v-icon name="get_app" /></v-list-item-icon>
-						<v-list-item-content>{{ $t('download_file') }}</v-list-item-content>
+						<v-list-item-content>{{ $$t('download_file') }}</v-list-item-content>
 					</v-list-item>
 
 					<v-divider v-if="!internalDisabled" />
@@ -261,21 +261,21 @@ function useURLImport() {
 					<v-list-item v-if="createAllowed && enableCreate" clickable @click="activeDialog = 'upload'">
 						<v-list-item-icon><v-icon name="phonelink" /></v-list-item-icon>
 						<v-list-item-content>
-							{{ $t(file ? 'replace_from_device' : 'upload_from_device') }}
+							{{ $$t(file ? 'replace_from_device' : 'upload_from_device') }}
 						</v-list-item-content>
 					</v-list-item>
 
 					<v-list-item v-if="enableSelect" clickable @click="activeDialog = 'choose'">
 						<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
 						<v-list-item-content>
-							{{ $t(file ? 'replace_from_library' : 'choose_from_library') }}
+							{{ $$t(file ? 'replace_from_library' : 'choose_from_library') }}
 						</v-list-item-content>
 					</v-list-item>
 
 					<v-list-item v-if="createAllowed && enableCreate" clickable @click="activeDialog = 'url'">
 						<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
 						<v-list-item-content>
-							{{ $t(file ? 'replace_from_url' : 'import_from_url') }}
+							{{ $$t(file ? 'replace_from_url' : 'import_from_url') }}
 						</v-list-item-content>
 					</v-list-item>
 				</template>
@@ -310,12 +310,12 @@ function useURLImport() {
 			@update:model-value="activeDialog = null"
 		>
 			<v-card>
-				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
+				<v-card-title>{{ $$t('upload_from_device') }}</v-card-title>
 				<v-card-text>
 					<v-upload from-url :folder="folder" @input="onUpload" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="activeDialog = null">{{ $t('cancel') }}</v-button>
+					<v-button secondary @click="activeDialog = null">{{ $$t('cancel') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -336,16 +336,16 @@ function useURLImport() {
 			@esc="activeDialog = null"
 		>
 			<v-card>
-				<v-card-title>{{ $t('import_from_url') }}</v-card-title>
+				<v-card-title>{{ $$t('import_from_url') }}</v-card-title>
 				<v-card-text>
 					<v-input v-model="url" autofocus :placeholder="$t('url')" :nullable="false" :disabled="urlLoading" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
-						{{ $t('cancel') }}
+						{{ $$t('cancel') }}
 					</v-button>
 					<v-button :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
-						{{ $t('import_label') }}
+						{{ $$t('import_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

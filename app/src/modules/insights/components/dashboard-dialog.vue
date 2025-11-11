@@ -83,8 +83,8 @@ async function save() {
 		</template>
 
 		<v-card>
-			<v-card-title v-if="!dashboard">{{ $t('create_dashboard') }}</v-card-title>
-			<v-card-title v-else>{{ $t('edit_dashboard') }}</v-card-title>
+			<v-card-title v-if="!dashboard">{{ $$t('create_dashboard') }}</v-card-title>
+			<v-card-title v-else>{{ $$t('edit_dashboard') }}</v-card-title>
 
 			<v-card-text>
 				<div class="fields">
@@ -97,10 +97,10 @@ async function save() {
 
 			<v-card-actions>
 				<v-button secondary @click="cancel">
-					{{ $t('cancel') }}
+					{{ $$t('cancel') }}
 				</v-button>
 				<v-button :disabled="isSaveDisabled" :loading="saving" @click="save">
-					{{ $t('save') }}
+					{{ $$t('save') }}
 				</v-button>
 			</v-card-actions>
 		</v-card>

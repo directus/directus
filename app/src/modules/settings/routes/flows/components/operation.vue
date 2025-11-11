@@ -262,7 +262,7 @@ function pointerLeave() {
 			<template #fallback="{ error: optionsOverviewError }">
 				<div class="options-overview-error">
 					<v-icon name="warning" />
-					{{ $t('unexpected_error') }}
+					{{ $$t('unexpected_error') }}
 					<v-error :error="optionsOverviewError" />
 				</div>
 			</template>
@@ -276,7 +276,7 @@ function pointerLeave() {
 			<template #fallback="{ error: operationOverviewError }">
 				<div class="options-overview-error">
 					<v-icon name="warning" />
-					{{ $t('unexpected_error') }}
+					{{ $$t('unexpected_error') }}
 					<v-error :error="operationOverviewError" />
 				</div>
 			</template>
@@ -302,7 +302,7 @@ function pointerLeave() {
 				/>
 
 				<span v-else>
-					{{ flowStatus === 'active' ? t('active') : t('inactive') }}
+					{{ flowStatus === 'active' ? $t('active') : t('inactive') }}
 				</span>
 			</div>
 		</template>

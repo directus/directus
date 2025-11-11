@@ -100,14 +100,14 @@ function clearFilters() {
 					</template>
 
 					<v-card>
-						<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
+						<v-card-title>{{ $$t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 						<v-card-actions>
 							<v-button secondary @click="confirmDelete = false">
-								{{ $t('cancel') }}
+								{{ $$t('cancel') }}
 							</v-button>
 							<v-button kind="danger" :loading="deleting" @click="batchDelete">
-								{{ $t('delete_label') }}
+								{{ $$t('delete_label') }}
 							</v-button>
 						</v-card-actions>
 					</v-card>
@@ -123,17 +123,17 @@ function clearFilters() {
 			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
 					<v-info :title="$t('no_results')" icon="search" center>
-						{{ $t('no_results_copy') }}
+						{{ $$t('no_results_copy') }}
 
 						<template #append>
-							<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+							<v-button @click="clearFilters">{{ $$t('clear_filters') }}</v-button>
 						</template>
 					</v-info>
 				</template>
 
 				<template #no-items>
 					<v-info :title="$t('webhooks_count', 0)" icon="anchor" center>
-						{{ $t('no_webhooks_copy') }}
+						{{ $$t('no_webhooks_copy') }}
 					</v-info>
 				</template>
 			</component>
