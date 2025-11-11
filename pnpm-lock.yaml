@@ -595,8 +595,8 @@ catalogs:
       specifier: 3.0.2
       version: 3.0.2
     ky:
-      specifier: 1.13.0
-      version: 1.13.0
+      specifier: 1.14.0
+      version: 1.14.0
     ldapjs:
       specifier: 2.3.3
       version: 2.3.3
@@ -2101,7 +2101,7 @@ importers:
         version: link:../extensions
       ky:
         specifier: 'catalog:'
-        version: 1.13.0
+        version: 1.14.0
       zod:
         specifier: 'catalog:'
         version: 4.1.12
@@ -9787,8 +9787,8 @@ packages:
   kolorist@1.8.0:
     resolution: {integrity: sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==}
 
-  ky@1.13.0:
-    resolution: {integrity: sha512-JeNNGs44hVUp2XxO3FY9WV28ymG7LgO4wju4HL/dCq1A8eKDcFgVrdCn1ssn+3Q/5OQilv5aYsL0DMt5mmAV9w==}
+  ky@1.14.0:
+    resolution: {integrity: sha512-Rczb6FMM6JT0lvrOlP5WUOCB7s9XKxzwgErzhKlKde1bEV90FXplV1o87fpt4PU/asJFiqjYJxAJyzJhcrxOsQ==}
     engines: {node: '>=18'}
 
   launch-editor@2.11.1:
@@ -21709,7 +21709,7 @@ snapshots:
 
   kolorist@1.8.0: {}
 
-  ky@1.13.0: {}
+  ky@1.14.0: {}
 
   launch-editor@2.11.1:
     dependencies:

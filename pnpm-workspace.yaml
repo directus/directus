@@ -206,7 +206,7 @@ catalog:
   keyv: 5.5.3
   knex: 3.1.0
   knex-mock-client: 3.0.2
-  ky: 1.13.0
+  ky: 1.14.0
   ldapjs: 2.3.3
   liquidjs: 10.24.0
   lodash: 4.17.21
