@@ -7,7 +7,6 @@ import { DeepPartial, Field, Settings, SettingsModuleBarLink, SettingsModuleBarM
 import { assign } from 'lodash';
 import { nanoid } from 'nanoid';
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 
 type PreviewExtra = {
@@ -65,8 +64,6 @@ const props = withDefaults(
 const emit = defineEmits<{
 	(e: 'input', value: Settings['module_bar']): void;
 }>();
-
-const { t } = useI18n();
 
 const editing = ref<string | null>();
 const values = ref<SettingsModuleBarLink | null>();
@@ -248,7 +245,7 @@ function remove(id: string) {
 			</template>
 		</draggable>
 
-		<v-button @click="edit('+')">{{ t('add_link') }}</v-button>
+		<v-button @click="edit('+')">{{ $t('add_link') }}</v-button>
 
 		<v-drawer
 			:title="t('custom_link')"
