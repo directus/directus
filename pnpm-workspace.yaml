@@ -33,7 +33,7 @@ catalog:
   '@editorjs/raw': 2.5.1
   '@editorjs/table': 2.4.5
   '@editorjs/underline': 1.2.1
-  '@eslint/js': 9.38.0
+  '@eslint/js': 9.39.1
   '@fortawesome/fontawesome-svg-core': 6.7.2
   '@fortawesome/free-brands-svg-icons': 6.7.2
   '@fullcalendar/core': 6.1.19
@@ -166,7 +166,7 @@ catalog:
   esbuild: 0.25.11
   esbuild-plugin-replace: 1.4.0
   escape-string-regexp: 5.0.0
-  eslint: 9.38.0
+  eslint: 9.39.1
   eslint-config-prettier: 10.1.8
   eslint-plugin-vue: 10.5.1
   eventemitter2: 6.4.9
