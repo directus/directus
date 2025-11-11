@@ -192,7 +192,7 @@ catalog:
   histoire: 0.17.17
   html-entities: 2.6.0
   icc: 3.0.0
-  inquirer: 12.10.0
+  inquirer: 12.11.0
   ioredis: 5.8.2
   ip-matching: 2.1.2
   isolated-vm: 5.0.3
