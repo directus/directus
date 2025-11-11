@@ -244,38 +244,38 @@ const { t } = useI18n();
 - [ ] ~~modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-relationship-m2a.vue~~ (uses t in script)
 - [ ] ~~modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-relationship-m2m.vue~~ (uses t in script)
 - [ ] ~~modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-relationship-m2o.vue~~ (uses t in script)
-- [ ] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-relationship-o2m.vue
-- [ ] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-relationship-translations.vue
-- [ ] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-schema.vue
-- [ ] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-tabs.vue
-- [ ] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-validation.vue
-- [ ] modules/settings/routes/data-model/field-detail/field-detail-simple/field-configuration.vue
-- [ ] modules/settings/routes/data-model/field-detail/field-detail-simple/field-detail-simple.vue
-- [ ] modules/settings/routes/data-model/field-detail/field-detail-simple/relationship-configuration.vue
-- [ ] modules/settings/routes/data-model/field-detail/field-detail.vue
-- [ ] modules/settings/routes/data-model/field-detail/shared/extension-options.vue
-- [ ] modules/settings/routes/data-model/field-detail/shared/related-collection-select.vue
-- [ ] modules/settings/routes/data-model/field-detail/shared/related-field-select.vue
-- [ ] modules/settings/routes/data-model/fields/components/field-select-menu.vue
-- [ ] modules/settings/routes/data-model/fields/components/field-select.vue
-- [ ] modules/settings/routes/data-model/fields/components/fields-management.vue
+- [x] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-relationship-o2m.vue
+- [x] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-relationship-translations.vue
+- [ ] ~~modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-schema.vue~~ (uses t in script)
+- [ ] ~~modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-tabs.vue~~ (uses t in script)
+- [ ] ~~modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-validation.vue~~ (uses t in script)
+- [ ] ~~modules/settings/routes/data-model/field-detail/field-detail-simple/field-configuration.vue~~ (uses t in script)
+- [ ] ~~modules/settings/routes/data-model/field-detail/field-detail-simple/field-detail-simple.vue~~ (uses t in script)
+- [ ] ~~modules/settings/routes/data-model/field-detail/field-detail-simple/relationship-configuration.vue~~ (uses t in script)
+- [ ] ~~modules/settings/routes/data-model/field-detail/field-detail.vue~~ (uses t in script)
+- [x] modules/settings/routes/data-model/field-detail/shared/extension-options.vue
+- [x] modules/settings/routes/data-model/field-detail/shared/related-collection-select.vue
+- [ ] ~~modules/settings/routes/data-model/field-detail/shared/related-field-select.vue~~ (uses t in script)
+- [x] modules/settings/routes/data-model/fields/components/field-select-menu.vue
+- [ ] ~~modules/settings/routes/data-model/fields/components/field-select.vue~~ (uses t in script)
+- [ ] ~~modules/settings/routes/data-model/fields/components/fields-management.vue~~ (uses t in script)
 - [x] modules/settings/routes/data-model/fields/fields.vue
-- [ ] modules/settings/routes/data-model/new-collection.vue
-- [ ] modules/settings/routes/extensions/components/extension-group-divider.vue
-- [ ] modules/settings/routes/extensions/components/extension-item-options.vue
-- [ ] modules/settings/routes/extensions/components/extension-item.vue
+- [ ] ~~modules/settings/routes/data-model/new-collection.vue~~ (uses t in script)
+- [ ] ~~modules/settings/routes/extensions/components/extension-group-divider.vue~~ (uses t in script)
+- [ ] ~~modules/settings/routes/extensions/components/extension-item-options.vue~~ (uses t in script)
+- [ ] ~~modules/settings/routes/extensions/components/extension-item.vue~~ (uses t in script)
 - [x] modules/settings/routes/extensions/components/extensions-info-sidebar-detail.vue
 - [x] modules/settings/routes/extensions/extensions.vue
 - [x] modules/settings/routes/flows/components/logs-drawer.vue
-- [ ] modules/settings/routes/flows/components/logs-sidebar-detail.vue
-- [ ] modules/settings/routes/flows/components/operation-detail.vue
+- [ ] ~~modules/settings/routes/flows/components/logs-sidebar-detail.vue~~ (uses t in script)
+- [ ] ~~modules/settings/routes/flows/components/operation-detail.vue~~ (uses t in script)
 - [x] modules/settings/routes/flows/components/operation.vue
 - [x] modules/settings/routes/flows/components/options-overview.vue
 - [x] modules/settings/routes/flows/components/trigger-detail.vue
 - [x] modules/settings/routes/flows/flow-drawer.vue
-- [ ] modules/settings/routes/flows/flow.vue
-- [ ] modules/settings/routes/flows/overview.vue
-- [ ] modules/settings/routes/marketplace/components/extension-list-item.vue
+- [ ] ~~modules/settings/routes/flows/flow.vue~~ (uses t in script)
+- [ ] ~~modules/settings/routes/flows/overview.vue~~ (uses t in script)
+- [ ] ~~modules/settings/routes/marketplace/components/extension-list-item.vue~~ (uses t in script)
 - [x] modules/settings/routes/marketplace/routes/account/account.vue
 - [x] modules/settings/routes/marketplace/routes/account/components/account-info-sidebar-detail.vue
 - [x] modules/settings/routes/marketplace/routes/account/components/account-metadata.vue
@@ -283,7 +283,7 @@ const { t } = useI18n();
 - [x] modules/settings/routes/marketplace/routes/extension/components/extension-info-sidebar-detail.vue
 - [x] modules/settings/routes/marketplace/routes/extension/components/extension-install.vue
 - [x] modules/settings/routes/marketplace/routes/extension/components/extension-metadata-author.vue
-- [ ] modules/settings/routes/marketplace/routes/extension/components/extension-metadata-compatibility.vue
+- [ ] ~~modules/settings/routes/marketplace/routes/extension/components/extension-metadata-compatibility.vue~~ (uses t in script)
 - [x] modules/settings/routes/marketplace/routes/extension/components/extension-metadata-date.vue
 - [x] modules/settings/routes/marketplace/routes/extension/components/extension-metadata-downloads.vue
 - [x] modules/settings/routes/marketplace/routes/extension/components/extension-metadata-license.vue
@@ -291,129 +291,129 @@ const { t } = useI18n();
 - [x] modules/settings/routes/marketplace/routes/extension/components/extension-metadata.vue
 - [x] modules/settings/routes/marketplace/routes/extension/components/extension-readme.vue
 - [x] modules/settings/routes/marketplace/routes/extension/extension.vue
-- [ ] modules/settings/routes/marketplace/routes/registry/components/inline-filter.vue
+- [ ] ~~modules/settings/routes/marketplace/routes/registry/components/inline-filter.vue~~ (uses t in script)
 - [x] modules/settings/routes/marketplace/routes/registry/components/registry-info-sidebar-detail.vue
 - [x] modules/settings/routes/marketplace/routes/registry/registry.vue
 - [x] modules/settings/routes/not-found.vue
 - [x] modules/settings/routes/policies/add-new.vue
-- [ ] modules/settings/routes/policies/collection.vue
+- [ ] ~~modules/settings/routes/policies/collection.vue~~ (uses t in script)
 - [x] modules/settings/routes/policies/item.vue
 - [x] modules/settings/routes/policies/policy-info-sidebar-detail.vue
 - [x] modules/settings/routes/presets/collection/collection.vue
 - [x] modules/settings/routes/presets/collection/components/presets-info-sidebar-detail.vue
-- [ ] modules/settings/routes/presets/item.vue
-- [ ] modules/settings/routes/project/components/project-info-sidebar-detail.vue
-- [ ] modules/settings/routes/project/project.vue
-- [ ] modules/settings/routes/roles/add-new.vue
-- [ ] modules/settings/routes/roles/collection.vue
-- [ ] modules/settings/routes/roles/item.vue
-- [ ] modules/settings/routes/roles/public-item.vue
-- [ ] modules/settings/routes/roles/role-info-sidebar-detail.vue
-- [ ] modules/settings/routes/system-logs/components/inline-filter.vue
-- [ ] modules/settings/routes/system-logs/components/logs-display.vue
-- [ ] modules/settings/routes/system-logs/components/system-logs-sidebar-detail.vue
-- [ ] modules/settings/routes/system-logs/logs.vue
-- [ ] modules/settings/routes/translations/collection.vue
-- [ ] modules/settings/routes/translations/item.vue
-- [ ] modules/settings/routes/webhooks/collection.vue
-- [ ] modules/settings/routes/webhooks/item.vue
+- [x] modules/settings/routes/presets/item.vue
+- [x] modules/settings/routes/project/components/project-info-sidebar-detail.vue
+- [x] modules/settings/routes/project/project.vue
+- [x] modules/settings/routes/roles/add-new.vue
+- [ ] ~~modules/settings/routes/roles/collection.vue~~ (uses t in script)
+- [x] modules/settings/routes/roles/item.vue
+- [ ] ~~modules/settings/routes/roles/public-item.vue~~ (uses t in script)
+- [x] modules/settings/routes/roles/role-info-sidebar-detail.vue
+- [x] modules/settings/routes/system-logs/components/inline-filter.vue
+- [x] modules/settings/routes/system-logs/components/logs-display.vue
+- [x] modules/settings/routes/system-logs/components/system-logs-sidebar-detail.vue
+- [ ] ~~modules/settings/routes/system-logs/logs.vue~~ (uses t in script)
+- [x] modules/settings/routes/translations/collection.vue
+- [x] modules/settings/routes/translations/item.vue
+- [x] modules/settings/routes/webhooks/collection.vue
+- [ ] ~~modules/settings/routes/webhooks/item.vue~~ (uses t in script)
 
 ### Modules - Users
-- [ ] modules/users/components/navigation-role.vue
-- [ ] modules/users/components/navigation.vue
-- [ ] modules/users/components/user-info-sidebar-detail.vue
-- [ ] modules/users/routes/collection.vue
-- [ ] modules/users/routes/item.vue
+- [x] modules/users/components/navigation-role.vue
+- [x] modules/users/components/navigation.vue
+- [ ] ~~modules/users/components/user-info-sidebar-detail.vue~~ (uses t in script)
+- [ ] ~~modules/users/routes/collection.vue~~ (uses t in script)
+- [ ] ~~modules/users/routes/item.vue~~ (uses t in script)
 
 ### Modules - Visual
-- [ ] modules/visual/components/editing-layer.vue
-- [ ] modules/visual/routes/visual-editor.vue
+- [ ] ~~modules/visual/components/editing-layer.vue~~ (uses t in script)
+- [ ] ~~modules/visual/routes/visual-editor.vue~~ (uses t in script)
 
 ### Panels
-- [ ] panels/bar-chart/panel-bar-chart.vue
-- [ ] panels/line-chart/panel-line-chart.vue
-- [ ] panels/meter/panel-meter.vue
-- [ ] panels/metric-list/panel-metric-list.vue
-- [ ] panels/metric/panel-metric.vue
-- [ ] panels/pie-chart/panel-pie-chart.vue
-- [ ] panels/relational-variable/multiple-relation.vue
-- [ ] panels/relational-variable/panel-relational-variable.vue
-- [ ] panels/relational-variable/single-relation.vue
-- [ ] panels/time-series/panel-time-series.vue
+- [ ] ~~panels/bar-chart/panel-bar-chart.vue~~ (uses t in script)
+- [ ] ~~panels/line-chart/panel-line-chart.vue~~ (uses t in script)
+- [x] panels/meter/panel-meter.vue
+- [x] panels/metric-list/panel-metric-list.vue
+- [x] panels/metric/panel-metric.vue
+- [x] panels/pie-chart/panel-pie-chart.vue
+- [x] panels/relational-variable/multiple-relation.vue
+- [x] panels/relational-variable/panel-relational-variable.vue
+- [x] panels/relational-variable/single-relation.vue
+- [ ] ~~panels/time-series/panel-time-series.vue~~ (uses t in script)
 
 ### Routes
-- [ ] routes/accept-invite.vue
-- [ ] routes/login/components/continue-as.vue
-- [ ] routes/login/components/login-form/ldap-form.vue
-- [ ] routes/login/components/login-form/login-form.vue
-- [ ] routes/login/components/sso-links.vue
-- [ ] routes/login/login.vue
-- [ ] routes/private-not-found.vue
-- [ ] routes/register/register-form.vue
-- [ ] routes/register/register.vue
-- [ ] routes/reset-password/request.vue
-- [ ] routes/reset-password/reset-password.vue
-- [ ] routes/reset-password/reset.vue
-- [ ] routes/setup/form.vue
-- [ ] routes/setup/setup.vue
-- [ ] routes/shared/shared.vue
-- [ ] routes/tfa-setup.vue
+- [ ] ~~routes/accept-invite.vue~~ (uses t in script)
+- [x] routes/login/components/continue-as.vue
+- [x] routes/login/components/login-form/ldap-form.vue
+- [x] routes/login/components/login-form/login-form.vue
+- [x] routes/login/components/sso-links.vue
+- [ ] ~~routes/login/login.vue~~ (uses t in script)
+- [ ] ~~routes/private-not-found.vue~~ (uses t in script)
+- [x] routes/register/register-form.vue
+- [ ] ~~routes/register/register.vue~~ (uses t in script)
+- [ ] ~~routes/reset-password/request.vue~~ (uses t in script)
+- [ ] ~~routes/reset-password/reset-password.vue~~ (uses t in script)
+- [ ] ~~routes/reset-password/reset.vue~~ (uses t in script)
+- [x] routes/setup/form.vue
+- [ ] ~~routes/setup/setup.vue~~ (uses t in script)
+- [ ] ~~routes/shared/shared.vue~~ (uses t in script)
+- [ ] ~~routes/tfa-setup.vue~~ (uses t in script)
 
 ### Views - Private
-- [ ] views/private/components/archive-sidebar-detail.vue
-- [ ] views/private/components/basic-import-sidebar-detail.vue
-- [ ] views/private/components/bookmark-add.vue
-- [ ] views/private/components/comment-input.vue
-- [ ] views/private/components/comment-item-header.vue
-- [ ] views/private/components/comments-sidebar-detail.vue
-- [ ] views/private/components/comparison/comparison-header.vue
-- [ ] views/private/components/comparison/comparison-modal.vue
-- [ ] views/private/components/drawer-batch.vue
-- [ ] views/private/components/drawer-collection.vue
-- [ ] views/private/components/drawer-files.vue
-- [ ] views/private/components/export-sidebar-detail.vue
-- [ ] views/private/components/file-preview-replace.vue
-- [ ] views/private/components/files-navigation-folder.vue
-- [ ] views/private/components/files-navigation.vue
-- [ ] views/private/components/flow-sidebar-detail.vue
-- [ ] views/private/components/folder-picker.vue
-- [ ] views/private/components/image-editor.vue
-- [ ] views/private/components/import-error-dialog.vue
-- [ ] views/private/components/latency-indicator.vue
-- [ ] views/private/components/layout-sidebar-detail.vue
-- [ ] views/private/components/license-banner.vue
-- [ ] views/private/components/live-preview.vue
-- [ ] views/private/components/module-bar-avatar.vue
-- [ ] views/private/components/module-bar-logo.vue
-- [ ] views/private/components/notification-dialogs.vue
-- [ ] views/private/components/notifications-drawer.vue
-- [ ] views/private/components/notifications-preview.vue
-- [ ] views/private/components/overlay-item-content.vue
-- [ ] views/private/components/overlay-item.vue
-- [ ] views/private/components/refresh-sidebar-detail.vue
-- [ ] views/private/components/revision-item.vue
-- [ ] views/private/components/revisions-sidebar-detail.vue
-- [ ] views/private/components/save-options.vue
-- [ ] views/private/components/search-input.vue
-- [ ] views/private/components/share-item.vue
-- [ ] views/private/components/shares-sidebar-detail.vue
-- [ ] views/private/components/skip-menu.vue
-- [ ] views/private/components/user-popover.vue
-- [ ] views/private/components/users-invite.vue
-- [ ] views/private/private-view.vue
+- [ ] ~~views/private/components/archive-sidebar-detail.vue~~ (uses t in script)
+- [ ] ~~views/private/components/basic-import-sidebar-detail.vue~~ (uses t in script)
+- [x] views/private/components/bookmark-add.vue
+- [ ] ~~views/private/components/comment-input.vue~~ (uses t in script)
+- [ ] ~~views/private/components/comment-item-header.vue~~ (uses t in script)
+- [ ] ~~views/private/components/comments-sidebar-detail.vue~~ (uses t in script)
+- [ ] ~~views/private/components/comparison/comparison-header.vue~~ (uses t in script)
+- [ ] ~~views/private/components/comparison/comparison-modal.vue~~ (uses t in script)
+- [x] views/private/components/drawer-batch.vue
+- [x] views/private/components/drawer-collection.vue
+- [ ] ~~views/private/components/drawer-files.vue~~ (uses t in script)
+- [ ] ~~views/private/components/export-sidebar-detail.vue~~ (uses t in script)
+- [x] views/private/components/file-preview-replace.vue
+- [x] views/private/components/files-navigation-folder.vue
+- [x] views/private/components/files-navigation.vue
+- [x] views/private/components/flow-sidebar-detail.vue
+- [x] views/private/components/folder-picker.vue
+- [x] views/private/components/image-editor.vue
+- [ ] ~~views/private/components/import-error-dialog.vue~~ (uses t in script)
+- [ ] ~~views/private/components/latency-indicator.vue~~ (uses t in script)
+- [x] views/private/components/layout-sidebar-detail.vue
+- [ ] ~~views/private/components/license-banner.vue~~ (uses t in script)
+- [ ] ~~views/private/components/live-preview.vue~~ (uses t in script)
+- [x] views/private/components/module-bar-avatar.vue
+- [ ] ~~views/private/components/module-bar-logo.vue~~ (uses t in script)
+- [x] views/private/components/notification-dialogs.vue
+- [x] views/private/components/notifications-drawer.vue
+- [x] views/private/components/notifications-preview.vue
+- [x] views/private/components/overlay-item-content.vue
+- [ ] ~~views/private/components/overlay-item.vue~~ (uses t in script)
+- [ ] ~~views/private/components/refresh-sidebar-detail.vue~~ (uses t in script)
+- [ ] ~~views/private/components/revision-item.vue~~ (uses t in script)
+- [ ] ~~views/private/components/revisions-sidebar-detail.vue~~ (uses t in script)
+- [x] views/private/components/save-options.vue
+- [x] views/private/components/search-input.vue
+- [ ] ~~views/private/components/share-item.vue~~ (uses t in script)
+- [ ] ~~views/private/components/shares-sidebar-detail.vue~~ (uses t in script)
+- [ ] ~~views/private/components/skip-menu.vue~~ (uses t in script)
+- [x] views/private/components/user-popover.vue
+- [x] views/private/components/users-invite.vue
+- [x] views/private/private-view.vue
 
 ### Views - Public & Shared
-- [ ] views/public/public-view.vue
-- [ ] views/shared/shared-view.vue
+- [x] views/public/public-view.vue
+- [x] views/shared/shared-view.vue
 
 ---
 
 ## Progress Tracking
 - **Total Components**: 298
-- **Completed**: 16
-- **Skipped (uses t in script)**: 5
-- **Remaining**: 277
-- **Progress**: 5%
+- **Completed**: 192
+- **Skipped (uses t in script)**: 106
+- **Remaining**: 0
+- **Progress**: 64%
 
 ---
 
