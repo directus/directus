@@ -85,6 +85,7 @@
 		"@types/base-64": "catalog:",
 		"@types/chroma-js": "catalog:",
 		"@types/codemirror": "catalog:",
+		"@codemirror/autocomplete": "catalog:",
 		"@codemirror/commands": "catalog:",
 		"@codemirror/lang-javascript": "catalog:",
 		"@codemirror/lang-json": "catalog:",

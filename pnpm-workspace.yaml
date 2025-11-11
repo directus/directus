@@ -81,6 +81,7 @@ catalog:
   '@types/bytes': 3.1.5
   '@types/chroma-js': 3.1.2
   '@types/codemirror': 5.60.16
+  '@codemirror/autocomplete': 6.19.1
   '@codemirror/commands': 6.5.0
   '@codemirror/lang-javascript': 6.2.4
   '@codemirror/lang-json': 6.0.2
