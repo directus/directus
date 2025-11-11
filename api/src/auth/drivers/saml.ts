@@ -136,7 +136,12 @@ export function createSAMLAuthRouter(providerName: string) {
 			if (req.query['redirect']) {
 				const redirect = req.query['redirect'] as string;
 
-				if (!isLoginRedirectAllowed(redirect, `${req.protocol}://${req.hostname}`, providerName)) {
+				if (
+					!isLoginRedirectAllowed(redirect, providerName, {
+						protocol: req.protocol,
+						hostname: req.hostname,
+					})
+				) {
 					throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 				}
 

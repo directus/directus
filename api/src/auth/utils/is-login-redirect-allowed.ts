@@ -3,7 +3,23 @@ import { toArray } from '@directus/utils';
 import { useLogger } from '../../logger/index.js';
 import isUrlAllowed from '../../utils/is-url-allowed.js';
 
-export function isLoginRedirectAllowed(originUrl: string, provider: string, redirect: unknown): boolean {
+type IsLoginRedirectAllowedOptions = {
+	protocol: string;
+	hostname: string;
+};
+
+/**
+ * Check if the redirect URL is allowed
+ * @param redirect URL to redirect to
+ * @param provider OAuth provider name
+ * @param options Request options
+ * @returns True if the redirect is allowed, false otherwise
+ */
+export function isLoginRedirectAllowed(
+	redirect: unknown,
+	provider: string,
+	options: IsLoginRedirectAllowedOptions,
+): boolean {
 	if (!redirect) return true; // empty redirect
 	if (typeof redirect !== 'string') return false; // invalid type
 
@@ -21,9 +37,10 @@ export function isLoginRedirectAllowed(originUrl: string, provider: string, redi
 	}
 
 	const { protocol: redirectProtocol, hostname: redirectDomain } = new URL(redirect);
-	const redirectUrl = `${redirectProtocol}//${redirectDomain}`
+	const redirectUrl = `${redirectProtocol}//${redirectDomain}`;
 
-	if (redirectUrl !== originUrl) return false;
+	// Security check: redirect URL must match the request origin
+	if (redirectUrl !== `${options.protocol}://${options.hostname}`) return false;
 
 	const envKey = `AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`;
 
@@ -39,5 +56,5 @@ export function isLoginRedirectAllowed(originUrl: string, provider: string, redi
 	const { protocol: publicProtocol, hostname: publicDomain } = new URL(publicUrl);
 
 	// allow redirects to the defined PUBLIC_URL
-	return redirectUrl === `${publicProtocol}//${publicDomain}`
+	return redirectUrl === `${publicProtocol}//${publicDomain}`;
 }

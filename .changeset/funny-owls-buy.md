@@ -1,5 +1,5 @@
 ---
-'@directus/api': patch
+'@directus/api': minor
 '@directus/app': patch
 ---
 
