@@ -70,7 +70,7 @@ catalog:
   '@sinclair/typebox': 0.34.41
   '@sindresorhus/slugify': 2.2.1
   '@smithy/node-http-handler': 4.4.5
-  '@supabase/storage-js': 2.76.1
+  '@supabase/storage-js': 2.81.0
   '@tinymce/tinymce-vue': 6.3.0
   '@turf/meta': 7.2.0
   '@tus/server': 2.3.0

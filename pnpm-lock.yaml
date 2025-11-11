@@ -190,8 +190,8 @@ catalogs:
       specifier: 4.4.5
       version: 4.4.5
     '@supabase/storage-js':
-      specifier: 2.76.1
-      version: 2.76.1
+      specifier: 2.81.0
+      version: 2.81.0
     '@tinymce/tinymce-vue':
       specifier: 6.3.0
       version: 6.3.0
@@ -2636,7 +2636,7 @@ importers:
         version: link:../utils
       '@supabase/storage-js':
         specifier: 'catalog:'
-        version: 2.76.1
+        version: 2.81.0
       tus-js-client:
         specifier: 'catalog:'
         version: 4.3.1
@@ -6228,12 +6228,9 @@ packages:
   '@streamparser/json@0.0.20':
     resolution: {integrity: sha512-VqAAkydywPpkw63WQhPVKCD3SdwXuihCUVZbbiY3SfSTGQyHmwRoq27y4dmJdZuJwd5JIlQoMPyGvMbUPY0RKQ==}
 
-  '@supabase/node-fetch@2.6.15':
-    resolution: {integrity: sha512-1ibVeYUacxWYi9i0cf5efil6adJ9WRyZBLivgjs+AUpewx1F3xPi7gLgaASI2SmIQxPoCEjAsLAzKPgMJVgOUQ==}
-    engines: {node: 4.x || >=6.0.0}
-
-  '@supabase/storage-js@2.76.1':
-    resolution: {integrity: sha512-OJiNT8tocI9tcTjTjv1SBVLabzgEnS1NorZuqivkiJ0gTYmeg2c2PFmqCARhoQ4whF6zR9MVsX/Mtj2oSv4i/w==}
+  '@supabase/storage-js@2.81.0':
+    resolution: {integrity: sha512-gj9u+EyEVLgDA9jW8JOsAgEc8H79zg01STK5KLv9EU45kf5Qh7kAoCmG090Jkp/YEGvSiaR/Ta7Xs/gUTLqflw==}
+    engines: {node: '>=20.0.0'}
 
   '@svgdotjs/svg.draggable.js@3.0.6':
     resolution: {integrity: sha512-7iJFm9lL3C40HQcqzEfezK2l+dW2CpoVY3b77KQGqc8GXWa6LhhmX5Ckv7alQfUXBuZbjpICZ+Dvq1czlGx7gA==}
@@ -17849,13 +17846,8 @@ snapshots:
 
   '@streamparser/json@0.0.20': {}
 
-  '@supabase/node-fetch@2.6.15':
+  '@supabase/storage-js@2.81.0':
     dependencies:
-      whatwg-url: 5.0.0
-
-  '@supabase/storage-js@2.76.1':
-    dependencies:
-      '@supabase/node-fetch': 2.6.15
       tslib: 2.8.1
 
   '@svgdotjs/svg.draggable.js@3.0.6(@svgdotjs/svg.js@3.2.5)':
