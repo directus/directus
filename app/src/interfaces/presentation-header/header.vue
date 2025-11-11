@@ -130,7 +130,7 @@ const buttonProps = computed(() =>
 			secondary: link.type !== 'primary',
 			icon: !link.label,
 			disabled: (link.actionType === 'flow' && attrs['batch-mode']) || props.disabled,
-			loading: link.flow && loadingFlows.value.includes(link.flow),
+			loading: link.flow && runningFlows.value.includes(link.flow),
 		};
 
 		if (link.actionType === 'url' && link.href) {
@@ -163,7 +163,7 @@ function toggleHelp() {
 
 async function handleActionClick(action: Link) {
 	if (action.actionType === 'flow' && action.flow) {
-		if (loadingFlows.value.includes(action.flow)) return;
+		if (runningFlows.value.includes(action.flow)) return;
 
 		const effectiveValues = { ...combinedItemData.value };
 
@@ -240,11 +240,7 @@ const helpString = computed(() => {
 	return dompurify.sanitize(props.help);
 });
 
-const loadingFlows = computed(() => {
-	return manualFlows.value.filter((flow: ManualFlow) => flow.isFlowRunning).map((flow: ManualFlow) => flow.id);
-});
-
-const { runManualFlow, manualFlows } = useInjectRunManualFlow();
+const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 </script>
 
 <template>
@@ -271,7 +267,10 @@ const { runManualFlow, manualFlows } = useInjectRunManualFlow();
 							small
 							:kind="primaryLink!.type"
 						>
-							<v-icon v-if="primaryLink!.icon" left :name="primaryLink!.icon" />
+							<v-icon v-if="!primaryLink.icon && !primaryLink.label" name="smart_button" />
+
+							<v-icon v-if="primaryLink!.icon" :left="primaryLink.label" :name="primaryLink!.icon" />
+
 							<span v-if="primaryLink!.label">{{ primaryLink!.label }}</span>
 						</v-button>
 					</template>
@@ -294,8 +293,8 @@ const { runManualFlow, manualFlows } = useInjectRunManualFlow();
 								<v-list-item
 									v-for="(link, index) in linksParsed"
 									:key="index"
-									:clickable="!link.flow || (link.flow && !loadingFlows.includes(link.flow))"
-									:disabled="link.flow && loadingFlows.includes(link.flow)"
+									:clickable="!link.flow || (link.flow && !runningFlows.includes(link.flow))"
+									:disabled="link.flow && runningFlows.includes(link.flow)"
 									@click="link.actionType === 'flow' ? handleActionClick(link) : null"
 								>
 									<v-list-item-icon v-if="link.icon">
@@ -313,7 +312,7 @@ const { runManualFlow, manualFlows } = useInjectRunManualFlow();
 											</template>
 										</template>
 										<template v-else>
-											<template v-if="link.flow && loadingFlows.includes(link.flow)">
+											<template v-if="link.flow && runningFlows.includes(link.flow)">
 												<v-progress-circular small indeterminate />
 											</template>
 											<template v-else>
