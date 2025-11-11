@@ -89,12 +89,12 @@ export const syncExtensions = async (options?: { force: boolean }): Promise<void
 			if (localStat && remoteStat.modified <= localStat.modified && remoteStat.size === localStat.size) {
 				// local file exists and is unchanged
 				// eslint-disable-next-line no-console
-				console.info('Skipping sync for:', filepath);
+				console.info('Skipping sync for:', relativePath);
 				continue;
 			}
 
 			// eslint-disable-next-line no-console
-			console.log(remoteStat, localStat);
+			console.info('Syncing:', relativePath);
 			
 			const readStream = await disk.read(filepath);
 
@@ -118,10 +118,12 @@ export const syncExtensions = async (options?: { force: boolean }): Promise<void
 
 		// any localFiles left exist locally but not remote
 		for (const removeFile of localFiles) {
+			const removePath = join(extensionsPath, removeFile);
+
 			// eslint-disable-next-line no-console
-			console.info('Removing: ', removeFile);
+			console.info('Removing: ', removePath);
 			
-			await rm(removeFile)
+			await rm(removePath, { force: true })
 				.catch(() => {/* ignore file removal error? */});
 		}
 
