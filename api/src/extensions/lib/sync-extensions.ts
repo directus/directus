@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { exists } from 'fs-extra';
 import mid from 'node-machine-id';
 import { createWriteStream } from 'node:fs';
-import { mkdir, rm } from 'node:fs/promises';
+import { mkdir, readdir, rm, stat } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import Queue from 'p-queue';
@@ -12,13 +12,15 @@ import { useLogger } from '../../logger/index.js';
 import { getStorage } from '../../storage/index.js';
 import { getExtensionsPath } from './get-extensions-path.js';
 import { SyncStatus, getSyncStatus, setSyncStatus } from './sync-status.js';
+// import { createFileChecksum, processChecksums } from './checksum.js';
+// import { PassThrough } from 'node:stream';
 
 export const syncExtensions = async (options?: { force: boolean }): Promise<void> => {
 	const lock = useLock();
 	const messenger = useBus();
 	const env = useEnv();
 	const logger = useLogger();
-
+ 
 	if (!options?.force) {
 		const isDone = (await getSyncStatus()) === SyncStatus.DONE;
 		if (isDone) return;
@@ -48,7 +50,10 @@ export const syncExtensions = async (options?: { force: boolean }): Promise<void
 			// In case the FS still contains the cached extensions from a previous invocation. We have to
 			// clear them out to ensure the remote extensions folder remains the source of truth for all
 			// extensions that are loaded.
-			await rm(extensionsPath, { recursive: true, force: true });
+
+
+			// DONT REMOVE DURING TESTING IDIOT
+			// await rm(extensionsPath, { recursive: true, force: true });
 		}
 
 		// Ensure that the local extensions cache path exists
@@ -63,13 +68,43 @@ export const syncExtensions = async (options?: { force: boolean }): Promise<void
 
 		// Make sure we don't overload the file handles
 		const queue = new Queue({ concurrency: 1000 });
+		// const checksums: [string, Promise<string>][] = [];
+
+		const localFiles = (await readdir(extensionsPath, { recursive: true, withFileTypes: true }))
+			.filter(dirent => dirent.isFile())
+			.map(dirent => join(relative(extensionsPath, dirent.parentPath), dirent.name));
 
 		for await (const filepath of disk.list(storageExtensionsPath)) {
-			const readStream = await disk.read(filepath);
-
 			// We want files to be stored in the root of `$TEMP_PATH/extensions`, so gotta remove the
 			// extensions path on disk from the start of the file path
-			const destPath = join(extensionsPath, relative(resolve(sep, storageExtensionsPath), resolve(sep, filepath)));
+			const relativePath = relative(resolve(sep, storageExtensionsPath), resolve(sep, filepath));
+			const destPath = join(extensionsPath, relativePath);
+
+			const localFileIndex = localFiles.findIndex(f => f === relativePath);
+			if (localFileIndex >= 0) localFiles.splice(localFileIndex);
+
+			const remoteStat = await disk.stat(filepath);		
+			const localStat = await fsStat(destPath);
+			
+			if (localStat && remoteStat.modified <= localStat.modified && remoteStat.size === localStat.size) {
+				// local file exists and is unchanged
+				// eslint-disable-next-line no-console
+				console.info('Skipping sync for:', filepath);
+				continue;
+			}
+
+			// eslint-disable-next-line no-console
+			console.log(remoteStat, localStat);
+			
+			const readStream = await disk.read(filepath);
+
+
+			// ensure both streams receive data
+			// const checksumStream = new PassThrough();
+			// const filesystemStream = new PassThrough();
+			// readStream.pipe(checksumStream);
+			// readStream.pipe(filesystemStream);
+			// checksums.push([filepath, createFileChecksum(checksumStream)]);
 
 			// Ensure that the directory path exists
 			await mkdir(dirname(destPath), { recursive: true });
@@ -80,9 +115,36 @@ export const syncExtensions = async (options?: { force: boolean }): Promise<void
 		}
 
 		await queue.onIdle();
-		await setSyncStatus(SyncStatus.DONE);
+
+		// any localFiles left exist locally but not remote
+		for (const removeFile of localFiles) {
+			// eslint-disable-next-line no-console
+			console.info('Removing: ', removeFile);
+			
+			await rm(removeFile)
+				.catch(() => {/* ignore file removal error? */});
+		}
+
+		// const test = await processChecksums(checksums);
+		// console.log(test);
+
+		// No longer needed because the above loop removes the file!
+		// await setSyncStatus(SyncStatus.DONE);
+
 		messenger.publish(machineKey, { ready: true });
 	} finally {
 		await lock.delete(machineKey);
 	}
 };
+
+
+async function fsStat(path: string) {
+	const data = await stat(path, { bigint: false })
+		.catch(() => {/* file not available */});
+	
+	if (!data) return null;
+	return {
+		size: data.size,
+		modified: data.mtime
+	};
+}

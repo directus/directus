@@ -1,5 +1,5 @@
 import { exists } from 'fs-extra';
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile, writeFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { getExtensionsPath } from './get-extensions-path.js';
 
@@ -25,5 +25,10 @@ export const getSyncStatus = async () => {
 
 export const setSyncStatus = async (status: SyncStatus) => {
 	const statusFilePath = join(getExtensionsPath(), '.status');
-	await writeFile(statusFilePath, status);
+
+	if (status === SyncStatus.SYNCING) {
+		await writeFile(statusFilePath, status);
+	} else {
+		await rm(statusFilePath);
+	}
 };
