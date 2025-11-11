@@ -871,8 +871,8 @@ catalogs:
       specifier: 4.6.3
       version: 4.6.3
     vue-tsc:
-      specifier: 3.1.2
-      version: 3.1.2
+      specifier: 3.1.3
+      version: 3.1.3
     vue-virtual-scroller:
       specifier: 2.0.0-beta.8
       version: 2.0.0-beta.8
@@ -1822,7 +1822,7 @@ importers:
         version: 4.6.3(vue@3.5.22(typescript@5.9.3))
       vue-tsc:
         specifier: 'catalog:'
-        version: 3.1.2(typescript@5.9.3)
+        version: 3.1.3(typescript@5.9.3)
       vue-virtual-scroller:
         specifier: 'catalog:'
         version: 2.0.0-beta.8(vue@3.5.22(typescript@5.9.3))
@@ -1886,7 +1886,7 @@ importers:
         version: 2.4.6
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -1904,7 +1904,7 @@ importers:
         version: 3.0.0
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -1988,7 +1988,7 @@ importers:
         version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2019,7 +2019,7 @@ importers:
         version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2074,7 +2074,7 @@ importers:
         version: 9.7.0
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2117,7 +2117,7 @@ importers:
         version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2238,7 +2238,7 @@ importers:
         version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2275,7 +2275,7 @@ importers:
         version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2300,7 +2300,7 @@ importers:
         version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2359,7 +2359,7 @@ importers:
         version: 3.0.0
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2384,7 +2384,7 @@ importers:
         version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2424,7 +2424,7 @@ importers:
         version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2458,7 +2458,7 @@ importers:
         version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2495,7 +2495,7 @@ importers:
         version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2532,7 +2532,7 @@ importers:
         version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2563,7 +2563,7 @@ importers:
         version: 3.2.4(vitest@3.2.4(@types/node@22.13.14)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2615,7 +2615,7 @@ importers:
         version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2658,7 +2658,7 @@ importers:
         version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2680,7 +2680,7 @@ importers:
         version: 2.3.1(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2701,7 +2701,7 @@ importers:
         version: 0.25.11
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2875,7 +2875,7 @@ importers:
         version: 7.1.2
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2942,7 +2942,7 @@ importers:
         version: 0.2.5
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -2976,7 +2976,7 @@ importers:
         version: 3.2.4(vitest@3.2.4(@types/node@24.9.1)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@20.0.3)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -3000,7 +3000,7 @@ importers:
         version: 1.4.0
       tsdown:
         specifier: 'catalog:'
-        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+        version: 0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -6805,8 +6805,8 @@ packages:
       typescript:
         optional: true
 
-  '@vue/language-core@3.1.2':
-    resolution: {integrity: sha512-PyFDCqpdfYUT+oMLqcc61oHfJlC6yjhybaefwQjRdkchIihToOEpJ2Wu/Ebq2yrnJdd1EsaAvZaXVAqcxtnDxQ==}
+  '@vue/language-core@3.1.3':
+    resolution: {integrity: sha512-KpR1F/eGAG9D1RZ0/T6zWJs6dh/pRLfY5WupecyYKJ1fjVmDMgTPw9wXmKv2rBjo4zCJiOSiyB8BDP1OUwpMEA==}
     peerDependencies:
       typescript: '*'
     peerDependenciesMeta:
@@ -13323,8 +13323,8 @@ packages:
     peerDependencies:
       vue: ^3.5.0
 
-  vue-tsc@3.1.2:
-    resolution: {integrity: sha512-3fd4DY0rFczs5f+VB3OhcLU83V6+3Puj2yLBe0Ak65k7ERk+STVNKaOAi0EBo6Lc15UiJB6LzU6Mxy4+h/pKew==}
+  vue-tsc@3.1.3:
+    resolution: {integrity: sha512-StMNfZHwPIXQgY3KxPKM0Jsoc8b46mDV3Fn2UlHCBIwRJApjqrSwqeMYgWf0zpN+g857y74pv7GWuBm+UqQe1w==}
     hasBin: true
     peerDependencies:
       typescript: '>=5.0.0'
@@ -18663,7 +18663,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  '@vue/language-core@3.1.2(typescript@5.9.3)':
+  '@vue/language-core@3.1.3(typescript@5.9.3)':
     dependencies:
       '@volar/language-core': 2.4.23
       '@vue/compiler-dom': 3.5.22
@@ -23815,7 +23815,7 @@ snapshots:
       glob: 11.0.3
       package-json-from-dist: 1.0.1
 
-  rolldown-plugin-dts@0.17.2(rolldown@1.0.0-beta.45)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3)):
+  rolldown-plugin-dts@0.17.2(rolldown@1.0.0-beta.45)(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3)):
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5
@@ -23829,7 +23829,7 @@ snapshots:
       rolldown: 1.0.0-beta.45
     optionalDependencies:
       typescript: 5.9.3
-      vue-tsc: 3.1.2(typescript@5.9.3)
+      vue-tsc: 3.1.3(typescript@5.9.3)
     transitivePeerDependencies:
       - oxc-resolver
       - supports-color
@@ -25116,7 +25116,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  tsdown@0.15.11(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3)):
+  tsdown@0.15.11(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3)):
     dependencies:
       ansis: 4.2.0
       cac: 6.7.14
@@ -25126,7 +25126,7 @@ snapshots:
       empathic: 2.0.0
       hookable: 5.5.3
       rolldown: 1.0.0-beta.45
-      rolldown-plugin-dts: 0.17.2(rolldown@1.0.0-beta.45)(typescript@5.9.3)(vue-tsc@3.1.2(typescript@5.9.3))
+      rolldown-plugin-dts: 0.17.2(rolldown@1.0.0-beta.45)(typescript@5.9.3)(vue-tsc@3.1.3(typescript@5.9.3))
       semver: 7.7.3
       tinyexec: 1.0.1
       tinyglobby: 0.2.15
@@ -25809,10 +25809,10 @@ snapshots:
       '@vue/devtools-api': 6.6.4
       vue: 3.5.22(typescript@5.9.3)
 
-  vue-tsc@3.1.2(typescript@5.9.3):
+  vue-tsc@3.1.3(typescript@5.9.3):
     dependencies:
       '@volar/typescript': 2.4.23
-      '@vue/language-core': 3.1.2(typescript@5.9.3)
+      '@vue/language-core': 3.1.3(typescript@5.9.3)
       typescript: 5.9.3
 
   vue-virtual-scroller@2.0.0-beta.8(vue@3.5.22(typescript@5.9.3)):
