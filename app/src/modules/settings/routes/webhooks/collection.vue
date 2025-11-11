@@ -116,7 +116,7 @@ function clearFilters() {
 
 			<div class="deprecation-notice-wrapper">
 				<v-notice type="danger">
-					<span v-md="{ value: t('webhooks_deprecation_notice'), target: '_blank' }"></span>
+					<span v-md="{ value: $t('webhooks_deprecation_notice'), target: '_blank' }"></span>
 				</v-notice>
 			</div>
 
@@ -140,7 +140,7 @@ function clearFilters() {
 
 			<template #sidebar>
 				<sidebar-detail icon="info" :title="$t('information')" close>
-					<div v-md="t('page_help_settings_webhooks_collection')" class="page-description" />
+					<div v-md="$t('page_help_settings_webhooks_collection')" class="page-description" />
 				</sidebar-detail>
 				<layout-sidebar-detail v-model="layout">
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
