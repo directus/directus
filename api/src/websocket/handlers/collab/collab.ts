@@ -5,6 +5,11 @@ import { handleWebSocketError } from '../../errors.js';
 import { getMessageType } from '../../utils/message.js';
 import { CollabRooms } from './room.js';
 import type { FocusMessage, JoinMessage, LeaveMessage, SaveMessage, UpdateMessage } from './types.js';
+import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
+import getDatabase from '../../../database/index.js';
+import { getSchema } from '../../../utils/get-schema.js';
+import { ForbiddenError } from '@directus/errors';
+import { hasFieldPermision } from './field-permissions.js';
 
 /**
  * Handler responsible for subscriptions
@@ -43,6 +48,13 @@ export class CollabHandler {
 
 	async onJoin(client: WebSocketClient, message: JoinMessage) {
 		try {
+			const allowedCollections = await fetchAllowedCollections(
+				{ accountability: client.accountability!, action: 'read' },
+				{ knex: getDatabase(), schema: await getSchema() },
+			);
+
+			if (message.collection in allowedCollections === false) throw new ForbiddenError();
+
 			const room = await this.rooms.createRoom(
 				message.collection,
 				message.item,
@@ -62,6 +74,8 @@ export class CollabHandler {
 				const room = this.rooms.getRoom(message.room);
 
 				if (!room) return;
+
+				if (!room.hasClient(client)) throw new ForbiddenError();
 
 				room.leave(client);
 			} else {
@@ -84,17 +98,24 @@ export class CollabHandler {
 
 			if (!room) return;
 
+			if (!room.hasClient(client)) throw new ForbiddenError();
+
 			room.save(client);
 		} catch (err) {
 			handleWebSocketError(client, err, 'save');
 		}
 	}
 
-	onUpdate(client: WebSocketClient, message: UpdateMessage) {
+	async onUpdate(client: WebSocketClient, message: UpdateMessage) {
 		try {
 			const room = this.rooms.getRoom(message.room);
 
 			if (!room) return;
+
+			if (!room.hasClient(client)) throw new ForbiddenError();
+
+			if ((await hasFieldPermision(client.accountability!, room.collection, message.field)) === false)
+				throw new ForbiddenError();
 
 			if ('changes' in message) {
 				room.update(message.field, message.changes);
@@ -106,11 +127,16 @@ export class CollabHandler {
 		}
 	}
 
-	onFocus(client: WebSocketClient, message: FocusMessage) {
+	async onFocus(client: WebSocketClient, message: FocusMessage) {
 		try {
 			const room = this.rooms.getRoom(message.room);
 
 			if (!room) return;
+
+			if (!room.hasClient(client)) throw new ForbiddenError();
+
+			if (message.field && (await hasFieldPermision(client.accountability!, room.collection, message.field)) === false)
+				throw new ForbiddenError();
 
 			room.focus(client, message.field);
 		} catch (err) {

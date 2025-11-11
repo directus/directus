@@ -1,4 +1,3 @@
-import { ForbiddenError } from '@directus/errors';
 import {
 	COLLAB,
 	COLLAB_COLORS,
@@ -9,19 +8,18 @@ import {
 	type WebSocketClient,
 } from '@directus/types';
 import { createHash } from 'crypto';
-import { random } from 'lodash-es';
-import { sanitizePayload } from './sanitize-payload.js';
-import { getSchema } from '../../../utils/get-schema.js';
+import { isEqual, random } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
+import emitter from '../../../emitter.js';
+import { getSchema } from '../../../utils/get-schema.js';
+import { getService } from '../../../utils/get-service.js';
+import { hasFieldPermision } from './field-permissions.js';
+import { sanitizePayload } from './sanitize-payload.js';
 
 export class CollabRooms {
 	rooms: Record<string, Room> = {};
 
 	async createRoom(collection: string, item: string, version: string | null, initialChanges?: Item) {
-		const schema = await getSchema();
-
-		if (!(collection in schema.collections) || item === '+') throw new ForbiddenError();
-
 		const uid = getRoomHash(collection, item, version);
 
 		if (!(uid in this.rooms)) {
@@ -64,6 +62,26 @@ export class Room {
 		this.item = item;
 		this.version = version;
 		this.changes = initialChanges ?? {};
+
+		// React to external updates to the item
+		emitter.onAction(`${this.collection}.items.update`, async ({ keys }, { accountability }) => {
+			if (!keys.includes(this.item)) return;
+
+			const service = getService(this.collection, { schema: await getSchema() });
+			const item = await service.readOne(this.item);
+
+			this.changes = Object.fromEntries(
+				Object.entries(this.changes).filter(([key, value]) => !isEqual(item[key], value)),
+			);
+
+			for (const client of this.clients) {
+				if (client.accountability?.user === accountability?.user) continue;
+
+				this.send(client, {
+					action: 'save',
+				});
+			}
+		});
 	}
 
 	hasClient(client: WebSocketClient) {
@@ -95,7 +113,11 @@ export class Room {
 				schema: await getSchema(),
 				accountability: client.accountability!,
 			}),
-			focuses: this.focuses,
+			focuses: Object.fromEntries(
+				Object.entries(this.focuses).filter(([field, _]) =>
+					hasFieldPermision(client.accountability!, this.collection, field),
+				),
+			),
 			connection: client.uid,
 			users: Array.from(this.clients).map((client) => ({
 				user: client.accountability!.user!,
@@ -151,28 +173,36 @@ export class Room {
 		}
 	}
 
-	unset(field: string) {
+	async unset(field: string) {
 		delete this.changes[field];
 
-		this.sendAll({
-			action: 'update',
-			field: field,
-		});
+		for (const c of this.clients) {
+			if (field && !(await hasFieldPermision(c.accountability!, this.collection, field))) continue;
+
+			this.send(c, {
+				action: 'update',
+				field: field,
+			});
+		}
 	}
 
-	focus(client: WebSocketClient, field: string | null) {
-		// TODO check read permission for the field
+	async focus(client: WebSocketClient, field: string | null) {
 		if (!field) {
 			this.focuses = Object.fromEntries(Object.entries(this.focuses).filter(([_, user]) => user !== client.uid));
 		} else {
+			if (field in (await getSchema()).collections[this.collection]!.fields === false) return;
 			this.focuses[field] = client.uid;
 		}
 
-		this.sendAll({
-			action: 'focus',
-			connection: client.uid,
-			field,
-		});
+		for (const c of this.clients) {
+			if (field && !(await hasFieldPermision(c.accountability!, this.collection, field))) continue;
+
+			this.send(c, {
+				action: 'focus',
+				connection: client.uid,
+				field,
+			});
+		}
 	}
 
 	sendAll(message: ClientBaseCollabMessage) {

@@ -9,12 +9,14 @@ import {
 	ContentVersion,
 	Item,
 	PrimaryKey,
-	User,
 } from '@directus/types';
 import { isEqual } from 'lodash';
 import { computed, onBeforeUnmount, onMounted, provide, ref, Ref, watch } from 'vue';
 
-export type CollabUser = Pick<User, 'id' | 'first_name' | 'last_name'> & {
+export type CollabUser = {
+	id: string;
+	first_name?: string;
+	last_name?: string;
 	connection: ClientID;
 	color: CollabColor;
 	avatar?: Avatar;
@@ -163,18 +165,27 @@ export function useCollab(
 
 				const user = existingInfo
 					? existingInfo
-					: await sdk.request<CollabUser>(
-							readUser(message.user, { fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'] }),
-						);
+					: await sdk
+							.request<CollabUser>(
+								readUser(message.user, {
+									fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'],
+								}),
+							)
+							.catch(() => ({}));
 
-				users.value = [...users.value, { ...user, color: message.color, connection: message.connection }];
+				users.value = [
+					...users.value,
+					{ ...user, id: message.user, color: message.color, connection: message.connection },
+				];
 			}
 
 			if (message.action === 'leave') {
 				users.value = users.value.filter((user) => user.connection !== message.connection);
 
 				focused.value = Object.fromEntries(
-					Object.entries(focused.value).filter(([_, user]) => user.connection !== message.connection),
+					Object.entries(focused.value).filter(
+						([_, user]) => user?.connection && user.connection !== message.connection,
+					),
 				);
 			}
 

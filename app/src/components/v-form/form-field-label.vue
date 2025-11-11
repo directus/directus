@@ -272,7 +272,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 
 :deep(.v-avatar) {
 	position: absolute;
-	bottom: 0;
-	right: 0;
+	inset-block-end: 0;
+	inset-inline-end: 0;
 }
 </style>

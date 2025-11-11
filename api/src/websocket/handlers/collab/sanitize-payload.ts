@@ -28,14 +28,6 @@ export async function sanitizePayload(
 	return await asyncDeepMapWithSchema(
 		payload,
 		async ([key, value], context) => {
-			try {
-				const service = getService(context.collection.collection, ctx);
-				const pk = context.object[context.collection.primary];
-				if (pk) await service.readOne(pk, { fields: [String(key)] });
-			} catch {
-				return;
-			}
-
 			if (context.field.special.some((v) => v === 'conceal' || v === 'hash')) return;
 
 			// Filter out {} or [] values for relations
@@ -54,6 +46,14 @@ export async function sanitizePayload(
 				) ?? false;
 
 			if (!readAllowed) return;
+
+			try {
+				const service = getService(context.collection.collection, ctx);
+				const pk = context.object[context.collection.primary];
+				if (pk) await service.readOne(pk, { fields: [String(key)] });
+			} catch {
+				return;
+			}
 
 			return [key, value];
 		},
