@@ -3020,7 +3020,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/utils
       '@types/js-yaml':
-        specifier: 4.0.9
+        specifier: 'catalog:'
         version: 4.0.9
       '@types/lodash-es':
         specifier: 'catalog:'
@@ -3032,34 +3032,34 @@ importers:
         specifier: 6.0.2
         version: 6.0.2
       '@types/ws':
-        specifier: 8.5.14
-        version: 8.5.14
+        specifier: 'catalog:'
+        version: 8.18.1
       argon2:
-        specifier: 0.41.1
-        version: 0.41.1
+        specifier: 'catalog:'
+        version: 0.44.0
       autocannon:
         specifier: 8.0.0
         version: 8.0.0
       axios:
-        specifier: 1.8.4
-        version: 1.8.4
+        specifier: 'catalog:'
+        version: 1.12.2
       get-port:
-        specifier: 7.1.0
+        specifier: 'catalog:'
         version: 7.1.0
       globby:
         specifier: 14.1.0
         version: 14.1.0
       graphql-ws:
-        specifier: 5.16.2
-        version: 5.16.2(graphql@16.11.0)
+        specifier: 'catalog:'
+        version: 6.0.6(graphql@16.11.0)(ws@8.18.3)
       js-yaml:
-        specifier: 4.1.0
+        specifier: 'catalog:'
         version: 4.1.0
       json-to-graphql-query:
-        specifier: 2.3.0
+        specifier: 'catalog:'
         version: 2.3.0
       knex:
-        specifier: 3.1.0
+        specifier: 'catalog:'
         version: 3.1.0(mysql2@3.15.3)(pg@8.16.3)(sqlite3@5.1.7)(tedious@18.6.1)
       listr2:
         specifier: 9.0.1
@@ -3077,7 +3077,7 @@ importers:
         specifier: 'catalog:'
         version: 5.9.3
       uuid:
-        specifier: 11.1.0
+        specifier: 'catalog:'
         version: 11.1.0
       vite-tsconfig-paths:
         specifier: 5.1.4
@@ -3086,8 +3086,8 @@ importers:
         specifier: 1.6.1
         version: 1.6.1(@types/node@24.9.1)(happy-dom@20.0.10)(jsdom@20.0.3)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)
       ws:
-        specifier: 8.18.1
-        version: 8.18.1
+        specifier: 'catalog:'
+        version: 8.18.3
 
 packages:
 
@@ -6572,9 +6572,6 @@ packages:
   '@types/ws@8.18.1':
     resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
 
-  '@types/ws@8.5.14':
-    resolution: {integrity: sha512-bd/YFLW+URhBzMXurx7lWByOu+xzU9+kb3RboOteXYDfW+tr+JZa99OyNmPINEGB/ahzKrEuc8rcv4gnpJmxTw==}
-
   '@typescript-eslint/eslint-plugin@8.46.2':
     resolution: {integrity: sha512-ZGBMToy857/NIPaaCucIUQgqueOiq7HeAKkhlvqVV4lm089zUFW6ikRySx2v+cAhKeUCPuWVHeimyk6Dw1iY3w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -7095,10 +7092,6 @@ packages:
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
     deprecated: This package is no longer supported.
 
-  argon2@0.41.1:
-    resolution: {integrity: sha512-dqCW8kJXke8Ik+McUcMDltrbuAWETPyU6iq+4AhxqKphWi7pChB/Zgd/Tp/o8xRLbg8ksMj46F/vph9wnxpTzQ==}
-    engines: {node: '>=16.17.0'}
-
   argon2@0.44.0:
     resolution: {integrity: sha512-zHPGN3S55sihSQo0dBbK0A5qpi2R31z7HZDZnry3ifOyj8bZZnpZND2gpmhnRGO1V/d555RwBqIK5W4Mrmv3ig==}
     engines: {node: '>=16.17.0'}
@@ -7202,9 +7195,6 @@ packages:
 
   axios@1.12.2:
     resolution: {integrity: sha512-vMJzPewAlRyOgxV2dU0Cuz2O8zzzx9VYtbJOaBgXFeLc4IV/Eg50n4LowmehOOR61S8ZMpc2K5Sa7g6A4jfkUw==}
-
-  axios@1.8.4:
-    resolution: {integrity: sha512-eBSYY4Y68NNlHbHBMdeDmKNtDgXWhQsJcGqzO3iLUM0GraQFSS9cVgPX5I9b3lbdFKyYoAEGAZF1DwhTaljNAw==}
 
   backoff@2.5.0:
     resolution: {integrity: sha512-wC5ihrnUXmR2douXmXLCe5O3zg3GKIyvRi/hi58a/XyRxVI+3/yM0PYueQOZXPXQ9pxBislYkw+sF9b7C/RuMA==}
@@ -9100,12 +9090,6 @@ packages:
     resolution: {integrity: sha512-J+vjof74oMlCWXSvt0DOf2APEdZOCdubEvGDUAlqH//VBYcOYsGgRW7Xzorr44LvkjiuvecWc8fChxuZZbChtg==}
     peerDependencies:
       graphql: '>=0.8.0'
-
-  graphql-ws@5.16.2:
-    resolution: {integrity: sha512-E1uccsZxt/96jH/OwmLPuXMACILs76pKF2i3W861LpKBCYtGIyPQGtWLuBLkND4ox1KHns70e83PS4te50nvPQ==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      graphql: '>=0.11 <=16'
 
   graphql-ws@6.0.6:
     resolution: {integrity: sha512-zgfER9s+ftkGKUZgc0xbx8T7/HMO4AV5/YuYiFc+AtgcO5T0v8AxYYNQ+ltzuzDZgNkYJaFspm5MMYLjQzrkmw==}
@@ -13464,18 +13448,6 @@ packages:
 
   ws@8.17.1:
     resolution: {integrity: sha512-6XQFvXTkbfUOZOKKILFG1PDK2NDQs4azKQl26T0YS5CxqWLgXajbPZ+h4gZekJyRqFU8pvnbAbbs/3TgRPy+GQ==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-
-  ws@8.18.1:
-    resolution: {integrity: sha512-RKW2aJZMXeMxVpnZ6bck+RswznaxmzdULiBr6KY7XkTnW8uvt0iT9H5DkHUChXrc+uurzwa0rVI16n/Xzjdz1w==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -18253,10 +18225,6 @@ snapshots:
     dependencies:
       '@types/node': 24.9.1
 
-  '@types/ws@8.5.14':
-    dependencies:
-      '@types/node': 24.9.1
-
   '@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
@@ -18940,12 +18908,6 @@ snapshots:
       readable-stream: 3.6.2
     optional: true
 
-  argon2@0.41.1:
-    dependencies:
-      '@phc/format': 1.0.0
-      node-addon-api: 8.5.0
-      node-gyp-build: 4.8.4
-
   argon2@0.44.0:
     dependencies:
       '@phc/format': 1.0.0
@@ -19067,14 +19029,6 @@ snapshots:
       object-code: 1.3.3
 
   axios@1.12.2:
-    dependencies:
-      follow-redirects: 1.15.11(debug@4.3.7)
-      form-data: 4.0.4
-      proxy-from-env: 1.1.0
-    transitivePeerDependencies:
-      - debug
-
-  axios@1.8.4:
     dependencies:
       follow-redirects: 1.15.11(debug@4.3.7)
       form-data: 4.0.4
@@ -21012,10 +20966,6 @@ snapshots:
     dependencies:
       graphql: 16.11.0
 
-  graphql-ws@5.16.2(graphql@16.11.0):
-    dependencies:
-      graphql: 16.11.0
-
   graphql-ws@6.0.6(graphql@16.11.0)(ws@8.18.3):
     dependencies:
       graphql: 16.11.0
@@ -21568,7 +21518,7 @@ snapshots:
       whatwg-encoding: 2.0.0
       whatwg-mimetype: 3.0.0
       whatwg-url: 11.0.0
-      ws: 8.18.1
+      ws: 8.18.3
       xml-name-validator: 4.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -21951,7 +21901,7 @@ snapshots:
 
   mailgun.js@8.2.2:
     dependencies:
-      axios: 1.8.4
+      axios: 1.12.2
       base-64: 1.0.0
       url-join: 4.0.1
     transitivePeerDependencies:
@@ -25942,8 +25892,6 @@ snapshots:
   ws@7.5.10: {}
 
   ws@8.17.1: {}
-
-  ws@8.18.1: {}
 
   ws@8.18.3: {}
 
