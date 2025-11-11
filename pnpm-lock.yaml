@@ -307,8 +307,8 @@ catalogs:
       specifier: 3.0.6
       version: 3.0.6
     '@types/papaparse':
-      specifier: 5.3.16
-      version: 5.3.16
+      specifier: 5.5.0
+      version: 5.5.0
     '@types/proxy-addr':
       specifier: 2.0.3
       version: 2.0.3
@@ -1395,7 +1395,7 @@ importers:
         version: 3.0.6
       '@types/papaparse':
         specifier: 'catalog:'
-        version: 5.3.16
+        version: 5.5.0
       '@types/proxy-addr':
         specifier: 'catalog:'
         version: 2.0.3
@@ -6493,8 +6493,8 @@ packages:
   '@types/object-hash@3.0.6':
     resolution: {integrity: sha512-fOBV8C1FIu2ELinoILQ+ApxcUKz4ngq+IWUYrxSGjXzzjUALijilampwkMgEtJ+h2njAW3pi853QpzNVCHB73w==}
 
-  '@types/papaparse@5.3.16':
-    resolution: {integrity: sha512-T3VuKMC2H0lgsjI9buTB3uuKj3EMD2eap1MOuEQuBQ44EnDx/IkGhU6EwiTf9zG3za4SKlmwKAImdDKdNnCsXg==}
+  '@types/papaparse@5.5.0':
+    resolution: {integrity: sha512-GVs5iMQmUr54BAZYYkByv8zPofFxmyxUpISPb2oh8sayR3+1zbxasrOvoKiHJ/nnoq/uULuPsu1Lze1EkagVFg==}
 
   '@types/proxy-addr@2.0.3':
     resolution: {integrity: sha512-TgAHHO4tNG3HgLTUhB+hM4iwW6JUNeQHCLnF1DjaDA9c69PN+IasoFu2MYDhubFc+ZIw5c5t9DMtjvrD6R3Egg==}
@@ -18132,7 +18132,7 @@ snapshots:
 
   '@types/object-hash@3.0.6': {}
 
-  '@types/papaparse@5.3.16':
+  '@types/papaparse@5.5.0':
     dependencies:
       '@types/node': 24.9.1
 
