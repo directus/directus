@@ -182,18 +182,18 @@ const { t } = useI18n();
 - [x] interfaces/translations/translations.vue
 
 ### Layouts
-- [ ] layouts/calendar/calendar.vue
-- [ ] layouts/calendar/options.vue
-- [ ] layouts/cards/cards.vue
-- [ ] layouts/cards/components/header.vue
-- [ ] layouts/cards/options.vue
-- [ ] layouts/kanban/kanban.vue
-- [ ] layouts/kanban/options.vue
-- [ ] layouts/map/components/map.vue
-- [ ] layouts/map/map.vue
-- [ ] layouts/map/options.vue
-- [ ] layouts/tabular/options.vue
-- [ ] layouts/tabular/tabular.vue
+- [x] layouts/calendar/calendar.vue
+- [x] layouts/calendar/options.vue
+- [x] layouts/cards/cards.vue
+- [x] layouts/cards/components/header.vue
+- [x] layouts/cards/options.vue
+- [x] layouts/kanban/kanban.vue
+- [x] layouts/kanban/options.vue
+- [ ] ~~layouts/map/components/map.vue~~ (uses t in script)
+- [x] layouts/map/map.vue
+- [x] layouts/map/options.vue
+- [x] layouts/tabular/options.vue
+- [x] layouts/tabular/tabular.vue
 
 ### Modules - Activity
 - [ ] modules/activity/components/navigation.vue

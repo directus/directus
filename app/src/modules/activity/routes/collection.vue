@@ -7,14 +7,12 @@ import { useLayout } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import ActivityNavigation from '../components/navigation.vue';
 
 defineProps<{
 	primaryKey?: string;
 }>();
 
-const { t } = useI18n();
 
 const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('directus_activity'));
 
@@ -39,7 +37,7 @@ const roleFilter = ref<Filter | null>(null);
 		collection="directus_activity"
 	>
 		<private-view
-			:title="t('activity_feed')"
+			:title="$t('activity_feed')"
 			:small-header="currentLayout?.smallHeader"
 			:header-shadow="currentLayout?.headerShadow"
 		>
@@ -63,14 +61,14 @@ const roleFilter = ref<Filter | null>(null);
 
 			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="t('no_results')" icon="search" center>
-						{{ t('no_results_copy') }}
+					<v-info :title="$t('no_results')" icon="search" center>
+						{{ $t('no_results_copy') }}
 					</v-info>
 				</template>
 
 				<template #no-items>
-					<v-info :title="t('item_count', 0)" icon="access_time" center>
-						{{ t('no_items_copy') }}
+					<v-info :title="$t('item_count', 0)" icon="access_time" center>
+						{{ $t('no_items_copy') }}
 					</v-info>
 				</template>
 			</component>
@@ -78,7 +76,7 @@ const roleFilter = ref<Filter | null>(null);
 			<router-view name="detail" :primary-key="primaryKey" />
 
 			<template #sidebar>
-				<sidebar-detail icon="info" :title="t('information')" close>
+				<sidebar-detail icon="info" :title="$t('information')" close>
 					<div v-md="t('page_help_activity_collection')" class="page-description" />
 				</sidebar-detail>
 				<layout-sidebar-detail v-model="layout">

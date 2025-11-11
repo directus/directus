@@ -1,19 +1,17 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import InsightsNavigation from '../components/navigation.vue';
 
-const { t } = useI18n();
 </script>
 
 <template>
-	<private-view :title="t('insights')">
+	<private-view :title="$t('insights')">
 		<template #navigation>
 			<insights-navigation />
 		</template>
 
 		<div class="not-found">
-			<v-info :title="t('page_not_found')" icon="not_interested">
-				{{ t('page_not_found_body') }}
+			<v-info :title="$t('page_not_found')" icon="not_interested">
+				{{ $t('page_not_found_body') }}
 			</v-info>
 		</div>
 	</private-view>

@@ -3,7 +3,6 @@ import { useCollectionsStore } from '@/stores/collections';
 import { useUserStore } from '@/stores/user';
 import { isNil, orderBy } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useNavigation } from '../composables/use-navigation';
 import NavigationItem from './navigation-item.vue';
 
@@ -11,7 +10,6 @@ const props = defineProps<{
 	currentCollection?: string;
 }>();
 
-const { t } = useI18n();
 const { currentCollection } = toRefs(props);
 const { activeGroups, showHidden } = useNavigation(currentCollection);
 
@@ -41,7 +39,7 @@ const hasHiddenCollections = computed(
 <template>
 	<div class="content-navigation-wrapper">
 		<div v-if="showSearch" class="search-input">
-			<v-input v-model="search" type="search" :placeholder="t('search_collection')" />
+			<v-input v-model="search" type="search" :placeholder="$t('search_collection')" />
 		</div>
 
 		<v-list
@@ -61,7 +59,7 @@ const hasHiddenCollections = computed(
 				dashed
 				to="/settings/data-model/+"
 			>
-				{{ t('create_collection') }}
+				{{ $t('create_collection') }}
 			</v-button>
 
 			<navigation-item

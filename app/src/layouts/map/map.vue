@@ -2,7 +2,6 @@
 import { usePageSize } from '@/composables/use-page-size';
 import { useSync } from '@directus/composables';
 import { GeometryOptions } from '@directus/types';
-import { useI18n } from 'vue-i18n';
 import MapComponent from './components/map.vue';
 
 defineOptions({ inheritAttrs: false });
@@ -94,7 +93,7 @@ limitWritable.value = selectedSize;
 				type="warning"
 				icon="wrong_location"
 				center
-				:title="t('layouts.map.invalid_geometry')"
+				:title="$t('layouts.map.invalid_geometry')"
 			>
 				{{ geojsonError }}
 			</v-info>
@@ -113,7 +112,7 @@ limitWritable.value = selectedSize;
 					/>
 				</div>
 				<div class="mapboxgl-ctrl-dropdown">
-					<span>{{ t('limit') }}</span>
+					<span>{{ $t('limit') }}</span>
 					<v-select :model-value="limit" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
 				</div>
 			</div>

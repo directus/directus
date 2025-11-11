@@ -3,11 +3,9 @@ import { FancySelectItem } from '@/components/v-fancy-select.vue';
 import { useExtension } from '@/composables/use-extension';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import ExtensionOptions from '../shared/extension-options.vue';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store/';
 
-const { t } = useI18n();
 
 const fieldDetailStore = useFieldDetailStore();
 
@@ -110,9 +108,9 @@ const options = computed({
 		<v-skeleton-loader v-if="loading" />
 		<template v-else>
 			<v-notice v-if="interfaceId && (!selectedInterface || !interfaceIsSelectable)" class="not-found" type="danger">
-				{{ t('interface_not_found', { interface: interfaceId }) }}
+				{{ $t('interface_not_found', { interface: interfaceId }) }}
 				<div class="spacer" />
-				<button @click="interfaceId = null">{{ t('reset_interface') }}</button>
+				<button @click="interfaceId = null">{{ $t('reset_interface') }}</button>
 			</v-notice>
 
 			<extension-options

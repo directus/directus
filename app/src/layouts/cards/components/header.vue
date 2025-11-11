@@ -2,7 +2,6 @@
 import { useSync } from '@directus/composables';
 import type { Field, ShowSelect } from '@directus/types';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -20,7 +19,6 @@ const props = withDefaults(
 
 const emit = defineEmits(['select-all', 'update:size', 'update:sort', 'update:selection']);
 
-const { t } = useI18n();
 
 const sizeSync = useSync(props, 'size', emit);
 const sortSync = useSync(props, 'sort', emit);
@@ -72,11 +70,11 @@ function onClickSelect() {
 			<button type="button" :class="{ 'no-selection': !selectionSync.length }" @click="onClickSelect">
 				<template v-if="selectionSync.length">
 					<v-icon name="cancel" outline />
-					<span class="label">{{ t('n_items_selected', selectionSync.length) }}</span>
+					<span class="label">{{ $t('n_items_selected', selectionSync.length) }}</span>
 				</template>
 				<template v-else>
 					<v-icon name="check_circle" outline />
-					<span class="label">{{ t(showSelect === 'multiple' ? 'select_all' : 'select_an_item') }}</span>
+					<span class="label">{{ $t(showSelect === 'multiple' ? 'select_all' : 'select_an_item') }}</span>
 				</template>
 			</button>
 		</div>

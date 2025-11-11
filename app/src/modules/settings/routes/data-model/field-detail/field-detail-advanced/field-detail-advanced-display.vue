@@ -4,11 +4,9 @@ import { useExtension } from '@/composables/use-extension';
 import { clone } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import ExtensionOptions from '../shared/extension-options.vue';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 
-const { t } = useI18n();
 
 const fieldDetailStore = useFieldDetailStore();
 
@@ -94,9 +92,9 @@ const options = computed({
 		<v-skeleton-loader v-if="loading" />
 		<template v-else>
 			<v-notice v-if="display && !selectedDisplay" class="not-found" type="danger">
-				{{ t('display_not_found', { display: display }) }}
+				{{ $t('display_not_found', { display: display }) }}
 				<div class="spacer" />
-				<button @click="display = null">{{ t('reset_display') }}</button>
+				<button @click="display = null">{{ $t('reset_display') }}</button>
 			</v-notice>
 
 			<extension-options

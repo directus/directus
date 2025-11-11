@@ -4,7 +4,6 @@ import { useSync } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
 import { GeometryOptions, Item } from '@directus/types';
 import { toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	collection: string;
@@ -21,7 +20,6 @@ const emit = defineEmits<{
 	(e: 'update:displayTemplate', displayTemplate: string): void;
 }>();
 
-const { t } = useI18n();
 
 const appStore = useAppStore();
 
@@ -35,7 +33,7 @@ const { basemap } = toRefs(appStore);
 
 <template>
 	<div class="field">
-		<div class="type-label">{{ t('layouts.map.basemap') }}</div>
+		<div class="type-label">{{ $t('layouts.map.basemap') }}</div>
 		<v-select v-model="basemap" :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
 	</div>
 
@@ -46,7 +44,7 @@ const { basemap } = toRefs(appStore);
 	</template>
 	<template v-else>
 		<div class="field">
-			<div class="type-label">{{ t('layouts.map.field') }}</div>
+			<div class="type-label">{{ $t('layouts.map.field') }}</div>
 			<v-select
 				v-model="geometryFieldWritable"
 				:items="geometryFields.map(({ name, field }) => ({ text: name, value: field }))"
@@ -55,18 +53,18 @@ const { basemap } = toRefs(appStore);
 	</template>
 
 	<div class="field">
-		<div class="type-label">{{ t('display_template') }}</div>
+		<div class="type-label">{{ $t('display_template') }}</div>
 		<v-collection-field-template
 			v-model="displayTemplateWritable"
 			:collection="collection"
-			:placeholder="t('layouts.map.default_template')"
+			:placeholder="$t('layouts.map.default_template')"
 		/>
 	</div>
 
 	<div class="field">
 		<v-checkbox
 			v-model="clusterDataWritable"
-			:label="t('layouts.map.cluster')"
+			:label="$t('layouts.map.cluster')"
 			:disabled="geometryOptions && geometryOptions.geometryType !== 'Point'"
 		/>
 	</div>

@@ -13,7 +13,6 @@ import { useAppStore } from '@directus/stores';
 import { applyOptionsData } from '@directus/utils';
 import { assign, isEmpty } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import InsightsNavigation from '../components/navigation.vue';
 import InsightsNotFound from './not-found.vue';
 
@@ -25,7 +24,6 @@ const props = withDefaults(
 	{ panelKey: null },
 );
 
-const { t } = useI18n();
 
 const { panels: panelsInfo } = useExtensions();
 
@@ -277,7 +275,7 @@ const refreshInterval = computed({
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
+			<sidebar-detail icon="info" :title="$t('information')" close>
 				<div v-md="t('page_help_insights_dashboard')" class="page-description" />
 			</sidebar-detail>
 
@@ -310,7 +308,7 @@ const refreshInterval = computed({
 				<div v-else class="panel-container" :class="{ loading: loading.includes(tile.id) }">
 					<div v-if="errors[tile.id]" class="panel-error">
 						<v-icon name="warning" />
-						{{ t('unexpected_error') }}
+						{{ $t('unexpected_error') }}
 						<v-error :error="errors[tile.id]" />
 					</div>
 					<div
@@ -318,7 +316,7 @@ const refreshInterval = computed({
 						class="panel-no-data type-note"
 						:class="{ 'header-offset': tile.showHeader }"
 					>
-						{{ t('no_data') }}
+						{{ $t('no_data') }}
 					</div>
 					<v-error-boundary v-else :name="`panel-${tile.data.type}`">
 						<component
@@ -336,7 +334,7 @@ const refreshInterval = computed({
 						<template #fallback="{ error }">
 							<div class="panel-error">
 								<v-icon name="warning" />
-								{{ t('unexpected_error') }}
+								{{ $t('unexpected_error') }}
 								<v-error :error="error" />
 							</div>
 						</template>
@@ -354,21 +352,21 @@ const refreshInterval = computed({
 			@apply="copyPanel"
 		>
 			<v-card>
-				<v-card-title>{{ t('copy_to') }}</v-card-title>
+				<v-card-title>{{ $t('copy_to') }}</v-card-title>
 
 				<v-card-text>
 					<v-notice v-if="!copyPanelChoices.length">
-						{{ t('no_other_dashboards_copy') }}
+						{{ $t('no_other_dashboards_copy') }}
 					</v-notice>
 					<v-select v-else v-model="copyPanelTo" :items="copyPanelChoices" item-text="name" item-value="id" />
 				</v-card-text>
 
 				<v-card-actions>
 					<v-button secondary @click="copyPanelID = null">
-						{{ t('cancel') }}
+						{{ $t('cancel') }}
 					</v-button>
 					<v-button :disabled="!copyPanelChoices.length" @click="copyPanel">
-						{{ t('copy') }}
+						{{ $t('copy') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -376,27 +374,27 @@ const refreshInterval = computed({
 
 		<v-dialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="cancelChanges(true)">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('discard_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('discard_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="cancelChanges(true)">
-						{{ t('discard_changes') }}
+						{{ $t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmCancel = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="confirmCancel = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
+						{{ $t('discard_changes') }}
 					</v-button>
 
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

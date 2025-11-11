@@ -7,7 +7,6 @@ export default {
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
 import { Field } from '@directus/types';
-import { useI18n } from 'vue-i18n';
 
 export interface Props {
 	fields: string[];
@@ -19,14 +18,13 @@ const props = defineProps<Props>();
 
 const emit = defineEmits(['update:tableSpacing', 'update:activeFields', 'update:fields']);
 
-const { t } = useI18n();
 
 const tableSpacingWritable = useSync(props, 'tableSpacing', emit);
 </script>
 
 <template>
 	<div class="field">
-		<div class="type-label">{{ t('layouts.tabular.spacing') }}</div>
+		<div class="type-label">{{ $t('layouts.tabular.spacing') }}</div>
 		<v-select
 			v-model="tableSpacingWritable"
 			:items="[

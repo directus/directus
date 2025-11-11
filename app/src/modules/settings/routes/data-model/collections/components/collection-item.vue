@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Collection } from '@/types/collections';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import { CollectionTree } from '../collections.vue';
 import CollectionOptions from './collection-options.vue';
@@ -16,7 +15,6 @@ const props = defineProps<{
 
 const emit = defineEmits(['setNestedSort', 'editCollection', 'toggleCollapse']);
 
-const { t } = useI18n();
 
 const toggleCollapse = () => {
 	emit('toggleCollapse', props.collection.collection);
