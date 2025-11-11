@@ -42,7 +42,7 @@ catalog:
   '@fullcalendar/list': 6.1.19
   '@fullcalendar/timegrid': 6.1.19
   '@godaddy/terminus': 4.12.1
-  '@google-cloud/storage': 7.17.2
+  '@google-cloud/storage': 7.17.3
   '@histoire/plugin-vue': 0.17.17
   '@joeattardi/emoji-button': 4.6.4
   '@json2csv/plainjs': 7.0.6
