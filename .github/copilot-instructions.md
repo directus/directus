@@ -256,7 +256,6 @@ pnpm dev
 ## Support Channels
 
 - GitHub Issues: Bug reports and feature requests
-- Discord: https://directus.chat (Live chat)
 - Community: https://community.directus.io (Discussions)
 - Twitter: @directus (Updates)
 
