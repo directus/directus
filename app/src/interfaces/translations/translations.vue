@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
+import { useI18n } from 'vue-i18n';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useWindowSize } from '@/composables/use-window-size';
 import { useInjectNestedValidation } from '@/composables/use-nested-validation';

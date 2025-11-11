@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { localizedFormatDistanceStrict } from '@/utils/localized-format-distance-strict';
+import { useI18n } from 'vue-i18n';
 import MetadataItem from '../../../components/metadata-item.vue';
 
 defineProps<{ publishDate: string }>();

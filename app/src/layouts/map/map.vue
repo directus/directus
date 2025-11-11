@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { usePageSize } from '@/composables/use-page-size';
+import { useI18n } from 'vue-i18n';
 import { useSync } from '@directus/composables';
 import { GeometryOptions } from '@directus/types';
 import MapComponent from './components/map.vue';

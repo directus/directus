@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
+import { useI18n } from 'vue-i18n';
 import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
 import { cssVar } from '@directus/utils/browser';
 import ApexCharts from 'apexcharts';

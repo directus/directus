@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { BaseConditionalFillOperators, PanelFunction } from '@/types/panels';
+import { useI18n } from 'vue-i18n';
 import { computed, unref } from 'vue';
 
 type ConditionalFillFormat = {

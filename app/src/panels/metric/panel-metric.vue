@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Filter } from '@directus/types';
+import { useI18n } from 'vue-i18n';
 import { isNil } from 'lodash';
 import { computed, ref, onMounted, onUpdated, onBeforeUnmount } from 'vue';
 import { useAutoFontFit } from '@/composables/use-auto-fit-text';

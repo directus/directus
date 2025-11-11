@@ -66,7 +66,7 @@ const fields = useFormFields(props.register, value, initialValues);
 			disabled-menu
 		></v-form>
 		<v-notice>
-			<span v-md="t('setup_license_notice')"></span>
+			<span v-md="$t('setup_license_notice')"></span>
 			<br />
 			<i18n-t keypath="setup_license_follow_up" tag="span">
 				<template #contactOurTeam>
@@ -123,7 +123,7 @@ const fields = useFormFields(props.register, value, initialValues);
 			</i18n-t>
 		</v-checkbox>
 		<v-checkbox v-model="product_updates">
-			<span v-md="t('setup_marketing_emails')"></span>
+			<span v-md="$t('setup_marketing_emails')"></span>
 		</v-checkbox>
 	</div>
 </template>

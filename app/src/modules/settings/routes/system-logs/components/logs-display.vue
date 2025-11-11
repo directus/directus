@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { localizedFormat } from '@/utils/localized-format';
+import { useI18n } from 'vue-i18n';
 import { nextTick, ref } from 'vue';
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import { Log } from '../types';

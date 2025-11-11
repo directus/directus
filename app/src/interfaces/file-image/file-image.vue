@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
+import { useI18n } from 'vue-i18n';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import { formatFilesize } from '@/utils/format-filesize';

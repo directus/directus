@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Sort } from '@/components/v-table/types';
+import { useI18n } from 'vue-i18n';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { useRelationPermissionsO2M } from '@/composables/use-relation-permissions';

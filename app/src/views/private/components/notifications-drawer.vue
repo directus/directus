@@ -2,6 +2,7 @@
 import api from '@/api';
 import useDatetime from '@/components/use-datetime.vue';
 import { useCollectionsStore } from '@/stores/collections';
+import { useI18n } from 'vue-i18n';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';

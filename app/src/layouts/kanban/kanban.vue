@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getAssetUrl } from '@/utils/get-asset-url';
+import { useI18n } from 'vue-i18n';
 import type { Field, PrimaryKey } from '@directus/types';
 import { computed, ref } from 'vue';
 import Draggable from 'vuedraggable';

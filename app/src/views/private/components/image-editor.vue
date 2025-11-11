@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useSettingsStore } from '@/stores/settings';
+import { useI18n } from 'vue-i18n';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';
 import type { File } from '@directus/types';

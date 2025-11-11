@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import type { ShowSelect } from '@directus/types';
 
 import '@fullcalendar/core';
