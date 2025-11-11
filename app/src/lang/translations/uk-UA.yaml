@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Інформація про
+privacy_policy: Політика конфіденційності 
+contact_our_team: Звʼязок із нашою командою 
 first_name: Ім'я
 last_name: Прізвище
 identifier: Ідентифікатор
