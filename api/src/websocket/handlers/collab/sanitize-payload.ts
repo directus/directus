@@ -41,9 +41,11 @@ export async function sanitizePayload(
 			}
 
 			const readAllowed =
-				permissionsByCollection[context.collection.collection]?.some(
-					(perm) => perm.fields && (perm.fields.includes(String(key)) || perm.fields.includes('*')),
-				) ?? false;
+				(accountability.admin === true ||
+					permissionsByCollection[context.collection.collection]?.some(
+						(perm) => perm.fields && (perm.fields.includes(String(key)) || perm.fields.includes('*')),
+					)) ??
+				false;
 
 			if (!readAllowed) return;
 

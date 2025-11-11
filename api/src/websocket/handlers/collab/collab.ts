@@ -8,7 +8,7 @@ import type { FocusMessage, JoinMessage, LeaveMessage, SaveMessage, UpdateMessag
 import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
 import getDatabase from '../../../database/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
-import { ForbiddenError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { hasFieldPermision } from './field-permissions.js';
 
 /**
@@ -53,7 +53,10 @@ export class CollabHandler {
 				{ knex: getDatabase(), schema: await getSchema() },
 			);
 
-			if (message.collection in allowedCollections === false) throw new ForbiddenError();
+			if (!allowedCollections.includes(message.collection))
+				throw new InvalidPayloadError({
+					reason: `No permission to access collection ${message.collection} or collection does not exist`,
+				});
 
 			const room = await this.rooms.createRoom(
 				message.collection,
@@ -73,9 +76,15 @@ export class CollabHandler {
 			if (message) {
 				const room = this.rooms.getRoom(message.room);
 
-				if (!room) return;
+				if (!room)
+					throw new InvalidPayloadError({
+						reason: `No access to room ${message.room} or room does not exist`,
+					});
 
-				if (!room.hasClient(client)) throw new ForbiddenError();
+				if (!room.hasClient(client))
+					throw new InvalidPayloadError({
+						reason: `Not connected to room ${message.room}`,
+					});
 
 				room.leave(client);
 			} else {
@@ -96,9 +105,15 @@ export class CollabHandler {
 		try {
 			const room = this.rooms.getRoom(message.room);
 
-			if (!room) return;
+			if (!room)
+				throw new InvalidPayloadError({
+					reason: `No access to room ${message.room} or room does not exist`,
+				});
 
-			if (!room.hasClient(client)) throw new ForbiddenError();
+			if (!room.hasClient(client))
+				throw new InvalidPayloadError({
+					reason: `Not connected to room ${message.room}`,
+				});
 
 			room.save(client);
 		} catch (err) {
@@ -110,12 +125,20 @@ export class CollabHandler {
 		try {
 			const room = this.rooms.getRoom(message.room);
 
-			if (!room) return;
+			if (!room)
+				throw new InvalidPayloadError({
+					reason: `No access to room ${message.room} or room does not exist`,
+				});
 
-			if (!room.hasClient(client)) throw new ForbiddenError();
+			if (!room.hasClient(client))
+				throw new InvalidPayloadError({
+					reason: `Not connected to room ${message.room}`,
+				});
 
 			if ((await hasFieldPermision(client.accountability!, room.collection, message.field)) === false)
-				throw new ForbiddenError();
+				throw new InvalidPayloadError({
+					reason: `No permission to update field ${message.field} or field does not exist`,
+				});
 
 			if ('changes' in message) {
 				room.update(message.field, message.changes);
@@ -131,12 +154,20 @@ export class CollabHandler {
 		try {
 			const room = this.rooms.getRoom(message.room);
 
-			if (!room) return;
+			if (!room)
+				throw new InvalidPayloadError({
+					reason: `No access to room ${message.room} or room does not exist`,
+				});
 
-			if (!room.hasClient(client)) throw new ForbiddenError();
+			if (!room.hasClient(client))
+				throw new InvalidPayloadError({
+					reason: `Not connected to room ${message.room}`,
+				});
 
 			if (message.field && (await hasFieldPermision(client.accountability!, room.collection, message.field)) === false)
-				throw new ForbiddenError();
+				throw new InvalidPayloadError({
+					reason: `No permission to focus on field ${message.field} or field does not exist`,
+				});
 
 			room.focus(client, message.field);
 		} catch (err) {
