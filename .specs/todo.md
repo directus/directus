@@ -130,22 +130,22 @@ const { t } = useI18n();
 - [x] interfaces/_system/system-mfa-setup/system-mfa-setup.vue
 - [x] interfaces/_system/system-modules/system-modules.vue
 - [x] interfaces/_system/system-owner/system-owner.vue
-- [ ] interfaces/_system/system-permissions/add-collection.vue
-- [ ] interfaces/_system/system-permissions/detail/components/actions.vue
-- [ ] interfaces/_system/system-permissions/detail/components/app-minimal.vue
-- [ ] interfaces/_system/system-permissions/detail/components/fields.vue
-- [ ] interfaces/_system/system-permissions/detail/components/permissions.vue
-- [ ] interfaces/_system/system-permissions/detail/components/presets.vue
-- [ ] interfaces/_system/system-permissions/detail/components/validation.vue
-- [ ] interfaces/_system/system-permissions/detail/permissions-detail.vue
-- [ ] interfaces/_system/system-permissions/permissions-header.vue
-- [ ] interfaces/_system/system-permissions/permissions-row.vue
-- [ ] interfaces/_system/system-permissions/permissions-toggle.vue
-- [ ] interfaces/_system/system-permissions/system-permissions.vue
-- [ ] interfaces/_system/system-raw-editor/system-raw-editor.vue
-- [ ] interfaces/_system/system-scope/system-scope.vue
-- [ ] interfaces/_system/system-theme/system-theme.vue
-- [ ] interfaces/_system/system-token/system-token.vue
+- [x] interfaces/_system/system-permissions/add-collection.vue
+- [x] interfaces/_system/system-permissions/detail/components/actions.vue
+- [x] interfaces/_system/system-permissions/detail/components/app-minimal.vue
+- [x] interfaces/_system/system-permissions/detail/components/fields.vue
+- [ ] ~~interfaces/_system/system-permissions/detail/components/permissions.vue~~ (uses t in script)
+- [x] interfaces/_system/system-permissions/detail/components/presets.vue
+- [ ] ~~interfaces/_system/system-permissions/detail/components/validation.vue~~ (uses t in script)
+- [ ] ~~interfaces/_system/system-permissions/detail/permissions-detail.vue~~ (uses t in script)
+- [x] interfaces/_system/system-permissions/permissions-header.vue
+- [x] interfaces/_system/system-permissions/permissions-row.vue
+- [x] interfaces/_system/system-permissions/permissions-toggle.vue
+- [x] interfaces/_system/system-permissions/system-permissions.vue
+- [ ] ~~interfaces/_system/system-raw-editor/system-raw-editor.vue~~ (uses t in script)
+- [ ] ~~interfaces/_system/system-scope/system-scope.vue~~ (uses t in script)
+- [x] interfaces/_system/system-theme/system-theme.vue
+- [ ] ~~interfaces/_system/system-token/system-token.vue~~ (uses t in script)
 
 ### Interfaces - Regular
 - [ ] interfaces/collection-item-dropdown/collection-item-dropdown.vue

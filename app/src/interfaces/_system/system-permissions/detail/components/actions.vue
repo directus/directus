@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Permission, PrimaryKey } from '@directus/types';
-import { useI18n } from 'vue-i18n';
 
 defineProps<{
 	permission: Permission;
@@ -11,7 +10,6 @@ const emit = defineEmits<{
 	save: [];
 }>();
 
-const { t } = useI18n();
 </script>
 
 <template>

@@ -2,7 +2,6 @@
 import { Collection } from '@/types/collections';
 import ValueNull from '@/views/private/components/value-null.vue';
 import { Permission, PermissionsAction } from '@directus/types';
-import { useI18n } from 'vue-i18n';
 import { editablePermissionActions, EditablePermissionsAction } from '@/app-permissions.js';
 import PermissionsToggle from './permissions-toggle.vue';
 
@@ -22,7 +21,6 @@ const emit = defineEmits<{
 	setNoAccessAll: [];
 }>();
 
-const { t } = useI18n();
 </script>
 
 <template>
@@ -31,9 +29,9 @@ const { t } = useI18n();
 			<div>
 				<div v-tooltip.left="collection.name" class="name">{{ collection.collection }}</div>
 				<div class="shortcuts">
-					<button type="button" class="all" @click="emit('setFullAccessAll')">{{ t('all') }}</button>
+					<button type="button" class="all" @click="emit('setFullAccessAll')">{{ $t('all') }}</button>
 					<span class="divider">/</span>
-					<button type="button" class="none" @click="emit('setNoAccessAll')">{{ t('none') }}</button>
+					<button type="button" class="none" @click="emit('setNoAccessAll')">{{ $t('none') }}</button>
 				</div>
 			</div>
 		</td>
@@ -52,7 +50,7 @@ const { t } = useI18n();
 			<value-null v-else />
 		</td>
 		<td class="remove">
-			<v-icon v-tooltip="t('remove')" name="close" clickable @click="emit('removeRow')" />
+			<v-icon v-tooltip="$t('remove')" name="close" clickable @click="emit('removeRow')" />
 		</td>
 	</tr>
 </template>

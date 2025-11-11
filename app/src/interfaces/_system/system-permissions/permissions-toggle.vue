@@ -2,7 +2,6 @@
 import VChip from '@/components/v-chip.vue';
 import { Collection, Permission, PermissionsAction } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	collection: Collection;
@@ -18,7 +17,6 @@ const emit = defineEmits<{
 	edit: [];
 }>();
 
-const { t } = useI18n();
 
 const { permission } = toRefs(props);
 
@@ -59,13 +57,13 @@ const appMinimalLevel = computed(() => {
 		"
 		:class="[{ 'has-app-minimal': !!appMinimal }, appMinimalLevel]"
 	>
-		<v-chip v-if="appMinimalLevel === 'full'" small class="toggle all">{{ t(action) }}</v-chip>
+		<v-chip v-if="appMinimalLevel === 'full'" small class="toggle all">{{ $t(action) }}</v-chip>
 
 		<v-menu v-else show-arrow>
 			<template #activator="{ toggle, active }">
 				<v-chip small clickable class="toggle" :class="[permissionLevel, { active }]" @click="toggle">
 					<v-progress-circular v-if="loading || saving" indeterminate small />
-					<template v-else>{{ t(action) }}</template>
+					<template v-else>{{ $t(action) }}</template>
 				</v-chip>
 			</template>
 
@@ -75,7 +73,7 @@ const appMinimalLevel = computed(() => {
 						<v-icon name="check" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ t('all_access') }}
+						{{ $t('all_access') }}
 					</v-list-item-content>
 				</v-list-item>
 
@@ -89,7 +87,7 @@ const appMinimalLevel = computed(() => {
 						<v-icon name="block" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ t('no_access') }}
+						{{ $t('no_access') }}
 					</v-list-item-content>
 				</v-list-item>
 
@@ -100,7 +98,7 @@ const appMinimalLevel = computed(() => {
 						<v-icon name="rule" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ t('use_custom') }}
+						{{ $t('use_custom') }}
 					</v-list-item-content>
 					<v-list-item-icon>
 						<v-icon name="launch" />

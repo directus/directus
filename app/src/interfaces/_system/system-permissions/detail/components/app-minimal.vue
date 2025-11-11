@@ -1,17 +1,15 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 
 defineProps<{
 	value?: any;
 }>();
 
-const { t } = useI18n();
 </script>
 
 <template>
 	<div v-if="value" class="app-minimal">
 		<v-divider />
-		<v-notice type="warning">{{ t('the_following_are_minimum_permissions') }}</v-notice>
+		<v-notice type="warning">{{ $t('the_following_are_minimum_permissions') }}</v-notice>
 		<pre class="app-minimal-preview">{{ value }}</pre>
 	</div>
 </template>
