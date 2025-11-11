@@ -159,7 +159,7 @@ const toolDisplayName = computed(() => {
 }
 
 .tool-content-wrapper {
-	max-block-size: 300px;
+	max-block-size: 280px;
 	overflow-block: auto;
 	padding-inline: 0.5rem;
 
