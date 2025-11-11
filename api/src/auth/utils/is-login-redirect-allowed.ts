@@ -3,15 +3,15 @@ import { toArray } from '@directus/utils';
 import { useLogger } from '../../logger/index.js';
 import isUrlAllowed from '../../utils/is-url-allowed.js';
 
-export function isLoginRedirectAllowed(redirect: unknown, origin: string, provider: string): boolean {
+export function isLoginRedirectAllowed(originUrl: string, provider: string, redirect: unknown): boolean {
 	if (!redirect) return true; // empty redirect
 	if (typeof redirect !== 'string') return false; // invalid type
 
 	const env = useEnv();
 	const publicUrl = env['PUBLIC_URL'] as string;
 
-	if (URL.canParse(redirect) === false) {
-		if (redirect.startsWith('//') === false) {
+	if (!URL.canParse(redirect)) {
+		if (!redirect.startsWith('//')) {
 			// should be a relative path like `/admin/test`
 			return true;
 		}
@@ -20,9 +20,10 @@ export function isLoginRedirectAllowed(redirect: unknown, origin: string, provid
 		return false;
 	}
 
-	const { origin: redirectOrigin } = new URL(redirect);
+	const { protocol: redirectProtocol, hostname: redirectDomain } = new URL(redirect);
+	const redirectUrl = `${redirectProtocol}//${redirectDomain}`
 
-	if (redirectOrigin !== origin) return false;
+	if (redirectUrl !== originUrl) return false;
 
 	const envKey = `AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`;
 
@@ -35,6 +36,8 @@ export function isLoginRedirectAllowed(redirect: unknown, origin: string, provid
 		return false;
 	}
 
+	const { protocol: publicProtocol, hostname: publicDomain } = new URL(publicUrl);
+
 	// allow redirects to the defined PUBLIC_URL
-	return redirectOrigin === new URL(publicUrl).origin;
+	return redirectUrl === `${publicProtocol}//${publicDomain}`
 }

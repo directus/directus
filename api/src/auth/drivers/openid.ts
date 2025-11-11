@@ -35,8 +35,9 @@ import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 import { getSchema } from '../../utils/get-schema.js';
-import { generateProviderCallbackUrl } from '../utils/generate-provider-callback-url.js';
 import { isLoginRedirectAllowed } from '../utils/is-login-redirect-allowed.js';
+import { generateRedirectUri } from '../utils/generate-redirect-uri.js';
+import { generateRedirectUrl } from '../utils/generate-redirect-url.js';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: null | Client;
@@ -444,11 +445,11 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const redirect = req.query['redirect'];
 			const otp = req.query['otp'];
 
-			if (!isLoginRedirectAllowed(redirect, `${req.protocol}://${req.get('host')}`, providerName)) {
+			if (!isLoginRedirectAllowed(`${req.protocol}://${req.hostname}`, providerName, redirect)) {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			const callbackUrl = generateProviderCallbackUrl(req, providerName);
+			const redirectUrl = generateRedirectUrl(`${req.protocol}://${req.get('host')}`, providerName);
 
 			const token = jwt.sign(
 				{
@@ -456,7 +457,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 					redirect,
 					prompt,
 					otp,
-					callbackUrl,
+					redirectUrl,
 				},
 				getSecret(),
 				{
@@ -471,7 +472,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			});
 
 			try {
-				return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt, callbackUrl));
+				return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt, redirectUrl));
 			} catch {
 				return res.redirect(
 					new Url(env['PUBLIC_URL'] as string)

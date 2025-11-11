@@ -34,7 +34,7 @@ import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 import { getSchema } from '../../utils/get-schema.js';
-import { generateProviderCallbackUrl } from '../utils/generate-provider-callback-url.js';
+import { generateRedirectUri } from '../utils/generate-redirect-uri.js';
 import { isLoginRedirectAllowed } from '../utils/is-login-redirect-allowed.js';
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
@@ -101,7 +101,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		return generators.codeVerifier();
 	}
 
-	generateAuthUrl(codeVerifier: string, prompt = false, redirectUri?: string): string {
+	generateAuthUrl(codeVerifier: string, prompt = false, redirectUrl?: string): string {
 		const { plainCodeChallenge } = this.config;
 
 		try {
@@ -117,7 +117,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				code_challenge_method: plainCodeChallenge ? 'plain' : 'S256',
 				// Some providers require state even with PKCE
 				state: codeChallenge,
-				redirect_uri: redirectUri,
+				redirect_uri: redirectUrl,
 			});
 		} catch (e) {
 			throw handleError(e);
@@ -153,7 +153,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				: generators.codeChallenge(payload['codeVerifier']);
 
 			tokenSet = await this.client.oauthCallback(
-				payload['callbackUrl'],
+				payload['redirectUri'],
 				{ code: payload['code'], state: payload['state'] },
 				{ code_verifier: payload['codeVerifier'], state: codeChallenge },
 			);
@@ -359,11 +359,11 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			const otp = req.query['otp'];
 			const redirect = req.query['redirect'];
 
-			if (!isLoginRedirectAllowed(redirect, `${req.protocol}://${req.get('host')}`, providerName)) {
+			if (!isLoginRedirectAllowed(`${req.protocol}://${req.hostname}`, providerName, redirect)) {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			const callbackUrl = generateProviderCallbackUrl(req, providerName);
+			const redirectUrl = generateRedirectUri(`${req.protocol}://${req.get('host')}`, providerName);
 
 			const token = jwt.sign(
 				{
@@ -371,7 +371,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 					redirect,
 					prompt,
 					otp,
-					callbackUrl,
+					redirectUrl,
 				},
 				getSecret(),
 				{
@@ -385,7 +385,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				sameSite: 'lax',
 			});
 
-			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt, callbackUrl));
+			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt, redirectUrl));
 		},
 		respond,
 	);
