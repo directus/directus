@@ -285,7 +285,7 @@ catalog:
   tsx: 4.20.6
   tus-js-client: 4.3.1
   typescript: 5.9.3
-  typescript-eslint: 8.46.2
+  typescript-eslint: 8.46.4
   undici: 7.16.0
   unplugin-yaml: 3.0.7
   universal-cookie: 8.0.1
