@@ -833,9 +833,7 @@ export type OptionsDeletePermission = {
 	policyId: string;
 };
 
-export async function DeletePermission(vendor: Vendor, options: OptionsDeletePermission) {
-	const policyId = options.policyId;
-
+export async function DeletePermission(vendor: Vendor, { policyId }: OptionsDeletePermission) {
 	const response = await request(getUrl(vendor))
 		.delete(`/policies/${policyId}`)
 		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
