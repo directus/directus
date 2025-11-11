@@ -12,7 +12,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { getEndpoint } from '@directus/utils';
 import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import TranslationForm from './translation-form.vue';
 import { validateItem } from '@/utils/validate-item';
 
@@ -365,7 +364,7 @@ function useNestedValidation() {
 			<template #split-view="{ active, toggle }">
 				<v-icon
 					v-if="splitViewAvailable && !splitViewEnabled"
-					v-tooltip="t('interfaces.translations.toggle_split_view')"
+					v-tooltip="$t('interfaces.translations.toggle_split_view')"
 					name="flip"
 					clickable
 					@click.stop="
@@ -385,7 +384,7 @@ function useNestedValidation() {
 		>
 			<template #split-view>
 				<v-icon
-					v-tooltip="t('interfaces.translations.toggle_split_view')"
+					v-tooltip="$t('interfaces.translations.toggle_split_view')"
 					name="flip"
 					clickable
 					@click="splitView = false"

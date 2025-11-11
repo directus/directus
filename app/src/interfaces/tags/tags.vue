@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -25,7 +24,6 @@ const props = withDefaults(
 
 const emit = defineEmits(['input']);
 
-const { t } = useI18n();
 
 const presetVals = computed<string[]>(() => {
 	if (props.presets !== undefined) return processArray(props.presets);

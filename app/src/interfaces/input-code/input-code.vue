@@ -3,7 +3,6 @@ import { useWindowSize } from '@/composables/use-window-size';
 import { getStringifiedValue } from '@/utils/get-stringified-value';
 import CodeMirror, { ModeSpec } from 'codemirror';
 import { Ref, computed, onMounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import importCodemirrorMode from './import-codemirror-mode';
 
 import 'codemirror/mode/meta';
@@ -42,7 +41,6 @@ const props = withDefaults(
 
 const emit = defineEmits(['input']);
 
-const { t } = useI18n();
 
 const { width } = useWindowSize();
 

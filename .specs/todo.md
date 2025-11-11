@@ -148,38 +148,38 @@ const { t } = useI18n();
 - [ ] ~~interfaces/_system/system-token/system-token.vue~~ (uses t in script)
 
 ### Interfaces - Regular
-- [ ] interfaces/collection-item-dropdown/collection-item-dropdown.vue
-- [ ] interfaces/file-image/file-image.vue
-- [ ] interfaces/file/file.vue
-- [ ] interfaces/files/files.vue
-- [ ] interfaces/group-accordion/accordion-section.vue
-- [ ] interfaces/group-detail/group-detail.vue
-- [ ] interfaces/input-autocomplete-api/input-autocomplete-api.vue
-- [ ] interfaces/input-block-editor/input-block-editor.vue
-- [ ] interfaces/input-code/input-code.vue
-- [ ] interfaces/input-hash/input-hash.vue
-- [ ] interfaces/input-rich-text-html/input-rich-text-html.vue
-- [ ] interfaces/input-rich-text-md/input-rich-text-md.vue
-- [ ] interfaces/list-m2a/list-m2a.vue
-- [ ] interfaces/list-m2m/list-m2m.vue
-- [ ] interfaces/list-o2m-tree-view/item-preview.vue
-- [ ] interfaces/list-o2m-tree-view/list-o2m-tree-view.vue
-- [ ] interfaces/list-o2m-tree-view/nested-draggable.vue
-- [ ] interfaces/list-o2m/list-o2m.vue
-- [ ] interfaces/list/list.vue
-- [ ] interfaces/list/options.vue
-- [ ] interfaces/map/map.vue
-- [ ] interfaces/map/options.vue
-- [ ] interfaces/presentation-notice/presentation-notice.vue
-- [ ] interfaces/select-color/select-color.vue
-- [ ] interfaces/select-dropdown-m2o/select-dropdown-m2o.vue
-- [ ] interfaces/select-icon/select-icon.vue
-- [ ] interfaces/select-multiple-checkbox-tree/select-multiple-checkbox-tree.vue
-- [ ] interfaces/select-multiple-checkbox/select-multiple-checkbox.vue
-- [ ] interfaces/select-radio/select-radio.vue
-- [ ] interfaces/tags/tags.vue
-- [ ] interfaces/translations/translation-form.vue
-- [ ] interfaces/translations/translations.vue
+- [x] interfaces/collection-item-dropdown/collection-item-dropdown.vue
+- [x] interfaces/file-image/file-image.vue
+- [x] interfaces/file/file.vue
+- [x] interfaces/files/files.vue
+- [ ] ~~interfaces/group-accordion/accordion-section.vue~~ (uses t in script)
+- [ ] ~~interfaces/group-detail/group-detail.vue~~ (uses t in script)
+- [x] interfaces/input-autocomplete-api/input-autocomplete-api.vue
+- [x] interfaces/input-block-editor/input-block-editor.vue
+- [x] interfaces/input-code/input-code.vue
+- [ ] ~~interfaces/input-hash/input-hash.vue~~ (uses t in script)
+- [ ] ~~interfaces/input-rich-text-html/input-rich-text-html.vue~~ (uses t in script)
+- [x] interfaces/input-rich-text-md/input-rich-text-md.vue
+- [ ] ~~interfaces/list-m2a/list-m2a.vue~~ (uses t in script)
+- [x] interfaces/list-m2m/list-m2m.vue
+- [x] interfaces/list-o2m-tree-view/item-preview.vue
+- [x] interfaces/list-o2m-tree-view/list-o2m-tree-view.vue
+- [x] interfaces/list-o2m-tree-view/nested-draggable.vue
+- [x] interfaces/list-o2m/list-o2m.vue
+- [ ] ~~interfaces/list/list.vue~~ (uses t in script)
+- [ ] ~~interfaces/list/options.vue~~ (uses t in script)
+- [ ] ~~interfaces/map/map.vue~~ (uses t in script)
+- [x] interfaces/map/options.vue
+- [x] interfaces/presentation-notice/presentation-notice.vue
+- [ ] ~~interfaces/select-color/select-color.vue~~ (uses t in script)
+- [x] interfaces/select-dropdown-m2o/select-dropdown-m2o.vue
+- [x] interfaces/select-icon/select-icon.vue
+- [x] interfaces/select-multiple-checkbox-tree/select-multiple-checkbox-tree.vue
+- [x] interfaces/select-multiple-checkbox/select-multiple-checkbox.vue
+- [x] interfaces/select-radio/select-radio.vue
+- [x] interfaces/tags/tags.vue
+- [x] interfaces/translations/translation-form.vue
+- [x] interfaces/translations/translations.vue
 
 ### Layouts
 - [ ] layouts/calendar/calendar.vue

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useCustomSelection } from '@directus/composables';
 import { computed, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
 
 type Option = {
@@ -31,7 +30,6 @@ const props = withDefaults(
 
 const emit = defineEmits(['input']);
 
-const { t } = useI18n();
 
 const { choices, value } = toRefs(props);
 
@@ -50,7 +48,7 @@ const customIcon = computed(() => {
 
 <template>
 	<v-notice v-if="!items" type="warning">
-		{{ t('choices_option_configured_incorrectly') }}
+		{{ $t('choices_option_configured_incorrectly') }}
 	</v-notice>
 	<div
 		v-else
@@ -73,7 +71,7 @@ const customIcon = computed(() => {
 			@update:model-value="$emit('input', $event)"
 		/>
 		<v-notice v-if="items.length === 0 && !allowOther" type="info">
-			{{ t('no_options_available') }}
+			{{ $t('no_options_available') }}
 		</v-notice>
 		<div
 			v-if="allowOther"
@@ -94,7 +92,7 @@ const customIcon = computed(() => {
 			<input
 				ref="customInput"
 				v-model="otherValue"
-				:placeholder="t('other')"
+				:placeholder="$t('other')"
 				:disabled="disabled"
 				@change="$emit('input', otherValue)"
 			/>
