@@ -111,8 +111,8 @@ const { t } = useI18n();
 - [x] interfaces/_system/system-display/system-display.vue
 - [x] interfaces/_system/system-field-tree/system-field-tree.vue
 - [x] interfaces/_system/system-field/system-field.vue
-- [ ] interfaces/_system/system-fields/system-fields.vue
-- [ ] interfaces/_system/system-filter/input-component.vue
+- [ ] ~~interfaces/_system/system-fields/system-fields.vue~~ (uses t in script computed)
+- [x] interfaces/_system/system-filter/input-component.vue
 - [ ] interfaces/_system/system-filter/input-group.vue
 - [ ] interfaces/_system/system-filter/nodes.vue
 - [ ] interfaces/_system/system-filter/system-filter.vue
