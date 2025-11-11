@@ -11,6 +11,7 @@ import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-d
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import { useAppStore } from '@directus/stores';
 import { applyOptionsData } from '@directus/utils';
+import { createReusableTemplate } from '@vueuse/core';
 import { assign, isEmpty } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -21,11 +22,13 @@ const props = withDefaults(
 	defineProps<{
 		primaryKey: string;
 		panelKey?: string | null;
+		viewOnly?: boolean;
 	}>(),
-	{ panelKey: null },
+	{ panelKey: null, viewOnly: false },
 );
 
 const { t } = useI18n();
+const [DefineTemplate, ReuseTemplate] = createReusableTemplate()
 
 const { panels: panelsInfo } = useExtensions();
 
@@ -196,7 +199,64 @@ const refreshInterval = computed({
 </script>
 
 <template>
+	<DefineTemplate>
+		<v-workspace
+			:edit-mode="editMode"
+			:tiles="tiles"
+			:zoom-to-fit="zoomToFit"
+			@duplicate="(tile) => insightsStore.stagePanelDuplicate(tile.id)"
+			@edit="(tile) => router.push(`/insights/${primaryKey}/${tile.id}`)"
+			@update="insightsStore.stagePanelUpdate"
+			@delete="insightsStore.stagePanelDelete"
+			@move="copyPanelID = $event"
+		>
+			<template #default="{ tile }">
+				<v-progress-circular
+					v-if="loading.includes(tile.id) && !data[tile.id]"
+					:class="{ 'header-offset': tile.showHeader }"
+					class="panel-loading"
+					indeterminate
+				/>
+				<div v-else class="panel-container" :class="{ loading: loading.includes(tile.id) }">
+					<div v-if="errors[tile.id]" class="panel-error">
+						<v-icon name="warning" />
+						{{ t('unexpected_error') }}
+						<v-error :error="errors[tile.id]" />
+					</div>
+					<div
+						v-else-if="tile.id in data && isEmpty(data[tile.id])"
+						class="panel-no-data type-note"
+						:class="{ 'header-offset': tile.showHeader }"
+					>
+						{{ t('no_data') }}
+					</div>
+					<v-error-boundary v-else :name="`panel-${tile.data.type}`">
+						<component
+							:is="`panel-${tile.data.type}`"
+							v-bind="tile.data.options"
+							:id="tile.id"
+							:dashboard="primaryKey"
+							:show-header="tile.showHeader"
+							:height="tile.height"
+							:width="tile.width"
+							:now="now"
+							:data="data[tile.id]"
+						/>
+
+						<template #fallback="{ error }">
+							<div class="panel-error">
+								<v-icon name="warning" />
+								{{ t('unexpected_error') }}
+								<v-error :error="error" />
+							</div>
+						</template>
+					</v-error-boundary>
+				</div>
+			</template>
+		</v-workspace>
+	</DefineTemplate>
 	<insights-not-found v-if="!currentDashboard" />
+	<ReuseTemplate v-else-if="viewOnly" />
 	<private-view v-else :title="currentDashboard.name">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
@@ -290,60 +350,7 @@ const refreshInterval = computed({
 			<insights-navigation />
 		</template>
 
-		<v-workspace
-			:edit-mode="editMode"
-			:tiles="tiles"
-			:zoom-to-fit="zoomToFit"
-			@duplicate="(tile) => insightsStore.stagePanelDuplicate(tile.id)"
-			@edit="(tile) => router.push(`/insights/${primaryKey}/${tile.id}`)"
-			@update="insightsStore.stagePanelUpdate"
-			@delete="insightsStore.stagePanelDelete"
-			@move="copyPanelID = $event"
-		>
-			<template #default="{ tile }">
-				<v-progress-circular
-					v-if="loading.includes(tile.id) && !data[tile.id]"
-					:class="{ 'header-offset': tile.showHeader }"
-					class="panel-loading"
-					indeterminate
-				/>
-				<div v-else class="panel-container" :class="{ loading: loading.includes(tile.id) }">
-					<div v-if="errors[tile.id]" class="panel-error">
-						<v-icon name="warning" />
-						{{ t('unexpected_error') }}
-						<v-error :error="errors[tile.id]" />
-					</div>
-					<div
-						v-else-if="tile.id in data && isEmpty(data[tile.id])"
-						class="panel-no-data type-note"
-						:class="{ 'header-offset': tile.showHeader }"
-					>
-						{{ t('no_data') }}
-					</div>
-					<v-error-boundary v-else :name="`panel-${tile.data.type}`">
-						<component
-							:is="`panel-${tile.data.type}`"
-							v-bind="tile.data.options"
-							:id="tile.id"
-							:dashboard="primaryKey"
-							:show-header="tile.showHeader"
-							:height="tile.height"
-							:width="tile.width"
-							:now="now"
-							:data="data[tile.id]"
-						/>
-
-						<template #fallback="{ error }">
-							<div class="panel-error">
-								<v-icon name="warning" />
-								{{ t('unexpected_error') }}
-								<v-error :error="error" />
-							</div>
-						</template>
-					</v-error-boundary>
-				</div>
-			</template>
-		</v-workspace>
+		<ReuseTemplate />
 
 		<router-view name="detail" :dashboard-key="primaryKey" :panel-key="panelKey" />
 
