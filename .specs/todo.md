@@ -116,10 +116,10 @@ const { t } = useI18n();
 - [x] interfaces/_system/system-filter/input-group.vue
 - [ ] ~~interfaces/_system/system-filter/nodes.vue~~ (uses t in script)
 - [x] interfaces/_system/system-filter/system-filter.vue
-- [ ] interfaces/_system/system-folder/folder.vue
-- [ ] interfaces/_system/system-inline-fields/system-inline-fields.vue
-- [ ] interfaces/_system/system-input-password/input-password.vue
-- [ ] interfaces/_system/system-input-translated-string/custom-translations-tooltip.vue
+- [ ] ~~interfaces/_system/system-folder/folder.vue~~ (uses t in script computed)
+- [ ] ~~interfaces/_system/system-inline-fields/system-inline-fields.vue~~ (uses t in script computed)
+- [x] interfaces/_system/system-input-password/input-password.vue
+- [x] interfaces/_system/system-input-translated-string/custom-translations-tooltip.vue
 - [ ] interfaces/_system/system-input-translated-string/input-translated-string.vue
 - [ ] interfaces/_system/system-interface-options/system-interface-options.vue
 - [ ] interfaces/_system/system-interface/system-interface.vue
