@@ -113,13 +113,14 @@ directus/
 - Use descriptive test names with `describe()` and `test()`
 
 Example:
+
 ```typescript
 import { describe, expect, test, vi } from 'vitest';
 
 describe('function name', () => {
-  test('should do something specific', () => {
-    // Test implementation
-  });
+	test('should do something specific', () => {
+		// Test implementation
+	});
 });
 ```
 
