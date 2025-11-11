@@ -183,7 +183,7 @@ catalog:
   geojson: 0.5.0
   get-port: 7.1.0
   glob-to-regexp: 0.4.1
-  globals: 16.4.0
+  globals: 16.5.0
   graphql: 16.11.0
   graphql-compose: 9.1.0
   graphql-ws: 6.0.6
