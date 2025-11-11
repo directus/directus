@@ -529,8 +529,8 @@ catalogs:
       specifier: 16.5.0
       version: 16.5.0
     graphql:
-      specifier: 16.11.0
-      version: 16.11.0
+      specifier: 16.12.0
+      version: 16.12.0
     graphql-compose:
       specifier: 9.1.0
       version: 9.1.0
@@ -1136,13 +1136,13 @@ importers:
         version: 0.4.1
       graphql:
         specifier: 'catalog:'
-        version: 16.11.0
+        version: 16.12.0
       graphql-compose:
         specifier: 'catalog:'
-        version: 9.1.0(graphql@16.11.0)
+        version: 9.1.0(graphql@16.12.0)
       graphql-ws:
         specifier: 'catalog:'
-        version: 6.0.6(graphql@16.11.0)(ws@8.18.3)
+        version: 6.0.6(graphql@16.12.0)(ws@8.18.3)
       helmet:
         specifier: 'catalog:'
         version: 8.1.0
@@ -2795,7 +2795,7 @@ importers:
         version: 4.21.2
       graphql:
         specifier: 'catalog:'
-        version: 16.11.0
+        version: 16.12.0
       nodemailer:
         specifier: 'catalog:'
         version: 7.0.10
@@ -3051,7 +3051,7 @@ importers:
         version: 14.1.0
       graphql-ws:
         specifier: 'catalog:'
-        version: 6.0.6(graphql@16.11.0)(ws@8.18.3)
+        version: 6.0.6(graphql@16.12.0)(ws@8.18.3)
       js-yaml:
         specifier: 'catalog:'
         version: 4.1.0
@@ -9118,8 +9118,8 @@ packages:
       ws:
         optional: true
 
-  graphql@16.11.0:
-    resolution: {integrity: sha512-mS1lbMsxgQj6hge1XZ6p7GPhbrtFwUFYi3wRzXAC/FmYnyXMTvvI3td3rjmQ2u8ewXueaSvRPWaEcgVVOT9Jnw==}
+  graphql@16.12.0:
+    resolution: {integrity: sha512-DKKrynuQRne0PNpEbzuEdHlYOMksHSUI8Zc9Unei5gTsMNA2/vMpoMz/yKba50pejK56qj98qM0SjYxAKi13gQ==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
   gray-matter@4.0.3:
@@ -20975,22 +20975,22 @@ snapshots:
     dependencies:
       lodash: 4.17.21
 
-  graphql-compose@9.1.0(graphql@16.11.0):
+  graphql-compose@9.1.0(graphql@16.12.0):
     dependencies:
-      graphql: 16.11.0
-      graphql-type-json: 0.3.2(graphql@16.11.0)
+      graphql: 16.12.0
+      graphql-type-json: 0.3.2(graphql@16.12.0)
 
-  graphql-type-json@0.3.2(graphql@16.11.0):
+  graphql-type-json@0.3.2(graphql@16.12.0):
     dependencies:
-      graphql: 16.11.0
+      graphql: 16.12.0
 
-  graphql-ws@6.0.6(graphql@16.11.0)(ws@8.18.3):
+  graphql-ws@6.0.6(graphql@16.12.0)(ws@8.18.3):
     dependencies:
-      graphql: 16.11.0
+      graphql: 16.12.0
     optionalDependencies:
       ws: 8.18.3
 
-  graphql@16.11.0: {}
+  graphql@16.12.0: {}
 
   gray-matter@4.0.3:
     dependencies:
