@@ -151,7 +151,7 @@ catalog:
   cookie-parser: 1.4.7
   copyfiles: 2.4.1
   cors: 2.8.5
-  cron: 4.3.3
+  cron: 4.3.4
   cropperjs: 1.6.2
   date-fns: 4.1.0
   decamelize: 6.0.1
