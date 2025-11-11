@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { RegistryAccountResponse } from '@directus/extensions-registry';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import MetadataItem from '../../../components/metadata-item.vue';
 
 const props = defineProps<{
 	account: RegistryAccountResponse['data'];
 }>();
 
-const { t } = useI18n();
 
 const githubLink = computed(() => {
 	if (props.account.github_username) {
@@ -26,7 +24,7 @@ const npmLink = computed(() => {
 <template>
 	<div class="metadata">
 		<div v-if="account.github_bio" class="about">
-			<p class="type-label">{{ t('about') }}</p>
+			<p class="type-label">{{ $t('about') }}</p>
 			<p>{{ account.github_bio }}</p>
 			<v-divider class="divider" />
 		</div>
@@ -37,7 +35,7 @@ const npmLink = computed(() => {
 					{{ account.github_username }}
 				</MetadataItem>
 				<MetadataItem v-if="account.github_blog" icon="link" :href="account.github_blog">
-					{{ t('website') }}
+					{{ $t('website') }}
 				</MetadataItem>
 			</div>
 		</v-list>

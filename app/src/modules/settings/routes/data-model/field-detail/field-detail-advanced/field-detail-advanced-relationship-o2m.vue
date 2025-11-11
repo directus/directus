@@ -3,12 +3,10 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import RelatedCollectionSelect from '../shared/related-collection-select.vue';
 import RelatedFieldSelect from '../shared/related-field-select.vue';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 
-const { t } = useI18n();
 
 const fieldDetailStore = useFieldDetailStore();
 const relationsStore = useRelationsStore();
@@ -41,12 +39,12 @@ const unsortableJunctionFields = computed(() => {
 	<div>
 		<div class="grid">
 			<div class="field">
-				<div class="type-label">{{ t('this_collection') }}</div>
+				<div class="type-label">{{ $t('this_collection') }}</div>
 				<v-input disabled :model-value="collection" />
 			</div>
 
 			<div class="field">
-				<div class="type-label">{{ t('related_collection') }}</div>
+				<div class="type-label">{{ $t('related_collection') }}</div>
 				<related-collection-select v-model="relatedCollection" :disabled="isExisting" />
 			</div>
 
@@ -58,20 +56,20 @@ const unsortableJunctionFields = computed(() => {
 		</div>
 
 		<div class="sort-field">
-			<v-divider large :inline-title="false">{{ t('sort_field') }}</v-divider>
+			<v-divider large :inline-title="false">{{ $t('sort_field') }}</v-divider>
 
 			<related-field-select
 				v-model="sortField"
 				:collection="relatedCollection"
 				:type-allow-list="['integer', 'bigInteger', 'float', 'decimal']"
 				:disabled-fields="unsortableJunctionFields"
-				:placeholder="t('add_sort_field') + '...'"
+				:placeholder="$t('add_sort_field') + '...'"
 				nullable
 			/>
 		</div>
 
 		<div class="relational-triggers">
-			<v-divider class="field full" large :inline-title="false">{{ t('relational_triggers') }}</v-divider>
+			<v-divider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</v-divider>
 
 			<div class="field">
 				<div class="type-label">
@@ -83,7 +81,7 @@ const unsortableJunctionFields = computed(() => {
 				</div>
 				<v-select
 					v-model="onDeselect"
-					:placeholder="t('choose_action') + '...'"
+					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
 							text: t('referential_action_set_null', { field: relatedField }),
@@ -111,7 +109,7 @@ const unsortableJunctionFields = computed(() => {
 				<v-select
 					v-model="onDelete"
 					:disabled="collection === relatedCollection"
-					:placeholder="t('choose_action') + '...'"
+					:placeholder="$t('choose_action') + '...'"
 					:items="[
 						{
 							text: t('referential_action_set_null', { field: relatedField }),
@@ -139,7 +137,7 @@ const unsortableJunctionFields = computed(() => {
 
 		<v-notice v-if="generationInfo.length > 0" class="generated-data" type="warning">
 			<span>
-				{{ t('new_data_alert') }}
+				{{ $t('new_data_alert') }}
 
 				<ul>
 					<li v-for="(data, index) in generationInfo" :key="index">

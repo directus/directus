@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref, toRefs, unref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
@@ -23,7 +22,6 @@ const props = withDefaults(defineProps<Props>(), {
 	primaryKey: null,
 });
 
-const { t } = useI18n();
 
 const router = useRouter();
 
@@ -270,14 +268,14 @@ async function revert(values: Record<string, any>) {
 				</template>
 
 				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
+							{{ $t('cancel') }}
 						</v-button>
 						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete_label') }}
+							{{ $t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -315,19 +313,19 @@ async function revert(values: Record<string, any>) {
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
+						{{ $t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
+			<sidebar-detail icon="info" :title="$t('information')" close>
 				<div v-md="t('page_help_settings_translations_item')" class="page-description" />
 			</sidebar-detail>
 			<template v-if="isNew === false && loading === false && internalPrimaryKey">

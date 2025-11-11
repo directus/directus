@@ -2,9 +2,7 @@
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n();
 
 const loading = ref(false);
 const bookmarksCount = ref<number | null>(null);
@@ -35,14 +33,14 @@ async function fetchCounts() {
 </script>
 
 <template>
-	<sidebar-detail icon="info" :title="t('information')" close>
+	<sidebar-detail icon="info" :title="$t('information')" close>
 		<dl>
 			<div>
-				<dt>{{ t('bookmarks') }}</dt>
+				<dt>{{ $t('bookmarks') }}</dt>
 				<dd>{{ bookmarksCount }}</dd>
 			</div>
 			<div>
-				<dt>{{ t('presets') }}</dt>
+				<dt>{{ $t('presets') }}</dt>
 				<dd>{{ presetsCount }}</dd>
 			</div>
 		</dl>

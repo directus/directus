@@ -4,7 +4,6 @@ import { ApiOutput } from '@directus/types';
 import { groupBy } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
 import ExtensionItem from './components/extension-item.vue';
@@ -13,7 +12,6 @@ import { ExtensionType } from './types';
 
 type ExtensionsMap = Record<ExtensionType, ApiOutput[]>;
 
-const { t } = useI18n();
 
 const extensionsStore = useExtensionsStore();
 const { extensions, loading } = storeToRefs(extensionsStore);
@@ -35,7 +33,7 @@ const extensionsByType = computed(() => {
 </script>
 
 <template>
-	<private-view :title="t('extensions')">
+	<private-view :title="$t('extensions')">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
@@ -70,8 +68,8 @@ const extensionsByType = computed(() => {
 				</div>
 			</template>
 
-			<v-info v-else icon="error" center :title="t('no_extensions')">
-				{{ t('no_extensions_copy') }}
+			<v-info v-else icon="error" center :title="$t('no_extensions')">
+				{{ $t('no_extensions_copy') }}
 			</v-info>
 		</div>
 	</private-view>

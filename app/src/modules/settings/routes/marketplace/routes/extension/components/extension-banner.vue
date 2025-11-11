@@ -4,10 +4,8 @@ import { extensionTypeIconMap } from '@/constants/extension-type-icon-map';
 import { localizedFormatDistanceStrict } from '@/utils/localized-format-distance-strict';
 import type { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { formatName } from '../../../utils/format-name';
 
-const { t } = useI18n();
 
 const props = defineProps<{
 	extension: RegistryDescribeResponse['data'];
@@ -20,7 +18,7 @@ const newestVersion = computed(() => props.extension.versions.at(0)!);
 <template>
 	<VBanner :icon="icon">
 		<template #headline>
-			<v-chip outlined x-small>{{ t(`extension_${extension.type}`) }}</v-chip>
+			<v-chip outlined x-small>{{ $t(`extension_${extension.type}`) }}</v-chip>
 		</template>
 
 		<h2 class="name">{{ formatName(extension) }}</h2>

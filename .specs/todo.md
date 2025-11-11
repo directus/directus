@@ -196,54 +196,54 @@ const { t } = useI18n();
 - [x] layouts/tabular/tabular.vue
 
 ### Modules - Activity
-- [ ] modules/activity/components/navigation.vue
-- [ ] modules/activity/routes/collection.vue
-- [ ] modules/activity/routes/item.vue
+- [x] modules/activity/components/navigation.vue
+- [x] modules/activity/routes/collection.vue
+- [ ] ~~modules/activity/routes/item.vue~~ (uses t in script)
 
 ### Modules - Content
-- [ ] modules/content/components/navigation-bookmark.vue
-- [ ] modules/content/components/navigation-item.vue
-- [ ] modules/content/components/navigation.vue
-- [ ] modules/content/components/version-menu.vue
-- [ ] modules/content/routes/collection.vue
-- [ ] modules/content/routes/item.vue
-- [ ] modules/content/routes/no-collections.vue
-- [ ] modules/content/routes/not-found.vue
+- [x] modules/content/components/navigation-bookmark.vue
+- [x] modules/content/components/navigation-item.vue
+- [x] modules/content/components/navigation.vue
+- [x] modules/content/components/version-menu.vue
+- [x] modules/content/routes/collection.vue
+- [ ] ~~modules/content/routes/item.vue~~ (uses t in script)
+- [x] modules/content/routes/no-collections.vue
+- [x] modules/content/routes/not-found.vue
 
 ### Modules - Files
-- [ ] modules/files/components/add-folder.vue
-- [ ] modules/files/components/file-info-sidebar-detail.vue
-- [ ] modules/files/routes/add-new.vue
-- [ ] modules/files/routes/collection.vue
-- [ ] modules/files/routes/item.vue
-- [ ] modules/files/routes/not-found.vue
+- [x] modules/files/components/add-folder.vue
+- [ ] ~~modules/files/components/file-info-sidebar-detail.vue~~ (uses t in script)
+- [x] modules/files/routes/add-new.vue
+- [ ] ~~modules/files/routes/collection.vue~~ (uses t in script)
+- [ ] ~~modules/files/routes/item.vue~~ (uses t in script)
+- [x] modules/files/routes/not-found.vue
 
 ### Modules - Insights
-- [ ] modules/insights/components/dashboard-dialog.vue
-- [ ] modules/insights/components/navigation.vue
-- [ ] modules/insights/routes/dashboard.vue
-- [ ] modules/insights/routes/not-found.vue
-- [ ] modules/insights/routes/overview.vue
-- [ ] modules/insights/routes/panel-configuration.vue
+- [x] modules/insights/components/dashboard-dialog.vue
+- [x] modules/insights/components/navigation.vue
+- [x] modules/insights/routes/dashboard.vue
+- [x] modules/insights/routes/not-found.vue
+- [ ] ~~modules/insights/routes/overview.vue~~ (uses t in script)
+- [x] modules/insights/routes/panel-configuration.vue
 
 ### Modules - Settings
-- [ ] modules/settings/components/navigation.vue
-- [ ] modules/settings/routes/ai/components/ai-info-sidebar-detail.vue
-- [ ] modules/settings/routes/ai/overview.vue
-- [ ] modules/settings/routes/appearance/components/theming-info-sidebar-detail.vue
-- [ ] modules/settings/routes/appearance/item.vue
-- [ ] modules/settings/routes/data-model/collections/collections.vue
-- [ ] modules/settings/routes/data-model/collections/components/collection-dialog.vue
-- [ ] modules/settings/routes/data-model/collections/components/collection-item.vue
-- [ ] modules/settings/routes/data-model/collections/components/collection-options.vue
-- [ ] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-actions.vue
-- [ ] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-conditions.vue
-- [ ] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-display.vue
-- [ ] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-field.vue
-- [ ] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-interface.vue
-- [ ] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-relationship-m2a.vue
-- [ ] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-relationship-m2m.vue
-- [ ] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-relationship-m2o.vue
+- [ ] ~~modules/settings/components/navigation.vue~~ (uses t in script)
+- [x] modules/settings/routes/ai/components/ai-info-sidebar-detail.vue
+- [x] modules/settings/routes/ai/overview.vue
+- [x] modules/settings/routes/appearance/components/theming-info-sidebar-detail.vue
+- [x] modules/settings/routes/appearance/item.vue
+- [x] modules/settings/routes/data-model/collections/collections.vue
+- [x] modules/settings/routes/data-model/collections/components/collection-dialog.vue
+- [x] modules/settings/routes/data-model/collections/components/collection-item.vue
+- [x] modules/settings/routes/data-model/collections/components/collection-options.vue
+- [x] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-actions.vue
+- [ ] ~~modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-conditions.vue~~ (uses t in script)
+- [x] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-display.vue
+- [x] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-field.vue
+- [x] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-interface.vue
+- [ ] ~~modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-relationship-m2a.vue~~ (uses t in script)
+- [ ] ~~modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-relationship-m2m.vue~~ (uses t in script)
+- [ ] ~~modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-relationship-m2o.vue~~ (uses t in script)
 - [ ] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-relationship-o2m.vue
 - [ ] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-relationship-translations.vue
 - [ ] modules/settings/routes/data-model/field-detail/field-detail-advanced/field-detail-advanced-schema.vue
@@ -259,48 +259,48 @@ const { t } = useI18n();
 - [ ] modules/settings/routes/data-model/fields/components/field-select-menu.vue
 - [ ] modules/settings/routes/data-model/fields/components/field-select.vue
 - [ ] modules/settings/routes/data-model/fields/components/fields-management.vue
-- [ ] modules/settings/routes/data-model/fields/fields.vue
+- [x] modules/settings/routes/data-model/fields/fields.vue
 - [ ] modules/settings/routes/data-model/new-collection.vue
 - [ ] modules/settings/routes/extensions/components/extension-group-divider.vue
 - [ ] modules/settings/routes/extensions/components/extension-item-options.vue
 - [ ] modules/settings/routes/extensions/components/extension-item.vue
-- [ ] modules/settings/routes/extensions/components/extensions-info-sidebar-detail.vue
-- [ ] modules/settings/routes/extensions/extensions.vue
-- [ ] modules/settings/routes/flows/components/logs-drawer.vue
+- [x] modules/settings/routes/extensions/components/extensions-info-sidebar-detail.vue
+- [x] modules/settings/routes/extensions/extensions.vue
+- [x] modules/settings/routes/flows/components/logs-drawer.vue
 - [ ] modules/settings/routes/flows/components/logs-sidebar-detail.vue
 - [ ] modules/settings/routes/flows/components/operation-detail.vue
-- [ ] modules/settings/routes/flows/components/operation.vue
-- [ ] modules/settings/routes/flows/components/options-overview.vue
-- [ ] modules/settings/routes/flows/components/trigger-detail.vue
-- [ ] modules/settings/routes/flows/flow-drawer.vue
+- [x] modules/settings/routes/flows/components/operation.vue
+- [x] modules/settings/routes/flows/components/options-overview.vue
+- [x] modules/settings/routes/flows/components/trigger-detail.vue
+- [x] modules/settings/routes/flows/flow-drawer.vue
 - [ ] modules/settings/routes/flows/flow.vue
 - [ ] modules/settings/routes/flows/overview.vue
 - [ ] modules/settings/routes/marketplace/components/extension-list-item.vue
-- [ ] modules/settings/routes/marketplace/routes/account/account.vue
-- [ ] modules/settings/routes/marketplace/routes/account/components/account-info-sidebar-detail.vue
-- [ ] modules/settings/routes/marketplace/routes/account/components/account-metadata.vue
-- [ ] modules/settings/routes/marketplace/routes/extension/components/extension-banner.vue
-- [ ] modules/settings/routes/marketplace/routes/extension/components/extension-info-sidebar-detail.vue
-- [ ] modules/settings/routes/marketplace/routes/extension/components/extension-install.vue
-- [ ] modules/settings/routes/marketplace/routes/extension/components/extension-metadata-author.vue
+- [x] modules/settings/routes/marketplace/routes/account/account.vue
+- [x] modules/settings/routes/marketplace/routes/account/components/account-info-sidebar-detail.vue
+- [x] modules/settings/routes/marketplace/routes/account/components/account-metadata.vue
+- [x] modules/settings/routes/marketplace/routes/extension/components/extension-banner.vue
+- [x] modules/settings/routes/marketplace/routes/extension/components/extension-info-sidebar-detail.vue
+- [x] modules/settings/routes/marketplace/routes/extension/components/extension-install.vue
+- [x] modules/settings/routes/marketplace/routes/extension/components/extension-metadata-author.vue
 - [ ] modules/settings/routes/marketplace/routes/extension/components/extension-metadata-compatibility.vue
-- [ ] modules/settings/routes/marketplace/routes/extension/components/extension-metadata-date.vue
-- [ ] modules/settings/routes/marketplace/routes/extension/components/extension-metadata-downloads.vue
-- [ ] modules/settings/routes/marketplace/routes/extension/components/extension-metadata-license.vue
-- [ ] modules/settings/routes/marketplace/routes/extension/components/extension-metadata-size.vue
-- [ ] modules/settings/routes/marketplace/routes/extension/components/extension-metadata.vue
-- [ ] modules/settings/routes/marketplace/routes/extension/components/extension-readme.vue
-- [ ] modules/settings/routes/marketplace/routes/extension/extension.vue
+- [x] modules/settings/routes/marketplace/routes/extension/components/extension-metadata-date.vue
+- [x] modules/settings/routes/marketplace/routes/extension/components/extension-metadata-downloads.vue
+- [x] modules/settings/routes/marketplace/routes/extension/components/extension-metadata-license.vue
+- [x] modules/settings/routes/marketplace/routes/extension/components/extension-metadata-size.vue
+- [x] modules/settings/routes/marketplace/routes/extension/components/extension-metadata.vue
+- [x] modules/settings/routes/marketplace/routes/extension/components/extension-readme.vue
+- [x] modules/settings/routes/marketplace/routes/extension/extension.vue
 - [ ] modules/settings/routes/marketplace/routes/registry/components/inline-filter.vue
-- [ ] modules/settings/routes/marketplace/routes/registry/components/registry-info-sidebar-detail.vue
-- [ ] modules/settings/routes/marketplace/routes/registry/registry.vue
-- [ ] modules/settings/routes/not-found.vue
-- [ ] modules/settings/routes/policies/add-new.vue
+- [x] modules/settings/routes/marketplace/routes/registry/components/registry-info-sidebar-detail.vue
+- [x] modules/settings/routes/marketplace/routes/registry/registry.vue
+- [x] modules/settings/routes/not-found.vue
+- [x] modules/settings/routes/policies/add-new.vue
 - [ ] modules/settings/routes/policies/collection.vue
-- [ ] modules/settings/routes/policies/item.vue
-- [ ] modules/settings/routes/policies/policy-info-sidebar-detail.vue
-- [ ] modules/settings/routes/presets/collection/collection.vue
-- [ ] modules/settings/routes/presets/collection/components/presets-info-sidebar-detail.vue
+- [x] modules/settings/routes/policies/item.vue
+- [x] modules/settings/routes/policies/policy-info-sidebar-detail.vue
+- [x] modules/settings/routes/presets/collection/collection.vue
+- [x] modules/settings/routes/presets/collection/components/presets-info-sidebar-detail.vue
 - [ ] modules/settings/routes/presets/item.vue
 - [ ] modules/settings/routes/project/components/project-info-sidebar-detail.vue
 - [ ] modules/settings/routes/project/project.vue

@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n();
 
 defineProps<{
 	id: string;
@@ -17,7 +15,7 @@ defineProps<{
 		<img v-if="githubAvatarUrl" :src="githubAvatarUrl" :alt="githubName ?? username" class="avatar" />
 		<v-icon v-else name="face" left />
 		{{ githubName ?? username }}
-		<v-icon v-if="verified" v-tooltip="t('verified')" class="verified" name="verified" small />
+		<v-icon v-if="verified" v-tooltip="$t('verified')" class="verified" name="verified" small />
 	</v-button>
 </template>
 

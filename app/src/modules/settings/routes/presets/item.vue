@@ -12,7 +12,6 @@ import { isSystemCollection } from '@directus/system-data';
 import { DeepPartial, Field, Filter, Preset } from '@directus/types';
 import { isEqual } from 'lodash';
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 
@@ -38,7 +37,6 @@ const props = withDefaults(defineProps<Props>(), {
 	id: null,
 });
 
-const { t } = useI18n();
 
 const router = useRouter();
 
@@ -473,7 +471,7 @@ function discardAndLeave() {
 		readonly
 	>
 		<private-view
-			:title="t('editing_preset')"
+			:title="$t('editing_preset')"
 			:small-header="currentLayout?.smallHeader"
 			:header-shadow="currentLayout?.headerShadow"
 		>
@@ -507,14 +505,14 @@ function discardAndLeave() {
 					</template>
 
 					<v-card>
-						<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+						<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
 
 						<v-card-actions>
 							<v-button secondary @click="confirmDelete = false">
-								{{ t('cancel') }}
+								{{ $t('cancel') }}
 							</v-button>
 							<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-								{{ t('delete_label') }}
+								{{ $t('delete_label') }}
 							</v-button>
 						</v-card-actions>
 					</v-card>
@@ -538,26 +536,26 @@ function discardAndLeave() {
 				<div class="layout">
 					<component :is="`layout-${values.layout}`" v-if="values.layout && values.collection" v-bind="layoutState">
 						<template #no-results>
-							<v-info :title="t('no_results')" icon="search" center>
-								{{ t('no_results_copy') }}
+							<v-info :title="$t('no_results')" icon="search" center>
+								{{ $t('no_results_copy') }}
 							</v-info>
 						</template>
 
 						<template #no-items>
-							<v-info :title="t('item_count', 0)" center>
-								{{ t('no_items_copy') }}
+							<v-info :title="$t('item_count', 0)" center>
+								{{ $t('no_items_copy') }}
 							</v-info>
 						</template>
 					</component>
 
 					<v-notice v-else>
-						{{ t('no_layout_collection_selected_yet') }}
+						{{ $t('no_layout_collection_selected_yet') }}
 					</v-notice>
 				</div>
 			</div>
 
 			<template #sidebar>
-				<sidebar-detail icon="info" :title="t('information')" close>
+				<sidebar-detail icon="info" :title="$t('information')" close>
 					<div v-md="t('page_help_settings_presets_item')" class="page-description" />
 				</sidebar-detail>
 
@@ -568,7 +566,7 @@ function discardAndLeave() {
 						v-bind="layoutState"
 					/>
 
-					<sidebar-detail icon="layers" :title="t('layout_options')">
+					<sidebar-detail icon="layers" :title="$t('layout_options')">
 						<div class="layout-options">
 							<component
 								:is="`layout-options-${values.layout}`"
@@ -582,13 +580,13 @@ function discardAndLeave() {
 
 			<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 				<v-card>
-					<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-					<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+					<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+					<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 					<v-card-actions>
 						<v-button secondary @click="discardAndLeave">
-							{{ t('discard_changes') }}
+							{{ $t('discard_changes') }}
 						</v-button>
-						<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+						<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>

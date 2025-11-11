@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useExtensions } from '@/extensions';
 import { computed, toRefs, unref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { getTriggers } from '../triggers';
 import { FlowRaw } from '@directus/types';
 import VDetail from '@/components/v-detail.vue';
@@ -14,7 +13,6 @@ const props = defineProps<{
 
 const { flow, revision } = toRefs(props);
 
-const { t } = useI18n();
 
 const { triggers } = getTriggers();
 const { operations } = useExtensions();
@@ -83,21 +81,21 @@ const steps = computed(() => {
 					<div class="header">
 						<span class="dot" />
 						<span class="type-label">
-							{{ t('trigger') }}
+							{{ $t('trigger') }}
 							<span class="subdued">&nbsp;{{ usedTrigger?.name }}</span>
 						</span>
 					</div>
 
 					<div class="inset">
-						<v-detail v-if="triggerData.options" :label="t('options')">
+						<v-detail v-if="triggerData.options" :label="$t('options')">
 							<pre class="json">{{ triggerData.options }}</pre>
 						</v-detail>
 
-						<v-detail v-if="triggerData.trigger" :label="t('payload')">
+						<v-detail v-if="triggerData.trigger" :label="$t('payload')">
 							<pre class="json">{{ triggerData.trigger }}</pre>
 						</v-detail>
 
-						<v-detail v-if="triggerData.accountability" :label="t('accountability')">
+						<v-detail v-if="triggerData.accountability" :label="$t('accountability')">
 							<pre class="json">{{ triggerData.accountability }}</pre>
 						</v-detail>
 					</div>
@@ -113,11 +111,11 @@ const steps = computed(() => {
 					</div>
 
 					<div class="inset">
-						<v-detail v-if="step.options" :label="t('options')">
+						<v-detail v-if="step.options" :label="$t('options')">
 							<pre class="json">{{ step.options }}</pre>
 						</v-detail>
 
-						<v-detail v-if="step.data !== null" :label="t('payload')">
+						<v-detail v-if="step.data !== null" :label="$t('payload')">
 							<pre class="json">{{ step.data }}</pre>
 						</v-detail>
 					</div>

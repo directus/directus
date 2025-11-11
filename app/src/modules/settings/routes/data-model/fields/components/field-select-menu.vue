@@ -2,7 +2,6 @@
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import type { Field, Width } from '@directus/types';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	field: Field;
@@ -16,7 +15,6 @@ defineEmits<{
 	setWidth: [Width];
 }>();
 
-const { t } = useI18n();
 
 const localType = computed(() => getLocalTypeForField(props.field.collection, props.field.field));
 const isPrimaryKey = computed(() => props.field.schema?.is_primary_key === true);
@@ -34,7 +32,7 @@ const duplicable = computed(() => localType.value === 'standard' && isPrimaryKey
 			<v-list-item :to="`/settings/data-model/${field.collection}/${field.field}`">
 				<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
 				<v-list-item-content>
-					{{ t('edit_field') }}
+					{{ $t('edit_field') }}
 				</v-list-item-content>
 			</v-list-item>
 
@@ -42,17 +40,17 @@ const duplicable = computed(() => localType.value === 'standard' && isPrimaryKey
 				<v-list-item-icon>
 					<v-icon name="content_copy" />
 				</v-list-item-icon>
-				<v-list-item-content>{{ t('duplicate_field') }}</v-list-item-content>
+				<v-list-item-content>{{ $t('duplicate_field') }}</v-list-item-content>
 			</v-list-item>
 
 			<v-list-item clickable @click="$emit('toggleVisibility')">
 				<template v-if="field.meta?.hidden === false">
 					<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
-					<v-list-item-content>{{ t('hide_field_on_detail') }}</v-list-item-content>
+					<v-list-item-content>{{ $t('hide_field_on_detail') }}</v-list-item-content>
 				</template>
 				<template v-else>
 					<v-list-item-icon><v-icon name="visibility" /></v-list-item-icon>
-					<v-list-item-content>{{ t('show_field_on_detail') }}</v-list-item-content>
+					<v-list-item-content>{{ $t('show_field_on_detail') }}</v-list-item-content>
 				</template>
 			</v-list-item>
 
@@ -64,7 +62,7 @@ const duplicable = computed(() => localType.value === 'standard' && isPrimaryKey
 				@click="$emit('setWidth', 'half')"
 			>
 				<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
-				<v-list-item-content>{{ t('half_width') }}</v-list-item-content>
+				<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
 			</v-list-item>
 
 			<v-list-item
@@ -73,7 +71,7 @@ const duplicable = computed(() => localType.value === 'standard' && isPrimaryKey
 				@click="$emit('setWidth', 'full')"
 			>
 				<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
-				<v-list-item-content>{{ t('full_width') }}</v-list-item-content>
+				<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
 			</v-list-item>
 
 			<v-list-item
@@ -82,7 +80,7 @@ const duplicable = computed(() => localType.value === 'standard' && isPrimaryKey
 				@click="$emit('setWidth', 'fill')"
 			>
 				<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
-				<v-list-item-content>{{ t('fill_width') }}</v-list-item-content>
+				<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
 			</v-list-item>
 
 			<v-divider />
@@ -95,7 +93,7 @@ const duplicable = computed(() => localType.value === 'standard' && isPrimaryKey
 			>
 				<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
 				<v-list-item-content>
-					{{ t('delete_field') }}
+					{{ $t('delete_field') }}
 				</v-list-item-content>
 			</v-list-item>
 		</v-list>

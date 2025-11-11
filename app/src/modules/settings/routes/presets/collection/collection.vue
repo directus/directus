@@ -9,7 +9,6 @@ import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-det
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useCollection, useLayout } from '@directus/composables';
 import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../../components/navigation.vue';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
 
@@ -18,7 +17,6 @@ const collection = ref('directus_presets');
 
 const { layoutOptions, layoutQuery, filter, search, refreshInterval } = usePreset(collection);
 
-const { t } = useI18n();
 
 const layoutRef = ref();
 
@@ -107,7 +105,7 @@ function clearFilters() {
 		:clear-filters="clearFilters"
 	>
 		<private-view
-			:title="t('settings_presets')"
+			:title="$t('settings_presets')"
 			:small-header="currentLayout?.smallHeader"
 			:header-shadow="currentLayout?.headerShadow"
 		>
@@ -144,14 +142,14 @@ function clearFilters() {
 					</template>
 
 					<v-card>
-						<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
+						<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 						<v-card-actions>
 							<v-button secondary @click="confirmDelete = false">
-								{{ t('cancel') }}
+								{{ $t('cancel') }}
 							</v-button>
 							<v-button kind="danger" :loading="deleting" @click="batchDelete">
-								{{ t('delete_label') }}
+								{{ $t('delete_label') }}
 							</v-button>
 						</v-card-actions>
 					</v-card>
@@ -186,21 +184,21 @@ function clearFilters() {
 
 			<component :is="`layout-${layout || 'tabular'}`" v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="t('no_results')" icon="bookmark" center>
-						{{ t('no_results_copy') }}
+					<v-info :title="$t('no_results')" icon="bookmark" center>
+						{{ $t('no_results_copy') }}
 
 						<template #append>
-							<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
+							<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
 						</template>
 					</v-info>
 				</template>
 
 				<template #no-items>
-					<v-info :title="t('no_presets')" icon="bookmark" center>
-						{{ t('no_presets_copy') }}
+					<v-info :title="$t('no_presets')" icon="bookmark" center>
+						{{ $t('no_presets_copy') }}
 
 						<template v-if="createAllowed" #append>
-							<v-button :to="`/settings/presets/+`">{{ t('create_preset') }}</v-button>
+							<v-button :to="`/settings/presets/+`">{{ $t('create_preset') }}</v-button>
 						</template>
 					</v-info>
 				</template>
@@ -225,12 +223,12 @@ function clearFilters() {
 
 			<v-dialog :model-value="deleteError !== null">
 				<v-card>
-					<v-card-title>{{ t('something_went_wrong') }}</v-card-title>
+					<v-card-title>{{ $t('something_went_wrong') }}</v-card-title>
 					<v-card-text>
 						<v-error :error="deleteError" />
 					</v-card-text>
 					<v-card-actions>
-						<v-button @click="deleteError = null">{{ t('done') }}</v-button>
+						<v-button @click="deleteError = null">{{ $t('done') }}</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>

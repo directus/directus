@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { watchDebounced } from '@vueuse/core';
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const type = defineModel<string[] | null>('type');
 const sort = defineModel<string[] | null>('sort');
@@ -28,7 +27,6 @@ watchDebounced(
 	{ debounce: 100 },
 );
 
-const { t } = useI18n();
 
 const typeOptions = computed(() => {
 	return props.allowedLogLevelNames.map((logLevel) => ({
@@ -78,7 +76,7 @@ const sortOptions = computed(() => {
 
 		<div class="field">
 			<v-icon class="icon" small name="search" />
-			<input v-model="searchInputValue" v-focus="true" :placeholder="t('search_logs')" class="search-input" />
+			<input v-model="searchInputValue" v-focus="true" :placeholder="$t('search_logs')" class="search-input" />
 		</div>
 	</div>
 </template>
