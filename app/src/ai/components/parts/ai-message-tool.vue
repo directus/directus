@@ -47,15 +47,25 @@ const toolDisplayName = computed(() => {
 <template>
 	<CollapsibleRoot class="message-tool" :default-open="false">
 		<CollapsibleTrigger class="tool-header">
-			<v-icon name="build" x-small />
-			<p class="tool-name">{{ toolDisplayName }}</p>
-			<v-chip class="tool-status" :class="statusConfig.class" x-small :label="false">
-				<v-icon :name="statusConfig.icon" x-small />
-				{{ statusConfig.label }}
-			</v-chip>
-			<v-icon name="expand_more" x-small class="chevron" />
+			<p class="tool-name">
+				<v-icon name="build" x-small left />
+				<v-text-overflow :text="toolDisplayName" />
+			</p>
+			<div class="tool-status">
+				<v-chip class="tool-status-chip" :class="statusConfig.class" x-small :label="false">
+					<v-icon :name="statusConfig.icon" x-small />
+					{{ statusConfig.label }}
+				</v-chip>
+				<v-icon name="expand_more" x-small class="chevron" />
+			</div>
 		</CollapsibleTrigger>
 		<CollapsibleContent class="tool-content-wrapper">
+			<v-notice v-if="'errorText' in part && part.state === 'output-error'" type="danger" class="tool-error" multiline>
+				<template #title>
+					{{ $t('ai.error_message') }}
+				</template>
+				<span>{{ part.errorText }}</span>
+			</v-notice>
 			<div v-if="'input' in part" class="tool-input">
 				<p class="label">{{ $t('ai.input') }}</p>
 				<code>{{ part.input }}</code>
@@ -64,10 +74,6 @@ const toolDisplayName = computed(() => {
 				<p class="label">{{ $t('ai.output') }}</p>
 				<code>{{ part.output }}</code>
 			</div>
-			<p v-if="'errorText' in part && part.state === 'output-error'" class="tool-error">
-				<v-icon name="error" x-small />
-				<span>{{ part.errorText }}</span>
-			</p>
 		</CollapsibleContent>
 	</CollapsibleRoot>
 </template>
@@ -75,7 +81,6 @@ const toolDisplayName = computed(() => {
 <style scoped>
 .message-tool {
 	inline-size: 100%;
-	padding: 0.5rem;
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--background-subdued);
 }
@@ -83,6 +88,8 @@ const toolDisplayName = computed(() => {
 .tool-header {
 	display: flex;
 	align-items: center;
+	padding: 0.5rem;
+	justify-content: space-between;
 	gap: 0.5rem;
 	font-size: 0.875rem;
 	font-weight: 600;
@@ -103,10 +110,18 @@ const toolDisplayName = computed(() => {
 }
 
 .tool-name {
-	flex-shrink: 0;
+	display: inline-flex;
+	align-items: center;
+	overflow: hidden;
 }
 
 .tool-status {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+}
+
+.tool-status-chip {
 	.v-icon {
 		margin-inline-end: 0.25rem;
 		border: none;
@@ -144,7 +159,9 @@ const toolDisplayName = computed(() => {
 }
 
 .tool-content-wrapper {
-	overflow: hidden;
+	max-block-size: 300px;
+	overflow-block: auto;
+	padding-inline: 0.5rem;
 
 	&[data-state='open'] {
 		animation: slide-down 200ms ease-out;
@@ -152,6 +169,10 @@ const toolDisplayName = computed(() => {
 
 	&[data-state='closed'] {
 		animation: slide-up 200ms ease-out;
+	}
+
+	& > * {
+		margin-block-end: 0.5rem;
 	}
 }
 
@@ -168,6 +189,7 @@ const toolDisplayName = computed(() => {
 	border-radius: var(--theme--border-radius);
 	background-color: var(--theme--background);
 	font-size: 0.875rem;
+	line-height: 1.25;
 
 	code {
 		font-size: 0.75rem;

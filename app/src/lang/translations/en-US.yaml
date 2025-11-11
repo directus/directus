@@ -1672,12 +1672,13 @@ ai:
   thinking: Thinking...
   input: Input
   output: Output
-  label: Streaming...
+  streaming: Streaming...
   ready: Ready
   complete: Complete
-  error: An error occurred
-  retry: Retry
+  error: Error
+  error_message: An error occurred
   unknown_error: Unknown Error
+  retry: Retry
   prompt_input_placeholder: Type your message here...
   clear_conversation: Clear Conversation
   build_with_chat: Build with AI Chat
