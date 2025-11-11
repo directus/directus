@@ -31,6 +31,7 @@ const props = withDefaults(
 		rawEditorActive?: boolean;
 		disabledMenuOptions?: MenuOptions[];
 		direction?: string;
+		active?: boolean;
 	}>(),
 	{
 		modelValue: undefined,
@@ -201,7 +202,7 @@ function useComputedValues() {
 		]"
 	>
 		<v-menu v-if="!isLabelHidden" placement="bottom-start" show-arrow arrow-placement="start">
-			<template #activator="{ toggle, active }">
+			<template #activator="{ toggle }">
 				<form-field-label
 					:field="field"
 					:toggle="toggle"
@@ -252,10 +253,19 @@ function useComputedValues() {
 			:comparison="comparison"
 			:comparison-active="comparisonActive"
 			:style="style"
+			:active="active || Boolean(focusedBy)"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
-			@focus-field="onFocus"
-			@blur-field="onBlur"
+			@focus-field="
+				($event) => {
+					(onFocus($event), emit('focusField', $event));
+				}
+			"
+			@blur-field="
+				($event) => {
+					(onBlur($event), emit('blurField', $event));
+				}
+			"
 		/>
 
 		<form-field-raw-editor

@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { i18n } from '@/lang';
+import { BaseProps } from '..';
 
 withDefaults(
-	defineProps<{
-		value: boolean | null;
-		disabled?: false;
-		label?: string;
-		iconOn?: string;
-		iconOff?: string;
-		colorOn?: string;
-		colorOff?: string;
-	}>(),
+	defineProps<
+		BaseProps & {
+			value: boolean | null;
+			label?: string;
+			iconOn?: string;
+			iconOff?: string;
+			colorOn?: string;
+			colorOff?: string;
+		}
+	>(),
 	{
 		label: () => i18n.global.t('enabled'),
 		iconOn: 'check_box',
@@ -34,6 +36,7 @@ defineEmits<{
 		:model-value="value"
 		:indeterminate="value === null"
 		:disabled="disabled"
+		:active="active"
 		:style="{
 			'--v-checkbox-color': colorOn,
 			'--v-checkbox-unchecked-color': colorOff,

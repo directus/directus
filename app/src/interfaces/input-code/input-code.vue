@@ -18,29 +18,30 @@ import 'codemirror/addon/search/search.js';
 import 'codemirror/addon/search/searchcursor.js';
 
 import 'codemirror/keymap/sublime.js';
+import { BaseProps } from '..';
 
 /** Regex to check for interpolation, e.g. `{{ $trigger }}` */
 const INTERPOLATION_REGEX = /^\{\{\s*[^}\s]+\s*\}\}$/;
 
 const props = withDefaults(
-	defineProps<{
-		value?: string | Record<string, unknown> | unknown[] | boolean | number | null;
-		disabled?: boolean;
-		altOptions?: Record<string, any>;
-		template?: string;
-		lineNumber?: boolean;
-		lineWrapping?: boolean;
-		placeholder?: string;
-		language?: string;
-		type?: string;
-	}>(),
+	defineProps<
+		BaseProps & {
+			value?: string | Record<string, unknown> | unknown[] | boolean | number | null;
+			altOptions?: Record<string, any>;
+			template?: string;
+			lineNumber?: boolean;
+			lineWrapping?: boolean;
+			placeholder?: string;
+			language?: string;
+		}
+	>(),
 	{
 		lineNumber: true,
 		language: 'plaintext',
 	},
 );
 
-const emit = defineEmits(['input']);
+const emit = defineEmits(['input', 'focus', 'blur']);
 
 const { t } = useI18n();
 
@@ -93,6 +94,14 @@ onMounted(async () => {
 			} else {
 				emit('input', content);
 			}
+		});
+
+		codemirror.on('focus', () => {
+			if (!props.disabled) emit('focus');
+		});
+
+		codemirror.on('blur', () => {
+			if (!props.disabled) emit('blur');
 		});
 	}
 });
@@ -261,6 +270,18 @@ watch(
 );
 
 watch(
+	() => props.active,
+	(active) => {
+		if (active) {
+			codemirror?.getWrapperElement().classList.add('CodeMirror-active');
+		} else {
+			codemirror?.getWrapperElement().classList.remove('CodeMirror-active');
+		}
+	},
+	{ immediate: true },
+);
+
+watch(
 	() => props.altOptions,
 	async (altOptions) => {
 		if (!altOptions || altOptions.size === 0) return;
@@ -297,7 +318,7 @@ function isInterpolation(value: any) {
 </script>
 
 <template>
-	<div class="input-code codemirror-custom-styles" :class="{ disabled }" dir="ltr">
+	<div class="input-code codemirror-custom-styles" :class="{ disabled, active }" dir="ltr">
 		<div ref="codemirrorEl"></div>
 
 		<v-button v-if="template" v-tooltip.left="t('fill_template')" small icon secondary @click="fillTemplate">

@@ -11,6 +11,8 @@ interface Props {
 	label?: string | null;
 	/** Disable the checkbox */
 	disabled?: boolean;
+	/** Forces the focused state */
+	active?: boolean;
 	/** Renders the checkbox neither selected nor unselected */
 	indeterminate?: boolean;
 	/** What icon to use for the on state */
@@ -113,7 +115,7 @@ function onClickIcon(e: MouseEvent): void {
 		role="checkbox"
 		:aria-pressed="isChecked ? 'true' : 'false'"
 		:disabled
-		:class="{ checked: isChecked, indeterminate, block }"
+		:class="{ checked: isChecked, indeterminate, block, active }"
 		@click.stop="toggleInput"
 	>
 		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
@@ -223,6 +225,11 @@ function onClickIcon(e: MouseEvent): void {
 		> * {
 			z-index: 1;
 		}
+	}
+
+	&.active {
+		border-color: var(--theme--form--field--input--border-color-focus);
+		box-shadow: var(--theme--form--field--input--box-shadow-focus);
 	}
 
 	&:not(:disabled):hover {

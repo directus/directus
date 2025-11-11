@@ -157,11 +157,15 @@ export class Room {
 		this.changes[field] = changes;
 
 		for (const client of this.clients) {
-			const item = await await sanitizePayload(this.collection, this.changes, {
-				knex: getDatabase(),
-				schema: await getSchema(),
-				accountability: client.accountability!,
-			});
+			const item = await await sanitizePayload(
+				this.collection,
+				{ [field]: changes },
+				{
+					knex: getDatabase(),
+					schema: await getSchema(),
+					accountability: client.accountability!,
+				},
+			);
 
 			if (field in item) {
 				this.send(client, {

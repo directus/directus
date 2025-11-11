@@ -1,29 +1,30 @@
 <script setup lang="ts">
 import { APP_NUMERIC_TYPES } from '@/constants';
 import { computed } from 'vue';
+import { BaseProps } from '..';
 
 const props = withDefaults(
-	defineProps<{
-		value: string | number | null;
-		type?: string;
-		clear?: boolean;
-		disabled?: boolean;
-		placeholder?: string;
-		masked?: boolean;
-		iconLeft?: string;
-		iconRight?: string;
-		trim?: boolean;
-		font?: 'sans-serif' | 'serif' | 'monospace';
-		length?: number;
-		softLength?: number;
-		dbSafe?: boolean;
-		autofocus?: boolean;
-		slug?: boolean;
-		min?: number;
-		max?: number;
-		step?: number;
-		direction?: string;
-	}>(),
+	defineProps<
+		BaseProps & {
+			value: string | number | null;
+			clear?: boolean;
+			placeholder?: string;
+			masked?: boolean;
+			iconLeft?: string;
+			iconRight?: string;
+			trim?: boolean;
+			font?: 'sans-serif' | 'serif' | 'monospace';
+			length?: number;
+			softLength?: number;
+			dbSafe?: boolean;
+			autofocus?: boolean;
+			slug?: boolean;
+			min?: number;
+			max?: number;
+			step?: number;
+			direction?: string;
+		}
+	>(),
 	{
 		font: 'sans-serif',
 		step: 1,
@@ -72,6 +73,7 @@ const isFloat = computed(() => ['float', 'decimal'].includes(props.type!));
 		:nullable="!clear"
 		:placeholder="placeholder"
 		:disabled="disabled"
+		:active="active"
 		:trim="trim"
 		:type="inputType"
 		:class="font"

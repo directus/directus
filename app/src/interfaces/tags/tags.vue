@@ -2,28 +2,30 @@
 import formatTitle from '@directus/format-title';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { BaseProps } from '..';
 
 const props = withDefaults(
-	defineProps<{
-		value: string[] | string | null;
-		disabled?: boolean;
-		placeholder?: string;
-		whitespace?: string | null;
-		capitalization?: string | null;
-		alphabetize?: boolean;
-		iconLeft?: string;
-		iconRight?: string;
-		presets?: string[];
-		allowCustom?: boolean;
-		direction?: string;
-	}>(),
+	defineProps<
+		BaseProps & {
+			value: string[] | string | null;
+			placeholder?: string;
+			whitespace?: string | null;
+			capitalization?: string | null;
+			alphabetize?: boolean;
+			iconLeft?: string;
+			iconRight?: string;
+			presets?: string[];
+			allowCustom?: boolean;
+			direction?: string;
+		}
+	>(),
 	{
 		iconRight: 'local_offer',
 		allowCustom: true,
 	},
 );
 
-const emit = defineEmits(['input']);
+const emit = defineEmits(['input', 'focus', 'blur']);
 
 const { t } = useI18n();
 
@@ -125,8 +127,15 @@ function emitValue() {
 			:placeholder="placeholder || t('interfaces.tags.add_tags')"
 			:disabled="disabled"
 			:dir="direction"
+			:active="active"
 			@keydown="onInput"
-			@blur="onInput"
+			@focus="emit('focus')"
+			@blur="
+				($event: any) => {
+					onInput($event);
+					emit('blur');
+				}
+			"
 		>
 			<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 			<template #append><v-icon :name="iconRight" /></template>

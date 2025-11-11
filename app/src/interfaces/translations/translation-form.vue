@@ -22,6 +22,7 @@ const {
 } = defineProps<{
 	languageOptions: Record<string, any>[];
 	disabled?: boolean;
+	active?: boolean;
 	autofocus?: boolean;
 	relationInfo?: RelationM2M;
 	getItemWithLang: (items: Record<string, any>[], lang: string | undefined) => DisplayItem | undefined;
@@ -36,6 +37,11 @@ const {
 }>();
 
 const lang = defineModel<string>('lang');
+
+defineEmits<{
+	(event: 'focus'): void;
+	(event: 'blur'): void;
+}>();
 
 const { t } = useI18n();
 
@@ -194,7 +200,10 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			:badge="selectedLanguage.text"
 			:direction="selectedLanguage.direction"
 			:autofocus="autofocus"
+			:active="active"
 			inline
+			@focus-field="$emit('focus')"
+			@blur-field="$emit('blur')"
 			@update:model-value="updateValue($event, lang)"
 		/>
 

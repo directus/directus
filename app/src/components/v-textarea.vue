@@ -4,6 +4,8 @@ import { computed } from 'vue';
 interface Props {
 	/** Disables the input */
 	disabled?: boolean;
+	/** Forces the focused state */
+	active?: boolean;
 	/** Autofocusses the input on render */
 	autofocus?: boolean;
 	/** Render the input with 100% width */
@@ -62,6 +64,7 @@ function trimIfEnabled() {
 		class="v-textarea"
 		:class="{
 			disabled,
+			active,
 			'expand-on-focus': expandOnFocus,
 			'full-width': fullWidth,
 			'has-content': hasContent,
@@ -120,6 +123,7 @@ function trimIfEnabled() {
 
 		&:focus,
 		&:focus-within,
+		&.active,
 		&.has-content {
 			block-size: var(--v-textarea-max-height);
 
@@ -141,6 +145,7 @@ function trimIfEnabled() {
 	}
 
 	&:focus:not(.disabled),
+	&.active,
 	&:focus-within:not(.disabled) {
 		border-color: var(--theme--form--field--input--border-color-focus);
 		box-shadow: var(--theme--form--field--input--box-shadow-focus);
@@ -164,9 +169,13 @@ function trimIfEnabled() {
 		}
 	}
 
-	&.disabled textarea {
-		color: var(--theme--foreground-subdued);
-		background-color: var(--theme--form--field--input--background-subdued);
+	&.disabled {
+		overflow: hidden;
+
+		textarea {
+			color: var(--theme--foreground-subdued);
+			background-color: var(--theme--form--field--input--background-subdued);
+		}
 	}
 }
 </style>

@@ -15,6 +15,7 @@ const props = defineProps<{
 	modelValue?: string | number | boolean | Record<string, any> | Array<any>;
 	loading?: boolean;
 	disabled?: boolean;
+	active?: boolean;
 	autofocus?: boolean;
 	rawEditorEnabled?: boolean;
 	rawEditorActive?: boolean;
@@ -56,6 +57,7 @@ const value = computed(() =>
 			<component
 				:is="componentName"
 				v-bind="(field.meta && field.meta.options) || {}"
+				:active="active"
 				:autofocus="disabled !== true && autofocus"
 				:disabled="disabled"
 				:loading="loading"

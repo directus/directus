@@ -15,22 +15,23 @@ import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import TranslationForm from './translation-form.vue';
 import { validateItem } from '@/utils/validate-item';
+import { BaseProps } from '..';
 
 const props = withDefaults(
-	defineProps<{
-		collection: string;
-		field: string;
-		primaryKey: string | number;
-		languageField?: string | null;
-		languageDirectionField?: string | null;
-		defaultLanguage?: string | null;
-		defaultOpenSplitView?: boolean;
-		userLanguage?: boolean;
-		value: (number | string | Record<string, any>)[] | Record<string, any> | null;
-		autofocus?: boolean;
-		disabled?: boolean;
-		version: ContentVersion | null;
-	}>(),
+	defineProps<
+		BaseProps & {
+			collection: string;
+			primaryKey: string | number;
+			languageField?: string | null;
+			languageDirectionField?: string | null;
+			defaultLanguage?: string | null;
+			defaultOpenSplitView?: boolean;
+			userLanguage?: boolean;
+			value?: (number | string | Record<string, any>)[] | Record<string, any> | null;
+			autofocus?: boolean;
+			version: ContentVersion | null;
+		}
+	>(),
 	{
 		languageField: null,
 		languageDirectionField: 'direction',
@@ -43,7 +44,7 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits(['input']);
+const emit = defineEmits(['input', 'focus', 'blur']);
 
 const value = computed({
 	get: () => props.value ?? [],
@@ -360,8 +361,15 @@ function useNestedValidation() {
 </script>
 
 <template>
-	<div class="translations" :class="{ split: splitViewEnabled }">
-		<translation-form v-model:lang="firstLang" v-bind="translationProps" :class="splitViewEnabled ? 'half' : 'full'">
+	<div class="translations" :class="{ split: splitViewEnabled, active }">
+		<translation-form
+			v-model:lang="firstLang"
+			v-bind="translationProps"
+			:class="splitViewEnabled ? 'half' : 'full'"
+			:active="active"
+			@focus="$emit('focus')"
+			@blur="$emit('blur')"
+		>
 			<template #split-view="{ active, toggle }">
 				<v-icon
 					v-if="splitViewAvailable && !splitViewEnabled"
@@ -382,6 +390,8 @@ function useNestedValidation() {
 			v-bind="translationProps"
 			secondary
 			class="half"
+			@focus="$emit('focus')"
+			@blur="$emit('blur')"
 		>
 			<template #split-view>
 				<v-icon

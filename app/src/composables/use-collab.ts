@@ -223,8 +223,8 @@ export function useCollab(
 		const style = computed(() => {
 			if (!focusedBy.value) return {};
 			return {
-				'box-shadow': `0 0 16px -8px var(--${focusedBy.value?.color})`,
-				'--theme--form--field--input--border-color': `var(--${focusedBy.value?.color})`,
+				'--theme--form--field--input--box-shadow-focus': `0 0 16px -8px var(--${focusedBy.value?.color})`,
+				'--theme--form--field--input--border-color-focus': `var(--${focusedBy.value?.color})`,
 			};
 		});
 

@@ -106,7 +106,8 @@
 	box-shadow: var(--theme--form--field--input--box-shadow-hover);
 }
 
-.wysiwyg:not(.disabled) .tox-tinymce.focus {
+.wysiwyg:not(.disabled) .tox-tinymce.focus,
+.wysiwyg .tox-tinymce.active {
 	border-color: var(--theme--form--field--input--border-color-focus) !important;
 	box-shadow: var(--theme--form--field--input--box-shadow-focus) !important;
 }
