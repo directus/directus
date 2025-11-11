@@ -107,7 +107,7 @@ directus/
 ## Testing Conventions
 
 - Use Vitest for unit and integration tests
-- Test files should be named `*.test.ts` or `*.spec.ts`
+- Test files should be named `*.test.ts`
 - Place tests next to the code they test
 - Mock external dependencies using `vi.mock()`
 - Use descriptive test names with `describe()` and `test()`
