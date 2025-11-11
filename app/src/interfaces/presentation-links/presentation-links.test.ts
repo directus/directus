@@ -72,7 +72,7 @@ describe('basic rendering', () => {
 		expect(wrapper.exists());
 	});
 
-	test('renders a button for every link with correct attributes', () => {
+	test('renders a button for every link', () => {
 		const wrapper = mount(PresentationLinks, mountOptions);
 
 		const buttons = wrapper.findAllComponents('button');
