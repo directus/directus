@@ -4,7 +4,7 @@ import { render } from 'micromustache';
 import { computed, inject, ref, useAttrs, watch } from 'vue';
 import api from '@/api';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
-import { injectRunManualFlow, ManualFlow } from '@/composables/use-flows';
+import { useInjectRunManualFlow, ManualFlow } from '@/composables/use-flows';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -244,7 +244,7 @@ const loadingFlows = computed(() => {
 	return manualFlows.value.filter((flow: ManualFlow) => flow.isFlowRunning).map((flow: ManualFlow) => flow.id);
 });
 
-const { runManualFlow, manualFlows } = injectRunManualFlow();
+const { runManualFlow, manualFlows } = useInjectRunManualFlow();
 </script>
 
 <template>
