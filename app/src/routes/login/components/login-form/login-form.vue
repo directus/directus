@@ -4,7 +4,6 @@ import { login } from '@/auth';
 import { translateAPIError } from '@/lang';
 import { useUserStore } from '@/stores/user';
 import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import z from 'zod';
 
@@ -18,7 +17,6 @@ const props = defineProps<{
 	provider: string;
 }>();
 
-const { t } = useI18n();
 
 const router = useRouter();
 
@@ -102,7 +100,7 @@ async function onSubmit() {
 
 <template>
 	<form novalidate @submit.prevent="onSubmit">
-		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
+		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="$t('email')" />
 		<interface-system-input-password :value="password" autocomplete="current-password" @input="password = $event" />
 
 		<transition-expand>
@@ -111,7 +109,7 @@ async function onSubmit() {
 				v-model="otp"
 				type="text"
 				autocomplete="one-time-code"
-				:placeholder="t('otp')"
+				:placeholder="$t('otp')"
 				autofocus
 			/>
 		</transition-expand>
@@ -121,10 +119,10 @@ async function onSubmit() {
 		</v-notice>
 		<div class="buttons">
 			<v-button class="sign-in" type="submit" :loading="loggingIn" large>
-				<v-text-overflow :text="t('sign_in')" />
+				<v-text-overflow :text="$t('sign_in')" />
 			</v-button>
 			<router-link to="/reset-password" class="forgot-password">
-				{{ t('forgot_password') }}
+				{{ $t('forgot_password') }}
 			</router-link>
 		</div>
 	</form>

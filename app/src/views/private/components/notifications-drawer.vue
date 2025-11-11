@@ -13,7 +13,6 @@ import { Filter, Notification } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { storeToRefs } from 'pinia';
 import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 type LocalNotification = Notification & {
@@ -204,7 +203,7 @@ function clearFilters() {
 	<v-drawer
 		v-model="notificationsDrawerOpen"
 		icon="notifications"
-		:title="t('notifications')"
+		:title="$t('notifications')"
 		:sidebar-label="t('folders')"
 		@cancel="notificationsDrawerOpen = false"
 		@apply="toggleArchive"
@@ -241,14 +240,14 @@ function clearFilters() {
 				</template>
 
 				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
+							{{ $t('cancel') }}
 						</v-button>
 						<v-button kind="danger" @click="deleteSelected">
-							{{ t('delete_label') }}
+							{{ $t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -272,28 +271,28 @@ function clearFilters() {
 					<v-list-item-icon>
 						<v-icon name="inbox" />
 					</v-list-item-icon>
-					<v-list-item-content>{{ t('inbox') }}</v-list-item-content>
+					<v-list-item-content>{{ $t('inbox') }}</v-list-item-content>
 				</v-tab>
 				<v-tab value="archived">
 					<v-list-item-icon>
 						<v-icon name="archive" />
 					</v-list-item-icon>
-					<v-list-item-content>{{ t('archive') }}</v-list-item-content>
+					<v-list-item-content>{{ $t('archive') }}</v-list-item-content>
 				</v-tab>
 			</v-tabs>
 		</template>
 
 		<template v-if="!loading && !itemCount">
-			<v-info v-if="filter || search" :title="t('no_results')" icon="search" center>
-				{{ t('no_results_copy') }}
+			<v-info v-if="filter || search" :title="$t('no_results')" icon="search" center>
+				{{ $t('no_results_copy') }}
 
 				<template #append>
-					<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
+					<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
 				</template>
 			</v-info>
 
-			<v-info v-else icon="notifications" :title="t('no_notifications')" center>
-				{{ t('no_notifications_copy') }}
+			<v-info v-else icon="notifications" :title="$t('no_notifications')" center>
+				{{ $t('no_notifications_copy') }}
 			</v-info>
 		</template>
 
@@ -340,7 +339,7 @@ function clearFilters() {
 							</use-datetime>
 							<v-icon
 								v-if="notification.to"
-								v-tooltip="t('goto_collection_content')"
+								v-tooltip="$t('goto_collection_content')"
 								clickable
 								name="open_in_new"
 								@click="onLinkClick(notification.to)"

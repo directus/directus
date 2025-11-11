@@ -2,7 +2,6 @@
 import { Filter } from '@directus/types';
 import { isNil } from 'lodash';
 import { computed, ref, onMounted, onUpdated, onBeforeUnmount } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useAutoFontFit } from '@/composables/use-auto-fit-text';
 import { formatNumber } from '@/utils/format-number';
 import type { Style, Notation, Unit } from '@/utils/format-number';

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useThemeConfiguration } from '@/composables/use-theme-configuration';
 import chroma from 'chroma-js';
-import { useI18n } from 'vue-i18n';
 import { cssVar } from '@directus/utils/browser';
 import { isNil } from 'lodash';
 import { formatNumber } from '@/utils/format-number';

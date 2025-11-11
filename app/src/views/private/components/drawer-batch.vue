@@ -5,7 +5,6 @@ import { APIError } from '@/types/error';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getEndpoint } from '@directus/utils';
 import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	collection: string;
@@ -21,7 +20,6 @@ const emit = defineEmits<{
 	(e: 'input', value: Record<string, any>): void;
 }>();
 
-const { t } = useI18n();
 
 const { internalEdits } = useEdits();
 const { internalActive } = useActiveState();
@@ -122,7 +120,7 @@ function useActions() {
 <template>
 	<v-drawer
 		v-model="internalActive"
-		:title="t('editing_in_batch', { count: primaryKeys.length })"
+		:title="$t('editing_in_batch', { count: primaryKeys.length })"
 		persistent
 		@cancel="cancel"
 		@apply="save"

@@ -5,14 +5,12 @@ import { AuthProvider } from '@/types/login';
 import { getRootPath } from '@/utils/get-root-path';
 import formatTitle from '@directus/format-title';
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
 const props = defineProps<{
 	providers: AuthProvider[];
 }>();
 
-const { t } = useI18n();
 
 const route = useRoute();
 
@@ -178,7 +176,7 @@ watch(selectedProviderName, (val) => {
 						<v-icon :name="provider.icon" />
 					</div>
 					<div class="sso-title">
-						<v-text-overflow :text="t('log_in_with', { provider: provider.label })" />
+						<v-text-overflow :text="$t('log_in_with', { provider: provider.label })" />
 					</div>
 				</a>
 
@@ -189,7 +187,7 @@ watch(selectedProviderName, (val) => {
 						autofocus
 						type="text"
 						autocomplete="one-time-code"
-						:placeholder="t('otp')"
+						:placeholder="$t('otp')"
 						class="otp-input"
 						@keydown.enter.prevent="onSubmitOTP"
 					>

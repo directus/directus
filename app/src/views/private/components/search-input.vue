@@ -3,7 +3,6 @@ import { useElementSize } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { isObject } from 'lodash';
 import { Ref, computed, inject, onMounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -24,7 +23,6 @@ const emit = defineEmits<{
 	(e: 'update:filter', value: Filter | null): void;
 }>();
 
-const { t } = useI18n();
 
 const input = ref<HTMLInputElement | null>(null);
 

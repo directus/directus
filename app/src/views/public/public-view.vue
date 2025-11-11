@@ -3,7 +3,6 @@ import { useServerStore } from '@/stores/server';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 interface Props {
 	wide?: boolean;
@@ -13,7 +12,6 @@ withDefaults(defineProps<Props>(), {
 	wide: false,
 });
 
-const { t } = useI18n();
 const serverStore = useServerStore();
 
 const { info } = storeToRefs(serverStore);
