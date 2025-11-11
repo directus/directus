@@ -1920,7 +1920,7 @@ interfaces:
     button: Buttons
     error: Cannot perform action
     action_type: Action Type
-    select_flow_note: Flow must be configured with a manual trigger for this collection
+    select_manual_flow_note: Flow must be configured with a manual trigger for this collection
   select-multiple-checkbox:
     checkboxes: Checkboxes
     description: Choose between multiple options via checkboxes

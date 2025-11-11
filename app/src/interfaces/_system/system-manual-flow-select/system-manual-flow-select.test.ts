@@ -68,12 +68,6 @@ const mountOptions = {
 			}),
 			i18n,
 		],
-		stubs: {
-			VSelect: {
-				template:
-					'<select><option value="">Select...</option><option value="test-flow-1">Flow 1</option><option value="test-flow-2">Flow 2</option></select>',
-			},
-		},
 	},
 	props: {
 		value: null,

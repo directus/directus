@@ -116,9 +116,9 @@ export default defineInterface({
 							name: '$t:flow',
 							meta: {
 								width: 'full',
-								interface: 'system-flow-select',
+								interface: 'system-manual-flow-select',
 								hidden: true,
-								note: '$t:interfaces.presentation-links.select_flow_note',
+								note: '$t:interfaces.presentation-links.select_manual_flow_note',
 								options: {
 									collectionName: collection,
 								},
