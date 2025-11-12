@@ -1,18 +1,13 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { useI18n } from 'vue-i18n';
-import SidebarButton from './sidebar-button.vue';
-import NotificationItem from './notification-item.vue';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
+import { storeToRefs } from 'pinia';
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import NotificationItem from './notification-item.vue';
+import SidebarButton from './sidebar-button.vue';
 
-defineProps<{
-	modelValue?: boolean;
-}>();
-
-defineEmits<{
-	(e: 'update:modelValue', value: boolean): void;
-}>();
+const active = ref(false);
 
 const { t } = useI18n();
 
@@ -26,16 +21,16 @@ const { lastFour } = storeToRefs(notificationsStore);
 	<div class="notifications-preview">
 		<sidebar-button
 			v-tooltip.left="sidebarStore.collapsed && t('activity_log')"
-			:active="modelValue"
+			:active
 			class="toggle"
 			icon="pending_actions"
-			@click="$emit('update:modelValue', !modelValue)"
+			@click="active = !active"
 		>
 			{{ t('activity_log') }}
 		</sidebar-button>
 
 		<transition-expand tag="div">
-			<div v-if="modelValue" class="inline">
+			<div v-if="active && !sidebarStore.collapsed" class="inline">
 				<div class="padding-box">
 					<router-link class="link" to="/activity" :class="{ 'has-items': lastFour.length > 0 }">
 						{{ t('show_all_activity') }}

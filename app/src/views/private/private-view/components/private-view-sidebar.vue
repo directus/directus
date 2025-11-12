@@ -1,10 +1,7 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import NotificationsPreview from '../../components/notifications-preview.vue';
 import SkipMenu from '../../components/skip-menu.vue';
 import SidebarDetailGroup from './private-view-sidebar-detail-group.vue';
-import NotificationsPreview from '../../components/notifications-preview.vue';
-
-const notificationsPreviewActive = ref(false);
 </script>
 
 <template>
@@ -17,7 +14,7 @@ const notificationsPreviewActive = ref(false);
 
 			<div class="spacer" />
 
-			<notifications-preview v-model="notificationsPreviewActive" />
+			<notifications-preview />
 		</div>
 	</aside>
 </template>
