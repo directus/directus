@@ -1,25 +1,20 @@
 <script setup lang="ts">
 import { useWindowSize } from '@/composables/use-window-size';
 import { getStringifiedValue } from '@/utils/get-stringified-value';
-import CodeMirror, { ModeSpec } from 'codemirror';
-import { Ref, computed, onMounted, ref, watch } from 'vue';
+import { EditorState, Compartment, StateEffect, StateField, Annotation } from '@codemirror/state';
+import { EditorView, keymap, placeholder as placeholderExtension, lineNumbers, drawSelection } from '@codemirror/view';
+import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
+import { syntaxHighlighting, defaultHighlightStyle, bracketMatching, indentOnInput } from '@codemirror/language';
+import { closeBrackets, closeBracketsKeymap, autocompletion, completionKeymap } from '@codemirror/autocomplete';
+import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
+import { json } from '@codemirror/lang-json';
+import { lintGutter, linter, Diagnostic } from '@codemirror/lint';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import importCodemirrorMode from './import-codemirror-mode';
 
-import 'codemirror/mode/meta';
+const setValueAnnotation = Annotation.define<boolean>();
 
-import 'codemirror/addon/comment/comment.js';
-import 'codemirror/addon/dialog/dialog.js';
-import 'codemirror/addon/display/placeholder.js';
-import 'codemirror/addon/lint/lint.js';
-import 'codemirror/addon/scroll/annotatescrollbar.js';
-import 'codemirror/addon/search/matchesonscrollbar.js';
-import 'codemirror/addon/search/search.js';
-import 'codemirror/addon/search/searchcursor.js';
-
-import 'codemirror/keymap/sublime.js';
-
-/** Regex to check for interpolation, e.g. `{{ $trigger }}` */
 const INTERPOLATION_REGEX = /^\{\{\s*[^}\s]+\s*\}\}$/;
 
 const props = withDefaults(
@@ -46,54 +41,16 @@ const { t } = useI18n();
 
 const { width } = useWindowSize();
 
-const codemirrorEl: Ref<HTMLTextAreaElement | null> = ref(null);
-let codemirror: CodeMirror.Editor | null;
+const codemirrorEl = ref<HTMLDivElement | null>(null);
+let editorView: EditorView | null = null;
 let previousContent: string | null = null;
+let isUpdatingFromProps = false;
 
-onMounted(async () => {
-	if (codemirrorEl.value) {
-		await getImports(cmOptions.value);
-
-		await importCodemirrorMode(cmOptions.value.mode);
-
-		codemirror = CodeMirror(codemirrorEl.value, {
-			...cmOptions.value,
-			value: stringValue.value,
-		});
-
-		codemirror.setOption('mode', { name: 'javascript ' });
-
-		await setLanguage();
-
-		codemirror.on('change', (cm, { origin }) => {
-			const content = cm.getValue();
-
-			// prevent duplicate emits with same content
-			if (content === previousContent) return;
-			previousContent = content;
-
-			if (origin === 'setValue') return;
-
-			if (props.type === 'json') {
-				if (content.length === 0) {
-					return emit('input', null);
-				}
-
-				if (isInterpolation(content)) {
-					return emit('input', content);
-				}
-
-				try {
-					const parsedJson = JSON.parse(content);
-					if (typeof parsedJson !== 'string') return emit('input', parsedJson);
-					return emit('input', content);
-				} catch {
-					// We won't stage invalid JSON
-				}
-			} else {
-				emit('input', content);
-			}
-		});
+const readOnly = computed(() => {
+	if (width.value < 600) {
+		return props.disabled;
+	} else {
+		return props.disabled;
 	}
 });
 
@@ -105,179 +62,244 @@ const stringValue = computed(() => {
 	return getStringifiedValue(props.value, props.type === 'json');
 });
 
+const languageCompartment = new Compartment();
+const readOnlyCompartment = new Compartment();
+const lineNumbersCompartment = new Compartment();
+const lineWrappingCompartment = new Compartment();
+const lintCompartment = new Compartment();
+
+const setReadOnlyEffect = StateEffect.define<boolean>();
+
+const readOnlyField = StateField.define<boolean>({
+	create: () => false,
+	update: (value, tr) => {
+		for (const effect of tr.effects) {
+			if (effect.is(setReadOnlyEffect)) {
+				return effect.value;
+			}
+		}
+
+		return value;
+	},
+	provide: (f) => EditorView.editable.from(f, (value) => !value),
+});
+
+async function getLanguageExtension() {
+	const lang = (props.language || 'plaintext').toLowerCase();
+
+	if (props.type === 'json' || lang === 'json') {
+		return json();
+	} else if (lang === 'plaintext') {
+		return [];
+	} else {
+		const mode = await importCodemirrorMode(lang);
+		return mode || [];
+	}
+}
+
+async function createJsonLinter(): Promise<any> {
+	if (props.type !== 'json' && props.language?.toLowerCase() !== 'json') {
+		return null;
+	}
+
+	const jsonlint = (await import('jsonlint-mod')) as any;
+
+	return linter(async (view) => {
+		const text = view.state.doc.toString();
+		const diagnostics: Diagnostic[] = [];
+
+		if (isInterpolation(text)) {
+			return diagnostics;
+		}
+
+		const parser = jsonlint.parser;
+
+		parser.parseError = (str: string, hash: any) => {
+			const loc = hash.loc;
+			const from = view.state.doc.line(loc.first_line).from + loc.first_column;
+			const to = view.state.doc.line(loc.last_line).from + loc.last_column;
+
+			diagnostics.push({
+				from,
+				to,
+				severity: 'error',
+				message: str,
+			});
+		};
+
+		if (text.length > 0) {
+			try {
+				jsonlint.parse(text);
+			} catch {
+				// Errors are captured via parseError
+			}
+		}
+
+		return diagnostics;
+	});
+}
+
+onMounted(async () => {
+	if (!codemirrorEl.value) return;
+
+	const languageExtension = await getLanguageExtension();
+	const jsonLinter = await createJsonLinter();
+
+	const extensions = [
+		history(),
+		drawSelection(),
+		indentOnInput(),
+		bracketMatching(),
+		closeBrackets(),
+		syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+		highlightSelectionMatches(),
+		autocompletion(),
+		keymap.of([
+			...closeBracketsKeymap,
+			...defaultKeymap,
+			...historyKeymap,
+			...searchKeymap,
+			...completionKeymap,
+			indentWithTab,
+		] as any),
+
+		languageCompartment.of(languageExtension),
+		readOnlyCompartment.of(EditorState.readOnly.of(readOnly.value)),
+		readOnlyField,
+		lineNumbersCompartment.of(props.lineNumber ? lineNumbers() : []),
+		lineWrappingCompartment.of(props.lineWrapping ? EditorView.lineWrapping : []),
+		EditorState.tabSize.of(4),
+
+		EditorView.updateListener.of((update) => {
+			if (update.docChanged && !isUpdatingFromProps) {
+				const content = update.state.doc.toString();
+
+				if (content === previousContent) return;
+				previousContent = content;
+
+				if (update.transactions.some((tr) => tr.annotation(setValueAnnotation))) {
+					return;
+				}
+
+				if (props.type === 'json') {
+					if (content.length === 0) {
+						return emit('input', null);
+					}
+
+					if (isInterpolation(content)) {
+						return emit('input', content);
+					}
+
+					try {
+						const parsedJson = JSON.parse(content);
+						if (typeof parsedJson !== 'string') return emit('input', parsedJson);
+						return emit('input', content);
+					} catch {
+						// We won't stage invalid JSON
+					}
+				} else {
+					emit('input', content);
+				}
+			}
+		}),
+	];
+
+	if (props.placeholder) {
+		extensions.push(placeholderExtension(props.placeholder));
+	}
+
+	if (jsonLinter) {
+		extensions.push(lintGutter(), lintCompartment.of(jsonLinter));
+	}
+
+	const state = EditorState.create({
+		doc: String(stringValue.value),
+		extensions,
+	});
+
+	editorView = new EditorView({
+		state,
+		parent: codemirrorEl.value,
+	});
+});
+
+onUnmounted(() => {
+	editorView?.destroy();
+});
+
 watch(
 	() => props.language,
-	() => {
-		setLanguage();
+	async () => {
+		if (!editorView) return;
+
+		const languageExtension = await getLanguageExtension();
+
+		editorView.dispatch({
+			effects: languageCompartment.reconfigure(languageExtension),
+		});
 	},
 );
 
-watch(stringValue, () => {
-	// prevent setting redundantly stringified json value when it's actually the same value
-	if (props.type === 'json' && codemirror?.getValue() === props.value) return;
-
-	if (codemirror?.getValue() !== stringValue.value) {
-		codemirror?.setValue(stringValue.value || '');
-	}
-});
-
-async function setLanguage() {
-	if (codemirror) {
-		const lang = (props.language || 'plaintext').toLowerCase();
-
-		if (props.type === 'json' || lang === 'json') {
-			// @ts-ignore
-			await import('codemirror/mode/javascript/javascript.js');
-
-			const jsonlint = (await import('jsonlint-mod')) as any;
-
-			codemirror.setOption('mode', { name: 'javascript', json: true } as ModeSpec<{ json: boolean }>);
-
-			CodeMirror.registerHelper('lint', 'json', (text: string) => {
-				const found: Record<string, any>[] = [];
-
-				if (isInterpolation(text)) return found;
-
-				const parser = jsonlint.parser;
-
-				parser.parseError = (str: string, hash: any) => {
-					const loc = hash.loc;
-
-					found.push({
-						from: CodeMirror.Pos(loc.first_line - 1, loc.first_column),
-						to: CodeMirror.Pos(loc.last_line - 1, loc.last_column),
-						message: str,
-					});
-				};
-
-				if (text.length > 0) {
-					try {
-						jsonlint.parse(text);
-					} catch {
-						// Do nothing
-					}
-				}
-
-				return found;
-			});
-		} else if (lang === 'plaintext') {
-			codemirror.setOption('mode', { name: 'plaintext' });
-		} else {
-			await importCodemirrorMode(lang);
-			codemirror.setOption('mode', { name: lang });
-		}
-	}
-}
-
-async function getImports(optionsObj: Record<string, any>): Promise<void> {
-	const imports = [] as Promise<any>[];
-
-	if (optionsObj && optionsObj.size > 0) {
-		if (optionsObj.styleActiveLine) {
-			imports.push(import('codemirror/addon/selection/active-line.js'));
-		}
-
-		if (optionsObj.markSelection) {
-			// @ts-ignore - @types/codemirror is missing this export
-			imports.push(import('codemirror/addon/selection/mark-selection.js'));
-		}
-
-		if (optionsObj.highlightSelectionMatches) {
-			imports.push(import('codemirror/addon/search/match-highlighter.js'));
-		}
-
-		if (optionsObj.autoRefresh) {
-			imports.push(import('codemirror/addon/display/autorefresh.js'));
-		}
-
-		if (optionsObj.matchBrackets) {
-			imports.push(import('codemirror/addon/edit/matchbrackets.js'));
-		}
-
-		if (optionsObj.hintOptions || optionsObj.showHint) {
-			imports.push(import('codemirror/addon/hint/show-hint.js'));
-			// @ts-ignore - @types/codemirror is missing this export
-			imports.push(import('codemirror/addon/hint/show-hint.css'));
-			// @ts-ignore - @types/codemirror is missing this export
-			imports.push(import('codemirror/addon/hint/javascript-hint.js'));
-		}
-
-		await Promise.all(imports);
-	}
-}
-
-const readOnly = computed(() => {
-	if (width.value < 600) {
-		// mobile requires 'nocursor' to avoid bringing up the keyboard
-		return props.disabled ? 'nocursor' : false;
-	} else {
-		// desktop cannot use 'nocursor' as it prevents copy/paste
-		return props.disabled;
-	}
-});
-
-const defaultOptions: CodeMirror.EditorConfiguration = {
-	tabSize: 4,
-	autoRefresh: true,
-	indentUnit: 4,
-	styleActiveLine: true,
-	highlightSelectionMatches: { showToken: /\w/, annotateScrollbar: true, delay: 100 },
-	hintOptions: {
-		completeSingle: true,
-		hint: () => undefined,
-	},
-	matchBrackets: true,
-	showCursorWhenSelecting: true,
-	lineWiseCopyCut: false,
-	theme: 'default',
-	extraKeys: { Ctrl: 'autocomplete' },
-	lint: true,
-	gutters: ['CodeMirror-lint-markers'],
-};
-
-const cmOptions = computed<Record<string, any>>(() => {
-	return Object.assign(
-		{},
-		defaultOptions,
-		{
-			lineNumbers: props.lineNumber,
-			lineWrapping: props.lineWrapping,
-			readOnly: readOnly.value,
-			cursorBlinkRate: props.disabled ? -1 : 530,
-			mode: props.language || 'plaintext',
-			placeholder: props.placeholder,
-		},
-		props.altOptions ? props.altOptions : {},
-	);
-});
-
 watch(
 	() => props.disabled,
-	(disabled) => {
-		codemirror?.setOption('readOnly', readOnly.value);
-		codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
+	() => {
+		if (!editorView) return;
+
+		editorView.dispatch({
+			effects: [
+				setReadOnlyEffect.of(readOnly.value),
+				readOnlyCompartment.reconfigure(EditorState.readOnly.of(readOnly.value)),
+			],
+		});
 	},
 	{ immediate: true },
 );
 
 watch(
-	() => props.altOptions,
-	async (altOptions) => {
-		if (!altOptions || altOptions.size === 0) return;
-		await getImports(altOptions);
+	() => props.lineNumber,
+	(lineNumber) => {
+		if (!editorView) return;
 
-		for (const key in altOptions) {
-			codemirror?.setOption(key as any, altOptions[key]);
-		}
+		editorView.dispatch({
+			effects: lineNumbersCompartment.reconfigure(lineNumber ? lineNumbers() : []),
+		});
 	},
 );
 
 watch(
-	() => props.lineNumber,
-	(lineNumber) => {
-		codemirror?.setOption('lineNumbers', lineNumber);
+	() => props.lineWrapping,
+	(lineWrapping) => {
+		if (!editorView) return;
+
+		editorView.dispatch({
+			effects: lineWrappingCompartment.reconfigure(lineWrapping ? EditorView.lineWrapping : []),
+		});
 	},
 );
+
+watch(stringValue, () => {
+	if (!editorView || isUpdatingFromProps) return;
+
+	if (props.type === 'json' && editorView.state.doc.toString() === props.value) return;
+
+	const currentValue = editorView.state.doc.toString();
+	const newStringValue = stringValue.value;
+
+	if (currentValue !== newStringValue) {
+		isUpdatingFromProps = true;
+
+		editorView.dispatch({
+			changes: {
+				from: 0,
+				to: editorView.state.doc.length,
+				insert: String(newStringValue || ''),
+			},
+			annotations: [setValueAnnotation.of(true)],
+		});
+
+		isUpdatingFromProps = false;
+	}
+});
 
 function fillTemplate() {
 	if (props.type === 'json' && props.template) {
@@ -308,9 +330,62 @@ function isInterpolation(value: any) {
 
 <style lang="scss" scoped>
 .input-code {
+	--input-code--height: var(--input-height-tall);
+	--input-code--gutter--width: 50px;
 	position: relative;
 	inline-size: 100%;
 	font-size: 14px;
+
+	:deep(.cm-editor) {
+		inline-size: 100%;
+		color: var(--theme--foreground);
+		font-weight: inherit;
+		font-family: var(--theme--fonts--monospace--font-family);
+		background-color: var(--theme--form--field--input--background);
+		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+		border-radius: var(--theme--border-radius);
+		transition: all var(--fast) var(--transition);
+		box-shadow: var(--theme--form--field--input--box-shadow);
+		block-size: var(--input-code--height);
+
+		.cm-gutters {
+			background-color: var(--theme--form--field--input--background-subdued);
+			border-inline-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+			inline-size: var(--input-code--gutter--width);
+			border-start-start-radius: var(--theme--border-radius);
+			border-end-start-radius: var(--theme--border-radius);
+		}
+
+		.cm-lineNumbers {
+			color: var(--theme--foreground-subdued);
+		}
+	}
+
+	&:hover :deep(.cm-editor) {
+		border-color: var(--theme--form--field--input--border-color-hover);
+		box-shadow: var(--theme--form--field--input--box-shadow-hover);
+
+		.cm-gutters {
+			border-inline-end-color: var(--theme--form--field--input--border-color-hover);
+		}
+	}
+
+	&.disabled {
+		:deep(.cm-editor) {
+			color: var(--theme--foreground-subdued);
+			background-color: var(--theme--form--field--input--background-subdued);
+		}
+
+		&:hover :deep(.cm-editor) {
+			border-color: var(--theme--form--field--input--border-color);
+		}
+	}
+
+	:deep(.cm-editor.cm-focused) {
+		outline: none;
+		border-color: var(--theme--form--field--input--border-color-focus);
+		box-shadow: var(--theme--form--field--input--box-shadow-focus);
+	}
 }
 
 .small {

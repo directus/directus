@@ -1,249 +1,202 @@
-// @ts-nocheck
-export default function importCodemirrorMode(mode: string): Promise<void> {
-	switch (mode) {
-		case 'apl':
-			return import('codemirror/mode/apl/apl.js');
-		case 'asciiarmor':
-			return import('codemirror/mode/asciiarmor/asciiarmor.js');
-		case 'asn.1':
-			return import('codemirror/mode/asn.1/asn.1.js');
-		case 'asterisk':
-			return import('codemirror/mode/asterisk/asterisk.js');
-		case 'brainfuck':
-			return import('codemirror/mode/brainfuck/brainfuck.js');
-		case 'clike':
-			return import('codemirror/mode/clike/clike.js');
-		case 'clojure':
-			return import('codemirror/mode/clojure/clojure.js');
-		case 'cmake':
-			return import('codemirror/mode/cmake/cmake.js');
-		case 'cobol':
-			return import('codemirror/mode/cobol/cobol.js');
-		case 'coffeescript':
-			return import('codemirror/mode/coffeescript/coffeescript.js');
-		case 'commonlisp':
-			return import('codemirror/mode/commonlisp/commonlisp.js');
-		case 'crystal':
-			return import('codemirror/mode/crystal/crystal.js');
-		case 'css':
-			return import('codemirror/mode/css/css.js');
-		case 'cypher':
-			return import('codemirror/mode/cypher/cypher.js');
-		case 'd':
-			return import('codemirror/mode/d/d.js');
-		case 'dart':
-			return import('codemirror/mode/dart/dart.js');
-		case 'diff':
-			return import('codemirror/mode/diff/diff.js');
-		case 'django':
-			return import('codemirror/mode/django/django.js');
-		case 'dockerfile':
-			return import('codemirror/mode/dockerfile/dockerfile.js');
-		case 'dtd':
-			return import('codemirror/mode/dtd/dtd.js');
-		case 'dylan':
-			return import('codemirror/mode/dylan/dylan.js');
-		case 'ebnf':
-			return import('codemirror/mode/ebnf/ebnf.js');
-		case 'ecl':
-			return import('codemirror/mode/ecl/ecl.js');
-		case 'eiffel':
-			return import('codemirror/mode/eiffel/eiffel.js');
-		case 'elm':
-			return import('codemirror/mode/elm/elm.js');
-		case 'erlang':
-			return import('codemirror/mode/erlang/erlang.js');
-		case 'factor':
-			return import('codemirror/mode/factor/factor.js');
-		case 'fcl':
-			return import('codemirror/mode/fcl/fcl.js');
-		case 'forth':
-			return import('codemirror/mode/forth/forth.js');
-		case 'fortran':
-			return import('codemirror/mode/fortran/fortran.js');
-		case 'gas':
-			return import('codemirror/mode/gas/gas.js');
-		case 'gfm':
-			return import('codemirror/mode/gfm/gfm.js');
-		case 'gherkin':
-			return import('codemirror/mode/gherkin/gherkin.js');
-		case 'go':
-			return import('codemirror/mode/go/go.js');
-		case 'groovy':
-			return import('codemirror/mode/groovy/groovy.js');
-		case 'haml':
-			return import('codemirror/mode/haml/haml.js');
-		case 'handlebars':
-			return import('codemirror/mode/handlebars/handlebars.js');
-		case 'haskell':
-			return import('codemirror/mode/haskell/haskell.js');
-		case 'haskell-literate':
-			return import('codemirror/mode/haskell-literate/haskell-literate.js');
-		case 'haxe':
-			return import('codemirror/mode/haxe/haxe.js');
-		case 'htmlembedded':
-			return import('codemirror/mode/htmlembedded/htmlembedded.js');
-		case 'htmlmixed':
-			return import('codemirror/mode/htmlmixed/htmlmixed.js');
-		case 'http':
-			return import('codemirror/mode/http/http.js');
-		case 'idl':
-			return import('codemirror/mode/idl/idl.js');
-		case 'javascript':
-			return import('codemirror/mode/javascript/javascript.js');
-		case 'jinja2':
-			return import('codemirror/mode/jinja2/jinja2.js');
-		case 'jsx':
-			return import('codemirror/mode/jsx/jsx.js');
-		case 'julia':
-			return import('codemirror/mode/julia/julia.js');
-		case 'livescript':
-			return import('codemirror/mode/livescript/livescript.js');
-		case 'lua':
-			return import('codemirror/mode/lua/lua.js');
-		case 'markdown':
-			return import('codemirror/mode/markdown/markdown.js');
-		case 'mathematica':
-			return import('codemirror/mode/mathematica/mathematica.js');
-		case 'mbox':
-			return import('codemirror/mode/mbox/mbox.js');
-		case 'mirc':
-			return import('codemirror/mode/mirc/mirc.js');
-		case 'mllike':
-			return import('codemirror/mode/mllike/mllike.js');
-		case 'modelica':
-			return import('codemirror/mode/modelica/modelica.js');
-		case 'mscgen':
-			return import('codemirror/mode/mscgen/mscgen.js');
-		case 'mumps':
-			return import('codemirror/mode/mumps/mumps.js');
-		case 'nginx':
-			return import('codemirror/mode/nginx/nginx.js');
-		case 'nsis':
-			return import('codemirror/mode/nsis/nsis.js');
-		case 'ntriples':
-			return import('codemirror/mode/ntriples/ntriples.js');
-		case 'octave':
-			return import('codemirror/mode/octave/octave.js');
-		case 'oz':
-			return import('codemirror/mode/oz/oz.js');
-		case 'pascal':
-			return import('codemirror/mode/pascal/pascal.js');
-		case 'pegjs':
-			return import('codemirror/mode/pegjs/pegjs.js');
-		case 'perl':
-			return import('codemirror/mode/perl/perl.js');
-		case 'php':
-			return import('codemirror/mode/php/php.js');
-		case 'pig':
-			return import('codemirror/mode/pig/pig.js');
-		case 'powershell':
-			return import('codemirror/mode/powershell/powershell.js');
-		case 'properties':
-			return import('codemirror/mode/properties/properties.js');
-		case 'protobuf':
-			return import('codemirror/mode/protobuf/protobuf.js');
-		case 'pug':
-			return import('codemirror/mode/pug/pug.js');
-		case 'puppet':
-			return import('codemirror/mode/puppet/puppet.js');
-		case 'python':
-			return import('codemirror/mode/python/python.js');
-		case 'q':
-			return import('codemirror/mode/q/q.js');
-		case 'r':
-			return import('codemirror/mode/r/r.js');
-		case 'rpm':
-			return import('codemirror/mode/rpm/rpm.js');
-		case 'rst':
-			return import('codemirror/mode/rst/rst.js');
-		case 'ruby':
-			return import('codemirror/mode/ruby/ruby.js');
-		case 'rust':
-			return import('codemirror/mode/rust/rust.js');
-		case 'sas':
-			return import('codemirror/mode/sas/sas.js');
-		case 'sass':
-			return import('codemirror/mode/sass/sass.js');
-		case 'scheme':
-			return import('codemirror/mode/scheme/scheme.js');
-		case 'shell':
-			return import('codemirror/mode/shell/shell.js');
-		case 'sieve':
-			return import('codemirror/mode/sieve/sieve.js');
-		case 'slim':
-			return import('codemirror/mode/slim/slim.js');
-		case 'smalltalk':
-			return import('codemirror/mode/smalltalk/smalltalk.js');
-		case 'smarty':
-			return import('codemirror/mode/smarty/smarty.js');
-		case 'solr':
-			return import('codemirror/mode/solr/solr.js');
-		case 'soy':
-			return import('codemirror/mode/soy/soy.js');
-		case 'sparql':
-			return import('codemirror/mode/sparql/sparql.js');
-		case 'spreadsheet':
-			return import('codemirror/mode/spreadsheet/spreadsheet.js');
-		case 'sql':
-			return import('codemirror/mode/sql/sql.js');
-		case 'stex':
-			return import('codemirror/mode/stex/stex.js');
-		case 'stylus':
-			return import('codemirror/mode/stylus/stylus.js');
-		case 'swift':
-			return import('codemirror/mode/swift/swift.js');
-		case 'tcl':
-			return import('codemirror/mode/tcl/tcl.js');
-		case 'textile':
-			return import('codemirror/mode/textile/textile.js');
-		case 'tiddlywiki':
-			return import('codemirror/mode/tiddlywiki/tiddlywiki.js');
-		case 'tiki':
-			return import('codemirror/mode/tiki/tiki.js');
-		case 'toml':
-			return import('codemirror/mode/toml/toml.js');
-		case 'tornado':
-			return import('codemirror/mode/tornado/tornado.js');
-		case 'troff':
-			return import('codemirror/mode/troff/troff.js');
-		case 'ttcn':
-			return import('codemirror/mode/ttcn/ttcn.js');
-		case 'ttcn-cfg':
-			return import('codemirror/mode/ttcn-cfg/ttcn-cfg.js');
-		case 'turtle':
-			return import('codemirror/mode/turtle/turtle.js');
-		case 'twig':
-			return import('codemirror/mode/twig/twig.js');
-		case 'vb':
-			return import('codemirror/mode/vb/vb.js');
-		case 'vbscript':
-			return import('codemirror/mode/vbscript/vbscript.js');
-		case 'velocity':
-			return import('codemirror/mode/velocity/velocity.js');
-		case 'verilog':
-			return import('codemirror/mode/verilog/verilog.js');
-		case 'vhdl':
-			return import('codemirror/mode/vhdl/vhdl.js');
-		case 'vue':
-			return import('codemirror/mode/vue/vue.js');
-		case 'wast':
-			return import('codemirror/mode/wast/wast.js');
-		case 'webidl':
-			return import('codemirror/mode/webidl/webidl.js');
-		case 'xml':
-			return import('codemirror/mode/xml/xml.js');
-		case 'xquery':
-			return import('codemirror/mode/xquery/xquery.js');
-		case 'yacas':
-			return import('codemirror/mode/yacas/yacas.js');
-		case 'yaml':
-			return import('codemirror/mode/yaml/yaml.js');
-		case 'yaml-frontmatter':
-			return import('codemirror/mode/yaml-frontmatter/yaml-frontmatter.js');
-		case 'z80':
-			return import('codemirror/mode/z80/z80.js');
-		default:
-			return Promise.resolve();
+import { LanguageSupport } from '@codemirror/language';
+import { StreamLanguage } from '@codemirror/language';
+import type { StreamParser } from '@codemirror/language';
+import { camelCase } from 'lodash';
+
+export const modeMap: Record<
+	string,
+	{
+		name: string;
+		import: () => Promise<{ default?: StreamParser<unknown>; [key: string]: any }>;
+	}
+> = {
+	apl: { name: 'APL', import: () => import('@codemirror/legacy-modes/mode/apl') },
+	asciiarmor: { name: 'ASCII Armor', import: () => import('@codemirror/legacy-modes/mode/asciiarmor') },
+	'asn.1': { name: 'ASN.1', import: () => import('@codemirror/legacy-modes/mode/asn1') },
+	asterisk: { name: 'Asterisk', import: () => import('@codemirror/legacy-modes/mode/asterisk') },
+	brainfuck: { name: 'Brainfuck', import: () => import('@codemirror/legacy-modes/mode/brainfuck') },
+	clike: { name: 'C-like', import: () => import('@codemirror/legacy-modes/mode/clike') },
+	clojure: { name: 'Clojure', import: () => import('@codemirror/legacy-modes/mode/clojure') },
+	cmake: { name: 'CMake', import: () => import('@codemirror/legacy-modes/mode/cmake') },
+	cobol: { name: 'COBOL', import: () => import('@codemirror/legacy-modes/mode/cobol') },
+	coffeescript: { name: 'CoffeeScript', import: () => import('@codemirror/legacy-modes/mode/coffeescript') },
+	commonlisp: { name: 'Common Lisp', import: () => import('@codemirror/legacy-modes/mode/commonlisp') },
+	crystal: { name: 'Crystal', import: () => import('@codemirror/legacy-modes/mode/crystal') },
+	css: { name: 'CSS', import: () => import('@codemirror/legacy-modes/mode/css') },
+	cypher: { name: 'Cypher', import: () => import('@codemirror/legacy-modes/mode/cypher') },
+	d: { name: 'D', import: () => import('@codemirror/legacy-modes/mode/d') },
+	diff: { name: 'Diff', import: () => import('@codemirror/legacy-modes/mode/diff') },
+	dockerfile: { name: 'Dockerfile', import: () => import('@codemirror/legacy-modes/mode/dockerfile') },
+	dtd: { name: 'DTD', import: () => import('@codemirror/legacy-modes/mode/dtd') },
+	dylan: { name: 'Dylan', import: () => import('@codemirror/legacy-modes/mode/dylan') },
+	ebnf: { name: 'EBNF', import: () => import('@codemirror/legacy-modes/mode/ebnf') },
+	ecl: { name: 'ECL', import: () => import('@codemirror/legacy-modes/mode/ecl') },
+	eiffel: { name: 'Eiffel', import: () => import('@codemirror/legacy-modes/mode/eiffel') },
+	elm: { name: 'Elm', import: () => import('@codemirror/legacy-modes/mode/elm') },
+	erlang: { name: 'Erlang', import: () => import('@codemirror/legacy-modes/mode/erlang') },
+	factor: { name: 'Factor', import: () => import('@codemirror/legacy-modes/mode/factor') },
+	fcl: { name: 'FCL', import: () => import('@codemirror/legacy-modes/mode/fcl') },
+	forth: { name: 'Forth', import: () => import('@codemirror/legacy-modes/mode/forth') },
+	fortran: { name: 'Fortran', import: () => import('@codemirror/legacy-modes/mode/fortran') },
+	gas: { name: 'GAS', import: () => import('@codemirror/legacy-modes/mode/gas') },
+	gherkin: { name: 'Gherkin', import: () => import('@codemirror/legacy-modes/mode/gherkin') },
+	go: { name: 'Go', import: () => import('@codemirror/legacy-modes/mode/go') },
+	groovy: { name: 'Groovy', import: () => import('@codemirror/legacy-modes/mode/groovy') },
+	haskell: { name: 'Haskell', import: () => import('@codemirror/legacy-modes/mode/haskell') },
+	haxe: { name: 'Haxe', import: () => import('@codemirror/legacy-modes/mode/haxe') },
+	http: { name: 'HTTP', import: () => import('@codemirror/legacy-modes/mode/http') },
+	idl: { name: 'IDL', import: () => import('@codemirror/legacy-modes/mode/idl') },
+	javascript: { name: 'JavaScript', import: () => import('@codemirror/legacy-modes/mode/javascript') },
+	jinja2: { name: 'Jinja2', import: () => import('@codemirror/legacy-modes/mode/jinja2') },
+	julia: { name: 'Julia', import: () => import('@codemirror/legacy-modes/mode/julia') },
+	livescript: { name: 'LiveScript', import: () => import('@codemirror/legacy-modes/mode/livescript') },
+	lua: { name: 'Lua', import: () => import('@codemirror/legacy-modes/mode/lua') },
+	mathematica: { name: 'Mathematica', import: () => import('@codemirror/legacy-modes/mode/mathematica') },
+	mbox: { name: 'Mbox', import: () => import('@codemirror/legacy-modes/mode/mbox') },
+	mirc: { name: 'mIRC', import: () => import('@codemirror/legacy-modes/mode/mirc') },
+	mllike: { name: 'ML-like', import: () => import('@codemirror/legacy-modes/mode/mllike') },
+	modelica: { name: 'Modelica', import: () => import('@codemirror/legacy-modes/mode/modelica') },
+	mscgen: { name: 'MscGen', import: () => import('@codemirror/legacy-modes/mode/mscgen') },
+	mumps: { name: 'MUMPS', import: () => import('@codemirror/legacy-modes/mode/mumps') },
+	nginx: { name: 'Nginx', import: () => import('@codemirror/legacy-modes/mode/nginx') },
+	nsis: { name: 'NSIS', import: () => import('@codemirror/legacy-modes/mode/nsis') },
+	ntriples: { name: 'N-Triples', import: () => import('@codemirror/legacy-modes/mode/ntriples') },
+	octave: { name: 'Octave', import: () => import('@codemirror/legacy-modes/mode/octave') },
+	oz: { name: 'Oz', import: () => import('@codemirror/legacy-modes/mode/oz') },
+	pascal: { name: 'Pascal', import: () => import('@codemirror/legacy-modes/mode/pascal') },
+	pegjs: { name: 'PEG.js', import: () => import('@codemirror/legacy-modes/mode/pegjs') },
+	perl: { name: 'Perl', import: () => import('@codemirror/legacy-modes/mode/perl') },
+	pig: { name: 'Pig', import: () => import('@codemirror/legacy-modes/mode/pig') },
+	powershell: { name: 'PowerShell', import: () => import('@codemirror/legacy-modes/mode/powershell') },
+	properties: { name: 'Properties', import: () => import('@codemirror/legacy-modes/mode/properties') },
+	protobuf: { name: 'Protocol Buffers', import: () => import('@codemirror/legacy-modes/mode/protobuf') },
+	pug: { name: 'Pug', import: () => import('@codemirror/legacy-modes/mode/pug') },
+	puppet: { name: 'Puppet', import: () => import('@codemirror/legacy-modes/mode/puppet') },
+	python: { name: 'Python', import: () => import('@codemirror/legacy-modes/mode/python') },
+	q: { name: 'Q', import: () => import('@codemirror/legacy-modes/mode/q') },
+	r: { name: 'R', import: () => import('@codemirror/legacy-modes/mode/r') },
+	rpm: { name: 'RPM', import: () => import('@codemirror/legacy-modes/mode/rpm') },
+	ruby: { name: 'Ruby', import: () => import('@codemirror/legacy-modes/mode/ruby') },
+	rust: { name: 'Rust', import: () => import('@codemirror/legacy-modes/mode/rust') },
+	sas: { name: 'SAS', import: () => import('@codemirror/legacy-modes/mode/sas') },
+	sass: { name: 'Sass', import: () => import('@codemirror/legacy-modes/mode/sass') },
+	scheme: { name: 'Scheme', import: () => import('@codemirror/legacy-modes/mode/scheme') },
+	shell: { name: 'Shell', import: () => import('@codemirror/legacy-modes/mode/shell') },
+	sieve: { name: 'Sieve', import: () => import('@codemirror/legacy-modes/mode/sieve') },
+	smalltalk: { name: 'Smalltalk', import: () => import('@codemirror/legacy-modes/mode/smalltalk') },
+	solr: { name: 'Solr', import: () => import('@codemirror/legacy-modes/mode/solr') },
+	sparql: { name: 'SPARQL', import: () => import('@codemirror/legacy-modes/mode/sparql') },
+	spreadsheet: { name: 'Spreadsheet', import: () => import('@codemirror/legacy-modes/mode/spreadsheet') },
+	sql: { name: 'SQL', import: () => import('@codemirror/legacy-modes/mode/sql') },
+	stex: { name: 'sTeX', import: () => import('@codemirror/legacy-modes/mode/stex') },
+	stylus: { name: 'Stylus', import: () => import('@codemirror/legacy-modes/mode/stylus') },
+	swift: { name: 'Swift', import: () => import('@codemirror/legacy-modes/mode/swift') },
+	tcl: { name: 'Tcl', import: () => import('@codemirror/legacy-modes/mode/tcl') },
+	textile: { name: 'Textile', import: () => import('@codemirror/legacy-modes/mode/textile') },
+	tiddlywiki: { name: 'TiddlyWiki', import: () => import('@codemirror/legacy-modes/mode/tiddlywiki') },
+	tiki: { name: 'Tiki', import: () => import('@codemirror/legacy-modes/mode/tiki') },
+	toml: { name: 'TOML', import: () => import('@codemirror/legacy-modes/mode/toml') },
+	troff: { name: 'Troff', import: () => import('@codemirror/legacy-modes/mode/troff') },
+	ttcn: { name: 'TTCN', import: () => import('@codemirror/legacy-modes/mode/ttcn') },
+	'ttcn-cfg': { name: 'TTCN-CFG', import: () => import('@codemirror/legacy-modes/mode/ttcn-cfg') },
+	turtle: { name: 'Turtle', import: () => import('@codemirror/legacy-modes/mode/turtle') },
+	vb: { name: 'Visual Basic', import: () => import('@codemirror/legacy-modes/mode/vb') },
+	vbscript: { name: 'VBScript', import: () => import('@codemirror/legacy-modes/mode/vbscript') },
+	velocity: { name: 'Velocity', import: () => import('@codemirror/legacy-modes/mode/velocity') },
+	verilog: { name: 'Verilog', import: () => import('@codemirror/legacy-modes/mode/verilog') },
+	vhdl: { name: 'VHDL', import: () => import('@codemirror/legacy-modes/mode/vhdl') },
+	wast: { name: 'WebAssembly Text', import: () => import('@codemirror/legacy-modes/mode/wast') },
+	webidl: { name: 'Web IDL', import: () => import('@codemirror/legacy-modes/mode/webidl') },
+	xml: { name: 'XML', import: () => import('@codemirror/legacy-modes/mode/xml') },
+	xquery: { name: 'XQuery', import: () => import('@codemirror/legacy-modes/mode/xquery') },
+	yacas: { name: 'Yacas', import: () => import('@codemirror/legacy-modes/mode/yacas') },
+	yaml: { name: 'YAML', import: () => import('@codemirror/legacy-modes/mode/yaml') },
+	z80: { name: 'Z80', import: () => import('@codemirror/legacy-modes/mode/z80') },
+};
+
+function tryGetParser(value: any): any | null {
+	if (typeof value === 'object' && value && typeof value.token === 'function') {
+		return value;
+	}
+
+	if (typeof value === 'function') {
+		try {
+			const result = value({});
+
+			if (result && typeof result === 'object' && typeof result.token === 'function') {
+				return result;
+			}
+		} catch {
+			// Function may not accept empty object, try without args
+		}
+
+		try {
+			const result = value();
+
+			if (result && typeof result === 'object' && typeof result.token === 'function') {
+				return result;
+			}
+		} catch {
+			// Function may require args
+		}
+	}
+
+	return null;
+}
+
+function findParserInModule(modeModule: any, normalizedMode: string): { parser: any; source: string } | null {
+	const camelCaseMode = camelCase(normalizedMode);
+
+	const candidates = [
+		normalizedMode,
+		camelCaseMode,
+		normalizedMode.replace(/\./g, ''),
+		camelCaseMode.replace(/\./g, ''),
+	];
+
+	for (const candidate of candidates) {
+		const parser = tryGetParser(modeModule[candidate]);
+
+		if (parser) {
+			return { parser, source: candidate };
+		}
+	}
+
+	for (const key of Object.keys(modeModule).filter((key) => key !== 'default')) {
+		const parser = tryGetParser(modeModule[key]);
+
+		if (parser) {
+			return { parser, source: key };
+		}
+	}
+
+	return null;
+}
+
+export default async function importCodemirrorMode(mode: string): Promise<LanguageSupport | null> {
+	const normalizedMode = mode.toLowerCase();
+
+	if (normalizedMode === 'plaintext') {
+		return null;
+	}
+
+	const modeEntry = modeMap[normalizedMode];
+
+	if (!modeEntry) {
+		return null;
+	}
+
+	try {
+		const modeModule = await modeEntry.import();
+
+		const parserResult = findParserInModule(modeModule, normalizedMode);
+
+		if (!parserResult) {
+			return null;
+		}
+
+		return new LanguageSupport(StreamLanguage.define(parserResult.parser as StreamParser<unknown>));
+	} catch {
+		return null;
 	}
 }
