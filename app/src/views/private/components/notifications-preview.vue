@@ -15,6 +15,15 @@ const notificationsStore = useNotificationsStore();
 const sidebarStore = useSidebarStore();
 
 const { lastFour } = storeToRefs(notificationsStore);
+
+const toggle = () => {
+	if (active.value) {
+		active.value = false;
+	} else {
+		active.value = true;
+		sidebarStore.expand();
+	}
+}
 </script>
 
 <template>
@@ -24,7 +33,7 @@ const { lastFour } = storeToRefs(notificationsStore);
 			:active
 			class="toggle"
 			icon="pending_actions"
-			@click="active = !active"
+			@click="toggle"
 		>
 			{{ t('activity_log') }}
 		</sidebar-button>
