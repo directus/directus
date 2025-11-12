@@ -4,9 +4,9 @@ import { useI18n } from 'vue-i18n';
 import SidebarButton from './sidebar-button.vue';
 import NotificationItem from './notification-item.vue';
 import { useNotificationsStore } from '@/stores/notifications';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
 defineProps<{
-	sidebarOpen?: boolean;
 	modelValue?: boolean;
 }>();
 
@@ -17,13 +17,15 @@ defineEmits<{
 const { t } = useI18n();
 
 const notificationsStore = useNotificationsStore();
+const sidebarStore = useSidebarStore();
+
 const { lastFour } = storeToRefs(notificationsStore);
 </script>
 
 <template>
 	<div class="notifications-preview">
 		<sidebar-button
-			v-tooltip.left="!sidebarOpen && t('activity_log')"
+			v-tooltip.left="sidebarStore.collapsed && t('activity_log')"
 			:active="modelValue"
 			class="toggle"
 			icon="pending_actions"

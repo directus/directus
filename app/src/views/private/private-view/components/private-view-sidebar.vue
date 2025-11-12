@@ -1,6 +1,10 @@
 <script lang="ts" setup>
-import SidebarDetailGroup from './private-view-sidebar-detail-group.vue';
+import { ref } from 'vue';
 import SkipMenu from '../../components/skip-menu.vue';
+import SidebarDetailGroup from './private-view-sidebar-detail-group.vue';
+import NotificationsPreview from '../../components/notifications-preview.vue';
+
+const notificationsPreviewActive = ref(false);
 </script>
 
 <template>
@@ -13,7 +17,7 @@ import SkipMenu from '../../components/skip-menu.vue';
 
 			<div class="spacer" />
 
-			<!-- TODO <notifications-preview v-model="notificationsPreviewActive" :sidebar-open="sidebarOpen" /> -->
+			<notifications-preview v-model="notificationsPreviewActive" />
 		</div>
 	</aside>
 </template>
