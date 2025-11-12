@@ -148,6 +148,7 @@
 		"semver": "catalog:",
 		"string-width": "catalog:",
 		"tinymce": "catalog:",
+		"tokenlens": "catalog:",
 		"tus-js-client": "catalog:",
 		"typescript": "catalog:",
 		"universal-cookie": "catalog:",

@@ -4,6 +4,7 @@ import { useAiStore } from '@/ai/stores/use-ai';
 import { computed, type Component } from 'vue';
 import Openai from '@/ai/components/logos/openai.vue';
 import Claude from '@/ai/components/logos/claude.vue';
+import { extractFromId } from '../utils/extract-from-id';
 
 interface ModelIcons {
 	[key: string]: Component;
@@ -21,12 +22,12 @@ const currentProviderIcon = computed(() => {
 });
 
 const modelsWithMeta = computed(() => {
-	return aiStore.models.map((model) => {
-		const [provider = '', name = ''] = model.split('/');
+	return aiStore.modelIds.map((id) => {
+		const { provider, model } = extractFromId(id);
 		return {
+			id,
 			model,
 			provider,
-			name,
 			icon: modelIcons[provider] ?? null,
 		};
 	});
@@ -44,22 +45,22 @@ const modelsWithMeta = computed(() => {
 		</template>
 
 		<v-list>
-			<template v-for="(item, index) in modelsWithMeta" :key="item.model">
+			<template v-for="(item, index) in modelsWithMeta" :key="item.id">
 				<v-divider v-if="index !== 0 && item.provider !== modelsWithMeta[index - 1]?.provider" />
 				<v-list-item
-					:active="aiStore.selectedModel === item.model"
+					:active="aiStore.selectedModelId === item.id"
 					clickable
-					@click="aiStore.selectedModel = item.model"
+					@click="aiStore.selectedModelId = item.id"
 				>
 					<v-list-item-icon>
 						<component :is="item.icon" v-if="item.icon" class="model-icon" />
 					</v-list-item-icon>
 					<v-list-item-content>
 						<div class="model-list-item-content">
-							<v-text-overflow :text="formatTitle(item.name)" />
+							<v-text-overflow :text="formatTitle(item.model)" />
 						</div>
 					</v-list-item-content>
-					<template v-if="aiStore.selectedModel === item.model" #append>
+					<template v-if="aiStore.selectedModelId === item.id" #append>
 						<v-icon name="check" x-small />
 					</template>
 				</v-list-item>

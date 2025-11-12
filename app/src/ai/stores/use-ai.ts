@@ -7,7 +7,8 @@ import { defineStore } from 'pinia';
 import { computed, ref, shallowRef, watch } from 'vue';
 import { z } from 'zod';
 import { StaticToolDefinition } from '../composables/define-tool';
-import { AI_MODELS } from '../models';
+import { AI_MODEL_IDS } from '../models';
+import { extractFromId } from '../utils/extract-from-id';
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
@@ -23,18 +24,18 @@ export const useAiStore = defineStore('ai-store', () => {
 		chatOpen.value = false;
 	});
 
-	const models = computed(() =>
-		AI_MODELS.filter((model) => {
-			const provider = model.split('/')[0]!;
+	const modelIds = computed(() =>
+		AI_MODEL_IDS.filter((id) => {
+			const { provider } = extractFromId(id);
 			return settingsStore.availableAiProviders.includes(provider);
 		}),
 	);
 
-	const defaultProvider = computed(() => models.value[0]?.split('/')[0] ?? null);
-	const defaultModel = computed(() => models.value[0]?.split('/')[1] ?? null);
-	const selectedModel = useLocalStorage<string | null>('selected-ai-model', defaultModel.value);
-	const currentProvider = computed(() => selectedModel.value?.split('/')[0] ?? defaultProvider.value);
-	const currentModel = computed(() => selectedModel.value?.split('/')[1] ?? defaultModel.value);
+	const defaultProvider = computed(() => modelIds.value[0] ? extractFromId(modelIds.value[0]).provider : null);
+	const defaultModel = computed(() => modelIds.value[0] ? extractFromId(modelIds.value[0]).model : null);
+	const selectedModelId = useLocalStorage<string | null>('selected-ai-model', modelIds.value[0] ?? null);
+	const currentProvider = computed(() => selectedModelId.value ? extractFromId(selectedModelId.value).provider : defaultProvider.value);
+	const currentModel = computed(() => selectedModelId.value ? extractFromId(selectedModelId.value).model : defaultModel.value);
 
 	const systemTools = shallowRef<string[]>([
 		'items',
@@ -161,8 +162,8 @@ export const useAiStore = defineStore('ai-store', () => {
 		chat,
 		messages,
 		status,
-		selectedModel,
-		models,
+		selectedModelId,
+		modelIds,
 		registerLocalTool,
 		replaceLocalTool,
 		deregisterLocalTool,
