@@ -23,7 +23,7 @@ const toggle = () => {
 		active.value = true;
 		sidebarStore.expand();
 	}
-}
+};
 </script>
 
 <template>
