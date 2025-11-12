@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
 import { isEmpty, isEqual } from 'lodash';
 import { computed, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
 
 type Option = {
 	text: string;
@@ -14,20 +10,15 @@ type Option = {
 	children?: Option[];
 };
 
-const props = withDefaults(
-	defineProps<{
-		value: string | number | null;
-		disabled?: boolean;
-		choices?: Option[];
-		icon?: string;
-		allowNone?: boolean;
-		placeholder?: string;
-		allowOther?: boolean;
-	}>(),
-	{
-		placeholder: () => t('select_an_item'),
-	},
-);
+const props = defineProps<{
+	value: string | number | null;
+	disabled?: boolean;
+	choices?: Option[];
+	icon?: string;
+	allowNone?: boolean;
+	placeholder?: string;
+	allowOther?: boolean;
+}>();
 
 const emit = defineEmits(['input']);
 
@@ -92,7 +83,7 @@ watch(
 		:show-deselect="allowNone"
 		item-icon="icon"
 		item-color="color"
-		:placeholder="placeholder"
+		:placeholder="placeholder || $t('select_an_item')"
 		:allow-other="allowOther"
 		@update:model-value="$emit('input', $event)"
 	>
