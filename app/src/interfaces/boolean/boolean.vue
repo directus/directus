@@ -14,7 +14,6 @@ withDefaults(
 		colorOff?: string;
 	}>(),
 	{
-		label: () => t('enabled'),
 		iconOn: 'check_box',
 		iconOff: 'check_box_outline_blank',
 		colorOn: 'var(--theme--primary)',
@@ -32,7 +31,7 @@ defineEmits<{
 		block
 		:icon-on="iconOn"
 		:icon-off="iconOff"
-		:label="label"
+		:label="label || t('enabled')"
 		:model-value="value"
 		:indeterminate="value === null"
 		:disabled="disabled"

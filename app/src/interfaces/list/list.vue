@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldMeta } from '@directus/types';
 import { isEqual, sortBy } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
 import Draggable from 'vuedraggable';
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
 
 const props = withDefaults(
 	defineProps<{
@@ -26,9 +22,6 @@ const props = withDefaults(
 	}>(),
 	{
 		fields: () => [],
-		addLabel: () => t('create_new'),
-		headerPlaceholder: () => t('empty_item'),
-		placeholder: () => t('no_items'),
 	},
 );
 
@@ -209,7 +202,7 @@ function closeDrawer() {
 <template>
 	<div class="repeater">
 		<v-notice v-if="(Array.isArray(internalValue) && internalValue.length === 0) || internalValue == null">
-			{{ placeholder }}
+			{{ placeholder || $t('no_items') }}
 		</v-notice>
 		<v-notice v-else-if="!Array.isArray(internalValue)" type="warning">
 			<p>{{ $t('interfaces.list.incompatible_data') }}</p>
@@ -247,13 +240,13 @@ function closeDrawer() {
 
 		<div class="actions">
 			<v-button v-if="showAddNew" :disabled @click="addNew">
-				{{ addLabel }}
+				{{ addLabel || $t('create_new') }}
 			</v-button>
 		</div>
 
 		<v-drawer
 			:model-value="drawerOpen"
-			:title="displayValue || headerPlaceholder"
+			:title="displayValue || headerPlaceholder || $t('empty_item')"
 			persistent
 			@update:model-value="checkDiscard()"
 			@cancel="checkDiscard()"
