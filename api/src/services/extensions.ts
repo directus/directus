@@ -143,6 +143,7 @@ export class ExtensionsService {
 	}
 
 	async readAll() {
+		await this.extensionsManager.isReloading();
 		const settings = await this.extensionsItemService.readByQuery({ limit: -1 });
 
 		const regular = settings.filter(({ bundle }) => bundle === null);
@@ -151,6 +152,11 @@ export class ExtensionsService {
 		const output: ApiOutput[] = [];
 
 		for (const meta of regular) {
+			if (meta.source === 'registry') {
+				const x = await describe(meta.id);
+				console.log('reg', x.data.versions[0]?.version);
+			}
+
 			output.push({
 				id: meta.id,
 				bundle: meta.bundle,
@@ -182,6 +188,7 @@ export class ExtensionsService {
 	}
 
 	async readOne(id: string): Promise<ApiOutput> {
+		await this.extensionsManager.isReloading();
 		const meta = await this.extensionsItemService.readOne(id);
 		const schema = this.extensionsManager.getExtension(meta.source, meta.folder) ?? null;
 

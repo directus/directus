@@ -137,6 +137,8 @@ export class ExtensionManager {
 	 */
 	private reloadQueue: JobQueue = new JobQueue();
 
+	private reloadPromise: Promise<void> = Promise.resolve();
+
 	/**
 	 * Optional file system watcher to auto-reload extensions when the local file system changes
 	 */
@@ -223,6 +225,11 @@ export class ExtensionManager {
 		const logger = useLogger();
 
 		await this.installationManager.install(versionId);
+
+		// if we broadcast immediatly before reloading locally do we then
+		//  start reloading other instances before finishing the current
+		//  install request? to hopefully prevent the fetch race condition
+		await this.broadcastReloadNotification();
 		await this.reload({ forceSync: true });
 
 		emitter.emitAction('extensions.installed', {
@@ -232,7 +239,6 @@ export class ExtensionManager {
 
 		logger.info(`Installed extension: ${versionId}`);
 
-		await this.broadcastReloadNotification();
 	}
 
 	public async uninstall(folder: string) {
@@ -328,10 +334,10 @@ export class ExtensionManager {
 
 		const logger = useLogger();
 
-		let resolve: (val?: unknown) => void;
+		let resolve: () => void;
 		let reject: (val?: unknown) => void;
 
-		const promise = new Promise((res, rej) => {
+		this.reloadPromise = new Promise((res, rej) => {
 			resolve = res;
 			reject = rej;
 		});
@@ -379,7 +385,11 @@ export class ExtensionManager {
 			}
 		});
 
-		return promise;
+		return this.reloadPromise;
+	}
+
+	public isReloading(): Promise<void> {
+		return this.reloadPromise;
 	}
 
 	/**
