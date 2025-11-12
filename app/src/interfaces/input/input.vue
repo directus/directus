@@ -5,8 +5,9 @@ import { computed } from 'vue';
 const props = withDefaults(
 	defineProps<{
 		value: string | number | null;
-		disabled?: boolean;
+		type?: string;
 		clear?: boolean;
+		disabled?: boolean;
 		placeholder?: string;
 		masked?: boolean;
 		iconLeft?: string;

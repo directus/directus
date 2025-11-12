@@ -19,6 +19,7 @@ import { validateItem } from '@/utils/validate-item';
 const props = withDefaults(
 	defineProps<{
 		collection: string;
+		field: string;
 		primaryKey: string | number;
 		languageField?: string | null;
 		languageDirectionField?: string | null;
@@ -27,8 +28,8 @@ const props = withDefaults(
 		userLanguage?: boolean;
 		value?: (number | string | Record<string, any>)[] | Record<string, any> | null;
 		autofocus?: boolean;
-		version: ContentVersion | null;
 		disabled?: boolean;
+		version: ContentVersion | null;
 	}>(),
 	{
 		languageField: null,

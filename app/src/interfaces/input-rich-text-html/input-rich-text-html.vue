@@ -50,11 +50,12 @@ type CustomFormat = {
 const props = withDefaults(
 	defineProps<{
 		value: string | null;
-		disabled?: boolean;
+		field?: string;
 		toolbar?: string[];
 		font?: 'sans-serif' | 'serif' | 'monospace';
 		customFormats?: CustomFormat[];
 		tinymceOverrides?: Record<string, unknown>;
+		disabled?: boolean;
 		imageToken?: string;
 		folder?: string;
 		softLength?: number;
