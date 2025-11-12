@@ -11,7 +11,7 @@ import type { PrivateViewProps } from './private-view.vue';
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
 import PrivateViewSidebar from './private-view-sidebar.vue';
 
-const contentEl = useTemplateRef('contentEl');
+const contentEl = useTemplateRef('content-el');
 provide('main-element', contentEl);
 
 const props = defineProps<PrivateViewProps & { inlineNav: boolean }>();
@@ -20,7 +20,7 @@ defineOptions({ inheritAttrs: false });
 
 const sidebarStore = useSidebarStore();
 
-const { y } = useScroll(useTemplateRef('scrollContainer'));
+const { y } = useScroll(useTemplateRef('scroll-container'));
 
 const showHeaderShadow = computed(() => y.value > 0);
 
@@ -41,7 +41,7 @@ const splitterCollapsed = computed({
 <template>
 	<SkipMenu section="main" />
 
-	<div id="main-content" ref="contentEl" class="content">
+	<div id="main-content" ref="content-el" class="content">
 		<SplitPanel
 			v-model:size="sidebarStore.size"
 			v-model:collapsed="splitterCollapsed"
@@ -60,7 +60,7 @@ const splitterCollapsed = computed({
 			:disabled="!sm"
 		>
 			<template #start>
-				<div ref="scrollContainer" class="scrolling-container">
+				<div ref="scroll-container" class="scrolling-container">
 					<PrivateViewHeaderBar
 						:title="props.title"
 						:shadow="showHeaderShadow"
