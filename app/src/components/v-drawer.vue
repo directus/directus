@@ -14,6 +14,9 @@ export interface Props {
 	modelValue?: boolean;
 	persistent?: boolean;
 	icon?: string;
+	/**
+	 * Color of the icon displayed in the drawer header.
+	 */
 	iconColor?: string;
 	sidebarResizeable?: boolean;
 	sidebarLabel?: string;
