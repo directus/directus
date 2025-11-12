@@ -280,7 +280,14 @@ async function revert(values: Record<string, any>) {
 				</v-card>
 			</v-dialog>
 
-			<v-button v-tooltip.bottom="$t('save')" rounded icon :loading="saving" :disabled="!isSavable" @click="saveAndQuit">
+			<v-button
+				v-tooltip.bottom="$t('save')"
+				rounded
+				icon
+				:loading="saving"
+				:disabled="!isSavable"
+				@click="saveAndQuit"
+			>
 				<v-icon name="check" />
 
 				<template #append-outer>

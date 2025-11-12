@@ -25,7 +25,6 @@ defineEmits<{
 	'update:modelValue': [value: string | null];
 }>();
 
-
 const loading = ref(false);
 const folders = ref<FolderRaw[]>([]);
 

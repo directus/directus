@@ -629,7 +629,14 @@ function popoverClickOutsideMiddleware(e: Event) {
 						<v-icon small name="close" outline />
 					</v-button>
 
-					<v-button v-tooltip="getTooltip('save', $t('save'))" x-small rounded icon :disabled="!isSavable" @click="save">
+					<v-button
+						v-tooltip="getTooltip('save', $t('save'))"
+						x-small
+						rounded
+						icon
+						:disabled="!isSavable"
+						@click="save"
+					>
 						<v-icon small name="check" outline />
 					</v-button>
 				</div>

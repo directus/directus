@@ -218,7 +218,13 @@ const refreshInterval = computed({
 					<v-icon name="clear" />
 				</v-button>
 
-				<v-button v-tooltip.bottom="$t('create_panel')" rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
+				<v-button
+					v-tooltip.bottom="$t('create_panel')"
+					rounded
+					icon
+					outlined
+					:to="`/insights/${currentDashboard.id}/+`"
+				>
 					<v-icon name="add" />
 				</v-button>
 

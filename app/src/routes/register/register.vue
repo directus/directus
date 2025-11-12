@@ -36,7 +36,9 @@ useHead({
 		<div v-if="wasSuccessful" class="after-success">
 			<div
 				v-md="
-					requiresEmailVerification ? $t('registration_successful_check_email_note') : $t('registration_successful_note')
+					requiresEmailVerification
+						? $t('registration_successful_check_email_note')
+						: $t('registration_successful_note')
 				"
 			></div>
 			<v-button large to="/login">{{ $t('sign_in') }}</v-button>

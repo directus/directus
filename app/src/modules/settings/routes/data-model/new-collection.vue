@@ -427,7 +427,12 @@ function onApply() {
 					<v-divider class="full" />
 					<div class="field half">
 						<div class="type-label">{{ $t('primary_key_field') }}</div>
-						<v-input v-model="primaryKeyFieldName" class="monospace" db-safe :placeholder="$t('a_unique_column_name')" />
+						<v-input
+							v-model="primaryKeyFieldName"
+							class="monospace"
+							db-safe
+							:placeholder="$t('a_unique_column_name')"
+						/>
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('type') }}</div>

@@ -67,7 +67,6 @@ const {
 
 const { createAllowed } = useRelationPermissionsM2O(relationInfo);
 
-
 const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
 
 const fileExtension = computed(() => {

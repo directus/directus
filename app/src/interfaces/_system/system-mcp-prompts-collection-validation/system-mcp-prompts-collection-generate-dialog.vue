@@ -135,7 +135,9 @@ async function generateCollection() {
 				</p>
 
 				<p v-else>
-					{{ $t('mcp_prompts_collection.generate_collection_dialog_description', { collection: customCollectionName }) }}
+					{{
+						$t('mcp_prompts_collection.generate_collection_dialog_description', { collection: customCollectionName })
+					}}
 				</p>
 
 				<template v-if="saving">
