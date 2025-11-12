@@ -12,8 +12,6 @@ import { useLogger } from '../../logger/index.js';
 import { getStorage } from '../../storage/index.js';
 import { getExtensionsPath } from './get-extensions-path.js';
 import { SyncStatus, getSyncStatus, setSyncStatus } from './sync-status.js';
-// import { createFileChecksum, processChecksums } from './checksum.js';
-// import { PassThrough } from 'node:stream';
 
 export const syncExtensions = async (options?: { force: boolean }): Promise<void> => {
 	const lock = useLock();
@@ -68,7 +66,6 @@ export const syncExtensions = async (options?: { force: boolean }): Promise<void
 
 		// Make sure we don't overload the file handles
 		const queue = new Queue({ concurrency: 1000 });
-		// const checksums: [string, Promise<string>][] = [];
 
 		const localFiles = (await readdir(extensionsPath, { recursive: true, withFileTypes: true }))
 			.filter(dirent => dirent.isFile())
@@ -98,14 +95,6 @@ export const syncExtensions = async (options?: { force: boolean }): Promise<void
 			
 			const readStream = await disk.read(filepath);
 
-
-			// ensure both streams receive data
-			// const checksumStream = new PassThrough();
-			// const filesystemStream = new PassThrough();
-			// readStream.pipe(checksumStream);
-			// readStream.pipe(filesystemStream);
-			// checksums.push([filepath, createFileChecksum(checksumStream)]);
-
 			// Ensure that the directory path exists
 			await mkdir(dirname(destPath), { recursive: true });
 
@@ -126,9 +115,6 @@ export const syncExtensions = async (options?: { force: boolean }): Promise<void
 			await rm(removePath, { force: true })
 				.catch(() => {/* ignore file removal error? */});
 		}
-
-		// const test = await processChecksums(checksums);
-		// console.log(test);
 
 		// No longer needed because the above loop removes the file!
 		// await setSyncStatus(SyncStatus.DONE);
