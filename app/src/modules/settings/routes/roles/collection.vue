@@ -6,7 +6,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { Role } from '@directus/types';
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 
@@ -20,8 +19,6 @@ type RoleItem = Pick<Role, RoleBaseFields> & {
 	public?: boolean;
 	count?: number;
 };
-
-const { t } = useI18n();
 
 const router = useRouter();
 
@@ -49,7 +46,7 @@ const tableHeaders = ref<TableHeader[]>([
 		description: null,
 	},
 	{
-		text: t('name'),
+		text: $t('name'),
 		value: 'name',
 		sortable: false,
 		width: 200,
@@ -57,7 +54,7 @@ const tableHeaders = ref<TableHeader[]>([
 		description: null,
 	},
 	{
-		text: t('users'),
+		text: $t('users'),
 		value: 'count',
 		sortable: false,
 		width: 140,
@@ -65,7 +62,7 @@ const tableHeaders = ref<TableHeader[]>([
 		description: null,
 	},
 	{
-		text: t('fields.directus_roles.children'),
+		text: $t('fields.directus_roles.children'),
 		display: 'related-values',
 		displayOptions: {
 			template: '{{ name }}',
@@ -79,7 +76,7 @@ const tableHeaders = ref<TableHeader[]>([
 		description: null,
 	},
 	{
-		text: t('description'),
+		text: $t('description'),
 		value: 'description',
 		sortable: false,
 		width: 470,
@@ -117,8 +114,8 @@ async function fetchRoles() {
 		roles.value = [
 			{
 				id: 'public',
-				name: t('public_label'),
-				description: t('public_description'),
+				name: $t('public_label'),
+				description: $t('public_description'),
 				icon: 'public',
 				public: true,
 			},
@@ -150,8 +147,8 @@ function navigateToRole({ item }: { item: Role }) {
 </script>
 
 <template>
-	<private-view :title="t('settings_roles')">
-		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
+	<private-view :title="$t('settings_roles')">
+		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
@@ -164,11 +161,11 @@ function navigateToRole({ item }: { item: Role }) {
 				v-if="!loading"
 				v-model="search"
 				:autofocus="roles.length > 25"
-				:placeholder="t('search_role')"
+				:placeholder="$t('search_role')"
 				:show-filter="false"
 			/>
 
-			<v-button v-tooltip.bottom="t('create_role')" rounded icon :to="addNewLink">
+			<v-button v-tooltip.bottom="$t('create_role')" rounded icon :to="addNewLink">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -178,8 +175,8 @@ function navigateToRole({ item }: { item: Role }) {
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_roles_collection')" class="page-description" />
+			<sidebar-detail icon="info" :title="$t('information')" close>
+				<div v-md="$t('page_help_settings_roles_collection')" class="page-description" />
 			</sidebar-detail>
 		</template>
 
@@ -223,11 +220,11 @@ function navigateToRole({ item }: { item: Role }) {
 			</v-table>
 		</div>
 
-		<v-info v-else icon="search" :title="t('no_results')" center>
-			{{ t('no_results_copy') }}
+		<v-info v-else icon="search" :title="$t('no_results')" center>
+			{{ $t('no_results_copy') }}
 
 			<template #append>
-				<v-button @click="search = null">{{ t('clear_filters') }}</v-button>
+				<v-button @click="search = null">{{ $t('clear_filters') }}</v-button>
 			</template>
 		</v-info>
 

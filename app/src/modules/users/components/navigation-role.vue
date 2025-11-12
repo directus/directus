@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { BasicRole } from '../composables/use-navigation';
 import { translate } from '@/utils/translate-literal';
 
@@ -13,8 +12,6 @@ const props = defineProps<{
 defineEmits<{
 	click: [{ role: string }];
 }>();
-
-const { t } = useI18n();
 
 const { isAdmin } = useUserStore();
 
@@ -68,7 +65,7 @@ const settingLink = computed(() => ({
 					<v-icon name="list_alt" />
 				</v-list-item-icon>
 				<v-list-item-content>
-					<v-text-overflow :text="t('edit_role')" />
+					<v-text-overflow :text="$t('edit_role')" />
 				</v-list-item-content>
 			</v-list-item>
 		</v-list>

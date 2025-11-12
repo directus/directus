@@ -2,7 +2,6 @@
 import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
 import { useCustomSelectionMultiple, type OtherValue } from '@directus/composables';
 import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 type Option = {
 	text: string;
@@ -31,8 +30,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const { choices, value } = toRefs(props);
 const showAll = ref(false);
@@ -85,12 +82,12 @@ function onBlurCustomInput(otherVal: OtherValue) {
 		<v-detail
 			v-if="hideChoices && showAll === false"
 			:class="gridClass"
-			:label="t(`interfaces.select-multiple-checkbox.show_more`, { count: hiddenCount })"
+			:label="$t(`interfaces.select-multiple-checkbox.show_more`, { count: hiddenCount })"
 			@update:model-value="showAll = true"
 		></v-detail>
 
 		<v-notice v-if="items.length === 0 && !allowOther" type="info">
-			{{ t('no_options_available') }}
+			{{ $t('no_options_available') }}
 		</v-notice>
 
 		<template v-if="allowOther">
@@ -110,13 +107,13 @@ function onBlurCustomInput(otherVal: OtherValue) {
 				@blur:custom-input="onBlurCustomInput(otherValue)"
 			>
 				<template #append>
-					<v-icon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherValue.key, null)" />
+					<v-icon v-tooltip="$$t('remove_item')" name="delete" clickable @click="setOtherValue(otherValue.key, null)" />
 				</template>
 			</v-checkbox>
 
 			<button v-if="allowOther" type="button" :disabled class="add-new custom" @click="addOtherValue('', true)">
 				<v-icon name="add" />
-				{{ t('other') }}
+				{{ $t('other') }}
 			</button>
 		</template>
 	</div>

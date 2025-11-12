@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import HeaderBar from '@/views/private/components/header-bar.vue';
 import { computed, provide, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { type ApplyShortcut } from './v-dialog.vue';
 import VResizeable from './v-resizeable.vue';
+
+const { t } = useI18n();
 
 export interface Props {
 	title: string;
@@ -25,7 +27,7 @@ const props = withDefaults(defineProps<Props>(), {
 	modelValue: undefined,
 	persistent: false,
 	icon: 'box',
-	sidebarLabel: i18n.global.t('sidebar'),
+	sidebarLabel: t('sidebar'),
 	cancelable: true,
 	headerShadow: true,
 	smallHeader: false,

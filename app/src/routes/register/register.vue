@@ -30,38 +30,38 @@ useHead({
 <template>
 	<public-view>
 		<div class="header">
-			<h1 class="type-title">{{ wasSuccessful ? t('registration_successful_headline') : t('register') }}</h1>
+			<h1 class="type-title">{{ wasSuccessful ? $t('registration_successful_headline') : $t('register') }}</h1>
 		</div>
 
 		<div v-if="wasSuccessful" class="after-success">
 			<div
 				v-md="
-					requiresEmailVerification ? t('registration_successful_check_email_note') : t('registration_successful_note')
+					requiresEmailVerification ? $t('registration_successful_check_email_note') : $t('registration_successful_note')
 				"
 			></div>
-			<v-button large to="/login">{{ t('sign_in') }}</v-button>
+			<v-button large to="/login">{{ $t('sign_in') }}</v-button>
 		</div>
 
 		<register-form v-else @was-successful="wasSuccessful = $event" />
 
 		<div v-if="wasSuccessful == false" class="login-wrapper">
-			{{ t('already_have_an_account') }}
+			{{ $t('already_have_an_account') }}
 			<router-link to="/login" class="login-link">
-				{{ t('sign_in') }}
+				{{ $t('sign_in') }}
 			</router-link>
 		</div>
 
 		<template #notice>
 			<template v-if="authenticated">
 				<v-icon name="lock_open" left />
-				{{ t('authenticated') }}
+				{{ $t('authenticated') }}
 			</template>
 			<template v-else-if="logoutReason && te(`logoutReason.${logoutReason}`)">
-				{{ t(`logoutReason.${logoutReason}`) }}
+				{{ $t(`logoutReason.${logoutReason}`) }}
 			</template>
 			<template v-else>
 				<v-icon name="lock" left />
-				{{ t('not_authenticated') }}
+				{{ $t('not_authenticated') }}
 			</template>
 		</template>
 	</public-view>

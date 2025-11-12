@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 withDefaults(
 	defineProps<{
@@ -12,7 +14,7 @@ withDefaults(
 		colorOff?: string;
 	}>(),
 	{
-		label: () => i18n.global.t('enabled'),
+		label: () => t('enabled'),
 		iconOn: 'check_box',
 		iconOff: 'check_box_outline_blank',
 		colorOn: 'var(--theme--primary)',

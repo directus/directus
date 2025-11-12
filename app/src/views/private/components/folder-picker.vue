@@ -2,7 +2,6 @@
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import FolderPickerListItem from './folder-picker-list-item.vue';
 
 type FolderRaw = {
@@ -26,7 +25,6 @@ defineEmits<{
 	'update:modelValue': [value: string | null];
 }>();
 
-const { t } = useI18n();
 
 const loading = ref(false);
 const folders = ref<FolderRaw[]>([]);
@@ -123,7 +121,7 @@ function parseFolder(id: string) {
 						<v-list-item-icon>
 							<v-icon name="folder_special" outline />
 						</v-list-item-icon>
-						<v-list-item-content>{{ t('file_library') }}</v-list-item-content>
+						<v-list-item-content>{{ $t('file_library') }}</v-list-item-content>
 					</template>
 
 					<folder-picker-list-item

@@ -5,8 +5,10 @@ import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldMeta } from '@directus/types';
 import { isEqual, sortBy } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = withDefaults(
 	defineProps<{
@@ -24,17 +26,15 @@ const props = withDefaults(
 	}>(),
 	{
 		fields: () => [],
-		addLabel: () => i18n.global.t('create_new'),
-		headerPlaceholder: () => i18n.global.t('empty_item'),
-		placeholder: () => i18n.global.t('no_items'),
+		addLabel: () => t('create_new'),
+		headerPlaceholder: () => t('empty_item'),
+		placeholder: () => t('no_items'),
 	},
 );
 
 const emit = defineEmits<{
 	(e: 'input', value: FieldMeta[] | null): void;
 }>();
-
-const { t } = useI18n();
 
 const active = ref<number | null>(null);
 const drawerOpen = computed(() => active.value !== null);
@@ -212,7 +212,7 @@ function closeDrawer() {
 			{{ placeholder }}
 		</v-notice>
 		<v-notice v-else-if="!Array.isArray(internalValue)" type="warning">
-			<p>{{ t('interfaces.list.incompatible_data') }}</p>
+			<p>{{ $t('interfaces.list.incompatible_data') }}</p>
 		</v-notice>
 
 		<draggable
@@ -266,7 +266,7 @@ function closeDrawer() {
 			</template>
 
 			<template #actions>
-				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="isSaveDisabled" @click="saveItem(active!)">
+				<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="isSaveDisabled" @click="saveItem(active!)">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -286,13 +286,13 @@ function closeDrawer() {
 
 		<v-dialog v-model="confirmDiscard" @esc="confirmDiscard = false" @apply="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave()">
-						{{ t('discard_changes') }}
+						{{ $t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmDiscard = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="confirmDiscard = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

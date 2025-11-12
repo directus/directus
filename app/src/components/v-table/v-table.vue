@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import type { ShowSelect } from '@directus/types';
 import { clone, forEach, pick } from 'lodash';
@@ -8,6 +7,9 @@ import Draggable from 'vuedraggable';
 import TableHeader from './table-header.vue';
 import TableRow from './table-row.vue';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const HeaderDefaults: Header = {
 	text: '',
@@ -53,8 +55,8 @@ const props = withDefaults(
 		modelValue: () => [],
 		fixedHeader: false,
 		loading: false,
-		loadingText: i18n.global.t('loading'),
-		noItemsText: i18n.global.t('no_items'),
+		loadingText: t('loading'),
+		noItemsText: t('no_items'),
 		rowHeight: 48,
 		selectionUseKeys: false,
 		inline: false,

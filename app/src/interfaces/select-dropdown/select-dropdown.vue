@@ -2,6 +2,9 @@
 import { i18n } from '@/lang';
 import { isEmpty, isEqual } from 'lodash';
 import { computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 type Option = {
 	text: string;
@@ -22,7 +25,7 @@ const props = withDefaults(
 		allowOther?: boolean;
 	}>(),
 	{
-		placeholder: () => i18n.global.t('select_an_item'),
+		placeholder: () => t('select_an_item'),
 	},
 );
 

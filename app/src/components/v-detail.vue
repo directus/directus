@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { i18n } from '@/lang';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 interface Props {
 	modelValue?: boolean;
@@ -11,7 +13,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	modelValue: undefined,
-	label: i18n.global.t('toggle'),
+	label: t('toggle'),
 	startOpen: false,
 	disabled: false,
 });

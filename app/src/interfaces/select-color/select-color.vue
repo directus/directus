@@ -25,39 +25,39 @@ const props = withDefaults(defineProps<Props>(), {
 	opacity: false,
 	presets: () => [
 		{
-			name: i18n.global.t('colors.purple'),
+			name: t('colors.purple'),
 			color: '#6644FF',
 		},
 		{
-			name: i18n.global.t('colors.blue'),
+			name: t('colors.blue'),
 			color: '#3399FF',
 		},
 		{
-			name: i18n.global.t('colors.green'),
+			name: t('colors.green'),
 			color: '#2ECDA7',
 		},
 		{
-			name: i18n.global.t('colors.yellow'),
+			name: t('colors.yellow'),
 			color: '#FFC23B',
 		},
 		{
-			name: i18n.global.t('colors.orange'),
+			name: t('colors.orange'),
 			color: '#FFA439',
 		},
 		{
-			name: i18n.global.t('colors.red'),
+			name: t('colors.red'),
 			color: '#E35169',
 		},
 		{
-			name: i18n.global.t('colors.black'),
+			name: t('colors.black'),
 			color: '#18222F',
 		},
 		{
-			name: i18n.global.t('colors.gray'),
+			name: t('colors.gray'),
 			color: '#A2B5CD',
 		},
 		{
-			name: i18n.global.t('colors.white'),
+			name: t('colors.white'),
 			color: '#FFFFFF',
 		},
 	],
@@ -303,7 +303,7 @@ function useColor() {
 			<v-input
 				v-model="input"
 				:disabled="disabled"
-				:placeholder="placeholder || t('interfaces.select-color.placeholder')"
+				:placeholder="placeholder || $t('interfaces.select-color.placeholder')"
 				:pattern="opacity ? /#([a-f\d]{2}){4}/i : /#([a-f\d]{2}){3}/i"
 				class="color-input"
 				:maxlength="opacity ? 9 : 7"
