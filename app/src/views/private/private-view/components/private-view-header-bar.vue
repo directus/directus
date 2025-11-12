@@ -100,6 +100,7 @@ const showSidebarToggle = computed(() => {
 .header-bar {
 	position: sticky;
 	inset-block-start: 0;
+	inset-inline-start: 0;
 	z-index: 4;
 	background-color: var(--theme--header--background);
 	inline-size: 100%;
