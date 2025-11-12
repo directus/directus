@@ -141,7 +141,7 @@ const archiveFilter = computed<Filter | null>(() => {
 });
 
 const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
-	collection: collection.value,
+	collection: collection,
 	selection,
 	location: 'collection',
 	onRefreshCallback: refresh,
