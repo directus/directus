@@ -22,8 +22,8 @@ const sidebarStore = useSidebarStore();
 
 function onClick() {
 	emit('toggle', !active.value);
-	sidebarStore.expand();
 	toggle();
+	sidebarStore.expand();
 }
 </script>
 
