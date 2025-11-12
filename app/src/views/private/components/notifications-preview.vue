@@ -1,39 +1,45 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { useI18n } from 'vue-i18n';
-import SidebarButton from './sidebar-button.vue';
-import NotificationItem from './notification-item.vue';
 import { useNotificationsStore } from '@/stores/notifications';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
+import { storeToRefs } from 'pinia';
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import NotificationItem from './notification-item.vue';
+import SidebarButton from './sidebar-button.vue';
 
-defineProps<{
-	sidebarOpen?: boolean;
-	modelValue?: boolean;
-}>();
-
-defineEmits<{
-	(e: 'update:modelValue', value: boolean): void;
-}>();
+const active = ref(false);
 
 const { t } = useI18n();
 
 const notificationsStore = useNotificationsStore();
+const sidebarStore = useSidebarStore();
+
 const { lastFour } = storeToRefs(notificationsStore);
+
+const toggle = () => {
+	if (active.value) {
+		active.value = false;
+	} else {
+		active.value = true;
+		sidebarStore.expand();
+	}
+};
 </script>
 
 <template>
 	<div class="notifications-preview">
 		<sidebar-button
-			v-tooltip.left="!sidebarOpen && t('activity_log')"
-			:active="modelValue"
+			v-tooltip.left="sidebarStore.collapsed && t('activity_log')"
+			:active
 			class="toggle"
 			icon="pending_actions"
-			@click="$emit('update:modelValue', !modelValue)"
+			@click="toggle"
 		>
 			{{ t('activity_log') }}
 		</sidebar-button>
 
 		<transition-expand tag="div">
-			<div v-if="modelValue" class="inline">
+			<div v-if="active && !sidebarStore.collapsed" class="inline">
 				<div class="padding-box">
 					<router-link class="link" to="/activity" :class="{ 'has-items': lastFour.length > 0 }">
 						{{ t('show_all_activity') }}

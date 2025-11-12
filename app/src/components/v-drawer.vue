@@ -14,6 +14,9 @@ export interface Props {
 	modelValue?: boolean;
 	persistent?: boolean;
 	icon?: string;
+	/**
+	 * Color of the icon displayed in the drawer header.
+	 */
 	iconColor?: string;
 	sidebarResizeable?: boolean;
 	sidebarLabel?: string;
@@ -36,7 +39,7 @@ const { t } = useI18n();
 
 const localActive = ref(false);
 
-const scrollContainer = useTemplateRef('scrollContainer');
+const scrollContainer = useTemplateRef('scroll-container');
 
 provide('main-element', scrollContainer);
 
@@ -101,7 +104,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 					</nav>
 				</v-resizeable>
 
-				<main ref="scrollContainer" :class="{ main: true, 'small-search-input': $slots.sidebar }">
+				<main ref="scroll-container" :class="{ main: true, 'small-search-input': $slots.sidebar }">
 					<v-drawer-header :title="title" :shadow="showHeaderShadow" :icon="icon" :icon-color="iconColor">
 						<template #title><slot name="title" /></template>
 						<template #headline>
