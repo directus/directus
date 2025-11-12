@@ -22,7 +22,6 @@ const {
 } = defineProps<{
 	languageOptions: Record<string, any>[];
 	disabled?: boolean;
-	active?: boolean;
 	autofocus?: boolean;
 	relationInfo?: RelationM2M;
 	getItemWithLang: (items: Record<string, any>[], lang: string | undefined) => DisplayItem | undefined;
@@ -200,7 +199,6 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			:badge="selectedLanguage.text"
 			:direction="selectedLanguage.direction"
 			:autofocus="autofocus"
-			:active="active"
 			inline
 			@focus-field="$emit('focus')"
 			@blur-field="$emit('blur')"

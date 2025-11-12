@@ -18,23 +18,23 @@ import 'codemirror/addon/search/search.js';
 import 'codemirror/addon/search/searchcursor.js';
 
 import 'codemirror/keymap/sublime.js';
-import { BaseProps } from '..';
+import { Type } from '@directus/types';
 
 /** Regex to check for interpolation, e.g. `{{ $trigger }}` */
 const INTERPOLATION_REGEX = /^\{\{\s*[^}\s]+\s*\}\}$/;
 
 const props = withDefaults(
-	defineProps<
-		BaseProps & {
-			value?: string | Record<string, unknown> | unknown[] | boolean | number | null;
-			altOptions?: Record<string, any>;
-			template?: string;
-			lineNumber?: boolean;
-			lineWrapping?: boolean;
-			placeholder?: string;
-			language?: string;
-		}
-	>(),
+	defineProps<{
+		value?: string | Record<string, unknown> | unknown[] | boolean | number | null;
+		disabled?: boolean;
+		altOptions?: Record<string, any>;
+		template?: string;
+		lineNumber?: boolean;
+		lineWrapping?: boolean;
+		placeholder?: string;
+		language?: string;
+		type?: Type;
+	}>(),
 	{
 		lineNumber: true,
 		language: 'plaintext',
@@ -318,7 +318,7 @@ function isInterpolation(value: any) {
 </script>
 
 <template>
-	<div class="input-code codemirror-custom-styles" :class="{ disabled, active }" dir="ltr">
+	<div class="input-code codemirror-custom-styles" :class="{ disabled }" dir="ltr">
 		<div ref="codemirrorEl"></div>
 
 		<v-button v-if="template" v-tooltip.left="t('fill_template')" small icon secondary @click="fillTemplate">

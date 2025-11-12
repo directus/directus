@@ -15,23 +15,21 @@ import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import TranslationForm from './translation-form.vue';
 import { validateItem } from '@/utils/validate-item';
-import { BaseProps } from '..';
 
 const props = withDefaults(
-	defineProps<
-		BaseProps & {
-			collection: string;
-			primaryKey: string | number;
-			languageField?: string | null;
-			languageDirectionField?: string | null;
-			defaultLanguage?: string | null;
-			defaultOpenSplitView?: boolean;
-			userLanguage?: boolean;
-			value?: (number | string | Record<string, any>)[] | Record<string, any> | null;
-			autofocus?: boolean;
-			version: ContentVersion | null;
-		}
-	>(),
+	defineProps<{
+		collection: string;
+		primaryKey: string | number;
+		languageField?: string | null;
+		languageDirectionField?: string | null;
+		defaultLanguage?: string | null;
+		defaultOpenSplitView?: boolean;
+		userLanguage?: boolean;
+		value?: (number | string | Record<string, any>)[] | Record<string, any> | null;
+		autofocus?: boolean;
+		version: ContentVersion | null;
+		disabled?: boolean;
+	}>(),
 	{
 		languageField: null,
 		languageDirectionField: 'direction',
@@ -361,12 +359,11 @@ function useNestedValidation() {
 </script>
 
 <template>
-	<div class="translations" :class="{ split: splitViewEnabled, active }">
+	<div class="translations" :class="{ split: splitViewEnabled }">
 		<translation-form
 			v-model:lang="firstLang"
 			v-bind="translationProps"
 			:class="splitViewEnabled ? 'half' : 'full'"
-			:active="active"
 			@focus="$emit('focus')"
 			@blur="$emit('blur')"
 		>

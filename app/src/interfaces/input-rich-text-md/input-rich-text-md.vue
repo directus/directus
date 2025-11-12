@@ -12,24 +12,22 @@ import { getAssetUrl } from '@/utils/get-asset-url';
 import { percentage } from '@/utils/percentage';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { Alteration, CustomSyntax, applyEdit } from './edits';
-import { BaseProps } from '..';
 
 const props = withDefaults(
-	defineProps<
-		BaseProps & {
-			value: string | null;
-			placeholder?: string;
-			editorFont?: 'sans-serif' | 'serif' | 'monospace';
-			previewFont?: 'sans-serif' | 'serif' | 'monospace';
-			defaultView?: 'editor' | 'preview';
-			toolbar?: string[];
-			customSyntax?: CustomSyntax[];
-			imageToken?: string;
-			softLength?: number;
-			folder?: string;
-			direction?: string;
-		}
-	>(),
+	defineProps<{
+		value: string | null;
+		disabled?: boolean;
+		placeholder?: string;
+		editorFont?: 'sans-serif' | 'serif' | 'monospace';
+		previewFont?: 'sans-serif' | 'serif' | 'monospace';
+		defaultView?: 'editor' | 'preview';
+		toolbar?: string[];
+		customSyntax?: CustomSyntax[];
+		imageToken?: string;
+		softLength?: number;
+		folder?: string;
+		direction?: string;
+	}>(),
 	{
 		editorFont: 'sans-serif',
 		previewFont: 'sans-serif',
@@ -214,7 +212,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 </script>
 
 <template>
-	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="[view, { disabled, active }]">
+	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="[view, { disabled }]">
 		<div class="toolbar">
 			<template v-if="view === 'editor'">
 				<v-menu v-if="toolbar?.includes('heading')" show-arrow placement="bottom-start">
@@ -458,8 +456,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 	box-shadow: var(--theme--form--field--input--box-shadow-hover);
 }
 
-.interface-input-rich-text-md:not(.disabled):focus-within,
-.interface-input-rich-text-md.active {
+.interface-input-rich-text-md:not(.disabled):focus-within {
 	border-color: var(--theme--form--field--input--border-color-focus);
 	box-shadow: var(--theme--form--field--input--box-shadow-focus);
 }

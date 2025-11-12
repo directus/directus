@@ -1,6 +1,4 @@
-import { FormField } from '@/components/v-form/types';
 import type { InterfaceConfig } from '@directus/extensions';
-import { Type, Width } from '@directus/types';
 import { sortBy } from 'lodash';
 import { App } from 'vue';
 
@@ -12,18 +10,6 @@ export function getInternalInterfaces(): InterfaceConfig[] {
 
 	return sortBy(Object.values(interfaces), 'id');
 }
-
-export type BaseProps = {
-	value?: unknown;
-	loading?: boolean;
-	disabled?: boolean;
-	/** Forces the focused state */
-	active?: boolean;
-	width?: Width;
-	type?: Type;
-	field: string;
-	fieldData: FormField;
-};
 
 export function registerInterfaces(interfaces: InterfaceConfig[], app: App): void {
 	for (const inter of interfaces) {

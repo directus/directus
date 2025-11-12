@@ -38,7 +38,6 @@ import 'tinymce/plugins/pagebreak/plugin';
 import 'tinymce/plugins/preview/plugin';
 import 'tinymce/plugins/table/plugin';
 import 'tinymce/themes/silver';
-import { BaseProps } from '..';
 
 type CustomFormat = {
 	title: string;
@@ -49,19 +48,18 @@ type CustomFormat = {
 };
 
 const props = withDefaults(
-	defineProps<
-		BaseProps & {
-			value: string | null;
-			toolbar?: string[];
-			font?: 'sans-serif' | 'serif' | 'monospace';
-			customFormats?: CustomFormat[];
-			tinymceOverrides?: Record<string, unknown>;
-			imageToken?: string;
-			folder?: string;
-			softLength?: number;
-			direction?: string;
-		}
-	>(),
+	defineProps<{
+		value: string | null;
+		disabled?: boolean;
+		toolbar?: string[];
+		font?: 'sans-serif' | 'serif' | 'monospace';
+		customFormats?: CustomFormat[];
+		tinymceOverrides?: Record<string, unknown>;
+		imageToken?: string;
+		folder?: string;
+		softLength?: number;
+		direction?: string;
+	}>(),
 	{
 		toolbar: () => toolbarDefault,
 		font: 'sans-serif',
@@ -159,21 +157,6 @@ watch(
 		editorRef.value.remove();
 		editorInitialized.value = false;
 		editorKey.value++;
-	},
-);
-
-watch(
-	() => props.active,
-	(newOptions) => {
-		if (editorElement.value == null) return;
-
-		const body = editorElement.value.$el.parentElement?.querySelector('.tox-tinymce');
-
-		if (newOptions) {
-			body?.classList.add('active');
-		} else {
-			body?.classList.remove('active');
-		}
 	},
 );
 

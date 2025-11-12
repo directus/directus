@@ -2,23 +2,21 @@
 import formatTitle from '@directus/format-title';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { BaseProps } from '..';
 
 const props = withDefaults(
-	defineProps<
-		BaseProps & {
-			value: string[] | string | null;
-			placeholder?: string;
-			whitespace?: string | null;
-			capitalization?: string | null;
-			alphabetize?: boolean;
-			iconLeft?: string;
-			iconRight?: string;
-			presets?: string[];
-			allowCustom?: boolean;
-			direction?: string;
-		}
-	>(),
+	defineProps<{
+		value: string[] | string | null;
+		disabled?: boolean;
+		placeholder?: string;
+		whitespace?: string | null;
+		capitalization?: string | null;
+		alphabetize?: boolean;
+		iconLeft?: string;
+		iconRight?: string;
+		presets?: string[];
+		allowCustom?: boolean;
+		direction?: string;
+	}>(),
 	{
 		iconRight: 'local_offer',
 		allowCustom: true,
@@ -127,7 +125,6 @@ function emitValue() {
 			:placeholder="placeholder || t('interfaces.tags.add_tags')"
 			:disabled="disabled"
 			:dir="direction"
-			:active="active"
 			@keydown="onInput"
 			@focus="emit('focus')"
 			@blur="

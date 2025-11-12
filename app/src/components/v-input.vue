@@ -454,6 +454,7 @@ function useInvalidInput() {
 
 			color: var(--v-input-color);
 			background-color: var(--theme--form--field--input--background);
+			border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
 			box-shadow: var(--theme--form--field--input--box-shadow-focus);
 		}
 
@@ -463,10 +464,6 @@ function useInvalidInput() {
 			color: var(--theme--foreground-subdued);
 			background-color: var(--theme--form--field--input--background-subdued);
 			border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
-		}
-
-		&.active {
-			border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
 		}
 
 		.prefix,

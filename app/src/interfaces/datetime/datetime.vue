@@ -3,13 +3,13 @@ import { isValid } from 'date-fns';
 import { computed, ref } from 'vue';
 import { parseDate } from '@/utils/parse-date';
 import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
-import { BaseProps } from '..';
 
 interface Props extends Omit<UseDatetimeProps, 'value'> {
 	value: string | null;
+	disabled?: boolean;
 }
 
-const props = withDefaults(defineProps<BaseProps & Props>(), {
+const props = withDefaults(defineProps<Props>(), {
 	use24: true,
 	format: 'long',
 	relative: false,
@@ -37,16 +37,8 @@ function unsetValue(e: any) {
 
 <template>
 	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
-		<template #activator="{ toggle, active: menuActive }">
-			<v-list-item
-				block
-				clickable
-				:disabled
-				:active="menuActive || active"
-				@click="toggle"
-				@focus="$emit('focus')"
-				@blur="$emit('blur')"
-			>
+		<template #activator="{ toggle, active }">
+			<v-list-item block clickable :disabled :active @click="toggle" @focus="$emit('focus')" @blur="$emit('blur')">
 				<template v-if="isValidValue">
 					<use-datetime v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
 						{{ datetime }}
