@@ -35,7 +35,7 @@ import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { isLoginRedirectAllowed } from '../utils/is-login-redirect-allowed.js';
-import { generateRedirectUrl } from '../utils/generate-redirect-url.js';
+import { generateCallbackUrl } from '../utils/generate-callback-url.js';
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
 	config: Record<string, any>;
@@ -101,7 +101,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		return generators.codeVerifier();
 	}
 
-	generateAuthUrl(codeVerifier: string, prompt = false, redirectUrl?: string): string {
+	generateAuthUrl(codeVerifier: string, prompt = false, callbackUrl?: string): string {
 		const { plainCodeChallenge } = this.config;
 
 		try {
@@ -117,7 +117,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				code_challenge_method: plainCodeChallenge ? 'plain' : 'S256',
 				// Some providers require state even with PKCE
 				state: codeChallenge,
-				redirect_uri: redirectUrl,
+				redirect_uri: callbackUrl,
 			});
 		} catch (e) {
 			throw handleError(e);
@@ -359,11 +359,11 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			const otp = req.query['otp'];
 			const redirect = req.query['redirect'];
 
-			if (!isLoginRedirectAllowed(`${req.protocol}://${req.hostname}`, providerName, redirect)) {
+			if (!isLoginRedirectAllowed(providerName, `${req.protocol}://${req.hostname}`, redirect)) {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			const redirectUrl = generateRedirectUrl(`${req.protocol}://${req.get('host')}`, providerName);
+			const callbackUrl = generateCallbackUrl(providerName, `${req.protocol}://${req.get('host')}`,);
 
 			const token = jwt.sign(
 				{
@@ -371,7 +371,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 					redirect,
 					prompt,
 					otp,
-					redirectUrl,
+					callbackUrl,
 				},
 				getSecret(),
 				{
@@ -385,7 +385,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				sameSite: 'lax',
 			});
 
-			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt, redirectUrl));
+			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt, callbackUrl));
 		},
 		respond,
 	);

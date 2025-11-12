@@ -42,7 +42,7 @@ vi.mock('openid-client', () => {
 		}
 	}
 
-	class MockRPError extends Error {}
+	class MockRPError extends Error { }
 
 	return {
 		Issuer: class MockIssuer {
@@ -76,7 +76,6 @@ vi.mock('openid-client', () => {
 
 import { useEnv } from '@directus/env';
 import { useLogger } from '../../logger/index.js';
-import * as oauthCallbacks from '../../utils/oauth-callbacks.js';
 import { OAuth2AuthDriver } from './oauth2.js';
 import type { Logger } from 'pino';
 import {
@@ -218,27 +217,6 @@ describe('OAuth2AuthDriver', () => {
 				expect(mockLogger.error).toHaveBeenCalledWith(
 					expect.stringContaining('[OAuth2] Expected a JSON-Object as role mapping'),
 				);
-			});
-
-			test('calls generateRedirectUrls with correct parameters for multi-domain', () => {
-				const spy = vi.spyOn(oauthCallbacks, 'generateRedirectUrls');
-
-				vi.mocked(useEnv).mockReturnValue({
-					AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'http://external.com,http://internal.com',
-				});
-
-				const config = createOAuth2Config();
-				const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
-
-				// Verify the utility was called correctly
-				expect(spy).toHaveBeenCalledWith('github', 'OAuth2');
-
-				// Verify the result is correct
-				expect(driver.redirectUris).toHaveLength(2);
-				expect(driver.redirectUris[0]?.toString()).toBe('http://external.com/auth/login/github/callback');
-				expect(driver.redirectUris[1]?.toString()).toBe('http://internal.com/auth/login/github/callback');
-
-				spy.mockRestore();
 			});
 		});
 	});
@@ -1068,51 +1046,6 @@ describe('OAuth2AuthDriver', () => {
 				};
 
 				await expect(driver.getUserID(payload)).rejects.toThrow();
-			});
-		});
-
-		describe('Multi-domain callbacks', () => {
-			test('uses correct callback URL based on originUrl in payload', async () => {
-				vi.mocked(useEnv).mockReturnValue({
-					AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'http://localhost:8080,http://external.com',
-				});
-
-				const config = createOAuth2Config({
-					allowPublicRegistration: true,
-				});
-
-				const driver = new OAuth2AuthDriver({ knex: {} as any }, config);
-
-				const oauthCallbackSpy = vi.spyOn(driver.client, 'oauthCallback').mockResolvedValue({
-					access_token: 'test-access-token',
-					refresh_token: 'test-refresh-token',
-				} as any);
-
-				vi.spyOn(driver.client, 'userinfo').mockResolvedValue({
-					email: 'test@example.com',
-				} as any);
-
-				vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue(undefined);
-
-				vi.spyOn(driver as any, 'getUsersService').mockReturnValue({
-					createOne: vi.fn().mockResolvedValue('new-user-id'),
-				});
-
-				const payload = {
-					code: 'test-code',
-					codeVerifier: 'test-verifier',
-					state: 'test-state',
-					originUrl: 'http://external.com',
-				};
-
-				await driver.getUserID(payload);
-
-				// Verify oauthCallback was called with the correct callback URL for external.com
-				expect(oauthCallbackSpy).toHaveBeenCalledWith(
-					'http://external.com/auth/login/github/callback',
-					expect.any(Object),
-					expect.any(Object),
-				);
 			});
 		});
 	});

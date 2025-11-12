@@ -10,7 +10,7 @@ import isUrlAllowed from '../../utils/is-url-allowed.js';
  * @param redirect URL to redirect to
  * @returns True if the redirect is allowed, false otherwise
  */
-export function isLoginRedirectAllowed(originUrl: string, provider: string, redirect: unknown): boolean {
+export function isLoginRedirectAllowed(provider: string, originUrl: string, redirect: unknown): boolean {
 	if (!redirect) return true; // empty redirect
 	if (typeof redirect !== 'string') return false; // invalid type
 

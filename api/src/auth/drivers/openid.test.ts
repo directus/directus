@@ -59,7 +59,7 @@ vi.mock('openid-client', () => {
 				},
 			});
 
-			constructor() {}
+			constructor() { }
 			Client = class {
 				constructor() {
 					return mockClient;
@@ -83,14 +83,12 @@ vi.mock('openid-client', () => {
 					this.error_description = params.error_description;
 				}
 			},
-			RPError: class RPError extends Error {},
+			RPError: class RPError extends Error { },
 		},
 	};
 });
 
-import { useEnv } from '@directus/env';
 import { useLogger } from '../../logger/index.js';
-import * as oauthCallbacks from '../../utils/oauth-callbacks.js';
 import { OpenIDAuthDriver } from './openid.js';
 import type { Logger } from 'pino';
 import {
@@ -161,35 +159,6 @@ describe('OpenIDAuthDriver', () => {
 
 				expect(driver).toBeDefined();
 				expect(driver.client).toBeNull();
-			});
-		});
-
-		describe('Configuration', () => {
-			test('generates redirectUris using generateRedirectUrls utility', () => {
-				const spy = vi.spyOn(oauthCallbacks, 'generateRedirectUrls');
-
-				vi.mocked(useEnv).mockReturnValue({
-					[`AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`]: 'http://external.com,http://internal.com',
-				});
-
-				const config = createOpenIDConfig();
-				const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
-
-				expect(spy).toHaveBeenCalledWith(provider, 'OpenID');
-				expect(driver.redirectUris).toHaveLength(2);
-				expect(driver.redirectUris[0]?.toString()).toBe(`http://external.com/auth/login/${provider}/callback`);
-				expect(driver.redirectUris[1]?.toString()).toBe(`http://internal.com/auth/login/${provider}/callback`);
-
-				spy.mockRestore();
-			});
-
-			test('sets empty redirectUris when no REDIRECT_ALLOW_LIST', () => {
-				vi.mocked(useEnv).mockReturnValue({});
-
-				const config = createOpenIDConfig();
-				const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
-
-				expect(driver.redirectUris).toEqual([]);
 			});
 		});
 
@@ -627,6 +596,7 @@ describe('OpenIDAuthDriver', () => {
 				};
 
 				await expect(driver.getUserID(payload)).rejects.toThrow(InvalidCredentialsError);
+
 				expect(mockLogger.warn).toHaveBeenCalledWith(
 					`[OpenID] Failed to find user identifier for provider "${provider}"`,
 				);
@@ -987,56 +957,6 @@ describe('OpenIDAuthDriver', () => {
 				};
 
 				await expect(driver.getUserID(payload)).rejects.toThrow();
-			});
-		});
-
-		describe('Multi-domain callbacks', () => {
-			test('uses correct callback URL based on originUrl in payload', async () => {
-				vi.mocked(useEnv).mockReturnValue({
-					[`AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`]: 'http://localhost:8080,http://external.com',
-				});
-
-				const config = createOpenIDConfig({
-					allowPublicRegistration: true,
-				});
-
-				const driver = new OpenIDAuthDriver({ knex: {} as any }, config);
-				await driver['getClient']();
-
-				const mockUserInfo = {
-					email: 'test@example.com',
-				};
-
-				const mockTokenSet = {
-					access_token: 'test-access-token',
-					refresh_token: 'test-refresh-token',
-					claims: () => mockUserInfo,
-				};
-
-				vi.spyOn(driver.client!, 'callbackParams').mockReturnValue({});
-				const callbackSpy = vi.spyOn(driver.client!, 'callback').mockResolvedValue(mockTokenSet as any);
-				vi.spyOn(driver.client!, 'userinfo').mockResolvedValue(mockUserInfo as any);
-				vi.spyOn(driver as any, 'fetchUserId').mockResolvedValue(undefined);
-
-				vi.spyOn(driver as any, 'getUsersService').mockReturnValue({
-					createOne: vi.fn().mockResolvedValue('new-user-id'),
-				});
-
-				const payload = {
-					code: 'test-code',
-					codeVerifier: 'test-verifier',
-					state: 'test-state',
-					originUrl: 'http://external.com',
-				};
-
-				await driver.getUserID(payload);
-
-				// Verify callback was called with the correct callback URL for external.com
-				expect(callbackSpy).toHaveBeenCalledWith(
-					`http://external.com/auth/login/${provider}/callback`,
-					expect.any(Object),
-					expect.any(Object),
-				);
 			});
 		});
 	});

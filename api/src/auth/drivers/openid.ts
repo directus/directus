@@ -36,8 +36,7 @@ import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { isLoginRedirectAllowed } from '../utils/is-login-redirect-allowed.js';
-import { generateRedirectUrl } from '../utils/generate-redirect-url.js';
-
+import { generateCallbackUrl } from '../utils/generate-callback-url.js';
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: null | Client;
 	config: Record<string, any>;
@@ -172,7 +171,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		return generators.codeVerifier();
 	}
 
-	async generateAuthUrl(codeVerifier: string, prompt = false, redirectUri?: string): Promise<string> {
+	async generateAuthUrl(codeVerifier: string, prompt = false, callbackUrl?: string): Promise<string> {
 		const { plainCodeChallenge } = this.config;
 
 		try {
@@ -190,7 +189,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				// Some providers require state even with PKCE
 				state: codeChallenge,
 				nonce: codeChallenge,
-				redirect_uri: redirectUri,
+				redirect_uri: callbackUrl,
 			});
 		} catch (e) {
 			throw handleError(e);
@@ -444,11 +443,11 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const redirect = req.query['redirect'];
 			const otp = req.query['otp'];
 
-			if (!isLoginRedirectAllowed(`${req.protocol}://${req.hostname}`, providerName, redirect)) {
+			if (!isLoginRedirectAllowed(providerName, `${req.protocol}://${req.hostname}`, redirect)) {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			const redirectUrl = generateRedirectUrl(`${req.protocol}://${req.get('host')}`, providerName);
+			const callbackUrl = generateCallbackUrl(providerName, `${req.protocol}://${req.get('host')}`);
 
 			const token = jwt.sign(
 				{
@@ -456,7 +455,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 					redirect,
 					prompt,
 					otp,
-					redirectUrl,
+					callbackUrl,
 				},
 				getSecret(),
 				{
@@ -471,7 +470,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			});
 
 			try {
-				return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt, redirectUrl));
+				return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt, callbackUrl));
 			} catch {
 				return res.redirect(
 					new Url(env['PUBLIC_URL'] as string)
