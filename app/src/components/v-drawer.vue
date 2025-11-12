@@ -2,11 +2,8 @@
 import { translateShortcut } from '@/utils/translate-shortcut';
 import HeaderBar from '@/views/private/components/header-bar.vue';
 import { computed, provide, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { type ApplyShortcut } from './v-dialog.vue';
 import VResizeable from './v-resizeable.vue';
-
-const { t } = useI18n();
 
 export interface Props {
 	title: string;
@@ -27,7 +24,6 @@ const props = withDefaults(defineProps<Props>(), {
 	modelValue: undefined,
 	persistent: false,
 	icon: 'box',
-	sidebarLabel: t('sidebar'),
 	cancelable: true,
 	headerShadow: true,
 	smallHeader: false,
@@ -127,7 +123,7 @@ const internalActive = computed({
 						<template #title:append><slot name="header:append" /></template>
 					</header-bar>
 
-					<v-detail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel">
+					<v-detail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel || $t('sidebar')">
 						<nav>
 							<slot name="sidebar" />
 						</nav>
