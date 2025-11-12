@@ -8,7 +8,7 @@ import type { FocusMessage, JoinMessage, LeaveMessage, SaveMessage, UpdateMessag
 import { fetchAllowedCollections } from '../../../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
 import getDatabase from '../../../database/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { InvalidPayloadError } from '@directus/errors';
 import { hasFieldPermision } from './field-permissions.js';
 
 /**

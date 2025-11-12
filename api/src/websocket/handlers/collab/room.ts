@@ -157,7 +157,7 @@ export class Room {
 		this.changes[field] = changes;
 
 		for (const client of this.clients) {
-			const item = await await sanitizePayload(
+			const item = await sanitizePayload(
 				this.collection,
 				{ [field]: changes },
 				{

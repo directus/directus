@@ -11,7 +11,7 @@ import {
 	PrimaryKey,
 } from '@directus/types';
 import { isEqual } from 'lodash';
-import { computed, onBeforeUnmount, onMounted, provide, ref, Ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 
 export type CollabUser = {
 	id: string;
@@ -22,6 +22,18 @@ export type CollabUser = {
 	avatar?: Avatar;
 };
 
+export type CollabFieldContext = {
+	onFieldUpdate: (value: unknown) => void;
+	onFieldUnset: () => void;
+	onFocus: () => void;
+	onBlur: () => void;
+	focusedBy: Ref<CollabUser | undefined>;
+};
+
+export type CollabContext = {
+	registerField: (field: string) => CollabFieldContext;
+};
+
 export function useCollab(
 	collection: Ref<string>,
 	item: Ref<PrimaryKey | null>,
@@ -30,7 +42,12 @@ export function useCollab(
 	edits: Ref<Item>,
 	getItem: () => Promise<void>,
 	active?: Ref<boolean>,
-) {
+): {
+	onSave: () => void;
+	users: Ref<CollabUser[]>;
+	collabContext: CollabContext;
+	connected: Ref<boolean>;
+} {
 	const connected = ref(false);
 
 	const roomId = ref<string | null>(null);
@@ -215,30 +232,25 @@ export function useCollab(
 		}),
 	);
 
-	provide(COLLAB, (field: string) => {
-		const focusedBy = computed(() => {
-			return focused.value[field];
-		});
+	const collabContext = {
+		registerField(field: string) {
+			const focusedBy = computed(() => {
+				if (focused.value[field]?.connection === connectionId.value) return;
+				return focused.value[field];
+			});
 
-		const style = computed(() => {
-			if (!focusedBy.value) return {};
 			return {
-				'--theme--form--field--input--box-shadow-focus': `0 0 16px -8px var(--${focusedBy.value?.color})`,
-				'--theme--form--field--input--border-color-focus': `var(--${focusedBy.value?.color})`,
+				onFieldUpdate: (value: unknown) => onFieldUpdate(field, value),
+				onFieldUnset: () => onFieldUnset(field),
+				onBlur,
+				focusedBy,
+				onFocus: () => onFocus(field),
 			};
-		});
-
-		return {
-			onFieldUpdate: (value: unknown) => onFieldUpdate(field, value),
-			onFieldUnset: () => onFieldUnset(field),
-			onBlur,
-			style,
-			focusedBy,
-			onFocus: () => onFocus(field),
-		};
-	});
+		},
+	};
 
 	function onFieldUpdate(field: string, value: any) {
+		console.log('onFieldUpdate', field, value);
 		if (!roomId.value) return;
 
 		sdk.sendMessage({
@@ -287,5 +299,5 @@ export function useCollab(
 		});
 	}
 
-	return { onSave, users, connected };
+	return { onSave, users, collabContext, connected };
 }

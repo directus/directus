@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { useClipboard } from '@/composables/use-clipboard';
+import { CollabFieldContext } from '@/composables/use-collab';
 import { formatFieldFunction } from '@/utils/format-field-function';
-import { COLLAB, ValidationError } from '@directus/types';
+import { ValidationError } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import { isEqual } from 'lodash';
-import { computed, inject, ref, watch } from 'vue';
+import { computed, ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu, { type MenuOptions } from './form-field-menu.vue';
 import FormFieldRawEditor from './form-field-raw-editor.vue';
-import type { FormField, ComparisonContext } from './types';
+import type { ComparisonContext, FormField } from './types';
+import { useFocusWithin } from '@vueuse/core';
 
 const props = withDefaults(
 	defineProps<{
@@ -31,7 +33,7 @@ const props = withDefaults(
 		rawEditorActive?: boolean;
 		disabledMenuOptions?: MenuOptions[];
 		direction?: string;
-		active?: boolean;
+		collabFieldContext?: CollabFieldContext;
 	}>(),
 	{
 		modelValue: undefined,
@@ -40,6 +42,13 @@ const props = withDefaults(
 		validationError: undefined,
 		badge: undefined,
 		direction: undefined,
+		collabFieldContext: () => ({
+			onFieldUpdate: () => {},
+			onFieldUnset: () => {},
+			onFocus: () => {},
+			onBlur: () => {},
+			focusedBy: ref(undefined),
+		}),
 	},
 );
 
@@ -55,19 +64,7 @@ const emit = defineEmits([
 
 const { t } = useI18n();
 
-const collab = inject(COLLAB);
-
-const { onFieldUpdate, onFieldUnset, onBlur, focusedBy, onFocus, style } =
-	typeof collab === 'function'
-		? collab(props.field.field)
-		: {
-				onFieldUpdate: () => {},
-				onFieldUnset: () => {},
-				onBlur: () => {},
-				onFocus: () => {},
-				focusedBy: ref(),
-				style: ref({}),
-			};
+const { focusedBy, onFieldUnset, onFieldUpdate, onBlur, onFocus } = props.collabFieldContext;
 
 const isDisabled = computed(() => {
 	if (props.disabled) return true;
@@ -197,12 +194,19 @@ function useComputedValues() {
 			field.meta?.width || 'full',
 			{
 				invalid: validationError,
-				'diff-indicator': comparison?.fields.has(field.field),
+				'diff-indicator': comparison?.fields.has(field.field) || focusedBy,
 			},
 		]"
+		:style="
+			focusedBy
+				? {
+						'--comparison-indicator--color': `var(--${focusedBy.color}-50)`,
+					}
+				: {}
+		"
 	>
 		<v-menu v-if="!isLabelHidden" placement="bottom-start" show-arrow arrow-placement="start">
-			<template #activator="{ toggle }">
+			<template #activator="{ toggle, active }">
 				<form-field-label
 					:field="field"
 					:toggle="toggle"
@@ -252,18 +256,16 @@ function useComputedValues() {
 			:direction="direction"
 			:comparison="comparison"
 			:comparison-active="comparisonActive"
-			:style="style"
-			:active="active || Boolean(focusedBy)"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 			@focus-field="
 				($event) => {
-					(onFocus($event), emit('focusField', $event));
+					(onFocus(), emit('focusField', $event));
 				}
 			"
 			@blur-field="
 				($event) => {
-					(onBlur($event), emit('blurField', $event));
+					(onBlur(), emit('blurField', $event));
 				}
 			"
 		/>

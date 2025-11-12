@@ -16,6 +16,7 @@ import { getFormFields } from './utils/get-form-fields';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
 import ValidationErrors from './validation-errors.vue';
+import { CollabContext } from '@/composables/use-collab';
 
 type FieldValues = {
 	[field: string]: any;
@@ -46,6 +47,7 @@ const props = withDefaults(
 		inline?: boolean;
 		version?: ContentVersion | null;
 		comparison?: ComparisonContext;
+		collabContext?: CollabContext;
 	}>(),
 	{
 		collection: undefined,
@@ -449,6 +451,7 @@ function useRawEditor() {
 					:raw-editor-active="rawActiveFields.has(fieldName)"
 					:disabled-menu-options="disabledMenuOptions"
 					:direction="direction"
+					:collab-field-context="collabContext?.registerField(fieldName)"
 					@update:model-value="setValue(fieldName, $event)"
 					@set-field-value="setValue($event.field, $event.value, { force: true })"
 					@unset="unsetValue(fieldsMap[fieldName]!)"

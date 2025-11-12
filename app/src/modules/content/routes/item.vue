@@ -93,6 +93,7 @@ const {
 	onSave,
 	users: collabUsers,
 	connected,
+	collabContext,
 } = useCollab(collection, primaryKey, currentVersion, item, edits, getItem);
 
 const validationErrors = computed(() => {
@@ -773,6 +774,7 @@ function useCollectionRoute() {
 			:primary-key="internalPrimaryKey"
 			:validation-errors="validationErrors"
 			:version="currentVersion"
+			:collab-context="collabContext"
 		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
