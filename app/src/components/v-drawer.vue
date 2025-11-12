@@ -39,7 +39,7 @@ const { t } = useI18n();
 
 const localActive = ref(false);
 
-const scrollContainer = useTemplateRef('scrollContainer');
+const scrollContainer = useTemplateRef('scroll-container');
 
 provide('main-element', scrollContainer);
 
