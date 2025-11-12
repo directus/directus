@@ -46,7 +46,7 @@ function onClick() {
 			</div>
 		</button>
 		<transition-expand class="scroll-container">
-			<div v-show="active">
+			<div v-show="active && !sidebarStore.collapsed">
 				<div class="content">
 					<slot />
 				</div>
