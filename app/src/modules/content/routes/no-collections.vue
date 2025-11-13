@@ -1,30 +1,27 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
-import { useI18n } from 'vue-i18n';
 import ContentNavigation from '../components/navigation.vue';
-
-const { t } = useI18n();
 
 const userStore = useUserStore();
 </script>
 
 <template>
-	<private-view class="content-overview" :title="t('content')" icon="box">
+	<private-view class="content-overview" :title="$t('content')" icon="box">
 		<template #navigation>
 			<content-navigation />
 		</template>
 
-		<v-info icon="box" :title="t('no_collections')" center>
+		<v-info icon="box" :title="$t('no_collections')" center>
 			<template v-if="userStore.isAdmin">
-				{{ t('no_collections_copy_admin') }}
+				{{ $t('no_collections_copy_admin') }}
 			</template>
 
 			<template v-else>
-				{{ t('no_collections_copy') }}
+				{{ $t('no_collections_copy') }}
 			</template>
 
 			<template v-if="userStore.isAdmin" #append>
-				<v-button to="/settings/data-model/+">{{ t('create_collection') }}</v-button>
+				<v-button to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
 			</template>
 		</v-info>
 	</private-view>

@@ -4,7 +4,6 @@ import SearchInput from '@/views/private/components/search-input.vue';
 import { useCollection, useLayout } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { computed, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import type { Props as VDrawerProps } from '@/components/v-drawer.vue';
 import { mergeFilters } from '@directus/utils';
 import { isEqual } from 'lodash';
@@ -27,8 +26,6 @@ const emit = defineEmits<{
 	(e: 'update:active', value: boolean): void;
 	(e: 'input', value: (number | string)[] | null): void;
 }>();
-
-const { t } = useI18n();
 
 const { save, cancel } = useActions();
 const { internalActive } = useActiveState();
@@ -155,7 +152,7 @@ function useActions() {
 	>
 		<v-drawer
 			v-model="internalActive"
-			:title="t('select_item')"
+			:title="$t('select_item')"
 			:icon="collectionInfo!.icon"
 			v-bind="drawerProps"
 			@cancel="cancel"
@@ -174,7 +171,7 @@ function useActions() {
 			<template #actions>
 				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />
 
-				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!hasSelectionChanged" @click="save">
+				<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="!hasSelectionChanged" @click="save">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -182,11 +179,11 @@ function useActions() {
 			<div class="layout">
 				<component :is="`layout-${localLayout}`" v-bind="layoutState">
 					<template #no-results>
-						<v-info :title="t('item_count', 0)" :icon="collectionInfo!.icon" center />
+						<v-info :title="$t('item_count', 0)" :icon="collectionInfo!.icon" center />
 					</template>
 
 					<template #no-items>
-						<v-info :title="t('item_count', 0)" :icon="collectionInfo!.icon" center />
+						<v-info :title="$t('item_count', 0)" :icon="collectionInfo!.icon" center />
 					</template>
 				</component>
 			</div>

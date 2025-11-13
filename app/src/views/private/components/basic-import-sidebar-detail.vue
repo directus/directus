@@ -103,19 +103,19 @@ function useUpload() {
 </script>
 
 <template>
-	<sidebar-detail id="import" icon="publish" :title="t('label_import')">
+	<sidebar-detail id="import" icon="publish" :title="$t('label_import')">
 		<div class="fields">
 			<template v-if="createAllowed">
 				<div class="field full">
 					<div v-if="uploading || importing" class="uploading">
 						<div class="type-text">
-							<span>{{ importing ? t('import_data_indeterminate') : t('upload_file_indeterminate') }}</span>
+							<span>{{ importing ? $t('import_data_indeterminate') : $t('upload_file_indeterminate') }}</span>
 							<span v-if="!importing">{{ progress }}%</span>
 						</div>
 						<v-progress-linear :indeterminate="importing" :value="progress" rounded />
 					</div>
 					<template v-else>
-						<p class="type-label">{{ t('label_import') }}</p>
+						<p class="type-label">{{ $t('label_import') }}</p>
 						<v-input clickable>
 							<template #prepend>
 								<div class="preview" :class="{ 'has-file': file }">
@@ -134,7 +134,7 @@ function useUpload() {
 									/>
 								</label>
 								<span class="import-file-text" :class="{ 'no-file': !file }">
-									{{ file ? file.name : t('import_data_input_placeholder') }}
+									{{ file ? file.name : $t('import_data_input_placeholder') }}
 								</span>
 							</template>
 							<template #append>
@@ -150,7 +150,7 @@ function useUpload() {
 
 				<div class="field full">
 					<v-button small full-width :disabled="!file" :loading="uploading || importing" @click="importData">
-						{{ t('import_data_button') }}
+						{{ $t('import_data_button') }}
 					</v-button>
 				</div>
 			</template>

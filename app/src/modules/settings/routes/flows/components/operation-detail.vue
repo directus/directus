@@ -138,7 +138,7 @@ function saveOperation() {
 <template>
 	<v-drawer
 		:model-value="isOpen"
-		:title="t(operationId === '+' ? 'create_operation' : 'edit_operation')"
+		:title="$t(operationId === '+' ? 'create_operation' : 'edit_operation')"
 		:subtitle="flow.name"
 		icon="offline_bolt"
 		persistent
@@ -146,7 +146,7 @@ function saveOperation() {
 		@apply="saveOperation"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="t('done')" icon rounded :disabled="saveDisabled" small @click="saveOperation">
+			<v-button v-tooltip.bottom="$t('done')" icon rounded :disabled="saveDisabled" small @click="saveOperation">
 				<v-icon name="check" small />
 			</v-button>
 		</template>
@@ -155,7 +155,7 @@ function saveOperation() {
 			<div class="grid">
 				<div class="field half">
 					<div class="type-label">
-						{{ t('name') }}
+						{{ $t('name') }}
 					</div>
 					<v-input v-model="operationName" autofocus :placeholder="generatedName">
 						<template #append>
@@ -165,14 +165,14 @@ function saveOperation() {
 				</div>
 				<div class="field half">
 					<div class="type-label">
-						{{ t('key') }}
+						{{ $t('key') }}
 					</div>
 					<v-input v-model="operationKey" db-safe :placeholder="generatedKey">
 						<template #append>
 							<v-icon name="vpn_key" />
 						</template>
 					</v-input>
-					<small v-if="!isOperationKeyUnique" class="error">{{ t('operation_key_unique_error') }}</small>
+					<small v-if="!isOperationKeyUnique" class="error">{{ $t('operation_key_unique_error') }}</small>
 				</div>
 			</div>
 
@@ -181,9 +181,9 @@ function saveOperation() {
 			<v-fancy-select v-model="operationType" class="select" :items="displayOperations" />
 
 			<v-notice v-if="operationType && !selectedOperation" class="not-found" type="danger">
-				{{ t('operation_not_found', { operation: operationType }) }}
+				{{ $t('operation_not_found', { operation: operationType }) }}
 				<div class="spacer" />
-				<button @click="operationType = null">{{ t('reset_interface') }}</button>
+				<button @click="operationType = null">{{ $t('reset_interface') }}</button>
 			</v-notice>
 
 			<extension-options

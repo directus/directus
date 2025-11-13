@@ -4,11 +4,8 @@ import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
 import { SetupForm as Form } from '@directus/types';
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const settingsStore = useSettingsStore();
-
-const { t } = useI18n();
 
 const errors = ref<Record<string, any>[]>([]);
 const editing = ref(false);
@@ -59,14 +56,14 @@ async function reset() {
 			{{ form.project_owner ?? initialValues.project_owner }}
 			<div class="spacer" />
 			<div class="item-actions">
-				<v-icon v-tooltip="t('interfaces.system-owner.edit')" name="edit" clickable />
+				<v-icon v-tooltip="$t('interfaces.system-owner.edit')" name="edit" clickable />
 			</div>
 		</v-list-item>
 	</div>
 
-	<v-drawer v-model="editing" :title="t('interfaces.system-owner.update')" icon="link" @cancel="reset" @apply="save">
+	<v-drawer v-model="editing" :title="$t('interfaces.system-owner.update')" icon="link" @cancel="reset" @apply="save">
 		<template #actions>
-			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!isSaveAllowed" :loading="isSaving" @click="save">
+			<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="!isSaveAllowed" :loading="isSaving" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>

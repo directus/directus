@@ -114,7 +114,7 @@ async function save() {
 				small
 				autofocus
 				type="search"
-				:placeholder="t('search_field')"
+				:placeholder="$t('search_field')"
 				:full-width="false"
 			>
 				<template #prepend>

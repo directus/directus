@@ -393,7 +393,7 @@ function useFileUpload() {
 				>
 					<template #activator="{ on }">
 						<v-button
-							v-tooltip.bottom="batchEditAllowed ? t('move_to_folder') : t('not_allowed')"
+							v-tooltip.bottom="batchEditAllowed ? $t('move_to_folder') : $t('not_allowed')"
 							rounded
 							icon
 							class="folder"
@@ -407,7 +407,7 @@ function useFileUpload() {
 					</template>
 
 					<v-card>
-						<v-card-title>{{ t('move_to_folder') }}</v-card-title>
+						<v-card-title>{{ $t('move_to_folder') }}</v-card-title>
 
 						<v-card-text>
 							<folder-picker v-model="selectedFolder" />
@@ -415,10 +415,10 @@ function useFileUpload() {
 
 						<v-card-actions>
 							<v-button secondary @click="moveToDialogActive = false">
-								{{ t('cancel') }}
+								{{ $t('cancel') }}
 							</v-button>
 							<v-button :loading="moving" @click="moveToFolder">
-								{{ t('move') }}
+								{{ $t('move') }}
 							</v-button>
 						</v-card-actions>
 					</v-card>
@@ -427,7 +427,7 @@ function useFileUpload() {
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
 						<v-button
-							v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"
+							v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
 							:disabled="batchDeleteAllowed !== true"
 							rounded
 							icon
@@ -441,14 +441,14 @@ function useFileUpload() {
 					</template>
 
 					<v-card>
-						<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
+						<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 						<v-card-actions>
 							<v-button secondary @click="confirmDelete = false">
-								{{ t('cancel') }}
+								{{ $t('cancel') }}
 							</v-button>
 							<v-button kind="danger" :loading="deleting" @click="batchDelete">
-								{{ t('delete_label') }}
+								{{ $t('delete_label') }}
 							</v-button>
 						</v-card-actions>
 					</v-card>
@@ -456,7 +456,7 @@ function useFileUpload() {
 
 				<v-button
 					v-if="selection.length > 0"
-					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
+					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
 					rounded
 					icon
 					secondary
@@ -468,7 +468,7 @@ function useFileUpload() {
 				</v-button>
 
 				<v-button
-					v-tooltip.bottom="createAllowed ? t('upload_file') : t('not_allowed')"
+					v-tooltip.bottom="createAllowed ? $t('upload_file') : $t('not_allowed')"
 					rounded
 					icon
 					:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
@@ -485,36 +485,36 @@ function useFileUpload() {
 
 			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
-					<v-info v-if="!filter && !search" :title="t('file_count', 0)" icon="folder" center>
-						{{ t('no_files_copy') }}
+					<v-info v-if="!filter && !search" :title="$t('file_count', 0)" icon="folder" center>
+						{{ $t('no_files_copy') }}
 
 						<template #append>
 							<v-button :to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }">
-								{{ t('add_file') }}
+								{{ $t('add_file') }}
 							</v-button>
 						</template>
 					</v-info>
 
-					<v-info v-else :title="t('no_results')" icon="search" center>
-						{{ t('no_results_copy') }}
+					<v-info v-else :title="$t('no_results')" icon="search" center>
+						{{ $t('no_results_copy') }}
 
 						<template #append>
-							<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
+							<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
 						</template>
 					</v-info>
 				</template>
 
 				<template #no-items>
-					<v-info :title="t('file_count', 0)" icon="folder" center>
-						{{ t('no_files_copy') }}
+					<v-info :title="$t('file_count', 0)" icon="folder" center>
+						{{ $t('no_files_copy') }}
 
 						<template #append>
 							<v-button
-								v-tooltip.bottom="createAllowed ? t('add_file') : t('not_allowed')"
+								v-tooltip.bottom="createAllowed ? $t('add_file') : $t('not_allowed')"
 								:disabled="createAllowed === false"
 								:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
 							>
-								{{ t('add_file') }}
+								{{ $t('add_file') }}
 							</v-button>
 						</template>
 					</v-info>

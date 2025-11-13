@@ -1,22 +1,19 @@
 <script setup lang="ts">
 import { useClipboard } from '@/composables/use-clipboard';
 import { Role } from '@directus/types';
-import { useI18n } from 'vue-i18n';
 
 defineProps<{
 	role: Role | null;
 }>();
 
-const { t } = useI18n();
-
 const { isCopySupported, copyToClipboard } = useClipboard();
 </script>
 
 <template>
-	<sidebar-detail v-if="role" id="role" icon="info" :title="t('information')">
+	<sidebar-detail v-if="role" id="role" icon="info" :title="$t('information')">
 		<dl>
 			<div class="description-list">
-				<dt>{{ t('primary_key') }}</dt>
+				<dt>{{ $t('primary_key') }}</dt>
 				<dd>{{ role.id }}</dd>
 				<v-icon
 					v-if="isCopySupported"

@@ -9,7 +9,6 @@ import SaveOptions from '@/views/private/components/save-options.vue';
 import UsersInvite from '@/views/private/components/users-invite.vue';
 import { Role } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import RoleInfoSidebarDetail from './role-info-sidebar-detail.vue';
@@ -18,8 +17,6 @@ const props = defineProps<{
 	primaryKey: string;
 	permissionKey?: string;
 }>();
-
-const { t } = useI18n();
 
 const router = useRouter();
 
@@ -115,16 +112,16 @@ function discardAndStay() {
 </script>
 
 <template>
-	<private-view :title="loading ? t('loading') : t('editing_role', { role: item && item.name })" show-back>
+	<private-view :title="loading ? $t('loading') : $t('editing_role', { role: item && item.name })" show-back>
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings_roles'), to: '/settings/roles' }]" />
+			<v-breadcrumb :items="[{ name: $t('settings_roles'), to: '/settings/roles' }]" />
 		</template>
 
 		<template #actions>
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<v-button
-						v-tooltip.bottom="t('delete_label')"
+						v-tooltip.bottom="$t('delete_label')"
 						rounded
 						icon
 						class="action-delete"
@@ -138,14 +135,14 @@ function discardAndStay() {
 				</template>
 
 				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
+							{{ $t('cancel') }}
 						</v-button>
 						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete_label') }}
+							{{ $t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -153,7 +150,7 @@ function discardAndStay() {
 
 			<v-button
 				v-if="canInviteUsers"
-				v-tooltip.bottom="t('invite_users')"
+				v-tooltip.bottom="$t('invite_users')"
 				rounded
 				icon
 				secondary
@@ -163,7 +160,7 @@ function discardAndStay() {
 				<v-icon name="person_add" small />
 			</v-button>
 
-			<v-button rounded icon :tooltip="t('save')" :loading="saving" :disabled="!hasEdits" small @click="saveAndQuit">
+			<v-button rounded icon :tooltip="$t('save')" :loading="saving" :disabled="!hasEdits" small @click="saveAndQuit">
 				<v-icon name="check" small />
 
 				<template #append-outer>
@@ -202,13 +199,13 @@ function discardAndStay() {
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
+						{{ $t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

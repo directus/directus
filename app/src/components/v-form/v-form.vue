@@ -9,6 +9,7 @@ import { useElementSize } from '@directus/composables';
 import { ContentVersion, Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
 import { computed, getCurrentInstance, onBeforeUpdate, provide, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { z } from 'zod';
 import { useInputSchema } from './composables/use-input-schema';
 import type { MenuOptions } from './form-field-menu.vue';
@@ -18,7 +19,6 @@ import { getFormFields } from './utils/get-form-fields';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
 import ValidationErrors from './validation-errors.vue';
-import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 
@@ -114,10 +114,7 @@ defineTool({
 	description: 'Read values of the form on the current page',
 	inputSchema: computed(() => {
 		return z.object({
-			fields:
-				fieldNames.value.length > 0
-					? z.array(z.enum(fieldNames.value))
-					: z.array(z.string()),
+			fields: fieldNames.value.length > 0 ? z.array(z.enum(fieldNames.value)) : z.array(z.string()),
 		});
 	}),
 	execute: ({ fields }) => {
