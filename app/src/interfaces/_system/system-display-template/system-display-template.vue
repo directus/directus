@@ -3,7 +3,6 @@ import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFakeVersionField } from '@/composables/use-fake-version-field';
 import { computed, inject, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	value: string | null;
@@ -18,8 +17,6 @@ const props = defineProps<{
 defineEmits<{
 	(e: 'input', value: string | null): void;
 }>();
-
-const { t } = useI18n();
 
 const collectionsStore = useCollectionsStore();
 
@@ -66,7 +63,7 @@ const tree = computed(() => {
 <template>
 	<div class="system-display-template">
 		<v-notice v-if="tree === null">
-			{{ t('interfaces.system-display-template.select_a_collection') }}
+			{{ $t('interfaces.system-display-template.select_a_collection') }}
 		</v-notice>
 		<v-field-template
 			v-else

@@ -9,7 +9,6 @@ import { uploadFiles } from '@/utils/upload-files';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import { sum } from 'lodash';
 import { computed, onUnmounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import type { Upload } from 'tus-js-client';
 
 export type UploadController = {
@@ -38,8 +37,6 @@ const emit = defineEmits<{
 	input: [files: null | File | File[]];
 	start: [controller: UploadController];
 }>();
-
-const { t } = useI18n();
 
 let uploadController: Upload | null = null;
 
@@ -318,7 +315,7 @@ defineExpose({ abort });
 	>
 		<template v-if="dragging && fromUser">
 			<v-icon class="upload-icon" x-large name="file_upload" />
-			<p class="type-label">{{ t('drop_to_upload') }}</p>
+			<p class="type-label">{{ $t('drop_to_upload') }}</p>
 		</template>
 
 		<template v-else-if="uploading">
@@ -326,8 +323,8 @@ defineExpose({ abort });
 			<p class="type-text">
 				{{
 					multiple && numberOfFiles > 1
-						? t('upload_files_indeterminate', { done: done, total: numberOfFiles })
-						: t('upload_file_indeterminate')
+						? $t('upload_files_indeterminate', { done: done, total: numberOfFiles })
+						: $t('upload_file_indeterminate')
 				}}
 			</p>
 			<v-progress-linear :value="progress" rounded />
@@ -335,13 +332,13 @@ defineExpose({ abort });
 
 		<template v-else>
 			<div class="actions">
-				<v-button v-if="fromUser" v-tooltip="t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
+				<v-button v-if="fromUser" v-tooltip="$t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
 					<input ref="input" class="browse" type="file" tabindex="-1" :multiple="multiple" @input="onBrowseSelect" />
 					<v-icon name="file_upload" />
 				</v-button>
 				<v-button
 					v-if="fromLibrary"
-					v-tooltip="t('choose_from_library')"
+					v-tooltip="$t('choose_from_library')"
 					icon
 					rounded
 					secondary
@@ -351,7 +348,7 @@ defineExpose({ abort });
 				</v-button>
 				<v-button
 					v-if="fromUrl && fromUser"
-					v-tooltip="t('import_from_url')"
+					v-tooltip="$t('import_from_url')"
 					icon
 					rounded
 					secondary
@@ -361,7 +358,7 @@ defineExpose({ abort });
 				</v-button>
 			</div>
 
-			<p class="type-label">{{ t(fromUser ? 'drag_file_here' : 'choose_from_library') }}</p>
+			<p class="type-label">{{ $t(fromUser ? 'drag_file_here' : 'choose_from_library') }}</p>
 
 			<template v-if="fromUrl !== false || fromLibrary !== false">
 				<drawer-files
@@ -381,16 +378,16 @@ defineExpose({ abort });
 					@update:model-value="activeDialog = null"
 				>
 					<v-card>
-						<v-card-title>{{ t('import_from_url') }}</v-card-title>
+						<v-card-title>{{ $t('import_from_url') }}</v-card-title>
 						<v-card-text>
-							<v-input v-model="url" autofocus :placeholder="t('url')" :nullable="false" :disabled="urlLoading" />
+							<v-input v-model="url" autofocus :placeholder="$t('url')" :nullable="false" :disabled="urlLoading" />
 						</v-card-text>
 						<v-card-actions>
 							<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
-								{{ t('cancel') }}
+								{{ $t('cancel') }}
 							</v-button>
 							<v-button :loading="urlLoading" :disabled="!isValidURL" @click="importFromURL">
-								{{ t('import_label') }}
+								{{ $t('import_label') }}
 							</v-button>
 						</v-card-actions>
 					</v-card>

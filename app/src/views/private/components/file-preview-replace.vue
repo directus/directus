@@ -2,7 +2,6 @@
 import VUpload from '@/components/v-upload.vue';
 import FilePreview, { type Props as FilePreviewProps } from '@/views/private/components/file-preview.vue';
 import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 defineProps<FilePreviewProps>();
 
@@ -11,7 +10,6 @@ const emit = defineEmits<{
 	replace: [];
 }>();
 
-const { t } = useI18n();
 const dialogActive = ref(false);
 
 function onInput() {
@@ -29,17 +27,17 @@ function close() {
 		<file-preview :file="file" />
 
 		<button class="replace-toggle" @click="dialogActive = true">
-			{{ t('replace_file') }}
+			{{ $t('replace_file') }}
 		</button>
 
 		<v-dialog :model-value="dialogActive" @esc="close">
 			<v-card>
-				<v-card-title>{{ t('replace_file') }}</v-card-title>
+				<v-card-title>{{ $t('replace_file') }}</v-card-title>
 				<v-card-text>
 					<v-upload :file-id="file.id" from-url @input="onInput" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="close">{{ t('done') }}</v-button>
+					<v-button secondary @click="close">{{ $t('done') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
