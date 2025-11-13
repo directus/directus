@@ -4,7 +4,7 @@ import { i18n } from '@/lang';
 withDefaults(
 	defineProps<{
 		value: boolean | null;
-		disabled?: boolean;
+		disabled?: false;
 		label?: string;
 		iconOn?: string;
 		iconOff?: string;

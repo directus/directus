@@ -126,6 +126,7 @@ function emitValue() {
 			:disabled="disabled"
 			:dir="direction"
 			@keydown="onInput"
+			@blur="onInput"
 		>
 			<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 			<template #append><v-icon :name="iconRight" /></template>
