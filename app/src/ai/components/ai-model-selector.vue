@@ -1,68 +1,42 @@
 <script setup lang="ts">
-import { formatTitle } from '@directus/format-title';
 import { useAiStore } from '@/ai/stores/use-ai';
-import { computed, type Component } from 'vue';
-import Openai from '@/ai/components/logos/openai.vue';
-import Claude from '@/ai/components/logos/claude.vue';
-import { extractFromId } from '../utils/extract-from-id';
-
-interface ModelIcons {
-	[key: string]: Component;
-}
-
-const modelIcons: ModelIcons = {
-	openai: Openai,
-	anthropic: Claude,
-};
 
 const aiStore = useAiStore();
-
-const currentProviderIcon = computed(() => {
-	return aiStore.currentProvider ? modelIcons[aiStore.currentProvider] : null;
-});
-
-const modelsWithMeta = computed(() => {
-	return aiStore.modelIds.map((id) => {
-		const { provider, model } = extractFromId(id);
-		return {
-			id,
-			model,
-			provider,
-			icon: modelIcons[provider] ?? null,
-		};
-	});
-});
 </script>
 
 <template>
 	<v-menu placement="bottom-start" show-arrow>
 		<template #activator="{ toggle }">
 			<button class="select-trigger" @click="toggle">
-				<component :is="currentProviderIcon" v-if="currentProviderIcon" class="model-icon small" />
-				{{ formatTitle(aiStore.currentModel || '') }}
+				<template v-if="aiStore.selectedModel">
+					<component :is="aiStore.selectedModel.icon" class="model-icon small" />
+					{{ aiStore.selectedModel.name }}
+				</template>
+
 				<v-icon name="expand_more" x-small class="select-icon" />
 			</button>
 		</template>
 
 		<v-list>
-			<template v-for="(item, index) in modelsWithMeta" :key="item.id">
-				<v-divider v-if="index !== 0 && item.provider !== modelsWithMeta[index - 1]?.provider" />
+			<template
+				v-for="(modelDefinition, index) in aiStore.models"
+				:key="`${modelDefinition.provider}:${modelDefinition.model}`"
+			>
+				<v-divider v-if="index !== 0 && modelDefinition.provider !== aiStore.models[index - 1]?.provider" />
+
 				<v-list-item
-					:active="aiStore.selectedModelId === item.id"
+					:active="aiStore.selectedModel === modelDefinition"
 					clickable
-					@click="aiStore.selectedModelId = item.id"
+					@click="aiStore.selectModel(modelDefinition)"
 				>
 					<v-list-item-icon>
-						<component :is="item.icon" v-if="item.icon" class="model-icon" />
+						<component :is="modelDefinition.icon" v-if="modelDefinition.icon" class="model-icon" />
 					</v-list-item-icon>
 					<v-list-item-content>
 						<div class="model-list-item-content">
-							<v-text-overflow :text="formatTitle(item.model)" />
+							<v-text-overflow :text="modelDefinition.name" />
 						</div>
 					</v-list-item-content>
-					<template v-if="aiStore.selectedModelId === item.id" #append>
-						<v-icon name="check" x-small />
-					</template>
 				</v-list-item>
 			</template>
 		</v-list>

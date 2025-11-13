@@ -4,11 +4,10 @@ import { Chat } from '@ai-sdk/vue';
 import { useLocalStorage } from '@vueuse/core';
 import { DefaultChatTransport, type UIMessage, lastAssistantMessageIsCompleteWithToolCalls } from 'ai';
 import { defineStore } from 'pinia';
-import { computed, ref, shallowRef, watch } from 'vue';
+import { computed, reactive, ref, shallowRef, watch } from 'vue';
 import { z } from 'zod';
 import { StaticToolDefinition } from '../composables/define-tool';
-import { AI_MODEL_IDS } from '../models';
-import { extractFromId } from '../utils/extract-from-id';
+import { AI_MODELS, type ModelDefinition } from '../models';
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
@@ -24,18 +23,38 @@ export const useAiStore = defineStore('ai-store', () => {
 		chatOpen.value = false;
 	});
 
-	const modelIds = computed(() =>
-		AI_MODEL_IDS.filter((id) => {
-			const { provider } = extractFromId(id);
+	const models = computed(() =>
+		AI_MODELS.filter(({ provider }) => {
 			return settingsStore.availableAiProviders.includes(provider);
 		}),
 	);
 
-	const defaultProvider = computed(() => modelIds.value[0] ? extractFromId(modelIds.value[0]).provider : null);
-	const defaultModel = computed(() => modelIds.value[0] ? extractFromId(modelIds.value[0]).model : null);
-	const selectedModelId = useLocalStorage<string | null>('selected-ai-model', modelIds.value[0] ?? null);
-	const currentProvider = computed(() => selectedModelId.value ? extractFromId(selectedModelId.value).provider : defaultProvider.value);
-	const currentModel = computed(() => selectedModelId.value ? extractFromId(selectedModelId.value).model : defaultModel.value);
+	const defaultModel = computed(() => models.value[0] ?? null);
+
+	const selectedModelId = useLocalStorage<string | null>(
+		'selected-ai-model',
+		defaultModel.value ? `${defaultModel.value.provider}:${defaultModel.value.model}` : null,
+	);
+
+	const selectedModel = computed(() => {
+		if (!selectedModelId.value) return null;
+
+		const [provider, model] = selectedModelId.value.split(':');
+
+		if (!provider && !model) return null;
+
+		return (
+			models.value.find((modelDefinition) => {
+				return modelDefinition.provider === provider && modelDefinition.model === model;
+			}) ??
+			defaultModel.value ??
+			null
+		);
+	});
+
+	const selectModel = (modelDefinition: ModelDefinition) => {
+		selectedModelId.value = `${modelDefinition.provider}:${modelDefinition.model}`;
+	};
 
 	const systemTools = shallowRef<string[]>([
 		'items',
@@ -64,8 +83,8 @@ export const useAiStore = defineStore('ai-store', () => {
 			api: '/ai/chat',
 			credentials: 'include',
 			body: () => ({
-				provider: currentProvider.value,
-				model: currentModel.value,
+				provider: selectedModel.value?.provider,
+				model: selectedModel.value?.model,
 				tools: [...systemTools.value, ...localTools.value.map(toApiTool)],
 			}),
 		}),
@@ -79,6 +98,15 @@ export const useAiStore = defineStore('ai-store', () => {
 						delete part.providerMetadata;
 					}
 				});
+			}
+		},
+		onData: (data) => {
+			if (data.type === 'data-usage') {
+				const usageData = data.data as Record<string, unknown>;
+				const { inputTokens, outputTokens, totalTokens } = usageData;
+				if (typeof inputTokens === 'number') usage.inputTokens = inputTokens;
+				if (typeof outputTokens === 'number') usage.outputTokens = outputTokens;
+				if (typeof totalTokens === 'number') usage.totalTokens = totalTokens;
 			}
 		},
 		onToolCall: async ({ toolCall }) => {
@@ -155,15 +183,20 @@ export const useAiStore = defineStore('ai-store', () => {
 		chat.messages.splice(0, chat.messages.length);
 	};
 
+	const usage = reactive({
+		cachedInputTokens: 0,
+		inputTokens: 0,
+		outputTokens: 0,
+		totalTokens: 0,
+	});
+
 	return {
-		currentProvider,
-		currentModel,
 		addMessage,
 		chat,
 		messages,
 		status,
-		selectedModelId,
-		modelIds,
+		selectedModel,
+		models,
 		registerLocalTool,
 		replaceLocalTool,
 		deregisterLocalTool,
@@ -174,5 +207,6 @@ export const useAiStore = defineStore('ai-store', () => {
 		stop,
 		reset,
 		chatOpen,
+		selectModel,
 	};
 });
