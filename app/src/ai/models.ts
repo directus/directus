@@ -10,7 +10,7 @@ export interface ModelDefinition {
 	provider: string;
 	model: string;
 	name: string;
-	icon: Component,
+	icon: Component;
 	limit: {
 		context: number;
 		output: number;

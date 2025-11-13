@@ -8,6 +8,7 @@ import { computed, reactive, ref, shallowRef, watch } from 'vue';
 import { z } from 'zod';
 import { StaticToolDefinition } from '../composables/define-tool';
 import { AI_MODELS, type ModelDefinition } from '../models';
+import { calculateRelativeUsage } from '../utils/calculate-relative-usage';
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
@@ -104,9 +105,9 @@ export const useAiStore = defineStore('ai-store', () => {
 			if (data.type === 'data-usage') {
 				const usageData = data.data as Record<string, unknown>;
 				const { inputTokens, outputTokens, totalTokens } = usageData;
-				if (typeof inputTokens === 'number') usage.inputTokens = inputTokens;
-				if (typeof outputTokens === 'number') usage.outputTokens = outputTokens;
-				if (typeof totalTokens === 'number') usage.totalTokens = totalTokens;
+				if (typeof inputTokens === 'number') tokenUsage.inputTokens = inputTokens;
+				if (typeof outputTokens === 'number') tokenUsage.outputTokens = outputTokens;
+				if (typeof totalTokens === 'number') tokenUsage.totalTokens = totalTokens;
 			}
 		},
 		onToolCall: async ({ toolCall }) => {
@@ -181,13 +182,26 @@ export const useAiStore = defineStore('ai-store', () => {
 	const reset = () => {
 		chat.clearError();
 		chat.messages.splice(0, chat.messages.length);
+
+		tokenUsage.inputTokens = 0;
+		tokenUsage.outputTokens = 0;
+		tokenUsage.totalTokens = 0;
 	};
 
-	const usage = reactive({
-		cachedInputTokens: 0,
+	const tokenUsage = reactive({
 		inputTokens: 0,
 		outputTokens: 0,
 		totalTokens: 0,
+	});
+
+	const contextUsagePercentage = computed(() => {
+		if (!selectedModel.value) return 0;
+
+		const { limit } = selectedModel.value;
+
+		const context = limit.context > 0 ? (tokenUsage.totalTokens / limit.context) * 100 : 0;
+
+		return context;
 	});
 
 	return {
@@ -208,5 +222,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		reset,
 		chatOpen,
 		selectModel,
+		tokenUsage,
+		contextUsagePercentage,
 	};
 });

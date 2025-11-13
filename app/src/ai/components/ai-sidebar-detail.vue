@@ -21,6 +21,8 @@ const aiStore = useAiStore();
 			<div class="ai-sidebar-content">
 				<ai-header />
 				<ai-conversation />
+				{{ aiStore.tokenUsage }}
+				{{ aiStore.contextUsagePercentage }}
 			</div>
 		</CollapsibleContent>
 	</CollapsibleRoot>
