@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { exists } from 'fs-extra';
 import mid from 'node-machine-id';
 import { createWriteStream } from 'node:fs';
-import { mkdir, readdir, rm, stat } from 'node:fs/promises';
+import { mkdir, readdir, rm, rmdir, stat } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import Queue from 'p-queue';
@@ -19,20 +19,19 @@ export const syncExtensions = async (options?: { force: boolean }): Promise<void
 	const env = useEnv();
 	const logger = useLogger();
  
-	if (!options?.force) {
-		const isDone = (await getSyncStatus()) === SyncStatus.DONE;
-		if (isDone) return;
-	}
+	const isSyncing = (await getSyncStatus()) === SyncStatus.SYNCING;
 
 	const machineId = await mid.machineId();
 	const machineKey = `extensions-sync/${machineId}`;
-
+// await lock.delete(machineKey)
 	const processId = await lock.increment(machineKey);
 
 	const currentProcessShouldHandleSync = processId === 1;
 
-	if (currentProcessShouldHandleSync === false) {
-		logger.trace('Extensions already being synced to this machine from another process.');
+	console.log(machineId, processId);
+
+	if (currentProcessShouldHandleSync === false || isSyncing) {
+		logger.debug('Extensions already being synced to this machine from another process.');
 
 		// Wait until the process that called the lock publishes a message that the syncing is complete
 		return new Promise((resolve) => {
@@ -44,21 +43,11 @@ export const syncExtensions = async (options?: { force: boolean }): Promise<void
 		const extensionsPath = getExtensionsPath();
 		const storageExtensionsPath = env['EXTENSIONS_PATH'] as string;
 
-		if (await exists(extensionsPath)) {
-			// In case the FS still contains the cached extensions from a previous invocation. We have to
-			// clear them out to ensure the remote extensions folder remains the source of truth for all
-			// extensions that are loaded.
-
-
-			// DONT REMOVE DURING TESTING IDIOT
-			// await rm(extensionsPath, { recursive: true, force: true });
-		}
-
 		// Ensure that the local extensions cache path exists
 		await mkdir(extensionsPath, { recursive: true });
 		await setSyncStatus(SyncStatus.SYNCING);
 
-		logger.trace('Syncing extensions from configured storage location...');
+		logger.debug('Syncing extensions from configured storage location...');
 
 		const storage = await getStorage();
 
@@ -67,9 +56,13 @@ export const syncExtensions = async (options?: { force: boolean }): Promise<void
 		// Make sure we don't overload the file handles
 		const queue = new Queue({ concurrency: 1000 });
 
+		const remoteFiles = new Set<string>();
+
 		const localFiles = (await readdir(extensionsPath, { recursive: true, withFileTypes: true }))
 			.filter(dirent => dirent.isFile())
 			.map(dirent => join(relative(extensionsPath, dirent.parentPath), dirent.name));
+
+		console.log(localFiles);
 
 		for await (const filepath of disk.list(storageExtensionsPath)) {
 			// We want files to be stored in the root of `$TEMP_PATH/extensions`, so gotta remove the
@@ -77,17 +70,22 @@ export const syncExtensions = async (options?: { force: boolean }): Promise<void
 			const relativePath = relative(resolve(sep, storageExtensionsPath), resolve(sep, filepath));
 			const destPath = join(extensionsPath, relativePath);
 
-			const localFileIndex = localFiles.findIndex(f => f === relativePath);
-			if (localFileIndex >= 0) localFiles.splice(localFileIndex);
+			remoteFiles.add(relativePath);
 
-			const remoteStat = await disk.stat(filepath);		
-			const localStat = await fsStat(destPath);
-			
-			if (localStat && remoteStat.modified <= localStat.modified && remoteStat.size === localStat.size) {
-				// local file exists and is unchanged
-				// eslint-disable-next-line no-console
-				console.info('Skipping sync for:', relativePath);
-				continue;
+			const localFileIndex = localFiles.findIndex(f => f === relativePath);
+			if (localFileIndex >= 0) localFiles.splice(localFileIndex, 1);
+
+			if (options?.force !== true) {
+				// dont bother checking meta info when force is enabled
+				const remoteStat = await disk.stat(filepath);
+				const localStat = await fsStat(destPath);
+				
+				if (localStat && remoteStat.modified <= localStat.modified && remoteStat.size === localStat.size) {
+					// local file exists and is unchanged
+					// eslint-disable-next-line no-console
+					console.info('Skipping sync for:', relativePath);
+					continue;
+				}
 			}
 
 			// eslint-disable-next-line no-console
@@ -105,19 +103,66 @@ export const syncExtensions = async (options?: { force: boolean }): Promise<void
 
 		await queue.onIdle();
 
-		// any localFiles left exist locally but not remote
-		for (const removeFile of localFiles) {
-			const removePath = join(extensionsPath, removeFile);
+		// Now we can determine which directories will be empty
+		const dirsWithRemoteFiles = new Set<string>();
 
-			// eslint-disable-next-line no-console
-			console.info('Removing: ', removePath);
-			
-			await rm(removePath, { force: true })
-				.catch(() => {/* ignore file removal error? */});
+		// Track all directories that contain remote files
+		for (const remoteFile of remoteFiles) {
+			let currentDir = dirname(join(extensionsPath, remoteFile));
+
+			while (currentDir !== extensionsPath) {
+				dirsWithRemoteFiles.add(currentDir);
+				currentDir = dirname(currentDir);
+			}
 		}
 
-		// No longer needed because the above loop removes the file!
-		// await setSyncStatus(SyncStatus.DONE);
+		// Collect all directories from files we're removing
+		const removeDirs = new Set<string>();
+
+		for (const removeFile of localFiles) {
+			if (removeFile === '.status') continue;
+
+			const removePath = join(extensionsPath, removeFile);
+			let currentDir = dirname(removePath);
+
+			while (currentDir !== extensionsPath) {
+				removeDirs.add(currentDir);
+				currentDir = dirname(currentDir);
+			}
+		}
+
+		// Find directories that can be removed recursively (no remote files in them or subdirectories)
+		const dirsToRemoveRecursively = Array.from(removeDirs)
+			.filter(dir => !dirsWithRemoteFiles.has(dir))
+			.sort((a, b) => pathDepth(a) - pathDepth(b)); // Shallowest first
+
+		console.log(dirsToRemoveRecursively);
+
+		// Remove entire directory trees at once
+		const removedDirs = new Set<string>();
+
+		for (const removeDir of dirsToRemoveRecursively) {
+			// Skip if already removed as part of a parent directory
+			let alreadyRemoved = false;
+
+			for (const removed of removedDirs) {
+				if (removeDir.startsWith(removed + sep)) {
+					alreadyRemoved = true;
+					break;
+				}
+			}
+
+			if (!alreadyRemoved) {
+				console.log('removing dir recursively:', removeDir);
+
+				await rm(removeDir, { recursive: true, force: true })
+					.catch((e) => { console.error('e2', e); });
+
+				removedDirs.add(removeDir);
+			}
+		}
+
+		await setSyncStatus(SyncStatus.DONE);
 
 		messenger.publish(machineKey, { ready: true });
 	} finally {
@@ -135,4 +180,14 @@ async function fsStat(path: string) {
 		size: data.size,
 		modified: data.mtime
 	};
+}
+
+function pathDepth(path: string): number {
+	let count = 0;
+
+	for (let i = 0; i < path.length; i++) {
+		if (path[i] === sep) count++;
+	}
+
+	return count;
 }
