@@ -195,14 +195,13 @@ describe('aiChatPostHandler', () => {
 				tools: [],
 			};
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
-				InvalidPayloadError,
-			);
+		await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
+			InvalidPayloadError,
+		);
 
-			expect(vi.mocked(safeValidateUIMessages)).toHaveBeenCalledWith({
-				messages: [{ role: 'invalid', content: 'test' }],
-				tools: {},
-			});
+		expect(vi.mocked(safeValidateUIMessages)).toHaveBeenCalledWith({
+			messages: [{ role: 'invalid', content: 'test' }],
+		});
 		});
 
 		it('should call safeValidateUIMessages with correct messages', async () => {
@@ -218,10 +217,10 @@ describe('aiChatPostHandler', () => {
 				tools: [],
 			};
 
-			await aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn());
+		await aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn());
 
-			expect(vi.mocked(safeValidateUIMessages)).toHaveBeenCalledWith({ messages, tools: {} });
-		});
+		expect(vi.mocked(safeValidateUIMessages)).toHaveBeenCalledWith({ messages });
+	});
 	});
 
 	describe('api keys handling', () => {
@@ -287,10 +286,9 @@ describe('aiChatPostHandler', () => {
 				custom: { name: 'custom', mocked: true },
 			};
 
-			expect(vi.mocked(safeValidateUIMessages)).toHaveBeenCalledWith({
-				messages: [{ role: 'user', content: 'Hello' }],
-				tools: expectedTools,
-			});
+		expect(vi.mocked(safeValidateUIMessages)).toHaveBeenCalledWith({
+			messages: [{ role: 'user', content: 'Hello' }],
+		});
 
 			expect(vi.mocked(createUiStream)).toHaveBeenCalledWith(expect.any(Array), {
 				provider: 'openai',
