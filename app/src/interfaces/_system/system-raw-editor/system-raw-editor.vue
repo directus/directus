@@ -229,8 +229,6 @@ watch(
 <style lang="scss" scoped>
 .system-raw-editor {
 	position: relative;
-	block-size: var(--theme--form--field--input--height);
-	min-block-size: var(--theme--form--field--input--height);
 	border-radius: var(--theme--border-radius);
 
 	:deep(.cm-editor) {
@@ -283,7 +281,7 @@ watch(
 
 	:deep(.cm-scroller) {
 		block-size: 100%;
-		min-block-size: var(--input-height-tall);
+		/* min-block-size: var(--input-height-tall); */
 		max-block-size: var(--theme--form--field--input--height);
 		overflow: auto !important;
 	}

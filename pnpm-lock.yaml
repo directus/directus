@@ -45,6 +45,12 @@ catalogs:
     '@codemirror/lang-markdown':
       specifier: 6.5.0
       version: 6.5.0
+    '@codemirror/lang-php':
+      specifier: 6.0.2
+      version: 6.0.2
+    '@codemirror/lang-yaml':
+      specifier: 6.1.2
+      version: 6.1.2
     '@codemirror/language':
       specifier: 6.5.0
       version: 6.5.0
@@ -252,9 +258,6 @@ catalogs:
     '@types/chroma-js':
       specifier: 3.1.2
       version: 3.1.2
-    '@types/codemirror':
-      specifier: 5.60.16
-      version: 5.60.16
     '@types/content-disposition':
       specifier: 0.5.9
       version: 0.5.9
@@ -438,9 +441,6 @@ catalogs:
     chroma-js:
       specifier: 3.1.2
       version: 3.1.2
-    codemirror:
-      specifier: 5.65.18
-      version: 5.65.18
     color:
       specifier: 5.0.2
       version: 5.0.2
@@ -1508,6 +1508,12 @@ importers:
       '@codemirror/lang-markdown':
         specifier: 'catalog:'
         version: 6.5.0
+      '@codemirror/lang-php':
+        specifier: 'catalog:'
+        version: 6.0.2
+      '@codemirror/lang-yaml':
+        specifier: 'catalog:'
+        version: 6.1.2
       '@codemirror/language':
         specifier: 'catalog:'
         version: 6.5.0
@@ -1682,9 +1688,6 @@ importers:
       '@types/chroma-js':
         specifier: 'catalog:'
         version: 3.1.2
-      '@types/codemirror':
-        specifier: 'catalog:'
-        version: 5.60.16
       '@types/diacritics':
         specifier: 'catalog:'
         version: 1.3.3
@@ -1754,9 +1757,6 @@ importers:
       chroma-js:
         specifier: 'catalog:'
         version: 3.1.2
-      codemirror:
-        specifier: 'catalog:'
-        version: 5.65.18
       color:
         specifier: 'catalog:'
         version: 5.0.2
@@ -3692,6 +3692,12 @@ packages:
   '@codemirror/lang-markdown@6.5.0':
     resolution: {integrity: sha512-0K40bZ35jpHya6FriukbgaleaqzBLZfOh7HuzqbMxBXkbYMJDxfF39c23xOgxFezR+3G+tR2/Mup+Xk865OMvw==}
 
+  '@codemirror/lang-php@6.0.2':
+    resolution: {integrity: sha512-ZKy2v1n8Fc8oEXj0Th0PUMXzQJ0AIR6TaZU+PbDHExFwdu+guzOA4jmCHS1Nz4vbFezwD7LyBdDnddSJeScMCA==}
+
+  '@codemirror/lang-yaml@6.1.2':
+    resolution: {integrity: sha512-dxrfG8w5Ce/QbT7YID7mWZFKhdhsaTNOYjOkSIMt1qmC4VQnXSDSYVHHHn8k6kJUfIhtLo8t1JJgltlxWdsITw==}
+
   '@codemirror/language@6.11.3':
     resolution: {integrity: sha512-9HBM2XnwDj7fnu0551HkGdrUrrqmYq/WC5iv6nbY2WdicXdGbhR/gfbZOH73Aqj4351alY1+aoG9rCNfiwS1RA==}
 
@@ -4690,6 +4696,12 @@ packages:
 
   '@lezer/markdown@1.6.0':
     resolution: {integrity: sha512-AXb98u3M6BEzTnreBnGtQaF7xFTiMA92Dsy5tqEjpacbjRxDSFdN4bKJo9uvU4cEEOS7D2B9MT7kvDgOEIzJSw==}
+
+  '@lezer/php@1.0.5':
+    resolution: {integrity: sha512-W7asp9DhM6q0W6DYNwIkLSKOvxlXRrif+UXBMxzsJUuqmhE7oVU+gS3THO4S/Puh7Xzgm858UNaFi6dxTP8dJA==}
+
+  '@lezer/yaml@1.0.3':
+    resolution: {integrity: sha512-GuBLekbw9jDBDhGur82nuwkxKQ+a3W5H0GfaAthDXcAu+XdpS43VlnxA9E9hllkpSP5ellRDKjLLj7Lu9Wr6xA==}
 
   '@manypkg/find-root@1.1.0':
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
@@ -6453,9 +6465,6 @@ packages:
   '@types/chroma-js@3.1.2':
     resolution: {integrity: sha512-YBTQqArPN8A0niHXCwrO1z5x++a+6l0mLBykncUpr23oIPW7L4h39s6gokdK/bDrPmSh8+TjMmrhBPnyiaWPmQ==}
 
-  '@types/codemirror@5.60.16':
-    resolution: {integrity: sha512-V/yHdamffSS075jit+fDxaOAmdP2liok8NSNJnAZfDJErzOheuygHZEhAJrfmk5TEyM32MhkZjwo/idX791yxw==}
-
   '@types/connect@3.4.38':
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
 
@@ -6671,9 +6680,6 @@ packages:
 
   '@types/supertest@6.0.2':
     resolution: {integrity: sha512-137ypx2lk/wTQbW6An6safu9hXmajAifU/s7szAHLN/FeIm5w7yR0Wkl9fdJMRSHwOn4HLAI0DaB2TOORuhPDg==}
-
-  '@types/tern@0.23.9':
-    resolution: {integrity: sha512-ypzHFE/wBzh+BlH6rrBgS5I/Z7RD21pGhZ2rltb/+ZrVM1awdZwjx7hE5XfuYgHWk9uvV5HLZN3SloevCAp3Bw==}
 
   '@types/through@0.0.33':
     resolution: {integrity: sha512-HsJ+z3QuETzP3cswwtzt2vEIiHBk/dCcHGhbmG5X3ecnwFD/lPrMpliGXxSCg03L9AhrdwA4Oz/qfspkDW+xGQ==}
@@ -7692,9 +7698,6 @@ packages:
   cmd-shim@6.0.3:
     resolution: {integrity: sha512-FMabTRlc5t5zjdenF6mS0MBeFZm0XqHqeOkcskKFb/LYCcRQ5fVgLOHVc4Lq9CqABd9zhjwPjMBCJvMCziSVtA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-
-  codemirror@5.65.18:
-    resolution: {integrity: sha512-Gaz4gHnkbHMGgahNt3CA5HBk5lLQBqmD/pBgeB4kQU6OedZmqMBjlRF0LSrp2tJ4wlLNPm2FfaUd1pDy0mdlpA==}
 
   codex-notifier@1.1.2:
     resolution: {integrity: sha512-DCp6xe/LGueJ1N5sXEwcBc3r3PyVkEEDNWCVigfvywAkeXcZMk9K41a31tkEFBW0Ptlwji6/JlAb49E3Yrxbtg==}
@@ -14889,6 +14892,24 @@ snapshots:
       '@lezer/common': 1.3.0
       '@lezer/markdown': 1.6.0
 
+  '@codemirror/lang-php@6.0.2':
+    dependencies:
+      '@codemirror/lang-html': 6.4.11
+      '@codemirror/language': 6.11.3
+      '@codemirror/state': 6.5.0
+      '@lezer/common': 1.3.0
+      '@lezer/php': 1.0.5
+
+  '@codemirror/lang-yaml@6.1.2':
+    dependencies:
+      '@codemirror/autocomplete': 6.19.1
+      '@codemirror/language': 6.11.3
+      '@codemirror/state': 6.5.0
+      '@lezer/common': 1.3.0
+      '@lezer/highlight': 1.2.2
+      '@lezer/lr': 1.4.2
+      '@lezer/yaml': 1.0.3
+
   '@codemirror/language@6.11.3':
     dependencies:
       '@codemirror/state': 6.5.0
@@ -15917,6 +15938,18 @@ snapshots:
     dependencies:
       '@lezer/common': 1.3.0
       '@lezer/highlight': 1.2.2
+
+  '@lezer/php@1.0.5':
+    dependencies:
+      '@lezer/common': 1.3.0
+      '@lezer/highlight': 1.2.2
+      '@lezer/lr': 1.4.2
+
+  '@lezer/yaml@1.0.3':
+    dependencies:
+      '@lezer/common': 1.3.0
+      '@lezer/highlight': 1.2.2
+      '@lezer/lr': 1.4.2
 
   '@manypkg/find-root@1.1.0':
     dependencies:
@@ -18181,10 +18214,6 @@ snapshots:
 
   '@types/chroma-js@3.1.2': {}
 
-  '@types/codemirror@5.60.16':
-    dependencies:
-      '@types/tern': 0.23.9
-
   '@types/connect@3.4.38':
     dependencies:
       '@types/node': 24.9.1
@@ -18431,10 +18460,6 @@ snapshots:
     dependencies:
       '@types/methods': 1.1.4
       '@types/superagent': 8.1.9
-
-  '@types/tern@0.23.9':
-    dependencies:
-      '@types/estree': 1.0.8
 
   '@types/through@0.0.33':
     dependencies:
@@ -19723,8 +19748,6 @@ snapshots:
   cmd-extension@1.0.2: {}
 
   cmd-shim@6.0.3: {}
-
-  codemirror@5.65.18: {}
 
   codex-notifier@1.1.2: {}
 

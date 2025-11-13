@@ -1,6 +1,10 @@
 import { LanguageSupport } from '@codemirror/language';
 import { StreamLanguage } from '@codemirror/language';
 import type { StreamParser } from '@codemirror/language';
+import { javascript } from '@codemirror/lang-javascript';
+import { markdown } from '@codemirror/lang-markdown';
+import { php } from '@codemirror/lang-php';
+import { yaml } from '@codemirror/lang-yaml';
 import { camelCase } from 'lodash';
 
 export const modeMap: Record<
@@ -39,6 +43,7 @@ export const modeMap: Record<
 	forth: { name: 'Forth', import: () => import('@codemirror/legacy-modes/mode/forth') },
 	fortran: { name: 'Fortran', import: () => import('@codemirror/legacy-modes/mode/fortran') },
 	gas: { name: 'GAS', import: () => import('@codemirror/legacy-modes/mode/gas') },
+	gfm: { name: 'GitHub Flavored Markdown', import: () => Promise.resolve({}) },
 	gherkin: { name: 'Gherkin', import: () => import('@codemirror/legacy-modes/mode/gherkin') },
 	go: { name: 'Go', import: () => import('@codemirror/legacy-modes/mode/go') },
 	groovy: { name: 'Groovy', import: () => import('@codemirror/legacy-modes/mode/groovy') },
@@ -46,12 +51,13 @@ export const modeMap: Record<
 	haxe: { name: 'Haxe', import: () => import('@codemirror/legacy-modes/mode/haxe') },
 	http: { name: 'HTTP', import: () => import('@codemirror/legacy-modes/mode/http') },
 	idl: { name: 'IDL', import: () => import('@codemirror/legacy-modes/mode/idl') },
-	javascript: { name: 'JavaScript', import: () => import('@codemirror/legacy-modes/mode/javascript') },
+	javascript: { name: 'JavaScript / TypeScript / JSX', import: () => Promise.resolve({}) },
 	jinja2: { name: 'Jinja2', import: () => import('@codemirror/legacy-modes/mode/jinja2') },
 	julia: { name: 'Julia', import: () => import('@codemirror/legacy-modes/mode/julia') },
 	livescript: { name: 'LiveScript', import: () => import('@codemirror/legacy-modes/mode/livescript') },
 	lua: { name: 'Lua', import: () => import('@codemirror/legacy-modes/mode/lua') },
 	mathematica: { name: 'Mathematica', import: () => import('@codemirror/legacy-modes/mode/mathematica') },
+	markdown: { name: 'Markdown', import: () => Promise.resolve({}) },
 	mbox: { name: 'Mbox', import: () => import('@codemirror/legacy-modes/mode/mbox') },
 	mirc: { name: 'mIRC', import: () => import('@codemirror/legacy-modes/mode/mirc') },
 	mllike: { name: 'ML-like', import: () => import('@codemirror/legacy-modes/mode/mllike') },
@@ -66,6 +72,7 @@ export const modeMap: Record<
 	pascal: { name: 'Pascal', import: () => import('@codemirror/legacy-modes/mode/pascal') },
 	pegjs: { name: 'PEG.js', import: () => import('@codemirror/legacy-modes/mode/pegjs') },
 	perl: { name: 'Perl', import: () => import('@codemirror/legacy-modes/mode/perl') },
+	php: { name: 'PHP', import: () => Promise.resolve({}) },
 	pig: { name: 'Pig', import: () => import('@codemirror/legacy-modes/mode/pig') },
 	powershell: { name: 'PowerShell', import: () => import('@codemirror/legacy-modes/mode/powershell') },
 	properties: { name: 'Properties', import: () => import('@codemirror/legacy-modes/mode/properties') },
@@ -110,7 +117,8 @@ export const modeMap: Record<
 	xml: { name: 'XML', import: () => import('@codemirror/legacy-modes/mode/xml') },
 	xquery: { name: 'XQuery', import: () => import('@codemirror/legacy-modes/mode/xquery') },
 	yacas: { name: 'Yacas', import: () => import('@codemirror/legacy-modes/mode/yacas') },
-	yaml: { name: 'YAML', import: () => import('@codemirror/legacy-modes/mode/yaml') },
+	yaml: { name: 'YAML', import: () => Promise.resolve({}) },
+	'yaml-frontmatter': { name: 'YAML Frontmatter', import: () => Promise.resolve({}) },
 	z80: { name: 'Z80', import: () => import('@codemirror/legacy-modes/mode/z80') },
 };
 
@@ -180,23 +188,44 @@ export default async function importCodemirrorMode(mode: string): Promise<Langua
 		return null;
 	}
 
-	const modeEntry = modeMap[normalizedMode];
+	switch (normalizedMode) {
+		case 'javascript':
+		case 'typescript':
+		case 'ts':
+		case 'jsx':
+		case 'tsx':
+			return javascript({ jsx: true, typescript: true });
+		case 'markdown':
+			return markdown();
+		case 'gfm':
+			return markdown();
+		case 'php':
+			return php();
+		case 'yaml':
+			return yaml();
+		case 'yaml-frontmatter':
+			return yaml();
 
-	if (!modeEntry) {
-		return null;
-	}
+		default: {
+			const modeEntry = modeMap[normalizedMode];
 
-	try {
-		const modeModule = await modeEntry.import();
+			if (!modeEntry) {
+				return null;
+			}
 
-		const parserResult = findParserInModule(modeModule, normalizedMode);
+			try {
+				const modeModule = await modeEntry.import();
 
-		if (!parserResult) {
-			return null;
+				const parserResult = findParserInModule(modeModule, normalizedMode);
+
+				if (!parserResult) {
+					return null;
+				}
+
+				return new LanguageSupport(StreamLanguage.define(parserResult.parser as StreamParser<unknown>));
+			} catch {
+				return null;
+			}
 		}
-
-		return new LanguageSupport(StreamLanguage.define(parserResult.parser as StreamParser<unknown>));
-	} catch {
-		return null;
 	}
 }
