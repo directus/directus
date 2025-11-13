@@ -7,9 +7,6 @@ import Draggable from 'vuedraggable';
 import TableHeader from './table-header.vue';
 import TableRow from './table-row.vue';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
 
 const HeaderDefaults: Header = {
 	text: '',
