@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import { ValidationError, Field } from '@directus/types';
 import { useValidationErrorDetails } from '@/composables/use-validation-error-details';
 import { toRef } from 'vue';
@@ -11,8 +10,6 @@ const props = defineProps<{
 
 defineEmits(['scroll-to-field']);
 
-const { t } = useI18n();
-
 const { validationErrorsWithDetails, getDefaultValidationMessage } = useValidationErrorDetails(
 	toRef(props.validationErrors),
 	toRef(props.fields),
@@ -22,19 +19,19 @@ const { validationErrorsWithDetails, getDefaultValidationMessage } = useValidati
 <template>
 	<v-notice type="danger" class="full">
 		<div>
-			<p>{{ t('validation_errors_notice') }}</p>
+			<p>{{ $t('validation_errors_notice') }}</p>
 			<ul class="validation-errors-list">
 				<li v-for="(validationError, index) of validationErrorsWithDetails" :key="index" class="validation-error">
 					<strong class="field" @click="$emit('scroll-to-field', validationError.group || validationError.field)">
 						<template v-if="validationError.field && validationError.hidden && validationError.group">
 							{{
-								`${validationError.fieldName} (${t('hidden_in_group', {
+								`${validationError.fieldName} (${$t('hidden_in_group', {
 									group: validationError.groupName,
 								})})`
 							}}
 						</template>
 						<template v-else-if="validationError.field && validationError.hidden">
-							{{ `${validationError.fieldName} (${t('hidden')})` }}
+							{{ `${validationError.fieldName} (${$t('hidden')})` }}
 						</template>
 						<template v-else-if="validationError.field">{{ validationError.fieldName }}</template>
 					</strong>
