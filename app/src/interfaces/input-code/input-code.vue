@@ -10,7 +10,6 @@ import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
 import { json } from '@codemirror/lang-json';
 import { lintGutter, linter, Diagnostic } from '@codemirror/lint';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import importCodemirrorMode from './import-codemirror-mode';
 
 const setValueAnnotation = Annotation.define<boolean>();
@@ -36,8 +35,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const { width } = useWindowSize();
 
@@ -322,7 +319,7 @@ function isInterpolation(value: any) {
 	<div class="input-code codemirror-custom-styles" :class="{ disabled }" dir="ltr">
 		<div ref="codemirrorEl"></div>
 
-		<v-button v-if="template" v-tooltip.left="t('fill_template')" small icon secondary @click="fillTemplate">
+		<v-button v-if="template" v-tooltip.left="$t('fill_template')" small icon secondary @click="fillTemplate">
 			<v-icon name="playlist_add" />
 		</v-button>
 	</div>

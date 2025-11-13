@@ -1,14 +1,14 @@
 import formatTitle from '@directus/format-title';
 import type { TusDriver } from '@directus/storage';
 import type { Accountability, ChunkedUploadContext, File, SchemaOverview } from '@directus/types';
+import { DataStore, ERRORS, Upload } from '@tus/utils';
+import { omit } from 'lodash-es';
 import { extension } from 'mime-types';
 import { extname } from 'node:path';
 import stream from 'node:stream';
-import { DataStore, ERRORS, Upload } from '@tus/utils';
-import { ItemsService } from '../items.js';
-import { useLogger } from '../../logger/index.js';
 import getDatabase from '../../database/index.js';
-import { omit } from 'lodash-es';
+import { useLogger } from '../../logger/index.js';
+import { ItemsService } from '../items.js';
 
 export type TusDataStoreConfig = {
 	constants: {
@@ -97,7 +97,7 @@ export class TusDataStore extends DataStore {
 		}
 
 		const fileData: Partial<File> = {
-			...omit(upload.metadata, ['id']),
+			...omit(upload.metadata, ['id', 'replace_id']),
 			tus_id: upload.id,
 			tus_data: upload,
 			filesize: upload.size,

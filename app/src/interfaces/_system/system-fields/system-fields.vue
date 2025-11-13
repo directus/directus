@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
+import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { Field } from '@directus/types';
 import { computed } from 'vue';
 import Draggable from 'vuedraggable';
-import { useI18n } from 'vue-i18n';
-import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 
 interface Props {
 	collectionName: string;
@@ -67,8 +66,6 @@ const fields = computed<(Field & { key: string })[]>({
 	},
 });
 
-const { t } = useI18n();
-
 const addFields = (fields: string[]) => {
 	const uniqueFields = new Set([...(props.value ?? []), ...fields]);
 	emit('input', Array.from(uniqueFields));
@@ -88,12 +85,12 @@ const removeField = (field: string) => {
 <template>
 	<template v-if="!collectionName">
 		<v-notice>
-			{{ t('interfaces.system-fields.select_a_collection') }}
+			{{ $t('interfaces.system-fields.select_a_collection') }}
 		</v-notice>
 	</template>
 	<template v-else>
 		<v-list v-if="fields.length === 0">
-			<v-notice class="no-fields">{{ t('interfaces.system-fields.no_fields') }}</v-notice>
+			<v-notice class="no-fields">{{ $t('interfaces.system-fields.no_fields') }}</v-notice>
 		</v-list>
 		<draggable
 			v-else
@@ -115,7 +112,7 @@ const removeField = (field: string) => {
 		<v-menu placement="bottom-start" show-arrow>
 			<template #activator="{ toggle }">
 				<button class="toggle" @click="toggle">
-					{{ t('add_field') }}
+					{{ $t('add_field') }}
 					<v-icon name="expand_more" />
 				</button>
 			</template>

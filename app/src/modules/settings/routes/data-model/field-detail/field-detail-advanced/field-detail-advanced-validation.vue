@@ -57,7 +57,7 @@ const fields = computed<DeepPartial<Field>[]>(() => [
 </script>
 
 <template>
-	<v-notice v-if="!field.field">{{ t('configure_field_key_to_continue') }}</v-notice>
+	<v-notice v-if="!field.field">{{ $t('configure_field_key_to_continue') }}</v-notice>
 
 	<v-form v-else v-model="validationSync" :initial-values="validationInitial" :fields="fields" :loading="loading" />
 </template>

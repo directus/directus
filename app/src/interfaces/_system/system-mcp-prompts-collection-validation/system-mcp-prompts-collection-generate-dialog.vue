@@ -124,18 +124,20 @@ async function generateCollection() {
 	<v-dialog v-model="active">
 		<v-card>
 			<v-card-title v-if="collection" class="title">
-				{{ t('mcp_prompts_collection.generate_fields_dialog_title') }}
+				{{ $t('mcp_prompts_collection.generate_fields_dialog_title') }}
 			</v-card-title>
 			<v-card-title v-else class="title">
-				{{ t('mcp_prompts_collection.generate_collection_dialog_title') }}
+				{{ $t('mcp_prompts_collection.generate_collection_dialog_title') }}
 			</v-card-title>
 			<v-card-text>
 				<p v-if="collection">
-					{{ t('mcp_prompts_collection.generate_fields_dialog_description', { collection }) }}
+					{{ $t('mcp_prompts_collection.generate_fields_dialog_description', { collection }) }}
 				</p>
 
 				<p v-else>
-					{{ t('mcp_prompts_collection.generate_collection_dialog_description', { collection: customCollectionName }) }}
+					{{
+						$t('mcp_prompts_collection.generate_collection_dialog_description', { collection: customCollectionName })
+					}}
 				</p>
 
 				<template v-if="saving">
@@ -146,8 +148,8 @@ async function generateCollection() {
 					<div v-if="!collection" class="grid">
 						<div class="field full">
 							<div class="field-label type-label">
-								{{ t('name') }}
-								<v-icon v-tooltip="t('required')" class="required" name="star" sup filled />
+								{{ $t('name') }}
+								<v-icon v-tooltip="$t('required')" class="required" name="star" sup filled />
 							</div>
 							<v-input
 								v-model="customCollectionName"
@@ -155,20 +157,20 @@ async function generateCollection() {
 								class="monospace"
 								:class="{ error: collectionAlreadyExists }"
 								db-safe
-								:placeholder="t('a_unique_table_name')"
+								:placeholder="$t('a_unique_table_name')"
 							/>
 							<div class="hints">
 								<small v-if="collectionAlreadyExists" class="error">
-									{{ t('mcp_prompts_collection.already_exists') }}
+									{{ $t('mcp_prompts_collection.already_exists') }}
 								</small>
-								<small class="type-note">{{ t('collection_names_are_case_sensitive') }}</small>
+								<small class="type-note">{{ $t('collection_names_are_case_sensitive') }}</small>
 							</div>
 						</div>
 					</div>
 					<!-- Show fields to be created -->
 					<v-notice v-if="fieldsToCreate?.length > 0" class="generated-data" type="warning" multiline>
 						<template #title>
-							{{ t('new_data_alert') }}
+							{{ $t('new_data_alert') }}
 						</template>
 						<span>
 							<ul>
@@ -181,13 +183,13 @@ async function generateCollection() {
 				</template>
 			</v-card-text>
 			<v-card-actions>
-				<v-button secondary @click="active = false">{{ t('cancel') }}</v-button>
+				<v-button secondary @click="active = false">{{ $t('cancel') }}</v-button>
 				<v-button
 					:loading="saving"
 					:disabled="saving || (!collection && collectionAlreadyExists)"
 					@click="generateCollection"
 				>
-					{{ t('generate') }}
+					{{ $t('generate') }}
 				</v-button>
 			</v-card-actions>
 		</v-card>
