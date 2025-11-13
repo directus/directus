@@ -24,22 +24,8 @@ export interface ModelDefinition {
 export const AI_MODELS: ModelDefinition[] = [
 	{
 		provider: 'openai',
-		model: 'gpt-5-mini',
-		name: 'GPT-5 mini',
-		icon: LogoOpenAI,
-		limit: {
-			context: 400_000,
-			output: 128_000,
-		},
-		cost: {
-			input: 0.25,
-			output: 2,
-		},
-	},
-	{
-		provider: 'openai',
 		model: 'gpt-5-nano',
-		name: 'GPT-5 nano',
+		name: 'GPT-5 Nano',
 		icon: LogoOpenAI,
 		limit: {
 			context: 400_000,
@@ -48,6 +34,20 @@ export const AI_MODELS: ModelDefinition[] = [
 		cost: {
 			input: 0.05,
 			output: 0.4,
+		},
+	},
+	{
+		provider: 'openai',
+		model: 'gpt-5-mini',
+		name: 'GPT-5 Mini',
+		icon: LogoOpenAI,
+		limit: {
+			context: 400_000,
+			output: 128_000,
+		},
+		cost: {
+			input: 0.25,
+			output: 2,
 		},
 	},
 	{
@@ -62,20 +62,6 @@ export const AI_MODELS: ModelDefinition[] = [
 		cost: {
 			input: 1.25,
 			output: 10.0,
-		},
-	},
-	{
-		provider: 'openai',
-		model: 'gpt-5-pro',
-		name: 'GPT-5 Pro',
-		icon: LogoOpenAI,
-		limit: {
-			context: 400_000,
-			output: 272_000,
-		},
-		cost: {
-			input: 15.0,
-			output: 120.0,
 		},
 	},
 	{
@@ -104,20 +90,6 @@ export const AI_MODELS: ModelDefinition[] = [
 		cost: {
 			input: 3.0,
 			output: 15.0,
-		},
-	},
-	{
-		provider: 'anthropic',
-		model: 'claude-opus-4-5',
-		name: 'Claude Opus 4.1',
-		icon: LogoClaude,
-		limit: {
-			context: 200_000,
-			output: 32_000,
-		},
-		cost: {
-			input: 15.0,
-			output: 75.0,
 		},
 	},
 ] as const;
