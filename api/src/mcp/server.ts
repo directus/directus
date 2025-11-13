@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { isSystemCollection } from '@directus/system-data';
 import type { Query } from '@directus/types';
 import { isObject, parseJSON, toArray } from '@directus/utils';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
@@ -35,12 +36,14 @@ export class DirectusMCP {
 	systemPromptEnabled?: boolean;
 	server: Server;
 	allowDeletes?: boolean;
+	allowSystemCollections?: boolean;
 
 	constructor(options: MCPOptions = {}) {
 		this.promptsCollection = options.promptsCollection ?? null;
 		this.systemPromptEnabled = options.systemPromptEnabled ?? true;
 		this.systemPrompt = options.systemPrompt ?? null;
 		this.allowDeletes = options.allowDeletes ?? false;
+		this.allowSystemCollections = options.allowSystemCollections ?? false;
 
 		this.server = new Server(
 			{
@@ -255,6 +258,15 @@ export class DirectusMCP {
 
 				if ('action' in args && args['action'] === 'delete' && !this.allowDeletes) {
 					throw new InvalidPayloadError({ reason: 'Delete actions are disabled' });
+				}
+
+				if (
+					tool.name === 'items' &&
+					'collection' in args &&
+					isSystemCollection(args['collection'] as string) &&
+					!this.allowSystemCollections
+				) {
+					throw new InvalidPayloadError({ reason: 'Cannot provide a core collection' });
 				}
 
 				if ('query' in args && args['query']) {

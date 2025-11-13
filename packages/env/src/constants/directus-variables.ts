@@ -258,6 +258,7 @@ export const DIRECTUS_VARIABLES = [
 
 	// mcp
 	'MCP_ENABLED',
+	'MCP_ALLOW_SYSTEM_COLLECTIONS',
 ] as const;
 
 /**
