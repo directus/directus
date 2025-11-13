@@ -6,9 +6,12 @@ import { sdk } from '@/sdk';
 import { useServerStore } from '@/stores/server';
 import { realtime } from '@directus/sdk';
 import { useLocalStorage } from '@vueuse/core';
-import CodeMirror from 'codemirror';
-import 'codemirror/mode/javascript/javascript';
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { EditorState, Compartment } from '@codemirror/state';
+import { EditorView, lineNumbers, keymap, drawSelection } from '@codemirror/view';
+import { history, historyKeymap } from '@codemirror/commands';
+import { syntaxHighlighting, defaultHighlightStyle } from '@codemirror/language';
+import { json } from '@codemirror/lang-json';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import InlineFilter from './components/inline-filter.vue';
@@ -20,8 +23,9 @@ const { t } = useI18n();
 const reconnectionParams = { delay: 1000, retries: 10 };
 let reconnectionCount = 0;
 const logsDisplay = ref<InstanceType<typeof LogsDisplay>>();
-const codemirrorEl = ref<HTMLTextAreaElement>();
-let codemirror: CodeMirror.Editor | null = null;
+const codemirrorEl = ref<HTMLDivElement>();
+let editorView: EditorView | null = null;
+const lineWrappingCompartment = new Compartment();
 const { isCopySupported, copyToClipboard } = useClipboard();
 const search = ref<string>();
 const logLevelNames = ref<string[]>();
@@ -109,13 +113,12 @@ watch(logDetailSearch, () => {
 	processRawLog();
 });
 
-watch(logDetailVisible, async () => {
-	await nextTick();
-	codemirror?.refresh();
-});
-
 watch(softWrap, () => {
-	codemirror?.setOption('lineWrapping', softWrap.value);
+	if (!editorView) return;
+
+	editorView.dispatch({
+		effects: lineWrappingCompartment.reconfigure(softWrap.value ? EditorView.lineWrapping : []),
+	});
 });
 
 function filterObjectBySortedPaths(obj: Log['data'], paths: string[]) {
@@ -291,30 +294,32 @@ function showLogDetail(index: number) {
 		selectedLog.value.selected = true;
 	}
 
-	if (!codemirror && codemirrorEl.value) {
-		codemirror = CodeMirror(codemirrorEl.value, {
-			mode: 'application/json',
-			readOnly: true,
-			lineNumbers: true,
-			lineWrapping: softWrap.value,
-			cursorBlinkRate: -1,
+	if (!editorView && codemirrorEl.value) {
+		const extensions = [
+			history(),
+			drawSelection(),
+			lineNumbers(),
+			EditorState.readOnly.of(true),
+			json(),
+			syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+			lineWrappingCompartment.of(softWrap.value ? EditorView.lineWrapping : []),
+			keymap.of([...historyKeymap] as any),
+		];
+
+		const state = EditorState.create({
+			doc: '',
+			extensions,
+		});
+
+		editorView = new EditorView({
+			state,
+			parent: codemirrorEl.value,
 		});
 	}
 
 	processRawLog();
 
 	logDetailVisible.value = true;
-
-	updateCopyButtonPosition();
-}
-
-function updateCopyButtonPosition() {
-	const copyButtonEl: HTMLElement | null = document.querySelector('.copy-button');
-	const codeMirrorScrollBarEl: HTMLElement | null = document.querySelector('.CodeMirror-hscrollbar');
-
-	if (!copyButtonEl || !codeMirrorScrollBarEl) return;
-
-	copyButtonEl.style.insetInlineEnd = `${Number(codeMirrorScrollBarEl.style.insetInlineEnd.replace('px', '')) + 10}px`;
 }
 
 function processRawLog() {
@@ -328,7 +333,19 @@ function processRawLog() {
 		filteredRawLog = JSON.stringify(selectedLog.value?.data, null, 2);
 	}
 
-	codemirror?.setValue(filteredRawLog);
+	if (!editorView) return;
+
+	editorView.dispatch({
+		changes: {
+			from: 0,
+			to: editorView.state.doc.length,
+			insert: filteredRawLog,
+		},
+	});
+}
+
+function getEditorContent() {
+	return editorView ? editorView.state.doc.toString() : '';
 }
 
 function minimizeLog() {
@@ -413,6 +430,7 @@ onMounted(() => {
 
 onUnmounted(() => {
 	pauseLogsStreaming();
+	editorView?.destroy();
 });
 </script>
 
@@ -500,7 +518,7 @@ onUnmounted(() => {
 								class="copy-button"
 								secondary
 								icon
-								@click="copyToClipboard(codemirror?.getValue())"
+								@click="copyToClipboard(getEditorContent())"
 							>
 								<v-icon name="content_copy" />
 							</v-button>
@@ -616,12 +634,12 @@ onUnmounted(() => {
 	box-shadow: var(--theme--form--field--input--box-shadow);
 }
 
-.raw-log :deep(.CodeMirror) {
+.raw-log :deep(.cm-editor) {
 	block-size: 100%;
 	max-block-size: 100%;
 }
 
-.raw-log :deep(.CodeMirror-scroll) {
+.raw-log :deep(.cm-scroller) {
 	block-size: 100%;
 	max-block-size: 100%;
 }
