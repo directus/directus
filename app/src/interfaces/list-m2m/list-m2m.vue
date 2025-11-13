@@ -465,10 +465,10 @@ function getLinkForItem(item: DisplayItem) {
 
 <template>
 	<v-notice v-if="!relationInfo" type="warning">
-		{{ t('relationship_not_setup') }}
+		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
-		{{ t('no_singleton_relations') }}
+		{{ $t('no_singleton_relations') }}
 	</v-notice>
 	<div v-else class="many-to-many">
 		<div :class="[`layout-${layout}`, { bordered: layout === LAYOUTS.TABLE }]">
@@ -489,7 +489,7 @@ function getLinkForItem(item: DisplayItem) {
 
 				<v-button
 					v-if="!disabled && updateAllowed && selectedKeys.length"
-					v-tooltip.bottom="t('edit')"
+					v-tooltip.bottom="$t('edit')"
 					rounded
 					icon
 					secondary
@@ -500,7 +500,7 @@ function getLinkForItem(item: DisplayItem) {
 
 				<v-button
 					v-if="!disabled && enableSelect && selectAllowed"
-					v-tooltip.bottom="selectAllowed ? t('add_existing') : t('not_allowed')"
+					v-tooltip.bottom="selectAllowed ? $t('add_existing') : $t('not_allowed')"
 					rounded
 					icon
 					:secondary="enableCreate"
@@ -511,7 +511,7 @@ function getLinkForItem(item: DisplayItem) {
 
 				<v-button
 					v-if="!disabled && enableCreate && createAllowed && selectAllowed"
-					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
+					v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
 					rounded
 					icon
 					@click="createItem"
@@ -550,7 +550,7 @@ function getLinkForItem(item: DisplayItem) {
 					<div class="item-actions">
 						<router-link
 							v-if="enableLink"
-							v-tooltip="t('navigate_to_item')"
+							v-tooltip="$t('navigate_to_item')"
 							:to="getLinkForItem(item)!"
 							class="item-link"
 							:class="{ disabled: item.$type === 'created' }"
@@ -584,7 +584,7 @@ function getLinkForItem(item: DisplayItem) {
 
 			<template v-else>
 				<v-notice v-if="displayItems.length === 0">
-					{{ t('no_items') }}
+					{{ $t('no_items') }}
 				</v-notice>
 
 				<draggable
@@ -618,7 +618,7 @@ function getLinkForItem(item: DisplayItem) {
 							<div class="item-actions">
 								<router-link
 									v-if="enableLink && element.$type !== 'created'"
-									v-tooltip="t('navigate_to_item')"
+									v-tooltip="$t('navigate_to_item')"
 									:to="getLinkForItem(element)!"
 									class="item-link"
 									@click.stop
@@ -653,18 +653,18 @@ function getLinkForItem(item: DisplayItem) {
 						<div class="spacer" />
 
 						<div v-if="loading === false" class="per-page">
-							<span>{{ t('per_page') }}</span>
+							<span>{{ $t('per_page') }}</span>
 							<v-select v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
 						</div>
 					</template>
 				</template>
 				<template v-else>
 					<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="createItem">
-						{{ t('create_new') }}
+						{{ $t('create_new') }}
 					</v-button>
 
 					<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
-						{{ t('add_existing') }}
+						{{ $t('add_existing') }}
 					</v-button>
 
 					<div class="spacer" />
