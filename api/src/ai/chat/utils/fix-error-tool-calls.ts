@@ -21,7 +21,7 @@ export const fixErrorToolCalls = (messages: { [x: string]: unknown }[]): UIMessa
 					'state' in part &&
 					part.state === 'output-error' &&
 					'rawInput' in part &&
-					!('input' in part && part.input !== undefined)
+					(!('input' in part) || part.input == null)
 				) {
 					return { ...part, input: part.rawInput };
 				}

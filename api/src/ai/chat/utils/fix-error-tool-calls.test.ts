@@ -318,6 +318,44 @@ describe('fixErrorToolCalls', () => {
 		]);
 	});
 
+	it('handles error tool call with input set to null explicitly', () => {
+		const messages = [
+			{
+				role: 'assistant',
+				parts: [
+					{
+						type: 'tool-input-available',
+						state: 'output-error',
+						toolCallId: 'call_null',
+						toolName: 'test-tool',
+						rawInput: { should: 'copy' },
+						input: null,
+						errorText: 'Error',
+					},
+				],
+			},
+		] as const;
+
+		const result = fixErrorToolCalls(messages as any);
+
+		expect(result).toEqual([
+			{
+				role: 'assistant',
+				parts: [
+					{
+						type: 'tool-input-available',
+						state: 'output-error',
+						toolCallId: 'call_null',
+						toolName: 'test-tool',
+						rawInput: { should: 'copy' },
+						input: { should: 'copy' },
+						errorText: 'Error',
+					},
+				],
+			},
+		]);
+	});
+
 	it('handles complex nested rawInput objects', () => {
 		const messages = [
 			{
