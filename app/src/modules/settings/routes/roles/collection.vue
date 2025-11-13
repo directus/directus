@@ -6,8 +6,11 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { Role } from '@directus/types';
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
+
+const { t } = useI18n();
 
 type RoleBaseFields = 'id' | 'name' | 'description' | 'icon';
 
@@ -46,7 +49,7 @@ const tableHeaders = ref<TableHeader[]>([
 		description: null,
 	},
 	{
-		text: $t('name'),
+		text: t('name'),
 		value: 'name',
 		sortable: false,
 		width: 200,
@@ -54,7 +57,7 @@ const tableHeaders = ref<TableHeader[]>([
 		description: null,
 	},
 	{
-		text: $t('users'),
+		text: t('users'),
 		value: 'count',
 		sortable: false,
 		width: 140,
@@ -62,7 +65,7 @@ const tableHeaders = ref<TableHeader[]>([
 		description: null,
 	},
 	{
-		text: $t('fields.directus_roles.children'),
+		text: t('fields.directus_roles.children'),
 		display: 'related-values',
 		displayOptions: {
 			template: '{{ name }}',
@@ -76,7 +79,7 @@ const tableHeaders = ref<TableHeader[]>([
 		description: null,
 	},
 	{
-		text: $t('description'),
+		text: t('description'),
 		value: 'description',
 		sortable: false,
 		width: 470,
@@ -114,8 +117,8 @@ async function fetchRoles() {
 		roles.value = [
 			{
 				id: 'public',
-				name: $t('public_label'),
-				description: $t('public_description'),
+				name: t('public_label'),
+				description: t('public_description'),
 				icon: 'public',
 				public: true,
 			},

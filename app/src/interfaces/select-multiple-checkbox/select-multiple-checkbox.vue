@@ -107,7 +107,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 				@blur:custom-input="onBlurCustomInput(otherValue)"
 			>
 				<template #append>
-					<v-icon v-tooltip="$$t('remove_item')" name="delete" clickable @click="setOtherValue(otherValue.key, null)" />
+					<v-icon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherValue.key, null)" />
 				</template>
 			</v-checkbox>
 

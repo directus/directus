@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
-
 withDefaults(
 	defineProps<{
 		value: boolean | null;
@@ -31,7 +27,7 @@ defineEmits<{
 		block
 		:icon-on="iconOn"
 		:icon-off="iconOff"
-		:label="label || t('enabled')"
+		:label="label || $t('enabled')"
 		:model-value="value"
 		:indeterminate="value === null"
 		:disabled="disabled"
