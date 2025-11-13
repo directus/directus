@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import mid from 'node-machine-id';
 import { createWriteStream } from 'node:fs';
-import { mkdir, readdir, rm, stat } from 'node:fs/promises';
+import { mkdir, stat } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import Queue from 'p-queue';
@@ -9,9 +9,12 @@ import { useBus } from '../../bus/index.js';
 import { useLock } from '../../lock/index.js';
 import { useLogger } from '../../logger/index.js';
 import { SyncStatus, getSyncStatus, setSyncStatus } from './sync/status.js';
-import { ExtensionSyncManager } from './sync/manager.js';
+import { SyncFileTracker } from './sync/tracker.js';
+import { getExtensionsPath } from './get-extensions-path.js';
+import { getStorage } from '../../storage/index.js';
 
-export const syncExtensions = async (options?: { force: boolean }): Promise<void> => {
+export async function syncExtensions(options?: { force: boolean }): Promise<void> {
+	const env = useEnv();
 	const lock = useLock();
 	const messenger = useBus();
 	const logger = useLogger();
@@ -20,14 +23,12 @@ export const syncExtensions = async (options?: { force: boolean }): Promise<void
 
 	const machineId = await mid.machineId();
 	const machineKey = `extensions-sync/${machineId}`;
-await lock.delete(machineKey)
+// await lock.delete(machineKey)
 	const processId = await lock.increment(machineKey);
-
-	const currentProcessShouldHandleSync = processId === 1;
 
 	console.log(machineId, processId);
 
-	if (currentProcessShouldHandleSync === false || isSyncing) {
+	if (processId !== 1 || isSyncing) {
 		logger.debug('Extensions already being synced to this machine from another process.');
 
 		// Wait until the process that called the lock publishes a message that the syncing is complete
@@ -37,31 +38,35 @@ await lock.delete(machineKey)
 	}
 
 	try {
-		const syncManager = new ExtensionSyncManager();
+		logger.debug('Syncing extensions from configured storage location...');
 
-		await syncManager.ensureLocalDirectoryExists();
+		const localExtensionsPath = getExtensionsPath();
+		const remoteExtensionsPath = env['EXTENSIONS_PATH'] as string;
+
+		// Ensure that the local extensions cache path exists
+		await mkdir(localExtensionsPath, { recursive: true });
 		await setSyncStatus(SyncStatus.SYNCING);
 
-		logger.debug('Syncing extensions from configured storage location...');
-		const disk = await syncManager.getRemoteDisk();
+		const disk = await getRemoteDisk(env['EXTENSIONS_LOCATION'] as string);
 
 		// Make sure we don't overload the file handles
 		const queue = new Queue({ concurrency: 1000 });
 
-		await syncManager.readLocalFiles();
+		const fileTracker = new SyncFileTracker();
+		await fileTracker.readLocalFiles(localExtensionsPath);
 
-		for await (const filepath of await syncManager.readRemoteFiles()) {
+		for await (const filepath of disk.list(remoteExtensionsPath)) {
 			// We want files to be stored in the root of `$TEMP_PATH/extensions`, so gotta remove the
 			// extensions path on disk from the start of the file path
-			const relativePath = relative(resolve(sep, syncManager.remoteRootPath), resolve(sep, filepath));
-			const destPath = join(syncManager.localRootPath, relativePath);
+			const relativePath = relative(resolve(sep, remoteExtensionsPath), resolve(sep, filepath));
+			const destinationPath = join(localExtensionsPath, relativePath);
 
-			syncManager.setRemoteFile(relativePath);
+			await fileTracker.syncFile(relativePath);
 
 			if (options?.force !== true) {
 				// dont bother checking meta info when force is enabled
 				const remoteStat = await disk.stat(filepath);
-				const localStat = await fsStat(destPath);
+				const localStat = await fsStat(destinationPath);
 				
 				if (localStat && remoteStat.modified <= localStat.modified && remoteStat.size === localStat.size) {
 					// local file exists and is unchanged
@@ -74,27 +79,29 @@ await lock.delete(machineKey)
 			// eslint-disable-next-line no-console
 			console.info('Syncing:', relativePath);
 			
-			const readStream = await disk.read(filepath);
-
 			// Ensure that the directory path exists
-			await mkdir(dirname(destPath), { recursive: true });
+			await mkdir(dirname(destinationPath), { recursive: true });
 
-			const writeStream = createWriteStream(destPath);
+			const readStream = await disk.read(filepath);
+			const writeStream = createWriteStream(destinationPath);
 			queue.add(() => pipeline(readStream, writeStream));
 		}
 
 		await queue.onIdle();
 
-		await syncManager.cleanup();
-
-		await setSyncStatus(SyncStatus.IDLE);
+		await fileTracker.cleanup(localExtensionsPath);
 
 		messenger.publish(machineKey, { ready: true });
 	} finally {
 		await lock.delete(machineKey);
+		await setSyncStatus(SyncStatus.IDLE);
 	}
-};
+}
 
+async function getRemoteDisk(location: string) {
+	const storage = await getStorage();
+	return storage.location(location);
+}
 
 async function fsStat(path: string) {
 	const data = await stat(path, { bigint: false })
