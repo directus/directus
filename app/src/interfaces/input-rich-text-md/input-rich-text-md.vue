@@ -51,7 +51,7 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits(['input', 'focus', 'blur']);
+const emit = defineEmits(['input']);
 
 const { t } = useI18n();
 
@@ -103,14 +103,6 @@ onMounted(async () => {
 			if (origin === 'setValue') return;
 
 			emit('input', content);
-		});
-
-		codemirror.on('focus', () => {
-			if (!props.disabled) emit('focus');
-		});
-
-		codemirror.on('blur', () => {
-			if (!props.disabled) emit('blur');
 		});
 	}
 

@@ -43,7 +43,7 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits(['input', 'focus', 'blur']);
+const emit = defineEmits(['input']);
 
 const value = computed({
 	get: () => props.value ?? [],
@@ -361,13 +361,7 @@ function useNestedValidation() {
 
 <template>
 	<div class="translations" :class="{ split: splitViewEnabled }">
-		<translation-form
-			v-model:lang="firstLang"
-			v-bind="translationProps"
-			:class="splitViewEnabled ? 'half' : 'full'"
-			@focus="$emit('focus')"
-			@blur="$emit('blur')"
-		>
+		<translation-form v-model:lang="firstLang" v-bind="translationProps" :class="splitViewEnabled ? 'half' : 'full'">
 			<template #split-view="{ active, toggle }">
 				<v-icon
 					v-if="splitViewAvailable && !splitViewEnabled"
@@ -388,8 +382,6 @@ function useNestedValidation() {
 			v-bind="translationProps"
 			secondary
 			class="half"
-			@focus="$emit('focus')"
-			@blur="$emit('blur')"
 		>
 			<template #split-view>
 				<v-icon

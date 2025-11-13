@@ -454,8 +454,6 @@ function useRawEditor() {
 					@unset="unsetValue(fieldsMap[fieldName]!)"
 					@toggle-batch="toggleBatchField(fieldsMap[fieldName]!)"
 					@toggle-raw="toggleRawField(fieldsMap[fieldName]!)"
-					@focus-field="$emit('focusField', $event)"
-					@blur-field="$emit('blurField', $event)"
 				/>
 			</template>
 		</template>

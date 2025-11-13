@@ -26,7 +26,7 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits(['input']);
+const emit = defineEmits(['input', 'focus', 'blur']);
 
 const applyGlobalIcon = computed(() => props.choices?.some((choice) => choice.icon));
 

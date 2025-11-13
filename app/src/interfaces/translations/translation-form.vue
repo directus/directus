@@ -37,11 +37,6 @@ const {
 
 const lang = defineModel<string>('lang');
 
-defineEmits<{
-	(event: 'focus'): void;
-	(event: 'blur'): void;
-}>();
-
 const { t } = useI18n();
 
 const selectedLanguage = computed(() => languageOptions.find((optLang) => lang.value === optLang.value));
@@ -200,8 +195,6 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			:direction="selectedLanguage.direction"
 			:autofocus="autofocus"
 			inline
-			@focus-field="$emit('focus')"
-			@blur-field="$emit('blur')"
 			@update:model-value="updateValue($event, lang)"
 		/>
 

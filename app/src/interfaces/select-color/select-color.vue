@@ -63,7 +63,7 @@ const props = withDefaults(defineProps<Props>(), {
 	],
 });
 
-const emit = defineEmits(['input']);
+const emit = defineEmits(['input', 'focus', 'blur']);
 
 const isCssVar = computed(() => {
 	if (!props.value) return false;
@@ -298,8 +298,8 @@ function useColor() {
 </script>
 
 <template>
-	<v-menu attached :disabled="disabled" :close-on-content-click="false" no-focus-return>
-		<template #activator="{ activate, toggle }">
+	<v-menu attached :disabled="disabled" :close-on-content-click="false">
+		<template #activator="{ activate, toggle, active }">
 			<v-input
 				v-model="input"
 				:disabled="disabled"
@@ -310,6 +310,8 @@ function useColor() {
 				@change="onChanged"
 				@click="onClickInput($event, toggle)"
 				@keydown="onKeydownInput($event, activate)"
+				@focus="$emit('focus')"
+				@blur="!active && $emit('blur')"
 			>
 				<template #prepend>
 					<v-input

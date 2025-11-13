@@ -23,7 +23,7 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits(['input', 'focus', 'blur']);
+const emit = defineEmits(['input']);
 
 const { t } = useI18n();
 
@@ -126,13 +126,6 @@ function emitValue() {
 			:disabled="disabled"
 			:dir="direction"
 			@keydown="onInput"
-			@focus="emit('focus')"
-			@blur="
-				($event: any) => {
-					onInput($event);
-					emit('blur');
-				}
-			"
 		>
 			<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 			<template #append><v-icon :name="iconRight" /></template>

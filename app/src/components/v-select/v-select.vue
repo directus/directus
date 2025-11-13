@@ -80,13 +80,19 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits(['update:modelValue', 'group-toggle']);
+const emit = defineEmits(['update:modelValue', 'group-toggle', 'focusin', 'focusout']);
 
 const { t } = useI18n();
 
 const { internalItems, internalItemsCount, internalSearch } = useItems();
 const { displayValue } = useDisplayValue();
 const { modelValue } = toRefs(props);
+const open = ref(false);
+
+watch(open, (open) => {
+	if (open) emit('focusin');
+	else emit('focusout');
+});
 
 const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, internalItems, (value) =>
 	emit('update:modelValue', value),
@@ -251,6 +257,7 @@ function useDisplayValue() {
 
 <template>
 	<v-menu
+		v-model="open"
 		class="v-select"
 		:disabled="disabled"
 		:attached="inline === false"

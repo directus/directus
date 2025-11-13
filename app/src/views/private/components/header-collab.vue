@@ -8,6 +8,7 @@ import { useI18n } from 'vue-i18n';
 interface Props {
 	connected?: boolean;
 	modelValue?: CollabUser[] | CollabUser;
+	xSmall?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -39,7 +40,8 @@ const users = computed(() => {
 			:key="user.id"
 			v-tooltip.bottom="user.name ?? t('unknown_user')"
 			:border="`var(--${user.color})`"
-			small
+			:small="!xSmall"
+			:x-small="xSmall"
 			round
 		>
 			<img v-if="user.avatar_url" :src="user.avatar_url" />

@@ -20,8 +20,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
 	(e: 'input', value: string | null): void;
-	(e: 'focus'): void;
-	(e: 'blur'): void;
 }>();
 
 const dateTimeMenu = ref();
@@ -38,7 +36,7 @@ function unsetValue(e: any) {
 <template>
 	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
 		<template #activator="{ toggle, active }">
-			<v-list-item block clickable :disabled :active @click="toggle" @focus="$emit('focus')" @blur="$emit('blur')">
+			<v-list-item block clickable :disabled :active @click="toggle">
 				<template v-if="isValidValue">
 					<use-datetime v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
 						{{ datetime }}

@@ -18,7 +18,6 @@ import 'codemirror/addon/search/search.js';
 import 'codemirror/addon/search/searchcursor.js';
 
 import 'codemirror/keymap/sublime.js';
-import { Type } from '@directus/types';
 
 /** Regex to check for interpolation, e.g. `{{ $trigger }}` */
 const INTERPOLATION_REGEX = /^\{\{\s*[^}\s]+\s*\}\}$/;
@@ -33,7 +32,7 @@ const props = withDefaults(
 		lineWrapping?: boolean;
 		placeholder?: string;
 		language?: string;
-		type?: Type;
+		type?: string;
 	}>(),
 	{
 		lineNumber: true,
@@ -41,7 +40,7 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits(['input', 'focus', 'blur']);
+const emit = defineEmits(['input']);
 
 const { t } = useI18n();
 
@@ -94,14 +93,6 @@ onMounted(async () => {
 			} else {
 				emit('input', content);
 			}
-		});
-
-		codemirror.on('focus', () => {
-			if (!props.disabled) emit('focus');
-		});
-
-		codemirror.on('blur', () => {
-			if (!props.disabled) emit('blur');
 		});
 	}
 });
@@ -265,18 +256,6 @@ watch(
 	(disabled) => {
 		codemirror?.setOption('readOnly', readOnly.value);
 		codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
-	},
-	{ immediate: true },
-);
-
-watch(
-	() => props.active,
-	(active) => {
-		if (active) {
-			codemirror?.getWrapperElement().classList.add('CodeMirror-active');
-		} else {
-			codemirror?.getWrapperElement().classList.remove('CodeMirror-active');
-		}
 	},
 	{ immediate: true },
 );

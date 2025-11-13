@@ -21,7 +21,7 @@ const props = defineProps<{
 	direction?: string;
 }>();
 
-defineEmits(['update:modelValue', 'setFieldValue', 'focusField', 'blurField']);
+defineEmits(['update:modelValue', 'setFieldValue']);
 
 const { t } = useI18n();
 
@@ -75,8 +75,6 @@ const value = computed(() =>
 				:raw-editor-enabled="rawEditorEnabled"
 				@input="$emit('update:modelValue', $event)"
 				@set-field-value="$emit('setFieldValue', $event)"
-				@focus="$emit('focusField', field.field)"
-				@blur="$emit('blurField', field.field)"
 			/>
 
 			<template #fallback>

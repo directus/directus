@@ -51,15 +51,7 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits([
-	'toggle-batch',
-	'toggle-raw',
-	'unset',
-	'update:modelValue',
-	'setFieldValue',
-	'focusField',
-	'blurField',
-]);
+const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelValue', 'setFieldValue']);
 
 const { t } = useI18n();
 
@@ -193,13 +185,14 @@ function useComputedValues() {
 			field.meta?.width || 'full',
 			{
 				invalid: validationError,
-				'diff-indicator': comparison?.fields.has(field.field) || focusedBy,
+				'diff-indicator': comparison?.fields.has(field.field),
+				'collab-indicator': focusedBy,
 			},
 		]"
 		:style="
 			focusedBy
 				? {
-						'--comparison-indicator--color': `var(--${focusedBy.color}-50)`,
+						'--collab-indicator--color': `var(--${focusedBy.color}-10)`,
 					}
 				: {}
 		"
@@ -257,16 +250,8 @@ function useComputedValues() {
 			:comparison-active="comparisonActive"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
-			@focus-field="
-				($event) => {
-					(onFocus(), emit('focusField', $event));
-				}
-			"
-			@blur-field="
-				($event) => {
-					(onBlur(), emit('blurField', $event));
-				}
-			"
+			@focusin="onFocus"
+			@focusout="onBlur"
 		/>
 
 		<form-field-raw-editor
@@ -293,6 +278,7 @@ function useComputedValues() {
 <style lang="scss" scoped>
 .field {
 	position: relative;
+	align-self: baseline;
 
 	&.diff-indicator {
 		&::before {
@@ -303,6 +289,19 @@ function useComputedValues() {
 			inline-size: 4px;
 			z-index: 1;
 			background-color: var(--comparison-indicator--color);
+		}
+	}
+
+	&.collab-indicator {
+		&::before {
+			content: '';
+			position: absolute;
+			inset: -12px;
+			inset-block-end: -12px;
+			inset-inline: -12px;
+			inset-inline-end: -12px;
+			border-radius: 8px;
+			background-color: var(--collab-indicator--color);
 		}
 	}
 }
