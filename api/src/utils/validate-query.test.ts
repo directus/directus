@@ -44,7 +44,7 @@ describe('max limit', () => {
 describe('export', async () => {
 	const { validateQuery } = await import('./validate-query.js');
 
-	test.each(['csv', 'json', 'xml', 'yaml'])('should accept format %i', (format) => {
+	test.each(['csv', 'csv_utf8', 'json', 'xml', 'yaml'])('should accept format %i', (format) => {
 		expect(() => validateQuery({ export: format } as any)).not.toThrowError();
 	});
 
