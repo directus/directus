@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import { useInjectRunManualFlow, type ManualFlow } from '@/composables/use-flows';
-
-const { t } = useI18n();
 
 defineProps<{
 	manualFlows: ManualFlow[];
@@ -12,7 +9,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 </script>
 
 <template>
-	<sidebar-detail v-if="manualFlows.length > 0" icon="bolt" :title="t('flows')">
+	<sidebar-detail v-if="manualFlows.length > 0" icon="bolt" :title="$t('flows')">
 		<div class="fields">
 			<div v-for="manualFlow in manualFlows" :key="manualFlow.id" class="field full">
 				<v-button

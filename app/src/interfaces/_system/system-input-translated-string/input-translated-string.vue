@@ -7,7 +7,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { snakeCase } from 'lodash';
 import { computed, ref, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import CustomTranslationsTooltip from './custom-translations-tooltip.vue';
 
 const translationPrefix = '$t:';
@@ -26,8 +25,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const menuEl = ref();
 const hasValidKey = ref<boolean>(false);
@@ -184,7 +181,7 @@ const newTranslationDefaults = computed(() => {
 					type="text"
 					:model-value="searchValue"
 					autofocus
-					:placeholder="t('interfaces.input-translated-string.search_placeholder')"
+					:placeholder="$t('interfaces.input-translated-string.search_placeholder')"
 					@update:model-value="searchValue = $event"
 				>
 					<template #append>
@@ -215,7 +212,7 @@ const newTranslationDefaults = computed(() => {
 						<v-icon name="add" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ t('interfaces.input-translated-string.new_custom_translation') }}
+						{{ $t('interfaces.input-translated-string.new_custom_translation') }}
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>

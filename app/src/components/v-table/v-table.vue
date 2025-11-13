@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import type { ShowSelect } from '@directus/types';
 import { clone, forEach, pick } from 'lodash';
@@ -53,8 +52,6 @@ const props = withDefaults(
 		modelValue: () => [],
 		fixedHeader: false,
 		loading: false,
-		loadingText: i18n.global.t('loading'),
-		noItemsText: i18n.global.t('no_items'),
 		rowHeight: 48,
 		selectionUseKeys: false,
 		inline: false,
@@ -304,12 +301,12 @@ function updateSort(newSort: Sort) {
 			</thead>
 			<tbody v-if="loading && items.length === 0">
 				<tr class="loading-text">
-					<td :style="{ gridColumn: fullColSpan }">{{ loadingText }}</td>
+					<td :style="{ gridColumn: fullColSpan }">{{ loadingText || $t('loading') }}</td>
 				</tr>
 			</tbody>
 			<tbody v-if="!loading && items.length === 0">
 				<tr class="no-items-text">
-					<td :style="{ gridColumn: fullColSpan }">{{ noItemsText }}</td>
+					<td :style="{ gridColumn: fullColSpan }">{{ noItemsText || $t('no_items') }}</td>
 				</tr>
 			</tbody>
 			<draggable

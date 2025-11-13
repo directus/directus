@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import { ref } from 'vue';
@@ -22,7 +21,6 @@ const props = withDefaults(
 	},
 );
 
-const { t } = useI18n();
 const emit = defineEmits(['update:open', 'deselect', 'input']);
 const editActive = ref(false);
 </script>
@@ -41,7 +39,7 @@ const editActive = ref(false);
 		<div class="spacer" />
 
 		<div v-if="!disabled" class="item-actions">
-			<v-icon v-tooltip="t('edit_item')" name="edit" clickable @click="editActive = true" />
+			<v-icon v-tooltip="$t('edit_item')" name="edit" clickable @click="editActive = true" />
 
 			<v-remove
 				:item-type="item.$type"

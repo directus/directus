@@ -7,7 +7,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { merge } from 'lodash';
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import SettingsNavigation from '../../../components/navigation.vue';
 import CollectionDialog from './components/collection-dialog.vue';
@@ -15,8 +14,6 @@ import CollectionItem from './components/collection-item.vue';
 import CollectionOptions from './components/collection-options.vue';
 import { useExpandCollapse } from './composables/use-expand-collapse';
 import { saveAs } from 'file-saver';
-
-const { t } = useI18n();
 
 const search = ref<string | null>(null);
 const collectionDialogActive = ref(false);
@@ -141,9 +138,9 @@ async function downloadSnapshot() {
 </script>
 
 <template>
-	<private-view :title="t('settings_data_model')">
+	<private-view :title="$t('settings_data_model')">
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
+			<v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
 		</template>
 
 		<template #title-outer:prepend>
@@ -157,18 +154,18 @@ async function downloadSnapshot() {
 				v-model="search"
 				:show-filter="false"
 				:autofocus="collectionsStore.collections.length - systemCollections.length > 25"
-				:placeholder="t('search_collection')"
+				:placeholder="$t('search_collection')"
 			/>
 
 			<collection-dialog v-model="collectionDialogActive">
 				<template #activator="{ on }">
-					<v-button v-tooltip.bottom="t('create_folder')" rounded icon secondary @click="on">
+					<v-button v-tooltip.bottom="$t('create_folder')" rounded icon secondary @click="on">
 						<v-icon name="create_new_folder" />
 					</v-button>
 				</template>
 			</collection-dialog>
 
-			<v-button v-tooltip.bottom="t('create_collection')" rounded icon to="/settings/data-model/+">
+			<v-button v-tooltip.bottom="$t('create_collection')" rounded icon to="/settings/data-model/+">
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -178,21 +175,21 @@ async function downloadSnapshot() {
 		</template>
 
 		<div class="padding-box">
-			<v-info v-if="collections.length === 0" icon="box" :title="t('no_collections')">
-				{{ t('no_collections_copy_admin') }}
+			<v-info v-if="collections.length === 0" icon="box" :title="$t('no_collections')">
+				{{ $t('no_collections_copy_admin') }}
 
 				<template #append>
-					<v-button to="/settings/data-model/+">{{ t('create_collection') }}</v-button>
+					<v-button to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
 				</template>
 			</v-info>
 
 			<template v-else>
 				<transition-expand>
 					<div v-if="hasExpandableCollections" class="expand-collapse-button">
-						{{ t('expand') }}
-						<button @click="expandAll">{{ t('all') }}</button>
+						{{ $t('expand') }}
+						<button @click="expandAll">{{ $t('all') }}</button>
 						/
-						<button @click="collapseAll">{{ t('none') }}</button>
+						<button @click="collapseAll">{{ $t('none') }}</button>
 					</div>
 				</transition-expand>
 				<draggable
@@ -225,7 +222,7 @@ async function downloadSnapshot() {
 					v-for="collection of tableCollections"
 					v-show="findVisibilityChild(collection.collection)!.visible"
 					:key="collection.collection"
-					v-tooltip="t('db_only_click_to_configure')"
+					v-tooltip="$t('db_only_click_to_configure')"
 					class="collection-row hidden"
 					block
 					dense
@@ -246,7 +243,7 @@ async function downloadSnapshot() {
 
 			<v-detail
 				v-show="systemCollections.some((collection) => findVisibilityChild(collection.collection)?.visible)"
-				:label="t('system_collections')"
+				:label="$t('system_collections')"
 			>
 				<collection-item
 					v-for="collection of systemCollections"
@@ -263,13 +260,13 @@ async function downloadSnapshot() {
 		<router-view name="add" />
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_datamodel_collections')" class="page-description" />
+			<sidebar-detail icon="info" :title="$t('information')" close>
+				<div v-md="$t('page_help_settings_datamodel_collections')" class="page-description" />
 			</sidebar-detail>
-			<sidebar-detail icon="download" :title="t('snapshot.export')">
-				<div v-md="t('snapshot.info')" class="page-description" />
+			<sidebar-detail icon="download" :title="$t('snapshot.export')">
+				<div v-md="$t('snapshot.info')" class="page-description" />
 				<v-button small full-width class="snapshot-download" @click="downloadSnapshot">
-					{{ t('snapshot.download') }}
+					{{ $t('snapshot.download') }}
 				</v-button>
 			</sidebar-detail>
 		</template>

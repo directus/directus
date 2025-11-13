@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import SystemMcpPromptsCollectionGenerateDialog from './system-mcp-prompts-collection-generate-dialog.vue';
-
-const { t } = useI18n();
 
 const generateCollectionDialogActive = ref(false);
 
@@ -14,13 +11,13 @@ defineEmits<{
 
 <template>
 	<v-notice multiline indent-content>
-		<template #title>{{ t('mcp_prompts_collection.no_collection_selected') }}</template>
+		<template #title>{{ $t('mcp_prompts_collection.no_collection_selected') }}</template>
 
 		<div class="notice-content">
-			<p>{{ t('mcp_prompts_collection.no_collection_selected_copy') }}</p>
+			<p>{{ $t('mcp_prompts_collection.no_collection_selected_copy') }}</p>
 
 			<v-button small outlined @click="generateCollectionDialogActive = true">
-				{{ t('mcp_prompts_collection.generate') }}
+				{{ $t('mcp_prompts_collection.generate') }}
 			</v-button>
 
 			<SystemMcpPromptsCollectionGenerateDialog

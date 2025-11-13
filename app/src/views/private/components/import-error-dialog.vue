@@ -76,7 +76,7 @@ function closeDialog() {
 <template>
 	<v-dialog v-model="modelValue" persistent>
 		<v-card>
-			<v-card-title>{{ t('import_data_errors') }}</v-card-title>
+			<v-card-title>{{ $t('import_data_errors') }}</v-card-title>
 			<v-card-text class="validation-errors-wrapper">
 				<v-notice type="danger" multiline>
 					<p>{{ $t('import_data_validation_errors_notice') }}</p>
