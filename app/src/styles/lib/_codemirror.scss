@@ -35,8 +35,7 @@
 	border-color: var(--theme--form--field--input--border-color);
 }
 
-.CodeMirror.CodeMirror-focused,
-.CodeMirror.CodeMirror-active {
+.CodeMirror.CodeMirror-focused {
 	border-color: var(--theme--form--field--input--border-color-focus);
 	box-shadow: var(--theme--form--field--input--box-shadow-focus);
 }
