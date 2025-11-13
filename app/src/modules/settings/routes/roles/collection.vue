@@ -10,6 +10,8 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 
+const { t } = useI18n();
+
 type RoleBaseFields = 'id' | 'name' | 'description' | 'icon';
 
 type RoleResponse = Pick<Role, RoleBaseFields> & {
@@ -20,8 +22,6 @@ type RoleItem = Pick<Role, RoleBaseFields> & {
 	public?: boolean;
 	count?: number;
 };
-
-const { t } = useI18n();
 
 const router = useRouter();
 
@@ -150,20 +150,20 @@ function navigateToRole({ item }: { item: Role }) {
 </script>
 
 <template>
-	<private-view :title="t('settings_roles')" icon="group">
-		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
+	<private-view :title="$t('settings_roles')" icon="group">
+		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #actions>
 			<search-input
 				v-if="!loading"
 				v-model="search"
 				:autofocus="roles.length > 25"
-				:placeholder="t('search_role')"
+				:placeholder="$t('search_role')"
 				:show-filter="false"
 				small
 			/>
 
-			<v-button v-tooltip.bottom="t('create_role')" rounded icon :to="addNewLink" small>
+			<v-button v-tooltip.bottom="$t('create_role')" rounded icon :to="addNewLink" small>
 				<v-icon name="add" small />
 			</v-button>
 		</template>
@@ -212,11 +212,11 @@ function navigateToRole({ item }: { item: Role }) {
 			</v-table>
 		</div>
 
-		<v-info v-else icon="search" :title="t('no_results')" center>
-			{{ t('no_results_copy') }}
+		<v-info v-else icon="search" :title="$t('no_results')" center>
+			{{ $t('no_results_copy') }}
 
 			<template #append>
-				<v-button @click="search = null">{{ t('clear_filters') }}</v-button>
+				<v-button @click="search = null">{{ $t('clear_filters') }}</v-button>
 			</template>
 		</v-info>
 

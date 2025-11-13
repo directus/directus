@@ -3,7 +3,6 @@ import { useElementSize } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { isObject } from 'lodash';
 import { Ref, computed, inject, onMounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -23,8 +22,6 @@ const emit = defineEmits<{
 	(e: 'update:modelValue', value: string | null): void;
 	(e: 'update:filter', value: Filter | null): void;
 }>();
-
-const { t } = useI18n();
 
 const input = ref<HTMLInputElement | null>(null);
 
@@ -145,7 +142,7 @@ function emitValue() {
 			<input
 				ref="input"
 				:value="modelValue"
-				:placeholder="placeholder ?? t('search_items')"
+				:placeholder="placeholder ?? $t('search_items')"
 				type="search"
 				spellcheck="false"
 				autocapitalize="off"
@@ -161,7 +158,7 @@ function emitValue() {
 			<div class="spacer" />
 			<v-icon
 				v-if="modelValue"
-				v-tooltip.bottom="t('clear_value')"
+				v-tooltip.bottom="$t('clear_value')"
 				small
 				clickable
 				class="icon-clear"
@@ -170,7 +167,7 @@ function emitValue() {
 			/>
 			<template v-if="showFilter">
 				<v-icon
-					v-tooltip.bottom="t('filter')"
+					v-tooltip.bottom="$t('filter')"
 					small
 					clickable
 					class="icon-filter"

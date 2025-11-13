@@ -187,47 +187,47 @@ async function copyFileId() {
 </script>
 
 <template>
-	<sidebar-detail id="file-info" icon="info" :title="t('file_details')">
+	<sidebar-detail id="file-info" icon="info" :title="$t('file_details')">
 		<dl v-if="file">
 			<div v-if="file.type">
-				<dt>{{ t('type') }}</dt>
+				<dt>{{ $t('type') }}</dt>
 				<dd>{{ readableMimeType(file.type) || file.type }}</dd>
 			</div>
 
 			<div v-if="file.width && file.height">
-				<dt>{{ t('dimensions') }}</dt>
+				<dt>{{ $t('dimensions') }}</dt>
 				<dd>{{ n(file.width) }} × {{ n(file.height) }}</dd>
 			</div>
 
 			<div v-if="file.duration">
-				<dt>{{ t('duration') }}</dt>
+				<dt>{{ $t('duration') }}</dt>
 				<dd>{{ n(file.duration) }}</dd>
 			</div>
 
 			<div v-if="file.filesize">
-				<dt>{{ t('size') }}</dt>
+				<dt>{{ $t('size') }}</dt>
 				<dd>{{ size }}</dd>
 			</div>
 
 			<div v-if="file.charset">
-				<dt>{{ t('charset') }}</dt>
+				<dt>{{ $t('charset') }}</dt>
 				<dd>{{ file.charset }}</dd>
 			</div>
 
 			<div v-if="file.embed">
-				<dt>{{ t('embed') }}</dt>
+				<dt>{{ $t('embed') }}</dt>
 				<dd>{{ file.embed }}</dd>
 			</div>
 
 			<div v-if="creationDate">
-				<dt>{{ t('created') }}</dt>
+				<dt>{{ $t('created') }}</dt>
 				<dd>
 					<span v-tooltip="creationDate.long">{{ creationDate.short }}</span>
 				</dd>
 			</div>
 
 			<div v-if="userCreated">
-				<dt>{{ t('owner') }}</dt>
+				<dt>{{ $t('owner') }}</dt>
 				<dd>
 					<user-popover :user="userCreated.id">
 						<router-link :to="userCreated.link">{{ userCreated.name }}</router-link>
@@ -236,21 +236,21 @@ async function copyFileId() {
 			</div>
 
 			<div v-if="uploadDate">
-				<dt>{{ t('uploaded') }}</dt>
+				<dt>{{ $t('uploaded') }}</dt>
 				<dd>
 					<span v-tooltip="uploadDate.long">{{ uploadDate.short }}</span>
 				</dd>
 			</div>
 
 			<div v-if="modificationDate">
-				<dt>{{ t('modified') }}</dt>
+				<dt>{{ $t('modified') }}</dt>
 				<dd>
 					<span v-tooltip="modificationDate.long">{{ modificationDate.short }}</span>
 				</dd>
 			</div>
 
 			<div v-if="userModified">
-				<dt>{{ t('edited_by') }}</dt>
+				<dt>{{ $t('edited_by') }}</dt>
 				<dd>
 					<user-popover :user="userModified.id">
 						<router-link :to="userModified.link">{{ userModified.name }}</router-link>
@@ -259,23 +259,23 @@ async function copyFileId() {
 			</div>
 
 			<div v-if="fileLink">
-				<dt>{{ t('file') }}</dt>
+				<dt>{{ $t('file') }}</dt>
 				<dd>
-					<a :href="fileLink" target="_blank">{{ t('open_in_new_window') }}</a>
+					<a :href="fileLink" target="_blank">{{ $t('open_in_new_window') }}</a>
 				</dd>
 			</div>
 
 			<div>
-				<dt>{{ t('folder') }}</dt>
+				<dt>{{ $t('folder') }}</dt>
 				<dd>
 					<router-link :to="folderLink">
-						{{ t('open_folder', { folder: folder ? folder.name : t('file_library') }) }}
+						{{ $t('open_folder', { folder: folder ? folder.name : $t('file_library') }) }}
 					</router-link>
 				</dd>
 			</div>
 
 			<div v-if="file?.id" class="copy-id">
-				<dt>{{ t('copy_id') }}</dt>
+				<dt>{{ $t('copy_id') }}</dt>
 				<dd>
 					<v-button icon secondary small class="copy-id-button" @click="copyFileId">
 						<v-icon small name="content_copy" outline />
@@ -287,27 +287,27 @@ async function copyFileId() {
 				<v-divider />
 
 				<div v-if="imageMetadata.Make && imageMetadata.Model">
-					<dt>{{ t('camera') }}</dt>
+					<dt>{{ $t('camera') }}</dt>
 					<dd>{{ imageMetadata.Make }} {{ imageMetadata.Model }}</dd>
 				</div>
 
 				<div v-if="imageMetadata.FNumber">
-					<dt>{{ t('exposure') }}</dt>
+					<dt>{{ $t('exposure') }}</dt>
 					<dd>ƒ/{{ imageMetadata.FNumber }}</dd>
 				</div>
 
 				<div v-if="imageMetadata.ExposureTime">
-					<dt>{{ t('shutter') }}</dt>
-					<dd>1/{{ Math.round(1 / +imageMetadata.ExposureTime) }} {{ t('second') }}</dd>
+					<dt>{{ $t('shutter') }}</dt>
+					<dd>1/{{ Math.round(1 / +imageMetadata.ExposureTime) }} {{ $t('second') }}</dd>
 				</div>
 
 				<div v-if="imageMetadata.FocalLength">
-					<dt>{{ t('focal_length') }}</dt>
+					<dt>{{ $t('focal_length') }}</dt>
 					<dd>{{ imageMetadata.FocalLength }}mm</dd>
 				</div>
 
 				<div v-if="imageMetadata.ISO">
-					<dt>{{ t('iso') }}</dt>
+					<dt>{{ $t('iso') }}</dt>
 					<dd>{{ imageMetadata.ISO }}</dd>
 				</div>
 			</template>

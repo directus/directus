@@ -282,7 +282,7 @@ function revert(values: Record<string, any>) {
 			>
 				<template #activator="{ on }">
 					<v-button
-						v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')"
+						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
 						rounded
 						icon
 						class="action-delete"
@@ -296,14 +296,14 @@ function revert(values: Record<string, any>) {
 				</template>
 
 				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
+							{{ $t('cancel') }}
 						</v-button>
 						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete_label') }}
+							{{ $t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -332,21 +332,21 @@ function revert(values: Record<string, any>) {
 				</template>
 
 				<v-card>
-					<v-card-title>{{ isArchived ? t('unarchive_confirm') : t('archive_confirm') }}</v-card-title>
+					<v-card-title>{{ isArchived ? $t('unarchive_confirm') : $t('archive_confirm') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button secondary @click="confirmArchive = false">
-							{{ t('cancel') }}
+							{{ $t('cancel') }}
 						</v-button>
 						<v-button kind="warning" :loading="archiving" @click="toggleArchive">
-							{{ isArchived ? t('unarchive') : t('archive') }}
+							{{ isArchived ? $t('unarchive') : $t('archive') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
 			<v-button
-				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
+				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
 				rounded
 				icon
 				:loading="saving"
@@ -380,7 +380,7 @@ function revert(values: Record<string, any>) {
 					<v-image
 						v-else-if="avatarSrc && !avatarError"
 						:src="avatarSrc"
-						:alt="t('avatar')"
+						:alt="$t('avatar')"
 						@error="avatarError = $event"
 					/>
 					<v-icon v-else name="account_circle" x-large />
@@ -423,13 +423,13 @@ function revert(values: Record<string, any>) {
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
+						{{ $t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref, toRefs, unref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
@@ -22,8 +21,6 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
 	primaryKey: null,
 });
-
-const { t } = useI18n();
 
 const router = useRouter();
 
@@ -208,13 +205,13 @@ async function revert(values: Record<string, any>) {
 
 	<private-view
 		v-else
-		:title="primaryKey === '+' ? t('create_custom_translation') : t('edit_custom_translation')"
+		:title="primaryKey === '+' ? $t('create_custom_translation') : $t('edit_custom_translation')"
 		show-back
 	>
 		<template #headline>
 			<v-breadcrumb
 				v-if="collectionInfo?.meta && collectionInfo.meta.singleton === true"
-				:items="[{ name: t('content'), to: '/content' }]"
+				:items="[{ name: $t('content'), to: '/content' }]"
 			/>
 			<v-breadcrumb v-else :items="breadcrumb" />
 		</template>
@@ -224,7 +221,7 @@ async function revert(values: Record<string, any>) {
 				<template #activator="{ on }">
 					<v-button
 						v-if="collectionInfo!.meta && collectionInfo!.meta.singleton === false"
-						v-tooltip.bottom="t('delete_label')"
+						v-tooltip.bottom="$t('delete_label')"
 						rounded
 						icon
 						class="action-delete"
@@ -238,21 +235,21 @@ async function revert(values: Record<string, any>) {
 				</template>
 
 				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
+							{{ $t('cancel') }}
 						</v-button>
 						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete_label') }}
+							{{ $t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
 			<v-button
-				v-tooltip.bottom="t('save')"
+				v-tooltip.bottom="$t('save')"
 				rounded
 				icon
 				:loading="saving"
@@ -291,13 +288,13 @@ async function revert(values: Record<string, any>) {
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
+						{{ $t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

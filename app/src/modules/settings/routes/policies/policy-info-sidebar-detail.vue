@@ -1,22 +1,19 @@
 <script setup lang="ts">
 import { useClipboard } from '@/composables/use-clipboard';
 import { Policy } from '@directus/types';
-import { useI18n } from 'vue-i18n';
 
 defineProps<{
 	policy: Policy | null;
 }>();
 
-const { t } = useI18n();
-
 const { isCopySupported, copyToClipboard } = useClipboard();
 </script>
 
 <template>
-	<sidebar-detail v-if="policy" id="policy" icon="info" :title="t('information')">
+	<sidebar-detail v-if="policy" id="policy" icon="info" :title="$t('information')">
 		<dl>
 			<div class="description-list">
-				<dt>{{ t('primary_key') }}</dt>
+				<dt>{{ $t('primary_key') }}</dt>
 				<dd>{{ policy.id }}</dd>
 				<v-icon
 					v-if="isCopySupported"

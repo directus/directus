@@ -218,7 +218,7 @@ function revert(values: Record<string, any>) {
 
 <template>
 	<files-not-found v-if="!loading && !item" />
-	<private-view v-else :title="loading || !item ? t('loading') : item.title" show-back>
+	<private-view v-else :title="loading || !item ? $t('loading') : item.title" show-back>
 		<template #headline>
 			<v-breadcrumb :items="breadcrumb" />
 		</template>
@@ -227,7 +227,7 @@ function revert(values: Record<string, any>) {
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<v-button
-						v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')"
+						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
 						rounded
 						icon
 						class="action-delete"
@@ -241,14 +241,14 @@ function revert(values: Record<string, any>) {
 				</template>
 
 				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
+							{{ $t('cancel') }}
 						</v-button>
 						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete_label') }}
+							{{ $t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -262,7 +262,7 @@ function revert(values: Record<string, any>) {
 			>
 				<template #activator="{ on }">
 					<v-button
-						v-tooltip.bottom="item === null || !updateAllowed ? t('not_allowed') : t('move_to_folder')"
+						v-tooltip.bottom="item === null || !updateAllowed ? $t('not_allowed') : $t('move_to_folder')"
 						rounded
 						icon
 						secondary
@@ -275,7 +275,7 @@ function revert(values: Record<string, any>) {
 				</template>
 
 				<v-card>
-					<v-card-title>{{ t('move_to_folder') }}</v-card-title>
+					<v-card-title>{{ $t('move_to_folder') }}</v-card-title>
 
 					<v-card-text>
 						<folder-picker v-model="selectedFolder" />
@@ -283,16 +283,16 @@ function revert(values: Record<string, any>) {
 
 					<v-card-actions>
 						<v-button secondary @click="moveToDialogActive = false">
-							{{ t('cancel') }}
+							{{ $t('cancel') }}
 						</v-button>
 						<v-button :loading="moving" @click="moveToFolder">
-							{{ t('move') }}
+							{{ $t('move') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 			<v-button
-				v-tooltip.bottom="t('download')"
+				v-tooltip.bottom="$t('download')"
 				secondary
 				icon
 				rounded
@@ -305,7 +305,7 @@ function revert(values: Record<string, any>) {
 
 			<v-button
 				v-if="item?.type?.includes('image') && updateAllowed"
-				v-tooltip.bottom="t('edit')"
+				v-tooltip.bottom="$t('edit')"
 				rounded
 				icon
 				secondary
@@ -316,7 +316,7 @@ function revert(values: Record<string, any>) {
 			</v-button>
 
 			<v-button
-				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
+				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
 				rounded
 				icon
 				:loading="saving"
@@ -361,13 +361,13 @@ function revert(values: Record<string, any>) {
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
+						{{ $t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

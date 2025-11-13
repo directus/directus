@@ -2,7 +2,6 @@
 import { useClipboard } from '@/composables/use-clipboard';
 import { translate } from '@/utils/translate-object-values';
 import { FlowRaw } from '@directus/types';
-import { useI18n } from 'vue-i18n';
 
 defineProps<{
 	panel: Record<string, any>;
@@ -10,14 +9,12 @@ defineProps<{
 	flow: FlowRaw;
 }>();
 
-const { t } = useI18n();
-
 const { isCopySupported, copyToClipboard } = useClipboard();
 </script>
 
 <template>
 	<div v-tooltip="panel.key" class="name">
-		{{ panel.id === '$trigger' ? t(`triggers.${panel.type}.name`) : panel.name }}
+		{{ panel.id === '$trigger' ? $t(`triggers.${panel.type}.name`) : panel.name }}
 	</div>
 	<dl class="options-overview">
 		<div

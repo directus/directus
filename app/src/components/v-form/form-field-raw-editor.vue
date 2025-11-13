@@ -4,7 +4,6 @@ import { getStringifiedValue } from '@/utils/get-stringified-value';
 import { isValidJSON, parseJSON } from '@directus/utils';
 import { isNil } from 'lodash';
 import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import type { FormField } from './types';
 import type { Field } from '@directus/types';
 
@@ -23,8 +22,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['cancel', 'setRawValue']);
-
-const { t } = useI18n();
 const internalValue = ref();
 
 const type = computed(() => {
@@ -68,7 +65,7 @@ const setRawValue = () => {
 <template>
 	<v-dialog :model-value="showModal" persistent @esc="$emit('cancel')" @apply="setRawValue">
 		<v-card>
-			<v-card-title>{{ disabled ? t('view_raw_value') : t('edit_raw_value') }}</v-card-title>
+			<v-card-title>{{ disabled ? $t('view_raw_value') : $t('edit_raw_value') }}</v-card-title>
 			<v-card-text>
 				<interface-input-code
 					v-if="type === 'object'"
@@ -76,7 +73,7 @@ const setRawValue = () => {
 					:disabled="disabled"
 					:line-number="false"
 					:alt-options="{ gutters: false }"
-					:placeholder="t('enter_raw_value')"
+					:placeholder="$t('enter_raw_value')"
 					language="json"
 					@input="internalValue = $event"
 				/>
@@ -86,13 +83,13 @@ const setRawValue = () => {
 					:type="type === 'string' ? 'text' : type"
 					:disabled="disabled"
 					language="plaintext"
-					:placeholder="t('enter_raw_value')"
+					:placeholder="$t('enter_raw_value')"
 					@input="internalValue = $event"
 				/>
 			</v-card-text>
 			<v-card-actions>
-				<v-button secondary @click="$emit('cancel')">{{ t('cancel') }}</v-button>
-				<v-button @click.prevent="setRawValue">{{ t('done') }}</v-button>
+				<v-button secondary @click="$emit('cancel')">{{ $t('cancel') }}</v-button>
+				<v-button @click.prevent="setRawValue">{{ $t('done') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>

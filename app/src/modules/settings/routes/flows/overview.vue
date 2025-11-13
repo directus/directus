@@ -127,9 +127,9 @@ function onFlowDrawerCompletion(id: string) {
 </script>
 
 <template>
-	<private-view :title="t('flows')" icon="bolt">
+	<private-view :title="$t('flows')" icon="bolt">
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
+			<v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
 		</template>
 
 		<template #navigation>
@@ -138,7 +138,7 @@ function onFlowDrawerCompletion(id: string) {
 
 		<template #actions>
 			<v-button
-				v-tooltip.bottom="createAllowed ? t('create_flow') : t('not_allowed')"
+				v-tooltip.bottom="createAllowed ? $t('create_flow') : $t('not_allowed')"
 				rounded
 				icon
 				:disabled="createAllowed === false"
@@ -149,11 +149,11 @@ function onFlowDrawerCompletion(id: string) {
 			</v-button>
 		</template>
 
-		<v-info v-if="flows.length === 0" icon="bolt" :title="t('no_flows')" center>
-			{{ t('no_flows_copy') }}
+		<v-info v-if="flows.length === 0" icon="bolt" :title="$t('no_flows')" center>
+			{{ $t('no_flows_copy') }}
 
 			<template v-if="createAllowed" #append>
-				<v-button @click="editFlow = '+'">{{ t('create_flow') }}</v-button>
+				<v-button @click="editFlow = '+'">{{ $t('create_flow') }}</v-button>
 			</template>
 		</v-info>
 
@@ -190,11 +190,11 @@ function onFlowDrawerCompletion(id: string) {
 						<v-list-item clickable @click="toggleFlowStatusById(item.id, item.status)">
 							<template v-if="item.status === 'active'">
 								<v-list-item-icon><v-icon name="block" /></v-list-item-icon>
-								<v-list-item-content>{{ t('set_flow_inactive') }}</v-list-item-content>
+								<v-list-item-content>{{ $t('set_flow_inactive') }}</v-list-item-content>
 							</template>
 							<template v-else>
 								<v-list-item-icon><v-icon name="check" /></v-list-item-icon>
-								<v-list-item-content>{{ t('set_flow_active') }}</v-list-item-content>
+								<v-list-item-content>{{ $t('set_flow_active') }}</v-list-item-content>
 							</template>
 						</v-list-item>
 
@@ -203,7 +203,7 @@ function onFlowDrawerCompletion(id: string) {
 								<v-icon name="edit" outline />
 							</v-list-item-icon>
 							<v-list-item-content>
-								{{ t('edit_flow') }}
+								{{ $t('edit_flow') }}
 							</v-list-item-content>
 						</v-list-item>
 
@@ -212,7 +212,7 @@ function onFlowDrawerCompletion(id: string) {
 								<v-icon name="delete" outline />
 							</v-list-item-icon>
 							<v-list-item-content>
-								{{ t('delete_flow') }}
+								{{ $t('delete_flow') }}
 							</v-list-item-content>
 						</v-list-item>
 					</v-list>
@@ -222,14 +222,14 @@ function onFlowDrawerCompletion(id: string) {
 
 		<v-dialog :model-value="!!confirmDelete" @esc="confirmDelete = null" @apply="deleteFlow">
 			<v-card>
-				<v-card-title>{{ t('flow_delete_confirm', { flow: confirmDelete!.name }) }}</v-card-title>
+				<v-card-title>{{ $t('flow_delete_confirm', { flow: confirmDelete!.name }) }}</v-card-title>
 
 				<v-card-actions>
 					<v-button secondary @click="confirmDelete = null">
-						{{ t('cancel') }}
+						{{ $t('cancel') }}
 					</v-button>
 					<v-button danger :loading="deletingFlow" @click="deleteFlow">
-						{{ t('delete_label') }}
+						{{ $t('delete_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

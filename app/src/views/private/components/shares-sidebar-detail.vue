@@ -262,11 +262,11 @@ async function copy(id: string) {
 		:badge="!loadingCount && sharesCount > 0 ? abbreviateNumber(sharesCount) : null"
 		@toggle="onToggle"
 	>
-		<v-notice v-if="error" type="danger">{{ t('unexpected_error') }}</v-notice>
+		<v-notice v-if="error" type="danger">{{ $t('unexpected_error') }}</v-notice>
 		<v-progress-linear v-else-if="loading" indeterminate />
 
 		<div v-else-if="!shares || shares.length === 0" class="empty">
-			<div class="content">{{ t('no_shares') }}</div>
+			<div class="content">{{ $t('no_shares') }}</div>
 		</div>
 
 		<template v-for="share in shares" :key="share.id">
@@ -294,15 +294,15 @@ async function copy(id: string) {
 			@apply="remove"
 		>
 			<v-card>
-				<v-card-title>{{ t('delete_share') }}</v-card-title>
-				<v-card-text>{{ t('delete_are_you_sure') }}</v-card-text>
+				<v-card-title>{{ $t('delete_share') }}</v-card-title>
+				<v-card-text>{{ $t('delete_are_you_sure') }}</v-card-text>
 
 				<v-card-actions>
 					<v-button secondary @click="shareToDelete = null">
-						{{ t('cancel') }}
+						{{ $t('cancel') }}
 					</v-button>
 					<v-button kind="danger" :loading="deleting" @click="remove">
-						{{ t('delete_label') }}
+						{{ $t('delete_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -315,7 +315,7 @@ async function copy(id: string) {
 			@apply="send"
 		>
 			<v-card>
-				<v-card-title>{{ t('share_send_link') }}</v-card-title>
+				<v-card-title>{{ $t('share_send_link') }}</v-card-title>
 				<v-card-text>
 					<div class="grid">
 						<div class="field">
@@ -323,7 +323,7 @@ async function copy(id: string) {
 						</div>
 
 						<div class="field">
-							<div class="type-label">{{ t('emails') }}</div>
+							<div class="type-label">{{ $t('emails') }}</div>
 							<v-textarea v-model="sendEmails" :nullable="false" placeholder="admin@example.com, user@example.com..." />
 						</div>
 					</div>
@@ -331,17 +331,17 @@ async function copy(id: string) {
 
 				<v-card-actions>
 					<v-button secondary @click="shareToSend = null">
-						{{ t('cancel') }}
+						{{ $t('cancel') }}
 					</v-button>
 					<v-button :loading="sending" @click="send">
-						{{ t('share_send_link') }}
+						{{ $t('share_send_link') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
 		<v-button v-if="allowed" full-width @click="select('+')">
-			{{ t('new_share') }}
+			{{ $t('new_share') }}
 		</v-button>
 	</sidebar-detail>
 </template>

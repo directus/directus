@@ -76,16 +76,16 @@ function onToggle(open: boolean) {
 	>
 		<v-progress-linear v-if="!revisionsByDate && loading" indeterminate />
 
-		<div v-else-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>
+		<div v-else-if="revisionsCount === 0" class="empty">{{ $t('no_logs') }}</div>
 
 		<template v-else>
 			<button class="toggle-failed" :class="{ active: showFailedOnly }" @click="showFailedOnly = !showFailedOnly">
 				<v-icon v-if="!showFailedOnly" name="circle" small />
 				<v-icon v-else name="cancel" small />
-				{{ t('show_failed_only') }}
+				{{ $t('show_failed_only') }}
 			</button>
 
-			<div v-if="!revisionsByDate?.length" class="empty">{{ t('no_logs_on_page') }}</div>
+			<div v-if="!revisionsByDate?.length" class="empty">{{ $t('no_logs_on_page') }}</div>
 
 			<v-detail
 				v-for="group in revisionsByDate"

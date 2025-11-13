@@ -68,7 +68,7 @@ watch(form, () => {
 		<setup-form v-model="form" :errors="errors" utm-location="onboarding"></setup-form>
 		<v-button full-width :disabled="!formComplete" :loading="isSaving" @click="launch()">
 			<v-icon name="rocket_launch" />
-			{{ t('setup_launch') }}
+			{{ $t('setup_launch') }}
 		</v-button>
 
 		<v-notice v-if="error" type="danger">

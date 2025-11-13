@@ -4,7 +4,6 @@ import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';
 import type { TriggerType } from '@directus/types';
 import { computed, reactive, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { getTriggers } from './triggers';
 
 interface Values {
@@ -28,8 +27,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['cancel', 'done']);
-
-const { t } = useI18n();
 
 const flowsStore = useFlowsStore();
 
@@ -168,19 +165,19 @@ function onApply() {
 
 <template>
 	<v-drawer
-		:title="isNew ? t('creating_new_flow') : t('updating_flow')"
+		:title="isNew ? $t('creating_new_flow') : $t('updating_flow')"
 		class="new-flow"
 		persistent
 		:model-value="active"
-		:sidebar-label="t(currentTab[0] as string)"
+		:sidebar-label="$t(currentTab[0] as string)"
 		@cancel="$emit('cancel')"
 		@apply="onApply"
 	>
 		<template #sidebar>
 			<v-tabs v-model="currentTab" vertical>
-				<v-tab value="flow_setup">{{ t('flow_setup') }}</v-tab>
+				<v-tab value="flow_setup">{{ $t('flow_setup') }}</v-tab>
 				<v-tab value="trigger_setup" :disabled="!values.name">
-					{{ t('trigger_setup') }}
+					{{ $t('trigger_setup') }}
 				</v-tab>
 			</v-tabs>
 		</template>
@@ -190,55 +187,55 @@ function onApply() {
 				<div class="fields">
 					<div class="field half">
 						<div class="type-label">
-							{{ t('flow_name') }}
-							<v-icon v-tooltip="t('required')" class="required" name="star" sup filled />
+							{{ $t('flow_name') }}
+							<v-icon v-tooltip="$t('required')" class="required" name="star" sup filled />
 						</div>
-						<v-input v-model="values.name" autofocus :placeholder="t('flow_name')" />
+						<v-input v-model="values.name" autofocus :placeholder="$t('flow_name')" />
 					</div>
 					<div class="field half">
-						<div class="type-label">{{ t('status') }}</div>
+						<div class="type-label">{{ $t('status') }}</div>
 						<v-select
 							v-model="values.status"
 							:items="[
 								{
-									text: t('active'),
+									text: $t('active'),
 									value: 'active',
 								},
 								{
-									text: t('inactive'),
+									text: $t('inactive'),
 									value: 'inactive',
 								},
 							]"
 						/>
 					</div>
 					<div class="field full">
-						<div class="type-label">{{ t('description') }}</div>
-						<v-input v-model="values.description" :placeholder="t('description')" />
+						<div class="type-label">{{ $t('description') }}</div>
+						<v-input v-model="values.description" :placeholder="$t('description')" />
 					</div>
 					<div class="field half">
-						<div class="type-label">{{ t('icon') }}</div>
+						<div class="type-label">{{ $t('icon') }}</div>
 						<interface-select-icon :value="values.icon" @input="values.icon = $event" />
 					</div>
 					<div class="field half">
-						<div class="type-label">{{ t('color') }}</div>
+						<div class="type-label">{{ $t('color') }}</div>
 						<interface-select-color width="half" :value="values.color" @input="values.color = $event" />
 					</div>
 					<v-divider class="full" />
 					<div class="field full">
-						<div class="type-label">{{ t('flow_tracking') }}</div>
+						<div class="type-label">{{ $t('flow_tracking') }}</div>
 						<v-select
 							v-model="values.accountability"
 							:items="[
 								{
-									text: t('flow_tracking_all'),
+									text: $t('flow_tracking_all'),
 									value: 'all',
 								},
 								{
-									text: t('flow_tracking_activity'),
+									text: $t('flow_tracking_activity'),
 									value: 'activity',
 								},
 								{
-									text: t('flow_tracking_null'),
+									text: $t('flow_tracking_null'),
 									value: null,
 								},
 							]"
@@ -262,7 +259,7 @@ function onApply() {
 		<template #actions>
 			<v-button
 				v-if="currentTab[0] === 'flow_setup'"
-				v-tooltip.bottom="isNew ? t('next') : t('save')"
+				v-tooltip.bottom="isNew ? $t('next') : $t('save')"
 				:disabled="isFlowSetupDisabled"
 				:loading="saving"
 				icon
@@ -274,7 +271,7 @@ function onApply() {
 			</v-button>
 			<v-button
 				v-if="currentTab[0] === 'trigger_setup'"
-				v-tooltip.bottom="isNew ? t('finish_setup') : t('save')"
+				v-tooltip.bottom="isNew ? $t('finish_setup') : $t('save')"
 				:disabled="isFlowTriggerDisabled"
 				:loading="saving"
 				icon
