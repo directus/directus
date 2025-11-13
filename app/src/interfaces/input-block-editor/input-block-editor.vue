@@ -5,7 +5,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import EditorJS from '@editorjs/editorjs';
 import { isEqual } from 'lodash';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useBus } from './bus';
 import { sanitizeValue } from './sanitize';
@@ -39,8 +38,6 @@ const props = withDefaults(
 const bus = useBus();
 
 const emit = defineEmits<{ input: [value: EditorJS.OutputData | null] }>();
-
-const { t } = useI18n();
 
 const collectionStore = useCollectionsStore();
 
@@ -164,7 +161,7 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 			v-if="haveFilesAccess && !disabled"
 			:model-value="fileHandler !== null"
 			icon="image"
-			:title="t('upload_from_device')"
+			:title="$t('upload_from_device')"
 			cancelable
 			@update:model-value="unsetFileHandler"
 			@cancel="unsetFileHandler"

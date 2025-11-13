@@ -6,12 +6,9 @@ import { useSettingsStore } from '@/stores/settings';
 import { useCollection } from '@directus/composables';
 import { clone } from 'lodash';
 import { computed, ref, unref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import ThemingInfoSidebarDetail from './components/theming-info-sidebar-detail.vue';
-
-const { t } = useI18n();
 
 const router = useRouter();
 
@@ -57,7 +54,7 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<private-view :title="t('settings_appearance')" icon="palette">
+	<private-view :title="$t('settings_appearance')" icon="palette">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #actions>
@@ -80,13 +77,13 @@ function discardAndLeave() {
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
+						{{ $t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

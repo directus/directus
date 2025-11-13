@@ -63,7 +63,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			class="field-name"
 			v-bind="!disabledMenu ? { type: 'button', onClick: toggle } : {}"
 		>
-			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot" />
+			<span v-if="edited" v-tooltip="$t('edited')" class="edit-dot" />
 			<v-checkbox
 				v-if="batchMode"
 				:model-value="batchActive"
@@ -82,7 +82,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			<div class="field-label-content">
 				<v-text-overflow :text="field.name" />
 
-				<span v-if="showHiddenIndicator" class="hidden-indicator">({{ t('hidden') }})</span>
+				<span v-if="showHiddenIndicator" class="hidden-indicator">({{ $t('hidden') }})</span>
 
 				<v-icon
 					v-if="field.meta?.required === true"
@@ -97,7 +97,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 
 				<v-icon
 					v-if="!disabled && rawEditorEnabled"
-					v-tooltip="t('toggle_raw_editor')"
+					v-tooltip="$t('toggle_raw_editor')"
 					class="raw-editor-toggle"
 					:class="{ active: rawEditorActive }"
 					name="data_object"

@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
-import { translateShortcut } from '@/utils/translate-shortcut';
 import VDrawerHeader from '@/components/v-drawer-header.vue';
+import { translateShortcut } from '@/utils/translate-shortcut';
+import { useScroll } from '@vueuse/core';
 import { computed, provide, ref, useTemplateRef } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { type ApplyShortcut } from './v-dialog.vue';
 import VResizeable from './v-resizeable.vue';
-import { useScroll } from '@vueuse/core';
 
 export interface Props {
 	title: string;
@@ -29,13 +27,10 @@ const props = withDefaults(defineProps<Props>(), {
 	modelValue: undefined,
 	persistent: false,
 	icon: 'box',
-	sidebarLabel: i18n.global.t('sidebar'),
 	cancelable: true,
 });
 
 const emit = defineEmits(['cancel', 'apply', 'update:modelValue']);
-
-const { t } = useI18n();
 
 const localActive = ref(false);
 
@@ -78,7 +73,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 		<article class="v-drawer">
 			<v-button
 				v-if="cancelable"
-				v-tooltip.bottom="`${t('cancel')} (${translateShortcut(['esc'])})`"
+				v-tooltip.bottom="`${$t('cancel')} (${translateShortcut(['esc'])})`"
 				class="cancel"
 				icon
 				rounded
@@ -123,7 +118,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 						<template #title:append><slot name="header:append" /></template>
 					</v-drawer-header>
 
-					<v-detail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel">
+					<v-detail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel || $t('sidebar')">
 						<nav>
 							<slot name="sidebar" />
 						</nav>

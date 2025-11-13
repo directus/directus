@@ -2,7 +2,6 @@
 import { useExtensions } from '@/extensions';
 import type { InterfaceConfig } from '@directus/extensions';
 import { computed, inject, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	value: string | null;
@@ -12,8 +11,6 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(e: 'input', value: string | null): void;
 }>();
-
-const { t } = useI18n();
 
 const { interfaces } = useExtensions();
 
@@ -46,13 +43,13 @@ const items = computed(() => {
 
 <template>
 	<v-notice v-if="selectedType === undefined">
-		{{ t('select_field_type') }}
+		{{ $t('select_field_type') }}
 	</v-notice>
 	<v-select
 		v-else
 		:items="items"
 		:model-value="value"
-		:placeholder="t('interfaces.system-interface.placeholder')"
+		:placeholder="$t('interfaces.system-interface.placeholder')"
 		@update:model-value="$emit('input', $event)"
 	/>
 </template>

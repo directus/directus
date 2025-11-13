@@ -6,14 +6,11 @@ import { useLayout } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import ActivityNavigation from '../components/navigation.vue';
 
 defineProps<{
 	primaryKey?: string;
 }>();
-
-const { t } = useI18n();
 
 const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('directus_activity'));
 
@@ -35,7 +32,7 @@ const roleFilter = ref<Filter | null>(null);
 		show-select="none"
 		collection="directus_activity"
 	>
-		<private-view :title="t('activity_feed')" icon="access_time">
+		<private-view :title="$t('activity_feed')" icon="access_time">
 			<template #actions:prepend>
 				<component :is="`layout-actions-${layout}`" v-bind="layoutState" />
 			</template>
@@ -50,14 +47,14 @@ const roleFilter = ref<Filter | null>(null);
 
 			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="t('no_results')" icon="search" center>
-						{{ t('no_results_copy') }}
+					<v-info :title="$t('no_results')" icon="search" center>
+						{{ $t('no_results_copy') }}
 					</v-info>
 				</template>
 
 				<template #no-items>
-					<v-info :title="t('item_count', 0)" icon="access_time" center>
-						{{ t('no_items_copy') }}
+					<v-info :title="$t('item_count', 0)" icon="access_time" center>
+						{{ $t('no_items_copy') }}
 					</v-info>
 				</template>
 			</component>
@@ -65,8 +62,8 @@ const roleFilter = ref<Filter | null>(null);
 			<router-view name="detail" :primary-key="primaryKey" />
 
 			<template #sidebar>
-				<sidebar-detail icon="info" :title="t('information')" close>
-					<div v-md="t('page_help_activity_collection')" class="page-description" />
+				<sidebar-detail icon="info" :title="$t('information')" close>
+					<div v-md="$t('page_help_activity_collection')" class="page-description" />
 				</sidebar-detail>
 				<layout-sidebar-detail v-model="layout">
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />

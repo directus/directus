@@ -3,7 +3,6 @@ import api from '@/api';
 import VBanner from '@/components/v-banner.vue';
 import type { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { ref, watchEffect } from 'vue';
-import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../../../components/navigation.vue';
 import ExtensionBanner from './components/extension-banner.vue';
 import ExtensionInfoSidebarDetail from './components/extension-info-sidebar-detail.vue';
@@ -13,8 +12,6 @@ import ExtensionReadme from './components/extension-readme.vue';
 const props = defineProps<{
 	extensionId: string;
 }>();
-
-const { t } = useI18n();
 
 const loading = ref(false);
 const error = ref<unknown>(null);
@@ -37,7 +34,7 @@ watchEffect(async () => {
 </script>
 
 <template>
-	<private-view :title="t('marketplace')" show-back>
+	<private-view :title="$t('marketplace')" show-back>
 		<template #navigation>
 			<settings-navigation />
 		</template>
@@ -59,7 +56,7 @@ watchEffect(async () => {
 
 			<v-banner v-else-if="loading" icon="plugin">
 				<template #avatar><v-progress-circular indeterminate /></template>
-				{{ t('loading') }}
+				{{ $t('loading') }}
 			</v-banner>
 
 			<v-error v-else :error="error" />

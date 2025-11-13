@@ -5,13 +5,10 @@ import type { RegistryListResponse } from '@directus/extensions-registry';
 import { useRouteQuery } from '@vueuse/router';
 import { isEqual } from 'lodash';
 import { computed, ref, watch, watchEffect } from 'vue';
-import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../../../components/navigation.vue';
 import ExtensionListItem from '../../components/extension-list-item.vue';
 import InlineFilter from './components/inline-filter.vue';
 import RegistryInfoSidebarDetail from './components/registry-info-sidebar-detail.vue';
-
-const { t } = useI18n();
 
 const perPage = 10;
 
@@ -73,8 +70,8 @@ watchEffect(async () => {
 </script>
 
 <template>
-	<private-view :title="t('marketplace')" icon="storefront">
-		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
+	<private-view :title="$t('marketplace')">
+		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #navigation>
 			<settings-navigation />
@@ -98,7 +95,7 @@ watchEffect(async () => {
 						/>
 					</svg>
 				</template>
-				{{ t('marketplace') }}
+				{{ $t('marketplace') }}
 			</VBanner>
 
 			<InlineFilter
@@ -126,11 +123,11 @@ watchEffect(async () => {
 
 			<v-info
 				v-if="extensions?.length === 0 && !loading && !error"
-				:title="t('no_results')"
+				:title="$t('no_results')"
 				class="no-results"
 				icon="extension"
 			>
-				{{ t('no_results_copy') }}
+				{{ $t('no_results_copy') }}
 			</v-info>
 
 			<v-pagination
