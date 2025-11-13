@@ -68,7 +68,7 @@ const {
 
 const isImage = ref(true);
 
-const { t, n, te } = useI18n();
+const { n, te } = useI18n();
 
 const lightboxActive = ref(false);
 const editDrawerActive = ref(false);
@@ -170,7 +170,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
 		<v-notice v-else-if="internalDisabled && !image" class="disabled-placeholder" center icon="hide_image">
-			{{ t('no_image_selected') }}
+			{{ $t('no_image_selected') }}
 		</v-notice>
 
 		<div v-else-if="image" class="image-preview">
@@ -178,7 +178,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				<v-icon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
 
 				<span class="message">
-					{{ src ? t(`errors.${imageError}`) : t('errors.UNSUPPORTED_MEDIA_TYPE') }}
+					{{ src ? $t(`errors.${imageError}`) : $t('errors.UNSUPPORTED_MEDIA_TYPE') }}
 				</span>
 			</div>
 
@@ -200,12 +200,12 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			<div class="shadow" />
 
 			<div class="actions">
-				<v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
+				<v-button v-tooltip="$t('zoom')" icon rounded @click="lightboxActive = true">
 					<v-icon name="zoom_in" />
 				</v-button>
 
 				<v-button
-					v-tooltip="t('download')"
+					v-tooltip="$t('download')"
 					icon
 					rounded
 					:href="getAssetUrl(image.id, { isDownload: true })"
@@ -215,11 +215,11 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				</v-button>
 
 				<template v-if="!internalDisabled">
-					<v-button v-tooltip="t('edit_item')" icon rounded @click="editImageDetails = true">
+					<v-button v-tooltip="$t('edit_item')" icon rounded @click="editImageDetails = true">
 						<v-icon name="edit" />
 					</v-button>
 
-					<v-button v-if="updateAllowed" v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
+					<v-button v-if="updateAllowed" v-tooltip="$t('edit_image')" icon rounded @click="editImageEditor = true">
 						<v-icon name="tune" />
 					</v-button>
 

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
 import { useFolders } from '@/composables/use-folders';
 import api from '@/api';
@@ -10,8 +9,6 @@ const props = defineProps<{
 	parent?: string;
 	disabled?: boolean;
 }>();
-
-const { t } = useI18n();
 
 const router = useRouter();
 
@@ -50,7 +47,7 @@ async function addFolder() {
 	<v-dialog v-model="dialogActive" @esc="dialogActive = false" @apply="addFolder">
 		<template #activator="{ on }">
 			<v-button
-				v-tooltip.bottom="disabled ? t('not_allowed') : t('create_folder')"
+				v-tooltip.bottom="disabled ? $t('not_allowed') : $t('create_folder')"
 				rounded
 				icon
 				secondary
@@ -62,14 +59,14 @@ async function addFolder() {
 		</template>
 
 		<v-card>
-			<v-card-title>{{ t('create_folder') }}</v-card-title>
+			<v-card-title>{{ $t('create_folder') }}</v-card-title>
 			<v-card-text>
-				<v-input v-model="newFolderName" autofocus :placeholder="t('folder_name')" />
+				<v-input v-model="newFolderName" autofocus :placeholder="$t('folder_name')" />
 			</v-card-text>
 			<v-card-actions>
-				<v-button secondary @click="dialogActive = false">{{ t('cancel') }}</v-button>
+				<v-button secondary @click="dialogActive = false">{{ $t('cancel') }}</v-button>
 				<v-button ref="saveBtn" :disabled="newFolderName === null" :loading="saving" @click="addFolder">
-					{{ t('save') }}
+					{{ $t('save') }}
 				</v-button>
 			</v-card-actions>
 		</v-card>

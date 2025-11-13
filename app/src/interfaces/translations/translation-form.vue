@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { isEmpty } from 'lodash';
 import { usePermissions } from '@/composables/use-permissions';
 import { type DisplayItem } from '@/composables/use-relation-multiple';
@@ -36,8 +35,6 @@ const {
 }>();
 
 const lang = defineModel<string>('lang');
-
-const { t } = useI18n();
 
 const selectedLanguage = computed(() => languageOptions.find((optLang) => lang.value === optLang.value));
 
@@ -151,7 +148,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 
 					<v-icon
 						v-else
-						v-tooltip="!activatorDisabled ? t('enable') : null"
+						v-tooltip="!activatorDisabled ? $t('enable') : null"
 						:class="{ disabled: activatorDisabled }"
 						:name="iconName"
 						:disabled="activatorDisabled"

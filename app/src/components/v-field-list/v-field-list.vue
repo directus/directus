@@ -7,7 +7,6 @@ import { useFakeVersionField } from '@/composables/use-fake-version-field';
 import { Field } from '@directus/types';
 import { debounce, isNil } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import VFieldListItem from './v-field-list-item.vue';
 
 const collectionsStore = useCollectionsStore();
@@ -59,8 +58,6 @@ const showSearch = computed(() => {
 
 	return false;
 });
-
-const { t } = useI18n();
 
 const collectionInfo = computed(() => collectionsStore.getCollection(collection.value));
 const versioningEnabled = computed(() => Boolean(collectionInfo.value?.meta?.versioning && props.injectVersionField));
@@ -149,7 +146,7 @@ function filter(field: Field, parent?: FieldNode): boolean {
 		<slot name="prepend" />
 		<v-list-item v-if="showSearch">
 			<v-list-item-content>
-				<v-input v-model="search" autofocus small :placeholder="t('search')" @click.stop>
+				<v-input v-model="search" autofocus small :placeholder="$t('search')" @click.stop>
 					<template #append>
 						<v-icon small name="search" />
 					</template>
@@ -159,7 +156,7 @@ function filter(field: Field, parent?: FieldNode): boolean {
 
 		<template v-if="allowSelectAll">
 			<v-list-item clickable :disabled="selectAllDisabled" @click="addAll">
-				{{ t('select_all') }}
+				{{ $t('select_all') }}
 			</v-list-item>
 
 			<v-divider />

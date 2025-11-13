@@ -58,18 +58,18 @@ useHead({
 		<v-input :model-value="email" disabled />
 		<v-input
 			v-model="password"
-			:placeholder="t('password')"
+			:placeholder="$t('password')"
 			autofocus
 			autocomplete="username"
 			type="password"
 			:disabled="done"
 		/>
-		<v-notice v-if="done" type="success">{{ t('password_reset_successful') }}</v-notice>
+		<v-notice v-if="done" type="success">{{ $t('password_reset_successful') }}</v-notice>
 		<v-notice v-if="error" type="danger">
 			{{ errorFormatted }}
 		</v-notice>
-		<v-button v-if="!done" type="submit" :loading="resetting" large>{{ t('reset') }}</v-button>
-		<v-button v-else large :to="signInLink">{{ t('sign_in') }}</v-button>
+		<v-button v-if="!done" type="submit" :loading="resetting" large>{{ $t('reset') }}</v-button>
+		<v-button v-else large :to="signInLink">{{ $t('sign_in') }}</v-button>
 	</form>
 </template>
 

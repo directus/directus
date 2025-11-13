@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import { computed, ref } from 'vue';
 import { isPlainObject } from 'lodash';
 import { useClipboard } from '@/composables/use-clipboard';
@@ -9,8 +8,6 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-
-const { t } = useI18n();
 
 const code = computed(() => {
 	return props.error?.response?.data?.errors?.[0]?.extensions?.code || props.error?.extensions?.code || 'UNKNOWN';
@@ -47,7 +44,7 @@ async function copyError() {
 		<output>[{{ code }}] {{ message }}</output>
 		<v-icon
 			v-if="isCopySupported"
-			v-tooltip="t('copy_details')"
+			v-tooltip="$t('copy_details')"
 			small
 			class="copy-error"
 			:name="copied ? 'check' : 'content_copy'"

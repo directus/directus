@@ -4,7 +4,6 @@ import FilePreviewReplace from '@/views/private/components/file-preview-replace.
 import type { Field, PrimaryKey } from '@directus/types';
 import { cloneDeep } from 'lodash';
 import { computed, useTemplateRef } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const {
 	collection,
@@ -34,7 +33,6 @@ const {
 
 const internalEdits = defineModel<Record<string, any>>('internal-edits');
 
-const { t } = useI18n();
 const { mainInitialValues, junctionInitialValues } = useInitialValues();
 const { file } = useFile();
 const { scrollToField } = useValidationScrollToField();
@@ -111,8 +109,8 @@ function useValidationScrollToField() {
 	<div class="overlay-item-content" :class="{ empty: emptyForm }">
 		<file-preview-replace v-if="file" class="preview" :file="file" in-modal @replace="refresh" />
 
-		<v-info v-if="emptyForm" :title="t('no_visible_fields')" icon="search" center>
-			{{ t('no_visible_fields_copy') }}
+		<v-info v-if="emptyForm" :title="$t('no_visible_fields')" icon="search" center>
+			{{ $t('no_visible_fields_copy') }}
 		</v-info>
 
 		<div v-else class="overlay-item-order" :class="{ swap: swapFormOrder }">
