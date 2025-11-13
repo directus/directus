@@ -25,7 +25,7 @@ What's changed:
 
 - [ ] Added or updated tests
 - [ ] Documentation PR created [here](https://github.com/directus/docs) or not required
-- [ ] Openapi package PR created [here](https://github.com/directus/openapi) or not required
+- [ ] OpenAPI package PR created [here](https://github.com/directus/openapi) or not required
 
 ---
 
