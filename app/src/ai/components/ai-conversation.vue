@@ -10,7 +10,7 @@ const aiStore = useAiStore();
 
 const messagesContainerRef = useTemplateRef<HTMLElement>('messages-container');
 
-const { arrivedState, measure } = useScroll(messagesContainerRef);
+const { arrivedState } = useScroll(messagesContainerRef);
 
 const showScrollButton = computed(() => {
 	// Only show if we have messages and are not at the bottom
@@ -20,7 +20,6 @@ const showScrollButton = computed(() => {
 onMounted(() => {
 	nextTick(() => {
 		scrollToBottom();
-		measure(); // Recalculate scroll state
 	});
 });
 
