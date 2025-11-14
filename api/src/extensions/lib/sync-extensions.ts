@@ -68,12 +68,12 @@ export async function syncExtensions(options?: { force: boolean }): Promise<void
 				
 				if (localStat && remoteStat.modified <= localStat.modified && remoteStat.size === localStat.size) {
 					// local file exists and is unchanged
-					logger.debug('Skipping sync for:', relativePath);
+					logger.debug('Skipping sync for:' + relativePath);
 					continue;
 				}
 			}
 
-			logger.debug('Downloading file:', relativePath);
+			logger.debug('Downloading file:' + relativePath);
 			
 			// Ensure that the directory path exists
 			await mkdir(dirname(destinationPath), { recursive: true });

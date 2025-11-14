@@ -59,7 +59,7 @@ export class SyncFileTracker {
         for (const dir of removeDirsRecursive) {
             const relativePath = join(localExtensionsPath, dir);
 
-            this.logger.debug('Removing local folder:', relativePath);
+            this.logger.debug('Removing local folder:' + relativePath);
             
             await rm(relativePath, { recursive: true, force: true });
         }
