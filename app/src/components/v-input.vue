@@ -312,8 +312,7 @@ function useInvalidInput() {
 	return { isInvalidInput, tooltipInvalid, setInvalidInput };
 
 	function setInvalidInput(target: HTMLInputElement) {
-		// Check for invalid input (non-numeric characters in a number field)
-		// and also check for min/max violations
+		// Checks if the input is invalid: either non-numeric input or value out of allowed range
 		isInvalidInput.value = target.validity.badInput || target.validity.rangeOverflow || target.validity.rangeUnderflow;
 	}
 }
