@@ -104,6 +104,7 @@ function scrollToBottom() {
 
 .messages-container {
 	position: relative;
+	padding-inline: 8px;
 	flex: 1;
 	overflow-y: auto;
 	min-block-size: 0;
@@ -120,6 +121,7 @@ function scrollToBottom() {
 
 .input-container {
 	flex-shrink: 0;
+	padding-inline-end: 12px;
 }
 
 .error-message {
