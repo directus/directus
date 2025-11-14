@@ -52,6 +52,7 @@ const props = withDefaults(
 		fields: () => ['id'],
 		template: null,
 		disabled: false,
+		nonEditable: false,
 		enableCreate: true,
 		enableSelect: true,
 		filter: null,
@@ -564,8 +565,6 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 						<v-list-item
 							block
 							clickable
-							:disabled="disabled"
-							:non-editable="nonEditable"
 							:dense="totalItemCount > 4"
 							:class="{ deleted: element.$type === 'deleted' }"
 							@click="editItem(element)"
@@ -651,6 +650,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 		<drawer-item
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:active="currentlyEditing !== null"
 			:collection="relationInfo.relatedCollection.collection"
 			:primary-key="currentlyEditing || '+'"

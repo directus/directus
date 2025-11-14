@@ -168,7 +168,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 </script>
 
 <template>
-	<div class="image" :class="[width, { crop, 'non-editable': nonEditable }]">
+	<div class="image" :class="[width, { crop }]">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
 		<v-notice v-else-if="internalDisabled && !image" class="disabled-placeholder" center icon="hide_image">
@@ -251,6 +251,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				v-if="image"
 				v-model:active="editImageDetails"
 				:disabled="internalDisabled"
+				:non-editable="nonEditable"
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"

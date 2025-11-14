@@ -14,6 +14,7 @@ const props = withDefaults(
 	defineProps<{
 		value: string[] | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		choices: Option[];
 		allowOther?: boolean;
 		width?: string;
@@ -77,6 +78,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 			:value="item.value"
 			:label="item.text"
 			:disabled="item.disabled || disabled"
+			:non-editable="nonEditable"
 			:icon-on="iconOn"
 			:icon-off="iconOff"
 			:model-value="value || []"
@@ -102,6 +104,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 				:autofocus-custom-input="otherValue.focus"
 				:value="otherValue.value"
 				:disabled="disabled"
+				:non-editable="nonEditable"
 				:icon-on="iconOn"
 				:icon-off="iconOff"
 				:model-value="value || []"

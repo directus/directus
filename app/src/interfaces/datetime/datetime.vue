@@ -35,17 +35,9 @@ function unsetValue(e: any) {
 </script>
 
 <template>
-	<v-menu
-		ref="dateTimeMenu"
-		:close-on-content-click="false"
-		attached
-		:disabled="disabled"
-		:non-editable="nonEditable"
-		full-height
-		seamless
-	>
+	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
 		<template #activator="{ toggle, active }">
-			<v-list-item block clickable :disabled="disabled" :non-editable="nonEditable" :active @click="toggle">
+			<v-list-item block clickable :disabled :non-editable :active @click="toggle">
 				<template v-if="isValidValue">
 					<use-datetime v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
 						{{ datetime }}

@@ -244,6 +244,7 @@ function getLinkForItem() {
 			:edits="edits"
 			:circular-field="relationInfo.relation.meta?.one_field ?? undefined"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			@input="onDrawerItemInput"
 		/>
 

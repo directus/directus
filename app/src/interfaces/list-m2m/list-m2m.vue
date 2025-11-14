@@ -604,7 +604,6 @@ function getLinkForItem(item: DisplayItem) {
 						<v-list-item
 							block
 							clickable
-							:disabled="disabled"
 							:dense="totalItemCount > 4"
 							:class="{ deleted: element.$type === 'deleted' }"
 							@click="editItem(element)"
@@ -683,6 +682,7 @@ function getLinkForItem(item: DisplayItem) {
 		<drawer-item
 			v-model:active="editModalActive"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"

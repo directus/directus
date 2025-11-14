@@ -253,7 +253,8 @@ function stageEdits(item: Record<string, any>) {
 		</div>
 
 		<drawer-item
-			v-if="!disabled"
+			:disabled
+			:non-editable
 			:active="addNewActive"
 			:collection="collection"
 			:primary-key="'+'"

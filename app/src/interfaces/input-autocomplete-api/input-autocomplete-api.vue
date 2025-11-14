@@ -20,6 +20,7 @@ const props = withDefaults(
 		iconRight?: string;
 		font?: 'sans-serif' | 'serif' | 'monospace';
 		disabled?: boolean;
+		nonEditable?: boolean;
 		direction?: string;
 	}>(),
 	{
@@ -100,6 +101,7 @@ async function onValueChange(value: string, activate: () => void, deactivate: ()
 				<v-input
 					:placeholder="placeholder"
 					:disabled="disabled"
+					:non-editable="nonEditable"
 					:class="font"
 					:model-value="value"
 					:dir="direction"

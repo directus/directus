@@ -10,6 +10,7 @@ import LanguageSelect from './language-select.vue';
 const {
 	languageOptions,
 	disabled,
+	nonEditable,
 	relationInfo,
 	getItemWithLang,
 	displayItems,
@@ -22,6 +23,7 @@ const {
 } = defineProps<{
 	languageOptions: Record<string, any>[];
 	disabled?: boolean;
+	nonEditable?: boolean;
 	autofocus?: boolean;
 	relationInfo?: RelationM2M;
 	getItemWithLang: (items: Record<string, any>[], lang: string | undefined) => DisplayItem | undefined;
@@ -187,6 +189,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			"
 			:class="{ unselected: !item }"
 			:disabled="disabled || !saveAllowed || item?.$type === 'deleted'"
+			:non-editable
 			:loading="loading"
 			:fields="fields"
 			:model-value="item"

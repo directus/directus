@@ -111,7 +111,7 @@ function onSelection(selectedIds: (number | string)[] | null) {
 	<div class="collection-item-dropdown">
 		<v-skeleton-loader v-if="loading" type="input" />
 
-		<v-list-item v-else :disabled block clickable @click="selectDrawerOpen = true">
+		<v-list-item v-else :disabled :non-editable block clickable @click="selectDrawerOpen = true">
 			<div v-if="displayItem" class="preview">
 				<render-template :collection="selectedCollection" :item="displayItem" :template="displayTemplate" />
 			</div>

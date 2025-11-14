@@ -31,6 +31,7 @@ export interface OverlayItemProps {
 	edits?: Record<string, any>;
 	junctionField?: string | null;
 	disabled?: boolean;
+	nonEditable?: boolean;
 	// There's an interesting case where the main form can be a newly created item ('+'), while
 	// it has a pre-selected related item it needs to alter. In that case, we have to fetch the
 	// related data anyway.
@@ -55,6 +56,7 @@ const props = withDefaults(defineProps<OverlayItemProps>(), {
 	primaryKey: null,
 	junctionField: null,
 	disabled: false,
+	nonEditable: false,
 	relatedPrimaryKey: '+',
 	circularField: null,
 	applyShortcut: 'meta+enter',
@@ -228,6 +230,7 @@ const overlayItemContentProps = computed(() => {
 		initialValues: initialValues.value,
 		fields: fields.value,
 		disabled: props.disabled,
+		nonEditable: props.nonEditable,
 		loading: loading.value,
 		validationErrors: validationErrors.value,
 		junctionFieldLocation: props.junctionFieldLocation,

@@ -222,7 +222,7 @@ function useComputedValues() {
 			:batch-mode="batchMode"
 			:batch-active="batchActive"
 			:disabled="isDisabled"
-			:non-editable="!!props.nonEditable"
+			:non-editable="nonEditable"
 			:primary-key="primaryKey"
 			:raw-editor-enabled="rawEditorEnabled"
 			:raw-editor-active="rawEditorActive"

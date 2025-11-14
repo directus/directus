@@ -491,6 +491,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 		<drawer-item
 			v-model:active="editModalActive"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"

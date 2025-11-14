@@ -12,12 +12,14 @@ const props = withDefaults(
 		edits: Record<string, any>;
 		relationInfo: RelationO2M;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		open?: boolean;
 		deleted: boolean;
 		isLocalItem: boolean;
 	}>(),
 	{
 		disabled: false,
+		nonEditable: false,
 		open: false,
 	},
 );
@@ -55,6 +57,8 @@ const editActive = ref(false);
 
 		<drawer-item
 			v-model:active="editActive"
+			:disabled
+			:non-editable
 			:collection="collection"
 			:primary-key="item[props.relationInfo.relatedPrimaryKeyField.field] || '+'"
 			:edits="edits"
