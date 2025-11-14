@@ -3,23 +3,26 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { nextTick } from 'vue';
 import { EditorView } from '@codemirror/view';
 import { createI18n } from 'vue-i18n';
-import InputCode from './input-code.vue';
+import InputRichTextMD from './input-rich-text-md.vue';
 
 vi.mock('@/composables/use-window-size', () => ({
 	useWindowSize: () => ({ width: { value: 1200 }, height: { value: 800 } }),
 }));
 
-vi.mock('./import-codemirror-mode', () => ({
-	default: vi.fn(() => Promise.resolve([])),
+vi.mock('@/composables/use-shortcut', () => ({
+	useShortcut: vi.fn(),
 }));
 
-vi.mock('jsonlint-mod', () => ({
-	default: {
-		parser: {
-			parseError: vi.fn(),
-		},
-		parse: vi.fn((text: string) => JSON.parse(text)),
-	},
+vi.mock('@/utils/get-asset-url', () => ({
+	getAssetUrl: vi.fn((id: string) => `/assets/${id}`),
+}));
+
+vi.mock('@/utils/percentage', () => ({
+	percentage: vi.fn((count: number, max: number) => (count / max) * 100),
+}));
+
+vi.mock('@/utils/translate-shortcut', () => ({
+	translateShortcut: vi.fn(() => 'Meta'),
 }));
 
 const i18n = createI18n({
@@ -32,7 +35,7 @@ const i18n = createI18n({
 });
 
 function getEditorView(wrapper: ReturnType<typeof mount>): EditorView | null {
-	const editorElement = wrapper.find('.input-code .cm-editor').element as HTMLElement;
+	const editorElement = wrapper.find('.codemirror-container .cm-editor').element as HTMLElement;
 	if (!editorElement) return null;
 	return EditorView.findFromDOM(editorElement);
 }
@@ -52,13 +55,56 @@ const globalMountOptions = {
 		'v-icon': {
 			template: '<span class="v-icon"><slot /></span>',
 		},
+		'v-menu': {
+			template: '<div class="v-menu"><slot /></div>',
+		},
+		'v-list': {
+			template: '<div class="v-list"><slot /></div>',
+		},
+		'v-list-item': {
+			template: '<div class="v-list-item"><slot /></div>',
+		},
+		'v-list-item-content': {
+			template: '<div class="v-list-item-content"><slot /></div>',
+		},
+		'v-list-item-hint': {
+			template: '<div class="v-list-item-hint"><slot /></div>',
+		},
+		'v-text-overflow': {
+			template: '<span class="v-text-overflow"><slot /></span>',
+		},
+		'v-item-group': {
+			template: '<div class="v-item-group"><slot /></div>',
+		},
+		'v-dialog': {
+			template: '<div class="v-dialog"><slot /></div>',
+		},
+		'v-card': {
+			template: '<div class="v-card"><slot /></div>',
+		},
+		'v-card-title': {
+			template: '<div class="v-card-title"><slot /></div>',
+		},
+		'v-card-text': {
+			template: '<div class="v-card-text"><slot /></div>',
+		},
+		'v-card-actions': {
+			template: '<div class="v-card-actions"><slot /></div>',
+		},
+		'v-upload': {
+			template: '<div class="v-upload"></div>',
+		},
+		'v-input': {
+			template: '<input class="v-input" />',
+		},
 	},
 	directives: {
 		tooltip: vi.fn(),
+		md: vi.fn(),
 	},
 };
 
-describe('InputCode', () => {
+describe('InputRichTextMD', () => {
 	let wrapper: ReturnType<typeof mount>;
 
 	afterEach(() => {
@@ -67,9 +113,9 @@ describe('InputCode', () => {
 
 	describe('Component Mounting', () => {
 		it('should mount successfully', async () => {
-			wrapper = mount(InputCode, {
+			wrapper = mount(InputRichTextMD, {
 				props: {
-					value: 'console.log("test");',
+					value: 'Test content',
 				},
 				global: globalMountOptions,
 			});
@@ -77,13 +123,13 @@ describe('InputCode', () => {
 			await waitForEditor(wrapper);
 
 			expect(wrapper.exists()).toBe(true);
-			expect(wrapper.find('.input-code').exists()).toBe(true);
+			expect(wrapper.find('.interface-input-rich-text-md').exists()).toBe(true);
 		});
 
 		it('should initialize editor with value prop', async () => {
-			wrapper = mount(InputCode, {
+			wrapper = mount(InputRichTextMD, {
 				props: {
-					value: 'const x = 42;',
+					value: '# Hello World',
 				},
 				global: globalMountOptions,
 			});
@@ -91,15 +137,15 @@ describe('InputCode', () => {
 			const editorView = await waitForEditor(wrapper);
 
 			expect(editorView).toBeTruthy();
-			expect(editorView?.state.doc.toString()).toBe('const x = 42;');
+			expect(editorView?.state.doc.toString()).toBe('# Hello World');
 		});
 	});
 
 	describe('Disabled Prop', () => {
 		it('should make editor readonly when disabled is true', async () => {
-			wrapper = mount(InputCode, {
+			wrapper = mount(InputRichTextMD, {
 				props: {
-					value: 'test code',
+					value: 'Test content',
 					disabled: true,
 				},
 				global: globalMountOptions,
@@ -112,9 +158,9 @@ describe('InputCode', () => {
 		});
 
 		it('should update readonly state when disabled prop changes', async () => {
-			wrapper = mount(InputCode, {
+			wrapper = mount(InputRichTextMD, {
 				props: {
-					value: 'test code',
+					value: 'Test content',
 					disabled: false,
 				},
 				global: globalMountOptions,
@@ -133,10 +179,10 @@ describe('InputCode', () => {
 
 	describe('Placeholder Prop', () => {
 		it('should apply placeholder when provided', async () => {
-			wrapper = mount(InputCode, {
+			wrapper = mount(InputRichTextMD, {
 				props: {
 					value: null,
-					placeholder: 'Enter code here...',
+					placeholder: 'Enter markdown here...',
 				},
 				global: globalMountOptions,
 			});
@@ -145,47 +191,30 @@ describe('InputCode', () => {
 
 			const placeholderElement = wrapper.find('.cm-placeholder');
 			expect(placeholderElement.exists()).toBe(true);
-			expect(placeholderElement.text()).toBe('Enter code here...');
 		});
 	});
 
-	describe('Line Number Prop', () => {
-		it('should show line numbers by default', async () => {
-			wrapper = mount(InputCode, {
+	describe('Default View Prop', () => {
+		it('should use preview view when defaultView is preview', async () => {
+			wrapper = mount(InputRichTextMD, {
 				props: {
-					value: 'line 1\nline 2\nline 3',
+					value: 'Test',
+					defaultView: 'preview',
 				},
 				global: globalMountOptions,
 			});
 
 			await waitForEditor(wrapper);
 
-			const gutters = wrapper.find('.cm-gutters');
-			expect(gutters.exists()).toBe(true);
-		});
-
-		it('should hide line numbers when lineNumber is false', async () => {
-			wrapper = mount(InputCode, {
-				props: {
-					value: 'test code',
-					lineNumber: false,
-				},
-				global: globalMountOptions,
-			});
-
-			await waitForEditor(wrapper);
-
-			const gutters = wrapper.find('.cm-gutters');
-			expect(gutters.exists()).toBe(false);
+			expect(wrapper.find('.interface-input-rich-text-md').classes()).toContain('preview');
 		});
 	});
 
-	describe('Type Prop - JSON Handling', () => {
-		it('should parse JSON value when type is json', async () => {
-			wrapper = mount(InputCode, {
+	describe('Direction Prop', () => {
+		it('should apply ltr direction by default', async () => {
+			wrapper = mount(InputRichTextMD, {
 				props: {
-					value: { key: 'value' },
-					type: 'json',
+					value: 'Test',
 				},
 				global: globalMountOptions,
 			});
@@ -193,15 +222,30 @@ describe('InputCode', () => {
 			const editorView = await waitForEditor(wrapper);
 
 			expect(editorView).toBeTruthy();
-			const content = editorView?.state.doc.toString();
-			expect(content).toContain('"key"');
-			expect(content).toContain('"value"');
+			const contentElement = wrapper.find('.cm-content').element;
+			expect(contentElement?.getAttribute('dir')).toBe('ltr');
+		});
+
+		it('should apply rtl direction when prop is rtl', async () => {
+			wrapper = mount(InputRichTextMD, {
+				props: {
+					value: 'Test',
+					direction: 'rtl',
+				},
+				global: globalMountOptions,
+			});
+
+			const editorView = await waitForEditor(wrapper);
+
+			expect(editorView).toBeTruthy();
+			const contentElement = wrapper.find('.cm-content').element;
+			expect(contentElement?.getAttribute('dir')).toBe('rtl');
 		});
 	});
 
 	describe('Value Updates', () => {
 		it('should update editor when value prop changes', async () => {
-			wrapper = mount(InputCode, {
+			wrapper = mount(InputRichTextMD, {
 				props: {
 					value: 'Initial content',
 				},
@@ -219,34 +263,30 @@ describe('InputCode', () => {
 		});
 	});
 
-	describe('Template Prop', () => {
-		it('should show template button when template is provided', async () => {
-			wrapper = mount(InputCode, {
-				props: {
-					value: '',
-					template: '{"default": "template"}',
-				},
-				global: globalMountOptions,
-			});
-
-			await waitForEditor(wrapper);
-
-			const button = wrapper.find('.v-button');
-			expect(button.exists()).toBe(true);
-		});
-
-		it('should not show template button when template is not provided', async () => {
-			wrapper = mount(InputCode, {
+	describe('Input Event Emission', () => {
+		it('should emit input event when user types in editor', async () => {
+			wrapper = mount(InputRichTextMD, {
 				props: {
 					value: '',
 				},
 				global: globalMountOptions,
 			});
 
-			await waitForEditor(wrapper);
+			const editorView = await waitForEditor(wrapper);
+			expect(editorView).toBeTruthy();
 
-			const button = wrapper.find('.v-button');
-			expect(button.exists()).toBe(false);
+			editorView?.dispatch({
+				changes: {
+					from: 0,
+					to: 0,
+					insert: 'New content',
+				},
+			});
+
+			await nextTick();
+
+			expect(wrapper.emitted('input')).toBeTruthy();
+			expect(wrapper.emitted('input')?.[0]).toEqual(['New content']);
 		});
 	});
 });
