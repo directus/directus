@@ -1,8 +1,8 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`should hide items not matching search value > object items 1`] = `
-"<div data-v-cdcb6889="" id="v-menu-stub" class="v-select" disabled="false" attached="true" show-arrow="false" close-on-content-click="true" placement="bottom" full-height="false">
-  <div data-v-cdcb6889="" id="v-input-stub" full-width="true" readonly="" clickable="" disabled="false"></div>
+"<div data-v-cdcb6889="" id="v-menu-stub" class="v-select" disabled="false" non-editable="false" attached="true" show-arrow="false" close-on-content-click="true" placement="bottom" full-height="false">
+  <div data-v-cdcb6889="" id="v-input-stub" full-width="true" readonly="" clickable="" disabled="false" non-editable="false"></div>
   <ul data-v-ff20e609="" data-v-cdcb6889="" class="v-list list">
     <!--v-if-->
     <!--v-if-->
@@ -62,8 +62,8 @@ exports[`should hide items not matching search value > object items 1`] = `
 `;
 
 exports[`should hide items not matching search value > string items 1`] = `
-"<div data-v-cdcb6889="" id="v-menu-stub" class="v-select" disabled="false" attached="true" show-arrow="false" close-on-content-click="true" placement="bottom" full-height="false">
-  <div data-v-cdcb6889="" id="v-input-stub" full-width="true" readonly="" clickable="" disabled="false"></div>
+"<div data-v-cdcb6889="" id="v-menu-stub" class="v-select" disabled="false" non-editable="false" attached="true" show-arrow="false" close-on-content-click="true" placement="bottom" full-height="false">
+  <div data-v-cdcb6889="" id="v-input-stub" full-width="true" readonly="" clickable="" disabled="false" non-editable="false"></div>
   <ul data-v-ff20e609="" data-v-cdcb6889="" class="v-list list">
     <!--v-if-->
     <!--v-if-->
@@ -123,8 +123,8 @@ exports[`should hide items not matching search value > string items 1`] = `
 `;
 
 exports[`should render with object items 1`] = `
-"<div data-v-cdcb6889="" id="v-menu-stub" class="v-select" disabled="false" attached="true" show-arrow="false" close-on-content-click="true" placement="bottom" full-height="false">
-  <v-input-stub data-v-cdcb6889="" full-width="true" readonly="" clickable="" disabled="false"></v-input-stub>
+"<div data-v-cdcb6889="" id="v-menu-stub" class="v-select" disabled="false" non-editable="false" attached="true" show-arrow="false" close-on-content-click="true" placement="bottom" full-height="false">
+  <v-input-stub data-v-cdcb6889="" full-width="true" readonly="" clickable="" disabled="false" non-editable="false"></v-input-stub>
   <ul data-v-ff20e609="" data-v-cdcb6889="" class="v-list list">
     <!--v-if-->
     <!--v-if-->
@@ -148,8 +148,8 @@ exports[`should render with object items 1`] = `
 `;
 
 exports[`should render with string items 1`] = `
-"<div data-v-cdcb6889="" id="v-menu-stub" class="v-select" disabled="false" attached="true" show-arrow="false" close-on-content-click="true" placement="bottom" full-height="false">
-  <v-input-stub data-v-cdcb6889="" full-width="true" readonly="" clickable="" disabled="false"></v-input-stub>
+"<div data-v-cdcb6889="" id="v-menu-stub" class="v-select" disabled="false" non-editable="false" attached="true" show-arrow="false" close-on-content-click="true" placement="bottom" full-height="false">
+  <v-input-stub data-v-cdcb6889="" full-width="true" readonly="" clickable="" disabled="false" non-editable="false"></v-input-stub>
   <ul data-v-ff20e609="" data-v-cdcb6889="" class="v-list list">
     <!--v-if-->
     <!--v-if-->
