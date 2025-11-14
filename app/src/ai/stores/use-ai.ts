@@ -13,7 +13,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
 	const sidebarStore = useSidebarStore();
 
-	const chatOpen = ref<boolean>(false);
+	const chatOpen = useLocalStorage<boolean>('ai-chat-open', false);
 
 	watch(chatOpen, (newOpen) => {
 		if (newOpen === true) sidebarStore.expand();
