@@ -116,7 +116,7 @@ function onClickIcon(e: MouseEvent): void {
 		role="checkbox"
 		:aria-pressed="isChecked ? 'true' : 'false'"
 		:disabled="disabled && !customValue"
-		:class="{ checked: isChecked, indeterminate, block }"
+		:class="{ checked: isChecked, indeterminate, block, disabled }"
 		@click.stop="toggleInput"
 	>
 		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
@@ -185,7 +185,7 @@ function onClickIcon(e: MouseEvent): void {
 		transition: color var(--fast) var(--transition);
 	}
 
-	&:disabled {
+	&.disabled {
 		cursor: not-allowed;
 
 		.label {
@@ -209,7 +209,7 @@ function onClickIcon(e: MouseEvent): void {
 		border-radius: var(--theme--border-radius);
 		transition: all var(--fast) var(--transition);
 
-		&:disabled {
+		&.disabled {
 			background-color: var(
 				--form--field--input--disabled--background,
 				var(--theme--form--field--input--background-subdued)
@@ -232,7 +232,7 @@ function onClickIcon(e: MouseEvent): void {
 		}
 	}
 
-	&:not(:disabled):hover {
+	&:not(.disabled):hover {
 		.checkbox {
 			--v-icon-color: var(--theme--primary);
 		}
@@ -242,7 +242,7 @@ function onClickIcon(e: MouseEvent): void {
 		}
 	}
 
-	&:not(:disabled):not(.indeterminate) {
+	&:not(.disabled):not(.indeterminate) {
 		.label {
 			color: var(--theme--foreground);
 		}
@@ -254,7 +254,7 @@ function onClickIcon(e: MouseEvent): void {
 		}
 	}
 
-	&:not(:disabled:not(.non-editable)):not(.indeterminate).checked {
+	&:not(.disabled:not(.non-editable)):not(.indeterminate).checked {
 		.checkbox {
 			--v-icon-color: var(--v-checkbox-color, var(--theme--primary));
 		}
