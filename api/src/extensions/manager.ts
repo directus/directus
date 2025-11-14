@@ -230,7 +230,7 @@ export class ExtensionManager {
 		//  start reloading other instances before finishing the current
 		//  install request? to hopefully prevent the fetch race condition
 		await this.broadcastReloadNotification();
-		await this.reload({ forceSync: true });
+		await this.reload();
 
 		emitter.emitAction('extensions.installed', {
 			extensions: this.extensions,
@@ -244,7 +244,7 @@ export class ExtensionManager {
 		const logger = useLogger();
 
 		await this.installationManager.uninstall(folder);
-		await this.reload({ forceSync: true });
+		await this.reload();
 
 		emitter.emitAction('extensions.uninstalled', {
 			extensions: this.extensions,
