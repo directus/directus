@@ -407,12 +407,12 @@ function useDisplayValue() {
 							@blur:custom-input="onBlurCustomInput(otherVal)"
 						/>
 					</v-list-item-content>
-					<v-list-item-icon>
+					<v-list-item-icon v-if="!nonEditable">
 						<v-icon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherVal.key, null)" />
 					</v-list-item-icon>
 				</v-list-item>
 
-				<v-list-item clickable @click.stop="addOtherValue('', true)">
+				<v-list-item v-if="!nonEditable" clickable @click.stop="addOtherValue('', true)">
 					<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
 					<v-list-item-content>{{ t('other') }}</v-list-item-content>
 				</v-list-item>

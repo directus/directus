@@ -340,8 +340,8 @@ function useColor() {
 					</v-button>
 				</template>
 				<template #append>
-					<div class="item-actions">
-						<v-remove v-if="isValidColor && !nonEditable" deselect @action="unsetColor" />
+					<div v-if="!nonEditable" class="item-actions">
+						<v-remove v-if="isValidColor" deselect @action="unsetColor" />
 
 						<v-icon v-else name="palette" clickable @click="toggle" />
 					</div>

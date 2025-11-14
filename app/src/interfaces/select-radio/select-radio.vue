@@ -76,11 +76,11 @@ const customIcon = computed(() => {
 			{{ t('no_options_available') }}
 		</v-notice>
 		<div
-			v-if="allowOther"
+			v-if="allowOther && !(nonEditable && !usesOtherValue && !otherValue)"
 			class="custom"
 			:class="{
-				active: !disabled && usesOtherValue,
-				'has-value': !disabled && otherValue,
+				active: (!disabled || nonEditable) && usesOtherValue,
+				'has-value': (!disabled || nonEditable) && otherValue,
 				disabled,
 				'non-editable': nonEditable,
 			}"

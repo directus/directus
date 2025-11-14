@@ -254,8 +254,8 @@ function closeDrawer() {
 			</template>
 		</draggable>
 
-		<div class="actions">
-			<v-button v-if="showAddNew && !disabled" :disabled @click="addNew">
+		<div v-if="!nonEditable" class="actions">
+			<v-button v-if="showAddNew" :disabled @click="addNew">
 				{{ addLabel }}
 			</v-button>
 		</div>

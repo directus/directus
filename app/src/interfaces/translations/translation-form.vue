@@ -165,7 +165,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 
 			<template #controls="{ active, toggle }">
 				<v-remove
-					v-if="item"
+					v-if="item && !(nonEditable && item.$type !== 'deleted')"
 					:class="{ disabled: activatorDisabled }"
 					:disabled="activatorDisabled"
 					:item-type="item.$type"

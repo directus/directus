@@ -21,6 +21,7 @@ const props = withDefaults(
 		selectedCollection: string;
 		template?: string | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		filter?: Filter | null;
 	}>(),
 	{
@@ -118,8 +119,9 @@ function onSelection(selectedIds: (number | string)[] | null) {
 
 			<div class="spacer" />
 
-			<div class="item-actions">
+			<div v-if="!nonEditable" class="item-actions">
 				<v-remove v-if="displayItem" deselect @action="value = null" />
+
 				<v-icon v-else class="expand" name="expand_more" />
 			</div>
 		</v-list-item>

@@ -109,12 +109,18 @@ function onBlurCustomInput(otherVal: OtherValue) {
 				@update:value="setOtherValue(otherValue.key, $event)"
 				@blur:custom-input="onBlurCustomInput(otherValue)"
 			>
-				<template #append>
+				<template v-if="!nonEditable" #append>
 					<v-icon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherValue.key, null)" />
 				</template>
 			</v-checkbox>
 
-			<button v-if="allowOther" type="button" :disabled class="add-new custom" @click="addOtherValue('', true)">
+			<button
+				v-if="allowOther && !nonEditable"
+				type="button"
+				:disabled
+				class="add-new custom"
+				@click="addOtherValue('', true)"
+			>
 				<v-icon name="add" />
 				{{ t('other') }}
 			</button>

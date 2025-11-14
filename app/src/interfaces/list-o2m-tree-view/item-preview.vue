@@ -40,10 +40,11 @@ const editActive = ref(false);
 
 		<div class="spacer" />
 
-		<div v-if="!disabled" class="item-actions">
+		<div class="item-actions">
 			<v-icon v-tooltip="t('edit_item')" name="edit" clickable @click="editActive = true" />
 
 			<v-remove
+				v-if="!disabled"
 				:item-type="item.$type"
 				:item-info="relationInfo"
 				:item-is-local="isLocalItem"

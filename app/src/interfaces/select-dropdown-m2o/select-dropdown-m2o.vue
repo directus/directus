@@ -202,7 +202,7 @@ function getLinkForItem() {
 			<div class="item-actions">
 				<template v-if="displayItem">
 					<router-link
-						v-if="enableLink"
+						v-if="enableLink && !nonEditable"
 						v-tooltip="t('navigate_to_item')"
 						:to="getLinkForItem()"
 						class="item-link"
@@ -211,13 +211,7 @@ function getLinkForItem() {
 						<v-icon name="launch" />
 					</router-link>
 
-					<v-icon
-						v-if="!disabled || nonEditable"
-						v-tooltip="t('edit_item')"
-						name="edit"
-						clickable
-						@click="editModalActive = true"
-					/>
+					<v-icon v-tooltip="t('edit_item')" name="edit" clickable @click="editModalActive = true" />
 
 					<v-remove
 						v-if="!disabled"
