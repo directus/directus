@@ -18,7 +18,7 @@ const { edits, item, loading } = useItem(collection, primaryKey);
 		:collection="collection"
 		:initial-values="item"
 		:primary-key="primaryKey"
-		disabled
+		non-editable
 		:loading="loading"
 	/>
 </template>
