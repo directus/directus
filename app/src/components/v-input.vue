@@ -290,13 +290,31 @@ function stepDown() {
 
 function useInvalidInput() {
 	const isInvalidInput = ref(false);
-	const tooltipInvalid = computed(() => t(props.type === 'number' ? 'not_a_number' : 'invalid_input'));
+
+	const tooltipInvalid = computed(() => {
+		if (props.type === 'number') {
+			if (isInvalidInput.value) {
+				if (input.value?.validity.rangeOverflow) {
+					return t('value_exceeds_maximum', { max: props.max });
+				}
+
+				if (input.value?.validity.rangeUnderflow) {
+					return t('value_below_minimum', { min: props.min });
+				}
+
+				return t('not_a_number');
+			}
+		}
+
+		return t('invalid_input');
+	});
 
 	return { isInvalidInput, tooltipInvalid, setInvalidInput };
 
 	function setInvalidInput(target: HTMLInputElement) {
-		// When the input’s validity.badInput property is true (e.g., due to invalid user input like non-numeric characters in a number field), the input event’s target.value will be empty even if we see a value in the input field. This means we can’t sanitize the input value in the input event handler.
-		isInvalidInput.value = target.validity.badInput;
+		// Check for invalid input (non-numeric characters in a number field)
+		// and also check for min/max violations
+		isInvalidInput.value = target.validity.badInput || target.validity.rangeOverflow || target.validity.rangeUnderflow;
 	}
 }
 </script>
