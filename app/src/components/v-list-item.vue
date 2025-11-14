@@ -16,7 +16,7 @@ interface Props {
 	href?: string;
 	/** Disables the item */
 	disabled?: boolean;
-	/** If the item is non-editable */
+	/** Set the non-editable state for the input */
 	nonEditable?: boolean;
 	/** If the item should be clickable */
 	clickable?: boolean;
@@ -90,7 +90,7 @@ const additionalProps = computed(() => {
 	if (component.value === 'button') {
 		return {
 			type: 'button',
-			disabled: props.disabled && !props.nonEditable,
+			disabled: props.disabled,
 		};
 	}
 
@@ -125,7 +125,7 @@ const isActiveRoute = computed(() => {
 });
 
 function onClick(event: PointerEvent) {
-	if (props.disabled === true && !props.nonEditable) return;
+	if (props.disabled === true) return;
 	emit('click', event);
 }
 </script>
