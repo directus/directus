@@ -27,6 +27,20 @@ export default defineConfig({
 			},
 		},
 	},
+	tree: {
+		groups: [
+			{
+				id: 'components',
+				title: 'Components',
+				include: (file) => file.path.includes('components/'),
+			},
+			{
+				id: 'other',
+				title: 'Other',
+				include: () => true,
+			},
+		],
+	},
 	backgroundPresets: [],
 	viteIgnorePlugins: ['directus-extensions-serve', 'directus-extensions-build'],
 	viteNodeInlineDeps: [/@joeattardi\/emoji-button/],

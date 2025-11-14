@@ -43,7 +43,7 @@ catalog:
   '@fullcalendar/timegrid': 6.1.19
   '@godaddy/terminus': 4.12.1
   '@google-cloud/storage': 7.17.3
-  '@histoire/plugin-vue': 0.17.17
+  '@histoire/plugin-vue': https://pkg.pr.new/histoire-dev/histoire/@histoire/plugin-vue@bb826e1
   '@joeattardi/emoji-button': 4.6.4
   '@json2csv/plainjs': 7.0.6
   '@keyv/redis': 3.0.1
@@ -189,7 +189,7 @@ catalog:
   graphql-ws: 6.0.6
   happy-dom: 20.0.10
   helmet: 8.1.0
-  histoire: 0.17.17
+  histoire: https://pkg.pr.new/histoire-dev/histoire@bb826e1
   html-entities: 2.6.0
   icc: 3.0.0
   inquirer: 12.11.0
