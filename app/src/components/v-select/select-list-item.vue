@@ -65,7 +65,7 @@ const isActive = computed(() => {
 				:model-value="modelValue || []"
 				:label="item.text"
 				:value="item.value"
-				:disabled="item.disabled"
+				:disabled="item.disabled || nonEditable"
 				:non-editable="nonEditable"
 				@update:model-value="$emit('update:modelValue', $event.length > 0 ? $event : null)"
 			/>

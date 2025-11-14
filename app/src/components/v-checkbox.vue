@@ -129,6 +129,7 @@ function onClickIcon(e: MouseEvent): void {
 				v-model="internalValue"
 				type="text"
 				class="custom-input"
+				:disabled
 				@click.stop
 				@blur="$emit('blur:custom-input')"
 			/>

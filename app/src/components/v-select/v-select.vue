@@ -100,12 +100,9 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 	(value) => emit('update:modelValue', value),
 );
 
-const isMenuDisabled = computed(() => {
-	if (!props.multiple) {
-		return props.disabled || props.nonEditable;
-	}
-
-	return props.disabled && !props.nonEditable;
+const isDisabled = computed(() => {
+	const hasSelection = Array.isArray(modelValue.value) && modelValue.value.length > 0;
+	return props.disabled && !(props.nonEditable && props.multiple && hasSelection);
 });
 
 const search = ref<string | null>(null);
@@ -262,8 +259,7 @@ function useDisplayValue() {
 <template>
 	<v-menu
 		class="v-select"
-		:disabled="isMenuDisabled"
-		:non-editable="nonEditable"
+		:disabled="isDisabled"
 		:attached="inline === false"
 		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
@@ -297,7 +293,7 @@ function useDisplayValue() {
 					:model-value="displayValue.text"
 					clickable
 					:placeholder="placeholder"
-					:disabled="disabled"
+					:disabled="isDisabled"
 					:non-editable="nonEditable"
 					:active="active"
 					@click="toggle"
@@ -404,6 +400,7 @@ function useDisplayValue() {
 							:value="otherVal.value"
 							custom-value
 							:autofocus-custom-input="otherVal.focus"
+							:disabled="disabled"
 							:non-editable="nonEditable"
 							@update:model-value="$emit('update:modelValue', $event)"
 							@update:value="setOtherValue(otherVal.key, $event)"
