@@ -1,8 +1,9 @@
-import { ServiceUnavailableError } from '@directus/errors';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { download } from '@directus/extensions-registry';
+import { mkdir, readFile, rm } from 'node:fs/promises';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { useLogger } from '../../../logger/index.js';
 import { InstallationManager } from './manager.js';
 
-// Mock all dependencies at the top level
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn(() => ({
 		TEMP_PATH: '/tmp',
@@ -43,7 +44,7 @@ vi.mock('../get-extensions-path.js', () => ({
 	getExtensionsPath: vi.fn(() => '/extensions'),
 }));
 
-describe('InstallationManager - Error Message Specificity', () => {
+describe('InstallationManager', () => {
 	let manager: InstallationManager;
 	let mockLogger: any;
 
@@ -54,11 +55,8 @@ describe('InstallationManager - Error Message Specificity', () => {
 			warn: vi.fn(),
 		};
 
-		const { useLogger } = vi.mocked(await import('../../../logger/index.js'));
-		useLogger.mockReturnValue(mockLogger);
-
-		const { download } = vi.mocked(await import('@directus/extensions-registry'));
-		const { readFile } = vi.mocked(await import('node:fs/promises'));
+		vi.mocked(useLogger).mockReturnValue(mockLogger);
+		vi.mocked(mkdir).mockResolvedValue(undefined);
 
 		// Setup successful mocks by default
 		const mockReadableStream = {
@@ -67,9 +65,9 @@ describe('InstallationManager - Error Message Specificity', () => {
 			}),
 		};
 
-		download.mockResolvedValue(mockReadableStream as any);
+		vi.mocked(download).mockResolvedValue(mockReadableStream as any);
 
-		readFile.mockResolvedValue(
+		vi.mocked(readFile).mockResolvedValue(
 			JSON.stringify({
 				name: 'test-extension',
 				directus: {
@@ -81,157 +79,37 @@ describe('InstallationManager - Error Message Specificity', () => {
 		manager = new InstallationManager();
 	});
 
-	it('should throw ServiceUnavailableError with permission error message for EACCES', async () => {
-		const { mkdir } = vi.mocked(await import('node:fs/promises'));
-		const permissionError = new Error('Permission denied') as NodeJS.ErrnoException;
-		permissionError.code = 'EACCES';
+	describe('Errors', () => {
+		test('should throw marketplace ServiceUnavailableError when download fails', async () => {
+			vi.mocked(download).mockRejectedValue(new Error('Network error'));
 
-		mkdir.mockRejectedValue(permissionError);
-
-		try {
-			await manager.install('test-version');
-			expect.fail('Expected error to be thrown');
-		} catch (error) {
-			expect(error).toBeInstanceOf(ServiceUnavailableError);
-
-			expect((error as any).extensions.reason).toBe(
-				'Insufficient permissions to write to the extensions directory. Please check file system permissions',
+			await expect(manager.install('test-version')).rejects.toThrowError(
+				'Service "marketplace" is unavailable. Could not download the extension.',
 			);
+		});
 
-			expect((error as any).extensions.service).toBe('marketplace');
-		}
-	});
+		test('should throw extension ServiceUnavailableError for any non marketplace error', async () => {
+			vi.mocked(mkdir).mockRejectedValue(new Error());
 
-	it('should throw ServiceUnavailableError with permission error message for EPERM', async () => {
-		const { move } = vi.mocked(await import('fs-extra'));
-		const permissionError = new Error('Operation not permitted') as NodeJS.ErrnoException;
-		permissionError.code = 'EPERM';
-
-		move.mockRejectedValue(permissionError);
-
-		try {
-			await manager.install('test-version');
-			expect.fail('Expected error to be thrown');
-		} catch (error) {
-			expect(error).toBeInstanceOf(ServiceUnavailableError);
-
-			expect((error as any).extensions.reason).toBe(
-				'Insufficient permissions to write to the extensions directory. Please check file system permissions',
+			await expect(manager.install('test-version')).rejects.toThrowError(
+				'Service "extensions" is unavailable. Failed to extract the extension or write it to storage.',
 			);
-		}
-	});
+		});
 
-	it('should throw ServiceUnavailableError with directory error message for ENOENT', async () => {
-		const { mkdir } = vi.mocked(await import('node:fs/promises'));
-		const noEntError = new Error('No such file or directory') as NodeJS.ErrnoException;
-		noEntError.code = 'ENOENT';
+		test('should always clean up temporary directory even when error occurs', async () => {
+			vi.mocked(mkdir).mockRejectedValue(new Error());
 
-		mkdir.mockRejectedValue(noEntError);
+			await expect(manager.install('test-version')).rejects.toThrow();
 
-		try {
-			await manager.install('test-version');
-			expect.fail('Expected error to be thrown');
-		} catch (error) {
-			expect(error).toBeInstanceOf(ServiceUnavailableError);
-			expect((error as any).extensions.reason).toBe('Extensions directory path does not exist or is inaccessible');
-		}
-	});
+			expect(rm).toHaveBeenCalledWith('/tmp/marketplace/test-version', { recursive: true });
+		});
 
-	it('should throw ServiceUnavailableError with generic error message for unknown errors', async () => {
-		const { mkdir } = vi.mocked(await import('node:fs/promises'));
-		const { readFile } = vi.mocked(await import('node:fs/promises'));
-		const { download } = vi.mocked(await import('@directus/extensions-registry'));
-		const unknownError = new Error('Network error');
+		test('should log warning when error occurs', async () => {
+			vi.mocked(download).mockRejectedValue(new Error('Test error'));
 
-		// Mock successful mkdir and readFile to ensure we get to the download error
-		mkdir.mockResolvedValue(undefined);
+			await expect(manager.install('test-version')).rejects.toThrow();
 
-		readFile.mockResolvedValue(
-			JSON.stringify({
-				name: 'test-extension',
-				directus: {
-					type: 'interface',
-				},
-			}),
-		);
-
-		download.mockRejectedValue(unknownError);
-
-		try {
-			await manager.install('test-version');
-			expect.fail('Expected error to be thrown');
-		} catch (error) {
-			expect(error).toBeInstanceOf(ServiceUnavailableError);
-			expect((error as any).extensions.reason).toBe('Could not download and extract the extension');
-		}
-	});
-
-	it('should always clean up temporary directory even when error occurs', async () => {
-		const { mkdir, rm } = vi.mocked(await import('node:fs/promises'));
-		const permissionError = new Error('Permission denied') as NodeJS.ErrnoException;
-		permissionError.code = 'EACCES';
-
-		mkdir.mockRejectedValue(permissionError);
-
-		await expect(manager.install('test-version')).rejects.toThrow();
-
-		expect(rm).toHaveBeenCalledWith('/tmp/marketplace/test-version', { recursive: true });
-	});
-
-	it('should throw ServiceUnavailableError with file limit error message for EMFILE', async () => {
-		const { mkdir } = vi.mocked(await import('node:fs/promises'));
-		const fileLimitError = new Error('Too many open files') as NodeJS.ErrnoException;
-		fileLimitError.code = 'EMFILE';
-
-		mkdir.mockRejectedValue(fileLimitError);
-
-		try {
-			await manager.install('test-version');
-			expect.fail('Expected error to be thrown');
-		} catch (error) {
-			expect(error).toBeInstanceOf(ServiceUnavailableError);
-			expect((error as any).extensions.reason).toBe('Too many open files during extension installation');
-		}
-	});
-
-	it('should throw ServiceUnavailableError with file limit error message for ENFILE', async () => {
-		const { mkdir } = vi.mocked(await import('node:fs/promises'));
-		const fileLimitError = new Error('File table overflow') as NodeJS.ErrnoException;
-		fileLimitError.code = 'ENFILE';
-
-		mkdir.mockRejectedValue(fileLimitError);
-
-		try {
-			await manager.install('test-version');
-			expect.fail('Expected error to be thrown');
-		} catch (error) {
-			expect(error).toBeInstanceOf(ServiceUnavailableError);
-			expect((error as any).extensions.reason).toBe('Too many open files during extension installation');
-		}
-	});
-
-	it('should log warning when error occurs', async () => {
-		const { mkdir } = vi.mocked(await import('node:fs/promises'));
-		const { readFile } = vi.mocked(await import('node:fs/promises'));
-		const { download } = vi.mocked(await import('@directus/extensions-registry'));
-		const testError = new Error('Test error');
-
-		// Mock successful mkdir and readFile to ensure we get to the download error
-		mkdir.mockResolvedValue(undefined);
-
-		readFile.mockResolvedValue(
-			JSON.stringify({
-				name: 'test-extension',
-				directus: {
-					type: 'interface',
-				},
-			}),
-		);
-
-		download.mockRejectedValue(testError);
-
-		await expect(manager.install('test-version')).rejects.toThrow();
-
-		expect(mockLogger.warn).toHaveBeenCalledWith(testError);
+			expect(mockLogger.warn).toHaveBeenCalled();
+		});
 	});
 });
