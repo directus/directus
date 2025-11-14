@@ -140,6 +140,7 @@ function onClick(event: PointerEvent) {
 			dense,
 			link: isLink,
 			disabled,
+			'non-editable': nonEditable,
 			dashed,
 			block,
 			nav,
@@ -255,9 +256,11 @@ function onClick(event: PointerEvent) {
 	}
 
 	&.disabled {
-		--v-list-item-color: var(--form--field--input--disabled--foreground, var(--theme--foreground-subdued)) !important;
+		cursor: not-allowed;
 
-		cursor: var(--form--field--disabled--cursor, not-allowed);
+		&:not(.non-editable) {
+			--v-list-item-color: var(--theme--foreground-subdued) !important;
+		}
 	}
 
 	&.dense {

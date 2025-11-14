@@ -93,44 +93,15 @@ function emitValue(): void {
 	}
 
 	&:disabled {
-		cursor: var(--form--field--disabled--cursor, not-allowed);
+		cursor: not-allowed;
 
-		.label {
-			color: var(--form--field--disabled--primary, var(--theme--foreground-subdued));
-		}
-
-		.v-icon {
-			--v-icon-color: var(--form--icon--disabled, var(--theme--foreground-subdued));
-		}
-
-		&.non-editable {
-			cursor: pointer;
-
+		&:not(.non-editable) {
 			.label {
-				color: var(--form--field--disabled--primary, var(--theme--foreground));
+				color: var(--theme--foreground-subdued);
 			}
 
 			.v-icon {
-				--v-icon-color: var(--form--icon--disabled, var(--theme--primary));
-			}
-
-			&.checked {
-				.v-icon {
-					--v-icon-color: var(--v-radio-color, var(--theme--primary));
-				}
-
-				&.block {
-					border-color: var(--v-radio-color, var(--theme--primary));
-
-					.label {
-						color: var(--v-radio-color, var(--theme--primary));
-					}
-
-					&::before {
-						background-color: var(--v-radio-color, var(--theme--primary));
-						opacity: 0.1;
-					}
-				}
+				--v-icon-color: var(--theme--foreground-subdued);
 			}
 		}
 	}
@@ -165,7 +136,8 @@ function emitValue(): void {
 		}
 	}
 
-	&:not(:disabled).checked {
+	&:not(:disabled).checked,
+	&.checked.non-editable {
 		.v-icon {
 			--v-icon-color: var(--v-radio-color, var(--theme--primary));
 		}

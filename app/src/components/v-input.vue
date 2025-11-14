@@ -309,7 +309,7 @@ function useInvalidInput() {
 		<div v-if="$slots['prepend-outer']" class="prepend-outer">
 			<slot name="prepend-outer" :value="modelValue" :disabled="disabled" />
 		</div>
-		<div class="input" :class="{ disabled, active }">
+		<div class="input" :class="{ disabled, active, 'non-editable': nonEditable }">
 			<div v-if="$slots.prepend" class="prepend">
 				<slot name="prepend" :value="modelValue" :disabled="disabled" />
 			</div>
@@ -461,14 +461,11 @@ function useInvalidInput() {
 			box-shadow: var(--theme--form--field--input--box-shadow-focus);
 		}
 
-		&.disabled {
+		&.disabled:not(.non-editable) {
 			--arrow-color: var(--v-input-border-color);
 
-			color: var(--form--field--input--disabled--foreground, var(--theme--foreground-subdued));
-			background-color: var(
-				--form--field--input--disabled--background,
-				var(--theme--form--field--input--background-subdued)
-			);
+			color: var(--theme--foreground-subdued);
+			background-color: var(--theme--form--field--input--background-subdued);
 			border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
 		}
 

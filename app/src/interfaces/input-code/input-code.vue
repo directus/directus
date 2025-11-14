@@ -26,6 +26,7 @@ const props = withDefaults(
 	defineProps<{
 		value?: string | Record<string, unknown> | unknown[] | boolean | number | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		altOptions?: Record<string, any>;
 		template?: string;
 		lineNumber?: boolean;
@@ -297,7 +298,7 @@ function isInterpolation(value: any) {
 </script>
 
 <template>
-	<div class="input-code codemirror-custom-styles" :class="{ disabled }" dir="ltr">
+	<div class="input-code codemirror-custom-styles" :class="{ disabled, 'non-editable': nonEditable }" dir="ltr">
 		<div ref="codemirrorEl"></div>
 
 		<v-button v-if="template" v-tooltip.left="t('fill_template')" small icon secondary @click="fillTemplate">
