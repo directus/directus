@@ -19,13 +19,16 @@ export async function syncExtensions(options?: { force: boolean }): Promise<void
 	const messenger = useBus();
 	const logger = useLogger();
 
-	const isSyncing = (await getSyncStatus()) === SyncStatus.SYNCING;
+	if (options?.force !== true && (await getSyncStatus()) === SyncStatus.SYNCING) {
+		logger.debug('Extensions already being synced to this directory from another process.');
+		return;
+	}
 
 	const machineId = await mid.machineId();
 	const machineKey = `extensions-sync/${machineId}`;
 	const processId = await lock.increment(machineKey);
 
-	if (processId !== 1 || isSyncing) {
+	if (processId !== 1) {
 		logger.debug('Extensions already being synced to this machine from another process.');
 
 		// Wait until the process that called the lock publishes a message that the syncing is complete
