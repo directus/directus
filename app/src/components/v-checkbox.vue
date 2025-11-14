@@ -115,7 +115,7 @@ function onClickIcon(e: MouseEvent): void {
 		type="button"
 		role="checkbox"
 		:aria-pressed="isChecked ? 'true' : 'false'"
-		:disabled
+		:disabled="disabled && !customValue"
 		:class="{ checked: isChecked, indeterminate, block }"
 		@click.stop="toggleInput"
 	>
