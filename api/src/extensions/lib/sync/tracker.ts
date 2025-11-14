@@ -7,71 +7,71 @@ import { useLogger } from '../../../logger/index.js';
 import type { Logger } from 'pino';
 
 export class SyncFileTracker {
-    private localFiles: Set<string>;
-    private trackedDirs: Set<string>;
-    private logger: Logger<never>;
+	private localFiles: Set<string>;
+	private trackedDirs: Set<string>;
+	private logger: Logger<never>;
 
-    constructor() {
-        this.localFiles = new Set();
-        this.trackedDirs = new Set();
-        this.logger = useLogger();
-    }
+	constructor() {
+		this.localFiles = new Set();
+		this.trackedDirs = new Set();
+		this.logger = useLogger();
+	}
 
-    async readLocalFiles(localExtensionsPath: string) {
-        const entries = await readdir(localExtensionsPath, { recursive: true, withFileTypes: true });
-        
-        for (const entry of entries) {
-            if (!entry.isFile()) continue;
-            const relativePath = join(relative(localExtensionsPath, entry.parentPath), entry.name);
-            this.localFiles.add(relativePath);
-        }
-    }
+	async readLocalFiles(localExtensionsPath: string) {
+		const entries = await readdir(localExtensionsPath, { recursive: true, withFileTypes: true });
 
-    async syncFile(filePath: string) {
-        this.localFiles.delete(filePath);
-        let currentDir = dirname(filePath);
+		for (const entry of entries) {
+			if (!entry.isFile()) continue;
+			const relativePath = join(relative(localExtensionsPath, entry.parentPath), entry.name);
+			this.localFiles.add(relativePath);
+		}
+	}
 
-        while (currentDir !== '.') {
-            if (this.trackedDirs.has(currentDir)) break;
-            this.trackedDirs.add(currentDir);
-            currentDir = dirname(currentDir);
-        }
-    }
+	async syncFile(filePath: string) {
+		this.localFiles.delete(filePath);
+		let currentDir = dirname(filePath);
 
-    async cleanup(localExtensionsPath: string) {
-        const removeDirs = new Set<string>();
-    
-        for (const removeFile of this.localFiles) {
-            if (removeFile === '.status') continue;
-            let currentDir = dirname(removeFile);
+		while (currentDir !== '.') {
+			if (this.trackedDirs.has(currentDir)) break;
+			this.trackedDirs.add(currentDir);
+			currentDir = dirname(currentDir);
+		}
+	}
 
-            while (currentDir !== localExtensionsPath) {
-                if (this.trackedDirs.has(currentDir)) break;
-                removeDirs.add(currentDir);
-                currentDir = dirname(currentDir);
-            }
-        }
+	async cleanup(localExtensionsPath: string) {
+		const removeDirs = new Set<string>();
 
-        const removeDirsRecursive = Array.from(removeDirs)
-            .sort((a, b) => pathDepth(b) - pathDepth(a))
-            .filter((d) => !removeDirs.has(dirname(d)));
+		for (const removeFile of this.localFiles) {
+			if (removeFile === '.status') continue;
+			let currentDir = dirname(removeFile);
 
-        for (const dir of removeDirsRecursive) {
-            const relativePath = join(localExtensionsPath, dir);
+			while (currentDir !== localExtensionsPath) {
+				if (this.trackedDirs.has(currentDir)) break;
+				removeDirs.add(currentDir);
+				currentDir = dirname(currentDir);
+			}
+		}
 
-            this.logger.debug('Removing local folder:' + relativePath);
-            
-            await rm(relativePath, { recursive: true, force: true });
-        }
-    }
+		const removeDirsRecursive = Array.from(removeDirs)
+			.sort((a, b) => pathDepth(b) - pathDepth(a))
+			.filter((d) => !removeDirs.has(dirname(d)));
+
+		for (const dir of removeDirsRecursive) {
+			const relativePath = join(localExtensionsPath, dir);
+
+			this.logger.debug('Removing local folder:' + relativePath);
+
+			await rm(relativePath, { recursive: true, force: true });
+		}
+	}
 }
 
 function pathDepth(path: string): number {
-    let count = 0;
+	let count = 0;
 
-    for (let i = 0; i < path.length; i++) {
-        if (path[i] === sep) count++;
-    }
+	for (let i = 0; i < path.length; i++) {
+		if (path[i] === sep) count++;
+	}
 
-    return count;
+	return count;
 }

@@ -238,7 +238,6 @@ export class ExtensionManager {
 		});
 
 		logger.info(`Installed extension: ${versionId}`);
-
 	}
 
 	public async uninstall(folder: string) {

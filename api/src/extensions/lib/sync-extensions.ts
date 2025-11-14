@@ -18,7 +18,7 @@ export async function syncExtensions(options?: { force: boolean }): Promise<void
 	const lock = useLock();
 	const messenger = useBus();
 	const logger = useLogger();
- 
+
 	const isSyncing = (await getSyncStatus()) === SyncStatus.SYNCING;
 
 	const machineId = await mid.machineId();
@@ -65,7 +65,7 @@ export async function syncExtensions(options?: { force: boolean }): Promise<void
 			if (options?.force !== true) {
 				const remoteStat = await disk.stat(filepath);
 				const localStat = await fsStat(destinationPath);
-				
+
 				if (localStat && remoteStat.modified <= localStat.modified && remoteStat.size === localStat.size) {
 					// local file exists and is unchanged
 					logger.debug('Skipping sync for:' + relativePath);
@@ -74,7 +74,7 @@ export async function syncExtensions(options?: { force: boolean }): Promise<void
 			}
 
 			logger.debug('Downloading file:' + relativePath);
-			
+
 			// Ensure that the directory path exists
 			await mkdir(dirname(destinationPath), { recursive: true });
 
@@ -95,12 +95,13 @@ export async function syncExtensions(options?: { force: boolean }): Promise<void
 }
 
 export async function fsStat(path: string) {
-	const data = await stat(path, { bigint: false })
-		.catch(() => {/* file not available */});
-	
+	const data = await stat(path, { bigint: false }).catch(() => {
+		/* file not available */
+	});
+
 	if (!data) return null;
 	return {
 		size: data.size,
-		modified: data.mtime
+		modified: data.mtime,
 	};
 }
