@@ -281,7 +281,6 @@ watch(
 
 	:deep(.cm-scroller) {
 		block-size: 100%;
-		/* min-block-size: var(--input-height-tall); */
 		max-block-size: var(--theme--form--field--input--height);
 		overflow: auto !important;
 	}
