@@ -10,7 +10,6 @@ import { useEventListener } from '@vueuse/core';
 import { debounce } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { computed, provide, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import HeaderBar from './components/header-bar.vue';
 import ModuleBar from './components/module-bar.vue';
@@ -49,8 +48,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['update:splitView']);
-
-const { t } = useI18n();
 
 const router = useRouter();
 const headTitle = computed(() => props.title ?? null);
@@ -265,11 +262,11 @@ const showLicenseBanner = computed(
 </script>
 
 <template>
-	<v-info v-if="appAccess === false" center :title="t('no_app_access')" type="danger" icon="block">
-		{{ t('no_app_access_copy') }}
+	<v-info v-if="appAccess === false" center :title="$t('no_app_access')" type="danger" icon="block">
+		{{ $t('no_app_access_copy') }}
 
 		<template #append>
-			<v-button to="/logout">{{ t('switch_user') }}</v-button>
+			<v-button to="/logout">{{ $t('switch_user') }}</v-button>
 		</template>
 	</v-info>
 
