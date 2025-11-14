@@ -156,7 +156,7 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 
 <template>
 	<div class="input-block-editor">
-		<div ref="editorElement" :class="{ [font]: true, disabled, bordered }"></div>
+		<div ref="editorElement" :class="{ [font]: true, disabled, 'non-editable': nonEditable, bordered }"></div>
 
 		<v-drawer
 			v-if="haveFilesAccess && !disabled"
@@ -198,13 +198,13 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 }
 
 .disabled {
-	color: var(--form--field--input--disabled--foreground, var(--theme--form--field--input--foreground-subdued));
-	background-color: var(
-		--form--field--input--disabled--background,
-		var(--theme--form--field--input--background-subdued)
-	);
-	border-color: var(--form--field--input--disabled--border-color, var(--theme--form--field--input--border-color));
 	pointer-events: none;
+
+	&:not(.non-editable) {
+		color: var(--theme--form--field--input--foreground-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
+		border-color: var(--theme--form--field--input--border-color);
+	}
 }
 
 .bordered {

@@ -65,8 +65,6 @@ const props = withDefaults(
 
 const emit = defineEmits(['update:modelValue']);
 
-const isNonEditable = computed(() => !!props.nonEditable);
-
 const values = computed(() => {
 	return Object.assign({}, cloneDeep(props.initialValues), cloneDeep(props.modelValue));
 });
@@ -389,7 +387,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 </script>
 
 <template>
-	<div ref="el" :class="['v-form', gridClass, { inline, 'non-editable': isNonEditable }]">
+	<div ref="el" :class="['v-form', gridClass, { inline }]">
 		<validation-errors
 			v-if="showValidationErrors && validationErrors.length > 0"
 			:validation-errors="validationErrors"
@@ -424,7 +422,8 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:fields="fieldsForGroup[index] || []"
 					:values="modelValue || {}"
 					:initial-values="initialValues || {}"
-					:disabled="disabled || isNonEditable"
+					:disabled="disabled || nonEditable"
+					:non-editable="nonEditable"
 					:batch-mode="batchMode"
 					:batch-active-fields="batchActiveFields"
 					:primary-key="primaryKey"
@@ -434,7 +433,6 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:raw-editor-enabled="rawEditorEnabled"
 					:direction="direction"
 					:version
-					:non-editable="isNonEditable"
 					:comparison="comparison"
 					v-bind="fieldsMap[fieldName]!.meta?.options || {}"
 					@apply="apply"
@@ -452,9 +450,9 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:autofocus="index === firstEditableFieldIndex && autofocus"
 					:model-value="(values || {})[fieldName]"
 					:initial-value="(initialValues || {})[fieldName]"
-					:disabled="isDisabled(fieldsMap[fieldName]!) || isNonEditable"
+					:disabled="isDisabled(fieldsMap[fieldName]!) || nonEditable"
+					:non-editable="nonEditable"
 					:batch-mode="batchMode"
-					:non-editable="isNonEditable"
 					:batch-active="batchActiveFields.includes(fieldName)"
 					:comparison="comparison"
 					:comparison-active="comparison?.selectedFields.includes(fieldName)"
@@ -490,21 +488,6 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 
 .v-form {
 	@include mixins.form-grid;
-
-	--form--field--input--disabled--background: var(--theme--form--field--input--background-subdued);
-	--form--field--input--disabled--foreground: var(--theme--form--field--input--foreground-subdued);
-	--form--icon--disabled: var(--theme--foreground-subdued);
-	--form--field--disabled--primary: var(--theme--foreground-subdued);
-	--form--field--disabled--border-color: var(--theme--form--field--input--border-color-subdued);
-	--form--field--disabled--cursor: not-allowed;
-	&.non-editable {
-		--form--field--input--disabled--background: var(--theme--form--field--input--background);
-		--form--field--input--disabled--foreground: var(--theme--form--field--input--foreground);
-		--form--icon--disabled: var(--theme--primary);
-		--form--field--disabled--primary: var(--theme--primary);
-		--form--field--disabled--border-color: var(--theme--form--field--input--border-color);
-		--form--field--disabled--cursor: pointer;
-	}
 
 	.first-visible-field :deep(.presentation-divider) {
 		margin-block-start: 0;

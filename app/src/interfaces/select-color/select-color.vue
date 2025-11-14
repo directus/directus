@@ -308,7 +308,8 @@ function useColor() {
 		<template #activator="{ activate, toggle }">
 			<v-input
 				v-model="input"
-				:disabled="disabled"
+				:disabled
+				:non-editable
 				:placeholder="placeholder || $t('interfaces.select-color.placeholder')"
 				:pattern="opacity ? /#([a-f\d]{2}){4}/i : /#([a-f\d]{2}){3}/i"
 				class="color-input"
@@ -344,8 +345,8 @@ function useColor() {
 					</v-button>
 				</template>
 				<template #append>
-					<div class="item-actions">
-						<v-remove v-if="isValidColor && !nonEditable" deselect @action="unsetColor" />
+					<div v-if="!nonEditable" class="item-actions">
+						<v-remove v-if="isValidColor" deselect @action="unsetColor" />
 
 						<v-icon v-else name="palette" clickable @click="toggle" />
 					</div>

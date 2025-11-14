@@ -182,7 +182,7 @@ function getLinkForItem() {
 		{{ $t('no_items') }}
 	</v-notice>
 
-	<div v-else class="many-to-one" :class="{ 'non-editable': nonEditable }">
+	<div v-else class="many-to-one">
 		<v-skeleton-loader v-if="loading" type="input" />
 
 		<v-list-item v-else block clickable :disabled="disabled" :non-editable="nonEditable" @click="onPreviewClick">
@@ -200,7 +200,7 @@ function getLinkForItem() {
 			<div class="item-actions">
 				<template v-if="displayItem">
 					<router-link
-						v-if="enableLink"
+						v-if="enableLink && !nonEditable"
 						v-tooltip="$t('navigate_to_item')"
 						:to="getLinkForItem()"
 						class="item-link"
@@ -209,13 +209,7 @@ function getLinkForItem() {
 						<v-icon name="launch" />
 					</router-link>
 
-					<v-icon
-						v-if="!disabled || nonEditable"
-						v-tooltip="$t('edit_item')"
-						name="edit"
-						clickable
-						@click="editModalActive = true"
-					/>
+					<v-icon v-tooltip="$t('edit_item')" name="edit" clickable @click="editModalActive = true" />
 
 					<v-remove
 						v-if="!disabled"
@@ -248,6 +242,7 @@ function getLinkForItem() {
 			:edits="edits"
 			:circular-field="relationInfo.relation.meta?.one_field ?? undefined"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			@input="onDrawerItemInput"
 		/>
 
@@ -270,12 +265,6 @@ function getLinkForItem() {
 
 	.add:hover {
 		--v-icon-color: var(--theme--primary);
-	}
-}
-
-.many-to-one.non-editable .item-actions {
-	:deep(.v-icon) {
-		--v-icon-color-hover: var(--theme--form--field--input--foreground);
 	}
 }
 

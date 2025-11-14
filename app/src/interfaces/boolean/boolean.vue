@@ -25,7 +25,6 @@ defineEmits<{
 
 <template>
 	<v-checkbox
-		:class="{ 'non-editable': nonEditable }"
 		block
 		:icon-on="iconOn"
 		:icon-off="iconOff"

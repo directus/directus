@@ -17,12 +17,9 @@
 	box-shadow: var(--theme--form--field--input--box-shadow);
 }
 
-.disabled .CodeMirror {
-	color: var(--form--field--input--disabled--foreground, var(--theme--foreground-subdued));
-	background-color: var(
-		--form--field--input--disabled--background,
-		var(--theme--form--field--input--background-subdued)
-	);
+.disabled:not(.non-editable) .CodeMirror {
+	color: var(--theme--foreground-subdued);
+	background-color: var(--theme--form--field--input--background-subdued);
 }
 
 .CodeMirror .CodeMirror-placeholder {

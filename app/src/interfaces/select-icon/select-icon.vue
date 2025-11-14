@@ -180,11 +180,12 @@ function useIconsPerRow(
 </script>
 
 <template>
-	<v-menu v-model="menuActive" attached :disabled="disabled" no-focus-return>
+	<v-menu v-model="menuActive" attached :disabled no-focus-return>
 		<template #activator="{ active, activate, deactivate, toggle }">
 			<v-input
 				v-model="searchQuery"
-				:disabled="disabled"
+				:disabled
+				:non-editable
 				:placeholder="value ? formatTitle(value) : $t('interfaces.select-icon.search_for_icon')"
 				:class="{ 'has-value': value }"
 				:nullable="false"

@@ -46,7 +46,6 @@ const value = computed(() =>
 		class="interface"
 		:class="{
 			subdued: batchMode && batchActive === false,
-			'non-editable': nonEditable,
 		}"
 	>
 		<v-skeleton-loader v-if="loading && field.hideLoader !== true" />

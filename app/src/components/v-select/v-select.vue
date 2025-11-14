@@ -100,12 +100,9 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 	(value) => emit('update:modelValue', value),
 );
 
-const isMenuDisabled = computed(() => {
-	if (!props.multiple) {
-		return props.disabled || props.nonEditable;
-	}
-
-	return props.disabled && !props.nonEditable;
+const isDisabled = computed(() => {
+	const hasSelection = Array.isArray(modelValue.value) && modelValue.value.length > 0;
+	return props.disabled && !(props.nonEditable && props.multiple && hasSelection);
 });
 
 const search = ref<string | null>(null);
@@ -262,8 +259,7 @@ function useDisplayValue() {
 <template>
 	<v-menu
 		class="v-select"
-		:disabled="isMenuDisabled"
-		:non-editable="nonEditable"
+		:disabled="isDisabled"
 		:attached="inline === false"
 		:show-arrow="inline === true"
 		:close-on-content-click="closeOnContentClick"
@@ -297,7 +293,7 @@ function useDisplayValue() {
 					:model-value="displayValue.text"
 					clickable
 					:placeholder="placeholder"
-					:disabled="disabled"
+					:disabled="isDisabled"
 					:non-editable="nonEditable"
 					:active="active"
 					@click="toggle"
@@ -318,12 +314,11 @@ function useDisplayValue() {
 		</template>
 
 		<v-list class="list" :mandatory="mandatory" @toggle="$emit('group-toggle', $event)">
-			<template v-if="showDeselect && !(nonEditable && multiple)">
+			<template v-if="showDeselect && !nonEditable">
 				<v-list-item
 					clickable
 					:disabled="modelValue === null || (Array.isArray(modelValue) && !modelValue.length)"
-					:non-editable="nonEditable"
-					@click="nonEditable ? undefined : $emit('update:modelValue', null)"
+					@click="$emit('update:modelValue', null)"
 				>
 					<v-list-item-icon v-if="multiple === true">
 						<v-icon name="close" />
@@ -405,18 +400,19 @@ function useDisplayValue() {
 							:value="otherVal.value"
 							custom-value
 							:autofocus-custom-input="otherVal.focus"
+							:disabled="disabled"
 							:non-editable="nonEditable"
 							@update:model-value="$emit('update:modelValue', $event)"
 							@update:value="setOtherValue(otherVal.key, $event)"
 							@blur:custom-input="onBlurCustomInput(otherVal)"
 						/>
 					</v-list-item-content>
-					<v-list-item-icon>
+					<v-list-item-icon v-if="!nonEditable">
 						<v-icon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherVal.key, null)" />
 					</v-list-item-icon>
 				</v-list-item>
 
-				<v-list-item clickable @click.stop="addOtherValue('', true)">
+				<v-list-item v-if="!nonEditable" clickable @click.stop="addOtherValue('', true)">
 					<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
 					<v-list-item-content>{{ $t('other') }}</v-list-item-content>
 				</v-list-item>

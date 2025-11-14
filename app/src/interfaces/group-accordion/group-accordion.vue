@@ -121,7 +121,7 @@ function useComputedGroup() {
 			:values="groupValues"
 			:initial-values="initialValues"
 			:disabled="disabled"
-			:non-editable="!!nonEditable"
+			:non-editable="nonEditable"
 			:batch-mode="batchMode"
 			:batch-active-fields="batchActiveFields"
 			:comparison="comparison"

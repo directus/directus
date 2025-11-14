@@ -416,8 +416,8 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 			</draggable>
 		</template>
 
-		<div class="actions">
-			<v-menu v-if="!nonEditable && enableCreate && createCollections.length > 0" :disabled="disabled" show-arrow>
+		<div v-if="!nonEditable" class="actions">
+			<v-menu v-if="enableCreate && createCollections.length > 0" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button :disabled="disabled" @click="toggle">
 						{{ $t('create_new') }}
@@ -440,7 +440,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 				</v-list>
 			</v-menu>
 
-			<v-menu v-if="!nonEditable && enableSelect && selectAllowed" :disabled="disabled" show-arrow>
+			<v-menu v-if="enableSelect && selectAllowed" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button :disabled="disabled" @click="toggle">
 						{{ $t('add_existing') }}
@@ -491,6 +491,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 		<drawer-item
 			v-model:active="editModalActive"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"

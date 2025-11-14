@@ -78,7 +78,7 @@ onMounted(() => {
 });
 
 function toggleInput(): void {
-	if (props.disabled || props.nonEditable) return;
+	if (props.disabled) return;
 
 	if (props.indeterminate === true) {
 		emit('update:indeterminate', false);
@@ -115,8 +115,8 @@ function onClickIcon(e: MouseEvent): void {
 		type="button"
 		role="checkbox"
 		:aria-pressed="isChecked ? 'true' : 'false'"
-		:disabled
-		:class="{ checked: isChecked, indeterminate, block }"
+		:disabled="disabled && !customValue"
+		:class="{ checked: isChecked, indeterminate, block, disabled, 'non-editable': nonEditable }"
 		@click.stop="toggleInput"
 	>
 		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
@@ -129,6 +129,7 @@ function onClickIcon(e: MouseEvent): void {
 				v-model="internalValue"
 				type="text"
 				class="custom-input"
+				:disabled
 				@click.stop
 				@blur="$emit('blur:custom-input')"
 			/>
@@ -184,15 +185,17 @@ function onClickIcon(e: MouseEvent): void {
 		transition: color var(--fast) var(--transition);
 	}
 
-	&:disabled {
+	&.disabled {
 		cursor: not-allowed;
 
-		.label {
-			color: var(--form--field--disabled--primary, var(--theme--foreground-subdued));
-		}
+		&:not(.non-editable) {
+			.label {
+				color: var(--theme--foreground-subdued);
+			}
 
-		.checkbox {
-			--v-icon-color: var(--form--icon--disabled, var(--theme--foreground-subdued));
+			.checkbox {
+				--v-icon-color: var(--theme--foreground-subdued);
+			}
 		}
 	}
 
@@ -208,11 +211,8 @@ function onClickIcon(e: MouseEvent): void {
 		border-radius: var(--theme--border-radius);
 		transition: all var(--fast) var(--transition);
 
-		&:disabled {
-			background-color: var(
-				--form--field--input--disabled--background,
-				var(--theme--form--field--input--background-subdued)
-			);
+		&.disabled:not(.non-editable) {
+			background-color: var(--theme--form--field--input--background-subdued);
 		}
 
 		&::before {
@@ -231,7 +231,7 @@ function onClickIcon(e: MouseEvent): void {
 		}
 	}
 
-	&:not(:disabled):hover {
+	&:not(.disabled):hover {
 		.checkbox {
 			--v-icon-color: var(--theme--primary);
 		}
@@ -241,7 +241,7 @@ function onClickIcon(e: MouseEvent): void {
 		}
 	}
 
-	&:not(:disabled):not(.indeterminate) {
+	&:not(.disabled):not(.indeterminate) {
 		.label {
 			color: var(--theme--foreground);
 		}
@@ -253,14 +253,17 @@ function onClickIcon(e: MouseEvent): void {
 		}
 	}
 
-	&:not(:disabled:not(.non-editable)):not(.indeterminate).checked {
-		.checkbox {
-			--v-icon-color: var(--v-checkbox-color, var(--theme--primary));
-		}
+	&.checked {
+		&.disabled.non-editable:not(.indeterminate),
+		&:not(.disabled):not(.indeterminate) {
+			.checkbox {
+				--v-icon-color: var(--v-checkbox-color, var(--theme--primary));
+			}
 
-		&.block {
-			.label {
-				color: var(--v-checkbox-color, var(--theme--primary));
+			&.block {
+				.label {
+					color: var(--v-checkbox-color, var(--theme--primary));
+				}
 			}
 		}
 	}

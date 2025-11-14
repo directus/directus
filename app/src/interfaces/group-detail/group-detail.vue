@@ -155,7 +155,7 @@ function useComparisonIndicator() {
 			:validation-errors="validationErrors"
 			:loading="loading"
 			:batch-mode="batchMode"
-			:non-editable="!!nonEditable"
+			:non-editable="nonEditable"
 			:disabled="disabled"
 			:badge="badge"
 			:direction="direction"

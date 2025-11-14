@@ -4,6 +4,8 @@ import { computed } from 'vue';
 interface Props {
 	/** Disables the slider */
 	disabled?: boolean;
+	/** Set the non-editable state for the radio */
+	nonEditable?: boolean;
 	/** Show the thumb label on drag of the thumb */
 	showThumbLabel?: boolean;
 	/** Maximum allowed value */
@@ -22,6 +24,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
+	nonEditable: false,
 	showThumbLabel: false,
 	max: 100,
 	min: 0,
@@ -57,7 +60,10 @@ function onInput(event: Event) {
 		<div v-if="$slots.prepend" class="prepend">
 			<slot name="prepend" :value="modelValue" />
 		</div>
-		<div class="slider" :class="{ disabled, 'thumb-label-visible': showThumbLabel && alwaysShowValue }">
+		<div
+			class="slider"
+			:class="{ disabled, 'thumb-label-visible': showThumbLabel && alwaysShowValue, 'non-editable': nonEditable }"
+		>
 			<input
 				:disabled="disabled"
 				type="range"
@@ -73,7 +79,7 @@ function onInput(event: Event) {
 				<span v-for="i in Math.floor((max - min) / step) + 1" :key="i" class="tick" />
 			</div>
 			<div v-if="showThumbLabel" class="thumb-label-wrapper">
-				<div class="thumb-label" :class="{ visible: alwaysShowValue }">
+				<div class="thumb-label" :class="{ visible: alwaysShowValue || nonEditable }">
 					<slot name="thumb-label type-text" :value="modelValue">
 						{{ modelValue }}
 					</slot>
@@ -110,8 +116,14 @@ function onInput(event: Event) {
 		flex-grow: 1;
 
 		&.disabled {
-			--v-slider-thumb-color: var(--form--icon--disabled, var(--theme--foreground-subdued));
-			--v-slider-fill-color: var(--form--icon--disabled, var(--theme--foreground-subdued));
+			input {
+				cursor: not-allowed;
+			}
+
+			&:not(.non-editable) {
+				--v-slider-thumb-color: var(--theme--foreground-subdued);
+				--v-slider-fill-color: var(--theme--foreground-subdued);
+			}
 		}
 
 		&.thumb-label-visible {

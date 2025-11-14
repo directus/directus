@@ -48,6 +48,8 @@ const showAddNew = computed(() => {
 const activeItem = computed(() => (active.value !== null ? edits.value : null));
 
 const isSaveDisabled = computed(() => {
+	if (props.disabled) return true;
+
 	for (const field of props.fields) {
 		if (
 			field.meta?.required &&
@@ -201,7 +203,7 @@ function closeDrawer() {
 </script>
 
 <template>
-	<div class="repeater" :class="{ 'non-editable': nonEditable }">
+	<div class="repeater">
 		<v-notice v-if="(Array.isArray(internalValue) && internalValue.length === 0) || internalValue == null">
 			{{ placeholder || $t('no_items') }}
 		</v-notice>
@@ -220,13 +222,7 @@ function closeDrawer() {
 			@update:model-value="$emit('input', $event)"
 		>
 			<template #item="{ element, index }">
-				<v-list-item
-					:dense="internalValue.length > 4"
-					:non-editable="nonEditable"
-					block
-					clickable
-					@click="openItem(index)"
-				>
+				<v-list-item :dense="internalValue.length > 4" :non-editable block clickable @click="openItem(index)">
 					<v-icon v-if="!disabled && !sort" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 
 					<render-template
@@ -245,8 +241,8 @@ function closeDrawer() {
 			</template>
 		</draggable>
 
-		<div class="actions">
-			<v-button v-if="showAddNew && !disabled" :disabled @click="addNew">
+		<div v-if="!nonEditable" class="actions">
+			<v-button v-if="showAddNew" :disabled @click="addNew">
 				{{ addLabel || $t('create_new') }}
 			</v-button>
 		</div>
@@ -273,11 +269,11 @@ function closeDrawer() {
 
 			<div class="drawer-item-content">
 				<v-form
-					:disabled="disabled"
-					:non-editable="!!nonEditable"
+					:disabled
+					:non-editable
 					:fields="fieldsWithNames"
 					:model-value="activeItem"
-					:direction="direction"
+					:direction
 					autofocus
 					primary-key="+"
 					@update:model-value="trackEdits($event)"

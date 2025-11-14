@@ -168,7 +168,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 </script>
 
 <template>
-	<div class="image" :class="[width, { crop, 'non-editable': nonEditable }]">
+	<div class="image" :class="[width, { crop }]">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
 		<v-notice v-else-if="internalDisabled && !image" class="disabled-placeholder" center icon="hide_image">
@@ -201,7 +201,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 
 			<div class="shadow" />
 
-			<div v-if="!disabled || nonEditable" class="actions">
+			<div class="actions">
 				<v-button v-tooltip="$t('zoom')" icon rounded @click="lightboxActive = true">
 					<v-icon name="zoom_in" />
 				</v-button>
@@ -251,6 +251,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				v-if="image"
 				v-model:active="editImageDetails"
 				:disabled="internalDisabled"
+				:non-editable="nonEditable"
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"
@@ -274,7 +275,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			<file-lightbox v-model="lightboxActive" :file="image" />
 		</div>
 		<v-upload
-			v-else-if="!disabled"
+			v-else
 			from-url
 			:from-user="createAllowed && enableCreate"
 			:from-library="enableSelect"
@@ -282,9 +283,6 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			:filter="customFilter"
 			@input="onUpload"
 		/>
-		<v-notice v-else class="disabled-placeholder" center icon="hide_image">
-			{{ t('no_image_selected') }}
-		</v-notice>
 	</div>
 </template>
 
