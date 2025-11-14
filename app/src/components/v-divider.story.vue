@@ -4,6 +4,8 @@ import VDivider from './v-divider.vue';
 
 <template>
 	<Story title="VDivider">
+		<v-list-item>Item A</v-list-item>
 		<v-divider />
+		<v-list-item>Item B</v-list-item>
 	</Story>
 </template>
