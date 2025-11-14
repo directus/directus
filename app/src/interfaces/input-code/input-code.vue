@@ -3,7 +3,6 @@ import { useWindowSize } from '@/composables/use-window-size';
 import { getStringifiedValue } from '@/utils/get-stringified-value';
 import CodeMirror, { ModeSpec } from 'codemirror';
 import { Ref, computed, onMounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import importCodemirrorMode from './import-codemirror-mode';
 
 import 'codemirror/mode/meta';
@@ -42,8 +41,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const { width } = useWindowSize();
 
@@ -301,7 +298,7 @@ function isInterpolation(value: any) {
 	<div class="input-code codemirror-custom-styles" :class="{ disabled, 'non-editable': nonEditable }" dir="ltr">
 		<div ref="codemirrorEl"></div>
 
-		<v-button v-if="template" v-tooltip.left="t('fill_template')" small icon secondary @click="fillTemplate">
+		<v-button v-if="template" v-tooltip.left="$t('fill_template')" small icon secondary @click="fillTemplate">
 			<v-icon name="playlist_add" />
 		</v-button>
 	</div>

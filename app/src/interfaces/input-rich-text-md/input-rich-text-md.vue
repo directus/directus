@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/display/placeholder.js';
@@ -54,8 +53,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const { width } = useWindowSize();
 
@@ -215,13 +212,13 @@ function edit(type: Alteration, options?: Record<string, any>) {
 			<template v-if="view === 'editor'">
 				<v-menu v-if="toolbar?.includes('heading')" show-arrow placement="bottom-start">
 					<template #activator="{ toggle }">
-						<v-button v-tooltip="t('wysiwyg_options.heading')" :disabled="disabled" small icon @click="toggle">
+						<v-button v-tooltip="$t('wysiwyg_options.heading')" :disabled="disabled" small icon @click="toggle">
 							<v-icon name="format_size" />
 						</v-button>
 					</template>
 					<v-list>
 						<v-list-item v-for="n in 6" :key="n" clickable @click="edit('heading', { level: n })">
-							<v-list-item-content><v-text-overflow :text="t(`wysiwyg_options.h${n}`)" /></v-list-item-content>
+							<v-list-item-content><v-text-overflow :text="$t(`wysiwyg_options.h${n}`)" /></v-list-item-content>
 							<v-list-item-hint>{{ translateShortcut(['meta', 'alt']) }} {{ n }}</v-list-item-hint>
 						</v-list-item>
 					</v-list>
@@ -229,7 +226,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 
 				<v-button
 					v-if="toolbar?.includes('bold')"
-					v-tooltip="t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
+					v-tooltip="$t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
 					:disabled="disabled"
 					small
 					icon
@@ -239,7 +236,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 				</v-button>
 				<v-button
 					v-if="toolbar?.includes('italic')"
-					v-tooltip="t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
+					v-tooltip="$t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
 					:disabled="disabled"
 					small
 					icon
@@ -249,7 +246,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 				</v-button>
 				<v-button
 					v-if="toolbar?.includes('strikethrough')"
-					v-tooltip="t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
+					v-tooltip="$t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
 					:disabled="disabled"
 					small
 					icon
@@ -259,7 +256,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 				</v-button>
 				<v-button
 					v-if="toolbar?.includes('bullist')"
-					v-tooltip="t('wysiwyg_options.bullist')"
+					v-tooltip="$t('wysiwyg_options.bullist')"
 					:disabled="disabled"
 					small
 					icon
@@ -269,7 +266,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 				</v-button>
 				<v-button
 					v-if="toolbar?.includes('numlist')"
-					v-tooltip="t('wysiwyg_options.numlist')"
+					v-tooltip="$t('wysiwyg_options.numlist')"
 					:disabled="disabled"
 					small
 					icon
@@ -279,7 +276,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 				</v-button>
 				<v-button
 					v-if="toolbar?.includes('blockquote')"
-					v-tooltip="t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
+					v-tooltip="$t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
 					:disabled="disabled"
 					small
 					icon
@@ -289,7 +286,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 				</v-button>
 				<v-button
 					v-if="toolbar?.includes('code')"
-					v-tooltip="t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
+					v-tooltip="$t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
 					:disabled="disabled"
 					small
 					icon
@@ -299,7 +296,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 				</v-button>
 				<v-button
 					v-if="toolbar?.includes('link')"
-					v-tooltip="t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
+					v-tooltip="$t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
 					:disabled="disabled"
 					small
 					icon
@@ -310,7 +307,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 
 				<v-menu v-if="toolbar?.includes('table')" show-arrow :close-on-content-click="false">
 					<template #activator="{ toggle }">
-						<v-button v-tooltip="t('wysiwyg_options.table')" :disabled="disabled" small icon @click="toggle">
+						<v-button v-tooltip="$t('wysiwyg_options.table')" :disabled="disabled" small icon @click="toggle">
 							<v-icon name="table_chart" />
 						</v-button>
 					</template>
@@ -318,11 +315,11 @@ function edit(type: Alteration, options?: Record<string, any>) {
 					<template #default="{ deactivate }">
 						<div class="table-options">
 							<div class="field half">
-								<p class="type-label">{{ t('rows') }}</p>
+								<p class="type-label">{{ $t('rows') }}</p>
 								<v-input v-model="table.rows" :min="1" type="number" />
 							</div>
 							<div class="field half">
-								<p class="type-label">{{ t('columns') }}</p>
+								<p class="type-label">{{ $t('columns') }}</p>
 								<v-input v-model="table.columns" :min="1" type="number" />
 							</div>
 							<div class="field full">
@@ -344,7 +341,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 
 				<v-button
 					v-if="toolbar?.includes('image')"
-					v-tooltip="t('wysiwyg_options.image')"
+					v-tooltip="$t('wysiwyg_options.image')"
 					:disabled="disabled"
 					small
 					icon
@@ -376,10 +373,10 @@ function edit(type: Alteration, options?: Record<string, any>) {
 				@update:model-value="([value]: ['editor' | 'preview']) => (view = value)"
 			>
 				<v-button x-small value="editor" :class="[{ active: view !== 'preview' }]">
-					{{ t('interfaces.input-rich-text-md.edit') }}
+					{{ $t('interfaces.input-rich-text-md.edit') }}
 				</v-button>
 				<v-button x-small value="preview" :class="[{ active: view === 'preview' }]">
-					{{ t('interfaces.input-rich-text-md.preview') }}
+					{{ $t('interfaces.input-rich-text-md.preview') }}
 				</v-button>
 			</v-item-group>
 		</div>
@@ -409,12 +406,12 @@ function edit(type: Alteration, options?: Record<string, any>) {
 			@update:model-value="imageDialogOpen = false"
 		>
 			<v-card>
-				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
+				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
 				<v-card-text>
 					<v-upload from-url from-library :folder="folder" @input="onImageUpload" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="imageDialogOpen = false">{{ t('cancel') }}</v-button>
+					<v-button secondary @click="imageDialogOpen = false">{{ $t('cancel') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

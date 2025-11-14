@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { debounce } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 export type Choice = {
 	text: string;
@@ -26,7 +25,6 @@ const props = withDefaults(
 
 defineEmits(['input']);
 
-const { t } = useI18n();
 const search = ref('');
 
 const { choices, value } = toRefs(props);
@@ -45,11 +43,11 @@ const searchDebounced = ref('');
 
 <template>
 	<v-notice v-if="items.length === 0" type="info">
-		{{ t('no_options_available') }}
+		{{ $t('no_options_available') }}
 	</v-notice>
 	<div v-else class="select-multiple-checkbox-tree">
 		<div v-if="items.length > 10" class="search">
-			<v-input v-model="search" class="input" type="text" :placeholder="t('search')">
+			<v-input v-model="search" class="input" type="text" :placeholder="$t('search')">
 				<template #prepend>
 					<v-icon name="search" />
 				</template>
@@ -73,7 +71,7 @@ const searchDebounced = ref('');
 
 		<div class="footer">
 			<button :class="{ active: showSelectionOnly === false }" @click="showSelectionOnly = false">
-				{{ t('interfaces.select-multiple-checkbox-tree.show_all') }}
+				{{ $t('interfaces.select-multiple-checkbox-tree.show_all') }}
 			</button>
 			/
 			<button
@@ -81,7 +79,7 @@ const searchDebounced = ref('');
 				:disabled="value == null || value.length === 0"
 				@click="showSelectionOnly = true"
 			>
-				{{ t('interfaces.select-multiple-checkbox-tree.show_selected') }}
+				{{ $t('interfaces.select-multiple-checkbox-tree.show_selected') }}
 			</button>
 		</div>
 	</div>

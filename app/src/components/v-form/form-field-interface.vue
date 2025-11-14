@@ -2,7 +2,6 @@
 import { useExtension } from '@/composables/use-extension';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import type { FormField, ComparisonContext } from './types';
 
 const props = defineProps<{
@@ -23,8 +22,6 @@ const props = defineProps<{
 }>();
 
 defineEmits(['update:modelValue', 'setFieldValue']);
-
-const { t } = useI18n();
 
 const inter = useExtension(
 	'interface',
@@ -80,7 +77,7 @@ const value = computed(() =>
 			/>
 
 			<template #fallback>
-				<v-notice type="warning">{{ t('unexpected_error') }}</v-notice>
+				<v-notice type="warning">{{ $t('unexpected_error') }}</v-notice>
 			</template>
 		</v-error-boundary>
 
@@ -92,7 +89,7 @@ const value = computed(() =>
 		/>
 
 		<v-notice v-else type="warning">
-			{{ t('interface_not_found', { interface: field.meta && field.meta.interface }) }}
+			{{ $t('interface_not_found', { interface: field.meta && field.meta.interface }) }}
 		</v-notice>
 	</div>
 </template>

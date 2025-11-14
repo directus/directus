@@ -4,7 +4,6 @@ import axios from 'axios';
 import { debounce, get, throttle } from 'lodash';
 import { render } from 'micromustache';
 import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -31,8 +30,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const results = ref<Record<string, any>[]>([]);
 
@@ -93,7 +90,7 @@ async function onValueChange(value: string, activate: () => void, deactivate: ()
 
 <template>
 	<v-notice v-if="!url" type="warning">
-		{{ t('one_or_more_options_are_missing') }}
+		{{ $t('one_or_more_options_are_missing') }}
 	</v-notice>
 	<div v-else>
 		<v-menu attached :disabled="disabled">

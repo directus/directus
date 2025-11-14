@@ -6,7 +6,6 @@ import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { ErrorCode } from '@directus/errors';
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import z from 'zod';
 
@@ -15,7 +14,6 @@ type Credentials = {
 	password: string;
 };
 
-const { t } = useI18n();
 const router = useRouter();
 const serverStore = useServerStore();
 const userStore = useUserStore();
@@ -91,7 +89,7 @@ async function onSubmit() {
 			autofocus
 			autocomplete="username"
 			type="email"
-			:placeholder="t('email')"
+			:placeholder="$t('email')"
 			:disabled="isLoading"
 		/>
 		<interface-system-input-password :value="password" :disabled="isLoading" @input="password = $event" />
@@ -100,7 +98,7 @@ async function onSubmit() {
 			{{ errorFormatted }}
 		</v-notice>
 		<div class="buttons">
-			<v-button type="submit" :loading="isLoading" :disabled="isLoading" large>{{ t('register') }}</v-button>
+			<v-button type="submit" :loading="isLoading" :disabled="isLoading" large>{{ $t('register') }}</v-button>
 		</div>
 	</form>
 </template>

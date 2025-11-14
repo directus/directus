@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldMeta } from '@directus/types';
 import { isEqual, sortBy } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 
 const props = withDefaults(
@@ -25,17 +23,12 @@ const props = withDefaults(
 	}>(),
 	{
 		fields: () => [],
-		addLabel: () => i18n.global.t('create_new'),
-		headerPlaceholder: () => i18n.global.t('empty_item'),
-		placeholder: () => i18n.global.t('no_items'),
 	},
 );
 
 const emit = defineEmits<{
 	(e: 'input', value: FieldMeta[] | null): void;
 }>();
-
-const { t } = useI18n();
 
 const active = ref<number | null>(null);
 const drawerOpen = computed(() => active.value !== null);
@@ -212,10 +205,10 @@ function closeDrawer() {
 <template>
 	<div class="repeater">
 		<v-notice v-if="(Array.isArray(internalValue) && internalValue.length === 0) || internalValue == null">
-			{{ placeholder }}
+			{{ placeholder || $t('no_items') }}
 		</v-notice>
 		<v-notice v-else-if="!Array.isArray(internalValue)" type="warning">
-			<p>{{ t('interfaces.list.incompatible_data') }}</p>
+			<p>{{ $t('interfaces.list.incompatible_data') }}</p>
 		</v-notice>
 
 		<draggable
@@ -250,13 +243,13 @@ function closeDrawer() {
 
 		<div v-if="!nonEditable" class="actions">
 			<v-button v-if="showAddNew" :disabled @click="addNew">
-				{{ addLabel }}
+				{{ addLabel || $t('create_new') }}
 			</v-button>
 		</div>
 
 		<v-drawer
 			:model-value="drawerOpen"
-			:title="displayValue || headerPlaceholder"
+			:title="displayValue || headerPlaceholder || $t('empty_item')"
 			persistent
 			@update:model-value="checkDiscard()"
 			@cancel="checkDiscard()"
@@ -269,7 +262,7 @@ function closeDrawer() {
 			</template>
 
 			<template #actions>
-				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="isSaveDisabled" @click="saveItem(active!)">
+				<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="isSaveDisabled" @click="saveItem(active!)">
 					<v-icon name="check" />
 				</v-button>
 			</template>
@@ -290,13 +283,13 @@ function closeDrawer() {
 
 		<v-dialog v-model="confirmDiscard" @esc="confirmDiscard = false" @apply="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave()">
-						{{ t('discard_changes') }}
+						{{ $t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmDiscard = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="confirmDiscard = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
