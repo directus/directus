@@ -85,7 +85,7 @@ const sortOptions = [
 
 		<div class="field">
 			<v-icon class="icon" small name="search" />
-			<input v-model="searchInputValue" v-focus="true" :placeholder="t('search_extensions')" class="search-input" />
+			<input v-model="searchInputValue" v-focus="true" :placeholder="$t('search_extensions')" class="search-input" />
 		</div>
 
 		<div v-show="filterCount !== 0" class="item-count">{{ showingCount }}</div>

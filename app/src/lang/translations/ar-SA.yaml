@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: حول
+first_name: الاسم الأول
+last_name: الاسم الأخير
 identifier: المعرِّف
 avatar: الصورة الرمزية
 application: التطبيق
@@ -165,19 +167,9 @@ rename_version: إعادة تسمية الإصدار
 compare_version: مقارنة الإصدار
 save_version: حفظ الإصدار
 promote_version: تحديث الإصدار
-promote_version_disabled: لا يوجد تغييرات
-promote_version_drawer_title: تحديث الإصدار {version} إلى الإصدار الرئيس
-promote_version_changes: التغييرات
-promote_version_preview: معاينة
-outdated_notice: >-
-  تم تحديث العنصر الرئيس منذ إنشاء هذا الإصدار. يرجى مراجعة جميع قيم الحقول أدناه، وتأكيد الإصدار الذي يجب استخدامه عند تحديث هذا الإصدار إلى العنصر الرئيس.
-promote_notice: >-
-  يرجى مراجعة جميع قيم الحقول أدناه، وتأكيد الإصدار الذي يجب استخدامه عند تحديث هذا الإصدار إلى العنصر الرئيس.
 delete_version: حذف الإصدار
 delete_version_copy: >-
   هل أنت متأكد من أنك تريد حذف الإصدار "{version}"؟ لا يمكن التراجع عن هذا الإجراء.
-delete_on_promote_copy: >-
-  هل تريد حذف أو الإبقاء على الإصدار "{version}" بعد التحديث؟
 reset_bookmark: إعادة تعيين المفضلة
 update_bookmark: تحديث المفضلة
 delete_bookmark: حذف إشارة مرجعية
@@ -447,7 +439,6 @@ revision_delta_created: تم الإنشاء
 revision_delta_created_externally: تم إنشاؤها خارجيا
 revision_delta_updated: 'تم تحديث حقل واحد | تحديث حقول {count}'
 revision_delta_deleted: حذف
-revision_delta_version_saved: 'تم حفظ الإصدار (تم تحديث حقل واحد) | تم حفظ الإصدار (تم تحديث {count} حقول)'
 revision_delta_reverted: تمت الإستعادة
 revision_delta_update_message: تم تحديث هذا الحقل ولكن يتم إخفاء قيمته لأسباب أمنية.
 revision_delta_other: تنقيح
@@ -1506,6 +1497,8 @@ shares: مشاركات
 unlimited_usage: استخدام غير محدود
 no_shares: لا توجد مشاركات لإظهارها
 new_share: مشاركة جديدة
+mcp_prompts_collection_schema:
+  messages_role_user: مستخدم
 expired: منتهية الصلاحية
 upcoming: القادم
 share: مشاركة

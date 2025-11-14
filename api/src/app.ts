@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { handlePressure } from '@directus/pressure';
+import { toBoolean } from '@directus/utils';
 import cookieParser from 'cookie-parser';
 import type { Request, RequestHandler, Response } from 'express';
 import express from 'express';
@@ -25,6 +26,7 @@ import flowsRouter from './controllers/flows.js';
 import foldersRouter from './controllers/folders.js';
 import graphqlRouter from './controllers/graphql.js';
 import itemsRouter from './controllers/items.js';
+import mcpRouter from './controllers/mcp.js';
 import metricsRouter from './controllers/metrics.js';
 import notFoundHandler from './controllers/not-found.js';
 import notificationsRouter from './controllers/notifications.js';
@@ -69,6 +71,7 @@ import metricsSchedule from './schedules/metrics.js';
 import retentionSchedule from './schedules/retention.js';
 import telemetrySchedule from './schedules/telemetry.js';
 import tusSchedule from './schedules/tus.js';
+import projectSchedule from './schedules/project.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
 import { validateStorage } from './utils/validate-storage.js';
@@ -297,6 +300,10 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/folders', foldersRouter);
 	app.use('/items', itemsRouter);
 
+	if (toBoolean(env['MCP_ENABLED']) === true) {
+		app.use('/mcp', mcpRouter);
+	}
+
 	if (env['METRICS_ENABLED'] === true) {
 		app.use('/metrics', metricsRouter);
 	}
@@ -334,6 +341,7 @@ export default async function createApp(): Promise<express.Application> {
 	await telemetrySchedule();
 	await tusSchedule();
 	await metricsSchedule();
+	await projectSchedule();
 
 	await emitter.emitInit('app.after', { app });
 

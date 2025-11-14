@@ -426,10 +426,10 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 <template>
 	<v-notice v-if="!relationInfo" type="warning">
-		{{ t('relationship_not_setup') }}
+		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
-		{{ t('no_singleton_relations') }}
+		{{ $t('no_singleton_relations') }}
 	</v-notice>
 	<div v-else class="one-to-many">
 		<div :class="{ bordered: layout === LAYOUTS.TABLE }">
@@ -450,7 +450,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 				<v-button
 					v-if="!disabled && updateAllowed && selectedKeys.length"
-					v-tooltip.bottom="t('edit')"
+					v-tooltip.bottom="$t('edit')"
 					rounded
 					icon
 					secondary
@@ -461,7 +461,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 				<v-button
 					v-if="!disabled && enableSelect && updateAllowed"
-					v-tooltip.bottom="t('add_existing')"
+					v-tooltip.bottom="$t('add_existing')"
 					rounded
 					icon
 					:secondary="enableCreate"
@@ -472,7 +472,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 				<v-button
 					v-if="!disabled && enableCreate && createAllowed"
-					v-tooltip.bottom="t('create_item')"
+					v-tooltip.bottom="$t('create_item')"
 					rounded
 					icon
 					@click="createItem"
@@ -511,7 +511,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 					<div class="item-actions">
 						<router-link
 							v-if="enableLink"
-							v-tooltip="t('navigate_to_item')"
+							v-tooltip="$t('navigate_to_item')"
 							:to="getLinkForItem(item)!"
 							class="item-link"
 							:class="{ disabled: item.$type === 'created' }"
@@ -545,7 +545,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 
 			<template v-else>
 				<v-notice v-if="displayItems.length === 0">
-					{{ t('no_items') }}
+					{{ $t('no_items') }}
 				</v-notice>
 
 				<draggable
@@ -579,7 +579,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 							<div class="item-actions">
 								<router-link
 									v-if="enableLink && element.$type !== 'created'"
-									v-tooltip="t('navigate_to_item')"
+									v-tooltip="$t('navigate_to_item')"
 									:to="getLinkForItem(element)!"
 									class="item-link"
 									@click.stop
@@ -614,7 +614,7 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 						<div class="spacer" />
 
 						<div v-if="loading === false" class="per-page">
-							<span>{{ t('per_page') }}</span>
+							<span>{{ $t('per_page') }}</span>
 							<v-select v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
 						</div>
 					</template>
@@ -625,14 +625,14 @@ const hasSatisfiedUniqueConstraint = computed(() => {
 						:disabled="disabled"
 						@click="createItem"
 					>
-						{{ t('create_new') }}
+						{{ $t('create_new') }}
 					</v-button>
 					<v-button
 						v-if="enableSelect && updateAllowed && !hasSatisfiedUniqueConstraint"
 						:disabled="disabled"
 						@click="selectModalActive = true"
 					>
-						{{ t('add_existing') }}
+						{{ $t('add_existing') }}
 					</v-button>
 					<div class="spacer" />
 					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />

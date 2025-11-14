@@ -135,14 +135,14 @@ function useConfirmation() {
 
 	<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="onConfirmDelete">
 		<v-card>
-			<v-card-title>{{ t('batch_delete_confirm', 1) }}</v-card-title>
+			<v-card-title>{{ $t('batch_delete_confirm', 1) }}</v-card-title>
 
 			<v-card-actions>
 				<v-button secondary @click="confirmDelete = false">
-					{{ t('cancel') }}
+					{{ $t('cancel') }}
 				</v-button>
 				<v-button kind="danger" @click="onConfirmDelete">
-					{{ t('delete_label') }}
+					{{ $t('delete_label') }}
 				</v-button>
 			</v-card-actions>
 		</v-card>

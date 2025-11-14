@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import { Field, ValidationError } from '@directus/types';
+import type { ComparisonContext } from '@/components/v-form/types';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -15,6 +16,7 @@ const props = withDefaults(
 		disabled?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
+		comparison?: ComparisonContext;
 		loading?: boolean;
 		validationErrors?: ValidationError[];
 		badge?: string;
@@ -36,6 +38,8 @@ defineEmits(['apply']);
 const { t } = useI18n();
 
 const detailOpen = ref(props.start === 'open');
+
+const { isComparisonIndicatorActive, isComparisonIndicatorMuted } = useComparisonIndicator();
 
 // In case that conditions change the start prop after the group already got rendered
 // caused by the async loading of data to run the conditions against
@@ -86,16 +90,47 @@ watch(validationMessages, (newVal, oldVal) => {
 	if (isEqual(newVal, oldVal)) return;
 	detailOpen.value = validationMessages.value.length > 0;
 });
+
+function useComparisonIndicator() {
+	const isGroupWithFieldDifferences = computed(
+		() => props.comparison && props.fields.some((field) => props.comparison!.fields.has(field.field)),
+	);
+
+	const isComparisonIndicatorActive = computed(() => !detailOpen.value && isGroupWithFieldDifferences.value);
+
+	const isComparisonIndicatorMuted = computed(() => {
+		if (!props.comparison) return false;
+		if (detailOpen.value && isGroupWithFieldDifferences.value) return true;
+
+		return (
+			!isGroupWithFieldDifferences.value &&
+			props.fields.some((field) => props.comparison!.revisionFields?.has(field.field))
+		);
+	});
+
+	return {
+		isComparisonIndicatorActive,
+		isComparisonIndicatorMuted,
+	};
+}
 </script>
 
 <template>
-	<v-detail v-model="detailOpen" :start-open="start === 'open'" class="group-detail">
+	<v-detail
+		v-model="detailOpen"
+		:start-open="start === 'open'"
+		class="group-detail"
+		:class="{
+			'indicator-active': isComparisonIndicatorActive,
+			'indicator-muted': isComparisonIndicatorMuted,
+		}"
+	>
 		<template #activator="{ toggle, active }">
-			<button class="toggle-btn" type="button" @click="toggle">
+			<button type="button" class="toggle-btn" @click="toggle">
 				<v-divider :class="{ active, edited }" :inline-title="false" large>
 					<template v-if="headerIcon" #icon><v-icon :name="headerIcon" class="header-icon" /></template>
 					<template v-if="field.name">
-						<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
+						<span v-if="edited" v-tooltip="$t('edited')" class="edit-dot"></span>
 						<span class="title">{{ field.name }}</span>
 					</template>
 					<v-icon
@@ -124,14 +159,35 @@ watch(validationMessages, (newVal, oldVal) => {
 			:direction="direction"
 			:show-no-visible-fields="false"
 			:show-validation-errors="false"
+			:comparison="comparison"
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</v-detail>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@use '@/styles/mixins';
+
 .v-form {
 	padding-block-start: calc(var(--theme--form--row-gap) / 2);
+}
+
+.group-detail {
+	&.indicator-active {
+		@include mixins.field-indicator;
+
+		&::before {
+			transition: background-color var(--slow) var(--transition);
+		}
+	}
+
+	&.indicator-muted {
+		@include mixins.field-indicator('muted');
+
+		&::before {
+			transition: background-color var(--slow) var(--transition) var(--fast);
+		}
+	}
 }
 
 .toggle-btn {

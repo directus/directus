@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -24,8 +23,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const presetVals = computed<string[]>(() => {
 	if (props.presets !== undefined) return processArray(props.presets);
@@ -84,7 +81,7 @@ function processArray(array: string[]): string[] {
 }
 
 function onInput(event: KeyboardEvent) {
-	if (event.target && (event.key === 'Enter' || event.key === ',')) {
+	if (event.target && (event.key === 'Enter' || event.key === ',' || (event.type === 'blur' && document.hasFocus()))) {
 		event.preventDefault();
 		addTag((event.target as HTMLInputElement).value);
 		(event.target as HTMLInputElement).value = '';
@@ -122,10 +119,11 @@ function emitValue() {
 	<div class="interface-tags">
 		<v-input
 			v-if="allowCustom"
-			:placeholder="placeholder || t('interfaces.tags.add_tags')"
+			:placeholder="placeholder || $t('interfaces.tags.add_tags')"
 			:disabled="disabled"
 			:dir="direction"
 			@keydown="onInput"
+			@blur="onInput"
 		>
 			<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 			<template #append><v-icon :name="iconRight" /></template>

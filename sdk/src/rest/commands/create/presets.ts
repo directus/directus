@@ -1,5 +1,5 @@
 import type { DirectusPreset } from '../../../schema/preset.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreatePresetOutput<
@@ -18,7 +18,7 @@ export type CreatePresetOutput<
  */
 export const createPresets =
 	<Schema, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
-		items: Partial<DirectusPreset<Schema>>[],
+		items: NestedPartial<DirectusPreset<Schema>>[],
 		query?: TQuery,
 	): RestCommand<CreatePresetOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createPresets =
  */
 export const createPreset =
 	<Schema, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
-		item: Partial<DirectusPreset<Schema>>,
+		item: NestedPartial<DirectusPreset<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreatePresetOutput<Schema, TQuery>, Schema> =>
 	() => ({

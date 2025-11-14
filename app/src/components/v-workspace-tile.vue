@@ -2,7 +2,6 @@
 import type { Panel } from '@directus/extensions';
 import { throttle } from 'lodash';
 import { StyleValue, computed, reactive, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useUserStore } from '@/stores/user';
 
 export type AppTile = {
@@ -74,8 +73,6 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits(['update', 'move', 'duplicate', 'delete', 'edit', 'preview']);
-
-const { t } = useI18n();
 
 const userStore = useUserStore();
 
@@ -286,7 +283,7 @@ function useDragDrop() {
 		</div>
 
 		<div v-if="editMode" class="edit-actions" @pointerdown.stop>
-			<v-icon v-tooltip="t('edit')" class="edit-icon" name="edit" clickable @click="$emit('edit')" />
+			<v-icon v-tooltip="$t('edit')" class="edit-icon" name="edit" clickable @click="$emit('edit')" />
 
 			<v-menu v-if="showOptions" placement="bottom-end" show-arrow>
 				<template #activator="{ toggle }">
@@ -299,7 +296,7 @@ function useDragDrop() {
 							<v-icon class="move-icon" name="input" />
 						</v-list-item-icon>
 						<v-list-item-content>
-							{{ t('copy_to') }}
+							{{ $t('copy_to') }}
 						</v-list-item-content>
 					</v-list-item>
 
@@ -307,14 +304,14 @@ function useDragDrop() {
 						<v-list-item-icon>
 							<v-icon name="control_point_duplicate" />
 						</v-list-item-icon>
-						<v-list-item-content>{{ t('duplicate') }}</v-list-item-content>
+						<v-list-item-content>{{ $t('duplicate') }}</v-list-item-content>
 					</v-list-item>
 
 					<v-list-item class="delete-action" clickable @click="$emit('delete')">
 						<v-list-item-icon>
 							<v-icon name="delete" />
 						</v-list-item-icon>
-						<v-list-item-content>{{ t('delete') }}</v-list-item-content>
+						<v-list-item-content>{{ $t('delete') }}</v-list-item-content>
 					</v-list-item>
 				</v-list>
 			</v-menu>

@@ -21,6 +21,32 @@
 # 'Proxy', 'Intl'
 
 about: About
+directus_bsl: Directus BSL 1.1
+privacy_policy: Privacy Policy
+contact_our_team: Contact our Team
+setup_welcome: Welcome to Directus
+setup_info: Let's create your admin account and get your project up and running.
+setup_license_notice: >
+  Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget.
+setup_license_follow_up: >
+  Entities above this threshold require a paid license. You can continue evaluating Directus now and {contactOurTeam}
+  when you're ready to discuss production use.
+setup_save_accept_license: >
+  By hitting save, you accept the terms of the {directusBsl} and {privacyPolicy}.
+setup_accept_license: I accept the terms of the {directusBsl} and {privacyPolicy}
+setup_marketing_emails: Send me product updates and release notes
+setup_launch: Launch Directus
+setup_project: Setup Project
+first_name: First Name
+last_name: Last Name
+admin_email: Admin Email
+owner_email: Owner Email
+email_address: Email Address
+organization_name: Organization Name
+how_do_you_use_directus: What are you using Directus for?
+usage_personal: Personal / Learning
+usage_commercial: Business / Commercial
+usage_community: Open Source / Community
 identifier: Identifier
 avatar: Avatar
 application: Application
@@ -60,6 +86,8 @@ full_width: Full Width
 group: Group
 popular: Popular
 recent: Recent
+latest: Latest
+updated: Updated
 export_items: Export Items
 and: And
 or: Or
@@ -119,6 +147,13 @@ hook: Hook
 fill_width: Fill Width
 field_name_translations: Field Name Translations
 enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication
+sso_tfa_setup_notice:
+  You will be logged out of your account and required to log back in. Any unsaved changes will be discarded.
+enable_tfa: Enable 2FA
+cancel_tfa_setup: Cancel 2FA Setup
+cancel_tfa_setup_notice: Are you sure you want to cancel the 2FA setup?
+keep_setup: Keep Setup
+cancel_setup: Cancel Setup
 add_field: Add Field
 role_name: Role Name
 policy_name: Policy Name
@@ -175,21 +210,14 @@ rename_version: Rename Version
 compare_version: Compare Version
 save_version: Save Version
 promote_version: Promote Version
-promote_version_disabled: No Changes
-promote_version_drawer_title: Promote {version} into Main
-promote_version_changes: Changes
-promote_version_preview: Preview
-outdated_notice: >-
-  The main item has been updated since this version was created. Please review all the field values below, and confirm
-  which version should be used when promoting this version into the main item.
-promote_notice: >-
-  Please review all the field values below, and confirm which version should be used when promoting this version into
-  the main item.
+apply: Apply
+select_all_differences: Select All Differences
+main_updated_notice: The main item has been updated since this version was created.
 delete_version: Delete Version
 delete_version_copy: >-
   Are you sure you want to delete the "{version}" version? This action cannot be undone.
-delete_on_promote_copy: >-
-  Do you want to delete or keep the "{version}" version after promoting?
+delete_on_apply_copy: >-
+  You are about to promote “{version}” to Main. What should happen to “{version}” after promotion?
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -258,6 +286,8 @@ validationError:
   iends_with: Value has to end with {substring}
   nends_with: Value can't end with {substring}
   niends_with: Value can't end with {substring}
+  confirm_password: Passwords do not match
+  org_name: Please include an organization name
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
@@ -440,6 +470,8 @@ precision_scale: Precision & Scale
 readonly: Readonly
 unique: Unique
 index: Index
+searchable: Searchable
+field_searchable: Include field in search queries
 updated_on: Updated On
 updated_by: Updated By
 primary_key: Primary Key
@@ -479,11 +511,13 @@ revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
 revision_delta_deleted: Deleted
-revision_delta_version_saved: 'Version Save (Updated 1 Field) | Version Save (Updated {count} Fields)'
 revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
+updated_in_revision: Updated in this Revision
+updated_in_revision_matches_latest: Updated in this Revision but matches Latest
+differences_count: 'No Differences | 1 Difference | {count} Differences'
 presentation_text_values_cannot_be_reimported: 'Uses presentation text, values can not be re-imported.'
 download_page_as_csv: 'Download Page as CSV'
 download_page_as_csv_unsupported: This layout does not support downloading the current page.
@@ -506,7 +540,14 @@ import_data_input_placeholder: CSV or JSON...
 import_data_button: Start Import
 import_data_indeterminate: Importing Data...
 import_data_success: Data successfully imported from {filename}
+import_data_errors: Import Error
 import_data_error: This file's data structure doesn't match the collection.
+import_data_validation_errors_notice: 'The following rows have invalid values:'
+import_data_error_row: 'Row {rows}{field}:'
+snapshot:
+  export: Export Schema
+  download: Download Snapshot (JSON)
+  info: Schema-only export for sharing or debugging
 label_import: Import
 label_export: Export
 import_export: Import / Export
@@ -683,6 +724,7 @@ activity_log: Activity Log
 all_items: All Items
 any: Any
 csv: CSV
+csv_utf8: CSV Excel (UTF-8)
 no_collections: No Collections
 create_collection: Create Collection
 no_collections_copy_admin: You don’t have any Collections yet. Click the button below to get started.
@@ -747,6 +789,7 @@ enabled_dev_tooltip: App extensions are always enabled in dev mode
 disable_tfa: Disable 2FA
 admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
 tfa_setup: Setup 2FA
+tfa_setup_description: Set up two-factor authentication to protect your account
 tfa_scan_code: Scan the code in your authenticator app to finish setting up 2FA
 enter_otp_to_disable_tfa: Enter the OTP to disable 2FA
 create_account: Create Account
@@ -973,6 +1016,7 @@ flows: Flows
 flow: Flow
 select_a_flow: Select a Flow
 run_flow_confirm: Are you sure you want to execute this flow?
+run_flow_anyway: Run Flow Anyway
 run_flow_on_current_collection: Run Flow on Current Collection
 run_flow_on_current: Run Flow on Current Item
 run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
@@ -1158,6 +1202,8 @@ appearance_dark: Dark
 other: Other...
 adding_user: Adding User
 unknown_user: Unknown User
+unknown_version: Unknown Version
+unknown_revision: Unknown Revision
 creating_in: 'Creating Item in {collection}'
 editing_in: 'Editing Item in {collection}'
 viewing_in: 'Viewing Item in {collection}'
@@ -1170,6 +1216,8 @@ settings_roles: User Roles
 settings_permissions: Access Policies
 settings_project: Settings
 settings_appearance: Appearance
+settings_ai: AI
+model_context_protocol: Model Context Protocol
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_system_logs: System Logs
@@ -1217,6 +1265,7 @@ page_help_files_item: >-
 page_help_settings_project: "**Settings** — Your project's global configuration options."
 page_help_settings_appearance: "**Appearance** — Your project's appearance and theming options."
 page_help_settings_extensions: '**Extensions** — The extensions installed in your project.'
+page_help_settings_ai: "**AI** — Your project's artificial intelligence configuration options."
 page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
   as well as unmanaged database tables that can be added.
@@ -1224,7 +1273,7 @@ page_help_settings_datamodel_fields: >-
   **Data Model: Collection** — A form for managing this collection and its fields.
 page_help_settings_system_logs: '**System Logs** — Access a live stream of the system logs.'
 page_help_settings_policies_collection: '**Browse Policies** — Lists all policies within the project.'
-page_help_settings_policies_item: "**Policy Detail** — Manage a policy's permissions and other settings."
+page_help_settings_policies_item: '**Policy Detail** — Manage a policies permissions and other settings.'
 page_help_settings_roles_collection: '**Browse Roles** — Lists the all user roles within the project.'
 page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
 page_help_settings_presets_collection: >-
@@ -1452,6 +1501,32 @@ fields:
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
     visual_editor_urls: Visual Editor URLs
+    mcp_enabled: MCP Server
+    mcp_enabled_note:
+      'Connect AI/LLM tools to your Directus project via <a href="https://directus.io/docs/guides/ai/mcp"
+      target="_blank">Model Context Protocol (MCP)</a>. This enables AI assistants to read and interact with your
+      Directus data securely.'
+    mcp_notice:
+      'Model Context Protocol is a standard for connecting LLMs to applications like Directus. Once enabled, the
+      Directus MCP server will be available at `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp"
+      target="_blank">Learn more about MCP and how to connect.</a>'
+    mcp_allow_deletes: Allow Deletes
+    mcp_allow_deletes_note:
+      'Enable deletion of items, files, flows, fields, relations, and collections through MCP tools. <strong>WARNING:
+      May cause data loss.</strong> Disabled by default for safety.'
+    mcp_prompts_collection: AI Prompts Collection
+    mcp_prompts_collection_note:
+      'Select collection for storing <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">reusable
+      prompt templates</a> for AI interactions.'
+    mcp_system_prompt_divider: System Prompt Configuration
+    mcp_system_prompt_enabled: Use System Prompt
+    mcp_system_prompt_enabled_note:
+      "Use the <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>default system prompt</a>
+      to guide LLM behavior. Disable to remove or override with your own prompt below."
+    mcp_system_prompt: Custom System Prompt
+    mcp_system_prompt_note:
+      'Custom system prompt to replace the default. Leave empty to use default (if enabled above).'
+
   directus_shares:
     name: Name
     role: Role
@@ -1636,12 +1711,43 @@ unlimited_usage: Unlimited usage
 uses_left: No uses left | One use left | {n} uses left
 no_shares: No shares to show
 new_share: New Share
+mcp_prompts_collection:
+  no_collection_selected: No collection selected
+  no_collection_selected_copy: Select a collection to enable reusable prompt templates.
+  collection_not_found: Collection Not Found
+  collection_not_found_description: The collection "{collection}" does not exist in the database.
+  generate: Generate AI Prompts collection...
+  already_exists: AI Prompts collection already exists
+  generate_collection_dialog_title: Generate AI prompts collection
+  generate_fields_dialog_title: Generate AI prompts fields
+  generate_collection_dialog_description:
+    'This will create a new collection "{collection}" with the necessary fields and settings to store reusable prompt
+    templates.'
+  generate_fields_dialog_description: 'This will create the required fields on your "{collection}" collection.'
+  validation_success: 'Collection ready to be used as the "AI Prompts" collection.'
+  validation_error_invalid: Collection cannot be used
+  validation_error_missing: Collection cannot be used yet
+  invalid_fields: 'The following fields exist but are of an incompatible type:'
+  missing_fields: 'The following fields are required but missing:'
+  generate_missing: Generate missing fields...
+mcp_prompts_collection_schema:
+  system_prompt_note: Instructions that shape how the LLM responds.
+  messages_note:
+    'Optional: Define the conversation structure between users and LLMs. Used to add context and improve outputs.'
+  messages_role_user: User
+  messages_role_assistant: Assistant
+  messages_role_note: Who is speaking in this message.
+  meta_prompts_notice:
+    'Prompts are reusable templates that you can use with LLMs through the Directus MCP server, Flows, or other AI
+    applications. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">Learn more about creating
+    effective prompts.</a>'
 expired: Expired
 upcoming: Upcoming
 share: Share
 share_item: Share Item
 shared_with_you: An item has been shared with you
 shared_enter_passcode: Enter your passcode to continue...
+generate: Generate
 shared_leave_blank_for_passwordless_access: Leave blank for passwordless access
 shared_leave_blank_for_unlimited: Leave blank for unlimited
 shared_times_remaining: This link can only be used {n} times
@@ -1838,6 +1944,11 @@ interfaces:
     collection: Collection
     description: Select between existing collections
     include_system_collections: Include System Collections
+  system-owner:
+    update: Update Project Owner
+    edit: Edit Project Owner
+    system-owner: System Owner
+    description: System Owner Interface
   system-collections:
     collections: Collections
     description: Select between existing collections
@@ -1935,6 +2046,9 @@ interfaces:
   collection-item-dropdown:
     collection-item-dropdown: Collection Item Dropdown
     description: Select an item from a collection in JSON format
+  collection-item-multiple-dropdown:
+    collection-item-multiple-dropdown: Collection Item Dropdown (Multiple)
+    description: Select multiple items from a collection in JSON format
   input-rich-text-md:
     markdown: Markdown
     description: Enter and preview markdown
@@ -2611,15 +2725,13 @@ percent: Percent
 show_password: Show password
 hide_password: Hide password
 bsl_banner:
-  welcome_to_directus: Welcome to Directus!
-  directus_free_use:
-    Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget.
-  organization_threshold: Entities above this threshold require a paid license.
-  license_agreement: By clicking "Accept", you agree to the {directusBsl} and {privacyPolicy}.
-  directus_bsl: Directus BSL 1.1
-  privacy_policy: Privacy Policy
-  accept_terms: Accept
-  get_license: Get a License
+  title: You have not set a project owner.
+  license:
+    We need this to ensure compliance with our BSL 1.1 license. This should be the primary contact responsible for your
+    project.
+  set_owner: Set Owner
+  remind_later: Remind Later
+  remind_next_login: We'll remind you again on your next login.
 accepted: Accepted
 text_direction_auto: Automatic (Match Language)
 text_direction_ltr: Left to Right (LTR)

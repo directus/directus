@@ -6,6 +6,7 @@ type Image = {
 	id: string;
 	type: string;
 	title: string;
+	modified_on: Date;
 };
 
 const props = defineProps<{
@@ -17,7 +18,11 @@ const imageError = ref(false);
 
 const src = computed(() => {
 	if (props.value?.id === null || props.value?.id === undefined) return null;
-	return getAssetUrl(`${props.value.id}?key=system-small-cover`);
+
+	return getAssetUrl(props.value.id, {
+		imageKey: 'system-small-cover',
+		cacheBuster: props.value.modified_on,
+	});
 });
 </script>
 

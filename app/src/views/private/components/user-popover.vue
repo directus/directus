@@ -4,14 +4,11 @@ import { getAssetUrl } from '@/utils/get-asset-url';
 import { userName } from '@/utils/user-name';
 import { User } from '@directus/types';
 import { computed, onUnmounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 const props = defineProps<{
 	user: string;
 }>();
-
-const { t } = useI18n();
 
 const router = useRouter();
 
@@ -23,7 +20,10 @@ const avatarSrc = computed(() => {
 	if (data.value === null) return null;
 
 	if (data.value.avatar?.id) {
-		return getAssetUrl(`${data.value.avatar.id}?key=system-medium-cover`);
+		return getAssetUrl(data.value.avatar.id, {
+			imageKey: 'system-medium-cover',
+			cacheBuster: data.value.avatar.modified_on,
+		});
 	}
 
 	return null;
@@ -50,7 +50,7 @@ async function fetchUser() {
 	try {
 		const response = await api.get(`/users/${props.user}`, {
 			params: {
-				fields: ['id', 'first_name', 'last_name', 'avatar.id', 'role.name', 'status', 'email'],
+				fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on', 'role.name', 'status', 'email'],
 			},
 		});
 
@@ -92,7 +92,7 @@ function navigateToUser() {
 			<div class="data">
 				<div class="name type-title">{{ userName(data) }}</div>
 				<v-chip class="status" :class="data.status" small>
-					{{ t(`fields.directus_users.status_${data.status}`) }}
+					{{ $t(`fields.directus_users.status_${data.status}`) }}
 				</v-chip>
 				<v-chip v-if="data.role?.name" small>{{ data.role.name }}</v-chip>
 				<div class="email">{{ data.email }}</div>

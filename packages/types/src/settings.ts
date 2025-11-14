@@ -62,6 +62,20 @@ export type Settings = {
 	default_theme_dark: string | null;
 	theme_light_overrides: Record<string, unknown> | null;
 	theme_dark_overrides: Record<string, unknown> | null;
-	accepted_terms: boolean;
 	project_id: string | null;
+} & OwnerInformation;
+
+export type OwnerInformation = {
+	project_owner: string | null;
+	project_usage: 'personal' | 'commercial' | 'community' | null;
+	org_name: string | null;
+	product_updates: boolean;
 };
+
+export type SetupForm = {
+	first_name: string | null;
+	last_name: string | null;
+	password: string | null;
+	password_confirm: string | null;
+	license: boolean;
+} & OwnerInformation;

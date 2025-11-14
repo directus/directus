@@ -344,6 +344,7 @@ describe('applySnapshot', () => {
 							type: 'uuid',
 						} as SnapshotField,
 					],
+					systemFields: [],
 					relations: [],
 				};
 
@@ -424,6 +425,7 @@ describe('applySnapshot', () => {
 						directus: '0.0.0',
 						collections: [],
 						fields: [],
+						systemFields: [],
 						relations: [],
 					},
 					schema: snapshotApplyTestSchema,
@@ -442,6 +444,7 @@ describe('applySnapshot', () => {
 				directus: '0.0.0',
 				collections: [],
 				fields: [],
+				systemFields: [],
 				relations: [],
 			};
 

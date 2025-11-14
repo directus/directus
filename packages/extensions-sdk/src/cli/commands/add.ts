@@ -228,7 +228,7 @@ export default async function add(options: AddOptions): Promise<void> {
 		const convertSourcePath = path.resolve(source, convertName);
 		const entrySourcePath = path.resolve(source, name);
 
-		const convertFiles = await fse.readdir(source);
+		const convertFiles = (await fse.readdir(source, 'utf8')) as string[];
 
 		await Promise.all(
 			convertFiles.map((file) => fse.move(path.resolve(source, file), path.join(convertSourcePath, file))),

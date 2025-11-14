@@ -3,7 +3,6 @@ import { useExtension } from '@/composables/use-extension';
 import { isVueComponent } from '@directus/utils';
 import { storeToRefs } from 'pinia';
 import { computed, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore } from '../store';
 
 const props = withDefaults(
@@ -22,8 +21,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['update:modelValue']);
-
-const { t } = useI18n();
 
 const fieldDetailStore = useFieldDetailStore();
 
@@ -74,7 +71,7 @@ const optionsValues = computed({
 
 <template>
 	<v-notice v-if="usesCustomComponent === false && optionsFields.length === 0">
-		{{ t('no_options_available') }}
+		{{ $t('no_options_available') }}
 	</v-notice>
 
 	<v-form
@@ -97,7 +94,7 @@ const optionsValues = computed({
 			@input="optionsValues = $event"
 		/>
 		<template #fallback>
-			<v-notice type="warning">{{ t('unexpected_error') }}</v-notice>
+			<v-notice type="warning">{{ $t('unexpected_error') }}</v-notice>
 		</template>
 	</v-error-boundary>
 </template>

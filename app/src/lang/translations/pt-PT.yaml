@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Acerca
+first_name: Primeiro Nome
+last_name: Apelido
 identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
@@ -168,19 +170,9 @@ rename_version: Renomear versão
 compare_version: Comparar versão
 save_version: Guardar Versão
 promote_version: Promover versão
-promote_version_disabled: Sem alterações
-promote_version_drawer_title: Promover {version} para Principal
-promote_version_changes: Alterações
-promote_version_preview: Pré-visualização
-outdated_notice: >-
-  O item principal foi atualizado desde que esta versão foi criada. Por favor, reveja todos os valores do campo abaixo e confirme qual a versão que deve ser utilizada ao promover esta versão no item principal.
-promote_notice: >-
-  Por favor, reveja todos os valores dos campos abaixo e confirme qual versão deve ser usada ao promover esta versão no item principal.
 delete_version: Eliminar Versão
 delete_version_copy: >-
   Tem a certeza que deseja eliminar a versão "{version}"? Esta ação não pode ser revertida.
-delete_on_promote_copy: >-
-  Pretende eliminar ou manter a versão {version} após a promoção?
 reset_bookmark: Restaurar marcador
 update_bookmark: Atualizar o marcador
 delete_bookmark: Eliminar o marcador
@@ -458,7 +450,6 @@ revision_delta_created: Criado
 revision_delta_created_externally: Criado externamente
 revision_delta_updated: '1 campo foi atualizado | {count} campos foram atualizados'
 revision_delta_deleted: Removido
-revision_delta_version_saved: 'Salvar Versão (Atualizado 1 Campo) Version Save (Atualizado em {count} Campos)'
 revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo foi atualizado, mas o seu valor foi oculto por razões de segurança.
 revision_delta_other: Revisão
@@ -1081,6 +1072,8 @@ inline: Em linha
 comment: Comentário
 live_preview:
   new_window: Abrir numa Nova Janela
+mcp_prompts_collection_schema:
+  messages_role_user: Utilizador
 share_copy_link_error: Não foi possível copiar a hiperligação
 relational_triggers: Gatilhos Relacionais
 referential_action_field_label_m2o: Ao Eliminar de {collection}...

@@ -2,13 +2,14 @@
 import { useExtension } from '@/composables/use-extension';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
-import type { FormField } from './types';
+import type { FormField, ComparisonContext } from './types';
 
 const props = defineProps<{
 	field: FormField;
 	batchMode?: boolean;
 	batchActive?: boolean;
+	comparison?: ComparisonContext;
+	comparisonActive?: boolean;
 	primaryKey?: string | number | null;
 	modelValue?: string | number | boolean | Record<string, any> | Array<any>;
 	loading?: boolean;
@@ -20,8 +21,6 @@ const props = defineProps<{
 }>();
 
 defineEmits(['update:modelValue', 'setFieldValue']);
-
-const { t } = useI18n();
 
 const inter = useExtension(
 	'interface',
@@ -60,6 +59,8 @@ const value = computed(() =>
 				:value="value"
 				:batch-mode="batchMode"
 				:batch-active="batchActive"
+				:comparison-mode="!!comparison"
+				:comparison-active="comparisonActive"
 				:width="(field.meta && field.meta.width) || 'full'"
 				:type="field.type"
 				:collection="field.collection"
@@ -74,7 +75,7 @@ const value = computed(() =>
 			/>
 
 			<template #fallback>
-				<v-notice type="warning">{{ t('unexpected_error') }}</v-notice>
+				<v-notice type="warning">{{ $t('unexpected_error') }}</v-notice>
 			</template>
 		</v-error-boundary>
 
@@ -86,7 +87,7 @@ const value = computed(() =>
 		/>
 
 		<v-notice v-else type="warning">
-			{{ t('interface_not_found', { interface: field.meta && field.meta.interface }) }}
+			{{ $t('interface_not_found', { interface: field.meta && field.meta.interface }) }}
 		</v-notice>
 	</div>
 </template>
