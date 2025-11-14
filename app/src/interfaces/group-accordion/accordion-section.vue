@@ -134,7 +134,7 @@ function useComparisonIndicator() {
 							:loading="loading"
 							:batch-mode="batchMode"
 							:disabled="disabled"
-							:non-editable="!!nonEditable"
+							:non-editable="nonEditable"
 							:comparison="comparison"
 							:direction="direction"
 							:show-no-visible-fields="false"

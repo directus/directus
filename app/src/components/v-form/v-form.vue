@@ -68,8 +68,6 @@ const { t } = useI18n();
 
 const emit = defineEmits(['update:modelValue']);
 
-const isNonEditable = computed(() => !!props.nonEditable);
-
 const values = computed(() => {
 	return Object.assign({}, cloneDeep(props.initialValues), cloneDeep(props.modelValue));
 });
@@ -427,7 +425,8 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:fields="fieldsForGroup[index] || []"
 					:values="modelValue || {}"
 					:initial-values="initialValues || {}"
-					:disabled="disabled || isNonEditable"
+					:disabled="disabled || nonEditable"
+					:non-editable="nonEditable"
 					:batch-mode="batchMode"
 					:batch-active-fields="batchActiveFields"
 					:primary-key="primaryKey"
@@ -437,7 +436,6 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:raw-editor-enabled="rawEditorEnabled"
 					:direction="direction"
 					:version
-					:non-editable="isNonEditable"
 					:comparison="comparison"
 					v-bind="fieldsMap[fieldName]!.meta?.options || {}"
 					@apply="apply"
@@ -455,9 +453,9 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:autofocus="index === firstEditableFieldIndex && autofocus"
 					:model-value="(values || {})[fieldName]"
 					:initial-value="(initialValues || {})[fieldName]"
-					:disabled="isDisabled(fieldsMap[fieldName]!) || isNonEditable"
+					:disabled="isDisabled(fieldsMap[fieldName]!) || nonEditable"
+					:non-editable="nonEditable"
 					:batch-mode="batchMode"
-					:non-editable="isNonEditable"
 					:batch-active="batchActiveFields.includes(fieldName)"
 					:comparison="comparison"
 					:comparison-active="comparison?.selectedFields.includes(fieldName)"
