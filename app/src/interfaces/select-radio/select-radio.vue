@@ -15,10 +15,8 @@ const props = withDefaults(
 		disabled?: boolean;
 		nonEditable?: boolean;
 		choices?: Option[];
-
 		allowOther?: boolean;
 		width?: string;
-
 		iconOn?: string;
 		iconOff?: string;
 		color?: string;
@@ -56,7 +54,7 @@ const customIcon = computed(() => {
 	<div
 		v-else
 		class="radio-buttons"
-		:class="[gridClass, { 'non-editable': nonEditable }]"
+		:class="gridClass"
 		:style="{
 			'--v-radio-color': color,
 		}"

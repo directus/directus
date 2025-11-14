@@ -208,7 +208,7 @@ function closeDrawer() {
 </script>
 
 <template>
-	<div class="repeater" :class="{ 'non-editable': nonEditable }">
+	<div class="repeater">
 		<v-notice v-if="(Array.isArray(internalValue) && internalValue.length === 0) || internalValue == null">
 			{{ placeholder }}
 		</v-notice>

@@ -113,7 +113,6 @@ const classes = computed(() => [
 		'full-width': props.fullWidth,
 		'has-click': props.clickable,
 		disabled: props.disabled,
-		'non-editable': props.nonEditable,
 		small: props.small,
 		invalid: isInvalidInput.value,
 	},

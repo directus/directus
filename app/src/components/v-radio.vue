@@ -55,7 +55,7 @@ function emitValue(): void {
 		@click="emitValue"
 	>
 		<v-icon :name="icon" />
-		<span class="label type-text" :class="{ 'non-editable': nonEditable }">
+		<span class="label type-text">
 			<slot name="label">{{ label }}</slot>
 		</span>
 	</button>

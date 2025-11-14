@@ -390,7 +390,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 </script>
 
 <template>
-	<div ref="el" :class="['v-form', gridClass, { inline, 'non-editable': isNonEditable }]">
+	<div ref="el" :class="['v-form', gridClass, { inline }]">
 		<validation-errors
 			v-if="showValidationErrors && validationErrors.length > 0"
 			:validation-errors="validationErrors"

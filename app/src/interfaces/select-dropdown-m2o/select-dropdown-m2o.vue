@@ -184,7 +184,7 @@ function getLinkForItem() {
 		{{ t('no_items') }}
 	</v-notice>
 
-	<div v-else class="many-to-one" :class="{ 'non-editable': nonEditable }">
+	<div v-else class="many-to-one">
 		<v-skeleton-loader v-if="loading" type="input" />
 
 		<v-list-item v-else block clickable :disabled="disabled" :non-editable="nonEditable" @click="onPreviewClick">
@@ -272,12 +272,6 @@ function getLinkForItem() {
 
 	.add:hover {
 		--v-icon-color: var(--theme--primary);
-	}
-}
-
-.many-to-one.non-editable .item-actions {
-	:deep(.v-icon) {
-		--v-icon-color-hover: var(--theme--form--field--input--foreground);
 	}
 }
 
