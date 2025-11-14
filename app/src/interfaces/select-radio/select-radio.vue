@@ -186,14 +186,21 @@ const customIcon = computed(() => {
 		}
 	}
 
+	&.disabled {
+		cursor: not-allowed;
+
+		input,
+		.radio-icon {
+			cursor: not-allowed;
+		}
+	}
+
 	&.disabled:not(.non-editable) {
 		background-color: var(--theme--form--field--input--background-subdued);
 		border-color: transparent;
-		cursor: not-allowed;
 
 		input {
 			color: var(--theme--form--field--input--foreground-subdued);
-			cursor: not-allowed;
 
 			&::placeholder {
 				color: var(--theme--form--field--input--foreground-subdued);

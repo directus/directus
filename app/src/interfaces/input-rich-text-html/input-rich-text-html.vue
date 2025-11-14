@@ -56,7 +56,6 @@ const props = withDefaults(
 		customFormats?: CustomFormat[];
 		tinymceOverrides?: Record<string, unknown>;
 		disabled?: boolean;
-		nonEditable?: boolean;
 		imageToken?: string;
 		folder?: string;
 		softLength?: number;
@@ -182,9 +181,6 @@ const editorOptions = computed(() => {
 		toolbarString += ' styles';
 	}
 
-	// Enforce read-only when non-editable
-	const isReadOnly = props.nonEditable === true;
-
 	return {
 		skin: false,
 		content_css: false,
@@ -212,7 +208,6 @@ const editorOptions = computed(() => {
 		image_dimensions: false,
 		extended_valid_elements: 'audio[loop|controls],source[src|type]',
 		toolbar: toolbarString ? toolbarString : false,
-		readonly: isReadOnly,
 		style_formats: styleFormats,
 		file_picker_types: 'customImage customMedia image media',
 		link_default_protocol: 'https',
