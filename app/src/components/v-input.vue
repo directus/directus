@@ -292,7 +292,7 @@ function useInvalidInput() {
 	const isInvalidInput = ref(false);
 
 	const tooltipInvalid = computed(() => {
-		if (props.type === 'number') {
+		if (props.integer === true || props.float === true) {
 			if (isInvalidInput.value) {
 				if (input.value?.validity.rangeOverflow) {
 					return t('value_exceeds_maximum', { max: props.max });
