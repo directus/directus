@@ -48,8 +48,9 @@ describe('export', async () => {
 		expect(() => validateQuery({ export: format } as any)).not.toThrowError();
 	});
 
-	test('should error with invalid-format', () => {
+	test('should error with invalid formats', () => {
 		expect(() => validateQuery({ export: 'invalid-format' } as any)).toThrowError('"export" must be one of');
+		expect(() => validateQuery({ export: 'csv_invalid' } as any)).toThrowError('"export" must be one of');
 	});
 });
 
