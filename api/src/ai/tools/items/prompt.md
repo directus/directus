@@ -3,7 +3,7 @@ Perform CRUD operations on items within Directus collections
 ## Actions
 
 - `read`: Query items with filtering/pagination/field selection
-- `create`: Add items (single/batch) with nested relations
+- `create`: Add items with nested relations
 - `update`: Modify items with partial data
 - `delete`: Remove items by primary keys
 
@@ -59,12 +59,12 @@ Core: `_eq`, `_neq`, `_in`, `_nin`, `_null`, `_nnull`, `_lt`, `_lte`, `_gt`, `_g
 {
 	"action": "create",
 	"collection": "posts",
-	"data": {
+	"data": [{
 		"title": "New Post",
 		"author": { "name": "John Doe", "email": "john@example.com" }, // Creates nested
 		"categories": [1, 2, { "name": "New Category" }], // Mix existing + new
 		"status": "draft"
-	}
+	}]
 }
 ```
 
@@ -97,7 +97,7 @@ Core: `_eq`, `_neq`, `_in`, `_nin`, `_null`, `_nnull`, `_lt`, `_lte`, `_gt`, `_g
 	"action": "update",
 	"collection": "posts",
 	"keys": ["uuid-1", "uuid-2"],
-	"data": { "status": "published" } // Partial update
+	"data": [{ "status": "published" }] // Partial update
 }
 ```
 
@@ -121,13 +121,13 @@ Core: `_eq`, `_neq`, `_in`, `_nin`, `_null`, `_nnull`, `_lt`, `_lte`, `_gt`, `_g
 	"action": "update",
 	"collection": "posts",
 	"keys": ["uuid-1"],
-	"data": {
+	"data": [{
 		"categories": {
 			"create": [{ "name": "New Category" }],
 			"update": [{ "id": 3, "name": "Renamed" }],
 			"delete": [5]
 		}
-	}
+	}]
 }
 ```
 
@@ -137,7 +137,7 @@ Core: `_eq`, `_neq`, `_in`, `_nin`, `_null`, `_nnull`, `_lt`, `_lte`, `_gt`, `_g
 // Don't update without specifying which items
 {
 	"action": "update",
-	"data": { "status": "published" } // Will fail - no keys provided
+	"data": [{ "status": "published" }] // Will fail - no keys provided
 }
 ```
 
