@@ -142,7 +142,7 @@ export default defineInterface({
 			],
 		};
 
-		const numericFieldType = (field.type === 'float' || field.type === 'decimal') ? 'float' : 'integer';
+		const numericFieldType = field.type === 'float' || field.type === 'decimal' ? 'float' : 'integer';
 
 		const numberOptions: DeepPartial<Field>[] = [
 			{
