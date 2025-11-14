@@ -13,7 +13,8 @@ export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
 	const sidebarStore = useSidebarStore();
 
-	const chatOpen = ref<boolean>(false);
+	const chatOpen = useLocalStorage<boolean>('ai-chat-open', false);
+	const input = ref<string>('');
 
 	watch(chatOpen, (newOpen) => {
 		if (newOpen === true) sidebarStore.expand();
@@ -125,6 +126,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	const status = computed(() => chat.status);
 
 	const addMessage = (message: string) => {
+		if (chat.status === 'streaming' || chat.status === 'submitted') return;
 		chat.sendMessage({ text: message });
 	};
 
@@ -157,6 +159,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	return {
 		currentProvider,
 		currentModel,
+		input,
 		addMessage,
 		chat,
 		messages,
