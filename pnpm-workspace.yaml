@@ -174,7 +174,7 @@ catalog:
   dotenv: 17.2.3
   editorjs-toggle-block: 0.3.16
   encodeurl: 2.0.0
-  esbuild: 0.25.11
+  esbuild: 0.25.12
   esbuild-plugin-replace: 1.4.0
   escape-string-regexp: 5.0.0
   eslint: 9.39.1
@@ -208,7 +208,7 @@ catalog:
   ip-matching: 2.1.2
   isolated-vm: 5.0.3
   joi: 18.0.1
-  js-yaml: 4.1.0
+  js-yaml: 4.1.1
   js2xmlparser: 5.0.0
   json-to-graphql-query: 2.3.0
   json2csv: 5.0.7
