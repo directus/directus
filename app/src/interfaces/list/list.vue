@@ -55,6 +55,8 @@ const showAddNew = computed(() => {
 const activeItem = computed(() => (active.value !== null ? edits.value : null));
 
 const isSaveDisabled = computed(() => {
+	if (props.disabled) return true;
+
 	for (const field of props.fields) {
 		if (
 			field.meta?.required &&
