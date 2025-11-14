@@ -7,10 +7,7 @@ import { Snackbar } from '@/types/notifications';
 import { render } from 'micromustache';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
-
-const { t } = useI18n();
 
 const notificationsStore = useNotificationsStore();
 const { isAdmin, currentUser } = useUserStore();
@@ -87,10 +84,10 @@ const done = async (notification: Snackbar) => {
 				<v-card-actions>
 					<v-button v-if="notification.type === 'error' && isAdmin && notification.code === 'UNKNOWN'" secondary>
 						<a target="_blank" :href="getErrorUrl(notification.error)">
-							{{ t('report_error') }}
+							{{ $t('report_error') }}
 						</a>
 					</v-button>
-					<v-button @click="done(notification)">{{ notification.dismissText ?? t('dismiss') }}</v-button>
+					<v-button @click="done(notification)">{{ notification.dismissText ?? $t('dismiss') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

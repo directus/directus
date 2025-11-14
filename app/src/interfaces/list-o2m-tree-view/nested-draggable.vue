@@ -13,7 +13,6 @@ import type { ContentVersion, Filter } from '@directus/types';
 import { moveInArray } from '@directus/utils';
 import { cloneDeep } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import ItemPreview from './item-preview.vue';
 
@@ -66,7 +65,6 @@ const props = withDefaults(
 	},
 );
 
-const { t } = useI18n();
 const emit = defineEmits(['update:modelValue']);
 
 const value = computed<ChangesItem | any[]>({
@@ -188,7 +186,7 @@ function stageEdits(item: Record<string, any>) {
 
 	<template v-else-if="root && filteredDisplayItems.length === 0">
 		<v-notice>
-			{{ t('no_items') }}
+			{{ $t('no_items') }}
 		</v-notice>
 	</template>
 
@@ -249,10 +247,10 @@ function stageEdits(item: Record<string, any>) {
 	<template v-if="root">
 		<div class="actions">
 			<v-button v-if="enableCreate && !nonEditable" :disabled @click="addNewActive = true">
-				{{ t('create_new') }}
+				{{ $t('create_new') }}
 			</v-button>
 			<v-button v-if="enableSelect && !nonEditable" :disabled @click="selectDrawer = true">
-				{{ t('add_existing') }}
+				{{ $t('add_existing') }}
 			</v-button>
 		</div>
 

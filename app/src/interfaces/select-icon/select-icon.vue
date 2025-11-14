@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import { computed, ref, nextTick, watch, type Ref, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import icons from './icons.json';
 import { socialIcons } from '@/components/v-icon/social-icons';
@@ -20,8 +19,6 @@ withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const searchQuery = ref('');
 const menuActive = ref(false);
@@ -188,7 +185,7 @@ function useIconsPerRow(
 			<v-input
 				v-model="searchQuery"
 				:disabled="disabled"
-				:placeholder="value ? formatTitle(value) : t('interfaces.select-icon.search_for_icon')"
+				:placeholder="value ? formatTitle(value) : $t('interfaces.select-icon.search_for_icon')"
 				:class="{ 'has-value': value }"
 				:nullable="false"
 				@click="onClickInput($event, toggle)"
