@@ -568,8 +568,8 @@ catalogs:
       specifier: 18.0.1
       version: 18.0.1
     js-yaml:
-      specifier: 4.1.0
-      version: 4.1.0
+      specifier: 4.1.1
+      version: 4.1.1
     js2xmlparser:
       specifier: 5.0.0
       version: 5.0.0
@@ -1166,7 +1166,7 @@ importers:
         version: 18.0.1
       js-yaml:
         specifier: 'catalog:'
-        version: 4.1.0
+        version: 4.1.1
       js2xmlparser:
         specifier: 'catalog:'
         version: 5.0.0
@@ -2902,7 +2902,7 @@ importers:
         version: 18.0.1
       js-yaml:
         specifier: 'catalog:'
-        version: 4.1.0
+        version: 4.1.1
       lodash-es:
         specifier: 'catalog:'
         version: 4.17.21
@@ -3054,7 +3054,7 @@ importers:
         version: 6.0.6(graphql@16.12.0)(ws@8.18.3)
       js-yaml:
         specifier: 'catalog:'
-        version: 4.1.0
+        version: 4.1.1
       json-to-graphql-query:
         specifier: 'catalog:'
         version: 2.3.0
@@ -9640,6 +9640,10 @@ packages:
 
   js-yaml@4.1.0:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
+    hasBin: true
+
+  js-yaml@4.1.1:
+    resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
     hasBin: true
 
   js2xmlparser@5.0.0:
@@ -21519,6 +21523,10 @@ snapshots:
       esprima: 4.0.1
 
   js-yaml@4.1.0:
+    dependencies:
+      argparse: 2.0.1
+
+  js-yaml@4.1.1:
     dependencies:
       argparse: 2.0.1
 
