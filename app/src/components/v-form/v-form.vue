@@ -494,21 +494,6 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 .v-form {
 	@include mixins.form-grid;
 
-	--form--field--input--disabled--background: var(--theme--form--field--input--background-subdued);
-	--form--field--input--disabled--foreground: var(--theme--form--field--input--foreground-subdued);
-	--form--icon--disabled: var(--theme--foreground-subdued);
-	--form--field--disabled--primary: var(--theme--foreground-subdued);
-	--form--field--disabled--border-color: var(--theme--form--field--input--border-color-subdued);
-	--form--field--disabled--cursor: not-allowed;
-	&.non-editable {
-		--form--field--input--disabled--background: var(--theme--form--field--input--background);
-		--form--field--input--disabled--foreground: var(--theme--form--field--input--foreground);
-		--form--icon--disabled: var(--theme--primary);
-		--form--field--disabled--primary: var(--theme--primary);
-		--form--field--disabled--border-color: var(--theme--form--field--input--border-color);
-		--form--field--disabled--cursor: pointer;
-	}
-
 	.first-visible-field :deep(.presentation-divider) {
 		margin-block-start: 0;
 	}
