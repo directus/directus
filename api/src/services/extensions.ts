@@ -152,11 +152,6 @@ export class ExtensionsService {
 		const output: ApiOutput[] = [];
 
 		for (const meta of regular) {
-			if (meta.source === 'registry') {
-				const x = await describe(meta.id);
-				console.log('reg', x.data.versions[0]?.version);
-			}
-
 			output.push({
 				id: meta.id,
 				bundle: meta.bundle,

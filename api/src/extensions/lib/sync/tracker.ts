@@ -3,14 +3,18 @@
  */
 import { readdir, rm } from 'node:fs/promises';
 import { dirname, join, relative, sep } from 'node:path';
+import { useLogger } from '../../../logger/index.js';
+import type { Logger } from 'pino';
 
 export class SyncFileTracker {
     private localFiles: Set<string>;
     private trackedDirs: Set<string>;
+    private logger: Logger<never>;
 
     constructor() {
         this.localFiles = new Set();
         this.trackedDirs = new Set();
+        this.logger = useLogger();
     }
 
     async readLocalFiles(localExtensionsPath: string) {
@@ -54,7 +58,9 @@ export class SyncFileTracker {
 
         for (const dir of removeDirsRecursive) {
             const relativePath = join(localExtensionsPath, dir);
-            console.log('Removing:', relativePath);
+
+            this.logger.debug('Removing local folder:', relativePath);
+            
             await rm(relativePath, { recursive: true, force: true });
         }
     }

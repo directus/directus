@@ -23,10 +23,7 @@ export async function syncExtensions(options?: { force: boolean }): Promise<void
 
 	const machineId = await mid.machineId();
 	const machineKey = `extensions-sync/${machineId}`;
-// await lock.delete(machineKey)
 	const processId = await lock.increment(machineKey);
-
-	console.log(machineId, processId);
 
 	if (processId !== 1 || isSyncing) {
 		logger.debug('Extensions already being synced to this machine from another process.');
@@ -47,7 +44,8 @@ export async function syncExtensions(options?: { force: boolean }): Promise<void
 		await mkdir(localExtensionsPath, { recursive: true });
 		await setSyncStatus(SyncStatus.SYNCING);
 
-		const disk = await getRemoteDisk(env['EXTENSIONS_LOCATION'] as string);
+		const storage = await getStorage();
+		const disk = storage.location(env['EXTENSIONS_LOCATION'] as string);
 
 		// Make sure we don't overload the file handles
 		const queue = new Queue({ concurrency: 1000 });
@@ -63,21 +61,19 @@ export async function syncExtensions(options?: { force: boolean }): Promise<void
 
 			await fileTracker.syncFile(relativePath);
 
+			// No need to check metadata when force is enabled
 			if (options?.force !== true) {
-				// dont bother checking meta info when force is enabled
 				const remoteStat = await disk.stat(filepath);
 				const localStat = await fsStat(destinationPath);
 				
 				if (localStat && remoteStat.modified <= localStat.modified && remoteStat.size === localStat.size) {
 					// local file exists and is unchanged
-					// eslint-disable-next-line no-console
-					console.info('Skipping sync for:', relativePath);
+					logger.debug('Skipping sync for:', relativePath);
 					continue;
 				}
 			}
 
-			// eslint-disable-next-line no-console
-			console.info('Syncing:', relativePath);
+			logger.debug('Downloading file:', relativePath);
 			
 			// Ensure that the directory path exists
 			await mkdir(dirname(destinationPath), { recursive: true });
@@ -98,12 +94,7 @@ export async function syncExtensions(options?: { force: boolean }): Promise<void
 	}
 }
 
-async function getRemoteDisk(location: string) {
-	const storage = await getStorage();
-	return storage.location(location);
-}
-
-async function fsStat(path: string) {
+export async function fsStat(path: string) {
 	const data = await stat(path, { bigint: false })
 		.catch(() => {/* file not available */});
 	
