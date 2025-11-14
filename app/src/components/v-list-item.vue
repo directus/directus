@@ -310,7 +310,7 @@ function onClick(event: PointerEvent) {
 			flex-grow: 1;
 		}
 
-		&.clickable:hover {
+		&.clickable:hover:not(.disabled) {
 			background-color: var(
 				--v-list-item-background-color-hover,
 				var(--v-list-background-color-hover, var(--theme--form--field--input--background))

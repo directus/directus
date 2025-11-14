@@ -443,7 +443,7 @@ function useInvalidInput() {
 			}
 		}
 
-		&:hover {
+		&:hover:not(.disabled) {
 			--arrow-color: var(--v-input-border-color-hover, var(--theme--form--field--input--border-color-hover));
 
 			color: var(--v-input-color);
