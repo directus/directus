@@ -276,6 +276,11 @@ function toggleCollapse() {
 		}
 	}
 
+	&:focus-visible {
+		outline: var(--focus-ring-width) solid var(--focus-ring-color);
+		outline-offset: var(--focus-ring-offset);
+	}
+
 	&:disabled {
 		cursor: not-allowed;
 		border-color: var(--theme--foreground-subdued);
