@@ -127,13 +127,7 @@ function onFlowDrawerCompletion(id: string) {
 </script>
 
 <template>
-	<private-view :title="$t('flows')">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon>
-				<v-icon name="bolt" />
-			</v-button>
-		</template>
-
+	<private-view :title="$t('flows')" icon="bolt">
 		<template #headline>
 			<v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
 		</template>
@@ -148,9 +142,10 @@ function onFlowDrawerCompletion(id: string) {
 				rounded
 				icon
 				:disabled="createAllowed === false"
+				small
 				@click="editFlow = '+'"
 			>
-				<v-icon name="add" />
+				<v-icon name="add" small />
 			</v-button>
 		</template>
 

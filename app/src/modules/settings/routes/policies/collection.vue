@@ -140,14 +140,8 @@ function navigateToPolicy({ item }: { item: Policy }) {
 </script>
 
 <template>
-	<private-view :title="$t('settings_permissions')">
+	<private-view :title="$t('settings_permissions')" icon="admin_panel_settings">
 		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
-
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="admin_panel_settings" />
-			</v-button>
-		</template>
 
 		<template #actions>
 			<search-input
@@ -156,10 +150,11 @@ function navigateToPolicy({ item }: { item: Policy }) {
 				:autofocus="policies.length > 25"
 				:placeholder="$t('search_policy')"
 				:show-filter="false"
+				small
 			/>
 
-			<v-button v-tooltip.bottom="$t('create_policy')" rounded icon :to="addNewLink">
-				<v-icon name="add" />
+			<v-button v-tooltip.bottom="$t('create_policy')" rounded icon :to="addNewLink" small>
+				<v-icon name="add" small />
 			</v-button>
 		</template>
 

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useGroupable } from '@directus/composables';
-import { useAppStore } from '@directus/stores';
-import { toRefs } from 'vue';
+import { useSidebarStore } from '../private-view/stores/sidebar';
 
 const props = defineProps<{
 	icon: string;
@@ -19,27 +18,27 @@ const { active, toggle } = useGroupable({
 	group: 'sidebar-detail',
 });
 
-const appStore = useAppStore();
-const { sidebarOpen } = toRefs(appStore);
+const sidebarStore = useSidebarStore();
 
 function onClick() {
 	emit('toggle', !active.value);
 	toggle();
+	sidebarStore.expand();
 }
 </script>
 
 <template>
-	<div class="sidebar-detail" :class="{ open: sidebarOpen }">
-		<button v-if="close" v-show="sidebarOpen" class="close" @click="sidebarOpen = false">
+	<div class="sidebar-detail" :class="{ open: !sidebarStore.collapsed }">
+		<button v-if="close" v-show="!sidebarStore.collapsed" class="close" @click="sidebarStore.collapse">
 			<v-icon name="close" />
 		</button>
-		<button v-tooltip.left="!sidebarOpen && title" class="toggle" :class="{ open: active }" @click="onClick">
+		<button v-tooltip.left="sidebarStore.collapsed && title" class="toggle" :class="{ open: active }" @click="onClick">
 			<div class="icon">
 				<v-badge :dot="badge === true" bordered :value="badge" :disabled="!badge">
 					<v-icon :name="icon" />
 				</v-badge>
 			</div>
-			<div v-show="sidebarOpen" class="title">
+			<div v-show="!sidebarStore.collapsed" class="title">
 				{{ title }}
 			</div>
 			<div v-if="!close" class="icon">
@@ -47,7 +46,7 @@ function onClick() {
 			</div>
 		</button>
 		<transition-expand class="scroll-container">
-			<div v-show="active">
+			<div v-show="active && !sidebarStore.collapsed">
 				<div class="content">
 					<slot />
 				</div>

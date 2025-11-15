@@ -197,19 +197,14 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 </script>
 
 <template>
-	<private-view :title="$t('public_label')">
+	<private-view :title="$t('public_label')" show-back>
 		<template #headline>
 			<v-breadcrumb :items="[{ name: $t('settings_roles'), to: '/settings/roles' }]" />
 		</template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
 
 		<template #actions>
-			<v-button rounded icon :tooltip="$t('save')" :loading="saving" :disabled="!hasEdits" @click="saveAndQuit">
-				<v-icon name="check" />
+			<v-button rounded icon :tooltip="$t('save')" :loading="saving" :disabled="!hasEdits" small @click="saveAndQuit">
+				<v-icon name="check" small />
 
 				<template #append-outer>
 					<save-options

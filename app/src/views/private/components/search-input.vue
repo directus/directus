@@ -138,13 +138,7 @@ function emitValue() {
 			role="search"
 			@click="activate"
 		>
-			<v-icon
-				v-tooltip.bottom="!active ? $t('search') : undefined"
-				name="search"
-				class="icon-search"
-				:clickable="!active"
-				@click="input?.focus()"
-			/>
+			<v-icon small name="search" class="icon-search" :clickable="!active" @click="input?.focus()" />
 			<input
 				ref="input"
 				:value="modelValue"
@@ -165,6 +159,7 @@ function emitValue() {
 			<v-icon
 				v-if="modelValue"
 				v-tooltip.bottom="$t('clear_value')"
+				small
 				clickable
 				class="icon-clear"
 				name="close"
@@ -173,6 +168,7 @@ function emitValue() {
 			<template v-if="showFilter">
 				<v-icon
 					v-tooltip.bottom="$t('filter')"
+					small
 					clickable
 					class="icon-filter"
 					name="filter_list"
@@ -205,20 +201,20 @@ function emitValue() {
 .search-input {
 	display: flex;
 	align-items: center;
-	inline-size: 42px;
-	min-block-size: 42px;
+	inline-size: 36px;
+	min-block-size: 36px;
 	max-inline-size: 100%;
 	box-sizing: content-box;
 	overflow: hidden;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-radius: calc((42px + var(--theme--border-width) * 2) / 2);
+	border-radius: calc((36px + var(--theme--border-width) * 2) / 2);
 	transition:
 		inline-size var(--slow) var(--transition),
 		border-end-start-radius var(--fast) var(--transition),
 		border-end-end-radius var(--fast) var(--transition);
 
 	&.show-filter {
-		inline-size: 69px;
+		inline-size: 64px;
 	}
 
 	input {
@@ -293,8 +289,16 @@ function emitValue() {
 	}
 
 	&.active {
-		inline-size: 300px;
+		inline-size: 100%;
 		border-color: var(--theme--form--field--input--border-color-focus);
+
+		@media (width > 400px) {
+			inline-size: 150px;
+		}
+
+		@media (width > 640px) {
+			inline-size: 200px;
+		}
 
 		input {
 			opacity: 1;
@@ -302,14 +306,18 @@ function emitValue() {
 	}
 
 	&.filter-active {
-		inline-size: 200px;
+		inline-size: 100%;
 
 		.icon-filter {
 			--v-icon-color: var(--theme--primary);
 		}
 
-		@media (min-width: 600px) {
-			inline-size: 250px;
+		@media (width > 400px) {
+			inline-size: 150px;
+		}
+
+		@media (width > 640px) {
+			inline-size: 200px;
 		}
 
 		@media (min-width: 960px) {

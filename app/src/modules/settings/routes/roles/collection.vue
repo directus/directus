@@ -150,14 +150,8 @@ function navigateToRole({ item }: { item: Role }) {
 </script>
 
 <template>
-	<private-view :title="$t('settings_roles')">
+	<private-view :title="$t('settings_roles')" icon="group">
 		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
-
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="group" />
-			</v-button>
-		</template>
 
 		<template #actions>
 			<search-input
@@ -166,10 +160,11 @@ function navigateToRole({ item }: { item: Role }) {
 				:autofocus="roles.length > 25"
 				:placeholder="$t('search_role')"
 				:show-filter="false"
+				small
 			/>
 
-			<v-button v-tooltip.bottom="$t('create_role')" rounded icon :to="addNewLink">
-				<v-icon name="add" />
+			<v-button v-tooltip.bottom="$t('create_role')" rounded icon :to="addNewLink" small>
+				<v-icon name="add" small />
 			</v-button>
 		</template>
 

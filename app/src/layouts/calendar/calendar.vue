@@ -12,14 +12,14 @@ defineOptions({
 interface Props {
 	createCalendar: (calendarElement: HTMLElement) => void;
 	destroyCalendar: () => void;
-	itemCount: number | null;
+	itemCount?: number | null;
 	totalCount: number | null;
 	isFiltered: boolean;
 	limit: number;
 	resetPresetAndRefresh: () => Promise<void>;
 	error?: any;
 	selectMode: boolean;
-	showSelect: ShowSelect;
+	showSelect?: ShowSelect;
 }
 
 const props = withDefaults(defineProps<Props>(), {

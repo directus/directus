@@ -23,7 +23,7 @@ const props = withDefaults(
 		parent?: { id: string; type: Target; loner: boolean };
 		flow: FlowRaw;
 		panelsToBeDeleted: string[];
-		isHovered: boolean;
+		isHovered?: boolean;
 		subdued?: boolean;
 	}>(),
 	{

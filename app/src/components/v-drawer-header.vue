@@ -1,52 +1,24 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import HeaderBarActions from './header-bar-actions.vue';
+import HeaderBarActions from '@/views/private/components/header-bar-actions.vue';
+import PrivateViewHeaderBarIcon from '@/views/private/private-view/components/private-view-header-bar-icon.vue';
 
 withDefaults(
 	defineProps<{
 		title?: string;
-		showSidebarToggle?: boolean;
-		primaryActionIcon?: string;
-		small?: boolean;
 		shadow?: boolean;
+		icon?: string;
+		iconColor?: string;
+		showBack?: boolean;
 	}>(),
 	{
-		primaryActionIcon: 'menu',
-		shadow: true,
+		shadow: false,
 	},
 );
-
-defineEmits<{
-	(e: 'primary'): void;
-	(e: 'toggle:sidebar'): void;
-}>();
-
-const headerEl = ref<Element>();
-
-const collapsed = ref(false);
-
-const observer = new IntersectionObserver(
-	([e]) => {
-		if (!e) return;
-		collapsed.value = e.boundingClientRect.y < 0;
-	},
-	{ threshold: [1] },
-);
-
-onMounted(() => {
-	observer.observe(headerEl.value as HTMLElement);
-});
-
-onUnmounted(() => {
-	observer.disconnect();
-});
 </script>
 
 <template>
-	<header ref="headerEl" class="header-bar" :class="{ collapsed, small, shadow }">
-		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')">
-			<v-icon :name="primaryActionIcon" />
-		</v-button>
+	<header class="header-bar" :class="{ shadow }">
+		<private-view-header-bar-icon v-if="icon || showBack" :icon :show-back :icon-color />
 
 		<div v-if="$slots['title-outer:prepend']" class="title-outer-prepend">
 			<slot name="title-outer:prepend" />
@@ -74,7 +46,7 @@ onUnmounted(() => {
 
 		<slot name="actions:prepend" />
 
-		<header-bar-actions :show-sidebar-toggle="showSidebarToggle" @toggle:sidebar="$emit('toggle:sidebar')">
+		<header-bar-actions>
 			<slot name="actions" />
 		</header-bar-actions>
 
@@ -93,28 +65,11 @@ onUnmounted(() => {
 	justify-content: flex-start;
 	inline-size: 100%;
 	block-size: calc(var(--header-bar-height) + var(--theme--header--border-width));
-	margin: 0;
 	padding: 0 10px;
 	background-color: var(--theme--header--background);
 	box-shadow: none;
-	transition:
-		box-shadow var(--medium) var(--transition),
-		margin var(--fast) var(--transition);
+	transition: box-shadow var(--medium) var(--transition);
 	border-block-end: var(--theme--header--border-width) solid var(--theme--header--border-color);
-
-	.nav-toggle {
-		@media (min-width: 960px) {
-			display: none;
-		}
-	}
-
-	.title-outer-prepend {
-		display: none;
-
-		@media (min-width: 960px) {
-			display: block;
-		}
-	}
 
 	.title-container {
 		position: relative;
@@ -124,17 +79,17 @@ onUnmounted(() => {
 		inline-size: 100%;
 		max-inline-size: calc(100% - 12px - 44px - 120px - 12px - 8px);
 		block-size: 100%;
-		margin-inline-start: 16px;
+		margin-inline-start: 10px;
 		overflow: hidden;
 
-		@media (min-width: 600px) {
+		@media (width > 640px) {
 			max-inline-size: 70%;
 		}
 
 		&.full {
 			margin-inline-end: 12px;
 			padding-inline-end: 0;
-			@media (min-width: 600px) {
+			@media (width > 640px) {
 				margin-inline-end: 20px;
 				padding-inline-end: 20px;
 			}
@@ -153,7 +108,7 @@ onUnmounted(() => {
 			transition: opacity var(--fast) var(--transition);
 			font-family: var(--theme--header--headline--font-family);
 
-			@media (min-width: 600px) {
+			@media (width > 640px) {
 				inset-block-start: -2px;
 			}
 		}
@@ -185,60 +140,17 @@ onUnmounted(() => {
 		}
 	}
 
-	&.small {
-		inset-block-start: 0;
-		block-size: 60px;
-	}
-
-	&.small .title-container .headline {
-		opacity: 0;
-		pointer-events: none;
-	}
-
-	&.collapsed.shadow,
-	&.small.shadow {
+	&.shadow {
 		box-shadow: var(--theme--header--box-shadow);
-
-		.title-container {
-			.headline {
-				opacity: 0;
-				pointer-events: none;
-			}
-		}
+		transition: box-shadow var(--fast) var(--transition);
 	}
 
 	.spacer {
 		flex-grow: 1;
 	}
 
-	.sidebar-toggle {
-		flex-shrink: 0;
-		margin-inline-start: 8px;
-
-		@media (min-width: 960px) {
-			display: none;
-		}
-	}
-
-	@media (min-width: 600px) {
-		padding: 0 32px;
-
-		&:not(.small) {
-			margin: 24px 0;
-
-			/* Somewhat hacky way to make sure we fill
-			the empty space caused by the margin with
-			the appropriate color */
-			&::before {
-				content: '';
-				inline-size: 100%;
-				block-size: 24px;
-				inset-block-end: 100%;
-				inset-inline-start: 0;
-				background-color: var(--theme--header--background);
-				position: absolute;
-			}
-		}
+	@media (width > 640px) {
+		padding: 0 20px;
 	}
 }
 </style>

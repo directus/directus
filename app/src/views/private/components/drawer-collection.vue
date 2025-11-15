@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useCollection, useLayout } from '@directus/composables';
@@ -42,8 +41,6 @@ const { layout, layoutOptions, layoutQuery, search, filter: presetFilter } = use
 const localLayout = ref(layout.value || 'tabular');
 const localOptions = ref(layoutOptions.value);
 const localQuery = ref(layoutQuery.value);
-
-const currentLayout = useExtension('layout', localLayout);
 
 const layoutSelection = computed<any>({
 	get() {
@@ -156,8 +153,7 @@ function useActions() {
 		<v-drawer
 			v-model="internalActive"
 			:title="$t('select_item')"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
+			:icon="collectionInfo!.icon"
 			v-bind="drawerProps"
 			@cancel="cancel"
 			@apply="save"
@@ -168,12 +164,6 @@ function useActions() {
 
 			<template #subtitle>
 				<v-breadcrumb :items="[{ name: collectionInfo!.name, disabled: true }]" />
-			</template>
-
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded icon secondary disabled>
-					<v-icon :name="collectionInfo!.icon" :color="collectionInfo!.color" />
-				</v-button>
 			</template>
 
 			<template #actions:prepend><component :is="`layout-actions-${localLayout}`" v-bind="layoutState" /></template>

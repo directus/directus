@@ -73,12 +73,6 @@ watchEffect(async () => {
 	<private-view :title="$t('marketplace')">
 		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="storefront" />
-			</v-button>
-		</template>
-
 		<template #navigation>
 			<settings-navigation />
 		</template>
