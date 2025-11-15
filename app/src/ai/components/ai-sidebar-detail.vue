@@ -30,7 +30,7 @@ useShortcut(
 		class="collapsible-root"
 	>
 		<CollapsibleTrigger class="collapsible-trigger">
-			<VIcon name="smart_toy" class="collapsible-trigger-icon" />
+			<VIcon name="magic_button" class="collapsible-trigger-icon" />
 			<span v-show="!sidebarStore.collapsed" class="collapsible-trigger-title">{{ $t('ai_chat') }}</span>
 			<VIcon v-show="!sidebarStore.collapsed" name="chevron_left" class="collapsible-trigger-chevron" />
 		</CollapsibleTrigger>
