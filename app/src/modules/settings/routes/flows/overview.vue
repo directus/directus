@@ -85,8 +85,14 @@ function updateSort(sort: Sort | null) {
 	internalSort.value = sort ?? { by: 'name', desc: false };
 }
 
-function navigateToFlow({ item: flow }: { item: FlowRaw }) {
-	router.push(`/settings/flows/${flow.id}`);
+function navigateToFlow({ item: flow, event }: { item: FlowRaw; event: MouseEvent }) {
+	const route = `/settings/flows/${flow.id}`;
+
+	if (event.ctrlKey || event.metaKey || event.button === 1) {
+		window.open(router.resolve(route).href, '_blank');
+	} else {
+		router.push(route);
+	}
 }
 
 async function deleteFlow() {
