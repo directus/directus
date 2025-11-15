@@ -80,16 +80,16 @@ function toggleCollapse() {
 
 .content-wrapper {
 	position: relative;
-	transition: max-block-size 200ms ease-out;
+	transition: max-block-size var(--fast) var(--transition);
 }
 
 .has-collapse:not(.is-open) .content-wrapper {
-	max-block-size: 280px;
+	max-block-size: 250px;
 	overflow: hidden;
 }
 
 .is-open .content-wrapper {
-	max-block-size: none;
+	max-block-size: 9999px;
 }
 
 /* Headings */
