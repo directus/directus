@@ -23,6 +23,7 @@ const props = withDefaults(
 		collection: string;
 		field: string;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		version: ContentVersion | null;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
@@ -33,6 +34,7 @@ const props = withDefaults(
 	{
 		value: () => [],
 		disabled: false,
+		nonEditable: false,
 		enableCreate: true,
 		enableSelect: true,
 		limit: 15,
@@ -414,7 +416,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 			</draggable>
 		</template>
 
-		<div class="actions">
+		<div v-if="!nonEditable" class="actions">
 			<v-menu v-if="enableCreate && createCollections.length > 0" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button :disabled="disabled" @click="toggle">
@@ -489,6 +491,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 		<drawer-item
 			v-model:active="editModalActive"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"

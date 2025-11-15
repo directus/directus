@@ -4,6 +4,8 @@ import { computed } from 'vue';
 interface Props {
 	/** Disables the input */
 	disabled?: boolean;
+	/** Set the non-editable state for the input */
+	nonEditable?: boolean;
 	/** Autofocusses the input on render */
 	autofocus?: boolean;
 	/** Render the input with 100% width */
@@ -22,6 +24,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
+	nonEditable: false,
 	autofocus: false,
 	fullWidth: true,
 	modelValue: undefined,
@@ -62,6 +65,7 @@ function trimIfEnabled() {
 		class="v-textarea"
 		:class="{
 			disabled,
+			'non-editable': nonEditable,
 			'expand-on-focus': expandOnFocus,
 			'full-width': fullWidth,
 			'has-content': hasContent,
@@ -164,7 +168,7 @@ function trimIfEnabled() {
 		}
 	}
 
-	&.disabled textarea {
+	&.disabled:not(.non-editable) textarea {
 		color: var(--theme--foreground-subdued);
 		background-color: var(--theme--form--field--input--background-subdued);
 	}
