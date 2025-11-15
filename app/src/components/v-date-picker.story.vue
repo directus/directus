@@ -7,7 +7,7 @@ const value = ref('');
 </script>
 
 <template>
-	<Story title="VDatePicker">
+	<Story title="VDatePicker" icon="material-symbols:calendar-month">
 		<v-date-picker v-model="value" :type />
 
 		<template #controls>

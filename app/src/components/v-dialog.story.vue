@@ -6,7 +6,7 @@ const value = ref(false);
 </script>
 
 <template>
-	<Story title="VDialog">
+	<Story title="VDialog" icon="material-symbols:mode-comment">
 		<v-button @click="value = true">Open</v-button>
 		<v-dialog v-model="value">
 			<v-card>

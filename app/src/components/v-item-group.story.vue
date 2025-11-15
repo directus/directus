@@ -6,7 +6,7 @@ const value = ref(['item1']);
 </script>
 
 <template>
-	<Story title="VItemGroup">
+	<Story title="VItemGroup" icon="material-symbols:tv-options-edit-channels">
 		<v-item-group v-model="value">
 			<v-item v-slot="{ active }" watch value="item1">First item is active: {{ active }}</v-item>
 			<v-item v-slot="{ active }" value="item2">Second item is active: {{ active }}</v-item>

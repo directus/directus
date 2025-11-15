@@ -25,7 +25,7 @@ function initState() {
 </script>
 
 <template>
-	<Story title="VBreadcrumb" :init-state="initState">
+	<Story title="VBreadcrumb" icon="material-symbols:assistant-navigation" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
 			<v-breadcrumb v-bind="state" />
 		</template>

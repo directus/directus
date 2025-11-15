@@ -9,7 +9,7 @@ const { treeList } = useFieldTree(collection);
 </script>
 
 <template>
-	<Story title="VFieldTemplate">
+	<Story title="VFieldTemplate" icon="material-symbols:data-object">
 		<v-field-template v-model="value" :tree="treeList" />
 
 		<template #controls>

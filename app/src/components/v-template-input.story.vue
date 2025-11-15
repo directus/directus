@@ -19,7 +19,7 @@ const value = ref('Hey ho everyone, I am a new comment!');
 </script>
 
 <template>
-	<Story title="VTemplateInput" :init-state="initState">
+	<Story title="VTemplateInput" icon="material-symbols:chat" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
 			<v-template-input
 				v-model="value"

@@ -4,7 +4,7 @@ import { logEvent } from 'histoire/client';
 </script>
 
 <template>
-	<Story title="VCard">
+	<Story title="VCard" icon="material-symbols:call-to-action">
 		<v-card>
 			<v-card-title>Want a cake?</v-card-title>
 			<v-card-text>If you want a cake, you have to click on accept. And the cake is definitely not a lie.</v-card-text>

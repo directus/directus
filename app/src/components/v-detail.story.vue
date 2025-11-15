@@ -6,7 +6,7 @@ const value = ref(false);
 </script>
 
 <template>
-	<Story title="VDetail">
+	<Story title="VDetail" icon="material-symbols:expand-all">
 		<v-detail v-model="value">
 			<v-list-item block>A more detailed something!</v-list-item>
 		</v-detail>

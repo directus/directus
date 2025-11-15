@@ -6,7 +6,7 @@ const width = ref(300);
 </script>
 
 <template>
-	<Story title="VResizeable" :init-state="() => ({ minWidth: 220, maxWidth: 500 })">
+	<Story title="VResizeable" icon="material-symbols:arrow-range" :init-state="() => ({ minWidth: 220, maxWidth: 500 })">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
 			<v-resizeable v-model:width="width" v-bind="state">
 				<v-list-item>Item 1</v-list-item>

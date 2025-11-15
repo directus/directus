@@ -7,7 +7,7 @@ This is a new line.`);
 </script>
 
 <template>
-	<Story title="VTextarea">
+	<Story title="VTextarea" icon="material-symbols:checkbook">
 		<v-textarea v-model="value" />
 
 		<template #controls>

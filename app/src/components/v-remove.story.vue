@@ -3,7 +3,7 @@ import VRemove from './v-remove.vue';
 </script>
 
 <template>
-	<Story title="VRemove">
+	<Story title="VRemove" icon="material-symbols:delete">
 		<Variant title="Basic">
 			<v-remove />
 		</Variant>

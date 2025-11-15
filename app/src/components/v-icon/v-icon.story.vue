@@ -9,7 +9,7 @@ function initState() {
 </script>
 
 <template>
-	<Story title="VIcon" :init-state="initState">
+	<Story title="VIcon" icon="material-symbols:cruelty-free" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
 			<v-icon v-bind="state" />
 		</template>

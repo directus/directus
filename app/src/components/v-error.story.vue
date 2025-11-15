@@ -11,7 +11,7 @@ const error = ref({
 </script>
 
 <template>
-	<Story title="VError">
+	<Story title="VError" icon="material-symbols:warning">
 		<v-error :error />
 
 		<template #controls>

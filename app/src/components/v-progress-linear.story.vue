@@ -10,7 +10,7 @@ function initState() {
 </script>
 
 <template>
-	<Story title="VProgressLinear" :init-state="initState">
+	<Story title="VProgressLinear" icon="material-symbols:trending-flat" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
 			<v-progress-linear v-bind="state" />
 		</template>

@@ -70,7 +70,7 @@ async function copyColor(hex: string) {
 </script>
 
 <template>
-	<Story title="Colors" auto-props-disabled responsive-disabled>
+	<Story title="Colors" icon="material-symbols:palette" auto-props-disabled responsive-disabled>
 		<v-input ref="element" v-model="search" placeholder="Search for a color..." :full-width="false">
 			<template #append>
 				<v-icon name="search" />
@@ -105,6 +105,7 @@ async function copyColor(hex: string) {
 .grids {
 	margin-block-start: 80px;
 	display: flex;
+	gap: 16px;
 	align-items: flex-start;
 	flex-wrap: wrap;
 }

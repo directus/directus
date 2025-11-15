@@ -3,7 +3,7 @@ import VMenu from './v-menu.vue';
 </script>
 
 <template>
-	<Story title="VMenu">
+	<Story title="VMenu" icon="material-symbols:more-vert">
 		<v-menu>
 			<template #activator="{ toggle }">
 				<v-icon clickable class="options" name="more_vert" @click="toggle" />
