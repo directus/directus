@@ -4,10 +4,13 @@ import { useMutationObserver } from '@vueuse/core';
 import { computed, ref, watch } from 'vue';
 
 import '@/styles/_variables.scss';
+import { loadStores } from './stores';
 
 const isIframe = window.self !== window.top;
 const topHtmlElement = window.top?.document.documentElement;
 const iframe = window.self.document;
+
+loadStores();
 
 if (isIframe && topHtmlElement) {
 	iframe.documentElement.classList.add('custom-html');
@@ -95,10 +98,6 @@ if (isIframe && topHtmlElement) {
 }
 
 .histoire-generic-render-story:not(.__histoire-render-custom-controls) .custom-wrapper {
-	position: relative;
-	height: calc(100vh - 2 * 24px);
 	padding: 24px;
-
-	background-color: var(--theme--background);
 }
 </style>

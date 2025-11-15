@@ -11,7 +11,7 @@ function initState() {
 </script>
 
 <template>
-	<Story title="VRadio" :init-state="initState">
+	<Story title="VRadio" icon="material-symbols:radio-button-checked" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
 			<v-radio v-bind="state" />
 		</template>

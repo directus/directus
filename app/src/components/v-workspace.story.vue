@@ -27,7 +27,7 @@ function initState() {
 </script>
 
 <template>
-	<Story title="VWorkspace" :init-state="initState">
+	<Story title="VWorkspace" icon="material-symbols:table-restaurant" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
 			<v-workspace v-bind="state" />
 		</template>

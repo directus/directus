@@ -6,7 +6,7 @@ const value = ref();
 </script>
 
 <template>
-	<Story title="VCheckbox">
+	<Story title="VCheckbox" icon="material-symbols:check-box">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
 			<v-checkbox v-model="value" v-bind="state">My Checkbox</v-checkbox>
 		</template>

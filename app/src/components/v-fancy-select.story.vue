@@ -31,7 +31,7 @@ const value = ref();
 </script>
 
 <template>
-	<Story title="VFancySelect" :init-state="initState">
+	<Story title="VFancySelect" icon="material-symbols:view-agenda" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
 			<v-fancy-select v-model="value" v-bind="state">My Button</v-fancy-select>
 		</template>
