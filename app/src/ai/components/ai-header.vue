@@ -19,6 +19,7 @@ const aiStore = useAiStore();
 	display: flex;
 	align-items: center;
 	padding-block-end: 12px;
+	padding-inline-end: 12px;
 }
 
 .spacer {

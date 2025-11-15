@@ -36,13 +36,13 @@ onMounted(() => {
 <style scoped>
 /*
   Available Variables:
-  --ai-message-list-gap          [1rem]
+  --ai-message-list-gap          [2.5rem]
 */
 
 .ai-message-list {
 	display: flex;
 	flex-direction: column;
-	gap: var(--ai-message-list-gap, 1rem);
+	gap: var(--ai-message-list-gap, 2.5rem);
 	padding-block-end: 1rem;
 	position: relative;
 }

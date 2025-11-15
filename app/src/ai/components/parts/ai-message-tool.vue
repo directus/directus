@@ -82,13 +82,14 @@ const toolDisplayName = computed(() => {
 .message-tool {
 	inline-size: 100%;
 	border-radius: var(--theme--border-radius);
-	background-color: var(--theme--background-subdued);
+	border: var(--theme--border-width) solid var(--theme--border-color-accent);
+
 }
 
 .tool-header {
 	display: flex;
 	align-items: center;
-	padding: 0.8rem 1rem;
+	padding: 0.5rem;
 	justify-content: space-between;
 	gap: 0.5rem;
 	font-size: 0.875rem;
@@ -127,34 +128,33 @@ const toolDisplayName = computed(() => {
 		border: none;
 	}
 
+	border-width: 0;
+
+	--v-chip-background-color: transparent;
+
 	&.status-streaming {
-		--v-chip-background-color: var(--theme--primary-background);
 		--v-chip-color: var(--theme--primary-foreground);
-		--v-chip-border-color: var(--theme--primary-background);
+		--v-chip-border-color: var(--theme--primary);
 	}
 
 	&.status-ready {
-		--v-chip-background-color: var(--theme--warning-background);
 		--v-chip-color: var(--theme--warning-accent);
-		--v-chip-border-color: var(--theme--warning-background);
+		--v-chip-border-color: var(--theme--warning);
 	}
 
 	&.status-complete {
-		--v-chip-background-color: var(--theme--success-background);
 		--v-chip-color: var(--theme--success-accent);
-		--v-chip-border-color: var(--theme--success-background);
+		--v-chip-border-color: var(--theme--success);
 	}
 
 	&.status-error {
-		--v-chip-background-color: var(--theme--danger-background);
 		--v-chip-color: var(--theme--danger-accent);
-		--v-chip-border-color: var(--theme--danger-background);
+		--v-chip-border-color: var(--theme--danger);
 	}
 
 	&.status-unknown {
-		--v-chip-background-color: var(--theme--foreground-subdued);
 		--v-chip-color: var(--theme--foreground-subdued);
-		--v-chip-border-color: var(--theme--foreground-subdued);
+		--v-chip-border-color: var(--theme--foreground);
 	}
 }
 

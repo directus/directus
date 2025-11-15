@@ -43,30 +43,34 @@ withDefaults(defineProps<Props>(), {
 					v-for="(part, index) in parts"
 					:key="`${id}-${part.type}-${index}-${'state' in part ? `-${part.state}` : ''}`"
 				>
-					<AiMessageText v-if="part.type === 'text'" :text="part.text" :state="part.state || 'done'" />
-					<AiMessageReasoning v-else-if="part.type === 'reasoning' && (part.text || part.state === 'streaming')" :text="part.text" :state="part.state ?? 'done'" />
+					<AiMessageText v-if="part.type === 'text'" :text="part.text" :state="part.state || 'done'" :role="role" />
+					<AiMessageReasoning
+						v-else-if="part.type === 'reasoning' && (part.text || part.state === 'streaming')"
+						:text="part.text"
+						:state="part.state ?? 'done'"
+					/>
 					<AiMessageFile v-else-if="part.type === 'file'" :part="part" />
 					<AiMessageSourceUrl v-else-if="part.type === 'source-url'" :part="part" />
 					<AiMessageSourceDocument v-else-if="part.type === 'source-document'" :part="part" />
 					<AiMessageTool v-else-if="part.type.startsWith('tool-')" :part="part as DynamicToolUIPart" />
 				</template>
 			</slot>
-		</div>
 
-		<div v-if="actions && actions.length > 0" class="message-actions">
-			<v-button
-				v-for="(action, index) in actions"
-				:key="index"
-				v-tooltip="action.label"
-				x-small
-				icon
-				secondary
-				:disabled="action.disabled"
-				:loading="action.loading"
-				@click="action.onClick?.($event)"
-			>
-				<v-icon :name="action.icon" small />
-			</v-button>
+			<div v-if="actions && actions.length > 0" class="message-actions">
+				<v-button
+					v-for="(action, index) in actions"
+					:key="index"
+					v-tooltip="action.label"
+					x-small
+					icon
+					secondary
+					:disabled="action.disabled"
+					:loading="action.loading"
+					@click="action.onClick?.($event)"
+				>
+					<v-icon :name="action.icon" small />
+				</v-button>
+			</div>
 		</div>
 	</article>
 </template>
@@ -77,21 +81,16 @@ withDefaults(defineProps<Props>(), {
   --ai-message-background       [role-based]
   --ai-message-color            [role-based]
   --ai-message-border-radius    [var(--theme--border-radius)]
-  --ai-message-gap              [0.75rem]
+  --ai-message-parts-gap        [0.75rem]
 */
 
 .ai-message {
 	display: flex;
-	gap: var(--ai-message-gap, 0.75rem);
+	gap: var(--ai-message-parts-gap, 0.75rem);
 	align-items: flex-start;
 	max-inline-size: 100%;
 
-	&:hover .message-actions {
-		opacity: 1;
-	}
-
 	&[data-role='assistant'] {
-		--ai-message-background: var(--theme--background-subdued);
 		--ai-message-color: var(--theme--foreground);
 
 		justify-content: flex-start;
@@ -99,8 +98,8 @@ withDefaults(defineProps<Props>(), {
 	}
 
 	&[data-role='user'] {
-		--ai-message-background: var(--theme--primary);
-		--ai-message-color: var(--theme--background);
+		--ai-message-background: var(--theme--background);
+		--ai-message-color: var(--theme--foreground);
 
 		justify-content: flex-end;
 		margin-inline-start: 12px;
@@ -129,7 +128,5 @@ withDefaults(defineProps<Props>(), {
 	gap: 0.25rem;
 	align-items: center;
 	margin-block-start: 0.25rem;
-	opacity: 0;
-	transition: opacity var(--fast) var(--transition);
 }
 </style>

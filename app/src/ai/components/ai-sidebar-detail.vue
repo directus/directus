@@ -30,7 +30,7 @@ useShortcut(
 		class="collapsible-root"
 	>
 		<CollapsibleTrigger class="collapsible-trigger">
-			<VIcon name="smart_toy" class="collapsible-trigger-icon" />
+			<VIcon name="magic_button" class="collapsible-trigger-icon" />
 			<span v-show="!sidebarStore.collapsed" class="collapsible-trigger-title">{{ $t('ai_chat') }}</span>
 			<VIcon v-show="!sidebarStore.collapsed" name="chevron_left" class="collapsible-trigger-chevron" />
 		</CollapsibleTrigger>
@@ -57,6 +57,12 @@ useShortcut(
 	display: flex;
 	align-items: center;
 	padding-inline: 18px 9px;
+	transition: color var(--fast) var(--transition);
+
+	&:hover:not([data-state='open']) {
+		color: var(--theme--primary);
+		animation: colors 2s ease infinite alternate;
+	}
 }
 
 .collapsible-trigger-icon {
@@ -95,7 +101,7 @@ useShortcut(
 }
 
 .ai-sidebar-content {
-	padding: 12px;
+	padding: 12px 0 12px 12px;
 	block-size: 100%;
 	display: flex;
 	flex-direction: column;
@@ -116,6 +122,18 @@ useShortcut(
 	}
 	to {
 		block-size: 0;
+	}
+}
+
+@keyframes colors {
+	0% {
+		filter: hue-rotate(0);
+	}
+	50% {
+		filter: hue-rotate(90deg);
+	}
+	100% {
+		filter: hue-rotate(180deg);
 	}
 }
 </style>
