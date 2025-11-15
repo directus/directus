@@ -57,6 +57,12 @@ useShortcut(
 	display: flex;
 	align-items: center;
 	padding-inline: 18px 9px;
+	transition: color var(--fast) var(--transition);
+
+	&:hover:not([data-state='open']) {
+		color: var(--theme--primary);
+		animation: colors 2s ease infinite alternate;
+	}
 }
 
 .collapsible-trigger-icon {
@@ -116,6 +122,18 @@ useShortcut(
 	}
 	to {
 		block-size: 0;
+	}
+}
+
+@keyframes colors {
+	0% {
+		filter: hue-rotate(0);
+	}
+	50% {
+		filter: hue-rotate(90deg);
+	}
+	100% {
+		filter: hue-rotate(180deg);
 	}
 }
 </style>
