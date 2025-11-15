@@ -12,6 +12,7 @@ import { AI_MODELS } from '../models';
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
 	const sidebarStore = useSidebarStore();
+	const storedMessages = useLocalStorage<UIMessage[]>('directus-ai-chat-messages', []);
 
 	const chatOpen = ref<boolean>(false);
 
@@ -31,7 +32,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	);
 
 	const defaultProvider = computed(() => models.value[0]?.split('/')[0] ?? null);
-	const defaultModel = computed(() => models.value[0]?.split('/')[1] ?? null);
+	const defaultModel = computed(() => models.value[0] ?? null);
 	const selectedModel = useLocalStorage<string | null>('selected-ai-model', defaultModel.value);
 	const currentProvider = computed(() => selectedModel.value?.split('/')[0] ?? defaultProvider.value);
 	const currentModel = computed(() => selectedModel.value?.split('/')[1] ?? defaultModel.value);
@@ -59,6 +60,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	});
 
 	const chat = new Chat<UIMessage>({
+		messages: storedMessages.value,
 		transport: new DefaultChatTransport({
 			api: '/ai/chat',
 			credentials: 'include',
@@ -79,6 +81,8 @@ export const useAiStore = defineStore('ai-store', () => {
 					}
 				});
 			}
+
+			storedMessages.value = chat.messages;
 		},
 		onToolCall: async ({ toolCall }) => {
 			const isServerTool = toolCall.dynamic || systemTools.value.includes(toolCall.toolName);
@@ -152,6 +156,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	const reset = () => {
 		chat.clearError();
 		chat.messages.splice(0, chat.messages.length);
+		storedMessages.value = [];
 	};
 
 	return {
