@@ -222,44 +222,39 @@ function emitValue(event: InputEvent) {
 		return;
 	}
 
-	if (props.type === 'number') {
+	if (props.type === 'number' && props.integer === true) {
 		const parsedNumber = Number(value);
 
-		if (props.integer === true && !Number.isInteger(parsedNumber) && Number.isNaN(parsedNumber) === false) {
+		if (!Number.isInteger(parsedNumber) && Number.isNaN(parsedNumber) === false) {
 			emit('update:modelValue', Math.floor(parsedNumber));
 			return;
 		}
 
-		// Ignore if numeric value remains unchanged
-		if (props.modelValue !== parsedNumber) {
-			emit('update:modelValue', parsedNumber);
-		}
-	} else {
-		// decimal input marked as text
-		if (props.float === true) {
-			/**
-			 * Normalize decimal separator from ',' to '.'
-			 * Thousands separators are not supported in the input
-			 */
-			value = value.replace(',', '.');
-		}
-
-		if (props.slug === true) {
-			const endsWithSpace = value.endsWith(' ');
-			value = slugify(value, { separator: props.slugSeparator, preserveTrailingDash: true });
-			if (endsWithSpace) value += props.slugSeparator;
-		}
-
-		if (props.dbSafe === true) {
-			value = value.replace(/\s/g, '_');
-			// Replace é -> e etc
-			value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-			// prevent pasting of non dbSafeCharacters from bypassing the keydown checks
-			value = value.replace(/[^a-zA-Z0-9_]/g, '');
-		}
-
-		emit('update:modelValue', value);
+		emit('update:modelValue', parsedNumber);
+		return;
 	}
+
+	// decimals are treated as string due to rounding errors
+	if (props.type === 'text' && props.float === true) {
+		// Replace `,` with `.` for decimal separator, ignoring thousands separators
+		value = value.replace(',', '.');
+	}
+
+	if (props.slug === true) {
+		const endsWithSpace = value.endsWith(' ');
+		value = slugify(value, { separator: props.slugSeparator, preserveTrailingDash: true });
+		if (endsWithSpace) value += props.slugSeparator;
+	}
+
+	if (props.dbSafe === true) {
+		value = value.replace(/\s/g, '_');
+		// Replace é -> e etc
+		value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+		// prevent pasting of non dbSafeCharacters from bypassing the keydown checks
+		value = value.replace(/[^a-zA-Z0-9_]/g, '');
+	}
+
+	emit('update:modelValue', value);
 }
 
 function stepUp() {

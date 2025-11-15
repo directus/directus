@@ -166,6 +166,7 @@ describe('emitValue', () => {
 			props: {
 				type: 'number',
 				modelValue: '1',
+				integer: true,
 			},
 			global,
 		});
@@ -173,6 +174,21 @@ describe('emitValue', () => {
 		await wrapper.find('input').trigger('input');
 
 		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual([1]);
+	});
+
+	test('should keep trailing zeros while typing', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: '1.200',
+				float: true,
+			},
+			global,
+		});
+
+		await wrapper.find('input').trigger('input');
+
+		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['1.200']);
 	});
 
 	test('should replace "," with "." for decimal separator when decimal types marked as text', async () => {
