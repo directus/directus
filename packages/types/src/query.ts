@@ -19,6 +19,7 @@ export type Query = {
 };
 
 export type DeepQuery = {
+	_alias?: Record<string, string> | null;
 	_fields?: string[] | null;
 	_sort?: string[] | null;
 	_filter?: Filter | null;
