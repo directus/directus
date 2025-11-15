@@ -1811,9 +1811,7 @@ interfaces:
     accordion_mode: حالت آکاردئون
     max_one_section_open: حداکثر 1 بخش باز باشد
   presentation-links:
-    presentation-links: دکمه لینک ها
     links: لینک‌ ها
-    description: دکمه های لینک قابل تنظیم برای راه اندازی URL های پویا
     style: استایل
     primary: اصلی
     link: لینک‌‌ها

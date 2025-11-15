@@ -1688,9 +1688,7 @@ interfaces:
     accordion_mode: Körüklü Liste Modu
     max_one_section_open: En Fazla 1 Bölüm Açık
   presentation-links:
-    presentation-links: Buton Bağlantıları
     links: Bağlantılar
-    description: Dinamik URL'ler girmek için yapılandırılabilir bağlantı butonları
     style: Stil
     primary: Birincil
     link: Bağlantılar

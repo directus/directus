@@ -1656,7 +1656,6 @@ interfaces:
     accordion_mode: قائمة منسدلة
     max_one_section_open: قسم واحد مفتوح كحد أقصى
   presentation-links:
-    presentation-links: روابط على شكل زر
     links: روابط
     style: النمط
     primary: الأساسي

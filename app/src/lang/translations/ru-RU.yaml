@@ -1778,9 +1778,7 @@ interfaces:
     accordion_mode: Вид аккордеона
     max_one_section_open: 1 открытая секция
   presentation-links:
-    presentation-links: Кнопки-ссылки
     links: Ссылки
-    description: Настраиваемые кнопки-ссылки для динамических URL-адресов
     style: Стиль
     primary: Первичный
     link: Ссылки
