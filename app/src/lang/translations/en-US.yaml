@@ -75,6 +75,8 @@ condition_rules: Condition Rules
 input: Input
 invalid_input: Invalid Input
 not_a_number: Not a Number
+value_exceeds_maximum: Value exceeds maximum of {max}
+value_below_minimum: Value is below minimum of {min}
 maps: Maps
 switch_user: Switch User
 item_creation: Item Creation
