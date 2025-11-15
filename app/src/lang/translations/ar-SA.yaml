@@ -253,6 +253,7 @@ field_permissions: أذونات العنصر
 field_validation: مجال المصادقة
 field_presets: الإعداد المسبق للحقل
 permissions_for_role: 'عناصر الدور {role} يمكن أن {action}.'
+permissions_for_policy: ''
 fields_for_role: 'عناصر الدور {role} يمكن أن {action}.'
 fields_for_policy: '.'
 validation_for_role: 'الحقل {action} قواعد الدور {role} يجب أن يطيع.'
