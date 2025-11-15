@@ -6,7 +6,7 @@ const icon = ref('person');
 </script>
 
 <template>
-	<Story title="VBanner">
+	<Story title="VBanner" icon="material-symbols:badge">
 		<VBanner :icon>
 			<h2 class="name">Nils Twelker</h2>
 

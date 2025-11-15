@@ -21,7 +21,7 @@ if (typeof window.URL.createObjectURL === 'undefined') {
 </script>
 
 <template>
-	<Story title="VForm">
+	<Story title="VForm" icon="material-symbols:assignment">
 		TBD
 		<!-- <v-form :fields /> -->
 	</Story>

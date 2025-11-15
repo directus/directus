@@ -6,7 +6,7 @@ const src = ref('https://raw.githubusercontent.com/directus/directus/refs/heads/
 </script>
 
 <template>
-	<Story title="VImage">
+	<Story title="VImage" icon="material-symbols:image">
 		<v-image :src />
 
 		<template #controls>

@@ -6,7 +6,7 @@ const collection = ref('articles');
 </script>
 
 <template>
-	<Story title="VFieldList">
+	<Story title="VFieldList" icon="material-symbols:graph-2">
 		<v-field-list :collection="collection" />
 
 		<template #controls>

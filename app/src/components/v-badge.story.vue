@@ -9,7 +9,7 @@ function initState() {
 </script>
 
 <template>
-	<Story title="VBadge" :init-state="initState">
+	<Story title="VBadge" icon="material-symbols:voting-chip" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
 			<v-badge v-bind="state"><v-icon name="notifications_active" /></v-badge>
 		</template>

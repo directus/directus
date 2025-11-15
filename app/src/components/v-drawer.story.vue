@@ -7,7 +7,7 @@ const title = ref('My Drawer');
 </script>
 
 <template>
-	<Story title="VDrawer">
+	<Story title="VDrawer" icon="material-symbols:dock-to-right">
 		<v-button @click="open = true">Open</v-button>
 		<v-drawer v-model="open" :title @cancel="open = false" @apply="open = false">
 			<template #actions>

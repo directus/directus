@@ -3,7 +3,7 @@ import VListItem from './v-list-item.vue';
 </script>
 
 <template>
-	<Story title="VList/VListItem" :layout="{ type: 'grid', width: '45%' }">
+	<Story title="VList/VListItem" icon="material-symbols:horizontal-rule" :layout="{ type: 'grid', width: '45%' }">
 		<Variant title="Basic">
 			<v-list-item>This is a list Item</v-list-item>
 		</Variant>

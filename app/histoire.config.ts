@@ -30,6 +30,11 @@ export default defineConfig({
 	tree: {
 		groups: [
 			{
+				id: 'styles',
+				title: 'Styles',
+				include: (file) => file.path.includes('styles/'),
+			},
+			{
 				id: 'components',
 				title: 'Components',
 				include: (file) => file.path.includes('components/'),

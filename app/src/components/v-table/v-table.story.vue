@@ -44,7 +44,7 @@ const items = ref([
 </script>
 
 <template>
-	<Story title="VTable">
+	<Story title="VTable" icon="material-symbols:table">
 		<v-table v-model:headers="headers" v-model:sort="sort" v-model="selection" v-model:items="items" />
 		<template #controls>
 			<HstJson v-model="selection" title="Selection" />

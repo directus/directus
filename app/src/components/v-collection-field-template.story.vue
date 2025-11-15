@@ -7,7 +7,7 @@ const value = ref('');
 </script>
 
 <template>
-	<Story title="VCollectionFieldTemplate">
+	<Story title="VCollectionFieldTemplate" icon="material-symbols:data-object">
 		<v-collection-field-template v-model="value" :collection />
 
 		<template #controls>
