@@ -30,23 +30,22 @@ import type { RoleMap } from '../../types/rolemap.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { getSchema } from '../../utils/get-schema.js';
 import { getSecret } from '../../utils/get-secret.js';
-import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
 import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
+import { generateCallbackUrl } from '../utils/generate-callback-url.js';
+import { isLoginRedirectAllowed } from '../utils/is-login-redirect-allowed.js';
 import { LocalAuthDriver } from './local.js';
-import { getSchema } from '../../utils/get-schema.js';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: null | Client;
-	redirectUrl: string;
 	config: Record<string, any>;
 	roleMap: RoleMap;
 
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
 
-		const env = useEnv();
 		const logger = useLogger();
 
 		const {
@@ -66,9 +65,6 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidProviderConfigError({ provider });
 		}
 
-		const redirectUrl = new Url(env['PUBLIC_URL'] as string).addPath('auth', 'login', provider, 'callback');
-
-		this.redirectUrl = redirectUrl.toString();
 		this.config = config;
 		this.roleMap = {};
 
@@ -152,7 +148,6 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			{
 				client_id: clientId,
 				...(!isPrivateKeyJwtAuthMethod && { client_secret: clientSecret }),
-				redirect_uris: [this.redirectUrl],
 				response_types: ['code'],
 				...clientOptionsOverrides,
 			},
@@ -177,7 +172,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		return generators.codeVerifier();
 	}
 
-	async generateAuthUrl(codeVerifier: string, prompt = false): Promise<string> {
+	async generateAuthUrl(codeVerifier: string, prompt = false, callbackUrl?: string): Promise<string> {
 		const { plainCodeChallenge } = this.config;
 
 		try {
@@ -195,6 +190,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				// Some providers require state even with PKCE
 				state: codeChallenge,
 				nonce: codeChallenge,
+				redirect_uri: callbackUrl,
 			});
 		} catch (e) {
 			throw handleError(e);
@@ -232,7 +228,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				: generators.codeChallenge(payload['codeVerifier']);
 
 			tokenSet = await client.callback(
-				this.redirectUrl,
+				payload['callbackUrl'],
 				{ code: payload['code'], state: payload['state'], iss: payload['iss'] },
 				{ code_verifier: payload['codeVerifier'], state: codeChallenge, nonce: codeChallenge },
 			);
@@ -448,14 +444,26 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const redirect = req.query['redirect'];
 			const otp = req.query['otp'];
 
-			if (isLoginRedirectAllowed(redirect, providerName) === false) {
+			if (!isLoginRedirectAllowed(providerName, `${req.protocol}://${req.hostname}`, redirect)) {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt, otp }, getSecret(), {
-				expiresIn: (env[`AUTH_${providerName.toUpperCase()}_LOGIN_TIMEOUT`] ?? '5m') as StringValue | number,
-				issuer: 'directus',
-			});
+			const callbackUrl = generateCallbackUrl(providerName, `${req.protocol}://${req.get('host')}`);
+
+			const token = jwt.sign(
+				{
+					verifier: codeVerifier,
+					redirect,
+					prompt,
+					otp,
+					callbackUrl,
+				},
+				getSecret(),
+				{
+					expiresIn: (env[`AUTH_${providerName.toUpperCase()}_LOGIN_TIMEOUT`] ?? '5m') as StringValue | number,
+					issuer: 'directus',
+				},
+			);
 
 			res.cookie(`openid.${providerName}`, token, {
 				httpOnly: true,
@@ -463,7 +471,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			});
 
 			try {
-				return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt));
+				return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt, callbackUrl));
 			} catch {
 				return res.redirect(
 					new Url(env['PUBLIC_URL'] as string)
@@ -499,6 +507,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 					redirect?: string;
 					prompt: boolean;
 					otp?: string;
+					callbackUrl?: string;
 				};
 			} catch (e: any) {
 				logger.warn(e, `[OpenID] Couldn't verify OpenID cookie`);
@@ -506,7 +515,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				return res.redirect(`${url.toString()}?reason=${ErrorCode.InvalidCredentials}`);
 			}
 
-			const { verifier, prompt, otp } = tokenData;
+			const { verifier, prompt, otp, callbackUrl } = tokenData;
 			let { redirect } = tokenData;
 
 			const accountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
@@ -536,6 +545,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 						codeVerifier: verifier,
 						state: req.query['state'],
 						iss: req.query['iss'],
+						callbackUrl,
 					},
 					{ session: authMode === 'session', ...(otp ? { otp: String(otp) } : {}) },
 				);
