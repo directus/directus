@@ -35,7 +35,10 @@ watch(
 
 function scrollToBottom() {
 	const el = messagesContainerRef.value;
-	if (el) el.scrollTop = el.scrollHeight;
+
+	if (el) {
+		el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+	}
 }
 </script>
 
@@ -73,15 +76,15 @@ function scrollToBottom() {
 			</v-notice>
 
 			<div id="scroll-anchor"></div>
+		</div>
 
+		<div class="input-container">
 			<div v-show="showScrollButton" class="scroll-to-bottom-container">
 				<v-button icon rounded secondary x-small class="scroll-to-bottom-btn" @click="scrollToBottom">
 					<v-icon small name="arrow_downward" />
 				</v-button>
 			</div>
-		</div>
 
-		<div class="input-container">
 			<ai-input />
 		</div>
 	</div>
@@ -120,6 +123,7 @@ function scrollToBottom() {
 
 .input-container {
 	flex-shrink: 0;
+	position: relative;
 }
 
 .error-message {
@@ -148,8 +152,10 @@ function scrollToBottom() {
 }
 
 .scroll-to-bottom-container {
-	position: sticky;
-	inset-block-end: 8px;
+	position: absolute;
+	inset-block-start: -36px;
+	inset-inline-start: 50%;
+	translate: -50% 0;
 	z-index: 4;
 	margin-block-start: auto;
 	display: flex;
