@@ -13,6 +13,7 @@ type Option = {
 const props = defineProps<{
 	value: string | number | null;
 	disabled?: boolean;
+	nonEditable?: boolean;
 	choices?: Option[];
 	icon?: string;
 	allowNone?: boolean;
@@ -80,6 +81,7 @@ watch(
 		:model-value="value"
 		:items="items"
 		:disabled="disabled"
+		:non-editable="nonEditable"
 		:show-deselect="allowNone"
 		item-icon="icon"
 		item-color="color"

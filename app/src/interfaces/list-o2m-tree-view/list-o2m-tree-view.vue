@@ -14,6 +14,7 @@ const props = withDefaults(
 	defineProps<{
 		value?: (number | string | Record<string, any>)[] | Record<string, any>;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		collection: string;
 		field: string;
 		primaryKey: string | number;
@@ -26,6 +27,7 @@ const props = withDefaults(
 	{
 		value: () => [],
 		disabled: false,
+		nonEditable: false,
 		enableCreate: true,
 		enableSelect: true,
 		filter: null,
@@ -128,6 +130,7 @@ const fields = computed(() => {
 			:primary-key="primaryKey"
 			:relation-info="relationInfo"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:fields="fields"
 			:enable-create="enableCreate"
 			:enable-select="enableSelect"
