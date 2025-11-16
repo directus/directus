@@ -23,15 +23,9 @@ onMounted(() => {
 	});
 });
 
-// Scroll to bottom when the user submits a message
-watch(
-	() => aiStore.status,
-	(newStatus) => {
-		if (newStatus === 'submitted') {
-			scrollToBottom();
-		}
-	},
-);
+aiStore.onSubmit(() => {
+	scrollToBottom();
+});
 
 function scrollToBottom() {
 	const el = messagesContainerRef.value;

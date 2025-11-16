@@ -11,7 +11,7 @@ const canSubmit = computed(
 );
 
 function handleKeydown(event: KeyboardEvent) {
-	if (event.key === 'Enter' && !event.shiftKey) {
+	if (!event.shiftKey) {
 		event.preventDefault();
 
 		if (canSubmit.value) {
@@ -23,8 +23,7 @@ function handleKeydown(event: KeyboardEvent) {
 function handleSubmit() {
 	if (!canSubmit.value) return;
 
-	aiStore.addMessage(aiStore.input);
-	aiStore.input = '';
+	aiStore.submit();
 }
 </script>
 
@@ -36,7 +35,7 @@ function handleSubmit() {
 				v-model="aiStore.input"
 				:placeholder="$t('ai.prompt_input_placeholder')"
 				autofocus
-				@keydown="handleKeydown"
+				@keydown.enter="handleKeydown"
 			/>
 			<div class="input-controls">
 				<ai-input-submit
