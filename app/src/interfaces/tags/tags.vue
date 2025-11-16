@@ -6,6 +6,7 @@ const props = withDefaults(
 	defineProps<{
 		value: string[] | string | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		placeholder?: string;
 		whitespace?: string | null;
 		capitalization?: string | null;
@@ -120,7 +121,8 @@ function emitValue() {
 		<v-input
 			v-if="allowCustom"
 			:placeholder="placeholder || $t('interfaces.tags.add_tags')"
-			:disabled="disabled"
+			:disabled
+			:non-editable
 			:dir="direction"
 			@keydown="onInput"
 			@blur="onInput"
