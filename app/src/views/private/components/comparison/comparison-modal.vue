@@ -194,7 +194,6 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 							</template>
 							<template v-else>
 								<v-form
-									disabled
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.base || {}"
@@ -205,6 +204,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										selectedFields: [],
 										onToggleField: () => {},
 									}"
+									non-editable
 									class="comparison-form--base"
 								/>
 							</template>
@@ -235,7 +235,6 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 							</template>
 							<template v-else>
 								<v-form
-									disabled
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.incoming || {}"
@@ -246,6 +245,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										selectedFields: selectedComparisonFields,
 										onToggleField: toggleComparisonField,
 									}"
+									non-editable
 									class="comparison-form--incoming"
 								/>
 							</template>

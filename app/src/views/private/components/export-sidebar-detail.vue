@@ -477,6 +477,10 @@ async function exportDataFiles() {
 								value: 'csv',
 							},
 							{
+								text: $t('csv_utf8'),
+								value: 'csv_utf8',
+							},
+							{
 								text: $t('json'),
 								value: 'json',
 							},

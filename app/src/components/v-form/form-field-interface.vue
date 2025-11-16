@@ -14,6 +14,7 @@ const props = defineProps<{
 	modelValue?: string | number | boolean | Record<string, any> | Array<any>;
 	loading?: boolean;
 	disabled?: boolean;
+	nonEditable?: boolean;
 	autofocus?: boolean;
 	rawEditorEnabled?: boolean;
 	rawEditorActive?: boolean;
@@ -55,6 +56,7 @@ const value = computed(() =>
 				v-bind="(field.meta && field.meta.options) || {}"
 				:autofocus="disabled !== true && autofocus"
 				:disabled="disabled"
+				:non-editable="nonEditable"
 				:loading="loading"
 				:value="value"
 				:batch-mode="batchMode"

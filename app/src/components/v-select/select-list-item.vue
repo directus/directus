@@ -9,12 +9,14 @@ const props = withDefaults(
 		modelValue?: string | number | (string | number)[] | null;
 		multiple?: boolean;
 		allowOther?: boolean;
+		nonEditable?: boolean;
 	}>(),
 	{
 		itemLabelFontFamily: 'var(--v-select-font-family)',
 		modelValue: null,
 		multiple: true,
 		allowOther: false,
+		nonEditable: false,
 	},
 );
 
@@ -63,7 +65,8 @@ const isActive = computed(() => {
 				:model-value="modelValue || []"
 				:label="item.text"
 				:value="item.value"
-				:disabled="item.disabled"
+				:disabled="item.disabled || nonEditable"
+				:non-editable="nonEditable"
 				@update:model-value="$emit('update:modelValue', $event.length > 0 ? $event : null)"
 			/>
 		</v-list-item-content>
