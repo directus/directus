@@ -53,6 +53,8 @@ function emitValue(newValue: string) {
 		:placeholder="internalPlaceholder"
 		:disabled="disabled"
 		:type="type"
+		:disabled
+		:non-editable
 		:autocomplete="masked ? 'new-password' : 'off'"
 		:model-value="localValue"
 		:class="{ hashed: isHashed && !localValue }"

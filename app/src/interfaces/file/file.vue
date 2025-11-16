@@ -24,6 +24,7 @@ const props = withDefaults(
 	defineProps<{
 		value: string | Record<string, any> | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		loading?: boolean;
 		folder?: string;
 		filter?: Filter;
@@ -190,6 +191,7 @@ function useURLImport() {
 						block
 						:active
 						:disabled="internalDisabled"
+						:non-editable="nonEditable"
 						:placeholder="$t('no_file_selected')"
 						:model-value="file && file.title"
 						@click="toggle"
@@ -288,6 +290,7 @@ function useURLImport() {
 			:primary-key="file.id"
 			:edits="edits"
 			:disabled="internalDisabled"
+			:non-editable="nonEditable"
 			@input="update"
 		>
 			<template #actions>

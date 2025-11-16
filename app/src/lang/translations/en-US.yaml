@@ -724,6 +724,7 @@ activity_log: Activity Log
 all_items: All Items
 any: Any
 csv: CSV
+csv_utf8: CSV Excel (UTF-8)
 no_collections: No Collections
 create_collection: Create Collection
 no_collections_copy_admin: You don’t have any Collections yet. Click the button below to get started.
@@ -2021,6 +2022,9 @@ interfaces:
   collection-item-dropdown:
     collection-item-dropdown: Collection Item Dropdown
     description: Select an item from a collection in JSON format
+  collection-item-multiple-dropdown:
+    collection-item-multiple-dropdown: Collection Item Dropdown (Multiple)
+    description: Select multiple items from a collection in JSON format
   input-rich-text-md:
     markdown: Markdown
     description: Enter and preview markdown
