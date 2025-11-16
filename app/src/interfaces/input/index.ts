@@ -142,6 +142,7 @@ export default defineInterface({
 			],
 		};
 
+		// The input interface only supports 'integer' or 'float' types, so we use 'float' for decimal fields
 		const numericFieldType = field.type === 'float' || field.type === 'decimal' ? 'float' : 'integer';
 
 		const numberOptions: DeepPartial<Field>[] = [

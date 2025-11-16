@@ -292,6 +292,7 @@ function useInvalidInput() {
 	const isInvalidInput = ref(false);
 
 	const tooltipInvalid = computed(() => {
+		// Check for integer or float inputs (decimal inputs can be type text depending on database)
 		if (props.integer === true || props.float === true) {
 			if (isInvalidInput.value) {
 				if (input.value?.validity.rangeOverflow) {
