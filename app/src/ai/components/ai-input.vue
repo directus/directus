@@ -4,6 +4,7 @@ import { computed, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AiTextarea from './ai-textarea.vue';
 import AiInputSubmit from './ai-input-submit.vue';
+import AiInputUsage from './ai-input-usage.vue';
 import { useAiStore } from '../stores/use-ai';
 
 const aiStore = useAiStore();
@@ -57,6 +58,7 @@ function handleBlur() {
 				@blur="handleBlur"
 			/>
 			<div class="input-controls">
+				<ai-input-usage />
 				<ai-input-submit :status="aiStore.status" :can-submit="canSubmit" @stop="aiStore.stop" @reload="aiStore.retry" @submit="handleSubmit" />
 			</div>
 		</div>

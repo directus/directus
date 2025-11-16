@@ -8,7 +8,6 @@ import { computed, reactive, ref, shallowRef, watch } from 'vue';
 import { z } from 'zod';
 import { StaticToolDefinition } from '../composables/define-tool';
 import { AI_MODELS, type ModelDefinition } from '../models';
-import { calculateRelativeUsage } from '../utils/calculate-relative-usage';
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
