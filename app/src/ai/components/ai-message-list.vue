@@ -30,8 +30,6 @@ onMounted(() => {
 				<span />
 			</div>
 		</AiMessage>
-
-		<div id="anchor"></div>
 	</div>
 </template>
 
@@ -47,15 +45,6 @@ onMounted(() => {
 	gap: var(--ai-message-list-gap, 1rem);
 	padding-block-end: 1rem;
 	position: relative;
-}
-
-.ai-message-list * {
-	overflow-anchor: none;
-}
-
-#anchor {
-	overflow-anchor: auto;
-	block-size: 1px;
 }
 
 .loading-indicator {
@@ -104,39 +93,5 @@ onMounted(() => {
 		transform: scale(1);
 		opacity: 1;
 	}
-}
-
-.auto-scroll-container {
-	position: sticky;
-	inset-block-end: 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding-block-start: 1rem;
-	pointer-events: none;
-}
-
-.auto-scroll-button {
-	pointer-events: all;
-	box-shadow: var(--theme--shadow);
-	padding: 4px;
-
-	--v-button-background-color: var(--theme--background);
-	--v-button-background-color-hover: var(--theme--background-accent);
-	--v-button-color: var(--theme--foreground);
-	--v-button-color-hover: var(--theme--foreground-accent);
-}
-
-.auto-scroll-enter-active,
-.auto-scroll-leave-active {
-	transition:
-		opacity var(--fast) var(--transition),
-		transform var(--fast) var(--transition);
-}
-
-.auto-scroll-enter-from,
-.auto-scroll-leave-to {
-	opacity: 0;
-	transform: translateY(0.5rem);
 }
 </style>

@@ -51,8 +51,9 @@ function emitValue(newValue: string) {
 <template>
 	<v-input
 		:placeholder="internalPlaceholder"
-		:disabled="disabled"
+		:disabled
 		:type="type"
+		:non-editable
 		:autocomplete="masked ? 'new-password' : 'off'"
 		:model-value="localValue"
 		:class="{ hashed: isHashed && !localValue }"

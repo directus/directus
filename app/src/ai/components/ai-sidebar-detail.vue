@@ -1,17 +1,31 @@
 <script setup lang="ts">
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { useShortcut } from '@/composables/use-shortcut';
+import { translateShortcut } from '@/utils/translate-shortcut';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
+import { ref } from 'vue';
 import { useAiStore } from '../stores/use-ai';
 import AiConversation from './ai-conversation.vue';
 import AiHeader from './ai-header.vue';
 
 const sidebarStore = useSidebarStore();
 const aiStore = useAiStore();
+
+const aiSidebarDetailRef = ref<HTMLElement | undefined>(undefined);
+
+useShortcut('meta+j', () => {
+	aiStore.chatOpen = !aiStore.chatOpen;
+});
 </script>
 
 <template>
-	<CollapsibleRoot v-model:open="aiStore.chatOpen" v-tooltip.left="!aiStore.chatOpen && $t('ai_chat')" class="collapsible-root">
+	<CollapsibleRoot
+		ref="aiSidebarDetailRef"
+		v-model:open="aiStore.chatOpen"
+		v-tooltip.left="!aiStore.chatOpen && `${$t('ai_chat')} (${translateShortcut(['meta', 'j'])})`"
+		class="collapsible-root"
+	>
 		<CollapsibleTrigger class="collapsible-trigger">
 			<VIcon name="smart_toy" class="collapsible-trigger-icon" />
 			<span v-show="!sidebarStore.collapsed" class="collapsible-trigger-title">{{ $t('ai_chat') }}</span>

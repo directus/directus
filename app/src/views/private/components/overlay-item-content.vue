@@ -22,6 +22,7 @@ const {
 	initialValues: Record<string, any> | null;
 	fields: Field[];
 	disabled: boolean;
+	nonEditable: boolean;
 	loading: boolean;
 	validationErrors: any[];
 	junctionFieldLocation?: string;
@@ -127,6 +128,7 @@ function useValidationScrollToField() {
 				ref="junctionForm"
 				:model-value="internalEdits?.[junctionField]"
 				:disabled="disabled"
+				:non-editable="nonEditable"
 				:loading="loading"
 				:show-no-visible-fields="false"
 				:initial-values="junctionInitialValues"
@@ -141,6 +143,7 @@ function useValidationScrollToField() {
 				ref="mainForm"
 				v-model="internalEdits"
 				:disabled="disabled"
+				:non-editable="nonEditable"
 				:loading="loading"
 				:show-no-visible-fields="false"
 				:initial-values="mainInitialValues"
