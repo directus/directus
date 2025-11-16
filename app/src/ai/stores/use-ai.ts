@@ -8,12 +8,14 @@ import { computed, ref, shallowRef, watch } from 'vue';
 import { z } from 'zod';
 import { StaticToolDefinition } from '../composables/define-tool';
 import { AI_MODELS } from '../models';
+import { createEventHook } from '@vueuse/core';
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
 	const sidebarStore = useSidebarStore();
 
-	const chatOpen = ref<boolean>(false);
+	const chatOpen = useLocalStorage<boolean>('ai-chat-open', false);
+	const input = ref<string>('');
 
 	watch(chatOpen, (newOpen) => {
 		if (newOpen === true) sidebarStore.expand();
@@ -124,9 +126,14 @@ export const useAiStore = defineStore('ai-store', () => {
 
 	const status = computed(() => chat.status);
 
-	const addMessage = (message: string) => {
-		chat.sendMessage({ text: message });
-	};
+	const submitHook = createEventHook();
+
+	const submit = () => {
+		if (chat.status === 'streaming' || chat.status === 'submitted') return;
+		chat.sendMessage({ text: input.value });
+		submitHook.trigger(input.value);
+		input.value = '';
+	}
 
 	const registerLocalTool = (tool: StaticToolDefinition) => {
 		localTools.value = [...localTools.value, tool];
@@ -157,7 +164,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	return {
 		currentProvider,
 		currentModel,
-		addMessage,
+		input,
 		chat,
 		messages,
 		status,
@@ -173,5 +180,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		stop,
 		reset,
 		chatOpen,
+		submit,
+		onSubmit: submitHook.on,
 	};
 });

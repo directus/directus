@@ -8,6 +8,7 @@ interface Props {
 	placeholder?: string;
 	disabled?: boolean;
 	rows?: number;
+	autofocus?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -49,6 +50,7 @@ defineExpose({
 	<textarea
 		ref="textarea-ref"
 		v-model="modelValue"
+		v-focus="autofocus"
 		:placeholder="placeholder"
 		:disabled
 		:rows="rows"
