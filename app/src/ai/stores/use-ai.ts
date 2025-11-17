@@ -205,6 +205,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		tokenUsage.inputTokens = 0;
 		tokenUsage.outputTokens = 0;
 		tokenUsage.totalTokens = 0;
+		estimatedMaxMessages.value = Infinity;
 	};
 
 	/**
