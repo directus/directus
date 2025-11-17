@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useCustomSelection } from '@directus/composables';
 import { computed, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
 
 type Option = {
@@ -13,11 +12,10 @@ const props = withDefaults(
 	defineProps<{
 		value: string | number | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		choices?: Option[];
-
 		allowOther?: boolean;
 		width?: string;
-
 		iconOn?: string;
 		iconOff?: string;
 		color?: string;
@@ -30,8 +28,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const { choices, value } = toRefs(props);
 
@@ -50,7 +46,7 @@ const customIcon = computed(() => {
 
 <template>
 	<v-notice v-if="!items" type="warning">
-		{{ t('choices_option_configured_incorrectly') }}
+		{{ $t('choices_option_configured_incorrectly') }}
 	</v-notice>
 	<div
 		v-else
@@ -67,21 +63,23 @@ const customIcon = computed(() => {
 			:value="item.value"
 			:label="item.text"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:icon-on="iconOn"
 			:icon-off="iconOff"
 			:model-value="value"
 			@update:model-value="$emit('input', $event)"
 		/>
 		<v-notice v-if="items.length === 0 && !allowOther" type="info">
-			{{ t('no_options_available') }}
+			{{ $t('no_options_available') }}
 		</v-notice>
 		<div
-			v-if="allowOther"
+			v-if="allowOther && !(nonEditable && !usesOtherValue && !otherValue)"
 			class="custom"
 			:class="{
-				active: !disabled && usesOtherValue,
-				'has-value': !disabled && otherValue,
+				active: (!disabled || nonEditable) && usesOtherValue,
+				'has-value': (!disabled || nonEditable) && otherValue,
 				disabled,
+				'non-editable': nonEditable,
 			}"
 		>
 			<v-icon
@@ -94,7 +92,7 @@ const customIcon = computed(() => {
 			<input
 				ref="customInput"
 				v-model="otherValue"
-				:placeholder="t('other')"
+				:placeholder="$t('other')"
 				:disabled="disabled"
 				@change="$emit('input', otherValue)"
 			/>
@@ -184,13 +182,20 @@ const customIcon = computed(() => {
 	}
 
 	&.disabled {
+		cursor: not-allowed;
+
+		input,
+		.radio-icon {
+			cursor: not-allowed;
+		}
+	}
+
+	&.disabled:not(.non-editable) {
 		background-color: var(--theme--form--field--input--background-subdued);
 		border-color: transparent;
-		cursor: not-allowed;
 
 		input {
 			color: var(--theme--form--field--input--foreground-subdued);
-			cursor: not-allowed;
 
 			&::placeholder {
 				color: var(--theme--form--field--input--foreground-subdued);

@@ -21,6 +21,7 @@ const props = withDefaults(
 		comparison?: ComparisonContext;
 		comparisonActive?: boolean;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		modelValue?: any;
 		initialValue?: any;
 		primaryKey?: string | number;
@@ -31,6 +32,7 @@ const props = withDefaults(
 		rawEditorEnabled?: boolean;
 		rawEditorActive?: boolean;
 		disabledMenuOptions?: MenuOptions[];
+		disabledMenu?: boolean;
 		direction?: string;
 		collabFieldContext?: CollabFieldContext;
 	}>(),
@@ -197,7 +199,7 @@ function useComputedValues() {
 				: {}
 		"
 	>
-		<v-menu v-if="!isLabelHidden" placement="bottom-start" show-arrow arrow-placement="start">
+		<v-menu v-if="!isLabelHidden" :disabled="disabledMenu" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
 				<form-field-label
 					:field="field"
@@ -214,6 +216,7 @@ function useComputedValues() {
 					:raw-editor-active="rawEditorActive"
 					:loading="loading"
 					:focused-by="focusedBy"
+					:disabled-menu="disabledMenu"
 					@toggle-batch="$emit('toggle-batch', $event)"
 					@toggle-raw="$emit('toggle-raw', $event)"
 				/>
@@ -232,6 +235,7 @@ function useComputedValues() {
 				@paste-raw="pasteRaw"
 			/>
 		</v-menu>
+
 		<div v-else-if="['full', 'fill'].includes(field.meta?.width ?? '') === false" class="label-spacer" />
 
 		<form-field-interface
@@ -242,6 +246,7 @@ function useComputedValues() {
 			:batch-mode="batchMode"
 			:batch-active="batchActive"
 			:disabled="isDisabled"
+			:non-editable="nonEditable"
 			:primary-key="primaryKey"
 			:raw-editor-enabled="rawEditorEnabled"
 			:raw-editor-active="rawEditorActive"

@@ -8,6 +8,7 @@ import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
+import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
@@ -44,6 +45,8 @@ const { t, te } = useI18n();
 
 const router = useRouter();
 const { collectionRoute } = useCollectionRoute();
+
+const userStore = useUserStore();
 
 const form = ref<HTMLElement>();
 
@@ -572,7 +575,7 @@ function useCollectionRoute() {
 
 			<v-button
 				v-else
-				v-tooltip.bottom="t('back')"
+				v-tooltip.bottom="$t('back')"
 				class="header-icon"
 				rounded
 				icon
@@ -588,7 +591,7 @@ function useCollectionRoute() {
 			<div class="headline-wrapper" :class="{ 'has-version-menu': shouldShowVersioning }">
 				<v-breadcrumb
 					v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
-					:items="[{ name: t('content'), to: '/content' }]"
+					:items="[{ name: $t('content'), to: '/content' }]"
 					class="headline-breadcrumb"
 				/>
 				<v-breadcrumb v-else :items="breadcrumb" class="headline-breadcrumb" />
@@ -616,7 +619,7 @@ function useCollectionRoute() {
 		<template #actions>
 			<v-button
 				v-if="previewUrl"
-				v-tooltip.bottom="t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
+				v-tooltip.bottom="$t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
 				rounded
 				icon
 				class="action-preview"
@@ -636,7 +639,7 @@ function useCollectionRoute() {
 				<template #activator="{ on }">
 					<v-button
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
-						v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')"
+						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
 						rounded
 						icon
 						class="action-delete"
@@ -649,14 +652,14 @@ function useCollectionRoute() {
 				</template>
 
 				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
+							{{ $t('cancel') }}
 						</v-button>
 						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete_label') }}
+							{{ $t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -684,14 +687,14 @@ function useCollectionRoute() {
 				</template>
 
 				<v-card>
-					<v-card-title>{{ isArchived ? t('unarchive_confirm') : t('archive_confirm') }}</v-card-title>
+					<v-card-title>{{ isArchived ? $t('unarchive_confirm') : $t('archive_confirm') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button secondary @click="confirmArchive = false">
-							{{ t('cancel') }}
+							{{ $t('cancel') }}
 						</v-button>
 						<v-button kind="warning" :loading="archiving" @click="toggleArchive">
-							{{ isArchived ? t('unarchive') : t('archive') }}
+							{{ isArchived ? $t('unarchive') : $t('archive') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -701,7 +704,7 @@ function useCollectionRoute() {
 				v-if="currentVersion === null"
 				rounded
 				icon
-				:tooltip="saveAllowed ? t('save') : t('not_allowed')"
+				:tooltip="saveAllowed ? $t('save') : $t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
 				@click="saveAndQuit"
@@ -723,7 +726,7 @@ function useCollectionRoute() {
 				v-else
 				rounded
 				icon
-				:tooltip="t('save_version')"
+				:tooltip="$t('save_version')"
 				:loading="saveVersionLoading"
 				:disabled="!isSavable"
 				@click="saveVersionAction('stay')"
@@ -739,17 +742,17 @@ function useCollectionRoute() {
 						<v-list>
 							<v-list-item clickable @click="saveVersionAction('main')">
 								<v-list-item-icon><v-icon name="check" /></v-list-item-icon>
-								<v-list-item-content>{{ t('save_and_return_to_main') }}</v-list-item-content>
+								<v-list-item-content>{{ $t('save_and_return_to_main') }}</v-list-item-content>
 								<v-list-item-hint>{{ translateShortcut(['meta', 'alt', 's']) }}</v-list-item-hint>
 							</v-list-item>
 							<v-list-item clickable @click="saveVersionAction('quit')">
 								<v-list-item-icon><v-icon name="done_all" /></v-list-item-icon>
-								<v-list-item-content>{{ t('save_and_quit') }}</v-list-item-content>
+								<v-list-item-content>{{ $t('save_and_quit') }}</v-list-item-content>
 								<v-list-item-hint>{{ translateShortcut(['meta', 'shift', 's']) }}</v-list-item-hint>
 							</v-list-item>
 							<v-list-item clickable @click="discardAndStay">
 								<v-list-item-icon><v-icon name="undo" /></v-list-item-icon>
-								<v-list-item-content>{{ t('discard_all_changes') }}</v-list-item-content>
+								<v-list-item-content>{{ $t('discard_all_changes') }}</v-list-item-content>
 							</v-list-item>
 						</v-list>
 					</v-menu>
@@ -775,17 +778,18 @@ function useCollectionRoute() {
 			:validation-errors="validationErrors"
 			:version="currentVersion"
 			:collab-context="collabContext"
+			:direction="userStore.textDirection"
 		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
+						{{ $t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -795,8 +799,8 @@ function useCollectionRoute() {
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_collections_item')" class="page-description" />
+			<sidebar-detail icon="info" :title="$t('information')" close>
+				<div v-md="$t('page_help_collections_item')" class="page-description" />
 			</sidebar-detail>
 			<template v-if="isNew === false && actualPrimaryKey">
 				<revisions-sidebar-detail

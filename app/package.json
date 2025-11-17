@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "14.0.0",
+	"version": "14.1.2",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -145,6 +145,7 @@
 		"tinymce": "catalog:",
 		"tus-js-client": "catalog:",
 		"typescript": "catalog:",
+		"universal-cookie": "catalog:",
 		"vite": "catalog:",
 		"vite-plugin-vue-devtools": "catalog:",
 		"vitest": "catalog:",
@@ -154,6 +155,7 @@
 		"vue-tsc": "catalog:",
 		"vue-virtual-scroller": "catalog:",
 		"vuedraggable": "catalog:",
-		"wellknown": "catalog:"
+		"wellknown": "catalog:",
+		"zod": "catalog:"
 	}
 }

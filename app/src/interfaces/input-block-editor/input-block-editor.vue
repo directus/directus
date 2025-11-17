@@ -3,11 +3,11 @@ import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
 import EditorJS from '@editorjs/editorjs';
-import { cloneDeep, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useBus } from './bus';
+import { sanitizeValue } from './sanitize';
 import getTools from './tools';
 import { useFileHandler } from './use-file-handler';
 
@@ -19,6 +19,7 @@ const RedactorDomChanged = 'redactor dom changed';
 const props = withDefaults(
 	defineProps<{
 		disabled?: boolean;
+		nonEditable?: boolean;
 		autofocus?: boolean;
 		value?: Record<string, any> | null;
 		bordered?: boolean;
@@ -38,8 +39,6 @@ const props = withDefaults(
 const bus = useBus();
 
 const emit = defineEmits<{ input: [value: EditorJS.OutputData | null] }>();
-
-const { t } = useI18n();
 
 const collectionStore = useCollectionsStore();
 
@@ -153,27 +152,17 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 		unexpectedError(error);
 	}
 }
-
-function sanitizeValue(value: any): EditorJS.OutputData | null {
-	if (!value || typeof value !== 'object' || !value.blocks || value.blocks.length < 1) return null;
-
-	return cloneDeep({
-		time: value?.time || Date.now(),
-		version: value?.version || '0.0.0',
-		blocks: value.blocks,
-	});
-}
 </script>
 
 <template>
 	<div class="input-block-editor">
-		<div ref="editorElement" :class="{ [font]: true, disabled, bordered }"></div>
+		<div ref="editorElement" :class="{ [font]: true, disabled, 'non-editable': nonEditable, bordered }"></div>
 
 		<v-drawer
 			v-if="haveFilesAccess && !disabled"
 			:model-value="fileHandler !== null"
 			icon="image"
-			:title="t('upload_from_device')"
+			:title="$t('upload_from_device')"
 			cancelable
 			@update:model-value="unsetFileHandler"
 			@cancel="unsetFileHandler"
@@ -209,10 +198,13 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 }
 
 .disabled {
-	color: var(--theme--form--field--input--foreground-subdued);
-	background-color: var(--theme--form--field--input--background-subdued);
-	border-color: var(--theme--form--field--input--border-color);
 	pointer-events: none;
+
+	&:not(.non-editable) {
+		color: var(--theme--form--field--input--foreground-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
+		border-color: var(--theme--form--field--input--border-color);
+	}
 }
 
 .bordered {

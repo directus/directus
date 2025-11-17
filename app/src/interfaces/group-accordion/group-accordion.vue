@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import type { ComparisonContext } from '@/components/v-form/types';
 import { Field, ValidationError } from '@directus/types';
 import { isEqual } from 'lodash';
-import type { ComparisonContext } from '@/components/v-form/types';
 import { ref, watch } from 'vue';
 import AccordionSection from './accordion-section.vue';
 
@@ -12,6 +12,7 @@ const props = withDefaults(
 		values: Record<string, unknown>;
 		initialValues: Record<string, unknown>;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
 		comparison?: ComparisonContext;
@@ -47,7 +48,7 @@ watch(
 		}
 
 		if (start === 'first') {
-			selection.value = [groupFields.value[0].field];
+			selection.value = [groupFields.value[0]!.field];
 		}
 	},
 	{ immediate: true },
@@ -120,6 +121,7 @@ function useComputedGroup() {
 			:values="groupValues"
 			:initial-values="initialValues"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:batch-mode="batchMode"
 			:batch-active-fields="batchActiveFields"
 			:comparison="comparison"
@@ -136,3 +138,9 @@ function useComputedGroup() {
 		/>
 	</v-item-group>
 </template>
+
+<style lang="scss" scoped>
+.group-accordion {
+	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+}
+</style>

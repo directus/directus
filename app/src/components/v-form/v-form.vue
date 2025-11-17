@@ -8,7 +8,6 @@ import { useElementSize } from '@directus/composables';
 import { ContentVersion, Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEqual, isEmpty, isNil, omit } from 'lodash';
 import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import type { MenuOptions } from './form-field-menu.vue';
 import FormField from './form-field.vue';
 import type { FormField as TFormField, ComparisonContext } from './types';
@@ -63,8 +62,6 @@ const props = withDefaults(
 		version: null,
 	},
 );
-
-const { t } = useI18n();
 
 const emit = defineEmits(['update:modelValue', 'updateField', 'unsetField', 'focusField', 'blurField']);
 

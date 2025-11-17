@@ -1,7 +1,7 @@
 import type { Item, Query } from '@directus/types';
 import { getEndpoint, moveInArray } from '@directus/utils';
 import axios from 'axios';
-import { debounce, isEqual } from 'lodash-es';
+import { isEqual, throttle } from 'lodash-es';
 import type { ComputedRef, Ref, WritableComputedRef } from 'vue';
 import { computed, ref, toRef, unref, watch } from 'vue';
 import { useCollection } from './use-collection.js';
@@ -18,6 +18,7 @@ export type UsableItems = {
 	items: Ref<Item[]>;
 	totalPages: ComputedRef<number>;
 	loading: Ref<boolean>;
+	loadingItemCount: Ref<boolean>;
 	error: Ref<any>;
 	changeManualSort: (data: ManualSortData) => Promise<void>;
 	getItems: () => Promise<void>;
@@ -51,6 +52,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 	const items = ref<Item[]>([]);
 	const loading = ref(false);
+	const loadingItemCount = ref(false);
 	const error = ref<any>(null);
 
 	const itemCount = ref<number | null>(null);
@@ -70,9 +72,10 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 	let loadingTimeout: NodeJS.Timeout | null = null;
 
-	const fetchItems = debounce((shouldUpdateCount: boolean) => {
+	// Throttle is used to ensure we send the first trigger instantly, debounce will not.
+	const fetchItems = throttle((shouldUpdateCount: boolean) => {
 		Promise.all([getItems(), shouldUpdateCount ? getItemCount() : Promise.resolve()]);
-	}, 350);
+	}, 500);
 
 	watch(
 		[collection, limit, sort, search, filter, fields, page, toRef(alias), toRef(deep)],
@@ -124,6 +127,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		items,
 		totalPages,
 		loading,
+		loadingItemCount,
 		error,
 		changeManualSort,
 		getItems,
@@ -279,6 +283,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	async function getItemCount() {
 		if (!endpoint.value) return;
 
+		loadingItemCount.value = true;
+
 		try {
 			if (existingRequests.filter) existingRequests.filter.abort();
 			existingRequests.filter = new AbortController();
@@ -311,6 +317,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			if (!axios.isCancel(err)) {
 				throw err;
 			}
+		} finally {
+			loadingItemCount.value = false;
 		}
 	}
 }

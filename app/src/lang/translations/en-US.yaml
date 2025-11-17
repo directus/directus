@@ -21,6 +21,32 @@
 # 'Proxy', 'Intl'
 
 about: About
+directus_bsl: Directus BSL 1.1
+privacy_policy: Privacy Policy
+contact_our_team: Contact our Team
+setup_welcome: Welcome to Directus
+setup_info: Let's create your admin account and get your project up and running.
+setup_license_notice: >
+  Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget.
+setup_license_follow_up: >
+  Entities above this threshold require a paid license. You can continue evaluating Directus now and {contactOurTeam}
+  when you're ready to discuss production use.
+setup_save_accept_license: >
+  By hitting save, you accept the terms of the {directusBsl} and {privacyPolicy}.
+setup_accept_license: I accept the terms of the {directusBsl} and {privacyPolicy}
+setup_marketing_emails: Send me product updates and release notes
+setup_launch: Launch Directus
+setup_project: Setup Project
+first_name: First Name
+last_name: Last Name
+admin_email: Admin Email
+owner_email: Owner Email
+email_address: Email Address
+organization_name: Organization Name
+how_do_you_use_directus: What are you using Directus for?
+usage_personal: Personal / Learning
+usage_commercial: Business / Commercial
+usage_community: Open Source / Community
 identifier: Identifier
 avatar: Avatar
 application: Application
@@ -260,6 +286,8 @@ validationError:
   iends_with: Value has to end with {substring}
   nends_with: Value can't end with {substring}
   niends_with: Value can't end with {substring}
+  confirm_password: Passwords do not match
+  org_name: Please include an organization name
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
@@ -696,6 +724,7 @@ activity_log: Activity Log
 all_items: All Items
 any: Any
 csv: CSV
+csv_utf8: CSV Excel (UTF-8)
 no_collections: No Collections
 create_collection: Create Collection
 no_collections_copy_admin: You don’t have any Collections yet. Click the button below to get started.
@@ -1915,6 +1944,11 @@ interfaces:
     collection: Collection
     description: Select between existing collections
     include_system_collections: Include System Collections
+  system-owner:
+    update: Update Project Owner
+    edit: Edit Project Owner
+    system-owner: System Owner
+    description: System Owner Interface
   system-collections:
     collections: Collections
     description: Select between existing collections
@@ -2012,6 +2046,9 @@ interfaces:
   collection-item-dropdown:
     collection-item-dropdown: Collection Item Dropdown
     description: Select an item from a collection in JSON format
+  collection-item-multiple-dropdown:
+    collection-item-multiple-dropdown: Collection Item Dropdown (Multiple)
+    description: Select multiple items from a collection in JSON format
   input-rich-text-md:
     markdown: Markdown
     description: Enter and preview markdown
@@ -2688,15 +2725,13 @@ percent: Percent
 show_password: Show password
 hide_password: Hide password
 bsl_banner:
-  welcome_to_directus: Welcome to Directus!
-  directus_free_use:
-    Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget.
-  organization_threshold: Entities above this threshold require a paid license.
-  license_agreement: By clicking "Accept", you agree to the {directusBsl} and {privacyPolicy}.
-  directus_bsl: Directus BSL 1.1
-  privacy_policy: Privacy Policy
-  accept_terms: Accept
-  get_license: Get a License
+  title: You have not set a project owner.
+  license:
+    We need this to ensure compliance with our BSL 1.1 license. This should be the primary contact responsible for your
+    project.
+  set_owner: Set Owner
+  remind_later: Remind Later
+  remind_next_login: We'll remind you again on your next login.
 accepted: Accepted
 text_direction_auto: Automatic (Match Language)
 text_direction_ltr: Left to Right (LTR)

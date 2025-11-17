@@ -252,6 +252,7 @@ export class ImportService {
 		const extractJSON = StreamArray.withParser();
 		const nestedActionEvents: ActionEventParams[] = [];
 		const errorTracker = createErrorTracker();
+		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
 
 		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
@@ -268,11 +269,15 @@ export class ImportService {
 						if (errorTracker.shouldStop()) return;
 
 						try {
-							const result = await service.upsertOne(task.data, {
-								bypassEmitAction: (params) => nestedActionEvents.push(params),
-							});
-
-							return result;
+							if (isSingleton) {
+								return await service.upsertSingleton(task.data, {
+									bypassEmitAction: (params) => nestedActionEvents.push(params),
+								});
+							} else {
+								return await service.upsertOne(task.data, {
+									bypassEmitAction: (params) => nestedActionEvents.push(params),
+								});
+							}
 						} catch (error) {
 							for (const err of toArray(error)) {
 								errorTracker.addCapturedError(err, task.rowNumber);
@@ -296,6 +301,20 @@ export class ImportService {
 					stream.pipe(extractJSON);
 
 					extractJSON.on('data', ({ value }: Record<string, any>) => {
+						if (isSingleton && rowNumber > 1) {
+							saveQueue.kill();
+							destroyStream(stream);
+							destroyStream(extractJSON);
+
+							reject(
+								new InvalidPayloadError({
+									reason: `Cannot import multiple records into singleton collection ${collection}`,
+								}),
+							);
+
+							return;
+						}
+
 						saveQueue.push({ data: value, rowNumber: rowNumber++ });
 					});
 
@@ -339,6 +358,7 @@ export class ImportService {
 
 		const nestedActionEvents: ActionEventParams[] = [];
 		const errorTracker = createErrorTracker();
+		const isSingleton = this.schema.collections[collection]?.singleton ?? false;
 
 		return transaction(this.knex, async (trx) => {
 			const service = getService(collection, {
@@ -368,11 +388,15 @@ export class ImportService {
 						if (errorTracker.shouldStop()) return;
 
 						try {
-							const result = await service.upsertOne(task.data, {
-								bypassEmitAction: (action) => nestedActionEvents.push(action),
-							});
-
-							return result;
+							if (isSingleton) {
+								return await service.upsertSingleton(task.data, {
+									bypassEmitAction: (action) => nestedActionEvents.push(action),
+								});
+							} else {
+								return await service.upsertOne(task.data, {
+									bypassEmitAction: (action) => nestedActionEvents.push(action),
+								});
+							}
 						} catch (error: any) {
 							for (const err of toArray(error)) {
 								errorTracker.addCapturedError(err, task.rowNumber);
@@ -429,6 +453,19 @@ export class ImportService {
 								)
 								.on('data', (obj: Record<string, unknown>) => {
 									rowNumber++;
+
+									if (isSingleton && rowNumber > 1) {
+										saveQueue.kill();
+										cleanup(true);
+
+										reject(
+											new InvalidPayloadError({
+												reason: `Cannot import multiple records into singleton collection ${collection}`,
+											}),
+										);
+
+										return;
+									}
 
 									const result: Record<string, unknown> = {};
 
@@ -520,6 +557,7 @@ export class ExportService {
 
 			const mimeTypes = {
 				csv: 'text/csv',
+				csv_utf8: 'text/csv; charset=utf-8',
 				json: 'application/json',
 				xml: 'text/xml',
 				yaml: 'text/yaml',
@@ -577,7 +615,7 @@ export class ExportService {
 					if (result.length) {
 						let csvHeadings = null;
 
-						if (format === 'csv') {
+						if (format.startsWith('csv')) {
 							if (!query.fields) query.fields = ['*'];
 
 							// to ensure the all headings are included in the CSV file, all possible fields need to be determined.
@@ -720,15 +758,16 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 			return string;
 		}
 
-		if (format === 'csv') {
+		if (format.startsWith('csv')) {
 			if (input.length === 0) return '';
 
 			const transforms = [CSVTransforms.flatten({ separator: '.' })];
 			const header = options?.includeHeader !== false;
+			const withBOM = format === 'csv_utf8';
 
 			const transformOptions = options?.fields
-				? { transforms, header, fields: options?.fields }
-				: { transforms, header };
+				? { transforms, header, fields: options?.fields, withBOM }
+				: { transforms, header, withBOM };
 
 			let string = new CSVParser(transformOptions).parse(input);
 

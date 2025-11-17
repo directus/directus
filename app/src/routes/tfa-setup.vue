@@ -116,20 +116,20 @@ useHead({
 <template>
 	<public-view>
 		<div class="header">
-			<h1 class="type-title">{{ t('tfa_setup') }}</h1>
+			<h1 class="type-title">{{ $t('tfa_setup') }}</h1>
 		</div>
 
 		<form v-if="tfaEnabled === false && tfaGenerated === false && loading === false" @submit.prevent="generate">
 			<div class="title">
-				{{ canSkipPassword ? t('tfa_setup_description') : t('enter_password_to_enable_tfa') }}
+				{{ canSkipPassword ? $t('tfa_setup_description') : $t('enter_password_to_enable_tfa') }}
 			</div>
 			<div v-if="!canSkipPassword">
-				<v-input v-model="password" :nullable="false" type="password" :placeholder="t('password')" autofocus />
+				<v-input v-model="password" :nullable="false" type="password" :placeholder="$t('password')" autofocus />
 			</div>
 			<v-error v-if="error" :error="error" />
 			<div class="actions">
-				<button v-if="showCancelButton" type="button" class="cancel-link" @click="cancel">{{ t('cancel') }}</button>
-				<v-button type="submit" :loading="loading" large>{{ t('next') }}</v-button>
+				<button v-if="showCancelButton" type="button" class="cancel-link" @click="cancel">{{ $t('cancel') }}</button>
+				<v-button type="submit" :loading="loading" large>{{ $t('next') }}</v-button>
 			</div>
 		</form>
 
@@ -138,24 +138,24 @@ useHead({
 		<div v-show="tfaEnabled === false && tfaGenerated === true && loading === false">
 			<form @submit.prevent="enable">
 				<div class="title">
-					{{ t('tfa_scan_code') }}
+					{{ $t('tfa_scan_code') }}
 				</div>
 				<div>
 					<canvas :id="canvasID" class="qr" />
 					<output class="secret">{{ secret }}</output>
-					<v-input ref="inputOTP" v-model="otp" type="text" :placeholder="t('otp')" :nullable="false" />
+					<v-input ref="inputOTP" v-model="otp" type="text" :placeholder="$t('otp')" :nullable="false" />
 					<v-error v-if="error" :error="error" />
 				</div>
 				<div class="actions">
-					<button v-if="showCancelButton" type="button" class="cancel-link" @click="cancel">{{ t('cancel') }}</button>
-					<v-button type="submit" :disabled="otp.length !== 6" large @click="enable">{{ t('done') }}</v-button>
+					<button v-if="showCancelButton" type="button" class="cancel-link" @click="cancel">{{ $t('cancel') }}</button>
+					<v-button type="submit" :disabled="otp.length !== 6" large @click="enable">{{ $t('done') }}</v-button>
 				</div>
 			</form>
 		</div>
 
 		<template #notice>
 			<v-icon name="lock" left />
-			{{ t('not_authenticated') }}
+			{{ $t('not_authenticated') }}
 		</template>
 	</public-view>
 </template>
