@@ -2,7 +2,7 @@
 import { renderStringTemplate } from '@/utils/render-string-template';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldMeta } from '@directus/types';
-import { isEqual, sortBy } from 'lodash';
+import { cloneDeep, isEqual, sortBy } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
 import Draggable from 'vuedraggable';
 
@@ -155,6 +155,28 @@ function removeItem(item: Record<string, any>) {
 	}
 }
 
+function copyItem(item: Record<string, any>, index: number) {
+	if (!value.value || !Array.isArray(internalValue.value)) return;
+
+	// Check limit
+	if (props.limit !== undefined && internalValue.value.length >= props.limit) {
+		return;
+	}
+
+	// Create a deep copy of the item
+	const copiedItem = cloneDeep(item);
+
+	// Insert the copied item right after the original
+	const newValue = [...internalValue.value];
+	newValue.splice(index + 1, 0, copiedItem);
+
+	if (props.fields && props.sort) {
+		emitValue(sortBy(newValue, props.sort));
+	} else {
+		emitValue(newValue);
+	}
+}
+
 function addNew() {
 	isNewItem.value = true;
 
@@ -232,6 +254,13 @@ function closeDrawer() {
 					<div class="spacer" />
 
 					<div class="item-actions">
+						<v-icon
+							v-if="!disabled"
+							v-tooltip="$t('duplicate')"
+							name="content_copy"
+							clickable
+							@click.stop="copyItem(element, index)"
+						/>
 						<v-remove v-if="!disabled" confirm @action="removeItem(element)" />
 					</div>
 				</v-list-item>
