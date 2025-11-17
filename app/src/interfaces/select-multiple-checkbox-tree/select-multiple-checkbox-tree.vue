@@ -12,6 +12,7 @@ const props = withDefaults(
 	defineProps<{
 		value: string[] | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		choices?: Choice[];
 		valueCombining?: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
 	}>(),
@@ -60,7 +61,8 @@ const searchDebounced = ref('');
 		<v-checkbox-tree
 			:model-value="value"
 			:search="searchDebounced"
-			:disabled="disabled"
+			:disabled
+			:non-editable
 			:choices="items"
 			:value-combining="valueCombining"
 			:show-selection-only="showSelectionOnly"

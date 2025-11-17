@@ -22,6 +22,7 @@ const props = withDefaults(
 		template?: string | null;
 		selectMode?: 'auto' | 'dropdown' | 'modal';
 		disabled?: boolean;
+		nonEditable?: boolean;
 		filter?: Filter | null;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
@@ -32,6 +33,7 @@ const props = withDefaults(
 		value: null,
 		selectMode: 'auto',
 		disabled: false,
+		nonEditable: false,
 		template: null,
 		filter: null,
 		enableCreate: true,
@@ -183,7 +185,7 @@ function getLinkForItem() {
 	<div v-else class="many-to-one">
 		<v-skeleton-loader v-if="loading" type="input" />
 
-		<v-list-item v-else block clickable :disabled @click="onPreviewClick">
+		<v-list-item v-else block clickable :disabled="disabled" :non-editable="nonEditable" @click="onPreviewClick">
 			<div v-if="displayItem" class="preview">
 				<render-template
 					:collection="relationInfo.relatedCollection.collection"
@@ -198,7 +200,7 @@ function getLinkForItem() {
 			<div class="item-actions">
 				<template v-if="displayItem">
 					<router-link
-						v-if="enableLink"
+						v-if="enableLink && !nonEditable"
 						v-tooltip="$t('navigate_to_item')"
 						:to="getLinkForItem()"
 						class="item-link"
@@ -207,7 +209,7 @@ function getLinkForItem() {
 						<v-icon name="launch" />
 					</router-link>
 
-					<v-icon v-if="!disabled" v-tooltip="$t('edit_item')" name="edit" clickable @click="editModalActive = true" />
+					<v-icon v-tooltip="$t('edit_item')" name="edit" clickable @click="editModalActive = true" />
 
 					<v-remove
 						v-if="!disabled"
@@ -240,6 +242,7 @@ function getLinkForItem() {
 			:edits="edits"
 			:circular-field="relationInfo.relation.meta?.one_field ?? undefined"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			@input="onDrawerItemInput"
 		/>
 

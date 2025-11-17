@@ -29,6 +29,7 @@ const props = withDefaults(
 		value: (number | string | Record<string, any>)[] | Record<string, any> | null;
 		autofocus?: boolean;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		version: ContentVersion | null;
 	}>(),
 	{
@@ -37,6 +38,7 @@ const props = withDefaults(
 		value: () => [],
 		autofocus: false,
 		disabled: false,
+		nonEditable: false,
 		defaultLanguage: null,
 		defaultOpenSplitView: false,
 		userLanguage: false,
@@ -158,6 +160,7 @@ function updateValue(item: DisplayItem | undefined, lang: string | undefined) {
 const translationProps = computed(() => ({
 	languageOptions: languageOptions.value,
 	disabled: props.disabled,
+	nonEditable: props.nonEditable,
 	autofocus: props.autofocus,
 	relationInfo: relationInfo.value,
 	getItemWithLang,
