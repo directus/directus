@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { useShortcut } from '@/composables/use-shortcut';
-import { computed, ref, useTemplateRef } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
 import AiTextarea from './ai-textarea.vue';
 import AiInputSubmit from './ai-input-submit.vue';
 import AiInputUsage from './ai-input-usage.vue';
@@ -9,40 +7,24 @@ import { useAiStore } from '../stores/use-ai';
 
 const aiStore = useAiStore();
 
-const emit = defineEmits<{
-	send: [message: string];
-}>();
+const canSubmit = computed(
+	() => aiStore.input.trim().length > 0 && aiStore.status !== 'streaming' && aiStore.status !== 'submitted',
+);
 
-const { t } = useI18n();
-const textareaComponent = useTemplateRef<InstanceType<typeof AiTextarea>>('textarea-component');
+function handleKeydown(event: KeyboardEvent) {
+	if (!event.shiftKey) {
+		event.preventDefault();
 
-useShortcut('meta+enter', handleSubmit, textareaComponent as any);
-
-const content = ref('');
-const focused = ref(false);
-const sending = ref(false);
-
-const canSubmit = computed(() => content.value.trim().length > 0 && !sending.value);
+		if (canSubmit.value) {
+			handleSubmit();
+		}
+	}
+}
 
 function handleSubmit() {
 	if (!canSubmit.value) return;
 
-	sending.value = true;
-
-	emit('send', content.value);
-
-	content.value = '';
-	sending.value = false;
-}
-
-function handleFocus() {
-	focused.value = true;
-}
-
-function handleBlur() {
-	if (!content.value) {
-		focused.value = false;
-	}
+	aiStore.submit();
 }
 </script>
 
@@ -51,15 +33,20 @@ function handleBlur() {
 		<div class="input-wrapper">
 			<AiTextarea
 				ref="textarea-component"
-				v-model="content"
-				:placeholder="t('ai.prompt_input_placeholder')"
-				:disabled="sending"
-				@focus="handleFocus"
-				@blur="handleBlur"
+				v-model="aiStore.input"
+				:placeholder="$t('ai.prompt_input_placeholder')"
+				autofocus
+				@keydown.enter="handleKeydown"
 			/>
 			<div class="input-controls">
 				<ai-input-usage />
-				<ai-input-submit :status="aiStore.status" :can-submit="canSubmit" @stop="aiStore.stop" @reload="aiStore.retry" @submit="handleSubmit" />
+				<ai-input-submit
+					:status="aiStore.status"
+					:can-submit="canSubmit"
+					@stop="aiStore.stop"
+					@reload="aiStore.retry"
+					@submit="handleSubmit"
+				/>
 			</div>
 		</div>
 	</div>
