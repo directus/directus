@@ -6,16 +6,15 @@ import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fiel
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { useElementSize } from '@directus/composables';
 import { ContentVersion, Field, ValidationError } from '@directus/types';
-import { assign, cloneDeep, isEqual, isEmpty, isNil, omit } from 'lodash';
+import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
 import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import type { MenuOptions } from './form-field-menu.vue';
 import FormField from './form-field.vue';
-import type { FormField as TFormField, ComparisonContext } from './types';
+import type { ComparisonContext, FormField as TFormField } from './types';
 import { getFormFields } from './utils/get-form-fields';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
 import ValidationErrors from './validation-errors.vue';
-import { CollabContext } from '@/composables/use-collab';
 
 type FieldValues = {
 	[field: string]: any;
@@ -31,6 +30,7 @@ const props = withDefaults(
 		batchMode?: boolean;
 		primaryKey?: string | number;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		validationErrors?: ValidationError[];
 		autofocus?: boolean;
 		group?: string | null;
@@ -40,12 +40,12 @@ const props = withDefaults(
 		/* Enable the raw editor toggler on fields */
 		rawEditorEnabled?: boolean;
 		disabledMenuOptions?: MenuOptions[];
+		disabledMenu?: boolean;
 		direction?: string;
 		showDivider?: boolean;
 		inline?: boolean;
 		version?: ContentVersion | null;
 		comparison?: ComparisonContext;
-		collabContext?: CollabContext;
 	}>(),
 	{
 		collection: undefined,
@@ -63,7 +63,7 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits(['update:modelValue', 'updateField', 'unsetField', 'focusField', 'blurField']);
+const emit = defineEmits(['update:modelValue']);
 
 const values = computed(() => {
 	return Object.assign({}, cloneDeep(props.initialValues), cloneDeep(props.modelValue));
@@ -267,7 +267,6 @@ function setValue(fieldKey: string, value: any, opts?: { force?: boolean }) {
 
 	const edits = props.modelValue ? cloneDeep(props.modelValue) : {};
 	edits[fieldKey] = value;
-	emit('updateField', fieldKey, value);
 	emit('update:modelValue', edits);
 }
 
@@ -308,7 +307,6 @@ function unsetValue(field: TFormField | undefined) {
 		const newEdits = { ...props.modelValue };
 		delete newEdits[field.field];
 		emit('update:modelValue', newEdits);
-		emit('unsetField', field.field);
 	}
 }
 
@@ -362,6 +360,30 @@ function useRawEditor() {
 		}
 	}
 }
+
+function getFirstVisibleFieldClass(index: number) {
+	return index === firstVisibleFieldIndex.value ? 'first-visible-field' : '';
+}
+
+function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
+	if (isComparisonDiff()) {
+		if (field.indicatorStyle === 'active') return 'indicator-active';
+		if (field.indicatorStyle === 'muted') return 'indicator-muted';
+	}
+
+	return '';
+
+	function isComparisonDiff() {
+		if (field.indicatorStyle === 'hidden' || !props.comparison) return false;
+
+		if (isGroup) {
+			const groupFields = getFieldsForGroup(field.meta?.field ?? null);
+			return groupFields.some((groupField) => props.comparison!.fields.has(groupField.field));
+		}
+
+		return props.comparison.fields.has(field.field);
+	}
+}
 </script>
 
 <template>
@@ -375,11 +397,11 @@ function useRawEditor() {
 		<v-info
 			v-if="noVisibleFields && showNoVisibleFields && !loading"
 			class="no-fields-info"
-			:title="t('no_visible_fields')"
+			:title="$t('no_visible_fields')"
 			:icon="inline ? false : 'search'"
 			:center="!inline"
 		>
-			{{ t('no_visible_fields_copy') }}
+			{{ $t('no_visible_fields_copy') }}
 		</v-info>
 		<template v-for="(fieldName, index) in fieldNames" :key="fieldName">
 			<template v-if="fieldsMap[fieldName]">
@@ -393,13 +415,15 @@ function useRawEditor() {
 					"
 					:class="[
 						fieldsMap[fieldName]!.meta?.width || 'full',
-						index === firstVisibleFieldIndex ? 'first-visible-field' : '',
+						getFirstVisibleFieldClass(index),
+						getComparisonIndicatorClasses(fieldsMap[fieldName]!, true),
 					]"
 					:field="fieldsMap[fieldName]"
 					:fields="fieldsForGroup[index] || []"
 					:values="modelValue || {}"
 					:initial-values="initialValues || {}"
-					:disabled="disabled"
+					:disabled="disabled || nonEditable"
+					:non-editable="nonEditable"
 					:batch-mode="batchMode"
 					:batch-active-fields="batchActiveFields"
 					:primary-key="primaryKey"
@@ -421,12 +445,13 @@ function useRawEditor() {
 							formFieldEls[fieldName] = el;
 						}
 					"
-					:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
+					:class="[getFirstVisibleFieldClass(index), getComparisonIndicatorClasses(fieldsMap[fieldName]!)]"
 					:field="fieldsMap[fieldName]!"
 					:autofocus="index === firstEditableFieldIndex && autofocus"
 					:model-value="(values || {})[fieldName]"
 					:initial-value="(initialValues || {})[fieldName]"
-					:disabled="isDisabled(fieldsMap[fieldName]!)"
+					:disabled="isDisabled(fieldsMap[fieldName]!) || nonEditable"
+					:non-editable="nonEditable"
 					:batch-mode="batchMode"
 					:batch-active="batchActiveFields.includes(fieldName)"
 					:comparison="comparison"
@@ -444,8 +469,8 @@ function useRawEditor() {
 					:raw-editor-enabled="rawEditorEnabled"
 					:raw-editor-active="rawActiveFields.has(fieldName)"
 					:disabled-menu-options="disabledMenuOptions"
+					:disabled-menu="disabledMenu"
 					:direction="direction"
-					:collab-field-context="collabContext?.registerField(fieldName)"
 					@update:model-value="setValue(fieldName, $event)"
 					@set-field-value="setValue($event.field, $event.value, { force: true })"
 					@unset="unsetValue(fieldsMap[fieldName]!)"
@@ -476,5 +501,13 @@ function useRawEditor() {
 .v-divider {
 	margin-block-end: 50px;
 	grid-column: 1 / 3;
+}
+
+.indicator-active {
+	@include mixins.field-indicator;
+}
+
+.indicator-muted {
+	@include mixins.field-indicator('muted');
 }
 </style>

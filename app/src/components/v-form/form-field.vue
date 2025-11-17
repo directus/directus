@@ -187,7 +187,6 @@ function useComputedValues() {
 			field.meta?.width || 'full',
 			{
 				invalid: validationError,
-				'diff-indicator': comparison?.fields.has(field.field),
 				'collab-indicator': focusedBy,
 			},
 		]"
@@ -284,18 +283,6 @@ function useComputedValues() {
 .field {
 	position: relative;
 	align-self: baseline;
-
-	&.diff-indicator {
-		&::before {
-			content: '';
-			position: absolute;
-			inset-block: 0;
-			inset-inline-start: -12px;
-			inline-size: 4px;
-			z-index: 1;
-			background-color: var(--comparison-indicator--color);
-		}
-	}
 
 	&.collab-indicator {
 		&::before {
