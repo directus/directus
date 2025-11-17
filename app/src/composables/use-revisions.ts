@@ -71,7 +71,7 @@ export function useRevisions(
 						version: version?.value
 							? {
 									_eq: version.value.id,
-							  }
+								}
 							: { _null: true },
 					},
 				],
@@ -224,7 +224,7 @@ export function useRevisions(
 						version: version?.value
 							? {
 									_eq: version.value.id,
-							  }
+								}
 							: { _null: true },
 					},
 				],

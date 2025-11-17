@@ -47,6 +47,7 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 					event.preventDefault();
 
 					editor.value.execCommand('removeformat');
+					updateActiveState();
 				}
 			};
 

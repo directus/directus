@@ -9,8 +9,6 @@
 	font-family: inherit;
 	line-height: inherit;
 	tab-size: 2;
-	-webkit-user-select: none;
-	user-select: none;
 	outline: none;
 
 	&::-moz-focus-inner,
@@ -66,19 +64,6 @@ body,
 #root {
 	inline-size: 100%;
 	block-size: 100%;
-}
-
-input,
-textarea,
-[contenteditable],
-.selectable {
-	-webkit-user-select: text;
-	user-select: text;
-
-	* {
-		-webkit-user-select: text;
-		user-select: text;
-	}
 }
 
 ::placeholder {

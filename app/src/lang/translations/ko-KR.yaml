@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 앱 정보
+first_name: 이름/별명
+last_name: 성
 identifier: 식별자
 avatar: 아바타
 application: 애플리케이션
@@ -46,6 +48,8 @@ location: 위치
 collection_names_are_case_sensitive: 컬렉션 이름은 대소문자를 구분합니다
 condition_rules: 조건식
 input: 입력
+invalid_input: 잘못된 입력
+not_a_number: 숫자가 아닙니다
 maps: 지도
 switch_user: 사용자 전환
 item_creation: 추가
@@ -112,6 +116,12 @@ hook: 후크
 fill_width: 전체 폭
 field_name_translations: 필드명 번역
 enter_password_to_enable_tfa: 암호를 입력하여 이중 인증을 활성화하십시오
+sso_tfa_setup_notice: 계정에서 로그아웃되며 다시 로그인해야 합니다. 저장하지 않은 변경 사항은 삭제됩니다.
+enable_tfa: 2FA 활성화
+cancel_tfa_setup: 2FA 설정 취소
+cancel_tfa_setup_notice: 2FA 설정을 취소하시겠습니까?
+keep_setup: 설정 유지
+cancel_setup: 설정 취소
 add_field: 필드 추가
 role_name: 역할명
 policy_name: 정책 이름
@@ -168,19 +178,9 @@ rename_version: 버전 이름 변경
 compare_version: 버전 비교
 save_version: 버전 저장
 promote_version: 버전 승격
-promote_version_disabled: 변경 사항 없음
-promote_version_drawer_title: '{version}을(를) 메인으로 승격'
-promote_version_changes: 변경 사항
-promote_version_preview: 미리보기
-outdated_notice: >-
-  이 버전이 생성된 이후 메인 항목이 업데이트되었습니다. 아래의 모든 필드 값을 검토하고 이 버전을 메인 항목으로 승격할 때 사용할 버전을 확인하세요.
-promote_notice: >-
-  아래의 모든 필드 값을 검토하고 이 버전을 메인 항목으로 승격할 때 사용할 버전을 확인하세요.
 delete_version: 버전 삭제
 delete_version_copy: >-
   "{version}" 버전을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
-delete_on_promote_copy: >-
-  승격 후 "{version}" 버전을 삭제하거나 유지하시겠습니까?
 reset_bookmark: 북마크 초기화
 update_bookmark: 북마크 업데이트
 delete_bookmark: 북마크 삭제
@@ -320,6 +320,8 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: 앱 환경설정 초기화
 hidden_field: 숨김 필드
 hidden_on_detail: 실행 시 숨김
+clear_hidden_field: 값(들) 지우기
+clear_value_on_save_when_hidden: 숨김 시 저장 시 값 지우기
 readonly_field_label: 앱에서 필드를 비활성화합니다.
 required_readonly_field_warning: 필드에 대해 readonly와 required를 모두 활성화하면 값이 비어 있는 경우 항목을 저장하지 못합니다.
 key: 키
@@ -458,7 +460,6 @@ revision_delta_created: 생성됨
 revision_delta_created_externally: 외부에서 생성됨
 revision_delta_updated: '업데이트 된 1개의 필드 | 업데이트 된 {count}개의 필드'
 revision_delta_deleted: 삭제됨
-revision_delta_version_saved: '버전 저장 (1개 필드 업데이트) | 버전 저장 ({count} 필드 업데이트)'
 revision_delta_reverted: 되돌림
 revision_delta_update_message: 이 필드는 업데이트되었지만 보안상의 이유로 해당 값이 숨겨져 있습니다.
 revision_delta_other: 리비전
@@ -486,6 +487,10 @@ import_data_button: 가져오기 시작
 import_data_indeterminate: 데이터를 가져오는 중...
 import_data_success: '{filename}에서 데이터를 성공적으로 가져왔습니다.'
 import_data_error: 이 파일의 데이터 구조가 컬렉션과 일치하지 않습니다.
+snapshot:
+  export: 스키마 내보내기
+  download: 스냅샷 다운로드(JSON)
+  info: 공유 또는 디버깅을 위한 스키마 전용 내보내기
 label_import: 가져오기
 label_export: 내보내기
 import_export: 가져오기 / 내보내기
@@ -723,6 +728,7 @@ enabled_dev_tooltip: 앱 확장 기능은 개발 모드에서 항상 활성화�
 disable_tfa: 2FA 비활성화
 admin_disable_tfa_text: 이 사용자에 대해 2FA를 비활성화하시겠습니까?
 tfa_setup: 2FA 설정
+tfa_setup_description: 계정을 보호하기 위해 2단계 인증을 설정하세요
 tfa_scan_code: 인증 앱에서 코드를 스캔하여 2FA 설정을 완료하세요.
 enter_otp_to_disable_tfa: 2FA를 비활성화하려면 OTP를 입력하세요.
 create_account: 계정 추가
@@ -945,6 +951,7 @@ flows: 플로우
 flow: 플로우
 select_a_flow: 플로우 선택
 run_flow_confirm: 이 규칙을 실행하시겠습니까?
+run_flow_anyway: 어쨌든 플로우를 실행
 run_flow_on_current_collection: 현재 컬렉션에서 플로우 실행
 run_flow_on_current: 현재 항목에서 플로우 실행
 run_flow_on_current_edited_confirm: 이 항목은 이 플로우에 의해 업데이트될 수 있습니다. 실행하시겠습니까?
@@ -1142,6 +1149,8 @@ settings_roles: 사용자 역할
 settings_permissions: 액세스 정책
 settings_project: 설정
 settings_appearance: 외관
+settings_ai: AI
+model_context_protocol: 모델 컨텍스트 프로토콜
 settings_webhooks: 웹후크
 settings_flows: 플로우
 settings_system_logs: 시스템 로그
@@ -1186,13 +1195,14 @@ page_help_files_item: >-
 page_help_settings_project: "**설정** — 프로젝트의 전역 구성 옵션입니다."
 page_help_settings_appearance: "**외형** - 프로젝트의 외형과 테마 옵션입니다."
 page_help_settings_extensions: '**확장 프로그램** - 프로젝트에 설치된 확장 프로그램입니다.'
+page_help_settings_ai: "**AI** — 프로젝트의 인공지능 구성 옵션입니다."
 page_help_settings_datamodel_collections: >-
   **데이터 모델: 컬렉션** - 사용 가능한 모든 컬렉션을 나열합니다. 여기에는 추가할 수 있는 관리되지 않는 데이터베이스 테이블뿐만 아니라 가시적, 숨김 및 시스템 컬렉션이 포함됩니다.
 page_help_settings_datamodel_fields: >-
   **데이터 모델: 컬렉션** — 이 컬렉션과 해당 필드를 관리하기 위한 양식입니다.
 page_help_settings_system_logs: '**시스템 로그** — 시스템 로그의 라이브 스트림에 액세스합니다.'
 page_help_settings_policies_collection: '**Browse Policies** - 프로젝트 내의 모든 정책을 나열합니다.'
-page_help_settings_policies_item: "**정책 세부 정보** - 정책의 권한 및 기타 설정을 관리합니다."
+page_help_settings_policies_item: '**정책 세부 정보** — 정책 권한 및 기타 설정을 관리합니다.'
 page_help_settings_roles_collection: '**역할 찾아보기** — 프로젝트 내의 모든 사용자 역할을 나열합니다.'
 page_help_settings_roles_item: "**역할 세부 정보** — 역할의 권한 및 기타 설정을 관리합니다."
 page_help_settings_presets_collection: >-
@@ -1335,6 +1345,7 @@ fields:
     tags: 태그(Tags)
     user_preferences: 개인 설정
     language: 언어
+    text_direction: 텍스트 방향
     tfa_secret: 이중 인증
     admin_options: 관리 옵션
     status: 상태
@@ -1413,6 +1424,19 @@ fields:
     public_registration_verify_email: 이메일 인증
     public_registration_verify_email_note: 등록하는 사용자에게 로그인하기 전에 인증 링크를 클릭하도록 요청하는 이메일을 보냅니다.
     visual_editor_urls: 비주얼 에디터 URL
+    mcp_enabled: MCP 서버
+    mcp_enabled_note: '<a href="https://directus.io/docs/guides/ai/mcp" target="_blank">모델 컨텍스트 프로토콜(MCP)</a> 을 통해 AI/LLM 도구를 Directus 프로젝트에 연결하세요. 이를 통해 AI 어시스턴트가 Directus 데이터를 안전하게 읽고 상호 작용할 수 있습니다.'
+    mcp_notice: '모델 컨텍스트 프로토콜(MCP)은 Directus와 같은 애플리케이션에 LLM을 연결하는 표준입니다. 활성화되면 Directus MCP 서버를 `/mcp`에서 사용할 수 있습니다. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">MCP 및 연결 방법에 대해 자세히 알아보세요.</a>'
+    mcp_allow_deletes: 삭제 허용
+    mcp_allow_deletes_note:
+      - 데이터 손실이 발생할 수 있습니다. 안전을 위해 기본적으로 비활성화되어 있습니다.
+    mcp_prompts_collection: AI 프롬프트 컬렉션
+    mcp_prompts_collection_note: 'AI 상호작용을 위한 <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">재사용 가능한 프롬프트 템플릿을</a> 저장하기 위한 컬렉션을 선택하세요.'
+    mcp_system_prompt_divider: 시스템 프롬프트 구성
+    mcp_system_prompt_enabled: 시스템 프롬프트 사용
+    mcp_system_prompt_enabled_note: "LLM 동작을 안내하려면 <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>기본 시스템 프롬프트를</a> 사용하세요. 아래의 프롬프트를 제거하거나 재정의하려면 비활성화하세요."
+    mcp_system_prompt: 사용자 정의 시스템 프롬프트
+    mcp_system_prompt_note: '기본값을 대체할 사용자 지정 시스템 프롬프트입니다. 기본값을 사용하려면 비워 두세요(위에서 활성화한 경우).'
   directus_shares:
     name: 이름
     role: 역할
@@ -1590,17 +1614,43 @@ live_preview:
   new_window: 새 창에서 열기
   close_window: 분할 화면에서 열기
   toggle_3d: 토글 3D
+  iframe_title: 라이브 웹사이트 미리보기
 shares: 공유
 unlimited_usage: 무제한 사용
 uses_left: 남은 용도 없음 | 1회 사용 남음 | {n} 왼쪽 사용
 no_shares: 표시할 공유가 없습니다.
 new_share: 새 공유
+mcp_prompts_collection:
+  no_collection_selected: 선택된 컬렉션이 없습니다
+  no_collection_selected_copy: 재사용 가능한 프롬프트 템플릿을 활성화하려면 컬렉션을 선택하세요.
+  collection_not_found: 컬렉션을 찾을 수 없습니다
+  collection_not_found_description: 컬렉션 "{collection}"이 데이터베이스에 없습니다.
+  generate: AI 프롬프트 컬렉션 생성...
+  already_exists: AI 프롬프트 컬렉션이 이미 존재합니다.
+  generate_collection_dialog_title: AI 프롬프트 컬렉션 생성
+  generate_fields_dialog_title: AI 프롬프트 필드 생성
+  generate_collection_dialog_description: '이렇게 하면 재사용 가능한 프롬프트 템플릿을 저장하는 데 필요한 필드와 설정이 포함된 새 컬렉션 "{collection}"이 생성됩니다.'
+  generate_fields_dialog_description: '이렇게 하면 "{collection}" 컬렉션에 필수 필드가 생성됩니다.'
+  validation_success: '"AI 프롬프트" 컬렉션으로 사용할 준비가 된 컬렉션입니다.'
+  validation_error_invalid: 컬렉션을 사용할 수 없습니다
+  validation_error_missing: 아직 컬렉션을 사용할 수 없습니다
+  invalid_fields: '다음 필드는 존재하지만 호환되지 않는 유형입니다.'
+  missing_fields: '다음 필드는 필수이지만 누락되었습니다.'
+  generate_missing: 누락된 필드 생성...
+mcp_prompts_collection_schema:
+  system_prompt_note: LLM이 어떻게 대응할지에 대한 지침입니다.
+  messages_note: '선택 사항: 사용자와 LLM 간의 대화 구조를 정의합니다. 맥락을 추가하고 결과를 개선하는 데 사용됩니다.'
+  messages_role_user: 사용자
+  messages_role_assistant: 어시스턴트
+  messages_role_note: 이 메시지에서 말하는 사람은 누구입니까?
+  meta_prompts_notice: '프롬프트는 Directus MCP 서버, Flows 또는 기타 AI 애플리케이션을 통해 LLM과 함께 사용할 수 있는 재사용 가능한 템플릿입니다. <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">효과적인 프롬프트 생성에 대해 자세히 알아보세요.</a>'
 expired: 만료됨
 upcoming: 다가오는
 share: 공유하다
 share_item: 항목 공유
 shared_with_you: 항목이 나와 공유되었습니다.
 shared_enter_passcode: 계속하려면 비밀번호를 입력하세요...
+generate: 생성
 shared_leave_blank_for_passwordless_access: 비밀번호 없이 액세스하려면 비워두세요
 shared_leave_blank_for_unlimited: 무제한으로 하려면 비워두세요
 shared_times_remaining: 이 링크는 {n}번만 사용할 수 있습니다.
@@ -2032,6 +2082,7 @@ interfaces:
     folder_note: 업로드된 파일의 폴더입니다. 기존 파일에는 영향을 주지 않습니다.
     imageToken: 정적 액세스 토큰
     imageToken_label: 정적 액세스 토큰이 자산의 URL에 추가됩니다.
+    media_preview_iframe_title: 미디어 미리보기
   input-block-editor:
     input-block-editor: 블록 편집기
     description: Editor.js를 사용하여 리치 미디어 스토리를 위한 블록 스타일 편집기, JSON 형식의 깨끗한 데이터를 출력합니다.
@@ -2485,6 +2536,12 @@ operations:
     name: 잠
     description: 주어진 시간(밀리초) 동안 대기
     milliseconds: 밀리초
+  throw-error:
+    name: 오류 발생
+    description: 거부 경로에 오류를 던집니다.
+    code: 오류 코드
+    status: HTTP 상태 코드
+    message: 에러 메시지
   transform:
     name: 페이로드 변환
     description: 플로우의 JSON 페이로드 변경
@@ -2544,13 +2601,7 @@ search_flow: 흐름 검색...
 percent: 퍼센트
 show_password: 비밀번호 보이기
 hide_password: 비밀번호 숨기기
-bsl_banner:
-  welcome_to_directus: Directus에 오신 것을 환영합니다!
-  directus_free_use: Directus는 연간 매출, 자금 또는 운영 예산이 500만 달러 미만인 기업에 무료로 사용할 수 있습니다.
-  organization_threshold: 이 임계값을 초과하는 엔터티에는 유료 라이선스가 필요합니다.
-  license_agreement: '"동의"를 클릭하면 {directusBsl} 및 {privacyPolicy}에 동의하는 것입니다.'
-  directus_bsl: 다이렉터스 BSL 1.1
-  privacy_policy: 개인정보처리방침
-  accept_terms: 승인
-  get_license: 라이선스 받기
 accepted: 수락됨
+text_direction_auto: 자동(일치 언어)
+text_direction_ltr: 왼쪽에서 오른쪽으로(LTR)
+text_direction_rtl: 오른쪽에서 왼쪽(RTL)

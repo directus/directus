@@ -1,5 +1,5 @@
 import type { DirectusTranslation } from '../../../schema/translation.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -20,7 +20,7 @@ export type UpdateTranslationOutput<
 export const updateTranslations =
 	<Schema, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
 		keys: DirectusTranslation<Schema>['id'][],
-		item: Partial<DirectusTranslation<Schema>>,
+		item: NestedPartial<DirectusTranslation<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateTranslationOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -42,7 +42,7 @@ export const updateTranslations =
  */
 export const updateTranslationsBatch =
 	<Schema, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
-		items: Partial<DirectusTranslation<Schema>>[],
+		items: NestedPartial<DirectusTranslation<Schema>>[],
 		query?: TQuery,
 	): RestCommand<UpdateTranslationOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -63,7 +63,7 @@ export const updateTranslationsBatch =
 export const updateTranslation =
 	<Schema, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
 		key: DirectusTranslation<Schema>['id'],
-		item: Partial<DirectusTranslation<Schema>>,
+		item: NestedPartial<DirectusTranslation<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdateTranslationOutput<Schema, TQuery>, Schema> =>
 	() => {

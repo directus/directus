@@ -3,7 +3,6 @@ import api from '@/api';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
-import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
 import { readableMimeType } from '@/utils/readable-mime-type';
@@ -14,7 +13,6 @@ import { Filter } from '@directus/types';
 import { deepMap } from '@directus/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 type FileInfo = {
 	id: string;
@@ -26,6 +24,7 @@ const props = withDefaults(
 	defineProps<{
 		value: string | Record<string, any> | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		loading?: boolean;
 		folder?: string;
 		filter?: Filter;
@@ -52,7 +51,7 @@ const value = computed({
 });
 
 const query = ref<RelationQuerySingle>({
-	fields: ['id', 'title', 'type', 'filename_download'],
+	fields: ['id', 'title', 'type', 'filename_download', 'modified_on'],
 });
 
 const { collection, field } = toRefs(props);
@@ -69,8 +68,6 @@ const {
 
 const { createAllowed } = useRelationPermissionsM2O(relationInfo);
 
-const { t } = useI18n();
-
 const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
 
 const fileExtension = computed(() => {
@@ -78,16 +75,21 @@ const fileExtension = computed(() => {
 	return readableMimeType(file.value.type, true);
 });
 
-const assetURL = computed(() => {
-	const id = typeof props.value === 'string' ? props.value : props.value?.id;
-	return getAssetUrl(id);
-});
-
 const imageThumbnail = computed(() => {
 	if (file.value === null || props.value === null) return null;
-	if (file.value.type.includes('svg')) return assetURL.value;
+
 	if (file.value.type.includes('image') === false) return null;
-	return addQueryToPath(assetURL.value, { key: 'system-small-cover' });
+
+	if (file.value.type.includes('svg')) {
+		return getAssetUrl(file.value.id, {
+			cacheBuster: file.value.modified_on,
+		});
+	}
+
+	return getAssetUrl(file.value.id, {
+		imageKey: 'system-small-cover',
+		cacheBuster: file.value.modified_on,
+	});
 });
 
 const imageThumbnailError = ref<any>(null);
@@ -189,7 +191,8 @@ function useURLImport() {
 						block
 						:active
 						:disabled="internalDisabled"
-						:placeholder="t('no_file_selected')"
+						:non-editable="nonEditable"
+						:placeholder="$t('no_file_selected')"
 						:model-value="file && file.title"
 						@click="toggle"
 					>
@@ -222,7 +225,7 @@ function useURLImport() {
 						<div class="item-actions">
 							<template v-if="file">
 								<v-icon
-									v-tooltip="t('edit_item')"
+									v-tooltip="$t('edit_item')"
 									name="edit"
 									clickable
 									@click.stop="
@@ -248,9 +251,9 @@ function useURLImport() {
 
 			<v-list>
 				<template v-if="file">
-					<v-list-item clickable :download="file.filename_download" :href="getAssetUrl(file.id, true)">
+					<v-list-item clickable :download="file.filename_download" :href="getAssetUrl(file.id, { isDownload: true })">
 						<v-list-item-icon><v-icon name="get_app" /></v-list-item-icon>
-						<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
+						<v-list-item-content>{{ $t('download_file') }}</v-list-item-content>
 					</v-list-item>
 
 					<v-divider v-if="!internalDisabled" />
@@ -259,21 +262,21 @@ function useURLImport() {
 					<v-list-item v-if="createAllowed && enableCreate" clickable @click="activeDialog = 'upload'">
 						<v-list-item-icon><v-icon name="phonelink" /></v-list-item-icon>
 						<v-list-item-content>
-							{{ t(file ? 'replace_from_device' : 'upload_from_device') }}
+							{{ $t(file ? 'replace_from_device' : 'upload_from_device') }}
 						</v-list-item-content>
 					</v-list-item>
 
 					<v-list-item v-if="enableSelect" clickable @click="activeDialog = 'choose'">
 						<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
 						<v-list-item-content>
-							{{ t(file ? 'replace_from_library' : 'choose_from_library') }}
+							{{ $t(file ? 'replace_from_library' : 'choose_from_library') }}
 						</v-list-item-content>
 					</v-list-item>
 
 					<v-list-item v-if="createAllowed && enableCreate" clickable @click="activeDialog = 'url'">
 						<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
 						<v-list-item-content>
-							{{ t(file ? 'replace_from_url' : 'import_from_url') }}
+							{{ $t(file ? 'replace_from_url' : 'import_from_url') }}
 						</v-list-item-content>
 					</v-list-item>
 				</template>
@@ -287,10 +290,17 @@ function useURLImport() {
 			:primary-key="file.id"
 			:edits="edits"
 			:disabled="internalDisabled"
+			:non-editable="nonEditable"
 			@input="update"
 		>
 			<template #actions>
-				<v-button secondary rounded icon :download="file.filename_download" :href="getAssetUrl(file.id, true)">
+				<v-button
+					secondary
+					rounded
+					icon
+					:download="file.filename_download"
+					:href="getAssetUrl(file.id, { isDownload: true })"
+				>
 					<v-icon name="download" />
 				</v-button>
 			</template>
@@ -302,12 +312,12 @@ function useURLImport() {
 			@update:model-value="activeDialog = null"
 		>
 			<v-card>
-				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
+				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
 				<v-card-text>
 					<v-upload from-url :folder="folder" @input="onUpload" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="activeDialog = null">{{ t('cancel') }}</v-button>
+					<v-button secondary @click="activeDialog = null">{{ $t('cancel') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -328,16 +338,16 @@ function useURLImport() {
 			@esc="activeDialog = null"
 		>
 			<v-card>
-				<v-card-title>{{ t('import_from_url') }}</v-card-title>
+				<v-card-title>{{ $t('import_from_url') }}</v-card-title>
 				<v-card-text>
-					<v-input v-model="url" autofocus :placeholder="t('url')" :nullable="false" :disabled="urlLoading" />
+					<v-input v-model="url" autofocus :placeholder="$t('url')" :nullable="false" :disabled="urlLoading" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
-						{{ t('cancel') }}
+						{{ $t('cancel') }}
 					</v-button>
 					<v-button :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
-						{{ t('import_label') }}
+						{{ $t('import_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

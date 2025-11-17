@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Derbarê
+first_name: Navê Pêşîn
+last_name: Navê Paşîn
 identifier: Nasname
 avatar: Avatar
 application: Serlêdan
@@ -164,19 +166,9 @@ rename_version: Navê Guhertoye Biguherîne
 compare_version: Guhertoyê Berhev Bike
 save_version: Guhertoye Tomar Bike
 promote_version: Guhertoye Bilind Bike
-promote_version_disabled: Ti Guhertin Nîne
-promote_version_drawer_title: '{version} bilind bike bo Sereke'
-promote_version_changes: Guhertin
-promote_version_preview: Pêşdîtin
-outdated_notice: >-
-  Hêmana sereke ji dema ku ev guherto hatiye afirandin ve hatiye nûkirin. Ji kerema xwe hemû nirxên qadê yên jêrîn binirxînin, û tesdîq bikin ka kîjan guherto divê were bikaranîn gava ku ev guherto tê bilindkirin bo hêmana sereke.
-promote_notice: >-
-  Ji kerema xwe hemû nirxên qadê yên jêrîn binirxînin, û tesdîq bikin ka kîjan guherto divê were bikaranîn gava ku ev guherto tê bilindkirin bo hêmana sereke.
 delete_version: Guhertoye Jê Bibe
 delete_version_copy: >-
   Tu bi rastî dixwazî guhertoya "{version}" jê bibî? Ev çalakî nayê vegerandin.
-delete_on_promote_copy: >-
-  Tu dixwazî piştî bilindkirinê, guhertoya "{version}" jê bibî an bihêlî?
 reset_bookmark: Nîşankê Vegerîne
 update_bookmark: Nîşankê Nûbike
 delete_bookmark: Nîşankê Jê Bibe
@@ -451,7 +443,6 @@ revision_delta_created: Hate afirandin
 revision_delta_created_externally: Ji Derve Hate Afirandin
 revision_delta_updated: '1 Qad Hate Nûkirin | {count} Qad Hatin Nûkirin'
 revision_delta_deleted: Hate jêbirin
-revision_delta_version_saved: 'Tomarkirina Guhertoyê (1 Qad Hate Nûkirin) | Tomarkirina Guhertoyê ({count} Qad Hatin Nûkirin)'
 revision_delta_reverted: Hate Vegerandin
 revision_delta_update_message: Ev qad hate nûkirin lê nirxa wê ji ber sedemên ewlehiyê tê veşartin.
 revision_delta_other: Sererastkirin
@@ -1180,7 +1171,6 @@ page_help_settings_datamodel_fields: >-
   **Modela Daneyê: Koleksiyon** — Formek ji bo birêvebirina vê koleksiyon û qadên wê.
 page_help_settings_system_logs: '**Têketinên Pergalê** — Gihîştina herikîna zindî ya têketinên pergalê.'
 page_help_settings_policies_collection: '**Polîtîkayan Bigere** — Lîsteya hemû polîtîkayên di projeyê de.'
-page_help_settings_policies_item: "**Hûrgiliyên Polîtîkayê** — Destûr û mîhengkariyên din ên polîtîkayekê birêve bibe."
 page_help_settings_roles_collection: '**Rolan Bigere** — Lîsteya hemû rolên bikarhêner di projeyê de.'
 page_help_settings_roles_item: "**Hûrgiliyên Rolê** — Destûr û mîhengkariyên din ên rolekê birêve bibe."
 page_help_settings_presets_collection: >-
@@ -1583,6 +1573,8 @@ unlimited_usage: Bikaranîna bêsînor
 uses_left: Ti bikaranînên mayî tune ne | Yek bikaranîna mayî | {n} bikaranînên mayî
 no_shares: Ti parvekirî tune ne ji bo nîşandanê
 new_share: Parvekirina Nû
+mcp_prompts_collection_schema:
+  messages_role_user: Bikarhêner
 expired: Derbasbûyî
 upcoming: Tê
 share: Parve Bike

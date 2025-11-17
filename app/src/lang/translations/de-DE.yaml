@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Über
+first_name: Vorname
+last_name: Nachname
 identifier: Identifikator
 avatar: Avatar
 application: Anwendung
@@ -168,19 +170,9 @@ rename_version: Version umbenennen
 compare_version: Version vergleichen
 save_version: Version speichern
 promote_version: Version überführen
-promote_version_disabled: Keine Änderungen
-promote_version_drawer_title: Version {version} in Main überführen
-promote_version_changes: Änderungen
-promote_version_preview: Vorschau
-outdated_notice: >-
-  Das Main-Element wurde seit der Erstellung dieser Version abgeändert. Bitte überprüfen Sie alle untenstehenden Feldwerte und bestätigen Sie, welche Version verwendet werden soll, wenn diese Version in Main überführt wird.
-promote_notice: >-
-  Bitte überprüfen Sie alle untenstehenden Feldwerte und bestätigen Sie, welche Version verwendet werden soll, wenn diese Version in Main überführt wird.
 delete_version: Version löschen
 delete_version_copy: >-
   Möchten Sie die "{version}" Version wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
-delete_on_promote_copy: >-
-  Möchten Sie die "{version}" Version nach der Überführung löschen oder beibehalten?
 reset_bookmark: Lesezeichen zurücksetzen
 update_bookmark: Lesezeichen bearbeiten
 delete_bookmark: Lesezeichen löschen
@@ -457,7 +449,6 @@ revision_delta_created: Erstellt
 revision_delta_created_externally: Extern erstellt
 revision_delta_updated: '1 Feld aktualisiert | {count} Felder aktualisiert'
 revision_delta_deleted: Gelöscht
-revision_delta_version_saved: 'Version (1 Feld aktualisiert) | Version ({count} Felder aktualisiert)'
 revision_delta_reverted: Zurückgesetzt
 revision_delta_update_message: Dieses Feld wurde aktualisiert, aber sein Wert wird aus Sicherheitsgründen verschleiert.
 revision_delta_other: Revision
@@ -1183,7 +1174,6 @@ page_help_settings_datamodel_fields: >-
   **Datenmodell: Sammlung** — Ein Formular zur Verwaltung dieser Sammlung und ihrer Felder.
 page_help_settings_system_logs: '**Systemprotokolle** — Greifen Sie auf einen Live-Stream der Systemprotokolle zu.'
 page_help_settings_policies_collection: '**Richtlinien durchstöbern** — Auflistung aller Richtlinien innerhalb des Projekts.'
-page_help_settings_policies_item: "**Richtlinien-Detail** — Verwalten Sie die Berechtigungen einer Richtlinie sowie weitere Einstellungen."
 page_help_settings_roles_collection: '**Rollen durchstöbern** — Auflistung aller Benutzerrollen innerhalb des Projekts.'
 page_help_settings_roles_item: "**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten."
 page_help_settings_presets_collection: >-
@@ -1585,6 +1575,8 @@ unlimited_usage: Unbegrenzte Nutzung
 uses_left: Keine Verwendungen übrig | Eine Verwendung übrig | {n} Verwendungen übrig
 no_shares: Keine Freigaben zum Anzeigen
 new_share: Neue Freigabe
+mcp_prompts_collection_schema:
+  messages_role_user: Benutzer
 expired: Abgelaufen
 upcoming: Bevorstehend
 share: Teilen

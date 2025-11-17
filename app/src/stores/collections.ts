@@ -114,21 +114,21 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 								collection_names: {
 									[collection.collection]: getLiteralInterpolatedTranslation(translation),
 								},
-						  }
+							}
 						: {}),
 					...(singular
 						? {
 								collection_names_singular: {
 									[collection.collection]: getLiteralInterpolatedTranslation(singular),
 								},
-						  }
+							}
 						: {}),
 					...(plural
 						? {
 								collection_names_plural: {
 									[collection.collection]: getLiteralInterpolatedTranslation(plural),
 								},
-						  }
+							}
 						: {}),
 				});
 			}

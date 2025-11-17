@@ -87,5 +87,9 @@ withDefaults(defineProps<Props>(), {
 	inset-block-start: 50%;
 	inset-inline-start: 50%;
 	transform: translate(-50%, -50%);
+
+	html[dir='rtl'] & {
+		transform: translate(50%, -50%);
+	}
 }
 </style>

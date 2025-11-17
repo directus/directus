@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: دەربارە
+first_name: ناوی یەکەم
+last_name: ناوی باوک
 identifier: ناسەرەوە
 avatar: وێنۆچکە
 application: ئەپڵیکەیشن
@@ -164,19 +166,9 @@ rename_version: ناوی وەشان بگۆڕە
 compare_version: بەراوردکردنی وەشان
 save_version: پاشەکەوتکردنی وەشان
 promote_version: پەرەپێدانی وەشان
-promote_version_disabled: هیچ گۆڕانکارییەک نییە
-promote_version_drawer_title: گەرەنتیکردنی {version} بۆ ناو سەرەکی
-promote_version_changes: گۆڕانکاریەکان
-promote_version_preview: بینین
-outdated_notice: >-
-  مادەی سەرەکی نوێکراوەتەوە لەوەتەی ئەم وەشانە دروستکراوە. تکایە هەموو بەهای خانەکان پێداچونەوەی بۆ بکە لە خوارەوە، و پشتڕاستی بکەوە کە کام وەشانە بەکار بهێنرێت کاتێک ئەم وەشانە گەرەنتی دەکەیت بۆ مادەی سەرەکی.
-promote_notice: >-
-  تکایە هەموو بەهای خانەکان پێداچونەوەی بۆ بکە لە خوارەوە، و پشتڕاستی بکەوە کە کام وەشانە بەکار بهێنرێت کاتێک ئەم وەشانە گەرەنتی دەکەیت بۆ مادەی سەرەکی.
 delete_version: سڕینەوەی وەشان
 delete_version_copy: >-
   ئایا دڵنیای دەتەوێت وەشانی "{version}" بسڕیتەوە؟ ئەم کردارە گەڕانەوەی نییە.
-delete_on_promote_copy: >-
-  ئایا دەتەوێت وەشانی "{version}" بسڕیتەوە یان بیپارێزیت دوای گەرەنتیکردنی؟
 reset_bookmark: ڕێکخستنەوەی نیشانکەر
 update_bookmark: نوێکردنەوەی نیشانکەر
 delete_bookmark: سڕینەوەی نیشانکەر
@@ -451,7 +443,6 @@ revision_delta_created: دروستکرا
 revision_delta_created_externally: لە دەرەوە دروست کرا
 revision_delta_updated: 'یەک خانە نوێکرایەوە | {count} خانە نوێکرانەوە'
 revision_delta_deleted: سڕایەوە
-revision_delta_version_saved: 'خەزنکردنی وەشان (1 خانە نوێکراوەتەوە) | پاراستنی وەشان ({count} خانە نوێکراوەتەوە)'
 revision_delta_reverted: گەڕێندرایەوە
 revision_delta_update_message: ئەم خانەیە نوێ کراوەتەوە بەڵام بەهاکەی بە هۆکاری ئەمنی دەشاردرێتەوە.
 revision_delta_other: پێداچونەوە
@@ -1181,7 +1172,6 @@ page_help_settings_datamodel_fields: >-
   **مۆدێلی داتا: کۆمەڵەکان** —شێوەیەکە بۆ بەڕێوەبردنی کۆمەڵەکان و خانەکانیان.
 page_help_settings_system_logs: '**تۆمارەکانی سیستەم** — دەستگەیشتن بە ڕۆیشتنی ڕاستەوخۆی تۆمارەکانی سیستەم.'
 page_help_settings_policies_collection: '**گەڕانی سیاسەتەکان** — لیستی سەرجەم سیاسەتەکان لە پڕۆژەکەدا.'
-page_help_settings_policies_item: "**وردەکاری سیاسەت** — بەڕێوەبردنی دەسەڵاتەکانی سیاسەت و ڕێکخستنەکانی تر."
 page_help_settings_roles_collection: '**گەڕانی پلەکان** — لیستی سەرجەم پلەکانی بەکارهێنەر لە پڕۆژەکەدا.'
 page_help_settings_roles_item: "**وردەکاری پلە** — بەڕێوەبردنی دەسەڵاتەکانی پلە و ڕێکخستنەکانی تر."
 page_help_settings_presets_collection: >-
@@ -1584,6 +1574,8 @@ unlimited_usage: بەکارهێنانی بێسنور
 uses_left: هیچ بەکارهێنانی نەماوە | یەک بەکارهێنان ماوە | {n} بەکارهێنان ماوە
 no_shares: هیچ هاوبەشیکردنێک نییە بۆ نیشاندان
 new_share: هاوبەشی نوێ
+mcp_prompts_collection_schema:
+  messages_role_user: بەکارهێنەر
 expired: بەسەرچوو
 upcoming: داهاتوو
 share: هاوبەشیکردن

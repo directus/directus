@@ -18,6 +18,7 @@ export type UsableItems = {
 	items: Ref<Item[]>;
 	totalPages: ComputedRef<number>;
 	loading: Ref<boolean>;
+	loadingItemCount: Ref<boolean>;
 	error: Ref<any>;
 	changeManualSort: (data: ManualSortData) => Promise<void>;
 	getItems: () => Promise<void>;
@@ -51,6 +52,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 	const items = ref<Item[]>([]);
 	const loading = ref(false);
+	const loadingItemCount = ref(false);
 	const error = ref<any>(null);
 
 	const itemCount = ref<number | null>(null);
@@ -70,7 +72,10 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 
 	let loadingTimeout: NodeJS.Timeout | null = null;
 
-	const fetchItems = throttle(getItems, 500);
+	// Throttle is used to ensure we send the first trigger instantly, debounce will not.
+	const fetchItems = throttle((shouldUpdateCount: boolean) => {
+		Promise.all([getItems(), shouldUpdateCount ? getItemCount() : Promise.resolve()]);
+	}, 500);
 
 	watch(
 		[collection, limit, sort, search, filter, fields, page, toRef(alias), toRef(deep)],
@@ -97,11 +102,11 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 				}
 			}
 
-			if (newCollection !== oldCollection || !isEqual(newFilter, oldFilter) || newSearch !== oldSearch) {
-				getItemCount();
-			}
+			// determine if the count needs to be updated based on changes to a collection, filter, or search
+			const shouldUpdateCount =
+				newCollection !== oldCollection || !isEqual(newFilter, oldFilter) || newSearch !== oldSearch;
 
-			fetchItems();
+			fetchItems(shouldUpdateCount);
 		},
 		{ deep: true, immediate: true },
 	);
@@ -122,6 +127,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		items,
 		totalPages,
 		loading,
+		loadingItemCount,
 		error,
 		changeManualSort,
 		getItems,
@@ -247,10 +253,10 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			const aggregate = primaryKeyField.value
 				? {
 						countDistinct: primaryKeyField.value.field,
-				  }
+					}
 				: {
 						count: '*',
-				  };
+					};
 
 			const response = await api.get<any>(endpoint.value, {
 				params: {
@@ -277,6 +283,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	async function getItemCount() {
 		if (!endpoint.value) return;
 
+		loadingItemCount.value = true;
+
 		try {
 			if (existingRequests.filter) existingRequests.filter.abort();
 			existingRequests.filter = new AbortController();
@@ -284,10 +292,10 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			const aggregate = primaryKeyField.value
 				? {
 						countDistinct: primaryKeyField.value.field,
-				  }
+					}
 				: {
 						count: '*',
-				  };
+					};
 
 			const response = await api.get<any>(endpoint.value, {
 				params: {
@@ -309,6 +317,8 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			if (!axios.isCancel(err)) {
 				throw err;
 			}
+		} finally {
+			loadingItemCount.value = false;
 		}
 	}
 }

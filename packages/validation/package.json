@@ -1,11 +1,11 @@
 {
 	"name": "@directus/validation",
-	"version": "2.0.7",
+	"version": "2.0.11",
 	"type": "module",
 	"sideEffects": false,
 	"scripts": {
-		"build": "tsup src/index.ts --format=esm --dts",
-		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"build": "tsdown src/index.ts --dts",
+		"dev": "tsdown src/index.ts --dts --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
@@ -30,7 +30,7 @@
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@vitest/coverage-v8": "catalog:",
-		"tsup": "catalog:",
+		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	},

@@ -12,7 +12,6 @@ import { type Alterations, Filter, Permission, PermissionsAction } from '@direct
 import { getEndpoint } from '@directus/utils';
 import { cloneDeep, get, groupBy, isNil, merge, orderBy, sortBy } from 'lodash';
 import { computed, inject, nextTick, type Ref, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import AddCollection from './add-collection.vue';
 import PermissionsDetail from './detail/permissions-detail.vue';
 import PermissionsHeader from './permissions-header.vue';
@@ -41,7 +40,6 @@ const emit = defineEmits<{
 }>();
 
 const { collection, primaryKey, field } = toRefs(props);
-const { t } = useI18n();
 
 const contentEl = inject<Ref<Element | null>>('main-element');
 const permissionsTable = ref<HTMLTableElement | null>(null);
@@ -102,7 +100,7 @@ function editItem(collection: string, action: PermissionsAction) {
 		: createEmptyPermission({
 				collection,
 				action,
-		  });
+			});
 
 	if (newItem.value || existingPermission?.$type === 'created') {
 		currentlyEditingKey.value = '+';
@@ -586,7 +584,7 @@ function useGroupedPermissions() {
 <template>
 	<div>
 		<v-notice v-if="adminAccess">
-			{{ t('admins_have_all_permissions') }}
+			{{ $t('admins_have_all_permissions') }}
 		</v-notice>
 
 		<div v-else-if="!loading || allPermissions.length > 0" class="permissions-list">
@@ -596,7 +594,7 @@ function useGroupedPermissions() {
 				<tbody>
 					<tr v-if="allPermissions.length === 0">
 						<td class="empty-state" colspan="7">
-							{{ t('no_permissions') }}
+							{{ $t('no_permissions') }}
 						</td>
 					</tr>
 
@@ -616,7 +614,7 @@ function useGroupedPermissions() {
 					<tr v-if="regularPermissions.length > 0 && systemPermissions.length > 0">
 						<td colspan="7" class="system-divider">
 							<v-divider>
-								{{ t('system_collections') }}
+								{{ $t('system_collections') }}
 							</v-divider>
 						</td>
 					</tr>
@@ -632,7 +630,7 @@ function useGroupedPermissions() {
 							appAccess
 								? appAccessMinimalPermissions.filter(
 										(permission) => permission.collection === group.collection.collection,
-								  )
+									)
 								: undefined
 						"
 						@edit-item="editItem(group.collection.collection, $event)"
@@ -648,10 +646,10 @@ function useGroupedPermissions() {
 					<tr v-if="appAccess">
 						<td colspan="7" class="reset-toggle">
 							<span>
-								{{ t('reset_system_permissions_to') }}
-								<button @click="resetActive = 'minimum'">{{ t('app_access_minimum') }}</button>
+								{{ $t('reset_system_permissions_to') }}
+								<button @click="resetActive = 'minimum'">{{ $t('app_access_minimum') }}</button>
 								/
-								<button @click="resetActive = 'recommended'">{{ t('recommended_defaults') }}</button>
+								<button @click="resetActive = 'recommended'">{{ $t('recommended_defaults') }}</button>
 							</span>
 						</td>
 					</tr>
@@ -680,12 +678,12 @@ function useGroupedPermissions() {
 		<v-dialog :model-value="!!resetActive" @update:model-value="resetActive = false" @esc="resetActive = false">
 			<v-card>
 				<v-card-title>
-					{{ t('reset_system_permissions_copy') }}
+					{{ $t('reset_system_permissions_copy') }}
 				</v-card-title>
 				<v-card-actions>
-					<v-button secondary @click="resetActive = false">{{ t('cancel') }}</v-button>
+					<v-button secondary @click="resetActive = false">{{ $t('cancel') }}</v-button>
 					<v-button @click="resetSystemPermissions(resetActive === 'recommended')">
-						{{ t('reset') }}
+						{{ $t('reset') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

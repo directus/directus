@@ -1,4 +1,6 @@
 ---
+first_name: Ime
+last_name: Prezime
 identifier: Identifikator
 application: Aplikacija
 default_provider: Zadano
@@ -92,7 +94,6 @@ rename_folder: Preimenuj folder
 delete_folder: Izbriši folder
 prefix: Prefiks
 suffix: Sufiks
-promote_version_preview: Pretpregled
 reset_bookmark: Poništi bookmark
 update_bookmark: Ažuriraj bookmark
 delete_bookmark: Obriši bookmark
@@ -1200,6 +1201,8 @@ shares: Dijeljenja
 unlimited_usage: Neograničena upotreba
 no_shares: Nema dijeljenja za prikaz
 new_share: Novo dijeljenje
+mcp_prompts_collection_schema:
+  messages_role_user: Korisnik
 expired: Isteklo
 upcoming: Nadolazeće
 share: Podijeli

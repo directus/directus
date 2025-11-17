@@ -60,7 +60,6 @@ async function saveEdits(item: Record<string, any>) {
 				<v-list-item
 					v-for="row in data"
 					:key="row[primaryKeyField]"
-					class="selectable"
 					:clickable="linkToItem === true"
 					@click="startEditing(row)"
 				>

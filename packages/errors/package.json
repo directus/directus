@@ -1,6 +1,6 @@
 {
 	"name": "@directus/errors",
-	"version": "2.0.2",
+	"version": "2.0.5",
 	"description": "Create consistent error objects around the codebase",
 	"repository": {
 		"type": "git",
@@ -21,8 +21,8 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsup src/index.ts --format=esm --dts",
-		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"build": "tsdown src/index.ts --dts",
+		"dev": "tsdown src/index.ts --dts --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
@@ -35,7 +35,7 @@
 		"@directus/types": "workspace:*",
 		"@types/ms": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"tsup": "catalog:",
+		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	}

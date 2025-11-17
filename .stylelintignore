@@ -2,3 +2,4 @@
 !*.scss
 !*.css
 !*.vue
+Dockerfile

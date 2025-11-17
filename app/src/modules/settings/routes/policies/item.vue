@@ -3,27 +3,25 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useUserStore } from '@/stores/user';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { Policy } from '@directus/types';
 import { ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
+import PolicyInfoSidebarDetail from './policy-info-sidebar-detail.vue';
 
 const props = defineProps<{
 	primaryKey: string;
 	permissionKey?: string;
 }>();
 
-const { t } = useI18n();
-
 const router = useRouter();
 
 const userStore = useUserStore();
 const { primaryKey } = toRefs(props);
 
-const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const { edits, hasEdits, item, saving, loading, save, remove, deleting, validationErrors } = useItem<Policy>(
 	ref('directus_policies'),
@@ -52,7 +50,7 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 async function saveAndStay() {
 	try {
 		await save();
-		revisionsDrawerDetailRef.value?.refresh?.();
+		revisionsSidebarDetailRef.value?.refresh?.();
 		await userStore.hydrate();
 	} catch {
 		// 'save' shows unexpected error dialog
@@ -105,9 +103,9 @@ function discardAndStay() {
 </script>
 
 <template>
-	<private-view :title="loading ? t('loading') : t('editing_policy', { policy: item && item.name })">
+	<private-view :title="loading ? $t('loading') : $t('editing_policy', { policy: item && item.name })">
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings_permissions'), to: '/settings/policies' }]" />
+			<v-breadcrumb :items="[{ name: $t('settings_permissions'), to: '/settings/policies' }]" />
 		</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/policies/`">
@@ -118,7 +116,7 @@ function discardAndStay() {
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<v-button
-						v-tooltip.bottom="t('delete_label')"
+						v-tooltip.bottom="$t('delete_label')"
 						rounded
 						icon
 						class="action-delete"
@@ -131,20 +129,20 @@ function discardAndStay() {
 				</template>
 
 				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
+							{{ $t('cancel') }}
 						</v-button>
 						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete_label') }}
+							{{ $t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon :tooltip="t('save')" :loading="saving" :disabled="!hasEdits" @click="saveAndQuit">
+			<v-button rounded icon :tooltip="$t('save')" :loading="saving" :disabled="!hasEdits" @click="saveAndQuit">
 				<v-icon name="check" />
 
 				<template #append-outer>
@@ -175,8 +173,9 @@ function discardAndStay() {
 		</div>
 
 		<template #sidebar>
-			<revisions-drawer-detail
-				ref="revisionsDrawerDetailRef"
+			<policy-info-sidebar-detail :policy="item" />
+			<revisions-sidebar-detail
+				ref="revisionsSidebarDetailRef"
 				collection="directus_policies"
 				:primary-key="primaryKey"
 			/>
@@ -184,13 +183,13 @@ function discardAndStay() {
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
+						{{ $t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

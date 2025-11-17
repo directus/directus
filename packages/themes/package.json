@@ -1,6 +1,6 @@
 {
 	"name": "@directus/themes",
-	"version": "1.1.3",
+	"version": "1.1.7",
 	"description": "Themes for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -29,27 +29,27 @@
 	},
 	"dependencies": {
 		"@directus/utils": "workspace:*",
-		"decamelize": "6.0.0",
-		"flat": "6.0.1",
+		"decamelize": "catalog:",
+		"flat": "catalog:",
 		"lodash-es": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "catalog:",
-		"@unhead/vue": "1.11.20",
-		"@vitejs/plugin-vue": "5.2.1",
-		"pinia": "2.3.1",
-		"rollup-plugin-node-externals": "8.0.0",
+		"@unhead/vue": "catalog:",
+		"@vitejs/plugin-vue": "catalog:",
+		"pinia": "catalog:",
+		"rollup-plugin-node-externals": "catalog:",
 		"typescript": "catalog:",
-		"vite": "5.4.19",
-		"vite-plugin-dts": "4.5.1",
-		"vitest": "3.2.4",
-		"vue": "3.5.13"
+		"vite": "catalog:",
+		"vite-plugin-dts": "catalog:",
+		"vitest": "catalog:",
+		"vue": "catalog:"
 	},
 	"peerDependencies": {
-		"@unhead/vue": "1",
-		"pinia": "2",
-		"vue": "^3.4"
+		"@unhead/vue": "catalog:",
+		"pinia": "catalog:",
+		"vue": "catalog:"
 	}
 }

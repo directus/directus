@@ -23,6 +23,7 @@ const props = withDefaults(
 		collection: string;
 		field: string;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		version: ContentVersion | null;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
@@ -33,6 +34,7 @@ const props = withDefaults(
 	{
 		value: () => [],
 		disabled: false,
+		nonEditable: false,
 		enableCreate: true,
 		enableSelect: true,
 		limit: 15,
@@ -334,10 +336,10 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 </script>
 
 <template>
-	<v-notice v-if="!relationInfo" type="warning">{{ t('relationship_not_setup') }}</v-notice>
-	<v-notice v-else-if="allowedCollections.length === 0" type="warning">{{ t('no_singleton_relations') }}</v-notice>
+	<v-notice v-if="!relationInfo" type="warning">{{ $t('relationship_not_setup') }}</v-notice>
+	<v-notice v-else-if="allowedCollections.length === 0" type="warning">{{ $t('no_singleton_relations') }}</v-notice>
 	<div v-else class="m2a-builder">
-		<v-notice v-if="canDrag && !allowDrag">{{ t('interfaces.list-m2a.sorting_disabled') }}</v-notice>
+		<v-notice v-if="canDrag && !allowDrag">{{ $t('interfaces.list-m2a.sorting_disabled') }}</v-notice>
 		<template v-if="loading">
 			<v-skeleton-loader
 				v-for="n in clamp(totalItemCount - (page - 1) * limitWritable, 1, limitWritable)"
@@ -347,7 +349,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 		</template>
 
 		<template v-else>
-			<v-notice v-if="displayItems.length === 0">{{ t('no_items') }}</v-notice>
+			<v-notice v-if="displayItems.length === 0">{{ $t('no_items') }}</v-notice>
 
 			<draggable
 				v-else
@@ -395,7 +397,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 					<v-list-item v-else block :class="{ deleted: element.$type === 'deleted' }">
 						<v-icon class="invalid-icon" name="warning" left />
 
-						<span>{{ t('invalid_item') }}</span>
+						<span>{{ $t('invalid_item') }}</span>
 
 						<div class="spacer" />
 
@@ -414,11 +416,11 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 			</draggable>
 		</template>
 
-		<div class="actions">
+		<div v-if="!nonEditable" class="actions">
 			<v-menu v-if="enableCreate && createCollections.length > 0" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button :disabled="disabled" @click="toggle">
-						{{ t('create_new') }}
+						{{ $t('create_new') }}
 						<v-icon name="arrow_drop_down" right />
 					</v-button>
 				</template>
@@ -441,7 +443,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 			<v-menu v-if="enableSelect && selectAllowed" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button :disabled="disabled" @click="toggle">
-						{{ t('add_existing') }}
+						{{ $t('add_existing') }}
 						<v-icon name="arrow_drop_down" right />
 					</v-button>
 				</template>
@@ -463,7 +465,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 
 			<div v-if="pageCount > 1 || limitWritable !== limit" class="pagination">
 				<div v-if="pageSizes.length > 1" class="per-page">
-					<span>{{ t('per_page') }}</span>
+					<span>{{ $t('per_page') }}</span>
 					<v-select
 						:model-value="`${limitWritable}`"
 						:items="pageSizes"
@@ -489,6 +491,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 		<drawer-item
 			v-model:active="editModalActive"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"

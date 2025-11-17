@@ -13,6 +13,9 @@ on:
       - .github/workflows/blackbox.yml
   workflow_call:
 
+permissions:
+  contents: read
+
 concurrency:
   group: blackbox-${{ github.ref }}
   cancel-in-progress: true

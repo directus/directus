@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Rreth
+first_name: Emri
+last_name: Mbiemri
 identifier: Identifikues
 avatar: Avatar
 application: Aplikacion
@@ -164,19 +166,9 @@ rename_version: Riemërto Versionin
 compare_version: Krahaso Versionin
 save_version: Ruaj Versionin
 promote_version: Promovo Versionin
-promote_version_disabled: Pa Ndryshime
-promote_version_drawer_title: Promovo {version} në Kryesore
-promote_version_changes: Ndryshimet
-promote_version_preview: Parashiko
-outdated_notice: >-
-  Artikulli kryesor është përditësuar që nga krijimi i këtij versioni. Ju lutemi shqyrtoni të gjitha vlerat e fushave më poshtë dhe konfirmoni cilin version duhet të përdorni kur promovoni këtë version në artikullin kryesor.
-promote_notice: >-
-  Ju lutemi shqyrtoni të gjitha vlerat e fushave më poshtë dhe konfirmoni cilin version duhet të përdorni kur promovoni këtë version në artikullin kryesor.
 delete_version: Fshi Versionin
 delete_version_copy: >-
   A jeni i sigurt që doni të fshini versionin "{version}"? Kjo veprim nuk mund të zhbëhet.
-delete_on_promote_copy: >-
-  Dëshironi të fshini apo të ruani versionin "{version}" pas promovimit?
 reset_bookmark: Rikthe Shënuesin
 update_bookmark: Përditëso Shënuesin
 delete_bookmark: Fshi Shënuesin
@@ -451,7 +443,6 @@ revision_delta_created: U krijua
 revision_delta_created_externally: U krijua Jashtë
 revision_delta_updated: '''Përditësoi 1 Fushë | Përditësoi {count} Fusha'''
 revision_delta_deleted: U fshi
-revision_delta_version_saved: 'Ruajtja e Versionit (Përditësuar 1 Fushë) | Ruajtja e Versionit (Përditësuar {count} Fusha)'
 revision_delta_reverted: U rikthye
 revision_delta_update_message: Kjo fushë është përditësuar por vlera e saj është e fshehur për arsye sigurie.
 revision_delta_other: Rishikim
@@ -1170,7 +1161,6 @@ page_help_settings_datamodel_fields: >-
   **Modeli i të Dhënave: Koleksioni** — Një formë për menaxhimin e këtij koleksioni dhe fushave të tij.
 page_help_settings_system_logs: '**Regjistrat e Sistemit** — Aksesoni një transmetim të drejtpërdrejtë të regjistrave të sistemit.'
 page_help_settings_policies_collection: '**Shfleto Drejtimet** — Rendit të gjithë drejtimet brenda projektit.'
-page_help_settings_policies_item: "**Detajet e Drejtimit** — Menaxho lejet dhe cilësimet e tjera të një drejtimi."
 page_help_settings_roles_collection: '**Shfleto Rolet** — Rendit të gjithë rolet e përdoruesve brenda projektit.'
 page_help_settings_roles_item: "**Detajet e Rolit** — Menaxho lejet e rolit dhe cilësimet e tjera."
 page_help_settings_presets_collection: >-
@@ -1572,6 +1562,8 @@ unlimited_usage: Përdorim i Pakufizuar
 uses_left: Asnjë përdorim i mbetur | Një përdorim i mbetur | {n} përdorime të mbetura
 no_shares: Asnjë ndarje për t'u shfaqur
 new_share: Ndarje e Re
+mcp_prompts_collection_schema:
+  messages_role_user: Përdorues
 expired: Skaduar
 upcoming: E Ardhshme
 share: Ndaj

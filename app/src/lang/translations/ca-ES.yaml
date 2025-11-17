@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Quant a
+first_name: Nom
+last_name: Cognoms
 identifier: Indentificador
 avatar: Foto
 application: Aplicació
@@ -119,7 +121,6 @@ delete_folder: Suprimeix carpeta
 prefix: Prefix
 suffix: Sufix
 keep: Manté
-promote_version_preview: Vista prèvia
 reset_bookmark: Reinicia marcador
 update_bookmark: Actualitza marcador
 delete_bookmark: Eliminar marcador
@@ -1218,6 +1219,8 @@ inline: Inline
 comment: Comentari
 live_preview:
   new_window: Obre en una nova finestra
+mcp_prompts_collection_schema:
+  messages_role_user: Usuari
 relational_triggers: Disparadors relacionals
 referential_action_field_label_m2o: Si s'esborra de {collection}...
 referential_action_field_label_o2m: Si es deselecciona de {collection}...

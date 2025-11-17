@@ -13,7 +13,7 @@ const settingsStore = useSettingsStore();
 const customLogoPath = computed<string | null>(() => {
 	if (settingsStore.settings === null) return null;
 	if (!settingsStore.settings?.project_logo) return null;
-	return getAssetUrl(`${settingsStore.settings.project_logo}`);
+	return getAssetUrl(settingsStore.settings.project_logo);
 });
 
 const showLoader = ref(false);

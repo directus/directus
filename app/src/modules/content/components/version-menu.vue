@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useCollectionPermissions } from '@/composables/use-permissions';
+import { getVersionDisplayName } from '@/utils/get-version-display-name';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { ContentVersion } from '@directus/types';
-import { isNil } from 'lodash';
-import { ref, toRefs, unref, watch, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
+import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
+import { ContentVersion, PrimaryKey } from '@directus/types';
 import slugify from '@sindresorhus/slugify';
-import VersionPromoteDrawer from './version-promote-drawer.vue';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 
 interface Props {
 	collection: string;
-	primaryKey: string | number;
+	primaryKey: PrimaryKey;
 	updateAllowed: boolean;
 	hasEdits: boolean;
 	currentVersion: ContentVersion | null;
@@ -27,11 +26,9 @@ const emit = defineEmits<{
 	switch: [version: ContentVersion | null];
 }>();
 
-const { t } = useI18n();
+const { collection, primaryKey, hasEdits, currentVersion, versions } = toRefs(props);
 
-const { collection, primaryKey, hasEdits, currentVersion } = toRefs(props);
-
-const isVersionPromoteDrawerOpen = ref(false);
+const comparisonModalActive = ref(false);
 
 const {
 	createAllowed: createVersionsAllowed,
@@ -172,7 +169,7 @@ function useRenameDialog() {
 	};
 
 	async function renameVersion() {
-		if (isRenameDisabled.value || updating.value) return;
+		if (isRenameDisabled.value || updating.value || newVersionKey.value === null) return;
 
 		updating.value = true;
 
@@ -249,12 +246,8 @@ function useDeleteDialog() {
 	}
 }
 
-function getVersionDisplayName(version: ContentVersion) {
-	return isNil(version.name) ? version.key : version.name;
-}
-
 async function onPromoteComplete(deleteOnPromote: boolean) {
-	isVersionPromoteDrawerOpen.value = false;
+	comparisonModalActive.value = false;
 
 	if (deleteOnPromote) {
 		await deleteVersion();
@@ -270,18 +263,14 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 			<template #activator="{ toggle }">
 				<button class="version-button" type="button" @click="toggle">
 					<v-icon name="published_with_changes" />
-					<v-text-overflow
-						class="version-name"
-						:text="currentVersion ? getVersionDisplayName(currentVersion) : t('main_version')"
-						placement="bottom"
-					/>
+					<v-text-overflow class="version-name" :text="getVersionDisplayName(currentVersion)" placement="bottom" />
 					<v-icon small name="arrow_drop_down" />
 				</button>
 			</template>
 
 			<v-list>
 				<v-list-item class="version-item" clickable :active="currentVersion === null" @click="switchVersion(null)">
-					{{ t('main_version') }}
+					{{ $t('main_version') }}
 				</v-list-item>
 
 				<v-list-item
@@ -299,59 +288,62 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 					<v-divider />
 
 					<v-list-item clickable @click="createDialogActive = true">
-						{{ t('create_version') }}
+						{{ $t('create_version') }}
 					</v-list-item>
 				</template>
 
 				<template v-if="currentVersion !== null">
 					<v-divider />
 
-					<v-list-item v-if="updateAllowed" clickable @click="isVersionPromoteDrawerOpen = true">
-						{{ t('promote_version') }}
+					<v-list-item v-if="updateAllowed" clickable @click="comparisonModalActive = true">
+						{{ $t('promote_version') }}
 					</v-list-item>
 
 					<v-list-item v-if="updateVersionsAllowed" clickable @click="openRenameDialog">
-						{{ t('rename_version') }}
+						{{ $t('rename_version') }}
 					</v-list-item>
 
 					<v-list-item v-if="deleteVersionsAllowed" class="version-delete" clickable @click="deleteDialogActive = true">
-						{{ t('delete_version') }}
+						{{ $t('delete_version') }}
 					</v-list-item>
 				</template>
 			</v-list>
 		</v-menu>
 
-		<version-promote-drawer
+		<comparison-modal
 			v-if="currentVersion !== null"
-			:active="isVersionPromoteDrawerOpen"
-			:current-version="currentVersion"
-			:delete-versions-allowed="deleteVersionsAllowed"
-			@cancel="isVersionPromoteDrawerOpen = false"
+			v-model="comparisonModalActive"
+			:delete-versions-allowed
+			:collection
+			:primary-key
+			mode="version"
+			:current-version
+			@cancel="comparisonModalActive = false"
 			@promote="onPromoteComplete($event)"
 		/>
 
 		<v-dialog v-model="switchDialogActive" @esc="switchDialogActive = false" @apply="switchVersion">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
 				<v-card-text>
 					{{
-						t('switch_version_copy', {
-							version: switchTarget ? switchTarget.name || switchTarget.key : t('main_version'),
+						$t('switch_version_copy', {
+							version: switchTarget ? switchTarget.name || switchTarget.key : $t('main_version'),
 						})
 					}}
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="switchVersion()">
-						{{ t('switch_version') }}
+						{{ $t('switch_version') }}
 					</v-button>
-					<v-button @click="switchDialogActive = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="switchDialogActive = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
 		<v-dialog :model-value="createDialogActive" persistent @esc="closeCreateDialog" @apply="createVersion">
 			<v-card>
-				<v-card-title>{{ t('create_version') }}</v-card-title>
+				<v-card-title>{{ $t('create_version') }}</v-card-title>
 
 				<v-card-text>
 					<div class="grid">
@@ -359,7 +351,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 							<v-input
 								v-model="newVersionName"
 								class="full"
-								:placeholder="t('version_name')"
+								:placeholder="$t('version_name')"
 								autofocus
 								trim
 								:max-length="255"
@@ -370,7 +362,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 							<v-input
 								v-model="newVersionKey"
 								class="full"
-								:placeholder="t('version_key')"
+								:placeholder="$t('version_key')"
 								slug
 								trim
 								:max-length="64"
@@ -380,9 +372,9 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 				</v-card-text>
 
 				<v-card-actions>
-					<v-button secondary @click="closeCreateDialog">{{ t('cancel') }}</v-button>
+					<v-button secondary @click="closeCreateDialog">{{ $t('cancel') }}</v-button>
 					<v-button :disabled="isCreateDisabled" :loading="creating" @click="createVersion">
-						{{ t('save') }}
+						{{ $t('save') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -390,7 +382,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 
 		<v-dialog :model-value="renameDialogActive" persistent @esc="closeRenameDialog" @apply="renameVersion">
 			<v-card>
-				<v-card-title>{{ t('rename_version') }}</v-card-title>
+				<v-card-title>{{ $t('rename_version') }}</v-card-title>
 
 				<v-card-text>
 					<div class="grid">
@@ -399,7 +391,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 								v-model="newVersionName"
 								autofocus
 								class="full"
-								:placeholder="t('version_name')"
+								:placeholder="$t('version_name')"
 								trim
 								:max-length="255"
 							/>
@@ -408,7 +400,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 							<v-input
 								v-model="newVersionKey"
 								class="full"
-								:placeholder="t('version_key')"
+								:placeholder="$t('version_key')"
 								slug
 								trim
 								:max-length="64"
@@ -418,9 +410,9 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 				</v-card-text>
 
 				<v-card-actions>
-					<v-button secondary @click="closeRenameDialog">{{ t('cancel') }}</v-button>
+					<v-button secondary @click="closeRenameDialog">{{ $t('cancel') }}</v-button>
 					<v-button :disabled="isRenameDisabled" :loading="updating" @click="renameVersion">
-						{{ t('save') }}
+						{{ $t('save') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -433,11 +425,11 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 			@apply="onDeleteVersion"
 		>
 			<v-card>
-				<v-card-title>{{ t('delete_version_copy', { version: currentVersion!.name }) }}</v-card-title>
+				<v-card-title>{{ $t('delete_version_copy', { version: currentVersion!.name }) }}</v-card-title>
 				<v-card-actions>
-					<v-button secondary @click="deleteDialogActive = false">{{ t('cancel') }}</v-button>
+					<v-button secondary @click="deleteDialogActive = false">{{ $t('cancel') }}</v-button>
 					<v-button :loading="deleting" kind="danger" @click="onDeleteVersion">
-						{{ t('delete_label') }}
+						{{ $t('delete_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

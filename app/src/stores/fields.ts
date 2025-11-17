@@ -128,7 +128,7 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 										[field.field]: getLiteralInterpolatedTranslation(translation),
 									},
 								},
-						  }
+							}
 						: {}),
 				});
 			}

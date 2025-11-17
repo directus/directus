@@ -159,8 +159,8 @@ useHead({ title });
 
 	<shared-view v-else :inline="!authenticated" :title="title">
 		<div v-if="notFound">
-			<strong>{{ t('share_access_not_found') }}</strong>
-			{{ t('share_access_not_found_desc') }}
+			<strong>{{ $t('share_access_not_found') }}</strong>
+			{{ $t('share_access_not_found_desc') }}
 		</div>
 
 		<v-error v-else-if="error" :error="error" />
@@ -168,7 +168,7 @@ useHead({ title });
 		<template v-else-if="share">
 			<template v-if="!authenticated">
 				<v-notice v-if="usesLeft !== undefined && usesLeft !== null" :type="usesLeftNoticeType">
-					{{ t('shared_uses_left', usesLeft) }}
+					{{ $t('shared_uses_left', usesLeft) }}
 				</v-notice>
 
 				<template v-if="usesLeft !== 0">
@@ -177,11 +177,11 @@ useHead({ title });
 						class="password"
 						:class="{ invalid: passwordWrong }"
 						type="password"
-						:placeholder="t('shared_enter_passcode')"
+						:placeholder="$t('shared_enter_passcode')"
 						@update:model-value="password = $event"
 					/>
 					<v-button :busy="authenticating" @click="authenticate">
-						{{ t('share_access_page') }}
+						{{ $t('share_access_page') }}
 					</v-button>
 				</template>
 			</template>

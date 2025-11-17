@@ -1,95 +1,28 @@
+title: 'Feature Request - Please use our Public Roadmap'
+labels:
+  - redirect
 body:
   - type: markdown
     attributes:
       value: |
-        Hi, thank you for taking the time to create a feature request!
+        **Feature requests have moved to our Public Roadmap**
 
-        In order to make sure this feature request has the biggest chance of being implemented, please fill out the following sections in as much detail as you can.
+        Please submit your request here: https://roadmap.directus.io/roadmap
 
-  - type: textarea
+        This allows you to:
+        - ✅ Vote on features you'd like to see
+        - 📊 See what we're currently working on
+        - 📅 See what is planned
+        - 🎯 Track feature status in real-time, directly integrated with our Linear projects
+
+        **Not a feature request?** If you'd like to engage with our community, ask questions, or get help, please visit [community.directus.io](https://community.directus.io)
+
+        Please note: New discussions opened here will be automatically closed. We appreciate your understanding!
+
+  - type: checkboxes
+    id: understand
     attributes:
-      label: Summary
-      description: Brief explanation of the feature
-    validations:
-      required: true
-
-  - type: textarea
-    attributes:
-      label: Basic Example
-      description: If the proposal involves a new or changed API, include a basic code example.
-
-  - type: textarea
-    attributes:
-      label: Motivation
-      description: |
-        Why are we doing this? What use cases does it support? What is the expected outcome?
-
-        Please focus on explaining the motivation so that if this RFC is not accepted, the motivation could be used to develop alternative solutions. In other words, enumerate the constraints you are trying to solve without coupling them too closely to the solution you have in mind.
-    validations:
-      required: true
-
-  - type: textarea
-    attributes:
-      label: Detailed Design
-      description: |
-        This is the bulk of the RFC. Explain the design in enough detail for somebody familiar with Directus to understand, and for somebody familiar with the implementation to implement. This should get into specifics and corner-cases, and include examples of how the feature is used. Any new terminology should be defined here.
-    validations:
-      required: true
-
-  - type: textarea
-    attributes:
-      label: Requirements List
-      value: |
-        ### Must Have:
-        - A
-        - B
-
-        ### Should Have:
-        - C
-
-        ### Could Have:
-        - D
-
-        ### Won't Have:
-        - E
-      description: |
-        What is required to make this feature a success? Please use [the MoSCoW method](https://en.wikipedia.org/wiki/MoSCoW_method) to describe the requirements.
-    validations:
-      required: true
-
-  - type: textarea
-    attributes:
-      label: Drawbacks
-      description: |
-        Why should we **not** do this? Please consider:
-          - implementation cost, both in term of code size and complexity
-          - whether the proposed feature can be implemented in user space
-          - the impact on teaching people Directus
-          - integration of this feature with other existing and planned features
-          - cost of migrating existing Directus applications (is it a breaking change?)
-
-          There are tradeoffs to choosing any path. Attempt to identify them here.
-    validations:
-      required: true
-
-  - type: textarea
-    attributes:
-      label: Alternatives
-      description: |
-        What other designs have been considered? What is the impact of not doing this?
-    validations:
-      required: true
-
-  - type: textarea
-    attributes:
-      label: Adoption Strategy
-      description: |
-        If we implement this proposal, how will existing Directus developers adopt it? Is this a breaking change? Can we write a migration? How will this affect other projects in the Directus ecosystem?
-    validations:
-      required: true
-
-  - type: textarea
-    attributes:
-      label: Unresolved Questions
-      description: |
-        What parts of this request are still unknown?
+      label: 'Next steps'
+      options:
+        - label: "I'll submit my feature request at roadmap.directus.io (please do not start discussion)"
+          required: true

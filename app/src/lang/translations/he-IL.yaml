@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: אודות
+first_name: שם פרטי
+last_name: שם משפחה
 identifier: מזהה
 avatar: צלמית
 application: יישום
@@ -154,21 +156,20 @@ version_name: שם הגרסה
 main_version: ראשי
 switch_version: החלפת גרסה
 switch_version_copy: האם את/ה רוצה להחליף לגרסה {version}? שינויים שלא נשמרו יאבדו.
-create_version: ליצור גרסה
+create_version: צור גרסה
 rename_version: לשנות שם גרסה
 compare_version: השווה גירסאות
 save_version: לשמור גרסה
 promote_version: לקדם גרסה
-promote_version_disabled: ללא שינויים
-promote_version_drawer_title: לקדם {version} לענף הראשי
-promote_version_changes: שינויים
-promote_version_preview: תצוגה מקדימה
 delete_version: מחיקת גרסא
 delete_version_copy: >-
   האם ברצונך למחוק את גרסה {version}? הפעולה אינה ניתנת לביטול.
-delete_on_promote_copy: >-
-  האם ברצונך לשמור או למחוק את גרסה {version} לאחר הקידום?
+reached_maximum_number_of_extensions: הגעת למספר התוספות המקסימלי עבור הפרויקט ({n}). למידע נוסף, פנה למנהל המערכת.
 not_allowed: לא מורשה
+archive: ארכיון
+archive_confirm: האם אתם בטוחים שברצונכם להעביר פריט זה לארכיון?
+unarchive: הוצאה מהארכיון
+unarchive_confirm: האם אתם בטוחים שברצונכם להוציא פריט זה מהארכיון?
 validationError:
   eq: הערך צריך להיות {valid}
   neq: הערך אינו יכול להיות {invalid}
@@ -176,6 +177,7 @@ validationError:
   nempty: הערך אינו יכול להיות ריק
   null: הערך צריך להיות null
   nnull: הערך צריך להיות לא null
+  starts_with: ערך צריך להתחיל ב{substring}
   istarts_with: ערך צריך להתחיל ב{substring}
   nstarts_with: ערך לא יכול יכול להתחיל ב{substring}
   nistarts_with: ערך לא יכול יכול להתחיל ב{substring}
@@ -189,11 +191,23 @@ use_custom: השתמש במותאם אישית
 nullable: לא חובה
 allow_null_value: אפשר ערך ריק
 allow_multiple: מאפשר כמה
+field_standard: סטנדרטי
 field_file: קובץ בודד
 field_files: כמה קובצים
+field_m2o: קשר רבים ליחיד (M2O)
+field_o2m: קשר יחיד לרבים (O2M)
+field_m2m: קשר רבים לרבים (M2M)
 field_translations: תרגומים
+field_group: קבוצת שדות
+item_permissions: הרשאות פריט
+field_permissions: הרשאות שדה
+field_validation: וולידציות שדה
+field_presets: פריסטים שדה
 hide_field: שדה הסתר
+hide_field_on_detail: הסתר שדה
+show_field_on_detail: הצג שדה
 delete_field: מחק שדה
+field_create_success: 'שדה "{field}" נוצר בהצלחה'
 language: שפה
 language_placeholder: בחר שפה...
 global: גלובלי
@@ -206,6 +220,11 @@ count_distinct: ספירה מובחנת
 min: מינימום
 max: מקסימום
 create_field: צור שדה
+creating_new_field: 'שדה חדש ({collection})'
+field_in_collection: '{field} ({collection})'
+hidden_field: שדה מוסתר
+clear_hidden_field: נקה שדות
+key: מפתח
 boolean: בוליאני
 date: תאריך
 date_range: טווח תאריכים
@@ -217,34 +236,139 @@ click_here: לחץ כאן
 new_field: 'שדה חדש'
 new_collection: 'אוסף חדש'
 add_link: הוסף קישור
+default_value: ערך ברירת מחדל
 single_file: קובץ בודד
 multiple_files: כמה קובצים
+m2o_relationship: קשר רבים ליחיד
+m2m_relationship: קשר רבים לרבים
+dialog: חלונית
+modal: מודל
+confirmation_dialog: חלונית אישור
 next: המשך
 field_name: שם שדה
 translations: תרגומים
+no_translations: אין תרגומים
+left_to_right: שמאל לימין
+right_to_left: ימין לשמאל
 note: הערה
 enter_a_value: הכנס ערך...
 length: אורך
+readonly: קריאה בלבד
+unique: ייחודי
+index: אינדקס
+updated_on: עודכן ב-
+updated_by: עודכן על ידי
+primary_key: מפתח ראשי
+foreign_key: מפתח זר
 dismiss: דחה
+copy_raw_value_success: הועתק
+copy_raw_value_fail: העתקה נכשלה
+paste_raw_value_success: הודבק
+paste_raw_value_fail: ההדבקה נכשלה
+clear_value: נקה שדות
 notifications: התראות
 title: כותרת
 revision_delta_deleted: נמחק
 leave_comment: השאר תגובה...
 post_comment_success: תגובה פורסמה
 post_comment_updated: התגובה עודכנה
+label_import: ייבוא
 functions:
   count: כמות
+months:
+  january: ינואר
+  february: פברואר
+  march: מרץ
+  april: אפריל
+  may: מאי
+  june: יוני
+  july: יולי
+  august: אוגוסט
+  september: ספטמבר
+  october: אוקטובר
+  november: נובמבר
+  december: דצמבר
+drag_mode: מצב גרירה
+original: מקורי
+import_label: ייבוא
+file_details: פרטי קובץ
+copy_id: העתק ID
+size: גודל
+created: נוצר
+modified: נערך
+owner: בעלים
+edited_by: נערך על ידי
+folder: תיקייה
+folders: תיקיות
+zoom: זום
+download: הורדה
+open: פתיחה
+open_in_new_window: פתח בחלון חדש
+open_folder: פתח תקייה "{folder}"
+background_color: צבע רקע
+upload_from_device: העלאה ממכשיר
+choose_from_library: בחר קובץ מספריית הקבצים
+import_from_url: יבא קובץ מקישור URL
+no_image_selected: לא נבחרה תמונה
+created_by: נוצר על ידי
+created_on: נוצר בתאריך
+save_and_create_new: שמור וצור חדש
+add_existing: הוסף קיים
+enable_create_button: אפשר כפתור יצירה
+collapse: צמצם
+collapse_all: צמצם הכל
+select_item: בחר פריט
+no_items: אין פריטים
+search_items: חפש פריטים...
+search_extensions: חפש הרחבות...
+disabled: מושבת
+information: מידע
+report_bug: דווח על תקלה
+item_count: 'אין פריטים | פריט אחד | {count} פריטים'
+filtered_item_count: 'אין פריטים מסוננים | פריט אחד מסונן | {count} פריטים מסוננים'
+no_items_copy: אין פריטים במאגר עדיין.
+file_count: 'אין קבצים | קובץ אחד | {count} קבצים'
+user_count: 'אין משתמשים | משתמש אחד | {count} משתמשים'
+no_users_copy: אין משתמשים בתפקיד זה.
+no_notifications: אין התראות
+no_notifications_copy: אתם מעודכנים לגמרי!
+activity_log: יומן פעילות
+all_items: כל הפריטים
+any: כל
+csv: CSV
+no_collections: אין מאגרים
+create_collection: צור מאגר
+select_a_field: בחירת שדה
+active: פעיל
+move_to: העבר אל...
+copy: העתק
+copy_to: העתק אל...
+inactive: לא פעיל
 users: משתמשים
+roles: תפקידים
 activity: פעילות
 action: פעולה
 ip_address: '‏כתובת IP'
 duration: משך זמן
+collection_created: המאגר נוצר
 status: סטטוס
+select_an_item: בחר פריט...
+edit: עריכה
+edit_item: עריכת פריט
+enabled: מופעל
+create_account: צור חשבון
+account_created_successfully: חשבון נוצר בהצלחה
 errors:
   NOT_NULL_VIOLATION: הערך צריך להיות לא null
+create_bookmark: צור סימניה
+create_item: צור פריט
+create_folder: צור תיקייה
 role: תפקיד
+create: צור
 width: רוחב
 height: גובה
+wysiwyg_options:
+  backcolor: צבע רקע
 settings_translations: תרגומים
 source_registry: חנות
 collection: מאגר
@@ -267,6 +391,9 @@ fields:
     location: מיקום
     metadata: מטא-נתונים
     filesize: גודל קובץ
+    created_on: נוצר בתאריך
+    created_by: נוצר על ידי
+    folder: תיקייה
     width: רוחב
     height: גובה
     duration: משך זמן
@@ -283,6 +410,7 @@ fields:
     language: שפה
     tfa_secret: אימות דו-שלבי
     status: סטטוס
+    status_active: פעיל
     role: תפקיד
   directus_settings:
     module_bar: סרגל מודולים
@@ -300,13 +428,26 @@ fields:
   directus_webhooks:
     status: סטטוס
 field_options:
+  directus_activity:
+    create: צור
   directus_collections:
     language: שפה
+    archive_divider: ארכיון
+  directus_users:
+    status_dropdown_active: פעיל
+  directus_webhooks:
+    status_options_active: פעיל
+    status_options_inactive: לא פעיל
+    actions_create: צור
 comment: הערה
+live_preview:
+  new_window: פתח בחלון חדש
 description: תיאור
 email: דוא"ל
 password: סיסמה
 interfaces:
+  filter:
+    any: כל
   presentation-links:
     primary: ראשי
   system-collection:
@@ -315,8 +456,14 @@ interfaces:
     choices_value_placeholder: הכנס ערך...
   files:
     files: קבצים
+  input-rich-text-md:
+    edit: עריכה
+  map:
+    zoom: זום
   tags:
     tags: תגיות
+  boolean:
+    label_default: מופעל
 displays:
   translations:
     translations: תרגומים
@@ -353,3 +500,4 @@ operations:
   notification:
     message: הודעה
     subject: נושא
+standard: סטנדרטי

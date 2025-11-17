@@ -3,7 +3,7 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { useApi } from '@directus/composables';
 import { Alterations, Item, Policy } from '@directus/types';
@@ -79,7 +79,7 @@ const edits = ref<{ policies?: Alterations<Access> | null }>({});
 
 const hasEdits = computed(() => !isEmpty(edits.value) && !isEqual(initialValue.value, edits.value));
 
-const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const revisionsSidebarDetailRef = ref<InstanceType<typeof RevisionsSidebarDetail> | null>(null);
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
@@ -155,7 +155,7 @@ async function save() {
 async function saveAndStay() {
 	try {
 		await save();
-		revisionsDrawerDetailRef.value?.refresh?.();
+		revisionsSidebarDetailRef.value?.refresh?.();
 	} catch {
 		// `save` shows unexpected error dialog
 	}
@@ -197,9 +197,9 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 </script>
 
 <template>
-	<private-view :title="t('public_label')">
+	<private-view :title="$t('public_label')">
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings_roles'), to: '/settings/roles' }]" />
+			<v-breadcrumb :items="[{ name: $t('settings_roles'), to: '/settings/roles' }]" />
 		</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
@@ -208,7 +208,7 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 		</template>
 
 		<template #actions>
-			<v-button rounded icon :tooltip="t('save')" :loading="saving" :disabled="!hasEdits" @click="saveAndQuit">
+			<v-button rounded icon :tooltip="$t('save')" :loading="saving" :disabled="!hasEdits" @click="saveAndQuit">
 				<v-icon name="check" />
 
 				<template #append-outer>
@@ -237,13 +237,13 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
+						{{ $t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

@@ -51,4 +51,3 @@ TODO
 /tests/blackbox/server-log-*
 /tests/blackbox/sequencer-data.json
 /packages/extensions-sdk/temp-extension-*/
-/docs/packages/

@@ -5,6 +5,7 @@ import type {
 	ActionEventParams,
 	Aggregate,
 	Alterations,
+	DefaultOverwrite,
 	FieldOverview,
 	Item,
 	MutationOptions,
@@ -36,6 +37,7 @@ type Transformers = {
 		accountability: Accountability | null;
 		specials: string[];
 		helpers: Helpers;
+		overwriteDefaults: DefaultOverwrite | undefined;
 	}) => Promise<any>;
 };
 
@@ -50,14 +52,19 @@ export class PayloadService {
 	collection: string;
 	schema: SchemaOverview;
 	nested: string[];
+	overwriteDefaults: DefaultOverwrite | undefined;
 
-	constructor(collection: string, options: AbstractServiceOptions) {
+	constructor(
+		collection: string,
+		options: AbstractServiceOptions & { overwriteDefaults?: DefaultOverwrite | undefined },
+	) {
 		this.accountability = options.accountability || null;
 		this.knex = options.knex || getDatabase();
 		this.helpers = getHelpers(this.knex);
 		this.collection = collection;
 		this.schema = options.schema;
 		this.nested = options.nested ?? [];
+		this.overwriteDefaults = options.overwriteDefaults;
 
 		return this;
 	}
@@ -109,12 +116,12 @@ export class PayloadService {
 			if (action === 'read') return value ? '**********' : null;
 			return value;
 		},
-		async 'user-created'({ action, value, accountability }) {
-			if (action === 'create') return accountability?.user || null;
+		async 'user-created'({ action, value, accountability, overwriteDefaults }) {
+			if (action === 'create') return (overwriteDefaults ? overwriteDefaults._user : accountability?.user) ?? null;
 			return value;
 		},
-		async 'user-updated'({ action, value, accountability }) {
-			if (action === 'update') return accountability?.user || null;
+		async 'user-updated'({ action, value, accountability, overwriteDefaults }) {
+			if (action === 'update') return (overwriteDefaults ? overwriteDefaults._user : accountability?.user) ?? null;
 			return value;
 		},
 		async 'role-created'({ action, value, accountability }) {
@@ -125,12 +132,18 @@ export class PayloadService {
 			if (action === 'update') return accountability?.role || null;
 			return value;
 		},
-		async 'date-created'({ action, value, helpers }) {
-			if (action === 'create') return new Date(helpers.date.writeTimestamp(new Date().toISOString()));
+		async 'date-created'({ action, value, helpers, overwriteDefaults }) {
+			if (action === 'create')
+				return new Date(
+					overwriteDefaults ? overwriteDefaults._date : helpers.date.writeTimestamp(new Date().toISOString()),
+				);
 			return value;
 		},
-		async 'date-updated'({ action, value, helpers }) {
-			if (action === 'update') return new Date(helpers.date.writeTimestamp(new Date().toISOString()));
+		async 'date-updated'({ action, value, helpers, overwriteDefaults }) {
+			if (action === 'update')
+				return new Date(
+					overwriteDefaults ? overwriteDefaults._date : helpers.date.writeTimestamp(new Date().toISOString()),
+				);
 			return value;
 		},
 		async 'cast-csv'({ action, value }) {
@@ -281,6 +294,7 @@ export class PayloadService {
 					accountability,
 					specials: fieldSpecials,
 					helpers: this.helpers,
+					overwriteDefaults: this.overwriteDefaults,
 				});
 			}
 		}
@@ -536,6 +550,11 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						autoPurgeCache: opts?.autoPurgeCache,
+						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+						skipTracking: opts?.skipTracking,
+						overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
+						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
 				}
@@ -546,6 +565,11 @@ export class PayloadService {
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					emitEvents: opts?.emitEvents,
+					autoPurgeCache: opts?.autoPurgeCache,
+					autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+					skipTracking: opts?.skipTracking,
+					overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
+					onItemCreate: opts?.onItemCreate,
 					mutationTracker: opts?.mutationTracker,
 				});
 			}
@@ -626,6 +650,11 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						autoPurgeCache: opts?.autoPurgeCache,
+						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+						skipTracking: opts?.skipTracking,
+						overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
+						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
 				}
@@ -636,6 +665,11 @@ export class PayloadService {
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					emitEvents: opts?.emitEvents,
+					autoPurgeCache: opts?.autoPurgeCache,
+					autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+					skipTracking: opts?.skipTracking,
+					overwriteDefaults: opts?.overwriteDefaults?.[relation.field],
+					onItemCreate: opts?.onItemCreate,
 					mutationTracker: opts?.mutationTracker,
 				});
 			}
@@ -759,6 +793,11 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						autoPurgeCache: opts?.autoPurgeCache,
+						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+						skipTracking: opts?.skipTracking,
+						overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!],
+						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					})),
 				);
@@ -789,6 +828,11 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						autoPurgeCache: opts?.autoPurgeCache,
+						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+						skipTracking: opts?.skipTracking,
+						overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!],
+						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
 				} else {
@@ -801,6 +845,11 @@ export class PayloadService {
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
+							autoPurgeCache: opts?.autoPurgeCache,
+							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+							skipTracking: opts?.skipTracking,
+							overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!],
+							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						},
 					);
@@ -851,13 +900,18 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						autoPurgeCache: opts?.autoPurgeCache,
+						autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+						skipTracking: opts?.skipTracking,
+						overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['create'],
+						onItemCreate: opts?.onItemCreate,
 						mutationTracker: opts?.mutationTracker,
 					});
 				}
 
 				if (alterations.update) {
-					for (const item of alterations.update) {
-						const { [relatedPrimaryKeyField]: key, ...record } = item;
+					for (const index in alterations.update) {
+						const { [relatedPrimaryKeyField]: key, ...record } = alterations.update[index]!;
 
 						const existingRecord = await this.knex
 							.select(relatedPrimaryKeyField, relation.field)
@@ -875,6 +929,11 @@ export class PayloadService {
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
+							autoPurgeCache: opts?.autoPurgeCache,
+							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+							skipTracking: opts?.skipTracking,
+							overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['update'][index],
+							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						});
 					}
@@ -905,6 +964,11 @@ export class PayloadService {
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
+							autoPurgeCache: opts?.autoPurgeCache,
+							autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+							skipTracking: opts?.skipTracking,
+							overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['delete'],
+							onItemCreate: opts?.onItemCreate,
 							mutationTracker: opts?.mutationTracker,
 						});
 					} else {
@@ -917,6 +981,11 @@ export class PayloadService {
 								bypassEmitAction: (params) =>
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 								emitEvents: opts?.emitEvents,
+								autoPurgeCache: opts?.autoPurgeCache,
+								autoPurgeSystemCache: opts?.autoPurgeSystemCache,
+								skipTracking: opts?.skipTracking,
+								overwriteDefaults: opts?.overwriteDefaults?.[relation.meta!.one_field!]?.['delete'],
+								onItemCreate: opts?.onItemCreate,
 								mutationTracker: opts?.mutationTracker,
 							},
 						);
@@ -932,8 +1001,8 @@ export class PayloadService {
 	 * Transforms the input partial payload to match the output structure, to have consistency
 	 * between delta and data
 	 */
-	async prepareDelta(data: Partial<Item>): Promise<string | null> {
-		let payload = cloneDeep(data);
+	async prepareDelta(delta: Partial<Item>): Promise<string | null> {
+		let payload = cloneDeep(delta);
 
 		for (const key in payload) {
 			if (payload[key]?.isRawInstance) {

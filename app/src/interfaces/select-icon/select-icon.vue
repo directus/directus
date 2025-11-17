@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import { computed, ref, nextTick, watch, type Ref, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import icons from './icons.json';
 import { socialIcons } from '@/components/v-icon/social-icons';
@@ -11,6 +10,7 @@ withDefaults(
 	defineProps<{
 		value: string | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		width?: string;
 	}>(),
 	{
@@ -19,8 +19,6 @@ withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const searchQuery = ref('');
 const menuActive = ref(false);
@@ -182,12 +180,13 @@ function useIconsPerRow(
 </script>
 
 <template>
-	<v-menu v-model="menuActive" attached :disabled="disabled" no-focus-return>
+	<v-menu v-model="menuActive" attached :disabled no-focus-return>
 		<template #activator="{ active, activate, deactivate, toggle }">
 			<v-input
 				v-model="searchQuery"
-				:disabled="disabled"
-				:placeholder="value ? formatTitle(value) : t('interfaces.select-icon.search_for_icon')"
+				:disabled
+				:non-editable
+				:placeholder="value ? formatTitle(value) : $t('interfaces.select-icon.search_for_icon')"
 				:class="{ 'has-value': value }"
 				:nullable="false"
 				@click="onClickInput($event, toggle)"
@@ -200,7 +199,7 @@ function useIconsPerRow(
 				<template #append>
 					<div class="item-actions">
 						<v-remove
-							v-if="value !== null"
+							v-if="value !== null && !nonEditable"
 							deselect
 							@action="
 								() => {
@@ -294,7 +293,7 @@ function useIconsPerRow(
 
 .icon-row {
 	display: grid;
-	grid-gap: var(--gap, 8px);
+	gap: var(--gap, 8px);
 	grid-template-columns: repeat(var(--icons-per-row, 1), var(--icon-size, 24px));
 	justify-content: start;
 	color: var(--theme--form--field--input--foreground-subdued);

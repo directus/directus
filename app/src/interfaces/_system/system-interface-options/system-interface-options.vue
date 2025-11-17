@@ -3,7 +3,6 @@ import { useExtension } from '@/composables/use-extension';
 import type { ExtensionOptionsContext } from '@directus/extensions';
 import { isVueComponent } from '@directus/utils';
 import { computed, inject, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	value: Record<string, unknown> | null;
@@ -18,8 +17,6 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(e: 'input', value: Record<string, unknown> | null): void;
 }>();
-
-const { t } = useI18n();
 
 const options = computed({
 	get() {
@@ -87,11 +84,11 @@ const optionsFields = computed(() => {
 
 <template>
 	<v-notice v-if="!selectedInterface">
-		{{ t('select_interface') }}
+		{{ $t('select_interface') }}
 	</v-notice>
 
 	<v-notice v-else-if="usesCustomComponent === false && optionsFields.length === 0">
-		{{ t('no_options_available') }}
+		{{ $t('no_options_available') }}
 	</v-notice>
 
 	<div v-else class="inset">

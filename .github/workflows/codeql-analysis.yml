@@ -5,6 +5,11 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
 env:
   NODE_OPTIONS: --max_old_space_size=6144
 

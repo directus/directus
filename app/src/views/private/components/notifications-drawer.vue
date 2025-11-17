@@ -204,8 +204,8 @@ function clearFilters() {
 	<v-drawer
 		v-model="notificationsDrawerOpen"
 		icon="notifications"
-		:title="t('notifications')"
-		:sidebar-label="t('folders')"
+		:title="$t('notifications')"
+		:sidebar-label="$t('folders')"
 		@cancel="notificationsDrawerOpen = false"
 		@apply="toggleArchive"
 	>
@@ -228,7 +228,7 @@ function clearFilters() {
 			>
 				<template #activator="{ on }">
 					<v-button
-						v-tooltip.bottom="t('delete_label')"
+						v-tooltip.bottom="$t('delete_label')"
 						rounded
 						icon
 						class="action-delete"
@@ -241,21 +241,21 @@ function clearFilters() {
 				</template>
 
 				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
+							{{ $t('cancel') }}
 						</v-button>
 						<v-button kind="danger" @click="deleteSelected">
-							{{ t('delete_label') }}
+							{{ $t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
 
 			<v-button
-				v-tooltip.bottom="tab[0] === 'inbox' ? t('archive') : t('unarchive')"
+				v-tooltip.bottom="tab[0] === 'inbox' ? $t('archive') : $t('unarchive')"
 				icon
 				rounded
 				:disabled="selection.length === 0"
@@ -272,28 +272,28 @@ function clearFilters() {
 					<v-list-item-icon>
 						<v-icon name="inbox" />
 					</v-list-item-icon>
-					<v-list-item-content>{{ t('inbox') }}</v-list-item-content>
+					<v-list-item-content>{{ $t('inbox') }}</v-list-item-content>
 				</v-tab>
 				<v-tab value="archived">
 					<v-list-item-icon>
 						<v-icon name="archive" />
 					</v-list-item-icon>
-					<v-list-item-content>{{ t('archive') }}</v-list-item-content>
+					<v-list-item-content>{{ $t('archive') }}</v-list-item-content>
 				</v-tab>
 			</v-tabs>
 		</template>
 
 		<template v-if="!loading && !itemCount">
-			<v-info v-if="filter || search" :title="t('no_results')" icon="search" center>
-				{{ t('no_results_copy') }}
+			<v-info v-if="filter || search" :title="$t('no_results')" icon="search" center>
+				{{ $t('no_results_copy') }}
 
 				<template #append>
-					<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
+					<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
 				</template>
 			</v-info>
 
-			<v-info v-else icon="notifications" :title="t('no_notifications')" center>
-				{{ t('no_notifications_copy') }}
+			<v-info v-else icon="notifications" :title="$t('no_notifications')" center>
+				{{ $t('no_notifications_copy') }}
 			</v-info>
 		</template>
 
@@ -306,7 +306,7 @@ function clearFilters() {
 				<v-checkbox
 					class="select-all"
 					:class="{ dense: totalPages > 1 }"
-					:label="!allItemsSelected ? t('select_all') : t('deselect_all')"
+					:label="!allItemsSelected ? $t('select_all') : $t('deselect_all')"
 					:model-value="allItemsSelected"
 					:indeterminate="someItemsSelected"
 					@update:model-value="selectAll"
@@ -340,7 +340,7 @@ function clearFilters() {
 							</use-datetime>
 							<v-icon
 								v-if="notification.to"
-								v-tooltip="t('goto_collection_content')"
+								v-tooltip="$t('goto_collection_content')"
 								clickable
 								name="open_in_new"
 								@click="onLinkClick(notification.to)"
@@ -425,14 +425,7 @@ function clearFilters() {
 		.message {
 			inline-size: 100%;
 			margin-block-start: 8px;
-			-webkit-user-select: text;
-			user-select: text;
 			cursor: auto;
-
-			:deep(*) {
-				-webkit-user-select: text;
-				user-select: text;
-			}
 
 			:deep() {
 				@include mixins.markdown;

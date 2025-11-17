@@ -12,12 +12,39 @@ import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getRootPath } from '@/utils/get-root-path';
 import { useAppStore } from '@directus/stores';
+import { useLocalStorage } from '@/composables/use-local-storage';
 import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter, RouteRecordRaw } from 'vue-router';
+import Setup from '@/routes/setup/setup.vue';
 
 export const defaultRoutes: RouteRecordRaw[] = [
 	{
 		path: '/',
-		redirect: '/login',
+		redirect: () => {
+			const serverStore = useServerStore();
+
+			if (serverStore.info.setupCompleted) {
+				return '/login';
+			} else {
+				return '/setup';
+			}
+		},
+	},
+	{
+		name: 'setup',
+		path: '/setup',
+		component: Setup,
+		beforeEnter: async (_from, _to, next) => {
+			const serverStore = useServerStore();
+
+			if (serverStore.info.setupCompleted) {
+				return next('/login');
+			}
+
+			return next();
+		},
+		meta: {
+			public: true,
+		},
 	},
 	{
 		name: 'login',
@@ -97,6 +124,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 	const appStore = useAppStore();
 	const serverStore = useServerStore();
 	const userStore = useUserStore();
+	const { data: requireTfaSetup } = useLocalStorage<string>('require_tfa_setup');
 
 	// First load
 	if (firstLoad) {
@@ -116,6 +144,11 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 		} catch (error: any) {
 			appStore.error = error;
 		}
+	}
+
+	if (!serverStore.info.setupCompleted) {
+		if (to.fullPath === '/setup') return;
+		return '/setup';
 	}
 
 	if (to.meta?.public !== true) {
@@ -146,7 +179,17 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 
 		if (userStore.currentUser && !('share' in userStore.currentUser)) {
 			if (to.path !== '/tfa-setup') {
+				// Check for role-based enforcement
 				if (userStore.currentUser.enforce_tfa && userStore.currentUser.tfa_secret === null) {
+					if (userStore.currentUser.last_page === to.fullPath) {
+						return '/tfa-setup';
+					} else {
+						return '/tfa-setup?redirect=' + encodeURIComponent(to.fullPath);
+					}
+				}
+
+				// Check for user-initiated TFA setup request in localStorage
+				if (requireTfaSetup.value === userStore.currentUser.id && userStore.currentUser.tfa_secret === null) {
 					if (userStore.currentUser.last_page === to.fullPath) {
 						return '/tfa-setup';
 					} else {

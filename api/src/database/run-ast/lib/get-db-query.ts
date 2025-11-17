@@ -4,18 +4,19 @@ import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import type { Context } from '../../../permissions/types.js';
 import type { FieldNode, FunctionFieldNode, O2MNode } from '../../../types/ast.js';
-import { applySort, type ColumnSortRecord } from './apply-query/sort.js';
 import { getCollectionFromAlias } from '../../../utils/get-collection-from-alias.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
-import { getColumn } from '../utils/get-column.js';
 import { getHelpers } from '../../helpers/index.js';
 import { applyCaseWhen } from '../utils/apply-case-when.js';
+import { generateQueryAlias } from '../utils/generate-alias.js';
 import { getColumnPreprocessor } from '../utils/get-column-pre-processor.js';
+import { getColumn } from '../utils/get-column.js';
 import { getNodeAlias } from '../utils/get-field-alias.js';
 import { getInnerQueryColumnPreProcessor } from '../utils/get-inner-query-column-pre-processor.js';
 import { withPreprocessBindings } from '../utils/with-preprocess-bindings.js';
-import applyQuery, { generateAlias } from './apply-query/index.js';
+import applyQuery from './apply-query/index.js';
 import { applyLimit } from './apply-query/pagination.js';
+import { applySort, type ColumnSortRecord } from './apply-query/sort.js';
 
 export type DBQueryOptions = {
 	table: string;
@@ -148,12 +149,16 @@ export function getDBQuery(
 			let orderByString = '';
 			const orderByFields: Knex.Raw[] = [];
 
-			sortRecords.map((sortRecord) => {
+			sortRecords.map((sortRecord, index) => {
 				if (orderByString.length !== 0) {
 					orderByString += ', ';
 				}
 
-				const sortAlias = `sort_${generateAlias()}`;
+				const sortAlias = generateQueryAlias(
+					table,
+					queryCopy,
+					`sort_${index}_${sortRecord.column}_${sortRecord.order}`,
+				);
 
 				let orderByColumn: Knex.Raw;
 
@@ -211,7 +216,7 @@ export function getDBQuery(
 
 	if (!needsInnerQuery) return dbQuery;
 
-	const innerCaseWhenAliasPrefix = generateAlias();
+	const innerCaseWhenAliasPrefix = generateQueryAlias(table, queryCopy, 'inner_case_when');
 
 	if (hasCaseWhen) {
 		/* If there are cases, we need to employ a trick in order to evaluate the case/when structure in the inner query,

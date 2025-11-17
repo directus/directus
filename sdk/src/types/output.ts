@@ -27,7 +27,7 @@ export type ApplyQueryFields<
 						RemoveRelationships<Schema, CollectionItem>,
 						FlatFields,
 						FF extends Record<string, string> ? FF : Record<string, string>
-				  >
+					>
 				: never,
 			RelationalFields extends never
 				? never
@@ -41,10 +41,10 @@ export type ApplyQueryFields<
 												? ApplyNestedQueryFields<Schema, RelatedCollection, RelationalFields[Field]>[] | null // many-to-many or one-to-many
 												: ApplyManyToAnyFields<Schema, RelatedCollection, RelationalFields[Field]>[] // many-to-any'
 											: ApplyNestedQueryFields<Schema, RelatedCollection, RelationalFields[Field]> // many-to-one
-								  >
+									>
 								: never
 							: never;
-				  }
+					}
 		>
 	>
 >;
@@ -63,7 +63,7 @@ export type ApplyManyToAnyFields<
 	? PickRelationalFields<FieldsList> extends never
 		? ApplyQueryFields<Schema, Junction, Readonly<UnpackList<FieldsList>>> // no relational fields
 		: 'item' extends keyof PickRelationalFields<FieldsList> // do m2a magic
-		  ? PickRelationalFields<FieldsList>['item'] extends infer ItemFields
+			? PickRelationalFields<FieldsList>['item'] extends infer ItemFields
 				? Omit<ApplyQueryFields<Schema, Omit<Junction, 'item'>, Readonly<UnpackList<FieldsList>>>, 'item'> &
 						('collection' extends UnpackList<FieldsList>
 							? {
@@ -74,16 +74,16 @@ export type ApplyManyToAnyFields<
 											? ApplyNestedQueryFields<Schema, Schema[Scope], ItemFields[Scope]>
 											: never;
 									};
-							  }[keyof ItemFields]
+								}[keyof ItemFields]
 							: {
 									item: {
 										[Scope in keyof ItemFields]: Scope extends keyof Schema
 											? ApplyNestedQueryFields<Schema, Schema[Scope], ItemFields[Scope]>
 											: never;
 									}[keyof ItemFields];
-							  })
+								})
 				: never
-		  : ApplyQueryFields<Schema, Junction, Readonly<UnpackList<FieldsList>>> // no items query
+			: ApplyQueryFields<Schema, Junction, Readonly<UnpackList<FieldsList>>> // no items query
 	: never;
 
 /**
@@ -109,12 +109,12 @@ export type MapFlatFields<
 	[F in Fields as F extends keyof FunctionMap ? FunctionMap[F] : F]: F extends keyof FunctionMap
 		? FunctionOutputType
 		: Extract<Item[F], keyof FieldOutputMap> extends infer A
-		  ? A[] extends never[]
+			? A[] extends never[]
 				? Item[F]
 				: A extends keyof FieldOutputMap
-				  ? FieldOutputMap[A] | Exclude<Item[F], A>
-				  : Item[F]
-		  : Item[F];
+					? FieldOutputMap[A] | Exclude<Item[F], A>
+					: Item[F]
+			: Item[F];
 };
 
 // Possible JSON types

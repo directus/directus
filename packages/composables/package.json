@@ -1,6 +1,6 @@
 {
 	"name": "@directus/composables",
-	"version": "11.2.1",
+	"version": "11.2.6",
 	"description": "Shared Vue composables for Directus use",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -22,8 +22,8 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsup src/index.ts --format=esm --dts",
-		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"build": "tsdown src/index.ts --dts",
+		"dev": "tsdown src/index.ts --dts --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
@@ -42,12 +42,12 @@
 		"@types/lodash-es": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"@vue/test-utils": "catalog:",
-		"tsup": "catalog:",
+		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",
 		"vue": "catalog:"
 	},
 	"peerDependencies": {
-		"vue": "^3.4"
+		"vue": "catalog:"
 	}
 }

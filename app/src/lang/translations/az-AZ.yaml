@@ -164,14 +164,6 @@ rename_version: Versiyanın adını dəyiş
 compare_version: Versiyaları müqayisə et
 save_version: Versiyanı yadda saxla
 promote_version: Versiyanı promote et
-promote_version_disabled: Dəyişiklik yoxdur
-promote_version_drawer_title: '{version} versiyasını Əsas et'
-promote_version_changes: Dəyişikliklər
-promote_version_preview: Ön baxış
-outdated_notice: >-
-  Bu versiya yaradılandan bəri əsas element yeniləndi. Lütfən, aşağıdakı bütün sahə dəyərlərini nəzərdən keçirin və bu versiyanı əsas elementə təşviq edərkən hansı versiyanın istifadə olunacağını təsdiqləyin.
-promote_notice: >-
-  Lütfən, aşağıdakı bütün sahə dəyərlərini nəzərdən keçirin və bu versiyanı əsas elementə təşviq edərkən hansı versiyanın istifadə olunacağını təsdiqləyin.
 delete_version: Versiyanı sil
 delete_version_copy: >-
   "{version}" versiyasını silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz.
@@ -209,6 +201,7 @@ field_presets: Xana ayarları
 permissions_for_role: '{role} rolunun {action} edə biləcəti obyektlər.'
 fields_for_role: '{role} rolunun {action} edə biləcəti xanalar.'
 search_collection: Axtar...
+confirmation_dialog: Təsdiqetmə sorğusu
 comments: Şərhlər
 no_items: Məlumat yoxdur
 search_items: Axtar...
@@ -216,6 +209,7 @@ items: məlumat
 wysiwyg_options:
   table: Cədvəl
 creating_in: 'Əlavə et: {collection}'
+editing_in: 'Redaktə et: {collection}'
 source_registry: Marketplace
 fields:
   directus_activity:
@@ -228,7 +222,9 @@ fields:
     name: Rol adı
   directus_policies:
     name:
+shares: Paylaşımlar
 revisions: Dəyişikliklər
+no_revisions: Daha öncə dəyişiklik edilməyib
 table: Cədvəl
 interfaces:
   presentation-links:

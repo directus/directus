@@ -44,6 +44,14 @@ describe('setLanguage', () => {
 
 		expect(vi.mocked(setLanguage).mock.calls[0]?.[0]).not.toBeNull();
 	});
+
+	test('should be called with user language', async () => {
+		const userStore = useUserStore();
+
+		await hydrate();
+
+		expect(vi.mocked(setLanguage)).toBeCalledWith(userStore.language);
+	});
 });
 
 describe('basemap', () => {

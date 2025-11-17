@@ -1,5 +1,5 @@
 import type { DirectusOperation } from '../../../schema/operation.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreateOperationOutput<
@@ -18,7 +18,7 @@ export type CreateOperationOutput<
  */
 export const createOperations =
 	<Schema, const TQuery extends Query<Schema, DirectusOperation<Schema>>>(
-		items: Partial<DirectusOperation<Schema>>[],
+		items: NestedPartial<DirectusOperation<Schema>>[],
 		query?: TQuery,
 	): RestCommand<CreateOperationOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createOperations =
  */
 export const createOperation =
 	<Schema, const TQuery extends Query<Schema, DirectusOperation<Schema>>>(
-		item: Partial<DirectusOperation<Schema>>,
+		item: NestedPartial<DirectusOperation<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreateOperationOutput<Schema, TQuery>, Schema> =>
 	() => ({

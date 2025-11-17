@@ -2,7 +2,6 @@
 import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
 import { useCustomSelectionMultiple, type OtherValue } from '@directus/composables';
 import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 type Option = {
 	text: string;
@@ -14,6 +13,7 @@ const props = withDefaults(
 	defineProps<{
 		value: string[] | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		choices: Option[];
 		allowOther?: boolean;
 		width?: string;
@@ -31,8 +31,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const { choices, value } = toRefs(props);
 const showAll = ref(false);
@@ -77,6 +75,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 			:value="item.value"
 			:label="item.text"
 			:disabled="item.disabled || disabled"
+			:non-editable="nonEditable"
 			:icon-on="iconOn"
 			:icon-off="iconOff"
 			:model-value="value || []"
@@ -85,12 +84,12 @@ function onBlurCustomInput(otherVal: OtherValue) {
 		<v-detail
 			v-if="hideChoices && showAll === false"
 			:class="gridClass"
-			:label="t(`interfaces.select-multiple-checkbox.show_more`, { count: hiddenCount })"
+			:label="$t(`interfaces.select-multiple-checkbox.show_more`, { count: hiddenCount })"
 			@update:model-value="showAll = true"
 		></v-detail>
 
 		<v-notice v-if="items.length === 0 && !allowOther" type="info">
-			{{ t('no_options_available') }}
+			{{ $t('no_options_available') }}
 		</v-notice>
 
 		<template v-if="allowOther">
@@ -102,6 +101,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 				:autofocus-custom-input="otherValue.focus"
 				:value="otherValue.value"
 				:disabled="disabled"
+				:non-editable="nonEditable"
 				:icon-on="iconOn"
 				:icon-off="iconOff"
 				:model-value="value || []"
@@ -109,14 +109,20 @@ function onBlurCustomInput(otherVal: OtherValue) {
 				@update:value="setOtherValue(otherValue.key, $event)"
 				@blur:custom-input="onBlurCustomInput(otherValue)"
 			>
-				<template #append>
+				<template v-if="!nonEditable" #append>
 					<v-icon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherValue.key, null)" />
 				</template>
 			</v-checkbox>
 
-			<button v-if="allowOther" type="button" :disabled class="add-new custom" @click="addOtherValue('', true)">
+			<button
+				v-if="allowOther && !nonEditable"
+				type="button"
+				:disabled
+				class="add-new custom"
+				@click="addOtherValue('', true)"
+			>
 				<v-icon name="add" />
-				{{ t('other') }}
+				{{ $t('other') }}
 			</button>
 		</template>
 	</div>
@@ -127,7 +133,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 	--columns: 1;
 
 	display: grid;
-	grid-gap: 12px 32px;
+	gap: 12px 32px;
 	grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
 }
 

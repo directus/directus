@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: About
+first_name: First Name
+last_name: Last Name
 identifier: Identifier
 avatar: Avatar
 application: Application
@@ -103,7 +105,6 @@ rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
-promote_version_preview: Preview
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -1279,6 +1280,8 @@ shares: Shares
 unlimited_usage: Unlimited usage
 no_shares: No shares to show
 new_share: New Share
+mcp_prompts_collection_schema:
+  messages_role_user: User
 expired: Expired
 upcoming: Upcoming
 share: Share

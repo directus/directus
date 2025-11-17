@@ -487,7 +487,7 @@ export class ExtensionManager {
 						? [
 								path.resolve(extension.path, extension.entrypoint.app),
 								path.resolve(extension.path, extension.entrypoint.api),
-						  ]
+							]
 						: path.resolve(extension.path, extension.entrypoint),
 				);
 
@@ -517,7 +517,7 @@ export class ExtensionManager {
 
 		try {
 			/** Opt In for now. Should be @deprecated later to always use rolldown! */
-			const rollDirection = env['EXTENSIONS_ROLLDOWN'] ?? false ? rolldown : rollup;
+			const rollDirection = (env['EXTENSIONS_ROLLDOWN'] ?? false) ? rolldown : rollup;
 
 			const bundle = await rollDirection({
 				input: 'entry',

@@ -33,7 +33,7 @@ const emit = defineEmits<{
 	(e: 'refresh'): void;
 }>();
 
-const { t, n } = useI18n();
+const { n } = useI18n();
 
 const settingsStore = useSettingsStore();
 
@@ -167,28 +167,25 @@ function useImage() {
 				?.getCroppedCanvas({
 					imageSmoothingQuality: 'high',
 				})
-				.toBlob(
-					async (blob) => {
-						if (blob === null) {
-							return reject(`Couldn't process and save edited image`);
-						}
+				.toBlob(async (blob) => {
+					if (blob === null) {
+						return reject(`Couldn't process and save edited image`);
+					}
 
-						const formData = new FormData();
+					const formData = new FormData();
 
-						if (focalPoint) {
-							formData.append('focal_point_x' as keyof File, focalPoint.x?.toString() ?? '');
-							formData.append('focal_point_y' as keyof File, focalPoint.y?.toString() ?? '');
-						}
+					if (focalPoint) {
+						formData.append('focal_point_x' as keyof File, focalPoint.x?.toString() ?? '');
+						formData.append('focal_point_y' as keyof File, focalPoint.y?.toString() ?? '');
+					}
 
-						formData.append('file', blob, imageData.value?.filename_download);
+					formData.append('file', blob, imageData.value?.filename_download);
 
-						api.patch(`/files/${props.id}`, formData).then(
-							() => resolve(),
-							(err) => reject(err),
-						);
-					},
-					imageData.value?.type ?? undefined,
-				);
+					api.patch(`/files/${props.id}`, formData).then(
+						() => resolve(),
+						(err) => reject(err),
+					);
+				}, imageData.value?.type ?? undefined);
 		});
 	}
 
@@ -446,7 +443,7 @@ function setAspectRatio() {
 	<v-drawer
 		v-model="internalActive"
 		class="modal"
-		:title="t('editing_image')"
+		:title="$t('editing_image')"
 		persistent
 		@cancel="internalActive = false"
 		@apply="save"
@@ -456,7 +453,7 @@ function setAspectRatio() {
 		</template>
 
 		<template #subtitle>
-			<span class="warning">{{ t('changes_are_permanent') }}</span>
+			<span class="warning">{{ $t('changes_are_permanent') }}</span>
 		</template>
 
 		<div v-if="loading" class="loader">
@@ -477,21 +474,21 @@ function setAspectRatio() {
 			<div class="toolbar">
 				<div class="drag-mode toolbar-button">
 					<v-icon
-						v-tooltip.top.inverted="t('move_tool')"
+						v-tooltip.top.inverted="$t('move_tool')"
 						name="pan_tool"
 						:class="{ active: localDragMode === 'move' }"
 						clickable
 						@click="dragMode = 'move'"
 					/>
 					<v-icon
-						v-tooltip.top.inverted="t('crop_tool')"
+						v-tooltip.top.inverted="$t('crop_tool')"
 						name="crop"
 						:class="{ active: localDragMode === 'crop' }"
 						clickable
 						@click="dragMode = 'crop'"
 					/>
 					<v-icon
-						v-tooltip.top.inverted="t('focal_point_tool')"
+						v-tooltip.top.inverted="$t('focal_point_tool')"
 						name="location_searching"
 						:class="{ active: localDragMode === 'focal_point' }"
 						clickable
@@ -499,20 +496,20 @@ function setAspectRatio() {
 					/>
 				</div>
 
-				<v-icon v-tooltip.top.inverted="t('rotate')" name="rotate_90_degrees_ccw" clickable @click="rotate" />
+				<v-icon v-tooltip.top.inverted="$t('rotate')" name="rotate_90_degrees_ccw" clickable @click="rotate" />
 
 				<v-icon
-					v-tooltip.top.inverted="t('flip_horizontal')"
+					v-tooltip.top.inverted="$t('flip_horizontal')"
 					name="flip_horizontal"
 					clickable
 					@click="flip('horizontal')"
 				/>
 
-				<v-icon v-tooltip.top.inverted="t('flip_vertical')" name="flip_vertical" clickable @click="flip('vertical')" />
+				<v-icon v-tooltip.top.inverted="$t('flip_vertical')" name="flip_vertical" clickable @click="flip('vertical')" />
 
 				<v-menu placement="top" show-arrow>
 					<template #activator="{ toggle }">
-						<v-icon v-tooltip.top.inverted="t('aspect_ratio')" :name="aspectRatioIcon" clickable @click="toggle" />
+						<v-icon v-tooltip.top.inverted="$t('aspect_ratio')" :name="aspectRatioIcon" clickable @click="toggle" />
 					</template>
 
 					<v-list>
@@ -547,11 +544,11 @@ function setAspectRatio() {
 						</v-list-item>
 						<v-list-item clickable :active="aspectRatio === 1 / 1" @click="aspectRatio = 1 / 1">
 							<v-list-item-icon><v-icon name="crop_square" /></v-list-item-icon>
-							<v-list-item-content>{{ t('square') }}</v-list-item-content>
+							<v-list-item-content>{{ $t('square') }}</v-list-item-content>
 						</v-list-item>
 						<v-list-item clickable :active="Number.isNaN(aspectRatio)" @click="aspectRatio = NaN">
 							<v-list-item-icon><v-icon name="crop_free" /></v-list-item-icon>
-							<v-list-item-content>{{ t('free') }}</v-list-item-content>
+							<v-list-item-content>{{ $t('free') }}</v-list-item-content>
 						</v-list-item>
 						<v-list-item
 							v-if="imageData && imageData.width && imageData.height"
@@ -560,27 +557,27 @@ function setAspectRatio() {
 							@click="setAspectRatio"
 						>
 							<v-list-item-icon><v-icon name="crop_original" /></v-list-item-icon>
-							<v-list-item-content>{{ t('original') }}</v-list-item-content>
+							<v-list-item-content>{{ $t('original') }}</v-list-item-content>
 						</v-list-item>
 					</v-list>
 				</v-menu>
 
 				<div class="spacer" />
 
-				<v-icon v-tooltip.top.inverted="t('reset')" name="restart_alt" clickable @click="reset" />
+				<v-icon v-tooltip.top.inverted="$t('reset')" name="restart_alt" clickable @click="reset" />
 
 				<div v-if="imageData" class="dimensions">
 					{{ dimensionsString }}
 				</div>
 
 				<button v-show="cropping" class="toolbar-button cancel" type="button" @click="cropping = false">
-					{{ localDragMode === 'focal_point' ? t('cancel_selection') : t('cancel_crop') }}
+					{{ localDragMode === 'focal_point' ? $t('cancel_selection') : $t('cancel_crop') }}
 				</button>
 			</div>
 		</div>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="t('save')" :loading="saving" icon rounded :disabled="!hasEdits" @click="save">
+			<v-button v-tooltip.bottom="$t('save')" :loading="saving" icon rounded :disabled="!hasEdits" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-cloudinary",
-	"version": "12.0.7",
+	"version": "12.0.11",
 	"description": "Cloudinary file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -21,8 +21,8 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsup src/index.ts --format=esm --dts",
-		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"build": "tsdown src/index.ts --dts",
+		"dev": "tsdown src/index.ts --dts --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
@@ -37,7 +37,7 @@
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"tsup": "catalog:",
+		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	}

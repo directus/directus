@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Sobre
+first_name: Primeiro Nome
+last_name: Sobrenome
 identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
@@ -46,6 +48,7 @@ location: Local
 collection_names_are_case_sensitive: Os nomes das coleções diferenciam maiúsculas de minúsculas
 condition_rules: Regras da condição
 input: Entrada
+invalid_input: Entrada invalida
 maps: Mapas
 switch_user: Alternar Usuário
 item_creation: Criação do Item
@@ -112,6 +115,7 @@ hook: Gancho
 fill_width: Preencher Largura
 field_name_translations: Traduções do Nome do Campo
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
+sso_tfa_setup_notice: Você será desligado da sua conta e precisará entrar novamente. Qualquer mudança não salva será descartada.
 add_field: Adicionar Campo
 role_name: Nome do Cargo
 policy_name: Nome da política 
@@ -168,19 +172,9 @@ rename_version: Renomear Versão
 compare_version: Comparar Versão
 save_version: Salvar Versão
 promote_version: Promover Versão
-promote_version_disabled: Sem alterações
-promote_version_drawer_title: Promover {version} para a Main
-promote_version_changes: Mudanças
-promote_version_preview: Pré-visualizar
-outdated_notice: >-
-  O item principal foi atualizado desde que esta versão foi criada. Por favor, reveja todos os valores dos campos abaixo e confirme qual versão deve ser usada ao promover esta versão no item principal.
-promote_notice: >-
-  Por favor, reveja todos os valores dos campos abaixo e confirme qual versão deve ser usada ao promover esta versão no item principal.
 delete_version: Deletar Versão
 delete_version_copy: >-
   Tem certeza que deseja excluir a versão "{version}"? Esta ação não pode ser desfeita.
-delete_on_promote_copy: >-
-  Você quer apagar ou manter a versão "{version}" após a promoção?
 reset_bookmark: Redefinir Favoritos
 update_bookmark: Atualizar Favorito
 delete_bookmark: Deletar Favorito
@@ -320,6 +314,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Redefinir Preferências da Página
 hidden_field: Campo Oculto
 hidden_on_detail: Oculto em Detalhe
+clear_hidden_field: Limpar Valor(es)
 readonly_field_label: Desabilitar Campo no Aplicativo
 required_readonly_field_warning: Ao habilitar "somente leitura" e "obrigatório" em um campo impede que o “item” seja salvo se o valor estiver vazio.
 key: Chave
@@ -458,7 +453,6 @@ revision_delta_created: Criado
 revision_delta_created_externally: Criado externamente
 revision_delta_updated: '1 campo atualizado | {count} campos atualizados'
 revision_delta_deleted: Excluído
-revision_delta_version_saved: 'Salvar Versão (Atualizado 1 Campo) | Salvar Versão (Atualizado em {count} Campos)'
 revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo foi actualizado, mas o seu valor está a ser ocultado por razões de segurança.
 revision_delta_other: Revisão
@@ -1188,7 +1182,6 @@ page_help_settings_datamodel_fields: >-
   **Modelo de Dados: Coleção** — Um formulário para gerenciar esta coleção e seus campos.
 page_help_settings_system_logs: '** Sistema de Registros** — Acesse um fluxo ao vivo dos registros do sistema.'
 page_help_settings_policies_collection: '**Pesquisar Políticas** — Lista todas as políticas no projeto.'
-page_help_settings_policies_item: "\"Detalhes da política, Gerenciar permissões de uma política e outras configurações\""
 page_help_settings_roles_collection: 'Navegar por funções, listar todas as funções de usuário no projeto.'
 page_help_settings_roles_item: "**Detalhes do cargo** — Gerencie as permissões de um cargo e outras configurações."
 page_help_settings_presets_collection: >-
@@ -1591,6 +1584,8 @@ unlimited_usage: Uso Ilimitado
 uses_left: Nenhum uso restante | Um uso restante |  {n} usos restantes
 no_shares: Nenhum compartilhamento para mostrar
 new_share: Novo Compartilhamento
+mcp_prompts_collection_schema:
+  messages_role_user: Usuário
 expired: Expirado
 upcoming: Próximos
 share: Compartilhar
@@ -2533,12 +2528,6 @@ search_flow: Procurar Fluxo...
 percent: Porcentagem
 show_password: Mostrar senha
 hide_password: Ocultar Senha
-bsl_banner:
-  welcome_to_directus: Boas-vindas ao Directus!
-  organization_threshold: Entidades acima dessa limiar necessitam de uma licença paga.
-  license_agreement: Ao clicar em "Aceito", você concorda com {directusBsl} e {privacyPolicy}.
-  directus_bsl: Directus BSL 1.1
-  privacy_policy: Políticas de Privacidade
-  accept_terms: Aceitar
-  get_license: Obtenha a sua licença
 accepted: Aceitado
+text_direction_auto: Automático (Adequar o Idioma)
+text_direction_ltr: Da Esquerda para a Direita (EPD)
