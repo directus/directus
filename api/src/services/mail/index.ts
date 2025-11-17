@@ -72,6 +72,7 @@ export class MailService {
 
 		let { html } = data;
 
+		// option for providing tempalate data was added to prevent transaction race conditions with preceding promises
 		const defaultTemplateData = options?.defaultTemplateData ?? (await this.getDefaultTemplateData());
 
 		if (isObject(emailOptions.from) && (!emailOptions.from.name || !emailOptions.from.address)) {
