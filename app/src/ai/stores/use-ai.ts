@@ -37,6 +37,16 @@ export const useAiStore = defineStore('ai-store', () => {
 		defaultModel.value ? `${defaultModel.value.provider}:${defaultModel.value.model}` : null,
 	);
 
+	// Ensure selectedModelId is set to the default model when models become available
+	watch(
+		() => defaultModel.value,
+		(newDefaultModel) => {
+			if (selectedModelId.value === null && newDefaultModel) {
+				selectedModelId.value = `${newDefaultModel.provider}:${newDefaultModel.model}`;
+			}
+		},
+		{ immediate: true }
+	);
 	const selectedModel = computed(() => {
 		if (!selectedModelId.value) return null;
 
