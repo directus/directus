@@ -5,8 +5,9 @@ import { useUserStore } from '@/stores/user';
 import { useAppStore } from '@directus/stores';
 import { User } from '@directus/types';
 import { useHead } from '@unhead/vue';
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { DEFAULT_AUTH_DRIVER } from '@/constants';
 
 const { t } = useI18n();
 const appStore = useAppStore();
@@ -20,8 +21,19 @@ onMounted(() => {
 	}
 });
 
-const { generateTFA, enableTFA, loading, password, tfaEnabled, tfaGenerated, secret, otp, error, canvasID } =
-	useTFASetup(false);
+const {
+	generateTFA,
+	enableTFA,
+	cancelTFASetup,
+	loading,
+	password,
+	tfaEnabled,
+	tfaGenerated,
+	secret,
+	otp,
+	error,
+	canvasID,
+} = useTFASetup(false);
 
 watch(
 	() => tfaGenerated.value,
@@ -33,14 +45,66 @@ watch(
 	},
 );
 
-async function enable() {
-	await enableTFA();
+// Check if the current user is an OAuth user
+const isOAuthUser = computed(() => {
+	const user = userStore.currentUser;
+	return user && !('share' in user) && user.provider !== DEFAULT_AUTH_DRIVER;
+});
 
-	if (error.value === null) {
-		const redirectQuery = router.currentRoute.value.query.redirect as string;
-		router.push(redirectQuery || (userStore.currentUser as User)?.last_page || '/login');
+// Check if the user has role that requires TFA
+const roleRequiresTFA = computed(() => {
+	const user = userStore.currentUser;
+	if (!user || 'share' in user) return false;
+	return !!(user as any).enforce_tfa;
+});
+
+// Check if user can skip password (OAuth users can always skip password)
+const canSkipPassword = computed(() => {
+	return isOAuthUser.value;
+});
+
+// Check if cancel button should be shown (not shown if role requires TFA)
+const showCancelButton = computed(() => {
+	return !roleRequiresTFA.value;
+});
+
+async function generate() {
+	await generateTFA(!canSkipPassword.value);
+}
+
+async function enable() {
+	const success = await enableTFA();
+
+	if (success) {
+		navigateAfterTFA();
 	} else {
 		(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
+	}
+}
+
+async function cancel() {
+	// If user has tfa_setup_status pending, call the API to cancel setup before redirecting
+	try {
+		await cancelTFASetup();
+	} catch (error) {
+		// If cancel fails, still redirect to avoid getting stuck
+		// eslint-disable-next-line no-console
+		console.error('Failed to cancel 2FA setup:', error);
+	}
+
+	navigateAfterTFA();
+}
+
+function navigateAfterTFA() {
+	const redirectQuery = router.currentRoute.value.query.redirect as string;
+	const fallback = (userStore.currentUser as User)?.last_page || '/login';
+
+	// If redirect is an absolute URL, navigate via window.location to avoid double "/admin" prefix
+	// This addresses an issue where the redirect URL is doubled when an SSO user is sent through the tfa setup flow
+	if (typeof redirectQuery === 'string' && /^(https?:)?\/\//.test(redirectQuery)) {
+		window.location.href = redirectQuery;
+	} else {
+		router.push(redirectQuery || fallback);
 	}
 }
 
@@ -52,19 +116,21 @@ useHead({
 <template>
 	<public-view>
 		<div class="header">
-			<h1 class="type-title">{{ t('tfa_setup') }}</h1>
+			<h1 class="type-title">{{ $t('tfa_setup') }}</h1>
 		</div>
 
-		<form v-if="tfaEnabled === false && tfaGenerated === false && loading === false" @submit.prevent="generateTFA">
+		<form v-if="tfaEnabled === false && tfaGenerated === false && loading === false" @submit.prevent="generate">
 			<div class="title">
-				{{ t('enter_password_to_enable_tfa') }}
+				{{ canSkipPassword ? $t('tfa_setup_description') : $t('enter_password_to_enable_tfa') }}
 			</div>
-			<div>
-				<v-input v-model="password" :nullable="false" type="password" :placeholder="t('password')" autofocus />
-
-				<v-error v-if="error" :error="error" />
+			<div v-if="!canSkipPassword">
+				<v-input v-model="password" :nullable="false" type="password" :placeholder="$t('password')" autofocus />
 			</div>
-			<v-button type="submit" :loading="loading">{{ t('next') }}</v-button>
+			<v-error v-if="error" :error="error" />
+			<div class="actions">
+				<button v-if="showCancelButton" type="button" class="cancel-link" @click="cancel">{{ $t('cancel') }}</button>
+				<v-button type="submit" :loading="loading" large>{{ $t('next') }}</v-button>
+			</div>
 		</form>
 
 		<v-progress-circular v-else-if="loading === true" class="loader" indeterminate />
@@ -72,21 +138,24 @@ useHead({
 		<div v-show="tfaEnabled === false && tfaGenerated === true && loading === false">
 			<form @submit.prevent="enable">
 				<div class="title">
-					{{ t('tfa_scan_code') }}
+					{{ $t('tfa_scan_code') }}
 				</div>
 				<div>
 					<canvas :id="canvasID" class="qr" />
-					<output class="secret selectable">{{ secret }}</output>
-					<v-input ref="inputOTP" v-model="otp" type="text" :placeholder="t('otp')" :nullable="false" />
+					<output class="secret">{{ secret }}</output>
+					<v-input ref="inputOTP" v-model="otp" type="text" :placeholder="$t('otp')" :nullable="false" />
 					<v-error v-if="error" :error="error" />
 				</div>
-				<v-button type="submit" :disabled="otp.length !== 6" @click="enable">{{ t('done') }}</v-button>
+				<div class="actions">
+					<button v-if="showCancelButton" type="button" class="cancel-link" @click="cancel">{{ $t('cancel') }}</button>
+					<v-button type="submit" :disabled="otp.length !== 6" large @click="enable">{{ $t('done') }}</v-button>
+				</div>
 			</form>
 		</div>
 
 		<template #notice>
 			<v-icon name="lock" left />
-			{{ t('not_authenticated') }}
+			{{ $t('not_authenticated') }}
 		</template>
 	</public-view>
 </template>
@@ -119,5 +188,20 @@ h1 {
 	font-family: var(--theme--fonts--monospace--font-family);
 	letter-spacing: 2.6px;
 	text-align: center;
+}
+
+.actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.cancel-link {
+	color: var(--theme--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+}
+
+.cancel-link:hover {
+	color: var(--theme--foreground);
 }
 </style>

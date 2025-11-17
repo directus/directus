@@ -1,5 +1,5 @@
 import type { DirectusUser } from '../../../schema/user.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreateUserOutput<
@@ -18,7 +18,7 @@ export type CreateUserOutput<
  */
 export const createUsers =
 	<Schema, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
-		items: Partial<DirectusUser<Schema>>[],
+		items: NestedPartial<DirectusUser<Schema>>[],
 		query?: TQuery,
 	): RestCommand<CreateUserOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createUsers =
  */
 export const createUser =
 	<Schema, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
-		item: Partial<DirectusUser<Schema>>,
+		item: NestedPartial<DirectusUser<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreateUserOutput<Schema, TQuery>, Schema> =>
 	() => ({

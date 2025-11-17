@@ -3,6 +3,7 @@
 	grid-template-columns: [start] minmax(0, 1fr) [half] minmax(0, 1fr) [full];
 	gap: var(--theme--form--row-gap) var(--theme--form--column-gap);
 
+	/* stylelint-disable-next-line */
 	&.with-fill {
 		grid-template-columns:
 			[start] minmax(0, var(--form-column-max-width)) [half] minmax(0, var(--form-column-max-width))

@@ -17,7 +17,7 @@
 	box-shadow: var(--theme--form--field--input--box-shadow);
 }
 
-.disabled .CodeMirror {
+.disabled:not(.non-editable) .CodeMirror {
 	color: var(--theme--foreground-subdued);
 	background-color: var(--theme--form--field--input--background-subdued);
 }
@@ -464,7 +464,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	font-family: inherit;
 	line-height: inherit;
 	white-space: pre;
-	word-wrap: normal;
+	overflow-wrap: normal;
 	background: transparent;
 	border-width: 0;
 
@@ -477,7 +477,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-wrap pre.CodeMirror-line,
 .CodeMirror-wrap pre.CodeMirror-line-like {
 	white-space: pre-wrap;
-	word-wrap: break-word;
+	overflow-wrap: break-word;
 	word-break: normal;
 }
 

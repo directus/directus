@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { useFieldsStore } from '@/stores/fields';
 import { Revision } from '@/types/revisions';
+import { getRevisionFields } from '@/utils/get-revision-fields';
 import { userName } from '@/utils/user-name';
 import { format } from 'date-fns';
 import { computed } from 'vue';
@@ -16,18 +18,25 @@ defineEmits<{
 
 const { t } = useI18n();
 
-const revisionCount = computed(() => (props.revision.delta ? Object.keys(props.revision.delta).length : 0));
+const fieldsStore = useFieldsStore();
+const fields = fieldsStore.getFieldsForCollection(props.revision.collection);
+
+const revisionCount = computed(() => {
+	const revisionDelta = Object.keys(props.revision.delta ?? {});
+	const revisionFields = getRevisionFields(revisionDelta, fields);
+	return revisionFields.length;
+});
 
 const headerMessage = computed(() => {
 	switch (props.revision.activity.action.toLowerCase()) {
 		case 'create':
-			return t('revision_delta_created');
+			return t('revision_delta_updated', revisionCount.value);
 		case 'update':
 			return t('revision_delta_updated', revisionCount.value);
 		case 'delete':
 			return t('revision_delta_deleted');
 		case 'version_save':
-			return t('revision_delta_version_saved', revisionCount.value);
+			return t('revision_delta_updated', revisionCount.value);
 		case 'revert':
 			return t('revision_delta_reverted');
 		default:
@@ -65,7 +74,7 @@ const user = computed(() => {
 				<span>{{ user }}</span>
 			</user-popover>
 
-			<span v-else>{{ t('private_user') }}</span>
+			<span v-else>{{ $t('private_user') }}</span>
 		</div>
 	</button>
 </template>

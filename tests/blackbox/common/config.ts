@@ -91,6 +91,7 @@ const directusConfig = {
 	QUERY_LIMIT_DEFAULT: '90', // Must be less than MAX_BATCH_MUTATION by at least 3
 	ACCESS_TOKEN_TTL: '25d', // should be larger than 24.86 days to test Expires value larger than 32-bit signed integer
 	WEBSOCKETS_ENABLED: 'true',
+	TUS_ENABLED: 'true',
 	...directusAuthConfig,
 	...directusStorageConfig,
 };

@@ -30,6 +30,7 @@ const props = withDefaults(
 		field: string;
 		width: string;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		version: ContentVersion | null;
 		layout?: LAYOUTS;
 		tableSpacing?: 'compact' | 'cozy' | 'comfortable';
@@ -51,6 +52,7 @@ const props = withDefaults(
 		fields: () => ['id'],
 		template: null,
 		disabled: false,
+		nonEditable: false,
 		enableCreate: true,
 		enableSelect: true,
 		filter: null,
@@ -407,14 +409,29 @@ function getLinkForItem(item: DisplayItem) {
 
 	return null;
 }
+
+const hasSatisfiedUniqueConstraint = computed(() => {
+	if (!relationInfo.value) return false;
+
+	const parentCollection = relationInfo.value.relation.related_collection;
+	const relatedCollection = relationInfo.value.relatedCollection.collection;
+
+	// Find all M2O fields in the related collection that point to the parent collection and are unique
+	const m2oFields = fieldsStore.getFieldsForCollection(relatedCollection).filter((field) => {
+		const schema = field.schema;
+		return schema?.foreign_key_table === parentCollection && schema?.is_unique === true;
+	});
+
+	return m2oFields.length > 0 && totalItemCount.value > 0;
+});
 </script>
 
 <template>
 	<v-notice v-if="!relationInfo" type="warning">
-		{{ t('relationship_not_setup') }}
+		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
-		{{ t('no_singleton_relations') }}
+		{{ $t('no_singleton_relations') }}
 	</v-notice>
 	<div v-else class="one-to-many">
 		<div :class="{ bordered: layout === LAYOUTS.TABLE }">
@@ -425,45 +442,47 @@ function getLinkForItem(item: DisplayItem) {
 					{{ showingCount }}
 				</div>
 
-				<div v-if="enableSearchFilter && (totalItemCount > 10 || search || searchFilter)" class="search">
-					<search-input
-						v-model="search"
-						v-model:filter="searchFilter"
-						:collection="relationInfo.relatedCollection.collection"
-					/>
-				</div>
+				<template v-if="!nonEditable">
+					<div v-if="enableSearchFilter && (totalItemCount > 10 || search || searchFilter)" class="search">
+						<search-input
+							v-model="search"
+							v-model:filter="searchFilter"
+							:collection="relationInfo.relatedCollection.collection"
+						/>
+					</div>
 
-				<v-button
-					v-if="!disabled && updateAllowed && selectedKeys.length"
-					v-tooltip.bottom="t('edit')"
-					rounded
-					icon
-					secondary
-					@click="batchEditActive = true"
-				>
-					<v-icon name="edit" outline />
-				</v-button>
+					<v-button
+						v-if="!disabled && updateAllowed && selectedKeys.length"
+						v-tooltip.bottom="$t('edit')"
+						rounded
+						icon
+						secondary
+						@click="batchEditActive = true"
+					>
+						<v-icon name="edit" outline />
+					</v-button>
 
-				<v-button
-					v-if="!disabled && enableSelect && updateAllowed"
-					v-tooltip.bottom="t('add_existing')"
-					rounded
-					icon
-					:secondary="enableCreate"
-					@click="selectModalActive = true"
-				>
-					<v-icon name="playlist_add" />
-				</v-button>
+					<v-button
+						v-if="!disabled && enableSelect && updateAllowed"
+						v-tooltip.bottom="$t('add_existing')"
+						rounded
+						icon
+						:secondary="enableCreate"
+						@click="selectModalActive = true"
+					>
+						<v-icon name="playlist_add" />
+					</v-button>
 
-				<v-button
-					v-if="!disabled && enableCreate && createAllowed"
-					v-tooltip.bottom="t('create_item')"
-					rounded
-					icon
-					@click="createItem"
-				>
-					<v-icon name="add" />
-				</v-button>
+					<v-button
+						v-if="!disabled && enableCreate && createAllowed"
+						v-tooltip.bottom="$t('create_item')"
+						rounded
+						icon
+						@click="createItem"
+					>
+						<v-icon name="add" />
+					</v-button>
+				</template>
 			</div>
 
 			<v-table
@@ -492,11 +511,11 @@ function getLinkForItem(item: DisplayItem) {
 					/>
 				</template>
 
-				<template #item-append="{ item }">
+				<template v-if="!nonEditable" #item-append="{ item }">
 					<div class="item-actions">
 						<router-link
 							v-if="enableLink"
-							v-tooltip="t('navigate_to_item')"
+							v-tooltip="$t('navigate_to_item')"
 							:to="getLinkForItem(item)!"
 							class="item-link"
 							:class="{ disabled: item.$type === 'created' }"
@@ -530,7 +549,7 @@ function getLinkForItem(item: DisplayItem) {
 
 			<template v-else>
 				<v-notice v-if="displayItems.length === 0">
-					{{ t('no_items') }}
+					{{ $t('no_items') }}
 				</v-notice>
 
 				<draggable
@@ -546,7 +565,6 @@ function getLinkForItem(item: DisplayItem) {
 						<v-list-item
 							block
 							clickable
-							:disabled="disabled"
 							:dense="totalItemCount > 4"
 							:class="{ deleted: element.$type === 'deleted' }"
 							@click="editItem(element)"
@@ -561,10 +579,10 @@ function getLinkForItem(item: DisplayItem) {
 
 							<div class="spacer" />
 
-							<div class="item-actions">
+							<div v-if="!nonEditable" class="item-actions">
 								<router-link
 									v-if="enableLink && element.$type !== 'created'"
-									v-tooltip="t('navigate_to_item')"
+									v-tooltip="$t('navigate_to_item')"
 									:to="getLinkForItem(element)!"
 									class="item-link"
 									@click.stop
@@ -586,39 +604,53 @@ function getLinkForItem(item: DisplayItem) {
 				</draggable>
 			</template>
 
-			<div class="actions">
-				<template v-if="layout === LAYOUTS.TABLE">
-					<template v-if="pageCount > 1">
-						<v-pagination
-							v-model="page"
-							:length="pageCount"
-							:total-visible="width.includes('half') ? 1 : 2"
-							show-first-last
-						/>
+			<template v-if="layout === LAYOUTS.TABLE">
+				<div v-if="pageCount > 1" class="actions">
+					<v-pagination
+						v-model="page"
+						:length="pageCount"
+						:total-visible="width.includes('half') ? 1 : 2"
+						show-first-last
+					/>
 
-						<div class="spacer" />
-
-						<div v-if="loading === false" class="per-page">
-							<span>{{ t('per_page') }}</span>
-							<v-select v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
-						</div>
-					</template>
-				</template>
-				<template v-else>
-					<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="createItem">
-						{{ t('create_new') }}
-					</v-button>
-					<v-button v-if="enableSelect && updateAllowed" :disabled="disabled" @click="selectModalActive = true">
-						{{ t('add_existing') }}
-					</v-button>
 					<div class="spacer" />
+
+					<div v-if="loading === false" class="per-page">
+						<span>{{ $t('per_page') }}</span>
+						<v-select v-model="limit" :items="['10', '20', '30', '50', '100']" inline />
+					</div>
+				</div>
+			</template>
+			<template v-else>
+				<div v-if="!nonEditable || pageCount > 1" class="actions">
+					<template v-if="!nonEditable">
+						<v-button
+							v-if="enableCreate && createAllowed && !hasSatisfiedUniqueConstraint"
+							:disabled="disabled"
+							@click="createItem"
+						>
+							{{ $t('create_new') }}
+						</v-button>
+
+						<v-button
+							v-if="enableSelect && updateAllowed && !hasSatisfiedUniqueConstraint"
+							:disabled="disabled"
+							@click="selectModalActive = true"
+						>
+							{{ $t('add_existing') }}
+						</v-button>
+					</template>
+
+					<div class="spacer" />
+
 					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
-				</template>
-			</div>
+				</div>
+			</template>
 		</div>
 
 		<drawer-item
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:active="currentlyEditing !== null"
 			:collection="relationInfo.relatedCollection.collection"
 			:primary-key="currentlyEditing || '+'"

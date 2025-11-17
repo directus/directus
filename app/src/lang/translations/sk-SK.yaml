@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: O programe
+first_name: Meno
+last_name: Priezvisko
 identifier: Identifikátor
 avatar: Avatar
 application: Aplikácia
@@ -164,19 +166,9 @@ rename_version: Premenovať verziu
 compare_version: Porovnať verzie
 save_version: Uložiť verziu
 promote_version: Povýšiť verziu
-promote_version_disabled: Žiadne zmeny
-promote_version_drawer_title: Povýšiť {version} ako hlavnú
-promote_version_changes: Zmeny
-promote_version_preview: Náhľad
-outdated_notice: >-
-  Od vytvorenia tejto verzie bola hlavná položka upravená. Prosím prezrite všetky nasledujúce polia a potvrďte, ktorá verzia sa má použiť pri povýšení tejto verzie do hlavnej.
-promote_notice: >-
-  Prosím prezrite všetky nasledujúce hodnoty polí a potvrďte ktorá verzia sa má použiť pri povýšení tejto verzie do hlavnej.
 delete_version: Odstrániť verziu
 delete_version_copy: >-
   Naozaj chcete odstrániť verziu "{version}"? Táto akcia sa nedá vrátiť.
-delete_on_promote_copy: >-
-  Prajete si odstrániť alebo ponechať verziu "{version}" po jej povýšení?
 reset_bookmark: Obnoviť záložku
 update_bookmark: Aktualizovať záložku
 delete_bookmark: Odstrániť záložku
@@ -449,7 +441,6 @@ revision_delta_created: Vytvorené
 revision_delta_created_externally: Vytvorené externe
 revision_delta_updated: 'Zmenené 1 pole | Zmenené {count} polia'
 revision_delta_deleted: Odstránené
-revision_delta_version_saved: 'Uložiť verziu (1 upravené pole) | Uložiť verziu ({count} upravených polí)'
 revision_delta_reverted: Vrátené
 revision_delta_update_message: Toto pole je zmenené, ale jeho hodnota je utajená z bezpečnostných dôvodov.
 revision_delta_other: Revízia
@@ -1170,7 +1161,6 @@ page_help_settings_datamodel_fields: >-
   **Data Model: Zbierka** — Formulár na správu tejto zbierky a jej polí.
 page_help_settings_system_logs: '**Systémové logy** — Prístup k streamu systémových logov.'
 page_help_settings_policies_collection: '**Prehliadať politiky** - Zoznam všetkých politík v projekte.'
-page_help_settings_policies_item: "**Detaily politiky** - Spravuje povolenia politiky a iné nastavenia."
 page_help_settings_roles_collection: '**Prehliadať role** - Zoznam všetkých rolí v projekte.'
 page_help_settings_roles_item: "**Podrobnosti role** — Spravuje oprávnenia rolí a iné nastavenia."
 page_help_settings_presets_collection: >-
@@ -1570,6 +1560,8 @@ unlimited_usage: Neobmedzené používanie
 uses_left: Žiadne zostávajúce použitia | Jedno zostávajúce použitie | {n} zostávajúcich použití
 no_shares: Žiadne zdieľania
 new_share: Nové zdieľanie
+mcp_prompts_collection_schema:
+  messages_role_user: Používateľ
 expired: Vypršalo
 upcoming: Nadchádzajúce
 share: Zdielať

@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: O aplikacji
+first_name: Imię
+last_name: Nazwisko
 identifier: Identyfikator
 avatar: Awatar
 application: Aplikacja
@@ -164,19 +166,9 @@ rename_version: Zmień nazwę wersji
 compare_version: Porównaj wersję
 save_version: Zapisz wersję
 promote_version: Promuj wersję
-promote_version_disabled: Brak zmian
-promote_version_drawer_title: Promuj {version} do Głównej
-promote_version_changes: Zmiany
-promote_version_preview: Podgląd
-outdated_notice: >-
-  Główny element został zaktualizowany od czasu utworzenia tej wersji. Przejrzyj wszystkie wartości pól poniżej i potwierdź, która wersja powinna być użyta podczas promowania tej wersji w głównym elemencie.
-promote_notice: >-
-  Przejrzyj wszystkie wartości pól poniżej i potwierdź, która wersja powinna być użyta podczas promowania tej wersji w głównym elemencie.
 delete_version: Usuń wersję
 delete_version_copy: >-
   Czy na pewno chcesz usunąć wersję "{version}"? Tej akcji nie można cofnąć.
-delete_on_promote_copy: >-
-  Czy chcesz usunąć lub zachować wersję "{version}" po promowaniu?
 reset_bookmark: Zresetuj zakładkę
 update_bookmark: Aktualizuj zakładkę
 delete_bookmark: Usuń zakładkę
@@ -451,7 +443,6 @@ revision_delta_created: Utworzony
 revision_delta_created_externally: Utworzono zewnętrznie
 revision_delta_updated: 'Zaktualizowano 1 pole | Zaktualizowano {count} pól'
 revision_delta_deleted: Usunięty
-revision_delta_version_saved: 'Zapisywanie wersji (zaktualizowane 1 pola) | Zapisywanie wersji (zaktualizowane pola {count})'
 revision_delta_reverted: Odwrócony
 revision_delta_update_message: To pole zostało zaktualizowane, ale jego wartość jest ukrywana ze względów bezpieczeństwa.
 revision_delta_other: Rewizja
@@ -1544,6 +1535,8 @@ unlimited_usage: Nieograniczone użycie
 uses_left: Brak pozostałych zastosowań | Pozostało jedno użycie | {n} pozostało do użycia
 no_shares: Brak udostępnień do wyświetlenia
 new_share: Nowe udostępnianie
+mcp_prompts_collection_schema:
+  messages_role_user: Użytkownik
 expired: Wygasły
 upcoming: Nadchodzące
 share: Udostępnij

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/update-check",
-	"version": "13.0.1",
+	"version": "13.0.4",
 	"description": "Check if an update for Directus is available",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -22,7 +22,7 @@
 	],
 	"scripts": {
 		"build": "pnpm run '/^bundle|typecheck$/'",
-		"bundle": "tsup src/index.ts --format=esm --dts",
+		"bundle": "tsdown src/index.ts --dts",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
 		"typecheck": "tsc --noEmit"
@@ -42,7 +42,7 @@
 		"@types/semver": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"strip-ansi": "catalog:",
-		"tsup": "catalog:",
+		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	}

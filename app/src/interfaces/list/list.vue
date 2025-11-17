@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldMeta } from '@directus/types';
 import { isEqual, sortBy } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 
 const props = withDefaults(
@@ -17,6 +15,7 @@ const props = withDefaults(
 		sort?: string;
 		limit?: number;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		headerPlaceholder?: string;
 		collection?: string;
 		placeholder?: string;
@@ -24,17 +23,12 @@ const props = withDefaults(
 	}>(),
 	{
 		fields: () => [],
-		addLabel: () => i18n.global.t('create_new'),
-		headerPlaceholder: () => i18n.global.t('empty_item'),
-		placeholder: () => i18n.global.t('no_items'),
 	},
 );
 
 const emit = defineEmits<{
 	(e: 'input', value: FieldMeta[] | null): void;
 }>();
-
-const { t } = useI18n();
 
 const active = ref<number | null>(null);
 const drawerOpen = computed(() => active.value !== null);
@@ -54,6 +48,8 @@ const showAddNew = computed(() => {
 const activeItem = computed(() => (active.value !== null ? edits.value : null));
 
 const isSaveDisabled = computed(() => {
+	if (props.disabled) return true;
+
 	for (const field of props.fields) {
 		if (
 			field.meta?.required &&
@@ -81,14 +77,13 @@ const defaults = computed(() => {
 	return values;
 });
 
-const fieldsWithNames = computed(
-	() =>
-		props.fields?.map((field) => {
-			return {
-				...field,
-				name: formatTitle(field.name ?? field.field!),
-			};
-		}),
+const fieldsWithNames = computed(() =>
+	props.fields?.map((field) => {
+		return {
+			...field,
+			name: formatTitle(field.name ?? field.field!),
+		};
+	}),
 );
 
 const internalValue = computed({
@@ -210,10 +205,10 @@ function closeDrawer() {
 <template>
 	<div class="repeater">
 		<v-notice v-if="(Array.isArray(internalValue) && internalValue.length === 0) || internalValue == null">
-			{{ placeholder }}
+			{{ placeholder || $t('no_items') }}
 		</v-notice>
 		<v-notice v-else-if="!Array.isArray(internalValue)" type="warning">
-			<p>{{ t('interfaces.list.incompatible_data') }}</p>
+			<p>{{ $t('interfaces.list.incompatible_data') }}</p>
 		</v-notice>
 
 		<draggable
@@ -227,7 +222,7 @@ function closeDrawer() {
 			@update:model-value="$emit('input', $event)"
 		>
 			<template #item="{ element, index }">
-				<v-list-item :dense="internalValue.length > 4" block clickable @click="openItem(index)">
+				<v-list-item :dense="internalValue.length > 4" :non-editable block clickable @click="openItem(index)">
 					<v-icon v-if="!disabled && !sort" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 
 					<render-template
@@ -246,15 +241,15 @@ function closeDrawer() {
 			</template>
 		</draggable>
 
-		<div class="actions">
+		<div v-if="!nonEditable" class="actions">
 			<v-button v-if="showAddNew" :disabled @click="addNew">
-				{{ addLabel }}
+				{{ addLabel || $t('create_new') }}
 			</v-button>
 		</div>
 
 		<v-drawer
 			:model-value="drawerOpen"
-			:title="displayValue || headerPlaceholder"
+			:title="displayValue || headerPlaceholder || $t('empty_item')"
 			persistent
 			@update:model-value="checkDiscard()"
 			@cancel="checkDiscard()"
@@ -267,17 +262,18 @@ function closeDrawer() {
 			</template>
 
 			<template #actions>
-				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="isSaveDisabled" @click="saveItem(active!)">
+				<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="isSaveDisabled" @click="saveItem(active!)">
 					<v-icon name="check" />
 				</v-button>
 			</template>
 
 			<div class="drawer-item-content">
 				<v-form
-					:disabled="disabled"
+					:disabled
+					:non-editable
 					:fields="fieldsWithNames"
 					:model-value="activeItem"
-					:direction="direction"
+					:direction
 					autofocus
 					primary-key="+"
 					@update:model-value="trackEdits($event)"
@@ -287,13 +283,13 @@ function closeDrawer() {
 
 		<v-dialog v-model="confirmDiscard" @esc="confirmDiscard = false" @apply="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave()">
-						{{ t('discard_changes') }}
+						{{ $t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmDiscard = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="confirmDiscard = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

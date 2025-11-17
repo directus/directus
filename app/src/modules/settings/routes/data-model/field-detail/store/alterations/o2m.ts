@@ -132,7 +132,7 @@ export function generateRelatedField(updates: StateUpdates, state: State) {
 	if (!collection) return;
 
 	const currentCollectionPrimaryKeyFieldType = state.collection
-		? fieldsStore.getPrimaryKeyFieldForCollection(state.collection)?.type ?? 'integer'
+		? (fieldsStore.getPrimaryKeyFieldForCollection(state.collection)?.type ?? 'integer')
 		: 'integer';
 
 	const field = updates.relations?.o2m?.field;

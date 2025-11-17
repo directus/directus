@@ -93,6 +93,7 @@ function useComments(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 							'user_created.first_name',
 							'user_created.last_name',
 							'user_created.avatar.id',
+							'user_created.avatar.modified_on',
 						],
 					},
 				})
@@ -235,7 +236,7 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 		<v-progress-linear v-if="loading" indeterminate />
 
 		<div v-else-if="!comments || comments.length === 0" class="empty">
-			<div class="content">{{ t('no_comments') }}</div>
+			<div class="content">{{ $t('no_comments') }}</div>
 		</div>
 
 		<template v-for="group in comments" v-else :key="group.date.toString()">

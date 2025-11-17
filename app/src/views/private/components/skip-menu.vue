@@ -50,7 +50,7 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 	padding: 0;
 	margin: -1px;
 	overflow: hidden;
-	clip: rect(0, 0, 0, 0);
+	clip-path: rect(0, 0, 0, 0);
 	white-space: nowrap;
 	border-width: 0;
 
@@ -59,7 +59,7 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 		block-size: auto;
 		margin: 0;
 		overflow: visible;
-		clip: auto;
+		clip-path: auto;
 		white-space: normal;
 
 		background-color: var(--theme--popover--menu--background);
@@ -79,6 +79,10 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 		&.center {
 			inset-inline-start: 50%;
 			transform: translate(-50%, 0);
+
+			html[dir='rtl'] & {
+				transform: translate(50%, 0);
+			}
 		}
 	}
 }

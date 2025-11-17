@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema-builder",
-	"version": "0.0.3",
+	"version": "0.0.8",
 	"description": "Directus SchemaBuilder for mocking/constructing a database schema based on code.",
 	"keywords": [
 		"sql",
@@ -31,8 +31,8 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsup src/index.ts --format=esm --dts",
-		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"build": "tsdown src/index.ts --dts",
+		"dev": "tsdown src/index.ts --dts --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
 	},
@@ -44,7 +44,7 @@
 		"@directus/tsconfig": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"tsup": "catalog:",
+		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
 	}

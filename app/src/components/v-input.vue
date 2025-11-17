@@ -12,6 +12,8 @@ interface Props {
 	autofocus?: boolean;
 	/** Set the disabled state for the input */
 	disabled?: boolean;
+	/** Set the non-editable state for the input */
+	nonEditable?: boolean;
 	/** If the input should be clickable */
 	clickable?: boolean;
 	/** Prefix the users value with a value */
@@ -61,6 +63,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
 	autofocus: false,
 	disabled: false,
+	nonEditable: false,
 	clickable: false,
 	prefix: undefined,
 	suffix: undefined,
@@ -235,6 +238,15 @@ function emitValue(event: InputEvent) {
 			emit('update:modelValue', parsedNumber);
 		}
 	} else {
+		// decimal input marked as text
+		if (props.float === true) {
+			/**
+			 * Normalize decimal separator from ',' to '.'
+			 * Thousands separators are not supported in the input
+			 */
+			value = value.replace(',', '.');
+		}
+
 		if (props.slug === true) {
 			const endsWithSpace = value.endsWith(' ');
 			value = slugify(value, { separator: props.slugSeparator, preserveTrailingDash: true });
@@ -297,7 +309,7 @@ function useInvalidInput() {
 		<div v-if="$slots['prepend-outer']" class="prepend-outer">
 			<slot name="prepend-outer" :value="modelValue" :disabled="disabled" />
 		</div>
-		<div class="input" :class="{ disabled, active }">
+		<div class="input" :class="{ disabled, active, 'non-editable': nonEditable }">
 			<div v-if="$slots.prepend" class="prepend">
 				<slot name="prepend" :value="modelValue" :disabled="disabled" />
 			</div>
@@ -323,7 +335,7 @@ function useInvalidInput() {
 			</slot>
 			<v-icon v-if="isInvalidInput" v-tooltip="tooltipInvalid" name="warning" class="warning-invalid" />
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
-			<span v-if="type === 'number' && !hideArrows">
+			<span v-if="type === 'number' && !hideArrows && !nonEditable">
 				<v-icon
 					:class="{ disabled: !isStepUpAllowed }"
 					name="keyboard_arrow_up"
@@ -430,7 +442,7 @@ function useInvalidInput() {
 			}
 		}
 
-		&:hover {
+		&:hover:not(.disabled) {
 			--arrow-color: var(--v-input-border-color-hover, var(--theme--form--field--input--border-color-hover));
 
 			color: var(--v-input-color);
@@ -449,7 +461,7 @@ function useInvalidInput() {
 			box-shadow: var(--theme--form--field--input--box-shadow-focus);
 		}
 
-		&.disabled {
+		&.disabled:not(.non-editable) {
 			--arrow-color: var(--v-input-border-color);
 
 			color: var(--theme--foreground-subdued);

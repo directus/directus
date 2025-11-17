@@ -130,7 +130,7 @@ function setUpChart() {
 	const colors = monoThemeGenerator(
 		props.color && props.color.startsWith('var(--')
 			? cssVar(props.color.substring(4, props.color.length - 1))
-			: props.color ?? 'var(--theme--primary)',
+			: (props.color ?? 'var(--theme--primary)'),
 		series.length,
 	);
 
@@ -211,13 +211,13 @@ function setUpChart() {
 						bottom: 5,
 						left: 0,
 						right: 0,
-				  }
+					}
 				: {
 						top: props.showHeader ? -20 : -2,
 						bottom: 0,
 						left: 12,
 						right: 12,
-				  },
+					},
 		},
 		markers: {
 			colors: colors,
@@ -291,7 +291,7 @@ function setUpChart() {
 						: n(value, 'decimal', {
 								minimumFractionDigits: 0,
 								maximumFractionDigits: props.decimals,
-						  } as any);
+							} as any);
 				},
 				style: {
 					fontFamily: 'var(--theme--fonts--sans--font-family)',

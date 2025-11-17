@@ -153,7 +153,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 											? SeedFunctions.generatePrimaryKeys(pkType, {
 													quantity: 1,
 													seed: `${localCollectionSingletonO2M}_update_o2m`,
-											  })[0]
+												})[0]
 											: undefined,
 									name: o2mNameNew,
 								},

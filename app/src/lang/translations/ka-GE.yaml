@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: შესახებ
+first_name: სახელი
+last_name: გვარი
 identifier: იდენტიფიკატორი
 avatar: პროფილის ფოტო
 application: აპლიკაცია
@@ -168,19 +170,9 @@ rename_version: ვერსიის სახელის გადარქ�
 compare_version: ვერსიების შეადარება
 save_version: ვერსიის შენახვა
 promote_version: ვერსიის დაწინაურება
-promote_version_disabled: ცვლილებების გარეშე
-promote_version_drawer_title: '"{version}"-ის დაწინაურება მთავარში'
-promote_version_changes: ცვლილებები
-promote_version_preview: გადახედვა
-outdated_notice: >-
-  მთავარი ჩანაწერი ამ ვერსიის შექმნის შემდეგ განახლდა. გთხოვთ, გადახედეთ ქვემოთ მოცემულ ყველა ველს და დაადასტურეთ, რომელი ვერსია უნდა იქნას გამოყენებული მთავარ ჩანაწერში დაწინაურებისას.
-promote_notice: >-
-  გთხოვთ, გადახედეთ ქვემოთ მოცემულ ყველა ველს და დაადასტურეთ, რომელი ვერსია უნდა იქნას გამოყენებული მთავარ ჩანაწერში დაწინაურებისას.
 delete_version: ვერსიის წაშლა
 delete_version_copy: >-
   დარწმუნებული ხართ, რომ გსურთ წაშალოთ "{version}" ვერსია? ამ მოქმედების გაუქმება შეუძლებელი იქნება.
-delete_on_promote_copy: >-
-  დაწინაურების შემდეგ გსურთ წაშალოთ ან დაიტოვოთ "{version}" ვერსია?
 reset_bookmark: სანიშნის აღდგენა
 update_bookmark: სანიშნის განახლება
 delete_bookmark: სანიშნის წაშლა
@@ -458,7 +450,6 @@ revision_delta_created: შეიქმნა
 revision_delta_created_externally: შეიქმნა გარედან
 revision_delta_updated: 'განახლდა 1 ველი | განახლდა {count} ველი'
 revision_delta_deleted: წაიშალა
-revision_delta_version_saved: 'ვერსია შეინახა (განახლდა 1 ველი) | ვერსია შეინახა (განახლდა {count} ველი)'
 revision_delta_reverted: დაბრუნდა
 revision_delta_update_message: ეს ველი განახლდა, მაგრამ მისი მნიშვნელობა უსაფრთხოების მიზნით დამალულია.
 revision_delta_other: რევიზია
@@ -1194,7 +1185,6 @@ page_help_settings_datamodel_fields: >-
   **მონაცემთა მოდელი: კოლექცია** — ფორმა ამ კოლექციისა და მისი ველების სამართავად.
 page_help_settings_system_logs: '**სისტემის ჟურნალები** — წვდომა სისტემის ჟურნალების პირდაპირ სტრიმზე.'
 page_help_settings_policies_collection: '**პოლიტიკების დათვალიერება** — პროექტში არსებული ყველა პოლიტიკის სია.'
-page_help_settings_policies_item: "**პოლიტიკის დეტალები** — პოლიტიკის უფლებებისა და სხვა პარამეტრების მართვა."
 page_help_settings_roles_collection: '**როლების დათვალიერება** — პროექტში არსებული ყველა მომხმარებლის როლის სია.'
 page_help_settings_roles_item: "**როლის დეტალები** — როლის უფლებებისა და სხვა პარამეტრების მართვა."
 page_help_settings_presets_collection: >-
@@ -1597,6 +1587,8 @@ unlimited_usage: შეუზღუდავი გამოყენება
 uses_left: გამოყენება არ დარჩა | ერთი გამოყენება დარჩა | {n} გამოყენება დარჩა
 no_shares: საჩვენებელი გაზიარებები არ არის
 new_share: ახალი გაზიარება
+mcp_prompts_collection_schema:
+  messages_role_user: მომხმარებელი
 expired: ვადაგასული
 upcoming: მომავალი
 share: გაზიარება
@@ -2546,13 +2538,4 @@ search_flow: Flow-ს ძებნა...
 percent: პროცენტი
 show_password: პაროლის ჩვენება
 hide_password: პაროლის დამალვა
-bsl_banner:
-  welcome_to_directus: კეთილი იყოს თქვენი მობრძანება Directus-ში!
-  directus_free_use: Directus-ის გამოყენება უფასოა ორგანიზაციებისთვის, რომელთა წლიური შემოსავალი, დაფინანსება ან საოპერაციო ბიუჯეტი 5 მილიონ დოლარზე ნაკლებია.
-  organization_threshold: ამ ზღვარზე მაღალი მაჩვენებლის მქონე ორგანიზაციებისთვის საჭიროა ფასიანი ლიცენზია.
-  license_agreement: '„ვეთანხმები“-ზე დაჭერით, თქვენ ეთანხმებით {directusBsl}-სა და {privacyPolicy}-ს.'
-  directus_bsl: Directus BSL 1.1
-  privacy_policy: კონფიდენციალურობის პოლიტიკა
-  accept_terms: ვეთანხმები
-  get_license: ლიცენზიის მიღება
 accepted: დათანხმება

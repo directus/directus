@@ -14,6 +14,7 @@ import { useUserStore } from '@/stores/user';
 import { getBasemapSources } from '@/utils/geometry/basemap';
 import { useAppStore } from '@directus/stores';
 import { onDehydrateExtensions, onHydrateExtensions } from './extensions';
+import { setLanguage } from './lang/set-language';
 
 type GenericStore = {
 	$id: string;
@@ -75,6 +76,8 @@ export async function hydrate(): Promise<void> {
 
 			await onHydrateExtensions();
 		}
+
+		await setLanguage(userStore.language);
 
 		appStore.basemap = getBasemapSources()[0].name;
 	} catch (error: any) {

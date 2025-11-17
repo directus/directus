@@ -146,13 +146,13 @@ async function createExtension({
 				path: { app: 'dist/app.js', api: 'dist/api.js' },
 				source: { app: `src/app.${languageToShort(language)}`, api: `src/api.${languageToShort(language)}` },
 				host,
-		  }
+			}
 		: {
 				type,
 				path: 'dist/index.js',
 				source: `src/index.${languageToShort(language)}`,
 				host,
-		  };
+			};
 
 	const packageManifest = getPackageManifest(name, options, await getExtensionDevDeps(type, language));
 

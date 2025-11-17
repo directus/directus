@@ -2,7 +2,7 @@ import { Focus } from '@/__utils__/focus';
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 import { mount } from '@vue/test-utils';
-import { describe, expect, test, vi, afterEach } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import VInput from './v-input.vue';
 
 const global: GlobalMountOptions = {
@@ -173,6 +173,36 @@ describe('emitValue', () => {
 		await wrapper.find('input').trigger('input');
 
 		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual([1]);
+	});
+
+	test('should replace "," with "." for decimal separator when decimal types marked as text', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'text',
+				modelValue: '1,22',
+				float: true,
+			},
+			global,
+		});
+
+		await wrapper.find('input').trigger('input');
+
+		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['1.22']);
+	});
+
+	test('should emit number without a thousandths separator', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'text',
+				modelValue: '1,222,220',
+				float: true,
+			},
+			global,
+		});
+
+		await wrapper.find('input').trigger('input');
+
+		expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['1.222220']);
 	});
 
 	test('should turn ending space into slug separator for slug input', async () => {

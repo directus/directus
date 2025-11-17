@@ -14,7 +14,7 @@
 		}
 	],
 
-	"ignoreFiles": ["app/src/__histoire__/**", "docs/**"],
+	"ignoreFiles": ["app/src/__histoire__/**"],
 
 	"rules": {
 		"alpha-value-notation": "number",
@@ -38,6 +38,7 @@
 		"font-family-name-quotes": "always-unless-keyword",
 		"font-family-no-missing-generic-family-keyword": [true, { "ignoreFontFamilies": ["Material Symbols"] }],
 		"media-feature-range-notation": null,
+		"nesting-selector-no-missing-scoping-root": [true, { "ignoreAtRules": ["mixin"] }],
 		"no-descending-specificity": null,
 		"property-no-vendor-prefix": [true, { "ignoreProperties": ["user-select", "appearance", "mask-image"] }],
 		"rule-empty-line-before": ["always", { "ignore": ["after-comment", "first-nested", "inside-block"] }],

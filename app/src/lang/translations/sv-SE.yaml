@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Om
+first_name: Förnamn
+last_name: Efternamn
 identifier: Identifierare
 avatar: Profilbild
 application: Applikation
@@ -28,10 +30,12 @@ method: Metod
 published: Publicerad
 draft: Utkast
 archived: Arkiverad
+marketplace: Marketplace
 extensions: Tillägg
 skip_link_nav: Hoppa till navigering
 skip_link_module_nav: Hoppa över till modulnavigering
 skip_link_main: Hoppa till huvudinnehåll
+skip_link_sidebar: Hoppa till sidofält
 modules: Moduler
 module_bar: Modulfält
 logs: Loggar
@@ -44,6 +48,8 @@ location: Position
 collection_names_are_case_sensitive: Samlingsnamn är skiftlägeskänsliga
 condition_rules: Villkor
 input: Inmatning
+invalid_input: Ogiltig inmatning
+not_a_number: Inte en siffra
 maps: Kartor
 switch_user: Byt användare
 item_creation: Skapa ny
@@ -69,6 +75,7 @@ extension_panel: Panel
 extension_theme: Tema
 extension_hook: Hook
 extension_endpoint: Endpoint
+extension_operation: Funktion
 extension_bundle: Paket
 extension_interfaces: Gränssnitt
 extension_displays: Display
@@ -84,17 +91,24 @@ extension_missing: Saknas
 extension_reload_required: Siduppdatering krävs
 extension_reload_required_copy: Sidan måste laddas om för att kunna se ändringarna efter att ha aktiverad eller inaktiverad tillägg.
 extension_reload_now: Ladda om nu
+published_relative: Publicerad {relativeTime}
 compatible_with_your_project: Kompatibel med ditt projekt
+compatible_with_your_project_copy: Skaparen har angett att tillägget är kompatibelt med version {hostVersion}, vilket matchar ditt projekts version ({currentVersion})
+last_updated_relative: Senast uppdaterad {relativeTime}
 n_files: '{n} filer'
 verified: Verifierad
 homepage: Hemsida
+repository: Utveckling
 reload_page: Ladda om sida
+reload_required: Omladdning krävs
 report_an_issue: Rapportera ett problem
 website: Webbplats
 github: GitHub
 beta: Beta
 n_downloads: '{n} nedladdningar'
 downloads: Nedladdningar
+compatibility_not_guaranteed: Kompatibilitet kan inte garanteras
+compatibility_not_guaranteed_copy: Skaparen har angett att tillägget är kompatibelt med version {hostVersion}, vilket inte matchar ditt projekts version ({currentVersion})
 enable: Aktivera
 disable: Inaktivera
 custom: Anpassad
@@ -102,6 +116,12 @@ hook: Hook
 fill_width: Full bredd
 field_name_translations: Översättningar fältnamn
 enter_password_to_enable_tfa: Ange ditt lösenord för att aktivera tvåfaktorsautentisering
+sso_tfa_setup_notice: Du kommer att loggas ut från ditt konto och måste logga in på nytt. Alla osparade ändringar kommer att försvinna.
+enable_tfa: Aktivera 2FA
+cancel_tfa_setup: Avbryt 2FA aktivering
+cancel_tfa_setup_notice: Är du säker på att du vill avbryta 2FA aktiveringen?
+keep_setup: Fortsätt aktiveringen
+cancel_setup: Avbryt aktiveringen
 add_field: Lägg till fält
 role_name: Rollens namn
 policy_name: Policynamn
@@ -152,14 +172,12 @@ version_key: Versionsnyckel
 version_name: Versionsnamn
 main_version: Huvud
 switch_version: Byt Version
+switch_version_copy: Är du säker på att du vill byta till "{version}" versionen? Osparade ändringar kommer att försvinna.
 create_version: Skapa Version
 rename_version: Byt namn på version
 compare_version: Jämför versioner
 save_version: Spara version
 promote_version: Promota version
-promote_version_disabled: Inga ändringar
-promote_version_changes: Ändringar
-promote_version_preview: Förhandsgranska
 delete_version: Ta bort version
 delete_version_copy: >-
   Är du säker på att du vill ta bort versionen "{version}"? Denna åtgärd kan inte ångras.
@@ -176,8 +194,12 @@ logoutReason:
   SESSION_EXPIRED: Sessionen har upphört
 public_label: Publik
 public_description: Kontrollerar vilken data som är tillgängliga via APIet utan autentisering.
+public_role_info: >-
+  Den publika rollen kontrollerar vilken API-data som är tillgänglig för oautentiserade användare eller användare som saknar roller. Anrop med den publika rollen kan inte ha app- eller admin-behörighet. Om app- eller admin-behörighet finns i en policy som tilldelats den publika rollen så kommer de att ignoreras.
 admin_description: Initial administrativ roll med obegränsad app/API-åtkomst.
+admin_policy_description: Initial administrativ policy med obegränsad App/API-behörighet.
 no_description: Ingen beskrivning...
+reached_maximum_number_of_extensions: Du har nått det maximala antalet tillägg för detta projekt ({n}). Kontakta din systemadministratör för mer information.
 not_allowed: Inte tillåtet
 archive: Arkivera
 archive_confirm: Är du säker på att du vill arkivera detta objekt?
@@ -185,6 +207,7 @@ archive_confirm_count: >-
   Inga objekt valda | Är du säker på att du vill arkivera detta objekt? | Är du säker på att du vill arkivera dessa {count} objekt?
 reset_system_permissions_to: 'Återställ systemrättigheter till:'
 reset_system_permissions_copy: Den här åtgärden kommer att skriva över alla anpassade behörigheter som du kan ha tillämpat på systemkollektionerna. Är du säker?
+the_following_are_minimum_permissions: Följande minimibehörigheter tillämpas automatiskt när "App Access" är aktiverat. Du kan lägga till ytterligare behörigheter om det behövs, men du kan inte ha lägre behörigheter än denna nivå.
 app_access_minimum: Minsta tillgång till applikationen
 recommended_defaults: Rekommenderade standardvärden
 unarchive: Ångra arkivering
@@ -214,6 +237,8 @@ validationError:
   istarts_with: Värdet måste börja med {substring}
   nstarts_with: Värdet får inte börja med {substring}
   nistarts_with: Värdet får inte börja med {substring}
+  ends_with: Värdet måste sluta med {substring}
+  iends_with: Värdet måste sluta med {substring}
   nends_with: Värdet kan inte sluta med {substring}
   niends_with: Värdet kan inte sluta med {substring}
 all_access: Alla behörigheter
@@ -239,7 +264,9 @@ field_permissions: Behörigheter för fält
 field_validation: Validering av fält
 field_presets: Fältets förvalda inställningar
 permissions_for_role: 'Objekt som {role} rollen kan {action}.'
+permissions_for_policy: 'Objekt som {policy} policyn kan {action}.'
 fields_for_role: 'Fält {role} rollen kan {action}.'
+fields_for_policy: 'Fält som {policy} policyn kan {action}.'
 validation_for_role: 'Fältets {action} regler {role} rollen måste lyda.'
 presets_for_role: 'Förvalt fältvärde för rollen {role}.'
 presets_for_policy: 'Förvalt fältvärde för rollen {policy}.'
@@ -1091,6 +1118,7 @@ install_extension: Installera tillägg
 uninstall: Avinstallera
 installed: Installerad
 reinstall: Installera om
+source_registry: Marketplace
 source_local: Lokal
 source_module: Nodmodul
 collection: Kollektion
@@ -1404,6 +1432,8 @@ live_preview:
   close_window: Öppna i delad vy
   toggle_3d: Växla 3D
 unlimited_usage: Obegränsad användning
+mcp_prompts_collection_schema:
+  messages_role_user: Användare
 expired: Upphört
 upcoming: Kommande
 share: Dela
@@ -2167,10 +2197,4 @@ date_precision: Datumprecision
 percent: Procent
 show_password: Visa lösenord
 hide_password: Dölj lösenord
-bsl_banner:
-  welcome_to_directus: Välkommen till Directus!
-  directus_bsl: Directus BSL 1.1
-  privacy_policy: Integritetspolicy
-  accept_terms: Acceptera
-  get_license: Skaffa en licens
 accepted: Accepterad

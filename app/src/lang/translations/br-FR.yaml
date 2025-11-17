@@ -1,4 +1,6 @@
 ---
+first_name: Anv bihan
+last_name: Anv
 edit_field: Kemm ar vaezienn
 location: Lec'h
 input: Enkas
@@ -792,6 +794,8 @@ inline: En linenn
 comment: Evezhiadenn
 live_preview:
   new_window: Digeriñ e-barzh ur prenestr nevez
+mcp_prompts_collection_schema:
+  messages_role_user: Implijer
 relational_triggers: Distegneroù darempred
 referential_action_field_label_m2o: Pa vez dilemet un {collection} ...
 referential_action_field_label_o2m: Pa vez diziuzet un {collection} ...

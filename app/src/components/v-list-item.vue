@@ -16,6 +16,8 @@ interface Props {
 	href?: string;
 	/** Disables the item */
 	disabled?: boolean;
+	/** Set the non-editable state for the input */
+	nonEditable?: boolean;
 	/** If the item should be clickable */
 	clickable?: boolean;
 	/** If the item should be active or not */
@@ -45,6 +47,7 @@ const props = withDefaults(defineProps<Props>(), {
 	to: '',
 	href: undefined,
 	disabled: false,
+	nonEditable: false,
 	clickable: false,
 	active: undefined,
 	dashed: false,
@@ -137,6 +140,7 @@ function onClick(event: PointerEvent) {
 			dense,
 			link: isLink,
 			disabled,
+			'non-editable': nonEditable,
 			dashed,
 			block,
 			nav,
@@ -211,8 +215,6 @@ function onClick(event: PointerEvent) {
 		cursor: pointer;
 		transition: var(--fast) var(--transition);
 		transition-property: background-color, color;
-		-webkit-user-select: none;
-		user-select: none;
 
 		&:not(.disabled):not(.dense):not(.block):hover {
 			color: var(--v-list-item-color-hover, var(--v-list-color-hover, var(--theme--foreground)));
@@ -254,9 +256,11 @@ function onClick(event: PointerEvent) {
 	}
 
 	&.disabled {
-		--v-list-item-color: var(--theme--foreground-subdued) !important;
-
 		cursor: not-allowed;
+
+		&:not(.non-editable) {
+			--v-list-item-color: var(--theme--foreground-subdued) !important;
+		}
 	}
 
 	&.dense {
@@ -309,7 +313,7 @@ function onClick(event: PointerEvent) {
 			flex-grow: 1;
 		}
 
-		&.clickable:hover {
+		&.clickable:hover:not(.disabled) {
 			background-color: var(
 				--v-list-item-background-color-hover,
 				var(--v-list-background-color-hover, var(--theme--form--field--input--background))

@@ -539,7 +539,11 @@ function getRollupOptions({
 			esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }),
 			mode === 'browser' ? styles() : null,
 			...plugins,
-			nodeResolve({ browser: mode === 'browser', preferBuiltins: mode === 'node' }),
+			nodeResolve({
+				browser: mode === 'browser',
+				exportConditions: mode === 'node' ? ['node'] : [],
+				preferBuiltins: mode === 'node',
+			}),
 			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
 			json(),
 			mode === 'browser'
@@ -548,7 +552,7 @@ function getRollupOptions({
 							'process.env.NODE_ENV': JSON.stringify('production'),
 						},
 						preventAssignment: true,
-				  })
+					})
 				: null,
 			minify ? terser() : null,
 		],

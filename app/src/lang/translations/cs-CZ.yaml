@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: O nás
+first_name: Křestní jméno
+last_name: Příjmení
 identifier: Identifikátor
 avatar: Avatar
 application: Aplikace
@@ -30,6 +32,10 @@ draft: Návrh
 archived: Archivováno
 marketplace: Tržiště
 extensions: Rozšíření
+skip_link_nav: Přeskočit na navigaci
+skip_link_module_nav: Přeskočit na navigaci modulu
+skip_link_main: Přeskočit na hlavní obsah
+skip_link_sidebar: Přeskočit na postranní panel
 modules: Moduly
 module_bar: Panel modulů
 logs: Logy
@@ -42,6 +48,8 @@ location: Poloha
 collection_names_are_case_sensitive: Názvy kolekcí jsou citlivé na malá a velká písmena
 condition_rules: Pravidla
 input: Vstup
+invalid_input: Neplatný vstup
+not_a_number: Není číslo
 maps: Mapy
 switch_user: Přepnout uživatele
 item_creation: Vytvoření položky
@@ -108,6 +116,7 @@ hook: Hook
 fill_width: Celá šířka
 field_name_translations: Překlady názvu polí
 enter_password_to_enable_tfa: Zadejte své heslo pro zapnutí dvoufázového ověřování
+sso_tfa_setup_notice: Budete odhlášeni z vašeho účtu a musíte se přihlásit. Všechny neuložené změny budou zahozeny.
 add_field: Přidat pole
 role_name: Jméno role
 policy_name: Název oprávnění
@@ -164,19 +173,9 @@ rename_version: Přejmenovat verzi
 compare_version: Porovnat verzi
 save_version: Uložit verzi
 promote_version: Povýšit verzi
-promote_version_disabled: Beze změn
-promote_version_drawer_title: Povýšit verzi {version} na hlavní
-promote_version_changes: Změny
-promote_version_preview: Náhled
-outdated_notice: >-
-  Hlavní položka byla od vytvoření této verze aktualizována. Přečtěte si prosím všechny níže uvedené hodnoty polí a potvrďte, která verze by měla být použita při povýšení této verze na hlavní.
-promote_notice: >-
-  Přečtěte si prosím všechny níže uvedené hodnoty polí a potvrďte, která verze by měla být použita při povýšení této verze na hlavní.
 delete_version: Smazat verzi
 delete_version_copy: >-
   Opravdu chcete smazat verzi "{version}"? Tuto akci nelze vrátit zpět.
-delete_on_promote_copy: >-
-  Chcete po povýšení odstranit nebo ponechat verzi "{version}"?
 reset_bookmark: Obnovit záložku
 update_bookmark: Aktualizovat záložku
 delete_bookmark: Smazat záložku
@@ -451,7 +450,6 @@ revision_delta_created: Vytvořena
 revision_delta_created_externally: Vytvořena externě
 revision_delta_updated: 'Aktualizováno 1 pole | Aktualizováno {count} polí'
 revision_delta_deleted: Odstraněna
-revision_delta_version_saved: 'Uložit verzi (Aktualizováno 1 pole) | Uložit verzi (Aktualizováno {count} polí)'
 revision_delta_reverted: Vrácena
 revision_delta_update_message: Toto pole bylo aktualizováno, ale jeho hodnota je skryta z bezpečnostních důvodů.
 revision_delta_other: Revize
@@ -1172,7 +1170,6 @@ page_help_settings_datamodel_fields: >-
   **Model dat: Kolekce** – Formulář pro správu této kolekce a jejích polí.
 page_help_settings_system_logs: '**Systémové logy** – Přístup k živému toku systémových logů.'
 page_help_settings_policies_collection: '**Procházet oprávnění** — Zobrazuje všechna oprávnění v rámci projektu.'
-page_help_settings_policies_item: "**Detail oprávnění** — Správa přístupových oprávnění a dalších nastavení."
 page_help_settings_roles_collection: '**Procházet role** — Zobrazuje všechny role v rámci projektu.'
 page_help_settings_roles_item: "**Detail role** — Správa oprávnění role a dalších nastavení."
 page_help_settings_presets_collection: >-
@@ -1573,6 +1570,8 @@ unlimited_usage: Neomezené použití
 uses_left: Nezbývá žádné použití | Zbývá 1 použití | Zbývá {n} použití
 no_shares: Nic sdíleného k zobrazení
 new_share: Nové sdílení
+mcp_prompts_collection_schema:
+  messages_role_user: Uživatel
 expired: Vypršela platnost
 upcoming: Nadcházející
 share: Sdílet

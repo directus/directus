@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions",
-	"version": "3.0.8",
+	"version": "3.0.13",
 	"description": "Utilities and types for Directus extensions",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -25,8 +25,8 @@
 	],
 	"scripts": {
 		"build": "pnpm run '/^build:.*/'",
-		"build:node": "tsup src/node.ts --tsconfig src/node/tsconfig.json --out-dir dist --format=esm --dts",
-		"build:shared": "tsup src/index.ts --tsconfig src/tsconfig.json --out-dir dist --format=esm --dts",
+		"build:node": "tsdown src/node.ts --tsconfig src/node/tsconfig.json --out-dir dist --dts",
+		"build:shared": "tsdown src/index.ts --tsconfig src/tsconfig.json --out-dir dist --dts",
 		"dev": "pnpm run '/^build:.*/' --watch",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
@@ -35,30 +35,30 @@
 		"@directus/constants": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@types/express": "4.17.21",
-		"fs-extra": "11.3.0",
+		"@types/express": "catalog:",
+		"fs-extra": "catalog:",
 		"lodash-es": "catalog:",
-		"zod": "3.24.2"
+		"zod": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
-		"@types/fs-extra": "11.0.4",
+		"@types/fs-extra": "catalog:",
 		"@types/lodash-es": "catalog:",
 		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
-		"knex": "3.1.0",
-		"pino": "9.6.0",
-		"tsup": "catalog:",
+		"knex": "catalog:",
+		"pino": "catalog:",
+		"tsdown": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:",
-		"vue": "3.5.13",
-		"vue-router": "4.5.0"
+		"vue": "catalog:",
+		"vue-router": "catalog:"
 	},
 	"peerDependencies": {
-		"knex": "3",
-		"pino": "9",
-		"vue": "^3.4",
-		"vue-router": "4"
+		"knex": "catalog:",
+		"pino": "catalog:",
+		"vue": "catalog:",
+		"vue-router": "catalog:"
 	},
 	"peerDependenciesMeta": {
 		"knex": {

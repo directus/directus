@@ -184,7 +184,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 	<div class="field-select" :class="field.meta?.width || 'full'">
 		<v-input v-if="disabled" disabled class="field">
 			<template #prepend>
-				<v-icon v-tooltip="t('system_fields_locked')" name="lock" />
+				<v-icon v-tooltip="$t('system_fields_locked')" name="lock" />
 			</template>
 
 			<template #input>
@@ -220,7 +220,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 							{{ field.field }}
 							<v-icon v-if="field.meta?.required === true" name="star" class="required" sup filled />
 						</span>
-						<v-icon v-if="hidden" v-tooltip="t('hidden_field')" name="visibility_off" class="hidden-icon" small />
+						<v-icon v-if="hidden" v-tooltip="$t('hidden_field')" name="visibility_off" class="hidden-icon" small />
 						<field-select-menu
 							:field="field"
 							:no-delete="nestedFields.length > 0"
@@ -254,7 +254,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 								<v-icon v-if="field.meta?.required === true" name="star" class="required" sup filled />
 							</span>
 							<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
-							<span v-else class="interface">{{ t('db_only_click_to_configure') }}</span>
+							<span v-else class="interface">{{ $t('db_only_click_to_configure') }}</span>
 						</div>
 					</div>
 				</template>
@@ -263,18 +263,18 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 					<div class="icons">
 						<v-icon
 							v-if="field.schema && field.schema.is_primary_key"
-							v-tooltip="t('primary_key')"
+							v-tooltip="$t('primary_key')"
 							name="vpn_key"
 							small
 						/>
 						<v-icon
 							v-if="!field.meta"
-							v-tooltip="t('db_only_click_to_configure')"
+							v-tooltip="$t('db_only_click_to_configure')"
 							name="report_problem"
 							class="unmanaged"
 							small
 						/>
-						<v-icon v-if="hidden" v-tooltip="t('hidden_field')" name="visibility_off" class="hidden-icon" small />
+						<v-icon v-if="hidden" v-tooltip="$t('hidden_field')" name="visibility_off" class="hidden-icon" small />
 
 						<router-link
 							v-if="showRelatedCollectionLink"
@@ -296,26 +296,26 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 			<v-dialog v-model="duplicateActive" @esc="duplicateActive = false" @apply="saveDuplicate">
 				<v-card class="duplicate">
-					<v-card-title>{{ t('duplicate_where_to') }}</v-card-title>
+					<v-card-title>{{ $t('duplicate_where_to') }}</v-card-title>
 					<v-card-text>
 						<div class="form-grid">
 							<div class="field">
-								<span class="type-label">{{ t('collection', 0) }}</span>
+								<span class="type-label">{{ $t('collection', 0) }}</span>
 								<interface-system-collection :value="duplicateTo" class="monospace" @input="duplicateTo = $event" />
 							</div>
 
 							<div class="field">
-								<span class="type-label">{{ t('field', 0) }}</span>
+								<span class="type-label">{{ $t('field', 0) }}</span>
 								<v-input v-model="duplicateName" class="monospace" db-safe autofocus />
 							</div>
 						</div>
 					</v-card-text>
 					<v-card-actions>
 						<v-button secondary @click="duplicateActive = false">
-							{{ t('cancel') }}
+							{{ $t('cancel') }}
 						</v-button>
 						<v-button :disabled="duplicateName === null" :loading="duplicating" @click="saveDuplicate">
-							{{ t('duplicate') }}
+							{{ $t('duplicate') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -323,10 +323,10 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 			<v-dialog v-model="deleteActive" @esc="deleteActive = false" @apply="deleteField">
 				<v-card>
-					<v-card-title>{{ t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
+					<v-card-title>{{ $t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
 					<v-card-actions>
-						<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
-						<v-button :loading="deleting" kind="danger" @click="deleteField">{{ t('delete_label') }}</v-button>
+						<v-button secondary @click="deleteActive = false">{{ $t('cancel') }}</v-button>
+						<v-button :loading="deleting" kind="danger" @click="deleteField">{{ $t('delete_label') }}</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
@@ -448,7 +448,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 .field-grid {
 	position: relative;
 	display: grid;
-	grid-gap: 8px;
+	gap: 8px;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 
 	& + & {

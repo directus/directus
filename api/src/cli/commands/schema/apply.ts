@@ -13,7 +13,7 @@ import { applySnapshot } from '../../../utils/apply-snapshot.js';
 import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
 import { getSnapshot } from '../../../utils/get-snapshot.js';
 
-function filterSnapshotDiff(snapshot: SnapshotDiff, filters: string[]): SnapshotDiff {
+export function filterSnapshotDiff(snapshot: SnapshotDiff, filters: string[]): SnapshotDiff {
 	const filterSet = new Set(filters);
 
 	function shouldKeep(item: { collection: string; field?: string }): boolean {
@@ -25,6 +25,7 @@ function filterSnapshotDiff(snapshot: SnapshotDiff, filters: string[]): Snapshot
 	const filteredDiff: SnapshotDiff = {
 		collections: snapshot.collections.filter((item) => shouldKeep(item)),
 		fields: snapshot.fields.filter((item) => shouldKeep(item)),
+		systemFields: snapshot.systemFields.filter((item) => shouldKeep(item)),
 		relations: snapshot.relations.filter((item) => shouldKeep(item)),
 	};
 
@@ -70,6 +71,7 @@ export async function apply(
 		if (
 			snapshotDiff.collections.length === 0 &&
 			snapshotDiff.fields.length === 0 &&
+			snapshotDiff.systemFields.length === 0 &&
 			snapshotDiff.relations.length === 0
 		) {
 			logger.info('No changes to apply.');
@@ -138,6 +140,30 @@ export async function apply(
 				sections.push(lines.join('\n'));
 			}
 
+			if (snapshotDiff.systemFields.length > 0) {
+				const lines = [chalk.underline.bold('System Fields:')];
+
+				for (const { collection, field, diff } of snapshotDiff.systemFields) {
+					if (diff[0]?.kind === DiffKind.EDIT) {
+						lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}`);
+
+						for (const change of diff) {
+							const path = formatPath(change.path!);
+
+							if (change.kind === DiffKind.EDIT) {
+								lines.push(`    - Set ${path} to ${change.rhs}`);
+							} else if (change.kind === DiffKind.DELETE) {
+								lines.push(`    - Remove ${path}`);
+							} else if (change.kind === DiffKind.NEW) {
+								lines.push(`    - Add ${path} and set it to ${change.rhs}`);
+							}
+						}
+					}
+				}
+
+				sections.push(lines.join('\n'));
+			}
+
 			if (snapshotDiff.relations.length > 0) {
 				const lines = [chalk.underline.bold('Relations:')];
 
@@ -199,7 +225,7 @@ export async function apply(
 	}
 }
 
-function formatPath(path: any[]): string {
+export function formatPath(path: any[]): string {
 	if (path.length === 1) {
 		return path.toString();
 	}
@@ -207,7 +233,7 @@ function formatPath(path: any[]): string {
 	return path.slice(1).join('.');
 }
 
-function formatRelatedCollection(relatedCollection: string | null): string {
+export function formatRelatedCollection(relatedCollection: string | null): string {
 	// Related collection doesn't exist for a2o relationship types
 	if (relatedCollection) {
 		return ` → ${relatedCollection}`;

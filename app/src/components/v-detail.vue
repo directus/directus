@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { i18n } from '@/lang';
 
 interface Props {
 	modelValue?: boolean;
@@ -11,7 +10,6 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	modelValue: undefined,
-	label: i18n.global.t('toggle'),
 	startOpen: false,
 	disabled: false,
 });
@@ -53,7 +51,7 @@ function toggle() {
 			<button type="button" class="activator" :disabled @click="internalActive = !internalActive">
 				<v-divider>
 					<v-icon v-if="!disabled" :name="internalActive ? 'expand_more' : 'chevron_right'" small />
-					<slot name="title">{{ label }}</slot>
+					<slot name="title">{{ label || $t('toggle') }}</slot>
 				</v-divider>
 			</button>
 		</slot>

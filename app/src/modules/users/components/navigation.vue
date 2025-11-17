@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import useNavigation from '../composables/use-navigation';
 import NavigationRole from './navigation-role.vue';
@@ -11,7 +10,6 @@ const props = defineProps<{
 
 const { currentRole } = toRefs(props);
 
-const { t } = useI18n();
 const router = useRouter();
 
 const { roles, roleTree, openRoles, loading } = useNavigation(currentRole);
@@ -25,7 +23,7 @@ function handleClick({ role }: { role: string }) {
 	<v-list nav>
 		<v-list-item to="/users" exact :active="!currentRole">
 			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
-			<v-list-item-content>{{ t('all_users') }}</v-list-item-content>
+			<v-list-item-content>{{ $t('all_users') }}</v-list-item-content>
 		</v-list-item>
 
 		<v-divider v-if="(roles && roles.length > 0) || loading" />

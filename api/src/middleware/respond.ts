@@ -11,7 +11,7 @@ import { getCacheKey } from '../utils/get-cache-key.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { stringByteSize } from '../utils/get-string-byte-size.js';
-import { permissionsCachable } from '../utils/permissions-cachable.js';
+import { permissionsCacheable } from '../utils/permissions-cacheable.js';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const env = useEnv();
@@ -35,7 +35,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		!req.sanitizedQuery.export &&
 		res.locals['cache'] !== false &&
 		exceedsMaxSize === false &&
-		(await permissionsCachable(
+		(await permissionsCacheable(
 			req.collection,
 			{
 				knex: getDatabase(),
@@ -90,6 +90,12 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 			res.attachment(`${filename}.csv`);
 			res.set('Content-Type', 'text/csv');
 			return res.status(200).send(exportService.transform(res.locals['payload']?.data, 'csv'));
+		}
+
+		if (req.sanitizedQuery.export === 'csv_utf8') {
+			res.attachment(`${filename}.csv`);
+			res.set('Content-Type', 'text/csv; charset=utf-8');
+			return res.status(200).send(exportService.transform(res.locals['payload']?.data, 'csv_utf8'));
 		}
 
 		if (req.sanitizedQuery.export === 'yaml') {

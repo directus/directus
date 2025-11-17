@@ -5,13 +5,13 @@ import MetadataItem from '../../../components/metadata-item.vue';
 
 defineProps<{ publishDate: string }>();
 
-const { t, d } = useI18n();
+const { d } = useI18n();
 </script>
 
 <template>
 	<MetadataItem v-tooltip="d(publishDate, 'long')" has-tooltip icon="event">
 		{{
-			t('last_updated_relative', {
+			$t('last_updated_relative', {
 				relativeTime: localizedFormatDistanceStrict(new Date(publishDate), new Date(), {
 					addSuffix: true,
 				}),

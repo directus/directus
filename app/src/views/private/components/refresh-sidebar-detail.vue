@@ -56,20 +56,20 @@ const items = computed(() => {
 			? {
 					text: t('refresh_interval_minutes', { minutes: seconds / 60 }, seconds / 60),
 					value: seconds,
-			  }
+				}
 			: {
 					text: t('refresh_interval_seconds', { seconds }, seconds),
 					value: seconds,
-			  };
+				};
 	});
 });
 </script>
 
 <template>
-	<sidebar-detail :icon="active ? 'sync' : 'sync_disabled'" :title="t('auto_refresh')" :badge="active">
+	<sidebar-detail :icon="active ? 'sync' : 'sync_disabled'" :title="$t('auto_refresh')" :badge="active">
 		<div class="fields">
 			<div class="field full">
-				<p class="type-label">{{ t('refresh_interval') }}</p>
+				<p class="type-label">{{ $t('refresh_interval') }}</p>
 				<v-select v-model="model" :items="items" />
 			</div>
 		</div>

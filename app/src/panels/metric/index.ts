@@ -29,7 +29,7 @@ export default definePanel({
 			? undefined
 			: {
 					[options.function]: [options.field || '*'],
-			  };
+				};
 
 		const panelQuery: PanelQuery = {
 			collection: options.collection,

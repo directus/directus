@@ -383,6 +383,8 @@ export function useRelationMultiple(
 			loading.value = true;
 
 			if (itemId.value !== '+') {
+				const currentItemId = itemId.value;
+
 				const filter: Filter = { _and: [{ [reverseJunctionField]: itemId.value } as Filter] };
 
 				if (previewQuery.value.filter) {
@@ -399,6 +401,14 @@ export function useRelationMultiple(
 						sort: previewQuery.value.sort,
 					},
 				});
+
+				// if itemId changed during the request, we wan't to avoid updating items with incorrect data.
+				// This can happen if the user navigates to a different item while the request is in progress.
+				// The assumption here is that there is another request that started after this one started
+				// and this one is no longer relevant.
+				if (itemId.value !== currentItemId) {
+					return;
+				}
 
 				fetchedItems.value = response.data.data;
 			}

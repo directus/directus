@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Pri
+first_name: Pesona nomo
+last_name: Familia nomo
 identifier: Identigilo
 avatar: Profilbildo
 application: Aplikaĵo
@@ -110,7 +112,6 @@ prefix: Prefikso
 suffix: Sufikso
 version: Versio
 create_version: Krei version
-promote_version_changes: Ŝanĝoj
 delete_bookmark: Forigi la legosignon
 delete_bookmark_copy: >-
   Ĉu vi certas, ke vi volas forigi la legosignon "{bookmark}"? La ago ne estas malfarebla.
@@ -833,6 +834,8 @@ live_preview:
 shares: Konigoj
 unlimited_usage: Senlima uzado
 new_share: Nova konigo
+mcp_prompts_collection_schema:
+  messages_role_user: Uzanto
 expired: Eksvalidiĝinta
 share: Konigi
 share_item: Konigi la eron

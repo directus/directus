@@ -322,7 +322,7 @@ function useOnUpdate() {
 		<div class="form">
 			<div class="field">
 				<div class="label type-label">
-					{{ t('key') }}
+					{{ $t('key') }}
 					<v-icon class="required" sup name="star" filled />
 				</div>
 
@@ -333,18 +333,18 @@ function useOnUpdate() {
 					class="monospace"
 					:nullable="false"
 					db-safe
-					:placeholder="t('a_unique_column_name')"
+					:placeholder="$t('a_unique_column_name')"
 				/>
 
-				<small class="type-note">{{ t('schema_setup_key') }}</small>
+				<small class="type-note">{{ $t('schema_setup_key') }}</small>
 			</div>
 
 			<div class="field half">
 				<div class="label type-label">
-					{{ t('type') }}
+					{{ $t('type') }}
 					<v-icon class="required" sup name="star" filled />
 				</div>
-				<v-input v-if="isAlias" :model-value="t('alias')" disabled />
+				<v-input v-if="isAlias" :model-value="$t('alias')" disabled />
 				<v-select
 					v-else
 					v-model="type"
@@ -356,12 +356,12 @@ function useOnUpdate() {
 
 			<template v-if="['decimal', 'float'].includes(type) === false">
 				<div v-if="!isAlias" class="field half">
-					<div class="label type-label">{{ t('length') }}</div>
+					<div class="label type-label">{{ $t('length') }}</div>
 					<v-input
 						v-model="maxLength"
 						type="number"
 						:min="1"
-						:placeholder="type !== 'string' ? t('not_available_for_type') : '255'"
+						:placeholder="type !== 'string' ? $t('not_available_for_type') : '255'"
 						:disabled="isExisting || type !== 'string'"
 					/>
 				</div>
@@ -369,7 +369,7 @@ function useOnUpdate() {
 
 			<template v-else>
 				<div v-if="!isAlias" class="field half">
-					<div class="label type-label">{{ t('precision_scale') }}</div>
+					<div class="label type-label">{{ $t('precision_scale') }}</div>
 					<div class="precision-scale">
 						<v-input v-model="numericPrecision" type="number" :placeholder="10" />
 						<v-input v-model="numericScale" type="number" :placeholder="5" />
@@ -379,18 +379,18 @@ function useOnUpdate() {
 
 			<template v-if="hasCreateUpdateTriggers">
 				<div class="field half-left">
-					<div class="label type-label">{{ t('on_create') }}</div>
+					<div class="label type-label">{{ $t('on_create') }}</div>
 					<v-select v-model="onCreateValue" :items="onCreateOptions" />
 				</div>
 
 				<div class="field half-right">
-					<div class="label type-label">{{ t('on_update') }}</div>
+					<div class="label type-label">{{ $t('on_update') }}</div>
 					<v-select v-model="onUpdateValue" :items="onUpdateOptions" />
 				</div>
 			</template>
 
 			<div v-if="!isAlias && !isPrimaryKey && !isGenerated" class="field full">
-				<div class="label type-label">{{ t('default_value') }}</div>
+				<div class="label type-label">{{ $t('default_value') }}</div>
 
 				<v-input v-if="['string', 'uuid'].includes(type)" v-model="defaultValue" class="monospace" placeholder="NULL" />
 
@@ -439,18 +439,18 @@ function useOnUpdate() {
 			</div>
 
 			<div v-if="!isAlias" class="field half-left">
-				<div class="label type-label">{{ t('nullable') }}</div>
-				<v-checkbox v-model="nullable" :disabled="isGenerated || isPrimaryKey" :label="t('allow_null_value')" block />
+				<div class="label type-label">{{ $t('nullable') }}</div>
+				<v-checkbox v-model="nullable" :disabled="isGenerated || isPrimaryKey" :label="$t('allow_null_value')" block />
 			</div>
 
 			<div v-if="!isAlias" class="field half-right">
-				<div class="label type-label">{{ t('unique') }}</div>
-				<v-checkbox v-model="unique" :disabled="isGenerated || isPrimaryKey" :label="t('value_unique')" block />
+				<div class="label type-label">{{ $t('unique') }}</div>
+				<v-checkbox v-model="unique" :disabled="isGenerated || isPrimaryKey" :label="$t('value_unique')" block />
 			</div>
 
 			<div v-if="!isAlias" class="field half-left">
-				<div class="label type-label">{{ t('index') }}</div>
-				<v-checkbox v-model="indexed" :disabled="isGenerated || isPrimaryKey" :label="t('value_index')" block />
+				<div class="label type-label">{{ $t('index') }}</div>
+				<v-checkbox v-model="indexed" :disabled="isGenerated || isPrimaryKey" :label="$t('value_index')" block />
 			</div>
 		</div>
 	</div>
@@ -483,7 +483,7 @@ function useOnUpdate() {
 
 .precision-scale {
 	display: grid;
-	grid-gap: 12px;
+	gap: 12px;
 	grid-template-columns: 1fr 1fr;
 }
 
