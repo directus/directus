@@ -82,13 +82,19 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits(['update:modelValue', 'group-toggle']);
+const emit = defineEmits(['update:modelValue', 'group-toggle', 'focusin', 'focusout']);
 
 const { t } = useI18n();
 
 const { internalItems, internalItemsCount, internalSearch } = useItems();
 const { displayValue } = useDisplayValue();
 const { modelValue } = toRefs(props);
+const open = ref(false);
+
+watch(open, (open) => {
+	if (open) emit('focusin');
+	else emit('focusout');
+});
 
 const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, internalItems, (value) =>
 	emit('update:modelValue', value),
@@ -258,6 +264,7 @@ function useDisplayValue() {
 
 <template>
 	<v-menu
+		v-model="open"
 		class="v-select"
 		:disabled="isDisabled"
 		:attached="inline === false"
@@ -324,7 +331,7 @@ function useDisplayValue() {
 						<v-icon name="close" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ multiple ? $t('deselect_all') : $t('deselect') }}
+						{{ multiple ? t('deselect_all') : t('deselect') }}
 					</v-list-item-content>
 					<v-list-item-icon v-if="multiple === false">
 						<v-icon name="close" />
@@ -335,13 +342,13 @@ function useDisplayValue() {
 
 			<v-list-item v-if="internalItemsCount === 0 && !allowOther">
 				<v-list-item-content>
-					{{ $t('no_options_available') }}
+					{{ t('no_options_available') }}
 				</v-list-item-content>
 			</v-list-item>
 
 			<v-list-item v-if="internalItemsCount > 10 || search">
 				<v-list-item-content>
-					<v-input v-model="search" autofocus small :placeholder="$t('search')" @click.stop.prevent>
+					<v-input v-model="search" autofocus small :placeholder="t('search')" @click.stop.prevent>
 						<template #append>
 							<v-icon small name="search" />
 						</template>
@@ -378,7 +385,7 @@ function useDisplayValue() {
 					<input
 						v-model="otherValue"
 						class="other-input"
-						:placeholder="$t('other')"
+						:placeholder="t('other')"
 						@focus="otherValue ? $emit('update:modelValue', otherValue) : null"
 					/>
 				</v-list-item-content>
@@ -414,7 +421,7 @@ function useDisplayValue() {
 
 				<v-list-item v-if="!nonEditable" clickable @click.stop="addOtherValue('', true)">
 					<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
-					<v-list-item-content>{{ $t('other') }}</v-list-item-content>
+					<v-list-item-content>{{ t('other') }}</v-list-item-content>
 				</v-list-item>
 			</template>
 		</v-list>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { i18n } from '@/lang';
 import { isCssVar as isCssVarUtil } from '@/utils/is-css-var';
 import { isHex } from '@/utils/is-hex';
 import { cssVar } from '@directus/utils/browser';
@@ -24,52 +25,47 @@ const props = withDefaults(defineProps<Props>(), {
 	value: null,
 	placeholder: undefined,
 	opacity: false,
+	presets: () => [
+		{
+			name: i18n.global.t('colors.purple'),
+			color: '#6644FF',
+		},
+		{
+			name: i18n.global.t('colors.blue'),
+			color: '#3399FF',
+		},
+		{
+			name: i18n.global.t('colors.green'),
+			color: '#2ECDA7',
+		},
+		{
+			name: i18n.global.t('colors.yellow'),
+			color: '#FFC23B',
+		},
+		{
+			name: i18n.global.t('colors.orange'),
+			color: '#FFA439',
+		},
+		{
+			name: i18n.global.t('colors.red'),
+			color: '#E35169',
+		},
+		{
+			name: i18n.global.t('colors.black'),
+			color: '#18222F',
+		},
+		{
+			name: i18n.global.t('colors.gray'),
+			color: '#A2B5CD',
+		},
+		{
+			name: i18n.global.t('colors.white'),
+			color: '#FFFFFF',
+		},
+	],
 });
 
-// Reactive translations can't be default values of props
-const presetsWithDefaults = computed(
-	() =>
-		props.presets || [
-			{
-				name: t('colors.purple'),
-				color: '#6644FF',
-			},
-			{
-				name: t('colors.blue'),
-				color: '#3399FF',
-			},
-			{
-				name: t('colors.green'),
-				color: '#2ECDA7',
-			},
-			{
-				name: t('colors.yellow'),
-				color: '#FFC23B',
-			},
-			{
-				name: t('colors.orange'),
-				color: '#FFA439',
-			},
-			{
-				name: t('colors.red'),
-				color: '#E35169',
-			},
-			{
-				name: t('colors.black'),
-				color: '#18222F',
-			},
-			{
-				name: t('colors.gray'),
-				color: '#A2B5CD',
-			},
-			{
-				name: t('colors.white'),
-				color: '#FFFFFF',
-			},
-		],
-);
-
-const emit = defineEmits(['input']);
+const emit = defineEmits(['input', 'focus', 'blur']);
 
 const isCssVar = computed(() => {
 	if (!props.value) return false;
@@ -304,8 +300,8 @@ function useColor() {
 </script>
 
 <template>
-	<v-menu attached :disabled="disabled" :close-on-content-click="false" no-focus-return>
-		<template #activator="{ activate, toggle }">
+	<v-menu attached :disabled="disabled" :close-on-content-click="false">
+		<template #activator="{ activate, toggle, active }">
 			<v-input
 				v-model="input"
 				:disabled
@@ -317,6 +313,8 @@ function useColor() {
 				@change="onChanged"
 				@click="onClickInput($event, toggle)"
 				@keydown="onKeydownInput($event, activate)"
+				@focus="$emit('focus')"
+				@blur="!active && $emit('blur')"
 			>
 				<template #prepend>
 					<v-input
@@ -458,9 +456,9 @@ function useColor() {
 				/>
 			</div>
 		</div>
-		<div v-if="presetsWithDefaults" class="presets">
+		<div v-if="presets" class="presets">
 			<v-button
-				v-for="preset in presetsWithDefaults"
+				v-for="preset in presets"
 				:key="preset.color"
 				v-tooltip="preset.name"
 				class="preset"
