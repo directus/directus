@@ -15,6 +15,8 @@ describe('Mail', async () => {
 			async onData(stream, _, cb) {
 				const message = await simpleParser(stream);
 
+				console.log({ message });
+
 				stream.on('end', () => {
 					messages.push(message);
 					cb(null);
