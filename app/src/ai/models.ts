@@ -93,8 +93,3 @@ export const AI_MODELS: ModelDefinition[] = [
 		},
 	},
 ] as const;
-
-/*
-	,
-	'anthropic:claude-opus-4-1',
-	*/
