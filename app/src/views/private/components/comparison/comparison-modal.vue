@@ -178,7 +178,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 						<comparison-header
 							:loading="modalLoading"
 							:title="baseDisplayName"
-							:date-updated="t('latest')"
+							:date-updated="$t('latest')"
 							:user-updated="baseUserUpdated"
 							:user-loading="baseUserLoading"
 						/>
@@ -194,7 +194,6 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 							</template>
 							<template v-else>
 								<v-form
-									disabled
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.base || {}"
@@ -205,6 +204,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										selectedFields: [],
 										onToggleField: () => {},
 									}"
+									non-editable
 									class="comparison-form--base"
 								/>
 							</template>
@@ -235,7 +235,6 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 							</template>
 							<template v-else>
 								<v-form
-									disabled
 									:collection="collection"
 									:primary-key="primaryKey"
 									:initial-values="comparisonData?.incoming || {}"
@@ -246,6 +245,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										selectedFields: selectedComparisonFields,
 										onToggleField: toggleComparisonField,
 									}"
+									non-editable
 									class="comparison-form--incoming"
 								/>
 							</template>
@@ -257,7 +257,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 				<div class="columns">
 					<div class="col left">
 						<div class="fields-changed">
-							{{ t('differences_count', { count: availableFieldsCount }) }}
+							{{ $t('differences_count', { count: availableFieldsCount }) }}
 						</div>
 					</div>
 					<div class="col right">
@@ -269,23 +269,23 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 									:indeterminate="someFieldsSelected && !allFieldsSelected"
 									@update:model-value="toggleSelectAll"
 								>
-									{{ t('select_all_differences') }} ({{ selectedComparisonFields.length }}/{{ availableFieldsCount }})
+									{{ $t('select_all_differences') }} ({{ selectedComparisonFields.length }}/{{ availableFieldsCount }})
 								</v-checkbox>
 							</div>
 							<div class="buttons-container">
 								<v-button
-									v-tooltip.top="`${t('cancel')} (${translateShortcut(['esc'])})`"
+									v-tooltip.top="`${$t('cancel')} (${translateShortcut(['esc'])})`"
 									secondary
 									@click="$emit('cancel')"
 								>
 									<v-icon name="close" left />
-									<span class="button-text">{{ t('cancel') }}</span>
+									<span class="button-text">{{ $t('cancel') }}</span>
 								</v-button>
 								<v-button
 									v-tooltip.top="
 										selectedComparisonFields.length === 0
 											? undefined
-											: `${t('apply')} (${translateShortcut(['meta', 'enter'])})`
+											: `${$t('apply')} (${translateShortcut(['meta', 'enter'])})`
 									"
 									:disabled="selectedComparisonFields.length === 0"
 									:loading="promoting"
@@ -293,7 +293,7 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 								>
 									<v-icon :name="'arrow_upload_progress'" left />
 									<span class="button-text">
-										{{ t('apply') }}
+										{{ $t('apply') }}
 									</span>
 								</v-button>
 							</div>
@@ -310,12 +310,12 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 		>
 			<v-card>
 				<v-card-title>
-					{{ t('delete_on_apply_copy', { version: deltaDisplayName }) }}
+					{{ $t('delete_on_apply_copy', { version: deltaDisplayName }) }}
 				</v-card-title>
 				<v-card-actions>
-					<v-button secondary @click="promote(false)">{{ t('keep') }}</v-button>
+					<v-button secondary @click="promote(false)">{{ $t('keep') }}</v-button>
 					<v-button :loading="promoting" kind="danger" @click="promote(true)">
-						{{ t('delete_label') }}
+						{{ $t('delete_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

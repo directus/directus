@@ -417,8 +417,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<private-view :title="t('settings_system_logs')">
-		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
+	<private-view :title="$t('settings_system_logs')">
+		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
 				<v-icon name="terminal" />
@@ -426,23 +426,23 @@ onUnmounted(() => {
 		</template>
 
 		<template #actions>
-			<v-button v-if="shouldStream && !streamConnected" v-tooltip.bottom="t('loading')" rounded icon disabled>
+			<v-button v-if="shouldStream && !streamConnected" v-tooltip.bottom="$t('loading')" rounded icon disabled>
 				<v-progress-circular small indeterminate />
 			</v-button>
 			<v-button
 				v-else-if="!shouldStream"
-				v-tooltip.bottom="t('resume_streaming_logs')"
+				v-tooltip.bottom="$t('resume_streaming_logs')"
 				rounded
 				icon
 				@click="resumeLogsStreaming"
 			>
 				<v-icon name="play_arrow" />
 			</v-button>
-			<v-button v-else v-tooltip.bottom="t('pause_streaming_logs')" rounded icon @click="pauseLogsStreaming">
+			<v-button v-else v-tooltip.bottom="$t('pause_streaming_logs')" rounded icon @click="pauseLogsStreaming">
 				<v-icon name="pause" />
 			</v-button>
 			<v-button
-				v-tooltip.bottom="t('clear_logs')"
+				v-tooltip.bottom="$t('clear_logs')"
 				rounded
 				icon
 				:disabled="logs.length === 0"
@@ -488,7 +488,7 @@ onUnmounted(() => {
 							<interface-input
 								:value="logDetailSearch"
 								class="full"
-								:placeholder="t('log_detail_filter_paths')"
+								:placeholder="$t('log_detail_filter_paths')"
 								icon-right="search"
 								spellcheck="false"
 								@input="logDetailSearch = $event"
@@ -506,7 +506,7 @@ onUnmounted(() => {
 							</v-button>
 						</div>
 						<div class="actions">
-							<v-checkbox v-model="softWrap" :label="t('soft_wrap_lines')" />
+							<v-checkbox v-model="softWrap" :label="$t('soft_wrap_lines')" />
 						</div>
 					</div>
 				</transition>

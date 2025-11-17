@@ -6,7 +6,6 @@ import { useSync } from '@directus/composables';
 import type { ShowSelect } from '@directus/types';
 import { clone, throttle } from 'lodash';
 import { computed, ref, useSlots } from 'vue';
-import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import { Header, Sort } from './types';
 
@@ -40,7 +39,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['update:sort', 'toggle-select-all', 'update:headers', 'update:reordering']);
-const { t } = useI18n();
 const userStore = useUserStore();
 
 const isRTL = computed(() => userStore.textDirection === 'rtl');
@@ -201,7 +199,7 @@ function toggleManualSort() {
 					:class="{ 'sorted-manually': sort.by === manualSortKey }"
 					scope="col"
 				>
-					<v-icon v-tooltip="t('toggle_manual_sorting')" name="sort" small clickable @click="toggleManualSort" />
+					<v-icon v-tooltip="$t('toggle_manual_sorting')" name="sort" small clickable @click="toggleManualSort" />
 				</th>
 
 				<th v-if="showSelect !== 'none'" class="select cell" scope="col">
@@ -240,7 +238,7 @@ function toggleManualSort() {
 							class="header-btn"
 							type="button"
 							:disabled="!header.sortable"
-							:aria-label="header.sortable ? t(getTooltipForSortIcon(header)) : undefined"
+							:aria-label="header.sortable ? $t(getTooltipForSortIcon(header)) : undefined"
 							@click="changeSort(header)"
 						>
 							<span class="name">
@@ -252,7 +250,7 @@ function toggleManualSort() {
 
 							<v-icon
 								v-if="header.sortable"
-								v-tooltip.top="t(getTooltipForSortIcon(header))"
+								v-tooltip.top="$t(getTooltipForSortIcon(header))"
 								name="sort"
 								class="action-icon"
 								small

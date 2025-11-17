@@ -8,13 +8,13 @@ import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import NestedDraggable from './nested-draggable.vue';
 
 const props = withDefaults(
 	defineProps<{
 		value?: (number | string | Record<string, any>)[] | Record<string, any>;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		collection: string;
 		field: string;
 		primaryKey: string | number;
@@ -27,6 +27,7 @@ const props = withDefaults(
 	{
 		value: () => [],
 		disabled: false,
+		nonEditable: false,
 		enableCreate: true,
 		enableSelect: true,
 		filter: null,
@@ -53,8 +54,6 @@ const _value = computed<ChangesItem>({
 		emit('input', val);
 	},
 });
-
-const { t } = useI18n();
 
 const values = inject('values', ref<Record<string, any>>({}));
 
@@ -117,10 +116,10 @@ const fields = computed(() => {
 
 <template>
 	<v-notice v-if="!relationInfo || collection !== relationInfo?.relatedCollection.collection" type="warning">
-		{{ t('interfaces.list-o2m-tree-view.recursive_only') }}
+		{{ $t('interfaces.list-o2m-tree-view.recursive_only') }}
 	</v-notice>
 	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
-		{{ t('no_singleton_relations') }}
+		{{ $t('no_singleton_relations') }}
 	</v-notice>
 	<div v-else class="tree-view">
 		<nested-draggable
@@ -131,6 +130,7 @@ const fields = computed(() => {
 			:primary-key="primaryKey"
 			:relation-info="relationInfo"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:fields="fields"
 			:enable-create="enableCreate"
 			:enable-select="enableSelect"

@@ -2,7 +2,7 @@ import firaMono from '../../assets/fonts/FiraMono-Medium.woff2';
 import merriweatherRegular from '../../assets/fonts/merriweather-regular.woff2';
 import { cssVar } from '@directus/utils/browser';
 
-export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospace'): string {
+export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospace', nonEditable: boolean): string {
 	const userFontFamily = cssVar(`--theme--fonts--${font}--font-family`);
 
 	return `
@@ -30,9 +30,13 @@ body {
 	text-rendering: optimizeLegibility;
 	-moz-osx-font-smoothing: grayscale;
 }
-body.mce-content-readonly {
-	color: ${cssVar('--foreground-subdued')};
-	background-color: ${cssVar('--background-subdued')};
+${
+	!nonEditable
+		? `body.mce-content-readonly {
+			color: ${cssVar('--foreground-subdued')};
+			background-color: ${cssVar('--background-subdued')};
+		}`
+		: ''
 }
 .mce-offscreen-selection {
 	display: none;

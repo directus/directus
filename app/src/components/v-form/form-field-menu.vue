@@ -3,7 +3,6 @@ import { useClipboard } from '@/composables/use-clipboard';
 import { RELATIONAL_TYPES } from '@directus/constants';
 import type { RelationalType } from '@directus/types';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import type { FormField } from './types';
 
 export type MenuOptions =
@@ -31,8 +30,6 @@ const props = withDefaults(
 );
 
 defineEmits(['update:modelValue', 'unset', 'edit-raw', 'copy-raw', 'paste-raw']);
-
-const { t } = useI18n();
 
 const { isCopySupported, isPasteSupported } = useClipboard();
 
@@ -86,11 +83,11 @@ const relational = computed(
 	<v-list>
 		<v-list-item v-if="!localDisabledOptions.has('edit-raw')" clickable @click="$emit('edit-raw')">
 			<v-list-item-icon><v-icon name="code" /></v-list-item-icon>
-			<v-list-item-content>{{ t('edit_raw_value') }}</v-list-item-content>
+			<v-list-item-content>{{ $t('edit_raw_value') }}</v-list-item-content>
 		</v-list-item>
 		<v-list-item v-if="!localDisabledOptions.has('view-raw')" clickable @click="$emit('edit-raw')">
 			<v-list-item-icon><v-icon name="code" /></v-list-item-icon>
-			<v-list-item-content>{{ t('view_raw_value') }}</v-list-item-content>
+			<v-list-item-content>{{ $t('view_raw_value') }}</v-list-item-content>
 		</v-list-item>
 		<v-list-item
 			v-if="!localDisabledOptions.has('copy-raw')"
@@ -99,11 +96,11 @@ const relational = computed(
 			@click="$emit('copy-raw')"
 		>
 			<v-list-item-icon><v-icon name="content_copy" /></v-list-item-icon>
-			<v-list-item-content>{{ t('copy_raw_value') }}</v-list-item-content>
+			<v-list-item-content>{{ $t('copy_raw_value') }}</v-list-item-content>
 		</v-list-item>
 		<v-list-item v-if="!localDisabledOptions.has('paste-raw')" clickable @click="$emit('paste-raw')">
 			<v-list-item-icon><v-icon name="content_paste" /></v-list-item-icon>
-			<v-list-item-content>{{ t('paste_raw_value') }}</v-list-item-content>
+			<v-list-item-content>{{ $t('paste_raw_value') }}</v-list-item-content>
 		</v-list-item>
 		<v-divider v-if="showDivider" />
 		<v-list-item
@@ -115,7 +112,7 @@ const relational = computed(
 			<v-list-item-icon>
 				<v-icon name="settings_backup_restore" />
 			</v-list-item-icon>
-			<v-list-item-content>{{ t('reset_to_default') }}</v-list-item-content>
+			<v-list-item-content>{{ $t('reset_to_default') }}</v-list-item-content>
 		</v-list-item>
 		<v-list-item
 			v-if="!localDisabledOptions.has('undo-changes')"
@@ -126,7 +123,7 @@ const relational = computed(
 			<v-list-item-icon>
 				<v-icon name="undo" />
 			</v-list-item-icon>
-			<v-list-item-content>{{ t('undo_changes') }}</v-list-item-content>
+			<v-list-item-content>{{ $t('undo_changes') }}</v-list-item-content>
 		</v-list-item>
 		<v-list-item
 			v-if="!localDisabledOptions.has('clear-value')"
@@ -135,7 +132,7 @@ const relational = computed(
 			@click="$emit('update:modelValue', null)"
 		>
 			<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
-			<v-list-item-content>{{ t('clear_value') }}</v-list-item-content>
+			<v-list-item-content>{{ $t('clear_value') }}</v-list-item-content>
 		</v-list-item>
 	</v-list>
 </template>

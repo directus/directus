@@ -90,7 +90,7 @@ function deselect() {
 			<template #append>
 				<v-icon
 					v-if="localValue && isCopySupported"
-					v-tooltip="t('copy')"
+					v-tooltip="$t('copy')"
 					name="content_copy"
 					clickable
 					class="clipboard-icon"
@@ -98,7 +98,7 @@ function deselect() {
 				/>
 				<v-icon
 					v-if="!disabled"
-					v-tooltip="value ? t('interfaces.system-token.regenerate') : t('interfaces.system-token.generate')"
+					v-tooltip="value ? $t('interfaces.system-token.regenerate') : $t('interfaces.system-token.generate')"
 					:name="value ? 'refresh' : 'add'"
 					class="regenerate-icon"
 					clickable
@@ -106,7 +106,7 @@ function deselect() {
 					@click="generateToken"
 				/>
 				<v-icon
-					v-tooltip="!disabled && value && t('interfaces.system-token.remove_token')"
+					v-tooltip="!disabled && value && $t('interfaces.system-token.remove_token')"
 					:name="!disabled && value ? 'clear' : 'vpn_key'"
 					:class="{ 'clear-icon': !disabled && !!value, 'default-icon': disabled && value }"
 					:clickable="!disabled && !!value"
@@ -117,7 +117,7 @@ function deselect() {
 		</v-input>
 
 		<v-notice v-if="isNewTokenGenerated && value">
-			{{ t('interfaces.system-token.generate_success_copy') }}
+			{{ $t('interfaces.system-token.generate_success_copy') }}
 		</v-notice>
 	</div>
 </template>

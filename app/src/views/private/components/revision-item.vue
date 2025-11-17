@@ -74,7 +74,7 @@ const user = computed(() => {
 				<span>{{ user }}</span>
 			</user-popover>
 
-			<span v-else>{{ t('private_user') }}</span>
+			<span v-else>{{ $t('private_user') }}</span>
 		</div>
 	</button>
 </template>

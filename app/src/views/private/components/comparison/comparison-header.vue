@@ -118,7 +118,7 @@ function getDeltaOptionUser(deltaOption: any) {
 							<button class="meta-selection" @click="toggle">
 								<div class="meta-text">
 									<div class="meta-date-time">{{ selectOptionTime }}</div>
-									<div class="meta-user-info">{{ t('edited_by') }} {{ selectOptionUser }}</div>
+									<div class="meta-user-info">{{ $t('edited_by') }} {{ selectOptionUser }}</div>
 								</div>
 								<v-icon name="expand_more" class="dropdown-icon" />
 							</button>
@@ -134,7 +134,7 @@ function getDeltaOptionUser(deltaOption: any) {
 						>
 							<div>
 								<div>{{ getDelataOptionTime(option) }}</div>
-								<div>{{ t('edited_by') }} {{ getDeltaOptionUser(option) }}</div>
+								<div>{{ $t('edited_by') }} {{ getDeltaOptionUser(option) }}</div>
 							</div>
 						</v-list-item>
 					</v-menu>
@@ -143,11 +143,11 @@ function getDeltaOptionUser(deltaOption: any) {
 						<div v-if="formattedDateUpdated" class="meta-date-time">
 							{{ formattedDateUpdated }}
 						</div>
-						<div v-if="userUpdatedName" class="meta-user-info">{{ t('edited_by') }} {{ userUpdatedName }}</div>
+						<div v-if="userUpdatedName" class="meta-user-info">{{ $t('edited_by') }} {{ userUpdatedName }}</div>
 						<div v-else-if="userLoading" class="meta-user-info">
-							{{ t('loading') }}
+							{{ $t('loading') }}
 						</div>
-						<div v-else class="meta-user-info">{{ t('edited_by') }} {{ t('unknown_user') }}</div>
+						<div v-else class="meta-user-info">{{ $t('edited_by') }} {{ $t('unknown_user') }}</div>
 					</div>
 				</div>
 			</template>

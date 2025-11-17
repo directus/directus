@@ -38,8 +38,8 @@ const availableCollections = computed(() => {
 	<div class="relationship">
 		<div v-if="localType === 'm2o'" class="field full">
 			<div class="label type-label">
-				{{ t('related_collection') }}
-				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
+				{{ $t('related_collection') }}
+				<v-icon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
 			</div>
 
 			<related-collection-select v-model="relatedCollectionM2O" />
@@ -48,8 +48,8 @@ const availableCollections = computed(() => {
 		<template v-else-if="localType === 'o2m'">
 			<div class="field half-left">
 				<div class="label type-label">
-					{{ t('related_collection') }}
-					<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
+					{{ $t('related_collection') }}
+					<v-icon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
 				</div>
 
 				<related-collection-select v-model="o2mCollection" />
@@ -57,8 +57,8 @@ const availableCollections = computed(() => {
 
 			<div class="field half-right">
 				<div class="label type-label">
-					{{ t('foreign_key') }}
-					<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
+					{{ $t('foreign_key') }}
+					<v-icon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
 				</div>
 
 				<related-field-select v-model="o2mField" :collection="o2mCollection" :disabled="!o2mCollection" />
@@ -67,8 +67,8 @@ const availableCollections = computed(() => {
 
 		<div v-if="localType === 'm2m'" class="field full">
 			<div class="label type-label">
-				{{ t('related_collection') }}
-				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
+				{{ $t('related_collection') }}
+				<v-icon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
 			</div>
 
 			<related-collection-select v-model="relatedCollectionM2O" />
@@ -76,8 +76,8 @@ const availableCollections = computed(() => {
 
 		<div v-if="localType === 'translations'" class="field full">
 			<div class="label type-label">
-				{{ t('languages_collection') }}
-				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
+				{{ $t('languages_collection') }}
+				<v-icon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
 			</div>
 
 			<related-collection-select v-model="relatedCollectionM2O" />
@@ -85,13 +85,13 @@ const availableCollections = computed(() => {
 
 		<div v-if="localType === 'm2a'" class="field full">
 			<div class="label type-label">
-				{{ t('related_collections') }}
-				<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
+				{{ $t('related_collections') }}
+				<v-icon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
 			</div>
 
 			<v-select
 				v-model="oneAllowedCollections"
-				:placeholder="t('collection') + '...'"
+				:placeholder="$t('collection') + '...'"
 				:items="availableCollections"
 				item-value="collection"
 				item-text="collection"

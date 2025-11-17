@@ -4,7 +4,6 @@ import { useUserStore } from '@/stores/user';
 import { Vector2 } from '@/utils/vector2';
 import { FlowRaw } from '@directus/types';
 import { computed, ref, toRefs, unref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
 import { getTriggers } from '../triggers';
 import OptionsOverview from './options-overview.vue';
@@ -55,8 +54,6 @@ const emit = defineEmits([
 	'hide-hint',
 	'flow-status',
 ]);
-
-const { t } = useI18n();
 
 const userStore = useUserStore();
 
@@ -208,7 +205,7 @@ function pointerLeave() {
 				rounded
 				@pointerdown.stop="pointerdown('resolve')"
 			>
-				<v-icon v-tooltip="editMode && t('operation_handle_resolve')" name="check_circle" />
+				<v-icon v-tooltip="editMode && $t('operation_handle_resolve')" name="check_circle" />
 			</div>
 			<transition name="fade">
 				<div
@@ -216,7 +213,7 @@ function pointerLeave() {
 					class="hint resolve-hint"
 				>
 					<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('resolve')">
-						<v-icon v-tooltip="t('operation_handle_resolve')" name="add_circle_outline" />
+						<v-icon v-tooltip="$t('operation_handle_resolve')" name="add_circle_outline" />
 					</div>
 				</div>
 			</transition>
@@ -228,7 +225,7 @@ function pointerLeave() {
 				class="button add-reject"
 				@pointerdown.stop="pointerdown('reject')"
 			>
-				<v-icon v-tooltip="editMode && t('operation_handle_reject')" name="cancel" />
+				<v-icon v-tooltip="editMode && $t('operation_handle_reject')" name="cancel" />
 			</div>
 			<transition name="fade">
 				<div
@@ -236,7 +233,7 @@ function pointerLeave() {
 					class="hint reject-hint"
 				>
 					<div x-small icon rounded class="button-hint" @pointerdown.stop="pointerdown('reject')">
-						<v-icon v-tooltip="t('operation_handle_reject')" name="add_circle_outline" />
+						<v-icon v-tooltip="$t('operation_handle_reject')" name="add_circle_outline" />
 					</div>
 				</div>
 			</transition>
@@ -264,7 +261,7 @@ function pointerLeave() {
 			<template #fallback="{ error: optionsOverviewError }">
 				<div class="options-overview-error">
 					<v-icon name="warning" />
-					{{ t('unexpected_error') }}
+					{{ $t('unexpected_error') }}
 					<v-error :error="optionsOverviewError" />
 				</div>
 			</template>
@@ -278,7 +275,7 @@ function pointerLeave() {
 			<template #fallback="{ error: operationOverviewError }">
 				<div class="options-overview-error">
 					<v-icon name="warning" />
-					{{ t('unexpected_error') }}
+					{{ $t('unexpected_error') }}
 					<v-error :error="operationOverviewError" />
 				</div>
 			</template>
@@ -286,7 +283,7 @@ function pointerLeave() {
 		<template v-if="panel.id === '$trigger'" #footer>
 			<div class="status-footer" :class="flowStatus">
 				<display-color
-					v-tooltip="flowStatus === 'active' ? t('active') : t('inactive')"
+					v-tooltip="flowStatus === 'active' ? $t('active') : $t('inactive')"
 					class="status-dot"
 					:value="flowStatus === 'active' ? 'var(--theme--primary)' : 'var(--theme--foreground-subdued)'"
 				/>
@@ -297,14 +294,14 @@ function pointerLeave() {
 					inline
 					:model-value="flowStatus"
 					:items="[
-						{ text: t('active'), value: 'active' },
-						{ text: t('inactive'), value: 'inactive' },
+						{ text: $t('active'), value: 'active' },
+						{ text: $t('inactive'), value: 'inactive' },
 					]"
 					@update:model-value="flowStatus = $event"
 				/>
 
 				<span v-else>
-					{{ flowStatus === 'active' ? t('active') : t('inactive') }}
+					{{ flowStatus === 'active' ? $t('active') : $t('inactive') }}
 				</span>
 			</div>
 		</template>

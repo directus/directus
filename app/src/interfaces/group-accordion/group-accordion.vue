@@ -12,6 +12,7 @@ const props = withDefaults(
 		values: Record<string, unknown>;
 		initialValues: Record<string, unknown>;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
 		comparison?: ComparisonContext;
@@ -120,6 +121,7 @@ function useComputedGroup() {
 			:values="groupValues"
 			:initial-values="initialValues"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:batch-mode="batchMode"
 			:batch-active-fields="batchActiveFields"
 			:comparison="comparison"

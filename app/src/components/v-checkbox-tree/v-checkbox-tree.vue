@@ -21,6 +21,8 @@ const props = withDefaults(
 		itemChildren?: string;
 		/** Disables any interaction */
 		disabled?: boolean;
+		/** Set the non-editable state for the input */
+		nonEditable?: boolean;
 		/** Show only the selected choices */
 		showSelectionOnly?: boolean;
 		/** Opens all groups included in the array. `[]` collapses all groups. Ignored if not an array. */
@@ -35,6 +37,7 @@ const props = withDefaults(
 		itemValue: 'value',
 		itemChildren: 'children',
 		disabled: false,
+		nonEditable: false,
 		showSelectionOnly: false,
 	},
 );
@@ -158,6 +161,7 @@ function findSelectedChoices(choices: Record<string, any>[], checked: (string | 
 			:value="choice[itemValue]"
 			:children="choice[itemChildren]"
 			:disabled="disabled || choice.disabled"
+			:non-editable="nonEditable"
 			:show-selection-only="showSelectionOnly"
 		/>
 	</v-list>

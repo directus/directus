@@ -6,9 +6,6 @@ import { useAppStore } from '@directus/stores';
 import { User } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
 
 const appStore = useAppStore();
 const notificationsStore = useNotificationsStore();
@@ -49,7 +46,7 @@ const userFullName = userStore.fullName ?? undefined;
 	<div class="module-bar-avatar">
 		<v-badge :value="unread" :disabled="unread == 0" class="notifications-badge">
 			<v-button
-				v-tooltip.right="t('notifications')"
+				v-tooltip.right="$t('notifications')"
 				tile
 				icon
 				x-large
@@ -64,19 +61,19 @@ const userFullName = userStore.fullName ?? undefined;
 			<v-dialog v-model="signOutActive" @esc="signOutActive = false">
 				<template #activator="{ on }">
 					<transition name="sign-out">
-						<v-button v-tooltip.right="t('sign_out')" tile icon x-large class="sign-out" @click="on">
+						<v-button v-tooltip.right="$t('sign_out')" tile icon x-large class="sign-out" @click="on">
 							<v-icon name="logout" />
 						</v-button>
 					</transition>
 				</template>
 
 				<v-card>
-					<v-card-title>{{ t('sign_out_confirm') }}</v-card-title>
+					<v-card-title>{{ $t('sign_out_confirm') }}</v-card-title>
 					<v-card-actions>
 						<v-button secondary @click="signOutActive = !signOutActive">
-							{{ t('cancel') }}
+							{{ $t('cancel') }}
 						</v-button>
-						<v-button :to="signOutLink">{{ t('sign_out') }}</v-button>
+						<v-button :to="signOutLink">{{ $t('sign_out') }}</v-button>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>

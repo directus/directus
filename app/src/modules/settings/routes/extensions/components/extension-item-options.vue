@@ -41,7 +41,7 @@ const stateActions = computed(() => {
 				<v-list-item
 					v-for="(action, index) in stateActions"
 					:key="index"
-					v-tooltip.left="stateLocked ? t('enabled_dev_tooltip') : null"
+					v-tooltip.left="stateLocked ? $t('enabled_dev_tooltip') : null"
 					:disabled="stateLocked"
 					clickable
 					@click="$emit('toggleState', action.enabled)"
@@ -56,7 +56,7 @@ const stateActions = computed(() => {
 				<template v-if="!extension.bundle">
 					<v-divider />
 					<v-list-item
-						v-tooltip.left="uninstallLocked ? t('uninstall_locked') : null"
+						v-tooltip.left="uninstallLocked ? $t('uninstall_locked') : null"
 						:disabled="uninstallLocked"
 						class="uninstall"
 						clickable
@@ -66,7 +66,7 @@ const stateActions = computed(() => {
 							<v-icon name="delete" />
 						</v-list-item-icon>
 						<v-list-item-content>
-							{{ t('uninstall') }}
+							{{ $t('uninstall') }}
 						</v-list-item-content>
 					</v-list-item>
 				</template>
@@ -79,7 +79,7 @@ const stateActions = computed(() => {
 							<v-icon name="download" />
 						</v-list-item-icon>
 						<v-list-item-content>
-							{{ t('reinstall') }}
+							{{ $t('reinstall') }}
 						</v-list-item-content>
 					</v-list-item>
 					<v-divider />
@@ -89,7 +89,7 @@ const stateActions = computed(() => {
 						<v-icon name="delete" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ t('remove') }}
+						{{ $t('remove') }}
 					</v-list-item-content>
 				</v-list-item>
 			</template>

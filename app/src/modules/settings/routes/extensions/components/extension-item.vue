@@ -98,12 +98,12 @@ function isAppExtension(type?: ExtensionType) {
 
 <template>
 	<v-list-item block>
-		<v-list-item-icon v-tooltip="t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
+		<v-list-item-icon v-tooltip="$t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
 		<v-list-item-content>
 			<span class="meta" :class="{ disabled }">
 				<router-link
 					v-if="extension.meta.source === 'registry' && !extension.bundle"
-					v-tooltip="t('open_in_marketplace')"
+					v-tooltip="$t('open_in_marketplace')"
 					class="marketplace-link"
 					:to="`/settings/marketplace/extension/${extension.id}`"
 				>

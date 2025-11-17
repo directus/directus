@@ -8,7 +8,6 @@ import { assign, clone, isUndefined, omitBy } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
 import { storeToRefs } from 'pinia';
 import { computed, reactive, unref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
 
@@ -16,8 +15,6 @@ const props = defineProps<{
 	dashboardKey: string;
 	panelKey: string;
 }>();
-
-const { t } = useI18n();
 
 const isOpen = useDialogRoute();
 
@@ -128,15 +125,15 @@ const stageChanges = () => {
 <template>
 	<v-drawer
 		:model-value="isOpen"
-		:title="panel?.name || t('panel')"
-		:subtitle="t('panel_options')"
+		:title="panel?.name || $t('panel')"
+		:subtitle="$t('panel_options')"
 		:icon="panel?.icon || 'insert_chart'"
 		persistent
 		@cancel="router.push(`/insights/${dashboardKey}`)"
 		@apply="stageChanges"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="t('done')" :disabled="!panel.type" icon rounded @click="stageChanges">
+			<v-button v-tooltip.bottom="$t('done')" :disabled="!panel.type" icon rounded @click="stageChanges">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -176,33 +173,33 @@ const stageChanges = () => {
 							/>
 							<v-divider :inline-title="false" large>
 								<template #icon><v-icon name="info" /></template>
-								<template #default>{{ t('panel_header') }}</template>
+								<template #default>{{ $t('panel_header') }}</template>
 							</v-divider>
 
 							<div class="form-grid">
 								<div class="field half-left">
-									<p class="type-label">{{ t('visible') }}</p>
+									<p class="type-label">{{ $t('visible') }}</p>
 									<v-checkbox
 										:model-value="panel.show_header"
 										block
-										:label="t('show_header')"
+										:label="$t('show_header')"
 										@update:model-value="edits.show_header = $event"
 									/>
 								</div>
 
 								<div class="field half-right">
-									<p class="type-label">{{ t('name') }}</p>
+									<p class="type-label">{{ $t('name') }}</p>
 									<v-input
 										:model-value="panel.name"
 										:nullable="false"
 										:disabled="panel.show_header !== true"
-										:placeholder="t('panel_name_placeholder')"
+										:placeholder="$t('panel_name_placeholder')"
 										@update:model-value="edits.name = $event"
 									/>
 								</div>
 
 								<div class="field half-left">
-									<p class="type-label">{{ t('icon') }}</p>
+									<p class="type-label">{{ $t('icon') }}</p>
 									<interface-select-icon
 										:value="panel.icon"
 										:disabled="panel.show_header !== true"
@@ -211,7 +208,7 @@ const stageChanges = () => {
 								</div>
 
 								<div class="field half-right">
-									<p class="type-label">{{ t('color') }}</p>
+									<p class="type-label">{{ $t('color') }}</p>
 									<interface-select-color
 										:value="panel.color"
 										:disabled="panel.show_header !== true"
@@ -221,11 +218,11 @@ const stageChanges = () => {
 								</div>
 
 								<div class="field full">
-									<p class="type-label">{{ t('note') }}</p>
+									<p class="type-label">{{ $t('note') }}</p>
 									<v-input
 										:model-value="panel.note"
 										:disabled="panel.show_header !== true"
-										:placeholder="t('panel_note_placeholder')"
+										:placeholder="$t('panel_note_placeholder')"
 										@update:model-value="edits.note = $event"
 									/>
 								</div>

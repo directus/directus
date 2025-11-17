@@ -29,7 +29,7 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 				{{ formatName(extension) }}
 				<v-chip v-if="showType" outlined x-small class="chip">{{ chip }}</v-chip>
 				<v-chip v-if="extensionsStore.extensionIds.includes(extension.id)" outlined x-small class="chip">
-					{{ t('installed') }}
+					{{ $t('installed') }}
 				</v-chip>
 			</div>
 			<div class="author">
@@ -37,7 +37,7 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 				<v-icon v-if="extension.publisher.verified" name="verified" x-small />
 			</div>
 			<div v-if="extension.description" class="description">{{ extension.description }}</div>
-			<div v-else class="description">{{ t('no_description') }}</div>
+			<div v-else class="description">{{ $t('no_description') }}</div>
 		</v-list-item-content>
 		<div class="meta">
 			<div class="published">
@@ -51,7 +51,7 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 			</div>
 
 			<div class="license" :class="{ known: !!props.extension.license }">
-				{{ props.extension.license ?? t('unknown') }}
+				{{ props.extension.license ?? $t('unknown') }}
 				<v-icon small name="policy" />
 			</div>
 		</div>

@@ -43,7 +43,7 @@ async function deleteAndQuit() {
 <template>
 	<private-view :title="title">
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings_webhooks'), to: '/settings/webhooks' }]" />
+			<v-breadcrumb :items="[{ name: $t('settings_webhooks'), to: '/settings/webhooks' }]" />
 		</template>
 
 		<template #title-outer:prepend>
@@ -61,14 +61,14 @@ async function deleteAndQuit() {
 				</template>
 
 				<v-card>
-					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
 
 					<v-card-actions>
 						<v-button secondary @click="confirmDelete = false">
-							{{ t('cancel') }}
+							{{ $t('cancel') }}
 						</v-button>
 						<v-button kind="danger" :loading="deleting" @click="deleteAndQuit">
-							{{ t('delete_label') }}
+							{{ $t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -81,7 +81,7 @@ async function deleteAndQuit() {
 
 		<div class="deprecation-notice-wrapper">
 			<v-notice type="danger">
-				<span v-md="{ value: t('webhooks_deprecation_notice'), target: '_blank' }"></span>
+				<span v-md="{ value: $t('webhooks_deprecation_notice'), target: '_blank' }"></span>
 			</v-notice>
 		</div>
 
@@ -95,8 +95,8 @@ async function deleteAndQuit() {
 		/>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_webhooks_item')" class="page-description" />
+			<sidebar-detail icon="info" :title="$t('information')" close>
+				<div v-md="$t('page_help_settings_webhooks_item')" class="page-description" />
 			</sidebar-detail>
 			<revisions-sidebar-detail
 				v-if="isNew === false"

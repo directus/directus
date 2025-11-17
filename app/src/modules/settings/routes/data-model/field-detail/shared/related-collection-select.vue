@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	modelValue?: string;
@@ -10,7 +9,6 @@ const props = defineProps<{
 
 defineEmits(['update:modelValue']);
 
-const { t } = useI18n();
 const collectionsStore = useCollectionsStore();
 
 const collectionExists = computed(() => {
@@ -29,13 +27,13 @@ const systemCollections = collectionsStore.crudSafeSystemCollections;
 		db-safe
 		:nullable="false"
 		:disabled="disabled"
-		:placeholder="t('collection') + '...'"
+		:placeholder="$t('collection') + '...'"
 		@update:model-value="$emit('update:modelValue', $event)"
 	>
 		<template v-if="!disabled" #append>
 			<v-menu show-arrow placement="bottom-end">
 				<template #activator="{ toggle }">
-					<v-icon v-tooltip="t('select_existing')" name="list_alt" clickable :disabled="disabled" @click="toggle" />
+					<v-icon v-tooltip="$t('select_existing')" name="list_alt" clickable :disabled="disabled" @click="toggle" />
 				</template>
 
 				<v-list class="monospace">
@@ -55,7 +53,7 @@ const systemCollections = collectionsStore.crudSafeSystemCollections;
 					<v-divider />
 
 					<v-list-group>
-						<template #activator>{{ t('system') }}</template>
+						<template #activator>{{ $t('system') }}</template>
 						<v-list-item
 							v-for="systemCollection in systemCollections"
 							:key="systemCollection.collection"

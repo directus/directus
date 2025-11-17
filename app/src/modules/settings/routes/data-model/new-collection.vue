@@ -384,70 +384,75 @@ function onApply() {
 
 <template>
 	<v-drawer
-		:title="t('creating_new_collection')"
+		:title="$t('creating_new_collection')"
 		:model-value="isOpen"
 		class="new-collection"
 		persistent
-		:sidebar-label="currentTab[0] && t(currentTab[0])"
+		:sidebar-label="currentTab[0] && $t(currentTab[0])"
 		@cancel="router.push('/settings/data-model')"
 		@apply="onApply"
 	>
 		<template #sidebar>
 			<v-tabs v-model="currentTab" vertical>
-				<v-tab value="collection_setup">{{ t('collection_setup') }}</v-tab>
+				<v-tab value="collection_setup">{{ $t('collection_setup') }}</v-tab>
 				<v-tab value="optional_system_fields" :disabled="!collectionName">
-					{{ t('optional_system_fields') }}
+					{{ $t('optional_system_fields') }}
 				</v-tab>
 			</v-tabs>
 		</template>
 
 		<v-tabs-items v-model="currentTab" class="content">
 			<v-tab-item value="collection_setup">
-				<v-notice>{{ t('creating_collection_info') }}</v-notice>
+				<v-notice>{{ $t('creating_collection_info') }}</v-notice>
 
 				<div class="grid">
 					<div class="field half">
 						<div class="type-label">
-							{{ t('name') }}
-							<v-icon v-tooltip="t('required')" class="required" name="star" sup filled />
+							{{ $t('name') }}
+							<v-icon v-tooltip="$t('required')" class="required" name="star" sup filled />
 						</div>
 						<v-input
 							v-model="collectionName"
 							autofocus
 							class="monospace"
 							db-safe
-							:placeholder="t('a_unique_table_name')"
+							:placeholder="$t('a_unique_table_name')"
 						/>
-						<small class="type-note">{{ t('collection_names_are_case_sensitive') }}</small>
+						<small class="type-note">{{ $t('collection_names_are_case_sensitive') }}</small>
 					</div>
 					<div class="field half">
-						<div class="type-label">{{ t('singleton') }}</div>
-						<v-checkbox v-model="singleton" block :label="t('singleton_label')" />
+						<div class="type-label">{{ $t('singleton') }}</div>
+						<v-checkbox v-model="singleton" block :label="$t('singleton_label')" />
 					</div>
 					<v-divider class="full" />
 					<div class="field half">
-						<div class="type-label">{{ t('primary_key_field') }}</div>
-						<v-input v-model="primaryKeyFieldName" class="monospace" db-safe :placeholder="t('a_unique_column_name')" />
+						<div class="type-label">{{ $t('primary_key_field') }}</div>
+						<v-input
+							v-model="primaryKeyFieldName"
+							class="monospace"
+							db-safe
+							:placeholder="$t('a_unique_column_name')"
+						/>
 					</div>
 					<div class="field half">
-						<div class="type-label">{{ t('type') }}</div>
+						<div class="type-label">{{ $t('type') }}</div>
 						<v-select
 							v-model="primaryKeyFieldType"
 							:items="[
 								{
-									text: t('auto_increment_integer'),
+									text: $t('auto_increment_integer'),
 									value: 'auto_int',
 								},
 								{
-									text: t('auto_increment_big_integer'),
+									text: $t('auto_increment_big_integer'),
 									value: 'auto_big_int',
 								},
 								{
-									text: t('generated_uuid'),
+									text: $t('generated_uuid'),
 									value: 'uuid',
 								},
 								{
-									text: t('manual_string'),
+									text: $t('manual_string'),
 									value: 'manual',
 								},
 							]"
@@ -456,7 +461,7 @@ function onApply() {
 				</div>
 			</v-tab-item>
 			<v-tab-item value="optional_system_fields">
-				<v-notice>{{ t('creating_collection_system') }}</v-notice>
+				<v-notice>{{ $t('creating_collection_system') }}</v-notice>
 
 				<div class="grid system">
 					<div
@@ -465,7 +470,7 @@ function onApply() {
 						class="field"
 						:class="index % 2 === 0 ? 'half' : 'half-right'"
 					>
-						<div class="type-label">{{ t(info.label) }}</div>
+						<div class="type-label">{{ $t(info.label) }}</div>
 						<v-input
 							v-model="info.name"
 							db-safe
@@ -490,7 +495,7 @@ function onApply() {
 		<template #actions>
 			<v-button
 				v-if="currentTab[0] === 'collection_setup'"
-				v-tooltip.bottom="t('next')"
+				v-tooltip.bottom="$t('next')"
 				:disabled="!collectionName || collectionName.length === 0"
 				icon
 				rounded
@@ -500,7 +505,7 @@ function onApply() {
 			</v-button>
 			<v-button
 				v-if="currentTab[0] === 'optional_system_fields'"
-				v-tooltip.bottom="t('finish_setup')"
+				v-tooltip.bottom="$t('finish_setup')"
 				:loading="saving"
 				icon
 				rounded

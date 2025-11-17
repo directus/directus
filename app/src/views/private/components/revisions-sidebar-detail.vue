@@ -86,7 +86,7 @@ defineExpose({
 		<v-progress-linear v-if="!revisions && loading" indeterminate />
 
 		<div v-else-if="revisionsCount === 0" class="empty">
-			<div class="content">{{ t('no_revisions') }}</div>
+			<div class="content">{{ $t('no_revisions') }}</div>
 		</div>
 
 		<template v-else>
@@ -98,7 +98,7 @@ defineExpose({
 				<v-divider v-if="revisionsByDate!.length > 0" />
 
 				<div class="external">
-					{{ t('revision_delta_created_externally') }}
+					{{ $t('revision_delta_created_externally') }}
 				</div>
 			</template>
 			<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />

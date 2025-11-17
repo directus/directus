@@ -7,7 +7,6 @@ import { getCollectionRoute } from '@/utils/get-route';
 import { isSystemCollection } from '@directus/system-data';
 import type { DeepPartial } from '@directus/types';
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 type Props = {
 	collection: Collection;
@@ -15,8 +14,6 @@ type Props = {
 };
 
 const props = withDefaults(defineProps<Props>(), {});
-
-const { t } = useI18n();
 
 const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
@@ -80,7 +77,7 @@ async function update(updates: DeepPartial<Collection>) {
 						<v-icon name="box" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ t('goto_collection_content') }}
+						{{ $t('goto_collection_content') }}
 					</v-list-item-content>
 				</v-list-item>
 
@@ -88,13 +85,13 @@ async function update(updates: DeepPartial<Collection>) {
 					<template v-if="collection.meta?.hidden === false">
 						<v-list-item-icon><v-icon name="visibility_off" /></v-list-item-icon>
 						<v-list-item-content>
-							{{ collection.schema ? t('make_collection_hidden') : t('make_folder_hidden') }}
+							{{ collection.schema ? $t('make_collection_hidden') : $t('make_folder_hidden') }}
 						</v-list-item-content>
 					</template>
 					<template v-else>
 						<v-list-item-icon><v-icon name="visibility" /></v-list-item-icon>
 						<v-list-item-content>
-							{{ collection.schema ? t('make_collection_visible') : t('make_folder_visible') }}
+							{{ collection.schema ? $t('make_collection_visible') : $t('make_folder_visible') }}
 						</v-list-item-content>
 					</template>
 				</v-list-item>
@@ -111,7 +108,7 @@ async function update(updates: DeepPartial<Collection>) {
 							<v-icon name="folder_open" />
 						</v-list-item-icon>
 						<v-list-item-content>
-							{{ t('start_open') }}
+							{{ $t('start_open') }}
 						</v-list-item-content>
 					</v-list-item>
 
@@ -124,7 +121,7 @@ async function update(updates: DeepPartial<Collection>) {
 							<v-icon name="folder" />
 						</v-list-item-icon>
 						<v-list-item-content>
-							{{ t('start_collapsed') }}
+							{{ $t('start_collapsed') }}
 						</v-list-item-content>
 					</v-list-item>
 
@@ -137,7 +134,7 @@ async function update(updates: DeepPartial<Collection>) {
 							<v-icon name="folder_lock" />
 						</v-list-item-icon>
 						<v-list-item-content>
-							{{ t('always_open') }}
+							{{ $t('always_open') }}
 						</v-list-item-content>
 					</v-list-item>
 
@@ -149,7 +146,7 @@ async function update(updates: DeepPartial<Collection>) {
 						<v-icon name="delete" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ collection.schema ? t('delete_collection') : t('delete_folder') }}
+						{{ collection.schema ? $t('delete_collection') : $t('delete_folder') }}
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -160,14 +157,14 @@ async function update(updates: DeepPartial<Collection>) {
 				<v-card-title>
 					{{
 						collection.schema
-							? t('delete_collection_are_you_sure', { collection: collection.collection })
-							: t('delete_folder_are_you_sure', { folder: collection.collection })
+							? $t('delete_collection_are_you_sure', { collection: collection.collection })
+							: $t('delete_folder_are_you_sure', { folder: collection.collection })
 					}}
 				</v-card-title>
 				<v-card-text v-if="peerDependencies.length > 0">
 					<v-notice type="danger">
 						<div class="delete-dependencies">
-							{{ t('delete_collection_peer_dependencies') }}
+							{{ $t('delete_collection_peer_dependencies') }}
 							<ul>
 								<li v-for="dependency in peerDependencies" :key="dependency.collection">
 									{{ dependency.field }} ({{ dependency.collection }})
@@ -178,10 +175,10 @@ async function update(updates: DeepPartial<Collection>) {
 				</v-card-text>
 				<v-card-actions>
 					<v-button :disabled="deleting" secondary @click="deleteActive = false">
-						{{ t('cancel') }}
+						{{ $t('cancel') }}
 					</v-button>
 					<v-button :loading="deleting" kind="danger" @click="deleteCollection">
-						{{ collection.schema ? t('delete_collection') : t('delete_folder') }}
+						{{ collection.schema ? $t('delete_collection') : $t('delete_folder') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

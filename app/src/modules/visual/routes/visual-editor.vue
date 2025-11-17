@@ -74,7 +74,7 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 		>
 			<template #prepend-header>
 				<v-button
-					v-tooltip.bottom.end="t('toggle_navigation')"
+					v-tooltip.bottom.end="$t('toggle_navigation')"
 					x-small
 					rounded
 					icon
@@ -85,7 +85,7 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 				</v-button>
 
 				<v-button
-					v-tooltip.bottom.end="t('toggle_editable_elements')"
+					v-tooltip.bottom.end="$t('toggle_editable_elements')"
 					x-small
 					rounded
 					icon

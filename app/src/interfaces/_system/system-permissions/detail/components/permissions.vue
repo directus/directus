@@ -51,9 +51,9 @@ const fields = computed<DeepPartial<Field>[]>(() => [
 	<div>
 		<v-notice>
 			{{
-				t('permissions_for_policy', {
-					action: t(permission.action === 'delete' ? 'delete_label' : permission.action).toLowerCase(),
-					policy: policy ? policy.name : t('public_label'),
+				$t('permissions_for_policy', {
+					action: $t(permission.action === 'delete' ? 'delete_label' : permission.action).toLowerCase(),
+					policy: policy ? policy.name : $t('public_label'),
 				})
 			}}
 		</v-notice>

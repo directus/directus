@@ -4,6 +4,8 @@ import type { Field } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { ComparisonContext, FormField } from './types';
+import { CollabUser } from '@/composables/use-collab';
+import HeaderCollab from '@/views/private/components/header-collab.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -22,6 +24,7 @@ const props = withDefaults(
 		disabledMenu?: boolean;
 		comparison?: ComparisonContext;
 		comparisonActive?: boolean;
+		focusedBy?: CollabUser;
 	}>(),
 	{
 		batchMode: false,
@@ -63,7 +66,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			class="field-name"
 			v-bind="!disabledMenu ? { type: 'button', onClick: toggle } : {}"
 		>
-			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot" />
+			<span v-if="edited" v-tooltip="$t('edited')" class="edit-dot" />
 			<v-checkbox
 				v-if="batchMode"
 				:model-value="batchActive"
@@ -82,7 +85,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			<div class="field-label-content">
 				<v-text-overflow :text="field.name" />
 
-				<span v-if="showHiddenIndicator" class="hidden-indicator">({{ t('hidden') }})</span>
+				<span v-if="showHiddenIndicator" class="hidden-indicator">({{ $t('hidden') }})</span>
 
 				<v-icon
 					v-if="field.meta?.required === true"
@@ -97,7 +100,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 
 				<v-icon
 					v-if="!disabled && rawEditorEnabled"
-					v-tooltip="t('toggle_raw_editor')"
+					v-tooltip="$t('toggle_raw_editor')"
 					class="raw-editor-toggle"
 					:class="{ active: rawEditorActive }"
 					name="data_object"
@@ -120,6 +123,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 
 			<v-icon v-if="!disabled && !disabledMenu" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
 		</component>
+		<header-collab :model-value="focusedBy" hide-current x-small />
 	</div>
 </template>
 
@@ -269,5 +273,11 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 
 .type-label {
 	font-family: var(--theme--form--field--label--font-family);
+}
+
+:deep(.v-avatar) {
+	position: absolute;
+	inset-block-end: 0;
+	inset-inline-end: 0;
 }
 </style>

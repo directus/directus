@@ -195,7 +195,7 @@ async function batchDelete() {
 </script>
 
 <template>
-	<private-view :title="t('insights')">
+	<private-view :title="$t('insights')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="insights" />
@@ -212,12 +212,12 @@ async function batchDelete() {
 				v-model="search"
 				:show-filter="false"
 				:autofocus="insightsStore.dashboards.length > 25"
-				:placeholder="t('search_dashboard')"
+				:placeholder="$t('search_dashboard')"
 			/>
 
 			<v-button
 				v-if="selection.length > 0"
-				v-tooltip.bottom="createAllowed ? t('export_dashboard') : t('not_allowed')"
+				v-tooltip.bottom="createAllowed ? $t('export_dashboard') : $t('not_allowed')"
 				:disabled="createAllowed !== true"
 				rounded
 				icon
@@ -235,7 +235,7 @@ async function batchDelete() {
 			>
 				<template #activator="{ on }">
 					<v-button
-						v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"
+						v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
 						:disabled="batchDeleteAllowed !== true"
 						rounded
 						icon
@@ -248,14 +248,14 @@ async function batchDelete() {
 				</template>
 
 				<v-card>
-					<v-card-title>{{ t('batch_delete_confirm', selection.length) }}</v-card-title>
+					<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
 						<v-button secondary @click="confirmBatchDelete = false">
-							{{ t('cancel') }}
+							{{ $t('cancel') }}
 						</v-button>
 						<v-button kind="danger" :loading="batchDeleting" @click="batchDelete">
-							{{ t('delete_label') }}
+							{{ $t('delete_label') }}
 						</v-button>
 					</v-card-actions>
 				</v-card>
@@ -264,7 +264,7 @@ async function batchDelete() {
 			<dashboard-dialog v-model="createDialogActive">
 				<template #activator="{ on }">
 					<v-button
-						v-tooltip.bottom="createAllowed ? t('create_dashboard') : t('not_allowed')"
+						v-tooltip.bottom="createAllowed ? $t('create_dashboard') : $t('not_allowed')"
 						rounded
 						icon
 						:disabled="createAllowed === false"
@@ -277,8 +277,8 @@ async function batchDelete() {
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_insights_overview')" class="page-description" />
+			<sidebar-detail icon="info" :title="$t('information')" close>
+				<div v-md="$t('page_help_insights_overview')" class="page-description" />
 			</sidebar-detail>
 			<basic-import-sidebar-detail collection="directus_dashboards" @refresh="refresh" />
 		</template>
@@ -321,7 +321,7 @@ async function batchDelete() {
 									<v-icon name="edit" />
 								</v-list-item-icon>
 								<v-list-item-content>
-									{{ t('edit_dashboard') }}
+									{{ $t('edit_dashboard') }}
 								</v-list-item-content>
 							</v-list-item>
 
@@ -331,7 +331,7 @@ async function batchDelete() {
 									<v-icon v-if="duplicating !== item.id" name="content_copy" />
 								</v-list-item-icon>
 								<v-list-item-content>
-									{{ t('duplicate_dashboard') }}
+									{{ $t('duplicate_dashboard') }}
 								</v-list-item-content>
 							</v-list-item>
 
@@ -340,7 +340,7 @@ async function batchDelete() {
 									<v-icon name="download" />
 								</v-list-item-icon>
 								<v-list-item-content>
-									{{ t('export_dashboard') }}
+									{{ $t('export_dashboard') }}
 								</v-list-item-content>
 							</v-list-item>
 
@@ -357,7 +357,7 @@ async function batchDelete() {
 									<v-icon name="delete" />
 								</v-list-item-icon>
 								<v-list-item-content>
-									{{ t('delete_dashboard') }}
+									{{ $t('delete_dashboard') }}
 								</v-list-item-content>
 							</v-list-item>
 						</v-list>
@@ -366,22 +366,22 @@ async function batchDelete() {
 			</template>
 		</v-table>
 
-		<v-info v-else-if="search" icon="search" :title="t('no_results')" center>
-			{{ t('no_results_copy') }}
+		<v-info v-else-if="search" icon="search" :title="$t('no_results')" center>
+			{{ $t('no_results_copy') }}
 
 			<template #append>
-				<v-button @click="search = null">{{ t('clear_filters') }}</v-button>
+				<v-button @click="search = null">{{ $t('clear_filters') }}</v-button>
 			</template>
 		</v-info>
 
-		<v-info v-else icon="space_dashboard" :title="t('no_dashboards')" center>
-			{{ t('no_dashboards_copy') }}
+		<v-info v-else icon="space_dashboard" :title="$t('no_dashboards')" center>
+			{{ $t('no_dashboards_copy') }}
 
 			<template v-if="createAllowed" #append>
 				<dashboard-dialog v-model="createDialogActive">
 					<template #activator="{ on }">
-						<v-button v-tooltip.bottom="createAllowed ? t('create_dashboard') : t('not_allowed')" @click="on">
-							{{ t('create_dashboard') }}
+						<v-button v-tooltip.bottom="createAllowed ? $t('create_dashboard') : $t('not_allowed')" @click="on">
+							{{ $t('create_dashboard') }}
 						</v-button>
 					</template>
 				</dashboard-dialog>
@@ -390,14 +390,14 @@ async function batchDelete() {
 
 		<v-dialog :model-value="!!confirmDelete" @esc="confirmDelete = null" @apply="deleteDashboard">
 			<v-card>
-				<v-card-title>{{ t('dashboard_delete_confirm') }}</v-card-title>
+				<v-card-title>{{ $t('dashboard_delete_confirm') }}</v-card-title>
 
 				<v-card-actions>
 					<v-button secondary @click="confirmDelete = null">
-						{{ t('cancel') }}
+						{{ $t('cancel') }}
 					</v-button>
 					<v-button danger :loading="deletingDashboard" @click="deleteDashboard">
-						{{ t('delete_label') }}
+						{{ $t('delete_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

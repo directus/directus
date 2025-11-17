@@ -217,7 +217,7 @@ export default abstract class SocketController {
 
 			try {
 				const payload = await waitForAnyMessage(ws, this.authentication.timeout);
-				if (getMessageType(payload) !== 'auth') throw new Error();
+				if ((getMessageType(payload) as any) !== 'auth') throw new Error();
 
 				const state = await authenticateConnection(WebSocketAuthMessage.parse(payload), accountabilityOverrides);
 

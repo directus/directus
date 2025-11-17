@@ -24,11 +24,11 @@ const label = computed(() =>
 	<MetadataItem
 		v-tooltip="
 			isCompatible
-				? t('compatible_with_your_project_copy', {
+				? $t('compatible_with_your_project_copy', {
 						currentVersion: serverStore.info.version!,
 						hostVersion: hostVersion,
 					})
-				: t('compatibility_not_guaranteed_copy', {
+				: $t('compatibility_not_guaranteed_copy', {
 						currentVersion: serverStore.info.version!,
 						hostVersion: hostVersion,
 					})

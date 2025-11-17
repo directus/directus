@@ -199,7 +199,7 @@ function useUrls() {
 
 				<v-button
 					v-if="!hidePopupButton"
-					v-tooltip.bottom.end="t(inPopup ? 'live_preview.close_window' : 'live_preview.new_window')"
+					v-tooltip.bottom.end="$t(inPopup ? 'live_preview.close_window' : 'live_preview.new_window')"
 					x-small
 					rounded
 					icon
@@ -211,7 +211,7 @@ function useUrls() {
 
 				<v-button
 					v-if="!hideRefreshButton"
-					v-tooltip.bottom.end="t('live_preview.refresh')"
+					v-tooltip.bottom.end="$t('live_preview.refresh')"
 					x-small
 					icon
 					rounded
@@ -292,7 +292,7 @@ function useUrls() {
 				/>
 			</div>
 			<v-button
-				v-tooltip.bottom.start="t('live_preview.change_size')"
+				v-tooltip.bottom.start="$t('live_preview.change_size')"
 				x-small
 				icon
 				rounded
@@ -305,12 +305,12 @@ function useUrls() {
 			</v-button>
 		</div>
 
-		<v-info v-if="!frameSrc" :title="t('no_url')" icon="edit_square" center>
-			{{ t('no_url_copy') }}
+		<v-info v-if="!frameSrc" :title="$t('no_url')" icon="edit_square" center>
+			{{ $t('no_url_copy') }}
 		</v-info>
 
-		<v-info v-else-if="invalidUrl" :title="t('invalid_url')" type="danger" icon="edit_square" center>
-			{{ t('invalid_url_copy') }}
+		<v-info v-else-if="invalidUrl" :title="$t('invalid_url')" type="danger" icon="edit_square" center>
+			{{ $t('invalid_url_copy') }}
 		</v-info>
 
 		<div v-else class="container">

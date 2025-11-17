@@ -3,7 +3,6 @@ import { useServerStore } from '@/stores/server';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 defineProps<{
 	title?: string;
@@ -13,8 +12,6 @@ defineProps<{
 const serverStore = useServerStore();
 
 const { info: serverInfo } = storeToRefs(serverStore);
-
-const { t } = useI18n();
 
 const logoURL = computed<string | null>(() => {
 	if (!serverStore.info?.project?.project_logo) return null;
@@ -45,7 +42,7 @@ const logoURL = computed<string | null>(() => {
 						<div class="title">
 							<p class="subtitle">{{ serverInfo?.project?.project_name }}</p>
 							<slot name="title">
-								<h1 class="type-title">{{ title ?? t('share_access_page') }}</h1>
+								<h1 class="type-title">{{ title ?? $t('share_access_page') }}</h1>
 							</slot>
 						</div>
 					</div>

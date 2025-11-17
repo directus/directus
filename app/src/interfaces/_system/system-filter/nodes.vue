@@ -339,7 +339,7 @@ function isExistingField(node: Record<string, any>): boolean {
 						/>
 						<span class="delete">
 							<v-icon
-								v-tooltip="t('delete_label')"
+								v-tooltip="$t('delete_label')"
 								name="close"
 								small
 								clickable
@@ -356,13 +356,13 @@ function isExistingField(node: Record<string, any>): boolean {
 							<span class="key" @click="toggleLogic(index)">
 								{{
 									filterInfo[index].name === '_and'
-										? t('interfaces.filter.logic_type_and')
-										: t('interfaces.filter.logic_type_or')
+										? $t('interfaces.filter.logic_type_and')
+										: $t('interfaces.filter.logic_type_or')
 								}}
 							</span>
 							<span class="text">
 								{{
-									`— ${filterInfo[index].name === '_and' ? t('interfaces.filter.all') : t('interfaces.filter.any')} ${t(
+									`— ${filterInfo[index].name === '_and' ? $t('interfaces.filter.all') : $t('interfaces.filter.any')} ${t(
 										'interfaces.filter.of_the_following',
 									)}`
 								}}
@@ -370,7 +370,7 @@ function isExistingField(node: Record<string, any>): boolean {
 						</div>
 						<span class="delete">
 							<v-icon
-								v-tooltip="t('delete_label')"
+								v-tooltip="$t('delete_label')"
 								name="close"
 								small
 								clickable

@@ -13,7 +13,6 @@ import type { ContentVersion, Filter } from '@directus/types';
 import { moveInArray } from '@directus/utils';
 import { cloneDeep } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import ItemPreview from './item-preview.vue';
 
@@ -45,6 +44,7 @@ const props = withDefaults(
 		field: string;
 		primaryKey: string | number;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		version: ContentVersion | null;
 		template: string;
 		filter?: Filter | null;
@@ -58,13 +58,13 @@ const props = withDefaults(
 	}>(),
 	{
 		disabled: false,
+		nonEditable: false,
 		filter: null,
 		root: false,
 		modelValue: undefined,
 	},
 );
 
-const { t } = useI18n();
 const emit = defineEmits(['update:modelValue']);
 
 const value = computed<ChangesItem | any[]>({
@@ -186,7 +186,7 @@ function stageEdits(item: Record<string, any>) {
 
 	<template v-else-if="root && filteredDisplayItems.length === 0">
 		<v-notice>
-			{{ t('no_items') }}
+			{{ $t('no_items') }}
 		</v-notice>
 	</template>
 
@@ -206,13 +206,14 @@ function stageEdits(item: Record<string, any>) {
 		@change="change($event as ChangeEvent)"
 	>
 		<template #item="{ element, index }">
-			<v-list-item class="row" :class="{ draggable: element.$type !== 'deleted' }">
+			<v-list-item :non-editable="nonEditable" class="row" :class="{ draggable: element.$type !== 'deleted' }">
 				<item-preview
 					:item="element"
 					:edits="getItemEdits(element)"
 					:template="template"
 					:collection="collection"
 					:disabled="disabled"
+					:non-editable="nonEditable"
 					:relation-info="relationInfo"
 					:open="open[element[relationInfo.relatedPrimaryKeyField.field]] ?? false"
 					:deleted="element.$type === 'deleted'"
@@ -227,8 +228,10 @@ function stageEdits(item: Record<string, any>) {
 					:template="template"
 					:collection="collection"
 					:disabled="disabled"
+					:non-editable="nonEditable"
 					:field="field"
 					:fields="fields"
+					:version="version"
 					:enable-create="enableCreate"
 					:enable-select="enableSelect"
 					:custom-filter="customFilter"
@@ -242,13 +245,14 @@ function stageEdits(item: Record<string, any>) {
 	</draggable>
 
 	<template v-if="root">
-		<div class="actions">
-			<v-button v-if="enableCreate" :disabled @click="addNewActive = true">{{ t('create_new') }}</v-button>
-			<v-button v-if="enableSelect" :disabled @click="selectDrawer = true">{{ t('add_existing') }}</v-button>
+		<div v-if="!nonEditable" class="actions">
+			<v-button v-if="enableCreate" :disabled @click="addNewActive = true">{{ $t('create_new') }}</v-button>
+			<v-button v-if="enableSelect" :disabled @click="selectDrawer = true">{{ $t('add_existing') }}</v-button>
 		</div>
 
 		<drawer-item
-			v-if="!disabled"
+			:disabled
+			:non-editable
 			:active="addNewActive"
 			:collection="collection"
 			:primary-key="'+'"

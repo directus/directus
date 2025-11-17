@@ -1,14 +1,8 @@
-<script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
-</script>
-
 <template>
 	<thead class="permissions-overview-header">
 		<tr>
-			<th>{{ t('collection') }}</th>
-			<th colspan="6">{{ t('actions') }}</th>
+			<th>{{ $t('collection') }}</th>
+			<th colspan="6">{{ $t('actions') }}</th>
 		</tr>
 	</thead>
 </template>

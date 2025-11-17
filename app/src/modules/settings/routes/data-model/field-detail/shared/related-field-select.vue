@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -18,13 +16,11 @@ const props = withDefaults(
 	{
 		disabledFields: () => [],
 		typeDenyList: () => [],
-		placeholder: () => i18n.global.t('foreign_key') + '...',
 	},
 );
 
 defineEmits(['update:modelValue']);
 
-const { t } = useI18n();
 const fieldsStore = useFieldsStore();
 
 const fields = computed(() => {
@@ -54,14 +50,14 @@ const fieldExists = computed(() => {
 		db-safe
 		:nullable="nullable"
 		:disabled="disabled"
-		:placeholder="placeholder"
+		:placeholder="placeholder || $t('foreign_key')"
 		:class="{ matches: fieldExists }"
 		@update:model-value="$emit('update:modelValue', $event)"
 	>
 		<template v-if="fields && fields.length > 0 && !disabled" #append>
 			<v-menu show-arrow placement="bottom-end">
 				<template #activator="{ toggle }">
-					<v-icon v-tooltip="t('select_existing')" name="list_alt" clickable @click="toggle" />
+					<v-icon v-tooltip="$t('select_existing')" name="list_alt" clickable @click="toggle" />
 				</template>
 
 				<v-list class="monospace">

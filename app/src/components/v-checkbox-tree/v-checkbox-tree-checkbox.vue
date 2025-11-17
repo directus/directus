@@ -22,6 +22,7 @@ const props = withDefaults(
 		itemValue?: string;
 		itemChildren?: string;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		showSelectionOnly?: boolean;
 		parentValue?: string | number | null;
 	}>(),
@@ -35,6 +36,7 @@ const props = withDefaults(
 		itemValue: 'value',
 		itemChildren: 'children',
 		disabled: false,
+		nonEditable: false,
 		showSelectionOnly: false,
 		parentValue: null,
 	},
@@ -386,7 +388,8 @@ function getRecursiveChildrenValues(mode: 'all' | 'branch' | 'leaf', children: R
 				:checked="groupCheckedStateOverride"
 				:label="text"
 				:value="value"
-				:disabled="disabled"
+				:disabled
+				:non-editable
 			>
 				<v-highlight :text="text" :query="search" />
 			</v-checkbox>
@@ -407,13 +410,14 @@ function getRecursiveChildrenValues(mode: 'all' | 'branch' | 'leaf', children: R
 			:value="choice[itemValue]"
 			:children="choice[itemChildren]"
 			:disabled="disabled || choice.disabled"
+			:non-editable="nonEditable"
 			:show-selection-only="showSelectionOnly"
 			:parent-value="value"
 		/>
 	</v-list-group>
 
 	<v-list-item v-else-if="!hidden" class="item">
-		<v-checkbox v-model="treeValue" :disabled="disabled" :checked="checked" :label="text" :value="value">
+		<v-checkbox v-model="treeValue" :disabled :non-editable :checked :label="text" :value>
 			<v-highlight :text="text" :query="search" />
 		</v-checkbox>
 	</v-list-item>

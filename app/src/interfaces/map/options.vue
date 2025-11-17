@@ -7,7 +7,6 @@ import { Field, GeometryOptions, GeometryType } from '@directus/types';
 import { CameraOptions, Map } from 'maplibre-gl';
 import type { Ref } from 'vue';
 import { computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -18,8 +17,6 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const nativeGeometryType = computed(() => (props.field?.type.split('.')[1] as GeometryType) ?? 'Point');
 const geometryType = ref<GeometryType>(nativeGeometryType.value ?? props.value?.geometryType ?? 'Point');
@@ -86,16 +83,16 @@ onUnmounted(() => {
 <template>
 	<div class="form-grid">
 		<div v-if="!nativeGeometryType && field?.type !== 'csv'" class="field half-left">
-			<div class="type-label">{{ t('interfaces.map.geometry_type') }}</div>
+			<div class="type-label">{{ $t('interfaces.map.geometry_type') }}</div>
 			<v-select
 				v-model="geometryType"
-				:placeholder="t('any')"
+				:placeholder="$t('any')"
 				show-deselect
 				:items="GEOMETRY_TYPES.map((value) => ({ value, text: value }))"
 			/>
 		</div>
 		<div class="field">
-			<div class="type-label">{{ t('interfaces.map.default_view') }}</div>
+			<div class="type-label">{{ $t('interfaces.map.default_view') }}</div>
 			<div ref="mapContainer" class="map"></div>
 		</div>
 	</div>

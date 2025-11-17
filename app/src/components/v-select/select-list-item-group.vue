@@ -11,12 +11,14 @@ const props = withDefaults(
 		multiple?: boolean;
 		allowOther?: boolean;
 		groupSelectable?: boolean;
+		nonEditable?: boolean;
 	}>(),
 	{
 		modelValue: null,
 		multiple: true,
 		allowOther: true,
 		groupSelectable: false,
+		nonEditable: false,
 	},
 );
 
@@ -35,7 +37,7 @@ const isActive = computed(() => {
 });
 
 function onGroupClick(item: Option) {
-	if (!props.groupSelectable) return;
+	if (!props.groupSelectable || props.nonEditable) return;
 
 	emit('update:modelValue', item.value);
 }
@@ -45,7 +47,7 @@ function onGroupClick(item: Option) {
 	<v-list-group
 		v-show="!item.hidden"
 		:active="isActive"
-		:clickable="groupSelectable || item.selectable"
+		:clickable="(groupSelectable || item.selectable) && !nonEditable"
 		:value="item.value"
 		@click="onGroupClick(item)"
 	>
@@ -61,6 +63,7 @@ function onGroupClick(item: Option) {
 					:label="item.text"
 					:value="item.value"
 					:disabled="item.disabled"
+					:non-editable="nonEditable"
 					@update:model-value="$emit('update:modelValue', $event.length > 0 ? $event : null)"
 				/>
 			</v-list-item-content>
@@ -75,6 +78,7 @@ function onGroupClick(item: Option) {
 				:multiple="multiple"
 				:allow-other="allowOther"
 				:group-selectable="groupSelectable"
+				:non-editable="nonEditable"
 				@update:model-value="$emit('update:modelValue', $event)"
 			/>
 			<select-list-item
@@ -84,6 +88,7 @@ function onGroupClick(item: Option) {
 				:item-label-font-family="itemLabelFontFamily"
 				:multiple="multiple"
 				:allow-other="allowOther"
+				:non-editable="nonEditable"
 				@update:model-value="$emit('update:modelValue', $event)"
 			/>
 		</template>

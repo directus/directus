@@ -252,32 +252,32 @@ const sortFields = computed(() => {
 <template>
 	<div class="grid">
 		<div class="grid-element half">
-			<p class="type-label">{{ t('template') }}</p>
+			<p class="type-label">{{ $t('template') }}</p>
 			<v-input v-model="template" class="input" :placeholder="`{{ field }}`" />
 		</div>
 
 		<div class="grid-element half">
-			<p class="type-label">{{ t('interfaces.list.add_label') }}</p>
+			<p class="type-label">{{ $t('interfaces.list.add_label') }}</p>
 			<interface-system-input-translated-string
 				:value="addLabel"
 				class="input"
-				:placeholder="t('create_new')"
+				:placeholder="$t('create_new')"
 				@input="addLabel = $event"
 			/>
 		</div>
 		<div class="grid-element half-left">
-			<p class="type-label">{{ t('interfaces.list.sort') }}</p>
+			<p class="type-label">{{ $t('interfaces.list.sort') }}</p>
 			<v-select
 				v-model="sort"
 				class="input"
 				:items="sortFields"
 				show-deselect
-				:placeholder="t('interfaces.list.sort_placeholder')"
+				:placeholder="$t('interfaces.list.sort_placeholder')"
 			/>
 		</div>
 
 		<div class="grid-element full">
-			<p class="type-label">{{ t('interfaces.list.edit_fields') }}</p>
+			<p class="type-label">{{ $t('interfaces.list.edit_fields') }}</p>
 			<repeater
 				:value="repeaterValue"
 				template="{{ field }} — {{ interface }}"

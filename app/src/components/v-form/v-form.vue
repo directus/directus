@@ -6,16 +6,16 @@ import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fiel
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { useElementSize } from '@directus/composables';
 import { ContentVersion, Field, ValidationError } from '@directus/types';
-import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
+import { assign, cloneDeep, isEqual, isEmpty, isNil, omit } from 'lodash';
 import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import type { MenuOptions } from './form-field-menu.vue';
 import FormField from './form-field.vue';
-import type { ComparisonContext, FormField as TFormField } from './types';
+import type { FormField as TFormField, ComparisonContext } from './types';
 import { getFormFields } from './utils/get-form-fields';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
 import ValidationErrors from './validation-errors.vue';
+import { CollabContext } from '@/composables/use-collab';
 
 type FieldValues = {
 	[field: string]: any;
@@ -40,12 +40,12 @@ const props = withDefaults(
 		/* Enable the raw editor toggler on fields */
 		rawEditorEnabled?: boolean;
 		disabledMenuOptions?: MenuOptions[];
-		disabledMenu?: boolean;
 		direction?: string;
 		showDivider?: boolean;
 		inline?: boolean;
 		version?: ContentVersion | null;
 		comparison?: ComparisonContext;
+		collabContext?: CollabContext;
 	}>(),
 	{
 		collection: undefined,
@@ -63,9 +63,7 @@ const props = withDefaults(
 	},
 );
 
-const { t } = useI18n();
-
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'updateField', 'unsetField', 'focusField', 'blurField']);
 
 const values = computed(() => {
 	return Object.assign({}, cloneDeep(props.initialValues), cloneDeep(props.modelValue));
@@ -269,6 +267,7 @@ function setValue(fieldKey: string, value: any, opts?: { force?: boolean }) {
 
 	const edits = props.modelValue ? cloneDeep(props.modelValue) : {};
 	edits[fieldKey] = value;
+	emit('updateField', fieldKey, value);
 	emit('update:modelValue', edits);
 }
 
@@ -309,6 +308,7 @@ function unsetValue(field: TFormField | undefined) {
 		const newEdits = { ...props.modelValue };
 		delete newEdits[field.field];
 		emit('update:modelValue', newEdits);
+		emit('unsetField', field.field);
 	}
 }
 
@@ -362,30 +362,6 @@ function useRawEditor() {
 		}
 	}
 }
-
-function getFirstVisibleFieldClass(index: number) {
-	return index === firstVisibleFieldIndex.value ? 'first-visible-field' : '';
-}
-
-function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
-	if (isComparisonDiff()) {
-		if (field.indicatorStyle === 'active') return 'indicator-active';
-		if (field.indicatorStyle === 'muted') return 'indicator-muted';
-	}
-
-	return '';
-
-	function isComparisonDiff() {
-		if (field.indicatorStyle === 'hidden' || !props.comparison) return false;
-
-		if (isGroup) {
-			const groupFields = getFieldsForGroup(field.meta?.field ?? null);
-			return groupFields.some((groupField) => props.comparison!.fields.has(groupField.field));
-		}
-
-		return props.comparison.fields.has(field.field);
-	}
-}
 </script>
 
 <template>
@@ -417,8 +393,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					"
 					:class="[
 						fieldsMap[fieldName]!.meta?.width || 'full',
-						getFirstVisibleFieldClass(index),
-						getComparisonIndicatorClasses(fieldsMap[fieldName]!, true),
+						index === firstVisibleFieldIndex ? 'first-visible-field' : '',
 					]"
 					:field="fieldsMap[fieldName]"
 					:fields="fieldsForGroup[index] || []"
@@ -446,7 +421,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 							formFieldEls[fieldName] = el;
 						}
 					"
-					:class="[getFirstVisibleFieldClass(index), getComparisonIndicatorClasses(fieldsMap[fieldName]!)]"
+					:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
 					:field="fieldsMap[fieldName]!"
 					:autofocus="index === firstEditableFieldIndex && autofocus"
 					:model-value="(values || {})[fieldName]"
@@ -469,8 +444,8 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:raw-editor-enabled="rawEditorEnabled"
 					:raw-editor-active="rawActiveFields.has(fieldName)"
 					:disabled-menu-options="disabledMenuOptions"
-					:disabled-menu="disabledMenu"
 					:direction="direction"
+					:collab-field-context="collabContext?.registerField(fieldName)"
 					@update:model-value="setValue(fieldName, $event)"
 					@set-field-value="setValue($event.field, $event.value, { force: true })"
 					@unset="unsetValue(fieldsMap[fieldName]!)"
@@ -501,13 +476,5 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 .v-divider {
 	margin-block-end: 50px;
 	grid-column: 1 / 3;
-}
-
-.indicator-active {
-	@include mixins.field-indicator;
-}
-
-.indicator-muted {
-	@include mixins.field-indicator('muted');
 }
 </style>

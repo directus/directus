@@ -10,6 +10,8 @@ interface Props {
 	label?: string | null;
 	/** Disable the radio button */
 	disabled?: boolean;
+	/** Set the non-editable state for the radio */
+	nonEditable?: boolean;
 	/** Change the icon to display when enabled */
 	iconOn?: string;
 	/** Change the icon to display when disabled */
@@ -22,6 +24,7 @@ const props = withDefaults(defineProps<Props>(), {
 	modelValue: null,
 	label: null,
 	disabled: false,
+	nonEditable: false,
 	iconOn: 'radio_button_checked',
 	iconOff: 'radio_button_unchecked',
 	block: false,
@@ -48,7 +51,7 @@ function emitValue(): void {
 		type="button"
 		:aria-pressed="isChecked ? 'true' : 'false'"
 		:disabled="disabled"
-		:class="{ checked: isChecked, block }"
+		:class="{ checked: isChecked, block, 'non-editable': nonEditable }"
 		@click="emitValue"
 	>
 		<v-icon :name="icon" />
@@ -92,12 +95,14 @@ function emitValue(): void {
 	&:disabled {
 		cursor: not-allowed;
 
-		.label {
-			color: var(--theme--foreground-subdued);
-		}
+		&:not(.non-editable) {
+			.label {
+				color: var(--theme--foreground-subdued);
+			}
 
-		.v-icon {
-			--v-icon-color: var(--theme--foreground-subdued);
+			.v-icon {
+				--v-icon-color: var(--theme--foreground-subdued);
+			}
 		}
 	}
 
@@ -131,7 +136,8 @@ function emitValue(): void {
 		}
 	}
 
-	&:not(:disabled).checked {
+	&:not(:disabled).checked,
+	&.checked.non-editable {
 		.v-icon {
 			--v-icon-color: var(--v-radio-color, var(--theme--primary));
 		}

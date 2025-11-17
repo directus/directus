@@ -8,7 +8,6 @@ import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import { Filter } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { computed, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 type Value = {
 	key: (string | number) | null;
@@ -21,6 +20,7 @@ const props = withDefaults(
 		selectedCollection: string;
 		template?: string | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		filter?: Filter | null;
 	}>(),
 	{
@@ -29,8 +29,6 @@ const props = withDefaults(
 		filter: null,
 	},
 );
-
-const { t } = useI18n();
 
 const emit = defineEmits(['input']);
 
@@ -110,16 +108,17 @@ function onSelection(selectedIds: (number | string)[] | null) {
 	<div class="collection-item-dropdown">
 		<v-skeleton-loader v-if="loading" type="input" />
 
-		<v-list-item v-else :disabled block clickable @click="selectDrawerOpen = true">
+		<v-list-item v-else :disabled :non-editable block clickable @click="selectDrawerOpen = true">
 			<div v-if="displayItem" class="preview">
 				<render-template :collection="selectedCollection" :item="displayItem" :template="displayTemplate" />
 			</div>
-			<div v-else class="placeholder">{{ t('select_an_item') }}</div>
+			<div v-else class="placeholder">{{ $t('select_an_item') }}</div>
 
 			<div class="spacer" />
 
-			<div class="item-actions">
+			<div v-if="!nonEditable" class="item-actions">
 				<v-remove v-if="displayItem" deselect @action="value = null" />
+
 				<v-icon v-else class="expand" name="expand_more" />
 			</div>
 		</v-list-item>

@@ -8,6 +8,7 @@ const props = withDefaults(
 		type?: string;
 		clear?: boolean;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		placeholder?: string;
 		masked?: boolean;
 		iconLeft?: string;
@@ -72,6 +73,7 @@ const isFloat = computed(() => ['float', 'decimal'].includes(props.type!));
 		:nullable="!clear"
 		:placeholder="placeholder"
 		:disabled="disabled"
+		:non-editable="nonEditable"
 		:trim="trim"
 		:type="inputType"
 		:class="font"

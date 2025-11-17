@@ -2,7 +2,6 @@
 import type { Translation } from '@/stores/translations';
 import { fetchAll } from '@/utils/fetch-all';
 import { Ref, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 interface Props {
 	translationKey: string;
@@ -12,8 +11,6 @@ const props = defineProps<Props>();
 
 const translations: Ref<Translation[]> = ref([]);
 const loading = ref(false);
-
-const { t } = useI18n();
 
 const fetchTranslation = async () => {
 	loading.value = true;
@@ -49,7 +46,7 @@ const clicked = (toggleTooltip: () => void) => {
 		<v-menu class="menu" show-arrow>
 			<template #activator="{ toggle, deactivate, active }">
 				<v-icon
-					v-tooltip.bottom="translations && translations.length === 0 && t('translations')"
+					v-tooltip.bottom="translations && translations.length === 0 && $t('translations')"
 					:small="false"
 					class="icon"
 					:class="{ active }"
@@ -65,7 +62,7 @@ const clicked = (toggleTooltip: () => void) => {
 					<v-list-item-content>
 						<div class="header">
 							<div class="lang">
-								{{ t('loading') }}
+								{{ $t('loading') }}
 							</div>
 						</div>
 					</v-list-item-content>

@@ -8,7 +8,6 @@ import { Collection } from '@/types/collections';
 import { useSync } from '@directus/composables';
 import type { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { ComponentPublicInstance, Ref, inject, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 defineOptions({ inheritAttrs: false });
 
@@ -61,7 +60,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
 
-const { t } = useI18n();
 const { collection } = toRefs(props);
 
 const { sortAllowed } = useCollectionPermissions(collection);
@@ -160,7 +158,7 @@ function removeField(fieldKey: string) {
 							<v-icon name="sort" class="flip" />
 						</v-list-item-icon>
 						<v-list-item-content>
-							{{ t('sort_asc') }}
+							{{ $t('sort_asc') }}
 						</v-list-item-content>
 					</v-list-item>
 
@@ -174,7 +172,7 @@ function removeField(fieldKey: string) {
 							<v-icon name="sort" />
 						</v-list-item-icon>
 						<v-list-item-content>
-							{{ t('sort_desc') }}
+							{{ $t('sort_desc') }}
 						</v-list-item-content>
 					</v-list-item>
 
@@ -185,7 +183,7 @@ function removeField(fieldKey: string) {
 							<v-icon name="format_align_left" />
 						</v-list-item-icon>
 						<v-list-item-content>
-							{{ t('left_align') }}
+							{{ $t('left_align') }}
 						</v-list-item-content>
 					</v-list-item>
 					<v-list-item :active="header.align === 'center'" clickable @click="onAlignChange?.(header.value, 'center')">
@@ -193,7 +191,7 @@ function removeField(fieldKey: string) {
 							<v-icon name="format_align_center" />
 						</v-list-item-icon>
 						<v-list-item-content>
-							{{ t('center_align') }}
+							{{ $t('center_align') }}
 						</v-list-item-content>
 					</v-list-item>
 					<v-list-item :active="header.align === 'right'" clickable @click="onAlignChange?.(header.value, 'right')">
@@ -201,7 +199,7 @@ function removeField(fieldKey: string) {
 							<v-icon name="format_align_right" />
 						</v-list-item-icon>
 						<v-list-item-content>
-							{{ t('right_align') }}
+							{{ $t('right_align') }}
 						</v-list-item-content>
 					</v-list-item>
 
@@ -212,7 +210,7 @@ function removeField(fieldKey: string) {
 							<v-icon name="remove" />
 						</v-list-item-icon>
 						<v-list-item-content>
-							{{ t('hide_field') }}
+							{{ $t('hide_field') }}
 						</v-list-item-content>
 					</v-list-item>
 				</v-list>
@@ -222,7 +220,7 @@ function removeField(fieldKey: string) {
 				<v-menu placement="bottom-end" show-arrow :close-on-content-click="false">
 					<template #activator="{ toggle, active }">
 						<v-icon
-							v-tooltip="t('add_field')"
+							v-tooltip="$t('add_field')"
 							class="add-field"
 							name="add"
 							:class="{ active }"
@@ -255,7 +253,7 @@ function removeField(fieldKey: string) {
 					</div>
 
 					<div v-if="loading === false && (items.length >= 25 || limit < 25)" class="per-page">
-						<span>{{ t('per_page') }}</span>
+						<span>{{ $t('per_page') }}</span>
 						<v-select
 							:model-value="`${limit}`"
 							:items="pageSizes"

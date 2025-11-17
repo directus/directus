@@ -5,10 +5,7 @@ import { hydrate } from '@/hydrate';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
 import { onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-
-const { t } = useI18n();
 
 const router = useRouter();
 
@@ -65,8 +62,8 @@ async function hydrateAndLogin() {
 				</template>
 			</i18n-t>
 			<div class="actions">
-				<router-link to="/logout" class="sign-out">{{ t('sign_out') }}</router-link>
-				<v-button autofocus large @click="hydrateAndLogin">{{ t('continue_label') }}</v-button>
+				<router-link to="/logout" class="sign-out">{{ $t('sign_out') }}</router-link>
+				<v-button autofocus large @click="hydrateAndLogin">{{ $t('continue_label') }}</v-button>
 			</div>
 		</template>
 	</div>

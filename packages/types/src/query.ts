@@ -10,7 +10,7 @@ export type Query = {
 	search?: string | null;
 	version?: string | null;
 	versionRaw?: boolean | null;
-	export?: 'json' | 'csv' | 'xml' | null;
+	export?: 'json' | 'csv' | 'csv_utf8' | 'xml' | 'yaml' | null;
 	group?: string[] | null;
 	aggregate?: Aggregate | null;
 	deep?: NestedDeepQuery | null;

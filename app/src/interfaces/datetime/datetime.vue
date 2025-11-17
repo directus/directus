@@ -7,6 +7,7 @@ import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-da
 interface Props extends Omit<UseDatetimeProps, 'value'> {
 	value: string | null;
 	disabled?: boolean;
+	nonEditable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -36,7 +37,7 @@ function unsetValue(e: any) {
 <template>
 	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
 		<template #activator="{ toggle, active }">
-			<v-list-item block clickable :disabled :active @click="toggle">
+			<v-list-item block clickable :disabled :non-editable :active @click="toggle">
 				<template v-if="isValidValue">
 					<use-datetime v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
 						{{ datetime }}

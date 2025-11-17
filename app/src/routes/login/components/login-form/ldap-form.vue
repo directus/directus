@@ -4,7 +4,6 @@ import { login } from '@/auth';
 import { translateAPIError } from '@/lang';
 import { useUserStore } from '@/stores/user';
 import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 type Credentials = {
@@ -16,8 +15,6 @@ type Credentials = {
 const props = defineProps<{
 	provider: string;
 }>();
-
-const { t } = useI18n();
 
 const router = useRouter();
 
@@ -94,8 +91,8 @@ async function onSubmit() {
 
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input v-model="identifier" autofocus autocomplete="username" :placeholder="t('identifier')" />
-		<v-input v-model="password" type="password" autocomplete="current-password" :placeholder="t('password')" />
+		<v-input v-model="identifier" autofocus autocomplete="username" :placeholder="$t('identifier')" />
+		<v-input v-model="password" type="password" autocomplete="current-password" :placeholder="$t('password')" />
 
 		<transition-expand>
 			<v-input
@@ -103,7 +100,7 @@ async function onSubmit() {
 				v-model="otp"
 				type="text"
 				autocomplete="one-time-code"
-				:placeholder="t('otp')"
+				:placeholder="$t('otp')"
 				autofocus
 			/>
 		</transition-expand>
@@ -112,7 +109,7 @@ async function onSubmit() {
 			{{ errorFormatted }}
 		</v-notice>
 		<v-button class="sign-in" type="submit" :loading="loggingIn" large>
-			<v-text-overflow :text="t('sign_in')" />
+			<v-text-overflow :text="$t('sign_in')" />
 		</v-button>
 	</form>
 </template>

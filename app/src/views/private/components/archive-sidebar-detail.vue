@@ -46,7 +46,7 @@ watch(selectedItem, () => {
 </script>
 
 <template>
-	<sidebar-detail icon="archive" :title="t('archive')" :badge="active">
+	<sidebar-detail icon="archive" :title="$t('archive')" :badge="active">
 		<div class="fields">
 			<div class="field full">
 				<v-radio

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { render } from 'micromustache';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -13,8 +12,6 @@ const props = withDefaults(
 		format: null,
 	},
 );
-
-const { t } = useI18n();
 
 const displayValue = computed(() => {
 	if (!props.value) return null;
@@ -46,7 +43,7 @@ function renderValue(input: Record<string, any> | Record<string, any>[]) {
 			<span class="toggle" @click.stop="toggle">
 				<span class="label">
 					{{ displayValue.length }}
-					{{ t('items') }}
+					{{ $t('items') }}
 				</span>
 			</span>
 		</template>

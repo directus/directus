@@ -5,7 +5,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import EditorJS from '@editorjs/editorjs';
 import { isEqual } from 'lodash';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useBus } from './bus';
 import { sanitizeValue } from './sanitize';
@@ -20,6 +19,7 @@ const RedactorDomChanged = 'redactor dom changed';
 const props = withDefaults(
 	defineProps<{
 		disabled?: boolean;
+		nonEditable?: boolean;
 		autofocus?: boolean;
 		value?: Record<string, any> | null;
 		bordered?: boolean;
@@ -39,8 +39,6 @@ const props = withDefaults(
 const bus = useBus();
 
 const emit = defineEmits<{ input: [value: EditorJS.OutputData | null] }>();
-
-const { t } = useI18n();
 
 const collectionStore = useCollectionsStore();
 
@@ -158,13 +156,13 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 
 <template>
 	<div class="input-block-editor">
-		<div ref="editorElement" :class="{ [font]: true, disabled, bordered }"></div>
+		<div ref="editorElement" :class="{ [font]: true, disabled, 'non-editable': nonEditable, bordered }"></div>
 
 		<v-drawer
 			v-if="haveFilesAccess && !disabled"
 			:model-value="fileHandler !== null"
 			icon="image"
-			:title="t('upload_from_device')"
+			:title="$t('upload_from_device')"
 			cancelable
 			@update:model-value="unsetFileHandler"
 			@cancel="unsetFileHandler"
@@ -200,10 +198,13 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 }
 
 .disabled {
-	color: var(--theme--form--field--input--foreground-subdued);
-	background-color: var(--theme--form--field--input--background-subdued);
-	border-color: var(--theme--form--field--input--border-color);
 	pointer-events: none;
+
+	&:not(.non-editable) {
+		color: var(--theme--form--field--input--foreground-subdued);
+		background-color: var(--theme--form--field--input--background-subdued);
+		border-color: var(--theme--form--field--input--border-color);
+	}
 }
 
 .bordered {

@@ -12,7 +12,6 @@ import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { get } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { getItemRoute } from '@/utils/get-route';
 
 const props = withDefaults(
@@ -23,6 +22,7 @@ const props = withDefaults(
 		template?: string | null;
 		selectMode?: 'auto' | 'dropdown' | 'modal';
 		disabled?: boolean;
+		nonEditable?: boolean;
 		filter?: Filter | null;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
@@ -33,6 +33,7 @@ const props = withDefaults(
 		value: null,
 		selectMode: 'auto',
 		disabled: false,
+		nonEditable: false,
 		template: null,
 		filter: null,
 		enableCreate: true,
@@ -59,7 +60,6 @@ const customFilter = computed(() => {
 	);
 });
 
-const { t } = useI18n();
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
 
@@ -170,22 +170,22 @@ function getLinkForItem() {
 
 <template>
 	<v-notice v-if="!relationInfo" type="warning">
-		{{ t('relationship_not_setup') }}
+		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
-		{{ t('no_singleton_relations') }}
+		{{ $t('no_singleton_relations') }}
 	</v-notice>
 	<v-notice v-else-if="!displayTemplate" type="warning">
-		{{ t('display_template_not_setup') }}
+		{{ $t('display_template_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="!enableCreate && !enableSelect && !displayItem">
-		{{ t('no_items') }}
+		{{ $t('no_items') }}
 	</v-notice>
 
 	<div v-else class="many-to-one">
 		<v-skeleton-loader v-if="loading" type="input" />
 
-		<v-list-item v-else block clickable :disabled @click="onPreviewClick">
+		<v-list-item v-else block clickable :disabled="disabled" :non-editable="nonEditable" @click="onPreviewClick">
 			<div v-if="displayItem" class="preview">
 				<render-template
 					:collection="relationInfo.relatedCollection.collection"
@@ -193,15 +193,15 @@ function getLinkForItem() {
 					:template="displayTemplate"
 				/>
 			</div>
-			<div v-else class="placeholder">{{ t(enableSelect ? 'select_an_item' : 'create_item') }}</div>
+			<div v-else class="placeholder">{{ $t(enableSelect ? 'select_an_item' : 'create_item') }}</div>
 
 			<div class="spacer" />
 
 			<div class="item-actions">
 				<template v-if="displayItem">
 					<router-link
-						v-if="enableLink"
-						v-tooltip="t('navigate_to_item')"
+						v-if="enableLink && !nonEditable"
+						v-tooltip="$t('navigate_to_item')"
 						:to="getLinkForItem()"
 						class="item-link"
 						@click.stop
@@ -209,7 +209,7 @@ function getLinkForItem() {
 						<v-icon name="launch" />
 					</router-link>
 
-					<v-icon v-if="!disabled" v-tooltip="t('edit_item')" name="edit" clickable @click="editModalActive = true" />
+					<v-icon v-tooltip="$t('edit_item')" name="edit" clickable @click="editModalActive = true" />
 
 					<v-remove
 						v-if="!disabled"
@@ -223,7 +223,7 @@ function getLinkForItem() {
 				<template v-else>
 					<v-icon
 						v-if="!disabled && createAllowed && enableCreate"
-						v-tooltip="t('create_item')"
+						v-tooltip="$t('create_item')"
 						class="add"
 						name="add"
 						clickable
@@ -242,6 +242,7 @@ function getLinkForItem() {
 			:edits="edits"
 			:circular-field="relationInfo.relation.meta?.one_field ?? undefined"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			@input="onDrawerItemInput"
 		/>
 

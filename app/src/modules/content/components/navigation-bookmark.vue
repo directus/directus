@@ -6,7 +6,6 @@ import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Preset } from '@directus/types';
 import { computed, reactive, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
 interface Props {
@@ -14,8 +13,6 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-
-const { t } = useI18n();
 
 const router = useRouter();
 const route = useRoute();
@@ -131,7 +128,7 @@ function useDeleteBookmark() {
 		<v-menu placement="bottom-start" show-arrow>
 			<template #activator="{ toggle, active }">
 				<v-icon
-					v-tooltip.bottom="!hasPermission && t(`cannot_edit_${scope}_bookmarks`)"
+					v-tooltip.bottom="!hasPermission && $t(`cannot_edit_${scope}_bookmarks`)"
 					:name="hasPermission ? 'more_vert' : 'lock'"
 					:clickable="hasPermission"
 					small
@@ -150,7 +147,7 @@ function useDeleteBookmark() {
 						<v-icon name="edit" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="t(`edit_${scope}_bookmark`)" />
+						<v-text-overflow :text="$t(`edit_${scope}_bookmark`)" />
 					</v-list-item-content>
 				</v-list-item>
 				<v-list-item clickable class="danger" @click="deleteActive = true">
@@ -158,7 +155,7 @@ function useDeleteBookmark() {
 						<v-icon name="delete" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="t(`delete_${scope}_bookmark`)" />
+						<v-text-overflow :text="$t(`delete_${scope}_bookmark`)" />
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -166,7 +163,7 @@ function useDeleteBookmark() {
 
 		<v-dialog v-model="editActive" persistent @esc="editCancel" @apply="editSave">
 			<v-card>
-				<v-card-title>{{ t('edit_personal_bookmark') }}</v-card-title>
+				<v-card-title>{{ $t('edit_personal_bookmark') }}</v-card-title>
 				<v-card-text>
 					<div class="fields">
 						<interface-system-input-translated-string
@@ -180,9 +177,9 @@ function useDeleteBookmark() {
 					</div>
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="editCancel">{{ t('cancel') }}</v-button>
+					<v-button secondary @click="editCancel">{{ $t('cancel') }}</v-button>
 					<v-button :disabled="isEditDisabled" :loading="editSaving" @click="editSave">
-						{{ t('save') }}
+						{{ $t('save') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -190,11 +187,11 @@ function useDeleteBookmark() {
 
 		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false" @apply="deleteSave">
 			<v-card>
-				<v-card-title>{{ t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</v-card-title>
+				<v-card-title>{{ $t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</v-card-title>
 				<v-card-actions>
-					<v-button secondary @click="deleteActive = false">{{ t('cancel') }}</v-button>
+					<v-button secondary @click="deleteActive = false">{{ $t('cancel') }}</v-button>
 					<v-button :loading="deleteSaving" kind="danger" @click="deleteSave">
-						{{ t('delete_label') }}
+						{{ $t('delete_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

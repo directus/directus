@@ -7,7 +7,6 @@ import { getCollectionRoute } from '@/utils/get-route';
 import { useGroupable } from '@directus/composables';
 import { Preset } from '@directus/types';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import NavigationBookmark from './navigation-bookmark.vue';
 import NavigationItemContent from './navigation-item-content.vue';
@@ -18,7 +17,6 @@ const props = defineProps<{
 	search?: string;
 }>();
 
-const { t } = useI18n();
 const route = useRoute();
 
 const { isAdmin } = useUserStore();
@@ -140,7 +138,7 @@ function getChildBookmarks(collection: Collection) {
 					<v-icon name="database" />
 				</v-list-item-icon>
 				<v-list-item-content>
-					<v-text-overflow :text="t('edit_collection')" />
+					<v-text-overflow :text="$t('edit_collection')" />
 				</v-list-item-content>
 			</v-list-item>
 		</v-list>

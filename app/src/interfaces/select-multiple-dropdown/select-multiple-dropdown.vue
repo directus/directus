@@ -11,9 +11,9 @@ const props = withDefaults(
 	defineProps<{
 		value?: string[];
 		disabled?: boolean;
+		nonEditable?: boolean;
 		choices?: Option[];
 		icon?: string;
-
 		allowNone?: boolean;
 		placeholder?: string;
 		allowOther?: boolean;
@@ -44,6 +44,7 @@ function updateValue(value: string[]) {
 		:model-value="value"
 		:items="items"
 		:disabled="disabled"
+		:non-editable="nonEditable"
 		:show-deselect="allowNone"
 		:placeholder="placeholder"
 		:allow-other="allowOther"

@@ -439,7 +439,7 @@ function handleKeyDown(event: any) {
 				icon="error"
 				center
 				type="danger"
-				:title="t('interfaces.map.invalid_options')"
+				:title="$t('interfaces.map.invalid_options')"
 			>
 				<v-notice type="danger" :icon="false">
 					{{ geometryOptionsError }}
@@ -450,15 +450,15 @@ function handleKeyDown(event: any) {
 				icon="error"
 				center
 				type="warning"
-				:title="t('layouts.map.invalid_geometry')"
+				:title="$t('layouts.map.invalid_geometry')"
 			>
 				<v-notice type="warning" :icon="false">
 					{{ geometryParsingError }}
 				</v-notice>
 				<template #append>
 					<v-card-actions>
-						<v-button small secondary @click="resetValue(false)">{{ t('continue') }}</v-button>
-						<v-button small kind="danger" @click="resetValue(true)">{{ t('reset') }}</v-button>
+						<v-button small secondary @click="resetValue(false)">{{ $t('continue') }}</v-button>
+						<v-button small kind="danger" @click="resetValue(true)">{{ $t('reset') }}</v-button>
 					</v-card-actions>
 				</template>
 			</v-info>

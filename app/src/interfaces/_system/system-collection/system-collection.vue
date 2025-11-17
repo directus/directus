@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -17,8 +16,6 @@ const props = withDefaults(
 defineEmits<{
 	(e: 'input', value: string | null): void;
 }>();
-
-const { t } = useI18n();
 
 const collectionsStore = useCollectionsStore();
 
@@ -52,7 +49,7 @@ const items = computed(() => {
 		:disabled="disabled"
 		:show-deselect="allowNone"
 		:items="items"
-		:placeholder="t('select_a_collection')"
+		:placeholder="$t('select_a_collection')"
 		@update:model-value="$emit('input', $event)"
 	/>
 </template>

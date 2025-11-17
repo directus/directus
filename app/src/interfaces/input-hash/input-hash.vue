@@ -13,6 +13,7 @@ import { useI18n } from 'vue-i18n';
 const props = defineProps<{
 	value: string | null;
 	disabled?: boolean;
+	nonEditable?: boolean;
 	placeholder?: string;
 	masked?: boolean;
 }>();
@@ -45,7 +46,8 @@ function emitValue(newValue: string) {
 <template>
 	<v-input
 		:placeholder="internalPlaceholder"
-		:disabled="disabled"
+		:disabled
+		:non-editable
 		:type="masked ? 'password' : 'text'"
 		:autocomplete="masked ? 'new-password' : 'off'"
 		:model-value="localValue"

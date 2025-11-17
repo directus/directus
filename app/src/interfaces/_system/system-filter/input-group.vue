@@ -6,7 +6,6 @@ import { useCollection } from '@directus/composables';
 import { FieldFilter } from '@directus/types';
 import { clone, get } from 'lodash';
 import { computed, nextTick, onBeforeMount, ref, toRef } from 'vue';
-import { useI18n } from 'vue-i18n';
 import InputComponent from './input-component.vue';
 import { fieldToFilter, getComparator, getField } from './utils';
 
@@ -26,7 +25,6 @@ const emit = defineEmits<{
 
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
-const { t } = useI18n();
 
 const fieldPath = computed(() => getField(props.field));
 const isVersionField = computed(() => fieldPath.value === '$version');
@@ -314,7 +312,7 @@ function useVariableInput() {
 				:value="(value as (string | number)[])[0] ?? ''"
 				@input="setValueAt(0, $event)"
 			/>
-			<div class="and">{{ t('interfaces.filter.and') }}</div>
+			<div class="and">{{ $t('interfaces.filter.and') }}</div>
 			<input-component
 				:is="interfaceType"
 				:choices="choices"

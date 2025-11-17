@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import { watch, computed, toRefs } from 'vue';
 import { useFolders } from '@/composables/use-folders';
 import NavigationFolder from './files-navigation-folder.vue';
@@ -18,7 +17,6 @@ const props = defineProps<{
 	actionsDisabled?: boolean;
 }>();
 
-const { t } = useI18n();
 const { rootFolder, localOpenFolders } = toRefs(props);
 
 const { nestedFolders, folders, loading, openFolders } = useFolders(rootFolder, localOpenFolders);
@@ -106,7 +104,7 @@ function setOpenFolders() {
 						</v-list-item-icon>
 						<v-list-item-content>
 							<v-text-overflow v-if="rootFolderInfo" :text="rootFolderInfo.name" />
-							<v-text-overflow v-else :text="t('file_library')" />
+							<v-text-overflow v-else :text="$t('file_library')" />
 						</v-list-item-content>
 					</template>
 
@@ -127,21 +125,21 @@ function setOpenFolders() {
 		<v-list-item clickable :active="currentSpecial === 'all'" @click="onClick({ special: 'all' })">
 			<v-list-item-icon><v-icon name="file_copy" outline /></v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="t('all_files')" />
+				<v-text-overflow :text="$t('all_files')" />
 			</v-list-item-content>
 		</v-list-item>
 
 		<v-list-item clickable :active="currentSpecial === 'mine'" @click="onClick({ special: 'mine' })">
 			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="t('my_files')" />
+				<v-text-overflow :text="$t('my_files')" />
 			</v-list-item-content>
 		</v-list-item>
 
 		<v-list-item clickable :active="currentSpecial === 'recent'" @click="onClick({ special: 'recent' })">
 			<v-list-item-icon><v-icon name="history" /></v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="t('recent_files')" />
+				<v-text-overflow :text="$t('recent_files')" />
 			</v-list-item-content>
 		</v-list-item>
 	</v-list>

@@ -2,7 +2,6 @@
 import { useCollectionsStore } from '@/stores/collections';
 import { isSystemCollection } from '@directus/system-data';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -17,8 +16,6 @@ const props = withDefaults(
 defineEmits<{
 	(e: 'input', value: string[] | null): void;
 }>();
-
-const { t } = useI18n();
 
 const collectionsStore = useCollectionsStore();
 
@@ -46,7 +43,7 @@ const items = computed(() => {
 
 <template>
 	<v-notice v-if="items.length === 0">
-		{{ t('no_collections') }}
+		{{ $t('no_collections') }}
 	</v-notice>
 	<interface-select-multiple-checkbox
 		v-else

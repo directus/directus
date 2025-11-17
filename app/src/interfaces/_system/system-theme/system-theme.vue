@@ -3,10 +3,7 @@ import { useServerStore } from '@/stores/server';
 import { translate } from '@/utils/translate-literal';
 import { useThemeStore } from '@directus/themes';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import ThemePreview from './theme-preview.vue';
-
-const { t } = useI18n();
 
 defineEmits<{
 	input: [string | null];
@@ -50,7 +47,7 @@ const valueWithDefault = computed(() => {
 
 				<div class="label">
 					<v-icon :name="value === null ? 'radio_button_checked' : 'radio_button_unchecked'" />
-					<v-text-overflow :text="t('default_sync_with_project')" />
+					<v-text-overflow :text="$t('default_sync_with_project')" />
 				</div>
 			</button>
 		</template>

@@ -3,7 +3,6 @@ import api from '@/api';
 import VBanner from '@/components/v-banner.vue';
 import type { RegistryDescribeResponse } from '@directus/extensions-registry';
 import { ref, watchEffect } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../../components/navigation.vue';
 import ExtensionBanner from './components/extension-banner.vue';
@@ -16,7 +15,6 @@ const props = defineProps<{
 }>();
 
 const router = useRouter();
-const { t } = useI18n();
 
 const loading = ref(false);
 const error = ref<unknown>(null);
@@ -52,9 +50,9 @@ const navigateBack = () => {
 </script>
 
 <template>
-	<private-view :title="t('marketplace')">
+	<private-view :title="$t('marketplace')">
 		<template #title-outer:prepend>
-			<v-button v-tooltip.bottom="t('back')" class="header-icon" rounded icon secondary exact @click="navigateBack">
+			<v-button v-tooltip.bottom="$t('back')" class="header-icon" rounded icon secondary exact @click="navigateBack">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -80,7 +78,7 @@ const navigateBack = () => {
 
 			<v-banner v-else-if="loading" icon="plugin">
 				<template #avatar><v-progress-circular indeterminate /></template>
-				{{ t('loading') }}
+				{{ $t('loading') }}
 			</v-banner>
 
 			<v-error v-else :error="error" />

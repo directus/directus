@@ -92,6 +92,12 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 			return res.status(200).send(exportService.transform(res.locals['payload']?.data, 'csv'));
 		}
 
+		if (req.sanitizedQuery.export === 'csv_utf8') {
+			res.attachment(`${filename}.csv`);
+			res.set('Content-Type', 'text/csv; charset=utf-8');
+			return res.status(200).send(exportService.transform(res.locals['payload']?.data, 'csv_utf8'));
+		}
+
 		if (req.sanitizedQuery.export === 'yaml') {
 			res.attachment(`${filename}.yaml`);
 			res.set('Content-Type', 'text/yaml');

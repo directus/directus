@@ -4,6 +4,10 @@ import { useSizeClass } from '@directus/composables';
 interface Props {
 	/** Render as a tile (square) */
 	tile?: boolean;
+	/** Render round */
+	round?: boolean;
+	/** Render border with optional color */
+	border?: boolean | string;
 	/** Renders a smaller avatar */
 	xSmall?: boolean;
 	/** Renders a small avatar */
@@ -22,7 +26,11 @@ const sizeClass = useSizeClass(props);
 </script>
 
 <template>
-	<div class="v-avatar" :class="[{ tile }, sizeClass]">
+	<div
+		class="v-avatar"
+		:class="[{ tile, round, border }, sizeClass]"
+		:style="typeof border === 'string' ? [{ '--v-avatar-border-color': border }] : []"
+	>
 		<slot />
 	</div>
 </template>
@@ -56,8 +64,12 @@ const sizeClass = useSizeClass(props);
 	border-radius: 0;
 }
 
+.border {
+	border: 3px solid var(--v-avatar-border-color, var(--theme--border-color));
+}
+
 .x-small {
-	--v-avatar-size: 24px;
+	--v-avatar-size: 28px;
 
 	border-radius: 4px;
 }
@@ -72,6 +84,10 @@ const sizeClass = useSizeClass(props);
 
 .x-large {
 	--v-avatar-size: 80px;
+}
+
+.round {
+	border-radius: 50%;
 }
 
 :slotted(img) {

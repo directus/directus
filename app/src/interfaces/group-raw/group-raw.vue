@@ -10,6 +10,7 @@ withDefaults(
 		initialValues: Record<string, unknown>;
 		primaryKey: number | string;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
 		comparison?: ComparisonContext;
@@ -39,6 +40,7 @@ defineEmits(['apply']);
 			:validation-errors="validationErrors"
 			:loading="loading"
 			:batch-mode="batchMode"
+			:non-editable="nonEditable"
 			:disabled="disabled"
 			:comparison="comparison"
 			:badge="badge"

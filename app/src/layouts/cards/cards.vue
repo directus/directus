@@ -4,7 +4,6 @@ import { Collection } from '@/types/collections';
 import { useElementSize, useSync } from '@directus/composables';
 import type { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { Ref, inject, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import Card from './components/card.vue';
 import CardsHeader from './components/header.vue';
 
@@ -51,8 +50,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
-
-const { t } = useI18n();
 
 const selectionWritable = useSync(props, 'selection', emit);
 const limitWritable = useSync(props, 'limit', emit);
@@ -136,7 +133,7 @@ watch(innerWidth, (value) => {
 				</div>
 
 				<div v-if="loading === false && items.length >= 25" class="per-page">
-					<span>{{ t('per_page') }}</span>
+					<span>{{ $t('per_page') }}</span>
 					<v-select :model-value="`${limit}`" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
 				</div>
 			</div>

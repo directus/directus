@@ -131,6 +131,8 @@ function onCloseClick(event: MouseEvent) {
 	}
 
 	&.disabled {
+		cursor: auto;
+
 		color: var(--v-chip-color, var(--theme--foreground));
 		background-color: var(--v-chip-background-color, var(--theme--background-normal));
 		border-color: var(--v-chip-border-color, var(--v-chip-background-color, var(--theme--background-normal)));

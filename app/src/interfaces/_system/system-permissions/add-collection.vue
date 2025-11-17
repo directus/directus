@@ -4,7 +4,6 @@ import { Collection } from '@/types/collections';
 import { isSystemCollection } from '@directus/system-data';
 import { orderBy } from 'lodash';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	excludeCollections?: string[];
@@ -14,7 +13,6 @@ defineEmits<{
 	select: [string];
 }>();
 
-const { t } = useI18n();
 const collectionsStore = useCollectionsStore();
 
 const availableCollections = computed(() => {
@@ -61,7 +59,7 @@ function notExcluded({ collection }: Collection) {
 		>
 			<template #preview="{ toggle }">
 				<v-button @click="toggle">
-					{{ t('permission_add_collection') }}
+					{{ $t('permission_add_collection') }}
 					<v-icon name="arrow_drop_down" right />
 				</v-button>
 			</template>

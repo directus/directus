@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 defineEmits(['update:selection']);
 
-const { n, t } = useI18n();
+const { n } = useI18n();
 
 const calendarElement = ref<HTMLElement>();
 
@@ -50,7 +50,7 @@ const atLimit = computed(() => {
 <template>
 	<div class="calendar-layout" :class="{ 'select-mode': selectMode, 'select-one': showSelect === 'one' }">
 		<v-notice v-if="atLimit" type="warning">
-			{{ t('dataset_too_large_currently_showing_n_items', { n: n(props.limit) }) }}
+			{{ $t('dataset_too_large_currently_showing_n_items', { n: n(props.limit) }) }}
 		</v-notice>
 		<div v-if="!error" ref="calendarElement" />
 		<slot v-else name="error" :error="error" :reset="resetPresetAndRefresh" />

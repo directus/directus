@@ -115,6 +115,10 @@ router.get(
 router.get(
 	`/registry/account/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res, next) => {
+		if (req.accountability && req.accountability.admin !== true) {
+			throw new ForbiddenError();
+		}
+
 		if (typeof req.params['pk'] !== 'string') {
 			throw new ForbiddenError();
 		}
@@ -136,6 +140,10 @@ router.get(
 router.get(
 	`/registry/extension/:pk(${UUID_REGEX})`,
 	asyncHandler(async (req, res, next) => {
+		if (req.accountability && req.accountability.admin !== true) {
+			throw new ForbiddenError();
+		}
+
 		if (typeof req.params['pk'] !== 'string') {
 			throw new ForbiddenError();
 		}

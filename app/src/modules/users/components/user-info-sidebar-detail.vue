@@ -30,10 +30,10 @@ watch(
 </script>
 
 <template>
-	<sidebar-detail icon="info" :title="t('information')" close>
+	<sidebar-detail icon="info" :title="$t('information')" close>
 		<dl v-if="isNew === false && user">
 			<div v-if="user.id" class="description-list">
-				<dt>{{ t('key') }}</dt>
+				<dt>{{ $t('key') }}</dt>
 				<dd>{{ user.id }}</dd>
 				<v-icon
 					v-if="isCopySupported"
@@ -45,20 +45,20 @@ watch(
 				/>
 			</div>
 			<div v-if="user.last_page">
-				<dt>{{ t('last_page') }}</dt>
+				<dt>{{ $t('last_page') }}</dt>
 				<dd>
 					<router-link :to="user.last_page">{{ user.last_page }}</router-link>
 				</dd>
 			</div>
 			<div v-if="user.last_access">
-				<dt>{{ t('last_access') }}</dt>
+				<dt>{{ $t('last_access') }}</dt>
 				<dd>{{ lastAccessDate }}</dd>
 			</div>
 		</dl>
 
 		<v-divider />
 
-		<div v-md="t('page_help_users_item')" class="page-description" />
+		<div v-md="$t('page_help_users_item')" class="page-description" />
 	</sidebar-detail>
 </template>
 

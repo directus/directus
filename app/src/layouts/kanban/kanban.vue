@@ -58,7 +58,7 @@ const props = withDefaults(
 
 defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
 
-const { t, n } = useI18n();
+const { n } = useI18n();
 
 const editDialogOpen = ref<string | number | null>(null);
 const editTitle = ref('');
@@ -134,7 +134,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 		<template v-else>
 			<v-notice v-if="atLimit" type="warning" class="limit">
-				{{ t('dataset_too_large_currently_showing_n_items', { n: n(props.limit ?? 0) }) }}
+				{{ $t('dataset_too_large_currently_showing_n_items', { n: n(props.limit ?? 0) }) }}
 			</v-notice>
 
 			<div class="kanban">
@@ -154,7 +154,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 							<div class="header">
 								<div class="title">
 									<div class="title-content">
-										{{ group.id === null ? t('layouts.kanban.no_group') : group.title }}
+										{{ group.id === null ? $t('layouts.kanban.no_group') : group.title }}
 									</div>
 									<span class="badge">{{ group.items.length }}</span>
 								</div>
@@ -171,7 +171,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 												@click="openEditGroup(group)"
 											>
 												<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
-												<v-list-item-content>{{ t('layouts.kanban.edit_group') }}</v-list-item-content>
+												<v-list-item-content>{{ $t('layouts.kanban.edit_group') }}</v-list-item-content>
 											</v-list-item>
 											<v-list-item
 												:disabled="!canDeleteGroups || selectMode"
@@ -180,7 +180,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 												@click="deleteGroup(group.id)"
 											>
 												<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
-												<v-list-item-content>{{ t('layouts.kanban.delete_group') }}</v-list-item-content>
+												<v-list-item-content>{{ $t('layouts.kanban.delete_group') }}</v-list-item-content>
 											</v-list-item>
 										</v-list>
 									</v-menu>
@@ -259,14 +259,14 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 				<v-dialog :model-value="editDialogOpen !== null" @esc="cancelChanges()" @apply="saveChanges">
 					<v-card>
 						<v-card-title>
-							{{ editDialogOpen === '+' ? t('layouts.kanban.add_group') : t('layouts.kanban.edit_group') }}
+							{{ editDialogOpen === '+' ? $t('layouts.kanban.add_group') : $t('layouts.kanban.edit_group') }}
 						</v-card-title>
 						<v-card-text>
-							<v-input v-model="editTitle" :placeholder="t('layouts.kanban.add_group_placeholder')" />
+							<v-input v-model="editTitle" :placeholder="$t('layouts.kanban.add_group_placeholder')" />
 						</v-card-text>
 						<v-card-actions>
-							<v-button secondary @click="cancelChanges()">{{ t('cancel') }}</v-button>
-							<v-button @click="saveChanges">{{ editDialogOpen === '+' ? t('create') : t('save') }}</v-button>
+							<v-button secondary @click="cancelChanges()">{{ $t('cancel') }}</v-button>
+							<v-button @click="saveChanges">{{ editDialogOpen === '+' ? $t('create') : $t('save') }}</v-button>
 						</v-card-actions>
 					</v-card>
 				</v-dialog>
