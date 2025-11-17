@@ -56,6 +56,7 @@ const props = withDefaults(
 		customFormats?: CustomFormat[];
 		tinymceOverrides?: Record<string, unknown>;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		imageToken?: string;
 		folder?: string;
 		softLength?: number;
@@ -184,7 +185,7 @@ const editorOptions = computed(() => {
 	return {
 		skin: false,
 		content_css: false,
-		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace'),
+		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', !!props.nonEditable),
 		plugins: [
 			'media',
 			'table',
