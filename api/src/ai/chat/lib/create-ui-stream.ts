@@ -53,7 +53,9 @@ export const createUiStream = (
 		stopWhen: [stepCountIs(10)],
 		providerOptions: {
 			openai: {
-				reasoningSummary: 'detailed',
+				reasoningSummary: 'auto',
+				store: false,
+				include: ['reasoning.encrypted_content'],
 			},
 		},
 		tools,
