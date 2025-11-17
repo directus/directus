@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useFocusin } from '@/composables/use-focusin';
 import { isCssVar as isCssVarUtil } from '@/utils/is-css-var';
 import { isHex } from '@/utils/is-hex';
 import { cssVar } from '@directus/utils/browser';
@@ -25,6 +26,8 @@ const props = withDefaults(defineProps<Props>(), {
 	placeholder: undefined,
 	opacity: false,
 });
+
+const { active } = useFocusin('menu');
 
 // Reactive translations can't be default values of props
 const presetsWithDefaults = computed(
@@ -304,7 +307,7 @@ function useColor() {
 </script>
 
 <template>
-	<v-menu attached :disabled="disabled" :close-on-content-click="false" no-focus-return>
+	<v-menu ref="menu" v-model="active" attached :disabled="disabled" :close-on-content-click="false" no-focus-return>
 		<template #activator="{ activate, toggle }">
 			<v-input
 				v-model="input"
