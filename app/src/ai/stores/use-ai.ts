@@ -121,7 +121,9 @@ export const useAiStore = defineStore('ai-store', () => {
 				if (typeof inputTokens === 'number') tokenUsage.inputTokens = inputTokens;
 				if (typeof outputTokens === 'number') tokenUsage.outputTokens = outputTokens;
 				if (typeof totalTokens === 'number') tokenUsage.totalTokens = totalTokens;
-				estimatedMaxMessages.value = Math.floor((messages.value.length / contextUsagePercentage.value) * 100);
+				if (contextUsagePercentage.value > 0) {
+					estimatedMaxMessages.value = Math.floor((messages.value.length / contextUsagePercentage.value) * 100);
+				}
 			}
 		},
 		onToolCall: async ({ toolCall }) => {
