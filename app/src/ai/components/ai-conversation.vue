@@ -19,19 +19,19 @@ const showScrollButton = computed(() => {
 
 onMounted(() => {
 	nextTick(() => {
-		scrollToBottom();
+		scrollToBottom('instant');
 	});
 });
 
 aiStore.onSubmit(() => {
-	scrollToBottom();
+	scrollToBottom('smooth');
 });
 
-function scrollToBottom() {
+function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 	const el = messagesContainerRef.value;
 
 	if (el) {
-		el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+		el.scrollTo({ top: el.scrollHeight, behavior });
 	}
 }
 </script>
@@ -74,7 +74,7 @@ function scrollToBottom() {
 
 		<div class="input-container">
 			<div v-show="showScrollButton" class="scroll-to-bottom-container">
-				<v-button icon rounded secondary x-small class="scroll-to-bottom-btn" @click="scrollToBottom">
+				<v-button icon rounded secondary x-small class="scroll-to-bottom-btn" @click="scrollToBottom('smooth')">
 					<v-icon small name="arrow_downward" />
 				</v-button>
 			</div>
