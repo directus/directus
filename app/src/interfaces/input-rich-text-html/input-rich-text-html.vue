@@ -339,17 +339,13 @@ function setup(editor: any) {
 
 function setFocus(val: boolean) {
 	if (editorElement.value == null) return;
-	const body = editorElement.value.$el.parentElement?.querySelector('.tox-tinymce') as HTMLElement;
+	const body = editorElement.value.$el.parentElement?.querySelector('.tox-tinymce');
 
 	if (body == null) return;
 
 	if (val) {
-		body.dispatchEvent(new FocusEvent('focus'));
-		body.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
 		body.classList.add('focus');
 	} else {
-		body.dispatchEvent(new FocusEvent('blur'));
-		body.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
 		body.classList.remove('focus');
 	}
 }
