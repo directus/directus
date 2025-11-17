@@ -42,7 +42,7 @@ export const useAiStore = defineStore('ai-store', () => {
 
 		const [provider, model] = selectedModelId.value.split(':');
 
-		if (!provider && !model) return null;
+		if (!provider || !model) return null;
 
 		return (
 			models.value.find((modelDefinition) => {
