@@ -13,7 +13,7 @@ const value = ref(3);
 </script>
 
 <template>
-	<Story title="VPagination" :init-state="initState">
+	<Story title="VPagination" icon="material-symbols:steppers" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
 			<v-pagination v-model="value" v-bind="state" />
 		</template>

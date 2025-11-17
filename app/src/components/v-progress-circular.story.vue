@@ -9,7 +9,7 @@ function initState() {
 </script>
 
 <template>
-	<Story title="VProgressCircular" :init-state="initState">
+	<Story title="VProgressCircular" icon="material-symbols:replay" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
 			<v-progress-circular v-bind="state" />
 		</template>

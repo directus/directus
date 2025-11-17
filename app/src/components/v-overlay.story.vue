@@ -9,7 +9,7 @@ function initState() {
 </script>
 
 <template>
-	<Story title="VOverlay" :init-state="initState">
+	<Story title="VOverlay" icon="material-symbols:shadow" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
 			<v-overlay v-bind="state" />
 			<div>This is hidden behind the overlay.</div>

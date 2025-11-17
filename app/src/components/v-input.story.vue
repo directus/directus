@@ -6,7 +6,7 @@ const value = ref('Shut up and take my money. 💸');
 </script>
 
 <template>
-	<Story title="VInput">
+	<Story title="VInput" icon="material-symbols:edit-square">
 		<v-input v-model="value" />
 
 		<template #controls>

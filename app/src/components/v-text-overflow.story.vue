@@ -10,7 +10,7 @@ function initState() {
 </script>
 
 <template>
-	<Story title="VTextOverflow" :init-state="initState">
+	<Story title="VTextOverflow" icon="material-symbols:wrap-text" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
 			<v-text-overflow v-bind="state" />
 		</template>

@@ -10,7 +10,7 @@ function initState() {
 </script>
 
 <template>
-	<Story title="VHighlight" :init-state="initState">
+	<Story title="VHighlight" icon="material-symbols:format-ink-highlighter" :init-state="initState">
 		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
 			<v-highlight v-bind="state" />
 		</template>

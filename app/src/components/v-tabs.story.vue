@@ -6,7 +6,7 @@ const value = ref([1]);
 </script>
 
 <template>
-	<Story title="VTabs">
+	<Story title="VTabs" icon="material-symbols:toolbar">
 		<v-tabs v-model="value">
 			<v-tab>Foods</v-tab>
 			<v-tab>Drinks</v-tab>

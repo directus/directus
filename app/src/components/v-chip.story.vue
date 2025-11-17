@@ -3,7 +3,7 @@ import VChip from './v-chip.vue';
 </script>
 
 <template>
-	<Story title="VChip">
+	<Story title="VChip" icon="material-symbols:label">
 		<v-chip>Cake</v-chip>
 	</Story>
 </template>
