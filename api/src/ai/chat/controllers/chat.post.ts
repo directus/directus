@@ -5,6 +5,7 @@ import { fromZodError } from 'zod-validation-error';
 import { createUiStream } from '../lib/create-ui-stream.js';
 import { ChatRequest } from '../models/chat-request.js';
 import { chatRequestToolToAiSdkTool } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
+import { fixErrorToolCalls } from '../utils/fix-error-tool-calls.js';
 
 export const aiChatPostHandler: RequestHandler = async (req, res) => {
 	if (!req.accountability) {
@@ -30,7 +31,8 @@ export const aiChatPostHandler: RequestHandler = async (req, res) => {
 		return acc;
 	}, {});
 
-	const validationResult = await safeValidateUIMessages({ messages: rawMessages, tools: tools });
+	const fixedMessages = fixErrorToolCalls(rawMessages);
+	const validationResult = await safeValidateUIMessages({ messages: fixedMessages });
 
 	if (validationResult.success === false) {
 		throw new InvalidPayloadError({ reason: validationResult.error.message });
