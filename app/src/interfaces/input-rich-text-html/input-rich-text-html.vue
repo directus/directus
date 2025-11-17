@@ -38,6 +38,7 @@ import 'tinymce/plugins/pagebreak/plugin';
 import 'tinymce/plugins/preview/plugin';
 import 'tinymce/plugins/table/plugin';
 import 'tinymce/themes/silver';
+import { useFocusin } from '@/composables/use-focusin';
 
 type CustomFormat = {
 	title: string;
@@ -343,13 +344,13 @@ function setFocus(val: boolean) {
 
 	if (body == null) return;
 
+	const { focus, blur } = useFocusin(body);
+
 	if (val) {
-		body.dispatchEvent(new FocusEvent('focus'));
-		body.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+		focus();
 		body.classList.add('focus');
 	} else {
-		body.dispatchEvent(new FocusEvent('blur'));
-		body.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+		blur();
 		body.classList.remove('focus');
 	}
 }

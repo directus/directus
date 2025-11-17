@@ -2,11 +2,12 @@
 import { useCustomSelection, useCustomSelectionMultiple, type OtherValue } from '@directus/composables';
 import { Placement } from '@popperjs/core';
 import { debounce, get, isArray } from 'lodash';
-import { computed, Ref, ref, toRefs, watch } from 'vue';
+import { computed, Ref, ref, toRefs, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SelectListItemGroup from './select-list-item-group.vue';
 import SelectListItem from './select-list-item.vue';
 import { Option } from './types';
+import { useFocusin } from '@/composables/use-focusin';
 
 type ItemsRaw = (string | any)[];
 type InputValue = string[] | string | number | null;
@@ -89,12 +90,8 @@ const { t } = useI18n();
 const { internalItems, internalItemsCount, internalSearch } = useItems();
 const { displayValue } = useDisplayValue();
 const { modelValue } = toRefs(props);
-const open = ref(false);
 
-watch(open, (open) => {
-	if (open) emit('focusin');
-	else emit('focusout');
-});
+const { active } = useFocusin('menu');
 
 const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, internalItems, (value) =>
 	emit('update:modelValue', value),
@@ -264,7 +261,8 @@ function useDisplayValue() {
 
 <template>
 	<v-menu
-		v-model="open"
+		ref="menu"
+		v-model="active"
 		class="v-select"
 		:disabled="isDisabled"
 		:attached="inline === false"

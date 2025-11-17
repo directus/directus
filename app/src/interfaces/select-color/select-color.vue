@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
+import { useFocusin } from '@/composables/use-focusin';
 import { isCssVar as isCssVarUtil } from '@/utils/is-css-var';
 import { isHex } from '@/utils/is-hex';
 import { cssVar } from '@directus/utils/browser';
@@ -297,11 +297,13 @@ function useColor() {
 		return arr.map((x) => Math.round(x));
 	}
 }
+
+const { active } = useFocusin('menu');
 </script>
 
 <template>
-	<v-menu attached :disabled="disabled" :close-on-content-click="false">
-		<template #activator="{ activate, toggle, active }">
+	<v-menu ref="menu" v-model="active" attached :disabled="disabled" :close-on-content-click="false" no-focus-return>
+		<template #activator="{ activate, toggle }">
 			<v-input
 				v-model="input"
 				:disabled
