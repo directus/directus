@@ -20,6 +20,7 @@ const props = withDefaults(
 		comparison?: ComparisonContext;
 		comparisonActive?: boolean;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		modelValue?: any;
 		initialValue?: any;
 		primaryKey?: string | number;
@@ -210,6 +211,7 @@ function useComputedValues() {
 				@paste-raw="pasteRaw"
 			/>
 		</v-menu>
+
 		<div v-else-if="['full', 'fill'].includes(field.meta?.width ?? '') === false" class="label-spacer" />
 
 		<form-field-interface
@@ -220,6 +222,7 @@ function useComputedValues() {
 			:batch-mode="batchMode"
 			:batch-active="batchActive"
 			:disabled="isDisabled"
+			:non-editable="nonEditable"
 			:primary-key="primaryKey"
 			:raw-editor-enabled="rawEditorEnabled"
 			:raw-editor-active="rawEditorActive"

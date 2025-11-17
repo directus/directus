@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useWindowSize } from '@/composables/use-window-size';
 import { getStringifiedValue } from '@/utils/get-stringified-value';
 import { EditorState, Compartment, StateEffect, StateField, Annotation } from '@codemirror/state';
 import { EditorView, keymap, placeholder as placeholderExtension, lineNumbers, drawSelection } from '@codemirror/view';
@@ -20,6 +19,7 @@ const props = withDefaults(
 	defineProps<{
 		value?: string | Record<string, unknown> | unknown[] | boolean | number | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		altOptions?: Record<string, any>;
 		template?: string;
 		lineNumber?: boolean;
@@ -36,19 +36,13 @@ const props = withDefaults(
 
 const emit = defineEmits(['input']);
 
-const { width } = useWindowSize();
-
 const codemirrorEl = ref<HTMLDivElement | null>(null);
 let editorView: EditorView | null = null;
 let previousContent: string | null = null;
 let isUpdatingFromProps = false;
 
 const readOnly = computed(() => {
-	if (width.value < 600) {
-		return props.disabled;
-	} else {
-		return props.disabled;
-	}
+	return props.disabled;
 });
 
 const stringValue = computed(() => {
@@ -316,7 +310,7 @@ function isInterpolation(value: any) {
 </script>
 
 <template>
-	<div class="input-code codemirror-custom-styles" :class="{ disabled }" dir="ltr">
+	<div class="input-code codemirror-custom-styles" :class="{ disabled, 'non-editable': nonEditable }" dir="ltr">
 		<div ref="codemirrorEl"></div>
 
 		<v-button v-if="template" v-tooltip.left="$t('fill_template')" small icon secondary @click="fillTemplate">
@@ -367,12 +361,14 @@ function isInterpolation(value: any) {
 		}
 	}
 
-	&.disabled {
+	&.disabled:not(.non-editable) {
 		:deep(.cm-editor) {
 			color: var(--theme--foreground-subdued);
 			background-color: var(--theme--form--field--input--background-subdued);
 		}
+	}
 
+	&.disabled {
 		&:hover :deep(.cm-editor) {
 			border-color: var(--theme--form--field--input--border-color);
 		}

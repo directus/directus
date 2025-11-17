@@ -20,6 +20,7 @@ const props = withDefaults(
 		selectedCollection: string;
 		template?: string | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		filter?: Filter | null;
 	}>(),
 	{
@@ -107,7 +108,7 @@ function onSelection(selectedIds: (number | string)[] | null) {
 	<div class="collection-item-dropdown">
 		<v-skeleton-loader v-if="loading" type="input" />
 
-		<v-list-item v-else :disabled block clickable @click="selectDrawerOpen = true">
+		<v-list-item v-else :disabled :non-editable block clickable @click="selectDrawerOpen = true">
 			<div v-if="displayItem" class="preview">
 				<render-template :collection="selectedCollection" :item="displayItem" :template="displayTemplate" />
 			</div>
@@ -115,8 +116,9 @@ function onSelection(selectedIds: (number | string)[] | null) {
 
 			<div class="spacer" />
 
-			<div class="item-actions">
+			<div v-if="!nonEditable" class="item-actions">
 				<v-remove v-if="displayItem" deselect @action="value = null" />
+
 				<v-icon v-else class="expand" name="expand_more" />
 			</div>
 		</v-list-item>

@@ -23,6 +23,7 @@ const props = withDefaults(
 		selectedCollection: string;
 		template?: string | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		filter?: Filter | null;
 	}>(),
 	{
@@ -184,7 +185,7 @@ function onSort(sortedItems: Record<string, any>[]) {
 			@update:model-value="onSort($event)"
 		>
 			<template #item="{ element }">
-				<v-list-item block :disabled="disabled" :dense="displayItems.length > 4">
+				<v-list-item block :disabled :non-editable :dense="displayItems.length > 4">
 					<v-icon v-if="!disabled" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 
 					<render-template
@@ -196,14 +197,14 @@ function onSort(sortedItems: Record<string, any>[]) {
 
 					<div class="spacer" />
 
-					<div class="item-actions">
+					<div v-if="!nonEditable" class="item-actions">
 						<v-remove v-if="!disabled" deselect @action="removeItem(element)" />
 					</div>
 				</v-list-item>
 			</template>
 		</draggable>
 
-		<div class="actions">
+		<div v-if="!nonEditable" class="actions">
 			<v-button :disabled="disabled" @click="selectDrawerOpen = true">
 				{{ t('select_item') }}
 			</v-button>
