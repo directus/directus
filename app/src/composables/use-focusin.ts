@@ -1,7 +1,10 @@
-import { MaybeRef, ref, Ref, toRef, useTemplateRef, watch } from 'vue';
+import { ComponentPublicInstance, MaybeRef, ref, Ref, toRef, watch } from 'vue';
 
-export function useFocusin(reference: string | MaybeRef<HTMLElement>, active?: Ref<boolean>) {
-	const element = typeof reference === 'string' ? useTemplateRef<HTMLElement>(reference) : toRef(reference);
+export function useFocusin(
+	reference: MaybeRef<HTMLElement | ComponentPublicInstance | undefined>,
+	active?: Ref<boolean>,
+) {
+	const element = toRef(reference);
 
 	const state = active ?? ref(false);
 
@@ -11,9 +14,10 @@ export function useFocusin(reference: string | MaybeRef<HTMLElement>, active?: R
 	});
 
 	function focus() {
-		element.value?.dispatchEvent(new FocusEvent('focus'));
+		const el = element.value instanceof HTMLElement ? element.value : element.value?.$el;
+		el?.dispatchEvent(new FocusEvent('focus'));
 
-		element.value?.dispatchEvent(
+		el?.dispatchEvent(
 			new FocusEvent('focusin', {
 				bubbles: true,
 			}),
@@ -21,9 +25,10 @@ export function useFocusin(reference: string | MaybeRef<HTMLElement>, active?: R
 	}
 
 	function blur() {
-		element.value?.dispatchEvent(new FocusEvent('blur'));
+		const el = element.value instanceof HTMLElement ? element.value : element.value?.$el;
+		el?.dispatchEvent(new FocusEvent('blur'));
 
-		element.value?.dispatchEvent(
+		el?.dispatchEvent(
 			new FocusEvent('focusout', {
 				bubbles: true,
 			}),

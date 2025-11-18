@@ -4,7 +4,7 @@ import { isCssVar as isCssVarUtil } from '@/utils/is-css-var';
 import { isHex } from '@/utils/is-hex';
 import { cssVar } from '@directus/utils/browser';
 import Color, { ColorInstance } from 'color';
-import { ComponentPublicInstance, computed, ref, watch } from 'vue';
+import { ComponentPublicInstance, computed, ref, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -27,7 +27,8 @@ const props = withDefaults(defineProps<Props>(), {
 	opacity: false,
 });
 
-const { active } = useFocusin('menu');
+const menu = useTemplateRef('menu');
+const { active } = useFocusin(menu);
 
 // Reactive translations can't be default values of props
 const presetsWithDefaults = computed(

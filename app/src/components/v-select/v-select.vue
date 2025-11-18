@@ -2,7 +2,7 @@
 import { useCustomSelection, useCustomSelectionMultiple, type OtherValue } from '@directus/composables';
 import { Placement } from '@popperjs/core';
 import { debounce, get, isArray } from 'lodash';
-import { computed, Ref, ref, toRefs, watch } from 'vue';
+import { computed, onMounted, Ref, ref, toRefs, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SelectListItemGroup from './select-list-item-group.vue';
 import SelectListItem from './select-list-item.vue';
@@ -87,7 +87,9 @@ const emit = defineEmits(['update:modelValue', 'group-toggle']);
 
 const { t } = useI18n();
 
-const { active: menuActive } = useFocusin('menu');
+const menu = useTemplateRef('menu');
+
+const { active: menuActive } = useFocusin(menu);
 
 const { internalItems, internalItemsCount, internalSearch } = useItems();
 const { displayValue } = useDisplayValue();
