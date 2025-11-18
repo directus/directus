@@ -1581,6 +1581,7 @@ interfaces:
     max_one_section_open: Max 1 sektion öppen
   presentation-links:
     presentation-links: Knappar
+    links: Länkar
     style: Stil
     primary: Primär
     link: Länkar

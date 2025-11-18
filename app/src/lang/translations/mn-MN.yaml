@@ -1728,6 +1728,7 @@ interfaces:
     max_one_section_open: Ихдээ 1 нээлттэй хэсэг
   presentation-links:
     presentation-links: Товчлуур
+    links: Холбоосууд
     style: Хэв маяг
     primary: Үндсэн
     link: Холбоосууд

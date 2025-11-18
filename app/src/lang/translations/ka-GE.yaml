@@ -1755,6 +1755,7 @@ interfaces:
     max_one_section_open: მაქს. 1 სექცია ღია
   presentation-links:
     presentation-links: ღილაკები
+    links: ბმულები
     style: სტილი
     primary: პირველადი
     link: ბმულები

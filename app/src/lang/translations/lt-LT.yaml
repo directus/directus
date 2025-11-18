@@ -1732,6 +1732,7 @@ interfaces:
     max_one_section_open: Vienu metu išskleista tik viena
   presentation-links:
     presentation-links: Mygtukai
+    links: Nuorodos
     style: Stilius
     primary: Pirminis
     link: Nuorodos

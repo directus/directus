@@ -118,7 +118,7 @@ enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em D
 sso_tfa_setup_notice: Você será desligado da sua conta e precisará entrar novamente. Qualquer mudança não salva será descartada.
 add_field: Adicionar Campo
 role_name: Nome do Cargo
-policy_name: Nome da política 
+policy_name: Nome da política
 branch: Branch
 leaf: Folha
 indeterminate: Indeterminado
@@ -1752,6 +1752,7 @@ interfaces:
     max_one_section_open: Máximo 1 Seção Aberta
   presentation-links:
     presentation-links: Botões
+    links: Links
     style: Estilo
     primary: Primário
     link: Links

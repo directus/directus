@@ -1726,6 +1726,7 @@ interfaces:
     max_one_section_open: Max 1 sekcia otvorená
   presentation-links:
     presentation-links: Tlačidlá
+    links: Odkazy
     style: Štýl
     primary: Primárne
     link: Odkazy

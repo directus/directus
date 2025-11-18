@@ -1463,7 +1463,7 @@ interfaces:
     accordion_mode: Harmonika tilstand
     max_one_section_open: Maks en sektion åben
   presentation-links:
-    presentation-links: Knapper
+    links: Links
     style: Stil
     primary: Primær
     link: Links

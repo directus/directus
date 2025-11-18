@@ -1423,7 +1423,7 @@ fields:
     mcp_notice: 'Model Context Protocol — это стандарт для подключения LLM к таким приложениям, как Directus. Единожды настроенный, Directus MCP сервер будет доступен по `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Узнать больше про MCP и его установку.</a>'
     mcp_allow_deletes: Разрешить удаления
     mcp_allow_deletes_note:
-      - 
+      -
     mcp_prompts_collection: AI Prompts Collection
   directus_shares:
     name: Название
@@ -1778,6 +1778,7 @@ interfaces:
     max_one_section_open: 1 открытая секция
   presentation-links:
     presentation-links: Кнопки
+    links: Ссылки
     style: Стиль
     primary: Первичный
     link: Ссылки

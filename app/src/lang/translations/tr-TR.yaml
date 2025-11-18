@@ -1686,6 +1686,7 @@ interfaces:
     max_one_section_open: En Fazla 1 Bölüm Açık
   presentation-links:
     presentation-links: Butonlar
+    links: Bağlantılar
     style: Stil
     primary: Birincil
     link: Bağlantılar

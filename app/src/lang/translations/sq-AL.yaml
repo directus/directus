@@ -1729,6 +1729,7 @@ interfaces:
     max_one_section_open: Maksimum 1 Seksion i Hapur
   presentation-links:
     presentation-links: Butonat
+    links: Lidhje
     style: Stil
     primary: Primar
     link: Lidhje

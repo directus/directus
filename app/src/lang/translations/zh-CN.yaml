@@ -1855,6 +1855,7 @@ interfaces:
     max_one_section_open: 最多展开 1 项
   presentation-links:
     presentation-links: 按钮
+    links: 链接
     style: 样式
     primary: 主要的
     link: 链接

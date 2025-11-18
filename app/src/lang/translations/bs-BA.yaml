@@ -1346,7 +1346,7 @@ interfaces:
     accordion_mode: Način rada harmonike
     max_one_section_open: Maksimalno 1 otvoren odjeljak
   presentation-links:
-    presentation-links: Dugmeta
+    links: Linkovi
     style: Stil
     primary: Primarno
     link: Link

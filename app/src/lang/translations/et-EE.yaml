@@ -1132,6 +1132,7 @@ interfaces:
     any: Ükskõik milline
   presentation-links:
     presentation-links: Nupud
+    links: Lingid
     style: Stiil
     primary: Peamine
     link: Lingid

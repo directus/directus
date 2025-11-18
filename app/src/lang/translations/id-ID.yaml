@@ -1339,6 +1339,7 @@ interfaces:
     max_one_section_open: Maks 1 Bagian Dibuka
   presentation-links:
     presentation-links: Tombol
+    links: Tautan
     style: Gaya
     primary: Primer
     link: Tautan

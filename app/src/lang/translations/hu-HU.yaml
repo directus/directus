@@ -1407,6 +1407,7 @@ interfaces:
     max_one_section_open: Max. egy nyitott szakasz
   presentation-links:
     presentation-links: Gombok
+    links: Linkek
     style: Stílus
     primary: Elsődleges
     link: Linkek

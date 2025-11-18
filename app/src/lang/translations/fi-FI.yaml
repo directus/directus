@@ -1288,6 +1288,7 @@ interfaces:
     accordion_mode: Haitarin tila
   presentation-links:
     presentation-links: Painikkeet
+    links: Linkit
     style: Tyyli
     primary: Ensisijainen
     link: Linkit

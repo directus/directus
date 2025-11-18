@@ -918,6 +918,7 @@ interfaces:
     all: Svi
   presentation-links:
     presentation-links: Dugmad
+    links: Linkovi
     style: Stil
     primary: Primarni
     link: Linkovi

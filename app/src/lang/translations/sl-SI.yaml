@@ -1067,6 +1067,7 @@ interfaces:
     max_one_section_open: Največ ena odprta sekcija
   presentation-links:
     presentation-links: Gumbi
+    links: Povezave
     style: Slog
     primary: Glavni
     link: Povezave

@@ -1770,6 +1770,7 @@ interfaces:
     max_one_section_open: Max 1 section ouverte
   presentation-links:
     presentation-links: Boutons
+    links: Liens
     style: Style
     primary: Primaire
     link: Liens

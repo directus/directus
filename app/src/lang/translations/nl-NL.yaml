@@ -1762,6 +1762,7 @@ interfaces:
     max_one_section_open: Max 1 sectie open
   presentation-links:
     presentation-links: Knoppen
+    links: Links
     style: Stijl
     primary: Primair
     link: Links

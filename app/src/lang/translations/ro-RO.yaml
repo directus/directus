@@ -1383,6 +1383,7 @@ interfaces:
     max_one_section_open: Cel mult o secțiune deschisă
   presentation-links:
     presentation-links: Butoane
+    links: Link-uri
     style: Stil
     primary: Principal
     link: Link-uri

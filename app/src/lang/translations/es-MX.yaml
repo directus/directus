@@ -1759,6 +1759,7 @@ interfaces:
     max_one_section_open: Máximo de una sección abierta
   presentation-links:
     presentation-links: Botones
+    links: Enlaces
     style: Estilo
     primary: Principal
     link: Enlaces

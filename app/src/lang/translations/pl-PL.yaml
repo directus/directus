@@ -1701,6 +1701,7 @@ interfaces:
     max_one_section_open: Otwórz maksymalnie 1 sekcję
   presentation-links:
     presentation-links: Przyciski
+    links: Linki
     style: Style
     primary: Podstawowy
     link: Linki

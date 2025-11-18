@@ -1811,6 +1811,7 @@ interfaces:
     max_one_section_open: 최대 1개 섹션 열기
   presentation-links:
     presentation-links: 버튼
+    links: 연결
     style: 스타일
     primary: 기본
     link: 연결

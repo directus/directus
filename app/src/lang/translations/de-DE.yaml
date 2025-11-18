@@ -1741,6 +1741,7 @@ interfaces:
     max_one_section_open: Max. einen Abschnitt öffnen
   presentation-links:
     presentation-links: Buttons
+    links: Links
     style: Stil
     primary: Primär
     link: Links

@@ -1492,6 +1492,7 @@ interfaces:
     max_one_section_open: 最多開啟一個區塊
   presentation-links:
     presentation-links: 按鈕
+    links: 連結
     style: 樣式
     primary: 主要
     link: 連結

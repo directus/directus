@@ -1692,6 +1692,7 @@ interfaces:
     max_one_section_open: Maksimalno 1 otvoren odjeljak
   presentation-links:
     presentation-links: Gumbi
+    links: Poveznice
     style: Stil
     primary: Primarno
     link: Poveznice
