@@ -16,9 +16,9 @@ describe('Mail', async () => {
 			hideSTARTTLS: true,
 			async onData(stream, _, cb) {
 				const message = await simpleParser(stream);
+				messages.push(message);
 
 				stream.on('end', () => {
-					messages.push(message);
 					cb(null);
 				});
 			},
