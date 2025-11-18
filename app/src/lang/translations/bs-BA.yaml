@@ -711,7 +711,6 @@ label: Oznaka
 flows: Tokovi
 flow: Tok
 select_a_flow: Odaberite tok
-run_flow_on_current_edited_confirm: Ova se stavka može ažurirati ovim tokom, jeste li sigurni da je želite izvršiti?
 trigger: Okidač
 trigger_options: Opcije okidača
 view_trigger: Prikaži okidač
@@ -935,7 +934,6 @@ directus_collection:
   directus_dashboards: Kontrolni paneli unutar modula s uvidima
   directus_fields: Dodatna konfiguracija polja i metapodaci
   directus_files: Metapodaci za sva upravljane fajlove
-  directus_flows: Automatizacija tokova
   directus_folders: Pruža virtualne direktorije za fajlove
   directus_migrations: Koju verziju baze podataka koristite
   directus_notifications: Obavijesti poslane korisnicima
@@ -1348,9 +1346,7 @@ interfaces:
     accordion_mode: Način rada harmonike
     max_one_section_open: Maksimalno 1 otvoren odjeljak
   presentation-links:
-    presentation-links: Veze dugmeta
-    links: Linkovi
-    description: Konfigurabilna dugmeta veza za pokretanje dinamičkih URL-ova
+    presentation-links: Dugmeta
     style: Stil
     primary: Primarno
     link: Link
@@ -1863,11 +1859,9 @@ triggers:
 a_flow_uuid: Odaberite tok za okinuti...
 any_string_or_json: Bilo koji string ili JSON...
 item_payload_placeholder: Ovo je JSON koji se koristi za ažuriranje vrijednosti polja stavke...
-operation_variables_note: Podacima o toku možete pristupiti pomoću varijabli kao što su **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger {'}'}{'}'}** i **{'{'}{'{'}$accountability{'}'}{'}'}**, ili referencirajte prethodne operacije koristeći **{'{ '}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Uslov
-    description: Usmjerite tok na temelju If / Else logike
   exec:
     name: Pokreni skriptu
     description: Izvršite proizvoljni kod za izmjenu payloada
@@ -1931,7 +1925,6 @@ operations:
     description: Promjenite JSON payload toka
   trigger:
     name: Pokreni tok
-    description: Proslijedite ove podatke u drugi tok
     flows: Tokovi
     flow: Tok
     data: Podaci
