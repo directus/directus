@@ -243,7 +243,7 @@ const overlayItemContentProps = computed(() => {
 });
 
 const { provideRunManualFlow } = useFlows({
-	collection: collection,
+	collection,
 	primaryKey: primaryKey.value,
 	location: 'item',
 	hasEdits,

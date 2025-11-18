@@ -303,7 +303,7 @@ watch(
 );
 
 const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
-	collection: collection,
+	collection,
 	primaryKey: actualPrimaryKey.value,
 	location: 'item',
 	hasEdits,
