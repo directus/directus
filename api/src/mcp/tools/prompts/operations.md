@@ -265,6 +265,8 @@ can read existing operations to see if they are using extensions operations. </a
 7. Use nested objects in filters, NOT dot notation
 8. Request headers as array of objects, body as stringified JSON
 9. Pass native objects in data (except request body)
+9. ALWAYS pass native objects in data (except request body for `request` operation)
+10. No `$NOW` variable - use exec operation: `return { now: new Date().toISOString() };`
 
 </common_mistakes>
 
