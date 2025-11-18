@@ -227,8 +227,9 @@ export class ExtensionManager {
 
 		await this.installationManager.install(versionId);
 
-		await this.broadcastReloadNotification({ partialSync: versionId });
-		await this.reload({ partialSync: versionId });
+		const syncFolder = join('.registry', versionId);
+		await this.broadcastReloadNotification({ partialSync: syncFolder });
+		await this.reload({ partialSync: syncFolder });
 
 		emitter.emitAction('extensions.installed', {
 			extensions: this.extensions,
@@ -243,8 +244,9 @@ export class ExtensionManager {
 
 		await this.installationManager.uninstall(folder);
 
-		await this.broadcastReloadNotification({ partialSync: folder });
-		await this.reload({ partialSync: folder });
+		const syncFolder = join('.registry', folder);
+		await this.broadcastReloadNotification({ partialSync: syncFolder });
+		await this.reload({ partialSync: syncFolder });
 
 		emitter.emitAction('extensions.uninstalled', {
 			extensions: this.extensions,

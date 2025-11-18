@@ -65,18 +65,19 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
         const disk = storage.location(env['EXTENSIONS_LOCATION'] as string);
 
         // check if we are only removing the local directory
-        if (await disk.exists(remoteExtensionsPath) === false) {
-            logger.debug('Deleting local extension: ' + localExtensionsPath);
-            // remove the local extension and continue to the finally block
-            return await rm(localExtensionsPath, { recursive: true, force: true });
-        }
+        console.log(await disk.exists(remoteExtensionsPath), remoteExtensionsPath)
+        // if ((await disk.exists(remoteExtensionsPath)) === false) {
+        //     logger.debug('Deleting local extension: ' + localExtensionsPath);
+        //     // remove the local extension and continue to the finally block
+        //     return await rm(localExtensionsPath, { recursive: true, force: true });
+        // }
 
         // Make sure we don't overload the file handles
         const queue = new Queue({ concurrency: 1000 });
 
         // start file tracker
         const fileTracker = new SyncFileTracker();
-        // IDEA we can probably check if the local folder is empty here!
+        
         await fileTracker.readLocalFiles(localExtensionsPath);
         const hasLocalFiles = fileTracker.hasLocalFiles();
 
