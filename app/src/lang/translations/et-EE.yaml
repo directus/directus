@@ -1131,9 +1131,7 @@ interfaces:
     all: Kõik
     any: Ükskõik milline
   presentation-links:
-    presentation-links: Nuppude lingid
-    links: Lingid
-    description: Seadistatavad nupud dünaamiliste URLide avamiseks
+    presentation-links: Nupud
     style: Stiil
     primary: Peamine
     link: Lingid
