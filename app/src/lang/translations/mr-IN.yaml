@@ -924,10 +924,8 @@ label: लेबल
 flows: फ्लोव
 flow: फ्लोव
 select_a_flow: फ्लो सिलेक्ट करा
-run_flow_confirm: तुमची खात्री आहे की तुम्ही हा प्रवाह कार्यान्वित करू इच्छिता?
 run_flow_on_current_collection: वर्तमान संकलनावर प्रवाह चालवा
 run_flow_on_current: वर्तमान आयटमवर फ्लो चालवा
-run_flow_on_current_edited_confirm: हा आयटम या प्रवाहाद्वारे अद्यतनित केला जाऊ शकतो, तुमची खात्री आहे की तुम्ही ते कार्यान्वित करू इच्छिता?
 run_flow_on_selected: प्रथम एक किंवा अधिक आयटम निवडा | 1 निवडलेल्या आयटमवर फ्लो चालवा | निवडलेल्या {n} आयटमवर फ्लो चालवा
 run_flow: रन फ्लो
 field_name_placeholder: फील्डचे नाव एंटर करा...
@@ -1218,7 +1216,6 @@ directus_collection:
   directus_dashboards: इनसाइट्स मॉड्यूलमधील डॅशबोर्ड
   directus_fields: अतिरिक्त फील्ड कॉन्फिगरेशन आणि मेटाडेटा
   directus_files: सर्व व्यवस्थापित फाइल मालमत्तेसाठी मेटाडेटा
-  directus_flows: ऑटोमेशन फ्लोव
   directus_folders: फायलींसाठी आभासी निर्देशिका प्रदान करते
   directus_migrations: तुम्ही डेटाबेसची कोणती आवृत्ती वापरत आहात
   directus_notifications: वापरकर्त्यांना सूचना पाठवल्या
@@ -1732,9 +1729,7 @@ interfaces:
     accordion_mode: एकॉर्डियन मोड
     max_one_section_open: कमाल 1 विभाग उघडा
   presentation-links:
-    presentation-links: बटण लिंक
-    links: लिंक
-    description: डायनॅमिक URL लाँच करण्यासाठी कॉन्फिगर करण्यायोग्य लिंक बटणे
+    presentation-links: बटन्स
     style: स्टाईल
     primary: प्राथमिक
     link: लिंक्स
@@ -2359,11 +2354,9 @@ triggers:
 a_flow_uuid: ट्रिगर करण्यासाठी एक प्रवाह निवडा...
 any_string_or_json: कोणतीही स्ट्रिंग किंवा JSON...
 item_payload_placeholder: आयटमची फील्ड व्हॅल्यू अपडेट करण्यासाठी वापरला जाणारा JSON आहे...
-operation_variables_note: तुम्ही **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** आणि **{'{'}{'{'}$accountability{'}'}{'}'}** सारख्या व्हेरिएबल्ससह प्रवाह डेटामध्ये प्रवेश करू शकता, किंवा वापरून मागील ऑपरेशन्सचा संदर्भ द्या **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: अट
-    description: If/Else लॉजिकवर आधारित फ्लो रूट करा
   exec:
     name: स्क्रिप्ट चालवा
     description: पेलोड सुधारण्यासाठी अनियंत्रित कोड कार्यान्वित करा
@@ -2447,7 +2440,6 @@ operations:
     description: फ्लोचा JSON पेलोड बदला
   trigger:
     name: ट्रिगर प्रवाह
-    description: हा डेटा दुसर्या प्रवाहात पास करा
     flows: फ्लोव
     flow: फ्लोव
     data: डेटा
