@@ -931,10 +931,8 @@ label: Popisek
 flows: Toky
 flow: Tok
 select_a_flow: Vybrat tok
-run_flow_confirm: Jste si jisti, že chcete spustit tento tok?
 run_flow_on_current_collection: Spustit tok nad aktuální kolekcí
 run_flow_on_current: Spustit tok nad aktuální položkou
-run_flow_on_current_edited_confirm: Tato položka může být tímto tokem aktualizována, jste si jisti, že tok chcete spustit?
 run_flow_on_selected: Nejprve vyberte jednu nebo více položek | Spustit tok na 1 vybrané položce | Spustit tok na {n} vybraných položkách
 run_flow: Spustit tok
 field_name_placeholder: Zadejte název pole...
@@ -1224,7 +1222,6 @@ directus_collection:
   directus_dashboards: Nástěnky v modulu přehledů
   directus_fields: Další konfigurace polí a metadata
   directus_files: Metadata pro všechny spravované soubory
-  directus_flows: Automatické toky
   directus_folders: Poskytuje virtuální adresáře souborů
   directus_migrations: Jakou verzi databáze používáte
   directus_notifications: Oznámení zaslaná uživatelům
@@ -1738,9 +1735,7 @@ interfaces:
     accordion_mode: Režim harmoniky
     max_one_section_open: Max. 1 otevřená sekce
   presentation-links:
-    presentation-links: Tlačítkové odkazy
-    links: Odkazy
-    description: Konfigurovatelná tlačítka odkazů pro spouštění dynamických URL
+    presentation-links: Tlačítka
     style: Styl
     primary: Primární
     link: Odkazy
@@ -2363,11 +2358,9 @@ triggers:
 a_flow_uuid: Vyberte tok pro spuštění...
 any_string_or_json: Jakýkoliv řetězec nebo JSON...
 item_payload_placeholder: Toto je JSON používaný k aktualizaci hodnot polí položky...
-operation_variables_note: Můžete přistupovat k datům toku s proměnnými jako **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** a **{'{'}{'{'}$accountability{'}'}{'}'}**, nebo odkázovat na předchozí operace s **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Podmínka
-    description: Trasovat tok založený na If / Else logice
   exec:
     name: Spustit skript
     description: Spusťte libovolný kód pro změnu datového balíku
@@ -2451,7 +2444,6 @@ operations:
     description: Upravit JSON toku
   trigger:
     name: Spouštěč toku
-    description: Předat tato data jinému toku
     flows: Toky
     flow: Tok
     data: Údaje
