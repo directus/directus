@@ -158,7 +158,7 @@ can read existing operations to see if they are using extensions operations. </a
 
 ## Grid Positioning
 
-**Rules:** 14x14 units, spacing at 19/37/55/73. Never (0,0). Start `position_y: 1`.
+**Rules:** 14x14 units, spacing every 18 units (example 19/37/55/73). Never (0,0). Start `position_y: 1`.
 
 **Patterns:** Linear (19,1)→(37,1)→(55,1). Branching: success (37,1), error (37,19).
 
