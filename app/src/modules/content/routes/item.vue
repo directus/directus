@@ -612,7 +612,7 @@ function useCollectionRoute() {
 			</div>
 		</template>
 
-		<template #title-outer:append>
+		<template #title:append>
 			<header-collab :model-value="collabUsers" :connected="connected" small />
 		</template>
 
@@ -853,6 +853,10 @@ function useCollectionRoute() {
 
 .title-loader {
 	inline-size: 260px;
+}
+
+.header-collab {
+	margin-inline-start: 16px;
 }
 
 .version-more-options.v-icon {

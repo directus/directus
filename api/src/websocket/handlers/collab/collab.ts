@@ -48,14 +48,21 @@ export class CollabHandler {
 
 	async onJoin(client: WebSocketClient, message: JoinMessage) {
 		try {
+			const schema = await getSchema();
+
 			const allowedCollections = await fetchAllowedCollections(
 				{ accountability: client.accountability!, action: 'read' },
-				{ knex: getDatabase(), schema: await getSchema() },
+				{ knex: getDatabase(), schema },
 			);
 
 			if (!allowedCollections.includes(message.collection))
 				throw new InvalidPayloadError({
 					reason: `No permission to access collection ${message.collection} or collection does not exist`,
+				});
+
+			if (!message.item && !schema.collections[message.collection]?.singleton)
+				throw new InvalidPayloadError({
+					reason: `Item id has to be provided for non singleton collections`,
 				});
 
 			const room = await this.rooms.createRoom(
@@ -135,7 +142,7 @@ export class CollabHandler {
 					reason: `Not connected to room ${message.room}`,
 				});
 
-			if ((await hasFieldPermision(client.accountability!, room.collection, message.field)) === false)
+			if ((await hasFieldPermision(client.accountability!, room.collection, message.field, 'update')) === false)
 				throw new InvalidPayloadError({
 					reason: `No permission to update field ${message.field} or field does not exist`,
 				});

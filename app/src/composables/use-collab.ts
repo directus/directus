@@ -92,6 +92,13 @@ export function useCollab(
 		}
 	});
 
+	watch(version, (newVersion, oldVersion) => {
+		if (newVersion?.key !== oldVersion?.key) {
+			leave();
+			join();
+		}
+	});
+
 	eventHandlers.push(
 		sdk.onWebSocket('open', () => {
 			connected.value = true;
@@ -110,23 +117,21 @@ export function useCollab(
 	);
 
 	function join() {
-		if (roomId.value || !collection.value || !item.value || item.value === '+') return;
+		if (roomId.value || !collection.value || item.value === '+') return;
 
 		sdk.sendMessage({
 			type: COLLAB,
 			action: 'join',
 			collection: collection.value,
-			item: String(item.value),
-			version: version.value,
+			item: item.value ? String(item.value) : null,
+			version: version.value?.key ?? null,
 			initialChanges: edits.value,
 		});
 	}
 
 	function leave() {
-		sdk.sendMessage({
-			type: COLLAB,
+		sendMessage({
 			action: 'leave',
-			room: roomId.value,
 		});
 
 		roomId.value = null;
@@ -138,8 +143,8 @@ export function useCollab(
 			if (
 				message.action === 'init' &&
 				message.collection === collection.value &&
-				message.item === String(item.value) &&
-				message.version === version.value
+				((!item.value && !message.item) || message.item === String(item.value)) &&
+				((!version.value && !message.version) || message.version === version.value?.key)
 			) {
 				receiveInit(message);
 				return;
