@@ -937,10 +937,8 @@ label: იარლიყი
 flows: ნაკადები
 flow: ნაკადი
 select_a_flow: აირჩიეთ ნაკადი
-run_flow_confirm: დარწმუნებული ხართ, რომ გსურთ ამ ნაკადის შესრულება?
 run_flow_on_current_collection: პროცესის გაშვება მიმდინარე კოლექციაზე
 run_flow_on_current: პროცესის გაშვება მიმდინარე ჩანაწერზე
-run_flow_on_current_edited_confirm: ეს ჩანაწერი შეიძლება განახლდეს ამ პროცესით, დარწმუნებული ხართ, რომ გსურთ მისი შესრულება?
 run_flow_on_selected: ჯერ აირჩიეთ ერთი ან მეტი ჩანაწერი | პროცესის გაშვება 1 არჩეულ ჩანაწერზე | პროცესის გაშვება {n} არჩეულ ჩანაწერზე
 run_flow: პროცესის გაშვება
 trigger_flow_success: პროცესი "{flow}" წარმატებით გაეშვა
@@ -1240,7 +1238,6 @@ directus_collection:
   directus_dashboards: დაფები ანალიტიკის მოდულში
   directus_fields: დამატებითი ველის კონფიგურაცია და მეტამონაცემები
   directus_files: მეტამონაცემები ყველა მართული ფაილური რესურსისთვის
-  directus_flows: ავტომატიზაციის ნაკადები
   directus_folders: უზრუნველყოფს ვირტუალურ დირექტორიებს ფაილებისთვის
   directus_migrations: მონაცემთა ბაზის ვერსია, რომელსაც იყენებთ
   directus_notifications: მომხმარებლებისთვის გაგზავნილი შეტყობინებები
@@ -1757,9 +1754,7 @@ interfaces:
     accordion_mode: აკორდეონის რეჟიმი
     max_one_section_open: მაქს. 1 სექცია ღია
   presentation-links:
-    presentation-links: ღილაკის ბმულები
-    links: ბმულები
-    description: კონფიგურირებადი ბმულის ღილაკები დინამიური URL-ების გასაშვებად
+    presentation-links: ღილაკები
     style: სტილი
     primary: პირველადი
     link: ბმულები
@@ -2389,11 +2384,9 @@ triggers:
 a_flow_uuid: აირჩიეთ გასააქტიურებელი Flow...
 any_string_or_json: ნებისმიერი სტრიქონი ან JSON...
 item_payload_placeholder: ეს არის JSON, რომელიც გამოიყენება ჩანაწერის ველების მნიშვნელობების განახლებისთვის...
-operation_variables_note: შეგიძლიათ წვდომა იქონიოთ flow-ს მონაცემებზე ისეთი ცვლადებით, როგორიცაა **{'}{'}$last{'}{'}**, **{'}{'}$trigger{'}{'}** და **{'}{'}$accountability{'}{'}**, ან მიუთითოთ წინა ოპერაციებზე **{'}{'}operation_key{'}{'}**-ის გამოყენებით.
 operations:
   condition:
     name: პირობა
-    description: წარმართეთ flow-ს ლოგიკა If / Else-ის მიხედვით
   exec:
     name: სკრიპტის გაშვება
     description: შეასრულეთ ნებისმიერი კოდი payload-ის შესაცვლელად
@@ -2484,7 +2477,6 @@ operations:
     description: შეცვალეთ Flow-ს JSON payload-ი
   trigger:
     name: Flow-ს გაშვება
-    description: გადაეცით ეს მონაცემები სხვა flow-ს
     flows: Flow-ები
     flow: Flow
     data: მონაცემები
