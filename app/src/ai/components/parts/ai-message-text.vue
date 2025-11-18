@@ -12,11 +12,13 @@ const isOpen = ref(false);
 const shouldShowCollapse = ref(false);
 const contentRef = useTemplateRef<HTMLElement>('message-content');
 
+const MESSAGE_TEXT_MAX_HEIGHT = 250;
+
 useResizeObserver(contentRef, (entries) => {
 	const entry = entries[0];
 
 	if (entry) {
-		shouldShowCollapse.value = entry.target.scrollHeight > 250;
+		shouldShowCollapse.value = entry.target.scrollHeight > MESSAGE_TEXT_MAX_HEIGHT;
 	}
 });
 </script>
@@ -76,7 +78,7 @@ useResizeObserver(contentRef, (entries) => {
 }
 
 .message-text[data-role='user'].has-overflow:not(.is-open) .content-wrapper {
-	max-block-size: 250px;
+	max-block-size: calc(v-bind(MESSAGE_TEXT_MAX_HEIGHT) * 1px);
 	overflow: hidden;
 
 	&::after {
