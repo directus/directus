@@ -14,12 +14,14 @@ describe('Mail', async () => {
 		fakeSMTPServer = new SMTPServer({
 			authOptional: true,
 			hideSTARTTLS: true,
-			async onData(stream, _, cb) {
-				const message = await simpleParser(stream);
-				messages.push(message);
+			onData(stream, _, cb) {
+				simpleParser(stream, (err, message) => {
+					if (err) {
+						return cb();
+					}
 
-				stream.on('end', () => {
-					cb(null);
+					messages.push(message);
+					cb();
 				});
 			},
 		});
