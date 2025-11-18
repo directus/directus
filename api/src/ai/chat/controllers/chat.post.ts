@@ -12,13 +12,13 @@ export const aiChatPostHandler: RequestHandler = async (req, res) => {
 		throw new ForbiddenError(); // TODO should this be a policy flag?
 	}
 
-	const result = ChatRequest.safeParse(req.body);
+	const parseResult = ChatRequest.safeParse(req.body);
 
-	if (!result.success) {
-		throw new InvalidPayloadError({ reason: fromZodError(result.error).message });
+	if (!parseResult.success) {
+		throw new InvalidPayloadError({ reason: fromZodError(parseResult.error).message });
 	}
 
-	const { provider, model, messages: rawMessages, tools: requestedTools } = result.data;
+	const { provider, model, messages: rawMessages, tools: requestedTools } = parseResult.data;
 
 	if (rawMessages.length === 0) {
 		throw new InvalidPayloadError({ reason: `"messages" must not be empty` });
@@ -44,6 +44,9 @@ export const aiChatPostHandler: RequestHandler = async (req, res) => {
 		tools: tools,
 		apiKeys: res.locals['ai'].apiKeys,
 		systemPrompt: res.locals['ai'].systemPrompt,
+		onUsage: (usage) => {
+			res.write(`data: ${JSON.stringify({ type: 'data-usage', data: usage })}\n\n`);
+		},
 	});
 
 	stream.pipeUIMessageStreamToResponse(res);

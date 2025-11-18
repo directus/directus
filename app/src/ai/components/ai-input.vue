@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import AiTextarea from './ai-textarea.vue';
-import AiInputSubmit from './ai-input-submit.vue';
 import { useAiStore } from '../stores/use-ai';
+import AiInputSubmit from './ai-input-submit.vue';
+import AiTextarea from './ai-textarea.vue';
 
 const aiStore = useAiStore();
 
@@ -30,7 +30,7 @@ function handleSubmit() {
 <template>
 	<div class="ai-input-container">
 		<div class="input-wrapper">
-			<AiTextarea
+			<ai-textarea
 				ref="textarea-component"
 				v-model="aiStore.input"
 				:placeholder="$t('ai.prompt_input_placeholder')"
