@@ -43,12 +43,6 @@ vi.mock('@/api', () => {
 							},
 						});
 					}
-
-					return Promise.resolve({
-						data: {
-							data: textData,
-						},
-					});
 				} else {
 					return Promise.resolve({
 						data: {
