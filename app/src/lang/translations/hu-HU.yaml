@@ -738,7 +738,6 @@ flow: Folyamat
 select_a_flow: Válasszon egy folyamatot
 run_flow_on_current_collection: Folyamat futtatása az aktuális gyűjteményen
 run_flow_on_current: Folyamat futtatása a jelenlegi elemen
-run_flow_on_current_edited_confirm: Lehetséges, hogy a tétel frissítve lesz a futtatás miatt, biztosan folytatja?
 run_flow_on_selected: Futtatás a kiválasztott elemeken
 run_flow: Folyamat futtatása
 trigger: Eseményindító
@@ -972,7 +971,6 @@ directus_collection:
   directus_dashboards: Irányítópultok az Insights modulon belül
   directus_fields: Mező további konfigurációja és metaadatok
   directus_files: Metaadatok az összes kezelt fájleszközhöz
-  directus_flows: Automatizáció
   directus_folders: Virtuális könyvtárakat biztosít a fájlok számára
   directus_migrations: Az adatbázis melyik verzióját használja
   directus_notifications: A felhasználóknak küldött értesítések
@@ -1408,9 +1406,7 @@ interfaces:
     accordion_mode: Harmonika mód
     max_one_section_open: Max. egy nyitott szakasz
   presentation-links:
-    presentation-links: Gomb hivatkozások
-    links: Linkek
-    description: Konfigurálható linkgombok dinamikus URL-ek indításához
+    presentation-links: Gombok
     style: Stílus
     primary: Elsődleges
     link: Linkek
@@ -1997,11 +1993,9 @@ triggers:
 a_flow_uuid: Válasszon ki egy folyamatot az aktiváláshoz...
 any_string_or_json: Bármilyen karakterlánc vagy JSON...
 item_payload_placeholder: Ez a JSON az elem mezőértékeinek frissítésére...
-operation_variables_note: A folyamat adatait olyan változókkal érheti el, mint a **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger {'}'}{'}'}** és **{'{'}{'{'}$accountability{'}'}{'}'}**, vagy hivatkozzon korábbi műveletekre a **{'{ használatával '}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Feltétel
-    description: Hozzon létre folyamatot a Ha / Különben logika alapján
   exec:
     name: Szkript futtatása
     description: Tetszőleges kód futtatása az adattartalom módosításához
@@ -2072,7 +2066,6 @@ operations:
     description: Módosítsa a Folyamat JSON-adattartalmát
   trigger:
     name: Folyamat beindítása
-    description: Adja át ezeket az adatokat egy másik folyamatnak
     flows: Folyamatok
     flow: Folyamat
     data: Adat
