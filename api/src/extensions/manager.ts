@@ -200,7 +200,7 @@ export class ExtensionManager {
 		}
 
 		if (!this.isLoaded) {
-			await this.load();
+			await this.load({ forceSync: true });
 
 			if (this.extensions.length > 0) {
 				logger.info(`Loaded extensions: ${this.extensions.map((ext) => ext.name).join(', ')}`);
