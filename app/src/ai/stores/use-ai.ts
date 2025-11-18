@@ -47,6 +47,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		},
 		{ immediate: true }
 	);
+
 	const selectedModel = computed(() => {
 		if (!selectedModelId.value) return null;
 
@@ -131,6 +132,7 @@ export const useAiStore = defineStore('ai-store', () => {
 				if (typeof inputTokens === 'number') tokenUsage.inputTokens = inputTokens;
 				if (typeof outputTokens === 'number') tokenUsage.outputTokens = outputTokens;
 				if (typeof totalTokens === 'number') tokenUsage.totalTokens = totalTokens;
+
 				if (contextUsagePercentage.value > 0) {
 					estimatedMaxMessages.value = Math.floor((messages.value.length / contextUsagePercentage.value) * 100);
 				}

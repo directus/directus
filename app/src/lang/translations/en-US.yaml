@@ -1669,6 +1669,8 @@ unlimited_usage: Unlimited usage
 uses_left: No uses left | One use left | {n} uses left
 no_shares: No shares to show
 new_share: New Share
+show_more: Show More
+show_less: Show Less
 ai:
   thinking: Thinking...
   input: Input

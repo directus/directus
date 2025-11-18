@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTemplateRef, computed, onMounted, nextTick, watch } from 'vue';
+import { useTemplateRef, computed, onMounted, nextTick } from 'vue';
 import { useScroll } from '@vueuse/core';
 import { useAiStore } from '../stores/use-ai';
 import AiMessageList from './ai-message-list.vue';
@@ -101,6 +101,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 .messages-container {
 	position: relative;
+	padding-inline: 8px;
 	flex: 1;
 	overflow-y: auto;
 	min-block-size: 0;
@@ -118,6 +119,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 .input-container {
 	flex-shrink: 0;
 	position: relative;
+	padding-inline-end: 12px;
 }
 
 .error-message {

@@ -1,21 +1,95 @@
 <script setup lang="ts">
+import { useResizeObserver } from '@vueuse/core';
+import { ref, useTemplateRef } from 'vue';
+
 defineProps<{
 	text: string;
 	state: 'streaming' | 'done';
+	role?: 'user' | 'assistant' | 'system';
 }>();
+
+const isOpen = ref(false);
+const shouldShowCollapse = ref(false);
+const contentRef = useTemplateRef<HTMLElement>('message-content');
+
+const MESSAGE_TEXT_MAX_HEIGHT = 250;
+
+useResizeObserver(contentRef, (entries) => {
+	const entry = entries[0];
+
+	if (entry) {
+		shouldShowCollapse.value = entry.target.scrollHeight > MESSAGE_TEXT_MAX_HEIGHT;
+	}
+});
 </script>
 
 <template>
-	<div v-md="text || ''" class="message-text"></div>
+	<div class="message-text" :class="{ 'is-open': isOpen, 'has-overflow': shouldShowCollapse }" :data-role="role">
+		<div class="content-wrapper">
+			<div ref="message-content" v-md="text || ''" class="message-content" />
+		</div>
+		<button v-if="role === 'user' && shouldShowCollapse" class="collapse-trigger" @click="isOpen = !isOpen">
+			{{ isOpen ? $t('show_less') : $t('show_more') }}
+		</button>
+	</div>
 </template>
 
 <style scoped>
 .message-text {
-	padding: 0.8rem 1rem;
+	inline-size: 100%;
 	border-radius: var(--ai-message-border-radius, var(--theme--border-radius));
 	background-color: var(--ai-message-background);
 	color: var(--ai-message-color, var(--theme--foreground));
 	overflow-wrap: break-word;
+
+	--ai-message-text-border-color: var(--theme--border-color-accent);
+	--ai-message-text-blockquote-border-color: var(--theme--border-color-accent);
+	--ai-message-code-background: var(--theme--background);
+
+	&[data-role='assistant'] {
+		.message-content {
+			padding: 0.4rem 0;
+		}
+
+		--ai-message-code-background: var(--theme--background-subdued);
+	}
+
+	&[data-role='user'] {
+		--ai-message-text-border-color: var(--theme--border-color);
+
+		.message-content {
+			padding: 0.8rem 1rem;
+		}
+
+		--ai-message-code-background: var(--theme--background-normal);
+	}
+
+	&[data-role='user'].has-overflow:not(.is-open) .message-content {
+		padding-block-end: 0;
+	}
+
+	&[data-role='user'].has-overflow.is-open .message-content {
+		padding-block-end: 0.8rem;
+	}
+}
+
+.content-wrapper {
+	position: relative;
+}
+
+.message-text[data-role='user'].has-overflow:not(.is-open) .content-wrapper {
+	max-block-size: calc(v-bind(MESSAGE_TEXT_MAX_HEIGHT) * 1px);
+	overflow: hidden;
+
+	&::after {
+		content: '';
+		position: absolute;
+		inset-block-end: 0;
+		inset-inline: 0;
+		block-size: 80px;
+		background: linear-gradient(to bottom, transparent, var(--ai-message-background));
+		pointer-events: none;
+	}
 }
 
 /* Headings */
@@ -113,12 +187,12 @@ defineProps<{
 :deep(del),
 :deep(s) {
 	text-decoration: line-through;
-	opacity: 0.7;
+	color: var(--theme--foreground-subdued);
 }
 
 /* Code */
 :deep(code) {
-	background-color: var(--theme--background);
+	background-color: var(--ai-message-code-background);
 	padding: 0.125rem 0.375rem;
 	border-radius: 0.25rem;
 	font-family: var(--theme--fonts--monospace--font-family);
@@ -126,9 +200,10 @@ defineProps<{
 }
 
 :deep(pre) {
+	font-family: var(--theme--fonts--monospace--font-family);
 	margin: 0.75rem 0;
 	padding: 1rem;
-	background-color: var(--theme--background);
+	background-color: var(--ai-message-code-background);
 	border-radius: var(--theme--border-radius);
 	overflow-x: auto;
 
@@ -158,8 +233,64 @@ defineProps<{
 }
 
 /* Task lists */
+:deep(ul:has(input[type='checkbox'])) {
+	list-style: none;
+	padding-inline-start: 0.25rem;
+}
+
+:deep(li:has(input[type='checkbox'])) {
+	padding-inline-start: 0.25rem;
+}
+
 :deep(input[type='checkbox']) {
+	position: relative;
+	inline-size: 20px;
+	block-size: 20px;
 	margin-inline-end: 0.5rem;
+	margin-block-start: 0.1em;
+	vertical-align: top;
+	appearance: none;
+	background-color: transparent;
+	border: 2px solid var(--theme--foreground-subdued);
+	border-radius: 2px;
+	cursor: pointer;
+	transition: all var(--fast) var(--transition);
+
+	&:hover:not(:disabled) {
+		border-color: var(--theme--primary);
+	}
+
+	&:checked {
+		border-color: var(--theme--primary);
+		background-color: transparent;
+
+		&::after {
+			content: '';
+			position: absolute;
+			inset-inline-start: 5px;
+			inline-size: 5px;
+			block-size: 10px;
+			border: solid var(--theme--primary);
+			border-width: 0 2px 2px 0;
+			transform: rotate(45deg);
+		}
+	}
+
+	&:focus-visible {
+		outline: var(--focus-ring-width) solid var(--focus-ring-color);
+		outline-offset: var(--focus-ring-offset);
+	}
+
+	&:disabled {
+		cursor: not-allowed;
+		border-color: var(--theme--foreground-subdued);
+
+		&:checked {
+			&::after {
+				border-color: var(--theme--foreground-subdued);
+			}
+		}
+	}
 }
 
 /* Links */
@@ -176,9 +307,7 @@ defineProps<{
 :deep(blockquote) {
 	margin: 1rem 0;
 	padding: 0.75rem 1rem;
-	border-inline-start: 0.25rem solid var(--theme--border-color);
-	background-color: var(--theme--background-subdued);
-	color: var(--theme--foreground-subdued);
+	border-inline-start: 0.25rem solid var(--ai-message-text-blockquote-border-color);
 
 	p:first-child {
 		margin-block-start: 0;
@@ -193,7 +322,7 @@ defineProps<{
 :deep(hr) {
 	margin: 1.5rem 0;
 	border: none;
-	border-block-start: 1px solid var(--theme--border-color);
+	border-block-start: var(--theme--border-width) solid var(--ai-message-text-border-color);
 }
 
 /* Tables */
@@ -206,18 +335,18 @@ defineProps<{
 }
 
 :deep(thead) {
-	background-color: var(--theme--background-subdued);
+	background-color: var(--theme--background);
 }
 
 :deep(th),
 :deep(td) {
 	padding: 0.5rem 0.75rem;
-	border: 1px solid var(--theme--border-color);
+	border: var(--theme--border-width) solid var(--theme--border-color-accent);
 	text-align: start;
 }
 
 :deep(th) {
-	font-weight: 600;
+	font-weight: 700;
 }
 
 :deep(tr:nth-child(even)) {
@@ -230,5 +359,26 @@ defineProps<{
 	block-size: auto;
 	border-radius: var(--theme--border-radius);
 	margin: 0.5rem 0;
+}
+
+/* Collapsible */
+.collapse-trigger {
+	position: relative;
+	display: block;
+	inline-size: 100%;
+	padding: 0.5rem 1rem 0.8rem;
+	text-align: start;
+	z-index: 1;
+	font-size: 0.875rem;
+	color: var(--ai-message-color, var(--theme--foreground));
+	font-weight: 600;
+	cursor: pointer;
+	background: none;
+	border: none;
+	border-radius: var(--ai-message-border-radius, var(--theme--border-radius));
+
+	&:hover {
+		color: var(--ai-message-color-hover, var(--theme--foreground-accent));
+	}
 }
 </style>
