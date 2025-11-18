@@ -28,6 +28,7 @@ const props = withDefaults(
 		enableSelect?: boolean;
 		limit?: number;
 		prefix?: string;
+		template?: string | null;
 		allowDuplicates?: boolean;
 	}>(),
 	{
@@ -36,6 +37,7 @@ const props = withDefaults(
 		enableCreate: true,
 		enableSelect: true,
 		limit: 15,
+		template: null,
 		allowDuplicates: false,
 	},
 );
@@ -63,7 +65,9 @@ const templates = computed(() => {
 
 	for (const collection of allowedCollections.value) {
 		const primaryKeyField = relationInfo.value.relationPrimaryKeyFields[collection.collection];
-		templates[collection.collection] = collection.meta?.display_template || `{{${primaryKeyField?.field}}}`;
+
+		templates[collection.collection] =
+			props.template || collection.meta?.display_template || `{{${primaryKeyField?.field}}}`;
 	}
 
 	return templates;
