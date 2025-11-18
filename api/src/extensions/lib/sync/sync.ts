@@ -5,14 +5,14 @@ import { createWriteStream } from 'node:fs';
 import { mkdir, rm } from 'node:fs/promises';
 import { pipeline } from 'node:stream/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
-import { fsStat, getSyncPaths } from './utils.js';
+import { getSyncPaths, compareFileMetadata } from './utils.js';
 import { useBus } from '../../../bus/index.js';
 import { SyncFileTracker } from './tracker.js';
 import { useLock } from '../../../lock/index.js';
 import { useLogger } from '../../../logger/index.js';
 import { getStorage } from '../../../storage/index.js';
 import { getExtensionsPath } from '../get-extensions-path.js';
-import { getSyncStatus, setSyncStatus, SyncStatus } from './status.js';
+import { isSynchronizing, setSyncStatus, SyncStatus } from './status.js';
 
 export type ExtensionSyncOptions = {
 	forceSync?: boolean; // force sync all extensions
@@ -25,7 +25,7 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 	const messenger = useBus();
 	const logger = useLogger();
 
-	if (options?.forceSync !== true && (await getSyncStatus()) === SyncStatus.SYNCING) {
+	if (options?.forceSync !== true && await isSynchronizing()) {
 		logger.debug('Extensions are already being synced to this directory from another process.');
 		return;
 	}
@@ -84,16 +84,8 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 
 			// No need to check metadata when force is enabled
 			if (options?.forceSync !== true && hasLocalFiles) {
-				const localStat = await fsStat(destinationPath);
-
-				if (localStat !== null) {
-					const remoteStat = await disk.stat(filepath);
-
-					if (localStat && remoteStat.modified <= localStat.modified && remoteStat.size === localStat.size) {
-						// local file exists and is unchanged
-						continue;
-					}
-				}
+                const fileUnchanged = await compareFileMetadata(destinationPath, filepath, disk);
+                if (fileUnchanged) continue;
 			}
 
 			// Ensure that the directory path exists

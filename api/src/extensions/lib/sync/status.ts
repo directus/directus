@@ -32,3 +32,11 @@ export async function setSyncStatus(status: SyncStatus) {
 		await rm(statusFilePath);
 	}
 }
+
+/**
+ * Checks the filesystem lock file if we are currently synchronizing
+ */
+export async function isSynchronizing() {
+	const status = await getSyncStatus();
+	return status === SyncStatus.SYNCING;
+}
