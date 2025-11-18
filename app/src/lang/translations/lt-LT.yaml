@@ -925,10 +925,8 @@ label: Žyma
 flows: Procesai
 flow: Procesas
 select_a_flow: Pasirinkite procesą
-run_flow_confirm: Ar tikrai norite vykdyti šį procesą?
 run_flow_on_current_collection: Vykdyti procesą šiai kolekcijai
 run_flow_on_current: Vykdyti procesą šiam įrašui
-run_flow_on_current_edited_confirm: Procesas atnaujins šį įrašą. Neišsaugoti pakeitimai bus prarasti. Ar tikrai norite jį įvykdyti?
 run_flow_on_selected: Pasirinkite vieną ar daugiau įrašų | Vykdyti procesą pasirinktam įrašui | Vykdyti procesą {n} įrašams
 run_flow: Vykdyti procesą
 trigger_flow_success: Procesas „{flow}“ sėkmingai paleistas
@@ -1220,7 +1218,6 @@ directus_collection:
   directus_dashboards: Prietaisų skydeliai įžvalgų modulyje
   directus_fields: Papildomi lauko nustatymai ir metaduomenys
   directus_files: Visų tvarkomų failų metaduomenys
-  directus_flows: Automatizuoti procesai
   directus_folders: Pateikia virtualius katalogus failams
   directus_migrations: Naudojama duomenų bazės versija
   directus_notifications: Pranešimai išsiųsti naudotojams
@@ -1734,9 +1731,7 @@ interfaces:
     accordion_mode: Suskleidžiamų kortelių rėžimas
     max_one_section_open: Vienu metu išskleista tik viena
   presentation-links:
-    presentation-links: Mygtukų nuorodos
-    links: Nuorodos
-    description: Konfigūruojamos mygtukų nuorodos, dinaminių URL kvietimui
+    presentation-links: Mygtukai
     style: Stilius
     primary: Pirminis
     link: Nuorodos
@@ -2364,11 +2359,9 @@ triggers:
 a_flow_uuid: Pasirinkite procesą, kurį aktyvuoti…
 any_string_or_json: Any string or JSON...
 item_payload_placeholder: This is the JSON used to update the item's field values...
-operation_variables_note: Galite pasiekti proceso duomenis naudodami kintamuosius kaip  **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}**, **{'{'}{'{'}$accountability{'}'}{'}'}**, arba nurodyti ankstesnes operacijas su **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condition
-    description: Nukreipti procesą pagal if / else logiką
   exec:
     name: Run Script
     description: Execute arbitrary code to modify the payload
@@ -2459,7 +2452,6 @@ operations:
     description: Keisti proceso JSON turinį
   trigger:
     name: Paleisti procesą
-    description: Perduoti šiuos duomenis kitam procesui
     flows: Procesai
     flow: Procesas
     data: Data
