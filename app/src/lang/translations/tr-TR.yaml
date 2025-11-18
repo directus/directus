@@ -925,10 +925,8 @@ label: Etiket
 flows: Akışlar
 flow: Akış
 select_a_flow: Bir Akış Seç
-run_flow_confirm: Bu komut dosyasını çalıştırmak istediğinize emin misiniz?
 run_flow_on_current_collection: Anlık Koleksiyonda Ak
 run_flow_on_current: Anlık Eşyada Ak
-run_flow_on_current_edited_confirm: Bu öğe bu akış tarafından güncellenebilir, yürütmek istediğinizden emin misiniz?
 run_flow: Akışı Çalıştır
 field_name_placeholder: Alan adını girin...
 field_key_placeholder: Alan anahtarını girin...
@@ -1205,7 +1203,6 @@ directus_collection:
   directus_dashboards: Panolar modülündeki panolar
   directus_fields: Ek alan ayarları ve metaveri
   directus_files: Yönetilen tüm dosyalar için metaveri
-  directus_flows: Otomasyon akışları
   directus_folders: Dosyalar için sanal klasörler sunar
   directus_migrations: Veritabanının hangi sürümünü kullanıyorsunuz
   directus_notifications: Bildirimler kullanıcılara gönderildi
@@ -1688,9 +1685,7 @@ interfaces:
     accordion_mode: Körüklü Liste Modu
     max_one_section_open: En Fazla 1 Bölüm Açık
   presentation-links:
-    presentation-links: Buton Bağlantıları
-    links: Bağlantılar
-    description: Dinamik URL'ler girmek için yapılandırılabilir bağlantı butonları
+    presentation-links: Butonlar
     style: Stil
     primary: Birincil
     link: Bağlantılar
@@ -2370,7 +2365,6 @@ operations:
     name: Yükü Dönüştür
   trigger:
     name: Tetik Akışı
-    description: Bu verileri başka bir akışa iletin
     flows: Akışlar
     flow: Akış
     data: Veri
