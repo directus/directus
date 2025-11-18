@@ -729,7 +729,6 @@ label: Tunniste
 flows: Toiminnot
 flow: Vuo
 select_a_flow: Valitse Vuo
-run_flow_on_current_edited_confirm: Tämä kohde voidaan päivittää tällä Vuolla, oletko varma, että haluat suorittaa Vuon?
 trigger: Laukaisija
 trigger_options: Liipaisun asetukset
 view_trigger: Näytä liipaisin
@@ -1288,9 +1287,7 @@ interfaces:
     all_opened: Kaikki avattuna
     accordion_mode: Haitarin tila
   presentation-links:
-    presentation-links: Painikelinkit
-    links: Linkit
-    description: Muokattavissa olevat linkkipainikkeet dynaamisten URL:ien avaamiseen
+    presentation-links: Painikkeet
     style: Tyyli
     primary: Ensisijainen
     link: Linkit
