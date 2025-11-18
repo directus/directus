@@ -371,7 +371,8 @@ Operations can access data using `{{ variable }}` syntax:
 - `{{ operation_key.field }}` - Specific field from operation result
 - `{{ $last }}` - Previous operation result (⚠️ avoid - breaks when reordered)
 
-**Always use operation keys** for reliable flows. If you reorder operations, `$last` will reference a different operation. </data_chain_warning>
+**Always use operation keys** for reliable flows. If you reorder operations, `$last` will reference a different
+operation. </data_chain_warning>
 
 <real_world_examples>
 
