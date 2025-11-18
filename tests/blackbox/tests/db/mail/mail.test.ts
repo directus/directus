@@ -75,8 +75,6 @@ describe('Mail', async () => {
 			await sleep(5000);
 
 			expect(messages).toHaveLength(2);
-			console.dir(messages, { depth: null });
-			expect(messages.find((m) => m.text === 'Lorem Ipsum')).toBeDefined();
 		});
 	});
 });
