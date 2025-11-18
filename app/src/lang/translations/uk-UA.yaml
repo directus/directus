@@ -20,10 +20,31 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Інформація про
+directus_bsl: Directus BSL 1,1
 privacy_policy: Політика конфіденційності 
 contact_our_team: Звʼязок із нашою командою 
+setup_welcome: Ласкаво просимо до Directus
+setup_info: Створімо ваш обліковий запис адміністратора та запустімо ваш проєкт.
+setup_license_notice: >
+  Directus безплатний для використання з об’єктами, чий річний дохід, фінансування або операційний бюджет становить менше ніж $5 мільйонів.
+setup_license_follow_up: >
+  Об’єкти, що перевищують цей поріг, потребують платної ліцензії. Ви можете продовжити оцінку Directus зараз і {contactOurTeam}, коли будете готові обговорити використання у виробництві.
+setup_save_accept_license: >
+  Натискаючи «Зберегти», ви погоджуєтесь з умовами {directusBsl} та {privacyPolicy}.
+setup_accept_license: Я погоджуюсь з умовами {directusBsl} та {privacyPolicy}
+setup_marketing_emails: Надіслати мені оновлення продукту та нотатки про випуск
+setup_launch: Запустити Directus
+setup_project: Запустити проєкт
 first_name: Ім'я
 last_name: Прізвище
+admin_email: Email адміністратора
+owner_email: Email власника
+email_address: Адреса електронної пошти
+organization_name: Назва організації
+how_do_you_use_directus: Для чого ви використовуєте Directus?
+usage_personal: Особисте / Навчання
+usage_commercial: Бізнес / Комерційне використання
+usage_community: Відкрите програмне забезпечення / Спільнота
 identifier: Ідентифікатор
 avatar: Аватар
 application: Додаток
@@ -34,6 +55,10 @@ draft: Чернетка
 archived: Архівовано
 marketplace: Маркетплейс
 extensions: Розширення
+skip_link_nav: Перейти до навігації
+skip_link_module_nav: Перейти до навігації модуля
+skip_link_main: Перейти до основного вмісту
+skip_link_sidebar: Перейти до бічної панелі
 modules: Модулі
 module_bar: Панель модулів
 logs: Логи
@@ -46,6 +71,8 @@ location: Розташування
 collection_names_are_case_sensitive: Назви колекції чутливі до регістру букв
 condition_rules: Правила умов
 input: Введення
+invalid_input: Неправильне значення
+not_a_number: Не є числом
 maps: Мапи
 switch_user: Змінити користувача
 item_creation: Створення елемента
@@ -57,6 +84,8 @@ full_width: Повна ширина
 group: Група
 popular: Популярне
 recent: Останнє
+latest: Останні
+updated: Оновлені
 export_items: Експорт товарів
 and: Й
 or: Або
@@ -112,6 +141,7 @@ hook: Хук
 fill_width: Ширина заповнення
 field_name_translations: Переклад назви поля
 enter_password_to_enable_tfa: Введіть свій пароль, щоб увімкнути двофакторну аутентифікацію
+sso_tfa_setup_notice: Ви будете вийдені зі свого облікового запису та зобов’язані увійти знову. Будь‑які незбережені зміни буде скасовано.
 add_field: Додати поле
 role_name: Назва ролі
 policy_name: Назва політики
