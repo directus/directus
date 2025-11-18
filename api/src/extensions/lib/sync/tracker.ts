@@ -21,10 +21,12 @@ export class SyncFileTracker {
 		const entries = await readdir(localExtensionsPath, { recursive: true, withFileTypes: true })
 			.catch(() => {/* folder doesnt exist, perhaps call mkdir here! */})
 
-		for (const entry of entries ?? []) {
-			if (!entry.isFile()) continue;
-			const relativePath = join(relative(localExtensionsPath, entry.parentPath), entry.name);
-			this.localFiles.add(relativePath);
+		if (entries) {
+			for (const entry of entries) {
+				if (!entry.isFile()) continue;
+				const relativePath = join(relative(localExtensionsPath, entry.parentPath), entry.name);
+				this.localFiles.add(relativePath);
+			}
 		}
 	}
 

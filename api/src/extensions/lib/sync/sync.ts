@@ -65,21 +65,21 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
         const disk = storage.location(env['EXTENSIONS_LOCATION'] as string);
 
         // check if we are only removing the local directory
-        console.log(await disk.exists(remoteExtensionsPath), remoteExtensionsPath)
-        // if ((await disk.exists(remoteExtensionsPath)) === false) {
-        //     logger.debug('Deleting local extension: ' + localExtensionsPath);
-        //     // remove the local extension and continue to the finally block
-        //     return await rm(localExtensionsPath, { recursive: true, force: true });
-        // }
+        if (options?.partialSync && await disk.exists(join(remoteExtensionsPath, 'package.json')) === false) {
+            console.log(await disk.exists(join(remoteExtensionsPath, 'package.json')), remoteExtensionsPath)
+            logger.debug('Deleting local extension: ' + localExtensionsPath);
+            // remove the local extension
+            await rm(localExtensionsPath, { recursive: true, force: true });
+            // continue to the finally block
+            return;
+        }
 
         // Make sure we don't overload the file handles
         const queue = new Queue({ concurrency: 1000 });
 
         // start file tracker
         const fileTracker = new SyncFileTracker();
-        
         await fileTracker.readLocalFiles(localExtensionsPath);
-        const hasLocalFiles = fileTracker.hasLocalFiles();
 
         for await (const filepath of disk.list(remoteExtensionsPath)) {
             // We want files to be stored in the root of `$TEMP_PATH/extensions`, so gotta remove the
@@ -90,7 +90,7 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
             await fileTracker.syncFile(relativePath);
 
             // No need to check metadata when force is enabled
-            if (options?.forceSync !== true && hasLocalFiles === false) {
+            if (options?.forceSync !== true && fileTracker.hasLocalFiles()) {
                 const localStat = await fsStat(destinationPath);
 
                 if (localStat !== null) {
@@ -104,7 +104,7 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
                 }
             }
 
-            logger.debug('Downloading file:' + relativePath);
+            logger.debug('Downloading file:' + (options?.partialSync ? join(options.partialSync, relativePath) : relativePath));
 
             // Ensure that the directory path exists
             await mkdir(dirname(destinationPath), { recursive: true });
