@@ -83,7 +83,6 @@ const toolDisplayName = computed(() => {
 	inline-size: 100%;
 	border-radius: var(--theme--border-radius);
 	border: var(--theme--border-width) solid var(--theme--border-color-accent);
-
 }
 
 .tool-header {
