@@ -1757,9 +1757,7 @@ interfaces:
     accordion_mode: აკორდეონის რეჟიმი
     max_one_section_open: მაქს. 1 სექცია ღია
   presentation-links:
-    presentation-links: ღილაკის ბმულები
     links: ბმულები
-    description: კონფიგურირებადი ბმულის ღილაკები დინამიური URL-ების გასაშვებად
     style: სტილი
     primary: პირველადი
     link: ბმულები

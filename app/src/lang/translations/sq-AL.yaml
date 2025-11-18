@@ -1730,9 +1730,7 @@ interfaces:
     accordion_mode: Modaliteti i Akordionit
     max_one_section_open: Maksimum 1 Seksion i Hapur
   presentation-links:
-    presentation-links: Lidhje Butonash
     links: Lidhje
-    description: Butonat e lidhjeve konfigurues për lansimin e URL-ve dinamike
     style: Stil
     primary: Primar
     link: Lidhje

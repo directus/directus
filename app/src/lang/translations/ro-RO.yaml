@@ -1382,9 +1382,7 @@ interfaces:
     accordion_mode: Mod acordeon
     max_one_section_open: Cel mult o secțiune deschisă
   presentation-links:
-    presentation-links: Link-uri buton
     links: Link-uri
-    description: Link-uri buton configurabile pentru lansarea de url-uri dinamice
     style: Stil
     primary: Principal
     link: Link-uri
