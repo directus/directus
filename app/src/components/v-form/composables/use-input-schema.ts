@@ -33,10 +33,14 @@ export const useInputSchema = (finalFields: MaybeRefOrGetter<Field[]>) => {
 							type = z.bigint();
 							break;
 						case 'date':
-						case 'dateTime':
+							type = z.iso.date();
+							break;
 						case 'time':
+							type = z.iso.time();
+							break;
+						case 'dateTime':
 						case 'timestamp':
-							type = z.date();
+							type = z.iso.datetime();
 							break;
 						case 'json':
 							type = z.json();
