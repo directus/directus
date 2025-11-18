@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import { ref } from 'vue';
@@ -12,17 +11,18 @@ const props = withDefaults(
 		edits: Record<string, any>;
 		relationInfo: RelationO2M;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		open?: boolean;
 		deleted: boolean;
 		isLocalItem: boolean;
 	}>(),
 	{
 		disabled: false,
+		nonEditable: false,
 		open: false,
 	},
 );
 
-const { t } = useI18n();
 const emit = defineEmits(['update:open', 'deselect', 'input']);
 const editActive = ref(false);
 </script>
@@ -40,10 +40,11 @@ const editActive = ref(false);
 
 		<div class="spacer" />
 
-		<div v-if="!disabled" class="item-actions">
-			<v-icon v-tooltip="t('edit_item')" name="edit" clickable @click="editActive = true" />
+		<div class="item-actions">
+			<v-icon v-tooltip="$t('edit_item')" name="edit" clickable @click="editActive = true" />
 
 			<v-remove
+				v-if="!disabled"
 				:item-type="item.$type"
 				:item-info="relationInfo"
 				:item-is-local="isLocalItem"
@@ -54,6 +55,8 @@ const editActive = ref(false);
 
 		<drawer-item
 			v-model:active="editActive"
+			:disabled
+			:non-editable
 			:collection="collection"
 			:primary-key="item[props.relationInfo.relatedPrimaryKeyField.field] || '+'"
 			:edits="edits"

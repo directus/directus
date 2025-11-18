@@ -1,15 +1,7 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed } from 'vue';
 import { ValidationError, Field } from '@directus/types';
-import { formatFieldFunction } from '@/utils/format-field-function';
-import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
-
-type ValidationErrorWithDetails = ValidationError & {
-	fieldName: string;
-	groupName: string;
-	customValidationMessage: string | null;
-};
+import { useValidationErrorDetails } from '@/composables/use-validation-error-details';
+import { toRef } from 'vue';
 
 const props = defineProps<{
 	validationErrors: ValidationError[];
@@ -18,80 +10,28 @@ const props = defineProps<{
 
 defineEmits(['scroll-to-field']);
 
-const { t } = useI18n();
-
-const validationErrorsWithDetails = computed<ValidationErrorWithDetails[]>(() => {
-	return props.validationErrors.map(
-		(validationError: ValidationError & { nestedNames?: Record<string, string>; validation_message?: string }) => {
-			const { field: _fieldKey, fn: functionName } = extractFieldFromFunction(validationError.field);
-			const [fieldKey, ...nestedFieldKeys] = _fieldKey.split('.');
-			const field = props.fields.find((field) => field.field === fieldKey);
-			const group = props.fields.find((field) => field.field === validationError.group);
-			const fieldName = getFieldName() + getNestedFieldNames(nestedFieldKeys, validationError.nestedNames);
-			const isRequiredError = field?.meta?.required && validationError.type === 'nnull';
-			const isNotUniqueError = validationError.code === 'RECORD_NOT_UNIQUE';
-
-			return {
-				...validationError,
-				field: fieldKey,
-				fieldName,
-				groupName: group?.name ?? validationError.group,
-				type: getValidationType(),
-				customValidationMessage: getCustomValidationMessage(),
-			};
-
-			function getFieldName() {
-				if (!field) return validationError.field;
-				if (functionName) return formatFieldFunction(field.collection, validationError.field);
-				return field.name;
-			}
-
-			function getNestedFieldNames(nestedFieldKeys: string[], nestedNames?: Record<string, string>) {
-				if (!nestedFieldKeys?.length) return '';
-				const separator = ' → ';
-				return `${separator}${nestedFieldKeys.map((name) => nestedNames?.[name] ?? name).join(separator)}`;
-			}
-
-			function getValidationType() {
-				if (isRequiredError) return 'required';
-				if (isNotUniqueError) return 'unique';
-				return validationError.type;
-			}
-
-			function getCustomValidationMessage() {
-				const customValidationMessage = validationError.validation_message ?? field?.meta?.validation_message;
-				if (!customValidationMessage) return null;
-
-				const hasCustomValidation = !!field?.meta?.validation;
-				if (hasCustomValidation && (isRequiredError || isNotUniqueError)) return null;
-
-				return customValidationMessage;
-			}
-		},
-	) as ValidationErrorWithDetails[];
-});
-
-function getDefaultValidationMessage(validationError: ValidationErrorWithDetails) {
-	return t(`validationError.${validationError.type}`, validationError);
-}
+const { validationErrorsWithDetails, getDefaultValidationMessage } = useValidationErrorDetails(
+	toRef(props.validationErrors),
+	toRef(props.fields),
+);
 </script>
 
 <template>
 	<v-notice type="danger" class="full">
 		<div>
-			<p>{{ t('validation_errors_notice') }}</p>
+			<p>{{ $t('validation_errors_notice') }}</p>
 			<ul class="validation-errors-list">
 				<li v-for="(validationError, index) of validationErrorsWithDetails" :key="index" class="validation-error">
 					<strong class="field" @click="$emit('scroll-to-field', validationError.group || validationError.field)">
 						<template v-if="validationError.field && validationError.hidden && validationError.group">
 							{{
-								`${validationError.fieldName} (${t('hidden_in_group', {
+								`${validationError.fieldName} (${$t('hidden_in_group', {
 									group: validationError.groupName,
 								})})`
 							}}
 						</template>
 						<template v-else-if="validationError.field && validationError.hidden">
-							{{ `${validationError.fieldName} (${t('hidden')})` }}
+							{{ `${validationError.fieldName} (${$t('hidden')})` }}
 						</template>
 						<template v-else-if="validationError.field">{{ validationError.fieldName }}</template>
 					</strong>

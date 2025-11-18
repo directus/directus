@@ -2,13 +2,15 @@
 import api from '@/api';
 import { type ApplyShortcut } from '@/components/v-dialog.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useFlows } from '@/composables/use-flows';
+import { useNestedValidation } from '@/composables/use-nested-validation';
 import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
-import { useNestedValidation } from '@/composables/use-nested-validation';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { mergeItemData } from '@/utils/merge-item-data';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
@@ -16,12 +18,11 @@ import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { Field, PrimaryKey, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { isEmpty, merge, set } from 'lodash';
-import { computed, ref, toRefs, watch, unref, type Ref } from 'vue';
+import { isEmpty, set } from 'lodash';
+import { computed, ref, toRefs, unref, watch, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import OverlayItemContent from './overlay-item-content.vue';
-import { useFlows } from '@/composables/use-flows';
 
 export interface OverlayItemProps {
 	overlay?: 'drawer' | 'modal' | 'popover';
@@ -31,6 +32,7 @@ export interface OverlayItemProps {
 	edits?: Record<string, any>;
 	junctionField?: string | null;
 	disabled?: boolean;
+	nonEditable?: boolean;
 	// There's an interesting case where the main form can be a newly created item ('+'), while
 	// it has a pre-selected related item it needs to alter. In that case, we have to fetch the
 	// related data anyway.
@@ -55,6 +57,7 @@ const props = withDefaults(defineProps<OverlayItemProps>(), {
 	primaryKey: null,
 	junctionField: null,
 	disabled: false,
+	nonEditable: false,
 	relatedPrimaryKey: '+',
 	circularField: null,
 	applyShortcut: 'meta+enter',
@@ -228,6 +231,7 @@ const overlayItemContentProps = computed(() => {
 		initialValues: initialValues.value,
 		fields: fields.value,
 		disabled: props.disabled,
+		nonEditable: props.nonEditable,
 		loading: loading.value,
 		validationErrors: validationErrors.value,
 		junctionFieldLocation: props.junctionFieldLocation,
@@ -435,7 +439,12 @@ function useActions() {
 	}
 
 	function validateForm({ defaultValues, existingValues, editsToValidate, fieldsToValidate }: Record<string, any>) {
-		return validateItem(merge({}, defaultValues, existingValues, editsToValidate), fieldsToValidate, isNew.value, true);
+		return validateItem(
+			mergeItemData(defaultValues, existingValues, editsToValidate),
+			fieldsToValidate,
+			isNew.value,
+			true,
+		);
 	}
 
 	function save() {
@@ -553,7 +562,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 		<template #actions>
 			<slot name="actions" />
 
-			<v-button v-tooltip.bottom="getTooltip('save', t('save'))" icon rounded :disabled="!isSavable" @click="save">
+			<v-button v-tooltip.bottom="getTooltip('save', $t('save'))" icon rounded :disabled="!isSavable" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -590,8 +599,8 @@ function popoverClickOutsideMiddleware(e: Event) {
 
 			<v-card-actions>
 				<slot name="actions" />
-				<v-button v-tooltip="getTooltip('cancel')" secondary @click="cancel">{{ t('cancel') }}</v-button>
-				<v-button v-tooltip="getTooltip('save')" :disabled="!isSavable" @click="save">{{ t('save') }}</v-button>
+				<v-button v-tooltip="getTooltip('cancel')" secondary @click="cancel">{{ $t('cancel') }}</v-button>
+				<v-button v-tooltip="getTooltip('save')" :disabled="!isSavable" @click="save">{{ $t('save') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -625,11 +634,18 @@ function popoverClickOutsideMiddleware(e: Event) {
 				<div class="popover-actions-inner">
 					<slot name="actions" />
 
-					<v-button v-tooltip="getTooltip('cancel', t('cancel'))" x-small rounded icon secondary @click="cancel">
+					<v-button v-tooltip="getTooltip('cancel', $t('cancel'))" x-small rounded icon secondary @click="cancel">
 						<v-icon small name="close" outline />
 					</v-button>
 
-					<v-button v-tooltip="getTooltip('save', t('save'))" x-small rounded icon :disabled="!isSavable" @click="save">
+					<v-button
+						v-tooltip="getTooltip('save', $t('save'))"
+						x-small
+						rounded
+						icon
+						:disabled="!isSavable"
+						@click="save"
+					>
 						<v-icon small name="check" outline />
 					</v-button>
 				</div>
@@ -645,26 +661,26 @@ function popoverClickOutsideMiddleware(e: Event) {
 
 	<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 		<v-card>
-			<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-			<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+			<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+			<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="discardAndLeave">
-					{{ t('discard_changes') }}
+					{{ $t('discard_changes') }}
 				</v-button>
-				<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+				<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
 
 	<v-dialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="discardAndCancel">
 		<v-card>
-			<v-card-title>{{ t('discard_all_changes') }}</v-card-title>
-			<v-card-text>{{ t('discard_changes_copy') }}</v-card-text>
+			<v-card-title>{{ $t('discard_all_changes') }}</v-card-title>
+			<v-card-text>{{ $t('discard_changes_copy') }}</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="discardAndCancel">
-					{{ t('discard_changes') }}
+					{{ $t('discard_changes') }}
 				</v-button>
-				<v-button @click="confirmCancel = false">{{ t('keep_editing') }}</v-button>
+				<v-button @click="confirmCancel = false">{{ $t('keep_editing') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>

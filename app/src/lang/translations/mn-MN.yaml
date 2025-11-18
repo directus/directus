@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Тухай
+first_name: Нэр
+last_name: Овог
 identifier: Тодохойлогч
 avatar: Аватар
 application: Аппликейшн
@@ -164,19 +166,9 @@ rename_version: Хувилбарын нэр солих
 compare_version: Хувилбар харьцуулах
 save_version: Хувилбар хадгалах
 promote_version: Хувилбар дэвшүүлэх
-promote_version_disabled: Өөрчлөлт байхгүй
-promote_version_drawer_title: '{version}-ийг үндсэн рүү дэвшүүлэх'
-promote_version_changes: Өөрчлөлтүүд
-promote_version_preview: Урьдчилан үзэх
-outdated_notice: >-
-  Энэ хувилбар нь үүссэн тул үндсэн оролт нь шинэчлэгдлээ. Доорх бүх талбаруудын утгуудыг шалгаж, энэ хувилбарыг үндсэн оролт руу дэвшүүлэхэд аль хувилбарыг ашиглахыг батална уу.
-promote_notice: >-
-  Доорх бүх талбаруудын утгуудыг шалгаж, энэ хувилбарыг үндсэн оролт руу дэвшүүлэхэд аль хувилбарыг ашиглахыг батална уу.
 delete_version: Хувилбар устгах
 delete_version_copy: >-
   Хувилбар {version}-ийг устгахдаа итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүйг анхаарна уу.
-delete_on_promote_copy: >-
-  Хувилбар {version}-ийг дэвшүүлсний дараа устгах уу эсвэл үлдээх үү?
 reset_bookmark: Тэмдэглэгээг хуучин хэвэнд оруулах
 update_bookmark: Тэмдэглээг шинэлэх
 delete_bookmark: Тэмдэглэгээг устгах
@@ -451,7 +443,6 @@ revision_delta_created: Үүссэн
 revision_delta_created_externally: Гадна үүссэн
 revision_delta_updated: '1 талбар шинэчлэгдсэн | {count} талбаруудыг шинэчиллээ'
 revision_delta_deleted: Устгасан
-revision_delta_version_saved: 'Хувилбар хадгалагдсан (1 талбар шинэчлэгдсэн) | Хувилбар хадгалагдсан ({count} талбаруудыг шинэчиллээ)'
 revision_delta_reverted: Буцаагдсан
 revision_delta_update_message: Энэ талбар шинэчлэгдсэн боловч үүний утга нь аюулгүй байдлын үүднээс далдлагдаж байна.
 revision_delta_other: Хянасан

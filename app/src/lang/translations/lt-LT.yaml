@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Apie
+first_name: Vardas
+last_name: Pavardė
 identifier: Identifikatorius
 avatar: Nuotrauka
 application: Aplikacija
@@ -164,19 +166,9 @@ rename_version: Pervadinti versiją
 compare_version: Palyginti versijas
 save_version: Išsaugoti versiją
 promote_version: Pakelti versiją
-promote_version_disabled: Nėra pakeitimų
-promote_version_drawer_title: Pakelti {version} į pagrindinę
-promote_version_changes: Pakeitimai
-promote_version_preview: Peržiūrėti
-outdated_notice: >-
-  Pagrindinė versija buvo atnaujinta po šios versijos sukūrimo. Peržiūrėkite laukų reikšmes žemiau ir patvirtinkite kuri versija turėtų būti naudojama kaip pagrindinė.
-promote_notice: >-
-  Peržiūrėkite laukų reikšmes žemiau ir patvirtinkite kuri versija turėtų būti naudojama kaip pagrindinė.
 delete_version: Pašalinti versiją
 delete_version_copy: >-
   Ar tikrai norite pašalinti "{version}" versiją? Šio veiksmo nebus galima atšaukti.
-delete_on_promote_copy: >-
-  Ar norite ištrinti ar pasilikti "{version}" po pakėlimo į pagrindinę versiją?
 reset_bookmark: Atstatyti skirtuką
 update_bookmark: Atnaujinti žymę
 delete_bookmark: Ištrinti žymę
@@ -451,7 +443,6 @@ revision_delta_created: Sukurta
 revision_delta_created_externally: Sukurta išorėje
 revision_delta_updated: 'Atnaujintas 1 laujas | Atnaujinta {count} laukų'
 revision_delta_deleted: Ištrintas
-revision_delta_version_saved: 'Saugoti versiją (atnaujintas 1 laukas) | Saugoti versiją (atnaujinti {count} laukai)'
 revision_delta_reverted: Atstatytas
 revision_delta_update_message: Laukas buvo atnaujintas. Reikšmė yra paslėpta.
 revision_delta_other: Pakeitimas

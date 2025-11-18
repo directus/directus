@@ -39,6 +39,15 @@ const snapshotJoiSchema = Joi.object({
 				.allow(null),
 		}),
 	),
+	systemFields: Joi.array().items(
+		Joi.object({
+			collection: Joi.string(),
+			field: Joi.string(),
+			schema: Joi.object({
+				is_indexed: Joi.bool(),
+			}),
+		}),
+	),
 	relations: Joi.array().items(
 		Joi.object({
 			collection: Joi.string(),

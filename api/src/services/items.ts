@@ -8,8 +8,8 @@ import type {
 	Accountability,
 	ActionEventParams,
 	Item as AnyItem,
-	MutationTracker,
 	MutationOptions,
+	MutationTracker,
 	PrimaryKey,
 	Query,
 	QueryOptions,
@@ -1067,13 +1067,31 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
+		const keysAfterHooks =
+			opts.emitEvents !== false
+				? await emitter.emitFilter(
+						this.eventScope === 'items'
+							? ['items.delete', `${this.collection}.items.delete`]
+							: `${this.eventScope}.delete`,
+						keys,
+						{
+							collection: this.collection,
+						},
+						{
+							database: this.knex,
+							schema: this.schema,
+							accountability: this.accountability,
+						},
+					)
+				: keys;
+
 		if (this.accountability) {
 			await validateAccess(
 				{
 					accountability: this.accountability,
 					action: 'delete',
 					collection: this.collection,
-					primaryKeys: keys,
+					primaryKeys: keysAfterHooks,
 				},
 				{
 					knex: this.knex,
@@ -1086,23 +1104,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			throw opts.preMutationError;
 		}
 
-		if (opts.emitEvents !== false) {
-			await emitter.emitFilter(
-				this.eventScope === 'items' ? ['items.delete', `${this.collection}.items.delete`] : `${this.eventScope}.delete`,
-				keys,
-				{
-					collection: this.collection,
-				},
-				{
-					database: this.knex,
-					schema: this.schema,
-					accountability: this.accountability,
-				},
-			);
-		}
-
 		await transaction(this.knex, async (trx) => {
-			await trx(this.collection).whereIn(primaryKeyField, keys).delete();
+			await trx(this.collection).whereIn(primaryKeyField, keysAfterHooks).delete();
 
 			if (opts.userIntegrityCheckFlags) {
 				if (opts.onRequireUserIntegrityCheck) {
@@ -1125,7 +1128,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				});
 
 				await activityService.createMany(
-					keys.map((key) => ({
+					keysAfterHooks.map((key) => ({
 						action: Action.DELETE,
 						user: this.accountability!.user,
 						collection: this.collection,
@@ -1150,8 +1153,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						? ['items.delete', `${this.collection}.items.delete`]
 						: `${this.eventScope}.delete`,
 				meta: {
-					payload: keys,
-					keys: keys,
+					payload: keysAfterHooks,
+					keys: keysAfterHooks,
 					collection: this.collection,
 				},
 				context: {
@@ -1168,7 +1171,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 		}
 
-		return keys;
+		return keysAfterHooks;
 	}
 
 	/**

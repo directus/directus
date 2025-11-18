@@ -6,15 +6,14 @@ import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { ErrorCode } from '@directus/errors';
 import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import z from 'zod';
 
 type Credentials = {
 	email: string;
 	password: string;
 };
 
-const { t } = useI18n();
 const router = useRouter();
 const serverStore = useServerStore();
 const userStore = useUserStore();
@@ -44,9 +43,8 @@ const errorFormatted = computed(() => {
 
 async function onSubmit() {
 	// Simple RegEx, not for validation, but to prevent unnecessary login requests when the value is clearly invalid
-	const emailRegex = /^\S+@\S+$/;
 
-	if (email.value === null || !emailRegex.test(email.value) || password.value === null) {
+	if (!z.email().safeParse(email.value).success || password.value === null) {
 		error.value = ErrorCode.InvalidPayload;
 		return;
 	}
@@ -55,7 +53,7 @@ async function onSubmit() {
 		isLoading.value = true;
 
 		const credentials: Credentials = {
-			email: email.value,
+			email: email.value!,
 			password: password.value,
 		};
 
@@ -91,7 +89,7 @@ async function onSubmit() {
 			autofocus
 			autocomplete="username"
 			type="email"
-			:placeholder="t('email')"
+			:placeholder="$t('email')"
 			:disabled="isLoading"
 		/>
 		<interface-system-input-password :value="password" :disabled="isLoading" @input="password = $event" />
@@ -100,7 +98,7 @@ async function onSubmit() {
 			{{ errorFormatted }}
 		</v-notice>
 		<div class="buttons">
-			<v-button type="submit" :loading="isLoading" :disabled="isLoading" large>{{ t('register') }}</v-button>
+			<v-button type="submit" :loading="isLoading" :disabled="isLoading" large>{{ $t('register') }}</v-button>
 		</div>
 	</form>
 </template>
