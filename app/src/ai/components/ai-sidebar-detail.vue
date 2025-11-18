@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import VIcon from '@/components/v-icon/v-icon.vue';
-import { translateShortcut } from '@/utils/translate-shortcut';
-import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { ref } from 'vue';
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
+import { useShortcut } from '@/composables/use-shortcut';
 import { useAiStore } from '../stores/use-ai';
+import { translateShortcut } from '@/utils/translate-shortcut';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import AiConversation from './ai-conversation.vue';
 import AiHeader from './ai-header.vue';
-import { useShortcut } from '@/composables/use-shortcut';
 
 const sidebarStore = useSidebarStore();
 const aiStore = useAiStore();
@@ -56,7 +56,7 @@ useShortcut('meta+j', () => {
 	padding-inline: 18px 9px;
 	transition: color var(--fast) var(--transition);
 
-	&:hover:not([data-state='open']) {
+	&:hover:not([data-state='open']){
 		color: var(--theme--primary);
 		animation: colors 2s ease infinite alternate;
 	}
