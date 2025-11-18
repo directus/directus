@@ -928,10 +928,8 @@ label: Etichetta
 flows: Flussi
 flow: Flusso
 select_a_flow: Seleziona un flusso
-run_flow_confirm: Sei sicuro di voler eseguire il flusso?
 run_flow_on_current_collection: Esegui il flusso sulla raccolta corrente
 run_flow_on_current: Esegui il flusso sull'elemento corrente
-run_flow_on_current_edited_confirm: Questo elemento potrebbe essere aggiornato dal flusso, sei sicuro di volerlo eseguire?
 run_flow_on_selected: Seleziona prima uno o più elementi | Esegui il flusso sull'elemento selezionato | Esegui il flusso sui {n} elementi selezionati
 run_flow: Esegui il flusso
 trigger_flow_success: Flusso "{flow}" eseguito con successo
@@ -1230,7 +1228,6 @@ directus_collection:
   directus_dashboards: Bacheche nel modulo approfondimenti
   directus_fields: Configurazione e metadati aggiuntivi del campo
   directus_files: Metadati per tutti i file degli asset gestiti
-  directus_flows: Flussi di automazione
   directus_folders: Fornisce directory virtuali per i file
   directus_migrations: Quale versione del database stai usando
   directus_notifications: Notifiche inviate agli utenti
@@ -1747,9 +1744,7 @@ interfaces:
     accordion_mode: Modalità dell'accordion
     max_one_section_open: Massimo una sezione aperta
   presentation-links:
-    presentation-links: Pulsanti di collegamento
-    links: Collegamenti
-    description: Pulsanti configurabili per avviare URL dinamici
+    presentation-links: Pulsanti
     style: Stile
     primary: Principale
     link: Collegamenti
@@ -2378,11 +2373,9 @@ triggers:
 a_flow_uuid: Seleziona un flusso da attivare...
 any_string_or_json: Qualsiasi stringa o JSON...
 item_payload_placeholder: Questo è il JSON usato per aggiornare i valori dei campi dell'elemento...
-operation_variables_note: Puoi accedere ai dati di flusso con variabili come **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** e **{'{'}{'{'}$accountability{'}'}{'}'}**, o fare riferimento alle operazioni precedenti usando **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condizione
-    description: Stabilisce il percorso di un flusso con una logica Se / Altrimenti
   exec:
     name: Esegui lo script
     description: Esegui codice arbitrario per modificare il payload
@@ -2473,7 +2466,6 @@ operations:
     description: Modifica il payload JSON del flusso
   trigger:
     name: Attiva il flusso
-    description: Passa questi dati a un altro flusso
     flows: Flussi
     flow: Flusso
     data: Dati
