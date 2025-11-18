@@ -68,6 +68,7 @@ const mountOptions = {
 			}),
 			i18n,
 		],
+		stubs: ['v-select'],
 	},
 	props: {
 		value: null,

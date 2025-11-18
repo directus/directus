@@ -24,6 +24,8 @@ const flows = computed(() =>
 		.map((flow: FlowRaw) => ({
 			value: flow.id,
 			text: `${flow.name}${(flow.description && ': ' + flow.description) || ''}${flow.status === 'inactive' ? ` (${t('inactive')})` : ''}`,
+			icon: flow.icon,
+			color: flow.color,
 		})),
 );
 </script>
@@ -32,6 +34,8 @@ const flows = computed(() =>
 	<v-select
 		:model-value="value"
 		:items="flows"
+		item-icon="icon"
+		item-color="color"
 		show-deselect
 		:placeholder="$t('select_a_flow')"
 		@update:model-value="$emit('input', $event)"
