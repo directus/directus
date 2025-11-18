@@ -40,7 +40,7 @@ function toggleCollapse() {
 <style scoped>
 .message-text {
 	inline-size: 100%;
-	border-radius: var(--ai-message-border-radius, calc(var(--theme--border-radius)));
+	border-radius: var(--ai-message-border-radius, var(--theme--border-radius));
 	background-color: var(--ai-message-background);
 	color: var(--ai-message-color, var(--theme--foreground));
 	overflow-wrap: break-word;
@@ -59,8 +59,6 @@ function toggleCollapse() {
 
 	&[data-role='user'] {
 		--ai-message-text-border-color: var(--theme--border-color);
-
-		border-start-end-radius: 0;
 
 		.message-content {
 			padding: 0.8rem 1rem;
