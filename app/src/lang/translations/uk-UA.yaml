@@ -926,10 +926,8 @@ label: Ярлик
 flows: Автоматизація
 flow: Автоматизація
 select_a_flow: Виберіть Автоматизацію
-run_flow_confirm: Ви впевнені, що хочете виконати цей процес?
 run_flow_on_current_collection: Запуск програми на поточній колекції
 run_flow_on_current: Запуск програми на поточному елементі
-run_flow_on_current_edited_confirm: Ця автоматизацією може внести зміни до вибраного об'єкту, ви впевнені що хочете її виконати?
 run_flow_on_selected: Спочатку виберіть один або кілька елементів | Запустити процес на 1 вибраному елементі | Запустити процес на {n} вибраних елементах
 run_flow: Запустити процес
 field_name_placeholder: Введіть назву поля...
@@ -1220,7 +1218,6 @@ directus_collection:
   directus_dashboards: Панелі керування в межах модуля інсайтів
   directus_fields: Додаткова конфігурація поля та метадані
   directus_files: Метадані для всіх керованих файлів
-  directus_flows: Автоматизація
   directus_folders: Забезпечує віртуальні каталоги для файлів
   directus_migrations: Яку версію бази даних ви використовуєте
   directus_notifications: Сповіщення відіслано користувачам
@@ -1734,9 +1731,7 @@ interfaces:
     accordion_mode: Режим акордеон
     max_one_section_open: Максимальна кількість відкритих секцій – 1
   presentation-links:
-    presentation-links: Кнопки посилання
-    links: Посилання
-    description: Настроювані кнопки посилань для запуску динамічних URL-адрес
+    presentation-links: Кнопки
     style: Стиль
     primary: Стандартно
     link: Посилання
@@ -2361,11 +2356,9 @@ triggers:
 a_flow_uuid: Виберіть потік для запуску...
 any_string_or_json: Будь-який рядок або JSON...
 item_payload_placeholder: Це JSON, який використовується для оновлення значень полів елемента...
-operation_variables_note: Ви можете отримати доступ до даних потоку за допомогою таких змінних, як **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** та **{'{'}{'{'}$accountability{'}'}{'}'}** або зверніться до попередніх операцій за допомогою **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Умова
-    description: Керувати потоком на основі умови
   exec:
     name: Виконати Скрипт
     description: Виконати довільний код щоб змінити дані
@@ -2449,7 +2442,6 @@ operations:
     description: Змінити вміст JSON потоку
   trigger:
     name: Ініціювати потік
-    description: Передати ці дані в інший потік
     flows: Автоматизація
     flow: Автоматизація
     data: Дані
