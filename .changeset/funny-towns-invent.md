@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-fix display template bug on fields
+Fixed relational interfaces not using field-level display template
