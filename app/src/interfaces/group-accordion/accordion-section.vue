@@ -13,6 +13,7 @@ const props = withDefaults(
 		values: Record<string, unknown>;
 		initialValues: Record<string, unknown>;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
 		comparison?: ComparisonContext;
@@ -133,6 +134,7 @@ function useComparisonIndicator() {
 							:loading="loading"
 							:batch-mode="batchMode"
 							:disabled="disabled"
+							:non-editable="nonEditable"
 							:comparison="comparison"
 							:direction="direction"
 							:show-no-visible-fields="false"

@@ -10,6 +10,7 @@ const props = withDefaults(
 	defineProps<{
 		field: Field;
 		fields: Field[];
+		nonEditable?: boolean;
 		primaryKey: number | string;
 		values: Record<string, unknown>;
 		initialValues: Record<string, unknown>;
@@ -154,6 +155,7 @@ function useComparisonIndicator() {
 			:validation-errors="validationErrors"
 			:loading="loading"
 			:batch-mode="batchMode"
+			:non-editable="nonEditable"
 			:disabled="disabled"
 			:badge="badge"
 			:direction="direction"

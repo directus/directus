@@ -1,7 +1,14 @@
 import { createAnthropic, type AnthropicProvider } from '@ai-sdk/anthropic';
 import { createOpenAI, type OpenAIProvider } from '@ai-sdk/openai';
 import { ServiceUnavailableError } from '@directus/errors';
-import { convertToModelMessages, stepCountIs, streamText, type Tool, type UIMessage } from 'ai';
+import {
+	convertToModelMessages,
+	stepCountIs,
+	streamText,
+	type LanguageModelUsage,
+	type Tool,
+	type UIMessage,
+} from 'ai';
 
 export interface CreateUiStreamOptions {
 	provider: 'openai' | 'anthropic';
@@ -12,11 +19,12 @@ export interface CreateUiStreamOptions {
 		anthropic: string | null;
 	};
 	systemPrompt?: string;
+	onUsage?: (usage: Pick<LanguageModelUsage, 'inputTokens' | 'outputTokens' | 'totalTokens'>) => void | Promise<void>;
 }
 
 export const createUiStream = (
 	messages: UIMessage[],
-	{ provider, model, tools, apiKeys, systemPrompt }: CreateUiStreamOptions,
+	{ provider, model, tools, apiKeys, systemPrompt, onUsage }: CreateUiStreamOptions,
 ) => {
 	if (apiKeys[provider] === null) {
 		throw new ServiceUnavailableError({ service: provider, reason: 'No API key configured for LLM provider' });
@@ -38,16 +46,26 @@ export const createUiStream = (
 		optionalStreamingParameters.system = systemPrompt;
 	}
 
-	return streamText({
+	const stream = streamText({
 		...optionalStreamingParameters,
 		model: modelProvider(model),
 		messages: convertToModelMessages(messages),
 		stopWhen: [stepCountIs(10)],
 		providerOptions: {
 			openai: {
-				reasoningSummary: 'detailed',
+				reasoningSummary: 'auto',
+				store: false,
+				include: ['reasoning.encrypted_content'],
 			},
 		},
 		tools,
+		onFinish({ usage }) {
+			if (onUsage) {
+				const { inputTokens, outputTokens, totalTokens } = usage;
+				onUsage({ inputTokens, outputTokens, totalTokens });
+			}
+		},
 	});
+
+	return stream;
 };

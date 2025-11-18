@@ -36,6 +36,7 @@ const props = withDefaults(
 		batchMode?: boolean;
 		primaryKey?: string | number;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		validationErrors?: ValidationError[];
 		autofocus?: boolean;
 		group?: string | null;
@@ -468,7 +469,8 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:fields="fieldsForGroup[index] || []"
 					:values="modelValue || {}"
 					:initial-values="initialValues || {}"
-					:disabled="disabled"
+					:disabled="disabled || nonEditable"
+					:non-editable="nonEditable"
 					:batch-mode="batchMode"
 					:batch-active-fields="batchActiveFields"
 					:primary-key="primaryKey"
@@ -495,7 +497,8 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:autofocus="index === firstEditableFieldIndex && autofocus"
 					:model-value="(values || {})[fieldName]"
 					:initial-value="(initialValues || {})[fieldName]"
-					:disabled="isDisabled(fieldsMap[fieldName]!)"
+					:disabled="isDisabled(fieldsMap[fieldName]!) || nonEditable"
+					:non-editable="nonEditable"
 					:batch-mode="batchMode"
 					:batch-active="batchActiveFields.includes(fieldName)"
 					:comparison="comparison"

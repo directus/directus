@@ -19,23 +19,20 @@ const showScrollButton = computed(() => {
 
 onMounted(() => {
 	nextTick(() => {
-		scrollToBottom();
+		scrollToBottom('instant');
 	});
 });
 
-// Scroll to bottom when the user submits a message
-watch(
-	() => aiStore.status,
-	(newStatus) => {
-		if (newStatus === 'submitted') {
-			scrollToBottom();
-		}
-	},
-);
+aiStore.onSubmit(() => {
+	scrollToBottom('smooth');
+});
 
-function scrollToBottom() {
+function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 	const el = messagesContainerRef.value;
-	if (el) el.scrollTop = el.scrollHeight;
+
+	if (el) {
+		el.scrollTo({ top: el.scrollHeight, behavior });
+	}
 }
 </script>
 
@@ -73,15 +70,15 @@ function scrollToBottom() {
 			</v-notice>
 
 			<div id="scroll-anchor"></div>
-
-			<div v-show="showScrollButton" class="scroll-to-bottom-container">
-				<v-button icon rounded secondary x-small class="scroll-to-bottom-btn" @click="scrollToBottom">
-					<v-icon small name="arrow_downward" />
-				</v-button>
-			</div>
 		</div>
 
 		<div class="input-container">
+			<div v-show="showScrollButton" class="scroll-to-bottom-container">
+				<v-button icon rounded secondary x-small class="scroll-to-bottom-btn" @click="scrollToBottom('smooth')">
+					<v-icon small name="arrow_downward" />
+				</v-button>
+			</div>
+
 			<ai-input />
 		</div>
 	</div>
@@ -121,6 +118,7 @@ function scrollToBottom() {
 
 .input-container {
 	flex-shrink: 0;
+	position: relative;
 	padding-inline-end: 12px;
 }
 
@@ -150,8 +148,10 @@ function scrollToBottom() {
 }
 
 .scroll-to-bottom-container {
-	position: sticky;
-	inset-block-end: 8px;
+	position: absolute;
+	inset-block-start: -36px;
+	inset-inline-start: 50%;
+	translate: -50% 0;
 	z-index: 4;
 	margin-block-start: auto;
 	display: flex;

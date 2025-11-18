@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import AiTextarea from './ai-textarea.vue';
-import AiInputSubmit from './ai-input-submit.vue';
 import { useAiStore } from '../stores/use-ai';
+import AiInputSubmit from './ai-input-submit.vue';
+import AiTextarea from './ai-textarea.vue';
 
 const aiStore = useAiStore();
 
@@ -11,7 +11,7 @@ const canSubmit = computed(
 );
 
 function handleKeydown(event: KeyboardEvent) {
-	if (event.key === 'Enter' && !event.shiftKey) {
+	if (!event.shiftKey) {
 		event.preventDefault();
 
 		if (canSubmit.value) {
@@ -23,20 +23,19 @@ function handleKeydown(event: KeyboardEvent) {
 function handleSubmit() {
 	if (!canSubmit.value) return;
 
-	aiStore.addMessage(aiStore.input);
-	aiStore.input = '';
+	aiStore.submit();
 }
 </script>
 
 <template>
 	<div class="ai-input-container">
 		<div class="input-wrapper">
-			<AiTextarea
+			<ai-textarea
 				ref="textarea-component"
 				v-model="aiStore.input"
 				:placeholder="$t('ai.prompt_input_placeholder')"
 				autofocus
-				@keydown="handleKeydown"
+				@keydown.enter="handleKeydown"
 			/>
 			<div class="input-controls">
 				<ai-input-submit
