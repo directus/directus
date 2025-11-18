@@ -270,9 +270,9 @@ export function useFlows(options: UseFlowsOptions) {
  * This parent component must also render the <flow-dialogs> component or the confirmation dialogs will not be reachable.
  */
 export function useInjectRunManualFlow() {
-	return inject(runManualFlowSymbol) as {
-		runManualFlow: (flowId: string) => void;
-		runningFlows: Ref<string[]>;
-		isActiveFlow: (flowId: string) => boolean;
-	};
+	return inject(runManualFlowSymbol, {
+		runManualFlow: (_flowId: string) => {},
+		runningFlows: ref<string[]>([]),
+		isActiveFlow: (_flowId: string) => false,
+	});
 }
