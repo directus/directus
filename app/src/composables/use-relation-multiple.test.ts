@@ -7,6 +7,11 @@ import { RelationM2A } from './use-relation-m2a';
 import { RelationO2M } from './use-relation-o2m';
 
 vi.mock('@/api', () => {
+	const textData = [
+		{ id: 1, text: 'Text content 1' },
+		{ id: 2, text: 'Text content 2' },
+	];
+
 	return {
 		default: {
 			get: (path: string, { params }: { params: Record<string, any> }) => {
@@ -28,6 +33,22 @@ vi.mock('@/api', () => {
 							data: [{ count: { id: m2aData.length } }],
 						},
 					});
+				} else if (path === '/items/text') {
+					const ids = params?.filter?.id?._in;
+
+					if (ids) {
+						return Promise.resolve({
+							data: {
+								data: textData.filter((item) => ids.includes(item.id)),
+							},
+						});
+					}
+
+					return Promise.resolve({
+						data: {
+							data: textData,
+						},
+					});
 				} else {
 					return Promise.resolve({
 						data: {
@@ -44,6 +65,17 @@ vi.mock('@/utils/unexpected-error', () => {
 	return {
 		unexpectedError: (error: unknown) => {
 			throw error;
+		},
+	};
+});
+
+vi.mock('@/utils/fetch-all', () => {
+	return {
+		fetchAll: async (url: string, config: any = {}) => {
+			const api = (await import('@/api')).default;
+			// Use the mocked api.get directly without Pinia
+			const { data } = await api.get(url, config);
+			return data.data;
 		},
 	};
 });
@@ -454,7 +486,8 @@ const TestComponentM2A = defineComponent({
 			const q: RelationQueryMultiple = {
 				limit: 15,
 				page: 1,
-				fields: ['id'],
+				// Include fields for display template testing
+				fields: ['id', 'item:text.id', 'item:text.text', 'item:code.id', 'item:code.code'],
 			};
 
 			return q;
@@ -472,14 +505,14 @@ Article           Many|Any: article_m2a                    ┌─Text
 │id       ├───┐   │id: junctionPKField             │    ┌──┼─┤id       │
 │content  │   └──►│article_id: reverseJunctionField│    │  │ │text     │
 └─────────┘       │item: junctionField             │◄───┤  │ └─────────┘
-				      │sort: sortField                 │    │  │
-				      │collection: collectionField     │◄───┼──┤
-				      └────────────────────────────────┘    │  │
-														              │  └─Code
+							│sort: sortField                 │    │  │
+							│collection: collectionField     │◄───┼──┤
+							└────────────────────────────────┘    │  │
+																					│  └─Code
 				AllowedCollection: [Text,Code]		        │    ┌─────────┐
 				relatedPKFields: {Text: id,Code: id}        └────┤id       │
-															                │code     │
-															                └─────────┘
+																							│code     │
+																							└─────────┘
 */
 
 describe('test m2a relation', () => {
@@ -532,5 +565,132 @@ describe('test m2a relation', () => {
 				$edits: 1,
 			},
 		]);
+	});
+
+	test('selecting existing items for a new parent (Add Existing)', async () => {
+		const wrapper = mount(TestComponentM2A, {
+			props: {
+				relation: relationM2A,
+				value: [],
+				id: '+',
+			},
+		});
+
+		wrapper.vm.select([1], 'text');
+
+		await flushPromises();
+
+		expect(wrapper.vm.displayItems).toEqual([
+			{
+				article_id: '+',
+				collection: 'text',
+				item: {
+					id: 1,
+					text: 'Text content 1',
+				},
+				$type: 'created',
+				$index: 0,
+			},
+		]);
+
+		expect(wrapper.vm.value).toEqual({
+			create: [
+				{
+					article_id: '+',
+					collection: 'text',
+					item: { id: 1 },
+				},
+			],
+			update: [],
+			delete: [],
+		});
+	});
+
+	test('selecting multiple existing items from different collections', async () => {
+		const wrapper = mount(TestComponentM2A, {
+			props: {
+				relation: relationM2A,
+				value: [],
+				id: '+',
+			},
+		});
+
+		wrapper.vm.select([1, 2], 'text');
+		await flushPromises();
+
+		expect(wrapper.vm.displayItems).toEqual([
+			{
+				article_id: '+',
+				collection: 'text',
+				item: {
+					id: 1,
+					text: 'Text content 1',
+				},
+				$type: 'created',
+				$index: 0,
+			},
+			{
+				article_id: '+',
+				collection: 'text',
+				item: {
+					id: 2,
+					text: 'Text content 2',
+				},
+				$type: 'created',
+				$index: 1,
+			},
+		]);
+
+		expect(wrapper.vm.value).toEqual({
+			create: [
+				{ article_id: '+', collection: 'text', item: { id: 1 } },
+				{ article_id: '+', collection: 'text', item: { id: 2 } },
+			],
+			update: [],
+			delete: [],
+		});
+	});
+
+	test('creating new item with full data (Create New)', async () => {
+		const wrapper = mount(TestComponentM2A, {
+			props: {
+				relation: relationM2A,
+				value: [],
+				id: '+',
+			},
+		});
+
+		wrapper.vm.create({
+			collection: 'text',
+			item: {
+				text: 'New text content',
+			},
+		});
+
+		await flushPromises();
+
+		expect(wrapper.vm.displayItems).toEqual([
+			{
+				collection: 'text',
+				item: {
+					text: 'New text content',
+				},
+				$type: 'created',
+				$index: 0,
+			},
+		]);
+
+		expect(wrapper.vm.value).toEqual({
+			create: [
+				{
+					collection: 'text',
+					item: {
+						text: 'New text content',
+					},
+				},
+			],
+			update: [],
+			delete: [],
+		});
 	});
 });
