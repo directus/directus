@@ -2,14 +2,13 @@ Perform CRUD on Directus Operations within Flows. Operations are individual acti
 processing and transforming data through the data chain.
 
 <key_concepts>
-
 - **Operations** are the building blocks of flows
 - Each operation has a unique `key` that identifies it in the data chain
 - Operations connect via `resolve` (success) and `reject` (failure) paths
-- Data from each operation is stored under its key in the data chain </key_concepts>
+- Data from each operation is stored under its key in the data chain
+</key_concepts>
 
 <uuid_vs_keys>
-
 ## UUID vs Keys - Critical Distinction
 
 **UUIDs** (System identifiers): `"abc-123-def-456"`
@@ -22,10 +21,10 @@ processing and transforming data through the data chain.
 
 - Use in: Data chain variables `{{ operation_key }}`
 - You define these when creating operations
-- Used to access operation results in subsequent operations </uuid_vs_keys>
+- Used to access operation results in subsequent operations
+</uuid_vs_keys>
 
 <critical_syntax>
-
 ## Critical Syntax Rules - MEMORIZE THESE
 
 **Condition Filters**: Use nested objects, NEVER dot notation
@@ -46,10 +45,10 @@ processing and transforming data through the data chain.
 **Data Chain Variables**: Use operation keys, avoid `$last`
 
 - ❌ `{{ $last }}` (breaks when reordered)
-- ✅ `{{ operation_key }}` (reliable) </critical_syntax>
+- ✅ `{{ operation_key }}` (reliable)
+</critical_syntax>
 
 <required_fields>
-
 ## Required Fields Summary
 
 **All Operations:**
@@ -58,10 +57,10 @@ processing and transforming data through the data chain.
 - `key` - Unique operation identifier
 - `type` - Operation type
 - `position_x`, `position_y` - Grid coordinates
-- `resolve`, `reject` - Next operation UUIDs (null initially) </required_fields>
+- `resolve`, `reject` - Next operation UUIDs (null initially)
+</required_fields>
 
 <available_operations> Core operations available in Directus:
-
 - **condition** - Evaluate filter rules to determine execution path
 - **exec** - Execute custom JavaScript/TypeScript code in sandboxed environment
 - **item-create** - Create items in a collection
@@ -79,10 +78,10 @@ processing and transforming data through the data chain.
 - **trigger** - Execute another flow with iteration modes
 
 If user has installed extensions from the Directus Marketplace, there may be more operations available than this. You
-can read existing operations to see if they are using extensions operations. </available_operations>
+can read existing operations to see if they are using extensions operations.
+</available_operations>
 
 <crud_actions>
-
 ### `read` - List Flow Operations
 
 ```json
@@ -141,31 +140,25 @@ can read existing operations to see if they are using extensions operations. </a
 	"key": "operation-uuid"
 }
 ```
-
 </crud_actions>
 
 <workflow_creation>
-
 ## Workflow Creation Process
 
 **Critical Order:** Create flow first → Create operations with null resolve/reject → Link operations via UUIDs → Update flow entry point.
 
 **See `flows` tool for complete workflow example with detailed steps.**
-
 </workflow_creation>
 
 <positioning_system>
-
 ## Grid Positioning
 
 **Rules:** 14x14 units, spacing every 18 units (example 19/37/55/73). Never (0,0). Start `position_y: 1`.
 
 **Patterns:** Linear (19,1)→(37,1)→(55,1). Branching: success (37,1), error (37,19).
-
 </positioning_system>
 
 <operation_examples>
-
 **condition** - Evaluates filter rules
 
 ```json
@@ -237,25 +230,21 @@ can read existing operations to see if they are using extensions operations. </a
 {"type": "log", "options": {"message": "Processing {{ $trigger.payload.id }}"}}
 {"type": "throw-error", "options": {"code": "CUSTOM_ERROR", "status": "400", "message": "Invalid data"}}
 ```
-
 </operation_examples>
 
 <data_chain_variables>
-
 **Data Chain:** Use `{{ operation_key }}` to access results, `{{ $trigger.payload }}` for trigger data. Avoid `{{ $last }}` (breaks when reordered). See `flows` tool for complete syntax.
-
 </data_chain_variables>
 
 <permission_options> For operations that support permissions:
-
 - `$trigger` - Use permissions from the triggering context (default)
 - `$public` - Use public role permissions
 - `$full` - Use full system permissions
-- `role-uuid` - Use specific role's permissions </permission_options>
+- `role-uuid` - Use specific role's permissions
+</permission_options>
 
 
 <common_mistakes>
-
 1. Create flow first, never operations without flow
 2. Use UUIDs in resolve/reject, NOT keys
 3. Create operations before referencing them
@@ -265,17 +254,12 @@ can read existing operations to see if they are using extensions operations. </a
 7. Use nested objects in filters, NOT dot notation
 8. Request headers as array of objects, body as stringified JSON
 9. Pass native objects in data (except request body)
-9. ALWAYS pass native objects in data (except request body for `request` operation)
-10. No `$NOW` variable - use exec operation: `return { now: new Date().toISOString() };`
-
+10. ALWAYS pass native objects in data (EXCEPTIONS: - request body for `request` operation - code in `exec` operations)
+11. No `$NOW` variable - use exec operation: `return { now: new Date().toISOString() };`
 </common_mistakes>
 
 <troubleshooting>
-
 **Invalid foreign key:** Operation UUID doesn't exist. Use UUIDs (36 chars), not keys. Create operations before referencing.
-
 **Not executing:** Check resolve/reject chain, verify flow.operation set, confirm required options provided.
-
 **Overlapping (0,0):** Update positions: `{"action": "update", "key": "uuid", "data": {"position_x": 19, "position_y": 1}}`
-
 </troubleshooting>
