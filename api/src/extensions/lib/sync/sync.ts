@@ -1,17 +1,18 @@
-import { useEnv } from '@directus/env';
-import mid from 'node-machine-id';
-import { createWriteStream } from 'node:fs';
-import { mkdir, stat, rm } from 'node:fs/promises';
-import { useLock } from '../../../lock/index.js';
-import { useBus } from '../../../bus/index.js';
-import { useLogger } from '../../../logger/index.js';
-import { getSyncStatus, setSyncStatus, SyncStatus } from './status.js';
-import { getExtensionsPath } from '../get-extensions-path.js';
-import { dirname, join, relative, resolve, sep } from 'node:path';
-import { pipeline } from 'node:stream/promises';
-import { getStorage } from '../../../storage/index.js';
 import Queue from 'p-queue';
+import mid from 'node-machine-id';
+import { useEnv } from '@directus/env';
+import { createWriteStream } from 'node:fs';
+import { mkdir, rm } from 'node:fs/promises';
+import { pipeline } from 'node:stream/promises';
+import { dirname, join, relative, resolve, sep } from 'node:path';
+import { fsStat } from './utils.js';
+import { useBus } from '../../../bus/index.js';
 import { SyncFileTracker } from './tracker.js';
+import { useLock } from '../../../lock/index.js';
+import { useLogger } from '../../../logger/index.js';
+import { getStorage } from '../../../storage/index.js';
+import { getExtensionsPath } from '../get-extensions-path.js';
+import { getSyncStatus, setSyncStatus, SyncStatus } from './status.js';
 
 export type ExtensionSyncOptions = {
 	forceSync?: boolean; // force sync all extensions
@@ -24,12 +25,6 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 	const messenger = useBus();
 	const logger = useLogger();
 
-	if (options?.partialSync) {
-		logger.debug('Partial sync: ' + options.partialSync);
-	} else {
-		logger.debug('Full sync');
-	}
-
 	if (options?.forceSync !== true && (await getSyncStatus()) === SyncStatus.SYNCING) {
 		logger.debug('Extensions are already being synced to this directory from another process.');
 		return;
@@ -37,7 +32,7 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 
 	const machineId = await mid.machineId();
 	const machineKey = `extensions-sync/${machineId}`;
-	await lock.delete(machineKey);
+	/* DEBUG DO NOT FORGET TO REMOVE!!!*/await lock.delete(machineKey);
 	const processId = await lock.increment(machineKey);
 
 	if (processId !== 1) {
@@ -60,7 +55,7 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 		const localExtensionsPath = options?.partialSync
 			? join(getExtensionsPath(), options.partialSync)
 			: getExtensionsPath();
-            
+
 		const remoteExtensionsPath = options?.partialSync
 			? join(env['EXTENSIONS_PATH'] as string, options.partialSync)
 			: (env['EXTENSIONS_PATH'] as string);
@@ -70,12 +65,13 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 		const disk = storage.location(env['EXTENSIONS_LOCATION'] as string);
 
 		// check if we are only removing the local directory
-		if (options?.partialSync && (await disk.exists(join(remoteExtensionsPath, 'package.json'))) === false) {
-			logger.debug('Deleting local extension: ' + localExtensionsPath);
-			// remove the local extension
-			await rm(localExtensionsPath, { recursive: true, force: true });
-			// continue to the finally block
-			return;
+		if (options?.partialSync) {
+            const remoteExists = await disk.exists(join(remoteExtensionsPath, 'package.json'));
+            
+            if (remoteExists === false) {
+                await rm(localExtensionsPath, { recursive: true, force: true });
+                return;
+            }
 		}
 
 		// Make sure we don't overload the file handles
@@ -103,15 +99,10 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 
 					if (localStat && remoteStat.modified <= localStat.modified && remoteStat.size === localStat.size) {
 						// local file exists and is unchanged
-						logger.debug('Skipping sync for:' + relativePath);
 						continue;
 					}
 				}
 			}
-
-			logger.debug(
-				'Downloading file:' + (options?.partialSync ? join(options.partialSync, relativePath) : relativePath),
-			);
 
 			// Ensure that the directory path exists
 			await mkdir(dirname(destinationPath), { recursive: true });
@@ -127,23 +118,10 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 		// cleanup dangling local files
 		await fileTracker.cleanup(localExtensionsPath);
 	} finally {
-		// release lock for other processes
+        // release various locking mechanisms
 		messenger.publish(machineKey, { ready: true });
-		// clear the lock
 		await lock.delete(machineKey);
-		// remove the status file
 		await setSyncStatus(SyncStatus.IDLE);
 	}
 }
 
-export async function fsStat(path: string) {
-	const data = await stat(path, { bigint: false }).catch(() => {
-		/* file not available */
-	});
-
-	if (!data) return null;
-	return {
-		size: data.size,
-		modified: data.mtime,
-	};
-}

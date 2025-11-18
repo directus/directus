@@ -2,7 +2,8 @@
  * class to help tracking file status between local and remote
  */
 import { readdir, rm } from 'node:fs/promises';
-import { dirname, join, relative, sep } from 'node:path';
+import { dirname, join, relative } from 'node:path';
+import { pathDepth } from './utils.js';
 
 export class SyncFileTracker {
 	private localFiles: Set<string>;
@@ -77,12 +78,3 @@ export class SyncFileTracker {
 	}
 }
 
-function pathDepth(path: string): number {
-	let count = 0;
-
-	for (let i = 0; i < path.length; i++) {
-		if (path[i] === sep) count++;
-	}
-
-	return count;
-}
