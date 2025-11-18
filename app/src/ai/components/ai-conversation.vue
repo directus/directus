@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTemplateRef, computed, onMounted, nextTick, watch } from 'vue';
+import { useTemplateRef, computed, onMounted, nextTick } from 'vue';
 import { useScroll } from '@vueuse/core';
 import { useAiStore } from '../stores/use-ai';
 import AiMessageList from './ai-message-list.vue';
