@@ -1,34 +1,34 @@
-import { useEnv } from "@directus/env";
+import { useEnv } from '@directus/env';
 import mid from 'node-machine-id';
 import { createWriteStream } from 'node:fs';
 import { mkdir, stat, rm } from 'node:fs/promises';
-import { useLock } from "../../../lock/index.js";
-import { useBus } from "../../../bus/index.js";
-import { useLogger } from "../../../logger/index.js";
-import { getSyncStatus, setSyncStatus, SyncStatus } from "./status.js";
-import { getExtensionsPath } from "../get-extensions-path.js";
+import { useLock } from '../../../lock/index.js';
+import { useBus } from '../../../bus/index.js';
+import { useLogger } from '../../../logger/index.js';
+import { getSyncStatus, setSyncStatus, SyncStatus } from './status.js';
+import { getExtensionsPath } from '../get-extensions-path.js';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { pipeline } from 'node:stream/promises';
-import { getStorage } from "../../../storage/index.js";
+import { getStorage } from '../../../storage/index.js';
 import Queue from 'p-queue';
-import { SyncFileTracker } from "./tracker.js";
+import { SyncFileTracker } from './tracker.js';
 
 export type ExtensionSyncOptions = {
-    forceSync?: boolean; // force sync all extensions
-    partialSync?: string; // only sync a specific extension
+	forceSync?: boolean; // force sync all extensions
+	partialSync?: string; // only sync a specific extension
 };
 
 export async function syncExtensions(options?: ExtensionSyncOptions): Promise<void> {
-    const env = useEnv();
+	const env = useEnv();
 	const lock = useLock();
 	const messenger = useBus();
 	const logger = useLogger();
 
-    if (options?.partialSync) {
-        logger.debug('Partial sync: ' + options.partialSync);
-    } else {
-        logger.debug('Full sync');
-    }
+	if (options?.partialSync) {
+		logger.debug('Partial sync: ' + options.partialSync);
+	} else {
+		logger.debug('Full sync');
+	}
 
 	if (options?.forceSync !== true && (await getSyncStatus()) === SyncStatus.SYNCING) {
 		logger.debug('Extensions are already being synced to this directory from another process.');
@@ -49,84 +49,91 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 		});
 	}
 
-    try {
+	try {
 		logger.debug('Syncing extensions from configured storage location...');
-        
-        // Ensure that the local extensions cache path exists
-        await mkdir(getExtensionsPath(), { recursive: true });
-        await setSyncStatus(SyncStatus.SYNCING);
 
-        // determine paths to sync
-        const localExtensionsPath = options?.partialSync ? join(getExtensionsPath(), options.partialSync) : getExtensionsPath();
-        const remoteExtensionsPath = options?.partialSync ? join(env['EXTENSIONS_PATH'] as string, options.partialSync) : env['EXTENSIONS_PATH'] as string;
+		// Ensure that the local extensions cache path exists
+		await mkdir(getExtensionsPath(), { recursive: true });
+		await setSyncStatus(SyncStatus.SYNCING);
 
-        // get the remote storage
-        const storage = await getStorage();
-        const disk = storage.location(env['EXTENSIONS_LOCATION'] as string);
+		// determine paths to sync
+		const localExtensionsPath = options?.partialSync
+			? join(getExtensionsPath(), options.partialSync)
+			: getExtensionsPath();
+            
+		const remoteExtensionsPath = options?.partialSync
+			? join(env['EXTENSIONS_PATH'] as string, options.partialSync)
+			: (env['EXTENSIONS_PATH'] as string);
 
-        // check if we are only removing the local directory
-        if (options?.partialSync && await disk.exists(join(remoteExtensionsPath, 'package.json')) === false) {
-            console.log(await disk.exists(join(remoteExtensionsPath, 'package.json')), remoteExtensionsPath)
-            logger.debug('Deleting local extension: ' + localExtensionsPath);
-            // remove the local extension
-            await rm(localExtensionsPath, { recursive: true, force: true });
-            // continue to the finally block
-            return;
-        }
+		// get the remote storage
+		const storage = await getStorage();
+		const disk = storage.location(env['EXTENSIONS_LOCATION'] as string);
 
-        // Make sure we don't overload the file handles
-        const queue = new Queue({ concurrency: 1000 });
+		// check if we are only removing the local directory
+		if (options?.partialSync && (await disk.exists(join(remoteExtensionsPath, 'package.json'))) === false) {
+			logger.debug('Deleting local extension: ' + localExtensionsPath);
+			// remove the local extension
+			await rm(localExtensionsPath, { recursive: true, force: true });
+			// continue to the finally block
+			return;
+		}
 
-        // start file tracker
-        const fileTracker = new SyncFileTracker();
-        await fileTracker.readLocalFiles(localExtensionsPath);
+		// Make sure we don't overload the file handles
+		const queue = new Queue({ concurrency: 1000 });
 
-        for await (const filepath of disk.list(remoteExtensionsPath)) {
-            // We want files to be stored in the root of `$TEMP_PATH/extensions`, so gotta remove the
-            // extensions path on disk from the start of the file path
-            const relativePath = relative(resolve(sep, remoteExtensionsPath), resolve(sep, filepath));
-            const destinationPath = join(localExtensionsPath, relativePath);
+		// start file tracker
+		const fileTracker = new SyncFileTracker();
+		const localFileCount = await fileTracker.readLocalFiles(localExtensionsPath);
+		const hasLocalFiles = localFileCount > 0;
 
-            await fileTracker.syncFile(relativePath);
+		for await (const filepath of disk.list(remoteExtensionsPath)) {
+			// We want files to be stored in the root of `$TEMP_PATH/extensions`, so gotta remove the
+			// extensions path on disk from the start of the file path
+			const relativePath = relative(resolve(sep, remoteExtensionsPath), resolve(sep, filepath));
+			const destinationPath = join(localExtensionsPath, relativePath);
 
-            // No need to check metadata when force is enabled
-            if (options?.forceSync !== true && fileTracker.hasLocalFiles()) {
-                const localStat = await fsStat(destinationPath);
+			await fileTracker.passedFile(relativePath);
 
-                if (localStat !== null) {
-                    const remoteStat = await disk.stat(filepath);
+			// No need to check metadata when force is enabled
+			if (options?.forceSync !== true && hasLocalFiles) {
+				const localStat = await fsStat(destinationPath);
 
-                    if (localStat && remoteStat.modified <= localStat.modified && remoteStat.size === localStat.size) {
-                        // local file exists and is unchanged
-                        logger.debug('Skipping sync for:' + relativePath);
-                        continue;
-                    }
-                }
-            }
+				if (localStat !== null) {
+					const remoteStat = await disk.stat(filepath);
 
-            logger.debug('Downloading file:' + (options?.partialSync ? join(options.partialSync, relativePath) : relativePath));
+					if (localStat && remoteStat.modified <= localStat.modified && remoteStat.size === localStat.size) {
+						// local file exists and is unchanged
+						logger.debug('Skipping sync for:' + relativePath);
+						continue;
+					}
+				}
+			}
 
-            // Ensure that the directory path exists
-            await mkdir(dirname(destinationPath), { recursive: true });
+			logger.debug(
+				'Downloading file:' + (options?.partialSync ? join(options.partialSync, relativePath) : relativePath),
+			);
 
-            // write remote file to the local filesystem
-            const readStream = await disk.read(filepath);
-            const writeStream = createWriteStream(destinationPath);
-            queue.add(() => pipeline(readStream, writeStream));
-        }
+			// Ensure that the directory path exists
+			await mkdir(dirname(destinationPath), { recursive: true });
 
-        // wait for the queue to finish
+			// write remote file to the local filesystem
+			const readStream = await disk.read(filepath);
+			const writeStream = createWriteStream(destinationPath);
+			queue.add(() => pipeline(readStream, writeStream));
+		}
+
+		// wait for the queue to finish
 		await queue.onIdle();
-        // cleanup dangling local files
+		// cleanup dangling local files
 		await fileTracker.cleanup(localExtensionsPath);
-    } finally {
-        // release lock for other processes
-        messenger.publish(machineKey, { ready: true });
-        // clear the lock
-        await lock.delete(machineKey);
-        // remove the status file
-        await setSyncStatus(SyncStatus.IDLE);
-    }
+	} finally {
+		// release lock for other processes
+		messenger.publish(machineKey, { ready: true });
+		// clear the lock
+		await lock.delete(machineKey);
+		// remove the status file
+		await setSyncStatus(SyncStatus.IDLE);
+	}
 }
 
 export async function fsStat(path: string) {

@@ -143,7 +143,9 @@ export class ExtensionsService {
 	}
 
 	async readAll() {
+		// wait for extensions to be reloaded
 		await this.extensionsManager.isReloading();
+
 		const settings = await this.extensionsItemService.readByQuery({ limit: -1 });
 
 		const regular = settings.filter(({ bundle }) => bundle === null);
@@ -183,6 +185,7 @@ export class ExtensionsService {
 	}
 
 	async readOne(id: string): Promise<ApiOutput> {
+		// wait for extensions to be reloaded
 		await this.extensionsManager.isReloading();
 		const meta = await this.extensionsItemService.readOne(id);
 		const schema = this.extensionsManager.getExtension(meta.source, meta.folder) ?? null;

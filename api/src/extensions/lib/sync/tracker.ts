@@ -3,34 +3,40 @@
  */
 import { readdir, rm } from 'node:fs/promises';
 import { dirname, join, relative, sep } from 'node:path';
-import { useLogger } from '../../../logger/index.js';
-import type { Logger } from 'pino';
 
 export class SyncFileTracker {
 	private localFiles: Set<string>;
 	private trackedDirs: Set<string>;
-	private logger: Logger<never>;
 
 	constructor() {
 		this.localFiles = new Set();
 		this.trackedDirs = new Set();
-		this.logger = useLogger();
 	}
 
-	async readLocalFiles(localExtensionsPath: string) {
-		const entries = await readdir(localExtensionsPath, { recursive: true, withFileTypes: true })
-			.catch(() => {/* folder doesnt exist, perhaps call mkdir here! */})
+	/**
+	 * Reads all files recusrively in the provided directory
+	 * @returns the number of files read
+	 */
+	async readLocalFiles(localExtensionsPath: string): Promise<number> {
+		const entries = await readdir(localExtensionsPath, { recursive: true, withFileTypes: true }).catch(() => {
+			/* path doesnt exist */
+		});
 
-		if (entries) {
-			for (const entry of entries) {
-				if (!entry.isFile()) continue;
-				const relativePath = join(relative(localExtensionsPath, entry.parentPath), entry.name);
-				this.localFiles.add(relativePath);
-			}
+		if (!entries) return 0;
+
+		for (const entry of entries) {
+			if (!entry.isFile()) continue;
+			const relativePath = join(relative(localExtensionsPath, entry.parentPath), entry.name);
+			this.localFiles.add(relativePath);
 		}
+
+		return this.localFiles.size;
 	}
 
-	async syncFile(filePath: string) {
+	/**
+	 * Removes a file from the locally tracked files
+	 */
+	async passedFile(filePath: string) {
 		this.localFiles.delete(filePath);
 		let currentDir = dirname(filePath);
 
@@ -41,6 +47,9 @@ export class SyncFileTracker {
 		}
 	}
 
+	/**
+	 * Removes left over tracked files that were not processed
+	 */
 	async cleanup(localExtensionsPath: string) {
 		const removeDirs = new Set<string>();
 
@@ -55,21 +64,16 @@ export class SyncFileTracker {
 			}
 		}
 
+		// sort directory by depth so we can remove the highest level directory recursively
 		const removeDirsRecursive = Array.from(removeDirs)
 			.sort((a, b) => pathDepth(b) - pathDepth(a))
 			.filter((d) => !removeDirs.has(dirname(d)));
 
 		for (const dir of removeDirsRecursive) {
 			const relativePath = join(localExtensionsPath, dir);
-
-			this.logger.debug('Removing local folder:' + relativePath);
-
+			// removing local folder that does not exist in the remote storage
 			await rm(relativePath, { recursive: true, force: true });
 		}
-	}
-
-	hasLocalFiles() {
-		return this.localFiles.size > 0;
 	}
 }
 

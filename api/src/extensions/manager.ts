@@ -137,6 +137,9 @@ export class ExtensionManager {
 	 */
 	private reloadQueue: JobQueue = new JobQueue();
 
+	/**
+	 * Used to prevent race condition when reading extension data while reloading extensions
+	 */
 	private reloadPromise: Promise<void> = Promise.resolve();
 
 	/**
@@ -214,8 +217,11 @@ export class ExtensionManager {
 		this.messenger.subscribe(this.reloadChannel, (payload: Record<string, unknown>) => {
 			// Ignore requests for reloading that were published by the current process
 			if (isPlainObject(payload) && 'origin' in payload && payload['origin'] === this.processId) return;
-			console.log('reload', payload);
-			this.reload(payload);
+			// Reload extensions with event options
+			const options: ExtensionSyncOptions = {};
+			if (typeof payload['forceSync'] === 'boolean') options.forceSync = payload['forceSync'];
+			if (typeof payload['partialSync'] === 'string') options.partialSync = payload['partialSync'];
+			this.reload(options);
 		});
 	}
 
@@ -228,8 +234,10 @@ export class ExtensionManager {
 		await this.installationManager.install(versionId);
 
 		const syncFolder = join('.registry', versionId);
-		await this.broadcastReloadNotification({ partialSync: syncFolder });
-		await this.reload({ partialSync: syncFolder });
+		const syncOptions = { partialSync: syncFolder };
+
+		await this.broadcastReloadNotification(syncOptions);
+		await this.reload(syncOptions);
 
 		emitter.emitAction('extensions.installed', {
 			extensions: this.extensions,
@@ -245,8 +253,10 @@ export class ExtensionManager {
 		await this.installationManager.uninstall(folder);
 
 		const syncFolder = join('.registry', folder);
-		await this.broadcastReloadNotification({ partialSync: syncFolder });
-		await this.reload({ partialSync: syncFolder });
+		const syncOptions = { partialSync: syncFolder };
+
+		await this.broadcastReloadNotification(syncOptions);
+		await this.reload(syncOptions);
 
 		emitter.emitAction('extensions.uninstalled', {
 			extensions: this.extensions,
