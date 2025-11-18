@@ -64,6 +64,10 @@ export class SyncFileTracker {
 			await rm(relativePath, { recursive: true, force: true });
 		}
 	}
+
+	hasLocalFiles() {
+		return this.localFiles.size > 0;
+	}
 }
 
 function pathDepth(path: string): number {

@@ -57,9 +57,9 @@ import { getInstallationManager } from './lib/installation/index.js';
 import type { InstallationManager } from './lib/installation/manager.js';
 import { generateApiExtensionsSandboxEntrypoint } from './lib/sandbox/generate-api-extensions-sandbox-entrypoint.js';
 import { instantiateSandboxSdk } from './lib/sandbox/sdk/instantiate.js';
-import { syncExtensions } from './lib/sync-extensions.js';
 import { wrapEmbeds } from './lib/wrap-embeds.js';
 import DriverLocal from '@directus/storage-driver-local';
+import { syncExtensions, type ExtensionSyncOptions } from './lib/sync/sync.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
@@ -214,7 +214,8 @@ export class ExtensionManager {
 		this.messenger.subscribe(this.reloadChannel, (payload: Record<string, unknown>) => {
 			// Ignore requests for reloading that were published by the current process
 			if (isPlainObject(payload) && 'origin' in payload && payload['origin'] === this.processId) return;
-			this.reload();
+			console.log('reload', payload);
+			this.reload(payload);
 		});
 	}
 
@@ -226,11 +227,8 @@ export class ExtensionManager {
 
 		await this.installationManager.install(versionId);
 
-		// if we broadcast immediatly before reloading locally do we then
-		//  start reloading other instances before finishing the current
-		//  install request? to hopefully prevent the fetch race condition
-		await this.broadcastReloadNotification();
-		await this.reload();
+		await this.broadcastReloadNotification({ partialSync: versionId });
+		await this.reload({ partialSync: versionId });
 
 		emitter.emitAction('extensions.installed', {
 			extensions: this.extensions,
@@ -244,7 +242,9 @@ export class ExtensionManager {
 		const logger = useLogger();
 
 		await this.installationManager.uninstall(folder);
-		await this.reload();
+
+		await this.broadcastReloadNotification({ partialSync: folder });
+		await this.reload({ partialSync: folder });
 
 		emitter.emitAction('extensions.uninstalled', {
 			extensions: this.extensions,
@@ -252,23 +252,21 @@ export class ExtensionManager {
 		});
 
 		logger.info(`Uninstalled extension: ${folder}`);
-
-		await this.broadcastReloadNotification();
 	}
 
-	public async broadcastReloadNotification() {
-		await this.messenger.publish(this.reloadChannel, { origin: this.processId });
+	public async broadcastReloadNotification(options?: ExtensionSyncOptions) {
+		await this.messenger.publish(this.reloadChannel, { ...options, origin: this.processId });
 	}
 
 	/**
 	 * Load all extensions from disk and register them in their respective places
 	 */
-	private async load(options?: { forceSync: boolean }): Promise<void> {
+	private async load(options?: ExtensionSyncOptions): Promise<void> {
 		const logger = useLogger();
 
 		if (env['EXTENSIONS_LOCATION']) {
 			try {
-				await syncExtensions({ force: options?.forceSync ?? false });
+				await syncExtensions(options);
 			} catch (error) {
 				logger.error(`Failed to sync extensions`);
 				logger.error(error);
@@ -325,7 +323,7 @@ export class ExtensionManager {
 	/**
 	 * Reload all the extensions. Will unload if extensions have already been loaded
 	 */
-	public reload(options?: { forceSync: boolean }): Promise<unknown> {
+	public reload(options?: ExtensionSyncOptions): Promise<unknown> {
 		if (this.reloadQueue.size > 0) {
 			// The pending job in the queue will already handle the additional changes
 			return Promise.resolve();
