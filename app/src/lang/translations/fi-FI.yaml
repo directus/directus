@@ -1288,9 +1288,7 @@ interfaces:
     all_opened: Kaikki avattuna
     accordion_mode: Haitarin tila
   presentation-links:
-    presentation-links: Painikelinkit
     links: Linkit
-    description: Muokattavissa olevat linkkipainikkeet dynaamisten URL:ien avaamiseen
     style: Tyyli
     primary: Ensisijainen
     link: Linkit

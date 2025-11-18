@@ -1738,9 +1738,7 @@ interfaces:
     accordion_mode: Režim harmoniky
     max_one_section_open: Max. 1 otevřená sekce
   presentation-links:
-    presentation-links: Tlačítkové odkazy
     links: Odkazy
-    description: Konfigurovatelná tlačítka odkazů pro spouštění dynamických URL
     style: Styl
     primary: Primární
     link: Odkazy
