@@ -960,7 +960,6 @@ directus_collection:
   directus_dashboards: Quadres de comandament de tota la visió
   directus_fields: Configuració i metadades addicionals del camp
   directus_files: Metadades per a tots els actius de fitxers gestionats
-  directus_flows: Automatització de fluxes
   directus_folders: Proporciona directoris virtuals per a fitxers
   directus_migrations: Quina versió de base de dades estàs utilitzant
   directus_notifications: Notificacions enviades als usuaris
@@ -1349,9 +1348,7 @@ interfaces:
     accordion_mode: Mode d'acordió
     max_one_section_open: Màxim 1 secció oberta
   presentation-links:
-    presentation-links: Botó d'enllaços
-    links: Enllaços
-    description: Botons d'enllaços configurables per a llançar URLs dinàmiques
+    presentation-links: Botons
     style: Estil
     primary: Primari
     link: Enllaços
