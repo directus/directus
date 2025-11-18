@@ -917,9 +917,7 @@ interfaces:
     add_filter: Dodaj Filter
     all: Svi
   presentation-links:
-    presentation-links: Linkovi dugmeta
-    links: Linkovi
-    description: Podesivi linkovi za otvaranje dinamičkih URL-ova
+    presentation-links: Dugmad
     style: Stil
     primary: Primarni
     link: Linkovi
