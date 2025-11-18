@@ -955,10 +955,8 @@ label: Étiquette
 flows: Flux
 flow: Flux
 select_a_flow: Sélectionner un flux
-run_flow_confirm: Êtes-vous sûr(e) de vouloir exécuter ce flux ?
 run_flow_on_current_collection: Exécuter ce flux sur la collection actuelle
 run_flow_on_current: Exécuter le flux sur l'élément actuel
-run_flow_on_current_edited_confirm: Cet élément peut être mis à jour par ce flux, êtes-vous sûr de vouloir l'exécuter ?
 run_flow_on_selected: Sélectionner un ou plusieurs éléments | Exécuter le flux sur l'élément sélectionné | Exécuter le flux sur les {n} éléments sélectionnés
 run_flow: Exécuter le flux
 field_name_placeholder: Saisir un nom de champ...
@@ -1256,7 +1254,6 @@ directus_collection:
   directus_dashboards: Tableaux de bord dans le module Insights
   directus_fields: Configuration supplémentaire des champs et métadonnées
   directus_files: Métadonnées pour tous les fichiers gérés
-  directus_flows: Flux d'automatisation
   directus_folders: Fournit des répertoires virtuels pour les fichiers
   directus_migrations: Quelle version de la base de données que vous utilisez
   directus_notifications: Notifications envoyées aux utilisateurs
@@ -1772,9 +1769,7 @@ interfaces:
     accordion_mode: Mode Accordion
     max_one_section_open: Max 1 section ouverte
   presentation-links:
-    presentation-links: Bouton avec lien
-    links: Liens
-    description: Bouton avec lien paramétrable pour appeler une URL
+    presentation-links: Boutons
     style: Style
     primary: Primaire
     link: Liens
@@ -2401,11 +2396,9 @@ triggers:
 a_flow_uuid: Choisir un flux à exécuter...
 any_string_or_json: Toute chaîne de caractères ou JSON...
 item_payload_placeholder: C'est le JSON utilisé pour mettre à jour les valeurs des champs de l'élément...
-operation_variables_note: Vous pouvez accéder aux données de flux à l'aide de variables telles que **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** et **{'{'}{'{'}$accountability{'}'}{'}'}**, ou faire référence à des opérations précédentes à l'aide de **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condition
-    description: Acheminer un flux en fonction d'une condition de type Si / Sinon
   exec:
     name: Lancer le script
     description: Exécuter du code arbitraire pour modifier les données utiles
@@ -2493,7 +2486,6 @@ operations:
     description: Modifier les données utiles JSON du Flux
   trigger:
     name: Déclencher le Flux
-    description: Transmettre ces données à un autre Flux
     flows: Flux
     flow: Flux
     data: Données
