@@ -758,10 +758,8 @@ label: Label
 flows: Kumpulan Alur
 flow: Alur
 select_a_flow: Pilih Alur
-run_flow_confirm: Apakah Anda yakin ingin menjalankan Flow ini?
 run_flow_on_current_collection: Jalankan Flow pada Koleksi Ini
 run_flow_on_current: Jalankan Flow pada Item Ini
-run_flow_on_current_edited_confirm: Item ini mungkin akan diperbarui sesuai dengan alur ini, apakah anda yakin akan menjalankannya?
 run_flow_on_selected: Pilih Satu atau Lebih Item Terlebih Dahulu | Jalankan Flow pada 1 Item Terpilih | Jalankan Flow pada {n} Item yang Dipilih
 run_flow: Jalankan Flow
 field_name_placeholder: Masukkan Nama Kolom...
@@ -997,7 +995,6 @@ directus_collection:
   directus_dashboards: Dasbor dalam modul Wawasan
   directus_fields: Isian konfigurasi tambahan dan metadata
   directus_files: Metadata untuk semua aset file terkelola
-  directus_flows: Otomatisasi mengalir
   directus_folders: Menyediakan direktori virtual untuk file
   directus_migrations: Versi database apa yang Anda gunakan
   directus_notifications: Notifikasi dikirim ke pengguna
@@ -1341,9 +1338,7 @@ interfaces:
     accordion_mode: Mode Akordeon
     max_one_section_open: Maks 1 Bagian Dibuka
   presentation-links:
-    presentation-links: Tautan Tombol
-    links: Tautan
-    description: Tombol tautan yang dapat dikonfigurasi untuk meluncurkan URL dinamis
+    presentation-links: Tombol
     style: Gaya
     primary: Primer
     link: Tautan
