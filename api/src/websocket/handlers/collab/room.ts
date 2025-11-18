@@ -19,15 +19,6 @@ import { sanitizePayload } from './sanitize-payload.js';
 export class CollabRooms {
 	rooms: Record<string, Room> = {};
 
-	constructor() {
-		setInterval(() => {
-			console.log(
-				'ROOMS: ',
-				Object.values(this.rooms).map((room) => `c: ${room.collection}, i: ${room.item}, v: ${room.version};`),
-			);
-		}, 1000);
-	}
-
 	async createRoom(collection: string, item: string | null, version: string | null, initialChanges?: Item) {
 		const uid = getRoomHash(collection, item, version);
 
