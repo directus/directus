@@ -1015,11 +1015,11 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Select a Flow
-run_flow_confirm: Are you sure you want to execute this flow?
+run_flow_confirm: Are you sure you want to execute this Flow?
 run_flow_anyway: Run Flow Anyway
 run_flow_on_current_collection: Run Flow on Current Collection
 run_flow_on_current: Run Flow on Current Item
-run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
+run_flow_on_current_edited_confirm: This item may be updated by this Flow, are you sure you want to execute it?
 run_flow_on_selected: Select One or More Items First | Run Flow on 1 Selected Item | Run Flow on {n} Selected Items
 run_flow: Run Flow
 trigger_flow_success: Flow "{flow}" triggered successfully
@@ -1332,7 +1332,7 @@ directus_collection:
   directus_dashboards: Dashboards within the Insights module
   directus_fields: Additional field configuration and metadata
   directus_files: Metadata for all managed file assets
-  directus_flows: Automation flows
+  directus_flows: Automation Flows
   directus_folders: Provides virtual directories for files
   directus_migrations: What version of the database you're using
   directus_notifications: Notifications sent to users
@@ -1512,7 +1512,7 @@ fields:
       target="_blank">Learn more about MCP and how to connect.</a>'
     mcp_allow_deletes: Allow Deletes
     mcp_allow_deletes_note:
-      'Enable deletion of items, files, flows, fields, relations, and collections through MCP tools. <strong>WARNING:
+      'Enable deletion of items, files, Flows, fields, relations, and collections through MCP tools. <strong>WARNING:
       May cause data loss.</strong> Disabled by default for safety.'
     mcp_prompts_collection: AI Prompts Collection
     mcp_prompts_collection_note:
@@ -1913,14 +1913,15 @@ interfaces:
     accordion_mode: Accordion Mode
     max_one_section_open: Max 1 Section Open
   presentation-links:
-    presentation-links: Button Links
-    links: Links
-    description: Configurable link buttons for launching dynamic URLs
+    presentation-links: Buttons
+    description: Configurable link buttons for launching dynamic URLs or triggering Flows
     style: Style
     primary: Primary
     link: Links
     button: Buttons
     error: Cannot perform action
+    action_type: Action Type
+    select_manual_flow_note: Flow must be configured with a manual trigger for this collection
   select-multiple-checkbox:
     checkboxes: Checkboxes
     description: Choose between multiple options via checkboxes
@@ -2255,6 +2256,8 @@ interfaces:
   input-password:
     input-password: Input Password
     description: Password input with toggle to hide value
+  flow-select:
+    flow-select: Flow Select
 displays:
   translations:
     translations: Translations
@@ -2567,13 +2570,13 @@ a_flow_uuid: Select a Flow to trigger...
 any_string_or_json: Any string or JSON...
 item_payload_placeholder: This is the JSON used to update the item's field values...
 operation_variables_note:
-  You can access flow data with variables such as **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** and
+  You can access Flow data with variables such as **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** and
   **{'{'}{'{'}$accountability{'}'}{'}'}**, or reference previous operations using
   **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condition
-    description: Route a flow based on If / Else logic
+    description: Route a Flow based on If / Else logic
   exec:
     name: Run Script
     description: Execute arbitrary code to modify the payload
@@ -2670,7 +2673,7 @@ operations:
     description: Alter the Flow's JSON payload
   trigger:
     name: Trigger Flow
-    description: Pass this data to another flow
+    description: Pass this data to another Flow
     flows: Flows
     flow: Flow
     data: Data
