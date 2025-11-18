@@ -480,8 +480,7 @@ const TestComponentM2A = defineComponent({
 			const q: RelationQueryMultiple = {
 				limit: 15,
 				page: 1,
-				// Include fields for display template testing
-				fields: ['id', 'item:text.id', 'item:text.text', 'item:code.id', 'item:code.code'],
+				fields: ['id', 'item:text.id', 'item:text.text'],
 			};
 
 			return q;
