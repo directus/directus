@@ -1,6 +1,7 @@
 import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
+import { sleep } from '@utils/sleep';
 import { simpleParser, type ParsedMail } from 'mailparser';
 import { SMTPServer } from 'smtp-server';
 import request from 'supertest';
@@ -69,6 +70,10 @@ describe('Mail', async () => {
 
 			// Checks
 			expect(response.status).toEqual(200);
+
+			// wait for mail to arrive
+			await sleep(5000);
+
 			expect(messages).toHaveLength(2);
 			expect(messages.find((m) => m.text === 'Lorem Ipsum')).toBeDefined();
 		});
