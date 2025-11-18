@@ -1067,9 +1067,7 @@ interfaces:
   group-accordion:
     start: เริ่มต้น
   presentation-links:
-    presentation-links: ปุ่มลิงก์
-    links: ลิงค์
-    description: ปุ่มลิงค์ที่สามารถตั้งค่าได้เพื่อเปิด URLs
+    presentation-links: ปุ่ม
     style: สไตล์
     primary: หลัก
     link: ลิงค์
