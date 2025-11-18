@@ -5,7 +5,7 @@ import { createWriteStream } from 'node:fs';
 import { mkdir, rm } from 'node:fs/promises';
 import { pipeline } from 'node:stream/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
-import { fsStat } from './utils.js';
+import { fsStat, getSyncPaths } from './utils.js';
 import { useBus } from '../../../bus/index.js';
 import { SyncFileTracker } from './tracker.js';
 import { useLock } from '../../../lock/index.js';
@@ -32,7 +32,7 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 
 	const machineId = await mid.machineId();
 	const machineKey = `extensions-sync/${machineId}`;
-	/* DEBUG DO NOT FORGET TO REMOVE!!!*/await lock.delete(machineKey);
+	/* DEBUG DO NOT FORGET TO REMOVE!!!*/ await lock.delete(machineKey);
 	const processId = await lock.increment(machineKey);
 
 	if (processId !== 1) {
@@ -51,27 +51,19 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 		await mkdir(getExtensionsPath(), { recursive: true });
 		await setSyncStatus(SyncStatus.SYNCING);
 
-		// determine paths to sync
-		const localExtensionsPath = options?.partialSync
-			? join(getExtensionsPath(), options.partialSync)
-			: getExtensionsPath();
+		const { localExtensionsPath, remoteExtensionsPath } = getSyncPaths(options?.partialSync);
 
-		const remoteExtensionsPath = options?.partialSync
-			? join(env['EXTENSIONS_PATH'] as string, options.partialSync)
-			: (env['EXTENSIONS_PATH'] as string);
-
-		// get the remote storage
 		const storage = await getStorage();
 		const disk = storage.location(env['EXTENSIONS_LOCATION'] as string);
 
 		// check if we are only removing the local directory
 		if (options?.partialSync) {
-            const remoteExists = await disk.exists(join(remoteExtensionsPath, 'package.json'));
-            
-            if (remoteExists === false) {
-                await rm(localExtensionsPath, { recursive: true, force: true });
-                return;
-            }
+			const remoteExists = await disk.exists(join(remoteExtensionsPath, 'package.json'));
+
+			if (remoteExists === false) {
+				await rm(localExtensionsPath, { recursive: true, force: true });
+				return;
+			}
 		}
 
 		// Make sure we don't overload the file handles
@@ -118,10 +110,9 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 		// cleanup dangling local files
 		await fileTracker.cleanup(localExtensionsPath);
 	} finally {
-        // release various locking mechanisms
+		// release various locking mechanisms
 		messenger.publish(machineKey, { ready: true });
 		await lock.delete(machineKey);
 		await setSyncStatus(SyncStatus.IDLE);
 	}
 }
-

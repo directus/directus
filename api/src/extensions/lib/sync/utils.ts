@@ -1,5 +1,7 @@
-import { sep } from 'node:path';
+import { join, relative, resolve, sep } from 'node:path';
 import { stat } from 'node:fs/promises';
+import { getExtensionsPath } from '../get-extensions-path.js';
+import { useEnv } from '@directus/env';
 
 /**
  * Returns the directory depth of the provided path
@@ -29,3 +31,21 @@ export async function fsStat(path: string) {
 	};
 }
 
+export function getSyncPaths(partialPath: string | undefined) {
+	const env = useEnv();
+	const localRootPath = getExtensionsPath();
+	const remoteRootPath = env['EXTENSIONS_PATH'] as string;
+
+	if (!partialPath) {
+		return {
+			localExtensionsPath: localRootPath,
+			remoteExtensionsPath: remoteRootPath,
+		};
+	}
+
+	const resolvedPartialPath = relative(sep, resolve(sep, partialPath));
+	return {
+		localExtensionsPath: join(localRootPath, resolvedPartialPath),
+		remoteExtensionsPath: join(remoteRootPath, resolvedPartialPath),
+	};
+}
