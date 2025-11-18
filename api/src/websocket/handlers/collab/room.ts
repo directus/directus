@@ -54,7 +54,7 @@ export class Room {
 	changes: Item;
 	clients: WebSocketClient[] = [];
 	clientColors: Record<ClientID, CollabColor> = {};
-	focuses: Record<string, ClientID> = {};
+	focuses: Record<ClientID, string> = {};
 
 	constructor(uid: string, collection: string, item: string, version: string | null, initialChanges?: Item) {
 		this.uid = uid;
@@ -114,7 +114,7 @@ export class Room {
 				accountability: client.accountability!,
 			}),
 			focuses: Object.fromEntries(
-				Object.entries(this.focuses).filter(([field, _]) =>
+				Object.entries(this.focuses).filter(([_, field]) =>
 					hasFieldPermision(client.accountability!, this.collection, field),
 				),
 			),
@@ -192,10 +192,9 @@ export class Room {
 
 	async focus(client: WebSocketClient, field: string | null) {
 		if (!field) {
-			this.focuses = Object.fromEntries(Object.entries(this.focuses).filter(([_, user]) => user !== client.uid));
+			delete this.focuses[client.uid];
 		} else {
-			if (field in (await getSchema()).collections[this.collection]!.fields === false) return;
-			this.focuses[field] = client.uid;
+			this.focuses[client.uid] = field;
 		}
 
 		for (const c of this.clients) {

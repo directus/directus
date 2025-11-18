@@ -59,7 +59,7 @@ export type ClientBaseCollabMessage =
 			version: string | null;
 			changes: Item;
 			connection: ClientID;
-			focuses: Record<string, ClientID>;
+			focuses: Record<ClientID, string>;
 			users: { user: UserID; connection: ClientID; color: CollabColor }[];
 	  }
 	| {
