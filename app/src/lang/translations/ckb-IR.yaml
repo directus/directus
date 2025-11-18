@@ -926,10 +926,8 @@ label: پێناس
 flows: لێشاوەکان
 flow: لێشاو
 select_a_flow: لێشاوێک دیاری بکە
-run_flow_confirm: ئایا دڵنیای دەتەوێت ئەم لێشاوە جێبەجێ بکەیت؟
 run_flow_on_current_collection: جێبەجێکردنی لێشاو لەسەر کۆمەڵەی ئێستا
 run_flow_on_current: جێبەجێکردنی لێشاو لەسەر مادەی ئێستا
-run_flow_on_current_edited_confirm: لەوانەیە ئەم مادەیە بەهۆی ئەم لێشاوەوە نوێ بکرێتەوە، ئایا دڵنیای کە دەتەوێت جێبەجێی بکەیت؟
 run_flow_on_selected: سەرەتا یەک یان چەند مادەیەک دیاری بکە | جێبەجێکردنی لێشاو لەسەر ١ مادەی دیاریکراو | جێبەجێکردنی لێشاو لەسەر {n} مادەی دیاریکراو
 run_flow: جێبەجێکردنی لێشاو
 trigger_flow_success: لێشاوی "{flow}" بە سەرکەوتووی جێبەجێکرا
@@ -1227,7 +1225,6 @@ directus_collection:
   directus_dashboards: داشبۆردەکان لە یەکەی تێڕوانینەکان
   directus_fields: ڕێکخستن و مێتادەیتای زیادەی خانە
   directus_files: مێتادەیتا بۆ هەموو پەڕگە بەڕێوەبراوەکان
-  directus_flows: خۆکارکردنی لێشاوەکان
   directus_folders: دابینکردنی بەڕێوەبردنی خەیاڵی بۆ پەڕگەکان
   directus_migrations: کام وەشانی بنکەدراو بەکاردەهێنیت
   directus_notifications: ئاگادارکەرەوەکان نێردران بۆ بەکارهێنەران
@@ -1742,9 +1739,7 @@ interfaces:
     accordion_mode: دۆخی ئەکۆردیۆن
     max_one_section_open: ئەوپەڕی یەک بەشی کراوە
   presentation-links:
-    presentation-links: دوگمە بەستەرەکان
-    links: بەستەرەکان
-    description: ڕێکخستنی دوگمەی بەستەرەکان بۆ کردنەوەی بەستەرە گۆڕاوەکان
+    presentation-links: دوگمەکان
     style: شێواز
     primary: سەرەکی
     link: بەستەرەکان
@@ -2373,11 +2368,9 @@ triggers:
 a_flow_uuid: لێشاوێک دیاری بکە بۆ وروژاندن...
 any_string_or_json: هەر دەقێک یان JSONێک...
 item_payload_placeholder: ئەمە ئەو JSONەیە کە بەکاردێت بۆ نوێکردنەوەی بەهاکانی خانەی مادەکە...
-operation_variables_note: دەتوانیت دەستت بە داتای لێشاو بگات بە بەکارهێنانی گۆڕاوەکانی وەک **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** و **{'{'}{'{'}$accountability{'}'}{'}'}**, یان ئاماژە بە کردارە پێشوەکان بکەیت بە بەکارهێنانی **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: مەرج
-    description: ڕێڕەوی لێشاوێک بەپێی ئەگەر / ئەگینا
   exec:
     name: جێبەجێکردنی سکریپت
     description: جێبەجێکردنی کۆدی دڵخواز بۆ گۆڕینی سودبارەکە
@@ -2468,7 +2461,6 @@ operations:
     description: گۆڕینی سودباری JSONی لێشاو
   trigger:
     name: وروژاندنی لێشاو
-    description: گواستنەوەی ئەم داتایە بۆ لێشاوێکی تر
     flows: لێشاوەکان
     flow: لێشاو
     data: داتا
