@@ -56,7 +56,8 @@ useShortcut('meta+j', () => {
 	padding-inline: 18px 9px;
 	transition: color var(--fast) var(--transition);
 
-	&:hover:not([data-state='open']){
+	&:hover:not([data-state='open']) .collapsible-trigger-icon,
+	&:hover:not([data-state='open']) .collapsible-trigger-title {
 		color: var(--theme--primary);
 		animation: colors 2s ease infinite alternate;
 	}
