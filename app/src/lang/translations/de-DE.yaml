@@ -932,10 +932,8 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Flow auswählen
-run_flow_confirm: Sind Sie sicher, dass Sie diesen Flow ausführen wollen?
 run_flow_on_current_collection: Flow in der aktuellen Sammlung ausführen
 run_flow_on_current: Flow beim aktuellen Element ausführen
-run_flow_on_current_edited_confirm: Dieses Element kann durch diesen Flow aktualisiert werden, bist du dir sicher, dass du es ausführen möchtest?
 run_flow_on_selected: Zuerst eine oder mehrere Elemente auswählen | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Elemente ausführen
 run_flow: Flow ausführen
 trigger_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
@@ -1229,7 +1227,6 @@ directus_collection:
   directus_dashboards: Dashboards innerhalb des Moduls "Einblicke"
   directus_fields: Weitere Felder und Metadaten
   directus_files: Metadaten für alle verwalteten Dateien
-  directus_flows: Automation Flows
   directus_folders: Stellt virtuelle Verzeichnisse für Dateien bereit
   directus_migrations: Welche Version der Datenbank verwenden Sie
   directus_notifications: Benachrichtigungen an Benutzer gesendet
@@ -1743,9 +1740,7 @@ interfaces:
     accordion_mode: Akkordeon-Modus
     max_one_section_open: Max. einen Abschnitt öffnen
   presentation-links:
-    presentation-links: Button-Links
-    links: Links
-    description: Konfigurierbare Link-Buttons für dynamische URLs
+    presentation-links: Buttons
     style: Stil
     primary: Primär
     link: Links
@@ -2373,11 +2368,9 @@ triggers:
 a_flow_uuid: Auszulösenden Flow auswählen...
 any_string_or_json: Ein String oder JSON...
 item_payload_placeholder: Dies ist der JSON-Wert um die Feldwerte des Elements zu aktualisieren...
-operation_variables_note: Du kannst auf Flow-Daten mit Variablen wie **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** und **{'{'}{'{'}$accountability{'}'}{'}'}**, oder vorherige Operationen mit **{'{'}{'{'}operation_key{'}'}{'}'}**.' referenzieren
 operations:
   condition:
     name: Kondition
-    description: Leiten eines Flows basierend auf If / Else Logik
   exec:
     name: Skript ausführen
     description: Führe beliebigen Code aus, um die Nutzlast zu ändern
@@ -2468,7 +2461,6 @@ operations:
     description: JSON Payload des Flows bearbeiten
   trigger:
     name: Flow auslösen
-    description: Daten an anderen Flow übergeben
     flows: Flows
     flow: Flow
     data: Daten
