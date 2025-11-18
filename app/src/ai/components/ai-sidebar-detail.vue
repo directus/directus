@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from 'vue';
-import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
-import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
-import { useShortcut } from '@/composables/use-shortcut';
-import { useAiStore } from '../stores/use-ai';
-import { translateShortcut } from '@/utils/translate-shortcut';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { useShortcut } from '@/composables/use-shortcut';
+import { translateShortcut } from '@/utils/translate-shortcut';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
+import { useElementHover } from '@vueuse/core';
+import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
+import { useTemplateRef } from 'vue';
+import { useAiStore } from '../stores/use-ai';
 import AiConversation from './ai-conversation.vue';
 import AiHeader from './ai-header.vue';
 import AiMagicButton from './ai-magic-button.vue';
-import { useElementHover } from '@vueuse/core';
 
 const sidebarStore = useSidebarStore();
 const aiStore = useAiStore();
@@ -124,18 +124,6 @@ useShortcut('meta+j', () => {
 	}
 	to {
 		block-size: 0;
-	}
-}
-
-@keyframes colors {
-	0% {
-		filter: hue-rotate(0);
-	}
-	50% {
-		filter: hue-rotate(90deg);
-	}
-	100% {
-		filter: hue-rotate(180deg);
 	}
 }
 </style>
