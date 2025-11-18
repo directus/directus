@@ -992,11 +992,9 @@ label: 标签
 flows: 流程
 flow: 流程
 select_a_flow: 选择一个流程
-run_flow_confirm: 您确定要执行此流程吗？
 run_flow_anyway: 仍然运行流程
 run_flow_on_current_collection: 在当前集合上运行流程
 run_flow_on_current: 在当前项目上运行流程
-run_flow_on_current_edited_confirm: 此流程可能会更新此项，您确定要执行它吗？
 run_flow_on_selected: 先选择一个或多个项目 | 在 1 个选定项目 上运行 | 在 {n} 个选定项目 上运行
 run_flow: 运行流程
 trigger_flow_success: 流程 "{flow}" 已成功触发
@@ -1302,7 +1300,6 @@ directus_collection:
   directus_dashboards: Insights模块中的仪表板
   directus_fields: 其他字段配置和元数据
   directus_files: 文件资源元数据
-  directus_flows: 自动化流程
   directus_folders: 虚拟文件目录
   directus_migrations: 您的数据库版本是
   directus_notifications: 发送给用户的通知
@@ -1857,9 +1854,7 @@ interfaces:
     accordion_mode: 折叠模式
     max_one_section_open: 最多展开 1 项
   presentation-links:
-    presentation-links: 按钮链接
-    links: 链接
-    description: 启动动态URL的可配置链接按钮
+    presentation-links: 按钮
     style: 样式
     primary: 主要的
     link: 链接
@@ -2495,11 +2490,9 @@ triggers:
 a_flow_uuid: 选择要触发的流...
 any_string_or_json: 任意字符串或JSON对象...
 item_payload_placeholder: 这是用于更新条目字段值的 JSON对象...
-operation_variables_note: 您可以通过变量引用访问流程数据，例如**{'{'}{'{'}$last{'}'}{'}'}**， **{'{'}{'{'}$trigger{'}'}{'}'}** 和 **{'{'}{'{'}$accountability{'}'}{'}'}**, 或使用 **{'{'}{'{'} operation_key{'}'}{'}'}**引用之前的操作。
 operations:
   condition:
     name: 条件
-    description: 基于 if /Else 逻辑路由的流程
   exec:
     name: 运行脚本
     description: 执行任意代码来修改有效负载
@@ -2596,7 +2589,6 @@ operations:
     description: 修改流程的JSON格式负载
   trigger:
     name: 触发流程
-    description: 将此数据传递到另一个流程
     flows: 流程
     flow: 流程
     data: 数据
