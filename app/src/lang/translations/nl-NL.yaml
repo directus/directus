@@ -942,10 +942,8 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Selecteer een Flow
-run_flow_confirm: Ben je zeker dat u deze flow wilt uitvoeren?
 run_flow_on_current_collection: Voer flow uit op Huidige Collectie
 run_flow_on_current: Flow Uitvoeren op Huidig Item
-run_flow_on_current_edited_confirm: Dit item kan aangepast worden door deze Flow, weet je zeker dat je het wilt uitvoeren?
 run_flow_on_selected: Selecteer Eerst Één of Meer Items | Flow Uitvoeren op 1 Geselecteerd Item | Flow Uitvoeren op {n} Geselecteerde Items
 run_flow: Flow Uitvoeren
 trigger_flow_success: Flow "{flow}" succesvol getriggerd
@@ -1245,7 +1243,6 @@ directus_collection:
   directus_dashboards: Dashboards binnen de Inzichten module
   directus_fields: Aanvullende collectie configuratie en metadata
   directus_files: Metadata voor alle beheerde bestanden
-  directus_flows: Automatisering Flows
   directus_folders: Geeft virtuele map voor bestanden
   directus_migrations: Welke versie van de database je gebruikt
   directus_notifications: Notificaties verzonden naar gebruikers
@@ -1764,9 +1761,7 @@ interfaces:
     accordion_mode: Accordeonmodus
     max_one_section_open: Max 1 sectie open
   presentation-links:
-    presentation-links: Knoplinks
-    links: Links
-    description: Configureerbare link knoppen voor het openen van dynamische URLs
+    presentation-links: Knoppen
     style: Stijl
     primary: Primair
     link: Links
@@ -2397,11 +2392,9 @@ triggers:
 a_flow_uuid: Selecteer een Flow om te triggeren...
 any_string_or_json: Elke string of JSON...
 item_payload_placeholder: Dit is de JSON die wordt gebruikt om de veldwaarden van het item bij te werken...
-operation_variables_note: Je kunt flow-data benaderen met variabelen zoals **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** en **{'{'}{'{'}$accountability{'}'}{'}'}**, of verwijs naar vorige bewerkingen met **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Conditie
-    description: Route een flow gebaseerd op If / Else logica
   exec:
     name: Script uitvoeren
     description: Voer willekeurige code uit om de payload te wijzigen
@@ -2498,7 +2491,6 @@ operations:
     description: Wijzig de JSON payload van de Flow
   trigger:
     name: Activeer Flow
-    description: Geef deze data door aan een andere flow
     flows: Flows
     flow: Flow
     data: Data
