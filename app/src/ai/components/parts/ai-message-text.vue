@@ -1,37 +1,32 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { useResizeObserver } from '@vueuse/core';
+import { ref, useTemplateRef } from 'vue';
 
-const props = defineProps<{
+defineProps<{
 	text: string;
 	state: 'streaming' | 'done';
 	role?: 'user' | 'assistant' | 'system';
 }>();
 
-const contentRef = ref<HTMLElement | null>(null);
-const shouldCollapse = ref(false);
 const isOpen = ref(false);
+const shouldShowCollapse = ref(false);
+const contentRef = useTemplateRef<HTMLElement>('message-content');
 
-const MAX_HEIGHT = 250;
+useResizeObserver(contentRef, (entries) => {
+	const entry = entries[0];
 
-onMounted(() => {
-	if (props.role === 'user' && contentRef.value) {
-		const height = contentRef.value.scrollHeight;
-		shouldCollapse.value = height > MAX_HEIGHT;
+	if (entry) {
+		shouldShowCollapse.value = entry.target.scrollHeight > 250;
 	}
 });
-
-function toggleCollapse() {
-	isOpen.value = !isOpen.value;
-}
 </script>
 
 <template>
-	<div class="message-text" :class="{ 'has-collapse': shouldCollapse, 'is-open': isOpen }" :data-role="role">
+	<div class="message-text" :class="{ 'is-open': isOpen, 'has-overflow': shouldShowCollapse }" :data-role="role">
 		<div class="content-wrapper">
-			<div ref="contentRef" v-md="text || ''" class="message-content"></div>
-			<div v-if="shouldCollapse && !isOpen" class="fade-overlay"></div>
+			<div ref="message-content" v-md="text || ''" class="message-content" />
 		</div>
-		<button v-if="shouldCollapse" class="collapse-trigger" @click="toggleCollapse">
+		<button v-if="role === 'user' && shouldShowCollapse" class="collapse-trigger" @click="isOpen = !isOpen">
 			{{ isOpen ? $t('ai.message.show_less') : $t('ai.message.show_more') }}
 		</button>
 	</div>
@@ -67,27 +62,32 @@ function toggleCollapse() {
 		--ai-message-code-background: var(--theme--background-normal);
 	}
 
-	&.has-collapse .message-content {
+	&[data-role='user'].has-overflow:not(.is-open) .message-content {
 		padding-block-end: 0;
 	}
 
-	&.has-collapse.is-open .message-content {
+	&[data-role='user'].has-overflow.is-open .message-content {
 		padding-block-end: 0.8rem;
 	}
 }
 
 .content-wrapper {
 	position: relative;
-	transition: max-block-size var(--fast) var(--transition);
 }
 
-.has-collapse:not(.is-open) .content-wrapper {
+.message-text[data-role='user'].has-overflow:not(.is-open) .content-wrapper {
 	max-block-size: 250px;
 	overflow: hidden;
-}
 
-.is-open .content-wrapper {
-	max-block-size: 9999px;
+	&::after {
+		content: '';
+		position: absolute;
+		inset-block-end: 0;
+		inset-inline: 0;
+		block-size: 80px;
+		background: linear-gradient(to bottom, transparent, var(--ai-message-background));
+		pointer-events: none;
+	}
 }
 
 /* Headings */
@@ -360,15 +360,6 @@ function toggleCollapse() {
 }
 
 /* Collapsible */
-.fade-overlay {
-	position: absolute;
-	inset-block-end: 0;
-	inset-inline: 0;
-	block-size: 80px;
-	background: linear-gradient(to bottom, transparent, var(--ai-message-background));
-	pointer-events: none;
-}
-
 .collapse-trigger {
 	position: relative;
 	display: block;
