@@ -883,10 +883,8 @@ label: Etikett
 flows: Flöden
 flow: Flöde
 select_a_flow: Välj ett flöde
-run_flow_confirm: Är du säker på att du vill köra detta flöde?
 run_flow_on_current_collection: Kör flöde på nuvarande samling
 run_flow_on_current: Kör flöde på aktuellt objekt
-run_flow_on_current_edited_confirm: Detta objekt kan uppdateras av detta flöde, är du säker på att du vill köra det?
 field_name_placeholder: Ange fältnamn...
 field_key_placeholder: Ange fältnyckel...
 trigger: Utlösare
@@ -1131,7 +1129,6 @@ directus_collection:
   directus_activity: Ansvarsloggar för alla händelser
   directus_comments: Kommentarer för objekt
   directus_dashboards: Kontrollpaneler i insights modulen
-  directus_flows: Automationsflöden
   directus_migrations: Vilken version av databasen du använder
   directus_notifications: Meddelande skickat till användare
   directus_panels: Individuella paneler inom Insights kontrollpaneler
@@ -1583,9 +1580,7 @@ interfaces:
     accordion_mode: Läge för dragspel
     max_one_section_open: Max 1 sektion öppen
   presentation-links:
-    presentation-links: Knappens länkar
-    links: Länkar
-    description: Konfigurerbara knappar med länk för att öppna dynamiska URL:er
+    presentation-links: Knappar
     style: Stil
     primary: Primär
     link: Länkar
