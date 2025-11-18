@@ -57,14 +57,19 @@ export class NotificationsService extends ItemsService {
 				});
 
 				mailService
-					.send({
-						template: {
-							name: 'base',
-							data: app_access ? { url: manageUserAccountUrl, html } : { html },
+					.send(
+						{
+							template: {
+								name: 'base',
+								data: app_access ? { url: manageUserAccountUrl, html } : { html },
+							},
+							to: user['email'],
+							subject: data.subject,
 						},
-						to: user['email'],
-						subject: data.subject,
-					})
+						{
+							defaultTemplateData: await mailService.getDefaultTemplateData(),
+						},
+					)
 					.catch((error) => {
 						logger.error(error, `Could not send notification via mail`);
 					});
