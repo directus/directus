@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import VIcon from '@/components/v-icon/v-icon.vue';
-import { useShortcut } from '@/composables/use-shortcut';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { ref } from 'vue';
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
-import { ref } from 'vue';
 import { useAiStore } from '../stores/use-ai';
 import AiConversation from './ai-conversation.vue';
 import AiHeader from './ai-header.vue';
