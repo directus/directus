@@ -993,11 +993,9 @@ label: عنوان
 flows: جریان‌ها
 flow: جریان
 select_a_flow: انتخاب یک جریان
-run_flow_confirm: آیا از اجرای این جریان اطمینان دارید؟
 run_flow_anyway: اجرای جریان در هر صورت
 run_flow_on_current_collection: اجرای جریان در مجموعه فعلی
 run_flow_on_current: اجرای جریان در مجموعه فعلی
-run_flow_on_current_edited_confirm: این مورد ممکن است توسط این جریان به‌روزرسانی شود، آیا از اجرای آن اطمینان دارید؟
 run_flow_on_selected: ابتدا یک یا چند مورد را انتخاب کنید | اجرای جریان روی 1 مورد انتخاب شده | اجرای {n} مورد روی جریان
 run_flow: اجرای جریان
 trigger_flow_success: جریان «{flow}» با موفقیت اجرا شد
@@ -1299,7 +1297,6 @@ directus_collection:
   directus_dashboards: داشبوردهای درون ماژول Insights
   directus_fields: پیکربندی فیلد اضافی و ابرداده
   directus_files: فراداده برای همه Assets های فایل مدیریت شده
-  directus_flows: خودکارسازی جریان‌ها
   directus_folders: دایرکتوری های مجازی برای فایل ها فراهم می کند
   directus_migrations: از چه نسخه ای از پایگاه داده استفاده می کنید
   directus_notifications: اعلانهای ارسالی به کاربر
@@ -1854,9 +1851,7 @@ interfaces:
     accordion_mode: حالت آکاردئون
     max_one_section_open: حداکثر 1 بخش باز باشد
   presentation-links:
-    presentation-links: دکمه لینک ها
-    links: لینک‌ ها
-    description: دکمه های لینک قابل تنظیم برای راه اندازی URL های پویا
+    presentation-links: دکمه‌‌ها
     style: استایل
     primary: اصلی
     link: لینک‌‌ها
@@ -2494,11 +2489,9 @@ triggers:
 a_flow_uuid: یک جریان را جهت راه‌اندازی انتخاب کنید...
 any_string_or_json: Json یا هر رشته‌ای...
 item_payload_placeholder: این JSON برای به‌روزرسانی مقادیر فیلد به‌کارگیری می‌شود...
-operation_variables_note: شما می‌توانید با متغیرهایی نظیر **{'{'}{'{'}$last{'}'}{'}'}**، **{'{'}{'{'}$trigger{'}'}{'}'}** و **{'{'}{'{'}$accountability{'}'}{'}'}** به داده‌های جریان دسترسی پیدا کنید؛ یا با **{'{'}{'{'}operation_key{'}'}{'}'}** به عملیات‌های قبلی ارجاع بدهید.
 operations:
   condition:
     name: شرط
-    description: مسیریابی یک جریان بر اساس منطق If / Else
   exec:
     name: اجرای اسکریپت
     description: خواندن داده از پایگاه داده
@@ -2591,7 +2584,6 @@ operations:
     description: تغییر حامل JSON جریان
   trigger:
     name: راه‌اندازی جریان
-    description: انتقال این داده به یک جریان دیگر
     flows: جریان‌ها
     flow: جریان
     data: داده Data
