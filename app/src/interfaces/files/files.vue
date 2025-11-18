@@ -21,6 +21,7 @@ const props = withDefaults(
 		collection: string;
 		field: string;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		version: ContentVersion | null;
 		template?: string | null;
 		enableCreate?: boolean;
@@ -31,6 +32,7 @@ const props = withDefaults(
 		limit?: number;
 	}>(),
 	{
+		nonEditable: false,
 		template: null,
 		enableCreate: true,
 		enableSelect: true,
@@ -327,7 +329,6 @@ const allowDrag = computed(
 					<v-list-item
 						:class="{ deleted: element.$type === 'deleted' }"
 						:dense="totalItemCount > 4"
-						:disabled="disabled"
 						block
 						clickable
 						@click="editItem(element)"
@@ -378,19 +379,26 @@ const allowDrag = computed(
 			</draggable>
 		</template>
 
-		<div class="actions">
-			<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="showUpload = true">
-				{{ $t('upload_file') }}
-			</v-button>
-			<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
-				{{ $t('add_existing') }}
-			</v-button>
+		<div v-if="!nonEditable || pageCount > 1" class="actions">
+			<template v-if="!nonEditable">
+				<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="showUpload = true">
+					{{ $t('upload_file') }}
+				</v-button>
+
+				<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
+					{{ $t('add_existing') }}
+				</v-button>
+			</template>
+
+			<div class="spacer" />
+
 			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
 		</div>
 
 		<drawer-item
 			v-model:active="editModalActive"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
