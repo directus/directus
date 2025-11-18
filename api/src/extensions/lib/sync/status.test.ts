@@ -3,7 +3,7 @@ import { exists } from 'fs-extra';
 import { writeFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { getExtensionsPath } from '../get-extensions-path.js';
-import { getSyncStatus, setSyncStatus, SyncStatus } from './status.js';
+import { getSyncStatus, setSyncStatus, isSynchronizing, SyncStatus } from './status.js';
 
 vi.mock('fs-extra');
 vi.mock('node:fs/promises');
@@ -27,7 +27,6 @@ describe('extensions sync status', () => {
 			vi.mocked(exists).mockResolvedValue(true);
 
 			const status = await getSyncStatus();
-
 			expect(status).toBe(SyncStatus.SYNCING);
 		});
 
@@ -36,7 +35,6 @@ describe('extensions sync status', () => {
 			vi.mocked(exists).mockResolvedValue(false);
 
 			const status = await getSyncStatus();
-
 			expect(status).toBe(SyncStatus.IDLE);
 		});
 	});
@@ -54,6 +52,24 @@ describe('extensions sync status', () => {
 
 			expect(rm).toHaveBeenCalledWith(statusFilePath);
 			expect(writeFile).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('isSynchronizing', () => {
+		test('should return true when status file exists', async () => {
+			// @ts-ignore
+			vi.mocked(exists).mockResolvedValue(true);
+
+			const result = await isSynchronizing();
+			expect(result).toBe(true);
+		});
+
+		test('should return false when status file does not exist', async () => {
+			// @ts-ignore
+			vi.mocked(exists).mockResolvedValue(false);
+
+			const result = await isSynchronizing();
+			expect(result).toBe(false);
 		});
 	});
 });
