@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -8,11 +8,15 @@ import { translateShortcut } from '@/utils/translate-shortcut';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import AiConversation from './ai-conversation.vue';
 import AiHeader from './ai-header.vue';
+import AiMagicButton from './ai-magic-button.vue';
+import { useElementHover } from '@vueuse/core';
 
 const sidebarStore = useSidebarStore();
 const aiStore = useAiStore();
 
-const aiSidebarDetailRef = ref<HTMLElement | undefined>(undefined);
+const aiSidebarCollapsibleTriggerContent = useTemplateRef('collapsible-trigger-content');
+
+const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 
 useShortcut('meta+j', () => {
 	aiStore.chatOpen = !aiStore.chatOpen;
@@ -21,15 +25,16 @@ useShortcut('meta+j', () => {
 
 <template>
 	<CollapsibleRoot
-		ref="aiSidebarDetailRef"
 		v-model:open="aiStore.chatOpen"
 		v-tooltip.left="!aiStore.chatOpen && `${$t('ai_chat')} (${translateShortcut(['meta', 'j'])})`"
 		class="collapsible-root"
 	>
 		<CollapsibleTrigger class="collapsible-trigger">
-			<VIcon name="magic_button" class="collapsible-trigger-icon" />
-			<span v-show="!sidebarStore.collapsed" class="collapsible-trigger-title">{{ $t('ai_chat') }}</span>
-			<VIcon v-show="!sidebarStore.collapsed" name="chevron_left" class="collapsible-trigger-chevron" />
+			<div ref="collapsible-trigger-content" class="collapsible-trigger-content">
+				<AiMagicButton class="collapsible-trigger-icon" :animate="hovering" />
+				<span v-show="!sidebarStore.collapsed" class="collapsible-trigger-title">{{ $t('ai_chat') }}</span>
+				<VIcon v-show="!sidebarStore.collapsed" name="chevron_left" class="collapsible-trigger-chevron" />
+			</div>
 		</CollapsibleTrigger>
 		<CollapsibleContent class="collapsible-content">
 			<div class="ai-sidebar-content">
@@ -49,18 +54,17 @@ useShortcut('meta+j', () => {
 .collapsible-trigger {
 	block-size: 60px;
 	inline-size: 100%;
+}
+
+.collapsible-trigger-content {
+	block-size: 100%;
+	inline-size: 100%;
 	background-color: var(--theme--sidebar--section--toggle--background);
 	color: var(--theme--sidebar--section--toggle--foreground);
 	display: flex;
 	align-items: center;
 	padding-inline: 18px 9px;
 	transition: color var(--fast) var(--transition);
-
-	&:hover:not([data-state='open']) .collapsible-trigger-icon,
-	&:hover:not([data-state='open']) .collapsible-trigger-title {
-		color: var(--theme--primary);
-		animation: colors 2s ease infinite alternate;
-	}
 }
 
 .collapsible-trigger-icon {
