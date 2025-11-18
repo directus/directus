@@ -735,7 +735,6 @@ bold: In đậm
 icon_on: Biểu tượng của trạng thái Bật
 icon_off: Biểu tượng của trạng thái Tắt
 label: Nhãn
-run_flow_confirm: Bạn có muốn thực thi luồng này không?
 run_flow_on_current_collection: Chạy luồng trên collection hiện tại
 run_flow: Chạy
 field_name_placeholder: Nhập tên trường...
