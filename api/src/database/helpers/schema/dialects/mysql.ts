@@ -62,7 +62,7 @@ export class SchemaHelperMySQL extends SchemaHelper {
 
 			MariaDB allows aliases to be used in the GROUP BY clause
 
-			> The GROUP BY expression can be a computed value, and can refer back to an identifer specified with AS.
+			> The GROUP BY expression can be a computed value, and can refer back to an identifier specified with AS.
 
 			https://mariadb.com/kb/en/group-by/#group-by-examples
 			 */
