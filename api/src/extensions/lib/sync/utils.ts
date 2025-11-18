@@ -31,6 +31,9 @@ export async function fsStat(path: string) {
 	};
 }
 
+/**
+ * Builds up the local and remote paths to use with syncing
+ */
 export function getSyncPaths(partialPath: string | undefined) {
 	const env = useEnv();
 	const localRootPath = getExtensionsPath();

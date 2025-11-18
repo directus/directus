@@ -31,7 +31,7 @@ import ivm from 'isolated-vm';
 import { clone, debounce, isPlainObject } from 'lodash-es';
 import { readFile, readdir } from 'node:fs/promises';
 import os from 'node:os';
-import { dirname, join } from 'node:path';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ReadStream } from 'node:fs';
 import path from 'path';
@@ -233,7 +233,8 @@ export class ExtensionManager {
 
 		await this.installationManager.install(versionId);
 
-		const syncFolder = join('.registry', versionId);
+		const resolvedFolder = relative(sep, resolve(sep, versionId));
+		const syncFolder = join('.registry', resolvedFolder);
 		const syncOptions = { partialSync: syncFolder };
 
 		await this.broadcastReloadNotification(syncOptions);
@@ -252,7 +253,8 @@ export class ExtensionManager {
 
 		await this.installationManager.uninstall(folder);
 
-		const syncFolder = join('.registry', folder);
+		const resolvedFolder = relative(sep, resolve(sep, folder));
+		const syncFolder = join('.registry', resolvedFolder);
 		const syncOptions = { partialSync: syncFolder };
 
 		await this.broadcastReloadNotification(syncOptions);
