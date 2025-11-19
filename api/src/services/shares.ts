@@ -41,12 +41,12 @@ export class SharesService extends ItemsService {
 				},
 			);
 
-			// ensure non-admin users cannot set a different role escalating their privilege when sharing
+			// ensure public users cannot set a different role escalating their privilege when sharing
 			if (
+				this.accountability.user === null &&
+				this.accountability.role === null &&
 				this.accountability.admin === false &&
-				'role' in data &&
-				data['role'] !== null &&
-				data['role'] !== this.accountability.role
+				'role' in data && data['role'] !== null
 			) {
 				throw new ForbiddenError({
 					reason: `You don't have permission to set "${data['role']}" as role for shares or it does not exist.`,
