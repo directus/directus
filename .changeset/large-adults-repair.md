@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed M2A display template not showing when adding items to new parent
+Fixed display template not appearing for relations inside translations on new items
