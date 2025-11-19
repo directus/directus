@@ -60,10 +60,10 @@ export function getSyncPaths(partialPath: string | undefined) {
  */
 export async function compareFileMetadata(localPath: string, remotePath: string, disk: Driver): Promise<boolean> {
 	const localStat = await fsStat(localPath).catch(() => {});
-    if (!localStat) return false;
+	if (!localStat) return false;
 
-    const remoteStat = await disk.stat(remotePath).catch(() => {});
-    if (!remoteStat) return false;
+	const remoteStat = await disk.stat(remotePath).catch(() => {});
+	if (!remoteStat) return false;
 
-    return remoteStat.modified <= localStat.modified && remoteStat.size === localStat.size;
+	return remoteStat.modified <= localStat.modified && remoteStat.size === localStat.size;
 }

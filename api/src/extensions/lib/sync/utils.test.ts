@@ -52,7 +52,7 @@ describe('extensions sync utils', () => {
 
 		beforeEach(() => {
 			vi.mocked(getExtensionsPath).mockReturnValue(mockLocalPath);
-			vi.mocked(useEnv).mockReturnValue({ EXTENSIONS_PATH: mockRemotePath});
+			vi.mocked(useEnv).mockReturnValue({ EXTENSIONS_PATH: mockRemotePath });
 		});
 
 		test('should return root paths when partialPath is undefined', () => {

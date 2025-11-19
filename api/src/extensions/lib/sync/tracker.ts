@@ -77,4 +77,3 @@ export class SyncFileTracker {
 		}
 	}
 }
-

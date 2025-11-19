@@ -25,7 +25,7 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 	const messenger = useBus();
 	const logger = useLogger();
 
-	if (options?.forceSync !== true && await isSynchronizing()) {
+	if (options?.forceSync !== true && (await isSynchronizing())) {
 		logger.debug('Extensions are already being synced to this directory from another process.');
 		return;
 	}
@@ -84,8 +84,8 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 
 			// No need to check metadata when force is enabled
 			if (options?.forceSync !== true && hasLocalFiles) {
-                const fileUnchanged = await compareFileMetadata(destinationPath, filepath, disk);
-                if (fileUnchanged) continue;
+				const fileUnchanged = await compareFileMetadata(destinationPath, filepath, disk);
+				if (fileUnchanged) continue;
 			}
 
 			// Ensure that the directory path exists
