@@ -109,6 +109,16 @@ export function useRelationMultiple(
 		{ immediate: true },
 	);
 
+	const { fetchedSelectItems, selected, isItemSelected, selectedOnPage } = useSelected();
+
+	const totalItemCount = computed(() => {
+		if (relation.value?.type === 'o2m') {
+			return existingItemCount.value + _value.value.create.length + selected.value.length;
+		}
+
+		return existingItemCount.value + _value.value.create.length;
+	});
+
 	const createdItems = computed(() => {
 		const info = relation.value;
 		if (info?.type === undefined) return [];
@@ -123,16 +133,6 @@ export function useRelationMultiple(
 
 		if (info.type === 'o2m') return items;
 		return items.filter((item) => item[info.reverseJunctionField.field] === undefined);
-	});
-
-	const { fetchedSelectItems, selected, isItemSelected, selectedOnPage } = useSelected();
-
-	const totalItemCount = computed(() => {
-		if (relation.value?.type === 'o2m') {
-			return existingItemCount.value + _value.value.create.length + selected.value.length;
-		}
-
-		return existingItemCount.value + _value.value.create.length;
 	});
 
 	const displayItems = computed(() => {
@@ -177,49 +177,44 @@ export function useRelationMultiple(
 			return updatedItem;
 		});
 
-		// Helper function to merge items with fetched display data
-		function mergeWithFetchedData(items: DisplayItem[]) {
-			return items.map((edit) => {
-				const fetchedItem = fetchedSelectItems.value.find((item) => {
-					switch (relation.value?.type) {
-						case 'o2m':
-							return edit[targetPKField.value] === item[targetPKField.value];
-						case 'm2m':
-							return (
-								edit[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field] ===
-								item[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field]
-							);
+		const fullSelectedOnPage = selectedOnPage.value.map((edit) => {
+			const fetchedItem = fetchedSelectItems.value.find((item) => {
+				switch (relation.value?.type) {
+					case 'o2m':
+						return edit[targetPKField.value] === item[targetPKField.value];
+					case 'm2m':
+						return (
+							edit[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field] ===
+							item[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field]
+						);
 
-						case 'm2a': {
-							const itemCollection = item[relation.value.collectionField.field];
-							const editCollection = edit[relation.value.collectionField.field];
-							const itemPkField = relation.value.relationPrimaryKeyFields[itemCollection]?.field;
-							const editPkField = relation.value.relationPrimaryKeyFields[editCollection]?.field;
+					case 'm2a': {
+						const itemCollection = item[relation.value.collectionField.field];
+						const editCollection = edit[relation.value.collectionField.field];
+						const itemPkField = relation.value.relationPrimaryKeyFields[itemCollection]?.field;
+						const editPkField = relation.value.relationPrimaryKeyFields[editCollection]?.field;
 
-							if (!itemPkField) throw new Error(`No primary key field found for collection ${itemCollection}`);
-							if (!editPkField) throw new Error(`No primary key field found for collection ${editCollection}`);
+						if (!itemPkField) throw new Error(`No primary key field found for collection ${itemCollection}`);
+						if (!editPkField) throw new Error(`No primary key field found for collection ${editCollection}`);
 
-							return (
-								itemCollection === editCollection &&
-								edit[relation.value.junctionField.field][editPkField] ===
-									item[relation.value.junctionField.field][itemPkField]
-							);
-						}
+						return (
+							itemCollection === editCollection &&
+							edit[relation.value.junctionField.field][editPkField] ===
+							item[relation.value.junctionField.field][itemPkField]
+						);
 					}
+				}
 
-					return;
-				});
-
-				if (!fetchedItem) return edit;
-				return merge({}, fetchedItem, edit);
+				return;
 			});
-		}
 
-		const fullSelectedOnPage = mergeWithFetchedData(selectedOnPage.value);
+			if (!fetchedItem) return edit;
+			return merge({}, fetchedItem, edit);
+		});
+
 		const newItems = getPage(existingItemCount.value + selected.value.length, createdItems.value);
-		const fullNewItems = mergeWithFetchedData(newItems);
 
-		items.push(...fullSelectedOnPage, ...fullNewItems);
+		items.push(...fullSelectedOnPage, ...newItems);
 
 		const sortField = (previewQuery.value.sort ?? toArray(relation.value.sortField))[0];
 
@@ -506,32 +501,8 @@ export function useRelationMultiple(
 
 		const selectedOnPage = computed(() => getPage(existingItemCount.value, selected.value));
 
-		// Combine selected and created items that need display data loaded
-		// For M2A/M2M, we need both items with reverseJunctionField set (selected)
-		// and items without it (created on new parent items)
-		const itemsNeedingDisplayData = computed(() => {
-			if (relation.value?.type === 'o2m') {
-				return selectedOnPage.value;
-			}
-
-			// For M2A/M2M, also include created items from current page
-			const createdOnPage = getPage(existingItemCount.value + selected.value.length, createdItems.value);
-			const allItems = [...selectedOnPage.value, ...createdOnPage];
-
-			// Filter out invalid items (missing collection or pkField)
-			if (relation.value?.type !== 'm2a') return allItems;
-
-			const m2aRelation = relation.value;
-
-			return allItems.filter((item) => {
-				const collection = item[m2aRelation.collectionField.field];
-				if (!collection) return false;
-				return !!m2aRelation.relationPrimaryKeyFields[collection]?.field;
-			});
-		});
-
 		watch(
-			itemsNeedingDisplayData,
+			selectedOnPage,
 			(newVal, oldVal) => {
 				if (
 					newVal.length !== oldVal?.length ||
@@ -543,7 +514,7 @@ export function useRelationMultiple(
 			{ immediate: true },
 		);
 
-		return { fetchedSelectItems, selected, isItemSelected, selectedOnPage, loadSelectedDisplay };
+		return { fetchedSelectItems, selected, isItemSelected, selectedOnPage };
 
 		function getRelatedIDs(item: DisplayItem): string | number | undefined {
 			switch (relation.value?.type) {
@@ -639,27 +610,14 @@ export function useRelationMultiple(
 		}
 
 		async function loadSelectedDisplayM2A(relation: RelationM2A) {
-			// Filter items that need data (don't already have all required fields)
-			const itemsToLoad = itemsNeedingDisplayData.value.filter((item) => {
-				const collection = item[relation.collectionField.field];
-
-				// Check if item already has all required fields
-				const itemData = item[relation.junctionField.field];
-
-				const fieldsNeeded = previewQuery.value.fields
-					.filter((f) => f.startsWith(`${relation.junctionField.field}:${collection}.`))
-					.map((f) => f.replace(`${relation.junctionField.field}:${collection}.`, ''));
-
-				return !fieldsNeeded.every((field) => itemData[field] !== undefined);
-			});
-
-			if (itemsToLoad.length === 0) {
+			if (selectedOnPage.value.length === 0) {
+				fetchedSelectItems.value = [];
 				return;
 			}
 
 			const collectionField = relation.collectionField.field;
 
-			const selectGrouped = itemsToLoad.reduce(
+			const selectGrouped = selectedOnPage.value.reduce(
 				(acc, item) => {
 					const collection = item[collectionField];
 					if (!(collection in acc)) acc[collection] = [];

@@ -182,7 +182,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			v-if="selectedLanguage"
 			:key="selectedLanguage.value"
 			:primary-key="
-				relationInfo?.junctionPrimaryKeyField.field ? itemInitial?.[relationInfo?.junctionPrimaryKeyField.field] : null
+				relationInfo?.junctionPrimaryKeyField.field ? (itemInitial?.[relationInfo?.junctionPrimaryKeyField.field] ?? '+') : null
 			"
 			:class="{ unselected: !item }"
 			:disabled="disabled || !saveAllowed || item?.$type === 'deleted'"
