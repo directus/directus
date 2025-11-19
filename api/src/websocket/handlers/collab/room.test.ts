@@ -1,11 +1,18 @@
-import { describe, expect, test, vi } from 'vitest';
-import { CollabRooms, Room } from './room.js';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+import { CollabRooms, getRoomHash, Room } from './room.js';
 import type { WebSocketClient } from '@directus/types';
 import { merge } from 'lodash-es';
+import { sanitizePayload } from './sanitize-payload.js';
+import { hasFieldPermision } from './field-permissions.js';
 
 vi.mock('../../../database/index.js');
 vi.mock('../../../utils/get-schema.js');
 vi.mock('./sanitize-payload.js');
+vi.mock('./field-permissions.js');
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
 
 function mockWebSocketClient(client: Partial<WebSocketClient>): WebSocketClient {
 	return merge(
@@ -107,6 +114,7 @@ describe('room', () => {
 	test('join room', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });
+		const clientC = mockWebSocketClient({ uid: 'hij' });
 		const room = new Room('room1', 'coll', '1', null);
 
 		await room.join(clientA);
@@ -129,6 +137,10 @@ describe('room', () => {
 
 		expect(room.clients.length).toBe(2);
 
+		expect(room.hasClient(clientA)).toBeTruthy();
+		expect(room.hasClient(clientB)).toBeTruthy();
+		expect(room.hasClient(clientC)).toBeFalsy();
+
 		expect(JSON.parse(String(vi.mocked(clientA.send).mock.lastCall?.[0]))).toEqual({
 			action: 'join',
 			connection: 'def',
@@ -150,5 +162,142 @@ describe('room', () => {
 		room.leave(clientA);
 
 		expect(room.clients.length).toBe(0);
+	});
+
+	test('update field', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const room = new Room('room1', 'coll', '1', null);
+
+		await room.join(clientA);
+		await room.join(clientB);
+
+		vi.mocked(sanitizePayload).mockImplementation(async (_, payload, ctx) => {
+			if (ctx.accountability === clientA.accountability) {
+				return payload;
+			}
+
+			return {};
+		});
+
+		await room.update('id', 5);
+
+		expect(JSON.parse(String(vi.mocked(clientA.send).mock.lastCall?.[0]))).toEqual({
+			action: 'update',
+			field: 'id',
+			changes: 5,
+			type: 'collab',
+			room: 'room1',
+		});
+
+		// Init, join and update message
+		expect(clientA.send).toHaveBeenCalledTimes(3);
+		// Only the init message should have been send
+		expect(clientB.send).toHaveBeenCalledOnce();
+	});
+
+	test('unset field', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const room = new Room('room1', 'coll', '1', null);
+
+		await room.join(clientA);
+		await room.join(clientB);
+
+		vi.mocked(hasFieldPermision).mockImplementation(async (accountability) => {
+			if (accountability === clientA.accountability) {
+				return true;
+			}
+
+			return false;
+		});
+
+		await room.unset('id');
+
+		expect(JSON.parse(String(vi.mocked(clientA.send).mock.lastCall?.[0]))).toEqual({
+			action: 'update',
+			field: 'id',
+			type: 'collab',
+			room: 'room1',
+		});
+
+		// Init, join and update message
+		expect(clientA.send).toHaveBeenCalledTimes(3);
+		// Only the init message should have been send
+		expect(clientB.send).toHaveBeenCalledOnce();
+	});
+
+	test('save', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const room = new Room('room1', 'coll', '1', null);
+
+		await room.join(clientA);
+		await room.join(clientB);
+
+		room.save(clientB);
+
+		expect(JSON.parse(String(vi.mocked(clientA.send).mock.lastCall?.[0]))).toEqual({
+			action: 'save',
+			type: 'collab',
+			room: 'room1',
+		});
+
+		// Init, join and save message
+		expect(clientA.send).toHaveBeenCalledTimes(3);
+		// Only the init message should have been send
+		expect(clientB.send).toHaveBeenCalledOnce();
+	});
+
+	test('focus', async () => {
+		const clientA = mockWebSocketClient({ uid: 'abc' });
+		const clientB = mockWebSocketClient({ uid: 'def' });
+		const room = new Room('room1', 'coll', '1', null);
+
+		await room.join(clientA);
+		await room.join(clientB);
+
+		vi.mocked(hasFieldPermision).mockImplementation(async (accountability) => {
+			if (accountability === clientA.accountability) {
+				return true;
+			}
+
+			return false;
+		});
+
+		await room.focus(clientA, 'id');
+
+		expect(JSON.parse(String(vi.mocked(clientA.send).mock.lastCall?.[0]))).toEqual({
+			action: 'focus',
+			field: 'id',
+			connection: 'abc',
+			type: 'collab',
+			room: 'room1',
+		});
+
+		// Init, join and focus message
+		expect(clientA.send).toHaveBeenCalledTimes(3);
+		// Only the init message should have been send
+		expect(clientB.send).toHaveBeenCalledOnce();
+	});
+});
+
+describe('getRoomHash', () => {
+	test('unique for just collection', () => {
+		expect(getRoomHash('abc', null, null)).toEqual(getRoomHash('abc', null, null));
+		expect(getRoomHash('abc', null, null)).not.toEqual(getRoomHash('def', null, null));
+	});
+
+	test('unique for collection and item', () => {
+		expect(getRoomHash('abc', '123', null)).toEqual(getRoomHash('abc', '123', null));
+		expect(getRoomHash('abc', '123', null)).not.toEqual(getRoomHash('def', '123', null));
+		expect(getRoomHash('abc', '123', null)).not.toEqual(getRoomHash('abc', '456', null));
+	});
+
+	test('unique for collection, item and version', () => {
+		expect(getRoomHash('abc', '123', 'v1')).toEqual(getRoomHash('abc', '123', 'v1'));
+		expect(getRoomHash('abc', '123', 'v1')).not.toEqual(getRoomHash('def', '123', 'v1'));
+		expect(getRoomHash('abc', '123', 'v1')).not.toEqual(getRoomHash('abc', '456', 'v1'));
+		expect(getRoomHash('abc', '123', 'v1')).not.toEqual(getRoomHash('abc', '123', 'v2'));
 	});
 });
