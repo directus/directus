@@ -200,7 +200,7 @@ export function useRelationMultiple(
 						return (
 							itemCollection === editCollection &&
 							edit[relation.value.junctionField.field][editPkField] ===
-							item[relation.value.junctionField.field][itemPkField]
+								item[relation.value.junctionField.field][itemPkField]
 						);
 					}
 				}
