@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
-
 withDefaults(
 	defineProps<{
 		color?: string;
@@ -19,7 +15,7 @@ withDefaults(
 <template>
 	<div class="presentation-notice">
 		<v-notice :icon="icon" :type="color">
-			<div v-md="text ?? t('interfaces.presentation-notice.no_text')" />
+			<div v-md="text ?? $t('interfaces.presentation-notice.no_text')" />
 		</v-notice>
 	</div>
 </template>

@@ -3,7 +3,6 @@ import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { ref, reactive, watch } from 'vue';
 import { useCollectionsStore } from '@/stores/collections';
-import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
 import { Collection } from '@/types/collections';
 
@@ -13,8 +12,6 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits(['update:modelValue']);
-
-const { t } = useI18n();
 
 const collectionsStore = useCollectionsStore();
 
@@ -82,8 +79,8 @@ async function save() {
 		</template>
 
 		<v-card>
-			<v-card-title v-if="!collection">{{ t('create_folder') }}</v-card-title>
-			<v-card-title v-else>{{ t('edit_folder') }}</v-card-title>
+			<v-card-title v-if="!collection">{{ $t('create_folder') }}</v-card-title>
+			<v-card-title v-else>{{ $t('edit_folder') }}</v-card-title>
 
 			<v-card-text>
 				<div class="fields">
@@ -93,21 +90,21 @@ async function save() {
 						class="full collection-key"
 						db-safe
 						autofocus
-						:placeholder="t('folder_key')"
+						:placeholder="$t('folder_key')"
 					/>
 					<interface-select-icon width="half" :value="values.icon" @input="values.icon = $event" />
 					<interface-select-color width="half" :value="values.color" @input="values.color = $event" />
-					<v-input v-model="values.note" class="full" :placeholder="t('note')" />
+					<v-input v-model="values.note" class="full" :placeholder="$t('note')" />
 					<interface-list
 						width="full"
 						class="full"
 						:value="values.translations"
-						:placeholder="t('no_translations')"
+						:placeholder="$t('no_translations')"
 						template="{{ translation }} ({{ language }})"
 						:fields="[
 							{
 								field: 'language',
-								name: t('language'),
+								name: $t('language'),
 								type: 'string',
 								schema: {
 									default_value: 'en-US',
@@ -119,7 +116,7 @@ async function save() {
 							},
 							{
 								field: 'translation',
-								name: t('field_options.directus_collections.collection_name'),
+								name: $t('field_options.directus_collections.collection_name'),
 								type: 'string',
 								meta: {
 									interface: 'input',
@@ -137,10 +134,10 @@ async function save() {
 
 			<v-card-actions>
 				<v-button secondary @click="cancel">
-					{{ t('cancel') }}
+					{{ $t('cancel') }}
 				</v-button>
 				<v-button :disabled="!values.collection" :loading="saving" @click="save">
-					{{ t('save') }}
+					{{ $t('save') }}
 				</v-button>
 			</v-card-actions>
 		</v-card>

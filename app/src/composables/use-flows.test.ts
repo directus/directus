@@ -2,7 +2,7 @@ import { describe, beforeEach, expect, test, vi, afterEach } from 'vitest';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { useFlows } from './use-flows';
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import { useFlowsStore } from '@/stores/flows';
 import api from '@/api';
 
@@ -64,7 +64,7 @@ afterEach(() => {
 const mockOnRefresh = vi.fn();
 
 const useFlowsOptions = {
-	collection: 'test_collection',
+	collection: ref('test_collection'),
 	primaryKey: 'item_1',
 	location: 'collection' as const,
 	hasEdits: ref(true),
@@ -161,6 +161,35 @@ describe('manualFlows', () => {
 		expect(manualFlows.value.length).toEqual(3);
 		expect(mockFlowsStore.getManualFlowsForCollection).toHaveBeenCalledWith('test_collection');
 	});
+
+	test('returns collection specific flows when changing collection', async () => {
+		const mockGetManualFlows = vi.fn();
+
+		mockGetManualFlows.mockReturnValue(mockFlows);
+
+		const mockFlowsStore = {
+			getManualFlowsForCollection: mockGetManualFlows,
+		};
+
+		vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
+
+		const testCollection = ref('test_collection');
+
+		const { manualFlows } = useFlows({ ...useFlowsOptions, collection: testCollection });
+
+		expect(manualFlows.value.length).toEqual(3);
+		expect(mockGetManualFlows).toHaveBeenLastCalledWith('test_collection');
+
+		mockGetManualFlows.mockReturnValue([]);
+
+		testCollection.value = 'test_collection_2';
+
+		await nextTick();
+
+		expect(manualFlows.value.length).toEqual(0);
+		expect(mockGetManualFlows).toHaveBeenLastCalledWith('test_collection_2');
+		expect(mockGetManualFlows).toHaveBeenCalledTimes(2);
+	});
 });
 
 describe('manualFlow.isFlowDisabled', () => {
@@ -249,15 +278,11 @@ describe('runManualFlow', () => {
 
 		vi.mocked(api.post).mockResolvedValue({});
 
-		const { manualFlows, runManualFlow } = useFlows(useFlowsOptions);
+		const { runManualFlow } = useFlows(useFlowsOptions);
 
 		await runManualFlow('non-existent-flow');
 
 		expect(api.post).not.toHaveBeenCalled();
-
-		manualFlows.value.forEach((manualFlow) => {
-			expect(manualFlow.isFlowRunning).toEqual(false);
-		});
 	});
 
 	test('returns early when flow is not in manualFlows (filtered out)', async () => {
@@ -269,15 +294,11 @@ describe('runManualFlow', () => {
 
 		vi.mocked(api.post).mockResolvedValue({});
 
-		const { manualFlows, runManualFlow } = useFlows(useFlowsOptions);
+		const { runManualFlow } = useFlows(useFlowsOptions);
 
 		await runManualFlow(mockFlows[1]!.id);
 
 		expect(api.post).not.toHaveBeenCalled();
-
-		manualFlows.value.forEach((manualFlow) => {
-			expect(manualFlow.isFlowRunning).toEqual(false);
-		});
 	});
 
 	test('successfully runs flow for collection with requireSelection false', async () => {

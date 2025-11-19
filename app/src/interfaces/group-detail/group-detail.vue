@@ -10,6 +10,7 @@ const props = withDefaults(
 	defineProps<{
 		field: Field;
 		fields: Field[];
+		nonEditable?: boolean;
 		primaryKey: number | string;
 		values: Record<string, unknown>;
 		initialValues: Record<string, unknown>;
@@ -130,7 +131,7 @@ function useComparisonIndicator() {
 				<v-divider :class="{ active, edited }" :inline-title="false" large>
 					<template v-if="headerIcon" #icon><v-icon :name="headerIcon" class="header-icon" /></template>
 					<template v-if="field.name">
-						<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
+						<span v-if="edited" v-tooltip="$t('edited')" class="edit-dot"></span>
 						<span class="title">{{ field.name }}</span>
 					</template>
 					<v-icon
@@ -154,6 +155,7 @@ function useComparisonIndicator() {
 			:validation-errors="validationErrors"
 			:loading="loading"
 			:batch-mode="batchMode"
+			:non-editable="nonEditable"
 			:disabled="disabled"
 			:badge="badge"
 			:direction="direction"
