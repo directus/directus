@@ -63,6 +63,7 @@ export type Settings = {
 	theme_light_overrides: Record<string, unknown> | null;
 	theme_dark_overrides: Record<string, unknown> | null;
 	project_id: string | null;
+	collab: boolean;
 } & OwnerInformation;
 
 export type OwnerInformation = {
