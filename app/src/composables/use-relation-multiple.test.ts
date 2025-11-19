@@ -472,14 +472,14 @@ Article           Many|Any: article_m2a                    ┌─Text
 │id       ├───┐   │id: junctionPKField             │    ┌──┼─┤id       │
 │content  │   └──►│article_id: reverseJunctionField│    │  │ │text     │
 └─────────┘       │item: junctionField             │◄───┤  │ └─────────┘
-							│sort: sortField                 │    │  │
-							│collection: collectionField     │◄───┼──┤
-							└────────────────────────────────┘    │  │
-																					│  └─Code
+				      │sort: sortField                 │    │  │
+				      │collection: collectionField     │◄───┼──┤
+				      └────────────────────────────────┘    │  │
+														              │  └─Code
 				AllowedCollection: [Text,Code]		        │    ┌─────────┐
 				relatedPKFields: {Text: id,Code: id}        └────┤id       │
-																							│code     │
-																							└─────────┘
+															                │code     │
+															                └─────────┘
 */
 
 describe('test m2a relation', () => {
