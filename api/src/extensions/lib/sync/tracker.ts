@@ -58,7 +58,7 @@ export class SyncFileTracker {
 			if (removeFile === '.status') continue;
 			let currentDir = dirname(removeFile);
 
-			while (currentDir !== localExtensionsPath) {
+			while (currentDir !== localExtensionsPath && currentDir !== '.') {
 				if (this.trackedDirs.has(currentDir)) break;
 				removeDirs.add(currentDir);
 				currentDir = dirname(currentDir);
