@@ -197,9 +197,9 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 </script>
 
 <template>
-	<private-view :title="t('public_label')">
+	<private-view :title="$t('public_label')">
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('settings_roles'), to: '/settings/roles' }]" />
+			<v-breadcrumb :items="[{ name: $t('settings_roles'), to: '/settings/roles' }]" />
 		</template>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
@@ -208,7 +208,7 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 		</template>
 
 		<template #actions>
-			<v-button rounded icon :tooltip="t('save')" :loading="saving" :disabled="!hasEdits" @click="saveAndQuit">
+			<v-button rounded icon :tooltip="$t('save')" :loading="saving" :disabled="!hasEdits" @click="saveAndQuit">
 				<v-icon name="check" />
 
 				<template #append-outer>
@@ -237,13 +237,13 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
+						{{ $t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

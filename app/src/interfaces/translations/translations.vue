@@ -29,6 +29,7 @@ const props = withDefaults(
 		value: (number | string | Record<string, any>)[] | Record<string, any> | null;
 		autofocus?: boolean;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		version: ContentVersion | null;
 	}>(),
 	{
@@ -37,6 +38,7 @@ const props = withDefaults(
 		value: () => [],
 		autofocus: false,
 		disabled: false,
+		nonEditable: false,
 		defaultLanguage: null,
 		defaultOpenSplitView: false,
 		userLanguage: false,
@@ -54,7 +56,7 @@ const value = computed({
 
 const { collection, field, primaryKey, version } = toRefs(props);
 const { relationInfo } = useRelationM2M(collection, field);
-const { t, locale } = useI18n();
+const { locale } = useI18n();
 
 const fieldsStore = useFieldsStore();
 
@@ -158,6 +160,7 @@ function updateValue(item: DisplayItem | undefined, lang: string | undefined) {
 const translationProps = computed(() => ({
 	languageOptions: languageOptions.value,
 	disabled: props.disabled,
+	nonEditable: props.nonEditable,
 	autofocus: props.autofocus,
 	relationInfo: relationInfo.value,
 	getItemWithLang,
@@ -365,7 +368,7 @@ function useNestedValidation() {
 			<template #split-view="{ active, toggle }">
 				<v-icon
 					v-if="splitViewAvailable && !splitViewEnabled"
-					v-tooltip="t('interfaces.translations.toggle_split_view')"
+					v-tooltip="$t('interfaces.translations.toggle_split_view')"
 					name="flip"
 					clickable
 					@click.stop="
@@ -385,7 +388,7 @@ function useNestedValidation() {
 		>
 			<template #split-view>
 				<v-icon
-					v-tooltip="t('interfaces.translations.toggle_split_view')"
+					v-tooltip="$t('interfaces.translations.toggle_split_view')"
 					name="flip"
 					clickable
 					@click="splitView = false"

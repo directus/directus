@@ -1813,9 +1813,7 @@ interfaces:
     accordion_mode: 아코디언 모드
     max_one_section_open: 최대 1개 섹션 열기
   presentation-links:
-    presentation-links: 버튼 링크
     links: 연결
-    description: 동적 URL 실행을 위한 구성 가능한 링크 버튼
     style: 스타일
     primary: 기본
     link: 연결

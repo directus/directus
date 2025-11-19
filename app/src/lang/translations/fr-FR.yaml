@@ -20,6 +20,13 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: À propos
+privacy_policy: Politique de confidentialité
+contact_our_team: Contactez notre équipe
+setup_welcome: Bienvenue sur Directus
+setup_license_notice: >
+  Directus est gratuit à l'usage pour les entités des moins de 5 millions de dollars de revenue annuel, de financement ou de budget opérationnel.
+setup_launch: Lancer Directus
+setup_project: Configurer un projet
 first_name: Prénom
 last_name: Nom
 identifier: Identifiant
@@ -1763,9 +1770,7 @@ interfaces:
     accordion_mode: Mode Accordion
     max_one_section_open: Max 1 section ouverte
   presentation-links:
-    presentation-links: Bouton avec lien
     links: Liens
-    description: Bouton avec lien paramétrable pour appeler une URL
     style: Style
     primary: Primaire
     link: Liens

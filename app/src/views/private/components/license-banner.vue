@@ -21,13 +21,17 @@ const isSaveDisabled = computed(
 		(form.value.project_usage === 'commercial' && !form.value.org_name),
 );
 
+const isSaving = ref(false);
+
 async function setOwner() {
 	errors.value = validate(form.value, fields);
 
 	if (errors.value.length > 0) return;
 
+	isSaving.value = true;
 	await settingsStore.setOwner(form.value);
 	await settingsStore.hydrate();
+	isSaving.value = false;
 }
 
 async function remindLater() {
@@ -47,22 +51,22 @@ const fields = useFormFields(false, form);
 			<div class="inner">
 				<v-card-title>
 					<span class="warning">
-						{{ t('bsl_banner.title') }}
+						{{ $t('bsl_banner.title') }}
 						<v-icon name="warning" filled />
 					</span>
 				</v-card-title>
 
 				<v-card-text>
-					<div class="sub">{{ t('bsl_banner.license') }}</div>
+					<div class="sub">{{ $t('bsl_banner.license') }}</div>
 					<setup-form v-model="form" :errors="errors" :register="false" utm-location="banner"></setup-form>
 				</v-card-text>
 
 				<v-card-actions>
 					<v-button secondary @click="remindLater">
-						{{ t('bsl_banner.remind_later') }}
+						{{ $t('bsl_banner.remind_later') }}
 					</v-button>
-					<v-button :disabled="isSaveDisabled" @click="setOwner">
-						{{ t('bsl_banner.set_owner') }}
+					<v-button :disabled="isSaveDisabled" :loading="isSaving" @click="setOwner">
+						{{ $t('bsl_banner.set_owner') }}
 					</v-button>
 				</v-card-actions>
 			</div>

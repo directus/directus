@@ -593,7 +593,7 @@ function discardAndLeave() {
 
 <template>
 	<settings-not-found v-if="!flow && !loading" />
-	<private-view v-else :title="flow?.name ?? t('loading')">
+	<private-view v-else :title="flow?.name ?? $t('loading')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact to="/settings/flows">
 				<v-icon name="arrow_back" />
@@ -601,12 +601,12 @@ function discardAndLeave() {
 		</template>
 
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('flows'), to: '/settings/flows' }]" />
+			<v-breadcrumb :items="[{ name: $t('flows'), to: '/settings/flows' }]" />
 		</template>
 
 		<template #title:append>
 			<display-color
-				v-tooltip="flow?.status === 'active' ? t('active') : t('inactive')"
+				v-tooltip="flow?.status === 'active' ? $t('active') : $t('inactive')"
 				class="status-dot"
 				:value="flow?.status === 'active' ? 'var(--theme--primary)' : 'var(--theme--foreground-subdued)'"
 			/>
@@ -615,7 +615,7 @@ function discardAndLeave() {
 		<template #actions>
 			<template v-if="editMode">
 				<v-button
-					v-tooltip.bottom="t('clear_changes')"
+					v-tooltip.bottom="$t('clear_changes')"
 					class="clear-changes"
 					rounded
 					icon
@@ -625,14 +625,14 @@ function discardAndLeave() {
 					<v-icon name="clear" />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('save')" rounded icon :loading="saving" @click="saveChanges">
+				<v-button v-tooltip.bottom="$t('save')" rounded icon :loading="saving" @click="saveChanges">
 					<v-icon name="check" />
 				</v-button>
 			</template>
 
 			<template v-else>
 				<v-button
-					v-tooltip.bottom="t('delete_flow')"
+					v-tooltip.bottom="$t('delete_flow')"
 					class="delete-flow"
 					rounded
 					icon
@@ -642,15 +642,15 @@ function discardAndLeave() {
 					<v-icon name="delete" />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('edit_flow')" rounded icon outlined @click="editMode = !editMode">
+				<v-button v-tooltip.bottom="$t('edit_flow')" rounded icon outlined @click="editMode = !editMode">
 					<v-icon name="edit" />
 				</v-button>
 			</template>
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_settings_flows_item')" class="page-description" />
+			<sidebar-detail icon="info" :title="$t('information')" close>
+				<div v-md="$t('page_help_settings_flows_item')" class="page-description" />
 			</sidebar-detail>
 
 			<logs-sidebar-detail v-if="flow" :flow="flow" />
@@ -711,33 +711,33 @@ function discardAndLeave() {
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="discardAndLeave">{{ t('discard_changes') }}</v-button>
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+					<v-button secondary @click="discardAndLeave">{{ $t('discard_changes') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
 		<v-dialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="cancelChanges">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('discard_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('discard_changes_copy') }}</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="cancelChanges">{{ t('discard_changes') }}</v-button>
-					<v-button @click="confirmCancel = false">{{ t('keep_editing') }}</v-button>
+					<v-button secondary @click="cancelChanges">{{ $t('discard_changes') }}</v-button>
+					<v-button @click="confirmCancel = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
 		<v-dialog :model-value="confirmDelete" @esc="confirmDelete = false" @apply="deleteFlow">
 			<v-card>
-				<v-card-title>{{ t('flow_delete_confirm', { flow: flow?.name }) }}</v-card-title>
+				<v-card-title>{{ $t('flow_delete_confirm', { flow: flow?.name }) }}</v-card-title>
 
 				<v-card-actions>
-					<v-button secondary @click="confirmDelete = false">{{ t('cancel') }}</v-button>
-					<v-button danger :loading="deleting" @click="deleteFlow">{{ t('delete_label') }}</v-button>
+					<v-button secondary @click="confirmDelete = false">{{ $t('cancel') }}</v-button>
+					<v-button danger :loading="deleting" @click="deleteFlow">{{ $t('delete_label') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -749,21 +749,21 @@ function discardAndLeave() {
 			@apply="copyPanel"
 		>
 			<v-card>
-				<v-card-title>{{ t('copy_to') }}</v-card-title>
+				<v-card-title>{{ $t('copy_to') }}</v-card-title>
 
 				<v-card-text>
 					<v-notice v-if="copyPanelChoices.length === 0">
-						{{ t('no_other_flows_copy') }}
+						{{ $t('no_other_flows_copy') }}
 					</v-notice>
 					<v-select v-else v-model="copyPanelTo" :items="copyPanelChoices" item-text="name" item-value="id" />
 				</v-card-text>
 
 				<v-card-actions>
 					<v-button secondary @click="copyPanelId = undefined">
-						{{ t('cancel') }}
+						{{ $t('cancel') }}
 					</v-button>
 					<v-button :loading="copyPanelLoading" :disabled="copyPanelChoices.length === 0" @click="copyPanel">
-						{{ t('copy') }}
+						{{ $t('copy') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>

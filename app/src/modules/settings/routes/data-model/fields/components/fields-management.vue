@@ -141,13 +141,13 @@ async function setNestedSort(updates?: Field[]) {
 		</draggable>
 
 		<v-button full-width :to="`/settings/data-model/${collection}/+`">
-			{{ t('create_field') }}
+			{{ $t('create_field') }}
 		</v-button>
 
 		<v-menu show-arrow>
 			<template #activator="{ toggle, active }">
 				<button class="add-field-advanced" :dashed="!active" :class="{ active }" @click="toggle">
-					{{ t('create_in_advanced_field_creation_mode') }}
+					{{ $t('create_in_advanced_field_creation_mode') }}
 				</button>
 			</template>
 			<v-list>

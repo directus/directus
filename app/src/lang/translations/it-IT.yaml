@@ -1747,9 +1747,7 @@ interfaces:
     accordion_mode: Modalità dell'accordion
     max_one_section_open: Massimo una sezione aperta
   presentation-links:
-    presentation-links: Pulsanti di collegamento
     links: Collegamenti
-    description: Pulsanti configurabili per avviare URL dinamici
     style: Stile
     primary: Principale
     link: Collegamenti
