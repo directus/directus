@@ -49,7 +49,7 @@ export class SharesService extends ItemsService {
 				'role' in data && data['role'] !== null
 			) {
 				throw new ForbiddenError({
-					reason: `You don't have permission to set "${data['role']}" as role for shares or it does not exist.`,
+					reason: `You don't have permission to set role "${data['role']}" for the share or it does not exist.`,
 				});
 			}
 		}
