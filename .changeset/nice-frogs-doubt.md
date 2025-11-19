@@ -2,4 +2,4 @@
 '@directus/api': major
 ---
 
-Fixed share auth for system created shares
+Fixed share token for system created shares
