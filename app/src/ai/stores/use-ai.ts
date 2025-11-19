@@ -1,14 +1,13 @@
 import { useSettingsStore } from '@/stores/settings';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { Chat } from '@ai-sdk/vue';
-import { useLocalStorage } from '@vueuse/core';
+import { createEventHook, useLocalStorage } from '@vueuse/core';
 import { DefaultChatTransport, type UIMessage, lastAssistantMessageIsCompleteWithToolCalls } from 'ai';
 import { defineStore } from 'pinia';
-import { computed, ref, shallowRef, watch } from 'vue';
+import { computed, reactive, ref, shallowRef, watch } from 'vue';
 import { z } from 'zod';
 import { StaticToolDefinition } from '../composables/define-tool';
-import { AI_MODELS } from '../models';
-import { createEventHook } from '@vueuse/core';
+import { AI_MODELS, type ModelDefinition } from '../models';
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
@@ -27,17 +26,48 @@ export const useAiStore = defineStore('ai-store', () => {
 	});
 
 	const models = computed(() =>
-		AI_MODELS.filter((model) => {
-			const provider = model.split('/')[0]!;
+		AI_MODELS.filter(({ provider }) => {
 			return settingsStore.availableAiProviders.includes(provider);
 		}),
 	);
 
-	const defaultProvider = computed(() => models.value[0]?.split('/')[0] ?? null);
 	const defaultModel = computed(() => models.value[0] ?? null);
-	const selectedModel = useLocalStorage<string | null>('selected-ai-model', defaultModel.value);
-	const currentProvider = computed(() => selectedModel.value?.split('/')[0] ?? defaultProvider.value);
-	const currentModel = computed(() => selectedModel.value?.split('/')[1] ?? defaultModel.value);
+
+	const selectedModelId = useLocalStorage<string | null>(
+		'selected-ai-model',
+		defaultModel.value ? `${defaultModel.value.provider}:${defaultModel.value.model}` : null,
+	);
+
+	// Ensure selectedModelId is set to the default model when models become available
+	watch(
+		() => defaultModel.value,
+		(newDefaultModel) => {
+			if (selectedModelId.value === null && newDefaultModel) {
+				selectedModelId.value = `${newDefaultModel.provider}:${newDefaultModel.model}`;
+			}
+		},
+		{ immediate: true }
+	);
+
+	const selectedModel = computed(() => {
+		if (!selectedModelId.value) return null;
+
+		const [provider, model] = selectedModelId.value.split(':');
+
+		if (!provider || !model) return null;
+
+		return (
+			models.value.find((modelDefinition) => {
+				return modelDefinition.provider === provider && modelDefinition.model === model;
+			}) ??
+			defaultModel.value ??
+			null
+		);
+	});
+
+	const selectModel = (modelDefinition: ModelDefinition) => {
+		selectedModelId.value = `${modelDefinition.provider}:${modelDefinition.model}`;
+	};
 
 	const systemTools = shallowRef<string[]>([
 		'items',
@@ -67,10 +97,22 @@ export const useAiStore = defineStore('ai-store', () => {
 			api: '/ai/chat',
 			credentials: 'include',
 			body: () => ({
-				provider: currentProvider.value,
-				model: currentModel.value,
+				provider: selectedModel.value?.provider,
+				model: selectedModel.value?.model,
 				tools: [...systemTools.value, ...localTools.value.map(toApiTool)],
 			}),
+			prepareSendMessagesRequest: (req) => {
+				const limitedMessages =
+					estimatedMaxMessages.value < Infinity ? req.messages.slice(-estimatedMaxMessages.value) : req.messages;
+
+				return {
+					...req,
+					body: {
+						...req.body,
+						messages: limitedMessages,
+					},
+				};
+			},
 		}),
 		sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
 		onFinish: ({ isAbort, message }) => {
@@ -85,6 +127,20 @@ export const useAiStore = defineStore('ai-store', () => {
 			}
 
 			storedMessages.value = chat.messages;
+		},
+		onData: (data) => {
+			if (data.type === 'data-usage') {
+				const usageData = data.data as Record<string, unknown>;
+				const { inputTokens, outputTokens, totalTokens } = usageData;
+
+				if (typeof inputTokens === 'number') tokenUsage.inputTokens = inputTokens;
+				if (typeof outputTokens === 'number') tokenUsage.outputTokens = outputTokens;
+				if (typeof totalTokens === 'number') tokenUsage.totalTokens = totalTokens;
+
+				if (contextUsagePercentage.value > 0) {
+					estimatedMaxMessages.value = Math.floor((messages.value.length / contextUsagePercentage.value) * 100);
+				}
+			}
 		},
 		onToolCall: async ({ toolCall }) => {
 			const isServerTool = toolCall.dynamic || systemTools.value.includes(toolCall.toolName);
@@ -137,7 +193,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		chat.sendMessage({ text: input.value });
 		submitHook.trigger(input.value);
 		input.value = '';
-	}
+	};
 
 	const registerLocalTool = (tool: StaticToolDefinition) => {
 		localTools.value = [...localTools.value, tool];
@@ -164,11 +220,36 @@ export const useAiStore = defineStore('ai-store', () => {
 		chat.clearError();
 		chat.messages.splice(0, chat.messages.length);
 		storedMessages.value = [];
+
+		tokenUsage.inputTokens = 0;
+		tokenUsage.outputTokens = 0;
+		tokenUsage.totalTokens = 0;
+		estimatedMaxMessages.value = Infinity;
 	};
 
+	/**
+	 * Guesstimate of what the messages limit is based on the current average token size per message.
+	 * This is updated whenever the actual token usage is returned from the server. We default to
+	 * infinity as we can't know a theoretical limit until the server responds with actual token
+	 * usage. Input context also includes tool definitions (of which we don't know the size), so this
+	 * estimate is never fully accurate.
+	 * @default Infinity
+	 */
+	const estimatedMaxMessages = ref(Infinity);
+
+	const tokenUsage = reactive({ inputTokens: 0, outputTokens: 0, totalTokens: 0 });
+
+	const contextUsagePercentage = computed(() => {
+		if (!selectedModel.value) return 0;
+
+		const { limit } = selectedModel.value;
+
+		const context = limit.context > 0 ? (tokenUsage.totalTokens / limit.context) * 100 : 0;
+
+		return context;
+	});
+
 	return {
-		currentProvider,
-		currentModel,
 		input,
 		chat,
 		messages,
@@ -185,7 +266,11 @@ export const useAiStore = defineStore('ai-store', () => {
 		stop,
 		reset,
 		chatOpen,
+		selectModel,
+		tokenUsage,
+		contextUsagePercentage,
 		submit,
 		onSubmit: submitHook.on,
+		estimatedMaxMessages,
 	};
 });

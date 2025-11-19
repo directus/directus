@@ -1408,9 +1408,7 @@ interfaces:
     accordion_mode: Harmonika mód
     max_one_section_open: Max. egy nyitott szakasz
   presentation-links:
-    presentation-links: Gomb hivatkozások
     links: Linkek
-    description: Konfigurálható linkgombok dinamikus URL-ek indításához
     style: Stílus
     primary: Elsődleges
     link: Linkek

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTemplateRef, computed, onMounted, nextTick, watch } from 'vue';
+import { useTemplateRef, computed, onMounted, nextTick } from 'vue';
 import { useScroll } from '@vueuse/core';
 import { useAiStore } from '../stores/use-ai';
 import AiMessageList from './ai-message-list.vue';
@@ -19,19 +19,19 @@ const showScrollButton = computed(() => {
 
 onMounted(() => {
 	nextTick(() => {
-		scrollToBottom();
+		scrollToBottom('instant');
 	});
 });
 
 aiStore.onSubmit(() => {
-	scrollToBottom();
+	scrollToBottom('smooth');
 });
 
-function scrollToBottom() {
+function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 	const el = messagesContainerRef.value;
 
 	if (el) {
-		el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+		el.scrollTo({ top: el.scrollHeight, behavior });
 	}
 }
 </script>
@@ -74,7 +74,7 @@ function scrollToBottom() {
 
 		<div class="input-container">
 			<div v-show="showScrollButton" class="scroll-to-bottom-container">
-				<v-button icon rounded secondary x-small class="scroll-to-bottom-btn" @click="scrollToBottom">
+				<v-button icon rounded secondary x-small class="scroll-to-bottom-btn" @click="scrollToBottom('smooth')">
 					<v-icon small name="arrow_downward" />
 				</v-button>
 			</div>
@@ -101,6 +101,7 @@ function scrollToBottom() {
 
 .messages-container {
 	position: relative;
+	padding-inline: 8px;
 	flex: 1;
 	overflow-y: auto;
 	min-block-size: 0;
@@ -118,6 +119,7 @@ function scrollToBottom() {
 .input-container {
 	flex-shrink: 0;
 	position: relative;
+	padding-inline-end: 12px;
 }
 
 .error-message {
