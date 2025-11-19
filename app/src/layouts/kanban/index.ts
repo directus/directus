@@ -48,8 +48,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { sort, limit, page, fields } = useLayoutQuery();
 
-		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField });
-
 		const { fieldGroups } = useFilterFields(fieldsInCollection, {
 			title: (field) => field.type === 'string' || fieldIsRelatedField(field),
 			text: (field) => field.type === 'string' || field.type === 'text' || fieldIsRelatedField(field),
@@ -153,6 +151,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			search,
 			filterSystem,
 		});
+
+		const { onClick } = useLayoutClickHandler({ props, items, selection, primaryKeyField });
 
 		watch(ungroupedDisabled, (disabled) => {
 			if (disabled && showUngrouped.value) showUngrouped.value = false;
