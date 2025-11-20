@@ -160,7 +160,7 @@ function onSort(sortedItems: Record<string, any>[]) {
 </script>
 
 <template>
-	<div class="collection-item-multiple-dropdown">
+	<div v-prevent-focusout="selectDrawerOpen" class="collection-item-multiple-dropdown">
 		<v-notice v-if="displayItems.length === 0">
 			{{ t('no_items') }}
 		</v-notice>

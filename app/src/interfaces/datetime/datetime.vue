@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { isValid } from 'date-fns';
-import { computed, ref } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import { parseDate } from '@/utils/parse-date';
 import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
+import { useFocusin } from '@/composables/use-focusin';
 
 interface Props extends Omit<UseDatetimeProps, 'value'> {
 	value: string | null;
@@ -23,7 +24,7 @@ const emit = defineEmits<{
 	(e: 'input', value: string | null): void;
 }>();
 
-const dateTimeMenu = ref();
+const menuActive = ref(false);
 
 const isValidValue = computed(() => (props.value ? isValid(parseDate(props.value, props.type)) : false));
 
@@ -35,7 +36,15 @@ function unsetValue(e: any) {
 </script>
 
 <template>
-	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
+	<v-menu
+		v-model="menuActive"
+		v-prevent-focusout="menuActive"
+		:close-on-content-click="false"
+		attached
+		:disabled="disabled"
+		full-height
+		seamless
+	>
 		<template #activator="{ toggle, active }">
 			<v-list-item block clickable :disabled :non-editable :active @click="toggle">
 				<template v-if="isValidValue">
