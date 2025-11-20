@@ -15,10 +15,16 @@ export interface PrivateViewProps {
 </script>
 
 <script setup lang="ts">
+import { useSettingsStore } from '@/stores/settings';
+import { useUserStore } from '@/stores/user';
+import { useCookies } from '@vueuse/integrations/useCookies';
+import { computed, ref } from 'vue';
+import NotificationDialogs from '../../components/notification-dialogs.vue';
+import NotificationsDrawer from '../../components/notifications-drawer.vue';
+import NotificationsGroup from '../../components/notifications-group.vue';
+import { useSidebarStore } from '../stores/sidebar';
 import PrivateViewNoAppAccess from './private-view-no-app-access.vue';
 import PrivateViewRoot from './private-view-root.vue';
-import { useUserStore } from '@/stores/user';
-import { computed } from 'vue';
 
 const userStore = useUserStore();
 
@@ -28,6 +34,16 @@ const appAccess = computed(() => {
 });
 
 defineProps<PrivateViewProps>();
+
+const notificationsPreviewActive = ref(false);
+
+const cookies = useCookies(['license-banner-dismissed']);
+const sidebarStore = useSidebarStore();
+const settingsStore = useSettingsStore();
+
+const showLicenseBanner = computed(
+	() => userStore.isAdmin && !settingsStore.settings?.project_owner && !cookies.get('license-banner-dismissed'),
+);
 </script>
 
 <template>
@@ -47,4 +63,10 @@ defineProps<PrivateViewProps>();
 
 		<slot />
 	</PrivateViewRoot>
+
+	<notifications-drawer />
+	<notifications-group v-if="notificationsPreviewActive === false" :sidebar-open="!sidebarStore.collapsed" />
+	<notification-dialogs />
+
+	<license-banner v-model="showLicenseBanner" />
 </template>
