@@ -2897,6 +2897,9 @@ importers:
       fs-extra:
         specifier: 'catalog:'
         version: 11.3.2
+      ip-matching:
+        specifier: 'catalog:'
+        version: 2.1.2
       joi:
         specifier: 'catalog:'
         version: 18.0.1
@@ -2919,6 +2922,9 @@ importers:
       '@directus/types':
         specifier: workspace:*
         version: link:../types
+      '@ngneat/falso':
+        specifier: 'catalog:'
+        version: 8.0.2
       '@types/fs-extra':
         specifier: 'catalog:'
         version: 11.0.4

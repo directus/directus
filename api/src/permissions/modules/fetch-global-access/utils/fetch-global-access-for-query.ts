@@ -1,7 +1,7 @@
 import type { Accountability, Policy } from '@directus/types';
-import { toBoolean, toArray } from '@directus/utils';
+import { toArray, toBoolean } from '@directus/utils';
+import { ipInNetworks } from '@directus/utils/node';
 import type { Knex } from 'knex';
-import { ipInNetworks } from '../../../../utils/ip-in-networks.js';
 import type { GlobalAccess } from '../types.js';
 
 type AccessRow = {

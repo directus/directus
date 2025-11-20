@@ -1,5 +1,6 @@
 export * from './array-helpers.js';
 export * from './get-node-env.js';
+export * from './ip-in-networks.js';
 export * from './is-readable-stream.js';
 export * from './list-folders.js';
 export * from './path-to-relative-url.js';
