@@ -1,7 +1,7 @@
 import { useSettingsStore } from '@/stores/settings';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { Chat } from '@ai-sdk/vue';
-import { createEventHook, useLocalStorage } from '@vueuse/core';
+import { createEventHook, useLocalStorage, useSessionStorage } from '@vueuse/core';
 import { DefaultChatTransport, type UIMessage, lastAssistantMessageIsCompleteWithToolCalls } from 'ai';
 import { defineStore } from 'pinia';
 import { computed, reactive, ref, shallowRef, watch } from 'vue';
@@ -12,6 +12,7 @@ import { AI_MODELS, type ModelDefinition } from '../models';
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
 	const sidebarStore = useSidebarStore();
+	const storedMessages = useSessionStorage<UIMessage[]>('directus-ai-chat-messages', []);
 
 	const chatOpen = useLocalStorage<boolean>('ai-chat-open', false);
 	const input = ref<string>('');
@@ -45,7 +46,7 @@ export const useAiStore = defineStore('ai-store', () => {
 				selectedModelId.value = `${newDefaultModel.provider}:${newDefaultModel.model}`;
 			}
 		},
-		{ immediate: true }
+		{ immediate: true },
 	);
 
 	const selectedModel = computed(() => {
@@ -91,6 +92,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	});
 
 	const chat = new Chat<UIMessage>({
+		messages: storedMessages.value,
 		transport: new DefaultChatTransport({
 			api: '/ai/chat',
 			credentials: 'include',
@@ -123,6 +125,8 @@ export const useAiStore = defineStore('ai-store', () => {
 					}
 				});
 			}
+
+			storedMessages.value = chat.messages;
 		},
 		onData: (data) => {
 			if (data.type === 'data-usage') {
@@ -215,6 +219,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	const reset = () => {
 		chat.clearError();
 		chat.messages.splice(0, chat.messages.length);
+		storedMessages.value = [];
 
 		tokenUsage.inputTokens = 0;
 		tokenUsage.outputTokens = 0;
