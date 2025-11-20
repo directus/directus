@@ -12,11 +12,10 @@ const props = withDefaults(
 	defineProps<{
 		value: string | number | null;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		choices?: Option[];
-
 		allowOther?: boolean;
 		width?: string;
-
 		iconOn?: string;
 		iconOff?: string;
 		color?: string;
@@ -64,6 +63,7 @@ const customIcon = computed(() => {
 			:value="item.value"
 			:label="item.text"
 			:disabled="disabled"
+			:non-editable="nonEditable"
 			:icon-on="iconOn"
 			:icon-off="iconOff"
 			:model-value="value"
@@ -73,12 +73,13 @@ const customIcon = computed(() => {
 			{{ $t('no_options_available') }}
 		</v-notice>
 		<div
-			v-if="allowOther"
+			v-if="allowOther && !(nonEditable && !usesOtherValue && !otherValue)"
 			class="custom"
 			:class="{
-				active: !disabled && usesOtherValue,
-				'has-value': !disabled && otherValue,
+				active: (!disabled || nonEditable) && usesOtherValue,
+				'has-value': (!disabled || nonEditable) && otherValue,
 				disabled,
+				'non-editable': nonEditable,
 			}"
 		>
 			<v-icon
@@ -181,13 +182,20 @@ const customIcon = computed(() => {
 	}
 
 	&.disabled {
+		cursor: not-allowed;
+
+		input,
+		.radio-icon {
+			cursor: not-allowed;
+		}
+	}
+
+	&.disabled:not(.non-editable) {
 		background-color: var(--theme--form--field--input--background-subdued);
 		border-color: transparent;
-		cursor: not-allowed;
 
 		input {
 			color: var(--theme--form--field--input--foreground-subdued);
-			cursor: not-allowed;
 
 			&::placeholder {
 				color: var(--theme--form--field--input--foreground-subdued);

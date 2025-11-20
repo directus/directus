@@ -146,309 +146,72 @@ can read existing operations to see if they are using extensions operations. </a
 
 <workflow_creation>
 
-## Workflow Creation Process - **ESSENTIAL READING**
+## Workflow Creation Process
 
-**⚠️ CRITICAL**: Follow this exact order or operations will fail
+**Critical Order:** Create flow first → Create operations with null resolve/reject → Link operations via UUIDs → Update
+flow entry point.
 
-<workflow_steps>
-
-### Step-by-Step Process:
-
-1. **Create the flow** using the `flows` tool
-2. **Create all operations** with null resolve/reject initially
-3. **Link operations together** using the UUIDs returned from step 2
-4. **Update the flow** to set the first operation as the entry point
-
-### Why This Order Matters:
-
-- Operations must exist before they can be referenced in resolve/reject fields
-- UUIDs are only available after operations are created
-- The flow needs at least one operation created before setting its entry point </workflow_steps>
-
-<workflow_example>
-
-### Complete Workflow Example:
-
-```json
-// Step 1: Create the flow first (using flows tool)
-{
-  "action": "create",
-  "data": {
-    "name": "Email on Post Published",
-    "trigger": "event",
-    "options": {
-      "type": "action",
-      "scope": ["items.create"],
-      "collections": ["posts"]
-    }
-  }
-}
-// Returns: {"id": "flow-uuid-123", ...}
-
-// Step 2: Create operations with null connections initially
-{"action": "create", "data": {
-  "flow": "flow-uuid-123",
-  "key": "check_status",
-  "type": "condition",
-  "position_x": 19,  // First operation position
-  "position_y": 1,
-  "options": {
-    "filter": {
-      "$trigger": {
-        "payload": {
-          "status": {"_eq": "published"}
-        }
-      }
-    }
-  },
-  "resolve": null,  // Set to null initially
-  "reject": null    // Set to null initially
-}}
-// Returns: {"id": "condition-uuid-456", ...}
-
-{"action": "create", "data": {
-  "flow": "flow-uuid-123",
-  "key": "send_email",
-  "type": "mail",
-  "position_x": 37,  // Second operation position
-  "position_y": 1,
-  "options": {
-    "to": ["admin@example.com"],
-    "subject": "New post published",
-    "body": "Post '{{$trigger.payload.title}}' was published"
-  },
-  "resolve": null,
-  "reject": null
-}}
-// Returns: {"id": "email-uuid-789", ...}
-
-// Step 3: Connect operations using UUIDs (NOT keys)
-{"action": "update", "key": "condition-uuid-456", "data": {
-  "resolve": "email-uuid-789",  // Use UUID from step 2
-  "reject": null                // No error handling operation
-}}
-
-// Step 4: Update flow to set first operation (using flows tool)
-{"action": "update", "key": "flow-uuid-123", "data": {
-  "operation": "condition-uuid-456"  // First operation UUID
-}}
-```
-
-</workflow_example> </workflow_creation>
+**See `flows` tool for complete workflow example with detailed steps.** </workflow_creation>
 
 <positioning_system>
 
-## Grid-Based Positioning - **ALWAYS SET POSITIONS**
+## Grid Positioning
 
-**Grid Rules:**
+**Rules:** 14x14 units, spacing every 18 units (example 19/37/55/73). Never (0,0). Start `position_y: 1`.
 
-- Each operation: 14x14 grid units
-- Standard spacing: 18 units (19, 37, 55, 73...)
-- Vertical start: `position_y: 1`
-- Never use (0,0) - operations will overlap
+**Patterns:** Linear (19,1)→(37,1)→(55,1). Branching: success (37,1), error (37,19). </positioning_system>
 
-**Common Patterns:**
+<operation_examples> **condition** - Evaluates filter rules
 
 ```json
-// Linear flow
-{"position_x": 19, "position_y": 1}  // First
-{"position_x": 37, "position_y": 1}  // Second
-{"position_x": 55, "position_y": 1}  // Third
-
-// Branching (success/error)
-{"position_x": 19, "position_y": 1}   // Main
-{"position_x": 37, "position_y": 1}   // Success (same row)
-{"position_x": 37, "position_y": 19}  // Error (lower row)
+{ "type": "condition", "options": { "filter": { "$trigger": { "payload": { "status": { "_eq": "published" } } } } } }
+// Multiple: {"_and": [{"status": {"_eq": "published"}}, {"featured": {"_eq": true}}]}
 ```
 
-</positioning_system>
-
-<operation_examples> <condition> Evaluates filter rules to determine path
+**item-create/read/update/delete** - CRUD operations
 
 ```json
-{
-	"type": "condition",
-	"options": {
-		"filter": {
-			"$trigger": {
-				"payload": {
-					"status": { "_eq": "published" }
-				}
-			}
-		}
-	}
-}
+{"type": "item-create", "options": {"collection": "notifications", "permissions": "$trigger", "payload": {"title": "{{ $trigger.payload.title }}"}}}
+{"type": "item-read", "options": {"collection": "products", "query": {"filter": {"status": {"_eq": "active"}}}}}
+{"type": "item-update", "options": {"collection": "orders", "key": "{{ $trigger.payload.id }}", "payload": {"status": "processed"}}}
+{"type": "item-delete", "options": {"collection": "temp_data", "key": ["{{ read_items[0].id }}"]}}
 ```
 
-<filter_examples>
-
-```json
-// Check if field exists
-{
-  "filter": {
-    "$trigger": {
-      "payload": {
-        "website": {"_nnull": true}
-      }
-    }
-  }
-}
-
-// Multiple conditions (AND) - CORRECTED SYNTAX
-{
-  "filter": {
-    "$trigger": {
-      "payload": {
-        "_and": [
-          {"status": {"_eq": "published"}},
-          {"featured": {"_eq": true}}
-        ]
-      }
-    }
-  }
-}
-```
-
-</filter_examples> </condition>
-
-<item_operations> **Create Items:**
-
-```json
-{
-	"type": "item-create",
-	"options": {
-		"collection": "notifications",
-		"permissions": "$trigger",
-		"emitEvents": true,
-		"payload": {
-			"title": "{{ $trigger.payload.title }}",
-			"user": "{{ $accountability.user }}"
-		}
-	}
-}
-```
-
-**Read Items:**
-
-```json
-{
-	"type": "item-read",
-	"options": {
-		"collection": "products",
-		"permissions": "$full",
-		"query": {
-			"filter": { "status": { "_eq": "active" } },
-			"limit": 10
-		}
-	}
-}
-```
-
-**Update Items:**
-
-```json
-{
-	"type": "item-update",
-	"options": {
-		"collection": "orders",
-		"permissions": "$trigger",
-		"emitEvents": true,
-		"key": "{{ $trigger.payload.id }}",
-		"payload": { "status": "processed" }
-	}
-}
-```
-
-**Delete Items:**
-
-```json
-{
-	"type": "item-delete",
-	"options": {
-		"collection": "temp_data",
-		"permissions": "$full",
-		"key": ["{{ read_items[0].id }}"]
-	}
-}
-```
-
-</item_operations>
-
-<exec>
-Execute custom JavaScript/TypeScript in isolated sandbox
-
-**⚠️ SECURITY WARNING**: Scripts run sandboxed with NO file system or network access
+**exec** - Custom JavaScript/TypeScript (sandboxed, no file/network access)
 
 ```json
 {
 	"type": "exec",
 	"options": {
-		"code": "module.exports = async function(data) {\n  // Validate input\n  if (!data.$trigger.payload.value) {\n    throw new Error('Missing required value');\n  }\n  \n  // Process data\n  const result = data.$trigger.payload.value * 2;\n  \n  // Return must be valid JSON\n  return {\n    result: result,\n    processed: true\n  };\n}"
+		"code": "module.exports = async function(data) {\n  const result = data.$trigger.payload.value * 2;\n  return { result, processed: true };\n}"
 	}
 }
 ```
 
-**Common Use Cases**: Data transformation, calculations, complex logic, formatting, extracting nested values </exec>
-
-<mail>
-Send email notifications with optional templates
+**mail** - Send email (markdown/wysiwyg/template)
 
 ```json
 {
 	"type": "mail",
 	"options": {
-		"to": ["user@example.com", "{{ $trigger.payload.email }}"],
+		"to": ["user@example.com"],
 		"subject": "Order Confirmation",
-		"type": "markdown", // "markdown" (default), "wysiwyg", or "template"
-		"body": "Your order {{ $trigger.payload.order_id }} has been confirmed.",
-		"cc": ["cc@example.com"], // Optional
-		"bcc": ["bcc@example.com"], // Optional
-		"replyTo": ["reply@example.com"] // Optional
+		"body": "Order {{ $trigger.payload.order_id }}"
 	}
 }
+// Template: {"type": "template", "template": "welcome-email", "data": {"username": "{{ $trigger.payload.name }}"}}
 ```
 
-**Template Mode:**
-
-```json
-{
-	"type": "mail",
-	"options": {
-		"to": ["{{ $trigger.payload.email }}"],
-		"subject": "Welcome!",
-		"type": "template",
-		"template": "welcome-email", // Template name (default: "base")
-		"data": {
-			"username": "{{ $trigger.payload.name }}",
-			"activation_url": "https://example.com/activate/{{ $trigger.payload.token }}"
-		}
-	}
-}
-```
-
-</mail>
-
-<notification>
-Send in-app notifications to users
+**notification** - In-app notifications
 
 ```json
 {
 	"type": "notification",
-	"options": {
-		"recipient": ["{{ $accountability.user }}"], // User ID(s) to notify
-		"subject": "Task Complete",
-		"message": "Your export is ready for download",
-		"permissions": "$trigger",
-		"collection": "exports", // Optional: Related collection
-		"item": "{{ create_export.id }}" // Optional: Related item ID
-	}
+	"options": { "recipient": ["{{ $accountability.user }}"], "subject": "Task Complete", "message": "Export ready" }
 }
 ```
 
-</notification>
-
-<request>
-Make HTTP requests
+**request** - HTTP requests (headers must be array of objects, body as stringified JSON)
 
 ```json
 {
@@ -456,146 +219,57 @@ Make HTTP requests
 	"options": {
 		"method": "POST",
 		"url": "https://api.example.com/webhook",
-		"headers": [
-			{
-				"header": "Authorization",
-				"value": "Bearer {{ $env.API_TOKEN }}"
-			},
-			{
-				"header": "Content-Type",
-				"value": "application/json"
-			}
-		],
-		"body": "{\"data\": \"{{ process_data }}\", \"timestamp\": \"{{ $trigger.timestamp }}\"}"
+		"headers": [{ "header": "Authorization", "value": "Bearer {{ $env.API_TOKEN }}" }],
+		"body": "{\"data\": \"{{ process_data }}\"}"
 	}
 }
 ```
 
-**Real Example (Netlify Deploy Hook)**:
-
-```json
-{
-	"type": "request",
-	"options": {
-		"method": "POST",
-		"url": "https://api.netlify.com/build_hooks/your-hook-id",
-		"headers": [
-			{
-				"header": "User-Agent",
-				"value": "Directus-Flow/1.0"
-			}
-		],
-		"body": "{\"trigger\": \"content_updated\", \"item_id\": \"{{ $trigger.payload.id }}\"}"
-	}
-}
-```
-
-</request>
-
-<json_web_token> Sign, verify, or decode JWT tokens - **CONSOLIDATED EXAMPLE**
+**json-web-token** - Sign/verify/decode JWT
 
 ```json
 {
 	"type": "json-web-token",
 	"options": {
-		"operation": "sign", // "sign", "verify", or "decode"
-
-		// For SIGN operations:
-		"payload": {
-			"userId": "{{ $trigger.payload.user }}",
-			"role": "{{ $trigger.payload.role }}"
-		},
+		"operation": "sign",
+		"payload": { "userId": "{{ $trigger.payload.user }}" },
 		"secret": "{{ $env.JWT_SECRET }}",
-		"options": {
-			"expiresIn": "1h",
-			"algorithm": "HS256"
-		},
-
-		// For VERIFY/DECODE operations:
-		"token": "{{ $trigger.payload.token }}"
-		// "secret": "{{ $env.JWT_SECRET }}", // Required for verify, not for decode
-		// "options": {"algorithms": ["HS256"]}, // For verify
-		// "options": {"complete": true} // For decode
+		"options": { "expiresIn": "1h" }
 	}
 }
+// Verify: {"operation": "verify", "token": "{{ $trigger.payload.token }}", "secret": "{{ $env.JWT_SECRET }}"}
 ```
 
-</json_web_token>
-
-<other_operations> **Transform JSON:**
+**transform** - Create custom JSON payloads
 
 ```json
 {
 	"type": "transform",
-	"options": {
-		"json": {
-			"combined": {
-				"user": "{{ $accountability.user }}",
-				"items": "{{ read_items }}",
-				"timestamp": "{{ $trigger.timestamp }}"
-			}
-		}
-	}
+	"options": { "json": { "combined": { "user": "{{ $accountability.user }}", "items": "{{ read_items }}" } } }
 }
 ```
 
-**Trigger Flow:**
+**trigger** - Execute another flow
 
 ```json
 {
 	"type": "trigger",
-	"options": {
-		"flow": "other-flow-uuid",
-		"payload": { "data": "{{ transform_result }}" },
-		"iterationMode": "parallel", // "parallel", "serial", "batch"
-		"batchSize": 10 // Only for batch mode
-	}
+	"options": { "flow": "flow-uuid", "payload": { "data": "{{ transform_result }}" }, "iterationMode": "parallel" }
 }
 ```
 
-**Sleep:**
+**sleep/log/throw-error** - Utilities
 
 ```json
-{
-	"type": "sleep",
-	"options": { "milliseconds": 5000 }
-}
+{"type": "sleep", "options": {"milliseconds": 5000}}
+{"type": "log", "options": {"message": "Processing {{ $trigger.payload.id }}"}}
+{"type": "throw-error", "options": {"code": "CUSTOM_ERROR", "status": "400", "message": "Invalid data"}}
 ```
 
-**Log:**
+</operation_examples>
 
-```json
-{
-	"type": "log",
-	"options": { "message": "Processing item: {{ $trigger.payload.id }}" }
-}
-```
-
-**Throw Error:**
-
-```json
-{
-	"type": "throw-error",
-	"options": {
-		"code": "CUSTOM_ERROR",
-		"status": "400",
-		"message": "Invalid data: {{ $trigger.payload.error_details }}"
-	}
-}
-```
-
-</other_operations> </operation_examples>
-
-<data_chain_variables> Use `{{ variable }}` syntax to access data:
-
-- `{{ $trigger.payload }}` - Trigger data
-- `{{ $accountability.user }}` - User context
-- `{{ operation_key }}` - Result from specific operation (recommended)
-- `{{ operation_key.field }}` - Specific field from operation result
-
-**⚠️ Avoid `$last`:** While `{{ $last }}` references the previous operation's result, avoid using it in production
-flows. If you reorder operations, `$last` will reference a different operation, potentially breaking your flow. Always
-use specific operation keys like `{{ operation_key }}` for reliable, maintainable flows. </data_chain_variables>
+<data_chain_variables> **Data Chain:** Use `{{ operation_key }}` to access results, `{{ $trigger.payload }}` for trigger
+data. Avoid `{{ $last }}` (breaks when reordered). See `flows` tool for complete syntax. </data_chain_variables>
 
 <permission_options> For operations that support permissions:
 
@@ -604,118 +278,22 @@ use specific operation keys like `{{ operation_key }}` for reliable, maintainabl
 - `$full` - Use full system permissions
 - `role-uuid` - Use specific role's permissions </permission_options>
 
-<real_world_patterns> <data_processing_pipeline>
-
-### Data Processing Pipeline
-
-Read → Transform → Update pattern:
-
-```json
-// 1. Read with relations
-{
-  "flow": "flow-uuid", "key": "invoice", "type": "item-read",
-  "position_x": 19, "position_y": 1,
-  "options": {
-    "collection": "os_invoices",
-    "key": ["{{$trigger.payload.invoice}}"],
-    "query": {"fields": ["*", "line_items.*", "payments.*"]}
-  },
-  "resolve": "calc-operation-uuid"
-}
-// 2. Calculate totals
-{
-  "flow": "flow-uuid", "key": "calculations", "type": "exec",
-  "position_x": 37, "position_y": 1,
-  "options": {
-    "code": "module.exports = async function(data) {\n  const invoice = data.invoice;\n  const subtotal = invoice.line_items.reduce((sum, item) => sum + (item.price * item.quantity), 0);\n  const tax = subtotal * 0.08;\n  return { subtotal, tax, total: subtotal + tax };\n}"
-  },
-  "resolve": "update-operation-uuid"
-}
-// 3. Update with results
-{
-  "flow": "flow-uuid", "key": "update_invoice", "type": "item-update",
-  "position_x": 55, "position_y": 1,
-  "options": {
-    "collection": "os_invoices",
-    "payload": "{{calculations}}",
-    "key": ["{{$trigger.payload.invoice}}"]
-  }
-}
-```
-
-</data_processing_pipeline>
-
-<error_handling_branching>
-
-### Error Handling with Branching
-
-```json
-// Main operation with error handling
-{
-  "flow": "flow-uuid", "key": "main_operation", "type": "request",
-  "position_x": 19, "position_y": 1,
-  "resolve": "success-operation-uuid",
-  "reject": "error-operation-uuid"
-}
-// Success path
-{
-  "flow": "flow-uuid", "key": "success_notification", "type": "notification",
-  "position_x": 37, "position_y": 1
-}
-// Error path (lower row)
-{
-  "flow": "flow-uuid", "key": "error_log", "type": "log",
-  "position_x": 37, "position_y": 19
-}
-```
-
-</error_handling_branching> </real_world_patterns>
-
 <common_mistakes>
 
-1. **DO NOT** create operations without a flow - create flow first
-2. **DO NOT** use operation keys in resolve/reject - use UUIDs (see <workflow_example> above)
-3. **DO NOT** try to reference operations that do not exist yet
-4. **DO NOT** use duplicate keys within the same flow
-5. **DO NOT** create circular references in resolve/reject paths
-6. **DO NOT** forget to handle both success and failure paths
-7. **DO NOT** pass stringified JSON - use native objects (except request body)
-8. **DO NOT** leave operations at default position (0,0) - see <positioning_system> above
-9. **DO NOT** use dot notation in condition filters - see <critical_syntax> above
-10. **DO NOT** use wrong format for request operations - see <critical_syntax> above </common_mistakes>
+1. Create flow first, never operations without flow
+2. Use UUIDs in resolve/reject, NOT keys
+3. Create operations before referencing them
+4. No duplicate keys within same flow
+5. Avoid circular resolve/reject references
+6. Set positions (not 0,0)
+7. Use nested objects in filters, NOT dot notation
+8. Request headers as array of objects, body as stringified JSON
+9. Pass native objects in data (except request body)
+10. ALWAYS pass native objects in data (EXCEPTIONS: - request body for `request` operation - code in `exec` operations)
+11. No `$NOW` variable - use exec operation: `return { now: new Date().toISOString() };` </common_mistakes>
 
 <troubleshooting>
-<invalid_foreign_key>
-### "Invalid foreign key" Errors
-
-This typically means you're trying to reference an operation that doesn't exist:
-
-- Verify the operation UUID exists by reading operations for the flow
-- Check that you're using UUIDs (36 characters) not keys (short names)
-- Ensure operations are created before being referenced </invalid_foreign_key>
-
-<operation_not_executing>
-
-### Operation Not Executing
-
-- Check the resolve/reject chain for breaks
-- Verify the first operation is set as the flow's `operation` field
-- Confirm all required operation options are provided </operation_not_executing>
-
-<overlapping_operations>
-
-### Overlapping Operations in Visual Editor
-
-If operations appear stacked at (0,0) in the flow editor:
-
-```json
-// Fix by updating each operation's position
-{"action": "update", "key": "operation-uuid", "data": {
-  "position_x": 19, "position_y": 1
-}}
-{"action": "update", "key": "other-operation-uuid", "data": {
-  "position_x": 37, "position_y": 1
-}}
-```
-
-</overlapping_operations> </troubleshooting>
+**Invalid foreign key:** Operation UUID doesn't exist. Use UUIDs (36 chars), not keys. Create operations before referencing.
+**Not executing:** Check resolve/reject chain, verify flow.operation set, confirm required options provided.
+**Overlapping (0,0):** Update positions: `{"action": "update", "key": "uuid", "data": {"position_x": 19, "position_y": 1}}`
+</troubleshooting>

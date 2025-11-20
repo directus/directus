@@ -10,6 +10,7 @@ const { t } = useI18n();
 
 interface Props {
 	disabled?: boolean;
+	nonEditable?: boolean;
 	value?: string | null;
 	placeholder?: string;
 	presets?: { name: string; color: string }[];
@@ -19,6 +20,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
+	nonEditable: false,
 	value: null,
 	placeholder: undefined,
 	opacity: false,
@@ -306,7 +308,8 @@ function useColor() {
 		<template #activator="{ activate, toggle }">
 			<v-input
 				v-model="input"
-				:disabled="disabled"
+				:disabled
+				:non-editable
 				:placeholder="placeholder || $t('interfaces.select-color.placeholder')"
 				:pattern="opacity ? /#([a-f\d]{2}){4}/i : /#([a-f\d]{2}){3}/i"
 				class="color-input"
@@ -342,7 +345,7 @@ function useColor() {
 					</v-button>
 				</template>
 				<template #append>
-					<div class="item-actions">
+					<div v-if="!nonEditable" class="item-actions">
 						<v-remove v-if="isValidColor" deselect @action="unsetColor" />
 
 						<v-icon v-else name="palette" clickable @click="toggle" />
