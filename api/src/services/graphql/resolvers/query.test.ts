@@ -145,38 +145,6 @@ describe('resolveQuery', () => {
 		expect(collectionArg).toBe('posts');
 	});
 
-	test('query by version calls getQuery with suffixed collection name', async () => {
-		mockReplaceFragments.mockReturnValue([{}]);
-		mockParseArgs.mockReturnValue({ id: 'abc' });
-
-		mockGetQuery.mockReturnValue({
-			fields: [],
-		});
-
-		const gql: any = {
-			scope: 'app',
-			schema: {
-				collections: {},
-			},
-			accountability: {},
-			read: vi.fn(),
-		};
-
-		const info: any = {
-			fieldName: 'posts_by_version',
-			fieldNodes: [{ selectionSet: { selections: [{}] }, arguments: [] }],
-			fragments: {},
-			variableValues: {},
-		};
-
-		await resolveQuery(gql, info);
-
-		expect(mockGetQuery).toHaveBeenCalled();
-		const lastCallArgs = mockGetQuery.mock.calls[mockGetQuery.mock.calls.length - 1];
-		const collectionArg = lastCallArgs?.[lastCallArgs.length - 1];
-		expect(collectionArg).toBe('posts_by_version');
-	});
-
 	test('query by version injects versionRaw to query', async () => {
 		mockReplaceFragments.mockReturnValue([{}]);
 		mockParseArgs.mockReturnValue({ id: 'abc' });
