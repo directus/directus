@@ -2,7 +2,8 @@ import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
 import type { Field, FieldMeta, ValidationError } from '@directus/types';
 import { mount } from '@vue/test-utils';
-import { expect, test, describe, it } from 'vitest';
+import { describe, expect, it, test } from 'vitest';
+import VNotice from '../v-notice.vue';
 import ValidationErrors from './validation-errors.vue';
 
 const global: GlobalMountOptions = {
@@ -12,11 +13,7 @@ const global: GlobalMountOptions = {
 			name: 'v-icon',
 			template: '<span class="v-icon"><slot /></span>',
 		},
-		'v-notice': {
-			name: 'v-notice',
-			props: ['type'],
-			template: '<div class="v-notice"><slot /></div>',
-		},
+		'v-notice': VNotice,
 	},
 	directives: {
 		tooltip: () => {},
@@ -49,13 +46,19 @@ describe('Custom validation message', () => {
 
 	const customValidationError = {
 		field: 'title',
+		path: [],
 		type: 'contains',
 		substring: 'a',
+		hidden: false,
+		group: null,
 	} as unknown as ValidationError;
 
 	const requiredValidationError = {
 		field: 'title',
+		path: [],
 		type: 'nnull',
+		hidden: false,
+		group: null,
 	} as unknown as ValidationError;
 
 	it('appears when custom validation rule fails', () => {
