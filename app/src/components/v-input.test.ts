@@ -4,12 +4,14 @@ import { i18n } from '@/lang';
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import VInput from './v-input.vue';
+import Tooltip from '@/directives/tooltip';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon'],
 	plugins: [i18n],
 	directives: {
 		focus: Focus,
+		tooltip: Tooltip,
 	},
 };
 
@@ -333,5 +335,104 @@ describe('invalid warning', () => {
 		expect(validitySpy).toHaveBeenCalledTimes(2);
 
 		expect(wrapper.html()).toMatchSnapshot();
+	});
+
+	test('should appear when value exceeds maximum', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 15,
+				min: 0,
+				max: 10,
+				integer: true,
+			},
+			global,
+		});
+
+		await wrapper.vm.$nextTick();
+
+		expect((wrapper.vm as any).isInvalidRange).toBe(true);
+		expect(wrapper.find('.v-input.invalid').exists()).toBe(true);
+		expect(wrapper.find('v-icon-stub.warning-invalid').exists()).toBe(true);
+	});
+
+	test('should appear when value is below minimum', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: -5,
+				min: 0,
+				max: 10,
+				integer: true,
+			},
+			global,
+		});
+
+		await wrapper.vm.$nextTick();
+
+		expect((wrapper.vm as any).isInvalidRange).toBe(true);
+		expect(wrapper.find('.v-input.invalid').exists()).toBe(true);
+	});
+
+	test('should not appear when value is within range', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 5,
+				min: 0,
+				max: 10,
+				integer: true,
+			},
+			global,
+		});
+
+		await wrapper.vm.$nextTick();
+
+		expect((wrapper.vm as any).isInvalidRange).toBe(false);
+		expect(wrapper.find('.v-input.invalid').exists()).toBe(false);
+	});
+
+	test('should work with decimal values for float type', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 10.5,
+				min: 0.5,
+				max: 10,
+				float: true,
+			},
+			global,
+		});
+
+		await wrapper.vm.$nextTick();
+
+		expect((wrapper.vm as any).isInvalidRange).toBe(true);
+		expect(wrapper.find('.v-input.invalid').exists()).toBe(true);
+	});
+
+	test('useInvalidInput takes priority over useInvalidRange', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 15,
+				min: 0,
+				max: 10,
+				integer: true,
+			},
+			global,
+		});
+
+		const input = wrapper.find('input');
+		const inputEl = input.element as HTMLInputElement;
+
+		vi.spyOn(inputEl, 'validity', 'get').mockReturnValue({
+			badInput: true,
+		} as ValidityState);
+
+		await input.trigger('input');
+		await wrapper.vm.$nextTick();
+
+		expect((wrapper.vm as any).isInvalidInput).toBe(true);
+		expect(wrapper.find('.v-input.invalid').exists()).toBe(true);
 	});
 });

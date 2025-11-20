@@ -127,7 +127,7 @@ const isStepDownAllowed = computed(() => {
 	return props.disabled === false && (props.min === undefined || parseInt(String(props.modelValue), 10) > props.min);
 });
 
-const { isInvalidInput, tooltipInvalid, setInvalidInput } = useInvalidInput();
+const { isInvalidInput, tooltipInvalidInput, setInvalidInput } = useInvalidInput();
 const { isInvalidRange, tooltipInvalidRange } = useInvalidRange();
 
 function onInput(event: InputEvent) {
@@ -295,9 +295,9 @@ function stepDown() {
 function useInvalidInput() {
 	const isInvalidInput = ref(false);
 
-	const tooltipInvalid = computed(() => t(props.type === 'number' ? 'not_a_number' : 'invalid_input'));
+	const tooltipInvalidInput = computed(() => t(props.type === 'number' ? 'not_a_number' : 'invalid_input'));
 
-	return { isInvalidInput, tooltipInvalid, setInvalidInput };
+	return { isInvalidInput, tooltipInvalidInput, setInvalidInput };
 
 	function setInvalidInput(target: HTMLInputElement) {
 		// When the input’s validity.badInput property is true (e.g., due to invalid user input like non-numeric characters in a number field), the input event’s target.value will be empty even if we see a value in the input field. This means we can’t sanitize the input value in the input event handler.
@@ -309,7 +309,12 @@ function useInvalidRange() {
 	const isInvalidRange = computed(() => {
 		const modelValue = Number(props.modelValue);
 
-		return !!(props.min && props.max && modelValue && (modelValue < props.min || modelValue > props.max));
+		return !!(
+			props.min !== undefined &&
+			props.max !== undefined &&
+			modelValue &&
+			(modelValue < props.min || modelValue > props.max)
+		);
 	});
 
 	const tooltipInvalidRange = computed(() => {
@@ -326,7 +331,7 @@ function useInvalidRange() {
 		return null;
 	});
 
-	return { isInvalidRange, tooltipInvalidRange };	
+	return { isInvalidRange, tooltipInvalidRange };
 }
 </script>
 
@@ -359,7 +364,7 @@ function useInvalidRange() {
 					@keydown.enter="$emit('keydown:enter', $event)"
 				/>
 			</slot>
-			<v-icon v-if="isInvalidInput" v-tooltip="tooltipInvalidRange" name="warning" class="warning-invalid" />
+			<v-icon v-if="isInvalidInput" v-tooltip="tooltipInvalidInput" name="warning" class="warning-invalid" />
 			<v-icon v-else-if="isInvalidRange" v-tooltip="tooltipInvalidRange" name="warning" class="warning-invalid" />
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
 			<span v-if="type === 'number' && !hideArrows && !nonEditable">
