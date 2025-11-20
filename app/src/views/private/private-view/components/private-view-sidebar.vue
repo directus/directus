@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import AiSidebarDetail from '@/ai/components/ai-sidebar-detail.vue';
+import { AiSidebarDetail } from '@/layers/ai';
 import { AccordionRoot } from 'reka-ui';
 import SkipMenu from '../../components/skip-menu.vue';
 import { useSidebarStore } from '../stores/sidebar';

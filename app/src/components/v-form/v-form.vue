@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineTool } from '@/ai/composables/define-tool';
+import { defineTool } from '@/layers/ai';
 import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';

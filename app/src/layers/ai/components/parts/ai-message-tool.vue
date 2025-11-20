@@ -3,7 +3,7 @@ import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui
 import type { UIMessagePart, UIDataTypes, UITools } from 'ai';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useAiStore } from '@/ai/stores/use-ai';
+import { useAiStore } from '../../stores/use-ai';
 import formatTitle from '@directus/format-title';
 
 const aiStore = useAiStore();
