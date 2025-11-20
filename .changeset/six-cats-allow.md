@@ -1,5 +1,5 @@
 ---
-'@directus/app': patch
+'@directus/app': minor
 ---
 
-fix(flows): allow opening flows in new tab with Ctrl/Cmd+Click or middle mouse button
+Ensured that flows open in a new tab by pressing Ctrl/Cmd+click or the middle mouse button
