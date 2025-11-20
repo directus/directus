@@ -114,7 +114,7 @@ const classes = computed(() => [
 		'has-click': props.clickable,
 		disabled: props.disabled,
 		small: props.small,
-		invalid: isInvalidInput.value || isInvalidRange.value,
+		invalid: isInvalidInput.value,
 	},
 	...((attrs.class || '') as string).split(' '),
 ]);
