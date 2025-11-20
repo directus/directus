@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { ServiceUnavailableError } from '@directus/errors';
+import { ErrorCode, isDirectusError, ServiceUnavailableError } from '@directus/errors';
 import { EXTENSION_PKG_KEY, ExtensionManifest } from '@directus/extensions';
 import { download, type DownloadOptions } from '@directus/extensions-registry';
 import DriverLocal from '@directus/storage-driver-local';
@@ -33,7 +33,16 @@ export class InstallationManager {
 				options.registry = env['MARKETPLACE_REGISTRY'];
 			}
 
-			const tarReadableStream = await download(versionId, env['MARKETPLACE_TRUST'] === 'sandbox', options);
+			let tarReadableStream;
+
+			try {
+				tarReadableStream = await download(versionId, env['MARKETPLACE_TRUST'] === 'sandbox', options);
+			} catch (error) {
+				throw new ServiceUnavailableError(
+					{ service: 'marketplace', reason: 'Could not download the extension' },
+					{ cause: error },
+				);
+			}
 
 			if (!tarReadableStream) {
 				throw new Error(`No readable stream returned from download`);
@@ -92,8 +101,13 @@ export class InstallationManager {
 		} catch (err) {
 			logger.warn(err);
 
+			// rethrow marketplace servic unavailable
+			if (isDirectusError(err, ErrorCode.ServiceUnavailable)) {
+				throw err;
+			}
+
 			throw new ServiceUnavailableError(
-				{ service: 'marketplace', reason: 'Could not download and extract the extension' },
+				{ service: 'extensions', reason: 'Failed to extract the extension or write it to storage' },
 				{ cause: err },
 			);
 		} finally {
