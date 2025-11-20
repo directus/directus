@@ -114,7 +114,7 @@ const classes = computed(() => [
 		'has-click': props.clickable,
 		disabled: props.disabled,
 		small: props.small,
-		invalid: isInvalidInput.value,
+		invalid: isInvalidInput.value || isInvalidRange.value,
 	},
 	...((attrs.class || '') as string).split(' '),
 ]);
@@ -128,6 +128,7 @@ const isStepDownAllowed = computed(() => {
 });
 
 const { isInvalidInput, tooltipInvalid, setInvalidInput } = useInvalidInput();
+const { isInvalidRange, tooltipInvalidRange } = useInvalidRange();
 
 function onInput(event: InputEvent) {
 	const target = event.target as HTMLInputElement;
@@ -294,31 +295,38 @@ function stepDown() {
 function useInvalidInput() {
 	const isInvalidInput = ref(false);
 
-	const tooltipInvalid = computed(() => {
-		// Check for integer or float inputs (decimal inputs can be type text depending on database)
-		if (props.integer === true || props.float === true) {
-			if (isInvalidInput.value) {
-				if (input.value?.validity.rangeOverflow) {
-					return t('value_exceeds_maximum', { max: props.max });
-				}
-
-				if (input.value?.validity.rangeUnderflow) {
-					return t('value_below_minimum', { min: props.min });
-				}
-
-				return t('not_a_number');
-			}
-		}
-
-		return t('invalid_input');
-	});
+	const tooltipInvalid = computed(() => t(props.type === 'number' ? 'not_a_number' : 'invalid_input'));
 
 	return { isInvalidInput, tooltipInvalid, setInvalidInput };
 
 	function setInvalidInput(target: HTMLInputElement) {
-		// Checks if the input is invalid: either non-numeric input or value out of allowed range
-		isInvalidInput.value = target.validity.badInput || target.validity.rangeOverflow || target.validity.rangeUnderflow;
+		// When the input’s validity.badInput property is true (e.g., due to invalid user input like non-numeric characters in a number field), the input event’s target.value will be empty even if we see a value in the input field. This means we can’t sanitize the input value in the input event handler.
+		isInvalidInput.value = target.validity.badInput;
 	}
+}
+
+function useInvalidRange() {
+	const isInvalidRange = computed(() => {
+		const modelValue = Number(props.modelValue);
+
+		return !!(props.min && props.max && modelValue && (modelValue < props.min || modelValue > props.max));
+	});
+
+	const tooltipInvalidRange = computed(() => {
+		const modelValue = Number(props.modelValue);
+
+		if (props.min && modelValue && modelValue < props.min) {
+			return t('invalid_range_min', { value: props.modelValue });
+		}
+
+		if (props.max && props.modelValue && modelValue > props.max) {
+			return t('invalid_range_max', { value: props.modelValue });
+		}
+
+		return null;
+	});
+
+	return { isInvalidRange, tooltipInvalidRange };	
 }
 </script>
 
@@ -351,7 +359,8 @@ function useInvalidInput() {
 					@keydown.enter="$emit('keydown:enter', $event)"
 				/>
 			</slot>
-			<v-icon v-if="isInvalidInput" v-tooltip="tooltipInvalid" name="warning" class="warning-invalid" />
+			<v-icon v-if="isInvalidInput" v-tooltip="tooltipInvalidRange" name="warning" class="warning-invalid" />
+			<v-icon v-else-if="isInvalidRange" v-tooltip="tooltipInvalidRange" name="warning" class="warning-invalid" />
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
 			<span v-if="type === 'number' && !hideArrows && !nonEditable">
 				<v-icon

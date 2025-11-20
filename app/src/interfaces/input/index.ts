@@ -142,14 +142,11 @@ export default defineInterface({
 			],
 		};
 
-		// The input interface only supports 'integer' or 'float' types, so we use 'float' for decimal fields
-		const numericFieldType = field.type === 'float' || field.type === 'decimal' ? 'float' : 'integer';
-
 		const numberOptions: DeepPartial<Field>[] = [
 			{
 				field: 'min',
 				name: '$t:interfaces.input.minimum_value',
-				type: numericFieldType,
+				type: field.type,
 				meta: {
 					width: 'half',
 					interface: 'input',
@@ -158,7 +155,7 @@ export default defineInterface({
 			{
 				field: 'max',
 				name: '$t:interfaces.input.maximum_value',
-				type: numericFieldType,
+				type: field.type,
 				meta: {
 					width: 'half',
 					interface: 'input',
@@ -167,7 +164,7 @@ export default defineInterface({
 			{
 				field: 'step',
 				name: '$t:interfaces.input.step_interval',
-				type: numericFieldType,
+				type: field.type,
 				meta: {
 					width: 'half',
 					interface: 'input',
