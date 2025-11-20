@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Added support for decimal intervals and min/max validation for float fields
+Added support for float intervals and min/max warnings for number inputs
