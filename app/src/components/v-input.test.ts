@@ -436,3 +436,160 @@ describe('invalid warning', () => {
 		expect(wrapper.find('.v-input.invalid').exists()).toBe(true);
 	});
 });
+
+describe('step controls', () => {
+	test('isStepUpAllowed should work with integer values', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 5,
+				max: 10,
+				integer: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepUpAllowed).toBe(true);
+	});
+
+	test('isStepUpAllowed should work with float values', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 5.5,
+				max: 10,
+				float: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepUpAllowed).toBe(true);
+	});
+
+	test('isStepUpAllowed should be false when at max', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 10,
+				max: 10,
+				integer: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepUpAllowed).toBe(false);
+	});
+
+	test('isStepUpAllowed should be false when exceeding max', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 10.5,
+				max: 10,
+				float: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepUpAllowed).toBe(false);
+	});
+
+	test('isStepDownAllowed should work with integer values', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 5,
+				min: 0,
+				integer: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepDownAllowed).toBe(true);
+	});
+
+	test('isStepDownAllowed should work with float values', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 5.5,
+				min: 0,
+				float: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepDownAllowed).toBe(true);
+	});
+
+	test('isStepDownAllowed should be false when at min', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 0,
+				min: 0,
+				integer: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepDownAllowed).toBe(false);
+	});
+
+	test('isStepDownAllowed should be false when below min', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: -0.5,
+				min: 0,
+				float: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepDownAllowed).toBe(false);
+	});
+
+	test('isStepUpAllowed should be true when no max is set', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 100,
+				integer: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepUpAllowed).toBe(true);
+	});
+
+	test('isStepDownAllowed should be true when no min is set', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: -100,
+				integer: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepDownAllowed).toBe(true);
+	});
+
+	test('step controls should be disabled when input is disabled', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'number',
+				modelValue: 5,
+				min: 0,
+				max: 10,
+				disabled: true,
+				integer: true,
+			},
+			global,
+		});
+
+		expect((wrapper.vm as any).isStepUpAllowed).toBe(false);
+		expect((wrapper.vm as any).isStepDownAllowed).toBe(false);
+	});
+});
