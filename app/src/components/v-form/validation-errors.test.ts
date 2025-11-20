@@ -19,7 +19,7 @@ const global: GlobalMountOptions = {
 		},
 	},
 	directives: {
-		tooltip: () => { },
+		tooltip: () => {},
 	},
 };
 
@@ -144,16 +144,11 @@ describe('Custom validation message', () => {
 
 describe('Props updates', () => {
 	it('updates when validationErrors prop changes', async () => {
-		const fields = [
-			{ field: 'name', name: 'Name' } as Field,
-			{ field: 'email', name: 'Email' } as Field,
-		];
+		const fields = [{ field: 'name', name: 'Name' } as Field, { field: 'email', name: 'Email' } as Field];
 
 		const wrapper = mount(ValidationErrors, {
 			props: {
-				validationErrors: [
-					{ field: 'name', type: 'nnull' } as unknown as ValidationError
-				],
+				validationErrors: [{ field: 'name', type: 'nnull' } as unknown as ValidationError],
 				fields,
 			},
 			global,
@@ -168,9 +163,7 @@ describe('Props updates', () => {
 	});
 
 	it('updates when errors are added', async () => {
-		const fields = [
-			{ field: 'name', name: 'Name' } as Field
-		];
+		const fields = [{ field: 'name', name: 'Name' } as Field];
 
 		const wrapper = mount(ValidationErrors, {
 			props: {
@@ -189,10 +182,7 @@ describe('Props updates', () => {
 	});
 
 	it('updates when errors are removed', async () => {
-		const fields = [
-			{ field: 'name', name: 'Name' } as Field,
-			{ field: 'email', name: 'Email' } as Field,
-		];
+		const fields = [{ field: 'name', name: 'Name' } as Field, { field: 'email', name: 'Email' } as Field];
 
 		const wrapper = mount(ValidationErrors, {
 			props: {
