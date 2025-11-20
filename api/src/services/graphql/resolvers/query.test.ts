@@ -209,7 +209,7 @@ describe('resolveQuery', () => {
 		expect(queryArg).toEqual(expect.objectContaining({ versionRaw: true }));
 	});
 
-	test('parseFilterFunctionPath is called for each field', async () => {
+	test('properly resolves fields to correct path for each nested function field', async () => {
 		mockReplaceFragments.mockReturnValue([{}]);
 		mockParseArgs.mockReturnValue({ id: 'abc' });
 
@@ -239,7 +239,7 @@ describe('resolveQuery', () => {
 		expect(queryArg).toEqual(expect.objectContaining({ fields: ['count(a)', 'b.sum(c)', 'c.d.max(e)'] }));
 	});
 
-	test('adds group field to each result item when query has group', async () => {
+	test('inject group field for each item when grouping', async () => {
 		mockReplaceFragments.mockReturnValue([{}]);
 		mockParseArgs.mockReturnValue({});
 
