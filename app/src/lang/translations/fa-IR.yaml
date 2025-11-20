@@ -2175,7 +2175,7 @@ interfaces:
     value_securely_saved: Value Securely Saved
     generate: Generate Token
     regenerate: بازسازی توکن
-    generate_success_copy: Make sure to backup and copy the token above. For security reasons, you will not be able to view the token again after saving and navigate off this page.
+    generate_success_copy: مطمئن شوید که توکن بالا را پشتیبان‌گیری و رونوشت کرده‌اید. به دلایل امنیتی، بعد از ذخیره‌سازی و بستن این صفحه امکان مشاهده مجدد توکن را نخواهید داشت.
     remove_token: حذف توکن
   system-raw-editor:
     system-raw-editor: ویرایشگر خام
