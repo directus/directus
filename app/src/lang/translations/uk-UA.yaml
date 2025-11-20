@@ -354,6 +354,8 @@ hidden_field: Приховане поле
 hidden_on_detail: Приховано на деталі
 clear_hidden_field: Очистити значення
 clear_value_on_save_when_hidden: Очистити значення при збереженні, коли приховано
+readonly_field_label: Вимкнути поле в застосунку
+required_readonly_field_warning: Увімкнення одночасно “лише для читання” та “обов’язкове” для поля запобігає збереженню елемента, якщо значення порожнє.
 key: Клавіша
 alias: Ім'я користувача
 bigInteger: Велике ціле число
@@ -451,6 +453,8 @@ precision_scale: Точність і шкала
 readonly: Тільки читання
 unique: Унікальне
 index: Індекс
+searchable: Можна шукати
+field_searchable: Включити поле в пошукові запити
 updated_on: Оновлене
 updated_by: Оновлено
 primary_key: Первинний ключ
@@ -459,6 +463,7 @@ field_key: Ключ до поля
 finish_setup: Завершити налаштування
 dismiss: Відмінити
 toggle_raw_editor: Перемкнути редактор RAW
+toggle_variable_input: Перемкнути змінний ввід
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Необроблене значення
 copy_raw_value: Скопіювати необроблене значення
@@ -493,6 +498,9 @@ revision_delta_reverted: Відновлено
 revision_delta_update_message: Це поле оновлено, але його значення приховується з міркувань безпеки.
 revision_delta_other: Редакція
 revision_delta_by: '{date} {user}'
+updated_in_revision: Оновлено в цій ревізії
+updated_in_revision_matches_latest: Оновлено в цій ревізії, але відповідає останній
+differences_count: 'Без відмінностей | 1 відмінність | {count} відмінностей'
 presentation_text_values_cannot_be_reimported: 'Використовує текст презентації, значення не можуть бути повторно імпортовані.'
 download_page_as_csv: 'Завантажити сторінку у CSV'
 download_page_as_csv_unsupported: Цей макет не підтримує завантаження поточної сторінки.
@@ -515,7 +523,10 @@ import_data_input_placeholder: CSV або JSON...
 import_data_button: Розпочати імпорт
 import_data_indeterminate: Імпорт даних...
 import_data_success: Дані успішно імпортовано з {filename}
+import_data_errors: Помилка імпорту
 import_data_error: Структура даних не відповідає підбірці.
+import_data_validation_errors_notice: 'У таких рядках містяться недійсні значення:'
+import_data_error_row: 'Рядок {rows}{field}:'
 label_import: Імпортувати
 label_export: Експорт
 import_export: Імпорт / Експорт
