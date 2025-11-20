@@ -32,16 +32,10 @@ export async function resolveQuery(gql: GraphQLService, info: GraphQLResolveInfo
 			collection = collection.slice(0, -6);
 		}
 
-		let isByVersion = false;
+		query = await getQuery(args, gql.schema, selections, info.variableValues, gql.accountability, collection);
 
 		if (collection.endsWith('_by_version') && collection in gql.schema.collections === false) {
 			collection = collection.slice(0, -11);
-			isByVersion = true;
-		}
-
-		query = await getQuery(args, gql.schema, selections, info.variableValues, gql.accountability, collection);
-
-		if (isByVersion) {
 			query.versionRaw = true;
 		}
 	}
