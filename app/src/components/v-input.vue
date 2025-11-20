@@ -321,11 +321,11 @@ function useInvalidRange() {
 		const modelValue = Number(props.modelValue);
 
 		if (props.min && modelValue && modelValue < props.min) {
-			return t('invalid_range_min', { value: props.modelValue });
+			return t('invalid_range_min', { value: props.min });
 		}
 
 		if (props.max && props.modelValue && modelValue > props.max) {
-			return t('invalid_range_max', { value: props.modelValue });
+			return t('invalid_range_max', { value: props.max });
 		}
 
 		return null;
