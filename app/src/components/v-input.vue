@@ -120,11 +120,11 @@ const classes = computed(() => [
 ]);
 
 const isStepUpAllowed = computed(() => {
-	return props.disabled === false && (props.max === undefined || parseInt(String(props.modelValue), 10) < props.max);
+	return props.disabled === false && (props.max === undefined || Number(props.modelValue) < props.max);
 });
 
 const isStepDownAllowed = computed(() => {
-	return props.disabled === false && (props.min === undefined || parseInt(String(props.modelValue), 10) > props.min);
+	return props.disabled === false && (props.min === undefined || Number(props.modelValue) > props.min);
 });
 
 const { isInvalidInput, tooltipInvalidInput, setInvalidInput } = useInvalidInput();
