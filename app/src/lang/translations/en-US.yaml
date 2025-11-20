@@ -77,7 +77,6 @@ invalid_input: Invalid Input
 not_a_number: Not a Number
 invalid_range_min: Value is below minimum of {value}
 invalid_range_max: Value exceeds maximum of {value}
-value_below_minimum: Value is below minimum of {min}
 maps: Maps
 switch_user: Switch User
 item_creation: Item Creation
