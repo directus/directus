@@ -5,9 +5,9 @@ export function sieveFunctions(data: unknown): unknown {
 		return data.map(sieveFunctions);
 	} else if (data instanceof Error) {
 		return {
-			name: data.name,
-			message: data.message,
-			stack: data.stack,
+			name: sieveFunctions(data.name),
+			message: sieveFunctions(data.message),
+			stack: sieveFunctions(data.stack),
 			...Object.fromEntries(Object.entries(data).map(([key, value]) => [key, sieveFunctions(value)])),
 		};
 	} else if (typeof data === 'object' && data !== null) {
