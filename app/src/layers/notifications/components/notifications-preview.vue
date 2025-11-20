@@ -3,7 +3,7 @@ import { useNotificationsStore } from '@/stores/notifications';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
-import NotificationItem from '../../../layers/notifications/components/notification-item.vue';
+import NotificationItem from './notification-item.vue';
 import SidebarButton from './sidebar-button.vue';
 
 const active = ref(false);

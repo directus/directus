@@ -1,16 +1,15 @@
 <script setup lang="ts">
+import { NotificationDialogs, NotificationsGroup } from '@/layers/notifications';
+import LivePreview from '@/views/private/components/live-preview.vue';
+import ModuleBar from '@/views/private/components/module-bar.vue';
+import { useHead } from '@unhead/vue';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { useHead } from '@unhead/vue';
-import ModuleBar from '@/views/private/components/module-bar.vue';
-import NotificationDialogs from '@/views/private/components/notification-dialogs.vue';
-import NotificationsGroup from '@/views/private/components/notifications-group.vue';
-import LivePreview from '@/views/private/components/live-preview.vue';
 import EditingLayer from '../components/editing-layer.vue';
+import type { NavigationData } from '../types';
 import { getUrlRoute } from '../utils/get-url-route';
 import { sameOrigin } from '../utils/same-origin';
-import type { NavigationData } from '../types';
 
 const { dynamicUrl, invalidUrl } = defineProps<{
 	urls: string[];
