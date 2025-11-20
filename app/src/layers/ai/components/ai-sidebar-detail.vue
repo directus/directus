@@ -26,7 +26,7 @@ useShortcut('meta+j', () => {
 <template>
 	<CollapsibleRoot
 		v-model:open="aiStore.chatOpen"
-		v-tooltip.left="!aiStore.chatOpen && `${$t('ai_chat')} (${translateShortcut(['meta', 'j'])})`"
+		v-tooltip.left="sidebarStore.collapsed && `${$t('ai_chat')} (${translateShortcut(['meta', 'j'])})`"
 		class="collapsible-root"
 	>
 		<CollapsibleTrigger class="collapsible-trigger">
