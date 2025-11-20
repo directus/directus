@@ -198,7 +198,7 @@ export class AuthenticationService {
 			}
 		}
 
-		const roles = await fetchRolesTree(user.role, this.knex);
+		const roles = await fetchRolesTree(user.role, { knex: this.knex });
 
 		const globalAccess = await fetchGlobalAccess(
 			{ roles, user: user.id, ip: this.accountability?.ip ?? null },
@@ -357,7 +357,7 @@ export class AuthenticationService {
 			}
 		}
 
-		const roles = await fetchRolesTree(record.user_role, this.knex);
+		const roles = await fetchRolesTree(record.user_role, { knex: this.knex });
 
 		const globalAccess = await fetchGlobalAccess(
 			{ user: record.user_id, roles, ip: this.accountability?.ip ?? null },

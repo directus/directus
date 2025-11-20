@@ -54,6 +54,7 @@
 		"@types/node": "catalog:",
 		"@types/tmp": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
+		"knex": "catalog:",
 		"tmp": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",

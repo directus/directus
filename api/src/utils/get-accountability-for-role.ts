@@ -22,7 +22,7 @@ export async function getAccountabilityForRole(
 			app: true,
 		});
 	} else {
-		const roles = await fetchRolesTree(role, context.database);
+		const roles = await fetchRolesTree(role, { knex: context.database });
 
 		// The roles tree should always include the passed role. If it doesn't, it's because it
 		// couldn't be read from the database and therefore doesn't exist
