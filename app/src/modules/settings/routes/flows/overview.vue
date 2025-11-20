@@ -89,7 +89,6 @@ function navigateToFlow({ item: flow, event }: { item: FlowRaw; event: MouseEven
 	const route = `/settings/flows/${flow.id}`;
 
 	if (event.ctrlKey || event.metaKey || event.button === 1) {
-		event.preventDefault();
 		window.open(router.resolve(route).href, '_blank');
 	} else {
 		router.push(route);
