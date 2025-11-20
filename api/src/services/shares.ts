@@ -40,6 +40,18 @@ export class SharesService extends ItemsService {
 					knex: this.knex,
 				},
 			);
+
+			// ensure public users cannot set a different role escalating their privilege when sharing
+			if (
+				this.accountability.user === null &&
+				this.accountability.role === null &&
+				this.accountability.admin === false &&
+				'role' in data && data['role'] !== null
+			) {
+				throw new ForbiddenError({
+					reason: `You don't have permission to set role "${data['role']}" for the share or it does not exist.`,
+				});
+			}
 		}
 
 		return super.createOne(data, opts);

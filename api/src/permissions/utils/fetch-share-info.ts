@@ -8,7 +8,7 @@ export interface ShareInfo {
 	user_created: {
 		id: string;
 		role: string;
-	};
+	} | null;
 }
 
 export const fetchShareInfo = withCache('share-info', _fetchShareInfo);
