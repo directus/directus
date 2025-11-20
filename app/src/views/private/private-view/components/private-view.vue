@@ -15,13 +15,11 @@ export interface PrivateViewProps {
 </script>
 
 <script setup lang="ts">
+import { NotificationDialogs, NotificationsDrawer, NotificationsGroup } from '@/layers/notifications';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { useCookies } from '@vueuse/integrations/useCookies';
 import { computed, ref } from 'vue';
-import NotificationDialogs from '../../components/notification-dialogs.vue';
-import NotificationsDrawer from '../../components/notifications-drawer.vue';
-import NotificationsGroup from '../../components/notifications-group.vue';
 import { useSidebarStore } from '../stores/sidebar';
 import PrivateViewNoAppAccess from './private-view-no-app-access.vue';
 import PrivateViewRoot from './private-view-root.vue';
