@@ -3,13 +3,14 @@ import { isPlainObject } from 'lodash-es';
 import assert from 'node:assert';
 import { getRelationInfo, type RelationInfo } from '../get-relation-info.js';
 import { InvalidQueryError } from '@directus/errors';
+import { unknown } from 'zod';
 
 /**
  * Allows to deep map the data like a response or delta changes with collection, field and relation context for each entry.
  * Bottom to Top depth first mapping of values.
  */
 export function deepMapWithSchema(
-	object: Record<string, any>,
+	object: Record<string, unknown>,
 	callback: (
 		entry: [key: string | number, value: unknown],
 		context: {
@@ -18,7 +19,7 @@ export function deepMapWithSchema(
 			relation: Relation | null;
 			leaf: boolean;
 			relationType: RelationInfo['relationType'] | null;
-			object: Record<string, any>;
+			object: Record<string, unknown>;
 		},
 	) => [key: string | number, value: unknown] | undefined,
 	context: {
@@ -36,8 +37,17 @@ export function deepMapWithSchema(
 		/** If set to true, will throw away fields that are not in the schema */
 		omitUnknownFields?: boolean;
 	},
-): any {
+): unknown {
 	const collection = context.schema.collections[context.collection]!;
+	let primaryKeyMapped = false;
+
+	if (options?.mapPrimaryKeys) {
+		object = {
+			[collection.primary]: object,
+		};
+
+		primaryKeyMapped = true;
+	}
 
 	assert(
 		isPlainObject(object) && typeof object === 'object' && object !== null,
@@ -52,7 +62,7 @@ export function deepMapWithSchema(
 		fields = Object.keys(object).map((key) => [key, collection.fields[key]!]);
 	}
 
-	return Object.fromEntries(
+	const result = Object.fromEntries(
 		fields
 			.map(([key, field]) => {
 				let value = object[key];
@@ -80,15 +90,9 @@ export function deepMapWithSchema(
 							break;
 
 						case 'o2m': {
-							const primaryKeyField = context.schema.collections[relationInfo!.relation!.collection]!.primary;
-
 							function map(childValue: any) {
-								if (!isPlainObject(childValue) || typeof childValue !== 'object' || childValue === null) {
-									if (!options?.mapPrimaryKeys) return childValue;
-
-									childValue = {
-										[primaryKeyField]: childValue,
-									};
+								if (!isObject(childValue)) {
+									return childValue;
 								}
 
 								leaf = false;
@@ -151,11 +155,17 @@ export function deepMapWithSchema(
 			})
 			.filter((f) => f) as any[],
 	);
+
+	if (primaryKeyMapped) {
+		return result[collection.primary];
+	}
+
+	return result;
 }
 
 // TODO: Figure out a way to reduce code duplication with deepMapWithSchema
 export async function asyncDeepMapWithSchema(
-	object: Record<string, any>,
+	object: unknown,
 	callback: (
 		entry: [key: string | number, value: unknown],
 		context: {
@@ -164,7 +174,7 @@ export async function asyncDeepMapWithSchema(
 			relation: Relation | null;
 			leaf: boolean;
 			relationType: RelationInfo['relationType'] | null;
-			object: Record<string, any>;
+			object: Record<string, unknown>;
 		},
 	) => Promise<[key: string | number, value: unknown] | undefined>,
 	context: {
@@ -182,13 +192,19 @@ export async function asyncDeepMapWithSchema(
 		/** If set to true, will throw away fields that are not in the schema */
 		omitUnknownFields?: boolean;
 	},
-): Promise<any> {
+): Promise<unknown> {
 	const collection = context.schema.collections[context.collection]!;
+	let primaryKeyMapped = false;
 
-	assert(
-		isPlainObject(object) && typeof object === 'object' && object !== null,
-		`DeepMapResponse only works on objects, received ${JSON.stringify(object)}`,
-	);
+	if (options?.mapPrimaryKeys) {
+		object = {
+			[collection.primary]: object,
+		};
+
+		primaryKeyMapped = true;
+	}
+
+	assert(isObject(object), `DeepMapResponse only works on objects, received ${JSON.stringify(object)}`);
 
 	let fields: [string, FieldOverview][];
 
@@ -198,7 +214,7 @@ export async function asyncDeepMapWithSchema(
 		fields = Object.keys(object).map((key) => [key, collection.fields[key]!]);
 	}
 
-	return Object.fromEntries(
+	const result = Object.fromEntries(
 		(
 			await Promise.all(
 				fields.map(async ([key, field]) => {
@@ -227,16 +243,8 @@ export async function asyncDeepMapWithSchema(
 								break;
 
 							case 'o2m': {
-								const primaryKeyField = context.schema.collections[relationInfo!.relation!.collection]!.primary;
-
 								async function map(childValue: any) {
-									if (!isPlainObject(childValue) || typeof childValue !== 'object' || childValue === null) {
-										if (!options?.mapPrimaryKeys) return childValue;
-
-										childValue = {
-											[primaryKeyField]: childValue,
-										};
-									}
+									if (isObject(childValue) && !options?.mapPrimaryKeys) return childValue;
 
 									leaf = false;
 									return await asyncDeepMapWithSchema(
@@ -253,11 +261,11 @@ export async function asyncDeepMapWithSchema(
 
 								if (Array.isArray(value)) {
 									value = await Promise.all((value as any[]).map(map));
-								} else if (options?.detailedUpdateSyntax && isPlainObject(value)) {
+								} else if (options?.detailedUpdateSyntax && isDetailedUpdateSyntax(value)) {
 									value = {
-										create: await Promise.all(value['create']?.map(map)),
-										update: await Promise.all(value['update']?.map(map)),
-										delete: await Promise.all(value['delete']?.map(map)),
+										create: await Promise.all(value['create'].map(map)),
+										update: await Promise.all(value['update'].map(map)),
+										delete: await Promise.all(value['delete'].map(map)),
 									};
 								}
 
@@ -299,4 +307,23 @@ export async function asyncDeepMapWithSchema(
 			)
 		).filter((f) => f) as any[],
 	);
+
+	if (primaryKeyMapped) {
+		return result[collection.primary];
+	}
+
+	return result;
+}
+
+function isDetailedUpdateSyntax(value: unknown): value is { create: unknown[]; update: unknown[]; delete: unknown[] } {
+	return (
+		isObject(value) &&
+		Array.isArray(value['create']) &&
+		Array.isArray(value['update']) &&
+		Array.isArray(value['delete'])
+	);
+}
+
+function isObject(value: unknown): value is Record<string, unknown> {
+	return isPlainObject(value) && typeof value === 'object' && value !== null;
 }
