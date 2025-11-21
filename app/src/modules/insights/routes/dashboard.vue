@@ -194,13 +194,7 @@ const refreshInterval = computed({
 
 <template>
 	<insights-not-found v-if="!currentDashboard" />
-	<private-view v-else :title="currentDashboard.name">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon :name="currentDashboard.icon" />
-			</v-button>
-		</template>
-
+	<private-view v-else :title="currentDashboard.name" :icon="currentDashboard.icon">
 		<template #headline>
 			<v-breadcrumb :items="[{ name: $t('insights'), to: '/insights' }]" />
 		</template>
@@ -212,10 +206,11 @@ const refreshInterval = computed({
 					class="clear-changes"
 					rounded
 					icon
+					small
 					outlined
 					@click="cancelChanges"
 				>
-					<v-icon name="clear" />
+					<v-icon name="clear" small />
 				</v-button>
 
 				<v-button
@@ -224,8 +219,9 @@ const refreshInterval = computed({
 					icon
 					outlined
 					:to="`/insights/${currentDashboard.id}/+`"
+					small
 				>
-					<v-icon name="add" />
+					<v-icon name="add" small />
 				</v-button>
 
 				<v-button
@@ -233,10 +229,11 @@ const refreshInterval = computed({
 					:disabled="!hasEdits"
 					rounded
 					icon
+					small
 					:loading="saving"
 					@click="saveChanges"
 				>
-					<v-icon name="check" />
+					<v-icon name="check" small />
 				</v-button>
 			</template>
 
@@ -247,10 +244,11 @@ const refreshInterval = computed({
 					class="zoom-to-fit"
 					rounded
 					icon
+					small
 					outlined
 					@click="toggleZoomToFit"
 				>
-					<v-icon name="aspect_ratio" />
+					<v-icon name="aspect_ratio" small />
 				</v-button>
 
 				<v-button
@@ -260,9 +258,10 @@ const refreshInterval = computed({
 					rounded
 					icon
 					outlined
+					small
 					@click="toggleFullScreen"
 				>
-					<v-icon name="fullscreen" />
+					<v-icon name="fullscreen" small />
 				</v-button>
 
 				<v-button
@@ -271,10 +270,11 @@ const refreshInterval = computed({
 					rounded
 					icon
 					outlined
+					small
 					:disabled="!updateAllowed"
 					@click="editMode = !editMode"
 				>
-					<v-icon name="edit" />
+					<v-icon name="edit" small />
 				</v-button>
 			</template>
 		</template>

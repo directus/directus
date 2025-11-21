@@ -6,13 +6,7 @@ const userStore = useUserStore();
 </script>
 
 <template>
-	<private-view class="content-overview" :title="$t('content')">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon name="box" />
-			</v-button>
-		</template>
-
+	<private-view class="content-overview" :title="$t('content')" icon="box">
 		<template #navigation>
 			<content-navigation />
 		</template>

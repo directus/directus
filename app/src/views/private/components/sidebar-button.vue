@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useAppStore } from '@directus/stores';
-import { toRefs } from 'vue';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
+
+const sidebarStore = useSidebarStore();
 
 withDefaults(
 	defineProps<{
@@ -16,9 +17,6 @@ withDefaults(
 defineEmits<{
 	(e: 'click', event: MouseEvent): void;
 }>();
-
-const appStore = useAppStore();
-const { sidebarOpen } = toRefs(appStore);
 </script>
 
 <template>
@@ -32,7 +30,7 @@ const { sidebarOpen } = toRefs(appStore);
 		<div class="icon">
 			<v-icon :name="icon!" />
 		</div>
-		<div v-if="sidebarOpen" class="title">
+		<div v-if="!sidebarStore.collapsed" class="title">
 			<slot />
 		</div>
 	</component>

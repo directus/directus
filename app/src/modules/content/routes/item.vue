@@ -11,6 +11,7 @@ import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
+import PrivateView from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
@@ -23,7 +24,7 @@ import type { PrimaryKey } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter, useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
@@ -346,17 +347,6 @@ onBeforeUnmount(() => {
 	if (popupWindow) popupWindow.close();
 });
 
-function navigateBack() {
-	const backState = router.options.history.state.back;
-
-	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
-		router.back();
-		return;
-	}
-
-	router.push(collectionRoute.value);
-}
-
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [
 		{
@@ -522,12 +512,13 @@ function useCollectionRoute() {
 		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
 	/>
 
-	<private-view
+	<PrivateView
 		v-else
 		v-model:split-view="splitView"
 		:class="{ 'has-content-versioning': shouldShowVersioning }"
 		:split-view-min-width="310"
-		:title="title"
+		:title
+		show-back
 	>
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
 			<h1 class="type-title">
@@ -545,32 +536,6 @@ function useCollectionRoute() {
 					:template="collectionInfo.meta!.display_template"
 				/>
 			</h1>
-		</template>
-
-		<template #title-outer:prepend>
-			<v-button
-				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				disabled
-			>
-				<v-icon :name="collectionInfo.icon" />
-			</v-button>
-
-			<v-button
-				v-else
-				v-tooltip.bottom="$t('back')"
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				exact
-				@click="navigateBack"
-			>
-				<v-icon name="arrow_back" />
-			</v-button>
 		</template>
 
 		<template #headline>
@@ -608,9 +573,10 @@ function useCollectionRoute() {
 				icon
 				class="action-preview"
 				:secondary="livePreviewMode === null"
+				small
 				@click="toggleSplitView"
 			>
-				<v-icon name="visibility" outline />
+				<v-icon name="visibility" outline small />
 			</v-button>
 
 			<v-dialog
@@ -629,9 +595,10 @@ function useCollectionRoute() {
 						class="action-delete"
 						secondary
 						:disabled="item === null || deleteAllowed !== true"
+						small
 						@click="on"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" outline small />
 					</v-button>
 				</template>
 
@@ -664,9 +631,10 @@ function useCollectionRoute() {
 						icon
 						secondary
 						:disabled="item === null || archiveAllowed !== true"
+						small
 						@click="on"
 					>
-						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline />
+						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline small />
 					</v-button>
 				</template>
 
@@ -691,9 +659,10 @@ function useCollectionRoute() {
 				:tooltip="saveAllowed ? $t('save') : $t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
+				small
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" />
+				<v-icon name="check" small />
 
 				<template #append-outer>
 					<save-options
@@ -713,9 +682,10 @@ function useCollectionRoute() {
 				:tooltip="$t('save_version')"
 				:loading="saveVersionLoading"
 				:disabled="!isSavable"
+				small
 				@click="saveVersionAction('stay')"
 			>
-				<v-icon name="beenhere" />
+				<v-icon name="beenhere" small />
 
 				<template #append-outer>
 					<v-menu v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true" show-arrow>
@@ -809,7 +779,7 @@ function useCollectionRoute() {
 				<flow-sidebar-detail v-if="currentVersion === null" :manual-flows />
 			</template>
 		</template>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>
@@ -828,7 +798,7 @@ function useCollectionRoute() {
 	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		padding: var(--content-padding);
 		padding-block-end: var(--content-padding-bottom);
 	}
@@ -864,7 +834,7 @@ function useCollectionRoute() {
 			inset-block-start: 4px;
 		}
 
-		@media (min-width: 600px) {
+		@media (width > 640px) {
 			opacity: 1;
 		}
 	}
@@ -879,14 +849,13 @@ function useCollectionRoute() {
 		opacity: 1;
 		pointer-events: auto;
 	}
+	:deep(.header-bar.small .title-container .headline) {
+		opacity: 1;
+		pointer-events: auto;
+	}
 	:deep(.header-bar.small.shadow .title-container .headline) {
 		opacity: 1;
-	}
-}
-
-.headline-wrapper.has-version-menu .headline-breadcrumb {
-	@media (max-width: 600px) {
-		display: none;
+		pointer-events: auto;
 	}
 }
 </style>

@@ -47,6 +47,7 @@
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@directus/validation": "workspace:*",
+		"@directus/vue-split-panel": "catalog:",
 		"@editorjs/attaches": "catalog:",
 		"@editorjs/checklist": "catalog:",
 		"@editorjs/code": "catalog:",

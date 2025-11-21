@@ -54,17 +54,12 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<private-view :title="$t('settings_ai')">
+	<private-view :title="$t('settings_ai')" icon="smart_toy">
 		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="smart_toy" />
-			</v-button>
-		</template>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="!hasEdits" :loading="saving" @click="save">
-				<v-icon name="check" />
+			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!hasEdits" :loading="saving" small @click="save">
+				<v-icon name="check" small />
 			</v-button>
 		</template>
 

@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import api from '@/api';
-import { useExtension } from '@/composables/use-extension';
+import { useFlows } from '@/composables/use-flows';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
-import { useFlows } from '@/composables/use-flows';
 import { usePermissionsStore } from '@/stores/permissions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -11,19 +10,19 @@ import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-det
 import BookmarkAdd from '@/views/private/components/bookmark-add.vue';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
+import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useCollection, useLayout } from '@directus/composables';
+import { isSystemCollection } from '@directus/system-data';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
-import { isSystemCollection } from '@directus/system-data';
-import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 
 type Item = {
 	[field: string]: any;
@@ -79,8 +78,6 @@ const {
 } = useBatch();
 
 const { bookmarkDialogActive, creatingBookmark, createBookmark } = useBookmarks();
-
-const currentLayout = useExtension('layout', layout);
 
 watch(
 	collection,
@@ -310,19 +307,13 @@ function clearFilters() {
 		:clear-filters="clearFilters"
 	>
 		<content-not-found v-if="!currentCollection || isSystemCollection(collection)" />
+
 		<private-view
 			v-else
 			:title="bookmark ? bookmarkTitle : currentCollection.name"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
-			:sidebar-shadow="currentLayout?.sidebarShadow"
+			:icon="archive ? 'archive' : currentCollection.icon"
+			:icon-color="currentCollection.color"
 		>
-			<template #title-outer:prepend>
-				<v-button class="header-icon" :class="{ archive }" rounded icon secondary disabled>
-					<v-icon :name="archive ? 'archive' : currentCollection.icon" :color="currentCollection.color" />
-				</v-button>
-			</template>
-
 			<template #headline>
 				<v-breadcrumb v-if="bookmark" :items="breadcrumb" />
 				<v-breadcrumb v-else :items="[{ name: $t('content'), to: '/content' }]" />
@@ -338,7 +329,14 @@ function clearFilters() {
 						@save="createBookmark"
 					>
 						<template #activator="{ on }">
-							<v-icon v-tooltip.right="$t('create_bookmark')" class="toggle" clickable name="bookmark" @click="on" />
+							<v-icon
+								v-tooltip.right="$t('create_bookmark')"
+								small
+								class="toggle"
+								clickable
+								name="bookmark"
+								@click="on"
+							/>
 						</template>
 					</bookmark-add>
 
@@ -362,7 +360,14 @@ function clearFilters() {
 						@save="createBookmark"
 					>
 						<template #activator="{ on }">
-							<v-icon v-tooltip.bottom="$t('create_bookmark')" class="toggle" name="bookmark" clickable @click="on" />
+							<v-icon
+								v-tooltip.bottom="$t('create_bookmark')"
+								small
+								class="toggle"
+								name="bookmark"
+								clickable
+								@click="on"
+							/>
 						</template>
 					</bookmark-add>
 
@@ -372,6 +377,7 @@ function clearFilters() {
 						name="settings_backup_restore"
 						clickable
 						class="clear"
+						small
 						@click="clearLocalSave"
 					/>
 				</div>
@@ -382,7 +388,7 @@ function clearFilters() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" :collection="collection" />
+				<search-input v-model="search" v-model:filter="filter" :collection="collection" small />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
@@ -393,9 +399,10 @@ function clearFilters() {
 							icon
 							class="action-delete"
 							secondary
+							small
 							@click="on"
 						>
-							<v-icon name="delete" outline />
+							<v-icon name="delete" outline small />
 						</v-button>
 					</template>
 
@@ -431,9 +438,10 @@ function clearFilters() {
 							rounded
 							icon
 							secondary
+							small
 							@click="on"
 						>
-							<v-icon name="archive" outline />
+							<v-icon name="archive" outline small />
 						</v-button>
 					</template>
 
@@ -458,9 +466,10 @@ function clearFilters() {
 					icon
 					secondary
 					:disabled="batchEditAllowed === false"
+					small
 					@click="batchEditActive = true"
 				>
-					<v-icon name="edit" outline />
+					<v-icon name="edit" outline small />
 				</v-button>
 
 				<v-button
@@ -469,8 +478,9 @@ function clearFilters() {
 					icon
 					:to="addNewLink"
 					:disabled="createAllowed === false"
+					small
 				>
-					<v-icon name="add" />
+					<v-icon name="add" small />
 				</v-button>
 
 				<flow-dialogs v-bind="flowDialogsContext" />
@@ -598,7 +608,6 @@ function clearFilters() {
 	.saved,
 	.clear {
 		display: inline-block;
-		margin-inline-start: 8px;
 	}
 
 	.add,

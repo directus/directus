@@ -138,17 +138,6 @@ const archiveTooltip = computed(() => {
 useShortcut('meta+s', saveAndStay, form);
 useShortcut('meta+shift+s', saveAndAddNew, form);
 
-function navigateBack() {
-	const backState = router.options.history.state.back;
-
-	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
-		router.back();
-		return;
-	}
-
-	router.push('/users');
-}
-
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [
 		{
@@ -279,13 +268,7 @@ function revert(values: Record<string, any>) {
 </script>
 
 <template>
-	<private-view :title="title">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="navigateBack">
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
-
+	<private-view :title="title" show-back>
 		<template #headline>
 			<v-breadcrumb :items="breadcrumb" />
 		</template>
@@ -305,9 +288,10 @@ function revert(values: Record<string, any>) {
 						class="action-delete"
 						secondary
 						:disabled="item === null || deleteAllowed !== true"
+						small
 						@click="on"
 					>
-						<v-icon name="delete" />
+						<v-icon name="delete" small />
 					</v-button>
 				</template>
 
@@ -340,9 +324,10 @@ function revert(values: Record<string, any>) {
 						icon
 						secondary
 						:disabled="item === null || archiveAllowed !== true"
+						small
 						@click="on"
 					>
-						<v-icon :name="isArchived ? 'unarchive' : 'archive'" />
+						<v-icon :name="isArchived ? 'unarchive' : 'archive'" small />
 					</v-button>
 				</template>
 
@@ -366,9 +351,10 @@ function revert(values: Record<string, any>) {
 				icon
 				:loading="saving"
 				:disabled="!isSavable"
+				small
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" />
+				<v-icon name="check" small />
 
 				<template #append-outer>
 					<save-options
@@ -515,7 +501,7 @@ function revert(values: Record<string, any>) {
 			object-fit: cover;
 		}
 
-		@media (min-width: 600px) {
+		@media (width > 640px) {
 			inline-size: 144px;
 			block-size: 144px;
 			margin-inline-end: 22px;
@@ -565,7 +551,7 @@ function revert(values: Record<string, any>) {
 		}
 	}
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		block-size: 188px;
 
 		.user-box-content .location {

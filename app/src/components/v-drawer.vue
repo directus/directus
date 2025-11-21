@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import VDrawerHeader from '@/components/v-drawer-header.vue';
 import { translateShortcut } from '@/utils/translate-shortcut';
-import HeaderBar from '@/views/private/components/header-bar.vue';
-import { computed, provide, ref } from 'vue';
+import { useScroll } from '@vueuse/core';
+import { computed, provide, ref, useTemplateRef } from 'vue';
 import { type ApplyShortcut } from './v-dialog.vue';
 import VResizeable from './v-resizeable.vue';
 
@@ -11,11 +12,13 @@ export interface Props {
 	modelValue?: boolean;
 	persistent?: boolean;
 	icon?: string;
+	/**
+	 * Color of the icon displayed in the drawer header.
+	 */
+	iconColor?: string;
 	sidebarResizeable?: boolean;
 	sidebarLabel?: string;
 	cancelable?: boolean;
-	headerShadow?: boolean;
-	smallHeader?: boolean;
 	applyShortcut?: ApplyShortcut;
 }
 
@@ -25,17 +28,15 @@ const props = withDefaults(defineProps<Props>(), {
 	persistent: false,
 	icon: 'box',
 	cancelable: true,
-	headerShadow: true,
-	smallHeader: false,
 });
 
 const emit = defineEmits(['cancel', 'apply', 'update:modelValue']);
 
 const localActive = ref(false);
 
-const mainEl = ref<Element>();
+const scrollContainer = useTemplateRef('scroll-container');
 
-provide('main-element', mainEl);
+provide('main-element', scrollContainer);
 
 const sidebarWidth = 220;
 // Half of the space of the drawer (856 / 2 = 428)
@@ -50,6 +51,10 @@ const internalActive = computed({
 		emit('update:modelValue', newActive);
 	},
 });
+
+const { y } = useScroll(scrollContainer);
+
+const showHeaderShadow = computed(() => y.value > 0);
 </script>
 
 <template>
@@ -94,14 +99,8 @@ const internalActive = computed({
 					</nav>
 				</v-resizeable>
 
-				<main ref="mainEl" :class="{ main: true, 'small-search-input': $slots.sidebar }">
-					<header-bar
-						:title="title"
-						primary-action-icon="close"
-						:small="smallHeader"
-						:shadow="headerShadow"
-						@primary="$emit('cancel')"
-					>
+				<main ref="scroll-container" :class="{ main: true, 'small-search-input': $slots.sidebar }">
+					<v-drawer-header :title="title" :shadow="showHeaderShadow" :icon="icon" :icon-color="iconColor">
 						<template #title><slot name="title" /></template>
 						<template #headline>
 							<slot name="subtitle">
@@ -110,18 +109,14 @@ const internalActive = computed({
 						</template>
 
 						<template #title-outer:prepend>
-							<slot name="title-outer:prepend">
-								<v-button class="header-icon" rounded icon secondary disabled>
-									<v-icon :name="icon" />
-								</v-button>
-							</slot>
+							<slot name="title-outer:prepend" />
 						</template>
 
 						<template #actions:prepend><slot name="actions:prepend" /></template>
 						<template #actions><slot name="actions" /></template>
 
 						<template #title:append><slot name="header:append" /></template>
-					</header-bar>
+					</v-drawer-header>
 
 					<v-detail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel || $t('sidebar')">
 						<nav>
@@ -235,7 +230,7 @@ const internalActive = computed({
 			overflow: auto;
 			scroll-padding-block-start: 100px;
 
-			@media (min-width: 600px) {
+			@media (width > 640px) {
 				--content-padding: 32px;
 				--content-padding-bottom: 132px;
 			}
