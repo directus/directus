@@ -1,11 +1,15 @@
+import { useEnv } from '@directus/env';
 import { Url } from '../../utils/url.js';
+
 /**
- * Generate callback URL from origin
+ * Generate callback URL from public URL
  *
- * @param string Origin URL
  * @param providerName OAuth provider name
- * @returns url
+ * @returns callback URL
  */
-export function generateCallbackUrl(providerName: string, originUrl: string): string {
-	return new Url(originUrl).addPath('auth', 'login', providerName, 'callback').toString();
+export function generateCallbackUrl(providerName: string): string {
+	const env = useEnv();
+	const publicUrl = env['PUBLIC_URL'] as string;
+
+	return new Url(publicUrl).addPath('auth', 'login', providerName, 'callback').toString();
 }

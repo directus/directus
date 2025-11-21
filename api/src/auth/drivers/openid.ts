@@ -448,7 +448,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			const callbackUrl = generateCallbackUrl(providerName, `${req.protocol}://${req.get('host')}`);
+			const callbackUrl = generateCallbackUrl(providerName);
 
 			const token = jwt.sign(
 				{
