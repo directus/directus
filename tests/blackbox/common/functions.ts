@@ -81,6 +81,43 @@ export async function SaveVersion(
 	return response.body.data;
 }
 
+export async function CompareVersion(
+	vendor: Vendor,
+	options: {
+		id: string;
+	},
+) {
+	const response = await request(getUrl(vendor))
+		.get(`/versions/${options.id}/compare`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
+
+	return response.body.data;
+}
+
+export async function PromoteVersion(
+	vendor: Vendor,
+	options: {
+		id: string;
+		hash: string;
+		fields?: string[];
+	},
+) {
+	const payload: { mainHash: string; fields?: string[] } = {
+		mainHash: options.hash,
+	};
+
+	if (options.fields) {
+		payload.fields = options.fields;
+	}
+
+	const response = await request(getUrl(vendor))
+		.post(`/versions/${options.id}/promote`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
+		.send(payload);
+
+	return response.body.data;
+}
+
 export async function CreateRole(vendor: Vendor, options: OptionsCreateRole) {
 	// Action
 	const roleResponse = await request(getUrl(vendor))
@@ -156,6 +193,7 @@ export type OptionsCreateCollection = {
 	env?: Env;
 	// Automatically removed params
 	primaryKeyType?: PrimaryKeyType;
+	systemFields?: Array<'date_created' | 'date_updated'>;
 };
 
 export async function CreateCollection(vendor: Vendor, options: Partial<OptionsCreateCollection>) {
@@ -205,8 +243,44 @@ export async function CreateCollection(vendor: Vendor, options: Partial<OptionsC
 			break;
 	}
 
-	if (options.primaryKeyType) {
-		delete options.primaryKeyType;
+	for (const systemField of new Set(options.systemFields ?? [])) {
+		if (systemField === 'date_created') {
+			options.fields.push({
+				field: 'date_created',
+				type: 'timestamp',
+				meta: {
+					special: ['date-created'],
+					interface: 'datetime',
+					readonly: true,
+					hidden: true,
+					width: 'half',
+					display: 'datetime',
+					display_options: { relative: true },
+				},
+				schema: {},
+			});
+		} else if (systemField === 'date_updated') {
+			options.fields.push({
+				field: 'date_updated',
+				type: 'timestamp',
+				meta: {
+					special: ['date-updated'],
+					interface: 'datetime',
+					readonly: true,
+					hidden: true,
+					width: 'half',
+					display: 'datetime',
+					display_options: { relative: true },
+				},
+				schema: {},
+			});
+		}
+	}
+
+	for (const autoRemovedKey of ['primaryKeyType', 'systemFields']) {
+		if (autoRemovedKey in options) {
+			delete options[autoRemovedKey as keyof OptionsCreateCollection];
+		}
 	}
 
 	// Action

@@ -6,6 +6,7 @@ import {
 	CreateFieldM2O,
 	CreateFieldO2M,
 	DeleteCollection,
+	type OptionsCreateCollection,
 } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { it } from 'vitest';
@@ -65,15 +66,21 @@ export const seedDBStructure = () => {
 
 			// // Create all collections
 			await Promise.all(
-				Object.values(c).map((collection) =>
-					CreateCollection(vendor, {
+				Object.values(c).map((collection) => {
+					const payload: OptionsCreateCollection = {
 						collection: collection,
 						primaryKeyType: 'integer',
 						meta: {
 							versioning: true,
 						},
-					}),
-				),
+					};
+
+					if (collection === c.links) {
+						payload.systemFields = ['date_created', 'date_updated'];
+					}
+
+					return CreateCollection(vendor, payload);
+				}),
 			);
 
 			await Promise.all(fields.map((field) => CreateField(vendor, field)));
