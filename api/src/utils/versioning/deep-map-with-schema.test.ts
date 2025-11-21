@@ -692,3 +692,32 @@ test('map with non-existent fields', () => {
 		},
 	});
 });
+
+test('map primary key fields', () => {
+	const object = {
+		id: 2,
+		title: 4,
+		author: { id: 6 },
+		links: [8, 10],
+	};
+
+	const result = deepMapWithSchema(
+		object,
+		([key, value], context) => {
+			if (key === context.collection.primary && context.leaf) {
+				return [key, Number(value) + 1];
+			}
+
+			return [key, value];
+		},
+		{ schema: schema, collection: 'articles' },
+		{ mapPrimaryKeys: true },
+	);
+
+	expect(result).toEqual({
+		id: 3,
+		title: 4,
+		author: { id: 7 },
+		links: [9, 11],
+	});
+});

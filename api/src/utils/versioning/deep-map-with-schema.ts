@@ -3,14 +3,13 @@ import { isPlainObject } from 'lodash-es';
 import assert from 'node:assert';
 import { getRelationInfo, type RelationInfo } from '../get-relation-info.js';
 import { InvalidQueryError } from '@directus/errors';
-import { unknown } from 'zod';
 
 /**
  * Allows to deep map the data like a response or delta changes with collection, field and relation context for each entry.
  * Bottom to Top depth first mapping of values.
  */
 export function deepMapWithSchema(
-	object: Record<string, unknown>,
+	object: unknown,
 	callback: (
 		entry: [key: string | number, value: unknown],
 		context: {
@@ -41,7 +40,7 @@ export function deepMapWithSchema(
 	const collection = context.schema.collections[context.collection]!;
 	let primaryKeyMapped = false;
 
-	if (options?.mapPrimaryKeys) {
+	if (options?.mapPrimaryKeys && !isObject(object)) {
 		object = {
 			[collection.primary]: object,
 		};
@@ -49,10 +48,7 @@ export function deepMapWithSchema(
 		primaryKeyMapped = true;
 	}
 
-	assert(
-		isPlainObject(object) && typeof object === 'object' && object !== null,
-		`DeepMapResponse only works on objects, received ${JSON.stringify(object)}`,
-	);
+	assert(isObject(object), `DeepMapResponse only works on objects, received ${JSON.stringify(object)}`);
 
 	let fields: [string, FieldOverview][];
 
@@ -72,7 +68,7 @@ export function deepMapWithSchema(
 				const relationInfo = getRelationInfo(context.schema.relations, collection.collection, field.field);
 				let leaf = true;
 
-				if (relationInfo.relation && typeof value === 'object' && value !== null && isPlainObject(object)) {
+				if (relationInfo.relation && (!isPrimitive(value) || options?.mapPrimaryKeys)) {
 					switch (relationInfo.relationType) {
 						case 'm2o':
 							value = deepMapWithSchema(
@@ -91,7 +87,7 @@ export function deepMapWithSchema(
 
 						case 'o2m': {
 							function map(childValue: any) {
-								if (!isObject(childValue)) {
+								if (!isObject(childValue) && !options?.mapPrimaryKeys) {
 									return childValue;
 								}
 
@@ -110,11 +106,11 @@ export function deepMapWithSchema(
 
 							if (Array.isArray(value)) {
 								value = (value as any[]).map(map);
-							} else if (options?.detailedUpdateSyntax && isPlainObject(value)) {
+							} else if (options?.detailedUpdateSyntax && isDetailedUpdateSyntax(value)) {
 								value = {
-									create: value['create']?.map(map),
-									update: value['update']?.map(map),
-									delete: value['delete']?.map(map),
+									create: value.create.map(map),
+									update: value.update.map(map),
+									delete: value.delete.map(map),
 								};
 							}
 
@@ -124,7 +120,7 @@ export function deepMapWithSchema(
 						case 'a2o': {
 							const related_collection = object[relationInfo.relation.meta!.one_collection_field!];
 
-							if (!related_collection) {
+							if (!related_collection || typeof related_collection !== 'string') {
 								throw new InvalidQueryError({
 									reason: `When selecting '${collection.collection}.${field.field}', the field '${
 										collection.collection
@@ -196,7 +192,7 @@ export async function asyncDeepMapWithSchema(
 	const collection = context.schema.collections[context.collection]!;
 	let primaryKeyMapped = false;
 
-	if (options?.mapPrimaryKeys) {
+	if (options?.mapPrimaryKeys && !isObject(object)) {
 		object = {
 			[collection.primary]: object,
 		};
@@ -225,7 +221,7 @@ export async function asyncDeepMapWithSchema(
 					const relationInfo = getRelationInfo(context.schema.relations, collection.collection, field.field);
 					let leaf = true;
 
-					if (relationInfo.relation && typeof value === 'object' && value !== null && isPlainObject(object)) {
+					if (relationInfo.relation && (!isPrimitive(value) || options?.mapPrimaryKeys)) {
 						switch (relationInfo.relationType) {
 							case 'm2o':
 								value = await asyncDeepMapWithSchema(
@@ -244,7 +240,7 @@ export async function asyncDeepMapWithSchema(
 
 							case 'o2m': {
 								async function map(childValue: any) {
-									if (isObject(childValue) && !options?.mapPrimaryKeys) return childValue;
+									if (!isObject(childValue) && !options?.mapPrimaryKeys) return childValue;
 
 									leaf = false;
 									return await asyncDeepMapWithSchema(
@@ -263,9 +259,9 @@ export async function asyncDeepMapWithSchema(
 									value = await Promise.all((value as any[]).map(map));
 								} else if (options?.detailedUpdateSyntax && isDetailedUpdateSyntax(value)) {
 									value = {
-										create: await Promise.all(value['create'].map(map)),
-										update: await Promise.all(value['update'].map(map)),
-										delete: await Promise.all(value['delete'].map(map)),
+										create: await Promise.all(value.create.map(map)),
+										update: await Promise.all(value.update.map(map)),
+										delete: await Promise.all(value.delete.map(map)),
 									};
 								}
 
@@ -275,7 +271,7 @@ export async function asyncDeepMapWithSchema(
 							case 'a2o': {
 								const related_collection = object[relationInfo.relation.meta!.one_collection_field!];
 
-								if (!related_collection) {
+								if (!related_collection || typeof related_collection !== 'string') {
 									throw new InvalidQueryError({
 										reason: `When selecting '${collection.collection}.${field.field}', the field '${
 											collection.collection
@@ -326,4 +322,8 @@ function isDetailedUpdateSyntax(value: unknown): value is { create: unknown[]; u
 
 function isObject(value: unknown): value is Record<string, unknown> {
 	return isPlainObject(value) && typeof value === 'object' && value !== null;
+}
+
+function isPrimitive(value: unknown) {
+	return (typeof value !== 'object' && typeof value !== 'function') || value === null;
 }
