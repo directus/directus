@@ -20,8 +20,8 @@ import type { AuthDriverOptions, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { LocalAuthDriver } from './local.js';
+import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
 import { getSchema } from '../../utils/get-schema.js';
-import { isLoginRedirectAllowed } from '../utils/is-login-redirect-allowed.js';
 
 // Register the samlify schema validator
 samlify.setSchemaValidator(validator);
@@ -136,7 +136,7 @@ export function createSAMLAuthRouter(providerName: string) {
 			if (req.query['redirect']) {
 				const redirect = req.query['redirect'] as string;
 
-				if (!isLoginRedirectAllowed(providerName, `${req.protocol}://${req.hostname}`, redirect)) {
+				if (isLoginRedirectAllowed(redirect, providerName) === false) {
 					throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 				}
 
