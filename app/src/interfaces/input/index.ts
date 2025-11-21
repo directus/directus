@@ -146,7 +146,7 @@ export default defineInterface({
 			{
 				field: 'min',
 				name: '$t:interfaces.input.minimum_value',
-				type: 'integer',
+				type: field.type,
 				meta: {
 					width: 'half',
 					interface: 'input',
@@ -155,7 +155,7 @@ export default defineInterface({
 			{
 				field: 'max',
 				name: '$t:interfaces.input.maximum_value',
-				type: 'integer',
+				type: field.type,
 				meta: {
 					width: 'half',
 					interface: 'input',
@@ -164,7 +164,7 @@ export default defineInterface({
 			{
 				field: 'step',
 				name: '$t:interfaces.input.step_interval',
-				type: 'integer',
+				type: field.type,
 				meta: {
 					width: 'half',
 					interface: 'input',
