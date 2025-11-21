@@ -9,9 +9,16 @@ import {
 	ContentVersion,
 	Item,
 	PrimaryKey,
+	WebSocketCollabMessage,
 } from '@directus/types';
-import { isEqual } from 'lodash';
+import { capitalize, debounce, isEqual, throttle } from 'lodash';
 import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
+
+type InitMessage = Extract<ClientCollabMessage, { action: 'init' }>;
+type JoinMessage = Extract<ClientCollabMessage, { action: 'join' }>;
+type LeaveMessage = Extract<ClientCollabMessage, { action: 'leave' }>;
+type UpdateMessage = Extract<ClientCollabMessage, { action: 'update' }>;
+type FocusMessage = Extract<ClientCollabMessage, { action: 'focus' }>;
 
 export type CollabUser = {
 	id: string;
@@ -53,8 +60,17 @@ export function useCollab(
 	const roomId = ref<string | null>(null);
 	const connectionId = ref<ClientID | null>(null);
 	const users = ref<CollabUser[]>([]);
-	const focused = ref<Record<string, CollabUser>>({});
+	const focused = ref<Record<ClientID, string>>({});
 	const eventHandlers: RemoveEventHandler[] = [];
+
+	const messageReceivers = {
+		receiveJoin,
+		receiveFocus,
+		receiveInit,
+		receiveLeave,
+		receiveSave,
+		receiveUpdate,
+	};
 
 	onMounted(() => {
 		if (active) return;
@@ -76,6 +92,13 @@ export function useCollab(
 		}
 	});
 
+	watch(version, (newVersion, oldVersion) => {
+		if (newVersion?.key !== oldVersion?.key) {
+			leave();
+			join();
+		}
+	});
+
 	eventHandlers.push(
 		sdk.onWebSocket('open', () => {
 			connected.value = true;
@@ -94,23 +117,21 @@ export function useCollab(
 	);
 
 	function join() {
-		if (roomId.value || !collection.value || !item.value || item.value === '+') return;
+		if (roomId.value || !collection.value || item.value === '+') return;
 
 		sdk.sendMessage({
 			type: COLLAB,
 			action: 'join',
 			collection: collection.value,
-			item: String(item.value),
-			version: version.value,
+			item: item.value ? String(item.value) : null,
+			version: version.value?.key ?? null,
 			initialChanges: edits.value,
 		});
 	}
 
 	function leave() {
-		sdk.sendMessage({
-			type: COLLAB,
+		sendMessage({
 			action: 'leave',
-			room: roomId.value,
 		});
 
 		roomId.value = null;
@@ -122,180 +143,161 @@ export function useCollab(
 			if (
 				message.action === 'init' &&
 				message.collection === collection.value &&
-				message.item === String(item.value) &&
-				message.version === version.value
+				((!item.value && !message.item) || message.item === String(item.value)) &&
+				((!version.value && !message.version) || message.version === version.value?.key)
 			) {
-				roomId.value = message.room;
-				connectionId.value = message.connection;
-
-				if (!isEqual(message.changes, edits.value)) edits.value = message.changes;
-
-				if (message.users.length === 0) return;
-
-				const usersInfo = await sdk.request(
-					readUsers({
-						filter: {
-							id: {
-								_in: Array.from(new Set(message.users.map((user) => user.user))),
-							},
-						},
-						fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'],
-					}),
-				);
-
-				users.value = message.users
-					.map(({ user, color, connection }) => {
-						const info = usersInfo.find((u) => u.id === user) as any;
-
-						return {
-							...info,
-							color,
-							connection,
-						};
-					})
-					.sort((a, b) => {
-						if (a.connection === message.connection) return -1;
-						if (b.connection === message.connection) return 1;
-						return 0;
-					});
-
-				focused.value = Object.fromEntries(
-					Object.entries(message.focuses).map(([field, user]) => {
-						return [field, users.value.find((u) => u.id === user)!];
-					}),
-				);
+				receiveInit(message);
+				return;
 			}
 
 			if (!roomId.value || roomId.value !== message.room) return;
 
-			if (message.action === 'update') {
-				if ('changes' in message) {
-					if (!isEqual(message.changes, edits.value[message.field]))
-						edits.value = { ...edits.value, [message.field]: message.changes };
-				} else {
-					delete edits.value[message.field];
-				}
-			}
-
-			if (message.action === 'join') {
-				const existingInfo = users.value.find((user) => user.id === message.user);
-
-				const user = existingInfo
-					? existingInfo
-					: await sdk
-							.request<CollabUser>(
-								readUser(message.user, {
-									fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'],
-								}),
-							)
-							.catch(() => ({}));
-
-				users.value = [
-					...users.value,
-					{ ...user, id: message.user, color: message.color, connection: message.connection },
-				];
-			}
-
-			if (message.action === 'leave') {
-				users.value = users.value.filter((user) => user.connection !== message.connection);
-
-				focused.value = Object.fromEntries(
-					Object.entries(focused.value).filter(
-						([_, user]) => user?.connection && user.connection !== message.connection,
-					),
-				);
-			}
-
-			if (message.action === 'save') {
-				await getItem();
-
-				if (!initialValues.value) return;
-
-				for (const field of Object.keys(initialValues.value)) {
-					if (isEqual(initialValues.value[field], edits.value[field])) delete edits.value[field];
-				}
-			}
-
-			if (message.action === 'focus') {
-				if (connectionId.value === message.connection) return;
-
-				if (message.field) {
-					const user = users.value.find((user) => user.connection === message.connection);
-
-					if (user) focused.value = { ...focused.value, [message.field]: user };
-				} else {
-					focused.value = Object.fromEntries(
-						Object.entries(focused.value).filter(([_, user]) => user.connection !== message.connection),
-					);
-				}
-			}
+			messageReceivers[`receive${capitalize(message.action)}`](message as any);
 		}),
 	);
 
 	const collabContext = {
 		registerField(field: string) {
 			const focusedBy = computed(() => {
-				if (focused.value[field]?.connection === connectionId.value) return;
-				return focused.value[field];
+				const focusedBy = Object.entries(focused.value).find(([cid, f]) => cid !== connectionId.value && f === field);
+				if (!focusedBy) return;
+				return users.value.find((user) => user.connection === focusedBy[0]);
 			});
 
 			return {
 				onFieldUpdate: (value: unknown) => onFieldUpdate(field, value),
 				onFieldUnset: () => onFieldUnset(field),
-				onBlur,
+				onBlur: () => onFocus(null),
 				focusedBy,
 				onFocus: () => onFocus(field),
 			};
 		},
 	};
 
-	function onFieldUpdate(field: string, value: any) {
-		console.log('onFieldUpdate', field, value);
-		if (!roomId.value) return;
+	async function receiveInit(message: InitMessage) {
+		roomId.value = message.room;
+		connectionId.value = message.connection;
 
-		sdk.sendMessage({
-			type: COLLAB,
+		if (!isEqual(message.changes, edits.value)) edits.value = message.changes;
+
+		if (message.users.length === 0) return;
+
+		const usersInfo = await sdk.request(
+			readUsers({
+				filter: {
+					id: {
+						_in: Array.from(new Set(message.users.map((user) => user.user))),
+					},
+				},
+				fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'],
+			}),
+		);
+
+		users.value = message.users
+			.map(({ user, color, connection }) => {
+				const info = usersInfo.find((u) => u.id === user) as any;
+
+				return {
+					...info,
+					color,
+					connection,
+				};
+			})
+			.sort((a, b) => {
+				if (a.connection === message.connection) return -1;
+				if (b.connection === message.connection) return 1;
+				return 0;
+			});
+
+		focused.value = message.focuses;
+	}
+
+	function receiveUpdate(message: UpdateMessage) {
+		if ('changes' in message) {
+			if (!isEqual(message.changes, edits.value[message.field]))
+				edits.value = { ...edits.value, [message.field]: message.changes };
+		} else {
+			delete edits.value[message.field];
+		}
+	}
+
+	async function receiveJoin(message: JoinMessage) {
+		const existingInfo = users.value.find((user) => user.id === message.user);
+
+		const user = existingInfo
+			? existingInfo
+			: await sdk
+					.request<CollabUser>(
+						readUser(message.user, {
+							fields: ['id', 'first_name', 'last_name', 'avatar.id', 'avatar.modified_on'],
+						}),
+					)
+					.catch(() => ({}));
+
+		users.value = [...users.value, { ...user, id: message.user, color: message.color, connection: message.connection }];
+	}
+
+	async function receiveLeave(message: LeaveMessage) {
+		users.value = users.value.filter((user) => user.connection !== message.connection);
+
+		delete focused.value[message.connection];
+	}
+
+	async function receiveSave() {
+		await getItem();
+
+		if (!initialValues.value) return;
+
+		for (const field of Object.keys(initialValues.value)) {
+			if (isEqual(initialValues.value[field], edits.value[field])) delete edits.value[field];
+		}
+	}
+
+	async function receiveFocus(message: FocusMessage) {
+		if (connectionId.value === message.connection) return;
+
+		if (message.field) {
+			focused.value[message.connection] = message.field;
+		} else {
+			delete focused.value[message.connection];
+		}
+	}
+
+	const onFieldUpdate = throttle((field: string, value: any) => {
+		sendMessage({
 			action: 'update',
 			changes: value,
 			field: field,
-			room: roomId.value,
+		});
+	}, 100);
+
+	const onFieldUnset = throttle((field: string) => {
+		sendMessage({
+			action: 'update',
+			field: field,
+		});
+	}, 100);
+
+	function onSave() {
+		sendMessage({
+			action: 'save',
 		});
 	}
 
-	function onFieldUnset(field: string) {
+	const onFocus = debounce((field: string | null) => {
+		sendMessage({
+			action: 'focus',
+			field: field,
+		});
+	}, 100);
+
+	function sendMessage(message: Omit<WebSocketCollabMessage, 'id'>) {
 		if (!roomId.value) return;
 
 		sdk.sendMessage({
 			type: COLLAB,
-			action: 'update',
-			field: field,
 			room: roomId.value,
-		});
-	}
-
-	function onSave() {
-		sdk.sendMessage({
-			type: COLLAB,
-			action: 'save',
-			room: roomId.value,
-		});
-	}
-
-	function onFocus(field: string) {
-		sdk.sendMessage({
-			type: COLLAB,
-			action: 'focus',
-			field,
-			room: roomId.value,
-		});
-	}
-
-	function onBlur() {
-		sdk.sendMessage({
-			type: COLLAB,
-			action: 'focus',
-			field: null,
-			room: roomId.value,
+			...message,
 		});
 	}
 

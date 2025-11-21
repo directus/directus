@@ -19,7 +19,7 @@ import { sanitizePayload } from './sanitize-payload.js';
 export class CollabRooms {
 	rooms: Record<string, Room> = {};
 
-	async createRoom(collection: string, item: string, version: string | null, initialChanges?: Item) {
+	async createRoom(collection: string, item: string | null, version: string | null, initialChanges?: Item) {
 		const uid = getRoomHash(collection, item, version);
 
 		if (!(uid in this.rooms)) {
@@ -49,14 +49,14 @@ export class CollabRooms {
 export class Room {
 	uid: string;
 	collection: string;
-	item: string;
+	item: string | null;
 	version: string | null;
 	changes: Item;
 	clients: WebSocketClient[] = [];
 	clientColors: Record<ClientID, CollabColor> = {};
-	focuses: Record<string, ClientID> = {};
+	focuses: Record<ClientID, string> = {};
 
-	constructor(uid: string, collection: string, item: string, version: string | null, initialChanges?: Item) {
+	constructor(uid: string, collection: string, item: string | null, version: string | null, initialChanges?: Item) {
 		this.uid = uid;
 		this.collection = collection;
 		this.item = item;
@@ -68,7 +68,8 @@ export class Room {
 			if (!keys.includes(this.item)) return;
 
 			const service = getService(this.collection, { schema: await getSchema() });
-			const item = await service.readOne(this.item);
+
+			const item = this.item ? await service.readOne(this.item) : await service.readSingleton({});
 
 			this.changes = Object.fromEntries(
 				Object.entries(this.changes).filter(([key, value]) => !isEqual(item[key], value)),
@@ -114,7 +115,7 @@ export class Room {
 				accountability: client.accountability!,
 			}),
 			focuses: Object.fromEntries(
-				Object.entries(this.focuses).filter(([field, _]) =>
+				Object.entries(this.focuses).filter(([_, field]) =>
 					hasFieldPermision(client.accountability!, this.collection, field),
 				),
 			),
@@ -192,10 +193,9 @@ export class Room {
 
 	async focus(client: WebSocketClient, field: string | null) {
 		if (!field) {
-			this.focuses = Object.fromEntries(Object.entries(this.focuses).filter(([_, user]) => user !== client.uid));
+			delete this.focuses[client.uid];
 		} else {
-			if (field in (await getSchema()).collections[this.collection]!.fields === false) return;
-			this.focuses[field] = client.uid;
+			this.focuses[client.uid] = field;
 		}
 
 		for (const c of this.clients) {
@@ -231,6 +231,6 @@ export class Room {
 	}
 }
 
-export function getRoomHash(collection: string, item: string | number, version: string | null) {
+export function getRoomHash(collection: string, item: string | number | null, version: string | null) {
 	return createHash('sha256').update([collection, item, version].join('-')).digest('hex');
 }

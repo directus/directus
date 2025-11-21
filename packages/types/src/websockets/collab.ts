@@ -20,7 +20,7 @@ export const WebSocketCollabMessage = z.discriminatedUnion('action', [
 		type: z.literal(COLLAB),
 		action: z.literal('join'),
 		collection: z.string(),
-		item: z.string(),
+		item: z.string().nullable(),
 		version: z.string().nullable(),
 		initialChanges: ZodItem.optional(),
 	}),
@@ -55,11 +55,11 @@ export type ClientBaseCollabMessage =
 	| {
 			action: 'init';
 			collection: string;
-			item: string;
+			item: string | null;
 			version: string | null;
 			changes: Item;
 			connection: ClientID;
-			focuses: Record<string, ClientID>;
+			focuses: Record<ClientID, string>;
 			users: { user: UserID; connection: ClientID; color: CollabColor }[];
 	  }
 	| {

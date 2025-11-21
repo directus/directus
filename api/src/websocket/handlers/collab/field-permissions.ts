@@ -7,13 +7,14 @@ export async function hasFieldPermision(
 	accountability: Accountability,
 	collection: string,
 	field: string,
+	type: 'read' | 'update' = 'read',
 ): Promise<boolean> {
 	if (accountability.admin === true) {
 		return true;
 	}
 
 	const allowedFields = await fetchAllowedFields(
-		{ accountability, action: 'read', collection },
+		{ accountability, action: type, collection },
 		{ knex: getDatabase(), schema: await getSchema() },
 	);
 
