@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { Url } from '../../utils/url.js';
 
 /**
- * Generate callback URL from public URL
+ * Generate callback URL from PUBLIC_URL environment variable
  *
  * @param providerName OAuth provider name
  * @returns callback URL
