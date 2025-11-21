@@ -181,11 +181,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 		<v-form
 			v-if="selectedLanguage"
 			:key="selectedLanguage.value"
-			:primary-key="
-				relationInfo?.junctionPrimaryKeyField.field
-					? (itemInitial?.[relationInfo?.junctionPrimaryKeyField.field] ?? '+')
-					: null
-			"
+			:primary-key="itemPrimaryKey ?? '+'"
 			:class="{ unselected: !item }"
 			:disabled="disabled || !saveAllowed || item?.$type === 'deleted'"
 			:non-editable
