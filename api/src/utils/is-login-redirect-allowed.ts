@@ -1,24 +1,20 @@
 import { useEnv } from '@directus/env';
 import { toArray } from '@directus/utils';
-import { useLogger } from '../../logger/index.js';
-import isUrlAllowed from '../../utils/is-url-allowed.js';
+import { useLogger } from '../logger/index.js';
+import isUrlAllowed from './is-url-allowed.js';
 
 /**
- * Check if the redirect URL is allowed
- * @param originUrl Origin URL
- * @param provider OAuth provider name
- * @param redirect URL to redirect to
- * @returns True if the redirect is allowed, false otherwise
+ * Checks if the defined redirect after successful SSO login is in the allow list
  */
-export function isLoginRedirectAllowed(provider: string, originUrl: string, redirect: unknown): boolean {
+export function isLoginRedirectAllowed(redirect: unknown, provider: string): boolean {
 	if (!redirect) return true; // empty redirect
 	if (typeof redirect !== 'string') return false; // invalid type
 
 	const env = useEnv();
 	const publicUrl = env['PUBLIC_URL'] as string;
 
-	if (!URL.canParse(redirect)) {
-		if (!redirect.startsWith('//')) {
+	if (URL.canParse(redirect) === false) {
+		if (redirect.startsWith('//') === false) {
 			// should be a relative path like `/admin/test`
 			return true;
 		}
@@ -28,10 +24,6 @@ export function isLoginRedirectAllowed(provider: string, originUrl: string, redi
 	}
 
 	const { protocol: redirectProtocol, hostname: redirectDomain } = new URL(redirect);
-	const redirectUrl = `${redirectProtocol}//${redirectDomain}`;
-
-	// Security check: redirect URL must match the request origin
-	if (redirectUrl !== originUrl) return false;
 
 	const envKey = `AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`;
 
@@ -44,8 +36,8 @@ export function isLoginRedirectAllowed(provider: string, originUrl: string, redi
 		return false;
 	}
 
+	// allow redirects to the defined PUBLIC_URL
 	const { protocol: publicProtocol, hostname: publicDomain } = new URL(publicUrl);
 
-	// allow redirects to the defined PUBLIC_URL
-	return redirectUrl === `${publicProtocol}//${publicDomain}`;
+	return `${redirectProtocol}//${redirectDomain}` === `${publicProtocol}//${publicDomain}`;
 }
