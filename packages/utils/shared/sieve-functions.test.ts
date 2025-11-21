@@ -57,3 +57,57 @@ test('sieve nested array', () => {
 test('sieve date', () => {
 	expect(sieveFunctions(new Date())).toEqual({});
 });
+
+test('sieve error object', () => {
+	const error = new Error('Test error message');
+	const sieved = sieveFunctions(error);
+
+	expect(sieved).toHaveProperty('name', 'Error');
+	expect(sieved).toHaveProperty('message', 'Test error message');
+	expect(sieved).toHaveProperty('stack');
+	expect(typeof (sieved as any).stack).toBe('string');
+});
+
+test('sieve error object with custom properties', () => {
+	const error = new Error('Test error');
+	(error as any).customProp = 'custom value';
+	(error as any).customFn = () => 'should be removed';
+
+	const sieved = sieveFunctions(error) as any;
+
+	expect(sieved).toHaveProperty('name', 'Error');
+	expect(sieved).toHaveProperty('message', 'Test error');
+	expect(sieved).toHaveProperty('customProp', 'custom value');
+	expect(sieved.customFn).toBe(undefined);
+});
+
+test('sieve nested error in object', () => {
+	const error = new Error('Nested error');
+
+	const obj = {
+		status: 'failed',
+		error: error,
+		fn: () => {},
+	};
+
+	const sieved = sieveFunctions(obj) as any;
+
+	expect(sieved).toHaveProperty('status', obj.status);
+	expect(sieved.error).toHaveProperty('name', 'Error');
+	expect(sieved.error).toHaveProperty('message', 'Nested error');
+	expect(sieved.fn).toBe(undefined);
+});
+
+test('sieve custom error with enumerable properties', () => {
+	const error = new Error('Too bad');
+	(error as any).code = 'INTERNAL_SERVER_ERROR';
+	(error as any).status = 500;
+
+	const sieved = sieveFunctions(error) as any;
+
+	expect(sieved.name).toBe('Error');
+	expect(sieved.message).toBe('Too bad');
+	expect(sieved.stack).toBeDefined();
+	expect(sieved.code).toBe((error as any).code);
+	expect(sieved.status).toBe((error as any).status);
+});
