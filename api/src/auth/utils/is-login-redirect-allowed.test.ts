@@ -27,58 +27,71 @@ describe('isLoginRedirectAllowed', () => {
 
 	describe('empty or invalid redirect', () => {
 		test('returns true when redirect is undefined', () => {
-			const result = isLoginRedirectAllowed('github', PUBLIC_URL, undefined);
+			const result = isLoginRedirectAllowed('github', undefined);
 
 			expect(result).toBe(true);
 		});
 
 		test('returns true when redirect is empty string', () => {
-			const result = isLoginRedirectAllowed('github', PUBLIC_URL, '');
+			const result = isLoginRedirectAllowed('github', '');
 
 			expect(result).toBe(true);
 		});
 
 		test('returns false when redirect is not a string', () => {
-			const result = isLoginRedirectAllowed('github', PUBLIC_URL, 123);
+			const result = isLoginRedirectAllowed('github', 123);
 
 			expect(result).toBe(false);
 		});
 
 		describe('relative path redirects', () => {
 			test('returns true for relative path redirect', () => {
-				const result = isLoginRedirectAllowed('github', PUBLIC_URL, '/admin/users');
+				const result = isLoginRedirectAllowed('github', '/admin/users');
 
 				expect(result).toBe(true);
 			});
 
 			test('returns true for root path redirect', () => {
-				const result = isLoginRedirectAllowed('github', PUBLIC_URL, '/');
+				const result = isLoginRedirectAllowed('github', '/');
 
 				expect(result).toBe(true);
 			});
 
 			test('returns false for protocol-relative URL (//example.com)', () => {
-				const result = isLoginRedirectAllowed('github', PUBLIC_URL, '//malicious.com/test');
+				const result = isLoginRedirectAllowed('github', '//malicious.com/test');
 
 				expect(result).toBe(false);
 			});
 		});
 
-		describe('origin matching', () => {
-			test('returns false when redirect origin does not match request origin', () => {
-				const result = isLoginRedirectAllowed('github', PUBLIC_URL, 'https://different.com/admin');
+		describe('cross-domain redirects', () => {
+			test('allows cross-domain redirect when in ALLOW_LIST', () => {
+				vi.mocked(useEnv).mockReturnValue({
+					PUBLIC_URL: 'https://api.directus.com',
+					AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'https://frontend.com/auth/callback',
+				});
+
+				const result = isLoginRedirectAllowed('github', 'https://frontend.com/auth/callback');
+
+				expect(result).toBe(true);
+			});
+
+			test('rejects cross-domain redirect when NOT in ALLOW_LIST', () => {
+				vi.mocked(useEnv).mockReturnValue({
+					PUBLIC_URL: 'https://api.directus.com',
+				});
+
+				const result = isLoginRedirectAllowed('github', 'https://frontend.com/auth/callback');
 
 				expect(result).toBe(false);
 			});
 
-			test('returns false when redirect origin differs by protocol', () => {
-				const result = isLoginRedirectAllowed('github', PUBLIC_URL, 'http://example.com/admin');
+			test('allows redirect to PUBLIC_URL origin even without ALLOW_LIST', () => {
+				vi.mocked(useEnv).mockReturnValue({
+					PUBLIC_URL: 'https://directus.app',
+				});
 
-				expect(result).toBe(false);
-			});
-
-			test('allows redirect when port differs', () => {
-				const result = isLoginRedirectAllowed('github', PUBLIC_URL, `${PUBLIC_URL}:8080/admin`);
+				const result = isLoginRedirectAllowed('github', 'https://directus.app/admin');
 
 				expect(result).toBe(true);
 			});
@@ -90,7 +103,7 @@ describe('isLoginRedirectAllowed', () => {
 					AUTH_GITHUB_REDIRECT_ALLOW_LIST: 'https://example.com/custom',
 				});
 
-				const result = isLoginRedirectAllowed('github', 'https://example.com', 'https://example.com/custom');
+				const result = isLoginRedirectAllowed('github', 'https://example.com/custom');
 
 				expect(result).toBe(true);
 			});
@@ -100,7 +113,7 @@ describe('isLoginRedirectAllowed', () => {
 					AUTH_GITHUB_REDIRECT_ALLOW_LIST: ['https://example.com/custom1', 'https://example.com/custom2'],
 				});
 
-				const result = isLoginRedirectAllowed('github', 'https://example.com', 'https://example.com/custom2');
+				const result = isLoginRedirectAllowed('github', 'https://example.com/custom2');
 
 				expect(result).toBe(true);
 			});
@@ -112,7 +125,7 @@ describe('isLoginRedirectAllowed', () => {
 				});
 
 				// Not in allow list, but matches PUBLIC_URL, so should pass
-				const result = isLoginRedirectAllowed('github', PUBLIC_URL, `${PUBLIC_URL}/forbidden`);
+				const result = isLoginRedirectAllowed('github', `${PUBLIC_URL}/forbidden`);
 
 				expect(result).toBe(true);
 			});
@@ -124,14 +137,24 @@ describe('isLoginRedirectAllowed', () => {
 					PUBLIC_URL: 'invalid-url',
 				});
 
-				const result = isLoginRedirectAllowed('github', 'https://example.com', 'https://example.com/admin');
+				const result = isLoginRedirectAllowed('github', 'https://example.com/admin');
 
 				expect(result).toBe(false);
 				expect(mockLogger.error).toHaveBeenCalledWith('Invalid PUBLIC_URL for login redirect');
 			});
 
-			test('rejects redirect when PUBLIC_URL origin does not match', () => {
-				const result = isLoginRedirectAllowed('github', 'https://example.com', 'https://example.com/admin');
+			test('rejects redirect when protocol differs from PUBLIC_URL', () => {
+				vi.mocked(useEnv).mockReturnValue({
+					PUBLIC_URL: 'https://directus.app',
+				});
+
+				const result = isLoginRedirectAllowed('github', 'http://directus.app/admin');
+
+				expect(result).toBe(false);
+			});
+
+			test('rejects redirect when not in ALLOW_LIST and not PUBLIC_URL origin', () => {
+				const result = isLoginRedirectAllowed('github', 'https://example.com/admin');
 
 				expect(result).toBe(false);
 			});
@@ -139,19 +162,19 @@ describe('isLoginRedirectAllowed', () => {
 
 		describe('edge cases', () => {
 			test('handles URL with query parameters', () => {
-				const result = isLoginRedirectAllowed('github', PUBLIC_URL, `${PUBLIC_URL}/admin?tab=users`);
+				const result = isLoginRedirectAllowed('github', `${PUBLIC_URL}/admin?tab=users`);
 
 				expect(result).toBe(true);
 			});
 
 			test('handles URL with hash fragment', () => {
-				const result = isLoginRedirectAllowed('github', PUBLIC_URL, `${PUBLIC_URL}/admin#section`);
+				const result = isLoginRedirectAllowed('github', `${PUBLIC_URL}/admin#section`);
 
 				expect(result).toBe(true);
 			});
 
 			test('handles URL with both query and hash', () => {
-				const result = isLoginRedirectAllowed('github', PUBLIC_URL, `${PUBLIC_URL}/admin?tab=users#top`);
+				const result = isLoginRedirectAllowed('github', `${PUBLIC_URL}/admin?tab=users#top`);
 
 				expect(result).toBe(true);
 			});
