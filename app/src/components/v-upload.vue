@@ -340,7 +340,15 @@ defineExpose({ abort });
 		<template v-else>
 			<div class="actions">
 				<v-button v-if="fromUser" v-tooltip="$t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
-					<input ref="input" class="browse" type="file" tabindex="-1" :multiple="multiple" @input="onBrowseSelect" />
+					<input
+						ref="input"
+						class="browse"
+						type="file"
+						tabindex="-1"
+						:multiple="multiple"
+						@cancel="userSelectOpen = false"
+						@input="onBrowseSelect"
+					/>
 					<v-icon name="file_upload" />
 				</v-button>
 				<v-button

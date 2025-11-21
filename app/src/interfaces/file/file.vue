@@ -13,7 +13,7 @@ import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { Filter } from '@directus/types';
 import { deepMap } from '@directus/utils';
 import { render } from 'micromustache';
-import { computed, inject, ref, toRefs, useTemplateRef } from 'vue';
+import { computed, inject, ref, toRefs } from 'vue';
 
 type FileInfo = {
 	id: string;
@@ -124,7 +124,7 @@ const internalDisabled = computed(() => {
 	return props.disabled || (props.enableCreate === false && props.enableSelect === false);
 });
 
-const interfaceOpen = computed(() => Boolean(activeDialog.value) || menuOpen.value);
+const interfaceOpen = computed(() => Boolean(activeDialog.value) || menuOpen.value || editDrawerActive.value);
 
 function setSelection(selection: (string | number)[] | null) {
 	if (selection![0]) {
