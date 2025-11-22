@@ -1,12 +1,12 @@
 import { isDirectusError, type DirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
-import type { GraphQLError, GraphQLFormattedError } from 'graphql';
+import { GraphQLError, type GraphQLFormattedError } from 'graphql';
 import { useLogger } from '../../../logger/index.js';
 
 const processError = (
 	accountability: Accountability | null,
 	error: Readonly<GraphQLError & { originalError: GraphQLError | DirectusError | Error | undefined }>,
-): GraphQLFormattedError => {
+): GraphQLError | GraphQLFormattedError => {
 	const logger = useLogger();
 
 	logger.error(error);
@@ -27,6 +27,9 @@ const processError = (
 			...(error.locations && { locations: error.locations }),
 			...(error.path && { path: error.path }),
 		};
+	} else if (error instanceof GraphQLError) {
+		delete (error as any).originalError;
+		return error;
 	} else {
 		if (accountability?.admin === true) {
 			const graphqlFormattedError: {
