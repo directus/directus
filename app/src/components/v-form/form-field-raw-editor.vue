@@ -98,8 +98,8 @@ const setRawValue = () => {
 <style lang="scss" scoped>
 .v-card-text {
 	.input-code {
-		:deep(.CodeMirror),
-		:deep(.CodeMirror-scroll) {
+		:deep(.cm-editor),
+		:deep(.cm-scroller) {
 			max-block-size: var(--input-height-max);
 		}
 	}

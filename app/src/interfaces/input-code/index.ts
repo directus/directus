@@ -1,33 +1,19 @@
 import { DeepPartial, Field } from '@directus/types';
 import { defineInterface } from '@directus/extensions';
-import CodeMirror from 'codemirror';
-import 'codemirror/mode/meta';
 import InterfaceCode from './input-code.vue';
 import PreviewSVG from './preview.svg?raw';
+import { modeMap } from './import-codemirror-mode';
 
-const choicesMap = CodeMirror.modeInfo.reduce((acc: Record<string, string>, choice) => {
-	if (['JSON', 'JSON-LD'].includes(choice.name)) {
-		acc['JSON'] = 'JSON';
-		return acc;
-	}
-
-	if (choice.mode == null || choice.mode == 'null') {
-		choice.mode = 'plaintext';
-	}
-
-	if (choice.mode in acc) {
-		acc[choice.mode] += ' / ' + choice.name;
-	} else {
-		acc[choice.mode] = choice.name;
-	}
-
-	return acc;
-}, {});
-
-const choices = Object.entries(choicesMap).map(([key, value]) => ({
-	text: value,
-	value: key,
-}));
+const choices = Object.entries(modeMap)
+	.concat([
+		['json', { name: 'JSON', import: () => Promise.resolve({}) }],
+		['plaintext', { name: 'Plain Text', import: () => Promise.resolve({}) }],
+	])
+	.map(([key, entry]) => ({
+		text: entry.name,
+		value: key,
+	}))
+	.sort((a, b) => a.text.localeCompare(b.text));
 
 export default defineInterface({
 	id: 'input-code',
