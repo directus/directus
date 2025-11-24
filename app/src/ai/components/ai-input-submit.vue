@@ -38,7 +38,14 @@ const handleClick = () => {
 </script>
 
 <template>
-	<v-button :disabled="isDisabled" class="submit-button" x-small :danger="props.status === 'error'" icon @click="handleClick">
+	<v-button
+		:disabled="isDisabled"
+		class="submit-button"
+		x-small
+		:danger="props.status === 'error'"
+		icon
+		@click="handleClick"
+	>
 		<v-icon :name="icon" />
 	</v-button>
 </template>

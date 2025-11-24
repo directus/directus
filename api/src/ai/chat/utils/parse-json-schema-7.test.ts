@@ -115,9 +115,7 @@ describe('parseJsonSchema7', () => {
 			type: 'object',
 		} as const;
 
-		expect(() => parseJsonSchema7(bad)).toThrowError(
-			/Must be the JSON Schema Draft-07 meta-schema URL/,
-		);
+		expect(() => parseJsonSchema7(bad)).toThrowError(/Must be the JSON Schema Draft-07 meta-schema URL/);
 	});
 
 	it('throws when no schema keywords are present', () => {
@@ -130,4 +128,3 @@ describe('parseJsonSchema7', () => {
 		expect(() => parseJsonSchema7(bad)).toThrow();
 	});
 });
-

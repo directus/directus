@@ -4,16 +4,17 @@ import { fromZodError } from 'zod-validation-error';
 
 const jsonType = z.enum(['null', 'boolean', 'object', 'array', 'number', 'integer', 'string']);
 
-const maybeDraft7Url = z
-	.url({ protocol: /^https?$/, hostname: /^json-schema\.org$/ })
-	.refine((val) => {
+const maybeDraft7Url = z.url({ protocol: /^https?$/, hostname: /^json-schema\.org$/ }).refine(
+	(val) => {
 		try {
 			const u = new URL(val);
 			return u.pathname === '/draft-07/schema' && (u.hash === '' || u.hash === '#');
 		} catch {
 			return false;
 		}
-	}, { message: 'Must be the JSON Schema Draft-07 meta-schema URL' });
+	},
+	{ message: 'Must be the JSON Schema Draft-07 meta-schema URL' },
+);
 
 const JsonSchema7 = z
 	.object({
