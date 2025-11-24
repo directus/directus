@@ -832,7 +832,6 @@ label: 標籤
 flows: 流程
 flow: 流程
 select_a_flow: 選擇流程
-run_flow_on_current_edited_confirm: 有些項目可能會被這個工作流程更新，是否確定要執行？
 trigger: 觸發條件
 trigger_options: 觸發條件選項
 view_trigger: 檢視觸發條件
@@ -1057,7 +1056,6 @@ directus_collection:
   directus_dashboards: 儀表板以及預測模組
   directus_fields: 額外的資料集設定以及元資料
   directus_files: 所有檔案資源的元資料
-  directus_flows: 自動流程
   directus_folders: 提供虛擬資料夾供存放檔案。
   directus_migrations: 您使用的資料庫類型
   directus_notifications: 傳送給使用者的通知
@@ -1493,7 +1491,7 @@ interfaces:
     accordion_mode: 收合模式
     max_one_section_open: 最多開啟一個區塊
   presentation-links:
-    links: 連結
+    presentation-links: 按鈕
     style: 樣式
     primary: 主要
     link: 連結
@@ -2028,11 +2026,9 @@ triggers:
 a_flow_uuid: 選擇要觸發的流程...
 any_string_or_json: 任何字串或 JSON...
 item_payload_placeholder: 這個JSON用來更新資料項目各欄位的值
-operation_variables_note: 您可透過這些方法存取流程中的資料 **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** 及 **{'{'}{'{'}$accountability{'}'}{'}'}**, 或呼叫之前的操作如 **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: 條件
-    description: 透過判斷邏輯來操作流程
   exec:
     name: 執行程式
     description: 透過自訂程式修改傳入資料
@@ -2103,7 +2099,6 @@ operations:
     description: 修改 JSON 內文
   trigger:
     name: 觸發流程
-    description: 將資料傳送給其他流程
     flows: 流程
     flow: 流程
     data: 資料
