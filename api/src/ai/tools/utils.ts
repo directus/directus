@@ -28,4 +28,3 @@ export async function buildSanitizedQueryFromArgs<T extends { query?: Partial<Qu
 
 	return sanitizedQuery;
 }
-
