@@ -4,30 +4,11 @@ import type { GlobalMountOptions } from '@/__utils__/types';
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import VInput from './v-input.vue';
-
-const i18n = {
-	not_a_number: 'Not a Number',
-	invalid_input: 'Invalid Input',
-	invalid_range_min: (value: number) => `Value is below minimum of ${value}`,
-	invalid_range_max: (value: number) => `Value exceeds maximum of ${value}`,
-};
-
-const tMock = vi.fn((key: string, params?: any) => {
-	if (key === 'not_a_number') return i18n.not_a_number;
-	if (key === 'invalid_input') return i18n.invalid_input;
-	if (key === 'invalid_range_min') return i18n.invalid_range_min(params?.value);
-	if (key === 'invalid_range_max') return i18n.invalid_range_max(params?.value);
-	return key;
-});
-
-vi.mock('vue-i18n', () => ({
-	useI18n: () => ({
-		t: tMock,
-	}),
-}));
+import { i18n } from '@/lang';
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon'],
+	plugins: [i18n],
 	directives: {
 		focus: Focus,
 		tooltip: Tooltip,
@@ -273,10 +254,9 @@ describe('emitValue', () => {
 	});
 });
 
-describe('invalid warning', () => {
+describe('inline warning', () => {
 	afterEach(() => {
 		vi.restoreAllMocks();
-		tMock.mockClear();
 	});
 
 	const validityMock: ValidityState = {
@@ -317,8 +297,7 @@ describe('invalid warning', () => {
 		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(true);
 		expect(validitySpy).toHaveBeenCalledTimes(2);
 
-		expect(tMock).toHaveBeenCalledWith('not_a_number');
-		expect((wrapper.vm as any).inlineWarning).toBe(i18n.not_a_number);
+		expect((wrapper.vm as any).inlineWarning).toBe(i18n.global.t('not_a_number'));
 
 		expect(wrapper.html()).toMatchSnapshot();
 	});
@@ -366,8 +345,7 @@ describe('invalid warning', () => {
 
 		expect((wrapper.vm as any).inlineWarning).toBeDefined();
 		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(true);
-		expect(tMock).toHaveBeenCalledWith('invalid_range_max', { value: 10 });
-		expect((wrapper.vm as any).inlineWarning).toBe(i18n.invalid_range_max(10));
+		expect((wrapper.vm as any).inlineWarning).toBe(i18n.global.t('invalid_range_max', { value: 10 }));
 	});
 
 	test('should appear when value is below minimum', async () => {
@@ -386,8 +364,7 @@ describe('invalid warning', () => {
 
 		expect((wrapper.vm as any).inlineWarning).toBeDefined();
 		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(true);
-		expect(tMock).toHaveBeenCalledWith('invalid_range_min', { value: 0 });
-		expect((wrapper.vm as any).inlineWarning).toBe(i18n.invalid_range_min(0));
+		expect((wrapper.vm as any).inlineWarning).toBe(i18n.global.t('invalid_range_min', { value: 0 }));
 	});
 
 	test('should not appear when value is within range', async () => {
@@ -424,8 +401,7 @@ describe('invalid warning', () => {
 
 		expect((wrapper.vm as any).inlineWarning).toBeDefined();
 		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(true);
-		expect(tMock).toHaveBeenCalledWith('invalid_range_max', { value: 10 });
-		expect((wrapper.vm as any).inlineWarning).toBe(i18n.invalid_range_max(10));
+		expect((wrapper.vm as any).inlineWarning).toBe(i18n.global.t('invalid_range_max', { value: 10 }));
 	});
 
 	test('should show invalid_input key for non-number type', async () => {
@@ -446,8 +422,7 @@ describe('invalid warning', () => {
 		await input.trigger('input');
 		await wrapper.vm.$nextTick();
 
-		expect(tMock).toHaveBeenCalledWith('invalid_input');
-		expect((wrapper.vm as any).inlineWarning).toBe(i18n.invalid_input);
+		expect((wrapper.vm as any).inlineWarning).toBe(i18n.global.t('invalid_input'));
 	});
 
 	test('useInvalidInput takes priority over useInvalidRange', async () => {
