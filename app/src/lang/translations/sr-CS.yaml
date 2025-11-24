@@ -917,7 +917,7 @@ interfaces:
     add_filter: Dodaj Filter
     all: Svi
   presentation-links:
-    links: Linkovi
+    presentation-links: Dugmad
     style: Stil
     primary: Primarni
     link: Linkovi
