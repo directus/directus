@@ -1,18 +1,7 @@
 <script setup lang="ts">
 import { useNotificationsStore } from '@/stores/notifications';
-import { computed, toRefs } from 'vue';
-import { useSidebarStore } from '../private-view/stores/sidebar';
+import { toRefs } from 'vue';
 import NotificationItem from './notification-item.vue';
-
-const sidebarStore = useSidebarStore();
-
-const insetInlineEnd = computed(() => {
-	if (sidebarStore.collapsed) {
-		return '78px';
-	}
-
-	return Math.max(296, Math.min(616, sidebarStore.size + 16)) + 'px';
-});
 
 const notificationsStore = useNotificationsStore();
 const queue = toRefs(notificationsStore).queue;
@@ -42,9 +31,9 @@ const queue = toRefs(notificationsStore).queue;
 
 <style lang="scss" scoped>
 .notifications-group {
-	position: fixed;
+	position: absolute;
 	inset-block-end: 16px;
-	inset-inline-end: v-bind(insetInlineEnd);
+	inset-inline-end: 16px;
 	z-index: 50;
 	display: flex;
 	flex-direction: column;

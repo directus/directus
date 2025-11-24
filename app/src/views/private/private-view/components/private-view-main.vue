@@ -83,9 +83,9 @@ const splitterCollapsed = computed({
 					<main ref="mainEl">
 						<slot />
 					</main>
-
-					<NotificationsGroup />
 				</div>
+
+				<NotificationsGroup />
 			</template>
 
 			<template #divider>
@@ -110,6 +110,10 @@ const splitterCollapsed = computed({
 <style scoped>
 #main-content {
 	block-size: 100%;
+
+	&:deep(.sp-start) {
+		position: relative;
+	}
 }
 
 .main-split {
