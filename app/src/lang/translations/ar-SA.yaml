@@ -253,6 +253,7 @@ field_permissions: أذونات العنصر
 field_validation: مجال المصادقة
 field_presets: الإعداد المسبق للحقل
 permissions_for_role: 'عناصر الدور {role} يمكن أن {action}.'
+permissions_for_policy: ''
 fields_for_role: 'عناصر الدور {role} يمكن أن {action}.'
 fields_for_policy: '.'
 validation_for_role: 'الحقل {action} قواعد الدور {role} يجب أن يطيع.'
@@ -918,10 +919,8 @@ label: تسمية
 flows: التدفقات
 flow: التدفق
 select_a_flow: حدد تدفق
-run_flow_confirm: هل أنت متأكد من أنك تريد تنفيذ هذا التدفق؟
 run_flow_on_current_collection: تشغيل التدفق على المجموعة الحالية
 run_flow_on_current: تشغيل التدفق على العنصر الحالي
-run_flow_on_current_edited_confirm: قد يتم تحديث هذا العنصر بواسطة هذا التدفق، هل أنت متيقِّن من أنك تريد تنفيذه؟
 run_flow_on_selected: حدد عنصر واحد أو أكثر أولاً | تشغيل العملية على عنصر واحد محدد | تشغيل العملية على {n} عناصر محددة
 run_flow: تشغيل التدفق
 field_name_placeholder: أدخل اسم الحقل...
@@ -1184,7 +1183,6 @@ directus_collection:
   directus_dashboards: لوحات التحكم داخل وحدة البصائر
   directus_fields: تكوين وبيانات الحقل الإضافي الوصفية
   directus_files: البيانات الوصفية لجميع أصول الملفات المدارة
-  directus_flows: تدفقات الأتمتة
   directus_folders: يوفر مجلدات افتراضية للملفات
   directus_migrations: ما هي نسخة قاعدة البيانات التي تستخدمها
   directus_notifications: الإشعارات المرسلة إلى المستخدمين
@@ -1656,7 +1654,7 @@ interfaces:
     accordion_mode: قائمة منسدلة
     max_one_section_open: قسم واحد مفتوح كحد أقصى
   presentation-links:
-    links: روابط
+    presentation-links: أزرار
     style: النمط
     primary: الأساسي
     link: روابط
