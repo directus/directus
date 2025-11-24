@@ -783,6 +783,7 @@ errors:
   COLLECTION_NOT_FOUND: "Колекція не існує"
   CONTAINS_NULL_VALUES: Поле містить нульові значення
   CONTENT_TOO_LARGE: Надісланий елемент/файл має надто великий розмір
+  FAILED_VALIDATION: Спроба перевірки зазнала невдачі
   FIELD_NOT_FOUND: Поле не знайдено
   FORBIDDEN: Заборонено
   GRAPHQL_VALIDATION: Верифікація GraphQL
@@ -1033,6 +1034,9 @@ operation_key: Ідентифікатор для довідки...
 operation_key_unique_error: Ключі операції повинні бути унікальними у потоці
 operation_handle_resolve: 'Рішення: натисніть, щоб додати, або перетягніть, щоб змінити маршрут'
 operation_handle_reject: 'Відмова: натисніть, щоб додати, або перетягніть, щоб змінити маршрут'
+no_url: Не надано URL-адреси
+no_url_copy: Будь ласка, додайте URL-адресу в налаштуваннях.
+invalid_url: Недійсна URL-адреса
 insights: Статистика
 dashboard: Панель приладів
 panel: Панель
