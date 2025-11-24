@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "14.2.0",
+	"version": "14.3.0",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
