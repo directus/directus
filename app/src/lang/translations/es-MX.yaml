@@ -939,10 +939,8 @@ label: Etiqueta
 flows: Flujos
 flow: Flujo
 select_a_flow: Selecciona un flujo
-run_flow_confirm: '¿Estás seguro que deseas ejecutar este flujo?'
 run_flow_on_current_collection: Ejecutar flujo en la colección actual
 run_flow_on_current: Ejecutar flujo en el elemento actual
-run_flow_on_current_edited_confirm: Este elemento puede ser actualizado por este flujo, ¿estás seguro que quieres ejecutarlo?
 run_flow_on_selected: Seleccione uno o más elementos primero | Ejecutar flujo en 1 elemento seleccionado | Ejecutar flujo en {n} elementos seleccionados
 run_flow: Ejecutar flujo
 trigger_flow_success: El flujo "{flow}" se ha activado correctamente
@@ -1242,7 +1240,6 @@ directus_collection:
   directus_dashboards: Tableros dentro del módulo Informes
   directus_fields: Configuración adicional de campos y metadatos
   directus_files: Metadatos para todos los archivos gestionados
-  directus_flows: Flujos automatizados
   directus_folders: Proporciona directorios virtuales para archivos
   directus_migrations: Qué versión de la base de datos estás usando
   directus_notifications: Notificaciones enviadas a usuarios
@@ -1761,7 +1758,7 @@ interfaces:
     accordion_mode: Modo Accordion
     max_one_section_open: Máximo de una sección abierta
   presentation-links:
-    links: Enlaces
+    presentation-links: Botones
     style: Estilo
     primary: Principal
     link: Enlaces
@@ -2392,11 +2389,9 @@ triggers:
 a_flow_uuid: Seleccione un flujo para disparar...
 any_string_or_json: Alguna cadena o JSON...
 item_payload_placeholder: Este es el JSON usado para actualizar los valores del campo del elemento...
-operation_variables_note: Puedes acceder a los datos del flujo con variables como **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** y **{'{'}{'{'}$accountability{'}'}{'}'}**, o hacer referencia a previas operaciones usando **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condición
-    description: Enrutar un flujo basado en si / Otra lógica
   exec:
     name: Ejecutar script
     description: Ejecutar código arbitrario para modificar el payload
@@ -2493,7 +2488,6 @@ operations:
     description: Alterar la payload JSON del flujo
   trigger:
     name: Disparar flujo
-    description: Pasar estos datos a otro flujo
     flows: Flujos
     flow: Flujo
     data: Datos
