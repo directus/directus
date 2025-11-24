@@ -807,7 +807,6 @@ icon_on: Ikon til
 icon_off: Ikon fra
 label: Etiket
 select_a_flow: Vælg et Flow
-run_flow_on_current_edited_confirm: Dette element kan blive opdateret af dette flow, er du sikker på, at du vil udføre det?
 trigger: Udløser
 trigger_options: Udløserindstillinger
 view_trigger: Vis udløser
@@ -1036,7 +1035,6 @@ directus_collection:
   directus_dashboards: Instrumentbrætter i Insights modulet
   directus_fields: Yderligere feltkonfiguration og metadata
   directus_files: Metadata for alle administrerede fil-asset'er
-  directus_flows: Automatiseringsflows
   directus_folders: Giver virtuelle mapper til filer
   directus_migrations: Hvilken version af den database, du bruger
   directus_notifications: Notifikationer sendt til brugere
@@ -1465,7 +1463,7 @@ interfaces:
     accordion_mode: Harmonika tilstand
     max_one_section_open: Maks en sektion åben
   presentation-links:
-    links: Links
+    presentation-links: Knapper
     style: Stil
     primary: Primær
     link: Links
@@ -2023,11 +2021,9 @@ triggers:
 a_flow_uuid: Vælg et flow, der skal udløses...
 any_string_or_json: Enhver streng eller JSON...
 item_payload_placeholder: Dette er den JSON, der bruges til at opdatere elementets feltværdier...
-operation_variables_note: Du kan få adgang til flowdata med variabler såsom **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** og **{'{'}{'{'}$accountability{'}'}{'}'}**, eller referer til tidligere handlinger ved hjælp af **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Betingelse
-    description: Rut et flow baseret på If / Else logik
   exec:
     name: Kør script
     description: Udfør vilkårlig kode for at ændre nyttelasten
@@ -2088,7 +2084,6 @@ operations:
     name: Transformer nyttelast
     description: Ændre Flows JSON-nyttelast
   trigger:
-    description: Send disse data til et andet flow
     data: Data
     iteration_mode: Iterationstilstand
     iteration_mode_note: Mode til iteration over arrays.
