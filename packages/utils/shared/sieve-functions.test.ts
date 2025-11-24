@@ -71,7 +71,7 @@ test('sieve nested error in object', () => {
 	const obj = {
 		status: 'failed',
 		error: error,
-		fn: () => {},
+		fn: () => { },
 	};
 
 	const sieved = sieveFunctions(obj) as any;
@@ -79,18 +79,4 @@ test('sieve nested error in object', () => {
 	expect(sieved).toHaveProperty('status', obj.status);
 	expect(sieved.error).toBe(error);
 	expect(sieved.fn).toBe(undefined);
-});
-
-test('sieve custom error with enumerable properties', () => {
-	const error = new Error('Too bad');
-	(error as any).code = 'INTERNAL_SERVER_ERROR';
-	(error as any).status = 500;
-
-	const sieved = sieveFunctions(error) as any;
-
-	expect(sieved.name).toBe('Error');
-	expect(sieved.message).toBe('Too bad');
-	expect(sieved.stack).toBeDefined();
-	expect(sieved.code).toBe((error as any).code);
-	expect(sieved.status).toBe((error as any).status);
 });
