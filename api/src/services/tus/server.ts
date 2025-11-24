@@ -119,8 +119,8 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 					collection: 'directus_files',
 				},
 				{
+					schema,
 					database: getDatabase(),
-					schema: context.schema,
 					accountability: context.accountability ?? null,
 				},
 			);
