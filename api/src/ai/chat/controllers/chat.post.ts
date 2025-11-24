@@ -8,8 +8,8 @@ import { chatRequestToolToAiSdkTool } from '../utils/chat-request-tool-to-ai-sdk
 import { fixErrorToolCalls } from '../utils/fix-error-tool-calls.js';
 
 export const aiChatPostHandler: RequestHandler = async (req, res) => {
-	if (!req.accountability) {
-		throw new ForbiddenError(); // TODO should this be a policy flag?
+	if (!req.accountability?.app) {
+		throw new ForbiddenError();
 	}
 
 	const parseResult = ChatRequest.safeParse(req.body);
