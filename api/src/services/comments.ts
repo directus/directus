@@ -86,7 +86,7 @@ export class CommentsService extends ItemsService {
 				ip: null,
 			};
 
-			const userGlobalAccess = await fetchGlobalAccess(accountability, this.knex);
+			const userGlobalAccess = await fetchGlobalAccess(accountability, { knex: this.knex });
 
 			accountability.admin = userGlobalAccess.admin;
 			accountability.app = userGlobalAccess.app;

@@ -1,4 +1,7 @@
 export * from './array-helpers.js';
+export * from './fetch-global-access/fetch-global-access.js';
+export * from './fetch-global-access/lib/fetch-global-access-for-roles.js';
+export * from './fetch-global-access/lib/fetch-global-access-for-user.js';
 export * from './fetch-roles-tree.js';
 export * from './get-node-env.js';
 export * from './ip-in-networks.js';

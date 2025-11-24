@@ -32,7 +32,7 @@ export async function getAccountabilityForRole(
 
 		const globalAccess = await fetchGlobalAccess(
 			{ user: null, roles, ip: context.accountability?.ip ?? null },
-			context.database,
+			{ knex: context.database },
 		);
 
 		generatedAccountability = createDefaultAccountability({

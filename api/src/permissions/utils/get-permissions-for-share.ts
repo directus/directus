@@ -55,8 +55,8 @@ export async function getPermissionsForShare(
 		shareFieldMap,
 		userFieldMap,
 	] = await Promise.all([
-		fetchGlobalAccess(shareAccountability, context.knex),
-		fetchGlobalAccess(userAccountability, context.knex),
+		fetchGlobalAccess(shareAccountability, { knex: context.knex }),
+		fetchGlobalAccess(userAccountability, { knex: context.knex }),
 		getPermissionsForAccountability(userAccountability, context),
 		getPermissionsForAccountability(shareAccountability, context),
 		fetchAllowedFieldMap(

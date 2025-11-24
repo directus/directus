@@ -202,7 +202,7 @@ export class AuthenticationService {
 
 		const globalAccess = await fetchGlobalAccess(
 			{ roles, user: user.id, ip: this.accountability?.ip ?? null },
-			this.knex,
+			{ knex: this.knex },
 		);
 
 		const tokenPayload: DirectusTokenPayload = {
@@ -361,7 +361,7 @@ export class AuthenticationService {
 
 		const globalAccess = await fetchGlobalAccess(
 			{ user: record.user_id, roles, ip: this.accountability?.ip ?? null },
-			this.knex,
+			{ knex: this.knex },
 		);
 
 		if (record.user_id) {

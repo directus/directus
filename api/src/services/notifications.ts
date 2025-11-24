@@ -47,7 +47,7 @@ export class NotificationsService extends ItemsService {
 						roles,
 						ip: null,
 					},
-					this.knex,
+					{ knex: this.knex },
 				);
 
 				const mailService = new MailService({

@@ -1,9 +1,14 @@
-import type { Accountability } from '@directus/types';
+import type { Accountability, GlobalAccess } from '@directus/types';
+import {
+	fetchGlobalAccessForRoles as _fetchGlobalAccessForRoles,
+	fetchGlobalAccessForUser as _fetchGlobalAccessForUser,
+} from '@directus/utils/node';
 import type { Knex } from 'knex';
 import { withCache } from '../../utils/with-cache.js';
-import { fetchGlobalAccessForRoles } from './lib/fetch-global-access-for-roles.js';
-import { fetchGlobalAccessForUser } from './lib/fetch-global-access-for-user.js';
-import type { GlobalAccess } from './types.js';
+
+interface FetchGlobalAccessContext {
+	knex: Knex;
+}
 
 export const fetchGlobalAccess = withCache('global-access', _fetchGlobalAccess, ({ user, roles, ip }) => ({
 	user,
@@ -11,19 +16,27 @@ export const fetchGlobalAccess = withCache('global-access', _fetchGlobalAccess, 
 	ip,
 }));
 
+const fetchGlobalAccessForRoles = withCache('global-access-roles', _fetchGlobalAccessForRoles, ({ roles, ip }) => ({
+	roles,
+	ip,
+}));
+
+const fetchGlobalAccessForUser = withCache('global-access-user', _fetchGlobalAccessForUser, ({ user, ip }) => ({
+	user,
+	ip,
+}));
+
 /**
- * Fetch the global access (eg admin/app access) rules for the given roles, or roles+user combination
- *
- * Will fetch roles and user info separately so they can be cached and reused individually
+ * Re-implements fetchGlobalAccess to add caching.
  */
 export async function _fetchGlobalAccess(
 	accountability: Pick<Accountability, 'user' | 'roles' | 'ip'>,
-	knex: Knex,
+	context: FetchGlobalAccessContext,
 ): Promise<GlobalAccess> {
-	const access = await fetchGlobalAccessForRoles(accountability, knex);
+	const access = await fetchGlobalAccessForRoles(accountability, { knex: context.knex });
 
 	if (accountability.user !== undefined) {
-		const userAccess = await fetchGlobalAccessForUser(accountability, knex);
+		const userAccess = await fetchGlobalAccessForUser(accountability, { knex: context.knex });
 
 		// If app/admin is already true, keep it true
 		access.app ||= userAccess.app;
