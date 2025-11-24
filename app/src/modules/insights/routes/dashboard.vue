@@ -14,7 +14,6 @@ import { applyOptionsData } from '@directus/utils';
 import { createReusableTemplate } from '@vueuse/core';
 import { assign, isEmpty } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import InsightsNavigation from '../components/navigation.vue';
 import InsightsNotFound from './not-found.vue';
 
@@ -27,7 +26,6 @@ const props = withDefaults(
 	{ panelKey: null, viewOnly: false },
 );
 
-const { t } = useI18n();
 const [DefineTemplate, ReuseTemplate] = createReusableTemplate()
 
 const { panels: panelsInfo } = useExtensions();
@@ -265,13 +263,13 @@ const refreshInterval = computed({
 		</template>
 
 		<template #headline>
-			<v-breadcrumb :items="[{ name: t('insights'), to: '/insights' }]" />
+			<v-breadcrumb :items="[{ name: $t('insights'), to: '/insights' }]" />
 		</template>
 
 		<template #actions>
 			<template v-if="editMode">
 				<v-button
-					v-tooltip.bottom="t('clear_changes')"
+					v-tooltip.bottom="$t('clear_changes')"
 					class="clear-changes"
 					rounded
 					icon
@@ -281,12 +279,18 @@ const refreshInterval = computed({
 					<v-icon name="clear" />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('create_panel')" rounded icon outlined :to="`/insights/${currentDashboard.id}/+`">
+				<v-button
+					v-tooltip.bottom="$t('create_panel')"
+					rounded
+					icon
+					outlined
+					:to="`/insights/${currentDashboard.id}/+`"
+				>
 					<v-icon name="add" />
 				</v-button>
 
 				<v-button
-					v-tooltip.bottom="t('save')"
+					v-tooltip.bottom="$t('save')"
 					:disabled="!hasEdits"
 					rounded
 					icon
@@ -299,7 +303,7 @@ const refreshInterval = computed({
 
 			<template v-else>
 				<v-button
-					v-tooltip.bottom="t('fit_to_screen')"
+					v-tooltip.bottom="$t('fit_to_screen')"
 					:active="zoomToFit"
 					class="zoom-to-fit"
 					rounded
@@ -311,7 +315,7 @@ const refreshInterval = computed({
 				</v-button>
 
 				<v-button
-					v-tooltip.bottom="t('full_screen')"
+					v-tooltip.bottom="$t('full_screen')"
 					:active="fullScreen"
 					class="fullscreen"
 					rounded
@@ -323,7 +327,7 @@ const refreshInterval = computed({
 				</v-button>
 
 				<v-button
-					v-tooltip.bottom="t('edit_panels')"
+					v-tooltip.bottom="$t('edit_panels')"
 					class="edit"
 					rounded
 					icon
@@ -337,8 +341,8 @@ const refreshInterval = computed({
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_insights_dashboard')" class="page-description" />
+			<sidebar-detail icon="info" :title="$t('information')" close>
+				<div v-md="$t('page_help_insights_dashboard')" class="page-description" />
 			</sidebar-detail>
 
 			<comments-sidebar-detail :key="primaryKey" collection="directus_dashboards" :primary-key="primaryKey" />
@@ -361,21 +365,21 @@ const refreshInterval = computed({
 			@apply="copyPanel"
 		>
 			<v-card>
-				<v-card-title>{{ t('copy_to') }}</v-card-title>
+				<v-card-title>{{ $t('copy_to') }}</v-card-title>
 
 				<v-card-text>
 					<v-notice v-if="!copyPanelChoices.length">
-						{{ t('no_other_dashboards_copy') }}
+						{{ $t('no_other_dashboards_copy') }}
 					</v-notice>
 					<v-select v-else v-model="copyPanelTo" :items="copyPanelChoices" item-text="name" item-value="id" />
 				</v-card-text>
 
 				<v-card-actions>
 					<v-button secondary @click="copyPanelID = null">
-						{{ t('cancel') }}
+						{{ $t('cancel') }}
 					</v-button>
 					<v-button :disabled="!copyPanelChoices.length" @click="copyPanel">
-						{{ t('copy') }}
+						{{ $t('copy') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
@@ -383,27 +387,27 @@ const refreshInterval = computed({
 
 		<v-dialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="cancelChanges(true)">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('discard_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('discard_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="cancelChanges(true)">
-						{{ t('discard_changes') }}
+						{{ $t('discard_changes') }}
 					</v-button>
-					<v-button @click="confirmCancel = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="confirmCancel = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
-				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
+				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="discardAndLeave">
-						{{ t('discard_changes') }}
+						{{ $t('discard_changes') }}
 					</v-button>
 
-					<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+					<v-button @click="confirmLeave = false">{{ $t('keep_editing') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

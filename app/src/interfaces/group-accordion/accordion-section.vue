@@ -13,6 +13,7 @@ const props = withDefaults(
 		values: Record<string, unknown>;
 		initialValues: Record<string, unknown>;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
 		comparison?: ComparisonContext;
@@ -106,7 +107,7 @@ function useComparisonIndicator() {
 					:class="{ active, edited }"
 					@click="handleModifier($event, toggle)"
 				>
-					<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
+					<span v-if="edited" v-tooltip="$t('edited')" class="edit-dot"></span>
 					<v-icon class="icon" :class="{ active }" name="expand_more" />
 					<span class="field-name">{{ field.name }}</span>
 					<v-icon v-if="field.meta?.required === true" class="required" sup name="star" filled />
@@ -133,6 +134,7 @@ function useComparisonIndicator() {
 							:loading="loading"
 							:batch-mode="batchMode"
 							:disabled="disabled"
+							:non-editable="nonEditable"
 							:comparison="comparison"
 							:direction="direction"
 							:show-no-visible-fields="false"

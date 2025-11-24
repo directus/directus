@@ -1857,9 +1857,7 @@ interfaces:
     accordion_mode: 折叠模式
     max_one_section_open: 最多展开 1 项
   presentation-links:
-    presentation-links: 按钮链接
     links: 链接
-    description: 启动动态URL的可配置链接按钮
     style: 样式
     primary: 主要的
     link: 链接

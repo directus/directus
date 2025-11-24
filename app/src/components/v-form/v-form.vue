@@ -8,7 +8,6 @@ import { useElementSize } from '@directus/composables';
 import { ContentVersion, Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
 import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import type { MenuOptions } from './form-field-menu.vue';
 import FormField from './form-field.vue';
 import type { ComparisonContext, FormField as TFormField } from './types';
@@ -31,6 +30,7 @@ const props = withDefaults(
 		batchMode?: boolean;
 		primaryKey?: string | number;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		validationErrors?: ValidationError[];
 		autofocus?: boolean;
 		group?: string | null;
@@ -62,8 +62,6 @@ const props = withDefaults(
 		version: null,
 	},
 );
-
-const { t } = useI18n();
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -399,11 +397,11 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 		<v-info
 			v-if="noVisibleFields && showNoVisibleFields && !loading"
 			class="no-fields-info"
-			:title="t('no_visible_fields')"
+			:title="$t('no_visible_fields')"
 			:icon="inline ? false : 'search'"
 			:center="!inline"
 		>
-			{{ t('no_visible_fields_copy') }}
+			{{ $t('no_visible_fields_copy') }}
 		</v-info>
 		<template v-for="(fieldName, index) in fieldNames" :key="fieldName">
 			<template v-if="fieldsMap[fieldName]">
@@ -424,7 +422,8 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:fields="fieldsForGroup[index] || []"
 					:values="modelValue || {}"
 					:initial-values="initialValues || {}"
-					:disabled="disabled"
+					:disabled="disabled || nonEditable"
+					:non-editable="nonEditable"
 					:batch-mode="batchMode"
 					:batch-active-fields="batchActiveFields"
 					:primary-key="primaryKey"
@@ -451,7 +450,8 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					:autofocus="index === firstEditableFieldIndex && autofocus"
 					:model-value="(values || {})[fieldName]"
 					:initial-value="(initialValues || {})[fieldName]"
-					:disabled="isDisabled(fieldsMap[fieldName]!)"
+					:disabled="isDisabled(fieldsMap[fieldName]!) || nonEditable"
+					:non-editable="nonEditable"
 					:batch-mode="batchMode"
 					:batch-active="batchActiveFields.includes(fieldName)"
 					:comparison="comparison"

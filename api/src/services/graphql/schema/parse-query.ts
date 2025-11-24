@@ -138,10 +138,10 @@ export async function getQuery(
 
 	if (collection) {
 		if (query.filter) {
-			query.filter = filterReplaceM2A(query.filter, collection, schema);
+			query.filter = filterReplaceM2A(query.filter, collection, schema, { aliasMap: query.alias });
 		}
 
-		query.deep = filterReplaceM2ADeep(query.deep, collection, schema);
+		query.deep = filterReplaceM2ADeep(query.deep, collection, schema, { aliasMap: query.alias });
 	}
 
 	validateQuery(query);
