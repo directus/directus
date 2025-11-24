@@ -894,10 +894,8 @@ label: Надпис
 flows: Автоматизирани процеси
 flow: Процес
 select_a_flow: Избор на процес
-run_flow_confirm: Сигурни ли сте, че искате да изпълните този процес?
 run_flow_on_current_collection: Стартиране на процеса за текущата колекция
 run_flow_on_current: Изпълнение на процеса на текущия елемент
-run_flow_on_current_edited_confirm: Записът може да бъде редактиран от процеса, сигурни ли сте, че искате да го изпълните?
 run_flow_on_selected: Първо изберете един или повече елементи | Изпълнение на процеса на 1 избран елемент | Стартирайте Flow върху {n} избрани елементи
 run_flow: Стартирайте процеса
 field_name_placeholder: Въведете име на поле...
@@ -1163,7 +1161,6 @@ directus_collection:
   directus_dashboards: Табла в модула за задълбочен анализ
   directus_fields: Допълнителна кофигурация и данни
   directus_files: Мета данни за всички файлове
-  directus_flows: Автоматизирани процеси
   directus_folders: Виртуални директории за файловете
   directus_migrations: Версия на базата данни която се използва
   directus_notifications: Известия, изпратени до потребителите
@@ -1637,7 +1634,7 @@ interfaces:
     accordion_mode: Акордионен режим
     max_one_section_open: До 1 отворена секция
   presentation-links:
-    links: Връзки
+    presentation-links: Бутони
     style: Стил
     primary: Главен
     link: Връзки
@@ -2257,11 +2254,9 @@ triggers:
 a_flow_uuid: Избор на процес за задействане...
 any_string_or_json: Всякакъв низ или JSON...
 item_payload_placeholder: Това трябва да е JSON документа, който ще се използва при актуализирането на полетата на записа...
-operation_variables_note: Данните от операцията са достъпни чрез променливи като **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** и **{'{'}{'{'}$accountability{'}'}{'}'}**, или за достъп до предишната операция чрез **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Условие
-    description: Маршрутизиране на процес базирано на If / Else логика
   exec:
     name: Изпълняване на скрипт
     description: Изпълняване на потребителски код за промяна на съдържанието
@@ -2345,7 +2340,6 @@ operations:
     description: Промяна на JSON съдържанието на процеса
   trigger:
     name: Задействане на процес
-    description: Подаване на данните към друг процес
     flows: Автоматизирани процеси
     flow: Процес
     data: Данни
