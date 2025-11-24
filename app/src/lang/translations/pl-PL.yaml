@@ -921,10 +921,8 @@ label: Etykieta
 flows: Przepływy
 flow: Przepływ
 select_a_flow: Wybierz przepływ
-run_flow_confirm: Czy na pewno chcesz wykonać ten przepływ?
 run_flow_on_current_collection: Uruchom Przepływ na Aktualnej Kolekcji
 run_flow_on_current: Uruchom Przepływ na Bieżącym Przedmiocie
-run_flow_on_current_edited_confirm: Ten przedmiot może być aktualizowany przez ten przepływ, czy na pewno chcesz go wykonać?
 run_flow_on_selected: Najpierw wybierz jeden lub więcej elementów | Uruchom przepływ na 1 wybranym elemencie | Uruchom przepływ na {n} wybranych elementach
 run_flow: Uruchom Przepływ
 field_name_placeholder: Wprowadź nazwę pola...
@@ -1202,7 +1200,6 @@ directus_collection:
   directus_dashboards: Panel główny w module Insights
   directus_fields: Dodatkowa konfiguracja pola i metadane
   directus_files: Metadane dla wszystkich zarządzanych zasobów plików
-  directus_flows: Automatyzacja przepływów
   directus_folders: Dostarcza wirtualne katalogi dla plików
   directus_migrations: Jaką wersję bazy danych używasz
   directus_notifications: Powiadomienia wysłane do użytkowników
@@ -1703,7 +1700,7 @@ interfaces:
     accordion_mode: Tryb Accordion
     max_one_section_open: Otwórz maksymalnie 1 sekcję
   presentation-links:
-    links: Linki
+    presentation-links: Przyciski
     style: Style
     primary: Podstawowy
     link: Linki
@@ -2327,11 +2324,9 @@ triggers:
 a_flow_uuid: Wybierz przepływ do wyzwalacza...
 any_string_or_json: Dowolny ciąg znaków lub JSON...
 item_payload_placeholder: To jest JSON używany do aktualizacji wartości pola elementu...
-operation_variables_note: Możesz uzyskać dostęp do danych przepływu zmiennymi takimi jak **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** i **{'{'}{'{'}$accountability{'}'}{'}'}**, lub odniesienie do poprzednich operacji używając **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Warunek
-    description: Trasa przepływu na podstawie logiki If / Else
   exec:
     name: Uruchom skrypt
     description: Wykonaj arbitralny kod, aby zmodyfikować ładunek
@@ -2415,7 +2410,6 @@ operations:
     description: Zmień obciążenie JSON przepływów
   trigger:
     name: Przepływ Wyzwalaczy
-    description: Przenieś te dane do innego przepływu
     flows: Przepływy
     flow: Przepływ
     data: Dane
