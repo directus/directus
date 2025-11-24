@@ -118,7 +118,7 @@ enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em D
 sso_tfa_setup_notice: Você será desligado da sua conta e precisará entrar novamente. Qualquer mudança não salva será descartada.
 add_field: Adicionar Campo
 role_name: Nome do Cargo
-policy_name: Nome da política
+policy_name: Nome da política 
 branch: Branch
 leaf: Folha
 indeterminate: Indeterminado
@@ -935,10 +935,8 @@ label: Rótulo
 flows: Fluxos
 flow: Fluxo
 select_a_flow: Selecione um fluxo
-run_flow_confirm: Tem certeza que deseja excluir este fluxo?
 run_flow_on_current_collection: Executar fluxo na coleção atual
 run_flow_on_current: Executar fluxo no Item atual
-run_flow_on_current_edited_confirm: Este item pode ser alterado por este fluxo, você tem certeza que deseja continuar?
 run_flow_on_selected: Selecione Um ou Mais Itens Primeiro | Execute o fluxo em 1 Item Selecionado | Execute o fluxo em {n} Itens Selecionados
 run_flow: Executar Fluxo
 trigger_flow_success: Fluxo "{flow}" ativado com sucesso
@@ -1237,7 +1235,6 @@ directus_collection:
   directus_dashboards: Painéis dentro do módulo Insights
   directus_fields: Configurações e metadados adicionais do campo
   directus_files: Metadados de todos os arquivos gerenciados
-  directus_flows: Fluxos de automação
   directus_folders: Fornece diretórios virtuais para arquivos
   directus_migrations: Qual versão do banco de dados você está utilizando
   directus_notifications: Notificações enviadas aos usuários
@@ -1754,7 +1751,7 @@ interfaces:
     accordion_mode: Modo do Acordeão
     max_one_section_open: Máximo 1 Seção Aberta
   presentation-links:
-    links: Links
+    presentation-links: Botões
     style: Estilo
     primary: Primário
     link: Links
@@ -2383,11 +2380,9 @@ triggers:
 a_flow_uuid: Selecione um Fluxo para acionamento...
 any_string_or_json: Qualquer texto ou JSON...
 item_payload_placeholder: Este é o JSON utilizado para atualizar os campos do item...
-operation_variables_note: Você pode acessar dados do fluxo com variáveis como **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** e **{'{'}{'{'}$accountability{'}'}{'}'}**, ou referenciar operações prévias utilizando **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condição
-    description: Direciona um fluxo utilizando lógica Se / Se não
   exec:
     name: Executar Script
     description: Executa código arbitrário para modificação do payload
@@ -2472,7 +2467,6 @@ operations:
     description: Altere a carga JSON do Flow
   trigger:
     name: Ativar Fluxo
-    description: Passar estes dados para outro fluxo
     flows: Fluxos
     flow: Fluxo
     data: Dados
