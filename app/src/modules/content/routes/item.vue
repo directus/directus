@@ -28,6 +28,7 @@ import { useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
+import { useAiStore } from '@/ai/stores/use-ai';
 
 interface Props {
 	collection: string;
@@ -89,6 +90,14 @@ const {
 	refresh,
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, query);
+
+const aiStore = useAiStore();
+
+aiStore.onSystemToolResult((tool, input) => {
+	if (tool === 'items' && input.collection === collection.value) {
+		refresh();
+	}
+});
 
 const validationErrors = computed(() => {
 	if (currentVersion.value === null) return itemValidationErrors.value;
