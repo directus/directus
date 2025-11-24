@@ -1,27 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Mount component 1`] = `
-"<div data-v-418390f4="" class="v-input full-width">
-  <!--v-if-->
-  <div data-v-418390f4="" class="input">
-    <!--v-if-->
-    <!--v-if--><input data-v-418390f4="" autocomplete="off" type="text" step="1" value="">
-    <!--v-if-->
-    <!--v-if-->
-    <!--v-if-->
-    <!--v-if-->
-  </div>
-  <!--v-if-->
-</div>"
-`;
-
 exports[`invalid warning > should appear for invalid input 1`] = `
 "<div data-v-418390f4="" class="v-input full-width invalid">
   <!--v-if-->
   <div data-v-418390f4="" class="input">
     <!--v-if-->
     <!--v-if--><input data-v-418390f4="" autocomplete="off" type="number" step="1" value="">
-    <v-icon-stub data-v-418390f4="" name="warning" class="warning-invalid" data-tooltip="81Q7cPtje1gNlLhCuktdh"></v-icon-stub>
+    <v-icon-stub data-v-418390f4="" name="warning" class="inline-warning"></v-icon-stub>
     <!--v-if--><span data-v-418390f4=""><v-icon-stub data-v-418390f4="" class="step-up" name="keyboard_arrow_up" tabindex="-1" clickable="" disabled="false"></v-icon-stub><v-icon-stub data-v-418390f4="" class="step-down" name="keyboard_arrow_down" tabindex="-1" clickable="" disabled="false"></v-icon-stub></span>
     <!--v-if-->
   </div>

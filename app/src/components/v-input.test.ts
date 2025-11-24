@@ -1,29 +1,38 @@
 import { Focus } from '@/__utils__/focus';
+import { Tooltip } from '@/__utils__/tooltip';
 import type { GlobalMountOptions } from '@/__utils__/types';
-import { i18n } from '@/lang';
 import { mount } from '@vue/test-utils';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import VInput from './v-input.vue';
-import Tooltip from '@/directives/tooltip';
+
+const i18n = {
+	not_a_number: 'Not a Number',
+	invalid_input: 'Invalid Input',
+	invalid_range_min: (value: number) => `Value is below minimum of ${value}`,
+	invalid_range_max: (value: number) => `Value exceeds maximum of ${value}`,
+}
+
+const tMock = vi.fn((key: string, params?: any) => {
+	if (key === 'not_a_number') return i18n.not_a_number;
+	if (key === 'invalid_input') return i18n.invalid_input;
+	if (key === 'invalid_range_min') return i18n.invalid_range_min(params?.value);
+	if (key === 'invalid_range_max') return i18n.invalid_range_max(params?.value);
+	return key;
+});
+
+vi.mock('vue-i18n', () => ({
+	useI18n: () => ({
+		t: tMock,
+	}),
+}));
 
 const global: GlobalMountOptions = {
 	stubs: ['v-icon'],
-	plugins: [i18n],
 	directives: {
 		focus: Focus,
 		tooltip: Tooltip,
 	},
 };
-
-test('Mount component', () => {
-	expect(VInput).toBeTruthy();
-
-	const wrapper = mount(VInput, {
-		global,
-	});
-
-	expect(wrapper.html()).toMatchSnapshot();
-});
 
 test('modelValue prop', async () => {
 	const wrapper = mount(VInput, {
@@ -267,6 +276,7 @@ describe('emitValue', () => {
 describe('invalid warning', () => {
 	afterEach(() => {
 		vi.restoreAllMocks();
+		tMock.mockClear();
 	});
 
 	const validityMock: ValidityState = {
@@ -297,15 +307,18 @@ describe('invalid warning', () => {
 		const validitySpy = vi.spyOn(inputEl, 'validity', 'get').mockReturnValue({ ...validityMock, badInput: true });
 
 		expect(inputEl.validity.badInput).toBe(true);
-		expect((wrapper.vm as any).isInvalidInput).toBe(false);
+		expect((wrapper.vm as any).isBadInput).toBe(false);
 
 		await input.trigger('input');
 		await wrapper.vm.$nextTick();
 
-		expect((wrapper.vm as any).isInvalidInput).toBe(true);
+		expect((wrapper.vm as any).isBadInput).toBe(true);
 		expect(wrapper.find('.v-input.invalid').exists()).toBe(true);
-		expect(wrapper.find('v-icon-stub.warning-invalid').exists()).toBe(true);
+		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(true);
 		expect(validitySpy).toHaveBeenCalledTimes(2);
+
+		expect(tMock).toHaveBeenCalledWith('not_a_number');
+		expect((wrapper.vm as any).inlineWarning).toBe(i18n.not_a_number);
 
 		expect(wrapper.html()).toMatchSnapshot();
 	});
@@ -324,14 +337,14 @@ describe('invalid warning', () => {
 		const validitySpy = vi.spyOn(inputEl, 'validity', 'get').mockReturnValue(validityMock);
 
 		expect(inputEl.validity.badInput).toBe(false);
-		expect((wrapper.vm as any).isInvalidInput).toBe(false);
+		expect((wrapper.vm as any).isBadInput).toBe(false);
 
 		await input.trigger('input');
 		await wrapper.vm.$nextTick();
 
-		expect((wrapper.vm as any).isInvalidInput).toBe(false);
+		expect((wrapper.vm as any).isBadInput).toBe(false);
 		expect(wrapper.find('.v-input.invalid').exists()).toBe(false);
-		expect(wrapper.find('v-icon-stub.warning-invalid').exists()).toBe(false);
+		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(false);
 		expect(validitySpy).toHaveBeenCalledTimes(2);
 
 		expect(wrapper.html()).toMatchSnapshot();
@@ -351,9 +364,10 @@ describe('invalid warning', () => {
 
 		await wrapper.vm.$nextTick();
 
-		expect((wrapper.vm as any).isInvalidRange).toBe(true);
-		expect(wrapper.find('.v-input.invalid').exists()).toBe(true);
-		expect(wrapper.find('v-icon-stub.warning-invalid').exists()).toBe(true);
+		expect((wrapper.vm as any).inlineWarning).toBeDefined();
+		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(true);
+		expect(tMock).toHaveBeenCalledWith('invalid_range_max', { value: 10 });
+		expect((wrapper.vm as any).inlineWarning).toBe(i18n.invalid_range_max(10));
 	});
 
 	test('should appear when value is below minimum', async () => {
@@ -370,8 +384,10 @@ describe('invalid warning', () => {
 
 		await wrapper.vm.$nextTick();
 
-		expect((wrapper.vm as any).isInvalidRange).toBe(true);
-		expect(wrapper.find('.v-input.invalid').exists()).toBe(true);
+		expect((wrapper.vm as any).inlineWarning).toBeDefined();
+		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(true);
+		expect(tMock).toHaveBeenCalledWith('invalid_range_min', { value: 0 });
+		expect((wrapper.vm as any).inlineWarning).toBe(i18n.invalid_range_min(0));
 	});
 
 	test('should not appear when value is within range', async () => {
@@ -388,8 +404,8 @@ describe('invalid warning', () => {
 
 		await wrapper.vm.$nextTick();
 
-		expect((wrapper.vm as any).isInvalidRange).toBe(false);
-		expect(wrapper.find('.v-input.invalid').exists()).toBe(false);
+		expect((wrapper.vm as any).inlineWarning).toBeUndefined();
+		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(false);
 	});
 
 	test('should work with decimal values for float type', async () => {
@@ -406,8 +422,32 @@ describe('invalid warning', () => {
 
 		await wrapper.vm.$nextTick();
 
-		expect((wrapper.vm as any).isInvalidRange).toBe(true);
-		expect(wrapper.find('.v-input.invalid').exists()).toBe(true);
+		expect((wrapper.vm as any).inlineWarning).toBeDefined();
+		expect(wrapper.find('v-icon-stub.inline-warning').exists()).toBe(true);
+		expect(tMock).toHaveBeenCalledWith('invalid_range_max', { value: 10 });
+		expect((wrapper.vm as any).inlineWarning).toBe(i18n.invalid_range_max(10));
+	});
+
+	test('should show invalid_input key for non-number type', async () => {
+		const wrapper = mount(VInput, {
+			props: {
+				type: 'text',
+			},
+			global,
+		});
+
+		const input = wrapper.find('input');
+		const inputEl = input.element as HTMLInputElement;
+
+		vi.spyOn(inputEl, 'validity', 'get').mockReturnValue({
+			badInput: true,
+		} as ValidityState);
+
+		await input.trigger('input');
+		await wrapper.vm.$nextTick();
+
+		expect(tMock).toHaveBeenCalledWith('invalid_input');
+		expect((wrapper.vm as any).inlineWarning).toBe(i18n.invalid_input);
 	});
 
 	test('useInvalidInput takes priority over useInvalidRange', async () => {
@@ -432,7 +472,7 @@ describe('invalid warning', () => {
 		await input.trigger('input');
 		await wrapper.vm.$nextTick();
 
-		expect((wrapper.vm as any).isInvalidInput).toBe(true);
+		expect((wrapper.vm as any).isBadInput).toBe(true);
 		expect(wrapper.find('.v-input.invalid').exists()).toBe(true);
 	});
 });
