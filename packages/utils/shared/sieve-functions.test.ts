@@ -71,7 +71,7 @@ test('sieve nested error in object', () => {
 	const obj = {
 		status: 'failed',
 		error: error,
-		fn: () => { },
+		fn: () => {},
 	};
 
 	const sieved = sieveFunctions(obj) as any;
