@@ -1,3 +1,4 @@
+import { useAiStore } from '@/ai/stores/use-ai';
 import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
 import { DeepPartial, Relation } from '@directus/types';
@@ -7,6 +8,14 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export const useRelationsStore = defineStore('relations', () => {
+	const aiStore = useAiStore();
+
+	aiStore.onSystemToolResult(async (toolName) => {
+		if (toolName === 'relations') {
+			await hydrate();
+		}
+	});
+
 	const relations = ref<Relation[]>([]);
 
 	const hydrate = async () => {

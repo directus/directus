@@ -86,7 +86,8 @@ export const useAiStore = defineStore('ai-store', () => {
 
 	const localTools = shallowRef<StaticToolDefinition[]>([]);
 
-	const systemToolResultHook = createEventHook<[tool: SystemTool, input: unknown, output: unknown]>();
+	const systemToolResultHook =
+		createEventHook<[tool: SystemTool, input: Record<string, unknown>, output: Record<string, unknown>]>();
 
 	const toApiTool = (tool: StaticToolDefinition) => ({
 		name: tool.name,
