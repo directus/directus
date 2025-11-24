@@ -926,10 +926,8 @@ label: Nîşane
 flows: Herikîn
 flow: Herikîn
 select_a_flow: Herikînekê Hilbijêre
-run_flow_confirm: Tu bi rastî dixwazî vê herikînê bixebitînî?
 run_flow_on_current_collection: Herikînê li ser Koleksiyona Heyî Bixebitîne
 run_flow_on_current: Herikînê li ser Hêmana Heyî Bixebitîne
-run_flow_on_current_edited_confirm: Dibe ku ev hêman ji aliyê vê herikînê ve were nûkirin, tu bi rastî dixwazî vê bixebitînî?
 run_flow_on_selected: Pêşî Yek an Zêdetir Hêmanan Hilbijêre | Herikînê li ser 1 Hêmana Hilbijartî Bixebitîne | Herikînê li ser {n} Hêmanên Hilbijartî Bixebitîne
 run_flow: Herikînê Bixebitîne
 trigger_flow_success: Herikîna "{flow}" bi serkeftî hate kirin
@@ -1226,7 +1224,6 @@ directus_collection:
   directus_dashboards: Daşbordên di Modula Têgihiştinan de
   directus_fields: Veavakirin û metadaneyên zêde yên qadê
   directus_files: Metadaneya ji bo hemû tiştên pelê yên birêvebirî
-  directus_flows: Herikînên otomatîkkirinê
   directus_folders: Peldankên virtual ji bo pelan peyda dike
   directus_migrations: Tu kîjan guhertoya databeysa bi kar tînî
   directus_notifications: Agahdariyên şandî ji bikarhêneran re
@@ -1741,7 +1738,7 @@ interfaces:
     accordion_mode: Moda Akordionê
     max_one_section_open: Herî Zêde 1 Beş Vekirî
   presentation-links:
-    links: Girêdan
+    presentation-links: Bişkok
     style: Şêwaz
     primary: Sereke
     link: Girêdan
@@ -2370,11 +2367,9 @@ triggers:
 a_flow_uuid: Herikînekê hilbijêre ji bo tetîkkirinê...
 any_string_or_json: Her rêzek an JSON...
 item_payload_placeholder: Ev e JSONa ku tê bikaranîn ji bo nûkirina nirxên qadê yên hêmanê...
-operation_variables_note: Tu dikarî bigihî daneya herikînê bi guherokên wekî **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** û **{'{'}{'{'}$accountability{'}'}{'}'}**, an jî referansê bidî operasyonên berê bi **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Merc
-    description: Herikînekê rêbike li gorî lojîka If / Else
   exec:
     name: Koda Bixebitîne
     description: Koda kêfî bixebitîne ji bo guherandina payloadê
@@ -2465,7 +2460,6 @@ operations:
     description: JSONa Herikînê biguherîne
   trigger:
     name: Herikînê Tetîk Bike
-    description: Vê daneyê bişîne herikîneke din
     flows: Herikîn
     flow: Herikîn
     data: Dane
