@@ -29,22 +29,23 @@ import type { RoleMap } from '../../types/rolemap.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
-import { getSchema } from '../../utils/get-schema.js';
 import { getSecret } from '../../utils/get-secret.js';
+import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
 import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
-import { generateCallbackUrl } from '../utils/generate-callback-url.js';
-import { isLoginRedirectAllowed } from '../utils/is-login-redirect-allowed.js';
 import { LocalAuthDriver } from './local.js';
+import { getSchema } from '../../utils/get-schema.js';
 
 export class OAuth2AuthDriver extends LocalAuthDriver {
 	client: Client;
+	redirectUrl: string;
 	config: Record<string, any>;
 	roleMap: RoleMap;
 
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
 
+		const env = useEnv();
 		const logger = useLogger();
 
 		const { authorizeUrl, accessUrl, profileUrl, clientId, clientSecret, ...additionalConfig } = config;
@@ -54,11 +55,23 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			throw new InvalidProviderConfigError({ provider: additionalConfig['provider'] });
 		}
 
+		const redirectUrl = new Url(env['PUBLIC_URL'] as string).addPath(
+			'auth',
+			'login',
+			additionalConfig['provider'],
+			'callback',
+		);
+
+		this.redirectUrl = redirectUrl.toString();
 		this.config = additionalConfig;
 
 		this.roleMap = {};
 
 		const roleMapping = this.config['roleMapping'];
+
+		if (roleMapping) {
+			this.roleMap = roleMapping;
+		}
 
 		// role mapping will fail on login if AUTH_<provider>_ROLE_MAPPING is an array instead of an object.
 		// This happens if the 'json:' prefix is missing from the variable declaration. To save the user from exhaustive debugging, we'll try to fail early here.
@@ -68,10 +81,6 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			);
 
 			throw new InvalidProviderError();
-		}
-
-		if (roleMapping) {
-			this.roleMap = roleMapping;
 		}
 
 		const issuer = new Issuer({
@@ -93,6 +102,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		this.client = new issuer.Client({
 			client_id: clientId,
 			client_secret: clientSecret,
+			redirect_uris: [this.redirectUrl],
 			response_types: ['code'],
 			...clientOptionsOverrides,
 		});
@@ -102,7 +112,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		return generators.codeVerifier();
 	}
 
-	generateAuthUrl(codeVerifier: string, prompt = false, callbackUrl?: string): string {
+	generateAuthUrl(codeVerifier: string, prompt = false): string {
 		const { plainCodeChallenge } = this.config;
 
 		try {
@@ -118,7 +128,6 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				code_challenge_method: plainCodeChallenge ? 'plain' : 'S256',
 				// Some providers require state even with PKCE
 				state: codeChallenge,
-				redirect_uri: callbackUrl,
 			});
 		} catch (e) {
 			throw handleError(e);
@@ -154,7 +163,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				: generators.codeChallenge(payload['codeVerifier']);
 
 			tokenSet = await this.client.oauthCallback(
-				payload['redirectUri'],
+				this.redirectUrl,
 				{ code: payload['code'], state: payload['state'] },
 				{ code_verifier: payload['codeVerifier'], state: codeChallenge },
 			);
@@ -357,36 +366,24 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			const provider = getAuthProvider(providerName) as OAuth2AuthDriver;
 			const codeVerifier = provider.generateCodeVerifier();
 			const prompt = !!req.query['prompt'];
-			const otp = req.query['otp'];
 			const redirect = req.query['redirect'];
+			const otp = req.query['otp'];
 
-			if (!isLoginRedirectAllowed(providerName, `${req.protocol}://${req.hostname}`, redirect)) {
+			if (isLoginRedirectAllowed(redirect, providerName) === false) {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			const callbackUrl = generateCallbackUrl(providerName, `${req.protocol}://${req.get('host')}`);
-
-			const token = jwt.sign(
-				{
-					verifier: codeVerifier,
-					redirect,
-					prompt,
-					otp,
-					callbackUrl,
-				},
-				getSecret(),
-				{
-					expiresIn: '5m',
-					issuer: 'directus',
-				},
-			);
+			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt, otp }, getSecret(), {
+				expiresIn: '5m',
+				issuer: 'directus',
+			});
 
 			res.cookie(`oauth2.${providerName}`, token, {
 				httpOnly: true,
 				sameSite: 'lax',
 			});
 
-			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt, callbackUrl));
+			return res.redirect(provider.generateAuthUrl(codeVerifier, prompt));
 		},
 		respond,
 	);
@@ -413,14 +410,13 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 					redirect?: string;
 					prompt: boolean;
 					otp?: string;
-					callbackUrl?: string;
 				};
 			} catch (e: any) {
 				logger.warn(e, `[OAuth2] Couldn't verify OAuth2 cookie`);
 				throw new InvalidCredentialsError();
 			}
 
-			const { verifier, prompt, otp, callbackUrl } = tokenData;
+			const { verifier, prompt, otp } = tokenData;
 			let { redirect } = tokenData;
 
 			const accountability: Accountability = createDefaultAccountability({
@@ -451,7 +447,6 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 						code: req.query['code'],
 						codeVerifier: verifier,
 						state: req.query['state'],
-						callbackUrl,
 					},
 					{ session: authMode === 'session', ...(otp ? { otp: String(otp) } : {}) },
 				);
