@@ -167,20 +167,22 @@ describe('room', () => {
 	test('update field', async () => {
 		const clientA = mockWebSocketClient({ uid: 'abc' });
 		const clientB = mockWebSocketClient({ uid: 'def' });
+		const clientC = mockWebSocketClient({ uid: 'hij' });
 		const room = new Room('room1', 'coll', '1', null);
 
 		await room.join(clientA);
 		await room.join(clientB);
+		await room.join(clientC);
 
 		vi.mocked(sanitizePayload).mockImplementation(async (_, payload, ctx) => {
-			if (ctx.accountability === clientA.accountability) {
+			if (ctx.accountability === clientA.accountability || ctx.accountability === clientC.accountability) {
 				return payload;
 			}
 
 			return {};
 		});
 
-		await room.update('id', 5);
+		await room.update(clientA, 'id', 5);
 
 		expect(JSON.parse(String(vi.mocked(clientA.send).mock.lastCall?.[0]))).toEqual({
 			action: 'update',
@@ -190,10 +192,12 @@ describe('room', () => {
 			room: 'room1',
 		});
 
-		// Init, join and update message
-		expect(clientA.send).toHaveBeenCalledTimes(3);
+		// Init and join message
+		expect(clientA.send).toHaveBeenCalledTimes(2);
 		// Only the init message should have been send
 		expect(clientB.send).toHaveBeenCalledOnce();
+		// Init, join and update message
+		expect(clientB.send).toHaveBeenCalledTimes(3);
 	});
 
 	test('unset field', async () => {

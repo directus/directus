@@ -154,10 +154,12 @@ export class Room {
 		);
 	}
 
-	async update(field: string, changes: unknown) {
+	async update(sender: WebSocketClient, field: string, changes: unknown) {
 		this.changes[field] = changes;
 
 		for (const client of this.clients) {
+			if (client.uid === sender.uid) continue;
+
 			const item = await sanitizePayload(
 				this.collection,
 				{ [field]: changes },
@@ -191,19 +193,19 @@ export class Room {
 		}
 	}
 
-	async focus(client: WebSocketClient, field: string | null) {
+	async focus(sender: WebSocketClient, field: string | null) {
 		if (!field) {
-			delete this.focuses[client.uid];
+			delete this.focuses[sender.uid];
 		} else {
-			this.focuses[client.uid] = field;
+			this.focuses[sender.uid] = field;
 		}
 
-		for (const c of this.clients) {
-			if (field && !(await hasFieldPermision(c.accountability!, this.collection, field))) continue;
+		for (const client of this.clients) {
+			if (field && !(await hasFieldPermision(client.accountability!, this.collection, field))) continue;
 
-			this.send(c, {
+			this.send(client, {
 				action: 'focus',
-				connection: client.uid,
+				connection: sender.uid,
 				field,
 			});
 		}
