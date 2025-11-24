@@ -922,10 +922,8 @@ label: Popis
 flows: Toky
 flow: Tok
 select_a_flow: Vyberte tok
-run_flow_confirm: Naozaj chcete spustiť tento tok?
 run_flow_on_current_collection: Spustiť tok nad aktuálnou zbierkou
 run_flow_on_current: Spustiť tok na aktuálnej položke
-run_flow_on_current_edited_confirm: Táto položka sa môže vykonaním tohoto toku zmeniť, naozaj to chcete vykonať?
 run_flow_on_selected: Najprv zvoľte jednu alebo viac položiek | Spustiť tok na 1 zvolenej položke | Spustiť tok na {n} zvolených položkách
 run_flow: Spustiť tok
 field_name_placeholder: Zadajte názov poľa...
@@ -1216,7 +1214,6 @@ directus_collection:
   directus_dashboards: Tabule v module prehľadov
   directus_fields: Dodatočné nastavenia polí a metadát
   directus_files: Metadáta pre všetky spravované súbory
-  directus_flows: Automatizácia tokov
   directus_folders: Poskytuje virtuálne priečinky na súboru
   directus_migrations: Akú verziu databázy používate
   directus_notifications: Notifikácie poslané používateľom
@@ -1728,7 +1725,7 @@ interfaces:
     accordion_mode: Režim akordeónu
     max_one_section_open: Max 1 sekcia otvorená
   presentation-links:
-    links: Odkazy
+    presentation-links: Tlačidlá
     style: Štýl
     primary: Primárne
     link: Odkazy
@@ -2353,11 +2350,9 @@ triggers:
 a_flow_uuid: Vyberte tok na spustenie...
 any_string_or_json: Akýkoľvek text alebo JSON...
 item_payload_placeholder: Toto je JSON použitý na aktualizáciu hodnôt polí v položke...
-operation_variables_note: K dátam toku sa viete dostať použitím premenných **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** a **{'{'}{'{'}$accountability{'}'}{'}'}**, alebo odkazovať na predošlé operácie použitím **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Podmienka
-    description: Presmeruje tok podľa logiky If / Else
   exec:
     name: Spustiť skript
     description: Vykoná ľubovoľný kód, ktorý upraví payload
@@ -2441,7 +2436,6 @@ operations:
     description: Zmení JSON payload toku
   trigger:
     name: Spúšťač toku
-    description: Presunie tieto dáta do iného toku
     flows: Toky
     flow: Tok
     data: Údaje
