@@ -200,10 +200,12 @@ function closeDrawer() {
 	edits.value = {};
 	active.value = null;
 }
+
+const menuActive = computed(() => drawerOpen.value || confirmDiscard.value);
 </script>
 
 <template>
-	<div class="repeater">
+	<div v-prevent-focusout="menuActive" class="repeater">
 		<v-notice v-if="(Array.isArray(internalValue) && internalValue.length === 0) || internalValue == null">
 			{{ placeholder || $t('no_items') }}
 		</v-notice>

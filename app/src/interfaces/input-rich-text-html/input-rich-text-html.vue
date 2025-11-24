@@ -399,10 +399,14 @@ onMounted(() => {
 		'Right to left': t('right_to_left'),
 	});
 });
+
+const menuActive = computed(
+	() => codeDrawerOpen.value || imageDrawerOpen.value || mediaDrawerOpen.value || linkDrawerOpen.value,
+);
 </script>
 
 <template>
-	<div :id="field" class="wysiwyg" :class="{ disabled }">
+	<div :id="field" v-prevent-focusout="menuActive" class="wysiwyg" :class="{ disabled }">
 		<editor
 			:key="editorKey"
 			ref="editorElement"

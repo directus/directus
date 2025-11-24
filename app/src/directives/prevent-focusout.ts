@@ -12,12 +12,12 @@ const PreventFocusout: Directive = {
 		if (binding.oldValue && !binding.value) {
 			el.removeEventListener('focusout', preventFocusout);
 
-			console.log('focusout', el.contains(document.activeElement));
-
 			if (!el.contains(document.activeElement))
 				el.dispatchEvent(
 					new FocusEvent('focusout', {
 						bubbles: true,
+						composed: true,
+						view: window,
 					}),
 				);
 		}
@@ -25,14 +25,13 @@ const PreventFocusout: Directive = {
 		if (binding.value && !binding.oldValue) {
 			el.addEventListener('focusout', preventFocusout);
 
-			console.log('focusin', el.contains(document.activeElement));
-
-			if (!el.contains(document.activeElement))
+			if (!el.contains(document.activeElement)) {
 				el.dispatchEvent(
 					new FocusEvent('focusin', {
 						bubbles: true,
 					}),
 				);
+			}
 		}
 	},
 };

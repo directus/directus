@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { DisplayItem } from '@/composables/use-relation-multiple';
 import type { RelationM2O } from '@/composables/use-relation-m2o';
@@ -127,11 +127,29 @@ function useConfirmation() {
 </script>
 
 <template>
-	<v-button v-if="button" v-tooltip="tooltip" v-bind="$attrs" icon rounded :disabled @click.stop="onClick">
+	<v-button
+		v-if="button"
+		v-prevent-focusout="confirmDelete"
+		v-tooltip="tooltip"
+		v-bind="$attrs"
+		icon
+		rounded
+		:disabled
+		@click.stop="onClick"
+	>
 		<v-icon :name="icon" :disabled />
 	</v-button>
 
-	<v-icon v-else v-tooltip="tooltip" v-bind="$attrs" :name="icon" :disabled clickable @click.stop="onClick" />
+	<v-icon
+		v-else
+		v-prevent-focusout="confirmDelete"
+		v-tooltip="tooltip"
+		v-bind="$attrs"
+		:name="icon"
+		:disabled
+		clickable
+		@click.stop="onClick"
+	/>
 
 	<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="onConfirmDelete">
 		<v-card>
