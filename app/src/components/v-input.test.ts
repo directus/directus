@@ -10,7 +10,7 @@ const i18n = {
 	invalid_input: 'Invalid Input',
 	invalid_range_min: (value: number) => `Value is below minimum of ${value}`,
 	invalid_range_max: (value: number) => `Value exceeds maximum of ${value}`,
-}
+};
 
 const tMock = vi.fn((key: string, params?: any) => {
 	if (key === 'not_a_number') return i18n.not_a_number;
