@@ -950,11 +950,9 @@ label: 상표
 flows: 플로우
 flow: 플로우
 select_a_flow: 플로우 선택
-run_flow_confirm: 이 규칙을 실행하시겠습니까?
 run_flow_anyway: 어쨌든 플로우를 실행
 run_flow_on_current_collection: 현재 컬렉션에서 플로우 실행
 run_flow_on_current: 현재 항목에서 플로우 실행
-run_flow_on_current_edited_confirm: 이 항목은 이 플로우에 의해 업데이트될 수 있습니다. 실행하시겠습니까?
 run_flow_on_selected: 먼저 하나 이상의 항목 선택 | 선택한 항목 1개에서 플로우 실행 | {n} 선택한 항목에서 플로우 실행
 run_flow: 플로우 실행
 trigger_flow_success: 플로우 "{flow}"가 성공적으로 트리거되었습니다.
@@ -1258,7 +1256,6 @@ directus_collection:
   directus_dashboards: Insights 모듈 내의 대시보드
   directus_fields: 추가 필드 구성 및 메타데이터
   directus_files: 관리되는 모든 파일 자산의 메타데이터
-  directus_flows: 자동화 플로우
   directus_folders: 파일을 위한 가상 디렉터리 제공
   directus_migrations: 사용 중인 데이터베이스 버전
   directus_notifications: 사용자에게 전송된 알림
@@ -1813,7 +1810,7 @@ interfaces:
     accordion_mode: 아코디언 모드
     max_one_section_open: 최대 1개 섹션 열기
   presentation-links:
-    links: 연결
+    presentation-links: 버튼
     style: 스타일
     primary: 기본
     link: 연결
@@ -2444,11 +2441,9 @@ triggers:
 a_flow_uuid: 트리거할 플로우 선택...
 any_string_or_json: 모든 문자열 또는 JSON...
 item_payload_placeholder: 항목의 필드 값을 업데이트하는 데 사용되는 JSON입니다...
-operation_variables_note: '**{''{''}{''{''}$last{''}''}{''}''}**, **{''{''}{''{''}$trigger와 같은 변수를 사용하여 플로우 데이터에 액세스할 수 있습니다. {''}''}{''}''}** 및 **{''{''}{''{''}$accountability{''}''}{''}''}** 또는 **{''{를 사용하여 이전 작업 참조 ''}{''{''}operation_key{''}''}{''}''}**.'''
 operations:
   condition:
     name: 상태
-    description: If / Else 논리를 기반으로 플로우 라우팅
   exec:
     name: 스크립트 실행
     description: 임의의 코드를 실행하여 페이로드 수정
@@ -2545,7 +2540,6 @@ operations:
     description: 플로우의 JSON 페이로드 변경
   trigger:
     name: 트리거 플로우
-    description: 이 데이터를 다른 플로우에 전달
     flows: 플로우
     flow: 플로우
     data: 데이터
