@@ -120,8 +120,8 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 				},
 				{
 					database: getDatabase(),
-					schema,
-					accountability: req.accountability,
+					schema: context.schema,
+					accountability: context.accountability ?? null,
 				},
 			);
 
