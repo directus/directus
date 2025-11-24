@@ -53,7 +53,7 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 		datastore: store,
 		locker: getTusLocker(),
 		...(RESUMABLE_UPLOADS.MAX_SIZE !== null && { maxSize: RESUMABLE_UPLOADS.MAX_SIZE }),
-		async onUploadFinish(req: any, upload) {
+		async onUploadFinish(_req: any, upload) {
 			const schema = await getSchema();
 
 			const service = new ItemsService<File>('directus_files', {
