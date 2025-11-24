@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`invalid warning > should appear for invalid input 1`] = `
+exports[`inline warning > should appear for invalid input 1`] = `
 "<div data-v-418390f4="" class="v-input full-width invalid">
   <!--v-if-->
   <div data-v-418390f4="" class="input">
@@ -14,7 +14,7 @@ exports[`invalid warning > should appear for invalid input 1`] = `
 </div>"
 `;
 
-exports[`invalid warning > should not appear for valid input 1`] = `
+exports[`inline warning > should not appear for valid input 1`] = `
 "<div data-v-418390f4="" class="v-input full-width">
   <!--v-if-->
   <div data-v-418390f4="" class="input">
