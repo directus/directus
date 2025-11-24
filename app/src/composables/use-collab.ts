@@ -214,8 +214,7 @@ export function useCollab(
 
 	function receiveUpdate(message: UpdateMessage) {
 		if ('changes' in message) {
-			if (!isEqual(message.changes, edits.value[message.field]))
-				edits.value = { ...edits.value, [message.field]: message.changes };
+			if (!isEqual(message.changes, edits.value[message.field])) edits.value[message.field] = message.changes;
 		} else {
 			delete edits.value[message.field];
 		}

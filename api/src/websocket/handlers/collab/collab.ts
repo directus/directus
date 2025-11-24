@@ -148,7 +148,7 @@ export class CollabHandler {
 				});
 
 			if ('changes' in message) {
-				room.update(message.field, message.changes);
+				room.update(client, message.field, message.changes);
 			} else {
 				room.unset(message.field);
 			}
