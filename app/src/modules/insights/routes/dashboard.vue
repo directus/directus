@@ -26,7 +26,7 @@ const props = withDefaults(
 	{ panelKey: null, viewOnly: false },
 );
 
-const [DefineTemplate, ReuseTemplate] = createReusableTemplate()
+const [DefineTemplate, ReuseTemplate] = createReusableTemplate();
 
 const { panels: panelsInfo } = useExtensions();
 
