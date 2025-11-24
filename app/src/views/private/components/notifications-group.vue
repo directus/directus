@@ -50,10 +50,6 @@ const queue = toRefs(notificationsStore).queue;
 	opacity: 1;
 }
 
-.slide-fade-leave-active {
-	position: absolute;
-}
-
 .slide-fade-enter-from {
 	transform: translateX(50px) scaleY(0) scaleX(0);
 	transform-origin: right bottom;
