@@ -1,9 +1,8 @@
-import type { Accountability } from '@directus/types';
+import type { Accountability, GlobalAccess } from '@directus/types';
 import type { Knex } from 'knex';
 import { beforeEach, expect, test, vi } from 'vitest';
-import type { GlobalAccess } from '../types.js';
 import { fetchGlobalAccessForQuery } from '../utils/fetch-global-access-for-query.js';
-import { _fetchGlobalAccessForUser as fetchGlobalAccessForUser } from './fetch-global-access-for-user.js';
+import { fetchGlobalAccessForUser } from './fetch-global-access-for-user.js';
 
 vi.mock('../utils/fetch-global-access-for-query.js');
 
@@ -25,7 +24,7 @@ test('Returns result of fetchGlobalAccessForQuery with roles and accountability'
 
 	const accountability = { user: 'user-a' } as Accountability;
 
-	const res = await fetchGlobalAccessForUser(accountability, knex);
+	const res = await fetchGlobalAccessForUser(accountability, { knex });
 
 	expect(knex.where).toHaveBeenCalledWith('user', '=', 'user-a');
 	expect(fetchGlobalAccessForQuery).toHaveBeenCalledWith(mockKnex, accountability);
