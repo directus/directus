@@ -1218,8 +1218,6 @@ interfaces:
     max_one_section_open: Max 1 Section Open
   presentation-links:
     presentation-links: Buttons
-    links: Links
-    description: Configurable link buttons for launching dynamic URLs or triggering Flows
     style: Style
     primary: Primary
     link: Links
