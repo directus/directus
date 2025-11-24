@@ -508,6 +508,7 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
+date-fns_time_short_seconds: ''
 date-fns_date_short_no_year: MMM d
 minutes: Minuta
 hours: Orë
@@ -922,10 +923,8 @@ label: Etiketë
 flows: Rrjedha
 flow: Rrjedh
 select_a_flow: Zgjidh një Rrjedhë
-run_flow_confirm: A je i sigurtë që dëshiron të ekzekutosh këtë rrjedhë?
 run_flow_on_current_collection: Zbato Rrjedhën në Koleksionin Aktual
 run_flow_on_current: Zbato Rrjedhën në Artikullin Aktual
-run_flow_on_current_edited_confirm: Ky artikull mund të përditësohet nga kjo rrjedhë, a je i sigurtë që dëshiron të ekzekutosh atë?
 run_flow_on_selected: Zgjidh Një ose më Shumë Artikuj Së Pari | Zbato Rrjedhën në 1 Artikull të Zgjedhur | Zbato Rrjedhën në {n} Artikuj të Zgjedhur
 run_flow: Zbato Rrjedhën
 field_name_placeholder: Shkruaj emrin e fushës...
@@ -1216,7 +1215,6 @@ directus_collection:
   directus_dashboards: Dashboards brenda modulit të Insights
   directus_fields: Konfigurimi shtesë i fushave dhe metadata
   directus_files: Metadata për të gjitha asetet e menaxhuara të skedarëve
-  directus_flows: Flujot e automatizimit
   directus_folders: Ofron drejtoritë virtuale për skedarë
   directus_migrations: Cila version i bazës së të dhënave që po përdorni
   directus_notifications: Njoftimet e dërguara për përdoruesit
@@ -1730,7 +1728,7 @@ interfaces:
     accordion_mode: Modaliteti i Akordionit
     max_one_section_open: Maksimum 1 Seksion i Hapur
   presentation-links:
-    links: Lidhje
+    presentation-links: Butonat
     style: Stil
     primary: Primar
     link: Lidhje
@@ -2355,11 +2353,9 @@ triggers:
 a_flow_uuid: Zgjidh një rrjedhë për të shkaktuar...
 any_string_or_json: Çdo varg ose JSON...
 item_payload_placeholder: Kjo është JSON që përdoret për të përditësuar vlerat e fushës së artikullit...
-operation_variables_note: Mund të aksesosh të dhënat e rrjedhës me variabla si {'{'}{'{'}$last{'}'}{'}'}, {'{'}{'{'}$trigger{'}'}{'}'} dhe {'{'}{'{'}$accountability{'}'}{'}'}, ose referohu në operacionet e mëparshme duke përdorur {'{'}{'{'}operation_key{'}'}{'}'}.'
 operations:
   condition:
     name: Kusht
-    description: Drejto një rrjedhë bazuar në logjikën Nëse / Përndryshe
   exec:
     name: Ekzekuto Skript
     description: Ekzekuto kod të papërcaktuar për të ndryshuar ngarkesën
@@ -2415,6 +2411,7 @@ operations:
     template: Template
     data: Të Dhënat
     bcc_placeholder: ...
+    reply_to:
   notification:
     name: Dërgo Njoftim
     description: Një njoftim në aplikacion për një ose më shumë përdorues
@@ -2444,7 +2441,6 @@ operations:
     description: Ndrysho ngarkesën JSON të rrjedhës
   trigger:
     name: Shkakto Rrjedhën
-    description: Kaloni këtë të dhënë në një rrjedhë tjetër
     flows: Rrjedha
     flow: Rrjedh
     data: Të Dhënat
