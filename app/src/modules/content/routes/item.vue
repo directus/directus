@@ -782,9 +782,7 @@ function useCollectionRoute() {
 			</template>
 
 			<template #end>
-				<div class="preview-container">
-					<live-preview :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
-				</div>
+				<live-preview :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
 			</template>
 		</SplitPanel>
 
@@ -873,6 +871,24 @@ function useCollectionRoute() {
 	inline-size: 260px;
 }
 
+.type-title {
+	line-height: 1;
+}
+
+:deep(.type-title) {
+	.render-template {
+		img {
+			block-size: 20px;
+		}
+	}
+}
+
+.headline-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+}
+
 .version-more-options.v-icon {
 	--focus-ring-offset: var(--focus-ring-offset-invert);
 
@@ -904,12 +920,6 @@ function useCollectionRoute() {
 		}
 	}
 
-	.headline-wrapper {
-		display: flex;
-		align-items: center;
-		gap: 0.25rem;
-	}
-
 	:deep(.header-bar.collapsed.shadow .title-container .headline) {
 		opacity: 1;
 		pointer-events: auto;
@@ -921,6 +931,12 @@ function useCollectionRoute() {
 	:deep(.header-bar.small.shadow .title-container .headline) {
 		opacity: 1;
 		pointer-events: auto;
+	}
+}
+
+.headline-wrapper.has-version-menu .headline-breadcrumb {
+	@media (max-width: 600px) {
+		display: none;
 	}
 }
 
@@ -953,5 +969,4 @@ function useCollectionRoute() {
 .content-split:active :deep(iframe) {
 	pointer-events: none !important;
 }
-
 </style>
