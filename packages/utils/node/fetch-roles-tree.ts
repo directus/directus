@@ -1,9 +1,5 @@
 import type { Knex } from 'knex';
 
-interface FetchRolesTreeContext {
-	knex: Knex;
-}
-
 /**
  * Given a starting role ID, fetches the entire hierarchy of roles up to the root.
  *
@@ -11,7 +7,7 @@ interface FetchRolesTreeContext {
  * @param context
  * @returns An array of role IDs from root to the starting role.
  */
-export async function fetchRolesTree(start: string | null, context: FetchRolesTreeContext): Promise<string[]> {
+export async function fetchRolesTree(start: string | null, context: { knex: Knex }): Promise<string[]> {
 	if (!start) return [];
 
 	let parent: string | null = start;
