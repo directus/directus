@@ -16,7 +16,7 @@ export function withCache<F extends (...args: any) => any>(
 	namespace: string,
 	handler: F,
 	prepareArg?: (...args: Parameters<F>) => Record<string, unknown>,
-): (...args: Parameters<F>) => Promise<ReturnType<F>> {
+): (...args: Parameters<F>) => Promise<Awaited<ReturnType<F>>> {
 	const cache = useCache();
 
 	return async (...args) => {
