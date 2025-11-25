@@ -1,135 +1,155 @@
+import { useAiStore } from '@/ai/stores/use-ai';
 import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
 import { DeepPartial, Relation } from '@directus/types';
 import { getRelations, getRelationType } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { defineStore } from 'pinia';
+import { ref } from 'vue';
 
-export const useRelationsStore = defineStore({
-	id: 'relationsStore',
-	state: () => ({
-		relations: [] as Relation[],
-	}),
-	actions: {
-		async hydrate() {
-			const response = await api.get(`/relations`);
-			this.relations = response.data.data;
-		},
-		async dehydrate() {
-			this.$reset();
-		},
-		getRelationsForCollection(collection: string) {
-			return this.relations.filter((relation) => {
-				return relation.collection === collection || relation.related_collection === collection;
-			});
-		},
-		async upsertRelation(collection: string, field: string, values: DeepPartial<Relation>) {
-			const existing = this.getRelationForField(collection, field);
+export const useRelationsStore = defineStore('relations', () => {
+	const aiStore = useAiStore();
 
-			if (existing) {
-				if (isEqual(existing, values)) return;
+	aiStore.onSystemToolResult(async (toolName) => {
+		if (toolName === 'relations') {
+			await hydrate();
+		}
+	});
 
-				const updatedRelationResponse = await api.patch<{ data: Relation }>(
-					`/relations/${collection}/${field}`,
-					values,
-				);
+	const relations = ref<Relation[]>([]);
 
-				this.relations = this.relations.map((relation) => {
-					if (relation.collection === collection && relation.field === field) {
-						return updatedRelationResponse.data.data;
-					}
+	const hydrate = async () => {
+		const response = await api.get(`/relations`);
+		relations.value = response.data.data;
+	};
 
-					return relation;
-				});
-			} else {
-				const createdRelationResponse = await api.post<{ data: Relation }>(`/relations`, values);
+	const dehydrate = () => {
+		relations.value = [];
+	};
 
-				this.relations = [...this.relations, createdRelationResponse.data.data];
-			}
-		},
-		/**
-		 * Retrieve all relation rows that apply to the current field. Regardless of relational direction
-		 */
-		getRelationsForField(collection: string, field: string): Relation[] {
-			const fieldsStore = useFieldsStore();
-			const fieldInfo = fieldsStore.getField(collection, field);
+	const getRelationsForCollection = (collection: string) => {
+		return relations.value.filter((relation) => {
+			return relation.collection === collection || relation.related_collection === collection;
+		});
+	};
 
-			if (!fieldInfo) return [];
+	const upsertRelation = async (collection: string, field: string, values: DeepPartial<Relation>) => {
+		const existing = getRelationForField(collection, field);
 
-			const relations = getRelations(this.getRelationsForCollection(collection), collection, field);
+		if (existing) {
+			if (isEqual(existing, values)) return;
 
-			if (relations.length > 0) {
-				const firstRelation = relations[0] as Relation;
+			const updatedRelationResponse = await api.patch<{ data: Relation }>(`/relations/${collection}/${field}`, values);
 
-				const isM2M = firstRelation.meta?.junction_field !== null;
-
-				// If the relation matching the field has a junction field, it's a m2m. In that case,
-				// we also want to return the secondary relationship (from the jt to the related)
-				// so any ui elements (interfaces) can utilize the full relationship
-				if (isM2M) {
-					const secondaryRelation = this.relations.find((relation) => {
-						return (
-							relation.collection === firstRelation.collection &&
-							relation.field === firstRelation.meta?.junction_field &&
-							relation.meta?.junction_field === firstRelation.field
-						);
-					});
-
-					if (secondaryRelation) relations.push(secondaryRelation);
+			relations.value = relations.value.map((relation) => {
+				if (relation.collection === collection && relation.field === field) {
+					return updatedRelationResponse.data.data;
 				}
-			}
 
-			return relations;
-		},
-		/**
-		 * Retrieve the passed fields relationship. This is only the current m2o foreign key relationship
-		 */
-		getRelationForField(collection: string, field: string): Relation | null {
-			const fieldsStore = useFieldsStore();
-			const fieldInfo = fieldsStore.getField(collection, field);
-
-			if (!fieldInfo) return null;
-
-			const relations = this.getRelationsForCollection(collection);
-			return relations.find((relation) => relation.collection === collection && relation.field === field) ?? null;
-		},
-		/**
-		 * Get a list of all relation types the path is made of
-		 * @param collection The starting collection
-		 * @param path The path to digest
-		 * @returns An array of types of the relations
-		 */
-		getRelationTypes(collection: string, path: string): ('m2a' | 'o2m' | 'm2o')[] {
-			if (!path.includes('.')) return [];
-
-			const parts = path.split('.') as [string] & string[];
-
-			const currentField = parts[0].includes(':') ? (parts[0].split(':')[0] as string) : parts[0];
-
-			const relation = this.getRelationsForField(collection, currentField).find(
-				(relation) => relation.collection === collection || relation.related_collection === collection,
-			);
-
-			if (!relation) return [];
-
-			const type = getRelationType({
-				collection: collection,
-				field: currentField,
-				relation,
+				return relation;
 			});
+		} else {
+			const createdRelationResponse = await api.post<{ data: Relation }>(`/relations`, values);
 
-			switch (type) {
-				case 'o2m':
-					return ['o2m', ...this.getRelationTypes(relation.collection, parts.slice(1).join('.'))];
-				case 'm2o':
-					if (!relation.related_collection) return [];
-					return ['m2o', ...this.getRelationTypes(relation.related_collection, parts.slice(1).join('.'))];
-				case 'm2a':
-					if (!relation.meta?.one_allowed_collections) return ['m2a'];
-					return ['m2a', ...this.getRelationTypes(parts[0].split(':')[1] as string, parts.slice(1).join('.'))];
+			relations.value = [...relations.value, createdRelationResponse.data.data];
+		}
+	};
+
+	/**
+	 * Retrieve all relation rows that apply to the current field. Regardless of relational direction
+	 */
+	const getRelationsForField = (collection: string, field: string): Relation[] => {
+		const fieldsStore = useFieldsStore();
+		const fieldInfo = fieldsStore.getField(collection, field);
+
+		if (!fieldInfo) return [];
+
+		const scopedRelations = getRelations(getRelationsForCollection(collection), collection, field);
+
+		if (scopedRelations.length > 0) {
+			const firstRelation = scopedRelations[0] as Relation;
+
+			const isM2M = firstRelation.meta?.junction_field !== null;
+
+			// If the relation matching the field has a junction field, it's a m2m. In that case,
+			// we also want to return the secondary relationship (from the jt to the related)
+			// so any ui elements (interfaces) can utilize the full relationship
+			if (isM2M) {
+				const secondaryRelation = relations.value.find((relation) => {
+					return (
+						relation.collection === firstRelation.collection &&
+						relation.field === firstRelation.meta?.junction_field &&
+						relation.meta?.junction_field === firstRelation.field
+					);
+				});
+
+				if (secondaryRelation) scopedRelations.push(secondaryRelation);
 			}
+		}
 
-			return [];
-		},
-	},
+		return scopedRelations;
+	};
+
+	/**
+	 * Retrieve the passed fields relationship. This is only the current m2o foreign key relationship
+	 */
+	const getRelationForField = (collection: string, field: string): Relation | null => {
+		const fieldsStore = useFieldsStore();
+		const fieldInfo = fieldsStore.getField(collection, field);
+
+		if (!fieldInfo) return null;
+
+		const relations = getRelationsForCollection(collection);
+		return relations.find((relation) => relation.collection === collection && relation.field === field) ?? null;
+	};
+
+	/**
+	 * Get a list of all relation types the path is made of
+	 * @param collection The starting collection
+	 * @param path The path to digest
+	 * @returns An array of types of the relations
+	 */
+	const getRelationTypes = (collection: string, path: string): ('m2a' | 'o2m' | 'm2o')[] => {
+		if (!path.includes('.')) return [];
+
+		const parts = path.split('.') as [string] & string[];
+
+		const currentField = parts[0].includes(':') ? (parts[0].split(':')[0] as string) : parts[0];
+
+		const relation = getRelationsForField(collection, currentField).find(
+			(relation) => relation.collection === collection || relation.related_collection === collection,
+		);
+
+		if (!relation) return [];
+
+		const type = getRelationType({
+			collection: collection,
+			field: currentField,
+			relation,
+		});
+
+		switch (type) {
+			case 'o2m':
+				return ['o2m', ...getRelationTypes(relation.collection, parts.slice(1).join('.'))];
+			case 'm2o':
+				if (!relation.related_collection) return [];
+				return ['m2o', ...getRelationTypes(relation.related_collection, parts.slice(1).join('.'))];
+			case 'm2a':
+				if (!relation.meta?.one_allowed_collections) return ['m2a'];
+				return ['m2a', ...getRelationTypes(parts[0].split(':')[1] as string, parts.slice(1).join('.'))];
+		}
+
+		return [];
+	};
+
+	return {
+		relations,
+		hydrate,
+		dehydrate,
+		getRelationsForCollection,
+		upsertRelation,
+		getRelationForField,
+		getRelationsForField,
+		getRelationType,
+	};
 });
