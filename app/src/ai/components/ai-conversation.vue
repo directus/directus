@@ -127,7 +127,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 	font-size: 0.875rem;
 	inline-size: 100%;
 	max-inline-size: 100%;
-	word-break: break-word;
+	overflow-wrap: anywhere;
 }
 
 .error-buttons-container {
