@@ -56,7 +56,11 @@ export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
 		return ['settings', 'flows', data['id'] as string];
 	},
 	async handler({ args, schema, accountability }) {
-		const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
+		let sanitizedQuery = {};
+
+		if (args.action !== 'delete' && args.action !== 'create') {
+			sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
+		}
 
 		const flowsService = new FlowsService({
 			schema,

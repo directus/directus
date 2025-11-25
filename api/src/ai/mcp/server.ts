@@ -1,6 +1,5 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
-import type { Query } from '@directus/types';
 import { isObject, parseJSON, toArray } from '@directus/utils';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import {
@@ -23,7 +22,6 @@ import { render, tokenize } from 'micromustache';
 import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 import { ItemsService } from '../../services/index.js';
-import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { Url } from '../../utils/url.js';
 import { findMcpTool, getAllMcpTools } from '../tools/index.js';
 import type { ToolConfig, ToolResult } from '../tools/types.js';
@@ -215,8 +213,6 @@ export class DirectusMCP {
 		// calling tools
 		this.server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest) => {
 			const tool = findMcpTool(request.params.name);
-
-			let sanitizedQuery = {};
 
 			try {
 				if (!tool || (tool.name === 'system-prompt' && this.systemPromptEnabled === false)) {

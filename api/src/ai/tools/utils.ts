@@ -1,12 +1,12 @@
 import { sanitizeQuery } from '@/utils/sanitize-query.js';
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, SchemaOverview } from '@directus/types';
 
 /**
  * Build a sanitized query object from a tool's args payload.
  * - Ensures fields defaults to '*' when not provided
  * - Returns an empty object when no args.query is present
  */
-export async function buildSanitizedQueryFromArgs<T extends { query?: Partial<Query> | null | undefined }>(
+export async function buildSanitizedQueryFromArgs<T extends { query?: Record<string, any> | undefined }>(
 	args: T,
 	schema: SchemaOverview,
 	accountability?: Accountability | null,
@@ -18,7 +18,7 @@ export async function buildSanitizedQueryFromArgs<T extends { query?: Partial<Qu
 
 		sanitizedQuery = await sanitizeQuery(
 			{
-				fields: q.fields ?? '*',
+				fields: q['fields'] ?? '*',
 				...q,
 			},
 			schema,
