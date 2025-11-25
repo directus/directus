@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useScroll } from '@vueuse/core';
-import { computed, inject, provide, ref, unref, useTemplateRef, type Ref } from 'vue';
+import { computed, inject, provide, unref, useTemplateRef, type ComputedRef } from 'vue';
 import PrivateViewDrawer from './private-view-drawer.vue';
 import SkipMenu from '../../components/skip-menu.vue';
 import { useSidebarStore } from '../stores/sidebar';
@@ -22,7 +22,7 @@ const sidebarStore = useSidebarStore();
 
 const { y } = useScroll(useTemplateRef('scroll-container'));
 
-const livePreviewActive = inject<Ref<boolean>>('live-preview-active', ref(false));
+const livePreviewActive = inject<ComputedRef<boolean>>('live-preview-active', computed(() => false));
 
 const showHeaderShadow = computed(() => y.value > 0 || unref(livePreviewActive));
 
