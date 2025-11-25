@@ -17,7 +17,7 @@
 	.field {
 		grid-column: start / fill;
 
-		@media (min-width: 960px) {
+		@container (inline-size >= 375px) {
 			grid-column: start / full;
 		}
 	}
@@ -27,7 +27,7 @@
 	.half-space {
 		grid-column: start / fill;
 
-		@media (min-width: 960px) {
+		@container (inline-size >= 375px) {
 			grid-column: start / half;
 		}
 	}
@@ -36,7 +36,7 @@
 	.half-right {
 		grid-column: start / fill;
 
-		@media (min-width: 960px) {
+		@container (inline-size >= 375px) {
 			grid-column: half / full;
 		}
 	}
@@ -44,7 +44,7 @@
 	.full {
 		grid-column: start / fill;
 
-		@media (min-width: 960px) {
+		@container (inline-size >= 375px) {
 			grid-column: start / full;
 		}
 	}

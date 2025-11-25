@@ -487,6 +487,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 @use '@/styles/mixins';
 
 .v-form {
+	container-type: inline-size;
 	@include mixins.form-grid;
 
 	.first-visible-field :deep(.presentation-divider) {
