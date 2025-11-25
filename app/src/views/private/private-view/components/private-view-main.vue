@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useScroll } from '@vueuse/core';
-import { computed, provide, useTemplateRef } from 'vue';
+import { computed, inject, provide, ref, unref, useTemplateRef, type Ref } from 'vue';
 import PrivateViewDrawer from './private-view-drawer.vue';
 import SkipMenu from '../../components/skip-menu.vue';
 import { useSidebarStore } from '../stores/sidebar';
@@ -22,7 +22,9 @@ const sidebarStore = useSidebarStore();
 
 const { y } = useScroll(useTemplateRef('scroll-container'));
 
-const showHeaderShadow = computed(() => y.value > 0);
+const livePreviewActive = inject<Ref<boolean>>('live-preview-active', ref(false));
+
+const showHeaderShadow = computed(() => y.value > 0 || unref(livePreviewActive));
 
 const { sm } = useBreakpoints(breakpointsTailwind);
 
@@ -60,7 +62,7 @@ const splitterCollapsed = computed({
 			:disabled="!sm"
 		>
 			<template #start>
-				<div ref="scroll-container" class="scrolling-container">
+				<div ref="scroll-container" class="scrolling-container" :class="{ 'flex-layout': livePreviewActive }">
 					<PrivateViewHeaderBar
 						:title="props.title"
 						:shadow="showHeaderShadow"
@@ -120,6 +122,16 @@ const splitterCollapsed = computed({
 	block-size: 100%;
 	inline-size: 100%;
 	position: relative;
+}
+
+.scrolling-container.flex-layout {
+	display: flex;
+	flex-direction: column;
+}
+
+.scrolling-container.flex-layout main {
+	flex: 1;
+	min-block-size: 0;
 }
 
 .mobile-sidebar {

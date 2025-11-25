@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { useLocalStorage } from '@/composables/use-local-storage';
+import { useLocalStorage, useBreakpoints, breakpointsTailwind } from '@vueuse/core';
 import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
@@ -21,8 +21,10 @@ import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detai
 import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import { useCollection } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
+import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
-import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
+import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
+import { computed, onBeforeUnmount, provide, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
@@ -256,9 +258,24 @@ const previewUrl = computed(() => {
 	return displayValue.value.trim() || null;
 });
 
-const { data: livePreviewMode } = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
+const livePreviewMode = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
+const livePreviewSizeStorage = useLocalStorage<number>('live-preview-size', 350);
 
-const splitView = computed({
+const breakpoints = useBreakpoints(breakpointsTailwind);
+const isMobile = breakpoints.smaller('sm');
+
+const livePreviewSize = computed({
+	get() {
+		return livePreviewSizeStorage.value ?? 350;
+	},
+	set(value: number) {
+		if (isMobile.value) return;
+
+		livePreviewSizeStorage.value = value;
+	},
+});
+
+const livePreviewActive = computed({
 	get() {
 		if (!collectionInfo.value?.meta?.preview_url) return false;
 		if (unref(isNew)) return false;
@@ -269,6 +286,17 @@ const splitView = computed({
 		livePreviewMode.value = value ? 'split' : null;
 	},
 });
+
+const livePreviewCollapsed = computed({
+	get() {
+		return !livePreviewActive.value;
+	},
+	set(value: boolean) {
+		livePreviewMode.value = value ? null : 'split';
+	},
+});
+
+provide('live-preview-active', livePreviewActive);
 
 let popupWindow: Window | null = null;
 
@@ -313,7 +341,7 @@ const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
 
 provideRunManualFlow();
 
-function toggleSplitView() {
+function togglelivePreview() {
 	if (livePreviewMode.value === null) {
 		livePreviewMode.value = 'split';
 	} else {
@@ -512,14 +540,7 @@ function useCollectionRoute() {
 		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
 	/>
 
-	<PrivateView
-		v-else
-		v-model:split-view="splitView"
-		:class="{ 'has-content-versioning': shouldShowVersioning }"
-		:split-view-min-width="310"
-		:title
-		show-back
-	>
+	<PrivateView v-else :class="{ 'has-content-versioning': shouldShowVersioning }" :title show-back>
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
 			<h1 class="type-title">
 				{{ collectionInfo.name }}
@@ -574,7 +595,7 @@ function useCollectionRoute() {
 				class="action-preview"
 				:secondary="livePreviewMode === null"
 				small
-				@click="toggleSplitView"
+				@click="togglelivePreview"
 			>
 				<v-icon name="visibility" outline small />
 			</v-button>
@@ -720,7 +741,50 @@ function useCollectionRoute() {
 			<content-navigation :current-collection="collection" />
 		</template>
 
+		<SplitPanel
+			v-if="previewUrl"
+			v-model:size="livePreviewSize"
+			v-model:collapsed="livePreviewCollapsed"
+			primary="end"
+			size-unit="px"
+			collapsible
+			:collapsed-size="0"
+			:collapse-threshold="150"
+			:min-size="isMobile ? 0 : 200"
+			:max-size="isMobile ? 1000 : 800"
+			:transition-duration="150"
+			class="content-split"
+			:disabled="isMobile"
+		>
+			<template #start>
+				<v-form
+					ref="form"
+					v-model="edits"
+					:autofocus="isNew"
+					:disabled="isFormDisabled"
+					:loading="loading"
+					:initial-values="item"
+					:fields="fields"
+					:primary-key="internalPrimaryKey"
+					:validation-errors="validationErrors"
+					:version="currentVersion"
+					:direction="userStore.textDirection"
+				/>
+			</template>
+
+			<template #divider>
+				<PrivateViewResizeHandle />
+			</template>
+
+			<template #end>
+				<div class="preview-container">
+					<live-preview :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
+				</div>
+			</template>
+		</SplitPanel>
+
 		<v-form
+			v-else
 			ref="form"
 			v-model="edits"
 			:autofocus="isNew"
@@ -746,10 +810,6 @@ function useCollectionRoute() {
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
-
-		<template #splitView>
-			<live-preview v-if="previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
-		</template>
 
 		<template #sidebar>
 			<sidebar-detail icon="info" :title="$t('information')" close>
@@ -858,4 +918,35 @@ function useCollectionRoute() {
 		pointer-events: auto;
 	}
 }
+
+.content-split {
+	flex-grow: 1;
+	block-size: 100%;
+	position: relative;
+}
+
+.content-split :deep(.sp-start),
+.content-split :deep(.sp-end) {
+	overflow-y: auto;
+}
+
+.content-split :deep(.sp-end) {
+	background-color: var(--theme--background-subdued);
+	border-inline-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+}
+
+.content-split.sp-collapsed :deep(.sp-divider) {
+	display: none;
+}
+
+.content-split.sp-collapsed :deep(.sp-end) {
+	border-inline-start: none;
+}
+
+/* Disable pointer events on iframe during drag to prevent jank */
+.content-split.sp-dragging :deep(iframe),
+.content-split:active :deep(iframe) {
+	pointer-events: none !important;
+}
+
 </style>
