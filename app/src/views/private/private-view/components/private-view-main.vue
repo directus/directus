@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { SplitPanel } from '@directus/vue-split-panel';
-import { useScroll } from '@vueuse/core';
+import { breakpointsTailwind, useBreakpoints, useScroll } from '@vueuse/core';
 import { computed, inject, provide, unref, useTemplateRef, type ComputedRef } from 'vue';
-import PrivateViewDrawer from './private-view-drawer.vue';
+import NotificationsGroup from '../../components/notifications-group.vue';
 import SkipMenu from '../../components/skip-menu.vue';
 import { useSidebarStore } from '../stores/sidebar';
+import PrivateViewDrawer from './private-view-drawer.vue';
 import PrivateViewHeaderBar from './private-view-header-bar.vue';
 import PrivateViewResizeHandle from './private-view-resize-handle.vue';
-import type { PrivateViewProps } from './private-view.vue';
-import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
 import PrivateViewSidebar from './private-view-sidebar.vue';
+import type { PrivateViewProps } from './private-view.vue';
 
 const contentEl = useTemplateRef('content-el');
 provide('main-element', contentEl);
@@ -89,6 +89,8 @@ const splitterCollapsed = computed({
 						<slot />
 					</main>
 				</div>
+
+				<NotificationsGroup />
 			</template>
 
 			<template #divider>
@@ -113,6 +115,10 @@ const splitterCollapsed = computed({
 <style scoped>
 #main-content {
 	block-size: 100%;
+
+	&:deep(.sp-start) {
+		position: relative;
+	}
 
 	&:deep(.sp-divider) {
 		z-index: 5;

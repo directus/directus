@@ -281,6 +281,29 @@ function clearFilters() {
 					<v-list-item-content>{{ $t('archive') }}</v-list-item-content>
 				</v-tab>
 			</v-tabs>
+
+			<v-divider class="nav-divider" />
+
+			<v-list nav>
+				<v-list-item
+					clickable
+					to="/activity"
+					:active="!notificationsDrawerOpen"
+					@click="notificationsDrawerOpen = false"
+				>
+					<v-list-item-icon>
+						<v-icon name="manage_search" />
+					</v-list-item-icon>
+
+					<v-list-item-content>
+						{{ $t('activity') }}
+					</v-list-item-content>
+
+					<v-list-item-hint>
+						<v-icon name="exit_to_app" />
+					</v-list-item-hint>
+				</v-list-item>
+			</v-list>
 		</template>
 
 		<template v-if="!loading && !itemCount">
@@ -312,7 +335,7 @@ function clearFilters() {
 					@update:model-value="selectAll"
 				/>
 
-				<v-divider :class="{ dense: totalPages > 1 }" />
+				<v-divider class="select-all-divider" :class="{ dense: totalPages > 1 }" />
 
 				<v-list class="notifications">
 					<v-list-item
@@ -445,7 +468,7 @@ function clearFilters() {
 	}
 }
 
-.v-divider {
+.select-all-divider {
 	margin: 8px 0;
 
 	&.dense {
@@ -466,5 +489,9 @@ function clearFilters() {
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
+}
+
+.nav-divider {
+	margin-inline: 12px;
 }
 </style>
