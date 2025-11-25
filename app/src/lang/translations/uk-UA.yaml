@@ -1045,6 +1045,7 @@ toggle_editable_elements: Перемкнути редаговані елемен
 no_url: Не надано URL-адреси
 no_url_copy: Будь ласка, додайте URL-адресу в налаштуваннях.
 invalid_url: Недійсна URL-адреса
+invalid_url_copy: Вказана URL-адреса не відповідає жодній URL-адресі, зазначеній у налаштуваннях.
 insights: Статистика
 dashboard: Панель приладів
 panel: Панель
@@ -1150,6 +1151,7 @@ wysiwyg_options:
   h4: Заголовок 4
   h5: Заголовок 5
   h6: Заголовок 6
+  pre: Попередньо відформатований
   fontselect: Обрати шрифт
   fontsizeselect: Обрати розмір шрифту
   indent: Відступ справа
@@ -1180,6 +1182,8 @@ appearance_dark: Темна
 other: Інше...
 adding_user: Додавання користувача
 unknown_user: Невідомий користувач
+unknown_version: Невідома версія
+unknown_revision: Невідома ревізія
 creating_in: 'Створення об''єкту в {collection}'
 editing_in: 'Редагування об''єкту в {collection}'
 viewing_in: 'Перегляд на запис від {collection}'
@@ -1192,6 +1196,7 @@ settings_roles: Ролі користувачів
 settings_permissions: Правила доступу
 settings_project: Налаштування
 settings_appearance: Вигляд
+settings_ai: ШІ
 settings_webhooks: Вебхуки
 settings_flows: Автоматизація
 settings_system_logs: Системні журнали
