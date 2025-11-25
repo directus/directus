@@ -108,6 +108,10 @@ const splitterCollapsed = computed({
 <style scoped>
 #main-content {
 	block-size: 100%;
+
+	&:deep(.sp-divider) {
+		z-index: 5;
+	}
 }
 
 .main-split {
