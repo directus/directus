@@ -341,14 +341,6 @@ const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
 
 provideRunManualFlow();
 
-function togglelivePreview() {
-	if (livePreviewMode.value === null) {
-		livePreviewMode.value = 'split';
-	} else {
-		livePreviewMode.value = null;
-	}
-}
-
 async function refreshLivePreview() {
 	try {
 		await fetchTemplateValues();
@@ -595,7 +587,7 @@ function useCollectionRoute() {
 				class="action-preview"
 				:secondary="livePreviewMode === null"
 				small
-				@click="togglelivePreview"
+				@click="livePreviewCollapsed = !livePreviewCollapsed"
 			>
 				<v-icon name="visibility" outline small />
 			</v-button>
