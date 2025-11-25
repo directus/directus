@@ -1,3 +1,4 @@
+import { useAiStore } from '@/ai/stores/use-ai';
 import { formatItemsCountPaginated, formatItemsCountRelative } from '@/utils/format-items-count';
 import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
 import { getItemRoute } from '@/utils/get-route';
@@ -30,6 +31,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: MapActions,
 	},
 	setup(props, { emit }) {
+		const aiStore = useAiStore();
+
+		aiStore.onSystemToolResult((tool, input) => {
+			if (tool === 'items' && input.collection === collection.value) {
+				refresh();
+			}
+		});
+
 		const router = useRouter();
 		const { t, n } = useI18n();
 

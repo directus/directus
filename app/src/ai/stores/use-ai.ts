@@ -8,6 +8,7 @@ import { computed, reactive, ref, shallowRef, watch } from 'vue';
 import { z } from 'zod';
 import { StaticToolDefinition } from '../composables/define-tool';
 import { AI_MODELS, type ModelDefinition } from '../models';
+import { SystemTool } from '../types/system-tool';
 
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
@@ -69,7 +70,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		selectedModelId.value = `${modelDefinition.provider}:${modelDefinition.model}`;
 	};
 
-	const systemTools = shallowRef<string[]>([
+	const systemTools = shallowRef<SystemTool[]>([
 		'items',
 		'files',
 		'folders',
@@ -84,6 +85,9 @@ export const useAiStore = defineStore('ai-store', () => {
 	]);
 
 	const localTools = shallowRef<StaticToolDefinition[]>([]);
+
+	const systemToolResultHook =
+		createEventHook<[tool: SystemTool, input: Record<string, unknown>, output: Record<string, unknown>]>();
 
 	const toApiTool = (tool: StaticToolDefinition) => ({
 		name: tool.name,
@@ -115,19 +119,6 @@ export const useAiStore = defineStore('ai-store', () => {
 			},
 		}),
 		sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
-		onFinish: ({ isAbort, message }) => {
-			if (isAbort) {
-				// Update the state to done and delete the providerMetadata from the aborted message.parts where part.type === 'reasoning' to prevent OpenAI reasoning issues
-				message.parts.forEach((part) => {
-					if (part.type === 'reasoning') {
-						part.state = 'done';
-						delete part.providerMetadata;
-					}
-				});
-			}
-
-			storedMessages.value = chat.messages;
-		},
 		onData: (data) => {
 			if (data.type === 'data-usage') {
 				const usageData = data.data as Record<string, unknown>;
@@ -169,6 +160,19 @@ export const useAiStore = defineStore('ai-store', () => {
 				}
 			}
 		},
+		onFinish: ({ isAbort, message }) => {
+			if (isAbort) {
+				// Update the state to done and delete the providerMetadata from the aborted message.parts where part.type === 'reasoning' to prevent OpenAI reasoning issues
+				message.parts.forEach((part) => {
+					if (part.type === 'reasoning') {
+						part.state = 'done';
+						delete part.providerMetadata;
+					}
+				});
+			}
+
+			storedMessages.value = chat.messages;
+		},
 	});
 
 	const error = computed(() => chat.error);
@@ -183,6 +187,28 @@ export const useAiStore = defineStore('ai-store', () => {
 			parts: [...(msg.parts ?? [])],
 		})),
 	);
+
+	const latestMessage = computed(() => messages.value.at(-1));
+
+	const processedToolCallIds = new Set<string>();
+
+	watch(latestMessage, (message) => {
+		if (!message) return;
+
+		for (const part of message.parts) {
+			if ('toolCallId' in part && part.state === 'output-available' && !processedToolCallIds.has(part.toolCallId)) {
+				processedToolCallIds.add(part.toolCallId);
+
+				const tool = part.type.substring('tool-'.length);
+
+				const isSystemTool = systemTools.value.includes(tool);
+
+				if (isSystemTool) {
+					systemToolResultHook.trigger(tool as SystemTool, part.input, part.output);
+				}
+			}
+		}
+	});
 
 	const status = computed(() => chat.status);
 
@@ -220,6 +246,7 @@ export const useAiStore = defineStore('ai-store', () => {
 		chat.clearError();
 		chat.messages.splice(0, chat.messages.length);
 		storedMessages.value = [];
+		processedToolCallIds.clear();
 
 		tokenUsage.inputTokens = 0;
 		tokenUsage.outputTokens = 0;
@@ -272,5 +299,6 @@ export const useAiStore = defineStore('ai-store', () => {
 		submit,
 		onSubmit: submitHook.on,
 		estimatedMaxMessages,
+		onSystemToolResult: systemToolResultHook.on,
 	};
 });

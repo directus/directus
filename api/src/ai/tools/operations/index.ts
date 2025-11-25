@@ -52,7 +52,11 @@ export const operations = defineTool<z.infer<typeof OperationsValidationSchema>>
 	inputSchema: OperationsInputSchema,
 	validateSchema: OperationsValidationSchema,
 	async handler({ args, schema, accountability }) {
-		const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
+		let sanitizedQuery = {};
+
+		if (args.action === 'read') {
+			sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
+		}
 
 		const operationService = new OperationsService({
 			schema,

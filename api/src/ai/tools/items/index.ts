@@ -1,6 +1,5 @@
 import { ItemsService } from '@/services/items.js';
 import { requireText } from '@/utils/require-text.js';
-import { buildSanitizedQueryFromArgs } from '../utils.js';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type { PrimaryKey } from '@directus/types';
@@ -18,6 +17,7 @@ import {
 	QueryInputSchema,
 	QueryValidateSchema,
 } from '../schema.js';
+import { buildSanitizedQueryFromArgs } from '../utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -72,7 +72,11 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 		return ['content', input.collection, data['id']];
 	},
 	async handler({ args, schema, accountability }) {
-		const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
+		let sanitizedQuery = {};
+
+		if (args.action !== 'delete') {
+			sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
+		}
 
 		if (isSystemCollection(args.collection)) {
 			throw new InvalidPayloadError({ reason: 'Cannot provide a core collection' });
