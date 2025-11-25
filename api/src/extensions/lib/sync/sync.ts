@@ -32,7 +32,6 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 
 	const machineId = await mid.machineId();
 	const machineKey = `extensions-sync/${machineId}`;
-	/* DEBUG DO NOT FORGET TO REMOVE!!!*/ await lock.delete(machineKey);
 	const processId = await lock.increment(machineKey);
 
 	if (processId !== 1) {
