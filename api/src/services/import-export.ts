@@ -557,6 +557,7 @@ export class ExportService {
 
 			const mimeTypes = {
 				csv: 'text/csv',
+				csv_utf8: 'text/csv; charset=utf-8',
 				json: 'application/json',
 				xml: 'text/xml',
 				yaml: 'text/yaml',
@@ -614,7 +615,7 @@ export class ExportService {
 					if (result.length) {
 						let csvHeadings = null;
 
-						if (format === 'csv') {
+						if (format.startsWith('csv')) {
 							if (!query.fields) query.fields = ['*'];
 
 							// to ensure the all headings are included in the CSV file, all possible fields need to be determined.
@@ -757,15 +758,16 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 			return string;
 		}
 
-		if (format === 'csv') {
+		if (format.startsWith('csv')) {
 			if (input.length === 0) return '';
 
 			const transforms = [CSVTransforms.flatten({ separator: '.' })];
 			const header = options?.includeHeader !== false;
+			const withBOM = format === 'csv_utf8';
 
 			const transformOptions = options?.fields
-				? { transforms, header, fields: options?.fields }
-				: { transforms, header };
+				? { transforms, header, fields: options?.fields, withBOM }
+				: { transforms, header, withBOM };
 
 			let string = new CSVParser(transformOptions).parse(input);
 

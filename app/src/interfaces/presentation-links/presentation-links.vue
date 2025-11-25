@@ -98,7 +98,7 @@ const linksParsed = computed<ParsedLink[]>(() =>
 			actionType: link.actionType,
 			to: isInternalLink ? interpolatedUrl : undefined,
 			href: link.actionType === 'flow' || isInternalLink ? undefined : interpolatedUrl,
-			flow: link.actionType === 'flow' ? link.flow : 'undefined',
+			flow: link.actionType === 'flow' ? link.flow : undefined,
 		};
 	}),
 );

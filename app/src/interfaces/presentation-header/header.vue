@@ -4,7 +4,7 @@ import { render } from 'micromustache';
 import { computed, inject, ref, useAttrs, watch } from 'vue';
 import api from '@/api';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
-import { useInjectRunManualFlow, ManualFlow } from '@/composables/use-flows';
+import { useInjectRunManualFlow } from '@/composables/use-flows';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 

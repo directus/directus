@@ -91,7 +91,6 @@ describe('external link', () => {
 		expect(buttonExternalLink.attributes('class')).toBe('action primary');
 		expect(buttonExternalLink.attributes('icon')).toBe('false');
 		expect(buttonExternalLink.attributes('secondary')).toBe('false');
-		expect(buttonExternalLink.attributes('loading')).toBe('false');
 	});
 
 	test('has correct child', () => {
@@ -113,7 +112,6 @@ describe('internal link', () => {
 		expect(buttonExternalLink.attributes('class')).toBe('action primary');
 		expect(buttonExternalLink.attributes('icon')).toBe('false');
 		expect(buttonExternalLink.attributes('secondary')).toBe('false');
-		expect(buttonExternalLink.attributes('loading')).toBe('false');
 	});
 
 	test('has correct child', () => {

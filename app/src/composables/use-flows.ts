@@ -11,7 +11,7 @@ import { useNotificationsStore } from '@/stores/notifications';
 import formatTitle from '@directus/format-title';
 
 interface UseFlowsOptions {
-	collection: string;
+	collection: Ref<string>;
 	primaryKey?: PrimaryKey | null;
 	selection?: Ref<Item[]>;
 	location: 'collection' | 'item';
@@ -127,7 +127,7 @@ export function useFlows(options: UseFlowsOptions) {
 
 	const manualFlows = computed<ManualFlow[]>(() => {
 		const manualFlows = flowsStore
-			.getManualFlowsForCollection(collection)
+			.getManualFlowsForCollection(collection.value)
 			.filter(
 				(flow) => !flow.options?.location || flow.options?.location === 'both' || flow.options?.location === location,
 			)
@@ -228,14 +228,14 @@ export function useFlows(options: UseFlowsOptions) {
 			) {
 				await api.post(`/flows/trigger/${flowId}`, {
 					...(confirmValues.value ?? {}),
-					collection: collection,
+					collection: collection.value,
 				});
 			} else {
 				const keys = primaryKey ? [primaryKey] : selection.value || [];
 
 				await api.post(`/flows/trigger/${flowId}`, {
 					...confirmValues.value,
-					collection: collection,
+					collection: collection.value,
 					keys,
 				});
 			}
@@ -270,9 +270,9 @@ export function useFlows(options: UseFlowsOptions) {
  * This parent component must also render the <flow-dialogs> component or the confirmation dialogs will not be reachable.
  */
 export function useInjectRunManualFlow() {
-	return inject(runManualFlowSymbol) as {
-		runManualFlow: (flowId: string) => void;
-		runningFlows: Ref<string[]>;
-		isActiveFlow: (flowId: string) => boolean;
-	};
+	return inject(runManualFlowSymbol, {
+		runManualFlow: (_flowId: string) => {},
+		runningFlows: ref<string[]>([]),
+		isActiveFlow: (_flowId: string) => false,
+	});
 }

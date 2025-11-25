@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { isDynamicVariable } from '@directus/utils';
 import { computed, onMounted, onUpdated, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 type Choice = {
 	text: string;
@@ -30,7 +29,6 @@ const emit = defineEmits<{
 	commaValuePasted: [value: string];
 }>();
 
-const { t } = useI18n();
 const dateTimeMenu = ref();
 const inputEl = ref<HTMLInputElement | null>(null);
 const isInputValid = ref(true);
@@ -159,7 +157,7 @@ defineExpose({
 		inline
 		:items="choices"
 		:model-value="value"
-		:placeholder="t('select')"
+		:placeholder="$t('select')"
 		allow-other
 		group-selectable
 		@update:model-value="onInput($event)"
