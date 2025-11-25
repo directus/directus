@@ -708,6 +708,7 @@ activity_log: Журнал активності
 all_items: Всі об'єкти
 any: Будь-які
 csv: CSV
+csv_utf8: CSV Excel (UTF-8)
 no_collections: Немає колекцій
 create_collection: Створити колекцію
 no_collections_copy_admin: В вас ще немає колекцій. Натисніть кнопку нижче, щоб розпочати.
@@ -994,10 +995,14 @@ label: Ярлик
 flows: Автоматизація
 flow: Автоматизація
 select_a_flow: Виберіть Автоматизацію
+run_flow_confirm: Ви впевнені, що хочете виконати цей процес?
+run_flow_anyway: Все одно виконати процес
 run_flow_on_current_collection: Запуск програми на поточній колекції
 run_flow_on_current: Запуск програми на поточному елементі
+run_flow_on_current_edited_confirm: Цей елемент може бути оновлений цим процесом. Ви впевнені, що хочете його виконати?
 run_flow_on_selected: Спочатку виберіть один або кілька елементів | Запустити процес на 1 вибраному елементі | Запустити процес на {n} вибраних елементах
 run_flow: Запустити процес
+trigger_flow_success: Процес {flow} успішно виконано
 field_name_placeholder: Введіть назву поля...
 field_key_placeholder: Введіть ключ до поля...
 trigger: Тригер
@@ -1034,6 +1039,9 @@ operation_key: Ідентифікатор для довідки...
 operation_key_unique_error: Ключі операції повинні бути унікальними у потоці
 operation_handle_resolve: 'Рішення: натисніть, щоб додати, або перетягніть, щоб змінити маршрут'
 operation_handle_reject: 'Відмова: натисніть, щоб додати, або перетягніть, щоб змінити маршрут'
+visual_editor: Візуальний редактор
+toggle_navigation: Перемкнути навігацію
+toggle_editable_elements: Перемкнути редаговані елементи
 no_url: Не надано URL-адреси
 no_url_copy: Будь ласка, додайте URL-адресу в налаштуваннях.
 invalid_url: Недійсна URL-адреса
