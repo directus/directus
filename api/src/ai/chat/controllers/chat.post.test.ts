@@ -67,13 +67,17 @@ describe('aiChatPostHandler', () => {
 		it('should throw ForbiddenError when accountability is missing', async () => {
 			delete (mockReq as any).accountability;
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(ForbiddenError);
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
+				ForbiddenError,
+			);
 		});
 
 		it('should throw ForbiddenError when accountability is null', async () => {
 			mockReq.accountability = null as any;
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(ForbiddenError);
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
+				ForbiddenError,
+			);
 		});
 	});
 

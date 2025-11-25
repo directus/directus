@@ -7,7 +7,7 @@ import { ChatRequest } from '../models/chat-request.js';
 import { chatRequestToolToAiSdkTool } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
 import { fixErrorToolCalls } from '../utils/fix-error-tool-calls.js';
 
-export const aiChatPostHandler: RequestHandler = async (req, res) => {
+export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 	if (!req.accountability?.app) {
 		throw new ForbiddenError();
 	}
