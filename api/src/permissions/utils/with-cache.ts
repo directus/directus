@@ -25,7 +25,7 @@ export function withCache<F extends (...args: any) => any>(
 		const cached = await cache.get(key);
 
 		if (cached !== undefined) {
-			return cached;
+			return cached as Awaited<ReturnType<F>>;
 		}
 
 		const res = await handler(...args);
