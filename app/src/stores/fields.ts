@@ -71,7 +71,8 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 	const aiStore = useAiStore();
 
 	aiStore.onSystemToolResult(async (toolName) => {
-		if (toolName === 'fields') {
+		// Fields can be modified as a nested object within collections as well
+		if (toolName === 'collections' || toolName === 'fields') {
 			await hydrate();
 		}
 	});
