@@ -59,11 +59,11 @@ describe('useInputSchema', () => {
 
 		const { inputSchema } = useInputSchema(fields as unknown as Field[]);
 		const schema = inputSchema.value;
-		expect(() => schema.parse({ str: 'abc', bool: true, int: 42, date: new Date() })).not.toThrow();
+		expect(() => schema.parse({ str: 'abc', bool: true, int: 42, date: '2020-01-01' })).not.toThrow();
 		expect(() => schema.parse({ str: 1 })).toThrow();
 		expect(() => schema.parse({ bool: 'true' })).toThrow();
 		expect(() => schema.parse({ int: '42' })).toThrow();
-		expect(() => schema.parse({ date: '2020-01-01' })).toThrow();
+		expect(() => schema.parse({ date: new Date() })).toThrow();
 	});
 
 	it('should accept missing optional fields', () => {
