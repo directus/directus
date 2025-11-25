@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { RelationO2M } from '@/composables/use-relation-o2m';
-import { ref } from 'vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -24,7 +23,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['update:open', 'deselect', 'input']);
-const editActive = ref(false);
+const editActive = defineModel<boolean>('editOpen');
 </script>
 
 <template>

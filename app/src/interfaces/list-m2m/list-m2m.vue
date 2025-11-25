@@ -463,6 +463,8 @@ function getLinkForItem(item: DisplayItem) {
 
 	return null;
 }
+
+const menuActive = computed(() => editModalActive.value || selectModalActive.value || batchEditActive.value);
 </script>
 
 <template>
@@ -472,7 +474,7 @@ function getLinkForItem(item: DisplayItem) {
 	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
 		{{ $t('no_singleton_relations') }}
 	</v-notice>
-	<div v-else class="many-to-many">
+	<div v-else v-prevent-focusout="menuActive" class="many-to-many">
 		<div :class="[`layout-${layout}`, { bordered: layout === LAYOUTS.TABLE }]">
 			<div v-if="layout === LAYOUTS.TABLE" class="actions top" :class="width">
 				<div class="spacer" />

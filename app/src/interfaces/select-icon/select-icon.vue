@@ -180,7 +180,7 @@ function useIconsPerRow(
 </script>
 
 <template>
-	<v-menu v-model="menuActive" attached :disabled no-focus-return>
+	<v-menu v-model="menuActive" v-prevent-focusout="menuActive" attached :disabled no-focus-return>
 		<template #activator="{ active, activate, deactivate, toggle }">
 			<v-input
 				v-model="searchQuery"

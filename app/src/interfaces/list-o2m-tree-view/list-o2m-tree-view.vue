@@ -112,6 +112,12 @@ const fields = computed(() => {
 
 	return addRelatedPrimaryKeyToFields(relationInfo.value?.relatedCollection.collection ?? '', displayFields);
 });
+
+const addNewOpen = ref(false);
+const selectOpen = ref(false);
+const editOpen = ref(false);
+
+const menuActive = computed(() => addNewOpen.value || selectOpen.value || editOpen.value);
 </script>
 
 <template>
@@ -121,9 +127,12 @@ const fields = computed(() => {
 	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
 		{{ $t('no_singleton_relations') }}
 	</v-notice>
-	<div v-else class="tree-view">
+	<div v-else v-prevent-focusout="menuActive" class="tree-view">
 		<nested-draggable
 			v-model="_value"
+			v-model:add-new-open="addNewOpen"
+			v-model:select-open="selectOpen"
+			v-model:edit-open="editOpen"
 			:template="template"
 			:collection="collection"
 			:field="field"

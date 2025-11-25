@@ -308,7 +308,15 @@ function useColor() {
 </script>
 
 <template>
-	<v-menu ref="menu" v-model="active" attached :disabled="disabled" :close-on-content-click="false" no-focus-return>
+	<v-menu
+		ref="menu"
+		v-model="active"
+		v-prevent-focusout="active"
+		attached
+		:disabled="disabled"
+		:close-on-content-click="false"
+		no-focus-return
+	>
 		<template #activator="{ activate, toggle }">
 			<v-input
 				v-model="input"
