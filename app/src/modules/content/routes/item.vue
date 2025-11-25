@@ -264,12 +264,12 @@ const livePreviewSizeStorage = useLocalStorage<number>('live-preview-size', 50);
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller('sm');
 
-const livePreviewActive = computed(() => {
-	if (!collectionInfo.value?.meta?.preview_url) return false;
-	if (unref(isNew)) return false;
-
-	return livePreviewMode.value === 'split';
-});
+const livePreviewActive = computed(
+	() =>
+		!!collectionInfo.value?.meta?.preview_url &&
+		!unref(isNew) &&
+		livePreviewMode.value === 'split',
+);
 
 const livePreviewCollapsed = computed({
 	get() {
