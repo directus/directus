@@ -265,10 +265,7 @@ const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller('sm');
 
 const livePreviewActive = computed(
-	() =>
-		!!collectionInfo.value?.meta?.preview_url &&
-		!unref(isNew) &&
-		livePreviewMode.value === 'split',
+	() => !!collectionInfo.value?.meta?.preview_url && !unref(isNew) && livePreviewMode.value === 'split',
 );
 
 const livePreviewCollapsed = computed({

@@ -22,7 +22,10 @@ const sidebarStore = useSidebarStore();
 
 const { y } = useScroll(useTemplateRef('scroll-container'));
 
-const livePreviewActive = inject<ComputedRef<boolean>>('live-preview-active', computed(() => false));
+const livePreviewActive = inject<ComputedRef<boolean>>(
+	'live-preview-active',
+	computed(() => false),
+);
 
 const showHeaderShadow = computed(() => y.value > 0 || unref(livePreviewActive));
 
