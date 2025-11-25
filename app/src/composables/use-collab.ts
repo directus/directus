@@ -92,6 +92,11 @@ export function useCollab(
 		}
 	});
 
+	watch(item, () => {
+		leave();
+		join();
+	});
+
 	watch(version, (newVersion, oldVersion) => {
 		if (newVersion?.key !== oldVersion?.key) {
 			leave();
@@ -130,6 +135,8 @@ export function useCollab(
 	}
 
 	function leave() {
+		if (!roomId.value) return;
+
 		sendMessage({
 			action: 'leave',
 		});
