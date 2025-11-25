@@ -28,7 +28,7 @@ const fetchGlobalAccessForUser = withCache('global-access-user', _fetchGlobalAcc
 }));
 
 /**
- * Re-implements fetchGlobalAccess to add caching.
+ * Re-implements fetchGlobalAccess to add caching, fetches roles and user info separately so they can be cached and reused individually
  */
 export async function _fetchGlobalAccess(
 	accountability: Pick<Accountability, 'user' | 'roles' | 'ip'>,

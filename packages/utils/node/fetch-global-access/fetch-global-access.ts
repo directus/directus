@@ -4,9 +4,11 @@ import { fetchGlobalAccessForRoles } from './lib/fetch-global-access-for-roles.j
 import { fetchGlobalAccessForUser } from './lib/fetch-global-access-for-user.js';
 
 /**
- * Fetch the global access (eg admin/app access) rules for the given roles, or roles+user combination
+ * Fetches the global access permissions for a given accountability.
  *
- * Will fetch roles and user info separately so they can be cached and reused individually
+ * @param accountability - The accountability object containing user, roles, and optionally the IP.
+ * @param context
+ * @returns The global access permissions.
  */
 export async function fetchGlobalAccess(
 	accountability: Pick<Accountability, 'user' | 'roles' | 'ip'>,
