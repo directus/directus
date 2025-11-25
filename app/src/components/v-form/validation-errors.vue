@@ -11,8 +11,8 @@ const props = defineProps<{
 defineEmits(['scroll-to-field']);
 
 const { validationErrorsWithDetails, getDefaultValidationMessage } = useValidationErrorDetails(
-	toRef(props.validationErrors),
-	toRef(props.fields),
+	toRef(() => props.validationErrors),
+	toRef(() => props.fields),
 );
 </script>
 

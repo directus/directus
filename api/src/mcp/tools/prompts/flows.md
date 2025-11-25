@@ -247,12 +247,55 @@ UI button that users click to start flows
 - Data chain variable syntax
 - Operation-specific configuration
 
-**Workflow Process:**
+**Critical Workflow - Follow This Order:**
 
-1. Create flow first to get flow ID
-2. Use `operations` tool to add/manage operations
-3. Operations execute in sequence based on resolve/reject paths
-4. Link operations via UUIDs in resolve/reject fields </operations_integration>
+1. Create flow first (using `flows` tool)
+2. Create all operations with null resolve/reject initially (using `operations` tool)
+3. Link operations together using UUIDs from step 2
+4. Update flow to set first operation as entry point
+
+**Why This Order:** Operations must exist before they can be referenced. UUIDs only available after creation.
+
+**Complete Example:**
+
+```json
+// Step 1: Create flow
+{"action": "create", "data": {
+  "name": "Email on Post Published",
+  "trigger": "event",
+  "options": {"type": "action", "scope": ["items.create"], "collections": ["posts"]}
+}}
+// Returns: {"id": "flow-uuid-123"}
+
+// Step 2: Create operations with null connections
+{"action": "create", "data": {
+  "flow": "flow-uuid-123", "key": "check_status", "type": "condition",
+  "position_x": 19, "position_y": 1,
+  "options": {"filter": {"$trigger": {"payload": {"status": {"_eq": "published"}}}}},
+  "resolve": null, "reject": null
+}}
+// Returns: {"id": "condition-uuid-456"}
+
+{"action": "create", "data": {
+  "flow": "flow-uuid-123", "key": "send_email", "type": "mail",
+  "position_x": 37, "position_y": 1,
+  "options": {"to": ["admin@example.com"], "subject": "New post", "body": "{{$trigger.payload.title}}"},
+  "resolve": null, "reject": null
+}}
+// Returns: {"id": "email-uuid-789"}
+
+// Step 3: Link operations via UUIDs
+{"action": "update", "key": "condition-uuid-456", "data": {
+  "resolve": "email-uuid-789"
+}}
+
+// Step 4: Set flow entry point
+{"action": "update", "key": "flow-uuid-123", "data": {
+  "operation": "condition-uuid-456"
+}}
+```
+
+</operations_integration>
 
 <flow_chaining>
 
@@ -319,15 +362,17 @@ UI button that users click to start flows
 
 ## Data Chain Access
 
-**See the `operations` tool for complete data chain syntax and examples.**
+Operations can access data using `{{ variable }}` syntax:
 
-Operations can access:
+- `{{ $trigger.payload }}` - Trigger data
+- `{{ $accountability.user }}` - User context
+- `{{ $env.VARIABLE_NAME }}` - Environment variables
+- `{{ operation_key }}` - Result from specific operation (recommended)
+- `{{ operation_key.field }}` - Specific field from operation result
+- `{{ $last }}` - Previous operation result (⚠️ avoid - breaks when reordered)
 
-- `$trigger` - Initial trigger data
-- `$accountability` - User/permission context
-- `$env` - Environment variables
-- `<operationKey>` - Result of specific operation (recommended)
-- `$last` - Result of previous operation (avoid - breaks when reordered) </data_chain_warning>
+**Always use operation keys** for reliable flows. If you reorder operations, `$last` will reference a different
+operation. </data_chain_warning>
 
 <real_world_examples>
 

@@ -2,11 +2,38 @@ import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { requestGraphQL } from '@common/transport';
 import { TEST_USERS, USER } from '@common/variables';
+import { SMTPServer } from 'smtp-server';
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 describe('/server', () => {
 	describe('GET /health', () => {
+		let fakeSMTPServer: SMTPServer;
+
+		beforeAll(async () => {
+			fakeSMTPServer = new SMTPServer({
+				authOptional: true,
+				hideSTARTTLS: true,
+				onData(_stream, _, cb) {
+					cb();
+				},
+			});
+
+			await new Promise<void>((resolve) =>
+				fakeSMTPServer.listen(1025, '127.0.0.1', () => {
+					resolve();
+				}),
+			);
+		}, 180_000);
+
+		afterAll(async () => {
+			await new Promise<void>((resolve) =>
+				fakeSMTPServer.close(() => {
+					resolve();
+				}),
+			);
+		});
+
 		TEST_USERS.forEach((userKey) => {
 			describe(USER[userKey].NAME, () => {
 				it.each(vendors)('%s', async (vendor) => {
