@@ -259,21 +259,10 @@ const previewUrl = computed(() => {
 });
 
 const livePreviewMode = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
-const livePreviewSizeStorage = useLocalStorage<number>('live-preview-size', 350);
+const livePreviewSizeStorage = useLocalStorage<number>('live-preview-size', 50);
 
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller('sm');
-
-const livePreviewSize = computed({
-	get() {
-		return livePreviewSizeStorage.value ?? 350;
-	},
-	set(value: number) {
-		if (isMobile.value) return;
-
-		livePreviewSizeStorage.value = value;
-	},
-});
 
 const livePreviewActive = computed({
 	get() {
@@ -293,6 +282,22 @@ const livePreviewCollapsed = computed({
 	},
 	set(value: boolean) {
 		livePreviewMode.value = value ? null : 'split';
+	},
+});
+
+const livePreviewSize = computed({
+	get() {
+		// On mobile, preview takes full width when active
+		if (isMobile.value && livePreviewActive.value) {
+			return 100;
+		}
+
+		return livePreviewSizeStorage.value ?? 50;
+	},
+	set(value: number) {
+		if (isMobile.value) return;
+
+		livePreviewSizeStorage.value = value;
 	},
 });
 
@@ -746,12 +751,12 @@ function useCollectionRoute() {
 			v-model:size="livePreviewSize"
 			v-model:collapsed="livePreviewCollapsed"
 			primary="end"
-			size-unit="px"
+			size-unit="%"
 			collapsible
 			:collapsed-size="0"
-			:collapse-threshold="150"
-			:min-size="isMobile ? 0 : 200"
-			:max-size="isMobile ? 1000 : 800"
+			:collapse-threshold="15"
+			:min-size="isMobile ? 0 : 20"
+			:max-size="isMobile ? 100 : 80"
 			:transition-duration="150"
 			class="content-split"
 			:disabled="isMobile"
