@@ -1,48 +1,50 @@
 import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { fetchGlobalAccess } from './fetch-global-access.js';
 import { fetchGlobalAccessForRoles } from './lib/fetch-global-access-for-roles.js';
 import { fetchGlobalAccessForUser } from './lib/fetch-global-access-for-user.js';
 
-let knex: Knex;
-
 vi.mock('./lib/fetch-global-access-for-roles.js');
 vi.mock('./lib/fetch-global-access-for-user.js');
 
-beforeEach(() => {
-	vi.clearAllMocks();
+describe('fetchGlobalAccess', () => {
+	let knex: Knex;
 
-	knex = {} as unknown as Knex;
-});
+	beforeEach(() => {
+		vi.clearAllMocks();
 
-test('Returns result from access for roles when no user is passed', async () => {
-	const mockRolesAccess = { app: true, admin: true };
-	vi.mocked(fetchGlobalAccessForRoles).mockResolvedValue(mockRolesAccess);
+		knex = {} as unknown as Knex;
+	});
 
-	const res = await fetchGlobalAccess({} as Accountability, { knex });
+	test('Returns result from access for roles when no user is passed', async () => {
+		const mockRolesAccess = { app: true, admin: true };
+		vi.mocked(fetchGlobalAccessForRoles).mockResolvedValue(mockRolesAccess);
 
-	expect(res).toEqual(mockRolesAccess);
-});
+		const res = await fetchGlobalAccess({} as Accountability, { knex });
 
-test('Returns highest result if user is passed', async () => {
-	const mockRolesAccess = { app: true, admin: true };
-	const mockUserAccess = { app: false, admin: false };
-	vi.mocked(fetchGlobalAccessForRoles).mockResolvedValue(mockRolesAccess);
-	vi.mocked(fetchGlobalAccessForUser).mockResolvedValue(mockUserAccess);
+		expect(res).toEqual(mockRolesAccess);
+	});
 
-	const res = await fetchGlobalAccess({ user: 'user', roles: [], ip: '' }, { knex });
+	test('Returns highest result if user is passed', async () => {
+		const mockRolesAccess = { app: true, admin: true };
+		const mockUserAccess = { app: false, admin: false };
+		vi.mocked(fetchGlobalAccessForRoles).mockResolvedValue(mockRolesAccess);
+		vi.mocked(fetchGlobalAccessForUser).mockResolvedValue(mockUserAccess);
 
-	expect(res).toEqual({ app: true, admin: true });
-});
+		const res = await fetchGlobalAccess({ user: 'user', roles: [], ip: '' }, { knex });
 
-test('Combines result of role and user', async () => {
-	const mockRolesAccess = { app: false, admin: true };
-	const mockUserAccess = { app: true, admin: false };
-	vi.mocked(fetchGlobalAccessForRoles).mockResolvedValue(mockRolesAccess);
-	vi.mocked(fetchGlobalAccessForUser).mockResolvedValue(mockUserAccess);
+		expect(res).toEqual({ app: true, admin: true });
+	});
 
-	const res = await fetchGlobalAccess({ user: 'user', roles: [], ip: '' }, { knex });
+	test('Combines result of role and user', async () => {
+		const mockRolesAccess = { app: false, admin: true };
+		const mockUserAccess = { app: true, admin: false };
+		vi.mocked(fetchGlobalAccessForRoles).mockResolvedValue(mockRolesAccess);
+		vi.mocked(fetchGlobalAccessForUser).mockResolvedValue(mockUserAccess);
 
-	expect(res).toEqual({ app: true, admin: true });
+		const res = await fetchGlobalAccess({ user: 'user', roles: [], ip: '' }, { knex });
+
+		expect(res).toEqual({ app: true, admin: true });
+	});
 });
