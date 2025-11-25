@@ -282,9 +282,8 @@ const livePreviewCollapsed = computed({
 
 const livePreviewSize = computed({
 	get() {
-		// On mobile, preview takes full width when active
-		if (isMobile.value && livePreviewActive.value) {
-			return 100;
+		if (isMobile.value) {
+			return livePreviewActive.value ? 100 : 0;
 		}
 
 		return livePreviewSizeStorage.value ?? 50;
