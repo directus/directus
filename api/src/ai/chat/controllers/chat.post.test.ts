@@ -1,5 +1,5 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { aiChatPostHandler } from './chat.post.js';
 
@@ -23,12 +23,15 @@ import { chatRequestToolToAiSdkTool } from '../utils/chat-request-tool-to-ai-sdk
 describe('aiChatPostHandler', () => {
 	let mockReq: Partial<Request>;
 	let mockRes: Partial<Response>;
+	let mockNext: NextFunction;
 	let mockStream: { pipeUIMessageStreamToResponse: ReturnType<typeof vi.fn> };
 
 	beforeEach(() => {
 		mockStream = {
 			pipeUIMessageStreamToResponse: vi.fn(),
 		};
+
+		mockNext = vi.fn();
 
 		mockReq = {
 			body: {},
@@ -64,13 +67,13 @@ describe('aiChatPostHandler', () => {
 		it('should throw ForbiddenError when accountability is missing', async () => {
 			delete (mockReq as any).accountability;
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(ForbiddenError);
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(ForbiddenError);
 		});
 
 		it('should throw ForbiddenError when accountability is null', async () => {
 			mockReq.accountability = null as any;
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(ForbiddenError);
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(ForbiddenError);
 		});
 	});
 
@@ -82,7 +85,7 @@ describe('aiChatPostHandler', () => {
 				tools: [],
 			};
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
 				InvalidPayloadError,
 			);
 		});
@@ -94,7 +97,7 @@ describe('aiChatPostHandler', () => {
 				tools: [],
 			};
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
 				InvalidPayloadError,
 			);
 		});
@@ -106,7 +109,7 @@ describe('aiChatPostHandler', () => {
 				tools: [],
 			};
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
 				InvalidPayloadError,
 			);
 		});
@@ -119,7 +122,7 @@ describe('aiChatPostHandler', () => {
 				tools: [],
 			};
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
 				InvalidPayloadError,
 			);
 		});
@@ -132,7 +135,7 @@ describe('aiChatPostHandler', () => {
 				tools: [],
 			};
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
 				InvalidPayloadError,
 			);
 		});
@@ -145,7 +148,7 @@ describe('aiChatPostHandler', () => {
 				tools: [],
 			};
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
 				InvalidPayloadError,
 			);
 		});
@@ -158,7 +161,7 @@ describe('aiChatPostHandler', () => {
 				tools: [],
 			};
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
 				InvalidPayloadError,
 			);
 		});
@@ -171,7 +174,7 @@ describe('aiChatPostHandler', () => {
 				tools: [],
 			};
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
 				InvalidPayloadError,
 			);
 
@@ -195,7 +198,7 @@ describe('aiChatPostHandler', () => {
 				tools: [],
 			};
 
-			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn())).rejects.toThrow(
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).rejects.toThrow(
 				InvalidPayloadError,
 			);
 
@@ -217,7 +220,7 @@ describe('aiChatPostHandler', () => {
 				tools: [],
 			};
 
-			await aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn());
+			await aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext);
 
 			expect(vi.mocked(safeValidateUIMessages)).toHaveBeenCalledWith({ messages });
 		});
@@ -243,7 +246,7 @@ describe('aiChatPostHandler', () => {
 				tools: [],
 			};
 
-			await aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn());
+			await aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext);
 
 			expect(vi.mocked(createUiStream)).toHaveBeenCalledWith(expect.any(Array), {
 				provider: 'openai',
@@ -279,7 +282,7 @@ describe('aiChatPostHandler', () => {
 				tools,
 			};
 
-			await aiChatPostHandler(mockReq as Request, mockRes as Response, vi.fn());
+			await aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext);
 
 			const expectedTools = {
 				search: { name: 'search', mocked: true },
