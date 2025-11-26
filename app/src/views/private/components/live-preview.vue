@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { CSSProperties, computed, onMounted, ref, watch, nextTick } from 'vue';
+import { CSSProperties, computed, onMounted, ref, watch, nextTick, useSlots } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useElementSize } from '@directus/composables';
+import EditingLayer from '@/modules/visual/components/editing-layer.vue';
+import { sameOrigin } from '@/modules/visual/utils/same-origin';
 
 declare global {
 	interface Window {
@@ -15,6 +17,9 @@ const {
 	dynamicUrl,
 	dynamicDisplay,
 	singleUrlSubdued = true,
+	canEnableVisualEditing = false,
+	visualEditorUrls = [],
+	defaultShowEditableElements = false,
 } = defineProps<{
 	url: string | string[];
 	invalidUrl?: boolean;
@@ -26,6 +31,11 @@ const {
 	hidePopupButton?: boolean;
 	inPopup?: boolean;
 	centered?: boolean;
+	/** Whether visual editing prerequisites are met (module enabled, URLs configured, valid item) */
+	canEnableVisualEditing?: boolean;
+	/** Allowed URLs for visual editing - used to verify the current preview URL passes sameOrigin */
+	visualEditorUrls?: string[];
+	defaultShowEditableElements?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -34,6 +44,7 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
+const slots = useSlots();
 
 useResizeObserver();
 
@@ -45,6 +56,8 @@ const zoom = ref<number>(1);
 const displayWidth = ref<number>();
 const displayHeight = ref<number>();
 const isRefreshing = ref(false);
+const showEditableElements = ref(defaultShowEditableElements);
+const overlayProvided = computed(() => !!slots.overlay);
 
 const livePreviewEl = ref<HTMLElement>();
 const resizeHandle = ref<HTMLDivElement>();
@@ -86,6 +99,23 @@ const fullscreen = computed(() => {
 	return width.value === undefined && height.value === undefined;
 });
 
+/**
+ * Two-layer visual editing check:
+ * 1. Parent checks prerequisites (module enabled, URLs configured, valid item state)
+ * 2. Child checks if the *currently displayed* URL (frameSrc) passes sameOrigin
+ *
+ * We use frameSrc here because the user may have selected a different URL from the dropdown
+ */
+const visualEditingEnabled = computed(() => {
+	if (!canEnableVisualEditing) return false;
+	if (invalidUrl) return false;
+
+	const currentUrl = frameSrc.value;
+	if (!currentUrl || !visualEditorUrls.length) return false;
+
+	return visualEditorUrls.some((allowedUrl) => sameOrigin(allowedUrl, currentUrl));
+});
+
 function toggleFullscreen() {
 	if (fullscreen.value) {
 		width.value = 400;
@@ -112,6 +142,17 @@ function onIframeLoad() {
 }
 
 window.refreshLivePreview = refresh;
+
+watch(
+	() => frameSrc.value,
+	() => {
+		showEditableElements.value = false;
+	},
+);
+
+watch(visualEditingEnabled, (enabled) => {
+	if (!enabled) showEditableElements.value = false;
+});
 
 function useResizeObserver() {
 	let observerInitialized = false;
@@ -196,6 +237,19 @@ function useUrls() {
 		<div class="header">
 			<div class="group">
 				<slot name="prepend-header" />
+
+				<v-button
+					v-if="visualEditingEnabled"
+					v-tooltip.bottom.end="$t(showEditableElements ? 'close' : 'toggle_editable_elements')"
+					x-small
+					rounded
+					icon
+					:active="showEditableElements"
+					secondary
+					@click="showEditableElements = !showEditableElements"
+				>
+					<v-icon small name="edit" outline />
+				</v-button>
 
 				<v-button
 					v-if="!hidePopupButton"
@@ -334,6 +388,12 @@ function useUrls() {
 						@load="onIframeLoad"
 					/>
 					<slot name="overlay" :frame-el :frame-src />
+					<editing-layer
+						v-if="visualEditingEnabled && !overlayProvided"
+						:frame-el="frameEl"
+						:frame-src="frameSrc"
+						:show-editable-elements="showEditableElements"
+					/>
 				</div>
 			</div>
 		</div>

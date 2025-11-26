@@ -7,6 +7,7 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { useFlows } from '@/composables/use-flows';
+import { useVisualEditing } from '@/composables/use-visual-editing';
 import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
@@ -267,6 +268,7 @@ const previewUrl = computed(() => {
 	return displayValue.value.trim() || null;
 });
 
+const livePreviewFullWidth = useLocalStorage<boolean>('live-preview-full-width', false);
 const livePreviewMode = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
 const livePreviewSizeStorage = useLocalStorage<number>('live-preview-size', 50);
 
@@ -288,7 +290,7 @@ const livePreviewCollapsed = computed({
 
 const livePreviewSize = computed({
 	get() {
-		if (isMobile.value) {
+		if (isMobile.value || livePreviewFullWidth.value) {
 			return livePreviewActive.value ? 100 : 0;
 		}
 
@@ -302,6 +304,12 @@ const livePreviewSize = computed({
 });
 
 provide('live-preview-active', livePreviewActive);
+
+const { visualEditingEnabled, visualEditorUrls } = useVisualEditing({ previewUrl, isNew });
+
+watch(previewUrl, (url) => {
+	if (!url) livePreviewFullWidth.value = false;
+});
 
 let popupWindow: Window | null = null;
 
@@ -748,7 +756,7 @@ function useCollectionRoute() {
 			:collapsed-size="0"
 			:collapse-threshold="15"
 			:min-size="isMobile ? 0 : 20"
-			:max-size="isMobile ? 100 : 80"
+			:max-size="isMobile || livePreviewFullWidth ? 100 : 80"
 			:transition-duration="150"
 			class="content-split"
 			:disabled="isMobile"
@@ -774,7 +782,25 @@ function useCollectionRoute() {
 			</template>
 
 			<template #end>
-				<live-preview :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
+				<live-preview
+					:url="previewUrl"
+					:can-enable-visual-editing="visualEditingEnabled"
+					:visual-editor-urls="visualEditorUrls"
+					@new-window="livePreviewMode = 'popup'"
+				>
+					<template #prepend-header>
+						<v-button
+							v-tooltip.bottom.end="$t('full_width')"
+							x-small
+							rounded
+							icon
+							:secondary="!livePreviewFullWidth"
+							@click="livePreviewFullWidth = !livePreviewFullWidth"
+						>
+							<v-icon small name="width_full" outline />
+						</v-button>
+					</template>
+				</live-preview>
 			</template>
 		</SplitPanel>
 
