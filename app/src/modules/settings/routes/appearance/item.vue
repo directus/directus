@@ -54,7 +54,7 @@ function discardAndLeave() {
 
 <template>
 	<private-view :title="$t('settings_appearance')" icon="palette">
-		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
+		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #actions>
 			<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="!hasEdits" :loading="saving" small @click="save">

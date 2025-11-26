@@ -36,7 +36,7 @@ useResizeObserver(contentRef, (entries) => {
 
 <style scoped>
 .message-text {
-	inline-size: 100%;
+	max-inline-size: 100%;
 	border-radius: var(--ai-message-border-radius, var(--theme--border-radius));
 	background-color: var(--ai-message-background);
 	color: var(--ai-message-color, var(--theme--foreground));

@@ -86,9 +86,11 @@ function handleSubmit() {
 	align-items: center;
 	gap: 8px;
 	flex-shrink: 0;
+	inline-size: 100%;
 
 	.submit-button {
 		--v-button-background-color-disabled: var(--theme--background-accent);
+		margin-inline-start: auto;
 	}
 }
 </style>
