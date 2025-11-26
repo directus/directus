@@ -17,7 +17,7 @@
 		"@types/mailparser": "3.4.6",
 		"@types/seedrandom": "3.0.8",
 		"@types/smtp-server": "3.5.12",
-		"@types/supertest": "6.0.2",
+		"@types/supertest": "6.0.3",
 		"@types/ws": "catalog:",
 		"argon2": "catalog:",
 		"autocannon": "8.0.0",
