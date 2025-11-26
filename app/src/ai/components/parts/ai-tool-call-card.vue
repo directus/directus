@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { useAiStore } from '@/ai/stores/use-ai';
+import { translateShortcut } from '@/utils/translate-shortcut';
+import { onKeyStroke } from '@vueuse/core';
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { onKeyStroke } from '@vueuse/core';
-import { useAiStore } from '@/ai/stores/use-ai';
 
 const aiStore = useAiStore();
 const { t } = useI18n();
@@ -114,11 +115,11 @@ onKeyStroke('Escape', (e) => {
 					</v-button>
 					<v-button x-small outlined @click="handleAlwaysAllow">
 						{{ t('ai.always_allow') }}
-						<span class="keyboard-hint">⌘↵</span>
+						<span class="keyboard-hint">{{ translateShortcut(['meta', 'enter']) }}</span>
 					</v-button>
 					<v-button x-small @click="handleApprove">
 						{{ t('ai.approve') }}
-						<span class="keyboard-hint">↵</span>
+						<span class="keyboard-hint">{{ translateShortcut(['enter']) }}</span>
 					</v-button>
 				</div>
 			</div>
