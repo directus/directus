@@ -62,8 +62,6 @@ const resolvedRelationalValues = ref<Record<string, any>>({});
 
 const primaryKey = computed(() => props.primaryKey ?? null);
 
-const componentRoot = ref<HTMLElement | null>(null);
-
 const combinedItemData = computed(() => {
 	const result = { ...itemValues.value };
 
@@ -214,7 +212,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 </script>
 
 <template>
-	<div ref="componentRoot" class="page-header">
+	<div class="page-header">
 		<div class="header-content" :style="{ '--header-color': color }">
 			<div class="text-content">
 				<p v-if="title" class="text-title">
