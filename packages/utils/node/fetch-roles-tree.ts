@@ -3,7 +3,7 @@ import type { Knex } from 'knex';
 /**
  * Given a starting role ID, fetches the entire hierarchy of roles up to the root.
  *
- * @param start The starting role ID.
+ * @param start - The starting role ID.
  * @param context
  * @returns An array of role IDs from root to the starting role.
  */
