@@ -51,6 +51,7 @@ const {
 const emit = defineEmits<{
 	'new-window': [];
 	selectUrl: [newUrl: string, oldUrl: string];
+	saved: [data: { collection: string; primaryKey: string | number }];
 }>();
 
 const { t } = useI18n();
@@ -403,6 +404,7 @@ function useUrls() {
 						:frame-el="frameEl"
 						:frame-src="frameSrc"
 						:show-editable-elements="showEditableElements"
+						@saved="(data) => emit('saved', data)"
 					/>
 				</div>
 			</div>
