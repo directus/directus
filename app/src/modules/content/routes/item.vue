@@ -364,6 +364,10 @@ async function refreshLivePreview() {
 	}
 }
 
+function onVisualEditorSaved() {
+	refresh();
+}
+
 watch(saving, async (newVal, oldVal) => {
 	if (newVal === true || oldVal === false) return;
 
@@ -787,6 +791,7 @@ function useCollectionRoute() {
 					:can-enable-visual-editing="visualEditingEnabled"
 					:visual-editor-urls="visualEditorUrls"
 					@new-window="livePreviewMode = 'popup'"
+					@saved="onVisualEditorSaved"
 				>
 					<template #prepend-header>
 						<v-button
