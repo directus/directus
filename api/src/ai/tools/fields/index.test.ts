@@ -20,7 +20,6 @@ vi.mock('@/database/index.js', () => {
 describe('fields tool', () => {
 	const mockSchema = { collections: {}, fields: {}, relations: {} } as unknown as SchemaOverview;
 	const mockAccountability = { user: 'test-user', admin: true } as Accountability;
-	const mockSanitizedQuery = { fields: ['*'] };
 
 	afterEach(() => {
 		vi.clearAllMocks();
@@ -66,7 +65,6 @@ describe('fields tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(FieldsService).toHaveBeenCalledWith({
@@ -94,7 +92,6 @@ describe('fields tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(result).toEqual({ type: 'text', data: expectedFields });
@@ -113,7 +110,6 @@ describe('fields tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockFieldsService.readOne).toHaveBeenCalledWith(expectedField.collection, expectedField.field);
@@ -152,7 +148,6 @@ describe('fields tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockFieldsService.updateField).toHaveBeenCalledOnce();
@@ -206,7 +201,6 @@ describe('fields tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockFieldsService.updateField).toHaveBeenNthCalledWith(1, collection, updateData[0], {
@@ -236,7 +230,6 @@ describe('fields tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockFieldsService.deleteField).toHaveBeenCalledWith(collection, fieldName);
@@ -261,7 +254,6 @@ describe('fields tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				}),
 			).rejects.toThrow('Invalid action.');
 		});

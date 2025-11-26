@@ -11,14 +11,12 @@ describe('system tool', () => {
 	describe('prompt override', () => {
 		const mockSchema = { collections: {}, fields: {}, relations: {} } as unknown as SchemaOverview;
 		const mockAccountability = { user: 'test-user' } as Accountability;
-		const mockSanitizedQuery = { fields: ['*'] };
 
 		test.each([undefined, null])('should return default prompt when no override provided', async (override) => {
 			const result = await system.handler({
 				args: { promptOverride: override },
 				schema: mockSchema,
 				accountability: mockAccountability,
-				sanitizedQuery: mockSanitizedQuery,
 			});
 
 			expect(result).toEqual({ type: 'text', data: requireText(resolve(__dirname, './prompt.md')) });
@@ -31,7 +29,6 @@ describe('system tool', () => {
 				args: { promptOverride },
 				schema: mockSchema,
 				accountability: mockAccountability,
-				sanitizedQuery: mockSanitizedQuery,
 			});
 
 			expect(result).toEqual({ type: 'text', data: promptOverride });

@@ -65,18 +65,13 @@ export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
 		return ['files', data['id'] as string];
 	},
 	async handler({ args, schema, accountability }) {
-		let sanitizedQuery = {};
-
-		if (args.action !== 'delete' && args.action !== 'import') {
-			sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
-		}
-
 		const service = new FilesService({
 			schema,
 			accountability,
 		});
 
 		if (args.action === 'read') {
+			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 			let result = null;
 
 			if (args.keys) {
@@ -92,6 +87,7 @@ export const files = defineTool<z.infer<typeof FilesValidateSchema>>({
 		}
 
 		if (args.action === 'update') {
+			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 			let updatedKeys: PrimaryKey[] = [];
 
 			if (Array.isArray(args.data)) {

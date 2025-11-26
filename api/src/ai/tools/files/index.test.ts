@@ -8,7 +8,6 @@ vi.mock('@/services/files.js');
 describe('files tool', () => {
 	const mockSchema = { collections: {}, fields: {}, relations: {} } as unknown as SchemaOverview;
 	const mockAccountability = { user: 'test-user' } as Accountability;
-	const mockSanitizedQuery = { fields: ['*'] };
 
 	afterEach(() => {
 		vi.clearAllMocks();
@@ -53,10 +52,9 @@ describe('files tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
-				expect(mockFilesService.readMany).toHaveBeenCalledWith(keys, mockSanitizedQuery);
+				expect(mockFilesService.readMany).toHaveBeenCalledWith(keys, {});
 
 				expect(result).toEqual({
 					type: 'text',
@@ -82,7 +80,6 @@ describe('files tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockFilesService.updateMany).toHaveBeenCalledWith(keys, updateData);
@@ -107,7 +104,6 @@ describe('files tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockFilesService.deleteMany).toHaveBeenCalledWith(keys);
@@ -129,7 +125,6 @@ describe('files tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				}),
 			).rejects.toThrow('Invalid action.');
 		});

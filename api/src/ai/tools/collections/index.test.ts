@@ -8,7 +8,6 @@ vi.mock('@/services/collections.js');
 describe('collections tool', () => {
 	const mockSchema = { collections: {}, fields: {}, relations: {} } as unknown as SchemaOverview;
 	const mockAccountability = { user: 'test-user', admin: true } as Accountability;
-	const mockSanitizedQuery = { fields: ['*'] };
 
 	afterEach(() => {
 		vi.clearAllMocks();
@@ -52,7 +51,6 @@ describe('collections tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(CollectionsService).toHaveBeenCalledWith({
@@ -85,7 +83,6 @@ describe('collections tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockCollectionsService.createMany).toHaveBeenCalledWith(collectionsData);
@@ -111,7 +108,6 @@ describe('collections tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: {},
 				});
 
 				expect(mockCollectionsService.readMany).toHaveBeenCalledWith(keys);
@@ -128,7 +124,6 @@ describe('collections tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockCollectionsService.readByQuery).toHaveBeenCalled();
@@ -152,7 +147,6 @@ describe('collections tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockCollectionsService.updateBatch).toHaveBeenCalledWith([updateData]);
@@ -173,7 +167,6 @@ describe('collections tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockCollectionsService.deleteMany).toHaveBeenCalledWith(keys);
@@ -195,7 +188,6 @@ describe('collections tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				}),
 			).rejects.toThrow('Invalid action.');
 		});

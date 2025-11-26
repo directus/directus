@@ -8,7 +8,6 @@ vi.mock('@/services/folders.js');
 describe('folders tool', () => {
 	const mockSchema = {} as SchemaOverview;
 	const mockAccountability = { user: 'test-user' } as Accountability;
-	const mockSanitizedQuery = { fields: ['*'] };
 
 	afterEach(() => {
 		vi.clearAllMocks();
@@ -55,7 +54,6 @@ describe('folders tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(FoldersService).toHaveBeenCalledWith({
@@ -64,7 +62,7 @@ describe('folders tool', () => {
 				});
 
 				expect(mockFoldersService.createMany).toHaveBeenCalledWith([folderData]);
-				expect(mockFoldersService.readMany).toHaveBeenCalledWith(savedKeys, mockSanitizedQuery);
+				expect(mockFoldersService.readMany).toHaveBeenCalledWith(savedKeys, {});
 
 				expect(result).toEqual({
 					type: 'text',
@@ -87,7 +85,6 @@ describe('folders tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockFoldersService.createMany).toHaveBeenCalledWith(foldersData);
@@ -108,10 +105,9 @@ describe('folders tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
-				expect(mockFoldersService.readMany).toHaveBeenCalledWith(keys, mockSanitizedQuery);
+				expect(mockFoldersService.readMany).toHaveBeenCalledWith(keys, {});
 				expect(mockFoldersService.readByQuery).not.toHaveBeenCalled();
 
 				expect(result).toEqual({
@@ -131,10 +127,9 @@ describe('folders tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
-				expect(mockFoldersService.readByQuery).toHaveBeenCalledWith(mockSanitizedQuery);
+				expect(mockFoldersService.readByQuery).toHaveBeenCalledWith({});
 				expect(mockFoldersService.readMany).not.toHaveBeenCalled();
 
 				expect(result).toEqual({
@@ -161,7 +156,6 @@ describe('folders tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockFoldersService.updateMany).toHaveBeenCalledWith(keys, updateData);
@@ -193,7 +187,6 @@ describe('folders tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockFoldersService.updateBatch).toHaveBeenCalledWith(batchData);
@@ -215,10 +208,9 @@ describe('folders tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
-				expect(mockFoldersService.updateByQuery).toHaveBeenCalledWith(mockSanitizedQuery, updateData);
+				expect(mockFoldersService.updateByQuery).toHaveBeenCalledWith({}, updateData);
 				expect(mockFoldersService.updateMany).not.toHaveBeenCalled();
 				expect(mockFoldersService.updateMany).not.toHaveBeenCalled();
 			});
@@ -237,7 +229,6 @@ describe('folders tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockFoldersService.deleteMany).toHaveBeenCalledWith(keys);
@@ -259,7 +250,6 @@ describe('folders tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				}),
 			).rejects.toThrow('Invalid action.');
 		});
@@ -294,7 +284,6 @@ describe('folders tool', () => {
 				},
 				schema: mockSchema,
 				accountability: mockAccountability,
-				sanitizedQuery: mockSanitizedQuery,
 			});
 
 			expect(result).toEqual({
@@ -314,7 +303,6 @@ describe('folders tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				}),
 			).rejects.toThrow('Service error');
 		});

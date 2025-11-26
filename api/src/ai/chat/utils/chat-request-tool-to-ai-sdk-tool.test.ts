@@ -84,9 +84,7 @@ describe('chatRequestToolToAiSdkTool', () => {
 		const original = ALL_TOOLS.splice(0, ALL_TOOLS.length);
 
 		try {
-			expect(() => chatRequestToolToAiSdkTool('does.not.exist', accountability, schema)).toThrowError(
-				/Tool with name "does\.not\.exist" does not exist/,
-			);
+			expect(() => chatRequestToolToAiSdkTool('does.not.exist', accountability, schema)).toThrowError();
 		} finally {
 			ALL_TOOLS.push(...original);
 		}

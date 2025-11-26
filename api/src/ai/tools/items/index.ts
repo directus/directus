@@ -72,12 +72,6 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 		return ['content', input.collection, data['id']];
 	},
 	async handler({ args, schema, accountability }) {
-		let sanitizedQuery = {};
-
-		if (args.action !== 'delete') {
-			sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
-		}
-
 		if (isSystemCollection(args.collection)) {
 			throw new InvalidPayloadError({ reason: 'Cannot provide a core collection' });
 		}
@@ -94,6 +88,7 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 		});
 
 		if (args.action === 'create') {
+			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 			const data = toArray(args.data);
 
 			if (isSingleton) {
@@ -122,6 +117,7 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 		}
 
 		if (args.action === 'read') {
+			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 			let result = null;
 
 			if (isSingleton) {
@@ -139,6 +135,8 @@ export const items = defineTool<z.infer<typeof ItemsValidateSchema>>({
 		}
 
 		if (args.action === 'update') {
+			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
+
 			if (isSingleton) {
 				if (Array.isArray(args.data)) {
 					throw new InvalidPayloadError({ reason: 'Invalid data payload, object exptected' });

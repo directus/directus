@@ -9,13 +9,13 @@ import type { ToolConfig } from '../tools/types.js';
 import { DirectusMCP } from './server.js';
 import { DirectusTransport } from './transport.js';
 
-vi.mock('../services/items.js');
+vi.mock('../../services/items.js');
 
 vi.mock('zod-validation-error', () => ({
 	fromZodError: vi.fn((_error) => ({ message: 'Validation error' })),
 }));
 
-vi.mock('./tools/index.js', () => ({
+vi.mock('../tools/index.js', () => ({
 	getAllMcpTools: vi.fn(() => [
 		{
 			name: 'test-tool',

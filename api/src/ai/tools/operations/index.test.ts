@@ -8,7 +8,6 @@ vi.mock('@/services/operations');
 describe('operations tool', () => {
 	const mockSchema = { collections: {}, fields: {}, relations: {} } as unknown as SchemaOverview;
 	const mockAccountability = { user: 'test-user' } as Accountability;
-	const mockSanitizedQuery = { fields: ['*'] };
 
 	afterEach(() => {
 		vi.clearAllMocks();
@@ -53,7 +52,6 @@ describe('operations tool', () => {
 					args: { action: 'create', data: mockOperationData },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockOperationsService.createOne).toHaveBeenCalledWith(mockOperationData);
@@ -79,10 +77,9 @@ describe('operations tool', () => {
 					args: { action: 'read' },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
-				expect(mockOperationsService.readByQuery).toHaveBeenCalledWith(mockSanitizedQuery);
+				expect(mockOperationsService.readByQuery).toHaveBeenCalledWith({});
 
 				expect(result).toEqual({
 					type: 'text',
@@ -104,11 +101,10 @@ describe('operations tool', () => {
 					args: { action: 'update', key: mockKey, data: mockUpdateData },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockOperationsService.updateOne).toHaveBeenCalledWith(mockKey, mockUpdateData);
-				expect(mockOperationsService.readOne).toHaveBeenCalledWith(mockKey, mockSanitizedQuery);
+				expect(mockOperationsService.readOne).toHaveBeenCalledWith(mockKey, {});
 
 				expect(result).toEqual({
 					type: 'text',
@@ -127,7 +123,6 @@ describe('operations tool', () => {
 					args: { action: 'delete', key: mockKey },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockOperationsService.deleteOne).toHaveBeenCalledWith(mockKey);
@@ -149,7 +144,6 @@ describe('operations tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				}),
 			).rejects.toThrow('Invalid action.');
 		});

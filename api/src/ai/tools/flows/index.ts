@@ -56,12 +56,6 @@ export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
 		return ['settings', 'flows', data['id'] as string];
 	},
 	async handler({ args, schema, accountability }) {
-		let sanitizedQuery = {};
-
-		if (args.action !== 'delete' && args.action !== 'create') {
-			sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
-		}
-
 		const flowsService = new FlowsService({
 			schema,
 			accountability,
@@ -78,6 +72,7 @@ export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
 		}
 
 		if (args.action === 'read') {
+			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 			const result = await flowsService.readByQuery(sanitizedQuery);
 
 			return {
@@ -87,6 +82,7 @@ export const flows = defineTool<z.infer<typeof FlowsValidateSchema>>({
 		}
 
 		if (args.action === 'update') {
+			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 			const updatedKey = await flowsService.updateOne(args.key, args.data as Partial<FlowRaw>);
 			const result = await flowsService.readOne(updatedKey, sanitizedQuery);
 
