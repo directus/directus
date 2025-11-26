@@ -73,7 +73,7 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 
 <template>
 	<div class="ai-settings-menu">
-		<v-menu v-model="menuOpen" placement="top-start" show-arrow :close-on-content-click="false">
+		<v-menu v-model="menuOpen" placement="top-start" show-arrow :close-on-content-click="false" full-height>
 			<template #activator="{ toggle }">
 				<v-button v-tooltip.left="$t('ai.settings')" x-small icon secondary @click="toggle">
 					<v-icon name="settings" small />
@@ -177,20 +177,18 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 }
 
 .settings-container {
-	display: flex;
-	flex-direction: column;
 	min-inline-size: 320px;
 	max-inline-size: 400px;
 	max-block-size: 400px;
-	overflow: hidden;
+	overflow-y: auto;
 }
 
 .search-header {
+	position: sticky;
+	inset-block-start: 0;
+	z-index: 1;
 	padding: 8px;
-}
-
-.settings-container :deep(.v-list) {
-	overflow-y: auto;
+	background-color: var(--theme--popover--menu--background);
 }
 
 .section-title {
