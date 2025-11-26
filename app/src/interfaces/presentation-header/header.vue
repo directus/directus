@@ -321,27 +321,69 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 	align-items: baseline;
 	justify-content: space-between;
 	min-inline-size: 0;
-}
 
-.text-title {
-	display: flex;
-	color: var(--theme--foreground-accent);
-	overflow: hidden;
-	gap: 8px;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	font-size: 24px;
-	font-weight: 600;
+	.text-content {
+		min-inline-size: 0;
 
-	.v-icon {
-		--v-icon-color: var(--header-color);
-		margin-block-start: 2px;
-		flex-shrink: 0;
+		.text-title {
+			display: flex;
+			color: var(--theme--foreground-accent);
+			overflow: hidden;
+			gap: 8px;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			font-size: 24px;
+			font-weight: 600;
+
+			.v-icon {
+				--v-icon-color: var(--header-color);
+				margin-block-start: 2px;
+				flex-shrink: 0;
+			}
+		}
 	}
-}
 
-.actions-wrapper {
-	flex-shrink: 0;
+	.actions-wrapper {
+		flex-shrink: 0;
+
+		.actions-container {
+			display: flex;
+			gap: 12px;
+			align-items: center;
+
+			.v-button {
+				inline-size: 100%;
+				justify-content: center;
+				position: relative;
+			}
+
+			.full-button,
+			.help-button {
+				display: block;
+				position: relative;
+			}
+
+			.icon-button {
+				display: none;
+				position: relative;
+			}
+
+			@container (max-width: 600px) {
+				align-items: stretch;
+				inline-size: 100%;
+
+				.full-button {
+					display: none;
+					position: relative;
+				}
+
+				.icon-button {
+					display: block;
+					position: relative;
+				}
+			}
+		}
+	}
 }
 
 .text-subtitle {
@@ -351,44 +393,6 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-}
-
-.actions-container {
-	display: flex;
-	gap: 12px;
-	align-items: center;
-
-	.v-button {
-		inline-size: 100%;
-		justify-content: center;
-		position: relative;
-	}
-
-	.full-button,
-	.help-button {
-		display: block;
-		position: relative;
-	}
-
-	.icon-button {
-		display: none;
-		position: relative;
-	}
-
-	@container (max-width: 600px) {
-		align-items: stretch;
-		inline-size: 100%;
-
-		.full-button {
-			display: none;
-			position: relative;
-		}
-
-		.icon-button {
-			display: block;
-			position: relative;
-		}
-	}
 }
 
 .help-text {
@@ -411,12 +415,12 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 		block-size: auto;
 		display: block;
 	}
-}
 
-.collapse-button-container {
-	display: flex;
-	justify-content: flex-end;
-	margin-block-start: 16px;
+	.collapse-button-container {
+		display: flex;
+		justify-content: flex-end;
+		margin-block-start: 16px;
+	}
 }
 
 .help-modal {
