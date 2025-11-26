@@ -11,6 +11,7 @@ import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
 import { computed, getCurrentInstance, onBeforeUpdate, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { z } from 'zod';
+import { useFieldAnimations, fieldAnimationsKey } from './composables/use-field-animations';
 import { useInputSchema } from './composables/use-input-schema';
 import type { MenuOptions } from './form-field-menu.vue';
 import FormField from './form-field.vue';
@@ -90,6 +91,7 @@ const gridClass = computed<string | null>(() => {
 });
 
 const formFieldEls = ref<Record<string, any>>({});
+const fieldAnimations = useFieldAnimations();
 
 onBeforeUpdate(() => {
 	formFieldEls.value = {};
@@ -135,14 +137,16 @@ defineTool({
 	description: `Set values of form on the current page`,
 	inputSchema: writeInputSchema,
 	execute: (args) => {
-		const output: string[] = [];
+		const changedFields: string[] = [];
 
 		for (const [key, value] of Object.entries(args)) {
 			setValue(key, value);
-			output.push(`Successfully set form field ${key} to value ${value}`);
+			changedFields.push(key);
 		}
 
-		return output;
+		fieldAnimations.triggerAnimations(changedFields);
+
+		return { success: true, changedFields };
 	},
 });
 
@@ -189,6 +193,7 @@ watch(
 );
 
 provide('values', values);
+provide(fieldAnimationsKey, fieldAnimations);
 
 function useForm() {
 	const fieldsStore = useFieldsStore();
