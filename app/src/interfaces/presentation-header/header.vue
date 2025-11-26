@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import dompurify from 'dompurify';
 import { render } from 'micromustache';
-import { computed, inject, ref, useAttrs, watch } from 'vue';
-import api from '@/api';
-import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
+import { computed, inject, ref, useAttrs } from 'vue';
+import { getFieldsFromTemplate } from '@directus/utils';
 import { useInjectRunManualFlow } from '@/composables/use-flows';
 import { useFieldsStore } from '@/stores/fields';
-import { unexpectedError } from '@/utils/unexpected-error';
+import { useFetchTemplateData } from './composables/useFetchTemplateData';
 
 export interface FlowIdentifier {
 	collection: string;
@@ -60,8 +59,6 @@ const fields = computed(() => {
 
 const itemValues = inject('values', ref<Record<string, any>>({}));
 const resolvedRelationalValues = ref<Record<string, any>>({});
-const fetchedTemplateData = ref<Record<string, any>>({});
-const isLoading = ref(false);
 
 const primaryKey = computed(() => props.primaryKey ?? null);
 
@@ -175,7 +172,7 @@ async function handleActionClick(action: Link) {
 	}
 }
 
-function getAllRequiredTemplateFields(): string[] {
+const requiredTemplateFields = computed(() => {
 	const fieldsFromTitle = props.title ? getFieldsFromTemplate(props.title) : [];
 	const fieldsFromSubtitle = props.subtitle ? getFieldsFromTemplate(props.subtitle) : [];
 
@@ -184,37 +181,8 @@ function getAllRequiredTemplateFields(): string[] {
 			?.filter((action) => action.actionType === 'url' && action.url)
 			.flatMap((action) => getFieldsFromTemplate(action.url || '')) || [];
 
-	const allFields = [...fieldsFromTitle, ...fieldsFromSubtitle, ...fieldsFromLinks];
-	return [...new Set(allFields)];
-}
-
-watch(
-	[primaryKey, () => getAllRequiredTemplateFields()],
-	async ([value, fields]) => {
-		if (!value || value === '+' || fields.length === 0) {
-			fetchedTemplateData.value = {};
-			return;
-		}
-
-		isLoading.value = true;
-
-		try {
-			const response = await api.get(`${getEndpoint(props.collection)}/${value}`, {
-				params: {
-					fields,
-				},
-			});
-
-			fetchedTemplateData.value = response.data.data;
-		} catch (error) {
-			unexpectedError(error);
-			fetchedTemplateData.value = {};
-		} finally {
-			isLoading.value = false;
-		}
-	},
-	{ immediate: true },
-);
+	return [...new Set([...fieldsFromTitle, ...fieldsFromSubtitle, ...fieldsFromLinks])];
+});
 
 const primaryLink = computed(() => {
 	if (linksParsed.value.length === 1) {
@@ -239,6 +207,8 @@ const helpString = computed(() => {
 
 	return dompurify.sanitize(props.help);
 });
+
+const { data: fetchedTemplateData } = useFetchTemplateData(props.collection, primaryKey, requiredTemplateFields);
 
 const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 </script>
