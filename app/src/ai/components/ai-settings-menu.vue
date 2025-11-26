@@ -51,20 +51,20 @@ const toolIcons: Record<SystemTool, string> = {
 	relations: 'hub',
 };
 
-const toolApprovalOptions = computed(() => {
-	const map = new Map<string, (typeof approvalModeOptions.value)[0]>();
+const toolOptions = computed(() => {
+	const map = new Map<string, { icon: string; approval: (typeof approvalModeOptions.value)[0] }>();
 
 	for (const tool of systemTools) {
 		const mode = aiStore.getToolApprovalMode(tool);
-		map.set(tool, approvalModeOptions.value.find((o) => o.value === mode)!);
+
+		map.set(tool, {
+			icon: toolIcons[tool] || 'build',
+			approval: approvalModeOptions.value.find((o) => o.value === mode)!,
+		});
 	}
 
 	return map;
 });
-
-function getToolIcon(toolName: SystemTool): string {
-	return toolIcons[toolName] || 'build';
-}
 
 function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 	aiStore.setToolApprovalMode(toolName, mode);
@@ -100,7 +100,7 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 
 						<v-list-item v-for="toolName in enabledTools" :key="toolName" class="tool-item">
 							<v-list-item-icon>
-								<v-icon :name="getToolIcon(toolName)" small />
+								<v-icon :name="toolOptions.get(toolName)?.icon ?? 'build'" small />
 							</v-list-item-icon>
 							<v-list-item-content>
 								<div class="tool-row">
@@ -116,9 +116,9 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 										@update:model-value="onApprovalModeChange(toolName, $event as ToolApprovalMode)"
 									>
 										<template #preview>
-											<div class="approval-preview" :style="{ color: toolApprovalOptions.get(toolName)?.color }">
-												<v-icon :name="toolApprovalOptions.get(toolName)?.icon" x-small />
-												{{ toolApprovalOptions.get(toolName)?.text }}
+											<div class="approval-preview" :style="{ color: toolOptions.get(toolName)?.approval?.color }">
+												<v-icon :name="toolOptions.get(toolName)?.approval?.icon" x-small />
+												{{ toolOptions.get(toolName)?.approval?.text }}
 											</div>
 										</template>
 									</v-select>
@@ -139,7 +139,7 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 
 						<v-list-item v-for="toolName in disabledTools" :key="toolName" class="tool-item">
 							<v-list-item-icon>
-								<v-icon :name="getToolIcon(toolName)" small />
+								<v-icon :name="toolOptions.get(toolName)?.icon ?? 'build'" small />
 							</v-list-item-icon>
 							<v-list-item-content>
 								<div class="tool-row">
@@ -155,9 +155,9 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 										@update:model-value="onApprovalModeChange(toolName, $event as ToolApprovalMode)"
 									>
 										<template #preview>
-											<div class="approval-preview" :style="{ color: toolApprovalOptions.get(toolName)?.color }">
-												<v-icon :name="toolApprovalOptions.get(toolName)?.icon" x-small />
-												{{ toolApprovalOptions.get(toolName)?.text }}
+											<div class="approval-preview" :style="{ color: toolOptions.get(toolName)?.approval?.color }">
+												<v-icon :name="toolOptions.get(toolName)?.approval?.icon" x-small />
+												{{ toolOptions.get(toolName)?.approval?.text }}
 											</div>
 										</template>
 									</v-select>
