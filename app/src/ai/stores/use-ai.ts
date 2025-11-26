@@ -183,8 +183,7 @@ export const useAiStore = defineStore('ai-store', () => {
 			}
 		},
 		onToolCall: async ({ toolCall }) => {
-			const isServerTool =
-				toolCall.dynamic || systemTools.value.includes(toolCall.toolName as SystemTool);
+			const isServerTool = toolCall.dynamic || systemTools.value.includes(toolCall.toolName as SystemTool);
 
 			if (isServerTool) {
 				return;

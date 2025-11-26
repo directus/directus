@@ -25,22 +25,31 @@ const toolDisplayName = computed(() => {
 	return formatTitle(toolName.value);
 });
 
-const state = computed(() => props.part.state as 'input-streaming' | 'input-available' | 'approval-requested' | 'output-available' | 'output-error');
+const state = computed(
+	() =>
+		props.part.state as
+			| 'input-streaming'
+			| 'input-available'
+			| 'approval-requested'
+			| 'output-available'
+			| 'output-error',
+);
+
 const approval = computed(() => (props.part as any).approval);
 </script>
 
 <template>
-	<AiToolCallCard :state="state" :approval="approval" :tool-name="toolName" :default-open="state === 'approval-requested'">
+	<AiToolCallCard
+		:state="state"
+		:approval="approval"
+		:tool-name="toolName"
+		:default-open="state === 'approval-requested'"
+	>
 		<template #title>
 			<v-text-overflow :text="toolDisplayName" />
 		</template>
 		<template #error>
-			<v-notice
-				v-if="'errorText' in part && part.state === 'output-error'"
-				type="danger"
-				class="tool-error"
-				multiline
-			>
+			<v-notice v-if="'errorText' in part && part.state === 'output-error'" type="danger" class="tool-error" multiline>
 				<template #title>
 					{{ $t('ai.error_message') }}
 				</template>

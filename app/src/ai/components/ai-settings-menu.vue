@@ -93,9 +93,9 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 							</v-list-item-icon>
 							<v-list-item-content>
 								<div class="tool-row">
-									<span v-tooltip="$t(`ai.tool_descriptions.${toolName}`)" class="tool-name">{{
-										formatTitle(toolName)
-									}}</span>
+									<span v-tooltip="$t(`ai.tool_descriptions.${toolName}`)" class="tool-name">
+										{{ formatTitle(toolName) }}
+									</span>
 									<v-select
 										:model-value="aiStore.getToolApprovalMode(toolName)"
 										:items="approvalModeOptions"
@@ -108,11 +108,14 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 											<div
 												class="approval-preview"
 												:style="{
-													color: approvalModeOptions.find((o) => o.value === aiStore.getToolApprovalMode(toolName))?.color,
+													color: approvalModeOptions.find((o) => o.value === aiStore.getToolApprovalMode(toolName))
+														?.color,
 												}"
 											>
 												<v-icon
-													:name="approvalModeOptions.find((o) => o.value === aiStore.getToolApprovalMode(toolName))?.icon"
+													:name="
+														approvalModeOptions.find((o) => o.value === aiStore.getToolApprovalMode(toolName))?.icon
+													"
 													x-small
 												/>
 												{{ approvalModeOptions.find((o) => o.value === aiStore.getToolApprovalMode(toolName))?.text }}
@@ -140,9 +143,9 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 							</v-list-item-icon>
 							<v-list-item-content>
 								<div class="tool-row">
-									<span v-tooltip="$t(`ai.tool_descriptions.${toolName}`)" class="tool-name">{{
-										formatTitle(toolName)
-									}}</span>
+									<span v-tooltip="$t(`ai.tool_descriptions.${toolName}`)" class="tool-name">
+										{{ formatTitle(toolName) }}
+									</span>
 									<v-select
 										:model-value="aiStore.getToolApprovalMode(toolName)"
 										:items="approvalModeOptions"
@@ -155,11 +158,14 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 											<div
 												class="approval-preview"
 												:style="{
-													color: approvalModeOptions.find((o) => o.value === aiStore.getToolApprovalMode(toolName))?.color,
+													color: approvalModeOptions.find((o) => o.value === aiStore.getToolApprovalMode(toolName))
+														?.color,
 												}"
 											>
 												<v-icon
-													:name="approvalModeOptions.find((o) => o.value === aiStore.getToolApprovalMode(toolName))?.icon"
+													:name="
+														approvalModeOptions.find((o) => o.value === aiStore.getToolApprovalMode(toolName))?.icon
+													"
 													x-small
 												/>
 												{{ approvalModeOptions.find((o) => o.value === aiStore.getToolApprovalMode(toolName))?.text }}
