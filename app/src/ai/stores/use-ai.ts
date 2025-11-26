@@ -102,7 +102,8 @@ export const useAiStore = defineStore('ai-store', () => {
 		'items',
 		'files',
 		'folders',
-		// 'assets', Omit because we don't support image or audio uploads yet
+		// Omit 'assets' because we don't support image or audio uploads yet
+		// 'assets',
 		'flows',
 		'trigger-flow',
 		'operations',
