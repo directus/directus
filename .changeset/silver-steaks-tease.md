@@ -4,4 +4,4 @@
 '@directus/api': patch
 ---
 
-Exposed core accountability utilities
+Moved `fetchRolesTree`,`fetchGlobalAccess`, `fetchGlobalAccessForUser` and `fetchGlobalAccessForRoles` to the public utility package
