@@ -1,5 +1,10 @@
 import { ref, type InjectionKey } from 'vue';
 
+interface FieldAnimationState {
+	key: number;
+	delay: number;
+}
+
 export interface FieldAnimations {
 	triggerAnimations: (fields: string[]) => void;
 	clearAnimation: (field: string) => void;
@@ -12,17 +17,19 @@ export const fieldAnimationsKey: InjectionKey<FieldAnimations> = Symbol('field-a
 const FIELD_ANIMATION_STAGGER = 150; // Stagger per field for smooth cascade
 
 export function useFieldAnimations(): FieldAnimations {
-	const updatedFields = ref<Map<string, number>>(new Map());
+	const updatedFields = ref<Map<string, FieldAnimationState>>(new Map());
 
 	function triggerAnimations(fields: string[]) {
 		const newMap = new Map(updatedFields.value);
-		const baseTime = Date.now();
+		const baseKey = Date.now();
 
 		fields.forEach((field, index) => {
-			// Handle nested paths - animate the top-level field
-			const topLevel = field.includes('.') ? field.split('.')[0]! : field;
-			// Stagger timestamps by 10ms for reliable ordering
-			newMap.set(topLevel, baseTime + index * 10);
+			const [topLevel] = field.split('.');
+
+			newMap.set(topLevel!, {
+				key: baseKey + index,
+				delay: index * FIELD_ANIMATION_STAGGER,
+			});
 		});
 
 		updatedFields.value = newMap;
@@ -37,18 +44,11 @@ export function useFieldAnimations(): FieldAnimations {
 	}
 
 	function getAnimationKey(field: string): number | undefined {
-		return updatedFields.value.get(field);
+		return updatedFields.value.get(field)?.key;
 	}
 
 	function getAnimationDelay(field: string): number {
-		const timestamp = updatedFields.value.get(field);
-		if (!timestamp) return 0;
-
-		// Sort by timestamp to determine animation order
-		const sorted = [...updatedFields.value.entries()].sort((a, b) => a[1] - b[1]);
-		const index = sorted.findIndex(([f]) => f === field);
-
-		return index * FIELD_ANIMATION_STAGGER;
+		return updatedFields.value.get(field)?.delay ?? 0;
 	}
 
 	return {
