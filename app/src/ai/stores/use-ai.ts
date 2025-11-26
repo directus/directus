@@ -26,7 +26,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	const toolApprovals = useLocalStorage<Record<string, ToolApprovalMode>>('ai-tool-approvals', {});
 
 	const getToolApprovalMode = (toolName: string): ToolApprovalMode => {
-		return toolApprovals.value[toolName] ?? 'disabled';
+		return toolApprovals.value[toolName] ?? 'ask';
 	};
 
 	const setToolApprovalMode = (toolName: string, mode: ToolApprovalMode) => {
