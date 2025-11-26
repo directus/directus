@@ -4,7 +4,7 @@ import { type Accountability, type SchemaOverview } from '@directus/types';
 import type { Tool } from 'ai';
 import { jsonSchema, tool } from 'ai';
 import { fromZodError } from 'zod-validation-error';
-import type { ChatRequestTool } from '../models/chat-request.js';
+import type { ChatRequestTool, ToolApprovalMode } from '../models/chat-request.js';
 
 export const chatRequestToolToAiSdkTool = ({
 	chatRequestTool,
@@ -15,7 +15,7 @@ export const chatRequestToolToAiSdkTool = ({
 	chatRequestTool: ChatRequestTool;
 	accountability: Accountability;
 	schema: SchemaOverview;
-	toolApprovals?: Record<string, 'always' | 'ask' | 'disabled'>;
+	toolApprovals?: Record<string, ToolApprovalMode>;
 }): Tool => {
 	if (typeof chatRequestTool === 'string') {
 		const directusTool = ALL_TOOLS.find(({ name }) => name === chatRequestTool);
