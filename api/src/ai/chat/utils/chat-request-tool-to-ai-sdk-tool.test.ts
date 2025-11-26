@@ -105,7 +105,6 @@ describe('chatRequestToolToAiSdkTool', () => {
 					schema,
 				}),
 			).toThrowError(/Tool by name "does\.not\.exist" does not exist/);
-
 		} finally {
 			ALL_TOOLS.push(...original);
 		}

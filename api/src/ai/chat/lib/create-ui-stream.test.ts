@@ -103,9 +103,7 @@ describe('createUiStream', () => {
 			apiKeys,
 		});
 
-		expect(streamText).toHaveBeenCalledWith(
-			expect.objectContaining({ system: 'DEFAULT_SYSTEM_PROMPT' }),
-		);
+		expect(streamText).toHaveBeenCalledWith(expect.objectContaining({ system: 'DEFAULT_SYSTEM_PROMPT' }));
 	});
 
 	it('uses provided system prompt when given', () => {
@@ -117,9 +115,7 @@ describe('createUiStream', () => {
 			systemPrompt: 'CUSTOM_PROMPT',
 		});
 
-		expect(streamText).toHaveBeenCalledWith(
-			expect.objectContaining({ system: 'CUSTOM_PROMPT' }),
-		);
+		expect(streamText).toHaveBeenCalledWith(expect.objectContaining({ system: 'CUSTOM_PROMPT' }));
 	});
 
 	it('replaces empty string system prompt with default', () => {
@@ -131,8 +127,6 @@ describe('createUiStream', () => {
 			systemPrompt: '',
 		});
 
-		expect(streamText).toHaveBeenCalledWith(
-			expect.objectContaining({ system: 'DEFAULT_SYSTEM_PROMPT' }),
-		);
+		expect(streamText).toHaveBeenCalledWith(expect.objectContaining({ system: 'DEFAULT_SYSTEM_PROMPT' }));
 	});
 });

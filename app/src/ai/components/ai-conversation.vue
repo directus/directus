@@ -75,13 +75,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 		<div ref="messages-container" class="messages-container">
 			<ai-message-list :messages="aiStore.messages" :status="aiStore.status" />
 
-			<v-info
-				v-if="emptyState"
-				icon="magic_button"
-				type="primary"
-				:title="$t(emptyState.title)"
-				class="empty-state"
-			>
+			<v-info v-if="emptyState" icon="magic_button" type="primary" :title="$t(emptyState.title)" class="empty-state">
 				{{ $t(emptyState.description) }}
 				<template v-if="emptyState.showSettings" #append>
 					<v-button to="/settings/ai">{{ $t('ai.go_to_settings') }}</v-button>
