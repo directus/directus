@@ -9,6 +9,7 @@ import {
 	type Tool,
 	type UIMessage,
 } from 'ai';
+import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
 
 export interface CreateUiStreamOptions {
 	provider: 'openai' | 'anthropic';
@@ -40,14 +41,10 @@ export const createUiStream = (
 		throw new Error(`Unexpected provider given: "${provider}"`);
 	}
 
-	const optionalStreamingParameters: { system?: string } = {};
-
-	if (systemPrompt) {
-		optionalStreamingParameters.system = systemPrompt;
-	}
+	systemPrompt ||= SYSTEM_PROMPT;
 
 	const stream = streamText({
-		...optionalStreamingParameters,
+		system: systemPrompt,
 		model: modelProvider(model),
 		messages: convertToModelMessages(messages),
 		stopWhen: [stepCountIs(10)],
