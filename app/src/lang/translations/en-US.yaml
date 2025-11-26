@@ -1705,7 +1705,6 @@ ai:
     items: Create, read, update, and delete content
     files: Search and manage files
     folders: Create and organize folders
-    assets: Download raw asset data
     flows: Create and update flows
     trigger-flow: Run manually triggered flows
     operations: Manage operations within flows
