@@ -25,8 +25,9 @@ export function useFieldAnimations(): FieldAnimations {
 
 		fields.forEach((field, index) => {
 			const [topLevel] = field.split('.');
+			if (!topLevel) return;
 
-			newMap.set(topLevel!, {
+			newMap.set(topLevel, {
 				key: baseKey + index,
 				delay: index * FIELD_ANIMATION_STAGGER,
 			});
