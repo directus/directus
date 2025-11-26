@@ -199,11 +199,9 @@ const primaryLinkProps = computed(() => {
 });
 
 const helpString = computed(() => {
-	if (props.enableHelpTranslations && props.helpTranslationsString) {
-		return dompurify.sanitize(props.helpTranslationsString);
-	}
+	const text = props.enableHelpTranslations && props.helpTranslationsString ? props.helpTranslationsString : props.help;
 
-	return dompurify.sanitize(props.help);
+	return dompurify.sanitize(text);
 });
 
 const { data: fetchedTemplateData } = useFetchTemplateData(props.collection, primaryKey, requiredTemplateFields);
