@@ -80,7 +80,7 @@ onKeyStroke('Escape', (e) => {
 		<CollapsibleTrigger
 			class="card-header"
 			:class="{ 'is-disabled': isApprovalRequested }"
-			@click.prevent="isApprovalRequested ? null : undefined"
+			:disabled="isApprovalRequested"
 		>
 			<div class="card-title" :class="{ streaming: isStreaming }">
 				<v-icon :name="icon || 'build'" x-small />
