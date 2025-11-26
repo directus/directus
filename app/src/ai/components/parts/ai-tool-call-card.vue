@@ -252,11 +252,11 @@ const handleAlwaysAllow = () => {
 	padding-inline: 0.5rem;
 
 	&[data-state='open'] {
-		animation: slide-down 200ms ease-out forwards;
+		animation: slide-down var(--fast) var(--transition-out) forwards;
 	}
 
 	&[data-state='closed'] {
-		animation: slide-up 200ms ease-out;
+		animation: slide-up var(--fast) var(--transition-out);
 	}
 
 	& > * {
