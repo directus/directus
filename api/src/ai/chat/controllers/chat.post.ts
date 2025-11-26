@@ -18,7 +18,7 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 		throw new InvalidPayloadError({ reason: fromZodError(parseResult.error).message });
 	}
 
-	const { provider, model, messages: rawMessages, tools: requestedTools } = parseResult.data;
+	const { provider, model, messages: rawMessages, tools: requestedTools, toolApprovals } = parseResult.data;
 
 	if (rawMessages.length === 0) {
 		throw new InvalidPayloadError({ reason: `"messages" must not be empty` });
@@ -26,8 +26,16 @@ export const aiChatPostHandler: RequestHandler = async (req, res, _next) => {
 
 	const tools = requestedTools.reduce<{ [x: string]: Tool<unknown, unknown> }>((acc, t) => {
 		const name = typeof t === 'string' ? t : t.name;
-		const tool = chatRequestToolToAiSdkTool(t, req.accountability!, req.schema) as Tool<unknown, unknown>;
-		acc[name] = tool;
+
+		const aiTool = chatRequestToolToAiSdkTool({
+			chatRequestTool: t,
+			accountability: req.accountability!,
+			schema: req.schema,
+			...(toolApprovals && { toolApprovals }),
+		}) as Tool<unknown, unknown>;
+
+		acc[name] = aiTool;
+
 		return acc;
 	}, {});
 

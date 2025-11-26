@@ -24,11 +24,15 @@ export const ChatRequestTool = z.union([
 
 export type ChatRequestTool = z.infer<typeof ChatRequestTool>;
 
+export const ToolApprovalMode = z.enum(['always', 'ask', 'disabled']);
+export type ToolApprovalMode = z.infer<typeof ToolApprovalMode>;
+
 export const ChatRequest = z.intersection(
 	z.discriminatedUnion('provider', [ProviderOpenAi, ProviderAnthropic]),
 	z.object({
 		tools: z.array(ChatRequestTool),
 		messages: z.array(z.looseObject({})),
+		toolApprovals: z.record(z.string(), ToolApprovalMode).optional(),
 	}),
 );
 

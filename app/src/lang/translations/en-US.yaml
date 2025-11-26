@@ -1683,14 +1683,48 @@ ai:
   error: Error
   error_message: An error occurred
   unknown_error: Unknown Error
+  unknown: Unknown
+  approval_requested: Approval Requested
+  approve: Approve
+  always_allow: Always Allow
+  deny: Deny
+  approve_tool_execution: Approve tool execution?
   retry: Retry
   prompt_input_placeholder: Type your message here...
   clear_conversation: Clear Conversation
   build_with_chat: Build with AI Chat
   responses_may_be_inaccurate: AI responses may be inaccurate
+  settings: Settings
+  tool_approval:
+    always: Always Allowed
+    ask: Needs Approval
+    disabled: Disabled
+  enabled_tools: Enabled Tools
+  disabled_tools: Disabled Tools
+  tool_descriptions:
+    items: Create, read, update, and delete content
+    files: Search and manage files
+    folders: Create and organize folders
+    flows: Create and update flows
+    trigger-flow: Run manually triggered flows
+    operations: Manage operations within flows
+    schema: Get database schema information
+    collections: Create and manage collections
+    fields: Create and configure collection fields
+    relations: Set up relationships between collections
 ai_tools:
   update_form_values: Update Form Values
   read_form_values: Read Form Values
+  items: Items
+  files: Files
+  folders: Folders
+  flows: Flows
+  trigger-flow: Trigger Flow
+  operations: Operations
+  schema: Schema
+  collections: Collections
+  fields: Fields
+  relations: Relations
 mcp_prompts_collection:
   no_collection_selected: No collection selected
   no_collection_selected_copy: Select a collection to enable reusable prompt templates.
