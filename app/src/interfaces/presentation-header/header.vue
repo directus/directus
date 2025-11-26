@@ -7,11 +7,6 @@ import { useInjectRunManualFlow } from '@/composables/use-flows';
 import { useFieldsStore } from '@/stores/fields';
 import { useFetchTemplateData } from './composables/useFetchTemplateData';
 
-export interface FlowIdentifier {
-	collection: string;
-	key: string;
-}
-
 type Link = {
 	icon: string;
 	label: string;
