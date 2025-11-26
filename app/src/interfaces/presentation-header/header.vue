@@ -53,7 +53,6 @@ const fields = computed(() => {
 });
 
 const itemValues = inject('values', ref<Record<string, any>>({}));
-const resolvedRelationalValues = ref<Record<string, any>>({});
 
 const primaryKey = computed(() => props.primaryKey ?? null);
 
@@ -77,27 +76,7 @@ const attrs = useAttrs();
 
 const linksParsed = computed<ParsedLink[]>(() =>
 	props.links.map((link) => {
-		/*
-		 * Resolve related fields for interpolation.
-		 * If the values from v-form already include related fields,
-		 * we use them because those represent the current unstaged edits.
-		 * Otherwise we use the fetched values from the API.
-		 */
-
-		const scope = { ...itemValues.value };
-
-		Object.keys(resolvedRelationalValues.value).forEach((key) => {
-			if (scope[key]?.constructor !== Object && scope[key] !== null) {
-				scope[key] = resolvedRelationalValues.value[key];
-			}
-		});
-
-		const interpolatedUrl = link.url ? render(link.url, scope) : '';
-
-		/*
-		 * This incorrectly matches new links starting with two slashes but(!)
-		 * updating this line would change existing behavior.
-		 */
+		const interpolatedUrl = link.url ? render(link.url, itemValues.value) : '';
 		const isInternalLink = interpolatedUrl?.startsWith('/');
 
 		return {
