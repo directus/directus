@@ -7,9 +7,9 @@ packages:
   - tests/*
 
 catalog:
-  '@ai-sdk/anthropic': 2.0.40
-  '@ai-sdk/openai': 2.0.61
-  '@ai-sdk/vue': 2.0.86
+  '@ai-sdk/anthropic': 3.0.0-beta.53
+  '@ai-sdk/openai': 3.0.0-beta.57
+  '@ai-sdk/vue': 3.0.0-beta.98
   '@authenio/samlify-node-xmllint': 2.0.0
   '@aws-sdk/client-s3': 3.928.0
   '@aws-sdk/client-sesv2': 3.928.0
@@ -133,7 +133,7 @@ catalog:
   '@vueuse/core': 14.0.0
   '@vueuse/integrations': 14.0.0
   '@vueuse/router': 14.0.0
-  ai: 5.0.86
+  ai: 6.0.0-beta.98
   ajv: 8.17.1
   apexcharts: 4.7.0
   argon2: 0.44.0
