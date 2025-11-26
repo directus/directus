@@ -8,6 +8,7 @@ import {
 	type LanguageModelUsage,
 	type Tool,
 	type UIMessage,
+	type StreamTextResult,
 } from 'ai';
 import { SYSTEM_PROMPT } from '../constants/system-prompt.js';
 
@@ -26,7 +27,7 @@ export interface CreateUiStreamOptions {
 export const createUiStream = (
 	messages: UIMessage[],
 	{ provider, model, tools, apiKeys, systemPrompt, onUsage }: CreateUiStreamOptions,
-) => {
+): StreamTextResult<Record<string, Tool<any, any>>, any> => {
 	if (apiKeys[provider] === null) {
 		throw new ServiceUnavailableError({ service: provider, reason: 'No API key configured for LLM provider' });
 	}
@@ -64,5 +65,5 @@ export const createUiStream = (
 		},
 	});
 
-	return stream;
+	return stream as StreamTextResult<Record<string, Tool<any, any>>, any>;
 };

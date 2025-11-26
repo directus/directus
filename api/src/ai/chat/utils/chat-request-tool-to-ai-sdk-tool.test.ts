@@ -47,7 +47,11 @@ describe('chatRequestToolToAiSdkTool', () => {
 	});
 
 	it('returns an AI tool for a known string tool name', () => {
-		const result: any = chatRequestToolToAiSdkTool('directus.test', accountability, schema);
+		const result: any = chatRequestToolToAiSdkTool({
+			chatRequestTool: 'directus.test',
+			accountability,
+			schema,
+		});
 
 		expect(aiTool).toHaveBeenCalledTimes(1);
 		const config = (result as any).config;
@@ -61,7 +65,12 @@ describe('chatRequestToolToAiSdkTool', () => {
 		(mockValidate.safeParse as any).mockReturnValue({ data: { a: 1 }, error: undefined });
 		(mockHandler as any).mockResolvedValue('ok');
 
-		const result: any = chatRequestToolToAiSdkTool('directus.test', accountability, schema);
+		const result: any = chatRequestToolToAiSdkTool({
+			chatRequestTool: 'directus.test',
+			accountability,
+			schema,
+		});
+
 		const { execute } = result.config;
 		const out = await execute({ a: 1 });
 
@@ -73,7 +82,12 @@ describe('chatRequestToolToAiSdkTool', () => {
 	it('throws InvalidPayloadError when validation fails in directus tool execute', async () => {
 		(mockValidate.safeParse as any).mockReturnValue({ error: { message: 'bad' } });
 
-		const result: any = chatRequestToolToAiSdkTool('directus.test', accountability, schema);
+		const result: any = chatRequestToolToAiSdkTool({
+			chatRequestTool: 'directus.test',
+			accountability,
+			schema,
+		});
+
 		const { execute } = result.config;
 
 		await expect(execute({})).rejects.toBeInstanceOf(InvalidPayloadError);
@@ -84,7 +98,14 @@ describe('chatRequestToolToAiSdkTool', () => {
 		const original = ALL_TOOLS.splice(0, ALL_TOOLS.length);
 
 		try {
-			expect(() => chatRequestToolToAiSdkTool('does.not.exist', accountability, schema)).toThrowError();
+			expect(() =>
+				chatRequestToolToAiSdkTool({
+					chatRequestTool: 'does.not.exist',
+					accountability,
+					schema,
+				}),
+			).toThrowError(/Tool by name "does\.not\.exist" does not exist/);
+
 		} finally {
 			ALL_TOOLS.push(...original);
 		}
@@ -97,12 +118,51 @@ describe('chatRequestToolToAiSdkTool', () => {
 			inputSchema: { type: 'object', properties: {} } as any,
 		};
 
-		const result: any = chatRequestToolToAiSdkTool(custom as any, accountability, schema);
+		const result: any = chatRequestToolToAiSdkTool({
+			chatRequestTool: custom as any,
+			accountability,
+			schema,
+		});
 
 		expect(aiJsonSchema).toHaveBeenCalledWith(custom.inputSchema);
 		const config = result.config;
 		expect(config.name).toBe('custom');
 		expect(config.description).toBe('Custom desc');
 		expect(config.inputSchema).toEqual({ __mock: 'jsonSchema', schema: custom.inputSchema });
+	});
+
+	it('sets needsApproval to true by default (ask mode)', () => {
+		const result: any = chatRequestToolToAiSdkTool({
+			chatRequestTool: 'directus.test',
+			accountability,
+			schema,
+		});
+
+		const config = result.config;
+		expect(config.needsApproval).toBe(true);
+	});
+
+	it('sets needsApproval to false when toolApprovals is always', () => {
+		const result: any = chatRequestToolToAiSdkTool({
+			chatRequestTool: 'directus.test',
+			accountability,
+			schema,
+			toolApprovals: { 'directus.test': 'always' },
+		});
+
+		const config = result.config;
+		expect(config.needsApproval).toBe(false);
+	});
+
+	it('sets needsApproval to true when toolApprovals is ask', () => {
+		const result: any = chatRequestToolToAiSdkTool({
+			chatRequestTool: 'directus.test',
+			accountability,
+			schema,
+			toolApprovals: { 'directus.test': 'ask' },
+		});
+
+		const config = result.config;
+		expect(config.needsApproval).toBe(true);
 	});
 });

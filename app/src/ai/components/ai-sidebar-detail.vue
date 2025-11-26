@@ -108,7 +108,7 @@ useShortcut('meta+j', () => {
 }
 
 .ai-sidebar-content {
-	padding: 12px 0 12px 12px;
+	padding: 12px 0 12px 18px;
 	block-size: 100%;
 	display: flex;
 	flex-direction: column;

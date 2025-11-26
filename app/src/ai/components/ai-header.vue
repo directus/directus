@@ -2,6 +2,7 @@
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useAiStore } from '../stores/use-ai';
 import AiModelSelector from './ai-model-selector.vue';
+import AiSettingsMenu from './ai-settings-menu.vue';
 
 const aiStore = useAiStore();
 </script>
@@ -10,7 +11,10 @@ const aiStore = useAiStore();
 	<div class="ai-header">
 		<ai-model-selector />
 		<div class="spacer" />
-		<v-icon v-tooltip.left="$t('ai.clear_conversation')" clickable name="delete_history" small @click="aiStore.reset" />
+		<v-button v-tooltip.left="$t('ai.clear_conversation')" x-small icon secondary @click="aiStore.reset">
+			<v-icon clickable name="delete_history" small />
+		</v-button>
+		<ai-settings-menu class="settings-menu" />
 	</div>
 </template>
 
@@ -24,5 +28,9 @@ const aiStore = useAiStore();
 
 .spacer {
 	flex-grow: 1;
+}
+
+.settings-menu {
+	margin-inline-start: 4px;
 }
 </style>

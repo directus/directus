@@ -2,7 +2,12 @@ import { useSettingsStore } from '@/stores/settings';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { Chat } from '@ai-sdk/vue';
 import { createEventHook, useLocalStorage, useSessionStorage } from '@vueuse/core';
-import { DefaultChatTransport, type UIMessage, lastAssistantMessageIsCompleteWithToolCalls } from 'ai';
+import {
+	DefaultChatTransport,
+	type UIMessage,
+	lastAssistantMessageIsCompleteWithApprovalResponses,
+	lastAssistantMessageIsCompleteWithToolCalls,
+} from 'ai';
 import { defineStore } from 'pinia';
 import { computed, reactive, ref, shallowRef, watch } from 'vue';
 import { z } from 'zod';
@@ -10,10 +15,33 @@ import { StaticToolDefinition } from '../composables/define-tool';
 import { AI_MODELS, type ModelDefinition } from '../models';
 import { SystemTool } from '../types/system-tool';
 
+export type ToolApprovalMode = 'always' | 'ask' | 'disabled';
+
 export const useAiStore = defineStore('ai-store', () => {
 	const settingsStore = useSettingsStore();
 	const sidebarStore = useSidebarStore();
 	const storedMessages = useSessionStorage<UIMessage[]>('directus-ai-chat-messages', []);
+
+	// Tool approval settings
+	const toolApprovals = useLocalStorage<Record<string, ToolApprovalMode>>('ai-tool-approvals', {});
+
+	const getToolApprovalMode = (toolName: string): ToolApprovalMode => {
+		return toolApprovals.value[toolName] ?? 'ask';
+	};
+
+	const setToolApprovalMode = (toolName: string, mode: ToolApprovalMode) => {
+		toolApprovals.value = { ...toolApprovals.value, [toolName]: mode };
+	};
+
+	const setAllToolsMode = (mode: ToolApprovalMode) => {
+		const newApprovals: Record<string, ToolApprovalMode> = {};
+
+		for (const tool of systemTools.value) {
+			newApprovals[tool] = mode;
+		}
+
+		toolApprovals.value = newApprovals;
+	};
 
 	const chatOpen = useLocalStorage<boolean>('ai-chat-open', false);
 	const input = ref<string>('');
@@ -74,7 +102,8 @@ export const useAiStore = defineStore('ai-store', () => {
 		'items',
 		'files',
 		'folders',
-		'assets',
+		// Omit 'assets' because we don't support image or audio uploads yet
+		// 'assets',
 		'flows',
 		'trigger-flow',
 		'operations',
@@ -83,6 +112,11 @@ export const useAiStore = defineStore('ai-store', () => {
 		'fields',
 		'relations',
 	]);
+
+	// Filter system tools based on approval mode (exclude 'disabled')
+	const enabledSystemTools = computed(() => {
+		return systemTools.value.filter((tool) => getToolApprovalMode(tool) !== 'disabled');
+	});
 
 	const localTools = shallowRef<StaticToolDefinition[]>([]);
 
@@ -100,11 +134,25 @@ export const useAiStore = defineStore('ai-store', () => {
 		transport: new DefaultChatTransport({
 			api: '/ai/chat',
 			credentials: 'include',
-			body: () => ({
-				provider: selectedModel.value?.provider,
-				model: selectedModel.value?.model,
-				tools: [...systemTools.value, ...localTools.value.map(toApiTool)],
-			}),
+			body: () => {
+				const tools = [...enabledSystemTools.value, ...localTools.value.map(toApiTool)];
+
+				// Filter toolApprovals to only include 'always' and 'ask' (not 'disabled')
+				const approvals: Record<string, 'always' | 'ask'> = {};
+
+				for (const [toolName, mode] of Object.entries(toolApprovals.value)) {
+					if (mode === 'always' || mode === 'ask') {
+						approvals[toolName] = mode;
+					}
+				}
+
+				return {
+					provider: selectedModel.value?.provider,
+					model: selectedModel.value?.model,
+					tools,
+					toolApprovals: approvals,
+				};
+			},
 			prepareSendMessagesRequest: (req) => {
 				const limitedMessages =
 					estimatedMaxMessages.value < Infinity ? req.messages.slice(-estimatedMaxMessages.value) : req.messages;
@@ -118,7 +166,9 @@ export const useAiStore = defineStore('ai-store', () => {
 				};
 			},
 		}),
-		sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+		sendAutomaticallyWhen: ({ messages }) =>
+			lastAssistantMessageIsCompleteWithApprovalResponses({ messages }) ||
+			lastAssistantMessageIsCompleteWithToolCalls({ messages }),
 		onData: (data) => {
 			if (data.type === 'data-usage') {
 				const usageData = data.data as Record<string, unknown>;
@@ -134,7 +184,7 @@ export const useAiStore = defineStore('ai-store', () => {
 			}
 		},
 		onToolCall: async ({ toolCall }) => {
-			const isServerTool = toolCall.dynamic || systemTools.value.includes(toolCall.toolName);
+			const isServerTool = toolCall.dynamic || systemTools.value.includes(toolCall.toolName as SystemTool);
 
 			if (isServerTool) {
 				return;
@@ -276,6 +326,14 @@ export const useAiStore = defineStore('ai-store', () => {
 		return context;
 	});
 
+	const approveToolCall = (approvalId: string) => {
+		chat.addToolApprovalResponse({ id: approvalId, approved: true });
+	};
+
+	const denyToolCall = (approvalId: string) => {
+		chat.addToolApprovalResponse({ id: approvalId, approved: false });
+	};
+
 	return {
 		input,
 		chat,
@@ -300,5 +358,11 @@ export const useAiStore = defineStore('ai-store', () => {
 		onSubmit: submitHook.on,
 		estimatedMaxMessages,
 		onSystemToolResult: systemToolResultHook.on,
+		toolApprovals,
+		getToolApprovalMode,
+		setToolApprovalMode,
+		setAllToolsMode,
+		approveToolCall,
+		denyToolCall,
 	};
 });
