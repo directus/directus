@@ -8,7 +8,6 @@ import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui
 import { useTemplateRef } from 'vue';
 import { useAiStore } from '../stores/use-ai';
 import AiConversation from './ai-conversation.vue';
-import AiHeader from './ai-header.vue';
 import AiMagicButton from './ai-magic-button.vue';
 
 const sidebarStore = useSidebarStore();
@@ -39,7 +38,6 @@ useShortcut('meta+j', () => {
 		</CollapsibleTrigger>
 		<CollapsibleContent class="collapsible-content">
 			<div class="ai-sidebar-content">
-				<ai-header />
 				<ai-conversation />
 			</div>
 		</CollapsibleContent>
