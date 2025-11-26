@@ -51,6 +51,17 @@ const toolIcons: Record<SystemTool, string> = {
 	relations: 'hub',
 };
 
+const toolApprovalOptions = computed(() => {
+	const map = new Map<string, (typeof approvalModeOptions.value)[0]>();
+
+	for (const tool of systemTools) {
+		const mode = aiStore.getToolApprovalMode(tool);
+		map.set(tool, approvalModeOptions.value.find((o) => o.value === mode)!);
+	}
+
+	return map;
+});
+
 function getToolIcon(toolName: SystemTool): string {
 	return toolIcons[toolName] || 'build';
 }
@@ -105,20 +116,9 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 										@update:model-value="onApprovalModeChange(toolName, $event as ToolApprovalMode)"
 									>
 										<template #preview>
-											<div
-												class="approval-preview"
-												:style="{
-													color: approvalModeOptions.find((o) => o.value === aiStore.getToolApprovalMode(toolName))
-														?.color,
-												}"
-											>
-												<v-icon
-													:name="
-														approvalModeOptions.find((o) => o.value === aiStore.getToolApprovalMode(toolName))?.icon
-													"
-													x-small
-												/>
-												{{ approvalModeOptions.find((o) => o.value === aiStore.getToolApprovalMode(toolName))?.text }}
+											<div class="approval-preview" :style="{ color: toolApprovalOptions.get(toolName)?.color }">
+												<v-icon :name="toolApprovalOptions.get(toolName)?.icon" x-small />
+												{{ toolApprovalOptions.get(toolName)?.text }}
 											</div>
 										</template>
 									</v-select>
@@ -155,20 +155,9 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 										@update:model-value="onApprovalModeChange(toolName, $event as ToolApprovalMode)"
 									>
 										<template #preview>
-											<div
-												class="approval-preview"
-												:style="{
-													color: approvalModeOptions.find((o) => o.value === aiStore.getToolApprovalMode(toolName))
-														?.color,
-												}"
-											>
-												<v-icon
-													:name="
-														approvalModeOptions.find((o) => o.value === aiStore.getToolApprovalMode(toolName))?.icon
-													"
-													x-small
-												/>
-												{{ approvalModeOptions.find((o) => o.value === aiStore.getToolApprovalMode(toolName))?.text }}
+											<div class="approval-preview" :style="{ color: toolApprovalOptions.get(toolName)?.color }">
+												<v-icon :name="toolApprovalOptions.get(toolName)?.icon" x-small />
+												{{ toolApprovalOptions.get(toolName)?.text }}
 											</div>
 										</template>
 									</v-select>
