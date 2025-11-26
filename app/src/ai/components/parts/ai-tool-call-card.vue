@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { useAiStore } from '@/ai/stores/use-ai';
-import { translateShortcut } from '@/utils/translate-shortcut';
-import { onKeyStroke } from '@vueuse/core';
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -57,23 +55,6 @@ const handleAlwaysAllow = () => {
 		aiStore.approveToolCall(props.approval.id);
 	}
 };
-
-onKeyStroke('Enter', (e) => {
-	if (!isApprovalRequested.value) return;
-	e.preventDefault();
-
-	if (e.metaKey) {
-		handleAlwaysAllow();
-	} else {
-		handleApprove();
-	}
-});
-
-onKeyStroke('Escape', (e) => {
-	if (!isApprovalRequested.value) return;
-	e.preventDefault();
-	handleDeny();
-});
 </script>
 
 <template>
@@ -115,11 +96,9 @@ onKeyStroke('Escape', (e) => {
 					</v-button>
 					<v-button x-small outlined @click="handleAlwaysAllow">
 						{{ t('ai.always_allow') }}
-						<span class="keyboard-hint">{{ translateShortcut(['meta', 'enter']) }}</span>
 					</v-button>
 					<v-button x-small @click="handleApprove">
 						{{ t('ai.approve') }}
-						<span class="keyboard-hint">{{ translateShortcut(['enter']) }}</span>
 					</v-button>
 				</div>
 			</div>
