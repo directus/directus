@@ -6,6 +6,7 @@ import {
 	DefaultChatTransport,
 	type UIMessage,
 	lastAssistantMessageIsCompleteWithApprovalResponses,
+	lastAssistantMessageIsCompleteWithToolCalls,
 } from 'ai';
 import { defineStore } from 'pinia';
 import { computed, reactive, ref, shallowRef, watch } from 'vue';
@@ -164,7 +165,9 @@ export const useAiStore = defineStore('ai-store', () => {
 				};
 			},
 		}),
-		sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithApprovalResponses,
+		sendAutomaticallyWhen: ({ messages }) =>
+			lastAssistantMessageIsCompleteWithApprovalResponses({ messages }) ||
+			lastAssistantMessageIsCompleteWithToolCalls({ messages }),
 		onData: (data) => {
 			if (data.type === 'data-usage') {
 				const usageData = data.data as Record<string, unknown>;
