@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import formatTitle from '@directus/format-title';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAiStore, type ToolApprovalMode } from '../stores/use-ai';
 import { SystemTool } from '../types/system-tool';
-import formatTitle from '@directus/format-title';
 
 const { t } = useI18n();
 const aiStore = useAiStore();
@@ -105,7 +105,7 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 							<v-list-item-content>
 								<div class="tool-row">
 									<span v-tooltip="$t(`ai.tool_descriptions.${toolName}`)" class="tool-name">
-										{{ formatTitle(toolName) }}
+										{{ $t(`ai_tools.${toolName}`) }}
 									</span>
 									<v-select
 										:model-value="aiStore.getToolApprovalMode(toolName)"

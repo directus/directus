@@ -1715,6 +1715,16 @@ ai:
 ai_tools:
   update_form_values: Update Form Values
   read_form_values: Read Form Values
+  items: Items
+  files: Files
+  folders: Folders
+  flows: Flows
+  trigger-flow: Trigger Flow
+  operations: Operations
+  schema: Schema
+  collections: Collections
+  fields: Fields
+  relations: Relations
 mcp_prompts_collection:
   no_collection_selected: No collection selected
   no_collection_selected_copy: Select a collection to enable reusable prompt templates.
