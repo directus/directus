@@ -35,7 +35,7 @@ const state = computed(
 			| 'output-error',
 );
 
-const approval = computed(() => (props.part as any).approval);
+const approval = computed(() => props.part.approval);
 </script>
 
 <template>
