@@ -5,6 +5,7 @@ import { useRelationPermissionsM2M } from '@/composables/use-relation-permission
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
+import { transformTemplateVariablesWithPath } from '@/utils/transform-template-variables-with-path';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import type { ContentVersion, Filter } from '@directus/types';
@@ -63,21 +64,10 @@ const templateWithDefaults = computed(() => {
 		return relationInfo.value.junctionCollection.meta?.display_template;
 	}
 
-	let relatedDisplayTemplate = relationInfo.value.relatedCollection.meta?.display_template;
+	const relatedDisplayTemplate = relationInfo.value.relatedCollection.meta?.display_template;
 
 	if (relatedDisplayTemplate) {
-		const regex = /({{.*?}})/g;
-		const parts = relatedDisplayTemplate.split(regex).filter((p) => p);
-
-		for (const part of parts) {
-			if (part.startsWith('{{') === false) continue;
-			const key = part.replace(/{{/g, '').replace(/}}/g, '').trim();
-			const newPart = `{{${relationInfo.value.relation.field}.${key}}}`;
-
-			relatedDisplayTemplate = relatedDisplayTemplate.replace(part, newPart);
-		}
-
-		return relatedDisplayTemplate;
+		return transformTemplateVariablesWithPath(relatedDisplayTemplate, [relationInfo.value.relation.field]);
 	}
 
 	return `{{${relationInfo.value.relation.field}.${relationInfo.value.relatedPrimaryKeyField.field}}}`;

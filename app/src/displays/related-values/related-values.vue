@@ -2,7 +2,10 @@
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { getItemRoute } from '@/utils/get-route';
+import { transformTemplateVariablesWithPath } from '@/utils/transform-template-variables-with-path';
 import { useCollection } from '@directus/composables';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 import { get } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -15,6 +18,9 @@ const props = defineProps<{
 }>();
 
 const { t, te } = useI18n();
+
+const collectionsStore = useCollectionsStore();
+const fieldsStore = useFieldsStore();
 
 const relatedCollectionData = computed(() => {
 	return getRelatedCollection(props.collection, props.field);
@@ -29,7 +35,7 @@ const junctionCollection = computed(() => {
 });
 
 const localType = computed(() => {
-	return getLocalTypeForField(props.collection, props.field);
+	return getLocalTypeForField(props.collection, props.field)?.toLowerCase();
 });
 
 const { primaryKeyField } = useCollection(relatedCollection);
@@ -41,7 +47,27 @@ const primaryKeyFieldPath = computed(() => {
 });
 
 const internalTemplate = computed(() => {
-	return props.template || `{{ ${primaryKeyFieldPath.value!} }}`;
+	if (props.template) return props.template;
+
+	// Try junction collection display template
+	if (junctionCollection.value) {
+		const junctionInfo = collectionsStore.getCollection(junctionCollection.value);
+		const junctionTemplate = junctionInfo?.meta?.display_template;
+
+		if (junctionTemplate) return junctionTemplate;
+	}
+
+	// Try related collection display template
+	const collectionMeta = collectionsStore.getCollection(relatedCollection.value);
+	const relatedTemplate = collectionMeta?.meta?.display_template;
+
+	if (relatedTemplate) {
+		const path = relatedCollectionData.value?.path ?? [];
+		return transformTemplateVariablesWithPath(relatedTemplate, path);
+	}
+
+	// Fallback to primary key template
+	return `{{ ${primaryKeyFieldPath.value!} }}`;
 });
 
 const unit = computed(() => {
@@ -64,18 +90,101 @@ const unit = computed(() => {
 	return null;
 });
 
+/**
+ * Transform M2A collection-specific template syntax
+ * Transforms {{item:CollectionName.field}} to {{item.field}} if collection matches
+ */
+ function transformM2ATemplate(template: string, itemCollection: string): string {
+	const regex = /{{item:([^.]+)\.([^}]+)}}/g;
+	let transformedTemplate = template;
+
+	for (const match of [...template.matchAll(regex)]) {
+		const fullMatch = match[0];
+		const templateCollection = match[1];
+		const field = match[2];
+
+		if (templateCollection === itemCollection) {
+			transformedTemplate = transformedTemplate.replace(fullMatch, `{{item.${field}}}`);
+		} else {
+			transformedTemplate = transformedTemplate.replace(fullMatch, '');
+		}
+	}
+
+	return transformedTemplate;
+}
+
+/**
+ * Get the collection name for a specific item.
+ * For M2A, reads from the item's "collection" field.
+ * Otherwise, returns junction or related collection.
+ */
+function getCollectionForItem(item: any): string {
+	if (localType.value === 'm2a') {
+		return item.collection || relatedCollection.value;
+	}
+
+	return junctionCollection.value ?? relatedCollection.value;
+}
+
+/**
+ * Get the display template for a specific item.
+ * For M2A, resolves template dynamically based on item's collection.
+ * For other types, uses the standard internalTemplate.
+ */
+function getTemplateForItem(item: any): string {
+	if (localType.value !== 'm2a') {
+		return internalTemplate.value || '';
+	}
+	
+	// M2A case
+	// Field configuration display template
+	if (props.template) {
+		const itemCollection = getCollectionForItem(item);
+		return transformM2ATemplate(props.template, itemCollection);
+	}
+	
+	// Junction collection display template
+	if (relatedCollection.value) {
+		const junctionMeta = collectionsStore.getCollection(relatedCollection.value);
+		const junctionTemplate = junctionMeta?.meta?.display_template;
+		
+		if (junctionTemplate) {
+			const itemCollection = getCollectionForItem(item);
+			return transformM2ATemplate(junctionTemplate, itemCollection);
+		}
+	}
+	
+	// Target collection display template
+	const itemCollection = getCollectionForItem(item);
+	const targetCollection = collectionsStore.getCollection(itemCollection);
+	const template = targetCollection?.meta?.display_template;
+	
+	if (template) {
+		// Transform "{{name}}" to "{{item.name}}" for M2A data structure
+		return transformTemplateVariablesWithPath(template, ['item']);
+	}
+	
+	// Fallback: primary key of item's collection
+	const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(itemCollection);
+	return `{{ item.${primaryKeyField?.field || 'id'} }}`;
+}
+
 function getLinkForItem(item: any) {
 	if (!relatedCollectionData.value || !primaryKeyFieldPath.value) return null;
+
+	// For M2A, get the collection from the item
+	const collection = localType.value === 'm2a' ? getCollectionForItem(item) : relatedCollection.value;
+
 	const primaryKey = get(item, primaryKeyFieldPath.value);
 
-	return getItemRoute(relatedCollection.value, primaryKey);
+	return getItemRoute(collection, primaryKey);
 }
 </script>
 
 <template>
 	<value-null v-if="!relatedCollection" />
 	<v-menu
-		v-else-if="['o2m', 'm2m', 'm2a', 'translations', 'files'].includes(localType!.toLowerCase())"
+		v-else-if="['o2m', 'm2m', 'm2a', 'translations', 'files'].includes(localType!)"
 		show-arrow
 		:disabled="value?.length === 0"
 	>
@@ -92,11 +201,7 @@ function getLinkForItem(item: any) {
 		<v-list class="links">
 			<v-list-item v-for="item in value" :key="item[primaryKeyFieldPath!]">
 				<v-list-item-content>
-					<render-template
-						:template="internalTemplate"
-						:item="item"
-						:collection="junctionCollection ?? relatedCollection"
-					/>
+					<render-template :template="getTemplateForItem(item)" :item="item" :collection="getCollectionForItem(item)" />
 				</v-list-item-content>
 				<v-list-item-icon>
 					<router-link :to="getLinkForItem(item)!"><v-icon name="launch" small /></router-link>

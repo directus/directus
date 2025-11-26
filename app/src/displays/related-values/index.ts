@@ -1,9 +1,11 @@
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { useCollectionsStore } from '@/stores/collections';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
+import { getLocalTypeForField } from '@/utils/get-local-type';
 import { RELATIONAL_TYPES } from '@directus/constants';
 import { defineDisplay } from '@directus/extensions';
 import type { Field } from '@directus/types';
@@ -27,19 +29,19 @@ export default defineDisplay({
 		const displayTemplateMeta: Partial<Field['meta']> =
 			editing === '+'
 				? {
-						interface: 'presentation-notice',
-						options: {
-							text: '$t:displays.related-values.display_template_configure_notice',
-						},
-						width: 'full',
-					}
+					interface: 'presentation-notice',
+					options: {
+						text: '$t:displays.related-values.display_template_configure_notice',
+					},
+					width: 'full',
+				}
 				: {
-						interface: 'system-display-template',
-						options: {
-							collectionName: relatedCollection,
-						},
-						width: 'full',
-					};
+					interface: 'system-display-template',
+					options: {
+						collectionName: relatedCollection,
+					},
+					width: 'full',
+				};
 
 		return [
 			{
@@ -86,10 +88,10 @@ export default defineDisplay({
 
 			const stringValue = display.value?.handler
 				? display.value.handler(fieldValue, field?.meta?.display_options ?? {}, {
-						interfaceOptions: field?.meta?.options ?? {},
-						field: field ?? undefined,
-						collection: collection,
-					})
+					interfaceOptions: field?.meta?.options ?? {},
+					field: field ?? undefined,
+					collection: collection,
+				})
 				: fieldValue;
 
 			set(stringValues, key, stringValue);
@@ -105,37 +107,129 @@ export default defineDisplay({
 		if (!relatedCollectionData) return [];
 
 		const fieldsStore = useFieldsStore();
+		const collectionsStore = useCollectionsStore();
 
 		const { junctionCollection, relatedCollection, path } = relatedCollectionData;
 
 		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection);
 
-		const fields = options?.template
-			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), junctionCollection ?? relatedCollection)
-			: [];
+		let template = options?.template;
+		let shouldPrefixWithPath = false;
 
-		if (primaryKeyField) {
-			const primaryKeyFieldValue = path ? [...path, primaryKeyField.field].join('.') : primaryKeyField.field;
+		// If no explicit template in options, try junction collection display_template
+		if (!template && junctionCollection) {
+			const junctionInfo = collectionsStore.getCollection(junctionCollection);
+			template = junctionInfo?.meta?.display_template ?? undefined;
+		}
 
-			if (!fields.includes(primaryKeyFieldValue)) {
-				fields.push(primaryKeyFieldValue);
+		// If still no template, use the related collection's display_template
+		if (!template) {
+			const collectionInfo = collectionsStore.getCollection(relatedCollection);
+			template = collectionInfo?.meta?.display_template ?? undefined;
+
+			if (template) {
+				shouldPrefixWithPath = true;
 			}
 		}
 
-		const fieldStoreField = fieldsStore.getField(collection, field);
+		const fields = new Set<string>();
 
-		if (fieldStoreField?.meta?.special?.includes('m2a')) {
+		const localType = getLocalTypeForField(collection, field);
+
+		if (localType === 'm2a') {
 			const relationsStore = useRelationsStore();
 			const relations = relationsStore.getRelationsForField(collection, field);
 
+			const m2aAllowedCollections = relations.find(
+				(relation) =>
+					relation.collection === relatedCollection &&
+					relation.meta?.one_allowed_collections &&
+					relation.meta.one_allowed_collections.length > 0,
+			)?.meta?.one_allowed_collections ?? [];
+
+			// Always include the collection field for M2A
 			const collectionField = relations.find((relation) => relation.meta?.one_collection_field)?.meta
 				?.one_collection_field;
 
-			if (collectionField && !fields.find((field) => field === collectionField)) {
-				fields.push(collectionField);
+			if (collectionField) {
+				fields.add(collectionField);
+			}
+
+			if (template) {
+				// Check if template uses M2A conditional syntax: {{item:CollectionName.field}}
+				const m2aRegex = /{{item:([^.]+)\.([^}]+)}}/g;
+				const matches = [...template.matchAll(m2aRegex)];
+
+				if (matches.length > 0) {
+					// Group fields by collection to apply adjustFieldsForDisplays per collection
+					const fieldsByCollection = new Map<string, string[]>();
+
+					for (const match of matches) {
+						const collectionName = match[1]!;
+						const fieldName = match[2]!;
+
+						if (!fieldsByCollection.has(collectionName)) {
+							fieldsByCollection.set(collectionName, []);
+						}
+
+						fieldsByCollection.get(collectionName)!.push(fieldName);
+					}
+
+					for (const [collectionName, collectionFields] of fieldsByCollection) {
+						const adjustedFields = adjustFieldsForDisplays(collectionFields, collectionName);
+
+						for (const adjustedField of adjustedFields) {
+							fields.add(`item:${collectionName}.${adjustedField}`);
+						}
+					}
+				}
+			} else {
+				// Fetch fields from each related collection's display_template
+				for (const m2aCollection of m2aAllowedCollections) {
+					const collectionInfo = collectionsStore.getCollection(m2aCollection);
+					const m2aTemplate = collectionInfo?.meta?.display_template;
+
+					if (m2aTemplate) {
+						const m2aFields = adjustFieldsForDisplays(getFieldsFromTemplate(m2aTemplate), m2aCollection);
+
+						for (const m2aField of m2aFields) {
+							fields.add(`item:${m2aCollection}.${m2aField}`);
+						}
+					} else {
+						// fallback to primary key only
+						const collectionPKField = fieldsStore.getPrimaryKeyFieldForCollection(m2aCollection);
+
+						if (collectionPKField) {
+							fields.add(`item:${m2aCollection}.${collectionPKField.field}`);
+						}
+					}
+				}
+			}
+		} else {
+			if (template) {
+				const templateFields = adjustFieldsForDisplays(
+					getFieldsFromTemplate(template),
+					junctionCollection ?? relatedCollection,
+				);
+
+				// Only prefix with path if using related collection template
+				// Options template and junction template are written from junction perspective
+				templateFields.forEach((fieldKey) => {
+					const field = shouldPrefixWithPath && path && path.length > 0
+						? [...path, fieldKey].join('.')
+						: fieldKey;
+
+					fields.add(field);
+				});
+			}
+
+			if (primaryKeyField) {
+				const primaryKeyFieldValue = path ? [...path, primaryKeyField.field].join('.') : primaryKeyField.field;
+
+				fields.add(primaryKeyFieldValue);
 			}
 		}
 
-		return fields;
-	},
+		return Array.from(fields);
+	}
 });
