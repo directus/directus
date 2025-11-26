@@ -55,7 +55,6 @@ describe('trigger flow tool', () => {
 				args: mockArgs,
 				schema: mockSchema,
 				accountability: mockAccountability,
-				sanitizedQuery: {},
 			});
 
 			expect(mockFlowManager.runWebhookFlow).toHaveBeenCalledWith(
@@ -119,7 +118,6 @@ describe('trigger flow tool', () => {
 					args: mockArgs,
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: {},
 				}),
 			).rejects.toThrow('Forbidden');
 		});
@@ -143,7 +141,6 @@ describe('trigger flow tool', () => {
 					args: mockArgs,
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: {},
 				}),
 			).rejects.toThrow('Invalid payload. Required field "title" is missing.');
 		});
@@ -171,7 +168,6 @@ describe('trigger flow tool', () => {
 					args: mockArgs,
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: {},
 				}),
 			).rejects.toThrow('Invalid payload. Required field "author" is missing.');
 		});

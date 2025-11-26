@@ -10,7 +10,6 @@ vi.mock('@/services/files.js');
 describe('assets tool', () => {
 	const mockSchema = {} as SchemaOverview;
 	const mockAccountability = { user: 'test-user' } as Accountability;
-	const mockSanitizedQuery = { fields: ['*'] };
 
 	afterEach(() => {
 		vi.clearAllMocks();
@@ -70,7 +69,6 @@ describe('assets tool', () => {
 						},
 						schema: mockSchema,
 						accountability: mockAccountability,
-						sanitizedQuery: mockSanitizedQuery,
 					});
 
 					expect(AssetsService).toHaveBeenCalledWith({
@@ -116,7 +114,6 @@ describe('assets tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(result).toEqual({
@@ -160,7 +157,6 @@ describe('assets tool', () => {
 						},
 						schema: mockSchema,
 						accountability: mockAccountability,
-						sanitizedQuery: mockSanitizedQuery,
 					});
 
 					expect(mockAssetsService.getAsset).toBeCalledWith(assetId, transforms);
@@ -199,7 +195,6 @@ describe('assets tool', () => {
 						},
 						schema: mockSchema,
 						accountability: mockAccountability,
-						sanitizedQuery: mockSanitizedQuery,
 					});
 
 					expect(mockAssetsService.getAsset).toBeCalledWith(assetId, transforms);
@@ -246,7 +241,6 @@ describe('assets tool', () => {
 						},
 						schema: mockSchema,
 						accountability: mockAccountability,
-						sanitizedQuery: mockSanitizedQuery,
 					}),
 				).rejects.toThrow(`Unsupported media type "${fileType === null ? 'unknown' : fileType}" in asset tool.`);
 

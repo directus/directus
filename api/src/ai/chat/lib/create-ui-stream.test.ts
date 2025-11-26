@@ -22,6 +22,7 @@ const mockStreamTextResult = {
 vi.mock('ai', () => ({
 	streamText: vi.fn(() => mockStreamTextResult),
 	convertToModelMessages: vi.fn((messages: UIMessage[]) => messages.map((m) => ({ ...m, converted: true }))),
+	stepCountIs: vi.fn(),
 }));
 
 describe('createUiStream', () => {

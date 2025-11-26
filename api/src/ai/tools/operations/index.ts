@@ -28,6 +28,7 @@ export const OperationsValidationSchema = z.discriminatedUnion('action', [
 		action: z.literal('update'),
 		data: OperationItemValidateSchema,
 		key: z.string(),
+		query: QueryValidateSchema.optional(),
 	}),
 	z.strictObject({
 		action: z.literal('delete'),
@@ -52,12 +53,6 @@ export const operations = defineTool<z.infer<typeof OperationsValidationSchema>>
 	inputSchema: OperationsInputSchema,
 	validateSchema: OperationsValidationSchema,
 	async handler({ args, schema, accountability }) {
-		let sanitizedQuery = {};
-
-		if (args.action === 'read') {
-			sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
-		}
-
 		const operationService = new OperationsService({
 			schema,
 			accountability,
@@ -74,6 +69,7 @@ export const operations = defineTool<z.infer<typeof OperationsValidationSchema>>
 		}
 
 		if (args.action === 'read') {
+			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 			const result = await operationService.readByQuery(sanitizedQuery);
 
 			return {
@@ -83,6 +79,7 @@ export const operations = defineTool<z.infer<typeof OperationsValidationSchema>>
 		}
 
 		if (args.action === 'update') {
+			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 			const updatedKey = await operationService.updateOne(args.key, args.data as OperationRaw);
 			const result = await operationService.readOne(updatedKey, sanitizedQuery);
 

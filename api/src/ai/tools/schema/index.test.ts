@@ -12,7 +12,6 @@ vi.mock('@/services/relations.js');
 describe('schema tool', () => {
 	const mockSchema = { collections: {}, fields: {}, relations: {} } as unknown as SchemaOverview;
 	const mockAccountability = { user: 'test-user', admin: true } as Accountability;
-	const mockSanitizedQuery = { fields: ['*'] };
 
 	afterEach(() => {
 		vi.clearAllMocks();
@@ -76,7 +75,6 @@ describe('schema tool', () => {
 					args: { keys },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(result).toEqual({
@@ -108,7 +106,6 @@ describe('schema tool', () => {
 					args: {},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(result).toEqual({
@@ -137,7 +134,6 @@ describe('schema tool', () => {
 					args: {},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(result).toEqual({
@@ -159,7 +155,6 @@ describe('schema tool', () => {
 					args: {},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(result).toEqual({
@@ -228,7 +223,6 @@ describe('schema tool', () => {
 					args: { keys: ['users'] },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(result).toEqual({
@@ -295,7 +289,6 @@ describe('schema tool', () => {
 					args: { keys: ['users'] },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(result).toEqual({
@@ -346,7 +339,6 @@ describe('schema tool', () => {
 					args: { keys: ['users'] },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(result).toEqual({
@@ -409,7 +401,6 @@ describe('schema tool', () => {
 					args: { keys: ['users'] },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(result).toEqual({
@@ -481,7 +472,6 @@ describe('schema tool', () => {
 					args: { keys: ['users'] },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				let current = (result?.data as any).users.deep_metadata.fields.level1;
@@ -536,7 +526,6 @@ describe('schema tool', () => {
 					args: { keys: ['users'] },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(result).toEqual({
@@ -591,7 +580,6 @@ describe('schema tool', () => {
 							args: { keys: ['posts'] },
 							schema: mockSchema,
 							accountability: mockAccountability,
-							sanitizedQuery: mockSanitizedQuery,
 						});
 
 						expect(result).toEqual({
@@ -657,7 +645,6 @@ describe('schema tool', () => {
 							args: { keys: ['users'] },
 							schema: mockSchema,
 							accountability: mockAccountability,
-							sanitizedQuery: mockSanitizedQuery,
 						});
 
 						expect(result).toEqual({
@@ -739,7 +726,6 @@ describe('schema tool', () => {
 							args: { keys: ['users'] },
 							schema: mockSchema,
 							accountability: mockAccountability,
-							sanitizedQuery: mockSanitizedQuery,
 						});
 
 						expect(result).toEqual({
@@ -810,7 +796,6 @@ describe('schema tool', () => {
 							args: { keys: ['posts'] },
 							schema: mockSchema,
 							accountability: mockAccountability,
-							sanitizedQuery: mockSanitizedQuery,
 						});
 
 						expect(result).toEqual({
@@ -897,7 +882,6 @@ describe('schema tool', () => {
 							args: { keys: ['comments'] },
 							schema: mockSchema,
 							accountability: mockAccountability,
-							sanitizedQuery: mockSanitizedQuery,
 						});
 
 						expect(result).toEqual({

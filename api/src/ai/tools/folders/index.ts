@@ -57,18 +57,13 @@ export const folders = defineTool<z.infer<typeof FoldersValidateSchema>>({
 	inputSchema: FoldersInputSchema,
 	validateSchema: FoldersValidateSchema,
 	async handler({ args, schema, accountability }) {
-		let sanitizedQuery = {};
-
-		if (args.action !== 'delete') {
-			sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
-		}
-
 		const service = new FoldersService({
 			schema,
 			accountability,
 		});
 
 		if (args.action === 'create') {
+			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 			const data = toArray(args.data);
 
 			const savedKeys = await service.createMany(data);
@@ -82,6 +77,7 @@ export const folders = defineTool<z.infer<typeof FoldersValidateSchema>>({
 		}
 
 		if (args.action === 'read') {
+			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 			let result = null;
 
 			if (args.keys) {
@@ -97,6 +93,8 @@ export const folders = defineTool<z.infer<typeof FoldersValidateSchema>>({
 		}
 
 		if (args.action === 'update') {
+			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
+
 			let updatedKeys: PrimaryKey[] = [];
 
 			if (Array.isArray(args.data)) {

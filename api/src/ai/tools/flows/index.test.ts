@@ -8,7 +8,6 @@ vi.mock('@/services/flows');
 describe('flows tool', () => {
 	const mockSchema = { collections: {}, fields: {}, relations: {} } as unknown as SchemaOverview;
 	const mockAccountability = { user: 'test-user' } as Accountability;
-	const mockSanitizedQuery = { fields: ['*'] };
 
 	afterEach(() => {
 		vi.clearAllMocks();
@@ -53,7 +52,6 @@ describe('flows tool', () => {
 					args: { action: 'create', data: mockFlowData },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockFlowsService.createOne).toHaveBeenCalledWith(mockFlowData);
@@ -76,7 +74,6 @@ describe('flows tool', () => {
 					args: { action: 'create', data: mockFlowData },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(result).toEqual({
@@ -99,10 +96,9 @@ describe('flows tool', () => {
 					args: { action: 'read' },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
-				expect(mockFlowsService.readByQuery).toHaveBeenCalledWith(mockSanitizedQuery);
+				expect(mockFlowsService.readByQuery).toHaveBeenCalledWith({});
 
 				expect(result).toEqual({
 					type: 'text',
@@ -124,11 +120,10 @@ describe('flows tool', () => {
 					args: { action: 'update', key: mockKey, data: mockUpdateData },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockFlowsService.updateOne).toHaveBeenCalledWith(mockKey, mockUpdateData);
-				expect(mockFlowsService.readOne).toHaveBeenCalledWith(mockKey, mockSanitizedQuery);
+				expect(mockFlowsService.readOne).toHaveBeenCalledWith(mockKey, {});
 
 				expect(result).toEqual({
 					type: 'text',
@@ -147,7 +142,6 @@ describe('flows tool', () => {
 					args: { action: 'delete', key: mockKey },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockFlowsService.deleteOne).toHaveBeenCalledWith(mockKey);
@@ -169,7 +163,6 @@ describe('flows tool', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				}),
 			).rejects.toThrow('Invalid action.');
 		});

@@ -17,7 +17,6 @@ describe('items tool', () => {
 	} as unknown as SchemaOverview;
 
 	const mockAccountability = { user: 'test-user' } as Accountability;
-	const mockSanitizedQuery = { fields: ['*'] };
 
 	afterEach(() => {
 		vi.clearAllMocks();
@@ -65,11 +64,10 @@ describe('items tool', () => {
 					args: { action: 'create', collection: 'test_collection', data: item },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockItemsService.createMany).toHaveBeenCalledWith([item]);
-				expect(mockItemsService.readMany).toHaveBeenCalledWith(savedKeys, mockSanitizedQuery);
+				expect(mockItemsService.readMany).toHaveBeenCalledWith(savedKeys, {});
 
 				expect(result).toEqual({
 					type: 'text',
@@ -97,7 +95,6 @@ describe('items tool', () => {
 					args: { action: 'create', collection: 'test_collection', data: data },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockItemsService.createMany).toHaveBeenCalledWith(data);
@@ -118,11 +115,10 @@ describe('items tool', () => {
 					args: { action: 'create', collection: 'singleton_collection', data: item },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockItemsService.upsertSingleton).toHaveBeenCalledWith(item);
-				expect(mockItemsService.readSingleton).toHaveBeenCalledWith(mockSanitizedQuery);
+				expect(mockItemsService.readSingleton).toHaveBeenCalledWith({});
 
 				expect(result).toEqual({
 					type: 'text',
@@ -138,7 +134,6 @@ describe('items tool', () => {
 					args: { action: 'create', collection: 'test_collection', data: { title: 'Test' } },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(result).toEqual({
@@ -161,10 +156,9 @@ describe('items tool', () => {
 					args: { action: 'read', collection: 'test_collection' },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
-				expect(mockItemsService.readByQuery).toHaveBeenCalledWith(mockSanitizedQuery);
+				expect(mockItemsService.readByQuery).toHaveBeenCalledWith({});
 
 				expect(result).toEqual({
 					type: 'text',
@@ -186,10 +180,9 @@ describe('items tool', () => {
 					args: { action: 'read', collection: 'test_collection', keys },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
-				expect(mockItemsService.readMany).toHaveBeenCalledWith(keys, mockSanitizedQuery);
+				expect(mockItemsService.readMany).toHaveBeenCalledWith(keys, {});
 
 				expect(result).toEqual({
 					type: 'text',
@@ -206,10 +199,9 @@ describe('items tool', () => {
 					args: { action: 'read', collection: 'singleton_collection' },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
-				expect(mockItemsService.readSingleton).toHaveBeenCalledWith(mockSanitizedQuery);
+				expect(mockItemsService.readSingleton).toHaveBeenCalledWith({});
 				expect(result).toEqual({ type: 'text', data: singletonItem });
 			});
 
@@ -220,7 +212,6 @@ describe('items tool', () => {
 					args: { action: 'read', collection: 'test_collection' },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(result).toEqual({
@@ -247,11 +238,10 @@ describe('items tool', () => {
 					args: { action: 'update', collection: 'test_collection', keys, data: updateData },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockItemsService.updateMany).toHaveBeenCalledWith(keys, updateData);
-				expect(mockItemsService.readMany).toHaveBeenCalledWith(keys, mockSanitizedQuery);
+				expect(mockItemsService.readMany).toHaveBeenCalledWith(keys, {});
 
 				expect(result).toEqual({
 					type: 'text',
@@ -274,7 +264,6 @@ describe('items tool', () => {
 					args: { action: 'update', collection: 'test_collection', data: updateData },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockItemsService.updateBatch).toHaveBeenCalledWith(updateData);
@@ -302,10 +291,9 @@ describe('items tool', () => {
 					args: { action: 'update', collection: 'test_collection', data: updateData },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
-				expect(mockItemsService.updateByQuery).toHaveBeenCalledWith(mockSanitizedQuery, updateData);
+				expect(mockItemsService.updateByQuery).toHaveBeenCalledWith({}, updateData);
 
 				expect(result).toEqual({
 					type: 'text',
@@ -323,11 +311,10 @@ describe('items tool', () => {
 					args: { action: 'update', collection: 'singleton_collection', data: updateData },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockItemsService.upsertSingleton).toHaveBeenCalledWith(updateData);
-				expect(mockItemsService.readSingleton).toHaveBeenCalledWith(mockSanitizedQuery);
+				expect(mockItemsService.readSingleton).toHaveBeenCalledWith({});
 
 				expect(result).toEqual({
 					type: 'text',
@@ -346,7 +333,6 @@ describe('items tool', () => {
 					args: { action: 'delete', collection: 'test_collection', keys },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockItemsService.deleteMany).toHaveBeenCalledWith(keys);
@@ -366,7 +352,6 @@ describe('items tool', () => {
 					args: { action: 'delete', collection: 'test_collection', keys },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockItemsService.deleteMany).toHaveBeenCalledWith(keys);
@@ -414,7 +399,6 @@ describe('items tool', () => {
 					args: { action: 'read', collection: 'directus_users' },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				}),
 			).rejects.toThrow(InvalidPayloadError);
 		});
@@ -425,7 +409,6 @@ describe('items tool', () => {
 					args: { action: 'read', collection: 'nonexistent' },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				}),
 			).rejects.toThrow(ForbiddenError);
 		});
@@ -436,7 +419,6 @@ describe('items tool', () => {
 					args: { action: 'invalid' as any, collection: 'test_collection' },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				}),
 			).rejects.toThrow('Invalid action.');
 		});
@@ -450,7 +432,6 @@ describe('items tool', () => {
 					args: { action: 'read', collection: 'test_collection' },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				}),
 			).rejects.toThrow('Database connection failed');
 		});
@@ -491,7 +472,6 @@ describe('items tool', () => {
 					args: { action: 'read', collection: 'test_collection' },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(ItemsService).toHaveBeenCalledWith('test_collection', {
@@ -561,7 +541,6 @@ describe('items tool', () => {
 					args: { action: 'read', collection: 'singleton_collection' },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockItemsService.readSingleton).toHaveBeenCalled();
@@ -575,7 +554,6 @@ describe('items tool', () => {
 					args: { action: 'read', collection: 'test_collection' },
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockItemsService.readByQuery).toHaveBeenCalled();

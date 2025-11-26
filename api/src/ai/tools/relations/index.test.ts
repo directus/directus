@@ -12,7 +12,6 @@ vi.mock('@/utils/get-snapshot.js', () => ({
 describe('relations tool ', () => {
 	const mockSchema = { collections: {}, fields: {}, relations: {} } as unknown as SchemaOverview;
 	const mockAccountability = { user: 'test-user', admin: true } as Accountability;
-	const mockSanitizedQuery = { fields: ['*'] };
 
 	afterEach(() => {
 		vi.clearAllMocks();
@@ -58,7 +57,6 @@ describe('relations tool ', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(RelationsService).toHaveBeenCalledWith({
@@ -85,7 +83,6 @@ describe('relations tool ', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockRelationsService.readOne).toHaveBeenCalledWith(collection, field);
@@ -108,7 +105,6 @@ describe('relations tool ', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockRelationsService.readAll).toHaveBeenCalled();
@@ -143,7 +139,6 @@ describe('relations tool ', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockRelationsService.updateOne).toHaveBeenCalledWith(collection, field, updateData);
@@ -164,7 +159,6 @@ describe('relations tool ', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				});
 
 				expect(mockRelationsService.deleteOne).toHaveBeenCalledWith(collection, field);
@@ -182,7 +176,6 @@ describe('relations tool ', () => {
 					},
 					schema: mockSchema,
 					accountability: mockAccountability,
-					sanitizedQuery: mockSanitizedQuery,
 				}),
 			).rejects.toThrow('Invalid action.');
 		});

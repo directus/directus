@@ -35,7 +35,8 @@ describe('aiChatPostHandler', () => {
 
 		mockReq = {
 			body: {},
-			accountability: { user: 'test-user', role: 'test-role' } as any,
+			accountability: { user: 'test-user', role: 'test-role', app: true } as any,
+			schema: { collections: {}, relations: {} } as any,
 		} as any;
 
 		mockRes = {
@@ -258,6 +259,7 @@ describe('aiChatPostHandler', () => {
 				tools: {},
 				apiKeys: customApiKeys,
 				systemPrompt: undefined,
+				onUsage: expect.any(Function),
 			});
 		});
 	});
@@ -303,6 +305,7 @@ describe('aiChatPostHandler', () => {
 				tools: expectedTools,
 				apiKeys: mockRes.locals!['ai'].apiKeys,
 				systemPrompt: undefined,
+				onUsage: expect.any(Function),
 			});
 		});
 	});
