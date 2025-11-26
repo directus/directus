@@ -983,10 +983,4 @@ function useCollectionRoute() {
 .content-split.sp-collapsed :deep(.sp-end) {
 	border-inline-start: none;
 }
-
-/* Disable pointer events on iframe during drag to prevent jank */
-.content-split.sp-dragging :deep(iframe),
-.content-split:active :deep(iframe) {
-	pointer-events: none !important;
-}
 </style>
