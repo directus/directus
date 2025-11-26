@@ -2,11 +2,44 @@
 import { useTemplateRef, computed, onMounted, nextTick } from 'vue';
 import { useScroll } from '@vueuse/core';
 import { useAiStore } from '../stores/use-ai';
+import { useUserStore } from '@/stores/user';
 import AiMessageList from './ai-message-list.vue';
 import AiInput from './ai-input.vue';
+import AiHeader from './ai-header.vue';
 import VInfo from '@/components/v-info.vue';
 
 const aiStore = useAiStore();
+const userStore = useUserStore();
+
+const hasProviders = computed(() => aiStore.models.length > 0);
+
+const emptyState = computed(() => {
+	if (!hasProviders.value && userStore.isAdmin) {
+		return {
+			title: 'ai.setup_ai_chat',
+			description: 'ai.setup_ai_chat_admin_description',
+			showSettings: true,
+		};
+	}
+
+	if (!hasProviders.value) {
+		return {
+			title: 'ai.setup_ai_chat',
+			description: 'ai.setup_ai_chat_user_description',
+			showSettings: false,
+		};
+	}
+
+	if (aiStore.messages.length === 0) {
+		return {
+			title: 'ai.build_with_chat',
+			description: 'ai.responses_may_be_inaccurate',
+			showSettings: false,
+		};
+	}
+
+	return null;
+});
 
 const messagesContainerRef = useTemplateRef<HTMLElement>('messages-container');
 
@@ -38,17 +71,21 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 
 <template>
 	<div class="ai-conversation">
+		<ai-header v-if="hasProviders" />
 		<div ref="messages-container" class="messages-container">
 			<ai-message-list :messages="aiStore.messages" :status="aiStore.status" />
 
 			<v-info
-				v-if="aiStore.messages.length === 0"
-				icon="smart_toy"
-				:title="$t('ai.build_with_chat')"
+				v-if="emptyState"
+				icon="magic_button"
 				type="primary"
+				:title="$t(emptyState.title)"
 				class="empty-state"
 			>
-				{{ $t('ai.responses_may_be_inaccurate') }}
+				{{ $t(emptyState.description) }}
+				<template v-if="emptyState.showSettings" #append>
+					<v-button to="/settings/ai">{{ $t('ai.go_to_settings') }}</v-button>
+				</template>
 			</v-info>
 
 			<v-notice v-if="aiStore.error" multiline type="danger" class="error-notice">
@@ -72,7 +109,7 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 			<div id="scroll-anchor"></div>
 		</div>
 
-		<div class="input-container">
+		<div v-if="hasProviders" class="input-container">
 			<div v-show="showScrollButton" class="scroll-to-bottom-container">
 				<v-button icon rounded secondary x-small class="scroll-to-bottom-btn" @click="scrollToBottom('smooth')">
 					<v-icon small name="arrow_downward" />

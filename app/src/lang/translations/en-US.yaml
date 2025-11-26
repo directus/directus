@@ -1694,6 +1694,10 @@ ai:
   clear_conversation: Clear Conversation
   build_with_chat: Build with AI Chat
   responses_may_be_inaccurate: AI responses may be inaccurate
+  go_to_settings: Go to Settings
+  setup_ai_chat: Setup AI Chat
+  setup_ai_chat_admin_description: Add your AI provider API keys in settings to enable AI Chat.
+  setup_ai_chat_user_description: Contact your administrator to enable AI Chat.
   settings: Settings
   tool_approval:
     always: Always Allowed

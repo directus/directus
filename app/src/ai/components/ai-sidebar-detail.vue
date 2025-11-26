@@ -8,7 +8,6 @@ import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui
 import { useTemplateRef } from 'vue';
 import { useAiStore } from '../stores/use-ai';
 import AiConversation from './ai-conversation.vue';
-import AiHeader from './ai-header.vue';
 import AiMagicButton from './ai-magic-button.vue';
 
 const sidebarStore = useSidebarStore();
@@ -33,12 +32,12 @@ useShortcut('meta+j', () => {
 			<div ref="collapsible-trigger-content" class="collapsible-trigger-content">
 				<AiMagicButton class="collapsible-trigger-icon" :animate="hovering" />
 				<span v-show="!sidebarStore.collapsed" class="collapsible-trigger-title">{{ $t('ai_chat') }}</span>
+				<v-chip v-show="!sidebarStore.collapsed" outlined primary x-small class="collapsible-trigger-beta">{{ $t('beta') }}</v-chip>
 				<VIcon v-show="!sidebarStore.collapsed" name="chevron_left" class="collapsible-trigger-chevron" />
 			</div>
 		</CollapsibleTrigger>
 		<CollapsibleContent class="collapsible-content">
 			<div class="ai-sidebar-content">
-				<ai-header />
 				<ai-conversation />
 			</div>
 		</CollapsibleContent>
@@ -74,6 +73,12 @@ useShortcut('meta+j', () => {
 .collapsible-trigger-title {
 	flex-grow: 1;
 	text-align: start;
+}
+
+.collapsible-trigger-beta {
+	margin-inline-end: 8px;
+	color: var(--theme--primary);
+	border-color: var(--theme--primary);
 }
 
 .collapsible-trigger-chevron {
