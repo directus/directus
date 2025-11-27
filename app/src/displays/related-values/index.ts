@@ -29,19 +29,19 @@ export default defineDisplay({
 		const displayTemplateMeta: Partial<Field['meta']> =
 			editing === '+'
 				? {
-						interface: 'presentation-notice',
-						options: {
-							text: '$t:displays.related-values.display_template_configure_notice',
-						},
-						width: 'full',
-					}
+					interface: 'presentation-notice',
+					options: {
+						text: '$t:displays.related-values.display_template_configure_notice',
+					},
+					width: 'full',
+				}
 				: {
-						interface: 'system-display-template',
-						options: {
-							collectionName: relatedCollection,
-						},
-						width: 'full',
-					};
+					interface: 'system-display-template',
+					options: {
+						collectionName: relatedCollection,
+					},
+					width: 'full',
+				};
 
 		return [
 			{
@@ -88,10 +88,10 @@ export default defineDisplay({
 
 			const stringValue = display.value?.handler
 				? display.value.handler(fieldValue, field?.meta?.display_options ?? {}, {
-						interfaceOptions: field?.meta?.options ?? {},
-						field: field ?? undefined,
-						collection: collection,
-					})
+					interfaceOptions: field?.meta?.options ?? {},
+					field: field ?? undefined,
+					collection: collection,
+				})
 				: fieldValue;
 
 			set(stringValues, key, stringValue);
@@ -182,6 +182,14 @@ export default defineDisplay({
 						for (const adjustedField of adjustedFields) {
 							fields.add(`item:${collectionName}.${adjustedField}`);
 						}
+					}
+				}
+
+				const adjustedJunctionFields = adjustFieldsForDisplays(getFieldsFromTemplate(template), relatedCollection);
+
+				for (const field of adjustedJunctionFields) {
+					if (!field.startsWith('item:')) {
+						fields.add(field);
 					}
 				}
 			} else {
