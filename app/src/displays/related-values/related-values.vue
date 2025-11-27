@@ -94,7 +94,7 @@ const unit = computed(() => {
  * Transform M2A collection-specific template syntax
  * Transforms {{item:CollectionName.field}} to {{item.field}} if collection matches
  */
- function transformM2ATemplate(template: string, itemCollection: string): string {
+function transformM2ATemplate(template: string, itemCollection: string): string {
 	const regex = /{{item:([^.]+)\.([^}]+)}}/g;
 	let transformedTemplate = template;
 
@@ -135,35 +135,35 @@ function getTemplateForItem(item: any): string {
 	if (localType.value !== 'm2a') {
 		return internalTemplate.value || '';
 	}
-	
+
 	// M2A case
 	// Field configuration display template
 	if (props.template) {
 		const itemCollection = getCollectionForItem(item);
 		return transformM2ATemplate(props.template, itemCollection);
 	}
-	
+
 	// Junction collection display template
 	if (relatedCollection.value) {
 		const junctionMeta = collectionsStore.getCollection(relatedCollection.value);
 		const junctionTemplate = junctionMeta?.meta?.display_template;
-		
+
 		if (junctionTemplate) {
 			const itemCollection = getCollectionForItem(item);
 			return transformM2ATemplate(junctionTemplate, itemCollection);
 		}
 	}
-	
+
 	// Target collection display template
 	const itemCollection = getCollectionForItem(item);
 	const targetCollection = collectionsStore.getCollection(itemCollection);
 	const template = targetCollection?.meta?.display_template;
-	
+
 	if (template) {
 		// Transform "{{name}}" to "{{item.name}}" for M2A data structure
 		return transformTemplateVariablesWithPath(template, ['item']);
 	}
-	
+
 	// Fallback: primary key of item's collection
 	const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(itemCollection);
 	return `{{ item.${primaryKeyField?.field || 'id'} }}`;

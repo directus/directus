@@ -29,19 +29,19 @@ export default defineDisplay({
 		const displayTemplateMeta: Partial<Field['meta']> =
 			editing === '+'
 				? {
-					interface: 'presentation-notice',
-					options: {
-						text: '$t:displays.related-values.display_template_configure_notice',
-					},
-					width: 'full',
-				}
+						interface: 'presentation-notice',
+						options: {
+							text: '$t:displays.related-values.display_template_configure_notice',
+						},
+						width: 'full',
+					}
 				: {
-					interface: 'system-display-template',
-					options: {
-						collectionName: relatedCollection,
-					},
-					width: 'full',
-				};
+						interface: 'system-display-template',
+						options: {
+							collectionName: relatedCollection,
+						},
+						width: 'full',
+					};
 
 		return [
 			{
@@ -88,10 +88,10 @@ export default defineDisplay({
 
 			const stringValue = display.value?.handler
 				? display.value.handler(fieldValue, field?.meta?.display_options ?? {}, {
-					interfaceOptions: field?.meta?.options ?? {},
-					field: field ?? undefined,
-					collection: collection,
-				})
+						interfaceOptions: field?.meta?.options ?? {},
+						field: field ?? undefined,
+						collection: collection,
+					})
 				: fieldValue;
 
 			set(stringValues, key, stringValue);
@@ -140,12 +140,13 @@ export default defineDisplay({
 			const relationsStore = useRelationsStore();
 			const relations = relationsStore.getRelationsForField(collection, field);
 
-			const m2aAllowedCollections = relations.find(
-				(relation) =>
-					relation.collection === relatedCollection &&
-					relation.meta?.one_allowed_collections &&
-					relation.meta.one_allowed_collections.length > 0,
-			)?.meta?.one_allowed_collections ?? [];
+			const m2aAllowedCollections =
+				relations.find(
+					(relation) =>
+						relation.collection === relatedCollection &&
+						relation.meta?.one_allowed_collections &&
+						relation.meta.one_allowed_collections.length > 0,
+				)?.meta?.one_allowed_collections ?? [];
 
 			// Always include the collection field for M2A
 			const collectionField = relations.find((relation) => relation.meta?.one_collection_field)?.meta
@@ -215,9 +216,7 @@ export default defineDisplay({
 				// Only prefix with path if using related collection template
 				// Options template and junction template are written from junction perspective
 				templateFields.forEach((fieldKey) => {
-					const field = shouldPrefixWithPath && path && path.length > 0
-						? [...path, fieldKey].join('.')
-						: fieldKey;
+					const field = shouldPrefixWithPath && path && path.length > 0 ? [...path, fieldKey].join('.') : fieldKey;
 
 					fields.add(field);
 				});
@@ -231,5 +230,5 @@ export default defineDisplay({
 		}
 
 		return Array.from(fields);
-	}
+	},
 });
