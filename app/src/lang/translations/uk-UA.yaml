@@ -1779,6 +1779,7 @@ revisions: Версії
 no_revisions: Переглядів поки немає
 no_logs: Журнал порожній
 show_failed_only: Показати лише невдалі
+no_logs_on_page: Немає записів на цій сторінці
 revert: Повернути
 save: Зберегти
 schema: Схема
@@ -1859,11 +1860,14 @@ interfaces:
     max_one_section_open: Максимальна кількість відкритих секцій – 1
   presentation-links:
     presentation-links: Кнопки
+    description: Налаштовувані кнопки-посилання для відкриття динамічних URL або запуску Flow
     style: Стиль
     primary: Стандартно
     link: Посилання
     button: Кнопки
     error: Неможливо виконати дію
+    action_type: Тип дії
+    select_manual_flow_note: Для цієї збірки Flow повинен мати ручний запуск
   select-multiple-checkbox:
     checkboxes: Прапорці
     description: Виберіть один із кількох варіантів за допомогою прапорців
@@ -2560,6 +2564,11 @@ operations:
     template: Шаблон
     data: Дані
     cc: CC
+    cc_placeholder: Додайте адреси електронної пошти у CC і натисніть Enter...
+    bcc: BCC
+    bcc_placeholder: Додайте адресу електронної пошти BCC і натисніть Enter...
+    reply_to: Відповісти
+    reply_to_placeholder: Додайте адресу електронної пошти для відповіді та натисніть Enter...
   notification:
     name: Надіслати сповіщення
     description: Надіслати сповіщення в застосунку одному або декільком користувачам
@@ -2584,11 +2593,18 @@ operations:
     name: Спати
     description: Зачекайте декілька мілісекунд
     milliseconds: Мілісекунди
+  throw-error:
+    name: Видати помилку
+    description: Видавати помилку в шляху відхилення
+    code: Код помилки
+    status: Код статусу HTTP
+    message: Повідомлення про помилку
   transform:
     name: Перетворити вміст
     description: Змінити вміст JSON потоку
   trigger:
     name: Ініціювати потік
+    description: Передати ці дані на інший Flow
     flows: Автоматизація
     flow: Автоматизація
     data: Дані
@@ -2643,8 +2659,11 @@ percent: Відсоток
 show_password: Показати пароль
 hide_password: Приховати пароль
 bsl_banner:
+  title: Ви не встановили власника проєкту.
+  license: Нам потрібно це, щоб забезпечити дотримання нашої BSL 1.1 ліцензії. Це має бути основний контакт з відповіддю за ваш проєкт.
   set_owner: Встановити власника
   remind_later: Нагадати пізніше
+  remind_next_login: Ми нагадаємо вам про це під час наступного входу.
 accepted: Схвалено
 text_direction_auto: Автоматично (відповідно до мови)
 text_direction_ltr: Зліва направо (LTR)
