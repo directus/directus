@@ -39,7 +39,7 @@ export class NotificationsService extends ItemsService {
 					.toString();
 
 				const html = data.message ? md(data.message) : '';
-				const roles = await fetchRolesTree(user['role'], this.knex);
+				const roles = await fetchRolesTree(user['role'], { knex: this.knex });
 
 				const { app: app_access } = await fetchGlobalAccess(
 					{
@@ -47,7 +47,7 @@ export class NotificationsService extends ItemsService {
 						roles,
 						ip: null,
 					},
-					this.knex,
+					{ knex: this.knex },
 				);
 
 				const mailService = new MailService({
