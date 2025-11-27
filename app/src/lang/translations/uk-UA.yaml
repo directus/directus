@@ -1197,6 +1197,7 @@ settings_permissions: Правила доступу
 settings_project: Налаштування
 settings_appearance: Вигляд
 settings_ai: ШІ
+model_context_protocol: Протокол контексту моделі
 settings_webhooks: Вебхуки
 settings_flows: Автоматизація
 settings_system_logs: Системні журнали
@@ -1241,12 +1242,14 @@ page_help_files_item: >-
 page_help_settings_project: "**Налаштування* – Глобальні параметри налаштування вашого проєкту."
 page_help_settings_appearance: "**Оформлення** – Зовнішній вигляд та параметри оформлення вашого проєкту."
 page_help_settings_extensions: '**Розширення** - Розширення, встановлені у вашому проєкті.'
+page_help_settings_ai: "**AI** — Параметри конфігурації штучного інтелекту вашого проєкту."
 page_help_settings_datamodel_collections: >-
   **Модель даних: колекції** — перелічує всі доступні колекції. Це включає видимі, приховані та системні колекції, а також незмінені таблиці бази даних, які можна додавати.
 page_help_settings_datamodel_fields: >-
   **Модель даних: колекція** — форма для керування цією колекцією та її полями.
 page_help_settings_system_logs: '**Системні журнали** — доступ до прямої трансляції системних журналів.'
 page_help_settings_policies_collection: '**Переглянути політики** — список усіх політик у проєкті.'
+page_help_settings_policies_item: '**Policy Detail**— Керування дозволами політики та іншими її налаштуваннями.'
 page_help_settings_roles_collection: '**Огляд ролей** — перераховує всі ролі користувачів у проєкті.'
 page_help_settings_roles_item: "**Детальна інформація про роль** — керуйте дозволами для ролі та іншими налаштуваннями."
 page_help_settings_presets_collection: >-
