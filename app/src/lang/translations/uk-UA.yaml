@@ -21,8 +21,8 @@
 #'Proxy', 'Intl'
 about: Інформація про
 directus_bsl: Directus BSL 1,1
-privacy_policy: Політика конфіденційності 
-contact_our_team: Звʼязок із нашою командою 
+privacy_policy: Політика конфіденційності
+contact_our_team: Звʼязок із нашою командою
 setup_welcome: Ласкаво просимо до Directus
 setup_info: Створімо ваш обліковий запис адміністратора та запустімо ваш проєкт.
 setup_license_notice: >
@@ -53,7 +53,7 @@ method: Метод
 published: Опубліковано
 draft: Чернетка
 archived: Архівовано
-marketplace: Маркетплейс
+marketplace: Ринкова площа
 extensions: Розширення
 skip_link_nav: Перейти до навігації
 skip_link_module_nav: Перейти до навігації модуля
@@ -95,7 +95,7 @@ init: Ініціалізація
 dataset_too_large_currently_showing_n_items: Дані завеликі. Зараз показуються перші {n} елементів.
 modifier: Модифікатор
 extension_interface: Інтерфейс
-extension_display: Відображати
+extension_display: Показувати
 extension_layout: Макет
 extension_module: Модуль
 extension_panel: Панель
@@ -1305,6 +1305,7 @@ directus_collection:
   directus_dashboards: Панелі керування в межах модуля інсайтів
   directus_fields: Додаткова конфігурація поля та метадані
   directus_files: Метадані для всіх керованих файлів
+  directus_flows: Автоматизація процесів
   directus_folders: Забезпечує віртуальні каталоги для файлів
   directus_migrations: Яку версію бази даних ви використовуєте
   directus_notifications: Сповіщення відіслано користувачам
@@ -1391,6 +1392,7 @@ fields:
     tags: Теги
     user_preferences: Налаштування користувача
     language: Мова
+    text_direction: Напрямок тексту
     tfa_secret: Двофакторна автентифікація
     admin_options: Можливості адміністратора
     status: Статус
@@ -1468,6 +1470,20 @@ fields:
     public_registration_email_filter_note: Тільки email адреси, що відповідають цьому фільтру, можуть реєструватися.
     public_registration_verify_email: Підтвердіть адресу
     public_registration_verify_email_note: Відправляє email до реєстраційного користувача із проханням натиснути на посилання для підтвердження, перш ніж він зможе увійти.
+    visual_editor_urls: URL-адреси візуального редактора
+    mcp_enabled: Сервер MCP
+    mcp_enabled_note: 'Приєднайте інструменти AI/LLM до вашого проєкту Directus за допомогою <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Протокол контексту моделі (MCP)</a>. Це дає змогу AI-асистентам безпечно читати та взаємодіяти з даними Directus.'
+    mcp_notice: 'Протокол контексту моделі є стандартним для підключення LLM до таких додатків, як Directus. Після увімкнення сервер Directus MCP буде доступний за адресою `/mcp`.<a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Дізнайтеся більше про MCP та про те, як під''єднатися.</a>'
+    mcp_allow_deletes: Дозволити видалення
+    mcp_allow_deletes_note:
+      - Може спричинити втрату даних.</strong>За замовчуванням вимкнено з міркувань безпеки.'
+    mcp_prompts_collection: Збірка запитів для ШІ
+    mcp_prompts_collection_note: 'Виберіть колекцію для зберігання<a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">шаблонів підказок для багаторазового використання</a>для взаємодії з АІ.'
+    mcp_system_prompt_divider: Налаштування системних підказок
+    mcp_system_prompt_enabled: Використовувати системне підказування
+    mcp_system_prompt_enabled_note: "Використовуйте<a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>стандартне системне запитування</a>для керування поведінкою LLM. Вимкніть, щоб видалити або замінити власним запитуванням нижче."
+    mcp_system_prompt: Користувацький Системний рядок
+    mcp_system_prompt_note: 'Спеціальний запит щодо заміни стандартної системи. Залиште порожнім, щоб використовувати стандартну (якщо вказано вище).'
   directus_shares:
     name: Назва
     role: Роль
@@ -1645,19 +1661,42 @@ live_preview:
   new_window: Відкрити в новому вікні
   close_window: Відкрити в режимі розділеного екрана
   toggle_3d: Перемикнути 3D
+  iframe_title: Попередній перегляд вебсайту
 shares: Акції
 unlimited_usage: Необмежене використання
 uses_left: Не залишилося використань | Залишилося одне використання | {n} використань залишилося
 no_shares: Немає спільних ресурсів для відображення
 new_share: Нова публікація
+mcp_prompts_collection:
+  no_collection_selected: Колекція не вибрана
+  no_collection_selected_copy: Виберіть колекцію, щоб увімкнути шаблони підказок, які можна використовувати повторно.
+  collection_not_found: Колекція не знайдена
+  collection_not_found_description: Колекція "{collection}" не існує в базі даних.
+  generate: Створити колекцію підказок АІ...
+  already_exists: Колекція підказок AI вже існує
+  generate_collection_dialog_title: Створити колекцію підказок для АІ
+  generate_fields_dialog_title: Створити поля підказок АІ
+  generate_collection_dialog_description: 'Буде створено нову збірку "{collection}" з необхідними полями та налаштуваннями для збереження багаторазових шаблонів запитів.'
+  generate_fields_dialog_description: 'Буде створено обов''язкові поля на вашій "{collection}" збірці.'
+  validation_success: 'Колекція готова до використання як збірка «AI Prompts».'
+  validation_error_invalid: Збірка не може бути використана
+  validation_error_missing: Збірка ще не доступна для використання
+  invalid_fields: 'Наступні поля існують, але мають несумісний тип:'
+  missing_fields: 'Наступні поля є обов''язковими, але відсутні:'
+  generate_missing: Створити відсутні поля...
 mcp_prompts_collection_schema:
+  system_prompt_note: Інструкції, що визначають, як LLM відповідає.
+  messages_note: 'Необов’язково: Визначте структуру розмови між користувачами та LLM. Використовується для додавання контексту та покращення результатів.'
   messages_role_user: Користувач
+  messages_role_assistant: Помічник
+  meta_prompts_notice: 'Запити — це шаблони багаторазового використання, які можна застосовувати з LLM через сервер Directus MCP, Flows або інші програми штучного інтелекту.<a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">Дізнайтеся більше про створення ефективних запитів.</a>'
 expired: Закінчився
 upcoming: Майбутнє
 share: Поділитись
 share_item: Поділитися записом
 shared_with_you: З вами поділилися записом
 shared_enter_passcode: Введіть пароль для продовження...
+generate: Створити
 shared_leave_blank_for_passwordless_access: Залиште порожнім для доступу без пароля
 shared_leave_blank_for_unlimited: Залишіть порожнім для необмеженого
 shared_times_remaining: Посилання може бути використане {n} разів
@@ -1739,6 +1778,7 @@ reset_password: Скинути пароль
 revisions: Версії
 no_revisions: Переглядів поки немає
 no_logs: Журнал порожній
+show_failed_only: Показати лише невдалі
 revert: Повернути
 save: Зберегти
 schema: Схема
@@ -1847,6 +1887,11 @@ interfaces:
     collection: Колекція
     description: Оберіть між інсуючими колекціями
     include_system_collections: Включити системні колекції
+  system-owner:
+    update: Оновити власника проєкту
+    edit: Редагувати власника проєкту
+    system-owner: Власник системи
+    description: Інтерфейс власника системи
   system-collections:
     collections: Колекції
     description: Обрати між існуючими колекціями
@@ -1944,6 +1989,9 @@ interfaces:
   collection-item-dropdown:
     collection-item-dropdown: Випадаючий список елементів колекції
     description: Вибір елемент з колекції у форматі JSON
+  collection-item-multiple-dropdown:
+    collection-item-multiple-dropdown: Список елементів колекції (множинний вибір)
+    description: Виберіть кілька елементів із колекції у форматі JSON
   input-rich-text-md:
     markdown: Розмітка
     description: Увійти та переглянути розмітку
@@ -2085,6 +2133,7 @@ interfaces:
     folder_note: Тека для завантажених файлів. Не може вплинути на існуючі файли.
     imageToken: Статичний маркер доступу
     imageToken_label: До URL-адреси об’єкта додається статичний маркер доступу
+    media_preview_iframe_title: Попередній перегляд медіа
   input-block-editor:
     input-block-editor: Редактор блоків
     description: Редактор блоків для мультимедійних матеріалів, виводить дані в чистому вигляді у форматі JSON за допомогою Editor.js
@@ -2140,6 +2189,8 @@ interfaces:
   input-password:
     input-password: Введіть пароль
     description: Введення пароля з перемикачем, щоб приховати значення
+  flow-select:
+    flow-select: Вибір процесу
 displays:
   translations:
     translations: Переклади
@@ -2355,7 +2406,10 @@ show_legend: Показати історію
 right: Справа
 left: Зліва
 start: Почати
+end: Кінець
 donut: Кільце
+continuous: Безперервно
+gap: Проміжок
 panels:
   metric:
     name: Метрична
@@ -2371,6 +2425,7 @@ panels:
     value_field: Поле значення
     fill_type: Тип заповнення
     curve_type: Тип кривої
+    missing_data: Відсутні дані
   label:
     name: Ярлик
     description: Показати деякі тексти
@@ -2421,6 +2476,7 @@ triggers:
     filter: 'Фільтр (блокування)'
   webhook:
     name: Вебхук
+    error_on_reject: Помилка при відхиленні
     description: Запуск за вхідним HTTP-запитом
     method: Метод
     async: Асинхронний
@@ -2443,9 +2499,11 @@ triggers:
 a_flow_uuid: Виберіть потік для запуску...
 any_string_or_json: Будь-який рядок або JSON...
 item_payload_placeholder: Це JSON, який використовується для оновлення значень полів елемента...
+operation_variables_note: Ви можете отримати доступ до даних процесу за допомогою таких змінних, як **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** та **{'{'}{'{'}$accountability{'}'}{'}'}**, або звертатися до попередніх операцій за допомогою **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Умова
+    description: Маршрутизація процесу на основі логіки If / Else
   exec:
     name: Виконати Скрипт
     description: Виконати довільний код щоб змінити дані
@@ -2497,9 +2555,11 @@ operations:
     name: Надіслати Email
     description: Відправити лист одному або декільком людям
     to: До
+    to_placeholder: Додайте адреси електронної пошти та натисніть Enter...
     body: Тіло
     template: Шаблон
     data: Дані
+    cc: CC
   notification:
     name: Надіслати сповіщення
     description: Надіслати сповіщення в застосунку одному або декільком користувачам
@@ -2582,3 +2642,10 @@ search_flow: Пошуковий потік...
 percent: Відсоток
 show_password: Показати пароль
 hide_password: Приховати пароль
+bsl_banner:
+  set_owner: Встановити власника
+  remind_later: Нагадати пізніше
+accepted: Схвалено
+text_direction_auto: Автоматично (відповідно до мови)
+text_direction_ltr: Зліва направо (LTR)
+text_direction_rtl: Справа наліво (RTL)
