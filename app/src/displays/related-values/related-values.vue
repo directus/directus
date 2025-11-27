@@ -80,7 +80,7 @@ function getLinkForItem(item: any) {
 		:disabled="value?.length === 0"
 	>
 		<template #activator="{ toggle }">
-			<span class="toggle" :class="{ disabled: value?.length === 0 }" @click.stop="toggle">
+			<span class="toggle" :class="{ disabled: value?.length === 0 }" @click.prevent="toggle">
 				<span class="label">
 					{{ value?.length }}
 					<template v-if="value?.length >= 100">+</template>

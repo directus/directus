@@ -19,7 +19,7 @@ export function useLayoutClickHandler({ props, selection, primaryKeyField }: Use
 	};
 
 	function onClick({ item, event }: { item: Item; event: MouseEvent }) {
-		if (props.readonly === true || !primaryKeyField.value) return;
+		if (props.readonly === true || !primaryKeyField.value || event.defaultPrevented) return;
 
 		const primaryKey = item[primaryKeyField.value.field];
 
