@@ -13,6 +13,7 @@ import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
 import getMailer from '../../mailer.js';
 import { Url } from '../../utils/url.js';
+import { useEmailRateLimiterQueue } from './rate-limiter.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -29,6 +30,13 @@ export type EmailOptions = SendMailOptions & {
 		name: string;
 		data: Record<string, any>;
 	};
+};
+
+export type DefaultTemplateData = {
+	projectName: string;
+	projectColor: string;
+	projectLogo: string;
+	projectUrl: string;
 };
 
 export class MailService {
@@ -53,16 +61,19 @@ export class MailService {
 		}
 	}
 
-	async send<T>(options: EmailOptions): Promise<T | null> {
-		const payload = await emitter.emitFilter(`email.send`, options, {});
+	async send<T>(data: EmailOptions, options?: { defaultTemplateData: DefaultTemplateData }): Promise<T | null> {
+		await useEmailRateLimiterQueue();
+
+		const payload = await emitter.emitFilter(`email.send`, data, {});
 
 		if (!payload) return null;
 
 		const { template, ...emailOptions } = payload;
 
-		let { html } = options;
+		let { html } = data;
 
-		const defaultTemplateData = await this.getDefaultTemplateData();
+		// option for providing tempalate data was added to prevent transaction race conditions with preceding promises
+		const defaultTemplateData = options?.defaultTemplateData ?? (await this.getDefaultTemplateData());
 
 		if (isObject(emailOptions.from) && (!emailOptions.from.name || !emailOptions.from.address)) {
 			throw new InvalidPayloadError({ reason: 'A name and address property are required in the "from" object' });
@@ -114,7 +125,7 @@ export class MailService {
 		return html;
 	}
 
-	private async getDefaultTemplateData() {
+	async getDefaultTemplateData() {
 		const projectInfo = await this.knex
 			.select(['project_name', 'project_logo', 'project_color', 'project_url'])
 			.from('directus_settings')

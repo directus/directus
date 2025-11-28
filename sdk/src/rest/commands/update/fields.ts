@@ -1,5 +1,5 @@
 import type { DirectusField } from '../../../schema/field.js';
-import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query, FieldQuery } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -20,7 +20,7 @@ export type UpdateFieldOutput<
  * @throws Will throw if field is empty
  */
 export const updateField =
-	<Schema, const TQuery extends Query<Schema, DirectusField<Schema>>>(
+	<Schema, const TQuery extends FieldQuery<Schema, DirectusField<Schema>>>(
 		collection: DirectusField<Schema>['collection'],
 		field: DirectusField<Schema>['field'],
 		item: NestedPartial<DirectusField<Schema>>,
@@ -39,6 +39,7 @@ export const updateField =
 	};
 
 /**
+ * Updates the multiple field in the given collection.
  * Update multiple existing fields.
  * @param collection
  * @param items
@@ -47,7 +48,7 @@ export const updateField =
  * @throws Will throw if collection is empty
  */
 export const updateFields =
-	<Schema, const TQuery extends Query<Schema, DirectusField<Schema>>>(
+	<Schema, const TQuery extends FieldQuery<Schema, DirectusField<Schema>>>(
 		collection: DirectusField<Schema>['collection'],
 		items: NestedPartial<DirectusField<Schema>>[],
 		query?: TQuery,

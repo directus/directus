@@ -307,7 +307,7 @@ Date: `year(field)`, `month(field)`, `day(field)`, `hour(field)` Aggregate: `cou
 
 ```json
 {"filter": {"year(date_created)": {"_eq": 2024}}}
-{"aggregate": {"count": "*", "sum": "price"}, "groupBy": ["category"]}
+{"aggregate": {"count": ["*"], "sum": ["price"]}, "groupBy": ["category"]}
 ```
 
 ## Restrictions

@@ -1,4 +1,6 @@
 ---
+first_name: First Name
+last_name: Last Name
 identifier: Identifier
 avatar: Avatar
 application: Application
@@ -71,7 +73,6 @@ rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
-promote_version_preview: Preview
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -1216,9 +1217,9 @@ interfaces:
     accordion_mode: Accordion Mode
     max_one_section_open: Max 1 Section Open
   presentation-links:
-    presentation-links: Button Links
+    presentation-links: Buttons
     links: Links
-    description: Configurable link buttons for launching dynamic URLs
+    description: Configurable link buttons for launching dynamic URLs or triggering Flows
     style: Style
     primary: Primary
     link: Links

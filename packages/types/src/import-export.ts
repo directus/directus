@@ -1,2 +1,2 @@
 /** The available export formats */
-export type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
+export type ExportFormat = 'csv' | 'csv_utf8' | 'json' | 'xml' | 'yaml';

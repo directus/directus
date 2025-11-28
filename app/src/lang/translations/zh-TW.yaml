@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: 關於
+first_name: 名字
+last_name: 姓氏
 identifier: 識別
 avatar: 頭像
 application: 應用程式
@@ -168,10 +170,6 @@ rename_version: 重新命名版本
 compare_version: 比較版本
 save_version: 儲存版本
 promote_version: 發布版本
-promote_version_disabled: 沒有更改
-promote_version_drawer_title: 將 {version} 升級為主要版本
-promote_version_changes: 變更
-promote_version_preview: 預覽
 delete_version: 刪除版本
 reset_bookmark: 重設書籤
 update_bookmark: 更新書籤
@@ -1495,9 +1493,7 @@ interfaces:
     accordion_mode: 收合模式
     max_one_section_open: 最多開啟一個區塊
   presentation-links:
-    presentation-links: 連結按鈕
     links: 連結
-    description: 可修改的連結按鈕，可連結至動態網址
     style: 樣式
     primary: 主要
     link: 連結

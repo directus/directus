@@ -20,7 +20,7 @@ export type UpdatePolicyOutput<
 export const updatePolicies =
 	<Schema, const TQuery extends Query<Schema, DirectusPolicy<Schema>>>(
 		keys: DirectusPolicy<Schema>['id'][],
-		item: Partial<DirectusPolicy<Schema>>,
+		item: NestedPartial<DirectusPolicy<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdatePolicyOutput<Schema, TQuery>[], Schema> =>
 	() => {
@@ -63,7 +63,7 @@ export const updatePoliciesBatch =
 export const updatePolicy =
 	<Schema, const TQuery extends Query<Schema, DirectusPolicy<Schema>>>(
 		key: DirectusPolicy<Schema>['id'],
-		item: Partial<DirectusPolicy<Schema>>,
+		item: NestedPartial<DirectusPolicy<Schema>>,
 		query?: TQuery,
 	): RestCommand<UpdatePolicyOutput<Schema, TQuery>, Schema> =>
 	() => {

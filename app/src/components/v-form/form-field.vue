@@ -10,14 +10,17 @@ import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu, { type MenuOptions } from './form-field-menu.vue';
 import FormFieldRawEditor from './form-field-raw-editor.vue';
-import type { FormField } from './types';
+import type { ComparisonContext, FormField } from './types';
 
 const props = withDefaults(
 	defineProps<{
 		field: FormField;
 		batchMode?: boolean;
 		batchActive?: boolean;
+		comparison?: ComparisonContext;
+		comparisonActive?: boolean;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		modelValue?: any;
 		initialValue?: any;
 		primaryKey?: string | number;
@@ -28,6 +31,7 @@ const props = withDefaults(
 		rawEditorEnabled?: boolean;
 		rawEditorActive?: boolean;
 		disabledMenuOptions?: MenuOptions[];
+		disabledMenu?: boolean;
 		direction?: string;
 	}>(),
 	{
@@ -52,7 +56,7 @@ const isDisabled = computed(() => {
 });
 
 const isLabelHidden = computed(() => {
-	if (props.batchMode && !props.field.meta?.special?.includes('no-data')) return false;
+	if ((props.batchMode || !!props.comparison) && !props.field.meta?.special?.includes('no-data')) return false;
 	return props.field.hideLabel;
 });
 
@@ -165,9 +169,14 @@ function useComputedValues() {
 		:data-collection="field.collection"
 		:data-field="field.field"
 		class="field"
-		:class="[field.meta?.width || 'full', { invalid: validationError }]"
+		:class="[
+			field.meta?.width || 'full',
+			{
+				invalid: validationError,
+			},
+		]"
 	>
-		<v-menu v-if="!isLabelHidden" placement="bottom-start" show-arrow arrow-placement="start">
+		<v-menu v-if="!isLabelHidden" :disabled="disabledMenu" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
 				<form-field-label
 					:field="field"
@@ -175,12 +184,15 @@ function useComputedValues() {
 					:active="active"
 					:batch-mode="batchMode"
 					:batch-active="batchActive"
+					:comparison="comparison"
+					:comparison-active="comparisonActive"
 					:edited="isEdited"
 					:has-error="!!validationError"
 					:badge="badge"
 					:raw-editor-enabled="rawEditorEnabled"
 					:raw-editor-active="rawEditorActive"
 					:loading="loading"
+					:disabled-menu="disabledMenu"
 					@toggle-batch="$emit('toggle-batch', $event)"
 					@toggle-raw="$emit('toggle-raw', $event)"
 				/>
@@ -199,6 +211,7 @@ function useComputedValues() {
 				@paste-raw="pasteRaw"
 			/>
 		</v-menu>
+
 		<div v-else-if="['full', 'fill'].includes(field.meta?.width ?? '') === false" class="label-spacer" />
 
 		<form-field-interface
@@ -209,10 +222,13 @@ function useComputedValues() {
 			:batch-mode="batchMode"
 			:batch-active="batchActive"
 			:disabled="isDisabled"
+			:non-editable="nonEditable"
 			:primary-key="primaryKey"
 			:raw-editor-enabled="rawEditorEnabled"
 			:raw-editor-active="rawEditorActive"
 			:direction="direction"
+			:comparison="comparison"
+			:comparison-active="comparisonActive"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>
@@ -239,10 +255,6 @@ function useComputedValues() {
 </template>
 
 <style lang="scss" scoped>
-.field {
-	position: relative;
-}
-
 .type-note {
 	position: relative;
 	display: block;

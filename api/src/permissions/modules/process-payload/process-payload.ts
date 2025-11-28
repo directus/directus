@@ -1,4 +1,3 @@
-import { ForbiddenError } from '@directus/errors';
 import type { Accountability, Filter, Item, PermissionsAction } from '@directus/types';
 import { parseFilter, validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
@@ -10,6 +9,10 @@ import { extractRequiredDynamicVariableContext } from '../../utils/extract-requi
 import { fetchDynamicVariableData } from '../../utils/fetch-dynamic-variable-data.js';
 import { contextHasDynamicVariables } from '../process-ast/utils/context-has-dynamic-variables.js';
 import { isFieldNullable } from './lib/is-field-nullable.js';
+import {
+	createCollectionForbiddenError,
+	createFieldsForbiddenError,
+} from '../process-ast/utils/validate-path/create-error.js';
 
 export interface ProcessPayloadOptions {
 	accountability: Accountability;
@@ -38,9 +41,7 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 		);
 
 		if (permissions.length === 0) {
-			throw new ForbiddenError({
-				reason: `You don't have permission to "${options.action}" from collection "${options.collection}" or it does not exist.`,
-			});
+			throw createCollectionForbiddenError('', options.collection);
 		}
 
 		const fieldsAllowed = uniq(permissions.map(({ fields }) => fields ?? []).flat());
@@ -50,14 +51,7 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 			const notAllowed = difference(fieldsUsed, fieldsAllowed);
 
 			if (notAllowed.length > 0) {
-				const fieldStr = notAllowed.map((field) => `"${field}"`).join(', ');
-
-				throw new ForbiddenError({
-					reason:
-						notAllowed.length === 1
-							? `You don't have permission to access field ${fieldStr} in collection "${options.collection}" or it does not exist.`
-							: `You don't have permission to access fields ${fieldStr} in collection "${options.collection}" or they do not exist.`,
-				});
+				throw createFieldsForbiddenError('', options.collection, notAllowed);
 			}
 		}
 

@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Despre
+first_name: Prenume
+last_name: Nume
 identifier: Identificator
 avatar: Avatar
 application: Aplicație
@@ -152,19 +154,9 @@ rename_version: Redenumiți versiunea
 compare_version: Comparați versiunile
 save_version: Salvează versiunea
 promote_version: Promovați versiunea
-promote_version_disabled: Fără modificări
-promote_version_drawer_title: Promovează {version} ca versiunea principală
-promote_version_changes: Modificări
-promote_version_preview: Previzualizare
-outdated_notice: >-
-  Elementul principal a fost actualizat de când a fost creată această versiune. Vă rugăm să revizuiți toate valorile câmpurilor de mai jos și să confirmați care versiune ar trebui utilizată atunci când promovați această versiune în elementul principal.
-promote_notice: >-
-  Vă rugăm să revizuiți toate valorile câmpurilor de mai jos și să confirmați care versiune ar trebui utilizată atunci când promovați această versiune în elementul principal.
 delete_version: Ștergeți versiunea
 delete_version_copy: >-
   Ești sigur că vrei să ștergi versiunea "{version}"? Această acțiune nu poate fi anulată.
-delete_on_promote_copy: >-
-  Vrei să ștergi sau să păstrezi versiunea "{version}" după promovare?
 reset_bookmark: Resetează semnul de carte
 update_bookmark: Actualizează semnul de carte
 delete_bookmark: Șterge semnul de carte
@@ -1390,9 +1382,7 @@ interfaces:
     accordion_mode: Mod acordeon
     max_one_section_open: Cel mult o secțiune deschisă
   presentation-links:
-    presentation-links: Link-uri buton
     links: Link-uri
-    description: Link-uri buton configurabile pentru lansarea de url-uri dinamice
     style: Stil
     primary: Principal
     link: Link-uri

@@ -25,14 +25,14 @@ export async function resolveQuery(gql: GraphQLService, info: GraphQLResolveInfo
 	const isAggregate = collection.endsWith('_aggregated') && collection in gql.schema.collections === false;
 
 	if (isAggregate) {
-		query = await getAggregateQuery(args, selections, gql.schema, gql.accountability);
 		collection = collection.slice(0, -11);
+		query = await getAggregateQuery(args, selections, gql.schema, gql.accountability, collection);
 	} else {
-		query = await getQuery(args, gql.schema, selections, info.variableValues, gql.accountability, collection);
-
 		if (collection.endsWith('_by_id') && collection in gql.schema.collections === false) {
 			collection = collection.slice(0, -6);
 		}
+
+		query = await getQuery(args, gql.schema, selections, info.variableValues, gql.accountability, collection);
 
 		if (collection.endsWith('_by_version') && collection in gql.schema.collections === false) {
 			collection = collection.slice(0, -11);

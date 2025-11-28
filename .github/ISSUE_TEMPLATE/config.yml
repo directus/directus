@@ -1,7 +1,7 @@
-blank_issues_enabled: true
+blank_issues_enabled: false
 contact_links:
   - name: Request a new feature
-    url: https://github.com/directus/directus/discussions/new?category=feature-requests
+    url: https://roadmap.directus.io/
     about: Share your ideas on how to make Directus better.
   - name: Ask a question
     url: https://community.directus.io

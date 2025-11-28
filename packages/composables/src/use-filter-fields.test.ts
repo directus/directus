@@ -50,6 +50,7 @@ const createMockField = (overrides: Partial<Field> = {}): Field => ({
 		group: null,
 		validation: null,
 		validation_message: null,
+		searchable: true,
 	},
 	...overrides,
 });

@@ -78,7 +78,7 @@ function useDelete() {
 				</span>
 			</user-popover>
 			<span v-else>
-				{{ t('private_user') }}
+				{{ $t('private_user') }}
 			</span>
 		</div>
 
@@ -94,11 +94,11 @@ function useDelete() {
 				<v-list>
 					<v-list-item clickable @click="$emit('edit')">
 						<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
-						<v-list-item-content>{{ t('edit') }}</v-list-item-content>
+						<v-list-item-content>{{ $t('edit') }}</v-list-item-content>
 					</v-list-item>
 					<v-list-item clickable @click="confirmDelete = true">
 						<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
-						<v-list-item-content>{{ t('delete_label') }}</v-list-item-content>
+						<v-list-item-content>{{ $t('delete_label') }}</v-list-item-content>
 					</v-list-item>
 				</v-list>
 			</v-menu>
@@ -106,15 +106,15 @@ function useDelete() {
 
 		<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="remove">
 			<v-card>
-				<v-card-title>{{ t('delete_comment') }}</v-card-title>
-				<v-card-text>{{ t('delete_are_you_sure') }}</v-card-text>
+				<v-card-title>{{ $t('delete_comment') }}</v-card-title>
+				<v-card-text>{{ $t('delete_are_you_sure') }}</v-card-text>
 
 				<v-card-actions>
 					<v-button secondary @click="confirmDelete = false">
-						{{ t('cancel') }}
+						{{ $t('cancel') }}
 					</v-button>
 					<v-button kind="danger" :loading="deleting" @click="remove">
-						{{ t('delete_label') }}
+						{{ $t('delete_label') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
