@@ -16,10 +16,7 @@ export interface ProcessAstOptions {
 	accountability: Accountability | null;
 }
 
-export async function processAst(
-	options: ProcessAstOptions,
-	context: Context,
-): Promise<{ ast: AST; permissions?: any }> {
+export async function processAst(options: ProcessAstOptions, context: Context) {
 	// FieldMap is a Map of paths in the AST, with each path containing the collection and fields in
 	// that collection that the AST path tries to access
 	const fieldMap: FieldMap = fieldMapFromAst(options.ast, context.schema);
@@ -31,7 +28,7 @@ export async function processAst(
 			validatePathExistence(path, collection, fields, context.schema);
 		}
 
-		return { ast: options.ast };
+		return options.ast;
 	}
 
 	const policies = await fetchPolicies(options.accountability, context);
@@ -66,8 +63,5 @@ export async function processAst(
 
 	injectCases(options.ast, permissions);
 
-	return {
-		ast: options.ast,
-		permissions,
-	};
+	return options.ast;
 }

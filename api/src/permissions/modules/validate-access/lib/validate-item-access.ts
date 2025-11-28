@@ -11,14 +11,8 @@ export interface ValidateItemAccessOptions {
 	collection: string;
 	primaryKeys: PrimaryKey[];
 	fields?: string[];
-	returnFieldPermissions?: boolean;
 }
 
-export async function validateItemAccess(
-	options: ValidateItemAccessOptions & { returnFieldPermissions: true },
-	context: Context,
-): Promise<{ hasAccess: boolean; authorizedFields: string[] }>;
-export async function validateItemAccess(options: ValidateItemAccessOptions, context: Context): Promise<boolean>;
 export async function validateItemAccess(options: ValidateItemAccessOptions, context: Context) {
 	const primaryKeyField = context.schema.collections[options.collection]?.primary;
 
@@ -40,36 +34,31 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 		cases: [],
 	};
 
-	const processResult = await processAst({ ast, ...options }, context);
+	await processAst({ ast, ...options }, context);
 
 	// Inject the filter after the permissions have been processed, as to not require access to the primary key
-	processResult.ast.query.filter = {
+	ast.query.filter = {
 		[primaryKeyField]: {
 			_in: options.primaryKeys,
 		},
 	};
 
-	const items = await fetchPermittedAstRootFields(processResult.ast, {
+	const items = await fetchPermittedAstRootFields(ast, {
 		schema: context.schema,
 		accountability: options.accountability,
 		knex: context.knex,
 		action: options.action,
 	});
 
-	let hasAccess = false;
-
 	if (items && items.length === options.primaryKeys.length) {
-		hasAccess = options.fields
-			? items.every((item: any) => options.fields!.every((field) => toBoolean(item[field])))
-			: true;
+		const { fields } = options;
+
+		if (fields) {
+			return items.every((item: any) => fields.every((field) => toBoolean(item[field])));
+		}
+
+		return true;
 	}
 
-	if (options.returnFieldPermissions) {
-		return {
-			hasAccess,
-			authorizedFields: processResult.permissions.find((p: any) => p.collection === options.collection)?.fields ?? [],
-		};
-	}
-
-	return hasAccess;
+	return false;
 }

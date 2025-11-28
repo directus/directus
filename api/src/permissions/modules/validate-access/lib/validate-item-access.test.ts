@@ -12,11 +12,6 @@ vi.mock('../../process-ast/process-ast.js');
 
 beforeEach(() => {
 	vi.clearAllMocks();
-
-	vi.mocked(processAst).mockImplementation(async ({ ast }) => ({
-		ast: ast,
-		permissions: [],
-	}));
 });
 
 test('Throws error when primary key does not exist in given collection', async () => {

@@ -38,7 +38,7 @@ test('Returns AST unmodified if accountability is null', async () => {
 
 	const output = await processAst({ action: 'read', accountability, ast }, { schema } as Context);
 
-	expect(output.ast).toBe(ast);
+	expect(output).toBe(ast);
 });
 
 test('Returns AST unmodified and unverified is current user is admin', async () => {
@@ -53,7 +53,7 @@ test('Returns AST unmodified and unverified is current user is admin', async () 
 
 	const output = await processAst({ accountability, action: 'read', ast }, { schema } as Context);
 
-	expect(output.ast).toBe(ast);
+	expect(output).toBe(ast);
 });
 
 test('Validates all paths existence in AST if accountability is null', async () => {
