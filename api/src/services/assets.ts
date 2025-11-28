@@ -9,7 +9,6 @@ import {
 import type {
 	AbstractServiceOptions,
 	Accountability,
-	File,
 	Range,
 	Stat,
 	SchemaOverview,
@@ -26,6 +25,7 @@ import sharp from 'sharp';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
+import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getStorage } from '../storage/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
@@ -41,11 +41,47 @@ export class AssetsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
+	filesService: FilesService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
+		this.filesService = new FilesService({ ...options, accountability: null });
+	}
+
+	/**
+	 * Filter file fields based on user permissions
+	 * Keeps only the 'type' field (essential for response) and fields the user has access to
+	 */
+	private async filterFileFields(file: any, fileId: string, systemPublicKeys: (string | null)[]): Promise<any> {
+		if (systemPublicKeys.includes(fileId) || !this.accountability || this.accountability.admin) {
+			return file;
+		}
+
+		const allowedFields = await fetchAllowedFields(
+			{
+				accountability: this.accountability,
+				action: 'read',
+				collection: 'directus_files',
+			},
+			{ knex: this.knex, schema: this.schema },
+		);
+
+		const hasFullAccess = allowedFields.includes('*');
+
+		if (!hasFullAccess) {
+			const essentialFields = ['type'];
+			const fieldsToKeep = [...essentialFields, ...allowedFields];
+
+			for (const field in file) {
+				if (!fieldsToKeep.includes(field)) {
+					delete file[field];
+				}
+			}
+		}
+
+		return file;
 	}
 
 	async getAsset(
@@ -75,7 +111,7 @@ export class AssetsService {
 			.from('directus_settings')
 			.first();
 
-		const systemPublicKeys = Object.values(publicSettings || {});
+		const systemPublicKeys: string[] = Object.values(publicSettings || {});
 
 		/**
 		 * This is a little annoying. Postgres will error out if you're trying to search in `where`
@@ -83,8 +119,6 @@ export class AssetsService {
 		 * validity of the uuid ahead of time.
 		 */
 		if (!isValidUuid(id)) throw new ForbiddenError();
-
-		let filesService: FilesService;
 
 		if (systemPublicKeys.includes(id) === false && this.accountability) {
 			await validateAccess(
@@ -96,15 +130,16 @@ export class AssetsService {
 				},
 				{ knex: this.knex, schema: this.schema },
 			);
+		}
 
-			filesService = new FilesService({ accountability: this.accountability, knex: this.knex, schema: this.schema });
-		} else filesService = new FilesService({ knex: this.knex, schema: this.schema });
-
-		const file = (await filesService.readOne(id, { limit: 1 })) as File;
+		const file = (await this.filesService.readOne(id, { limit: 1 }));
 
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
 		if (!exists) throw new ForbiddenError();
+
+		// Filter fields based on user permissions
+		await this.filterFileFields(file, id, systemPublicKeys);
 
 		if (range) {
 			const missingRangeLimits = range.start === undefined && range.end === undefined;
