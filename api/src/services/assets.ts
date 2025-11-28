@@ -132,7 +132,7 @@ export class AssetsService {
 			);
 		}
 
-		const file = (await this.filesService.readOne(id, { limit: 1 }));
+		const file = await this.filesService.readOne(id, { limit: 1 });
 
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
