@@ -42,6 +42,12 @@ export const WebSocketCollabMessage = z.discriminatedUnion('action', [
 ]);
 export type WebSocketCollabMessage = z.infer<typeof WebSocketCollabMessage>;
 
+// Broadcast Messages
+export type BroadcastMessage = {
+	client: ClientID;
+	message: ClientCollabMessage;
+};
+
 // Outgoing Messages
 export type ClientCollabMessage = {
 	type: typeof COLLAB;

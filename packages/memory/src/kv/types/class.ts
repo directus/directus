@@ -47,6 +47,10 @@ export interface Kv {
 	 */
 	setMax(key: string, value: number): Promise<boolean>;
 
+	aquireLock(key: string): Promise<string | undefined>;
+
+	releaseLock(key: string, hash: string): Promise<boolean>;
+
 	/**
 	 * Remove all keys from the kv store
 	 */

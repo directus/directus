@@ -2,6 +2,7 @@ import type { Redis } from 'ioredis';
 
 export interface ExtendedRedis extends Redis {
 	setMax(key: string, value: number): Promise<number>;
+	release(key: string, value: string): Promise<number>;
 }
 
 export interface KvConfigAbstract {

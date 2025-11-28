@@ -15,8 +15,8 @@ import { hasFieldPermision } from './field-permissions.js';
  * Handler responsible for subscriptions
  */
 export class CollabHandler {
-	// storage of subscriptions per collection
 	rooms: CollabRooms;
+
 	/**
 	 * Initialize the handler
 	 */

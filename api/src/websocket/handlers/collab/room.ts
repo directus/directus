@@ -1,6 +1,7 @@
 import {
 	COLLAB,
 	COLLAB_COLORS,
+	type Accountability,
 	type ClientBaseCollabMessage,
 	type ClientID,
 	type CollabColor,
@@ -15,15 +16,19 @@ import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
 import { hasFieldPermision } from './field-permissions.js';
 import { sanitizePayload } from './sanitize-payload.js';
+import { Messenger } from './messenger.js';
+import { useStore, type RedisStore } from './store.js';
+import { RedisStoreError } from './errors.js';
 
 export class CollabRooms {
 	rooms: Record<string, Room> = {};
+	messenger = new Messenger();
 
 	async createRoom(collection: string, item: string | null, version: string | null, initialChanges?: Item) {
 		const uid = getRoomHash(collection, item, version);
 
 		if (!(uid in this.rooms)) {
-			this.rooms[uid] = new Room(uid, collection, item, version, initialChanges);
+			this.rooms[uid] = new Room(this.messenger, uid, collection, item, version, initialChanges);
 		}
 
 		return this.rooms[uid]!;
@@ -46,39 +51,65 @@ export class CollabRooms {
 	}
 }
 
-export class Room {
+type RoomData = {
 	uid: string;
 	collection: string;
 	item: string | null;
 	version: string | null;
 	changes: Item;
-	clients: WebSocketClient[] = [];
-	clientColors: Record<ClientID, CollabColor> = {};
-	focuses: Record<ClientID, string> = {};
+	clients: { uid: ClientID; accountability: Accountability }[];
+	clientColors: Record<ClientID, CollabColor>;
+	focuses: Record<ClientID, string>;
+};
 
-	constructor(uid: string, collection: string, item: string | null, version: string | null, initialChanges?: Item) {
+export class Room {
+	uid: string;
+	messenger: Messenger;
+	store;
+
+	constructor(
+		messenger: Messenger,
+		uid: string,
+		collection: string,
+		item: string | null,
+		version: string | null,
+		initialChanges?: Item,
+	) {
+		this.store = useStore<RoomData>(uid);
+
+		this.store(async (store) => {
+			if (await store.has('collection')) return;
+
+			await store.set('collection', collection);
+			await store.set('item', item);
+			await store.set('version', version);
+			// TODO: Have to merge multiple initial Changes somehow?
+			await store.set('changes', initialChanges ?? {});
+		});
+
+		this.messenger = messenger;
 		this.uid = uid;
-		this.collection = collection;
-		this.item = item;
-		this.version = version;
-		this.changes = initialChanges ?? {};
 
 		// React to external updates to the item
-		emitter.onAction(`${this.collection}.items.update`, async ({ keys }, { accountability }) => {
-			if (!keys.includes(this.item)) return;
+		emitter.onAction(`${collection}.items.update`, async ({ keys }, { accountability }) => {
+			if (!keys.includes(item)) return;
 
-			const service = getService(this.collection, { schema: await getSchema() });
+			const service = getService(collection, { schema: await getSchema() });
 
-			const item = this.item ? await service.readOne(this.item) : await service.readSingleton({});
+			const result = item ? await service.readOne(item) : await service.readSingleton({});
 
-			this.changes = Object.fromEntries(
-				Object.entries(this.changes).filter(([key, value]) => !isEqual(item[key], value)),
-			);
+			await this.store(async (store) => {
+				let changes = (await store.get('changes')) ?? {};
+
+				changes = Object.fromEntries(Object.entries(changes).filter(([key, value]) => !isEqual(result[key], value)));
+
+				store.set('changes', changes);
+			});
 
 			for (const client of this.clients) {
 				if (client.accountability?.user === accountability?.user) continue;
 
-				this.send(client, {
+				this.send(client.uid, {
 					action: 'save',
 				});
 			}
@@ -101,10 +132,10 @@ export class Room {
 				color: clientColor,
 			});
 
-			this.clients.push(client);
+			this.clients.push({ uid: client.uid, accountability: client.accountability! });
 		}
 
-		this.send(client, {
+		this.send(client.uid, {
 			action: 'init',
 			collection: this.collection,
 			item: this.item,
@@ -121,7 +152,7 @@ export class Room {
 			),
 			connection: client.uid,
 			users: Array.from(this.clients).map((client) => ({
-				user: client.accountability!.user!,
+				user: client.accountability.user!,
 				connection: client.uid,
 				color: this.clientColors[client.uid]!,
 			})),
@@ -150,7 +181,7 @@ export class Room {
 			{
 				action: 'save',
 			},
-			sender,
+			sender.uid,
 		);
 	}
 
@@ -166,12 +197,12 @@ export class Room {
 				{
 					knex: getDatabase(),
 					schema: await getSchema(),
-					accountability: client.accountability!,
+					accountability: client.accountability,
 				},
 			);
 
 			if (field in item) {
-				this.send(client, {
+				this.send(client.uid, {
 					action: 'update',
 					field,
 					changes: item[field],
@@ -183,10 +214,10 @@ export class Room {
 	async unset(field: string) {
 		delete this.changes[field];
 
-		for (const c of this.clients) {
-			if (field && !(await hasFieldPermision(c.accountability!, this.collection, field))) continue;
+		for (const client of this.clients) {
+			if (field && !(await hasFieldPermision(client.accountability, this.collection, field))) continue;
 
-			this.send(c, {
+			this.send(client.uid, {
 				action: 'update',
 				field: field,
 			});
@@ -201,9 +232,9 @@ export class Room {
 		}
 
 		for (const client of this.clients) {
-			if (field && !(await hasFieldPermision(client.accountability!, this.collection, field))) continue;
+			if (field && !(await hasFieldPermision(client.accountability, this.collection, field))) continue;
 
-			this.send(client, {
+			this.send(client.uid, {
 				action: 'focus',
 				connection: sender.uid,
 				field,
@@ -212,24 +243,19 @@ export class Room {
 	}
 
 	sendAll(message: ClientBaseCollabMessage) {
-		const msg = JSON.stringify({ ...message, type: COLLAB, room: this.uid });
-
 		for (const client of this.clients) {
-			client.send(msg);
+			this.messenger.send(client.uid, { ...message, type: COLLAB, room: this.uid });
 		}
 	}
 
-	sendExcluding(message: ClientBaseCollabMessage, exclude: WebSocketClient) {
-		const msg = JSON.stringify({ ...message, type: COLLAB, room: this.uid });
-
+	sendExcluding(message: ClientBaseCollabMessage, exclude: ClientID) {
 		for (const client of this.clients) {
-			if (client.uid !== exclude.uid) client.send(msg);
+			if (client.uid !== exclude) this.messenger.send(client.uid, { ...message, type: COLLAB, room: this.uid });
 		}
 	}
 
-	send(client: WebSocketClient, message: ClientBaseCollabMessage) {
-		const msg = JSON.stringify({ ...message, type: COLLAB, room: this.uid });
-		client.send(msg);
+	send(client: ClientID, message: ClientBaseCollabMessage) {
+		this.messenger.send(client, { ...message, type: COLLAB, room: this.uid });
 	}
 }
 

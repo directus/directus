@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import {
 	bufferToUint8Array,
 	compress,
@@ -28,6 +29,14 @@ export const SET_MAX_SCRIPT = `
   return true
 `;
 
+const RELEASE_SCRIPT = `
+	if redis.call("GET", KEYS[1]) == ARGV[1] then
+	return redis.call("DEL", KEYS[1])
+	else
+	return 0
+	end
+`;
+
 export class KvRedis implements Kv {
 	private redis: ExtendedRedis;
 	private namespace: string;
@@ -39,6 +48,13 @@ export class KvRedis implements Kv {
 			config.redis.defineCommand('setMax', {
 				numberOfKeys: 1,
 				lua: SET_MAX_SCRIPT,
+			});
+		}
+
+		if ('release' in config.redis === false) {
+			config.redis.defineCommand('release', {
+				numberOfKeys: 1,
+				lua: RELEASE_SCRIPT,
 			});
 		}
 
@@ -94,6 +110,18 @@ export class KvRedis implements Kv {
 	async setMax(key: string, value: number) {
 		const wasSet = await this.redis.setMax(withNamespace(key, this.namespace), value);
 		return wasSet !== 0;
+	}
+
+	async aquireLock(key: string) {
+		const hash = randomUUID();
+		const result = await this.redis.set(key, hash, 'EX', 10, 'NX');
+
+		return result === 'OK' ? hash : undefined;
+	}
+
+	async releaseLock(key: string, hash: string) {
+		const result = await this.redis.release(withNamespace(key, this.namespace), hash);
+		return result !== 0;
 	}
 
 	async clear() {

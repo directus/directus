@@ -29,4 +29,12 @@ export class CacheRedis implements Cache {
 	async clear(): Promise<void> {
 		await this.store.clear();
 	}
+
+	async aquireLock(key: string) {
+		return await this.store.aquireLock(key);
+	}
+
+	async releaseLock(key: string, hash: string) {
+		return await this.store.releaseLock(key, hash);
+	}
 }

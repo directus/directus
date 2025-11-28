@@ -28,4 +28,12 @@ export class CacheLocal implements Cache {
 	async clear(): Promise<void> {
 		await this.store.clear();
 	}
+
+	aquireLock(key: string) {
+		return this.store.aquireLock(key);
+	}
+
+	releaseLock(key: string, hash: string) {
+		return this.store.releaseLock(key, hash);
+	}
 }

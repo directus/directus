@@ -33,4 +33,8 @@ export interface Cache {
 	 * Remove all keys from the cache
 	 */
 	clear(): Promise<void>;
+
+	aquireLock(key: string): Promise<string | undefined>;
+
+	releaseLock(key: string, hash: string): Promise<boolean>;
 }
