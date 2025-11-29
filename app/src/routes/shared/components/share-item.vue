@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useItem } from '@/composables/use-item';
+import { useUserStore } from '@/stores/user';
 import { toRefs } from 'vue';
 
 const props = defineProps<{
@@ -8,6 +9,8 @@ const props = defineProps<{
 }>();
 
 const { collection, primaryKey } = toRefs(props);
+
+const userStore = useUserStore();
 
 const { edits, item, loading } = useItem(collection, primaryKey);
 </script>
@@ -18,7 +21,8 @@ const { edits, item, loading } = useItem(collection, primaryKey);
 		:collection="collection"
 		:initial-values="item"
 		:primary-key="primaryKey"
-		disabled
+		non-editable
 		:loading="loading"
+		:direction="userStore.textDirection"
 	/>
 </template>

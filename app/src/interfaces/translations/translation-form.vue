@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { isEmpty } from 'lodash';
 import { usePermissions } from '@/composables/use-permissions';
 import { type DisplayItem } from '@/composables/use-relation-multiple';
@@ -10,6 +9,7 @@ import LanguageSelect from './language-select.vue';
 const {
 	languageOptions,
 	disabled,
+	nonEditable,
 	relationInfo,
 	getItemWithLang,
 	displayItems,
@@ -22,6 +22,7 @@ const {
 } = defineProps<{
 	languageOptions: Record<string, any>[];
 	disabled?: boolean;
+	nonEditable?: boolean;
 	autofocus?: boolean;
 	relationInfo?: RelationM2M;
 	getItemWithLang: (items: Record<string, any>[], lang: string | undefined) => DisplayItem | undefined;
@@ -36,8 +37,6 @@ const {
 }>();
 
 const lang = defineModel<string>('lang');
-
-const { t } = useI18n();
 
 const selectedLanguage = computed(() => languageOptions.find((optLang) => lang.value === optLang.value));
 
@@ -151,7 +150,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 
 					<v-icon
 						v-else
-						v-tooltip="!activatorDisabled ? t('enable') : null"
+						v-tooltip="!activatorDisabled ? $t('enable') : null"
 						:class="{ disabled: activatorDisabled }"
 						:name="iconName"
 						:disabled="activatorDisabled"
@@ -165,7 +164,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 
 			<template #controls="{ active, toggle }">
 				<v-remove
-					v-if="item"
+					v-if="item && !(nonEditable && item.$type !== 'deleted')"
 					:class="{ disabled: activatorDisabled }"
 					:disabled="activatorDisabled"
 					:item-type="item.$type"
@@ -182,11 +181,10 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 		<v-form
 			v-if="selectedLanguage"
 			:key="selectedLanguage.value"
-			:primary-key="
-				relationInfo?.junctionPrimaryKeyField.field ? itemInitial?.[relationInfo?.junctionPrimaryKeyField.field] : null
-			"
+			:primary-key="itemPrimaryKey ?? '+'"
 			:class="{ unselected: !item }"
 			:disabled="disabled || !saveAllowed || item?.$type === 'deleted'"
+			:non-editable
 			:loading="loading"
 			:fields="fields"
 			:model-value="item"

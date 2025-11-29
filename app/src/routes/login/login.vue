@@ -48,7 +48,7 @@ useHead({
 <template>
 	<public-view>
 		<div class="header">
-			<h1 class="type-title"><v-text-overflow :text="t('sign_in')" /></h1>
+			<h1 class="type-title"><v-text-overflow :text="$t('sign_in')" /></h1>
 			<div v-if="!authenticated && providerOptions.length > 1" class="provider-select">
 				<v-select v-model="providerSelect" inline :items="providerOptions" label />
 			</div>
@@ -63,23 +63,23 @@ useHead({
 		<sso-links v-if="!authenticated" :providers="auth.providers" />
 
 		<div v-if="!authenticated && serverStore.info.project?.public_registration" class="registration-wrapper">
-			{{ t('dont_have_an_account') }}
+			{{ $t('dont_have_an_account') }}
 			<router-link to="/register" class="registration-link">
-				{{ t('sign_up_now') }}
+				{{ $t('sign_up_now') }}
 			</router-link>
 		</div>
 
 		<template #notice>
 			<template v-if="authenticated">
 				<v-icon name="lock_open" left />
-				{{ t('authenticated') }}
+				{{ $t('authenticated') }}
 			</template>
 			<template v-else-if="logoutReason && te(`logoutReason.${logoutReason}`)">
-				{{ t(`logoutReason.${logoutReason}`) }}
+				{{ $t(`logoutReason.${logoutReason}`) }}
 			</template>
 			<template v-else>
 				<v-icon name="lock" left />
-				{{ t('not_authenticated') }}
+				{{ $t('not_authenticated') }}
 			</template>
 		</template>
 	</public-view>

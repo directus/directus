@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Acerca de
+first_name: Nombre
+last_name: Apellido
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
@@ -170,19 +172,9 @@ rename_version: Renombrar Versión
 compare_version: Comparar Versión
 save_version: Guardar Versión
 promote_version: Promover Versión
-promote_version_disabled: Sin Cambios
-promote_version_drawer_title: Promover {version} a Principal
-promote_version_changes: Cambios
-promote_version_preview: Vista previa
-outdated_notice: >-
-  El elemento principal se ha actualizado desde que se creó esta versión. Revise todos los valores de campo que se encuentran a continuación y confirme qué versión debe usarse al promocionar esta versión al elemento principal.
-promote_notice: >-
-  Revise todos los valores de campo a continuación y confirme qué versión debe usarse al promocionar esta versión al elemento principal.
 delete_version: Eliminar Versión
 delete_version_copy: >-
   ¿Está seguro de que desea eliminar la versión "{version}"? Esta acción no se puede deshacer.
-delete_on_promote_copy: >-
-  ¿Quieres eliminar o conservar la versión "{version}" después de su promoción?
 reset_bookmark: Restablecer marcador
 update_bookmark: Actualizar marcador
 delete_bookmark: Eliminar Marcador
@@ -460,7 +452,6 @@ revision_delta_created: Creado
 revision_delta_created_externally: Creado externamente
 revision_delta_updated: '1 Campo Actualizado |{count} Campos Actualizados'
 revision_delta_deleted: Borrado
-revision_delta_version_saved: 'Guardar versión (1 Campo Actualizado) | Guardar versión ({count} Campos Actualizados)'
 revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo ha sido actualizado, pero su valor está siendo ocultado por razones de seguridad.
 revision_delta_other: Revisión
@@ -1770,9 +1761,7 @@ interfaces:
     accordion_mode: Modo Accordion
     max_one_section_open: Máximo de una sección abierta
   presentation-links:
-    presentation-links: Botón de enlace
     links: Enlaces
-    description: Botones de enlace configurables para abrir URLs dinámicas
     style: Estilo
     primary: Primario
     link: Enlaces
@@ -2558,15 +2547,6 @@ search_flow: Buscar Flujo...
 percent: Porciento
 show_password: Mostrar Contraseña
 hide_password: Ocultar Contraseña
-bsl_banner:
-  welcome_to_directus: '¡Le damos la bienvenida a Directus!'
-  directus_free_use: El Directo es libre de usar para entidades menores de 5 millones de dólares en ingresos anuales, financiamiento o presupuesto operativo.
-  organization_threshold: Las entidades por encima de este umbral requieren una licencia de pago.
-  license_agreement: Al hacer clic en "Aceptar", acepta los {directusBsl} y {privacyPolicy}.
-  directus_bsl: BSL de Directus 1,1
-  privacy_policy: Política de Privacidad
-  accept_terms: Aceptar
-  get_license: Obtener una licencia
 accepted: Aceptado
 text_direction_auto: Automático (coincidir idioma)
 text_direction_ltr: Izquierda a derecha (LTR)

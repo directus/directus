@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: About
+first_name: Nome
+last_name: Cognome
 identifier: Identificatore
 avatar: Avatar
 application: Applicazione
@@ -164,19 +166,9 @@ rename_version: Rinomina versione
 compare_version: Confronta versioni
 save_version: Salva la versione
 promote_version: Promuovi versione
-promote_version_disabled: Nessuna modifica
-promote_version_drawer_title: Promuovi {version} a principale
-promote_version_changes: Novità
-promote_version_preview: Anteprima
-outdated_notice: >-
-  L'elemento principale è stato modificato da quando è stata creata questa versione. Verifica i valori di tutti i campi qui sotto e conferma quale versione deve essere usata promuovendo questa versione nell'elemento principale.
-promote_notice: >-
-  Verifica i valori di tutti i campi qui sotto e conferma quale versione deve essere usata promuovendo questa versione nell'elemento principale.
 delete_version: Elimina versione
 delete_version_copy: >-
   Sei sicuro di voler eliminare la versione "{version}"? Questa azione è irreversibile.
-delete_on_promote_copy: >-
-  Vuoi eliminare o tenere la versione "{version}" dopo la promozione?
 reset_bookmark: Reimposta Segnalibro
 update_bookmark: Aggiorna Segnalibro
 delete_bookmark: Elimina Segnalibro
@@ -453,7 +445,6 @@ revision_delta_created: Creato
 revision_delta_created_externally: Creato Esternamente
 revision_delta_updated: 'Aggiornato 1 Campo | Aggiornati {count} Campi'
 revision_delta_deleted: Eliminato
-revision_delta_version_saved: 'Salvataggio Versione (Aggiornato un campo) | Salvataggio Versione (Aggiornati {count} campi)'
 revision_delta_reverted: Ripristinato
 revision_delta_update_message: Questo campo è stato aggiornato, ma il suo valore è nascosto per motivi di sicurezza.
 revision_delta_other: Revisione
@@ -1756,9 +1747,7 @@ interfaces:
     accordion_mode: Modalità dell'accordion
     max_one_section_open: Massimo una sezione aperta
   presentation-links:
-    presentation-links: Pulsanti di collegamento
     links: Collegamenti
-    description: Pulsanti configurabili per avviare URL dinamici
     style: Stile
     primary: Principale
     link: Collegamenti

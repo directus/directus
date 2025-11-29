@@ -12,6 +12,12 @@ const schema = new SchemaBuilder()
 		c.field('string').string();
 		c.field('float').float();
 		c.field('integer').integer();
+
+		c.field('secret')
+			.string()
+			.options({
+				special: ['conceal'],
+			});
 	})
 	.build();
 
@@ -116,6 +122,27 @@ test(`Remove forbidden field(s) from search`, async () => {
 
 	expect(rawQuery.sql).toEqual(`select * where ((LOWER("test"."string") LIKE ?))`);
 	expect(rawQuery.bindings).toEqual(['%directus%']);
+});
+
+test(`Remove "conceal" field(s) from search irrespective of permissions`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applySearch(db as any, schema, queryBuilder, 'directus', 'test', {}, [
+		{
+			collection: 'test',
+			action: 'read',
+			fields: ['text', 'string', 'secret'],
+			permissions: {
+				text: {},
+			},
+		} as unknown as Permission,
+	]);
+
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toEqual(`select * where ((LOWER("test"."text") LIKE ?) or (LOWER("test"."string") LIKE ?))`);
+	expect(rawQuery.bindings).toEqual(['%directus%', '%directus%']);
 });
 
 test(`Add all fields for * field rule`, async () => {

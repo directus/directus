@@ -10,7 +10,6 @@ import {
 } from '@directus/utils';
 import { cloneDeep, get, isEmpty, set } from 'lodash';
 import { computed, inject, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import Nodes from './nodes.vue';
 import { getNodeName } from './utils';
 
@@ -51,8 +50,6 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const menuEl = ref();
 
@@ -175,16 +172,16 @@ function addKeyAsNode() {
 
 <template>
 	<v-notice v-if="collectionRequired && !collectionField && !collection" type="warning">
-		{{ t('collection_field_not_setup') }}
+		{{ $t('collection_field_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="collectionRequired && !collection" type="warning">
-		{{ t('select_a_collection') }}
+		{{ $t('select_a_collection') }}
 	</v-notice>
 
 	<div v-else class="system-filter" :class="{ inline, empty: innerValue.length === 0, field: fieldName !== undefined }">
 		<v-list mandatory>
 			<div v-if="innerValue.length === 0" class="no-rules">
-				{{ t('interfaces.filter.no_rules') }}
+				{{ $t('interfaces.filter.no_rules') }}
 			</div>
 
 			<nodes
@@ -204,15 +201,15 @@ function addKeyAsNode() {
 		</v-list>
 
 		<div v-if="fieldName" class="buttons">
-			<button @click="addNode(fieldName!)">{{ t('interfaces.filter.add_filter') }}</button>
-			<button @click="addNode('$group')">{{ t('interfaces.filter.add_group') }}</button>
+			<button @click="addNode(fieldName!)">{{ $t('interfaces.filter.add_filter') }}</button>
+			<button @click="addNode('$group')">{{ $t('interfaces.filter.add_group') }}</button>
 		</div>
 		<div v-else class="buttons">
 			<v-menu ref="menuEl" placement="bottom-start" show-arrow>
 				<template #activator="{ toggle, active }">
 					<button class="add-filter" :class="{ active }" @click="toggle">
 						<v-icon v-if="inline" name="add" class="add" small />
-						<span>{{ t('interfaces.filter.add_filter') }}</span>
+						<span>{{ $t('interfaces.filter.add_filter') }}</span>
 						<v-icon name="expand_more" class="expand_more" />
 					</button>
 				</template>
@@ -230,7 +227,7 @@ function addKeyAsNode() {
 					<template #prepend>
 						<v-list-item clickable @click="addNode('$group')">
 							<v-list-item-content>
-								<v-text-overflow :text="t('interfaces.filter.add_group')" />
+								<v-text-overflow :text="$t('interfaces.filter.add_group')" />
 							</v-list-item-content>
 						</v-list-item>
 						<v-divider />
@@ -240,7 +237,7 @@ function addKeyAsNode() {
 				<v-list v-else :mandatory="false">
 					<v-list-item clickable @click="addNode('$group')">
 						<v-list-item-content>
-							<v-text-overflow :text="t('interfaces.filter.add_group')" />
+							<v-text-overflow :text="$t('interfaces.filter.add_group')" />
 						</v-list-item-content>
 					</v-list-item>
 					<v-divider />
@@ -249,7 +246,7 @@ function addKeyAsNode() {
 							<input
 								v-model="newKey"
 								class="new-key-input"
-								:placeholder="t('interfaces.filter.add_key_placeholder')"
+								:placeholder="$t('interfaces.filter.add_key_placeholder')"
 								@keydown.enter="addKeyAsNode"
 							/>
 						</v-list-item-content>

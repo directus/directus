@@ -5,7 +5,6 @@ import { useRelationsStore } from '@/stores/relations';
 import formatTitle from '@directus/format-title';
 import { getFunctionsForType, getRelationType } from '@directus/utils';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 type FieldInfo = FieldNode & {
 	disabled?: boolean;
@@ -36,7 +35,6 @@ const props = withDefaults(
 
 const emit = defineEmits(['add']);
 
-const { t } = useI18n();
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
 
@@ -111,7 +109,7 @@ const openWhileSearching = computed(() => {
 				</v-list-item-icon>
 				<v-list-item-content>
 					<v-text-overflow
-						:text="`${t(`functions.${fn}`)} (${rawFieldNames ? field.field : field.name || formatTitle(field.field)})`"
+						:text="`${$t(`functions.${fn}`)} (${rawFieldNames ? field.field : field.name || formatTitle(field.field)})`"
 						:highlight="search"
 					/>
 				</v-list-item-content>
@@ -137,7 +135,7 @@ const openWhileSearching = computed(() => {
 
 		<template v-if="allowSelectAll">
 			<v-list-item clickable :disabled="selectAllDisabled" @click="addAll">
-				{{ t('select_all') }}
+				{{ $t('select_all') }}
 			</v-list-item>
 
 			<v-divider />

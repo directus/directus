@@ -19,6 +19,7 @@ const props = withDefaults(
 		loading?: boolean;
 		rawEditorEnabled?: boolean;
 		rawEditorActive?: boolean;
+		disabledMenu?: boolean;
 		comparison?: ComparisonContext;
 		comparisonActive?: boolean;
 	}>(),
@@ -33,6 +34,7 @@ const props = withDefaults(
 		loading: false,
 		rawEditorEnabled: false,
 		rawEditorActive: false,
+		disabledMenu: false,
 	},
 );
 
@@ -56,9 +58,12 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 
 <template>
 	<div class="field-label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
-		<button type="button" class="field-name" @click="toggle">
-			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot" />
-
+		<component
+			:is="disabledMenu ? 'div' : 'button'"
+			class="field-name"
+			v-bind="!disabledMenu ? { type: 'button', onClick: toggle } : {}"
+		>
+			<span v-if="edited" v-tooltip="$t('edited')" class="edit-dot" />
 			<v-checkbox
 				v-if="batchMode"
 				:model-value="batchActive"
@@ -77,7 +82,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 			<div class="field-label-content">
 				<v-text-overflow :text="field.name" />
 
-				<span v-if="showHiddenIndicator" class="hidden-indicator">({{ t('hidden') }})</span>
+				<span v-if="showHiddenIndicator" class="hidden-indicator">({{ $t('hidden') }})</span>
 
 				<v-icon
 					v-if="field.meta?.required === true"
@@ -92,7 +97,7 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 
 				<v-icon
 					v-if="!disabled && rawEditorEnabled"
-					v-tooltip="t('toggle_raw_editor')"
+					v-tooltip="$t('toggle_raw_editor')"
 					class="raw-editor-toggle"
 					:class="{ active: rawEditorActive }"
 					name="data_object"
@@ -113,8 +118,8 @@ function getUpdatedInRevisionTooltip(isDifferentFromLatest: boolean) {
 				</v-chip>
 			</div>
 
-			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
-		</button>
+			<v-icon v-if="!disabled && !disabledMenu" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
+		</component>
 	</div>
 </template>
 

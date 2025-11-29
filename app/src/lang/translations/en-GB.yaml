@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: About
+first_name: First Name
+last_name: Last Name
 identifier: Identifier
 avatar: Avatar
 application: Application
@@ -103,7 +105,6 @@ rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
-promote_version_preview: Preview
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
@@ -757,7 +758,7 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Select a Flow
-run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
+run_flow_on_current_edited_confirm: This item may be updated by this Flow, are you sure you want to execute it?
 trigger: Trigger
 trigger_options: Trigger Options
 view_trigger: View Trigger
@@ -989,7 +990,7 @@ directus_collection:
   directus_dashboards: Dashboards within the Insights module
   directus_fields: Additional field configuration and metadata
   directus_files: Metadata for all managed file assets
-  directus_flows: Automation flows
+  directus_flows: Automation Flows
   directus_folders: Provides virtual directories for files
   directus_migrations: What version of the database you're using
   directus_notifications: Notifications sent to users
@@ -1427,9 +1428,9 @@ interfaces:
     accordion_mode: Accordion Mode
     max_one_section_open: Max 1 Section Open
   presentation-links:
-    presentation-links: Button Links
+    presentation-links: Buttons
     links: Links
-    description: Configurable link buttons for launching dynamic URLs
+    description: Configurable link buttons for launching dynamic URLs or triggering Flows
     style: Style
     primary: Primary
     link: Links
@@ -2017,11 +2018,11 @@ triggers:
 a_flow_uuid: Select a Flow to trigger...
 any_string_or_json: Any string or JSON...
 item_payload_placeholder: This is the JSON used to update the item's field values...
-operation_variables_note: You can access flow data with variables such as **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** and **{'{'}{'{'}$accountability{'}'}{'}'}**, or reference previous operations using **{'{'}{'{'}operation_key{'}'}{'}'}**.'
+operation_variables_note: You can access Flow data with variables such as **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** and **{'{'}{'{'}$accountability{'}'}{'}'}**, or reference previous operations using **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condition
-    description: Route a flow based on If / Else logic
+    description: Route a Flow based on If / Else logic
   exec:
     name: Run Script
     description: Execute arbitrary code to modify the payload
@@ -2093,7 +2094,7 @@ operations:
     description: Alter the Flow's JSON payload
   trigger:
     name: Trigger Flow
-    description: Pass this data to another flow
+    description: Pass this data to another Flow
     flows: Flows
     flow: Flow
     data: Data

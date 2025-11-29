@@ -29,7 +29,7 @@ if (props.includeProjectDefault) {
 		:model-value="value"
 		:items="languages"
 		:disabled="disabled"
-		:placeholder="t('language_placeholder')"
+		:placeholder="$t('language_placeholder')"
 		@update:model-value="$emit('input', $event)"
 	/>
 </template>

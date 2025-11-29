@@ -485,13 +485,13 @@ function handleNoneGroupAddField(index: number, fieldKey: string) {
 							<div class="logic-type none">
 								<span class="key">{{ getFieldPreview(element) }}</span>
 								<span class="text">
-									{{ `— ${t('interfaces.filter.none_of_the_following')}` }}
+									{{ `— ${$t('interfaces.filter.none_of_the_following')}` }}
 								</span>
 							</div>
 							<v-menu placement="bottom-start" show-arrow>
 								<template #activator="{ toggle }">
 									<v-icon
-										v-tooltip="t('interfaces.filter.add_filter')"
+										v-tooltip="$t('interfaces.filter.add_filter')"
 										name="add"
 										class="add-filter"
 										small
@@ -511,7 +511,7 @@ function handleNoneGroupAddField(index: number, fieldKey: string) {
 							</v-menu>
 							<span class="delete">
 								<v-icon
-									v-tooltip="t('delete_label')"
+									v-tooltip="$t('delete_label')"
 									name="close"
 									small
 									clickable
@@ -578,7 +578,7 @@ function handleNoneGroupAddField(index: number, fieldKey: string) {
 							/>
 							<span class="delete">
 								<v-icon
-									v-tooltip="t('delete_label')"
+									v-tooltip="$t('delete_label')"
 									name="close"
 									small
 									clickable
@@ -598,13 +598,13 @@ function handleNoneGroupAddField(index: number, fieldKey: string) {
 								<span class="key" @click="toggleLogic(index)">
 									{{
 										filterInfo[index].name === '_and'
-											? t('interfaces.filter.logic_type_and')
-											: t('interfaces.filter.logic_type_or')
+											? $t('interfaces.filter.logic_type_and')
+											: $t('interfaces.filter.logic_type_or')
 									}}
 								</span>
 								<span class="text">
 									{{
-										`— ${filterInfo[index].name === '_and' ? t('interfaces.filter.all') : t('interfaces.filter.any')} ${t(
+										`— ${filterInfo[index].name === '_and' ? $t('interfaces.filter.all') : $t('interfaces.filter.any')} ${t(
 											'interfaces.filter.of_the_following',
 										)}`
 									}}
@@ -612,7 +612,7 @@ function handleNoneGroupAddField(index: number, fieldKey: string) {
 							</div>
 							<span class="delete">
 								<v-icon
-									v-tooltip="t('delete_label')"
+									v-tooltip="$t('delete_label')"
 									name="close"
 									small
 									clickable

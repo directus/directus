@@ -20,6 +20,8 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Derbarê
+first_name: Navê Pêşîn
+last_name: Navê Paşîn
 identifier: Nasname
 avatar: Avatar
 application: Serlêdan
@@ -164,19 +166,9 @@ rename_version: Navê Guhertoye Biguherîne
 compare_version: Guhertoyê Berhev Bike
 save_version: Guhertoye Tomar Bike
 promote_version: Guhertoye Bilind Bike
-promote_version_disabled: Ti Guhertin Nîne
-promote_version_drawer_title: '{version} bilind bike bo Sereke'
-promote_version_changes: Guhertin
-promote_version_preview: Pêşdîtin
-outdated_notice: >-
-  Hêmana sereke ji dema ku ev guherto hatiye afirandin ve hatiye nûkirin. Ji kerema xwe hemû nirxên qadê yên jêrîn binirxînin, û tesdîq bikin ka kîjan guherto divê were bikaranîn gava ku ev guherto tê bilindkirin bo hêmana sereke.
-promote_notice: >-
-  Ji kerema xwe hemû nirxên qadê yên jêrîn binirxînin, û tesdîq bikin ka kîjan guherto divê were bikaranîn gava ku ev guherto tê bilindkirin bo hêmana sereke.
 delete_version: Guhertoye Jê Bibe
 delete_version_copy: >-
   Tu bi rastî dixwazî guhertoya "{version}" jê bibî? Ev çalakî nayê vegerandin.
-delete_on_promote_copy: >-
-  Tu dixwazî piştî bilindkirinê, guhertoya "{version}" jê bibî an bihêlî?
 reset_bookmark: Nîşankê Vegerîne
 update_bookmark: Nîşankê Nûbike
 delete_bookmark: Nîşankê Jê Bibe
@@ -451,7 +443,6 @@ revision_delta_created: Hate afirandin
 revision_delta_created_externally: Ji Derve Hate Afirandin
 revision_delta_updated: '1 Qad Hate Nûkirin | {count} Qad Hatin Nûkirin'
 revision_delta_deleted: Hate jêbirin
-revision_delta_version_saved: 'Tomarkirina Guhertoyê (1 Qad Hate Nûkirin) | Tomarkirina Guhertoyê ({count} Qad Hatin Nûkirin)'
 revision_delta_reverted: Hate Vegerandin
 revision_delta_update_message: Ev qad hate nûkirin lê nirxa wê ji ber sedemên ewlehiyê tê veşartin.
 revision_delta_other: Sererastkirin
@@ -1750,9 +1741,7 @@ interfaces:
     accordion_mode: Moda Akordionê
     max_one_section_open: Herî Zêde 1 Beş Vekirî
   presentation-links:
-    presentation-links: Girêdanên Bişkokê
     links: Girêdan
-    description: Bişkokên girêdanê yên veavakirî ji bo destpêkirina URLên dînamîk
     style: Şêwaz
     primary: Sereke
     link: Girêdan

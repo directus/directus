@@ -69,7 +69,7 @@ function folderParentPath(folder: Folder, folders: Folder[]) {
 				<v-list-item-icon>
 					<v-icon name="folder_special" />
 				</v-list-item-icon>
-				<v-list-item-content>{{ t('interfaces.system-folder.root_name') }}</v-list-item-content>
+				<v-list-item-content>{{ $t('interfaces.system-folder.root_name') }}</v-list-item-content>
 			</v-list-item>
 			<v-divider v-if="nestedFolders && nestedFolders.length > 0" />
 			<folder-list-item
