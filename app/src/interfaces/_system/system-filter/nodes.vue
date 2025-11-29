@@ -12,7 +12,7 @@ import {
 	LogicalFilterOR,
 	Type,
 } from '@directus/types';
-import { getFilterOperatorsForType, getOutputTypeForFunction, getRelationType, toArray } from '@directus/utils';
+import { getFilterOperatorsForType, getOutputTypeForFunction, toArray } from '@directus/utils';
 import { get } from 'lodash';
 import { computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -329,28 +329,7 @@ function getRelatedCollectionForField(fieldPath: string): string | null {
 	const relations = relationsStore.getRelationsForField(props.collection, fieldPath);
 
 	if (relations[0]) {
-		const relationType = getRelationType({
-			relation: relations[0],
-			collection: props.collection,
-			field: fieldPath,
-		});
-
-		if (relationType === 'o2m') {
-			return relations[0].collection;
-		}
-
-		// Check if it's m2m by looking for junction field
-		// m2m relationships have a junction_field in the relation meta
-		const junctionField = relations[0].meta?.junction_field;
-
-		if (junctionField) {
-			// For m2m, the junction table connects to the related collection
-			const junctionRelations = relationsStore.getRelationsForField(relations[0].collection, junctionField);
-
-			if (junctionRelations[0]?.related_collection) {
-				return junctionRelations[0].related_collection;
-			}
-		}
+		return relations[0].collection;
 	}
 
 	return null;

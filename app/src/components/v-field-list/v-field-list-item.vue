@@ -125,7 +125,7 @@ const openWhileSearching = computed(() => {
 				</v-list-item-icon>
 				<v-list-item-content>
 					<v-text-overflow
-						:text="`${t('interfaces.filter.none')} (${rawFieldNames ? field.field : field.name || formatTitle(field.field)})`"
+						:text="`${$t('interfaces.filter.none')} (${rawFieldNames ? field.field : field.name || formatTitle(field.field)})`"
 						:highlight="search"
 					/>
 				</v-list-item-content>

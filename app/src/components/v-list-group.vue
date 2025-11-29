@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue';
 import { useGroupable } from '@directus/composables';
+import { computed, watch } from 'vue';
 
 interface Props {
 	/** If enabled, multiple elements can be selected */
@@ -84,7 +84,7 @@ function onClick(event: MouseEvent) {
 			:disabled="disabled"
 			:dense="dense"
 			:clickable="Boolean(clickable || to || !open)"
-			:activator="!clickable && $slots.default && arrowPlacement"
+			:activator="Boolean(!clickable && $slots.default && arrowPlacement)"
 			@click="onClick"
 		>
 			<v-list-item-icon
