@@ -1197,6 +1197,7 @@ settings_permissions: Reglas de Acceso
 settings_project: Ajustes
 settings_appearance: Apariencia
 settings_ai: IA
+model_context_protocol: Model Context Protocol
 settings_webhooks: Webhooks
 settings_flows: Flujos
 settings_system_logs: Registros del Sistema
@@ -1470,6 +1471,7 @@ fields:
     public_registration_verify_email: Verificar E-mail
     public_registration_verify_email_note: Envía un correo electrónico al usuario registrado pidiéndole que haga clic en un enlace de verificación antes de poder iniciar sesión.
     visual_editor_urls: URLs del Editor Visual
+    mcp_enabled: Servidor de MCP
     mcp_enabled_note: 'Conecta herramientas de IA/LLM a tu proyecto de Directus mediante el <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. Esto permite que los asistentes de IA lean e interactúen con tus datos de Directus de forma segura.'
     mcp_notice: 'Model Context Protocol es un estándar para conectar LLMs con aplicaciones como Directus. Una vez habilitado, el servidor MCP de Directus estará disponible en `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Más información sobre MCP y cómo realizar la conexión.</a>'
     mcp_allow_deletes: Permitir eliminar
@@ -1479,6 +1481,9 @@ fields:
     mcp_prompts_collection_note: 'Selecciona la colección donde se almacenarán las <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">plantillas de prompts reutilizables</a> para las interacciones de IA.'
     mcp_system_prompt_divider: Configuración del prompt del sistema
     mcp_system_prompt_enabled: Usar prompt del sistema
+    mcp_system_prompt_enabled_note: "Usar el <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>prompt de sistema predeterminado</a> para guiar el comportamiento del LLM. Desactívalo para eliminarlo o reemplazarlo con tu propio prompt a continuación."
+    mcp_system_prompt: Prompt de sistema personalizado
+    mcp_system_prompt_note: 'Prompt de sistema personalizado para reemplazar el predeterminado. Déjalo vacío para usar el predeterminado (si está habilitado arriba).'
   directus_shares:
     name: Nombre
     role: Rol
@@ -1663,6 +1668,13 @@ uses_left: Sin usos restantes | Un uso restante | {n} usos restantes
 no_shares: No hay acciones para mostrar
 new_share: Nueva parte
 mcp_prompts_collection:
+  no_collection_selected: Ninguna colección seleccionada
+  no_collection_selected_copy: Selecciona una colección para habilitar las plantillas de prompts reutilizables.
+  collection_not_found: Colección no encontrada
+  collection_not_found_description: La colección "{collection}" no existe en la base de datos.
+  generate: Generar colección de prompts de IA...
+  already_exists: La colección de prompts de IA ya existe
+  generate_collection_dialog_title: Generar colección de prompts de IA
   generate_fields_dialog_title: Generar campos de prompts de IA
   generate_collection_dialog_description: 'Esto creará una nueva colección “{collection}” con los campos y ajustes necesarios para almacenar plantillas de prompts reutilizables.'
   generate_fields_dialog_description: 'Esto creará los campos necesarios en tu colección “{collection}”.'
@@ -2652,6 +2664,7 @@ bsl_banner:
   license: Necesitamos esta información para garantizar el cumplimiento de nuestra licencia BSL 1.1. Esta persona debe ser el contacto principal responsable de tu proyecto.
   set_owner: Asignar Propietario
   remind_later: Recordar más tarde
+  remind_next_login: Te lo recordaremos nuevamente en tu próximo inicio de sesión.
 accepted: Aceptado
 text_direction_auto: Automático (coincidir idioma)
 text_direction_ltr: Izquierda a derecha (LTR)
