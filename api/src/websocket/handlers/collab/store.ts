@@ -27,15 +27,17 @@ const store = createCache(config);
 export function useStore<Type extends object>(uid: string) {
 	return async function access<T>(callback: (store: RedisStore<Type>) => Promise<T>): Promise<T> {
 		let lock = await store.aquireLock(`lock:${uid}`);
-		let tries = 5;
+		let tries = 0;
 
 		while (!lock) {
-			if (--tries < 0) {
+			tries++;
+
+			if (tries > 5) {
 				throw new RedisStoreError(`Couldn't aquire lock ${uid}`);
 			}
 
-			await sleep(200 + Math.random() * 200);
-			lock = await store.aquireLock(uid);
+			await sleep(200 * tries + Math.random() * 200);
+			lock = await store.aquireLock(`lock:${uid}`);
 		}
 
 		const result = await callback({

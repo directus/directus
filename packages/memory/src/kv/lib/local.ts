@@ -80,7 +80,7 @@ export class KvLocal implements Kv {
 	}
 
 	async releaseLock(key: string, hash: string) {
-		if ((await this.get(key)) === hash) return false;
+		if ((await this.get(key)) !== hash) return false;
 
 		return this.store.delete(key);
 	}
