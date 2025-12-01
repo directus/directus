@@ -50,21 +50,23 @@ export class AssetsService {
 		this.filesService = new FilesService({ ...options, accountability: null });
 	}
 
-	removeUnallowedFields(file: File, allowedFields: string[] | undefined): Partial<File> {
+	private filterFileFields(file: File, allowedFields: string[] | undefined): Partial<File> {
 		if (!allowedFields || allowedFields.includes('*')) {
 			return file;
 		}
 
 		const essentialFields = ['type'];
-		const fieldsToKeep = [...essentialFields, ...allowedFields];
+		const fieldsToKeep = new Set([...essentialFields, ...allowedFields]);
 
-		for (const field in file) {
-			if (!fieldsToKeep.includes(field)) {
-				delete (file as any)[field];
+		const filteredFile: Partial<File> = {};
+
+		for (const field of fieldsToKeep) {
+			if (field in file) {
+				(filteredFile as any)[field] = (file as any)[field];
 			}
 		}
 
-		return file;
+		return filteredFile;
 	}
 
 	async getAsset(
@@ -200,7 +202,7 @@ export class AssetsService {
 
 				return {
 					stream: deferStream ? assetStream : await assetStream(),
-					file: this.removeUnallowedFields(file, allowedFields),
+					file: this.filterFileFields(file, allowedFields),
 					stat: await storage.location(file.storage).stat(assetFilename),
 				};
 			}
@@ -277,14 +279,14 @@ export class AssetsService {
 			return {
 				stream: deferStream ? assetStream : await assetStream(),
 				stat: await storage.location(file.storage).stat(assetFilename),
-				file: this.removeUnallowedFields(file, allowedFields),
+				file: this.filterFileFields(file, allowedFields),
 			};
 		} else {
 			const assetStream = () => storage.location(file.storage).read(file.filename_disk, { range, version });
 			const stat = await storage.location(file.storage).stat(file.filename_disk);
 			return {
 				stream: deferStream ? assetStream : await assetStream(),
-				file: this.removeUnallowedFields(file, allowedFields ?? undefined),
+				file: this.filterFileFields(file, allowedFields),
 				stat,
 			};
 		}

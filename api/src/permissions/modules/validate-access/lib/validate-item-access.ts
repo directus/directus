@@ -90,27 +90,28 @@ export async function validateItemAccess(
 
 	const hasAccess = items && items.length === options.primaryKeys.length;
 
-	if (hasAccess) {
-		const { fields } = options;
-
-		if (fields && !options.returnAllowedRootFields) {
-			const fieldAccessValid = items.every((item: any) => fields.every((field) => toBoolean(item[field])));
-
-			if (!fieldAccessValid) {
-				return { accessAllowed: false };
-			}
-		}
-
-		if (options.returnAllowedRootFields && items.length > 0) {
-			const allowedRootFields = Object.keys(items[0]).filter((field) => {
-				return items[0][field] === 1;
-			});
-
-			return { accessAllowed: true, allowedRootFields };
-		}
-
-		return { accessAllowed: true };
+	if (!hasAccess) {
+		return { accessAllowed: false };
 	}
 
-	return { accessAllowed: false };
+	let accessAllowed = true;
+
+	if (options.fields) {
+		accessAllowed = items.every((item: any) =>
+			options.fields!.every((field) => toBoolean(item[field]))
+		);
+	}
+
+	if (options.returnAllowedRootFields && items.length > 0) {
+		const allowedRootFields = Object.keys(items[0]).filter((field) => {
+			return items[0][field] === 1;
+		});
+
+		return {
+			accessAllowed,
+			allowedRootFields
+		};
+	}
+
+	return { accessAllowed };
 }
