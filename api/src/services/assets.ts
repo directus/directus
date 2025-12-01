@@ -9,6 +9,7 @@ import {
 import type {
 	AbstractServiceOptions,
 	Accountability,
+	File,
 	Range,
 	Stat,
 	SchemaOverview,
@@ -25,8 +26,7 @@ import sharp from 'sharp';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
-import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
-import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
 import { getStorage } from '../storage/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
@@ -48,40 +48,6 @@ export class AssetsService {
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 		this.filesService = new FilesService({ ...options, accountability: null });
-	}
-
-	/**
-	 * Filter file fields based on user permissions
-	 * Keeps only the 'type' field (essential for response) and fields the user has access to
-	 */
-	private async filterFileFields(file: any, fileId: string, systemPublicKeys: (string | null)[]): Promise<any> {
-		if (systemPublicKeys.includes(fileId) || !this.accountability || this.accountability.admin) {
-			return file;
-		}
-
-		const allowedFields = await fetchAllowedFields(
-			{
-				accountability: this.accountability,
-				action: 'read',
-				collection: 'directus_files',
-			},
-			{ knex: this.knex, schema: this.schema },
-		);
-
-		const hasFullAccess = allowedFields.includes('*');
-
-		if (!hasFullAccess) {
-			const essentialFields = ['type'];
-			const fieldsToKeep = [...essentialFields, ...allowedFields];
-
-			for (const field in file) {
-				if (!fieldsToKeep.includes(field)) {
-					delete file[field];
-				}
-			}
-		}
-
-		return file;
 	}
 
 	async getAsset(
@@ -111,7 +77,7 @@ export class AssetsService {
 			.from('directus_settings')
 			.first();
 
-		const systemPublicKeys: string[] = Object.values(publicSettings || {});
+		const systemPublicKeys: string[] = Object.values(publicSettings || {}) as string[];
 
 		/**
 		 * This is a little annoying. Postgres will error out if you're trying to search in `where`
@@ -120,26 +86,50 @@ export class AssetsService {
 		 */
 		if (!isValidUuid(id)) throw new ForbiddenError();
 
+		let allowedFields: string[] | undefined;
+
 		if (systemPublicKeys.includes(id) === false && this.accountability) {
-			await validateAccess(
-				{
-					accountability: this.accountability,
-					action: 'read',
-					collection: 'directus_files',
-					primaryKeys: [id],
-				},
-				{ knex: this.knex, schema: this.schema },
-			);
+			if (this.accountability.admin) {
+				allowedFields = ['*'];
+			} else {
+				// Use validateItemAccess to check access and get allowed fields
+				const accessResult = await validateItemAccess(
+					{
+						accountability: this.accountability,
+						action: 'read',
+						collection: 'directus_files',
+						primaryKeys: [id],
+						returnAllowedRootFields: true,
+					},
+					{ knex: this.knex, schema: this.schema },
+				);
+
+				if (!accessResult.accessAllowed) {
+					throw new ForbiddenError({
+						reason: `You don't have permission to perform "read" for collection "directus_files" or it does not exist.`,
+					});
+				}
+
+				allowedFields = accessResult.allowedRootFields;
+			}
 		}
 
-		const file = await this.filesService.readOne(id, { limit: 1 });
+		const file = (await this.filesService.readOne(id, { limit: 1 })) as File;
 
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
 		if (!exists) throw new ForbiddenError();
 
-		// Filter fields based on user permissions
-		await this.filterFileFields(file, id, systemPublicKeys);
+		if (allowedFields && !allowedFields.includes('*')) {
+			const essentialFields = ['storage', 'filename_disk', 'type', 'filesize'];
+			const fieldsToKeep = [...essentialFields, ...allowedFields];
+
+			for (const field in file) {
+				if (!fieldsToKeep.includes(field)) {
+					delete (file as any)[field];
+				}
+			}
+		}
 
 		if (range) {
 			const missingRangeLimits = range.start === undefined && range.end === undefined;

@@ -6,16 +6,14 @@ import knex from 'knex';
 import { MockClient, Tracker, createTracker } from 'knex-mock-client';
 import { PassThrough } from 'node:stream';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi, type MockedFunction } from 'vitest';
-import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
-import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
 import { getStorage } from '../storage/index.js';
 import { AssetsService } from './assets.js';
 import { FilesService } from './files.js';
 
 vi.mock('../storage/index.js');
 vi.mock('@directus/storage');
-vi.mock('../permissions/modules/validate-access/validate-access.js');
-vi.mock('../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js');
+vi.mock('../permissions/modules/validate-access/lib/validate-item-access.js');
 vi.mock('./files.js');
 
 describe('Services / Assets', () => {
@@ -79,8 +77,11 @@ describe('Services / Assets', () => {
 
 			vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
 
-			// Mock validateAccess
-			vi.mocked(validateAccess).mockResolvedValue(undefined);
+			// Mock validateItemAccess to allow access by default
+			vi.mocked(validateItemAccess).mockResolvedValue({
+				accessAllowed: true,
+				allowedRootFields: ['*'],
+			});
 		});
 
 		describe('field filtering for non-admin users', () => {
@@ -98,7 +99,10 @@ describe('Services / Assets', () => {
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
 
-				vi.mocked(fetchAllowedFields).mockResolvedValue(['id', 'type', 'title']);
+				vi.mocked(validateItemAccess).mockResolvedValue({
+					accessAllowed: true,
+					allowedRootFields: ['id', 'type', 'title'],
+				});
 
 				const result = await service.getAsset(mockFileId);
 
@@ -121,7 +125,10 @@ describe('Services / Assets', () => {
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
 
-				vi.mocked(fetchAllowedFields).mockResolvedValue(['*']);
+				vi.mocked(validateItemAccess).mockResolvedValue({
+					accessAllowed: true,
+					allowedRootFields: ['*'],
+				});
 
 				const result = await service.getAsset(mockFileId);
 
@@ -148,7 +155,7 @@ describe('Services / Assets', () => {
 
 				expect(result.file).toEqual(mockFile);
 
-				expect(fetchAllowedFields).not.toHaveBeenCalled();
+				expect(validateItemAccess).not.toHaveBeenCalled();
 			});
 		});
 
@@ -177,14 +184,12 @@ describe('Services / Assets', () => {
 
 				expect(result.file).toEqual(logoFile);
 
-				expect(validateAccess).not.toHaveBeenCalled();
-
-				expect(fetchAllowedFields).not.toHaveBeenCalled();
+				expect(validateItemAccess).not.toHaveBeenCalled();
 			});
 		});
 
 		describe('access validation', () => {
-			it('should call validateAccess with correct parameters', async () => {
+			it('should call validateItemAccess with correct parameters', async () => {
 				const accountability: Accountability = {
 					user: 'test-user-id',
 					role: 'test-role-id',
@@ -197,16 +202,21 @@ describe('Services / Assets', () => {
 				service = createAssetsService(accountability);
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
-				vi.mocked(fetchAllowedFields).mockResolvedValue(['*']);
+
+				vi.mocked(validateItemAccess).mockResolvedValue({
+					accessAllowed: true,
+					allowedRootFields: ['*'],
+				});
 
 				await service.getAsset(mockFileId);
 
-				expect(validateAccess).toHaveBeenCalledWith(
+				expect(validateItemAccess).toHaveBeenCalledWith(
 					{
 						accountability,
 						action: 'read',
 						collection: 'directus_files',
 						primaryKeys: [mockFileId],
+						returnAllowedRootFields: true,
 					},
 					expect.objectContaining({
 						knex: db,
@@ -215,7 +225,7 @@ describe('Services / Assets', () => {
 				);
 			});
 
-			it('should throw ForbiddenError if validateAccess throws', async () => {
+			it('should throw ForbiddenError if validateItemAccess denies access', async () => {
 				const accountability: Accountability = {
 					user: 'test-user-id',
 					role: 'test-role-id',
@@ -227,7 +237,9 @@ describe('Services / Assets', () => {
 
 				service = createAssetsService(accountability);
 
-				vi.mocked(validateAccess).mockRejectedValue(new ForbiddenError());
+				vi.mocked(validateItemAccess).mockResolvedValue({
+					accessAllowed: false,
+				});
 
 				await expect(service.getAsset(mockFileId)).rejects.toThrow(ForbiddenError);
 			});
@@ -266,7 +278,10 @@ describe('Services / Assets', () => {
 
 				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
 
-				vi.mocked(fetchAllowedFields).mockResolvedValue(['id', 'type']);
+				vi.mocked(validateItemAccess).mockResolvedValue({
+					accessAllowed: true,
+					allowedRootFields: ['id', 'type'],
+				});
 
 				const result = await service.getAsset(mockFileId);
 
