@@ -36,7 +36,7 @@ export function useStore<Type extends object>(uid: string) {
 				throw new RedisStoreError(`Couldn't aquire lock ${uid}`);
 			}
 
-			await sleep(200 * tries + Math.random() * 200);
+			await sleep(Math.pow(2, tries * 2) + Math.random() * Math.pow(2, tries));
 			lock = await store.aquireLock(`lock:${uid}`);
 		}
 

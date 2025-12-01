@@ -269,9 +269,9 @@ export class Room {
 
 	async update(sender: WebSocketClient, field: string, changes: unknown) {
 		const { clients, collection } = await this.store(async (store) => {
-			const changes = await store.get('changes');
-			changes[field] = changes;
-			await store.set('changes', changes);
+			const existing_changes = await store.get('changes');
+			existing_changes[field] = changes;
+			await store.set('changes', existing_changes);
 
 			return { clients: await store.get('clients'), collection: await store.get('collection') };
 		});
