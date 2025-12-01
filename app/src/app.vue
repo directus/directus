@@ -7,12 +7,9 @@ import { useAppStore } from '@directus/stores';
 import { ThemeProvider } from '@directus/themes';
 import { useHead } from '@unhead/vue';
 import { computed, onMounted, onUnmounted, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useThemeConfiguration } from './composables/use-theme-configuration';
 import { startIdleTracking, stopIdleTracking } from './idle';
 import { useUserStore } from './stores/user';
-
-const { t } = useI18n();
 
 const appStore = useAppStore();
 const serverStore = useServerStore();
@@ -104,13 +101,13 @@ useSystem();
 			</div>
 		</transition>
 
-		<v-info v-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
-			{{ t('unexpected_error_copy') }}
+		<v-info v-if="error" type="danger" :title="$t('unexpected_error')" icon="error" center>
+			{{ $t('unexpected_error_copy') }}
 
 			<template #append>
 				<v-error class="error" :error="error" />
 
-				<v-button small @click="reload">{{ t('reload_page') }}</v-button>
+				<v-button small @click="reload">{{ $t('reload_page') }}</v-button>
 			</template>
 		</v-info>
 

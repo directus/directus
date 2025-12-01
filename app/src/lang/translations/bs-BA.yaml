@@ -1,4 +1,6 @@
 ---
+first_name: Ime
+last_name: Prezime
 identifier: Identifikator
 application: Aplikacija
 default_provider: Zadano
@@ -92,7 +94,6 @@ rename_folder: Preimenuj folder
 delete_folder: Izbriši folder
 prefix: Prefiks
 suffix: Sufiks
-promote_version_preview: Pretpregled
 reset_bookmark: Poništi bookmark
 update_bookmark: Ažuriraj bookmark
 delete_bookmark: Obriši bookmark
@@ -1347,9 +1348,7 @@ interfaces:
     accordion_mode: Način rada harmonike
     max_one_section_open: Maksimalno 1 otvoren odjeljak
   presentation-links:
-    presentation-links: Veze dugmeta
     links: Linkovi
-    description: Konfigurabilna dugmeta veza za pokretanje dinamičkih URL-ova
     style: Stil
     primary: Primarno
     link: Link

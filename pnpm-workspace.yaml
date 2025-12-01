@@ -8,9 +8,9 @@ packages:
 
 catalog:
   '@authenio/samlify-node-xmllint': 2.0.0
-  '@aws-sdk/client-s3': 3.918.0
-  '@aws-sdk/client-sesv2': 3.918.0
-  '@aws-sdk/lib-storage': 3.918.0
+  '@aws-sdk/client-s3': 3.928.0
+  '@aws-sdk/client-sesv2': 3.928.0
+  '@aws-sdk/lib-storage': 3.928.0
   '@azure/storage-blob': 12.29.1
   '@changesets/cli': 2.29.7
   '@changesets/get-github-info': 0.6.0
@@ -33,7 +33,7 @@ catalog:
   '@editorjs/raw': 2.5.1
   '@editorjs/table': 2.4.5
   '@editorjs/underline': 1.2.1
-  '@eslint/js': 9.38.0
+  '@eslint/js': 9.39.1
   '@fortawesome/fontawesome-svg-core': 6.7.2
   '@fortawesome/free-brands-svg-icons': 6.7.2
   '@fullcalendar/core': 6.1.19
@@ -42,18 +42,18 @@ catalog:
   '@fullcalendar/list': 6.1.19
   '@fullcalendar/timegrid': 6.1.19
   '@godaddy/terminus': 4.12.1
-  '@google-cloud/storage': 7.17.2
+  '@google-cloud/storage': 7.17.3
   '@histoire/plugin-vue': 0.17.17
   '@joeattardi/emoji-button': 4.6.4
   '@json2csv/plainjs': 7.0.6
   '@keyv/redis': 3.0.1
-  '@mapbox/mapbox-gl-draw': 1.5.0
+  '@mapbox/mapbox-gl-draw': 1.5.1
   '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
   '@mapbox/mapbox-gl-geocoder': 5.1.2
-  '@modelcontextprotocol/sdk': 1.20.2
+  '@modelcontextprotocol/sdk': 1.21.1
   '@ngneat/falso': 8.0.2
   '@npm/types': 2.1.0
-  '@pinia/testing': 1.0.2
+  '@pinia/testing': 1.0.3
   '@pnpm/logger': 1001.0.1
   '@pnpm/workspace.find-packages': 1000.0.43
   '@pnpm/workspace.pkgs-graph': 1000.0.25
@@ -62,15 +62,15 @@ catalog:
   '@rollup/plugin-commonjs': 28.0.9
   '@rollup/plugin-json': 6.1.0
   '@rollup/plugin-node-resolve': 16.0.3
-  '@rollup/plugin-replace': 6.0.2
+  '@rollup/plugin-replace': 6.0.3
   '@rollup/plugin-terser': 0.4.4
   '@rollup/plugin-virtual': 3.0.2
   '@rollup/plugin-yaml': 4.1.2
   '@shopify/semaphore': 3.1.0
   '@sinclair/typebox': 0.34.41
   '@sindresorhus/slugify': 2.2.1
-  '@smithy/node-http-handler': 4.4.3
-  '@supabase/storage-js': 2.76.1
+  '@smithy/node-http-handler': 4.4.5
+  '@supabase/storage-js': 2.81.0
   '@tinymce/tinymce-vue': 6.3.0
   '@turf/meta': 7.2.0
   '@types/archiver': 6.0.3
@@ -85,6 +85,7 @@ catalog:
   '@types/content-disposition': 0.5.9
   '@types/cookie-parser': 1.4.10
   '@types/cors': 2.8.19
+  '@types/cron': 3.0.11
   '@types/deep-diff': 1.0.5
   '@types/destroy': 1.0.3
   '@types/diacritics': 1.3.3
@@ -108,10 +109,9 @@ catalog:
   '@types/mime-types': 3.0.1
   '@types/ms': 2.1.0
   '@types/node': 22.13.14
-  '@types/cron': 3.0.11
   '@types/nodemailer': 7.0.3
   '@types/object-hash': 3.0.6
-  '@types/papaparse': 5.3.16
+  '@types/papaparse': 5.5.0
   '@types/proxy-addr': 2.0.3
   '@types/qrcode': 1.5.6
   '@types/qs': 6.14.0
@@ -153,7 +153,7 @@ catalog:
   cookie-parser: 1.4.7
   copyfiles: 2.4.1
   cors: 2.8.5
-  cron: 4.3.3
+  cron: 4.3.4
   cropperjs: 1.6.2
   date-fns: 4.1.0
   decamelize: 6.0.1
@@ -165,10 +165,10 @@ catalog:
   dotenv: 17.2.3
   editorjs-toggle-block: 0.3.16
   encodeurl: 2.0.0
-  esbuild: 0.25.11
+  esbuild: 0.26.0
   esbuild-plugin-replace: 1.4.0
   escape-string-regexp: 5.0.0
-  eslint: 9.38.0
+  eslint: 9.39.1
   eslint-config-prettier: 10.1.8
   eslint-plugin-vue: 10.5.1
   eventemitter2: 6.4.9
@@ -185,8 +185,8 @@ catalog:
   geojson: 0.5.0
   get-port: 7.1.0
   glob-to-regexp: 0.4.1
-  globals: 16.4.0
-  graphql: 16.11.0
+  globals: 16.5.0
+  graphql: 16.12.0
   graphql-compose: 9.1.0
   graphql-ws: 6.0.6
   happy-dom: 20.0.10
@@ -194,12 +194,12 @@ catalog:
   histoire: 0.17.17
   html-entities: 2.6.0
   icc: 3.0.0
-  inquirer: 12.10.0
+  inquirer: 12.11.0
   ioredis: 5.8.2
   ip-matching: 2.1.2
   isolated-vm: 5.0.3
   joi: 18.0.1
-  js-yaml: 4.1.0
+  js-yaml: 4.1.1
   js2xmlparser: 5.0.0
   json-to-graphql-query: 2.3.0
   json2csv: 5.0.7
@@ -208,7 +208,7 @@ catalog:
   keyv: 5.5.3
   knex: 3.1.0
   knex-mock-client: 3.0.2
-  ky: 1.13.0
+  ky: 1.14.0
   ldapjs: 2.3.3
   liquidjs: 10.24.0
   lodash: 4.17.21
@@ -232,7 +232,7 @@ catalog:
   nodemailer-mailgun-transport: 2.1.5
   npm-watch: 0.13.0
   object-hash: 3.0.0
-  ofetch: 1.5.0
+  ofetch: 1.5.1
   openapi3-ts: 4.5.0
   openid-client: 5.7.1
   ora: 8.2.0
@@ -256,17 +256,17 @@ catalog:
   qrcode: 1.5.4
   qs: 6.14.0
   rate-limiter-flexible: 7.2.0
-  rimraf: 6.0.1
+  rimraf: 6.1.0
   rolldown: 1.0.0-beta.31
   rollup: 4.52.5
   rollup-plugin-esbuild: 6.2.1
-  rollup-plugin-node-externals: 8.1.1
+  rollup-plugin-node-externals: 8.1.2
   rollup-plugin-styler: 2.0.0
   samlify: 2.10.1
   sanitize-html: 2.17.0
-  sass-embedded: 1.93.2
+  sass-embedded: 1.93.3
   semver: 7.7.3
-  sharp: 0.34.4
+  sharp: 0.34.5
   snappy: 7.3.3
   sqlite3: 5.1.7
   stream-json: 1.9.1
@@ -287,19 +287,20 @@ catalog:
   tsx: 4.20.6
   tus-js-client: 4.3.1
   typescript: 5.9.3
-  typescript-eslint: 8.46.2
+  typescript-eslint: 8.46.4
   undici: 7.16.0
   unplugin-yaml: 3.0.7
+  universal-cookie: 8.0.1
   update-check: 1.5.4
   uuid: 11.1.0
   vite: 7.1.12
   vite-plugin-dts: 4.5.4
   vite-plugin-vue-devtools: 7.7.2
   vitest: 3.2.4
-  vue: 3.5.22
+  vue: 3.5.24
   vue-i18n: 11.1.12
   vue-router: 4.6.3
-  vue-tsc: 3.1.2
+  vue-tsc: 3.1.3
   vue-virtual-scroller: 2.0.0-beta.8
   vuedraggable: 4.1.0
   wellknown: 0.5.0

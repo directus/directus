@@ -3,11 +3,9 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useInsightsStore } from '@/stores/insights';
 import { Dashboard } from '@/types/insights';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 defineEmits(['create']);
 
-const { t } = useI18n();
 const insightsStore = useInsightsStore();
 const { createAllowed } = useCollectionPermissions('directus_dashboards');
 
@@ -24,7 +22,7 @@ const navItems = computed(() =>
 <template>
 	<v-list nav>
 		<v-button v-if="navItems.length === 0 && createAllowed" full-width outlined dashed @click="$emit('create')">
-			{{ t('create_dashboard') }}
+			{{ $t('create_dashboard') }}
 		</v-button>
 
 		<v-list-item v-for="navItem in navItems" v-else :key="navItem.to" :to="navItem.to">

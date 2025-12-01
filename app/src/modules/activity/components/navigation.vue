@@ -2,15 +2,12 @@
 import { useUserStore } from '@/stores/user';
 import { Filter } from '@directus/types';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	filter?: Filter;
 }>();
 
 const emit = defineEmits(['update:filter']);
-
-const { t } = useI18n();
 
 const userStore = useUserStore();
 const currentUserID = computed(() => userStore.currentUser?.id);
@@ -38,7 +35,7 @@ function clearNavFilter() {
 				<v-icon name="access_time" />
 			</v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="t('all_activity')" />
+				<v-text-overflow :text="$t('all_activity')" />
 			</v-list-item-content>
 		</v-list-item>
 
@@ -51,7 +48,7 @@ function clearNavFilter() {
 				<v-icon name="face" />
 			</v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="t('my_activity')" />
+				<v-text-overflow :text="$t('my_activity')" />
 			</v-list-item-content>
 		</v-list-item>
 
@@ -66,7 +63,7 @@ function clearNavFilter() {
 				<v-icon name="add" />
 			</v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="t('create')" />
+				<v-text-overflow :text="$t('create')" />
 			</v-list-item-content>
 		</v-list-item>
 
@@ -79,7 +76,7 @@ function clearNavFilter() {
 				<v-icon name="check" />
 			</v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="t('update')" />
+				<v-text-overflow :text="$t('update')" />
 			</v-list-item-content>
 		</v-list-item>
 
@@ -92,7 +89,7 @@ function clearNavFilter() {
 				<v-icon name="clear" />
 			</v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="t('delete_label')" />
+				<v-text-overflow :text="$t('delete_label')" />
 			</v-list-item-content>
 		</v-list-item>
 
@@ -105,7 +102,7 @@ function clearNavFilter() {
 				<v-icon name="chat_bubble_outline" />
 			</v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="t('comment')" />
+				<v-text-overflow :text="$t('comment')" />
 			</v-list-item-content>
 		</v-list-item>
 
@@ -118,7 +115,7 @@ function clearNavFilter() {
 				<v-icon name="login" />
 			</v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="t('login')" />
+				<v-text-overflow :text="$t('login')" />
 			</v-list-item-content>
 		</v-list-item>
 	</v-list>

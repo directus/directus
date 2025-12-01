@@ -1,4 +1,6 @@
 ---
+first_name: Anv bihan
+last_name: Anv
 edit_field: Kemm ar vaezienn
 location: Lec'h
 input: Enkas
@@ -866,9 +868,7 @@ interfaces:
     add_filter: Ouzhpenn ur sil
     all: Holl
   presentation-links:
-    presentation-links: Bouton al liammoù
     links: Liammoù
-    description: Boutonoù liamm da reoliañ evit luskañ an URLoù dinamek
     style: Stil
     primary: Diazez
     link: Liammoù

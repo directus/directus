@@ -4,7 +4,6 @@ import { Collection } from '@/types/collections';
 import { useElementSize, useSync } from '@directus/composables';
 import type { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { Ref, inject, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import Card from './components/card.vue';
 import CardsHeader from './components/header.vue';
 
@@ -32,6 +31,7 @@ const props = withDefaults(
 		resetPresetAndRefresh: () => Promise<void>;
 		sort: string[];
 		loading: boolean;
+		loadingItemCount: boolean;
 		showSelect?: ShowSelect;
 		error?: any;
 		itemCount: number | null;
@@ -50,8 +50,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['update:selection', 'update:limit', 'update:size', 'update:sort', 'update:width']);
-
-const { t } = useI18n();
 
 const selectionWritable = useSync(props, 'selection', emit);
 const limitWritable = useSync(props, 'limit', emit);
@@ -86,7 +84,7 @@ watch(innerWidth, (value) => {
 
 <template>
 	<div ref="layoutElement" class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
-		<template v-if="loading || ((itemCount ?? 0) > 0 && !error)">
+		<template v-if="loading || (items.length > 0 && !error)">
 			<cards-header
 				v-model:size="sizeWritable"
 				v-model:selection="selectionWritable"
@@ -96,7 +94,9 @@ watch(innerWidth, (value) => {
 				@select-all="selectAll"
 			/>
 
-			<div class="grid" :class="{ 'single-row': isSingleRow }">
+			<v-progress-circular v-if="loading" indeterminate rounded />
+
+			<div v-else class="grid" :class="{ 'single-row': isSingleRow }">
 				<card
 					v-for="item in items"
 					:key="item[primaryKeyField!.field]"
@@ -121,8 +121,9 @@ watch(innerWidth, (value) => {
 
 			<div class="footer">
 				<div class="pagination">
+					<v-skeleton-loader v-if="!loading && loadingItemCount && items.length === limit" type="pagination" />
 					<v-pagination
-						v-if="totalPages > 1"
+						v-else-if="totalPages > 1"
 						:length="totalPages"
 						:total-visible="7"
 						show-first-last
@@ -132,7 +133,7 @@ watch(innerWidth, (value) => {
 				</div>
 
 				<div v-if="loading === false && items.length >= 25" class="per-page">
-					<span>{{ t('per_page') }}</span>
+					<span>{{ $t('per_page') }}</span>
 					<v-select :model-value="`${limit}`" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
 				</div>
 			</div>
@@ -166,7 +167,7 @@ watch(innerWidth, (value) => {
 	justify-content: space-between;
 	padding-block-start: 40px;
 
-	.pagination {
+	.pagination:not(.v-skeleton-loader) {
 		display: inline-block;
 	}
 

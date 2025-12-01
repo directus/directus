@@ -2,7 +2,6 @@
 import { useSync } from '@directus/composables';
 import type { Field, ShowSelect } from '@directus/types';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
@@ -19,8 +18,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['select-all', 'update:size', 'update:sort', 'update:selection']);
-
-const { t } = useI18n();
 
 const sizeSync = useSync(props, 'size', emit);
 const sortSync = useSync(props, 'sort', emit);
@@ -72,17 +69,17 @@ function onClickSelect() {
 			<button type="button" :class="{ 'no-selection': !selectionSync.length }" @click="onClickSelect">
 				<template v-if="selectionSync.length">
 					<v-icon name="cancel" outline />
-					<span class="label">{{ t('n_items_selected', selectionSync.length) }}</span>
+					<span class="label">{{ $t('n_items_selected', selectionSync.length) }}</span>
 				</template>
 				<template v-else>
 					<v-icon name="check_circle" outline />
-					<span class="label">{{ t(showSelect === 'multiple' ? 'select_all' : 'select_an_item') }}</span>
+					<span class="label">{{ $t(showSelect === 'multiple' ? 'select_all' : 'select_an_item') }}</span>
 				</template>
 			</button>
 		</div>
 		<div class="end">
 			<v-icon
-				v-tooltip.top="t('card_size')"
+				v-tooltip.top="$t('card_size')"
 				class="size-selector"
 				:name="`grid_${7 - size}`"
 				clickable
@@ -91,7 +88,7 @@ function onClickSelect() {
 
 			<v-menu show-arrow placement="bottom">
 				<template #activator="{ toggle }">
-					<button v-tooltip.top="t('sort_field')" type="button" class="sort-selector" @click="toggle">
+					<button v-tooltip.top="$t('sort_field')" type="button" class="sort-selector" @click="toggle">
 						{{ sortField && sortField.name }}
 					</button>
 				</template>
@@ -110,7 +107,7 @@ function onClickSelect() {
 				</v-list>
 			</v-menu>
 			<v-icon
-				v-tooltip.top="t('sort_direction')"
+				v-tooltip.top="$t('sort_direction')"
 				class="sort-direction"
 				:class="{ descending }"
 				name="sort"
