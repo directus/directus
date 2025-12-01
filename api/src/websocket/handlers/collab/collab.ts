@@ -10,18 +10,20 @@ import getDatabase from '../../../database/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { InvalidPayloadError } from '@directus/errors';
 import { hasFieldPermision } from './field-permissions.js';
+import { Messenger } from './messenger.js';
 
 /**
  * Handler responsible for subscriptions
  */
 export class CollabHandler {
 	rooms: CollabRooms;
+	messenger = new Messenger();
 
 	/**
 	 * Initialize the handler
 	 */
 	constructor() {
-		this.rooms = new CollabRooms();
+		this.rooms = new CollabRooms(this.messenger);
 		this.bindWebSocket();
 	}
 
@@ -48,6 +50,7 @@ export class CollabHandler {
 
 	async onJoin(client: WebSocketClient, message: JoinMessage) {
 		try {
+			this.messenger.addClient(client);
 			const schema = await getSchema();
 
 			const allowedCollections = await fetchAllowedCollections(
@@ -71,6 +74,10 @@ export class CollabHandler {
 				message.version ?? null,
 				message.initialChanges,
 			);
+
+			client.on('close', async () => {
+				await room.leave(client);
+			});
 
 			await room.join(client);
 		} catch (err) {

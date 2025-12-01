@@ -21,7 +21,11 @@ import { useStore } from './store.js';
 
 export class CollabRooms {
 	rooms: Record<string, Room> = {};
-	messenger = new Messenger();
+	messenger: Messenger;
+
+	constructor(messenger: Messenger) {
+		this.messenger = messenger;
+	}
 
 	async createRoom(collection: string, item: string | null, version: string | null, initialChanges?: Item) {
 		const uid = getRoomHash(collection, item, version);
@@ -71,6 +75,7 @@ export class CollabRooms {
 		(async () => {
 			for (const room of Object.values(this.rooms)) {
 				if ((await room.getClients()).length === 0) {
+					await room.close();
 					delete this.rooms[room.uid];
 				}
 			}
@@ -182,7 +187,7 @@ export class Room {
 				color: clientColor,
 			});
 
-			this.store(async (store) => {
+			await this.store(async (store) => {
 				const clientColors = await store.get('clientColors');
 				clientColors[client.uid] = clientColor;
 				await store.set('clientColors', clientColors);
@@ -236,8 +241,11 @@ export class Room {
 
 		await this.store(async (store) => {
 			const clients = await store.get('clients');
-			clients.filter((c) => c.uid !== client.uid);
-			await store.set('clients', clients);
+
+			await store.set(
+				'clients',
+				clients.filter((c) => c.uid !== client.uid),
+			);
 		});
 
 		this.sendAll({
@@ -362,6 +370,12 @@ export class Room {
 
 	send(client: ClientID, message: ClientBaseCollabMessage) {
 		this.messenger.send(client, { ...message, type: COLLAB, room: this.uid });
+	}
+
+	async close() {
+		await this.store(async (store) => {
+			return await store.delete('uid');
+		});
 	}
 }
 
