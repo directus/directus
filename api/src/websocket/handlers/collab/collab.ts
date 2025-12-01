@@ -78,24 +78,24 @@ export class CollabHandler {
 		}
 	}
 
-	onLeave(client: WebSocketClient, message?: LeaveMessage) {
+	async onLeave(client: WebSocketClient, message?: LeaveMessage) {
 		try {
 			if (message) {
-				const room = this.rooms.getRoom(message.room);
+				const room = await this.rooms.getRoom(message.room);
 
 				if (!room)
 					throw new InvalidPayloadError({
 						reason: `No access to room ${message.room} or room does not exist`,
 					});
 
-				if (!room.hasClient(client))
+				if (!room.hasClient(client.uid))
 					throw new InvalidPayloadError({
 						reason: `Not connected to room ${message.room}`,
 					});
 
 				room.leave(client);
 			} else {
-				const rooms = this.rooms.getClientRooms(client);
+				const rooms = await this.rooms.getClientRooms(client);
 
 				for (const room of rooms) {
 					room.leave(client);
@@ -108,16 +108,16 @@ export class CollabHandler {
 		}
 	}
 
-	onSave(client: WebSocketClient, message: SaveMessage) {
+	async onSave(client: WebSocketClient, message: SaveMessage) {
 		try {
-			const room = this.rooms.getRoom(message.room);
+			const room = await this.rooms.getRoom(message.room);
 
 			if (!room)
 				throw new InvalidPayloadError({
 					reason: `No access to room ${message.room} or room does not exist`,
 				});
 
-			if (!room.hasClient(client))
+			if (!room.hasClient(client.uid))
 				throw new InvalidPayloadError({
 					reason: `Not connected to room ${message.room}`,
 				});
@@ -130,19 +130,21 @@ export class CollabHandler {
 
 	async onUpdate(client: WebSocketClient, message: UpdateMessage) {
 		try {
-			const room = this.rooms.getRoom(message.room);
+			const room = await this.rooms.getRoom(message.room);
 
 			if (!room)
 				throw new InvalidPayloadError({
 					reason: `No access to room ${message.room} or room does not exist`,
 				});
 
-			if (!room.hasClient(client))
+			if (!room.hasClient(client.uid))
 				throw new InvalidPayloadError({
 					reason: `Not connected to room ${message.room}`,
 				});
 
-			if ((await hasFieldPermision(client.accountability!, room.collection, message.field, 'update')) === false)
+			if (
+				(await hasFieldPermision(client.accountability!, await room.getCollection(), message.field, 'update')) === false
+			)
 				throw new InvalidPayloadError({
 					reason: `No permission to update field ${message.field} or field does not exist`,
 				});
@@ -159,19 +161,22 @@ export class CollabHandler {
 
 	async onFocus(client: WebSocketClient, message: FocusMessage) {
 		try {
-			const room = this.rooms.getRoom(message.room);
+			const room = await this.rooms.getRoom(message.room);
 
 			if (!room)
 				throw new InvalidPayloadError({
 					reason: `No access to room ${message.room} or room does not exist`,
 				});
 
-			if (!room.hasClient(client))
+			if (!room.hasClient(client.uid))
 				throw new InvalidPayloadError({
 					reason: `Not connected to room ${message.room}`,
 				});
 
-			if (message.field && (await hasFieldPermision(client.accountability!, room.collection, message.field)) === false)
+			if (
+				message.field &&
+				(await hasFieldPermision(client.accountability!, await room.getCollection(), message.field)) === false
+			)
 				throw new InvalidPayloadError({
 					reason: `No permission to focus on field ${message.field} or field does not exist`,
 				});
