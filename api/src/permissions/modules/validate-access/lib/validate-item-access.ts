@@ -52,7 +52,13 @@ export async function validateItemAccess(
 		name: options.collection,
 		query: { limit: options.primaryKeys.length },
 		// Act as if every field was a "normal" field
-		children: childrenFields.map((field) => ({ type: 'field', name: field, fieldKey: field, whenCase: [], alias: false })),
+		children: childrenFields.map((field) => ({
+			type: 'field',
+			name: field,
+			fieldKey: field,
+			whenCase: [],
+			alias: false,
+		})),
 		cases: [],
 	};
 
