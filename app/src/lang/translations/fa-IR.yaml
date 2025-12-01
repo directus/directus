@@ -20,8 +20,31 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: درباره
+directus_bsl: BSL 1.1 دایرکتوس
+privacy_policy: سیاست حریم خصوصی
+contact_our_team: با تیم ما تماس بگیرید
+setup_welcome: به دایرکتوس خوش آمدید
+setup_info: بیایید حساب مدیر شما را ایجاد کنیم و پروژه‌تان را راه‌اندازی کنیم.
+setup_license_notice: >
+  دایرکتوس برای استفاده اشخاص با کمتر از ۵ میلیون دلار درآمد، سرمایه‌گذاری یا بودجه عملیاتی سالانه رایگان است.
+setup_license_follow_up: >
+  اشخاص بالاتر از این آستانه نیازمند مجوز پولی هستند. شما می‌توانید حالا به ارزیابی دایرکتوس ادامه دهید و وقتی برای گفتگو درباره استفاده عملیاتی آماده بودید، {contactOurTeam}.
+setup_save_accept_license: >
+  با انتخاب دکمه ذخیره، شما شرایط {directusBsl} و {privacyPolicy} را قبول می‌کنید.
+setup_accept_license: من شرایط {directusBsl} و {privacyPolicy} را قبول می‌کنم
+setup_marketing_emails: به‌روزرسانی‌های محصول و یادداشت‌های انتشار را برای من بفرست
+setup_launch: راه‌اندازی دایرکتوس
+setup_project: راه‌اندازی پروژه
 first_name: نام
 last_name: نام خانوادگی
+admin_email: ایمیل مدیر
+owner_email: ایمیل مالک
+email_address: نشانی ایمیل
+organization_name: نام سازمان
+how_do_you_use_directus: از دایرکتوس چه استفاده‌ای می‌کنید؟
+usage_personal: شخصی / یادگیری
+usage_commercial: کسب و کار / تجاری
+usage_community: متن‌باز / جامعه
 identifier: شناساگر
 avatar: آواتار
 application: برنامه
@@ -61,6 +84,8 @@ full_width: عرض کامل
 group: گروه
 popular: محبوب
 recent: اخیر
+latest: آخرین
+updated: به‌روز شد
 export_items: خروجی گرفتن از موارد
 and: و
 or: یا
@@ -178,9 +203,14 @@ rename_version: ویرایش نسخه
 compare_version: مقایسه نسخه
 save_version: ذخیره‌سازی نسخه
 promote_version: ارتقای نسخه
+apply: اعمال
+select_all_differences: انتخاب همه تفاوت‌ها
+main_updated_notice: مورد اصلی از زمان ایجاد این نسخه به روز شده است.
 delete_version: حذف نسخه
 delete_version_copy: >-
   آیا از حذف نسخه «{version}» مطمئنید؟ این اقدام غیر قابل بازگشت است.
+delete_on_apply_copy: >-
+  شما در شرف ارتقای "{version}" به اصلی هستید. بعد از ارتقا باید چه اتفاقی برای "{version}" بیافتد؟
 reset_bookmark: بازنشانی نشانک
 update_bookmark: به روزرسانی نشانک
 delete_bookmark: حذف نشانک
@@ -241,6 +271,8 @@ validationError:
   iends_with: مقدار باید با {substring} پایان یابد
   nends_with: مقدار نمی‌تواند با {substring} پایان یابد
   niends_with: مقدار نمی‌تواند با {substring} پایان یابد
+  confirm_password: رمزهای عبور مطابقت ندارند
+  org_name: لطفا یک نام سازمان ذکر کنید
 all_access: دسترسی کامل
 no_access: بدون دسترسی
 use_custom: استفاده از حالت سفارشی
@@ -400,7 +432,7 @@ o2m_relationship: رابطه یک-به-چند
 m2m_relationship: رابطه چند-به-چند
 m2a_relationship: رابطه یک-به-هر-مجموعه-ای
 invalid_item: آیتمِ نامعتبر
-require_confirmation: نیاز به تأیید رایانامه
+require_confirmation: نیاز به تایید
 dialog: گفتگو
 modal: مودال
 confirmation_dialog: تایید
@@ -421,6 +453,8 @@ precision_scale: دقت و مقیاس
 readonly: فقط خواندنی
 unique: یکتا
 index: ایندکس
+searchable: قابل جستجو
+field_searchable: قرار دادن فیلد در عبارات جستجو
 updated_on: به روزرسانی شده در
 updated_by: به روزرسانی شده توسط
 primary_key: کلید اصلی
@@ -464,6 +498,9 @@ revision_delta_reverted: بازگردانده شد
 revision_delta_update_message: این فیلد به روز شده است اما ارزش آن به دلایل امنیتی پنهان شده است.
 revision_delta_other: نسخه
 revision_delta_by: 'در {date} توسط {user}'
+updated_in_revision: در این بازنگری به‌روز شده
+updated_in_revision_matches_latest: در این بازنگری به‌روز شده اما با نسخه آخر منطبق است
+differences_count: 'بدون تفاوت | ۱ تفاوت | {count} تفاوت'
 presentation_text_values_cannot_be_reimported: 'از متن ارائه استفاده می کند، مقادیر را نمی توان دوباره وارد کرد.'
 download_page_as_csv: 'دانلود صفحه به‌صورت CSV'
 download_page_as_csv_unsupported: این چیدمان از دانلود کردن صفحه فعلی پشتیبانی نمی‌کند.
@@ -491,7 +528,9 @@ import_data_error: ساختار داده فایل با مجموعه همخوان
 import_data_validation_errors_notice: 'ردیف‌های زیر، مقادیر غیرقابل قبولی دارند:'
 import_data_error_row: 'ردیف {rows}{field}:'
 snapshot:
-  download: دانلود اسنپ‌شات (JSON)
+  export: استخراج طرح‌واره
+  download: دانلود لحظه‌نگار (JSON)
+  info: استخراج صرفا طرح‌واره برای اشتراک‌گذاری یا اشکال‌زدایی
 label_import: وارد کردن
 label_export: استخراج
 import_export: واردسازی / استحراج
@@ -667,6 +706,7 @@ activity_log: لاگ فعالیت ها
 all_items: همۀ موارد
 any: هرکدام
 csv: CSV
+csv_utf8: CSV Excel (UTF-8)
 no_collections: مجموعه ای وجود ندارد
 create_collection: ساخت مجموعه
 no_collections_copy_admin: شما هنوز هیچ مجموعه ای ندارید. برای شروع روی دکمه زیر کلیک کنید.
@@ -741,7 +781,7 @@ corresponding_field: فیلد متناظر
 errors:
   COLLECTION_NOT_FOUND: "مجموعه مد نظر، وجود ندارد"
   CONTAINS_NULL_VALUES: فیلد حاوی مقدار null است
-  CONTENT_TOO_LARGE: آیتم/فایل بیشتر از حد مجاز است
+  CONTENT_TOO_LARGE: مورد/فایل ارسالی خیلی بزرگ است
   FAILED_VALIDATION: اعتبارسنجی ناموفق بود
   FIELD_NOT_FOUND: فیلد یافت نشد
   FORBIDDEN: عدم اجازه دسترسی
@@ -1137,6 +1177,8 @@ appearance_dark: تیره
 other: دیگری...
 adding_user: اضافه کردن کاربر
 unknown_user: کاربر ناشناس
+unknown_version: نسخه نامعلوم
+unknown_revision: بازنگری نامعلوم
 creating_in: 'ساخت یک آیتم در {collection}'
 editing_in: 'ویرایش یک آیتم در {collection}'
 viewing_in: 'مشاهده آیتم در {collection}'
@@ -1257,7 +1299,6 @@ directus_collection:
   directus_dashboards: داشبوردهای درون ماژول Insights
   directus_fields: پیکربندی فیلد اضافی و ابرداده
   directus_files: فراداده برای همه Assets های فایل مدیریت شده
-  directus_flows: خودکارسازی جریان‌ها
   directus_folders: دایرکتوری های مجازی برای فایل ها فراهم می کند
   directus_migrations: از چه نسخه ای از پایگاه داده استفاده می کنید
   directus_notifications: اعلانهای ارسالی به کاربر
@@ -1267,7 +1308,7 @@ directus_collection:
   directus_policies: سیاست‌های کنترل دسترسی
   directus_presets: تنظیمات پیش‌فرض برای مجموعه و نشانک‌ها
   directus_relations: پیکربندی رابطه و داده متا
-  directus_revisions: عکس های فوری داده برای همه فعالیت ها
+  directus_revisions: لحظه‌نگارهای داده برای همه فعالیت‌ها
   directus_roles: گروههای اجازه برای کاربران سیستم
   directus_sessions: اطلاعات نشست کاربر
   directus_settings: گزینه های پیکربندی پروژه
@@ -1279,7 +1320,7 @@ directus_collection:
   directus_extensions: تنظیمات افزونه‌ها
 fields:
   directus_activity:
-    item: کلید اصلی آیتم
+    item: کلید اصلی مورد
     action: فعالیت
     collection: مجموعه
     timestamp: فعالیت در تاریخ
@@ -1288,7 +1329,7 @@ fields:
     user_agent: عامل کاربر
     origin: مبدأ
     ip: آدرس IP
-    revisions: نسخه
+    revisions: بازنگری‌ها
   directus_collections:
     collection: کالکشن یا مجموعه
     icon: آیکن
@@ -1732,6 +1773,7 @@ revisions: تجدید نظرها
 no_revisions: هنوز هیچ تجدیدنظری وجود ندارد
 no_logs: هنوز گزارشی نیست
 show_failed_only: فقط نمایش ناموفق‌ها
+no_logs_on_page: تاریخچه‌ای در این صفحه نیست
 revert: بازگشت
 save: ذخیره
 schema: اسکیما
@@ -1772,11 +1814,11 @@ list: فهرست
 search_filter: جستجو و علامت‌گذاری
 enable_search_filter: فعال کردن جست‌و‌جو و علامت گذاری
 item_link: لینک مورد
-show_link_to_item: نمایش لینک در آیتم
-navigate_to_item: بازگشت به آیتم
-undo_removed_item: لغو حذف آیتم
-remove_item: حذف آیتم
-delete_item: پاک‌کردن آیتم
+show_link_to_item: نمایش لینک در مورد
+navigate_to_item: بازگشت به مورد
+undo_removed_item: بازگرداندن مورد حذف‌شده
+remove_item: حذف مورد
+delete_item: حذف مورد
 pause: توقف
 resume: ادامه
 interfaces:
@@ -1811,7 +1853,7 @@ interfaces:
     accordion_mode: حالت آکاردئون
     max_one_section_open: حداکثر 1 بخش باز باشد
   presentation-links:
-    links: لینک‌ ها
+    presentation-links: دکمه‌‌ها
     style: استایل
     primary: اصلی
     link: لینک‌‌ها
@@ -1840,6 +1882,11 @@ interfaces:
     collection: کالکشن یا مجموعه
     description: بین مجموعه‌های موجود انتخاب کنید
     include_system_collections: شامل کالکشن های سیستمی
+  system-owner:
+    update: به‌روزرسانی مالک پروژه
+    edit: ویرایش مالک پروژه
+    system-owner: مالک سیستم
+    description: رابط کاربری مالک سیستم
   system-collections:
     collections: کالکشن ها یا مجموعه ها
     description: بین مجموعه‌های موجود انتخاب کنید
@@ -1934,8 +1981,11 @@ interfaces:
     description: انتخاب یک آیتم مرتبط
     display_template: نمایش الگو
   collection-item-dropdown:
-    collection-item-dropdown: Collection Item Dropdown
-    description: Select an item from a collection in JSON format
+    collection-item-dropdown: لیست کشویی مورد مجموعه
+    description: موردی از یک مجموعه را در قالب JSON انتخاب کنید
+  collection-item-multiple-dropdown:
+    collection-item-multiple-dropdown: لیست کشویی مورد مجموعه (چندتایی)
+    description: چند مورد از یک مجموعه را در قالب JSON انتخاب کنید
   input-rich-text-md:
     markdown: مارک‌داون
     description: Enter and preview markdown
@@ -1994,8 +2044,8 @@ interfaces:
     add_label: 'برچسب "ساخت مورد جدید"'
     sort: مرتب سازی
     sort_placeholder: دستی
-    field_note_placeholder: Enter field note...
-    incompatible_data: The current data is not compatible with the repeater interface and will be overridden when adding items to the repeater
+    field_note_placeholder: شرح فیلد را وارد کنید...
+    incompatible_data: داده فعلی با رابط کاربری تکرارشونده سازگار نیست و هنگام افزودن موارد به تکرارشونده، نادیده گرفته خواهد شد
     interface_group: تنظیمات رابط
     display_group: تنظیمات نحوه نمایش
   slider:
@@ -2050,12 +2100,13 @@ interfaces:
     no_collection: بدون مجموعه
     toggle_split_view: Toggle Split View
     enable: فعال سازی
+    default_split_view_state: حالت پیش‌فرض نمای تقسیم‌شده
     user_language: Use Current User Language
     default_language: زبان پیش‎فرض
     language_field: Language Indicator Field
     language_direction_field: Language Direction Field
   list-o2m-tree-view:
-    description: Tree view for nested recursive one-to-many items
+    description: نمایش درختی برای موارد یک به چند بازگشتی تو در تو
     recursive_only: The tree view interface only works for recursive relationships.
   user:
     user: کاربر
@@ -2124,7 +2175,7 @@ interfaces:
     value_securely_saved: Value Securely Saved
     generate: Generate Token
     regenerate: بازسازی توکن
-    generate_success_copy: Make sure to backup and copy the token above. For security reasons, you will not be able to view the token again after saving and navigate off this page.
+    generate_success_copy: مطمئن شوید که توکن بالا را پشتیبان‌گیری و رونوشت کرده‌اید. به دلایل امنیتی، بعد از ذخیره‌سازی و بستن این صفحه امکان مشاهده مجدد توکن را نخواهید داشت.
     remove_token: حذف توکن
   system-raw-editor:
     system-raw-editor: ویرایشگر خام
@@ -2412,6 +2463,7 @@ triggers:
     response_body_last: داده‌های آخرین عملیات
   event:
     name: هوک رویداد
+    description: در رویدادهای داده یا پلتفرم فعال می‌شود
     action: 'اقدام (غیر مسدودکننده)'
     filter: 'فیلتر (مسدودکننده)'
   webhook:
@@ -2439,11 +2491,9 @@ triggers:
 a_flow_uuid: یک جریان را جهت راه‌اندازی انتخاب کنید...
 any_string_or_json: Json یا هر رشته‌ای...
 item_payload_placeholder: این JSON برای به‌روزرسانی مقادیر فیلد به‌کارگیری می‌شود...
-operation_variables_note: شما می‌توانید با متغیرهایی نظیر **{'{'}{'{'}$last{'}'}{'}'}**، **{'{'}{'{'}$trigger{'}'}{'}'}** و **{'{'}{'{'}$accountability{'}'}{'}'}** به داده‌های جریان دسترسی پیدا کنید؛ یا با **{'{'}{'{'}operation_key{'}'}{'}'}** به عملیات‌های قبلی ارجاع بدهید.
 operations:
   condition:
     name: شرط
-    description: مسیریابی یک جریان بر اساس منطق If / Else
   exec:
     name: اجرای اسکریپت
     description: خواندن داده از پایگاه داده
@@ -2461,7 +2511,7 @@ operations:
     query: کوئری
   item-read:
     name: خواندن داده‌
-    description: خواندن آیتم‌ها از پایگاه داده
+    description: خواندن موارد از پایگاه داده
     key: ID ها
     query: کوئری
     emit_events: انتشار رویدادها
@@ -2473,6 +2523,7 @@ operations:
     payload: ظرفیت یا Payload
     query: کوئری
   json-web-token:
+    name: JSON Web Token (JWT)
     operation: عملیات
     secret: سکرت
     secret_placeholder: سکرت را وارد کنید...
@@ -2535,7 +2586,6 @@ operations:
     description: تغییر حامل JSON جریان
   trigger:
     name: راه‌اندازی جریان
-    description: انتقال این داده به یک جریان دیگر
     flows: جریان‌ها
     flow: جریان
     data: داده Data
@@ -2585,6 +2635,12 @@ search_flow: جستجوی جریان...
 percent: درصد
 show_password: نمایش رمز عبور
 hide_password: مخفی کردن رمز عبور
+bsl_banner:
+  title: شما مالک پروژه‌ای تنظیم نکرده‌اید.
+  license: ما برای اطمینان از انطباق با مجوز BSL 1.1 خود به این نیاز داریم. این باید مخاطب اصلی مسئول در برابر پروژه شما باشد.
+  set_owner: تعیین مالک
+  remind_later: بعدا یادآوری کن
+  remind_next_login: هنگام ورود بعدی شما دوباره یادآوری خواهیم کرد.
 accepted: پذیرفته شده
 text_direction_auto: خودکار (مطابق زبان)
 text_direction_ltr: چپ به راست (LTR)

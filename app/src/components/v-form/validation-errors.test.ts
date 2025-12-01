@@ -1,12 +1,23 @@
 import type { GlobalMountOptions } from '@/__utils__/types';
 import { i18n } from '@/lang';
-import type { Field, ValidationError } from '@directus/types';
+import type { Field, FieldMeta, ValidationError } from '@directus/types';
 import { mount } from '@vue/test-utils';
-import { expect, test, describe, it } from 'vitest';
+import { describe, expect, it, test } from 'vitest';
+import VNotice from '../v-notice.vue';
 import ValidationErrors from './validation-errors.vue';
 
 const global: GlobalMountOptions = {
 	plugins: [i18n],
+	stubs: {
+		'v-icon': {
+			name: 'v-icon',
+			template: '<span class="v-icon"><slot /></span>',
+		},
+		'v-notice': VNotice,
+	},
+	directives: {
+		tooltip: () => {},
+	},
 };
 
 test('Mount component', () => {
@@ -24,51 +35,12 @@ test('Mount component', () => {
 });
 
 describe('Custom validation message', () => {
-	const baseField: Field = {
+	const baseField = {
 		collection: 'posts',
 		name: 'Title',
 		field: 'title',
 		type: 'string',
-		schema: {
-			name: 'title',
-			table: 'posts',
-			data_type: 'varchar',
-			default_value: null,
-			max_length: 255,
-			numeric_precision: null,
-			numeric_scale: null,
-			is_generated: false,
-			generation_expression: null,
-			is_nullable: true,
-			is_unique: false,
-			is_indexed: false,
-			is_primary_key: false,
-			has_auto_increment: false,
-			foreign_key_column: null,
-			foreign_key_table: null,
-		},
-		meta: {
-			id: 1,
-			collection: 'posts',
-			field: 'title',
-			special: null,
-			interface: 'input',
-			options: null,
-			display: null,
-			display_options: null,
-			readonly: false,
-			hidden: false,
-			sort: 1,
-			width: 'full',
-			translations: null,
-			note: null,
-			conditions: null,
-			required: false,
-			group: null,
-			validation: null,
-			validation_message: null,
-		},
-	};
+	} as unknown as Field;
 
 	const customValidationRule = { _and: [{ title: { _contains: 'a' } }] };
 
@@ -97,10 +69,9 @@ describe('Custom validation message', () => {
 					{
 						...baseField,
 						meta: {
-							...baseField.meta,
 							validation: customValidationRule,
 							validation_message: 'my custom message',
-						},
+						} as unknown as FieldMeta,
 					} as Field,
 				],
 			},
@@ -118,11 +89,9 @@ describe('Custom validation message', () => {
 					{
 						...baseField,
 						meta: {
-							...baseField.meta,
-							validation: null,
 							validation_message: 'my custom message',
 							required: true,
-						},
+						} as FieldMeta,
 					} as Field,
 				],
 			},
@@ -140,11 +109,10 @@ describe('Custom validation message', () => {
 					{
 						...baseField,
 						meta: {
-							...baseField.meta,
 							validation: customValidationRule,
 							validation_message: 'my custom message',
 							required: true,
-						},
+						} as unknown as FieldMeta,
 					} as Field,
 				],
 			},
@@ -162,11 +130,10 @@ describe('Custom validation message', () => {
 					{
 						...baseField,
 						meta: {
-							...baseField.meta,
 							validation: customValidationRule,
 							validation_message: 'my custom message',
 							required: true,
-						},
+						} as unknown as FieldMeta,
 					} as Field,
 				],
 			},
@@ -175,5 +142,155 @@ describe('Custom validation message', () => {
 
 		expect(wrapper.html()).toContain('my custom message');
 		expect(wrapper.html()).toContain('Value is required');
+	});
+});
+
+describe('Props updates', () => {
+	it('updates when validationErrors prop changes', async () => {
+		const fields = [{ field: 'name', name: 'Name' } as Field, { field: 'email', name: 'Email' } as Field];
+
+		const wrapper = mount(ValidationErrors, {
+			props: {
+				validationErrors: [{ field: 'name', type: 'nnull' } as unknown as ValidationError],
+				fields,
+			},
+			global,
+		});
+
+		expect(wrapper.html()).toContain('Name');
+
+		await wrapper.setProps({ validationErrors: [{ field: 'email', type: 'nnull' } as unknown as ValidationError] });
+
+		expect(wrapper.html()).toContain('Email');
+		expect(wrapper.html()).not.toContain('Name');
+	});
+
+	it('updates when errors are added', async () => {
+		const fields = [{ field: 'name', name: 'Name' } as Field];
+
+		const wrapper = mount(ValidationErrors, {
+			props: {
+				validationErrors: [],
+				fields,
+			},
+			global,
+		});
+
+		expect(wrapper.findAll('.validation-error')).toHaveLength(0);
+
+		await wrapper.setProps({ validationErrors: [{ field: 'name', type: 'nnull' } as ValidationError] });
+
+		expect(wrapper.findAll('.validation-error')).toHaveLength(1);
+		expect(wrapper.html()).toContain('Name');
+	});
+
+	it('updates when errors are removed', async () => {
+		const fields = [{ field: 'name', name: 'Name' } as Field, { field: 'email', name: 'Email' } as Field];
+
+		const wrapper = mount(ValidationErrors, {
+			props: {
+				validationErrors: [
+					{ field: 'name', type: 'nnull' } as unknown as ValidationError,
+					{ field: 'email', type: 'nnull' } as unknown as ValidationError,
+				],
+				fields,
+			},
+			global,
+		});
+
+		expect(wrapper.findAll('.validation-error')).toHaveLength(2);
+
+		await wrapper.setProps({ validationErrors: [{ field: 'email', type: 'nnull' } as unknown as ValidationError] });
+
+		expect(wrapper.findAll('.validation-error')).toHaveLength(1);
+		expect(wrapper.html()).toContain('Email');
+		expect(wrapper.html()).not.toContain('Name');
+	});
+
+	it('updates when error types change', async () => {
+		const fields = [
+			{ field: 'name', name: 'Name', meta: { required: true } } as Field,
+			{
+				field: 'custom',
+				name: 'Custom Field',
+				meta: {
+					validation: { _and: [{ custom: { _eq: 'value' } }] },
+					validation_message: 'Custom message',
+				} as Partial<FieldMeta>,
+			} as Field,
+		];
+
+		const wrapper = mount(ValidationErrors, {
+			props: {
+				validationErrors: [{ field: 'name', type: 'nnull' } as unknown as ValidationError],
+				fields,
+			},
+			global,
+		});
+
+		expect(wrapper.html()).toContain('Name');
+
+		await wrapper.setProps({
+			validationErrors: [
+				{
+					field: 'custom',
+					type: 'eq',
+					valid: 'value',
+					validation_message: 'Custom message',
+				} as unknown as ValidationError,
+			],
+		});
+
+		expect(wrapper.html()).toContain('Custom Field');
+		expect(wrapper.html()).toContain('Custom message');
+	});
+
+	it('updates when multiple errors change simultaneously', async () => {
+		const fields = [
+			{ field: 'name', name: 'Name' } as Field,
+			{ field: 'email', name: 'Email' } as Field,
+			{
+				field: 'custom',
+				name: 'Custom Field',
+				meta: {
+					validation: { _and: [{ custom: { _eq: 'value' } }] },
+					validation_message: 'Custom message',
+				} as Partial<FieldMeta>,
+			} as Field,
+		];
+
+		const wrapper = mount(ValidationErrors, {
+			props: {
+				validationErrors: [
+					{
+						field: 'custom',
+						type: 'eq',
+						valid: 'value',
+						validation_message: 'Custom message',
+					} as unknown as ValidationError,
+				],
+				fields,
+			},
+			global,
+		});
+
+		expect(wrapper.findAll('.validation-error')).toHaveLength(1);
+		expect(wrapper.html()).toContain('Custom Field');
+
+		await wrapper.setProps({
+			validationErrors: [
+				{ field: 'name', type: 'nnull' } as unknown as ValidationError,
+				{
+					field: 'custom',
+					type: 'eq',
+					valid: 'value',
+					validation_message: 'Custom message',
+				} as unknown as ValidationError,
+			],
+		});
+
+		expect(wrapper.findAll('.validation-error')).toHaveLength(2);
+		expect(wrapper.html()).toContain('Name');
+		expect(wrapper.html()).toContain('Custom Field');
 	});
 });
