@@ -50,6 +50,23 @@ export class AssetsService {
 		this.filesService = new FilesService({ ...options, accountability: null });
 	}
 
+	removeUnallowedFields(file: File, allowedFields: string[] | undefined): Partial<File> {
+		if (!allowedFields || allowedFields.includes('*')) {
+			return file;
+		}
+
+		const essentialFields = ['type'];
+		const fieldsToKeep = [...essentialFields, ...allowedFields];
+
+		for (const field in file) {
+			if (!fieldsToKeep.includes(field)) {
+				delete (file as any)[field];
+			}
+		}
+
+		return file;
+	}
+
 	async getAsset(
 		id: string,
 		transformation?: TransformationSet,
@@ -93,7 +110,7 @@ export class AssetsService {
 				allowedFields = ['*'];
 			} else {
 				// Use validateItemAccess to check access and get allowed fields
-				const accessResult = await validateItemAccess(
+				const { allowedRootFields, accessAllowed } = await validateItemAccess(
 					{
 						accountability: this.accountability,
 						action: 'read',
@@ -104,13 +121,13 @@ export class AssetsService {
 					{ knex: this.knex, schema: this.schema },
 				);
 
-				if (!accessResult.accessAllowed) {
+				if (!accessAllowed || !allowedRootFields?.includes('type')) {
 					throw new ForbiddenError({
 						reason: `You don't have permission to perform "read" for collection "directus_files" or it does not exist.`,
 					});
 				}
 
-				allowedFields = accessResult.allowedRootFields;
+				allowedFields = allowedRootFields;
 			}
 		}
 
@@ -119,17 +136,6 @@ export class AssetsService {
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
 		if (!exists) throw new ForbiddenError();
-
-		if (allowedFields && !allowedFields.includes('*')) {
-			const essentialFields = ['storage', 'filename_disk', 'type', 'filesize'];
-			const fieldsToKeep = [...essentialFields, ...allowedFields];
-
-			for (const field in file) {
-				if (!fieldsToKeep.includes(field)) {
-					delete (file as any)[field];
-				}
-			}
-		}
 
 		if (range) {
 			const missingRangeLimits = range.start === undefined && range.end === undefined;
@@ -194,7 +200,7 @@ export class AssetsService {
 
 				return {
 					stream: deferStream ? assetStream : await assetStream(),
-					file,
+					file: this.removeUnallowedFields(file, allowedFields),
 					stat: await storage.location(file.storage).stat(assetFilename),
 				};
 			}
@@ -271,12 +277,16 @@ export class AssetsService {
 			return {
 				stream: deferStream ? assetStream : await assetStream(),
 				stat: await storage.location(file.storage).stat(assetFilename),
-				file,
+				file: this.removeUnallowedFields(file, allowedFields),
 			};
 		} else {
 			const assetStream = () => storage.location(file.storage).read(file.filename_disk, { range, version });
 			const stat = await storage.location(file.storage).stat(file.filename_disk);
-			return { stream: deferStream ? assetStream : await assetStream(), file, stat };
+			return {
+				stream: deferStream ? assetStream : await assetStream(),
+				file: this.removeUnallowedFields(file, allowedFields ?? undefined),
+				stat,
+			};
 		}
 	}
 }

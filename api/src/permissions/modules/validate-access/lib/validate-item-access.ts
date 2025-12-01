@@ -4,6 +4,12 @@ import { fetchPermittedAstRootFields } from '../../../../database/run-ast/module
 import type { AST } from '../../../../types/index.js';
 import type { Context } from '../../../types.js';
 import { processAst } from '../../process-ast/process-ast.js';
+import { fetchPolicies } from '../../../lib/fetch-policies.js';
+import { fetchPermissions } from '../../../lib/fetch-permissions.js';
+import { injectCases } from '../../process-ast/lib/inject-cases.js';
+import { fieldMapFromAst } from '../../process-ast/lib/field-map-from-ast.js';
+import type { FieldMap } from '../../process-ast/types.js';
+import { collectionsInFieldMap } from '../../process-ast/utils/collections-in-field-map.js';
 
 export interface ValidateItemAccessOptions {
 	accountability: Accountability;
@@ -32,31 +38,14 @@ export async function validateItemAccess(
 	// When we're looking up access to specific items, we have to read them from the database to
 	// make sure you are allowed to access them.
 
-	let childrenFields: string[] = [];
-
-	if (options.returnAllowedRootFields) {
-		if (options.fields && options.fields.length > 0) {
-			childrenFields = options.fields;
-		}
-		else {
-			childrenFields = Object.keys(context.schema.collections[options.collection]!.fields);
-		}
-	} else if (options.fields) {
-		childrenFields = options.fields;
-	}
-
 	const ast: AST = {
 		type: 'root',
 		name: options.collection,
 		query: { limit: options.primaryKeys.length },
 		// Act as if every field was a "normal" field
-		children: childrenFields.map((field) => ({
-			type: 'field',
-			name: field,
-			fieldKey: field,
-			whenCase: [],
-			alias: false,
-		})),
+		children:
+			options.fields?.map((field) => ({ type: 'field', name: field, fieldKey: field, whenCase: [], alias: false })) ??
+			[],
 		cases: [],
 	};
 
@@ -68,6 +57,29 @@ export async function validateItemAccess(
 			_in: options.primaryKeys,
 		},
 	};
+
+	// Inject the children collection fields after the permissions have been processed, as to not require access to all collection fields
+	if (options.returnAllowedRootFields) {
+		ast.children = Object.keys(context.schema.collections[options.collection]!.fields).map((field) => ({
+			type: 'field',
+			name: field,
+			fieldKey: field,
+			whenCase: [],
+			alias: false,
+		}));
+
+		const fieldMap: FieldMap = fieldMapFromAst(ast, context.schema);
+		const collections = collectionsInFieldMap(fieldMap);
+
+		const policies = await fetchPolicies(options.accountability, context);
+
+		const permissions = await fetchPermissions(
+			{ action: options.action, policies, collections, accountability: options.accountability },
+			context,
+		);
+
+		injectCases(ast, permissions);
+	}
 
 	const items = await fetchPermittedAstRootFields(ast, {
 		schema: context.schema,
@@ -81,7 +93,7 @@ export async function validateItemAccess(
 	if (hasAccess) {
 		const { fields } = options;
 
-		if (fields) {
+		if (fields && !options.returnAllowedRootFields) {
 			const fieldAccessValid = items.every((item: any) => fields.every((field) => toBoolean(item[field])));
 
 			if (!fieldAccessValid) {

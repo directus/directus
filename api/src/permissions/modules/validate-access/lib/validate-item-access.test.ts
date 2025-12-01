@@ -248,7 +248,7 @@ test('Tests only specified fields when returnAllowedRootFields is true and field
 
 	const acc = {} as unknown as Accountability;
 
-	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ 'field-b': 1, 'field-c': null }]);
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ 'field-a': 1, 'field-b': 1, 'field-c': null }]);
 
 	await validateItemAccess(
 		{
@@ -256,7 +256,7 @@ test('Tests only specified fields when returnAllowedRootFields is true and field
 			action: 'read',
 			collection: 'collection-a',
 			primaryKeys: [1],
-			fields: ['field-b', 'field-c'],
+			fields: ['field-b', 'field-c'], // ← Should be ignored when returnAllowedRootFields is true
 			returnAllowedRootFields: true,
 		},
 		{
@@ -264,11 +264,12 @@ test('Tests only specified fields when returnAllowedRootFields is true and field
 		} as Context,
 	);
 
-	// Verify that AST was created with only the specified fields
+	// Verify that AST was created with ALL fields from the collection (fields param is ignored)
 	expect(processAst).toHaveBeenCalledWith(
 		expect.objectContaining({
 			ast: expect.objectContaining({
 				children: expect.arrayContaining([
+					expect.objectContaining({ fieldKey: 'field-a' }),
 					expect.objectContaining({ fieldKey: 'field-b' }),
 					expect.objectContaining({ fieldKey: 'field-c' }),
 				]),
