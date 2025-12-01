@@ -1,5 +1,5 @@
 import api from '@/api';
-import { computed, ref, provide, inject, type Ref } from 'vue';
+import { computed, ref, provide, inject, unref, type Ref } from 'vue';
 import { FlowRaw, Item, PrimaryKey } from '@directus/types';
 import { notify } from '@/utils/notify';
 import { translate } from '@/utils/translate-object-values';
@@ -12,7 +12,7 @@ import formatTitle from '@directus/format-title';
 
 interface UseFlowsOptions {
 	collection: Ref<string>;
-	primaryKey?: PrimaryKey | null;
+	primaryKey?: Ref<PrimaryKey | null>;
 	selection?: Ref<Item[]>;
 	location: 'collection' | 'item';
 	hasEdits?: Ref<boolean>;
@@ -150,7 +150,7 @@ export function useFlows(options: UseFlowsOptions) {
 
 		function checkFlowDisabled(manualFlow: FlowRaw) {
 			if (location === 'item' || manualFlow.options?.requireSelection === false) return false;
-			return !primaryKey && selection.value.length === 0;
+			return !unref(primaryKey) && selection.value.length === 0;
 		}
 
 		return manualFlows;
@@ -231,7 +231,7 @@ export function useFlows(options: UseFlowsOptions) {
 					collection: collection.value,
 				});
 			} else {
-				const keys = primaryKey ? [primaryKey] : selection.value || [];
+				const keys = unref(primaryKey) ? [unref(primaryKey)] : selection.value || [];
 
 				await api.post(`/flows/trigger/${flowId}`, {
 					...confirmValues.value,
