@@ -38,12 +38,10 @@ export async function validateItemAccess(
 		if (options.fields && options.fields.length > 0) {
 			childrenFields = options.fields;
 		}
-		// Otherwise, test ALL fields from the collection
 		else {
 			childrenFields = Object.keys(context.schema.collections[options.collection]!.fields);
 		}
 	} else if (options.fields) {
-		// Classic behavior: test only provided fields
 		childrenFields = options.fields;
 	}
 
