@@ -57,8 +57,6 @@ export const sdk: SdkClient = createDirectus(getPublicURL(), { globals: { fetch:
 	.with(rest({ credentials: 'include' }))
 	.with(realtime({ authMode: 'strict' }));
 
-sdk.connect();
-
 export default sdk;
 
 function getUrlPath(request: FetchContext['request']): string | null {
