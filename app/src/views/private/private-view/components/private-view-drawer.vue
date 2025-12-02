@@ -18,6 +18,7 @@ defineProps<{ placement: 'left' | 'right' }>();
 div {
 	display: flex;
 	block-size: 100%;
-	inline-size: 100%;
+	inline-size: 280px;
+	max-inline-size: 100%;
 }
 </style>
