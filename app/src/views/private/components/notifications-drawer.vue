@@ -233,10 +233,11 @@ function clearFilters() {
 						icon
 						class="action-delete"
 						secondary
+						small
 						:disabled="selection.length === 0"
 						@click="on"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" outline small />
 					</v-button>
 				</template>
 

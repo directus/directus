@@ -2,13 +2,12 @@
 import api from '@/api';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useServerStore } from '@/stores/server';
+import type { APIError } from '@/types/error';
 import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
-import type { APIError } from '@/types/error';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
-import ImportErrorDialog from './import-error-dialog.vue';
 import { useCollection } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
@@ -16,6 +15,7 @@ import type { AxiosProgressEvent } from 'axios';
 import { debounce, pick } from 'lodash';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ImportErrorDialog from './import-error-dialog.vue';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -460,10 +460,11 @@ async function exportDataFiles() {
 					v-tooltip.bottom="location === 'download' ? $t('download_file') : $t('start_export')"
 					rounded
 					icon
+					small
 					:loading="exporting"
 					@click="startExport"
 				>
-					<v-icon :name="location === 'download' ? 'download' : 'start'" />
+					<v-icon :name="location === 'download' ? 'download' : 'start'" small />
 				</v-button>
 			</template>
 			<div class="export-fields">

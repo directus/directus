@@ -256,8 +256,8 @@ function remove(id: string) {
 			@apply="save"
 		>
 			<template #actions>
-				<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="isSaveDisabled" @click="save">
-					<v-icon name="check" />
+				<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="isSaveDisabled" @click="save" small>
+					<v-icon name="check" small />
 				</v-button>
 			</template>
 
