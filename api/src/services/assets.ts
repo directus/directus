@@ -55,8 +55,8 @@ export class AssetsService {
 			return file;
 		}
 
-		const essentialFields: (keyof File)[] = ['type'];
-		const fieldsToKeep = new Set<string>([...essentialFields, ...allowedFields]);
+		const bypassFields: (keyof File)[] = ['type', 'filesize'];
+		const fieldsToKeep = new Set<string>([...bypassFields, ...allowedFields]);
 
 		const filteredFile: Partial<File> = {};
 
@@ -107,30 +107,26 @@ export class AssetsService {
 
 		let allowedFields: string[] | undefined;
 
-		if (systemPublicKeys.includes(id) === false && this.accountability) {
-			if (this.accountability.admin) {
-				allowedFields = ['*'];
-			} else {
-				// Use validateItemAccess to check access and get allowed fields
-				const { allowedRootFields, accessAllowed } = await validateItemAccess(
-					{
-						accountability: this.accountability,
-						action: 'read',
-						collection: 'directus_files',
-						primaryKeys: [id],
-						returnAllowedRootFields: true,
-					},
-					{ knex: this.knex, schema: this.schema },
-				);
+		if (!systemPublicKeys.includes(id) && this.accountability && !this.accountability.admin) {
+			// Use validateItemAccess to check access and get allowed fields
+			const { allowedRootFieldsMap, accessAllowed } = await validateItemAccess(
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection: 'directus_files',
+					primaryKeys: [id],
+					returnAllowedRootFields: true,
+				},
+				{ knex: this.knex, schema: this.schema },
+			);
 
-				if (!accessAllowed) {
-					throw new ForbiddenError({
-						reason: `You don't have permission to perform "read" for collection "directus_files" or it does not exist.`,
-					});
-				}
-
-				allowedFields = allowedRootFields;
+			if (!accessAllowed) {
+				throw new ForbiddenError({
+					reason: `You don't have permission to perform "read" for collection "directus_files" or it does not exist.`,
+				});
 			}
+
+			allowedFields = allowedRootFieldsMap?.[id];
 		}
 
 		const file = (await this.filesService.readOne(id, { limit: 1 })) as File;

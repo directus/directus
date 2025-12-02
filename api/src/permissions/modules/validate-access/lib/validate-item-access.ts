@@ -7,9 +7,6 @@ import { processAst } from '../../process-ast/process-ast.js';
 import { fetchPolicies } from '../../../lib/fetch-policies.js';
 import { fetchPermissions } from '../../../lib/fetch-permissions.js';
 import { injectCases } from '../../process-ast/lib/inject-cases.js';
-import { fieldMapFromAst } from '../../process-ast/lib/field-map-from-ast.js';
-import type { FieldMap } from '../../process-ast/types.js';
-import { collectionsInFieldMap } from '../../process-ast/utils/collections-in-field-map.js';
 
 export interface ValidateItemAccessOptions {
 	accountability: Accountability;
@@ -22,7 +19,7 @@ export interface ValidateItemAccessOptions {
 
 export interface ValidateItemAccessResult {
 	accessAllowed: boolean;
-	allowedRootFields?: string[];
+	allowedRootFieldsMap?: Record<string, string[]>;
 }
 
 export async function validateItemAccess(
@@ -68,13 +65,10 @@ export async function validateItemAccess(
 			alias: false,
 		}));
 
-		const fieldMap: FieldMap = fieldMapFromAst(ast, context.schema);
-		const collections = collectionsInFieldMap(fieldMap);
-
 		const policies = await fetchPolicies(options.accountability, context);
 
 		const permissions = await fetchPermissions(
-			{ action: options.action, policies, collections, accountability: options.accountability },
+			{ action: options.action, policies, collections: [options.collection], accountability: options.accountability },
 			context,
 		);
 
@@ -101,15 +95,19 @@ export async function validateItemAccess(
 		accessAllowed = items.every((item: any) => options.fields!.every((field) => toBoolean(item[field])));
 	}
 
-	// If returnAllowedRootFields, extract the fields that have value = 1
+	// If returnAllowedRootFields, build a map of allowed fields per item
 	if (options.returnAllowedRootFields && items.length > 0) {
-		const allowedRootFields = Object.keys(items[0]).filter((field) => {
-			return items[0][field] === 1;
-		});
+		const allowedRootFieldsMap: Record<string, string[]> = {};
+
+		for (const item of items) {
+			const id = String(item[primaryKeyField]);
+
+			allowedRootFieldsMap[id] = Object.keys(item).filter((field) => field !== primaryKeyField && item[field] === 1);
+		}
 
 		return {
 			accessAllowed,
-			allowedRootFields,
+			allowedRootFieldsMap,
 		};
 	}
 
