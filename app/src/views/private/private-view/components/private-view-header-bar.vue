@@ -151,6 +151,10 @@ const showSidebarToggle = computed(() => {
 	overflow: hidden;
 }
 
+.title {
+	display: flex;
+}
+
 .headline {
 	--v-breadcrumb-color: var(--theme--header--headline--foreground);
 
