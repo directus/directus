@@ -55,7 +55,7 @@ export class AssetsService {
 			return file;
 		}
 
-		const bypassFields: (keyof File)[] = ['type', 'filesize'];
+		const bypassFields: (keyof File)[] = ['type', 'filesize', 'storage', 'filename_disk'];
 		const fieldsToKeep = new Set<string>([...bypassFields, ...allowedFields]);
 
 		const filteredFile: Partial<File> = {};
@@ -107,7 +107,7 @@ export class AssetsService {
 
 		let allowedFields: string[] | undefined;
 
-		if (!systemPublicKeys.includes(id) && this.accountability?.admin !== true) {
+		if (!systemPublicKeys.includes(id) && this.accountability && this.accountability.admin !== true) {
 			// Use validateItemAccess to check access and get allowed fields
 			const { allowedRootFields, accessAllowed } = await validateItemAccess(
 				{
