@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useShortcut } from '@/composables/use-shortcut';
-import { translateShortcut } from '@/utils/translate-shortcut';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { useElementHover } from '@vueuse/core';
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
@@ -25,7 +24,7 @@ useShortcut('meta+j', () => {
 <template>
 	<CollapsibleRoot
 		v-model:open="aiStore.chatOpen"
-		v-tooltip.left="!aiStore.chatOpen && `${$t('ai_chat')} (${translateShortcut(['meta', 'j'])})`"
+		v-tooltip.left="sidebarStore.collapsed && $t('ai_chat')"
 		class="collapsible-root"
 	>
 		<CollapsibleTrigger class="collapsible-trigger">
