@@ -273,7 +273,7 @@ function usePopoverWidth() {
 
 			<template #actions>
 				<template v-if="primaryKey">
-					<v-button v-if="mode === 'modal'" secondary :to="itemRoute" :disabled="isNew" small>
+					<v-button v-if="mode === 'modal'" secondary :to="itemRoute" :disabled="isNew">
 						{{ t('navigate_to_item') }}
 					</v-button>
 
