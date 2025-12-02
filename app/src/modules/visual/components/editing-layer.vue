@@ -288,7 +288,7 @@ function usePopoverWidth() {
 						icon
 						rounded
 					>
-						<v-icon name="launch" :small="mode !== 'popover'" :x-small="mode === 'popover'" />
+						<v-icon name="launch" small />
 					</v-button>
 				</template>
 			</template>
