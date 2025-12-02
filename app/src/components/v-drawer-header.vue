@@ -21,7 +21,16 @@ defineEmits<{
 
 <template>
 	<header class="header-bar" :class="{ shadow }">
-		<VButton class="cancel-button" rounded icon secondary exact small @click="$emit('cancel')">
+		<VButton
+			class="cancel-button"
+			rounded
+			icon
+			secondary
+			exact
+			small
+			@click="$emit('cancel')"
+			v-tooltip.bottom="$t('cancel')"
+		>
 			<v-icon name="close" small />
 		</VButton>
 
