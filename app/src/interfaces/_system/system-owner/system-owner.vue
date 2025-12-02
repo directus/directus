@@ -38,9 +38,8 @@ async function save() {
 	isSaving.value = true;
 	await settingsStore.setOwner(value as Form);
 	await settingsStore.hydrate();
-	emit('input', form.value.project_owner ?? initialValues.value.project_owner);
+	reset();
 	isSaving.value = false;
-	editing.value = false;
 }
 
 async function reset() {
