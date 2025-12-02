@@ -31,7 +31,7 @@ const isHashed = ref(false);
 const localValue = ref<string | null>(null);
 
 const internalPlaceholder = computed(() => {
-	return isHashed.value ? t('value_hashed') : props.placeholder;
+	return isHashed.value ? t('value_securely_stored') : props.placeholder;
 });
 
 watch(
