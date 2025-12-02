@@ -213,29 +213,46 @@ watch(
 	},
 );
 
+function getBaseEditorOptions() {
+	return {
+		skin: false,
+		content_css: false,
+		branding: false,
+		max_height: 1000,
+		elementpath: false,
+		statusbar: false,
+		menubar: false,
+		convert_urls: false,
+		directionality: props.direction,
+		language: i18n.global.locale.value,
+	};
+}
+
+function mapToolbarButton(button: string): string {
+	const buttonMap: Record<string, string> = {
+		link: 'customLink',
+		media: 'customMedia',
+		code: 'customCode',
+		image: 'customImage',
+		pre: 'customPre',
+		inlinecode: 'customInlineCode',
+	};
+
+	return buttonMap[button] || button;
+}
+
 const editorOptions = computed(() => {
 	const styleFormats =
 		Array.isArray(props.customFormats) && props.customFormats.length > 0 ? cloneDeep(props.customFormats) : null;
 
-	let toolbarString = (props.toolbar ?? [])
-		.map((button) =>
-			button
-				.replace(/^link$/g, 'customLink')
-				.replace(/^media$/g, 'customMedia')
-				.replace(/^code$/g, 'customCode')
-				.replace(/^image$/g, 'customImage')
-				.replace(/^pre$/g, 'customPre')
-				.replace(/^inlinecode$/g, 'customInlineCode'),
-		)
-		.join(' ');
+	let toolbarString = (props.toolbar ?? []).map(mapToolbarButton).join(' ');
 
 	if (styleFormats) {
 		toolbarString += ' styles';
 	}
 
 	return {
-		skin: false,
-		content_css: false,
+		...getBaseEditorOptions(),
 		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', !!props.nonEditable),
 		plugins: [
 			'media',
@@ -251,12 +268,6 @@ const editorOptions = computed(() => {
 			'fullscreen',
 			'directionality',
 		],
-		branding: false,
-		max_height: 1000,
-		elementpath: false,
-		statusbar: false,
-		menubar: false,
-		convert_urls: false,
 		image_dimensions: false,
 		extended_valid_elements: 'audio[loop|controls],source[src|type]',
 		toolbar: toolbarString ? toolbarString : false,
@@ -264,10 +275,8 @@ const editorOptions = computed(() => {
 		file_picker_types: 'customImage customMedia image media',
 		link_default_protocol: 'https',
 		browser_spellcheck: true,
-		directionality: props.direction,
 		paste_data_images: false,
 		setup,
-		language: i18n.global.locale.value,
 		ui_mode: 'split',
 		...(props.tinymceOverrides && cloneDeep(props.tinymceOverrides)),
 	};
@@ -275,20 +284,11 @@ const editorOptions = computed(() => {
 
 const comparisonEditorOptions = computed(() => {
 	return {
-		skin: false,
-		content_css: false,
+		...getBaseEditorOptions(),
 		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', true, true),
 		plugins: ['autoresize', 'directionality'],
-		branding: false,
-		max_height: 1000,
-		elementpath: false,
-		statusbar: false,
-		menubar: false,
-		toolbar: true,
+		toolbar: false,
 		readonly: true,
-		convert_urls: false,
-		directionality: props.direction,
-		language: i18n.global.locale.value,
 		setup: (editor: any) => {
 			comparisonEditorRef.value = editor;
 
@@ -314,7 +314,7 @@ function contentUpdated() {
 
 	if (!observer) return;
 
-	const newValue = editorRef.value.getContent() ? editorRef.value.getContent() : null;
+	const newValue = editorRef.value.getContent() || null;
 
 	if (newValue === emittedValue) return;
 
