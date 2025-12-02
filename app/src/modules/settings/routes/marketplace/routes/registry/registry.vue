@@ -69,7 +69,7 @@ watchEffect(async () => {
 </script>
 
 <template>
-	<private-view :title="$t('marketplace')">
+	<private-view :title="$t('marketplace')" icon="storefront">
 		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #navigation>
