@@ -97,9 +97,7 @@ export async function validateItemAccess(
 
 	// If returnAllowedRootFields, return intersection of allowed fields across all items
 	if (options.returnAllowedRootFields && items.length > 0) {
-		const allowedRootFields = Object.keys(items[0]!).filter((field) =>
-			items.every((item: any) => item[field] === 1),
-		);
+		const allowedRootFields = Object.keys(items[0]!).filter((field) => items.every((item: any) => item[field] === 1));
 
 		return {
 			accessAllowed,
