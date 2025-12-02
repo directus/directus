@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SplitPanel } from '@directus/vue-split-panel';
 import { breakpointsTailwind, useBreakpoints, useScroll } from '@vueuse/core';
-import { computed, inject, provide, unref, useTemplateRef, type ComputedRef } from 'vue';
+import { computed, inject, provide, unref, useTemplateRef, watch, type ComputedRef } from 'vue';
 import NotificationsGroup from '../../components/notifications-group.vue';
 import SkipMenu from '../../components/skip-menu.vue';
 import { useSidebarStore } from '../stores/sidebar';
@@ -30,6 +30,10 @@ const livePreviewActive = inject<ComputedRef<boolean>>(
 const showHeaderShadow = computed(() => y.value > 0 || unref(livePreviewActive));
 
 const { sm } = useBreakpoints(breakpointsTailwind);
+
+watch(sm, (isSmall) => {
+	if (!isSmall) sidebarStore.collapse();
+});
 
 const splitterCollapsed = computed({
 	get() {
