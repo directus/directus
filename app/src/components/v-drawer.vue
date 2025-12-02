@@ -168,6 +168,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 	.content {
 		--theme--form--row-gap: 52px;
 
+		container-type: size;
 		position: relative;
 		display: flex;
 		flex-grow: 1;
@@ -222,7 +223,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 		}
 
 		.main {
-			--content-padding: 16px;
+			--content-padding: 20px;
 			--content-padding-bottom: 32px;
 
 			position: relative;
@@ -231,7 +232,6 @@ const showHeaderShadow = computed(() => y.value > 0);
 			scroll-padding-block-start: 100px;
 
 			@media (width > 640px) {
-				--content-padding: 32px;
 				--content-padding-bottom: 132px;
 			}
 		}
