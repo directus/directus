@@ -33,6 +33,7 @@ const sidebarStore = useSidebarStore();
 }
 
 .accordion-root {
+	/* 60px leaves space for the the AI toggle at the bottom */
 	block-size: calc(100% - 60px);
 	display: flex;
 	flex-direction: column;
