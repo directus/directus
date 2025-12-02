@@ -17,6 +17,7 @@ const props = withDefaults(
 		placeholder?: string;
 		masked?: boolean;
 		type?: 'password' | 'text';
+		nonEditable?: boolean;
 	}>(),
 	{
 		type: 'text',
