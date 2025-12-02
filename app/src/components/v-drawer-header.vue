@@ -97,9 +97,6 @@ defineEmits<{
 		margin-inline-start: 10px;
 		overflow: hidden;
 
-		@media (width > 640px) {
-			max-inline-size: 70%;
-		}
 
 		&.full {
 			margin-inline-end: 12px;
@@ -164,7 +161,7 @@ defineEmits<{
 	}
 
 	@media (width > 640px) {
-		padding: 0 20px;
+		padding: 0 var(--content-padding);
 	}
 }
 

@@ -121,7 +121,7 @@ const splitterCollapsed = computed({
 </template>
 
 <style scoped>
-#main-content {
+.content {
 	block-size: 100%;
 
 	&:deep(.sp-start) {
