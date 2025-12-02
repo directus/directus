@@ -19,7 +19,7 @@ export interface ValidateItemAccessOptions {
 
 export interface ValidateItemAccessResult {
 	accessAllowed: boolean;
-	allowedRootFieldsMap?: Record<string, string[]>;
+	allowedRootFields?: string[];
 }
 
 export async function validateItemAccess(
@@ -95,19 +95,15 @@ export async function validateItemAccess(
 		accessAllowed = items.every((item: any) => options.fields!.every((field) => toBoolean(item[field])));
 	}
 
-	// If returnAllowedRootFields, build a map of allowed fields per item
+	// If returnAllowedRootFields, return intersection of allowed fields across all items
 	if (options.returnAllowedRootFields && items.length > 0) {
-		const allowedRootFieldsMap: Record<string, string[]> = {};
-
-		for (const item of items) {
-			const id = String(item[primaryKeyField]);
-
-			allowedRootFieldsMap[id] = Object.keys(item).filter((field) => item[field] === 1);
-		}
+		const allowedRootFields = Object.keys(items[0]!).filter((field) =>
+			items.every((item: any) => item[field] === 1),
+		);
 
 		return {
 			accessAllowed,
-			allowedRootFieldsMap,
+			allowedRootFields,
 		};
 	}
 

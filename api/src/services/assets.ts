@@ -107,11 +107,11 @@ export class AssetsService {
 
 		let allowedFields: string[] | undefined;
 
-		if (!systemPublicKeys.includes(id) && this.accountability && !this.accountability.admin) {
+		if (!systemPublicKeys.includes(id) && this.accountability?.admin !== true) {
 			// Use validateItemAccess to check access and get allowed fields
-			const { allowedRootFieldsMap, accessAllowed } = await validateItemAccess(
+			const { allowedRootFields, accessAllowed } = await validateItemAccess(
 				{
-					accountability: this.accountability,
+					accountability: this.accountability!,
 					action: 'read',
 					collection: 'directus_files',
 					primaryKeys: [id],
@@ -126,7 +126,7 @@ export class AssetsService {
 				});
 			}
 
-			allowedFields = allowedRootFieldsMap?.[id];
+			allowedFields = allowedRootFields;
 		}
 
 		const file = (await this.filesService.readOne(id, { limit: 1 })) as File;
