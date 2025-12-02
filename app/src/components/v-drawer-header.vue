@@ -150,7 +150,7 @@ withDefaults(
 	}
 
 	@media (width > 640px) {
-		padding: 0 20px;
+		padding: 0 var(--content-padding);
 	}
 }
 </style>
