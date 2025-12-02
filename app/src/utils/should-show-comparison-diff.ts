@@ -1,4 +1,4 @@
-const MIN_STRING_LENGTH_FOR_WORD_DIFF = 25;
+import { MIN_STRING_LENGTH_FOR_WORD_DIFF } from '@/constants/comparison-diff';
 
 export function shouldShowComparisonDiff(
 	comparisonMode: boolean | undefined,

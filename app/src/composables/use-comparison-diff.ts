@@ -1,6 +1,7 @@
 import { diffArrays, diffJson, diffWordsWithSpace } from 'diff';
 import { isEqual } from 'lodash';
 import type { Field } from '@directus/types';
+import { MIN_STRING_LENGTH_FOR_WORD_DIFF } from '@/constants/comparison-diff';
 
 export type Change = {
 	added?: boolean;
@@ -12,8 +13,6 @@ export type Change = {
 };
 
 const formattingTags = ['B', 'STRONG', 'I', 'EM', 'U', 'S', 'STRIKE', 'DEL', 'A', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
-
-const MIN_STRING_LENGTH_FOR_WORD_DIFF = 25;
 
 export function isHtmlString(value: any): boolean {
 	if (typeof value !== 'string') return false;
