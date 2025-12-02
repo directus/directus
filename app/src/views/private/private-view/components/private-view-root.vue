@@ -129,4 +129,10 @@ const splitterCollapsed = computed({
 	flex-grow: 1;
 	flex-shrink: 1;
 }
+
+
+.root-split.sp-dragging :deep(iframe),
+.root-split:active :deep(iframe) {
+	pointer-events: none !important;
+}
 </style>
