@@ -4,6 +4,12 @@ import { fetchPermittedAstRootFields } from '../../../../database/run-ast/module
 import type { AST } from '../../../../types/index.js';
 import type { Context } from '../../../types.js';
 import { processAst } from '../../process-ast/process-ast.js';
+import { fetchPolicies } from '../../../lib/fetch-policies.js';
+import { fetchPermissions } from '../../../lib/fetch-permissions.js';
+import { injectCases } from '../../process-ast/lib/inject-cases.js';
+import { fieldMapFromAst } from '../../process-ast/lib/field-map-from-ast.js';
+import type { FieldMap } from '../../process-ast/types.js';
+import { collectionsInFieldMap } from '../../process-ast/utils/collections-in-field-map.js';
 
 export interface ValidateItemAccessOptions {
 	accountability: Accountability;
@@ -43,9 +49,7 @@ export async function validateItemAccess(
 		cases: [],
 	};
 
-	if (options.fields?.length || !options.returnAllowedRootFields) {
-		await processAst({ ast, ...options }, context);
-	}
+	await processAst({ ast, ...options }, context);
 
 	// Inject the filter after the permissions have been processed, as to not require access to the primary key
 	ast.query.filter = {
@@ -54,17 +58,34 @@ export async function validateItemAccess(
 		},
 	};
 
-	// If returnAllowedRootFields, query ALL collection fields to know which are accessible
-	const fieldsOverride = options.returnAllowedRootFields
-		? Object.keys(context.schema.collections[options.collection]!.fields)
-		: undefined;
+	// Inject the children collection fields after the permissions have been processed, as to not require access to all collection fields
+	if (options.returnAllowedRootFields) {
+		ast.children = Object.keys(context.schema.collections[options.collection]!.fields).map((field) => ({
+			type: 'field',
+			name: field,
+			fieldKey: field,
+			whenCase: [],
+			alias: false,
+		}));
+
+		const fieldMap: FieldMap = fieldMapFromAst(ast, context.schema);
+		const collections = collectionsInFieldMap(fieldMap);
+
+		const policies = await fetchPolicies(options.accountability, context);
+
+		const permissions = await fetchPermissions(
+			{ action: options.action, policies, collections, accountability: options.accountability },
+			context,
+		);
+
+		injectCases(ast, permissions);
+	}
 
 	const items = await fetchPermittedAstRootFields(ast, {
 		schema: context.schema,
 		accountability: options.accountability,
 		knex: context.knex,
 		action: options.action,
-		...(fieldsOverride && { fieldsOverride }),
 	});
 
 	const hasAccess = items && items.length === options.primaryKeys.length;

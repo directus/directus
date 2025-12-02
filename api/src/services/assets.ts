@@ -50,7 +50,7 @@ export class AssetsService {
 		this.filesService = new FilesService({ ...options, accountability: null });
 	}
 
-	private filterFileFields(file: File, allowedFields: string[] | undefined): Partial<File> {
+	private sanitizeFields(file: File, allowedFields: string[] | undefined): Partial<File> {
 		if (!allowedFields || allowedFields.includes('*')) {
 			return file;
 		}
@@ -123,7 +123,7 @@ export class AssetsService {
 					{ knex: this.knex, schema: this.schema },
 				);
 
-				if (!accessAllowed || !allowedRootFields?.includes('type')) {
+				if (!accessAllowed) {
 					throw new ForbiddenError({
 						reason: `You don't have permission to perform "read" for collection "directus_files" or it does not exist.`,
 					});
@@ -202,7 +202,7 @@ export class AssetsService {
 
 				return {
 					stream: deferStream ? assetStream : await assetStream(),
-					file: this.filterFileFields(file, allowedFields),
+					file: this.sanitizeFields(file, allowedFields),
 					stat: await storage.location(file.storage).stat(assetFilename),
 				};
 			}
@@ -279,14 +279,14 @@ export class AssetsService {
 			return {
 				stream: deferStream ? assetStream : await assetStream(),
 				stat: await storage.location(file.storage).stat(assetFilename),
-				file: this.filterFileFields(file, allowedFields),
+				file: this.sanitizeFields(file, allowedFields),
 			};
 		} else {
 			const assetStream = () => storage.location(file.storage).read(file.filename_disk, { range, version });
 			const stat = await storage.location(file.storage).stat(file.filename_disk);
 			return {
 				stream: deferStream ? assetStream : await assetStream(),
-				file: this.filterFileFields(file, allowedFields),
+				file: this.sanitizeFields(file, allowedFields),
 				stat,
 			};
 		}
