@@ -8,6 +8,16 @@ defineProps<{ placement: 'left' | 'right' }>();
 
 <template>
 	<VDialog :model-value="!collapsed" :placement @update:model-value="collapsed = !$event">
-		<slot />
+		<div>
+			<slot />
+		</div>
 	</VDialog>
 </template>
+
+<style scoped>
+div {
+	display: flex;
+	block-size: 100%;
+	inline-size: 100%;
+}
+</style>
