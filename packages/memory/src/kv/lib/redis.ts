@@ -33,6 +33,7 @@ export class KvRedis implements Kv {
 	private namespace: string;
 	private compression: boolean;
 	private compressionMinSize: number;
+	private ttl?: number;
 
 	constructor(config: Omit<KvConfigRedis, 'type'>) {
 		if ('setMax' in config.redis === false) {
@@ -46,6 +47,7 @@ export class KvRedis implements Kv {
 		this.namespace = config.namespace;
 		this.compression = config.compression ?? true;
 		this.compressionMinSize = config.compressionMinSize ?? 1000;
+		this.ttl = config.ttl;
 	}
 
 	async get<T = unknown>(key: string) {
@@ -66,7 +68,11 @@ export class KvRedis implements Kv {
 
 	async set<T = unknown>(key: string, value: T) {
 		if (typeof value === 'number') {
-			await this.redis.set(withNamespace(key, this.namespace), value);
+			if (this.ttl) {
+				await this.redis.set(withNamespace(key, this.namespace), value, 'PX', this.ttl);
+			} else {
+				await this.redis.set(withNamespace(key, this.namespace), value);
+			}
 		} else {
 			let binaryArray = serialize(value);
 
@@ -74,7 +80,11 @@ export class KvRedis implements Kv {
 				binaryArray = await compress(binaryArray);
 			}
 
-			await this.redis.set(withNamespace(key, this.namespace), uint8ArrayToBuffer(binaryArray));
+			if (this.ttl) {
+				await this.redis.set(withNamespace(key, this.namespace), uint8ArrayToBuffer(binaryArray), 'PX', this.ttl);
+			} else {
+				await this.redis.set(withNamespace(key, this.namespace), uint8ArrayToBuffer(binaryArray));
+			}
 		}
 	}
 
