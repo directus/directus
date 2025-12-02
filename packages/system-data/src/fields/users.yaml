@@ -27,7 +27,6 @@ fields:
     options:
       iconRight: lock
       masked: true
-      type: 'password'
     width: half
 
   - field: avatar
