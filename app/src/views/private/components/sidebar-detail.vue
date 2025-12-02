@@ -62,6 +62,11 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .accordion-item {
 	display: contents;
+
+	:deep(.type-label) {
+		margin-block-end: 4px;
+		font-size: 1rem;
+	}
 }
 
 .accordion-trigger {
