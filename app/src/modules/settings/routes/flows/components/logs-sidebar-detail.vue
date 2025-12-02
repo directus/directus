@@ -71,7 +71,7 @@ function onToggle(open: boolean) {
 		id="logs"
 		:title
 		icon="fact_check"
-		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
+		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : undefined"
 		@toggle="onToggle"
 	>
 		<v-progress-linear v-if="!revisionsByDate && loading" indeterminate />

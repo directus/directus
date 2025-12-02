@@ -70,6 +70,7 @@ onUnmounted(() => {
 }
 
 .accordion-trigger {
+	--focus-ring-offset: var(--focus-ring-offset-invert);
 	display: flex;
 	align-items: center;
 	block-size: calc(60px + var(--theme--sidebar--section--toggle--border-width));

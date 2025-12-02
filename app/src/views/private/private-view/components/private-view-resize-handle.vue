@@ -46,7 +46,7 @@ div {
 
 	&:hover {
 		opacity: 1;
-		transition-delay: 200ms;
+		transition-delay: var(--medium);
 	}
 
 	&.start {

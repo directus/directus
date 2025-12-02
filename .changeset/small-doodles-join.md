@@ -7,4 +7,4 @@
 '@directus/app': minor
 ---
 
-Add AI chat sidebar
+Added AI chat sidebar

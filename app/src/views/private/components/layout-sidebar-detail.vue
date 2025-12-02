@@ -47,10 +47,6 @@ const currentLayout = computed(() => selectedLayout.value ?? fallbackLayout.valu
 <style lang="scss" scoped>
 @use '@/styles/mixins';
 
-.type-label {
-	font-size: 1rem;
-}
-
 :deep(.layout-options) {
 	--theme--form--row-gap: 20px;
 
