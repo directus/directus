@@ -82,9 +82,6 @@ withDefaults(
 		margin-inline-start: 10px;
 		overflow: hidden;
 
-		@media (width > 640px) {
-			max-inline-size: 70%;
-		}
 
 		&.full {
 			margin-inline-end: 12px;
