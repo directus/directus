@@ -28,8 +28,8 @@ defineEmits<{
 			secondary
 			exact
 			small
-			@click="$emit('cancel')"
 			v-tooltip.bottom="$t('cancel')"
+			@click="$emit('cancel')"
 		>
 			<v-icon name="close" small />
 		</VButton>
