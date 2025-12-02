@@ -9,7 +9,6 @@ export const useInputSchema = (finalFields: MaybeRefOrGetter<Field[]>) => {
 				(acc, field) => {
 					if (field.meta?.readonly) return acc;
 
-					// TODO alias types are o2m / m2m; would be powerful, but tough as nails to get to work
 					if (field.type === 'alias') return acc;
 
 					let type;
