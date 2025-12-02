@@ -102,7 +102,7 @@ export async function validateItemAccess(
 		for (const item of items) {
 			const id = String(item[primaryKeyField]);
 
-			allowedRootFieldsMap[id] = Object.keys(item).filter((field) => field !== primaryKeyField && item[field] === 1);
+			allowedRootFieldsMap[id] = Object.keys(item).filter((field) => item[field] === 1);
 		}
 
 		return {
