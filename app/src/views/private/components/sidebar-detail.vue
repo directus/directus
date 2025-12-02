@@ -2,7 +2,7 @@
 import VBadge from '@/components/v-badge.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { AccordionContent, AccordionHeader, AccordionItem, AccordionTrigger } from 'reka-ui';
-import { onUnmounted, watch } from 'vue';
+import { watch } from 'vue';
 import { useSidebarStore } from '../private-view/stores/sidebar';
 
 const props = defineProps<{
@@ -28,12 +28,6 @@ watch(
 		}
 	},
 );
-
-onUnmounted(() => {
-	if (sidebarStore.activeAccordionItem === props.id) {
-		sidebarStore.activeAccordionItem = undefined;
-	}
-});
 </script>
 
 <template>
