@@ -8,6 +8,9 @@ import Editor from '@tinymce/tinymce-vue';
 import { cloneDeep, isEqual } from 'lodash';
 import { ComponentPublicInstance, computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useComparisonDiff } from '@/composables/use-comparison-diff';
+import { shouldShowComparisonDiff } from '@/utils/should-show-comparison-diff';
+import { reconstructComparisonHtml } from '@/utils/reconstruct-comparison-html';
 import getEditorStyles from './get-editor-styles';
 import toolbarDefault from './toolbar-default';
 import useImage from './useImage';
@@ -61,6 +64,11 @@ const props = withDefaults(
 		folder?: string;
 		softLength?: number;
 		direction?: string;
+		comparisonMode?: boolean;
+		comparisonSide?: 'base' | 'incoming';
+		comparisonBaseValue?: any;
+		comparisonIncomingValue?: any;
+		fieldData?: any;
 	}>(),
 	{
 		toolbar: () => toolbarDefault,
@@ -74,7 +82,10 @@ const emit = defineEmits(['input']);
 const { t } = useI18n();
 const editorRef = ref<any | null>(null);
 const editorElement = ref<ComponentPublicInstance | null>(null);
+const comparisonEditorRef = ref<any | null>(null);
+const comparisonEditorElement = ref<ComponentPublicInstance | null>(null);
 const editorKey = ref(0);
+const comparisonEditorKey = ref(0);
 
 const { imageToken } = toRefs(props);
 const settingsStore = useSettingsStore();
@@ -119,6 +130,30 @@ const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = us
 const { preButton } = usePre(editorRef);
 const { inlineCodeButton } = useInlineCode(editorRef);
 
+const { computeDiff } = useComparisonDiff();
+
+const shouldShowDiff = computed(() => {
+	return shouldShowComparisonDiff(
+		props.comparisonMode,
+		props.comparisonSide,
+		props.comparisonBaseValue,
+		props.comparisonIncomingValue,
+	);
+});
+
+const diffChanges = computed(() => {
+	if (!shouldShowDiff.value) return [];
+	return computeDiff(props.comparisonBaseValue, props.comparisonIncomingValue, props.fieldData);
+});
+
+const comparisonHtml = computed(() => {
+	if (!shouldShowDiff.value || diffChanges.value.length === 0) {
+		return '';
+	}
+
+	return reconstructComparisonHtml(diffChanges.value, props.comparisonSide!, false) || '';
+});
+
 const internalValue = computed({
 	get() {
 		return props.value || '';
@@ -159,6 +194,22 @@ watch(
 		editorRef.value.remove();
 		editorInitialized.value = false;
 		editorKey.value++;
+	},
+);
+
+watch(
+	() => [comparisonHtml.value, props.font, props.direction, props.comparisonSide],
+	() => {
+		if (comparisonEditorRef.value) {
+			comparisonEditorRef.value.setContent(comparisonHtml.value);
+		}
+	},
+);
+
+watch(
+	() => props.comparisonSide,
+	() => {
+		comparisonEditorKey.value++;
 	},
 );
 
@@ -219,6 +270,32 @@ const editorOptions = computed(() => {
 		language: i18n.global.locale.value,
 		ui_mode: 'split',
 		...(props.tinymceOverrides && cloneDeep(props.tinymceOverrides)),
+	};
+});
+
+const comparisonEditorOptions = computed(() => {
+	return {
+		skin: false,
+		content_css: false,
+		content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', true, true),
+		plugins: ['autoresize', 'directionality'],
+		branding: false,
+		max_height: 1000,
+		elementpath: false,
+		statusbar: false,
+		menubar: false,
+		toolbar: true,
+		readonly: true,
+		convert_urls: false,
+		directionality: props.direction,
+		language: i18n.global.locale.value,
+		setup: (editor: any) => {
+			comparisonEditorRef.value = editor;
+
+			editor.on('init', () => {
+				editor.setContent(comparisonHtml.value);
+			});
+		},
 	};
 });
 
@@ -398,7 +475,17 @@ onMounted(() => {
 
 <template>
 	<div :id="field" class="wysiwyg" :class="{ disabled }">
+		<template v-if="shouldShowDiff && diffChanges.length > 0">
+			<editor
+				:key="`comparison-${comparisonSide}-${comparisonEditorKey}`"
+				ref="comparisonEditorElement"
+				v-model="comparisonHtml"
+				:init="comparisonEditorOptions"
+				disabled
+			/>
+		</template>
 		<editor
+			v-else
 			:key="editorKey"
 			ref="editorElement"
 			v-model="internalValue"

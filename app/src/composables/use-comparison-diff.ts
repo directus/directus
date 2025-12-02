@@ -1,0 +1,383 @@
+import { diffArrays, diffJson, diffWordsWithSpace } from 'diff';
+import { isEqual } from 'lodash';
+
+export type Change = {
+	added?: boolean;
+	removed?: boolean;
+	updated?: boolean;
+	count?: number;
+	value: string | any;
+	isHtml?: boolean;
+};
+
+const formattingTags = ['B', 'STRONG', 'I', 'EM', 'U', 'S', 'STRIKE', 'DEL', 'A', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
+
+const MIN_STRING_LENGTH_FOR_WORD_DIFF = 25;
+
+export function isHtmlString(value: any): boolean {
+	if (typeof value !== 'string') return false;
+	return /<[a-z][\s\S]*>/i.test(value);
+}
+
+function isFormattingElement(node: Node): boolean {
+	if (node.nodeType !== Node.ELEMENT_NODE) return false;
+	const tag = (node as HTMLElement).tagName;
+	return formattingTags.includes(tag);
+}
+
+function getFormattingTag(textNode: Node): string | null {
+	let current: Node | null = textNode.parentNode;
+
+	while (current) {
+		if (current.nodeType === Node.ELEMENT_NODE && isFormattingElement(current)) {
+			return (current as HTMLElement).tagName;
+		}
+
+		current = current.parentNode;
+	}
+
+	return null;
+}
+
+function isTextFormatted(textNode: Node): boolean {
+	return getFormattingTag(textNode) !== null;
+}
+
+function getFormattingDiffRanges(
+	baseContainer: HTMLElement,
+	incomingContainer: HTMLElement,
+): {
+	base: { start: number; end: number }[];
+	incoming: { start: number; end: number }[];
+} {
+	const baseUnformattedTexts = new Set<string>();
+	const incomingUnformattedTexts = new Set<string>();
+
+	function collectUnformattedTexts(node: Node, container: 'base' | 'incoming'): void {
+		if (node.nodeType === Node.TEXT_NODE) {
+			const text = (node.textContent || '').trim();
+
+			if (text && !isTextFormatted(node)) {
+				if (container === 'base') {
+					baseUnformattedTexts.add(text);
+				} else {
+					incomingUnformattedTexts.add(text);
+				}
+			}
+		} else if (node.nodeType === Node.ELEMENT_NODE) {
+			Array.from(node.childNodes).forEach((child) => collectUnformattedTexts(child, container));
+		}
+	}
+
+	collectUnformattedTexts(baseContainer, 'base');
+	collectUnformattedTexts(incomingContainer, 'incoming');
+
+	const baseTextNodes: {
+		node: Text;
+		start: number;
+		end: number;
+		text: string;
+		formatted: boolean;
+		formattingTag: string | null;
+	}[] = [];
+
+	const incomingTextNodes: {
+		node: Text;
+		start: number;
+		end: number;
+		text: string;
+		formatted: boolean;
+		formattingTag: string | null;
+	}[] = [];
+
+	let baseOffset = 0;
+	let incomingOffset = 0;
+
+	function collectTextNodes(node: Node, container: 'base' | 'incoming'): void {
+		if (node.nodeType === Node.TEXT_NODE) {
+			const text = node.textContent || '';
+			const trimmed = text.trim();
+			const formattingTag = getFormattingTag(node);
+			const formatted = formattingTag !== null;
+			const offset = container === 'base' ? baseOffset : incomingOffset;
+			const start = offset;
+			const end = offset + text.length;
+
+			if (container === 'base') {
+				baseTextNodes.push({ node: node as Text, start, end, text: trimmed, formatted, formattingTag });
+				baseOffset = end;
+			} else {
+				incomingTextNodes.push({ node: node as Text, start, end, text: trimmed, formatted, formattingTag });
+				incomingOffset = end;
+			}
+		} else if (node.nodeType === Node.ELEMENT_NODE) {
+			Array.from(node.childNodes).forEach((child) => collectTextNodes(child, container));
+		}
+	}
+
+	collectTextNodes(baseContainer, 'base');
+	collectTextNodes(incomingContainer, 'incoming');
+
+	const baseRanges: { start: number; end: number }[] = [];
+	const incomingRanges: { start: number; end: number }[] = [];
+
+	function findMatchingTextNode(
+		text: string,
+		nodes: { node: Text; start: number; end: number; text: string; formatted: boolean; formattingTag: string | null }[],
+	): { node: Text; start: number; end: number; text: string; formatted: boolean; formattingTag: string | null } | null {
+		for (const node of nodes) {
+			if (node.text === text) {
+				return node;
+			}
+		}
+
+		return null;
+	}
+
+	for (const baseNode of baseTextNodes) {
+		if (!baseNode.text) continue;
+
+		const matchingIncoming = findMatchingTextNode(baseNode.text, incomingTextNodes);
+
+		const shouldHighlight =
+			(baseNode.formatted && (!matchingIncoming || !matchingIncoming.formatted)) ||
+			(baseNode.formatted && matchingIncoming?.formatted && baseNode.formattingTag !== matchingIncoming.formattingTag);
+
+		if (shouldHighlight) {
+			baseRanges.push({ start: baseNode.start, end: baseNode.end });
+		}
+	}
+
+	for (const incomingNode of incomingTextNodes) {
+		if (!incomingNode.text) continue;
+
+		const matchingBase = findMatchingTextNode(incomingNode.text, baseTextNodes);
+
+		const shouldHighlight =
+			(incomingNode.formatted && (!matchingBase || !matchingBase.formatted)) ||
+			(incomingNode.formatted && matchingBase?.formatted && incomingNode.formattingTag !== matchingBase.formattingTag);
+
+		if (shouldHighlight) {
+			incomingRanges.push({ start: incomingNode.start, end: incomingNode.end });
+		}
+	}
+
+	return { base: baseRanges, incoming: incomingRanges };
+}
+
+function computeHtmlDiff(baseValue: string, incomingValue: string): Change[] {
+	const baseDiv = document.createElement('div');
+	const incomingDiv = document.createElement('div');
+	baseDiv.innerHTML = baseValue || '';
+	incomingDiv.innerHTML = incomingValue || '';
+	const baseText = baseDiv.textContent || '';
+	const incomingText = incomingDiv.textContent || '';
+
+	const textDiff = diffWordsWithSpace(baseText, incomingText);
+
+	const formattingRanges = getFormattingDiffRanges(baseDiv, incomingDiv);
+
+	const hasTextChange = textDiff.some((change) => change.added || change.removed);
+
+	const hasFormattingChange = formattingRanges.base.length > 0 || formattingRanges.incoming.length > 0;
+
+	if (!hasTextChange && !hasFormattingChange) {
+		return [];
+	}
+
+	const baseHighlighted = applyTextDiffToHtml(baseDiv, textDiff, false, formattingRanges.base);
+	const incomingHighlighted = applyTextDiffToHtml(incomingDiv, textDiff, true, formattingRanges.incoming);
+
+	return [
+		{
+			removed: true,
+			value: baseHighlighted,
+			isHtml: true,
+		},
+		{
+			added: true,
+			value: incomingHighlighted,
+			isHtml: true,
+		},
+	];
+}
+
+function applyTextDiffToHtml(
+	container: HTMLElement,
+	textDiff: Change[],
+	isIncoming: boolean,
+	formattingRanges: { start: number; end: number }[],
+): string {
+	const clone = container.cloneNode(true) as HTMLElement;
+	const highlightClass = isIncoming ? 'diff-added' : 'diff-removed';
+
+	const textNodes: { node: Text; start: number; end: number }[] = [];
+	let textOffset = 0;
+
+	function collectTextNodes(node: Node): void {
+		if (node.nodeType === Node.TEXT_NODE) {
+			const text = node.textContent || '';
+			const start = textOffset;
+			const end = textOffset + text.length;
+			textNodes.push({ node: node as Text, start, end });
+			textOffset = end;
+		} else if (node.nodeType === Node.ELEMENT_NODE) {
+			Array.from(node.childNodes).forEach(collectTextNodes);
+		}
+	}
+
+	collectTextNodes(clone);
+
+	let currentOffset = 0;
+	const highlightRanges: { start: number; end: number }[] = [];
+
+	for (const change of textDiff) {
+		if (isIncoming) {
+			if (change.removed) {
+				continue;
+			}
+
+			const changeText = String(change.value || '');
+			const changeLength = changeText.length;
+			const changeStart = currentOffset;
+			const changeEnd = currentOffset + changeLength;
+
+			if (change.added) {
+				highlightRanges.push({ start: changeStart, end: changeEnd });
+			}
+
+			currentOffset = changeEnd;
+		} else {
+			if (change.added) {
+				continue;
+			}
+
+			const changeText = String(change.value || '');
+			const changeLength = changeText.length;
+			const changeStart = currentOffset;
+			const changeEnd = currentOffset + changeLength;
+
+			if (change.removed) {
+				highlightRanges.push({ start: changeStart, end: changeEnd });
+			}
+
+			currentOffset = changeEnd;
+		}
+	}
+
+	highlightRanges.push(...formattingRanges);
+
+	for (const textNodeInfo of textNodes) {
+		const rangesForNode = highlightRanges.filter(
+			(range) => range.start < textNodeInfo.end && range.end > textNodeInfo.start,
+		);
+
+		if (rangesForNode.length === 0) continue;
+
+		const text = textNodeInfo.node.textContent || '';
+		const parent = textNodeInfo.node.parentNode;
+		if (!parent) continue;
+
+		const fragments: Node[] = [];
+		let lastIndex = 0;
+
+		for (const range of rangesForNode) {
+			const nodeStart = Math.max(0, range.start - textNodeInfo.start);
+			const nodeEnd = Math.min(text.length, range.end - textNodeInfo.start);
+
+			if (nodeStart > lastIndex) {
+				const before = text.substring(lastIndex, nodeStart);
+
+				if (before) {
+					fragments.push(document.createTextNode(before));
+				}
+			}
+
+			if (nodeStart < nodeEnd) {
+				const highlight = text.substring(nodeStart, nodeEnd);
+
+				if (highlight) {
+					const highlightSpan = document.createElement('span');
+					highlightSpan.className = highlightClass;
+					highlightSpan.textContent = highlight;
+					fragments.push(highlightSpan);
+				}
+			}
+
+			lastIndex = nodeEnd;
+		}
+
+		if (lastIndex < text.length) {
+			const after = text.substring(lastIndex);
+
+			if (after) {
+				fragments.push(document.createTextNode(after));
+			}
+		}
+
+		if (fragments.length > 0) {
+			fragments.forEach((fragment) => parent.insertBefore(fragment, textNodeInfo.node));
+			parent.removeChild(textNodeInfo.node);
+		}
+	}
+
+	return clone.innerHTML;
+}
+
+export function useComparisonDiff() {
+	function computeDiff(baseValue: any, incomingValue: any, field?: { meta?: { special?: string[] } }): Change[] {
+		let changes: Change[];
+
+		if (isEqual(baseValue, incomingValue)) {
+			if (field?.meta?.special && field.meta.special.includes('conceal')) {
+				changes = [
+					{
+						updated: true,
+						value: incomingValue,
+					},
+				];
+			} else {
+				return [];
+			}
+		} else if (
+			typeof baseValue === 'string' &&
+			typeof incomingValue === 'string' &&
+			isHtmlString(baseValue) &&
+			isHtmlString(incomingValue)
+		) {
+			changes = computeHtmlDiff(baseValue, incomingValue);
+		} else if (
+			typeof baseValue === 'string' &&
+			typeof incomingValue === 'string' &&
+			incomingValue.length > MIN_STRING_LENGTH_FOR_WORD_DIFF
+		) {
+			changes = diffWordsWithSpace(baseValue, incomingValue);
+		} else if (Array.isArray(baseValue) && Array.isArray(incomingValue)) {
+			changes = diffArrays(baseValue, incomingValue);
+		} else if (
+			baseValue &&
+			incomingValue &&
+			typeof baseValue === 'object' &&
+			typeof incomingValue === 'object' &&
+			!Array.isArray(baseValue) &&
+			!Array.isArray(incomingValue)
+		) {
+			changes = diffJson(baseValue, incomingValue);
+		} else {
+			changes = [
+				{
+					removed: true,
+					value: baseValue,
+				},
+				{
+					added: true,
+					value: incomingValue,
+				},
+			];
+		}
+
+		return changes;
+	}
+
+	return { computeDiff };
+}

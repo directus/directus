@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { APP_NUMERIC_TYPES } from '@/constants';
 import { computed } from 'vue';
+import { useComparisonDiff } from '@/composables/use-comparison-diff';
+import ComparisonDiff from '@/components/v-form/comparison-diff.vue';
+import { shouldShowComparisonDiff } from '@/utils/should-show-comparison-diff';
 
 const props = withDefaults(
 	defineProps<{
@@ -24,6 +27,11 @@ const props = withDefaults(
 		max?: number;
 		step?: number;
 		direction?: string;
+		comparisonMode?: boolean;
+		comparisonSide?: 'base' | 'incoming';
+		comparisonBaseValue?: any;
+		comparisonIncomingValue?: any;
+		fieldData?: any;
 	}>(),
 	{
 		font: 'sans-serif',
@@ -32,6 +40,22 @@ const props = withDefaults(
 );
 
 defineEmits(['input']);
+
+const { computeDiff } = useComparisonDiff();
+
+const shouldShowDiff = computed(() => {
+	return shouldShowComparisonDiff(
+		props.comparisonMode,
+		props.comparisonSide,
+		props.comparisonBaseValue,
+		props.comparisonIncomingValue,
+	);
+});
+
+const diffChanges = computed(() => {
+	if (!shouldShowDiff.value) return [];
+	return computeDiff(props.comparisonBaseValue, props.comparisonIncomingValue, props.fieldData);
+});
 
 const charsRemaining = computed(() => {
 	if (typeof props.value === 'number') return null;
@@ -67,7 +91,13 @@ const isFloat = computed(() => ['float', 'decimal'].includes(props.type!));
 </script>
 
 <template>
+	<template v-if="shouldShowDiff && diffChanges.length > 0">
+		<div class="comparison-input-wrapper">
+			<comparison-diff :changes="diffChanges" :side="comparisonSide!" :updated="false" />
+		</div>
+	</template>
 	<v-input
+		v-else
 		:autofocus="autofocus"
 		:model-value="value"
 		:nullable="!clear"
@@ -145,5 +175,9 @@ const isFloat = computed(() => ['float', 'decimal'].includes(props.type!));
 
 .danger {
 	color: var(--theme--danger);
+}
+
+.comparison-input-wrapper {
+	inline-size: 100%;
 }
 </style>

@@ -203,6 +203,8 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: [],
 										onToggleField: () => {},
+										baseValues: comparisonData?.base || {},
+										incomingValues: comparisonData?.incoming || {},
 									}"
 									non-editable
 									class="comparison-form--base"
@@ -244,6 +246,8 @@ function onIncomingSelectionChange(newDeltaId: PrimaryKey) {
 										revisionFields: comparisonData?.revisionFields,
 										selectedFields: selectedComparisonFields,
 										onToggleField: toggleComparisonField,
+										baseValues: comparisonData?.base || {},
+										incomingValues: comparisonData?.incoming || {},
 									}"
 									non-editable
 									class="comparison-form--incoming"
