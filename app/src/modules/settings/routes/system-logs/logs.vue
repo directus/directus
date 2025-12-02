@@ -420,7 +420,7 @@ onUnmounted(() => {
 		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #actions>
-			<v-button v-if="shouldStream && !streamConnected" v-tooltip.bottom="t('loading')" rounded icon disabled small>
+			<v-button v-if="shouldStream && !streamConnected" v-tooltip.bottom="$t('loading')" rounded icon disabled small>
 				<v-progress-circular small indeterminate />
 			</v-button>
 			<v-button
