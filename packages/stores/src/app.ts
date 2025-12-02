@@ -8,9 +8,6 @@ export const useAppStore = defineStore('appStore', () => {
 	/** Toggled visibility state notifications drawer */
 	const notificationsDrawerOpen = ref(false);
 
-	/** Full screen hides the sidebars completely */
-	const fullScreen = ref(false);
-
 	/** Have all stores been hydrated. This indicates that the app is ready to be rendered */
 	const hydrated = ref(false);
 
@@ -31,7 +28,6 @@ export const useAppStore = defineStore('appStore', () => {
 
 	return {
 		notificationsDrawerOpen,
-		fullScreen,
 		hydrated,
 		hydrating,
 		error,
