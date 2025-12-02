@@ -8,7 +8,7 @@ const sidebarStore = useSidebarStore();
 </script>
 
 <template>
-	<aside id="sidebar" ref="sidebarEl" role="contentinfo" class="alt-colors" aria-label="Module Sidebar">
+	<aside id="sidebar" role="contentinfo" class="alt-colors" aria-label="Module Sidebar">
 		<SkipMenu section="sidebar" />
 		<AccordionRoot v-model="sidebarStore.activeAccordionItem" type="single" collapsible class="accordion-root">
 			<slot name="sidebar" />
