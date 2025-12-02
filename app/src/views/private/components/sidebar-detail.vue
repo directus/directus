@@ -65,6 +65,12 @@ watch(
 
 .accordion-trigger {
 	--focus-ring-offset: var(--focus-ring-offset-invert);
+	--v-badge-offset-x: 15px;
+	--v-badge-offset-y: 4px;
+	--v-badge-border-color: var(--theme--sidebar--section--toggle--background);
+	--v-badge-background-color: var(--theme--primary);
+	--v-badge-color: var(--theme--background-normal);
+
 	display: flex;
 	align-items: center;
 	block-size: calc(60px + var(--theme--sidebar--section--toggle--border-width));
@@ -74,12 +80,6 @@ watch(
 		var(--theme--sidebar--section--toggle--border-color);
 	color: var(--theme--sidebar--section--toggle--foreground);
 	padding-inline: 18px 9px;
-
-	--v-badge-offset-x: 15px;
-	--v-badge-offset-y: 4px;
-	--v-badge-border-color: var(--theme--sidebar--section--toggle--background);
-	--v-badge-background-color: var(--theme--primary);
-	--v-badge-color: var(--theme--background-normal);
 }
 
 .accordion-trigger-icon {
