@@ -8,17 +8,24 @@ withDefaults(
 		shadow?: boolean;
 		icon?: string;
 		iconColor?: string;
-		showBack?: boolean;
 	}>(),
 	{
 		shadow: false,
 	},
 );
+
+defineEmits<{
+	cancel: [];
+}>();
 </script>
 
 <template>
 	<header class="header-bar" :class="{ shadow }">
-		<private-view-header-bar-icon v-if="icon || showBack" :icon :show-back :icon-color />
+		<VButton class="cancel-button" rounded icon secondary exact small @click="$emit('cancel')">
+			<v-icon name="close" small />
+		</VButton>
+
+		<private-view-header-bar-icon v-if="icon" class="header-icon" :icon :icon-color />
 
 		<div v-if="$slots['title-outer:prepend']" class="title-outer-prepend">
 			<slot name="title-outer:prepend" />
@@ -151,6 +158,22 @@ withDefaults(
 
 	@media (width > 640px) {
 		padding: 0 20px;
+	}
+}
+
+.cancel-button {
+	display: block;
+
+	@media (min-width: 960px) {
+		display: none;
+	}
+}
+
+.header-icon {
+	display: none;
+
+	@media (min-width: 960px) {
+		display: flex;
 	}
 }
 </style>

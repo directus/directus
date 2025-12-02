@@ -100,7 +100,13 @@ const showHeaderShadow = computed(() => y.value > 0);
 				</v-resizeable>
 
 				<main ref="scroll-container" :class="{ main: true, 'small-search-input': $slots.sidebar }">
-					<v-drawer-header :title="title" :shadow="showHeaderShadow" :icon="icon" :icon-color="iconColor">
+					<v-drawer-header
+						:title="title"
+						:shadow="showHeaderShadow"
+						:icon="icon"
+						:icon-color="iconColor"
+						@cancel="$emit('cancel')"
+					>
 						<template #title><slot name="title" /></template>
 						<template #headline>
 							<slot name="subtitle">
