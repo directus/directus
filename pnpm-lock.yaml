@@ -655,8 +655,8 @@ catalogs:
       specifier: 1.1.12
       version: 1.1.12
     nodemailer:
-      specifier: 7.0.10
-      version: 7.0.10
+      specifier: 7.0.11
+      version: 7.0.11
     nodemailer-mailgun-transport:
       specifier: 2.1.5
       version: 2.1.5
@@ -1217,7 +1217,7 @@ importers:
         version: 1.1.12
       nodemailer:
         specifier: 'catalog:'
-        version: 7.0.10
+        version: 7.0.11
       object-hash:
         specifier: 'catalog:'
         version: 3.0.0
@@ -2798,7 +2798,7 @@ importers:
         version: 16.12.0
       nodemailer:
         specifier: 'catalog:'
-        version: 7.0.10
+        version: 7.0.11
       openapi3-ts:
         specifier: 'catalog:'
         version: 4.5.0
@@ -6216,6 +6216,7 @@ packages:
   '@smithy/core@3.18.0':
     resolution: {integrity: sha512-vGSDXOJFZgOPTatSI1ly7Gwyy/d/R9zh2TO3y0JZ0uut5qQ88p9IaWaZYIWSSqtdekNM4CGok/JppxbAff4KcQ==}
     engines: {node: '>=18.0.0'}
+    deprecated: Please upgrade your lockfile to use the latest 3.x version of @smithy/core for various fixes, see https://github.com/smithy-lang/smithy-typescript/blob/main/packages/core/CHANGELOG.md
 
   '@smithy/credential-provider-imds@4.2.5':
     resolution: {integrity: sha512-BZwotjoZWn9+36nimwm/OLIcVe+KYRwzMjfhd4QT7QxPm9WY0HiOV8t/Wlh+HVUif0SBVV7ksq8//hPaBC/okQ==}
@@ -10707,6 +10708,10 @@ packages:
 
   nodemailer@7.0.10:
     resolution: {integrity: sha512-Us/Se1WtT0ylXgNFfyFSx4LElllVLJXQjWi2Xz17xWw7amDKO2MLtFnVp1WACy7GkVGs+oBlRopVNUzlrGSw1w==}
+    engines: {node: '>=6.0.0'}
+
+  nodemailer@7.0.11:
+    resolution: {integrity: sha512-gnXhNRE0FNhD7wPSCGhdNh46Hs6nm+uTyg+Kq0cZukNQiYdnCsoQjodNP9BQVG9XrcK/v6/MgpAPBUFyzh9pvw==}
     engines: {node: '>=6.0.0'}
 
   nodemon@3.1.10:
@@ -22921,6 +22926,8 @@ snapshots:
     optional: true
 
   nodemailer@7.0.10: {}
+
+  nodemailer@7.0.11: {}
 
   nodemon@3.1.10:
     dependencies:
