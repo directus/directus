@@ -28,7 +28,7 @@ useResizeObserver(contentRef, (entries) => {
 		<div class="content-wrapper">
 			<div ref="message-content" v-md="text || ''" class="message-content" />
 		</div>
-		<button v-if="role === 'user' && shouldShowCollapse" class="collapse-trigger" @click="isOpen = !isOpen">
+		<button v-if="role === 'user' && shouldShowCollapse" class="collapse-trigger" type="button" @click="isOpen = !isOpen">
 			{{ isOpen ? $t('show_less') : $t('show_more') }}
 		</button>
 	</div>
