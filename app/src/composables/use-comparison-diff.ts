@@ -1,5 +1,6 @@
 import { diffArrays, diffJson, diffWordsWithSpace } from 'diff';
 import { isEqual } from 'lodash';
+import type { Field } from '@directus/types';
 
 export type Change = {
 	added?: boolean;
@@ -72,51 +73,48 @@ function getFormattingDiffRanges(
 	collectUnformattedTexts(baseContainer, 'base');
 	collectUnformattedTexts(incomingContainer, 'incoming');
 
-	const baseTextNodes: {
+	type TextNodeInfo = {
 		node: Text;
 		start: number;
 		end: number;
 		text: string;
 		formatted: boolean;
 		formattingTag: string | null;
-	}[] = [];
+	};
 
-	const incomingTextNodes: {
-		node: Text;
-		start: number;
-		end: number;
-		text: string;
-		formatted: boolean;
-		formattingTag: string | null;
-	}[] = [];
+	function collectTextNodes(node: Node, startOffset: number = 0): { nodes: TextNodeInfo[]; nextOffset: number } {
+		const nodes: TextNodeInfo[] = [];
 
-	let baseOffset = 0;
-	let incomingOffset = 0;
+		function traverse(currentNode: Node, offset: number): number {
+			if (currentNode.nodeType === Node.TEXT_NODE) {
+				const text = currentNode.textContent || '';
+				const trimmed = text.trim();
+				const formattingTag = getFormattingTag(currentNode);
+				const formatted = formattingTag !== null;
+				const start = offset;
+				const end = offset + text.length;
 
-	function collectTextNodes(node: Node, container: 'base' | 'incoming'): void {
-		if (node.nodeType === Node.TEXT_NODE) {
-			const text = node.textContent || '';
-			const trimmed = text.trim();
-			const formattingTag = getFormattingTag(node);
-			const formatted = formattingTag !== null;
-			const offset = container === 'base' ? baseOffset : incomingOffset;
-			const start = offset;
-			const end = offset + text.length;
+				nodes.push({ node: currentNode as Text, start, end, text: trimmed, formatted, formattingTag });
+				return end;
+			} else if (currentNode.nodeType === Node.ELEMENT_NODE) {
+				let currentOffset = offset;
 
-			if (container === 'base') {
-				baseTextNodes.push({ node: node as Text, start, end, text: trimmed, formatted, formattingTag });
-				baseOffset = end;
-			} else {
-				incomingTextNodes.push({ node: node as Text, start, end, text: trimmed, formatted, formattingTag });
-				incomingOffset = end;
+				Array.from(currentNode.childNodes).forEach((child) => {
+					currentOffset = traverse(child, currentOffset);
+				});
+
+				return currentOffset;
 			}
-		} else if (node.nodeType === Node.ELEMENT_NODE) {
-			Array.from(node.childNodes).forEach((child) => collectTextNodes(child, container));
+
+			return offset;
 		}
+
+		const nextOffset = traverse(node, startOffset);
+		return { nodes, nextOffset };
 	}
 
-	collectTextNodes(baseContainer, 'base');
-	collectTextNodes(incomingContainer, 'incoming');
+	const { nodes: baseTextNodes } = collectTextNodes(baseContainer);
+	const { nodes: incomingTextNodes } = collectTextNodes(incomingContainer);
 
 	const baseRanges: { start: number; end: number }[] = [];
 	const incomingRanges: { start: number; end: number }[] = [];
@@ -211,22 +209,37 @@ function applyTextDiffToHtml(
 	const clone = container.cloneNode(true) as HTMLElement;
 	const highlightClass = isIncoming ? 'diff-added' : 'diff-removed';
 
-	const textNodes: { node: Text; start: number; end: number }[] = [];
-	let textOffset = 0;
+	function collectTextNodes(
+		node: Node,
+		startOffset: number = 0,
+	): { nodes: { node: Text; start: number; end: number }[]; nextOffset: number } {
+		const nodes: { node: Text; start: number; end: number }[] = [];
 
-	function collectTextNodes(node: Node): void {
-		if (node.nodeType === Node.TEXT_NODE) {
-			const text = node.textContent || '';
-			const start = textOffset;
-			const end = textOffset + text.length;
-			textNodes.push({ node: node as Text, start, end });
-			textOffset = end;
-		} else if (node.nodeType === Node.ELEMENT_NODE) {
-			Array.from(node.childNodes).forEach(collectTextNodes);
+		function traverse(currentNode: Node, offset: number): number {
+			if (currentNode.nodeType === Node.TEXT_NODE) {
+				const text = currentNode.textContent || '';
+				const start = offset;
+				const end = offset + text.length;
+				nodes.push({ node: currentNode as Text, start, end });
+				return end;
+			} else if (currentNode.nodeType === Node.ELEMENT_NODE) {
+				let currentOffset = offset;
+
+				Array.from(currentNode.childNodes).forEach((child) => {
+					currentOffset = traverse(child, currentOffset);
+				});
+
+				return currentOffset;
+			}
+
+			return offset;
 		}
+
+		const nextOffset = traverse(node, startOffset);
+		return { nodes, nextOffset };
 	}
 
-	collectTextNodes(clone);
+	const { nodes: textNodes } = collectTextNodes(clone);
 
 	let currentOffset = 0;
 	const highlightRanges: { start: number; end: number }[] = [];
@@ -325,7 +338,7 @@ function applyTextDiffToHtml(
 }
 
 export function useComparisonDiff() {
-	function computeDiff(baseValue: any, incomingValue: any, field?: { meta?: { special?: string[] } }): Change[] {
+	function computeDiff(baseValue: any, incomingValue: any, field?: Field): Change[] {
 		let changes: Change[];
 
 		if (isEqual(baseValue, incomingValue)) {
