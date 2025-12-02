@@ -1,21 +1,40 @@
+import formatTitle from '@directus/format-title';
 import { onMounted, onUnmounted, toValue, unref, watch, type MaybeRefOrGetter } from 'vue';
 import { z, ZodObject } from 'zod';
 import { useAiStore } from '../stores/use-ai';
-import formatTitle from '@directus/format-title';
 
 export interface StaticToolDefinition<T = ZodObject> {
 	name: string;
 	displayName: string;
-	description: string;
+	llmDescription: string;
 	inputSchema: T;
 	execute: (args: z.input<T>) => unknown | Promise<unknown>;
 }
 
 export interface ToolDefinition<T = ZodObject> {
+	/**
+	 * Unique name for the current tool
+	 */
 	name: MaybeRefOrGetter<string>;
+
+	/**
+	 * Human readable display name for the tool
+	 */
 	displayName?: MaybeRefOrGetter<string>;
-	description: MaybeRefOrGetter<string>;
+
+	/**
+	 * Description of the tool for LLM usage. Should be in English for best results
+	 */
+	llmDescription: MaybeRefOrGetter<string>;
+
+	/**
+	 * Zod schema defining the input for the tool
+	 */
 	inputSchema: MaybeRefOrGetter<T>;
+
+	/**
+	 * Function that will be executed when the tool is called
+	 */
 	execute: MaybeRefOrGetter<(args: z.input<T>) => unknown | Promise<unknown>>;
 }
 
@@ -25,7 +44,7 @@ export const toStatic = <T>(toolGetter: MaybeRefOrGetter<ToolDefinition<T>>): St
 	return {
 		name: toValue(tool.name),
 		displayName: tool.displayName ? toValue(tool.displayName) : formatTitle(toValue(tool.name)),
-		description: toValue(tool.description),
+		llmDescription: toValue(tool.llmDescription),
 		inputSchema: toValue(tool.inputSchema),
 		execute: unref(tool.execute),
 	};

@@ -125,7 +125,7 @@ export const useAiStore = defineStore('ai-store', () => {
 
 	const toApiTool = (tool: StaticToolDefinition) => ({
 		name: tool.name,
-		description: tool.description,
+		description: tool.llmDescription,
 		inputSchema: z.toJSONSchema(tool.inputSchema, { target: 'draft-7' }),
 	});
 
