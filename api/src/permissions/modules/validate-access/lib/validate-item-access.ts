@@ -77,9 +77,7 @@ export async function validateItemAccess(
 
 	// If specific fields were requested, verify they are all accessible
 	if (options.fields) {
-		accessAllowed = items.every((item: any) =>
-			options.fields!.every((field) => toBoolean(item[field]))
-		);
+		accessAllowed = items.every((item: any) => options.fields!.every((field) => toBoolean(item[field])));
 	}
 
 	// If returnAllowedRootFields, extract the fields that have value = 1

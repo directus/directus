@@ -39,13 +39,15 @@ export async function fetchPermittedAstRootFields(
 
 	// If fieldsOverride is provided, create children and compute cases internally
 	if (fieldsOverride) {
-		children = fieldsOverride.map((field): FieldNode => ({
-			type: 'field',
-			name: field,
-			fieldKey: field,
-			whenCase: [],
-			alias: false,
-		}));
+		children = fieldsOverride.map(
+			(field): FieldNode => ({
+				type: 'field',
+				name: field,
+				fieldKey: field,
+				whenCase: [],
+				alias: false,
+			}),
+		);
 
 		const { cases: newCases, caseMap, allowedFields } = getCases(collection, permissions, fieldsOverride);
 		cases = newCases;
