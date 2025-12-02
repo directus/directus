@@ -127,17 +127,16 @@ defineEmits<{
 			overflow: hidden;
 
 			.type-title {
-				color: var(--theme--header--title--foreground);
 				flex-grow: 1;
 				inline-size: 100%;
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
-				font-family: var(--theme--header--title--font-family);
-				font-weight: var(--theme--header--title--font-weight);
 			}
 
 			:deep(.type-title) {
+				max-inline-size: 100%;
+
 				.render-template {
 					img {
 						block-size: 24px;
