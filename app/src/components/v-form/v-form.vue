@@ -20,8 +20,6 @@ import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
 import ValidationErrors from './validation-errors.vue';
 
-const { t } = useI18n();
-
 type FieldValues = {
 	[field: string]: any;
 };
@@ -70,6 +68,8 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['update:modelValue']);
+
+const { t } = useI18n();
 
 const values = computed(() => {
 	return Object.assign({}, cloneDeep(props.initialValues), cloneDeep(props.modelValue));
