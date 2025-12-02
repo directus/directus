@@ -34,6 +34,8 @@ const appAccess = computed(() => {
 
 defineProps<PrivateViewProps>();
 
+defineOptions({ inheritAttrs: false });
+
 const cookies = useCookies(['license-banner-dismissed']);
 const settingsStore = useSettingsStore();
 
