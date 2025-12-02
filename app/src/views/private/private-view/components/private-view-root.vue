@@ -62,7 +62,6 @@ const splitterCollapsed = computed({
 			class="root-split"
 			:disabled="!inlineNav"
 		>
-
 			<template #start>
 				<PrivateViewNav v-if="inlineNav">
 					<template #navigation><slot name="navigation" /></template>

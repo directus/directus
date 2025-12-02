@@ -22,13 +22,13 @@ defineEmits<{
 <template>
 	<header class="header-bar" :class="{ shadow }">
 		<VButton
+			v-tooltip.bottom="$t('cancel')"
 			class="cancel-button"
 			rounded
 			icon
 			secondary
 			exact
 			small
-			v-tooltip.bottom="$t('cancel')"
 			@click="$emit('cancel')"
 		>
 			<v-icon name="close" small />
@@ -96,7 +96,6 @@ defineEmits<{
 		block-size: 100%;
 		margin-inline-start: 10px;
 		overflow: hidden;
-
 
 		&.full {
 			margin-inline-end: 12px;

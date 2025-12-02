@@ -103,45 +103,6 @@ export const useRelationsStore = defineStore('relations', () => {
 		return relations.find((relation) => relation.collection === collection && relation.field === field) ?? null;
 	};
 
-	/**
-	 * Get a list of all relation types the path is made of
-	 * @param collection The starting collection
-	 * @param path The path to digest
-	 * @returns An array of types of the relations
-	 */
-	const getRelationTypes = (collection: string, path: string): ('m2a' | 'o2m' | 'm2o')[] => {
-		if (!path.includes('.')) return [];
-
-		const parts = path.split('.') as [string] & string[];
-
-		const currentField = parts[0].includes(':') ? (parts[0].split(':')[0] as string) : parts[0];
-
-		const relation = getRelationsForField(collection, currentField).find(
-			(relation) => relation.collection === collection || relation.related_collection === collection,
-		);
-
-		if (!relation) return [];
-
-		const type = getRelationType({
-			collection: collection,
-			field: currentField,
-			relation,
-		});
-
-		switch (type) {
-			case 'o2m':
-				return ['o2m', ...getRelationTypes(relation.collection, parts.slice(1).join('.'))];
-			case 'm2o':
-				if (!relation.related_collection) return [];
-				return ['m2o', ...getRelationTypes(relation.related_collection, parts.slice(1).join('.'))];
-			case 'm2a':
-				if (!relation.meta?.one_allowed_collections) return ['m2a'];
-				return ['m2a', ...getRelationTypes(parts[0].split(':')[1] as string, parts.slice(1).join('.'))];
-		}
-
-		return [];
-	};
-
 	return {
 		relations,
 		hydrate,
