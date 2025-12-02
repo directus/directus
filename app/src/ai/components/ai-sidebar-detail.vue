@@ -104,7 +104,7 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 }
 
 .ai-sidebar-content {
-	padding: 12px 0 12px 18px;
+	padding: 12px;
 	block-size: 100%;
 	display: flex;
 	flex-direction: column;

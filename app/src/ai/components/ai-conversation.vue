@@ -149,7 +149,6 @@ function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
 .input-container {
 	flex-shrink: 0;
 	position: relative;
-	padding-inline-end: 12px;
 }
 
 .error-message {
