@@ -78,9 +78,10 @@ const showHeaderShadow = computed(() => y.value > 0);
 				icon
 				rounded
 				secondary
+				small
 				@click="$emit('cancel')"
 			>
-				<v-icon name="close" />
+				<v-icon name="close" small />
 			</v-button>
 
 			<div class="content">
@@ -152,8 +153,8 @@ const showHeaderShadow = computed(() => y.value > 0);
 
 		display: none;
 		position: absolute;
-		inset-block-start: 32px;
-		inset-inline-start: -76px;
+		inset-block-start: 22px;
+		inset-inline-start: -56px;
 
 		@media (min-width: 960px) {
 			display: inline-flex;
