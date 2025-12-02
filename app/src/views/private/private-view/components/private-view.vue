@@ -24,14 +24,14 @@ import NotificationsDrawer from '../../components/notifications-drawer.vue';
 import PrivateViewNoAppAccess from './private-view-no-app-access.vue';
 import PrivateViewRoot from './private-view-root.vue';
 
+defineProps<PrivateViewProps>();
+
 const userStore = useUserStore();
 
 const appAccess = computed(() => {
 	if (!userStore.currentUser) return true;
 	return userStore.currentUser?.app_access || false;
 });
-
-defineProps<PrivateViewProps>();
 
 const cookies = useCookies(['license-banner-dismissed']);
 const settingsStore = useSettingsStore();
