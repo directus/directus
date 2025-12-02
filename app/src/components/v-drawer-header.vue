@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import HeaderBarActions from '@/views/private/components/header-bar-actions.vue';
+import PrivateViewHeaderBarActions from '@/views/private/private-view/components/private-view-header-bar-actions.vue';
 import PrivateViewHeaderBarIcon from '@/views/private/private-view/components/private-view-header-bar-icon.vue';
 
 withDefaults(
@@ -53,9 +53,9 @@ defineEmits<{
 
 		<slot name="actions:prepend" />
 
-		<header-bar-actions>
+		<private-view-header-bar-actions>
 			<slot name="actions" />
-		</header-bar-actions>
+		</private-view-header-bar-actions>
 
 		<slot name="actions:append" />
 	</header>
@@ -84,7 +84,6 @@ defineEmits<{
 		align-items: center;
 		gap: 16px;
 		inline-size: 100%;
-		max-inline-size: calc(100% - 12px - 44px - 120px - 12px - 8px);
 		block-size: 100%;
 		margin-inline-start: 10px;
 		overflow: hidden;
