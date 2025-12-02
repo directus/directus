@@ -55,14 +55,14 @@ export class AssetsService {
 			return file;
 		}
 
-		const essentialFields = ['type'];
-		const fieldsToKeep = new Set([...essentialFields, ...allowedFields]);
+		const essentialFields: (keyof File)[] = ['type'];
+		const fieldsToKeep = new Set<string>([...essentialFields, ...allowedFields]);
 
 		const filteredFile: Partial<File> = {};
 
 		for (const field of fieldsToKeep) {
 			if (field in file) {
-				(filteredFile as any)[field] = (file as any)[field];
+				(filteredFile as Record<string, unknown>)[field] = file[field as keyof File];
 			}
 		}
 
@@ -96,7 +96,7 @@ export class AssetsService {
 			.from('directus_settings')
 			.first();
 
-		const systemPublicKeys: string[] = Object.values(publicSettings || {}) as string[];
+		const systemPublicKeys: string[] = Object.values(publicSettings || {});
 
 		/**
 		 * This is a little annoying. Postgres will error out if you're trying to search in `where`
