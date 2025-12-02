@@ -114,7 +114,7 @@ export class KvRedis implements Kv {
 
 	async aquireLock(key: string) {
 		const hash = randomUUID();
-		const result = await this.redis.set(key, hash, 'EX', 10, 'NX');
+		const result = await this.redis.set(withNamespace(key, this.namespace), hash, 'EX', 10, 'NX');
 
 		return result === 'OK' ? hash : undefined;
 	}

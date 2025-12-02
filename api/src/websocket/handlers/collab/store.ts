@@ -32,7 +32,7 @@ export function useStore<Type extends object>(uid: string) {
 		while (!lock) {
 			tries++;
 
-			if (tries > 5) {
+			if (tries > 10) {
 				throw new RedisStoreError(`Couldn't aquire lock ${uid}`);
 			}
 

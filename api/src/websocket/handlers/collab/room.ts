@@ -374,7 +374,7 @@ export class Room {
 
 	async close() {
 		await this.store(async (store) => {
-			return await store.delete('uid');
+			await store.delete('uid');
 		});
 	}
 }
