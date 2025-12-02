@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineTool } from '@/ai/composables/define-tool';
 import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
@@ -8,21 +7,15 @@ import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { useElementSize } from '@directus/composables';
 import { ContentVersion, Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
-import { computed, getCurrentInstance, onBeforeUpdate, provide, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { z } from 'zod';
-import { useInputSchema } from './composables/use-input-schema';
-import type { MenuOptions } from './form-field-menu.vue';
-import FormField from './form-field.vue';
-import type { ComparisonContext, FormField as TFormField } from './types';
+import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
+import type { MenuOptions } from './components/form-field-menu.vue';
+import FormField from './components/form-field.vue';
+import ValidationErrors from './components/validation-errors.vue';
+import { useAiTools } from './composables/use-ai-tools';
+import type { ComparisonContext, FieldValues, FormField as TFormField } from './types';
 import { getFormFields } from './utils/get-form-fields';
 import { updateFieldWidths } from './utils/update-field-widths';
 import { updateSystemDivider } from './utils/update-system-divider';
-import ValidationErrors from './validation-errors.vue';
-
-type FieldValues = {
-	[field: string]: any;
-};
 
 const props = withDefaults(
 	defineProps<{
@@ -69,8 +62,6 @@ const props = withDefaults(
 
 const emit = defineEmits(['update:modelValue']);
 
-const { t } = useI18n();
-
 const values = computed(() => {
 	return Object.assign({}, cloneDeep(props.initialValues), cloneDeep(props.modelValue));
 });
@@ -105,46 +96,7 @@ const {
 	isFieldVisible,
 } = useForm();
 
-const { inputSchema: writeInputSchema } = useInputSchema(finalFields);
-
-const componentUid = getCurrentInstance()!.uid;
-
-defineTool({
-	name: `read-form-values-${componentUid}`,
-	displayName: t('ai_tools.read_form_values'),
-	description: 'Read values of the form on the current page',
-	inputSchema: computed(() => {
-		return z.object({
-			fields: fieldNames.value.length > 0 ? z.array(z.enum(fieldNames.value)) : z.array(z.string()),
-		});
-	}),
-	execute: ({ fields }) => {
-		const output: Record<string, unknown> = {};
-
-		for (const field of fields) {
-			output[field] = values.value[field];
-		}
-
-		return output;
-	},
-});
-
-defineTool({
-	name: `set-form-values-${componentUid}`,
-	displayName: t('ai_tools.update_form_values'),
-	description: `Set values of form on the current page`,
-	inputSchema: writeInputSchema,
-	execute: (args) => {
-		const output: string[] = [];
-
-		for (const [key, value] of Object.entries(args)) {
-			setValue(key, value);
-			output.push(`Successfully set form field ${key} to value ${value}`);
-		}
-
-		return output;
-	},
-});
+useAiTools({ finalFields, fieldNames, setValue, values });
 
 const { toggleBatchField, batchActiveFields } = useBatch();
 const { toggleRawField, rawActiveFields } = useRawEditor();
