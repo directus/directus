@@ -750,6 +750,7 @@ function useCollectionRoute() {
 			:min-size="isMobile ? 0 : 20"
 			:max-size="isMobile ? 100 : 80"
 			:transition-duration="150"
+			:direction="userStore.textDirection"
 			class="content-split"
 			:disabled="isMobile"
 		>

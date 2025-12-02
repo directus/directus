@@ -1,18 +1,20 @@
 <script setup lang="ts">
+import { useUserStore } from '@/stores/user';
 import { SplitPanel } from '@directus/vue-split-panel';
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
+import { computed, watch } from 'vue';
+import ModuleBar from '../../components/module-bar.vue';
 import { useNavBarStore } from '../stores/nav-bar';
+import { useSidebarStore } from '../stores/sidebar';
+import PrivateViewDrawer from './private-view-drawer.vue';
 import PrivateViewMain from './private-view-main.vue';
 import PrivateViewNav from './private-view-nav.vue';
-import ModuleBar from '../../components/module-bar.vue';
-import type { PrivateViewProps } from './private-view.vue';
 import PrivateViewResizeHandle from './private-view-resize-handle.vue';
-import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
-import PrivateViewDrawer from './private-view-drawer.vue';
-import { computed, watch } from 'vue';
-import { useSidebarStore } from '../stores/sidebar';
+import type { PrivateViewProps } from './private-view.vue';
 
 const { lg, xl } = useBreakpoints(breakpointsTailwind);
 
+const userStore = useUserStore();
 const navBarStore = useNavBarStore();
 const sidebarStore = useSidebarStore();
 
@@ -53,12 +55,14 @@ const splitterCollapsed = computed({
 			:max-size="340"
 			:snap-points="[250]"
 			:snap-threshold="6"
+			:direction="userStore.textDirection"
 			divider-hit-area="24px"
 			:transition-duration="125"
 			primary="start"
 			class="root-split"
 			:disabled="!inlineNav"
 		>
+
 			<template #start>
 				<PrivateViewNav v-if="inlineNav">
 					<template #navigation><slot name="navigation" /></template>
@@ -129,7 +133,6 @@ const splitterCollapsed = computed({
 	flex-grow: 1;
 	flex-shrink: 1;
 }
-
 
 .root-split.sp-dragging :deep(iframe),
 .root-split:active :deep(iframe) {

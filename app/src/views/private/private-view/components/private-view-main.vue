@@ -10,6 +10,9 @@ import PrivateViewHeaderBar from './private-view-header-bar.vue';
 import PrivateViewResizeHandle from './private-view-resize-handle.vue';
 import PrivateViewSidebar from './private-view-sidebar.vue';
 import type { PrivateViewProps } from './private-view.vue';
+import { useUserStore } from '@/stores/user';
+
+const userStore = useUserStore();
 
 const contentEl = useTemplateRef('content-el');
 provide('main-element', contentEl);
@@ -62,6 +65,7 @@ const splitterCollapsed = computed({
 			:min-size="280"
 			:max-size="600"
 			:snap-points="[370]"
+			:direction="userStore.textDirection"
 			:snap-threshold="6"
 			divider-hit-area="24px"
 			:transition-duration="125"
