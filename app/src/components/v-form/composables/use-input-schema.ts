@@ -56,7 +56,6 @@ export const useInputSchema = (finalFields: MaybeRefOrGetter<Field[]>) => {
 						case 'geometry.MultiPoint':
 						case 'geometry.MultiLineString':
 						case 'geometry.MultiPolygon':
-							// TODO maybe https://github.com/reilem/zod-geojson?
 							type = z.json();
 							break;
 						// case 'alias':
