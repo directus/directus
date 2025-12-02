@@ -58,7 +58,7 @@ export async function validateItemAccess(
 		},
 	};
 
-	// Inject the children collection fields after the permissions have been processed, as to not require access to all collection fields
+	// Inject the root fields after the permissions have been processed, as to not require access to all collection fields
 	if (options.returnAllowedRootFields) {
 		ast.children = Object.keys(context.schema.collections[options.collection]!.fields).map((field) => ({
 			type: 'field',
