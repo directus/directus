@@ -1,7 +1,7 @@
+import formatTitle from '@directus/format-title';
 import { onMounted, onUnmounted, toValue, unref, watch, type MaybeRefOrGetter } from 'vue';
 import { z, ZodObject } from 'zod';
 import { useAiStore } from '../stores/use-ai';
-import formatTitle from '@directus/format-title';
 
 export interface StaticToolDefinition<T = ZodObject> {
 	name: string;
@@ -12,10 +12,29 @@ export interface StaticToolDefinition<T = ZodObject> {
 }
 
 export interface ToolDefinition<T = ZodObject> {
+	/**
+	 * Unique name for the current tool
+	 */
 	name: MaybeRefOrGetter<string>;
+
+	/**
+	 * Human readable display name for the tool
+	 */
 	displayName?: MaybeRefOrGetter<string>;
+
+	/**
+	 * Description of the tool for LLM usage. Should be in English for best results
+	 */
 	description: MaybeRefOrGetter<string>;
+
+	/**
+	 * Zod schema defining the input for the tool
+	 */
 	inputSchema: MaybeRefOrGetter<T>;
+
+	/**
+	 * Function that will be executed when the tool is called
+	 */
 	execute: MaybeRefOrGetter<(args: z.input<T>) => unknown | Promise<unknown>>;
 }
 
