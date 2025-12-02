@@ -788,6 +788,8 @@ function discardAndLeave() {
 	--row-size: 100px;
 	--gap-size: 40px;
 
+	padding-block-start: calc(var(--content-padding) / 2);
+
 	&.center {
 		block-size: calc(100% - 48px - var(--header-bar-height));
 		display: grid;
