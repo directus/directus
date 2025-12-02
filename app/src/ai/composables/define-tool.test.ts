@@ -33,7 +33,7 @@ describe('define-tool composable', () => {
 
 		const tool: ToolDefinition<typeof schema> = {
 			name,
-			llmDescription: description,
+			description,
 			inputSchema: schema,
 			execute,
 		};
@@ -41,7 +41,7 @@ describe('define-tool composable', () => {
 		const stat = toStatic(tool);
 
 		expect(stat.name).toBe('my-tool');
-		expect(stat.llmDescription).toBe('desc:my-tool');
+		expect(stat.description).toBe('desc:my-tool');
 		expect(stat.inputSchema).toBe(schema);
 		// Unwrapped function reference
 		expect(stat.execute).toBe(execA);
@@ -50,7 +50,7 @@ describe('define-tool composable', () => {
 	it('registers on mount and deregisters on unmount', async () => {
 		const toolRef = ref<ToolDefinition<typeof schema>>({
 			name: 'register-test',
-			llmDescription: 'register test tool',
+			description: 'register test tool',
 			inputSchema: schema,
 			execute: () => undefined,
 		});
@@ -83,7 +83,7 @@ describe('define-tool composable', () => {
 
 		const toolRef = ref<ToolDefinition<typeof schema>>({
 			name: 'first-name',
-			llmDescription: 'first desc',
+			description: 'first desc',
 			inputSchema: schema,
 			execute: execA,
 		});
@@ -102,7 +102,7 @@ describe('define-tool composable', () => {
 		// Update the whole definition to trigger the watcher
 		toolRef.value = {
 			name: 'second-name',
-			llmDescription: 'second desc',
+			description: 'second desc',
 			inputSchema: schema,
 			execute: execB,
 		};

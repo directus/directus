@@ -23,7 +23,7 @@ export const useAiTools = (options: UseAiToolsOptions) => {
 	defineTool({
 		name: `read-form-values-${componentUid}`,
 		displayName: t('ai_tools.read_form_values'),
-		llmDescription: 'Read values of the form on the current page',
+		description: 'Read values of the form on the current page',
 		inputSchema: computed(() => {
 			return z.object({
 				fields: options.fieldNames.value.length > 0 ? z.array(z.enum(options.fieldNames.value)) : z.array(z.string()),
@@ -43,7 +43,7 @@ export const useAiTools = (options: UseAiToolsOptions) => {
 	defineTool({
 		name: `set-form-values-${componentUid}`,
 		displayName: t('ai_tools.update_form_values'),
-		llmDescription: 'Set values of form on the current page',
+		description: `Set values of form on the current page`,
 		inputSchema: writeInputSchema,
 		execute: (args) => {
 			const output: string[] = [];
