@@ -231,7 +231,8 @@ export function useFlows(options: UseFlowsOptions) {
 					collection: collection.value,
 				});
 			} else {
-				const keys = unref(primaryKey) ? [unref(primaryKey)] : selection.value || [];
+				const pk = unref(primaryKey);
+				const keys = pk ? [pk] : selection.value || [];
 
 				await api.post(`/flows/trigger/${flowId}`, {
 					...confirmValues.value,
