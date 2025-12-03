@@ -225,10 +225,8 @@ test('Injects all collection fields when returnAllowedRootFields is true', async
 		} as Context,
 	);
 
-	// processAst is called first with empty children
 	expect(processAst).toHaveBeenCalled();
 
-	// fetchPermittedAstRootFields is called with AST containing all collection fields
 	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
 		expect.objectContaining({
 			children: expect.arrayContaining([
@@ -268,7 +266,6 @@ test('Injects all collection fields when both returnAllowedRootFields and fields
 		} as Context,
 	);
 
-	// processAst is called first with the specified fields
 	expect(processAst).toHaveBeenCalledWith(
 		expect.objectContaining({
 			ast: expect.objectContaining({
@@ -281,7 +278,6 @@ test('Injects all collection fields when both returnAllowedRootFields and fields
 		expect.anything(),
 	);
 
-	// fetchPermittedAstRootFields is called with AST containing all collection fields (injected after processAst)
 	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
 		expect.objectContaining({
 			children: expect.arrayContaining([
@@ -306,9 +302,6 @@ test('Returns intersection of allowed fields across multiple items', async () =>
 
 	const acc = {} as unknown as Accountability;
 
-	// Item 1: all fields accessible except field-c
-	// Item 2: all fields accessible except field-b
-	// Intersection should be: field-a, field-d
 	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([
 		{ 'field-a': 1, 'field-b': 1, 'field-c': null, 'field-d': 1 },
 		{ 'field-a': 1, 'field-b': null, 'field-c': 1, 'field-d': 1 },
