@@ -35,7 +35,8 @@ vi.mock('node:buffer');
 vi.mock('node:crypto');
 vi.mock('undici');
 
-const { join: joinActual } = await vi.importActual<typeof import('node:path')>('node:path');
+const { join: joinTmp } = await vi.importActual<typeof import('node:path')>('node:path');
+const joinActual = (...args: any[]) => normalizePath(joinTmp(...args));
 
 let sample: {
 	config: Required<DriverCloudinaryConfig>;
@@ -1151,8 +1152,10 @@ describe('#list', () => {
 	test('Fetches search api results', async () => {
 		await driver.list(sample.path.input).next();
 
+		const expression = encodeURIComponent(`folder="${sample.path.inputFull}" OR folder:"${sample.path.inputFull}/*"`);
+
 		expect(fetch).toHaveBeenCalledWith(
-			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/search?expression=${sample.path.inputFull}*&next_cursor=`,
+			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/search?expression=${expression}&next_cursor=`,
 			{
 				method: 'GET',
 				headers: {
@@ -1187,10 +1190,12 @@ describe('#list', () => {
 			output.push(path);
 		}
 
+		const expression = encodeURIComponent(`folder="${sample.path.inputFull}" OR folder:"${sample.path.inputFull}/*"`);
+
 		expect(fetch).toHaveBeenCalledTimes(2);
 
 		expect(fetch).toHaveBeenCalledWith(
-			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/search?expression=${sample.path.inputFull}*&next_cursor=${mockNextCursor}`,
+			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/search?expression=${expression}&next_cursor=${mockNextCursor}`,
 			{
 				method: 'GET',
 				headers: {
