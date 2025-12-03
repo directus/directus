@@ -3,6 +3,7 @@ import { stat } from 'node:fs/promises';
 import { getExtensionsPath } from '../get-extensions-path.js';
 import { useEnv } from '@directus/env';
 import type { Driver } from '@directus/storage';
+import { normalizePath } from '@directus/utils';
 
 /**
  * Returns the directory depth of the provided path
@@ -43,14 +44,14 @@ export function getSyncPaths(partialPath: string | undefined) {
 	if (!partialPath) {
 		return {
 			localExtensionsPath: localRootPath,
-			remoteExtensionsPath: remoteRootPath,
+			remoteExtensionsPath: normalizePath(remoteRootPath),
 		};
 	}
 
 	const resolvedPartialPath = relative(sep, resolve(sep, partialPath));
 	return {
 		localExtensionsPath: join(localRootPath, resolvedPartialPath),
-		remoteExtensionsPath: join(remoteRootPath, resolvedPartialPath),
+		remoteExtensionsPath: normalizePath(join(remoteRootPath, resolvedPartialPath)),
 	};
 }
 

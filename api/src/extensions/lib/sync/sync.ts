@@ -13,6 +13,7 @@ import { useLogger } from '../../../logger/index.js';
 import { getStorage } from '../../../storage/index.js';
 import { getExtensionsPath } from '../get-extensions-path.js';
 import { isSynchronizing, setSyncStatus, SyncStatus } from './status.js';
+import { normalizePath } from '@directus/utils';
 
 export type ExtensionSyncOptions = {
 	forceSync?: boolean; // force sync all extensions
@@ -57,7 +58,7 @@ export async function syncExtensions(options?: ExtensionSyncOptions): Promise<vo
 
 		// check if we are only removing the local directory
 		if (options?.partialSync) {
-			const remoteExists = await disk.exists(join(remoteExtensionsPath, 'package.json'));
+			const remoteExists = await disk.exists(normalizePath(join(remoteExtensionsPath, 'package.json')));
 
 			if (remoteExists === false) {
 				await rm(localExtensionsPath, { recursive: true, force: true });
