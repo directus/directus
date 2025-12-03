@@ -37,11 +37,15 @@ const RELEASE_SCRIPT = `
 	end
 `;
 
+let c = 0;
+
 export class KvRedis implements Kv {
 	private redis: ExtendedRedis;
 	private namespace: string;
 	private compression: boolean;
 	private compressionMinSize: number;
+	private lockTimeout: number;
+	private releaseTimeout: number;
 
 	constructor(config: Omit<KvConfigRedis, 'type'>) {
 		if ('setMax' in config.redis === false) {
@@ -62,6 +66,8 @@ export class KvRedis implements Kv {
 		this.namespace = config.namespace;
 		this.compression = config.compression ?? true;
 		this.compressionMinSize = config.compressionMinSize ?? 1000;
+		this.lockTimeout = config.lockTimeout ?? 10;
+		this.releaseTimeout = config.releaseTimeout ?? 5;
 	}
 
 	async get<T = unknown>(key: string) {
@@ -113,14 +119,53 @@ export class KvRedis implements Kv {
 	}
 
 	async aquireLock(key: string) {
+		const i = c++;
 		const hash = randomUUID();
-		const result = await this.redis.set(withNamespace(key, this.namespace), hash, 'EX', 10, 'NX');
+		key = withNamespace(key, this.namespace);
+		console.log(`${i} aquire lock with hash ${hash} `);
 
-		return result === 'OK' ? hash : undefined;
+		let result = await this.redis.set(key, hash, 'EX', this.releaseTimeout, 'NX');
+
+		await new Promise((resolve, reject) => {
+			let rejected = false;
+
+			const timeout = setTimeout(async () => {
+				await this.redis.lrem(`${key}:queue`, 0, hash);
+				rejected = true;
+				reject(`Aquiring lock timed out after ${this.lockTimeout}s`);
+			}, this.lockTimeout * 1000);
+
+			(async () => {
+				await this.redis.rpush(`${key}:queue`, hash);
+
+				let tries = 0;
+
+				while (result !== 'OK') {
+					if (rejected) return;
+					tries++;
+					await sleep(Math.pow(2, tries));
+
+					result = await this.redis.set(key, hash, 'EX', this.releaseTimeout, 'NX');
+				}
+
+				clearTimeout(timeout);
+				resolve(undefined);
+			})();
+		});
+
+		console.log(`${i} lock aquired`);
+
+		return hash;
 	}
 
 	async releaseLock(key: string, hash: string) {
-		const result = await this.redis.release(withNamespace(key, this.namespace), hash);
+		const i = c++;
+		key = withNamespace(key, this.namespace);
+		console.log(`${i} release lock`);
+		const result = await this.redis.release(key, hash);
+
+		console.log(`${i} lock released ${result !== 0}`);
+
 		return result !== 0;
 	}
 
@@ -137,4 +182,8 @@ export class KvRedis implements Kv {
 
 		await pipeline.exec();
 	}
+}
+
+function sleep(ms: number) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
 }

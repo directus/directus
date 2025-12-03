@@ -34,7 +34,13 @@ export interface Cache {
 	 */
 	clear(): Promise<void>;
 
-	aquireLock(key: string): Promise<string | undefined>;
+	/**
+	 * Waits until a lock was aquired successfully. If it times out, an error is thrown.
+	 */
+	aquireLock(key: string): Promise<string>;
 
+	/**
+	 * Releases a lock based on the hash that it was locked with.
+	 */
 	releaseLock(key: string, hash: string): Promise<boolean>;
 }

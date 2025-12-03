@@ -26,43 +26,30 @@ const store = createCache(config);
 
 export function useStore<Type extends object>(uid: string) {
 	return async function access<T>(callback: (store: RedisStore<Type>) => Promise<T>): Promise<T> {
-		let lock = await store.aquireLock(`lock:${uid}`);
-		let tries = 0;
+		try {
+			const lock = await store.aquireLock(`lock:${uid}`);
 
-		while (!lock) {
-			tries++;
+			const result = await callback({
+				has(key) {
+					return store.has(`${uid}:${String(key)}`);
+				},
+				get(key) {
+					// No clue why TS doesn't pick up that this function can't return undefined
+					return store.get(`${uid}:${String(key)}`) as any;
+				},
+				set(key, value) {
+					return store.set(`${uid}:${String(key)}`, value);
+				},
+				delete(key) {
+					return store.delete(`${uid}:${String(key)}`);
+				},
+			});
 
-			if (tries > 10) {
-				throw new RedisStoreError(`Couldn't aquire lock ${uid}`);
-			}
+			await store.releaseLock(`lock:${uid}`, lock);
 
-			await sleep(Math.pow(2, tries * 2) + Math.random() * Math.pow(2, tries));
-			lock = await store.aquireLock(`lock:${uid}`);
+			return result;
+		} catch {
+			throw new RedisStoreError(`Couldn't aquire lock ${uid}`);
 		}
-
-		const result = await callback({
-			has(key) {
-				return store.has(`${uid}:${String(key)}`);
-			},
-			get(key) {
-				// No clue why TS doesn't pick up that this function can't return undefined
-				return store.get(`${uid}:${String(key)}`) as any;
-			},
-			set(key, value) {
-				return store.set(`${uid}:${String(key)}`, value);
-			},
-			delete(key) {
-				return store.delete(`${uid}:${String(key)}`);
-			},
-		});
-
-		await store.releaseLock(`lock:${uid}`, lock);
-
-		return result;
 	};
 }
-
-const sleep = (time: number) =>
-	new Promise((resolve) => {
-		setTimeout(resolve, time);
-	});

@@ -2,7 +2,6 @@ import { LRUCache } from 'lru-cache';
 import { deserialize, serialize } from '../../utils/index.js';
 import type { Kv } from '../types/class.js';
 import type { KvConfigLocal } from '../types/config.js';
-import { randomUUID } from 'node:crypto';
 
 export class KvLocal implements Kv {
 	private store: LRUCache<string, Uint8Array, unknown> | Map<string, Uint8Array>;
@@ -70,19 +69,14 @@ export class KvLocal implements Kv {
 		return true;
 	}
 
-	async aquireLock(key: string) {
-		if (this.store.has(key)) return;
-
-		const hash = randomUUID();
-		this.set(key, hash);
-
-		return hash;
+	async aquireLock(_key: string) {
+		// Should not need implementation as it's a single process.
+		return '';
 	}
 
-	async releaseLock(key: string, hash: string) {
-		if ((await this.get(key)) !== hash) return false;
-
-		return this.store.delete(key);
+	async releaseLock(_key: string, _hash: string) {
+		// Should not need implementation as it's a single process.
+		return true;
 	}
 
 	async clear() {
