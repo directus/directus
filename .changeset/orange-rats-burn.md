@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-fix(revisions): use correct label for create revision
+Ensured the created revision uses the correct label
