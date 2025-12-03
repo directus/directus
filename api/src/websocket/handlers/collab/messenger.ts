@@ -8,15 +8,27 @@ import {
 	type WebSocketClient,
 } from '@directus/types';
 
+type RoomMessage = Extract<BroadcastMessage, { type: 'room' }>;
+
+export type RoomListener = (message: RoomMessage) => void;
 export class Messenger {
 	clients: Record<ClientID, WebSocketClient> = {};
 	messenger: Bus = useBus();
+	roomListeners: Record<string, RoomListener> = {};
 
 	constructor() {
 		this.messenger.subscribe(COLLAB, (message: BroadcastMessage) => {
-			const client = this.clients[message.client];
-			if (client) client.send(JSON.stringify(message.message));
+			if (message.type === 'send') {
+				const client = this.clients[message.client];
+				if (client) client.send(JSON.stringify(message.message));
+			} else if (message.type === 'room') {
+				this.roomListeners[message.room]?.(message);
+			}
 		});
+	}
+
+	setRoomListener(room: string, callback: RoomListener) {
+		this.roomListeners[room] = callback;
 	}
 
 	addClient(client: WebSocketClient) {
@@ -29,7 +41,11 @@ export class Messenger {
 		});
 	}
 
-	send(client: ClientID, message: ClientCollabMessage) {
-		this.messenger.publish(COLLAB, { client, message });
+	sendRoom(room: string, message: Omit<RoomMessage, 'type' | 'room'>) {
+		this.messenger.publish(COLLAB, { type: 'room', room, message });
+	}
+
+	sendClient(client: ClientID, message: ClientCollabMessage) {
+		this.messenger.publish(COLLAB, { type: 'send', client, message });
 	}
 }

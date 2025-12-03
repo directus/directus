@@ -34,6 +34,12 @@ export class CollabRooms {
 			this.rooms[uid] = new Room(this.messenger, uid, collection, item, version, initialChanges);
 		}
 
+		this.messenger.setRoomListener(uid, (message) => {
+			if (message.action === 'close') {
+				delete this.rooms[uid];
+			}
+		});
+
 		return this.rooms[uid]!;
 	}
 
@@ -125,8 +131,8 @@ export class Room {
 			await store.set('focuses', {});
 		});
 
-		this.messenger = messenger;
 		this.uid = uid;
+		this.messenger = messenger;
 
 		// React to external updates to the item
 		emitter.onAction(`${collection}.items.update`, async ({ keys }, { accountability }) => {
@@ -351,7 +357,7 @@ export class Room {
 			});
 
 			for (const client of clients) {
-				this.messenger.send(client.uid, { ...message, type: COLLAB, room: this.uid });
+				this.messenger.sendClient(client.uid, { ...message, type: COLLAB, room: this.uid });
 			}
 		})();
 	}
@@ -363,16 +369,18 @@ export class Room {
 			});
 
 			for (const client of clients) {
-				if (client.uid !== exclude) this.messenger.send(client.uid, { ...message, type: COLLAB, room: this.uid });
+				if (client.uid !== exclude) this.messenger.sendClient(client.uid, { ...message, type: COLLAB, room: this.uid });
 			}
 		})();
 	}
 
 	send(client: ClientID, message: ClientBaseCollabMessage) {
-		this.messenger.send(client, { ...message, type: COLLAB, room: this.uid });
+		this.messenger.sendClient(client, { ...message, type: COLLAB, room: this.uid });
 	}
 
 	async close() {
+		this.messenger.sendRoom(this.uid, { action: 'close' });
+
 		await this.store(async (store) => {
 			await store.delete('uid');
 		});

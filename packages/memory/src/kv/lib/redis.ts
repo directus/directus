@@ -65,7 +65,13 @@ export class KvRedis implements Kv {
 		this.compression = config.compression ?? true;
 		this.compressionMinSize = config.compressionMinSize ?? 1000;
 		this.lockTimeout = config.lockTimeout ?? 5000;
-		this.redlock = new Redlock([this.redis]);
+
+		this.redlock = new Redlock([this.redis], {
+			retryDelay: 20,
+			driftFactor: 50,
+			retryCount: 20,
+			retryJitter: 0.01,
+		});
 	}
 
 	async get<T = unknown>(key: string) {

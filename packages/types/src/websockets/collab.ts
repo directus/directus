@@ -43,10 +43,17 @@ export const WebSocketCollabMessage = z.discriminatedUnion('action', [
 export type WebSocketCollabMessage = z.infer<typeof WebSocketCollabMessage>;
 
 // Broadcast Messages
-export type BroadcastMessage = {
-	client: ClientID;
-	message: ClientCollabMessage;
-};
+export type BroadcastMessage =
+	| {
+			type: 'send';
+			client: ClientID;
+			message: ClientCollabMessage;
+	  }
+	| {
+			type: 'room';
+			action: 'close';
+			room: string;
+	  };
 
 // Outgoing Messages
 export type ClientCollabMessage = {
