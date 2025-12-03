@@ -23,6 +23,7 @@ export default defineInterface({
 				interface: 'system-display-template',
 				options: {
 					collectionName: collection,
+					includeRelations: false,
 				},
 			},
 		},
@@ -53,6 +54,7 @@ export default defineInterface({
 				interface: 'system-display-template',
 				options: {
 					collectionName: collection,
+					includeRelations: false,
 				},
 			},
 		},
@@ -194,6 +196,7 @@ export default defineInterface({
 									collectionName: collection,
 									font: 'monospace',
 									placeholder: 'https://example.com/articles/{{ id }}/{{ slug }}',
+									includeRelations: false,
 								},
 								conditions: [
 									{
