@@ -9,6 +9,9 @@ import { validateItemAccess } from './validate-item-access.js';
 vi.mock('../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js');
 vi.mock('../../../../database/run-ast/run-ast.js');
 vi.mock('../../process-ast/process-ast.js');
+vi.mock('../../../lib/fetch-policies.js');
+vi.mock('../../../lib/fetch-permissions.js');
+vi.mock('../../process-ast/lib/inject-cases.js');
 
 beforeEach(() => {
 	vi.clearAllMocks();
@@ -196,7 +199,7 @@ test('Returns allowed root fields when returnAllowedRootFields is true', async (
 	});
 });
 
-test('Tests all fields when returnAllowedRootFields is true and no fields specified', async () => {
+test('Injects all collection fields when returnAllowedRootFields is true', async () => {
 	const schema = new SchemaBuilder()
 		.collection('collection-a', (c) => {
 			c.field('field-a').id();
@@ -222,22 +225,23 @@ test('Tests all fields when returnAllowedRootFields is true and no fields specif
 		} as Context,
 	);
 
-	// Verify that AST was created with all fields from the collection
-	expect(processAst).toHaveBeenCalledWith(
+	// processAst is called first with empty children
+	expect(processAst).toHaveBeenCalled();
+
+	// fetchPermittedAstRootFields is called with AST containing all collection fields
+	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
 		expect.objectContaining({
-			ast: expect.objectContaining({
-				children: expect.arrayContaining([
-					expect.objectContaining({ fieldKey: 'field-a' }),
-					expect.objectContaining({ fieldKey: 'field-b' }),
-					expect.objectContaining({ fieldKey: 'field-c' }),
-				]),
-			}),
+			children: expect.arrayContaining([
+				expect.objectContaining({ fieldKey: 'field-a' }),
+				expect.objectContaining({ fieldKey: 'field-b' }),
+				expect.objectContaining({ fieldKey: 'field-c' }),
+			]),
 		}),
 		expect.anything(),
 	);
 });
 
-test('Tests only specified fields when returnAllowedRootFields is true and fields are provided', async () => {
+test('Injects all collection fields when both returnAllowedRootFields and fields are provided', async () => {
 	const schema = new SchemaBuilder()
 		.collection('collection-a', (c) => {
 			c.field('field-a').id();
@@ -256,7 +260,7 @@ test('Tests only specified fields when returnAllowedRootFields is true and field
 			action: 'read',
 			collection: 'collection-a',
 			primaryKeys: [1],
-			fields: ['field-b', 'field-c'], // ← Should be ignored when returnAllowedRootFields is true
+			fields: ['field-b', 'field-c'],
 			returnAllowedRootFields: true,
 		},
 		{
@@ -264,12 +268,11 @@ test('Tests only specified fields when returnAllowedRootFields is true and field
 		} as Context,
 	);
 
-	// Verify that AST was created with ALL fields from the collection (fields param is ignored)
+	// processAst is called first with the specified fields
 	expect(processAst).toHaveBeenCalledWith(
 		expect.objectContaining({
 			ast: expect.objectContaining({
 				children: expect.arrayContaining([
-					expect.objectContaining({ fieldKey: 'field-a' }),
 					expect.objectContaining({ fieldKey: 'field-b' }),
 					expect.objectContaining({ fieldKey: 'field-c' }),
 				]),
@@ -277,4 +280,55 @@ test('Tests only specified fields when returnAllowedRootFields is true and field
 		}),
 		expect.anything(),
 	);
+
+	// fetchPermittedAstRootFields is called with AST containing all collection fields (injected after processAst)
+	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
+		expect.objectContaining({
+			children: expect.arrayContaining([
+				expect.objectContaining({ fieldKey: 'field-a' }),
+				expect.objectContaining({ fieldKey: 'field-b' }),
+				expect.objectContaining({ fieldKey: 'field-c' }),
+			]),
+		}),
+		expect.anything(),
+	);
+});
+
+test('Returns intersection of allowed fields across multiple items', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+			c.field('field-b').string();
+			c.field('field-c').string();
+			c.field('field-d').string();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	// Item 1: all fields accessible except field-c
+	// Item 2: all fields accessible except field-b
+	// Intersection should be: field-a, field-d
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([
+		{ 'field-a': 1, 'field-b': 1, 'field-c': null, 'field-d': 1 },
+		{ 'field-a': 1, 'field-b': null, 'field-c': 1, 'field-d': 1 },
+	]);
+
+	const result = await validateItemAccess(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			primaryKeys: [1, 2],
+			returnAllowedRootFields: true,
+		},
+		{
+			schema,
+		} as Context,
+	);
+
+	expect(result).toEqual({
+		accessAllowed: true,
+		allowedRootFields: ['field-a', 'field-d'],
+	});
 });
