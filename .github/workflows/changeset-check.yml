@@ -55,7 +55,7 @@ jobs:
 
       - name: Checkout Repository
         if: steps.found_changeset.outputs.found == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
