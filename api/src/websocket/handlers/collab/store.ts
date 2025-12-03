@@ -1,7 +1,6 @@
 import { createCache, type CacheConfig } from '@directus/memory';
 import { COLLAB } from '@directus/types';
 import { redisConfigAvailable, useRedis } from '../../../redis/index.js';
-import { RedisStoreError } from './errors.js';
 
 export type RedisStore<T> = {
 	has(key: keyof T): Promise<boolean>;
@@ -25,11 +24,9 @@ const config: CacheConfig = localOnly
 const store = createCache(config);
 
 export function useStore<Type extends object>(uid: string) {
-	return async function access<T>(callback: (store: RedisStore<Type>) => Promise<T>): Promise<T> {
-		try {
-			const lock = await store.aquireLock(`lock:${uid}`);
-
-			const result = await callback({
+	return <T>(callback: (store: RedisStore<Type>) => Promise<T>) =>
+		store.usingLock(`lock:${uid}`, async () => {
+			return await callback({
 				has(key) {
 					return store.has(`${uid}:${String(key)}`);
 				},
@@ -44,12 +41,5 @@ export function useStore<Type extends object>(uid: string) {
 					return store.delete(`${uid}:${String(key)}`);
 				},
 			});
-
-			await store.releaseLock(`lock:${uid}`, lock);
-
-			return result;
-		} catch {
-			throw new RedisStoreError(`Couldn't aquire lock ${uid}`);
-		}
-	};
+		});
 }

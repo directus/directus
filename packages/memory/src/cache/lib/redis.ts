@@ -34,7 +34,7 @@ export class CacheRedis implements Cache {
 		return await this.store.aquireLock(key);
 	}
 
-	async releaseLock(key: string, hash: string) {
-		return await this.store.releaseLock(key, hash);
+	async usingLock<T>(key: string, callback: () => Promise<T>): Promise<T> {
+		return await this.store.usingLock(key, callback);
 	}
 }

@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { Redlock } from '@sesamecare-oss/redlock';
 import {
 	bufferToUint8Array,
 	compress,
@@ -37,15 +37,13 @@ const RELEASE_SCRIPT = `
 	end
 `;
 
-let c = 0;
-
 export class KvRedis implements Kv {
 	private redis: ExtendedRedis;
 	private namespace: string;
 	private compression: boolean;
 	private compressionMinSize: number;
 	private lockTimeout: number;
-	private releaseTimeout: number;
+	private redlock;
 
 	constructor(config: Omit<KvConfigRedis, 'type'>) {
 		if ('setMax' in config.redis === false) {
@@ -66,8 +64,8 @@ export class KvRedis implements Kv {
 		this.namespace = config.namespace;
 		this.compression = config.compression ?? true;
 		this.compressionMinSize = config.compressionMinSize ?? 1000;
-		this.lockTimeout = config.lockTimeout ?? 10;
-		this.releaseTimeout = config.releaseTimeout ?? 5;
+		this.lockTimeout = config.lockTimeout ?? 5000;
+		this.redlock = new Redlock([this.redis]);
 	}
 
 	async get<T = unknown>(key: string) {
@@ -119,54 +117,20 @@ export class KvRedis implements Kv {
 	}
 
 	async aquireLock(key: string) {
-		const i = c++;
-		const hash = randomUUID();
-		key = withNamespace(key, this.namespace);
-		console.log(`${i} aquire lock with hash ${hash} `);
+		const lock = await this.redlock.acquire([withNamespace(key, this.namespace)], Math.floor(this.lockTimeout));
 
-		let result = await this.redis.set(key, hash, 'EX', this.releaseTimeout, 'NX');
-
-		await new Promise((resolve, reject) => {
-			let rejected = false;
-
-			const timeout = setTimeout(async () => {
-				await this.redis.lrem(`${key}:queue`, 0, hash);
-				rejected = true;
-				reject(`Aquiring lock timed out after ${this.lockTimeout}s`);
-			}, this.lockTimeout * 1000);
-
-			(async () => {
-				await this.redis.rpush(`${key}:queue`, hash);
-
-				let tries = 0;
-
-				while (result !== 'OK') {
-					if (rejected) return;
-					tries++;
-					await sleep(Math.pow(2, tries));
-
-					result = await this.redis.set(key, hash, 'EX', this.releaseTimeout, 'NX');
-				}
-
-				clearTimeout(timeout);
-				resolve(undefined);
-			})();
-		});
-
-		console.log(`${i} lock aquired`);
-
-		return hash;
+		return {
+			release: async () => {
+				lock.release();
+			},
+			extend: async (duration: number) => {
+				lock.extend(duration);
+			},
+		};
 	}
 
-	async releaseLock(key: string, hash: string) {
-		const i = c++;
-		key = withNamespace(key, this.namespace);
-		console.log(`${i} release lock`);
-		const result = await this.redis.release(key, hash);
-
-		console.log(`${i} lock released ${result !== 0}`);
-
-		return result !== 0;
+	async usingLock<T>(key: string, callback: () => Promise<T>): Promise<T> {
+		return this.redlock.using([withNamespace(key, this.namespace)], Math.floor(this.lockTimeout), callback);
 	}
 
 	async clear() {
@@ -182,8 +146,4 @@ export class KvRedis implements Kv {
 
 		await pipeline.exec();
 	}
-}
-
-function sleep(ms: number) {
-	return new Promise((resolve) => setTimeout(resolve, ms));
 }

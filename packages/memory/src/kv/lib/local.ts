@@ -2,6 +2,7 @@ import { LRUCache } from 'lru-cache';
 import { deserialize, serialize } from '../../utils/index.js';
 import type { Kv } from '../types/class.js';
 import type { KvConfigLocal } from '../types/config.js';
+import { Lock, type RedlockAbortSignal, type RedlockUsingContext } from '@sesamecare-oss/redlock';
 
 export class KvLocal implements Kv {
 	private store: LRUCache<string, Uint8Array, unknown> | Map<string, Uint8Array>;
@@ -70,13 +71,14 @@ export class KvLocal implements Kv {
 	}
 
 	async aquireLock(_key: string) {
-		// Should not need implementation as it's a single process.
-		return '';
+		return {
+			release: async () => {},
+			extend: async (_duration: number) => {},
+		};
 	}
 
-	async releaseLock(_key: string, _hash: string) {
-		// Should not need implementation as it's a single process.
-		return true;
+	async usingLock<T>(_key: string, callback: () => Promise<T>): Promise<T> {
+		return callback();
 	}
 
 	async clear() {

@@ -78,8 +78,8 @@ export class CacheMulti implements Cache {
 		return await this.redis.aquireLock(key);
 	}
 
-	async releaseLock(key: string, hash: string) {
-		return await this.redis.releaseLock(key, hash);
+	async usingLock<T>(key: string, callback: () => Promise<T>): Promise<T> {
+		return await this.redis.usingLock(key, callback);
 	}
 
 	private async onMessageClear(payload: CacheMultiMessageClear) {

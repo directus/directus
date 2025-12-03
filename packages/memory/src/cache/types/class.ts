@@ -1,3 +1,5 @@
+import type { Lock } from '../../kv/types/lock.js';
+
 export interface Cache {
 	/**
 	 * Get the cached value by key. Returns undefined if the key doesn't exist in the cache
@@ -34,13 +36,7 @@ export interface Cache {
 	 */
 	clear(): Promise<void>;
 
-	/**
-	 * Waits until a lock was aquired successfully. If it times out, an error is thrown.
-	 */
-	aquireLock(key: string): Promise<string>;
+	aquireLock(key: string): Promise<Lock>;
 
-	/**
-	 * Releases a lock based on the hash that it was locked with.
-	 */
-	releaseLock(key: string, hash: string): Promise<boolean>;
+	usingLock<T>(key: string, callback: () => Promise<T>): Promise<T>;
 }

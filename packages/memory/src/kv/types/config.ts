@@ -50,14 +50,9 @@ export interface KvConfigRedis extends KvConfigAbstract {
 	compressionMinSize?: number;
 
 	/**
-	 * Maximum time (in s) to wait trying to aquire a lock.
+	 * Requested lock duration in miliseconds
 	 */
 	lockTimeout?: number;
-
-	/**
-	 * Maximum time (in s) a lock will be held until it will be automatically released.
-	 */
-	releaseTimeout?: number;
 
 	/**
 	 * Existing or new Redis connection to use with this memory class

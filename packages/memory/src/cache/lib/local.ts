@@ -29,11 +29,11 @@ export class CacheLocal implements Cache {
 		await this.store.clear();
 	}
 
-	aquireLock(key: string) {
-		return this.store.aquireLock(key);
+	async aquireLock(key: string) {
+		return await this.store.aquireLock(key);
 	}
 
-	releaseLock(key: string, hash: string) {
-		return this.store.releaseLock(key, hash);
+	async usingLock<T>(key: string, callback: () => Promise<T>): Promise<T> {
+		return await this.store.usingLock(key, callback);
 	}
 }
