@@ -111,7 +111,7 @@ export class AssetsService {
 			// Use validateItemAccess to check access and get allowed fields
 			const { allowedRootFields, accessAllowed } = await validateItemAccess(
 				{
-					accountability: this.accountability!,
+					accountability: this.accountability,
 					action: 'read',
 					collection: 'directus_files',
 					primaryKeys: [id],
