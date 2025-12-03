@@ -1,5 +1,5 @@
 ---
-'@directus/app': major
+'@directus/app': patch
 ---
 
 fix(revisions): use correct label for create revision
