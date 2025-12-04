@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import type {
 	AbstractServiceOptions,
 	Accountability,
@@ -8,7 +9,6 @@ import type {
 } from '@directus/types';
 import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
-import { ForbiddenError } from '@directus/errors';
 import { applyDiff } from '../utils/apply-diff.js';
 import { getSnapshotDiff } from '../utils/get-snapshot-diff.js';
 import { getSnapshot } from '../utils/get-snapshot.js';
@@ -25,10 +25,10 @@ export class SchemaService {
 		this.accountability = options.accountability ?? null;
 	}
 
-	async snapshot(): Promise<Snapshot> {
+	async snapshot(options?: { includeUntracked: boolean }): Promise<Snapshot> {
 		if (this.accountability?.admin !== true) throw new ForbiddenError();
 
-		const currentSnapshot = await getSnapshot({ database: this.knex });
+		const currentSnapshot = await getSnapshot({ database: this.knex, includeUntracked: options?.includeUntracked });
 
 		return currentSnapshot;
 	}
@@ -36,7 +36,7 @@ export class SchemaService {
 	async apply(payload: SnapshotDiffWithHash): Promise<void> {
 		if (this.accountability?.admin !== true) throw new ForbiddenError();
 
-		const currentSnapshot = await this.snapshot();
+		const currentSnapshot = await this.snapshot({ includeUntracked: true });
 		const snapshotWithHash = this.getHashedSnapshot(currentSnapshot);
 
 		if (!validateApplyDiff(payload, snapshotWithHash)) return;
@@ -52,7 +52,9 @@ export class SchemaService {
 
 		validateSnapshot(snapshot, options?.force);
 
-		const currentSnapshot = options?.currentSnapshot ?? (await getSnapshot({ database: this.knex }));
+		const currentSnapshot =
+			options?.currentSnapshot ?? (await getSnapshot({ database: this.knex, includeUntracked: true }));
+
 		const diff = getSnapshotDiff(currentSnapshot, snapshot);
 
 		if (
