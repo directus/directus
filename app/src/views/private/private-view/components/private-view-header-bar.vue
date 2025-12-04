@@ -48,7 +48,14 @@ const showSidebarToggle = computed(() => {
 				@click="navBarStore.expand"
 			/>
 
-			<PrivateViewHeaderBarIcon v-if="icon || showBack" class="icon" :icon :show-back :icon-color />
+			<PrivateViewHeaderBarIcon
+				v-if="icon || showBack"
+				v-tooltip.bottom="$t('back')"
+				class="icon"
+				:icon
+				:show-back
+				:icon-color
+			/>
 
 			<div class="title-outer-prepend">
 				<slot name="title-outer:prepend" />
@@ -154,7 +161,7 @@ const showSidebarToggle = computed(() => {
 .title {
 	display: flex;
 
-	.type-title {
+	&:deep(.type-title) {
 		line-height: 1.1em;
 	}
 }
