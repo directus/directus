@@ -2,10 +2,7 @@
 import dompurify from 'dompurify';
 import { render } from 'micromustache';
 import { computed, inject, ref, useAttrs } from 'vue';
-import { getFieldsFromTemplate } from '@directus/utils';
 import { useInjectRunManualFlow } from '@/composables/use-flows';
-import { useFieldsStore } from '@/stores/fields';
-import { useFetchTemplateData } from './composables/useFetchTemplateData';
 
 type Link = {
 	icon: string;
@@ -46,28 +43,12 @@ const props = withDefaults(
 	},
 );
 
-const fieldsStore = useFieldsStore();
-
-const fields = computed(() => {
-	return fieldsStore.getFieldsForCollection(props.collection);
-});
-
 const itemValues = inject('values', ref<Record<string, any>>({}));
 
 const primaryKey = computed(() => props.primaryKey ?? null);
 
 const combinedItemData = computed(() => {
 	const result = { ...itemValues.value };
-
-	Object.entries(fetchedTemplateData.value).forEach(([key, value]) => {
-		if (
-			value !== null &&
-			typeof value === 'object' &&
-			(!result[key] || typeof result[key] !== 'object' || result[key] === null)
-		) {
-			result[key] = value;
-		}
-	});
 
 	return result;
 });
@@ -144,18 +125,6 @@ async function handleActionClick(action: Link) {
 	}
 }
 
-const requiredTemplateFields = computed(() => {
-	const fieldsFromTitle = props.title ? getFieldsFromTemplate(props.title) : [];
-	const fieldsFromSubtitle = props.subtitle ? getFieldsFromTemplate(props.subtitle) : [];
-
-	const fieldsFromLinks =
-		props.links
-			?.filter((action) => action.actionType === 'url' && action.url)
-			.flatMap((action) => getFieldsFromTemplate(action.url || '')) || [];
-
-	return [...new Set([...fieldsFromTitle, ...fieldsFromSubtitle, ...fieldsFromLinks])];
-});
-
 const primaryLink = computed(() => {
 	if (linksParsed.value.length === 1) {
 		return linksParsed.value[0];
@@ -178,8 +147,6 @@ const helpString = computed(() => {
 	return dompurify.sanitize(text);
 });
 
-const { data: fetchedTemplateData } = useFetchTemplateData(props.collection, primaryKey, requiredTemplateFields);
-
 const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 </script>
 
@@ -189,7 +156,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 			<div class="text-content">
 				<p v-if="title" class="text-title">
 					<v-icon v-if="icon" :name="icon" />
-					<render-template :collection="collection" :fields="fields" :item="combinedItemData" :template="title" />
+					<render-template :item="itemValues" :template="title" />
 				</p>
 			</div>
 			<div class="actions-wrapper">
@@ -268,7 +235,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 			</div>
 		</div>
 		<p v-if="subtitle" class="text-subtitle">
-			<render-template :collection="collection" :fields="fields" :item="combinedItemData" :template="subtitle" />
+			<render-template :item="itemValues" :template="subtitle" />
 		</p>
 		<transition-expand>
 			<div v-if="expanded && help && helpDisplayMode !== 'modal'" class="help-text">
