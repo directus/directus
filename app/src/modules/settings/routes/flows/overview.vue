@@ -255,7 +255,6 @@ function onFlowDrawerCompletion(id: string) {
 <style scoped>
 .v-table {
 	padding: var(--content-padding);
-	padding-block-start: 0;
 }
 
 .ctx-toggle {

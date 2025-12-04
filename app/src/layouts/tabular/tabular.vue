@@ -273,9 +273,7 @@ function removeField(fieldKey: string) {
 
 <style lang="scss" scoped>
 .layout-tabular {
-	display: contents;
-	margin: var(--content-padding);
-	margin-block-end: var(--content-padding-bottom);
+	padding-block-start: var(--content-padding);
 }
 
 .v-table {
