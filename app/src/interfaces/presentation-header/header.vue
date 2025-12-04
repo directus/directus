@@ -182,7 +182,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 						</v-button>
 					</template>
 
-					<template v-else>
+					<template v-else-if="linksParsed.length > 1">
 						<v-menu placement="bottom-end">
 							<template #activator="{ toggle }">
 								<div>
