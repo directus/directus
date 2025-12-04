@@ -1,4 +1,4 @@
-import { COLLAB, WebSocketCollabMessage, type WebSocketClient } from '@directus/types';
+import { WS_TYPE, type WebSocketClient } from '@directus/types';
 import { capitalize } from 'lodash-es';
 import emitter from '../../../emitter.js';
 import { handleWebSocketError } from '../../errors.js';
@@ -10,6 +10,7 @@ import getDatabase from '../../../database/index.js';
 import { getSchema } from '../../../utils/get-schema.js';
 import { InvalidPayloadError } from '@directus/errors';
 import { hasFieldPermision } from './field-permissions.js';
+import { ClientMessage } from '@directus/types/collab';
 
 /**
  * Handler responsible for subscriptions
@@ -31,10 +32,10 @@ export class CollabHandler {
 	bindWebSocket() {
 		// listen to incoming messages on the connected websockets
 		emitter.onAction('websocket.message', async ({ client, message }) => {
-			if (getMessageType(message) !== COLLAB) return;
+			if (getMessageType(message) !== WS_TYPE.COLLAB) return;
 
 			try {
-				const validMessage = WebSocketCollabMessage.parse(message);
+				const validMessage = ClientMessage.parse(message);
 				await this[`on${capitalize(validMessage.action)}`](client, message);
 			} catch (error) {
 				handleWebSocketError(client, error, 'subscribe');

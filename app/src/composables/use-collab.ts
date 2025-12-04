@@ -1,31 +1,22 @@
 import sdk from '@/sdk';
 import { readUser, readUsers, RemoveEventHandler } from '@directus/sdk';
-import {
-	Avatar,
-	ClientCollabMessage,
-	ClientID,
-	COLLAB,
-	CollabColor,
-	ContentVersion,
-	Item,
-	PrimaryKey,
-	WebSocketCollabMessage,
-} from '@directus/types';
+import { Avatar, ContentVersion, Item, PrimaryKey, WS_TYPE } from '@directus/types';
+import { ServerMessage, ACTION, Color, ClientID, ClientMessage } from '@directus/types/collab';
 import { capitalize, debounce, isEqual, throttle } from 'lodash';
 import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue';
 
-type InitMessage = Extract<ClientCollabMessage, { action: 'init' }>;
-type JoinMessage = Extract<ClientCollabMessage, { action: 'join' }>;
-type LeaveMessage = Extract<ClientCollabMessage, { action: 'leave' }>;
-type UpdateMessage = Extract<ClientCollabMessage, { action: 'update' }>;
-type FocusMessage = Extract<ClientCollabMessage, { action: 'focus' }>;
+type InitMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.INIT }>;
+type JoinMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.JOIN }>;
+type LeaveMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.LEAVE }>;
+type UpdateMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.UPDATE }>;
+type FocusMessage = Extract<ServerMessage, { action: typeof ACTION.SERVER.FOUCS }>;
 
 export type CollabUser = {
 	id: string;
 	first_name?: string;
 	last_name?: string;
 	connection: ClientID;
-	color: CollabColor;
+	color: Color;
 	avatar?: Avatar;
 };
 
@@ -125,8 +116,8 @@ export function useCollab(
 		if (roomId.value || !collection.value || item.value === '+') return;
 
 		sdk.sendMessage({
-			type: COLLAB,
-			action: 'join',
+			type: WS_TYPE.COLLAB,
+			action: ACTION.CLIENT.JOIN,
 			collection: collection.value,
 			item: item.value ? String(item.value) : null,
 			version: version.value?.key ?? null,
@@ -138,7 +129,7 @@ export function useCollab(
 		if (!roomId.value) return;
 
 		sendMessage({
-			action: 'leave',
+			action: ACTION.CLIENT.LEAVE,
 		});
 
 		roomId.value = null;
@@ -146,9 +137,9 @@ export function useCollab(
 	}
 
 	eventHandlers.push(
-		sdk.onWebSocket('message', async (message: ClientCollabMessage) => {
+		sdk.onWebSocket('message', async (message: ServerMessage) => {
 			if (
-				message.action === 'init' &&
+				message.action === ACTION.SERVER.INIT &&
 				message.collection === collection.value &&
 				((!item.value && !message.item) || message.item === String(item.value)) &&
 				((!version.value && !message.version) || message.version === version.value?.key)
@@ -271,7 +262,7 @@ export function useCollab(
 
 	const onFieldUpdate = throttle((field: string, value: any) => {
 		sendMessage({
-			action: 'update',
+			action: ACTION.CLIENT.UPDATE,
 			changes: value,
 			field: field,
 		});
@@ -279,29 +270,29 @@ export function useCollab(
 
 	const onFieldUnset = throttle((field: string) => {
 		sendMessage({
-			action: 'update',
+			action: ACTION.CLIENT.UPDATE,
 			field: field,
 		});
 	}, 100);
 
 	function onSave() {
 		sendMessage({
-			action: 'save',
+			action: ACTION.CLIENT.SAVE,
 		});
 	}
 
 	const onFocus = debounce((field: string | null) => {
 		sendMessage({
-			action: 'focus',
+			action: ACTION.CLIENT.FOUCS,
 			field: field,
 		});
 	}, 100);
 
-	function sendMessage(message: Omit<WebSocketCollabMessage, 'id'>) {
+	function sendMessage(message: ClientMessage) {
 		if (!roomId.value) return;
 
 		sdk.sendMessage({
-			type: COLLAB,
+			type: WS_TYPE.COLLAB,
 			room: roomId.value,
 			...message,
 		});

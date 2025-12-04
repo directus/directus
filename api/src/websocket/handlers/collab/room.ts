@@ -1,12 +1,4 @@
-import {
-	COLLAB,
-	COLLAB_COLORS,
-	type ClientBaseCollabMessage,
-	type ClientID,
-	type CollabColor,
-	type Item,
-	type WebSocketClient,
-} from '@directus/types';
+import { WS_TYPE, type Item, type WebSocketClient } from '@directus/types';
 import { createHash } from 'crypto';
 import { isEqual, random } from 'lodash-es';
 import getDatabase from '../../../database/index.js';
@@ -15,6 +7,7 @@ import { getSchema } from '../../../utils/get-schema.js';
 import { getService } from '../../../utils/get-service.js';
 import { hasFieldPermision } from './field-permissions.js';
 import { sanitizePayload } from './sanitize-payload.js';
+import { ACTION, COLORS, type BaseServerMessage, type ClientID, type Color } from '@directus/types/collab';
 
 export class CollabRooms {
 	rooms: Record<string, Room> = {};
@@ -53,7 +46,7 @@ export class Room {
 	version: string | null;
 	changes: Item;
 	clients: WebSocketClient[] = [];
-	clientColors: Record<ClientID, CollabColor> = {};
+	clientColors: Record<ClientID, Color> = {};
 	focuses: Record<ClientID, string> = {};
 
 	constructor(uid: string, collection: string, item: string | null, version: string | null, initialChanges?: Item) {
@@ -79,7 +72,7 @@ export class Room {
 				if (client.accountability?.user === accountability?.user) continue;
 
 				this.send(client, {
-					action: 'save',
+					action: ACTION.SERVER.SAVE,
 				});
 			}
 		});
@@ -91,11 +84,11 @@ export class Room {
 
 	async join(client: WebSocketClient) {
 		if (!this.hasClient(client)) {
-			const clientColor = COLLAB_COLORS[random(COLLAB_COLORS.length - 1)]!;
+			const clientColor = COLORS[random(COLORS.length - 1)]!;
 			this.clientColors[client.uid] = clientColor;
 
 			this.sendAll({
-				action: 'join',
+				action: ACTION.SERVER.JOIN,
 				user: client.accountability!.user!,
 				connection: client.uid,
 				color: clientColor,
@@ -105,7 +98,7 @@ export class Room {
 		}
 
 		this.send(client, {
-			action: 'init',
+			action: ACTION.SERVER.INIT,
 			collection: this.collection,
 			item: this.item,
 			version: this.version,
@@ -138,7 +131,7 @@ export class Room {
 		this.clients = this.clients.filter((c) => c.uid !== client.uid);
 
 		this.sendAll({
-			action: 'leave',
+			action: ACTION.SERVER.LEAVE,
 			connection: client.uid,
 		});
 	}
@@ -148,7 +141,7 @@ export class Room {
 
 		this.sendExcluding(
 			{
-				action: 'save',
+				action: ACTION.SERVER.SAVE,
 			},
 			sender,
 		);
@@ -172,7 +165,7 @@ export class Room {
 
 			if (field in item) {
 				this.send(client, {
-					action: 'update',
+					action: ACTION.SERVER.UPDATE,
 					field,
 					changes: item[field],
 				});
@@ -187,7 +180,7 @@ export class Room {
 			if (field && !(await hasFieldPermision(c.accountability!, this.collection, field))) continue;
 
 			this.send(c, {
-				action: 'update',
+				action: ACTION.SERVER.UPDATE,
 				field: field,
 			});
 		}
@@ -204,31 +197,31 @@ export class Room {
 			if (field && !(await hasFieldPermision(client.accountability!, this.collection, field))) continue;
 
 			this.send(client, {
-				action: 'focus',
+				action: ACTION.SERVER.FOUCS,
 				connection: sender.uid,
 				field,
 			});
 		}
 	}
 
-	sendAll(message: ClientBaseCollabMessage) {
-		const msg = JSON.stringify({ ...message, type: COLLAB, room: this.uid });
+	sendAll(message: BaseServerMessage) {
+		const msg = JSON.stringify({ ...message, type: WS_TYPE.COLLAB, room: this.uid });
 
 		for (const client of this.clients) {
 			client.send(msg);
 		}
 	}
 
-	sendExcluding(message: ClientBaseCollabMessage, exclude: WebSocketClient) {
-		const msg = JSON.stringify({ ...message, type: COLLAB, room: this.uid });
+	sendExcluding(message: BaseServerMessage, exclude: WebSocketClient) {
+		const msg = JSON.stringify({ ...message, type: WS_TYPE.COLLAB, room: this.uid });
 
 		for (const client of this.clients) {
 			if (client.uid !== exclude.uid) client.send(msg);
 		}
 	}
 
-	send(client: WebSocketClient, message: ClientBaseCollabMessage) {
-		const msg = JSON.stringify({ ...message, type: COLLAB, room: this.uid });
+	send(client: WebSocketClient, message: BaseServerMessage) {
+		const msg = JSON.stringify({ ...message, type: WS_TYPE.COLLAB, room: this.uid });
 		client.send(msg);
 	}
 }
