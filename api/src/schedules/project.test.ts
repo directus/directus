@@ -51,6 +51,14 @@ test('Doesnt send report if not pending', async () => {
 	expect(vi.mocked(sendReport)).not.toHaveBeenCalledOnce();
 });
 
+test('Doesnt send report if telemetry is disabled', async () => {
+	vi.mocked(useEnv).mockReturnValue({ TELEMETRY: false });
+
+	await projectSchedule();
+
+	expect(vi.mocked(sendReport)).not.toHaveBeenCalledOnce();
+});
+
 test('Sends report when pending', async () => {
 	tracker.on.select('directus_settings').response([
 		{
