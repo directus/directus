@@ -255,7 +255,7 @@ const previewUrl = computed(() => {
 	return displayValue.value.trim() || null;
 });
 
-const livePreviewMode = useLocalStorage<'split' | 'popup' | null>('live-preview-mode', null);
+const livePreviewMode = useLocalStorage<'split' | 'popup' | null>('directus-live-preview-mode', null);
 
 const splitView = computed({
 	get() {

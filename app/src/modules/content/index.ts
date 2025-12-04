@@ -71,7 +71,7 @@ export default defineModule({
 					isNil(collection?.meta?.group),
 				);
 
-				const lastAccessedCollection = useLocalStorage<string | null>('last-accessed-collection', null);
+				const lastAccessedCollection = useLocalStorage<string | null>('directus-last-accessed-collection', null);
 
 				if (
 					typeof lastAccessedCollection.value === 'string' &&

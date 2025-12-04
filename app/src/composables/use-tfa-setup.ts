@@ -17,7 +17,7 @@ export function useTFASetup(initialEnabled: boolean) {
 	const canvasID = nanoid();
 
 	const userStore = useUserStore();
-	const requireTfaSetup = useLocalStorage<string | null>('require_tfa_setup', null);
+	const requireTfaSetup = useLocalStorage<string | null>('directus-require_tfa_setup', null);
 
 	onMounted(() => {
 		password.value = '';

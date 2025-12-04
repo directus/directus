@@ -116,7 +116,7 @@ const showMain = computed(() => {
 const localStorageModuleWidth = useLocalStorage<{
 	nav?: number;
 	main?: number;
-}>('module-width', {});
+}>('directus-module-width', {});
 
 const navWidth = ref(getWidth(localStorageModuleWidth.value?.nav, SIZES.minModuleNavWidth));
 
