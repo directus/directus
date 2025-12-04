@@ -20,10 +20,31 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: Інформація про
+directus_bsl: Directus BSL 1,1
 privacy_policy: Політика конфіденційності 
 contact_our_team: Звʼязок із нашою командою 
+setup_welcome: Ласкаво просимо до Directus
+setup_info: Створімо ваш обліковий запис адміністратора та запустімо ваш проєкт.
+setup_license_notice: >
+  Directus безплатний для використання з об’єктами, чий річний дохід, фінансування або операційний бюджет становить менше ніж $5 мільйонів.
+setup_license_follow_up: >
+  Об’єкти, що перевищують цей поріг, потребують платної ліцензії. Ви можете продовжити оцінку Directus зараз і {contactOurTeam}, коли будете готові обговорити використання у виробництві.
+setup_save_accept_license: >
+  Натискаючи «Зберегти», ви погоджуєтесь з умовами {directusBsl} та {privacyPolicy}.
+setup_accept_license: Я погоджуюсь з умовами {directusBsl} та {privacyPolicy}
+setup_marketing_emails: Надіслати мені оновлення продукту та нотатки про випуск
+setup_launch: Запустити Directus
+setup_project: Запустити проєкт
 first_name: Ім'я
 last_name: Прізвище
+admin_email: Email адміністратора
+owner_email: Email власника
+email_address: Адреса електронної пошти
+organization_name: Назва організації
+how_do_you_use_directus: Для чого ви використовуєте Directus?
+usage_personal: Особисте / Навчання
+usage_commercial: Бізнес / Комерційне використання
+usage_community: Відкрите програмне забезпечення / Спільнота
 identifier: Ідентифікатор
 avatar: Аватар
 application: Додаток
@@ -34,6 +55,10 @@ draft: Чернетка
 archived: Архівовано
 marketplace: Маркетплейс
 extensions: Розширення
+skip_link_nav: Перейти до навігації
+skip_link_module_nav: Перейти до навігації модуля
+skip_link_main: Перейти до основного вмісту
+skip_link_sidebar: Перейти до бічної панелі
 modules: Модулі
 module_bar: Панель модулів
 logs: Логи
@@ -46,6 +71,8 @@ location: Розташування
 collection_names_are_case_sensitive: Назви колекції чутливі до регістру букв
 condition_rules: Правила умов
 input: Введення
+invalid_input: Неправильне значення
+not_a_number: Не є числом
 maps: Мапи
 switch_user: Змінити користувача
 item_creation: Створення елемента
@@ -57,6 +84,8 @@ full_width: Повна ширина
 group: Група
 popular: Популярне
 recent: Останнє
+latest: Останні
+updated: Оновлені
 export_items: Експорт товарів
 and: Й
 or: Або
@@ -112,6 +141,12 @@ hook: Хук
 fill_width: Ширина заповнення
 field_name_translations: Переклад назви поля
 enter_password_to_enable_tfa: Введіть свій пароль, щоб увімкнути двофакторну аутентифікацію
+sso_tfa_setup_notice: Ви будете автоматично виведені зі свого облікового запису та зобов’язані увійти знову. Будь‑які незбережені зміни буде скасовано.
+enable_tfa: Увімкнути двофакторну автентифікацію 2FA
+cancel_tfa_setup: Скасувати налаштування 2FA
+cancel_tfa_setup_notice: Ви впевнені, що хочете скасувати налаштування 2FA?
+keep_setup: Зберегти налаштування
+cancel_setup: Скасувати налаштування
 add_field: Додати поле
 role_name: Назва ролі
 policy_name: Назва політики
@@ -168,9 +203,14 @@ rename_version: Перейменувати версію
 compare_version: Порівняти версію
 save_version: Зберегти версію
 promote_version: Просування версії
+apply: Застосувати
+select_all_differences: Вибрати всі відмінності
+main_updated_notice: Основний елемент був оновлений з моменту створення цієї версії.
 delete_version: Видалити версію
 delete_version_copy: >-
   Ви впевнені, що хочете видалити версію "{version}"? Цю дію не можна скасувати.
+delete_on_apply_copy: >-
+  Ви збираєтесь просувати версію “{version}” до основної. Що повинно статися з версією “{version}” після її просування?
 reset_bookmark: Скинути закладку
 update_bookmark: Оновити закладку
 delete_bookmark: Видалити закладку
@@ -231,6 +271,8 @@ validationError:
   iends_with: Значення має закінчуватися на {substring}
   nends_with: Рядок не може закінчуватися на {substring}
   niends_with: Рядок не може закінчуватися на {substring}
+  confirm_password: Паролі не збігаються
+  org_name: Будь ласка, вкажіть назву організації
 all_access: Повний доступ
 no_access: Немає доступу
 use_custom: Використайте Користувацькі налаштування
@@ -310,6 +352,10 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Скинути налаштування сторінки
 hidden_field: Приховане поле
 hidden_on_detail: Приховано на деталі
+clear_hidden_field: Очистити значення
+clear_value_on_save_when_hidden: Очистити значення при збереженні, коли приховано
+readonly_field_label: Вимкнути поле в застосунку
+required_readonly_field_warning: Увімкнення одночасно “лише для читання” та “обов’язкове” для поля запобігає збереженню елемента, якщо значення порожнє.
 key: Клавіша
 alias: Ім'я користувача
 bigInteger: Велике ціле число
@@ -407,6 +453,8 @@ precision_scale: Точність і шкала
 readonly: Тільки читання
 unique: Унікальне
 index: Індекс
+searchable: Можна шукати
+field_searchable: Включити поле в пошукові запити
 updated_on: Оновлене
 updated_by: Оновлено
 primary_key: Первинний ключ
@@ -415,6 +463,7 @@ field_key: Ключ до поля
 finish_setup: Завершити налаштування
 dismiss: Відмінити
 toggle_raw_editor: Перемкнути редактор RAW
+toggle_variable_input: Перемкнути змінний ввід
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Необроблене значення
 copy_raw_value: Скопіювати необроблене значення
@@ -449,6 +498,9 @@ revision_delta_reverted: Відновлено
 revision_delta_update_message: Це поле оновлено, але його значення приховується з міркувань безпеки.
 revision_delta_other: Редакція
 revision_delta_by: '{date} {user}'
+updated_in_revision: Оновлено в цій ревізії
+updated_in_revision_matches_latest: Оновлено в цій ревізії, але відповідає останній
+differences_count: 'Без відмінностей | 1 відмінність | {count} відмінностей'
 presentation_text_values_cannot_be_reimported: 'Використовує текст презентації, значення не можуть бути повторно імпортовані.'
 download_page_as_csv: 'Завантажити сторінку у CSV'
 download_page_as_csv_unsupported: Цей макет не підтримує завантаження поточної сторінки.
@@ -471,7 +523,10 @@ import_data_input_placeholder: CSV або JSON...
 import_data_button: Розпочати імпорт
 import_data_indeterminate: Імпорт даних...
 import_data_success: Дані успішно імпортовано з {filename}
+import_data_errors: Помилка імпорту
 import_data_error: Структура даних не відповідає підбірці.
+import_data_validation_errors_notice: 'У таких рядках містяться недійсні значення:'
+import_data_error_row: 'Рядок {rows}{field}:'
 label_import: Імпортувати
 label_export: Експорт
 import_export: Імпорт / Експорт
@@ -926,10 +981,8 @@ label: Ярлик
 flows: Автоматизація
 flow: Автоматизація
 select_a_flow: Виберіть Автоматизацію
-run_flow_confirm: Ви впевнені, що хочете виконати цей процес?
 run_flow_on_current_collection: Запуск програми на поточній колекції
 run_flow_on_current: Запуск програми на поточному елементі
-run_flow_on_current_edited_confirm: Ця автоматизацією може внести зміни до вибраного об'єкту, ви впевнені що хочете її виконати?
 run_flow_on_selected: Спочатку виберіть один або кілька елементів | Запустити процес на 1 вибраному елементі | Запустити процес на {n} вибраних елементах
 run_flow: Запустити процес
 field_name_placeholder: Введіть назву поля...
@@ -1220,7 +1273,6 @@ directus_collection:
   directus_dashboards: Панелі керування в межах модуля інсайтів
   directus_fields: Додаткова конфігурація поля та метадані
   directus_files: Метадані для всіх керованих файлів
-  directus_flows: Автоматизація
   directus_folders: Забезпечує віртуальні каталоги для файлів
   directus_migrations: Яку версію бази даних ви використовуєте
   directus_notifications: Сповіщення відіслано користувачам
@@ -1734,9 +1786,7 @@ interfaces:
     accordion_mode: Режим акордеон
     max_one_section_open: Максимальна кількість відкритих секцій – 1
   presentation-links:
-    presentation-links: Кнопки посилання
-    links: Посилання
-    description: Настроювані кнопки посилань для запуску динамічних URL-адрес
+    presentation-links: Кнопки
     style: Стиль
     primary: Стандартно
     link: Посилання
@@ -2361,11 +2411,9 @@ triggers:
 a_flow_uuid: Виберіть потік для запуску...
 any_string_or_json: Будь-який рядок або JSON...
 item_payload_placeholder: Це JSON, який використовується для оновлення значень полів елемента...
-operation_variables_note: Ви можете отримати доступ до даних потоку за допомогою таких змінних, як **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** та **{'{'}{'{'}$accountability{'}'}{'}'}** або зверніться до попередніх операцій за допомогою **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Умова
-    description: Керувати потоком на основі умови
   exec:
     name: Виконати Скрипт
     description: Виконати довільний код щоб змінити дані
@@ -2449,7 +2497,6 @@ operations:
     description: Змінити вміст JSON потоку
   trigger:
     name: Ініціювати потік
-    description: Передати ці дані в інший потік
     flows: Автоматизація
     flow: Автоматизація
     data: Дані

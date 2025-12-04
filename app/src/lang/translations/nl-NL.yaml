@@ -1764,9 +1764,7 @@ interfaces:
     accordion_mode: Accordeonmodus
     max_one_section_open: Max 1 sectie open
   presentation-links:
-    presentation-links: Knoplinks
     links: Links
-    description: Configureerbare link knoppen voor het openen van dynamische URLs
     style: Stijl
     primary: Primair
     link: Links

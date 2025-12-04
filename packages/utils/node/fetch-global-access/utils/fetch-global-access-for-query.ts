@@ -1,8 +1,7 @@
-import type { Accountability, Policy } from '@directus/types';
-import { toBoolean, toArray } from '@directus/utils';
+import type { Accountability, GlobalAccess, Policy } from '@directus/types';
 import type { Knex } from 'knex';
-import { ipInNetworks } from '../../../../utils/ip-in-networks.js';
-import type { GlobalAccess } from '../types.js';
+import { toArray, toBoolean } from '../../../shared/index.js';
+import { ipInNetworks } from '../../ip-in-networks.js';
 
 type AccessRow = {
 	admin_access: Policy['admin_access'] | null;

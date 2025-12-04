@@ -4,4 +4,4 @@
 '@directus/sdk': patch
 ---
 
-Update dependencies
+Updated `esbuild` dependency from 0.25.12 to 0.26.0

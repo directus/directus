@@ -9,8 +9,8 @@ import { fetchRolesTree } from '../../permissions/lib/fetch-roles-tree.js';
 import { getSchema } from '../../utils/get-schema.js';
 
 import type { Accountability, Permission } from '@directus/types';
-import { getSchemaInspector } from '../index.js';
 import { mergePermissions } from '../../permissions/utils/merge-permissions.js';
+import { getSchemaInspector } from '../index.js';
 
 type RoleAccess = {
 	app_access: boolean;
@@ -245,7 +245,7 @@ export async function down(knex: Knex) {
 	const rolePermissions: Array<Omit<Permission, 'id' | 'system' | 'policy'> | { role: string | null }> = [];
 
 	for (const role of roles) {
-		const roleTree = await fetchRolesTree(role.id, knex);
+		const roleTree = await fetchRolesTree(role.id, { knex });
 
 		let roleAccess = null;
 

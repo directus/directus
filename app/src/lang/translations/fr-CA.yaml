@@ -1763,9 +1763,7 @@ interfaces:
     accordion_mode: Mode Accordion
     max_one_section_open: Max 1 section ouverte
   presentation-links:
-    presentation-links: Bouton avec lien
     links: Liens
-    description: Bouton avec lien paramétrable pour appeler une URL
     style: Style
     primary: Primaire
     link: Liens

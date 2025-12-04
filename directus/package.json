@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "11.13.2",
+	"version": "11.13.4",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
