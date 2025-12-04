@@ -8,6 +8,10 @@ import { version } from 'directus/version';
  * Schedule the project status job
  */
 export default async function schedule() {
+	const env = useEnv();
+
+	if (toBoolean(env['TELEMETRY']) === false) return;
+
 	const db = getDatabase();
 
 	// Schedules a job at a random time of the day to avoid overloading the telemetry server
