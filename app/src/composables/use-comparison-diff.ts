@@ -1,5 +1,6 @@
 import { diffArrays, diffJson, diffWordsWithSpace } from 'diff';
 import { isEqual } from 'lodash';
+import dompurify from 'dompurify';
 import type { Field } from '@directus/types';
 import { MIN_STRING_LENGTH_FOR_WORD_DIFF } from '@/constants/comparison-diff';
 
@@ -39,10 +40,6 @@ function getFormattingTag(textNode: Node): string | null {
 	return null;
 }
 
-function isTextFormatted(textNode: Node): boolean {
-	return getFormattingTag(textNode) !== null;
-}
-
 function getFormattingDiffRanges(
 	baseContainer: HTMLElement,
 	incomingContainer: HTMLElement,
@@ -50,28 +47,6 @@ function getFormattingDiffRanges(
 	base: { start: number; end: number }[];
 	incoming: { start: number; end: number }[];
 } {
-	const baseUnformattedTexts = new Set<string>();
-	const incomingUnformattedTexts = new Set<string>();
-
-	function collectUnformattedTexts(node: Node, container: 'base' | 'incoming'): void {
-		if (node.nodeType === Node.TEXT_NODE) {
-			const text = (node.textContent || '').trim();
-
-			if (text && !isTextFormatted(node)) {
-				if (container === 'base') {
-					baseUnformattedTexts.add(text);
-				} else {
-					incomingUnformattedTexts.add(text);
-				}
-			}
-		} else if (node.nodeType === Node.ELEMENT_NODE) {
-			Array.from(node.childNodes).forEach((child) => collectUnformattedTexts(child, container));
-		}
-	}
-
-	collectUnformattedTexts(baseContainer, 'base');
-	collectUnformattedTexts(incomingContainer, 'incoming');
-
 	type TextNodeInfo = {
 		node: Text;
 		start: number;
@@ -165,8 +140,10 @@ function getFormattingDiffRanges(
 function computeHtmlDiff(baseValue: string, incomingValue: string): Change[] {
 	const baseDiv = document.createElement('div');
 	const incomingDiv = document.createElement('div');
-	baseDiv.innerHTML = baseValue || '';
-	incomingDiv.innerHTML = incomingValue || '';
+
+	baseDiv.innerHTML = dompurify.sanitize(baseValue || '');
+	incomingDiv.innerHTML = dompurify.sanitize(incomingValue || '');
+
 	const baseText = baseDiv.textContent || '';
 	const incomingText = incomingDiv.textContent || '';
 

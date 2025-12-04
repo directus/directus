@@ -43,6 +43,7 @@ const diffHtml = computed(() => {
 	>
 		<div class="delta">
 			<template v-if="diffHtml">
+				<!-- sanitized in use-comparison-diff.ts-->
 				<!-- eslint-disable-next-line vue/no-v-html -->
 				<div v-html="diffHtml" />
 			</template>
