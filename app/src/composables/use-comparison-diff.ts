@@ -93,23 +93,26 @@ function getFormattingDiffRanges(
 	const baseRanges: { start: number; end: number }[] = [];
 	const incomingRanges: { start: number; end: number }[] = [];
 
-	function findMatchingTextNode(
-		text: string,
-		nodes: { node: Text; start: number; end: number; text: string; formatted: boolean; formattingTag: string | null }[],
-	): { node: Text; start: number; end: number; text: string; formatted: boolean; formattingTag: string | null } | null {
-		for (const node of nodes) {
-			if (node.text === text) {
-				return node;
-			}
-		}
+	const incomingTextMap = new Map<string, TextNodeInfo>();
 
-		return null;
+	for (const node of incomingTextNodes) {
+		if (node.text && !incomingTextMap.has(node.text)) {
+			incomingTextMap.set(node.text, node);
+		}
+	}
+
+	const baseTextMap = new Map<string, TextNodeInfo>();
+
+	for (const node of baseTextNodes) {
+		if (node.text && !baseTextMap.has(node.text)) {
+			baseTextMap.set(node.text, node);
+		}
 	}
 
 	for (const baseNode of baseTextNodes) {
 		if (!baseNode.text) continue;
 
-		const matchingIncoming = findMatchingTextNode(baseNode.text, incomingTextNodes);
+		const matchingIncoming = incomingTextMap.get(baseNode.text) ?? null;
 
 		const shouldHighlight =
 			(baseNode.formatted && (!matchingIncoming || !matchingIncoming.formatted)) ||
@@ -123,7 +126,7 @@ function getFormattingDiffRanges(
 	for (const incomingNode of incomingTextNodes) {
 		if (!incomingNode.text) continue;
 
-		const matchingBase = findMatchingTextNode(incomingNode.text, baseTextNodes);
+		const matchingBase = baseTextMap.get(incomingNode.text) ?? null;
 
 		const shouldHighlight =
 			(incomingNode.formatted && (!matchingBase || !matchingBase.formatted)) ||
