@@ -168,7 +168,7 @@ export class DriverCloudinary implements TusDriver {
 		const folder = this.getFolderPath(fullPath);
 
 		const parameters = {
-			public_id: normalizePath(join(folder, publicId)),
+			public_id: join(folder, publicId),
 			type: 'upload',
 			api_key: this.apiKey,
 			timestamp: this.getTimestamp(),
@@ -397,7 +397,7 @@ export class DriverCloudinary implements TusDriver {
 			timestamp: this.getTimestamp(),
 			api_key: this.apiKey,
 			resource_type: resourceType,
-			public_id: normalizePath(join(folderPath, publicId)),
+			public_id: join(folderPath, publicId),
 		};
 
 		const signature = this.getFullSignature(parameters);
@@ -420,10 +420,8 @@ export class DriverCloudinary implements TusDriver {
 		let nextCursor = '';
 
 		do {
-			const expression = encodeURIComponent(`folder="${fullPath}" OR folder:"${fullPath}/*"`);
-
 			const response = await fetch(
-				`https://api.cloudinary.com/v1_1/${this.cloudName}/resources/search?expression=${expression}&next_cursor=${nextCursor}`,
+				`https://api.cloudinary.com/v1_1/${this.cloudName}/resources/search?expression=${fullPath}*&next_cursor=${nextCursor}`,
 				{
 					method: 'GET',
 					headers: {
