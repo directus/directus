@@ -451,10 +451,12 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	display: flex;
 	align-items: center;
 
-	&::before {
-		content: '•';
-		padding-inline-end: 0.25rem;
-		color: var(--theme--foreground-subdued);
+	@media (min-width: 600px) {
+		&::before {
+			content: '•';
+			padding-inline-end: 0.25rem;
+			color: var(--theme--foreground-subdued);
+		}
 	}
 }
 

@@ -233,10 +233,11 @@ function clearFilters() {
 						icon
 						class="action-delete"
 						secondary
+						small
 						:disabled="selection.length === 0"
 						@click="on"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" outline small />
 					</v-button>
 				</template>
 
@@ -300,7 +301,7 @@ function clearFilters() {
 					</v-list-item-content>
 
 					<v-list-item-hint>
-						<v-icon name="exit_to_app" />
+						<v-icon name="launch" />
 					</v-list-item-hint>
 				</v-list-item>
 			</v-list>

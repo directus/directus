@@ -7,7 +7,6 @@ import { computed } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
 import ExtensionItem from './components/extension-item.vue';
-import ExtensionsInfoSidebarDetail from './components/extensions-info-sidebar-detail.vue';
 import { ExtensionType } from './types';
 
 type ExtensionsMap = Record<ExtensionType, ApiOutput[]>;

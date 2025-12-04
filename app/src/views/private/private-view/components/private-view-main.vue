@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SplitPanel } from '@directus/vue-split-panel';
 import { breakpointsTailwind, useBreakpoints, useScroll } from '@vueuse/core';
-import { computed, inject, provide, unref, useTemplateRef, type ComputedRef } from 'vue';
+import { computed, inject, provide, unref, useTemplateRef, watch, type ComputedRef } from 'vue';
 import NotificationsGroup from '../../components/notifications-group.vue';
 import SkipMenu from '../../components/skip-menu.vue';
 import { useSidebarStore } from '../stores/sidebar';
@@ -10,13 +10,16 @@ import PrivateViewHeaderBar from './private-view-header-bar.vue';
 import PrivateViewResizeHandle from './private-view-resize-handle.vue';
 import PrivateViewSidebar from './private-view-sidebar.vue';
 import type { PrivateViewProps } from './private-view.vue';
+import { useUserStore } from '@/stores/user';
 
-const contentEl = useTemplateRef('content-el');
-provide('main-element', contentEl);
+const userStore = useUserStore();
 
 const props = defineProps<PrivateViewProps & { inlineNav: boolean }>();
 
 defineOptions({ inheritAttrs: false });
+
+const contentEl = useTemplateRef('content-el');
+provide('main-element', contentEl);
 
 const sidebarStore = useSidebarStore();
 
@@ -30,6 +33,10 @@ const livePreviewActive = inject<ComputedRef<boolean>>(
 const showHeaderShadow = computed(() => y.value > 0 || unref(livePreviewActive));
 
 const { sm } = useBreakpoints(breakpointsTailwind);
+
+watch(sm, (isSmall) => {
+	if (!isSmall) sidebarStore.collapse();
+});
 
 const splitterCollapsed = computed({
 	get() {
@@ -58,6 +65,7 @@ const splitterCollapsed = computed({
 			:min-size="280"
 			:max-size="600"
 			:snap-points="[370]"
+			:direction="userStore.textDirection"
 			:snap-threshold="6"
 			divider-hit-area="24px"
 			:transition-duration="125"

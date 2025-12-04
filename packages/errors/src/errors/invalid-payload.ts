@@ -1,6 +1,5 @@
 import { createError, ErrorCode } from '../index.js';
 
-// TODO should we have this natively support a ZodError for ease of use? `new InvalidPayloadError(ZodError)`
 export interface InvalidPayloadErrorExtensions {
 	reason: string;
 }

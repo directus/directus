@@ -2,7 +2,7 @@
 import VBadge from '@/components/v-badge.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { AccordionContent, AccordionHeader, AccordionItem, AccordionTrigger } from 'reka-ui';
-import { onUnmounted, watch } from 'vue';
+import { watch } from 'vue';
 import { useSidebarStore } from '../private-view/stores/sidebar';
 
 const props = defineProps<{
@@ -28,12 +28,6 @@ watch(
 		}
 	},
 );
-
-onUnmounted(() => {
-	if (sidebarStore.activeAccordionItem === props.id) {
-		sidebarStore.activeAccordionItem = undefined;
-	}
-});
 </script>
 
 <template>
@@ -62,10 +56,21 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .accordion-item {
 	display: contents;
+
+	:deep(.type-label) {
+		margin-block-end: 4px;
+		font-size: 1rem;
+	}
 }
 
 .accordion-trigger {
 	--focus-ring-offset: var(--focus-ring-offset-invert);
+	--v-badge-offset-x: 15px;
+	--v-badge-offset-y: 4px;
+	--v-badge-border-color: var(--theme--sidebar--section--toggle--background);
+	--v-badge-background-color: var(--theme--primary);
+	--v-badge-color: var(--theme--background-normal);
+
 	display: flex;
 	align-items: center;
 	block-size: calc(60px + var(--theme--sidebar--section--toggle--border-width));
@@ -75,12 +80,6 @@ onUnmounted(() => {
 		var(--theme--sidebar--section--toggle--border-color);
 	color: var(--theme--sidebar--section--toggle--foreground);
 	padding-inline: 18px 9px;
-
-	--v-badge-offset-x: 15px;
-	--v-badge-offset-y: 4px;
-	--v-badge-border-color: var(--theme--sidebar--section--toggle--background);
-	--v-badge-background-color: var(--theme--primary);
-	--v-badge-color: var(--theme--background-normal);
 }
 
 .accordion-trigger-icon {

@@ -2,8 +2,9 @@
 import { useSettingsStore } from '@/stores/settings';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
-import type { ShowSelect } from '@directus/types';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { useAppStore } from '@directus/stores';
+import type { ShowSelect } from '@directus/types';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import maplibre, {
 	AnyLayer,
@@ -47,6 +48,7 @@ const emit = defineEmits(['moveend', 'featureclick', 'featureselect', 'fitdata',
 
 const { t } = useI18n();
 const appStore = useAppStore();
+const sidebarStore = useSidebarStore();
 const settingsStore = useSettingsStore();
 let map: Map;
 const hoveredFeature = ref<MapboxGeoJSONFeature>();
@@ -54,7 +56,7 @@ const hoveredCluster = ref<boolean>();
 const selectMode = ref<boolean>();
 const container = ref<HTMLElement>();
 const unwatchers = [] as WatchStopHandle[];
-const { sidebarOpen, basemap } = toRefs(appStore);
+const { basemap } = toRefs(appStore);
 const mapboxKey = settingsStore.settings?.mapbox_key;
 const basemaps = getBasemapSources();
 
@@ -163,7 +165,7 @@ function setupMap() {
 	});
 
 	watch(
-		() => sidebarOpen.value,
+		() => sidebarStore.collapsed,
 		(opened) => {
 			if (!opened) setTimeout(() => map.resize(), 300);
 		},

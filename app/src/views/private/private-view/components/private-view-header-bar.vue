@@ -102,7 +102,7 @@ const showSidebarToggle = computed(() => {
 	position: sticky;
 	inset-block-start: 0;
 	inset-inline-start: 0;
-	z-index: 4;
+	z-index: 5;
 	background-color: var(--theme--header--background);
 	inline-size: 100%;
 	padding-inline: var(--content-padding);
@@ -149,6 +149,10 @@ const showSidebarToggle = computed(() => {
 .title-container {
 	position: relative;
 	overflow: hidden;
+}
+
+.title {
+	display: flex;
 }
 
 .headline {

@@ -3,7 +3,6 @@ import api from '@/api';
 import { usePreset } from '@/composables/use-preset';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
-import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
@@ -212,12 +211,6 @@ function clearFilters() {
 					:layout-query="layoutQuery"
 					@download="download"
 					@refresh="refresh"
-				/>
-				<flow-sidebar-detail
-					location="collection"
-					collection="directus_translations"
-					:selection="selection"
-					@refresh="batchRefresh"
 				/>
 			</template>
 

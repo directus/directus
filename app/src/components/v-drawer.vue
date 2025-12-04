@@ -78,9 +78,10 @@ const showHeaderShadow = computed(() => y.value > 0);
 				icon
 				rounded
 				secondary
+				small
 				@click="$emit('cancel')"
 			>
-				<v-icon name="close" />
+				<v-icon name="close" small />
 			</v-button>
 
 			<div class="content">
@@ -100,7 +101,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 				</v-resizeable>
 
 				<main ref="scroll-container" :class="{ main: true, 'small-search-input': $slots.sidebar }">
-					<v-drawer-header :title="title" :shadow="showHeaderShadow" :icon="icon" :icon-color="iconColor">
+					<v-drawer-header :title :shadow="showHeaderShadow" :icon :icon-color @cancel="$emit('cancel')">
 						<template #title><slot name="title" /></template>
 						<template #headline>
 							<slot name="subtitle">
@@ -146,8 +147,8 @@ const showHeaderShadow = computed(() => y.value > 0);
 
 		display: none;
 		position: absolute;
-		inset-block-start: 32px;
-		inset-inline-start: -76px;
+		inset-block-start: 22px;
+		inset-inline-start: -56px;
 
 		@media (min-width: 960px) {
 			display: inline-flex;
@@ -168,6 +169,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 	.content {
 		--theme--form--row-gap: 52px;
 
+		container-type: size;
 		position: relative;
 		display: flex;
 		flex-grow: 1;

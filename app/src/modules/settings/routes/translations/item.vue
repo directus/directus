@@ -6,7 +6,6 @@ import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
 import { refreshCurrentLanguage } from '@/lang/refresh-current-language';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
-import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { useCollection } from '@directus/composables';
@@ -310,13 +309,6 @@ async function revert(values: Record<string, any>) {
 					@revert="revert"
 				/>
 				<comments-sidebar-detail collection="directus_translations" :primary-key="internalPrimaryKey" />
-				<flow-sidebar-detail
-					location="item"
-					collection="directus_translations"
-					:primary-key="internalPrimaryKey"
-					:has-edits="hasEdits"
-					@refresh="refresh"
-				/>
 			</template>
 		</template>
 	</private-view>

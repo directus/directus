@@ -199,22 +199,33 @@ function emitValue() {
 }
 
 .search-input {
+	--button-size: 36px;
+	--search-input-size: calc(var(--button-size) - var(--theme--border-width) * 2);
+	--search-input-radius: calc(var(--button-size) / 2);
+	--icon-size: 18px;
+	--icon-search-padding-left: 7px; // visually center in closed filter
+	--icon-search-padding-right: 4px;
+	--icon-filter-margin-right: 8px;
+
 	display: flex;
 	align-items: center;
-	inline-size: 36px;
-	min-block-size: 36px;
+	inline-size: var(--search-input-size);
+	min-block-size: var(--search-input-size);
 	max-inline-size: 100%;
 	box-sizing: content-box;
 	overflow: hidden;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-radius: calc((36px + var(--theme--border-width) * 2) / 2);
+	border-radius: var(--search-input-radius);
 	transition:
 		inline-size var(--slow) var(--transition),
 		border-end-start-radius var(--fast) var(--transition),
 		border-end-end-radius var(--fast) var(--transition);
 
 	&.show-filter {
-		inline-size: 64px;
+		inline-size: calc(
+			var(--icon-size) * 2 + var(--icon-search-padding-left) + var(--icon-search-padding-right) +
+				var(--icon-filter-margin-right)
+		);
 	}
 
 	input {
@@ -258,11 +269,12 @@ function emitValue() {
 	}
 
 	.icon-search {
-		margin: 0 4px 0 9px; // visually center in closed filter
+		margin-block: 0;
+		margin-inline: var(--icon-search-padding-left) var(--icon-search-padding-right);
 	}
 
 	.icon-filter {
-		margin-inline-end: 8px;
+		margin-inline-end: var(--icon-filter-margin-right);
 	}
 
 	&:focus-within,
@@ -361,8 +373,8 @@ function emitValue() {
 	background-color: var(--theme--background-subdued);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-start-end-radius: 0;
-	border-end-end-radius: 22px;
-	border-end-start-radius: 22px;
+	border-end-end-radius: var(--search-input-radius);
+	border-end-start-radius: var(--search-input-radius);
 
 	&.active {
 		border-color: var(--theme--form--field--input--border-color-focus);

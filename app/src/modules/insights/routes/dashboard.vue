@@ -9,7 +9,6 @@ import { useInsightsStore } from '@/stores/insights';
 import { pointOnLine } from '@/utils/point-on-line';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
-import { useAppStore } from '@directus/stores';
 import { applyOptionsData } from '@directus/utils';
 import { assign, isEmpty } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
@@ -27,9 +26,7 @@ const props = withDefaults(
 const { panels: panelsInfo } = useExtensions();
 
 const insightsStore = useInsightsStore();
-const appStore = useAppStore();
 
-const { fullScreen } = toRefs(appStore);
 const { loading, errors, data, saving, hasEdits, refreshIntervals, variables } = toRefs(insightsStore);
 
 const zoomToFit = ref(false);
@@ -179,7 +176,6 @@ const discardAndLeave = () => {
 	router.push(unref(leaveTo)!);
 };
 
-const toggleFullScreen = () => (fullScreen.value = !fullScreen.value);
 const toggleZoomToFit = () => (zoomToFit.value = !zoomToFit.value);
 
 const refreshInterval = computed({
@@ -249,19 +245,6 @@ const refreshInterval = computed({
 					@click="toggleZoomToFit"
 				>
 					<v-icon name="aspect_ratio" small />
-				</v-button>
-
-				<v-button
-					v-tooltip.bottom="$t('full_screen')"
-					:active="fullScreen"
-					class="fullscreen"
-					rounded
-					icon
-					outlined
-					small
-					@click="toggleFullScreen"
-				>
-					<v-icon name="fullscreen" small />
 				</v-button>
 
 				<v-button
@@ -403,7 +386,6 @@ const refreshInterval = computed({
 </template>
 
 <style scoped lang="scss">
-.fullscreen,
 .zoom-to-fit,
 .clear-changes {
 	--v-button-color: var(--theme--foreground);

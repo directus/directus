@@ -298,7 +298,6 @@ function onApply() {
 
 .content {
 	padding: var(--content-padding);
-	padding-block-end: var(--content-padding);
 }
 
 .select {

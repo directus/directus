@@ -7,10 +7,6 @@
 </template>
 
 <style scoped>
-.actions-container {
-	display: contents;
-}
-
 .actions {
 	position: relative;
 	display: flex;
