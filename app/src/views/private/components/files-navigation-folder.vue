@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useFolders, Folder } from '@/composables/use-folders';
 import api from '@/api';
-import FolderPicker from '@/views/private/components/folder-picker.vue';
-import NavigationFolder from '@/views/private/components/files-navigation-folder.vue';
-import { useRouter } from 'vue-router';
-import { unexpectedError } from '@/utils/unexpected-error';
+import { Folder, useFolders } from '@/composables/use-folders';
 import { FolderTarget } from '@/types/folders';
 import { getFolderUrl } from '@/utils/get-asset-url';
+import { unexpectedError } from '@/utils/unexpected-error';
+import NavigationFolder from '@/views/private/components/files-navigation-folder.vue';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const props = withDefaults(
 	defineProps<{
@@ -224,7 +224,7 @@ function useDeleteFolder() {
 						<v-icon name="download" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="t('download')" />
+						<v-text-overflow :text="$t('download')" />
 					</v-list-item-content>
 				</v-list-item>
 				<v-list-item class="danger" clickable @click="deleteActive = true">

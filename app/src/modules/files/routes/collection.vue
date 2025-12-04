@@ -9,6 +9,7 @@ import { emitter, Events } from '@/events';
 import { useFilesStore } from '@/stores/files.js';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
+import { getAssetUrl, getFilesUrl } from '@/utils/get-asset-url';
 import { getFolderFilter } from '@/utils/get-folder-filter';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFiles } from '@/utils/upload-files';
@@ -19,16 +20,11 @@ import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detai
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
 import { mergeFilters } from '@directus/utils';
+import { storeToRefs } from 'pinia';
 import { computed, nextTick, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
-import { storeToRefs } from 'pinia';
-import { getAssetUrl, getFilesUrl } from '@/utils/get-asset-url';
-
-type Item = {
-	[field: string]: any;
-};
 
 const props = defineProps<{
 	folder?: string;
@@ -506,7 +502,7 @@ async function downloadFiles() {
 
 				<v-button
 					v-if="selection.length > 0"
-					v-tooltip.bottom="t('download')"
+					v-tooltip.bottom="$t('download')"
 					rounded
 					icon
 					secondary
