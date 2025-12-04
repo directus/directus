@@ -65,7 +65,7 @@ const mockOnRefresh = vi.fn();
 
 const useFlowsOptions = {
 	collection: ref('test_collection'),
-	primaryKey: 'item_1',
+	primaryKey: ref('item_1'),
 	location: 'collection' as const,
 	hasEdits: ref(true),
 	onRefreshCallback: mockOnRefresh,
@@ -397,5 +397,40 @@ describe('runManualFlow', () => {
 		await runManualFlow(mockFlows[3]!.id);
 
 		expect(mockOnRefresh).toHaveBeenCalledOnce();
+	});
+
+	test('calls runFlow with reactive primaryKey', async () => {
+		const mockFlowsStore = {
+			getManualFlowsForCollection: vi.fn().mockReturnValue(mockFlows),
+		};
+
+		const testOptions = {
+			...useFlowsOptions,
+			primaryKey: ref('item_1'),
+			hasEdits: ref(false),
+			location: 'item' as const,
+		};
+
+		vi.mocked(useFlowsStore).mockReturnValue(mockFlowsStore as any);
+
+		vi.mocked(api.post).mockResolvedValue({});
+
+		const { runManualFlow } = useFlows(testOptions);
+
+		await runManualFlow(mockFlows[1]!.id);
+
+		expect(api.post).toHaveBeenCalledWith(`/flows/trigger/${mockFlows[1]!.id}`, {
+			collection: 'test_collection',
+			keys: ['item_1'],
+		});
+
+		testOptions.primaryKey.value = 'item_2';
+
+		await runManualFlow(mockFlows[1]!.id);
+
+		expect(api.post).toHaveBeenCalledWith(`/flows/trigger/${mockFlows[1]!.id}`, {
+			collection: 'test_collection',
+			keys: ['item_2'],
+		});
 	});
 });
