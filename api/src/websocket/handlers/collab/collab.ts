@@ -11,6 +11,7 @@ import { getSchema } from '../../../utils/get-schema.js';
 import { InvalidPayloadError } from '@directus/errors';
 import { hasFieldPermision } from './field-permissions.js';
 import { ClientMessage } from '@directus/types/collab';
+import { getService } from '../../../utils/get-service.js';
 
 /**
  * Handler responsible for subscriptions
@@ -65,6 +66,23 @@ export class CollabHandler {
 				throw new InvalidPayloadError({
 					reason: `Item id has to be provided for non singleton collections`,
 				});
+
+			try {
+				const service = getService(message.collection, {
+					schema,
+					accountability: client.accountability,
+				});
+
+				if (schema.collections[message.collection]?.singleton) {
+					await service.readSingleton({});
+				} else {
+					await service.readOne(message.item!);
+				}
+			} catch {
+				throw new InvalidPayloadError({
+					reason: `No permission to access item or it does not exist`,
+				});
+			}
 
 			const room = await this.rooms.createRoom(
 				message.collection,
