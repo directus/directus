@@ -931,14 +931,14 @@ function useCollectionRoute() {
 	position: relative;
 }
 
-.content-split :deep(.sp-start),
-.content-split :deep(.sp-end) {
-	overflow-y: auto;
+.content-split :deep(.sp-start) {
+	overflow: auto;
 }
 
 .content-split :deep(.sp-end) {
 	background-color: var(--theme--background-subdued);
 	border-inline-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	overflow-y: auto;
 }
 
 .content-split.sp-collapsed :deep(.sp-divider) {
