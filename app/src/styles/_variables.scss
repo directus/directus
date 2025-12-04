@@ -9,9 +9,11 @@
 	--slow: 300ms;
 	--header-bar-height: 120px;
 	--content-padding: 12px;
+	--content-padding-bottom: 60px;
 	--input-height-tall: 168px;
 	--input-height-max: 500px;
 	--form-column-width: 300px;
+	--form-column-min-width: 220px;
 	--form-column-max-width: 380px;
 	--focus-ring-width: 2px;
 	--focus-ring-offset: 2px;
@@ -22,5 +24,9 @@
 
 	@media (width > 400px) {
 		--header-bar-height: 60px;
+	}
+
+	@media (width > 640px) {
+		--content-padding: 24px;
 	}
 }

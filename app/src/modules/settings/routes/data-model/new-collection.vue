@@ -556,7 +556,7 @@ function onApply() {
 
 .content {
 	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding);
+	padding-block-end: var(--content-padding);
 }
 
 .v-notice {

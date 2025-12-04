@@ -1,36 +1,36 @@
 <script setup lang="ts">
+import { useAiStore } from '@/ai/stores/use-ai';
 import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
-import { useLocalStorage, useBreakpoints, breakpointsTailwind } from '@vueuse/core';
 import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
-import { useFlows } from '@/composables/use-flows';
 import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import PrivateView from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
-import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
+import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
 import { useCollection } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
-import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
+import { breakpointsTailwind, useBreakpoints, useLocalStorage } from '@vueuse/core';
 import { computed, onBeforeUnmount, provide, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
-import { useAiStore } from '@/ai/stores/use-ai';
 
 interface Props {
 	collection: string;
@@ -848,13 +848,8 @@ function useCollectionRoute() {
 }
 
 .v-form {
-	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
-
-	@media (width > 640px) {
-		padding: var(--content-padding);
-		padding-block-end: var(--content-padding-bottom);
-	}
+	padding-inline: var(--content-padding);
+	padding-block: var(--content-padding) var(--content-padding-bottom);
 }
 
 .title-loader {
