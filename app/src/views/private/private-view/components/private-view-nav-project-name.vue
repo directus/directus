@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useServerStore } from '@/stores/server';
-import { useNavBarStore } from '../stores/nav-bar';
 import VIcon from '@/components/v-icon/v-icon.vue';
+import { useServerStore } from '@/stores/server';
+import { computed } from 'vue';
+import { useNavBarStore } from '../stores/nav-bar';
 
 const serverStore = useServerStore();
 
@@ -23,6 +23,7 @@ const navBarStore = useNavBarStore();
 			small
 			name="left_panel_close"
 			clickable
+			class="nav-toggle"
 			@click="navBarStore.collapse"
 		/>
 	</div>
@@ -55,5 +56,9 @@ const navBarStore = useNavBarStore();
 	.descriptor {
 		color: var(--theme--foreground-subdued);
 	}
+}
+
+.nav-toggle {
+	margin-inline-end: 8px; // Optically center with header bar icon
 }
 </style>
