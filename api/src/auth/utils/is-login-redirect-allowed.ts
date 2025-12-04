@@ -5,12 +5,11 @@ import isUrlAllowed from '../../utils/is-url-allowed.js';
 
 /**
  * Check if the redirect URL is allowed
- * @param originUrl Origin URL
  * @param provider OAuth provider name
  * @param redirect URL to redirect to
  * @returns True if the redirect is allowed, false otherwise
  */
-export function isLoginRedirectAllowed(provider: string, originUrl: string, redirect: unknown): boolean {
+export function isLoginRedirectAllowed(provider: string, redirect: unknown): boolean {
 	if (!redirect) return true; // empty redirect
 	if (typeof redirect !== 'string') return false; // invalid type
 
@@ -27,12 +26,6 @@ export function isLoginRedirectAllowed(provider: string, originUrl: string, redi
 		return false;
 	}
 
-	const { protocol: redirectProtocol, hostname: redirectDomain } = new URL(redirect);
-	const redirectUrl = `${redirectProtocol}//${redirectDomain}`;
-
-	// Security check: redirect URL must match the request origin
-	if (redirectUrl !== originUrl) return false;
-
 	const envKey = `AUTH_${provider.toUpperCase()}_REDIRECT_ALLOW_LIST`;
 
 	if (envKey in env) {
@@ -44,8 +37,9 @@ export function isLoginRedirectAllowed(provider: string, originUrl: string, redi
 		return false;
 	}
 
+	const { protocol: redirectProtocol, hostname: redirectDomain } = new URL(redirect);
 	const { protocol: publicProtocol, hostname: publicDomain } = new URL(publicUrl);
 
 	// allow redirects to the defined PUBLIC_URL
-	return redirectUrl === `${publicProtocol}//${publicDomain}`;
+	return `${redirectProtocol}//${redirectDomain}` === `${publicProtocol}//${publicDomain}`
 }

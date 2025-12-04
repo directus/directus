@@ -359,7 +359,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			const otp = req.query['otp'];
 			const redirect = req.query['redirect'];
 
-			if (!isLoginRedirectAllowed(providerName, `${req.protocol}://${req.hostname}`, redirect)) {
+			if (!isLoginRedirectAllowed(providerName, redirect)) {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
