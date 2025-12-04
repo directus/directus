@@ -261,9 +261,10 @@ function clearFilters() {
 				rounded
 				:disabled="selection.length === 0"
 				secondary
+				small
 				@click="toggleArchive"
 			>
-				<v-icon :name="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'" />
+				<v-icon :name="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'" small />
 			</v-button>
 		</template>
 
@@ -327,6 +328,8 @@ function clearFilters() {
 			</v-list>
 
 			<div v-else class="notifications-block">
+				<v-divider class="select-all-divider" :class="{ dense: totalPages > 1 }" />
+
 				<v-checkbox
 					class="select-all"
 					:class="{ dense: totalPages > 1 }"

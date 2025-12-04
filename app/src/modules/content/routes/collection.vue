@@ -340,7 +340,7 @@ function clearFilters() {
 						</template>
 					</bookmark-add>
 
-					<v-icon v-else-if="bookmarkSaved" class="saved" name="bookmark" filled />
+					<v-icon v-else-if="bookmarkSaved" class="saved" name="bookmark" filled small />
 
 					<template v-else-if="bookmarkIsMine">
 						<v-icon
@@ -348,6 +348,7 @@ function clearFilters() {
 							class="save"
 							clickable
 							name="bookmark_save"
+							small
 							@click="savePreset()"
 						/>
 					</template>
@@ -388,7 +389,7 @@ function clearFilters() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" :collection="collection" small />
+				<search-input v-model="search" v-model:filter="filter" :collection="collection" />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
