@@ -905,18 +905,6 @@ function useCollectionRoute() {
 		}
 	}
 
-	:deep(.header-bar.collapsed.shadow .title-container .headline) {
-		opacity: 1;
-		pointer-events: auto;
-	}
-	:deep(.header-bar.small .title-container .headline) {
-		opacity: 1;
-		pointer-events: auto;
-	}
-	:deep(.header-bar.small.shadow .title-container .headline) {
-		opacity: 1;
-		pointer-events: auto;
-	}
 }
 
 .headline-wrapper.has-version-menu .headline-breadcrumb {
