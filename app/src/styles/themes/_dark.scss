@@ -24,8 +24,8 @@
 	--background-inverted: #fff;
 	--background-mark: var(--theme--primary-subdued);
 	--overlay-color: rgb(0 0 0 / 0.9);
-	--navigation-shadow: 0px 0px 12px var(--black);
 	--sidebar-shadow: var(--navigation-shadow);
+	--shadow-color: var(--black);
 
 	// Generate color variations
 	@include mixins.generate-colors($color-mapping, colors.$dark-theme-shade, colors.$dark-theme-tint);
