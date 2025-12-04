@@ -21,7 +21,10 @@ describe('OAuth multi-domain and subpath support', () => {
 
       env[vendor].PORT = String(newServerPort);
       env[vendor]['PUBLIC_URL'] = `http://127.0.0.1:${newServerPort}/api`;
-      env[vendor]['AUTH_ALLOWED_ORIGINS'] = `http://127.0.0.1:${newServerPort}/api,http://localhost:${newServerPort}/api`;
+
+      env[vendor]['AUTH_ALLOWED_ORIGINS'] =
+        `http://127.0.0.1:${newServerPort}/api,http://localhost:${newServerPort}/api`;
+
       env[vendor]['AUTH_GITHUB_REDIRECT_ALLOW_LIST'] = 'https://external-frontend.com/callback';
 
       const server = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env[vendor] });
@@ -113,4 +116,3 @@ describe('OAuth multi-domain and subpath support', () => {
     });
   });
 });
-

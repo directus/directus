@@ -41,5 +41,5 @@ export function isLoginRedirectAllowed(provider: string, redirect: unknown): boo
 	const { protocol: publicProtocol, hostname: publicDomain } = new URL(publicUrl);
 
 	// allow redirects to the defined PUBLIC_URL
-	return `${redirectProtocol}//${redirectDomain}` === `${publicProtocol}//${publicDomain}`
+	return `${redirectProtocol}//${redirectDomain}` === `${publicProtocol}//${publicDomain}`;
 }

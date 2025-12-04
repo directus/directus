@@ -6,9 +6,7 @@ import { describe, expect, it } from 'vitest';
 describe('/auth/login/github redirect validation', () => {
   describe('blocks unlisted redirect URLs', () => {
     it.each(vendors)('%s', async (vendor) => {
-      const response = await request(getUrl(vendor)).get(
-        '/auth/login/github?redirect=https://malicious.com/steal',
-      );
+      const response = await request(getUrl(vendor)).get('/auth/login/github?redirect=https://malicious.com/steal');
 
       expect(response.statusCode).toBe(400);
       expect(response.body.errors[0].extensions.code).toBe('INVALID_PAYLOAD');
@@ -37,9 +35,7 @@ describe('/auth/login/github redirect validation', () => {
     it.each(vendors)('%s', async (vendor) => {
       const publicUrl = getUrl(vendor);
 
-      const response = await request(getUrl(vendor)).get(
-        `/auth/login/github?redirect=${publicUrl}/admin/content`,
-      );
+      const response = await request(getUrl(vendor)).get(`/auth/login/github?redirect=${publicUrl}/admin/content`);
 
       expect(response.statusCode).toBe(302);
       expect(response.headers['location']).toContain('github.com');
@@ -68,4 +64,3 @@ describe('/auth/login/github redirect validation', () => {
     });
   });
 });
-

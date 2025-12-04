@@ -36,9 +36,7 @@ export function generateCallbackUrl(providerName: string, requestOrigin: string)
 	const env = useEnv();
 	const publicUrl = env['PUBLIC_URL'] as string;
 
-	const allowedOrigins = env['AUTH_ALLOWED_ORIGINS']
-		? toArray(env['AUTH_ALLOWED_ORIGINS'] as string)
-		: [];
+	const allowedOrigins = env['AUTH_ALLOWED_ORIGINS'] ? toArray(env['AUTH_ALLOWED_ORIGINS'] as string) : [];
 
 	const matchedOrigin = findMatchingOrigin(requestOrigin, allowedOrigins);
 
