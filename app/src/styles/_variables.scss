@@ -9,6 +9,7 @@
 	--slow: 300ms;
 	--header-bar-height: 120px;
 	--content-padding: 12px;
+	--content-padding-bottom: 60px;
 	--input-height-tall: 168px;
 	--input-height-max: 500px;
 	--form-column-width: 300px;
@@ -23,5 +24,13 @@
 
 	@media (width > 400px) {
 		--header-bar-height: 60px;
+	}
+
+	@media (width > 640px) {
+		--content-padding: 24px;
+	}
+
+	@media (width > 1024px) {
+		--content-padding: 32px;
 	}
 }

@@ -100,13 +100,6 @@ const splitterCollapsed = computed({
 .private-view {
 	block-size: 100%;
 	display: flex;
-
-	--content-padding: 12px;
-	--content-padding-bottom: 60px;
-
-	@media (width > 640px) {
-		--content-padding: 20px;
-	}
 }
 
 .module-bar {

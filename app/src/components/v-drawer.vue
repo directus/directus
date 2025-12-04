@@ -222,18 +222,10 @@ const showHeaderShadow = computed(() => y.value > 0);
 		}
 
 		.main {
-			--content-padding: 16px;
-			--content-padding-bottom: 32px;
-
 			position: relative;
 			flex-grow: 1;
 			overflow: auto;
 			scroll-padding-block-start: 100px;
-
-			@media (width > 640px) {
-				--content-padding: 32px;
-				--content-padding-bottom: 132px;
-			}
 		}
 
 		.main.small-search-input:deep(.search-input.filter-active) {
