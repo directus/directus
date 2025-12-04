@@ -847,12 +847,11 @@ function useCollectionRoute() {
 }
 
 .v-form {
-	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
+	padding-inline: var(--content-padding);
+	padding-block: calc(var(--content-padding) * 3) var(--content-padding-bottom);
 
 	@media (width > 640px) {
-		padding: var(--content-padding);
-		padding-block-end: var(--content-padding-bottom);
+		padding-block-start: calc(var(--content-padding) * 2);
 	}
 }
 
