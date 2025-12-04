@@ -14,6 +14,7 @@
 	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
+		"./collab": "./dist/websockets/collab.js",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",

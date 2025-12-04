@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useClipboard } from '@/composables/use-clipboard';
+import { CollabFieldContext } from '@/composables/use-collab';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import { ValidationError } from '@directus/types';
 import { parseJSON } from '@directus/utils';
@@ -33,6 +34,7 @@ const props = withDefaults(
 		disabledMenuOptions?: MenuOptions[];
 		disabledMenu?: boolean;
 		direction?: string;
+		collabFieldContext?: CollabFieldContext;
 	}>(),
 	{
 		modelValue: undefined,
@@ -41,6 +43,13 @@ const props = withDefaults(
 		validationError: undefined,
 		badge: undefined,
 		direction: undefined,
+		collabFieldContext: () => ({
+			onFieldUpdate: () => {},
+			onFieldUnset: () => {},
+			onFocus: () => {},
+			onBlur: () => {},
+			focusedBy: ref(undefined),
+		}),
 	},
 );
 
@@ -48,10 +57,13 @@ const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelVa
 
 const { t } = useI18n();
 
+const { focusedBy, onFieldUnset, onFieldUpdate, onBlur, onFocus } = props.collabFieldContext;
+
 const isDisabled = computed(() => {
 	if (props.disabled) return true;
 	if (props.field?.meta?.readonly === true) return true;
 	if (props.batchMode && props.batchActive === false) return true;
+	if (focusedBy.value) return true;
 	return false;
 });
 
@@ -98,8 +110,10 @@ function emitValue(value: any) {
 		(isEqual(value, props.initialValue) || (props.initialValue === undefined && isEqual(value, defaultValue.value))) &&
 		props.batchMode === false
 	) {
+		onFieldUnset();
 		emit('unset', props.field);
 	} else {
+		onFieldUpdate(value);
 		emit('update:modelValue', value);
 	}
 }
@@ -173,8 +187,16 @@ function useComputedValues() {
 			field.meta?.width || 'full',
 			{
 				invalid: validationError,
+				'collab-indicator': focusedBy,
 			},
 		]"
+		:style="
+			focusedBy
+				? {
+						'--collab-indicator--color': `var(--${focusedBy.color}-10)`,
+					}
+				: {}
+		"
 	>
 		<v-menu v-if="!isLabelHidden" :disabled="disabledMenu" placement="bottom-start" show-arrow arrow-placement="start">
 			<template #activator="{ toggle, active }">
@@ -192,6 +214,7 @@ function useComputedValues() {
 					:raw-editor-enabled="rawEditorEnabled"
 					:raw-editor-active="rawEditorActive"
 					:loading="loading"
+					:focused-by="focusedBy"
 					:disabled-menu="disabledMenu"
 					@toggle-batch="$emit('toggle-batch', $event)"
 					@toggle-raw="$emit('toggle-raw', $event)"
@@ -231,6 +254,8 @@ function useComputedValues() {
 			:comparison-active="comparisonActive"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
+			@focusin="onFocus"
+			@focusout="onBlur"
 		/>
 
 		<form-field-raw-editor
@@ -255,6 +280,24 @@ function useComputedValues() {
 </template>
 
 <style lang="scss" scoped>
+.field {
+	position: relative;
+	align-self: baseline;
+
+	&.collab-indicator {
+		&::before {
+			content: '';
+			position: absolute;
+			inset: -12px;
+			inset-block-end: -12px;
+			inset-inline: -12px;
+			inset-inline-end: -12px;
+			border-radius: 8px;
+			background-color: var(--collab-indicator--color);
+		}
+	}
+}
+
 .type-note {
 	position: relative;
 	display: block;

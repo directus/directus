@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ComparisonContext } from '@/components/v-form/types';
+import { CollabContext } from '@/composables/use-collab';
 import { getFieldsInGroup } from '@/utils/get-fields-in-group';
 import { Field, ValidationError } from '@directus/types';
 import { merge } from 'lodash';
@@ -16,6 +17,7 @@ const props = withDefaults(
 		nonEditable?: boolean;
 		batchMode?: boolean;
 		batchActiveFields?: string[];
+		collabContext?: CollabContext;
 		comparison?: ComparisonContext;
 		primaryKey: number | string;
 		loading?: boolean;
@@ -136,6 +138,7 @@ function useComparisonIndicator() {
 							:disabled="disabled"
 							:non-editable="nonEditable"
 							:comparison="comparison"
+							:collab-context="collabContext"
 							:direction="direction"
 							:show-no-visible-fields="false"
 							:show-validation-errors="false"
