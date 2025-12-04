@@ -14,12 +14,12 @@ import { useUserStore } from '@/stores/user';
 
 const userStore = useUserStore();
 
-const contentEl = useTemplateRef('content-el');
-provide('main-element', contentEl);
-
 const props = defineProps<PrivateViewProps & { inlineNav: boolean }>();
 
 defineOptions({ inheritAttrs: false });
+
+const contentEl = useTemplateRef('content-el');
+provide('main-element', contentEl);
 
 const sidebarStore = useSidebarStore();
 

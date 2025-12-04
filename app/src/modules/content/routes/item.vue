@@ -271,7 +271,7 @@ const livePreviewMode = useLocalStorage<'split' | 'popup'>('live-preview-mode', 
 const livePreviewSizeStorage = useLocalStorage<number>('live-preview-size', 50);
 
 const breakpoints = useBreakpoints(breakpointsTailwind);
-const isMobile = breakpoints.smaller('sm');
+const isMobile = breakpoints.smallerOrEqual('sm');
 
 const livePreviewActive = computed(
 	() => !!collectionInfo.value?.meta?.preview_url && !unref(isNew) && livePreviewMode.value === 'split',

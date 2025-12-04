@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { BREAKPOINTS } from '@/constants';
 import { useUserStore } from '@/stores/user';
 import { SplitPanel } from '@directus/vue-split-panel';
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
+import { useBreakpoints } from '@vueuse/core';
 import { computed, watch } from 'vue';
 import ModuleBar from '../../components/module-bar.vue';
 import { useNavBarStore } from '../stores/nav-bar';
@@ -12,7 +13,7 @@ import PrivateViewNav from './private-view-nav.vue';
 import PrivateViewResizeHandle from './private-view-resize-handle.vue';
 import type { PrivateViewProps } from './private-view.vue';
 
-const { lg, xl } = useBreakpoints(breakpointsTailwind);
+const { lg, xl } = useBreakpoints(BREAKPOINTS);
 
 const userStore = useUserStore();
 const navBarStore = useNavBarStore();
