@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { useLocalStorage } from '@/composables/use-local-storage';
+import { useLocalStorage } from '@vueuse/core';
 import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
@@ -255,7 +255,7 @@ const previewUrl = computed(() => {
 	return displayValue.value.trim() || null;
 });
 
-const { data: livePreviewMode } = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
+const livePreviewMode = useLocalStorage<'split' | 'popup' | null>('live-preview-mode', null);
 
 const splitView = computed({
 	get() {

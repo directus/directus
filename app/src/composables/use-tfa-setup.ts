@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 import { onMounted, ref } from 'vue';
 import qrcode from 'qrcode';
 import { useUserStore } from '@/stores/user';
-import { useLocalStorage } from '@/composables/use-local-storage';
+import { useLocalStorage } from '@vueuse/core';
 
 export function useTFASetup(initialEnabled: boolean) {
 	const loading = ref(false);
@@ -17,7 +17,7 @@ export function useTFASetup(initialEnabled: boolean) {
 	const canvasID = nanoid();
 
 	const userStore = useUserStore();
-	const { data: requireTfaSetup } = useLocalStorage<string>('require_tfa_setup');
+	const requireTfaSetup = useLocalStorage<string | null>('require_tfa_setup', null);
 
 	onMounted(() => {
 		password.value = '';
