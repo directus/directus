@@ -11,12 +11,12 @@ import PrivateViewResizeHandle from './private-view-resize-handle.vue';
 import PrivateViewSidebar from './private-view-sidebar.vue';
 import type { PrivateViewProps } from './private-view.vue';
 
-const contentEl = useTemplateRef('content-el');
-provide('main-element', contentEl);
-
 const props = defineProps<PrivateViewProps & { inlineNav: boolean }>();
 
 defineOptions({ inheritAttrs: false });
+
+const contentEl = useTemplateRef('content-el');
+provide('main-element', contentEl);
 
 const sidebarStore = useSidebarStore();
 
