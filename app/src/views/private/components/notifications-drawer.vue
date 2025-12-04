@@ -300,7 +300,7 @@ function clearFilters() {
 					</v-list-item-content>
 
 					<v-list-item-hint>
-						<v-icon name="exit_to_app" />
+						<v-icon name="launch" />
 					</v-list-item-hint>
 				</v-list-item>
 			</v-list>
