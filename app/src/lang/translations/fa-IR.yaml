@@ -1853,7 +1853,7 @@ interfaces:
     accordion_mode: حالت آکاردئون
     max_one_section_open: حداکثر 1 بخش باز باشد
   presentation-links:
-    links: لینک‌ ها
+    presentation-links: دکمه‌‌ها
     style: استایل
     primary: اصلی
     link: لینک‌‌ها

@@ -21,8 +21,8 @@
 #'Proxy', 'Intl'
 about: Інформація про
 directus_bsl: Directus BSL 1,1
-privacy_policy: Політика конфіденційності
-contact_our_team: Звʼязок із нашою командою
+privacy_policy: Політика конфіденційності 
+contact_our_team: Звʼязок із нашою командою 
 setup_welcome: Ласкаво просимо до Directus
 setup_info: Створімо ваш обліковий запис адміністратора та запустімо ваш проєкт.
 setup_license_notice: >
@@ -1787,7 +1787,6 @@ interfaces:
     max_one_section_open: Максимальна кількість відкритих секцій – 1
   presentation-links:
     presentation-links: Кнопки
-    links: Посилання
     style: Стиль
     primary: Стандартно
     link: Посилання
