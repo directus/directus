@@ -856,10 +856,6 @@ function useCollectionRoute() {
 	inline-size: 260px;
 }
 
-.type-title {
-	line-height: 1;
-}
-
 :deep(.type-title) {
 	.render-template {
 		img {

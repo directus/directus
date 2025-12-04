@@ -129,6 +129,10 @@ defineEmits<{
 
 .title {
 	display: flex;
+
+	.type-title {
+		line-height: 1.1em;
+	}
 }
 
 .headline {
