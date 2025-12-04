@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import HeaderBarActions from '@/views/private/components/header-bar-actions.vue';
+import PrivateViewHeaderBarActions from '@/views/private/private-view/components/private-view-header-bar-actions.vue';
 import PrivateViewHeaderBarIcon from '@/views/private/private-view/components/private-view-header-bar-icon.vue';
 
 withDefaults(
@@ -8,17 +8,33 @@ withDefaults(
 		shadow?: boolean;
 		icon?: string;
 		iconColor?: string;
-		showBack?: boolean;
 	}>(),
 	{
 		shadow: false,
 	},
 );
+
+defineEmits<{
+	cancel: [];
+}>();
 </script>
 
 <template>
 	<header class="header-bar" :class="{ shadow }">
-		<private-view-header-bar-icon v-if="icon || showBack" :icon :show-back :icon-color />
+		<VButton
+			v-tooltip.bottom="$t('cancel')"
+			class="cancel-button"
+			rounded
+			icon
+			secondary
+			exact
+			small
+			@click="$emit('cancel')"
+		>
+			<v-icon name="close" small />
+		</VButton>
+
+		<private-view-header-bar-icon v-if="icon" class="header-icon" :icon :icon-color />
 
 		<div v-if="$slots['title-outer:prepend']" class="title-outer-prepend">
 			<slot name="title-outer:prepend" />
@@ -46,9 +62,9 @@ withDefaults(
 
 		<slot name="actions:prepend" />
 
-		<header-bar-actions>
+		<private-view-header-bar-actions>
 			<slot name="actions" />
-		</header-bar-actions>
+		</private-view-header-bar-actions>
 
 		<slot name="actions:append" />
 	</header>
@@ -57,7 +73,7 @@ withDefaults(
 <style lang="scss" scoped>
 .header-bar {
 	position: sticky;
-	inset-block-start: -1px;
+	inset-block-start: 0;
 	inset-inline-start: 0;
 	z-index: 5;
 	display: flex;
@@ -77,11 +93,9 @@ withDefaults(
 		align-items: center;
 		gap: 16px;
 		inline-size: 100%;
-		max-inline-size: calc(100% - 12px - 44px - 120px - 12px - 8px);
 		block-size: 100%;
 		margin-inline-start: 10px;
 		overflow: hidden;
-
 
 		&.full {
 			margin-inline-end: 12px;
@@ -117,17 +131,16 @@ withDefaults(
 			overflow: hidden;
 
 			.type-title {
-				color: var(--theme--header--title--foreground);
 				flex-grow: 1;
 				inline-size: 100%;
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
-				font-family: var(--theme--header--title--font-family);
-				font-weight: var(--theme--header--title--font-weight);
 			}
 
 			:deep(.type-title) {
+				max-inline-size: 100%;
+
 				.render-template {
 					img {
 						block-size: 24px;
@@ -148,6 +161,22 @@ withDefaults(
 
 	@media (width > 640px) {
 		padding: 0 var(--content-padding);
+	}
+}
+
+.cancel-button {
+	display: block;
+
+	@media (min-width: 960px) {
+		display: none;
+	}
+}
+
+.header-icon {
+	display: none;
+
+	@media (min-width: 960px) {
+		display: flex;
 	}
 }
 </style>

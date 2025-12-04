@@ -17,6 +17,7 @@ const props = withDefaults(
 		placeholder?: string;
 		masked?: boolean;
 		type?: 'password' | 'text';
+		nonEditable?: boolean;
 	}>(),
 	{
 		type: 'text',
@@ -31,7 +32,7 @@ const isHashed = ref(false);
 const localValue = ref<string | null>(null);
 
 const internalPlaceholder = computed(() => {
-	return isHashed.value ? t('value_hashed') : props.placeholder;
+	return isHashed.value ? t('value_securely_stored') : props.placeholder;
 });
 
 watch(
@@ -52,9 +53,9 @@ function emitValue(newValue: string) {
 	<v-input
 		:placeholder="internalPlaceholder"
 		:disabled
-		:type="type"
+		:type="masked ? 'password' : type"
 		:non-editable
-		:autocomplete="masked ? 'new-password' : 'off'"
+		:autocomplete="type === 'password' ? 'new-password' : 'off'"
 		:model-value="localValue"
 		:class="{ hashed: isHashed && !localValue }"
 		@update:model-value="emitValue"

@@ -8,7 +8,7 @@ const sidebarStore = useSidebarStore();
 </script>
 
 <template>
-	<aside id="sidebar" ref="sidebarEl" role="contentinfo" class="alt-colors" aria-label="Module Sidebar">
+	<aside id="sidebar" role="contentinfo" class="sidebar alt-colors" aria-label="Module Sidebar">
 		<SkipMenu section="sidebar" />
 		<AccordionRoot v-model="sidebarStore.activeAccordionItem" type="single" collapsible class="accordion-root">
 			<slot name="sidebar" />
@@ -18,7 +18,7 @@ const sidebarStore = useSidebarStore();
 </template>
 
 <style scoped>
-#sidebar {
+.sidebar {
 	inline-size: 100%;
 	block-size: 100%;
 	position: relative;
@@ -33,6 +33,7 @@ const sidebarStore = useSidebarStore();
 }
 
 .accordion-root {
+	/* 60px leaves space for the the AI toggle at the bottom */
 	block-size: calc(100% - 60px);
 	display: flex;
 	flex-direction: column;

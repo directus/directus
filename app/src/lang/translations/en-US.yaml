@@ -837,7 +837,7 @@ errors:
   VALUE_OUT_OF_RANGE: Value is out of range
   VALUE_TOO_LONG: Value is too long
 security: Security
-value_hashed: Value Securely Stored
+value_securely_stored: Value Securely Stored
 bookmark_name: Bookmark name...
 create_bookmark: Create Bookmark
 edit_bookmark: Edit Bookmark

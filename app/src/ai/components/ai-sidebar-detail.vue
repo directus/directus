@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import VIcon from '@/components/v-icon/v-icon.vue';
-import { useShortcut } from '@/composables/use-shortcut';
-import { translateShortcut } from '@/utils/translate-shortcut';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { useElementHover } from '@vueuse/core';
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
@@ -16,16 +14,12 @@ const aiStore = useAiStore();
 const aiSidebarCollapsibleTriggerContent = useTemplateRef('collapsible-trigger-content');
 
 const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
-
-useShortcut('meta+j', () => {
-	aiStore.chatOpen = !aiStore.chatOpen;
-});
 </script>
 
 <template>
 	<CollapsibleRoot
 		v-model:open="aiStore.chatOpen"
-		v-tooltip.left="!aiStore.chatOpen && `${$t('ai_chat')} (${translateShortcut(['meta', 'j'])})`"
+		v-tooltip.left="sidebarStore.collapsed && $t('ai_chat')"
 		class="collapsible-root"
 	>
 		<CollapsibleTrigger class="collapsible-trigger">
@@ -110,7 +104,7 @@ useShortcut('meta+j', () => {
 }
 
 .ai-sidebar-content {
-	padding: 12px 0 12px 18px;
+	padding: 12px;
 	block-size: 100%;
 	display: flex;
 	flex-direction: column;
