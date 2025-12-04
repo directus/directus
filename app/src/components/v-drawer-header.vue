@@ -21,52 +21,55 @@ defineEmits<{
 
 <template>
 	<header class="header-bar" :class="{ shadow }">
-		<VButton
-			v-tooltip.bottom="$t('cancel')"
-			class="cancel-button"
-			rounded
-			icon
-			secondary
-			exact
-			small
-			@click="$emit('cancel')"
-		>
-			<v-icon name="close" small />
-		</VButton>
+		<div class="primary">
+			<VButton
+				v-tooltip.bottom="$t('cancel')"
+				class="cancel-button"
+				rounded
+				icon
+				secondary
+				exact
+				small
+				@click="$emit('cancel')"
+			>
+				<v-icon name="close" small />
+			</VButton>
 
-		<private-view-header-bar-icon v-if="icon" class="header-icon" :icon :icon-color />
+			<PrivateViewHeaderBarIcon v-if="icon" class="header-icon" :icon :icon-color />
 
-		<div v-if="$slots['title-outer:prepend']" class="title-outer-prepend">
-			<slot name="title-outer:prepend" />
-		</div>
-
-		<div class="title-container" :class="{ full: !$slots['title-outer:append'] }">
-			<div class="headline">
-				<slot name="headline" />
+			<div class="title-outer-prepend">
+				<slot name="title-outer:prepend" />
 			</div>
 
-			<div class="title">
-				<slot name="title">
-					<slot name="title:prepend" />
-					<h1 class="type-title">
-						<v-text-overflow :text="title" placement="bottom">{{ title }}</v-text-overflow>
-					</h1>
-					<slot name="title:append" />
-				</slot>
+			<div class="title-container">
+				<div class="headline">
+					<slot name="headline" />
+				</div>
+
+				<div class="title">
+					<slot name="title">
+						<slot name="title:prepend" />
+
+						<h1 class="type-title">
+							<VTextOverflow :text="title" placement="bottom">{{ title }}</VTextOverflow>
+						</h1>
+
+						<slot name="title:append" />
+					</slot>
+				</div>
 			</div>
 
-			<slot name="title-outer:append" />
+			<div class="title-outer-append">
+				<slot name="title-outer:append" />
+			</div>
+
+			<div class="spacer" />
 		</div>
-
-		<div class="spacer" />
-
-		<slot name="actions:prepend" />
-
-		<private-view-header-bar-actions>
+		<PrivateViewHeaderBarActions>
+			<template #prepend><slot name="actions:prepend" /></template>
 			<slot name="actions" />
-		</private-view-header-bar-actions>
-
-		<slot name="actions:append" />
+			<template #append><slot name="actions:append" /></template>
+		</PrivateViewHeaderBarActions>
 	</header>
 </template>
 
@@ -76,92 +79,71 @@ defineEmits<{
 	inset-block-start: 0;
 	inset-inline-start: 0;
 	z-index: 5;
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
-	inline-size: 100%;
-	block-size: calc(var(--header-bar-height) + var(--theme--header--border-width));
-	padding: 0 10px;
 	background-color: var(--theme--header--background);
+	inline-size: 100%;
+	padding-inline: var(--content-padding);
 	box-shadow: none;
-	transition: box-shadow var(--medium) var(--transition);
 	border-block-end: var(--theme--header--border-width) solid var(--theme--header--border-color);
-
-	.title-container {
-		position: relative;
-		display: flex;
-		align-items: center;
-		gap: 16px;
-		inline-size: 100%;
-		block-size: 100%;
-		margin-inline-start: 10px;
-		overflow: hidden;
-
-		&.full {
-			margin-inline-end: 12px;
-			padding-inline-end: 0;
-			@media (width > 640px) {
-				margin-inline-end: 20px;
-				padding-inline-end: 20px;
-			}
-		}
-
-		.headline {
-			--v-breadcrumb-color: var(--theme--header--headline--foreground);
-
-			position: absolute;
-			inset-block-start: 2px;
-			inset-inline-start: 0;
-			font-weight: 600;
-			font-size: 12px;
-			white-space: nowrap;
-			opacity: 1;
-			transition: opacity var(--fast) var(--transition);
-			font-family: var(--theme--header--headline--font-family);
-
-			@media (width > 640px) {
-				inset-block-start: -2px;
-			}
-		}
-
-		.title {
-			position: relative;
-			display: flex;
-			align-items: center;
-			overflow: hidden;
-
-			.type-title {
-				flex-grow: 1;
-				inline-size: 100%;
-				overflow: hidden;
-				white-space: nowrap;
-				text-overflow: ellipsis;
-			}
-
-			:deep(.type-title) {
-				max-inline-size: 100%;
-
-				.render-template {
-					img {
-						block-size: 24px;
-					}
-				}
-			}
-		}
-	}
+	block-size: var(--header-bar-height);
+	grid-template-rows: repeat(2, 1fr);
 
 	&.shadow {
 		box-shadow: var(--theme--header--box-shadow);
 		transition: box-shadow var(--fast) var(--transition);
 	}
 
-	.spacer {
-		flex-grow: 1;
+	@media (width > 400px) {
+		display: flex;
+		align-items: center;
+		gap: 12px;
 	}
+}
+
+.primary {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding-block: 12px;
+
+	@media (width > 400px) {
+		display: contents;
+	}
+}
+
+.icon {
+	display: none;
 
 	@media (width > 640px) {
-		padding: 0 var(--content-padding);
+		display: flex;
 	}
+}
+
+:is(.title-outer-prepend, .title-outer-append):empty {
+	display: contents;
+}
+
+.title-container {
+	position: relative;
+	overflow: hidden;
+}
+
+.title {
+	display: flex;
+}
+
+.headline {
+	--v-breadcrumb-color: var(--theme--header--headline--foreground);
+
+	font-weight: 600;
+	font-size: 12px;
+	line-height: 12px;
+	white-space: nowrap;
+	font-family: var(--theme--header--headline--font-family);
+}
+
+.spacer {
+	flex-basis: 0;
+	flex-grow: 1;
 }
 
 .cancel-button {

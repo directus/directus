@@ -115,7 +115,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 
 						<template #actions:prepend><slot name="actions:prepend" /></template>
 						<template #actions><slot name="actions" /></template>
-
+						<template #actions:append><slot name="actions:append" /></template>
 						<template #title:append><slot name="header:append" /></template>
 					</v-drawer-header>
 
