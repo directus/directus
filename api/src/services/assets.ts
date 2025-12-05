@@ -26,7 +26,7 @@ import sharp from 'sharp';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
-import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { validateItemAccess } from '../permissions/modules/validate-access/lib/validate-item-access.js';
 import { getStorage } from '../storage/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
@@ -41,13 +41,32 @@ export class AssetsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
-	filesService: FilesService;
+	sudoFilesService: FilesService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
-		this.filesService = new FilesService({ ...options, accountability: null });
+		this.sudoFilesService = new FilesService({ ...options, accountability: null });
+	}
+
+	private sanitizeFields(file: File, allowedFields: string[] | undefined): Partial<File> {
+		if (!allowedFields || allowedFields.includes('*')) {
+			return file;
+		}
+
+		const bypassFields: (keyof File)[] = ['type', 'filesize'];
+		const fieldsToKeep = new Set<string>([...bypassFields, ...allowedFields]);
+
+		const filteredFile: Partial<File> = {};
+
+		for (const field of fieldsToKeep) {
+			if (field in file) {
+				(filteredFile as Record<string, unknown>)[field] = file[field as keyof File];
+			}
+		}
+
+		return filteredFile;
 	}
 
 	async getAsset(
@@ -77,7 +96,7 @@ export class AssetsService {
 			.from('directus_settings')
 			.first();
 
-		const systemPublicKeys = Object.values(publicSettings || {});
+		const systemPublicKeys: string[] = Object.values(publicSettings || {});
 
 		/**
 		 * This is a little annoying. Postgres will error out if you're trying to search in `where`
@@ -86,19 +105,31 @@ export class AssetsService {
 		 */
 		if (!isValidUuid(id)) throw new ForbiddenError();
 
-		if (systemPublicKeys.includes(id) === false && this.accountability) {
-			await validateAccess(
+		let allowedFields: string[] | undefined;
+
+		if (!systemPublicKeys.includes(id) && this.accountability && this.accountability.admin !== true) {
+			// Use validateItemAccess to check access and get allowed fields
+			const { allowedRootFields, accessAllowed } = await validateItemAccess(
 				{
 					accountability: this.accountability,
 					action: 'read',
 					collection: 'directus_files',
 					primaryKeys: [id],
+					returnAllowedRootFields: true,
 				},
 				{ knex: this.knex, schema: this.schema },
 			);
+
+			if (!accessAllowed) {
+				throw new ForbiddenError({
+					reason: `You don't have permission to perform "read" for collection "directus_files" or it does not exist.`,
+				});
+			}
+
+			allowedFields = allowedRootFields;
 		}
 
-		const file = (await this.filesService.readOne(id, { limit: 1 })) as File;
+		const file = (await this.sudoFilesService.readOne(id, { limit: 1 })) as File;
 
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
@@ -167,7 +198,7 @@ export class AssetsService {
 
 				return {
 					stream: deferStream ? assetStream : await assetStream(),
-					file,
+					file: this.sanitizeFields(file, allowedFields),
 					stat: await storage.location(file.storage).stat(assetFilename),
 				};
 			}
@@ -244,12 +275,16 @@ export class AssetsService {
 			return {
 				stream: deferStream ? assetStream : await assetStream(),
 				stat: await storage.location(file.storage).stat(assetFilename),
-				file,
+				file: this.sanitizeFields(file, allowedFields),
 			};
 		} else {
 			const assetStream = () => storage.location(file.storage).read(file.filename_disk, { range, version });
 			const stat = await storage.location(file.storage).stat(file.filename_disk);
-			return { stream: deferStream ? assetStream : await assetStream(), file, stat };
+			return {
+				stream: deferStream ? assetStream : await assetStream(),
+				file: this.sanitizeFields(file, allowedFields),
+				stat,
+			};
 		}
 	}
 }
