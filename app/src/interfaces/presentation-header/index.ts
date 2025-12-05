@@ -60,16 +60,17 @@ export default defineInterface({
 		},
 		{
 			field: 'help',
-			name: '$t:interfaces.header.help',
+			name: '$t:interfaces.header.help.title',
 			type: 'text',
 			meta: {
 				width: 'full',
 				interface: 'input-rich-text-html',
+				note: '$t:interfaces.header.help.note',
 			},
 		},
 		{
 			field: 'helpDisplayMode',
-			name: '$t:interfaces.header.help_display_mode',
+			name: '$t:interfaces.header.help_display_mode.title',
 			type: 'string',
 			schema: {
 				default_value: 'inline',
@@ -83,14 +84,16 @@ export default defineInterface({
 						{ text: '$t:modal', value: 'modal' },
 					],
 				},
+				note: '$t:interfaces.header.help_display_mode.note',
 			},
 		},
 		{
 			field: 'enableHelpTranslations',
-			name: '$t:interfaces.header.enable_help_translations',
+			name: '$t:interfaces.header.enable_help_translations.title',
 			type: 'boolean',
 			meta: {
 				width: 'half',
+				note: '$t:interfaces.header.enable_help_translations.note',
 			},
 			schema: {
 				default_value: false,
@@ -98,7 +101,7 @@ export default defineInterface({
 		},
 		{
 			field: 'helpTranslationsString',
-			name: '$t:interfaces.header.help_translations_string',
+			name: '$t:interfaces.header.help_translations_string.title',
 			type: 'json',
 			meta: {
 				width: 'full',
@@ -114,6 +117,7 @@ export default defineInterface({
 						hidden: false,
 					},
 				],
+				note: '$t:interfaces.header.help_translations_string.note',
 			},
 		},
 		{

@@ -2266,10 +2266,18 @@ interfaces:
     description: Create a header with a title, subtitle, help information, and/or links to help users navigate or run Flows.
     links: Links
     action_type: Action Type
-    help: Help
-    help_display_mode: Help Display Mode
-    enable_help_translations: Enable Help Translations
-    help_translations_string: Help Translations String
+    help:
+      title: Help
+      note: Provides toggleable help information for the user.
+    help_display_mode:
+      title: Help Display Mode
+      note: Select the display mode for the help information.
+    enable_help_translations:
+      title: Enable Help Translations
+      note: If enabled, this will override the Help field with values from the Help Translations String field.
+    help_translations_string:
+      title: Help Translations String
+      note: You will need to create a translation value for the key in the Translations settings of your project with the translated content for each language you want to support.
 displays:
   translations:
     translations: Translations
