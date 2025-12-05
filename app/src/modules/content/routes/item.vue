@@ -293,7 +293,7 @@ const livePreviewSize = computed({
 			return livePreviewActive.value ? 100 : 0;
 		}
 
-		return livePreviewSizeStorage.value ?? 50;
+		return livePreviewSizeStorage.value || livePreviewSizeDefault;
 	},
 	set(value: number) {
 		if (isMobile.value) return;
