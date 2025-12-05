@@ -1,10 +1,11 @@
-import { Knex } from 'knex';
+import type { DatabaseClient } from '@directus/types';
+import type { Knex } from 'knex';
 import { FieldsService } from '../../services/fields.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { getHelpers } from '../helpers/index.js';
 import { getDatabaseClient } from '../index.js';
 
-const REVISION_INDEXES = [
+const REVISION_INDEXES: { collection: string; field: string; ignore: DatabaseClient[] }[] = [
 	{ collection: 'directus_revisions', field: 'item', ignore: [] },
 	{ collection: 'directus_revisions', field: 'collection', ignore: [] },
 	{ collection: 'directus_revisions', field: 'version', ignore: [] },
