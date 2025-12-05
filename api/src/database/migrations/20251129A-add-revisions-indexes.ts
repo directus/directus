@@ -8,7 +8,6 @@ const REVISION_INDEXES = [
 	{ collection: 'directus_revisions', field: 'item', ignore: [] },
 	{ collection: 'directus_revisions', field: 'collection', ignore: [] },
 	{ collection: 'directus_revisions', field: 'version', ignore: [] },
-	{ collection: 'directus_revisions', field: 'parent', ignore: ['mysql'] },
 ];
 
 export async function up(knex: Knex): Promise<void> {
