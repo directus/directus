@@ -57,20 +57,30 @@ export async function validateItemAccess(
 
 	// Inject the root fields after the permissions have been processed, as to not require access to all collection fields
 	if (options.returnAllowedRootFields) {
-		ast.children = Object.keys(context.schema.collections[options.collection]!.fields).map((field) => ({
-			type: 'field',
-			name: field,
-			fieldKey: field,
-			whenCase: [],
-			alias: false,
-		}));
-
 		const policies = await fetchPolicies(options.accountability, context);
 
 		const permissions = await fetchPermissions(
 			{ action: options.action, policies, collections: [options.collection], accountability: options.accountability },
 			context,
 		);
+
+		const schemaFields = Object.keys(context.schema.collections[options.collection]!.fields);
+		const hasWildcard = permissions.some((p) => p.fields?.includes('*'));
+
+		const allowedFields = hasWildcard
+			? new Set(schemaFields)
+			: new Set(permissions.flatMap((p) => p.fields ?? []));
+
+		// Create children only for fields that exist in schema and are allowed by permissions
+		ast.children = Array.from(allowedFields)
+			.filter((field) => context.schema.collections[options.collection]!.fields[field])
+			.map((field) => ({
+				type: 'field',
+				name: field,
+				fieldKey: field,
+				whenCase: [],
+				alias: false,
+			}));
 
 		injectCases(ast, permissions);
 	}
@@ -97,7 +107,7 @@ export async function validateItemAccess(
 
 	// If returnAllowedRootFields, return intersection of allowed fields across all items
 	if (options.returnAllowedRootFields && items.length > 0) {
-		const allowedRootFields = Object.keys(items[0]!).filter((field) => items.every((item: any) => item[field] === 1));
+		const allowedRootFields = Object.keys(items[0]!).filter((field) => items.some((item: any) => item[field] === 1));
 
 		return {
 			accessAllowed,

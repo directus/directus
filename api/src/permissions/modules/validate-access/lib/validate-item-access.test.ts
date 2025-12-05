@@ -6,6 +6,10 @@ import type { Context } from '../../../types.js';
 import { processAst } from '../../process-ast/process-ast.js';
 import { validateItemAccess } from './validate-item-access.js';
 
+import { fetchPolicies } from '../../../lib/fetch-policies.js';
+import { fetchPermissions } from '../../../lib/fetch-permissions.js';
+import type { Permission } from '@directus/types';
+
 vi.mock('../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js');
 vi.mock('../../../../database/run-ast/run-ast.js');
 vi.mock('../../process-ast/process-ast.js');
@@ -324,4 +328,94 @@ test('Returns intersection of allowed fields across multiple items', async () =>
 		accessAllowed: true,
 		allowedRootFields: ['field-a', 'field-d'],
 	});
+});
+
+test('Merges fields from multiple permissions when returnAllowedRootFields is true', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+			c.field('field-b').string();
+			c.field('field-c').string();
+			c.field('field-d').string();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPolicies).mockResolvedValue([]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{ fields: ['field-a', 'field-b'] } as Permission,
+		{ fields: ['field-c', 'field-d'] } as Permission,
+	]);
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([
+		{ 'field-a': 1, 'field-b': 1, 'field-c': 1, 'field-d': 1 },
+	]);
+
+	await validateItemAccess(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			primaryKeys: [1],
+			returnAllowedRootFields: true,
+		},
+		{
+			schema,
+		} as Context,
+	);
+
+	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
+		expect.objectContaining({
+			children: expect.arrayContaining([
+				expect.objectContaining({ fieldKey: 'field-a' }),
+				expect.objectContaining({ fieldKey: 'field-b' }),
+				expect.objectContaining({ fieldKey: 'field-c' }),
+				expect.objectContaining({ fieldKey: 'field-d' }),
+			]),
+		}),
+		expect.anything(),
+	);
+});
+
+test('Includes all schema fields when permission has wildcard (*)', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+			c.field('field-b').string();
+			c.field('field-c').string();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	// Mock permission with wildcard
+	vi.mocked(fetchPolicies).mockResolvedValue([]);
+	vi.mocked(fetchPermissions).mockResolvedValue([{ fields: ['*'] } as Permission]);
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ 'field-a': 1, 'field-b': 1, 'field-c': 1 }]);
+
+	await validateItemAccess(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			primaryKeys: [1],
+			returnAllowedRootFields: true,
+		},
+		{
+			schema,
+		} as Context,
+	);
+
+	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
+		expect.objectContaining({
+			children: expect.arrayContaining([
+				expect.objectContaining({ fieldKey: 'field-a' }),
+				expect.objectContaining({ fieldKey: 'field-b' }),
+				expect.objectContaining({ fieldKey: 'field-c' }),
+			]),
+		}),
+		expect.anything(),
+	);
 });

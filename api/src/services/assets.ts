@@ -41,13 +41,13 @@ export class AssetsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
-	filesService: FilesService;
+	sudoFilesService: FilesService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
-		this.filesService = new FilesService({ ...options, accountability: null });
+		this.sudoFilesService = new FilesService({ ...options, accountability: null });
 	}
 
 	private sanitizeFields(file: File, allowedFields: string[] | undefined): Partial<File> {
@@ -129,7 +129,7 @@ export class AssetsService {
 			allowedFields = allowedRootFields;
 		}
 
-		const file = (await this.filesService.readOne(id, { limit: 1 })) as File;
+		const file = (await this.sudoFilesService.readOne(id, { limit: 1 })) as File;
 
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
