@@ -61,7 +61,7 @@ const splitterCollapsed = computed({
 			primary="end"
 			size-unit="px"
 			collapsible
-			:collapsed-size="!sm ? 0 : 60"
+			:collapsed-size="isMobile ? 0 : 60"
 			:collapse-threshold="70"
 			:min-size="280"
 			:max-size="600"
