@@ -291,6 +291,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 
 	.text-content {
 		min-inline-size: 0;
+		line-height: normal;
 
 		.text-title {
 			display: flex;
