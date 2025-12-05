@@ -41,5 +41,6 @@ import PrivateViewNavProjectName from './private-view-nav-project-name.vue';
 
 	block-size: calc(100% - var(--project-header-height));
 	overflow: hidden auto;
+	border-inline-end: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
 }
 </style>

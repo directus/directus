@@ -89,6 +89,14 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 	.collapsible-trigger-chevron {
 		transform: rotate(-90deg);
 	}
+
+	border-block-end: var(--theme--sidebar--section--toggle--border-width) solid
+		var(--theme--sidebar--section--toggle--border-color);
+}
+
+.collapsible-trigger[data-state='closed'] {
+	border-block-start: var(--theme--sidebar--section--toggle--border-width) solid
+		var(--theme--sidebar--section--toggle--border-color);
 }
 
 .collapsible-content {
