@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import type { Props as VDrawerProps } from '@/components/v-drawer.vue';
 import { usePreset } from '@/composables/use-preset';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useCollection, useLayout } from '@directus/composables';
 import { Filter } from '@directus/types';
-import { computed, ref, toRefs, unref, watch } from 'vue';
-import type { Props as VDrawerProps } from '@/components/v-drawer.vue';
 import { mergeFilters } from '@directus/utils';
 import { isEqual } from 'lodash';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -171,8 +171,8 @@ function useActions() {
 			<template #actions>
 				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />
 
-				<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="!hasSelectionChanged" @click="save">
-					<v-icon name="check" />
+				<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="!hasSelectionChanged" small @click="save">
+					<v-icon name="check" small />
 				</v-button>
 			</template>
 
