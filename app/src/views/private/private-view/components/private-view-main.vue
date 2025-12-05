@@ -36,6 +36,8 @@ const { sm } = useBreakpoints(breakpointsTailwind);
 
 watch(sm, (isSmall) => {
 	if (!isSmall) sidebarStore.collapse();
+});
+
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smallerOrEqual('sm');
 
