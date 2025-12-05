@@ -73,7 +73,7 @@ watch(
 
 	display: flex;
 	align-items: center;
-	block-size: calc(60px + var(--theme--sidebar--section--toggle--border-width));
+	block-size: 60px;
 	inline-size: 100%;
 	background-color: var(--theme--sidebar--section--toggle--background);
 	border-block-end: var(--theme--sidebar--section--toggle--border-width) solid

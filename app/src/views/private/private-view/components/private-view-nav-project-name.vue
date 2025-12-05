@@ -35,7 +35,7 @@ const navBarStore = useNavBarStore();
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	block-size: calc(60px + var(--theme--navigation--project--border-width));
+	block-size: 60px;
 	padding-inline: 20px 16px; // optically match contents of navigation bar
 	color: var(--theme--navigation--project--foreground);
 	text-align: start;
