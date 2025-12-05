@@ -32,13 +32,13 @@ router.post(
 			schema: req.schema,
 		});
 
-		const { archive, complete, folderName } = await service.zipFolder(req.params['pk']!);
+		const { archive, complete, metadata } = await service.zipFolder(req.params['pk']!);
 
 		res.setHeader('Content-Type', 'application/zip');
 
 		res.setHeader(
 			'Content-Disposition',
-			`attachment; filename="folder-${folderName ? folderName : 'unknown'}-${getDateTimeFormatted()}}.zip"`,
+			`attachment; filename="folder-${metadata['name'] ? metadata['name'] : 'unknown'}-${getDateTimeFormatted()}}.zip"`,
 		);
 
 		archive.pipe(res);

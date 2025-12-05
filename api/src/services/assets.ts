@@ -155,7 +155,9 @@ export class AssetsService {
 		return {
 			archive,
 			complete,
-			folderName: folderTree.get(root),
+			metadata: {
+				name: folderTree.get(root),
+			},
 		};
 	}
 
