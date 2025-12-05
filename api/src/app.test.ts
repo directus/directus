@@ -55,10 +55,6 @@ vi.mock('./auth', () => ({
 	registerAuthProviders: vi.fn(),
 }));
 
-vi.mock('./webhooks', () => ({
-	init: vi.fn(),
-}));
-
 vi.mock('./utils/validate-env.js');
 
 beforeEach(() => {
