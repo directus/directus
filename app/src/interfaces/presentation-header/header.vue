@@ -288,6 +288,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 			white-space: nowrap;
 			font-size: 24px;
 			font-weight: 600;
+			align-items: center;
 
 			.v-icon {
 				--v-icon-color: var(--header-color);
