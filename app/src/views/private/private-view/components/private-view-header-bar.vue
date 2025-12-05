@@ -162,7 +162,7 @@ const showSidebarToggle = computed(() => {
 	display: flex;
 
 	&:deep(.type-title) {
-		line-height: 1.1em;
+		line-height: 1.2em;
 	}
 }
 
