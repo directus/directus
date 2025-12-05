@@ -107,6 +107,7 @@ export class AssetsService {
 					_in: files,
 				},
 			},
+			limit: -1,
 		});
 
 		return this.zip({
@@ -139,6 +140,7 @@ export class AssetsService {
 					_in: Array.from(folderTree.keys()),
 				},
 			},
+			limit: -1,
 		});
 
 		const { archive, complete } = this.zip({
