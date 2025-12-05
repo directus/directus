@@ -20,6 +20,7 @@ import archiver from 'archiver';
 import type { Knex } from 'knex';
 import { clamp } from 'lodash-es';
 import { contentType } from 'mime-types';
+import { extname } from 'node:path';
 import type { Readable } from 'node:stream';
 import hash from 'object-hash';
 import path from 'path';
@@ -51,31 +52,6 @@ export class AssetsService {
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 		this.sudoService = new FilesService({ ...options, accountability: null });
-	}
-
-	async getFileHierarchy(rootFolder: string) {
-		const fileTree = this.knex
-			.withRecursive('folders', ['id', 'name', 'parent'], (qb) => {
-				qb.select('id', 'name', 'parent')
-					.from('directus_folders')
-					.where('id', rootFolder)
-					.unionAll((qb) => {
-						qb.select(
-							'directus_folders.id',
-							this.knex.raw(`CONCAT(folders.name, '/', directus_folders.name)`),
-							'directus_folders.parent',
-						)
-							.from('directus_folders')
-							.join('folders', 'folders.id', 'directus_folders.parent');
-					});
-			})
-			.select<{ id: string; folder: string }[]>('directus_files.id', 'folders.name as folder')
-			.from('directus_files')
-			.rightJoin('folders', 'folders.id', 'directus_files.folder');
-
-		const results = await fileTree;
-
-		return results;
 	}
 
 	private zip(options: { folders?: Map<string, string>; files: Pick<File, 'id' | 'folder' | 'filename_download'>[] }) {
