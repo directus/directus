@@ -43,13 +43,13 @@ export class AssetsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
-	filesService: FilesService;
+	sudoService: FilesService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
-		this.filesService = new FilesService({ ...options, accountability: null });
+		this.sudoService = new FilesService({ ...options, accountability: null });
 	}
 
 	async getFileHierarchy(rootFolder: string) {
@@ -183,7 +183,7 @@ export class AssetsService {
 			);
 		}
 
-		const file = (await this.filesService.readOne(id, { limit: 1 })) as File;
+		const file = (await this.sudoService.readOne(id, { limit: 1 })) as File;
 
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
