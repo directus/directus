@@ -1,4 +1,4 @@
-import type { PrimaryKey } from '@directus/types';
+import type { Folder, PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { z } from 'zod';
 import { FoldersService } from '../../services/folders.js';
@@ -60,7 +60,7 @@ export const folders = defineTool<z.infer<typeof FoldersValidateSchema>>({
 		if (args.action === 'create') {
 			const data = toArray(args.data);
 
-			const savedKeys = await service.createMany(data);
+			const savedKeys = await service.createMany(data as Partial<Folder>[]);
 
 			const result = await service.readMany(savedKeys, sanitizedQuery);
 
@@ -91,9 +91,9 @@ export const folders = defineTool<z.infer<typeof FoldersValidateSchema>>({
 			if (Array.isArray(args.data)) {
 				updatedKeys = await service.updateBatch(args.data);
 			} else if (args.keys) {
-				updatedKeys = await service.updateMany(args.keys, args.data);
+				updatedKeys = await service.updateMany(args.keys, args.data as Partial<Folder>);
 			} else {
-				updatedKeys = await service.updateByQuery(sanitizedQuery, args.data);
+				updatedKeys = await service.updateByQuery(sanitizedQuery, args.data as Partial<Folder>);
 			}
 
 			const result = await service.readMany(updatedKeys, sanitizedQuery);
