@@ -131,7 +131,7 @@ defineEmits<{
 .title {
 	display: flex;
 
-	.type-title {
+	&:deep(.type-title) {
 		line-height: 1.1em;
 	}
 }
