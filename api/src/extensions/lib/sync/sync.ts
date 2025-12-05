@@ -18,9 +18,12 @@ import { normalizePath } from '@directus/utils';
 export type ExtensionSyncOptions = {
 	forceSync?: boolean; // force sync all extensions
 	partialSync?: string; // only sync a specific extension
+	skipSync?: boolean; // do not sync on the instance handling the (un)install
 };
 
 export async function syncExtensions(options?: ExtensionSyncOptions): Promise<void> {
+	if (options?.skipSync === true) return;
+
 	const env = useEnv();
 	const lock = useLock();
 	const messenger = useBus();

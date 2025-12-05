@@ -235,10 +235,9 @@ export class ExtensionManager {
 
 		const resolvedFolder = relative(sep, resolve(sep, versionId));
 		const syncFolder = join('.registry', resolvedFolder);
-		const syncOptions = { partialSync: syncFolder };
 
-		await this.broadcastReloadNotification(syncOptions);
-		await this.reload(syncOptions);
+		await this.broadcastReloadNotification({ partialSync: syncFolder });
+		await this.reload({ skipSync: true });
 
 		emitter.emitAction('extensions.installed', {
 			extensions: this.extensions,
@@ -255,10 +254,9 @@ export class ExtensionManager {
 
 		const resolvedFolder = relative(sep, resolve(sep, folder));
 		const syncFolder = join('.registry', resolvedFolder);
-		const syncOptions = { partialSync: syncFolder };
 
-		await this.broadcastReloadNotification(syncOptions);
-		await this.reload(syncOptions);
+		await this.broadcastReloadNotification({ partialSync: syncFolder });
+		await this.reload({ skipSync: true });
 
 		emitter.emitAction('extensions.uninstalled', {
 			extensions: this.extensions,
