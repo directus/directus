@@ -538,7 +538,13 @@ function useCollectionRoute() {
 		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
 	/>
 
-	<PrivateView v-else :class="{ 'has-content-versioning': shouldShowVersioning }" :title show-back>
+	<PrivateView
+		v-else
+		:class="{ 'has-content-versioning': shouldShowVersioning }"
+		:title
+		:show-back="!collectionInfo.meta?.singleton"
+		:icon="collectionInfo.meta?.singleton ? collectionInfo.icon : undefined"
+	>
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
 			<h1 class="type-title">
 				{{ collectionInfo.name }}
