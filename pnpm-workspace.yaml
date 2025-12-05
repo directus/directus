@@ -75,6 +75,7 @@ catalog:
   '@turf/meta': 7.2.0
   '@tus/server': 2.3.0
   '@tus/utils': 0.6.0
+  '@types/archiver': 7.0.0
   '@types/async': 3.2.25
   '@types/base-64': 1.0.2
   '@types/busboy': 1.5.4
@@ -129,6 +130,7 @@ catalog:
   '@vueuse/integrations': 14.0.0
   '@vueuse/router': 14.0.0
   apexcharts: 4.7.0
+  archiver: 7.0.1
   argon2: 0.44.0
   async: 3.2.6
   async-mutex: 0.5.0
@@ -261,6 +263,7 @@ catalog:
   rollup-plugin-node-externals: 8.1.2
   rollup-plugin-styler: 2.0.0
   samlify: 2.10.1
+  sanitize-filename: 1.6.3
   sanitize-html: 2.17.0
   sass-embedded: 1.93.3
   semver: 7.7.3
@@ -287,8 +290,8 @@ catalog:
   typescript: 5.9.3
   typescript-eslint: 8.46.4
   undici: 7.16.0
-  unplugin-yaml: 3.0.7
   universal-cookie: 8.0.1
+  unplugin-yaml: 3.0.7
   update-check: 1.5.4
   uuid: 11.1.0
   vite: 7.1.12

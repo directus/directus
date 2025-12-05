@@ -1,4 +1,4 @@
-export function getDateFormatted() {
+export function getDateTimeFormatted() {
 	const date = new Date();
 
 	let month = String(date.getMonth() + 1);

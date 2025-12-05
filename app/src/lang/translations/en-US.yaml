@@ -196,6 +196,7 @@ connection_good: Good Connection
 connection_fair: Fair Connection
 connection_poor: Poor Connection
 primary: Primary
+download_folder: Download Folder
 rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix

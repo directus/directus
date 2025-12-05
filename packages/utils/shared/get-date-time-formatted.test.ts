@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 
-import { getDateFormatted } from './get-date-formatted.js';
+import { getDateTimeFormatted } from './get-date-time-formatted.js';
 
 beforeEach(() => {
 	vi.useFakeTimers();
@@ -33,5 +33,5 @@ test.each([
 
 	vi.setSystemTime(nowUTC);
 
-	expect(getDateFormatted()).toBe(expected);
+	expect(getDateTimeFormatted()).toBe(expected);
 });

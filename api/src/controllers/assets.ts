@@ -2,10 +2,11 @@ import { useEnv } from '@directus/env';
 import { InvalidQueryError, RangeNotSatisfiableError } from '@directus/errors';
 import type { Range, TransformationFormat, TransformationParams } from '@directus/types';
 import { TransformationMethods } from '@directus/types';
-import { parseJSON } from '@directus/utils';
+import { getDateTimeFormatted, parseJSON } from '@directus/utils';
 import contentDisposition from 'content-disposition';
 import { Router } from 'express';
 import { merge, pick } from 'lodash-es';
+import * as z from 'zod';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
@@ -22,6 +23,54 @@ const router = Router();
 const env = useEnv();
 
 router.use(useCollection('directus_files'));
+
+router.post(
+	'/folder/:pk',
+	asyncHandler(async (req, res) => {
+		const service = new AssetsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const { archive, complete, metadata } = await service.zipFolder(req.params['pk']!);
+
+		res.setHeader('Content-Type', 'application/zip');
+
+		res.setHeader(
+			'Content-Disposition',
+			`attachment; filename="folder-${metadata['name'] ? metadata['name'] : 'unknown'}-${getDateTimeFormatted()}.zip"`,
+		);
+
+		archive.pipe(res);
+
+		await complete();
+	}),
+);
+
+router.post(
+	'/files/',
+	asyncHandler(async (req, res) => {
+		const service = new AssetsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const { ids } = z
+			.object({
+				ids: z.array(z.string()),
+			})
+			.parse(req.body);
+
+		const { archive, complete } = await service.zipFiles(ids.map((id) => String(id)));
+
+		res.setHeader('Content-Type', 'application/zip');
+		res.setHeader('Content-Disposition', `attachment; filename="files-${getDateTimeFormatted()}.zip"`);
+
+		archive.pipe(res);
+
+		await complete();
+	}),
+);
 
 router.get(
 	'/:pk/:filename?',
