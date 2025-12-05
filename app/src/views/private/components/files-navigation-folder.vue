@@ -242,7 +242,7 @@ async function downloadFolder() {
 						<v-icon name="download" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-text-overflow :text="$t('download')" />
+						<v-text-overflow :text="$t('download_folder')" />
 					</v-list-item-content>
 				</v-list-item>
 				<v-list-item class="danger" clickable @click="deleteActive = true">
