@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { translateShortcut } from '@/utils/translate-shortcut';
 import PrivateViewHeaderBarActions from '@/views/private/private-view/components/private-view-header-bar-actions.vue';
 import PrivateViewHeaderBarIcon from '@/views/private/private-view/components/private-view-header-bar-icon.vue';
 
@@ -23,7 +24,7 @@ defineEmits<{
 	<header class="header-bar" :class="{ shadow }">
 		<div class="primary">
 			<VButton
-				v-tooltip.bottom="$t('cancel')"
+				v-tooltip.bottom="`${$t('cancel')} (${translateShortcut(['esc'])})`"
 				class="cancel-button"
 				rounded
 				icon
@@ -130,8 +131,8 @@ defineEmits<{
 .title {
 	display: flex;
 
-	.type-title {
-		line-height: 1.1em;
+	&:deep(.type-title) {
+		line-height: 1.2em;
 	}
 }
 

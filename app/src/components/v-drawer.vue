@@ -147,7 +147,7 @@ const showHeaderShadow = computed(() => y.value > 0);
 
 		display: none;
 		position: absolute;
-		inset-block-start: 22px;
+		inset-block-start: 12px;
 		inset-inline-start: -56px;
 
 		@media (min-width: 960px) {
