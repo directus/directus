@@ -19,8 +19,7 @@ import type {
 import archiver from 'archiver';
 import type { Knex } from 'knex';
 import { clamp } from 'lodash-es';
-import { contentType } from 'mime-types';
-import { extname } from 'node:path';
+import { contentType, extension } from 'mime-types';
 import type { Readable } from 'node:stream';
 import hash from 'object-hash';
 import path from 'path';
@@ -63,7 +62,7 @@ export class AssetsService {
 
 			for (const { id, folder, filename_download } of options.files) {
 				const file = await this.sudoFilesService.readOne(id, {
-					fields: ['id', 'storage', 'filename_disk', 'filename_download', 'modified_on'],
+					fields: ['id', 'storage', 'filename_disk', 'filename_download', 'modified_on', 'type'],
 				});
 
 				const exists = await storage.location(file.storage).exists(file.filename_disk);
@@ -74,13 +73,19 @@ export class AssetsService {
 
 				const assetStream = await storage.location(file.storage).read(file.filename_disk, { version });
 
-				const ext = extname(file.filename_download);
+				let fileName = filename_download;
 
-				const fileName = deduper.add(filename_download ?? file.id + ext, folder);
+				if (!fileName) {
+					const fileExtension = path.extname(file.filename_download) || (file.type && '.' + extension(file.type)) || '';
+
+					fileName = file.id + fileExtension;
+				}
+
+				const dedupedFileName = deduper.add(fileName, folder);
 
 				const folderName = folder ? options.folders?.get(folder) : undefined;
 
-				archive.append(assetStream, { name: fileName, prefix: folderName });
+				archive.append(assetStream, { name: dedupedFileName, prefix: folderName });
 			}
 
 			await archive.finalize();
