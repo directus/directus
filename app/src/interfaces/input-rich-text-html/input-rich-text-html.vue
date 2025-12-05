@@ -8,9 +8,6 @@ import Editor from '@tinymce/tinymce-vue';
 import { cloneDeep, isEqual } from 'lodash';
 import { ComponentPublicInstance, computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useComparisonDiff } from '@/composables/use-comparison-diff';
-import { shouldShowComparisonDiff } from '@/utils/should-show-comparison-diff';
-import { reconstructComparisonHtml } from '@/utils/reconstruct-comparison-html';
 import getEditorStyles from './get-editor-styles';
 import toolbarDefault from './toolbar-default';
 import useImage from './useImage';
@@ -66,8 +63,6 @@ const props = withDefaults(
 		direction?: string;
 		comparisonMode?: boolean;
 		comparisonSide?: 'base' | 'incoming';
-		comparisonBaseValue?: any;
-		comparisonIncomingValue?: any;
 		fieldData?: any;
 	}>(),
 	{
@@ -130,30 +125,6 @@ const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = us
 const { preButton } = usePre(editorRef);
 const { inlineCodeButton } = useInlineCode(editorRef);
 
-const { computeDiff } = useComparisonDiff();
-
-const shouldShowDiff = computed(() => {
-	return shouldShowComparisonDiff(
-		props.comparisonMode,
-		props.comparisonSide,
-		props.comparisonBaseValue,
-		props.comparisonIncomingValue,
-	);
-});
-
-const diffChanges = computed(() => {
-	if (!shouldShowDiff.value) return [];
-	return computeDiff(props.comparisonBaseValue, props.comparisonIncomingValue, props.fieldData);
-});
-
-const comparisonHtml = computed(() => {
-	if (!shouldShowDiff.value || diffChanges.value.length === 0) {
-		return '';
-	}
-
-	return reconstructComparisonHtml(diffChanges.value, props.comparisonSide!, false) || '';
-});
-
 const internalValue = computed({
 	get() {
 		return props.value || '';
@@ -198,10 +169,10 @@ watch(
 );
 
 watch(
-	() => [comparisonHtml.value, props.font, props.direction, props.comparisonSide],
+	() => [props.value, props.font, props.direction, props.comparisonSide],
 	() => {
 		if (comparisonEditorRef.value) {
-			comparisonEditorRef.value.setContent(comparisonHtml.value);
+			comparisonEditorRef.value.setContent(props.value || '');
 		}
 	},
 );
@@ -293,7 +264,7 @@ const comparisonEditorOptions = computed(() => {
 			comparisonEditorRef.value = editor;
 
 			editor.on('init', () => {
-				editor.setContent(comparisonHtml.value);
+				editor.setContent(props.value || '');
 			});
 		},
 	};
@@ -475,11 +446,11 @@ onMounted(() => {
 
 <template>
 	<div :id="field" class="wysiwyg" :class="{ disabled }">
-		<template v-if="shouldShowDiff && diffChanges.length > 0">
+		<template v-if="comparisonMode && value">
 			<editor
 				:key="`comparison-${comparisonSide}-${comparisonEditorKey}`"
 				ref="comparisonEditorElement"
-				v-model="comparisonHtml"
+				:value="value"
 				:init="comparisonEditorOptions"
 				disabled
 			/>

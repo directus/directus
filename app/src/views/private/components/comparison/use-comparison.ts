@@ -18,6 +18,9 @@ import type { ContentVersion, Field, PrimaryKey, User } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { has, isEqual, mergeWith } from 'lodash';
 import { computed, ref, watch, type Ref } from 'vue';
+import { useComparisonDiff, isHtmlString } from '@/composables/use-comparison-diff';
+import { reconstructComparisonHtml } from '@/utils/reconstruct-comparison-html';
+import { shouldShowComparisonDiff } from '@/utils/should-show-comparison-diff';
 import type {
 	ComparisonData,
 	NormalizedComparison,
@@ -232,6 +235,55 @@ export function useComparison(options: UseComparisonOptions) {
 		}
 	}
 
+	function processRichTextHtmlFields(
+		base: Record<string, any>,
+		incoming: Record<string, any>,
+		collectionName: string,
+	): { base: Record<string, any>; incoming: Record<string, any> } {
+		const fields = fieldsStore.getFieldsForCollection(collectionName);
+
+		if (!fields || fields.length === 0) {
+			return { base, incoming };
+		}
+
+		const { computeDiff } = useComparisonDiff();
+
+		for (const field of fields) {
+			if (field.meta?.interface !== 'input-rich-text-html') continue;
+
+			const fieldKey = field.field;
+			const baseValue = base[fieldKey];
+			const incomingValue = incoming[fieldKey];
+
+			if (baseValue === undefined && incomingValue === undefined) {
+				continue;
+			}
+
+			if (
+				shouldShowComparisonDiff(true, 'base', baseValue, incomingValue) &&
+				isHtmlString(baseValue) &&
+				isHtmlString(incomingValue)
+			) {
+				const changes = computeDiff(baseValue, incomingValue, field);
+
+				if (changes.length > 0) {
+					const baseHtml = reconstructComparisonHtml(changes, 'base', false);
+					const incomingHtml = reconstructComparisonHtml(changes, 'incoming', false);
+
+					if (baseHtml !== null) {
+						base[fieldKey] = baseHtml;
+					}
+
+					if (incomingHtml !== null) {
+						incoming[fieldKey] = incomingHtml;
+					}
+				}
+			}
+		}
+
+		return { base, incoming };
+	}
+
 	async function buildVersionComparison(version: ContentVersion): Promise<ComparisonData> {
 		try {
 			const response = await api.get(`/versions/${version.id}/compare`);
@@ -241,9 +293,15 @@ export function useComparison(options: UseComparisonOptions) {
 
 			const mainVersionMeta = await fetchLatestRevisionActivityOfMainVersion(collection.value, primaryKey.value);
 
-			return {
+			const { base: processedBase, incoming: processedIncoming } = processRichTextHtmlFields(
 				base,
-				incoming: incomingMerged,
+				incomingMerged,
+				collection.value,
+			);
+
+			return {
+				base: processedBase,
+				incoming: processedIncoming,
 				mainVersionMeta,
 				selectableDeltas: [version],
 				comparisonType: 'version',
@@ -317,9 +375,15 @@ export function useComparison(options: UseComparisonOptions) {
 		const specialFields = applyValuesToSpecialFields(fields, incoming, base, activity);
 		incoming = mergeWith({}, incoming, specialFields, replaceArraysInMergeCustomizer);
 
-		return {
+		const { base: processedBase, incoming: processedIncoming } = processRichTextHtmlFields(
 			base,
 			incoming,
+			targetCollection,
+		);
+
+		return {
+			base: processedBase,
+			incoming: processedIncoming,
 			selectableDeltas: revisionsList,
 			revisionFields,
 			comparisonType: 'revision',

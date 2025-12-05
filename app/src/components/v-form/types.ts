@@ -11,6 +11,4 @@ export interface ComparisonContext {
 	revisionFields?: Set<string>;
 	selectedFields: string[];
 	onToggleField: (field: string) => void;
-	baseValues?: Record<string, any>;
-	incomingValues?: Record<string, any>;
 }

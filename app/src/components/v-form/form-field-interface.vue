@@ -39,16 +39,6 @@ const componentName = computed(() => {
 const value = computed(() =>
 	props.modelValue === undefined ? (props.field.schema?.default_value ?? null) : props.modelValue,
 );
-
-const comparisonBaseValue = computed(() => {
-	if (!props.comparison?.baseValues || !props.field?.field) return undefined;
-	return props.comparison.baseValues[props.field.field];
-});
-
-const comparisonIncomingValue = computed(() => {
-	if (!props.comparison?.incomingValues || !props.field?.field) return undefined;
-	return props.comparison.incomingValues[props.field.field];
-});
 </script>
 
 <template>
@@ -74,8 +64,6 @@ const comparisonIncomingValue = computed(() => {
 				:comparison-mode="!!comparison"
 				:comparison-active="comparisonActive"
 				:comparison-side="comparison?.side"
-				:comparison-base-value="comparisonBaseValue"
-				:comparison-incoming-value="comparisonIncomingValue"
 				:width="(field.meta && field.meta.width) || 'full'"
 				:type="field.type"
 				:collection="field.collection"
