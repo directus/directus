@@ -72,7 +72,9 @@ export class AssetsService {
 
 				const assetStream = await storage.location(file.storage).read(file.filename_disk, { version });
 
-				const fileName = deduper.add(filename_download ?? file.id, folder);
+				const ext = extname(file.filename_download);
+
+				const fileName = deduper.add(filename_download ?? file.id + ext, folder);
 
 				const folderName = folder ? options.folders?.get(folder) : undefined;
 
