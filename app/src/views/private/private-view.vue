@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import VResizeable, { ResizeableOptions } from '@/components/v-resizeable.vue';
-import { useLocalStorage } from '@/composables/use-local-storage';
+import { useLocalStorage } from '@vueuse/core';
 import { useWindowSize } from '@/composables/use-window-size';
 import { useUserStore } from '@/stores/user';
 import { useElementSize, useSync } from '@directus/composables';
@@ -113,10 +113,10 @@ const showMain = computed(() => {
 	return remainingWidth >= props.splitViewMinWidth;
 });
 
-const { data: localStorageModuleWidth } = useLocalStorage<{
+const localStorageModuleWidth = useLocalStorage<{
 	nav?: number;
 	main?: number;
-}>('module-width', {});
+}>('directus-module-width', {});
 
 const navWidth = ref(getWidth(localStorageModuleWidth.value?.nav, SIZES.minModuleNavWidth));
 
