@@ -205,8 +205,8 @@ catalogs:
       specifier: 0.6.0
       version: 0.6.0
     '@types/archiver':
-      specifier: 6.0.3
-      version: 6.0.3
+      specifier: 7.0.0
+      version: 7.0.0
     '@types/async':
       specifier: 3.2.25
       version: 3.2.25
@@ -1332,7 +1332,7 @@ importers:
         version: 8.0.2
       '@types/archiver':
         specifier: 'catalog:'
-        version: 6.0.3
+        version: 7.0.0
       '@types/async':
         specifier: 'catalog:'
         version: 3.2.25
@@ -6510,8 +6510,8 @@ packages:
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
 
-  '@types/archiver@6.0.3':
-    resolution: {integrity: sha512-a6wUll6k3zX6qs5KlxIggs1P1JcYJaTCx2gnlr+f0S1yd2DoaEwoIK10HmBaLnZwWneBz+JBm0dwcZu0zECBcQ==}
+  '@types/archiver@7.0.0':
+    resolution: {integrity: sha512-/3vwGwx9n+mCQdYZ2IKGGHEFL30I96UgBlk8EtRDDFQ9uxM1l4O5Ci6r00EMAkiDaTqD9DQ6nVrWRICnBPtzzg==}
 
   '@types/argparse@1.0.38':
     resolution: {integrity: sha512-ebDJ9b0e702Yr7pWgB0jzm+CX4Srzz8RcXtLJDJB+BSccqMa36uyH/zUsSYao5+BD1ytv3k3rPYCq4mAE1hsXA==}
@@ -18375,7 +18375,7 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
-  '@types/archiver@6.0.3':
+  '@types/archiver@7.0.0':
     dependencies:
       '@types/readdir-glob': 1.1.5
 
