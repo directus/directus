@@ -223,9 +223,8 @@ function emitValue() {
 
 	&.show-filter {
 		inline-size: calc(
-			/* styleline-ignore-next-line */
-			var(--icon-size) * 2 + var(--icon-search-padding-left) + var(--icon-search-padding-right) +
-				var(--icon-filter-margin-right)
+			/* styleline-ignore-next-line */ var(--icon-size) * 2 + var(--icon-search-padding-left) +
+				var(--icon-search-padding-right) + var(--icon-filter-margin-right)
 		);
 	}
 

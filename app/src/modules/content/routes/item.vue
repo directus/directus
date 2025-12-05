@@ -907,7 +907,6 @@ function useCollectionRoute() {
 			opacity: 1;
 		}
 	}
-
 }
 
 .headline-wrapper.has-version-menu .headline-breadcrumb {

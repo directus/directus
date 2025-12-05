@@ -47,7 +47,7 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 }
 
 .collapsible-trigger {
-    --focus-ring-offset: var(--focus-ring-offset-invert);
+	--focus-ring-offset: var(--focus-ring-offset-invert);
 
 	block-size: 60px;
 	inline-size: 100%;
