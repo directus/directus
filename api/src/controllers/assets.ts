@@ -6,6 +6,7 @@ import { parseJSON } from '@directus/utils';
 import contentDisposition from 'content-disposition';
 import { Router } from 'express';
 import { merge, pick } from 'lodash-es';
+import * as z from 'zod';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
@@ -16,7 +17,6 @@ import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
-import * as z from 'zod';
 
 const router = Router();
 
@@ -32,9 +32,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const files = await service.getFileHierarchy(String(req.params['id']));
-
-		const { archive, complete } = await service.getZip(files, true);
+		const { archive, complete } = await service.zipFolder(req.params['pk']!);
 
 		res.setHeader('Content-Type', 'application/zip');
 		res.setHeader('Content-Disposition', `attachment; filename="folder-${new Date().toISOString()}.zip"`);
@@ -59,12 +57,12 @@ router.post(
 			})
 			.parse(req.body);
 
-		const { archive, complete } = await service.getZip(ids.map((id) => ({ id: String(id) })));
-
-		archive.pipe(res);
+		const { archive, complete } = await service.zipFiles(ids.map((id) => String(id)));
 
 		res.setHeader('Content-Type', 'application/zip');
 		res.setHeader('Content-Disposition', `attachment; filename="files-${new Date().toISOString()}.zip"`);
+
+		archive.pipe(res);
 
 		await complete();
 	}),

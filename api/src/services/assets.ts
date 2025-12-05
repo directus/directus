@@ -32,9 +32,10 @@ import { getStorage } from '../storage/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
+import { NameDeduper } from './assets/name-deduper.js';
 import { FilesService } from './files.js';
 import { getSharpInstance } from './files/lib/get-sharp-instance.js';
-import { FileDeduper, type Files } from './assets/dedupe-files.js';
+import { FoldersService } from './folders.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -77,44 +78,15 @@ export class AssetsService {
 		return results;
 	}
 
-	async getZip(files: Files, skipUnaccessable = false) {
-		const filesService = new FilesService({
-			schema: this.schema,
-			knex: this.knex,
-			accountability: this.accountability,
-		});
-
+	private zip(options: { folders?: Map<string, string>; files: Pick<File, 'id' | 'folder' | 'filename_download'>[] }) {
 		const archive = archiver('zip');
 
 		const complete = async () => {
-			const fileDeduper = new FileDeduper();
+			const deduper = new NameDeduper();
 			const storage = await getStorage();
 
-			for (const { id, folder } of files) {
-				if (!isValidUuid(id)) throw new ForbiddenError();
-				let accessError;
-
-				if (this.accountability) {
-					try {
-						await validateAccess(
-							{
-								accountability: this.accountability,
-								action: 'read',
-								collection: 'directus_files',
-								primaryKeys: [id],
-							},
-							{ knex: this.knex, schema: this.schema },
-						);
-					} catch (error) {
-						accessError = error;
-					}
-
-					if (!skipUnaccessable && accessError) {
-						throw accessError;
-					}
-				}
-
-				const file = (await filesService.readOne(id)) as File;
+			for (const { id, folder, filename_download } of options.files) {
+				const file = await this.sudoService.readOne(id);
 
 				const exists = await storage.location(file.storage).exists(file.filename_disk);
 
@@ -124,15 +96,66 @@ export class AssetsService {
 
 				const assetStream = await storage.location(file.storage).read(file.filename_disk, { version });
 
-				const name = fileDeduper.add(file.filename_download ?? file.id);
+				const fileName = deduper.add(filename_download ?? file.id, folder);
 
-				archive.append(assetStream, { name, prefix: folder });
+				const folderName = folder ? options.folders?.get(folder) : undefined;
+
+				archive.append(assetStream, { name: fileName, prefix: folderName });
 			}
 
 			await archive.finalize();
 		};
 
 		return { archive, complete };
+	}
+
+	async zipFiles(files: string[]) {
+		const filesService = new FilesService({
+			schema: this.schema,
+			knex: this.knex,
+			accountability: this.accountability,
+		});
+
+		const filesToZip = await filesService.readByQuery({
+			filter: {
+				id: {
+					_in: files,
+				},
+			},
+		});
+
+		return this.zip({
+			files: filesToZip.map((f) => ({ id: f['id'], folder: f['folder'], filename_download: f['filename_download'] })),
+		});
+	}
+
+	async zipFolder(root: string) {
+		const foldersService = new FoldersService({
+			schema: this.schema,
+			knex: this.knex,
+			accountability: this.accountability,
+		});
+
+		const folderTree = await foldersService.tree(root);
+
+		const filesService = new FilesService({
+			schema: this.schema,
+			knex: this.knex,
+			accountability: this.accountability,
+		});
+
+		const filesToZip = await filesService.readByQuery({
+			filter: {
+				folder: {
+					_in: Array.from(folderTree.keys()),
+				},
+			},
+		});
+
+		return this.zip({
+			folders: folderTree,
+			files: filesToZip.map((f) => ({ id: f['id'], folder: f['folder'], filename_download: f['filename_download'] })),
+		});
 	}
 
 	async getAsset(
