@@ -268,7 +268,8 @@ const previewUrl = computed(() => {
 });
 
 const livePreviewMode = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
-const livePreviewSizeStorage = useLocalStorage<number>('live-preview-size', 50);
+const livePreviewSizeDefault = 50;
+const livePreviewSizeStorage = useLocalStorage<number>('live-preview-size', livePreviewSizeDefault);
 
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smallerOrEqual('sm');
