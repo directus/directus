@@ -175,6 +175,7 @@
 		"rolldown": "catalog:",
 		"rollup": "catalog:",
 		"samlify": "catalog:",
+		"sanitize-filename": "catalog:",
 		"sanitize-html": "catalog:",
 		"sharp": "catalog:",
 		"snappy": "catalog:",

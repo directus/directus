@@ -765,6 +765,9 @@ catalogs:
     samlify:
       specifier: 2.10.1
       version: 2.10.1
+    sanitize-filename:
+      specifier: 1.6.3
+      version: 1.6.3
     sanitize-html:
       specifier: 2.17.0
       version: 2.17.0
@@ -1287,6 +1290,9 @@ importers:
       samlify:
         specifier: 'catalog:'
         version: 2.10.1
+      sanitize-filename:
+        specifier: 'catalog:'
+        version: 1.6.3
       sanitize-html:
         specifier: 'catalog:'
         version: 2.17.0

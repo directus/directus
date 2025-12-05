@@ -45,7 +45,7 @@ export class FoldersService extends ItemsService<Folder> {
 		}
 
 		const deduper = new NameDeduper();
-		const rootName = folderLookup.get(root)?.name ?? root;
+		const rootName = deduper.add(folderLookup.get(root)?.name, { fallback: root });
 		const stack = [[root, '']];
 		const tree = new Map<string, string>();
 
@@ -60,7 +60,7 @@ export class FoldersService extends ItemsService<Folder> {
 
 			const children = childFolderLookup.get(folderId);
 
-			const folderName = deduper.add(folder['name'] ?? folderId, folder['parent']);
+			const folderName = deduper.add(folder['name'], { group: folder['parent'], fallback: folderId });
 
 			const folderPath = path === '' ? rootName : `${path}/${folderName}`;
 

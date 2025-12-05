@@ -73,15 +73,9 @@ export class AssetsService {
 
 				const assetStream = await storage.location(file.storage).read(file.filename_disk, { version });
 
-				let fileName = filename_download;
+				const fileExtension = path.extname(file.filename_download) || (file.type && '.' + extension(file.type)) || '';
 
-				if (!fileName) {
-					const fileExtension = path.extname(file.filename_download) || (file.type && '.' + extension(file.type)) || '';
-
-					fileName = file.id + fileExtension;
-				}
-
-				const dedupedFileName = deduper.add(fileName, folder);
+				const dedupedFileName = deduper.add(filename_download, { group: folder, fallback: file.id + fileExtension });
 
 				const folderName = folder ? options.folders?.get(folder) : undefined;
 
