@@ -746,7 +746,7 @@ function useCollectionRoute() {
 		</template>
 
 		<SplitPanel
-			v-if="previewUrl"
+		<SplitPanel
 			v-model:size="livePreviewSize"
 			v-model:collapsed="livePreviewCollapsed"
 			primary="end"
@@ -757,7 +757,6 @@ function useCollectionRoute() {
 			:min-size="isMobile ? 0 : 20"
 			:max-size="isMobile ? 100 : 80"
 			:transition-duration="150"
-			:direction="userStore.textDirection"
 			class="content-split"
 			:disabled="isMobile"
 		>
@@ -782,7 +781,7 @@ function useCollectionRoute() {
 			</template>
 
 			<template #end>
-				<live-preview :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
+				<live-preview v-if="previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
 			</template>
 		</SplitPanel>
 
