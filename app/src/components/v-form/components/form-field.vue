@@ -10,7 +10,7 @@ import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu, { type MenuOptions } from './form-field-menu.vue';
 import FormFieldRawEditor from './form-field-raw-editor.vue';
-import type { ComparisonContext, FormField } from './types';
+import type { ComparisonContext, FormField } from '../types';
 
 const props = withDefaults(
 	defineProps<{

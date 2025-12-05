@@ -1,5 +1,5 @@
-import VMenu from '../v-menu.vue';
-import FormField from '@/components/v-form/form-field.vue';
+import VMenu from '@/components/v-menu.vue';
+import FormField from '@/components/v-form/components/form-field.vue';
 import { i18n } from '@/lang';
 import { Width } from '@directus/system-data';
 import { mount } from '@vue/test-utils';

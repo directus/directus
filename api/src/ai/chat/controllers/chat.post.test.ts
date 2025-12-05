@@ -276,7 +276,8 @@ describe('aiChatPostHandler', () => {
 			];
 
 			// Map tool name to a distinct mock tool value for easier assertions
-			vi.mocked(chatRequestToolToAiSdkTool).mockImplementation((t: any) => {
+			vi.mocked(chatRequestToolToAiSdkTool).mockImplementation((opts: any) => {
+				const t = opts.chatRequestTool;
 				const name = typeof t === 'string' ? t : t.name;
 				return { name, mocked: true } as any;
 			});
