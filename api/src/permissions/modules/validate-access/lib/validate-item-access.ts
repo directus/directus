@@ -67,9 +67,7 @@ export async function validateItemAccess(
 		const schemaFields = Object.keys(context.schema.collections[options.collection]!.fields);
 		const hasWildcard = permissions.some((p) => p.fields?.includes('*'));
 
-		const allowedFields = hasWildcard
-			? new Set(schemaFields)
-			: new Set(permissions.flatMap((p) => p.fields ?? []));
+		const allowedFields = hasWildcard ? new Set(schemaFields) : new Set(permissions.flatMap((p) => p.fields ?? []));
 
 		// Create children only for fields that exist in schema and are allowed by permissions
 		ast.children = Array.from(allowedFields)
@@ -107,7 +105,7 @@ export async function validateItemAccess(
 
 	// If returnAllowedRootFields, return intersection of allowed fields across all items
 	if (options.returnAllowedRootFields && items.length > 0) {
-		const allowedRootFields = Object.keys(items[0]!).filter((field) => items.some((item: any) => item[field] === 1));
+		const allowedRootFields = Object.keys(items[0]!).filter((field) => items.every((item: any) => item[field] === 1));
 
 		return {
 			accessAllowed,
