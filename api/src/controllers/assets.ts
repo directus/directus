@@ -24,8 +24,8 @@ const env = useEnv();
 
 router.use(useCollection('directus_files'));
 
-router.get(
-	'/folder/:id',
+router.post(
+	'/folder/:pk',
 	asyncHandler(async (req, res) => {
 		const service = new AssetsService({
 			accountability: req.accountability,

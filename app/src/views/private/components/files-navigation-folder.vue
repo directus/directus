@@ -155,6 +155,24 @@ function useDeleteFolder() {
 		}
 	}
 }
+
+async function downloadFolder() {
+	const response = await fetch(getFolderUrl(props.folder.id), {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	});
+
+	const blob = await response.blob();
+	const filename = response.headers.get('Content-Disposition')?.match(/filename="(.*?)"/)?.[1];
+
+	const url = window.URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = filename ?? 'unknown file';
+	a.click();
+}
 </script>
 
 <template>
@@ -219,7 +237,7 @@ function useDeleteFolder() {
 						<v-text-overflow :text="$t('move_to_folder')" />
 					</v-list-item-content>
 				</v-list-item>
-				<v-list-item clickable download :href="getFolderUrl(folder.id)">
+				<v-list-item clickable @click="downloadFolder">
 					<v-list-item-icon>
 						<v-icon name="download" />
 					</v-list-item-icon>
