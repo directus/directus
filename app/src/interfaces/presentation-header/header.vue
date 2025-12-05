@@ -240,11 +240,11 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 			<render-template :item="itemValues" :template="subtitle" />
 		</p>
 		<transition-expand>
-			<div v-if="expanded && help && helpDisplayMode !== 'modal'" class="help-text">
+			<div v-if="expanded && help && helpDisplayMode !== 'modal'" class="helper-text-outer">
 				<helper-text :content="helpText" />
 				<div class="collapse-button-container">
 					<v-button class="collapse-button" small secondary @click="toggleHelp">
-						{{ `${$t('collapse')} ${$t('help')}` }}
+						{{ `${$t('interfaces.header.collapse')}` }}
 						<v-icon name="expand_less" right />
 					</v-button>
 				</div>
@@ -363,10 +363,12 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 	white-space: nowrap;
 }
 
-.help-text {
-	padding-block: 16px;
+.helper-text-outer {
+	padding-block: 40px;
+	padding-inline: 32px;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
 	background-color: var(--theme--background-subdued);
+	overflow-y: scroll;
 
 	:deep(.helper-text) {
 		padding: var(--v-card-padding, 16px);

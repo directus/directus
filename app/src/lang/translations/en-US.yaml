@@ -2278,6 +2278,7 @@ interfaces:
     help_translations_string:
       title: Help Translations String
       note: You will need to create a translation value for the key in the Translations settings of your project with the translated content for each language you want to support.
+    collapse: Collapse help
 displays:
   translations:
     translations: Translations
