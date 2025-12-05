@@ -11,6 +11,9 @@ export interface PrivateViewProps {
 
 	/** Render a history back button in place of the title prepend icon */
 	showBack?: boolean;
+
+	/** Whether to always show sidebar shadows regardless of scroll state (true) or only when horizontally scrolled (false). */
+	sidebarShadow?: boolean;
 }
 </script>
 

@@ -27,7 +27,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	icon: 'view_week',
 	component: KanbanLayout,
 	headerShadow: false,
-	sidebarShadow: true,
+	sidebarShadow: false,
 	slots: {
 		options: KanbanOptions,
 		sidebar: () => undefined,

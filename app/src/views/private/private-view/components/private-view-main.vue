@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { SplitPanel } from '@directus/vue-split-panel';
+import { cssVar } from '@directus/utils/browser';
 import { breakpointsTailwind, useBreakpoints, useScroll } from '@vueuse/core';
 import { computed, inject, provide, unref, useTemplateRef, watch, type ComputedRef } from 'vue';
 import NotificationsGroup from '../../components/notifications-group.vue';
@@ -23,7 +24,22 @@ provide('main-element', contentEl);
 
 const sidebarStore = useSidebarStore();
 
-const { y } = useScroll(useTemplateRef('scroll-container'));
+const scrollContainerRef = useTemplateRef('scroll-container');
+const { y, x } = useScroll(scrollContainerRef);
+const sidebarShadow = computed(() => props.sidebarShadow ?? false);
+const contentPadding = computed(() => parseInt(cssVar('--content-padding'), 10) || 12);
+
+const showStartShadow = computed(() => {
+	if (sidebarShadow.value) return true;
+	return x.value >= contentPadding.value;
+});
+
+const showEndShadow = computed(() => {
+	if (sidebarShadow.value) return true;
+	const el = scrollContainerRef.value;
+	if (!el) return false;
+	return el.scrollWidth - el.clientWidth - x.value >= contentPadding.value;
+});
 
 const livePreviewActive = inject<ComputedRef<boolean>>(
 	'live-preview-active',
@@ -76,6 +92,8 @@ const splitterCollapsed = computed({
 			:disabled="isMobile"
 		>
 			<template #start>
+				<div class="scroll-shadow start" :class="{ visible: showStartShadow }" />
+				<div class="scroll-shadow end" :class="{ visible: showEndShadow }" />
 				<div ref="scroll-container" class="scrolling-container" :class="{ 'flex-layout': livePreviewActive }">
 					<PrivateViewHeaderBar
 						:title="props.title"
@@ -134,6 +152,38 @@ const splitterCollapsed = computed({
 	&:deep(.sp-divider) {
 		z-index: 5;
 	}
+}
+
+.scroll-shadow {
+	position: absolute;
+	inset-block: 0;
+	inline-size: 7px;
+	pointer-events: none;
+	z-index: 6;
+	opacity: 0;
+	transition: opacity var(--medium) var(--transition);
+}
+
+.scroll-shadow.visible {
+	opacity: 1;
+}
+
+.scroll-shadow.start {
+	inset-inline-start: 0;
+	background: linear-gradient(to right, var(--shadow-color, transparent), transparent);
+}
+
+.scroll-shadow.end {
+	inset-inline-end: 0;
+	background: linear-gradient(to left, var(--shadow-color, transparent), transparent);
+}
+
+:dir(rtl) .scroll-shadow.start {
+	background: linear-gradient(to left, var(--shadow-color, transparent), transparent);
+}
+
+:dir(rtl) .scroll-shadow.end {
+	background: linear-gradient(to right, var(--shadow-color, transparent), transparent);
 }
 
 .main-split {
