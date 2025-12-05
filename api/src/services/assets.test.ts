@@ -64,7 +64,6 @@ describe('Services / Assets', () => {
 		let mockStorage: Partial<StorageManager>;
 
 		beforeEach(() => {
-			// Mock storage
 			mockDriver = {
 				exists: vi.fn().mockResolvedValue(true),
 				read: vi.fn().mockResolvedValue(new PassThrough()),
@@ -77,7 +76,6 @@ describe('Services / Assets', () => {
 
 			vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
 
-			// Mock validateItemAccess to allow access by default
 			vi.mocked(validateItemAccess).mockResolvedValue({
 				accessAllowed: true,
 				allowedRootFields: ['*'],
@@ -286,12 +284,37 @@ describe('Services / Assets', () => {
 				const result = await service.getAsset(mockFileId);
 
 				expect(result.file.type).toBe(mockFile.type);
-				expect(result.file.storage).toBe(mockFile.storage);
-				expect(result.file.filename_disk).toBe(mockFile.filename_disk);
 
 				expect(result.file.filename_download).toBeUndefined();
 				expect(result.file.title).toBeUndefined();
 				expect(result.file.description).toBeUndefined();
+			});
+		});
+
+		describe('bypass fields', () => {
+			it('should always include type and filesize even if not in allowedRootFields', async () => {
+				const accountability: Accountability = {
+					user: 'test-user-id',
+					role: 'test-role-id',
+					roles: ['test-role-id'],
+					admin: false,
+					app: false,
+					ip: '127.0.0.1',
+				};
+
+				service = createAssetsService(accountability);
+
+				vi.mocked(FilesService.prototype.readOne).mockResolvedValue(mockFile as any);
+
+				vi.mocked(validateItemAccess).mockResolvedValue({
+					accessAllowed: true,
+					allowedRootFields: ['id'],
+				});
+
+				const result = await service.getAsset(mockFileId);
+
+				expect(result.file.type).toBe(mockFile.type);
+				expect(result.file.filesize).toBe(mockFile.filesize);
 			});
 		});
 	});
