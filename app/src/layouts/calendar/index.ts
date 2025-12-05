@@ -224,13 +224,6 @@ export default defineLayout<LayoutOptions>({
 			return options;
 		});
 
-		// Make sure to re-render the size of the calendar when the available space changes due to the
-		// sidebar being manipulated
-		watch(
-			() => sidebarStore.collapsed,
-			() => setTimeout(() => calendar.value?.updateSize(), 300),
-		);
-
 		watch(fullFullCalendarOptions, () => updateCalendar(), { deep: true, immediate: true });
 
 		watch(
@@ -263,6 +256,8 @@ export default defineLayout<LayoutOptions>({
 
 		const isFiltered = computed(() => !!props.filterUser || !!props.search);
 
+		const resize = () => calendar.value?.updateSize();
+
 		return {
 			items,
 			loading,
@@ -288,6 +283,7 @@ export default defineLayout<LayoutOptions>({
 			resetPresetAndRefresh,
 			refresh,
 			download,
+			resize,
 		};
 
 		async function resetPresetAndRefresh() {

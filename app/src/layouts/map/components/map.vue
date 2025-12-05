@@ -2,10 +2,11 @@
 import { useSettingsStore } from '@/stores/settings';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
-import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { useAppStore } from '@directus/stores';
 import type { ShowSelect } from '@directus/types';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import { useResizeObserver } from '@vueuse/core';
+import { debounce } from 'lodash';
 import maplibre, {
 	AnyLayer,
 	AttributionControl,
@@ -19,7 +20,7 @@ import maplibre, {
 	MapboxGeoJSONFeature,
 	NavigationControl,
 } from 'maplibre-gl';
-import { WatchStopHandle, computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
+import { WatchStopHandle, computed, onMounted, onUnmounted, ref, toRefs, useTemplateRef, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -48,13 +49,12 @@ const emit = defineEmits(['moveend', 'featureclick', 'featureselect', 'fitdata',
 
 const { t } = useI18n();
 const appStore = useAppStore();
-const sidebarStore = useSidebarStore();
 const settingsStore = useSettingsStore();
 let map: Map;
 const hoveredFeature = ref<MapboxGeoJSONFeature>();
 const hoveredCluster = ref<boolean>();
 const selectMode = ref<boolean>();
-const container = ref<HTMLElement>();
+const container = useTemplateRef('container');
 const unwatchers = [] as WatchStopHandle[];
 const { basemap } = toRefs(appStore);
 const mapboxKey = settingsStore.settings?.mapbox_key;
@@ -107,6 +107,13 @@ onMounted(() => {
 onUnmounted(() => {
 	map.remove();
 });
+
+useResizeObserver(
+	container,
+	debounce(() => {
+		map.resize();
+	}, 50),
+);
 
 function setupMap() {
 	map = new Map({
@@ -163,15 +170,6 @@ function setupMap() {
 
 		startWatchers();
 	});
-
-	watch(
-		() => sidebarStore.collapsed,
-		(opened) => {
-			if (!opened) setTimeout(() => map.resize(), 300);
-		},
-	);
-
-	setTimeout(() => map.resize(), 300);
 }
 
 function fitBounds() {
