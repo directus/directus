@@ -114,7 +114,7 @@ const splitterCollapsed = computed({
 						<template #title><slot name="title" /></template>
 					</PrivateViewHeaderBar>
 
-					<main ref="mainEl">
+					<main ref="mainEl" class="main-content-container">
 						<slot />
 					</main>
 				</div>
@@ -210,5 +210,10 @@ const splitterCollapsed = computed({
 
 .mobile-sidebar {
 	max-inline-size: 340px;
+}
+
+.main-content-container {
+	inline-size: 100%;
+	block-size: 100%;
 }
 </style>
