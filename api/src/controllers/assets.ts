@@ -53,7 +53,7 @@ router.post(
 
 		const { ids } = z
 			.object({
-				ids: z.array(z.union([z.string(), z.number()])),
+				ids: z.array(z.string()),
 			})
 			.parse(req.body);
 
