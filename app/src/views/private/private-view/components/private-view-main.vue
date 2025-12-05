@@ -214,6 +214,6 @@ const splitterCollapsed = computed({
 
 .main-content-container {
 	inline-size: 100%;
-	block-size: 100%;
+	block-size: calc(100% - 60px);
 }
 </style>
