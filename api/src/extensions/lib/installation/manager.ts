@@ -93,11 +93,11 @@ export class InstallationManager {
 				}
 
 				await queue.onIdle();
-			} else {
-				// No custom location, so save to regular local extensions folder
-				const dest = join(this.extensionPath, '.registry', versionId);
-				await move(join(tempDir, extractedPath), dest, { overwrite: true });
 			}
+
+			// move to regular local extensions folder
+			const dest = join(this.extensionPath, '.registry', versionId);
+			await move(join(tempDir, extractedPath), dest, { overwrite: true });
 		} catch (err) {
 			logger.warn(err);
 
@@ -129,9 +129,9 @@ export class InstallationManager {
 			}
 
 			await queue.onIdle();
-		} else {
-			const path = join(this.extensionPath, '.registry', folder);
-			await remove(path);
 		}
+
+		const path = join(this.extensionPath, '.registry', folder);
+		await remove(path);
 	}
 }
