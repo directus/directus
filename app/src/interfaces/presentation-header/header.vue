@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import dompurify from 'dompurify';
 import { render } from 'micromustache';
 import { computed, inject, ref, useAttrs } from 'vue';
 import { useInjectRunManualFlow } from '@/composables/use-flows';
+import HelperText from './helper-text.vue';
 
 type Link = {
 	icon: string;
@@ -141,10 +141,12 @@ const primaryLinkProps = computed(() => {
 	return null;
 });
 
-const helpString = computed(() => {
-	const text = props.enableHelpTranslations && props.helpTranslationsString ? props.helpTranslationsString : props.help;
+const helpText = computed(() => {
+	if (props.enableHelpTranslations && props.helpTranslationsString) {
+		return props.helpTranslationsString;
+	}
 
-	return dompurify.sanitize(text);
+	return props.help;
 });
 
 const { runManualFlow, runningFlows } = useInjectRunManualFlow();
@@ -239,8 +241,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 		</p>
 		<transition-expand>
 			<div v-if="expanded && help && helpDisplayMode !== 'modal'" class="help-text">
-				<!-- eslint-disable-next-line vue/no-v-html -->
-				<div v-html="helpString" />
+				<helper-text :content="helpText" />
 				<div class="collapse-button-container">
 					<v-button class="collapse-button" small secondary @click="toggleHelp">
 						{{ `${$t('collapse')} ${$t('help')}` }}
@@ -257,8 +258,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 					<v-icon name="close" />
 				</v-button>
 				<v-card-text>
-					<!-- eslint-disable-next-line vue/no-v-html -->
-					<div v-html="helpString" />
+					<helper-text :content="helpText" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button @click="showHelpModal = false">
@@ -364,11 +364,8 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 }
 
 .help-text {
-	padding-block: 40px;
-	padding-inline: 32px;
+	padding-block: 16px;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
-	max-block-size: 540px;
-	overflow-y: scroll;
 	background-color: var(--theme--background-subdued);
 
 	:deep(.helper-text) {
@@ -376,12 +373,6 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 		padding-block-start: 0;
 		max-inline-size: 100%;
 		overflow-x: auto;
-	}
-
-	:deep(img) {
-		max-inline-size: 100%;
-		block-size: auto;
-		display: block;
 	}
 
 	.collapse-button-container {
@@ -403,12 +394,6 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 		:deep(.button) {
 			border-radius: 100%;
 		}
-	}
-
-	:deep(img) {
-		max-inline-size: 100%;
-		block-size: auto;
-		display: block;
 	}
 }
 </style>
