@@ -36,15 +36,16 @@ const { sm } = useBreakpoints(breakpointsTailwind);
 
 watch(sm, (isSmall) => {
 	if (!isSmall) sidebarStore.collapse();
-});
+const breakpoints = useBreakpoints(breakpointsTailwind);
+const isMobile = breakpoints.smallerOrEqual('sm');
 
 const splitterCollapsed = computed({
 	get() {
-		if (sm.value === false) return true;
+		if (isMobile.value) return true;
 		return sidebarStore.collapsed;
 	},
 	set(val: boolean) {
-		if (sm.value === false) return;
+		if (isMobile.value) return;
 		sidebarStore.collapsed = val;
 	},
 });
