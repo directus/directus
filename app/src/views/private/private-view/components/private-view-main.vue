@@ -107,7 +107,7 @@ const splitterCollapsed = computed({
 			</template>
 
 			<template #end>
-				<PrivateViewSidebar v-if="sm">
+				<PrivateViewSidebar v-if="!isMobile">
 					<template #sidebar><slot name="sidebar" /></template>
 				</PrivateViewSidebar>
 
