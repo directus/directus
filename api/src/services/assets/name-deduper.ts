@@ -1,5 +1,3 @@
-export type Files = { id: string; folder?: string }[];
-
 const undef = Symbol('undefined');
 
 export class NameDeduper {
