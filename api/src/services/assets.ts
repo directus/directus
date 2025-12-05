@@ -45,13 +45,13 @@ export class AssetsService {
 	knex: Knex;
 	accountability: Accountability | null;
 	schema: SchemaOverview;
-	sudoService: FilesService;
+	sudoFilesService: FilesService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
-		this.sudoService = new FilesService({ ...options, accountability: null });
+		this.sudoFilesService = new FilesService({ ...options, accountability: null });
 	}
 
 	private zip(options: { folders?: Map<string, string>; files: Pick<File, 'id' | 'folder' | 'filename_download'>[] }) {
@@ -62,7 +62,7 @@ export class AssetsService {
 			const storage = await getStorage();
 
 			for (const { id, folder, filename_download } of options.files) {
-				const file = await this.sudoService.readOne(id, {
+				const file = await this.sudoFilesService.readOne(id, {
 					fields: ['id', 'storage', 'filename_disk', 'filename_download', 'modified_on'],
 				});
 
@@ -194,7 +194,7 @@ export class AssetsService {
 			);
 		}
 
-		const file = (await this.sudoService.readOne(id, { limit: 1 })) as File;
+		const file = (await this.sudoFilesService.readOne(id, { limit: 1 })) as File;
 
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
