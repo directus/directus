@@ -1458,7 +1458,7 @@ fields:
     ai_notice:
       'AI Chat provides an in-app sidebar to converse with an LLM. Once enabled, open the AI sidebar from the toolbar to
       ask questions, generate content, and get help working with your project. <a
-      href="https://directus.io/docs/guides/ai" target="_blank">Learn more about configuring and using AI Chat.</a>'
+      href="https://directus.io/docs/guides/ai/chat" target="_blank">Learn more about configuring and using AI Chat.</a>'
     mcp_enabled: MCP Server
     mcp_enabled_note:
       'Connect AI/LLM tools to your Directus project via <a href="https://directus.io/docs/guides/ai/mcp"
@@ -1485,7 +1485,7 @@ fields:
     mcp_system_prompt_note:
       'Custom system prompt to replace the default. Leave empty to use default (if enabled above).'
     ai_system_prompt: AI System Prompt
-    ai_system_prompt_note: 'Custom AI system prompt to guide LLM behavior in AI Chat interactions.'
+    ai_system_prompt_note: 'Custom AI system prompt to guide LLM behavior in AI Chat interactions. Leave empty to use the default.'
 
   directus_shares:
     name: Name
