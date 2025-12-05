@@ -165,6 +165,10 @@ async function downloadFolder() {
 		},
 	});
 
+	if (!response.ok) {
+		unexpectedError({ response: { data: await response.json() } });
+	}
+
 	const blob = await response.blob();
 	const filename = response.headers.get('Content-Disposition')?.match(/filename="(.*?)"/)?.[1];
 
