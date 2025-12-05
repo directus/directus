@@ -18,7 +18,7 @@ import type {
 	Query,
 	SchemaOverview,
 } from '@directus/types';
-import { getDateFormatted, parseJSON, toArray } from '@directus/utils';
+import { getDateTimeFormatted, parseJSON, toArray } from '@directus/utils';
 import { createTmpFile } from '@directus/utils/node';
 import type { ImportRowLines, ImportRowRange } from '@directus/validation';
 import { queue } from 'async';
@@ -654,7 +654,7 @@ export class ExportService {
 
 			const storage: string = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
 
-			const title = `export-${collection}-${getDateFormatted()}`;
+			const title = `export-${collection}-${getDateTimeFormatted()}`;
 			const filename = `${title}.${format}`;
 
 			const fileWithDefaults: Partial<File> & { storage: string; filename_download: string } = {

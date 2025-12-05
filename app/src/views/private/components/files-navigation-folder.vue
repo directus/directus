@@ -6,7 +6,7 @@ import { getFolderUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';
 import NavigationFolder from '@/views/private/components/files-navigation-folder.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
-import { getDateFormatted } from '@directus/utils';
+import { getDateTimeFormatted } from '@directus/utils';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -171,7 +171,7 @@ async function downloadFolder() {
 	const url = window.URL.createObjectURL(blob);
 	const a = document.createElement('a');
 	a.href = url;
-	a.download = filename ?? `folder-unknown-${getDateFormatted()}.zip`;
+	a.download = filename ?? `folder-unknown-${getDateTimeFormatted()}.zip`;
 	a.click();
 }
 </script>

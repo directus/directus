@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { InvalidQueryError, RangeNotSatisfiableError } from '@directus/errors';
 import type { Range, TransformationFormat, TransformationParams } from '@directus/types';
 import { TransformationMethods } from '@directus/types';
-import { getDateFormatted, parseJSON } from '@directus/utils';
+import { getDateTimeFormatted, parseJSON } from '@directus/utils';
 import contentDisposition from 'content-disposition';
 import { Router } from 'express';
 import { merge, pick } from 'lodash-es';
@@ -38,7 +38,7 @@ router.post(
 
 		res.setHeader(
 			'Content-Disposition',
-			`attachment; filename="folder-${folderName ? folderName : 'unknown'}-${getDateFormatted()}}.zip"`,
+			`attachment; filename="folder-${folderName ? folderName : 'unknown'}-${getDateTimeFormatted()}}.zip"`,
 		);
 
 		archive.pipe(res);
@@ -64,7 +64,7 @@ router.post(
 		const { archive, complete } = await service.zipFiles(ids.map((id) => String(id)));
 
 		res.setHeader('Content-Type', 'application/zip');
-		res.setHeader('Content-Disposition', `attachment; filename="files-${getDateFormatted()}.zip"`);
+		res.setHeader('Content-Disposition', `attachment; filename="files-${getDateTimeFormatted()}.zip"`);
 
 		archive.pipe(res);
 

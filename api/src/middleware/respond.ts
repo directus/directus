@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { getDateFormatted } from '@directus/utils';
+import { getDateTimeFormatted } from '@directus/utils';
 import { parse as parseBytesConfiguration } from 'bytes';
 import type { RequestHandler } from 'express';
 import { getCache, setCacheValue } from '../cache.js';
@@ -72,7 +72,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 			filename += 'Export';
 		}
 
-		filename += ' ' + getDateFormatted();
+		filename += ' ' + getDateTimeFormatted();
 
 		if (req.sanitizedQuery.export === 'json') {
 			res.attachment(`${filename}.json`);
