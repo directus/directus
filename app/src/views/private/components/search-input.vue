@@ -222,10 +222,12 @@ function emitValue() {
 		border-end-end-radius var(--fast) var(--transition);
 
 	&.show-filter {
+		/* stylelint-disable scss/operator-no-newline-after */
 		inline-size: calc(
-			/* styleline-ignore-next-line */ var(--icon-size) * 2 + var(--icon-search-padding-left) +
-				var(--icon-search-padding-right) + var(--icon-filter-margin-right)
+			var(--icon-size) * 2 + var(--icon-search-padding-left) + var(--icon-search-padding-right) +
+				var(--icon-filter-margin-right)
 		);
+		/* stylelint-enable scss/operator-no-newline-after */
 	}
 
 	input {
