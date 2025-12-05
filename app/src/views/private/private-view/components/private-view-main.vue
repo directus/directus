@@ -71,7 +71,7 @@ const splitterCollapsed = computed({
 			divider-hit-area="24px"
 			:transition-duration="125"
 			class="main-split"
-			:disabled="!sm"
+			:disabled="isMobile"
 		>
 			<template #start>
 				<div ref="scroll-container" class="scrolling-container" :class="{ 'flex-layout': livePreviewActive }">
