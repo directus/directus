@@ -721,7 +721,6 @@ label: लेबल
 flows: फ्लोहरु
 flow: फ्लो
 select_a_flow: फ्लो चयन गर्नुहोस्
-run_flow_on_current_edited_confirm: यो वस्तु यस फ्लो द्वारा अद्यावधिक हुन सक्छ, के तपाइँ यसलाई कार्यान्वयन गर्न निश्चित हुनुहुन्छ?
 field_name_placeholder: फिल्डको नाम प्रविष्ट गर्नुहोस्...
 trigger: ट्रिगर
 trigger_options: ट्रिगर विकल्पहरू
@@ -941,7 +940,6 @@ directus_collection:
   directus_dashboards: इनसाइट्स मोड्युल भित्र ड्यासबोर्डहरू
   directus_fields: अतिरिक्त फिल्ड कन्फिगरेसन र मेटाडाटा
   directus_files: सबै व्यवस्थित फाइल सम्पत्तिहरूको लागि मेटाडेटा
-  directus_flows: स्वचालन फ्लो
   directus_folders: फाइलहरूको लागि भर्चुअल डाइरेक्टरीहरू प्रदान गर्दछ
   directus_migrations: तपाईले प्रयोग गरिरहनु भएको डेटाबेसको कुन संस्करण
   directus_notifications: प्रयोगकर्ताहरूलाई सूचनाहरू पठाइयो
@@ -1329,7 +1327,7 @@ interfaces:
     all_closed: "सबै बन्द छ\n"
     all_opened: सबै खुल्यो
   presentation-links:
-    links: लिङ्कहरू
+    presentation-links: बटनहरू
     style: शैली
     primary: प्राथमिक
     link: लिङ्कहरू
@@ -1754,7 +1752,6 @@ item_payload_placeholder: "यो JSON वस्तुको फिल्ड म
 operations:
   condition:
     name: र्शत
-    description: If/Else तर्कमा आधारित प्रवाहलाई रुट गर्नुहोस्
   exec:
     name: स्क्रिप्ट चलाउनुहोस्
     description: पेलोड परिमार्जन गर्न मनमानी कोड कार्यान्वयन गर्नुहोस्
@@ -1826,7 +1823,6 @@ operations:
     description: फ्लोको JSON पेलोड परिवर्तन गर्नुहोस्
   trigger:
     name: ट्रिगर फ्लो
-    description: यो डाटालाई अर्को फ्लोमा पठाउनुहोस्
     flows: फ्लोहरु
     flow: फ्लो
     data: डाटा

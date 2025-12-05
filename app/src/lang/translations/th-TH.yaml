@@ -1067,7 +1067,7 @@ interfaces:
   group-accordion:
     start: เริ่มต้น
   presentation-links:
-    links: ลิงค์
+    presentation-links: ปุ่ม
     style: สไตล์
     primary: หลัก
     link: ลิงค์

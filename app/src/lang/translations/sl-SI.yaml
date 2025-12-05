@@ -1066,7 +1066,7 @@ interfaces:
     accordion_mode: Način harmonike
     max_one_section_open: Največ ena odprta sekcija
   presentation-links:
-    links: Povezave
+    presentation-links: Gumbi
     style: Slog
     primary: Glavni
     link: Povezave

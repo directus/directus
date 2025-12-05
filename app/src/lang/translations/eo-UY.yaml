@@ -646,8 +646,6 @@ collection: Kolekto
 collections: Kolektoj
 content: Enhavo
 system_fields_locked: Sistemaj valoroj estas ŝlositaj kaj ne povas esti redaktitaj
-directus_collection:
-  directus_flows: Aŭtomatigaj fluoj
 fields:
   directus_activity:
     item: Ĉefa ŝlosilo de la ero
@@ -929,7 +927,7 @@ interfaces:
     start: Komenci
     accordion_mode: Akordiona reĝimo
   presentation-links:
-    links: Ligiloj
+    presentation-links: Butonoj
     style: Stilo
     primary: Ĉefa
     link: Ligiloj
@@ -1235,7 +1233,6 @@ triggers:
     cron: Intervalo
   manual:
     name: Mana
-operation_variables_note: Vi povas atingi datumojn de la fluo per variabloj kiel **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** kaj **{'{'}{'{'}$accountability{'}'}{'}'}**, aŭ referenci antaŭajn operaciojn per **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Kondiĉo

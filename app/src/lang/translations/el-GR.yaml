@@ -529,7 +529,6 @@ operations:
     message: Μήνυμα
     subject: Θέμα
   trigger:
-    description: Πέρασμα δεδομένων σε άλλη ροή
     flows: Ροές
     flow: Ροή
     data: Δεδομένα

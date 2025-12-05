@@ -761,10 +761,8 @@ label: ラベル
 flows: フロー
 flow: フロー
 select_a_flow: フローを選択
-run_flow_confirm: このフローを実行しますか？
 run_flow_on_current_collection: 現在のコレクションでフローを実行
 run_flow_on_current: 現在のアイテムでフローを実行
-run_flow_on_current_edited_confirm: フローを実行するとこのアイテムは更新される可能性があります。実行しますか？
 run_flow_on_selected: 項目を1つ以上選択してください | 選択項目の実行フロー | {n}つの選択項目の実行フロー
 run_flow: フローを実行
 field_name_placeholder: フィールド名を入力
