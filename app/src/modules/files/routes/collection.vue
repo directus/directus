@@ -376,7 +376,7 @@ async function downloadFiles() {
 	const url = window.URL.createObjectURL(blob);
 	const a = document.createElement('a');
 	a.href = url;
-	a.download = filename ?? `files-${getDateFormatted()}.zip`;
+	a.download = filename ?? `unknown-${getDateFormatted()}`;
 	a.click();
 }
 </script>
