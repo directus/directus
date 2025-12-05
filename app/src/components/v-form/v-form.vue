@@ -73,7 +73,8 @@ const { width } = useElementSize(el);
 const gridClass = computed<string | null>(() => {
 	if (el.value === null) return null;
 
-	if (width.value > 792) {
+	// 856 (drawer width) - 2 * 24 (content-padding) = 808
+	if (width.value > 808) {
 		return 'grid with-fill';
 	} else {
 		return 'grid';
