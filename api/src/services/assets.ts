@@ -103,7 +103,11 @@ export class AssetsService {
 		});
 
 		return this.zip({
-			files: filesToZip.map((f) => ({ id: f['id'], folder: f['folder'], filename_download: f['filename_download'] })),
+			files: filesToZip.map((file) => ({
+				id: file['id'],
+				folder: file['folder'],
+				filename_download: file['filename_download'],
+			})),
 		});
 	}
 
@@ -132,7 +136,11 @@ export class AssetsService {
 
 		return this.zip({
 			folders: folderTree,
-			files: filesToZip.map((f) => ({ id: f['id'], folder: f['folder'], filename_download: f['filename_download'] })),
+			files: filesToZip.map((file) => ({
+				id: file['id'],
+				folder: file['folder'],
+				filename_download: file['filename_download'],
+			})),
 		});
 	}
 
