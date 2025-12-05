@@ -390,7 +390,6 @@ test('Includes all schema fields when permission has wildcard (*)', async () => 
 
 	const acc = {} as unknown as Accountability;
 
-	// Mock permission with wildcard
 	vi.mocked(fetchPolicies).mockResolvedValue([]);
 	vi.mocked(fetchPermissions).mockResolvedValue([{ fields: ['*'] } as Permission]);
 	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ 'field-a': 1, 'field-b': 1, 'field-c': 1 }]);
