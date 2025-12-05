@@ -746,7 +746,6 @@ function useCollectionRoute() {
 		</template>
 
 		<SplitPanel
-		<SplitPanel
 			v-model:size="livePreviewSize"
 			v-model:collapsed="livePreviewCollapsed"
 			primary="end"
@@ -784,21 +783,6 @@ function useCollectionRoute() {
 				<live-preview v-if="previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
 			</template>
 		</SplitPanel>
-
-		<v-form
-			v-else
-			ref="form"
-			v-model="edits"
-			:autofocus="isNew"
-			:disabled="isFormDisabled"
-			:loading="loading"
-			:initial-values="item"
-			:fields="fields"
-			:primary-key="internalPrimaryKey"
-			:validation-errors="validationErrors"
-			:version="currentVersion"
-			:direction="userStore.textDirection"
-		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
