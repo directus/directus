@@ -87,6 +87,13 @@ export class AssetsService {
 				archive.append(assetStream, { name: dedupedFileName, prefix: folderName });
 			}
 
+			// add any empty folders
+			if (options.folders) {
+				for (const [, folder] of options.folders) {
+					archive.append('', { name: folder + '/' });
+				}
+			}
+
 			await archive.finalize();
 		};
 
