@@ -8,11 +8,6 @@ import { useSidebarStore } from '../stores/sidebar';
 import PrivateViewHeaderBarActions from './private-view-header-bar-actions.vue';
 import PrivateViewHeaderBarIcon from './private-view-header-bar-icon.vue';
 
-const navBarStore = useNavBarStore();
-const sidebarStore = useSidebarStore();
-
-const { sm } = useBreakpoints(breakpointsTailwind);
-
 const props = defineProps<{
 	title?: string;
 	shadow: boolean;
@@ -21,6 +16,12 @@ const props = defineProps<{
 	iconColor?: string;
 	showBack?: boolean;
 }>();
+
+const navBarStore = useNavBarStore();
+const sidebarStore = useSidebarStore();
+
+const breakpoints = useBreakpoints(breakpointsTailwind);
+const isMobile = breakpoints.smallerOrEqual('sm');
 
 const showNavToggle = computed(() => {
 	if (props.inlineNav) {
@@ -31,7 +32,7 @@ const showNavToggle = computed(() => {
 });
 
 const showSidebarToggle = computed(() => {
-	return sidebarStore.collapsed === false || !sm.value;
+	return !sidebarStore.collapsed || isMobile.value;
 });
 </script>
 
