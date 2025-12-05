@@ -62,7 +62,9 @@ export class AssetsService {
 			const storage = await getStorage();
 
 			for (const { id, folder, filename_download } of options.files) {
-				const file = await this.sudoService.readOne(id);
+				const file = await this.sudoService.readOne(id, {
+					fields: ['id', 'storage', 'filename_disk', 'filename_download', 'modified_on'],
+				});
 
 				const exists = await storage.location(file.storage).exists(file.filename_disk);
 
