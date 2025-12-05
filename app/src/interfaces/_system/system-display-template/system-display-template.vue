@@ -4,15 +4,21 @@ import { useCollectionsStore } from '@/stores/collections';
 import { useFakeVersionField } from '@/composables/use-fake-version-field';
 import { computed, inject, ref } from 'vue';
 
-const props = defineProps<{
-	value: string | null;
-	placeholder?: string | null;
-	disabled?: boolean;
-	collectionField?: string;
-	collectionName?: string;
-	fields?: FieldNode[];
-	injectVersionField?: boolean;
-}>();
+const props = withDefaults(
+	defineProps<{
+		value: string | null;
+		placeholder?: string | null;
+		disabled?: boolean;
+		collectionField?: string;
+		collectionName?: string;
+		fields?: FieldNode[];
+		injectVersionField?: boolean;
+		includeRelations?: boolean;
+	}>(),
+	{
+		includeRelations: true,
+	},
+);
 
 defineEmits<{
 	(e: 'input', value: string | null): void;
@@ -45,7 +51,7 @@ const injectFields = computed(() => {
 	return fakeVersionField.value ? { fields: [fakeVersionField.value] } : null;
 });
 
-const { treeList, loadFieldRelations } = useFieldTree(collection, injectFields);
+const { treeList, loadFieldRelations } = useFieldTree(collection, injectFields, () => true, props.includeRelations);
 
 const tree = computed(() => {
 	if (props.fields) {
