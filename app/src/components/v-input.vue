@@ -473,8 +473,8 @@ function useInlineWarning() {
 			box-shadow: var(--theme--form--field--input--box-shadow-hover);
 		}
 
-		&:focus-within,
-		&.active {
+		&:focus-within:not(.disabled),
+		&.active:not(.disabled) {
 			--arrow-color: var(--v-input-border-color-hover, var(--theme--form--field--input--border-color-hover));
 
 			color: var(--v-input-color);
