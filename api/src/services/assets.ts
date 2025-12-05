@@ -136,7 +136,7 @@ export class AssetsService {
 			},
 		});
 
-		return this.zip({
+		const { archive, complete } = this.zip({
 			folders: folderTree,
 			files: filesToZip.map((file) => ({
 				id: file['id'],
@@ -144,6 +144,12 @@ export class AssetsService {
 				filename_download: file['filename_download'],
 			})),
 		});
+
+		return {
+			archive,
+			complete,
+			folderName: folderTree.get(root),
+		};
 	}
 
 	async getAsset(

@@ -19,7 +19,7 @@ import FolderPicker from '@/views/private/components/folder-picker.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
-import { mergeFilters } from '@directus/utils';
+import { getDateFormatted, mergeFilters } from '@directus/utils';
 import { storeToRefs } from 'pinia';
 import { computed, nextTick, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -376,7 +376,7 @@ async function downloadFiles() {
 	const url = window.URL.createObjectURL(blob);
 	const a = document.createElement('a');
 	a.href = url;
-	a.download = filename ?? `files-${new Date().toISOString()}.zip`;
+	a.download = filename ?? `files-${getDateFormatted()}.zip`;
 	a.click();
 }
 </script>
