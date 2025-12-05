@@ -38,7 +38,7 @@ router.post(
 
 		res.setHeader(
 			'Content-Disposition',
-			`attachment; filename="folder-${metadata['name'] ? metadata['name'] : 'unknown'}-${getDateTimeFormatted()}}.zip"`,
+			`attachment; filename="folder-${metadata['name'] ? metadata['name'] : 'unknown'}-${getDateTimeFormatted()}.zip"`,
 		);
 
 		archive.pipe(res);
