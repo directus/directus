@@ -47,6 +47,11 @@ on:
   schedule:
     - cron: '0 2 * * 0'
 
+# Don't cancel in-progress AMI builds - they're expensive and should complete
+concurrency:
+  group: ami-build-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   AWS_REGION: ${{ secrets.AWS_REGION || 'us-east-2' }}
   PACKER_VERSION: '1.10.0'
@@ -57,7 +62,7 @@ jobs:
   # =============================================================================
   check:
     name: Check Build Requirements
-    runs-on: depot-ubuntu-24.04-16
+    runs-on: ubuntu-latest
     outputs:
       should_build: ${{ steps.check.outputs.should_build }}
       version: ${{ steps.version.outputs.version }}
@@ -110,7 +115,7 @@ jobs:
   # =============================================================================
   build:
     name: Build AMI
-    runs-on: depot-ubuntu-24.04-16
+    runs-on: ubuntu-latest
     needs: check
     if: needs.check.outputs.should_build == 'true'
 
@@ -235,7 +240,7 @@ jobs:
   # =============================================================================
   cleanup:
     name: Cleanup Old AMIs
-    runs-on: depot-ubuntu-24.04-16
+    runs-on: ubuntu-latest
     needs: build
     if: github.event_name == 'schedule' # Only on scheduled runs
 
