@@ -47,10 +47,10 @@ on:
   schedule:
     - cron: '0 2 * * 0'
 
-# Don't cancel in-progress AMI builds - they're expensive and should complete
+# Cancel in-progress builds when new commits are pushed
 concurrency:
   group: ami-build-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION || 'us-east-2' }}
