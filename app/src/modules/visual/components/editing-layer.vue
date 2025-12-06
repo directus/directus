@@ -283,11 +283,12 @@ function usePopoverWidth() {
 						:to="itemRoute"
 						:disabled="isNew"
 						:x-small="mode === 'popover'"
+						:small="mode !== 'popover'"
 						secondary
 						icon
 						rounded
 					>
-						<v-icon name="launch" :small="mode === 'popover'" />
+						<v-icon name="launch" small />
 					</v-button>
 				</template>
 			</template>

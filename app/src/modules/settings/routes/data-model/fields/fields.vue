@@ -68,14 +68,9 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<private-view :title="formatTitle(collection)">
+	<private-view :title="formatTitle(collection)" show-back>
 		<template #headline>
 			<v-breadcrumb :items="[{ name: $t('settings_data_model'), to: '/settings/data-model' }]" />
-		</template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact to="/settings/data-model">
-				<v-icon name="arrow_back" />
-			</v-button>
 		</template>
 
 		<template #actions>
@@ -89,9 +84,10 @@ function discardAndLeave() {
 						class="action-delete"
 						secondary
 						:disabled="!item"
+						small
 						@click="on"
 					>
-						<v-icon name="delete" />
+						<v-icon name="delete" small />
 					</v-button>
 				</template>
 
@@ -115,9 +111,10 @@ function discardAndLeave() {
 				icon
 				:loading="saving"
 				:disabled="hasEdits === false"
+				small
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" />
+				<v-icon name="check" small />
 			</v-button>
 		</template>
 
@@ -146,12 +143,6 @@ function discardAndLeave() {
 			/>
 		</div>
 
-		<template #sidebar>
-			<sidebar-detail icon="info" :title="$t('information')" close>
-				<div v-md="$t('page_help_settings_datamodel_fields')" class="page-description" />
-			</sidebar-detail>
-		</template>
-
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
@@ -179,7 +170,7 @@ function discardAndLeave() {
 
 .collections-item {
 	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .fields {

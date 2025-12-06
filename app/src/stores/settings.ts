@@ -55,4 +55,19 @@ export const useSettingsStore = defineStore({
 			}
 		},
 	},
+	getters: {
+		availableAiProviders(): string[] {
+			const providers: string[] = [];
+
+			if (this.settings?.ai_openai_api_key) {
+				providers.push('openai');
+			}
+
+			if (this.settings?.ai_anthropic_api_key) {
+				providers.push('anthropic');
+			}
+
+			return providers;
+		},
+	},
 });

@@ -226,6 +226,7 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 
 <template>
 	<sidebar-detail
+		id="comments"
 		:title
 		icon="chat_bubble_outline"
 		:badge="!loadingCount && commentsCount > 0 ? abbreviateNumber(commentsCount) : null"

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRevisions } from '@/composables/use-revisions';
-import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 import type { Revision } from '@/types/revisions';
+import ComparisonModal from '@/views/private/components/comparison/comparison-modal.vue';
 import { useGroupable } from '@directus/composables';
 import { ContentVersion, PrimaryKey } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
@@ -78,6 +78,7 @@ defineExpose({
 
 <template>
 	<sidebar-detail
+		id="revisions"
 		:title
 		icon="change_history"
 		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"

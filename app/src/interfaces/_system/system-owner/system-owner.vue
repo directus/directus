@@ -62,8 +62,16 @@ async function reset() {
 
 	<v-drawer v-model="editing" :title="$t('interfaces.system-owner.update')" icon="link" @cancel="reset" @apply="save">
 		<template #actions>
-			<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="!isSaveAllowed" :loading="isSaving" @click="save">
-				<v-icon name="check" />
+			<v-button
+				v-tooltip.bottom="$t('save')"
+				icon
+				rounded
+				small
+				:disabled="!isSaveAllowed"
+				:loading="isSaving"
+				@click="save"
+			>
+				<v-icon name="check" small />
 			</v-button>
 		</template>
 

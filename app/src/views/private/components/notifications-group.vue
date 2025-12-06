@@ -3,25 +3,15 @@ import { useNotificationsStore } from '@/stores/notifications';
 import { toRefs } from 'vue';
 import NotificationItem from './notification-item.vue';
 
-defineProps<{
-	sidebarOpen?: boolean;
-	noSidebar?: boolean;
-}>();
-
 const notificationsStore = useNotificationsStore();
 const queue = toRefs(notificationsStore).queue;
 </script>
 
 <template>
-	<transition-group
-		class="notifications-group"
-		:class="{ 'sidebar-open': sidebarOpen, 'no-sidebar': noSidebar }"
-		name="slide-fade"
-		tag="div"
-	>
+	<transition-group class="notifications-group" name="slide-fade" tag="div">
 		<slot />
 		<notification-item
-			v-for="(notification, index) in queue"
+			v-for="notification in queue"
 			:id="notification.id"
 			:key="notification.id"
 			:title="notification.title"
@@ -30,8 +20,6 @@ const queue = toRefs(notificationsStore).queue;
 			:type="notification.type"
 			:loading="notification.loading"
 			:progress="notification.progress"
-			:tail="index === queue.length - 1"
-			:dense="sidebarOpen === false"
 			:show-close="notification.persist === true && notification.closeable !== false"
 			:always-show-text="notification.alwaysShowText"
 			:dismiss-icon="notification.dismissIcon"
@@ -43,24 +31,14 @@ const queue = toRefs(notificationsStore).queue;
 
 <style lang="scss" scoped>
 .notifications-group {
-	position: fixed;
-	inset-block-end: 24px;
-	inset-inline-end: 12px;
+	position: absolute;
+	inset-block-end: 16px;
+	inset-inline-end: 16px;
 	z-index: 50;
 	display: flex;
 	flex-direction: column;
 	align-items: end;
 	inline-size: 256px;
-
-	&.sidebar-open {
-		inset-block-end: 76px;
-	}
-
-	@media (min-width: 960px) {
-		&:not(.no-sidebar) {
-			inset-block-end: 76px;
-		}
-	}
 }
 
 .notification-item {
@@ -70,10 +48,6 @@ const queue = toRefs(notificationsStore).queue;
 .slide-fade-enter-active {
 	transform: translateX(0) scaleY(1) scaleX(1);
 	opacity: 1;
-}
-
-.slide-fade-leave-active {
-	position: absolute;
 }
 
 .slide-fade-enter-from {

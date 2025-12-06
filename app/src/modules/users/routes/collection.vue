@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import api from '@/api';
-import { useExtension } from '@/composables/use-extension';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { useServerStore } from '@/stores/server';
@@ -34,8 +33,6 @@ const selection = ref<string[]>([]);
 
 const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_users'));
 const { addNewLink } = useLinks();
-
-const currentLayout = useExtension('layout', layout);
 
 const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
 
@@ -182,19 +179,9 @@ function clearFilters() {
 		collection="directus_users"
 		:reset-preset="resetPreset"
 	>
-		<private-view
-			:title="title"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
-		>
+		<private-view :title="title" icon="people_alt">
 			<template v-if="breadcrumb" #headline>
 				<v-breadcrumb :items="breadcrumb" />
-			</template>
-
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded disabled icon secondary>
-					<v-icon name="people_alt" />
-				</v-button>
 			</template>
 
 			<template #actions:prepend>
@@ -202,7 +189,7 @@ function clearFilters() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" collection="directus_users" />
+				<search-input v-model="search" v-model:filter="filter" collection="directus_users" small />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
@@ -213,9 +200,10 @@ function clearFilters() {
 							icon
 							class="action-delete"
 							secondary
+							small
 							@click="on"
 						>
-							<v-icon name="delete" />
+							<v-icon name="delete" small />
 						</v-button>
 					</template>
 
@@ -240,9 +228,10 @@ function clearFilters() {
 					icon
 					secondary
 					:disabled="batchEditAllowed === false"
+					small
 					@click="batchEditActive = true"
 				>
-					<v-icon name="edit" />
+					<v-icon name="edit" small />
 				</v-button>
 
 				<v-button
@@ -251,9 +240,10 @@ function clearFilters() {
 					rounded
 					icon
 					secondary
+					small
 					@click="userInviteModalActive = true"
 				>
-					<v-icon name="person_add" />
+					<v-icon name="person_add" small />
 				</v-button>
 
 				<v-button
@@ -262,8 +252,9 @@ function clearFilters() {
 					icon
 					:to="addNewLink"
 					:disabled="createAllowed === false"
+					small
 				>
-					<v-icon name="add" />
+					<v-icon name="add" small />
 				</v-button>
 			</template>
 
@@ -315,9 +306,6 @@ function clearFilters() {
 			/>
 
 			<template #sidebar>
-				<sidebar-detail icon="info" :title="$t('information')" close>
-					<div v-md="$t('page_help_users_collection')" class="page-description" />
-				</sidebar-detail>
 				<layout-sidebar-detail v-model="layout">
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
 				</layout-sidebar-detail>

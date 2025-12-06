@@ -146,8 +146,8 @@ function saveOperation() {
 		@apply="saveOperation"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="$t('done')" icon rounded :disabled="saveDisabled" @click="saveOperation">
-				<v-icon name="check" />
+			<v-button v-tooltip.bottom="$t('done')" icon rounded :disabled="saveDisabled" small @click="saveOperation">
+				<v-icon name="check" small />
 			</v-button>
 		</template>
 
@@ -208,7 +208,6 @@ function saveOperation() {
 
 .content {
 	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding-bottom);
 
 	.grid {
 		@include mixins.form-grid;
@@ -216,7 +215,7 @@ function saveOperation() {
 }
 
 .v-divider {
-	margin: 52px 0;
+	margin: 20px 0;
 }
 
 .type-label {

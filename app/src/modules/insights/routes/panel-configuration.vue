@@ -133,8 +133,8 @@ const stageChanges = () => {
 		@apply="stageChanges"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="$t('done')" :disabled="!panel.type" icon rounded @click="stageChanges">
-				<v-icon name="check" />
+			<v-button v-tooltip.bottom="$t('done')" :disabled="!panel.type" icon rounded small @click="stageChanges">
+				<v-icon name="check" small />
 			</v-button>
 		</template>
 		<div class="content">
@@ -238,7 +238,7 @@ const stageChanges = () => {
 <style scoped lang="scss">
 .content {
 	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .v-divider {
@@ -267,7 +267,7 @@ const stageChanges = () => {
 		--columns: 2;
 	}
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		--columns: 3;
 	}
 
@@ -359,7 +359,7 @@ const stageChanges = () => {
 		--columns: 2;
 	}
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		--columns: 3;
 	}
 

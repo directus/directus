@@ -148,7 +148,7 @@ limitWritable.value = selectedSize;
 .layout-map {
 	position: relative;
 	inline-size: 100%;
-	block-size: calc(100% - 60px);
+	block-size: 100%;
 }
 
 .center {

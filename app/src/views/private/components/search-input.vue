@@ -138,13 +138,7 @@ function emitValue() {
 			role="search"
 			@click="activate"
 		>
-			<v-icon
-				v-tooltip.bottom="!active ? $t('search') : undefined"
-				name="search"
-				class="icon-search"
-				:clickable="!active"
-				@click="input?.focus()"
-			/>
+			<v-icon small name="search" class="icon-search" :clickable="!active" @click="input?.focus()" />
 			<input
 				ref="input"
 				:value="modelValue"
@@ -165,6 +159,7 @@ function emitValue() {
 			<v-icon
 				v-if="modelValue"
 				v-tooltip.bottom="$t('clear_value')"
+				small
 				clickable
 				class="icon-clear"
 				name="close"
@@ -173,6 +168,7 @@ function emitValue() {
 			<template v-if="showFilter">
 				<v-icon
 					v-tooltip.bottom="$t('filter')"
+					small
 					clickable
 					class="icon-filter"
 					name="filter_list"
@@ -203,22 +199,35 @@ function emitValue() {
 }
 
 .search-input {
+	--button-size: 36px;
+	--search-input-size: calc(var(--button-size) - var(--theme--border-width) * 2);
+	--search-input-radius: calc(var(--button-size) / 2);
+	--icon-size: 18px;
+	--icon-search-padding-left: 7px; // visually center in closed filter
+	--icon-search-padding-right: 4px;
+	--icon-filter-margin-right: 8px;
+
 	display: flex;
 	align-items: center;
-	inline-size: 42px;
-	min-block-size: 42px;
+	inline-size: var(--search-input-size);
+	min-block-size: var(--search-input-size);
 	max-inline-size: 100%;
 	box-sizing: content-box;
 	overflow: hidden;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-radius: calc((42px + var(--theme--border-width) * 2) / 2);
+	border-radius: var(--search-input-radius);
 	transition:
 		inline-size var(--slow) var(--transition),
 		border-end-start-radius var(--fast) var(--transition),
 		border-end-end-radius var(--fast) var(--transition);
 
 	&.show-filter {
-		inline-size: 69px;
+		/* stylelint-disable scss/operator-no-newline-after */
+		inline-size: calc(
+			var(--icon-size) * 2 + var(--icon-search-padding-left) + var(--icon-search-padding-right) +
+				var(--icon-filter-margin-right)
+		);
+		/* stylelint-enable scss/operator-no-newline-after */
 	}
 
 	input {
@@ -262,11 +271,12 @@ function emitValue() {
 	}
 
 	.icon-search {
-		margin: 0 4px 0 9px; // visually center in closed filter
+		margin-block: 0;
+		margin-inline: var(--icon-search-padding-left) var(--icon-search-padding-right);
 	}
 
 	.icon-filter {
-		margin-inline-end: 8px;
+		margin-inline-end: var(--icon-filter-margin-right);
 	}
 
 	&:focus-within,
@@ -293,8 +303,16 @@ function emitValue() {
 	}
 
 	&.active {
-		inline-size: 300px;
+		inline-size: 100%;
 		border-color: var(--theme--form--field--input--border-color-focus);
+
+		@media (width > 400px) {
+			inline-size: 150px;
+		}
+
+		@media (width > 640px) {
+			inline-size: 200px;
+		}
 
 		input {
 			opacity: 1;
@@ -302,14 +320,18 @@ function emitValue() {
 	}
 
 	&.filter-active {
-		inline-size: 200px;
+		inline-size: 100%;
 
 		.icon-filter {
 			--v-icon-color: var(--theme--primary);
 		}
 
-		@media (min-width: 600px) {
-			inline-size: 250px;
+		@media (width > 400px) {
+			inline-size: 150px;
+		}
+
+		@media (width > 640px) {
+			inline-size: 200px;
 		}
 
 		@media (min-width: 960px) {
@@ -353,8 +375,8 @@ function emitValue() {
 	background-color: var(--theme--background-subdued);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-start-end-radius: 0;
-	border-end-end-radius: 22px;
-	border-end-start-radius: 22px;
+	border-end-end-radius: var(--search-input-radius);
+	border-end-start-radius: var(--search-input-radius);
 
 	&.active {
 		border-color: var(--theme--form--field--input--border-color-focus);

@@ -43,7 +43,7 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 </template>
 
 <style lang="scss" scoped>
-.skip-menu {
+.skip-menu.v-list {
 	position: absolute;
 	inline-size: 1px;
 	block-size: 1px;

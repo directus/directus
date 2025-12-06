@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
@@ -17,8 +16,6 @@ const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('di
 
 const { layoutWrapper } = useLayout(layout);
 
-const currentLayout = useExtension('layout', layout);
-
 const roleFilter = ref<Filter | null>(null);
 </script>
 
@@ -35,17 +32,7 @@ const roleFilter = ref<Filter | null>(null);
 		show-select="none"
 		collection="directus_activity"
 	>
-		<private-view
-			:title="$t('activity_feed')"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
-		>
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded disabled icon secondary>
-					<v-icon name="access_time" />
-				</v-button>
-			</template>
-
+		<private-view :title="$t('activity_feed')" icon="access_time">
 			<template #actions:prepend>
 				<component :is="`layout-actions-${layout}`" v-bind="layoutState" />
 			</template>
@@ -75,9 +62,6 @@ const roleFilter = ref<Filter | null>(null);
 			<router-view name="detail" :primary-key="primaryKey" />
 
 			<template #sidebar>
-				<sidebar-detail icon="info" :title="$t('information')" close>
-					<div v-md="$t('page_help_activity_collection')" class="page-description" />
-				</sidebar-detail>
 				<layout-sidebar-detail v-model="layout">
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
 				</layout-sidebar-detail>

@@ -133,8 +133,8 @@ function close() {
 		</div>
 
 		<template #actions>
-			<v-button v-if="openItemLink" v-tooltip.bottom="$t('open')" :to="openItemLink" icon rounded>
-				<v-icon name="launch" />
+			<v-button v-if="openItemLink" v-tooltip.bottom="$t('open')" :to="openItemLink" icon rounded small>
+				<v-icon name="launch" small />
 			</v-button>
 		</template>
 	</v-drawer>
@@ -147,6 +147,6 @@ function close() {
 
 .content {
 	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding);
+	padding-block-end: var(--content-padding);
 }
 </style>

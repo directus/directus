@@ -4,8 +4,8 @@ import { computed } from 'vue';
 
 const props = withDefaults(
 	defineProps<{
-		value: Record<string, any> | Record<string, any>[] | null;
-		format: string | null;
+		value?: Record<string, any> | Record<string, any>[] | null;
+		format?: string | null;
 	}>(),
 	{
 		value: null,

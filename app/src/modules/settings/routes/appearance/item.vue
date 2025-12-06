@@ -8,7 +8,6 @@ import { clone } from 'lodash';
 import { computed, ref, unref } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
-import ThemingInfoSidebarDetail from './components/theming-info-sidebar-detail.vue';
 
 const router = useRouter();
 
@@ -39,7 +38,7 @@ async function save() {
 	if (edits.value === null) return;
 	saving.value = true;
 	await settingsStore.updateSettings(edits.value);
-	await serverStore.hydrate({ isLanguageUpdated: 'default_language' in edits.value });
+	await serverStore.hydrate();
 	edits.value = null;
 	saving.value = false;
 	initialValues.value = clone(settingsStore.settings);
@@ -54,17 +53,12 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<private-view :title="$t('settings_appearance')">
+	<private-view :title="$t('settings_appearance')" icon="palette">
 		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="palette" />
-			</v-button>
-		</template>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="!hasEdits" :loading="saving" @click="save">
-				<v-icon name="check" />
+			<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="!hasEdits" :loading="saving" small @click="save">
+				<v-icon name="check" small />
 			</v-button>
 		</template>
 
@@ -75,10 +69,6 @@ function discardAndLeave() {
 		<div class="settings">
 			<v-form v-model="edits" :initial-values="initialValues" :fields="fields" :primary-key="1" />
 		</div>
-
-		<template #sidebar>
-			<theming-info-sidebar-detail />
-		</template>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>

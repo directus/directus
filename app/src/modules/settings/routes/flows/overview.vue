@@ -133,13 +133,7 @@ function onFlowDrawerCompletion(id: string) {
 </script>
 
 <template>
-	<private-view :title="$t('flows')">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon>
-				<v-icon name="bolt" />
-			</v-button>
-		</template>
-
+	<private-view :title="$t('flows')" icon="bolt">
 		<template #headline>
 			<v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
 		</template>
@@ -154,16 +148,11 @@ function onFlowDrawerCompletion(id: string) {
 				rounded
 				icon
 				:disabled="createAllowed === false"
+				small
 				@click="editFlow = '+'"
 			>
-				<v-icon name="add" />
+				<v-icon name="add" small />
 			</v-button>
-		</template>
-
-		<template #sidebar>
-			<sidebar-detail icon="info" :title="$t('information')" close>
-				<div v-md="$t('page_help_settings_flows_collection')" class="page-description" />
-			</sidebar-detail>
 		</template>
 
 		<v-info v-if="flows.length === 0" icon="bolt" :title="$t('no_flows')" center>
@@ -266,7 +255,6 @@ function onFlowDrawerCompletion(id: string) {
 <style scoped>
 .v-table {
 	padding: var(--content-padding);
-	padding-block-start: 0;
 }
 
 .ctx-toggle {

@@ -88,7 +88,7 @@ function emitClick(event: MouseEvent) {
 		:style="{ '--v-icon-color': color }"
 		@click="emitClick"
 	>
-		<component :is="customIconName" v-if="customIconName" />
+		<component :is="customIconName" v-if="customIconName" class="custom-icon-svg" />
 		<SocialIcon v-else-if="socialIconName" :name="socialIconName" />
 		<i v-else :class="{ filled }" :data-icon="name"></i>
 	</component>
@@ -210,5 +210,10 @@ function emitClick(event: MouseEvent) {
 	&.mirrored {
 		transform: scaleX(-1);
 	}
+}
+
+.custom-icon-svg {
+	inline-size: 100%;
+	block-size: 100%;
 }
 </style>

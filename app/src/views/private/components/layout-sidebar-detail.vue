@@ -28,7 +28,7 @@ const currentLayout = computed(() => selectedLayout.value ?? fallbackLayout.valu
 </script>
 
 <template>
-	<sidebar-detail icon="layers" :title="$t('layout_options')">
+	<sidebar-detail id="layout" icon="layers" :title="$t('layout_options')">
 		<div class="layout-options">
 			<div class="field">
 				<div class="type-label">{{ $t('layout') }}</div>

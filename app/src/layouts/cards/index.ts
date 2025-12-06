@@ -1,3 +1,4 @@
+import { useAiStore } from '@/ai/stores/use-ai';
 import { useRelationsStore } from '@/stores/relations';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
@@ -27,6 +28,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: CardsActions,
 	},
 	setup(props, { emit }) {
+		const aiStore = useAiStore();
+
+		aiStore.onSystemToolResult((tool, input) => {
+			if (tool === 'items' && input.collection === collection.value) {
+				refresh();
+			}
+		});
+
 		const { t, n } = useI18n();
 		const relationsStore = useRelationsStore();
 

@@ -15,8 +15,9 @@ const { saving, readyToSave } = storeToRefs(fieldDetailStore);
 		:loading="saving"
 		icon
 		rounded
+		small
 		@click="$emit('save')"
 	>
-		<v-icon name="check" />
+		<v-icon name="check" small />
 	</v-button>
 </template>

@@ -125,8 +125,8 @@ function useActions() {
 		@apply="save"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="$t('save')" icon rounded :loading="saving" @click="save">
-				<v-icon name="check" />
+			<v-button v-tooltip.bottom="$t('save')" icon rounded small :loading="saving" @click="save">
+				<v-icon name="check" small />
 			</v-button>
 		</template>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ValidationErrors from '@/components/v-form/validation-errors.vue';
+import ValidationErrors from '@/components/v-form/components/validation-errors.vue';
 import FilePreviewReplace from '@/views/private/components/file-preview-replace.vue';
 import type { Field, PrimaryKey } from '@directus/types';
 import { cloneDeep } from 'lodash';

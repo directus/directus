@@ -593,13 +593,7 @@ function discardAndLeave() {
 
 <template>
 	<settings-not-found v-if="!flow && !loading" />
-	<private-view v-else :title="flow?.name ?? $t('loading')">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact to="/settings/flows">
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
-
+	<private-view v-else :title="flow?.name ?? $t('loading')" show-back>
 		<template #headline>
 			<v-breadcrumb :items="[{ name: $t('flows'), to: '/settings/flows' }]" />
 		</template>
@@ -620,13 +614,14 @@ function discardAndLeave() {
 					rounded
 					icon
 					outlined
+					small
 					@click="attemptCancelChanges"
 				>
-					<v-icon name="clear" />
+					<v-icon name="clear" small />
 				</v-button>
 
-				<v-button v-tooltip.bottom="$t('save')" rounded icon :loading="saving" @click="saveChanges">
-					<v-icon name="check" />
+				<v-button v-tooltip.bottom="$t('save')" rounded icon :loading="saving" small @click="saveChanges">
+					<v-icon name="check" small />
 				</v-button>
 			</template>
 
@@ -637,22 +632,19 @@ function discardAndLeave() {
 					rounded
 					icon
 					secondary
+					small
 					@click="confirmDelete = true"
 				>
-					<v-icon name="delete" />
+					<v-icon name="delete" small />
 				</v-button>
 
-				<v-button v-tooltip.bottom="$t('edit_flow')" rounded icon outlined @click="editMode = !editMode">
-					<v-icon name="edit" />
+				<v-button v-tooltip.bottom="$t('edit_flow')" rounded icon outlined small @click="editMode = !editMode">
+					<v-icon name="edit" small />
 				</v-button>
 			</template>
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="$t('information')" close>
-				<div v-md="$t('page_help_settings_flows_item')" class="page-description" />
-			</sidebar-detail>
-
 			<logs-sidebar-detail v-if="flow" :flow="flow" />
 		</template>
 
@@ -795,6 +787,8 @@ function discardAndLeave() {
 	--column-size: 200px;
 	--row-size: 100px;
 	--gap-size: 40px;
+
+	padding-block-start: calc(var(--content-padding) / 2);
 
 	&.center {
 		block-size: calc(100% - 48px - var(--header-bar-height));

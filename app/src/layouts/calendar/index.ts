@@ -1,3 +1,4 @@
+import { useAiStore } from '@/ai/stores/use-ai';
 import api from '@/api';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
 import { useServerStore } from '@/stores/server';
@@ -8,9 +9,9 @@ import { renderDisplayStringTemplate } from '@/utils/render-string-template';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 import { useCollection, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
-import { useAppStore } from '@directus/stores';
 import { Field, Item } from '@directus/types';
 import { getEndpoint, getFieldsFromTemplate, mergeFilters } from '@directus/utils';
 import { Calendar, CssDimValue, EventInput, CalendarOptions as FullCalendarOptions } from '@fullcalendar/core';
@@ -38,12 +39,19 @@ export default defineLayout<LayoutOptions>({
 		actions: CalendarActions,
 	},
 	setup(props, { emit }) {
+		const sidebarStore = useSidebarStore();
+		const aiStore = useAiStore();
+		const { info } = useServerStore();
+
+		aiStore.onSystemToolResult((tool, input) => {
+			if (tool === 'items' && input.collection === collection.value) {
+				refresh();
+			}
+		});
+
 		const { t, n, locale } = useI18n();
 
 		const calendar = ref<Calendar>();
-
-		const appStore = useAppStore();
-		const { info } = useServerStore();
 
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
@@ -216,13 +224,6 @@ export default defineLayout<LayoutOptions>({
 			return options;
 		});
 
-		// Make sure to re-render the size of the calendar when the available space changes due to the
-		// sidebar being manipulated
-		watch(
-			() => appStore.sidebarOpen,
-			() => setTimeout(() => calendar.value?.updateSize(), 300),
-		);
-
 		watch(fullFullCalendarOptions, () => updateCalendar(), { deep: true, immediate: true });
 
 		watch(
@@ -255,6 +256,8 @@ export default defineLayout<LayoutOptions>({
 
 		const isFiltered = computed(() => !!props.filterUser || !!props.search);
 
+		const resize = () => calendar.value?.updateSize();
+
 		return {
 			items,
 			loading,
@@ -280,6 +283,7 @@ export default defineLayout<LayoutOptions>({
 			resetPresetAndRefresh,
 			refresh,
 			download,
+			resize,
 		};
 
 		async function resetPresetAndRefresh() {

@@ -262,8 +262,15 @@ function closeDrawer() {
 			</template>
 
 			<template #actions>
-				<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="isSaveDisabled" @click="saveItem(active!)">
-					<v-icon name="check" />
+				<v-button
+					v-tooltip.bottom="$t('save')"
+					icon
+					rounded
+					small
+					:disabled="isSaveDisabled"
+					@click="saveItem(active!)"
+				>
+					<v-icon name="check" small />
 				</v-button>
 			</template>
 

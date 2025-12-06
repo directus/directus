@@ -9,7 +9,7 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 </script>
 
 <template>
-	<sidebar-detail v-if="manualFlows.length > 0" icon="bolt" :title="$t('flows')">
+	<sidebar-detail v-if="manualFlows.length > 0" id="flows" icon="bolt" :title="$t('flows')">
 		<div class="fields">
 			<div v-for="manualFlow in manualFlows" :key="manualFlow.id" class="field full">
 				<v-button

@@ -9,7 +9,6 @@ import { useInsightsStore } from '@/stores/insights';
 import { pointOnLine } from '@/utils/point-on-line';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
-import { useAppStore } from '@directus/stores';
 import { applyOptionsData } from '@directus/utils';
 import { assign, isEmpty } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
@@ -27,9 +26,7 @@ const props = withDefaults(
 const { panels: panelsInfo } = useExtensions();
 
 const insightsStore = useInsightsStore();
-const appStore = useAppStore();
 
-const { fullScreen } = toRefs(appStore);
 const { loading, errors, data, saving, hasEdits, refreshIntervals, variables } = toRefs(insightsStore);
 
 const zoomToFit = ref(false);
@@ -179,7 +176,6 @@ const discardAndLeave = () => {
 	router.push(unref(leaveTo)!);
 };
 
-const toggleFullScreen = () => (fullScreen.value = !fullScreen.value);
 const toggleZoomToFit = () => (zoomToFit.value = !zoomToFit.value);
 
 const refreshInterval = computed({
@@ -194,13 +190,7 @@ const refreshInterval = computed({
 
 <template>
 	<insights-not-found v-if="!currentDashboard" />
-	<private-view v-else :title="currentDashboard.name">
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded disabled icon secondary>
-				<v-icon :name="currentDashboard.icon" />
-			</v-button>
-		</template>
-
+	<private-view v-else :title="currentDashboard.name" :icon="currentDashboard.icon">
 		<template #headline>
 			<v-breadcrumb :items="[{ name: $t('insights'), to: '/insights' }]" />
 		</template>
@@ -212,10 +202,11 @@ const refreshInterval = computed({
 					class="clear-changes"
 					rounded
 					icon
+					small
 					outlined
 					@click="cancelChanges"
 				>
-					<v-icon name="clear" />
+					<v-icon name="clear" small />
 				</v-button>
 
 				<v-button
@@ -224,8 +215,9 @@ const refreshInterval = computed({
 					icon
 					outlined
 					:to="`/insights/${currentDashboard.id}/+`"
+					small
 				>
-					<v-icon name="add" />
+					<v-icon name="add" small />
 				</v-button>
 
 				<v-button
@@ -233,10 +225,11 @@ const refreshInterval = computed({
 					:disabled="!hasEdits"
 					rounded
 					icon
+					small
 					:loading="saving"
 					@click="saveChanges"
 				>
-					<v-icon name="check" />
+					<v-icon name="check" small />
 				</v-button>
 			</template>
 
@@ -247,22 +240,11 @@ const refreshInterval = computed({
 					class="zoom-to-fit"
 					rounded
 					icon
+					small
 					outlined
 					@click="toggleZoomToFit"
 				>
-					<v-icon name="aspect_ratio" />
-				</v-button>
-
-				<v-button
-					v-tooltip.bottom="$t('full_screen')"
-					:active="fullScreen"
-					class="fullscreen"
-					rounded
-					icon
-					outlined
-					@click="toggleFullScreen"
-				>
-					<v-icon name="fullscreen" />
+					<v-icon name="aspect_ratio" small />
 				</v-button>
 
 				<v-button
@@ -271,19 +253,16 @@ const refreshInterval = computed({
 					rounded
 					icon
 					outlined
+					small
 					:disabled="!updateAllowed"
 					@click="editMode = !editMode"
 				>
-					<v-icon name="edit" />
+					<v-icon name="edit" small />
 				</v-button>
 			</template>
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="$t('information')" close>
-				<div v-md="$t('page_help_insights_dashboard')" class="page-description" />
-			</sidebar-detail>
-
 			<comments-sidebar-detail :key="primaryKey" collection="directus_dashboards" :primary-key="primaryKey" />
 
 			<refresh-sidebar-detail v-model="refreshInterval" @refresh="insightsStore.refresh(primaryKey)" />
@@ -407,7 +386,6 @@ const refreshInterval = computed({
 </template>
 
 <style scoped lang="scss">
-.fullscreen,
 .zoom-to-fit,
 .clear-changes {
 	--v-button-color: var(--theme--foreground);

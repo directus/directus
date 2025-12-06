@@ -233,10 +233,11 @@ function clearFilters() {
 						icon
 						class="action-delete"
 						secondary
+						small
 						:disabled="selection.length === 0"
 						@click="on"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" outline small />
 					</v-button>
 				</template>
 
@@ -260,9 +261,10 @@ function clearFilters() {
 				rounded
 				:disabled="selection.length === 0"
 				secondary
+				small
 				@click="toggleArchive"
 			>
-				<v-icon :name="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'" />
+				<v-icon :name="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'" small />
 			</v-button>
 		</template>
 
@@ -281,6 +283,29 @@ function clearFilters() {
 					<v-list-item-content>{{ $t('archive') }}</v-list-item-content>
 				</v-tab>
 			</v-tabs>
+
+			<v-divider class="nav-divider" />
+
+			<v-list nav>
+				<v-list-item
+					clickable
+					to="/activity"
+					:active="!notificationsDrawerOpen"
+					@click="notificationsDrawerOpen = false"
+				>
+					<v-list-item-icon>
+						<v-icon name="manage_search" />
+					</v-list-item-icon>
+
+					<v-list-item-content>
+						{{ $t('activity') }}
+					</v-list-item-content>
+
+					<v-list-item-hint>
+						<v-icon name="launch" />
+					</v-list-item-hint>
+				</v-list-item>
+			</v-list>
 		</template>
 
 		<template v-if="!loading && !itemCount">
@@ -303,6 +328,8 @@ function clearFilters() {
 			</v-list>
 
 			<div v-else class="notifications-block">
+				<v-divider class="select-all-divider" :class="{ dense: totalPages > 1 }" />
+
 				<v-checkbox
 					class="select-all"
 					:class="{ dense: totalPages > 1 }"
@@ -312,7 +339,7 @@ function clearFilters() {
 					@update:model-value="selectAll"
 				/>
 
-				<v-divider :class="{ dense: totalPages > 1 }" />
+				<v-divider class="select-all-divider" :class="{ dense: totalPages > 1 }" />
 
 				<v-list class="notifications">
 					<v-list-item
@@ -370,12 +397,11 @@ function clearFilters() {
 .item-count {
 	position: relative;
 	display: none;
-	margin: 0 8px;
 	color: var(--theme--foreground-subdued);
 	white-space: nowrap;
 	align-self: center;
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		display: inline;
 	}
 }
@@ -446,7 +472,7 @@ function clearFilters() {
 	}
 }
 
-.v-divider {
+.select-all-divider {
 	margin: 8px 0;
 
 	&.dense {
@@ -467,5 +493,9 @@ function clearFilters() {
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
+}
+
+.nav-divider {
+	margin-inline: 12px;
 }
 </style>

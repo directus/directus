@@ -161,7 +161,7 @@ withDefaults(defineProps<Props>(), {
 		line-height: 2em;
 	}
 
-	@media (min-width: 600px) {
+	@media (min-width: 640px) {
 		.gap {
 			display: inline;
 		}

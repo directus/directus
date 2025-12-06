@@ -1,3 +1,4 @@
+import { useAiStore } from '@/ai/stores/use-ai';
 import { HeaderRaw, Sort } from '@/components/v-table/types';
 import { useAliasFields } from '@/composables/use-alias-fields';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
@@ -33,6 +34,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
 		const fieldsStore = useFieldsStore();
+
+		const aiStore = useAiStore();
+
+		aiStore.onSystemToolResult((tool, input) => {
+			if (tool === 'items' && input.collection === collection.value) {
+				refresh();
+			}
+		});
 
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
