@@ -8,10 +8,9 @@
 #   - Push to main with changes in packer/ directory
 #   - Weekly scheduled build (to pick up security updates)
 #
-# Required Secrets:
-#   - AWS_ACCESS_KEY_ID
-#   - AWS_SECRET_ACCESS_KEY
-#   - AWS_REGION (or defaults to us-east-2)
+# Authentication:
+#   Uses AWS OIDC for keyless authentication (no static credentials)
+#   IAM Role: arn:aws:iam::578313247618:role/github-actions-directus
 # =============================================================================
 
 name: Build Directus AMI
@@ -126,8 +125,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: arn:aws:iam::578313247618:role/github-actions-directus
+          role-session-name: github-actions-packer-build-${{ github.run_id }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Setup Packer
@@ -243,12 +242,16 @@ jobs:
     needs: build
     if: github.event_name == 'schedule' # Only on scheduled runs
 
+    permissions:
+      contents: read
+      id-token: write # For OIDC authentication
+
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: arn:aws:iam::578313247618:role/github-actions-directus
+          role-session-name: github-actions-packer-cleanup-${{ github.run_id }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Cleanup old AMIs
