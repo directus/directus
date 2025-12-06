@@ -6,9 +6,9 @@ module.exports = {
     {
       name: 'directus',
       cwd: '/opt/directus',
-      script: 'pnpm',
-      args: '--filter @directus/api start',
-      interpreter: 'none',
+      script: 'directus/cli.js',
+      args: 'start',
+      interpreter: 'node',
       env: {
         NODE_ENV: 'production',
         PORT: '${DIRECTUS_PORT}',

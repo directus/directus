@@ -1,22 +1,38 @@
 #cloud-config
+# NOTE: The 'ubuntu' password below is used ONLY during Packer build for initial SSH access.
+# The password is LOCKED in the final image by the Packer security hardening provisioner.
+# Production access is SSH key-based only.
 autoinstall:
   version: 1
-  locale: en_US.UTF-8
+  locale: en_US
   keyboard:
     layout: us
-  identity:
-    hostname: directus
-    username: ubuntu
-    password: "$6$rounds=4096$xyz$ghC6tLdxNU4pbF.VS/8kJCwEiK/Z8OBPmrBJ8m/rlVzKM5IXQTwlLBrz3oXQjLN1WJpEJnYx.RqMtg.99dLpe1"
+  
   ssh:
     install-server: true
-    allow-pw: true
+    allow-pw: true  # Required for Packer provisioning, disabled in final image
+  
   storage:
     layout:
-      name: direct
-  packages:
-    - openssh-server
-    - cloud-init
+      name: lvm
+  
   late-commands:
-    - echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/ubuntu
-    - chmod 440 /target/etc/sudoers.d/ubuntu
+    - curtin in-target --target=/target -- sh -c 'echo "ubuntu ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ubuntu'
+    - curtin in-target --target=/target -- chmod 440 /etc/sudoers.d/ubuntu
+  
+  user-data:
+    preserve_hostname: false
+    hostname: directus
+    package_upgrade: true
+    timezone: UTC
+    chpasswd:
+      expire: false
+      list:
+        - ubuntu:ubuntu
+    users:
+      - name: ubuntu
+        passwd: "$6$rounds=4096$randomsalt$h6S3Y8.8bAIVuH7Uqq7.wK2QbU.L3qGQKJFfGvVL6w5F6XhLdW7GlO5KxgC4LQY0V6j.VBKrZk9W4qk3b9Fkx/"
+        groups: [adm, cdrom, dip, plugdev, sudo]
+        lock-passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        shell: /bin/bash

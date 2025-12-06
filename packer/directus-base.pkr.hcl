@@ -3,8 +3,7 @@
 # =============================================================================
 # This template builds images for multiple platforms:
 # - AWS AMI (for EC2 deployment)
-# - VirtualBox OVA (for local testing)
-# - VMware (for local testing or vSphere)
+# - QEMU/KVM qcow2 (for local testing - can convert to VMDK/VDI)
 #
 # All images include:
 # - Node.js 22 (LTS)
@@ -20,10 +19,21 @@
 #   # Build all targets
 #   packer build directus-base.pkr.hcl
 #
-#   # Build specific target
-#   packer build -only="virtualbox-iso.directus-local" directus-base.pkr.hcl
+#   # Build specific target (AWS)
 #   packer build -only="amazon-ebs.directus-base" directus-base.pkr.hcl
-#   packer build -only="vmware-iso.directus-vmware" directus-base.pkr.hcl
+#
+#   # Build local VM (QEMU/KVM)
+#   packer build -only="qemu.directus-local" directus-base.pkr.hcl
+#
+# Converting qcow2 to other formats:
+#   # For VMware (VMDK)
+#   qemu-img convert -f qcow2 -O vmdk output-qemu/directus-local output-qemu/directus-local.vmdk
+#
+#   # For VirtualBox (VDI)
+#   qemu-img convert -f qcow2 -O vdi output-qemu/directus-local output-qemu/directus-local.vdi
+#
+#   # Or run directly with QEMU/KVM
+#   qemu-system-x86_64 -enable-kvm -m 4096 -hda output-qemu/directus-local
 # =============================================================================
 
 packer {
@@ -32,13 +42,9 @@ packer {
       version = ">= 1.2.0"
       source  = "github.com/hashicorp/amazon"
     }
-    virtualbox = {
-      version = ">= 1.0.0"
-      source  = "github.com/hashicorp/virtualbox"
-    }
-    vmware = {
-      version = ">= 1.0.0"
-      source  = "github.com/hashicorp/vmware"
+    qemu = {
+      version = ">= 1.1.0"
+      source  = "github.com/hashicorp/qemu"
     }
   }
 }
@@ -104,14 +110,20 @@ variable "directus_branch" {
 # Ubuntu ISO settings for local builds
 variable "iso_url" {
   type        = string
-  default     = "https://releases.ubuntu.com/24.04/ubuntu-24.04.1-live-server-amd64.iso"
+  default     = "https://releases.ubuntu.com/noble/ubuntu-24.04.3-live-server-amd64.iso"
   description = "Ubuntu ISO URL"
 }
 
 variable "iso_checksum" {
   type        = string
-  default     = "sha256:e240e4b801f7bb68c20d1356b60571d7c4f50a73e6a99da0a634d2dd9168fb1f"
+  default     = "sha256:c3514bf0056180d09376462a7a1b4f213c1d6e8ea67fae5c25099c6fd3d8274b"
   description = "Ubuntu ISO checksum"
+}
+
+variable "headless" {
+  type        = bool
+  default     = true
+  description = "Run QEMU in headless mode (set to false for debugging)"
 }
 
 # =============================================================================
@@ -180,78 +192,49 @@ source "amazon-ebs" "directus-base" {
 }
 
 # =============================================================================
-# Source: VirtualBox ISO (Local Testing)
+# Source: QEMU/KVM (Local Testing - outputs qcow2, convert to VMDK after)
 # =============================================================================
 
-source "virtualbox-iso" "directus-local" {
-  vm_name          = local.image_name
-  guest_os_type    = "Ubuntu_64"
+source "qemu" "directus-local" {
+  vm_name          = "directus-local"
   iso_url          = var.iso_url
   iso_checksum     = var.iso_checksum
   ssh_username     = "ubuntu"
   ssh_password     = "ubuntu"
-  ssh_timeout      = "30m"
+  ssh_timeout      = "60m"
   shutdown_command = "echo 'ubuntu' | sudo -S shutdown -P now"
 
-  cpus      = var.local_cpus
-  memory    = var.local_memory
-  disk_size = var.local_disk_size
+  cpus        = var.local_cpus
+  memory      = var.local_memory
+  disk_size   = "${var.local_disk_size}M"
+  accelerator = "kvm"
+  cpu_model   = "host"
+
+  # Output qcow2 format (convert to VMDK after with qemu-img)
+  format           = "qcow2"
+  output_directory = "${path.root}/output-qemu"
 
   http_directory = "${path.root}/http"
 
+  # Boot command for Ubuntu 24.04 autoinstall (UEFI/GRUB)
+  # 1. Spam spacebar to prevent auto-boot
+  # 2. Press 'e' to edit GRUB entry
+  # 3. Navigate to linux command line and append autoinstall parameter
+  # 4. F10 to boot
   boot_command = [
-    "c<wait>",
-    "linux /casper/vmlinuz --- autoinstall ds='nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/'",
-    "<enter><wait>",
-    "initrd /casper/initrd",
-    "<enter><wait>",
-    "boot",
-    "<enter>"
+    "<spacebar><wait><spacebar><wait><spacebar><wait><spacebar><wait><spacebar><wait>",
+    "e<wait>",
+    "<down><down><down><end>",
+    " autoinstall ds=nocloud-net\\;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
+    "<f10>"
   ]
 
-  boot_wait = "5s"
+  boot_wait = "3s"
 
-  vboxmanage = [
-    ["modifyvm", "{{.Name}}", "--nat-localhostreachable1", "on"],
-  ]
-
-  output_directory = "${path.root}/output-virtualbox"
-  format           = "ova"
-}
-
-# =============================================================================
-# Source: VMware ISO (Local Testing / vSphere)
-# =============================================================================
-
-source "vmware-iso" "directus-vmware" {
-  vm_name          = local.image_name
-  guest_os_type    = "ubuntu-64"
-  iso_url          = var.iso_url
-  iso_checksum     = var.iso_checksum
-  ssh_username     = "ubuntu"
-  ssh_password     = "ubuntu"
-  ssh_timeout      = "30m"
-  shutdown_command = "echo 'ubuntu' | sudo -S shutdown -P now"
-
-  cpus      = var.local_cpus
-  memory    = var.local_memory
-  disk_size = var.local_disk_size
-
-  http_directory = "${path.root}/http"
-
-  boot_command = [
-    "c<wait>",
-    "linux /casper/vmlinuz --- autoinstall ds='nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/'",
-    "<enter><wait>",
-    "initrd /casper/initrd",
-    "<enter><wait>",
-    "boot",
-    "<enter>"
-  ]
-
-  boot_wait = "5s"
-
-  output_directory = "${path.root}/output-vmware"
+  # QEMU-specific settings
+  headless       = var.headless  # Set to false for debugging: packer build -var headless=false
+  disk_interface = "virtio"
+  net_device     = "virtio-net"
 }
 
 # =============================================================================
@@ -259,12 +242,9 @@ source "vmware-iso" "directus-vmware" {
 # =============================================================================
 
 build {
-  name = "directus"
-
   sources = [
     "source.amazon-ebs.directus-base",
-    "source.virtualbox-iso.directus-local",
-    "source.vmware-iso.directus-vmware"
+    "source.qemu.directus-local"
   ]
 
   # Wait for cloud-init to complete (AWS and local)
@@ -294,9 +274,28 @@ build {
   provisioner "shell" {
     inline = [
       "echo '=== Installing Node.js 22 LTS ==='",
-      "curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -",
-      "sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq nodejs",
-      "node --version",
+      
+      "# Clean apt cache to avoid mirror issues",
+      "sudo rm -rf /var/lib/apt/lists/*",
+      "sudo apt-get clean",
+      
+      "# Install NodeSource GPG key and repository",
+      "sudo mkdir -p /etc/apt/keyrings",
+      "curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg",
+      "echo 'deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main' | sudo tee /etc/apt/sources.list.d/nodesource.list",
+      
+      "# Update and install Node.js from NodeSource",
+      "sudo apt-get update",
+      "sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs",
+      
+      "# Verify correct version installed",
+      "NODE_VERSION=$(node --version)",
+      "echo \"Node.js version: $NODE_VERSION\"",
+      "if ! echo \"$NODE_VERSION\" | grep -q '^v22'; then",
+      "  echo 'ERROR: Node.js 22 was not installed correctly!'",
+      "  exit 1",
+      "fi",
+      
       "npm --version"
     ]
   }
@@ -353,7 +352,30 @@ build {
       "echo '=== Creating directories ==='",
       "mkdir -p /opt/directus/uploads",
       "mkdir -p /opt/directus/extensions",
-      "mkdir -p /opt/directus/logs"
+      "mkdir -p /opt/directus/logs",
+
+      "echo '=== Creating default .env template ==='",
+      "cat > /opt/directus/.env.example << 'ENVFILE'",
+      "# Directus Configuration",
+      "HOST=0.0.0.0",
+      "PORT=8055",
+      "PUBLIC_URL=http://localhost:8055",
+      "",
+      "# Database (change for production)",
+      "DB_CLIENT=sqlite3",
+      "DB_FILENAME=/opt/directus/database.sqlite",
+      "",
+      "# Security (generate new values for production!)",
+      "SECRET=change-me-to-a-random-string",
+      "KEY=change-me-to-another-random-string",
+      "",
+      "# Admin Account",
+      "ADMIN_EMAIL=admin@example.com",
+      "ADMIN_PASSWORD=change-me",
+      "",
+      "# Telemetry",
+      "TELEMETRY=false",
+      "ENVFILE"
     ]
   }
 
@@ -448,15 +470,15 @@ build {
     ]
   }
 
-  # Upload local configuration script (VirtualBox/VMware)
+  # Upload local configuration script (QEMU/KVM)
   provisioner "file" {
-    only        = ["virtualbox-iso.directus-local", "vmware-iso.directus-vmware"]
+    only        = ["qemu.directus-local"]
     source      = "${path.root}/files/configure-local.sh"
     destination = "/tmp/configure-local.sh"
   }
 
   provisioner "shell" {
-    only = ["virtualbox-iso.directus-local", "vmware-iso.directus-vmware"]
+    only = ["qemu.directus-local"]
     inline = [
       "sudo mv /tmp/configure-local.sh /usr/local/bin/configure-local.sh",
       "sudo chmod +x /usr/local/bin/configure-local.sh"
@@ -469,6 +491,21 @@ build {
       "echo '=== Setting up PM2 startup ==='",
       "sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u $(whoami) --hp $HOME || true",
       "sudo systemctl enable pm2-$(whoami) || true"
+    ]
+  }
+
+  # Security hardening
+  provisioner "shell" {
+    inline = [
+      "echo '=== Security hardening ==='",
+      
+      "# Lock the ubuntu password - SSH keys only",
+      "sudo passwd -l ubuntu",
+      "echo 'Password authentication disabled for ubuntu user'",
+      
+      "# Ensure SSH password auth is disabled",
+      "sudo sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config",
+      "sudo sed -i 's/^#*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config"
     ]
   }
 
@@ -490,7 +527,10 @@ build {
       "sudo find /var/log -type f -name '*.log' -exec truncate -s 0 {} \\; || true",
 
       "# Clear bash history",
-      "rm -f ~/.bash_history || true"
+      "rm -f ~/.bash_history || true",
+      
+      "# Clear SSH host keys (regenerated on first boot)",
+      "sudo rm -f /etc/ssh/ssh_host_*"
     ]
   }
 

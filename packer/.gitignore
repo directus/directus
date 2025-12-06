@@ -1,6 +1,5 @@
 # Packer output directories
-output-virtualbox/
-output-vmware/
+output-qemu/
 manifest.json
 *.log
 
