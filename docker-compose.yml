@@ -173,3 +173,17 @@ services:
     ports:
       - 1025:1025
       - 1080:1080
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - COLLECTOR_OTLP_HTTP_CORS_ALLOWED_ORIGINS=http://localhost:8080,http://localhost:5173
+      - COLLECTOR_OTLP_HTTP_CORS_ALLOWED_HEADERS=content-type
+    command:
+      - "--collector.otlp.http.cors.allowed-origins=http://localhost:8080,http://localhost:5173"
+      - "--collector.otlp.http.cors.allowed-headers=content-type"
+    ports:
+      - 16686:16686 # Web UI
+      - 4317:4317   # OTLP gRPC
+      - 4318:4318   # OTLP HTTP
