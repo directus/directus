@@ -61,7 +61,7 @@ variable "aws_region" {
 
 variable "aws_instance_type" {
   type        = string
-  default     = "t3.medium"
+  default     = "c6i.xlarge"
   description = "AWS instance type for the build"
 }
 
