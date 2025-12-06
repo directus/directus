@@ -150,6 +150,8 @@ jobs:
           packer build \
             -var "aws_region=${{ env.AWS_REGION }}" \
             -var "build_version=${{ needs.check.outputs.version }}" \
+            -var "directus_repo=https://github.com/${{ github.repository }}.git" \
+            -var "directus_branch=${{ github.ref_name }}" \
             -color=false \
             directus-base.pkr.hcl
         env:
