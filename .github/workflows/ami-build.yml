@@ -29,7 +29,7 @@ on:
         required: false
         default: false
 
-  # Automatic trigger on packer changes
+  # Automatic trigger on packer changes | <TRIGGER>
   push:
     branches:
       - main
