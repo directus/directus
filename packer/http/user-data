@@ -1,0 +1,22 @@
+#cloud-config
+autoinstall:
+  version: 1
+  locale: en_US.UTF-8
+  keyboard:
+    layout: us
+  identity:
+    hostname: directus
+    username: ubuntu
+    password: "$6$rounds=4096$xyz$ghC6tLdxNU4pbF.VS/8kJCwEiK/Z8OBPmrBJ8m/rlVzKM5IXQTwlLBrz3oXQjLN1WJpEJnYx.RqMtg.99dLpe1"
+  ssh:
+    install-server: true
+    allow-pw: true
+  storage:
+    layout:
+      name: direct
+  packages:
+    - openssh-server
+    - cloud-init
+  late-commands:
+    - echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/ubuntu
+    - chmod 440 /target/etc/sudoers.d/ubuntu

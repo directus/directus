@@ -141,13 +141,14 @@ jobs:
 
       - name: Validate Packer template
         working-directory: packer
-        run: packer validate directus-base.pkr.hcl
+        run: packer validate -only="amazon-ebs.directus-base" directus-base.pkr.hcl
 
       - name: Build AMI
         id: build
         working-directory: packer
         run: |
           packer build \
+            -only="amazon-ebs.directus-base" \
             -var "aws_region=${{ env.AWS_REGION }}" \
             -var "build_version=${{ needs.check.outputs.version }}" \
             -var "directus_repo=https://github.com/${{ github.repository }}.git" \
