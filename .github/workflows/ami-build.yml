@@ -111,7 +111,7 @@ jobs:
 
     permissions:
       contents: read
-      id-token: write  # For OIDC authentication (if configured)
+      id-token: write # For OIDC authentication (if configured)
 
     steps:
       - name: Checkout repository
@@ -232,7 +232,7 @@ jobs:
     name: Cleanup Old AMIs
     runs-on: ubuntu-latest
     needs: build
-    if: github.event_name == 'schedule'  # Only on scheduled runs
+    if: github.event_name == 'schedule' # Only on scheduled runs
 
     steps:
       - name: Configure AWS credentials
