@@ -160,6 +160,25 @@ jobs:
           PACKER_LOG: 1
           PACKER_LOG_PATH: packer.log
 
+      # Cleanup orphaned Packer instances on failure/cancellation
+      - name: Cleanup orphaned EC2 instances
+        if: cancelled() || failure()
+        run: |
+          echo "Cleaning up orphaned Packer EC2 instances..."
+          INSTANCE_IDS=$(aws ec2 describe-instances \
+            --region ${{ env.AWS_REGION }} \
+            --filters "Name=tag:ManagedBy,Values=packer" \
+                      "Name=instance-state-name,Values=pending,running,stopping,stopped" \
+            --query 'Reservations[*].Instances[*].InstanceId' \
+            --output text)
+          
+          if [ -n "$INSTANCE_IDS" ]; then
+            echo "Terminating instances: $INSTANCE_IDS"
+            aws ec2 terminate-instances --instance-ids $INSTANCE_IDS
+          else
+            echo "No orphaned instances found"
+          fi
+
       - name: Extract AMI ID from manifest
         id: ami
         working-directory: packer
