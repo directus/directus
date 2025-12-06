@@ -1,7 +1,7 @@
 # =============================================================================
 # GitHub Actions: Build Directus Base AMI
 # =============================================================================
-# This workflow builds the F2F Directus base AMI using Packer.
+# This workflow builds the Directus base AMI using Packer.
 #
 # Triggers:
 #   - Manual dispatch (workflow_dispatch)
@@ -49,7 +49,7 @@ on:
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION || 'us-east-2' }}
-  PACKER_VERSION: '1.10.0'
+  PACKER_VERSION: '1.12.0'
 
 jobs:
   # =============================================================================
@@ -162,12 +162,14 @@ jobs:
         id: ami
         working-directory: packer
         run: |
+          # Extract AMI ID from the artifact_id (format: region:ami-xxx)
           AMI_ID=$(jq -r '.builds[-1].artifact_id | split(":")[1]' manifest.json)
-          AMI_NAME=$(jq -r '.builds[-1].custom_data.version' manifest.json)
+          # Get the build version from our input/computed version
+          AMI_VERSION="${{ needs.check.outputs.version }}"
           echo "ami_id=$AMI_ID" >> $GITHUB_OUTPUT
-          echo "ami_name=$AMI_NAME" >> $GITHUB_OUTPUT
+          echo "ami_version=$AMI_VERSION" >> $GITHUB_OUTPUT
           echo "AMI ID: $AMI_ID"
-          echo "AMI Name: $AMI_NAME"
+          echo "AMI Version: $AMI_VERSION"
 
       - name: Upload build logs
         if: always()
@@ -196,23 +198,27 @@ jobs:
 
       - name: Update SSM Parameter with latest AMI ID
         run: |
+          # Use configurable prefix (default: directus) for SSM parameters
+          SSM_PREFIX="${SSM_PARAMETER_PREFIX:-directus}"
+          
           aws ssm put-parameter \
-            --name "/f2f/ami/directus-base/latest" \
+            --name "/${SSM_PREFIX}/ami/directus-base/latest" \
             --type "String" \
             --value "${{ steps.ami.outputs.ami_id }}" \
             --overwrite \
-            --description "Latest F2F Directus base AMI ID (built ${{ needs.check.outputs.version }})"
+            --description "Latest Directus base AMI ID (built ${{ needs.check.outputs.version }})"
 
           # Also store versioned parameter
           aws ssm put-parameter \
-            --name "/f2f/ami/directus-base/${{ needs.check.outputs.version }}" \
+            --name "/${SSM_PREFIX}/ami/directus-base/${{ needs.check.outputs.version }}" \
             --type "String" \
             --value "${{ steps.ami.outputs.ami_id }}" \
             --overwrite \
-            --description "F2F Directus base AMI version ${{ needs.check.outputs.version }}"
+            --description "Directus base AMI version ${{ needs.check.outputs.version }}"
 
       - name: Create summary
         run: |
+          SSM_PREFIX="${SSM_PARAMETER_PREFIX:-directus}"
           echo "## AMI Build Complete 🎉" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
@@ -226,7 +232,7 @@ jobs:
           echo "\`\`\`hcl" >> $GITHUB_STEP_SUMMARY
           echo "# In Terraform, reference via SSM Parameter:" >> $GITHUB_STEP_SUMMARY
           echo "data \"aws_ssm_parameter\" \"directus_ami\" {" >> $GITHUB_STEP_SUMMARY
-          echo "  name = \"/f2f/ami/directus-base/latest\"" >> $GITHUB_STEP_SUMMARY
+          echo "  name = \"/${SSM_PREFIX}/ami/directus-base/latest\"" >> $GITHUB_STEP_SUMMARY
           echo "}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "# Or use directly:" >> $GITHUB_STEP_SUMMARY
@@ -258,11 +264,14 @@ jobs:
         run: |
           # Keep the 5 most recent AMIs, delete older ones
           echo "Cleaning up old AMIs (keeping 5 most recent)..."
+          
+          # Use configurable AMI name prefix (default: directus-base)
+          AMI_NAME_PREFIX="${AMI_NAME_PREFIX:-directus-base}"
 
           # Get all AMIs sorted by creation date
           AMIS=$(aws ec2 describe-images \
             --owners self \
-            --filters "Name=name,Values=f2f-directus-base-*" \
+            --filters "Name=name,Values=${AMI_NAME_PREFIX}-*" \
             --query 'Images | sort_by(@, &CreationDate) | [:-5].[ImageId, Name, CreationDate]' \
             --output text)
 
@@ -275,8 +284,8 @@ jobs:
           echo "$AMIS"
 
           # Deregister old AMIs and delete snapshots
-          echo "$AMIS" | while read AMI_ID NAME CREATED; do
-            if [[ -n "$AMI_ID" ]]; then
+          while IFS=$'\t' read -r AMI_ID NAME CREATED; do
+            if [[ -n "$AMI_ID" && "$AMI_ID" != "None" ]]; then
               echo "Deregistering $AMI_ID ($NAME, created $CREATED)..."
 
               # Get associated snapshots
@@ -296,6 +305,6 @@ jobs:
                 fi
               done
             fi
-          done
+          done <<< "$AMIS"
 
           echo "Cleanup complete"

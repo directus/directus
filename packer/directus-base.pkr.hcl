@@ -353,6 +353,7 @@ build {
       "mkdir -p /opt/directus/uploads",
       "mkdir -p /opt/directus/extensions",
       "mkdir -p /opt/directus/logs",
+      "sudo mkdir -p /etc/directus",
 
       "echo '=== Creating default .env template ==='",
       "cat > /opt/directus/.env.example << 'ENVFILE'",

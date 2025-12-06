@@ -17,10 +17,15 @@ server {
         allow all;
     }
 
-    # Redirect all other HTTP to HTTPS (after SSL is configured)
+    # NOTE: This configuration serves HTTP traffic before SSL is configured.
+    # Security implications:
+    # - Traffic is unencrypted until certbot configures HTTPS
+    # - certbot will automatically add HTTPS redirect after SSL setup
+    # - For production, ensure DNS is ready before instance launch to minimize HTTP-only window
+    # - Consider using AWS ALB/ELB with ACM certificates for immediate HTTPS
     location / {
         # Before SSL: proxy to Directus
-        # After SSL: this block will be replaced by certbot
+        # After SSL: this block will be replaced by certbot with HTTPS redirect
         proxy_pass http://directus_backend;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
