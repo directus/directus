@@ -38,6 +38,12 @@ on:
       - 'packer/**'
       - '.github/workflows/build-ami.yml'
 
+  # PR trigger for testing (validate only, no build)
+  pull_request:
+    paths:
+      - 'packer/**'
+      - '.github/workflows/build-ami.yml'
+
   # Weekly rebuild for security updates (Sundays at 2 AM UTC)
   schedule:
     - cron: '0 2 * * 0'
@@ -78,7 +84,7 @@ jobs:
             echo "Scheduled weekly rebuild"
           else
             # Check if packer files changed
-            if git diff --name-only HEAD~1 HEAD | grep -qE '^packer/|^\.github/workflows/build-ami\.yml'; then
+            if git diff --name-only HEAD~1 HEAD | grep -qE '^packer/|^\\.github/workflows/build-ami\\.yml'; then
               echo "should_build=true" >> $GITHUB_OUTPUT
               echo "Packer files changed"
             else
