@@ -1,0 +1,69 @@
+// PM2 Ecosystem Configuration for Directus
+// Variables to be substituted at runtime: All environment variables
+
+module.exports = {
+  apps: [
+    {
+      name: 'directus',
+      cwd: '/opt/directus',
+      script: 'pnpm',
+      args: '--filter @directus/api start',
+      interpreter: 'none',
+      env: {
+        NODE_ENV: 'production',
+        PORT: '${DIRECTUS_PORT}',
+
+        // Database
+        DB_CLIENT: 'pg',
+        DB_HOST: '${DB_HOST}',
+        DB_PORT: '${DB_PORT}',
+        DB_DATABASE: '${DB_NAME}',
+        DB_USER: '${DB_USER}',
+        DB_PASSWORD: '${DB_PASSWORD}',
+
+        // Security
+        KEY: '${DIRECTUS_KEY}',
+        SECRET: '${DIRECTUS_SECRET}',
+
+        // Admin user (only used on first run)
+        ADMIN_EMAIL: '${ADMIN_EMAIL}',
+        ADMIN_PASSWORD: '${ADMIN_PASSWORD}',
+
+        // Server
+        PUBLIC_URL: 'https://${FQDN}',
+
+        // Cache & Performance
+        CACHE_ENABLED: 'true',
+        CACHE_AUTO_PURGE: 'true',
+        CACHE_STORE: 'memory',
+
+        // Logging
+        LOG_LEVEL: 'info',
+        LOG_STYLE: 'pretty',
+
+        // Extensions
+        EXTENSIONS_PATH: '/opt/directus/extensions',
+        EXTENSIONS_AUTO_RELOAD: 'false',
+
+        // File storage
+        STORAGE_LOCATIONS: 'local',
+        STORAGE_LOCAL_DRIVER: 'local',
+        STORAGE_LOCAL_ROOT: '/opt/directus/uploads',
+
+        // Rate limiting
+        RATE_LIMITER_ENABLED: 'true',
+        RATE_LIMITER_STORE: 'memory',
+        RATE_LIMITER_POINTS: '50',
+        RATE_LIMITER_DURATION: '1',
+      },
+      instances: 1,
+      autorestart: true,
+      watch: false,
+      max_memory_restart: '1G',
+      error_file: '/opt/directus/logs/error.log',
+      out_file: '/opt/directus/logs/out.log',
+      log_file: '/opt/directus/logs/combined.log',
+      time: true,
+    },
+  ],
+};

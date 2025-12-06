@@ -1,14 +1,16 @@
 # =============================================================================
 # Packer Template: F2F Directus Base AMI
 # =============================================================================
-# This template builds an AMI with all dependencies pre-installed:
-# - Docker & Docker Compose
-# - Nginx
+# This template builds an AMI with Directus installed natively (not Docker):
+# - Node.js 22 (LTS)
+# - pnpm package manager
+# - PM2 process manager
+# - Nginx (reverse proxy)
 # - Certbot (Let's Encrypt)
 # - CloudWatch Agent
 # - AWS CLI v2
 # - PostgreSQL client
-# - Common system utilities
+# - F2F Directus fork pre-cloned and built
 #
 # Tenant-specific configuration is applied at runtime via user-data.
 # =============================================================================
@@ -18,10 +20,6 @@ packer {
     amazon = {
       version = ">= 1.2.0"
       source  = "github.com/hashicorp/amazon"
-    }
-    ansible = {
-      version = ">= 1.1.0"
-      source  = "github.com/hashicorp/ansible"
     }
   }
 }
@@ -38,8 +36,8 @@ variable "aws_region" {
 
 variable "instance_type" {
   type        = string
-  default     = "t3.small"
-  description = "Instance type for the build"
+  default     = "t3.medium"
+  description = "Instance type for the build (needs memory for pnpm install)"
 }
 
 variable "ami_name_prefix" {
@@ -50,7 +48,7 @@ variable "ami_name_prefix" {
 
 variable "ami_description" {
   type        = string
-  default     = "F2F Directus base image with Docker, Nginx, Certbot, and CloudWatch Agent"
+  default     = "F2F Directus base image with Node.js, Nginx, Certbot, and CloudWatch Agent"
   description = "Description for the AMI"
 }
 
@@ -76,6 +74,18 @@ variable "build_version" {
   type        = string
   default     = "latest"
   description = "Version tag for the AMI (typically git SHA or semantic version)"
+}
+
+variable "directus_repo" {
+  type        = string
+  default     = "https://github.com/Face-to-Face-IT/directus.git"
+  description = "Git repository URL for Directus fork"
+}
+
+variable "directus_branch" {
+  type        = string
+  default     = "main"
+  description = "Git branch to checkout"
 }
 
 # =============================================================================
@@ -139,16 +149,16 @@ source "amazon-ebs" "directus-base" {
   # Launch block device mapping
   launch_block_device_mappings {
     device_name           = "/dev/sda1"
-    volume_size           = 20
+    volume_size           = 30
     volume_type           = "gp3"
     delete_on_termination = true
   }
 
   # Wait for AMI to be available
-  ami_regions = []  # Only keep in build region
+  ami_regions = [] # Only keep in build region
 
   # Timeout settings
-  ssh_timeout           = "10m"
+  ssh_timeout = "10m"
   aws_polling {
     delay_seconds = 30
     max_attempts  = 60
@@ -182,7 +192,27 @@ build {
       "echo '=== Installing base packages ==='",
       "sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq \\",
       "  ca-certificates curl gnupg lsb-release git jq ufw unzip htop vim \\",
-      "  postgresql-client"
+      "  build-essential python3 postgresql-client"
+    ]
+  }
+
+  # Install Node.js 22 LTS
+  provisioner "shell" {
+    inline = [
+      "echo '=== Installing Node.js 22 LTS ==='",
+      "curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -",
+      "sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq nodejs",
+      "node --version",
+      "npm --version"
+    ]
+  }
+
+  # Install pnpm
+  provisioner "shell" {
+    inline = [
+      "echo '=== Installing pnpm ==='",
+      "sudo npm install -g pnpm@10",
+      "pnpm --version"
     ]
   }
 
@@ -198,48 +228,38 @@ build {
     ]
   }
 
-  # Install Docker
+  # Install PM2 for process management
   provisioner "shell" {
     inline = [
-      "echo '=== Installing Docker ==='",
-
-      "# Remove old versions",
-      "for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do",
-      "  sudo apt-get remove -y $pkg 2>/dev/null || true",
-      "done",
-
-      "# Add Docker GPG key",
-      "sudo install -m 0755 -d /etc/apt/keyrings",
-      "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/keyrings/docker.asc > /dev/null",
-      "sudo chmod a+r /etc/apt/keyrings/docker.asc",
-
-      "# Add Docker repository",
-      "echo \"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable\" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
-
-      "# Install Docker",
-      "sudo apt-get update -qq",
-      "sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq \\",
-      "  docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin",
-
-      "# Enable and start Docker",
-      "sudo systemctl enable docker",
-      "sudo systemctl start docker",
-
-      "# Add ubuntu user to docker group",
-      "sudo usermod -aG docker ubuntu",
-
-      "# Verify Docker",
-      "sudo docker --version",
-      "sudo docker compose version"
+      "echo '=== Installing PM2 ==='",
+      "sudo npm install -g pm2",
+      "pm2 --version"
     ]
   }
 
-  # Pre-pull Directus image (saves time during tenant deployment)
+  # Clone and build Directus
   provisioner "shell" {
+    environment_vars = [
+      "DIRECTUS_REPO=${var.directus_repo}",
+      "DIRECTUS_BRANCH=${var.directus_branch}"
+    ]
     inline = [
-      "echo '=== Pre-pulling Directus Docker image ==='",
-      "sudo docker pull directus/directus:latest",
-      "sudo docker pull postgres:15-alpine"
+      "echo '=== Cloning F2F Directus ==='",
+      "sudo mkdir -p /opt/directus",
+      "sudo chown ubuntu:ubuntu /opt/directus",
+      "git clone --depth 1 --branch $DIRECTUS_BRANCH $DIRECTUS_REPO /opt/directus",
+
+      "echo '=== Installing dependencies ==='",
+      "cd /opt/directus",
+      "pnpm install",
+
+      "echo '=== Building Directus ==='",
+      "pnpm build",
+
+      "echo '=== Creating directories ==='",
+      "mkdir -p /opt/directus/uploads",
+      "mkdir -p /opt/directus/extensions",
+      "mkdir -p /opt/directus/logs"
     ]
   }
 
@@ -280,15 +300,6 @@ build {
     ]
   }
 
-  # Create Directus directory structure
-  provisioner "shell" {
-    inline = [
-      "echo '=== Creating Directus directory structure ==='",
-      "sudo mkdir -p /opt/directus/{uploads,extensions,database}",
-      "sudo chown -R ubuntu:ubuntu /opt/directus"
-    ]
-  }
-
   # Upload Nginx template (will be configured at runtime)
   provisioner "file" {
     source      = "${path.root}/files/nginx-directus.conf.template"
@@ -315,6 +326,18 @@ build {
     ]
   }
 
+  # Upload PM2 ecosystem config template
+  provisioner "file" {
+    source      = "${path.root}/files/ecosystem.config.js.template"
+    destination = "/tmp/ecosystem.config.js.template"
+  }
+
+  provisioner "shell" {
+    inline = [
+      "sudo mv /tmp/ecosystem.config.js.template /opt/directus/"
+    ]
+  }
+
   # Upload tenant configuration script
   provisioner "file" {
     source      = "${path.root}/files/configure-tenant.sh"
@@ -328,6 +351,15 @@ build {
     ]
   }
 
+  # Create systemd service for PM2
+  provisioner "shell" {
+    inline = [
+      "echo '=== Setting up PM2 startup ==='",
+      "sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu",
+      "sudo systemctl enable pm2-ubuntu"
+    ]
+  }
+
   # Clean up
   provisioner "shell" {
     inline = [
@@ -337,6 +369,9 @@ build {
       "sudo rm -rf /var/lib/apt/lists/*",
       "sudo rm -rf /tmp/*",
       "sudo rm -rf /var/tmp/*",
+
+      "# Clear pnpm cache (keep node_modules)",
+      "pnpm store prune || true",
 
       "# Clear logs",
       "sudo journalctl --vacuum-time=1d",

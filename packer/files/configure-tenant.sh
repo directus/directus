@@ -3,7 +3,7 @@
 # Tenant Configuration Script
 # =============================================================================
 # This script is called at EC2 instance launch via user-data to configure
-# the tenant-specific settings. The AMI already has all dependencies installed.
+# the tenant-specific settings. The AMI already has Directus built and ready.
 #
 # Required environment variables (passed via user-data):
 #   TENANT_NAME         - Tenant identifier (e.g., "staging")
@@ -124,88 +124,34 @@ envsubst '${NAME_PREFIX} ${TENANT_NAME}' < /opt/aws/amazon-cloudwatch-agent/etc/
 echo "  CloudWatch Agent started"
 
 # =============================================================================
-# Configure Directus
+# Configure Directus with PM2
 # =============================================================================
 echo "=== Configuring Directus ==="
 
-# Create docker-compose.yml
-cat > /opt/directus/docker-compose.yml << EOF
-services:
-  directus:
-    image: directus/directus:latest
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:${DIRECTUS_PORT}:8055"
-    volumes:
-      - ./uploads:/directus/uploads
-      - ./extensions:/directus/extensions
-      - ./database:/directus/database
-      - ./logs:/directus/logs
-    environment:
-      # Database
-      DB_CLIENT: "pg"
-      DB_HOST: "${DB_HOST}"
-      DB_PORT: "${DB_PORT}"
-      DB_DATABASE: "${DB_NAME}"
-      DB_USER: "${DB_USER}"
-      DB_PASSWORD: "${DB_PASSWORD}"
+# Export all variables for envsubst
+export DIRECTUS_PORT DB_HOST DB_PORT DB_NAME DB_USER DB_PASSWORD
+export DIRECTUS_KEY DIRECTUS_SECRET ADMIN_EMAIL ADMIN_PASSWORD FQDN
 
-      # Security
-      KEY: "${DIRECTUS_KEY}"
-      SECRET: "${DIRECTUS_SECRET}"
+# Create ecosystem.config.js from template
+envsubst < /opt/directus/ecosystem.config.js.template > /opt/directus/ecosystem.config.js
 
-      # Admin user
-      ADMIN_EMAIL: "${ADMIN_EMAIL}"
-      ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
-
-      # Server
-      PUBLIC_URL: "https://${FQDN}"
-
-      # Cache & Performance
-      CACHE_ENABLED: "true"
-      CACHE_AUTO_PURGE: "true"
-      CACHE_STORE: "memory"
-
-      # Logging
-      LOG_LEVEL: "info"
-      LOG_STYLE: "pretty"
-
-      # Extensions
-      EXTENSIONS_PATH: "/directus/extensions"
-      EXTENSIONS_AUTO_RELOAD: "false"
-
-      # File storage
-      STORAGE_LOCATIONS: "local"
-      STORAGE_LOCAL_DRIVER: "local"
-      STORAGE_LOCAL_ROOT: "/directus/uploads"
-
-      # Rate limiting
-      RATE_LIMITER_ENABLED: "true"
-      RATE_LIMITER_STORE: "memory"
-      RATE_LIMITER_POINTS: "50"
-      RATE_LIMITER_DURATION: "1"
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8055/server/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
-EOF
-
-# Create logs directory
-mkdir -p /opt/directus/logs
+# Set ownership
 chown -R ubuntu:ubuntu /opt/directus
 
-echo "  Docker Compose configured"
+echo "  PM2 ecosystem configured"
 
 # =============================================================================
-# Start Directus
+# Start Directus with PM2
 # =============================================================================
 echo "=== Starting Directus ==="
 
 cd /opt/directus
-docker compose pull
-docker compose up -d
+
+# Start with PM2 as ubuntu user
+sudo -u ubuntu pm2 start ecosystem.config.js
+
+# Save PM2 process list for startup
+sudo -u ubuntu pm2 save
 
 # Wait for Directus to be healthy
 echo "  Waiting for Directus to start..."
@@ -298,6 +244,36 @@ AWS_REGION='$AWS_REGION'" /usr/local/bin/db-backup.sh
 fi
 
 # =============================================================================
+# Create update script
+# =============================================================================
+echo "=== Creating update script ==="
+
+cat > /usr/local/bin/update-directus.sh << 'UPDATE_EOF'
+#!/bin/bash
+set -euo pipefail
+
+echo "=== Updating Directus ==="
+cd /opt/directus
+
+# Pull latest changes
+git pull origin main
+
+# Install dependencies
+pnpm install
+
+# Build
+pnpm build
+
+# Restart PM2
+pm2 restart directus
+
+echo "=== Update complete ==="
+UPDATE_EOF
+
+chmod +x /usr/local/bin/update-directus.sh
+chown ubuntu:ubuntu /usr/local/bin/update-directus.sh
+
+# =============================================================================
 # Final status
 # =============================================================================
 echo ""
@@ -307,8 +283,12 @@ echo "  Directus URL: https://${FQDN}"
 echo "  Admin Email: ${ADMIN_EMAIL}"
 echo ""
 echo "  Check status with:"
-echo "    docker compose -f /opt/directus/docker-compose.yml ps"
+echo "    pm2 status"
+echo "    pm2 logs directus"
 echo "    curl -s http://localhost:${DIRECTUS_PORT}/server/health"
+echo ""
+echo "  Update Directus with:"
+echo "    sudo -u ubuntu /usr/local/bin/update-directus.sh"
 echo ""
 
 # Signal success
