@@ -1,0 +1,89 @@
+{
+  "agent": {
+    "metrics_collection_interval": 60,
+    "run_as_user": "root"
+  },
+  "logs": {
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          {
+            "file_path": "/var/log/syslog",
+            "log_group_name": "/aws/ec2/${NAME_PREFIX}-${TENANT_NAME}/syslog",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 30
+          },
+          {
+            "file_path": "/var/log/nginx/access.log",
+            "log_group_name": "/aws/ec2/${NAME_PREFIX}-${TENANT_NAME}/nginx-access",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 30
+          },
+          {
+            "file_path": "/var/log/nginx/error.log",
+            "log_group_name": "/aws/ec2/${NAME_PREFIX}-${TENANT_NAME}/nginx-error",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 30
+          },
+          {
+            "file_path": "/opt/directus/logs/*.log",
+            "log_group_name": "/aws/ec2/${NAME_PREFIX}-${TENANT_NAME}/directus",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 30
+          }
+        ]
+      }
+    }
+  },
+  "metrics": {
+    "namespace": "${NAME_PREFIX}/${TENANT_NAME}",
+    "metrics_collected": {
+      "cpu": {
+        "measurement": [
+          "cpu_usage_idle",
+          "cpu_usage_user",
+          "cpu_usage_system"
+        ],
+        "metrics_collection_interval": 60,
+        "totalcpu": true
+      },
+      "disk": {
+        "measurement": [
+          "used_percent",
+          "inodes_free"
+        ],
+        "metrics_collection_interval": 60,
+        "resources": [
+          "/"
+        ]
+      },
+      "diskio": {
+        "measurement": [
+          "io_time",
+          "read_bytes",
+          "write_bytes"
+        ],
+        "metrics_collection_interval": 60,
+        "resources": [
+          "*"
+        ]
+      },
+      "mem": {
+        "measurement": [
+          "mem_used_percent"
+        ],
+        "metrics_collection_interval": 60
+      },
+      "net": {
+        "measurement": [
+          "bytes_sent",
+          "bytes_recv"
+        ],
+        "metrics_collection_interval": 60,
+        "resources": [
+          "*"
+        ]
+      }
+    }
+  }
+}

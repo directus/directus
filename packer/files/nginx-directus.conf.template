@@ -1,0 +1,41 @@
+# Nginx configuration template for Directus
+# Variables to be substituted at runtime: FQDN, DIRECTUS_PORT
+
+upstream directus_backend {
+    server 127.0.0.1:${DIRECTUS_PORT};
+    keepalive 32;
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name ${FQDN};
+
+    # ACME challenge for Let's Encrypt
+    location /.well-known/acme-challenge/ {
+        root /var/www/html;
+        allow all;
+    }
+
+    # Redirect all other HTTP to HTTPS (after SSL is configured)
+    location / {
+        # Before SSL: proxy to Directus
+        # After SSL: this block will be replaced by certbot
+        proxy_pass http://directus_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+        proxy_read_timeout 300s;
+        proxy_connect_timeout 75s;
+
+        # WebSocket support
+        proxy_buffering off;
+    }
+}
+
+# HTTPS server block will be added by certbot
