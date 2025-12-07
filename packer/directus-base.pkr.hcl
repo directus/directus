@@ -446,13 +446,13 @@ build {
 
   # Upload PM2 ecosystem config template
   provisioner "file" {
-    source      = "${path.root}/files/ecosystem.config.js.template"
-    destination = "/tmp/ecosystem.config.js.template"
+    source      = "${path.root}/files/ecosystem.config.cjs.template"
+    destination = "/tmp/ecosystem.config.cjs.template"
   }
 
   provisioner "shell" {
     inline = [
-      "sudo mv /tmp/ecosystem.config.js.template /opt/directus/"
+      "sudo mv /tmp/ecosystem.config.cjs.template /opt/directus/"
     ]
   }
 
