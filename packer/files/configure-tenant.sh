@@ -113,8 +113,8 @@ echo "=== Configuring Directus ==="
 export DIRECTUS_PORT DB_HOST DB_PORT DB_NAME DB_USER DB_PASSWORD
 export DIRECTUS_KEY DIRECTUS_SECRET ADMIN_EMAIL ADMIN_PASSWORD FQDN
 
-# Create ecosystem.config.js from template
-envsubst < /opt/directus/ecosystem.config.js.template > /opt/directus/ecosystem.config.js
+# Create ecosystem.config.cjs from template (using .cjs for CommonJS compatibility)
+envsubst < /opt/directus/ecosystem.config.cjs.template > /opt/directus/ecosystem.config.cjs
 
 # Set ownership
 chown -R ubuntu:ubuntu /opt/directus
@@ -128,8 +128,8 @@ echo "=== Starting Directus ==="
 
 cd /opt/directus
 
-# Start with PM2 as ubuntu user
-sudo -u ubuntu pm2 start ecosystem.config.js
+# Start with PM2 as ubuntu user (using .cjs file)
+sudo -u ubuntu pm2 start ecosystem.config.cjs
 
 # Save PM2 process list for startup
 sudo -u ubuntu pm2 save
