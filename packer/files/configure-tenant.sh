@@ -13,11 +13,11 @@
 #   DB_PORT             - Database port (default: 5432)
 #   DB_NAME             - Database name (same as TENANT_NAME)
 #   DB_USER             - Database user (same as TENANT_NAME)
-#   DB_SECRET_ARN       - AWS Secrets Manager ARN for DB password
+#   DB_PASSWORD         - Database password
 #   DIRECTUS_KEY        - Directus KEY (for encryption)
 #   DIRECTUS_SECRET     - Directus SECRET (for encryption)
 #   ADMIN_EMAIL         - Directus admin email
-#   ADMIN_SECRET_ARN    - AWS Secrets Manager ARN for admin password
+#   ADMIN_PASSWORD      - Directus admin password
 #   AWS_REGION          - AWS region
 #   ENABLE_SSL          - Whether to enable SSL (true/false)
 #   SSL_EMAIL           - Email for Let's Encrypt
@@ -37,11 +37,11 @@ REQUIRED_VARS=(
     "FQDN"
     "NAME_PREFIX"
     "DB_HOST"
-    "DB_SECRET_ARN"
+    "DB_PASSWORD"
     "DIRECTUS_KEY"
     "DIRECTUS_SECRET"
     "ADMIN_EMAIL"
-    "ADMIN_SECRET_ARN"
+    "ADMIN_PASSWORD"
     "AWS_REGION"
 )
 
@@ -66,25 +66,6 @@ echo "  Tenant: $TENANT_NAME"
 echo "  FQDN: $FQDN"
 echo "  DB Host: $DB_HOST"
 echo "  Region: $AWS_REGION"
-
-# =============================================================================
-# Fetch secrets from AWS Secrets Manager
-# =============================================================================
-echo "=== Fetching secrets from AWS Secrets Manager ==="
-
-DB_PASSWORD=$(aws secretsmanager get-secret-value \
-    --secret-id "$DB_SECRET_ARN" \
-    --region "$AWS_REGION" \
-    --query 'SecretString' \
-    --output text)
-
-ADMIN_PASSWORD=$(aws secretsmanager get-secret-value \
-    --secret-id "$ADMIN_SECRET_ARN" \
-    --region "$AWS_REGION" \
-    --query 'SecretString' \
-    --output text)
-
-echo "  Secrets retrieved successfully"
 
 # =============================================================================
 # Configure Nginx
