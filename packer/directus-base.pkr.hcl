@@ -517,6 +517,10 @@ build {
       "TELEMETRY=false",
       "TESTENV",
       
+      "# Bootstrap the database (creates tables)",
+      "echo 'Bootstrapping Directus database...'",
+      "node ./directus/cli.js bootstrap",
+      
       "# Start Directus with PM2",
       "echo 'Starting Directus for validation...'",
       "pm2 start ecosystem.config.cjs --env production || pm2 start 'node ./directus/cli.js start' --name directus-test",
