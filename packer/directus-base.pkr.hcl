@@ -495,6 +495,65 @@ build {
     ]
   }
 
+  # =============================================================================
+  # Validate Directus starts correctly with SQLite
+  # =============================================================================
+  provisioner "shell" {
+    inline = [
+      "echo '=== Validating Directus starts correctly ==='",
+      "cd /opt/directus",
+      
+      "# Create temporary .env for validation",
+      "cat > /opt/directus/.env << 'TESTENV'",
+      "HOST=0.0.0.0",
+      "PORT=8055",
+      "PUBLIC_URL=http://localhost:8055",
+      "DB_CLIENT=sqlite3",
+      "DB_FILENAME=/opt/directus/test-validation.sqlite",
+      "SECRET=test-secret-for-validation-only",
+      "KEY=test-key-for-validation-only",
+      "ADMIN_EMAIL=test@example.com",
+      "ADMIN_PASSWORD=testpassword123",
+      "TELEMETRY=false",
+      "TESTENV",
+      
+      "# Start Directus with PM2",
+      "echo 'Starting Directus for validation...'",
+      "pm2 start ecosystem.config.cjs --env production || pm2 start 'node ./directus/cli.js start' --name directus-test",
+      
+      "# Wait for health check with timeout",
+      "echo 'Waiting for Directus to be healthy...'",
+      "TIMEOUT=120",
+      "ELAPSED=0",
+      "while [ $ELAPSED -lt $TIMEOUT ]; do",
+      "  if curl -sf http://localhost:8055/server/health > /dev/null 2>&1; then",
+      "    echo '✓ Directus health check passed!'",
+      "    curl -s http://localhost:8055/server/health | head -c 200",
+      "    echo ''",
+      "    break",
+      "  fi",
+      "  sleep 5",
+      "  ELAPSED=$((ELAPSED + 5))",
+      "  echo \"  Waiting... ($ELAPSED/$TIMEOUT seconds)\"",
+      "done",
+      
+      "# Check if we timed out",
+      "if [ $ELAPSED -ge $TIMEOUT ]; then",
+      "  echo '✗ ERROR: Directus health check failed!'",
+      "  pm2 logs --nostream --lines 100 || true",
+      "  exit 1",
+      "fi",
+      
+      "# Stop Directus and clean up",
+      "echo 'Stopping Directus and cleaning up validation files...'",
+      "pm2 delete all || true",
+      "rm -f /opt/directus/.env",
+      "rm -f /opt/directus/test-validation.sqlite",
+      
+      "echo '=== Validation complete! Directus starts successfully ==='"
+    ]
+  }
+
   # Security hardening
   provisioner "shell" {
     inline = [
