@@ -2,7 +2,7 @@
 import { useExtension } from '@/composables/use-extension';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { computed } from 'vue';
-import type { FormField, ComparisonContext } from './types';
+import type { FormField, ComparisonContext } from '../types';
 
 const props = defineProps<{
 	field: FormField;

@@ -4,7 +4,7 @@ import { getStringifiedValue } from '@/utils/get-stringified-value';
 import { isValidJSON, parseJSON } from '@directus/utils';
 import { isNil } from 'lodash';
 import { computed, ref, watch } from 'vue';
-import type { FormField } from './types';
+import type { FormField } from '../types';
 import type { Field } from '@directus/types';
 
 const props = withDefaults(

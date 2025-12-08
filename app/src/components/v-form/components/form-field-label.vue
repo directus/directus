@@ -3,7 +3,7 @@ import { isDateUpdated, isUserUpdated } from '@/utils/field-utils';
 import type { Field } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { ComparisonContext, FormField } from './types';
+import type { ComparisonContext, FormField } from '../types';
 
 const props = withDefaults(
 	defineProps<{
