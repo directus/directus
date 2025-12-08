@@ -31,7 +31,6 @@ const props = withDefaults(
 		helpDisplayMode?: 'inline' | 'modal';
 		enableHelpTranslations?: boolean;
 		helpTranslationsString?: string;
-		values: Record<string, any>;
 		color?: string;
 		collection: string;
 		primaryKey?: string | number | null;
