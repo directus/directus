@@ -20,6 +20,7 @@ module.exports = {
         DB_DATABASE: '${DB_NAME}',
         DB_USER: '${DB_USER}',
         DB_PASSWORD: '${DB_PASSWORD}',
+        DB_SSL: 'true',
 
         // Security
         KEY: '${DIRECTUS_KEY}',
