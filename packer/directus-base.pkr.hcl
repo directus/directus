@@ -380,13 +380,17 @@ build {
     ]
   }
 
-  # Install Template API
+  # Install Template API from GitHub Packages
   provisioner "shell" {
     inline = [
       "echo '=== Installing Directus Template API ==='",
       "sudo mkdir -p /opt/template-api",
       "sudo chown $(whoami):$(whoami) /opt/template-api",
       "cd /opt/template-api",
+      
+      "# Configure npm/pnpm to use GitHub Packages for @face-to-face-it scope",
+      "# GitHub Packages allows public package downloads without authentication",
+      "echo '@face-to-face-it:registry=https://npm.pkg.github.com' > .npmrc",
       
       "# Initialize package.json and install the template CLI API",
       "pnpm init",
