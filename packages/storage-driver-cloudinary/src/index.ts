@@ -168,7 +168,7 @@ export class DriverCloudinary implements TusDriver {
 		const folder = this.getFolderPath(fullPath);
 
 		const parameters = {
-			public_id: normalizePath(join(folder, publicId)),
+			public_id: normalizePath(join(folder, publicId), { removeLeading: true }),
 			type: 'upload',
 			api_key: this.apiKey,
 			timestamp: this.getTimestamp(),
@@ -397,7 +397,7 @@ export class DriverCloudinary implements TusDriver {
 			timestamp: this.getTimestamp(),
 			api_key: this.apiKey,
 			resource_type: resourceType,
-			public_id: normalizePath(join(folderPath, publicId)),
+			public_id: normalizePath(join(folderPath, publicId), { removeLeading: true }),
 		};
 
 		const signature = this.getFullSignature(parameters);
