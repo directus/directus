@@ -40,6 +40,10 @@ describe('FoldersService', () => {
 
 				expect(tree.size).toBe(1);
 				expect(tree.get('root-id')).toBe('parent');
+
+				expect(ItemsService.prototype.readByQuery).toHaveBeenCalledWith({
+					limit: -1,
+				});
 			});
 
 			test('should build tree for simple hierarchy', async () => {
