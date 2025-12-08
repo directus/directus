@@ -165,6 +165,7 @@ const showSidebarToggle = computed(() => {
 
 	&:deep(.type-title) {
 		line-height: 1.2em;
+        max-inline-size: 100%;
 	}
 }
 
