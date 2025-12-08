@@ -921,8 +921,11 @@ function useCollectionRoute() {
 
 .content-split :deep(.sp-end) {
 	background-color: var(--theme--background-subdued);
-	border-inline-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	overflow-y: auto;
+
+	@media (width > 640px) {
+		border-inline-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	}
 }
 
 .content-split.sp-collapsed :deep(.sp-divider) {
