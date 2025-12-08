@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { render } from 'micromustache';
 import { computed, inject, ref, useAttrs } from 'vue';
-import { getFieldsFromTemplate } from '@directus/utils';
 import { useInjectRunManualFlow } from '@/composables/use-flows';
 import HelperText from './helper-text.vue';
 import { useFieldsStore } from '@/stores/fields';
-import { useFetchTemplateData } from './composables/useFetchTemplateData';
+import { useTemplateData } from '@/composables/use-template-data';
+import type { Collection } from '@directus/types';
 
 type Link = {
 	icon: string;
@@ -59,15 +59,17 @@ const primaryKey = computed(() => props.primaryKey ?? null);
 const combinedItemData = computed(() => {
 	const result = { ...itemValues.value };
 
-	Object.entries(fetchedTemplateData.value).forEach(([key, value]) => {
-		if (
-			value !== null &&
-			typeof value === 'object' &&
-			(!result[key] || typeof result[key] !== 'object' || result[key] === null)
-		) {
-			result[key] = value;
-		}
-	});
+	if (fetchedTemplateData.value) {
+		Object.entries(fetchedTemplateData.value).forEach(([key, value]) => {
+			if (
+				value !== null &&
+				typeof value === 'object' &&
+				(!result[key] || typeof result[key] !== 'object' || result[key] === null)
+			) {
+				result[key] = value;
+			}
+		});
+	}
 
 	return result;
 });
@@ -138,18 +140,6 @@ async function handleActionClick(action: Link) {
 	}
 }
 
-const requiredTemplateFields = computed(() => {
-	const fieldsFromTitle = props.title ? getFieldsFromTemplate(props.title) : [];
-	const fieldsFromSubtitle = props.subtitle ? getFieldsFromTemplate(props.subtitle) : [];
-
-	const fieldsFromLinks =
-		props.links
-			?.filter((action) => action.actionType === 'url' && action.url)
-			.flatMap((action) => getFieldsFromTemplate(action.url || '')) || [];
-
-	return [...new Set([...fieldsFromTitle, ...fieldsFromSubtitle, ...fieldsFromLinks])];
-});
-
 const primaryLink = computed(() => {
 	if (linksParsed.value.length === 1) {
 		return linksParsed.value[0];
@@ -174,7 +164,34 @@ const helpText = computed(() => {
 	return props.help;
 });
 
-const { data: fetchedTemplateData } = useFetchTemplateData(props.collection, primaryKey, requiredTemplateFields);
+const collectionRef = computed(
+	() =>
+		({
+			collection: props.collection,
+			meta: {},
+		}) as Collection,
+);
+
+const templateForData = computed(() => {
+	const templateParts = [];
+
+	if (props.title) templateParts.push(props.title);
+	if (props.subtitle) templateParts.push(props.subtitle);
+
+	props.links?.forEach((link) => {
+		if (link.url) templateParts.push(link.url);
+	});
+
+	if (templateParts.length) {
+		return templateParts.join(' ');
+	}
+
+	return '';
+});
+
+const { templateData: fetchedTemplateData } = useTemplateData(collectionRef, primaryKey, {
+	template: ref(templateForData.value),
+});
 
 const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 </script>
