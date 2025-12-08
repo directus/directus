@@ -244,6 +244,53 @@ while true; do
 done
 
 # =============================================================================
+# Configure SSL (if enabled) - BEFORE service account to ensure HTTPS works
+# =============================================================================
+if [[ "$ENABLE_SSL" == "true" ]]; then
+    echo "=== Configuring SSL ==="
+
+    # Wait for DNS to propagate (try multiple resolvers)
+    echo "  Checking DNS resolution for $FQDN..."
+    DNS_READY=false
+    DNS_RESOLVERS=("1.1.1.1" "8.8.8.8" "9.9.9.9")  # Cloudflare, Google, Quad9
+    
+    for i in {1..30}; do
+        for resolver in "${DNS_RESOLVERS[@]}"; do
+            if host "$FQDN" "$resolver" 2>/dev/null | grep -q "has address"; then
+                echo "  DNS resolved successfully (via $resolver)"
+                DNS_READY=true
+                break 2  # Break out of both loops
+            fi
+        done
+        echo "  Waiting for DNS propagation... (attempt $i/30)"
+        sleep 10
+    done
+
+    if [[ "$DNS_READY" == "true" ]]; then
+        echo "  Obtaining SSL certificate..."
+        CERTBOT_OUTPUT=$(mktemp)
+        if certbot --nginx \
+            --non-interactive \
+            --agree-tos \
+            --email "$SSL_EMAIL" \
+            --domains "$FQDN" \
+            2>&1 | tee "$CERTBOT_OUTPUT"; then
+            echo "  SSL certificate obtained successfully"
+        else
+            CERTBOT_EXIT=$?
+            echo "  ERROR: Certbot failed (exit code: $CERTBOT_EXIT)"
+            echo "  Output: $(cat "$CERTBOT_OUTPUT")"
+            echo "  SSL will need manual setup: sudo certbot --nginx -d $FQDN"
+            # Don't exit - continue with service account setup
+        fi
+        rm -f "$CERTBOT_OUTPUT"
+    else
+        echo "  WARNING: DNS not yet propagated after 5 minutes, skipping SSL setup"
+        echo "  Run 'sudo certbot --nginx -d $FQDN' manually after DNS propagates"
+    fi
+fi
+
+# =============================================================================
 # Create Template API Service Account
 # =============================================================================
 echo "=== Creating Template API Service Account ==="
@@ -251,46 +298,96 @@ echo "=== Creating Template API Service Account ==="
 # Generate a secure token for the service account
 TEMPLATE_API_TOKEN=$(openssl rand -hex 32)
 
-# First, authenticate as admin to get access token
+# Authenticate as admin to get access token (with retry for race conditions)
 echo "  Authenticating as admin..."
-AUTH_RESPONSE=$(curl -sf -X POST "http://localhost:${DIRECTUS_PORT}/auth/login" \
-    -H "Content-Type: application/json" \
-    -d "{\"email\": \"${ADMIN_EMAIL}\", \"password\": \"${ADMIN_PASSWORD}\"}")
+ACCESS_TOKEN=""
+AUTH_ATTEMPTS=0
+AUTH_MAX_ATTEMPTS=5
 
-ACCESS_TOKEN=$(echo "$AUTH_RESPONSE" | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4)
+while [[ -z "$ACCESS_TOKEN" && $AUTH_ATTEMPTS -lt $AUTH_MAX_ATTEMPTS ]]; do
+    AUTH_ATTEMPTS=$((AUTH_ATTEMPTS + 1))
+    echo "  Authentication attempt $AUTH_ATTEMPTS/$AUTH_MAX_ATTEMPTS..."
+    
+    # Give Directus a moment to be fully ready
+    sleep 2
+    
+    AUTH_RESPONSE=$(curl -s -X POST "http://localhost:${DIRECTUS_PORT}/auth/login" \
+        -H "Content-Type: application/json" \
+        -d "{\"email\": \"${ADMIN_EMAIL}\", \"password\": \"${ADMIN_PASSWORD}\"}" 2>&1) || true
+    
+    # Try to extract access token using jq (preferred) or grep (fallback)
+    if command -v jq &> /dev/null; then
+        ACCESS_TOKEN=$(echo "$AUTH_RESPONSE" | jq -r '.data.access_token // empty' 2>/dev/null) || true
+    else
+        ACCESS_TOKEN=$(echo "$AUTH_RESPONSE" | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4) || true
+    fi
+    
+    if [[ -z "$ACCESS_TOKEN" ]]; then
+        echo "  Auth response: $AUTH_RESPONSE"
+        if [[ $AUTH_ATTEMPTS -lt $AUTH_MAX_ATTEMPTS ]]; then
+            echo "  Retrying in 5 seconds..."
+            sleep 5
+        fi
+    fi
+done
 
 if [[ -z "$ACCESS_TOKEN" ]]; then
-    echo "  ERROR: Failed to authenticate as admin"
-    echo "  Response: $AUTH_RESPONSE"
+    echo "  ERROR: Failed to authenticate as admin after $AUTH_MAX_ATTEMPTS attempts"
+    echo "  Last response: $AUTH_RESPONSE"
     exit 1
 fi
 
+echo "  Authentication successful"
+
 # Check if template-api user already exists
 echo "  Checking for existing service account..."
-EXISTING_USER=$(curl -sf "http://localhost:${DIRECTUS_PORT}/users?filter[email][_eq]=template-api@internal.local" \
-    -H "Authorization: Bearer ${ACCESS_TOKEN}" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4 || true)
+EXISTING_USER_RESPONSE=$(curl -s "http://localhost:${DIRECTUS_PORT}/users?filter[email][_eq]=template-api@internal.local" \
+    -H "Authorization: Bearer ${ACCESS_TOKEN}" 2>&1) || true
+
+if command -v jq &> /dev/null; then
+    EXISTING_USER=$(echo "$EXISTING_USER_RESPONSE" | jq -r '.data[0].id // empty' 2>/dev/null) || true
+else
+    EXISTING_USER=$(echo "$EXISTING_USER_RESPONSE" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4) || true
+fi
 
 if [[ -n "$EXISTING_USER" ]]; then
     echo "  Service account already exists (ID: $EXISTING_USER), updating token..."
     # Update the existing user's token
-    curl -sf -X PATCH "http://localhost:${DIRECTUS_PORT}/users/${EXISTING_USER}" \
+    UPDATE_RESPONSE=$(curl -s -X PATCH "http://localhost:${DIRECTUS_PORT}/users/${EXISTING_USER}" \
         -H "Authorization: Bearer ${ACCESS_TOKEN}" \
         -H "Content-Type: application/json" \
-        -d "{\"token\": \"${TEMPLATE_API_TOKEN}\"}" > /dev/null
+        -d "{\"token\": \"${TEMPLATE_API_TOKEN}\"}" 2>&1) || true
+    
+    if echo "$UPDATE_RESPONSE" | grep -q '"id"'; then
+        echo "  Service account token updated successfully"
+    else
+        echo "  ERROR: Failed to update service account token"
+        echo "  Response: $UPDATE_RESPONSE"
+        exit 1
+    fi
 else
     echo "  Creating service account user..."
-    # Create the service account user with admin role
-    # First get the admin role ID
-    ADMIN_ROLE_ID=$(curl -sf "http://localhost:${DIRECTUS_PORT}/roles?filter[admin_access][_eq]=true&limit=1" \
-        -H "Authorization: Bearer ${ACCESS_TOKEN}" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+    
+    # Get the admin role ID
+    ROLES_RESPONSE=$(curl -s "http://localhost:${DIRECTUS_PORT}/roles?filter[admin_access][_eq]=true&limit=1" \
+        -H "Authorization: Bearer ${ACCESS_TOKEN}" 2>&1) || true
+    
+    if command -v jq &> /dev/null; then
+        ADMIN_ROLE_ID=$(echo "$ROLES_RESPONSE" | jq -r '.data[0].id // empty' 2>/dev/null) || true
+    else
+        ADMIN_ROLE_ID=$(echo "$ROLES_RESPONSE" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4) || true
+    fi
     
     if [[ -z "$ADMIN_ROLE_ID" ]]; then
         echo "  ERROR: Could not find admin role"
+        echo "  Roles response: $ROLES_RESPONSE"
         exit 1
     fi
     
+    echo "  Found admin role: $ADMIN_ROLE_ID"
+    
     # Create the service account
-    CREATE_RESPONSE=$(curl -sf -X POST "http://localhost:${DIRECTUS_PORT}/users" \
+    CREATE_RESPONSE=$(curl -s -X POST "http://localhost:${DIRECTUS_PORT}/users" \
         -H "Authorization: Bearer ${ACCESS_TOKEN}" \
         -H "Content-Type: application/json" \
         -d "{
@@ -301,7 +398,7 @@ else
             \"first_name\": \"Template\",
             \"last_name\": \"API Service\",
             \"status\": \"active\"
-        }")
+        }" 2>&1) || true
     
     if echo "$CREATE_RESPONSE" | grep -q '"id"'; then
         echo "  Service account created successfully"
@@ -353,52 +450,6 @@ while true; do
 done
 
 echo "  Template API started on port 3000"
-
-# =============================================================================
-# Configure SSL (if enabled)
-# =============================================================================
-if [[ "$ENABLE_SSL" == "true" ]]; then
-    echo "=== Configuring SSL ==="
-
-    # Wait for DNS to propagate (try multiple resolvers)
-    echo "  Checking DNS resolution for $FQDN..."
-    DNS_READY=false
-    DNS_RESOLVERS=("1.1.1.1" "8.8.8.8" "9.9.9.9")  # Cloudflare, Google, Quad9
-    
-    for i in {1..30}; do
-        for resolver in "${DNS_RESOLVERS[@]}"; do
-            if host "$FQDN" "$resolver" 2>/dev/null | grep -q "has address"; then
-                echo "  DNS resolved successfully (via $resolver)"
-                DNS_READY=true
-                break 2  # Break out of both loops
-            fi
-        done
-        echo "  Waiting for DNS propagation... (attempt $i/30)"
-        sleep 10
-    done
-
-    if [[ "$DNS_READY" == "true" ]]; then
-        echo "  Obtaining SSL certificate..."
-        CERTBOT_OUTPUT=$(mktemp)
-        if certbot --nginx \
-            --non-interactive \
-            --agree-tos \
-            --email "$SSL_EMAIL" \
-            --domains "$FQDN" \
-            2>&1 | tee "$CERTBOT_OUTPUT"; then
-            echo "  SSL certificate obtained successfully"
-        else
-            CERTBOT_EXIT=$?
-            echo "  WARNING: Certbot failed (exit code: $CERTBOT_EXIT)"
-            echo "  Output: $(cat "$CERTBOT_OUTPUT")"
-            echo "  SSL will need manual setup: sudo certbot --nginx -d $FQDN"
-        fi
-        rm -f "$CERTBOT_OUTPUT"
-    else
-        echo "  WARNING: DNS not yet propagated, skipping SSL setup"
-        echo "  Run 'sudo certbot --nginx -d $FQDN' manually after DNS propagates"
-    fi
-fi
 
 # =============================================================================
 # Create backup scripts (if bucket configured)
@@ -498,15 +549,3 @@ echo "=== Tenant configuration complete at $(date) ==="
 echo ""
 echo "  Directus URL: https://${FQDN}"
 echo "  Admin Email: ${ADMIN_EMAIL}"
-echo ""
-echo "  Check status with:"
-echo "    pm2 status"
-echo "    pm2 logs directus"
-echo "    curl -s http://localhost:${DIRECTUS_PORT}/server/health"
-echo ""
-echo "  Update Directus with:"
-echo "    sudo -u ubuntu /usr/local/bin/update-directus.sh"
-echo ""
-
-# Signal success
-touch /var/run/tenant-configured
