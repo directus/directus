@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { InvalidQueryError, RangeNotSatisfiableError } from '@directus/errors';
+import { InvalidPayloadError, InvalidQueryError, RangeNotSatisfiableError } from '@directus/errors';
 import type { Range, TransformationFormat, TransformationParams } from '@directus/types';
 import { TransformationMethods } from '@directus/types';
 import { getDateTimeFormatted, parseJSON } from '@directus/utils';
@@ -7,6 +7,7 @@ import contentDisposition from 'content-disposition';
 import { Router } from 'express';
 import { merge, pick } from 'lodash-es';
 import * as z from 'zod';
+import { fromZodError } from 'zod-validation-error';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
@@ -17,6 +18,7 @@ import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { isValidUuid } from '../utils/is-valid-uuid.js';
 
 const router = Router();
 
@@ -55,13 +57,23 @@ router.post(
 			schema: req.schema,
 		});
 
-		const { ids } = z
+		const { error, data } = z
 			.object({
-				ids: z.array(z.string()),
+				ids: z
+					.array(
+						z.string().refine((v) => isValidUuid(v), {
+							error: '"id" must be a uuid',
+						}),
+					)
+					.min(1),
 			})
-			.parse(req.body);
+			.safeParse(req.body);
 
-		const { archive, complete } = await service.zipFiles(ids);
+		if (error) {
+			throw new InvalidPayloadError({ reason: fromZodError(error).message });
+		}
+
+		const { archive, complete } = await service.zipFiles(data.ids);
 
 		res.setHeader('Content-Type', 'application/zip');
 		res.setHeader('Content-Disposition', `attachment; filename="files-${getDateTimeFormatted()}.zip"`);
