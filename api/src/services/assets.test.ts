@@ -300,7 +300,7 @@ describe('AssetsService', () => {
 				{ id: 'file2', folder: folderId, filename_download: 'file2.txt' },
 			] as File[]);
 
-			vi.spyOn(FoldersService.prototype, 'buildTree').mockImplementation(async () => new Map([['root-id', 'root']]));
+			vi.spyOn(FoldersService.prototype, 'buildTree').mockResolvedValue(new Map([['root-id', 'root']]));
 
 			vi.spyOn(FilesService.prototype, 'readOne').mockImplementation(
 				async (key) => ({ id: key, folder: null, filename_download: `${key}.txt` }) as File,
