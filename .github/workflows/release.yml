@@ -25,36 +25,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Check if packages exist on NPM
-        run: |
-          missing_packages=""
-
-          for pattern in $(yq -r '.packages[]' pnpm-workspace.yaml); do
-            for package in $pattern; do
-              if [ -f "$package/package.json" ]; then
-                name=$(jq -r .name "$package/package.json")
-                private=$(jq -r .private "$package/package.json")
-
-                if [ "$private" != "true" ] && [ "$name" != "null" ]; then
-                  echo "Checking if $name exists on NPM..."
-                  if ! npm view "$name" > /dev/null 2>&1; then
-                    echo "Error: Package $name does not exist on NPM."
-                    missing_packages="$missing_packages $name"
-                  else
-                    echo "Package $name exists."
-                  fi
-                fi
-              fi
-            done
-          done
-
-          if [ -n "$missing_packages" ]; then
-            echo "Error: The following packages do not exist on NPM:"
-            for package in $missing_packages; do
-              echo " - $package"
-            done
-            echo "Please create these packages on NPM and configure Trusted Publishing before publishing."
-            exit 1
-          fi
+        uses: directus/npm-package-existence-checker@v1
 
   check-version:
     name: Check Version
