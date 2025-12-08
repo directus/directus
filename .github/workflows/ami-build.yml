@@ -142,6 +142,8 @@ jobs:
       - name: Initialize Packer
         working-directory: packer
         run: packer init directus-base.pkr.hcl
+        env:
+          PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Validate Packer template
         working-directory: packer
