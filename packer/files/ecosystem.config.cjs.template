@@ -76,8 +76,11 @@ module.exports = {
         PORT: '3000',
         // Directus URL for template operations (local instance)
         DIRECTUS_URL: 'http://localhost:${DIRECTUS_PORT}',
-        // Token will be set by configure-tenant.sh after service account creation
+        // Token for Template API to authenticate with Directus
         DIRECTUS_TOKEN: '${TEMPLATE_API_TOKEN}',
+        // API authentication token - same token used to secure external access
+        // Clients must provide this via Authorization: Bearer <token> or X-API-Key header
+        API_AUTH_TOKEN: '${TEMPLATE_API_TOKEN}',
       },
       instances: 1,
       autorestart: true,
