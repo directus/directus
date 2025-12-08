@@ -61,7 +61,7 @@ router.post(
 			})
 			.parse(req.body);
 
-		const { archive, complete } = await service.zipFiles(ids.map((id) => String(id)));
+		const { archive, complete } = await service.zipFiles(ids);
 
 		res.setHeader('Content-Type', 'application/zip');
 		res.setHeader('Content-Disposition', `attachment; filename="files-${getDateTimeFormatted()}.zip"`);
