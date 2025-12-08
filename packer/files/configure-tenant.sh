@@ -129,7 +129,13 @@ echo "=== Bootstrapping Directus Database ==="
 cd /opt/directus
 
 # Export environment variables for bootstrap command
+# These must match what Directus expects for database connection
 export DB_CLIENT=pg
+export DB_HOST="$DB_HOST"
+export DB_PORT="$DB_PORT"
+export DB_DATABASE="$DB_NAME"
+export DB_USER="$DB_USER"
+export DB_PASSWORD="$DB_PASSWORD"
 export DB_SSL=true
 export KEY="$DIRECTUS_KEY"
 export SECRET="$DIRECTUS_SECRET"
