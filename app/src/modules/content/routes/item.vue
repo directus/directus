@@ -761,6 +761,7 @@ function useCollectionRoute() {
 			:collapse-threshold="15"
 			:min-size="isMobile ? 0 : 20"
 			:max-size="isMobile ? 100 : 80"
+			:snap-points="[livePreviewSizeDefault]"
 			:transition-duration="150"
 			class="content-split"
 			:disabled="isMobile"
@@ -786,7 +787,11 @@ function useCollectionRoute() {
 			</template>
 
 			<template #end>
-				<live-preview v-if="previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
+				<live-preview
+					v-if="livePreviewActive && previewUrl"
+					:url="previewUrl"
+					@new-window="livePreviewMode = 'popup'"
+				/>
 			</template>
 		</SplitPanel>
 
@@ -916,8 +921,11 @@ function useCollectionRoute() {
 
 .content-split :deep(.sp-end) {
 	background-color: var(--theme--background-subdued);
-	border-inline-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	overflow-y: auto;
+
+	@media (width > 640px) {
+		border-inline-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	}
 }
 
 .content-split.sp-collapsed :deep(.sp-divider) {
