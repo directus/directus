@@ -121,6 +121,7 @@ const showSidebarToggle = computed(() => {
 	grid-template-rows: repeat(2, 1fr);
 
 	&.shadow {
+		z-index: 7;
 		box-shadow: var(--theme--header--box-shadow);
 		transition: box-shadow var(--fast) var(--transition);
 	}

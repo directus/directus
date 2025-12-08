@@ -14,6 +14,9 @@ export interface PrivateViewProps {
 
 	/** Whether to always show sidebar shadows regardless of scroll state (true) or only when horizontally scrolled (false). */
 	sidebarShadow?: boolean;
+
+	/** Override header shadow state. When provided, bypasses internal scroll-based calculation. */
+	showHeaderShadow?: boolean;
 }
 </script>
 

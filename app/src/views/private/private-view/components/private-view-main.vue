@@ -3,8 +3,8 @@ import { BREAKPOINTS } from '@/constants';
 import { useUserStore } from '@/stores/user';
 import { cssVar } from '@directus/utils/browser';
 import { SplitPanel } from '@directus/vue-split-panel';
-import { useBreakpoints, useScroll } from '@vueuse/core';
-import { computed, inject, provide, unref, useTemplateRef, watch, type ComputedRef } from 'vue';
+import { useBreakpoints, useScroll, useResizeObserver } from '@vueuse/core';
+import { computed, inject, provide, ref, unref, useTemplateRef, watch, type ComputedRef } from 'vue';
 import NotificationsGroup from '../../components/notifications-group.vue';
 import SkipMenu from '../../components/skip-menu.vue';
 import { useSidebarStore } from '../stores/sidebar';
@@ -26,20 +26,30 @@ provide('main-element', contentEl);
 const sidebarStore = useSidebarStore();
 
 const scrollContainerRef = useTemplateRef('scroll-container');
+
 const { y, x } = useScroll(scrollContainerRef);
-const sidebarShadow = computed(() => props.sidebarShadow ?? false);
+
+const containerWidth = ref(0);
+const scrollableWidth = ref(0);
+
+useResizeObserver(scrollContainerRef, ([entry]) => {
+	const el = entry?.target as HTMLElement | undefined;
+	if (!el) return;
+	containerWidth.value = el.clientWidth;
+	scrollableWidth.value = el.scrollWidth;
+});
+
+const enforceShadows = computed(() => props.sidebarShadow || false);
 const contentPadding = computed(() => parseInt(cssVar('--content-padding'), 10) || 12);
 
 const showStartShadow = computed(() => {
-	if (sidebarShadow.value) return true;
+	if (enforceShadows.value) return true;
 	return x.value >= contentPadding.value;
 });
 
 const showEndShadow = computed(() => {
-	if (sidebarShadow.value) return true;
-	const el = scrollContainerRef.value;
-	if (!el) return false;
-	return el.scrollWidth - el.clientWidth - x.value >= contentPadding.value;
+	if (enforceShadows.value) return true;
+	return scrollableWidth.value - containerWidth.value - x.value >= contentPadding.value;
 });
 
 const livePreviewActive = inject<ComputedRef<boolean>>(
@@ -47,7 +57,9 @@ const livePreviewActive = inject<ComputedRef<boolean>>(
 	computed(() => false),
 );
 
-const showHeaderShadow = computed(() => y.value > 0 || unref(livePreviewActive));
+const showHeaderShadow = computed(
+	() => enforceShadows.value || props.showHeaderShadow || y.value > 0 || unref(livePreviewActive),
+);
 
 const breakpoints = useBreakpoints(BREAKPOINTS);
 const isMobile = breakpoints.smallerOrEqual('sm');
@@ -149,7 +161,7 @@ const splitterCollapsed = computed({
 	}
 
 	&:deep(.sp-divider) {
-		z-index: 5;
+		z-index: 8;
 	}
 }
 

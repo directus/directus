@@ -42,7 +42,7 @@ div {
 		var(--theme--primary) var(--via),
 		transparent var(--to)
 	);
-	z-index: 4;
+	z-index: 8;
 
 	&:hover {
 		opacity: 1;

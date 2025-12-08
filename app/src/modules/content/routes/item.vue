@@ -25,8 +25,8 @@ import { useCollection } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
-import { useBreakpoints, useLocalStorage } from '@vueuse/core';
-import { computed, onBeforeUnmount, provide, ref, toRefs, unref, watch } from 'vue';
+import { useBreakpoints, useLocalStorage, useScroll } from '@vueuse/core';
+import { computed, onBeforeUnmount, provide, ref, toRefs, unref, watch, type ComponentPublicInstance } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
@@ -51,7 +51,11 @@ const { collectionRoute } = useCollectionRoute();
 
 const userStore = useUserStore();
 
-const form = ref<HTMLElement>();
+const form = ref<ComponentPublicInstance>();
+
+const scrollParent = computed(() => form.value?.$el?.parentElement);
+const { y: formScrollY } = useScroll(scrollParent);
+const showHeaderShadow = computed(() => formScrollY.value > 0);
 
 const { collection, primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
@@ -544,6 +548,7 @@ function useCollectionRoute() {
 		:class="{ 'has-content-versioning': shouldShowVersioning }"
 		:title
 		:show-back="!collectionInfo.meta?.singleton"
+		:show-header-shadow="showHeaderShadow"
 		:icon="collectionInfo.meta?.singleton ? collectionInfo.icon : undefined"
 	>
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
