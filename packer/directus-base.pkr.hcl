@@ -402,12 +402,15 @@ build {
       "# GitHub Packages requires authentication even for public packages",
       "cat > .npmrc << NPMRC",
       "@face-to-face-it:registry=https://npm.pkg.github.com",
-      "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}",
+      "//npm.pkg.github.com/:_authToken=$${GITHUB_TOKEN}",
       "NPMRC",
       
       "# Initialize package.json and install the template CLI API",
       "pnpm init",
       "pnpm add @face-to-face-it/directus-template-cli@0.7.4",
+      
+      "# Remove .npmrc after install (don't leave token on disk)",
+      "rm -f .npmrc",
       
       "# Create logs directory",
       "mkdir -p /opt/template-api/logs",
