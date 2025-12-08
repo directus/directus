@@ -48,7 +48,7 @@ export class FoldersService extends ItemsService<Folder> {
 			);
 		}
 
-		const folders = await this.readByQuery({});
+		const folders = await this.readByQuery({ limit: -1 });
 
 		// build folder and child lookup
 		const folderLookup = new Map<string, Folder>();
