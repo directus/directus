@@ -11,12 +11,12 @@ vi.mock('@directus/env', () => ({
 }));
 
 vi.mock('./files.js', async () => {
-	const { mockFilesService } = await import('../test-utils/files-service.js');
+	const { mockFilesService } = await import('../test-utils/services/files-service.js');
 	return mockFilesService();
 });
 
 vi.mock('./folders.js', async () => {
-	const { mockFoldersService } = await import('../test-utils/folders-service.js');
+	const { mockFoldersService } = await import('../test-utils/services/folders-service.js');
 	return mockFoldersService();
 });
 

@@ -16,7 +16,7 @@ import { mockItemsService } from './items-service.js';
  * ```typescript
  * // Standard usage
  * vi.mock('./files.js', async () => {
- *   const { mockFilesService } = await import('../test-utils/files-service.js');
+ *   const { mockFilesService } = await import('../test-utils/services/files-service.js');
  *   return mockFilesService();
  * });
  *

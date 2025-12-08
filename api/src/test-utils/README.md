@@ -392,7 +392,7 @@ Creates a standard ItemsService mock with all CRUD methods pre-configured with s
 ```typescript
 // Standard usage
 vi.mock('./items.js', async () => {
-	const { mockItemsService } = await import('../test-utils/items-service.js');
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
 	return mockItemsService();
 });
 
@@ -438,7 +438,7 @@ In addition to the base `ItemsService` method the following `FielsServive` speci
 ```typescript
 // Standard usage in CollectionsService tests
 vi.mock('./fields.js', async () => {
-  const { mockFieldsService } = await import('../test-utils/fields-service.js');
+  const { mockFieldsService } = await import('../test-utils/services/fields-service.js');
   return mockFieldsService();
 });
 
@@ -476,7 +476,7 @@ In addition to the base `ItemsService` method the following `FilesService` speci
 ```typescript
 // Standard usage in service tests
 vi.mock('./files.js', async () => {
-	const { mockFilesService } = await import('../test-utils/files-service.js');
+	const { mockFilesService } = await import('../test-utils/services/files-service.js');
 	return mockFilesService();
 });
 
@@ -509,7 +509,7 @@ In addition to the base `ItemsService` method the following `FoldersService` spe
 ```typescript
 // Standard usage in service tests
 vi.mock('./folders.js', async () => {
-	const { mockFoldersService } = await import('../test-utils/folders-service.js');
+	const { mockFoldersService } = await import('../test-utils/services/folders-service.js');
 	return mockFilesService();
 });
 
@@ -552,7 +552,7 @@ vi.mock('../emitter.js', async () => {
 });
 
 vi.mock('./items.js', async () => {
-	const { mockItemsService } = await import('../test-utils/items-service.js');
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
 	return mockItemsService();
 });
 

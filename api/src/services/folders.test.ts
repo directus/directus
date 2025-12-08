@@ -8,7 +8,7 @@ vi.mock('../permissions/modules/validate-access/validate-access.js', () => ({
 }));
 
 vi.mock('./items.js', async () => {
-	const { mockItemsService } = await import('../test-utils/items-service.js');
+	const { mockItemsService } = await import('../test-utils/services/items-service.js');
 	return mockItemsService();
 });
 
