@@ -1,7 +1,5 @@
 import sanitize from 'sanitize-filename';
 
-export type Files = { id: string; folder?: string }[];
-
 const DEFAULT_GROUP = Symbol('undefined');
 
 export class NameDeduper {
