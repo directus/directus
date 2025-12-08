@@ -380,6 +380,28 @@ build {
     ]
   }
 
+  # Install Template API
+  provisioner "shell" {
+    inline = [
+      "echo '=== Installing Directus Template API ==='",
+      "sudo mkdir -p /opt/template-api",
+      "sudo chown $(whoami):$(whoami) /opt/template-api",
+      "cd /opt/template-api",
+      
+      "# Initialize package.json and install the template CLI API",
+      "pnpm init",
+      "pnpm add @face-to-face-it/directus-template-cli@0.7.4",
+      
+      "# Create logs directory",
+      "mkdir -p /opt/template-api/logs",
+      
+      "# Create symlink to bin for easier access",
+      "ln -sf /opt/template-api/node_modules/@face-to-face-it/directus-template-cli/bin /opt/template-api/bin",
+      
+      "echo '  Template API installed at /opt/template-api'"
+    ]
+  }
+
   # Install Nginx
   provisioner "shell" {
     inline = [
@@ -496,7 +518,7 @@ build {
   }
 
   # =============================================================================
-  # Validate Directus starts correctly with SQLite
+  # Validate Directus and Template API start correctly
   # =============================================================================
   provisioner "shell" {
     inline = [
@@ -523,9 +545,14 @@ build {
       
       "# Start Directus with PM2",
       "echo 'Starting Directus for validation...'",
-      "pm2 start ecosystem.config.cjs --env production || pm2 start 'node ./directus/cli.js start' --name directus-test",
+      "pm2 start 'node ./directus/cli.js start' --name directus-test",
       
-      "# Wait for health check with timeout",
+      "# Start Template API with PM2",
+      "echo 'Starting Template API for validation...'",
+      "cd /opt/template-api",
+      "PORT=3000 pm2 start bin/api-server.js --name template-api-test",
+      
+      "# Wait for Directus health check with timeout",
       "echo 'Waiting for Directus to be healthy...'",
       "TIMEOUT=120",
       "ELAPSED=0",
@@ -541,20 +568,43 @@ build {
       "  echo \"  Waiting... ($ELAPSED/$TIMEOUT seconds)\"",
       "done",
       
-      "# Check if we timed out",
+      "# Check if Directus timed out",
       "if [ $ELAPSED -ge $TIMEOUT ]; then",
       "  echo '✗ ERROR: Directus health check failed!'",
       "  pm2 logs --nostream --lines 100 || true",
       "  exit 1",
       "fi",
       
-      "# Stop Directus and clean up",
-      "echo 'Stopping Directus and cleaning up validation files...'",
+      "# Wait for Template API health check",
+      "echo 'Waiting for Template API to be healthy...'",
+      "TIMEOUT=60",
+      "ELAPSED=0",
+      "while [ $ELAPSED -lt $TIMEOUT ]; do",
+      "  if curl -sf http://localhost:3000/health > /dev/null 2>&1; then",
+      "    echo '✓ Template API health check passed!'",
+      "    curl -s http://localhost:3000/health | head -c 200",
+      "    echo ''",
+      "    break",
+      "  fi",
+      "  sleep 5",
+      "  ELAPSED=$((ELAPSED + 5))",
+      "  echo \"  Waiting... ($ELAPSED/$TIMEOUT seconds)\"",
+      "done",
+      
+      "# Check if Template API timed out",
+      "if [ $ELAPSED -ge $TIMEOUT ]; then",
+      "  echo '✗ ERROR: Template API health check failed!'",
+      "  pm2 logs template-api-test --nostream --lines 50 || true",
+      "  exit 1",
+      "fi",
+      
+      "# Stop all services and clean up",
+      "echo 'Stopping services and cleaning up validation files...'",
       "pm2 delete all || true",
       "rm -f /opt/directus/.env",
       "rm -f /opt/directus/test-validation.sqlite",
       
-      "echo '=== Validation complete! Directus starts successfully ==='"
+      "echo '=== Validation complete! Both Directus and Template API start successfully ==='"
     ]
   }
 

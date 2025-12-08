@@ -117,19 +117,21 @@ envsubst '${NAME_PREFIX} ${TENANT_NAME}' < /opt/aws/amazon-cloudwatch-agent/etc/
 echo "  CloudWatch Agent started"
 
 # =============================================================================
-# Configure Directus with PM2
+# Configure Directus with PM2 (initial - Directus only)
 # =============================================================================
 echo "=== Configuring Directus ==="
 
-# Export all variables for envsubst
+# Export variables for envsubst (TEMPLATE_API_TOKEN will be set later)
 export DIRECTUS_PORT DB_HOST DB_PORT DB_NAME DB_USER DB_PASSWORD
 export DIRECTUS_KEY DIRECTUS_SECRET ADMIN_EMAIL ADMIN_PASSWORD FQDN
+export TEMPLATE_API_TOKEN="placeholder-will-be-updated"
 
 # Create ecosystem.config.cjs from template (using .cjs for CommonJS compatibility)
 envsubst < /opt/directus/ecosystem.config.cjs.template > /opt/directus/ecosystem.config.cjs
 
 # Set ownership
 chown -R ubuntu:ubuntu /opt/directus
+chown -R ubuntu:ubuntu /opt/template-api
 
 echo "  PM2 ecosystem configured"
 
@@ -206,14 +208,14 @@ if [[ -n "$PROJECT_OWNER" ]]; then
 fi
 
 # =============================================================================
-# Start Directus with PM2
+# Start Directus with PM2 (only Directus, not Template API yet)
 # =============================================================================
 echo "=== Starting Directus ==="
 
 cd /opt/directus
 
-# Start with PM2 as ubuntu user (using .cjs file)
-sudo -u ubuntu pm2 start ecosystem.config.cjs
+# Start only Directus app with PM2 as ubuntu user (Template API started later)
+sudo -u ubuntu pm2 start ecosystem.config.cjs --only directus
 
 # Save PM2 process list for startup
 sudo -u ubuntu pm2 save
@@ -240,6 +242,117 @@ while true; do
     echo "  Waiting for Directus... (${HEALTH_CHECK_ELAPSED}s / ${HEALTH_CHECK_TIMEOUT}s)"
     sleep $HEALTH_CHECK_INTERVAL
 done
+
+# =============================================================================
+# Create Template API Service Account
+# =============================================================================
+echo "=== Creating Template API Service Account ==="
+
+# Generate a secure token for the service account
+TEMPLATE_API_TOKEN=$(openssl rand -hex 32)
+
+# First, authenticate as admin to get access token
+echo "  Authenticating as admin..."
+AUTH_RESPONSE=$(curl -sf -X POST "http://localhost:${DIRECTUS_PORT}/auth/login" \
+    -H "Content-Type: application/json" \
+    -d "{\"email\": \"${ADMIN_EMAIL}\", \"password\": \"${ADMIN_PASSWORD}\"}")
+
+ACCESS_TOKEN=$(echo "$AUTH_RESPONSE" | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4)
+
+if [[ -z "$ACCESS_TOKEN" ]]; then
+    echo "  ERROR: Failed to authenticate as admin"
+    echo "  Response: $AUTH_RESPONSE"
+    exit 1
+fi
+
+# Check if template-api user already exists
+echo "  Checking for existing service account..."
+EXISTING_USER=$(curl -sf "http://localhost:${DIRECTUS_PORT}/users?filter[email][_eq]=template-api@internal.local" \
+    -H "Authorization: Bearer ${ACCESS_TOKEN}" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4 || true)
+
+if [[ -n "$EXISTING_USER" ]]; then
+    echo "  Service account already exists (ID: $EXISTING_USER), updating token..."
+    # Update the existing user's token
+    curl -sf -X PATCH "http://localhost:${DIRECTUS_PORT}/users/${EXISTING_USER}" \
+        -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+        -H "Content-Type: application/json" \
+        -d "{\"token\": \"${TEMPLATE_API_TOKEN}\"}" > /dev/null
+else
+    echo "  Creating service account user..."
+    # Create the service account user with admin role
+    # First get the admin role ID
+    ADMIN_ROLE_ID=$(curl -sf "http://localhost:${DIRECTUS_PORT}/roles?filter[admin_access][_eq]=true&limit=1" \
+        -H "Authorization: Bearer ${ACCESS_TOKEN}" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+    
+    if [[ -z "$ADMIN_ROLE_ID" ]]; then
+        echo "  ERROR: Could not find admin role"
+        exit 1
+    fi
+    
+    # Create the service account
+    CREATE_RESPONSE=$(curl -sf -X POST "http://localhost:${DIRECTUS_PORT}/users" \
+        -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+        -H "Content-Type: application/json" \
+        -d "{
+            \"email\": \"template-api@internal.local\",
+            \"password\": \"$(openssl rand -hex 32)\",
+            \"role\": \"${ADMIN_ROLE_ID}\",
+            \"token\": \"${TEMPLATE_API_TOKEN}\",
+            \"first_name\": \"Template\",
+            \"last_name\": \"API Service\",
+            \"status\": \"active\"
+        }")
+    
+    if echo "$CREATE_RESPONSE" | grep -q '"id"'; then
+        echo "  Service account created successfully"
+    else
+        echo "  ERROR: Failed to create service account"
+        echo "  Response: $CREATE_RESPONSE"
+        exit 1
+    fi
+fi
+
+echo "  Template API service account configured"
+
+# =============================================================================
+# Update ecosystem config with Template API token and start Template API
+# =============================================================================
+echo "=== Starting Template API ==="
+
+# Re-export TEMPLATE_API_TOKEN with the real value and regenerate ecosystem config
+export TEMPLATE_API_TOKEN
+envsubst < /opt/directus/ecosystem.config.cjs.template > /opt/directus/ecosystem.config.cjs
+
+# Start Template API from the ecosystem config
+cd /opt/directus
+sudo -u ubuntu pm2 start ecosystem.config.cjs --only template-api
+
+# Save PM2 process list
+sudo -u ubuntu pm2 save
+
+# Wait for Template API to be healthy
+echo "  Waiting for Template API to start..."
+TEMPLATE_API_TIMEOUT=60
+TEMPLATE_API_ELAPSED=0
+
+while true; do
+    if curl -sf http://localhost:3000/health > /dev/null 2>&1; then
+        echo "  Template API is healthy!"
+        break
+    fi
+    
+    TEMPLATE_API_ELAPSED=$((TEMPLATE_API_ELAPSED + 5))
+    if [[ $TEMPLATE_API_ELAPSED -ge $TEMPLATE_API_TIMEOUT ]]; then
+        echo "  ERROR: Template API health check timed out"
+        pm2 logs template-api --lines 30 --nostream || true
+        exit 1
+    fi
+    
+    echo "  Waiting for Template API... (${TEMPLATE_API_ELAPSED}s / ${TEMPLATE_API_TIMEOUT}s)"
+    sleep 5
+done
+
+echo "  Template API started on port 3000"
 
 # =============================================================================
 # Configure SSL (if enabled)
