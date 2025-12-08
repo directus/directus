@@ -59,6 +59,7 @@ export class FoldersService extends ItemsService<Folder> {
 
 			folderLookup.set(folder['id'], folder);
 
+			// root is always at the top level, we can therfor safely skip any parent references to it.
 			if (folder['parent'] && folder['id'] !== root) {
 				const children = childFolderLookup.get(folder['parent']) ?? [];
 
