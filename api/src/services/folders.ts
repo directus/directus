@@ -8,7 +8,31 @@ export class FoldersService extends ItemsService<Folder> {
 		super('directus_folders', options);
 	}
 
-	async tree(root: string) {
+	/**
+	 * Builds a full folder tree starting from a given root folder.
+	 *
+	 * This method returns a map of folder IDs to their corresponding paths
+	 * relative to the root. It resolves all nested child folders and ensures
+	 * that folder names are deduplicated within the same parent.
+	 *
+	 * Access control is applied automatically when non-admin, only folders the user has `read`
+	 * access to are included.
+	 *
+	 * @param {string} root - The ID of the root folder to start building the tree from.
+	 * @returns {Promise<Map<string, string>>} A `Map` where:
+	 *   - Key: folder ID
+	 *   - Value: folder path relative to the root (e.g., "Documents/Photos")
+	 *
+	 * @example
+	 * const foldersService = new FoldersService({ schema, accountability });
+	 * const tree = await foldersService.buildTree('root-folder-id');
+	 * console.log(tree.get('folder1')); // e.g., "RootFolder/SubFolder1"
+	 *
+	 * @remarks
+	 * - The returned `Map` includes the root folder itself.
+	 * - If a folder has no name, its ID will be used as a fallback.
+	 */
+	async buildTree(root: string) {
 		if (this.accountability && this.accountability.admin !== true) {
 			await validateAccess(
 				{

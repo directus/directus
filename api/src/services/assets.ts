@@ -132,7 +132,7 @@ export class AssetsService {
 			accountability: this.accountability,
 		});
 
-		const folderTree = await foldersService.tree(root);
+		const folderTree = await foldersService.buildTree(root);
 
 		const filesService = new FilesService({
 			schema: this.schema,
