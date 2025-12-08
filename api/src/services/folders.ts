@@ -73,6 +73,7 @@ export class FoldersService extends ItemsService<Folder> {
 		const stack = [[root, '']];
 		const tree = new Map<string, string>();
 
+		// build tree from stack
 		while (stack.length > 0) {
 			const [folderId, path] = stack.pop() ?? [];
 

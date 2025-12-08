@@ -87,7 +87,7 @@ export class AssetsService {
 				archive.append(assetStream, { name: dedupedFileName, prefix: folderName });
 			}
 
-			// add any empty folders
+			// add any empty folders, does not override already filled folder
 			if (options.folders) {
 				for (const [, folder] of options.folders) {
 					archive.append('', { name: folder + '/' });
