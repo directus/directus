@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { BREAKPOINTS } from '@/constants';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import VTextOverflow from '@/components/v-text-overflow.vue';
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
+import { useBreakpoints } from '@vueuse/core';
 import { computed } from 'vue';
 import { useNavBarStore } from '../stores/nav-bar';
 import { useSidebarStore } from '../stores/sidebar';
@@ -20,7 +21,7 @@ const props = defineProps<{
 const navBarStore = useNavBarStore();
 const sidebarStore = useSidebarStore();
 
-const breakpoints = useBreakpoints(breakpointsTailwind);
+const breakpoints = useBreakpoints(BREAKPOINTS);
 const isMobile = breakpoints.smallerOrEqual('sm');
 
 const showNavToggle = computed(() => {
