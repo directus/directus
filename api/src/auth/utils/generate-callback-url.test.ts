@@ -70,7 +70,7 @@ describe('generateCallbackUrl', () => {
 			expect(result).toBe('https://api-us.directus.io/v1/auth/login/github/callback');
 		});
 
-		test('matches on protocol and hostname only', () => {
+		test('matches on protocol and host only (without port)', () => {
 			vi.mocked(useEnv).mockReturnValue({
 				PUBLIC_URL,
 				AUTH_ALLOWED_ORIGINS: 'https://api.directus.io/subpath',
@@ -80,6 +80,17 @@ describe('generateCallbackUrl', () => {
 			const result = generateCallbackUrl('github', 'https://api.directus.io');
 
 			expect(result).toBe('https://api.directus.io/subpath/auth/login/github/callback');
+		});
+
+		test('matches on protocol and host with custom port', () => {
+			vi.mocked(useEnv).mockReturnValue({
+				PUBLIC_URL,
+				AUTH_ALLOWED_ORIGINS: 'http://localhost:8055/api,http://127.0.0.1:8055/api',
+			});
+
+			const result = generateCallbackUrl('github', 'http://localhost:8055');
+
+			expect(result).toBe('http://localhost:8055/api/auth/login/github/callback');
 		});
 
 		test('skips invalid URLs in AUTH_ALLOWED_ORIGINS', () => {

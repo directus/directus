@@ -10,10 +10,10 @@ function findMatchingOrigin(requestOrigin: string, allowedOrigins: string[]): st
 	for (const allowedOrigin of allowedOrigins) {
 		if (!URL.canParse(allowedOrigin)) continue;
 
-		const { protocol, hostname } = new URL(allowedOrigin);
-		const allowedOriginBase = `${protocol}//${hostname}`;
+		const { protocol, host } = new URL(allowedOrigin);
+		const allowedOriginBase = `${protocol}//${host}`;
 
-		// Match on protocol + hostname
+		// Match on protocol + host
 		if (requestOrigin === allowedOriginBase) {
 			return allowedOrigin; // Return full URL with subpath
 		}
