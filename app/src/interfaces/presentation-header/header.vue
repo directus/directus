@@ -134,12 +134,6 @@ async function handleActionClick(action: Link) {
 	if (action.actionType === 'flow' && action.flow) {
 		if (runningFlows.value.includes(action.flow)) return;
 
-		const effectiveValues = { ...combinedItemData.value };
-
-		if (!effectiveValues.id && primaryKey.value && primaryKey.value !== '+') {
-			effectiveValues.id = primaryKey.value;
-		}
-
 		runManualFlow(action.flow);
 	}
 }
