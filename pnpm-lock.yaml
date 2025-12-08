@@ -2793,6 +2793,9 @@ importers:
       '@sinclair/typebox':
         specifier: 'catalog:'
         version: 0.34.41
+      '@types/archiver':
+        specifier: 'catalog:'
+        version: 7.0.0
       '@types/express':
         specifier: 'catalog:'
         version: 4.17.21
