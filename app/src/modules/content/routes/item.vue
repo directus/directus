@@ -761,6 +761,7 @@ function useCollectionRoute() {
 			:collapse-threshold="15"
 			:min-size="isMobile ? 0 : 20"
 			:max-size="isMobile ? 100 : 80"
+			:snap-points="[livePreviewSizeDefault]"
 			:transition-duration="150"
 			class="content-split"
 			:disabled="isMobile"
