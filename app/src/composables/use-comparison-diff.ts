@@ -114,9 +114,12 @@ function getFormattingDiffRanges(
 
 		const matchingIncoming = incomingTextMap.get(baseNode.text) ?? null;
 
-		const shouldHighlight =
-			(baseNode.formatted && (!matchingIncoming || !matchingIncoming.formatted)) ||
-			(baseNode.formatted && matchingIncoming?.formatted && baseNode.formattingTag !== matchingIncoming.formattingTag);
+		const condition1 = baseNode.formatted && (!matchingIncoming || !matchingIncoming.formatted);
+
+		const condition2 =
+			baseNode.formatted && matchingIncoming?.formatted && baseNode.formattingTag !== matchingIncoming.formattingTag;
+
+		const shouldHighlight = condition1 || condition2;
 
 		if (shouldHighlight) {
 			baseRanges.push({ start: baseNode.start, end: baseNode.end });
@@ -128,12 +131,39 @@ function getFormattingDiffRanges(
 
 		const matchingBase = baseTextMap.get(incomingNode.text) ?? null;
 
-		const shouldHighlight =
-			(incomingNode.formatted && (!matchingBase || !matchingBase.formatted)) ||
-			(incomingNode.formatted && matchingBase?.formatted && incomingNode.formattingTag !== matchingBase.formattingTag);
+		const condition1 = incomingNode.formatted && (!matchingBase || !matchingBase.formatted);
+
+		const condition2 =
+			incomingNode.formatted && matchingBase?.formatted && incomingNode.formattingTag !== matchingBase.formattingTag;
+
+		const shouldHighlight = condition1 || condition2;
 
 		if (shouldHighlight) {
 			incomingRanges.push({ start: incomingNode.start, end: incomingNode.end });
+		}
+	}
+
+	for (const incomingNode of incomingTextNodes) {
+		if (!incomingNode.text || !incomingNode.formatted) continue;
+
+		const matchingBase = baseTextMap.get(incomingNode.text) ?? null;
+
+		if (!matchingBase || !matchingBase.formatted) {
+			for (const baseNode of baseTextNodes) {
+				if (!baseNode.text || baseNode.formatted) continue;
+
+				const baseText = baseNode.node.textContent || '';
+				const incomingText = incomingNode.text.trim();
+
+				if (incomingText && baseText.includes(incomingText)) {
+					const index = baseText.indexOf(incomingText);
+					const relativeStart = baseNode.start + index;
+					const relativeEnd = relativeStart + incomingText.length;
+
+					baseRanges.push({ start: relativeStart, end: relativeEnd });
+					break;
+				}
+			}
 		}
 	}
 
