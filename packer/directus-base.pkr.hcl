@@ -126,13 +126,6 @@ variable "headless" {
   description = "Run QEMU in headless mode (set to false for debugging)"
 }
 
-variable "github_token" {
-  type        = string
-  default     = ""
-  sensitive   = true
-  description = "GitHub token for accessing GitHub Packages (required for @face-to-face-it packages)"
-}
-
 # =============================================================================
 # Locals
 # =============================================================================
@@ -387,36 +380,26 @@ build {
     ]
   }
 
-  # Install Template API from GitHub Packages
+  # Install Template API from GitHub repository
   provisioner "shell" {
-    environment_vars = [
-      "GITHUB_TOKEN=${var.github_token}"
-    ]
     inline = [
       "echo '=== Installing Directus Template API ==='",
       "sudo mkdir -p /opt/template-api",
       "sudo chown $(whoami):$(whoami) /opt/template-api",
       "cd /opt/template-api",
       
-      "# Configure npm/pnpm to use GitHub Packages for @face-to-face-it scope",
-      "# GitHub Packages requires authentication even for public packages",
-      "cat > .npmrc << NPMRC",
-      "@face-to-face-it:registry=https://npm.pkg.github.com",
-      "//npm.pkg.github.com/:_authToken=$${GITHUB_TOKEN}",
-      "NPMRC",
-      
-      "# Initialize package.json and install the template CLI API",
+      "# Initialize package.json",
       "pnpm init",
-      "pnpm add @face-to-face-it/directus-template-cli@0.7.4",
       
-      "# Remove .npmrc after install (don't leave token on disk)",
-      "rm -f .npmrc",
+      "# Install directly from GitHub repo (avoids GitHub Packages auth issues)",
+      "# Using the specific tag/version from the repo",
+      "pnpm add github:Face-to-Face-IT/directus-template-api#v0.7.4",
       
       "# Create logs directory",
       "mkdir -p /opt/template-api/logs",
       
       "# Create symlink to bin for easier access",
-      "ln -sf /opt/template-api/node_modules/@face-to-face-it/directus-template-cli/bin /opt/template-api/bin",
+      "ln -sf /opt/template-api/node_modules/directus-template-cli/bin /opt/template-api/bin",
       
       "echo '  Template API installed at /opt/template-api'"
     ]

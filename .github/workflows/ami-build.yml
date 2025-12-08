@@ -122,7 +122,6 @@ jobs:
     permissions:
       contents: read
       id-token: write # For OIDC authentication (if configured)
-      packages: read  # For GitHub Packages access
 
     steps:
       - name: Checkout repository
@@ -156,7 +155,6 @@ jobs:
             -only="amazon-ebs.directus-base" \
             -var "aws_region=${{ env.AWS_REGION }}" \
             -var "build_version=${{ needs.check.outputs.version }}" \
-            -var "github_token=${{ secrets.GITHUB_TOKEN }}" \
             -color=false \
             directus-base.pkr.hcl
         env:
