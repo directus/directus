@@ -126,6 +126,13 @@ variable "headless" {
   description = "Run QEMU in headless mode (set to false for debugging)"
 }
 
+variable "github_token" {
+  type        = string
+  default     = ""
+  sensitive   = true
+  description = "GitHub token for accessing GitHub Packages (required for @face-to-face-it packages)"
+}
+
 # =============================================================================
 # Locals
 # =============================================================================
@@ -382,6 +389,9 @@ build {
 
   # Install Template API from GitHub Packages
   provisioner "shell" {
+    environment_vars = [
+      "GITHUB_TOKEN=${var.github_token}"
+    ]
     inline = [
       "echo '=== Installing Directus Template API ==='",
       "sudo mkdir -p /opt/template-api",
@@ -389,8 +399,11 @@ build {
       "cd /opt/template-api",
       
       "# Configure npm/pnpm to use GitHub Packages for @face-to-face-it scope",
-      "# GitHub Packages allows public package downloads without authentication",
-      "echo '@face-to-face-it:registry=https://npm.pkg.github.com' > .npmrc",
+      "# GitHub Packages requires authentication even for public packages",
+      "cat > .npmrc << NPMRC",
+      "@face-to-face-it:registry=https://npm.pkg.github.com",
+      "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}",
+      "NPMRC",
       
       "# Initialize package.json and install the template CLI API",
       "pnpm init",
