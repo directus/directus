@@ -112,6 +112,18 @@ function disable() {
 	input.value?.blur();
 }
 
+function onFocusOut(event: FocusEvent) {
+	if (filterActive.value) return;
+
+	// Check if focus is moving to another element inside the search component -- prevents race condition on touch vs click events
+	const searchElement = (event.currentTarget as HTMLElement)?.closest('.search-input');
+	const relatedTarget = event.relatedTarget as HTMLElement | null;
+
+	if (relatedTarget && searchElement?.contains(relatedTarget)) return;
+
+	disable();
+}
+
 function emitValue() {
 	if (!input.value) return;
 	const value = input.value?.value;
@@ -120,7 +132,14 @@ function emitValue() {
 </script>
 
 <template>
-	<v-badge bottom right class="search-badge" :value="activeFilterCount" :disabled="!activeFilterCount || filterActive">
+	<v-badge
+		bottom
+		right
+		class="search-badge"
+		:class="{ active, 'filter-active': filterActive }"
+		:value="activeFilterCount"
+		:disabled="!activeFilterCount || filterActive"
+	>
 		<div
 			v-click-outside="{
 				handler: disable,
@@ -153,7 +172,7 @@ function emitValue() {
 				@paste="emitValue"
 				@keydown.esc="disable"
 				@focusin="activate"
-				@focusout="filterActive ? undefined : disable()"
+				@focusout="onFocusOut"
 			/>
 			<div class="spacer" />
 			<v-icon
@@ -196,6 +215,20 @@ function emitValue() {
 	--v-badge-background-color: var(--theme--primary);
 	--v-badge-offset-y: 8px;
 	--v-badge-offset-x: 8px;
+
+	@media (width <= 400px) {
+		&.active,
+		&.filter-active {
+			position: absolute;
+			inset-inline: 0;
+			z-index: 1;
+			background-color: var(--theme--header--background);
+		}
+	}
+
+	:deep(.badge) {
+		pointer-events: none;
+	}
 }
 
 .search-input {
@@ -377,6 +410,13 @@ function emitValue() {
 	border-start-end-radius: 0;
 	border-end-end-radius: var(--search-input-radius);
 	border-end-start-radius: var(--search-input-radius);
+
+	@media (width <= 400px) {
+		inset-inline: 0;
+		inline-size: calc(100% + var(--theme--border-width) * 2);
+		min-inline-size: 0;
+		border-start-start-radius: 0;
+	}
 
 	&.active {
 		border-color: var(--theme--form--field--input--border-color-focus);
