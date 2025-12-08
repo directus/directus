@@ -425,7 +425,7 @@ Creates a standard FieldsService mock with common methods pre-configured.
 
 **Mocked methods:**
 
-In addition to the base `ItemsService` method the following `FielsServive` specific methods are available:
+In addition to the base `ItemsService` method the following `FieldsService` specific methods are available:
 
 - `addColumnToTable` → no-op function
 - `addColumnIndex` → resolves to undefined

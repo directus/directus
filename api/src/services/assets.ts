@@ -55,11 +55,11 @@ export class AssetsService {
 	}
 
 	private zip(options: { folders?: Map<string, string>; files: Pick<File, 'id' | 'folder' | 'filename_download'>[] }) {
-		const archive = archiver('zip');
-
 		if (options.files.length === 0) {
 			throw new InvalidPayloadError({ reason: 'No files found in the selected folders tree' });
 		}
+
+		const archive = archiver('zip');
 
 		const complete = async () => {
 			const deduper = new NameDeduper();

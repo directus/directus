@@ -21,13 +21,13 @@ export class NameDeduper {
 			this.map[groupKey]![name]! += 1;
 
 			return dedupedName;
-		} else {
-			if (!this.map[groupKey]) {
-				this.map[groupKey] = {};
-			}
-
-			this.map[groupKey][name] = 1;
 		}
+
+		if (!this.map[groupKey]) {
+			this.map[groupKey] = {};
+		}
+
+		this.map[groupKey][name] = 1;
 
 		return name;
 	}
