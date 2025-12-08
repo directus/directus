@@ -22,6 +22,12 @@
 #   ENABLE_SSL          - Whether to enable SSL (true/false)
 #   SSL_EMAIL           - Email for Let's Encrypt
 #   BACKUP_BUCKET       - S3 bucket for backups
+#
+# Optional environment variables (for BSL 1.1 license consent):
+#   PROJECT_OWNER       - Project owner email (defaults to ADMIN_EMAIL)
+#   PROJECT_USAGE       - Usage type: personal/educational/non-profit/commercial/agency
+#   ORG_NAME            - Organization name
+#   PRODUCT_UPDATES     - Whether to receive product updates (true/false)
 # =============================================================================
 
 set -euo pipefail
@@ -60,6 +66,12 @@ DIRECTUS_PORT="${DIRECTUS_PORT:-8055}"
 ENABLE_SSL="${ENABLE_SSL:-true}"
 SSL_EMAIL="${SSL_EMAIL:-$ADMIN_EMAIL}"
 BACKUP_BUCKET="${BACKUP_BUCKET:-}"
+
+# Project owner defaults (BSL 1.1 license consent)
+PROJECT_OWNER="${PROJECT_OWNER:-$ADMIN_EMAIL}"
+PROJECT_USAGE="${PROJECT_USAGE:-commercial}"
+ORG_NAME="${ORG_NAME:-}"
+PRODUCT_UPDATES="${PRODUCT_UPDATES:-false}"
 
 echo "=== Configuration ==="
 echo "  Tenant: $TENANT_NAME"
@@ -153,6 +165,44 @@ else
     BOOTSTRAP_EXIT=$?
     echo "  WARNING: Bootstrap failed with exit code $BOOTSTRAP_EXIT"
     echo "  This may be okay if the database was already initialized"
+fi
+
+# =============================================================================
+# Set Project Owner (BSL 1.1 License Consent)
+# =============================================================================
+# Set project owner fields to skip the consent screen on first login.
+# This updates directus_settings after bootstrap to pre-fill the license
+# consent fields required by Directus 11.x (BSL 1.1 license).
+if [[ -n "$PROJECT_OWNER" ]]; then
+    echo "=== Setting Project Owner (BSL 1.1 License) ==="
+    
+    # Convert boolean string to PostgreSQL boolean
+    PG_PRODUCT_UPDATES="false"
+    if [[ "$PRODUCT_UPDATES" == "true" ]]; then
+        PG_PRODUCT_UPDATES="true"
+    fi
+    
+    # Escape single quotes in org_name for SQL
+    ESCAPED_ORG_NAME="${ORG_NAME//\'/\'\'}"
+    
+    # Update directus_settings with project owner information
+    # project_status = NULL indicates consent has been given
+    if PGSSLMODE=require PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "
+        UPDATE directus_settings SET 
+            project_owner = '$PROJECT_OWNER',
+            project_usage = '$PROJECT_USAGE',
+            org_name = '$ESCAPED_ORG_NAME',
+            product_updates = $PG_PRODUCT_UPDATES,
+            project_status = NULL
+        WHERE id = 1;
+    " 2>&1; then
+        echo "  Project owner set to $PROJECT_OWNER"
+        echo "  Project usage: $PROJECT_USAGE"
+        [[ -n "$ORG_NAME" ]] && echo "  Organization: $ORG_NAME"
+    else
+        echo "  WARNING: Failed to set project owner"
+        echo "  This may be okay if the columns don't exist yet (older Directus version)"
+    fi
 fi
 
 # =============================================================================
