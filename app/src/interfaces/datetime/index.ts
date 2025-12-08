@@ -1,3 +1,4 @@
+import { getTimeZoneOptions } from '@/utils/timezones';
 import { defineInterface } from '@directus/extensions';
 import type { DeepPartial, Field } from '@directus/types';
 import InterfaceDateTime from './datetime.vue';
@@ -81,6 +82,23 @@ export default defineInterface({
 						},
 					},
 				);
+			}
+
+			if (field.type === 'timestamp') {
+				fields.push({
+					field: 'tz',
+					name: '$t:displays.datetime.timezone',
+					type: 'string',
+					meta: {
+						interface: 'select-dropdown',
+						width: 'full',
+						options: {
+							choices: getTimeZoneOptions(),
+							allowOther: true,
+						},
+						note: '$t:displays.datetime.timezone_note',
+					},
+				});
 			}
 		} else {
 			fields.push(
