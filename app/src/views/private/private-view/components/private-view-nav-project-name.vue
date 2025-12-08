@@ -42,6 +42,7 @@ const navBarStore = useNavBarStore();
 	background: var(--theme--navigation--project--background);
 	border-block-end: var(--theme--navigation--project--border-width) solid
 		var(--theme--navigation--project--border-color);
+		border-inline-end: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
 
 	.name-container {
 		flex-grow: 1;
