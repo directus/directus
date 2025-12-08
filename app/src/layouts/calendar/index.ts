@@ -39,7 +39,6 @@ export default defineLayout<LayoutOptions>({
 		actions: CalendarActions,
 	},
 	setup(props, { emit }) {
-		const sidebarStore = useSidebarStore();
 		const aiStore = useAiStore();
 		const { info } = useServerStore();
 
