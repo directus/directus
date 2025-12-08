@@ -4,7 +4,7 @@ import { ref, watch } from 'vue';
 
 export const useSidebarStore = defineStore('sidebar-store', () => {
 	const collapsed = useLocalStorage('sidebar-collapsed', false);
-	const size = useLocalStorage('sidebar-size', 250);
+	const size = useLocalStorage('sidebar-size', 370);
 
 	const activeAccordionItem = ref<string>();
 
