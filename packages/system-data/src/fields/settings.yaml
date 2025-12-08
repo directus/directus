@@ -740,6 +740,7 @@ fields:
     options:
       iconRight: lock
       masked: true
+      autocomplete: 'off'
     width: half
     group: ai_group
 
@@ -750,6 +751,7 @@ fields:
     options:
       iconRight: lock
       masked: true
+      autocomplete: 'off'
     width: half
     group: ai_group
 
