@@ -12,7 +12,6 @@ This directory contains mock implementations for commonly used modules in servic
 - **[cache.ts](#cachets)** - Cache system mocks
 - **[schema.ts](#schemats)** - Schema inspector mocks
 - **[emitter.ts](#emitterts)** - Event emitter mocks
-- **[storage.ts](#storagets)** - Storage driver mocks
 - **[items-service.ts](#items-servicets)** - ItemsService mocks
 - **[fields-service.ts](#fields-servicets)** - FieldsService mocks
 - **[files-service.ts](#files-servicets)** - FilesService mocks
@@ -360,36 +359,6 @@ expect(emitter.emitAction).toHaveBeenCalledWith(
 	expect.objectContaining({ collection: 'test_collection' }),
 	expect.any(Object),
 );
-```
-
----
-
-### storage.ts
-
-Provides storage driver mocking utilities.
-
-#### `mockStorage()`
-
-Creates a standard storage mock with `registerDriver`,`registerLocation` and `location` methods.
-
-**Returns:** Mock module object for `vi.mock()`
-
-**Example:**
-
-```typescript
-// Standard usage
-vi.mock('../storage.js', async () => {
-	const { mockStorage } = await import('../test-utils/storage.js');
-	return mockStorage();
-});
-
-// Dynamically change emitter behavior during tests
-import { getStorage } from '../storage.js';
-
-// Mock returned location stat
-const storage = await getStorage();
-const store = storage.location('local');
-vi.mocked(store.read).mockResolvedValue(Readable.from(['lorem']));
 ```
 
 ---

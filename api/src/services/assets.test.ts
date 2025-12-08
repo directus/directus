@@ -1,4 +1,5 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import type { Driver, StorageManager } from '@directus/storage';
 import type { File, SchemaOverview } from '@directus/types';
 import { Readable } from 'node:stream';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
@@ -32,10 +33,7 @@ vi.mock('../utils/get-schema.js', () => ({
 	getSchema: vi.fn(),
 }));
 
-vi.mock('../storage/index.js', async () => {
-	const { mockStorage } = await import('../test-utils/storage.js');
-	return mockStorage();
-});
+vi.mock('../storage/index.js');
 
 import archiver, { type Archiver } from 'archiver';
 import { getStorage } from '../storage/index.js';
@@ -54,8 +52,23 @@ describe('AssetsService', () => {
 		relations: [],
 	} as SchemaOverview;
 
+	let mockDriver: Partial<Driver>;
+	let mockStorage: Partial<StorageManager>;
+
 	// Common setup
 	beforeEach(() => {
+		vi.resetAllMocks();
+
+		mockDriver = {
+			read: vi.fn().mockResolvedValue(Readable.from(['stream'])),
+			exists: vi.fn().mockResolvedValue(true),
+		};
+
+		mockStorage = {
+			location: vi.fn(() => mockDriver as Driver),
+		};
+
+		vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
 		vi.mocked(archiver).mockReturnValue(mockArchiver as unknown as Archiver);
 	});
 
@@ -197,8 +210,14 @@ describe('AssetsService', () => {
 				{ id: 'file1', folder: null, filename_download: 'missing.txt', storage: 'local' },
 			] as File[]);
 
-			const storage = await getStorage();
-			vi.spyOn(storage.location('local'), 'exists').mockResolvedValue(false);
+			vi.spyOn(FilesService.prototype, 'readOne').mockResolvedValue({
+				id: 'file1',
+				folder: null,
+				filename_download: 'missing.txt',
+				storage: 'local',
+			} as File);
+
+			vi.mocked(mockDriver.exists!).mockResolvedValue(false);
 
 			const assetsService = new AssetsService({
 				schema: mockSchema,
