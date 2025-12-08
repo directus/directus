@@ -7,6 +7,7 @@ import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
+import { BREAKPOINTS } from '@/constants';
 import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
@@ -24,7 +25,7 @@ import { useCollection } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
-import { breakpointsTailwind, useBreakpoints, useLocalStorage } from '@vueuse/core';
+import { useBreakpoints, useLocalStorage } from '@vueuse/core';
 import { computed, onBeforeUnmount, provide, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
@@ -271,7 +272,7 @@ const livePreviewMode = useLocalStorage<'split' | 'popup'>('live-preview-mode', 
 const livePreviewSizeDefault = 50;
 const livePreviewSizeStorage = useLocalStorage<number>('live-preview-size', livePreviewSizeDefault);
 
-const breakpoints = useBreakpoints(breakpointsTailwind);
+const breakpoints = useBreakpoints(BREAKPOINTS);
 const isMobile = breakpoints.smallerOrEqual('sm');
 
 const livePreviewActive = computed(
