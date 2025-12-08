@@ -2263,7 +2263,8 @@ interfaces:
     flow-select: Flow Select
   header:
     header: Header
-    description: Create a header with a title, subtitle, help information, and/or links to help users navigate or run Flows.
+    description:
+      Create a header with a title, subtitle, help information, and/or links to help users navigate or run Flows.
     links: Links
     action_type: Action Type
     help:
@@ -2277,7 +2278,9 @@ interfaces:
       note: If enabled, this will override the Help field with values from the Help Translations String field.
     help_translations_string:
       title: Help Translations String
-      note: You will need to create a translation value for the key in the Translations settings of your project with the translated content for each language you want to support.
+      note:
+        You will need to create a translation value for the key in the Translations settings of your project with the
+        translated content for each language you want to support.
     collapse: Collapse help
 displays:
   translations:
