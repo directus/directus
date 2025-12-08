@@ -4,6 +4,7 @@
  */
 
 import { vi } from 'vitest';
+import { mockItemsService } from './items-service.js';
 
 /**
  * Creates a standard FieldsService mock for service tests
@@ -15,7 +16,7 @@ import { vi } from 'vitest';
  * ```typescript
  * // Standard usage
  * vi.mock('./fields.js', async () => {
- *   const { mockFieldsService } = await import('../__mocks__/fields-service.js');
+ *   const { mockFieldsService } = await import('../test-utils/fields-service.js');
  *   return mockFieldsService();
  * });
  *
@@ -27,7 +28,7 @@ import { vi } from 'vitest';
  * ```
  */
 export function mockFieldsService() {
-	const FieldsService = vi.fn();
+	const { ItemsService: FieldsService } = mockItemsService();
 
 	// Mock common methods used by other services (like CollectionsService)
 	FieldsService.prototype.addColumnToTable = vi.fn().mockImplementation(() => {});
