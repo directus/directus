@@ -393,7 +393,7 @@ build {
       
       "# Install directly from GitHub repo (avoids GitHub Packages auth issues)",
       "# Using the specific tag/version from the repo",
-      "pnpm add github:Face-to-Face-IT/directus-template-api#v0.7.4",
+      "pnpm add github:Face-to-Face-IT/directus-template-api#v0.7.4-ftf.1",
       
       "# Create logs directory",
       "mkdir -p /opt/template-api/logs",
