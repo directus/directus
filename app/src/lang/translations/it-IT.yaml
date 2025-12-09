@@ -753,7 +753,6 @@ errors:
   VALUE_OUT_OF_RANGE: Il valore è fuori dall'intervallo
   VALUE_TOO_LONG: Il valore è troppo lungo
 security: Sicurezza
-value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
 create_bookmark: Crea Segnalibro
 edit_bookmark: Modifica Segnalibro
@@ -1152,48 +1151,6 @@ discard_changes_copy: Sei sicuro di voler annullare tutte le modifiche che hai f
 show_x_axis: Mostra asse X
 show_y_axis: Mostra asse Y
 keep_editing: Continua a modificare
-page_help_collections_overview: '**Panoramica delle raccolte** — Elenco di tutte le raccolte a cui hai accesso.'
-page_help_collections_collection: >-
-  **Sfoglia gli elementi** — Elenca tutti gli elementi di {collection} a cui hai accesso. Personalizza il layout, i filtri e l'ordinamento per personalizzare la tua vista e salvare i segnalibri di queste diverse configurazioni per un accesso rapido.
-page_help_collections_item: >-
-  **Dettaglio Elemento** — Un form per la visualizzazione e la gestione di questo elemento. Questa barra laterale contiene anche una cronologia completa di revisioni e commenti incorporati.
-page_help_activity_collection: >-
-  **Consulta Attività** — Un elenco completo di tutte le attività di sistema e sui contenuti del tuo utente.
-page_help_docs_global: >-
-  **Panoramica della documentazione** — Documenti personalizzati specificamente per la versione e lo schema di questo progetto.
-page_help_files_collection: >-
-  **File Library** — Elenca tutti gli asset dei file caricati su questo progetto. Personalizza il layout, i filtri e l'ordinamento per creare la tua vista e anche salvare i segnalibri di queste diverse configurazioni per un accesso rapido.
-page_help_files_item: >-
-  **Dettagli del file** — Un form per la gestione dei metadati dei file, la modifica dell'asset originale e l'aggiornamento delle impostazioni di accesso.
-page_help_settings_project: "**Impostazioni** — Opzioni di configurazione globale del tuo progetto."
-page_help_settings_appearance: "**Aspetto** — Opzioni relative ad aspetto e temi del progetto."
-page_help_settings_extensions: '**Estensioni** — Le estensioni installate nel tuo progetto.'
-page_help_settings_datamodel_collections: >-
-  **Modello dei dati: Raccolte** — Elenca tutte le raccolte disponibili. Include raccolte visibili, nascoste e di sistema, così come tabelle di database non gestite che possono essere aggiunte.
-page_help_settings_datamodel_fields: >-
-  **Modello dei dati: Raccolta** — Un modulo per la gestione di questa raccolta e dei suoi campi.
-page_help_settings_system_logs: '**Log di sistema** — Accedi a un live stream dei log di sistema.'
-page_help_settings_policies_collection: '**Sfoglia le policy** — Elenca tutte le policy nel progetto.'
-page_help_settings_roles_collection: '**Sfoglia le policy** — Elenca tutte le policy nel progetto.'
-page_help_settings_roles_item: "**Dettagli del ruolo** — Gestisce i permessi di un ruolo e altre impostazioni."
-page_help_settings_presets_collection: >-
-  **Sfoglia Preset** — Elenca tutti i preset del progetto, tra cui: utente, ruolo, segnalibri globali e viste predefinite.
-page_help_settings_presets_item: >-
-  **Dettagli Preset** — Un modulo per la gestione dei segnalibri e dei preset predefiniti delle raccolte.
-page_help_settings_webhooks_collection: '**Sfoglia i webhooks** — Elenca tutti i webhooks nel progetto.'
-page_help_settings_webhooks_item: '**Dettaglio Webhook** — Un modulo per creare e gestire webhook del progetto.'
-page_help_settings_flows_collection: '**Sfoglia i flussi** — Elenca tutti i flussi nel progetto.'
-page_help_settings_flows_item: '**Dettagli del flusso** — Spazio di lavoro per gestire una o più operazioni.'
-page_help_settings_translations_collection: '**Sfoglia traduzioni personalizzate** — Elenca tutte le traduzioni personalizzate all''interno del progetto.'
-page_help_settings_translations_item: '**Dettaglio traduzioni personalizzate** — Un modulo per la visualizzazione e la gestione di questo elemento.'
-page_help_users_collection: '**Elenco utenti** — Elenca tutti gli utenti di sistema all''interno di questo progetto.'
-page_help_users_item: >-
-  **Dettagli utente** — Gestisci le informazioni del tuo account o visualizza i dettagli di altri utenti.
-page_help_insights_overview: '**Approfondimenti** — Elenco delle bacheche a cui hai accesso.'
-page_help_insights_dashboard: '**Bacheca** — Spazio di lavoro per gestire uno o più pannelli'
-page_help_marketplace_account: '**Account** — Editore o responsabile di un''estensione pubblicata.'
-page_help_marketplace_registry: '**Registry** — Estensioni disponibili nel Marketplace di Directus.'
-page_help_marketplace_extension: '**Estensione** — Estensione nel Marketplace di Directus.'
 activity_feed: Feed Attività
 add_new: Aggiungi nuovo
 create_new: Crea Nuovo
@@ -1575,6 +1532,22 @@ unlimited_usage: Utilizzo illimitato
 uses_left: Nessun utilizzo rimanente | 1 utilizzo rimanente | {n} utilizzi rimanenti
 no_shares: Nessuna condivisione da mostrare
 new_share: Nuova condivisione
+ai:
+  input: Input
+  unknown: Sconosciuto
+  settings: impostazioni
+  tool_approval:
+    disabled: Disabilitato
+ai_tools:
+  items: Elementi
+  files: File
+  folders: Cartelle
+  flows: Flussi
+  trigger-flow: Attiva il flusso
+  operations: Operazioni
+  schema: Schema
+  collections: Raccolte
+  fields: Campi
 mcp_prompts_collection_schema:
   messages_role_user: Utente
 expired: Scaduto
