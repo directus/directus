@@ -717,7 +717,6 @@ errors:
   VALUE_OUT_OF_RANGE: Valor fora da gama
   VALUE_TOO_LONG: O valor é muito longo
 security: Segurança
-value_hashed: Valor Guardado em Segurança
 create_bookmark: Criar marcador
 edit_bookmark: Editar marcador
 edit_personal_bookmark: Editar marcador pessoal
@@ -940,14 +939,6 @@ discard_changes: Cancelar alterações
 discard_all_changes: Descartar todas as Alterações
 discard_changes_copy: Tem a certeza de que pretende ignorar as alterações?
 keep_editing: Continuar a editar
-page_help_collections_collection: >-
-  **Navegando em itens** — Lista todos os {collection} itens que você tem acesso. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
-page_help_collections_item: >-
-  **Detalhes do Item** — Um formulário para visualizar e gerenciar este item. Esta barra lateral também contém um histórico completo de revisões e comentários incorporados.
-page_help_activity_collection: >-
-  **Atividade** — Uma listagem abrangente do sistema de todos os seus usuários e atividade de conteúdo.
-page_help_docs_global: >-
-  **Visão geral de documentação** — Documentação feita especificamente para versão e esquema deste projeto.
 add_new: Adicionar novo
 create_new: Criar Novo
 all: Todos
@@ -1073,6 +1064,17 @@ inline: Em linha
 comment: Comentário
 live_preview:
   new_window: Abrir numa Nova Janela
+ai:
+  unknown: Desconhecido
+  settings: Configurações
+  tool_approval:
+    disabled: Desativado
+ai_tools:
+  items: Items
+  files: Ficheiros
+  folders: Pastas
+  flows: Fluxos
+  operations: Operações
 mcp_prompts_collection_schema:
   messages_role_user: Utilizador
 share_copy_link_error: Não foi possível copiar a hiperligação
