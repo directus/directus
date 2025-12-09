@@ -255,6 +255,7 @@ notifications: Sciigoj
 page_not_found: Paĝo ne trovita
 display: Montri
 title: Titolo
+subtitle: Subtitolo
 revision_delta_created: Kreita
 revision_delta_created_externally: Ekstere kreita
 revision_delta_deleted: Forigita
@@ -1061,6 +1062,8 @@ interfaces:
     remove_token: Forigi la ĵetonon
   system-raw-editor:
     system-raw-editor: Kruda redaktilo
+  header:
+    links: Ligiloj
 displays:
   translations:
     translations: Tradukoj
