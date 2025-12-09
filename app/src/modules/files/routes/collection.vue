@@ -382,6 +382,7 @@ async function downloadFiles() {
 	a.href = url;
 	a.download = filename ?? `unknown-${getDateTimeFormatted()}`;
 	a.click();
+	URL.revokeObjectURL(url);
 }
 </script>
 

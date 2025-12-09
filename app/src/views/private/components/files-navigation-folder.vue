@@ -177,6 +177,7 @@ async function downloadFolder() {
 	a.href = url;
 	a.download = filename ?? `folder-unknown-${getDateTimeFormatted()}.zip`;
 	a.click();
+	URL.revokeObjectURL(url);
 }
 </script>
 
