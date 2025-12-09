@@ -130,6 +130,11 @@ const splitterCollapsed = computed({
 	overflow-y: auto;
 }
 
+.v-list.skip-menu.mobile-skip-menu {
+	/* 60 (module-bar) + 4 (spacing) */
+	inset-inline-start: 64px;
+}
+
 .mobile-nav {
 	inline-size: 0;
 	max-inline-size: 340px;
