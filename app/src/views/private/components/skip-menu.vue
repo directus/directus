@@ -70,7 +70,7 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 	>
 		<v-list-item
 			v-for="item in items"
-			:key="item"
+			:key="item.key"
 			:href="$router.resolve(item.hash).href"
 			target="_self"
 			@click="item.action"
