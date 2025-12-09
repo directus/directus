@@ -629,8 +629,6 @@ discard_all_changes: Forĵeti ĉiujn ŝanĝojn
 discard_changes_copy: Ĉu vi certas, ke vi volas forĵeti ĉiujn viajn ŝanĝojn?
 show_x_axis: Montri la X-akson
 show_y_axis: Montri la Y-akson
-page_help_collections_overview: '**Superrigaro de kolektoj** — Listo de ĉiuj kolektoj, kiujn vi povas atingi.'
-page_help_insights_dashboard: '**Stirpanelo** — Laborspaco por administri unu aŭ pliajn panelojn'
 add_new: Aldoni novan
 create_new: Krei novan
 all: Ĉiuj
@@ -833,6 +831,19 @@ live_preview:
 shares: Konigoj
 unlimited_usage: Senlima uzado
 new_share: Nova konigo
+ai:
+  unknown: Nekonata
+  settings: Agordoj
+  tool_approval:
+    disabled: Malŝaltita
+ai_tools:
+  items: Eroj
+  files: Dosieroj
+  flows: Fluoj
+  operations: Operacioj
+  schema: Skemo
+  collections: Kolektoj
+  fields: Kampoj
 mcp_prompts_collection_schema:
   messages_role_user: Uzanto
 expired: Eksvalidiĝinta
