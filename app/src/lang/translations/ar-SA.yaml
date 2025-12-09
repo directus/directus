@@ -253,6 +253,7 @@ field_permissions: أذونات العنصر
 field_validation: مجال المصادقة
 field_presets: الإعداد المسبق للحقل
 permissions_for_role: 'عناصر الدور {role} يمكن أن {action}.'
+permissions_for_policy: ''
 fields_for_role: 'عناصر الدور {role} يمكن أن {action}.'
 fields_for_policy: '.'
 validation_for_role: 'الحقل {action} قواعد الدور {role} يجب أن يطيع.'
@@ -744,7 +745,6 @@ errors:
   VALUE_OUT_OF_RANGE: القيمة خارج النطاق
   VALUE_TOO_LONG: الاسم طويل جدا
 security: الأمان
-value_hashed: تم تجزئة القيمة بشكل آمن
 bookmark_name: اسم الإشارة المرجعية...
 create_bookmark: إنشاء إشارة مرجعية
 edit_bookmark: تحرير الإشارة المرجعية
@@ -1120,44 +1120,6 @@ discard_changes_copy: هل أنت متيقِّن من أنك تريد تجاهل
 show_x_axis: إظهار المحور X
 show_y_axis: إظهار المحور Y
 keep_editing: استمر في التحرير
-page_help_collections_overview: '**نظرة عامة للمجموعات** - قائمة بجميع المجموعات التي لديك حق الوصول إليها.'
-page_help_collections_collection: >-
-  **استعراض العناصر** — قائمة بجميع عناصر {collection} التي لديك حق الوصول إليها. تخصيص نموذج العرض، التصفية، والترتيب لتصميم العرض الخاص بك، وحتى حفظ الإشارات المرجعية لهذه الإعدادات المختلفة للوصول السريع.
-page_help_collections_item: >-
-  **تفاصيل العنصر** - نموذج لمشاهدة وإدارة هذا العنصر. يحتوي هذا الشريط الجانبي أيضا على سجل كامل من التنقيحات، والتعليقات.
-page_help_activity_collection: >-
-  **تصفح النشاط** - قائمة شاملة لجميع انشطة النظام و المحتوى للمستخدم.
-page_help_docs_global: >-
-  **عرض عام للوثائق** - وثائق مصممة خصيصا لنسخة هذا المشروع ومخططه.
-page_help_files_collection: >-
-  **مكتبة الملفات** - قائمة جميع أصول الملفات التي تم تحميلها إلى هذا المشروع. تخصيص نموذج العرض، التصفية، والترتيب لتصميم العرض الخاص بك، وحتى حفظ الإشارات المرجعية لهذه الإعدادات المختلفة للوصول السريع.
-page_help_files_item: >-
-  **تفاصيل الملف** - نموذج لإدارة بيانات التعريف للملفات، تحرير الملف الأصلي، وتحديث إعدادات الوصول.
-page_help_settings_project: "**الإعدادات** — خيارات التكوين العالمي لمشروعك."
-page_help_settings_appearance: "**المظهر** — مظهر مشروعك وخيارات السمات."
-page_help_settings_extensions: '**الإضافات** - الإضافات المثبتة في مشروعك.'
-page_help_settings_datamodel_collections: >-
-  **نموذج البيانات: المجموعات** - قوائم جميع المجموعات المتاحة. ويشمل ذلك مجموعات النظام المرئية والمخفية، فضلا عن جداول قواعد البيانات غير المدارة التي يمكن إضافتها.
-page_help_settings_datamodel_fields: >-
-  **نموذج البيانات: المجموعة** - نموذج لإدارة هذه المجموعة وحقولها.
-page_help_settings_roles_item: "**تفاصيل الدور** - إدارة أذونات الدور والإعدادات الأخرى."
-page_help_settings_presets_collection: >-
-  **استعراض الإعدادات المسبقة** - عرض جميع الإعدادات المسبقة في المشروع، بما في ذلك: المستخدم، الدور، الإشارات المرجعية العالمية، فضلا عن نماذج عروض الافتراضية.
-page_help_settings_presets_item: >-
-  **تفاصيل الإعداد المسبق** - نموذج لإدارة الإشارات المرجعية والضبط المسبق الافتراضي للمجموعات.
-page_help_settings_webhooks_collection: '**تصفح Webhooks** - عرض جميع webhooks داخل المشروع.'
-page_help_settings_webhooks_item: '**تفاصيل Webhook ** - نموذج لإنشاء وإدارة webhook للمشروع.'
-page_help_settings_flows_collection: '**تصفح التدفقات** - عرض جميع التدفقات داخل المشروع.'
-page_help_settings_flows_item: '**تفاصيل التدفق** - مساحة عمل لإدارة عملية واحدة أو أكثر.'
-page_help_settings_translations_collection: '**تصفح الترجمات المخصصة** - يدرج جميع الترجمات المخصصة داخل المشروع.'
-page_help_settings_translations_item: '**تفاصيل الترجمات المخصصة** - نموذج لعرض وإدارة هذا العنصر.'
-page_help_users_collection: '**دليل المستخدم** - يعرض جميع مستخدمي النظام داخل هذا المشروع.'
-page_help_users_item: >-
-  **تفاصيل المستخدم** - إدارة معلومات حسابك، أو عرض تفاصيل المستخدمين الآخرين.
-page_help_insights_overview: '**البصائر** - قائمة لوحات التحكم التي لديك حق الوصول إليها.'
-page_help_insights_dashboard: '**لوحة البيانات** - مساحة العمل لإدارة لوحة واحدة أو أكثر'
-page_help_marketplace_account: '**الحساب** - ناشر أو مشرف امتداد منشور.'
-page_help_marketplace_registry: '**السجل** - الإضافات المتاحة في سوق Directus.'
 activity_feed: موجز النشاط
 add_new: إضافة جديدة
 create_new: أنشئ جديد
@@ -1495,6 +1457,21 @@ shares: مشاركات
 unlimited_usage: استخدام غير محدود
 no_shares: لا توجد مشاركات لإظهارها
 new_share: مشاركة جديدة
+ai:
+  input: إدخال
+  unknown: غير معروف
+  settings: إعدادات
+  tool_approval:
+    disabled: مُعطل
+ai_tools:
+  items: العناصر
+  files: الملفات
+  folders: المجلدات
+  flows: التدفقات
+  operations: عمليات
+  schema: مخطط
+  collections: مجموعات
+  fields: حقول
 mcp_prompts_collection_schema:
   messages_role_user: مستخدم
 expired: منتهية الصلاحية
