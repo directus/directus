@@ -661,7 +661,7 @@ describe('#stat', () => {
 
 		expect(driver['getFullSignature']).toHaveBeenCalledWith({
 			type: 'upload',
-			public_id: joinActual(sample.path.inputFolder, sample.publicId.input),
+			public_id: normalizePath(joinActual(sample.path.inputFolder, sample.publicId.input), { removeLeading: true }),
 			api_key: sample.config.apiKey,
 			timestamp: sample.timestamp,
 		});
@@ -672,7 +672,7 @@ describe('#stat', () => {
 
 		expect(driver['toFormUrlEncoded']).toHaveBeenCalledWith({
 			type: 'upload',
-			public_id: joinActual(sample.path.inputFolder, sample.publicId.input),
+			public_id: normalizePath(joinActual(sample.path.inputFolder, sample.publicId.input), { removeLeading: true }),
 			api_key: sample.config.apiKey,
 			timestamp: sample.timestamp,
 			signature: sample.fullSignature,
@@ -1084,7 +1084,7 @@ describe('#delete', () => {
 			timestamp: sample.timestamp,
 			api_key: sample.config.apiKey,
 			resource_type: sample.resourceType,
-			public_id: joinActual(sample.path.inputFolder, sample.publicId.input),
+			public_id: normalizePath(joinActual(sample.path.inputFolder, sample.publicId.input), { removeLeading: true }),
 		});
 	});
 
@@ -1093,7 +1093,7 @@ describe('#delete', () => {
 			timestamp: sample.timestamp,
 			api_key: sample.config.apiKey,
 			resource_type: sample.resourceType,
-			public_id: joinActual(sample.path.inputFolder, sample.publicId.input),
+			public_id: normalizePath(joinActual(sample.path.inputFolder, sample.publicId.input), { removeLeading: true }),
 			signature: sample.fullSignature,
 		});
 
