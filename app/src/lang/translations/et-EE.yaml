@@ -608,7 +608,6 @@ errors:
   USER_SUSPENDED: Kasutajakonto on suletud
   VALUE_OUT_OF_RANGE: Väärtus lubatud vahemikust väljas
 security: Turvalisus
-value_hashed: Väärtus salastati
 bookmark_name: Järjehoidja nimi...
 create_bookmark: Loo järjehoidja
 edit_bookmark: Muuda järjehoidjat
@@ -850,32 +849,6 @@ unsaved_changes: Salvestamata muudatused
 unsaved_changes_copy: Oled sa kindel, et soovid sellelt lehelt lahkuda?
 discard_changes: Loobu muudatustest
 keep_editing: Jätka muutmist
-page_help_collections_collection: >-
-  **Vaata kirjeid* - näitab kõiki {collection} andmekogu kirjeid, millele sul on ligipääs. Kiiremaks ligipääsuks saad seadistada vaateid, filtreid, sorteerimist ning lisada järjehoidjaid.
-page_help_collections_item: >-
-  **Kirje detailid** - Selle kirje vaatamise ja muutmise vorm. Külgribal on ühtlasi kirje muudatuste ajalugu ning lisatud kommentaarid.
-page_help_activity_collection: >-
-  **Vaata aktiivsust* - Põhjalik nimekiri kõigist toimingutest, mis süsteemis on tehtud.
-page_help_docs_global: >-
-  **Dokumentatsioon** — Selle projekti ülesehitust kirjeldav teave.
-page_help_files_collection: >-
-  **Failikogu* - Näitab kõiki faile ja pilte selles projektis. Muuta saab vaateid, filtreid jm ning lisada järjehoidjaid
-page_help_files_item: >-
-  **Faili detailid* — Vorm, milles saab muuta faili metaandmeid, ligipääse jm.
-page_help_settings_datamodel_collections: >-
-  **Andmekogud** — Näitab olemasolevaid andmekogusid. Samuti ka nähtavaid, peidetud, ja süsteemi kogusid, lisaks ka haldamata andmebaaside tabeleid, mida saab lisada.
-page_help_settings_datamodel_fields: >-
-  **Andmekogu** — Ükskiku andmekogu ja tema väljade muutmise vorm.
-page_help_settings_roles_item: "**Rolli detailid** - Muuda rolli ligipääse ja muid seadistusti."
-page_help_settings_presets_collection: >-
-  **Näita eelseadistusi** — Näitab kõiki projekti eelseadistusi, sh kasutajad, rollid, järjehoidjad ja vaikimisi vaated.
-page_help_settings_presets_item: >-
-  **Eelseadistuse detailid" - Vorm järjehoidjate ja andmekogude eelseadistuste muutmiseks.
-page_help_settings_webhooks_collection: '**Vaata veebikonkse** - Näitab veebikonkse.'
-page_help_settings_webhooks_item: '**Veebikonksu detailid** - Vorm veebikonksude lisamiseks ja muutmiseks.'
-page_help_users_collection: '**Kasutajad** - Näitab kõiki kasutajaid.'
-page_help_users_item: >-
-  **Kasutaja detailid** - Näitab konto infot.
 activity_feed: Tegevusvoog
 add_new: Lisa uus
 create_new: Loo Uus
@@ -1046,6 +1019,19 @@ inline: Tekstisisene
 comment: Kommentaar
 live_preview:
   new_window: Ava Uues Aknas
+ai:
+  input: Sisend
+  unknown: Tundmatu
+  settings: Seaded
+  tool_approval:
+    disabled: keelatud
+ai_tools:
+  items: kirjet
+  files: Failid
+  folders: Kaustad
+  operations: Operatsioonid
+  schema: Skeem
+  collections: Kogud
 mcp_prompts_collection_schema:
   messages_role_user: Kasutaja
 relational_triggers: Suhtelised lülitid
