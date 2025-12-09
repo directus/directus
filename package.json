@@ -34,7 +34,8 @@
 	"pnpm": {
 		"overrides": {
 			"tar-fs": "2.1.4",
-			"@yarnpkg/shell>cross-spawn": "7.0.6"
+			"@yarnpkg/shell>cross-spawn": "7.0.6",
+			"jws": "4.0.1"
 		}
 	},
 	"packageManager": "pnpm@10.14.0",
