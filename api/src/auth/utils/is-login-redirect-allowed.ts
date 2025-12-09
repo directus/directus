@@ -4,9 +4,9 @@ import { useLogger } from '../../logger/index.js';
 import isUrlAllowed from '../../utils/is-url-allowed.js';
 
 /**
- * Check if the redirect URL is allowed
- * @param provider OAuth provider name
- * @param redirect URL to redirect to
+ * Checks if the defined redirect after successful SSO login is in the allow list
+ * @param provider SSO provider name (oauth2/openid/saml)
+ * @param redirect URL to redirect to after login
  * @returns True if the redirect is allowed, false otherwise
  */
 export function isLoginRedirectAllowed(provider: string, redirect: unknown): boolean {
