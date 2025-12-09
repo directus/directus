@@ -509,6 +509,7 @@ confirm_revert_body: This will revert the item to the selected state.
 display: Display
 settings_update_success: Settings updated
 title: Title
+subtitle: Subtitle
 revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
@@ -2260,6 +2261,27 @@ interfaces:
     description: Password input with toggle to hide value
   flow-select:
     flow-select: Flow Select
+  header:
+    header: Header
+    description:
+      Create a header with a title, subtitle, help information, and/or links to help users navigate or run Flows.
+    links: Links
+    action_type: Action Type
+    help:
+      title: Help
+      note: Provides toggleable help information for the user.
+    help_display_mode:
+      title: Help Display Mode
+      note: Select the display mode for the help information.
+    enable_help_translations:
+      title: Enable Help Translations
+      note: If enabled, this will override the Help field with values from the Help Translations String field.
+    help_translations_string:
+      title: Help Translations String
+      note:
+        You will need to create a translation value for the key in the Translations settings of your project with the
+        translated content for each language you want to support.
+    collapse: Collapse help
 displays:
   translations:
     translations: Translations
