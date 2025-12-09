@@ -575,7 +575,6 @@ errors:
   VALUE_OUT_OF_RANGE: Érték a megengedett tartományon kívül esik
   VALUE_TOO_LONG: Az érték túl hosszú
 security: Biztonság
-value_hashed: Biztonságosan hashelt érték
 bookmark_name: Könyvjelző neve...
 create_bookmark: Könyvjelző létrehozása
 edit_bookmark: Könyvjelző szerkesztése
@@ -919,37 +918,6 @@ discard_changes_copy: Biztos benne, hogy elveti az összes eddig végrehajtott v
 show_x_axis: X tengely megjelenítése
 show_y_axis: Y tengely megjelenítése
 keep_editing: Szerkesztés folytatása
-page_help_collections_overview: '**Gyűjtemények áttekintése** - Az összes ön által hozzáférhető Gyűjtemény listája.'
-page_help_collections_collection: >-
-  **Elemek böngészése** - Az összes {collection} elemet listázza, amelyhez hozzáférhet. Testre szabhatja az elrendezést, a szűrőket, a rendezési nézetet, és akár könyvjelzőket is menthet a különböző konfigurációkról a gyors hozzáférés érdekében.
-page_help_collections_item: >-
-  **Elem részletei** - Ezen elem megtekintésére és kezelésére szolgáló űrlap. Ez az oldalsáv tartalmazza a revíziók teljes előzményeit és a beágyazott megjegyzéseket is.
-page_help_activity_collection: >-
-  **Böngészési tevékenység** - A felhasználók összes rendszer- és tartalomtevékenységének átfogó listája.
-page_help_docs_global: >-
-  **Dokumentációs áttekintés** - Kifejezetten ezen projekt verziójára és sémájára szabott dokumentumok.
-page_help_files_collection: >-
-  **Fájlok könyvtára** - A projektbe feltöltött összes fájleszköz listája. Testre szabhatja az elrendezést, a szűrőket, a rendezési nézetet, és akár könyvjelzőket is menthet a különböző konfigurációkról a gyors hozzáférés érdekében.
-page_help_files_item: >-
-  **File Részletek** - A fájl metaadatainak kezelésére, az eredeti eszköz szerkesztésére és a hozzáférési beállítások frissítésére szolgáló űrlap.
-page_help_settings_datamodel_collections: >-
-  **Adatmodell: Gyűjtemények** - Az összes elérhető gyűjtemény listája. Ide tartoznak a látható, rejtett és rendszergyűjtemények, valamint a hozzáadható nem kezelt adatbázis táblák.
-page_help_settings_datamodel_fields: >-
-  **Adatmodell: Gyűjtemény** - Egy űrlap, ezen gyűjtemény és mezőinek kezelésére.
-page_help_settings_roles_item: "**Szerepkör Részletei** - A szerepkörök jogosultságainak és egyéb beállításainak kezelése."
-page_help_settings_presets_collection: >-
-  **Alapbeállítások Böngészése** - A projektben lévő összes alapbeállítás listázása, beleértve: a felhasználói, szerepköri és globális könyvjelzőket, valamint az alapértelmezett nézeteket.
-page_help_settings_presets_item: >-
-  **Alapbeállítások Részletei** - Könyvjelzők és alapértelmezett gyűjteménybeállítások kezelésére szolgáló űrlap.
-page_help_settings_webhooks_collection: '**Webhookok Böngészése** — A projektben található összes webhook listája.'
-page_help_settings_webhooks_item: '**Webhook Részletei** — A projekt webhookjainak létrehozására és kezelésére szolgáló űrlap.'
-page_help_settings_flows_collection: '**Folyamatok tallózása** — A projekten belüli összes folyamat felsorolása.'
-page_help_settings_flows_item: '**A folyamat részletei** — Munkaterület egy vagy több művelet kezeléséhez.'
-page_help_users_collection: '**Felhasználók Könyvtára** - A projekt összes rendszerfelhasználójának listája.'
-page_help_users_item: >-
-  **Felhasználó részletei** - Kezelje fiókinformációit, vagy tekintse meg más felhasználók adatait.
-page_help_insights_overview: '**Betekintés** - A műszerfalak listája, amelyekhez hozzáférhet.'
-page_help_insights_dashboard: '**Irányítópult** — Munkaterület egy vagy több panel kezeléséhez'
 activity_feed: Tevékenységi Hírfolyam
 add_new: Új hozzáadása
 create_new: Új létrehozása
@@ -1259,6 +1227,19 @@ shares: Megosztások
 unlimited_usage: Korlátlan használat
 no_shares: Nincs megjeleníthető megosztás
 new_share: Új megosztás
+ai:
+  input: Bevitel
+  settings: Beállítások
+  tool_approval:
+    disabled: Letiltva
+ai_tools:
+  items: Elemek
+  files: Fájlok
+  flows: Folyamatok
+  trigger-flow: Folyamat beindítása
+  schema: Séma
+  collections: Gyűjtemények
+  fields: Mezők
 mcp_prompts_collection_schema:
   messages_role_user: Felhasználó
 expired: Lejárt
