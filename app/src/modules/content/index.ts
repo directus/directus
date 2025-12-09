@@ -1,4 +1,4 @@
-import { useLocalStorage } from '@/composables/use-local-storage';
+import { useLocalStorage } from '@vueuse/core';
 import { useCollectionsStore } from '@/stores/collections';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getCollectionRoute, getItemRoute, getSystemCollectionRoute } from '@/utils/get-route';
@@ -71,13 +71,15 @@ export default defineModule({
 					isNil(collection?.meta?.group),
 				);
 
-				const { data } = useLocalStorage('last-accessed-collection');
+				const lastAccessedCollection = useLocalStorage<string | null>('directus-last-accessed-collection', null);
 
 				if (
-					typeof data.value === 'string' &&
-					collectionsStore.visibleCollections.find((visibleCollection) => visibleCollection.collection === data.value)
+					typeof lastAccessedCollection.value === 'string' &&
+					collectionsStore.visibleCollections.find(
+						(visibleCollection) => visibleCollection.collection === lastAccessedCollection.value,
+					)
 				) {
-					return getCollectionRoute(data.value);
+					return getCollectionRoute(lastAccessedCollection.value);
 				}
 
 				let firstCollection = findFirst(rootCollections);
