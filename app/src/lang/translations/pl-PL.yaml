@@ -439,6 +439,7 @@ confirm_revert_body: Spowoduje to przywrócenie elementu do wybranego stanu.
 display: Pokaż
 settings_update_success: Ustawienia zaktualizowane
 title: Tytuł
+subtitle: Subtytuł
 revision_delta_created: Utworzony
 revision_delta_created_externally: Utworzono zewnętrznie
 revision_delta_updated: 'Zaktualizowano 1 pole | Zaktualizowano {count} pól'
@@ -2021,6 +2022,9 @@ interfaces:
   input-password:
     input-password: Wprowadź hasło
     description: Wprowadzanie hasła z przełącznikiem, aby ukryć wartość
+  header:
+    header: Nagłówek
+    links: Linki
 displays:
   translations:
     translations: Tłumaczenia
