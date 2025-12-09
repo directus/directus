@@ -367,6 +367,7 @@ confirm_revert_body: Dette vil reversere elementet til valgte tilstand.
 display: Visning
 settings_update_success: Innstillingene er oppdatert
 title: Tittel
+subtitle: Undertittel
 revision_delta_created: Opprettet
 revision_delta_created_externally: Opprettet eksternt
 revision_delta_updated: 'Oppdatert 1 felt | Oppdatert {count} felter'
