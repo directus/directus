@@ -1,9 +1,28 @@
-import { useLocalStorage, createEventHook } from '@vueuse/core';
+import { useLocalStorage, createEventHook, useBreakpoints } from '@vueuse/core';
 import { defineStore } from 'pinia';
+import { computed, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import { BREAKPOINTS } from '@/constants';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
 export const useNavBarStore = defineStore('nav-bar-store', () => {
 	const collapsed = useLocalStorage('nav-bar-collapsed', false);
 	const size = useLocalStorage('nav-bar-size', 250);
+
+	const route = useRoute();
+	const { lg, xl } = useBreakpoints(BREAKPOINTS);
+	const sidebarStore = useSidebarStore();
+
+	const inlineNav = computed(() => {
+		return sidebarStore.collapsed ? lg.value : xl.value;
+	});
+
+	watch(
+		() => route.fullPath,
+		() => {
+			if (!inlineNav.value) collapse();
+		},
+	);
 
 	const collapseHook = createEventHook();
 	const expandHook = createEventHook();
