@@ -353,8 +353,6 @@ describe('Services / Assets', () => {
 	});
 });
 
-
-
 describe('AssetsService', () => {
 	const mockArchiver = {
 		append: vi.fn(),
