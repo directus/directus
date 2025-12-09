@@ -446,6 +446,7 @@ confirm_revert_body: Toto vrátí položku do vybraného stavu.
 display: Zobrazení
 settings_update_success: Nastavení aktualizováno
 title: Název
+subtitle: Podnadpis
 revision_delta_created: Vytvořena
 revision_delta_created_externally: Vytvořena externě
 revision_delta_updated: 'Aktualizováno 1 pole | Aktualizováno {count} polí'
@@ -2055,6 +2056,9 @@ interfaces:
   input-password:
     input-password: Zadejte heslo
     description: Zadání hesla pomocí přepínače pro skrytí hodnoty
+  header:
+    header: Hlavička
+    links: Odkazy
 displays:
   translations:
     translations: Překlady
