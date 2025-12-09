@@ -498,7 +498,9 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	}
 
 	&:focus-visible {
-		outline-offset: 0;
+		--focus-ring-offset: var(--focus-ring-offset-invert);
+
+		padding-inline-start: var(--focus-ring-width);
 		margin-inline-end: var(--focus-ring-width);
 	}
 }
