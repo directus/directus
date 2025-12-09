@@ -439,6 +439,7 @@ confirm_revert_body: Kjo do të rikthejë artikullin në gjendjen e zgjedhur.
 display: Shfaq
 settings_update_success: Cilësimet u përditësuan
 title: Titulli
+subtitle: Nëntitull
 revision_delta_created: U krijua
 revision_delta_created_externally: U krijua Jashtë
 revision_delta_updated: '''Përditësoi 1 Fushë | Përditësoi {count} Fusha'''
@@ -2050,6 +2051,9 @@ interfaces:
   input-password:
     input-password: Fut Fjalëkalimin
     description: Hyrja e fjalëkalimit me mundësi për të fshehur vlerën
+  header:
+    header: Header
+    links: Lidhje
 displays:
   translations:
     translations: Përkthimet
