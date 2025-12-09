@@ -328,6 +328,7 @@ confirm_revert_body: Ini akan mengembalikan item ke keadaaan yang dipilih.
 display: Tampilkan
 settings_update_success: Pengaturan telah diperbarui
 title: Judul
+subtitle: Subjudul
 revision_delta_created: Dibuat
 revision_delta_created_externally: Buat secara Eksternal
 revision_delta_updated: 'Diperbarui 1 Baris | Diperbarui {count} Baris'
@@ -1440,6 +1441,8 @@ interfaces:
       underline: Garis Bawah
   system-token:
     system-token: Token
+  header:
+    links: Tautan
 displays:
   translations:
     translations: Terjemahan
