@@ -767,7 +767,6 @@ errors:
   VALUE_OUT_OF_RANGE: Waarde valt buiten het bereik
   VALUE_TOO_LONG: Waarde is te lang
 security: Beveiliging
-value_hashed: Waarde veilig opgeslagen
 bookmark_name: Bladwijzer naam...
 create_bookmark: Bladwijzer aanmaken
 edit_bookmark: Bladwijzer bewerken
@@ -1167,48 +1166,6 @@ discard_changes_copy: Weet je zeker dat je alle wijzigingen wilt verwerpen?
 show_x_axis: Toon X-as
 show_y_axis: Toon Y-as
 keep_editing: Blijf wijzigen
-page_help_collections_overview: '**Collecties overzicht** - Overzicht van alle collecties waartoe je toegang hebt.'
-page_help_collections_collection: >-
-  **Browse Items** — Toont alle items in {collection}. Pas layout, filters en sortering aan om je weergave aan te passen en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
-page_help_collections_item: >-
-  **Item detail** - Een formulier voor het bekijken en beheren van dit item. Deze zijbalk bevat ook een volledige geschiedenis van herzieningen en ingesloten reacties.
-page_help_activity_collection: >-
-  **Blader door activiteit** - Een uitgebreide lijst van alles wat er zich afgespeeld heeft.
-page_help_docs_global: >-
-  **Documentatie overzicht** — Docs die specifiek zijn afgestemd op de versie en schema van dit project.
-page_help_files_collection: >-
-  **Bestandsbibliotheek** - Toont alle bestanden die naar dit project zijn geüpload. Pas layout, filters en sortering aan om je weergave aan te passen en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
-page_help_files_item: >-
-  **Bestandsdetail** - Een formulier voor het beheren van metagegevens van bestanden, het bewerken van het originele bestand en het bijwerken van toegangsinstellingen.
-page_help_settings_project: "**Instellingen** - De algemene configuratieopties van je project."
-page_help_settings_appearance: "**Uiterlijk** — Het uiterlijk en de thema-opties van je project."
-page_help_settings_extensions: '**Extensies** — De extensies die in je project zijn geïnstalleerd.'
-page_help_settings_datamodel_collections: >-
-  **Gegevensmodel: Collecties** — Laat alle beschikbare collecties zien. Dit omvat zichtbare, verborgen en systeemcollecties, evenals niet beheerde databasetabellen die kunnen worden toegevoegd.
-page_help_settings_datamodel_fields: >-
-  **Gegevensmodel: Verzameling** - Een formulier voor het beheren van deze collectie en haar velden.
-page_help_settings_system_logs: '**Systeemlogs** ­— Toegang tot een livestream van systeemlogs.'
-page_help_settings_policies_collection: '**Bladeren door Policies** — Toont alle policies binnen het project.'
-page_help_settings_roles_collection: '**Bladeren door Rollen** — Toont alle gebruikersrollen binnen het project.'
-page_help_settings_roles_item: "**Rol Detail** - Beheer de rechten van de rol en andere instellingen."
-page_help_settings_presets_collection: >-
-  **Browse Voorkeuren** — Bewaart alle voorkeuren in dit project, inclusief: gebruikers, rol, en globale voorkeuren en standaard views.
-page_help_settings_presets_item: >-
-  **Voorkeur Detail** — Formulier om voorkeuren en bladwijzers mee te beheren.
-page_help_settings_webhooks_collection: '**Browse Webhooks** — Toont alle webhooks in het project.'
-page_help_settings_webhooks_item: '**Webhook Detail** - Een formulier voor het maken en beheren van project webhooks.'
-page_help_settings_flows_collection: '**Blader door Flows** — Toon alle Flows in het project.'
-page_help_settings_flows_item: '**Flow details** — Werkruimte voor het beheren van één of meerdere operaties.'
-page_help_settings_translations_collection: '**Bladeren door Aangepaste Vertalingen** — Toont alle aangepaste vertalingen binnen het project.'
-page_help_settings_translations_item: '**Aangepaste Vertalingen Detail** — Een formulier voor het bekijken en beheren van dit item.'
-page_help_users_collection: '**User Directory** — Laat alle gebruikers in dit project zien.'
-page_help_users_item: >-
-  **Gebruikersdetail** — Beheer je accountgegevens, of bekijk de details van andere gebruikers.
-page_help_insights_overview: '**Inzichten** — Lijst van dashboards waar je toegang toe hebt.'
-page_help_insights_dashboard: '**Dashboard** — Werkruimte voor het beheren van één of meer panelen'
-page_help_marketplace_account: '**Account** — Uitgever of beheerder van een gepubliceerde extensie.'
-page_help_marketplace_registry: '**Register** — Extensies beschikbaar in de Directus Marktplaats.'
-page_help_marketplace_extension: '**Extensie** — Extensie in de Directus Marktplaats.'
 activity_feed: Activiteiten
 add_new: Nieuw Toevoegen
 create_new: Nieuwe aanmaken
@@ -1592,6 +1549,22 @@ unlimited_usage: Onbeperkt gebruik
 uses_left: Geen gebruik over | Één gebruik over | {n} gebruik over
 no_shares: Geen delingen om weer te geven
 new_share: Delen
+ai:
+  input: Invoer
+  unknown: Onbekend
+  settings: Instellingen
+  tool_approval:
+    disabled: Uitgeschakeld
+ai_tools:
+  items: Items
+  files: Bestanden
+  folders: Mappen
+  flows: Flows
+  trigger-flow: Activeer Flow
+  operations: Operaties
+  schema: Schema
+  collections: Collecties
+  fields: Velden
 mcp_prompts_collection_schema:
   messages_role_user: Gebruiker
 expired: Verlopen
