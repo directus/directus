@@ -446,6 +446,7 @@ confirm_revert_body: ეს დააბრუნებს ჩანაწერ
 display: ჩვენება
 settings_update_success: პარამეტრები განახლდა
 title: სათაური
+subtitle: ქვესათაური
 revision_delta_created: შეიქმნა
 revision_delta_created_externally: შეიქმნა გარედან
 revision_delta_updated: 'განახლდა 1 ველი | განახლდა {count} ველი'
@@ -2076,6 +2077,9 @@ interfaces:
   input-password:
     input-password: პაროლის შეყვანა
     description: პაროლის შეყვანა მნიშვნელობის დამალვის გადამრთველით
+  header:
+    header: თავსართი
+    links: ბმულები
 displays:
   translations:
     translations: თარგმანები
