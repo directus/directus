@@ -439,6 +439,7 @@ confirm_revert_body: Ev wê hêmanê vegerîne rewşa hilbijartî.
 display: Nîşandan
 settings_update_success: Mîhengkarî hate nûkirin
 title: Sernav
+subtitle: Binsernav
 revision_delta_created: Hate afirandin
 revision_delta_created_externally: Ji Derve Hate Afirandin
 revision_delta_updated: '1 Qad Hate Nûkirin | {count} Qad Hatin Nûkirin'
@@ -2060,6 +2061,9 @@ interfaces:
   input-password:
     input-password: Têketina Şîfreyê
     description: Têketina şîfreyê bi bişkoka vejartina nirx
+  header:
+    header: Sernav
+    links: Girêdan
 displays:
   translations:
     translations: Wergerîn
