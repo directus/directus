@@ -3,7 +3,7 @@ import type { TusDriver } from '@directus/storage';
 import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
 import { normalizePath } from '@directus/utils';
 import { StorageClient } from '@supabase/storage-js';
-import { join } from 'node:path';
+import { basename, join } from 'node:path';
 import { Readable } from 'node:stream';
 import * as tus from 'tus-js-client';
 import type { RequestInit } from 'undici';
@@ -106,8 +106,10 @@ export class DriverSupabase implements TusDriver {
 	}
 
 	async stat(filepath: string) {
-		const { data, error } = await this.bucket.list(this.config.root, {
-			search: filepath,
+		const rootFolder = normalizePath(join(this.config.root, dirname(filepath)));
+
+		const { data, error } = await this.bucket.list(rootFolder, {
+			search: basename(filepath),
 			limit: 1,
 		});
 
