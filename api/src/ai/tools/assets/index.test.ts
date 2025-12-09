@@ -1,11 +1,11 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
-import { AssetsService } from '@/services/assets.js';
-import { FilesService } from '@/services/files.js';
+import { AssetsService } from '../../../services/assets.js';
+import { FilesService } from '../../../services/files.js';
 import { assets } from './index.js';
 
-vi.mock('@/services/assets.js');
-vi.mock('@/services/files.js');
+vi.mock('../../../services/assets.js');
+vi.mock('../../../services/files.js');
 
 describe('assets tool', () => {
 	const mockSchema = {} as SchemaOverview;

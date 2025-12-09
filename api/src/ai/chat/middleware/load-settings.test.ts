@@ -3,17 +3,17 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { loadSettings } from './load-settings.js';
 
 // Mock dependencies
-vi.mock('@/services/settings.js');
-vi.mock('@/utils/get-schema.js');
+vi.mock('../../../services/settings.js');
+vi.mock('../../../utils/get-schema.js');
 
 const mockReadSingleton = vi.fn();
 const mockGetSchema = vi.fn();
 
-vi.mocked(await import('@/services/settings.js')).SettingsService = vi.fn().mockImplementation(() => ({
+vi.mocked(await import('../../../services/settings.js')).SettingsService = vi.fn().mockImplementation(() => ({
 	readSingleton: mockReadSingleton,
 }));
 
-vi.mocked(await import('@/utils/get-schema.js')).getSchema = mockGetSchema;
+vi.mocked(await import('../../../utils/get-schema.js')).getSchema = mockGetSchema;
 
 let mockRequest: Partial<Request>;
 let mockResponse: Partial<Response>;
@@ -154,7 +154,7 @@ describe('loadSettings', () => {
 
 		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
 
-		const { SettingsService } = await import('@/services/settings.js');
+		const { SettingsService } = await import('../../../services/settings.js');
 
 		expect(SettingsService).toHaveBeenCalledWith({
 			schema: mockSchema,

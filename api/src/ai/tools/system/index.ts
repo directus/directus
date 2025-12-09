@@ -1,7 +1,7 @@
-import { requireText } from '@/utils/require-text.js';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
+import { requireText } from '../../../utils/require-text.js';
 import { defineTool } from '../define-tool.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

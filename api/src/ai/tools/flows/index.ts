@@ -1,10 +1,10 @@
-import { requireText } from '@/utils/require-text.js';
 import type { FlowRaw } from '@directus/types';
 import { isObject } from '@directus/utils';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 import { FlowsService } from '../../../services/flows.js';
+import { requireText } from '../../../utils/require-text.js';
 import { defineTool } from '../define-tool.js';
 import { FlowItemInputSchema, FlowItemValidateSchema, QueryInputSchema, QueryValidateSchema } from '../schema.js';
 import { buildSanitizedQueryFromArgs } from '../utils.js';
