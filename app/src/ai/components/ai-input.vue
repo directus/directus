@@ -62,6 +62,7 @@ function handleSubmit() {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
+	cursor: text;
 	gap: 8px;
 	padding: 12px;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
