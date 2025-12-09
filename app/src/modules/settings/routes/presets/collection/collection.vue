@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useExtension } from '@/composables/use-extension';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { usePresetsStore } from '@/stores/presets';
@@ -25,8 +24,6 @@ const { info: currentCollection } = useCollection(collection);
 const { layoutWrapper } = useLayout(layout);
 
 const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
-
-const currentLayout = useExtension('layout', layout);
 
 const {
 	updateAllowed: batchEditAllowed,
@@ -103,19 +100,9 @@ function clearFilters() {
 		:collection="collection"
 		:clear-filters="clearFilters"
 	>
-		<private-view
-			:title="$t('settings_presets')"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
-		>
+		<private-view :title="$t('settings_presets')" icon="bookmark">
 			<template #headline>
 				<v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
-			</template>
-
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded icon exact disabled>
-					<v-icon name="bookmark" />
-				</v-button>
 			</template>
 
 			<template #actions:prepend>
@@ -123,7 +110,7 @@ function clearFilters() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" :collection="collection" />
+				<search-input v-model="search" v-model:filter="filter" :collection="collection" small />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
@@ -134,9 +121,10 @@ function clearFilters() {
 							icon
 							class="action-delete"
 							secondary
+							small
 							@click="on"
 						>
-							<v-icon name="delete" outline />
+							<v-icon name="delete" outline small />
 						</v-button>
 					</template>
 
@@ -161,9 +149,10 @@ function clearFilters() {
 					icon
 					secondary
 					:disabled="batchEditAllowed === false"
+					small
 					@click="batchEditActive = true"
 				>
-					<v-icon name="edit" outline />
+					<v-icon name="edit" outline small />
 				</v-button>
 
 				<v-button
@@ -172,8 +161,9 @@ function clearFilters() {
 					icon
 					to="/settings/presets/+"
 					:disabled="createAllowed === false"
+					small
 				>
-					<v-icon name="add" />
+					<v-icon name="add" small />
 				</v-button>
 			</template>
 

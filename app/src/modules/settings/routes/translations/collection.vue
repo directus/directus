@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import api from '@/api';
-import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
-import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
@@ -40,8 +38,6 @@ const { layout, layoutOptions, layoutQuery, filter, search, resetPreset, refresh
 const { layoutWrapper } = useLayout(layout);
 
 const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
-
-const currentLayout = useExtension('layout', layout);
 
 async function refresh() {
 	await layoutRef.value?.state?.refresh?.();
@@ -111,18 +107,7 @@ function clearFilters() {
 		:reset-preset="resetPreset"
 		:clear-filters="clearFilters"
 	>
-		<private-view
-			:title="$t('settings_translations')"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
-			:sidebar-shadow="currentLayout?.sidebarShadow"
-		>
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded icon exact disabled>
-					<v-icon name="translate" />
-				</v-button>
-			</template>
-
+		<private-view :title="$t('settings_translations')" icon="translate">
 			<template #headline>
 				<v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" />
 			</template>
@@ -132,12 +117,20 @@ function clearFilters() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" collection="directus_translations" />
+				<search-input v-model="search" v-model:filter="filter" collection="directus_translations" small />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
-						<v-button v-tooltip.bottom="$t('delete_label')" rounded icon class="action-delete" secondary @click="on">
-							<v-icon name="delete" outline />
+						<v-button
+							v-tooltip.bottom="$t('delete_label')"
+							rounded
+							icon
+							class="action-delete"
+							secondary
+							small
+							@click="on"
+						>
+							<v-icon name="delete" outline small />
 						</v-button>
 					</template>
 
@@ -161,13 +154,14 @@ function clearFilters() {
 					rounded
 					icon
 					secondary
+					small
 					@click="batchEditActive = true"
 				>
-					<v-icon name="edit" outline />
+					<v-icon name="edit" outline small />
 				</v-button>
 
-				<v-button v-tooltip.bottom="$t('create_custom_translation')" rounded icon :to="addNewLink">
-					<v-icon name="add" />
+				<v-button v-tooltip.bottom="$t('create_custom_translation')" rounded icon :to="addNewLink" small>
+					<v-icon name="add" small />
 				</v-button>
 			</template>
 
@@ -205,9 +199,6 @@ function clearFilters() {
 			/>
 
 			<template #sidebar>
-				<sidebar-detail icon="info" :title="$t('information')" close>
-					<div v-md="$t('page_help_settings_translations_collection')" class="page-description" />
-				</sidebar-detail>
 				<layout-sidebar-detail v-model="layout">
 					<component :is="`layout-options-${layout || 'tabular'}`" v-bind="layoutState" />
 				</layout-sidebar-detail>
@@ -220,12 +211,6 @@ function clearFilters() {
 					:layout-query="layoutQuery"
 					@download="download"
 					@refresh="refresh"
-				/>
-				<flow-sidebar-detail
-					location="collection"
-					collection="directus_translations"
-					:selection="selection"
-					@refresh="batchRefresh"
 				/>
 			</template>
 

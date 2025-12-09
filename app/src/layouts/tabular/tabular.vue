@@ -272,12 +272,6 @@ function removeField(fieldKey: string) {
 </template>
 
 <style lang="scss" scoped>
-.layout-tabular {
-	display: contents;
-	margin: var(--content-padding);
-	margin-block-end: var(--content-padding-bottom);
-}
-
 .v-table {
 	--v-table-sticky-offset-top: var(--layout-offset-top);
 
