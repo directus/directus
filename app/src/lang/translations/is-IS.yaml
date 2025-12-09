@@ -485,6 +485,8 @@ interfaces:
       code: Kóði
       image: Mynd
       table: Tafla
+  header:
+    header: Haus
 displays:
   translations:
     translations: Þýðingar
