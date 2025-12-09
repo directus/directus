@@ -7,7 +7,11 @@ import AiTextarea from './ai-textarea.vue';
 const aiStore = useAiStore();
 
 const canSubmit = computed(
-	() => aiStore.input.trim().length > 0 && aiStore.status !== 'streaming' && aiStore.status !== 'submitted',
+	() =>
+		aiStore.input.trim().length > 0 &&
+		aiStore.status !== 'streaming' &&
+		aiStore.status !== 'submitted' &&
+		!aiStore.hasPendingToolCall,
 );
 
 function handleKeydown(event: KeyboardEvent) {

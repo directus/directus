@@ -240,6 +240,13 @@ export const useAiStore = defineStore('ai-store', () => {
 
 	const latestMessage = computed(() => messages.value.at(-1));
 
+	const hasPendingToolCall = computed(() => {
+		const lastMessage = latestMessage.value;
+		if (!lastMessage || lastMessage.role !== 'assistant') return false;
+
+		return lastMessage.parts.some((part) => 'state' in part && part.state === 'approval-requested');
+	});
+
 	const processedToolCallIds = new Set<string>();
 
 	watch(latestMessage, (message) => {
@@ -364,5 +371,6 @@ export const useAiStore = defineStore('ai-store', () => {
 		setAllToolsMode,
 		approveToolCall,
 		denyToolCall,
+		hasPendingToolCall,
 	};
 });
