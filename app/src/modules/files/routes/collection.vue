@@ -8,6 +8,7 @@ import { emitter, Events } from '@/events';
 import { useFilesStore } from '@/stores/files.js';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
+import { getAssetUrl, getFilesUrl } from '@/utils/get-asset-url';
 import { getFolderFilter } from '@/utils/get-folder-filter';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFiles } from '@/utils/upload-files';
@@ -17,16 +18,12 @@ import FolderPicker from '@/views/private/components/folder-picker.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
-import { mergeFilters } from '@directus/utils';
+import { getDateTimeFormatted, mergeFilters } from '@directus/utils';
+import { storeToRefs } from 'pinia';
 import { computed, nextTick, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
-import { storeToRefs } from 'pinia';
-
-type Item = {
-	[field: string]: any;
-};
 
 const props = defineProps<{
 	folder?: string;
@@ -41,7 +38,7 @@ const notificationsStore = useNotificationsStore();
 const { folders } = useFolders();
 
 const layoutRef = ref();
-const selection = ref<Item[]>([]);
+const selection = ref<string[]>([]);
 
 const userStore = useUserStore();
 
@@ -354,6 +351,36 @@ function useFileUpload() {
 		emitter.emit(Events.upload);
 	}
 }
+
+async function downloadFiles() {
+	let response;
+
+	if (selection.value.length === 1) {
+		response = await fetch(getAssetUrl(selection.value[0]!));
+	} else {
+		response = await fetch(getFilesUrl(), {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ ids: selection.value }),
+		});
+	}
+
+	if (!response.ok) {
+		unexpectedError({ response: { data: await response.json() } });
+	}
+
+	const blob = await response.blob();
+	const filename = response.headers.get('Content-Disposition')?.match(/filename="(.*?)"/)?.[1];
+
+	const url = window.URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = filename ?? `unknown-${getDateTimeFormatted()}`;
+	a.click();
+	URL.revokeObjectURL(url);
+}
 </script>
 
 <template>
@@ -465,6 +492,18 @@ function useFileUpload() {
 					@click="batchEditActive = true"
 				>
 					<v-icon name="edit" outline small />
+				</v-button>
+
+				<v-button
+					v-if="selection.length > 0"
+					v-tooltip.bottom="$t('download')"
+					rounded
+					icon
+					secondary
+					download
+					@click="downloadFiles"
+				>
+					<v-icon name="download" outline />
 				</v-button>
 
 				<v-button
