@@ -15,6 +15,7 @@ const props = withDefaults(
 		sort?: string;
 		limit?: number;
 		disabled?: boolean;
+		nonEditable?: boolean;
 		headerPlaceholder?: string;
 		collection?: string;
 		placeholder?: string;
@@ -47,6 +48,8 @@ const showAddNew = computed(() => {
 const activeItem = computed(() => (active.value !== null ? edits.value : null));
 
 const isSaveDisabled = computed(() => {
+	if (props.disabled) return true;
+
 	for (const field of props.fields) {
 		if (
 			field.meta?.required &&
@@ -219,7 +222,7 @@ function closeDrawer() {
 			@update:model-value="$emit('input', $event)"
 		>
 			<template #item="{ element, index }">
-				<v-list-item :dense="internalValue.length > 4" block clickable @click="openItem(index)">
+				<v-list-item :dense="internalValue.length > 4" :non-editable block clickable @click="openItem(index)">
 					<v-icon v-if="!disabled && !sort" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 
 					<render-template
@@ -238,7 +241,7 @@ function closeDrawer() {
 			</template>
 		</draggable>
 
-		<div class="actions">
+		<div v-if="!nonEditable" class="actions">
 			<v-button v-if="showAddNew" :disabled @click="addNew">
 				{{ addLabel || $t('create_new') }}
 			</v-button>
@@ -266,10 +269,11 @@ function closeDrawer() {
 
 			<div class="drawer-item-content">
 				<v-form
-					:disabled="disabled"
+					:disabled
+					:non-editable
 					:fields="fieldsWithNames"
 					:model-value="activeItem"
-					:direction="direction"
+					:direction
 					autofocus
 					primary-key="+"
 					@update:model-value="trackEdits($event)"

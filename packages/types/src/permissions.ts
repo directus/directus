@@ -32,3 +32,8 @@ export type CollectionPermissions = {
 export type CollectionAccess = {
 	[collection: string]: CollectionPermissions;
 };
+
+export type GlobalAccess = {
+	admin: boolean;
+	app: boolean;
+};
