@@ -407,6 +407,13 @@ do_nothing: Gera Ekkert
 comment: Athugasemd
 live_preview:
   new_window: Opna í Nýjum Glugga
+ai:
+  settings: Stillingar
+  tool_approval:
+    disabled: Óvirkt
+ai_tools:
+  files: Skrár
+  flows: Flæðir
 mcp_prompts_collection_schema:
   messages_role_user: Notandi
 share_copy_link: Afrita Hlekk
