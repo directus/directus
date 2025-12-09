@@ -13,7 +13,7 @@ export type TelemetrySettings = {
 	ai_system_prompt: boolean;
 };
 
-type DatabaseSettings = {
+export type DatabaseSettings = {
 	project_id: string;
 	mcp_enabled?: boolean;
 	mcp_allow_deletes?: boolean;
