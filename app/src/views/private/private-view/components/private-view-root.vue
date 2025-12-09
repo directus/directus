@@ -46,7 +46,7 @@ const splitterCollapsed = computed({
 <template>
 	<div class="private-view">
 		<template v-if="lg">
-			<SkipMenu section="nav" />
+			<SkipMenu section="navigation" />
 			<ModuleBar id="navigation" class="module-bar" />
 		</template>
 
@@ -69,17 +69,17 @@ const splitterCollapsed = computed({
 		>
 			<template #start>
 				<template v-if="inlineNav">
-					<SkipMenu section="moduleNav" />
+					<SkipMenu section="module-navigation" />
 					<PrivateViewNav id="module-navigation">
 						<template #navigation><slot name="navigation" /></template>
 					</PrivateViewNav>
 				</template>
 
 				<PrivateViewDrawer v-else v-model:collapsed="navBarStore.collapsed" placement="left">
-					<SkipMenu section="nav" />
+					<SkipMenu section="navigation" />
 					<ModuleBar id="navigation" class="module-bar" />
 
-					<SkipMenu section="moduleNav" class="mobile-skip-menu" />
+					<SkipMenu section="module-navigation" class="mobile-skip-menu" />
 					<PrivateViewNav id="module-navigation" class="mobile-nav">
 						<template #navigation><slot name="navigation" /></template>
 					</PrivateViewNav>
@@ -91,7 +91,7 @@ const splitterCollapsed = computed({
 			</template>
 
 			<template #end>
-				<SkipMenu section="main" />
+				<SkipMenu section="main-content" />
 				<PrivateViewMain id="main-content" v-bind="$props" :inline-nav>
 					<template #actions:append><slot name="actions:append" /></template>
 					<template #actions:prepend><slot name="actions:prepend" /></template>

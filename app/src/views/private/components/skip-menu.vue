@@ -3,24 +3,24 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { section } = defineProps<{
-	section: 'nav' | 'moduleNav' | 'main' | 'sidebar';
+	section: 'navigation' | 'module-navigation' | 'main-content' | 'sidebar';
 }>();
 
 const { t } = useI18n();
 
 const allItems = [
 	{
-		key: 'nav',
+		key: 'navigation',
 		hash: '#navigation',
 		text: t('skip_link_nav'),
 	},
 	{
-		key: 'moduleNav',
+		key: 'module-navigation',
 		hash: '#module-navigation',
 		text: t('skip_link_module_nav'),
 	},
 	{
-		key: 'main',
+		key: 'main-content',
 		hash: '#main-content',
 		text: t('skip_link_main'),
 	},
@@ -35,7 +35,11 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 </script>
 
 <template>
-	<v-list v-if="items.length" class="skip-menu" :class="{ right: section === 'sidebar', center: section === 'main' }">
+	<v-list
+		v-if="items.length"
+		class="skip-menu"
+		:class="{ right: section === 'sidebar', center: section === 'main-content' }"
+	>
 		<v-list-item v-for="item in items" :key="item" :href="$router.resolve(item.hash).href" target="_self">
 			{{ item.text }}
 		</v-list-item>

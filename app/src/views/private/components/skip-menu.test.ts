@@ -28,7 +28,7 @@ test('Mount component', () => {
 	expect(SkipMenu).toBeTruthy();
 
 	const wrapper = mount(SkipMenu, {
-		props: { section: 'main' },
+		props: { section: 'main-content' },
 		global,
 	});
 
