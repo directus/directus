@@ -247,6 +247,8 @@ field_options:
   directus_webhooks:
     actions_create: Креирај
 comment: Коментар
+ai_tools:
+  files: Фајлови
 description: Опис
 done: Завршено
 email: Имејл
