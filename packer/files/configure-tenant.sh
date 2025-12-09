@@ -368,8 +368,8 @@ if [[ -n "$EXISTING_USER" ]]; then
 else
     echo "  Creating service account user..."
     
-    # Get the admin role ID
-    ROLES_RESPONSE=$(curl -s "http://localhost:${DIRECTUS_PORT}/roles?filter[admin_access][_eq]=true&limit=1" \
+    # Get the Administrator role ID (Directus 11.x uses role name, not admin_access field)
+    ROLES_RESPONSE=$(curl -s "http://localhost:${DIRECTUS_PORT}/roles?filter[name][_eq]=Administrator&limit=1" \
         -H "Authorization: Bearer ${ACCESS_TOKEN}" 2>&1) || true
     
     if command -v jq &> /dev/null; then
@@ -379,12 +379,12 @@ else
     fi
     
     if [[ -z "$ADMIN_ROLE_ID" ]]; then
-        echo "  ERROR: Could not find admin role"
+        echo "  ERROR: Could not find Administrator role"
         echo "  Roles response: $ROLES_RESPONSE"
         exit 1
     fi
     
-    echo "  Found admin role: $ADMIN_ROLE_ID"
+    echo "  Found Administrator role: $ADMIN_ROLE_ID"
     
     # Create the service account
     CREATE_RESPONSE=$(curl -s -X POST "http://localhost:${DIRECTUS_PORT}/users" \
@@ -499,53 +499,25 @@ BACKUP_ENV_EOF
     # Update backup script to source environment file
     sed -i '2a\source /etc/directus/backup.env' /usr/local/bin/db-backup.sh
 
-    # Set up daily cron job with flock to prevent overlapping runs
-    # Uses UTC time - adjust CRON_TZ if needed for specific timezone
-    cat > /etc/cron.d/db-backup << 'CRON_EOF'
-# Daily database backup at 2 AM UTC
-CRON_TZ=UTC
-0 2 * * * root /usr/bin/flock -n /var/lock/db-backup.lock /usr/local/bin/db-backup.sh >> /var/log/db-backup.log 2>&1
+    # Create cron job for daily backups at 2 AM
+    cat > /etc/cron.d/directus-backup << 'CRON_EOF'
+# Directus database backup - daily at 2 AM UTC
+0 2 * * * root /usr/local/bin/db-backup.sh >> /var/log/db-backup.log 2>&1
 CRON_EOF
-    chmod 644 /etc/cron.d/db-backup
+
+    chmod 644 /etc/cron.d/directus-backup
 
     echo "  Backup scripts configured"
+    echo "  Daily backups scheduled for 2 AM UTC"
 fi
 
 # =============================================================================
-# Create update script
-# =============================================================================
-echo "=== Creating update script ==="
-
-cat > /usr/local/bin/update-directus.sh << 'UPDATE_EOF'
-#!/bin/bash
-set -euo pipefail
-
-echo "=== Updating Directus ==="
-cd /opt/directus
-
-# Pull latest changes
-git pull origin main
-
-# Install dependencies
-pnpm install
-
-# Build
-pnpm build
-
-# Restart PM2
-pm2 restart directus
-
-echo "=== Update complete ==="
-UPDATE_EOF
-
-chmod +x /usr/local/bin/update-directus.sh
-chown ubuntu:ubuntu /usr/local/bin/update-directus.sh
-
-# =============================================================================
-# Final status
+# Final Status
 # =============================================================================
 echo ""
-echo "=== Tenant configuration complete at $(date) ==="
+echo "=== Tenant configuration complete ==="
+echo "  Directus URL: https://$FQDN"
+echo "  Admin Email: $ADMIN_EMAIL"
+echo "  Template API: https://$FQDN/template-api/"
 echo ""
-echo "  Directus URL: https://${FQDN}"
-echo "  Admin Email: ${ADMIN_EMAIL}"
+echo "  Configuration completed at $(date)"
