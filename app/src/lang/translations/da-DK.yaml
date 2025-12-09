@@ -380,6 +380,7 @@ confirm_revert_body: Dette vil vende elementet tilbage til den valgte tilstand.
 display: Vis
 settings_update_success: Indstillinger opdateret
 title: Titel
+subtitle: Undertitel
 revision_delta_created: Oprettet
 revision_delta_created_externally: Oprettet eksternt
 revision_delta_updated: 'Opdateret 1 Felt | Opdaterede {count} felter'
@@ -1750,6 +1751,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Rå redigering
     description: Tillad indtastning af rå- eller overskægsskabelonværdier
+  header:
+    header: Overskrift
+    links: Links
 displays:
   translations:
     translations: Oversættelser
