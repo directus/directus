@@ -269,6 +269,7 @@ confirm_revert_body: This will revert the item to the selected state.
 display: Display
 settings_update_success: Settings updated
 title: Title
+subtitle: Subtitle
 revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
@@ -1480,6 +1481,9 @@ interfaces:
     start_closed: Start Closed
   system-token:
     system-token: Token
+  header:
+    header: Header
+    links: Links
 displays:
   translations:
     translations: Translations
