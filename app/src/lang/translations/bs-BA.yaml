@@ -305,6 +305,7 @@ confirm_revert_body: Ovo će vratiti stavku u odabrano stanje.
 display: Prikaz
 settings_update_success: Postavke su ažurirane
 title: Naslov
+subtitle: Podnaslov
 revision_delta_created: Kreirano
 revision_delta_created_externally: Kreirano izvana
 revision_delta_updated: 'Ažurirano 1 polje | Ažurirano {count} polja'
@@ -1623,6 +1624,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Uređivač sirovog sadržaja
     description: Omogućuje unos neobrađenih ili "mustache" predložaka
+  header:
+    header: Zaglavlje
+    links: Link
 displays:
   translations:
     translations: Prijevodi
