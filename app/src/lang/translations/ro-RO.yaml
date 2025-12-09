@@ -387,6 +387,7 @@ confirm_revert_body: Această acțiune va reseta elementul la starea selectată.
 display: Afişare
 settings_update_success: Setări actualizate
 title: Titlu
+subtitle: Subtitlu
 revision_delta_created: Creat
 revision_delta_created_externally: Creat extern
 revision_delta_updated: '1 câmp actualizat | {count} câmpuri actualizate'
@@ -1656,6 +1657,9 @@ interfaces:
     start_closed: Începe închis
   system-token:
     system-token: Token
+  header:
+    header: Antet
+    links: Link-uri
 displays:
   translations:
     translations: Traduceri
