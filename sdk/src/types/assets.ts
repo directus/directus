@@ -24,10 +24,3 @@ export type AssetResponse = {
 	arrayBuffer: ArrayBuffer;
 	blob: Blob;
 };
-
-/**
- * The download zip options
- */
-export type DownloadZipOptions<T extends keyof AssetResponse> = {
-	type?: T;
-};

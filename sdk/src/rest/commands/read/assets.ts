@@ -1,6 +1,5 @@
-import type { DirectusFile } from '../../../schema/file.js';
-import type { DirectusFolder } from '../../../schema/folder.js';
-import type { AssetResponse, AssetsQuery, DownloadZipOptions, ResponseTransformer } from '../../../types/index.js';
+import type { DirectusFile, DirectusFolder } from '../../../schema/index.js';
+import type { AssetResponse, AssetsQuery, ResponseTransformer } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 
@@ -71,18 +70,18 @@ export const readAssetArrayBuffer =
  * @param options
  */
 export const downloadFilesZip =
-	<Schema, R extends keyof AssetResponse>(
+	<Schema, R extends keyof AssetResponse = 'raw'>(
 		keys: DirectusFile<Schema>['id'][],
-		options: DownloadZipOptions<R>,
+		options?: { output: R },
 	): RestCommand<AssetResponse[R], Schema> =>
 	() => {
 		throwIfEmpty(String(keys), 'Keys cannot be empty');
 
 		let onResponseHandler: ResponseTransformer = (response) => response.body;
 
-		if (options?.type === 'arrayBuffer') {
+		if (options?.output === 'arrayBuffer') {
 			onResponseHandler = (response) => response.arrayBuffer();
-		} else if (options?.type === 'blob') {
+		} else if (options?.output === 'blob') {
 			onResponseHandler = (response) => response.blob();
 		}
 
@@ -103,18 +102,18 @@ export const downloadFilesZip =
  * @param options
  */
 export const downloadFolderZip =
-	<Schema, R extends keyof AssetResponse>(
+	<Schema, R extends keyof AssetResponse = 'raw'>(
 		key: DirectusFolder<Schema>['id'],
-		options?: DownloadZipOptions<R>,
+		options?: { output: R },
 	): RestCommand<AssetResponse[R], Schema> =>
 	() => {
 		throwIfEmpty(String(key), 'Key cannot be empty');
 
 		let onResponseHandler: ResponseTransformer = (response) => response.body;
 
-		if (options?.type === 'arrayBuffer') {
+		if (options?.output === 'arrayBuffer') {
 			onResponseHandler = (response) => response.arrayBuffer();
-		} else if (options?.type === 'blob') {
+		} else if (options?.output === 'blob') {
 			onResponseHandler = (response) => response.blob();
 		}
 
