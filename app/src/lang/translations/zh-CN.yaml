@@ -490,6 +490,7 @@ confirm_revert_body: 此操作会使条目恢复至选中状态
 display: 显示
 settings_update_success: 设置已更新
 title: 标题
+subtitle: 副标题
 revision_delta_created: 已创建
 revision_delta_created_externally: 外部创建
 revision_delta_updated: '更新了 1 个字段 | 更新了 {count} 个字段'
@@ -2182,6 +2183,9 @@ interfaces:
   input-password:
     input-password: 输入密码
     description: 带有隐藏值切换的密码输入
+  header:
+    header: 报头
+    links: 链接
 displays:
   translations:
     translations: 翻译
