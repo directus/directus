@@ -71,6 +71,7 @@ function handleSubmit() {
 	transition: border-color var(--fast) var(--transition);
 
 	&:has(.ai-textarea:disabled) {
+		cursor: not-allowed;
 		background-color: var(--theme--form--field--input--background-subdued);
 		border-color: var(--theme--form--field--input--border-color);
 	}
