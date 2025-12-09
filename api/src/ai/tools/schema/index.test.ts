@@ -1,13 +1,13 @@
-import { CollectionsService } from '@/services/collections.js';
-import { FieldsService } from '@/services/fields.js';
-import { RelationsService } from '@/services/relations.js';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
+import { CollectionsService } from '../../../services/collections.js';
+import { FieldsService } from '../../../services/fields.js';
+import { RelationsService } from '../../../services/relations.js';
 import { schema } from './index.js';
 
-vi.mock('@/services/collections.js');
-vi.mock('@/services/fields.js');
-vi.mock('@/services/relations.js');
+vi.mock('../../../services/collections.js');
+vi.mock('../../../services/fields.js');
+vi.mock('../../../services/relations.js');
 
 describe('schema tool', () => {
 	const mockSchema = { collections: {}, fields: {}, relations: {} } as unknown as SchemaOverview;

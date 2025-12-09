@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction 
 import { FoldersService } from '../../../services/folders.js';
 import { folders } from './index.js';
 
-vi.mock('@/services/folders.js');
+vi.mock('../../../services/folders.js');
 
 describe('folders tool', () => {
 	const mockSchema = {} as SchemaOverview;

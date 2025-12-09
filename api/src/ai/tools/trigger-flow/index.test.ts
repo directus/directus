@@ -1,11 +1,11 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
-import { getFlowManager } from '@/flows.js';
-import { FlowsService } from '@/services/flows.js';
+import { getFlowManager } from '../../../flows.js';
+import { FlowsService } from '../../../services/flows.js';
 import { triggerFlow } from './index.js';
 
-vi.mock('@/services/flows.js');
-vi.mock('@/flows');
+vi.mock('../../../services/flows.js');
+vi.mock('../../../flows');
 
 describe('trigger flow tool', () => {
 	const mockSchema = { collections: {}, fields: {}, relations: {} } as unknown as SchemaOverview;
