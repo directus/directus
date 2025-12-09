@@ -412,6 +412,7 @@ confirm_revert_body: 這將復原項目到所選狀態
 display: 顯示
 settings_update_success: 設定已更新
 title: 標題
+subtitle: 副標題
 revision_delta_created: 已建立
 revision_delta_created_externally: 由外部建立
 revision_delta_updated: '更新 1 個欄位 | 更新 {count} 個欄位'
@@ -1780,6 +1781,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: 原始資料編輯器
     description: 讓您透過編輯器編輯範本
+  header:
+    header: 標題
+    links: 連結
 displays:
   translations:
     translations: 翻譯
