@@ -606,7 +606,6 @@ errors:
   VALUE_OUT_OF_RANGE: Giá trị ngoài khoảng cho phép
   VALUE_TOO_LONG: Dữ liệu quá dài
 security: Bảo mật
-value_hashed: Dữ Liệu Mã Hóa An Toàn
 bookmark_name: Tên Dấu trang...
 create_bookmark: Tạo Dấu trang
 edit_bookmark: Chỉnh sửa Dấu trang
@@ -840,8 +839,6 @@ unsaved_changes: Những thay đổi chưa được lưu
 unsaved_changes_copy: Bạn có chắc chắn muốn rời khỏi trang này không?
 discard_changes: Hủy thay đổi
 keep_editing: Tiếp tục chỉnh sửa
-page_help_collections_collection: >-
-  ** Duyệt các mục ** - Liệt kê tất cả các mục trong {collection} mà bạn có quyền truy cập. Tùy chỉnh bố cục, bộ lọc và sắp xếp để điều chỉnh chế độ xem của bạn và thậm chí lưu dấu trang của các cấu hình khác nhau này để truy cập nhanh.
 add_new: Thêm mới
 create_new: Tạo Mới
 all: Tất cả
@@ -997,6 +994,16 @@ no_value: Không có giá trị
 comment: Bình luận
 live_preview:
   new_window: Mở trong Cửa Sổ Mới
+ai:
+  unknown: Không xác định
+  settings: Cài đặt
+  tool_approval:
+    disabled: Đã tắt
+ai_tools:
+  files: Tệp
+  folders: Thư mục
+  schema: Cấu trúc dữ liệu
+  collections: Danh mục
 mcp_prompts_collection_schema:
   messages_role_user: Người dùng
 expired: Đã hết hạn
