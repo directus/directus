@@ -20,8 +20,18 @@
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
 about: О программе
+privacy_policy: Политика конфиденциальности
+contact_our_team: Связаться с нашей командой
+setup_welcome: Добро пожаловать в Directus
+setup_info: Давайте создадим учетную запись администратора и запустим ваш проект.
+setup_launch: Запустить Directus
 first_name: Имя
 last_name: Фамилия
+admin_email: Почта админа
+owner_email: Почта владельца
+email_address: Адрес электронной почты
+organization_name: Название организации
+how_do_you_use_directus: Для чего вы используете Directus?
 identifier: Индентификатор
 avatar: Аватар
 application: Приложение
@@ -178,6 +188,7 @@ rename_version: Переименовать Версию
 compare_version: Сравнить Версии
 save_version: Сохранить Версию
 promote_version: Повысить версию
+apply: Применить
 delete_version: Удалить версию
 delete_version_copy: >-
   Вы уверены, что хотите удалить версию «{version}»? Это действие нельзя отменить.
@@ -456,6 +467,7 @@ confirm_revert_body: Это вернёт элемент в выбранное с
 display: Отображение
 settings_update_success: Настройки обновлены
 title: Заголовок
+subtitle: Подзаголовок
 revision_delta_created: Создано
 revision_delta_created_externally: Создано извне
 revision_delta_updated: 'Обновлено 1 поле | Обновлено {count} полей'
@@ -2099,6 +2111,9 @@ interfaces:
   input-password:
     input-password: Введите пароль
     description: Ввод пароля с переключением, чтобы скрыть значение
+  header:
+    header: HTTP-заголовок
+    links: Ссылки
 displays:
   translations:
     translations: Переводы
