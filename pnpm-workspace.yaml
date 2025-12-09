@@ -8,12 +8,12 @@ packages:
 
 catalog:
   '@authenio/samlify-node-xmllint': 2.0.0
-  '@aws-sdk/client-s3': 3.928.0
-  '@aws-sdk/client-sesv2': 3.928.0
-  '@aws-sdk/lib-storage': 3.928.0
+  '@aws-sdk/client-s3': 3.947.0
+  '@aws-sdk/client-sesv2': 3.947.0
+  '@aws-sdk/lib-storage': 3.947.0
   '@azure/storage-blob': 12.29.1
-  '@changesets/cli': 2.29.7
-  '@changesets/get-github-info': 0.6.0
+  '@changesets/cli': 2.29.8
+  '@changesets/get-github-info': 0.7.0
   '@changesets/types': 6.1.0
   '@directus/schema-builder': workspace:*
   '@directus/tsconfig': 3.0.0
@@ -50,13 +50,13 @@ catalog:
   '@mapbox/mapbox-gl-draw': 1.5.1
   '@mapbox/mapbox-gl-draw-static-mode': 1.0.1
   '@mapbox/mapbox-gl-geocoder': 5.1.2
-  '@modelcontextprotocol/sdk': 1.24.0
+  '@modelcontextprotocol/sdk': 1.24.3
   '@ngneat/falso': 8.0.2
   '@npm/types': 2.1.0
   '@pinia/testing': 1.0.3
   '@pnpm/logger': 1001.0.1
-  '@pnpm/workspace.find-packages': 1000.0.43
-  '@pnpm/workspace.pkgs-graph': 1000.0.25
+  '@pnpm/workspace.find-packages': 1000.0.49
+  '@pnpm/workspace.pkgs-graph': 1000.0.30
   '@popperjs/core': 2.11.8
   '@rollup/plugin-alias': 5.1.1
   '@rollup/plugin-commonjs': 28.0.9
@@ -70,9 +70,9 @@ catalog:
   '@sinclair/typebox': 0.34.41
   '@sindresorhus/slugify': 2.2.1
   '@smithy/node-http-handler': 4.4.5
-  '@supabase/storage-js': 2.81.0
+  '@supabase/storage-js': 2.87.1
   '@tinymce/tinymce-vue': 6.3.0
-  '@turf/meta': 7.2.0
+  '@turf/meta': 7.3.1
   '@tus/server': 2.3.0
   '@tus/utils': 0.6.0
   '@types/async': 3.2.25
@@ -101,16 +101,16 @@ catalog:
   '@types/json2csv': 5.0.7
   '@types/jsonwebtoken': 9.0.10
   '@types/ldapjs': 2.2.5
-  '@types/lodash': 4.17.20
+  '@types/lodash': 4.17.21
   '@types/lodash-es': 4.17.12
   '@types/mapbox__mapbox-gl-draw': 1.4.9
   '@types/mapbox__mapbox-gl-geocoder': 5.1.0
   '@types/mime-types': 3.0.1
   '@types/ms': 2.1.0
   '@types/node': 22.13.14
-  '@types/nodemailer': 7.0.3
+  '@types/nodemailer': 7.0.4
   '@types/object-hash': 3.0.6
-  '@types/papaparse': 5.5.0
+  '@types/papaparse': 5.5.1
   '@types/proxy-addr': 2.0.3
   '@types/qrcode': 1.5.6
   '@types/qs': 6.14.0
@@ -122,18 +122,18 @@ catalog:
   '@types/ws': 8.18.1
   '@unhead/addons': 1.11.20
   '@unhead/vue': 1.11.20
-  '@vitejs/plugin-vue': 6.0.1
+  '@vitejs/plugin-vue': 6.0.2
   '@vitest/coverage-v8': 3.2.4
   '@vue/test-utils': 2.4.6
-  '@vueuse/core': 14.0.0
-  '@vueuse/integrations': 14.0.0
-  '@vueuse/router': 14.0.0
+  '@vueuse/core': 14.1.0
+  '@vueuse/integrations': 14.1.0
+  '@vueuse/router': 14.1.0
   apexcharts: 4.7.0
   argon2: 0.44.0
   async: 3.2.6
   async-mutex: 0.5.0
-  axios: 1.12.2
-  axios-cache-interceptor: 1.8.3
+  axios: 1.13.2
+  axios-cache-interceptor: 1.9.0
   base-64: 1.0.0
   boxen: 8.0.1
   busboy: 1.6.0
@@ -142,16 +142,16 @@ catalog:
   caret-pos: 2.0.0
   chalk: 5.6.2
   chokidar: 4.0.3
-  chroma-js: 3.1.2
+  chroma-js: 3.2.0
   codemirror: 5.65.18
-  color: 5.0.2
+  color: 5.0.3
   commander: 14.0.2
   content-disposition: 0.5.4
-  cookie: 1.0.2
+  cookie: 1.1.1
   cookie-parser: 1.4.7
   copyfiles: 2.4.1
   cors: 2.8.5
-  cron: 4.3.4
+  cron: 4.3.5
   cropperjs: 1.6.2
   date-fns: 4.1.0
   decamelize: 6.0.1
@@ -159,18 +159,18 @@ catalog:
   destroy: 1.2.0
   diacritics: 1.3.0
   diff: 7.0.0
-  dompurify: 3.3.0
+  dompurify: 3.3.1
   dotenv: 17.2.3
   editorjs-toggle-block: 0.3.16
   encodeurl: 2.0.0
-  esbuild: 0.26.0
+  esbuild: 0.27.1
   esbuild-plugin-replace: 1.4.0
   escape-string-regexp: 5.0.0
   eslint: 9.39.1
   eslint-config-prettier: 10.1.8
-  eslint-plugin-vue: 10.5.1
+  eslint-plugin-vue: 10.6.2
   eventemitter2: 6.4.9
-  execa: 9.6.0
+  execa: 9.6.1
   exif-reader: 2.0.2
   express: 4.21.2
   file-saver: 2.0.5
@@ -178,7 +178,7 @@ catalog:
   flat: 6.0.1
   flatpickr: 4.6.13
   focus-trap: 7.6.6
-  form-data: 4.0.4
+  form-data: 4.0.5
   fs-extra: 11.3.2
   geojson: 0.5.0
   get-port: 7.1.0
@@ -187,7 +187,7 @@ catalog:
   graphql: 16.12.0
   graphql-compose: 9.1.0
   graphql-ws: 6.0.6
-  happy-dom: 20.0.10
+  happy-dom: 20.0.11
   helmet: 8.1.0
   histoire: 0.17.17
   html-entities: 2.6.0
@@ -196,29 +196,29 @@ catalog:
   ioredis: 5.8.2
   ip-matching: 2.1.2
   isolated-vm: 5.0.3
-  joi: 18.0.1
+  joi: 18.0.2
   js-yaml: 4.1.1
   js2xmlparser: 5.0.0
   json-to-graphql-query: 2.3.0
   json2csv: 5.0.7
   jsonlint-mod: 1.7.6
   jsonwebtoken: 9.0.3
-  keyv: 5.5.3
+  keyv: 5.5.5
   knex: 3.1.0
   knex-mock-client: 3.0.2
-  ky: 1.14.0
+  ky: 1.14.1
   ldapjs: 2.3.3
   liquidjs: 10.24.0
   lodash: 4.17.21
   lodash-es: 4.17.21
   log-symbols: 7.0.1
-  lru-cache: 11.2.2
+  lru-cache: 11.2.4
   mapbox-gl: 1.13.3
   maplibre-gl: 1.15.3
   marked: 16.4.1
   micromustache: 8.0.3
   mime: 4.1.0
-  mime-types: 3.0.1
+  mime-types: 3.0.2
   minimatch: 10.1.1
   mitt: 3.0.1
   mnemonist: 0.40.3
@@ -226,7 +226,7 @@ catalog:
   mysql2: 3.15.3
   nanoid: 5.1.6
   node-machine-id: 1.1.12
-  nodemailer: 7.0.10
+  nodemailer: 7.0.11
   nodemailer-mailgun-transport: 2.1.5
   npm-watch: 0.13.0
   object-hash: 3.0.0
@@ -244,19 +244,19 @@ catalog:
   pino: 9.7.0
   pino-http: 10.5.0
   pino-http-print: 3.1.0
-  pino-pretty: 13.1.2
-  pm2: 6.0.13
+  pino-pretty: 13.1.3
+  pm2: 6.0.14
   postcss-html: 1.8.0
-  prettier: 3.6.2
+  prettier: 3.7.4
   pretty-ms: 9.3.0
   prom-client: 15.1.3
   proxy-addr: 2.0.7
   qrcode: 1.5.4
   qs: 6.14.0
   rate-limiter-flexible: 7.2.0
-  rimraf: 6.1.0
+  rimraf: 6.1.2
   rolldown: 1.0.0-beta.31
-  rollup: 4.52.5
+  rollup: 4.53.3
   rollup-plugin-esbuild: 6.2.1
   rollup-plugin-node-externals: 8.1.2
   rollup-plugin-styler: 2.0.0
@@ -270,7 +270,7 @@ catalog:
   stream-json: 1.9.1
   string-width: 7.2.0
   strip-ansi: 7.1.2
-  stylelint: 16.25.0
+  stylelint: 16.26.1
   stylelint-config-standard: 39.0.1
   stylelint-config-standard-scss: 15.0.1
   stylelint-config-standard-vue: 1.0.0
@@ -281,29 +281,29 @@ catalog:
   tedious: 18.6.1
   tinymce: 6.8.6
   tmp: 0.2.5
-  tsdown: 0.15.11
-  tsx: 4.20.6
+  tsdown: 0.17.2
+  tsx: 4.21.0
   tus-js-client: 4.3.1
   typescript: 5.9.3
-  typescript-eslint: 8.46.4
+  typescript-eslint: 8.49.0
   undici: 7.16.0
   unplugin-yaml: 3.0.7
   universal-cookie: 8.0.1
   update-check: 1.5.4
   uuid: 11.1.0
-  vite: 7.1.12
+  vite: 7.2.7
   vite-plugin-dts: 4.5.4
   vite-plugin-vue-devtools: 7.7.2
   vitest: 3.2.4
-  vue: 3.5.24
-  vue-i18n: 11.1.12
+  vue: 3.5.25
+  vue-i18n: 11.2.2
   vue-router: 4.6.3
-  vue-tsc: 3.1.3
+  vue-tsc: 3.1.8
   vue-virtual-scroller: 2.0.0-beta.8
   vuedraggable: 4.1.0
   wellknown: 0.5.0
   ws: 8.18.3
-  zod: 4.1.12
+  zod: 4.1.13
   zod-validation-error: 4.0.2
 
 catalogMode: strict
