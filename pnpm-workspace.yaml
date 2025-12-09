@@ -46,7 +46,7 @@ catalog:
   '@fullcalendar/list': 6.1.19
   '@fullcalendar/timegrid': 6.1.19
   '@godaddy/terminus': 4.12.1
-  '@google-cloud/storage': 7.17.3
+  '@google-cloud/storage': 7.18.0
   '@histoire/plugin-vue': 0.17.17
   '@joeattardi/emoji-button': 4.6.4
   '@json2csv/plainjs': 7.0.6
@@ -210,7 +210,7 @@ catalog:
   json2csv: 5.0.7
   jsonlint-mod: 1.7.6
   jsonschema: 1.5.0
-  jsonwebtoken: 9.0.2
+  jsonwebtoken: 9.0.3
   keyv: 5.5.3
   knex: 3.1.0
   knex-mock-client: 3.0.2
@@ -268,7 +268,7 @@ catalog:
   rollup-plugin-esbuild: 6.2.1
   rollup-plugin-node-externals: 8.1.2
   rollup-plugin-styler: 2.0.0
-  samlify: 2.10.1
+  samlify: 2.10.2
   sanitize-html: 2.17.0
   sass-embedded: 1.93.3
   semver: 7.7.3
