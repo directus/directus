@@ -341,13 +341,18 @@ echo "  Authentication successful"
 
 # Check if template-api user already exists
 echo "  Checking for existing service account..."
-EXISTING_USER_RESPONSE=$(curl -s "http://localhost:${DIRECTUS_PORT}/users?filter[email][_eq]=template-api@internal.local" \
-    -H "Authorization: Bearer ${ACCESS_TOKEN}" 2>&1) || true
+EXISTING_USER_RESPONSE=$(curl -s "http://localhost:${DIRECTUS_PORT}/users?limit=100" \
+    -H "Authorization: Bearer ${ACCESS_TOKEN}") || true
 
 if command -v jq &> /dev/null; then
-    EXISTING_USER=$(echo "$EXISTING_USER_RESPONSE" | jq -r '.data[0].id // empty' 2>/dev/null) || true
+    EXISTING_USER=$(echo "$EXISTING_USER_RESPONSE" | jq -r '.data[] | select(.email == "template-api@internal.local") | .id // empty' 2>/dev/null) || true
 else
-    EXISTING_USER=$(echo "$EXISTING_USER_RESPONSE" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4) || true
+    # Fallback: grep for the email and extract nearby id
+    if echo "$EXISTING_USER_RESPONSE" | grep -q "template-api@internal.local"; then
+        EXISTING_USER=$(echo "$EXISTING_USER_RESPONSE" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4) || true
+    else
+        EXISTING_USER=""
+    fi
 fi
 
 if [[ -n "$EXISTING_USER" ]]; then
@@ -356,7 +361,7 @@ if [[ -n "$EXISTING_USER" ]]; then
     UPDATE_RESPONSE=$(curl -s -X PATCH "http://localhost:${DIRECTUS_PORT}/users/${EXISTING_USER}" \
         -H "Authorization: Bearer ${ACCESS_TOKEN}" \
         -H "Content-Type: application/json" \
-        -d "{\"token\": \"${TEMPLATE_API_TOKEN}\"}" 2>&1) || true
+        -d "{\"token\": \"${TEMPLATE_API_TOKEN}\"}") || true
     
     if echo "$UPDATE_RESPONSE" | grep -q '"id"'; then
         echo "  Service account token updated successfully"
@@ -368,9 +373,12 @@ if [[ -n "$EXISTING_USER" ]]; then
 else
     echo "  Creating service account user..."
     
-    # Get the Administrator role ID (Directus 11.x uses role name, not admin_access field)
-    ROLES_RESPONSE=$(curl -s "http://localhost:${DIRECTUS_PORT}/roles?filter[name][_eq]=Administrator&limit=1" \
-        -H "Authorization: Bearer ${ACCESS_TOKEN}" 2>&1) || true
+    # Get the first role (Administrator) - on fresh install there's only one role
+    # Note: We avoid using filter[] syntax as it has shell escaping issues
+    ROLES_RESPONSE=$(curl -s "http://localhost:${DIRECTUS_PORT}/roles?limit=1" \
+        -H "Authorization: Bearer ${ACCESS_TOKEN}") || true
+    
+    echo "  Roles API response: $ROLES_RESPONSE"
     
     if command -v jq &> /dev/null; then
         ADMIN_ROLE_ID=$(echo "$ROLES_RESPONSE" | jq -r '.data[0].id // empty' 2>/dev/null) || true
@@ -379,12 +387,12 @@ else
     fi
     
     if [[ -z "$ADMIN_ROLE_ID" ]]; then
-        echo "  ERROR: Could not find Administrator role"
+        echo "  ERROR: Could not find any roles"
         echo "  Roles response: $ROLES_RESPONSE"
         exit 1
     fi
     
-    echo "  Found Administrator role: $ADMIN_ROLE_ID"
+    echo "  Found role: $ADMIN_ROLE_ID"
     
     # Create the service account
     CREATE_RESPONSE=$(curl -s -X POST "http://localhost:${DIRECTUS_PORT}/users" \
@@ -398,7 +406,7 @@ else
             \"first_name\": \"Template\",
             \"last_name\": \"API Service\",
             \"status\": \"active\"
-        }" 2>&1) || true
+        }") || true
     
     if echo "$CREATE_RESPONSE" | grep -q '"id"'; then
         echo "  Service account created successfully"
@@ -441,7 +449,7 @@ while true; do
     TEMPLATE_API_ELAPSED=$((TEMPLATE_API_ELAPSED + 5))
     if [[ $TEMPLATE_API_ELAPSED -ge $TEMPLATE_API_TIMEOUT ]]; then
         echo "  ERROR: Template API health check timed out"
-        pm2 logs template-api --lines 30 --nostream || true
+        sudo -u ubuntu pm2 logs template-api --lines 30 --nostream || true
         exit 1
     fi
     
