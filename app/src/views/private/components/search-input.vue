@@ -240,12 +240,12 @@ function emitValue() {
 	--icon-search-padding-right: 4px;
 	--icon-filter-margin-right: 8px;
 
+	box-sizing: content-box;
 	display: flex;
 	align-items: center;
 	inline-size: var(--search-input-size);
 	min-block-size: var(--search-input-size);
-	max-inline-size: 100%;
-	box-sizing: content-box;
+	max-inline-size: calc(100% - var(--theme--border-width) * 2);
 	overflow: hidden;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--search-input-radius);
@@ -410,13 +410,6 @@ function emitValue() {
 	border-start-end-radius: 0;
 	border-end-end-radius: var(--search-input-radius);
 	border-end-start-radius: var(--search-input-radius);
-
-	@media (width <= 400px) {
-		inset-inline: 0;
-		inline-size: calc(100% + var(--theme--border-width) * 2);
-		min-inline-size: 0;
-		border-start-start-radius: 0;
-	}
 
 	&.active {
 		border-color: var(--theme--form--field--input--border-color-focus);
