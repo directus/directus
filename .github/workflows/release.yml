@@ -90,7 +90,7 @@ jobs:
         env:
           NPM_CONFIG_PROVENANCE: true
         run: |
-          sudo npm install -g npm@11
+          pnpm add -g npm@11
           pnpm --recursive publish \
             --access=public \
             --no-git-checks \
