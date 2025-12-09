@@ -449,6 +449,7 @@ confirm_revert_body: Isto irá reverter o item para o estado selecionado.
 display: Exibir
 settings_update_success: Configurações atualizadas
 title: Título
+subtitle: Subtítulo
 revision_delta_created: Criado
 revision_delta_created_externally: Criado externamente
 revision_delta_updated: '1 campo atualizado | {count} campos atualizados'
@@ -2073,6 +2074,9 @@ interfaces:
   input-password:
     input-password: Insira sua Senha
     description: Entrada de senha com alternância para ocultar o valor
+  header:
+    header: Cabeçalho
+    links: Links
 displays:
   translations:
     translations: Traduções
