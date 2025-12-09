@@ -9,12 +9,17 @@ export const useNavBarStore = defineStore('nav-bar-store', () => {
 	const size = useLocalStorage('nav-bar-size', 250);
 
 	const route = useRoute();
-	const breakpoints = useBreakpoints(BREAKPOINTS);
+	const { lg, xl } = useBreakpoints(BREAKPOINTS);
+	const sidebarStore = useSidebarStore();
+
+	const inlineNav = computed(() => {
+		return sidebarStore.collapsed ? lg.value : xl.value;
+	});
 
 	watch(
 		() => route.fullPath,
 		() => {
-			if (breakpoints.smaller('lg').value) collapse();
+			if (!inlineNav.value) collapse();
 		},
 	);
 
