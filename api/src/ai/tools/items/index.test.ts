@@ -1,10 +1,10 @@
-import { ItemsService } from '@/services/items.js';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
+import { ItemsService } from '../../../services/items.js';
 import { items } from './index.js';
 
-vi.mock('@/services/items.js');
+vi.mock('../../../services/items.js');
 
 describe('items tool', () => {
 	const mockSchema = {

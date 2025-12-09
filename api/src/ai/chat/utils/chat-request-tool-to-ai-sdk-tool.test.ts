@@ -1,7 +1,7 @@
-import { ALL_TOOLS } from '@/ai/tools/index.js';
 import { InvalidPayloadError } from '@directus/errors';
 import { jsonSchema as aiJsonSchema, tool as aiTool } from 'ai';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ALL_TOOLS } from '../../tools/index.js';
 import { chatRequestToolToAiSdkTool } from './chat-request-tool-to-ai-sdk-tool.js';
 
 // Mock the AI SDK to capture tool/jsonSchema calls
@@ -23,7 +23,7 @@ const { mockValidate, mockHandler } = vi.hoisted(() => ({
 	mockHandler: vi.fn(async (_args: any) => 'handled') as any,
 }));
 
-vi.mock('@/ai/tools/index.js', () => {
+vi.mock('../../tools/index.js', () => {
 	const TOOL = {
 		name: 'directus.test',
 		description: 'A test tool',

@@ -1,6 +1,6 @@
-import { SettingsService } from '@/services/settings.js';
-import { getSchema } from '@/utils/get-schema.js';
 import type { RequestHandler } from 'express';
+import { SettingsService } from '../../../services/settings.js';
+import { getSchema } from '../../../utils/get-schema.js';
 
 export const loadSettings: RequestHandler = async (_req, res, next) => {
 	const service = new SettingsService({
