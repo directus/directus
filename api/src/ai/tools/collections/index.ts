@@ -1,17 +1,17 @@
 import { InvalidPayloadError } from '@directus/errors';
 import type { Collection, RawCollection } from '@directus/types';
 import { isObject, toArray } from '@directus/utils';
-import { z } from 'zod';
-import { CollectionsService } from '../../../services/collections.js';
-import { defineTool } from '../define-tool.js';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { z } from 'zod';
+import { CollectionsService } from '../../../services/collections.js';
+import { requireText } from '../../../utils/require-text.js';
+import { defineTool } from '../define-tool.js';
 import {
 	CollectionItemInputSchema,
 	CollectionItemValidateCreateSchema,
 	CollectionItemValidateUpdateSchema,
 } from '../schema.js';
-import { requireText } from '@/utils/require-text.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

@@ -1,9 +1,9 @@
-import { FilesService } from '@/services/files.js';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
+import { FilesService } from '../../../services/files.js';
 import { files } from './index.js';
 
-vi.mock('@/services/files.js');
+vi.mock('../../../services/files.js');
 
 describe('files tool', () => {
 	const mockSchema = { collections: {}, fields: {}, relations: {} } as unknown as SchemaOverview;

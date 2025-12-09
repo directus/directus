@@ -1,15 +1,15 @@
-import { FieldsService } from '@/services/fields.js';
 import type { Accountability, Field, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
+import { FieldsService } from '../../../services/fields.js';
 import { fields } from './index.js';
 
-vi.mock('@/services/fields.js');
+vi.mock('../../../services/fields.js');
 
-vi.mock('@/utils/get-schema.js', () => {
+vi.mock('../../../utils/get-schema.js', () => {
 	return { getSchema: vi.fn() };
 });
 
-vi.mock('@/database/index.js', () => {
+vi.mock('../../../database/index.js', () => {
 	const self: Record<string, any> = {
 		transaction: vi.fn((cb) => cb(self)),
 	};

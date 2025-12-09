@@ -1,11 +1,11 @@
 import type { Accountability, Relation, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
-import { RelationsService } from '@/services/relations.js';
+import { RelationsService } from '../../../services/relations.js';
 import { relations } from './index.js';
 
-vi.mock('@/services/relations.js');
+vi.mock('../../../services/relations.js');
 
-vi.mock('@/utils/get-snapshot.js', () => ({
+vi.mock('../../../utils/get-snapshot.js', () => ({
 	getSnapshot: vi.fn(),
 }));
 

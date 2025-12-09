@@ -1,17 +1,17 @@
-import { clearSystemCache } from '@/cache.js';
-import getDatabase from '@/database/index.js';
-import { FieldsService } from '@/services/fields.js';
-import { getSchema } from '@/utils/get-schema.js';
-import { requireText } from '@/utils/require-text.js';
-import { shouldClearCache } from '@/utils/should-clear-cache.js';
-import { transaction } from '@/utils/transaction.js';
 import { InvalidPayloadError } from '@directus/errors';
 import type { Field, Item, RawField, Type } from '@directus/types';
 import { toArray } from '@directus/utils';
-import { z } from 'zod';
-import { defineTool } from '../define-tool.js';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { z } from 'zod';
+import { clearSystemCache } from '../../../cache.js';
+import getDatabase from '../../../database/index.js';
+import { FieldsService } from '../../../services/fields.js';
+import { getSchema } from '../../../utils/get-schema.js';
+import { requireText } from '../../../utils/require-text.js';
+import { shouldClearCache } from '../../../utils/should-clear-cache.js';
+import { transaction } from '../../../utils/transaction.js';
+import { defineTool } from '../define-tool.js';
 import {
 	FieldItemInputSchema,
 	FieldItemValidateSchema,

@@ -1,9 +1,9 @@
 import type { Accountability, FlowRaw, SchemaOverview } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
-import { FlowsService } from '@/services/flows.js';
+import { FlowsService } from '../../../services/flows.js';
 import { flows } from './index.js';
 
-vi.mock('@/services/flows');
+vi.mock('../../../services/flows');
 
 describe('flows tool', () => {
 	const mockSchema = { collections: {}, fields: {}, relations: {} } as unknown as SchemaOverview;
