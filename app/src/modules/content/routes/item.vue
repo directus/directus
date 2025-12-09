@@ -1,29 +1,34 @@
 <script setup lang="ts">
+import { useAiStore } from '@/ai/stores/use-ai';
 import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useFlows } from '@/composables/use-flows';
 import { useItem } from '@/composables/use-item';
-import { useLocalStorage } from '@vueuse/core';
 import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
-import { useFlows } from '@/composables/use-flows';
+import { BREAKPOINTS } from '@/constants';
 import { useUserStore } from '@/stores/user';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
+import PrivateView from '@/views/private';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
+import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
-import FlowDialogs from '@/views/private/components/flow-dialogs.vue';
+import PrivateViewResizeHandle from '@/views/private/private-view/components/private-view-resize-handle.vue';
 import { useCollection } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
+import { SplitPanel } from '@directus/vue-split-panel';
 import { useHead } from '@unhead/vue';
-import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
+import { useBreakpoints, useLocalStorage, useScroll } from '@vueuse/core';
+import { computed, onBeforeUnmount, provide, ref, toRefs, unref, watch, type ComponentPublicInstance } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter, useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
@@ -46,7 +51,11 @@ const { collectionRoute } = useCollectionRoute();
 
 const userStore = useUserStore();
 
-const form = ref<HTMLElement>();
+const form = ref<ComponentPublicInstance>();
+
+const scrollParent = computed(() => form.value?.$el?.parentElement);
+const { y: formScrollY } = useScroll(scrollParent);
+const showHeaderShadow = computed(() => formScrollY.value > 0);
 
 const { collection, primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
@@ -88,6 +97,14 @@ const {
 	refresh,
 	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, query);
+
+const aiStore = useAiStore();
+
+aiStore.onSystemToolResult((tool, input) => {
+	if (tool === 'items' && input.collection === collection.value) {
+		refresh();
+	}
+});
 
 const validationErrors = computed(() => {
 	if (currentVersion.value === null) return itemValidationErrors.value;
@@ -255,19 +272,42 @@ const previewUrl = computed(() => {
 	return displayValue.value.trim() || null;
 });
 
-const livePreviewMode = useLocalStorage<'split' | 'popup' | null>('directus-live-preview-mode', null);
+const livePreviewMode = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
+const livePreviewSizeDefault = 50;
+const livePreviewSizeStorage = useLocalStorage<number>('live-preview-size', livePreviewSizeDefault);
 
-const splitView = computed({
+const breakpoints = useBreakpoints(BREAKPOINTS);
+const isMobile = breakpoints.smallerOrEqual('sm');
+
+const livePreviewActive = computed(
+	() => !!collectionInfo.value?.meta?.preview_url && !unref(isNew) && livePreviewMode.value === 'split',
+);
+
+const livePreviewCollapsed = computed({
 	get() {
-		if (!collectionInfo.value?.meta?.preview_url) return false;
-		if (unref(isNew)) return false;
-
-		return livePreviewMode.value === 'split';
+		return !livePreviewActive.value;
 	},
-	set(value) {
-		livePreviewMode.value = value ? 'split' : null;
+	set(value: boolean) {
+		livePreviewMode.value = value ? null : 'split';
 	},
 });
+
+const livePreviewSize = computed({
+	get() {
+		if (isMobile.value) {
+			return livePreviewActive.value ? 100 : 0;
+		}
+
+		return livePreviewSizeStorage.value || livePreviewSizeDefault;
+	},
+	set(value: number) {
+		if (isMobile.value) return;
+
+		livePreviewSizeStorage.value = value;
+	},
+});
+
+provide('live-preview-active', livePreviewActive);
 
 let popupWindow: Window | null = null;
 
@@ -312,14 +352,6 @@ const { flowDialogsContext, manualFlows, provideRunManualFlow } = useFlows({
 
 provideRunManualFlow();
 
-function toggleSplitView() {
-	if (livePreviewMode.value === null) {
-		livePreviewMode.value = 'split';
-	} else {
-		livePreviewMode.value = null;
-	}
-}
-
 async function refreshLivePreview() {
 	try {
 		await fetchTemplateValues();
@@ -345,17 +377,6 @@ watch(saveVersionLoading, async (newVal, oldVal) => {
 onBeforeUnmount(() => {
 	if (popupWindow) popupWindow.close();
 });
-
-function navigateBack() {
-	const backState = router.options.history.state.back;
-
-	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
-		router.back();
-		return;
-	}
-
-	router.push(collectionRoute.value);
-}
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [
@@ -522,12 +543,13 @@ function useCollectionRoute() {
 		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
 	/>
 
-	<private-view
+	<PrivateView
 		v-else
-		v-model:split-view="splitView"
 		:class="{ 'has-content-versioning': shouldShowVersioning }"
-		:split-view-min-width="310"
-		:title="title"
+		:title
+		:show-back="!collectionInfo.meta?.singleton"
+		:show-header-shadow="showHeaderShadow"
+		:icon="collectionInfo.meta?.singleton ? collectionInfo.icon : undefined"
 	>
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
 			<h1 class="type-title">
@@ -545,32 +567,6 @@ function useCollectionRoute() {
 					:template="collectionInfo.meta!.display_template"
 				/>
 			</h1>
-		</template>
-
-		<template #title-outer:prepend>
-			<v-button
-				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				disabled
-			>
-				<v-icon :name="collectionInfo.icon" />
-			</v-button>
-
-			<v-button
-				v-else
-				v-tooltip.bottom="$t('back')"
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				exact
-				@click="navigateBack"
-			>
-				<v-icon name="arrow_back" />
-			</v-button>
 		</template>
 
 		<template #headline>
@@ -608,9 +604,10 @@ function useCollectionRoute() {
 				icon
 				class="action-preview"
 				:secondary="livePreviewMode === null"
-				@click="toggleSplitView"
+				small
+				@click="livePreviewCollapsed = !livePreviewCollapsed"
 			>
-				<v-icon name="visibility" outline />
+				<v-icon name="visibility" outline small />
 			</v-button>
 
 			<v-dialog
@@ -629,9 +626,10 @@ function useCollectionRoute() {
 						class="action-delete"
 						secondary
 						:disabled="item === null || deleteAllowed !== true"
+						small
 						@click="on"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" outline small />
 					</v-button>
 				</template>
 
@@ -664,9 +662,10 @@ function useCollectionRoute() {
 						icon
 						secondary
 						:disabled="item === null || archiveAllowed !== true"
+						small
 						@click="on"
 					>
-						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline />
+						<v-icon :name="isArchived ? 'unarchive' : 'archive'" outline small />
 					</v-button>
 				</template>
 
@@ -691,9 +690,10 @@ function useCollectionRoute() {
 				:tooltip="saveAllowed ? $t('save') : $t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
+				small
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" />
+				<v-icon name="check" small />
 
 				<template #append-outer>
 					<save-options
@@ -713,9 +713,10 @@ function useCollectionRoute() {
 				:tooltip="$t('save_version')"
 				:loading="saveVersionLoading"
 				:disabled="!isSavable"
+				small
 				@click="saveVersionAction('stay')"
 			>
-				<v-icon name="beenhere" />
+				<v-icon name="beenhere" small />
 
 				<template #append-outer>
 					<v-menu v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true" show-arrow>
@@ -750,19 +751,49 @@ function useCollectionRoute() {
 			<content-navigation :current-collection="collection" />
 		</template>
 
-		<v-form
-			ref="form"
-			v-model="edits"
-			:autofocus="isNew"
-			:disabled="isFormDisabled"
-			:loading="loading"
-			:initial-values="item"
-			:fields="fields"
-			:primary-key="internalPrimaryKey"
-			:validation-errors="validationErrors"
-			:version="currentVersion"
-			:direction="userStore.textDirection"
-		/>
+		<SplitPanel
+			v-model:size="livePreviewSize"
+			v-model:collapsed="livePreviewCollapsed"
+			primary="end"
+			size-unit="%"
+			collapsible
+			:collapsed-size="0"
+			:collapse-threshold="15"
+			:min-size="isMobile ? 0 : 20"
+			:max-size="isMobile ? 100 : 80"
+			:snap-points="[livePreviewSizeDefault]"
+			:transition-duration="150"
+			class="content-split"
+			:disabled="isMobile"
+		>
+			<template #start>
+				<v-form
+					ref="form"
+					v-model="edits"
+					:autofocus="isNew"
+					:disabled="isFormDisabled"
+					:loading="loading"
+					:initial-values="item"
+					:fields="fields"
+					:primary-key="internalPrimaryKey"
+					:validation-errors="validationErrors"
+					:version="currentVersion"
+					:direction="userStore.textDirection"
+				/>
+			</template>
+
+			<template #divider>
+				<PrivateViewResizeHandle />
+			</template>
+
+			<template #end>
+				<live-preview
+					v-if="livePreviewActive && previewUrl"
+					:url="previewUrl"
+					@new-window="livePreviewMode = 'popup'"
+				/>
+			</template>
+		</SplitPanel>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
@@ -777,14 +808,7 @@ function useCollectionRoute() {
 			</v-card>
 		</v-dialog>
 
-		<template #splitView>
-			<live-preview v-if="previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
-		</template>
-
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="$t('information')" close>
-				<div v-md="$t('page_help_collections_item')" class="page-description" />
-			</sidebar-detail>
 			<template v-if="isNew === false && actualPrimaryKey">
 				<revisions-sidebar-detail
 					v-if="revisionsAllowed && accountabilityScope === 'all'"
@@ -809,7 +833,7 @@ function useCollectionRoute() {
 				<flow-sidebar-detail v-if="currentVersion === null" :manual-flows />
 			</template>
 		</template>
-	</private-view>
+	</PrivateView>
 </template>
 
 <style lang="scss" scoped>
@@ -825,17 +849,26 @@ function useCollectionRoute() {
 }
 
 .v-form {
-	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
-
-	@media (min-width: 600px) {
-		padding: var(--content-padding);
-		padding-block-end: var(--content-padding-bottom);
-	}
+	padding-inline: var(--content-padding);
+	padding-block: var(--content-padding) var(--content-padding-bottom);
 }
 
 .title-loader {
 	inline-size: 260px;
+}
+
+:deep(.type-title) {
+	.render-template {
+		img {
+			block-size: 20px;
+		}
+	}
+}
+
+.headline-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
 }
 
 .version-more-options.v-icon {
@@ -864,23 +897,9 @@ function useCollectionRoute() {
 			inset-block-start: 4px;
 		}
 
-		@media (min-width: 600px) {
+		@media (width > 640px) {
 			opacity: 1;
 		}
-	}
-
-	.headline-wrapper {
-		display: flex;
-		align-items: center;
-		gap: 0.25rem;
-	}
-
-	:deep(.header-bar.collapsed.shadow .title-container .headline) {
-		opacity: 1;
-		pointer-events: auto;
-	}
-	:deep(.header-bar.small.shadow .title-container .headline) {
-		opacity: 1;
 	}
 }
 
@@ -888,5 +907,38 @@ function useCollectionRoute() {
 	@media (max-width: 600px) {
 		display: none;
 	}
+}
+
+.content-split {
+	flex-grow: 1;
+	block-size: 100%;
+	position: relative;
+}
+
+.content-split :deep(.sp-start) {
+	overflow: auto;
+}
+
+.content-split :deep(.sp-end) {
+	background-color: var(--theme--background-subdued);
+	overflow-y: auto;
+
+	@media (width > 640px) {
+		border-inline-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	}
+}
+
+.content-split.sp-collapsed :deep(.sp-divider) {
+	display: none;
+}
+
+.content-split.sp-collapsed :deep(.sp-end) {
+	border-inline-start: none;
+}
+
+/* Disable pointer events on iframe during drag to prevent jank */
+.content-split.sp-dragging :deep(iframe),
+.content-split:active :deep(iframe) {
+	pointer-events: none !important;
 }
 </style>

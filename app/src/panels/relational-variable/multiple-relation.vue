@@ -7,7 +7,7 @@ interface Props {
 	collection: string;
 	template: string;
 	filter: Record<string, any>;
-	limit: number;
+	limit?: number;
 }
 const props = withDefaults(defineProps<Props>(), { limit: 5 });
 const emit = defineEmits(['input', 'select']);

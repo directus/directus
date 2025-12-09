@@ -6,7 +6,6 @@ import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
 import { refreshCurrentLanguage } from '@/lang/refresh-current-language';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
-import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { useCollection } from '@directus/composables';
@@ -96,17 +95,6 @@ const disabledOptions = computed(() => {
 	if (isNew.value) return ['save-as-copy'];
 	return [];
 });
-
-function navigateBack() {
-	const backState = router.options.history.state.back;
-
-	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
-		router.back();
-		return;
-	}
-
-	router.push(`/settings/translations`);
-}
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [
@@ -214,33 +202,11 @@ async function revert(values: Record<string, any>) {
 <template>
 	<content-not-found v-if="error" />
 
-	<private-view v-else :title="primaryKey === '+' ? $t('create_custom_translation') : $t('edit_custom_translation')">
-		<template #title-outer:prepend>
-			<v-button
-				v-if="collectionInfo?.meta && collectionInfo.meta.singleton === true"
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				disabled
-			>
-				<v-icon :name="collectionInfo.icon" />
-			</v-button>
-
-			<v-button
-				v-else
-				v-tooltip.bottom="$t('back')"
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				exact
-				@click="navigateBack"
-			>
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
-
+	<private-view
+		v-else
+		:title="primaryKey === '+' ? $t('create_custom_translation') : $t('edit_custom_translation')"
+		show-back
+	>
 		<template #headline>
 			<v-breadcrumb
 				v-if="collectionInfo?.meta && collectionInfo.meta.singleton === true"
@@ -260,9 +226,10 @@ async function revert(values: Record<string, any>) {
 						class="action-delete"
 						secondary
 						:disabled="item === null"
+						small
 						@click="on"
 					>
-						<v-icon name="delete" outline />
+						<v-icon name="delete" outline small />
 					</v-button>
 				</template>
 
@@ -286,9 +253,10 @@ async function revert(values: Record<string, any>) {
 				icon
 				:loading="saving"
 				:disabled="!isSavable"
+				small
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" />
+				<v-icon name="check" small />
 
 				<template #append-outer>
 					<save-options
@@ -331,9 +299,6 @@ async function revert(values: Record<string, any>) {
 		</v-dialog>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="$t('information')" close>
-				<div v-md="$t('page_help_settings_translations_item')" class="page-description" />
-			</sidebar-detail>
 			<template v-if="isNew === false && loading === false && internalPrimaryKey">
 				<revisions-sidebar-detail
 					v-if="accountabilityScope === 'all'"
@@ -344,13 +309,6 @@ async function revert(values: Record<string, any>) {
 					@revert="revert"
 				/>
 				<comments-sidebar-detail collection="directus_translations" :primary-key="internalPrimaryKey" />
-				<flow-sidebar-detail
-					location="item"
-					collection="directus_translations"
-					:primary-key="internalPrimaryKey"
-					:has-edits="hasEdits"
-					@refresh="refresh"
-				/>
 			</template>
 		</template>
 	</private-view>
@@ -372,7 +330,7 @@ async function revert(values: Record<string, any>) {
 	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
 	padding-block-end: var(--content-padding-bottom);
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		padding: var(--content-padding);
 		padding-block-end: var(--content-padding-bottom);
 	}

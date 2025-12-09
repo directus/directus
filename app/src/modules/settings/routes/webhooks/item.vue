@@ -41,22 +41,16 @@ async function deleteAndQuit() {
 </script>
 
 <template>
-	<private-view :title="title">
+	<private-view :title="title" show-back>
 		<template #headline>
 			<v-breadcrumb :items="[{ name: $t('settings_webhooks'), to: '/settings/webhooks' }]" />
-		</template>
-
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="`/settings/webhooks/`">
-				<v-icon name="arrow_back" />
-			</v-button>
 		</template>
 
 		<template #actions>
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on">
-						<v-icon name="delete" />
+					<v-button rounded icon class="action-delete" :disabled="item === null" small @click="on">
+						<v-icon name="delete" small />
 					</v-button>
 				</template>
 
@@ -95,9 +89,6 @@ async function deleteAndQuit() {
 		/>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" :title="$t('information')" close>
-				<div v-md="$t('page_help_settings_webhooks_item')" class="page-description" />
-			</sidebar-detail>
 			<revisions-sidebar-detail
 				v-if="isNew === false"
 				ref="revisionsSidebarDetailRef"

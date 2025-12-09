@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useEventListener } from '@/composables/use-event-listener';
-import { useExtension } from '@/composables/use-extension';
 import { Folder, useFolders } from '@/composables/use-folders';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
@@ -47,8 +46,6 @@ const selection = ref<Item[]>([]);
 const userStore = useUserStore();
 
 const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_files'));
-
-const currentLayout = useExtension('layout', layout);
 
 const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
 
@@ -374,20 +371,9 @@ function useFileUpload() {
 		collection="directus_files"
 		:reset-preset="resetPreset"
 	>
-		<private-view
-			:title="title"
-			:class="{ dragging }"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
-		>
+		<private-view :title="title" icon="folder" :class="{ dragging }">
 			<template v-if="breadcrumb" #headline>
 				<v-breadcrumb :items="breadcrumb" />
-			</template>
-
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded disabled icon secondary>
-					<v-icon name="folder" outline />
-				</v-button>
 			</template>
 
 			<template #actions:prepend>
@@ -395,7 +381,7 @@ function useFileUpload() {
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" collection="directus_files" />
+				<search-input v-model="search" v-model:filter="filter" collection="directus_files" small />
 
 				<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
 
@@ -413,9 +399,10 @@ function useFileUpload() {
 							class="folder"
 							secondary
 							:disabled="!batchEditAllowed"
+							small
 							@click="on"
 						>
-							<v-icon name="folder_move" />
+							<v-icon name="folder_move" small />
 						</v-button>
 					</template>
 
@@ -446,9 +433,10 @@ function useFileUpload() {
 							icon
 							class="action-delete"
 							secondary
+							small
 							@click="on"
 						>
-							<v-icon name="delete" outline />
+							<v-icon name="delete" outline small />
 						</v-button>
 					</template>
 
@@ -473,9 +461,10 @@ function useFileUpload() {
 					icon
 					secondary
 					:disabled="batchEditAllowed === false"
+					small
 					@click="batchEditActive = true"
 				>
-					<v-icon name="edit" outline />
+					<v-icon name="edit" outline small />
 				</v-button>
 
 				<v-button
@@ -484,8 +473,9 @@ function useFileUpload() {
 					icon
 					:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
 					:disabled="createAllowed === false"
+					small
 				>
-					<v-icon name="add" />
+					<v-icon name="add" small />
 				</v-button>
 			</template>
 
@@ -541,9 +531,6 @@ function useFileUpload() {
 			/>
 
 			<template #sidebar>
-				<sidebar-detail icon="info" :title="$t('information')" close>
-					<div v-md="$t('page_help_files_collection')" class="page-description" />
-				</sidebar-detail>
 				<layout-sidebar-detail v-model="layout">
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
 				</layout-sidebar-detail>

@@ -12,3 +12,7 @@ export interface ComparisonContext {
 	selectedFields: string[];
 	onToggleField: (field: string) => void;
 }
+
+export type FieldValues = {
+	[field: string]: any;
+};

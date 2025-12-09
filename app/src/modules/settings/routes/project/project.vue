@@ -8,7 +8,6 @@ import { clone } from 'lodash';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
-import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
 
 const router = useRouter();
 
@@ -62,17 +61,12 @@ function discardAndLeave() {
 </script>
 
 <template>
-	<private-view :title="$t('settings_project')">
+	<private-view :title="$t('settings_project')" icon="tune">
 		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="tune" />
-			</v-button>
-		</template>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="!hasEdits" :loading="saving" @click="save">
-				<v-icon name="check" />
+			<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="!hasEdits" :loading="saving" small @click="save">
+				<v-icon name="check" small />
 			</v-button>
 		</template>
 
@@ -83,10 +77,6 @@ function discardAndLeave() {
 		<div class="settings">
 			<v-form v-model="edits" :initial-values="initialValues" :fields="fields" :primary-key="1" />
 		</div>
-
-		<template #sidebar>
-			<project-info-sidebar-detail />
-		</template>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
