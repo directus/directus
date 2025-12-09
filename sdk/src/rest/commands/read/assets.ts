@@ -1,4 +1,5 @@
 import type { DirectusFile } from '../../../schema/file.js';
+import type { DirectusFolder } from '../../../schema/folder.js';
 import type { AssetResponse, AssetsQuery, DownloadZipOptions, ResponseTransformer } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
@@ -103,7 +104,7 @@ export const downloadFilesZip =
  */
 export const downloadFolderZip =
 	<Schema, R extends keyof AssetResponse>(
-		key: DirectusFile<Schema>['id'],
+		key: DirectusFolder<Schema>['id'],
 		options?: DownloadZipOptions<R>,
 	): RestCommand<AssetResponse[R], Schema> =>
 	() => {
