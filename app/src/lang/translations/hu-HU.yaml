@@ -308,6 +308,7 @@ confirm_revert_body: Ez visszaállítja az elemet a kiválasztott állapotba.
 display: Megjelenés
 settings_update_success: Beállítások frissítve
 title: Cím
+subtitle: Alcím
 revision_delta_created: Létrehozva
 revision_delta_created_externally: Külsőleg létrehozva
 revision_delta_updated: 'Egy mező frissítve | {count} mező frissítve'
@@ -1695,6 +1696,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Nyers szerkesztő
     description: Lehetővé teszi a nyers vagy kapcsos zárójeles sablonértékek megadását
+  header:
+    header: Fejléc
+    links: Linkek
 displays:
   translations:
     translations: Fordítások
