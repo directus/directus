@@ -87,8 +87,6 @@ jobs:
 
       - name: Prepare
         uses: ./.github/actions/prepare
-        with:
-          registry: https://registry.npmjs.org
 
       - name: Publish packages to NPM
         env:
