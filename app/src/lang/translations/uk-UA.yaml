@@ -492,6 +492,7 @@ confirm_revert_body: Це поверне елемент до вибраного 
 display: Відображати
 settings_update_success: Налаштування оновлено
 title: Заголовок
+subtitle: Підзаголовок
 revision_delta_created: Створено
 revision_delta_created_externally: Створено ззовні
 revision_delta_updated: 'Оновлено 1 поле | Оновлено {count} полів'
@@ -2196,6 +2197,10 @@ interfaces:
     description: Введення пароля з перемикачем, щоб приховати значення
   flow-select:
     flow-select: Вибір процесу
+  header:
+    header: Заголовок
+    links: Посилання
+    action_type: Тип дії
 displays:
   translations:
     translations: Переклади
