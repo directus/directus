@@ -360,6 +360,7 @@ confirm_revert_body: Bản ghi sẽ được cập nhật về mốc thời gian
 display: Hiển thị
 settings_update_success: Cài đặt đã được cập nhật
 title: Tiêu đề
+subtitle: Tiêu đề phụ
 revision_delta_created: Đã tạo
 revision_delta_updated: 'Cập nhật 1 Trường | Cập nhật {count} Trường'
 revision_delta_deleted: Đã xóa
