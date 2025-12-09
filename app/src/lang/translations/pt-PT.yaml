@@ -446,6 +446,7 @@ confirm_revert_body: Isto irá reverter o documento para o estado selecionado.
 display: Visualização
 settings_update_success: Configurações atualizadas
 title: Título
+subtitle: Subtítulo
 revision_delta_created: Criado
 revision_delta_created_externally: Criado externamente
 revision_delta_updated: '1 campo foi atualizado | {count} campos foram atualizados'
