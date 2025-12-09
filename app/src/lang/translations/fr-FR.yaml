@@ -461,6 +461,7 @@ confirm_revert_body: Cela restaurera l'élément à l'état sélectionné.
 display: Affichage
 settings_update_success: Paramètres enregistrés
 title: Titre
+subtitle: Sous-titre
 revision_delta_created: Créé
 revision_delta_created_externally: Créé en externe
 revision_delta_updated: '1 champ mis à jour | {count} champs mis à jour'
@@ -2091,6 +2092,9 @@ interfaces:
   input-password:
     input-password: Saisissez le mot de passe
     description: Saisie de mot de passe avec affichage masqué/visible
+  header:
+    header: En-tête
+    links: Liens
 displays:
   translations:
     translations: Traductions
