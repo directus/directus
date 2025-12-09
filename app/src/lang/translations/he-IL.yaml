@@ -443,6 +443,14 @@ field_options:
 comment: הערה
 live_preview:
   new_window: פתח בחלון חדש
+ai:
+  unknown: לא ידוע
+  tool_approval:
+    disabled: מושבת
+ai_tools:
+  files: קבצים
+  folders: תיקיות
+  operations: תהליכים
 description: תיאור
 email: דוא"ל
 password: סיסמה
