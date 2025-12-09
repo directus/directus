@@ -32,10 +32,111 @@
 
 set -euo pipefail
 
+# =============================================================================
+# Configuration
+# =============================================================================
 LOG_FILE="/var/log/tenant-configure.log"
+STATUS_FILE="/var/run/tenant-configure.status"
+
+# Redirect all output to log file while also displaying to stdout
 exec > >(tee -a "$LOG_FILE") 2>&1
 
+# =============================================================================
+# Utility Functions
+# =============================================================================
+
+# Write status to file for external monitoring
+write_status() {
+    local status="$1"
+    local message="${2:-}"
+    echo "{\"status\": \"$status\", \"message\": \"$message\", \"timestamp\": \"$(date -Iseconds)\"}" > "$STATUS_FILE"
+}
+
+# Retry a command with exponential backoff
+# Usage: retry_with_backoff <max_attempts> <initial_delay> <command...>
+retry_with_backoff() {
+    local max_attempts=$1
+    local delay=$2
+    shift 2
+    local attempt=1
+    local exit_code=0
+
+    while [[ $attempt -le $max_attempts ]]; do
+        if "$@"; then
+            return 0
+        fi
+        exit_code=$?
+        
+        if [[ $attempt -lt $max_attempts ]]; then
+            echo "  Attempt $attempt/$max_attempts failed (exit code: $exit_code). Retrying in ${delay}s..."
+            sleep "$delay"
+            # Exponential backoff with cap at 60 seconds
+            delay=$((delay * 2))
+            [[ $delay -gt 60 ]] && delay=60
+        fi
+        ((attempt++))
+    done
+
+    echo "  All $max_attempts attempts failed"
+    return $exit_code
+}
+
+# Wait for a service to become healthy
+# Usage: wait_for_service <url> <timeout_seconds> <interval_seconds> <service_name>
+wait_for_service() {
+    local url=$1
+    local timeout=$2
+    local interval=$3
+    local service_name=$4
+    local elapsed=0
+
+    echo "  Waiting for $service_name to start..."
+    while true; do
+        if curl -sf --max-time 5 "$url" > /dev/null 2>&1; then
+            echo "  $service_name is healthy!"
+            return 0
+        fi
+
+        elapsed=$((elapsed + interval))
+        if [[ $elapsed -ge $timeout ]]; then
+            echo "  ERROR: $service_name health check timed out after ${timeout}s"
+            return 1
+        fi
+
+        echo "  Waiting for $service_name... (${elapsed}s / ${timeout}s)"
+        sleep "$interval"
+    done
+}
+
+# Test database connectivity
+test_db_connection() {
+    PGSSLMODE=require PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "SELECT 1" > /dev/null 2>&1
+}
+
+# Error handler for trap
+on_error() {
+    local exit_code=$?
+    local line_number=$1
+    echo ""
+    echo "=============================================="
+    echo "ERROR: Script failed at line $line_number"
+    echo "Exit code: $exit_code"
+    echo "Time: $(date)"
+    echo "=============================================="
+    write_status "failed" "Script failed at line $line_number with exit code $exit_code"
+    
+    # Don't exit - let the script continue to show what was happening
+}
+
+# Set up error trap
+trap 'on_error $LINENO' ERR
+
+# =============================================================================
+# Main Script
+# =============================================================================
+
 echo "=== Starting tenant configuration at $(date) ==="
+write_status "starting" "Beginning tenant configuration"
 
 # Validate required variables
 REQUIRED_VARS=(
@@ -54,6 +155,7 @@ REQUIRED_VARS=(
 for var in "${REQUIRED_VARS[@]}"; do
     if [[ -z "${!var:-}" ]]; then
         echo "ERROR: Required variable $var is not set"
+        write_status "failed" "Required variable $var is not set"
         exit 1
     fi
 done
@@ -80,9 +182,29 @@ echo "  DB Host: $DB_HOST"
 echo "  Region: $AWS_REGION"
 
 # =============================================================================
+# Validate Database Connectivity
+# =============================================================================
+echo "=== Validating Database Connectivity ==="
+write_status "running" "Validating database connectivity"
+
+if retry_with_backoff 5 5 test_db_connection; then
+    echo "  Database connection successful"
+else
+    echo "  ERROR: Cannot connect to database after multiple attempts"
+    echo "  Please verify:"
+    echo "    - DB_HOST ($DB_HOST) is correct"
+    echo "    - DB_PORT ($DB_PORT) is correct"
+    echo "    - DB_USER ($DB_USER) has access"
+    echo "    - Security groups allow inbound traffic on port $DB_PORT"
+    write_status "failed" "Database connection failed"
+    exit 1
+fi
+
+# =============================================================================
 # Configure Nginx
 # =============================================================================
 echo "=== Configuring Nginx ==="
+write_status "running" "Configuring Nginx"
 
 # Create nginx config from template
 export FQDN DIRECTUS_PORT
@@ -93,15 +215,19 @@ envsubst '${FQDN} ${DIRECTUS_PORT}' < /etc/nginx/templates/nginx-directus.conf.t
 ln -sf /etc/nginx/sites-available/directus /etc/nginx/sites-enabled/directus
 
 # Test and reload nginx
-nginx -t
-systemctl reload nginx
-
-echo "  Nginx configured for $FQDN"
+if nginx -t; then
+    systemctl reload nginx
+    echo "  Nginx configured for $FQDN"
+else
+    echo "  ERROR: Nginx configuration test failed"
+    exit 1
+fi
 
 # =============================================================================
 # Configure CloudWatch Agent
 # =============================================================================
 echo "=== Configuring CloudWatch Agent ==="
+write_status "running" "Configuring CloudWatch Agent"
 
 export NAME_PREFIX TENANT_NAME
 envsubst '${NAME_PREFIX} ${TENANT_NAME}' < /opt/aws/amazon-cloudwatch-agent/etc/templates/cloudwatch-agent.json.template \
@@ -120,6 +246,7 @@ echo "  CloudWatch Agent started"
 # Configure Directus with PM2 (initial - Directus only)
 # =============================================================================
 echo "=== Configuring Directus ==="
+write_status "running" "Configuring Directus"
 
 # Export variables for envsubst (TEMPLATE_API_TOKEN will be set later)
 export DIRECTUS_PORT DB_HOST DB_PORT DB_NAME DB_USER DB_PASSWORD
@@ -139,6 +266,7 @@ echo "  PM2 ecosystem configured"
 # Bootstrap Directus Database
 # =============================================================================
 echo "=== Bootstrapping Directus Database ==="
+write_status "running" "Bootstrapping Directus database"
 
 cd /opt/directus
 
@@ -165,7 +293,7 @@ if sudo -u ubuntu -E node directus/cli.js bootstrap 2>&1; then
     echo "  Bootstrap completed successfully"
 else
     BOOTSTRAP_EXIT=$?
-    echo "  WARNING: Bootstrap failed with exit code $BOOTSTRAP_EXIT"
+    echo "  WARNING: Bootstrap exited with code $BOOTSTRAP_EXIT"
     echo "  This may be okay if the database was already initialized"
 fi
 
@@ -211,6 +339,7 @@ fi
 # Start Directus with PM2 (only Directus, not Template API yet)
 # =============================================================================
 echo "=== Starting Directus ==="
+write_status "running" "Starting Directus"
 
 cd /opt/directus
 
@@ -220,34 +349,22 @@ sudo -u ubuntu pm2 start ecosystem.config.cjs --only directus
 # Save PM2 process list for startup
 sudo -u ubuntu pm2 save
 
-# Wait for Directus to be healthy (with timeout)
-echo "  Waiting for Directus to start..."
-HEALTH_CHECK_TIMEOUT=300  # 5 minutes
-HEALTH_CHECK_INTERVAL=5
-HEALTH_CHECK_ELAPSED=0
-
-while true; do
-    if curl -sf http://localhost:${DIRECTUS_PORT}/server/health > /dev/null 2>&1; then
-        echo "  Directus is healthy!"
-        break
-    fi
-    
-    HEALTH_CHECK_ELAPSED=$((HEALTH_CHECK_ELAPSED + HEALTH_CHECK_INTERVAL))
-    if [[ $HEALTH_CHECK_ELAPSED -ge $HEALTH_CHECK_TIMEOUT ]]; then
-        echo "  ERROR: Directus health check timed out after ${HEALTH_CHECK_TIMEOUT}s"
-        sudo -u ubuntu pm2 logs directus --lines 50 --nostream || true
-        exit 1
-    fi
-    
-    echo "  Waiting for Directus... (${HEALTH_CHECK_ELAPSED}s / ${HEALTH_CHECK_TIMEOUT}s)"
-    sleep $HEALTH_CHECK_INTERVAL
-done
+# Wait for Directus to be healthy
+if ! wait_for_service "http://localhost:${DIRECTUS_PORT}/server/health" 300 5 "Directus"; then
+    echo "  Dumping PM2 logs for debugging:"
+    sudo -u ubuntu pm2 logs directus --lines 50 --nostream || true
+    write_status "failed" "Directus health check timed out"
+    exit 1
+fi
 
 # =============================================================================
 # Configure SSL (if enabled) - BEFORE service account to ensure HTTPS works
 # =============================================================================
+SSL_CONFIGURED=false
+
 if [[ "$ENABLE_SSL" == "true" ]]; then
     echo "=== Configuring SSL ==="
+    write_status "running" "Configuring SSL certificate"
 
     # Wait for DNS to propagate (try multiple resolvers)
     echo "  Checking DNS resolution for $FQDN..."
@@ -268,22 +385,68 @@ if [[ "$ENABLE_SSL" == "true" ]]; then
 
     if [[ "$DNS_READY" == "true" ]]; then
         echo "  Obtaining SSL certificate..."
-        CERTBOT_OUTPUT=$(mktemp)
-        if certbot --nginx \
-            --non-interactive \
-            --agree-tos \
-            --email "$SSL_EMAIL" \
-            --domains "$FQDN" \
-            2>&1 | tee "$CERTBOT_OUTPUT"; then
-            echo "  SSL certificate obtained successfully"
-        else
+        
+        # Function to run certbot (for use with retry)
+        run_certbot() {
+            certbot --nginx \
+                --non-interactive \
+                --agree-tos \
+                --email "$SSL_EMAIL" \
+                --domains "$FQDN" \
+                2>&1
+        }
+        
+        # Retry certbot with exponential backoff
+        # Let's Encrypt can return "Service busy" during high load
+        CERTBOT_ATTEMPTS=5
+        CERTBOT_DELAY=10
+        CERTBOT_SUCCESS=false
+        
+        for attempt in $(seq 1 $CERTBOT_ATTEMPTS); do
+            echo "  Certbot attempt $attempt/$CERTBOT_ATTEMPTS..."
+            CERTBOT_OUTPUT=$(mktemp)
+            
+            if run_certbot | tee "$CERTBOT_OUTPUT"; then
+                echo "  SSL certificate obtained successfully"
+                CERTBOT_SUCCESS=true
+                SSL_CONFIGURED=true
+                rm -f "$CERTBOT_OUTPUT"
+                break
+            fi
+            
             CERTBOT_EXIT=$?
-            echo "  ERROR: Certbot failed (exit code: $CERTBOT_EXIT)"
-            echo "  Output: $(cat "$CERTBOT_OUTPUT")"
-            echo "  SSL will need manual setup: sudo certbot --nginx -d $FQDN"
-            # Don't exit - continue with service account setup
+            CERTBOT_ERROR=$(cat "$CERTBOT_OUTPUT")
+            rm -f "$CERTBOT_OUTPUT"
+            
+            # Check if this is a retryable error
+            if echo "$CERTBOT_ERROR" | grep -qiE "service busy|rate limit|too many|try again|temporarily"; then
+                echo "  Certbot failed with transient error (attempt $attempt/$CERTBOT_ATTEMPTS)"
+                if [[ $attempt -lt $CERTBOT_ATTEMPTS ]]; then
+                    echo "  Waiting ${CERTBOT_DELAY}s before retry..."
+                    sleep "$CERTBOT_DELAY"
+                    # Exponential backoff
+                    CERTBOT_DELAY=$((CERTBOT_DELAY * 2))
+                    [[ $CERTBOT_DELAY -gt 120 ]] && CERTBOT_DELAY=120
+                fi
+            else
+                # Non-retryable error - break out of loop
+                echo "  ERROR: Certbot failed with non-retryable error (exit code: $CERTBOT_EXIT)"
+                echo "  Error output: $CERTBOT_ERROR"
+                break
+            fi
+        done
+        
+        if [[ "$CERTBOT_SUCCESS" != "true" ]]; then
+            echo "  WARNING: SSL certificate could not be obtained after $CERTBOT_ATTEMPTS attempts"
+            echo "  The deployment will continue, but HTTPS will not work until SSL is configured."
+            echo "  To manually obtain SSL certificate, run:"
+            echo "    sudo certbot --nginx -d $FQDN"
+            echo ""
+            echo "  Common issues:"
+            echo "    - Let's Encrypt rate limits (wait 1 hour and retry)"
+            echo "    - DNS not propagated (verify with: dig $FQDN)"
+            echo "    - Firewall blocking port 80 (check security group)"
         fi
-        rm -f "$CERTBOT_OUTPUT"
     else
         echo "  WARNING: DNS not yet propagated after 5 minutes, skipping SSL setup"
         echo "  Run 'sudo certbot --nginx -d $FQDN' manually after DNS propagates"
@@ -294,6 +457,7 @@ fi
 # Create Template API Service Account
 # =============================================================================
 echo "=== Creating Template API Service Account ==="
+write_status "running" "Creating Template API service account"
 
 # Generate a secure token for the service account
 TEMPLATE_API_TOKEN=$(openssl rand -hex 32)
@@ -314,7 +478,7 @@ while [[ -z "$ACCESS_TOKEN" && $AUTH_ATTEMPTS -lt $AUTH_MAX_ATTEMPTS ]]; do
     # Give Directus a moment to be fully ready
     sleep 2
     
-    AUTH_RESPONSE=$(curl -s -X POST "http://localhost:${DIRECTUS_PORT}/auth/login" \
+    AUTH_RESPONSE=$(curl -s --max-time 30 -X POST "http://localhost:${DIRECTUS_PORT}/auth/login" \
         -H "Content-Type: application/json" \
         -d "{\"email\": \"${ADMIN_EMAIL}\", \"password\": \"${ADMIN_PASSWORD}\"}" 2>&1) || true
     
@@ -337,6 +501,7 @@ done
 if [[ -z "$ACCESS_TOKEN" ]]; then
     echo "  ERROR: Failed to authenticate as admin after $AUTH_MAX_ATTEMPTS attempts"
     echo "  Last response: $AUTH_RESPONSE"
+    write_status "failed" "Failed to authenticate as admin"
     exit 1
 fi
 
@@ -344,7 +509,7 @@ echo "  Authentication successful"
 
 # Check if template-api user already exists
 echo "  Checking for existing service account..."
-EXISTING_USER_RESPONSE=$(curl -s "http://localhost:${DIRECTUS_PORT}/users?limit=100" \
+EXISTING_USER_RESPONSE=$(curl -s --max-time 30 "http://localhost:${DIRECTUS_PORT}/users?limit=100" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}") || true
 
 if command -v jq &> /dev/null; then
@@ -361,7 +526,7 @@ fi
 if [[ -n "$EXISTING_USER" ]]; then
     echo "  Service account already exists (ID: $EXISTING_USER), updating token..."
     # Update the existing user's token
-    UPDATE_RESPONSE=$(curl -s -X PATCH "http://localhost:${DIRECTUS_PORT}/users/${EXISTING_USER}" \
+    UPDATE_RESPONSE=$(curl -s --max-time 30 -X PATCH "http://localhost:${DIRECTUS_PORT}/users/${EXISTING_USER}" \
         -H "Authorization: Bearer ${ACCESS_TOKEN}" \
         -H "Content-Type: application/json" \
         -d "{\"token\": \"${TEMPLATE_API_TOKEN}\"}") || true
@@ -371,6 +536,7 @@ if [[ -n "$EXISTING_USER" ]]; then
     else
         echo "  ERROR: Failed to update service account token"
         echo "  Response: $UPDATE_RESPONSE"
+        write_status "failed" "Failed to update service account token"
         exit 1
     fi
 else
@@ -378,7 +544,7 @@ else
     
     # Get the first role (Administrator) - on fresh install there's only one role
     # Note: We avoid using filter[] syntax as it has shell escaping issues
-    ROLES_RESPONSE=$(curl -s "http://localhost:${DIRECTUS_PORT}/roles?limit=1" \
+    ROLES_RESPONSE=$(curl -s --max-time 30 "http://localhost:${DIRECTUS_PORT}/roles?limit=1" \
         -H "Authorization: Bearer ${ACCESS_TOKEN}") || true
     
     echo "  Roles API response: $ROLES_RESPONSE"
@@ -392,13 +558,14 @@ else
     if [[ -z "$ADMIN_ROLE_ID" ]]; then
         echo "  ERROR: Could not find any roles"
         echo "  Roles response: $ROLES_RESPONSE"
+        write_status "failed" "Could not find admin role"
         exit 1
     fi
     
     echo "  Found role: $ADMIN_ROLE_ID"
     
     # Create the service account with a valid email format
-    CREATE_RESPONSE=$(curl -s -X POST "http://localhost:${DIRECTUS_PORT}/users" \
+    CREATE_RESPONSE=$(curl -s --max-time 30 -X POST "http://localhost:${DIRECTUS_PORT}/users" \
         -H "Authorization: Bearer ${ACCESS_TOKEN}" \
         -H "Content-Type: application/json" \
         -d "{
@@ -416,6 +583,7 @@ else
     else
         echo "  ERROR: Failed to create service account"
         echo "  Response: $CREATE_RESPONSE"
+        write_status "failed" "Failed to create service account"
         exit 1
     fi
 fi
@@ -426,6 +594,7 @@ echo "  Template API service account configured"
 # Update ecosystem config with Template API token and start Template API
 # =============================================================================
 echo "=== Starting Template API ==="
+write_status "running" "Starting Template API"
 
 # Re-export TEMPLATE_API_TOKEN with the real value and regenerate ecosystem config
 export TEMPLATE_API_TOKEN
@@ -439,26 +608,12 @@ sudo -u ubuntu pm2 start ecosystem.config.cjs --only template-api
 sudo -u ubuntu pm2 save
 
 # Wait for Template API to be healthy
-echo "  Waiting for Template API to start..."
-TEMPLATE_API_TIMEOUT=60
-TEMPLATE_API_ELAPSED=0
-
-while true; do
-    if curl -sf http://localhost:3000/health > /dev/null 2>&1; then
-        echo "  Template API is healthy!"
-        break
-    fi
-    
-    TEMPLATE_API_ELAPSED=$((TEMPLATE_API_ELAPSED + 5))
-    if [[ $TEMPLATE_API_ELAPSED -ge $TEMPLATE_API_TIMEOUT ]]; then
-        echo "  ERROR: Template API health check timed out"
-        sudo -u ubuntu pm2 logs template-api --lines 30 --nostream || true
-        exit 1
-    fi
-    
-    echo "  Waiting for Template API... (${TEMPLATE_API_ELAPSED}s / ${TEMPLATE_API_TIMEOUT}s)"
-    sleep 5
-done
+if ! wait_for_service "http://localhost:3000/health" 60 5 "Template API"; then
+    echo "  Dumping PM2 logs for debugging:"
+    sudo -u ubuntu pm2 logs template-api --lines 30 --nostream || true
+    write_status "failed" "Template API health check timed out"
+    exit 1
+fi
 
 echo "  Template API started on port 3000"
 
@@ -467,6 +622,7 @@ echo "  Template API started on port 3000"
 # =============================================================================
 if [[ -n "$BACKUP_BUCKET" ]]; then
     echo "=== Setting up backup scripts ==="
+    write_status "running" "Setting up backup scripts"
 
     cat > /usr/local/bin/db-backup.sh << 'BACKUP_EOF'
 #!/bin/bash
@@ -504,6 +660,7 @@ BACKUP_BUCKET='$BACKUP_BUCKET'
 TENANT_NAME='$TENANT_NAME'
 AWS_REGION='$AWS_REGION'
 BACKUP_ENV_EOF
+
     chmod 600 /etc/directus/backup.env
     chown root:root /etc/directus/backup.env
 
@@ -523,12 +680,25 @@ CRON_EOF
 fi
 
 # =============================================================================
-# Final Status
+# Completion
 # =============================================================================
 echo ""
 echo "=== Tenant configuration complete ==="
-echo "  Directus URL: https://$FQDN"
+write_status "completed" "Tenant configuration successful"
+
+# Summary with SSL status
+if [[ "$SSL_CONFIGURED" == "true" ]]; then
+    echo "  Directus URL: https://$FQDN"
+    echo "  Template API: https://$FQDN/template-api/"
+else
+    echo "  Directus URL: http://$FQDN (SSL not configured)"
+    echo "  Template API: http://$FQDN/template-api/"
+    if [[ "$ENABLE_SSL" == "true" ]]; then
+        echo ""
+        echo "  ⚠️  SSL was enabled but certificate could not be obtained."
+        echo "  Run 'sudo certbot --nginx -d $FQDN' to configure SSL manually."
+    fi
+fi
 echo "  Admin Email: $ADMIN_EMAIL"
-echo "  Template API: https://$FQDN/template-api/"
 echo ""
 echo "  Configuration completed at $(date)"
