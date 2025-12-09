@@ -34,8 +34,11 @@ const scrollableWidth = ref(0);
 useResizeObserver(scrollContainerRef, ([entry]) => {
 	const el = entry?.target as HTMLElement | undefined;
 	if (!el) return;
-	containerWidth.value = el.clientWidth;
-	scrollableWidth.value = el.scrollWidth;
+
+	setTimeout(() => {
+		containerWidth.value = el.clientWidth;
+		scrollableWidth.value = el.scrollWidth;
+	}, 100);
 });
 
 const enforceShadows = computed(() => props.sidebarShadow || false);
