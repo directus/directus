@@ -347,6 +347,7 @@ confirm_revert_body: Això revertirà l'element a l'estat seleccionat.
 display: Mostra
 settings_update_success: Ajustaments actualitzats
 title: Títol
+subtitle: Subtítol
 revision_delta_created: Creat
 revision_delta_created_externally: Creat externament
 revision_delta_updated: 'Actualitzat 1 camp | Actualitzats {count} camps'
@@ -1602,6 +1603,9 @@ interfaces:
     start_closed: Comená tancat
   system-token:
     system-token: Token
+  header:
+    header: Capçalera
+    links: Enllaços
 displays:
   translations:
     translations: Traduccions
