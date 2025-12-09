@@ -747,7 +747,6 @@ errors:
   VALUE_OUT_OF_RANGE: Hodnota mimo rozsahu
   VALUE_TOO_LONG: Hodnota je príliš dlhá
 security: Zabezpečenie
-value_hashed: Hodnota bezpečne zahashovaná
 bookmark_name: Názov záložky...
 create_bookmark: Vytvoriť záložku
 edit_bookmark: Upraviť záložku
@@ -1138,48 +1137,6 @@ discard_changes_copy: Naozaj chcete zahodiť všetky vykonané zmeny?
 show_x_axis: Zobraziť os X
 show_y_axis: Zobraziť os Y
 keep_editing: Pokračovať v úprave
-page_help_collections_overview: '**Prehľad zbierok** — Zoznam všetkých zbierok, ku ktorým máte prístup.'
-page_help_collections_collection: >-
-  **Prehľad položiek** — Zoznam všetkých položiek {collection}, ku ktorým máte prístup. Prispôsobte rozloženie, filtre a zoradenie podľa potreby alebo dokonca uložke záložky týchto rôznych konfigurácií na rýchlejší prístup.
-page_help_collections_item: >-
-  **Podrobnosti položky** — Formulár na pozeranie a správu tejto položky. Tento bočný panel obsahuje celú históriu revízií a súvisiace komentáre.
-page_help_activity_collection: >-
-  **Prehliadať aktivitu** — Zoznam všetkej aktivity vašich systémových používateľov a aktivity nad obsahom.
-page_help_docs_global: >-
-  **Prehľad dokumentácie** — Dokumenty vytvorené špecificky pre verziu tohoto projektu a túto schému.
-page_help_files_collection: >-
-  **Knižnica súborov** — Zoznamy všetkých súborov nahratých do tohoto projektu. Prispôsobte rozloženie, filtery a zoraďovanie, alebo si aj uložte záložky týchto rôznych konfigurácií na rýchly prístup.
-page_help_files_item: >-
-  **Podrobnosti súboru** — Formulár na spravovanie metedát súboru, úpravu pôvodného súboru a akualizáciu prístupových nastavení.
-page_help_settings_project: "**Nastavenia** — Globálne nastavenia vášho projektu."
-page_help_settings_appearance: "**Vzhľad** — Vzhľad vášho projektu a možnosti tém."
-page_help_settings_extensions: '**Rozšírenia** - Rozšírenia nainštalované vo vašom projekte.'
-page_help_settings_datamodel_collections: >-
-  **Data Model: Zbierky** — Zoznamy dostupných zbierok. Zahŕňa to viditeľné, skryté a systémové zbierky, a taktiež nespravované databázové tabuľky, ktore sa dajú pridať.
-page_help_settings_datamodel_fields: >-
-  **Data Model: Zbierka** — Formulár na správu tejto zbierky a jej polí.
-page_help_settings_system_logs: '**Systémové logy** — Prístup k streamu systémových logov.'
-page_help_settings_policies_collection: '**Prehliadať politiky** - Zoznam všetkých politík v projekte.'
-page_help_settings_roles_collection: '**Prehliadať role** - Zoznam všetkých rolí v projekte.'
-page_help_settings_roles_item: "**Podrobnosti role** — Spravuje oprávnenia rolí a iné nastavenia."
-page_help_settings_presets_collection: >-
-  **Prehliadanie presetov** — Vypíše všetky presety v projekte vrátane: používateľských, rolových a globálnych záložiek, a taktiež predvolené pohľady.
-page_help_settings_presets_item: >-
-  **Podrobnosti presetu** — Formulár spravujúci záložky a predvolené presety zbierky.
-page_help_settings_webhooks_collection: '**Prehliadanie Webhookov** — Zoznam všetkých webhookov v projekte.'
-page_help_settings_webhooks_item: '**Podrobnosti webhooku** — Formulár na vytváranie a správu webhookov v projekte.'
-page_help_settings_flows_collection: '**Prehliadanie tokov** — Zoznam všetkých tokov v projekte.'
-page_help_settings_flows_item: '**Podrobnosti toku** — Pracovný priestor na správu jedného alebo viac operácií.'
-page_help_settings_translations_collection: '**Prehliadať vlastné preklady** — Vypíše zoznam všetkých vlastných prekladov v rámci projektu.'
-page_help_settings_translations_item: '**Podrobnosti vlastného prekladu** — Formulár na pozeranie a úpravu tejto položky.'
-page_help_users_collection: '**Priečinok používateľov** — Zoznam všetkých používateľov v projekte.'
-page_help_users_item: >-
-  **Podrobnosti používateľa** — Spravuje informácie o vašom účte, alebo zobrazuje podrobnosti iných používateľov.
-page_help_insights_overview: '**Prehľady** — Zoznam tabúľ, ku ktorým máte prístup.'
-page_help_insights_dashboard: '**Tabuľa** — Pracovný priestor na spravovanie jedného alebo viac panelov'
-page_help_marketplace_account: '**Účet** — Vydavateľ alebo správca zverejneného rozšírenia.'
-page_help_marketplace_registry: '**Register** — Rozšírenie dostupné v Directus trhovisku.'
-page_help_marketplace_extension: '**Rozšírenie** — Rozšírenie v Directus trhovisku.'
 activity_feed: Záznam aktivít
 add_new: Pridať nový
 create_new: Vytvoriť nové
@@ -1558,6 +1515,22 @@ unlimited_usage: Neobmedzené používanie
 uses_left: Žiadne zostávajúce použitia | Jedno zostávajúce použitie | {n} zostávajúcich použití
 no_shares: Žiadne zdieľania
 new_share: Nové zdieľanie
+ai:
+  input: Vstup
+  unknown: Neznáme
+  settings: Nastavenia
+  tool_approval:
+    disabled: Vypnuté
+ai_tools:
+  items: Položky
+  files: Súbory
+  folders: Priečinky
+  flows: Toky
+  trigger-flow: Spúšťač toku
+  operations: Operácie
+  schema: Schéma
+  collections: Zbierky
+  fields: Polia
 mcp_prompts_collection_schema:
   messages_role_user: Používateľ
 expired: Vypršalo
