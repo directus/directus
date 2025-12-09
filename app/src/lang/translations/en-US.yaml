@@ -2331,6 +2331,9 @@ displays:
     down: Down
     nearest: Nearest
     up: Up
+    timezone: Timezone
+    timezone_local: Local Timezone
+    timezone_note: IANA timezone identifier (e.g., 'America/New_York', 'UTC'). Leave empty to use local timezone.
   file:
     file: File
     description: Display files
