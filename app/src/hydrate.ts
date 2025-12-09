@@ -1,3 +1,4 @@
+import { useAiStore } from '@/ai/stores/use-ai';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useFlowsStore } from '@/stores/flows';
@@ -37,6 +38,7 @@ export function useStores(
 		useInsightsStore,
 		useFlowsStore,
 		useNotificationsStore,
+		useAiStore,
 	],
 ): GenericStore[] {
 	return stores.map((useStore) => useStore()) as GenericStore[];
