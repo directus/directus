@@ -439,6 +439,7 @@ confirm_revert_body: Elementas bus atstatytas į pasirinktą būseną.
 display: Rodymas
 settings_update_success: Nustatymai atnaujinti
 title: Pavadinmas
+subtitle: Paantraštė
 revision_delta_created: Sukurta
 revision_delta_created_externally: Sukurta išorėje
 revision_delta_updated: 'Atnaujintas 1 laujas | Atnaujinta {count} laukų'
@@ -2053,6 +2054,9 @@ interfaces:
   input-password:
     input-password: Slaptažodžio įvedimas
     description: Slaptažodžio įvedimo laukas, su reikšmės paslėpimo galimybe
+  header:
+    header: Header
+    links: Nuorodos
 displays:
   translations:
     translations: Vertimai
