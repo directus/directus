@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, useTemplateRef } from 'vue';
 import { useAiStore } from '../stores/use-ai';
 import AiInputSubmit from './ai-input-submit.vue';
 import AiTextarea from './ai-textarea.vue';
@@ -9,6 +9,8 @@ const aiStore = useAiStore();
 const canSubmit = computed(
 	() => aiStore.input.trim().length > 0 && aiStore.status !== 'streaming' && aiStore.status !== 'submitted',
 );
+
+const textareaComponent = useTemplateRef<InstanceType<typeof AiTextarea>>('textarea-component');
 
 function handleKeydown(event: KeyboardEvent) {
 	if (!event.shiftKey) {
@@ -29,7 +31,7 @@ function handleSubmit() {
 
 <template>
 	<div class="ai-input-container">
-		<div class="input-wrapper">
+		<div class="input-wrapper" @click="textareaComponent?.focus()">
 			<ai-textarea
 				ref="textarea-component"
 				v-model="aiStore.input"
