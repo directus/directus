@@ -311,6 +311,14 @@ export const useAiStore = defineStore('ai-store', () => {
 		estimatedMaxMessages.value = Infinity;
 	};
 
+	const dehydrate = async () => {
+		reset();
+		input.value = '';
+		toolApprovals.value = {};
+		selectedModelId.value = defaultModel.value ? `${defaultModel.value.provider}:${defaultModel.value.model}` : null;
+		chatOpen.value = false;
+	};
+
 	/**
 	 * Guesstimate of what the messages limit is based on the current average token size per message.
 	 * This is updated whenever the actual token usage is returned from the server. We default to
@@ -372,5 +380,6 @@ export const useAiStore = defineStore('ai-store', () => {
 		approveToolCall,
 		denyToolCall,
 		hasPendingToolCall,
+		dehydrate,
 	};
 });
