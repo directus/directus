@@ -81,6 +81,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Update npm
+        shell: bash
+        run: npm install -g npm@11
+
       - name: Prepare
         uses: ./.github/actions/prepare
         with:
