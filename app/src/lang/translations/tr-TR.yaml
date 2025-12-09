@@ -447,6 +447,7 @@ confirm_revert_body: Bu işlem, öğeyi seçilen duruma geri döndürecektir.
 display: Göster
 settings_update_success: Ayarlar güncellendi
 title: Başlık
+subtitle: Alt Başlık
 revision_delta_created: Oluşturulma Tarihi
 revision_delta_created_externally: Harici Olarak Oluşturuldu
 revision_delta_updated: '1 Alan Güncellendi | {count} Alan güncellendi'
@@ -1995,6 +1996,9 @@ interfaces:
     description: Ham veya bıyık şablon değerlerinin girilmesine izin ver
   input-password:
     input-password: Şifreyi girin
+  header:
+    header: Header
+    links: Bağlantılar
 displays:
   translations:
     translations: Çeviriler
