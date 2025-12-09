@@ -25,6 +25,10 @@ export type ExtensionManager = {
 	 */
 	reload: (options?: { forceSync: boolean }) => Promise<unknown>;
 	/**
+	 * Returns a promise we can await while extensions are being reloaded
+	 */
+	isReloading: () => Promise<void>;
+	/**
 	 * Return the previously generated app extension bundle chunk by name
 	 */
 	getAppExtensionChunk: (name?: string) => Promise<ReadStream | null>;
