@@ -5,6 +5,7 @@ import { SplitPanel } from '@directus/vue-split-panel';
 import { useBreakpoints } from '@vueuse/core';
 import { computed, watch } from 'vue';
 import ModuleBar from '../../components/module-bar.vue';
+import SkipMenu from '../../components/skip-menu.vue';
 import { useNavBarStore } from '../stores/nav-bar';
 import { useSidebarStore } from '../stores/sidebar';
 import PrivateViewDrawer from './private-view-drawer.vue';
@@ -13,13 +14,13 @@ import PrivateViewNav from './private-view-nav.vue';
 import PrivateViewResizeHandle from './private-view-resize-handle.vue';
 import type { PrivateViewProps } from './private-view.vue';
 
+defineProps<PrivateViewProps>();
+
 const { lg, xl } = useBreakpoints(BREAKPOINTS);
 
 const userStore = useUserStore();
 const navBarStore = useNavBarStore();
 const sidebarStore = useSidebarStore();
-
-defineProps<PrivateViewProps>();
 
 const inlineNav = computed(() => {
 	return sidebarStore.collapsed ? lg.value : xl.value;
@@ -44,7 +45,10 @@ const splitterCollapsed = computed({
 
 <template>
 	<div class="private-view">
-		<ModuleBar v-if="lg" class="module-bar" />
+		<template v-if="lg">
+			<SkipMenu section="nav" />
+			<ModuleBar id="navigation" class="module-bar" />
+		</template>
 
 		<SplitPanel
 			v-model:size="navBarStore.size"
@@ -64,14 +68,19 @@ const splitterCollapsed = computed({
 			:disabled="!inlineNav"
 		>
 			<template #start>
-				<PrivateViewNav v-if="inlineNav">
-					<template #navigation><slot name="navigation" /></template>
-				</PrivateViewNav>
+				<template v-if="inlineNav">
+					<SkipMenu section="moduleNav" />
+					<PrivateViewNav id="module-navigation">
+						<template #navigation><slot name="navigation" /></template>
+					</PrivateViewNav>
+				</template>
 
 				<PrivateViewDrawer v-else v-model:collapsed="navBarStore.collapsed" placement="left">
-					<ModuleBar class="module-bar" />
+					<SkipMenu section="nav" />
+					<ModuleBar id="navigation" class="module-bar" />
 
-					<PrivateViewNav class="mobile-nav">
+					<SkipMenu section="moduleNav" class="mobile-skip-menu" />
+					<PrivateViewNav id="module-navigation" class="mobile-nav">
 						<template #navigation><slot name="navigation" /></template>
 					</PrivateViewNav>
 				</PrivateViewDrawer>
@@ -82,7 +91,8 @@ const splitterCollapsed = computed({
 			</template>
 
 			<template #end>
-				<PrivateViewMain v-bind="$props" :inline-nav>
+				<SkipMenu section="main" />
+				<PrivateViewMain id="main-content" v-bind="$props" :inline-nav>
 					<template #actions:append><slot name="actions:append" /></template>
 					<template #actions:prepend><slot name="actions:prepend" /></template>
 					<template #actions><slot name="actions" /></template>

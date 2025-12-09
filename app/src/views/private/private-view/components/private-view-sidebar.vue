@@ -1,15 +1,13 @@
 <script lang="ts" setup>
 import AiSidebarDetail from '@/ai/components/ai-sidebar-detail.vue';
 import { AccordionRoot } from 'reka-ui';
-import SkipMenu from '../../components/skip-menu.vue';
 import { useSidebarStore } from '../stores/sidebar';
 
 const sidebarStore = useSidebarStore();
 </script>
 
 <template>
-	<aside id="sidebar" role="contentinfo" class="sidebar alt-colors" aria-label="Module Sidebar">
-		<SkipMenu section="sidebar" />
+	<aside role="contentinfo" class="sidebar alt-colors" aria-label="Module Sidebar">
 		<AccordionRoot v-model="sidebarStore.activeAccordionItem" type="single" collapsible class="accordion-root">
 			<slot name="sidebar" />
 			<ai-sidebar-detail class="ai-sidebar-detail" />

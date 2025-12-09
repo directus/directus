@@ -3,7 +3,7 @@ import { BREAKPOINTS } from '@/constants';
 import { useUserStore } from '@/stores/user';
 import { cssVar } from '@directus/utils/browser';
 import { SplitPanel } from '@directus/vue-split-panel';
-import { useBreakpoints, useScroll, useResizeObserver } from '@vueuse/core';
+import { useBreakpoints, useResizeObserver, useScroll } from '@vueuse/core';
 import { computed, inject, provide, ref, unref, useTemplateRef, watch, type ComputedRef } from 'vue';
 import NotificationsGroup from '../../components/notifications-group.vue';
 import SkipMenu from '../../components/skip-menu.vue';
@@ -14,8 +14,6 @@ import PrivateViewResizeHandle from './private-view-resize-handle.vue';
 import PrivateViewSidebar from './private-view-sidebar.vue';
 import type { PrivateViewProps } from './private-view.vue';
 
-const userStore = useUserStore();
-
 const props = defineProps<PrivateViewProps & { inlineNav: boolean }>();
 
 defineOptions({ inheritAttrs: false });
@@ -23,6 +21,7 @@ defineOptions({ inheritAttrs: false });
 const contentEl = useTemplateRef('content-el');
 provide('main-element', contentEl);
 
+const userStore = useUserStore();
 const sidebarStore = useSidebarStore();
 
 const scrollContainerRef = useTemplateRef('scroll-container');
@@ -81,9 +80,7 @@ const splitterCollapsed = computed({
 </script>
 
 <template>
-	<SkipMenu section="main" />
-
-	<div id="main-content" ref="content-el" class="content">
+	<div ref="content-el" v-bind="$attrs" class="content">
 		<SplitPanel
 			v-model:size="sidebarStore.size"
 			v-model:collapsed="splitterCollapsed"
@@ -138,12 +135,16 @@ const splitterCollapsed = computed({
 			</template>
 
 			<template #end>
-				<PrivateViewSidebar v-if="!isMobile">
-					<template #sidebar><slot name="sidebar" /></template>
-				</PrivateViewSidebar>
+				<template v-if="!isMobile">
+					<SkipMenu section="sidebar" />
+					<PrivateViewSidebar id="sidebar">
+						<template #sidebar><slot name="sidebar" /></template>
+					</PrivateViewSidebar>
+				</template>
 
 				<PrivateViewDrawer v-else v-model:collapsed="sidebarStore.collapsed" placement="right">
-					<PrivateViewSidebar class="mobile-sidebar">
+					<SkipMenu section="sidebar" />
+					<PrivateViewSidebar id="sidebar" class="mobile-sidebar">
 						<template #sidebar><slot name="sidebar" /></template>
 					</PrivateViewSidebar>
 				</PrivateViewDrawer>
