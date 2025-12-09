@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import SkipMenu from '../../components/skip-menu.vue';
 import PrivateViewNavProjectName from './private-view-nav-project-name.vue';
+
+// id attribute for accessibility linking doesn’t work on the top-level element
+defineProps<{ id?: string }>();
 </script>
 
 <template>
 	<aside role="navigation" aria-label="Module Navigation" class="module-nav alt-colors">
-		<SkipMenu section="moduleNav" />
-
 		<PrivateViewNavProjectName />
 
-		<div id="module-navigation" class="module-nav-content">
+		<div :id class="module-nav-content">
 			<slot name="navigation" />
 		</div>
 	</aside>
