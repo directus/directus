@@ -752,7 +752,6 @@ errors:
   VALUE_OUT_OF_RANGE: Değer sınır dışında
   VALUE_TOO_LONG: Değer çok uzun
 security: Güvenlik
-value_hashed: Değer Güvenli Şekilde Hashlendi
 bookmark_name: Yer işareti adı...
 create_bookmark: Yer İşareti Oluştur
 edit_bookmark: Yer İşaretini Düzenle
@@ -1135,42 +1134,6 @@ discard_changes_copy: Tüm değişiklikleri iptal etmek istediğinize emin misin
 show_x_axis: X Eksenini Göster
 show_y_axis: Y Eksenini Göster
 keep_editing: Düzenlemeye Devam Et
-page_help_collections_overview: '**Koleksiyonlar Genel Bakış** — Erişimin olan tüm koleksiyonları listeler.'
-page_help_collections_collection: >-
-  **Öğelere Göz At** — {collection} koleksiyonundaki öğeleri listeler. Yerleşimi, filtreleri ve sıralamayı isteğine göre uyarla, üstelik bu seçenekleri hızlı erişim için yer işareti olarak kaydedebilirsin.
-page_help_collections_item: >-
-  **Öğe Detayı** — Bu öğeyi görüntülemek ve yönetmek için bir form/sayfa. Ayrıca bu kenar çubuğu tüm revizyon geçmişini ve yorumları içerir.
-page_help_activity_collection: >-
-  **Etkinliklere Göz At** — Bütün kullanıcılarının kapsamlı sistem ve içerik etkinliğinin bir listelemesi.
-page_help_docs_global: >-
-  **Dökümantasyon Genel Bakış** — Dökümantasyonlar bu projenin versiyon ve şemasına göre uyarlanmıştır.
-page_help_files_collection: >-
-  **Dosya Kütüphanesi** —Bu projeye yüklenen tüm dosyaları listeler. Yerleşimi, filtreleri ve sıralamayı isteğine göre uyarla, üstelik bu seçenekleri hızlı erişim için yer işareti olarak kaydedebilirsin.
-page_help_files_item: >-
-  **Dosya Detayı** — Dosya metaverilerini yönetmek, orijinal dosyayı düzenlemek ve erişim seçeneklerini güncellemek için bir form/sayfa.
-page_help_settings_project: "**Ayarlar** - Projenizin global konfigürasyon ayarları."
-page_help_settings_appearance: "**Görünüş** - Projenizin görünüş ve tema ayarları."
-page_help_settings_extensions: '**Uzantılar** - Projenize yüklenmiş uzantılar.'
-page_help_settings_ai: "."
-page_help_settings_datamodel_collections: >-
-  **Veri Modeli: Koleksiyonlar** — Tüm uygun koleksiyonları listeler. Bu görünür, gizli, sistem koleksiyonları ve dağınık veritabanı tablolarını içerir.
-page_help_settings_datamodel_fields: >-
-  **Veri Modeli: Koleksiyon** — Bu koleksiyonu ve alanlarını yönetmek için bir form/sayfa.
-page_help_settings_system_logs: '**Sistem Günlükleri** - Sistem günlüklerinin canlı akışına erişin.'
-page_help_settings_roles_item: "**Rol Detayı** — Bir rolün yetki ve diğer ayarlarını yönet."
-page_help_settings_presets_collection: >-
-  **Ön Ayarlara Göz At** — Projedeki tüm ön ayarları listeler. Buna kullanıcı, rol, genel yer işaretleri ve varsayılan görünüm/yerleşimler dahildir.
-page_help_settings_presets_item: >-
-  **Ön Ayar Detayı** —Yer işaretleri ve varsayılan koleksiyon ön ayarlarını yönetmek için bir form/sayfa.
-page_help_settings_webhooks_collection: '**Webhooklara Göz At** — Projedeki tüm webhookları listeler.'
-page_help_settings_webhooks_item: '**Webhook Detayı** — Projede webhook oluşturmak ve yönetmek için bir form/sayfa.'
-page_help_settings_flows_collection: '**Akışlara Gözat** — Proje içindeki tüm Akışları listeler.'
-page_help_settings_flows_item: '**Akış Ayrıntısı** — Bir veya daha fazla işlemi yönetmek için çalışma alanı.'
-page_help_users_collection: '**Kullanıcı Dizini** — Projedeki tüm sistem kullanıcılarını listeler.'
-page_help_users_item: >-
-  **Kullanıcı Detayı** — Hesap bilgilerini düzenle ya da diğer kullanıcıların detaylarını gör.
-page_help_insights_overview: '**Panolar** — Erişimin olan tüm panoların listelemesi.'
-page_help_insights_dashboard: '**Pano** — Bir veya birden fazla paneli kontrol edebileceğin bir çalışma alanı'
 activity_feed: Etkinlik Akışı
 add_new: Yeni Ekle
 create_new: Yeni Oluştur
@@ -1526,6 +1489,22 @@ shares: Paylaşımlar
 unlimited_usage: Limitsiz kullanım
 no_shares: Gösterilecek paylaşım yok
 new_share: Yeni Paylaşım
+ai:
+  input: Girdi
+  unknown: Bilinmeyen
+  settings: Ayarlar
+  tool_approval:
+    disabled: Devre Dışı
+ai_tools:
+  items: Öğeler
+  files: Dosyalar
+  folders: Klasörler
+  flows: Akışlar
+  trigger-flow: Tetik Akışı
+  operations: Operasyonlar
+  schema: Şema
+  collections: Koleksiyonlar
+  fields: Alanlar
 mcp_prompts_collection_schema:
   messages_role_user: Kullanıcı
 expired: Süresi Dolmuş
