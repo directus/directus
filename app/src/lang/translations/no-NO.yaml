@@ -612,7 +612,6 @@ errors:
   VALUE_OUT_OF_RANGE: Verdien er utenfor gyldig område
   VALUE_TOO_LONG: Verdien er for lang
 security: Sikkerhet
-value_hashed: Sikker verdi Hastet
 bookmark_name: Bokmerkenavn...
 create_bookmark: Lag bokmerke
 edit_bookmark: Rediger bokmerke
@@ -800,6 +799,18 @@ field_options:
 comment: Kommenter
 live_preview:
   new_window: Åpne i nytt vindu
+ai:
+  unknown: Ukjent
+  settings: Innstillinger
+  tool_approval:
+    disabled: Deaktivert
+ai_tools:
+  items: Elementer
+  files: Filer
+  folders: Mapper
+  operations: Operasjoner
+  schema: Skjema
+  collections: Kolleksjoner
 delete_field_are_you_sure: >-
   Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..
 description: Beskrivelse
