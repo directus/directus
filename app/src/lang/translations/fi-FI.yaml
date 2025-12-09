@@ -306,6 +306,7 @@ confirm_revert_body: Tämä palauttaa kohteen valittuun tilaan.
 display: Näyttö
 settings_update_success: Asetukset päivitetty
 title: Otsikko
+subtitle: Alaotsikko
 revision_delta_created: Luotu
 revision_delta_created_externally: Luotu ulkoisesti
 revision_delta_updated: 'Päivitetty 1 kenttä | Päivitetty {count} kenttää'
@@ -1542,6 +1543,9 @@ interfaces:
     start_closed: Aloita suljettuna
   system-token:
     system-token: Token
+  header:
+    header: Ylätunniste
+    links: Linkit
 displays:
   translations:
     translations: Käännökset
