@@ -441,6 +441,7 @@ confirm_revert_body: Questo ripristinerà l'elemento allo stato selezionato.
 display: Mostra
 settings_update_success: Impostazioni aggiornate
 title: Titolo
+subtitle: Sottotitolo
 revision_delta_created: Creato
 revision_delta_created_externally: Creato Esternamente
 revision_delta_updated: 'Aggiornato 1 Campo | Aggiornati {count} Campi'
@@ -2066,6 +2067,9 @@ interfaces:
   input-password:
     input-password: Inserisci password
     description: Campo password con controllo per mostrare o nascondere il valore
+  header:
+    header: Header
+    links: Collegamenti
 displays:
   translations:
     translations: Traduzioni
