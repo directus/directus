@@ -8,7 +8,6 @@ import { computed, ref, watch, watchEffect } from 'vue';
 import SettingsNavigation from '../../../../components/navigation.vue';
 import ExtensionListItem from '../../components/extension-list-item.vue';
 import InlineFilter from './components/inline-filter.vue';
-import RegistryInfoSidebarDetail from './components/registry-info-sidebar-detail.vue';
 
 const perPage = 10;
 
@@ -70,21 +69,11 @@ watchEffect(async () => {
 </script>
 
 <template>
-	<private-view :title="$t('marketplace')">
+	<private-view :title="$t('marketplace')" icon="storefront">
 		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
-
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="storefront" />
-			</v-button>
-		</template>
 
 		<template #navigation>
 			<settings-navigation />
-		</template>
-
-		<template #sidebar>
-			<registry-info-sidebar-detail />
 		</template>
 
 		<div class="page-container">
@@ -160,7 +149,6 @@ watchEffect(async () => {
 
 .page-container {
 	padding: var(--content-padding);
-	padding-block-start: 0;
 	max-inline-size: 1200px;
 }
 

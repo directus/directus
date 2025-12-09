@@ -288,7 +288,6 @@ const unsortableJunctionFields = computed(() => {
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 	gap: 12px 28px;
-	margin-block-start: 48px;
 
 	.v-icon.arrow {
 		--v-icon-color: var(--theme--primary);

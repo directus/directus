@@ -26,7 +26,7 @@ const props = withDefaults(
 		defaultLanguage?: string | null;
 		defaultOpenSplitView?: boolean;
 		userLanguage?: boolean;
-		value: (number | string | Record<string, any>)[] | Record<string, any> | null;
+		value?: (number | string | Record<string, any>)[] | Record<string, any> | null;
 		autofocus?: boolean;
 		disabled?: boolean;
 		nonEditable?: boolean;

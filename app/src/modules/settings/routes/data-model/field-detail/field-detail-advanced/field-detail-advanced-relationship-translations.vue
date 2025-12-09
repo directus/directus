@@ -188,7 +188,6 @@ const relatedPrimaryKey = computed(
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 	gap: 12px 28px;
-	margin-block-start: 48px;
 
 	.v-input.matches {
 		--v-input-color: var(--theme--primary);

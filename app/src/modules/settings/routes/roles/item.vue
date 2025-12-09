@@ -112,15 +112,11 @@ function discardAndStay() {
 </script>
 
 <template>
-	<private-view :title="loading ? $t('loading') : $t('editing_role', { role: item && item.name })">
+	<private-view :title="loading ? $t('loading') : $t('editing_role', { role: item && item.name })" show-back>
 		<template #headline>
 			<v-breadcrumb :items="[{ name: $t('settings_roles'), to: '/settings/roles' }]" />
 		</template>
-		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon exact :to="`/settings/roles/`">
-				<v-icon name="arrow_back" />
-			</v-button>
-		</template>
+
 		<template #actions>
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
@@ -131,9 +127,10 @@ function discardAndStay() {
 						class="action-delete"
 						secondary
 						:disabled="item === null"
+						small
 						@click="on"
 					>
-						<v-icon name="delete" />
+						<v-icon name="delete" small />
 					</v-button>
 				</template>
 
@@ -157,13 +154,14 @@ function discardAndStay() {
 				rounded
 				icon
 				secondary
+				small
 				@click="userInviteModalActive = true"
 			>
-				<v-icon name="person_add" />
+				<v-icon name="person_add" small />
 			</v-button>
 
-			<v-button rounded icon :tooltip="$t('save')" :loading="saving" :disabled="!hasEdits" @click="saveAndQuit">
-				<v-icon name="check" />
+			<v-button rounded icon :tooltip="$t('save')" :loading="saving" :disabled="!hasEdits" small @click="saveAndQuit">
+				<v-icon name="check" small />
 
 				<template #append-outer>
 					<save-options
