@@ -439,6 +439,7 @@ confirm_revert_body: Энэ нь оролтыг сонгосон төлөв рү
 display: Харагдах байдал
 settings_update_success: Тохиргоо шинэчлэгдлээ
 title: Гарчиг
+subtitle: Дэд гарчиг
 revision_delta_created: Үүссэн
 revision_delta_created_externally: Гадна үүссэн
 revision_delta_updated: '1 талбар шинэчлэгдсэн | {count} талбаруудыг шинэчиллээ'
@@ -2049,6 +2050,9 @@ interfaces:
   input-password:
     input-password: Нууц үг оруулах
     description: Утгыг нуух боломжтой нууц үгийн талбар
+  header:
+    header: Толгой
+    links: Холбоосууд
 displays:
   translations:
     translations: Орчуулгууд
