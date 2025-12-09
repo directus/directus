@@ -249,6 +249,7 @@ confirm_revert_body: Ova akcija će vratiti stavku na odabrano stanje.
 display: Prikaz
 settings_update_success: Podešavanja ažurirana
 title: Naslov
+subtitle: Pod naslov
 revision_delta_created: Kreiran
 revision_delta_created_externally: Eksterno Napravljeno
 revision_delta_updated: 'Ažurirano 1 Polje | Ažuirano {count} Polja'
@@ -1123,6 +1124,8 @@ interfaces:
     rate: Ocjena
   system-token:
     system-token: Token
+  header:
+    links: Linkovi
 displays:
   translations:
     translations: Prevodi
