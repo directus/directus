@@ -436,6 +436,7 @@ confirm_revert_body: سيؤدي هذا إلى إعادة العنصر إلى ا�
 display: عرض
 settings_update_success: تم تحديث الإعدادات
 title: العنوان
+subtitle: الترجمة
 revision_delta_created: تم الإنشاء
 revision_delta_created_externally: تم إنشاؤها خارجيا
 revision_delta_updated: 'تم تحديث حقل واحد | تحديث حقول {count}'
@@ -1937,6 +1938,9 @@ interfaces:
     header_icon: أيقونة الرأس
   system-token:
     system-token: الرمز المميز
+  header:
+    header: الترويسة
+    links: روابط
 displays:
   translations:
     translations: الترجمة
