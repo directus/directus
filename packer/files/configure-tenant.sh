@@ -298,6 +298,9 @@ echo "=== Creating Template API Service Account ==="
 # Generate a secure token for the service account
 TEMPLATE_API_TOKEN=$(openssl rand -hex 32)
 
+# Service account email - use tenant FQDN for valid email format
+SERVICE_ACCOUNT_EMAIL="template-api@${FQDN}"
+
 # Authenticate as admin to get access token (with retry for race conditions)
 echo "  Authenticating as admin..."
 ACCESS_TOKEN=""
@@ -345,10 +348,10 @@ EXISTING_USER_RESPONSE=$(curl -s "http://localhost:${DIRECTUS_PORT}/users?limit=
     -H "Authorization: Bearer ${ACCESS_TOKEN}") || true
 
 if command -v jq &> /dev/null; then
-    EXISTING_USER=$(echo "$EXISTING_USER_RESPONSE" | jq -r '.data[] | select(.email == "template-api@internal.local") | .id // empty' 2>/dev/null) || true
+    EXISTING_USER=$(echo "$EXISTING_USER_RESPONSE" | jq -r --arg email "$SERVICE_ACCOUNT_EMAIL" '.data[] | select(.email == $email) | .id // empty' 2>/dev/null) || true
 else
     # Fallback: grep for the email and extract nearby id
-    if echo "$EXISTING_USER_RESPONSE" | grep -q "template-api@internal.local"; then
+    if echo "$EXISTING_USER_RESPONSE" | grep -q "$SERVICE_ACCOUNT_EMAIL"; then
         EXISTING_USER=$(echo "$EXISTING_USER_RESPONSE" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4) || true
     else
         EXISTING_USER=""
@@ -394,12 +397,12 @@ else
     
     echo "  Found role: $ADMIN_ROLE_ID"
     
-    # Create the service account
+    # Create the service account with a valid email format
     CREATE_RESPONSE=$(curl -s -X POST "http://localhost:${DIRECTUS_PORT}/users" \
         -H "Authorization: Bearer ${ACCESS_TOKEN}" \
         -H "Content-Type: application/json" \
         -d "{
-            \"email\": \"template-api@internal.local\",
+            \"email\": \"${SERVICE_ACCOUNT_EMAIL}\",
             \"password\": \"$(openssl rand -hex 32)\",
             \"role\": \"${ADMIN_ROLE_ID}\",
             \"token\": \"${TEMPLATE_API_TOKEN}\",
