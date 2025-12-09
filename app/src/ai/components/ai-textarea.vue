@@ -41,8 +41,13 @@ function onBlur(event: FocusEvent) {
 	emit('blur', event);
 }
 
+function focus() {
+	textareaRef.value?.focus();
+}
+
 defineExpose({
 	textareaRef,
+	focus,
 });
 </script>
 
