@@ -764,7 +764,6 @@ errors:
   VALUE_OUT_OF_RANGE: Valor fuera de rango
   VALUE_TOO_LONG: El valor es demasiado largo
 security: Seguridad
-value_hashed: Valor Hasheado de Manera Segura
 bookmark_name: Nombre del Marcador...
 create_bookmark: Crear Marcador
 edit_bookmark: Editar Marcador
@@ -1164,48 +1163,6 @@ discard_changes_copy: '¿Seguro que quiere descartar todos los cambios?'
 show_x_axis: Mostrar eje X
 show_y_axis: Mostrar eje Y
 keep_editing: Sigue editando
-page_help_collections_overview: '**Resumen de Colecciones** — Lista de todas las colecciones a las que tienes acceso.'
-page_help_collections_collection: >-
-  **Navegar en Elementos** - Lista todos los elementos en {collection} a las que tiene acceso. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
-page_help_collections_item: >-
-  **Detalle de Elemento** - Una forma de visualizar y administrar este Elemento. Esta barra lateral también contiene un historial completo de revisiones y comentarios incluidos.
-page_help_activity_collection: >-
-  **Navegar en Actividad** - Una lista completa de todas las actividades del sistema y del contenido de su usuario.
-page_help_docs_global: >-
-  **Resumen de la Documentación** — Documentos específicamente diseñados para la versión y esquema de este proyecto.
-page_help_files_collection: >-
-  **Biblioteca de Archivos** — Lista todos los activos subidos a este proyecto. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
-page_help_files_item: >-
-  **Detalle de Archivo** — Una manera de manejar metadatos de archivos, editar el activo original, y actualizar ajustes de acceso.
-page_help_settings_project: "**Ajustes del Proyecto** — Sus opciones de ajustes globales para el proyecto."
-page_help_settings_appearance: "**Apariencia** — Opciones de apariencia y temas de tu proyecto."
-page_help_settings_extensions: '**Extensiones** — Las extensiones instaladas en tu proyecto.'
-page_help_settings_datamodel_collections: >-
-  **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas y del sistema, así como las tablas de base de datos que pueden ser agregadas.
-page_help_settings_datamodel_fields: >-
-  **Modelo de Datos: Colección** — Una manera de manejar esta colección y sus campos.
-page_help_settings_system_logs: '**Registros del sistema**: acceda a una transmisión en vivo de los registros del sistema.'
-page_help_settings_policies_collection: '**Examinar reglas**: enumera todas las reglas dentro del proyecto.'
-page_help_settings_roles_collection: '**Navegar roles**: enumera todos los roles de usuario dentro del proyecto.'
-page_help_settings_roles_item: "**Detalle de Rol** — Administra los permisos del Rol y otros ajustes."
-page_help_settings_presets_collection: >-
-  **Navegar en Predefinidos** — Lista todos los Predefinidos en el proyecto, incluye: Marcadores para usuario, rol y global, así como vistas por defecto.
-page_help_settings_presets_item: >-
-  **Detalle de Predefinido** — Una manera de administrar Marcadores y Predefinidos por defecto de Colecciones.
-page_help_settings_webhooks_collection: '**Navegar en Webhooks** — Lista todos los webhooks en el proyecto.'
-page_help_settings_webhooks_item: '**Detalle de Webhook** — Una manera de crear y administrar los webhooks del proyecto.'
-page_help_settings_flows_collection: '**Navegar flujos** — Lista de todos los flujos dentro del proyecto.'
-page_help_settings_flows_item: '**Detalle de flujo** — Espacio de trabajo para gestionar una o más operaciones.'
-page_help_settings_translations_collection: '**Ver traducciones personalizadas** — Lista todas las traducciones personalizadas dentro del proyecto.'
-page_help_settings_translations_item: '**Detalle de traducciones personalizadas** — Un formulario para ver y administrar este elemento.'
-page_help_users_collection: '**Directorio de Usuarios** — Lista todos los usuarios del sistema en este proyecto.'
-page_help_users_item: >-
-  **Detalle de Usuario** — Administre su información de cuenta, o visualice el detalle de otros usuarios.
-page_help_insights_overview: '**Diseños** — Lista de paneles a los que tienes acceso.'
-page_help_insights_dashboard: '**Panel de control** — Espacio de trabajo para administrar uno o más paneles'
-page_help_marketplace_account: '**Cuenta** — Editor o mantenedor de una extensión publicada.'
-page_help_marketplace_registry: '**Registro** — Extensiones disponibles en el Marketplace de Directus.'
-page_help_marketplace_extension: '**Extensión** — Extensión en el Marketplace de Directus.'
 activity_feed: Actividad
 add_new: Añadir Nuevo
 create_new: Crear Nuevo
@@ -1589,6 +1546,22 @@ unlimited_usage: Uso ilimitado
 uses_left: No quedan usos | Queda un uso | {n} usos restantes
 no_shares: No hay acciones para mostrar
 new_share: Nueva parte
+ai:
+  input: Entrada
+  unknown: Desconocido
+  settings: Configuración
+  tool_approval:
+    disabled: Desactivado
+ai_tools:
+  items: Elementos
+  files: Archivos
+  folders: Carpetas
+  flows: Flujos
+  trigger-flow: Activar flujo
+  operations: Operaciones
+  schema: Esquema
+  collections: Colecciones
+  fields: Campos
 mcp_prompts_collection_schema:
   messages_role_user: Usuario
 expired: Expirado
