@@ -1,4 +1,4 @@
-import type { PrimaryKey } from '@directus/types';
+import type { Folder, PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -66,7 +66,7 @@ export const folders = defineTool<z.infer<typeof FoldersValidateSchema>>({
 			const sanitizedQuery = await buildSanitizedQueryFromArgs(args, schema, accountability);
 			const data = toArray(args.data);
 
-			const savedKeys = await service.createMany(data);
+			const savedKeys = await service.createMany(data as Partial<Folder>[]);
 
 			const result = await service.readMany(savedKeys, sanitizedQuery);
 
@@ -100,9 +100,9 @@ export const folders = defineTool<z.infer<typeof FoldersValidateSchema>>({
 			if (Array.isArray(args.data)) {
 				updatedKeys = await service.updateBatch(args.data);
 			} else if (args.keys) {
-				updatedKeys = await service.updateMany(args.keys, args.data);
+				updatedKeys = await service.updateMany(args.keys, args.data as Partial<Folder>);
 			} else {
-				updatedKeys = await service.updateByQuery(sanitizedQuery, args.data);
+				updatedKeys = await service.updateByQuery(sanitizedQuery, args.data as Partial<Folder>);
 			}
 
 			const result = await service.readMany(updatedKeys, sanitizedQuery);

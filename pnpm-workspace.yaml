@@ -79,6 +79,7 @@ catalog:
   '@turf/meta': 7.2.0
   '@tus/server': 2.3.0
   '@tus/utils': 0.6.0
+  '@types/archiver': 7.0.0
   '@types/async': 3.2.25
   '@types/base-64': 1.0.2
   '@types/busboy': 1.5.4
@@ -136,6 +137,7 @@ catalog:
   ai: 6.0.0-beta.98
   ajv: 8.17.1
   apexcharts: 4.7.0
+  archiver: 7.0.1
   argon2: 0.44.0
   async: 3.2.6
   async-mutex: 0.5.0
@@ -268,6 +270,7 @@ catalog:
   rollup-plugin-esbuild: 6.2.1
   rollup-plugin-node-externals: 8.1.2
   rollup-plugin-styler: 2.0.0
+  sanitize-filename: 1.6.3
   samlify: 2.10.2
   sanitize-html: 2.17.0
   sass-embedded: 1.93.3

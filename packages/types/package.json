@@ -31,7 +31,8 @@
 		"@types/express": "catalog:",
 		"@types/geojson": "catalog:",
 		"@types/nodemailer": "catalog:",
-		"@types/ws": "catalog:"
+		"@types/ws": "catalog:",
+		"@types/archiver": "catalog:"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
