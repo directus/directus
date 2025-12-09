@@ -25,6 +25,8 @@ contact_our_team: Contactez notre équipe
 setup_welcome: Bienvenue sur Directus
 setup_license_notice: >
   Directus est gratuit à l'usage pour les entités des moins de 5 millions de dollars de revenue annuel, de financement ou de budget opérationnel.
+setup_license_follow_up: >
+
 setup_launch: Lancer Directus
 setup_project: Configurer un projet
 first_name: Prénom
@@ -778,7 +780,6 @@ errors:
   VALUE_OUT_OF_RANGE: La valeur est en dehors des limites
   VALUE_TOO_LONG: La valeur est trop longue
 security: Sécurité
-value_hashed: Valeur cryptée sécurisée
 bookmark_name: Nom du favori...
 create_bookmark: Ajouter comme favori
 edit_bookmark: Modifier le favori
@@ -1176,48 +1177,6 @@ discard_changes_copy: Êtes-vous sûr de vouloir annuler vos modifications ?
 show_x_axis: Afficher l'axe X
 show_y_axis: Afficher l'axe Y
 keep_editing: Continuer l’édition
-page_help_collections_overview: '**Aperçu des collections** — Liste de toutes les collections auxquelles vous avez accès.'
-page_help_collections_collection: >-
-  **Parcourir les éléments** - Lister tous les éléments de {collection} auxquels vous avez accès. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
-page_help_collections_item: >-
-  **Détail de l'élément** — Un formulaire pour visualiser et gérer cet élément. Cette barre latérale contient également un historique complet des révisions et des commentaires intégrés.
-page_help_activity_collection: >-
-  **Parcourez l'activité** — Une liste complète de tous votre système et contenu de l'activité utilisateur.
-page_help_docs_global: >-
-  **Aperçu de la documentation** — Documents adaptés spécifiquement à la version et au schéma de ce projet.
-page_help_files_collection: >-
-  **Bibliothèque de fichiers** — Liste tous les fichiers transférés vers ce projet. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
-page_help_files_item: >-
-  **Détail du fichier** — Un formulaire de gestion des métadonnées de fichiers, de modification du fichier original et de mise à jour des paramètres d'accès.
-page_help_settings_project: "**Paramètres** — Les options de configuration globale de votre projet."
-page_help_settings_appearance: "**Apparence** — Les options d'apparence et de thème de votre projet."
-page_help_settings_extensions: '**Extensions** — Les extensions installées dans votre projet.'
-page_help_settings_datamodel_collections: >-
-  **Modèle de données : Collections** — Liste toutes les collections disponibles. Cela inclut les collections visibles, cachées et système, ainsi que les tables de bases de données non gérées qui peuvent être ajoutées.
-page_help_settings_datamodel_fields: >-
-  **Modèle de données : Collection** — Un formulaire pour gérer cette collection et ses champs.
-page_help_settings_system_logs: '**System Logs** — Accédez au flux en direct des journaux du système.'
-page_help_settings_policies_collection: '**Parcourir les polices** — Liste toutes les polices du projet.'
-page_help_settings_roles_collection: '**Parcourir les Rôles** — Liste tous les rôles utilisateur du projet.'
-page_help_settings_roles_item: "**Détail du rôle** — Gérer les autorisations et les autres paramètres d'un rôle."
-page_help_settings_presets_collection: >-
-  **Parcourir les préréglages** - Liste tout les préréglages du projet, y compris : l'utilisateur, le rôle, les favoris globaux et les vues par défaut.
-page_help_settings_presets_item: >-
-  **Détail du préréglage** — Un formulaire pour gérer les favoris et les préréglages de collection par défaut.
-page_help_settings_webhooks_collection: '**Parcourez les Webhooks** — Liste tous les webhooks du projet.'
-page_help_settings_webhooks_item: '**Détail du Webhook** — Un formulaire pour créer et gérer les webhooks du projet.'
-page_help_settings_flows_collection: '**Parcourir les Flux** — Liste tous les Flux du projet.'
-page_help_settings_flows_item: '**Détail du Flux** - Espace de travail permettant de gérer une ou plusieurs opérations.'
-page_help_settings_translations_collection: '**Parcourir les traductions personnalisées** — Liste toutes les traductions personnalisées du projet.'
-page_help_settings_translations_item: '**Détail des traductions personnalisées** — Un formulaire pour visualiser et gérer cet élément.'
-page_help_users_collection: '**Répertoire utilisateur** — Liste tous les utilisateurs système de ce projet.'
-page_help_users_item: >-
-  **Détail de l'utilisateur** — Gérez les informations de votre compte ou consultez les détails des autres utilisateurs.
-page_help_insights_overview: '**Aperçus** — Liste des tableaux de bord auxquels vous avez accès.'
-page_help_insights_dashboard: '**Tableau de bord** — Espace de travail pour gérer un ou plusieurs panneaux'
-page_help_marketplace_account: '**Compte** — Éditeur ou mainteneur d''une extension publiée.'
-page_help_marketplace_registry: '**Enregistrement** — Extensions disponibles sur le Marketplace Directus.'
-page_help_marketplace_extension: '**Extension** — Extension sur le Marketplace Directus.'
 activity_feed: Flux d'activité
 add_new: Nouveau
 create_new: Nouveau
@@ -1598,6 +1557,22 @@ unlimited_usage: Utilisation illimitée
 uses_left: Pas d'utilisation restante | Une utilisation restante | {n} utilisations restantes
 no_shares: Aucun partage pour l'instant
 new_share: Nouveau partage
+ai:
+  input: Texte simple
+  unknown: Inconnu
+  settings: Réglages
+  tool_approval:
+    disabled: Désactivé
+ai_tools:
+  items: Éléments
+  files: Fichiers
+  folders: Dossiers
+  flows: Flux
+  trigger-flow: Déclencher le Flux
+  operations: Opérations
+  schema: Schéma
+  collections: Collections
+  fields: Champs
 mcp_prompts_collection_schema:
   messages_role_user: Utilisateur
 expired: Expiré
