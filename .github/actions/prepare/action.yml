@@ -12,17 +12,21 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: pnpm/action-setup@v4
-      name: Install pnpm
-      with:
-        run_install: false
-
     - name: Install Node.js
       uses: actions/setup-node@v4
       with:
         node-version-file: package.json
         registry-url: ${{ inputs.registry }}
         cache: 'pnpm'
+
+    - name: Update npm
+      shell: bash
+      run: npm install -g npm@11
+
+    - uses: pnpm/action-setup@v4
+      name: Install pnpm
+      with:
+        run_install: false
 
     - name: Install dependencies
       shell: bash
