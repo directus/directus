@@ -360,6 +360,7 @@ confirm_revert_body: See taastab kirje valitud väärtuse.
 display: Vaade
 settings_update_success: Seaded on salvestatud
 title: Pealkiri
+subtitle: Alampealkiri
 revision_delta_created: Loodud
 revision_delta_created_externally: Loodud Väliselt
 revision_delta_updated: 'Uuendati 1 väli | Uuendatid {count} välja'
@@ -1351,6 +1352,8 @@ interfaces:
     rate: Hinnang
   system-token:
     system-token: Kontrollkood
+  header:
+    links: Lingid
 displays:
   translations:
     translations: Tõlked
