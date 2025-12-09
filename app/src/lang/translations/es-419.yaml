@@ -492,6 +492,7 @@ confirm_revert_body: Esto va a revertir el item al estado seleccionado.
 display: Exhibir
 settings_update_success: Configuraciones Actualizadas
 title: Título
+subtitle: Subtítulo
 revision_delta_created: Creado
 revision_delta_created_externally: Creado externamente
 revision_delta_updated: '1 Campo Actualizado |{count} Campos Actualizados'
@@ -2196,6 +2197,10 @@ interfaces:
     description: Entrada de contraseña con alternancia para ocultar el valor
   flow-select:
     flow-select: Seleccionar Flow
+  header:
+    header: Cabecera
+    links: Enlaces
+    action_type: Tipo de acción
 displays:
   translations:
     translations: Traducciónes
