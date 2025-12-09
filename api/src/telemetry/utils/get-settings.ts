@@ -49,8 +49,8 @@ export const getSettings = async (db: Knex): Promise<TelemetrySettings> => {
 		mcp_allow_deletes: settings?.mcp_allow_deletes || false,
 		mcp_system_prompt_enabled: settings?.mcp_system_prompt_enabled || false,
 		visual_editor_urls: settings.visual_editor_urls?.length || 0,
-		ai_openai_api_key: settings?.ai_openai_api_key ? true : false,
-		ai_anthropic_api_key: settings?.ai_anthropic_api_key ? true : false,
-		ai_system_prompt: settings?.ai_system_prompt ? true : false,
+		ai_openai_api_key: Boolean(settings?.ai_openai_api_key),
+		ai_anthropic_api_key: Boolean(settings?.ai_anthropic_api_key),
+		ai_system_prompt: Boolean(settings?.ai_system_prompt),
 	};
 };
