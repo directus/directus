@@ -450,6 +450,7 @@ confirm_revert_body: Dit zal het item terugzetten naar de geselecteerde revisie.
 display: Toon
 settings_update_success: Instellingen bijgewerkt
 title: Titel
+subtitle: Ondertitel
 revision_delta_created: Aangemaakt
 revision_delta_created_externally: Extern aangemaakt
 revision_delta_updated: '1 veld bijgewerkt | {count} velden bijgewerkt'
@@ -2084,6 +2085,9 @@ interfaces:
   input-password:
     input-password: Wachtwoord invoer
     description: Wachtwoord invoer met schakelaar om waarde te verbergen
+  header:
+    header: Header
+    links: Links
 displays:
   translations:
     translations: Vertalingen
