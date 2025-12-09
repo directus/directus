@@ -490,6 +490,7 @@ confirm_revert_body: با این کار، آیتم به وضعیت انتخاب 
 display: نحوه نمایش
 settings_update_success: تنظیمات بروزرسانی شد
 title: عنوان
+subtitle: زیرعنوان
 revision_delta_created: ایجاد شد
 revision_delta_created_externally: به شکل خارجی ایجاد شد
 revision_delta_updated: 'یک فیلد برورزسانی شد | {count} فیلد بروزرسانی شدند'
@@ -2183,6 +2184,9 @@ interfaces:
   input-password:
     input-password: ورود رمز عبور
     description: ورودی پسورد با دکمه‌ای برای مخفی کردن مقدار
+  header:
+    header: سربرگ
+    links: لینک‌‌ها
 displays:
   translations:
     translations: ترجمه‌ها
