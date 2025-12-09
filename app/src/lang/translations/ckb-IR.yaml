@@ -439,6 +439,7 @@ confirm_revert_body: ئەمە مادەکە دەگەڕێنێتەوە بۆ دۆخ�
 display: پیشاندان
 settings_update_success: ڕێکخستنەکان نوێکراونەتەوە
 title: ناونیشان
+subtitle: ژێرنوس
 revision_delta_created: دروستکرا
 revision_delta_created_externally: لە دەرەوە دروست کرا
 revision_delta_updated: 'یەک خانە نوێکرایەوە | {count} خانە نوێکرانەوە'
@@ -2061,6 +2062,9 @@ interfaces:
   input-password:
     input-password: تێپەڕەوشە داخڵبکە
     description: خانەی تێپەڕەوشە لەگەڵ دوگمەی شاردنەوەی بەها
+  header:
+    header: سەرپەڕە
+    links: بەستەرەکان
 displays:
   translations:
     translations: وەرگێڕانەکان
