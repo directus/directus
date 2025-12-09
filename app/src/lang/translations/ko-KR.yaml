@@ -456,6 +456,7 @@ confirm_revert_body: 항목이 선택한 상태로 되돌아갑니다.
 display: 표시하다
 settings_update_success: 설정이 수정됨.
 title: 제목
+subtitle: 부제
 revision_delta_created: 생성됨
 revision_delta_created_externally: 외부에서 생성됨
 revision_delta_updated: '업데이트 된 1개의 필드 | 업데이트 된 {count}개의 필드'
@@ -2133,6 +2134,9 @@ interfaces:
   input-password:
     input-password: 비밀번호 입력
     description: 값을 숨기기 위해 토글을 사용한 비밀번호 입력
+  header:
+    header: 머리글
+    links: 연결
 displays:
   translations:
     translations: 번역
