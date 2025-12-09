@@ -2,4 +2,4 @@
 '@directus/composables': patch
 ---
 
-Default sidebar shadow to false
+Set default sidebar shadow to false
