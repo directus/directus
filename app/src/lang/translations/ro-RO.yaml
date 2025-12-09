@@ -636,7 +636,6 @@ errors:
   VALUE_OUT_OF_RANGE: Valoarea este în afara intervalului
   VALUE_TOO_LONG: Valoarea este prea lungă
 security: Securitate
-value_hashed: Valoare criptată în mod securizat
 bookmark_name: Denumirea semnului de carte...
 create_bookmark: Creează semn de carte
 edit_bookmark: Editează semn de carte
@@ -916,35 +915,6 @@ discard_changes_copy: Ești sigur că vrei să renunți la toate modificările f
 show_x_axis: Arată axa X
 show_y_axis: Arată axa Y
 keep_editing: Continuă editarea
-page_help_collections_overview: '**Prezentare generală colecție** - Lista tuturor colecțiilor la care aveți acces.'
-page_help_collections_collection: >-
-  **Răsfoiește elementele** — Listează toate elementele {collection} la care ai acces. Personalizați aspectul, filtrele și sortarea pentru a vă adapta afișarea, și chiar salvați semnele de carte ale acestor configurații diferite pentru acces rapid.
-page_help_collections_item: >-
-  **Detaliile elementului** - Un formular pentru vizualizarea și gestionarea acestui element. Această bară conține de asemenea o istorie completă a revizuirilor și a comentariilor încorporate.
-page_help_activity_collection: >-
-  **Răsfoiește activitatea** — O listare cuprinzătoare a întregii activității în sistem și conținut a utilizatorilor tăi.
-page_help_docs_global: >-
-  **Prezentare generală a documentației** - Documente special adaptate versiunii și schemei acestui proiect.
-page_help_files_collection: >-
-  **Bibliotecă de fișiere** - Listează toate activele fișierelor încărcate în acest proiect. Personalizați aspectul, filtrele și sortarea pentru a vă adapta afișarea, și chiar salvați semnele de carte ale acestor configurații diferite pentru acces rapid.
-page_help_files_item: >-
-  **Detaliile fișierului** - Un formular pentru gestionarea metadatelor fișierelor, editarea activului original și actualizarea setărilor de acces.
-page_help_settings_datamodel_collections: >-
-  **Modelul de date: Colecții** — Listează toate colecțiile disponibile. Aceasta include colecții vizibile, ascunse și de sistem, precum și tabele de baze de date negestionate care pot fi adăugate.
-page_help_settings_datamodel_fields: >-
-  **Modelul de date: Colecție** — Un formular pentru gestionarea acestei colecții și a câmpurilor sale.
-page_help_settings_roles_item: "**Detaliile rolurilor** - Gestionează permisiunile unui rol și alte setări."
-page_help_settings_presets_collection: >-
-  **Răsfoiește presetările** — Listează toate presetările din proiect, inclusiv: utilizatorul, rolul și semnele de carte globale, precum și vizualizările implicite.
-page_help_settings_presets_item: >-
-  **Detalii presetare** — Un formular pentru gestionarea marcajelor și presetărilor implicite de colectare.
-page_help_settings_webhooks_collection: '**Răsfoiește Webhooks** — Listează toate webhook-urile din cadrul proiectului.'
-page_help_settings_webhooks_item: '**Webhook Detail** - Un formular pentru crearea și gestionarea webhook-urilor proiectului.'
-page_help_users_collection: '**Listă utilizatori** — Listează toți utilizatorii de sistem din cadrul acestui proiect.'
-page_help_users_item: >-
-  **Detaliile utilizatorului** - Gestionați informațiile despre cont sau vizualizați detaliile altor utilizatori.
-page_help_insights_overview: '**Analize** - Lista tablourilor de bord la care ai acces.'
-page_help_insights_dashboard: '**Tablou de bord** - Spațiu de lucru pentru administrarea unuia sau mai multor panouri'
 activity_feed: Flux activitate
 add_new: Adaugare intrare nouă
 create_new: Adaugă
@@ -1252,6 +1222,20 @@ shares: Distribuiri
 unlimited_usage: Utilizare nelimitată
 no_shares: Nici o distribuire de afișat
 new_share: Distribuire nouă
+ai:
+  input: Input
+  unknown: Necunoscut
+  settings: Setări
+  tool_approval:
+    disabled: Dezactivat
+ai_tools:
+  items: Elemente
+  files: Fişiere
+  trigger-flow: Declanșare flux
+  operations: Operațiuni
+  schema: Schema
+  collections: Colecții
+  fields: Câmpuri
 mcp_prompts_collection_schema:
   messages_role_user: Utilizator
 expired: Expirat
