@@ -775,7 +775,6 @@ errors:
   VALUE_OUT_OF_RANGE: 값이 범위를 벗어났습니다.
   VALUE_TOO_LONG: 값이 너무 깁니다.
 security: 보안
-value_hashed: 안전하게 해시된 값
 bookmark_name: 북마크 이름...
 create_bookmark: 북마크 만들기
 edit_bookmark: 북마크 편집
@@ -1178,50 +1177,6 @@ discard_changes_copy: 모든 변경 사항을 취소하시겠습니까?
 show_x_axis: X축 표시
 show_y_axis: Y축 표시
 keep_editing: 계속 수정
-page_help_collections_overview: '**컬렉션 개요** — 액세스 권한이 있는 모든 컬렉션 목록입니다.'
-page_help_collections_collection: >-
-  **항목 찾아보기** — 액세스할 수 있는 모든 {collection} 항목을 나열합니다. 레이아웃, 필터 및 정렬을 사용자 지정하여 보기를 맞춤화하고 이러한 다양한 구성의 책갈피를 저장하여 빠르게 액세스할 수도 있습니다.
-page_help_collections_item: >-
-  **항목 세부 정보** — 이 항목을 보고 관리하기 위한 양식입니다. 이 사이드바에는 전체 수정 내역과 포함된 댓글도 포함되어 있습니다.
-page_help_activity_collection: >-
-  **찾아보기 활동** — 모든 사용자의 시스템 및 콘텐츠 활동에 대한 포괄적인 목록입니다.
-page_help_docs_global: >-
-  **문서 개요** — 이 프로젝트의 버전 및 스키마에 맞게 특별히 조정된 문서입니다.
-page_help_files_collection: >-
-  **파일 라이브러리** — 이 프로젝트에 업로드된 모든 파일 자산을 나열합니다. 레이아웃, 필터 및 정렬을 사용자 지정하여 보기를 맞춤화하고 이러한 다양한 구성의 책갈피를 저장하여 빠르게 액세스할 수도 있습니다.
-page_help_files_item: >-
-  **파일 세부 정보** — 파일 메타데이터 관리, 원본 자산 편집 및 액세스 설정 업데이트를 위한 양식입니다.
-page_help_settings_project: "**설정** — 프로젝트의 전역 구성 옵션입니다."
-page_help_settings_appearance: "**외형** - 프로젝트의 외형과 테마 옵션입니다."
-page_help_settings_extensions: '**확장 프로그램** - 프로젝트에 설치된 확장 프로그램입니다.'
-page_help_settings_ai: "**AI** — 프로젝트의 인공지능 구성 옵션입니다."
-page_help_settings_datamodel_collections: >-
-  **데이터 모델: 컬렉션** - 사용 가능한 모든 컬렉션을 나열합니다. 여기에는 추가할 수 있는 관리되지 않는 데이터베이스 테이블뿐만 아니라 가시적, 숨김 및 시스템 컬렉션이 포함됩니다.
-page_help_settings_datamodel_fields: >-
-  **데이터 모델: 컬렉션** — 이 컬렉션과 해당 필드를 관리하기 위한 양식입니다.
-page_help_settings_system_logs: '**시스템 로그** — 시스템 로그의 라이브 스트림에 액세스합니다.'
-page_help_settings_policies_collection: '**Browse Policies** - 프로젝트 내의 모든 정책을 나열합니다.'
-page_help_settings_policies_item: '**정책 세부 정보** — 정책 권한 및 기타 설정을 관리합니다.'
-page_help_settings_roles_collection: '**역할 찾아보기** — 프로젝트 내의 모든 사용자 역할을 나열합니다.'
-page_help_settings_roles_item: "**역할 세부 정보** — 역할의 권한 및 기타 설정을 관리합니다."
-page_help_settings_presets_collection: >-
-  **사전 설정 찾아보기** — 사용자, 역할, 전역 책갈피 및 기본 보기를 포함하여 프로젝트의 모든 사전 설정을 나열합니다.
-page_help_settings_presets_item: >-
-  **사전 설정 세부 정보** — 책갈피 및 기본 컬렉션 사전 설정을 관리하기 위한 양식입니다.
-page_help_settings_webhooks_collection: '**웹훅 찾아보기** — 프로젝트 내의 모든 웹훅을 나열합니다.'
-page_help_settings_webhooks_item: '**Webhook 세부 정보** — 프로젝트 Webhook 생성 및 관리를 위한 양식입니다.'
-page_help_settings_flows_collection: '**플로우 찾아보기** — 프로젝트 내의 모든 플로우을 나열합니다.'
-page_help_settings_flows_item: '**Flow Detail** — 하나 이상의 작업을 관리하기 위한 작업 공간입니다.'
-page_help_settings_translations_collection: '**사용자 정의 번역** - 프로젝트 내의 모든 사용자 지정 번역을 나열합니다.'
-page_help_settings_translations_item: '**사용자 정의 번역 세부 정보** - 이 항목을 보고 관리하기 위한 양식입니다.'
-page_help_users_collection: '**사용자 디렉터리** — 이 프로젝트 내의 모든 시스템 사용자를 나열합니다.'
-page_help_users_item: >-
-  **사용자 세부 정보** — 계정 정보를 관리하거나 다른 사용자의 세부 정보를 봅니다.
-page_help_insights_overview: '**Insights** — 액세스 권한이 있는 대시보드 목록입니다.'
-page_help_insights_dashboard: '**대시보드** — 하나 이상의 패널을 관리하기 위한 작업 공간'
-page_help_marketplace_account: '**계정** - 게시된 확장 프로그램의 게시자 또는 관리자입니다.'
-page_help_marketplace_registry: '**레지스트리** - Directus 마켓플레이스에서 사용할 수 있는 확장 기능입니다.'
-page_help_marketplace_extension: '**확장** - Directus 마켓플레이스의 확장 기능입니다.'
 activity_feed: 활동 내역
 add_new: 새로운 걸 더하다
 create_new: 새로 만들기
@@ -1618,6 +1573,22 @@ unlimited_usage: 무제한 사용
 uses_left: 남은 용도 없음 | 1회 사용 남음 | {n} 왼쪽 사용
 no_shares: 표시할 공유가 없습니다.
 new_share: 새 공유
+ai:
+  input: 입력
+  unknown: 알 수 없음
+  settings: 설정
+  tool_approval:
+    disabled: 비활성화 됨
+ai_tools:
+  items: 항목
+  files: 파일
+  folders: 폴더
+  flows: 플로우
+  trigger-flow: 트리거 플로우
+  operations: 작업
+  schema: 개요
+  collections: 컬렉션
+  fields: 필드
 mcp_prompts_collection:
   no_collection_selected: 선택된 컬렉션이 없습니다
   no_collection_selected_copy: 재사용 가능한 프롬프트 템플릿을 활성화하려면 컬렉션을 선택하세요.
