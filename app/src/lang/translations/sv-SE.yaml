@@ -440,6 +440,7 @@ confirm_revert_body: Det här objektet kommer återgå till vald position.
 display: Visa
 settings_update_success: Inställningar uppdaterade
 title: Rubrik
+subtitle: Underrubrik
 revision_delta_created: Skapad
 revision_delta_created_externally: Skapad externt
 revision_delta_updated: 'Uppdaterade 1 fält | Uppdaterade {count} fält'
@@ -1857,6 +1858,8 @@ interfaces:
     system-raw-editor: Råredigerare
   input-password:
     input-password: Ange lösenord
+  header:
+    links: Länkar
 displays:
   translations:
     translations: Översättningar
