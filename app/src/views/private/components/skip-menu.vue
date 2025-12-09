@@ -1,33 +1,61 @@
 <script setup lang="ts">
+import { BREAKPOINTS } from '@/constants';
+import { useNavBarStore } from '@/views/private/private-view/stores/nav-bar';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
+import { useBreakpoints } from '@vueuse/core';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { section } = defineProps<{
-	section: 'nav' | 'moduleNav' | 'main' | 'sidebar';
+	section: 'navigation' | 'module-navigation' | 'main-content' | 'sidebar';
 }>();
 
 const { t } = useI18n();
+const navBarStore = useNavBarStore();
+const sidebarStore = useSidebarStore();
+const { lg, xl, smallerOrEqual } = useBreakpoints(BREAKPOINTS);
+const isMobile = smallerOrEqual('sm');
+
+const inlineNav = computed(() => {
+	return sidebarStore.collapsed ? lg.value : xl.value;
+});
 
 const allItems = [
 	{
-		key: 'nav',
+		key: 'navigation',
 		hash: '#navigation',
 		text: t('skip_link_nav'),
+		action() {
+			if (!lg.value) navBarStore.expand();
+			if (isMobile.value) sidebarStore.collapse();
+		},
 	},
 	{
-		key: 'moduleNav',
+		key: 'module-navigation',
 		hash: '#module-navigation',
 		text: t('skip_link_module_nav'),
+		action() {
+			if (navBarStore.collapsed) navBarStore.expand();
+			if (isMobile.value) sidebarStore.collapse();
+		},
 	},
 	{
-		key: 'main',
+		key: 'main-content',
 		hash: '#main-content',
 		text: t('skip_link_main'),
+		action() {
+			if (!inlineNav.value) navBarStore.collapse();
+			if (isMobile.value) sidebarStore.collapse();
+		},
 	},
 	{
 		key: 'sidebar',
 		hash: '#sidebar',
 		text: t('skip_link_sidebar'),
+		action() {
+			if (!inlineNav.value) navBarStore.collapse();
+			sidebarStore.expand();
+		},
 	},
 ];
 
@@ -35,15 +63,27 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 </script>
 
 <template>
-	<v-list v-if="items.length" class="skip-menu" :class="{ right: section === 'sidebar', center: section === 'main' }">
-		<v-list-item v-for="item in items" :key="item" :href="$router.resolve(item.hash).href" target="_self">
+	<v-list
+		v-if="items.length"
+		class="skip-menu"
+		:class="{ right: section === 'sidebar', center: section === 'main-content' }"
+	>
+		<v-list-item
+			v-for="item in items"
+			:key="item.key"
+			:href="$router.resolve(item.hash).href"
+			target="_self"
+			@click="item.action"
+		>
 			{{ item.text }}
 		</v-list-item>
 	</v-list>
 </template>
 
 <style lang="scss" scoped>
-.skip-menu {
+.skip-menu.v-list {
+	--v-list-min-width: 210px;
+
 	position: absolute;
 	inline-size: 1px;
 	block-size: 1px;

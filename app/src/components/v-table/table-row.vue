@@ -7,7 +7,7 @@ const props = withDefaults(
 	defineProps<{
 		headers: Header[];
 		item: Item;
-		showSelect: ShowSelect;
+		showSelect?: ShowSelect;
 		showManualSort?: boolean;
 		isSelected?: boolean;
 		subdued?: boolean;

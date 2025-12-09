@@ -78,8 +78,9 @@ withDefaults(defineProps<Props>(), {
 			}
 
 			&:focus-visible {
-				outline-offset: var(--focus-ring-offset-inset);
+				outline-offset: var(--focus-ring-offset-invert);
 				padding-inline: calc(var(--focus-ring-width) + var(--focus-ring-offset));
+				padding-block: var(--focus-ring-width);
 			}
 		}
 

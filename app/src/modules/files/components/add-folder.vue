@@ -50,11 +50,12 @@ async function addFolder() {
 				v-tooltip.bottom="disabled ? $t('not_allowed') : $t('create_folder')"
 				rounded
 				icon
+				small
 				secondary
 				:disabled="disabled"
 				@click="on"
 			>
-				<v-icon name="create_new_folder" outline />
+				<v-icon small name="create_new_folder" outline />
 			</v-button>
 		</template>
 

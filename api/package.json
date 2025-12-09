@@ -66,6 +66,8 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
+		"@ai-sdk/anthropic": "catalog:",
+		"@ai-sdk/openai": "catalog:",
 		"@authenio/samlify-node-xmllint": "catalog:",
 		"@aws-sdk/client-sesv2": "catalog:",
 		"@directus/app": "workspace:*",
@@ -99,6 +101,7 @@
 		"@tus/server": "catalog:",
 		"@tus/utils": "catalog:",
 		"archiver": "catalog:",
+		"ai": "catalog:",
 		"argon2": "catalog:",
 		"async": "catalog:",
 		"async-mutex": "catalog:",
