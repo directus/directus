@@ -82,6 +82,8 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 
 <style lang="scss" scoped>
 .skip-menu.v-list {
+	--v-list-min-width: 210px;
+
 	position: absolute;
 	inline-size: 1px;
 	block-size: 1px;
