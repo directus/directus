@@ -239,6 +239,7 @@ length: Μήκος
 unique: Μοναδικό
 notifications: Ειδοποιήσεις
 title: Τίτλος
+subtitle: Υπότιτλος
 download_page_as_csv: 'Λήψη σελίδας ως CSV'
 leave_comment: Άφηστε ένα σχόλιο...
 import_data_input_placeholder: CSV ή JSON...
