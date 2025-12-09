@@ -208,6 +208,7 @@ confirm_revert_body: Adsavet e vo an elfenn d'ar stad dibabet.
 display: Diskwel
 settings_update_success: Arventennoù enrollet
 title: Titl
+subtitle: Istitl
 revision_delta_created: Krouet
 revision_delta_created_externally: Krouet en diavaez
 revision_delta_updated: '1 vaezienn hizivaet | {count} maezienn hizivaet'
@@ -1073,6 +1074,8 @@ interfaces:
   group-raw:
     name: Maeziennoù kriz
     description: Diskwel ar maeziennoù e-giz normal.
+  header:
+    links: Liammoù
 displays:
   translations:
     translations: Troidigezhioù
