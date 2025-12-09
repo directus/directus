@@ -255,6 +255,7 @@ notifications: Sciigoj
 page_not_found: Paĝo ne trovita
 display: Montri
 title: Titolo
+subtitle: Subtitolo
 revision_delta_created: Kreita
 revision_delta_created_externally: Ekstere kreita
 revision_delta_deleted: Forigita
@@ -628,8 +629,6 @@ discard_all_changes: Forĵeti ĉiujn ŝanĝojn
 discard_changes_copy: Ĉu vi certas, ke vi volas forĵeti ĉiujn viajn ŝanĝojn?
 show_x_axis: Montri la X-akson
 show_y_axis: Montri la Y-akson
-page_help_collections_overview: '**Superrigaro de kolektoj** — Listo de ĉiuj kolektoj, kiujn vi povas atingi.'
-page_help_insights_dashboard: '**Stirpanelo** — Laborspaco por administri unu aŭ pliajn panelojn'
 add_new: Aldoni novan
 create_new: Krei novan
 all: Ĉiuj
@@ -646,8 +645,6 @@ collection: Kolekto
 collections: Kolektoj
 content: Enhavo
 system_fields_locked: Sistemaj valoroj estas ŝlositaj kaj ne povas esti redaktitaj
-directus_collection:
-  directus_flows: Aŭtomatigaj fluoj
 fields:
   directus_activity:
     item: Ĉefa ŝlosilo de la ero
@@ -834,6 +831,19 @@ live_preview:
 shares: Konigoj
 unlimited_usage: Senlima uzado
 new_share: Nova konigo
+ai:
+  unknown: Nekonata
+  settings: Agordoj
+  tool_approval:
+    disabled: Malŝaltita
+ai_tools:
+  items: Eroj
+  files: Dosieroj
+  flows: Fluoj
+  operations: Operacioj
+  schema: Skemo
+  collections: Kolektoj
+  fields: Kampoj
 mcp_prompts_collection_schema:
   messages_role_user: Uzanto
 expired: Eksvalidiĝinta
@@ -929,7 +939,7 @@ interfaces:
     start: Komenci
     accordion_mode: Akordiona reĝimo
   presentation-links:
-    links: Ligiloj
+    presentation-links: Butonoj
     style: Stilo
     primary: Ĉefa
     link: Ligiloj
@@ -1063,6 +1073,8 @@ interfaces:
     remove_token: Forigi la ĵetonon
   system-raw-editor:
     system-raw-editor: Kruda redaktilo
+  header:
+    links: Ligiloj
 displays:
   translations:
     translations: Tradukoj
@@ -1235,7 +1247,6 @@ triggers:
     cron: Intervalo
   manual:
     name: Mana
-operation_variables_note: Vi povas atingi datumojn de la fluo per variabloj kiel **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** kaj **{'{'}{'{'}$accountability{'}'}{'}'}**, aŭ referenci antaŭajn operaciojn per **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Kondiĉo
