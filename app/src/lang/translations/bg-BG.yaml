@@ -426,6 +426,7 @@ confirm_revert_body: Възстановяване на записа към из�
 display: Изглед
 settings_update_success: Настройките са обновени
 title: Заглавие
+subtitle: Подзаглавие
 revision_delta_created: Създаден
 revision_delta_created_externally: Външно-създаден запис
 revision_delta_updated: '1 поле е обновено | {count} полета са обновени'
@@ -1951,6 +1952,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Редактор в суров вид
     description: Позволява въвеждане на сурови стойности или mustache шаблони
+  header:
+    header: Хедър
+    links: Връзки
 displays:
   translations:
     translations: Преводи
