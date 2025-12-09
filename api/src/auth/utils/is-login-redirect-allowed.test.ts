@@ -194,5 +194,26 @@ describe('isLoginRedirectAllowed', () => {
 
 			expect(result).toBe(false);
 		});
+
+		test('port must match when PUBLIC_URL has custom port', () => {
+			vi.mocked(useEnv).mockReturnValue({
+				PUBLIC_URL: 'http://localhost:8055',
+			});
+
+			// Different port should be rejected
+			const result = isLoginRedirectAllowed('github', 'http://localhost:3000/admin');
+
+			expect(result).toBe(false);
+		});
+
+		test('allows redirect when port matches PUBLIC_URL', () => {
+			vi.mocked(useEnv).mockReturnValue({
+				PUBLIC_URL: 'http://localhost:8055',
+			});
+
+			const result = isLoginRedirectAllowed('github', 'http://localhost:8055/admin');
+
+			expect(result).toBe(true);
+		});
 	});
 });
