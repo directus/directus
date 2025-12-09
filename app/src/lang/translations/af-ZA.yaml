@@ -187,6 +187,8 @@ field_options:
   directus_webhooks:
     actions_create: Skep
 comment: Kommentaar
+ai_tools:
+  files: Lêers
 description: Beskrywing
 email: E-pos
 password: Wagwoord
