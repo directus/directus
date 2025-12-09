@@ -287,6 +287,7 @@ confirm_revert_body: To bo vrnilo zapis na izbrano stanje.
 display: Prikaz
 settings_update_success: Nastavitve posodobljene
 title: Naslov
+subtitle: Podnaslov
 revision_delta_created: Ustvarjeno
 revision_delta_created_externally: Ustvarjeno eksterno
 revision_delta_updated: 'Eno polje urejeno | {count} polj urejenih'
@@ -1305,6 +1306,8 @@ interfaces:
     start_closed: Začni zaprto
   system-token:
     system-token: Žeton
+  header:
+    links: Povezave
 displays:
   translations:
     translations: Prevodi
