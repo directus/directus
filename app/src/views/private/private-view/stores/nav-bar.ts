@@ -1,8 +1,9 @@
 import { useLocalStorage, createEventHook, useBreakpoints } from '@vueuse/core';
 import { defineStore } from 'pinia';
-import { watch } from 'vue';
+import { computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { BREAKPOINTS } from '@/constants';
+import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
 export const useNavBarStore = defineStore('nav-bar-store', () => {
 	const collapsed = useLocalStorage('nav-bar-collapsed', false);
