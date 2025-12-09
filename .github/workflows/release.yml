@@ -81,17 +81,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Update npm
-        shell: bash
-        run: sudo npm install -g npm@11
-
       - name: Prepare
         uses: ./.github/actions/prepare
+        with:
+          registry: https://registry.npmjs.org
 
       - name: Publish packages to NPM
         env:
           NPM_CONFIG_PROVENANCE: true
         run: |
+          sudo npm install -g npm@11
           pnpm --recursive publish \
             --access=public \
             --no-git-checks \
