@@ -350,6 +350,7 @@ confirm_revert_body: 選択した状態へ戻す
 display: ディスプレイ
 settings_update_success: 設定が更新されました
 title: タイトル
+subtitle: サブタイトル
 revision_delta_created: 作成
 revision_delta_created_externally: 外部で作成
 revision_delta_updated: '1フィールド更新 |  {count} フィールド更新'
