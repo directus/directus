@@ -4,9 +4,11 @@ import { useRelationsStore } from '@/stores/relations.js';
 import { getRelatedCollection } from '@/utils/get-related-collection.js';
 import { Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { getGraphqlQueryFields } from './get-graphql-query-fields.js';
+import { transformM2AAliases } from './transform-m2a-aliases.js';
 
 vi.mock('@/utils/get-related-collection.js');
 
@@ -35,7 +37,8 @@ it('should return all direct fields for collection if field input is empty', () 
 
 	const result = getGraphqlQueryFields(fields, collection);
 
-	expect(result).toEqual({ title: true });
+	expect(result.queryFields).toEqual({ title: true });
+	expect(result.m2aAliasMap).toEqual({});
 });
 
 it('should return non-related fields directly', () => {
@@ -44,6 +47,7 @@ it('should return non-related fields directly', () => {
 			return {
 				relatedCollection: 'authors',
 			};
+
 		return null;
 	});
 
@@ -52,7 +56,8 @@ it('should return non-related fields directly', () => {
 
 	const result = getGraphqlQueryFields(fields, collection);
 
-	expect(result).toEqual({ title: true, author: { first_name: true, last_name: true } });
+	expect(result.queryFields).toEqual({ title: true, author: { first_name: true, last_name: true } });
+	expect(result.m2aAliasMap).toEqual({});
 });
 
 it('should include primary keys for relational fields', () => {
@@ -93,10 +98,11 @@ it('should include primary keys for relational fields', () => {
 
 	const result = getGraphqlQueryFields(fields, collection);
 
-	expect(result).toEqual({ author: { avatar: { id: true } }, translations: { id: true } });
+	expect(result.queryFields).toEqual({ author: { avatar: { id: true } }, translations: { id: true } });
+	expect(result.m2aAliasMap).toEqual({});
 });
 
-it('should work with m2a fields', () => {
+it('should work with m2a fields and use aliases for nested fields', () => {
 	vi.mocked(getRelatedCollection).mockImplementation((collection, field) => {
 		if (collection === 'pages')
 			switch (field) {
@@ -150,7 +156,7 @@ it('should work with m2a fields', () => {
 
 	const result = getGraphqlQueryFields(fields, collection);
 
-	expect(result).toEqual({
+	expect(result.queryFields).toEqual({
 		blocks: {
 			__args: {
 				filter: {
@@ -181,12 +187,206 @@ it('should work with m2a fields', () => {
 				__on: [
 					{
 						__typeName: 'block_paragraph',
-						id: true,
-						text: true,
+						block_paragraph__id: { __aliasFor: 'id' },
+						block_paragraph__text: { __aliasFor: 'text' },
 					},
 				],
 			},
 			id: true,
 		},
+	});
+
+	expect(result.m2aAliasMap).toEqual({
+		block_paragraph: {
+			block_paragraph__id: 'id',
+			block_paragraph__text: 'text',
+		},
+	});
+});
+
+/**
+ * Tests for GitHub Issue #25476
+ * @see https://github.com/directus/directus/issues/25476
+ *
+ * Problem: Duplicating items with M2A fields that link to collections with conflicting field types
+ * causes a GraphQL validation error.
+ *
+ * Scenario from the issue:
+ * - child1 collection has a JSON field called 'items'
+ * - child2 collection has a 1:N relation field also called 'items'
+ * - parent collection has M2A field 'children' linking to both child1 and child2
+ *
+ * Without aliases, the generated GraphQL query would be:
+ *   ... on child1 { items }      <- JSON type
+ *   ... on child2 { items { id } } <- [child2_items] type
+ *
+ * This causes GraphQL validation error:
+ *   "Fields 'items' conflict because they return conflicting types '[child2_items]' and 'JSON'"
+ *
+ * Solution: Use field aliases prefixed with collection name in inline fragments:
+ *   ... on child1 { child1__items: items }
+ *   ... on child2 { child2__items: items { id } }
+ */
+describe('m2a fields with conflicting field types (issue #25476)', () => {
+	function setupMocksForIssue25476() {
+		vi.mocked(getRelatedCollection).mockImplementation((collection, field) => {
+			if (collection === 'parent' && field === 'children') {
+				return { relatedCollection: 'parent_children' };
+			}
+
+			if (collection === 'child1' && field === 'items') {
+				return null; // JSON field - not a relation
+			}
+
+			if (collection === 'child2' && field === 'items') {
+				return { relatedCollection: 'child2_items' }; // 1:N relation
+			}
+
+			return null;
+		});
+
+		const fieldsStore = mockedStore(useFieldsStore());
+
+		fieldsStore.getPrimaryKeyFieldForCollection.mockImplementation((collection) => {
+			switch (collection) {
+				case 'parent_children':
+				case 'child1':
+				case 'child2':
+				case 'child2_items':
+					return { field: 'id' } as Field;
+				default:
+					return null;
+			}
+		});
+
+		const relationsStore = mockedStore(useRelationsStore());
+
+		relationsStore.getRelationForField.mockImplementation((currentCollection, sourceField) => {
+			if (currentCollection === 'parent_children' && sourceField === 'item') {
+				return {
+					meta: { one_collection_field: 'collection' },
+				} as Relation;
+			}
+
+			return null;
+		});
+	}
+
+	it('should use aliases to avoid GraphQL validation errors when collections have same field names', () => {
+		setupMocksForIssue25476();
+
+		// These are the duplication fields from the issue:
+		// ["children.collection", "children.item:child2.items", "children.item:child1.items"]
+		const fields: string[] = [
+			'children.collection',
+			'children.item:child1.items', // JSON field
+			'children.item:child2.items', // 1:N relation field
+		];
+
+		const collection = 'parent';
+
+		const result = getGraphqlQueryFields(fields, collection);
+
+		// Both 'items' fields should be aliased with their collection prefix
+		expect(result.queryFields.children.item.__on).toEqual([
+			{
+				__typeName: 'child1',
+				child1__items: { __aliasFor: 'items' }, // JSON field aliased
+			},
+			{
+				__typeName: 'child2',
+				child2__items: { __aliasFor: 'items', id: true }, // Relation field aliased
+			},
+		]);
+
+		expect(result.m2aAliasMap).toEqual({
+			child1: { child1__items: 'items' },
+			child2: { child2__items: 'items' },
+		});
+	});
+
+	it('should generate valid GraphQL query with aliased fields that avoids type conflicts', () => {
+		setupMocksForIssue25476();
+
+		const fields: string[] = ['children.collection', 'children.item:child1.items', 'children.item:child2.items'];
+
+		const { queryFields } = getGraphqlQueryFields(fields, 'parent');
+
+		// Generate the actual GraphQL query string
+		const graphqlQuery = jsonToGraphQLQuery({
+			query: {
+				parent_by_id: {
+					__args: { id: '123' },
+					...queryFields,
+				},
+			},
+		});
+
+		// The query should use aliases to avoid field conflicts
+		// child1__items: items (for the JSON field)
+		// child2__items: items { id } (for the relation field)
+		expect(graphqlQuery).toContain('child1__items: items');
+		expect(graphqlQuery).toContain('child2__items: items');
+
+		// Verify the inline fragments are present
+		expect(graphqlQuery).toContain('... on child1');
+		expect(graphqlQuery).toContain('... on child2');
+	});
+
+	it('should correctly transform aliased response data back to original field names', () => {
+		setupMocksForIssue25476();
+
+		const fields: string[] = ['children.collection', 'children.item:child1.items', 'children.item:child2.items'];
+
+		const { m2aAliasMap } = getGraphqlQueryFields(fields, 'parent');
+
+		// Simulate the GraphQL response with aliased fields
+		const graphqlResponse = {
+			id: 'parent-1',
+			children: [
+				{
+					id: 'junction-1',
+					collection: 'child1',
+					item: {
+						id: 'child1-item-1',
+						child1__items: { key: 'value', nested: [1, 2, 3] }, // JSON field with aliased name
+					},
+				},
+				{
+					id: 'junction-2',
+					collection: 'child2',
+					item: {
+						id: 'child2-item-1',
+						child2__items: [{ id: 'related-1' }, { id: 'related-2' }], // Relation field with aliased name
+					},
+				},
+			],
+		};
+
+		// Transform the response to restore original field names
+		const transformedData = transformM2AAliases(graphqlResponse, m2aAliasMap);
+
+		// The transformed data should have original field names
+		expect(transformedData).toEqual({
+			id: 'parent-1',
+			children: [
+				{
+					id: 'junction-1',
+					collection: 'child1',
+					item: {
+						id: 'child1-item-1',
+						items: { key: 'value', nested: [1, 2, 3] }, // Restored to 'items'
+					},
+				},
+				{
+					id: 'junction-2',
+					collection: 'child2',
+					item: {
+						id: 'child2-item-1',
+						items: [{ id: 'related-1' }, { id: 'related-2' }], // Restored to 'items'
+					},
+				},
+			],
+		});
 	});
 });

@@ -24,6 +24,7 @@ import { cloneDeep, mergeWith } from 'lodash';
 import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
+import { transformM2AAliases } from './lib/transform-m2a-aliases';
 
 type UsableItem<T extends Item> = {
 	edits: Ref<Item>;
@@ -228,7 +229,7 @@ export function useItem<T extends Item>(
 
 		const fields = collectionInfo.value?.meta?.item_duplication_fields ?? [];
 
-		const queryFields = getGraphqlQueryFields(fields, collection.value);
+		const { queryFields, m2aAliasMap } = getGraphqlQueryFields(fields, collection.value);
 		const alias = isSystemCollection(collection.value) ? collection.value.substring(9) : collection.value;
 
 		const query = jsonToGraphQLQuery({
@@ -254,7 +255,8 @@ export function useItem<T extends Item>(
 			throw error;
 		}
 
-		const itemData = response.data.data.item;
+		// Transform aliased M2A fields back to their original names
+		const itemData = transformM2AAliases(response.data.data.item, m2aAliasMap);
 
 		const newItem: Item = {
 			...(itemData || {}),
