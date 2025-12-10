@@ -126,13 +126,6 @@ variable "headless" {
   description = "Run QEMU in headless mode (set to false for debugging)"
 }
 
-variable "github_token" {
-  type        = string
-  default     = ""
-  sensitive   = true
-  description = "GitHub PAT for cloning private repos (e.g., directus-template)"
-}
-
 # =============================================================================
 # Locals
 # =============================================================================
@@ -266,11 +259,11 @@ build {
   # System updates and base packages
   provisioner "shell" {
     inline = [
-      "echo '=== Updating system packages ==='",
+      "echo '=== Updating system packages ===' ",
       "sudo apt-get update -qq",
       "sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq",
 
-      "echo '=== Installing base packages ==='",
+      "echo '=== Installing base packages ===' ",
       "sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq \\",
       "  ca-certificates curl gnupg lsb-release git jq ufw unzip htop vim \\",
       "  build-essential python3 postgresql-client dnsutils"
@@ -280,7 +273,7 @@ build {
   # Install Node.js 22 LTS
   provisioner "shell" {
     inline = [
-      "echo '=== Installing Node.js 22 LTS ==='",
+      "echo '=== Installing Node.js 22 LTS ===' ",
       
       "# Clean apt cache to avoid mirror issues",
       "sudo rm -rf /var/lib/apt/lists/*",
@@ -310,7 +303,7 @@ build {
   # Install pnpm
   provisioner "shell" {
     inline = [
-      "echo '=== Installing pnpm ==='",
+      "echo '=== Installing pnpm ===' ",
       "sudo npm install -g pnpm@10",
       "pnpm --version"
     ]
@@ -319,7 +312,7 @@ build {
   # Install PM2 for process management
   provisioner "shell" {
     inline = [
-      "echo '=== Installing PM2 ==='",
+      "echo '=== Installing PM2 ===' ",
       "sudo npm install -g pm2",
       "pm2 --version"
     ]
@@ -328,7 +321,7 @@ build {
   # Install AWS CLI v2 (AWS only, but doesn't hurt to have on local)
   provisioner "shell" {
     inline = [
-      "echo '=== Installing AWS CLI v2 ==='",
+      "echo '=== Installing AWS CLI v2 ===' ",
       "curl -sL 'https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip' -o /tmp/awscliv2.zip",
       "unzip -q /tmp/awscliv2.zip -d /tmp",
       "sudo /tmp/aws/install",
@@ -344,25 +337,25 @@ build {
       "DIRECTUS_BRANCH=${var.directus_branch}"
     ]
     inline = [
-      "echo '=== Cloning F2F Directus ==='",
+      "echo '=== Cloning F2F Directus ===' ",
       "sudo mkdir -p /opt/directus",
       "sudo chown $(whoami):$(whoami) /opt/directus",
       "git clone --depth 1 --branch $DIRECTUS_BRANCH $DIRECTUS_REPO /opt/directus",
 
-      "echo '=== Installing dependencies ==='",
+      "echo '=== Installing dependencies ===' ",
       "cd /opt/directus",
       "pnpm install",
 
-      "echo '=== Building Directus ==='",
+      "echo '=== Building Directus ===' ",
       "pnpm build",
 
-      "echo '=== Creating directories ==='",
+      "echo '=== Creating directories ===' ",
       "mkdir -p /opt/directus/uploads",
       "mkdir -p /opt/directus/extensions",
       "mkdir -p /opt/directus/logs",
       "sudo mkdir -p /etc/directus",
 
-      "echo '=== Creating default .env template ==='",
+      "echo '=== Creating default .env template ===' ",
       "cat > /opt/directus/.env.example << 'ENVFILE'",
       "# Directus Configuration",
       "HOST=0.0.0.0",
@@ -390,7 +383,7 @@ build {
   # Install Template API from GitHub repository
   provisioner "shell" {
     inline = [
-      "echo '=== Installing Directus Template API ==='",
+      "echo '=== Installing Directus Template API ===' ",
       "sudo mkdir -p /opt/template-api",
       "sudo chown $(whoami):$(whoami) /opt/template-api",
       "cd /opt/template-api",
@@ -412,31 +405,14 @@ build {
     ]
   }
 
-  # Clone Directus Template (schema/content for new tenants)
-  provisioner "shell" {
-    environment_vars = [
-      "GITHUB_TOKEN=${var.github_token}"
-    ]
-    inline = [
-      "echo '=== Cloning Directus Template ==='" ,
-      "sudo mkdir -p /opt/directus-template",
-      "sudo chown $(whoami):$(whoami) /opt/directus-template",
-      
-      "# Clone using the PAT for authentication",
-      "git clone https://oauth2:$${GITHUB_TOKEN}@github.com/Face-to-Face-IT/directus-template.git /opt/directus-template",
-      
-      "# Remove git history and credentials",
-      "rm -rf /opt/directus-template/.git",
-      
-      "echo '  Template cloned to /opt/directus-template'",
-      "ls -la /opt/directus-template/"
-    ]
-  }
+  # NOTE: Directus Template is now cloned at boot time (configure-tenant.sh)
+  # with a specific version tag. This allows versioned template deployments.
+  # The TEMPLATE_VERSION and GITHUB_TOKEN are passed via user-data.
 
   # Install Nginx
   provisioner "shell" {
     inline = [
-      "echo '=== Installing Nginx ==='",
+      "echo '=== Installing Nginx ===' ",
       "sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq nginx",
       "sudo systemctl enable nginx",
 
@@ -452,7 +428,7 @@ build {
   # Install Certbot
   provisioner "shell" {
     inline = [
-      "echo '=== Installing Certbot ==='",
+      "echo '=== Installing Certbot ===' ",
       "sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq certbot python3-certbot-nginx"
     ]
   }
@@ -461,7 +437,7 @@ build {
   provisioner "shell" {
     only = ["amazon-ebs.directus-base"]
     inline = [
-      "echo '=== Installing CloudWatch Agent ==='",
+      "echo '=== Installing CloudWatch Agent ===' ",
       "curl -sL 'https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb' -o /tmp/amazon-cloudwatch-agent.deb",
       "sudo dpkg -i /tmp/amazon-cloudwatch-agent.deb",
       "rm /tmp/amazon-cloudwatch-agent.deb",
@@ -542,7 +518,7 @@ build {
   # Create systemd service for PM2
   provisioner "shell" {
     inline = [
-      "echo '=== Setting up PM2 startup ==='",
+      "echo '=== Setting up PM2 startup ===' ",
       "sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u $(whoami) --hp $HOME || true",
       "sudo systemctl enable pm2-$(whoami) || true"
     ]
@@ -553,7 +529,7 @@ build {
   # =============================================================================
   provisioner "shell" {
     inline = [
-      "echo '=== Validating Directus starts correctly ==='",
+      "echo '=== Validating Directus starts correctly ===' ",
       "cd /opt/directus",
       
       "# Create temporary .env for validation",
@@ -635,14 +611,14 @@ build {
       "rm -f /opt/directus/.env",
       "rm -f /opt/directus/test-validation.sqlite",
       
-      "echo '=== Validation complete! Both Directus and Template API start successfully ==='"
+      "echo '=== Validation complete! Both Directus and Template API start successfully ===' "
     ]
   }
 
   # Security hardening
   provisioner "shell" {
     inline = [
-      "echo '=== Security hardening ==='",
+      "echo '=== Security hardening ===' ",
       
       "# Lock the ubuntu password - SSH keys only",
       "sudo passwd -l ubuntu",
@@ -657,7 +633,7 @@ build {
   # Clean up
   provisioner "shell" {
     inline = [
-      "echo '=== Cleaning up ==='",
+      "echo '=== Cleaning up ===' ",
       "sudo apt-get clean",
       "sudo apt-get autoremove -y",
       "sudo rm -rf /var/lib/apt/lists/*",
