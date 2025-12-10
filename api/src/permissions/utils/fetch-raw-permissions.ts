@@ -1,12 +1,15 @@
 import type { Accountability, Filter, Permission, PermissionsAction } from '@directus/types';
-import { sortBy } from 'lodash-es';
+import { intersection, sortBy } from 'lodash-es';
 import { withAppMinimalPermissions } from '../lib/with-app-minimal-permissions.js';
 import type { Context } from '../types.js';
-import { withCache, type InvalidateFunction } from './with-cache.js';
+import { withCache } from '@directus/memory';
+import { useCache } from '../cache.js';
+import emitter from '../../emitter.js';
 
 export const fetchRawPermissions = withCache(
 	'raw-permissions',
 	_fetchRawPermissions,
+	useCache(),
 	({ action, policies, collections, accountability, bypassMinimalAppPermissions }) => ({
 		policies, // we assume that policies always come from the same source, so they should be in the same order
 		...(action && { action }),
@@ -14,6 +17,32 @@ export const fetchRawPermissions = withCache(
 		...(accountability && { accountability: { app: accountability.app } }),
 		...(bypassMinimalAppPermissions && { bypassMinimalAppPermissions }),
 	}),
+	(invalidate, _, [options], permissions) => {
+		const permissionsIds = permissions.map((p) => p.id);
+
+		emitter.onAction('directus_permissions.create', function self({ payload }) {
+			if (!options.policies.includes(payload['policy'])) return;
+			if (options.action && payload['action'] !== options.action) return;
+			if (options.collections && !options.collections.includes(payload['collection'])) return;
+
+			invalidate();
+			emitter.offAction('directus_permissions.create', self);
+		});
+
+		emitter.onAction('directus_permissions.update', function self({ keys }) {
+			if (intersection(permissionsIds, keys).length > 0) {
+				invalidate();
+				emitter.offAction('directus_permissions.update', self);
+			}
+		});
+
+		emitter.onAction('directus_permissions.delete', function self({ keys }) {
+			if (intersection(permissionsIds, keys).length > 0) {
+				invalidate();
+				emitter.offAction('directus_permissions.update', self);
+			}
+		});
+	},
 );
 
 export interface FetchRawPermissionsOptions {
@@ -24,11 +53,7 @@ export interface FetchRawPermissionsOptions {
 	bypassMinimalAppPermissions?: boolean;
 }
 
-export async function _fetchRawPermissions(
-	options: FetchRawPermissionsOptions,
-	context: Context,
-	invalidate: InvalidateFunction,
-) {
+export async function _fetchRawPermissions(options: FetchRawPermissionsOptions, context: Context) {
 	const { PermissionsService } = await import('../../services/permissions.js');
 	const permissionsService = new PermissionsService(context);
 

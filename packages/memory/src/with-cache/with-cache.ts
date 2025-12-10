@@ -1,7 +1,11 @@
 import { getSimpleHash } from '@directus/utils';
-import { useCache } from '../cache.js';
+import type { Cache } from '../cache/index.js';
 
 type Pop<T extends any[]> = T extends [...infer U, any] ? U : never;
+type Last<T extends any[]> = T extends [...any[], infer U] ? U : never;
+
+export type ProvideFunction<T extends any[]> = (...args: T) => void;
+
 export type InvalidateFunction = () => void;
 
 const activeWithCaches = new Set<() => void>();
@@ -18,16 +22,21 @@ const activeWithCaches = new Set<() => void>();
  * @NOTE Ensure that the `prepareArg` function returns a JSON stringifiable representation of the arguments.
  */
 export function withCache<
-	F extends (...args: [...Pop<Parameters<F>>, invalidate: InvalidateFunction]) => any,
-	P extends Pop<Parameters<F>>,
+	F extends (...args: any[]) => any,
+	P extends Last<Parameters<F>> extends ProvideFunction<V> ? Pop<Parameters<F>> : Parameters<F>,
+	V extends any[] = Parameters<F> extends [...any[], provide: ProvideFunction<infer U>] ? U : never,
 >(
 	namespace: string,
 	handler: F,
+	cache: Cache,
 	prepareArg?: (...args: P) => Record<string, unknown>,
-	invalidate?: (invalidate: InvalidateFunction, ...args: P) => void,
+	invalidate?: (
+		invalidate: InvalidateFunction,
+		providedArgs: V,
+		functionArgs: P,
+		returnValue: Awaited<ReturnType<F>>,
+	) => void,
 ): (...args: P) => Promise<Awaited<ReturnType<F>>> {
-	const cache = useCache();
-
 	return async (...args) => {
 		const hashArgs = prepareArg ? prepareArg(...args) : args;
 		const key = namespace + '-' + getSimpleHash(JSON.stringify(hashArgs));
@@ -51,13 +60,17 @@ export function withCache<
 			parentActiveCaches = [];
 		};
 
-		if (invalidate) invalidate(clearCache, ...args);
-
 		activeWithCaches.add(clearCache);
 
-		const res = await handler(...args, clearCache);
+		const providedArgs: any[] = [];
+
+		const res = await handler(...args, (...args: V) => {
+			providedArgs.push(...args);
+		});
 
 		activeWithCaches.delete(clearCache);
+
+		if (invalidate) invalidate(clearCache, providedArgs as V, args, res);
 
 		cache.set(key, res);
 

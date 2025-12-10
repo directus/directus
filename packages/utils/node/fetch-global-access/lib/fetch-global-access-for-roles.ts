@@ -15,7 +15,6 @@ export async function fetchGlobalAccessForRoles(
 		knex: Knex;
 		ip?: Accountability['ip'];
 	},
-	_invalidate: () => void,
 ): Promise<GlobalAccess> {
 	const query = context.knex.where('role', 'in', roles);
 	return await fetchGlobalAccessForQuery(query, { ip: context.ip ?? null });

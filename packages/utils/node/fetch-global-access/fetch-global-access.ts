@@ -13,7 +13,6 @@ import { fetchGlobalAccessForUser } from './lib/fetch-global-access-for-user.js'
 export async function fetchGlobalAccess(
 	accountability: Pick<Accountability, 'user' | 'roles' | 'ip'>,
 	context: { knex: Knex },
-	_invalidate: () => void,
 ): Promise<GlobalAccess> {
 	const access = await fetchGlobalAccessForRoles(accountability.roles, { knex: context.knex, ip: accountability.ip });
 

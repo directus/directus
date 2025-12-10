@@ -15,7 +15,6 @@ export async function fetchGlobalAccessForUser(
 		knex: Knex;
 		ip?: Accountability['ip'];
 	},
-	_invalidate: () => void,
 ): Promise<GlobalAccess> {
 	const query = context.knex.where('user', '=', user);
 	return await fetchGlobalAccessForQuery(query, { ip: context.ip ?? null });
