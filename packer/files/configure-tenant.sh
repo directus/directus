@@ -22,6 +22,8 @@
 #   ENABLE_SSL          - Whether to enable SSL (true/false)
 #   SSL_EMAIL           - Email for Let's Encrypt
 #   BACKUP_BUCKET       - S3 bucket for backups
+#   TEMPLATE_VERSION    - Template version tag (e.g., "1.0.0") - REQUIRED
+#   GITHUB_TOKEN        - GitHub PAT for cloning private template repo
 #
 # Optional environment variables (for BSL 1.1 license consent):
 #   PROJECT_OWNER       - Project owner email (defaults to ADMIN_EMAIL)
@@ -150,6 +152,7 @@ REQUIRED_VARS=(
     "ADMIN_EMAIL"
     "ADMIN_PASSWORD"
     "AWS_REGION"
+    "TEMPLATE_VERSION"
 )
 
 for var in "${REQUIRED_VARS[@]}"; do
@@ -160,6 +163,14 @@ for var in "${REQUIRED_VARS[@]}"; do
     fi
 done
 
+# Validate TEMPLATE_VERSION format (must be a valid semver-like tag)
+if [[ ! "$TEMPLATE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+    echo "ERROR: TEMPLATE_VERSION must be a valid version tag (e.g., 1.0.0 or 1.0.0-beta.1)"
+    echo "  Received: $TEMPLATE_VERSION"
+    write_status "failed" "Invalid TEMPLATE_VERSION format"
+    exit 1
+fi
+
 # Set defaults
 DB_PORT="${DB_PORT:-5432}"
 DB_NAME="${DB_NAME:-directus}"
@@ -168,6 +179,7 @@ DIRECTUS_PORT="${DIRECTUS_PORT:-8055}"
 ENABLE_SSL="${ENABLE_SSL:-true}"
 SSL_EMAIL="${SSL_EMAIL:-$ADMIN_EMAIL}"
 BACKUP_BUCKET="${BACKUP_BUCKET:-}"
+GITHUB_TOKEN="${GITHUB_TOKEN:-}"
 
 # Project owner defaults (BSL 1.1 license consent)
 PROJECT_OWNER="${PROJECT_OWNER:-$ADMIN_EMAIL}"
@@ -180,6 +192,52 @@ echo "  Tenant: $TENANT_NAME"
 echo "  FQDN: $FQDN"
 echo "  DB Host: $DB_HOST"
 echo "  Region: $AWS_REGION"
+echo "  Template Version: $TEMPLATE_VERSION"
+
+# =============================================================================
+# Clone Directus Template (versioned)
+# =============================================================================
+echo "=== Cloning Directus Template (v${TEMPLATE_VERSION}) ==="
+write_status "running" "Cloning template version $TEMPLATE_VERSION"
+
+# Ensure template directory exists and is empty
+sudo rm -rf /opt/directus-template
+sudo mkdir -p /opt/directus-template
+sudo chown ubuntu:ubuntu /opt/directus-template
+
+# Clone using the specific version tag
+if [[ -n "$GITHUB_TOKEN" ]]; then
+    echo "  Using authenticated clone (private repo)"
+    if git clone --depth 1 --branch "v${TEMPLATE_VERSION}" \
+        "https://oauth2:${GITHUB_TOKEN}@github.com/Face-to-Face-IT/directus-template.git" \
+        /opt/directus-template 2>&1; then
+        echo "  Template v${TEMPLATE_VERSION} cloned successfully"
+    else
+        echo "  ERROR: Failed to clone template v${TEMPLATE_VERSION}"
+        echo "  Verify the tag exists: https://github.com/Face-to-Face-IT/directus-template/releases/tag/v${TEMPLATE_VERSION}"
+        write_status "failed" "Failed to clone template v${TEMPLATE_VERSION}"
+        exit 1
+    fi
+    # Remove git directory to clean up credentials
+    rm -rf /opt/directus-template/.git
+else
+    echo "  Using public clone (no auth)"
+    if git clone --depth 1 --branch "v${TEMPLATE_VERSION}" \
+        "https://github.com/Face-to-Face-IT/directus-template.git" \
+        /opt/directus-template 2>&1; then
+        echo "  Template v${TEMPLATE_VERSION} cloned successfully"
+    else
+        echo "  ERROR: Failed to clone template v${TEMPLATE_VERSION}"
+        echo "  Verify the tag exists: https://github.com/Face-to-Face-IT/directus-template/releases/tag/v${TEMPLATE_VERSION}"
+        write_status "failed" "Failed to clone template v${TEMPLATE_VERSION}"
+        exit 1
+    fi
+    rm -rf /opt/directus-template/.git
+fi
+
+# Record the template version for reference
+echo "$TEMPLATE_VERSION" > /opt/directus-template/.version
+echo "  Template version recorded in /opt/directus-template/.version"
 
 # =============================================================================
 # Validate Database Connectivity
@@ -313,7 +371,7 @@ if [[ -n "$PROJECT_OWNER" ]]; then
     fi
     
     # Escape single quotes in org_name for SQL
-    ESCAPED_ORG_NAME="${ORG_NAME//\'/\'\'}"
+    ESCAPED_ORG_NAME="${ORG_NAME//\'/\'\'}" 
     
     # Update directus_settings with project owner information
     # project_status = NULL indicates consent has been given
@@ -620,11 +678,12 @@ echo "  Template API started on port 3000"
 # =============================================================================
 # Apply Directus Template (schema and seed data)
 # =============================================================================
-echo "=== Applying Directus Template ==="
+echo "=== Applying Directus Template (v${TEMPLATE_VERSION}) ==="
 
-# Check if template exists (cloned during AMI build)
+# Check if template exists (cloned earlier in this script)
 if [[ -d "/opt/directus-template" ]]; then
     echo "  Template found at /opt/directus-template"
+    echo "  Version: $(cat /opt/directus-template/.version 2>/dev/null || echo 'unknown')"
     
     # Apply template using the Template API
     TEMPLATE_APPLY_RESPONSE=$(curl -s -X POST http://localhost:3000/api/apply \
@@ -637,7 +696,7 @@ if [[ -d "/opt/directus-template" ]]; then
     
     # Check if apply was successful
     if echo "$TEMPLATE_APPLY_RESPONSE" | jq -e '.success == true' > /dev/null 2>&1; then
-        echo "  Template applied successfully!"
+        echo "  Template v${TEMPLATE_VERSION} applied successfully!"
     else
         ERROR_MSG=$(echo "$TEMPLATE_APPLY_RESPONSE" | jq -r '.error // "Unknown error"')
         echo "  WARNING: Template apply failed: $ERROR_MSG"
@@ -645,7 +704,10 @@ if [[ -d "/opt/directus-template" ]]; then
         # Don't exit - tenant can still function without template
     fi
 else
-    echo "  WARNING: Template not found at /opt/directus-template - skipping"
+    echo "  ERROR: Template not found at /opt/directus-template"
+    echo "  Template should have been cloned earlier in this script"
+    write_status "failed" "Template not found after clone"
+    exit 1
 fi
 
 # =============================================================================
@@ -731,5 +793,6 @@ else
     fi
 fi
 echo "  Admin Email: $ADMIN_EMAIL"
+echo "  Template Version: $TEMPLATE_VERSION"
 echo ""
 echo "  Configuration completed at $(date)"
