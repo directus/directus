@@ -157,7 +157,6 @@ jobs:
             -only="amazon-ebs.directus-base" \
             -var "aws_region=${{ env.AWS_REGION }}" \
             -var "build_version=${{ needs.check.outputs.version }}" \
-            -var "github_token=${{ secrets.GH_PAT }}" \
             -color=false \
             directus-base.pkr.hcl
         env:
