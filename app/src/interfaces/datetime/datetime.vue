@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
+import { parseDate } from '@/utils/parse-date';
 import { isValid } from 'date-fns';
 import { computed, ref } from 'vue';
-import { parseDate } from '@/utils/parse-date';
-import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
 
 interface Props extends Omit<UseDatetimeProps, 'value'> {
 	value: string | null;
@@ -77,9 +77,15 @@ function unsetValue(e: any) {
 		var(--v-list-background-color, var(--theme--form--field--input--background))
 	);
 
-	&.active,
-	&:focus-within,
-	&:focus-visible {
+	&.disabled:not(.non-editable) {
+		--v-list-item-color: var(--theme--foreground-subdued);
+		--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
+		--v-list-item-border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
+	}
+
+	&.active:not(.disabled),
+	&:focus-within:not(.disabled),
+	&:focus-visible:not(.disabled) {
 		--v-list-item-border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
 		--v-list-item-border-color-hover: var(--v-list-item-border-color);
 
