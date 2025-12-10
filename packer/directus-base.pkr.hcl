@@ -126,6 +126,13 @@ variable "headless" {
   description = "Run QEMU in headless mode (set to false for debugging)"
 }
 
+variable "github_token" {
+  type        = string
+  default     = ""
+  sensitive   = true
+  description = "GitHub PAT for cloning private repos (e.g., directus-template)"
+}
+
 # =============================================================================
 # Locals
 # =============================================================================
@@ -402,6 +409,27 @@ build {
       "ln -sf /opt/template-api/node_modules/directus-template-cli/bin /opt/template-api/bin",
       
       "echo '  Template API installed at /opt/template-api'"
+    ]
+  }
+
+  # Clone Directus Template (schema/content for new tenants)
+  provisioner "shell" {
+    environment_vars = [
+      "GITHUB_TOKEN=${var.github_token}"
+    ]
+    inline = [
+      "echo '=== Cloning Directus Template ==='" ,
+      "sudo mkdir -p /opt/directus-template",
+      "sudo chown $(whoami):$(whoami) /opt/directus-template",
+      
+      "# Clone using the PAT for authentication",
+      "git clone https://oauth2:$${GITHUB_TOKEN}@github.com/Face-to-Face-IT/directus-template.git /opt/directus-template",
+      
+      "# Remove git history and credentials",
+      "rm -rf /opt/directus-template/.git",
+      
+      "echo '  Template cloned to /opt/directus-template'",
+      "ls -la /opt/directus-template/"
     ]
   }
 

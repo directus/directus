@@ -618,6 +618,37 @@ fi
 echo "  Template API started on port 3000"
 
 # =============================================================================
+# Apply Directus Template (schema and seed data)
+# =============================================================================
+echo "=== Applying Directus Template ==="
+
+# Check if template exists (cloned during AMI build)
+if [[ -d "/opt/directus-template" ]]; then
+    echo "  Template found at /opt/directus-template"
+    
+    # Apply template using the Template API
+    TEMPLATE_APPLY_RESPONSE=$(curl -s -X POST http://localhost:3000/api/apply \
+        -H "Content-Type: application/json" \
+        -d "{
+            \"templateLocation\": \"/opt/directus-template\",
+            \"directusUrl\": \"http://localhost:${DIRECTUS_PORT}\",
+            \"directusToken\": \"${TEMPLATE_API_TOKEN}\"
+        }")
+    
+    # Check if apply was successful
+    if echo "$TEMPLATE_APPLY_RESPONSE" | jq -e '.success == true' > /dev/null 2>&1; then
+        echo "  Template applied successfully!"
+    else
+        ERROR_MSG=$(echo "$TEMPLATE_APPLY_RESPONSE" | jq -r '.error // "Unknown error"')
+        echo "  WARNING: Template apply failed: $ERROR_MSG"
+        echo "  Response: $TEMPLATE_APPLY_RESPONSE"
+        # Don't exit - tenant can still function without template
+    fi
+else
+    echo "  WARNING: Template not found at /opt/directus-template - skipping"
+fi
+
+# =============================================================================
 # Create backup scripts (if bucket configured)
 # =============================================================================
 if [[ -n "$BACKUP_BUCKET" ]]; then
