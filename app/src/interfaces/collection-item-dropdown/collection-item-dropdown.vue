@@ -100,7 +100,11 @@ async function getDisplayItem() {
 
 function onSelection(selectedIds: (number | string)[] | null) {
 	selectDrawerOpen.value = false;
-	value.value = { key: Array.isArray(selectedIds) ? selectedIds[0] : null, collection: unref(selectedCollection) };
+
+	value.value = {
+		key: Array.isArray(selectedIds) && selectedIds[0] ? selectedIds[0] : null,
+		collection: unref(selectedCollection),
+	};
 }
 </script>
 
