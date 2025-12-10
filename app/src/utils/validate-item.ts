@@ -4,6 +4,7 @@ import {
 	FailedValidationErrorExtensions,
 	joiValidationErrorItemToErrorExtensions,
 } from '@directus/validation';
+import { NUMERIC_TYPES } from '@directus/constants';
 import { ContentVersion, Field, LogicalFilterAND } from '@directus/types';
 import { validatePayload } from '@directus/utils';
 import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';
@@ -38,6 +39,10 @@ export function validateItem(
 		if (isEmptyArray) updatedItem[field.field] = null;
 	});
 
+	fieldsWithConditions.forEach((field) => {
+		applyInterfaceOptionRules(field);
+	});
+
 	if (includeCustomValidations) fields.forEach(applyValidationRules);
 
 	const errors = validatePayload(validationRules, updatedItem).map((error) =>
@@ -65,6 +70,34 @@ export function validateItem(
 				_nnull: true,
 			},
 		});
+	}
+
+	function applyInterfaceOptionRules(field: Field) {
+		if (isNil(updatedItem[field.field])) return;
+
+		if (!NUMERIC_TYPES.includes(field.type as Exclude<typeof NUMERIC_TYPES, 'bigInteger'>[number])) return;
+
+		const options = field.meta?.options;
+		if (!options) return;
+
+		const min = options.min;
+		const max = options.max;
+
+		if (min !== undefined && typeof min === 'number') {
+			validationRules._and.push({
+				[field.field]: {
+					_gte: min,
+				},
+			});
+		}
+
+		if (max !== undefined && typeof max === 'number') {
+			validationRules._and.push({
+				[field.field]: {
+					_lte: max,
+				},
+			});
+		}
 	}
 
 	function applyValidationRules(field: Field) {
