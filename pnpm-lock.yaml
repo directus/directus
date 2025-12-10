@@ -679,8 +679,8 @@ catalogs:
       specifier: 1.1.12
       version: 1.1.12
     nodemailer:
-      specifier: 7.0.10
-      version: 7.0.10
+      specifier: 7.0.11
+      version: 7.0.11
     nodemailer-mailgun-transport:
       specifier: 2.1.5
       version: 2.1.5
@@ -1259,7 +1259,7 @@ importers:
         version: 1.1.12
       nodemailer:
         specifier: 'catalog:'
-        version: 7.0.10
+        version: 7.0.11
       object-hash:
         specifier: 'catalog:'
         version: 3.0.0
@@ -2861,7 +2861,7 @@ importers:
         version: 16.12.0
       nodemailer:
         specifier: 'catalog:'
-        version: 7.0.10
+        version: 7.0.11
       openapi3-ts:
         specifier: 'catalog:'
         version: 4.5.0
@@ -11116,6 +11116,10 @@ packages:
 
   nodemailer@7.0.10:
     resolution: {integrity: sha512-Us/Se1WtT0ylXgNFfyFSx4LElllVLJXQjWi2Xz17xWw7amDKO2MLtFnVp1WACy7GkVGs+oBlRopVNUzlrGSw1w==}
+    engines: {node: '>=6.0.0'}
+
+  nodemailer@7.0.11:
+    resolution: {integrity: sha512-gnXhNRE0FNhD7wPSCGhdNh46Hs6nm+uTyg+Kq0cZukNQiYdnCsoQjodNP9BQVG9XrcK/v6/MgpAPBUFyzh9pvw==}
     engines: {node: '>=6.0.0'}
 
   nodemon@3.1.10:
@@ -23937,6 +23941,8 @@ snapshots:
     optional: true
 
   nodemailer@7.0.10: {}
+
+  nodemailer@7.0.11: {}
 
   nodemon@3.1.10:
     dependencies:
