@@ -308,6 +308,7 @@ confirm_revert_body: Ez visszaállítja az elemet a kiválasztott állapotba.
 display: Megjelenés
 settings_update_success: Beállítások frissítve
 title: Cím
+subtitle: Alcím
 revision_delta_created: Létrehozva
 revision_delta_created_externally: Külsőleg létrehozva
 revision_delta_updated: 'Egy mező frissítve | {count} mező frissítve'
@@ -574,7 +575,6 @@ errors:
   VALUE_OUT_OF_RANGE: Érték a megengedett tartományon kívül esik
   VALUE_TOO_LONG: Az érték túl hosszú
 security: Biztonság
-value_hashed: Biztonságosan hashelt érték
 bookmark_name: Könyvjelző neve...
 create_bookmark: Könyvjelző létrehozása
 edit_bookmark: Könyvjelző szerkesztése
@@ -738,7 +738,6 @@ flow: Folyamat
 select_a_flow: Válasszon egy folyamatot
 run_flow_on_current_collection: Folyamat futtatása az aktuális gyűjteményen
 run_flow_on_current: Folyamat futtatása a jelenlegi elemen
-run_flow_on_current_edited_confirm: Lehetséges, hogy a tétel frissítve lesz a futtatás miatt, biztosan folytatja?
 run_flow_on_selected: Futtatás a kiválasztott elemeken
 run_flow: Folyamat futtatása
 trigger: Eseményindító
@@ -919,37 +918,6 @@ discard_changes_copy: Biztos benne, hogy elveti az összes eddig végrehajtott v
 show_x_axis: X tengely megjelenítése
 show_y_axis: Y tengely megjelenítése
 keep_editing: Szerkesztés folytatása
-page_help_collections_overview: '**Gyűjtemények áttekintése** - Az összes ön által hozzáférhető Gyűjtemény listája.'
-page_help_collections_collection: >-
-  **Elemek böngészése** - Az összes {collection} elemet listázza, amelyhez hozzáférhet. Testre szabhatja az elrendezést, a szűrőket, a rendezési nézetet, és akár könyvjelzőket is menthet a különböző konfigurációkról a gyors hozzáférés érdekében.
-page_help_collections_item: >-
-  **Elem részletei** - Ezen elem megtekintésére és kezelésére szolgáló űrlap. Ez az oldalsáv tartalmazza a revíziók teljes előzményeit és a beágyazott megjegyzéseket is.
-page_help_activity_collection: >-
-  **Böngészési tevékenység** - A felhasználók összes rendszer- és tartalomtevékenységének átfogó listája.
-page_help_docs_global: >-
-  **Dokumentációs áttekintés** - Kifejezetten ezen projekt verziójára és sémájára szabott dokumentumok.
-page_help_files_collection: >-
-  **Fájlok könyvtára** - A projektbe feltöltött összes fájleszköz listája. Testre szabhatja az elrendezést, a szűrőket, a rendezési nézetet, és akár könyvjelzőket is menthet a különböző konfigurációkról a gyors hozzáférés érdekében.
-page_help_files_item: >-
-  **File Részletek** - A fájl metaadatainak kezelésére, az eredeti eszköz szerkesztésére és a hozzáférési beállítások frissítésére szolgáló űrlap.
-page_help_settings_datamodel_collections: >-
-  **Adatmodell: Gyűjtemények** - Az összes elérhető gyűjtemény listája. Ide tartoznak a látható, rejtett és rendszergyűjtemények, valamint a hozzáadható nem kezelt adatbázis táblák.
-page_help_settings_datamodel_fields: >-
-  **Adatmodell: Gyűjtemény** - Egy űrlap, ezen gyűjtemény és mezőinek kezelésére.
-page_help_settings_roles_item: "**Szerepkör Részletei** - A szerepkörök jogosultságainak és egyéb beállításainak kezelése."
-page_help_settings_presets_collection: >-
-  **Alapbeállítások Böngészése** - A projektben lévő összes alapbeállítás listázása, beleértve: a felhasználói, szerepköri és globális könyvjelzőket, valamint az alapértelmezett nézeteket.
-page_help_settings_presets_item: >-
-  **Alapbeállítások Részletei** - Könyvjelzők és alapértelmezett gyűjteménybeállítások kezelésére szolgáló űrlap.
-page_help_settings_webhooks_collection: '**Webhookok Böngészése** — A projektben található összes webhook listája.'
-page_help_settings_webhooks_item: '**Webhook Részletei** — A projekt webhookjainak létrehozására és kezelésére szolgáló űrlap.'
-page_help_settings_flows_collection: '**Folyamatok tallózása** — A projekten belüli összes folyamat felsorolása.'
-page_help_settings_flows_item: '**A folyamat részletei** — Munkaterület egy vagy több művelet kezeléséhez.'
-page_help_users_collection: '**Felhasználók Könyvtára** - A projekt összes rendszerfelhasználójának listája.'
-page_help_users_item: >-
-  **Felhasználó részletei** - Kezelje fiókinformációit, vagy tekintse meg más felhasználók adatait.
-page_help_insights_overview: '**Betekintés** - A műszerfalak listája, amelyekhez hozzáférhet.'
-page_help_insights_dashboard: '**Irányítópult** — Munkaterület egy vagy több panel kezeléséhez'
 activity_feed: Tevékenységi Hírfolyam
 add_new: Új hozzáadása
 create_new: Új létrehozása
@@ -972,7 +940,6 @@ directus_collection:
   directus_dashboards: Irányítópultok az Insights modulon belül
   directus_fields: Mező további konfigurációja és metaadatok
   directus_files: Metaadatok az összes kezelt fájleszközhöz
-  directus_flows: Automatizáció
   directus_folders: Virtuális könyvtárakat biztosít a fájlok számára
   directus_migrations: Az adatbázis melyik verzióját használja
   directus_notifications: A felhasználóknak küldött értesítések
@@ -1260,6 +1227,19 @@ shares: Megosztások
 unlimited_usage: Korlátlan használat
 no_shares: Nincs megjeleníthető megosztás
 new_share: Új megosztás
+ai:
+  input: Bevitel
+  settings: Beállítások
+  tool_approval:
+    disabled: Letiltva
+ai_tools:
+  items: Elemek
+  files: Fájlok
+  flows: Folyamatok
+  trigger-flow: Folyamat beindítása
+  schema: Séma
+  collections: Gyűjtemények
+  fields: Mezők
 mcp_prompts_collection_schema:
   messages_role_user: Felhasználó
 expired: Lejárt
@@ -1408,7 +1388,7 @@ interfaces:
     accordion_mode: Harmonika mód
     max_one_section_open: Max. egy nyitott szakasz
   presentation-links:
-    links: Linkek
+    presentation-links: Gombok
     style: Stílus
     primary: Elsődleges
     link: Linkek
@@ -1697,6 +1677,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Nyers szerkesztő
     description: Lehetővé teszi a nyers vagy kapcsos zárójeles sablonértékek megadását
+  header:
+    header: Fejléc
+    links: Linkek
 displays:
   translations:
     translations: Fordítások
@@ -1995,11 +1978,9 @@ triggers:
 a_flow_uuid: Válasszon ki egy folyamatot az aktiváláshoz...
 any_string_or_json: Bármilyen karakterlánc vagy JSON...
 item_payload_placeholder: Ez a JSON az elem mezőértékeinek frissítésére...
-operation_variables_note: A folyamat adatait olyan változókkal érheti el, mint a **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger {'}'}{'}'}** és **{'{'}{'{'}$accountability{'}'}{'}'}**, vagy hivatkozzon korábbi műveletekre a **{'{ használatával '}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Feltétel
-    description: Hozzon létre folyamatot a Ha / Különben logika alapján
   exec:
     name: Szkript futtatása
     description: Tetszőleges kód futtatása az adattartalom módosításához
@@ -2070,7 +2051,6 @@ operations:
     description: Módosítsa a Folyamat JSON-adattartalmát
   trigger:
     name: Folyamat beindítása
-    description: Adja át ezeket az adatokat egy másik folyamatnak
     flows: Folyamatok
     flow: Folyamat
     data: Adat

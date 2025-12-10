@@ -490,6 +490,7 @@ confirm_revert_body: 此操作会使条目恢复至选中状态
 display: 显示
 settings_update_success: 设置已更新
 title: 标题
+subtitle: 副标题
 revision_delta_created: 已创建
 revision_delta_created_externally: 外部创建
 revision_delta_updated: '更新了 1 个字段 | 更新了 {count} 个字段'
@@ -816,7 +817,6 @@ errors:
   VALUE_OUT_OF_RANGE: 数值超出范围
   VALUE_TOO_LONG: 数值太长
 security: 安全
-value_hashed: 哈希值
 bookmark_name: 书签名称
 create_bookmark: 创建书签
 edit_bookmark: 编辑书签
@@ -992,11 +992,9 @@ label: 标签
 flows: 流程
 flow: 流程
 select_a_flow: 选择一个流程
-run_flow_confirm: 您确定要执行此流程吗？
 run_flow_anyway: 仍然运行流程
 run_flow_on_current_collection: 在当前集合上运行流程
 run_flow_on_current: 在当前项目上运行流程
-run_flow_on_current_edited_confirm: 此流程可能会更新此项，您确定要执行它吗？
 run_flow_on_selected: 先选择一个或多个项目 | 在 1 个选定项目 上运行 | 在 {n} 个选定项目 上运行
 run_flow: 运行流程
 trigger_flow_success: 流程 "{flow}" 已成功触发
@@ -1223,50 +1221,6 @@ discard_changes_copy: 您确定要放弃所有更改吗？
 show_x_axis: 显示 X 轴
 show_y_axis: 显示 Y 轴
 keep_editing: 继续编辑
-page_help_collections_overview: '**模型总览** - 您可以访问的所有模型列表。'
-page_help_collections_collection: >-
-  **浏览条目** - 列出所有 {collection} 集合中你可以访问的条级数据。 可以通过设置自定义布局、过滤器和排序来调整视图，甚至将不同的设置保存为书签以便快速访问。
-page_help_collections_item: >-
-  **条目详情** - 查看和管理此条目的表单。侧边栏还包含完整的修改历史和评论。
-page_help_activity_collection: >-
-  **浏览活动** - 您所有用户的系统和内容活动的完整列表。
-page_help_docs_global: >-
-  **文档概述** - 专为本项目的版本和模式设计的文档。
-page_help_files_collection: >-
-  **文件库** - 列出上传到此项目的所有相关内容。自定义布局、过滤器、排序以及调整视图，还可以保存这些不同配置的书签以便快速访问。
-page_help_files_item: >-
-  **文件详情** - 管理文件元数据、编辑原始资产和更新访问设置的表格。
-page_help_settings_project: "**设置** - 您项目的全局配置选项。"
-page_help_settings_appearance: "**外观** - 您的项目外观和主题选项。"
-page_help_settings_extensions: '**Extensions** — 在您的项目中安装的扩展。'
-page_help_settings_ai: "**AI** - 您项目的人工智能配置选项"
-page_help_settings_datamodel_collections: >-
-  **数据模型: ** - 列出所有可用的模型。这包括可见、隐藏和系统模型，以及可以添加的数据库表（包括还未加入并管理的）。
-page_help_settings_datamodel_fields: >-
-  **数据模型: Collection** — 用于管理此模型及其字段的表单
-page_help_settings_system_logs: '**系统日志** — 访问系统日志的实时流。'
-page_help_settings_policies_collection: '**浏览策略** - 列出项目内的所有策略。'
-page_help_settings_policies_item: '**策略详情** — 管理策略的权限和其他设置。'
-page_help_settings_roles_collection: '**Browse Roles** - 列出项目中所有用户角色。'
-page_help_settings_roles_item: "**角色详细** — 管理角色的权限和其他设置。"
-page_help_settings_presets_collection: >-
-  **Browse Presets** - 列出项目中的所有预设，包括：用户、角色、全局书签以及默认视图。
-page_help_settings_presets_item: >-
-  **预设详细信息** - 管理书签和默认模型预设的表单。
-page_help_settings_webhooks_collection: '**Browse Webhooks** - 列出项目内的所有网络钩子。'
-page_help_settings_webhooks_item: '**Webhook Detail** - 用于创建和管理项目webhooks的表格。'
-page_help_settings_flows_collection: '**Browse Webhooks** - 列出项目内的所有流。'
-page_help_settings_flows_item: '**流程详情** - 管理一个或多个操作面板的工作空间。'
-page_help_settings_translations_collection: '**浏览自定义翻译** - 列出项目中的所有自定义翻译。'
-page_help_settings_translations_item: '**自定义翻译详细信息** - 用于查看和管理此项目的表单。'
-page_help_users_collection: '**用户目录** - 列出此项目中的所有系统用户。'
-page_help_users_item: >-
-  **用户详细信息** - 管理您的帐户信息，或查看其他用户的详细信息。
-page_help_insights_overview: '**Insights** — 您可以访问的工作台列表。'
-page_help_insights_dashboard: '**仪表盘** — 管理工作区面板'
-page_help_marketplace_account: '**Account** - 发布者或已发布扩展的维护者。'
-page_help_marketplace_registry: '**Registry** — Directus 市场中提供的扩展。'
-page_help_marketplace_extension: '**Extension** — Directus 市场中提供的扩展。'
 activity_feed: 活动摘要
 add_new: 新增
 create_new: 新建
@@ -1302,7 +1256,6 @@ directus_collection:
   directus_dashboards: Insights模块中的仪表板
   directus_fields: 其他字段配置和元数据
   directus_files: 文件资源元数据
-  directus_flows: 自动化流程
   directus_folders: 虚拟文件目录
   directus_migrations: 您的数据库版本是
   directus_notifications: 发送给用户的通知
@@ -1664,6 +1617,22 @@ unlimited_usage: 无限使用
 uses_left: 无剩余使用次数 | 剩余一次使用次数 | 剩余 {n} 次使用次数
 no_shares: 没有要显示的共享
 new_share: 新建分享
+ai:
+  input: Input
+  unknown: 未知
+  settings: 设置
+  tool_approval:
+    disabled: 禁用
+ai_tools:
+  items: 条目
+  files: 多个文件
+  folders: 文件夹
+  flows: 流程
+  trigger-flow: 触发流程
+  operations: 操作
+  schema: Schema
+  collections: 数据模型
+  fields: 字段
 mcp_prompts_collection:
   no_collection_selected: 无选择的集合
   no_collection_selected_copy: 选择一个集合来启用可重复使用的提示词模板。
@@ -1857,7 +1826,7 @@ interfaces:
     accordion_mode: 折叠模式
     max_one_section_open: 最多展开 1 项
   presentation-links:
-    links: 链接
+    presentation-links: 按钮
     style: 样式
     primary: 主要的
     link: 链接
@@ -2185,6 +2154,9 @@ interfaces:
   input-password:
     input-password: 输入密码
     description: 带有隐藏值切换的密码输入
+  header:
+    header: 报头
+    links: 链接
 displays:
   translations:
     translations: 翻译
@@ -2493,11 +2465,9 @@ triggers:
 a_flow_uuid: 选择要触发的流...
 any_string_or_json: 任意字符串或JSON对象...
 item_payload_placeholder: 这是用于更新条目字段值的 JSON对象...
-operation_variables_note: 您可以通过变量引用访问流程数据，例如**{'{'}{'{'}$last{'}'}{'}'}**， **{'{'}{'{'}$trigger{'}'}{'}'}** 和 **{'{'}{'{'}$accountability{'}'}{'}'}**, 或使用 **{'{'}{'{'} operation_key{'}'}{'}'}**引用之前的操作。
 operations:
   condition:
     name: 条件
-    description: 基于 if /Else 逻辑路由的流程
   exec:
     name: 运行脚本
     description: 执行任意代码来修改有效负载
@@ -2594,7 +2564,6 @@ operations:
     description: 修改流程的JSON格式负载
   trigger:
     name: 触发流程
-    description: 将此数据传递到另一个流程
     flows: 流程
     flow: 流程
     data: 数据

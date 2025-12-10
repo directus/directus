@@ -223,6 +223,11 @@ fields:
   directus_policies:
     name:
 shares: Paylaşımlar
+ai:
+  unknown: Naməlum
+ai_tools:
+  items: məlumat
+  operations: Əməliyyatlar
 revisions: Dəyişikliklər
 no_revisions: Daha öncə dəyişiklik edilməyib
 table: Cədvəl
