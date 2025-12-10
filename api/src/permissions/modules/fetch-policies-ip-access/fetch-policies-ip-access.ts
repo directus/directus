@@ -1,7 +1,7 @@
 import type { Accountability } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { withCache } from '../../utils/with-cache.js';
+import { withCache, type InvalidateFunction } from '../../utils/with-cache.js';
 
 export const fetchPoliciesIpAccess = withCache('policies-ip-access', _fetchPoliciesIpAccess, ({ user, roles }) => ({
 	user,
@@ -11,6 +11,7 @@ export const fetchPoliciesIpAccess = withCache('policies-ip-access', _fetchPolic
 export async function _fetchPoliciesIpAccess(
 	accountability: Pick<Accountability, 'user' | 'roles'>,
 	knex: Knex,
+	invalidate: InvalidateFunction,
 ): Promise<string[][]> {
 	const query = knex('directus_access')
 		.select({ ip_access: 'directus_policies.ip_access' })

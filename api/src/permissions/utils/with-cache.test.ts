@@ -3,11 +3,13 @@ import { withCache } from './with-cache.js';
 
 const mockGet = vi.fn();
 const mockSet = vi.fn();
+const mockDelete = vi.fn();
 
 vi.mock('../cache.js', () => ({
 	useCache: () => ({
 		get: mockGet,
 		set: mockSet,
+		delete: mockDelete,
 	}),
 }));
 
@@ -95,7 +97,7 @@ describe('withCache', () => {
 
 		await wrapped(arg1, arg2);
 
-		expect(handler).toHaveBeenCalledWith(arg1, arg2);
+		expect(handler).toHaveBeenCalledWith(arg1, arg2, expect.any(Function));
 	});
 
 	test('stores handler result in cache after execution', async () => {
@@ -123,5 +125,36 @@ describe('withCache', () => {
 		const result = await wrapped();
 
 		expect(result).toBe('async-value');
+	});
+
+	test('child cache invalidates parent cache', async () => {
+		const cache: Record<string, unknown> = {};
+
+		mockSet.mockImplementation((key, value) => (cache[key] = value));
+		mockGet.mockImplementation((key) => cache[key]!);
+		mockDelete.mockImplementation((key) => delete cache[key]);
+
+		let invalidateCallback;
+		let i = 0;
+
+		const handler = vi.fn(() => i++);
+
+		const handlerCached = withCache('related', handler, undefined, (invalidate) => {
+			invalidateCallback = invalidate;
+		});
+
+		const parentHandler = vi.fn(async () => (await handlerCached()) + 1);
+
+		const parentHandlerCached = withCache('parent', parentHandler);
+
+		expect(await parentHandlerCached()).toBe(1);
+		expect(await parentHandlerCached()).toBe(1);
+		expect(await handlerCached()).toBe(0);
+
+		invalidateCallback!();
+
+		expect(await parentHandlerCached()).toBe(2);
+		expect(await parentHandlerCached()).toBe(2);
+		expect(await handlerCached()).toBe(1);
 	});
 });

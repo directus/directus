@@ -115,6 +115,18 @@ export class Emitter {
 
 const emitter = new Emitter();
 
+emitter.onAction('items.create', (meta, ctx) => {
+	console.log('Item create event:', meta);
+});
+
+emitter.onAction('items.update', (meta, ctx) => {
+	console.log('Item update event:', meta);
+});
+
+emitter.onAction('items.delete', (meta, ctx) => {
+	console.log('Item delete event:', meta);
+});
+
 export const useEmitter = () => emitter;
 
 export default emitter;

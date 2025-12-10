@@ -1,5 +1,5 @@
 import type { AbstractServiceOptions } from '@directus/types';
-import { withCache } from './with-cache.js';
+import { withCache, type InvalidateFunction } from './with-cache.js';
 
 export interface ShareInfo {
 	collection: string;
@@ -13,7 +13,11 @@ export interface ShareInfo {
 
 export const fetchShareInfo = withCache('share-info', _fetchShareInfo, (shareId) => ({ shareId }));
 
-export async function _fetchShareInfo(shareId: string, context: AbstractServiceOptions): Promise<ShareInfo> {
+export async function _fetchShareInfo(
+	shareId: string,
+	context: AbstractServiceOptions,
+	invalidate: InvalidateFunction,
+): Promise<ShareInfo> {
 	const { SharesService } = await import('../../services/shares.js');
 	const sharesService = new SharesService(context);
 

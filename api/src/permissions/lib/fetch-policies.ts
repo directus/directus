@@ -1,9 +1,12 @@
 import type { Accountability, Filter } from '@directus/types';
 import type { Context } from '../types.js';
 import { filterPoliciesByIp } from '../utils/filter-policies-by-ip.js';
-import { withCache } from '../utils/with-cache.js';
+import { withCache, type InvalidateFunction } from '../utils/with-cache.js';
+import emitter from '../../emitter.js';
+import { intersection } from 'lodash-es';
 
 export interface AccessRow {
+	id: string;
 	policy: { id: string; ip_access: string[] | null };
 	role: string | null;
 }
@@ -16,6 +19,7 @@ export const fetchPolicies = withCache('policies', _fetchPolicies, ({ roles, use
 export async function _fetchPolicies(
 	{ roles, user, ip }: Pick<Accountability, 'user' | 'roles' | 'ip'>,
 	context: Context,
+	invalidate: InvalidateFunction,
 ): Promise<string[]> {
 	const { AccessService } = await import('../../services/access.js');
 	const accessService = new AccessService(context);
@@ -34,9 +38,50 @@ export async function _fetchPolicies(
 
 	const accessRows = (await accessService.readByQuery({
 		filter,
-		fields: ['policy.id', 'policy.ip_access', 'role'],
+		fields: ['id', 'policy.id', 'policy.ip_access', 'role'],
 		limit: -1,
 	})) as AccessRow[];
+
+	const accessIds = accessRows.map((row) => row.id);
+	const policyIds = accessRows.map((row) => row.policy.id);
+
+	emitter.onAction('directus_access.create', function self() {
+		invalidate();
+		emitter.offAction('directus_access.create', self);
+	});
+
+	emitter.onAction('directus_policies.create', function self() {
+		invalidate();
+		emitter.offAction('directus_policies.create', self);
+	});
+
+	emitter.onAction('directus_access.delete', function self({ keys }) {
+		if (intersection(accessIds, keys).length > 0) {
+			invalidate();
+			emitter.offAction('directus_access.delete', self);
+		}
+	});
+
+	emitter.onAction('directus_policies.delete', function self({ keys }) {
+		if (intersection(policyIds, keys).length > 0) {
+			invalidate();
+			emitter.offAction('directus_policies.delete', self);
+		}
+	});
+
+	emitter.onAction('directus_access.update', function self({ keys }) {
+		if (intersection(accessIds, keys).length > 0) {
+			invalidate();
+			emitter.offAction('directus_access.update', self);
+		}
+	});
+
+	emitter.onAction('directus_policies.update', function self({ keys }) {
+		if (intersection(policyIds, keys).length > 0) {
+			invalidate();
+			emitter.offAction('directus_policies.update', self);
+		}
+	});
 
 	const filteredAccessRows = filterPoliciesByIp(accessRows, ip);
 

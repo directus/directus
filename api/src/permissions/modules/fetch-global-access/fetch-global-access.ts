@@ -4,7 +4,7 @@ import {
 	fetchGlobalAccessForUser as _fetchGlobalAccessForUser,
 } from '@directus/utils/node';
 import type { Knex } from 'knex';
-import { withCache } from '../../utils/with-cache.js';
+import { withCache, type InvalidateFunction } from '../../utils/with-cache.js';
 
 interface FetchGlobalAccessContext {
 	knex: Knex;
@@ -33,6 +33,7 @@ const fetchGlobalAccessForUser = withCache('global-access-user', _fetchGlobalAcc
 export async function _fetchGlobalAccess(
 	accountability: Pick<Accountability, 'user' | 'roles' | 'ip'>,
 	context: FetchGlobalAccessContext,
+	invalidate: InvalidateFunction,
 ): Promise<GlobalAccess> {
 	const access = await fetchGlobalAccessForRoles(accountability.roles, { knex: context.knex, ip: accountability.ip });
 

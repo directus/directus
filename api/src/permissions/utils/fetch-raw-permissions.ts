@@ -2,7 +2,7 @@ import type { Accountability, Filter, Permission, PermissionsAction } from '@dir
 import { sortBy } from 'lodash-es';
 import { withAppMinimalPermissions } from '../lib/with-app-minimal-permissions.js';
 import type { Context } from '../types.js';
-import { withCache } from './with-cache.js';
+import { withCache, type InvalidateFunction } from './with-cache.js';
 
 export const fetchRawPermissions = withCache(
 	'raw-permissions',
@@ -24,7 +24,11 @@ export interface FetchRawPermissionsOptions {
 	bypassMinimalAppPermissions?: boolean;
 }
 
-export async function _fetchRawPermissions(options: FetchRawPermissionsOptions, context: Context) {
+export async function _fetchRawPermissions(
+	options: FetchRawPermissionsOptions,
+	context: Context,
+	invalidate: InvalidateFunction,
+) {
 	const { PermissionsService } = await import('../../services/permissions.js');
 	const permissionsService = new PermissionsService(context);
 
