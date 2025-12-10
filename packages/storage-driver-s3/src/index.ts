@@ -1,15 +1,16 @@
 import type {
 	CompletedPart,
 	CopyObjectCommandInput,
+	CreateMultipartUploadCommandInput,
 	GetObjectCommandInput,
 	ListObjectsV2CommandInput,
 	ObjectCannedACL,
 	Part,
 	PutObjectCommandInput,
 	S3ClientConfig,
-	ServerSideEncryption,
 } from '@aws-sdk/client-s3';
 import {
+	ServerSideEncryption,
 	AbortMultipartUploadCommand,
 	CompleteMultipartUploadCommand,
 	CopyObjectCommand,
@@ -40,23 +41,31 @@ import { join } from 'node:path';
 import stream, { promises as streamProm, type Readable } from 'node:stream';
 
 export type DriverS3Config = {
-	root?: string;
-	key?: string;
-	secret?: string;
+	root?: string | undefined;
+	key?: string | undefined;
+	secret?: string | undefined;
 	bucket: string;
-	acl?: ObjectCannedACL;
-	serverSideEncryption?: ServerSideEncryption;
-	endpoint?: string;
-	region?: string;
-	forcePathStyle?: boolean;
-	tus?: {
-		chunkSize?: number;
-	};
-	connectionTimeout?: number;
-	socketTimeout?: number;
-	maxSockets?: number;
-	keepAlive?: boolean;
+	acl?: ObjectCannedACL | undefined;
+	serverSideEncryption?: ServerSideEncryption | undefined;
+	serverSideEncryptionKmsKeyId?: string | undefined;
+	endpoint?: string | undefined;
+	region?: string | undefined;
+	forcePathStyle?: boolean | undefined;
+	tus?:
+		| {
+				chunkSize?: number | undefined;
+		  }
+		| undefined;
+	connectionTimeout?: number | undefined;
+	socketTimeout?: number | undefined;
+	maxSockets?: number | undefined;
+	keepAlive?: boolean | undefined;
 };
+
+export const kmsKeyIdCheck = [
+	ServerSideEncryption.aws_kms,
+	ServerSideEncryption.aws_kms_dsse,
+] as ServerSideEncryption[];
 
 export class DriverS3 implements TusDriver {
 	private config: DriverS3Config;
@@ -194,6 +203,10 @@ export class DriverS3 implements TusDriver {
 
 		if (this.config.serverSideEncryption) {
 			params.ServerSideEncryption = this.config.serverSideEncryption;
+
+			if (kmsKeyIdCheck.includes(this.config.serverSideEncryption) && this.config.serverSideEncryptionKmsKeyId) {
+				params.SSEKMSKeyId = this.config.serverSideEncryptionKmsKeyId;
+			}
 		}
 
 		if (this.config.acl) {
@@ -220,6 +233,10 @@ export class DriverS3 implements TusDriver {
 
 		if (this.config.serverSideEncryption) {
 			params.ServerSideEncryption = this.config.serverSideEncryption;
+
+			if (kmsKeyIdCheck.includes(this.config.serverSideEncryption) && this.config.serverSideEncryptionKmsKeyId) {
+				params.SSEKMSKeyId = this.config.serverSideEncryptionKmsKeyId;
+			}
 		}
 
 		const upload = new Upload({
@@ -278,7 +295,7 @@ export class DriverS3 implements TusDriver {
 	}
 
 	async createChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<ChunkedUploadContext> {
-		const command = new CreateMultipartUploadCommand({
+		const params: CreateMultipartUploadCommandInput = {
 			Bucket: this.config.bucket,
 			Key: this.fullPath(filepath),
 			Metadata: { 'tus-version': TUS_RESUMABLE },
@@ -292,7 +309,17 @@ export class DriverS3 implements TusDriver {
 						CacheControl: context.metadata['cacheControl'],
 					}
 				: {}),
-		});
+		};
+
+		if (this.config.serverSideEncryption) {
+			params.ServerSideEncryption = this.config.serverSideEncryption;
+
+			if (kmsKeyIdCheck.includes(this.config.serverSideEncryption) && this.config.serverSideEncryptionKmsKeyId) {
+				params.SSEKMSKeyId = this.config.serverSideEncryptionKmsKeyId;
+			}
+		}
+
+		const command = new CreateMultipartUploadCommand(params);
 
 		const res = await this.client.send(command);
 
