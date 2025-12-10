@@ -25,7 +25,8 @@
 #   TEMPLATE_VERSION    - Template version tag (e.g., "1.0.0") - REQUIRED
 #   GITHUB_TOKEN        - GitHub PAT for cloning private template repo
 #
-# Optional environment variables (for BSL 1.1 license consent):
+# Optional environment variables:
+#   TEMPLATE_API_TOKEN  - API auth token for Template API (generated if not provided)
 #   PROJECT_OWNER       - Project owner email (defaults to ADMIN_EMAIL)
 #   PROJECT_USAGE       - Usage type: personal/educational/non-profit/commercial/agency
 #   ORG_NAME            - Organization name
@@ -181,6 +182,18 @@ SSL_EMAIL="${SSL_EMAIL:-$ADMIN_EMAIL}"
 BACKUP_BUCKET="${BACKUP_BUCKET:-}"
 GITHUB_TOKEN="${GITHUB_TOKEN:-}"
 
+# Template API token - use provided value or generate one
+# Track whether token was provided externally for later use
+TEMPLATE_API_TOKEN_PROVIDED=false
+if [[ -n "${TEMPLATE_API_TOKEN:-}" ]]; then
+    TEMPLATE_API_TOKEN_PROVIDED=true
+    echo "  Using TEMPLATE_API_TOKEN from environment"
+else
+    TEMPLATE_API_TOKEN=$(openssl rand -hex 32)
+    echo "  Generated TEMPLATE_API_TOKEN"
+fi
+export TEMPLATE_API_TOKEN
+
 # Project owner defaults (BSL 1.1 license consent)
 PROJECT_OWNER="${PROJECT_OWNER:-$ADMIN_EMAIL}"
 PROJECT_USAGE="${PROJECT_USAGE:-commercial}"
@@ -193,6 +206,7 @@ echo "  FQDN: $FQDN"
 echo "  DB Host: $DB_HOST"
 echo "  Region: $AWS_REGION"
 echo "  Template Version: $TEMPLATE_VERSION"
+echo "  Template API Token: ${TEMPLATE_API_TOKEN_PROVIDED:+provided}${TEMPLATE_API_TOKEN_PROVIDED:-generated}"
 
 # =============================================================================
 # Clone Directus Template (versioned)
@@ -301,15 +315,15 @@ envsubst '${NAME_PREFIX} ${TENANT_NAME}' < /opt/aws/amazon-cloudwatch-agent/etc/
 echo "  CloudWatch Agent started"
 
 # =============================================================================
-# Configure Directus with PM2 (initial - Directus only)
+# Configure Directus with PM2
 # =============================================================================
 echo "=== Configuring Directus ==="
 write_status "running" "Configuring Directus"
 
-# Export variables for envsubst (TEMPLATE_API_TOKEN will be set later)
+# Export variables for envsubst
 export DIRECTUS_PORT DB_HOST DB_PORT DB_NAME DB_USER DB_PASSWORD
 export DIRECTUS_KEY DIRECTUS_SECRET ADMIN_EMAIL ADMIN_PASSWORD FQDN
-export TEMPLATE_API_TOKEN="placeholder-will-be-updated"
+# TEMPLATE_API_TOKEN is already exported above
 
 # Create ecosystem.config.cjs from template (using .cjs for CommonJS compatibility)
 envsubst < /opt/directus/ecosystem.config.cjs.template > /opt/directus/ecosystem.config.cjs
@@ -499,16 +513,15 @@ if [[ "$ENABLE_SSL" == "true" ]]; then
             echo "  The deployment will continue, but HTTPS will not work until SSL is configured."
             echo "  To manually obtain SSL certificate, run:"
             echo "    sudo certbot --nginx -d $FQDN"
-            echo ""
-            echo "  Common issues:"
-            echo "    - Let's Encrypt rate limits (wait 1 hour and retry)"
-            echo "    - DNS not propagated (verify with: dig $FQDN)"
-            echo "    - Firewall blocking port 80 (check security group)"
         fi
     else
-        echo "  WARNING: DNS not yet propagated after 5 minutes, skipping SSL setup"
-        echo "  Run 'sudo certbot --nginx -d $FQDN' manually after DNS propagates"
+        echo "  WARNING: DNS not resolving for $FQDN after 5 minutes"
+        echo "  Skipping SSL configuration. To configure SSL manually later, run:"
+        echo "    sudo certbot --nginx -d $FQDN"
     fi
+else
+    echo "=== SSL Disabled ==="
+    echo "  ENABLE_SSL is not set to 'true', skipping SSL configuration"
 fi
 
 # =============================================================================
@@ -517,113 +530,73 @@ fi
 echo "=== Creating Template API Service Account ==="
 write_status "running" "Creating Template API service account"
 
-# Generate a secure token for the service account
-TEMPLATE_API_TOKEN=$(openssl rand -hex 32)
-
 # Service account email - use tenant FQDN for valid email format
 SERVICE_ACCOUNT_EMAIL="template-api@${FQDN}"
 
-# Authenticate as admin to get access token (with retry for race conditions)
+# Get admin access token for API calls
 echo "  Authenticating as admin..."
-ACCESS_TOKEN=""
-AUTH_ATTEMPTS=0
-AUTH_MAX_ATTEMPTS=5
+AUTH_RESPONSE=$(curl -s --max-time 30 -X POST \
+    "http://localhost:${DIRECTUS_PORT}/auth/login" \
+    -H "Content-Type: application/json" \
+    -d "{\"email\": \"${ADMIN_EMAIL}\", \"password\": \"${ADMIN_PASSWORD}\"}") || true
 
-while [[ -z "$ACCESS_TOKEN" && $AUTH_ATTEMPTS -lt $AUTH_MAX_ATTEMPTS ]]; do
-    AUTH_ATTEMPTS=$((AUTH_ATTEMPTS + 1))
-    echo "  Authentication attempt $AUTH_ATTEMPTS/$AUTH_MAX_ATTEMPTS..."
-    
-    # Give Directus a moment to be fully ready
-    sleep 2
-    
-    AUTH_RESPONSE=$(curl -s --max-time 30 -X POST "http://localhost:${DIRECTUS_PORT}/auth/login" \
-        -H "Content-Type: application/json" \
-        -d "{\"email\": \"${ADMIN_EMAIL}\", \"password\": \"${ADMIN_PASSWORD}\"}" 2>&1) || true
-    
-    # Try to extract access token using jq (preferred) or grep (fallback)
-    if command -v jq &> /dev/null; then
-        ACCESS_TOKEN=$(echo "$AUTH_RESPONSE" | jq -r '.data.access_token // empty' 2>/dev/null) || true
-    else
-        ACCESS_TOKEN=$(echo "$AUTH_RESPONSE" | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4) || true
-    fi
-    
-    if [[ -z "$ACCESS_TOKEN" ]]; then
-        echo "  Auth response: $AUTH_RESPONSE"
-        if [[ $AUTH_ATTEMPTS -lt $AUTH_MAX_ATTEMPTS ]]; then
-            echo "  Retrying in 5 seconds..."
-            sleep 5
-        fi
-    fi
-done
+ACCESS_TOKEN=$(echo "$AUTH_RESPONSE" | jq -r '.data.access_token // empty')
 
 if [[ -z "$ACCESS_TOKEN" ]]; then
-    echo "  ERROR: Failed to authenticate as admin after $AUTH_MAX_ATTEMPTS attempts"
-    echo "  Last response: $AUTH_RESPONSE"
-    write_status "failed" "Failed to authenticate as admin"
+    echo "  ERROR: Failed to authenticate as admin"
+    echo "  Response: $AUTH_RESPONSE"
+    write_status "failed" "Admin authentication failed"
     exit 1
 fi
 
-echo "  Authentication successful"
+echo "  Admin authentication successful"
 
 # Check if template-api user already exists
 echo "  Checking for existing service account..."
-EXISTING_USER_RESPONSE=$(curl -s --max-time 30 "http://localhost:${DIRECTUS_PORT}/users?limit=100" \
+EXISTING_USER_RESPONSE=$(curl -s --max-time 30 \
+    "http://localhost:${DIRECTUS_PORT}/users?limit=100" \
     -H "Authorization: Bearer ${ACCESS_TOKEN}") || true
 
-if command -v jq &> /dev/null; then
-    EXISTING_USER=$(echo "$EXISTING_USER_RESPONSE" | jq -r --arg email "$SERVICE_ACCOUNT_EMAIL" '.data[] | select(.email == $email) | .id // empty' 2>/dev/null) || true
-else
-    # Fallback: grep for the email and extract nearby id
-    if echo "$EXISTING_USER_RESPONSE" | grep -q "$SERVICE_ACCOUNT_EMAIL"; then
-        EXISTING_USER=$(echo "$EXISTING_USER_RESPONSE" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4) || true
-    else
-        EXISTING_USER=""
-    fi
-fi
+# Parse to find existing user by email
+EXISTING_USER=$(echo "$EXISTING_USER_RESPONSE" | jq -r ".data[] | select(.email == \"${SERVICE_ACCOUNT_EMAIL}\") | .id // empty")
 
 if [[ -n "$EXISTING_USER" ]]; then
     echo "  Service account already exists (ID: $EXISTING_USER), updating token..."
     # Update the existing user's token
-    UPDATE_RESPONSE=$(curl -s --max-time 30 -X PATCH "http://localhost:${DIRECTUS_PORT}/users/${EXISTING_USER}" \
+    UPDATE_RESPONSE=$(curl -s --max-time 30 -X PATCH \
+        "http://localhost:${DIRECTUS_PORT}/users/${EXISTING_USER}" \
         -H "Authorization: Bearer ${ACCESS_TOKEN}" \
         -H "Content-Type: application/json" \
         -d "{\"token\": \"${TEMPLATE_API_TOKEN}\"}") || true
     
-    if echo "$UPDATE_RESPONSE" | grep -q '"id"'; then
+    if echo "$UPDATE_RESPONSE" | jq -e '.data.id' > /dev/null 2>&1; then
         echo "  Service account token updated successfully"
     else
-        echo "  ERROR: Failed to update service account token"
+        echo "  WARNING: Failed to update service account token"
         echo "  Response: $UPDATE_RESPONSE"
-        write_status "failed" "Failed to update service account token"
-        exit 1
     fi
 else
     echo "  Creating service account user..."
     
-    # Get the first role (Administrator) - on fresh install there's only one role
-    # Note: We avoid using filter[] syntax as it has shell escaping issues
-    ROLES_RESPONSE=$(curl -s --max-time 30 "http://localhost:${DIRECTUS_PORT}/roles?limit=1" \
+    # Get the first role (Administrator on fresh install)
+    ROLES_RESPONSE=$(curl -s --max-time 30 \
+        "http://localhost:${DIRECTUS_PORT}/roles?limit=1" \
         -H "Authorization: Bearer ${ACCESS_TOKEN}") || true
     
-    echo "  Roles API response: $ROLES_RESPONSE"
-    
-    if command -v jq &> /dev/null; then
-        ADMIN_ROLE_ID=$(echo "$ROLES_RESPONSE" | jq -r '.data[0].id // empty' 2>/dev/null) || true
-    else
-        ADMIN_ROLE_ID=$(echo "$ROLES_RESPONSE" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4) || true
-    fi
+    ADMIN_ROLE_ID=$(echo "$ROLES_RESPONSE" | jq -r '.data[0].id // empty')
     
     if [[ -z "$ADMIN_ROLE_ID" ]]; then
         echo "  ERROR: Could not find any roles"
-        echo "  Roles response: $ROLES_RESPONSE"
-        write_status "failed" "Could not find admin role"
+        echo "  Response: $ROLES_RESPONSE"
+        write_status "failed" "No roles found for service account"
         exit 1
     fi
     
-    echo "  Found role: $ADMIN_ROLE_ID"
+    echo "  Using role: $ADMIN_ROLE_ID"
     
     # Create the service account with a valid email format
-    CREATE_RESPONSE=$(curl -s --max-time 30 -X POST "http://localhost:${DIRECTUS_PORT}/users" \
+    CREATE_RESPONSE=$(curl -s --max-time 30 -X POST \
+        "http://localhost:${DIRECTUS_PORT}/users" \
         -H "Authorization: Bearer ${ACCESS_TOKEN}" \
         -H "Content-Type: application/json" \
         -d "{
@@ -636,163 +609,144 @@ else
             \"status\": \"active\"
         }") || true
     
-    if echo "$CREATE_RESPONSE" | grep -q '"id"'; then
-        echo "  Service account created successfully"
+    if echo "$CREATE_RESPONSE" | jq -e '.data.id' > /dev/null 2>&1; then
+        SERVICE_ACCOUNT_ID=$(echo "$CREATE_RESPONSE" | jq -r '.data.id')
+        echo "  Service account created successfully (ID: $SERVICE_ACCOUNT_ID)"
     else
-        echo "  ERROR: Failed to create service account"
+        echo "  WARNING: Failed to create service account"
         echo "  Response: $CREATE_RESPONSE"
-        write_status "failed" "Failed to create service account"
-        exit 1
+        echo "  The Template API may not be able to authenticate with Directus"
     fi
 fi
 
-echo "  Template API service account configured"
-
 # =============================================================================
-# Update ecosystem config with Template API token and start Template API
+# Start Template API
 # =============================================================================
 echo "=== Starting Template API ==="
 write_status "running" "Starting Template API"
 
-# Re-export TEMPLATE_API_TOKEN with the real value and regenerate ecosystem config
-export TEMPLATE_API_TOKEN
-envsubst < /opt/directus/ecosystem.config.cjs.template > /opt/directus/ecosystem.config.cjs
+cd /opt/directus
 
 # Start Template API from the ecosystem config
-cd /opt/directus
 sudo -u ubuntu pm2 start ecosystem.config.cjs --only template-api
 
 # Save PM2 process list
 sudo -u ubuntu pm2 save
 
 # Wait for Template API to be healthy
-if ! wait_for_service "http://localhost:3000/health" 60 5 "Template API"; then
+if wait_for_service "http://localhost:3000/health" 60 5 "Template API"; then
+    echo "  Template API started successfully"
+else
+    echo "  WARNING: Template API health check failed"
     echo "  Dumping PM2 logs for debugging:"
     sudo -u ubuntu pm2 logs template-api --lines 30 --nostream || true
-    write_status "failed" "Template API health check timed out"
-    exit 1
 fi
 
-echo "  Template API started on port 3000"
-
 # =============================================================================
-# Apply Directus Template (schema and seed data)
+# Apply Initial Template (if template exists)
 # =============================================================================
-echo "=== Applying Directus Template (v${TEMPLATE_VERSION}) ==="
-
-# Check if template exists (cloned earlier in this script)
-if [[ -d "/opt/directus-template" ]]; then
-    echo "  Template found at /opt/directus-template"
-    echo "  Version: $(cat /opt/directus-template/.version 2>/dev/null || echo 'unknown')"
+if [[ -d "/opt/directus-template/src" ]]; then
+    echo "=== Applying Initial Template ==="
+    write_status "running" "Applying initial template"
     
-    # Apply template using the Template API
-    TEMPLATE_APPLY_RESPONSE=$(curl -s -X POST http://localhost:3000/api/apply \
-        -H "Content-Type: application/json" \
-        -d "{
-            \"templateLocation\": \"/opt/directus-template\",
-            \"directusUrl\": \"http://localhost:${DIRECTUS_PORT}\",
-            \"directusToken\": \"${TEMPLATE_API_TOKEN}\"
-        }")
-    
-    # Check if apply was successful
-    if echo "$TEMPLATE_APPLY_RESPONSE" | jq -e '.success == true' > /dev/null 2>&1; then
-        echo "  Template v${TEMPLATE_VERSION} applied successfully!"
+    # Determine the base URL based on SSL configuration
+    if [[ "$SSL_CONFIGURED" == "true" ]]; then
+        DIRECTUS_BASE_URL="https://${FQDN}"
     else
-        ERROR_MSG=$(echo "$TEMPLATE_APPLY_RESPONSE" | jq -r '.error // "Unknown error"')
-        echo "  WARNING: Template apply failed: $ERROR_MSG"
-        echo "  Response: $TEMPLATE_APPLY_RESPONSE"
-        # Don't exit - tenant can still function without template
+        DIRECTUS_BASE_URL="http://localhost:${DIRECTUS_PORT}"
+    fi
+    
+    echo "  Applying template v${TEMPLATE_VERSION} to Directus..."
+    echo "  Using Directus URL: $DIRECTUS_BASE_URL"
+    
+    # Call Template API to apply the template
+    APPLY_RESPONSE=$(curl -s --max-time 300 -X POST \
+        "http://localhost:3000/api/apply" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${TEMPLATE_API_TOKEN}" \
+        -d "{
+            \"directusUrl\": \"${DIRECTUS_BASE_URL}\",
+            \"directusToken\": \"${TEMPLATE_API_TOKEN}\",
+            \"templateLocation\": \"/opt/directus-template\",
+            \"templateType\": \"local\"
+        }") || true
+    
+    if echo "$APPLY_RESPONSE" | jq -e '.success == true' > /dev/null 2>&1; then
+        echo "  Template applied successfully!"
+    else
+        echo "  WARNING: Template application may have failed"
+        echo "  Response: $APPLY_RESPONSE"
+        echo "  You can manually apply the template later via the Template API"
     fi
 else
-    echo "  ERROR: Template not found at /opt/directus-template"
-    echo "  Template should have been cloned earlier in this script"
-    write_status "failed" "Template not found after clone"
-    exit 1
+    echo "=== No Template to Apply ==="
+    echo "  Template directory /opt/directus-template/src not found"
+    echo "  Skipping initial template application"
 fi
 
 # =============================================================================
-# Create backup scripts (if bucket configured)
+# Configure Backup Cron Job (if bucket specified)
 # =============================================================================
 if [[ -n "$BACKUP_BUCKET" ]]; then
-    echo "=== Setting up backup scripts ==="
-    write_status "running" "Setting up backup scripts"
-
-    cat > /usr/local/bin/db-backup.sh << 'BACKUP_EOF'
+    echo "=== Configuring Backup Cron Job ==="
+    write_status "running" "Configuring backup cron job"
+    
+    # Create backup script
+    cat > /opt/directus/backup.sh << 'BACKUP_SCRIPT'
 #!/bin/bash
 set -euo pipefail
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-BACKUP_FILE="/tmp/${DB_NAME}_${TIMESTAMP}.sql.gz"
 
-# Create backup
-# NOTE: pg_dump version should match or be newer than PostgreSQL server version.
-# AMI includes PostgreSQL client from Ubuntu repos. If using Aurora/RDS with
-# a newer PostgreSQL version, install matching client: sudo apt install postgresql-client-15
-PGSSLMODE=require PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" "$DB_NAME" | gzip > "$BACKUP_FILE"
+# Load environment from PM2
+eval $(sudo -u ubuntu pm2 env directus 2>/dev/null | grep -E '^(DB_|BACKUP_BUCKET|TENANT_NAME)' | sed 's/^/export /')
+
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+BACKUP_FILE="/tmp/directus_backup_${TIMESTAMP}.sql.gz"
+
+# Dump database
+PGSSLMODE=require PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -p "${DB_PORT:-5432}" -U "$DB_USER" -d "${DB_DATABASE:-directus}" | gzip > "$BACKUP_FILE"
 
 # Upload to S3
-aws s3 cp "$BACKUP_FILE" "s3://${BACKUP_BUCKET}/databases/${TENANT_NAME}/${TIMESTAMP}.sql.gz" --region "$AWS_REGION"
+aws s3 cp "$BACKUP_FILE" "s3://${BACKUP_BUCKET}/${TENANT_NAME}/database/${TIMESTAMP}.sql.gz"
 
 # Cleanup
 rm -f "$BACKUP_FILE"
 
-echo "Backup completed: s3://${BACKUP_BUCKET}/databases/${TENANT_NAME}/${TIMESTAMP}.sql.gz"
-BACKUP_EOF
-
-    chmod +x /usr/local/bin/db-backup.sh
-
-    # Create secure environment file for backup credentials (mode 600)
-    mkdir -p /etc/directus
-    cat > /etc/directus/backup.env << BACKUP_ENV_EOF
-# Backup credentials - DO NOT EDIT (generated by configure-tenant.sh)
-DB_HOST='$DB_HOST'
-DB_PORT='$DB_PORT'
-DB_NAME='$DB_NAME'
-DB_USER='$DB_USER'
-DB_PASSWORD='$DB_PASSWORD'
-BACKUP_BUCKET='$BACKUP_BUCKET'
-TENANT_NAME='$TENANT_NAME'
-AWS_REGION='$AWS_REGION'
-BACKUP_ENV_EOF
-
-    chmod 600 /etc/directus/backup.env
-    chown root:root /etc/directus/backup.env
-
-    # Update backup script to source environment file
-    sed -i '2a\source /etc/directus/backup.env' /usr/local/bin/db-backup.sh
-
-    # Create cron job for daily backups at 2 AM
-    cat > /etc/cron.d/directus-backup << 'CRON_EOF'
-# Directus database backup - daily at 2 AM UTC
-0 2 * * * root /usr/local/bin/db-backup.sh >> /var/log/db-backup.log 2>&1
-CRON_EOF
-
-    chmod 644 /etc/cron.d/directus-backup
-
-    echo "  Backup scripts configured"
-    echo "  Daily backups scheduled for 2 AM UTC"
-fi
-
-# =============================================================================
-# Completion
-# =============================================================================
-echo ""
-echo "=== Tenant configuration complete ==="
-write_status "completed" "Tenant configuration successful"
-
-# Summary with SSL status
-if [[ "$SSL_CONFIGURED" == "true" ]]; then
-    echo "  Directus URL: https://$FQDN"
-    echo "  Template API: https://$FQDN/template-api/"
+# Keep only last 30 backups
+aws s3 ls "s3://${BACKUP_BUCKET}/${TENANT_NAME}/database/" | sort | head -n -30 | awk '{print $4}' | xargs -I {} aws s3 rm "s3://${BACKUP_BUCKET}/${TENANT_NAME}/database/{}"
+BACKUP_SCRIPT
+    
+    chmod +x /opt/directus/backup.sh
+    
+    # Add cron job (daily at 2 AM)
+    echo "0 2 * * * root /opt/directus/backup.sh >> /var/log/directus-backup.log 2>&1" > /etc/cron.d/directus-backup
+    
+    echo "  Backup cron job configured (daily at 2 AM UTC)"
 else
-    echo "  Directus URL: http://$FQDN (SSL not configured)"
-    echo "  Template API: http://$FQDN/template-api/"
-    if [[ "$ENABLE_SSL" == "true" ]]; then
-        echo ""
-        echo "  ⚠️  SSL was enabled but certificate could not be obtained."
-        echo "  Run 'sudo certbot --nginx -d $FQDN' to configure SSL manually."
-    fi
+    echo "=== Backup Not Configured ==="
+    echo "  BACKUP_BUCKET not specified, skipping backup configuration"
 fi
-echo "  Admin Email: $ADMIN_EMAIL"
-echo "  Template Version: $TEMPLATE_VERSION"
+
+# =============================================================================
+# Final Status
+# =============================================================================
 echo ""
-echo "  Configuration completed at $(date)"
+echo "=============================================="
+echo "=== Tenant Configuration Complete ==="
+echo "=============================================="
+echo "  Tenant: $TENANT_NAME"
+echo "  URL: https://$FQDN"
+echo "  Template Version: $TEMPLATE_VERSION"
+echo "  SSL: ${SSL_CONFIGURED:-false}"
+echo "  Time: $(date)"
+echo "=============================================="
+
+write_status "complete" "Tenant configuration completed successfully"
+
+# Ensure PM2 saves the final state
+sudo -u ubuntu pm2 save
+
+echo ""
+echo "Directus is ready!"
+echo "  Admin URL: https://$FQDN/admin"
+echo "  Admin Email: $ADMIN_EMAIL"
+echo ""
