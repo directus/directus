@@ -12,6 +12,7 @@ defineProps<{
 	to?: RouteLocationRaw;
 	href?: string;
 	download?: string;
+	active?: boolean;
 }>();
 
 defineEmits<{
@@ -20,7 +21,20 @@ defineEmits<{
 </script>
 
 <template>
-	<VButton :disabled :loading :secondary :outlined :to :href :download icon rounded small @click="$emit('click')">
+	<VButton
+		:disabled
+		:active
+		:loading
+		:secondary
+		:outlined
+		:to
+		:href
+		:download
+		icon
+		rounded
+		small
+		@click="$emit('click')"
+	>
 		<VIcon :name="icon" small />
 		<template #append-outer><slot name="append-outer" /></template>
 	</VButton>
