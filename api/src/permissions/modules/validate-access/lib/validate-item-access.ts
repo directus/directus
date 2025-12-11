@@ -7,6 +7,7 @@ import { processAst } from '../../process-ast/process-ast.js';
 import { fetchPolicies } from '../../../lib/fetch-policies.js';
 import { fetchPermissions } from '../../../lib/fetch-permissions.js';
 import { injectCases } from '../../process-ast/lib/inject-cases.js';
+import { fetchAllowedFields } from '../../fetch-allowed-fields/fetch-allowed-fields.js';
 
 export interface ValidateItemAccessOptions {
 	accountability: Accountability;
@@ -57,20 +58,17 @@ export async function validateItemAccess(
 
 	// Inject the root fields after the permissions have been processed, as to not require access to all collection fields
 	if (options.returnAllowedRootFields) {
-		const policies = await fetchPolicies(options.accountability, context);
-
-		const permissions = await fetchPermissions(
-			{ action: options.action, policies, collections: [options.collection], accountability: options.accountability },
+		const allowedFields = await fetchAllowedFields(
+			{ accountability: options.accountability, action: options.action, collection: options.collection },
 			context,
 		);
 
 		const schemaFields = Object.keys(context.schema.collections[options.collection]!.fields);
-		const hasWildcard = permissions.some((p) => p.fields?.includes('*'));
-
-		const allowedFields = hasWildcard ? new Set(schemaFields) : new Set(permissions.flatMap((p) => p.fields ?? []));
+		const hasWildcard = allowedFields.includes('*');
+		const permissionedFields = hasWildcard ? schemaFields : allowedFields;
 
 		// Create children only for fields that exist in schema and are allowed by permissions
-		ast.children = Array.from(allowedFields)
+		ast.children = permissionedFields
 			.filter((field) => context.schema.collections[options.collection]!.fields[field])
 			.map((field) => ({
 				type: 'field',
@@ -79,6 +77,13 @@ export async function validateItemAccess(
 				whenCase: [],
 				alias: false,
 			}));
+
+		const policies = await fetchPolicies(options.accountability, context);
+
+		const permissions = await fetchPermissions(
+			{ action: options.action, policies, collections: [options.collection], accountability: options.accountability },
+			context,
+		);
 
 		injectCases(ast, permissions);
 	}
