@@ -146,8 +146,8 @@ function onSelection(selectedIds: (number | string)[] | null) {
 		--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
 	}
 
-	&:focus-within:not(.disabled),
-	&:focus-visible:not(.disabled) {
+	&:focus-within
+	&:focus-visible {
 		--v-list-item-border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
 		--v-list-item-border-color-hover: var(--v-list-item-border-color);
 
