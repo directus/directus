@@ -1221,6 +1221,7 @@ settings_project: Settings
 settings_appearance: Appearance
 settings_ai: AI
 model_context_protocol: Model Context Protocol
+external_mcp_servers: External MCP Servers
 ai_chat: AI Chat
 ai_disabled_by_env: AI Chat features have been disabled via environment variable.
 mcp_disabled_by_env: MCP features have been disabled via environment variable.
@@ -1487,7 +1488,7 @@ fields:
     ai_system_prompt: AI System Prompt
     ai_system_prompt_note:
       'Custom AI system prompt to guide LLM behavior in AI Chat interactions. Leave empty to use the default.'
-    ai_openai_api_key: OpenAI API Key
+ai_openai_api_key: OpenAI API Key
     ai_openai_allowed_models: OpenAI Allowed Models
     ai_anthropic_api_key: Anthropic API Key
     ai_anthropic_allowed_models: Anthropic Allowed Models
@@ -1507,6 +1508,10 @@ fields:
     ai_provider_options: Provider Options
     ai_provider_options_note: Provider-specific options passed to AI endpoints.
     ai_header_name: Header
+    external_mcp_notice:
+      'Connect to external MCP servers to extend AI Chat with additional tools. External servers provide tools that can
+      be used in AI conversations. <a href="https://directus.io/docs/guides/ai/external-mcp" target="_blank">Learn more
+      about connecting external MCP servers.</a>'
 
   directus_shares:
     name: Name
@@ -1570,6 +1575,16 @@ field_options:
     basemaps_style: Mapbox Style
     files_divider_title: Files & Thumbnails
     overrides_divider_title: App Overrides
+    mcp_server_id: Server ID
+    mcp_tool_approval: Tool Approval
+    mcp_tool_approval_always: Always Allow
+    mcp_tool_approval_ask: Ask Before Running
+    mcp_tool_approval_disabled: Disabled
+    mcp_server_auth: Authentication
+    mcp_auth_bearer: Bearer Token
+    mcp_auth_basic: Basic Auth
+    mcp_auth_token: Auth Token
+    mcp_auth_token_placeholder: Enter bearer token
   directus_activity:
     login: Login
     create: Create
@@ -1703,6 +1718,8 @@ ai:
     disabled: Disabled
   enabled_tools: Enabled Tools
   disabled_tools: Disabled Tools
+  external_tools: External Tools
+  loading_external_tools: Loading external tools...
   tool_descriptions:
     items: Create, read, update, and delete content
     files: Search and manage files
