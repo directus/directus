@@ -121,7 +121,7 @@ function onSelection(selectedIds: (number | string)[] | null) {
 			<div class="spacer" />
 
 			<div v-if="!nonEditable" class="item-actions">
-				<v-remove v-if="displayItem" deselect @action="value = null" />
+				<v-remove v-if="displayItem" deselect :disabled @action="value = null" />
 
 				<v-icon v-else class="expand" name="expand_more" />
 			</div>
