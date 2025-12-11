@@ -75,10 +75,6 @@ export class CollabHandler {
 				message.initialChanges,
 			);
 
-			client.on('close', async () => {
-				await room.leave(client);
-			});
-
 			await room.join(client);
 		} catch (err) {
 			handleWebSocketError(client, err, 'join');
