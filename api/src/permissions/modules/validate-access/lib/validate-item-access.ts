@@ -23,6 +23,21 @@ export interface ValidateItemAccessResult {
 	allowedRootFields?: string[];
 }
 
+export interface ValidateItemAccessResultWithFields {
+	accessAllowed: boolean;
+	allowedRootFields: string[];
+}
+
+export async function validateItemAccess(
+	options: ValidateItemAccessOptions & { returnAllowedRootFields: true },
+	context: Context,
+): Promise<ValidateItemAccessResultWithFields>;
+
+export async function validateItemAccess(
+	options: ValidateItemAccessOptions,
+	context: Context,
+): Promise<ValidateItemAccessResult>;
+
 export async function validateItemAccess(
 	options: ValidateItemAccessOptions,
 	context: Context,
@@ -96,6 +111,10 @@ export async function validateItemAccess(
 	const hasAccess = items && items.length === options.primaryKeys.length;
 
 	if (!hasAccess) {
+		if (options.returnAllowedRootFields) {
+			return { accessAllowed: false, allowedRootFields: [] };
+		}
+
 		return { accessAllowed: false };
 	}
 
@@ -107,8 +126,11 @@ export async function validateItemAccess(
 	}
 
 	// If returnAllowedRootFields, return intersection of allowed fields across all items
-	if (options.returnAllowedRootFields && items.length > 0) {
-		const allowedRootFields = Object.keys(items[0]!).filter((field) => items.every((item: any) => item[field] === 1));
+	if (options.returnAllowedRootFields) {
+		const allowedRootFields =
+			items.length > 0
+				? Object.keys(items[0]!).filter((field) => items.every((item: any) => item[field] === 1))
+				: [];
 
 		return {
 			accessAllowed,

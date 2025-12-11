@@ -243,7 +243,7 @@ export class AssetsService {
 				});
 			}
 
-			allowedFields = allowedRootFields ?? ['*'];
+			allowedFields = allowedRootFields;
 		}
 
 		const file = (await this.sudoFilesService.readOne(id, { limit: 1 })) as File;
