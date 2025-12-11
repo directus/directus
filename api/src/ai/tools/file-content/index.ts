@@ -100,24 +100,21 @@ const TEXT_EXTENSIONS = [
 ];
 
 function isTextFile(mimeType: string | null, filename: string): boolean {
-	// Check MIME type
-	if (mimeType && SUPPORTED_TEXT_TYPES.some((t) => mimeType.startsWith(t.split('/')[0]!) && mimeType.includes(t.split('/')[1]!))) {
+	// Check MIME type against supported types
+	if (mimeType && SUPPORTED_TEXT_TYPES.includes(mimeType)) {
 		return true;
 	}
 
+	// Also allow any text/* MIME type
 	if (mimeType?.startsWith('text/')) {
 		return true;
 	}
 
-	// Check file extension
-	const ext = filename.toLowerCase().slice(filename.lastIndexOf('.'));
+	// Check file extension (handles files with generic MIME types)
+	const lastDot = filename.lastIndexOf('.');
+	const ext = lastDot === -1 ? '' : filename.toLowerCase().slice(lastDot);
 
-	if (TEXT_EXTENSIONS.includes(ext)) {
-		return true;
-	}
-
-	// PDF is a special case
-	if (mimeType === 'application/pdf') {
+	if (ext && TEXT_EXTENSIONS.includes(ext)) {
 		return true;
 	}
 
