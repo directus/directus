@@ -17,6 +17,7 @@ import FilesNavigation from '@/views/private/components/files-navigation.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { useLayout } from '@directus/composables';
 import { getDateTimeFormatted, mergeFilters } from '@directus/utils';
 import { storeToRefs } from 'pinia';
@@ -419,18 +420,14 @@ async function downloadFiles() {
 					@apply="moveToFolder"
 				>
 					<template #activator="{ on }">
-						<v-button
+						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="batchEditAllowed ? $t('move_to_folder') : $t('not_allowed')"
-							rounded
-							icon
 							class="folder"
-							secondary
 							:disabled="!batchEditAllowed"
-							small
+							icon="folder_move"
+							secondary
 							@click="on"
-						>
-							<v-icon name="folder_move" small />
-						</v-button>
+						/>
 					</template>
 
 					<v-card>
@@ -453,18 +450,14 @@ async function downloadFiles() {
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
-						<v-button
+						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
 							:disabled="batchDeleteAllowed !== true"
-							rounded
-							icon
 							class="action-delete"
 							secondary
-							small
+							icon="delete"
 							@click="on"
-						>
-							<v-icon name="delete" outline small />
-						</v-button>
+						/>
 					</template>
 
 					<v-card>
@@ -481,41 +474,29 @@ async function downloadFiles() {
 					</v-card>
 				</v-dialog>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0"
 					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
-					rounded
-					icon
 					secondary
 					:disabled="batchEditAllowed === false"
-					small
+					icon="edit"
 					@click="batchEditActive = true"
-				>
-					<v-icon name="edit" outline small />
-				</v-button>
+				/>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0"
 					v-tooltip.bottom="$t('download')"
-					rounded
-					icon
 					secondary
-					download
+					icon="download"
 					@click="downloadFiles"
-				>
-					<v-icon name="download" outline />
-				</v-button>
+				/>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="createAllowed ? $t('upload_file') : $t('not_allowed')"
-					rounded
-					icon
 					:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
 					:disabled="createAllowed === false"
-					small
-				>
-					<v-icon name="add" small />
-				</v-button>
+					icon="add"
+				/>
 			</template>
 
 			<template #navigation>
