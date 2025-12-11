@@ -1,4 +1,4 @@
-import { UnsupportedMediaTypeError } from '@directus/errors';
+import { ContentTooLargeError, UnsupportedMediaTypeError } from '@directus/errors';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
@@ -12,6 +12,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const DEFAULT_MAX_LENGTH = 50000;
 const ABSOLUTE_MAX_LENGTH = 100000;
+// Maximum file size to load into memory (50MB)
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
 const FileContentValidateSchema = z.strictObject({
 	id: z.string(),
@@ -155,6 +157,11 @@ export const fileContent = defineTool<z.infer<typeof FileContentValidateSchema>>
 				mediaType: file.type ?? 'unknown',
 				where: 'file-content tool. Use the assets tool for images and audio files.',
 			});
+		}
+
+		// Validate file size to prevent memory issues
+		if (file.filesize && file.filesize > MAX_FILE_SIZE) {
+			throw new ContentTooLargeError();
 		}
 
 		// Read file from storage
