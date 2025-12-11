@@ -10,8 +10,8 @@ Extract and return the text content from a file stored in Directus.
 
 ```json
 {
-  "id": "file-uuid-here",
-  "max_length": 50000
+	"id": "file-uuid-here",
+	"max_length": 50000
 }
 ```
 
@@ -24,10 +24,10 @@ Extract and return the text content from a file stored in Directus.
 
 ```json
 {
-  "content": "extracted text content...",
-  "filename": "document.pdf",
-  "type": "application/pdf",
-  "truncated": false
+	"content": "extracted text content...",
+	"filename": "document.pdf",
+	"type": "application/pdf",
+	"truncated": false
 }
 ```
 
