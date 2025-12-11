@@ -2,6 +2,7 @@
 import { useFormFields, validate } from '@/routes/setup/form';
 import SetupForm from '@/routes/setup/form.vue';
 import { useSettingsStore } from '@/stores/settings';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { SetupForm as Form } from '@directus/types';
 import { computed, ref } from 'vue';
 
@@ -62,17 +63,13 @@ async function reset() {
 
 	<v-drawer v-model="editing" :title="$t('interfaces.system-owner.update')" icon="link" @cancel="reset" @apply="save">
 		<template #actions>
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
-				icon
-				rounded
-				small
 				:disabled="!isSaveAllowed"
 				:loading="isSaving"
+				icon="check"
 				@click="save"
-			>
-				<v-icon name="check" small />
-			</v-button>
+			/>
 		</template>
 
 		<div class="drawer-content">

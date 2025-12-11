@@ -7,6 +7,7 @@ import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
+import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -171,9 +172,12 @@ function useActions() {
 			<template #actions>
 				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />
 
-				<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="!hasSelectionChanged" small @click="save">
-					<v-icon name="check" small />
-				</v-button>
+				<PrivateViewHeaderBarActionButton
+					v-tooltip.bottom="$t('save')"
+					:disabled="!hasSelectionChanged"
+					icon="check"
+					@click="save"
+				/>
 			</template>
 
 			<div class="layout">

@@ -3,6 +3,7 @@ import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
 import { CreatePanel, useInsightsStore } from '@/stores/insights';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import type { Panel } from '@directus/extensions';
 import { assign, clone, isUndefined, omitBy } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
@@ -133,9 +134,12 @@ const stageChanges = () => {
 		@apply="stageChanges"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="$t('done')" :disabled="!panel.type" icon rounded small @click="stageChanges">
-				<v-icon name="check" small />
-			</v-button>
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('done')"
+				:disabled="!panel.type"
+				icon="check"
+				@click="stageChanges"
+			/>
 		</template>
 		<div class="content">
 			<div class="panel-grid">

@@ -15,6 +15,7 @@ import { storeToRefs } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 
 type LocalNotification = Notification & {
 	to?: string;
@@ -227,18 +228,14 @@ function clearFilters() {
 				@apply="deleteSelected"
 			>
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('delete_label')"
-						rounded
-						icon
 						class="action-delete"
 						secondary
-						small
 						:disabled="selection.length === 0"
+						icon="delete"
 						@click="on"
-					>
-						<v-icon name="delete" outline small />
-					</v-button>
+					/>
 				</template>
 
 				<v-card>
@@ -255,17 +252,13 @@ function clearFilters() {
 				</v-card>
 			</v-dialog>
 
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="tab[0] === 'inbox' ? $t('archive') : $t('unarchive')"
-				icon
-				rounded
 				:disabled="selection.length === 0"
 				secondary
-				small
+				:icon="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'"
 				@click="toggleArchive"
-			>
-				<v-icon :name="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'" small />
-			</v-button>
+			/>
 		</template>
 
 		<template #sidebar>

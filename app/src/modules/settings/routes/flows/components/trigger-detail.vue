@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { FlowRaw, TriggerType } from '@directus/types';
 import { computed, ref } from 'vue';
 import { getTriggers } from '../triggers';
@@ -57,9 +58,12 @@ const currentTriggerOptionFields = computed(() => {
 		@cancel="$emit('update:open', false)"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="$t('done')" icon rounded :disabled="!currentTrigger" small @click="saveTrigger">
-				<v-icon name="check" small />
-			</v-button>
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('done')"
+				:disabled="!currentTrigger"
+				icon="check"
+				@click="saveTrigger"
+			/>
 		</template>
 
 		<div class="content">

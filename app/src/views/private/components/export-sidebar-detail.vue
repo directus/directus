@@ -15,6 +15,7 @@ import type { AxiosProgressEvent } from 'axios';
 import { debounce, pick } from 'lodash';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import ImportErrorDialog from './import-error-dialog.vue';
 
 type LayoutQuery = {
@@ -456,16 +457,12 @@ async function exportDataFiles() {
 			@apply="startExport"
 		>
 			<template #actions>
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="location === 'download' ? $t('download_file') : $t('start_export')"
-					rounded
-					icon
-					small
 					:loading="exporting"
+					:icon="location === 'download' ? 'download' : 'start'"
 					@click="startExport"
-				>
-					<v-icon :name="location === 'download' ? 'download' : 'start'" small />
-				</v-button>
+				/>
 			</template>
 			<div class="export-fields">
 				<div class="field half-left">
