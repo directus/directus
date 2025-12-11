@@ -1311,4 +1311,261 @@ describe('LDAP Auth Driver', () => {
 			await expect(driver.getUserID({ identifier: 'testuser' })).rejects.toThrow(ServiceUnavailableError);
 		});
 	});
+
+	describe('connection recovery behavior', () => {
+		/**
+		 * These tests validate the LDAP driver's ability to handle connection drops.
+		 *
+		 * Key difference from ldapjs: The old ldapjs library had a built-in `reconnect: true`
+		 * option. The new ldapts library does NOT have automatic reconnection.
+		 *
+		 * The current implementation handles this by:
+		 * 1. Re-binding on every operation via validateBindClient()
+		 * 2. Creating new short-lived clients for verify() operations
+		 */
+
+		it('should recover from a stale connection by re-binding on next operation', async () => {
+			const driver = new LDAPAuthDriver({ knex: mockKnexInstance.mockKnex as any }, validConfig);
+
+			// First operation succeeds
+			vi.mocked(Client.prototype.bind).mockResolvedValueOnce(undefined);
+
+			vi.mocked(Client.prototype.search)
+				.mockResolvedValueOnce({
+					searchEntries: [{ dn: validConfig.bindDn }],
+					searchReferences: [],
+				})
+				.mockResolvedValueOnce({
+					searchEntries: [
+						{
+							dn: 'cn=testuser,ou=users,dc=example,dc=com',
+							userAccountControl: '0',
+						},
+					],
+					searchReferences: [],
+				});
+
+			mockKnexInstance.firstMock.mockResolvedValueOnce({ id: 'user-id-1' });
+
+			const result1 = await driver.getUserID({ identifier: 'testuser' });
+
+			expect(result1).toBe('user-id-1');
+			expect(Client.prototype.bind).toHaveBeenCalledTimes(1);
+
+			// Reset mocks for second operation
+			vi.mocked(Client.prototype.bind).mockClear();
+			vi.mocked(Client.prototype.search).mockClear();
+			mockKnexInstance.firstMock.mockClear();
+
+			// Second operation - connection is fresh because validateBindClient re-binds
+			vi.mocked(Client.prototype.bind).mockResolvedValueOnce(undefined);
+
+			vi.mocked(Client.prototype.search)
+				.mockResolvedValueOnce({
+					searchEntries: [{ dn: validConfig.bindDn }],
+					searchReferences: [],
+				})
+				.mockResolvedValueOnce({
+					searchEntries: [
+						{
+							dn: 'cn=testuser2,ou=users,dc=example,dc=com',
+							userAccountControl: '0',
+						},
+					],
+					searchReferences: [],
+				});
+
+			mockKnexInstance.firstMock.mockResolvedValueOnce({ id: 'user-id-2' });
+
+			const result2 = await driver.getUserID({ identifier: 'testuser2' });
+
+			expect(result2).toBe('user-id-2');
+			// Verify that bind was called again (fresh bind for second operation)
+			expect(Client.prototype.bind).toHaveBeenCalledTimes(1);
+		});
+
+		it('should handle connection dropped during bind by throwing ServiceUnavailableError', async () => {
+			const driver = new LDAPAuthDriver({ knex: mockKnexInstance.mockKnex as any }, validConfig);
+
+			// Simulate connection dropped - bind throws ECONNRESET
+			vi.mocked(Client.prototype.bind).mockRejectedValue(new Error('read ECONNRESET'));
+
+			await expect(driver.getUserID({ identifier: 'testuser' })).rejects.toThrow(ServiceUnavailableError);
+		});
+
+		it('should handle connection dropped during search by throwing ServiceUnavailableError', async () => {
+			const driver = new LDAPAuthDriver({ knex: mockKnexInstance.mockKnex as any }, validConfig);
+
+			vi.mocked(Client.prototype.bind).mockResolvedValue(undefined);
+
+			// First search succeeds (bind user validation), second fails (connection dropped)
+			vi.mocked(Client.prototype.search)
+				.mockResolvedValueOnce({
+					searchEntries: [{ dn: validConfig.bindDn }],
+					searchReferences: [],
+				})
+				.mockRejectedValueOnce(new Error('read ECONNRESET'));
+
+			await expect(driver.getUserID({ identifier: 'testuser' })).rejects.toThrow(ServiceUnavailableError);
+		});
+
+		it('should handle ETIMEDOUT errors during operations', async () => {
+			const driver = new LDAPAuthDriver({ knex: mockKnexInstance.mockKnex as any }, validConfig);
+
+			vi.mocked(Client.prototype.bind).mockRejectedValue(new Error('connect ETIMEDOUT'));
+
+			await expect(driver.getUserID({ identifier: 'testuser' })).rejects.toThrow(ServiceUnavailableError);
+		});
+
+		it('should handle socket hang up errors during operations', async () => {
+			const driver = new LDAPAuthDriver({ knex: mockKnexInstance.mockKnex as any }, validConfig);
+
+			vi.mocked(Client.prototype.bind).mockRejectedValue(new Error('socket hang up'));
+
+			await expect(driver.getUserID({ identifier: 'testuser' })).rejects.toThrow(ServiceUnavailableError);
+		});
+
+		it('should handle connection refused errors', async () => {
+			const driver = new LDAPAuthDriver({ knex: mockKnexInstance.mockKnex as any }, validConfig);
+
+			vi.mocked(Client.prototype.bind).mockRejectedValue(new Error('connect ECONNREFUSED 127.0.0.1:389'));
+
+			await expect(driver.getUserID({ identifier: 'testuser' })).rejects.toThrow(ServiceUnavailableError);
+		});
+
+		it('should create new client for each verify operation (stateless verification)', async () => {
+			const driver = new LDAPAuthDriver({ knex: mockKnexInstance.mockKnex as any }, validConfig);
+
+			// Track client instantiation count
+			const clientConstructorCalls = vi.mocked(Client).mock.calls.length;
+
+			vi.mocked(Client.prototype.bind).mockResolvedValue(undefined);
+			vi.mocked(Client.prototype.unbind).mockResolvedValue(undefined);
+
+			// First verify
+			await driver.verify({ external_identifier: 'cn=user1,dc=example,dc=com' } as any, 'password1');
+
+			// Second verify
+			await driver.verify({ external_identifier: 'cn=user2,dc=example,dc=com' } as any, 'password2');
+
+			// Verify that new clients were created (constructor + 2 for verify operations)
+			// The constructor creates 1 client, each verify creates 1 more
+			expect(vi.mocked(Client).mock.calls.length).toBe(clientConstructorCalls + 2);
+		});
+
+		it('should unbind after verify even if bind fails', async () => {
+			const driver = new LDAPAuthDriver({ knex: mockKnexInstance.mockKnex as any }, validConfig);
+
+			vi.mocked(Client.prototype.bind).mockRejectedValue(new LdapInvalidCredentialsError());
+			vi.mocked(Client.prototype.unbind).mockResolvedValue(undefined);
+
+			await expect(
+				driver.verify({ external_identifier: 'cn=user,dc=example,dc=com' } as any, 'wrong-password'),
+			).rejects.toThrow(InvalidCredentialsError);
+
+			// Verify unbind was called (cleanup happens in finally block)
+			expect(Client.prototype.unbind).toHaveBeenCalled();
+		});
+
+		it('should handle unbind errors gracefully during verify cleanup', async () => {
+			const driver = new LDAPAuthDriver({ knex: mockKnexInstance.mockKnex as any }, validConfig);
+
+			vi.mocked(Client.prototype.bind).mockResolvedValue(undefined);
+			vi.mocked(Client.prototype.unbind).mockRejectedValue(new Error('Unbind failed'));
+
+			// Should not throw even if unbind fails - the catch swallows it
+			await expect(
+				driver.verify({ external_identifier: 'cn=user,dc=example,dc=com' } as any, 'password'),
+			).resolves.toBeUndefined();
+		});
+
+		it('should rebind on each refresh operation to validate connection', async () => {
+			const driver = new LDAPAuthDriver({ knex: mockKnexInstance.mockKnex as any }, validConfig);
+
+			vi.mocked(Client.prototype.bind).mockResolvedValue(undefined);
+
+			vi.mocked(Client.prototype.search)
+				.mockResolvedValueOnce({
+					searchEntries: [{ dn: validConfig.bindDn }],
+					searchReferences: [],
+				})
+				.mockResolvedValueOnce({
+					searchEntries: [
+						{
+							dn: 'cn=user,ou=users,dc=example,dc=com',
+							userAccountControl: '0',
+						},
+					],
+					searchReferences: [],
+				});
+
+			// First refresh
+			await driver.refresh({ external_identifier: 'cn=user,dc=example,dc=com' } as any);
+
+			expect(Client.prototype.bind).toHaveBeenCalledTimes(1);
+
+			// Reset mocks
+			vi.mocked(Client.prototype.bind).mockClear();
+			vi.mocked(Client.prototype.search).mockClear();
+
+			vi.mocked(Client.prototype.bind).mockResolvedValue(undefined);
+
+			vi.mocked(Client.prototype.search)
+				.mockResolvedValueOnce({
+					searchEntries: [{ dn: validConfig.bindDn }],
+					searchReferences: [],
+				})
+				.mockResolvedValueOnce({
+					searchEntries: [
+						{
+							dn: 'cn=user,ou=users,dc=example,dc=com',
+							userAccountControl: '0',
+						},
+					],
+					searchReferences: [],
+				});
+
+			// Second refresh - should rebind again
+			await driver.refresh({ external_identifier: 'cn=user,dc=example,dc=com' } as any);
+
+			// Verify bind was called again on second refresh
+			expect(Client.prototype.bind).toHaveBeenCalledTimes(1);
+		});
+
+		it('should handle server becoming unavailable between operations', async () => {
+			const driver = new LDAPAuthDriver({ knex: mockKnexInstance.mockKnex as any }, validConfig);
+
+			// First operation succeeds
+			vi.mocked(Client.prototype.bind).mockResolvedValueOnce(undefined);
+
+			vi.mocked(Client.prototype.search)
+				.mockResolvedValueOnce({
+					searchEntries: [{ dn: validConfig.bindDn }],
+					searchReferences: [],
+				})
+				.mockResolvedValueOnce({
+					searchEntries: [
+						{
+							dn: 'cn=testuser,ou=users,dc=example,dc=com',
+							userAccountControl: '0',
+						},
+					],
+					searchReferences: [],
+				});
+
+			mockKnexInstance.firstMock.mockResolvedValueOnce({ id: 'user-id' });
+
+			await driver.getUserID({ identifier: 'testuser' });
+
+			// Reset mocks for second operation
+			vi.mocked(Client.prototype.bind).mockClear();
+			vi.mocked(Client.prototype.search).mockClear();
+
+			// Server becomes unavailable
+			vi.mocked(Client.prototype.bind).mockRejectedValue(new Error('connect ECONNREFUSED 127.0.0.1:389'));
+
+			// Second operation should fail with ServiceUnavailableError
+			await expect(driver.getUserID({ identifier: 'testuser' })).rejects.toThrow(ServiceUnavailableError);
+		});
+	});
 });
