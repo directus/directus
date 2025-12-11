@@ -33,4 +33,18 @@ export const getAllMcpTools = () => ALL_TOOLS;
 
 export const findMcpTool = (name: string) => ALL_TOOLS.find((tool) => tool.name === name);
 
-export { collections, fileContent, fields, files, flows, items, operations, relations, schema, system, triggerFlow };
+export {
+	assets,
+	collections,
+	fields,
+	fileContent,
+	files,
+	flows,
+	folders,
+	items,
+	operations,
+	relations,
+	schema,
+	system,
+	triggerFlow,
+};
