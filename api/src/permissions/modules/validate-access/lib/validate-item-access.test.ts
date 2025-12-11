@@ -181,7 +181,17 @@ test('Returns allowed root fields when returnAllowedRootFields is true', async (
 	const acc = {} as unknown as Accountability;
 
 	vi.mocked(fetchPolicies).mockResolvedValue([]);
-	vi.mocked(fetchPermissions).mockResolvedValue([{ fields: ['*'] } as Permission]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{
+			fields: ['field-a', 'field-b', 'field-d'],
+			permissions: { _and: [{ id: { _eq: 1 } }] },
+		} as unknown as Permission,
+		{
+			fields: ['field-c'],
+			permissions: { _and: [{ id: { _eq: 2 } }] },
+		} as unknown as Permission,
+	]);
 
 	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([
 		{ 'field-a': 1, 'field-b': 1, 'field-c': null, 'field-d': 1 },
@@ -218,7 +228,18 @@ test('Injects all collection fields when returnAllowedRootFields is true', async
 	const acc = {} as unknown as Accountability;
 
 	vi.mocked(fetchPolicies).mockResolvedValue([]);
-	vi.mocked(fetchPermissions).mockResolvedValue([{ fields: ['*'] } as Permission]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{
+			fields: ['field-a', 'field-b'],
+			permissions: { _and: [{ id: { _eq: 1 } }] },
+		} as unknown as Permission,
+		{
+			fields: ['field-c'],
+			permissions: { _and: [{ id: { _eq: 2 } }] },
+		} as unknown as Permission,
+	]);
+
 	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ 'field-a': 1, 'field-b': 1, 'field-c': null }]);
 
 	await validateItemAccess(
@@ -260,7 +281,18 @@ test('Injects all collection fields when both returnAllowedRootFields and fields
 	const acc = {} as unknown as Accountability;
 
 	vi.mocked(fetchPolicies).mockResolvedValue([]);
-	vi.mocked(fetchPermissions).mockResolvedValue([{ fields: ['*'] } as Permission]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{
+			fields: ['field-a', 'field-b'],
+			permissions: { _and: [{ id: { _eq: 1 } }] },
+		} as unknown as Permission,
+		{
+			fields: ['field-c'],
+			permissions: { _and: [{ id: { _eq: 2 } }] },
+		} as unknown as Permission,
+	]);
+
 	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ 'field-a': 1, 'field-b': 1, 'field-c': null }]);
 
 	await validateItemAccess(
@@ -314,7 +346,17 @@ test('Returns intersection of allowed fields across multiple items', async () =>
 	const acc = {} as unknown as Accountability;
 
 	vi.mocked(fetchPolicies).mockResolvedValue([]);
-	vi.mocked(fetchPermissions).mockResolvedValue([{ fields: ['*'] } as Permission]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{
+			fields: ['field-a', 'field-b', 'field-d'],
+			permissions: { _and: [{ id: { _eq: 1 } }] },
+		} as unknown as Permission,
+		{
+			fields: ['field-a', 'field-c', 'field-d'],
+			permissions: { _and: [{ id: { _eq: 2 } }] },
+		} as unknown as Permission,
+	]);
 
 	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([
 		{ 'field-a': 1, 'field-b': 1, 'field-c': null, 'field-d': 1 },
