@@ -16,6 +16,28 @@ vi.mock('../utils/chat-request-tool-to-ai-sdk-tool.js', () => ({
 	chatRequestToolToAiSdkTool: vi.fn(),
 }));
 
+vi.mock('../../../logger/index.js', () => ({
+	useLogger: () => ({
+		warn: vi.fn(),
+		debug: vi.fn(),
+		info: vi.fn(),
+		error: vi.fn(),
+	}),
+}));
+
+const mockGetMCPClientManager = vi.fn();
+const mockGetAllExternalMCPToolsAsAiSdkTools = vi.fn();
+const mockIsExternalMCPTool = vi.fn();
+
+vi.mock('../../mcp/client/index.js', () => ({
+	getMCPClientManager: () => mockGetMCPClientManager(),
+	isExternalMCPTool: (name: string) => mockIsExternalMCPTool(name),
+}));
+
+vi.mock('../utils/external-mcp-tool-to-ai-sdk-tool.js', () => ({
+	getAllExternalMCPToolsAsAiSdkTools: (...args: unknown[]) => mockGetAllExternalMCPToolsAsAiSdkTools(...args),
+}));
+
 import { safeValidateUIMessages } from 'ai';
 import { createUiStream } from '../lib/create-ui-stream.js';
 import { chatRequestToolToAiSdkTool } from '../utils/chat-request-tool-to-ai-sdk-tool.js';
@@ -58,6 +80,19 @@ describe('aiChatPostHandler', () => {
 			success: true,
 			data: [{ role: 'user', content: 'test message' }],
 		} as any);
+
+		// Default MCP mock - not initialized
+		mockGetMCPClientManager.mockReturnValue({
+			initialized: false,
+			getServers: vi.fn(() => []),
+			getClient: vi.fn(),
+			registerServers: vi.fn(),
+			connectAll: vi.fn(),
+			disconnectAll: vi.fn(),
+		});
+
+		mockGetAllExternalMCPToolsAsAiSdkTools.mockReturnValue({});
+		mockIsExternalMCPTool.mockImplementation((name: string) => name.startsWith('mcp__'));
 	});
 
 	afterEach(() => {
@@ -308,6 +343,241 @@ describe('aiChatPostHandler', () => {
 				systemPrompt: undefined,
 				onUsage: expect.any(Function),
 			});
+		});
+	});
+
+	describe('external MCP tools handling', () => {
+		it('should include all external tools when no specific external tools are requested', async () => {
+			const externalTools = {
+				'mcp__server1__tool1': { name: 'mcp__server1__tool1', execute: vi.fn() },
+				'mcp__server1__tool2': { name: 'mcp__server1__tool2', execute: vi.fn() },
+			};
+
+			mockGetMCPClientManager.mockReturnValue({
+				initialized: true,
+				getServers: vi.fn(() => []),
+				getClient: vi.fn(),
+				registerServers: vi.fn(),
+				connectAll: vi.fn(),
+				disconnectAll: vi.fn(),
+			});
+
+			mockGetAllExternalMCPToolsAsAiSdkTools.mockReturnValue(externalTools);
+
+			mockReq.body = {
+				provider: 'openai',
+				model: 'gpt-5',
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools: ['search'], // Only internal tool requested
+			};
+
+			vi.mocked(chatRequestToolToAiSdkTool).mockImplementation((opts: any) => {
+				const t = opts.chatRequestTool;
+				const name = typeof t === 'string' ? t : t.name;
+				return { name, mocked: true } as any;
+			});
+
+			await aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext);
+
+			expect(vi.mocked(createUiStream)).toHaveBeenCalledWith(
+				expect.any(Array),
+				expect.objectContaining({
+					tools: expect.objectContaining({
+						search: expect.any(Object),
+						'mcp__server1__tool1': expect.any(Object),
+						'mcp__server1__tool2': expect.any(Object),
+					}),
+				}),
+			);
+		});
+
+		it('should include only specific external tools when explicitly requested', async () => {
+			const externalTools = {
+				'mcp__server1__tool1': { name: 'mcp__server1__tool1', execute: vi.fn() },
+				'mcp__server1__tool2': { name: 'mcp__server1__tool2', execute: vi.fn() },
+			};
+
+			mockGetMCPClientManager.mockReturnValue({
+				initialized: true,
+				getServers: vi.fn(() => []),
+				getClient: vi.fn(),
+				registerServers: vi.fn(),
+				connectAll: vi.fn(),
+				disconnectAll: vi.fn(),
+			});
+
+			mockGetAllExternalMCPToolsAsAiSdkTools.mockReturnValue(externalTools);
+
+			mockReq.body = {
+				provider: 'openai',
+				model: 'gpt-5',
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools: ['search', 'mcp__server1__tool1'], // Only tool1 requested
+			};
+
+			vi.mocked(chatRequestToolToAiSdkTool).mockImplementation((opts: any) => {
+				const t = opts.chatRequestTool;
+				const name = typeof t === 'string' ? t : t.name;
+				return { name, mocked: true } as any;
+			});
+
+			await aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext);
+
+			const createUiStreamCall = vi.mocked(createUiStream).mock.calls[0]![1];
+			const toolsResult = createUiStreamCall.tools;
+
+			expect(toolsResult).toHaveProperty('search');
+			expect(toolsResult).toHaveProperty('mcp__server1__tool1');
+			expect(toolsResult).not.toHaveProperty('mcp__server1__tool2');
+		});
+
+		it('should skip external MCP tools in chatRequestToolToAiSdkTool loop', async () => {
+			mockGetMCPClientManager.mockReturnValue({
+				initialized: true,
+				getServers: vi.fn(() => []),
+				getClient: vi.fn(),
+				registerServers: vi.fn(),
+				connectAll: vi.fn(),
+				disconnectAll: vi.fn(),
+			});
+
+			mockGetAllExternalMCPToolsAsAiSdkTools.mockReturnValue({
+				'mcp__server1__tool1': { name: 'mcp__server1__tool1', execute: vi.fn() },
+			});
+
+			mockReq.body = {
+				provider: 'openai',
+				model: 'gpt-5',
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools: ['search', 'mcp__server1__tool1'],
+			};
+
+			vi.mocked(chatRequestToolToAiSdkTool).mockImplementation((opts: any) => {
+				const t = opts.chatRequestTool;
+				const name = typeof t === 'string' ? t : t.name;
+				return { name, mocked: true } as any;
+			});
+
+			await aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext);
+
+			// chatRequestToolToAiSdkTool should only be called for internal tools
+			const calls = vi.mocked(chatRequestToolToAiSdkTool).mock.calls;
+
+			const toolNames = calls.map((call) => {
+				const t = call[0].chatRequestTool;
+				return typeof t === 'string' ? t : t.name;
+			});
+
+			expect(toolNames).toContain('search');
+			expect(toolNames).not.toContain('mcp__server1__tool1');
+		});
+
+		it('should initialize MCP client manager when external servers are configured', async () => {
+			const registerServers = vi.fn();
+			const connectAll = vi.fn();
+
+			mockGetMCPClientManager.mockReturnValue({
+				initialized: false,
+				getServers: vi.fn(() => []),
+				getClient: vi.fn(),
+				registerServers,
+				connectAll,
+				disconnectAll: vi.fn(),
+			});
+
+			mockRes.locals = {
+				ai: {
+					apiKeys: { openai: 'test-key' },
+					mcpExternalServers: [
+						{
+							id: 'test-server',
+							name: 'Test Server',
+							url: 'https://mcp.example.com',
+							enabled: true,
+							toolApproval: 'ask',
+						},
+					],
+				},
+			};
+
+			mockReq.body = {
+				provider: 'openai',
+				model: 'gpt-5',
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools: [],
+			};
+
+			await aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext);
+
+			expect(registerServers).toHaveBeenCalled();
+			expect(connectAll).toHaveBeenCalled();
+		});
+
+		it('should continue without external tools when MCP initialization fails', async () => {
+			mockGetMCPClientManager.mockReturnValue({
+				initialized: false,
+				getServers: vi.fn(() => []),
+				getClient: vi.fn(),
+				registerServers: vi.fn(),
+				connectAll: vi.fn(() => Promise.reject(new Error('Connection failed'))),
+				disconnectAll: vi.fn(),
+			});
+
+			mockRes.locals = {
+				ai: {
+					apiKeys: { openai: 'test-key' },
+					mcpExternalServers: [
+						{
+							id: 'test-server',
+							name: 'Test Server',
+							url: 'https://mcp.example.com',
+							enabled: true,
+							toolApproval: 'ask',
+						},
+					],
+				},
+			};
+
+			mockReq.body = {
+				provider: 'openai',
+				model: 'gpt-5',
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools: [],
+			};
+
+			// Should not throw - continues without external tools
+			await expect(aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext)).resolves.not.toThrow();
+
+			expect(vi.mocked(createUiStream)).toHaveBeenCalled();
+		});
+
+		it('should not include external tools when client manager is not initialized', async () => {
+			mockGetMCPClientManager.mockReturnValue({
+				initialized: false,
+				getServers: vi.fn(() => []),
+				getClient: vi.fn(),
+				registerServers: vi.fn(),
+				connectAll: vi.fn(),
+				disconnectAll: vi.fn(),
+			});
+
+			mockReq.body = {
+				provider: 'openai',
+				model: 'gpt-5',
+				messages: [{ role: 'user', content: 'Hello' }],
+				tools: ['search'],
+			};
+
+			vi.mocked(chatRequestToolToAiSdkTool).mockImplementation((opts: any) => {
+				const t = opts.chatRequestTool;
+				const name = typeof t === 'string' ? t : t.name;
+				return { name, mocked: true } as any;
+			});
+
+			await aiChatPostHandler(mockReq as Request, mockRes as Response, mockNext);
+
+			// getAllExternalMCPToolsAsAiSdkTools should not be called when not initialized
+			expect(mockGetAllExternalMCPToolsAsAiSdkTools).not.toHaveBeenCalled();
 		});
 	});
 });
