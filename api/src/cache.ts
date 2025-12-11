@@ -3,7 +3,6 @@ import type { SchemaOverview } from '@directus/types';
 import Keyv, { type KeyvOptions } from 'keyv';
 import { useBus } from './bus/index.js';
 import { useLogger } from './logger/index.js';
-import { clearCache as clearPermissionCache } from './permissions/cache.js';
 import { redisConfigAvailable } from './redis/index.js';
 import { compress, decompress } from './utils/compress.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
@@ -103,8 +102,8 @@ export async function clearSystemCache(opts?: {
 	await localSchemaCache.clear();
 	memorySchemaCache = null;
 
-	// Since a lot of cached permission function rely on the schema it needs to be cleared as well
-	await clearPermissionCache();
+	// Not sure if we actually want this or if it's better to do this case by case
+	// await clearPermissionCache();
 
 	messenger.publish<CacheMessage>('schemaChanged', { autoPurgeCache: opts?.autoPurgeCache });
 }

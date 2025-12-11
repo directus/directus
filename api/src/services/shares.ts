@@ -6,7 +6,6 @@ import jwt from 'jsonwebtoken';
 import type { StringValue } from 'ms';
 import { nanoid } from 'nanoid';
 import { useLogger } from '../logger/index.js';
-import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { DirectusTokenPayload, ShareData } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
@@ -43,18 +42,6 @@ export class SharesService extends ItemsService {
 		}
 
 		return super.createOne(data, opts);
-	}
-
-	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		await clearPermissionsCache();
-
-		return super.updateMany(keys, data, opts);
-	}
-
-	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		await clearPermissionsCache();
-
-		return super.deleteMany(keys, opts);
 	}
 
 	async login(

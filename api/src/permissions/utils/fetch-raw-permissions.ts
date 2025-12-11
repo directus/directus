@@ -20,26 +20,26 @@ export const fetchRawPermissions = withCache(
 	(invalidate, _, [options], permissions) => {
 		const permissionsIds = permissions.map((p) => p.id);
 
-		emitter.onAction('directus_permissions.create', function self({ payload }) {
+		emitter.onAction('permissions.create', function self({ payload }) {
 			if (!options.policies.includes(payload['policy'])) return;
 			if (options.action && payload['action'] !== options.action) return;
 			if (options.collections && !options.collections.includes(payload['collection'])) return;
 
 			invalidate();
-			emitter.offAction('directus_permissions.create', self);
+			emitter.offAction('permissions.create', self);
 		});
 
-		emitter.onAction('directus_permissions.update', function self({ keys }) {
+		emitter.onAction('permissions.update', function self({ keys }) {
 			if (intersection(permissionsIds, keys).length > 0) {
 				invalidate();
-				emitter.offAction('directus_permissions.update', self);
+				emitter.offAction('permissions.update', self);
 			}
 		});
 
-		emitter.onAction('directus_permissions.delete', function self({ keys }) {
+		emitter.onAction('permissions.delete', function self({ keys }) {
 			if (intersection(permissionsIds, keys).length > 0) {
 				invalidate();
-				emitter.offAction('directus_permissions.update', self);
+				emitter.offAction('permissions.update', self);
 			}
 		});
 	},

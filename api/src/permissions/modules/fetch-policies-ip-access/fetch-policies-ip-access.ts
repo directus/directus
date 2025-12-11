@@ -15,39 +15,39 @@ export const fetchPoliciesIpAccess = withCache(
 		roles,
 	}),
 	(invalidate, [accessIds, policyIds], [{ roles, user }]) => {
-		emitter.onAction('directus_access.create', function self({ payload }) {
+		emitter.onAction('access.create', function self({ payload }) {
 			// This is not possible for the update cases as the field itself might not be updated
 			if (roles.includes(payload['role']) || !user || payload['user'] === user) {
 				invalidate();
-				emitter.offAction('directus_access.create', self);
+				emitter.offAction('access.create', self);
 			}
 		});
 
-		emitter.onAction('directus_access.update', function self({ keys }) {
+		emitter.onAction('access.update', function self({ keys }) {
 			if (intersection(accessIds, keys).length > 0) {
 				invalidate();
-				emitter.offAction('directus_access.update', self);
+				emitter.offAction('access.update', self);
 			}
 		});
 
-		emitter.onAction('directus_policies.update', function self({ keys }) {
+		emitter.onAction('policies.update', function self({ keys }) {
 			if (intersection(policyIds, keys).length > 0) {
 				invalidate();
-				emitter.offAction('directus_policies.update', self);
+				emitter.offAction('policies.update', self);
 			}
 		});
 
-		emitter.onAction('directus_access.delete', function self({ keys }) {
+		emitter.onAction('access.delete', function self({ keys }) {
 			if (intersection(accessIds, keys).length > 0) {
 				invalidate();
-				emitter.offAction('directus_access.delete', self);
+				emitter.offAction('access.delete', self);
 			}
 		});
 
-		emitter.onAction('directus_policies.delete', function self({ keys }) {
+		emitter.onAction('policies.delete', function self({ keys }) {
 			if (intersection(policyIds, keys).length > 0) {
 				invalidate();
-				emitter.offAction('directus_policies.delete', self);
+				emitter.offAction('policies.delete', self);
 			}
 		});
 	},

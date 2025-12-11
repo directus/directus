@@ -35,36 +35,36 @@ const fetchGlobalAccessForRoles = withCache(
 		ip,
 	}),
 	(invalidate, _, [roles]) => {
-		emitter.onAction('directus_access.create', function self({ payload }) {
+		emitter.onAction('access.create', function self({ payload }) {
 			// This is not possible for the update cases as the field itself might not be updated
 			if (roles.includes(payload['role'])) {
 				invalidate();
-				emitter.offAction('directus_access.create', self);
+				emitter.offAction('access.create', self);
 			}
 		});
 
-		emitter.onAction('directus_access.update', function self() {
+		emitter.onAction('access.update', function self() {
 			// Could be optimized to only invalidate if the updated ids match the fetched access ids
 			invalidate();
-			emitter.offAction('directus_access.update', self);
+			emitter.offAction('access.update', self);
 		});
 
-		emitter.onAction('directus_policies.update', function self() {
+		emitter.onAction('policies.update', function self() {
 			// Could be optimized to only invalidate if the updated ids match the fetched policy ids
 			invalidate();
-			emitter.offAction('directus_policies.update', self);
+			emitter.offAction('policies.update', self);
 		});
 
-		emitter.onAction('directus_access.delete', function self() {
+		emitter.onAction('access.delete', function self() {
 			// Could be optimized to only invalidate if the deleted ids match the fetched access ids
 			invalidate();
-			emitter.offAction('directus_access.delete', self);
+			emitter.offAction('access.delete', self);
 		});
 
-		emitter.onAction('directus_policies.delete', function self() {
+		emitter.onAction('policies.delete', function self() {
 			// Could be optimized to only invalidate if the updated ids match the fetched policy ids
 			invalidate();
-			emitter.offAction('directus_policies.delete', self);
+			emitter.offAction('policies.delete', self);
 		});
 	},
 );
@@ -78,36 +78,36 @@ const fetchGlobalAccessForUser = withCache(
 		ip,
 	}),
 	(invalidate, _, [user]) => {
-		emitter.onAction('directus_access.create', function self({ payload }) {
+		emitter.onAction('access.create', function self({ payload }) {
 			// This is not possible for the update cases as the field itself might not be updated
 			if (!user || payload['user'] === user) {
 				invalidate();
-				emitter.offAction('directus_access.create', self);
+				emitter.offAction('access.create', self);
 			}
 		});
 
-		emitter.onAction('directus_access.update', function self() {
+		emitter.onAction('access.update', function self() {
 			// Could be optimized to only invalidate if the updated ids match the fetched access ids
 			invalidate();
-			emitter.offAction('directus_access.update', self);
+			emitter.offAction('access.update', self);
 		});
 
-		emitter.onAction('directus_policies.update', function self() {
+		emitter.onAction('policies.update', function self() {
 			// Could be optimized to only invalidate if the updated ids match the fetched policy ids
 			invalidate();
-			emitter.offAction('directus_policies.update', self);
+			emitter.offAction('policies.update', self);
 		});
 
-		emitter.onAction('directus_access.delete', function self() {
+		emitter.onAction('access.delete', function self() {
 			// Could be optimized to only invalidate if the deleted ids match the fetched access ids
 			invalidate();
-			emitter.offAction('directus_access.delete', self);
+			emitter.offAction('access.delete', self);
 		});
 
-		emitter.onAction('directus_policies.delete', function self() {
+		emitter.onAction('policies.delete', function self() {
 			// Could be optimized to only invalidate if the updated ids match the fetched policy ids
 			invalidate();
-			emitter.offAction('directus_policies.delete', self);
+			emitter.offAction('policies.delete', self);
 		});
 	},
 );

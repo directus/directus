@@ -15,17 +15,17 @@ export const fetchRolesTree = withCache(
 	(invalidate, _, __, roles) => {
 		// Don't have to invalidate on create as new roles can't be in the tree yet
 
-		emitter.onAction('directus_roles.update', function self({ keys, payload }) {
+		emitter.onAction('roles.update', function self({ keys, payload }) {
 			if (intersection(roles, keys).length > 0 && 'parent' in payload) {
 				invalidate();
-				emitter.offAction('directus_roles.update', self);
+				emitter.offAction('roles.update', self);
 			}
 		});
 
-		emitter.onAction('directus_roles.delete', function self({ keys }) {
+		emitter.onAction('roles.delete', function self({ keys }) {
 			if (intersection(roles, keys).length > 0) {
 				invalidate();
-				emitter.offAction('directus_roles.update', self);
+				emitter.offAction('roles.update', self);
 			}
 		});
 	},

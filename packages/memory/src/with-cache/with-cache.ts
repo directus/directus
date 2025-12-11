@@ -9,6 +9,7 @@ export type ProvideFunction<T extends any[]> = (...args: T) => void;
 export type InvalidateFunction = () => void;
 
 const activeWithCaches = new Set<() => void>();
+const activeInvalidators = new Set<string>();
 
 /**
  * Wraps a function with caching capabilities.
@@ -39,11 +40,12 @@ export function withCache<
 ): (...args: P) => Promise<Awaited<ReturnType<F>>> {
 	return async (...args) => {
 		const hashArgs = prepareArg ? prepareArg(...args) : args;
-		const key = namespace + '-' + getSimpleHash(JSON.stringify(hashArgs));
+		const key = namespace + ':' + getSimpleHash(JSON.stringify(hashArgs));
 
 		const cached = await cache.get(key);
 
-		if (cached !== undefined) {
+		// If an instance starts on existing cache, we want to make sure that the invalidation logic is initialized
+		if (cached !== undefined && (!invalidate || activeInvalidators.has(key))) {
 			return cached as Awaited<ReturnType<F>>;
 		}
 
@@ -52,6 +54,7 @@ export function withCache<
 
 		const clearCache: InvalidateFunction = () => {
 			cache.delete(key);
+			activeInvalidators.delete(key);
 
 			for (const clearParentCache of parentActiveCaches) {
 				clearParentCache();
@@ -70,7 +73,10 @@ export function withCache<
 
 		activeWithCaches.delete(clearCache);
 
-		if (invalidate) invalidate(clearCache, providedArgs as V, args, res);
+		if (invalidate) {
+			invalidate(clearCache, providedArgs as V, args, res);
+			activeInvalidators.add(key);
+		}
 
 		cache.set(key, res);
 

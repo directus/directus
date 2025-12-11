@@ -21,42 +21,42 @@ export const fetchShareInfo = withCache(
 	(invalidate, _, [shareId], { user_created }) => {
 		// Don't need to invalidate create as we're fetching a single item
 
-		emitter.onAction('directus_shares.update', function self({ keys, payload }) {
+		emitter.onAction('shares.update', function self({ keys, payload }) {
 			if (
 				keys.includes(shareId) &&
 				('role' in payload || 'collection' in payload || 'item' in payload || 'user_created' in payload)
 			) {
 				invalidate();
-				emitter.offAction('directus_shares.update', self);
+				emitter.offAction('shares.update', self);
 			}
 		});
 
-		emitter.onAction('directus_users.update', function self({ keys, payload }) {
+		emitter.onAction('users.update', function self({ keys, payload }) {
 			if (keys.includes(user_created.id) && 'role' in payload) {
 				invalidate();
-				emitter.offAction('directus_users.update', self);
+				emitter.offAction('users.update', self);
 			}
 		});
 
-		emitter.onAction('directus_shares.delete', function self({ keys }) {
+		emitter.onAction('shares.delete', function self({ keys }) {
 			if (keys.includes(shareId)) {
 				invalidate();
-				emitter.offAction('directus_shares.delete', self);
+				emitter.offAction('shares.delete', self);
 			}
 		});
 
-		emitter.onAction('directus_users.delete', function self({ keys }) {
+		emitter.onAction('users.delete', function self({ keys }) {
 			if (keys.includes(user_created.id)) {
 				invalidate();
-				emitter.offAction('directus_users.delete', self);
+				emitter.offAction('users.delete', self);
 			}
 		});
 
 		// Do we need to care about on delete set null here?
-		emitter.onAction('directus_roles.delete', function self({ keys }) {
+		emitter.onAction('roles.delete', function self({ keys }) {
 			if (keys.includes(user_created.role)) {
 				invalidate();
-				emitter.offAction('directus_users.delete', self);
+				emitter.offAction('users.delete', self);
 			}
 		});
 	},

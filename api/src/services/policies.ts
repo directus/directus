@@ -3,7 +3,6 @@ import type { AbstractServiceOptions, MutationOptions, Policy, PrimaryKey } from
 import { UserIntegrityCheckFlag } from '@directus/types';
 import { getMatch } from 'ip-matching';
 import { clearSystemCache } from '../cache.js';
-import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { ItemsService } from './items.js';
 
 export class PoliciesService extends ItemsService<Policy> {
@@ -52,13 +51,7 @@ export class PoliciesService extends ItemsService<Policy> {
 		// A policy has been created, but the attachment to a user/role happens in the AccessService,
 		// so no need to check user integrity
 
-		const result = await super.createOne(data, opts);
-
-		// TODO is this necessary? Since the attachment should be handled in the AccessService
-		// A new policy has created, clear the permissions cache
-		await clearPermissionsCache();
-
-		return result;
+		return await super.createOne(data, opts);
 	}
 
 	override async updateMany(
