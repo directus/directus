@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
 import { parseDate } from '@/utils/parse-date';
+import { formatDateToTimezone, getLocalTimezoneOffset } from '@/utils/timezones';
 import { isValid, parseISO } from 'date-fns';
 import { computed, ref } from 'vue';
 
@@ -27,72 +28,6 @@ const emit = defineEmits<{
 const dateTimeMenu = ref();
 const isValidValue = computed(() => (props.value ? isValid(parseDate(props.value, props.type)) : false));
 
-/**
- * Converts a date-picker ISO value (which represents time in selected timezone) back to UTC.
- * The date-picker emits an ISO string, but we need to interpret it as being in the selected timezone.
- */
-function convertDateBetweenTZorUTC(isoValue: string | null, timezone: string | null, toUTC = true): string | null {
-	if (!isoValue || !timezone || props.type !== 'timestamp') {
-		return isoValue;
-	}
-
-	try {
-		const date = parseISO(isoValue);
-
-		if (!isValid(date)) return isoValue;
-
-		// Format this UTC date in the target timezone to see what it shows
-		const formatter = new Intl.DateTimeFormat('en-US', {
-			timeZone: timezone,
-			year: 'numeric',
-			month: '2-digit',
-			day: '2-digit',
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit',
-			hour12: false,
-		});
-
-		// Get the date components from the ISO value (these represent time in the selected timezone)
-		const year = date.getUTCFullYear();
-		const month = date.getUTCMonth();
-		const day = date.getUTCDate();
-		const hour = date.getUTCHours();
-		const minute = date.getUTCMinutes();
-		const second = date.getUTCSeconds();
-
-		// Create a UTC date with these components
-		const desiredUtc = new Date(Date.UTC(year, month, day, hour, minute, second));
-
-		const parts = formatter.formatToParts(desiredUtc);
-		const partsMap: Record<string, string> = {};
-
-		for (const part of parts) {
-			partsMap[part.type] = part.value;
-		}
-
-		// Calculate the difference between what we want and what we got
-		const actualTime = new Date(
-			parseInt(partsMap.year!),
-			parseInt(partsMap.month!) - 1,
-			parseInt(partsMap.day!),
-			parseInt(partsMap.hour!),
-			parseInt(partsMap.minute!),
-			parseInt(partsMap.second!),
-		).getTime();
-
-		const desiredTime = new Date(year, month, day, hour, minute, second).getTime();
-		const diffMs = desiredTime - actualTime;
-
-		// Adjust the UTC date by the difference
-		const adjustedUtc = new Date(desiredUtc.getTime() + (toUTC ? -diffMs : diffMs));
-
-		return adjustedUtc.toISOString();
-	} catch {
-		return isoValue;
-	}
-}
-
 function unsetValue(e: any) {
 	e.preventDefault();
 	e.stopPropagation();
@@ -102,12 +37,15 @@ function unsetValue(e: any) {
 // Computed property for date-picker value with timezone conversion
 const tzValue = computed({
 	get() {
+		const dateStr = props.value || '';
+		const date = parseISO(dateStr);
+
 		// Convert UTC value to timezone-adjusted value for date-picker display
-		if (props.type === 'timestamp' && props.tz && props.value) {
-			return convertDateBetweenTZorUTC(props.value, props.tz, false) || '';
+		if (isValid(date) && props.type === 'timestamp' && props.tz && props.value) {
+			return formatDateToTimezone(date, props.tz).toISOString();
 		}
 
-		return props.value || '';
+		return dateStr;
 	},
 	set(value: string | null) {
 		if (!value) {
@@ -116,9 +54,12 @@ const tzValue = computed({
 		}
 
 		// Convert date-picker value back to UTC considering the selected timezone
-		if (props.type === 'timestamp' && props.tz) {
-			const adjustedValue = convertDateBetweenTZorUTC(value, props.tz, true);
-			emit('input', adjustedValue);
+		const date = parseISO(value);
+
+		if (isValid(date) && props.type === 'timestamp' && props.tz) {
+			const offset = getLocalTimezoneOffset(date, props.tz);
+			date.setHours(date.getHours() - offset);
+			emit('input', date.toISOString());
 			return;
 		}
 
@@ -130,7 +71,7 @@ const tzValue = computed({
 <template>
 	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
 		<template #activator="{ toggle, active }">
-			<v-list-item block clickable :disabled :active @click="toggle">
+			<v-list-item block clickable :disabled :non-editable :active @click="toggle">
 				<template v-if="isValidValue">
 					<use-datetime v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
 						{{ datetime }}
@@ -140,12 +81,7 @@ const tzValue = computed({
 				<div class="spacer" />
 
 				<template v-if="!disabled">
-					<v-icon
-						v-if="tz"
-						v-tooltip="tz"
-						name="schedule"
-						class="timezone-icon"
-					/>
+					<v-icon v-if="tz" v-tooltip="tz" small name="schedule" class="timezone-icon" />
 
 					<v-icon
 						:name="value ? 'clear' : 'today'"
