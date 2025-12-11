@@ -84,9 +84,11 @@ describe('file-content tool', () => {
 				truncated: false,
 			},
 		});
+
 		expect(mockFilesService.readOne).toHaveBeenCalledWith('test-file-id', {
 			fields: ['id', 'storage', 'filename_disk', 'filename_download', 'type', 'filesize'],
 		});
+
 		expect(extractTextFromBuffer).toHaveBeenCalled();
 	});
 
