@@ -112,7 +112,7 @@ async function duplicateDashboard(id: string, toggle: () => void) {
 	toggle();
 }
 
-function exportDasboard(ids: string[]) {
+function exportDashboard(ids: string[]) {
 	const endpoint = getEndpoint('directus_dashboards');
 
 	// usually getEndpoint contains leading slash, but here we need to remove it
@@ -218,7 +218,7 @@ async function batchDelete() {
 				icon
 				secondary
 				small
-				@click="exportDasboard(selection)"
+				@click="exportDashboard(selection)"
 			>
 				<v-icon name="download" outline small />
 			</v-button>
@@ -330,7 +330,7 @@ async function batchDelete() {
 								</v-list-item-content>
 							</v-list-item>
 
-							<v-list-item class="warning" clickable @click="exportDasboard([item.id])">
+							<v-list-item class="warning" clickable @click="exportDashboard([item.id])">
 								<v-list-item-icon>
 									<v-icon name="download" />
 								</v-list-item-icon>
