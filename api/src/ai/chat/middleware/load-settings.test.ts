@@ -36,6 +36,7 @@ describe('loadSettings', () => {
 			ai_openai_api_key: 'test-openai-key',
 			ai_anthropic_api_key: 'test-anthropic-key',
 			ai_system_prompt: 'You are Directus.',
+			ai_mcp_external_servers: null,
 		});
 
 		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -43,7 +44,7 @@ describe('loadSettings', () => {
 		expect(mockGetSchema).toHaveBeenCalledTimes(1);
 
 		expect(mockReadSingleton).toHaveBeenCalledWith({
-			fields: ['ai_openai_api_key', 'ai_anthropic_api_key', 'ai_system_prompt'],
+			fields: ['ai_openai_api_key', 'ai_anthropic_api_key', 'ai_system_prompt', 'ai_mcp_external_servers'],
 		});
 
 		expect(mockResponse.locals).toEqual({
@@ -53,6 +54,7 @@ describe('loadSettings', () => {
 					anthropic: 'test-anthropic-key',
 				},
 				systemPrompt: 'You are Directus.',
+				mcpExternalServers: [],
 			},
 		});
 
@@ -64,6 +66,7 @@ describe('loadSettings', () => {
 			ai_openai_api_key: undefined,
 			ai_anthropic_api_key: undefined,
 			ai_system_prompt: undefined,
+			ai_mcp_external_servers: undefined,
 		});
 
 		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -71,7 +74,7 @@ describe('loadSettings', () => {
 		expect(mockGetSchema).toHaveBeenCalledTimes(1);
 
 		expect(mockReadSingleton).toHaveBeenCalledWith({
-			fields: ['ai_openai_api_key', 'ai_anthropic_api_key', 'ai_system_prompt'],
+			fields: ['ai_openai_api_key', 'ai_anthropic_api_key', 'ai_system_prompt', 'ai_mcp_external_servers'],
 		});
 
 		expect(mockResponse.locals).toEqual({
@@ -81,6 +84,7 @@ describe('loadSettings', () => {
 					anthropic: undefined,
 				},
 				systemPrompt: undefined,
+				mcpExternalServers: [],
 			},
 		});
 
@@ -92,6 +96,7 @@ describe('loadSettings', () => {
 			ai_openai_api_key: 'test-openai-key',
 			ai_anthropic_api_key: undefined,
 			ai_system_prompt: 'System prompt here',
+			ai_mcp_external_servers: null,
 		});
 
 		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -103,6 +108,7 @@ describe('loadSettings', () => {
 					anthropic: undefined,
 				},
 				systemPrompt: 'System prompt here',
+				mcpExternalServers: [],
 			},
 		});
 
@@ -114,6 +120,7 @@ describe('loadSettings', () => {
 			ai_openai_api_key: undefined,
 			ai_anthropic_api_key: 'test-anthropic-key',
 			ai_system_prompt: undefined,
+			ai_mcp_external_servers: null,
 		});
 
 		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -125,6 +132,7 @@ describe('loadSettings', () => {
 					anthropic: 'test-anthropic-key',
 				},
 				systemPrompt: undefined,
+				mcpExternalServers: [],
 			},
 		});
 
@@ -166,6 +174,7 @@ describe('loadSettings', () => {
 			ai_openai_api_key: null,
 			ai_anthropic_api_key: null,
 			ai_system_prompt: null,
+			ai_mcp_external_servers: null,
 		});
 
 		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -177,6 +186,7 @@ describe('loadSettings', () => {
 					anthropic: null,
 				},
 				systemPrompt: null,
+				mcpExternalServers: [],
 			},
 		});
 
@@ -188,6 +198,7 @@ describe('loadSettings', () => {
 			ai_openai_api_key: '',
 			ai_anthropic_api_key: '',
 			ai_system_prompt: '',
+			ai_mcp_external_servers: null,
 		});
 
 		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -199,9 +210,300 @@ describe('loadSettings', () => {
 					anthropic: '',
 				},
 				systemPrompt: '',
+				mcpExternalServers: [],
 			},
 		});
 
 		expect(nextFunction).toHaveBeenCalledTimes(1);
+	});
+
+	test('should load MCP external servers from settings', async () => {
+		const mockServers = [
+			{
+				id: 'test-server',
+				name: 'Test Server',
+				url: 'https://mcp.example.com',
+				enabled: true,
+				toolApproval: 'ask',
+			},
+		];
+
+		mockReadSingleton.mockResolvedValue({
+			ai_openai_api_key: 'test-key',
+			ai_anthropic_api_key: 'test-key',
+			ai_system_prompt: 'Test prompt',
+			ai_mcp_external_servers: JSON.stringify(mockServers),
+		});
+
+		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
+
+		expect(mockResponse.locals).toEqual({
+			ai: {
+				apiKeys: {
+					openai: 'test-key',
+					anthropic: 'test-key',
+				},
+				systemPrompt: 'Test prompt',
+				mcpExternalServers: mockServers,
+			},
+		});
+
+		expect(nextFunction).toHaveBeenCalledTimes(1);
+	});
+
+	test('should handle already-parsed MCP external servers array', async () => {
+		const mockServers = [
+			{
+				id: 'test-server',
+				name: 'Test Server',
+				url: 'https://mcp.example.com',
+				enabled: true,
+				toolApproval: 'ask',
+			},
+		];
+
+		mockReadSingleton.mockResolvedValue({
+			ai_openai_api_key: 'test-key',
+			ai_anthropic_api_key: 'test-key',
+			ai_system_prompt: 'Test prompt',
+			ai_mcp_external_servers: mockServers, // Already an array
+		});
+
+		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
+
+		expect(mockResponse.locals).toEqual({
+			ai: {
+				apiKeys: {
+					openai: 'test-key',
+					anthropic: 'test-key',
+				},
+				systemPrompt: 'Test prompt',
+				mcpExternalServers: mockServers,
+			},
+		});
+
+		expect(nextFunction).toHaveBeenCalledTimes(1);
+	});
+
+	test('should transform flat bearer auth fields to nested structure', async () => {
+		const rawServers = [
+			{
+				id: 'bearer-server',
+				name: 'Bearer Auth Server',
+				url: 'https://mcp.example.com',
+				enabled: true,
+				toolApproval: 'always',
+				authType: 'bearer',
+				authToken: 'my-secret-token',
+			},
+		];
+
+		mockReadSingleton.mockResolvedValue({
+			ai_openai_api_key: 'test-key',
+			ai_anthropic_api_key: 'test-key',
+			ai_system_prompt: 'Test prompt',
+			ai_mcp_external_servers: JSON.stringify(rawServers),
+		});
+
+		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
+
+		expect(mockResponse.locals).toEqual({
+			ai: {
+				apiKeys: {
+					openai: 'test-key',
+					anthropic: 'test-key',
+				},
+				systemPrompt: 'Test prompt',
+				mcpExternalServers: [
+					{
+						id: 'bearer-server',
+						name: 'Bearer Auth Server',
+						url: 'https://mcp.example.com',
+						enabled: true,
+						toolApproval: 'always',
+						auth: {
+							type: 'bearer',
+							token: 'my-secret-token',
+						},
+					},
+				],
+			},
+		});
+	});
+
+	test('should transform flat basic auth fields to nested structure', async () => {
+		const rawServers = [
+			{
+				id: 'basic-server',
+				name: 'Basic Auth Server',
+				url: 'https://mcp.example.com',
+				enabled: true,
+				toolApproval: 'ask',
+				authType: 'basic',
+				authUsername: 'myuser',
+				authPassword: 'mypassword',
+			},
+		];
+
+		mockReadSingleton.mockResolvedValue({
+			ai_openai_api_key: 'test-key',
+			ai_anthropic_api_key: 'test-key',
+			ai_system_prompt: 'Test prompt',
+			ai_mcp_external_servers: rawServers, // Already parsed array
+		});
+
+		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
+
+		expect(mockResponse.locals).toEqual({
+			ai: {
+				apiKeys: {
+					openai: 'test-key',
+					anthropic: 'test-key',
+				},
+				systemPrompt: 'Test prompt',
+				mcpExternalServers: [
+					{
+						id: 'basic-server',
+						name: 'Basic Auth Server',
+						url: 'https://mcp.example.com',
+						enabled: true,
+						toolApproval: 'ask',
+						auth: {
+							type: 'basic',
+							username: 'myuser',
+							password: 'mypassword',
+						},
+					},
+				],
+			},
+		});
+	});
+
+	test('should not include auth when authType is none', async () => {
+		const rawServers = [
+			{
+				id: 'no-auth-server',
+				name: 'No Auth Server',
+				url: 'https://mcp.example.com',
+				enabled: true,
+				toolApproval: 'disabled',
+				authType: 'none',
+			},
+		];
+
+		mockReadSingleton.mockResolvedValue({
+			ai_openai_api_key: 'test-key',
+			ai_anthropic_api_key: 'test-key',
+			ai_system_prompt: 'Test prompt',
+			ai_mcp_external_servers: rawServers,
+		});
+
+		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
+
+		expect(mockResponse.locals).toEqual({
+			ai: {
+				apiKeys: {
+					openai: 'test-key',
+					anthropic: 'test-key',
+				},
+				systemPrompt: 'Test prompt',
+				mcpExternalServers: [
+					{
+						id: 'no-auth-server',
+						name: 'No Auth Server',
+						url: 'https://mcp.example.com',
+						enabled: true,
+						toolApproval: 'disabled',
+					},
+				],
+			},
+		});
+	});
+
+	test('should not include auth when bearer is missing token', async () => {
+		const rawServers = [
+			{
+				id: 'incomplete-bearer',
+				name: 'Incomplete Bearer',
+				url: 'https://mcp.example.com',
+				enabled: true,
+				toolApproval: 'always',
+				authType: 'bearer',
+				// authToken is missing
+			},
+		];
+
+		mockReadSingleton.mockResolvedValue({
+			ai_openai_api_key: 'test-key',
+			ai_anthropic_api_key: 'test-key',
+			ai_system_prompt: 'Test prompt',
+			ai_mcp_external_servers: rawServers,
+		});
+
+		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
+
+		expect(mockResponse.locals).toEqual({
+			ai: {
+				apiKeys: {
+					openai: 'test-key',
+					anthropic: 'test-key',
+				},
+				systemPrompt: 'Test prompt',
+				mcpExternalServers: [
+					{
+						id: 'incomplete-bearer',
+						name: 'Incomplete Bearer',
+						url: 'https://mcp.example.com',
+						enabled: true,
+						toolApproval: 'always',
+						// No auth property when token is missing
+					},
+				],
+			},
+		});
+	});
+
+	test('should not include auth when basic auth is incomplete', async () => {
+		const rawServers = [
+			{
+				id: 'incomplete-basic',
+				name: 'Incomplete Basic',
+				url: 'https://mcp.example.com',
+				enabled: true,
+				toolApproval: 'always',
+				authType: 'basic',
+				authUsername: 'myuser',
+				// authPassword is missing
+			},
+		];
+
+		mockReadSingleton.mockResolvedValue({
+			ai_openai_api_key: 'test-key',
+			ai_anthropic_api_key: 'test-key',
+			ai_system_prompt: 'Test prompt',
+			ai_mcp_external_servers: rawServers,
+		});
+
+		await loadSettings(mockRequest as Request, mockResponse as Response, nextFunction);
+
+		expect(mockResponse.locals).toEqual({
+			ai: {
+				apiKeys: {
+					openai: 'test-key',
+					anthropic: 'test-key',
+				},
+				systemPrompt: 'Test prompt',
+				mcpExternalServers: [
+					{
+						id: 'incomplete-basic',
+						name: 'Incomplete Basic',
+						url: 'https://mcp.example.com',
+						enabled: true,
+						toolApproval: 'always',
+						// No auth property when credentials are incomplete
+					},
+				],
+			},
+		});
 	});
 });
