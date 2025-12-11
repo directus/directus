@@ -4,6 +4,7 @@ import { useDialogRoute } from '@/composables/use-dialog-route';
 import { i18n } from '@/lang';
 import { getItemRoute } from '@/utils/get-route';
 import { userName } from '@/utils/user-name';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { isSystemCollection } from '@directus/system-data';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -133,9 +134,7 @@ function close() {
 		</div>
 
 		<template #actions>
-			<v-button v-if="openItemLink" v-tooltip.bottom="$t('open')" :to="openItemLink" icon rounded small>
-				<v-icon name="launch" small />
-			</v-button>
+			<PrivateViewHeaderBarActionButton v-if="openItemLink" v-tooltip.bottom="$t('open')" :to="openItemLink" icon="launch" />
 		</template>
 	</v-drawer>
 </template>
