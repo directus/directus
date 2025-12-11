@@ -78,14 +78,12 @@ function unsetValue(e: any) {
 	);
 
 	&.disabled:not(.non-editable) {
-		--v-list-item-color: var(--theme--foreground-subdued);
 		--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
-		--v-list-item-border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	}
 
-	&.active:not(.disabled),
-	&:focus-within:not(.disabled),
-	&:focus-visible:not(.disabled) {
+	&.active,
+	&:focus-within
+	&:focus-visible {
 		--v-list-item-border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
 		--v-list-item-border-color-hover: var(--v-list-item-border-color);
 
