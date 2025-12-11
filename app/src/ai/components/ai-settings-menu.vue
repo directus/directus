@@ -2,7 +2,7 @@
 import formatTitle from '@directus/format-title';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useAiStore, type ToolApprovalMode } from '../stores/use-ai';
+import { useAiStore, type ExternalMCPToolInfo, type ToolApprovalMode } from '../stores/use-ai';
 import { SystemTool } from '../types/system-tool';
 
 const { t } = useI18n();
@@ -13,6 +13,11 @@ const searchQuery = ref('');
 
 watch(menuOpen, (open) => {
 	if (!open) searchQuery.value = '';
+
+	// Refresh external tools when menu opens
+	if (open) {
+		aiStore.fetchExternalTools();
+	}
 });
 
 const systemTools = aiStore.systemTools;
@@ -23,6 +28,17 @@ const filterBySearch = (tools: string[]) => {
 	return tools.filter((tool) => formatTitle(tool).toLowerCase().includes(query));
 };
 
+const filterExternalBySearch = (tools: ExternalMCPToolInfo[]) => {
+	if (!searchQuery.value) return tools;
+	const query = searchQuery.value.toLowerCase();
+	return tools.filter(
+		(tool) =>
+			tool.name.toLowerCase().includes(query) ||
+			tool.serverName.toLowerCase().includes(query) ||
+			tool.description.toLowerCase().includes(query),
+	);
+};
+
 const enabledTools = computed(() =>
 	filterBySearch(systemTools.filter((t) => aiStore.getToolApprovalMode(t) !== 'disabled')),
 );
@@ -30,6 +46,51 @@ const enabledTools = computed(() =>
 const disabledTools = computed(() =>
 	filterBySearch(systemTools.filter((t) => aiStore.getToolApprovalMode(t) === 'disabled')),
 );
+
+// External tools grouped by server (reserved for future use)
+const _externalToolsByServer = computed(() => {
+	const grouped = new Map<string, { serverName: string; tools: ExternalMCPToolInfo[] }>();
+
+	for (const tool of aiStore.externalTools) {
+		if (!grouped.has(tool.serverId)) {
+			grouped.set(tool.serverId, { serverName: tool.serverName, tools: [] });
+		}
+
+		grouped.get(tool.serverId)!.tools.push(tool);
+	}
+
+	return grouped;
+});
+
+const enabledExternalTools = computed(() =>
+	filterExternalBySearch(aiStore.externalTools.filter((t) => aiStore.getToolApprovalMode(t.name) !== 'disabled')),
+);
+
+const disabledExternalTools = computed(() =>
+	filterExternalBySearch(aiStore.externalTools.filter((t) => aiStore.getToolApprovalMode(t.name) === 'disabled')),
+);
+
+/**
+ * Extract the tool name from a full MCP tool name (mcp__server-id__tool-name)
+ * Handles cases where tool name itself may contain double underscores
+ */
+function getExternalToolDisplayName(fullName: string): string {
+	const prefix = 'mcp__';
+
+	if (!fullName.startsWith(prefix)) {
+		return formatTitle(fullName);
+	}
+
+	const withoutPrefix = fullName.slice(prefix.length);
+	const separatorIndex = withoutPrefix.indexOf('__');
+
+	if (separatorIndex === -1) {
+		return formatTitle(fullName);
+	}
+
+	const toolName = withoutPrefix.slice(separatorIndex + 2);
+	return formatTitle(toolName);
+}
 
 const approvalModeOptions = computed(() => [
 	{ text: t('ai.tool_approval.always'), value: 'always', icon: 'check', color: 'var(--theme--success)' },
@@ -63,6 +124,16 @@ const toolOptions = computed(() => {
 		});
 	}
 
+	// Add external tools to the map
+	for (const tool of aiStore.externalTools) {
+		const mode = aiStore.getToolApprovalMode(tool.name);
+
+		map.set(tool.name, {
+			icon: 'cloud',
+			approval: approvalModeOptions.value.find((o) => o.value === mode)!,
+		});
+	}
+
 	return map;
 });
 
@@ -90,7 +161,7 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 				</div>
 
 				<v-list>
-					<!-- Enabled Tools -->
+					<!-- Enabled System Tools -->
 					<template v-if="enabledTools.length > 0">
 						<v-list-item class="tool-item section-header" disabled>
 							<v-list-item-content>
@@ -127,9 +198,64 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 						</v-list-item>
 					</template>
 
-					<!-- Disabled Tools -->
-					<template v-if="disabledTools.length > 0">
+					<!-- Enabled External Tools -->
+					<template v-if="enabledExternalTools.length > 0">
 						<v-divider v-if="enabledTools.length > 0" />
+
+						<v-list-item class="tool-item section-header" disabled>
+							<v-list-item-content>
+								<span class="section-title">{{ $t('ai.external_tools') }}</span>
+							</v-list-item-content>
+						</v-list-item>
+
+						<v-list-item v-for="tool in enabledExternalTools" :key="tool.name" class="tool-item">
+							<v-list-item-icon>
+								<v-icon name="cloud" small />
+							</v-list-item-icon>
+							<v-list-item-content>
+								<div class="tool-row">
+									<div class="tool-info">
+										<span v-tooltip="tool.description" class="tool-name">
+											{{ getExternalToolDisplayName(tool.name) }}
+										</span>
+										<span class="server-name">{{ tool.serverName }}</span>
+									</div>
+									<v-select
+										:model-value="aiStore.getToolApprovalMode(tool.name)"
+										:items="approvalModeOptions"
+										item-icon="icon"
+										item-color="color"
+										inline
+										@update:model-value="onApprovalModeChange(tool.name, $event as ToolApprovalMode)"
+									>
+										<template #preview>
+											<div class="approval-preview" :style="{ color: toolOptions.get(tool.name)?.approval?.color }">
+												<v-icon :name="toolOptions.get(tool.name)?.approval?.icon" x-small />
+												{{ toolOptions.get(tool.name)?.approval?.text }}
+											</div>
+										</template>
+									</v-select>
+								</div>
+							</v-list-item-content>
+						</v-list-item>
+					</template>
+
+					<!-- Loading External Tools -->
+					<template v-if="aiStore.externalToolsLoading">
+						<v-divider v-if="enabledTools.length > 0" />
+						<v-list-item class="tool-item" disabled>
+							<v-list-item-icon>
+								<v-progress-circular indeterminate x-small />
+							</v-list-item-icon>
+							<v-list-item-content>
+								<span class="tool-name">{{ $t('ai.loading_external_tools') }}</span>
+							</v-list-item-content>
+						</v-list-item>
+					</template>
+
+					<!-- Disabled Tools -->
+					<template v-if="disabledTools.length > 0 || disabledExternalTools.length > 0">
+						<v-divider v-if="enabledTools.length > 0 || enabledExternalTools.length > 0" />
 
 						<v-list-item class="tool-item section-header" disabled>
 							<v-list-item-content>
@@ -137,6 +263,7 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 							</v-list-item-content>
 						</v-list-item>
 
+						<!-- Disabled System Tools -->
 						<v-list-item v-for="toolName in disabledTools" :key="toolName" class="tool-item">
 							<v-list-item-icon>
 								<v-icon :name="toolOptions.get(toolName)?.icon ?? 'build'" small />
@@ -158,6 +285,38 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 											<div class="approval-preview" :style="{ color: toolOptions.get(toolName)?.approval?.color }">
 												<v-icon :name="toolOptions.get(toolName)?.approval?.icon" x-small />
 												{{ toolOptions.get(toolName)?.approval?.text }}
+											</div>
+										</template>
+									</v-select>
+								</div>
+							</v-list-item-content>
+						</v-list-item>
+
+						<!-- Disabled External Tools -->
+						<v-list-item v-for="tool in disabledExternalTools" :key="tool.name" class="tool-item">
+							<v-list-item-icon>
+								<v-icon name="cloud" small />
+							</v-list-item-icon>
+							<v-list-item-content>
+								<div class="tool-row">
+									<div class="tool-info">
+										<span v-tooltip="tool.description" class="tool-name">
+											{{ getExternalToolDisplayName(tool.name) }}
+										</span>
+										<span class="server-name">{{ tool.serverName }}</span>
+									</div>
+									<v-select
+										:model-value="aiStore.getToolApprovalMode(tool.name)"
+										:items="approvalModeOptions"
+										item-icon="icon"
+										item-color="color"
+										inline
+										@update:model-value="onApprovalModeChange(tool.name, $event as ToolApprovalMode)"
+									>
+										<template #preview>
+											<div class="approval-preview" :style="{ color: toolOptions.get(tool.name)?.approval?.color }">
+												<v-icon :name="toolOptions.get(tool.name)?.approval?.icon" x-small />
+												{{ toolOptions.get(tool.name)?.approval?.text }}
 											</div>
 										</template>
 									</v-select>
@@ -205,9 +364,24 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 	inline-size: 100%;
 }
 
+.tool-info {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-inline-size: 0;
+}
+
 .tool-name {
 	font-size: 14px;
 	color: var(--theme--foreground);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.server-name {
+	font-size: 11px;
+	color: var(--theme--foreground-subdued);
 }
 
 .tool-item :deep(.v-select) {
