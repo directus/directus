@@ -857,7 +857,7 @@ fields:
     options:
       label: $t:fields.directus_settings.ai_system_prompt
 
-  - field: ai_openai_compatible_divider
+- field: ai_openai_compatible_divider
     interface: presentation-divider
     options:
       inlineTitle: true
@@ -1007,6 +1007,159 @@ fields:
             note: $t:fields.directus_settings.ai_provider_options_note
     width: full
     group: ai_group
+
+  - field: external_mcp_divider
+    interface: presentation-divider
+    options:
+      icon: cloud
+      title: $t:external_mcp_servers
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: external_mcp_notice
+    interface: presentation-notice
+    options:
+      icon: info
+      text: $t:fields.directus_settings.external_mcp_notice
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: ai_mcp_external_servers
+    interface: list
+    special:
+      - cast-json
+    group: ai_group
+    width: full
+    options:
+      template: '{{name}} ({{url}})'
+      fields:
+        - field: id
+          name: $t:field_options.directus_settings.mcp_server_id
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: input
+            required: true
+            width: half
+            options:
+              placeholder: my-mcp-server
+              slug: true
+        - field: name
+          name: $t:name
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: input
+            required: true
+            width: half
+            options:
+              placeholder: My MCP Server
+        - field: url
+          name: $t:url
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: input
+            required: true
+            width: full
+            options:
+              placeholder: https://mcp.example.com/sse
+              iconRight: link
+        - field: enabled
+          name: $t:enabled
+          type: boolean
+          schema:
+            default_value: true
+          meta:
+            interface: boolean
+            width: half
+            options:
+              label: $t:enabled
+        - field: toolApproval
+          name: $t:field_options.directus_settings.mcp_tool_approval
+          type: string
+          schema:
+            default_value: ask
+          meta:
+            interface: select-dropdown
+            width: half
+            options:
+              choices:
+                - value: always
+                  text: $t:field_options.directus_settings.mcp_tool_approval_always
+                - value: ask
+                  text: $t:field_options.directus_settings.mcp_tool_approval_ask
+                - value: disabled
+                  text: $t:field_options.directus_settings.mcp_tool_approval_disabled
+        - field: authType
+          name: $t:field_options.directus_settings.mcp_server_auth
+          type: string
+          schema:
+            default_value: none
+          meta:
+            interface: select-dropdown
+            width: half
+            options:
+              choices:
+                - value: none
+                  text: $t:none
+                - value: bearer
+                  text: $t:field_options.directus_settings.mcp_auth_bearer
+                - value: basic
+                  text: $t:field_options.directus_settings.mcp_auth_basic
+        - field: authToken
+          name: $t:field_options.directus_settings.mcp_auth_token
+          type: string
+          meta:
+            interface: input
+            width: half
+            options:
+              placeholder: $t:field_options.directus_settings.mcp_auth_token_placeholder
+              masked: true
+            conditions:
+              - name: authTypeBearer
+                rule:
+                  authType:
+                    _neq: bearer
+                hidden: true
+        - field: authUsername
+          name: $t:username
+          type: string
+          meta:
+            interface: input
+            width: half
+            options:
+              placeholder: $t:username
+            conditions:
+              - name: authTypeBasic
+                rule:
+                  authType:
+                    _neq: basic
+                hidden: true
+        - field: authPassword
+          name: $t:password
+          type: string
+          meta:
+            interface: input
+            width: half
+            options:
+              placeholder: $t:password
+              masked: true
+            conditions:
+              - name: authTypeBasic
+                rule:
+                  authType:
+                    _neq: basic
+                hidden: true
 
   - field: mcp_group
     interface: group-raw

@@ -3,7 +3,7 @@ import { type SystemTool, type ToolApprovalMode } from '@directus/ai';
 import formatTitle from '@directus/format-title';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useAiToolsStore } from '../stores/use-ai-tools';
+import { useAiToolsStore, type ExternalMCPToolInfo } from '../stores/use-ai-tools';
 import VButton from '@/components/v-button.vue';
 import VDivider from '@/components/v-divider.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -13,6 +13,7 @@ import VListItemIcon from '@/components/v-list-item-icon.vue';
 import VListItem from '@/components/v-list-item.vue';
 import VList from '@/components/v-list.vue';
 import VMenu from '@/components/v-menu.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 import VSelect from '@/components/v-select/v-select.vue';
 
 const { t } = useI18n();
@@ -23,6 +24,11 @@ const searchQuery = ref('');
 
 watch(menuOpen, (open) => {
 	if (!open) searchQuery.value = '';
+
+	// Refresh external tools when menu opens
+	if (open) {
+		toolsStore.fetchExternalTools();
+	}
 });
 
 const systemTools = toolsStore.systemTools;
@@ -40,6 +46,34 @@ const enabledTools = computed(() =>
 const disabledTools = computed(() =>
 	filterBySearch(systemTools.filter((t) => toolsStore.getToolApprovalMode(t) === 'disabled')),
 );
+
+const filterExternalBySearch = (tools: ExternalMCPToolInfo[]) => {
+	if (!searchQuery.value) return tools;
+	const query = searchQuery.value.toLowerCase();
+	return tools.filter(
+		(tool) =>
+			tool.name.toLowerCase().includes(query) ||
+			tool.serverName.toLowerCase().includes(query) ||
+			tool.description.toLowerCase().includes(query),
+	);
+};
+
+// External tools grouped by server
+const externalToolsByServer = computed(() => {
+	const grouped = new Map<string, { serverName: string; tools: ExternalMCPToolInfo[] }>();
+
+	for (const tool of toolsStore.externalTools) {
+		if (!grouped.has(tool.serverId)) {
+			grouped.set(tool.serverId, { serverName: tool.serverName, tools: [] });
+		}
+
+		grouped.get(tool.serverId)!.tools.push(tool);
+	}
+
+	return grouped;
+});
+
+const filteredExternalTools = computed(() => filterExternalBySearch(toolsStore.externalTools));
 
 const approvalModeOptions = computed(() => [
 	{ text: t('ai.tool_approval.always'), value: 'always', icon: 'check', color: 'var(--theme--success)' },
@@ -168,6 +202,68 @@ function onApprovalModeChange(toolName: string, mode: ToolApprovalMode) {
 											<div class="approval-preview" :style="{ color: toolOptions.get(toolName)?.approval?.color }">
 												<VIcon :name="toolOptions.get(toolName)?.approval?.icon ?? 'check'" x-small />
 												{{ toolOptions.get(toolName)?.approval?.text }}
+											</div>
+										</template>
+									</VSelect>
+								</div>
+							</VListItemContent>
+						</VListItem>
+					</template>
+
+					<!-- External MCP Tools -->
+					<template v-if="toolsStore.externalToolsLoading">
+						<VDivider />
+						<VListItem class="tool-item section-header" disabled>
+							<VListItemContent>
+								<span class="section-title">{{ $t('external_mcp_servers') }}</span>
+							</VListItemContent>
+							<VProgressCircular indeterminate small />
+						</VListItem>
+					</template>
+
+					<template v-else-if="filteredExternalTools.length > 0">
+						<VDivider />
+						<VListItem class="tool-item section-header" disabled>
+							<VListItemContent>
+								<span class="section-title">{{ $t('external_mcp_servers') }}</span>
+							</VListItemContent>
+						</VListItem>
+
+						<VListItem v-for="tool in filteredExternalTools" :key="tool.name" class="tool-item">
+							<VListItemIcon>
+								<VIcon name="extension" small />
+							</VListItemIcon>
+							<VListItemContent>
+								<div class="tool-row">
+									<span v-tooltip="tool.description" class="tool-name">
+										{{ tool.serverName }}: {{ tool.name.split(':').pop() }}
+									</span>
+									<VSelect
+										:model-value="toolsStore.getToolApprovalMode(tool.name)"
+										:items="approvalModeOptions"
+										item-icon="icon"
+										item-color="color"
+										inline
+										@update:model-value="onApprovalModeChange(tool.name, $event as ToolApprovalMode)"
+									>
+										<template #preview>
+											<div
+												class="approval-preview"
+												:style="{
+													color: approvalModeOptions.find((o) => o.value === toolsStore.getToolApprovalMode(tool.name))
+														?.color,
+												}"
+											>
+												<VIcon
+													:name="
+														approvalModeOptions.find((o) => o.value === toolsStore.getToolApprovalMode(tool.name))
+															?.icon ?? 'check'
+													"
+													x-small
+												/>
+												{{
+													approvalModeOptions.find((o) => o.value === toolsStore.getToolApprovalMode(tool.name))?.text
+												}}
 											</div>
 										</template>
 									</VSelect>

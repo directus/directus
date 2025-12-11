@@ -182,7 +182,11 @@ export const useAiStore = defineStore('ai-store', () => {
 			api: '/ai/chat',
 			credentials: 'include',
 			body: () => {
-				const tools = [...toolsStore.enabledSystemTools, ...toolsStore.localTools.map(toApiTool)];
+				const tools = [
+					...toolsStore.enabledSystemTools,
+					...toolsStore.enabledExternalTools.map((t) => t.name),
+					...toolsStore.localTools.map(toApiTool),
+				];
 
 				// Filter toolApprovals to only include 'always' and 'ask' (not 'disabled')
 				const approvals: Record<string, 'always' | 'ask'> = {};
@@ -244,7 +248,14 @@ export const useAiStore = defineStore('ai-store', () => {
 			}
 		},
 		onToolCall: async ({ toolCall }) => {
-			const isServerTool = toolCall.dynamic || toolsStore.isSystemTool(toolCall.toolName);
+			// Check if this is a server-side tool:
+			// - Dynamic tools are server-side
+			// - System tools (items, files, etc.) are server-side
+			// - External MCP tools (prefixed with "mcp__") are server-side
+			const isExternalMCPTool = toolCall.toolName.startsWith('mcp__');
+
+			const isServerTool =
+				toolCall.dynamic || toolsStore.isSystemTool(toolCall.toolName) || isExternalMCPTool;
 
 			if (isServerTool) {
 				return;
