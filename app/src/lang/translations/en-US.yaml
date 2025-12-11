@@ -1849,6 +1849,7 @@ ai:
   tool_descriptions:
     items: Create, read, update, and delete content
     files: Search and manage files
+    file-content: Read text content from files (PDF, text, code, etc.)
     folders: Create and organize folders
     flows: Create and update flows
     trigger-flow: Run manually triggered flows
@@ -1862,6 +1863,7 @@ ai_tools:
   read_form_values: Read Form Values
   items: Items
   files: Files
+  file-content: File Content
   folders: Folders
   flows: Flows
   trigger-flow: Trigger Flow
