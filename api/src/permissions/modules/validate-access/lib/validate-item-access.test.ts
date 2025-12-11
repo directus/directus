@@ -9,6 +9,7 @@ import { validateItemAccess } from './validate-item-access.js';
 import { fetchPolicies } from '../../../lib/fetch-policies.js';
 import { fetchPermissions } from '../../../lib/fetch-permissions.js';
 import type { Permission } from '@directus/types';
+import { injectCases } from '../../process-ast/lib/inject-cases.js';
 
 vi.mock('../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js');
 vi.mock('../../../../database/run-ast/run-ast.js');
@@ -470,3 +471,37 @@ test('Includes all schema fields when permission has wildcard (*)', async () => 
 		expect.anything(),
 	);
 });
+
+test('Skips injectCases when no item-level permission rules exist', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPolicies).mockResolvedValue([]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{ fields: ['field-a'], permissions: null } as unknown as Permission,
+	]);
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ 'field-a': 1 }]);
+
+	await validateItemAccess(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			primaryKeys: [1],
+			returnAllowedRootFields: true,
+		},
+		{
+			schema,
+		} as Context,
+	);
+
+	expect(injectCases).not.toHaveBeenCalled();
+});
+

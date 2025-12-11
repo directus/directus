@@ -98,7 +98,12 @@ export async function validateItemAccess(
 			context,
 		);
 
-		injectCases(ast, permissions);
+		// Only inject cases if there are item-level permission rules
+		const hasItemRules = permissions.some((p) => p.permissions && Object.keys(p.permissions).length > 0);
+
+		if (hasItemRules) {
+			injectCases(ast, permissions);
+		}
 	}
 
 	const items = await fetchPermittedAstRootFields(ast, {
@@ -128,9 +133,7 @@ export async function validateItemAccess(
 	// If returnAllowedRootFields, return intersection of allowed fields across all items
 	if (options.returnAllowedRootFields) {
 		const allowedRootFields =
-			items.length > 0
-				? Object.keys(items[0]!).filter((field) => items.every((item: any) => item[field] === 1))
-				: [];
+			items.length > 0 ? Object.keys(items[0]!).filter((field) => items.every((item: any) => item[field] === 1)) : [];
 
 		return {
 			accessAllowed,
