@@ -1,6 +1,7 @@
 export type SystemTool =
 	| 'items'
 	| 'files'
+	| 'file-content'
 	| 'folders'
 	| 'assets'
 	| 'flows'
