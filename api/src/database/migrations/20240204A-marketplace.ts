@@ -3,6 +3,7 @@ import type { Knex } from 'knex';
 import { randomUUID } from 'node:crypto';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { getDatabaseClient } from '../index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -74,12 +75,16 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('id').alter().notNullable();
 	});
 
-	await knex.transaction(async (trx) => {
-		await trx.schema.alterTable('directus_extensions', (table) => {
+	// MySQL with sql_require_primary_key=ON rejects dropping PK and adding it separately,
+	// so we use a single atomic ALTER TABLE statement for MySQL
+	if (getDatabaseClient(knex) === 'mysql') {
+		await knex.raw('ALTER TABLE `directus_extensions` DROP PRIMARY KEY, ADD PRIMARY KEY (`id`)');
+	} else {
+		await knex.schema.alterTable('directus_extensions', (table) => {
 			table.dropPrimary();
 			table.primary(['id']);
 		});
-	});
+	}
 
 	await knex.schema.alterTable('directus_extensions', (table) => {
 		table.dropColumn('name');
@@ -119,8 +124,22 @@ export async function down(knex: Knex): Promise<void> {
 		await knex('directus_extensions').update({ name }).where({ id });
 	}
 
-	await knex.schema.alterTable('directus_extensions', (table) => {
-		table.dropColumns('id', 'folder', 'source', 'bundle');
-		table.string('name').alter().primary().notNullable();
-	});
+	// MySQL with sql_require_primary_key=ON rejects dropping PK column without immediately adding a new PK
+	if (getDatabaseClient(knex) === 'mysql') {
+		await knex.raw(`
+			ALTER TABLE \`directus_extensions\`
+			DROP PRIMARY KEY,
+			DROP COLUMN \`id\`,
+			DROP COLUMN \`folder\`,
+			DROP COLUMN \`source\`,
+			DROP COLUMN \`bundle\`,
+			MODIFY \`name\` VARCHAR(255) NOT NULL,
+			ADD PRIMARY KEY (\`name\`)
+		`);
+	} else {
+		await knex.schema.alterTable('directus_extensions', (table) => {
+			table.dropColumns('id', 'folder', 'source', 'bundle');
+			table.string('name').alter().primary().notNullable();
+		});
+	}
 }
