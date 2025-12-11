@@ -76,7 +76,6 @@ export async function up(knex: Knex): Promise<void> {
 	});
 
 	// MySQL with sql_require_primary_key=ON rejects dropping PK and adding it separately,
-	// so we use a single atomic ALTER TABLE statement for MySQL
 	if (getDatabaseClient(knex) === 'mysql') {
 		await knex.raw('ALTER TABLE `directus_extensions` DROP PRIMARY KEY, ADD PRIMARY KEY (`id`)');
 	} else {
