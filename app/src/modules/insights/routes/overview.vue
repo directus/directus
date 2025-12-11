@@ -9,6 +9,7 @@ import { getPublicURL } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import BasicImportSidebarDetail from '@/views/private/components/basic-import-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { getEndpoint } from '@directus/utils';
 import { sortBy } from 'lodash';
 import { computed, ref } from 'vue';
@@ -210,18 +211,14 @@ async function batchDelete() {
 				small
 			/>
 
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-if="selection.length > 0"
 				v-tooltip.bottom="createAllowed ? $t('export_dashboard') : $t('not_allowed')"
 				:disabled="createAllowed !== true"
-				rounded
-				icon
 				secondary
-				small
+				icon="download"
 				@click="exportDashboard(selection)"
-			>
-				<v-icon name="download" outline small />
-			</v-button>
+			/>
 
 			<v-dialog
 				v-if="selection.length > 0"
@@ -230,18 +227,14 @@ async function batchDelete() {
 				@apply="batchDelete"
 			>
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
 						:disabled="batchDeleteAllowed !== true"
-						rounded
-						icon
 						class="action-delete"
 						secondary
-						small
+						icon="delete"
 						@click="on"
-					>
-						<v-icon name="delete" outline small />
-					</v-button>
+					/>
 				</template>
 
 				<v-card>
@@ -260,16 +253,12 @@ async function batchDelete() {
 
 			<dashboard-dialog v-model="createDialogActive">
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="createAllowed ? $t('create_dashboard') : $t('not_allowed')"
-						rounded
-						icon
 						:disabled="createAllowed === false"
-						small
+						icon="add"
 						@click="on"
-					>
-						<v-icon name="add" small />
-					</v-button>
+					/>
 				</template>
 			</dashboard-dialog>
 		</template>
