@@ -143,9 +143,7 @@ function onSelection(selectedIds: (number | string)[] | null) {
 
 .v-list-item {
 	&.disabled:not(.non-editable) {
-		--v-list-item-color: var(--theme--foreground-subdued);
 		--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
-		--v-list-item-border-color: var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	}
 
 	&:focus-within:not(.disabled),
