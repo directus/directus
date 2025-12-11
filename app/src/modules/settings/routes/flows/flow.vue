@@ -8,6 +8,7 @@ import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Vector2 } from '@/utils/vector2';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { FlowRaw, OperationRaw } from '@directus/types';
 import { cloneDeep, isEmpty, merge, omit } from 'lodash';
 import { customAlphabet, nanoid } from 'nanoid/non-secure';
@@ -608,39 +609,37 @@ function discardAndLeave() {
 
 		<template #actions>
 			<template v-if="editMode">
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('clear_changes')"
 					class="clear-changes"
-					rounded
-					icon
+					icon="clear"
 					outlined
-					small
 					@click="attemptCancelChanges"
-				>
-					<v-icon name="clear" small />
-				</v-button>
+				/>
 
-				<v-button v-tooltip.bottom="$t('save')" rounded icon :loading="saving" small @click="saveChanges">
-					<v-icon name="check" small />
-				</v-button>
+				<PrivateViewHeaderBarActionButton
+					v-tooltip.bottom="$t('save')"
+					:loading="saving"
+					icon="check"
+					@click="saveChanges"
+				/>
 			</template>
 
 			<template v-else>
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('delete_flow')"
 					class="delete-flow"
-					rounded
-					icon
 					secondary
-					small
+					icon="delete"
 					@click="confirmDelete = true"
-				>
-					<v-icon name="delete" small />
-				</v-button>
+				/>
 
-				<v-button v-tooltip.bottom="$t('edit_flow')" rounded icon outlined small @click="editMode = !editMode">
-					<v-icon name="edit" small />
-				</v-button>
+				<PrivateViewHeaderBarActionButton
+					v-tooltip.bottom="$t('edit_flow')"
+					outlined
+					icon="edit"
+					@click="editMode = !editMode"
+				/>
 			</template>
 		</template>
 
