@@ -54,8 +54,8 @@ export class AssetsService {
 		this.sudoFilesService = new FilesService({ ...options, accountability: null });
 	}
 
-	private sanitizeFields(file: File, allowedFields: string[] | undefined): Partial<File> {
-		if (!allowedFields || allowedFields.includes('*')) {
+	private sanitizeFields(file: File, allowedFields: string[]): Partial<File> {
+		if (allowedFields.includes('*')) {
 			return file;
 		}
 
@@ -222,7 +222,7 @@ export class AssetsService {
 		 */
 		if (!isValidUuid(id)) throw new ForbiddenError();
 
-		let allowedFields: string[] | undefined;
+		let allowedFields: string[] = ['*'];
 
 		if (!systemPublicKeys.includes(id) && this.accountability && this.accountability.admin !== true) {
 			// Use validateItemAccess to check access and get allowed fields
@@ -243,7 +243,7 @@ export class AssetsService {
 				});
 			}
 
-			allowedFields = allowedRootFields;
+			allowedFields = allowedRootFields ?? ['*'];
 		}
 
 		const file = (await this.sudoFilesService.readOne(id, { limit: 1 })) as File;
