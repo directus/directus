@@ -68,15 +68,13 @@ export async function validateItemAccess(
 		const permissionedFields = hasWildcard ? schemaFields : allowedFields;
 
 		// Create children only for fields that exist in schema and are allowed by permissions
-		ast.children = permissionedFields
-			.filter((field) => context.schema.collections[options.collection]!.fields[field])
-			.map((field) => ({
-				type: 'field',
-				name: field,
-				fieldKey: field,
-				whenCase: [],
-				alias: false,
-			}));
+		ast.children = permissionedFields.map((field) => ({
+			type: 'field',
+			name: field,
+			fieldKey: field,
+			whenCase: [],
+			alias: false,
+		}));
 
 		const policies = await fetchPolicies(options.accountability, context);
 
