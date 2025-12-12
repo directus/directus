@@ -74,4 +74,36 @@ describe('SchemaHelper', () => {
 			'name',
 		]);
 	});
+
+	test('createIndex creates a composite index with multiple fields', async () => {
+		const { helper, mockKnex } = createHelper();
+		await helper.createIndex('revisions', ['collection', 'item', 'version']);
+
+		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??, ??, ??)', [
+			'revisions_collection_item_version_index',
+			'revisions',
+			'collection',
+			'item',
+			'version',
+		]);
+	});
+
+	test('createIndex creates a unique composite index', async () => {
+		const { helper, mockKnex } = createHelper();
+		await helper.createIndex('products', ['sku', 'variant'], { unique: true });
+
+		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE UNIQUE INDEX ?? ON ?? (??, ??)', [
+			'products_sku_variant_unique',
+			'products',
+			'sku',
+			'variant',
+		]);
+	});
+
+	test('createIndex handles single field as array', async () => {
+		const { helper, mockKnex } = createHelper();
+		await helper.createIndex('users', ['email']);
+
+		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??)', ['users_email_index', 'users', 'email']);
+	});
 });

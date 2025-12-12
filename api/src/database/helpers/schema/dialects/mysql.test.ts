@@ -124,4 +124,41 @@ describe('SchemaHelperMySQL', () => {
 			'my_custom_column',
 		]);
 	});
+
+	test('createIndex creates a composite index with multiple fields', async () => {
+		const { helper, mockRaw } = createHelper();
+		await helper.createIndex('revisions', ['collection', 'item', 'version']);
+
+		expect(mockRaw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??, ??, ??)', [
+			'revisions_collection_item_version_index',
+			'revisions',
+			'collection',
+			'item',
+			'version',
+		]);
+	});
+
+	test('createIndex creates a concurrent composite index', async () => {
+		const { helper, mockRaw } = createHelper();
+		await helper.createIndex('revisions', ['collection', 'item'], { attemptConcurrentIndex: true });
+
+		expect(mockRaw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??, ??) ALGORITHM=INPLACE LOCK=NONE', [
+			'revisions_collection_item_index',
+			'revisions',
+			'collection',
+			'item',
+		]);
+	});
+
+	test('createIndex creates a unique composite index', async () => {
+		const { helper, mockRaw } = createHelper();
+		await helper.createIndex('products', ['sku', 'variant'], { unique: true });
+
+		expect(mockRaw).toHaveBeenCalledWith('CREATE UNIQUE INDEX ?? ON ?? (??, ??)', [
+			'products_sku_variant_unique',
+			'products',
+			'sku',
+			'variant',
+		]);
+	});
 });

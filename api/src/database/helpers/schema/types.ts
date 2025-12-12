@@ -185,11 +185,45 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return 64;
 	}
 
-	async createIndex(collection: string, field: string, options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
-		// fall back to concurrent index creation
+	/**
+	 * Creates an index on the specified field(s).
+	 *
+	 * @param collection - Table name
+	 * @param field - Single field name or array of field names for composite index
+	 * @param options - Index creation options
+	 *
+	 * @example
+	 * // Single column index
+	 * await helpers.schema.createIndex('users', 'email');
+	 *
+	 * // Composite index
+	 * await helpers.schema.createIndex('revisions', ['collection', 'item', 'version']);
+	 *
+	 * @remarks
+	 * **Composite Index Limits by Database:**
+	 * | Database       | Max Columns | Notes                           |
+	 * |----------------|-------------|---------------------------------|
+	 * | MySQL/InnoDB   | 16          | Hard limit                      |
+	 * | PostgreSQL     | 32          | Configurable via recompilation  |
+	 * | Oracle         | 32          | Fixed                           |
+	 * | SQL Server     | 32          | 16 for versions < 2016          |
+	 * | CockroachDB    | No limit    | Avoid keys > 1MiB               |
+	 * | SQLite         | 2000        | Configurable via recompilation  |
+	 */
+	async createIndex(
+		collection: string,
+		field: string | string[],
+		options: CreateIndexOptions = {},
+	): Promise<Knex.SchemaBuilder> {
+		const fields = Array.isArray(field) ? field : [field];
 		const isUnique = Boolean(options.unique);
-		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
+		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, fields);
+		const placeholders = fields.map(() => '??').join(', ');
 
-		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
+		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (${placeholders})`, [
+			constraintName,
+			collection,
+			...fields,
+		]);
 	}
 }
