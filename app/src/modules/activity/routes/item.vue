@@ -134,7 +134,12 @@ function close() {
 		</div>
 
 		<template #actions>
-			<PrivateViewHeaderBarActionButton v-if="openItemLink" v-tooltip.bottom="$t('open')" :to="openItemLink" icon="launch" />
+			<PrivateViewHeaderBarActionButton
+				v-if="openItemLink"
+				v-tooltip.bottom="$t('open')"
+				:to="openItemLink"
+				icon="launch"
+			/>
 		</template>
 	</v-drawer>
 </template>

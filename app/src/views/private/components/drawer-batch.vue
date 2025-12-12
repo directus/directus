@@ -126,12 +126,7 @@ function useActions() {
 		@apply="save"
 	>
 		<template #actions>
-			<PrivateViewHeaderBarActionButton
-				v-tooltip.bottom="$t('save')"
-				:loading="saving"
-				icon="check"
-				@click="save"
-			/>
+			<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save')" :loading="saving" icon="check" @click="save" />
 		</template>
 
 		<div class="drawer-batch-content">
