@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
+import { parseDate } from '@/utils/parse-date';
 import { isValid } from 'date-fns';
 import { computed, ref } from 'vue';
-import { parseDate } from '@/utils/parse-date';
-import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
 
 interface Props extends Omit<UseDatetimeProps, 'value'> {
 	value: string | null;
@@ -76,6 +76,10 @@ function unsetValue(e: any) {
 		--v-list-item-background-color,
 		var(--v-list-background-color, var(--theme--form--field--input--background))
 	);
+
+	&.disabled:not(.non-editable) {
+		--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
+	}
 
 	&.active,
 	&:focus-within,

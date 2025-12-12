@@ -100,7 +100,11 @@ async function getDisplayItem() {
 
 function onSelection(selectedIds: (number | string)[] | null) {
 	selectDrawerOpen.value = false;
-	value.value = { key: Array.isArray(selectedIds) ? selectedIds[0] : null, collection: unref(selectedCollection) };
+
+	value.value = {
+		key: Array.isArray(selectedIds) && selectedIds[0] ? selectedIds[0] : null,
+		collection: unref(selectedCollection),
+	};
 }
 </script>
 
@@ -117,7 +121,7 @@ function onSelection(selectedIds: (number | string)[] | null) {
 			<div class="spacer" />
 
 			<div v-if="!nonEditable" class="item-actions">
-				<v-remove v-if="displayItem" deselect @action="value = null" />
+				<v-remove v-if="displayItem" deselect :disabled @action="value = null" />
 
 				<v-icon v-else class="expand" name="expand_more" />
 			</div>
@@ -138,6 +142,10 @@ function onSelection(selectedIds: (number | string)[] | null) {
 @use '@/styles/mixins';
 
 .v-list-item {
+	&.disabled:not(.non-editable) {
+		--v-list-item-background-color: var(--theme--form--field--input--background-subdued);
+	}
+
 	&:focus-within,
 	&:focus-visible {
 		--v-list-item-border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
