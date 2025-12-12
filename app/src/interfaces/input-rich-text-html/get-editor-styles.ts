@@ -2,7 +2,11 @@ import firaMono from '../../assets/fonts/FiraMono-Medium.woff2';
 import merriweatherRegular from '../../assets/fonts/merriweather-regular.woff2';
 import { cssVar } from '@directus/utils/browser';
 
-export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospace', nonEditable: boolean): string {
+export default function getEditorStyles(
+	font: 'sans-serif' | 'serif' | 'monospace',
+	nonEditable: boolean,
+	includeDiffStyles?: boolean,
+): string {
 	const userFontFamily = cssVar(`--theme--fonts--${font}--font-family`);
 
 	return `
@@ -174,5 +178,22 @@ figure figcaption {
 	display: block;
 	margin-block-start: 0.25rem;
 	text-align: center;
-}`;
+}${
+		includeDiffStyles
+			? `
+.diff-added {
+	background-color: ${cssVar('--success-25')};
+	padding: 2px;
+	border-radius: ${cssVar('--theme--border-radius')};
+	margin-inline-end: 0.2em;
+}
+
+.diff-removed {
+	background-color: ${cssVar('--danger-25')};
+	padding: 2px;
+	border-radius: ${cssVar('--theme--border-radius')};
+	margin-inline-end: 0.2em;
+}`
+			: ''
+	}`;
 }

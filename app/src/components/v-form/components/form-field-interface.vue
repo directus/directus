@@ -2,7 +2,7 @@
 import { useExtension } from '@/composables/use-extension';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { computed } from 'vue';
-import type { FormField, ComparisonContext } from '../types';
+import type { FormField, ComparisonContext } from './types';
 
 const props = defineProps<{
 	field: FormField;
@@ -63,6 +63,7 @@ const value = computed(() =>
 				:batch-active="batchActive"
 				:comparison-mode="!!comparison"
 				:comparison-active="comparisonActive"
+				:comparison-side="comparison?.side"
 				:width="(field.meta && field.meta.width) || 'full'"
 				:type="field.type"
 				:collection="field.collection"
