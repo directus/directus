@@ -208,7 +208,6 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 				v-tooltip.bottom="$t('save')"
 				:loading="saving"
 				:disabled="!hasEdits"
-				small
 				icon="check"
 				@click="saveAndQuit"
 			>
