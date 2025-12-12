@@ -71,9 +71,7 @@ describe('Composite Index', () => {
 					(f: any) => f.collection === TEST_COLLECTION && f.field === 'collection',
 				);
 
-				const itemField = snapshot.fields.find(
-					(f: any) => f.collection === TEST_COLLECTION && f.field === 'item',
-				);
+				const itemField = snapshot.fields.find((f: any) => f.collection === TEST_COLLECTION && f.field === 'item');
 
 				const versionField = snapshot.fields.find(
 					(f: any) => f.collection === TEST_COLLECTION && f.field === 'version',
@@ -127,4 +125,3 @@ describe('Composite Index', () => {
 		);
 	});
 });
-
