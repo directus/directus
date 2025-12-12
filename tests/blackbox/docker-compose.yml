@@ -136,3 +136,20 @@ services:
       - SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=http://127.0.0.1:8080/auth/login/saml/acs
     extra_hosts:
       - 'host.docker.internal:host-gateway'
+
+  # OpenLDAP server for LDAP authentication tests
+  # Uses cleanstart/openldap:2.6 with default configuration
+  # Credentials:
+  #   Admin DN:      cn=Manager,dc=my-domain,dc=com
+  #   Admin Password: secret
+  #   Base DN:       dc=my-domain,dc=com
+  openldap:
+    image: cleanstart/openldap:2.6
+    ports:
+      - 6109:389
+    healthcheck:
+      # Check if server is responding by querying root DSE (doesn't require specific DN to exist)
+      test: ['CMD', 'ldapsearch', '-x', '-H', 'ldap://localhost:389', '-b', '', '-s', 'base', '(objectClass=*)']
+      interval: 10s
+      timeout: 5s
+      retries: 10
