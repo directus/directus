@@ -3,6 +3,7 @@ import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { useCollection } from '@directus/composables';
 import { clone } from 'lodash';
 import { computed, ref, unref } from 'vue';
@@ -57,9 +58,13 @@ function discardAndLeave() {
 		<template #headline><v-breadcrumb :items="[{ name: $t('settings'), to: '/settings' }]" /></template>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="!hasEdits" :loading="saving" small @click="save">
-				<v-icon name="check" small />
-			</v-button>
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('save')"
+				:disabled="!hasEdits"
+				:loading="saving"
+				icon="check"
+				@click="save"
+			/>
 		</template>
 
 		<template #navigation>

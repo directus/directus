@@ -5,6 +5,7 @@ import { useExtensions } from '@/extensions';
 import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/shared/extension-options.vue';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { translate } from '@/utils/translate-object-values';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { Field, FlowRaw } from '@directus/types';
 import slugify from '@sindresorhus/slugify';
 import { customAlphabet } from 'nanoid/non-secure';
@@ -146,9 +147,12 @@ function saveOperation() {
 		@apply="saveOperation"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="$t('done')" icon rounded :disabled="saveDisabled" small @click="saveOperation">
-				<v-icon name="check" small />
-			</v-button>
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('done')"
+				:disabled="saveDisabled"
+				icon="check"
+				@click="saveOperation"
+			/>
 		</template>
 
 		<div class="content">

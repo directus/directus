@@ -1,28 +1,29 @@
 <script setup lang="ts">
-import { i18n } from '@/lang';
 import { useInjectFocusTrapManager } from '@/composables/use-focus-trap-manager';
+import { i18n } from '@/lang';
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { SettingsStorageAssetPreset } from '@directus/types';
 import Editor from '@tinymce/tinymce-vue';
 import { cloneDeep, isEqual } from 'lodash';
+import tinymce from 'tinymce/tinymce';
 import { ComponentPublicInstance, computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getEditorStyles from './get-editor-styles';
 import toolbarDefault from './toolbar-default';
 import useImage from './useImage';
+import useInlineCode from './useInlineCode';
 import useLink from './useLink';
 import useMedia from './useMedia';
-import useSourceCode from './useSourceCode';
 import usePre from './usePre';
-import useInlineCode from './useInlineCode';
-import tinymce from 'tinymce/tinymce';
+import useSourceCode from './useSourceCode';
 
 import 'tinymce/skins/ui/oxide/skin.css';
 import './tinymce-overrides.css';
 
 import 'tinymce/tinymce';
 
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import 'tinymce/icons/default';
 import 'tinymce/models/dom';
 import 'tinymce/plugins/autoresize/plugin';
@@ -468,9 +469,7 @@ onMounted(() => {
 			</div>
 
 			<template #actions>
-				<v-button icon rounded @click="saveCode">
-					<v-icon name="check" />
-				</v-button>
+				<PrivateViewHeaderBarActionButton icon="check" @click="saveCode" />
 			</template>
 		</v-drawer>
 
@@ -521,9 +520,7 @@ onMounted(() => {
 			</div>
 
 			<template #actions>
-				<v-button v-tooltip.bottom="$t('save_image')" icon rounded @click="saveImage">
-					<v-icon name="check" />
-				</v-button>
+				<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save_image')" icon="check" @click="saveImage" />
 			</template>
 		</v-drawer>
 
@@ -583,9 +580,7 @@ onMounted(() => {
 			</div>
 
 			<template #actions>
-				<v-button v-tooltip.bottom="$t('save_media')" icon rounded @click="saveMedia">
-					<v-icon name="check" />
-				</v-button>
+				<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save_media')" icon="check" @click="saveMedia" />
 			</template>
 		</v-drawer>
 	</div>

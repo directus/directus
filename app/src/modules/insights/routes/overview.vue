@@ -9,6 +9,7 @@ import { getPublicURL } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import BasicImportSidebarDetail from '@/views/private/components/basic-import-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { getEndpoint } from '@directus/utils';
 import { sortBy } from 'lodash';
 import { computed, ref } from 'vue';
@@ -112,7 +113,7 @@ async function duplicateDashboard(id: string, toggle: () => void) {
 	toggle();
 }
 
-function exportDasboard(ids: string[]) {
+function exportDashboard(ids: string[]) {
 	const endpoint = getEndpoint('directus_dashboards');
 
 	// usually getEndpoint contains leading slash, but here we need to remove it
@@ -210,18 +211,14 @@ async function batchDelete() {
 				small
 			/>
 
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-if="selection.length > 0"
 				v-tooltip.bottom="createAllowed ? $t('export_dashboard') : $t('not_allowed')"
 				:disabled="createAllowed !== true"
-				rounded
-				icon
 				secondary
-				small
-				@click="exportDasboard(selection)"
-			>
-				<v-icon name="download" outline small />
-			</v-button>
+				icon="download"
+				@click="exportDashboard(selection)"
+			/>
 
 			<v-dialog
 				v-if="selection.length > 0"
@@ -230,18 +227,14 @@ async function batchDelete() {
 				@apply="batchDelete"
 			>
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
 						:disabled="batchDeleteAllowed !== true"
-						rounded
-						icon
 						class="action-delete"
 						secondary
-						small
+						icon="delete"
 						@click="on"
-					>
-						<v-icon name="delete" outline small />
-					</v-button>
+					/>
 				</template>
 
 				<v-card>
@@ -260,16 +253,12 @@ async function batchDelete() {
 
 			<dashboard-dialog v-model="createDialogActive">
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="createAllowed ? $t('create_dashboard') : $t('not_allowed')"
-						rounded
-						icon
 						:disabled="createAllowed === false"
-						small
+						icon="add"
 						@click="on"
-					>
-						<v-icon name="add" small />
-					</v-button>
+					/>
 				</template>
 			</dashboard-dialog>
 		</template>
@@ -330,7 +319,7 @@ async function batchDelete() {
 								</v-list-item-content>
 							</v-list-item>
 
-							<v-list-item class="warning" clickable @click="exportDasboard([item.id])">
+							<v-list-item class="warning" clickable @click="exportDashboard([item.id])">
 								<v-list-item-icon>
 									<v-icon name="download" />
 								</v-list-item-icon>

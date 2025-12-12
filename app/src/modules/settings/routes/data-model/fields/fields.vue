@@ -4,12 +4,13 @@ import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import formatTitle from '@directus/format-title';
+import { isSystemCollection } from '@directus/system-data';
 import { computed, ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
 import FieldsManagement from './components/fields-management.vue';
-import { isSystemCollection } from '@directus/system-data';
 
 const props = defineProps<{
 	collection: string;
@@ -76,19 +77,15 @@ function discardAndLeave() {
 		<template #actions>
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-if="isSystemCollection(collection) === false"
 						v-tooltip.bottom="$t('delete_collection')"
-						rounded
-						icon
 						class="action-delete"
 						secondary
 						:disabled="!item"
-						small
+						icon="delete"
 						@click="on"
-					>
-						<v-icon name="delete" small />
-					</v-button>
+					/>
 				</template>
 
 				<v-card>
@@ -105,17 +102,13 @@ function discardAndLeave() {
 				</v-card>
 			</v-dialog>
 
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
-				rounded
-				icon
 				:loading="saving"
 				:disabled="hasEdits === false"
-				small
+				icon="check"
 				@click="saveAndQuit"
-			>
-				<v-icon name="check" small />
-			</v-button>
+			/>
 		</template>
 
 		<template #navigation>

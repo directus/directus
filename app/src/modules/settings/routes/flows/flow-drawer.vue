@@ -2,6 +2,7 @@
 import api from '@/api';
 import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import type { TriggerType } from '@directus/types';
 import { computed, reactive, ref, watch } from 'vue';
 import { getTriggers } from './triggers';
@@ -257,30 +258,23 @@ function onApply() {
 		</v-tabs-items>
 
 		<template #actions>
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-if="currentTab[0] === 'flow_setup'"
 				v-tooltip.bottom="isNew ? $t('next') : $t('save')"
 				:disabled="isFlowSetupDisabled"
 				:loading="saving"
-				icon
-				rounded
-				small
+				:icon="isNew ? 'arrow_forward' : 'check'"
 				@click="onApplyFlowSetup"
-			>
-				<v-icon :name="isNew ? 'arrow_forward' : 'check'" small />
-			</v-button>
-			<v-button
+			/>
+
+			<PrivateViewHeaderBarActionButton
 				v-if="currentTab[0] === 'trigger_setup'"
 				v-tooltip.bottom="isNew ? $t('finish_setup') : $t('save')"
 				:disabled="isFlowTriggerDisabled"
 				:loading="saving"
-				icon
-				rounded
-				small
+				icon="check"
 				@click="save"
-			>
-				<v-icon name="check" small />
-			</v-button>
+			/>
 		</template>
 	</v-drawer>
 </template>

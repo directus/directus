@@ -13,6 +13,7 @@ import FolderPicker from '@/views/private/components/folder-picker.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import type { Field, File } from '@directus/types';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -226,18 +227,14 @@ function revert(values: Record<string, any>) {
 		<template #actions>
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
-						rounded
-						icon
 						class="action-delete"
-						secondary
 						:disabled="item === null || deleteAllowed === false"
-						small
+						icon="delete"
+						secondary
 						@click="on"
-					>
-						<v-icon name="delete" outline small />
-					</v-button>
+					/>
 				</template>
 
 				<v-card>
@@ -261,17 +258,13 @@ function revert(values: Record<string, any>) {
 				@apply="moveToFolder"
 			>
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="item === null || !updateAllowed ? $t('not_allowed') : $t('move_to_folder')"
-						rounded
-						icon
 						secondary
 						:disabled="item === null || !updateAllowed"
-						small
+						icon="folder_move"
 						@click="on"
-					>
-						<v-icon name="folder_move" small />
-					</v-button>
+					/>
 				</template>
 
 				<v-card>
@@ -291,41 +284,30 @@ function revert(values: Record<string, any>) {
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
-			<v-button
+
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('download')"
 				secondary
-				icon
-				rounded
 				:download="item?.filename_download"
 				:href="getAssetUrl(props.primaryKey, { isDownload: true })"
-				small
-			>
-				<v-icon name="download" small />
-			</v-button>
+				icon="download"
+			/>
 
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-if="item?.type?.includes('image') && updateAllowed"
 				v-tooltip.bottom="$t('edit')"
-				rounded
-				icon
 				secondary
-				small
+				icon="tune"
 				@click="editActive = true"
-			>
-				<v-icon name="tune" small />
-			</v-button>
+			/>
 
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
-				rounded
-				icon
 				:loading="saving"
 				:disabled="!isSavable"
-				small
+				icon="check"
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" small />
-
 				<template #append-outer>
 					<save-options
 						v-if="isSavable"
@@ -335,7 +317,7 @@ function revert(values: Record<string, any>) {
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
-			</v-button>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 
 		<template #navigation>

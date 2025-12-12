@@ -6,6 +6,7 @@ import ExportSidebarDetail from '@/views/private/components/export-sidebar-detai
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { useCollection, useLayout } from '@directus/composables';
 import { computed, ref } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
@@ -121,17 +122,13 @@ function clearFilters() {
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
-						<v-button
+						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="$t('delete_label')"
-							rounded
-							icon
 							class="action-delete"
 							secondary
-							small
+							icon="delete"
 							@click="on"
-						>
-							<v-icon name="delete" outline small />
-						</v-button>
+						/>
 					</template>
 
 					<v-card>
@@ -148,21 +145,19 @@ function clearFilters() {
 					</v-card>
 				</v-dialog>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0"
 					v-tooltip.bottom="$t('edit')"
-					rounded
-					icon
+					icon="edit"
 					secondary
-					small
 					@click="batchEditActive = true"
-				>
-					<v-icon name="edit" outline small />
-				</v-button>
+				/>
 
-				<v-button v-tooltip.bottom="$t('create_custom_translation')" rounded icon :to="addNewLink" small>
-					<v-icon name="add" small />
-				</v-button>
+				<PrivateViewHeaderBarActionButton
+					v-tooltip.bottom="$t('create_custom_translation')"
+					:to="addNewLink"
+					icon="add"
+				/>
 			</template>
 
 			<template #navigation>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { renderStringTemplate } from '@/utils/render-string-template';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldMeta } from '@directus/types';
 import { isEqual, sortBy } from 'lodash';
@@ -262,16 +263,12 @@ function closeDrawer() {
 			</template>
 
 			<template #actions>
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('save')"
-					icon
-					rounded
-					small
+					icon="check"
 					:disabled="isSaveDisabled"
 					@click="saveItem(active!)"
-				>
-					<v-icon name="check" small />
-				</v-button>
+				/>
 			</template>
 
 			<div class="drawer-item-content">

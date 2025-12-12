@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useClipboard } from '@/composables/use-clipboard';
 import { useShortcut } from '@/composables/use-shortcut';
-import { getRootPath } from '@/utils/get-root-path';
 import { sdk } from '@/sdk';
 import { useServerStore } from '@/stores/server';
+import { getRootPath } from '@/utils/get-root-path';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import PrivateView from '@/views/private/private-view/components/private-view.vue';
 import { realtime } from '@directus/sdk';
 import { useLocalStorage } from '@vueuse/core';
 import CodeMirror from 'codemirror';
@@ -423,30 +425,28 @@ onUnmounted(() => {
 			<v-button v-if="shouldStream && !streamConnected" v-tooltip.bottom="$t('loading')" rounded icon disabled small>
 				<v-progress-circular small indeterminate />
 			</v-button>
-			<v-button
+
+			<PrivateViewHeaderBarActionButton
 				v-else-if="!shouldStream"
 				v-tooltip.bottom="$t('resume_streaming_logs')"
-				rounded
-				icon
-				small
+				icon="play_arrow"
 				@click="resumeLogsStreaming"
-			>
-				<v-icon name="play_arrow" small />
-			</v-button>
-			<v-button v-else v-tooltip.bottom="$t('pause_streaming_logs')" rounded icon small @click="pauseLogsStreaming">
-				<v-icon name="pause" small />
-			</v-button>
-			<v-button
+			/>
+
+			<PrivateViewHeaderBarActionButton
+				v-else
+				v-tooltip.bottom="$t('pause_streaming_logs')"
+				icon="pause"
+				@click="pauseLogsStreaming"
+			/>
+
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('clear_logs')"
-				rounded
-				icon
 				:disabled="logs.length === 0"
 				class="action-clear"
-				small
+				icon="mop"
 				@click="clearLogs"
-			>
-				<v-icon name="mop" small />
-			</v-button>
+			/>
 		</template>
 
 		<template #navigation>

@@ -9,6 +9,7 @@ import { useInsightsStore } from '@/stores/insights';
 import { pointOnLine } from '@/utils/point-on-line';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { applyOptionsData } from '@directus/utils';
 import { assign, isEmpty } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
@@ -197,68 +198,48 @@ const refreshInterval = computed({
 
 		<template #actions>
 			<template v-if="editMode">
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('clear_changes')"
 					class="clear-changes"
-					rounded
-					icon
-					small
 					outlined
+					icon="clear"
 					@click="cancelChanges"
-				>
-					<v-icon name="clear" small />
-				</v-button>
+				/>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('create_panel')"
-					rounded
-					icon
 					outlined
 					:to="`/insights/${currentDashboard.id}/+`"
-					small
-				>
-					<v-icon name="add" small />
-				</v-button>
+					icon="add"
+				/>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('save')"
 					:disabled="!hasEdits"
-					rounded
-					icon
-					small
 					:loading="saving"
+					icon="check"
 					@click="saveChanges"
-				>
-					<v-icon name="check" small />
-				</v-button>
+				/>
 			</template>
 
 			<template v-else>
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('fit_to_screen')"
 					:active="zoomToFit"
 					class="zoom-to-fit"
-					rounded
-					icon
-					small
 					outlined
+					icon="aspect_ratio"
 					@click="toggleZoomToFit"
-				>
-					<v-icon name="aspect_ratio" small />
-				</v-button>
+				/>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('edit_panels')"
 					class="edit"
-					rounded
-					icon
 					outlined
-					small
 					:disabled="!updateAllowed"
+					icon="edit"
 					@click="editMode = !editMode"
-				>
-					<v-icon name="edit" small />
-				</v-button>
+				/>
 			</template>
 		</template>
 

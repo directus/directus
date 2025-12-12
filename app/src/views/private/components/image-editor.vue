@@ -10,6 +10,7 @@ import throttle from 'lodash/throttle';
 import { nanoid } from 'nanoid/non-secure';
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 
 const imageFields = [
 	'type',
@@ -577,9 +578,13 @@ function setAspectRatio() {
 		</div>
 
 		<template #actions>
-			<v-button v-tooltip.bottom="$t('save')" :loading="saving" icon rounded :disabled="!hasEdits" @click="save">
-				<v-icon name="check" />
-			</v-button>
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('save')"
+				:loading="saving"
+				:disabled="!hasEdits"
+				icon="check"
+				@click="save"
+			/>
 		</template>
 	</v-drawer>
 </template>

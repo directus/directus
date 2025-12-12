@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { RouteLocationRaw, useRoute, useLink } from 'vue-router';
-import { useSizeClass, useGroupable } from '@directus/composables';
+import vFocus from '@/directives/focus';
+import vTooltip from '@/directives/tooltip';
+import { useGroupable, useSizeClass } from '@directus/composables';
 import { isEqual, isNil } from 'lodash';
+import { computed } from 'vue';
+import { RouteLocationRaw, useLink, useRoute } from 'vue-router';
+import vProgressCircular from './v-progress-circular.vue';
 
 interface Props {
 	/** Automatically focuses on the button */

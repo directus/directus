@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import api from '@/api';
+import { logout } from '@/auth';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { useServerStore } from '@/stores/server';
+import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import UsersInvite from '@/views/private/components/users-invite.vue';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { useLayout } from '@directus/composables';
 import { mergeFilters } from '@directus/utils';
 import { computed, ref, toRefs } from 'vue';
@@ -15,8 +18,6 @@ import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import useNavigation from '../composables/use-navigation';
-import { logout } from '@/auth';
-import { useUserStore } from '@/stores/user';
 
 const props = defineProps<{ role?: string }>();
 
@@ -193,18 +194,14 @@ function clearFilters() {
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
-						<v-button
+						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
 							:disabled="batchDeleteAllowed !== true"
-							rounded
-							icon
 							class="action-delete"
 							secondary
-							small
+							icon="delete"
 							@click="on"
-						>
-							<v-icon name="delete" small />
-						</v-button>
+						/>
 					</template>
 
 					<v-card>
@@ -221,41 +218,29 @@ function clearFilters() {
 					</v-card>
 				</v-dialog>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0"
 					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
-					rounded
-					icon
 					secondary
 					:disabled="batchEditAllowed === false"
-					small
+					icon="edit"
 					@click="batchEditActive = true"
-				>
-					<v-icon name="edit" small />
-				</v-button>
+				/>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-if="canInviteUsers"
 					v-tooltip.bottom="$t('invite_users')"
-					rounded
-					icon
 					secondary
-					small
+					icon="person_add"
 					@click="userInviteModalActive = true"
-				>
-					<v-icon name="person_add" small />
-				</v-button>
+				/>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
-					rounded
-					icon
 					:to="addNewLink"
 					:disabled="createAllowed === false"
-					small
-				>
-					<v-icon name="add" small />
-				</v-button>
+					icon="add"
+				/>
 			</template>
 
 			<template #navigation>

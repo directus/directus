@@ -10,6 +10,7 @@ import { ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import PolicyInfoSidebarDetail from './policy-info-sidebar-detail.vue';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 
 const props = defineProps<{
 	primaryKey: string;
@@ -111,18 +112,14 @@ function discardAndStay() {
 		<template #actions>
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('delete_label')"
-						rounded
-						icon
 						class="action-delete"
 						secondary
 						:disabled="item === null"
-						small
+						icon="delete"
 						@click="on"
-					>
-						<v-icon name="delete" small />
-					</v-button>
+					/>
 				</template>
 
 				<v-card>
