@@ -93,4 +93,41 @@ describe('SchemaHelperCockroachDb', () => {
 			'my_custom_column',
 		]);
 	});
+
+	test('createIndex creates a composite index with multiple fields', async () => {
+		const { helper, mockKnex } = createHelper();
+		await helper.createIndex('revisions', ['collection', 'item', 'version']);
+
+		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX ?? ON ?? (??, ??, ??)', [
+			'revisions_collection_item_version_index',
+			'revisions',
+			'collection',
+			'item',
+			'version',
+		]);
+	});
+
+	test('createIndex creates a concurrent composite index', async () => {
+		const { helper, mockKnex } = createHelper();
+		await helper.createIndex('revisions', ['collection', 'item'], { attemptConcurrentIndex: true });
+
+		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE INDEX CONCURRENTLY ?? ON ?? (??, ??)', [
+			'revisions_collection_item_index',
+			'revisions',
+			'collection',
+			'item',
+		]);
+	});
+
+	test('createIndex creates a unique composite index', async () => {
+		const { helper, mockKnex } = createHelper();
+		await helper.createIndex('products', ['sku', 'variant'], { unique: true });
+
+		expect(mockKnex.raw).toHaveBeenCalledWith('CREATE UNIQUE INDEX ?? ON ?? (??, ??)', [
+			'products_sku_variant_unique',
+			'products',
+			'sku',
+			'variant',
+		]);
+	});
 });

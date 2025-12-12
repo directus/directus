@@ -111,13 +111,13 @@ export class SchemaHelperOracle extends SchemaHelper {
 		aliases can not be used before version 23c.
 
 		> If you also specify a group_by_clause in this statement, then this select list can contain only the following
-		  types of expressions:
+			types of expressions:
 				* Constants
 				* Aggregate functions and the functions USER, UID, and SYSDATE
 				* Expressions identical to those in the group_by_clause. If the group_by_clause is in a subquery,
-				  then all columns in the select list of the subquery must match the GROUP BY columns in the subquery.
-				  If the select list and GROUP BY columns of a top-level query or of a subquery do not match,
-				  then the statement results in ORA-00979.
+					then all columns in the select list of the subquery must match the GROUP BY columns in the subquery.
+					If the select list and GROUP BY columns of a top-level query or of a subquery do not match,
+					then the statement results in ORA-00979.
 				* Expressions involving the preceding expressions that evaluate to the same value for all rows in a group
 
 		https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/SELECT.html
@@ -138,21 +138,27 @@ export class SchemaHelperOracle extends SchemaHelper {
 
 	override async createIndex(
 		collection: string,
-		field: string,
+		field: string | string[],
 		options: CreateIndexOptions = {},
 	): Promise<Knex.SchemaBuilder> {
+		const fields = Array.isArray(field) ? field : [field];
 		const isUnique = Boolean(options.unique);
-		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
+		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, fields);
+		const placeholders = fields.map(() => '??').join(', ');
 
 		if (options.attemptConcurrentIndex) {
 			// https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/CREATE-INDEX.html#GUID-1F89BBC0-825F-4215-AF71-7588E31D8BFE__GUID-041E5429-065B-43D5-AC7F-66810140842C
-			return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??) ONLINE`, [
+			return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (${placeholders}) ONLINE`, [
 				constraintName,
 				collection,
-				field,
+				...fields,
 			]);
 		}
 
-		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
+		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (${placeholders})`, [
+			constraintName,
+			collection,
+			...fields,
+		]);
 	}
 }

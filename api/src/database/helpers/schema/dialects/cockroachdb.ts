@@ -53,7 +53,7 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 			> You can group columns by an alias (i.e., a label assigned to the column with an AS clause) rather than the column name.
 
 			> If aggregate groups are created on a full primary key, any column in the table can be selected as a target_elem,
-			  or specified in a HAVING clause.
+				or specified in a HAVING clause.
 
 			https://www.cockroachlabs.com/docs/stable/select-clause#parameters
 			 */
@@ -64,21 +64,27 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 
 	override async createIndex(
 		collection: string,
-		field: string,
+		field: string | string[],
 		options: CreateIndexOptions = {},
 	): Promise<Knex.SchemaBuilder> {
+		const fields = Array.isArray(field) ? field : [field];
 		const isUnique = Boolean(options.unique);
-		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
+		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, fields);
+		const placeholders = fields.map(() => '??').join(', ');
 
 		// https://www.cockroachlabs.com/docs/stable/create-index
 		if (options.attemptConcurrentIndex) {
-			return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX CONCURRENTLY ?? ON ?? (??)`, [
+			return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX CONCURRENTLY ?? ON ?? (${placeholders})`, [
 				constraintName,
 				collection,
-				field,
+				...fields,
 			]);
 		}
 
-		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
+		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (${placeholders})`, [
+			constraintName,
+			collection,
+			...fields,
+		]);
 	}
 }

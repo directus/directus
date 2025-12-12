@@ -190,4 +190,53 @@ describe('SchemaHelperMSSQL', () => {
 			'my_custom_column',
 		]);
 	});
+
+	test('createIndex creates a composite index with multiple fields', async () => {
+		const { helper, mockRaw } = createHelper();
+		mockRaw.mockResolvedValueOnce([{ edition: 'Standard Edition' }]);
+
+		await helper.createIndex('revisions', ['collection', 'item', 'version']);
+
+		expect(mockRaw).toHaveBeenNthCalledWith(1, `SELECT SERVERPROPERTY('edition') AS edition`);
+
+		expect(mockRaw).toHaveBeenNthCalledWith(2, 'CREATE INDEX ?? ON ?? (??, ??, ??)', [
+			'revisions_collection_item_version_index',
+			'revisions',
+			'collection',
+			'item',
+			'version',
+		]);
+	});
+
+	test('createIndex creates an online composite index on Enterprise edition', async () => {
+		const { helper, mockRaw } = createHelper();
+		mockRaw.mockResolvedValueOnce([{ edition: 'Enterprise Edition' }]);
+
+		await helper.createIndex('revisions', ['collection', 'item'], { attemptConcurrentIndex: true });
+
+		expect(mockRaw).toHaveBeenNthCalledWith(1, `SELECT SERVERPROPERTY('edition') AS edition`);
+
+		expect(mockRaw).toHaveBeenNthCalledWith(2, 'CREATE INDEX ?? ON ?? (??, ??) WITH (ONLINE = ON)', [
+			'revisions_collection_item_index',
+			'revisions',
+			'collection',
+			'item',
+		]);
+	});
+
+	test('createIndex creates a unique composite index', async () => {
+		const { helper, mockRaw } = createHelper();
+		mockRaw.mockResolvedValueOnce([{ edition: 'Standard Edition' }]);
+
+		await helper.createIndex('products', ['sku', 'variant'], { unique: true });
+
+		expect(mockRaw).toHaveBeenNthCalledWith(1, `SELECT SERVERPROPERTY('edition') AS edition`);
+
+		expect(mockRaw).toHaveBeenNthCalledWith(2, 'CREATE UNIQUE INDEX ?? ON ?? (??, ??)', [
+			'products_sku_variant_unique',
+			'products',
+			'sku',
+			'variant',
+		]);
+	});
 });
