@@ -71,6 +71,9 @@ export async function validateItemAccess(
 		},
 	};
 
+	let hasItemRules;
+	let permissionedFields;
+
 	// Inject the root fields after the permissions have been processed, as to not require access to all collection fields
 	if (options.returnAllowedRootFields) {
 		const allowedFields = await fetchAllowedFields(
@@ -80,16 +83,7 @@ export async function validateItemAccess(
 
 		const schemaFields = Object.keys(context.schema.collections[options.collection]!.fields);
 		const hasWildcard = allowedFields.includes('*');
-		const permissionedFields = hasWildcard ? schemaFields : allowedFields;
-
-		// Create children only for fields that exist in schema and are allowed by permissions
-		ast.children = permissionedFields.map((field) => ({
-			type: 'field',
-			name: field,
-			fieldKey: field,
-			whenCase: [],
-			alias: false,
-		}));
+		permissionedFields = hasWildcard ? schemaFields : allowedFields;
 
 		const policies = await fetchPolicies(options.accountability, context);
 
@@ -99,9 +93,18 @@ export async function validateItemAccess(
 		);
 
 		// Only inject cases if there are item-level permission rules
-		const hasItemRules = permissions.some((p) => p.permissions && Object.keys(p.permissions).length > 0);
+		hasItemRules = permissions.some((p) => p.permissions && Object.keys(p.permissions).length > 0);
 
 		if (hasItemRules) {
+			// Create children only for fields that exist in schema and are allowed by permissions
+			ast.children = permissionedFields.map((field) => ({
+				type: 'field',
+				name: field,
+				fieldKey: field,
+				whenCase: [],
+				alias: false,
+			}));
+
 			injectCases(ast, permissions);
 		}
 	}
@@ -132,6 +135,14 @@ export async function validateItemAccess(
 
 	// If returnAllowedRootFields, return intersection of allowed fields across all items
 	if (options.returnAllowedRootFields) {
+		// If there are no item-level rules, return the permissioned fields directly
+		if (!hasItemRules) {
+			return {
+				accessAllowed: true,
+				allowedRootFields: permissionedFields!,
+			}
+		}
+
 		const allowedRootFields =
 			items.length > 0 ? Object.keys(items[0]!).filter((field) => items.every((item: any) => item[field] === 1)) : [];
 
