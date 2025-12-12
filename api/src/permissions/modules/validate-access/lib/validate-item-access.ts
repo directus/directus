@@ -138,7 +138,7 @@ export async function validateItemAccess(
 		// If there are no item-level rules, return the permissioned fields directly
 		if (!hasItemRules) {
 			return {
-				accessAllowed: true,
+				accessAllowed,
 				allowedRootFields: permissionedFields!,
 			}
 		}
