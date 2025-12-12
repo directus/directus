@@ -26,18 +26,34 @@ function isFormattingElement(node: Node): boolean {
 	return formattingTags.includes(tag);
 }
 
-function getFormattingTag(textNode: Node): string | null {
+function hasInlineUnderline(element: HTMLElement): boolean {
+	if (element.tagName === 'U') return true;
+
+	const decoration = element.style.textDecoration || element.style.textDecorationLine;
+	return decoration.toLowerCase().includes('underline');
+}
+
+function getFormattingSignature(textNode: Node): string {
 	let current: Node | null = textNode.parentNode;
+	const formatting = new Set<string>();
 
 	while (current) {
-		if (current.nodeType === Node.ELEMENT_NODE && isFormattingElement(current)) {
-			return (current as HTMLElement).tagName;
+		if (current.nodeType === Node.ELEMENT_NODE) {
+			const element = current as HTMLElement;
+
+			if (isFormattingElement(element)) {
+				formatting.add(element.tagName);
+			}
+
+			if (hasInlineUnderline(element)) {
+				formatting.add('U');
+			}
 		}
 
 		current = current.parentNode;
 	}
 
-	return null;
+	return [...formatting].sort().join('|');
 }
 
 function getFormattingDiffRanges(
@@ -53,7 +69,7 @@ function getFormattingDiffRanges(
 		end: number;
 		text: string;
 		formatted: boolean;
-		formattingTag: string | null;
+		formattingSignature: string;
 	};
 
 	function collectTextNodes(node: Node, startOffset: number = 0): { nodes: TextNodeInfo[]; nextOffset: number } {
@@ -63,12 +79,12 @@ function getFormattingDiffRanges(
 			if (currentNode.nodeType === Node.TEXT_NODE) {
 				const text = currentNode.textContent || '';
 				const trimmed = text.trim();
-				const formattingTag = getFormattingTag(currentNode);
-				const formatted = formattingTag !== null;
+				const formattingSignature = getFormattingSignature(currentNode);
+				const formatted = formattingSignature.length > 0;
 				const start = offset;
 				const end = offset + text.length;
 
-				nodes.push({ node: currentNode as Text, start, end, text: trimmed, formatted, formattingTag });
+				nodes.push({ node: currentNode as Text, start, end, text: trimmed, formatted, formattingSignature });
 				return end;
 			} else if (currentNode.nodeType === Node.ELEMENT_NODE) {
 				let currentOffset = offset;
@@ -117,7 +133,9 @@ function getFormattingDiffRanges(
 		const condition1 = baseNode.formatted && (!matchingIncoming || !matchingIncoming.formatted);
 
 		const condition2 =
-			baseNode.formatted && matchingIncoming?.formatted && baseNode.formattingTag !== matchingIncoming.formattingTag;
+			baseNode.formatted &&
+			matchingIncoming?.formatted &&
+			baseNode.formattingSignature !== matchingIncoming.formattingSignature;
 
 		const shouldHighlight = condition1 || condition2;
 
@@ -134,7 +152,9 @@ function getFormattingDiffRanges(
 		const condition1 = incomingNode.formatted && (!matchingBase || !matchingBase.formatted);
 
 		const condition2 =
-			incomingNode.formatted && matchingBase?.formatted && incomingNode.formattingTag !== matchingBase.formattingTag;
+			incomingNode.formatted &&
+			matchingBase?.formatted &&
+			incomingNode.formattingSignature !== matchingBase.formattingSignature;
 
 		const shouldHighlight = condition1 || condition2;
 
