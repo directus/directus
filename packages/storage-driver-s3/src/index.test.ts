@@ -11,6 +11,7 @@ import { Upload } from '@aws-sdk/lib-storage';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
 import {
+	rand,
 	randAlphaNumeric,
 	randBoolean,
 	randGitBranch as randBucket,
@@ -38,7 +39,7 @@ vi.mock('@aws-sdk/lib-storage');
 vi.mock('node:path');
 
 let sample: {
-	config: Required<DriverS3Config>;
+	config: DriverS3Config;
 	path: {
 		input: string;
 		inputFull: string;
@@ -68,8 +69,9 @@ beforeEach(() => {
 			key: randAlphaNumeric({ length: 20 }).join(''),
 			secret: randAlphaNumeric({ length: 40 }).join(''),
 			bucket: randBucket(),
-			acl: randWord(),
-			serverSideEncryption: randWord(),
+			acl: 'private',
+			serverSideEncryption: rand(['AES256', 'aws:kms', 'aws:kms:dsse', 'aws:fsx']),
+			serverSideEncryptionKmsKeyId: randAlphaNumeric({ length: 20 }).join(''),
 			root: randDirectoryPath(),
 			endpoint: randDomainName(),
 			region: randWord(),
@@ -300,6 +302,7 @@ describe('#fullPath', () => {
 		vi.mocked(join).mockReturnValue(sample.path.inputFull);
 		vi.mocked(normalizePath).mockReturnValue(sample.path.inputFull);
 
+		// @ts-expect-error - mutating private attribute
 		driver['root'] = sample.config.root;
 
 		const result = driver['fullPath'](sample.path.input);
@@ -490,6 +493,36 @@ describe('#copy', () => {
 		});
 	});
 
+	test('Optionally sets ServerSideEncryptionKMSKeyId ', async () => {
+		driver['config'].serverSideEncryption = 'aws:kms';
+		driver['config'].serverSideEncryptionKmsKeyId = sample.config.serverSideEncryptionKmsKeyId;
+
+		await driver.copy(sample.path.src, sample.path.dest);
+
+		expect(CopyObjectCommand).toHaveBeenCalledWith({
+			Key: sample.path.destFull,
+			Bucket: sample.config.bucket,
+			CopySource: `/${sample.config.bucket}/${sample.path.srcFull}`,
+			ServerSideEncryption: 'aws:kms',
+			SSEKMSKeyId: sample.config.serverSideEncryptionKmsKeyId,
+		});
+	});
+
+	test('Does not set ServerSideEncryptionKMSKeyId if ServerSideEncryption is not aws:kms', async () => {
+		driver['config'].serverSideEncryption = 'AES256';
+		driver['config'].serverSideEncryptionKmsKeyId = sample.config.serverSideEncryptionKmsKeyId;
+
+		await driver.copy(sample.path.src, sample.path.dest);
+
+		expect(CopyObjectCommand).toHaveBeenCalledWith({
+			Key: sample.path.destFull,
+			Bucket: sample.config.bucket,
+			CopySource: `/${sample.config.bucket}/${sample.path.srcFull}`,
+			ServerSideEncryption: 'AES256',
+			SSEKMSKeyId: undefined,
+		});
+	});
+
 	test('Optionally sets ACL', async () => {
 		driver['config'].acl = sample.config.acl;
 
@@ -553,6 +586,42 @@ describe('#write', () => {
 				Bucket: sample.config.bucket,
 				Body: sample.stream,
 				ServerSideEncryption: sample.config.serverSideEncryption,
+			},
+		});
+	});
+
+	test('Optionally sets ServerSideEncryptionKmsKeyId', async () => {
+		driver['config'].serverSideEncryption = 'aws:kms';
+		driver['config'].serverSideEncryptionKmsKeyId = sample.config.serverSideEncryptionKmsKeyId;
+
+		await driver.write(sample.path.input, sample.stream);
+
+		expect(Upload).toHaveBeenCalledWith({
+			client: driver['client'],
+			params: {
+				Key: sample.path.inputFull,
+				Bucket: sample.config.bucket,
+				Body: sample.stream,
+				ServerSideEncryption: 'aws:kms',
+				SSEKMSKeyId: sample.config.serverSideEncryptionKmsKeyId,
+			},
+		});
+	});
+
+	test('Does not set ServerSideEncryptionKmsKeyId when ServerSideEncryption is not aws:kms', async () => {
+		driver['config'].serverSideEncryption = 'AES256';
+		driver['config'].serverSideEncryptionKmsKeyId = sample.config.serverSideEncryptionKmsKeyId;
+
+		await driver.write(sample.path.input, sample.stream);
+
+		expect(Upload).toHaveBeenCalledWith({
+			client: driver['client'],
+			params: {
+				Key: sample.path.inputFull,
+				Bucket: sample.config.bucket,
+				Body: sample.stream,
+				ServerSideEncryption: 'AES256',
+				SSEKMSKeyId: undefined,
 			},
 		});
 	});
@@ -639,6 +708,7 @@ describe('#list', () => {
 			],
 		} as unknown as void);
 
+		// @ts-expect-error - mutating private attribute
 		driver['root'] = sampleRoot;
 
 		const iterator = driver.list(sample.path.input);

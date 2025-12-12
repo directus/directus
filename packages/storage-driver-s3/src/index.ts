@@ -40,22 +40,25 @@ import { join } from 'node:path';
 import stream, { promises as streamProm, type Readable } from 'node:stream';
 
 export type DriverS3Config = {
-	root?: string;
-	key?: string;
-	secret?: string;
-	bucket: string;
-	acl?: ObjectCannedACL;
-	serverSideEncryption?: ServerSideEncryption;
-	endpoint?: string;
-	region?: string;
-	forcePathStyle?: boolean;
-	tus?: {
-		chunkSize?: number;
-	};
-	connectionTimeout?: number;
-	socketTimeout?: number;
-	maxSockets?: number;
-	keepAlive?: boolean;
+	root?: string | undefined;
+	key?: string | undefined;
+	secret?: string | undefined;
+	bucket: string | undefined;
+	acl?: ObjectCannedACL | undefined;
+	serverSideEncryption?: ServerSideEncryption | undefined;
+	serverSideEncryptionKmsKeyId?: string | undefined;
+	endpoint?: string | undefined;
+	region?: string | undefined;
+	forcePathStyle?: boolean | undefined;
+	tus?:
+		| {
+				chunkSize?: number | undefined;
+		  }
+		| undefined;
+	connectionTimeout?: number | undefined;
+	socketTimeout?: number | undefined;
+	maxSockets?: number | undefined;
+	keepAlive?: boolean | undefined;
 };
 
 export class DriverS3 implements TusDriver {
@@ -194,6 +197,10 @@ export class DriverS3 implements TusDriver {
 
 		if (this.config.serverSideEncryption) {
 			params.ServerSideEncryption = this.config.serverSideEncryption;
+
+			if (this.config.serverSideEncryption === 'aws:kms' && this.config.serverSideEncryptionKmsKeyId) {
+				params.SSEKMSKeyId = this.config.serverSideEncryptionKmsKeyId;
+			}
 		}
 
 		if (this.config.acl) {
@@ -220,6 +227,10 @@ export class DriverS3 implements TusDriver {
 
 		if (this.config.serverSideEncryption) {
 			params.ServerSideEncryption = this.config.serverSideEncryption;
+
+			if (this.config.serverSideEncryption === 'aws:kms' && this.config.serverSideEncryptionKmsKeyId) {
+				params.SSEKMSKeyId = this.config.serverSideEncryptionKmsKeyId;
+			}
 		}
 
 		const upload = new Upload({
