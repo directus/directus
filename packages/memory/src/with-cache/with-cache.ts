@@ -10,6 +10,7 @@ export type InvalidateFunction = () => void;
 
 const activeWithCaches = new Set<() => void>();
 const activeInvalidators = new Set<string>();
+const parentCaches: Record<string, (() => void)[]> = {};
 
 /**
  * Wraps a function with caching capabilities.
@@ -44,23 +45,24 @@ export function withCache<
 
 		const cached = await cache.get(key);
 
+		// Constantly track which caches are parents of others to allow proper invalidation
+		if (parentCaches[key] === undefined) parentCaches[key] = [];
+		parentCaches[key].push(...activeWithCaches);
+
 		// If an instance starts on existing cache, we want to make sure that the invalidation logic is initialized
 		if (cached !== undefined && (!invalidate || activeInvalidators.has(key))) {
 			return cached as Awaited<ReturnType<F>>;
 		}
 
-		// Make a local copy of parent cached to invalidate when this cache is invalidated
-		let parentActiveCaches = Array.from(activeWithCaches);
-
 		const clearCache: InvalidateFunction = () => {
 			cache.delete(key);
 			activeInvalidators.delete(key);
 
-			for (const clearParentCache of parentActiveCaches) {
+			for (const clearParentCache of parentCaches[key]!) {
 				clearParentCache();
 			}
 
-			parentActiveCaches = [];
+			parentCaches[key] = [];
 		};
 
 		activeWithCaches.add(clearCache);
