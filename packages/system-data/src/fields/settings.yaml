@@ -711,6 +711,58 @@ fields:
       - no-data
       - group
 
+  - field: ai_divider
+    interface: presentation-divider
+    options:
+      icon: chat
+      title: $t:ai_chat
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: ai_notice
+    interface: presentation-notice
+    options:
+      icon: info
+      text: $t:fields.directus_settings.ai_notice
+    special:
+      - alias
+      - no-data
+    width: full
+    group: ai_group
+
+  - field: ai_openai_api_key
+    special:
+      - encrypt
+    interface: input-hash
+    options:
+      iconRight: lock
+      masked: true
+      autocomplete: 'off'
+    width: half
+    group: ai_group
+
+  - field: ai_anthropic_api_key
+    special:
+      - encrypt
+    interface: input-hash
+    options:
+      iconRight: lock
+      masked: true
+      autocomplete: 'off'
+    width: half
+    group: ai_group
+
+  - field: ai_system_prompt
+    interface: input-rich-text-md
+    group: ai_group
+    width: full
+    note: $t:fields.directus_settings.ai_system_prompt_note
+    options:
+      label: $t:fields.directus_settings.ai_system_prompt
+
   - field: mcp_divider
     interface: presentation-divider
     options:

@@ -10,7 +10,7 @@ export type ApplyShortcut = 'meta+enter' | 'meta+s';
 interface Props {
 	modelValue?: boolean;
 	persistent?: boolean;
-	placement?: 'right' | 'center';
+	placement?: 'left' | 'right' | 'center';
 	/** Lets other overlays (drawer) open on top */
 	keepBehind?: boolean;
 	applyShortcut?: ApplyShortcut;
@@ -109,7 +109,7 @@ function useOverlayFocusTrap() {
 		<teleport to="#dialog-outlet">
 			<transition-dialog @after-leave="leave">
 				<component
-					:is="placement === 'right' ? 'div' : 'span'"
+					:is="placement === 'center' ? 'span' : 'div'"
 					v-if="internalActive"
 					ref="overlayEl"
 					class="container"
@@ -163,9 +163,24 @@ function useOverlayFocusTrap() {
 	animation: nudge 200ms;
 }
 
+.container.left {
+	align-items: center;
+	justify-content: flex-start;
+}
+
 .container.right {
 	align-items: center;
 	justify-content: flex-end;
+}
+
+.container.left.nudge > :slotted(*:not(:first-child)) {
+	transform-origin: left;
+
+	html[dir='rtl'] & {
+		transform-origin: right;
+	}
+
+	animation: shake 200ms;
 }
 
 .container.right.nudge > :slotted(*:not(:first-child)) {
@@ -214,7 +229,7 @@ function useOverlayFocusTrap() {
 	--v-overlay-z-index: 1;
 }
 
-@media (min-width: 600px) {
+@media (width > 640px) {
 	.container :slotted(.v-card) {
 		--v-card-min-width: 540px;
 	}

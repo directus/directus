@@ -28,7 +28,7 @@ jobs:
           - javascript
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -47,7 +47,7 @@ jobs:
           output: sarif-results
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: sarif-results
           path: sarif-results

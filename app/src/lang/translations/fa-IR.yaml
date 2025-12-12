@@ -490,6 +490,7 @@ confirm_revert_body: با این کار، آیتم به وضعیت انتخاب 
 display: نحوه نمایش
 settings_update_success: تنظیمات بروزرسانی شد
 title: عنوان
+subtitle: زیرعنوان
 revision_delta_created: ایجاد شد
 revision_delta_created_externally: به شکل خارجی ایجاد شد
 revision_delta_updated: 'یک فیلد برورزسانی شد | {count} فیلد بروزرسانی شدند'
@@ -817,7 +818,6 @@ errors:
   VALUE_OUT_OF_RANGE: مقدار، خارج از محدوده است
   VALUE_TOO_LONG: مقدار، بسیار طولانی است
 security: امنیت
-value_hashed: این مقدار به طور امن، هش شده است
 bookmark_name: نام نشانک...
 create_bookmark: ساخت نشانک
 edit_bookmark: ویرایش نشانک
@@ -1220,50 +1220,6 @@ discard_changes_copy: آیا مطمئن هستید که می‌خواهید تم
 show_x_axis: نمایش محور X
 show_y_axis: نمایش محور Y
 keep_editing: ادامه دادن ویرایش
-page_help_collections_overview: '**کلیات مجموعه ها** - لیستی از کلیه مجموعه هایی که به آنها دسترسی دارید.'
-page_help_collections_collection: >-
-  **مرور موارد** - تمام موارد مربوط به مجموعه {collection} که به آن دسترسی دارید را لیست میکند. تنظیمات مربوط به چیدمان، فیلترها و مرتب سازی را بر اساس نیاز خود ست کنید و حتی نشانکهایی از تنظیمات متفاوت را برای دسترسی سریعتر به آنها ذخیره کنید.
-page_help_collections_item: >-
-  **جزئیات آیتم** - فرمی برای نمایش و مدیریت این آیتم. همچنین، این نوار کناری شامل تاریخچه کاملی از نسخه ها و نظرات مرتبط است.
-page_help_activity_collection: >-
-  **مرور فعالیتها** - لیستی جامع از تمامی تنظیمات سیستمی کاربر شما و فعالیتهای محتوایی.
-page_help_docs_global: >-
-  **بررسی اجمالی مستندات** - مستنداتی صرفاً تنظیم شده با نسخه پروژه و شماتیک مربوطه.
-page_help_files_collection: >-
-  **مجموعه فایلها** - تمامی محتوای آپلود شده برای این پروژه را لیست میکند. تنظیمات مربوط به چیدمان، فیلترها و مرتب سازی را بر اساس نیاز خود ست کنید و حتی نشانکهایی از تنظیمات متفاوت را برای دسترسی سریعتر به آنها ذخیره کنید.
-page_help_files_item: >-
-  **جزئیات فایل** - فرمی برای مدیریت متادیتای فایل، ویرایش محتوای اصلی و بروزرسانی تنظیمات دسترسی.
-page_help_settings_project: "**تنظیمات** — تنظیمات سراسری پروژه شما."
-page_help_settings_appearance: "**ظاهر** - ظاهر پروژه شما و تنظیمات قالب‌بندی."
-page_help_settings_extensions: '**افزونه‌ها** — افزونه نصب‌شده در پروژه شما.'
-page_help_settings_ai: "**هوش مصنوعی** — گزینه‌های پیکربندی هوش مصنوعی پروژه شما."
-page_help_settings_datamodel_collections: >-
-  **مدل داده: مجموعه ها** - تمامی مجموعه های موجود را لیست می کند. این شامل مجموعه های پیدا و نهان و مجموعه های سیستمی و همچنین جداول پایگاه داده مدیریت نشده ای است که میتوانند اضافه شوند.
-page_help_settings_datamodel_fields: >-
-  **مدل داده: مجموعه** - فرمی برای مدیریت مجموعه و فیلدهای آن.
-page_help_settings_system_logs: '**لاگ‌های سیستم** — دسترسی به جریان زنده لاگ‌های سیستم.'
-page_help_settings_policies_collection: '**مرور سیاست‌ها** — همه سیاست‌های داخل پروژه را فهرست می‌کند.'
-page_help_settings_policies_item: '**جزئیات سیاست** — مدیریت مجوزهای یک سیاست و سایر تنظیمات.'
-page_help_settings_roles_collection: '**مرور نقش‌ها** - تمام نقش‌های کاربر در پروژه را لیست می‌کند.'
-page_help_settings_roles_item: "**جزئیات نقش** - مدیریت اجازه های یک نقش و سایر تنظیمات مربوط به آن."
-page_help_settings_presets_collection: >-
-  **مرور الگوها** - لیستی از تمامی الگوهای موجود در پروژه شامل: کاربر، نقش و نشانک های بالاترین سطح بعلاوه نماهای پیش فرض.
-page_help_settings_presets_item: >-
-  **جزئیات از پیش تعیین شده** - فرمی برای مدیریت نشانک‌ها و از پیش تنظیم‌های مجموعه پیش فرض.
-page_help_settings_webhooks_collection: '**مرور Webhooks** - فهرستی از تمام وبک هوک های داخل پروژه.'
-page_help_settings_webhooks_item: '** جزئیات وب هوک ** - فرمی برای ایجاد و مدیریت وب هوک های پروژه.'
-page_help_settings_flows_collection: '**مرور جریان‌ها** - همه جریان‌های داخل پروژه را فهرست می کند.'
-page_help_settings_flows_item: '**جزئیات جریان** - محیط کاری برای مدیریت یک یا چند عملیات.'
-page_help_settings_translations_collection: '**مرور ترجمه‌های سفارشی** — تمام ترجمه‌های سفارشی داخل پروژه را لیست می‌کند.'
-page_help_settings_translations_item: '**جزئیات ترجمه‌های سفارشی** — فرمی برای دیدن و مدیریت این مورد.'
-page_help_users_collection: '**دایرکتوری کاربر** - لیست تمامی کاربران سیستم در این پروژه.'
-page_help_users_item: >-
-  **جزئیات کاربر** — اطلاعات حساب خود را مدیریت کنید یا جزئیات سایر کاربران را مشاهده کنید.
-page_help_insights_overview: '**اطلاعات** - لیست داشبوردهایی که به آنها دسترسی دارید.'
-page_help_insights_dashboard: '**داشبورد** - فضای کاری برای مدیریت یک یا چند پنل'
-page_help_marketplace_account: '**حساب** — ناشر یا نگهدارنده یک افزونه منتشر شده.'
-page_help_marketplace_registry: '**رجیستری** — افزونه‌های فعال در بازار دایرکتوس.'
-page_help_marketplace_extension: '**افزونه** — افزونه در بازار دایرکتوس.'
 activity_feed: گزارش فعالیت ها
 add_new: اضافه کردن
 create_new: ساخت آیتم جدید
@@ -1660,6 +1616,22 @@ unlimited_usage: Unlimited usage
 uses_left: هیچ استفاده‌ای نمانده | یک استفاده مانده | {n} استفاده مانده
 no_shares: هیچ اشتراک گذاری برای نمایش نیست
 new_share: اشتراک گذاری جدید
+ai:
+  input: ورودی
+  unknown: نامشخص
+  settings: تنظیمات
+  tool_approval:
+    disabled: غیرفعال شده
+ai_tools:
+  items: آیتمها
+  files: فایل ها
+  folders: پوشه‌ها
+  flows: جریان‌ها
+  trigger-flow: راه‌اندازی جریان
+  operations: عملیات‌ها
+  schema: اسکیما
+  collections: مجموعه‌ها
+  fields: کادرها
 mcp_prompts_collection:
   no_collection_selected: مجموعه‌ای انتخاب نشده است
   no_collection_selected_copy: مجموعه‌ای را برای فعال‌سازی قالب‌های پرامپت قابل استفاده مجدد انتخاب کنید.
@@ -2183,6 +2155,9 @@ interfaces:
   input-password:
     input-password: ورود رمز عبور
     description: ورودی پسورد با دکمه‌ای برای مخفی کردن مقدار
+  header:
+    header: سربرگ
+    links: لینک‌‌ها
 displays:
   translations:
     translations: ترجمه‌ها

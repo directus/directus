@@ -110,19 +110,19 @@ const customIcon = computed(() => {
 }
 
 .grid-2 {
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		--columns: 2;
 	}
 }
 
 .grid-3 {
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		--columns: 3;
 	}
 }
 
 .grid-4 {
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		--columns: 4;
 	}
 }

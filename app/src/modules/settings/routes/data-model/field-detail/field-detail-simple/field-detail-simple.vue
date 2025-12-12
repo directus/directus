@@ -10,7 +10,7 @@ import { useExtensions } from '@/extensions';
 const props = withDefaults(
 	defineProps<{
 		collection: Collection;
-		search: string | null;
+		search?: string | null;
 	}>(),
 	{
 		search: null,
@@ -175,7 +175,7 @@ function toggleInterface(id: string) {
 <style scoped lang="scss">
 .content {
 	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .group h2 {
@@ -200,7 +200,7 @@ function toggleInterface(id: string) {
 		--columns: 2;
 	}
 
-	@media (min-width: 600px) {
+	@media (width > 640px) {
 		--columns: 3;
 	}
 

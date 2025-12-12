@@ -380,6 +380,7 @@ confirm_revert_body: Dette vil vende elementet tilbage til den valgte tilstand.
 display: Vis
 settings_update_success: Indstillinger opdateret
 title: Titel
+subtitle: Undertitel
 revision_delta_created: Oprettet
 revision_delta_created_externally: Oprettet eksternt
 revision_delta_updated: 'Opdateret 1 Felt | Opdaterede {count} felter'
@@ -647,7 +648,6 @@ errors:
   VALUE_OUT_OF_RANGE: Værdien er uden for rækkevidde
   VALUE_TOO_LONG: Værdien er for lang
 security: Sikkerhed
-value_hashed: Værdi sikker hashed
 bookmark_name: Bogmærke navn...
 create_bookmark: Opret bogmærke
 edit_bookmark: Rediger bogmærke
@@ -807,7 +807,6 @@ icon_on: Ikon til
 icon_off: Ikon fra
 label: Etiket
 select_a_flow: Vælg et Flow
-run_flow_on_current_edited_confirm: Dette element kan blive opdateret af dette flow, er du sikker på, at du vil udføre det?
 trigger: Udløser
 trigger_options: Udløserindstillinger
 view_trigger: Vis udløser
@@ -983,37 +982,6 @@ discard_changes_copy: Er du sikker på, at du vil kassere alle de foretagne ænd
 show_x_axis: Vis x-Akse
 show_y_axis: Vis y-akse
 keep_editing: Fortsæt redigering
-page_help_collections_overview: '**Samlinger Oversigt** — Liste over alle samlinger, du har adgang til.'
-page_help_collections_collection: >-
-  **Gennemse elementer ** — Viser alle {collection} elementer, du har adgang til. Tilpas layout, filtre og sortering for at skræddersy din visning, og gem endda bogmærker af disse forskellige konfigurationer for hurtig adgang.
-page_help_collections_item: >-
-  **Item Detail** — En formular til visning og håndtering af dette element. Denne sidebar indeholder også en fuld historie af revisioner og indlejrede kommentarer.
-page_help_activity_collection: >-
-  **Gennemse aktivitet** — En omfattende liste over alle dine brugeres system og indholdsaktivitet.
-page_help_docs_global: >-
-  **Dokumentationsoversigt** — Dokumenter, der er skræddersyet specifikt til projektets version og skema.
-page_help_files_collection: >-
-  **Fil Bibliotek** — Viser alle filer uploadet til dette projekt. Tilpas layout, filtre og sortering for at skræddersy din visning, og gem endda bogmærker af disse forskellige konfigurationer for hurtig adgang.
-page_help_files_item: >-
-  **Fildetaljer** — En formular til håndtering af filmetadata, redigering af det oprindelige aktiv og opdatering af adgangsindstillinger.
-page_help_settings_datamodel_collections: >-
-  **Datamodel: Samlinger** — Viser alle tilgængelige samlinger. Dette omfatter synlige, skjulte og systemsamlinger, samt uhåndterede databasetabeller, der kan tilføjes.
-page_help_settings_datamodel_fields: >-
-  **Datamodel: Samling** — En formular til håndtering af denne indsamling og dens felter.
-page_help_settings_roles_item: "**Rolle Detaljer** — Administrer en rolles tilladelser og andre indstillinger."
-page_help_settings_presets_collection: >-
-  **Gennemse forudindstillinger** — Viser alle forudindstillinger i projektet, herunder: bruger, rolle og globale bogmærker samt standardvisninger.
-page_help_settings_presets_item: >-
-  **Forudindstilling Detaljer** — En formular til håndtering af bogmærker og standard samlingsindstillinger.
-page_help_settings_webhooks_collection: '**Gennemse Webhooks** — Viser alle webhooks i projektet.'
-page_help_settings_webhooks_item: '**Webhook Detail** — En formular til oprettelse og håndtering af projektwebhooks.'
-page_help_settings_flows_collection: '**Gennemse flows** — Viser alle flows i projektet.'
-page_help_settings_flows_item: '**Flowdetalje** — Arbejdsområde til styring af en eller flere operationer.'
-page_help_users_collection: '**Bruger Directory** — Viser en liste over alle systembrugere i dette projekt.'
-page_help_users_item: >-
-  **Brugeroplysninger** — Administrer dine kontooplysninger eller se andre brugeres detaljer.
-page_help_insights_overview: '**Insights** — Liste over dashboards du har adgang til.'
-page_help_insights_dashboard: '**Dashboard** — Arbejdsrum til håndtering af et eller flere paneler'
 activity_feed: Aktivitetsfeed
 add_new: Tilføj ny
 create_new: Opret ny
@@ -1036,7 +1004,6 @@ directus_collection:
   directus_dashboards: Instrumentbrætter i Insights modulet
   directus_fields: Yderligere feltkonfiguration og metadata
   directus_files: Metadata for alle administrerede fil-asset'er
-  directus_flows: Automatiseringsflows
   directus_folders: Giver virtuelle mapper til filer
   directus_migrations: Hvilken version af den database, du bruger
   directus_notifications: Notifikationer sendt til brugere
@@ -1318,6 +1285,20 @@ shares: Aktier
 unlimited_usage: Ubegrænset brug
 no_shares: Ingen aktier at vise
 new_share: Ny Del
+ai:
+  input: Input
+  unknown: Ukendt
+  settings: Indstillinger
+  tool_approval:
+    disabled: Deaktiveret
+ai_tools:
+  items: elementer
+  files: Filer
+  folders: Mapper
+  operations: Opgaver
+  schema: Schema
+  collections: Samlinger
+  fields: Felter
 mcp_prompts_collection_schema:
   messages_role_user: Bruger
 expired: Udløbet
@@ -1465,7 +1446,7 @@ interfaces:
     accordion_mode: Harmonika tilstand
     max_one_section_open: Maks en sektion åben
   presentation-links:
-    links: Links
+    presentation-links: Knapper
     style: Stil
     primary: Primær
     link: Links
@@ -1752,6 +1733,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Rå redigering
     description: Tillad indtastning af rå- eller overskægsskabelonværdier
+  header:
+    header: Overskrift
+    links: Links
 displays:
   translations:
     translations: Oversættelser
@@ -2023,11 +2007,9 @@ triggers:
 a_flow_uuid: Vælg et flow, der skal udløses...
 any_string_or_json: Enhver streng eller JSON...
 item_payload_placeholder: Dette er den JSON, der bruges til at opdatere elementets feltværdier...
-operation_variables_note: Du kan få adgang til flowdata med variabler såsom **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** og **{'{'}{'{'}$accountability{'}'}{'}'}**, eller referer til tidligere handlinger ved hjælp af **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Betingelse
-    description: Rut et flow baseret på If / Else logik
   exec:
     name: Kør script
     description: Udfør vilkårlig kode for at ændre nyttelasten
@@ -2088,7 +2070,6 @@ operations:
     name: Transformer nyttelast
     description: Ændre Flows JSON-nyttelast
   trigger:
-    description: Send disse data til et andet flow
     data: Data
     iteration_mode: Iterationstilstand
     iteration_mode_note: Mode til iteration over arrays.

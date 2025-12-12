@@ -135,7 +135,7 @@ function toPage(page: number) {
 	line-height: 2em;
 }
 
-@media (min-width: 600px) {
+@media (width > 640px) {
 	.gap {
 		display: inline;
 	}
@@ -154,7 +154,7 @@ function toPage(page: number) {
 	display: none;
 }
 
-@media (min-width: 600px) {
+@media (width > 640px) {
 	.v-button.page:not(.active) {
 		display: inline;
 	}
