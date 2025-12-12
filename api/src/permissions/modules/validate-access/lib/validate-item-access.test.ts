@@ -109,6 +109,35 @@ test('Returns false if no items are returned', async () => {
 	).resolves.toEqual({ accessAllowed: false });
 });
 
+test('Returns false with empty allowedRootFields if no items are returned and returnAllowedRootFields is true', async () => {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+		})
+		.build();
+
+	const acc = {} as unknown as Accountability;
+
+	vi.mocked(fetchPolicies).mockResolvedValue([]);
+
+	vi.mocked(fetchPermissions).mockResolvedValue([{ fields: ['field-a'], permissions: null } as unknown as Permission]);
+
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([]);
+
+	const result = await validateItemAccess(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			primaryKeys: [1],
+			returnAllowedRootFields: true,
+		},
+		{ schema } as Context,
+	);
+
+	expect(result).toEqual({ accessAllowed: false, allowedRootFields: [] });
+});
+
 test('Returns true if the number of returned items matches the number of requested primary keys', async () => {
 	const schema = new SchemaBuilder()
 		.collection('collection-a', (c) => {
@@ -634,7 +663,7 @@ test('Keeps original fields children and returns permissionedFields directly whe
 		{ fields: ['field-a', 'field-b', 'field-c'], permissions: null } as unknown as Permission,
 	]);
 
-	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{}]);
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ 'field-b': 1 }]);
 
 	const result = await validateItemAccess(
 		{
@@ -662,4 +691,3 @@ test('Keeps original fields children and returns permissionedFields directly whe
 		allowedRootFields: ['field-a', 'field-b', 'field-c'],
 	});
 });
-

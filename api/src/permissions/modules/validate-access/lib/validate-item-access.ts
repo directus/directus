@@ -140,7 +140,7 @@ export async function validateItemAccess(
 			return {
 				accessAllowed,
 				allowedRootFields: permissionedFields!,
-			}
+			};
 		}
 
 		const allowedRootFields =
