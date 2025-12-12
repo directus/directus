@@ -101,6 +101,7 @@ export const useAiStore = defineStore('ai-store', () => {
 	const systemTools = shallowRef<SystemTool[]>([
 		'items',
 		'files',
+		'file-content',
 		'folders',
 		// Omit 'assets' because we don't support image or audio uploads yet
 		// 'assets',
