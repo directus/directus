@@ -106,7 +106,11 @@ export class DriverSupabase implements TusDriver {
 	}
 
 	async stat(filepath: string) {
-		const rootFolder = normalizePath(join(this.config.root, dirname(filepath)));
+		let rootPath = join(this.config.root, dirname(filepath))
+		// Supabase expects an empty string for current directory
+		if (rootPath === '.') rootPath = '';
+
+		const rootFolder = normalizePath(rootPath);
 
 		const { data, error } = await this.bucket.list(rootFolder, {
 			search: basename(filepath),
