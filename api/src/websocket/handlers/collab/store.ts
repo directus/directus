@@ -30,9 +30,8 @@ export function useStore<Type extends object>(uid: string) {
 				has(key) {
 					return store.has(`${uid}:${String(key)}`);
 				},
-				get(key) {
-					// No clue why TS doesn't pick up that this function can't return undefined
-					return store.get(`${uid}:${String(key)}`) as any;
+				get<K extends keyof Type>(key: K): Promise<Type[K]> {
+					return store.get(`${uid}:${String(key)}`) as Promise<Type[K]>;
 				},
 				set(key, value) {
 					return store.set(`${uid}:${String(key)}`, value);
