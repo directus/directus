@@ -106,7 +106,7 @@ export class DriverSupabase implements TusDriver {
 	}
 
 	async stat(filepath: string) {
-		let rootPath = join(this.config.root, dirname(filepath))
+		let rootPath = join(this.config.root, dirname(filepath));
 		// Supabase expects an empty string for current directory
 		if (rootPath === '.') rootPath = '';
 
