@@ -5,6 +5,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { useApi } from '@directus/composables';
 import { Alterations, Item, Policy } from '@directus/types';
 import { cloneDeep, isEmpty, isEqual, isObjectLike } from 'lodash';
@@ -203,9 +204,13 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 		</template>
 
 		<template #actions>
-			<v-button rounded icon :tooltip="$t('save')" :loading="saving" :disabled="!hasEdits" small @click="saveAndQuit">
-				<v-icon name="check" small />
-
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('save')"
+				:loading="saving"
+				:disabled="!hasEdits"
+				icon="check"
+				@click="saveAndQuit"
+			>
 				<template #append-outer>
 					<save-options
 						v-if="hasEdits"
@@ -215,7 +220,7 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
-			</v-button>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 
 		<template #navigation>

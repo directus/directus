@@ -6,6 +6,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { DeepPartial, Field, Relation } from '@directus/types';
 import { cloneDeep } from 'lodash';
 import { reactive, ref, watch } from 'vue';
@@ -493,28 +494,21 @@ function onApply() {
 		</v-tabs-items>
 
 		<template #actions>
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-if="currentTab[0] === 'collection_setup'"
 				v-tooltip.bottom="$t('next')"
 				:disabled="!collectionName || collectionName.length === 0"
-				icon
-				rounded
-				small
+				icon="arrow_forward"
 				@click="currentTab = ['optional_system_fields']"
-			>
-				<v-icon name="arrow_forward" small />
-			</v-button>
-			<v-button
+			/>
+
+			<PrivateViewHeaderBarActionButton
 				v-if="currentTab[0] === 'optional_system_fields'"
 				v-tooltip.bottom="$t('finish_setup')"
 				:loading="saving"
-				icon
-				rounded
-				small
+				icon="check"
 				@click="save"
-			>
-				<v-icon name="check" small />
-			</v-button>
+			/>
 		</template>
 	</v-drawer>
 </template>

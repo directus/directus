@@ -7,6 +7,7 @@ import { useUserStore } from '@/stores/user';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import UsersInvite from '@/views/private/components/users-invite.vue';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { Role } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
@@ -120,18 +121,14 @@ function discardAndStay() {
 		<template #actions>
 			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="$t('delete_label')"
-						rounded
-						icon
 						class="action-delete"
 						secondary
 						:disabled="item === null"
-						small
+						icon="delete"
 						@click="on"
-					>
-						<v-icon name="delete" small />
-					</v-button>
+					/>
 				</template>
 
 				<v-card>
@@ -148,21 +145,21 @@ function discardAndStay() {
 				</v-card>
 			</v-dialog>
 
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-if="canInviteUsers"
 				v-tooltip.bottom="$t('invite_users')"
-				rounded
-				icon
 				secondary
-				small
+				icon="person_add"
 				@click="userInviteModalActive = true"
+			/>
+
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('save')"
+				:loading="saving"
+				:disabled="!hasEdits"
+				icon="check"
+				@click="saveAndQuit"
 			>
-				<v-icon name="person_add" small />
-			</v-button>
-
-			<v-button rounded icon :tooltip="$t('save')" :loading="saving" :disabled="!hasEdits" small @click="saveAndQuit">
-				<v-icon name="check" small />
-
 				<template #append-outer>
 					<save-options
 						v-if="hasEdits"
@@ -172,7 +169,7 @@ function discardAndStay() {
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
-			</v-button>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 
 		<template #navigation>

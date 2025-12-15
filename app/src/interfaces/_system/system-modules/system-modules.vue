@@ -3,6 +3,7 @@ import { MODULE_BAR_DEFAULT } from '@/constants';
 import { useExtensions } from '@/extensions';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { translate } from '@/utils/translate-object-values';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { DeepPartial, Field, Settings, SettingsModuleBarLink, SettingsModuleBarModule } from '@directus/types';
 import { assign } from 'lodash';
 import { nanoid } from 'nanoid';
@@ -256,9 +257,12 @@ function remove(id: string) {
 			@apply="save"
 		>
 			<template #actions>
-				<v-button v-tooltip.bottom="$t('save')" icon rounded :disabled="isSaveDisabled" small @click="save">
-					<v-icon name="check" small />
-				</v-button>
+				<PrivateViewHeaderBarActionButton
+					v-tooltip.bottom="$t('save')"
+					:disabled="isSaveDisabled"
+					icon="check"
+					@click="save"
+				/>
 			</template>
 
 			<div class="drawer-content">

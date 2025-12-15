@@ -6,6 +6,7 @@ import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { useCollection, useLayout } from '@directus/composables';
 import { ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
@@ -114,18 +115,14 @@ function clearFilters() {
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
-						<v-button
+						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="batchDeleteAllowed ? $t('delete_label') : $t('not_allowed')"
 							:disabled="batchDeleteAllowed !== true"
-							rounded
-							icon
 							class="action-delete"
 							secondary
-							small
+							icon="delete"
 							@click="on"
-						>
-							<v-icon name="delete" outline small />
-						</v-button>
+						/>
 					</template>
 
 					<v-card>
@@ -142,29 +139,21 @@ function clearFilters() {
 					</v-card>
 				</v-dialog>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-if="selection.length > 0"
 					v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
-					rounded
-					icon
 					secondary
 					:disabled="batchEditAllowed === false"
-					small
+					icon="edit"
 					@click="batchEditActive = true"
-				>
-					<v-icon name="edit" outline small />
-				</v-button>
+				/>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="createAllowed ? $t('create_preset') : $t('not_allowed')"
-					rounded
-					icon
 					to="/settings/presets/+"
 					:disabled="createAllowed === false"
-					small
-				>
-					<v-icon name="add" small />
-				</v-button>
+					icon="add"
+				/>
 			</template>
 
 			<template #navigation>

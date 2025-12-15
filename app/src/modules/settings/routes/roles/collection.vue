@@ -4,6 +4,7 @@ import { fetchAll } from '@/utils/fetch-all';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import SearchInput from '@/views/private/components/search-input.vue';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { Role } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -163,9 +164,7 @@ function navigateToRole({ item }: { item: Role }) {
 				small
 			/>
 
-			<v-button v-tooltip.bottom="$t('create_role')" rounded icon :to="addNewLink" small>
-				<v-icon name="add" small />
-			</v-button>
+			<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('create_role')" :to="addNewLink" icon="add" />
 		</template>
 
 		<template #navigation>

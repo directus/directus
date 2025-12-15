@@ -6,6 +6,7 @@ import { useExtensions } from '@/extensions';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
 import { unexpectedError } from '@/utils/unexpected-error';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { useLayout } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { DeepPartial, Field, Filter, Preset } from '@directus/types';
@@ -478,18 +479,14 @@ function discardAndLeave() {
 			<template #actions>
 				<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 					<template #activator="{ on }">
-						<v-button
+						<PrivateViewHeaderBarActionButton
 							v-tooltip.bottom="$t('delete_label')"
-							rounded
-							icon
 							class="action-delete"
 							secondary
 							:disabled="preset === null || id === '+'"
-							small
+							icon="delete"
 							@click="on"
-						>
-							<v-icon name="delete" small />
-						</v-button>
+						/>
 					</template>
 
 					<v-card>
@@ -506,17 +503,13 @@ function discardAndLeave() {
 					</v-card>
 				</v-dialog>
 
-				<v-button
+				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('save')"
-					icon
-					rounded
 					:disabled="hasEdits === false"
 					:loading="saving"
-					small
+					icon="check"
 					@click="save"
-				>
-					<v-icon name="check" small />
-				</v-button>
+				/>
 			</template>
 
 			<div class="preset-item">
