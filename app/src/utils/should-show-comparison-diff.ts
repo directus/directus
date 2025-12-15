@@ -1,5 +1,3 @@
-import { MIN_STRING_LENGTH_FOR_WORD_DIFF } from '@/constants/comparison-diff';
-
 export function shouldShowComparisonDiff(
 	comparisonMode: boolean | undefined,
 	comparisonSide: 'base' | 'incoming' | undefined,
@@ -12,11 +10,7 @@ export function shouldShowComparisonDiff(
 	const baseValue = comparisonBaseValue ?? null;
 	const incomingValue = comparisonIncomingValue ?? null;
 
-	if (
-		typeof baseValue === 'string' &&
-		typeof incomingValue === 'string' &&
-		incomingValue.length > MIN_STRING_LENGTH_FOR_WORD_DIFF
-	) {
+	if (typeof baseValue === 'string' && typeof incomingValue === 'string') {
 		return true;
 	}
 

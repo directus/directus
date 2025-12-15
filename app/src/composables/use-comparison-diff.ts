@@ -2,7 +2,6 @@ import { diffArrays, diffJson, diffWordsWithSpace } from 'diff';
 import { isEqual } from 'lodash';
 import dompurify from 'dompurify';
 import type { Field } from '@directus/types';
-import { MIN_STRING_LENGTH_FOR_WORD_DIFF } from '@/constants/comparison-diff';
 
 export type Change = {
 	added?: boolean;
@@ -391,7 +390,8 @@ export function useComparisonDiff() {
 		} else if (
 			typeof baseValue === 'string' &&
 			typeof incomingValue === 'string' &&
-			incomingValue.length > MIN_STRING_LENGTH_FOR_WORD_DIFF
+			!isHtmlString(baseValue) &&
+			!isHtmlString(incomingValue)
 		) {
 			changes = diffWordsWithSpace(baseValue, incomingValue);
 		} else if (Array.isArray(baseValue) && Array.isArray(incomingValue)) {

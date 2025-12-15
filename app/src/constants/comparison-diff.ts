@@ -1,1 +1,0 @@
-export const MIN_STRING_LENGTH_FOR_WORD_DIFF = 25;
