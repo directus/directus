@@ -822,6 +822,7 @@ errors:
   VALUE_OUT_OF_RANGE: Waarde valt buiten het bereik
   VALUE_TOO_LONG: Waarde is te lang
 security: Beveiliging
+value_securely_stored: Waarde Veilig Opgeslagen
 bookmark_name: Bladwijzer naam...
 create_bookmark: Bladwijzer aanmaken
 edit_bookmark: Bladwijzer bewerken
@@ -997,8 +998,11 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Selecteer een Flow
+run_flow_confirm: Weet je zeker dat je deze Flow wil uitvoeren?
+run_flow_anyway: Voer Flow Toch Uit
 run_flow_on_current_collection: Voer flow uit op Huidige Collectie
 run_flow_on_current: Flow Uitvoeren op Huidig Item
+run_flow_on_current_edited_confirm: Dit item wordt wellicht bijgewerkt door deze Flow, weet je zeker dat je deze wil uitvoeren?
 run_flow_on_selected: Selecteer Eerst Één of Meer Items | Flow Uitvoeren op 1 Geselecteerd Item | Flow Uitvoeren op {n} Geselecteerde Items
 run_flow: Flow Uitvoeren
 trigger_flow_success: Flow "{flow}" succesvol getriggerd
@@ -1040,6 +1044,7 @@ operation_handle_resolve: 'Los op: Klik om toe te voegen, of sleep om te omleide
 operation_handle_reject: 'Weiger: Klik om toe te voegen, of sleep om te omleiden'
 visual_editor: Visuele editor
 toggle_navigation: Navigatie Omschakelen
+toggle_sidebar: Zijbalk Aan/Uit
 toggle_editable_elements: Bewerkbare Elementen Omschakelen
 no_url: Geen URL opgegeven
 no_url_copy: Gelieve een URL toe te voegen in de instellingen.
@@ -1181,6 +1186,8 @@ appearance_dark: Donker
 other: Anders...
 adding_user: Gebruiker toevoegen
 unknown_user: Onbekende gebruiker
+unknown_version: Onbekende Versie
+unknown_revision: Onbekende Revisie
 creating_in: 'Item maken in {collection}'
 editing_in: 'Item bewerken in {collection}'
 viewing_in: 'Bekijken van item uit {collection}'
@@ -1193,6 +1200,9 @@ settings_roles: Gebruikersrollen
 settings_permissions: Toegangsbeleid
 settings_project: Instellingen
 settings_appearance: Uiterlijk
+settings_ai: AI
+model_context_protocol: Model Context Protocol
+ai_chat: AI-chat
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_system_logs: Systeemlogs
@@ -1256,6 +1266,7 @@ directus_collection:
   directus_dashboards: Dashboards binnen de Inzichten module
   directus_fields: Aanvullende collectie configuratie en metadata
   directus_files: Metadata voor alle beheerde bestanden
+  directus_flows: Automatisering Flows
   directus_folders: Geeft virtuele map voor bestanden
   directus_migrations: Welke versie van de database je gebruikt
   directus_notifications: Notificaties verzonden naar gebruikers
@@ -1421,6 +1432,22 @@ fields:
     public_registration_verify_email: Bevestig e-mailadres
     public_registration_verify_email_note: Stuurt een e-mail naar de registrerende gebruiker waarin wordt gevraagd om op een verificatielink te klikken voordat ze kunnen inloggen.
     visual_editor_urls: Visual Editor URLs
+    ai_notice: 'AI Chat biedt een in-app zijbalk om te converteren met een LLM. Wanneer ingeschakeld, open je de AI-zijbalk uit de werkbalk om vragen te stellen, inhoud te genereren en hulp te krijgen bij je project. <a href="https://directus.io/docs/guides/ai/chat" target="_blank">Leer meer over het configureren en gebruiken van AI Chat.</a>'
+    mcp_enabled: MCP-server
+    mcp_enabled_note: 'Sluit AI/LM tools aan op uw Directus project via <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Model Context Protocol (MCP)</a>. Hierdoor kunnen AI-assistenten veilig lezen en communiceren met uw Directusgegevens.'
+    mcp_notice: 'Model Context Protocol is een standaard om LLMs te verbinden met toepassingen zoals Directus. Eenmaal ingeschakeld, zal de Directus MCP-server beschikbaar zijn op `/mcp`. <a href="https://directus.io/docs/guides/ai/mcp" target="_blank">Meer informatie over MCP en hoe te verbinden.</a>'
+    mcp_allow_deletes: Verwijderen Toestaan
+    mcp_allow_deletes_note:
+      - Kan dataverlies veroorzaken.</strong> Standaard uitgeschakeld voor veiligheid.'
+    mcp_prompts_collection: AI Prompts collectie
+    mcp_prompts_collection_note: 'Selecteer collectie voor het opslaan van <a href="https://directus.io/docs/guides/ai/mcp/prompts" target="_blank">herbruikbare prompt templates</a> voor AI-interacties.'
+    mcp_system_prompt_divider: Systeemprompt Configuratie
+    mcp_system_prompt_enabled: Gebruik Systeemprompt
+    mcp_system_prompt_enabled_note: "Gebruik het <a href='https://directus.io/docs/guides/ai/mcp#system-prompt' target='_blank'>standaard systeem prompt</a> om LLM-gedrag te begeleiden. Uitschakelen om dit te verwijderen of te overschrijven met uw eigen prompt hieronder."
+    mcp_system_prompt: Aangepast Systeemprompt
+    mcp_system_prompt_note: 'Aangepast systeemprompt om de standaard te vervangen. Laat leeg om standaard te gebruiken (indien ingeschakeld).'
+    ai_system_prompt: AI Systeemprompt
+    ai_system_prompt_note: 'Aangepast AI Systeemprompt voor het begeleiden van LLM-gedrag in AI Chat interacties. Laat leeg om de standaard te gebruiken.'
   directus_shares:
     name: Naam
     role: Rol
@@ -1604,9 +1631,33 @@ unlimited_usage: Onbeperkt gebruik
 uses_left: Geen gebruik over | Één gebruik over | {n} gebruik over
 no_shares: Geen delingen om weer te geven
 new_share: Delen
+show_more: Toon Meer
+show_less: Toon Minder
 ai:
+  thinking: Denken...
   input: Invoer
+  output: Output
+  streaming: Streamen...
+  ready: Gereed
+  complete: Voltooid
+  error: Foutmelding
+  error_message: Er is een fout opgetreden
+  unknown_error: Onbekende fout
   unknown: Onbekend
+  approval_requested: Goedkeuring Gevraagd
+  approve: Goedkeuren
+  always_allow: Altijd Toestaan
+  deny: Weigeren
+  approve_tool_execution: Uitvoering Tool goedkeuren?
+  retry: Probeer Opnieuw
+  prompt_input_placeholder: Typ je bericht hier...
+  clear_conversation: Gesprek Wissen
+  build_with_chat: Bouw met AI Chat
+  responses_may_be_inaccurate: AI--reacties zijn mogelijk onjuist
+  go_to_settings: Ga naar Instellingen
+  setup_ai_chat: Setup AI-chat
+  setup_ai_chat_admin_description: Voeg de API-keys van je AI-provider toe in de instellingen om AI-chat in te schakelen.
+  setup_ai_chat_user_description: Neem contact op met je systeembeheerder om AI Chat in te schakelen.
   settings: Instellingen
   tool_approval:
     always: Altijd Toegestaan
@@ -2172,6 +2223,8 @@ interfaces:
     description: Maak een koptekst met een titel, subtitel, hulpinformatie, en/of links om gebruikers te helpen Flows te navigeren of activeren.
     links: Links
     action_type: Actie Type
+    help:
+      title: Hulp
 displays:
   translations:
     translations: Vertalingen
