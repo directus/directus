@@ -10,13 +10,6 @@ export default function getEditorStyles(
 	const userFontFamily = cssVar(`--theme--fonts--${font}--font-family`);
 
 	return `
-:root {
-	--diff-added-background: #E5F9F5;
-	--diff-added-foreground: #00C897;
-	--diff-removed-background: #FCEEF0;
-	--diff-removed-foreground: #E35169;
-}
-
 @font-face {
 	font-family: 'Fira Mono';
 	font-style: normal;
@@ -189,16 +182,16 @@ figure figcaption {
 		includeDiffStyles
 			? `
 .diff-added {
-	color: var(--diff-added-foreground);
-	background-color: var(--diff-added-background);
+	color: ${cssVar('--theme--success')};
+	background-color: ${cssVar('--success-10')};
 	padding: 2px;
 	border-radius: ${cssVar('--theme--border-radius')};
 	margin-inline-end: 0.2em;
 }
 
 .diff-removed {
-	color: var(--diff-removed-foreground);
-	background-color: var(--diff-removed-background);
+	color: ${cssVar('--theme--danger')};
+	background-color: ${cssVar('--danger-10')};
 	padding: 2px;
 	border-radius: ${cssVar('--theme--border-radius')};
 	margin-inline-end: 0.2em;
