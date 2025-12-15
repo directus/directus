@@ -102,6 +102,7 @@
 		"@unhead/vue": "catalog:",
 		"@vitejs/plugin-vue": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
+		"@vue/compiler-dom": "catalog:",
 		"@vue/test-utils": "catalog:",
 		"@vueuse/core": "catalog:",
 		"@vueuse/integrations": "catalog:",

@@ -5,6 +5,7 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { FlowRaw } from '@directus/types';
 import { sortBy } from 'lodash';
 import { computed, ref } from 'vue';
@@ -143,16 +144,12 @@ function onFlowDrawerCompletion(id: string) {
 		</template>
 
 		<template #actions>
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="createAllowed ? $t('create_flow') : $t('not_allowed')"
-				rounded
-				icon
 				:disabled="createAllowed === false"
-				small
+				icon="add"
 				@click="editFlow = '+'"
-			>
-				<v-icon name="add" small />
-			</v-button>
+			/>
 		</template>
 
 		<v-info v-if="flows.length === 0" icon="bolt" :title="$t('no_flows')" center>

@@ -12,9 +12,10 @@ import { userName } from '@/utils/user-name';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { useCollection } from '@directus/composables';
 import type { User } from '@directus/types';
-import { computed, ref, toRefs, provide } from 'vue';
+import { computed, provide, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
@@ -281,18 +282,14 @@ function revert(values: Record<string, any>) {
 				@apply="deleteAndQuit"
 			>
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-tooltip.bottom="deleteAllowed ? $t('delete_label') : $t('not_allowed')"
-						rounded
-						icon
 						class="action-delete"
 						secondary
 						:disabled="item === null || deleteAllowed !== true"
-						small
+						icon="delete"
 						@click="on"
-					>
-						<v-icon name="delete" small />
-					</v-button>
+					/>
 				</template>
 
 				<v-card>
@@ -317,18 +314,14 @@ function revert(values: Record<string, any>) {
 				@apply="toggleArchive"
 			>
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
 						v-tooltip.bottom="archiveTooltip"
-						rounded
-						icon
 						secondary
 						:disabled="item === null || archiveAllowed !== true"
-						small
+						:icon="isArchived ? 'unarchive' : 'archive'"
 						@click="on"
-					>
-						<v-icon :name="isArchived ? 'unarchive' : 'archive'" small />
-					</v-button>
+					/>
 				</template>
 
 				<v-card>
@@ -345,17 +338,13 @@ function revert(values: Record<string, any>) {
 				</v-card>
 			</v-dialog>
 
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
-				rounded
-				icon
 				:loading="saving"
 				:disabled="!isSavable"
-				small
+				icon="check"
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" small />
-
 				<template #append-outer>
 					<save-options
 						v-if="isSavable"
@@ -366,7 +355,7 @@ function revert(values: Record<string, any>) {
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
-			</v-button>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 
 		<template #navigation>

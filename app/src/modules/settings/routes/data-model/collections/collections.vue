@@ -5,6 +5,8 @@ import { Collection } from '@/types/collections';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import SearchInput from '@/views/private/components/search-input.vue';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import { saveAs } from 'file-saver';
 import { merge } from 'lodash';
 import { computed, ref } from 'vue';
 import Draggable from 'vuedraggable';
@@ -13,7 +15,6 @@ import CollectionDialog from './components/collection-dialog.vue';
 import CollectionItem from './components/collection-item.vue';
 import CollectionOptions from './components/collection-options.vue';
 import { useExpandCollapse } from './composables/use-expand-collapse';
-import { saveAs } from 'file-saver';
 
 const search = ref<string | null>(null);
 const collectionDialogActive = ref(false);
@@ -154,15 +155,20 @@ async function downloadSnapshot() {
 
 			<collection-dialog v-model="collectionDialogActive">
 				<template #activator="{ on }">
-					<v-button v-tooltip.bottom="$t('create_folder')" rounded icon secondary small @click="on">
-						<v-icon name="create_new_folder" small />
-					</v-button>
+					<PrivateViewHeaderBarActionButton
+						v-tooltip.bottom="$t('create_folder')"
+						secondary
+						icon="create_new_folder"
+						@click="on"
+					/>
 				</template>
 			</collection-dialog>
 
-			<v-button v-tooltip.bottom="$t('create_collection')" rounded small icon to="/settings/data-model/+">
-				<v-icon name="add" small />
-			</v-button>
+			<PrivateViewHeaderBarActionButton
+				v-tooltip.bottom="$t('create_collection')"
+				to="/settings/data-model/+"
+				icon="add"
+			/>
 		</template>
 
 		<template #navigation>
