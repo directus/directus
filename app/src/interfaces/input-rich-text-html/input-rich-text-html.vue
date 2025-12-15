@@ -78,7 +78,6 @@ const { t } = useI18n();
 const editorRef = ref<any | null>(null);
 const editorElement = ref<ComponentPublicInstance | null>(null);
 const comparisonEditorRef = ref<any | null>(null);
-const comparisonEditorElement = ref<ComponentPublicInstance | null>(null);
 const editorKey = ref(0);
 const comparisonEditorKey = ref(0);
 
