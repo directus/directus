@@ -5,6 +5,7 @@ import { APIError } from '@/types/error';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getEndpoint } from '@directus/utils';
 import { computed, ref, toRefs } from 'vue';
+import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 
 const props = defineProps<{
 	collection: string;
@@ -125,9 +126,7 @@ function useActions() {
 		@apply="save"
 	>
 		<template #actions>
-			<v-button v-tooltip.bottom="$t('save')" icon rounded small :loading="saving" @click="save">
-				<v-icon name="check" small />
-			</v-button>
+			<PrivateViewHeaderBarActionButton v-tooltip.bottom="$t('save')" :loading="saving" icon="check" @click="save" />
 		</template>
 
 		<div class="drawer-batch-content">

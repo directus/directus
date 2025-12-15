@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { computed, ref, toRefs, unref } from 'vue';
-
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -8,7 +6,9 @@ import { refreshCurrentLanguage } from '@/lang/refresh-current-language';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
+import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
 import { useCollection } from '@directus/composables';
+import { computed, ref, toRefs, unref } from 'vue';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import ContentNotFound from '../not-found.vue';
@@ -218,19 +218,15 @@ async function revert(values: Record<string, any>) {
 		<template #actions>
 			<v-dialog v-if="!isNew" v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
-					<v-button
+					<PrivateViewHeaderBarActionButton
 						v-if="collectionInfo!.meta && collectionInfo!.meta.singleton === false"
 						v-tooltip.bottom="$t('delete_label')"
-						rounded
-						icon
 						class="action-delete"
 						secondary
 						:disabled="item === null"
-						small
+						icon="delete"
 						@click="on"
-					>
-						<v-icon name="delete" outline small />
-					</v-button>
+					/>
 				</template>
 
 				<v-card>
@@ -247,19 +243,16 @@ async function revert(values: Record<string, any>) {
 				</v-card>
 			</v-dialog>
 
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="$t('save')"
-				rounded
-				icon
 				:loading="saving"
 				:disabled="!isSavable"
-				small
+				icon="check"
 				@click="saveAndQuit"
 			>
-				<v-icon name="check" small />
-
 				<template #append-outer>
 					<save-options
+						v-if="hasEdits"
 						:disabled-options="disabledOptions"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
@@ -267,7 +260,7 @@ async function revert(values: Record<string, any>) {
 						@discard-and-stay="discardAndStay"
 					/>
 				</template>
-			</v-button>
+			</PrivateViewHeaderBarActionButton>
 		</template>
 
 		<template #navigation>

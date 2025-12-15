@@ -22,6 +22,7 @@ import { isEmpty, set } from 'lodash';
 import { computed, ref, toRefs, unref, watch, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import OverlayItemContent from './overlay-item-content.vue';
 
 export interface OverlayItemProps {
@@ -562,16 +563,12 @@ function popoverClickOutsideMiddleware(e: Event) {
 		<template #actions>
 			<slot name="actions" />
 
-			<v-button
+			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="getTooltip('save', $t('save'))"
-				icon
-				rounded
-				small
 				:disabled="!isSavable"
+				icon="check"
 				@click="save"
-			>
-				<v-icon name="check" small />
-			</v-button>
+			/>
 		</template>
 
 		<overlay-item-content
