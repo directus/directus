@@ -39,7 +39,11 @@ extension_display: Megjelenés
 extension_layout: Elrendezés
 extension_panel: Panel
 extension_hook: Beavatkozási rutin
+extension_operation: Művelet
 extension_modules: Modulok
+extension_bundles: Csomagok
+extension_missing: Hiányzó
+extension_reload_now: Újratöltés most
 enable: Engedélyez
 custom: Egyedi
 hook: Beavatkozási rutin
@@ -84,6 +88,10 @@ rename_folder: Mappa átnevezése
 delete_folder: Mappa törlése
 prefix: Előtag
 suffix: Utótag
+delete_version_copy: >-
+  Biztosan törölni szeretné a(z) „{version}” verziót? Ez a művelet nem vonható vissza.
+delete_on_apply_copy: >-
+  A(z) „{version}” verziót készül előléptetni a fő verzióra. Mi történjen a(z) „{version}” verzióval az előléptetés után?
 reset_bookmark: Könyvjelző visszaállítása
 update_bookmark: Könyvjelző frissítése
 delete_bookmark: Könyvjelző törlése
