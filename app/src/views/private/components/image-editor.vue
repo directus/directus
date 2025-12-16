@@ -451,7 +451,7 @@ function setAspectRatio() {
 </script>
 
 <template>
-	<v-drawer
+	<VDrawer
 		v-model="internalActive"
 		class="modal"
 		:title="$t('editing_image')"
@@ -468,10 +468,10 @@ function setAspectRatio() {
 		</template>
 
 		<div v-if="loading" class="loader">
-			<v-progress-circular indeterminate />
+			<VProgressCircular indeterminate />
 		</div>
 
-		<v-notice v-else-if="error" type="error">error</v-notice>
+		<VNotice v-else-if="error" type="error">error</VNotice>
 
 		<div
 			v-if="imageData && !loading && !error"
@@ -484,21 +484,21 @@ function setAspectRatio() {
 
 			<div class="toolbar">
 				<div class="drag-mode toolbar-button">
-					<v-icon
+					<VIcon
 						v-tooltip.top.inverted="$t('move_tool')"
 						name="pan_tool"
 						:class="{ active: localDragMode === 'move' }"
 						clickable
 						@click="dragMode = 'move'"
 					/>
-					<v-icon
+					<VIcon
 						v-tooltip.top.inverted="$t('crop_tool')"
 						name="crop"
 						:class="{ active: localDragMode === 'crop' }"
 						clickable
 						@click="dragMode = 'crop'"
 					/>
-					<v-icon
+					<VIcon
 						v-tooltip.top.inverted="$t('focal_point_tool')"
 						name="location_searching"
 						:class="{ active: localDragMode === 'focal_point' }"
@@ -507,75 +507,75 @@ function setAspectRatio() {
 					/>
 				</div>
 
-				<v-icon v-tooltip.top.inverted="$t('rotate')" name="rotate_90_degrees_ccw" clickable @click="rotate" />
+				<VIcon v-tooltip.top.inverted="$t('rotate')" name="rotate_90_degrees_ccw" clickable @click="rotate" />
 
-				<v-icon
+				<VIcon
 					v-tooltip.top.inverted="$t('flip_horizontal')"
 					name="flip_horizontal"
 					clickable
 					@click="flip('horizontal')"
 				/>
 
-				<v-icon v-tooltip.top.inverted="$t('flip_vertical')" name="flip_vertical" clickable @click="flip('vertical')" />
+				<VIcon v-tooltip.top.inverted="$t('flip_vertical')" name="flip_vertical" clickable @click="flip('vertical')" />
 
-				<v-menu placement="top" show-arrow>
+				<VMenu placement="top" show-arrow>
 					<template #activator="{ toggle }">
-						<v-icon v-tooltip.top.inverted="$t('aspect_ratio')" :name="aspectRatioIcon" clickable @click="toggle" />
+						<VIcon v-tooltip.top.inverted="$t('aspect_ratio')" :name="aspectRatioIcon" clickable @click="toggle" />
 					</template>
 
-					<v-list>
+					<VList>
 						<template v-if="customAspectRatios">
-							<v-list-item
+							<VListItem
 								v-for="customAspectRatio in customAspectRatios"
 								:key="customAspectRatio.text"
 								clickable
 								:active="aspectRatio === customAspectRatio.value"
 								@click="aspectRatio = customAspectRatio.value"
 							>
-								<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
-								<v-list-item-content>{{ customAspectRatio.text }}</v-list-item-content>
-							</v-list-item>
-							<v-divider />
+								<VListItemIcon><VIcon name="aspect_ratio" /></VListItemIcon>
+								<VListItemContent>{{ customAspectRatio.text }}</VListItemContent>
+							</VListItem>
+							<VDivider />
 						</template>
-						<v-list-item clickable :active="aspectRatio === 16 / 9" @click="aspectRatio = 16 / 9">
-							<v-list-item-icon><v-icon name="crop_16_9" /></v-list-item-icon>
-							<v-list-item-content>16:9</v-list-item-content>
-						</v-list-item>
-						<v-list-item clickable :active="aspectRatio === 3 / 2" @click="aspectRatio = 3 / 2">
-							<v-list-item-icon><v-icon name="crop_3_2" /></v-list-item-icon>
-							<v-list-item-content>3:2</v-list-item-content>
-						</v-list-item>
-						<v-list-item clickable :active="aspectRatio === 5 / 4" @click="aspectRatio = 5 / 4">
-							<v-list-item-icon><v-icon name="crop_5_4" /></v-list-item-icon>
-							<v-list-item-content>5:4</v-list-item-content>
-						</v-list-item>
-						<v-list-item clickable :active="aspectRatio === 7 / 5" @click="aspectRatio = 7 / 5">
-							<v-list-item-icon><v-icon name="crop_7_5" /></v-list-item-icon>
-							<v-list-item-content>7:5</v-list-item-content>
-						</v-list-item>
-						<v-list-item clickable :active="aspectRatio === 1 / 1" @click="aspectRatio = 1 / 1">
-							<v-list-item-icon><v-icon name="crop_square" /></v-list-item-icon>
-							<v-list-item-content>{{ $t('square') }}</v-list-item-content>
-						</v-list-item>
-						<v-list-item clickable :active="Number.isNaN(aspectRatio)" @click="aspectRatio = NaN">
-							<v-list-item-icon><v-icon name="crop_free" /></v-list-item-icon>
-							<v-list-item-content>{{ $t('free') }}</v-list-item-content>
-						</v-list-item>
-						<v-list-item
+						<VListItem clickable :active="aspectRatio === 16 / 9" @click="aspectRatio = 16 / 9">
+							<VListItemIcon><VIcon name="crop_16_9" /></VListItemIcon>
+							<VListItemContent>16:9</VListItemContent>
+						</VListItem>
+						<VListItem clickable :active="aspectRatio === 3 / 2" @click="aspectRatio = 3 / 2">
+							<VListItemIcon><VIcon name="crop_3_2" /></VListItemIcon>
+							<VListItemContent>3:2</VListItemContent>
+						</VListItem>
+						<VListItem clickable :active="aspectRatio === 5 / 4" @click="aspectRatio = 5 / 4">
+							<VListItemIcon><VIcon name="crop_5_4" /></VListItemIcon>
+							<VListItemContent>5:4</VListItemContent>
+						</VListItem>
+						<VListItem clickable :active="aspectRatio === 7 / 5" @click="aspectRatio = 7 / 5">
+							<VListItemIcon><VIcon name="crop_7_5" /></VListItemIcon>
+							<VListItemContent>7:5</VListItemContent>
+						</VListItem>
+						<VListItem clickable :active="aspectRatio === 1 / 1" @click="aspectRatio = 1 / 1">
+							<VListItemIcon><VIcon name="crop_square" /></VListItemIcon>
+							<VListItemContent>{{ $t('square') }}</VListItemContent>
+						</VListItem>
+						<VListItem clickable :active="Number.isNaN(aspectRatio)" @click="aspectRatio = NaN">
+							<VListItemIcon><VIcon name="crop_free" /></VListItemIcon>
+							<VListItemContent>{{ $t('free') }}</VListItemContent>
+						</VListItem>
+						<VListItem
 							v-if="imageData && imageData.width && imageData.height"
 							clickable
 							:active="aspectRatio === imageData.width / imageData.height"
 							@click="setAspectRatio"
 						>
-							<v-list-item-icon><v-icon name="crop_original" /></v-list-item-icon>
-							<v-list-item-content>{{ $t('original') }}</v-list-item-content>
-						</v-list-item>
-					</v-list>
-				</v-menu>
+							<VListItemIcon><VIcon name="crop_original" /></VListItemIcon>
+							<VListItemContent>{{ $t('original') }}</VListItemContent>
+						</VListItem>
+					</VList>
+				</VMenu>
 
 				<div class="spacer" />
 
-				<v-icon v-tooltip.top.inverted="$t('reset')" name="restart_alt" clickable @click="reset" />
+				<VIcon v-tooltip.top.inverted="$t('reset')" name="restart_alt" clickable @click="reset" />
 
 				<div v-if="imageData" class="dimensions">
 					{{ dimensionsString }}
@@ -596,7 +596,7 @@ function setAspectRatio() {
 				@click="save"
 			/>
 		</template>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>

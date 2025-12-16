@@ -111,11 +111,11 @@ function parseFolder(id: string) {
 </script>
 
 <template>
-	<v-skeleton-loader v-if="loading" />
+	<VSkeletonLoader v-if="loading" />
 	<div v-else class="folder-picker">
-		<v-list>
-			<v-item-group v-model="openFolders" scope="folder-picker" multiple>
-				<v-list-group
+		<VList>
+			<VItemGroup v-model="openFolders" scope="folder-picker" multiple>
+				<VListGroup
 					disable-groupable-parent
 					clickable
 					:active="modelValue === null"
@@ -124,13 +124,13 @@ function parseFolder(id: string) {
 					@click="$emit('update:modelValue', null)"
 				>
 					<template #activator>
-						<v-list-item-icon>
-							<v-icon name="folder_special" outline />
-						</v-list-item-icon>
-						<v-list-item-content>{{ $t('file_library') }}</v-list-item-content>
+						<VListItemIcon>
+							<VIcon name="folder_special" outline />
+						</VListItemIcon>
+						<VListItemContent>{{ $t('file_library') }}</VListItemContent>
 					</template>
 
-					<folder-picker-list-item
+					<FolderPickerListItem
 						v-for="folder in tree"
 						:key="folder.id"
 						:folder="folder"
@@ -139,9 +139,9 @@ function parseFolder(id: string) {
 						:disabled="disabledFolders?.includes(folder.id)"
 						:disabled-folders="disabledFolders"
 					/>
-				</v-list-group>
-			</v-item-group>
-		</v-list>
+				</VListGroup>
+			</VItemGroup>
+		</VList>
 	</div>
 </template>
 

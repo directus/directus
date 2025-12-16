@@ -168,19 +168,19 @@ function onSort(sortedItems: Record<string, any>[]) {
 
 <template>
 	<div class="collection-item-multiple-dropdown">
-		<v-notice v-if="displayItems.length === 0">
+		<VNotice v-if="displayItems.length === 0">
 			{{ t('no_items') }}
-		</v-notice>
+		</VNotice>
 
 		<template v-else-if="loading">
-			<v-skeleton-loader
+			<VSkeletonLoader
 				v-for="num in displayItems.length"
 				:key="num"
 				:type="displayItems.length > 4 ? 'block-list-item-dense' : 'block-list-item'"
 			/>
 		</template>
 
-		<draggable
+		<Draggable
 			v-else
 			:model-value="displayItems"
 			tag="v-list"
@@ -192,10 +192,10 @@ function onSort(sortedItems: Record<string, any>[]) {
 			@update:model-value="onSort($event)"
 		>
 			<template #item="{ element }">
-				<v-list-item block :disabled :non-editable :dense="displayItems.length > 4">
-					<v-icon v-if="!disabled" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+				<VListItem block :disabled :non-editable :dense="displayItems.length > 4">
+					<VIcon v-if="!disabled" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 
-					<render-template
+					<RenderTemplate
 						:collection="selectedCollection"
 						:item="element"
 						:template="displayTemplate"
@@ -205,19 +205,19 @@ function onSort(sortedItems: Record<string, any>[]) {
 					<div class="spacer" />
 
 					<div v-if="!nonEditable" class="item-actions">
-						<v-remove v-if="!disabled" deselect @action="removeItem(element)" />
+						<VRemove v-if="!disabled" deselect @action="removeItem(element)" />
 					</div>
-				</v-list-item>
+				</VListItem>
 			</template>
-		</draggable>
+		</Draggable>
 
 		<div v-if="!nonEditable" class="actions">
-			<v-button :disabled="disabled" @click="selectDrawerOpen = true">
+			<VButton :disabled="disabled" @click="selectDrawerOpen = true">
 				{{ t('select_item') }}
-			</v-button>
+			</VButton>
 		</div>
 
-		<drawer-collection
+		<DrawerCollection
 			v-model:active="selectDrawerOpen"
 			:collection="selectedCollection"
 			:selection="selectedKeys"

@@ -180,7 +180,7 @@ function toggleManualSort() {
 
 <template>
 	<thead class="table-header" :class="{ resizing, reordering }">
-		<draggable
+		<Draggable
 			v-model="headersWritable"
 			:class="{ fixed }"
 			item-key="value"
@@ -202,11 +202,11 @@ function toggleManualSort() {
 					:class="{ 'sorted-manually': sort.by === manualSortKey }"
 					scope="col"
 				>
-					<v-icon v-tooltip="$t('toggle_manual_sorting')" name="sort" small clickable @click="toggleManualSort" />
+					<VIcon v-tooltip="$t('toggle_manual_sorting')" name="sort" small clickable @click="toggleManualSort" />
 				</th>
 
 				<th v-if="showSelect !== 'none'" class="select cell" scope="col">
-					<v-checkbox
+					<VCheckbox
 						v-if="showSelect === 'multiple'"
 						:model-value="allItemsSelected"
 						:indeterminate="someItemsSelected"
@@ -217,7 +217,7 @@ function toggleManualSort() {
 
 			<template #item="{ element: header }">
 				<th :class="getClassesForHeader(header)" class="cell" scope="col" :style="{ inlineSize: header.width + 'px' }">
-					<v-menu v-if="hasHeaderContextMenuSlot" show-arrow placement="bottom-start">
+					<VMenu v-if="hasHeaderContextMenuSlot" show-arrow placement="bottom-start">
 						<template #activator="{ toggle }">
 							<div class="content reorder-handle">
 								<button class="header-btn" type="button" @click="toggle">
@@ -228,13 +228,13 @@ function toggleManualSort() {
 										</slot>
 									</span>
 
-									<v-icon :name="sort.by === header.value ? 'sort' : 'arrow_drop_down'" class="action-icon" small />
+									<VIcon :name="sort.by === header.value ? 'sort' : 'arrow_drop_down'" class="action-icon" small />
 								</button>
 							</div>
 						</template>
 
 						<slot name="header-context-menu" v-bind="{ header }" />
-					</v-menu>
+					</VMenu>
 
 					<div v-else class="content reorder-handle">
 						<button
@@ -251,7 +251,7 @@ function toggleManualSort() {
 								</slot>
 							</span>
 
-							<v-icon
+							<VIcon
 								v-if="header.sortable"
 								v-tooltip.top="$t(getTooltipForSortIcon(header))"
 								name="sort"
@@ -277,7 +277,7 @@ function toggleManualSort() {
 				</td>
 				<th v-if="hasItemAppendSlot && !$slots['header-append']" class="spacer cell" scope="col" />
 			</template>
-		</draggable>
+		</Draggable>
 		<!-- </tr> -->
 	</thead>
 </template>

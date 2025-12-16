@@ -97,10 +97,10 @@ const options = computed({
 					<div class="field half-left">
 						<div class="label type-label">
 							{{ $t('key') }}
-							<v-icon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
+							<VIcon v-tooltip="$t('required')" class="required-mark" sup name="star" filled />
 						</div>
 
-						<v-input v-model="key" autofocus class="monospace" db-safe :placeholder="$t('a_unique_column_name')" />
+						<VInput v-model="key" autofocus class="monospace" db-safe :placeholder="$t('a_unique_column_name')" />
 					</div>
 
 					<div class="field half-right">
@@ -108,7 +108,7 @@ const options = computed({
 							{{ $t('type') }}
 						</div>
 
-						<v-select v-model="type" :items="typeOptions" :disabled="typeDisabled" />
+						<VSelect v-model="type" :items="typeOptions" :disabled="typeDisabled" />
 					</div>
 
 					<div class="field half-left">
@@ -116,8 +116,8 @@ const options = computed({
 							{{ $t('default_value') }}
 						</div>
 
-						<v-checkbox v-if="type === 'boolean'" v-model="defaultValue" block :label="$t('enabled')" />
-						<v-input v-else v-model="defaultValue" class="monospace" placeholder="NULL" />
+						<VCheckbox v-if="type === 'boolean'" v-model="defaultValue" block :label="$t('enabled')" />
+						<VInput v-else v-model="defaultValue" class="monospace" placeholder="NULL" />
 					</div>
 
 					<div class="field half-right">
@@ -125,25 +125,25 @@ const options = computed({
 							{{ $t('required') }}
 						</div>
 
-						<v-checkbox v-model="required" block :label="$t('require_value_to_be_set')" />
+						<VCheckbox v-model="required" block :label="$t('require_value_to_be_set')" />
 					</div>
 				</div>
 
-				<relationship-configuration :local-type="localType" />
+				<RelationshipConfiguration :local-type="localType" />
 
-				<v-divider inline />
+				<VDivider inline />
 			</template>
 
-			<extension-options
+			<ExtensionOptions
 				v-model="options"
 				type="interface"
 				:extension="chosenInterface"
 				:options="customOptionsFields"
 			/>
 
-			<v-button class="save" full-width :disabled="!readyToSave" :loading="saving" @click="$emit('save')">
+			<VButton class="save" full-width :disabled="!readyToSave" :loading="saving" @click="$emit('save')">
 				{{ $t('save') }}
-			</v-button>
+			</VButton>
 
 			<button class="toggle-advanced" @click="$emit('toggleAdvanced')">
 				{{ $t('continue_in_advanced_field_creation_mode') }}

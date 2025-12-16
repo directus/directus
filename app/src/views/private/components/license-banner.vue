@@ -53,32 +53,32 @@ const fields = useFormFields(false, form);
 </script>
 
 <template>
-	<v-dialog>
-		<v-card>
+	<VDialog>
+		<VCard>
 			<div class="inner">
-				<v-card-title>
+				<VCardTitle>
 					<span class="warning">
 						{{ $t('bsl_banner.title') }}
-						<v-icon name="warning" filled />
+						<VIcon name="warning" filled />
 					</span>
-				</v-card-title>
+				</VCardTitle>
 
-				<v-card-text>
+				<VCardText>
 					<div class="sub">{{ $t('bsl_banner.license') }}</div>
-					<setup-form v-model="form" :errors="errors" :register="false" utm-location="banner"></setup-form>
-				</v-card-text>
+					<SetupForm v-model="form" :errors="errors" :register="false" utm-location="banner"></SetupForm>
+				</VCardText>
 
-				<v-card-actions>
-					<v-button secondary @click="remindLater">
+				<VCardActions>
+					<VButton secondary @click="remindLater">
 						{{ $t('bsl_banner.remind_later') }}
-					</v-button>
-					<v-button :disabled="isSaveDisabled" :loading="isSaving" @click="setOwner">
+					</VButton>
+					<VButton :disabled="isSaveDisabled" :loading="isSaving" @click="setOwner">
 						{{ $t('bsl_banner.set_owner') }}
-					</v-button>
-				</v-card-actions>
+					</VButton>
+				</VCardActions>
 			</div>
-		</v-card>
-	</v-dialog>
+		</VCard>
+	</VDialog>
 </template>
 
 <style scoped>

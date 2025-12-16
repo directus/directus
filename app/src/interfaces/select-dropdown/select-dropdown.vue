@@ -79,7 +79,7 @@ watch(
 </script>
 
 <template>
-	<v-select
+	<VSelect
 		:model-value="value"
 		:items="items"
 		:disabled="disabled"
@@ -92,7 +92,7 @@ watch(
 		@update:model-value="$emit('input', $event)"
 	>
 		<template v-if="showGlobalIcon" #prepend>
-			<v-icon :name="icon" />
+			<VIcon :name="icon" />
 		</template>
-	</v-select>
+	</VSelect>
 </template>

@@ -395,7 +395,7 @@ function onApply() {
 </script>
 
 <template>
-	<v-drawer
+	<VDrawer
 		:title="$t('creating_new_collection')"
 		:model-value="isOpen"
 		class="new-collection"
@@ -405,25 +405,25 @@ function onApply() {
 		@apply="onApply"
 	>
 		<template #sidebar>
-			<v-tabs v-model="currentTab" vertical>
-				<v-tab value="collection_setup">{{ $t('collection_setup') }}</v-tab>
-				<v-tab value="optional_system_fields" :disabled="!collectionName">
+			<VTabs v-model="currentTab" vertical>
+				<VTab value="collection_setup">{{ $t('collection_setup') }}</VTab>
+				<VTab value="optional_system_fields" :disabled="!collectionName">
 					{{ $t('optional_system_fields') }}
-				</v-tab>
-			</v-tabs>
+				</VTab>
+			</VTabs>
 		</template>
 
-		<v-tabs-items v-model="currentTab" class="content">
-			<v-tab-item value="collection_setup">
-				<v-notice>{{ $t('creating_collection_info') }}</v-notice>
+		<VTabsItems v-model="currentTab" class="content">
+			<VTabItem value="collection_setup">
+				<VNotice>{{ $t('creating_collection_info') }}</VNotice>
 
 				<div class="grid">
 					<div class="field half">
 						<div class="type-label">
 							{{ $t('name') }}
-							<v-icon v-tooltip="$t('required')" class="required" name="star" sup filled />
+							<VIcon v-tooltip="$t('required')" class="required" name="star" sup filled />
 						</div>
-						<v-input
+						<VInput
 							v-model="collectionName"
 							autofocus
 							class="monospace"
@@ -434,12 +434,12 @@ function onApply() {
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('singleton') }}</div>
-						<v-checkbox v-model="singleton" block :label="$t('singleton_label')" />
+						<VCheckbox v-model="singleton" block :label="$t('singleton_label')" />
 					</div>
-					<v-divider class="full" />
+					<VDivider class="full" />
 					<div class="field half">
 						<div class="type-label">{{ $t('primary_key_field') }}</div>
-						<v-input
+						<VInput
 							v-model="primaryKeyFieldName"
 							class="monospace"
 							db-safe
@@ -448,7 +448,7 @@ function onApply() {
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('type') }}</div>
-						<v-select
+						<VSelect
 							v-model="primaryKeyFieldType"
 							:items="[
 								{
@@ -471,9 +471,9 @@ function onApply() {
 						/>
 					</div>
 				</div>
-			</v-tab-item>
-			<v-tab-item value="optional_system_fields">
-				<v-notice>{{ $t('creating_collection_system') }}</v-notice>
+			</VTabItem>
+			<VTabItem value="optional_system_fields">
+				<VNotice>{{ $t('creating_collection_system') }}</VNotice>
 
 				<div class="grid system">
 					<div
@@ -483,7 +483,7 @@ function onApply() {
 						:class="index % 2 === 0 ? 'half' : 'half-right'"
 					>
 						<div class="type-label">{{ $t(info.label) }}</div>
-						<v-input
+						<VInput
 							v-model="info.name"
 							db-safe
 							class="monospace"
@@ -492,17 +492,17 @@ function onApply() {
 							@focus="info.enabled = true"
 						>
 							<template #prepend>
-								<v-checkbox v-model="info.enabled" :disabled="info.inputDisabled" />
+								<VCheckbox v-model="info.enabled" :disabled="info.inputDisabled" />
 							</template>
 
 							<template #append>
-								<v-icon :name="info.icon" />
+								<VIcon :name="info.icon" />
 							</template>
-						</v-input>
+						</VInput>
 					</div>
 				</div>
-			</v-tab-item>
-		</v-tabs-items>
+			</VTabItem>
+		</VTabsItems>
 
 		<template #actions>
 			<PrivateViewHeaderBarActionButton
@@ -521,7 +521,7 @@ function onApply() {
 				@click="save"
 			/>
 		</template>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>

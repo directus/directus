@@ -51,7 +51,7 @@ function stopSpinnerIfQueueIsEmpty() {
 	>
 		<template v-if="customLogoPath">
 			<transition name="fade">
-				<v-progress-linear v-if="showLoader" indeterminate rounded @animationiteration="stopSpinnerIfQueueIsEmpty" />
+				<VProgressLinear v-if="showLoader" indeterminate rounded @animationiteration="stopSpinnerIfQueueIsEmpty" />
 			</transition>
 			<img class="custom-logo" :src="customLogoPath" alt="Project Logo" />
 		</template>

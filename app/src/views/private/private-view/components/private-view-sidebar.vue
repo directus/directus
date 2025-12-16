@@ -10,7 +10,7 @@ const sidebarStore = useSidebarStore();
 	<aside role="contentinfo" class="sidebar alt-colors" aria-label="Module Sidebar">
 		<AccordionRoot v-model="sidebarStore.activeAccordionItem" type="single" collapsible class="accordion-root">
 			<slot name="sidebar" />
-			<ai-sidebar-detail class="ai-sidebar-detail" />
+			<AiSidebarDetail class="ai-sidebar-detail" />
 		</AccordionRoot>
 	</aside>
 </template>

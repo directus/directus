@@ -154,7 +154,7 @@ function useActions() {
 		select-mode
 		:show-select="multiple ? 'multiple' : 'one'"
 	>
-		<v-drawer
+		<VDrawer
 			v-model="internalActive"
 			:title="$t('select_item')"
 			:icon="collectionInfo!.icon"
@@ -167,13 +167,13 @@ function useActions() {
 			</template>
 
 			<template #subtitle>
-				<v-breadcrumb :items="[{ name: collectionInfo!.name, disabled: true }]" />
+				<VBreadcrumb :items="[{ name: collectionInfo!.name, disabled: true }]" />
 			</template>
 
 			<template #actions:prepend><component :is="`layout-actions-${localLayout}`" v-bind="layoutState" /></template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />
+				<SearchInput v-model="search" v-model:filter="presetFilter" :collection="collection" />
 
 				<PrivateViewHeaderBarActionButton
 					v-tooltip.bottom="$t('save')"
@@ -186,15 +186,15 @@ function useActions() {
 			<div class="layout">
 				<component :is="`layout-${localLayout}`" v-bind="layoutState">
 					<template #no-results>
-						<v-info :title="$t('item_count', 0)" :icon="collectionInfo!.icon" center />
+						<VInfo :title="$t('item_count', 0)" :icon="collectionInfo!.icon" center />
 					</template>
 
 					<template #no-items>
-						<v-info :title="$t('item_count', 0)" :icon="collectionInfo!.icon" center />
+						<VInfo :title="$t('item_count', 0)" :icon="collectionInfo!.icon" center />
 					</template>
 				</component>
 			</div>
-		</v-drawer>
+		</VDrawer>
 	</component>
 </template>
 

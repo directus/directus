@@ -44,10 +44,10 @@ const items = computed(() => {
 </script>
 
 <template>
-	<v-notice v-if="selectedType === undefined">
+	<VNotice v-if="selectedType === undefined">
 		{{ $t('select_field_type') }}
-	</v-notice>
-	<v-select
+	</VNotice>
+	<VSelect
 		v-else
 		:items="items"
 		:model-value="value"

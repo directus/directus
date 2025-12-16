@@ -43,7 +43,7 @@ async function copyError() {
 <template>
 	<div class="v-error">
 		<output>[{{ code }}] {{ message }}</output>
-		<v-icon
+		<VIcon
 			v-if="isCopySupported"
 			v-tooltip="$t('copy_details')"
 			small

@@ -86,59 +86,59 @@ const relational = computed(
 </script>
 
 <template>
-	<v-list>
-		<v-list-item v-if="!localDisabledOptions.has('edit-raw')" clickable @click="$emit('edit-raw')">
-			<v-list-item-icon><v-icon name="code" /></v-list-item-icon>
-			<v-list-item-content>{{ $t('edit_raw_value') }}</v-list-item-content>
-		</v-list-item>
-		<v-list-item v-if="!localDisabledOptions.has('view-raw')" clickable @click="$emit('edit-raw')">
-			<v-list-item-icon><v-icon name="code" /></v-list-item-icon>
-			<v-list-item-content>{{ $t('view_raw_value') }}</v-list-item-content>
-		</v-list-item>
-		<v-list-item
+	<VList>
+		<VListItem v-if="!localDisabledOptions.has('edit-raw')" clickable @click="$emit('edit-raw')">
+			<VListItemIcon><VIcon name="code" /></VListItemIcon>
+			<VListItemContent>{{ $t('edit_raw_value') }}</VListItemContent>
+		</VListItem>
+		<VListItem v-if="!localDisabledOptions.has('view-raw')" clickable @click="$emit('edit-raw')">
+			<VListItemIcon><VIcon name="code" /></VListItemIcon>
+			<VListItemContent>{{ $t('view_raw_value') }}</VListItemContent>
+		</VListItem>
+		<VListItem
 			v-if="!localDisabledOptions.has('copy-raw')"
 			:disabled="modelValue === null"
 			clickable
 			@click="$emit('copy-raw')"
 		>
-			<v-list-item-icon><v-icon name="content_copy" /></v-list-item-icon>
-			<v-list-item-content>{{ $t('copy_raw_value') }}</v-list-item-content>
-		</v-list-item>
-		<v-list-item v-if="!localDisabledOptions.has('paste-raw')" clickable @click="$emit('paste-raw')">
-			<v-list-item-icon><v-icon name="content_paste" /></v-list-item-icon>
-			<v-list-item-content>{{ $t('paste_raw_value') }}</v-list-item-content>
-		</v-list-item>
-		<v-divider v-if="showDivider" />
-		<v-list-item
+			<VListItemIcon><VIcon name="content_copy" /></VListItemIcon>
+			<VListItemContent>{{ $t('copy_raw_value') }}</VListItemContent>
+		</VListItem>
+		<VListItem v-if="!localDisabledOptions.has('paste-raw')" clickable @click="$emit('paste-raw')">
+			<VListItemIcon><VIcon name="content_paste" /></VListItemIcon>
+			<VListItemContent>{{ $t('paste_raw_value') }}</VListItemContent>
+		</VListItem>
+		<VDivider v-if="showDivider" />
+		<VListItem
 			v-if="!localDisabledOptions.has('reset-to-default')"
 			:disabled="modelValue === defaultValue"
 			clickable
 			@click="$emit('update:modelValue', defaultValue)"
 		>
-			<v-list-item-icon>
-				<v-icon name="settings_backup_restore" />
-			</v-list-item-icon>
-			<v-list-item-content>{{ $t('reset_to_default') }}</v-list-item-content>
-		</v-list-item>
-		<v-list-item
+			<VListItemIcon>
+				<VIcon name="settings_backup_restore" />
+			</VListItemIcon>
+			<VListItemContent>{{ $t('reset_to_default') }}</VListItemContent>
+		</VListItem>
+		<VListItem
 			v-if="!localDisabledOptions.has('undo-changes')"
 			:disabled="initialValue === undefined || modelValue === initialValue"
 			clickable
 			@click="$emit('unset', field)"
 		>
-			<v-list-item-icon>
-				<v-icon name="undo" />
-			</v-list-item-icon>
-			<v-list-item-content>{{ $t('undo_changes') }}</v-list-item-content>
-		</v-list-item>
-		<v-list-item
+			<VListItemIcon>
+				<VIcon name="undo" />
+			</VListItemIcon>
+			<VListItemContent>{{ $t('undo_changes') }}</VListItemContent>
+		</VListItem>
+		<VListItem
 			v-if="!localDisabledOptions.has('clear-value')"
 			:disabled="modelValue === null || relational"
 			clickable
 			@click="$emit('update:modelValue', null)"
 		>
-			<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
-			<v-list-item-content>{{ $t('clear_value') }}</v-list-item-content>
-		</v-list-item>
-	</v-list>
+			<VListItemIcon><VIcon name="delete" /></VListItemIcon>
+			<VListItemContent>{{ $t('clear_value') }}</VListItemContent>
+		</VListItem>
+	</VList>
 </template>

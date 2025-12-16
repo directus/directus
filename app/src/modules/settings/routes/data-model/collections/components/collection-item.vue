@@ -42,7 +42,7 @@ function onGroupSortChange(collections: Collection[]) {
 
 <template>
 	<div v-show="visibilityTree.visible" class="collection-item">
-		<v-list-item
+		<VListItem
 			block
 			dense
 			clickable
@@ -50,18 +50,18 @@ function onGroupSortChange(collections: Collection[]) {
 			:to="collection.schema ? `/settings/data-model/${collection.collection}` : undefined"
 			@click.self="!collection.schema ? $emit('editCollection', collection) : null"
 		>
-			<v-list-item-icon>
-				<v-icon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
-			</v-list-item-icon>
+			<VListItemIcon>
+				<VIcon v-if="!disableDrag" class="drag-handle" name="drag_handle" />
+			</VListItemIcon>
 			<div class="collection-item-detail">
-				<v-icon
+				<VIcon
 					:color="
 						collection.meta?.hidden ? 'var(--theme--foreground-subdued)' : (collection.color ?? 'var(--theme--primary)')
 					"
 					class="collection-icon"
 					:name="collection.meta?.hidden ? 'visibility_off' : collection.icon"
 				/>
-				<v-highlight
+				<VHighlight
 					ref="collectionName"
 					:query="visibilityTree.search"
 					:text="collection.collection"
@@ -70,7 +70,7 @@ function onGroupSortChange(collections: Collection[]) {
 				<span v-if="collection.meta?.note" class="collection-note">{{ collection.meta.note }}</span>
 			</div>
 
-			<v-icon
+			<VIcon
 				v-if="nestedCollections?.length"
 				v-tooltip="!isCollapsed ? $t('collapse') : $t('expand')"
 				:name="!isCollapsed ? 'unfold_less' : 'unfold_more'"
@@ -78,15 +78,15 @@ function onGroupSortChange(collections: Collection[]) {
 				class="collapse-toggle"
 				@click.stop.prevent="toggleCollapse"
 			/>
-			<collection-options
+			<CollectionOptions
 				:has-nested-collections="nestedCollections.length > 0"
 				:collection="collection"
 				@collection-toggle="toggleCollapse"
 			/>
-		</v-list-item>
+		</VListItem>
 
-		<transition-expand class="collection-items">
-			<draggable
+		<TransitionExpand class="collection-items">
+			<Draggable
 				v-if="!isCollapsed"
 				:model-value="nestedCollections"
 				:group="{ name: 'collections' }"
@@ -108,8 +108,8 @@ function onGroupSortChange(collections: Collection[]) {
 						@toggle-collapse="$emit('toggleCollapse', $event)"
 					/>
 				</template>
-			</draggable>
-		</transition-expand>
+			</Draggable>
+		</TransitionExpand>
 	</div>
 </template>
 

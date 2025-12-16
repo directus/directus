@@ -102,21 +102,21 @@ useSystem();
 	<div id="directus">
 		<transition name="fade">
 			<div v-if="hydrating" class="hydrating">
-				<v-progress-circular indeterminate />
+				<VProgressCircular indeterminate />
 			</div>
 		</transition>
 
-		<v-info v-if="error" type="danger" :title="$t('unexpected_error')" icon="error" center>
+		<VInfo v-if="error" type="danger" :title="$t('unexpected_error')" icon="error" center>
 			{{ $t('unexpected_error_copy') }}
 
 			<template #append>
-				<v-error class="error" :error="error" />
+				<VError class="error" :error="error" />
 
-				<v-button small @click="reload">{{ $t('reload_page') }}</v-button>
+				<VButton small @click="reload">{{ $t('reload_page') }}</VButton>
 			</template>
-		</v-info>
+		</VInfo>
 
-		<router-view v-else-if="!hydrating" />
+		<RouterView v-else-if="!hydrating" />
 	</div>
 
 	<teleport to="#custom-css">{{ customCSS }}</teleport>

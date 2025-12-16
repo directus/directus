@@ -28,37 +28,37 @@ defineProps<FlowDialogsContext>();
 </script>
 
 <template>
-	<v-dialog
+	<VDialog
 		:model-value="displayUnsavedChangesDialog"
 		keep-behind
 		@esc="resetConfirm"
 		@apply="confirmUnsavedChanges(currentFlowId!)"
 	>
-		<v-card>
-			<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
-			<v-card-text>{{ $t('run_flow_on_current_edited_confirm') }}</v-card-text>
+		<VCard>
+			<VCardTitle>{{ $t('unsaved_changes') }}</VCardTitle>
+			<VCardText>{{ $t('run_flow_on_current_edited_confirm') }}</VCardText>
 
-			<v-card-actions>
-				<v-button secondary @click="resetConfirm">
+			<VCardActions>
+				<VButton secondary @click="resetConfirm">
 					{{ $t('cancel') }}
-				</v-button>
-				<v-button @click="confirmUnsavedChanges(currentFlowId!)">
+				</VButton>
+				<VButton @click="confirmUnsavedChanges(currentFlowId!)">
 					{{ confirmButtonCTA }}
-				</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+				</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
 
-	<v-dialog
+	<VDialog
 		:model-value="displayCustomConfirmDialog"
 		keep-behind
 		@esc="resetConfirm"
 		@apply="confirmCustomDialog(currentFlowId!)"
 	>
-		<v-card>
-			<v-card-title>{{ confirmDialogDetails?.description ?? $t('run_flow_confirm') }}</v-card-title>
-			<v-card-text class="confirm-form">
-				<v-form
+		<VCard>
+			<VCardTitle>{{ confirmDialogDetails?.description ?? $t('run_flow_confirm') }}</VCardTitle>
+			<VCardText class="confirm-form">
+				<VForm
 					v-if="confirmDialogDetails?.fields.length"
 					:fields="confirmDialogDetails.fields"
 					:model-value="confirmValues"
@@ -66,18 +66,18 @@ defineProps<FlowDialogsContext>();
 					primary-key="+"
 					@update:model-value="updateFieldValues($event)"
 				/>
-			</v-card-text>
+			</VCardText>
 
-			<v-card-actions>
-				<v-button secondary @click="resetConfirm">
+			<VCardActions>
+				<VButton secondary @click="resetConfirm">
 					{{ $t('cancel') }}
-				</v-button>
-				<v-button :disabled="isConfirmButtonDisabled" @click="confirmCustomDialog(currentFlowId!)">
+				</VButton>
+				<VButton :disabled="isConfirmButtonDisabled" @click="confirmCustomDialog(currentFlowId!)">
 					{{ confirmButtonCTA }}
-				</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+				</VButton>
+			</VCardActions>
+		</VCard>
+	</VDialog>
 </template>
 
 <style lang="scss" scoped>

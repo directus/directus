@@ -226,7 +226,7 @@ function useVariableInput() {
 </script>
 
 <template>
-	<v-icon
+	<VIcon
 		v-if="isVariableInputComparator"
 		v-tooltip="$t('toggle_variable_input')"
 		class="variable-input-toggle"
@@ -242,7 +242,7 @@ function useVariableInput() {
 
 		<!-- TODO: eslint trips up here as we're using `is` as the prop name. Refactoring `is` away is the proper solve here -->
 		<!-- eslint-disable vue/no-undef-components -->
-		<input-component
+		<InputComponent
 			is="interface-input"
 			class="variable-input"
 			type="unknown"
@@ -255,7 +255,7 @@ function useVariableInput() {
 
 	<template v-else>
 		<template v-if="['_eq', '_neq', '_lt', '_gt', '_lte', '_gte'].includes(comparator)">
-			<input-component
+			<InputComponent
 				:is="interfaceType"
 				:choices="choices"
 				:type="fieldInfo?.type ?? 'unknown'"
@@ -281,7 +281,7 @@ function useVariableInput() {
 				].includes(comparator)
 			"
 		>
-			<input-component
+			<InputComponent
 				is="interface-input"
 				:choices="choices"
 				:type="fieldInfo?.type ?? 'unknown'"
@@ -292,7 +292,7 @@ function useVariableInput() {
 
 		<div v-else-if="['_in', '_nin'].includes(comparator)" class="list">
 			<div v-for="(val, index) in value" :key="index" class="value">
-				<input-component
+				<InputComponent
 					:is="interfaceType"
 					:ref="(el) => (inputRefs[index] = el)"
 					:type="fieldInfo?.type ?? 'unknown'"
@@ -308,7 +308,7 @@ function useVariableInput() {
 		</div>
 
 		<template v-else-if="['_between', '_nbetween'].includes(comparator)">
-			<input-component
+			<InputComponent
 				:is="interfaceType"
 				:choices="choices"
 				:type="fieldInfo?.type ?? 'unknown'"
@@ -316,7 +316,7 @@ function useVariableInput() {
 				@input="setValueAt(0, $event)"
 			/>
 			<div class="and">{{ $t('interfaces.filter.and') }}</div>
-			<input-component
+			<InputComponent
 				:is="interfaceType"
 				:choices="choices"
 				:type="fieldInfo?.type ?? 'unknown'"

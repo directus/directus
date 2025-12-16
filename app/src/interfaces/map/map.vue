@@ -436,38 +436,38 @@ function handleKeyDown(event: any) {
 			</div>
 		</transition>
 		<div class="mapboxgl-ctrl-group mapboxgl-ctrl mapboxgl-ctrl-dropdown basemap-select">
-			<v-icon name="map" />
-			<v-select v-model="basemap" inline :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
+			<VIcon name="map" />
+			<VSelect v-model="basemap" inline :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
 		</div>
 		<transition name="fade">
-			<v-info
+			<VInfo
 				v-if="geometryOptionsError"
 				icon="error"
 				center
 				type="danger"
 				:title="$t('interfaces.map.invalid_options')"
 			>
-				<v-notice type="danger" :icon="false">
+				<VNotice type="danger" :icon="false">
 					{{ geometryOptionsError }}
-				</v-notice>
-			</v-info>
-			<v-info
+				</VNotice>
+			</VInfo>
+			<VInfo
 				v-else-if="geometryParsingError"
 				icon="error"
 				center
 				type="warning"
 				:title="$t('layouts.map.invalid_geometry')"
 			>
-				<v-notice type="warning" :icon="false">
+				<VNotice type="warning" :icon="false">
 					{{ geometryParsingError }}
-				</v-notice>
+				</VNotice>
 				<template #append>
-					<v-card-actions>
-						<v-button small secondary @click="resetValue(false)">{{ $t('continue') }}</v-button>
-						<v-button small kind="danger" @click="resetValue(true)">{{ $t('reset') }}</v-button>
-					</v-card-actions>
+					<VCardActions>
+						<VButton small secondary @click="resetValue(false)">{{ $t('continue') }}</VButton>
+						<VButton small kind="danger" @click="resetValue(true)">{{ $t('reset') }}</VButton>
+					</VCardActions>
 				</template>
-			</v-info>
+			</VInfo>
 		</transition>
 	</div>
 </template>

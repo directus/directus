@@ -22,7 +22,7 @@ withDefaults(defineProps<Props>(), {
 <template>
 	<div class="v-info" :class="[type, { center }]">
 		<div v-if="icon !== false" class="icon">
-			<v-icon large :name="icon" />
+			<VIcon large :name="icon" />
 		</div>
 		<h2 class="title type-title">{{ title }}</h2>
 		<p class="content"><slot /></p>

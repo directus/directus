@@ -59,7 +59,7 @@ function toggle(item: Record<string, any>) {
 	<div class="v-fancy-select">
 		<transition-group tag="div" name="option">
 			<template v-for="(item, index) in visibleItems" :key="item[props.itemValue]">
-				<v-divider v-if="item.divider === true" />
+				<VDivider v-if="item.divider === true" />
 				<button
 					v-else
 					type="button"
@@ -72,7 +72,7 @@ function toggle(item: Record<string, any>) {
 					@click="toggle(item)"
 				>
 					<div class="icon">
-						<v-icon :name="item.icon" />
+						<VIcon :name="item.icon" />
 					</div>
 
 					<div class="content">
@@ -80,13 +80,13 @@ function toggle(item: Record<string, any>) {
 						<div class="description">{{ item[itemDescription] }}</div>
 					</div>
 
-					<v-icon
+					<VIcon
 						v-if="modelValue === item[itemValue] && disabled === false"
 						name="cancel"
 						clickable
 						@click.stop="toggle(item)"
 					/>
-					<v-icon v-else-if="item.iconRight" class="icon-right" :name="item.iconRight" />
+					<VIcon v-else-if="item.iconRight" class="icon-right" :name="item.iconRight" />
 				</button>
 			</template>
 		</transition-group>

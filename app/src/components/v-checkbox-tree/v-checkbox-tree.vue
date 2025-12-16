@@ -147,8 +147,8 @@ function findSelectedChoices(choices: Record<string, any>[], checked: (string | 
 </script>
 
 <template>
-	<v-list v-model="openSelection" role="group" :mandatory="false" @toggle="$emit('group-toggle', $event)">
-		<v-checkbox-tree-checkbox
+	<VList v-model="openSelection" role="group" :mandatory="false" @toggle="$emit('group-toggle', $event)">
+		<VCheckboxTreeCheckbox
 			v-for="choice in choices"
 			:key="choice[itemValue]"
 			v-model="value"
@@ -165,5 +165,5 @@ function findSelectedChoices(choices: Record<string, any>[], checked: (string | 
 			:non-editable="nonEditable"
 			:show-selection-only="showSelectionOnly"
 		/>
-	</v-list>
+	</VList>
 </template>

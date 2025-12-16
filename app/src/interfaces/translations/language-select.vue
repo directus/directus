@@ -27,18 +27,18 @@ const displayValue = computed(() => {
 </script>
 
 <template>
-	<v-menu attached class="language-select" :class="{ secondary, danger }">
+	<VMenu attached class="language-select" :class="{ secondary, danger }">
 		<template #activator="{ toggle, active }">
 			<button class="toggle" type="button" @click="toggle">
 				<slot name="prepend" />
 				<span class="display-value">{{ displayValue }}</span>
 				<span class="controls"><slot name="controls" :active :toggle /></span>
-				<v-icon class="expand" name="expand_more" :class="{ active }" />
+				<VIcon class="expand" name="expand_more" :class="{ active }" />
 			</button>
 		</template>
 
-		<v-list v-if="items">
-			<v-list-item
+		<VList v-if="items">
+			<VListItem
 				v-for="(item, index) in items"
 				:key="index"
 				clickable
@@ -49,16 +49,16 @@ const displayValue = computed(() => {
 					{{ item.text }}
 				</div>
 				<div class="end">
-					<v-progress-linear
+					<VProgressLinear
 						v-tooltip="`${Math.round((item.current / item.max) * 100)}%`"
 						:value="item.progress"
 						rounded
 						colorful
 					/>
 				</div>
-			</v-list-item>
-		</v-list>
-	</v-menu>
+			</VListItem>
+		</VList>
+	</VMenu>
 </template>
 
 <style lang="scss" scoped>

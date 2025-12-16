@@ -222,7 +222,7 @@ function clearFilters() {
 </script>
 
 <template>
-	<v-drawer
+	<VDrawer
 		v-model="notificationsDrawerOpen"
 		icon="notifications"
 		:title="$t('notifications')"
@@ -239,9 +239,9 @@ function clearFilters() {
 		</template>
 
 		<template #actions>
-			<search-input v-model="search" v-model:filter="filter" collection="directus_notifications" />
+			<SearchInput v-model="search" v-model:filter="filter" collection="directus_notifications" />
 
-			<v-dialog
+			<VDialog
 				v-model="confirmDelete"
 				:disabled="selection.length === 0"
 				@esc="confirmDelete = false"
@@ -258,19 +258,19 @@ function clearFilters() {
 					/>
 				</template>
 
-				<v-card>
-					<v-card-title>{{ $t('delete_are_you_sure') }}</v-card-title>
+				<VCard>
+					<VCardTitle>{{ $t('delete_are_you_sure') }}</VCardTitle>
 
-					<v-card-actions>
-						<v-button secondary @click="confirmDelete = false">
+					<VCardActions>
+						<VButton secondary @click="confirmDelete = false">
 							{{ $t('cancel') }}
-						</v-button>
-						<v-button kind="danger" @click="deleteSelected">
+						</VButton>
+						<VButton kind="danger" @click="deleteSelected">
 							{{ $t('delete_label') }}
-						</v-button>
-					</v-card-actions>
-				</v-card>
-			</v-dialog>
+						</VButton>
+					</VCardActions>
+				</VCard>
+			</VDialog>
 
 			<PrivateViewHeaderBarActionButton
 				v-tooltip.bottom="tab[0] === 'inbox' ? $t('archive') : $t('unarchive')"
@@ -282,68 +282,68 @@ function clearFilters() {
 		</template>
 
 		<template #sidebar>
-			<v-tabs v-model="tab" vertical>
-				<v-tab value="inbox">
-					<v-list-item-icon>
-						<v-icon name="inbox" />
-					</v-list-item-icon>
-					<v-list-item-content>{{ $t('inbox') }}</v-list-item-content>
-				</v-tab>
-				<v-tab value="archived">
-					<v-list-item-icon>
-						<v-icon name="archive" />
-					</v-list-item-icon>
-					<v-list-item-content>{{ $t('archive') }}</v-list-item-content>
-				</v-tab>
-			</v-tabs>
+			<VTabs v-model="tab" vertical>
+				<VTab value="inbox">
+					<VListItemIcon>
+						<VIcon name="inbox" />
+					</VListItemIcon>
+					<VListItemContent>{{ $t('inbox') }}</VListItemContent>
+				</VTab>
+				<VTab value="archived">
+					<VListItemIcon>
+						<VIcon name="archive" />
+					</VListItemIcon>
+					<VListItemContent>{{ $t('archive') }}</VListItemContent>
+				</VTab>
+			</VTabs>
 
-			<v-divider class="nav-divider" />
+			<VDivider class="nav-divider" />
 
-			<v-list nav>
-				<v-list-item
+			<VList nav>
+				<VListItem
 					clickable
 					to="/activity"
 					:active="!notificationsDrawerOpen"
 					@click="notificationsDrawerOpen = false"
 				>
-					<v-list-item-icon>
-						<v-icon name="manage_search" />
-					</v-list-item-icon>
+					<VListItemIcon>
+						<VIcon name="manage_search" />
+					</VListItemIcon>
 
-					<v-list-item-content>
+					<VListItemContent>
 						{{ $t('activity') }}
-					</v-list-item-content>
+					</VListItemContent>
 
-					<v-list-item-hint>
-						<v-icon name="launch" />
-					</v-list-item-hint>
-				</v-list-item>
-			</v-list>
+					<VListItemHint>
+						<VIcon name="launch" />
+					</VListItemHint>
+				</VListItem>
+			</VList>
 		</template>
 
 		<template v-if="!loading && !itemCount">
-			<v-info v-if="filter || search" :title="$t('no_results')" icon="search" center>
+			<VInfo v-if="filter || search" :title="$t('no_results')" icon="search" center>
 				{{ $t('no_results_copy') }}
 
 				<template #append>
-					<v-button @click="clearFilters">{{ $t('clear_filters') }}</v-button>
+					<VButton @click="clearFilters">{{ $t('clear_filters') }}</VButton>
 				</template>
-			</v-info>
+			</VInfo>
 
-			<v-info v-else icon="notifications" :title="$t('no_notifications')" center>
+			<VInfo v-else icon="notifications" :title="$t('no_notifications')" center>
 				{{ $t('no_notifications_copy') }}
-			</v-info>
+			</VInfo>
 		</template>
 
 		<div v-else class="content">
-			<v-list v-if="loading" class="notifications">
-				<v-skeleton-loader v-for="i in 10" :key="i" :class="{ dense: totalPages > 1 }" />
-			</v-list>
+			<VList v-if="loading" class="notifications">
+				<VSkeletonLoader v-for="i in 10" :key="i" :class="{ dense: totalPages > 1 }" />
+			</VList>
 
 			<div v-else class="notifications-block">
-				<v-divider class="select-all-divider" :class="{ dense: totalPages > 1 }" />
+				<VDivider class="select-all-divider" :class="{ dense: totalPages > 1 }" />
 
-				<v-checkbox
+				<VCheckbox
 					class="select-all"
 					:class="{ dense: totalPages > 1 }"
 					:label="!allItemsSelected ? $t('select_all') : $t('deselect_all')"
@@ -352,10 +352,10 @@ function clearFilters() {
 					@update:model-value="selectAll"
 				/>
 
-				<v-divider class="select-all-divider" :class="{ dense: totalPages > 1 }" />
+				<VDivider class="select-all-divider" :class="{ dense: totalPages > 1 }" />
 
-				<v-list class="notifications">
-					<v-list-item
+				<VList class="notifications">
+					<VListItem
 						v-for="notification in notifications"
 						:key="notification.id"
 						block
@@ -370,22 +370,22 @@ function clearFilters() {
 						"
 					>
 						<div class="header" @click="toggleNotification(notification.id)">
-							<v-checkbox
+							<VCheckbox
 								:model-value="selection.includes(notification.id)"
 								@update:model-value="toggleSelected(notification.id)"
 							/>
-							<v-text-overflow class="title" :highlight="search" :text="notification.subject" />
+							<VTextOverflow class="title" :highlight="search" :text="notification.subject" />
 							<use-datetime v-slot="{ datetime }" :value="notification.timestamp" type="timestamp" relative>
-								<v-text-overflow class="datetime" :text="datetime" />
+								<VTextOverflow class="datetime" :text="datetime" />
 							</use-datetime>
-							<v-icon
+							<VIcon
 								v-if="notification.to"
 								v-tooltip="$t('goto_collection_content')"
 								clickable
 								name="open_in_new"
 								@click="onLinkClick(notification.to)"
 							/>
-							<v-icon
+							<VIcon
 								v-if="notification.message"
 								clickable
 								:name="openNotifications.includes(notification.id) ? 'expand_less' : 'expand_more'"
@@ -396,12 +396,12 @@ function clearFilters() {
 							v-md="notification.message"
 							class="message"
 						/>
-					</v-list-item>
-				</v-list>
+					</VListItem>
+				</VList>
 			</div>
-			<v-pagination v-if="totalPages > 1" v-model="page" :total-visible="5" :length="totalPages" />
+			<VPagination v-if="totalPages > 1" v-model="page" :total-visible="5" :length="totalPages" />
 		</div>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>

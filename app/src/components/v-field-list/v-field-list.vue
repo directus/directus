@@ -148,27 +148,27 @@ function filter(field: Field, parent?: FieldNode): boolean {
 </script>
 
 <template>
-	<v-list :mandatory="false" @toggle="loadFieldRelations($event.value)">
+	<VList :mandatory="false" @toggle="loadFieldRelations($event.value)">
 		<slot name="prepend" />
-		<v-list-item v-if="showSearch">
-			<v-list-item-content>
-				<v-input v-model="search" autofocus small :placeholder="$t('search')" @click.stop>
+		<VListItem v-if="showSearch">
+			<VListItemContent>
+				<VInput v-model="search" autofocus small :placeholder="$t('search')" @click.stop>
 					<template #append>
-						<v-icon small name="search" />
+						<VIcon small name="search" />
 					</template>
-				</v-input>
-			</v-list-item-content>
-		</v-list-item>
+				</VInput>
+			</VListItemContent>
+		</VListItem>
 
 		<template v-if="allowSelectAll">
-			<v-list-item clickable :disabled="selectAllDisabled" @click="addAll">
+			<VListItem clickable :disabled="selectAllDisabled" @click="addAll">
 				{{ $t('select_all') }}
-			</v-list-item>
+			</VListItem>
 
-			<v-divider />
+			<VDivider />
 		</template>
 
-		<v-field-list-item
+		<VFieldListItem
 			v-for="fieldNode in treeList"
 			:key="fieldNode.field"
 			:field="fieldNode"
@@ -179,7 +179,7 @@ function filter(field: Field, parent?: FieldNode): boolean {
 			:raw-field-names="rawFieldNames"
 			@add="$emit('add', $event)"
 		/>
-	</v-list>
+	</VList>
 </template>
 
 <style lang="scss" scoped>

@@ -364,9 +364,9 @@ function useNestedValidation() {
 
 <template>
 	<div class="translations" :class="{ split: splitViewEnabled }">
-		<translation-form v-model:lang="firstLang" v-bind="translationProps" :class="splitViewEnabled ? 'half' : 'full'">
+		<TranslationForm v-model:lang="firstLang" v-bind="translationProps" :class="splitViewEnabled ? 'half' : 'full'">
 			<template #split-view="{ active, toggle }">
-				<v-icon
+				<VIcon
 					v-if="splitViewAvailable && !splitViewEnabled"
 					v-tooltip="$t('interfaces.translations.toggle_split_view')"
 					name="flip"
@@ -377,9 +377,9 @@ function useNestedValidation() {
 					"
 				/>
 			</template>
-		</translation-form>
+		</TranslationForm>
 
-		<translation-form
+		<TranslationForm
 			v-if="splitViewEnabled"
 			v-model:lang="secondLang"
 			v-bind="translationProps"
@@ -387,14 +387,14 @@ function useNestedValidation() {
 			class="half"
 		>
 			<template #split-view>
-				<v-icon
+				<VIcon
 					v-tooltip="$t('interfaces.translations.toggle_split_view')"
 					name="flip"
 					clickable
 					@click="splitView = false"
 				/>
 			</template>
-		</translation-form>
+		</TranslationForm>
 	</div>
 </template>
 

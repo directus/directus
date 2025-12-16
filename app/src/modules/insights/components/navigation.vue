@@ -27,16 +27,16 @@ const navItems = computed(() =>
 </script>
 
 <template>
-	<v-list nav>
-		<v-button v-if="navItems.length === 0 && createAllowed" full-width outlined dashed @click="$emit('create')">
+	<VList nav>
+		<VButton v-if="navItems.length === 0 && createAllowed" full-width outlined dashed @click="$emit('create')">
 			{{ $t('create_dashboard') }}
-		</v-button>
+		</VButton>
 
-		<v-list-item v-for="navItem in navItems" v-else :key="navItem.to" :to="navItem.to">
-			<v-list-item-icon><v-icon :name="navItem.icon" :color="navItem.color" /></v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="navItem.name" />
-			</v-list-item-content>
-		</v-list-item>
-	</v-list>
+		<VListItem v-for="navItem in navItems" v-else :key="navItem.to" :to="navItem.to">
+			<VListItemIcon><VIcon :name="navItem.icon" :color="navItem.color" /></VListItemIcon>
+			<VListItemContent>
+				<VTextOverflow :text="navItem.name" />
+			</VListItemContent>
+		</VListItem>
+	</VList>
 </template>

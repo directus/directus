@@ -85,7 +85,7 @@ onUnmounted(() => {
 	<div class="form-grid">
 		<div v-if="!nativeGeometryType && field?.type !== 'csv'" class="field half-left">
 			<div class="type-label">{{ $t('interfaces.map.geometry_type') }}</div>
-			<v-select
+			<VSelect
 				v-model="geometryType"
 				:placeholder="$t('any')"
 				show-deselect

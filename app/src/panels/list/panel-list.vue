@@ -60,19 +60,19 @@ async function saveEdits(item: Record<string, any>) {
 <template>
 	<div class="list" :class="{ 'has-header': showHeader }">
 		<div>
-			<v-list>
-				<v-list-item
+			<VList>
+				<VListItem
 					v-for="row in data"
 					:key="row[primaryKeyField]"
 					:clickable="linkToItem === true"
 					@click="startEditing(row)"
 				>
-					<render-template :item="row" :collection="collection" :template="displayTemplate" />
+					<RenderTemplate :item="row" :collection="collection" :template="displayTemplate" />
 					<div class="spacer" />
-				</v-list-item>
-			</v-list>
+				</VListItem>
+			</VList>
 		</div>
-		<drawer-item
+		<DrawerItem
 			:active="!!currentlyEditing"
 			:collection="collection"
 			:primary-key="currentlyEditing ?? '+'"

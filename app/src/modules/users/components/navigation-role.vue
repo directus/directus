@@ -30,7 +30,7 @@ const settingLink = computed(() => ({
 </script>
 
 <template>
-	<v-list-item
+	<VListItem
 		v-if="role.children === undefined"
 		v-context-menu="'contextMenu'"
 		scope="role-navigation"
@@ -38,10 +38,10 @@ const settingLink = computed(() => ({
 		clickable
 		@click="$emit('click', { role: role.id })"
 	>
-		<v-list-item-icon><v-icon :name="role.icon" /></v-list-item-icon>
-		<v-list-item-content>{{ translate(role.name) }}</v-list-item-content>
-	</v-list-item>
-	<v-list-group
+		<VListItemIcon><VIcon :name="role.icon" /></VListItemIcon>
+		<VListItemContent>{{ translate(role.name) }}</VListItemContent>
+	</VListItem>
+	<VListGroup
 		v-else
 		v-context-menu="'contextMenu'"
 		clickable
@@ -51,10 +51,10 @@ const settingLink = computed(() => ({
 		@click="$emit('click', { role: role.id })"
 	>
 		<template #activator>
-			<v-list-item-icon><v-icon :name="role.icon" /></v-list-item-icon>
-			<v-list-item-content>
-				<v-text-overflow :text="translate(role.name)" />
-			</v-list-item-content>
+			<VListItemIcon><VIcon :name="role.icon" /></VListItemIcon>
+			<VListItemContent>
+				<VTextOverflow :text="translate(role.name)" />
+			</VListItemContent>
 		</template>
 
 		<navigation-role
@@ -64,18 +64,18 @@ const settingLink = computed(() => ({
 			:current-role="currentRole"
 			@click="$emit('click', $event)"
 		/>
-	</v-list-group>
+	</VListGroup>
 
-	<v-menu v-if="isAdmin" ref="contextMenu" show-arrow placement="bottom-start">
-		<v-list>
-			<v-list-item clickable :to="settingLink">
-				<v-list-item-icon>
-					<v-icon name="list_alt" />
-				</v-list-item-icon>
-				<v-list-item-content>
-					<v-text-overflow :text="$t('edit_role')" />
-				</v-list-item-content>
-			</v-list-item>
-		</v-list>
-	</v-menu>
+	<VMenu v-if="isAdmin" ref="contextMenu" show-arrow placement="bottom-start">
+		<VList>
+			<VListItem clickable :to="settingLink">
+				<VListItemIcon>
+					<VIcon name="list_alt" />
+				</VListItemIcon>
+				<VListItemContent>
+					<VTextOverflow :text="$t('edit_role')" />
+				</VListItemContent>
+			</VListItem>
+		</VList>
+	</VMenu>
 </template>

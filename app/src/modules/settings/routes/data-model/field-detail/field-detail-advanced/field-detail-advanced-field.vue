@@ -37,32 +37,32 @@ const isSearchableType = computed(() => {
 	<div class="form">
 		<div v-if="!isGenerated" class="field half-left">
 			<div class="label type-label">{{ $t('readonly') }}</div>
-			<v-checkbox v-model="readonly" :label="$t('readonly_field_label')" block />
+			<VCheckbox v-model="readonly" :label="$t('readonly_field_label')" block />
 		</div>
 
 		<div v-if="!isGenerated" class="field half-right">
 			<div class="label type-label">{{ $t('required') }}</div>
-			<v-checkbox v-model="required" :label="$t('require_value_to_be_set')" block />
+			<VCheckbox v-model="required" :label="$t('require_value_to_be_set')" block />
 		</div>
 
-		<v-notice v-if="readonly && required" type="warning" class="full no-margin">
+		<VNotice v-if="readonly && required" type="warning" class="full no-margin">
 			{{ $t('required_readonly_field_warning') }}
-		</v-notice>
+		</VNotice>
 
 		<div class="field half-left">
 			<div class="label type-label">{{ $t('hidden') }}</div>
-			<v-checkbox v-model="hidden" :label="$t('hidden_on_detail')" block />
+			<VCheckbox v-model="hidden" :label="$t('hidden_on_detail')" block />
 		</div>
 
 		<div v-if="isSearchableType" class="field half-right">
 			<div class="label type-label">{{ $t('searchable') }}</div>
-			<v-checkbox v-model="searchable" :label="$t('field_searchable')" block />
+			<VCheckbox v-model="searchable" :label="$t('field_searchable')" block />
 		</div>
 
 		<div v-if="type !== 'group'" class="field full">
 			<div class="label type-label">{{ $t('note') }}</div>
-			<v-skeleton-loader v-if="loading" />
-			<interface-system-input-translated-string
+			<VSkeletonLoader v-if="loading" />
+			<InterfaceSystemInputTranslatedString
 				v-else
 				:value="note"
 				:placeholder="$t('add_note')"
@@ -73,7 +73,7 @@ const isSearchableType = computed(() => {
 		<div class="field full">
 			<div class="label type-label">{{ $t('field_name_translations') }}</div>
 
-			<interface-list
+			<InterfaceList
 				:template="'[{{ language }}] {{ translation }}'"
 				:fields="[
 					{

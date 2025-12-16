@@ -215,63 +215,63 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 		<div class="header-content" :style="{ '--header-color': color }">
 			<div class="text-content">
 				<p v-if="title" class="text-title">
-					<v-icon v-if="icon" :name="icon" />
-					<render-template :collection="collection" :fields="fields" :item="combinedItemData" :template="title" />
+					<VIcon v-if="icon" :name="icon" />
+					<RenderTemplate :collection="collection" :fields="fields" :item="combinedItemData" :template="title" />
 				</p>
 			</div>
 			<div class="actions-wrapper">
 				<div class="actions-container">
 					<template v-if="help">
-						<v-button :secondary="!expanded" small class="help-button" icon @click="toggleHelp">
-							<v-icon name="help_outline" />
-						</v-button>
+						<VButton :secondary="!expanded" small class="help-button" icon @click="toggleHelp">
+							<VIcon name="help_outline" />
+						</VButton>
 					</template>
 
 					<template v-if="primaryLink">
-						<v-button
+						<VButton
 							v-if="primaryLink!.href || primaryLink!.flow"
 							v-bind="primaryLinkProps"
 							small
 							:kind="primaryLink!.type"
 						>
-							<v-icon v-if="!primaryLink.icon && !primaryLink.label" name="smart_button" />
+							<VIcon v-if="!primaryLink.icon && !primaryLink.label" name="smart_button" />
 
-							<v-icon v-if="primaryLink!.icon" :left="primaryLink.label" :name="primaryLink!.icon" />
+							<VIcon v-if="primaryLink!.icon" :left="primaryLink.label" :name="primaryLink!.icon" />
 
 							<span v-if="primaryLink!.label">{{ primaryLink!.label }}</span>
-						</v-button>
+						</VButton>
 					</template>
 
 					<template v-else-if="linksParsed.length > 1">
-						<v-menu placement="bottom-end">
+						<VMenu placement="bottom-end">
 							<template #activator="{ toggle }">
 								<div>
-									<v-button secondary small class="full-button" @click="toggle">
+									<VButton secondary small class="full-button" @click="toggle">
 										{{ $t('actions') }}
-										<v-icon name="expand_more" right />
-									</v-button>
-									<v-button v-tooltip="$t('actions')" secondary small class="icon-button" icon @click="toggle">
-										<v-icon name="expand_more" />
-									</v-button>
+										<VIcon name="expand_more" right />
+									</VButton>
+									<VButton v-tooltip="$t('actions')" secondary small class="icon-button" icon @click="toggle">
+										<VIcon name="expand_more" />
+									</VButton>
 								</div>
 							</template>
 
-							<v-list>
-								<v-list-item
+							<VList>
+								<VListItem
 									v-for="(link, index) in linksParsed"
 									:key="index"
 									:clickable="!link.flow || (link.flow && !runningFlows.includes(link.flow))"
 									:disabled="link.flow && runningFlows.includes(link.flow)"
 									@click="link.actionType === 'flow' ? handleActionClick(link) : null"
 								>
-									<v-list-item-icon v-if="link.icon">
-										<v-icon :name="link.icon" />
-									</v-list-item-icon>
-									<v-list-item-content>
+									<VListItemIcon v-if="link.icon">
+										<VIcon :name="link.icon" />
+									</VListItemIcon>
+									<VListItemContent>
 										<template v-if="link.actionType === 'url'">
-											<router-link v-if="link.to" :to="link.to">
+											<RouterLink v-if="link.to" :to="link.to">
 												{{ $t(link.label) }}
-											</router-link>
+											</RouterLink>
 											<template v-else-if="link.href">
 												<a :href="link.href" target="_blank" rel="noopener noreferrer">
 													{{ $t(link.label) }}
@@ -280,51 +280,51 @@ const { runManualFlow, runningFlows } = useInjectRunManualFlow();
 										</template>
 										<template v-else>
 											<template v-if="link.flow && runningFlows.includes(link.flow)">
-												<v-progress-circular small indeterminate />
+												<VProgressCircular small indeterminate />
 											</template>
 											<template v-else>
 												{{ $t(link.label) }}
 											</template>
 										</template>
-									</v-list-item-content>
-								</v-list-item>
-							</v-list>
-						</v-menu>
+									</VListItemContent>
+								</VListItem>
+							</VList>
+						</VMenu>
 					</template>
 				</div>
 			</div>
 		</div>
 		<p v-if="subtitle" class="text-subtitle">
-			<render-template :collection="collection" :fields="fields" :item="combinedItemData" :template="subtitle" />
+			<RenderTemplate :collection="collection" :fields="fields" :item="combinedItemData" :template="subtitle" />
 		</p>
-		<transition-expand>
+		<TransitionExpand>
 			<div v-if="expanded && help && helpDisplayMode !== 'modal'" class="helper-text-outer">
-				<helper-text :content="helpText" />
+				<HelperText :content="helpText" />
 				<div class="collapse-button-container">
-					<v-button class="collapse-button" small secondary @click="toggleHelp">
+					<VButton class="collapse-button" small secondary @click="toggleHelp">
 						{{ `${$t('interfaces.header.collapse')}` }}
-						<v-icon name="expand_less" right />
-					</v-button>
+						<VIcon name="expand_less" right />
+					</VButton>
 				</div>
 			</div>
-		</transition-expand>
+		</TransitionExpand>
 
 		<!-- Help Modal -->
-		<v-dialog v-model="showHelpModal" keep-behind>
-			<v-card class="help-modal">
-				<v-button icon class="close-button" secondary small @click="showHelpModal = false">
-					<v-icon name="close" />
-				</v-button>
-				<v-card-text>
-					<helper-text :content="helpText" />
-				</v-card-text>
-				<v-card-actions>
-					<v-button @click="showHelpModal = false">
+		<VDialog v-model="showHelpModal" keep-behind>
+			<VCard class="help-modal">
+				<VButton icon class="close-button" secondary small @click="showHelpModal = false">
+					<VIcon name="close" />
+				</VButton>
+				<VCardText>
+					<HelperText :content="helpText" />
+				</VCardText>
+				<VCardActions>
+					<VButton @click="showHelpModal = false">
 						{{ $t('dismiss') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+					</VButton>
+				</VCardActions>
+			</VCard>
+		</VDialog>
 	</div>
 </template>
 

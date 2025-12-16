@@ -138,7 +138,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 
 <template>
 	<div :class="{ secondary }">
-		<language-select v-model="lang" :items="languageOptions" :danger="item?.$type === 'deleted'" :secondary>
+		<LanguageSelect v-model="lang" :items="languageOptions" :danger="item?.$type === 'deleted'" :secondary>
 			<template #prepend>
 				<span v-if="loading" class="activator-loading-placeholder" />
 
@@ -150,9 +150,9 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 					@after-leave="onTransitionEnd"
 					@leave-cancelled="onTransitionEnd"
 				>
-					<v-icon v-if="item" name="translate" :disabled="activatorDisabled" />
+					<VIcon v-if="item" name="translate" :disabled="activatorDisabled" />
 
-					<v-icon
+					<VIcon
 						v-else
 						v-tooltip="!activatorDisabled ? $t('enable') : null"
 						:class="{ disabled: activatorDisabled }"
@@ -167,7 +167,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			</template>
 
 			<template #controls="{ active, toggle }">
-				<v-remove
+				<VRemove
 					v-if="item && !(nonEditable && item.$type !== 'deleted')"
 					:class="{ disabled: activatorDisabled }"
 					:disabled="activatorDisabled"
@@ -180,9 +180,9 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 
 				<slot name="split-view" :active :toggle />
 			</template>
-		</language-select>
+		</LanguageSelect>
 
-		<v-form
+		<VForm
 			v-if="selectedLanguage"
 			:key="selectedLanguage.value"
 			:primary-key="itemPrimaryKey ?? '+'"
@@ -200,7 +200,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			@update:model-value="updateValue($event, lang)"
 		/>
 
-		<v-divider />
+		<VDivider />
 	</div>
 </template>
 

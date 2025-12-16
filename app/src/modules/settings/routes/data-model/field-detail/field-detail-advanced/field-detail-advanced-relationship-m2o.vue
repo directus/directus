@@ -91,41 +91,41 @@ const onDeleteOptions = computed(() =>
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
-				<v-input disabled :model-value="collection" />
+				<VInput disabled :model-value="collection" />
 			</div>
 
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
 
-				<related-collection-select v-model="relatedCollection" :disabled="isExisting" />
+				<RelatedCollectionSelect v-model="relatedCollection" :disabled="isExisting" />
 			</div>
 
-			<v-input disabled :model-value="currentField" />
-			<v-input :model-value="relatedPrimaryKey" disabled :placeholder="$t('primary_key') + '...'" />
-			<v-icon class="arrow" name="arrow_back" />
+			<VInput disabled :model-value="currentField" />
+			<VInput :model-value="relatedPrimaryKey" disabled :placeholder="$t('primary_key') + '...'" />
+			<VIcon class="arrow" name="arrow_back" />
 		</div>
 
-		<v-divider v-if="!isExisting" large :inline-title="false">{{ $t('corresponding_field') }}</v-divider>
+		<VDivider v-if="!isExisting" large :inline-title="false">{{ $t('corresponding_field') }}</VDivider>
 
 		<div v-if="!isExisting" class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('create_field') }}</div>
-				<v-checkbox v-model="hasCorresponding" block :label="correspondingLabel" />
+				<VCheckbox v-model="hasCorresponding" block :label="correspondingLabel" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('field_name') }}</div>
-				<v-input
+				<VInput
 					v-model="correspondingFieldKey"
 					:disabled="hasCorresponding === false"
 					:placeholder="$t('field_name') + '...'"
 					db-safe
 				/>
 			</div>
-			<v-icon name="arrow_forward" class="arrow" />
+			<VIcon name="arrow_forward" class="arrow" />
 		</div>
 
 		<div class="relational-triggers">
-			<v-divider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</v-divider>
+			<VDivider class="field full" large :inline-title="false">{{ $t('relational_triggers') }}</VDivider>
 
 			<div class="field">
 				<div class="type-label">
@@ -135,7 +135,7 @@ const onDeleteOptions = computed(() =>
 						})
 					}}
 				</div>
-				<v-select
+				<VSelect
 					v-model="onDeleteRelated"
 					:disabled="collection === relatedCollection"
 					:placeholder="$t('choose_action') + '...'"
@@ -144,7 +144,7 @@ const onDeleteOptions = computed(() =>
 			</div>
 		</div>
 
-		<v-notice v-if="generationInfo.length > 0" class="generated-data" type="warning">
+		<VNotice v-if="generationInfo.length > 0" class="generated-data" type="warning">
 			<span>
 				{{ $t('new_data_alert') }}
 
@@ -154,7 +154,7 @@ const onDeleteOptions = computed(() =>
 					</li>
 				</ul>
 			</span>
-		</v-notice>
+		</VNotice>
 	</div>
 </template>
 

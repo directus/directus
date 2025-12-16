@@ -384,9 +384,9 @@ function getRecursiveChildrenValues(mode: 'all' | 'branch' | 'leaf', children: R
 </script>
 
 <template>
-	<v-list-group v-if="visibleChildrenValues.length > 0" v-show="groupShown" :value="value" arrow-placement="before">
+	<VListGroup v-if="visibleChildrenValues.length > 0" v-show="groupShown" :value="value" arrow-placement="before">
 		<template #activator>
-			<v-checkbox
+			<VCheckbox
 				v-model="treeValue"
 				:indeterminate="groupIndeterminateState"
 				:checked="groupCheckedStateOverride"
@@ -395,8 +395,8 @@ function getRecursiveChildrenValues(mode: 'all' | 'branch' | 'leaf', children: R
 				:disabled
 				:non-editable
 			>
-				<v-highlight :text="text" :query="search" />
-			</v-checkbox>
+				<VHighlight :text="text" :query="search" />
+			</VCheckbox>
 		</template>
 
 		<v-checkbox-tree-checkbox
@@ -418,13 +418,13 @@ function getRecursiveChildrenValues(mode: 'all' | 'branch' | 'leaf', children: R
 			:show-selection-only="showSelectionOnly"
 			:parent-value="value"
 		/>
-	</v-list-group>
+	</VListGroup>
 
-	<v-list-item v-else-if="!hidden" class="item">
-		<v-checkbox v-model="treeValue" :disabled :non-editable :checked :label="text" :value>
-			<v-highlight :text="text" :query="search" />
-		</v-checkbox>
-	</v-list-item>
+	<VListItem v-else-if="!hidden" class="item">
+		<VCheckbox v-model="treeValue" :disabled :non-editable :checked :label="text" :value>
+			<VHighlight :text="text" :query="search" />
+		</VCheckbox>
+	</VListItem>
 </template>
 
 <style scoped>

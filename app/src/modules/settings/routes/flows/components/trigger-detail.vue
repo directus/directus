@@ -52,7 +52,7 @@ const currentTriggerOptionFields = computed(() => {
 </script>
 
 <template>
-	<v-drawer
+	<VDrawer
 		:model-value="open"
 		:title="$t('change_trigger')"
 		:subtitle="$t('trigger_options')"
@@ -70,9 +70,9 @@ const currentTriggerOptionFields = computed(() => {
 		</template>
 
 		<div class="content">
-			<v-fancy-select v-model="flowEdits.trigger" class="select" :items="triggers" item-text="name" item-value="id" />
+			<VFancySelect v-model="flowEdits.trigger" class="select" :items="triggers" item-text="name" item-value="id" />
 
-			<v-form
+			<VForm
 				v-if="flowEdits.trigger"
 				v-model="flowEdits.options"
 				class="extension-options"
@@ -81,7 +81,7 @@ const currentTriggerOptionFields = computed(() => {
 				primary-key="+"
 			/>
 		</div>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style scoped lang="scss">

@@ -76,7 +76,7 @@ const items = computed(() => {
 <template>
 	<div class="display-labels">
 		<template v-if="!showAsDot">
-			<v-chip
+			<VChip
 				v-for="item in items"
 				:key="item.value"
 				:style="{
@@ -88,13 +88,13 @@ const items = computed(() => {
 				label
 				:class="{ 'has-icon': !!item.icon || !!item.color }"
 			>
-				<v-icon v-if="item.icon" :name="item.icon" :color="item.color" left small />
-				<display-color v-else-if="item.color" class="inline-dot" :value="item.color" />
+				<VIcon v-if="item.icon" :name="item.icon" :color="item.color" left small />
+				<DisplayColor v-else-if="item.color" class="inline-dot" :value="item.color" />
 				{{ item.text }}
-			</v-chip>
+			</VChip>
 		</template>
 		<template v-else>
-			<display-color
+			<DisplayColor
 				v-for="item in items"
 				:key="item.value"
 				v-tooltip="item.text"

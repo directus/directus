@@ -59,7 +59,7 @@ withDefaults(defineProps<Props>(), {
 			</slot>
 
 			<div v-if="actions && actions.length > 0" class="message-actions">
-				<v-button
+				<VButton
 					v-for="(action, index) in actions"
 					:key="index"
 					v-tooltip="action.label"
@@ -70,8 +70,8 @@ withDefaults(defineProps<Props>(), {
 					:loading="action.loading"
 					@click="action.onClick?.($event)"
 				>
-					<v-icon :name="action.icon" small />
-				</v-button>
+					<VIcon :name="action.icon" small />
+				</VButton>
 			</div>
 		</div>
 	</article>

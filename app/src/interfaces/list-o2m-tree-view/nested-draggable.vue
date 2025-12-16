@@ -186,15 +186,15 @@ function stageEdits(item: Record<string, any>) {
 </script>
 
 <template>
-	<v-skeleton-loader v-if="loading" type="block-list-item" />
+	<VSkeletonLoader v-if="loading" type="block-list-item" />
 
 	<template v-else-if="root && filteredDisplayItems.length === 0">
-		<v-notice>
+		<VNotice>
 			{{ $t('no_items') }}
-		</v-notice>
+		</VNotice>
 	</template>
 
-	<draggable
+	<Draggable
 		v-bind="dragOptions"
 		class="drag-area"
 		:class="{ root, drag }"
@@ -210,8 +210,8 @@ function stageEdits(item: Record<string, any>) {
 		@change="change($event as ChangeEvent)"
 	>
 		<template #item="{ element, index }">
-			<v-list-item :non-editable="nonEditable" class="row" :class="{ draggable: element.$type !== 'deleted' }">
-				<item-preview
+			<VListItem :non-editable="nonEditable" class="row" :class="{ draggable: element.$type !== 'deleted' }">
+				<ItemPreview
 					:item="element"
 					:edits="getItemEdits(element)"
 					:template="template"
@@ -244,17 +244,17 @@ function stageEdits(item: Record<string, any>) {
 					:items-moved="itemsMoved"
 					@update:model-value="updateModelValue($event, index)"
 				/>
-			</v-list-item>
+			</VListItem>
 		</template>
-	</draggable>
+	</Draggable>
 
 	<template v-if="root">
 		<div v-if="!nonEditable" class="actions">
-			<v-button v-if="enableCreate" :disabled @click="addNewActive = true">{{ $t('create_new') }}</v-button>
-			<v-button v-if="enableSelect" :disabled @click="selectDrawer = true">{{ $t('add_existing') }}</v-button>
+			<VButton v-if="enableCreate" :disabled @click="addNewActive = true">{{ $t('create_new') }}</VButton>
+			<VButton v-if="enableSelect" :disabled @click="selectDrawer = true">{{ $t('add_existing') }}</VButton>
 		</div>
 
-		<drawer-item
+		<DrawerItem
 			:disabled
 			:non-editable
 			:active="addNewActive"
@@ -266,7 +266,7 @@ function stageEdits(item: Record<string, any>) {
 			@update:active="addNewActive = false"
 		/>
 
-		<drawer-collection
+		<DrawerCollection
 			v-if="!disabled"
 			v-model:active="selectDrawer"
 			:collection="collection"

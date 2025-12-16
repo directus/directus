@@ -133,7 +133,7 @@ const stageChanges = () => {
 </script>
 
 <template>
-	<v-drawer
+	<VDrawer
 		:model-value="isOpen"
 		:title="panel?.name || $t('panel')"
 		:subtitle="$t('panel_options')"
@@ -167,16 +167,16 @@ const stageChanges = () => {
 						</template>
 
 						<span v-else class="fallback">
-							<v-icon large :name="pan.icon" />
+							<VIcon large :name="pan.icon" />
 						</span>
 					</div>
-					<v-text-overflow :text="pan.name" class="name" />
+					<VTextOverflow :text="pan.name" class="name" />
 				</button>
 
-				<transition-expand>
+				<TransitionExpand>
 					<div v-if="panel.type" class="field-configuration" :style="configRow ? { 'grid-row': configRow } : {}">
 						<div class="setup">
-							<extension-options
+							<ExtensionOptions
 								:model-value="panel.options"
 								:options="customOptionsFields"
 								type="panel"
@@ -184,15 +184,15 @@ const stageChanges = () => {
 								raw-editor-enabled
 								@update:model-value="edits.options = $event"
 							/>
-							<v-divider :inline-title="false" large>
-								<template #icon><v-icon name="info" /></template>
+							<VDivider :inline-title="false" large>
+								<template #icon><VIcon name="info" /></template>
 								<template #default>{{ $t('panel_header') }}</template>
-							</v-divider>
+							</VDivider>
 
 							<div class="form-grid">
 								<div class="field half-left">
 									<p class="type-label">{{ $t('visible') }}</p>
-									<v-checkbox
+									<VCheckbox
 										:model-value="panel.show_header"
 										block
 										:label="$t('show_header')"
@@ -202,7 +202,7 @@ const stageChanges = () => {
 
 								<div class="field half-right">
 									<p class="type-label">{{ $t('name') }}</p>
-									<v-input
+									<VInput
 										:model-value="panel.name"
 										:nullable="false"
 										:disabled="panel.show_header !== true"
@@ -213,7 +213,7 @@ const stageChanges = () => {
 
 								<div class="field half-left">
 									<p class="type-label">{{ $t('icon') }}</p>
-									<interface-select-icon
+									<InterfaceSelectIcon
 										:value="panel.icon"
 										:disabled="panel.show_header !== true"
 										@input="edits.icon = $event"
@@ -222,7 +222,7 @@ const stageChanges = () => {
 
 								<div class="field half-right">
 									<p class="type-label">{{ $t('color') }}</p>
-									<interface-select-color
+									<InterfaceSelectColor
 										:value="panel.color"
 										:disabled="panel.show_header !== true"
 										width="half"
@@ -232,7 +232,7 @@ const stageChanges = () => {
 
 								<div class="field full">
 									<p class="type-label">{{ $t('note') }}</p>
-									<v-input
+									<VInput
 										:model-value="panel.note"
 										:disabled="panel.show_header !== true"
 										:placeholder="$t('panel_note_placeholder')"
@@ -242,10 +242,10 @@ const stageChanges = () => {
 							</div>
 						</div>
 					</div>
-				</transition-expand>
+				</TransitionExpand>
 			</div>
 		</div>
-	</v-drawer>
+	</VDrawer>
 </template>
 
 <style scoped lang="scss">

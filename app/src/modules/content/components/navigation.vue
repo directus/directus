@@ -48,10 +48,10 @@ const hasHiddenCollections = computed(
 <template>
 	<div class="content-navigation-wrapper">
 		<div v-if="showSearch" class="search-input">
-			<v-input v-model="search" type="search" :placeholder="$t('search_collection')" />
+			<VInput v-model="search" type="search" :placeholder="$t('search_collection')" />
 		</div>
 
-		<v-list
+		<VList
 			v-model="activeGroups"
 			v-context-menu="'contextMenu'"
 			scope="content-navigation"
@@ -61,7 +61,7 @@ const hasHiddenCollections = computed(
 			:mandatory="false"
 			:dense="dense"
 		>
-			<v-button
+			<VButton
 				v-if="userStore.isAdmin && collectionsStore.allCollections.length === 0"
 				full-width
 				outlined
@@ -69,9 +69,9 @@ const hasHiddenCollections = computed(
 				to="/settings/data-model/+"
 			>
 				{{ $t('create_collection') }}
-			</v-button>
+			</VButton>
 
-			<navigation-item
+			<NavigationItem
 				v-for="collection in rootItems"
 				:key="collection.collection"
 				:show-hidden="showHidden"
@@ -79,19 +79,19 @@ const hasHiddenCollections = computed(
 				:search="search"
 			/>
 
-			<v-menu v-if="hasHiddenCollections" ref="contextMenu" show-arrow placement="bottom-start">
-				<v-list>
-					<v-list-item clickable @click="showHidden = !showHidden">
-						<v-list-item-icon>
-							<v-icon :name="showHidden ? 'visibility_off' : 'visibility'" />
-						</v-list-item-icon>
-						<v-list-item-content>
-							<v-text-overflow :text="showHidden ? $t('hide_hidden_collections') : $t('show_hidden_collections')" />
-						</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
-		</v-list>
+			<VMenu v-if="hasHiddenCollections" ref="contextMenu" show-arrow placement="bottom-start">
+				<VList>
+					<VListItem clickable @click="showHidden = !showHidden">
+						<VListItemIcon>
+							<VIcon :name="showHidden ? 'visibility_off' : 'visibility'" />
+						</VListItemIcon>
+						<VListItemContent>
+							<VTextOverflow :text="showHidden ? $t('hide_hidden_collections') : $t('show_hidden_collections')" />
+						</VListItemContent>
+					</VListItem>
+				</VList>
+			</VMenu>
+		</VList>
 	</div>
 </template>
 

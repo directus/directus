@@ -28,9 +28,9 @@ const src = computed(() => {
 </script>
 
 <template>
-	<user-popover v-if="value" :user="value.id">
+	<UserPopover v-if="value" :user="value.id">
 		<div class="user" :class="display">
-			<v-image
+			<VImage
 				v-if="(display === 'avatar' || display === 'both') && src"
 				:src="src"
 				role="presentation"
@@ -46,7 +46,7 @@ const src = computed(() => {
 			/>
 			<span v-if="display === 'name' || display === 'both'">{{ userName(value) }}</span>
 		</div>
-	</user-popover>
+	</UserPopover>
 </template>
 
 <style lang="scss" scoped>

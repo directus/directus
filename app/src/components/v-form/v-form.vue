@@ -390,13 +390,13 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 
 <template>
 	<div ref="el" :class="['v-form', gridClass, { inline }]">
-		<validation-errors
+		<ValidationErrors
 			v-if="showValidationErrors && validationErrors.length > 0"
 			:validation-errors="validationErrors"
 			:fields="finalFields"
 			@scroll-to-field="scrollToField"
 		/>
-		<v-info
+		<VInfo
 			v-if="noVisibleFields && showNoVisibleFields && !loading"
 			class="no-fields-info"
 			:title="$t('no_visible_fields')"
@@ -404,7 +404,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 			:center="!inline"
 		>
 			{{ $t('no_visible_fields_copy') }}
-		</v-info>
+		</VInfo>
 		<template v-for="(fieldName, index) in fieldNames" :key="fieldName">
 			<template v-if="fieldsMap[fieldName]">
 				<component
@@ -440,7 +440,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 					@apply="apply"
 				/>
 
-				<form-field
+				<FormField
 					v-else-if="isFieldVisible(fieldsMap[fieldName])"
 					:ref="
 						(el) => {
@@ -481,7 +481,7 @@ function getComparisonIndicatorClasses(field: TFormField, isGroup = false) {
 				/>
 			</template>
 		</template>
-		<v-divider v-if="showDivider && !noVisibleFields" />
+		<VDivider v-if="showDivider && !noVisibleFields" />
 	</div>
 </template>
 

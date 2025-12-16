@@ -36,24 +36,24 @@ function deleteItem(elem: Record<string, any>) {
 <template>
 	<div class="one-to-many">
 		<template v-if="loading">
-			<v-skeleton-loader v-for="n in limit" :key="n" type="block-list-item-dense" />
+			<VSkeletonLoader v-for="n in limit" :key="n" type="block-list-item-dense" />
 		</template>
 
-		<v-notice v-else-if="displayItems.length === 0">
+		<VNotice v-else-if="displayItems.length === 0">
 			{{ $t('no_items') }}
-		</v-notice>
+		</VNotice>
 
-		<v-list v-else>
-			<v-list-item v-for="element in displayItems" :key="element[primaryKey]" block :dense="displayItems.length > 4">
+		<VList v-else>
+			<VListItem v-for="element in displayItems" :key="element[primaryKey]" block :dense="displayItems.length > 4">
 				<render-template :collection="collection" :item="element" :template="displayTemplate" />
 
 				<div class="spacer" />
 
 				<div class="item-actions">
-					<v-remove deselect @action="deleteItem(element)" />
+					<VRemove deselect @action="deleteItem(element)" />
 				</div>
-			</v-list-item>
-		</v-list>
+			</VListItem>
+		</VList>
 
 		<div class="actions">
 			<button v-if="totalItemCount < limit" @click="$emit('select')">

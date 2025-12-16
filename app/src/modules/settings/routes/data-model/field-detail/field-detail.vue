@@ -94,8 +94,8 @@ async function save() {
 </script>
 
 <template>
-	<v-drawer :model-value="isOpen" :title="title" persistent @cancel="cancel" @apply="save" @update:model-value="cancel">
-		<field-detail-simple
+	<VDrawer :model-value="isOpen" :title="title" persistent @cancel="cancel" @apply="save" @update:model-value="cancel">
+		<FieldDetailSimple
 			v-if="!showAdvanced"
 			:collection="collectionInfo"
 			:search="search"
@@ -104,14 +104,14 @@ async function save() {
 		/>
 
 		<template v-if="showAdvanced" #sidebar>
-			<field-detail-advanced-tabs v-model:current-tab="currentTab" />
+			<FieldDetailAdvancedTabs v-model:current-tab="currentTab" />
 		</template>
 
 		<template v-if="showAdvanced" #actions>
-			<field-detail-advanced-actions @save="save" />
+			<FieldDetailAdvancedActions @save="save" />
 		</template>
 		<template v-else #actions>
-			<v-input
+			<VInput
 				v-model="search"
 				class="search"
 				small
@@ -121,16 +121,16 @@ async function save() {
 				:full-width="false"
 			>
 				<template #prepend>
-					<v-icon name="search" outline />
+					<VIcon name="search" outline />
 				</template>
 				<template #append>
-					<v-icon v-if="search" clickable class="clear" name="close" @click.stop="search = null" />
+					<VIcon v-if="search" clickable class="clear" name="close" @click.stop="search = null" />
 				</template>
-			</v-input>
+			</VInput>
 		</template>
 
-		<field-detail-advanced v-if="showAdvanced" :collection="collectionInfo" :current-tab="currentTab[0]" @save="save" />
-	</v-drawer>
+		<FieldDetailAdvanced v-if="showAdvanced" :collection="collectionInfo" :current-tab="currentTab[0]" @save="save" />
+	</VDrawer>
 </template>
 
 <style lang="scss" scoped>

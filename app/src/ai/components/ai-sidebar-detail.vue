@@ -27,15 +27,15 @@ const hovering = useElementHover(aiSidebarCollapsibleTriggerContent);
 			<div ref="collapsible-trigger-content" class="collapsible-trigger-content">
 				<AiMagicButton class="collapsible-trigger-icon" :animate="hovering" />
 				<span v-show="!sidebarStore.collapsed" class="collapsible-trigger-title">{{ $t('ai_chat') }}</span>
-				<v-chip v-show="!sidebarStore.collapsed" outlined primary x-small class="collapsible-trigger-beta">
+				<VChip v-show="!sidebarStore.collapsed" outlined primary x-small class="collapsible-trigger-beta">
 					{{ $t('beta') }}
-				</v-chip>
+				</VChip>
 				<VIcon v-show="!sidebarStore.collapsed" name="chevron_left" class="collapsible-trigger-chevron" />
 			</div>
 		</CollapsibleTrigger>
 		<CollapsibleContent class="collapsible-content">
 			<div class="ai-sidebar-content">
-				<ai-conversation />
+				<AiConversation />
 			</div>
 		</CollapsibleContent>
 	</CollapsibleRoot>

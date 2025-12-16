@@ -32,7 +32,7 @@ const flows = computed(() =>
 </script>
 
 <template>
-	<v-select
+	<VSelect
 		:model-value="value"
 		:items="flows"
 		item-icon="icon"
