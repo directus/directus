@@ -1,9 +1,12 @@
-import type { Accountability, PermissionsAction, PrimaryKey } from '@directus/types';
+import type { Accountability, Filter, Item, PermissionsAction, PrimaryKey, SchemaOverview } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import { fetchPermittedAstRootFields } from '../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js';
 import type { AST } from '../../../../types/index.js';
 import type { Context } from '../../../types.js';
 import { processAst } from '../../process-ast/process-ast.js';
+import { withCache, type ProvideFunction } from '@directus/memory';
+import { useCache } from '../../../cache.js';
+import { invalidateFilter } from '../../../../websocket/handlers/collab/invalidate-filter.js';
 
 export interface ValidateItemAccessOptions {
 	accountability: Accountability;
@@ -13,7 +16,27 @@ export interface ValidateItemAccessOptions {
 	fields?: string[];
 }
 
-export async function validateItemAccess(options: ValidateItemAccessOptions, context: Context) {
+export const validateItemAccess = withCache(
+	'validateItemAccess',
+	_validateItemAccess,
+	useCache(),
+	(options) => ({
+		accountability: options.accountability,
+		collection: options.collection,
+		primaryKeys: options.primaryKeys.join(','),
+		fields: options.fields ? options.fields.join(',') : undefined,
+		action: options.action,
+	}),
+	(invalidate, [filter, schema], [{ collection }]) => {
+		invalidateFilter(filter, collection, schema, invalidate);
+	},
+);
+
+export async function _validateItemAccess(
+	options: ValidateItemAccessOptions,
+	context: Context,
+	provide: ProvideFunction<[Filter, SchemaOverview]>,
+) {
 	const primaryKeyField = context.schema.collections[options.collection]?.primary;
 
 	if (!primaryKeyField) {
@@ -43,7 +66,9 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 		},
 	};
 
-	const items = await fetchPermittedAstRootFields(ast, {
+	provide(ast.query.filter!, context.schema);
+
+	const items: Item[] = await fetchPermittedAstRootFields(ast, {
 		schema: context.schema,
 		accountability: options.accountability,
 		knex: context.knex,

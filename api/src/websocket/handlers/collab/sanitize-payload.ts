@@ -5,6 +5,9 @@ import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import { asyncDeepMapWithSchema } from '../../../utils/versioning/deep-map-with-schema.js';
 import { isEmpty } from 'lodash-es';
 import { getService } from '../../../utils/get-service.js';
+import { validateItemAccess } from '../../../permissions/modules/validate-access/lib/validate-item-access.js';
+import getDatabase from '../../../database/index.js';
+import { getSchema } from '../../../utils/get-schema.js';
 
 export async function sanitizePayload(
 	collection: string,
@@ -50,9 +53,25 @@ export async function sanitizePayload(
 			if (!readAllowed) return;
 
 			try {
-				const service = getService(context.collection.collection, ctx);
 				const pk = context.object[context.collection.primary] as string;
-				if (pk) await service.readOne(pk, { fields: [String(key)] });
+
+				if (!pk) return;
+
+				const access = validateItemAccess(
+					{
+						collection: context.collection.collection,
+						accountability,
+						action: 'read',
+						primaryKeys: [pk],
+						fields: [String(key)],
+					},
+					{
+						knex: getDatabase(),
+						schema: await getSchema(),
+					},
+				);
+
+				if (!access) return;
 			} catch {
 				return;
 			}
