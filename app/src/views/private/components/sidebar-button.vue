@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';
 
 const sidebarStore = useSidebarStore();

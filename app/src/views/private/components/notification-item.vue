@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useNotificationsStore } from '@/stores/notifications';
 
 const props = withDefaults(

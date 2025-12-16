@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import VCheckbox from '@/components/v-checkbox.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VTextarea from '@/components/v-textarea.vue';
+import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 import { translate } from '@/utils/translate-object-values';
 import { Type } from '@directus/types';
 import { storeToRefs } from 'pinia';

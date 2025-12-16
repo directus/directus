@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VProgressLinear from '@/components/v-progress-linear.vue';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import type { ShowSelect } from '@directus/types';
 import { clone, forEach, pick } from 'lodash';

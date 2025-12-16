@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
-import { isEmpty } from 'lodash';
+import VDivider from '@/components/v-divider.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VRemove from '@/components/v-remove.vue';
 import { usePermissions } from '@/composables/use-permissions';
-import { type DisplayItem } from '@/composables/use-relation-multiple';
 import { type RelationM2M } from '@/composables/use-relation-m2m';
+import { type DisplayItem } from '@/composables/use-relation-multiple';
+import { isEmpty } from 'lodash';
+import { computed, ref, watch } from 'vue';
 import LanguageSelect from './language-select.vue';
 
 const {

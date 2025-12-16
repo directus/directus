@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import TransitionExpand from '@/components/transition/expand.vue';
+import VBadge from '@/components/v-badge.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import InterfaceSystemFilter from '@/interfaces/_system/system-filter';
 import { useElementSize } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { isObject } from 'lodash';

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import VTab from '@/components/v-tab.vue';
+import VTabs from '@/components/v-tabs.vue';
 
 type Tab = {
 	value: string;

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import VButton from '@/components/v-button.vue';
+import vIcon from '@/components/v-icon/v-icon.vue';
 
 defineProps<{
 	icon?: string;

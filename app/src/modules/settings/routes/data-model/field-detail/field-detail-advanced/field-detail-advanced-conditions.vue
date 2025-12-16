@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VForm from '@/components/v-form/v-form.vue';
 import { DeepPartial, Field } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';

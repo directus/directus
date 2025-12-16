@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VInput from '@/components/v-input.vue';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';

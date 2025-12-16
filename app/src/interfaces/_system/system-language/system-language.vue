@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VSelect from '@/components/v-select/v-select.vue';
 import availableLanguages from '@/lang/available-languages.yaml';
 import { useI18n } from 'vue-i18n';
 

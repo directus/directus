@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import { ref } from 'vue';
 
 const loading = ref(false);

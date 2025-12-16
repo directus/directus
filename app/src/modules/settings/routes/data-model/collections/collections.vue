@@ -1,14 +1,26 @@
 <script setup lang="ts">
 import api from '@/api';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VDetail from '@/components/v-detail.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import SearchInput from '@/views/private/components/search-input.vue';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import { saveAs } from 'file-saver';
 import { merge } from 'lodash';
 import { computed, ref } from 'vue';
+import { RouterLink, RouterView } from 'vue-router';
 import Draggable from 'vuedraggable';
 import SettingsNavigation from '../../../components/navigation.vue';
 import CollectionDialog from './components/collection-dialog.vue';

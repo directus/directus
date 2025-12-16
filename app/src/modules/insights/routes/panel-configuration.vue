@@ -1,9 +1,18 @@
 <script setup lang="ts">
+import TransitionExpand from '@/components/transition/expand.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDivider from '@/components/v-divider.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
+import InterfaceSelectColor from '@/interfaces/select-color/select-color.vue';
+import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
 import { CreatePanel, useInsightsStore } from '@/stores/insights';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import type { Panel } from '@directus/extensions';
 import { assign, clone, isUndefined, omitBy } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';

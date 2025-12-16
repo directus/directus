@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import VDivider from '@/components/v-divider.vue';
+import VNotice from '@/components/v-notice.vue';
+
 defineProps<{
 	value?: any;
 }>();

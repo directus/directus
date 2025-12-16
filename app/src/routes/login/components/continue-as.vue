@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import api from '@/api';
 import { logout } from '@/auth';
+import VButton from '@/components/v-button.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 import { hydrate } from '@/hydrate';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
 import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { I18nT } from 'vue-i18n';
+import { RouterLink, useRouter } from 'vue-router';
 
 const router = useRouter();
 

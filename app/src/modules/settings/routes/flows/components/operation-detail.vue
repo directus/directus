@@ -1,11 +1,17 @@
 <script setup lang="ts">
+import VDivider from '@/components/v-divider.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VFancySelect from '@/components/v-fancy-select.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
 import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/shared/extension-options.vue';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { translate } from '@/utils/translate-object-values';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { Field, FlowRaw } from '@directus/types';
 import slugify from '@sindresorhus/slugify';
 import { customAlphabet } from 'nanoid/non-secure';

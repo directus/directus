@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import VErrorBoundary from '@/components/v-error-boundary.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useExtension } from '@/composables/use-extension';
 import { isVueComponent } from '@directus/utils';
 import { storeToRefs } from 'pinia';

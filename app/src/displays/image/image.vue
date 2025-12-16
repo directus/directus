@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VImage from '@/components/v-image.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
+import ValueNull from '@/views/private/components/value-null.vue';
 import { computed, ref } from 'vue';
 
 type Image = {

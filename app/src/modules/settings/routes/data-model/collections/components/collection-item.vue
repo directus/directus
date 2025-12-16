@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import TransitionExpand from '@/components/transition/expand.vue';
+import VHighlight from '@/components/v-highlight.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
 import { Collection } from '@/types/collections';
 import { computed } from 'vue';
 import Draggable from 'vuedraggable';

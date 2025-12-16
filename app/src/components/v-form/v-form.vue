@@ -8,6 +8,8 @@ import { useElementSize } from '@directus/composables';
 import { ContentVersion, Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEmpty, isEqual, isNil, omit } from 'lodash';
 import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
+import VDivider from '../v-divider.vue';
+import VInfo from '../v-info.vue';
 import type { MenuOptions } from './components/form-field-menu.vue';
 import FormField from './components/form-field.vue';
 import ValidationErrors from './components/validation-errors.vue';

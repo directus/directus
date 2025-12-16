@@ -1,11 +1,19 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import InterfaceSystemRawEditor from '@/interfaces/_system/system-raw-editor/system-raw-editor.vue';
+import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 import { getJSType } from '@/utils/get-js-type';
 import { getStringifiedValue } from '@/utils/get-stringified-value';
+import type { Field } from '@directus/types';
 import { isValidJSON, parseJSON } from '@directus/utils';
 import { isNil } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import type { FormField } from '../types';
-import type { Field } from '@directus/types';
 
 const props = withDefaults(
 	defineProps<{

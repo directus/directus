@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from './v-icon/v-icon.vue';
+
 interface Props {
 	/** The extension type of the file */
 	ext: string;

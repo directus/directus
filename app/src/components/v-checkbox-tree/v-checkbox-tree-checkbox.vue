@@ -2,6 +2,10 @@
 import { computed, toRefs } from 'vue';
 import { difference } from 'lodash';
 import { useVisibleChildren } from './use-visible-children';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VHighlight from '@/components/v-highlight.vue';
+import VListGroup from '@/components/v-list-group.vue';
+import VListItem from '@/components/v-list-item.vue';
 
 type Delta = {
 	added?: (number | string)[];

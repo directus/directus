@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VItemGroup from '@/components/v-item-group.vue';
+
 interface Props {
 	/** What tab should be currently active */
 	modelValue?: (number | string)[];

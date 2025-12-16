@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { logout } from '@/auth';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 import { onMounted } from 'vue';
 
 onMounted(() => {

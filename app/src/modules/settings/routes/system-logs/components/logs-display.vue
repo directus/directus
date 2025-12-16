@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VChip from '@/components/v-chip.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { localizedFormat } from '@/utils/localized-format';
 import { nextTick, ref } from 'vue';
 import { useI18n } from 'vue-i18n';

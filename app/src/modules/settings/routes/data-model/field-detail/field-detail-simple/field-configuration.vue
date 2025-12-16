@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
 import { nanoid } from 'nanoid/non-secure';

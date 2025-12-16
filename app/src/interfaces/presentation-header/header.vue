@@ -1,11 +1,26 @@
 <script setup lang="ts">
+import TransitionExpand from '@/components/transition/expand.vue';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import { useInjectRunManualFlow } from '@/composables/use-flows';
+import { useTemplateData } from '@/composables/use-template-data';
+import { useFieldsStore } from '@/stores/fields';
+import RenderTemplate from '@/views/private/components/render-template.vue';
+import type { Collection } from '@directus/types';
 import { render } from 'micromustache';
 import { computed, inject, ref, useAttrs } from 'vue';
-import { useInjectRunManualFlow } from '@/composables/use-flows';
+import { RouterLink } from 'vue-router';
 import HelperText from './helper-text.vue';
-import { useFieldsStore } from '@/stores/fields';
-import { useTemplateData } from '@/composables/use-template-data';
-import type { Collection } from '@directus/types';
 
 type Link = {
 	icon: string;

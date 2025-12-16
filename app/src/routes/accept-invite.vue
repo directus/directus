@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import api, { RequestError } from '@/api';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
 import { translateAPIError } from '@/lang';
 import { jwtPayload } from '@/utils/jwt-payload';
+import PublicView from '@/views/public';
 import { useHead } from '@unhead/vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';

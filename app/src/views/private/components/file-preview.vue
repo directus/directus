@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIconFile from '@/components/v-icon-file.vue';
+import VImage from '@/components/v-image.vue';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import type { File } from '@directus/types';

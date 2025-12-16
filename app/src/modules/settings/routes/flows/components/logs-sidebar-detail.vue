@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import VDetail from '@/components/v-detail.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VPagination from '@/components/v-pagination.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
 import { useRevisions } from '@/composables/use-revisions';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import { useGroupable } from '@directus/composables';

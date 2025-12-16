@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed, toRef } from 'vue';
-import type { ImportRowLines, ImportRowRange } from '@directus/validation';
-import type { APIError } from '@/types/error';
-import { useFieldsStore } from '@/stores/fields';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useValidationErrorDetails } from '@/composables/use-validation-error-details';
 import { VALIDATION_TYPES } from '@/constants';
+import { useFieldsStore } from '@/stores/fields';
+import type { APIError } from '@/types/error';
 import { ValidationError } from '@directus/types';
+import type { ImportRowLines, ImportRowRange } from '@directus/validation';
+import { computed, toRef } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 interface Props {
 	errors: APIError[];

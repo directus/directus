@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VItemGroup from '@/components/v-item-group.vue';
+import VListGroup from '@/components/v-list-group.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VList from '@/components/v-list.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { computed, ref } from 'vue';

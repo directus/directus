@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useUserStore } from '@/stores/user';
 import { Filter } from '@directus/types';
 import { computed } from 'vue';

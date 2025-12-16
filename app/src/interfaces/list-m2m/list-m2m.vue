@@ -1,5 +1,14 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VNotice from '@/components/v-notice.vue';
+import VPagination from '@/components/v-pagination.vue';
+import VRemove from '@/components/v-remove.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { Sort } from '@/components/v-table/types';
+import VTable from '@/components/v-table/v-table.vue';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
@@ -13,6 +22,7 @@ import { parseFilter } from '@/utils/parse-filter';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
@@ -20,6 +30,7 @@ import { clamp, get, isEmpty, isNil, merge, set } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { RouterLink } from 'vue-router';
 import Draggable from 'vuedraggable';
 
 const props = withDefaults(

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VSelect from '@/components/v-select/v-select.vue';
 import { useFlowsStore } from '@/stores/flows';
 import { FlowRaw } from '@directus/types';
 import { computed } from 'vue';

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { FIELD_TYPES_SELECT } from '@/constants';
+import InterfaceList from '@/interfaces/list/list.vue';
 import { translate } from '@/utils/translate-object-values';
 import formatTitle from '@directus/format-title';
 import { Field } from '@directus/types';
