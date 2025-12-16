@@ -8,30 +8,33 @@ import type { M2AAliasMap } from './get-graphql-query-fields';
  * reverses that transformation on the response data.
  *
  * @param data - The data returned from GraphQL query (can be an item or array of items)
- * @param m2aAliasMap - Mapping of collection names to their alias->original field name mappings
- * @param collectionField - The name of the field that indicates which collection an M2A item belongs to
+ * @param m2aAliasMap - Mapping of field paths to their alias configurations (includes collectionField and aliases per collection)
  * @returns The transformed data with original field names restored
  */
-export function transformM2AAliases<T>(data: T, m2aAliasMap: M2AAliasMap, collectionField: string = 'collection'): T {
+export function transformM2AAliases<T>(data: T, m2aAliasMap: M2AAliasMap): T {
 	if (!data || Object.keys(m2aAliasMap).length === 0) {
 		return data;
 	}
 
-	return transformItem(data, m2aAliasMap, collectionField, null) as T;
+	return transformItem(data, m2aAliasMap, null) as T;
 }
 
 function transformItem(
 	item: unknown,
 	m2aAliasMap: M2AAliasMap,
-	collectionField: string,
-	parentCollection: string | null,
+	activeM2AConfig: {
+		fieldPath: string;
+		collectionField: string;
+		aliases: Record<string, Record<string, string>>;
+		collection?: string;
+	} | null,
 ): unknown {
 	if (item === null || item === undefined) {
 		return item;
 	}
 
 	if (Array.isArray(item)) {
-		return item.map((element) => transformItem(element, m2aAliasMap, collectionField, parentCollection));
+		return item.map((element) => transformItem(element, m2aAliasMap, activeM2AConfig));
 	}
 
 	if (typeof item !== 'object') {
@@ -41,14 +44,31 @@ function transformItem(
 	const obj = item as Record<string, unknown>;
 	const result: Record<string, unknown> = {};
 
-	// Check if this object has a collection field indicating it's an M2A item or junction item
-	const itemCollection = obj[collectionField] as string | undefined;
+	// Try to detect if this is a junction item by checking for collection fields from any M2A config
+	let detectedM2AConfig: {
+		fieldPath: string;
+		collectionField: string;
+		aliases: Record<string, Record<string, string>>;
+		collection?: string;
+	} | null = activeM2AConfig;
 
-	// Determine which aliases to apply:
-	// 1. If this object has a collection field, use that collection's aliases for this object AND its children
-	// 2. If parentCollection is set (from ancestor), use that collection's aliases
-	const effectiveCollection = itemCollection ?? parentCollection;
-	const aliasesForCollection = effectiveCollection ? m2aAliasMap[effectiveCollection] : undefined;
+	if (!detectedM2AConfig) {
+		// Check if this object has a collection field that matches any M2A config
+		for (const [fieldPath, config] of Object.entries(m2aAliasMap)) {
+			if (config.collectionField in obj) {
+				detectedM2AConfig = { fieldPath, ...config };
+				break;
+			}
+		}
+	}
+
+	// Get the collection value - either from this object or from the active config (for nested items)
+	const itemCollection = detectedM2AConfig
+		? ((obj[detectedM2AConfig.collectionField] as string | undefined) ?? detectedM2AConfig.collection)
+		: undefined;
+
+	const aliasesForCollection =
+		detectedM2AConfig && itemCollection ? detectedM2AConfig.aliases[itemCollection] : undefined;
 
 	for (const [key, value] of Object.entries(obj)) {
 		// Skip internal GraphQL fields
@@ -64,9 +84,22 @@ function transformItem(
 			newKey = aliasesForCollection[key]!;
 		}
 
+		// Determine the M2A config for nested items
+		// If we're entering the 'item' field of a junction, we stay with the same config and pass the collection value
+		// Otherwise, we clear it (not in an M2A context anymore)
+		let nextM2AConfig: typeof activeM2AConfig = null;
+
+		if (detectedM2AConfig && key === 'item') {
+			// Entering the nested item - keep the same config and pass the collection value
+			nextM2AConfig = { ...detectedM2AConfig, collection: itemCollection };
+		} else if (detectedM2AConfig && key !== detectedM2AConfig.collectionField) {
+			// Still in the same M2A context (junction item fields other than collection field)
+			nextM2AConfig = detectedM2AConfig;
+		}
+
 		// Recursively transform nested objects/arrays
 		if (typeof value === 'object' && value !== null) {
-			newValue = transformItem(value, m2aAliasMap, collectionField, effectiveCollection);
+			newValue = transformItem(value, m2aAliasMap, nextM2AConfig);
 		}
 
 		result[newKey] = newValue;

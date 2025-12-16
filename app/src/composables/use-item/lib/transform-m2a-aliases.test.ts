@@ -11,14 +11,19 @@ describe('transformM2AAliases', () => {
 	});
 
 	it('should return null/undefined unchanged', () => {
-		expect(transformM2AAliases(null, { collection: {} })).toBeNull();
-		expect(transformM2AAliases(undefined, { collection: {} })).toBeUndefined();
+		expect(transformM2AAliases(null, {})).toBeNull();
+		expect(transformM2AAliases(undefined, {})).toBeUndefined();
 	});
 
 	it('should transform aliased fields in M2A items based on collection field', () => {
 		const aliasMap: M2AAliasMap = {
-			child1: { child1__items: 'items' },
-			child2: { child2__items: 'items' },
+			'children.item': {
+				collectionField: 'collection',
+				aliases: {
+					child1: { child1__items: 'items' },
+					child2: { child2__items: 'items' },
+				},
+			},
 		};
 
 		const data = {
@@ -70,8 +75,13 @@ describe('transformM2AAliases', () => {
 
 	it('should handle deeply nested M2A structures', () => {
 		const aliasMap: M2AAliasMap = {
-			block_text: { block_text__content: 'content' },
-			block_image: { block_image__content: 'content', block_image__url: 'url' },
+			'blocks.item': {
+				collectionField: 'collection',
+				aliases: {
+					block_text: { block_text__content: 'content' },
+					block_image: { block_image__content: 'content', block_image__url: 'url' },
+				},
+			},
 		};
 
 		const data = {
@@ -115,7 +125,12 @@ describe('transformM2AAliases', () => {
 
 	it('should not transform fields when collection field is not present', () => {
 		const aliasMap: M2AAliasMap = {
-			child1: { child1__items: 'items' },
+			'children.item': {
+				collectionField: 'collection',
+				aliases: {
+					child1: { child1__items: 'items' },
+				},
+			},
 		};
 
 		const data = {
@@ -134,25 +149,39 @@ describe('transformM2AAliases', () => {
 
 	it('should use custom collection field name', () => {
 		const aliasMap: M2AAliasMap = {
-			child1: { child1__data: 'data' },
+			'items.item': {
+				collectionField: 'type', // Custom collection field name
+				aliases: {
+					child1: { child1__data: 'data' },
+				},
+			},
 		};
 
 		const data = {
 			type: 'child1', // Custom collection field
-			child1__data: 'test value',
+			item: {
+				child1__data: 'test value',
+			},
 		};
 
-		const result = transformM2AAliases(data, aliasMap, 'type');
+		const result = transformM2AAliases(data, aliasMap);
 
 		expect(result).toEqual({
 			type: 'child1',
-			data: 'test value',
+			item: {
+				data: 'test value',
+			},
 		});
 	});
 
 	it('should strip __typename field from response', () => {
 		const aliasMap: M2AAliasMap = {
-			child1: { child1__items: 'items' },
+			'children.item': {
+				collectionField: 'collection',
+				aliases: {
+					child1: { child1__items: 'items' },
+				},
+			},
 		};
 
 		const data = {
@@ -187,33 +216,45 @@ describe('transformM2AAliases', () => {
 
 	it('should handle arrays at the root level', () => {
 		const aliasMap: M2AAliasMap = {
-			child1: { child1__field: 'field' },
+			'items.item': {
+				collectionField: 'collection',
+				aliases: {
+					child1: { child1__field: 'field' },
+				},
+			},
 		};
 
 		const data = [
-			{ collection: 'child1', child1__field: 'value1' },
-			{ collection: 'child1', child1__field: 'value2' },
+			{ collection: 'child1', item: { child1__field: 'value1' } },
+			{ collection: 'child1', item: { child1__field: 'value2' } },
 		];
 
 		const result = transformM2AAliases(data, aliasMap);
 
 		expect(result).toEqual([
-			{ collection: 'child1', field: 'value1' },
-			{ collection: 'child1', field: 'value2' },
+			{ collection: 'child1', item: { field: 'value1' } },
+			{ collection: 'child1', item: { field: 'value2' } },
 		]);
 	});
 
 	it('should preserve non-aliased fields', () => {
 		const aliasMap: M2AAliasMap = {
-			child1: { child1__special: 'special' },
+			'items.item': {
+				collectionField: 'collection',
+				aliases: {
+					child1: { child1__special: 'special' },
+				},
+			},
 		};
 
 		const data = {
 			collection: 'child1',
 			id: 1,
 			name: 'test',
-			child1__special: 'aliased value',
-			regular_field: 'untouched',
+			item: {
+				child1__special: 'aliased value',
+				regular_field: 'untouched',
+			},
 		};
 
 		const result = transformM2AAliases(data, aliasMap);
@@ -222,8 +263,141 @@ describe('transformM2AAliases', () => {
 			collection: 'child1',
 			id: 1,
 			name: 'test',
-			special: 'aliased value',
-			regular_field: 'untouched',
+			item: {
+				special: 'aliased value',
+				regular_field: 'untouched',
+			},
+		});
+	});
+
+	it('should handle multiple M2A fields targeting same child collections independently', () => {
+		// This test addresses the feedback about multiple M2A fields (items and items2)
+		// both targeting the same child collections - they should be isolated
+		const aliasMap: M2AAliasMap = {
+			'items.item': {
+				collectionField: 'collection',
+				aliases: {
+					child1: { child1__items: 'items' },
+					child2: { child2__items: 'items' },
+				},
+			},
+			'items2.item': {
+				collectionField: 'collection',
+				aliases: {
+					child1: { child1__items: 'items' },
+					child2: { child2__items: 'items' },
+				},
+			},
+		};
+
+		const data = {
+			id: 'parent-1',
+			items: [
+				{
+					id: 'junction-1',
+					collection: 'child1',
+					item: {
+						id: 'child1-item-1',
+						child1__items: 'value from items relation',
+					},
+				},
+			],
+			items2: [
+				{
+					id: 'junction-2',
+					collection: 'child1',
+					item: {
+						id: 'child1-item-2',
+						child1__items: 'value from items2 relation',
+					},
+				},
+			],
+		};
+
+		const result = transformM2AAliases(data, aliasMap);
+
+		// Both relations should be transformed independently
+		expect(result).toEqual({
+			id: 'parent-1',
+			items: [
+				{
+					id: 'junction-1',
+					collection: 'child1',
+					item: {
+						id: 'child1-item-1',
+						items: 'value from items relation',
+					},
+				},
+			],
+			items2: [
+				{
+					id: 'junction-2',
+					collection: 'child1',
+					item: {
+						id: 'child1-item-2',
+						items: 'value from items2 relation',
+					},
+				},
+			],
+		});
+	});
+
+	it('should handle custom collection field names (e.g., collection_ref)', () => {
+		// This test addresses the feedback about custom collection field names
+		const aliasMap: M2AAliasMap = {
+			'items.item': {
+				collectionField: 'collection_ref', // Custom field name
+				aliases: {
+					child1: { child1__items: 'items' },
+					child2: { child2__items: 'items' },
+				},
+			},
+		};
+
+		const data = {
+			id: 'parent-1',
+			items: [
+				{
+					id: 'junction-1',
+					collection_ref: 'child1', // Using custom field name
+					item: {
+						id: 'child1-item-1',
+						child1__items: 'test value',
+					},
+				},
+				{
+					id: 'junction-2',
+					collection_ref: 'child2', // Using custom field name
+					item: {
+						id: 'child2-item-1',
+						child2__items: 'test value 2',
+					},
+				},
+			],
+		};
+
+		const result = transformM2AAliases(data, aliasMap);
+
+		expect(result).toEqual({
+			id: 'parent-1',
+			items: [
+				{
+					id: 'junction-1',
+					collection_ref: 'child1',
+					item: {
+						id: 'child1-item-1',
+						items: 'test value',
+					},
+				},
+				{
+					id: 'junction-2',
+					collection_ref: 'child2',
+					item: {
+						id: 'child2-item-1',
+						items: 'test value 2',
+					},
+				},
+			],
 		});
 	});
 });

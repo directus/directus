@@ -197,9 +197,14 @@ it('should work with m2a fields and use aliases for nested fields', () => {
 	});
 
 	expect(result.m2aAliasMap).toEqual({
-		block_paragraph: {
-			block_paragraph__id: 'id',
-			block_paragraph__text: 'text',
+		'sub_blocks.different_field_for_test': {
+			collectionField: 'collection',
+			aliases: {
+				block_paragraph: {
+					block_paragraph__id: 'id',
+					block_paragraph__text: 'text',
+				},
+			},
 		},
 	});
 });
@@ -300,8 +305,13 @@ describe('m2a fields with conflicting field types (issue #25476)', () => {
 		]);
 
 		expect(result.m2aAliasMap).toEqual({
-			child1: { child1__items: 'items' },
-			child2: { child2__items: 'items' },
+			'children.item': {
+				collectionField: 'collection',
+				aliases: {
+					child1: { child1__items: 'items' },
+					child2: { child2__items: 'items' },
+				},
+			},
 		});
 	});
 
@@ -387,6 +397,122 @@ describe('m2a fields with conflicting field types (issue #25476)', () => {
 					},
 				},
 			],
+		});
+	});
+
+	it('should handle multiple M2A fields targeting same child collections with isolated alias maps', () => {
+		// This test addresses the feedback: when items and items2 both target child1/child2,
+		// each should have its own isolated alias map entry
+		vi.mocked(getRelatedCollection).mockImplementation((collection, field) => {
+			if (collection === 'parent' && (field === 'items' || field === 'items2')) {
+				return { relatedCollection: 'parent_items' };
+			}
+
+			if (collection === 'child1' && field === 'items') {
+				return null; // JSON field - not a relation
+			}
+
+			if (collection === 'child2' && field === 'items') {
+				return { relatedCollection: 'child2_items' }; // 1:N relation
+			}
+
+			return null;
+		});
+
+		const fieldsStore = mockedStore(useFieldsStore());
+
+		fieldsStore.getPrimaryKeyFieldForCollection.mockImplementation((collection) => {
+			switch (collection) {
+				case 'parent_items':
+				case 'child1':
+				case 'child2':
+				case 'child2_items':
+					return { field: 'id' } as Field;
+				default:
+					return null;
+			}
+		});
+
+		const relationsStore = mockedStore(useRelationsStore());
+
+		relationsStore.getRelationForField.mockImplementation((currentCollection, sourceField) => {
+			if (currentCollection === 'parent_items' && sourceField === 'item') {
+				return {
+					meta: { one_collection_field: 'collection' },
+				} as Relation;
+			}
+
+			return null;
+		});
+
+		const fields: string[] = [
+			'items.collection',
+			'items.item:child1.items',
+			'items.item:child2.items',
+			'items2.collection',
+			'items2.item:child1.items',
+			'items2.item:child2.items',
+		];
+
+		const collection = 'parent';
+
+		const result = getGraphqlQueryFields(fields, collection);
+
+		// Both M2A fields should have separate entries in the alias map
+		expect(result.m2aAliasMap).toHaveProperty('items.item');
+		expect(result.m2aAliasMap).toHaveProperty('items2.item');
+
+		// Each should have its own collectionField and aliases
+		expect(result.m2aAliasMap['items.item']).toEqual({
+			collectionField: 'collection',
+			aliases: {
+				child1: { child1__items: 'items' },
+				child2: { child2__items: 'items' },
+			},
+		});
+
+		expect(result.m2aAliasMap['items2.item']).toEqual({
+			collectionField: 'collection',
+			aliases: {
+				child1: { child1__items: 'items' },
+				child2: { child2__items: 'items' },
+			},
+		});
+
+		// Verify the query fields structure
+		expect(result.queryFields.items.item.__on).toBeDefined();
+		expect(result.queryFields.items2.item.__on).toBeDefined();
+	});
+
+	it('should use custom collection field name from relation meta', () => {
+		setupMocksForIssue25476();
+
+		// Mock a relation with custom collection field name
+		const relationsStore = mockedStore(useRelationsStore());
+
+		relationsStore.getRelationForField.mockImplementation((currentCollection, sourceField) => {
+			if (currentCollection === 'parent_children' && sourceField === 'item') {
+				return {
+					meta: { one_collection_field: 'collection_ref' }, // Custom field name
+				} as Relation;
+			}
+
+			return null;
+		});
+
+		const fields: string[] = ['children.collection_ref', 'children.item:child1.items', 'children.item:child2.items'];
+
+		const collection = 'parent';
+
+		const result = getGraphqlQueryFields(fields, collection);
+
+		// The alias map should use the custom collection field name
+		expect(result.m2aAliasMap['children.item']).toEqual({
+			collectionField: 'collection_ref', // Should use the custom field name
+			aliases: {
+				child1: { child1__items: 'items' },
+				child2: { child2__items: 'items' },
+			},
 		});
 	});
 });

@@ -5,10 +5,34 @@ import { getRelatedCollection } from '@/utils/get-related-collection';
 type QueryFields = { [key: string]: any };
 
 /**
- * Alias mapping structure: maps collection names to field aliases
- * e.g., { 'child1': { 'child1__items': 'items' }, 'child2': { 'child2__items': 'items' } }
+ * Alias mapping structure: scoped by full field path to support multiple M2A relations
+ * that may target the same child collections.
+ *
+ * Structure:
+ * {
+ *   "items.item": {
+ *     "collectionField": "collection_ref",  // The actual field name in junction table
+ *     "aliases": {
+ *       "child1": { "child1__items": "items" },
+ *       "child2": { "child2__items": "items" }
+ *     }
+ *   },
+ *   "items2.item": {
+ *     "collectionField": "collection",
+ *     "aliases": {
+ *       "child1": { "child1__items": "items" },
+ *       "child2": { "child2__items": "items" }
+ *     }
+ *   }
+ * }
  */
-export type M2AAliasMap = Record<string, Record<string, string>>;
+export type M2AAliasMap = Record<
+	string,
+	{
+		collectionField: string;
+		aliases: Record<string, Record<string, string>>;
+	}
+>;
 
 export interface GraphqlQueryFieldsResult {
 	queryFields: QueryFields;
@@ -37,23 +61,44 @@ export function getGraphqlQueryFields(fields: string[], collection: string): Gra
 		let currentField = fieldParts[0];
 		let currentPath = queryFields;
 		let inM2AFragment: string | null = null;
+		const m2aFieldPath: string[] = []; // Track full path to M2A junction (e.g., ["items", "item"])
+		let m2aCollectionField: string | null = null; // Track collection field name for this M2A relation
 
 		while (fieldParts.length > 1) {
-			const manyToAny = adjustForManyToAny(currentField, currentCollection, currentPath);
+			const m2a = adjustForM2A(currentField, currentCollection, currentPath);
 
-			if (manyToAny) {
-				currentCollection = manyToAny.relatedCollection;
-				currentPath = manyToAny.currentPath;
-				inM2AFragment = manyToAny.relatedCollection;
+			if (m2a) {
+				currentCollection = m2a.relatedCollection;
+				currentPath = m2a.currentPath;
+				inM2AFragment = m2a.relatedCollection;
+				// Extract the field name before the ":" (e.g., "item" from "item:child1")
+				const fieldName = currentField.split(':')[0]!;
+				m2aFieldPath.push(fieldName);
+				m2aCollectionField = m2a.collectionField;
 			} else {
 				const relatedCollection = getRelatedCollection(currentCollection, currentField);
 				currentCollection = relatedCollection!.junctionCollection ?? relatedCollection!.relatedCollection;
 
-				if (inM2AFragment) {
+				// Build up the field path as we traverse
+				if (!inM2AFragment) {
+					m2aFieldPath.push(currentField);
+				}
+
+				if (inM2AFragment && m2aFieldPath.length > 0) {
 					// Inside M2A fragment - use aliased field name
 					const aliasedField = `${inM2AFragment}__${currentField}`;
-					m2aAliasMap[inM2AFragment] ??= {};
-					m2aAliasMap[inM2AFragment][aliasedField] = currentField;
+					const fieldPathKey = m2aFieldPath.join('.');
+
+					// Ensure the alias map entry exists for this field path
+					if (!m2aAliasMap[fieldPathKey]) {
+						m2aAliasMap[fieldPathKey] = {
+							collectionField: m2aCollectionField!,
+							aliases: {},
+						};
+					}
+
+					m2aAliasMap[fieldPathKey]!.aliases[inM2AFragment] ??= {};
+					m2aAliasMap[fieldPathKey]!.aliases[inM2AFragment]![aliasedField] = currentField;
 
 					currentPath = currentPath[aliasedField] ??= { __aliasFor: currentField };
 				} else {
@@ -65,14 +110,17 @@ export function getGraphqlQueryFields(fields: string[], collection: string): Gra
 			currentField = fieldParts[0];
 		}
 
-		const manyToAny = adjustForManyToAny(currentField, currentCollection, currentPath);
+		const m2a = adjustForM2A(currentField, currentCollection, currentPath);
 
 		let relatedCollection;
 
-		if (manyToAny) {
-			relatedCollection = manyToAny.relatedCollection;
-			currentPath = manyToAny.currentPath;
-			inM2AFragment = manyToAny.relatedCollection;
+		if (m2a) {
+			relatedCollection = m2a.relatedCollection;
+			currentPath = m2a.currentPath;
+			inM2AFragment = m2a.relatedCollection;
+			const fieldName = currentField.split(':')[0]!;
+			m2aFieldPath.push(fieldName);
+			m2aCollectionField = m2a.collectionField;
 		} else {
 			const maybeRelatedCollection = getRelatedCollection(currentCollection, currentField);
 
@@ -84,24 +132,42 @@ export function getGraphqlQueryFields(fields: string[], collection: string): Gra
 		if (relatedCollection) {
 			const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)!.field;
 
-			if (manyToAny) {
+			if (m2a) {
 				currentPath[primaryKeyField] = true;
-			} else if (inM2AFragment) {
+			} else if (inM2AFragment && m2aFieldPath.length > 0) {
 				// Inside M2A fragment - use aliased field name for relations
 				const aliasedField = `${inM2AFragment}__${currentField}`;
-				m2aAliasMap[inM2AFragment] ??= {};
-				m2aAliasMap[inM2AFragment][aliasedField] = currentField;
+				const fieldPathKey = m2aFieldPath.join('.');
+
+				if (!m2aAliasMap[fieldPathKey]) {
+					m2aAliasMap[fieldPathKey] = {
+						collectionField: m2aCollectionField!,
+						aliases: {},
+					};
+				}
+
+				m2aAliasMap[fieldPathKey]!.aliases[inM2AFragment] ??= {};
+				m2aAliasMap[fieldPathKey]!.aliases[inM2AFragment]![aliasedField] = currentField;
 
 				currentPath[aliasedField] = { __aliasFor: currentField, [primaryKeyField]: true };
 			} else {
 				currentPath[currentField] = { [primaryKeyField]: true };
 			}
 		} else {
-			if (inM2AFragment) {
+			if (inM2AFragment && m2aFieldPath.length > 0) {
 				// Inside M2A fragment - use aliased field name for scalar fields
 				const aliasedField = `${inM2AFragment}__${currentField}`;
-				m2aAliasMap[inM2AFragment] ??= {};
-				m2aAliasMap[inM2AFragment][aliasedField] = currentField;
+				const fieldPathKey = m2aFieldPath.join('.');
+
+				if (!m2aAliasMap[fieldPathKey]) {
+					m2aAliasMap[fieldPathKey] = {
+						collectionField: m2aCollectionField!,
+						aliases: {},
+					};
+				}
+
+				m2aAliasMap[fieldPathKey]!.aliases[inM2AFragment] ??= {};
+				m2aAliasMap[fieldPathKey]!.aliases[inM2AFragment]![aliasedField] = currentField;
 
 				currentPath[aliasedField] = { __aliasFor: currentField };
 			} else {
@@ -112,9 +178,9 @@ export function getGraphqlQueryFields(fields: string[], collection: string): Gra
 
 	return { queryFields, m2aAliasMap };
 
-	function adjustForManyToAny(field: string, currentCollection: string, currentPath: QueryFields) {
-		const isManyToAny = field.includes(':');
-		if (!isManyToAny) return;
+	function adjustForM2A(field: string, currentCollection: string, currentPath: QueryFields) {
+		const isM2A = field.includes(':');
+		if (!isM2A) return;
 
 		const [sourceField, relatedCollection] = field.split(':') as [string, string];
 
@@ -145,6 +211,6 @@ export function getGraphqlQueryFields(fields: string[], collection: string): Gra
 			currentPath = fragment;
 		}
 
-		return { relatedCollection, currentPath };
+		return { relatedCollection, currentPath, collectionField };
 	}
 }
