@@ -1,9 +1,20 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VError from '@/components/v-error.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useTFASetup } from '@/composables/use-tfa-setup';
+import { DEFAULT_AUTH_DRIVER } from '@/constants';
 import { useUserStore } from '@/stores/user';
 import { User } from '@directus/types';
 import { computed, inject, nextTick, ref, watch } from 'vue';
-import { DEFAULT_AUTH_DRIVER } from '@/constants';
 
 const props = defineProps<{
 	value: string | null;

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
+import VSelect from '@/components/v-select/v-select.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';

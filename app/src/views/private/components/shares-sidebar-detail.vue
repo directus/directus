@@ -1,5 +1,15 @@
 <script setup lang="ts">
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
+import VTextarea from '@/components/v-textarea.vue';
 import { useClipboard } from '@/composables/use-clipboard';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -10,6 +20,7 @@ import { abbreviateNumber } from '@directus/utils';
 import { Ref, computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ShareItem from './share-item.vue';
+import SidebarDetail from './sidebar-detail.vue';
 
 const props = defineProps<{
 	collection: string;

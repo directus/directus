@@ -1,7 +1,17 @@
 <script setup lang="ts">
 import api, { RequestError } from '@/api';
 import { login, logout } from '@/auth';
+import VButton from '@/components/v-button.vue';
+import VError from '@/components/v-error.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useRelationsStore } from '@/stores/relations';
 import { getItemRoute } from '@/utils/get-route';
+import SharedView from '@/views/shared/shared-view.vue';
 import { useCollection } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
 import { Share } from '@directus/types';
@@ -10,10 +20,6 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import ShareItem from './components/share-item.vue';
-import { useFieldsStore } from '@/stores/fields';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useRelationsStore } from '@/stores/relations';
-import { useCollectionsStore } from '@/stores/collections';
 
 type ShareInfo = Pick<
 	Share,

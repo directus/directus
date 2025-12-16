@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VNotice from '@/components/v-notice.vue';
 import { ChangesItem } from '@/composables/use-relation-multiple';
 import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';

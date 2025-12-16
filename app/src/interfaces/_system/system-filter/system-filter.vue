@@ -1,4 +1,13 @@
 <script setup lang="ts">
+import VDivider from '@/components/v-divider.vue';
+import VFieldList from '@/components/v-field-list/v-field-list.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VNotice from '@/components/v-notice.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { ClientFilterOperator, FieldFunction, Filter, Type } from '@directus/types';

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VErrorBoundary from '@/components/v-error-boundary.vue';
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
@@ -7,6 +8,7 @@ import { translate } from '@/utils/translate-literal';
 import { Field } from '@directus/types';
 import { get } from '@directus/utils';
 import { computed, ref } from 'vue';
+import ValueNull from './value-null.vue';
 
 const props = withDefaults(
 	defineProps<{

@@ -1,12 +1,23 @@
 <script setup lang="ts">
 import api from '@/api';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDivider from '@/components/v-divider.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VTabItem from '@/components/v-tab-item.vue';
+import VTab from '@/components/v-tab.vue';
+import VTabsItems from '@/components/v-tabs-items.vue';
+import VTabs from '@/components/v-tabs.vue';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { DeepPartial, Field, Relation } from '@directus/types';
 import { cloneDeep } from 'lodash';
 import { reactive, ref, watch } from 'vue';

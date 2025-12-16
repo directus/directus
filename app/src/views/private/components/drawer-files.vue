@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
-import FilesNavigation from '@/views/private/components/files-navigation.vue';
-import { getFolderFilter } from '@/utils/get-folder-filter';
-import { ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { FolderTarget, SpecialFolder } from '@/types/folders';
+import { getFolderFilter } from '@/utils/get-folder-filter';
+import FilesNavigation from '@/views/private/components/files-navigation.vue';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
+import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import DrawerCollection from './drawer-collection.vue';
 
 const props = withDefaults(
 	defineProps<{

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import VFieldList from '@/components/v-field-list/v-field-list.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VMenu from '@/components/v-menu.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';

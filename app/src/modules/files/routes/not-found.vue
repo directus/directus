@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import VInfo from '@/components/v-info.vue';
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
+import { PrivateView } from '@/views/private';
 </script>
 
 <template>

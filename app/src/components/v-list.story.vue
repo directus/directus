@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VListItem from './v-list-item.vue';
 import VList from './v-list.vue';
 </script>
 

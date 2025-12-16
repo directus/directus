@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { isEmpty, isEqual } from 'lodash';
 import { computed, watch } from 'vue';
 

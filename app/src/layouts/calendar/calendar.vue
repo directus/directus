@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VNotice from '@/components/v-notice.vue';
 import type { ShowSelect } from '@directus/types';
 import { useResizeObserver } from '@vueuse/core';
 import { debounce } from 'lodash';

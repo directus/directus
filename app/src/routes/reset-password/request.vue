@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import api, { RequestError } from '@/api';
+import VButton from '@/components/v-button.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
 import { translateAPIError } from '@/lang';
 import { useHead } from '@unhead/vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { RouterLink } from 'vue-router';
 
 const { t } = useI18n();
 

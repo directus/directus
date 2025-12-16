@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import VCollectionFieldTemplate from '@/components/v-collection-field-template.vue';
+import VDetail from '@/components/v-detail.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
 import { useSync } from '@directus/composables';
 import { Field } from '@directus/types';
 

@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
 import type { Props as VDrawerProps } from '@/components/v-drawer.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VInfo from '@/components/v-info.vue';
 import { usePreset } from '@/composables/use-preset';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useCollection, useLayout } from '@directus/composables';

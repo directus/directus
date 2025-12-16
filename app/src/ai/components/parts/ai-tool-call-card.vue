@@ -3,6 +3,10 @@ import { useAiStore } from '@/ai/stores/use-ai';
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import VButton from '@/components/v-button.vue';
+import VChip from '@/components/v-chip.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 
 const aiStore = useAiStore();
 const { t } = useI18n();

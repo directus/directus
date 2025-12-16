@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { FancySelectItem } from '@/components/v-fancy-select.vue';
+import VFancySelect, { FancySelectItem } from '@/components/v-fancy-select.vue';
+import VNotice from '@/components/v-notice.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { useExtension } from '@/composables/use-extension';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';

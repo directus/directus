@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { pluralize } from '@directus/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';

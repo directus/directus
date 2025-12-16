@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { Permission, PrimaryKey } from '@directus/types';
 
 defineProps<{

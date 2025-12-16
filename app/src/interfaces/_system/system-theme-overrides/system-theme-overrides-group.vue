@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import TransitionExpand from '@/components/transition/expand.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { isPlainObject } from 'lodash';
 import { computed, ref } from 'vue';
 import SystemThemeOverridesRule from './system-theme-overrides-rule.vue';

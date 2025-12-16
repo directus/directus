@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import VListGroup from './v-list-group.vue';
+import VListItem from './v-list-item.vue';
+import VList from './v-list.vue';
 </script>
 
 <template>

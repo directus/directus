@@ -1,8 +1,21 @@
 <script setup lang="ts">
 import api from '@/api';
+import VDivider from '@/components/v-divider.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VFancySelect from '@/components/v-fancy-select.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VTabItem from '@/components/v-tab-item.vue';
+import VTab from '@/components/v-tab.vue';
+import VTabsItems from '@/components/v-tabs-items.vue';
+import VTabs from '@/components/v-tabs.vue';
+import InterfaceSelectColor from '@/interfaces/select-color/select-color.vue';
+import InterfaceSelectIcon from '@/interfaces/select-icon/select-icon.vue';
 import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import type { TriggerType } from '@directus/types';
 import { computed, reactive, ref, watch } from 'vue';
 import { getTriggers } from './triggers';

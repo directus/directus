@@ -8,6 +8,7 @@ import { clone, get } from 'lodash';
 import { computed, nextTick, onBeforeMount, ref, toRef } from 'vue';
 import InputComponent from './input-component.vue';
 import { fieldToFilter, getComparator, getField } from './utils';
+import VIcon from '@/components/v-icon/v-icon.vue';
 
 // Workaround because you cannot cast directly to union types inside
 // the template block without running into eslint/prettier issues
@@ -239,6 +240,8 @@ function useVariableInput() {
 	<template v-if="isVariableInputActive">
 		<span class="variable-input-braces">{{ '\{\{' }}</span>
 
+		<!-- TODO: eslint trips up here as we're using `is` as the prop name. Refactoring `is` away is the proper solve here -->
+		<!-- eslint-disable vue/no-undef-components -->
 		<input-component
 			is="interface-input"
 			class="variable-input"
