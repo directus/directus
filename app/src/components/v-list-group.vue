@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue';
 import { useGroupable } from '@directus/composables';
+import { computed, watch } from 'vue';
 
 interface Props {
 	/** If enabled, multiple elements can be selected */
