@@ -37,15 +37,14 @@ function unsetValue(e: any) {
 // Computed property for date-picker value with timezone conversion
 const tzValue = computed({
 	get() {
-		const dateStr = props.value || '';
-		const date = parseISO(dateStr);
-
 		// Convert UTC value to timezone-adjusted value for date-picker display
-		if (isValid(date) && props.type === 'timestamp' && props.tz && props.value) {
+		if (props.type === 'timestamp' && props.tz && props.value) {
+			const date = parseISO(props.value);
+			if (!isValid(date)) return null;
 			return formatDateToTimezone(date, props.tz).toISOString();
 		}
 
-		return dateStr;
+		return props.value;
 	},
 	set(value: string | null) {
 		if (!value) {
@@ -93,14 +92,7 @@ const tzValue = computed({
 			</v-list-item>
 		</template>
 
-		<v-date-picker
-			v-model="tzValue"
-			:type
-			:disabled
-			:include-seconds
-			:use-24
-			@close="dateTimeMenu?.deactivate"
-		/>
+		<v-date-picker v-model="tzValue" :type :disabled :include-seconds :use-24 @close="dateTimeMenu?.deactivate" />
 	</v-menu>
 </template>
 
