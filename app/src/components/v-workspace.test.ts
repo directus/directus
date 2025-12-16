@@ -49,7 +49,7 @@ test('editMode prop', async () => {
 	});
 
 	expect(wrapper.classes()).toContain('editing');
-	expect(wrapper.getComponent({ name: 'v-workspace-tile' }).attributes()['edit-mode']).toBeTruthy();
+	expect(wrapper.getComponent({ name: 'v-workspace-tile' }).props('editMode')).toBe(true);
 });
 
 test('zoomToFit prop', async () => {
