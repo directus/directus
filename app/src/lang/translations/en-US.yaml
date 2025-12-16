@@ -262,6 +262,7 @@ unarchive: Unarchive
 unarchive_confirm: Are you sure you want to unarchive this item?
 nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
 validation_errors_notice: 'The following fields have invalid values:'
+validation_value_is_invalid: Value is invalid
 validationError:
   eq: Value has to be {valid}
   neq: Value can't be {invalid}

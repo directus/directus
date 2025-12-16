@@ -1,5 +1,6 @@
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { formatFieldFunction } from '@/utils/format-field-function';
+import { parseValidationStructure, hasNestedGroups } from '@/utils/format-validation-structure';
 import { Field, ValidationError } from '@directus/types';
 import { computed, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -9,6 +10,8 @@ type ValidationErrorWithDetails = ValidationError & {
 	groupName?: string;
 	type: ValidationError['type'] | 'required' | 'unique';
 	customValidationMessage: string | null;
+	validationStructure?: ReturnType<typeof parseValidationStructure>;
+	hasNestedValidation: boolean;
 };
 
 export function useValidationErrorDetails(validationErrors: Ref<ValidationError[]>, fields: Ref<Field[]>) {
@@ -25,6 +28,9 @@ export function useValidationErrorDetails(validationErrors: Ref<ValidationError[
 				const isRequiredError = field?.meta?.required && validationError.type === 'nnull';
 				const isNotUniqueError = validationError.code === 'RECORD_NOT_UNIQUE';
 
+				const validationStructure = field?.meta?.validation ? parseValidationStructure(field.meta.validation) : null;
+				const hasNestedValidation = field?.meta?.validation ? hasNestedGroups(field.meta.validation) : false;
+
 				return {
 					...validationError,
 					field: fieldKey!,
@@ -32,6 +38,8 @@ export function useValidationErrorDetails(validationErrors: Ref<ValidationError[
 					groupName: group?.name ?? validationError.group,
 					type: getValidationType(),
 					customValidationMessage: getCustomValidationMessage(),
+					validationStructure,
+					hasNestedValidation,
 				} as ValidationErrorWithDetails;
 
 				function getFieldName() {
