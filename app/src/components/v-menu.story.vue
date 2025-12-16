@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import VIcon from './v-icon/v-icon.vue';
+import VListItemContent from './v-list-item-content.vue';
+import VListItemIcon from './v-list-item-icon.vue';
+import VListItem from './v-list-item.vue';
+import VList from './v-list.vue';
 import VMenu from './v-menu.vue';
 </script>
 

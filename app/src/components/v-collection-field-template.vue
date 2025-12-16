@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useFieldTree } from '@/composables/use-field-tree';
 import { toRefs } from 'vue';
+import VFieldTemplate from '@/components/v-field-template/v-field-template.vue';
+import VNotice from '@/components/v-notice.vue';
 
 const value = defineModel<string>();
 

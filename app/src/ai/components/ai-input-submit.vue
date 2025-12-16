@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { computed } from 'vue';
 import type { AiStatus } from './ai-message-list.vue';
 

@@ -3,6 +3,8 @@ import { useServerStore } from '@/stores/server';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
+import VImage from '@/components/v-image.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 
 interface Props {
 	wide?: boolean;

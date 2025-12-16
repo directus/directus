@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import VCheckboxTree from '@/components/v-checkbox-tree/v-checkbox-tree.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
 import { debounce } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VNotice from '@/components/v-notice.vue';
+import InterfaceInputCode from '@/interfaces/input-code/input-code.vue';
 import { useRelationsStore } from '@/stores/relations';
 import { useSync } from '@directus/composables';
 import { Permission, Policy } from '@directus/types';

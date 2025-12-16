@@ -8,6 +8,12 @@ import { Field } from '@directus/types';
 import { debounce, isNil } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import VFieldListItem from './v-field-list-item.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VList from '@/components/v-list.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
 
 const collectionsStore = useCollectionsStore();
 

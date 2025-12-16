@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { RevisionsByDate, Revision } from '@/types/revisions';
-
+import VDetail from '@/components/v-detail.vue';
+import { Revision, RevisionsByDate } from '@/types/revisions';
 import { ref } from 'vue';
-
 import RevisionItem from './revision-item.vue';
 
 interface Props {

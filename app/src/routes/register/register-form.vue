@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import api, { RequestError } from '@/api';
 import { login } from '@/auth';
+import VButton from '@/components/v-button.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import InterfaceSystemInputPassword from '@/interfaces/_system/system-input-password/input-password.vue';
 import { translateAPIError } from '@/lang';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';

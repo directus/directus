@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { RequestError } from '@/api';
 import { login } from '@/auth';
+import TransitionExpand from '@/components/transition/expand.vue';
+import VButton from '@/components/v-button.vue';
+import VInput from '@/components/v-input.vue';
+import VNotice from '@/components/v-notice.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
+import InterfaceSystemInputPassword from '@/interfaces/_system/system-input-password/input-password.vue';
 import { translateAPIError } from '@/lang';
 import { useUserStore } from '@/stores/user';
 import { computed, ref, toRefs, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 import z from 'zod';
 
 type Credentials = {

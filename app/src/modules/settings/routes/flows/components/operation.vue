@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import VErrorBoundary from '@/components/v-error-boundary.vue';
+import VError from '@/components/v-error.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VWorkspaceTile from '@/components/v-workspace-tile.vue';
+import DisplayColor from '@/displays/color/color.vue';
 import { useExtensions } from '@/extensions';
 import { useUserStore } from '@/stores/user';
 import { Vector2 } from '@/utils/vector2';

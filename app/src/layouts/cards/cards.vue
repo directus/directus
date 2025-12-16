@@ -1,6 +1,11 @@
 <script setup lang="ts">
+import VPagination from '@/components/v-pagination.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VSkeletonLoader from '@/components/v-skeleton-loader.vue';
 import { usePageSize } from '@/composables/use-page-size';
 import { Collection } from '@/types/collections';
+import RenderTemplate from '@/views/private/components/render-template.vue';
 import { useElementSize, useSync } from '@directus/composables';
 import type { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { Ref, inject, ref, watch } from 'vue';

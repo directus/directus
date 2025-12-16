@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import TransitionBounce from '@/components/transition/bounce.vue';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useUserStore } from '@/stores/user';
 import { Instance, Modifier, Placement, detectOverflow } from '@popperjs/core';

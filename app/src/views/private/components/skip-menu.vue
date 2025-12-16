@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
 import { BREAKPOINTS } from '@/constants';
 import { useNavBarStore } from '@/views/private/private-view/stores/nav-bar';
 import { useSidebarStore } from '@/views/private/private-view/stores/sidebar';

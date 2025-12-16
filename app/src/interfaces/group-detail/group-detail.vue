@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import VDetail from '@/components/v-detail.vue';
+import VDivider from '@/components/v-divider.vue';
+import type { ComparisonContext } from '@/components/v-form/types';
+import VForm from '@/components/v-form/v-form.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import formatTitle from '@directus/format-title';
 import { Field, ValidationError } from '@directus/types';
-import type { ComparisonContext } from '@/components/v-form/types';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';

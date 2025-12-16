@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import VCheckbox from '@/components/v-checkbox.vue';
+import VDetail from '@/components/v-detail.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VNotice from '@/components/v-notice.vue';
 import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
 import { useCustomSelectionMultiple, type OtherValue } from '@directus/composables';
 import { computed, ref, toRefs } from 'vue';

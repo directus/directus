@@ -3,6 +3,13 @@ import { FieldNode } from '@/composables/use-field-tree';
 import formatTitle from '@directus/format-title';
 import { getFunctionsForType } from '@directus/utils';
 import { computed } from 'vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListGroup from '@/components/v-list-group.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 
 type FieldInfo = FieldNode & {
 	disabled?: boolean;

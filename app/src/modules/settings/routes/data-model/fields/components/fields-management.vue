@@ -1,9 +1,17 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
 import { useFieldsStore } from '@/stores/fields';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { Field, LocalType } from '@directus/types';
 import { isNil, orderBy } from 'lodash';
-import { computed, toRefs, onBeforeMount, onBeforeUnmount } from 'vue';
+import { computed, onBeforeMount, onBeforeUnmount, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import FieldSelect from './field-select.vue';

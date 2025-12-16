@@ -1,7 +1,17 @@
 <script setup lang="ts">
-import { CSSProperties, computed, onMounted, ref, watch, nextTick } from 'vue';
-import { useI18n } from 'vue-i18n';
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInfo from '@/components/v-info.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VMenu from '@/components/v-menu.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
+import VSelect from '@/components/v-select/v-select.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useElementSize } from '@directus/composables';
+import { CSSProperties, computed, nextTick, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 declare global {
 	interface Window {

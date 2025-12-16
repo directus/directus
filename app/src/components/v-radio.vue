@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import VIcon from './v-icon/v-icon.vue';
 
 interface Props {
 	/** What value to represent when selected */

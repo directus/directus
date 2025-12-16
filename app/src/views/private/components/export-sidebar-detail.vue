@@ -1,6 +1,21 @@
 <script setup lang="ts">
 import api from '@/api';
+import VButton from '@/components/v-button.vue';
+import VDivider from '@/components/v-divider.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VNotice from '@/components/v-notice.vue';
+import VProgressLinear from '@/components/v-progress-linear.vue';
+import VRemove from '@/components/v-remove.vue';
+import VSelect from '@/components/v-select/v-select.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
+import InterfaceSystemField from '@/interfaces/_system/system-field/system-field.vue';
+import InterfaceSystemFields from '@/interfaces/_system/system-fields/system-fields.vue';
+import InterfaceSystemFilter from '@/interfaces/_system/system-filter/system-filter.vue';
 import { useServerStore } from '@/stores/server';
 import type { APIError } from '@/types/error';
 import { getPublicURL } from '@/utils/get-root-path';
@@ -17,6 +32,7 @@ import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import PrivateViewHeaderBarActionButton from '../private-view/components/private-view-header-bar-action-button.vue';
 import ImportErrorDialog from './import-error-dialog.vue';
+import sidebarDetail from './sidebar-detail.vue';
 
 type LayoutQuery = {
 	fields?: string[];

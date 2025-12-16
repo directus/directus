@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useFolders } from '@/composables/use-folders';
 import api from '@/api';
-import { useRouter } from 'vue-router';
+import VButton from '@/components/v-button.vue';
+import VCardActions from '@/components/v-card-actions.vue';
+import VCardText from '@/components/v-card-text.vue';
+import VCardTitle from '@/components/v-card-title.vue';
+import VCard from '@/components/v-card.vue';
+import VDialog from '@/components/v-dialog.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VInput from '@/components/v-input.vue';
+import { useFolders } from '@/composables/use-folders';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const props = defineProps<{
 	parent?: string;

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from 'reka-ui';
 import { computed } from 'vue';
 

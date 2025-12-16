@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import type { UIMessagePart as SDKUIMessagePart, UIDataTypes, DynamicToolUIPart, UITools } from 'ai';
+import type { DynamicToolUIPart, UIMessagePart as SDKUIMessagePart, UIDataTypes, UITools } from 'ai';
 
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
 import AiMessageFile from './parts/ai-message-file.vue';
 import AiMessageReasoning from './parts/ai-message-reasoning.vue';
 import AiMessageSourceDocument from './parts/ai-message-source-document.vue';

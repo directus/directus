@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
+import VDrawer from '@/components/v-drawer.vue';
+import VFancySelect from '@/components/v-fancy-select.vue';
+import VForm from '@/components/v-form/v-form.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
 import { FlowRaw, TriggerType } from '@directus/types';
 import { computed, ref } from 'vue';
 import { getTriggers } from '../triggers';

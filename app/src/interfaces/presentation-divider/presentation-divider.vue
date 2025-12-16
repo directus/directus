@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import VDivider from '@/components/v-divider.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+
 defineProps<{
 	color?: string;
 	icon?: string;

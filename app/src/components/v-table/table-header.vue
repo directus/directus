@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import VCheckbox from '@/components/v-checkbox.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VMenu from '@/components/v-menu.vue';
 import { useEventListener } from '@/composables/use-event-listener';
 import { useUserStore } from '@/stores/user';
 import { hideDragImage } from '@/utils/hide-drag-image';

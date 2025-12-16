@@ -1,4 +1,11 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VListItemContent from '@/components/v-list-item-content.vue';
+import VListItemIcon from '@/components/v-list-item-icon.vue';
+import VListItem from '@/components/v-list-item.vue';
+import VList from '@/components/v-list.vue';
+import VTextOverflow from '@/components/v-text-overflow.vue';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useInsightsStore } from '@/stores/insights';
 import { Dashboard } from '@/types/insights';

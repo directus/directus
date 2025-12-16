@@ -1,11 +1,17 @@
 <script setup lang="ts">
+import VBreadcrumb from '@/components/v-breadcrumb.vue';
+import VButton from '@/components/v-button.vue';
+import VCheckbox from '@/components/v-checkbox.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 import { useClipboard } from '@/composables/use-clipboard';
 import { useShortcut } from '@/composables/use-shortcut';
+import InterfaceInput from '@/interfaces/input/input.vue';
 import { sdk } from '@/sdk';
 import { useServerStore } from '@/stores/server';
 import { getRootPath } from '@/utils/get-root-path';
-import PrivateViewHeaderBarActionButton from '@/views/private/private-view/components/private-view-header-bar-action-button.vue';
-import PrivateView from '@/views/private/private-view/components/private-view.vue';
+import { PrivateViewHeaderBarActionButton } from '@/views/private';
+import { PrivateView } from '@/views/private';
 import { realtime } from '@directus/sdk';
 import { useLocalStorage } from '@vueuse/core';
 import CodeMirror from 'codemirror';

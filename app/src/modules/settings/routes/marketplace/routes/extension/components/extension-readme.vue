@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VNotice from '@/components/v-notice.vue';
+
 defineProps<{
 	readme: string | null;
 }>();

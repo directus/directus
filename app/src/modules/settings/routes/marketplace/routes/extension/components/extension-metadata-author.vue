@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import VButton from '@/components/v-button.vue';
+import VIcon from '@/components/v-icon/v-icon.vue';
+
 defineProps<{
 	id: string;
 	username: string;

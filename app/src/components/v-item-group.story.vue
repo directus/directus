@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import VItemGroup from './v-item-group.vue';
+import VItem from './v-item.vue';
 
 const value = ref(['item1']);
 </script>

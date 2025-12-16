@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VIcon from '@/components/v-icon/v-icon.vue';
+import ValueNull from '@/views/private/components/value-null.vue';
 import { computed } from 'vue';
 
 const props = withDefaults(

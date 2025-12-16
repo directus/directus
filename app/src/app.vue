@@ -10,6 +10,11 @@ import { computed, onMounted, onUnmounted, toRefs } from 'vue';
 import { useThemeConfiguration } from './composables/use-theme-configuration';
 import { startIdleTracking, stopIdleTracking } from './idle';
 import { useUserStore } from './stores/user';
+import { RouterView } from 'vue-router';
+import VButton from '@/components/v-button.vue';
+import VError from '@/components/v-error.vue';
+import VInfo from '@/components/v-info.vue';
+import VProgressCircular from '@/components/v-progress-circular.vue';
 
 const appStore = useAppStore();
 const serverStore = useServerStore();

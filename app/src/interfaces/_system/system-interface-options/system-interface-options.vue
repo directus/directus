@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VForm from '@/components/v-form/v-form.vue';
+import VNotice from '@/components/v-notice.vue';
 import { useExtension } from '@/composables/use-extension';
 import type { ExtensionOptionsContext } from '@directus/extensions';
 import { isVueComponent } from '@directus/utils';
