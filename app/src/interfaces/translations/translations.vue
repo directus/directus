@@ -379,13 +379,7 @@ function useNestedValidation() {
 			</template>
 		</TranslationForm>
 
-		<TranslationForm
-			v-if="splitViewEnabled"
-			v-model:lang="secondLang"
-			v-bind="translationProps"
-			secondary
-			class="half"
-		>
+		<TranslationForm v-if="splitViewEnabled" v-model:lang="secondLang" v-bind="translationProps" secondary class="half">
 			<template #split-view>
 				<VIcon
 					v-tooltip="$t('interfaces.translations.toggle_split_view')"

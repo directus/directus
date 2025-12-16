@@ -439,12 +439,7 @@ function onApply() {
 					<VDivider class="full" />
 					<div class="field half">
 						<div class="type-label">{{ $t('primary_key_field') }}</div>
-						<VInput
-							v-model="primaryKeyFieldName"
-							class="monospace"
-							db-safe
-							:placeholder="$t('a_unique_column_name')"
-						/>
+						<VInput v-model="primaryKeyFieldName" class="monospace" db-safe :placeholder="$t('a_unique_column_name')" />
 					</div>
 					<div class="field half">
 						<div class="type-label">{{ $t('type') }}</div>

@@ -135,10 +135,7 @@ const openWhileSearching = computed(() => {
 			<VIcon name="auto_awesome" small color="var(--theme--primary)" />
 		</VListItemIcon>
 		<VListItemContent>
-			<VTextOverflow
-				:text="rawFieldNames ? field.field : field.name || formatTitle(field.field)"
-				:highlight="search"
-			/>
+			<VTextOverflow :text="rawFieldNames ? field.field : field.name || formatTitle(field.field)" :highlight="search" />
 		</VListItemContent>
 	</VListItem>
 </template>

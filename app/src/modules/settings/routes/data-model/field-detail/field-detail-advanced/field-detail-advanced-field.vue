@@ -62,12 +62,7 @@ const isSearchableType = computed(() => {
 		<div v-if="type !== 'group'" class="field full">
 			<div class="label type-label">{{ $t('note') }}</div>
 			<VSkeletonLoader v-if="loading" />
-			<InterfaceSystemInputTranslatedString
-				v-else
-				:value="note"
-				:placeholder="$t('add_note')"
-				@input="note = $event"
-			/>
+			<InterfaceSystemInputTranslatedString v-else :value="note" :placeholder="$t('add_note')" @input="note = $event" />
 		</div>
 
 		<div class="field full">

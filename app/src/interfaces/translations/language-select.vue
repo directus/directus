@@ -38,12 +38,7 @@ const displayValue = computed(() => {
 		</template>
 
 		<VList v-if="items">
-			<VListItem
-				v-for="(item, index) in items"
-				:key="index"
-				clickable
-				@click="$emit('update:modelValue', item.value)"
-			>
+			<VListItem v-for="(item, index) in items" :key="index" clickable @click="$emit('update:modelValue', item.value)">
 				<div class="start">
 					<div class="dot" :class="{ show: item.edited }"></div>
 					{{ item.text }}

@@ -45,10 +45,7 @@ const relatedPrimaryKey = computed(
 
 			<div class="field">
 				<div class="type-label">{{ $t('translations_collection') }}</div>
-				<RelatedCollectionSelect
-					v-model="junctionCollection"
-					:disabled="autoGenerateJunctionRelation || isExisting"
-				/>
+				<RelatedCollectionSelect v-model="junctionCollection" :disabled="autoGenerateJunctionRelation || isExisting" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('languages_collection') }}</div>

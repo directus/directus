@@ -131,12 +131,7 @@ function getChildBookmarks(collection: Collection) {
 		:value="collection.collection"
 		:class="{ hidden: collection.meta?.hidden }"
 	>
-		<NavigationItemContent
-			:search="search"
-			:name="collection.name"
-			:icon="collection.icon"
-			:color="collection.color"
-		/>
+		<NavigationItemContent :search="search" :name="collection.name" :icon="collection.icon" :color="collection.color" />
 	</VListItem>
 
 	<VMenu v-if="hasContextMenu" ref="contextMenu" show-arrow placement="bottom-start">

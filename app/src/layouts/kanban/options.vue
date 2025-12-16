@@ -174,12 +174,7 @@ const userFieldSync = useSync(props, 'userField', emit);
 
 			<div class="field">
 				<div class="type-label">{{ $t('layouts.kanban.show_ungrouped') }}</div>
-				<VCheckbox
-					v-model="showUngroupedSync"
-					block
-					:disabled="ungroupedDisabled"
-					:label="$t('layouts.kanban.show')"
-				/>
+				<VCheckbox v-model="showUngroupedSync" block :disabled="ungroupedDisabled" :label="$t('layouts.kanban.show')" />
 			</div>
 		</div>
 	</VDetail>

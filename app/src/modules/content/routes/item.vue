@@ -804,11 +804,7 @@ function useCollectionRoute() {
 			</template>
 
 			<template #end>
-				<LivePreview
-					v-if="livePreviewActive && previewUrl"
-					:url="previewUrl"
-					@new-window="livePreviewMode = 'popup'"
-				/>
+				<LivePreview v-if="livePreviewActive && previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
 			</template>
 		</SplitPanel>
 

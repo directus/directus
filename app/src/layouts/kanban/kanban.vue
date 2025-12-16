@@ -184,11 +184,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 										</template>
 
 										<VList>
-											<VListItem
-												:disabled="!canUpdateGroupTitle || selectMode"
-												clickable
-												@click="openEditGroup(group)"
-											>
+											<VListItem :disabled="!canUpdateGroupTitle || selectMode" clickable @click="openEditGroup(group)">
 												<VListItemIcon><VIcon name="edit" /></VListItemIcon>
 												<VListItemContent>{{ $t('layouts.kanban.edit_group') }}</VListItemContent>
 											</VListItem>
