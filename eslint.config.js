@@ -125,10 +125,13 @@ export default typescriptEslint.config(
 			// Allow unused variables when they begin with an underscore
 			'vue/no-unused-vars': ['error', { ignorePattern: '^_' }],
 			// Require components to be imported in the script block
-			'vue/no-undef-components': ['error', {
-				// Histoire components in *.story.vue files
-				ignorePatterns: ['Story', 'Variant', 'Hst*']
-			}],
+			'vue/no-undef-components': [
+				'error',
+				{
+					// Histoire components in *.story.vue files
+					ignorePatterns: ['Story', 'Variant', 'Hst*'],
+				},
+			],
 		},
 	},
 

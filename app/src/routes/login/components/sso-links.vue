@@ -14,7 +14,6 @@ import formatTitle from '@directus/format-title';
 import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
-
 const props = defineProps<{
 	providers: AuthProvider[];
 }>();
